@@ -835,6 +835,7 @@ void ebits_show(Ebits_Object o)
 	Ebits_Object_Bit_State state;
 	
 	state = l->data;
+	_ebits_sync_bits(state);
 	evas_show(state->o->state.evas, state->object);
      }
 }

@@ -45,14 +45,19 @@ static gint view_shrink_logo(gpointer data);
 static gint view_scroll_logo(gpointer data);
 gint view_configure_handles(gpointer data);
 
+#define GET_SPIN(name, val) w = gtk_object_get_data(GTK_OBJECT(main_win), name); selected_state->description->val = gtk_spin_button_get_value_as_float(GTK_SPIN_BUTTON(w));
+#define GET_ENTRY(name, val) w = gtk_object_get_data(GTK_OBJECT(main_win), name); if (selected_state->description->val) free(selected_state->description->val); if (!strcmp(gtk_entry_get_text(GTK_ENTRY(w)), "")) selected_state->description->val = NULL; else selected_state->description->val = strdup(gtk_entry_get_text(GTK_ENTRY(w)));
+#define GET_ALL_SPIN(name, val) w = gtk_object_get_data(GTK_OBJECT(main_win), name); bits->description->val = gtk_spin_button_get_value_as_float(GTK_SPIN_BUTTON(w));
+#define SET_SPIN(name, val) w = gtk_object_get_data(GTK_OBJECT(main_win), name); gtk_spin_button_set_value(GTK_SPIN_BUTTON(w), selected_state->description->val);
+#define SET_ENTRY(name, val) w = gtk_object_get_data(GTK_OBJECT(main_win), name); if (selected_state->description->val) gtk_entry_set_text(GTK_ENTRY(w), selected_state->description->val); else gtk_entry_set_text(GTK_ENTRY(w), "");
+#define SET_ALL_SPIN(name, val) w = gtk_object_get_data(GTK_OBJECT(main_win), name); gtk_spin_button_set_value(GTK_SPIN_BUTTON(w), bits->description->val);
+
 static void
 update_selection_from_widget(void)
 {
    GtkWidget *w;
    Evas_List l;
    
-#define GET_SPIN(name, val) w = gtk_object_get_data(GTK_OBJECT(main_win), name); selected_state->description->val = gtk_spin_button_get_value_as_float(GTK_SPIN_BUTTON(w));
-#define GET_ENTRY(name, val) w = gtk_object_get_data(GTK_OBJECT(main_win), name); if (selected_state->description->val) free(selected_state->description->val); if (!strcmp(gtk_entry_get_text(GTK_ENTRY(w)), "")) selected_state->description->val = NULL; else selected_state->description->val = strdup(gtk_entry_get_text(GTK_ENTRY(w)));
    if (selected_state)
      {
 	Ebits_Object_Bit_State selected;
@@ -86,6 +91,8 @@ update_selection_from_widget(void)
 	  {
 	     selected_state->description->aspect.x = 0;
 	     selected_state->description->aspect.y = 0;
+	     SET_SPIN("aspect_h", aspect.x);
+	     SET_SPIN("aspect_v", aspect.y);
 	  }
 	GET_SPIN("min_h", min.w);
 	GET_SPIN("min_v", min.h);
@@ -171,7 +178,6 @@ update_selection_from_widget(void)
 	  }
 	gtk_clist_thaw(GTK_CLIST(w));
      }
-#define GET_ALL_SPIN(name, val) w = gtk_object_get_data(GTK_OBJECT(main_win), name); bits->description->val = gtk_spin_button_get_value_as_float(GTK_SPIN_BUTTON(w));
    GET_ALL_SPIN("bit_min_h", min.w);
    GET_ALL_SPIN("bit_min_v", min.h);
    GET_ALL_SPIN("bit_max_h", max.w);
@@ -194,8 +200,6 @@ update_widget_from_selection(void)
    GtkWidget *w;
    Evas_List l;
 
-#define SET_SPIN(name, val) w = gtk_object_get_data(GTK_OBJECT(main_win), name); gtk_spin_button_set_value(GTK_SPIN_BUTTON(w), selected_state->description->val);
-#define SET_ENTRY(name, val) w = gtk_object_get_data(GTK_OBJECT(main_win), name); if (selected_state->description->val) gtk_entry_set_text(GTK_ENTRY(w), selected_state->description->val); else gtk_entry_set_text(GTK_ENTRY(w), "");
    if (selected_state)
      {
 	Ebits_Object_Bit_State selected;
@@ -216,6 +220,8 @@ update_widget_from_selection(void)
 		  bitnames = g_list_append(bitnames, text);
 	       }
 	     w = gtk_object_get_data(GTK_OBJECT(main_win), "tl_rel_combo");
+	     gtk_combo_set_popdown_strings(GTK_COMBO(w), bitnames);
+	     w = gtk_object_get_data(GTK_OBJECT(main_win), "br_rel_combo");
 	     gtk_combo_set_popdown_strings(GTK_COMBO(w), bitnames);
 	     if (bitnames) g_list_free(bitnames);
 	  }
@@ -343,7 +349,6 @@ update_widget_from_selection(void)
 	w = gtk_object_get_data(GTK_OBJECT(main_win), "images");
 	gtk_clist_unselect_all(GTK_CLIST(w));	
      }
-#define SET_ALL_SPIN(name, val) w = gtk_object_get_data(GTK_OBJECT(main_win), name); gtk_spin_button_set_value(GTK_SPIN_BUTTON(w), bits->description->val);
    SET_ALL_SPIN("bit_min_h", min.w);
    SET_ALL_SPIN("bit_min_v", min.h);
    SET_ALL_SPIN("bit_max_h", max.w);
@@ -811,6 +816,8 @@ on_file_ok_clicked                     (GtkButton       *button,
 		}
 	      gtk_clist_thaw(GTK_CLIST(w));
 	      update_widget_from_selection();
+	      w = gtk_object_get_data(GTK_OBJECT(main_win), "file");
+	      gtk_entry_set_text(GTK_ENTRY(w), gtk_file_selection_get_filename(GTK_FILE_SELECTION(top)));
 	   }
 	gtk_idle_add(view_redraw, NULL);
 	E_DB_STR_SET(etcher_config, "/paths/bit", 
@@ -1490,6 +1497,7 @@ on_prop_apply_clicked                  (GtkButton       *button,
    ebits_resize(bits, backing_w, backing_h);
    update_visible_selection();
    ebits_set_state(bits, current_state);
+   update_widget_from_selection();
    gtk_idle_add(view_redraw, NULL);
 }
 
