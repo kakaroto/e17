@@ -1205,6 +1205,10 @@ typedef struct _emode
      GroupConfig         group_config;
      Window              kde_dock;
      int                 kde_support;
+     int                 kde_x1;
+     int                 kde_x2;
+     int                 kde_y1;
+     int                 kde_y2;
      char                clickalways;
      char                keybinds_changed;
      char                firsttime;

@@ -3196,3 +3196,10 @@ Thu Oct  7 13:49:23 PDT 1999
 (Raster)
 
 do the SetupUserInitialization late in the startup - not early.. :)
+
+-------------------------------------------------------------------------------
+
+Thu Oct  7 16:06:02 PDT 1999
+(Mandrake)
+
+this is broken.  good thing it's commented out.
