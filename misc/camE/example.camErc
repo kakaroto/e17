@@ -1,0 +1,42 @@
+[ftp]
+host = cam.super.tasty.men.com
+user = giblet
+pass = NO_WAY_BUDDY
+dir  = public_html/images/
+file = webcam.jpg
+tmp  = uploading.jpg
+passive = 1
+debug = 0
+do = 1
+
+[grab]
+device = /dev/video0
+temp_file = /tmp/webcam.jpg
+lag_reduce = 5
+text   = %d/%m/%Y %H:%M GMT - 
+width  = 352
+height = 288
+delay  = 10
+logfile = /home/gilbertt/.camlog
+infofile = /home/gilbertt/.caminfo
+archive = /opt/images/webcam
+quality = 80
+input  = 0
+norm   = 0
+title_text = Giblet TV
+title_r = 255
+title_g = 255
+title_b = 0
+title_a = 255
+title_font = arial/8
+text_r = 255
+text_g = 255
+text_b = 0
+text_a = 255
+text_font = arial/8
+bg_a = 0
+bg_b = 0
+bg_g = 0
+bg_a = 100
+ttf_dir = /usr/X11R6/lib/X11/fonts/TrueType
+blockfile = /home/gilbertt/BLOCKCAM
