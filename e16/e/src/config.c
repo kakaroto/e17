@@ -41,23 +41,21 @@ if (FindItem(name, 0, LIST_FINDBY_NAME, type)) \
 		return;\
 }
 
-static void
-SkipTillEnd(FILE * ConfigFile)
+static int
+IsWhitespace(const char *s)
 {
-   char                s[FILEPATH_LEN_MAX];
-   int                 i1, i2, fields;
+   int                 i = 0;
 
-   while (GetLine(s, sizeof(s), ConfigFile))
+   while (s[i])
      {
-	fields = sscanf(s, "%i %i", &i1, &i2);
-	if (i1 == CONFIG_CLOSE)
-	   return;
-	if (i2 == CONFIG_OPEN)
-	   SkipTillEnd(ConfigFile);
+	if ((s[i] != ' ') && (s[i] != '\n') && (s[i] != '\t'))
+	   return 0;
+	i++;
      }
+   return 1;
 }
 
-char               *
+static char        *
 GetLine(char *s, int size, FILE * f)
 {
 
@@ -211,7 +209,23 @@ GetLine(char *s, int size, FILE * f)
    return ret;
 }
 
-void
+static void
+SkipTillEnd(FILE * ConfigFile)
+{
+   char                s[FILEPATH_LEN_MAX];
+   int                 i1, i2, fields;
+
+   while (GetLine(s, sizeof(s), ConfigFile))
+     {
+	fields = sscanf(s, "%i %i", &i1, &i2);
+	if (i1 == CONFIG_CLOSE)
+	   return;
+	if (i2 == CONFIG_OPEN)
+	   SkipTillEnd(ConfigFile);
+     }
+}
+
+static void
 Config_Text(FILE * ConfigFile)
 {
 
@@ -445,7 +459,7 @@ Config_Text(FILE * ConfigFile)
 	  "Done loading a text block.  Outcome is likely not good.\n"));
 }
 
-void
+static void
 Config_Slideout(FILE * ConfigFile)
 {
 
@@ -523,7 +537,7 @@ Config_Slideout(FILE * ConfigFile)
 	  "Done loading a Slideout block.  Outcome is likely not good.\n"));
 }
 
-void
+static void
 Config_Control(FILE * ConfigFile)
 {
 
@@ -842,7 +856,7 @@ Config_Control(FILE * ConfigFile)
 	  "Done loading a Control block.  Outcome is likely not good.\n"));
 }
 
-void
+static void
 Config_MenuStyle(FILE * ConfigFile)
 {
    char                s[FILEPATH_LEN_MAX];
@@ -952,7 +966,7 @@ Config_MenuStyle(FILE * ConfigFile)
 	  "Done loading a Menu block.  Outcome is likely not good.\n"));
 }
 
-void
+static void
 Config_Menu(FILE * ConfigFile)
 {
    char                s[FILEPATH_LEN_MAX];
@@ -1185,7 +1199,7 @@ Config_Menu(FILE * ConfigFile)
 	  "Done loading a Menu block.  Outcome is likely not good.\n"));
 }
 
-void
+static void
 BorderPartLoad(FILE * ConfigFile, char type, Border * b)
 {
 
@@ -1322,7 +1336,7 @@ BorderPartLoad(FILE * ConfigFile, char type, Border * b)
 	  "Done loading a BorderPart block.  Outcome is likely not good.\n"));
 }
 
-void
+static void
 Config_Border(FILE * ConfigFile)
 {
 
@@ -1412,7 +1426,7 @@ Config_Border(FILE * ConfigFile)
 	  "Done loading a Main Border block.  Outcome is likely not good.\n"));
 }
 
-void
+static void
 Config_Button(FILE * ConfigFile)
 {
 
@@ -1633,7 +1647,7 @@ Config_Button(FILE * ConfigFile)
    return;
 }
 
-void
+static void
 Config_Desktop(FILE * ConfigFile)
 {
    /* this sets desktop settings */
@@ -1889,7 +1903,7 @@ Config_Desktop(FILE * ConfigFile)
    return;
 }
 
-void
+static void
 Config_ECursor(FILE * ConfigFile)
 {
    ImlibColor          icl, icl2;
@@ -1970,7 +1984,7 @@ Config_ECursor(FILE * ConfigFile)
 	  "Done loading a Desktop block.  Outcome is likely not good.\n"));
 }
 
-void
+static void
 Config_Iconbox(FILE * ConfigFile)
 {
    char                s[FILEPATH_LEN_MAX];
@@ -2013,7 +2027,7 @@ Config_Iconbox(FILE * ConfigFile)
 	  "Done loading an Iconbox block.  Outcome is likely not good.\n"));
 }
 
-void
+static void
 Config_Sound(FILE * ConfigFile)
 {
 
@@ -2049,7 +2063,7 @@ Config_Sound(FILE * ConfigFile)
 	  "Done loading an Sound block.  Outcome is likely not good.\n"));
 }
 
-void
+static void
 Config_ActionClass(FILE * ConfigFile)
 {
 
@@ -2318,7 +2332,7 @@ Config_ActionClass(FILE * ConfigFile)
 	  "Done loading an Action Class block.  Outcome is likely not good.\n"));
 }
 
-void
+static void
 Config_ImageClass(FILE * ConfigFile)
 {
 
@@ -2525,7 +2539,7 @@ Config_ImageClass(FILE * ConfigFile)
 	  "Done loading an ImageClass block.  Outcome is likely not good.\n"));
 }
 
-void
+static void
 Config_ColorModifier(FILE * ConfigFile)
 {
    char                s[FILEPATH_LEN_MAX];
@@ -2793,7 +2807,7 @@ Config_ColorModifier(FILE * ConfigFile)
    return;
 }
 
-void
+static void
 Config_ToolTip(FILE * ConfigFile)
 {
 
@@ -2891,7 +2905,7 @@ Config_ToolTip(FILE * ConfigFile)
 
 }
 
-void
+static void
 Config_FX(FILE * ConfigFile)
 {
 
@@ -2929,53 +2943,7 @@ Config_FX(FILE * ConfigFile)
 	  "Done loading an FX block.  Outcome is likely not good.\n"));
 }
 
-void
-Config_Extras(FILE * ConfigFile)
-{
-   char                s[FILEPATH_LEN_MAX];
-   char                s2[FILEPATH_LEN_MAX];
-   int                 i1;
-   int                 fields;
-   Iconbox           **ib;
-   int                 i, num;
-
-   ib = ListAllIconboxes(&num);
-   if (ib)
-     {
-	for (i = 0; i < num; i++)
-	   FreeIconbox(ib[i]);
-	Efree(ib);
-     }
-   while (GetLine(s, sizeof(s), ConfigFile))
-     {
-	s2[0] = 0;
-	i1 = CONFIG_INVALID;
-
-	fields = sscanf(s, "%i %4000s", &i1, s2);
-	switch (i1)
-	  {
-	  case CONFIG_IBOX:
-	     Config_Ibox(ConfigFile);
-	     break;
-	  case CONFIG_CLOSE:
-	     return;
-	     break;
-	  default:
-	     Alert(_
-		   ("Warning: unable to determine what to do with\n"
-		    "the following text in the middle of current "
-		    "Extras definition:\n"
-		    "%s\nWill ignore and continue...\n"), s);
-	     break;
-	  }
-     }
-   RecoverUserConfig();
-   Alert(_
-	 ("Warning: Configuration appears to have ended before we were\n"
-	  "Done loading an Extras block.  Outcome is likely not good.\n"));
-}
-
-void
+static void
 Config_Ibox(FILE * ConfigFile)
 {
 
@@ -3075,7 +3043,53 @@ Config_Ibox(FILE * ConfigFile)
 	  "Done loading an Iconbox block.  Outcome is likely not good.\n"));
 }
 
-void
+static void
+Config_Extras(FILE * ConfigFile)
+{
+   char                s[FILEPATH_LEN_MAX];
+   char                s2[FILEPATH_LEN_MAX];
+   int                 i1;
+   int                 fields;
+   Iconbox           **ib;
+   int                 i, num;
+
+   ib = ListAllIconboxes(&num);
+   if (ib)
+     {
+	for (i = 0; i < num; i++)
+	   FreeIconbox(ib[i]);
+	Efree(ib);
+     }
+   while (GetLine(s, sizeof(s), ConfigFile))
+     {
+	s2[0] = 0;
+	i1 = CONFIG_INVALID;
+
+	fields = sscanf(s, "%i %4000s", &i1, s2);
+	switch (i1)
+	  {
+	  case CONFIG_IBOX:
+	     Config_Ibox(ConfigFile);
+	     break;
+	  case CONFIG_CLOSE:
+	     return;
+	     break;
+	  default:
+	     Alert(_
+		   ("Warning: unable to determine what to do with\n"
+		    "the following text in the middle of current "
+		    "Extras definition:\n"
+		    "%s\nWill ignore and continue...\n"), s);
+	     break;
+	  }
+     }
+   RecoverUserConfig();
+   Alert(_
+	 ("Warning: Configuration appears to have ended before we were\n"
+	  "Done loading an Extras block.  Outcome is likely not good.\n"));
+}
+
+static void
 Config_WindowMatch(FILE * ConfigFile)
 {
 
@@ -3190,23 +3204,9 @@ Config_WindowMatch(FILE * ConfigFile)
 	  "Done loading an WindowMatch block.  Outcome is likely not good.\n"));
 }
 
-int
-IsWhitespace(const char *s)
-{
-   int                 i = 0;
-
-   while (s[i])
-     {
-	if ((s[i] != ' ') && (s[i] != '\n') && (s[i] != '\t'))
-	   return 0;
-	i++;
-     }
-   return 1;
-}
-
 static char        *cfg_tmpfile = NULL;
 
-FILE               *
+static FILE        *
 OpenConfigFileForReading(char *path, char preprocess)
 {
    /* This function will open a file at location path for */
@@ -3318,71 +3318,8 @@ OpenConfigFileForReading(char *path, char preprocess)
    EDBUG_RETURN(0);
 }
 
-int
-LoadConfigFile(char *f)
-{
-   FILE               *ConfigFile;
-   char                s[FILEPATH_LEN_MAX], s2[FILEPATH_LEN_MAX];
-   char               *file, *ppfile;
-   int                 i;
-   char                notheme = 0;
-
-   EDBUG(5, "LoadConfigFile");
-
-   Esnprintf(s, sizeof(s), "%s", f);
-   file = FindFile(s);
-   if (!file)
-      EDBUG_RETURN(0);
-
-   strcpy(s2, file);
-   i = 0;
-
-   while (s2[i])
-     {
-#ifndef __EMX__
-	if (s2[i] == '/')
-#else
-	if (s2[i] == '/' || s2[i] == '\\' || s2[i] == ':')
-#endif
-	   s2[i] = '.';
-	i++;
-     }
-
-   Esnprintf(s, sizeof(s), "%s/cached/cfg/%s.preparsed", UserCacheDir(), s2);
-
-   if (strstr(f, "control.cfg"))
-      notheme = 1;
-   else if (strstr(f, "menus.cfg"))
-      notheme = 1;
-   else if (strstr(f, "keybindings.cfg"))
-      notheme = 1;
-   if (notheme)
-      ppfile = FindNoThemeFile(s);
-   else
-      ppfile = FindFile(s);
-
-   if (!ppfile)
-     {
-	if (file)
-	   Efree(file);
-	if (notheme)
-	   file = FindNoThemeFile(f);
-	else
-	   file = FindFile(f);
-     }
-   if ((ppfile) && (exists(ppfile)) && (moddate(file) < moddate(ppfile)))
-      ConfigFile = OpenConfigFileForReading(ppfile, 0);
-   else
-      ConfigFile = OpenConfigFileForReading(file, 1);
-   if (ppfile)
-      Efree(ppfile);
-   if (file)
-      Efree(file);
-   return LoadOpenConfigFile(ConfigFile);
-}
-
 /* Split the process of finding the file from the process of loading it */
-int
+static int
 LoadOpenConfigFile(FILE * ConfigFile)
 {
    int                 i1, i2, fields;
@@ -3559,7 +3496,7 @@ LoadOpenConfigFile(FILE * ConfigFile)
 }
 
 char               *
-FindFile(char *file)
+FindFile(const char *file)
 {
    char                s[FILEPATH_LEN_MAX];
 
@@ -3609,8 +3546,8 @@ FindFile(char *file)
    EDBUG_RETURN(NULL);
 }
 
-char               *
-FindNoThemeFile(char *file)
+static char        *
+FindNoThemeFile(const char *file)
 {
    char                s[FILEPATH_LEN_MAX];
 
@@ -3652,6 +3589,69 @@ FindNoThemeFile(char *file)
 
    /* not found.... NULL */
    EDBUG_RETURN(NULL);
+}
+
+int
+LoadConfigFile(const char *f)
+{
+   FILE               *ConfigFile;
+   char                s[FILEPATH_LEN_MAX], s2[FILEPATH_LEN_MAX];
+   char               *file, *ppfile;
+   int                 i;
+   char                notheme = 0;
+
+   EDBUG(5, "LoadConfigFile");
+
+   Esnprintf(s, sizeof(s), "%s", f);
+   file = FindFile(s);
+   if (!file)
+      EDBUG_RETURN(0);
+
+   strcpy(s2, file);
+   i = 0;
+
+   while (s2[i])
+     {
+#ifndef __EMX__
+	if (s2[i] == '/')
+#else
+	if (s2[i] == '/' || s2[i] == '\\' || s2[i] == ':')
+#endif
+	   s2[i] = '.';
+	i++;
+     }
+
+   Esnprintf(s, sizeof(s), "%s/cached/cfg/%s.preparsed", UserCacheDir(), s2);
+
+   if (strstr(f, "control.cfg"))
+      notheme = 1;
+   else if (strstr(f, "menus.cfg"))
+      notheme = 1;
+   else if (strstr(f, "keybindings.cfg"))
+      notheme = 1;
+   if (notheme)
+      ppfile = FindNoThemeFile(s);
+   else
+      ppfile = FindFile(s);
+
+   if (!ppfile)
+     {
+	if (file)
+	   Efree(file);
+	if (notheme)
+	   file = FindNoThemeFile(f);
+	else
+	   file = FindFile(f);
+     }
+   if ((ppfile) && (exists(ppfile)) && (moddate(file) < moddate(ppfile)))
+      ConfigFile = OpenConfigFileForReading(ppfile, 0);
+   else
+      ConfigFile = OpenConfigFileForReading(file, 1);
+   if (ppfile)
+      Efree(ppfile);
+   if (file)
+      Efree(file);
+   return LoadOpenConfigFile(ConfigFile);
 }
 
 int
@@ -3727,7 +3727,7 @@ LoadEConfig(char *themelocation)
    {
       Progressbar        *p = NULL;
       int                 i;
-      char               *config_files[] = {
+      static const char  *const config_files[] = {
 	 "init.cfg",
 	 "control.cfg",
 	 "textclasses.cfg",

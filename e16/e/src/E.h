@@ -2478,42 +2478,16 @@ void                ModifyCMClass(char *name, int rnum, unsigned char *rpx,
 				  unsigned char *bpy);
 
 /* config.c functions */
-char               *GetLine(char *s, int size, FILE * f);
-int                 testForComment(char *line);
-int                 GetNextLine(char *line, FILE * ConfigFile);
-void                Config_Text(FILE * ConfigFile);
-void                Config_Slideout(FILE * ConfigFile);
-void                Config_Control(FILE * ConfigFile);
-void                Config_MenuStyle(FILE * ConfigFile);
-void                Config_Menu(FILE * ConfigFile);
-void                BorderPartLoad(FILE * ConfigFile, char type, Border * b);
-void                Config_Border(FILE * ConfigFile);
-void                Config_Button(FILE * ConfigFile);
-void                Config_Desktop(FILE * ConfigFile);
-void                Config_ECursor(FILE * ConfigFile);
-void                Config_Iconbox(FILE * ConfigFile);
-void                Config_Sound(FILE * ConfigFile);
-void                Config_ActionClass(FILE * ConfigFile);
-void                Config_ImageClass(FILE * ConfigFile);
-void                Config_ColorModifier(FILE * ConfigFile);
-void                Config_Extras(FILE * ConfigFile);
-void                Config_Ibox(FILE * ConfigFile);
-void                Config_FX(FILE * ConfigFile);
-void                Config_WindowMatch(FILE * ConfigFile);
-int                 IsWhitespace(const char *s);
-FILE               *OpenConfigFileForReading(char *path, char preprocess);
-void                Config_ToolTip(FILE * ConfigFile);
-int                 LoadConfigFile(char *file);
-int                 LoadOpenConfigFile(FILE * ConfigFile);
-int                 LoadStringFiles(void);
-char               *ExtractTheme(char *theme);
-char               *FindFile(char *file);
-char               *FindNoThemeFile(char *file);
-char               *FindTheme(char *theme);
-void                BadThemeDialog(void);
+char               *FindFile(const char *file);
+int                 LoadConfigFile(const char *file);
 int                 LoadEConfig(char *themelocation);
 void                SaveUserControlConfig(FILE * autosavefile);
 void                RecoverUserConfig(void);
+
+/* theme.c functions */
+void                BadThemeDialog(void);
+char               *FindTheme(char *theme);
+char               *ExtractTheme(char *theme);
 
 void                HKeyPress(XEvent * ev);
 void                HKeyRelease(XEvent * ev);
