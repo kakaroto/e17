@@ -1317,11 +1317,16 @@ ewl_widget_mouse_down_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 void
 ewl_widget_mouse_up_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 {
+	Ewl_Event_Mouse_Up *e = ev_data;
+	char state[14];
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	if (ewl_object_has_state(EWL_OBJECT(w), EWL_FLAG_STATE_DISABLED))
 		DRETURN(DLEVEL_STABLE);
 
-	ewl_widget_set_state(w, "mouse,up");
+	snprintf(state, 14, "mouse,up,%i", e->button);
+	ewl_widget_set_state(w, state);
+
 	if (ewl_object_has_state(EWL_OBJECT(w), EWL_FLAG_STATE_HILITED)) {
 		ewl_widget_set_state(w, "mouse,in");
 		ewl_callback_call_with_event_data(w, EWL_CALLBACK_CLICKED,
