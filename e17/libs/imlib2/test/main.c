@@ -412,8 +412,6 @@ int main (int argc, char **argv)
 	     up = imlib_updates_merge_for_rendering(up, w, h);
 	     imlib_render_image_updates_on_drawable(im, up, disp, win, vis, cm,
 						    depth, dith, 0, 0, NULL);
-	     imlib_image_set_has_alpha(im, 1);
-	     imlib_save_image(im, "out.argb");
 	     if ((px != x) || (py != y))
                {
 		  Imlib_Updates u;
