@@ -9,17 +9,14 @@ extern Ewl_Widget *dnd_widget;
 
 void __ewl_widget_show(Ewl_Widget * w, void *ev_data, void *user_data);
 void __ewl_widget_hide(Ewl_Widget * w, void *ev_data, void *user_data);
-void __ewl_widget_realize(Ewl_Widget * w, void *ev_data,
-				 void *user_data);
+void __ewl_widget_realize(Ewl_Widget * w, void *ev_data, void *user_data);
 void
 __ewl_widget_configure_ebits_object(Ewl_Widget * w, void *ev_data,
 				    void *user_data);
 void __ewl_widget_configure_fx_clip_box(Ewl_Widget * w, void *ev_data,
 					void *user_data);
-void __ewl_widget_destroy(Ewl_Widget * w, void *ev_data,
-				 void *user_data);
-void __ewl_widget_reparent(Ewl_Widget * w, void *ev_data,
-				  void *user_data);
+void __ewl_widget_destroy(Ewl_Widget * w, void *ev_data, void *user_data);
+void __ewl_widget_reparent(Ewl_Widget * w, void *ev_data, void *user_data);
 
 /**
  * ewl_widget_init - initialize a widgets to default values and callbacks
