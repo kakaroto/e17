@@ -10,54 +10,55 @@
 Etox et;
 char txt[4096];
 
+double down_x, down_y;
+double ox, oy;
+
 void
 mouse_down (void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
 {
-  evas_put_data(_e, _o, "clicked", (void *)1);
-  evas_put_data(_e, _o, "x", (void *)_x);
-  evas_put_data(_e, _o, "y", (void *)_y);
-  evas_set_layer(_e, _o, 200);
+   evas_put_data(_e, _o, "clicked", (void *)1);
+   evas_set_layer(_e, _o, 200);
+   evas_get_geometry(_e, _o, &ox, &oy, NULL, NULL);
+   down_x = evas_screen_x_to_world(_e, _x);
+   down_y = evas_screen_y_to_world(_e, _y);
 }
 
 void
 mouse_up (void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
 {
-  Etox_Obstacle ob;
-  double ox, oy, w, h; 
-  int x, y;
-
-  evas_remove_data(_e, _o, "clicked");
-  evas_set_layer(_e, _o, 50);
-
-  ob = _data;
-
-  if (_b == 2)
-    {
-      etox_obstacle_del(et, ob);
-      evas_hide(_e, _o);
-      return;
-    }
-
-  evas_get_geometry(_e, _o, &ox, &oy, &w, &h); 
-  x = evas_get_data(_e, _o, "x"); 
-  y = evas_get_data(_e, _o, "y");
-  etox_obstacle_set(et, ob, (ox + _x - x) - 15, oy + _y - y, w + 10, h);
+   Etox_Obstacle ob;
+   double x, y, w, h;
+   
+   evas_remove_data(_e, _o, "clicked");
+   evas_set_layer(_e, _o, 50);
+   
+   ob = _data;
+   
+   if (_b == 2)
+     {
+	etox_obstacle_del(et, ob);
+	evas_hide(_e, _o);
+	return;
+     }
+   x = evas_screen_x_to_world(_e, _x);
+   y = evas_screen_y_to_world(_e, _y);   
+   
+   evas_move(_e, _o, ox + x - down_x, oy + y - down_y);
+   evas_get_geometry(_e, _o, NULL, NULL, &w, &h); 
+   
+   etox_obstacle_set(et, ob, ox + x - down_x, oy + y - down_y, w, h);
 }
 
 void
 mouse_move (void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
 {
   if (evas_get_data(_e, _o, "clicked"))
-    {                                  
-      double ox, oy;
-      int x, y;
-
-      evas_get_geometry(_e, _o, &ox, &oy, NULL, NULL);
-      x = evas_get_data(_e, _o, "x");
-      y = evas_get_data(_e, _o, "y");
-      evas_put_data(_e, _o, "x", (void *)_x);
-      evas_put_data(_e, _o, "y", (void *)_y);
-      evas_move(_e, _o, ox + _x - x, oy + _y - y);
+    {
+       double x, y;
+       
+       x = evas_screen_x_to_world(_e, _x);
+       y = evas_screen_y_to_world(_e, _y);   
+       evas_move(_e, _o, ox + x - down_x, oy + y - down_y);
     }                                              
 }
 
