@@ -2318,3 +2318,10 @@ Removed color modifiers from the Ganymede theme and added imageclasses
 required for Eterm's "auto" mode.  (Note to Christian:  Mine are just
 temporary, for testing only.  Please make real ones as you see fit.)
 :-)
+
+-------------------------------------------------------------------------------
+
+Fri Sep 24 10:30:08 PDT 1999
+(Raster)
+
+hide tooltips when flippign desktop areas :)

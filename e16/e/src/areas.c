@@ -198,6 +198,7 @@ SetCurrentArea(int ax, int ay)
 {
    EWin              **lst;
    int                 i, num, a1, a2, x, y, dx, dy;
+   ToolTip            *tt;
 
    EDBUG(4, "SetCurrentArea");
    if ((mode.mode == MODE_RESIZE) ||
@@ -209,6 +210,8 @@ SetCurrentArea(int ax, int ay)
    if ((ax == desks.desk[desks.current].current_area_x) &&
        (ay == desks.desk[desks.current].current_area_y))
       EDBUG_RETURN_;
+   tt = FindItem("DEFAULT", 0, LIST_FINDBY_NAME, LIST_TYPE_TOOLTIP);
+   HideToolTip(tt);
    dx = ax - desks.desk[desks.current].current_area_x;
    dy = ay - desks.desk[desks.current].current_area_y;
    if (dx < 0)
