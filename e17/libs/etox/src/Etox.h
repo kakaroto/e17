@@ -211,7 +211,7 @@ typedef struct _etox_obstacle Etox_Obstacle;
 struct _etox_obstacle
 {
 	Etox *et;
-	Estyle *bit;
+	Evas_Object *bit;
 	int start_line;
 	int end_line;
 };
@@ -229,7 +229,7 @@ struct _etox_selection
 	struct
 	{
 		Etox_Line *line;
-		Estyle *bit;
+		Evas_Object *bit;
 	} start, end;
 
 	Etox_Context *context;
@@ -317,12 +317,11 @@ void etox_resize(Etox * et, int w, int h);
 /*
  * Geometry retrieval functions
  */
-void etox_get_geometry(Etox * et, int *x, int *y, int *w, int *h);
-int etox_coord_to_index(Etox * et, int x, int y);
-void etox_index_to_geometry(Etox * et, int index, int *x, int *y,
-			    int *w, int *h);
-int etox_coord_to_geometry(Etox * et, int xc, int yc, int *x, int *y,
-			   int *w, int *h);
+int etox_coord_to_index(Etox * et, double x, double y);
+void etox_index_to_geometry(Etox * et, int index, double *x, double *y,
+			    double *w, double *h);
+int etox_coord_to_geometry(Etox * et, double xc, double yc, double *x,
+		double *y, double *w, double *h);
 
 /*
  * Appearance altering functions

@@ -4,20 +4,20 @@ Evas_List *active_selections = NULL;
 
 #define SELECTION_LOOP_START(selected) \
 do { \
-	Estyle *bit = NULL; \
+	Evas_Object *bit = NULL; \
 	Etox_Line *line; \
 	Evas_List *l, *bl; \
-	int w, h; \
+	double w, h; \
 	line = selected->start.line; \
 	l = evas_list_find_list(selected->etox->lines, selected->start.line); \
 	bl = evas_list_find_list(line->bits, selected->start.bit); \
 	while (bl && bit != selected->end.bit) { \
 		bit = bl->data; \
-		estyle_geometry(bit, NULL, NULL, &w, NULL); \
+		evas_object_geometry_get(bit, NULL, NULL, &w, NULL); \
 		line->w -= w
 
 #define SELECTION_LOOP_END \
-		estyle_geometry(bit, NULL, NULL, &w, &h); \
+		evas_object_geometry_get(bit, NULL, NULL, &w, &h); \
 		line->w += w; \
 		if (h > line->h) \
 			line->h = h; \
@@ -33,11 +33,11 @@ do { \
 } while (0)
 
 
-Estyle *
-etox_split_bit(Etox_Line *line, Estyle *bit, int index)
+Evas_Object *
+etox_split_bit(Etox_Line *line, Evas_Object *bit, int index)
 {
 	Evas_List *l;
-	Estyle *point = bit;
+	Evas_Object *point = bit;
 	Etox_Selection *selected;
 
 	/*
@@ -62,9 +62,9 @@ etox_split_bit(Etox_Line *line, Estyle *bit, int index)
 
 Etox_Selection *
 etox_selection_new(Etox *etox, Etox_Line *l1, Etox_Line *l2,
-		Estyle *s1, Estyle *s2, int i1, int i2)
+		Evas_Object *s1, Evas_Object *s2, int i1, int i2)
 {
-	Estyle *temp;
+	Evas_Object *temp;
 	Etox_Selection *selected;
 
 	/*
@@ -140,7 +140,7 @@ etox_select_coords(Etox * et, int sx, int sy, int ex, int ey)
 {
 	int i1, i2;
 	Etox_Line *sl, *el = NULL;
-	Estyle *sb, *eb = NULL;
+	Evas_Object *sb, *eb = NULL;
 	Etox_Selection *selected = NULL;
 
 	sl = etox_coord_to_line(et, sy);
@@ -180,7 +180,7 @@ Etox_Selection *
 etox_select_index(Etox * et, int si, int ei)
 {
 	Etox_Line *sl = NULL, *el = NULL;
-	Estyle *sb = NULL, *eb = NULL;
+	Evas_Object *sb = NULL, *eb = NULL;
 	Etox_Selection *selected = NULL;
 
 	/*
@@ -282,7 +282,7 @@ etox_selection_set_color(Etox_Selection *selected, int r, int g, int b, int a)
 	selected->context->b = b;
 
 	SELECTION_LOOP_START(selected);
-		estyle_set_color(bit, r, g, b, a);
+		evas_object_color_set(bit, r, g, b, a);
 	SELECTION_LOOP_END;
 
 	etox_layout(selected->etox);
@@ -306,7 +306,7 @@ etox_selection_set_wrap_marker_color(Etox_Selection *selected, int r, int g,
 
 	SELECTION_LOOP_START(selected);
 		if (!bl->prev && line->flags & ETOX_LINE_WRAPPED) {
-			estyle_set_color(bit, r, g, b, a);
+			evas_object_color_set(bit, r, g, b, a);
 		}
 	SELECTION_LOOP_END;
 

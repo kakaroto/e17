@@ -304,7 +304,7 @@ void etox_prepend_text(Etox * et, char *text)
  */
 void etox_insert_text(Etox * et, char *text, int index)
 {
-	Estyle *bit;
+	Evas_Object *bit;
 	Evas_List *lines, *ll;
 	Etox_Line *start, *end, *temp;
 
@@ -495,7 +495,7 @@ void etox_clear(Etox * et)
  */
 void etox_set_layer(Etox * et, int layer)
 {
-	Estyle *bit;
+	Evas_Object *bit;
 	Etox_Line *line;
 	Evas_List *l, *ll;
 
@@ -519,7 +519,7 @@ void etox_set_layer(Etox * et, int layer)
 			 */
 			for (ll = line->bits; ll; ll = ll->next) {
 				bit = ll->data;
-				estyle_set_layer(bit, layer);
+				evas_object_layer_set(bit, layer);
 			}
 		}
 	}
@@ -651,11 +651,11 @@ void etox_get_geometry(Etox * et, int *x, int *y, int *w, int *h)
  * Returns no value. Stores the current geometry of the letter at index @index
  * in @et into the integers pointed to by @x, @y, @w, and @h.
  */
-void etox_index_to_geometry(Etox * et, int index, int *x, int *y,
-			    int *w, int *h)
+void etox_index_to_geometry(Etox * et, int index, double *x, double *y,
+			    double *w, double *h)
 {
 	int sum;
-	Estyle *bit = NULL;
+	Evas_Object *bit = NULL;
 	Etox_Line *line = NULL;
 	Evas_List *l, *ll, *lll;
 
@@ -723,13 +723,13 @@ void etox_index_to_geometry(Etox * et, int index, int *x, int *y,
  * of the letter at coordinates @xc, @yc in @et into the integers pointed to by
  * @x, @y, @w, and @h.
  */
-int etox_coord_to_geometry(Etox * et, int xc, int yc, int *x, int *y,
-			   int *w, int *h)
+int etox_coord_to_geometry(Etox * et, double xc, double yc, double *x,
+		double *y, double *w, double *h)
 {
 	int sum;
-	Estyle *bit;
+	Evas_Object *bit;
 	Etox_Line *line = NULL;
-	int tx, ty, tw, th;
+	double tx, ty, tw, th;
 	Evas_List *l;
 
 	CHECK_PARAM_POINTER_RETURN("et", et, 0);
@@ -764,7 +764,7 @@ int etox_coord_to_geometry(Etox * et, int xc, int yc, int *x, int *y,
 	 * happen with centered or right alignment.
 	 */
 	bit = line->bits->data;
-	estyle_geometry(bit, &tx, &ty, &tw, &th);
+	evas_object_geometry_get(bit, &tx, &ty, &tw, &th);
 	if (xc < tx)
 		xc = tx;
 
@@ -775,7 +775,7 @@ int etox_coord_to_geometry(Etox * et, int xc, int yc, int *x, int *y,
 	 */
 	for (l = line->bits; l; l = l->next) {
 		bit = l->data;
-		estyle_geometry(bit, &tx, &ty, &tw, &th);
+		evas_object_geometry_get(bit, &tx, &ty, &tw, &th);
 		if (xc >= tx && xc <= tx + tw)
 			break;
 		sum += estyle_length(bit);
@@ -798,7 +798,7 @@ int etox_coord_to_geometry(Etox * et, int xc, int yc, int *x, int *y,
 		 * Now position it based on the total width of the line, and
 		 * the starting position of the bits.
 		 */
-		estyle_geometry(bit, &tx, &ty, &tw, &th);
+		evas_object_geometry_get(bit, &tx, &ty, &tw, &th);
 		*x = tx + line->w;
 		*y = line->y;
 	} else {
@@ -889,7 +889,7 @@ void etox_obstacle_move(Etox_Obstacle * obst, int x, int y)
 {
 	CHECK_PARAM_POINTER("obst", obst);
 
-	estyle_move(obst->bit, x, y);
+	evas_object_move(obst->bit, x, y);
 	etox_obstacle_unplace(obst);
 	etox_obstacle_place(obst);
 }
@@ -924,7 +924,7 @@ void etox_obstacle_resize(Etox_Obstacle * obst, int x, int y)
 static Evas_List *_etox_break_text(Etox * et, char *text)
 {
 	Evas_List *ret = NULL;
-	Estyle *bit;
+	Evas_Object *bit;
 	Etox_Line *line = NULL;
 	char *walk = text;
 	char t = '\0';
@@ -957,13 +957,13 @@ static Evas_List *_etox_break_text(Etox * et, char *text)
 			 */
 			bit =
 			    estyle_new(et->evas, text, et->context->style);
-			estyle_set_clip(bit, et->clip);
-			estyle_set_color(bit, et->context->r,
+			evas_object_clip_set(bit, et->clip);
+			evas_object_color_set(bit, et->context->r,
 					 et->context->g, et->context->b,
 					 et->context->a);
 			estyle_set_font(bit, et->context->font, et->context->font_size);
 			etox_line_append(line, bit);
-			estyle_show(bit);
+			evas_object_show(bit);
 
 			*walk = '\t';
 			text = walk + 1;
@@ -975,13 +975,13 @@ static Evas_List *_etox_break_text(Etox * et, char *text)
 			*text = '\0';
 			bit =
 			    estyle_new(et->evas, walk, et->context->style);
-			estyle_set_color(bit, et->context->r,
+			evas_object_color_set(bit, et->context->r,
 					 et->context->g, et->context->b,
 					 et->context->a);
-			estyle_set_clip(bit, et->clip);
+			evas_object_clip_set(bit, et->clip);
 			estyle_set_font(bit, et->context->font, et->context->font_size);
 			etox_line_append(line, bit);
-			estyle_show(bit);
+			evas_object_show(bit);
 			*text = t;
 
 			break;
@@ -999,13 +999,14 @@ static Evas_List *_etox_break_text(Etox * et, char *text)
 			 */
 			bit =
 			    estyle_new(et->evas, text, et->context->style);
-			estyle_set_color(bit, et->context->r,
+			evas_object_color_set(bit, et->context->r,
 					 et->context->g, et->context->b,
 					 et->context->a);
-			estyle_set_clip(bit, et->clip);
-			estyle_set_font(bit, et->context->font, et->context->font_size);
+			evas_object_clip_set(bit, et->clip);
+			estyle_set_font(bit, et->context->font,
+					et->context->font_size);
 			etox_line_append(line, bit);
-			estyle_show(bit);
+			evas_object_show(bit);
 
 			*walk = '\n';
 			text = walk + 1;
@@ -1029,12 +1030,12 @@ static Evas_List *_etox_break_text(Etox * et, char *text)
 	 */
 	if (*text) {
 		bit = estyle_new(et->evas, text, et->context->style);
-		estyle_set_color(bit, et->context->r, et->context->g,
+		evas_object_color_set(bit, et->context->r, et->context->g,
 				 et->context->b, et->context->a);
-		estyle_set_clip(bit, et->clip);
+		evas_object_clip_set(bit, et->clip);
 		estyle_set_font(bit, et->context->font, et->context->font_size);
 		etox_line_append(line, bit);
-		estyle_show(bit);
+		evas_object_show(bit);
 	} else if (line->bits == NULL) {
 		ret = evas_list_remove(ret, line);
 		etox_line_free(line);

@@ -5,20 +5,20 @@ Etox_Line *etox_line_new(char align);
 void etox_line_free(Etox_Line * line);
 void etox_line_show(Etox_Line * line);
 void etox_line_hide(Etox_Line * line);
-void etox_line_append(Etox_Line * line, Estyle * bit);
-void etox_line_prepend(Etox_Line * line, Estyle * bit);
+void etox_line_append(Etox_Line * line, Evas_Object * bit);
+void etox_line_prepend(Etox_Line * line, Evas_Object * bit);
 void etox_line_layout(Etox_Line * line);
-void etox_line_remove(Etox_Line * line, Estyle * bit);
+void etox_line_remove(Etox_Line * line, Evas_Object * bit);
 void etox_line_merge_append(Etox_Line * line1, Etox_Line * line2);
 void etox_line_merge_prepend(Etox_Line * line1, Etox_Line * line2);
 void etox_line_minimize(Etox_Line * line);
 void etox_line_get_text(Etox_Line * line, char *buf);
 
 int etox_line_wrap(Etox *et, Etox_Line *line);
-void etox_line_split(Etox_Line *line, Estyle *bit, int index);
+void etox_line_split(Etox_Line *line, Evas_Object *bit, int index);
 void etox_line_unwrap(Etox *et, Etox_Line *line);
-Estyle *etox_line_coord_to_bit(Etox_Line *line, int x);
-Estyle *etox_line_index_to_bit(Etox_Line *line, int *i);
+Evas_Object *etox_line_coord_to_bit(Etox_Line *line, int x);
+Evas_Object *etox_line_index_to_bit(Etox_Line *line, int *i);
 void etox_line_print_bits(Etox_Line *line);
 
 #endif

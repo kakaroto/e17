@@ -57,7 +57,7 @@ void etox_obstacle_place(Etox_Obstacle * obst)
 {
 	int i = 0;
 	int j = 0;
-	int x, y, w, h;
+	double x, y, w, h;
 	Etox_Line *line;
 	Evas_List *l_nodes, *l;
 
@@ -67,7 +67,7 @@ void etox_obstacle_place(Etox_Obstacle * obst)
 	 * Check the simple return cases first, ie. does the obstacle fall
 	 * outside of the etox.
 	 */
-	estyle_geometry(obst->bit, &x, &y, &w, &h);
+	evas_object_geometry_get(obst->bit, &x, &y, &w, &h);
 	if (x > obst->et->x + obst->et->w)
 		return;
 
@@ -122,7 +122,7 @@ void etox_obstacle_place(Etox_Obstacle * obst)
 void etox_obstacle_unplace(Etox_Obstacle * obst)
 {
 	int i, j;
-	Estyle *bit;
+	Evas_Object *bit;
 	Etox_Line *line;
 	Evas_List *l, *ll;
 
@@ -163,23 +163,23 @@ void etox_obstacle_unplace(Etox_Obstacle * obst)
 static void _etox_obstacle_line_insert(Etox_Line * line,
 				       Etox_Obstacle * obst)
 {
-	Estyle *bit;
-	int x, y, w, h;
+	Evas_Object *bit;
+	double x, y, w, h;
 	Evas_List *l;
 
 	CHECK_PARAM_POINTER("line", line);
 	CHECK_PARAM_POINTER("obst", obst);
 
-	estyle_geometry(obst->bit, &x, &y, &w, &h);
+	evas_object_geometry_get(obst->bit, &x, &y, &w, &h);
 
 	/*
 	 * Find the position to place the obstacle within the line
 	 */
 	for (l = line->bits; l; l = l->next) {
-		int tx, ty, tw, th;
+		double tx, ty, tw, th;
 		bit = l->data;
 
-		estyle_geometry(bit, &tx, &ty, &tw, &th);
+		evas_object_geometry_get(bit, &tx, &ty, &tw, &th);
 		if (etox_rect_intersect(x, y, w, h, tx, ty, tw, th)) {
 			if (!bit)
 				return;

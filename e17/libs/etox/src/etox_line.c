@@ -31,7 +31,7 @@ Etox_Line *etox_line_new(char align)
  */
 void etox_line_free(Etox_Line * line)
 {
-	Estyle *bit;
+	Evas_Object *bit;
 
 	CHECK_PARAM_POINTER("line", line);
 
@@ -40,7 +40,7 @@ void etox_line_free(Etox_Line * line)
 	 */
 	while (line->bits) {
 		bit = line->bits->data;
-		estyle_free(bit);
+		evas_object_del(bit);
 		line->bits = evas_list_remove(line->bits, bit);
 	}
 
@@ -55,7 +55,7 @@ void etox_line_free(Etox_Line * line)
  */
 void etox_line_show(Etox_Line * line)
 {
-	Estyle *bit;
+	Evas_Object *bit;
 	Evas_List *l;
 
 	CHECK_PARAM_POINTER("line", line);
@@ -65,7 +65,7 @@ void etox_line_show(Etox_Line * line)
 	 */
 	for (l = line->bits; l; l = l->next) {
 		bit = l->data;
-		estyle_show(bit);
+		evas_object_show(bit);
 	}
 }
 
@@ -78,7 +78,7 @@ void etox_line_show(Etox_Line * line)
  */
 void etox_line_hide(Etox_Line * line)
 {
-	Estyle *bit;
+	Evas_Object *bit;
 	Evas_List *l;
 
 	CHECK_PARAM_POINTER("line", line);
@@ -88,7 +88,7 @@ void etox_line_hide(Etox_Line * line)
 	 */
 	for (l = line->bits; l; l = l->next) {
 		bit = l->data;
-		estyle_hide(bit);
+		evas_object_hide(bit);
 	}
 }
 
@@ -101,9 +101,9 @@ void etox_line_hide(Etox_Line * line)
  * Returns no value. Appends the bit @bit to the line @line and updates
  * display to reflect the change.
  */
-void etox_line_append(Etox_Line * line, Estyle * bit)
+void etox_line_append(Etox_Line * line, Evas_Object * bit)
 {
-	int x, y, w, h;
+	double x, y, w, h;
 
 	CHECK_PARAM_POINTER("line", line);
 	CHECK_PARAM_POINTER("bit", bit);
@@ -112,7 +112,7 @@ void etox_line_append(Etox_Line * line, Estyle * bit)
 	 * Append the text and update necessary fields
 	 */
 	line->bits = evas_list_append(line->bits, bit);
-	estyle_geometry(bit, &x, &y, &w, &h);
+	evas_object_geometry_get(bit, &x, &y, &w, &h);
 
 	line->w += w;
 	if (h > line->h)
@@ -128,9 +128,9 @@ void etox_line_append(Etox_Line * line, Estyle * bit)
  * Returns no value. Prepends the bit @bit to the line @line and updates
  * display to reflect the change.
  */
-void etox_line_prepend(Etox_Line * line, Estyle * bit)
+void etox_line_prepend(Etox_Line * line, Evas_Object * bit)
 {
-	int x, y, w, h;
+	double x, y, w, h;
 
 	CHECK_PARAM_POINTER("line", line);
 	CHECK_PARAM_POINTER("bit", bit);
@@ -139,7 +139,7 @@ void etox_line_prepend(Etox_Line * line, Estyle * bit)
 	 * Prepend the text and update necessary fields
 	 */
 	line->bits = evas_list_prepend(line->bits, bit);
-	estyle_geometry(bit, &x, &y, &w, &h);
+	evas_object_geometry_get(bit, &x, &y, &w, &h);
 
 	line->w += w;
 	line->length += estyle_length(bit);
@@ -153,16 +153,16 @@ void etox_line_prepend(Etox_Line * line, Estyle * bit)
  * Removes @bit from @line and updates the appearance of surrounding bits to
  * reflect this change.
  */
-void etox_line_remove(Etox_Line * line, Estyle * bit)
+void etox_line_remove(Etox_Line * line, Evas_Object * bit)
 {
-	int w;
+	double w;
 
 	CHECK_PARAM_POINTER("line", line);
 	CHECK_PARAM_POINTER("bit", bit);
 
 	line->bits = evas_list_remove(line->bits, bit);
 	line->length -= estyle_length(bit);
-	estyle_geometry(bit, NULL, NULL, &w, NULL);
+	evas_object_geometry_get(bit, NULL, NULL, &w, NULL);
 	line->w -= w;
 
 	/*
@@ -182,8 +182,8 @@ void etox_line_remove(Etox_Line * line, Estyle * bit)
 void etox_line_layout(Etox_Line * line)
 {
 	int x;
-	Estyle *bit;
-	int tx, ty, tw, th;
+	Evas_Object *bit;
+	double tx, ty, tw, th;
 	Evas_List *l;
 
 	CHECK_PARAM_POINTER("line", line);
@@ -215,7 +215,7 @@ void etox_line_layout(Etox_Line * line)
 		bit = l->data;
 		if (!estyle_fixed(bit)) {
 
-			estyle_geometry(bit, &tx, &ty, &tw, &th);
+			evas_object_geometry_get(bit, &tx, &ty, &tw, &th);
 			if (line->h < th)
 				line->h = th;
 
@@ -232,7 +232,7 @@ void etox_line_layout(Etox_Line * line)
 			/*
 			 * Move the evas object into place.
 			 */
-			estyle_move(bit, x, ty);
+			evas_object_move(bit, x, ty);
 		}
 
 		/*
@@ -247,7 +247,7 @@ void etox_line_layout(Etox_Line * line)
  */
 void etox_line_minimize(Etox_Line * line)
 {
-	Estyle *bit, *last_bit = NULL;
+	Evas_Object *bit, *last_bit = NULL;
 	Evas_List *l;
 
 	CHECK_PARAM_POINTER("line", line);
@@ -286,7 +286,7 @@ void etox_line_minimize(Etox_Line * line)
  */
 void etox_line_merge_append(Etox_Line * line1, Etox_Line * line2)
 {
-	Estyle *bit;
+	Evas_Object *bit;
 
 	CHECK_PARAM_POINTER("line1", line1);
 	CHECK_PARAM_POINTER("line2", line2);
@@ -317,7 +317,7 @@ void etox_line_merge_append(Etox_Line * line1, Etox_Line * line2)
  */
 void etox_line_merge_prepend(Etox_Line * line1, Etox_Line * line2)
 {
-	Estyle *bit;
+	Evas_Object *bit;
 
 	CHECK_PARAM_POINTER("line1", line1);
 	CHECK_PARAM_POINTER("line2", line2);
@@ -350,7 +350,7 @@ void etox_line_merge_prepend(Etox_Line * line1, Etox_Line * line2)
 void etox_line_get_text(Etox_Line * line, char *buf)
 {
 	char *temp;
-	Estyle *es;
+	Evas_Object *es;
 	Evas_List *l;
 
 	CHECK_PARAM_POINTER("line", line);
@@ -374,8 +374,8 @@ int
 etox_line_wrap(Etox *et, Etox_Line *line)
 {
 	Evas_List *ll;
-	Estyle *bit = NULL, *marker;
-	int x, w, y, h;
+	Evas_Object *bit = NULL, *marker;
+	double x, w, y, h;
 	int index = -1;
 
 	/* iterate through the bits to find the one on the border */
@@ -383,7 +383,7 @@ etox_line_wrap(Etox *et, Etox_Line *line)
 	while (ll) {
 		bit = ll->data;
 
-		estyle_geometry(bit, &x, &y, &w, &h);
+		evas_object_geometry_get(bit, &x, &y, &w, &h);
 		if (x + w > et->x + et->w)
 			break;
 
@@ -404,24 +404,23 @@ etox_line_wrap(Etox *et, Etox_Line *line)
 		while (isspace(tmp[index]))
 			index++;
 		FREE(tmp);
-	}
-
-	if (index >= 0 && index < estyle_length(bit)) {
 
 		etox_line_split(line, bit, index);
+
 		ll = evas_list_find_list(et->lines, line);
 		ll = ll->next;
 
 		/* create a marker bit. */
 		marker = estyle_new(et->evas, et->context->marker.text,
 				et->context->marker.style);
-		estyle_set_color(marker, et->context->marker.r,
-				et->context->marker.g, et->context->marker.b,
+		evas_object_color_set(marker, et->context->marker.r,
+				et->context->marker.g,
+				et->context->marker.b,
 				et->context->marker.a);
-		estyle_set_clip(marker, et->clip);
+		evas_object_clip_set(marker, et->clip);
 		estyle_set_font(marker, et->context->font,
 				et->context->font_size);
-		estyle_show(marker);
+		evas_object_show(marker);
 		etox_line_prepend(ll->data, marker);
 	}
 	else
@@ -431,11 +430,11 @@ etox_line_wrap(Etox *et, Etox_Line *line)
 }
 
 void
-etox_line_split(Etox_Line *line, Estyle *bit, int index)
+etox_line_split(Etox_Line *line, Evas_Object *bit, int index)
 {
 	Evas_List *ll;
 	Etox_Line *newline;
-	Estyle *split = NULL;
+	Evas_Object *split = NULL;
 
 	ll = evas_list_find_list(line->bits, bit);
 	ll = ll->next;
@@ -451,17 +450,20 @@ etox_line_split(Etox_Line *line, Estyle *bit, int index)
 	/*
 	 * If the bit starts on the boundary, simply move it to the next line.
 	 */
-	if (index) {
-		/* split the edge bit */
-		split = etox_split_bit(line, bit, index);
-		etox_line_remove(line, split);
+	if (index > 0) {
+		if (index < estyle_length(bit)) {
+			/* split the edge bit */
+			split = etox_split_bit(line, bit, index);
+			etox_line_remove(line, split);
+		}
 	}
 	else {
 		split = bit;
 		etox_line_remove(line, bit);
 	}
 
-	etox_line_append(newline, split);
+	if (split)
+		etox_line_append(newline, split);
 
 	/*
 	 * move the remaining bits to the new line
@@ -483,7 +485,7 @@ void
 etox_line_unwrap(Etox *et, Etox_Line *line)
 {
 	Evas_List *l, *prevline;
-	Estyle *marker;
+	Evas_Object *marker;
 
 	if (!et->lines)
 		return;
@@ -499,7 +501,7 @@ etox_line_unwrap(Etox *et, Etox_Line *line)
 		/* remove the wrap marker bit */
 		marker = line->bits->data;
 		line->bits = evas_list_remove(line->bits, marker);
-		estyle_free(marker);
+		evas_object_del(marker);
 
 		/* remove the line from the list */
 		et->lines = evas_list_remove(et->lines, line);
@@ -512,12 +514,12 @@ etox_line_unwrap(Etox *et, Etox_Line *line)
 	}
 }
 
-Estyle *
+Evas_Object *
 etox_line_coord_to_bit(Etox_Line *line, int x)
 {
-	int bx;
+	double bx;
 	Evas_List *l = NULL;
-	Estyle *bit = NULL;
+	Evas_Object *bit = NULL;
 
 	/*
 	 * Find the bit on this line
@@ -525,7 +527,7 @@ etox_line_coord_to_bit(Etox_Line *line, int x)
 	l = line->bits;
 	while (l) {
 		bit = l->data;
-		estyle_geometry(bit, &bx, NULL, NULL, NULL);
+		evas_object_geometry_get(bit, &bx, NULL, NULL, NULL);
 		if (bx < x)
 			break;
 		l = l->next;
@@ -534,12 +536,12 @@ etox_line_coord_to_bit(Etox_Line *line, int x)
 	return bit;
 }
 
-Estyle *
+Evas_Object *
 etox_line_index_to_bit(Etox_Line *line, int *i)
 {
 	int len = 0;
 	Evas_List *l = NULL;
-	Estyle *bit = NULL;
+	Evas_Object *bit = NULL;
 
 	l = line->bits;
 	while (l) {
