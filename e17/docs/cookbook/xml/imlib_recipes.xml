@@ -70,12 +70,12 @@ JPEG, PNG, PNM, TGA, TIFF, XPM and more.
 
 <para>
 With so many individuals putting so many images online its easy to forget where they
-came from and hard ensure that copyrighted material isn't inadvertantly misused.  Simply
-adding a watermark image such as your sites logo to each of your images can solve both 
-these problems.  But adding watermarks manual is a long and repetative task.  Imlib2 can
+came from and hard to ensure that copyrighted material isn't inadvertently misused.  Simply
+adding a watermark image, such as your sites logo, to each of your images can solve both 
+these problems.  But adding watermarks manual is a long and repetitive task.  Imlib2 can
 easily be used to solve this problem.  What we need to do is take an input image,
 and then specify a watermark image (your logo), position the watermark on the input image
-and then save it out to a new image which we'll use on the site.  The apps would look 
+and then save it out to a new image which we'll use on the site.  The app would look 
 something like this: 
 </para>
 
@@ -93,7 +93,7 @@ int main(int argc, char **argv){
     int     w_watermark, h_watermark;
     char    watermark[] = "watermark.png";
 
-    if(argc < 1)  {
+    if(argc &gt; 1)  {
         printf("Input image is: %s\n", argv[1]);
         printf("Watermark is: %s\n", watermark);
     }
@@ -142,12 +142,12 @@ int main(int argc, char **argv){
 </example>
 
 <para>
-Looking at the example, we first do some really basic argument checking, accepting an input impage as the first argument
+Looking at the example, we first do some really basic argument checking, accepting an input image as the first argument
 and an output image name for our watermarked copy.
-Using <command>imlib_load_image()</command> we load the input image and then grab its dimentions using the get functions.
-The <command>imlib_clone_image()</command> function we can create a copy of the input image, which will be the base of out
-watermarked output.  Next se load the watermark image, and notice that then use <command>imlib_context_set_image()</command>
-to change the context from the input image (image_input) to the watermark image (image_watermark).  Now we grab it's
+Using <command>imlib_load_image()</command> we load the input image and then grab its dimensions using the get functions.
+With the <command>imlib_clone_image()</command> function we can create a copy of the input image, which will be the base of our
+watermarked output.  Next we load the watermark image, and notice that we then use <command>imlib_context_set_image()</command>
+to change the context from the input image (image_input) to the watermark image (image_watermark).  Now we grab the images
 dimensions as well.  In the final block we do two simple calculations to determine the positioning of the watermark on the
 output image, in this case I want the watermark on the bottom right-hand corner.  The magic function that really does the
 work in this program is <command>imlib_blend_image_onto_image()</command>.  Notice that we change context to the output
@@ -155,17 +155,17 @@ image before proceeding.  The blend function will, as the name suggests, blend t
 as the source and destination image.  
 The blend function blends a source image onto the current image context which we designate as the destination.
 The arguments supplied to 
-<command>imlib_blend_image_onto_image</command> can look tricky, we need to tell it which source to use (the watermark), 
+<command>imlib_blend_image_onto_image()</command> can look tricky, we need to tell it which source to use (the watermark), 
 whether to merge the alpha channel (0 for no), the dimensions of the source image (x, y, w, h) and the dimensions of the 
-destination image (x, y, w, h).    You'll notice that in the example the we set the x and y positions of the source (watermark)
+destination image (x, y, w, h).    You'll notice that in the example we set the x and y positions of the source (watermark)
 image to 0 and then use the full width.  The destination (input image) is set to the bottom right hand corner minus
 the dimensions of the watermark, and then we specify the width and height of the watermark.
-Finally, we use the <command>imlib_save_image()</command> argument to save the output image.
+Finally, we use the <command>imlib_save_image()</command> function to save the output image.
 </para>
 
 <para>
 While this example should be significantly improved for real use, it outlines the basics of Imlib2 blending 
-to solves a very common problem effeciently.
+to solves a very common problem efficiently.
 </para>
 </section>
 
