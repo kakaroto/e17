@@ -1310,8 +1310,12 @@ CalcEwinSizes(EWin * ewin)
    char                reshape;
 
    EDBUG(4, "CalcEwinSizes");
+
    if (!ewin)
       EDBUG_RETURN_;
+   if (!ewin->border)
+      EDBUG_RETURN_;
+
    for (i = 0; i < ewin->border->num_winparts; i++)
       ewin->bits[i].w = -2;
    for (i = 0; i < ewin->border->num_winparts; i++)

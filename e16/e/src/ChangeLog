@@ -3810,3 +3810,13 @@ Wed Oct 27 23:03:16 PDT 1999
 
 fixes for Tru64 unix.  I may end up wanting to do an 0.16.2 release just for
 them (regular folks won't have to upgrade)
+
+-------------------------------------------------------------------------------
+
+Thu Oct 28 12:13:32 PDT 1999
+(Mandrake)
+
+I can't think of why this would be segfaulting or how this code could have
+gotten called if there were no border, but I think this must be the segfault
+I received in email. *shrug*
+
