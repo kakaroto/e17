@@ -10,6 +10,7 @@
 # endif
 
 /* opaque data types */
+typedef void *Imlib_Context;
 typedef void *Imlib_Image;
 typedef void *Imlib_Color_Modifier;
 typedef void *Imlib_Updates;
@@ -92,6 +93,14 @@ typedef void (*Imlib_Data_Destructor_Function) (Imlib_Image im, void *data);
 extern "C"
 {
 #endif
+
+/* context handling */
+   Imlib_Context imlib_context_new(void);
+   void imlib_context_free(Imlib_Context context);
+
+   void imlib_context_push(Imlib_Context context);
+   void imlib_context_pop(void);
+   Imlib_Context imlib_context_get(void);
 
 /* context setting */
 #ifndef X_DISPLAY_MISSING

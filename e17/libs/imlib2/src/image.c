@@ -338,7 +338,7 @@ __imlib_CleanupImageCache(void)
 {
    ImlibImage *im, *im_last;
    int current_cache;
-   char operation = 0;
+   char operation = 1;
 
    current_cache = __imlib_CurrentCacheSize();
    im_last = NULL;
@@ -641,8 +641,12 @@ __imlib_ListLoaders(int *num_ret)
 
       for (i = 0; i < num; i++)
       {
-         sprintf(s, "%s/" USER_LOADERS_PATH "/image/%s", home, l[i]);
-         list[i] = strdup(s);
+	   sprintf(s, "%s/" USER_LOADERS_PATH "/image/%s", home, l[i]);
+#ifndef __EMX__
+	 list[pi + i] = strdup(s);
+#else
+	 list[pi + i] = strdup(__XOS2RedirRoot(s));
+#endif
       }
       pi = i;
       __imlib_FileFreeDirList(l, num);

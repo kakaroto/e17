@@ -303,7 +303,7 @@ __imlib_RenderImage(Display *d, ImlibImage *im,
 	scaleinfo = __imlib_CalcScaleInfo(im, sw, sh, dw, dh, antialias);
 	if (!scaleinfo) return;
      }
-   /*\ Sign not needed anymore \*/
+   /* Sign not needed anymore */
    dw = abs(dw); dh = abs(dh);
    ct = __imlib_GetContext(d, v, cm, depth);
    actual_depth = depth;
@@ -360,7 +360,7 @@ __imlib_RenderImage(Display *d, ImlibImage *im,
    /* setup h */
    h = dh;
    /* scale in LINESIZE Y chunks and convert to depth*/
-   /*\ Get rgba and mask functions for XImage rendering \*/
+   /* Get rgba and mask functions for XImage rendering */
    rgbaer = __imlib_GetRGBAFunction(xim->bits_per_pixel, 
 				    v->red_mask, v->green_mask, v->blue_mask, 
 				    hiq, ct->palette_type);
@@ -417,7 +417,7 @@ __imlib_RenderImage(Display *d, ImlibImage *im,
 		       if (m)
 			  __imlib_ConsumeXImage(d, mxim);
 		       __imlib_FreeScaleInfo(scaleinfo);
-		       free(back);
+		       if (back) free(back);
 		       return;
 		    }
 		  memcpy(buf, im->data + ((y + sy) * im->w) + sx,
