@@ -53,9 +53,9 @@ void game_exit(int ret)
 
  free(prev);
  free(slot);
-*/
 
  gfx_done(); 
+*/
 
  exit(ret);
 }
