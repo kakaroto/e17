@@ -13,6 +13,13 @@ int             init;
 void            od_config_menu_hide(void);
 #endif
 
+typedef enum od_config_colors {
+  TT_TXT,
+  TT_SHD,
+  BG_FORE,
+  BG_BACK
+} od_config_colors;
+
 OD_Options      options;
 
 /* listeners */
@@ -40,6 +47,38 @@ theme_listener(const char *key, const Ecore_Config_Type type, const int tag,
   while (icons) {
     od_icon_reload((OD_Icon *) icons->data);
     icons = evas_list_next(icons);
+  }
+}
+
+unsigned
+od_argb_to_colour(char *argb)
+{
+  unsigned        tmp;
+
+  tmp=strtoul((char *)argb+1, NULL, 16);
+  return tmp;
+}
+
+colour_listener(const char *key, const Ecore_Config_Type type, const int tag, 
+                void *data)
+{
+  unsigned        colour;
+
+  colour = od_argb_to_colour(ecore_config_argbstr_get(key));
+
+  switch (tag) {
+    case TT_TXT:
+      options.tt_txt_color = colour;
+      break;
+    case TT_SHD:
+      options.tt_shd_color = colour;
+      break;
+    case BG_FORE:
+      options.bg_fore = colour;
+      break;
+    case BG_BACK:
+      options.bg_back = colour;
+      break;
   }
 }
 
@@ -88,10 +127,11 @@ od_config_init(void)
                             "zoom-time",
                             "Time taken (in seconds) for icons to zoom");
 
-  options.tt_txt_color = 0x00000000;
-  options.tt_shd_color = 0x7f000000;
-  options.bg_fore = 0x7f000000;
-  options.bg_back = 0x7fffffff;
+  ecore_config_argb_create("engage.options.tt_txt_color", "#00000000", 'c', "text-color", "Text color");
+  ecore_config_argb_create("engage.options.tt_shd_color", "#7f000000", 'C', "shadow-color", "Text shadow color");
+  ecore_config_argb_create("engage.options.bg_fore", "#7f000000", 'b', "bg-main-color", "Background main color");
+  ecore_config_argb_create("engage.options.bg_back", "#7fffffff", 'B', "bg-outline-color", "Background outline color");
+
   ecore_config_string_create("engage.options.tt_fa", "Vera", 'f', "font",
                              "The font to use for application titles etc.");
   ecore_config_int_create("engage.options.tt_fs", 8, 'F', "font-size",
@@ -123,6 +163,23 @@ od_config_init(void)
   options.arrow_size = ecore_config_int_get("engage.options.arrow_size");
   options.dock_zoom_duration =
     ecore_config_float_get("engage.options.zoom_duration");
+
+  options.tt_txt_color = 
+    od_argb_to_colour(ecore_config_argbstr_get("engage.options.tt_txt_color"));
+  ecore_config_listen("colour", "engage.options.tt_txt_color",
+                      colour_listener, TT_TXT, NULL);
+  options.tt_shd_color =
+    od_argb_to_colour(ecore_config_argbstr_get("engage.options.tt_shd_color"));
+  ecore_config_listen("colour", "engage.options.tt_shd_color", 
+                      colour_listener, TT_SHD, NULL);
+  options.bg_fore =
+    od_argb_to_colour(ecore_config_argbstr_get("engage.options.bg_fore"));
+  ecore_config_listen("colour", "engage.options.bg_fore", 
+                      colour_listener, BG_FORE, NULL);
+  options.bg_back = 
+    od_argb_to_colour(ecore_config_argbstr_get("engage.options.bg_back"));
+  ecore_config_listen("colour", "engage.options.bg_back", 
+                      colour_listener, BG_BACK, NULL);
 
   options.tt_fa = ecore_config_string_get("engage.options.tt_fa");
   options.tt_fs = ecore_config_int_get("engage.options.tt_fs");
