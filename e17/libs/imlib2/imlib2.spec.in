@@ -13,10 +13,6 @@ BuildRoot: /var/tmp/imlib2-root
 Packager: The Rasterman <raster@rasterman.com>
 URL: http://www.rasterman.com/raster/imlib.html
 Requires: freetype >= 1.2
-Requires: libjpeg
-Requires: libpng 
-Requires: edb
-Requires: zlib 
 Requires: XFree86
 Requires: imlib2-loader_jpeg
 Requires: imlib2-loader_png
