@@ -379,6 +379,7 @@ KDE_Init(void)
    SETSTR(KWM_STRING_TODESKTOP, "Move To");
    SETSTR(KWM_STRING_ONTOCURRENTDESKTOP, "Bring Here");
 
+   mode.kde_support = 1;
    EDBUG_RETURN_;
 
 }
@@ -403,6 +404,7 @@ KDE_Shutdown(void)
 	ptr = ptr->next;
      }
 
+   mode.kde_support = 0;
    EDBUG_RETURN_;
 
 }

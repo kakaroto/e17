@@ -1363,3 +1363,10 @@ Tue Sep  7 16:33:15 PDT 1999
 (Mandrake)
 
 more stuff for KDE support
+
+-------------------------------------------------------------------------------
+
+Tue Sep  7 17:03:02 PDT 1999
+(Mandrake)
+
+well, I suppose if we're going to CHECK a variable, we should SET it.
