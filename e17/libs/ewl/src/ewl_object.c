@@ -192,7 +192,8 @@ void ewl_object_set_preferred_w(Ewl_Object * o, unsigned int w)
 	/*
 	 * Now update the widgets parent of the change in size.
 	 */
-	ewl_container_resize_child(EWL_WIDGET(o), new_size - old_size,
+	if (!REALIZED(o) || !(o->flags & EWL_FILL_POLICY_HSHRINK))
+		ewl_container_resize_child(EWL_WIDGET(o), new_size - old_size,
 				EWL_ORIENTATION_HORIZONTAL);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -231,7 +232,8 @@ void ewl_object_set_preferred_h(Ewl_Object * o, unsigned int h)
 	/*
 	 * Notify the parent widgets of the change in size.
 	 */
-	ewl_container_resize_child(EWL_WIDGET(o), new_size - old_size,
+	if (!REALIZED(o) || !(o->flags & EWL_FILL_POLICY_VSHRINK))
+		ewl_container_resize_child(EWL_WIDGET(o), new_size - old_size,
 				EWL_ORIENTATION_VERTICAL);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);

@@ -128,9 +128,9 @@ enum _ewl_fill_policy
  * Flags identifying whether a widget is shown, has been realized, or is
  * recursive (ie. a container).
  */
-typedef enum _ewl_widget_flags Ewl_Widget_Flags;
+typedef enum Ewl_Widget_Flags Ewl_Widget_Flags;
 
-enum _ewl_widget_flags
+enum Ewl_Widget_Flags
 {
 	EWL_FLAGS_HIDDEN = 0x0,
 	EWL_FLAGS_SHOWN = 0x1,

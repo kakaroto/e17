@@ -1,4 +1,3 @@
-
 #ifndef __EWL_CALLBACK_H__
 #define __EWL_CALLBACK_H__
 
@@ -9,19 +8,31 @@
  * @{
  */
 
+/**
+ * The callbacks used internally for tracking event actions.
+ */
 typedef struct Ewl_Callback Ewl_Callback;
 
+/**
+ * @def EWL_CALLBACK(callback)
+ * Typecasts a pointer to an Ewl_Callback pointer.
+ */
 #define EWL_CALLBACK(callback) ((Ewl_Callback *) callback)
+
+/**
+ * @def EWL_CALLBACK_FUNCTION(cb_func)
+ * Typecasts a pointer to an Ewl_Callback_Function pointer.
+ */
 #define EWL_CALLBACK_FUNCTION(cb_func) ((Ewl_Callback_Function) cb_func)
 
+/**
+ * A shortcut for declaring functions that take a callback funciton pointer.
+ */
 typedef void    (*Ewl_Callback_Function) (Ewl_Widget * widget, void *ev_data,
 					  void *user_data);
 struct Ewl_Callback
 {
-	/*
-	 * The function to be executed when the specified event occurs.
-	 */
-	Ewl_Callback_Function func;
+	Ewl_Callback_Function func; /**< Function to be executed when the event occurs. */
 
 	/*
 	 * The user specified data to pass to func when executed.
