@@ -858,11 +858,11 @@ void
 EWMH_ProcessPropertyChange(EWin * ewin, Atom atom_change)
 {
    EDBUG(6, "EWMH_ProcessPropertyChange");
-
+#if 0
    if (atom_change == _NET_WM_DESKTOP)
       EWMH_GetWindowDesktop(ewin);
    else if (atom_change == _NET_WM_STATE)
       EWMH_GetWindowState(ewin);
-
+#endif
    EDBUG_RETURN_;
 }
