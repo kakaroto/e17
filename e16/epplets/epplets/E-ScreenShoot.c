@@ -1,6 +1,6 @@
 /* E-ScreenShoot.c
  *
- * Copyright (C) 1999 Tom Gilbert
+ * Copyright (C) 1999-2000 Tom Gilbert
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as

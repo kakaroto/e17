@@ -1,6 +1,6 @@
 /* E-Mixer.c
  *
- * Copyright (C) 1999 Tom Gilbert, Steve Brunton
+ * Copyright (C) 1999-2000 Tom Gilbert, Steve Brunton
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as

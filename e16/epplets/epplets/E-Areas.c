@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 1999 John J. Slee <john@chirp.com.au>
+ * Copyright (C) 1999-2000 John J. Slee <john@chirp.com.au>
  *
  *     This program is free software; you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by

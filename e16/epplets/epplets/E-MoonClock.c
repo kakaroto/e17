@@ -1,6 +1,6 @@
 /*
 
- *      E-MoonClock v0.1 (C) 1999 Michael Lea (mikelea@charm.net)
+ *      E-MoonClock v0.1 (C) 1999-2000 Michael Lea (mikelea@charm.net)
  *
  *              - Shows Moon Phase....
  *

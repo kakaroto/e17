@@ -1,6 +1,6 @@
 /* E-Mountbox.h
  *
- * Copyright (C) 1999 Christian Kreibich
+ * Copyright (C) 1999-2000 Christian Kreibich
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
