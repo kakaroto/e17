@@ -64,26 +64,22 @@ void
 esmart_textarea_smart_raise(Evas_Object *o)
 {
    Esmart_Text_Area *t;
-   int l;
    
    t = evas_object_smart_data_get(o);
-   l = evas_object_layer_get(t->bg);
-   evas_object_layer_set(t->text, l + 2);
-   evas_object_layer_set(t->bg, l + 1);
-   evas_object_layer_set(t->cursor, l + 2);
+   evas_object_raise(t->text);
+   evas_object_raise(t->bg);
+   evas_object_raise(t->cursor);
 }
 
 void 
 esmart_textarea_smart_lower(Evas_Object *o)
 {
    Esmart_Text_Area *t;
-   int l;
    
    t = evas_object_smart_data_get(o);
-   l = evas_object_layer_get(t->bg);
-   evas_object_layer_set(t->text, l);
-   evas_object_layer_set(t->bg, l + 1);
-   evas_object_layer_set(t->cursor, l);
+   evas_object_lower(t->text);
+   evas_object_lower(t->bg);
+   evas_object_lower(t->cursor);
 }
 
 void 

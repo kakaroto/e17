@@ -3,7 +3,6 @@ Simple:
 - add mouse selection
 - handle up / down movement when lower line longer that top one and v/v
 - remove all hardcoded values
-- reevaluate smart object raise / lower calls
 
 Medium:
 =======
