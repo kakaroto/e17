@@ -1,10 +1,14 @@
-
 #include "E.h"
 #include "timestamp.h"
 
 int
 main(int argc, char **argv)
 {
+   int                 i, num;
+   Button            **lst;
+   Background         *bg;
+   ECursor            *ec = NULL;
+
    /* This function runs all the setup for startup, and then 
     * proceeds into the primary event loop at the end.
     */
@@ -182,12 +186,6 @@ main(int argc, char **argv)
    desks.desk[0].viewable = 0;
    /* now we're going to load the configuration/theme */
    LoadEConfig(themepath);
-   {
-      int                 i;
-
-      for (i = 0; i < child_count; i++)
-	 kill(e_children[i], SIGCONT);
-   }
 
    desks.desk[0].viewable = 1;
    RefreshDesktop(0);
@@ -201,21 +199,17 @@ main(int argc, char **argv)
    /* toss down the dragbar and related */
    InitDesktopControls();
    /* then draw all the buttons that belong on the desktop */
-   {
-      Button            **lst;
-      int                 i, num;
-
-      lst = (Button **) ListItemTypeID(&num, LIST_TYPE_BUTTON, 0);
-      if (lst)
-	{
-	   for (i = 0; i < num; i++)
-	     {
-		if ((!lst[i]->internal) && (lst[i]->default_show))
-		   SimpleShowButton(lst[i]);
-	     }
-	   Efree(lst);
-	}
-   }
+   lst = (Button **) ListItemTypeID(&num, LIST_TYPE_BUTTON, 0);
+   if (lst)
+     {
+	for (i = 0; i < num; i++)
+	  {
+	     printf("%i / %i: %s\n", i, num, lst[i]->name);
+	     if ((!lst[i]->internal) && (lst[i]->default_show))
+		SimpleShowButton(lst[i]);
+	  }
+	Efree(lst);
+     }
    /* gnome hints stuff & session initialization here */
    GNOME_SetHints();
    SessionInit();
@@ -261,17 +255,14 @@ main(int argc, char **argv)
    if (mode.resizemode == 5)
       mode.resizemode = 0;
    /* of course, we have to set the cursors */
-   {
-      ECursor            *ec = NULL;
+   ec = FindItem("DEFAULT", 0, LIST_FINDBY_NAME, LIST_TYPE_ECURSOR);
+   if (ec)
+     {
+	ApplyECursor(root.win, ec);
+	ec->ref_count++;
+	ec->inroot = 1;
+     }
 
-      ec = FindItem("DEFAULT", 0, LIST_FINDBY_NAME, LIST_TYPE_ECURSOR);
-      if (ec)
-	{
-	   ApplyECursor(root.win, ec);
-	   ec->ref_count++;
-	   ec->inroot = 1;
-	}
-   }
    if (mode.display_warp < 0)
       mode.display_warp = 0;
    mode.startup = 0;
@@ -313,16 +304,14 @@ main(int argc, char **argv)
    XSync(disp, False);
    if (!mode.mapslide)
       CreateStartupDisplay(0);
-   {
-      Background         *bg;
-
-      if ((bg = RemoveItem("STARTUP_BACKGROUND_SIDEWAYS", 0, LIST_FINDBY_NAME,
-			   LIST_TYPE_BACKGROUND)))
-	 FreeDesktopBG(bg);
-      if ((bg = RemoveItem("STARTUP_BACKGROUND", 0, LIST_FINDBY_NAME,
-			   LIST_TYPE_BACKGROUND)))
-	 FreeDesktopBG(bg);
-   }
+   if ((bg = RemoveItem("STARTUP_BACKGROUND_SIDEWAYS", 0, LIST_FINDBY_NAME,
+			LIST_TYPE_BACKGROUND)))
+      FreeDesktopBG(bg);
+   if ((bg = RemoveItem("STARTUP_BACKGROUND", 0, LIST_FINDBY_NAME,
+			LIST_TYPE_BACKGROUND)))
+      FreeDesktopBG(bg);
+   for (i = 0; i < child_count; i++)
+      kill(e_children[i], SIGCONT);
 
    /* The primary event loop */
    for (;;)

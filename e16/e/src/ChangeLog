@@ -2242,3 +2242,12 @@ Wed Sep 22 18:21:40 PDT 1999
 (KainX)
 
 Ergh...let's not go freeing image classes willy-nilly, shall we?
+
+-------------------------------------------------------------------------------
+
+Wed Sep 22 20:07:31 PDT 1999
+(Raster)
+
+disabel pagers and icobnoxes form going into groups - ok theres a bug 
+restoring them and i've had enough of looking at that code.. so i simply
+disabled it. much simpler.

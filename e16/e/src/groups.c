@@ -86,7 +86,11 @@ BuildWindowGroup(EWin ** ewins, int num)
    AddItem(g, NULL, g->index, LIST_TYPE_GROUP);
 
    for (i = 0; i < num; i++)
-      AddEwinToGroup(ewins[i], g);
+     {
+	/* disable iconboxes and pagers to go into groups */
+	if (!((ewins[i]->ibox) || (ewins[i]->pager)))
+	   AddEwinToGroup(ewins[i], g);
+     }
 }
 
 void
@@ -96,16 +100,20 @@ AddEwinToGroup(EWin * ewin, Group * g)
 
    if (ewin && g)
      {
-	for (i = 0; i < ewin->num_groups; i++)
-	   if (ewin->groups[i] == g)
-	      return;
-	ewin->num_groups++;
-	ewin->groups = Erealloc(ewin->groups, sizeof(Group *) * ewin->num_groups);
-	ewin->groups[ewin->num_groups - 1] = g;
-	g->num_members++;
-	g->members = Erealloc(g->members, sizeof(EWin *) * g->num_members);
-	g->members[g->num_members - 1] = ewin;
-	RememberImportantInfoForEwin(ewin);
+	/* disable iconboxes and pagers to go into groups */
+	if (!((ewin->ibox) || (ewin->pager)))
+	  {
+	     for (i = 0; i < ewin->num_groups; i++)
+		if (ewin->groups[i] == g)
+		   return;
+	     ewin->num_groups++;
+	     ewin->groups = Erealloc(ewin->groups, sizeof(Group *) * ewin->num_groups);
+	     ewin->groups[ewin->num_groups - 1] = g;
+	     g->num_members++;
+	     g->members = Erealloc(g->members, sizeof(EWin *) * g->num_members);
+	     g->members[g->num_members - 1] = ewin;
+	     RememberImportantInfoForEwin(ewin);
+	  }
      }
 }
 

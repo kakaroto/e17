@@ -1076,6 +1076,9 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
 
 	     if (firstlast == 0)
 	       {
+		  XGCValues           gcv;
+		  GC                  gc;
+
 		  if (ewin_pi)
 		     EDestroyPixImg(ewin_pi);
 		  if (root_pi)
@@ -1098,7 +1101,10 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
 		       EDBUG_RETURN_;
 		    }
 		  EFillPixmap(root.win, root_pi->pmap, x1, y1, ewin->w, ewin->h);
-		  EFillPixmap(ewin->win, ewin_pi->pmap, 0, 0, ewin->w, ewin->h);
+		  gc = XCreateGC(disp, root_pi->pmap, 0, &gcv);
+		  XCopyArea(disp, root_pi->pmap, ewin_pi->pmap, gc, x1, y1,
+			    ewin->w, ewin->h, 0, 0);
+		  XFreeGC(disp, gc);
 		  EBlendPixImg(ewin, root_pi, ewin_pi, draw_pi, x, y,
 			       ewin->w, ewin->h);
 	       }
