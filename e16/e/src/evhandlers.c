@@ -27,9 +27,6 @@ static ToolTip     *ttip = NULL;
 static void         ToolTipTimeout(int val, void *data);
 
 static char         sentpress = 0;
-static Window       last_bpress = 0;
-static Time         last_time = 0;
-static int          last_button = 0;
 
 static void
 ToolTipTimeout(int val, void *data)
@@ -768,14 +765,14 @@ HandleMouseDown(XEvent * ev)
 
    TooltipsHandleEvent();
 
-   if ((((float)(ev->xbutton.time - last_time) / 1000) <
-	mode_double_click_time)
-       && ((int)(ev->xbutton.button) == (int)(last_button)))
+   if ((((float)(ev->xbutton.time - mode.last_time) / 1000) <
+	mode_double_click_time) &&
+       ((int)(ev->xbutton.button) == (int)(mode.last_button)))
       double_click = 1;
 
-   last_time = ev->xbutton.time;
-   last_button = ev->xbutton.button;
-   last_bpress = win;
+   mode.last_time = ev->xbutton.time;
+   mode.last_button = ev->xbutton.button;
+   mode.last_bpress = win;
 
    mode.x = ev->xbutton.x_root;
    mode.y = ev->xbutton.y_root;
@@ -859,7 +856,7 @@ HandleMouseUp(XEvent * ev)
        (!((mode.place) &&
 	  (mode.mode == MODE_MOVE_PENDING || mode.mode == MODE_MOVE))))
      {
-	if ((int)last_button != (int)ev->xbutton.button)
+	if ((int)mode.last_button != (int)ev->xbutton.button)
 	   EDBUG_RETURN_;
      }
 
@@ -873,9 +870,9 @@ HandleMouseUp(XEvent * ev)
 
    ActionsEnd(NULL);
 
-   if ((last_bpress) && (last_bpress != win))
+   if ((mode.last_bpress) && (mode.last_bpress != win))
      {
-	ev->xbutton.window = last_bpress;
+	ev->xbutton.window = mode.last_bpress;
 	BordersEventMouseOut2(ev);
 	ev->xbutton.window = win;
      }
@@ -893,9 +890,9 @@ HandleMouseUp(XEvent * ev)
 	ButtonProxySendEvent(ev);
      }
 
-   mode.context_win = last_bpress;
+   mode.context_win = mode.last_bpress;
 
-   if ((((float)(ev->xbutton.time - last_time) / 1000) < 0.5)
+   if ((((float)(ev->xbutton.time - mode.last_time) / 1000) < 0.5)
        && (mode.cur_menu_depth > 0) && (!clickmenu))
      {
 	clickmenu = 1;
@@ -942,7 +939,7 @@ HandleMouseUp(XEvent * ev)
 
    mode.action_inhibit = 0;
    mode.justclicked = 0;
-   last_bpress = 0;
+   mode.last_bpress = 0;
 
    EDBUG_RETURN_;
 }

@@ -1314,6 +1314,9 @@ typedef struct
    char                firsttime;
    Window              button_proxy_win;
    const XEvent       *current_event;
+   Window              last_bpress;
+   int                 last_button;
+   Time                last_time;
 }
 EMode;
 

@@ -1632,11 +1632,12 @@ PagersEventMotion(XEvent * ev)
 int
 PagersEventMouseDown(XEvent * ev)
 {
+   Window              win = ev->xbutton.window;
    int                 i, num;
    Pager              *p;
    EWin               *ewin, **gwins;
 
-   p = FindPager(ev->xbutton.window);
+   p = FindPager(win);
    if (!p)
       return 0;
 
@@ -1654,7 +1655,7 @@ PagersEventMouseDown(XEvent * ev)
    if (gwins)
       Efree(gwins);
 
-   if (ev->xbutton.window == p->hi_win)
+   if (win == p->hi_win)
      {
 	int                 hx, hy;
 	Window              dw;
@@ -1709,29 +1710,30 @@ PagersEventMouseDown(XEvent * ev)
 int
 PagersEventMouseUp(XEvent * ev)
 {
+   Window              win = ev->xbutton.window;
    int                 used = 0;
    int                 i, num;
    Pager              *p;
    EWin               *ewin, **gwins;
    int                 pax, pay;
 
-   p = FindPager(ev->xbutton.window);
+   p = FindPager(win);
    if (p == NULL)
       goto exit;
 
    if (((int)ev->xbutton.button == conf.pagers.sel_button))
      {
+	if (win != mode.last_bpress)
+	   goto exit;
 	PagerAreaAt(p, ev->xbutton.x, ev->xbutton.y, &pax, &pay);
 	GotoDesktop(p->desktop);
 	if (p->desktop != desks.current)
-	  {
-	     SoundPlay("SOUND_DESKTOP_SHUT");
-	  }
+	   SoundPlay("SOUND_DESKTOP_SHUT");
 	SetCurrentArea(pax, pay);
      }
    else if (((int)ev->xbutton.button == conf.pagers.win_button))
      {
-	if (ev->xbutton.window == p->hi_win)
+	if (win == p->hi_win)
 	  {
 	     int                 hx, hy;
 	     Window              dw;
@@ -1741,11 +1743,17 @@ PagersEventMouseUp(XEvent * ev)
 	     ev->xbutton.x += hx;
 	     ev->xbutton.y += hy;
 	  }
-	if (!FindItem
-	    ((char *)p->hi_ewin, 0, LIST_FINDBY_POINTER, LIST_TYPE_EWIN))
+
+	if (!FindItem((char *)p->hi_ewin, 0,
+		      LIST_FINDBY_POINTER, LIST_TYPE_EWIN))
 	   p->hi_ewin = NULL;
-	if ((mode.mode == MODE_PAGER_DRAG) && (p->hi_ewin))
+
+	switch (mode.mode)
 	  {
+	  case MODE_PAGER_DRAG:
+	     if (!p->hi_ewin)
+		break;
+
 	     ewin = NULL;
 	     for (i = 0; i < desks.desk[desks.current].num; i++)
 	       {
@@ -1769,6 +1777,7 @@ PagersEventMouseUp(XEvent * ev)
 			 }
 		    }
 	       }
+
 	     ewin = GetEwinPointerInClient();
 	     if ((ewin) && (ewin->pager))
 	       {
@@ -1893,10 +1902,13 @@ PagersEventMouseUp(XEvent * ev)
 		  if (gwins)
 		     Efree(gwins);
 	       }
-	  }
-	else if ((ev->xbutton.x >= 0) && (ev->xbutton.y >= 0)
-		 && (ev->xbutton.x < p->w) && (ev->xbutton.y < p->h))
-	  {
+	     break;
+
+	  default:
+	     if ((ev->xbutton.x < 0) || (ev->xbutton.y < 0) ||
+		 (ev->xbutton.x >= p->w) || (ev->xbutton.y >= p->h))
+		break;
+
 	     PagerAreaAt(p, ev->xbutton.x, ev->xbutton.y, &pax, &pay);
 	     GotoDesktop(p->desktop);
 	     SetCurrentArea(pax, pay);
@@ -1906,13 +1918,16 @@ PagersEventMouseUp(XEvent * ev)
 		  RaiseEwin(ewin);
 		  FocusToEWin(ewin, FOCUS_SET);
 	       }
+	     break;
 	  }
+
 	if (p->hi_ewin)
 	  {
 	     RedrawPagersForDesktop(p->hi_ewin->desktop, 3);
 	     ForceUpdatePagersForDesktop(p->hi_ewin->desktop);
 	     PagerHideHi(p);
 	  }
+
 	mode.mode = MODE_NONE;
 	mode.context_pager = NULL;
      }
