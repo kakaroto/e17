@@ -798,16 +798,8 @@ int ewd_list_clear(Ewd_List * list)
 
 	EWD_WRITE_LOCK(list);
 
-	if (ewd_list_is_empty(list))
-		return TRUE;
-
-	_ewd_list_goto_first(list);
-
-	if (list->current) {
-		data = _ewd_list_remove(list);
-		if (list->free_func)
-			list->free_func(data);
-	}
+	while (!ewd_list_is_empty(list))
+		_ewd_list_remove_first(list);
 
 	EWD_WRITE_UNLOCK(list);
 
