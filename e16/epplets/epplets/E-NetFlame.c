@@ -387,7 +387,6 @@ save_conf(int d1, int d2, int d3, int d4, int d5,
   Epplet_modify_config("color3", s);
   Esnprintf(s, sizeof(s), "%f", stream_max);
   Epplet_modify_config("bandwidth", s);
-  Epplet_modify_config("device", netdev);
   Epplet_save_config();
 }
 
