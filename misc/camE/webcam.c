@@ -114,7 +114,7 @@ static struct video_mmap grab_buf;
 static int grab_fd = -1;
 static int grab_size = 0;
 static unsigned char *grab_data = NULL;
-Imlib_Image convert_rgb_to_imlib2(unsigned char *mem, int width, int height);
+Imlib_Image convert_yuv_to_imlib2(unsigned char *mem, int width, int height);
 int execvp_with_timeout(int timeout, char *file, char **argv);
 void alarm_handler(int sig);
 
@@ -166,7 +166,7 @@ grab_init()
    }
 
    /* try to setup mmap-based capture */
-   grab_buf.format = VIDEO_PALETTE_RGB24;
+   grab_buf.format = VIDEO_PALETTE_YUV420;
    grab_buf.frame = 0;
    grab_buf.width = grab_width;
    grab_buf.height = grab_height;
@@ -184,6 +184,92 @@ grab_init()
       exit(1);
    }
 }
+
+/**
+  \brief convert YUV 4:2:0 data into RGB
+  \param width Width of yuv data, in pixels
+  \param height Height of yuv data, in pixels
+  \param src beginning of YUV data
+  \param dst beginning of RGB data, \b including the initial offset into the viewport
+  
+ This is a really simplistic approach. Speedups are welcomed. 
+*/
+Imlib_Image convert_yuv_to_imlib2(unsigned char *src, int width, int height)
+{
+    int line, col, linewidth;
+    int y, u, v, yy, vr = 0, ug = 0, vg = 0, ub = 0;
+    int r, g, b;
+    unsigned char *sy, *su, *sv;
+    Imlib_Image im;
+    DATA32 *data, *dest;
+ 
+    im = imlib_create_image(width, height);
+    imlib_context_set_image(im);
+    data = imlib_image_get_data();
+    dest = data;
+
+    linewidth = width + (width >> 1);
+    sy = src;
+    su = sy + 4;
+    sv = su + linewidth;
+
+    /* The biggest problem is the interlaced data, and the fact that odd
+       add even lines have V and U data, resp. 
+     */
+    for (line = 0; line < height; line++) {
+        for (col = 0; col < width; col++) {
+            y = *sy++;
+            yy = y << 8;
+            if ((col & 1) == 0) {
+                /* only at even colums we update the u/v data */
+                u = *su - 128;
+                ug =   88 * u;
+                ub =  454 * u;
+                v = *sv - 128;
+                vg =  183 * v;
+                vr =  359 * v;
+
+                su++;
+                sv++;
+            }
+            if ((col & 3) == 3) {
+                sy += 2; /* skip u/v */
+                su += 4; /* skip y */
+                sv += 4; /* skip y */
+            }
+
+            r = (yy +      vr) >> 8;
+            g = (yy - ug - vg) >> 8;
+            b = (yy + ub     ) >> 8;
+            /* At moments like this, you crave for MMX instructions with saturation */
+            if (r <   0) r =   0;
+            if (r > 255) r = 255;
+            if (g <   0) g =   0;
+            if (g > 255) g = 255;
+            if (b <   0) b =   0;
+            if (b > 255) b = 255;
+
+/*          *dst++ = r;
+            *dst++ = g;
+            *dst++ = b;
+ */
+            *dest = (r << 16) | (g << 8) | b | 0xff000000;
+            dest++;
+
+        } /* ..for col */
+        if (line & 1) { /* odd line: go to next band */
+            su += linewidth;
+            sv += linewidth;
+        }
+        else { /* rewind u/v pointers */
+            su -= linewidth;
+            sv -= linewidth;
+        }
+    } /* ..for line */
+   imlib_image_put_back_data(data);
+   return im;
+}
+
 
 Imlib_Image
 grab_one(int *width, int *height)
@@ -208,7 +294,7 @@ grab_one(int *width, int *height)
          return NULL;
       }
    }
-   im = convert_rgb_to_imlib2(grab_data, grab_buf.width, grab_buf.height);
+   im = convert_yuv_to_imlib2(grab_data, grab_buf.width, grab_buf.height);
    if (close_dev)
       close_device();
    if (im)
@@ -291,7 +377,7 @@ add_time_text(Imlib_Image image, char *message, int width, int height)
 }
 
 Imlib_Image
-convert_rgb_to_imlib2(unsigned char *mem, int width, int height)
+old_convert_yuv_to_imlib2(unsigned char *mem, int width, int height)
 {
    Imlib_Image im;
    DATA32 *data, *dest;
@@ -894,8 +980,8 @@ main(int argc, char *argv[])
          {
             char target_buf[2048];
             char cmd_buf[4096];
-            char *scp_args[5] = { "scp", "-BCq", NULL, NULL, NULL };
-            char *ssh_args[20] = { "ssh", "-n", "-q", NULL, NULL, NULL };
+            char *scp_args[] = { "scp", "-BCq", NULL, NULL, NULL };
+            char *ssh_args[] = { "ssh", "-n", "-q", NULL, NULL, NULL };
 
             if ((upload_blockfile && (stat(upload_blockfile, &st) == -1))
                 || !upload_blockfile)
