@@ -67,7 +67,7 @@ if($opt{list}) {
 
 
 while (my $key = shift @ARGV) {
-	print $key, "\n" if $opt{debug};
+	print "key == ", $key, "\n" if $opt{debug};
 	die "Couldn't find URL key '$key'\n" unless $bookmarks{$key}->[0];
 	my $url = $bookmarks{$key}->[0];
 	my $ref = $bookmarks{$key}->[1];
@@ -80,7 +80,7 @@ while (my $key = shift @ARGV) {
 
 	my $cmd = "$prog{app} $prog{pre} --title \"$title\" -T".$key."cam -R $ref $url $prog{post}";
 
-	print $cmd, "\n" if $opt{debug};
+	print "cmd == ", $cmd, "\n" if $opt{debug};
 
 	FORK: {
 		if(my $pid = fork) {
