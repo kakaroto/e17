@@ -12,3 +12,4 @@ config.status
 *.da
 bb.out
 gmon.out
+CommitLog

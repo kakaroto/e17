@@ -1077,14 +1077,6 @@ as well as an easy entry point for you to add your own indent style
 
 -------------------------------------------------------------------------------
 
-Wed Sep  1 14:38:58 PDT 1999
-(Mandrake)
-
-minor bug fixes in ecvs.  now it'll show you the commit as it happens, and
-it'll also remove the temporary file CommitLog
-
--------------------------------------------------------------------------------
-
 Wed Sep  1 14:40:22 PDT 1999
 (Mandrake)
 
