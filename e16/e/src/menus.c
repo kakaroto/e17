@@ -1521,7 +1521,7 @@ FileMenuUpdate(int val, void *data)
    if (!exists(m->data))
      {
 	HideMenu(m);
-	DestroyMenu(m);
+	EmptyMenu(m);
 	return;
      }
    if (m->data)

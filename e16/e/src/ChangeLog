@@ -2548,3 +2548,10 @@ Thu Sep 30 16:59:57 PDT 1999
 
 handle file menus beign deleted form disk and delete them from the menu 
 heirachy too
+
+-------------------------------------------------------------------------------
+
+Thu Sep 30 17:26:38 PDT 1999
+(Raster)
+
+try nto to segv if filemnus go missing... :)
