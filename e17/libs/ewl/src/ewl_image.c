@@ -8,7 +8,7 @@ static Ewl_Image_Type  ewl_image_get_type(const char *i);
  * @return Returns a pointer to a new image widget on success, NULL on failure.
  * @brief Load an image widget with specified image contents
  */
-Ewl_Widget     *ewl_image_new(char *i)
+Ewl_Widget     *ewl_image_new(char *i, char *k)
 {
 	Ewl_Image      *image;
 
@@ -18,7 +18,7 @@ Ewl_Widget     *ewl_image_new(char *i)
 	if (!image)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
-	ewl_image_init(image, i);
+	ewl_image_init(image, i, k);
 
 	DRETURN_PTR(EWL_WIDGET(image), DLEVEL_STABLE);
 }
@@ -31,7 +31,7 @@ Ewl_Widget     *ewl_image_new(char *i)
  *
  * Sets the fields and callbacks of @a i to their default values.
  */
-void ewl_image_init(Ewl_Image * i, char *path)
+void ewl_image_init(Ewl_Image * i, char *path, char *key)
 {
 	Ewl_Widget     *w;
 
@@ -61,7 +61,7 @@ void ewl_image_init(Ewl_Image * i, char *path)
 	i->sw = 1.0;
 	i->sh = 1.0;
 
-	ewl_image_set_file(i, path);
+	ewl_image_set_file(i, path, key);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -74,7 +74,7 @@ void ewl_image_init(Ewl_Image * i, char *path)
  *
  * Set the image displayed by @a i to the one found at the path @a im.
  */
-void ewl_image_set_file(Ewl_Image * i, char *im)
+void ewl_image_set_file(Ewl_Image * i, char *im, char *key)
 {
 	int             old_type;
 	Ewl_Widget     *w;
@@ -88,6 +88,7 @@ void ewl_image_set_file(Ewl_Image * i, char *im)
 	emb = ewl_embed_find_by_widget(w);
 
 	IF_FREE(i->path);
+	IF_FREE(i->key);
 
 	/*
 	 * Determine the type of image to be loaded.
@@ -96,6 +97,8 @@ void ewl_image_set_file(Ewl_Image * i, char *im)
 	if (im) {
 		i->type = ewl_image_get_type(im);
 		i->path = strdup(im);
+		if (key)
+			i->key = strdup(key);
 	}
 	else
 		i->type = EWL_IMAGE_TYPE_NORMAL;
@@ -245,7 +248,8 @@ void ewl_image_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 			return;
 
 		if (i->path)
-			edje_object_file_set(i->image, i->path, "EWL");
+			edje_object_file_set(i->image, i->path,
+					     (i->key ? i->key : "EWL"));
 
 	} else {
 		i->image = evas_object_image_add(emb->evas);
@@ -253,7 +257,8 @@ void ewl_image_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 			return;
 
 		if (i->path)
-			evas_object_image_file_set(i->image, i->path, NULL);
+			edje_object_file_set(i->image, i->path,
+					     (i->key ? i->key : "EWL"));
 	}
 
 	evas_object_layer_set(i->image, ewl_widget_get_layer_sum(w));
