@@ -1076,7 +1076,7 @@ ICCCM_SetEInfo(EWin * ewin)
    c[6] = ewin->client.w;
    c[7] = ewin->client.h;
    XChangeProperty(disp, ewin->client.win, a, XA_CARDINAL, 32, PropModeReplace,
-		   (unsigned char *)c, 9);
+		   (unsigned char *)c, 8);
    XChangeProperty(disp, ewin->client.win, aa, XA_STRING, 8, PropModeReplace,
 		   (unsigned char *)ewin->border->name,
 		   strlen(ewin->border->name) + 1);
@@ -1185,11 +1185,8 @@ ICCCM_GetEInfo(EWin * ewin)
 	     ewin->iconified = 0;
 	  }
 	ewin->client.already_placed = 1;
-	if (num >= 9)
-	  {
-	     ewin->client.w = c[6];
-	     ewin->client.h = c[7];
-	  }
+	ewin->client.w = c[6];
+	ewin->client.h = c[7];
 	XFree(c);
 
 	puc = NULL;
