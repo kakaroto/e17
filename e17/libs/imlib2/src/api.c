@@ -2748,3 +2748,9 @@ void imlib_image_draw_polygon(ImlibPolygon poly)
                    ctxt_color.blue, ctxt_color.alpha, ctxt_operation);
    }
 }
+
+void imlib_polygon_get_bounds(ImlibPolygon poly, int *px1, int *py1, int *px2, int *py2)
+{
+   CHECK_PARAM_POINTER("imlib_polygon_get_bounds", "polygon", poly);
+   __imlib_polygon_get_bounds(poly, px1, py1, px2, py2);
+}

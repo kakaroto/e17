@@ -1705,3 +1705,18 @@ __imlib_draw_polygon_clipped(ImlibImage * im, ImlibPoly poly, int clip_xmin,
    }
 }
 
+void __imlib_polygon_get_bounds(ImlibPoly poly, int *px1, int *py1, int *px2, int *py2)
+{
+   int x1,y1,x2,y2;
+   int i;
+  if(!poly || !poly->points || (poly->pointcount < 2))
+      return;
+  
+  for(i = 0; i < poly->pointcount; i++)
+     GROW_BOUNDS (x1, y1, x2, y2, poly->points[i].x, poly->points[i].y);
+
+    *px1 = x1;
+    *py1 = y1;
+    *px2 = x2;
+    *py2 = y2;
+}

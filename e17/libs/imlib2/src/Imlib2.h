@@ -249,6 +249,7 @@ ImlibPolygon imlib_polygon_new(int type);
 void imlib_polygon_free(ImlibPolygon poly);
 void imlib_polygon_add_point(ImlibPolygon poly, int x, int y);
 void imlib_image_draw_polygon(ImlibPolygon poly);
+void imlib_polygon_get_bounds(ImlibPolygon poly, int *px1, int *py1, int *px2, int *py2);
 
 Imlib_Color_Range imlib_create_color_range(void);
 void imlib_free_color_range(void);

@@ -1,6 +1,22 @@
 #ifndef __RGBADRAW
 #define __RGBADRAW 1
 
+
+#define GROW_BOUNDS(px1, py1, px2, py2, x, y) { \
+    if (x < px1)      \
+        px1 = x;      \
+                      \
+    if (x > px2)      \
+        px2 = x;      \
+                      \
+    if (y < py1)      \
+        py1 = y;      \
+                      \
+    if (y > py2)      \
+        py2 = y;      \
+}   
+
+
 typedef struct _imlib_point    ImlibPoint;
 
 struct _imlib_point
@@ -76,4 +92,5 @@ void
 __imlib_draw_polygon_clipped(ImlibImage * im, ImlibPoly poly, int clip_xmin,
    int clip_xmax, int clip_ymin, int clip_ymax, DATA8 r, DATA8 g,  DATA8 b,
    DATA8 a, ImlibOp op);
+void __imlib_polygon_get_bounds(ImlibPoly poly, int *px1, int *py1, int *px2, int *py2);
 #endif
