@@ -364,7 +364,7 @@ reboot_cb(void *data, Evas_Object *o, const char *emission, const char *source)
 {
     if(session->config->reboot.allow)
     {
-	execl("/bin/sh", "/bin/sh", "-c", "init" "6", NULL);
+	execl("/bin/sh", "/bin/sh", "-c", "/sbin/shutdown" "-r", "now", "This system is going down for reboot NOW!", NULL);
     }
 }
 
@@ -383,7 +383,7 @@ shutdown_cb(void *data, Evas_Object *o, const char *emission, const char *source
 {
     if(session->config->halt.allow)
     {
-	execl("/bin/sh", "/bin/sh", "-c", "init" "0", NULL);
+	execl("/bin/sh", "/bin/sh", "-c", "/sbin/shutdown" "-h", "now", "This system is being shut down NOW!", NULL);
     }
 }
 
@@ -411,6 +411,7 @@ main(int argc, char *argv[])
     int i = 0;
     char buf[PATH_MAX];
     char *str = NULL;
+	Ecore_X_Window ew;
     Evas *evas = NULL; 
     Ecore_Evas *e = NULL;
     Ecore_Timer *timer = NULL;
@@ -444,8 +445,10 @@ main(int argc, char *argv[])
 	edje_frametime_set(1.0/60.0);
 
 	/* setup our ecore_evas */ 
+	/* testing mode decides entrance window size */
 	e = ecore_evas_software_x11_new(NULL, 0, 0, 0, WINW, WINH);
-	ecore_evas_title_set(e, "Entrance --(Edje)--");
+	ew = ecore_evas_software_x11_window_get(e);
+	ecore_evas_title_set(e, "Entrance");
 	ecore_evas_callback_delete_request_set(e, window_del_cb);
 	ecore_evas_callback_resize_set(e, window_resize_cb);
 	ecore_evas_cursor_set(e, session->config->pointer, 12, 0, 0); 
