@@ -5,6 +5,8 @@
 #endif
 
 static void ewl_filedialog_process_directory(Ewl_Fileselector * fs, char *dir);
+static void __ewl_filedialog_file_click (Ewl_Widget * w, void *ev_data, 
+		void *user_data);
 
 
 /** Addition for Solaris compatablity in scandir dep. -benr **/
@@ -199,12 +201,12 @@ static void
 ewl_filedialog_process_directory(Ewl_Fileselector * fs, char *directory)
 {
 	struct dirent **dentries;
-	int num, i;
-	char dir[PATH_MAX];
-	char file[PATH_MAX];
-	struct stat     statbuf;
-	Ewl_Widget *items[1];
-	Ewl_Widget *row;
+	int           num, i;
+	char          dir[PATH_MAX];
+	char          file[PATH_MAX];
+	struct stat   statbuf;
+	Ewl_Widget    *items[1];
+	Ewl_Widget    *row;
 	
 	
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -228,19 +230,30 @@ ewl_filedialog_process_directory(Ewl_Fileselector * fs, char *directory)
 			continue;
 		}
 
-		items[0] = ewl_entry_new (dentries[num]->d_name);
+		items[0] = ewl_text_new (dentries[num]->d_name);
 		ewl_widget_show (items[0]);
 		
 		if (S_ISDIR(statbuf.st_mode)) {
 			ewl_tree_add_row (EWL_TREE (fs->dirs), NULL, items);
 		} else if (S_ISREG(statbuf.st_mode)) {
 			row = ewl_tree_add_row (EWL_TREE (fs->files), NULL, items);
-			ewl_callback_append (row, EWL_CALLBACK_CLICKED, 
-					fs->file_clicked, NULL);
+			ewl_callback_append (items[0], EWL_CALLBACK_DOUBLE_CLICKED, 
+					fs->file_clicked, fs);
+			ewl_callback_append (items[0], EWL_CALLBACK_CLICKED,
+					__ewl_filedialog_file_click, fs);
 		}
 	}
 	
-	
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static void __ewl_filedialog_file_click (Ewl_Widget * w, void *ev_data,
+		void *user_data)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+
+	printf ("single click catched\n");
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

@@ -81,14 +81,9 @@ void __start_fd (Ewl_Widget *w, void *ev_data, void *user_data)
 
 void __open_file (Ewl_Widget *w, void *ev_data, void *user_data)
 {
-	Ewl_Fileselector *fs;
-	Ewl_Table *t;
+	Ewl_Fileselector *fs = user_data;
 
-	fs = EWL_FILESELECTOR(user_data);
-	t = EWL_TABLE(fs->files);
-
-	if (t)
-		printf("file clicked = %s\n", ewl_table_get_selected(t));
+	printf ("File clicked: %s\n", ewl_text_get_text (EWL_TEXT (w)));
 
 	w = NULL;
 	ev_data = NULL;

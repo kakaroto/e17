@@ -67,16 +67,22 @@ void
 ewl_filedialog_init(Ewl_Filedialog * fd, Ewl_Widget * follows,
 		    Ewl_Filedialog_Type type, Ewl_Callback_Function cb)
 {
-
+	Ewl_Widget     *w;
+	
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR ("fd", fd);
 
-	ewl_floater_init(EWL_FLOATER(fd), follows);
+	w = EWL_WIDGET(fd);
+	
+	ewl_floater_init(EWL_FLOATER(w), follows);
 	fd->type = type;
 
+	ewl_widget_set_appearance (EWL_WIDGET (w), "filedialog");
+
 	if (type == EWL_FILEDIALOG_TYPE_OPEN)
-		ewl_filedialog_open_init(fd, cb);
+		ewl_filedialog_open_init(EWL_FILEDIALOG (fd), cb);
 	else
-		ewl_filedialog_save_init(fd, cb);
+		ewl_filedialog_save_init(EWL_FILEDIALOG (fd), cb);
 
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -87,7 +93,6 @@ static void
 ewl_filedialog_open_init(Ewl_Filedialog * fd, Ewl_Callback_Function cb)
 {
 	Open_Dialog    *od;
-	Ewl_Widget     *separator;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
