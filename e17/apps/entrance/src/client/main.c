@@ -460,6 +460,7 @@ main(int argc, char *argv[])
 	evas_image_cache_set(evas, 8 * 1024 * 1024);
 	evas_font_cache_set(evas, 1 * 1024 * 1024);
 	evas_font_path_append(evas, PACKAGE_DATA_DIR"/fonts");
+	evas_font_path_append(evas, PACKAGE_DATA_DIR"/data/fonts");
 	evas_key_modifier_add(evas, "Control_L");
 	evas_key_modifier_add(evas, "Control_R");
 	evas_key_modifier_add(evas, "Shift_L");
