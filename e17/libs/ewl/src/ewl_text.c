@@ -124,10 +124,10 @@ void ewl_text_text_set(Ewl_Text * ta, char *text)
 		ewl_text_update_size(ta);
 	}
 
-	text = strdup(text);
+	text = (text ? strdup(text) : NULL);
 	ewl_callback_call_with_event_data(EWL_WIDGET(ta),
 					  EWL_CALLBACK_VALUE_CHANGED, text);
-	FREE(text);
+	IF_FREE(text);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
