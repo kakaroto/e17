@@ -149,7 +149,8 @@ int execvp_with_timeout(int timeout,
                         char *file,
                         char **argv);
 void alarm_handler(int sig);
-int save_image(Imlib_Image image, char *file);
+int save_image(Imlib_Image image,
+               char *file);
 
 void
 close_device()
@@ -667,48 +668,54 @@ save_image(Imlib_Image image,
   if ((err) || (!image)) {
     switch (err) {
       case IMLIB_LOAD_ERROR_FILE_DOES_NOT_EXIST:
-        log("%s - File does not exist", file);
+        log("Error saving image %s - File does not exist", file);
         break;
       case IMLIB_LOAD_ERROR_FILE_IS_DIRECTORY:
-        log("%s - Directory specified for image filename", file);
+        log("Error saving image %s - Directory specified for image filename",
+            file);
         break;
       case IMLIB_LOAD_ERROR_PERMISSION_DENIED_TO_READ:
-        log("%s - No read access to directory", file);
+        log("Error saving image %s - No read access to directory", file);
         break;
       case IMLIB_LOAD_ERROR_UNKNOWN:
       case IMLIB_LOAD_ERROR_NO_LOADER_FOR_FILE_FORMAT:
-        log("%s - No Imlib2 loader for that file format", file);
+        log("Error saving image %s - No Imlib2 loader for that file format",
+            file);
         break;
       case IMLIB_LOAD_ERROR_PATH_TOO_LONG:
-        log("%s - Path specified is too long", file);
+        log("Error saving image %s - Path specified is too long", file);
         break;
       case IMLIB_LOAD_ERROR_PATH_COMPONENT_NON_EXISTANT:
-        log("%s - Path component does not exist", file);
+        log("Error saving image %s - Path component does not exist", file);
         break;
       case IMLIB_LOAD_ERROR_PATH_COMPONENT_NOT_DIRECTORY:
-        log("%s - Path component is not a directory", file);
+        log("Error saving image %s - Path component is not a directory",
+            file);
         break;
       case IMLIB_LOAD_ERROR_PATH_POINTS_OUTSIDE_ADDRESS_SPACE:
-        log("%s - Path points outside address space", file);
+        log("Error saving image %s - Path points outside address space",
+            file);
         break;
       case IMLIB_LOAD_ERROR_TOO_MANY_SYMBOLIC_LINKS:
-        log("%s - Too many levels of symbolic links", file);
+        log("Error saving image %s - Too many levels of symbolic links",
+            file);
         break;
       case IMLIB_LOAD_ERROR_OUT_OF_MEMORY:
-        log("While loading %s - Out of memory", file);
+        log("Error saving image %s - Out of memory", file);
         break;
       case IMLIB_LOAD_ERROR_OUT_OF_FILE_DESCRIPTORS:
         eprintf("While loading %s - Out of file descriptors", file);
         break;
       case IMLIB_LOAD_ERROR_PERMISSION_DENIED_TO_WRITE:
-        log("%s - Cannot write to directory", file);
+        log("Error saving image %s - Cannot write to directory", file);
         break;
       case IMLIB_LOAD_ERROR_OUT_OF_DISK_SPACE:
-        log("%s - Cannot write - out of disk space", file);
+        log("Error saving image %s - Cannot write - out of disk space", file);
         break;
       default:
-        log("While loading %s - Unknown error (%d). Attempting to continue",
-            file, err);
+        log
+          ("Error saving image %s - Unknown error (%d). Attempting to continue",
+           file, err);
         break;
     }
     return 0;
