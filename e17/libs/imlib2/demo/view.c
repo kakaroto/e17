@@ -100,6 +100,7 @@ progress(Imlib_Image im, char percent, int update_x, int update_y,
 					       NULL, IMLIB_OP_COPY);
    XSetWindowBackgroundPixmap(disp, win, pm);
    XClearArea(disp, win, update_x, update_y, update_w, update_h, False);
+   XFlush(disp);
 }
 
 int 
@@ -183,7 +184,7 @@ main (int argc, char **argv)
 		    {
 		       no++;
 		       if (no == argc)
-			  exit(0);
+			  no = argc - 1;
 		       file = argv[no];
 		       image_width = 0;
 		       zoom = 1.0;
@@ -195,6 +196,27 @@ main (int argc, char **argv)
 			    no++;
 			    if (no == argc)
 			       exit(0);
+			    file = argv[no];
+			    image_width = 0;
+			    im = imlib_load_image_with_progress_callback(file, progress, 10);
+			 }
+		    }
+		  if (b == 2)
+		    {
+		       no--;
+		       if (no == 0)
+			  no = 1;
+		       file = argv[no];
+		       image_width = 0;
+		       zoom = 1.0;
+		       zoom_mode = 0;
+		       imlib_free_image_and_decache(im);
+		       im = imlib_load_image_with_progress_callback(file, progress, 10);
+		       while (!im)
+			 {
+			    no--;
+			    if (no == 0)
+			       no = 1;
 			    file = argv[no];
 			    image_width = 0;
 			    im = imlib_load_image_with_progress_callback(file, progress, 10);
@@ -248,12 +270,13 @@ main (int argc, char **argv)
 			   NULL, IMLIB_OP_COPY);
 		       XSetWindowBackgroundPixmap(disp, win, pm);
 		       XClearWindow(disp, win);
+		       XFlush(disp);
 		       timeout = 1;
 		    }
 	       default:
 		  break;		  
 	       }
-	     t1 = 0.5;
+	     t1 = 0.2;
 	     tval.tv_sec = (long)t1;
 	     tval.tv_usec = (long)((t1 - ((double)tval.tv_sec)) * 1000000);
 	     xfd = ConnectionNumber(disp);
@@ -307,6 +330,7 @@ main (int argc, char **argv)
 			   NULL, IMLIB_OP_COPY);
 		       XSetWindowBackgroundPixmap(disp, win, pm);
 		       XClearWindow(disp, win);
+		       XFlush(disp);
 		       timeout = 0;
 		    }
 	       }
