@@ -46,4 +46,5 @@ edb_ed $DB add /entrance/session/7/title str "Failsafe"
 edb_ed $DB add /entrance/session/7/icon str "failsafe.png"
 edb_ed $DB add /entrance/system/reboot int 1
 edb_ed $DB add /entrance/system/halt int 1
-edb_ed $DB add /entrance/user/save int 1
+edb_ed $DB add /entrance/user/remember int 1
+edb_ed $DB add /entrance/user/remember_n int 5
