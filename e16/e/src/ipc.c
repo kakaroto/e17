@@ -1474,7 +1474,7 @@ IPC_ImageClass(char *params, Client * c)
 		    {
 		       Window              win;
 		       char               *winptr, *hptr, state[20];
-		       int                 st, w = 0, h = 0;
+		       int                 st, w = -1, h = -1;
 
 		       winptr = atword(params, 3);
 		       word(params, 4, state);
@@ -1500,6 +1500,8 @@ IPC_ImageClass(char *params, Client * c)
 			    w = (int)strtol(atword(winptr, 2), (char **)NULL, 0);
 			    h = (int)strtol(hptr, (char **)NULL, 0);
 			 }
+		       printf("IclassApply(0x%08x, 0x%08x, %d, %d, 0, 0, %d, 0);\n",
+			      iclass, win, w, h, st);
 		       IclassApply(iclass, win, w, h, 0, 0, st, 0);
 		    }
 	       }

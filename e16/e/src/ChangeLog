@@ -2269,3 +2269,11 @@ multiple desktops and via the titlebar or the menu,
 so group effects are limited to the current desktop
 for now.
 
+
+-------------------------------------------------------------------------------
+
+Thu Sep 23 14:40:50 PDT 1999
+(KainX)
+
+Woops.  Width and height of 0 doesn't make for a happy pixmap.  Let
+E figure it out.  This fixes Eterm's auto mode.
