@@ -92,7 +92,8 @@ entrance_auth_session_end(Entrance_Auth * e)
       e->pam.handle = NULL;
    }
 #endif
-   syslog(LOG_INFO, "Auth: Session Closed Successfully.");
+   /* 
+      syslog(LOG_INFO, "Auth: Session Closed Successfully."); */
 }
 
 /**
@@ -103,8 +104,13 @@ void
 entrance_auth_clear_pass(Entrance_Auth * e)
 {
    if (e->pw)
+   {
       if (e->pw->pw_passwd)
+      {
          free(e->pw->pw_passwd);
+         e->pw->pw_passwd = NULL;
+      }
+   }
    memset(e->pass, 0, sizeof(e->pass));
 }
 
@@ -119,8 +125,24 @@ entrance_auth_free(Entrance_Auth * e)
       e->pw = struct_passwd_free(e->pw);
 
    memset(e->pass, 0, sizeof(e->pass));
+   entrance_auth_session_end(e);
    free(e);
 }
+
+/**
+ * entrance_auth_reset
+ * @e the Entrance_Auth struct to be reset
+ */
+void
+entrance_auth_reset(Entrance_Auth * e)
+{
+   if (e->pw)
+      e->pw = struct_passwd_free(e->pw);
+
+   memset(e->user, 0, sizeof(e->user));
+   memset(e->pass, 0, sizeof(e->pass));
+}
+
 
 #if HAVE_PAM
 /**
@@ -260,7 +282,7 @@ entrance_auth_cmp_crypt(Entrance_Auth * e, Entrance_Config * cfg)
  * Pass it a char* and it'll set it if it should
  */
 void
-entrance_auth_set_pass(Entrance_Auth * e, const char *str)
+entrance_auth_pass_set(Entrance_Auth * e, const char *str)
 {
    if (str)
       snprintf(e->pass, PATH_MAX, "%s", str);
@@ -275,15 +297,16 @@ entrance_auth_set_pass(Entrance_Auth * e, const char *str)
  * to the passed in string, if they don't, e->user is unmodified.
  */
 int
-entrance_auth_set_user(Entrance_Auth * e, const char *str)
+entrance_auth_user_set(Entrance_Auth * e, const char *str)
 {
-   int result = 0;
+   int result = 1;
 
-   if (str)
+   if (e && str)
    {
       struct passwd *pwent;
 
       memset(e->pass, 0, sizeof(e->pass));
+      memset(e->user, 0, sizeof(e->user));
       snprintf(e->user, PATH_MAX, "%s", str);
 
       e->pw = struct_passwd_free(e->pw);
@@ -292,9 +315,6 @@ entrance_auth_set_user(Entrance_Auth * e, const char *str)
          e->pw = struct_passwd_dup(pwent);
          result = 0;
       }
-      else
-         result = 1;
-
       endpwent();
    }
    return (result);

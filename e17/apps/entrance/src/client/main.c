@@ -155,18 +155,15 @@ static void
 interp_return_key(void *data, const char *str)
 {
    Evas_Object *o = NULL;
-   Entrance_User *eu = NULL;
 
    o = (Evas_Object *) data;
 
    if (!strcmp(esmart_text_entry_edje_part_get(o), "entrance.entry.user"))
    {
-      if (!entrance_auth_set_user(session->auth, str))
+      if (!entrance_session_user_set(session, str))
       {
          edje_object_signal_emit(esmart_text_entry_edje_object_get(o),
                                  "entrance,user,success", "");
-         if ((eu = evas_hash_find(session->config->users.hash, str)))
-            entrance_session_user_set(session, eu);
          focus_swap(o, 0);
       }
       else
@@ -180,22 +177,19 @@ interp_return_key(void *data, const char *str)
    }
    if (!strcmp(esmart_text_entry_edje_part_get(o), "entrance.entry.pass"))
    {
-      if (session->auth->user && strlen(session->auth->user) > 0)
+      if (!entrance_session_pass_set(session, str))
       {
-         entrance_auth_set_pass(session->auth, str);
-         if (!entrance_session_auth_user(session))
-         {
-            session->authed = 1;
-            edje_object_signal_emit(esmart_text_entry_edje_object_get(o),
-                                    "entrance,user,auth,success", "");
-         }
-         else
-         {
-            entrance_session_user_reset(session);
-            edje_object_signal_emit(esmart_text_entry_edje_object_get(o),
-                                    "entrance,user,auth,fail", "");
-            focus_swap(o, 0);
-         }
+         session->authed = 1;
+         edje_object_signal_emit(esmart_text_entry_edje_object_get(o),
+                                 "entrance,user,auth,success", "");
+      }
+      else
+      {
+         esmart_text_entry_text_set(o, "");
+         entrance_session_user_reset(session);
+         edje_object_signal_emit(esmart_text_entry_edje_object_get(o),
+                                 "entrance,user,auth,fail", "");
+         focus_swap(o, 0);
       }
    }
 }
@@ -306,8 +300,8 @@ done_cb(void *data, Evas_Object * o, const char *emission, const char *source)
        * Request cookie here and call ecore_main_loop_quit, after we
        * receive the cookie back from server
        */
+      entrance_session_setup_user_session(session);
    }
-   entrance_session_setup_user_session(session);
 }
 
 /**
@@ -348,7 +342,7 @@ user_selected_cb(void *data, Evas_Object * o, const char *emission,
 {
    if (session && data)
    {
-      entrance_session_user_set(session, (Entrance_User *) data);
+      entrance_session_user_set(session, ((Entrance_User *) data)->name);
    }
 }
 
@@ -973,16 +967,15 @@ main(int argc, char *argv[])
       if (session->authed)
       {
          entrance_session_start_user_session(session);
-         entrance_session_free(session);
       }
       else
       {
          entrance_session_free(session);
-         ecore_evas_shutdown();
       }
       if (!testing)
          entrance_ipc_shutdown();
       edje_shutdown();
+      ecore_evas_shutdown();
       ecore_x_shutdown();
       ecore_shutdown();
    }
@@ -991,6 +984,5 @@ main(int argc, char *argv[])
       fprintf(stderr, "Fatal error: Could not initialize ecore_evas!\n");
       exit(1);
    }
-
    return (0);
 }

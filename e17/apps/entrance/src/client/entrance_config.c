@@ -190,8 +190,9 @@ entrance_config_populate(Entrance_Config * e, E_DB_File * db)
       {
          syslog(LOG_CRIT,
                 "/etc/shadow was found but couldn't be read. Run entrance as root.");
-         if(getuid() == 0) {
-             exit(-1);
+         if (getuid() == 0)
+         {
+            exit(-1);
          }
       }
    }

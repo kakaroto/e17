@@ -163,7 +163,7 @@ entrance_ipc_init(pid_t server_pid)
    if (ipc_title)
       free(ipc_title);
    ipc_title = strdup(buf);
-   printf("Debug: ipc_title = %s\n", ipc_title);
+   syslog(LOG_INFO, "Debug: ipc_title = %s", ipc_title);
    ecore_event_handler_add(ECORE_IPC_EVENT_CLIENT_ADD,
                            _entrance_ipc_client_add, NULL);
 
@@ -185,10 +185,10 @@ entrance_ipc_init(pid_t server_pid)
    if ((server =
         ecore_ipc_server_connect(ECORE_IPC_LOCAL_SYSTEM, ipc_title, 0, NULL)))
    {
-      fprintf(stderr, "entrance_ipc_init: Success\n");
+      syslog(LOG_INFO, "entrance_ipc_init: Success");
    }
    else
-      fprintf(stderr, "entrance_ipc_init: connect to daemon failed.\n");
+      syslog(LOG_INFO, "entrance_ipc_init: connect to daemon failed.");
 
    return TRUE;
 }
@@ -200,7 +200,7 @@ entrance_ipc_shutdown(void)
       ecore_ipc_server_del(server);
    server = NULL;
    ecore_ipc_shutdown();
-   fprintf(stderr, "entrance_ipc_shutdown: Success\n");
+   syslog(LOG_INFO, "entrance_ipc_shutdown: Success");
 }
 
 int
@@ -227,6 +227,6 @@ entrance_ipc_request_xauth(char *homedir, uid_t uid, gid_t gid)
                          0);
    ecore_ipc_server_send(server, E_XAUTH_REQ, E_HOMEDIR, pid, 0, 0, homedir,
                          strlen(homedir) + 1);
-   fprintf(stderr, "entranced: Requesting auth for uid %d (%s)\n", uid,
-           homedir);
+   syslog(LOG_INFO, "entranced: Requesting auth for uid %d (%s)", uid,
+          homedir);
 }
