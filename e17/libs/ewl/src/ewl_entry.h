@@ -18,4 +18,4 @@ Ewl_Widget     *ewl_entry_new(void);
 void            ewl_entry_set_text(Ewl_Entry * e, char *t);
 char           *ewl_entry_get_text(Ewl_Entry * e);
 
-#endif /* __EWL_ENTRY_H__ */
+#endif				/* __EWL_ENTRY_H__ */

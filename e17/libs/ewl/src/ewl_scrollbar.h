@@ -34,4 +34,4 @@ void            ewl_scrollbar_set_flag(Ewl_Scrollbar * s,
 				       Ewl_ScrollBar_Flags f);
 Ewl_ScrollBar_Flags ewl_scrollbar_get_flag(Ewl_Scrollbar * s);
 
-#endif /* __EWL_SCROLLBAR_H__ */
+#endif				/* __EWL_SCROLLBAR_H__ */

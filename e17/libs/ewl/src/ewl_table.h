@@ -62,4 +62,4 @@ Ewd_List       *ewl_table_find(Ewl_Table * table,
 
 char           *ewl_table_get_selected(Ewl_Table * table);
 
-#endif /* __EWL_TABLE_H__ */
+#endif				/* __EWL_TABLE_H__ */

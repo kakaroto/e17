@@ -60,13 +60,12 @@
 #define NULL 0
 #endif
 
-int
-getopt_long(argc, argv, options, long_options, opt_index)
-     int             argc;
-     char           *const *argv;
-     const char     *options;
-     const struct option *long_options;
-     int            *opt_index;
+int getopt_long(argc, argv, options, long_options, opt_index)
+int argc;
+char           *const *argv;
+const char     *options;
+const struct option *long_options;
+int            *opt_index;
 {
 	return _getopt_internal(argc, argv, options, long_options, opt_index,
 				0);
@@ -77,29 +76,27 @@ getopt_long(argc, argv, options, long_options, opt_index)
    but does match a short option, it is parsed as a short option
    instead.  */
 
-int
-getopt_long_only(argc, argv, options, long_options, opt_index)
-     int             argc;
-     char           *const *argv;
-     const char     *options;
-     const struct option *long_options;
-     int            *opt_index;
+int getopt_long_only(argc, argv, options, long_options, opt_index)
+int argc;
+char           *const *argv;
+const char     *options;
+const struct option *long_options;
+int            *opt_index;
 {
 	return _getopt_internal(argc, argv, options, long_options, opt_index,
 				1);
 }
 
 
-#endif /* Not ELIDE_CODE.  */
+#endif				/* Not ELIDE_CODE.  */
 
 #ifdef TEST
 
 #include <stdio.h>
 
-int
-main(argc, argv)
-     int             argc;
-     char          **argv;
+int main(argc, argv)
+int argc;
+char          **argv;
 {
 	int             c;
 	int             digit_optind = 0;
@@ -142,7 +139,8 @@ main(argc, argv)
 		case '9':
 			if (digit_optind != 0 &&
 			    digit_optind != this_option_optind)
-				printf("digits occur in two different argv-elements.\n");
+				printf
+				    ("digits occur in two different argv-elements.\n");
 			digit_optind = this_option_optind;
 			printf("option %c\n", c);
 			break;
@@ -181,4 +179,4 @@ main(argc, argv)
 	exit(0);
 }
 
-#endif /* TEST */
+#endif				/* TEST */

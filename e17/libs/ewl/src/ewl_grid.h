@@ -62,4 +62,4 @@ void            ewl_grid_get_row_h(Ewl_Grid * g, int row, int *height);
 
 void            ewl_grid_reset(Ewl_Grid * g, int rows, int cols);
 
-#endif /* __EWL_GRID_H__ */
+#endif				/* __EWL_GRID_H__ */

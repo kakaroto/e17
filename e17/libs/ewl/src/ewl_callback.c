@@ -21,8 +21,7 @@ static Ewd_Hash *cb_registration = NULL;
  * 
  * So using shared callbacks saves us over 2 MB of memory in this case.
  */
-void
-ewl_callbacks_init()
+void ewl_callbacks_init()
 {
 	cb_registration = ewd_hash_new(__ewl_callback_hash,
 				       __ewl_callback_compare);
@@ -34,8 +33,7 @@ ewl_callbacks_init()
  * Returns no value. Destroys some important variables for tracking callbacks
  * that allow shared callbacks.
  */
-void
-ewl_callbacks_deinit()
+void ewl_callbacks_deinit()
 {
 	ewd_hash_destroy(cb_registration);
 }
@@ -49,8 +47,7 @@ ewl_callbacks_deinit()
  * but this can not be counted on. The callback @cb will be freed if this is
  * not the case.
  */
-static Ewl_Callback *
-__ewl_callback_register(Ewl_Callback * cb)
+static Ewl_Callback *__ewl_callback_register(Ewl_Callback * cb)
 {
 	Ewl_Callback   *found;
 
@@ -78,8 +75,7 @@ __ewl_callback_register(Ewl_Callback * cb)
  * Returns no value. Checks to see if @cb has nay remaining references, if not
  * it is removed from the registration system and freed.
  */
-static void
-__ewl_callback_unregister(Ewl_Callback * cb)
+static void __ewl_callback_unregister(Ewl_Callback * cb)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -230,8 +226,7 @@ ewl_callback_insert_after(Ewl_Widget * w, Ewl_Callback_Type t,
  * Returns no value. Executes the callback chain for the specified widget @w,
  * with event @t.
  */
-void
-ewl_callback_call(Ewl_Widget * w, Ewl_Callback_Type t)
+void ewl_callback_call(Ewl_Widget * w, Ewl_Callback_Type t)
 {
 	Ewl_Callback   *cb = NULL;
 
@@ -295,8 +290,7 @@ ewl_callback_call_with_event_data(Ewl_Widget * w, Ewl_Callback_Type t,
  *
  * Returns no value. Delete all callbacks of type @t from widget @w.
  */
-void
-ewl_callback_del_type(Ewl_Widget * w, Ewl_Callback_Type t)
+void ewl_callback_del_type(Ewl_Widget * w, Ewl_Callback_Type t)
 {
 	Ewl_Callback   *rm;
 
@@ -323,8 +317,7 @@ ewl_callback_del_type(Ewl_Widget * w, Ewl_Callback_Type t)
  *
  * Returns no value. Delete the specified callback id from the widget @w.
  */
-void
-ewl_callback_del_cb_id(Ewl_Widget * w, Ewl_Callback_Type t, int cb_id)
+void ewl_callback_del_cb_id(Ewl_Widget * w, Ewl_Callback_Type t, int cb_id)
 {
 	Ewl_Callback   *cb;
 
@@ -353,8 +346,7 @@ ewl_callback_del_cb_id(Ewl_Widget * w, Ewl_Callback_Type t, int cb_id)
  * Returns no value. Removes and frees all callbacks associated with widget
  * @w.
  */
-void
-ewl_callback_clear(Ewl_Widget * w)
+void ewl_callback_clear(Ewl_Widget * w)
 {
 	int             i;
 
@@ -408,8 +400,7 @@ ewl_callback_del(Ewl_Widget * w, Ewl_Callback_Type t, Ewl_Callback_Function f)
 /*
  * Hashes the value of a callback based on it's type, function, and user data.
  */
-static unsigned int
-__ewl_callback_hash(void *key)
+static unsigned int __ewl_callback_hash(void *key)
 {
 	Ewl_Callback   *cb = EWL_CALLBACK(key);
 
@@ -425,8 +416,7 @@ __ewl_callback_hash(void *key)
  * Simple comparison of callbacks, always returns -1 unless there is an exact
  * match, in which case it returns 0.
  */
-static int
-__ewl_callback_compare(void *key1, void *key2)
+static int __ewl_callback_compare(void *key1, void *key2)
 {
 	Ewl_Callback   *cb1 = EWL_CALLBACK(key1);
 	Ewl_Callback   *cb2 = EWL_CALLBACK(key2);
@@ -434,8 +424,8 @@ __ewl_callback_compare(void *key1, void *key2)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	DCHECK_PARAM_PTR_RET("key1", key1, -1)
-		DCHECK_PARAM_PTR_RET("key2", key2, -1)
-		if (cb1->func == cb2->func && cb1->user_data == cb2->user_data)
+	    DCHECK_PARAM_PTR_RET("key2", key2, -1)
+	    if (cb1->func == cb2->func && cb1->user_data == cb2->user_data)
 		DRETURN_INT(0, DLEVEL_STABLE);
 
 	DRETURN_INT(-1, DLEVEL_STABLE);

@@ -111,4 +111,4 @@ void            ewl_widget_disable(Ewl_Widget * w);
 #define HIDDEN(w) (EWL_WIDGET(w)->visible & EWL_VISIBILITY_HIDDEN)
 #define LAYER(w) EWL_WIDGET(w)->layer
 
-#endif /* __EWL_WIDGET_H__ */
+#endif				/* __EWL_WIDGET_H__ */

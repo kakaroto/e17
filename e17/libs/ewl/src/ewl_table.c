@@ -24,8 +24,7 @@ Ewl_Table_Child *__ewl_table_create_child(Ewl_Widget * w);
  * Returns a pointer to a newly allocated grid on success, NULL on
  * failure.
  */
-Ewl_Widget     *
-ewl_table_new(int cols, int rows, char **col_headers)
+Ewl_Widget     *ewl_table_new(int cols, int rows, char **col_headers)
 {
 
 	/*---------------------------------
@@ -59,8 +58,7 @@ ewl_table_new(int cols, int rows, char **col_headers)
  * Returns no value. Responsible for setting up default values and
  * callbacks withing the table structure
  */
-void
-ewl_table_init(Ewl_Table * t, int cols, int rows, char **col_headers)
+void ewl_table_init(Ewl_Table * t, int cols, int rows, char **col_headers)
 {
 
 	/*---------------------------------
@@ -192,9 +190,9 @@ ewl_table_add(Ewl_Table * table, char *text,
  * Returns the child widget created so people can add callbacks and do
  * other fun stuff to it.
  */
-Ewl_Widget     *
-ewl_table_add_return(Ewl_Table * table, char *text,
-		     int start_col, int end_col, int start_row, int end_row)
+Ewl_Widget     *ewl_table_add_return(Ewl_Table * table, char *text,
+				     int start_col, int end_col, int start_row,
+				     int end_row)
 {
 
 	/*---------------------------------
@@ -240,10 +238,9 @@ ewl_table_add_return(Ewl_Table * table, char *text,
  *
  * Returns nothing
  */
-void
-ewl_table_get_col_row(Ewl_Table * t, char *text,	/* Ewl_Widget *w */
-		      int *start_col, int *end_col, int *start_row,
-		      int *end_row)
+void ewl_table_get_col_row(Ewl_Table * t, char *text,	/* Ewl_Widget *w */
+			   int *start_col, int *end_col, int *start_row,
+			   int *end_row)
 {
 
 	/*---------------------------------
@@ -301,9 +298,8 @@ ewl_table_get_col_row(Ewl_Table * t, char *text,	/* Ewl_Widget *w */
  *
  * Returns Ewd_List of widgets found in the specified col/row area
  */
-Ewd_List       *
-ewl_table_find(Ewl_Table * t, int start_col, int end_col,
-	       int start_row, int end_row)
+Ewd_List       *ewl_table_find(Ewl_Table * t, int start_col, int end_col,
+			       int start_row, int end_row)
 {
 
 	/*---------------------------------
@@ -349,8 +345,7 @@ ewl_table_find(Ewl_Table * t, int start_col, int end_col,
  *
  * Returns no value.
  */
-void
-ewl_table_set_col_w(Ewl_Table * table, int col, int width)
+void ewl_table_set_col_w(Ewl_Table * table, int col, int width)
 {
 
 	/*---------------------------------
@@ -375,8 +370,7 @@ ewl_table_set_col_w(Ewl_Table * table, int col, int width)
  *
  * Returns no value.
  */
-void
-ewl_table_get_col_w(Ewl_Table * table, int col, int *width)
+void ewl_table_get_col_w(Ewl_Table * table, int col, int *width)
 {
 
 	/*---------------------------------
@@ -401,8 +395,7 @@ ewl_table_get_col_w(Ewl_Table * table, int col, int *width)
  *
  * Returns no value.
  */
-void
-ewl_table_set_row_h(Ewl_Table * table, int row, int height)
+void ewl_table_set_row_h(Ewl_Table * table, int row, int height)
 {
 
 	/*---------------------------------
@@ -427,8 +420,7 @@ ewl_table_set_row_h(Ewl_Table * table, int row, int height)
  *
  * Returns no value.
  */
-void
-ewl_table_get_row_h(Ewl_Table * table, int row, int *height)
+void ewl_table_get_row_h(Ewl_Table * table, int row, int *height)
 {
 
 	/*---------------------------------
@@ -454,8 +446,7 @@ ewl_table_get_row_h(Ewl_Table * table, int row, int *height)
  *
  * Returns no value
  */
-void
-ewl_table_reset(Ewl_Table * t, int cols, int rows, char **col_headers)
+void ewl_table_reset(Ewl_Table * t, int cols, int rows, char **col_headers)
 {
 	Ewl_Widget     *button;
 	Ewl_Table_Child *child;
@@ -494,8 +485,7 @@ ewl_table_reset(Ewl_Table * t, int cols, int rows, char **col_headers)
  *
  * Returns the text in the currently selected widget in the table
  */
-char           *
-ewl_table_get_selected(Ewl_Table * t)
+char           *ewl_table_get_selected(Ewl_Table * t)
 {
 	Ewl_Text       *tw;
 	Ewl_Widget     *child;
@@ -530,8 +520,7 @@ ewl_table_get_selected(Ewl_Table * t)
 
 
 
-Ewl_Table_Child *
-__ewl_table_create_child(Ewl_Widget * w)
+Ewl_Table_Child *__ewl_table_create_child(Ewl_Widget * w)
 {
 
 	/*---------------------------------
@@ -580,8 +569,7 @@ __ewl_table_create_child(Ewl_Widget * w)
 
 
 
-void
-__ewl_table_child_show(Ewl_Widget * w, void *ev_data, void *user_data)
+void __ewl_table_child_show(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Table_Child *child;
 
@@ -596,8 +584,7 @@ __ewl_table_child_show(Ewl_Widget * w, void *ev_data, void *user_data)
 }
 
 
-void
-__ewl_table_child_configure(Ewl_Widget * w, void *ev_data, void *user_data)
+void __ewl_table_child_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 
 	/*---------------------------------
@@ -655,8 +642,7 @@ __ewl_table_child_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void
-__ewl_table_child_select(Ewl_Widget * w, void *ev_data, void *user_data)
+void __ewl_table_child_select(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Table      *t;
 	Ewl_Grid_Child *gc;
@@ -681,8 +667,7 @@ __ewl_table_child_select(Ewl_Widget * w, void *ev_data, void *user_data)
 
 
 
-void
-__ewl_table_show(Ewl_Widget * w, void *ev_data, void *user_data)
+void __ewl_table_show(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 
 	/*---------------------------------
@@ -702,8 +687,7 @@ __ewl_table_show(Ewl_Widget * w, void *ev_data, void *user_data)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 }
 
-void
-__ewl_table_configure(Ewl_Widget * w, void *ev_data, void *user_data)
+void __ewl_table_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 
 	/*---------------------------------

@@ -1,23 +1,23 @@
 
 #include <Ewl.h>
 
-static void     __ewl_spinner_realize(Ewl_Widget * widget, void *ev_data,
+void            __ewl_spinner_realize(Ewl_Widget * widget, void *ev_data,
 				      void *user_data);
-static void     __ewl_spinner_configure(Ewl_Widget * widget, void *ev_data,
+void            __ewl_spinner_configure(Ewl_Widget * widget, void *ev_data,
 					void *user_data);
-static void     __ewl_spinner_key_down(Ewl_Widget * widget, void *ev_data,
+void            __ewl_spinner_key_down(Ewl_Widget * widget, void *ev_data,
 				       void *user_data);
 void            __ewl_spinner_deselect(Ewl_Widget * w, void *ev_data,
 				       void *user_data);
 
-static void     __ewl_spinner_set_value(Ewl_Widget * widget, double value);
-static double   __ewl_spinner_get_value(Ewl_Widget * widget);
-static void     __ewl_spinner_set_digits(Ewl_Widget * widget, int digits);
-static void     __ewl_spinner_set_min_val(Ewl_Widget * widget, double val);
-static void     __ewl_spinner_set_max_val(Ewl_Widget * widget, double val);
-static void     __ewl_spinner_increase_value(Ewl_Widget * widget,
+void            __ewl_spinner_set_value(Ewl_Widget * widget, double value);
+double          __ewl_spinner_get_value(Ewl_Widget * widget);
+void            __ewl_spinner_set_digits(Ewl_Widget * widget, int digits);
+void            __ewl_spinner_set_min_val(Ewl_Widget * widget, double val);
+void            __ewl_spinner_set_max_val(Ewl_Widget * widget, double val);
+void            __ewl_spinner_increase_value(Ewl_Widget * widget,
 					     void *ev_data, void *user_data);
-static void     __ewl_spinner_decrease_value(Ewl_Widget * widget,
+void            __ewl_spinner_decrease_value(Ewl_Widget * widget,
 					     void *ev_data, void *user_data);
 
 void            __ewl_entry_key_down(Ewl_Widget * w, void *ev_data,
@@ -37,8 +37,7 @@ void            __ewl_entry_delete_to_right(Ewl_Widget * w);
  * Returns a pointer to a newly allocated spinner widget on success, NULL on
  * failure.
  */
-Ewl_Widget     *
-ewl_spinner_new()
+Ewl_Widget     *ewl_spinner_new()
 {
 	Ewl_Spinner    *s = NULL;
 
@@ -69,8 +68,7 @@ ewl_spinner_new()
  *
  * Returns no value. Sets the current value of the spinner @s to @value.
  */
-void
-ewl_spinner_set_value(Ewl_Spinner * s, double value)
+void ewl_spinner_set_value(Ewl_Spinner * s, double value)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("s", s);
@@ -86,8 +84,7 @@ ewl_spinner_set_value(Ewl_Spinner * s, double value)
  *
  * Returns the current value of the spinner @s on success, -1.0 on failure.
  */
-double
-ewl_spinner_get_value(Ewl_Spinner * s)
+double ewl_spinner_get_value(Ewl_Spinner * s)
 {
 	DCHECK_PARAM_PTR_RET("s", s, -1.00);
 
@@ -101,8 +98,7 @@ ewl_spinner_get_value(Ewl_Spinner * s)
  *
  * Returns no value. Changes the digits displayed by @s to @digits.
  */
-void
-ewl_spinner_set_digits(Ewl_Spinner * s, int digits)
+void ewl_spinner_set_digits(Ewl_Spinner * s, int digits)
 {
 	DCHECK_PARAM_PTR("s", s);
 
@@ -116,8 +112,7 @@ ewl_spinner_set_digits(Ewl_Spinner * s, int digits)
  *
  * Returns no value. Sets the smallest value that @s can obtain to @val.
  */
-void
-ewl_spinner_set_min_val(Ewl_Spinner * s, double val)
+void ewl_spinner_set_min_val(Ewl_Spinner * s, double val)
 {
 	DCHECK_PARAM_PTR("s", s);
 
@@ -131,8 +126,7 @@ ewl_spinner_set_min_val(Ewl_Spinner * s, double val)
  *
  * Returns no value. Sets the largest value that @s can obtain to @val.
  */
-void
-ewl_spinner_set_max_val(Ewl_Spinner * s, double val)
+void ewl_spinner_set_max_val(Ewl_Spinner * s, double val)
 {
 	DCHECK_PARAM_PTR("s", s);
 
@@ -147,8 +141,7 @@ ewl_spinner_set_max_val(Ewl_Spinner * s, double val)
  * Returns no value. Changes the increment that @s changes by with each click
  * of it's spinner buttons to @step.
  */
-void
-ewl_spinner_set_step(Ewl_Spinner * s, double step)
+void ewl_spinner_set_step(Ewl_Spinner * s, double step)
 {
 	Ewl_Widget     *w;
 
@@ -169,8 +162,7 @@ ewl_spinner_set_step(Ewl_Spinner * s, double step)
  * Returns no value. Sets the fields and callbacks of the spinner @s their
  * default values.
  */
-void
-ewl_spinner_init(Ewl_Spinner * s)
+void ewl_spinner_init(Ewl_Spinner * s)
 {
 	Ewl_Widget     *w;
 
@@ -214,8 +206,7 @@ ewl_spinner_init(Ewl_Spinner * s)
 			    __ewl_spinner_key_down, NULL);
 }
 
-static void
-__ewl_spinner_realize(Ewl_Widget * w, void *ev_data, void *user_data)
+void __ewl_spinner_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Spinner    *s;
 	int             ew = 0, eh = 0, biw = 0, bih = 0, bdw = 0, bdh = 0;
@@ -245,8 +236,7 @@ __ewl_spinner_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-static void
-__ewl_spinner_configure(Ewl_Widget * w, void *ev_data, void *user_data)
+void __ewl_spinner_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Spinner    *s;
 
@@ -260,14 +250,14 @@ __ewl_spinner_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_object_request_w(EWL_OBJECT(s->entry), CURRENT_W(w) - 12);
 
 	CURRENT_X(s->button_increase) = CURRENT_X(s->entry) +
-		CURRENT_W(s->entry) + 2;
+	    CURRENT_W(s->entry) + 2;
 	CURRENT_Y(s->button_increase) = CURRENT_Y(s->entry);
 
 	ewl_object_request_w(EWL_OBJECT(s->button_increase), 10);
 	ewl_object_request_h(EWL_OBJECT(s->button_increase), 10);
 
 	CURRENT_X(s->button_decrease) = CURRENT_X(s->entry) +
-		CURRENT_W(s->entry) + 2;
+	    CURRENT_W(s->entry) + 2;
 	CURRENT_Y(s->button_decrease) = CURRENT_Y(s->entry) + 10;
 
 	ewl_object_request_w(EWL_OBJECT(s->button_decrease), 10);
@@ -280,8 +270,7 @@ __ewl_spinner_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-static void
-__ewl_spinner_key_down(Ewl_Widget * w, void *ev_data, void *user_data)
+void __ewl_spinner_key_down(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Spinner    *s;
 	Ecore_Event_Key_Down *ev;
@@ -326,8 +315,7 @@ __ewl_spinner_key_down(Ewl_Widget * w, void *ev_data, void *user_data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void
-__ewl_spinner_deselect(Ewl_Widget * w, void *ev_data, void *user_data)
+void __ewl_spinner_deselect(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Spinner    *s;
 	char           *str;
@@ -350,8 +338,7 @@ __ewl_spinner_deselect(Ewl_Widget * w, void *ev_data, void *user_data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-static void
-__ewl_spinner_set_value(Ewl_Widget * w, double value)
+void __ewl_spinner_set_value(Ewl_Widget * w, double value)
 {
 	Ewl_Spinner    *s;
 	char            format[64];
@@ -383,8 +370,7 @@ __ewl_spinner_set_value(Ewl_Widget * w, double value)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-static double
-__ewl_spinner_get_value(Ewl_Widget * w)
+double __ewl_spinner_get_value(Ewl_Widget * w)
 {
 	Ewl_Spinner    *s;
 
@@ -396,8 +382,7 @@ __ewl_spinner_get_value(Ewl_Widget * w)
 	return s->value;
 }
 
-static void
-__ewl_spinner_set_digits(Ewl_Widget * w, int digits)
+void __ewl_spinner_set_digits(Ewl_Widget * w, int digits)
 {
 	Ewl_Spinner    *s;
 
@@ -413,8 +398,7 @@ __ewl_spinner_set_digits(Ewl_Widget * w, int digits)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-static void
-__ewl_spinner_set_min_val(Ewl_Widget * w, double val)
+void __ewl_spinner_set_min_val(Ewl_Widget * w, double val)
 {
 	Ewl_Spinner    *s;
 
@@ -430,8 +414,7 @@ __ewl_spinner_set_min_val(Ewl_Widget * w, double val)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-static void
-__ewl_spinner_set_max_val(Ewl_Widget * w, double val)
+void __ewl_spinner_set_max_val(Ewl_Widget * w, double val)
 {
 	Ewl_Spinner    *s;
 
@@ -447,7 +430,7 @@ __ewl_spinner_set_max_val(Ewl_Widget * w, double val)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-static void
+void
 __ewl_spinner_increase_value(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Spinner    *s;
@@ -464,7 +447,7 @@ __ewl_spinner_increase_value(Ewl_Widget * w, void *ev_data, void *user_data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-static void
+void
 __ewl_spinner_decrease_value(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Spinner    *s;

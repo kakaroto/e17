@@ -52,4 +52,4 @@ Ewl_Position    ewl_notebook_get_tabs_position(Ewl_Notebook * n);
 void            ewl_notebook_set_flags(Ewl_Notebook * n,
 				       Ewl_Notebook_Flags flags);
 
-#endif /* __EWL_NOTEBOOK_H__ */
+#endif				/* __EWL_NOTEBOOK_H__ */

@@ -73,8 +73,7 @@ void            __ewl_box_configure_child(Ewl_Box * b, Ewl_Object * c, int *x,
  *
  * Returns NULL on failure, or a newly allocated box on success.
  */
-Ewl_Widget     *
-ewl_box_new(Ewl_Orientation o)
+Ewl_Widget     *ewl_box_new(Ewl_Orientation o)
 {
 	Ewl_Box        *b;
 
@@ -98,8 +97,7 @@ ewl_box_new(Ewl_Orientation o)
  * Returns no value. Responsible for setting up default values and callbacks
  * within a box structure.
  */
-void
-ewl_box_init(Ewl_Box * b, Ewl_Orientation o)
+void ewl_box_init(Ewl_Box * b, Ewl_Orientation o)
 {
 	Ewl_Widget     *w;
 
@@ -154,8 +152,7 @@ ewl_box_init(Ewl_Box * b, Ewl_Orientation o)
  * Returns no value. Changes the orientation of the specified box, and
  * reconfigures it in order for the appearance to be updated.
  */
-void
-ewl_box_set_orientation(Ewl_Box * b, Ewl_Orientation o)
+void ewl_box_set_orientation(Ewl_Box * b, Ewl_Orientation o)
 {
 	Ewl_Widget     *w;
 
@@ -173,14 +170,6 @@ ewl_box_set_orientation(Ewl_Box * b, Ewl_Orientation o)
 
 	b->orientation = o;
 
-	/*
-	 * Change the appearance based on orientation
-	 */
-	if (b->orientation == EWL_ORIENTATION_VERTICAL)
-		ewl_widget_set_appearance(w, "/appearance/box/vertical");
-	else
-		ewl_widget_set_appearance(w, "/appearance/box/horizontal");
-
 	ewl_widget_configure(w);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -194,8 +183,7 @@ ewl_box_set_orientation(Ewl_Box * b, Ewl_Orientation o)
  * Returns no value. Adjust the spacing of the specified box and reconfigure
  * it to change the appearance.
  */
-void
-ewl_box_set_spacing(Ewl_Box * b, int s)
+void ewl_box_set_spacing(Ewl_Box * b, int s)
 {
 	Ewl_Widget     *w;
 
@@ -211,8 +199,7 @@ ewl_box_set_spacing(Ewl_Box * b, int s)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void
-__ewl_box_configure(Ewl_Widget * w, void *ev_data, void *user_data)
+void __ewl_box_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Box        *b;
 
@@ -288,8 +275,7 @@ __ewl_box_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 /*
  * Split the children into three lists for layout.
  */
-void
-__ewl_box_configure_calc(Ewl_Box * b, int *fill_size, int *align_size)
+void __ewl_box_configure_calc(Ewl_Box * b, int *fill_size, int *align_size)
 {
 	Ewl_Object     *child;
 
@@ -320,7 +306,7 @@ __ewl_box_configure_calc(Ewl_Box * b, int *fill_size, int *align_size)
 			 */
 			change = *fill_size;
 			*fill_size -= info->fill_ask(child) + b->spacing +
-				info->fill_pad1(child) + info->fill_pad2(child);
+			    info->fill_pad1(child) + info->fill_pad2(child);
 
 			/*
 			 * Attempt to give the widget the full size, this will
@@ -344,8 +330,7 @@ __ewl_box_configure_calc(Ewl_Box * b, int *fill_size, int *align_size)
  * Spread space to any widgets that have fill policy set to fill. This should
  * not be called if @num_fill or *@fill_size are equal to zero.
  */
-void
-__ewl_box_configure_fill(Ewl_Box * b, int *fill_size, int *align_size)
+void __ewl_box_configure_fill(Ewl_Box * b, int *fill_size, int *align_size)
 {
 	int             space;
 	int             temp, remainder;
@@ -488,7 +473,7 @@ __ewl_box_configure_layout(Ewl_Box * b, int *x, int *y, int *fill,
 			 * Move to the next position for the child.
 			 */
 			*fill += info->fill_ask(child) + b->spacing +
-				info->fill_pad2(child);
+			    info->fill_pad2(child);
 
 			ewl_widget_configure(EWL_WIDGET(child));
 		}
@@ -536,8 +521,7 @@ __ewl_box_configure_child(Ewl_Box * b, Ewl_Object * c, int *x, int *y,
 /*
  * When a child gets added to the box update it's size.
  */
-void
-__ewl_box_add(Ewl_Container * c, Ewl_Widget * w)
+void __ewl_box_add(Ewl_Container * c, Ewl_Widget * w)
 {
 	int             max_size = 0;
 	Box_Orientation *info;
@@ -558,7 +542,7 @@ __ewl_box_add(Ewl_Container * c, Ewl_Widget * w)
 	 */
 	if (EWL_BOX(c)->max_align)
 		max_size =
-			info->pref_align_ask(EWL_OBJECT(EWL_BOX(c)->max_align));
+		    info->pref_align_ask(EWL_OBJECT(EWL_BOX(c)->max_align));
 	else
 		max_size = info->pref_align_ask(EWL_OBJECT(w));
 
@@ -679,8 +663,7 @@ __ewl_box_child_resize(Ewl_Container * c, Ewl_Widget * w, int size,
  * Setup some internal variables for effectively laying out the children based
  * on orientation.
  */
-void
-__ewl_box_setup()
+void __ewl_box_setup()
 {
 	if (!vertical) {
 		vertical = NEW(Box_Orientation, 1);
@@ -696,7 +679,7 @@ __ewl_box_setup()
 		 * These are the valid fill policies for this widget.
 		 */
 		vertical->f_policy =
-			EWL_FILL_POLICY_VSHRINK | EWL_FILL_POLICY_VFILL;
+		    EWL_FILL_POLICY_VSHRINK | EWL_FILL_POLICY_VFILL;
 
 		/*
 		 * This sets the aligments for the non-filling direction.
@@ -749,7 +732,7 @@ __ewl_box_setup()
 		 * These are the valid fill policies for this widget.
 		 */
 		horizontal->f_policy =
-			EWL_FILL_POLICY_HSHRINK | EWL_FILL_POLICY_HFILL;
+		    EWL_FILL_POLICY_HSHRINK | EWL_FILL_POLICY_HFILL;
 
 		/*
 		 * This sets the aligments for the non-filling direction.

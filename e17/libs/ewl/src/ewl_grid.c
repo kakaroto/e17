@@ -17,8 +17,7 @@ void            __ewl_grid_auto_resize(Ewl_Container * p, Ewl_Widget * child,
  * Returns a pointer to a newly allocated grid on success, NULL on
  * failure.
  */
-Ewl_Widget     *
-ewl_grid_new(int cols, int rows)
+Ewl_Widget     *ewl_grid_new(int cols, int rows)
 {
 	Ewl_Grid       *g;
 
@@ -46,8 +45,7 @@ ewl_grid_new(int cols, int rows)
  * Returns no value. Responsible for setting up default values and
  * callbacks within a grid structure
  */
-void
-ewl_grid_init(Ewl_Grid * g, int cols, int rows)
+void ewl_grid_init(Ewl_Grid * g, int cols, int rows)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("g", g);
@@ -96,8 +94,7 @@ ewl_grid_init(Ewl_Grid * g, int cols, int rows)
  *
  * Returns no value
  */
-void
-ewl_grid_reset(Ewl_Grid * g, int cols, int rows)
+void ewl_grid_reset(Ewl_Grid * g, int cols, int rows)
 {
 	Ewl_Widget     *w;
 	int             i;
@@ -215,8 +212,7 @@ ewl_grid_add(Ewl_Grid * g, Ewl_Widget * w,
  *
  * Returns no value.
  */
-void
-ewl_grid_set_col_w(Ewl_Grid * g, int col, int width)
+void ewl_grid_set_col_w(Ewl_Grid * g, int col, int width)
 {
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -237,8 +233,7 @@ ewl_grid_set_col_w(Ewl_Grid * g, int col, int width)
 				ewl_object_get_current_h(EWL_OBJECT(g)));
 
 	g->col_size[col - 1].size = width -	/* this will be reverted in resize */
-		((ewl_object_get_current_w(EWL_OBJECT(g)) -
-		  g->grid_w) / g->cols);
+	    ((ewl_object_get_current_w(EWL_OBJECT(g)) - g->grid_w) / g->cols);
 
 
 	ewl_widget_configure(EWL_WIDGET(g));
@@ -256,8 +251,7 @@ ewl_grid_set_col_w(Ewl_Grid * g, int col, int width)
  *
  * Returns no value.
  */
-void
-ewl_grid_get_col_w(Ewl_Grid * g, int col, int *width)
+void ewl_grid_get_col_w(Ewl_Grid * g, int col, int *width)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("g", g);
@@ -276,8 +270,7 @@ ewl_grid_get_col_w(Ewl_Grid * g, int col, int *width)
  *
  * Returns no value.
  */
-void
-ewl_grid_set_row_h(Ewl_Grid * g, int row, int height)
+void ewl_grid_set_row_h(Ewl_Grid * g, int row, int height)
 {
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -296,8 +289,7 @@ ewl_grid_set_row_h(Ewl_Grid * g, int row, int height)
 				(height - g->row_size[row - 1].size));
 
 	g->row_size[row - 1].size = height -	/* this will be reverted in resize */
-		((ewl_object_get_current_h(EWL_OBJECT(g)) -
-		  g->grid_h) / g->rows);
+	    ((ewl_object_get_current_h(EWL_OBJECT(g)) - g->grid_h) / g->rows);
 
 
 	ewl_widget_configure(EWL_WIDGET(g));
@@ -314,8 +306,7 @@ ewl_grid_set_row_h(Ewl_Grid * g, int row, int height)
  *
  * Returns no value.
  */
-void
-ewl_grid_get_row_h(Ewl_Grid * g, int row, int *height)
+void ewl_grid_get_row_h(Ewl_Grid * g, int row, int *height)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("g", g);
@@ -327,8 +318,7 @@ ewl_grid_get_row_h(Ewl_Grid * g, int row, int *height)
 
 
 
-void
-__ewl_grid_realize(Ewl_Widget * w, void *ev_data, void *user_data)
+void __ewl_grid_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Grid       *g;
 	int             i;
@@ -358,8 +348,7 @@ __ewl_grid_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 }
 
 
-void
-__ewl_grid_configure(Ewl_Widget * w, void *ev_data, void *user_data)
+void __ewl_grid_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Grid       *g;
 	Ewl_Grid_Child *c;
@@ -428,8 +417,7 @@ __ewl_grid_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 
 
 
-void
-__ewl_grid_resize(Ewl_Grid * g)
+void __ewl_grid_resize(Ewl_Grid * g)
 {
 	int             w_flag = 0, h_flag = 0;
 	int             i, new_w = 0, new_h = 0;
@@ -509,8 +497,7 @@ __ewl_grid_resize(Ewl_Grid * g)
 /*
  * Notify the grid that a child has been added.
  */
-void
-__ewl_grid_add(Ewl_Container * p, Ewl_Widget * c)
+void __ewl_grid_add(Ewl_Container * p, Ewl_Widget * c)
 {
 	int             i;
 	int             temp;
@@ -546,7 +533,7 @@ __ewl_grid_add(Ewl_Container * p, Ewl_Widget * c)
 		 * column.
 		 */
 		temp = ewl_object_get_preferred_w(EWL_OBJECT(c)) /
-			(cdata->end_col - cdata->start_col + 1);
+		    (cdata->end_col - cdata->start_col + 1);
 
 		/*
 		 * Give the column a new preferred size based on the added
@@ -578,7 +565,7 @@ __ewl_grid_add(Ewl_Container * p, Ewl_Widget * c)
 		 * row.
 		 */
 		temp = ewl_object_get_preferred_h(EWL_OBJECT(c)) /
-			(cdata->end_row - cdata->start_row + 1);
+		    (cdata->end_row - cdata->start_row + 1);
 
 		/*
 		 * Give the row a new preferred size based on the added
@@ -623,13 +610,13 @@ __ewl_grid_auto_resize(Ewl_Container * p, Ewl_Widget * child, int size,
 	if (o == EWL_ORIENTATION_HORIZONTAL) {
 		info = g->col_size;
 		start_off =
-			(unsigned int) &cdata->start_col - (unsigned int) cdata;
+		    (unsigned int) &cdata->start_col - (unsigned int) cdata;
 		end_off = (unsigned int) &cdata->end_col - (unsigned int) cdata;
 		widget_size = ewl_object_get_preferred_w;
 	} else {
 		info = g->row_size;
 		start_off =
-			(unsigned int) &cdata->start_row - (unsigned int) cdata;
+		    (unsigned int) &cdata->start_row - (unsigned int) cdata;
 		end_off = (unsigned int) &cdata->end_row - (unsigned int) cdata;
 		widget_size = ewl_object_get_preferred_h;
 	}

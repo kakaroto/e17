@@ -37,4 +37,4 @@ void            ewl_list_insert_widgets(Ewl_Widget * widget,
 					Ewl_Widget * widgets[], int pos);
 void            ewl_list_select_row(Ewl_Widget * list, int row);
 
-#endif /* __EWL_LIST_H__ */
+#endif				/* __EWL_LIST_H__ */

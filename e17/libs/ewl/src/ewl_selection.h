@@ -19,4 +19,4 @@ void            ewl_selection_get_covered(Ewl_Widget * w, int *s, int *e);
 void            ewl_selection_expand(Ewl_Widget * w, int p);
 
 
-#endif /* __EWL_SELECTION_H__ */
+#endif				/* __EWL_SELECTION_H__ */

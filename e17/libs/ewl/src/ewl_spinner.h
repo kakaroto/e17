@@ -27,4 +27,4 @@ void            ewl_spinner_set_min_val(Ewl_Spinner * s, double val);
 void            ewl_spinner_set_max_val(Ewl_Spinner * s, double val);
 void            ewl_spinner_set_step(Ewl_Spinner * s, double step);
 
-#endif /* __EWL_SPINNER_H__ */
+#endif				/* __EWL_SPINNER_H__ */

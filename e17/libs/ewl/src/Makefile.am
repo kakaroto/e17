@@ -11,6 +11,7 @@ installed_headers_DATA = \
 	ewl_box.h \
 	ewl_button.h \
 	ewl_callback.h \
+	ewl_check.h \
 	ewl_checkbutton.h \
 	ewl_config.h \
 	ewl_container.h \
@@ -26,8 +27,10 @@ installed_headers_DATA = \
 	ewl_grid.h \
 	ewl_image.h \
 	ewl_imenu.h \
+	ewl_menu.h \
 	ewl_list.h \
 	ewl_macros.h \
+	ewl_menu_base.h \
 	ewl_misc.h \
 	ewl_notebook.h \
 	ewl_object.h \
@@ -51,6 +54,7 @@ libewl_la_SOURCES = \
 	ewl_box.c \
 	ewl_button.c \
 	ewl_callback.c \
+	ewl_check.c \
 	ewl_checkbutton.c \
 	ewl_config.c \
 	ewl_container.c \
@@ -64,6 +68,8 @@ libewl_la_SOURCES = \
 	ewl_grid.c \
 	ewl_image.c \
 	ewl_imenu.c \
+	ewl_menu.c \
+	ewl_menu_base.c \
 	ewl_misc.c \
 	ewl_notebook.c \
 	ewl_object.c \

@@ -1,6 +1,6 @@
 #include <Ewl.h>
 
-#define BUTTONS 16
+#define BUTTONS 17
 
 void            __close_main_widow(Ewl_Widget * w, void *ev_data,
 				   void *user_data);
@@ -27,6 +27,9 @@ void            __create_image_test_window(Ewl_Widget * w, void *ev_data,
 					   void *user_data);
 
 void            __create_imenu_test_window(Ewl_Widget * w, void *ev_data,
+					   void *user_data);
+
+void            __create_menu_test_window(Ewl_Widget * w, void *ev_data,
 					   void *user_data);
 
 void            __create_notebook_test_window(Ewl_Widget * w, void *ev_data,
@@ -162,6 +165,14 @@ main(int argc, char **argv)
 	button[i] = ewl_button_new("Ewl_IMenu");
 	ewl_callback_append(button[i], EWL_CALLBACK_CLICKED,
 			    __create_imenu_test_window, NULL);
+	i++;
+
+	/*
+	 * Create the button for the menu test and add it to the box.
+	 */
+	button[i] = ewl_button_new("Ewl_Menu");
+	ewl_callback_append(button[i], EWL_CALLBACK_CLICKED,
+			    __create_menu_test_window, NULL);
 	i++;
 
 	/*

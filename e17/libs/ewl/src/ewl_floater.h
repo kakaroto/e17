@@ -26,4 +26,4 @@ void            ewl_floater_set_position(Ewl_Floater * parent, int x, int y);
 void            ewl_floater_init(Ewl_Floater * f, Ewl_Widget * parent);
 
 
-#endif /* __EWL_FLOATER_H__ */
+#endif				/* __EWL_FLOATER_H__ */

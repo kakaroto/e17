@@ -18,4 +18,4 @@ Ewl_Widget     *ewl_separator_new(Ewl_Orientation o);
 void            ewl_separator_init(Ewl_Separator * s, Ewl_Orientation o);
 
 
-#endif /* __EWL_SEPARATOR_H__ */
+#endif				/* __EWL_SEPARATOR_H__ */

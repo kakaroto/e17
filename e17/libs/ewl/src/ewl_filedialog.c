@@ -37,9 +37,9 @@ struct _save_dialog {
  * Returns a pointer to a newly allocated filedialog in success, NULL on
  * failure.
  */
-Ewl_Widget     *
-ewl_filedialog_new(Ewl_Widget * follows, Ewl_Filedialog_Type type,
-		   Ewl_Callback_Function cb)
+Ewl_Widget     *ewl_filedialog_new(Ewl_Widget * follows,
+				   Ewl_Filedialog_Type type,
+				   Ewl_Callback_Function cb)
 {
 	Ewl_Filedialog *fd;
 
@@ -87,8 +87,7 @@ ewl_filedialog_init(Ewl_Filedialog * fd, Ewl_Widget * follows,
 }
 
 
-void
-__open_dialog_init(Ewl_Filedialog * fd, Ewl_Callback_Function cb)
+void __open_dialog_init(Ewl_Filedialog * fd, Ewl_Callback_Function cb)
 {
 	Open_Dialog    *od;
 	Ewl_Widget     *separator;
@@ -148,8 +147,7 @@ __open_dialog_init(Ewl_Filedialog * fd, Ewl_Callback_Function cb)
 }
 
 
-void
-__save_dialog_init(Ewl_Filedialog * fd, Ewl_Callback_Function cb)
+void __save_dialog_init(Ewl_Filedialog * fd, Ewl_Callback_Function cb)
 {
 	Save_Dialog    *sd;
 
@@ -173,8 +171,7 @@ __save_dialog_init(Ewl_Filedialog * fd, Ewl_Callback_Function cb)
 
 
 
-void
-__destroy_dialog(Ewl_Widget * w, void *ev_data, void *user_data)
+void __destroy_dialog(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Widget     *fd;
 

@@ -9,30 +9,29 @@ struct _ewl_list_selection {
 
 typedef struct _ewl_list_selection Ewl_List_Selection;
 
-static void     __ewl_list_init(Ewl_List * list);
-static void     __ewl_list_realize(Ewl_Widget * widget, void *ev_data,
+void            __ewl_list_init(Ewl_List * list);
+void            __ewl_list_realize(Ewl_Widget * widget, void *ev_data,
 				   void *user_data);
-static void     __ewl_list_show(Ewl_Widget * widget, void *ev_data,
+void            __ewl_list_show(Ewl_Widget * widget, void *ev_data,
 				void *user_data);
-static void     __ewl_list_hide(Ewl_Widget * widget, void *ev_data,
+void            __ewl_list_hide(Ewl_Widget * widget, void *ev_data,
 				void *user_data);
-static void     __ewl_list_configure(Ewl_Widget * widget, void *ev_data,
+void            __ewl_list_configure(Ewl_Widget * widget, void *ev_data,
 				     void *user_data);
-static void     __ewl_list_key_down(Ewl_Widget * widget, void *ev_data,
+void            __ewl_list_key_down(Ewl_Widget * widget, void *ev_data,
 				    void *user_data);
 
-static void     __ewl_list_select_row(Ewl_Widget * l, int row);
-static void     __ewl_list_unselect_row(Ewl_Widget * l, int row);
-static void     __ewl_list_move_up_selection(Ewl_Widget * l, int multiple);
-static void     __ewl_list_move_down_selection(Ewl_Widget * l, int multiple);
-static int      __ewl_list_check_selected(Ewl_Widget * l, int row);
-static void     __ewl_list_unselect_all(Ewl_Widget * l);
-static void     __ewl_list_selection_hilit(Ewl_Widget * l, int row);
-static void     __ewl_list_selection_unhilit(Ewl_Widget * l, int row);
+void            __ewl_list_select_row(Ewl_Widget * l, int row);
+void            __ewl_list_unselect_row(Ewl_Widget * l, int row);
+void            __ewl_list_move_up_selection(Ewl_Widget * l, int multiple);
+void            __ewl_list_move_down_selection(Ewl_Widget * l, int multiple);
+int             __ewl_list_check_selected(Ewl_Widget * l, int row);
+void            __ewl_list_unselect_all(Ewl_Widget * l);
+void            __ewl_list_selection_hilit(Ewl_Widget * l, int row);
+void            __ewl_list_selection_unhilit(Ewl_Widget * l, int row);
 
 
-Ewl_Widget     *
-ewl_list_new(int columns)
+Ewl_Widget     *ewl_list_new(int columns)
 {
 	Ewl_List       *list;
 	Ewl_Widget     *table;
@@ -56,8 +55,7 @@ ewl_list_new(int columns)
 	return EWL_WIDGET(list);
 }
 
-Ewl_Widget     *
-ewl_list_new_all(int columns, char *titles[])
+Ewl_Widget     *ewl_list_new_all(int columns, char *titles[])
 {
 	Ewl_Widget     *widget;
 
@@ -68,8 +66,7 @@ ewl_list_new_all(int columns, char *titles[])
 	return widget;
 }
 
-void
-ewl_list_append_text(Ewl_Widget * l, char *text[])
+void ewl_list_append_text(Ewl_Widget * l, char *text[])
 {
 	Ewl_Widget     *table;
 	int             i;
@@ -100,25 +97,21 @@ ewl_list_append_text(Ewl_Widget * l, char *text[])
 	}
 }
 
-void
-ewl_list_prepend_text(Ewl_Widget * l, char *text[])
+void ewl_list_prepend_text(Ewl_Widget * l, char *text[])
 {
 }
 
-void
-ewl_list_insert_text(Ewl_Widget * widget, char *text[], int row)
+void ewl_list_insert_text(Ewl_Widget * widget, char *text[], int row)
 {
 
 }
 
-void
-ewl_list_append_widgets(Ewl_Widget * widget, Ewl_Widget * widgets[])
+void ewl_list_append_widgets(Ewl_Widget * widget, Ewl_Widget * widgets[])
 {
 
 }
 
-void
-ewl_list_preppend_widgets(Ewl_Widget * widget, Ewl_Widget * widgets[])
+void ewl_list_preppend_widgets(Ewl_Widget * widget, Ewl_Widget * widgets[])
 {
 
 }
@@ -129,8 +122,7 @@ ewl_list_insert_widgets(Ewl_Widget * widget, Ewl_Widget * widgets[], int row)
 
 }
 
-void
-ewl_list_set_titles(Ewl_Widget * widget, char *titles[])
+void ewl_list_set_titles(Ewl_Widget * widget, char *titles[])
 {
 	Ewl_Widget     *table;
 
@@ -158,14 +150,12 @@ ewl_list_set_titles(Ewl_Widget * widget, char *titles[])
 	}
 }
 
-void
-ewl_list_select_row(Ewl_Widget * list, int row)
+void ewl_list_select_row(Ewl_Widget * list, int row)
 {
 	DCHECK_PARAM_PTR("list", list);
 }
 
-static void
-__ewl_list_init(Ewl_List * list)
+void __ewl_list_init(Ewl_List * list)
 {
 	Ewl_Widget     *w;
 
@@ -187,8 +177,7 @@ __ewl_list_init(Ewl_List * list)
 
 }
 
-static void
-__ewl_list_realize(Ewl_Widget * widget, void *ev_data, void *user_data)
+void __ewl_list_realize(Ewl_Widget * widget, void *ev_data, void *user_data)
 {
 	Ewl_Window     *win;
 
@@ -206,8 +195,7 @@ __ewl_list_realize(Ewl_Widget * widget, void *ev_data, void *user_data)
 	ewl_widget_realize(EWL_CONTAINER(widget)->children->first->data);
 }
 
-static void
-__ewl_list_show(Ewl_Widget * widget, void *ev_data, void *user_data)
+void __ewl_list_show(Ewl_Widget * widget, void *ev_data, void *user_data)
 {
 	Ewl_Window     *win;
 
@@ -223,8 +211,7 @@ __ewl_list_show(Ewl_Widget * widget, void *ev_data, void *user_data)
 		ewl_list_set_titles(widget, EWL_LIST(widget)->titles);
 }
 
-static void
-__ewl_list_hide(Ewl_Widget * widget, void *ev_data, void *user_data)
+void __ewl_list_hide(Ewl_Widget * widget, void *ev_data, void *user_data)
 {
 	Ewl_Window     *win;
 
@@ -235,8 +222,7 @@ __ewl_list_hide(Ewl_Widget * widget, void *ev_data, void *user_data)
 	evas_hide(win->evas, widget->fx_clip_box);
 }
 
-static void
-__ewl_list_configure(Ewl_Widget * widget, void *ev_data, void *user_data)
+void __ewl_list_configure(Ewl_Widget * widget, void *ev_data, void *user_data)
 {
 	Ewl_Widget     *table;
 	Ewl_Widget     *title;
@@ -258,8 +244,7 @@ __ewl_list_configure(Ewl_Widget * widget, void *ev_data, void *user_data)
 	}
 }
 
-static void
-__ewl_list_key_down(Ewl_Widget * widget, void *ev_data, void *user_data)
+void __ewl_list_key_down(Ewl_Widget * widget, void *ev_data, void *user_data)
 {
 	Ecore_Event_Key_Down *ev;
 	int             multiple = 0;
@@ -278,8 +263,7 @@ __ewl_list_key_down(Ewl_Widget * widget, void *ev_data, void *user_data)
 	}
 }
 
-static void
-__ewl_list_select_row(Ewl_Widget * l, int row)
+void __ewl_list_select_row(Ewl_Widget * l, int row)
 {
 	Ewl_Window     *win;
 	Ewl_List_Selection *sel;
@@ -316,8 +300,7 @@ __ewl_list_select_row(Ewl_Widget * l, int row)
 	ewd_list_append(EWL_LIST(l)->selections, sel);
 }
 
-static void
-__ewl_list_unselect_row(Ewl_Widget * l, int row)
+void __ewl_list_unselect_row(Ewl_Widget * l, int row)
 {
 	Ewl_List_Selection *sel;
 
@@ -340,8 +323,7 @@ __ewl_list_unselect_row(Ewl_Widget * l, int row)
 	}
 }
 
-static void
-__ewl_list_move_up_selection(Ewl_Widget * l, int multiple)
+void __ewl_list_move_up_selection(Ewl_Widget * l, int multiple)
 {
 	DCHECK_PARAM_PTR("l", l);
 
@@ -363,8 +345,7 @@ __ewl_list_move_up_selection(Ewl_Widget * l, int multiple)
 	__ewl_list_selection_hilit(l, EWL_LIST(l)->current_selected);
 }
 
-static void
-__ewl_list_move_down_selection(Ewl_Widget * l, int multiple)
+void __ewl_list_move_down_selection(Ewl_Widget * l, int multiple)
 {
 	DCHECK_PARAM_PTR("l", l);
 
@@ -387,8 +368,7 @@ __ewl_list_move_down_selection(Ewl_Widget * l, int multiple)
 	__ewl_list_selection_hilit(l, EWL_LIST(l)->current_selected);
 }
 
-static int
-__ewl_list_check_selected(Ewl_Widget * l, int row)
+int __ewl_list_check_selected(Ewl_Widget * l, int row)
 {
 	Ewl_List_Selection *sel;
 
@@ -404,8 +384,7 @@ __ewl_list_check_selected(Ewl_Widget * l, int row)
 	return FALSE;
 }
 
-static void
-__ewl_list_unselect_all(Ewl_Widget * l)
+void __ewl_list_unselect_all(Ewl_Widget * l)
 {
 	Ewl_List_Selection *sel;
 
@@ -425,8 +404,7 @@ __ewl_list_unselect_all(Ewl_Widget * l)
 	}
 }
 
-static void
-__ewl_list_selection_hilit(Ewl_Widget * l, int row)
+void __ewl_list_selection_hilit(Ewl_Widget * l, int row)
 {
 	Ewl_List_Selection *sel;
 
@@ -441,8 +419,7 @@ __ewl_list_selection_hilit(Ewl_Widget * l, int row)
 	}
 }
 
-static void
-__ewl_list_selection_unhilit(Ewl_Widget * l, int row)
+void __ewl_list_selection_unhilit(Ewl_Widget * l, int row)
 {
 	Ewl_List_Selection *sel;
 

@@ -18,4 +18,4 @@ void            ewl_cursor_set_position(Ewl_Widget * w, int p);
 int             ewl_cursor_get_position(Ewl_Widget * w);
 
 
-#endif /* __EWL_CURSOR_H__ */
+#endif				/* __EWL_CURSOR_H__ */

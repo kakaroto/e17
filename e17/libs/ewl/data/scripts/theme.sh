@@ -19,14 +19,23 @@ edb_ed $DB add "/appearance/button/default/base/visible" str "yes"
 edb_ed $DB add "/appearance/button/default/label/font" str "borzoib"
 edb_ed $DB add "/appearance/button/default/label/font_size" int 8
 edb_ed $DB add "/appearance/button/default/label/style" str "shadow"
+
+edb_ed $DB add "/appearance/check/base" str "/appearance/button/check/base.bits.db"
+edb_ed $DB add "/appearance/check/base/visible" str "yes"
+
 edb_ed $DB add "/appearance/button/check/base" str "/appearance/button/check/base.bits.db"
-edb_ed $DB add "/appearance/button/check/base/visible" str "yes"
+edb_ed $DB add "/appearance/button/check/base/visible" str "no"
+
 edb_ed $DB add "/appearance/button/check/label/font" str "borzoib"
 edb_ed $DB add "/appearance/button/check/label/font_size" int 8
 edb_ed $DB add "/appearance/button/check/label/style" str "shadow"
 
+edb_ed $DB add "/appearance/radio/base" str "/appearance/button/radio/base.bits.db"
+edb_ed $DB add "/appearance/radio/base/visible" str "yes"
+
 edb_ed $DB add "/appearance/button/radio/base" str "/appearance/button/radio/base.bits.db"
-edb_ed $DB add "/appearance/button/radio/base/visible" str "yes"
+edb_ed $DB add "/appearance/button/radio/base/visible" str "no"
+
 edb_ed $DB add "/appearance/button/radio/label/font" str "borzoib"
 edb_ed $DB add "/appearance/button/radio/label/font_size" int 8
 edb_ed $DB add "/appearance/button/radio/label/style" str "shadow"

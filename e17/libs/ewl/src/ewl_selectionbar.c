@@ -34,8 +34,7 @@ char            close_string[100];
  * Returns a pointer to a newly allocated scrollpane on success, NULL on
  * failure.
  */
-Ewl_Widget     *
-ewl_selectionbar_new(Ewl_Widget * parent)
+Ewl_Widget     *ewl_selectionbar_new(Ewl_Widget * parent)
 {
 	Ewl_Selectionbar *s;
 
@@ -61,8 +60,7 @@ ewl_selectionbar_new(Ewl_Widget * parent)
  * Returns no value. Sets up the default callbacks and values for the
  * the selectionbar
  */
-void
-ewl_selectionbar_init(Ewl_Selectionbar * s, Ewl_Widget * parent)
+void ewl_selectionbar_init(Ewl_Selectionbar * s, Ewl_Widget * parent)
 {
 	Ewl_Widget     *w;
 	Ewl_Window     *window;
@@ -144,8 +142,7 @@ ewl_selectionbar_init(Ewl_Selectionbar * s, Ewl_Widget * parent)
 }
 
 
-void
-__child_add(Ewl_Container * parent, Ewl_Widget * child)
+void __child_add(Ewl_Container * parent, Ewl_Widget * child)
 {
 	ewl_container_append_child(EWL_SELECTIONBAR(parent)->bar, child);
 	ewl_container_remove_child(parent, child);
@@ -161,8 +158,7 @@ __child_add(Ewl_Container * parent, Ewl_Widget * child)
  *
  * Returns no value
  */
-void
-ewl_selectionbar_set_size(Ewl_Selectionbar * s, int w, int h1, int h2)
+void ewl_selectionbar_set_size(Ewl_Selectionbar * s, int w, int h1, int h2)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -176,8 +172,7 @@ ewl_selectionbar_set_size(Ewl_Selectionbar * s, int w, int h1, int h2)
 }
 
 
-void
-__ewl_selectionbar_realize(Ewl_Widget * w, void *ev_data, void *user_data)
+void __ewl_selectionbar_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Selectionbar *s;
 
@@ -205,8 +200,7 @@ __ewl_selectionbar_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 }
 
 
-void
-__ewl_selectionbar_show(Ewl_Widget * w, void *ev_data, void *user_data)
+void __ewl_selectionbar_show(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Selectionbar *s;
 
@@ -285,8 +279,7 @@ __ewl_selectionbar_parent_configure(Ewl_Widget * w, void *ev_data,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void
-__focus_in(Ewl_Widget * w, void *ev_data, void *user_data)
+void __focus_in(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Selectionbar *s;
 	Ewl_Object     *o;
@@ -342,8 +335,7 @@ __focus_in(Ewl_Widget * w, void *ev_data, void *user_data)
 }
 
 
-void
-__focus_out(Ewl_Widget * w, void *ev_data, void *user_data)
+void __focus_out(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Selectionbar *s;
 	Ewd_List       *children;
@@ -401,8 +393,7 @@ __focus_out(Ewl_Widget * w, void *ev_data, void *user_data)
 
 
 
-void
-__open_bar_cb(int val, void *ev_data)
+void __open_bar_cb(int val, void *ev_data)
 {
 	Ewl_Widget     *w;
 	Ewl_Object     *o;
@@ -437,8 +428,7 @@ __open_bar_cb(int val, void *ev_data)
 }
 
 
-void
-__close_bar_cb(int val, void *ev_data)
+void __close_bar_cb(int val, void *ev_data)
 {
 	Ewl_Widget     *w;
 	Ewl_Object     *o;
@@ -471,8 +461,7 @@ __close_bar_cb(int val, void *ev_data)
 }
 
 
-void
-__mouse_move_over_children(Ewl_Widget * w, void *ev_data, void *user_data)
+void __mouse_move_over_children(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Selectionbar *s;
 
@@ -481,8 +470,7 @@ __mouse_move_over_children(Ewl_Widget * w, void *ev_data, void *user_data)
 	__children_animator(EWL_WIDGET(s->bar), ev_data, s);
 }
 
-void
-__children_animator(Ewl_Widget * w, void *ev_data, void *user_data)
+void __children_animator(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 
 	Ewl_Widget     *child;

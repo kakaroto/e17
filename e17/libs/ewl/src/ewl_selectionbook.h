@@ -37,4 +37,4 @@ void            ewl_selectionbook_rem_current_page(Ewl_Selectionbook * s,
 						   int destroy);
 
 
-#endif /* EWL_SELECTIONBOOK_H__ */
+#endif				/* EWL_SELECTIONBOOK_H__ */

@@ -1,9 +1,9 @@
 
 #include <Ewl.h>
 
-static void     __ewl_image_realize(Ewl_Widget * w, void *ev_data,
+void            __ewl_image_realize(Ewl_Widget * w, void *ev_data,
 				    void *user_data);
-static void     __ewl_image_configure(Ewl_Widget * w, void *ev_data,
+void            __ewl_image_configure(Ewl_Widget * w, void *ev_data,
 				      void *user_data);
 void            __ewl_image_mouse_down(Ewl_Widget * w, void *ev_data,
 				       void *user_data);
@@ -12,7 +12,7 @@ void            __ewl_image_mouse_up(Ewl_Widget * w, void *ev_data,
 void            __ewl_image_mouse_move(Ewl_Widget * w, void *ev_data,
 				       void *user_data);
 
-static Ewl_Image_Type __ewl_image_get_type(const char *i);
+Ewl_Image_Type  __ewl_image_get_type(const char *i);
 
 /**
  * ewl_image_load - allocates a new image widget with specified image contents
@@ -21,8 +21,7 @@ static Ewl_Image_Type __ewl_image_get_type(const char *i);
  * Returns a pointer to the newly allocated image widget on success, NULL on
  * failure.
  */
-Ewl_Widget     *
-ewl_image_load(const char *i)
+Ewl_Widget     *ewl_image_load(const char *i)
 {
 	Ewl_Image      *image;
 
@@ -54,8 +53,7 @@ ewl_image_load(const char *i)
  * Returns no value. Set the image displayed by @i to the one found at the
  * path @im.
  */
-void
-ewl_image_set_file(Ewl_Image * i, const char *im)
+void ewl_image_set_file(Ewl_Image * i, const char *im)
 {
 	int             old_type;
 	Ewl_Widget     *w;
@@ -117,8 +115,7 @@ ewl_image_set_file(Ewl_Image * i, const char *im)
  * Returns no value. Sets the fields and callbacks of @i to their default
  * values.
  */
-void
-ewl_image_init(Ewl_Image * i)
+void ewl_image_init(Ewl_Image * i)
 {
 	Ewl_Widget     *w;
 
@@ -145,8 +142,7 @@ ewl_image_init(Ewl_Image * i)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-static void
-__ewl_image_realize(Ewl_Widget * w, void *ev_data, void *user_data)
+void __ewl_image_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Image      *i;
 	Ewl_Window     *win;
@@ -184,8 +180,7 @@ __ewl_image_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-static void
-__ewl_image_configure(Ewl_Widget * w, void *ev_data, void *user_data)
+void __ewl_image_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Image      *i;
 	Ewl_Window     *win;
@@ -213,8 +208,7 @@ __ewl_image_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 /*
  * Determine the type of the file based on the filename.
  */
-static          Ewl_Image_Type
-__ewl_image_get_type(const char *i)
+Ewl_Image_Type __ewl_image_get_type(const char *i)
 {
 	int             l;
 
@@ -230,8 +224,7 @@ __ewl_image_get_type(const char *i)
 }
 
 
-void
-__ewl_image_mouse_down(Ewl_Widget * w, void *ev_data, void *user_data)
+void __ewl_image_mouse_down(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Image      *i;
 	Ewl_Window     *win;
@@ -250,8 +243,7 @@ __ewl_image_mouse_down(Ewl_Widget * w, void *ev_data, void *user_data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void
-__ewl_image_mouse_up(Ewl_Widget * w, void *ev_data, void *user_data)
+void __ewl_image_mouse_up(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Image      *i;
 	Ewl_Window     *win;
@@ -270,8 +262,7 @@ __ewl_image_mouse_up(Ewl_Widget * w, void *ev_data, void *user_data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void
-__ewl_image_mouse_move(Ewl_Widget * w, void *ev_data, void *user_data)
+void __ewl_image_mouse_move(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Image      *i;
 	Ewl_Window     *win;

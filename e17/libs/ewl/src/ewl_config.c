@@ -8,8 +8,8 @@
 
 static E_DB_File *config_db = NULL;
 
-static void     __create_user_config(void);
-static void     __create_fx_config(void);
+void            __create_user_config(void);
+void            __create_fx_config(void);
 
 static int      __open_config_db(const char *name);
 static void     __close_config_db(void);
@@ -24,8 +24,7 @@ extern Ewd_List *ewl_window_list;
  * Returns true on success, false on failure. This sets up the necessary
  * configuration variables.
  */
-int
-ewl_config_init(void)
+int ewl_config_init(void)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -53,8 +52,7 @@ ewl_config_init(void)
  * Returns TRUE on success, FALSE on failure. Sets the string value associated
  * with the key @k to @v in the configuration database.
  */
-int
-ewl_config_set_str(char *config, char *k, char *v)
+int ewl_config_set_str(char *config, char *k, char *v)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -79,8 +77,7 @@ ewl_config_set_str(char *config, char *k, char *v)
  * Returns TRUE on success, FALSE on failure. Sets the integer value associated
  * with the key @k to @v in the configuration database.
  */
-int
-ewl_config_set_int(char *config, char *k, int v)
+int ewl_config_set_int(char *config, char *k, int v)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -104,8 +101,7 @@ ewl_config_set_int(char *config, char *k, int v)
  * Returns TRUE on success, FALSE on failure. Sets the float value associated
  * with the key @k to @v in the configuration database.
  */
-int
-ewl_config_set_float(char *config, char *k, float v)
+int ewl_config_set_float(char *config, char *k, float v)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -128,8 +124,7 @@ ewl_config_set_float(char *config, char *k, float v)
  * Returns the string value associated with key @k in the configuration
  * database on success, NULL on failure.
  */
-char           *
-ewl_config_get_str(char *config, char *k)
+char           *ewl_config_get_str(char *config, char *k)
 {
 	char           *ret = NULL;
 
@@ -153,8 +148,7 @@ ewl_config_get_str(char *config, char *k)
  * Returns the integer value associated with key @k in the configuration
  * database on success, 0 on failure.
  */
-int
-ewl_config_get_int(char *config, char *k)
+int ewl_config_get_int(char *config, char *k)
 {
 	int             ret = -1;
 	int             v;
@@ -181,8 +175,7 @@ ewl_config_get_int(char *config, char *k)
  * Returns the float value associated with key @k in the configuration
  * database on success, 0.0 on failure.
  */
-float
-ewl_config_get_float(char *config, char *k)
+float ewl_config_get_float(char *config, char *k)
 {
 	int             ret = -1;
 	float           v = 0.0;
@@ -206,8 +199,7 @@ ewl_config_get_float(char *config, char *k)
  *
  * Returns the found render method on success, software rendering on failure.
  */
-Evas_Render_Method
-ewl_config_get_render_method()
+Evas_Render_Method ewl_config_get_render_method()
 {
 	Evas_Render_Method method = RENDER_METHOD_ALPHA_SOFTWARE;
 	char           *str = NULL;
@@ -236,8 +228,7 @@ ewl_config_get_render_method()
  * Returns no value. Reads in the values of the configuration database and
  * applies them to the running ewl program.
  */
-void
-ewl_config_reread_and_apply(void)
+void ewl_config_reread_and_apply(void)
 {
 	Ewl_Config      nc;
 
@@ -248,7 +239,7 @@ ewl_config_reread_and_apply(void)
 	nc.evas.font_cache = ewl_config_get_int("system", "/evas/font_cache");
 	nc.evas.image_cache = ewl_config_get_int("system", "/evas/image_cache");
 	nc.evas.render_method =
-		ewl_config_get_str("system", "/evas/render_method");
+	    ewl_config_get_str("system", "/evas/render_method");
 	nc.theme.name = ewl_config_get_str("system", "/theme/name");
 	nc.theme.cache = ewl_config_get_int("system", "/theme/cache");
 
@@ -289,8 +280,7 @@ ewl_config_reread_and_apply(void)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-static void
-__create_user_config(void)
+void __create_user_config(void)
 {
 	char           *home;
 	char            pe[256];
@@ -326,8 +316,7 @@ __create_user_config(void)
 	DRETURN(DLEVEL_STABLE);
 }
 
-static void
-__create_fx_config(void)
+void __create_fx_config(void)
 {
 	/* Give buttons fade_in & glow & fade_out effects by default */
 	ewl_config_set_int("fx", "/user/button/count", 2);
@@ -346,8 +335,7 @@ __create_fx_config(void)
 			   EWL_CALLBACK_HIDE);
 }
 
-static int
-__open_config_db(const char *name)
+static int __open_config_db(const char *name)
 {
 	char           *home;
 	char            path[PATH_LEN];
@@ -371,8 +359,7 @@ __open_config_db(const char *name)
 	DRETURN_INT(FALSE, DLEVEL_STABLE);
 }
 
-static void
-__close_config_db()
+static void __close_config_db()
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -386,8 +373,7 @@ __close_config_db()
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-static int
-__config_exists(char *name)
+static int __config_exists(char *name)
 {
 	char           *home;
 	char            path[PATH_LEN];

@@ -7,8 +7,7 @@
  *
  * Returns a newly allocated cursor widget on success, NULL on failure.
  */
-Ewl_Widget     *
-ewl_cursor_new(void)
+Ewl_Widget     *ewl_cursor_new(void)
 {
 	Ewl_Cursor     *c;
 
@@ -30,8 +29,7 @@ ewl_cursor_new(void)
  * Returns no value. Changes the position of the cursor so that the entry
  * widget can update it appropriately.
  */
-void
-ewl_cursor_set_position(Ewl_Widget * w, int p)
+void ewl_cursor_set_position(Ewl_Widget * w, int p)
 {
 	Ewl_Cursor     *c;
 
@@ -53,8 +51,7 @@ ewl_cursor_set_position(Ewl_Widget * w, int p)
  *
  * Returns the current position of the entry widget @w.
  */
-int
-ewl_cursor_get_position(Ewl_Widget * w)
+int ewl_cursor_get_position(Ewl_Widget * w)
 {
 	Ewl_Cursor     *c;
 
@@ -72,8 +69,7 @@ ewl_cursor_get_position(Ewl_Widget * w)
  *
  * Returns no value. Sets the default values and appearance for the cursor @c.
  */
-void
-ewl_cursor_init(Ewl_Cursor * c)
+void ewl_cursor_init(Ewl_Cursor * c)
 {
 	Ewl_Widget     *w;
 

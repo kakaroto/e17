@@ -15,4 +15,4 @@ void            ewl_theme_data_set_int(Ewl_Widget * w, char *k, int v);
 void            ewl_theme_data_set_default_str(char *k, char *v);
 void            ewl_theme_data_set_default_int(char *k, int v);
 
-#endif /* __EWL_THEME_H__ */
+#endif				/* __EWL_THEME_H__ */

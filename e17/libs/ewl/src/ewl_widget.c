@@ -34,8 +34,7 @@ void            __ewl_widget_disable(Ewl_Widget * w, void *ev_data,
  * assigned the default callbacks. The appearance key is assigned for easy
  * access to theme information.
  */
-void
-ewl_widget_init(Ewl_Widget * w, char *appearance)
+void ewl_widget_init(Ewl_Widget * w, char *appearance)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -91,8 +90,7 @@ ewl_widget_init(Ewl_Widget * w, char *appearance)
  * Returns no value. The specified widget is realized (ie. actually displayed to
  * the screen).
  */
-void
-_ewl_widget_realize(Ewl_Widget * w)
+void _ewl_widget_realize(Ewl_Widget * w)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -116,8 +114,7 @@ _ewl_widget_realize(Ewl_Widget * w)
  * Returns no value. Marks the widget as visible so that it will be displayed
  * the next time through the rendering loop.
  */
-void
-ewl_widget_show(Ewl_Widget * w)
+void ewl_widget_show(Ewl_Widget * w)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -140,8 +137,7 @@ ewl_widget_show(Ewl_Widget * w)
  * Returns no value. Marks the widget as invisible so that it will not be
  * displayed the next time through the rendering loop.
  */
-void
-ewl_widget_hide(Ewl_Widget * w)
+void ewl_widget_hide(Ewl_Widget * w)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -163,8 +159,7 @@ ewl_widget_hide(Ewl_Widget * w)
  * Returns no value. The widget calls it's destroy callback to do any clean up
  * necessary and then free's the widget.
  */
-void
-ewl_widget_destroy(Ewl_Widget * w)
+void ewl_widget_destroy(Ewl_Widget * w)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -198,8 +193,7 @@ ewl_widget_destroy(Ewl_Widget * w)
  * Returns no value. The configure callback is triggered for the specified
  * widget, this should adjust the widgets size and position.
  */
-void
-ewl_widget_configure(Ewl_Widget * w)
+void ewl_widget_configure(Ewl_Widget * w)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -222,8 +216,7 @@ ewl_widget_configure(Ewl_Widget * w)
  * Returns no value. The theme update callback is triggered for the specified
  * widget, this should adjust the widgets appearance.
  */
-void
-ewl_widget_theme_update(Ewl_Widget * w)
+void ewl_widget_theme_update(Ewl_Widget * w)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -244,8 +237,7 @@ ewl_widget_theme_update(Ewl_Widget * w)
  * Returns no value. The reparent callback is triggered for the specified
  * widget, this should adjust the widgets attributes based on the new parent.
  */
-void
-ewl_widget_reparent(Ewl_Widget * w)
+void ewl_widget_reparent(Ewl_Widget * w)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -264,8 +256,7 @@ ewl_widget_reparent(Ewl_Widget * w)
  * Returns no value. Assigns a key / value pair with @k as the key and @v as
  * the value to the specified widget @w.
  */
-void
-ewl_widget_set_data(Ewl_Widget * w, void *k, void *v)
+void ewl_widget_set_data(Ewl_Widget * w, void *k, void *v)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -288,8 +279,7 @@ ewl_widget_set_data(Ewl_Widget * w, void *k, void *v)
  * Returns no value. Removes a key / value pair with @k as the key from the
  * specified widget @w.
  */
-void
-ewl_widget_del_data(Ewl_Widget * w, void *k)
+void ewl_widget_del_data(Ewl_Widget * w, void *k)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -310,8 +300,7 @@ ewl_widget_del_data(Ewl_Widget * w, void *k)
  * Returns the value associated with @k on success, NULL on failure. Retrieves a
  * key / value pair with @k as the key from the specified widget @w.
  */
-void           *
-ewl_widget_get_data(Ewl_Widget * w, void *k)
+void           *ewl_widget_get_data(Ewl_Widget * w, void *k)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("w", w, NULL);
@@ -331,8 +320,7 @@ ewl_widget_get_data(Ewl_Widget * w, void *k)
  * Returns no value. Changes the key associated with the widgets appearance
  * and calls the theme update callback to initiate the change.
  */
-void
-ewl_widget_set_appearance(Ewl_Widget * w, char *appearance)
+void ewl_widget_set_appearance(Ewl_Widget * w, char *appearance)
 {
 	char           *oap;
 
@@ -360,8 +348,7 @@ ewl_widget_set_appearance(Ewl_Widget * w, char *appearance)
  *
  * Returns a pointer to the appearance key string on success, NULL on failure.
  */
-char           *
-ewl_widget_get_appearance(Ewl_Widget * w)
+char           *ewl_widget_get_appearance(Ewl_Widget * w)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -378,8 +365,7 @@ ewl_widget_get_appearance(Ewl_Widget * w)
  * Returns no value. Changes the appearance of the widget @w depending on the
  * state string passed by @state.
  */
-void
-ewl_widget_update_appearance(Ewl_Widget * w, char *state)
+void ewl_widget_update_appearance(Ewl_Widget * w, char *state)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -408,8 +394,7 @@ ewl_widget_update_appearance(Ewl_Widget * w, char *state)
  * The reparent callback is triggered to notify children of @w of the change
  * in parent.
  */
-void
-ewl_widget_set_parent(Ewl_Widget * w, Ewl_Widget * p)
+void ewl_widget_set_parent(Ewl_Widget * w, Ewl_Widget * p)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -422,8 +407,7 @@ ewl_widget_set_parent(Ewl_Widget * w, Ewl_Widget * p)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void
-ewl_widget_enable(Ewl_Widget * w)
+void ewl_widget_enable(Ewl_Widget * w)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -438,8 +422,7 @@ ewl_widget_enable(Ewl_Widget * w)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void
-ewl_widget_disable(Ewl_Widget * w)
+void ewl_widget_disable(Ewl_Widget * w)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -459,8 +442,7 @@ ewl_widget_disable(Ewl_Widget * w)
  * they are destroyed. This should ALWAYS be the the last callback
  * in the chain.
  */
-void
-__ewl_widget_destroy(Ewl_Widget * w, void *ev_data, void *data)
+void __ewl_widget_destroy(Ewl_Widget * w, void *ev_data, void *data)
 {
 	Ewl_Window     *win;
 	Ewd_List       *destroy_cbs;
@@ -525,8 +507,7 @@ __ewl_widget_destroy(Ewl_Widget * w, void *ev_data, void *data)
 /*
  * Every widget must show it's fx_clip_box to be seen
  */
-void
-__ewl_widget_show(Ewl_Widget * w, void *ev_data, void *user_data)
+void __ewl_widget_show(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Window     *win;
 
@@ -544,8 +525,7 @@ __ewl_widget_show(Ewl_Widget * w, void *ev_data, void *user_data)
 /*
  * Every widget must hide it's fx_clip_box in order to hide
  */
-void
-__ewl_widget_hide(Ewl_Widget * w, void *ev_data, void *user_data)
+void __ewl_widget_hide(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Window     *win;
 
@@ -563,8 +543,7 @@ __ewl_widget_hide(Ewl_Widget * w, void *ev_data, void *user_data)
 /*
  * Perform the basic operations necessary for realizing a widget
  */
-void
-__ewl_widget_realize(Ewl_Widget * w, void *ev_data, void *user_data)
+void __ewl_widget_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Window     *win;
 	Ewl_Container  *pc;
@@ -580,7 +559,7 @@ __ewl_widget_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 	 */
 	w->fx_clip_box = evas_add_rectangle(win->evas);
 	evas_set_color(win->evas, w->fx_clip_box, 255, 255, 255, 255);
-	evas_set_layer(win->evas, w->fx_clip_box, LAYER(w) /* - 1 */ );
+	evas_set_layer(win->evas, w->fx_clip_box, LAYER(w));
 
 	pc = EWL_CONTAINER(w->parent);
 
@@ -598,8 +577,7 @@ __ewl_widget_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 /*
  * Perform the basic operations necessary for configuring a widget
  */
-void
-__ewl_widget_configure(Ewl_Widget * w, void *ev_data, void *user_data)
+void __ewl_widget_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Window     *win;
 
@@ -632,8 +610,7 @@ __ewl_widget_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 /*
  * This simplifies updating the appearance of the widget
  */
-void
-__ewl_widget_theme_update(Ewl_Widget * w, void *ev_data, void *user_data)
+void __ewl_widget_theme_update(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	int             len;
 	char           *i;
@@ -729,8 +706,7 @@ __ewl_widget_theme_update(Ewl_Widget * w, void *ev_data, void *user_data)
 /*
  * Perform the basic operations necessary for reparenting a widget
  */
-void
-__ewl_widget_reparent(Ewl_Widget * w, void *ev_data, void *user_data)
+void __ewl_widget_reparent(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Window     *win;
 
@@ -740,12 +716,14 @@ __ewl_widget_reparent(Ewl_Widget * w, void *ev_data, void *user_data)
 	/*
 	 * No parent so give it the empty values.
 	 */
-	if (!w->parent) {
-		if (w->fx_clip_box)
-			LAYER(w) = 0;
-
-		DRETURN(DLEVEL_STABLE);
-	}
+	/*
+	 * if (!w->parent) {
+	 * if (w->fx_clip_box)
+	 * LAYER(w) = 0;
+	 * 
+	 * DRETURN(DLEVEL_STABLE);
+	 * }
+	 */
 
 	win = ewl_window_find_window_by_widget(w);
 
@@ -758,7 +736,9 @@ __ewl_widget_reparent(Ewl_Widget * w, void *ev_data, void *user_data)
 			      EWL_CONTAINER(w->parent)->clip_box);
 	}
 
-	LAYER(w) = LAYER(w->parent) + 5;
+	/*
+	 * LAYER(w) = LAYER(w->parent) + 5;
+	 */
 
 	if (REALIZED(w))
 		ewl_widget_theme_update(w);
@@ -767,8 +747,7 @@ __ewl_widget_reparent(Ewl_Widget * w, void *ev_data, void *user_data)
 }
 
 
-void
-__ewl_widget_enable(Ewl_Widget * w, void *ev_data, void *user_data)
+void __ewl_widget_enable(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -778,8 +757,7 @@ __ewl_widget_enable(Ewl_Widget * w, void *ev_data, void *user_data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void
-__ewl_widget_disable(Ewl_Widget * w, void *ev_data, void *user_data)
+void __ewl_widget_disable(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);

@@ -8,9 +8,9 @@ char           *xdisplay = NULL;
 extern Ewd_List *ewl_window_list;
 static Ewd_List *configure_list = NULL;
 
-static void     __ewl_init_parse_options(int argc, char **argv);
-static void     __ewl_parse_option_array(int argc, char **argv);
-void            ewl_reread_config(int val, void *data);
+void            __ewl_init_parse_options(int argc, char **argv);
+void            __ewl_parse_option_array(int argc, char **argv);
+static void     ewl_reread_config(int val, void *data);
 
 static int      __ewl_configure_check(Ewl_Widget * ppar, Ewl_Widget * w);
 
@@ -20,8 +20,7 @@ static int      __ewl_configure_check(Ewl_Widget * ppar, Ewl_Widget * w);
  * Returns no value. Set a breakpoint at this function in order to retrieve
  * backtraces from warning messages.
  */
-inline void
-ewl_print_warning()
+inline void ewl_print_warning()
 {
 	fprintf(stderr, "***** Ewl Developer Warning ***** :\n"
 		" To find where this is occurring set a breakpoint\n"
@@ -36,8 +35,7 @@ ewl_print_warning()
  * Returns no value. Sets up necessary internal variables for executing ewl
  * functions. This should be called before any other ewl functions are used.
  */
-void
-ewl_init(int argc, char **argv)
+void ewl_init(int argc, char **argv)
 {
 	char           *xdisplay = NULL;
 
@@ -89,8 +87,7 @@ ewl_init(int argc, char **argv)
  * Returns no value. This is the  main execution loop of ewl. It dispatches
  * incoming events and renders updates to the evas's used by ewl.
  */
-void
-ewl_main(void)
+void ewl_main(void)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -108,8 +105,7 @@ ewl_main(void)
  *
  * Returns no value. Renders updates to the evas's during idle event times.
  */
-void
-ewl_idle_render(void *data)
+void ewl_idle_render(void *data)
 {
 	Ewl_Window     *w;
 
@@ -140,7 +136,7 @@ ewl_idle_render(void *data)
 		 * If we have any unrealized windows at this point, we want to
 		 * realize and configure them to layout the children correct.
 		 */
-		if (!REALIZED(w)) {
+		if (VISIBLE(w) && !REALIZED(w)) {
 			ewl_widget_realize(EWL_WIDGET(w));
 			ewl_widget_configure(EWL_WIDGET(w));
 		}
@@ -159,8 +155,7 @@ ewl_idle_render(void *data)
  * Returns no value. Sets ewl to exit the main execution loop after this time
  * through the loop has been completed.
  */
-void
-ewl_main_quit(void)
+void ewl_main_quit(void)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -179,8 +174,7 @@ ewl_main_quit(void)
  * Returns no value. Parses the arguments of the program into sections that
  * ewl knows how to deal with.
  */
-static void
-__ewl_init_parse_options(int argc, char **argv)
+void __ewl_init_parse_options(int argc, char **argv)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -197,11 +191,10 @@ __ewl_init_parse_options(int argc, char **argv)
  * Returns no value. Parses the options passed to the main program and
  * processes any ewl related options.
  */
-static void
-__ewl_parse_option_array(int argc, char **argv)
+void __ewl_parse_option_array(int argc, char **argv)
 {
 	char            stropts[] =
-		"a:A:b:BcC:dD:e:f:Fg:hH:iIklL:mM:nNo:O:pPqQrR:sS:tT:uUvVwW:xXy:zZ1:2:3:4:56:78:90:";
+	    "a:A:b:BcC:dD:e:f:Fg:hH:iIklL:mM:nNo:O:pPqQrR:sS:tT:uUvVwW:xXy:zZ1:2:3:4:56:78:90:";
 
 	static struct option lopts[] = {
 		{"ewl_display", 1, 0, '$'},
@@ -234,8 +227,7 @@ __ewl_parse_option_array(int argc, char **argv)
  *
  * Returns no value. Sets up a timer loop for rereading the config data.
  */
-void
-ewl_reread_config(int val, void *data)
+static void ewl_reread_config(int val, void *data)
 {
 	ewl_config_reread_and_apply();
 
@@ -250,8 +242,7 @@ ewl_reread_config(int val, void *data)
  * Returns no value. Ask for the widget @w to be configured when the main idle
  * loop is executed.
  */
-void
-ewl_configure_request(Ewl_Widget * w)
+void ewl_configure_request(Ewl_Widget * w)
 {
 	Ewl_Window     *win;
 	Ewl_Widget     *search;
@@ -303,8 +294,7 @@ ewl_configure_request(Ewl_Widget * w)
 /*
  * Check to see if @ppar is a parent to @w at some level.
  */
-static int
-__ewl_configure_check(Ewl_Widget * ppar, Ewl_Widget * w)
+static int __ewl_configure_check(Ewl_Widget * ppar, Ewl_Widget * w)
 {
 	DENTER_FUNCTION(DLEVEL_TESTING);
 

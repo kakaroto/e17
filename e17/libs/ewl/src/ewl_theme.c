@@ -17,8 +17,7 @@ static Ewd_Hash *def_theme_data = NULL;
  *
  * Returns TRUE on success, FALSE on failure. Initializes the data structures
  * involved with theme handling. This involves finding the specified theme file. */
-int
-ewl_theme_init(void)
+int ewl_theme_init(void)
 {
 	struct stat     st;
 	char           *theme_name;
@@ -90,8 +89,7 @@ ewl_theme_init(void)
  * Returns no value. Sets the widget @w's theme information to the default
  * values.
  */
-void
-ewl_theme_init_widget(Ewl_Widget * w)
+void ewl_theme_init_widget(Ewl_Widget * w)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -108,8 +106,7 @@ ewl_theme_init_widget(Ewl_Widget * w)
  * Returns no value. Removes and frees (if not default) the theme information
  * from the widget @w.
  */
-void
-ewl_theme_deinit_widget(Ewl_Widget * w)
+void ewl_theme_deinit_widget(Ewl_Widget * w)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -128,8 +125,7 @@ ewl_theme_deinit_widget(Ewl_Widget * w)
 }
 
 /* Return the path of the current theme */
-char           *
-ewl_theme_path()
+char           *ewl_theme_path()
 {
 	DRETURN_PTR(strdup(theme_path), DLEVEL_STABLE);
 }
@@ -140,8 +136,7 @@ ewl_theme_path()
  *
  * Returns the font path associated with widget @w on success, NULL on failure.
  */
-char           *
-ewl_theme_font_path()
+char           *ewl_theme_font_path()
 {
 	static char    *font_path = NULL;
 
@@ -167,8 +162,7 @@ ewl_theme_font_path()
  *
  * Returns the path associated with image key @k on success, NULL on failure.
  */
-char           *
-ewl_theme_image_get(Ewl_Widget * w, char *k)
+char           *ewl_theme_image_get(Ewl_Widget * w, char *k)
 {
 	char           *path;
 	char           *data;
@@ -206,8 +200,7 @@ ewl_theme_image_get(Ewl_Widget * w, char *k)
  *
  * Returns the string associated with key @k on success, NULL on failure.
  */
-char           *
-ewl_theme_data_get_str(Ewl_Widget * w, char *k)
+char           *ewl_theme_data_get_str(Ewl_Widget * w, char *k)
 {
 	char           *ret = NULL;
 	char           *ret2 = NULL;
@@ -230,8 +223,7 @@ ewl_theme_data_get_str(Ewl_Widget * w, char *k)
 		if (ret && ewl_config.theme.cache) {
 			if (!cached_theme_data)
 				cached_theme_data =
-					ewd_hash_new(ewd_str_hash,
-						     ewd_str_compare);
+				    ewd_hash_new(ewd_str_hash, ewd_str_compare);
 			ewd_hash_set(cached_theme_data, k, strdup(ret));
 		}
 	}
@@ -249,8 +241,7 @@ ewl_theme_data_get_str(Ewl_Widget * w, char *k)
  *
  * Returns the integer associated with key @k on success, 0 on failure.
  */
-int
-ewl_theme_data_get_int(Ewl_Widget * w, char *k)
+int ewl_theme_data_get_int(Ewl_Widget * w, char *k)
 {
 	int             ret = 0;
 
@@ -278,8 +269,7 @@ ewl_theme_data_get_int(Ewl_Widget * w, char *k)
  * Returns no value. Changes the theme data in widget @w so that key @k now is
  * associated with value @v.
  */
-void
-ewl_theme_data_set_str(Ewl_Widget * w, char *k, char *v)
+void ewl_theme_data_set_str(Ewl_Widget * w, char *k, char *v)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -307,8 +297,7 @@ ewl_theme_data_set_str(Ewl_Widget * w, char *k, char *v)
  * Returns no value. Changes the theme data in widget @w so that key @k now is
  * associated with value @v.
  */
-void
-ewl_theme_data_set_int(Ewl_Widget * w, char *k, int v)
+void ewl_theme_data_set_int(Ewl_Widget * w, char *k, int v)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -332,8 +321,7 @@ ewl_theme_data_set_int(Ewl_Widget * w, char *k, int v)
  * Returns no value. Sets the data associated with key @k to value @v in the
  * default theme data.
  */
-void
-ewl_theme_data_set_default_str(char *k, char *v)
+void ewl_theme_data_set_default_str(char *k, char *v)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -350,8 +338,7 @@ ewl_theme_data_set_default_str(char *k, char *v)
  * Returns no value. Sets the data associated with key @k to value @v in the
  * default theme data.
  */
-void
-ewl_theme_data_set_default_int(char *k, int v)
+void ewl_theme_data_set_default_int(char *k, int v)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 

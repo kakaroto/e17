@@ -16,8 +16,7 @@ void            __ewl_textarea_update_size(Ewl_TextArea * ta);
  * Returns a pointer to a newly allocated text area widget on success, NULL on
  * failure. Sets the text initially to @text if not NULL.
  */
-Ewl_Widget     *
-ewl_textarea_new(char *text)
+Ewl_Widget     *ewl_textarea_new(char *text)
 {
 	Ewl_TextArea   *ta;
 
@@ -38,8 +37,7 @@ ewl_textarea_new(char *text)
  * Returns no value. Sets the internal fields and callbacks of a text area to
  * their defaults.
  */
-void
-ewl_textarea_init(Ewl_TextArea * ta, char *text)
+void ewl_textarea_init(Ewl_TextArea * ta, char *text)
 {
 	Ewl_Widget     *w;
 
@@ -71,8 +69,7 @@ ewl_textarea_init(Ewl_TextArea * ta, char *text)
  * Returns no value. Sets the text of the text area widget @ta to a copy of
  * the contents of @text.
  */
-void
-ewl_textarea_set_text(Ewl_TextArea * ta, char *text)
+void ewl_textarea_set_text(Ewl_TextArea * ta, char *text)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("ta", ta);
@@ -102,8 +99,7 @@ ewl_textarea_set_text(Ewl_TextArea * ta, char *text)
  *
  * Returns a pointer to a copy of the text in @ta on success, NULL on failure.
  */
-char           *
-ewl_textarea_get_text(Ewl_TextArea * ta)
+char           *ewl_textarea_get_text(Ewl_TextArea * ta)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("ta", ta, NULL);
@@ -117,8 +113,7 @@ ewl_textarea_get_text(Ewl_TextArea * ta)
  *
  * Returns a pointer to the textarea's etox on success, NULL on failure.
  */
-Etox           *
-ewl_textarea_get_etox(Ewl_TextArea * ta)
+Etox           *ewl_textarea_get_etox(Ewl_TextArea * ta)
 {
 	DCHECK_PARAM_PTR_RET("ta", ta, NULL);
 
@@ -132,8 +127,7 @@ ewl_textarea_get_etox(Ewl_TextArea * ta)
  *
  * Returns no value. Uses @context when creating/modifying the etox in @ta.
  */
-void
-ewl_textarea_set_context(Ewl_TextArea * ta, Etox_Context * context)
+void ewl_textarea_set_context(Ewl_TextArea * ta, Etox_Context * context)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -151,16 +145,14 @@ ewl_textarea_set_context(Ewl_TextArea * ta, Etox_Context * context)
  * Returns a pointer to the assigned context in @ta if one exists, otherwise
  * NULL.
  */
-Etox_Context   *
-ewl_textarea_get_context(Ewl_TextArea * ta)
+Etox_Context   *ewl_textarea_get_context(Ewl_TextArea * ta)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	DRETURN_PTR(ta->etox_context, DLEVEL_STABLE);
 }
 
-void
-__ewl_textarea_realize(Ewl_Widget * w, void *ev_data, void *user_data)
+void __ewl_textarea_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	int             r, g, b, a;
 	char           *style;
@@ -189,22 +181,21 @@ __ewl_textarea_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 		etox_context_load(ta->etox, ta->etox_context);
 		etox_context_free(ta->etox_context);
 		ta->etox_context = NULL;
-	}
-	else {
+	} else {
 
 		/*
 		 * Get the default style and color based on the theme.
 		 */
 		style = ewl_theme_data_get_str(w,
-				"/appearance/textarea/default/base/style");
+					       "/appearance/textarea/default/base/style");
 		r = ewl_theme_data_get_int(w,
-				"/appearance/textarea/default/base/r");
+					   "/appearance/textarea/default/base/r");
 		g = ewl_theme_data_get_int(w,
-				"/appearance/textarea/default/base/g");
+					   "/appearance/textarea/default/base/g");
 		b = ewl_theme_data_get_int(w,
-				"/appearance/textarea/default/base/b");
+					   "/appearance/textarea/default/base/b");
 		a = ewl_theme_data_get_int(w,
-				"/appearance/textarea/default/base/a");
+					   "/appearance/textarea/default/base/a");
 
 		/*
 		 * Set the default style
@@ -234,8 +225,7 @@ __ewl_textarea_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void
-__ewl_textarea_configure(Ewl_Widget * w, void *ev_data, void *user_data)
+void __ewl_textarea_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_TextArea   *ta;
 
@@ -256,8 +246,7 @@ __ewl_textarea_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void
-__ewl_textarea_reparent(Ewl_Widget * w, void *ev_data, void *user_data)
+void __ewl_textarea_reparent(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_TextArea   *ta;
 
@@ -278,8 +267,7 @@ __ewl_textarea_reparent(Ewl_Widget * w, void *ev_data, void *user_data)
 /*
  * Set the size of the text area to the size of the etox.
  */
-void
-__ewl_textarea_update_size(Ewl_TextArea * ta)
+void __ewl_textarea_update_size(Ewl_TextArea * ta)
 {
 	int             x, y, width, height;
 

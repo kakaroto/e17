@@ -20,8 +20,7 @@ void            __ewl_button_theme_update(Ewl_Widget * w, void *ev_data,
  *
  * Returns NULL on failure, a pointer to a new button on success
  */
-Ewl_Widget     *
-ewl_button_new(char *label)
+Ewl_Widget     *ewl_button_new(char *label)
 {
 	Ewl_Button     *b;
 
@@ -44,8 +43,7 @@ ewl_button_new(char *label)
  *
  * Returns no value. Initializes a button to default values and callbacks.
  */
-void
-ewl_button_init(Ewl_Button * b, char *label)
+void ewl_button_init(Ewl_Button * b, char *label)
 {
 	Ewl_Widget     *w;
 
@@ -101,8 +99,7 @@ ewl_button_init(Ewl_Button * b, char *label)
  *
  * Returns no value.
  */
-void
-ewl_button_set_label(Ewl_Button * b, char *l)
+void ewl_button_set_label(Ewl_Button * b, char *l)
 {
 	Ewl_Widget     *w;
 
@@ -123,8 +120,7 @@ ewl_button_set_label(Ewl_Button * b, char *l)
 }
 
 
-void
-__ewl_button_focus_in(Ewl_Widget * w, void *ev_data, void *user_data)
+void __ewl_button_focus_in(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -137,8 +133,7 @@ __ewl_button_focus_in(Ewl_Widget * w, void *ev_data, void *user_data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void
-__ewl_button_focus_out(Ewl_Widget * w, void *ev_data, void *user_data)
+void __ewl_button_focus_out(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -148,8 +143,7 @@ __ewl_button_focus_out(Ewl_Widget * w, void *ev_data, void *user_data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void
-__ewl_button_mouse_down(Ewl_Widget * w, void *ev_data, void *user_data)
+void __ewl_button_mouse_down(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -159,8 +153,7 @@ __ewl_button_mouse_down(Ewl_Widget * w, void *ev_data, void *user_data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void
-__ewl_button_mouse_up(Ewl_Widget * w, void *ev_data, void *user_data)
+void __ewl_button_mouse_up(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -175,8 +168,7 @@ __ewl_button_mouse_up(Ewl_Widget * w, void *ev_data, void *user_data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void
-__ewl_button_show(Ewl_Widget * w, void *ev_data, void *user_data)
+void __ewl_button_show(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -186,8 +178,7 @@ __ewl_button_show(Ewl_Widget * w, void *ev_data, void *user_data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void
-__ewl_button_theme_update(Ewl_Widget * w, void *ev_data, void *user_data)
+void __ewl_button_theme_update(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Button     *b;
 	char            appearance[PATH_LEN];

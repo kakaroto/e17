@@ -37,4 +37,4 @@ Evas_Render_Method ewl_config_get_render_method();
 void            ewl_config_reread_and_apply(void);
 
 
-#endif /* __EWL_CONFIG_H__ */
+#endif				/* __EWL_CONFIG_H__ */

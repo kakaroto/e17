@@ -59,7 +59,10 @@ extern          "C" {
 #include <ewl_spinner.h>
 #include <ewl_list.h>
 #include <ewl_image.h>
+#include <ewl_menu_base.h>
 #include <ewl_imenu.h>
+#include <ewl_menu.h>
+#include <ewl_check.h>
 #include <ewl_checkbutton.h>
 #include <ewl_radiobutton.h>
 #include <ewl_cursor.h>

@@ -70,7 +70,7 @@
    contain conflicting prototypes for getopt.  */
 #include <stdlib.h>
 #include <unistd.h>
-#endif /* GNU C library.  */
+#endif				/* GNU C library.  */
 
 #ifdef VMS
 #include <unixlib.h>
@@ -207,10 +207,9 @@ static char    *posixly_correct;
 
 char           *getenv();
 
-static char    *
-my_index(str, chr)
-     const char     *str;
-     int             chr;
+static char    *my_index(str, chr)
+const char     *str;
+int chr;
 {
 	while (*str) {
 		if (*str == chr)
@@ -231,10 +230,10 @@ my_index(str, chr)
 /* gcc with -traditional declares the built-in strlen to return int,
    and has done so at least since version 2.4.5. -- rms.  */
 extern int      strlen(const char *);
-#endif /* not __STDC__ */
-#endif /* __GNUC__ */
+#endif				/* not __STDC__ */
+#endif				/* __GNUC__ */
 
-#endif /* not __GNU_LIBRARY__ */
+#endif				/* not __GNU_LIBRARY__ */
 
 /* Handle permutation of arguments.  */
 
@@ -275,7 +274,7 @@ static void __attribute__ ((unused)) store_args_and_env(int argc,
 
 # ifdef text_set_element
 text_set_element(__libc_subinit, store_args_and_env);
-# endif	/* text_set_element */
+# endif				/* text_set_element */
 
 # define SWAP_FLAGS(ch1, ch2) \
   if (nonoption_flags_len > 0)						      \
@@ -284,9 +283,9 @@ text_set_element(__libc_subinit, store_args_and_env);
       __getopt_nonoption_flags[ch1] = __getopt_nonoption_flags[ch2];	      \
       __getopt_nonoption_flags[ch2] = __tmp;				      \
     }
-#else /* !_LIBC */
+#else				/* !_LIBC */
 # define SWAP_FLAGS(ch1, ch2)
-#endif /* _LIBC */
+#endif				/* _LIBC */
 
 /* Exchange two adjacent subsequences of ARGV.
    One subsequence is elements [first_nonopt,last_nonopt)
@@ -301,9 +300,8 @@ text_set_element(__libc_subinit, store_args_and_env);
 static void     exchange(char **);
 #endif
 
-static void
-exchange(argv)
-     char          **argv;
+static void exchange(argv)
+char          **argv;
 {
 	int             bottom = first_nonopt;
 	int             middle = last_nonopt;
@@ -357,7 +355,7 @@ exchange(argv)
 			for (i = 0; i < len; i++) {
 				tem = argv[bottom + i];
 				argv[bottom + i] =
-					argv[top - (middle - bottom) + i];
+				    argv[top - (middle - bottom) + i];
 				argv[top - (middle - bottom) + i] = tem;
 				SWAP_FLAGS(bottom + i,
 					   top - (middle - bottom) + i);
@@ -402,11 +400,10 @@ exchange(argv)
 #if defined (__STDC__) && __STDC__
 static const char *_getopt_initialize(int, char *const *, const char *);
 #endif
-static const char *
-_getopt_initialize(argc, argv, optstring)
-     int             argc;
-     char           *const *argv;
-     const char     *optstring;
+static const char *_getopt_initialize(argc, argv, optstring)
+int argc;
+char           *const *argv;
+const char     *optstring;
 {
 	/*
 	 * Start processing options with ARGV-element 1 (since ARGV-element 0 is
@@ -444,14 +441,14 @@ _getopt_initialize(argc, argv, optstring)
 				nonoption_flags_max_len = -1;
 			else {
 				const char     *orig_str =
-					__getopt_nonoption_flags;
+				    __getopt_nonoption_flags;
 				int             len = nonoption_flags_max_len =
-					strlen(orig_str);
+				    strlen(orig_str);
 
 				if (nonoption_flags_max_len < argc)
 					nonoption_flags_max_len = argc;
 				__getopt_nonoption_flags = (char *)
-					malloc(nonoption_flags_max_len);
+				    malloc(nonoption_flags_max_len);
 				if (__getopt_nonoption_flags == NULL)
 					nonoption_flags_max_len = -1;
 				else
@@ -525,14 +522,13 @@ _getopt_initialize(argc, argv, optstring)
    If LONG_ONLY is nonzero, '-' as well as '--' can introduce
    long-named options.  */
 
-int
-_getopt_internal(argc, argv, optstring, longopts, longind, long_only)
-     int             argc;
-     char           *const *argv;
-     const char     *optstring;
-     const struct option *longopts;
-     int            *longind;
-     int             long_only;
+int _getopt_internal(argc, argv, optstring, longopts, longind, long_only)
+int argc;
+char           *const *argv;
+const char     *optstring;
+const struct option *longopts;
+int            *longind;
+int long_only;
 {
 	optarg = NULL;
 
@@ -646,8 +642,8 @@ _getopt_internal(argc, argv, optstring, longopts, longind, long_only)
 		 */
 
 		nextchar =
-			(argv[optind] + 1 +
-			 (longopts != NULL && argv[optind][1] == '-'));
+		    (argv[optind] + 1 +
+		     (longopts != NULL && argv[optind][1] == '-'));
 	}
 
 	/*
@@ -980,7 +976,7 @@ _getopt_internal(argc, argv, optstring, longopts, longind, long_only)
 								     1]);
 						nextchar += strlen(nextchar);
 						return optstring[0] ==
-							':' ? ':' : '?';
+						    ':' ? ':' : '?';
 					}
 				}
 				nextchar += strlen(nextchar);
@@ -1046,27 +1042,25 @@ _getopt_internal(argc, argv, optstring, longopts, longind, long_only)
 	}
 }
 
-int
-getopt(argc, argv, optstring)
-     int             argc;
-     char           *const *argv;
-     const char     *optstring;
+int getopt(argc, argv, optstring)
+int argc;
+char           *const *argv;
+const char     *optstring;
 {
 	return _getopt_internal(argc, argv, optstring,
 				(const struct option *) 0, (int *) 0, 0);
 }
 
-#endif /* Not ELIDE_CODE.  */
+#endif				/* Not ELIDE_CODE.  */
 
 #ifdef TEST
 
 /* Compile with -DTEST to make an executable for use in testing
    the above definition of `getopt'.  */
 
-int
-main(argc, argv)
-     int             argc;
-     char          **argv;
+int main(argc, argv)
+int argc;
+char          **argv;
 {
 	int             c;
 	int             digit_optind = 0;
@@ -1091,7 +1085,8 @@ main(argc, argv)
 		case '9':
 			if (digit_optind != 0 &&
 			    digit_optind != this_option_optind)
-				printf("digits occur in two different argv-elements.\n");
+				printf
+				    ("digits occur in two different argv-elements.\n");
 			digit_optind = this_option_optind;
 			printf("option %c\n", c);
 			break;
@@ -1126,4 +1121,4 @@ main(argc, argv)
 	exit(0);
 }
 
-#endif /* TEST */
+#endif				/* TEST */

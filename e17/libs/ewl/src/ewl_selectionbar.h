@@ -30,4 +30,4 @@ void            ewl_selectionbar_set_size(Ewl_Selectionbar * s, int w, int h1,
 					  int h2);
 
 
-#endif /* __EWL_SELECTIONBAR_H__ */
+#endif				/* __EWL_SELECTIONBAR_H__ */

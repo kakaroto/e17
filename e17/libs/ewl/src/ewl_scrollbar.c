@@ -2,11 +2,11 @@
 #include <Ewl.h>
 
 
-static void     __ewl_scrollbar_realize(Ewl_Widget * s, void *ev_data,
+void            __ewl_scrollbar_realize(Ewl_Widget * s, void *ev_data,
 					void *user_data);
-static void     __ewl_scrollbar_decrement(Ewl_Widget * w, void *ev_data,
+void            __ewl_scrollbar_decrement(Ewl_Widget * w, void *ev_data,
 					  void *user_data);
-static void     __ewl_scrollbar_increment(Ewl_Widget * w, void *ev_data,
+void            __ewl_scrollbar_increment(Ewl_Widget * w, void *ev_data,
 					  void *user_data);
 void            __ewl_scrollbar_seeker_configure(Ewl_Widget * w, void *ev_data,
 						 void *user_data);
@@ -22,8 +22,7 @@ void            __ewl_scrollbar_seeker_value_changed(Ewl_Widget * w,
  * Returns NULL on failure, or a pointer to the newly allocated scrollbar
  * widget on success.
  */
-Ewl_Widget     *
-ewl_scrollbar_new(Ewl_Orientation orientation)
+Ewl_Widget     *ewl_scrollbar_new(Ewl_Orientation orientation)
 {
 	Ewl_Scrollbar  *s;
 
@@ -51,8 +50,7 @@ ewl_scrollbar_new(Ewl_Orientation orientation)
  *
  * Returns no value.
  */
-void
-ewl_scrollbar_init(Ewl_Scrollbar * s, Ewl_Orientation orientation)
+void ewl_scrollbar_init(Ewl_Scrollbar * s, Ewl_Orientation orientation)
 {
 	Ewl_Widget     *w;
 
@@ -248,8 +246,7 @@ ewl_scrollbar_init(Ewl_Scrollbar * s, Ewl_Orientation orientation)
  * Returns no value. Changes the area of the scrollbar that is filled by the
  * drag button.
  */
-void
-ewl_scrollbar_set_fill_percentage(Ewl_Scrollbar * s, double fp)
+void ewl_scrollbar_set_fill_percentage(Ewl_Scrollbar * s, double fp)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("s", s);
@@ -287,8 +284,7 @@ ewl_scrollbar_set_fill_percentage(Ewl_Scrollbar * s, double fp)
  * Returns the percentage of the scrollbar that the drag button fills on
  * success, -1 on failure.
  */
-double
-ewl_scrollbar_get_fill_percentage(Ewl_Scrollbar * s)
+double ewl_scrollbar_get_fill_percentage(Ewl_Scrollbar * s)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("s", s, -1);
@@ -302,8 +298,7 @@ ewl_scrollbar_get_fill_percentage(Ewl_Scrollbar * s)
  *
  * Returns the current value of the scrollbar @s.
  */
-double
-ewl_scrollbar_get_value(Ewl_Scrollbar * s)
+double ewl_scrollbar_get_value(Ewl_Scrollbar * s)
 {
 	double          v;
 
@@ -328,8 +323,7 @@ ewl_scrollbar_get_value(Ewl_Scrollbar * s)
  *
  * Returns no value. Sets the flags @f for the scrollbar @s.
  */
-void
-ewl_scrollbar_set_flag(Ewl_Scrollbar * s, Ewl_ScrollBar_Flags f)
+void ewl_scrollbar_set_flag(Ewl_Scrollbar * s, Ewl_ScrollBar_Flags f)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("s", s);
@@ -345,8 +339,7 @@ ewl_scrollbar_set_flag(Ewl_Scrollbar * s, Ewl_ScrollBar_Flags f)
  *
  * Returns the flags from the scrollbars @s.
  */
-Ewl_ScrollBar_Flags
-ewl_scrollbar_get_flag(Ewl_Scrollbar * s)
+Ewl_ScrollBar_Flags ewl_scrollbar_get_flag(Ewl_Scrollbar * s)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("s", s, 0);
@@ -358,8 +351,7 @@ ewl_scrollbar_get_flag(Ewl_Scrollbar * s)
 /*
  * Make sure that we show all the parts of the scrollbar
  */
-static void
-__ewl_scrollbar_realize(Ewl_Widget * w, void *ev_data, void *user_data)
+void __ewl_scrollbar_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Scrollbar  *s;
 
@@ -391,8 +383,7 @@ __ewl_scrollbar_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 /*
  * Decrement the value of the scrollbar's seeker portion
  */
-static void
-__ewl_scrollbar_decrement(Ewl_Widget * w, void *ev_data, void *user_data)
+void __ewl_scrollbar_decrement(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	double          v;
 	Ewl_Scrollbar  *s;
@@ -420,8 +411,7 @@ __ewl_scrollbar_decrement(Ewl_Widget * w, void *ev_data, void *user_data)
 /*
  * Decrement the value of the scrollbar's seeker portion
  */
-static void
-__ewl_scrollbar_increment(Ewl_Widget * w, void *ev_data, void *user_data)
+void __ewl_scrollbar_increment(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	double          v;
 	Ewl_Scrollbar  *s;

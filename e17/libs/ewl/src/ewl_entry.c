@@ -26,9 +26,12 @@ void            __ewl_entry_insert_text(Ewl_Widget * w, char *s);
 void            __ewl_entry_delete_to_left(Ewl_Widget * w);
 void            __ewl_entry_delete_to_right(Ewl_Widget * w);
 
-void
-                __ewl_entry_update_selected_region(Ewl_Widget * w, void *user_data,
+void            __ewl_entry_update_selected_region(Ewl_Widget * w,
+						   void *user_data,
 						   void *ev_data);
+void            __ewl_entry_child_resize(Ewl_Container * entry,
+					 Ewl_Widget * text, int size,
+					 Ewl_Orientation o);
 
 /**
  * ewl_entry_new - allocate and initialize a new entry widget
@@ -36,8 +39,7 @@ void
  * Returns a newly allocated and initialized entry widget on success, NULL on
  * failure.
  */
-Ewl_Widget     *
-ewl_entry_new(void)
+Ewl_Widget     *ewl_entry_new(void)
 {
 	Ewl_Entry      *e;
 
@@ -69,8 +71,7 @@ ewl_entry_new(void)
  *
  * Returns no value. Change the text of the entry widget @e to the string @t.
  */
-void
-ewl_entry_set_text(Ewl_Entry * e, char *t)
+void ewl_entry_set_text(Ewl_Entry * e, char *t)
 {
 	Ewl_Widget     *w;
 
@@ -84,8 +85,7 @@ ewl_entry_set_text(Ewl_Entry * e, char *t)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-char           *
-ewl_entry_get_text(Ewl_Entry * e)
+char           *ewl_entry_get_text(Ewl_Entry * e)
 {
 	Ewl_Widget     *w;
 
@@ -104,8 +104,7 @@ ewl_entry_get_text(Ewl_Entry * e)
  * Returns no value. Initializes the entry widget @e to it's default values
  * and callbacks.
  */
-void
-ewl_entry_init(Ewl_Entry * e)
+void ewl_entry_init(Ewl_Entry * e)
 {
 	Ewl_Widget     *w;
 
@@ -115,7 +114,7 @@ ewl_entry_init(Ewl_Entry * e)
 	w = EWL_WIDGET(e);
 
 	ewl_container_init(EWL_CONTAINER(w), "/appearance/entry/default",
-			   NULL, NULL);
+			   NULL, __ewl_entry_child_resize);
 	ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FILL_POLICY_FILL);
 	ewl_object_set_minimum_size(EWL_OBJECT(w), 20, 20);
 	ewl_object_set_maximum_size(EWL_OBJECT(w), 1 << 30, 20);
@@ -149,8 +148,7 @@ ewl_entry_init(Ewl_Entry * e)
 /*
  * Draw the appearance information for the entry widget
  */
-void
-__ewl_entry_realize(Ewl_Widget * w, void *ev_data, void *user_data)
+void __ewl_entry_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Entry      *e;
 
@@ -166,21 +164,10 @@ __ewl_entry_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_widget_realize(e->selection);
 	ewl_widget_hide(e->selection);
 
-	/*
-	 * if (w->ebits_object) {
-	 * int ww, hh;
-	 * 
-	 * ebits_get_max_size(w->ebits_object, &ww, &hh);
-	 * 
-	 * ewl_object_set_maximum_size(EWL_OBJECT(w), ww, hh);
-	 * }
-	 */
-
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void
-__ewl_entry_configure(Ewl_Widget * w, void *ev_data, void *user_data)
+void __ewl_entry_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Entry      *e;
 	int             xx, yy, ww, hh;
@@ -268,8 +255,7 @@ __ewl_entry_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 /*
  * Handle key events to modify the text of the entry widget.
  */
-void
-__ewl_entry_key_down(Ewl_Widget * w, void *ev_data, void *user_data)
+void __ewl_entry_key_down(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ecore_Event_Key_Down *ev;
 
@@ -296,8 +282,7 @@ __ewl_entry_key_down(Ewl_Widget * w, void *ev_data, void *user_data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void
-__ewl_entry_mouse_down(Ewl_Widget * w, void *ev_data, void *user_data)
+void __ewl_entry_mouse_down(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ecore_Event_Mouse_Down *ev;
 	Ewl_Entry      *e;
@@ -339,8 +324,7 @@ __ewl_entry_mouse_down(Ewl_Widget * w, void *ev_data, void *user_data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void
-__ewl_entry_mouse_move(Ewl_Widget * w, void *ev_data, void *user_data)
+void __ewl_entry_mouse_move(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ecore_Event_Mouse_Move *ev;
 	Ewl_Entry      *e;
@@ -392,8 +376,7 @@ __ewl_entry_mouse_move(Ewl_Widget * w, void *ev_data, void *user_data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void
-__ewl_entry_select(Ewl_Widget * w, void *ev_data, void *user_data)
+void __ewl_entry_select(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Entry      *e;
 
@@ -407,8 +390,7 @@ __ewl_entry_select(Ewl_Widget * w, void *ev_data, void *user_data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void
-__ewl_entry_deselect(Ewl_Widget * w, void *ev_data, void *user_data)
+void __ewl_entry_deselect(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Entry      *e;
 
@@ -422,8 +404,7 @@ __ewl_entry_deselect(Ewl_Widget * w, void *ev_data, void *user_data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void
-__ewl_entry_theme_update(Ewl_Widget * w, void *ev_data, void *user_data)
+void __ewl_entry_theme_update(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Entry      *e;
 	char           *font, *style;
@@ -450,8 +431,7 @@ __ewl_entry_theme_update(Ewl_Widget * w, void *ev_data, void *user_data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void
-__ewl_entry_move_cursor_to_left(Ewl_Widget * w)
+void __ewl_entry_move_cursor_to_left(Ewl_Widget * w)
 {
 	Ewl_Entry      *e;
 	int             pos;
@@ -471,8 +451,7 @@ __ewl_entry_move_cursor_to_left(Ewl_Widget * w)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void
-__ewl_entry_move_cursor_to_right(Ewl_Widget * w)
+void __ewl_entry_move_cursor_to_right(Ewl_Widget * w)
 {
 	Ewl_Entry      *e;
 	char           *str;
@@ -500,8 +479,7 @@ __ewl_entry_move_cursor_to_right(Ewl_Widget * w)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void
-__ewl_entry_move_cursor_to_home(Ewl_Widget * w)
+void __ewl_entry_move_cursor_to_home(Ewl_Widget * w)
 {
 	Ewl_Entry      *e;
 
@@ -516,8 +494,7 @@ __ewl_entry_move_cursor_to_home(Ewl_Widget * w)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void
-__ewl_entry_move_cursor_to_end(Ewl_Widget * w)
+void __ewl_entry_move_cursor_to_end(Ewl_Widget * w)
 {
 	Ewl_Entry      *e;
 	char           *s;
@@ -540,8 +517,7 @@ __ewl_entry_move_cursor_to_end(Ewl_Widget * w)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void
-__ewl_entry_insert_text(Ewl_Widget * w, char *s)
+void __ewl_entry_insert_text(Ewl_Widget * w, char *s)
 {
 	Ewl_Entry      *e;
 	char           *s2, *s3;
@@ -577,8 +553,7 @@ __ewl_entry_insert_text(Ewl_Widget * w, char *s)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void
-__ewl_entry_delete_to_left(Ewl_Widget * w)
+void __ewl_entry_delete_to_left(Ewl_Widget * w)
 {
 	Ewl_Entry      *e;
 	char           *s, *s2;
@@ -612,8 +587,7 @@ __ewl_entry_delete_to_left(Ewl_Widget * w)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void
-__ewl_entry_delete_to_right(Ewl_Widget * w)
+void __ewl_entry_delete_to_right(Ewl_Widget * w)
 {
 	Ewl_Entry      *e;
 	char           *s, *s2;
@@ -641,4 +615,18 @@ __ewl_entry_delete_to_right(Ewl_Widget * w)
 	ewl_widget_configure(w);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void
+__ewl_entry_child_resize(Ewl_Container * entry, Ewl_Widget * text, int size,
+			 Ewl_Orientation o)
+{
+	if (o == EWL_ORIENTATION_HORIZONTAL)
+		ewl_object_set_preferred_w(EWL_OBJECT(entry),
+					   ewl_object_get_preferred_w(EWL_OBJECT
+								      (text)));
+	else
+		ewl_object_set_preferred_h(EWL_OBJECT(entry),
+					   ewl_object_get_preferred_h(EWL_OBJECT
+								      (text)));
 }

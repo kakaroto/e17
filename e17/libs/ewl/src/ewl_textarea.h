@@ -26,4 +26,4 @@ void            ewl_textarea_set_context(Ewl_TextArea * ta,
 					 Etox_Context * context);
 Etox_Context   *ewl_textarea_get_context(Ewl_TextArea * ta);
 
-#endif /* __EWL_TEXTAREA_H__ */
+#endif				/* __EWL_TEXTAREA_H__ */

@@ -29,8 +29,7 @@ void            __ewl_scrollpane_box_resize(Ewl_Container * p, Ewl_Widget * w,
  * Returns a pointer to a newly allocated scrollpane on success, NULL on
  * failure.
  */
-Ewl_Widget     *
-ewl_scrollpane_new(void)
+Ewl_Widget     *ewl_scrollpane_new(void)
 {
 	Ewl_ScrollPane *s;
 
@@ -52,8 +51,7 @@ ewl_scrollpane_new(void)
  * Returns no value. Sets up default callbacks and field values for the
  * scrollpane @s.
  */
-void
-ewl_scrollpane_init(Ewl_ScrollPane * s)
+void ewl_scrollpane_init(Ewl_ScrollPane * s)
 {
 	Ewl_Widget     *w;
 
@@ -156,8 +154,7 @@ ewl_scrollpane_set_vscrollbar_flag(Ewl_ScrollPane * s, Ewl_ScrollBar_Flags f)
  *
  * Returns the flags of the horizontal scrollbar on success, NULL on failure.
  */
-Ewl_ScrollBar_Flags
-ewl_scrollpane_get_hscrollbar_flag(Ewl_ScrollPane * s)
+Ewl_ScrollBar_Flags ewl_scrollpane_get_hscrollbar_flag(Ewl_ScrollPane * s)
 {
 	Ewl_ScrollBar_Flags f;
 
@@ -175,8 +172,7 @@ ewl_scrollpane_get_hscrollbar_flag(Ewl_ScrollPane * s)
  *
  * Returns the flags of the vertical scrollbar on success, NULL on failure.
  */
-Ewl_ScrollBar_Flags
-ewl_scrollpane_get_vscrollbar_flag(Ewl_ScrollPane * s)
+Ewl_ScrollBar_Flags ewl_scrollpane_get_vscrollbar_flag(Ewl_ScrollPane * s)
 {
 	Ewl_ScrollBar_Flags f;
 
@@ -188,8 +184,7 @@ ewl_scrollpane_get_vscrollbar_flag(Ewl_ScrollPane * s)
 	DRETURN_INT(f, DLEVEL_STABLE);
 }
 
-void
-__ewl_scrollpane_realize(Ewl_Widget * w, void *ev_data, void *user_data)
+void __ewl_scrollpane_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	ewl_widget_realize(EWL_SCROLLPANE(w)->hscrollbar);
 	ewl_widget_realize(EWL_SCROLLPANE(w)->vscrollbar);
@@ -199,8 +194,7 @@ __ewl_scrollpane_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 /*
  * Move the contents of the scrollbar into place
  */
-void
-__ewl_scrollpane_configure(Ewl_Widget * w, void *ev_data, void *user_data)
+void __ewl_scrollpane_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	int             vs_width = 0;
 	int             hs_height = 0;
@@ -354,8 +348,7 @@ __ewl_scrollpane_body_configure(Ewl_Widget * w, void *ev_data, void *user_data)
  * When a horizontal scrollbar is clicked we need to move the contents of the
  * scrollpane horizontally.
  */
-void
-__ewl_scrollpane_hscroll(Ewl_Widget * w, void *ev_data, void *user_data)
+void __ewl_scrollpane_hscroll(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -370,8 +363,7 @@ __ewl_scrollpane_hscroll(Ewl_Widget * w, void *ev_data, void *user_data)
  * When a vertical scrollbar is clicked we need to move the contents of the
  * scrollpane vertically.
  */
-void
-__ewl_scrollpane_vscroll(Ewl_Widget * w, void *ev_data, void *user_data)
+void __ewl_scrollpane_vscroll(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -385,8 +377,7 @@ __ewl_scrollpane_vscroll(Ewl_Widget * w, void *ev_data, void *user_data)
 /*
  * Actually add the child to the box rather than the scrollpane itself.
  */
-void
-__ewl_scrollpane_add(Ewl_Container * parent, Ewl_Widget * child)
+void __ewl_scrollpane_add(Ewl_Container * parent, Ewl_Widget * child)
 {
 	Ewl_ScrollPane *s;
 
@@ -444,8 +435,7 @@ __ewl_scrollpane_child_resize(Ewl_Container * parent, Ewl_Widget * child,
 /*
  * When adding a child to the container, remove any other children.
  */
-void
-__ewl_scrollpane_box_add(Ewl_Container * p, Ewl_Widget * child)
+void __ewl_scrollpane_box_add(Ewl_Container * p, Ewl_Widget * child)
 {
 	/*
 	 * Remove all the children before the newly added one.

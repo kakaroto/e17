@@ -69,4 +69,4 @@ Ewl_Widget     *ewl_container_get_child_at(Ewl_Container * widget, int x,
 Ewl_Widget     *ewl_container_get_child_at_recursive(Ewl_Container * widget,
 						     int x, int y);
 
-#endif /* __EWL_CONTAINER_H__ */
+#endif				/* __EWL_CONTAINER_H__ */

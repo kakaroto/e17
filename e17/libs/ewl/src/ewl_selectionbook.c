@@ -20,8 +20,7 @@ void            __ewl_selectionbook_page_switch(Ewl_Widget * w, void *ev_data,
  * 
  * Returns a newly allocated selectionbook on success, NULL on failure.
  */
-Ewl_Widget     *
-ewl_selectionbook_new()
+Ewl_Widget     *ewl_selectionbook_new()
 {
 	Ewl_Selectionbook *s;
 
@@ -47,8 +46,7 @@ ewl_selectionbook_new()
  * Returns no value. Sets the fields and callbacks of the selectionbook
  * @s to their default values.
  */
-void
-ewl_selectionbook_init(Ewl_Selectionbook * s)
+void ewl_selectionbook_init(Ewl_Selectionbook * s)
 {
 	Ewl_Widget     *w;
 
@@ -133,8 +131,7 @@ ewl_selectionbook_add_page(Ewl_Selectionbook * s, Ewl_Widget * tab,
 
 
 
-void
-ewl_selectionbook_rem_page(Ewl_Selectionbook * s, int num, int destroy)
+void ewl_selectionbook_rem_page(Ewl_Selectionbook * s, int num, int destroy)
 {
 	Ewl_SbookPage  *p;;
 
@@ -187,8 +184,7 @@ ewl_selectionbook_rem_page(Ewl_Selectionbook * s, int num, int destroy)
 }
 
 
-void
-ewl_selectionbook_rem_current_page(Ewl_Selectionbook * s, int destroy)
+void ewl_selectionbook_rem_current_page(Ewl_Selectionbook * s, int destroy)
 {
 	Ewl_SbookPage  *p;
 
@@ -227,8 +223,7 @@ ewl_selectionbook_rem_current_page(Ewl_Selectionbook * s, int destroy)
 }
 
 
-void
-__ewl_selectionbook_realize(Ewl_Widget * w, void *ev_data, void *user_data)
+void __ewl_selectionbook_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Selectionbook *s;
 
@@ -273,8 +268,7 @@ __ewl_selectionbook_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 }
 
 
-void
-__ewl_selectionbook_destroy(Ewl_Widget * w, void *ev_data, void *user_data)
+void __ewl_selectionbook_destroy(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Selectionbook *s;
 	Ewl_SbookPage  *p;

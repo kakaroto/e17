@@ -17,8 +17,7 @@ void            __process_directory(Ewl_Fileselector * fs, char *dir);
  * Returns a pointer to a newly allocated fileselector on success, NULL
  * on failure.
  */
-Ewl_Widget     *
-ewl_fileselector_new(Ewl_Callback_Function file_clicked)
+Ewl_Widget     *ewl_fileselector_new(Ewl_Callback_Function file_clicked)
 {
 	Ewl_Fileselector *fs;
 
@@ -41,8 +40,7 @@ ewl_fileselector_new(Ewl_Callback_Function file_clicked)
  *
  * Returns nothing. Initialize the fileselector to default values
  */
-void
-ewl_fileselector_init(Ewl_Fileselector * fs, Ewl_Callback_Function fc)
+void ewl_fileselector_init(Ewl_Fileselector * fs, Ewl_Callback_Function fc)
 {
 	Ewl_Widget     *w;
 
@@ -77,8 +75,7 @@ ewl_fileselector_init(Ewl_Fileselector * fs, Ewl_Callback_Function fc)
 }
 
 
-void
-__ewl_fileselector_realize(Ewl_Widget * w, void *ev_data, void *user_data)
+void __ewl_fileselector_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Fileselector *fs;
 	char           *home;
@@ -113,8 +110,7 @@ __ewl_fileselector_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 }
 
 
-void
-__directory_clicked(Ewl_Widget * w, void *ev_data, void *user_data)
+void __directory_clicked(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	char            dir[PATH_MAX];
 	int             index;
@@ -136,8 +132,7 @@ __directory_clicked(Ewl_Widget * w, void *ev_data, void *user_data)
 }
 
 
-void
-__process_directory(Ewl_Fileselector * fs, char *directory)
+void __process_directory(Ewl_Fileselector * fs, char *directory)
 {
 	char          **dir_head, **file_head;
 	char            file[PATH_MAX];
@@ -260,12 +255,12 @@ __process_directory(Ewl_Fileselector * fs, char *directory)
 				fs->d_info[d_count].dirEntry = dentries[i];
 
 				tc = (Ewl_Table_Child *)
-					ewl_table_add_return(EWL_TABLE
-							     (fs->dirs),
-							     dentries[i]->
-							     d_name, 1, 1,
-							     d_count + 1,
-							     d_count + 1);
+				    ewl_table_add_return(EWL_TABLE
+							 (fs->dirs),
+							 dentries[i]->
+							 d_name, 1, 1,
+							 d_count + 1,
+							 d_count + 1);
 
 				ewl_widget_show(EWL_WIDGET(tc));
 
@@ -291,12 +286,12 @@ __process_directory(Ewl_Fileselector * fs, char *directory)
 				fs->f_info[f_count].status = statBuffer;
 
 				tc = (Ewl_Table_Child *)
-					ewl_table_add_return(EWL_TABLE
-							     (fs->files),
-							     dentries[i]->
-							     d_name, 1, 1,
-							     f_count + 1,
-							     f_count + 1);
+				    ewl_table_add_return(EWL_TABLE
+							 (fs->files),
+							 dentries[i]->
+							 d_name, 1, 1,
+							 f_count + 1,
+							 f_count + 1);
 
 				ewl_widget_show(EWL_WIDGET(tc));
 

@@ -24,8 +24,7 @@ static void     ewl_ev_mouse_out(Ecore_Event * _ev);
  *
  * Returns true or false to indicate success in initiating the event filters.
  */
-int
-ewl_ev_init(void)
+int ewl_ev_init(void)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -65,8 +64,7 @@ ewl_ev_init(void)
  * Returns no value. Dispatches the expose event to the appropriate window for
  * handling.
  */
-static void
-ewl_ev_window_expose(Ecore_Event * _ev)
+static void ewl_ev_window_expose(Ecore_Event * _ev)
 {
 	/*
 	 * Widgets don't need to know about this usually, but we still need to
@@ -96,8 +94,7 @@ ewl_ev_window_expose(Ecore_Event * _ev)
  * Returns no value. Dispatches a configure even to the appropriate ewl
  * window.
  */
-static void
-ewl_ev_window_configure(Ecore_Event * _ev)
+static void ewl_ev_window_configure(Ecore_Event * _ev)
 {
 	/*
 	 * When a configure event occurs, we must update the windows geometry
@@ -132,8 +129,7 @@ ewl_ev_window_configure(Ecore_Event * _ev)
  * Returns no value. Dispatches the delete event to the appropriate ewl
  * window.
  */
-static void
-ewl_ev_window_delete(Ecore_Event * _ev)
+static void ewl_ev_window_delete(Ecore_Event * _ev)
 {
 	/*
 	 * Retrieve the appropriate ewl_window using the x window id that is
@@ -163,8 +159,7 @@ ewl_ev_window_delete(Ecore_Event * _ev)
  * Returns no value. Dispatches the key down event to the appropriate ewl
  * window.
  */
-static void
-ewl_ev_key_down(Ecore_Event * _ev)
+static void ewl_ev_key_down(Ecore_Event * _ev)
 {
 	/*
 	 * Dispatcher of key down events, these get sent to the last widget
@@ -206,8 +201,7 @@ ewl_ev_key_down(Ecore_Event * _ev)
  * Returns no value. Dispatches the key up event to the appropriate ewl
  * window.
  */
-static void
-ewl_ev_key_up(Ecore_Event * _ev)
+static void ewl_ev_key_up(Ecore_Event * _ev)
 {
 	/*
 	 * Dispatch key up events to the appropriate widget
@@ -242,8 +236,7 @@ ewl_ev_key_up(Ecore_Event * _ev)
  * Returns no value. Dispatches the mouse down event to the appropriate ewl
  * window. Also determines the widgets clicked state.
  */
-static void
-ewl_ev_mouse_down(Ecore_Event * _ev)
+static void ewl_ev_mouse_down(Ecore_Event * _ev)
 {
 	Ewl_Widget     *widget = NULL;
 	Ewl_Window     *window;
@@ -302,8 +295,7 @@ ewl_ev_mouse_down(Ecore_Event * _ev)
  * Returns no value. Dispatches the mouse up event to the appropriate ewl
  * window. Also determines the widgets clicked state.
  */
-static void
-ewl_ev_mouse_up(Ecore_Event * _ev)
+static void ewl_ev_mouse_up(Ecore_Event * _ev)
 {
 	Ewl_Window     *window;
 	Ecore_Event_Mouse_Up *ev;
@@ -333,8 +325,7 @@ ewl_ev_mouse_up(Ecore_Event * _ev)
  * Returns no value. Dispatches the mouse move event to the appropriate ewl
  * window.
  */
-static void
-ewl_ev_mouse_move(Ecore_Event * _ev)
+static void ewl_ev_mouse_move(Ecore_Event * _ev)
 {
 	Ewl_Widget     *widget;
 	Ewl_Window     *window;
@@ -392,8 +383,7 @@ ewl_ev_mouse_move(Ecore_Event * _ev)
  * Returns no value. Dispatches the mouse out event to the appropriate ewl
  * window.
  */
-static void
-ewl_ev_mouse_out(Ecore_Event * _ev)
+static void ewl_ev_mouse_out(Ecore_Event * _ev)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 

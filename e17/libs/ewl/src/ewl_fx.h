@@ -51,11 +51,16 @@ void            ewl_fx_init_widget(Ewl_Widget * w);
 void            ewl_fx_deinit_widget(Ewl_Widget * w);
 
 int
-                ewl_fx_add_proto(char *name,
-				 Ewl_FX_Function fx_start,
-				 Ewl_FX_Timer_Function fx_cont,
-				 Ewl_FX_Function fx_stop,
-				 Ewl_FX_Modifies modifies);
+ 
+ 
+ 
+ 
+ 
+ 
+ewl_fx_add_proto(char *name,
+		 Ewl_FX_Function fx_start,
+		 Ewl_FX_Timer_Function fx_cont,
+		 Ewl_FX_Function fx_stop, Ewl_FX_Modifies modifies);
 int             ewl_fx_del_proto(char *name);
 
 Ewl_FX_Proto   *ewl_fx_proto_get(char *name);
@@ -84,4 +89,4 @@ Ewd_List       *ewl_fx_get_available(void);
 void            ewl_fx_start(Ewl_Widget * w, Ewl_FX_Pending * pend);
 void            ewl_fx_stop(Ewl_Widget * w, Ewl_FX_Pending * pend);
 
-#endif /* __EWL_FX_H__ */
+#endif				/* __EWL_FX_H__ */

@@ -60,4 +60,4 @@ void            ewl_callback_del_type(Ewl_Widget * w, Ewl_Callback_Type t);
 void            ewl_callback_del(Ewl_Widget * w, Ewl_Callback_Type t,
 				 Ewl_Callback_Function f);
 
-#endif /* __EWL_CALLBACK_H__ */
+#endif				/* __EWL_CALLBACK_H__ */

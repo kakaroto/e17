@@ -1,6 +1,6 @@
 #include <Ewl.h>
 
-static void     __ewl_separator_realize(Ewl_Widget * w, void *ev_data,
+void            __ewl_separator_realize(Ewl_Widget * w, void *ev_data,
 					void *user_data);
 
 /**
@@ -10,8 +10,7 @@ static void     __ewl_separator_realize(Ewl_Widget * w, void *ev_data,
  * Returns a pointer to the newly alloacted separator widget on success, NULL
  * on failure.
  */
-Ewl_Widget     *
-ewl_separator_new(Ewl_Orientation o)
+Ewl_Widget     *ewl_separator_new(Ewl_Orientation o)
 {
 	Ewl_Separator  *s;
 
@@ -33,8 +32,7 @@ ewl_separator_new(Ewl_Orientation o)
  * Returns no value. Clears the contents of the separator and stores the
  * default values along with the orientation specified by @o.
  */
-void
-ewl_separator_init(Ewl_Separator * s, Ewl_Orientation o)
+void ewl_separator_init(Ewl_Separator * s, Ewl_Orientation o)
 {
 	Ewl_Widget     *w;
 
@@ -62,8 +60,7 @@ ewl_separator_init(Ewl_Separator * s, Ewl_Orientation o)
  * Setup the ewl object's maximum size based on the max size of the ebits
  * object.
  */
-static void
-__ewl_separator_realize(Ewl_Widget * w, void *ev_data, void *user_data)
+void __ewl_separator_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);

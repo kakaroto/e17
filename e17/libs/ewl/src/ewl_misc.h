@@ -15,4 +15,4 @@ void            ewl_configure_request(Ewl_Widget * w);
 
 #define _EWL_CONFIG_QUEUE
 
-#endif /* __EWL_MISC_H__ */
+#endif				/* __EWL_MISC_H__ */

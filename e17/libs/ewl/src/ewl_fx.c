@@ -23,8 +23,7 @@ static int      fx_group_id = -1;
  * Returns no value. The programmer should not call this, it is used by
  * ewl_init, and nothing else.
  */
-int
-ewl_fx_init(void)
+int ewl_fx_init(void)
 {
 	int             count;
 
@@ -72,8 +71,7 @@ ewl_fx_init(void)
  * Returns no value. The programmer should not call this, it is used by
  * ewl_deinit, and nothing else.
  */
-int
-ewl_fx_deinit(void)
+int ewl_fx_deinit(void)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -88,8 +86,7 @@ ewl_fx_deinit(void)
  *
  * Returns no value. Internal variables for fx to be used are setup on @w.
  */
-void
-ewl_fx_init_widget(Ewl_Widget * w)
+void ewl_fx_init_widget(Ewl_Widget * w)
 {
 	char            wname[PATH_LEN];
 	char            key[PATH_LEN];
@@ -204,8 +201,7 @@ ewl_fx_init_widget(Ewl_Widget * w)
  *
  * Returns no value. Frees fx variables attached to the widget @w.
  */
-void
-ewl_fx_deinit_widget(Ewl_Widget * w)
+void ewl_fx_deinit_widget(Ewl_Widget * w)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -271,8 +267,7 @@ ewl_fx_add_proto(char *name,
  *
  * Returns TRUE on success, FALSE on failure.
  */
-int
-ewl_fx_del_proto(char *name)
+int ewl_fx_del_proto(char *name)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("name", name, FALSE);
@@ -286,8 +281,7 @@ ewl_fx_del_proto(char *name)
  *
  * Returns a pointer to the found fx prototype on success, NULL on failure.
  */
-Ewl_FX_Proto   *
-ewl_fx_proto_get(char *name)
+Ewl_FX_Proto   *ewl_fx_proto_get(char *name)
 {
 	Ewl_FX_Proto   *fxp;
 
@@ -486,8 +480,7 @@ ewl_fx_del(Ewl_Widget * w, char *name, Ewl_Callback_Type cb_start,
  * Returns no value. Any fx currently running are stopped and all fx are
  * deleted from the widget.
  */
-void
-ewl_fx_del_all(Ewl_Widget * w)
+void ewl_fx_del_all(Ewl_Widget * w)
 {
 	Ewl_FX_Pending *pend;
 
@@ -635,8 +628,7 @@ ewl_fx_timer_add(Ewl_Widget * w, char *name, double timeout, int fps,
  *
  * Returns no value. Removes the timer specified by @name from the widget @w.
  */
-void
-ewl_fx_timer_del(Ewl_Widget * w, char *name)
+void ewl_fx_timer_del(Ewl_Widget * w, char *name)
 {
 	Ewl_FX_Timer   *timer;
 	char            name2[PATH_LEN];
@@ -685,8 +677,7 @@ ewl_fx_timer_del(Ewl_Widget * w, char *name)
  * Returns no value. The RGBA values of @w's fx clip box are stored into any
  * non-NULL pointers @r, @g, @b, and @a respectively.
  */
-void
-ewl_fx_clip_box_get_color(Ewl_Widget * w, int *r, int *g, int *b, int *a)
+void ewl_fx_clip_box_get_color(Ewl_Widget * w, int *r, int *g, int *b, int *a)
 {
 	Ewl_Window     *win;
 
@@ -725,8 +716,7 @@ ewl_fx_clip_box_get_color(Ewl_Widget * w, int *r, int *g, int *b, int *a)
  * Returns no value. Sets the RGBA colors of @w's fx clib box to @r, @g, @b,
  * and @a respectively.
  */
-void
-ewl_fx_clip_box_set_color(Ewl_Widget * w, int r, int g, int b, int a)
+void ewl_fx_clip_box_set_color(Ewl_Widget * w, int r, int g, int b, int a)
 {
 	Ewl_Window     *win;
 
@@ -750,8 +740,7 @@ ewl_fx_clip_box_set_color(Ewl_Widget * w, int r, int g, int b, int a)
  *
  * Returns a pointer to the fx prototype on success, NULL on failure.
  */
-Ewl_FX_Proto   *
-ewl_fx_plugin_load(char *name)
+Ewl_FX_Proto   *ewl_fx_plugin_load(char *name)
 {
 	Ewd_Plugin     *plugin;
 	Ewl_FX_Load_Function load;
@@ -805,8 +794,7 @@ ewl_fx_plugin_load(char *name)
  *
  * Returns a list of available plugins on success, NULL on failure.
  */
-Ewd_List       *
-ewl_fx_get_available(void)
+Ewd_List       *ewl_fx_get_available(void)
 {
 	Ewd_List       *avail;
 
@@ -827,8 +815,7 @@ ewl_fx_get_available(void)
  *
  * Returns no value. Starts the pending fx @pend on widget @w.
  */
-void
-ewl_fx_start(Ewl_Widget * w, Ewl_FX_Pending * pend)
+void ewl_fx_start(Ewl_Widget * w, Ewl_FX_Pending * pend)
 {
 	Ewl_FX_Pending *pend2;
 	Ewl_FX_Proto   *proto, *proto2;
@@ -905,8 +892,7 @@ ewl_fx_start(Ewl_Widget * w, Ewl_FX_Pending * pend)
  * Returns no value. Here we stop the pending effect and search through
  * queued effects and start matching effects and remove them from the que list.
  */
-void
-ewl_fx_stop(Ewl_Widget * w, Ewl_FX_Pending * pend)
+void ewl_fx_stop(Ewl_Widget * w, Ewl_FX_Pending * pend)
 {
 	Ewl_FX_Pending *pend2, *pend3;
 	Ewl_FX_Proto   *proto, *proto2, *proto3;
@@ -1008,8 +994,7 @@ ewl_fx_stop(Ewl_Widget * w, Ewl_FX_Pending * pend)
  * The timer function determines when to stop the timer or add the ecore timer
  * again when needed.
  */
-static inline void
-__ewl_fx_timer_func(int val, void *data)
+static inline void __ewl_fx_timer_func(int val, void *data)
 {
 	Ewl_FX_Timer   *timer;
 
@@ -1103,7 +1088,9 @@ __ewl_fx_widget_appearance_changed(Ewl_Widget * w, void *ev_data,
 	 * Check for a valid appearance string.
 	 */
 	if (strncmp(w->appearance, "/appearance/", 12)) {
-		DWARNING("Widget %p has this:\n\n\t%s\n\nWierd appearance string\n", w, w->appearance);
+		DWARNING
+		    ("Widget %p has this:\n\n\t%s\n\nWierd appearance string\n",
+		     w, w->appearance);
 		DRETURN(DLEVEL_STABLE);
 	}
 

@@ -31,4 +31,4 @@ void            ewl_box_init(Ewl_Box * box, Ewl_Orientation orientation);
 void            ewl_box_set_orientation(Ewl_Box * b, Ewl_Orientation o);
 void            ewl_box_set_spacing(Ewl_Box * b, int spacing);
 
-#endif /* __EWL_BOX_H__ */
+#endif				/* __EWL_BOX_H__ */

@@ -4,19 +4,19 @@
 /*
  * Local callbacks used for acting based on events to parent widgets.
  */
-static void     __ewl_floater_parent_configure(Ewl_Widget * w, void *ev_data,
+void            __ewl_floater_parent_configure(Ewl_Widget * w, void *ev_data,
 					       void *user_data);
 
 /*
  * Local callbacks for events that occur to the floaters.
  */
-static void     __ewl_floater_configure(Ewl_Widget * parent, void *ev_data,
+void            __ewl_floater_configure(Ewl_Widget * parent, void *ev_data,
 					void *user_data);
-static void     __ewl_floater_realize(Ewl_Widget * parent, void *ev_data,
+void            __ewl_floater_realize(Ewl_Widget * parent, void *ev_data,
 				      void *user_data);
-static void     __ewl_floater_destroy(Ewl_Widget * parent, void *ev_data,
+void            __ewl_floater_destroy(Ewl_Widget * parent, void *ev_data,
 				      void *user_data);
-static void     __ewl_floater_reparent(Ewl_Widget * parent, void *ev_data,
+void            __ewl_floater_reparent(Ewl_Widget * parent, void *ev_data,
 				       void *user_data);
 
 extern void     __ewl_widget_reparent(Ewl_Widget * parent, void *ev_data,
@@ -30,8 +30,7 @@ extern void     __ewl_widget_reparent(Ewl_Widget * parent, void *ev_data,
  * widget on success. The @parent widget should be either a widget to follow
  * relative too, or a window for absolute positioning.
  */
-Ewl_Widget     *
-ewl_floater_new(Ewl_Widget * parent)
+Ewl_Widget     *ewl_floater_new(Ewl_Widget * parent)
 {
 	Ewl_Widget     *f;
 
@@ -58,8 +57,7 @@ ewl_floater_new(Ewl_Widget * parent)
  * Returns no value. Sets the fields and callbacks of the floater @f to their
  * defaults.
  */
-void
-ewl_floater_init(Ewl_Floater * f, Ewl_Widget * parent)
+void ewl_floater_init(Ewl_Floater * f, Ewl_Widget * parent)
 {
 	Ewl_Widget     *w;
 	Ewl_Window     *window;
@@ -129,8 +127,7 @@ ewl_floater_init(Ewl_Floater * f, Ewl_Widget * parent)
  *
  * Returns no value
  */
-void
-ewl_floater_set_position(Ewl_Floater * f, int x, int y)
+void ewl_floater_set_position(Ewl_Floater * f, int x, int y)
 {
 	DENTER_FUNCTION(DLEVEL_UNSTABLE);
 
@@ -156,8 +153,7 @@ ewl_floater_set_position(Ewl_Floater * f, int x, int y)
  * Returns no value. Sets the floater @f to be positioned relative to the
  * position of the widget @w.
  */
-void
-ewl_floater_set_relative(Ewl_Floater * f, Ewl_Widget * w)
+void ewl_floater_set_relative(Ewl_Floater * f, Ewl_Widget * w)
 {
 	DENTER_FUNCTION(DLEVEL_UNSTABLE);
 
@@ -186,7 +182,7 @@ ewl_floater_set_relative(Ewl_Floater * f, Ewl_Widget * w)
 /*
  * Use this to ensure the floater gets configured when the parent/window is.
  */
-static void
+void
 __ewl_floater_parent_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	DCHECK_PARAM_PTR("w", w);
@@ -196,8 +192,7 @@ __ewl_floater_parent_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 
 }
 
-static void
-__ewl_floater_reparent(Ewl_Widget * w, void *ev_data, void *user_data)
+void __ewl_floater_reparent(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_PARAM_PTR("user_data", user_data);
@@ -214,8 +209,7 @@ __ewl_floater_reparent(Ewl_Widget * w, void *ev_data, void *user_data)
  * Configure the floater so that the positioning is relative to a followed
  * widget if appropriate.
  */
-static void
-__ewl_floater_configure(Ewl_Widget * w, void *ev_data, void *user_data)
+void __ewl_floater_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	int             align, x, y;
 	Ewl_Floater    *f;
@@ -271,8 +265,7 @@ __ewl_floater_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 /*
  * Grab some necessary information from the parent when realizing this widget
  */
-static void
-__ewl_floater_realize(Ewl_Widget * w, void *ev_data, void *user_data)
+void __ewl_floater_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Floater    *f;
 
@@ -290,8 +283,7 @@ __ewl_floater_realize(Ewl_Widget * w, void *ev_data, void *user_data)
  * Be sure to remove the floater from the parent windows list of floaters when
  * it gets destroyed.
  */
-static void
-__ewl_floater_destroy(Ewl_Widget * w, void *ev_data, void *user_data)
+void __ewl_floater_destroy(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 

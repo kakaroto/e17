@@ -35,4 +35,4 @@ double          ewl_seeker_get_step(Ewl_Seeker * s);
 void            ewl_seeker_decrease(Ewl_Seeker * s);
 void            ewl_seeker_increase(Ewl_Seeker * s);
 
-#endif /* __EWL_SEEKER_H__ */
+#endif				/* __EWL_SEEKER_H__ */

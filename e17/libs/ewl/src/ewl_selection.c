@@ -5,8 +5,7 @@
 void            ewl_selection_init(Ewl_Selection * s);
 
 
-Ewl_Widget     *
-ewl_selection_new(void)
+Ewl_Widget     *ewl_selection_new(void)
 {
 	Ewl_Selection  *s;
 
@@ -21,8 +20,7 @@ ewl_selection_new(void)
 	DRETURN_PTR(EWL_WIDGET(s), DLEVEL_STABLE);
 }
 
-void
-ewl_selection_set_covered(Ewl_Widget * w, int s, int e)
+void ewl_selection_set_covered(Ewl_Widget * w, int s, int e)
 {
 	Ewl_Selection  *se;
 
@@ -39,8 +37,7 @@ ewl_selection_set_covered(Ewl_Widget * w, int s, int e)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void
-ewl_selection_get_covered(Ewl_Widget * w, int *s, int *e)
+void ewl_selection_get_covered(Ewl_Widget * w, int *s, int *e)
 {
 	Ewl_Selection  *se;
 
@@ -57,8 +54,7 @@ ewl_selection_get_covered(Ewl_Widget * w, int *s, int *e)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void
-ewl_selection_expand(Ewl_Widget * w, int p)
+void ewl_selection_expand(Ewl_Widget * w, int p)
 {
 	Ewl_Selection  *se;
 
@@ -79,8 +75,7 @@ ewl_selection_expand(Ewl_Widget * w, int p)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void
-ewl_selection_init(Ewl_Selection * s)
+void ewl_selection_init(Ewl_Selection * s)
 {
 	Ewl_Widget     *w;
 

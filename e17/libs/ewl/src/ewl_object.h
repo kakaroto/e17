@@ -139,4 +139,4 @@ inline Ewl_Fill_Policy ewl_object_get_fill_policy(Ewl_Object * o);
 	ewl_object_set_fill_policy(o, ewl_object_get_fill_policy(o) & \
 			~(EWL_FILL_POLICY_VFILL | EWL_FILL_POLICY_VSHRINK));
 
-#endif /* __EWL_OBJECT_H__ */
+#endif				/* __EWL_OBJECT_H__ */

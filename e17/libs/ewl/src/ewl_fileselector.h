@@ -48,4 +48,4 @@ void            ewl_fileselector_init(Ewl_Fileselector * fs,
 char           *ewl_fileselector_get_current(Ewl_Fileselector * fs);
 
 
-#endif /* __EWL_FILESELECTOR_H__ */
+#endif				/* __EWL_FILESELECTOR_H__ */
