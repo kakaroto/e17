@@ -3,9 +3,11 @@
 #define __EWL_EMBED_H__
 
 /**
- * @file ewl_embed.h
+ * @defgroup Ewl_Embed A Container for Displaying on an Evas
  * Defines the Ewl_Embed class to provide EWL with the ability to work with an
  * evas.
+ *
+ * @{
  */
 
 /**
@@ -41,5 +43,9 @@ Evas_Object    *ewl_embed_set_evas(Ewl_Embed *emb, Evas *evas);
 void            ewl_embed_font_path_add(char *path);
 Ewl_Embed      *ewl_embed_find_by_evas_window(Window win);
 Ewl_Embed      *ewl_embed_find_by_widget(Ewl_Widget * w);
+
+/**
+ * @}
+ */
 
 #endif				/* __EWL_EMBED_H__ */

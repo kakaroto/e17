@@ -2,9 +2,11 @@
 #define __EWL_MENU_BASE_H__
 
 /**
- * @file ewl_menu_base.h
- * Defines the basic menu classes that are extended to an actual menu
+ * @defgroup Ewl_Menu_Base The Basic Menu Functionality
+ * @brief Defines the basic menu classes that are extended to an actual menu
  * implementation by inheriting classes such as Ewl_Menu and Ewl_IMenu.
+ *
+ * @{
  */
 
 /**
@@ -83,5 +85,9 @@ void            ewl_menu_separator_init(Ewl_Menu_Separator *sep);
 
 void            ewl_menu_base_init(Ewl_Menu_Base * menu, char *image,
 				   char *title);
+
+/**
+ * @}
+ */
 
 #endif

@@ -2,9 +2,11 @@
 #define _EWL_TREE_H
 
 /**
- * @file ewl_tree.h
- * Defines a widget for laying out other widgets in a tree or list like
+ * @defgroup Ewl_Tree A Widget for List or Tree Layout
+ * @brief Defines a widget for laying out other widgets in a tree or list like
  * manner.
+ *
+ * @{
  */
 
 typedef struct Ewl_Tree Ewl_Tree;
@@ -82,5 +84,9 @@ Ewl_Widget *ewl_tree_add_text_row(Ewl_Tree *tree, Ewl_Row *prow, char **text);
 void ewl_tree_destroy_row(Ewl_Tree *tree, Ewl_Row *row);
 void ewl_tree_set_row_expand(Ewl_Row *row, Ewl_Tree_Node_Flags expanded);
 Ewl_Row *ewl_tree_find_row(Ewl_Tree *tree, int row);
+
+/**
+ * @}
+ */
 
 #endif

@@ -8,9 +8,8 @@ static void __ewl_cell_child_resize(Ewl_Container *c, Ewl_Widget *w, int size,
 		Ewl_Orientation o);
 
 /**
- * ewl_cell_new - allocate and initialize a new cell
- *
- * Returns a newly allocated cell on success, NULL on failure.
+ * @return Returns a newly allocated cell on success, NULL on failure.
+ * @brief Allocate and initialize a new cell
  */
 Ewl_Widget *ewl_cell_new()
 {
@@ -32,11 +31,11 @@ Ewl_Widget *ewl_cell_new()
 }
 
 /**
- * ewl_cell_init - initialize the cell fields of an inheriting object
- * @cell: the cell object to initialize
+ * @param cell: the cell object to initialize
+ * @return Returns TRUE on success, FALSE on failure.
+ * @brief Initialize the cell fields of an inheriting object
  *
- * Returns TRUE on success, FALSE on failure. The fields of the @cell object
- * are initialized to their defaults.
+ * The fields of the @a cell object are initialized to their defaults.
  */
 int ewl_cell_init(Ewl_Cell *cell)
 {

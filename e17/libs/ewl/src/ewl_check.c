@@ -11,10 +11,8 @@ void            __ewl_check_update_check(Ewl_Widget * w, void *ev_data,
 
 
 /**
- * ewl_check_new - allocate and initialize a new check
- * @label: the label to display with the check, NULL for no label
- *
- * Returns the newly allocated check on success, NULL on failure.
+ * @return Returns the newly allocated check on success, NULL on failure.
+ * @brief Allocate and initialize a new check
  */
 Ewl_Widget     *ewl_check_new()
 {
@@ -33,12 +31,13 @@ Ewl_Widget     *ewl_check_new()
 }
 
 /**
- * ewl_check_set_checked - change the checked status of the check
- * @w: the check to change the status
- * @c: the new status of the check
+ * @param cb: the check to change the status
+ * @param c: the new status of the check
+ * @return Returns no value.
+ * @brief Change the checked status of the check
  *
- * Returns no value. Changes the checked status of the check and
- * updates it's appearance to reflect the change.
+ * Changes the checked status of the check and updates it's appearance to
+ * reflect the change.
  */
 void ewl_check_set_checked(Ewl_Check * cb, int c)
 {
@@ -56,10 +55,9 @@ void ewl_check_set_checked(Ewl_Check * cb, int c)
 }
 
 /**
- * ewl_check_is_checked - determine the check state of the check
- * @w: the check to examine for it's checked state
- *
- * Returns TRUE if the check is checked, FALSE if not.
+ * @param cb: the check to examine for it's checked state
+ * @return Returns TRUE if the check is checked, FALSE if not.
+ * @brief Determine the check state of the check
  */
 int ewl_check_is_checked(Ewl_Check * cb)
 {
@@ -70,12 +68,12 @@ int ewl_check_is_checked(Ewl_Check * cb)
 }
 
 /**
- * ewl_check_init - initialize the members and callbacks of a check
- * @cb: the check to initialize
- * @label: the label to give the initialized check
+ * @param cb: the check to initialize
+ * @return Returns no value.
+ * @brief Initialize the members and callbacks of a check
  *
- * Returns no vlalue.The internal structures and callbacks of the check
- * are initialized ot default values.
+ * The internal structures and callbacks of the check are initialized ot
+ * default values.
  */
 void ewl_check_init(Ewl_Check * cb)
 {

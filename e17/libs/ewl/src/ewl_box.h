@@ -3,9 +3,11 @@
 #define __EWL_BOX_H__
 
 /**
- * @file ewl_box.h
- * Defines the Ewl_Box class used for laying out Ewl_Widget's in a horizontal
- * or vertical line.
+ * @defgroup Ewl_Box The Box Layout Widget.
+ * @brief Defines the Ewl_Box class used for laying out Ewl_Widget's in a
+ * horizontal or vertical line.
+ *
+ * @{
  */
 
 /**
@@ -55,5 +57,9 @@ int             ewl_box_init(Ewl_Box * box, Ewl_Orientation orientation);
 void            ewl_box_set_orientation(Ewl_Box * b, Ewl_Orientation o);
 void            ewl_box_set_spacing(Ewl_Box * b, int spacing);
 void            ewl_box_set_homogeneous(Ewl_Box *b, int h);
+
+/**
+ * @}
+ */
 
 #endif				/* __EWL_BOX_H__ */

@@ -3,8 +3,10 @@
 #define __EWL_TEXTAREA_H__
 
 /**
- * @file ewl_textarea.h
- * Defines a class for multi-line text layout and formatting.
+ * @defgroup Ewl_TextArea A Multi-Line Text Layout Display
+ * @brief Defines a class for multi-line text layout and formatting.
+ *
+ * @{
  */
 
 /**
@@ -42,5 +44,9 @@ Evas_Object    *ewl_textarea_get_etox(Ewl_TextArea * ta);
 void            ewl_textarea_set_context(Ewl_TextArea * ta,
 					 Etox_Context * context);
 Etox_Context   *ewl_textarea_get_context(Ewl_TextArea * ta);
+
+/**
+ * @}
+ */
 
 #endif				/* __EWL_TEXTAREA_H__ */

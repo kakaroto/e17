@@ -3,7 +3,7 @@
 #define __EWL_SEEKER_H__
 
 /**
- * @file ewl_seeker.h
+ * @defgroup Ewl_Seeker A Value Selector from a Range
  * Defines an Ewl_Widget with a draggable button enclosed, used to select a
  * value from a range.
  *

@@ -3,9 +3,11 @@
 #define __EWL_CHECKBUTTON_H__
 
 /**
- * @file ewl_checkbutton.h
+ * @defgroup Ewl_CheckButton A CheckButton with Label
  * @brief Defines an Ewl_CheckButton that inherits from Ewl_Widget and
  * provides an Ewl_Check that changes value on each click.
+ *
+ * @{
  */
 
 /**
@@ -37,11 +39,26 @@ struct Ewl_CheckButton
 Ewl_Widget     *ewl_checkbutton_new(char *l);
 void            ewl_checkbutton_init(Ewl_CheckButton * cb, char *label);
 
+/**
+ * @def ewl_checkbutton_set_checked(cb, c);
+ * Shortcut for dereferencing the checkbutton to update the checked state of
+ * the Ewl_Check.
+ */
 #define ewl_checkbutton_set_checked(cb, c) \
 	ewl_check_set_checked(EWL_CHECK(cb->check), c)
+
+/**
+ * @def ewl_checkbutton_is_checked(cb);
+ * Shortcut for dereferencing the checkbutton to test the checked state of
+ * the Ewl_Check.
+ */
 #define ewl_checkbutton_is_checked(cb) \
 	ewl_check_is_checked(EWL_CHECK(cb->check))
 void            ewl_checkbutton_set_label_position(Ewl_Widget * w,
 						   Ewl_Position p);
+
+/**
+ * @}
+ */
 
 #endif				/* __EWL_CHECKBUTTON_H__ */

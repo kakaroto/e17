@@ -2,14 +2,22 @@
 #ifndef __EWL_CALLBACK_H__
 #define __EWL_CALLBACK_H__
 
-typedef struct _ewl_callback Ewl_Callback;
+/**
+ * @defgroup Ewl_Callback The Callback Mechanisms
+ * Defines methods for creating and modifying callbacks on widgets
+ *
+ * @{
+ */
+
+typedef struct Ewl_Callback Ewl_Callback;
 
 #define EWL_CALLBACK(callback) ((Ewl_Callback *) callback)
 #define EWL_CALLBACK_FUNCTION(cb_func) ((Ewl_Callback_Function) cb_func)
 
 typedef void    (*Ewl_Callback_Function) (Ewl_Widget * widget, void *ev_data,
 					  void *user_data);
-struct _ewl_callback {
+struct Ewl_Callback
+{
 	/*
 	 * The function to be executed when the specified event occurs.
 	 */
@@ -73,5 +81,9 @@ void            ewl_callback_call_with_event_data(Ewl_Widget * widget,
 void            ewl_callback_del_type(Ewl_Widget * w, Ewl_Callback_Type t);
 void            ewl_callback_del(Ewl_Widget * w, Ewl_Callback_Type t,
 				 Ewl_Callback_Function f);
+
+/**
+ * @}
+ */
 
 #endif				/* __EWL_CALLBACK_H__ */

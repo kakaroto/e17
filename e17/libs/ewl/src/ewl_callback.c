@@ -9,10 +9,11 @@ static int      callback_id = 0;
 static Ewd_Hash *cb_registration = NULL;
 
 /**
- * ewl_callbacks_init - setup internal registration variables for callbacks
+ * @return Returns no value.
+ * @brief Setup internal registration variables for callbacks
  *
- * Returns no value. Sets up some important variables for tracking callbacks
- * that allow shared callbacks.
+ * Sets up some important variables for tracking callbacks that allow shared
+ * callbacks.
  *
  * W/o shared callbacks ewl_test with all windows open has a top line of:
  * 21279 ningerso  19   0 22972  22M  9412 R     6.0  8.0   0:40 ewl_test
@@ -28,10 +29,11 @@ void ewl_callbacks_init()
 }
 
 /**
- * ewl_callbacks_deinit - destroy internal registration variables for callbacks
+ * @return Returns no value.
+ * @brief Destroy internal registration variables for callbacks
  *
- * Returns no value. Destroys some important variables for tracking callbacks
- * that allow shared callbacks.
+ * Destroys some important variables for tracking callbacks that allow shared
+ * callbacks.
  */
 void ewl_callbacks_deinit()
 {
@@ -91,16 +93,16 @@ static void __ewl_callback_unregister(Ewl_Callback * cb)
 }
 
 /**
- * ewl_callback_append - append a callback of the specified type
- * @w: the widget to attach the callback
- * @t: the type of the callback that is being attached
- * @f: the function to attach as a callback
- * @user_data: the data to be passed to the callback function
+ * @param w: the widget to attach the callback
+ * @param t: the type of the callback that is being attached
+ * @param f: the function to attach as a callback
+ * @param user_data: the data to be passed to the callback function
+ * @return Returns 0 on failure, the id of the new callback on success.
+ * @brief Append a callback of the specified type
  *
- * Returns 0 on failure, the id of the new callback on success. Allocates a
- * new callback for the specified widget that calls @f with @user_data as the
- * data parameter when event @t occurs. This event is placed at the end of the
- * callback chain.
+ * Allocates a new callback for the specified widget that calls @a f with @a
+ * user_data as the data parameter when event @a ta  occurs. This event is
+ * placed at the end of the callback chain.
  */
 int
 ewl_callback_append(Ewl_Widget * w, Ewl_Callback_Type t,
@@ -136,14 +138,14 @@ ewl_callback_append(Ewl_Widget * w, Ewl_Callback_Type t,
 }
 
 /**
- * ewl_callback_prepend - prepend a callback of the specified type
- * @w: the widget to attach the callback
- * @t: the type of the callback that is being attached
- * @f: the function to attach as a callback
- * @user_data: the data to be passed to the callback function
+ * @param w: the widget to attach the callback
+ * @param t: the type of the callback that is being attached
+ * @param f: the function to attach as a callback
+ * @param user_data: the data to be passed to the callback function
+ * @return Returns 0 on failure, the id of the new callback on success.
+ * @brief prepend a callback of the specified type
  *
- * Returns 0 on failure, the id of the new callback on success. Same
- * functionality as ewl_callback_append, but the callback is placed at the
+ * Same functionality as ewl_callback_append, but the callback is placed at the
  * beginning of the callback chain.
  */
 int
@@ -180,17 +182,17 @@ ewl_callback_prepend(Ewl_Widget * w, Ewl_Callback_Type t,
 }
 
 /**
- * ewl_callback_insert_after - add a callback after a previous callback in list
- * @w: the widget to insert the callback
- * @t: the type of the callback that is being attached
- * @f: the function to attach as a callback
- * @user_data: the data to be passed to the callback function
- * @after: the function of the callback to append after
- * @after_data: the user data of the callback to append after
+ * @param w: the widget to insert the callback
+ * @param t: the type of the callback that is being attached
+ * @param f: the function to attach as a callback
+ * @param user_data: the data to be passed to the callback function
+ * @param after: the function of the callback to append after
+ * @param after_data: the user data of the callback to append after
+ * @return Returns 0 on failure, the id of the new callback on success.
+ * @brief Add a callback after a previous callback in list
  *
- * Returns 0 on failure, the id of the new callback on success. Same
- * functionality as ewl_callback_append, but the callback is placed after the
- * specified callback on the callback chain.
+ * Same functionality as ewl_callback_append, but the callback is placed after
+ * the specified callback on the callback chain.
  */
 int
 ewl_callback_insert_after(Ewl_Widget * w, Ewl_Callback_Type t,
@@ -236,12 +238,12 @@ ewl_callback_insert_after(Ewl_Widget * w, Ewl_Callback_Type t,
 }
 
 /**
- * ewl_callback_call - execute callbacks of specified types for the widget
- * @w: the widget to execute the callbacks
- * @t: the type of the callbacks to be executed
+ * @param w: the widget to execute the callbacks
+ * @param t: the type of the callbacks to be executed
+ * @return Returns no value.
+ * @brief Execute callbacks of specified types for the widget
  *
- * Returns no value. Executes the callback chain for the specified widget @w,
- * with event @t.
+ * Executes the callback chain for the specified widget @a w, with event @a t.
  */
 void ewl_callback_call(Ewl_Widget * w, Ewl_Callback_Type t)
 {
@@ -253,13 +255,14 @@ void ewl_callback_call(Ewl_Widget * w, Ewl_Callback_Type t)
 }
 
 /**
- * ewl_callback_call_with_event_data - execute callbacks with event data
- * @w: the widget to execute the callbacks
- * @t: the type of the callbacks to be executed
- * @ev_data: the event data to pass to the callbacks
+ * @param w: the widget to execute the callbacks
+ * @param t: the type of the callbacks to be executed
+ * @param ev_data: the event data to pass to the callbacks
+ * @return Returns no value.
+ * @brief Execute callbacks with event data
  *
- * Returns no value. Similar to ewl_callback_call, but the event data is
- * substituted by @ev_data.
+ * Similar to ewl_callback_call, but the event data is substituted by @a
+ * ev_data.
  */
 void
 ewl_callback_call_with_event_data(Ewl_Widget * w, Ewl_Callback_Type t,
@@ -323,11 +326,12 @@ ewl_callback_call_with_event_data(Ewl_Widget * w, Ewl_Callback_Type t,
 }
 
 /**
- * ewl_callback_del_type - delete all callbacks of the specified type
- * @w: the widget to delete the callbacks
- * @t: the type of the callbacks to be deleted
+ * @param w: the widget to delete the callbacks
+ * @param t: the type of the callbacks to be deleted
+ * @return Returns no value.
+ * @brief Delete all callbacks of the specified type
  *
- * Returns no value. Delete all callbacks of type @t from widget @w.
+ * Delete all callbacks of type @a t from widget @a w.
  */
 void ewl_callback_del_type(Ewl_Widget * w, Ewl_Callback_Type t)
 {
@@ -352,12 +356,13 @@ void ewl_callback_del_type(Ewl_Widget * w, Ewl_Callback_Type t)
 }
 
 /**
- * ewl_callback_del_cb_id - delete the specified callback id from the widget
- * @w: the widget to delete the id
- * @t: the type of event the callback is attached to
- * @cb_id: the id of the callback to delete
+ * @param w: the widget to delete the id
+ * @param t: the type of event the callback is attached to
+ * @param cb_id: the id of the callback to delete
+ * @return Returns no value.
+ * @brief Delete the specified callback id from the widget
  *
- * Returns no value. Delete the specified callback id from the widget @w.
+ * Delete the specified callback id from the widget @a w.
  */
 void ewl_callback_del_cb_id(Ewl_Widget * w, Ewl_Callback_Type t, int cb_id)
 {
@@ -386,11 +391,11 @@ void ewl_callback_del_cb_id(Ewl_Widget * w, Ewl_Callback_Type t, int cb_id)
 
 
 /**
- * ewl_callback_clear - remove all callbacks from the specified widget
- * @w: the widget to remove the callbacks
+ * @param w: the widget to remove the callbacks
+ * @return Returns no value.
+ * @brief Remove all callbacks from the specified widget
  *
- * Returns no value. Removes and frees all callbacks associated with widget
- * @w.
+ * Removes and frees all callbacks associated with widget @a w.
  */
 void ewl_callback_clear(Ewl_Widget * w)
 {
@@ -409,13 +414,14 @@ void ewl_callback_clear(Ewl_Widget * w)
 }
 
 /**
- * ewl_callback_del - delete the specified callback function from the widget
- * @w: the widget to delete the callback
- * @t: the type of event associated with the callback
- * @f: the function called by the callback
+ * @param w: the widget to delete the callback
+ * @param t: the type of event associated with the callback
+ * @param f: the function called by the callback
+ * @brief Delete the specified callback function from the widget
  *
- * Returns no value. Delete and frees the callback that calls function @f when
- * event @t occurs to widget @w.
+ * @return Returns no value.
+ * Delete and frees the callback that calls function @a f when event @a t occurs
+ * to widget @a w.
  */
 void
 ewl_callback_del(Ewl_Widget * w, Ewl_Callback_Type t, Ewl_Callback_Function f)

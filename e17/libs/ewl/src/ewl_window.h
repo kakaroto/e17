@@ -3,9 +3,11 @@
 #define __EWL_WINDOW_H__
 
 /**
- * @file ewl_window.h
- * Defines the Ewl_Window class which extends the Ewl_Embed class by creating
- * it's own window and evas.
+ * @defgroup Ewl_Window A Container for Displaying in a New Window
+ * @brief Defines the Ewl_Window class which extends the Ewl_Embed class by
+ * creating it's own window and evas.
+ *
+ * @{
  */
 
 /**
@@ -48,5 +50,9 @@ char           *ewl_window_get_title(Ewl_Window * win);
 void            ewl_window_set_borderless(Ewl_Window * win);
 void            ewl_window_move(Ewl_Window * win, int x, int y);
 void            ewl_window_get_position(Ewl_Window * win, int *x, int *y);
+
+/**
+ * @}
+ */
 
 #endif				/* __EWL_WINDOW_H__ */

@@ -3,8 +3,10 @@
 #define __EWL_ENTRY_H__
 
 /**
- * @file ewl_entry.h
- * Defines the Ewl_Entry class to allow for single line editable text.
+ * @defgroup Ewl_Entry A Single Line Text Entry Widget
+ * @brief Defines the Ewl_Entry class to allow for single line editable text.
+ *
+ * @{
  */
 
 /**
@@ -39,5 +41,9 @@ void            ewl_entry_init(Ewl_Entry * e, char *text);
 void            ewl_entry_set_text(Ewl_Entry * e, char *t);
 char           *ewl_entry_get_text(Ewl_Entry * e);
 void            ewl_entry_set_editable(Ewl_Entry *e, unsigned int edit);
+
+/**
+ * @}
+ */
 
 #endif				/* __EWL_ENTRY_H__ */

@@ -3,9 +3,11 @@
 #define __EWL_THEME_H__
 
 /**
- * @file ewl_theme.h
+ * @defgroup Ewl_Theme Methods for Accessing and Modifying Theme Data
  * Provides methods for accessing theme data, global theme data or per-widget
  * theme data.
+ *
+ * @{
  */
 
 int             ewl_theme_init(void);
@@ -21,5 +23,9 @@ void            ewl_theme_data_set_str(Ewl_Widget * w, char *k, char *v);
 void            ewl_theme_data_set_int(Ewl_Widget * w, char *k, int v);
 void            ewl_theme_data_set_default_str(char *k, char *v);
 void            ewl_theme_data_set_default_int(char *k, int v);
+
+/**
+ * @}
+ */
 
 #endif				/* __EWL_THEME_H__ */

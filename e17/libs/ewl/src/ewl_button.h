@@ -2,9 +2,11 @@
 #define __EWL_BUTTON_H__
 
 /**
- * @file ewl_button.h
- * The button class is a basic button with a label. This class inherits from
- * the Ewl_Box to allow for placing any other widget inside the button.
+ * @defgroup Ewl_Button The Basic Button
+ * @brief The button class is a basic button with a label. This class inherits
+ * from the Ewl_Box to allow for placing any other widget inside the button.
+ *
+ * @{
  */
 
 /**
@@ -34,5 +36,9 @@ struct Ewl_Button
 Ewl_Widget     *ewl_button_new(char *l);
 void            ewl_button_init(Ewl_Button * b, char *label);
 void            ewl_button_set_label(Ewl_Button * b, char *l);
+
+/**
+ * @}
+ */
 
 #endif				/* __EWL_BUTTON_H__ */

@@ -2,8 +2,10 @@
 #define __EWL_WIDGET_H__
 
 /**
- * @file ewl_widget.h
- * Defines the Ewl_Widget class and it's accessor/modifier functions.
+ * @defgroup Ewl_Widget The Parent Widget Class Common to All Widgets
+ * @brief Defines the Ewl_Widget class and it's accessor/modifier functions.
+ *
+ * @{
  */
 
 /**
@@ -139,12 +141,44 @@ void            ewl_widget_disable(Ewl_Widget * w);
  */
 void            ewl_widget_rebuild_appearance(Ewl_Widget *w);
 
+/**
+ * @def RECURSIVE(w)
+ * Used to test if a widget is recursive, aka. an Ewl_Container
+ */
 #define RECURSIVE(w) (EWL_WIDGET(w)->flags & EWL_FLAGS_RECURSIVE)
 
+/**
+ * @def REALIZED(w)
+ * Used to test if a widget has been realized.
+ */
 #define REALIZED(w) (EWL_WIDGET(w)->flags & EWL_FLAGS_REALIZED)
+
+/**
+ * @def VISIBLE(w)
+ * Used to test if a widget is visible.
+ */
 #define VISIBLE(w) (EWL_WIDGET(w)->flags & EWL_FLAGS_SHOWN)
+
+/**
+ * @def OBSCURED(w)
+ * Used to determine if a widget is marked as obscured.
+ */
 #define OBSCURED(w) (EWL_WIDGET(w)->flags & EWL_FLAGS_OBSCURED)
+
+/**
+ * @def HIDDEN(w)
+ * Used to determine if a widget is hidden.
+ */
 #define HIDDEN(w) (!(EWL_WIDGET(w)->flags & EWL_FLAGS_SHOWN))
+
+/**
+ * @def HIDDEN(w)
+ * Used to retrieve the layer of a widget.
+ */
 #define LAYER(w) EWL_WIDGET(w)->layer
+
+/**
+ * @}
+ */
 
 #endif				/* __EWL_WIDGET_H__ */

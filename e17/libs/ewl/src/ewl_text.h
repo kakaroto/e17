@@ -3,8 +3,10 @@
 #define __EWL_TEXT_H
 
 /**
- * @file ewl_text.h
+ * @defgroup Ewl_Text A Single Line Text Display
  * @brief Defines the Ewl_Text class to provide text display in a single line.
+ *
+ * @{
  */
 
 /**
@@ -68,5 +70,9 @@ int             ewl_text_get_letter_geometry_at(Ewl_Text * t, int x, int y,
 						int *th);
 void            ewl_text_set_alignment(Ewl_Text * t, Ewl_Alignment a);
 int             ewl_text_get_index_at(Ewl_Text * t, int x, int y);
+
+/**
+ * @}
+ */
 
 #endif

@@ -3,9 +3,11 @@
 #define __EWL_SPACER_H__
 
 /**
- * @file ewl_spacer.h
+ * @defgroup Ewl_Spacer A Widget to Add Space Between Other Widgets
  * Defines an Ewl_Widget to be used for adding space between widgets in a
  * layout.
+ *
+ * @{
  */
 
 /**
@@ -32,5 +34,9 @@ struct Ewl_Spacer
 
 Ewl_Widget     *ewl_spacer_new();
 void            ewl_spacer_init(Ewl_Spacer * s);
+
+/**
+ * @}
+ */
 
 #endif				/* __EWL_SPACER_H__ */

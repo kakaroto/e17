@@ -3,9 +3,11 @@
 #define __EWL_FLOATER_H__
 
 /**
- * @file ewl_floater.h
- * Defines a widget for layering above other widgets in EWL's drawing area,
- * with the ability to follow the movement of another widget.
+ * @defgroup Ewl_Floater A Floating Container
+ * @brief Defines a widget for layering above other widgets in EWL's drawing
+ * area, with the ability to follow the movement of another widget.
+ *
+ * @{
  */
 
 /**
@@ -38,5 +40,8 @@ Ewl_Widget     *ewl_floater_new(Ewl_Widget * parent);
 void            ewl_floater_set_position(Ewl_Floater * parent, int x, int y);
 void            ewl_floater_init(Ewl_Floater * f, Ewl_Widget * parent);
 
+/**
+ * @}
+ */
 
 #endif				/* __EWL_FLOATER_H__ */

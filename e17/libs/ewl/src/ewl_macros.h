@@ -3,7 +3,7 @@
 #define __EWL_MACROS_H__
 
 /**
- * @file ewl_macros.h
+ * @defgroup Ewl_Macros Useful Macros Used Internally and Available Externally
  * Defines a variety of utility macros.
  */
 

@@ -2,9 +2,11 @@
 #define __EWL_CONTAINER_H__
 
 /**
- * @file ewl_container.h
- * Define the Ewl_Container class which inherits from Ewl_Widget and adds the
- * ability to nest Ewl_Widget's inside.
+ * @defgroup Ewl_Container The Base Class for Widgets Holding Other Widgets
+ * @brief Define the Ewl_Container class which inherits from Ewl_Widget and adds
+ * the ability to nest Ewl_Widget's inside.
+ *
+ * @{
  */
 
 /**
@@ -48,16 +50,11 @@ typedef void    (*Ewl_Child_Resize) (Ewl_Container * c, Ewl_Widget * w,
  */
 struct Ewl_Container
 {
-	Ewl_Widget      widget; /**< Inherit the basics of the widget. */
-
-	Ewd_List       *children; /**< List of children that are contained. */
-
-	Evas_Object    *clip_box; /**< Clip box to bound widgets inside. */
-
-	Ewl_Child_Add   child_add; /**< Function called on child add */
-
-	Ewl_Child_Add   child_remove; /**< Function called on child remove */
-
+	Ewl_Widget       widget; /**< Inherit the basics of the widget. */
+	Ewd_List        *children; /**< List of children that are contained. */
+	Evas_Object     *clip_box; /**< Clip box to bound widgets inside. */
+	Ewl_Child_Add    child_add; /**< Function called on child add */
+	Ewl_Child_Add    child_remove; /**< Function called on child remove */
 	Ewl_Child_Resize child_resize; /**< Function called on child resize */
 };
 
@@ -92,5 +89,9 @@ Ewl_Widget     *ewl_container_get_child_at_recursive(Ewl_Container * widget,
 int             ewl_container_parent_of(Ewl_Widget *c, Ewl_Widget *w);
 void            ewl_container_prefer_largest(Ewl_Container *c,
 					     Ewl_Orientation o);
+
+/**
+ * @}
+ */
 
 #endif				/* __EWL_CONTAINER_H__ */
