@@ -110,32 +110,19 @@ open_system_config(void)
 }
 
 int
-ewl_config_set_str(const char *k, const char *v)
+ewl_config_set_str(char *k, char *v)
 {
-	int kl, vl;
+	if (!user_config) {
+		if ((create_user_config()) != -1)
+			open_user_config();
+	}
 
-	kl = strlen(k);
-	vl = strlen(v);
-
-	{
-		char k2[kl], v2[kl];
-
-		snprintf(k2, kl, "%s", k);
-		snprintf(v2, vl, "%s", v);
-
-		if (!user_config) {
-			if ((create_user_config()) != -1)
-				open_user_config();
-		}
-
-		if (user_config) {
-			e_db_str_set(user_config, k2, v2);
-			e_db_flush();
-		} else {
-			DWARNING
-			    ("Somehow i can't write to the user config, check permissions.");
-			return -1;
-		}
+	if (user_config) {
+		e_db_str_set(user_config, k, v);
+		e_db_flush();
+	} else {
+		DWARNING("can't write to user config, check permissions.");
+		return -1;
 	}
 
 	return 1;
@@ -143,122 +130,68 @@ ewl_config_set_str(const char *k, const char *v)
 
 
 int
-ewl_config_set_int(const char *k, const int v)
+ewl_config_set_int(char *k, int v)
 {
-	int kl, v2;
+	if (!user_config) {
+		if ((create_user_config()) != -1)
+			open_user_config();
+	}
 
-	kl = strlen(k);
-
-	{
-		char k2[kl];
-
-		snprintf(k2, kl, "%s", k);
-		v2 = v;
-
-		if (!user_config) {
-			if ((create_user_config()) != -1)
-				open_user_config();
-		}
-
-		if (user_config) {
-			e_db_int_set(user_config, k2, v2);
-			e_db_flush();
-		} else {
-			DWARNING
-			    ("Somehow i can't write to the user config, check permissions.");
-			return -1;
-		}
+	if (user_config) {
+		e_db_int_set(user_config, k, v);
+		e_db_flush();
+	} else {
+		DWARNING("can't write to user config, check permissions.");
+		return -1;
 	}
 
 	return 1;
 }
 
 int
-ewl_config_set_float(const char *k, const float v)
+ewl_config_set_float(char *k, float v)
 {
-	int kl;
-	float v2;
+	if (!user_config) {
+		if ((create_user_config()) != -1)
+			open_user_config();
+	}
 
-	kl = strlen(k);
-
-	{
-		char k2[kl];
-
-		snprintf(k2, kl, "%s", k);
-		v2 = v;
-
-		if (!user_config) {
-			if ((create_user_config()) != -1)
-				open_user_config();
-		}
-
-		if (user_config) {
-			e_db_float_set(user_config, k2, v2);
-			e_db_flush();
-		} else {
-			DWARNING
-			    ("Somehow i can't write to the user config, check permissions.");
-			return -1;
-		}
+	if (user_config) {
+		e_db_float_set(user_config, k, v);
+		e_db_flush();
+	} else {
+		DWARNING("can't write to user config, check permissions.");
+		return -1;
 	}
 
 	return 1;
 }
 
 char *
-ewl_config_get_str(const char *k)
+ewl_config_get_str(char *k)
 {
-	int kl;
-
-	kl = strlen(k);
-
-	{
-		char k2[kl];
-		snprintf(k2, kl, "%s", k);
-
-		if (config_db)
-			return e_db_str_get(config_db, k2);
-		else
-			return NULL;
-	}
+	if (config_db)
+		return e_db_str_get(config_db, k);
+	else
+		return NULL;
 }
 
 int
-ewl_config_get_int(const char *k, int *v)
+ewl_config_get_int(char *k, int *v)
 {
-	int kl;
-
-	kl = strlen(k);
-
-	{
-		char k2[kl];
-
-		snprintf(k2, kl, "%s", k);
-
-		if (config_db)
-			return e_db_int_get(config_db, k2, v);
-		else
-			return -1;
-	}
+	if (config_db)
+		return e_db_int_get(config_db, k, v);
+	else
+		return -1;
 }
 
 int
-ewl_config_get_float(const char *k, float *v)
+ewl_config_get_float(char *k, float *v)
 {
-	int kl;
-
-	kl = strlen(k);
-
-	{
-		char k2[kl];
-
-		snprintf(k2, kl, "%s", k);
-
-		if (config_db)
-			return e_db_float_get(config_db, k2, v);
-		else
-			return -1;
-	}
+	if (config_db)
+		return e_db_float_get(config_db, k, v);
+	else
+		return -1;
 }
 
 Evas_Render_Method
