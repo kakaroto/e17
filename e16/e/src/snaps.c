@@ -25,6 +25,25 @@
 #include <process.h>
 #endif
 
+static Snapshot    *NewSnapshot(char *name);
+
+/* Format the window identifier string */
+static int
+EwinMakeID(EWin * ewin, char *buf, int len)
+{
+   if ((ewin->client.role) && (ewin->client.name) && (ewin->client.class))
+      Esnprintf(buf, len, "%s.%s:%s", ewin->client.name, ewin->client.class,
+		ewin->client.role);
+   else if ((ewin->client.name) && (ewin->client.class))
+      Esnprintf(buf, len, "%s.%s", ewin->client.name, ewin->client.class);
+   else if (ewin->client.title)
+      Esnprintf(buf, len, "TITLE.%s", ewin->client.title);
+   else
+      return -1;
+
+   return 0;
+}
+
 /* find a snapshot state that applies to this ewin */
 Snapshot           *
 FindSnapshot(EWin * ewin)
@@ -34,25 +53,23 @@ FindSnapshot(EWin * ewin)
 
    if (ewin->snap)
       return ewin->snap;
-   if ((ewin->client.name) && (ewin->client.class))
-      Esnprintf(buf, sizeof(buf), "%s.%s", ewin->client.name,
-		ewin->client.class);
-   else if (ewin->client.title)
-      Esnprintf(buf, sizeof(buf), "TITLE.%s", ewin->client.title);
-   else
+
+   if (EwinMakeID(ewin, buf, sizeof(buf)))
       return NULL;
+
    sn = FindItem(buf, 0, LIST_FINDBY_BOTH, LIST_TYPE_SNAPSHOT);
    if (sn)
      {
 	ListChangeItemID(LIST_TYPE_SNAPSHOT, sn, 1);
 	sn->used = 1;
      }
+
    return sn;
 }
 
 /* find a snapshot state that applies to this ewin Or if that doesnt exist */
 /* create a new one */
-Snapshot           *
+static Snapshot    *
 GetSnapshot(EWin * ewin)
 {
    Snapshot           *sn;
@@ -62,11 +79,9 @@ GetSnapshot(EWin * ewin)
      {
 	char                buf[4096];
 
-	if ((ewin->client.name) && (ewin->client.class))
-	   Esnprintf(buf, sizeof(buf), "%s.%s", ewin->client.name,
-		     ewin->client.class);
-	else if (ewin->client.title)
-	   Esnprintf(buf, sizeof(buf), "TITLE.%s", ewin->client.title);
+	if (EwinMakeID(ewin, buf, sizeof(buf)))
+	   return NULL;
+
 	sn = NewSnapshot(buf);
 	ListChangeItemID(LIST_TYPE_SNAPSHOT, sn, 1);
 	if ((ewin->client.name) && (ewin->client.class))
@@ -84,11 +99,12 @@ GetSnapshot(EWin * ewin)
 	sn->used = 1;
 	ewin->snap = sn;
      }
+
    return sn;
 }
 
 /* create a new snapshot */
-Snapshot           *
+static Snapshot    *
 NewSnapshot(char *name)
 {
    Snapshot           *sn;
@@ -128,9 +144,11 @@ NewSnapshot(char *name)
    sn->use_neverfocus = 0;
    sn->neverfocus = 0;
    AddItemEnd(sn, sn->name, 0, LIST_TYPE_SNAPSHOT);
+
    return sn;
 }
 
+#if 0				/* Not used */
 /* clear all information out of a snapshot and set its refernce use to 0 */
 void
 ClearSnapshot(Snapshot * sn)
@@ -173,6 +191,7 @@ ClearSnapshot(Snapshot * sn)
    sn->neverfocus = 0;
    ListChangeItemID(LIST_TYPE_SNAPSHOT, sn, 0);
 }
+#endif
 
 static void         CB_ApplySnapEscape(int val, void *data);
 static void
@@ -212,10 +231,12 @@ CB_ApplySnap(int val, void *data)
 
 	     UnsnapshotEwin(ewin);
 	     sn = GetSnapshot(ewin);
+#if 0				/* ?!? */
 	     if (sn)
 	       {
 		  ClearSnapshot(sn);
 	       }
+#endif
 	     if (tmp_snap_border)
 		SnapshotEwinBorder(ewin);
 	     if (tmp_snap_desktop)
@@ -812,25 +833,22 @@ void
 UnsnapshotEwin(EWin * ewin)
 {
    Snapshot           *sn;
-   char                buf[4096];
 
-   if ((ewin->client.name) && (ewin->client.class))
-      Esnprintf(buf, sizeof(buf), "%s.%s", ewin->client.name,
-		ewin->client.class);
-   else if (ewin->client.title)
-      Esnprintf(buf, sizeof(buf), "TITLE.%s", ewin->client.title);
-   else
-      return;
    if (ewin->snap)
      {
-	ListChangeItemID(LIST_TYPE_SNAPSHOT, ewin->snap, 0);
-	ewin->snap->used = 0;
-	sn = RemoveItem((char *)ewin->snap, 0, LIST_FINDBY_POINTER,
-			LIST_TYPE_SNAPSHOT);
-	ewin->snap = NULL;
+	sn = ewin->snap;
+	UnmatchEwinToSnapInfo(ewin);
+	sn = RemoveItem((char *)sn, 0, LIST_FINDBY_POINTER, LIST_TYPE_SNAPSHOT);
      }
    else
-      sn = RemoveItem(buf, 0, LIST_FINDBY_NAME, LIST_TYPE_SNAPSHOT);
+     {
+	char                buf[4096];
+
+	if (EwinMakeID(ewin, buf, sizeof(buf)))
+	   return;
+	sn = RemoveItem(buf, 0, LIST_FINDBY_BOTH, LIST_TYPE_SNAPSHOT);
+     }
+
    if (sn)
      {
 	if (sn->name)
@@ -1225,6 +1243,21 @@ MatchEwinToSnapInfo(EWin * ewin)
 		AddEwinToGroup(ewin, g);
 	  }
      }
+}
+
+/* make a client window conform to snapshot info */
+void
+UnmatchEwinToSnapInfo(EWin * ewin)
+{
+   Snapshot           *sn;
+
+   sn = ewin->snap;
+   if (sn == NULL)
+      return;
+
+   ewin->snap = NULL;
+   sn->used = 0;
+   ListChangeItemID(LIST_TYPE_SNAPSHOT, sn, 0);
 }
 
 void

@@ -560,7 +560,7 @@ IPCStruct           IPCArray[] = {
     "  audio, fx, bg, group_defaults, remember"},
    {
     IPC_RememberList,
-    "list_remember", NULL,
+    "list_remember", "rl",
     "Retrieve a list of remembered windows and their attributes.",
     "usage:\n" "  list_remember [full]\n"
     "  Retrieve a list of remembered windows.  with full, the list\n"
@@ -5255,28 +5255,16 @@ IPC_RememberList(char *params, Client * c)
 				 "     Window Class: %s\n"
 				 "      Border Name: %s\n"
 				 /*"             Used: %s\n" */
-				 "      use_desktop: %d\n"
-				 "          desktop: %d\n"
-				 "      area (x, y): %d, %d\n"
-				 "           use_wh: %d\n"
-				 "           (w, h): %d, %d\n"
-				 "           use_xy: %d\n"
-				 "           (x, y): %d, %d\n"
-				 "        use_layer: %d\n"
-				 "            layer: %d\n"
-				 "       use_sticky: %d\n"
-				 "           sticky: %d\n"
-				 "        use_shade: %d\n"
-				 "            shade: %d\n"
-				 "      use_command: %d\n"
-				 "          command: %s\n"
-				 "  use_skipwinlist: %d\n"
-				 "      skipwinlist: %d\n"
-				 "    use_skiplists: %d\n"
-				 "         skiptask: %d\n"
-				 "        skipfocus: %d\n"
-				 "   use_neverfocus: %d\n"
-				 "       neverfocus: %d\n",
+				 "      use_desktop: %d     desktop: %d      area (x, y): %d, %d\n"
+				 "           use_wh: %d      (w, h): %d, %d\n"
+				 "           use_xy: %d      (x, y): %d, %d\n"
+				 "        use_layer: %d       layer: %d\n"
+				 "       use_sticky: %d      sticky: %d\n"
+				 "        use_shade: %d       shade: %d\n"
+				 "      use_command: %d     command: %s\n"
+				 "  use_skipwinlist: %d skipwinlist: %d\n"
+				 "    use_skiplists: %d    skiptask: %d        skipfocus: %d\n"
+				 "   use_neverfocus: %d  neverfocus: %d\n\n",
 				 lst[i]->name ? lst[i]->name : nstr,
 				 lst[i]->win_title ? lst[i]->win_title : nstr,
 				 lst[i]->win_name ? lst[i]->win_name : nstr,

@@ -2587,9 +2587,6 @@ void                FreeECursor(ECursor * ec);
 /* snaps.c functions */
 void                SnapshotEwinDialog(EWin * ewin);
 Snapshot           *FindSnapshot(EWin * ewin);
-Snapshot           *GetSnapshot(EWin * ewin);
-Snapshot           *NewSnapshot(char *name);
-void                ClearSnapshot(Snapshot * sn);
 void                SnapshotEwinBorder(EWin * ewin);
 void                SnapshotEwinDesktop(EWin * ewin);
 void                SnapshotEwinSize(EWin * ewin);
@@ -2599,10 +2596,8 @@ void                SnapshotEwinSticky(EWin * ewin);
 void                SnapshotEwinIcon(EWin * ewin);
 void                SnapshotEwinShade(EWin * ewin);
 void                SnapshotEwinCmd(EWin * ewin);
-
 void                SnapshotEwinSkipLists(EWin * ewin);
 void                SnapshotEwinNeverFocus(EWin * ewin);
-
 void                SnapshotEwinGroups(EWin * ewin, char onoff);
 void                SnapshotEwinAll(EWin * ewin);
 void                UnsnapshotEwin(EWin * ewin);
@@ -2611,6 +2606,7 @@ void                SaveSnapInfo(void);
 void                SpawnSnappedCmds(void);
 void                LoadSnapInfo(void);
 void                MatchEwinToSnapInfo(EWin * ewin);
+void                UnmatchEwinToSnapInfo(EWin * ewin);
 void                MatchEwinToSnapInfoAfter(EWin * ewin);
 void                RememberImportantInfoForEwin(EWin * ewin);
 void                RememberImportantInfoForEwins(EWin * ewin);

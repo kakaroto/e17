@@ -1550,12 +1550,7 @@ FreeEwin(EWin * ewin)
    if (GetZoomEWin() == ewin)
       Zoom(NULL);
 
-   if (ewin->snap)
-     {
-	ListChangeItemID(LIST_TYPE_SNAPSHOT, ewin->snap, 0);
-	ewin->snap->used = 0;
-	ewin->snap = NULL;
-     }
+   UnmatchEwinToSnapInfo(ewin);
 
    DesktopRemoveEwin(ewin);
 
