@@ -5,7 +5,7 @@
 
 void	elogin_draw_window (void);
 void	elogin_set_window_hints (EwlWindow *win);
-void	elogin_set_window_location(EwlWindow *win);
+void	elogin_set_window_location(EwlWidget *win);
 void
 elogin_init()
 {
@@ -30,8 +30,8 @@ elogin_draw_window()
 				r = 304, b = 203;
 	/* Window */
 	win = ewl_window_new_with_values(EWL_WINDOW_TOPLEVEL, "eLogin", 500, 350);
-
 	elogin_set_window_location(win);
+	ewl_window_resize(win, 500, 350);
 	ewl_window_set_class_hints(win, "elogin", "elogin");
 	ewl_window_set_decoration_hint(win, FALSE);
 
@@ -106,7 +106,7 @@ elogin_set_window_hints (EwlWindow *win)
 
 
 void
-elogin_set_window_location (EwlWindow *win)
+elogin_set_window_location (EwlWidget *win)
 {
 	EwlState	*s = ewl_state_get();
 
