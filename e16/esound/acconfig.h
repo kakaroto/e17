@@ -6,6 +6,7 @@
 #undef DRIVER_MKLINUX
 #undef DRIVER_ALSA
 #undef DRIVER_NEWALSA
+#undef DRIVER_DART
 #undef DRIVER_NONE
 #undef HAVE_INET_ATON
 #undef HAVE_NANOSLEEP
@@ -16,6 +17,11 @@
 #undef INADDR_LOOPBACK
 #undef HAVE_SUN_LEN
 
+/* Define this for AF_UNIX sockets support on OS/2 */
+#ifdef __EMX__
+#  define TCPIPV4
+#  define _EMX_TCPIP
+#endif
 
 
 @BOTTOM@

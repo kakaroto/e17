@@ -54,6 +54,11 @@ int main(int argc, char **argv)
 	source = stdin;
     }
 
+#ifdef __EMX__
+    /* Switch input stream to binary mode under EMX */
+    _fsetmode (source, "b");
+#endif
+
     format = bits | channels | mode | func;
     printf( "opening socket, format = 0x%08x at %d Hz\n", 
 	    format, rate );

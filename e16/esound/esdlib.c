@@ -424,7 +424,8 @@ esd_connect_tcpip(const char *host)
     char connect_host[64];
     int port = ESD_DEFAULT_PORT;
     unsigned int host_div = 0;
-  
+    memset (&socket_addr, 0, sizeof (socket_addr));
+    memset (&he, 0, sizeof (he));
     /* see if we have a remote speaker to play to */
     espeaker = host;
     if ( espeaker && *espeaker ) {
@@ -631,7 +632,7 @@ int esd_open_sound( const char *host )
 
     socket_out = esd_connect_tcpip( host );
     if ( socket_out >= 0 ) goto finish_connect;
-
+#ifndef __EMX__ /* Still in work */
     /* Connections failed, period. Since nobody gave us a remote esd
        to use, let's try spawning one. */
     /* ebm - I think this is an Inherently Bad Idea, but will leave it
@@ -703,7 +704,7 @@ int esd_open_sound( const char *host )
 	sigaction(SIGUSR1, &sa_orig, NULL);
 	sigaction(SIGALRM, &sa_orig_alarm, NULL);
     }
-
+#endif
  finish_connect:
     if (socket_out >= 0
 	&& !esd_send_auth (socket_out)) {
@@ -1306,8 +1307,9 @@ int esd_sample_play( int esd, int sample )
 	signal( SIGPIPE, phandler ); 
 	return -1;
     }
-    /* fsync( esd ); */
-
+#ifdef __EMX__  /* Some strange troubles without this one */
+     fsync( esd ); 
+#endif
     /* get the sample id back from the server */
     if ( read( esd, &is_ok, sizeof(is_ok) ) != sizeof(is_ok) ) {
 	signal( SIGPIPE, phandler ); 

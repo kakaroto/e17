@@ -141,8 +141,16 @@ if test "x$enable_local_sound" = "xyes"; then
       solaris*)
          found_sound=yes
          AC_DEFINE(DRIVER_SOLARIS)
+         ;;
       esac
    fi
+
+   case ${host_os} in
+   os2*)
+      found_sound=yes
+      AC_DEFINE(DRIVER_DART)
+      ;;
+   esac
 
    if test "${ac_cv_header_dmedia_audio_h}" = "yes"; then
       case ${host_os} in

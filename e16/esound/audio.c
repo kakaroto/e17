@@ -35,6 +35,8 @@ static int esd_audio_fd = -1;
 #  include "audio_solaris.c"
 #elif defined(DRIVER_MKLINUX)
 #  include "audio_mklinux.c"
+#elif defined(DRIVER_DART)
+#  include "audio_dart.c"
 #else
 #  include "audio_none.c"
 #endif

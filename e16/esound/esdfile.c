@@ -51,7 +51,7 @@ int esd_play_file( const char *name_prefix, const char *filename, int fallback )
     */
 
     /* open the audio file */
-    in_file = afOpenFile( filename, "r", NULL );
+    in_file = afOpenFile( filename, "rb", NULL );
     if ( !in_file )
 	return 0;
 
@@ -146,7 +146,7 @@ int esd_file_cache( int esd, const char *name_prefix, const char *filename )
     */
 
     /* open the audio file */
-    in_file = afOpenFile( filename, "r", NULL );
+    in_file = afOpenFile( filename, "rb", NULL );
     if ( !in_file )
 	return -1;
 
