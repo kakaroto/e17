@@ -126,11 +126,13 @@ winwidget_create_from_file(feh_file * file, char *name, char type)
       D_RETURN(NULL);
    }
 
+
    if (!opt.progressive)
    {
       imlib_context_set_image(ret->im);
       ret->w = ret->im_w = imlib_image_get_width();
       ret->h = ret->im_h = imlib_image_get_height();
+      D(("image is %dx%d pixels, format %s\n", ret->w, ret->h, imlib_image_format()));
       winwidget_create_window(ret, ret->w, ret->h);
       winwidget_render_image(ret, 1);
    }
@@ -231,7 +233,7 @@ winwidget_create_window(winwidget ret, int w, int h)
       XSetWMNormalHints(disp, ret->win, &xsz);
    }
 #endif
-   
+
    /* set the icon name property */
    XSetIconName(disp, ret->win, "feh");
    /* set the command hint */
@@ -349,15 +351,12 @@ winwidget_render_image(winwidget winwid, int resize)
    }
    else
    {
-      /* This centers the window, but is pointless right now, as zooming
-       * doesn't ;-) */
-      /*
-      if ((winwid->h > winwid->im_h) || (winwid->w > winwid->im_w))
-      {
-         x = (winwid->w - winwid->im_w) >> 1;
-         y = (winwid->h - winwid->im_h) >> 1;
-      }
-      */
+      /* This centers the window, but is pointless right now, as zooming *
+         doesn't ;-) */
+      /* 
+         if ((winwid->h > winwid->im_h) || (winwid->w > winwid->im_w)) { x =
+         (winwid->w - winwid->im_w) >> 1; y = (winwid->h - winwid->im_h) >>
+         1; } */
       imlib_render_image_on_drawable(x, y);
 
       /* resize window if the image size has changed */

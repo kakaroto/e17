@@ -269,16 +269,16 @@ slideshow_create_name(char *filename)
 }
 
 void
-feh_action_run(winwidget w)
+feh_action_run(feh_file *file)
 {
    char *sys;
 
    D_ENTER;
    D(("Running action %s\n", opt.action));
 
-   sys = feh_printf(opt.action, w->file);
+   sys = feh_printf(opt.action, file);
 
-   if (opt.verbose)
+   if (opt.verbose && !opt.list && !opt.customlist)
       fprintf(stderr, "Running action -->%s<--\n", sys);
    system(sys);
    D_RETURN_;

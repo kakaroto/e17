@@ -85,12 +85,12 @@ handle_keypress_event(XEvent * ev, Window win)
         {
            if (opt.slideshow)
            {
-              feh_action_run(winwid);
+              feh_action_run(winwid->file);
               slideshow_change_image(winwid, SLIDE_NEXT);
            }
            else if (opt.multiwindow)
            {
-              feh_action_run(winwid);
+              feh_action_run(winwid->file);
               winwidget_destroy(winwid);
            }
         }

@@ -86,7 +86,7 @@ void slideshow_change_image(winwidget winwid, int change);
 char *slideshow_create_name(char *filename);
 char *chop_file_from_full_path(char *str);
 void handle_keypress_event(XEvent * ev, Window win);
-void feh_action_run(winwidget w);
+void feh_action_run(feh_file *file);
 char *feh_printf(char *str, feh_file *file);
 
 int progressive_load_cb(Imlib_Image im, char percent, int update_x,

@@ -1,3 +1,8 @@
+Fri May 19 19:21:01 2000  Tom Gilbert  <gilbertt@btinternet.com>
+
+	* You can now use --action with list or customlists too. In these
+	modes, the action is run automatically for each file listed.
+
 Thu May 18 21:34:03 2000  Tom Gilbert  <gilbertt@btinternet.com>
 
 	* Quotes, escaped quotes and escaped spaces in config files work

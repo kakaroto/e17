@@ -180,10 +180,11 @@ to sort in reverse width order, use
 .B -nSwidth
 .TP 5
 .B -A, --action ACTION
-Specify a string as an action to perform when the enter key is pressed in
-slideshow or multiwindow modes. The action will be executed in a shell.
-Use format specifiers to refer to image properties. See FORMAT SPECIFIERS
-for details on these.
+Specify a string as an action to perform on the image. In slideshow or
+multiwindow modes, the action will be run when the enter key is pressed, in
+list mode, the action will be run for each file listed. The action will be
+executed by /bin/sh. Use format specifiers to refer to image info. See
+FORMAT SPECIFIERS for examples
 .br
 Eg. feh -A "mv %f ~/images/%n" *
 .br
