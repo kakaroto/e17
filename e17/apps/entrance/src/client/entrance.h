@@ -11,6 +11,6 @@
 #include "util.h"
 #include "entrance_session.h"
 
-#define X_TESTING 1
+#define X_TESTING 0
 
 #endif
