@@ -2810,3 +2810,12 @@ Sat Oct  2 18:08:37 PDT 1999
 (Raster)
 
 get rid of warning
+
+-------------------------------------------------------------------------------
+
+Sat Oct  2 18:11:31 PDT 1999
+(Raster)
+
+rtemove reply from ipc iclass apply - more efficient - this WILL break eterm
+automode (well it will braak eterm) until eterm is updated :)
+sorry kainx  :)
