@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (C) 1999 Carsten Haitzler, Geoff Harrison and various contributors
+# Copyright (C) 1999 Hallvar Helleseth (hallvar@ii.uib.no)
 # 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to
@@ -21,25 +21,29 @@
 # IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-# Use: none!
-# instructions: move the lucy in the sky with diamonds window and see what
-# happends to the other window.
+# Author: Hallvar Helleseth (hallvar@ii.uib.no) - Not that I'm proud ;)
+# Instructions: move the top window and see what happends to the lower one.
+#
 
 # The very wierd and bad way of getting the windowids of the two message
 # windows in bash, there must be a better way!
 
-a=0
-eesh -e "dialog_ok Lucy in the sky with diamonds"
+# Open a window then get the windowid of it (hopefully)
+eesh -e "dialog_ok Move this window"
 window=`eesh -ewait window_list|grep Message`
+a=0
 for i in $window;do
 	a=$(($a + 1))
 	if [ $a = 1 ];then
 		windowid=$i
 	fi
 done
-a=0
-eesh -e "dialog_ok Move me with LSD"
+
+# open a new dialog, then get the windowids of all windows named "Message" then
+# get the id that's not equal the first window we created
+eesh -e "dialog_ok Watch me follow the above window"
 window2=`eesh -ewait window_list|grep Message|grep -v $windowid`
+a=0
 for i in $window2;do
     a=$(($a + 1))
 	if [ $a = 1 ];then
@@ -47,42 +51,23 @@ for i in $window2;do
 	fi
 done
 
-# In one endless loop, get window positions and see if the lcd window is moving
-# if so we move the other window too
+# In one endless loop, get window position of the first window, then move the
+# second one accordingly...
 while true;do
-	lcdpos=`eesh -ewait "win_op $windowid move ? ?"`
+
+	# Get position
+	pos=`eesh -ewait "win_op $windowid move ? ?"`
 	a=0
-	for i in $lcdpos;do
+	for i in $pos;do
 		a=$(($a + 1))
 		if [ $a = 3 ];then
-			lcdxpos=$i
+			xpos=$i
 		fi
 		if [ $a = 4 ];then
-			lcdypos=$i
+			ypos=$i
 		fi
 	done
-	
-	pupos=`eesh -ewait "win_op $windowid move ? ?"`
-    a=0
-	for i in $pupos;do
-		a=$(($a + 1))
-        if [ $a = 3 ];then
-	      puxpos=$i
-        fi
-		if [ $a = 4 ];then
-		  puypos=$i
-		fi
-	done
-	
-	if [ $puxpos = $(($lcdxpos)) ];then
-		newxpos=$(($puxpos + 58))
-		newypos=$(($puypos + 74))
-	   eesh -e "win_op $windowid2 move $newxpos $newypos"
-	fi
-
-	# Is it faster if we give it a little time delay?
-	# I think it is, atleast we don't stress E too much if we give it a delay
-	for y in 1 2 3;do
-	     bill=0
-	done
+		
+	# Move the second window to the new position
+	eesh -e "win_op $windowid2 move $xpos $(($ypos + 74))"
 done
