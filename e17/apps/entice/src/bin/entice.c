@@ -296,8 +296,6 @@ entice_file_add(const char *file)
          if ((o = e_thumb_new(ecore_evas_get(entice->ee), path)))
          {
             entice->thumb.list = evas_list_append(entice->thumb.list, o);
-            entice->thumb.hash = evas_hash_add(entice->thumb.hash, path, o);
-            evas_object_show(o);
             evas_object_resize(o, 48, 48);
 
             edje = edje_object_add(ecore_evas_get(entice->ee));
@@ -306,6 +304,10 @@ entice_file_add(const char *file)
             hookup_entice_thumb_signals(edje, o);
             edje_object_part_swallow(edje, "EnticeThumb", o);
             evas_object_show(edje);
+            evas_object_show(o);
+
+            entice->thumb.hash =
+               evas_hash_add(entice->thumb.hash, path, edje);
 
             e_container_element_append(entice->container, edje);
             if (evas_list_count(entice->thumb.list) == 1)
@@ -397,22 +399,29 @@ int
 entice_file_remove(const char *file)
 {
    int result = 0;
-   Evas_Object *o = NULL;
-   char buf[PATH_MAX], path[PATH_MAX], *ptr = NULL;
+   char buf[PATH_MAX];
+   Evas_Object *o = NULL, *obj = NULL;
 
    if (file)
    {
       snprintf(buf, PATH_MAX, "%s", file);
       if ((o = evas_hash_find(entice->thumb.hash, buf)))
       {
-         entice->thumb.list = evas_list_remove(entice->thumb.list, o);
          entice->thumb.hash = evas_hash_del(entice->thumb.hash, buf, o);
+         if (entice->thumb.current && entice->thumb.current->prev)
+            entice->thumb.current = entice->thumb.current->prev;
+         else if (entice->thumb.list)
+            entice->thumb.current = entice->thumb.list;
+
+         if ((obj = edje_object_part_swallow_get(o, "EnticeThumb")))
+         {
+            entice->thumb.list = evas_list_remove(entice->thumb.list, obj);
+            evas_object_del(obj);
+         }
          e_container_element_remove(entice->container, o);
          evas_object_del(o);
-         /* FIXME container_vomit(o); */
-#if 0
-         e_thumb_free(o);
-#endif
+         if (evas_list_count(entice->thumb.list) == 0)
+            entice->thumb.current = NULL;
       }
       else
          result = 1;
@@ -436,16 +445,9 @@ entice_file_delete(const char *file)
    if (file)
    {
       snprintf(buf, PATH_MAX, "%s", file);
-      if ((o = evas_hash_find(entice->thumb.hash, buf)))
-      {
-         entice->thumb.list = evas_list_remove(entice->thumb.list, o);
-         entice->thumb.hash = evas_hash_del(entice->thumb.hash, buf, o);
-         e_container_element_remove(entice->container, o);
-         evas_object_del(o);
+      result = entice_file_remove(buf);
+      if (!result)
          unlink(buf);
-      }
-      else
-         result = 1;
    }
    else
       result = 2;
