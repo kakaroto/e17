@@ -1903,3 +1903,15 @@ Sat May 31 10:25:49 CEST 2003
 (Kim)
 
 An attempt to avoid the multiplying epplets.
+
+-------------------------------------------------------------------------------
+
+Thu Jun  5 11:15:12 CEST 2003
+(Kim)
+
+Unshade if shaded when selecting window on window list. This makes it easier to
+retrieve windows lost by accidental shading (and seems to me to be the proper
+action anyway).
+Attempt #2 to fix fullscreen mode with XFree86-4.3.
+Fiddling a bit with _NET_ACTIVE_WINDOW hint handling.
+Clean compile of (normally disabled) debug stuff.
