@@ -337,7 +337,7 @@ void term_scroll_down(Term *term, int rows) {
 
 int term_cursor_anim(Term *term) {
    int a;
-   a = 128 + 127 * cos ((ecore_time_get () - term->cursor.last_reset) * 2);
+   a = 162 + 73 * cos ((ecore_time_get () - term->cursor.last_reset) * 2);
    evas_object_color_set (term->cursor.shape, 100, 100, 100, a);
    return 1;
 }
