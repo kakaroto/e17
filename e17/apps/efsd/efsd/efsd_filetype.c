@@ -69,19 +69,20 @@ typedef enum efsd_magic_type
   EFSD_MAGIC_8              = 0,
   EFSD_MAGIC_16             = 1,
   EFSD_MAGIC_32             = 2,
-  EFSD_MAGIC_STRING         = 3
+  EFSD_MAGIC_DATE           = 3,
+  EFSD_MAGIC_STRING         = 4
 }
 EfsdMagicType;
 
 typedef enum efsd_magic_test
 {
-  EFSD_MAGIC_TEST_EQUAL     = 0,
-  EFSD_MAGIC_TEST_NOTEQUAL  = 1,
-  EFSD_MAGIC_TEST_SMALLER   = 2,
-  EFSD_MAGIC_TEST_LARGER    = 3,
-  EFSD_MAGIC_TEST_MASK      = 4,
-  EFSD_MAGIC_TEST_NOTMASK   = 5,
-  EFSD_MAGIC_TEST_SUBST     = 6
+  EFSD_MAGIC_TEST_EQUAL     =  0,
+  EFSD_MAGIC_TEST_NOTEQUAL  =  1,
+  EFSD_MAGIC_TEST_SMALLER   =  2,
+  EFSD_MAGIC_TEST_LARGER    =  3,
+  EFSD_MAGIC_TEST_MASK      =  4,
+  EFSD_MAGIC_TEST_NOTMASK   =  5,
+  EFSD_MAGIC_TEST_ACCEPT    =  6
 }
 EfsdMagicTest;
 
@@ -122,6 +123,7 @@ typedef struct efsd_magic
   EfsdMagicTest       test;
 
   char               *filetype;
+  char               *formatter;
 
   struct efsd_magic  *next;
   struct efsd_magic  *kids;
@@ -176,7 +178,7 @@ static EfsdByteorder host_byteorder = EFSD_BYTEORDER_SMALL;
 */
 static EfsdMagic  magic;
 
-static EfsdLock  *filetype_lock;
+static EfsdLock  *filetype_cache_lock;
 
 /* The db where everything is stored. */
 static E_DB_File *magic_db = NULL;
@@ -318,6 +320,10 @@ filetype_magic_new(char *key, char *params)
       filetype_edb_int32_t_get(magic_db, key, (uint32_t*)em->value);
       filetype_fix_byteorder(em);
       break;
+    case EFSD_MAGIC_DATE:
+      em->value = NEW(uint32_t);
+      filetype_edb_int32_t_get(magic_db, key, (uint32_t*)em->value);
+      filetype_fix_byteorder(em);
     case EFSD_MAGIC_STRING:
       em->value = (char*)e_db_data_get(magic_db, key, &em->value_len);
       break;
@@ -335,6 +341,8 @@ filetype_magic_new(char *key, char *params)
 
   sprintf(params, "%s", "/filetype");
   em->filetype = e_db_str_get(magic_db, key);
+
+  em->formatter = filetype_analyze_format_string(em->filetype);
 
   D_RETURN_(em);
 }
@@ -408,7 +416,8 @@ filetype_fix_byteorder(EfsdMagic *em)
   D_ENTER;
 
   if ((em->type == EFSD_MAGIC_16) ||
-      (em->type == EFSD_MAGIC_32))
+      (em->type == EFSD_MAGIC_32) ||
+      (em->type == EFSD_MAGIC_DATE))
     {
       if ((em->byteorder == host_byteorder)  || 
 	  (em->byteorder == EFSD_BYTEORDER_HOST))
@@ -422,6 +431,7 @@ filetype_fix_byteorder(EfsdMagic *em)
 	  *((uint16_t*)em->value) = SWAP_SHORT(*((uint16_t*)em->value));
 	  break;
 	case EFSD_MAGIC_32:
+	case EFSD_MAGIC_DATE:
 	  *((uint32_t*)em->value) = SWAP_LONG(*((uint32_t*)em->value));
 	  break;
 	default:
@@ -472,6 +482,9 @@ filetype_magic_test_perform(EfsdMagic *em, FILE *f)
 
   if (fseek(f, em->offset, SEEK_SET) < 0)
     D_RETURN_(NULL);
+
+  if (em->test == EFSD_MAGIC_TEST_ACCEPT)
+    D_RETURN_(em->filetype);
 
   switch (em->type)
     {
@@ -532,9 +545,6 @@ filetype_magic_test_perform(EfsdMagic *em, FILE *f)
 		D("Notmask test succeeded.\n");
 		D_RETURN_(em->filetype);
 	      }
-	    break;
-	  case EFSD_MAGIC_TEST_SUBST:
-	    D_RETURN_(em->filetype);
 	    break;
 	  default:
 	    D("UNKNOWN test type!\n");
@@ -599,14 +609,12 @@ filetype_magic_test_perform(EfsdMagic *em, FILE *f)
 		D_RETURN_(em->filetype); 
 	      }
 	    break;
-	  case EFSD_MAGIC_TEST_SUBST:
-	    D_RETURN_(em->filetype);
-	    break;
 	  default:
 	    D("UNKNOWN test type!\n");
 	  }
       }
       break;
+    case EFSD_MAGIC_DATE:
     case EFSD_MAGIC_32:
       {
 	uint32_t val, val_test;
@@ -663,9 +671,6 @@ filetype_magic_test_perform(EfsdMagic *em, FILE *f)
 		D_RETURN_(em->filetype);
 	      }
 	    break;
-	  case EFSD_MAGIC_TEST_SUBST:
-	    D_RETURN_(em->filetype);
-	    break;
 	  default:
 	    D("UNKNOWN test type!\n");
 	  }
@@ -681,9 +686,6 @@ filetype_magic_test_perform(EfsdMagic *em, FILE *f)
 	    if ((s[i] = (char)fgetc(f)) == EOF)
 	      D_RETURN_(NULL);
 	  }
-
-        if (em->test == EFSD_MAGIC_TEST_SUBST)
-	  D_RETURN_(em->filetype);
 
 	/* Fixme: add remaining string tests. */
 
@@ -715,7 +717,7 @@ filetype_magic_test_level(EfsdMagic *level, FILE *f, char *ptr, char stop_when_f
     {
       if ((s = filetype_magic_test_perform(em, f)) != NULL)
 	{	  
-	  if (em->test == EFSD_MAGIC_TEST_SUBST)
+	  if (em->formatter)
 	    {
 	      filetype_substitute_value(em, f, subst, MAXPATHLEN);
 	      sprintf(ptr, "%s", subst);
@@ -846,20 +848,18 @@ filetype_analyze_format_string(char *format)
 static int        
 filetype_substitute_value(EfsdMagic *em, FILE *f, char *subst, int subst_len)
 {
-  char *subst_loc = NULL;
-  int   precision = MAXPATHLEN;
+  char  *subst_loc = NULL;
+  int    precision = MAXPATHLEN, val;
+  void  *data = NULL;
+  char   s[MAXPATHLEN]; /* I guess it's sane to never read more than that */
+  char  *sptr = s;
 
   D_ENTER;
 
-  if (!em || !subst)
+  if (!em || !subst || !em->formatter)
     D_RETURN_(FALSE);
 
-  /* Sanity-check the conversion spec string: */
-
-  if ((subst_loc = filetype_analyze_format_string(em->filetype)) == NULL)
-    D_RETURN_(FALSE);
-
-  subst_loc++;
+  subst_loc = (em->formatter + 1);
 
   if (*(subst_loc) == '.')
     subst_loc++;
@@ -879,60 +879,59 @@ filetype_substitute_value(EfsdMagic *em, FILE *f, char *subst, int subst_len)
   if (fseek(f, em->offset, SEEK_SET) < 0)
     D_RETURN_(FALSE);
 
-  switch (*(subst_loc))
+
+  switch (em->type)
     {
-    case 'd':
+    case EFSD_MAGIC_8:
       {
-	int val = 0;
+	uint8_t val8;
+	
+	if (fread(&val8, sizeof(val8), 1, f) != 1)
+	  D_RETURN_(FALSE);
 
-	switch (em->type)
-	  {
-	  case EFSD_MAGIC_8:
-	    {
-	      uint8_t val8;
-	      
-	      if (fread(&val8, sizeof(val8), 1, f) != 1)
-		D_RETURN_(FALSE);
-	      val = (int)val8;
-	    }
-	    break;
-	  case EFSD_MAGIC_16:
-	    {
-	      uint16_t val16;
-	      
-	      if (fread(&val16, sizeof(val16), 1, f) != 1)
-		D_RETURN_(FALSE);
-	      filetype_fix_byteorder_short(em, &val16);
-	      val = (int)val16;
-	    }
-	    break;
-	  case EFSD_MAGIC_32:
-	    {
-	      uint32_t val32;
-	      
-	      if (fread(&val32, sizeof(val32), 1, f) != 1)
-		D_RETURN_(FALSE);
-	      filetype_fix_byteorder_long(em, &val32);
-	      val = (int)val32;
-	    }
-	    break;
-	  default:
-	  }
-
-	D("Original string: '%s'\n", em->filetype);
-
-	snprintf(subst, subst_len, em->filetype, val);
-
-	D("New string: '%s'\n", subst);
+	val = (int)val8;
+	data = (void*)val;
       }
       break;
-    case 's':
+    case EFSD_MAGIC_16:
       {
-	char  s[MAXPATHLEN]; /* I guess it's sane to never read more than that */
-	char *sptr = s;
+	uint16_t val16;
 	
-	D("Original string: '%s'\n", s);
-		
+	if (fread(&val16, sizeof(val16), 1, f) != 1)
+	  D_RETURN_(FALSE);
+	filetype_fix_byteorder_short(em, &val16);
+
+	val = (int)val16;
+	data = (void*)val;
+      }
+      break;
+    case EFSD_MAGIC_32:
+      {
+	uint32_t val32;
+	
+	if (fread(&val32, sizeof(val32), 1, f) != 1)
+		D_RETURN_(FALSE);
+	filetype_fix_byteorder_long(em, &val32);
+
+	val = (int)val32;
+	data = (void*)val;
+      }
+      break;
+    case EFSD_MAGIC_DATE:
+      {
+	uint32_t  val32;
+	
+	if (fread(&val32, sizeof(val32), 1, f) != 1)
+	  D_RETURN_(FALSE);
+	filetype_fix_byteorder_long(em, &val32);
+
+	CTIME((const time_t *)&val32, sptr);
+	
+	data = sptr;
+      }
+      break;
+    case EFSD_MAGIC_STRING:
+      {	
 	while (precision > 0)
 	  {
 	    if ((*sptr = fgetc(f)) == EOF)
@@ -940,20 +939,22 @@ filetype_substitute_value(EfsdMagic *em, FILE *f, char *subst, int subst_len)
 	    
 	    if (*sptr == '\0')
 	      break;
-
+	    
 	    precision--;
 	    sptr++;
 	  }
 
-	snprintf(subst, subst_len, em->filetype, s);
-
-	D("New string: '%s'\n", subst);
-      }
-      
+	data = s;
+      }       	
+      break;
     default:
       D("WARNING -- unhandled magic string substitution in %s\n", em->filetype);
     }
 
+  D("Original string: '%s'\n", em->filetype);
+  snprintf(subst, subst_len, em->filetype, data);
+  D("New string: '%s'\n", subst);
+  
   D_RETURN_(TRUE);
 }
 
@@ -1376,7 +1377,7 @@ filetype_cache_update(char *filename, time_t time,
 
   it = filetype_cache_lookup(filename);
 
-  efsd_lock_get_write_access(filetype_lock);
+  efsd_lock_get_write_access(filetype_cache_lock);
 
   if (it)
     {
@@ -1403,7 +1404,7 @@ filetype_cache_update(char *filename, time_t time,
 	}
     }
 
-  efsd_lock_release_write_access(filetype_lock);
+  efsd_lock_release_write_access(filetype_cache_lock);
 
   D_RETURN;
 }
@@ -1498,7 +1499,7 @@ efsd_filetype_init(void)
   D_ENTER;
 
   filetype_cache_init();
-  filetype_lock = efsd_lock_new();
+  filetype_cache_lock = efsd_lock_new();
 
   if (!filetype_init_magic())
     D_RETURN_(FALSE);
@@ -1519,10 +1520,10 @@ efsd_filetype_update_patterns(void)
   D_ENTER;
 
   D("Reloading system patterns db...\n");
-  efsd_lock_get_write_access(filetype_lock);
+  efsd_lock_get_write_access(filetype_cache_lock);
   filetype_cleanup_patterns();
   filetype_init_patterns();
-  efsd_lock_release_write_access(filetype_lock);
+  efsd_lock_release_write_access(filetype_cache_lock);
   D("Done.\n");
 
   D_RETURN;
@@ -1535,10 +1536,10 @@ efsd_filetype_update_patterns_user(void)
   D_ENTER;
 
   D("Reloading user patterns db...\n");
-  efsd_lock_get_write_access(filetype_lock);
+  efsd_lock_get_write_access(filetype_cache_lock);
   filetype_cleanup_patterns_user();
   filetype_init_patterns_user();
-  efsd_lock_release_write_access(filetype_lock);
+  efsd_lock_release_write_access(filetype_cache_lock);
   D("Done.\n");
 
   D_RETURN;
@@ -1551,12 +1552,12 @@ efsd_filetype_update_magic(void)
   D_ENTER;
 
   D("Reloading file magic db.\n");
-  efsd_lock_get_write_access(filetype_lock);
+  efsd_lock_get_write_access(filetype_cache_lock);
   filetype_cleanup_magic();
   filetype_init_magic();
   efsd_hash_free(filetype_cache);
   filetype_cache_init();
-  efsd_lock_release_write_access(filetype_lock);
+  efsd_lock_release_write_access(filetype_cache_lock);
   D("Done.\n");
 
   D_RETURN;
@@ -1568,16 +1569,16 @@ efsd_filetype_cleanup(void)
 {
   D_ENTER;
 
-  efsd_lock_get_write_access(filetype_lock);
+  efsd_lock_get_write_access(filetype_cache_lock);
 
   filetype_cleanup_magic();
   filetype_cleanup_patterns();
   filetype_cleanup_patterns_user();
 
-  efsd_lock_release_write_access(filetype_lock);
+  efsd_lock_release_write_access(filetype_cache_lock);
 
-  efsd_lock_free(filetype_lock);
-  filetype_lock = NULL;
+  efsd_lock_free(filetype_cache_lock);
+  filetype_cache_lock = NULL;
 
   D_RETURN;
 }
@@ -1627,7 +1628,7 @@ efsd_filetype_get(char *filename, char *type, int len)
 	}
     }
 
-  efsd_lock_get_read_access(filetype_lock);
+  efsd_lock_get_read_access(filetype_cache_lock);
   cached_result = filetype_cache_lookup(filename);
 
   if (cached_result)
@@ -1638,12 +1639,12 @@ efsd_filetype_get(char *filename, char *type, int len)
 	  /* File has not been changed -- use cached value. */
 	  D("Using cached filetype on %s\n", filename);
 	  strncpy(type, cached_result->filetype, len);
-	  efsd_lock_release_read_access(filetype_lock);
+	  efsd_lock_release_read_access(filetype_cache_lock);
 	  D_RETURN_(TRUE);
 	}
     }
 
-  efsd_lock_release_read_access(filetype_lock);
+  efsd_lock_release_read_access(filetype_cache_lock);
   D("Calculating filetype on %s\n", filename);
 
   /* Filetype is not in cache or file has been modified, re-test: */

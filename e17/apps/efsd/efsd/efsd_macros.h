@@ -50,8 +50,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #if USE_THREADS
 #define READDIR(dir, de, de_ptr)  (readdir_r(dir, &de, &de_ptr))
+#define CTIME(time_ptr, buf)      (ctime_r(time_ptr, buf))
 #else
 #define READDIR(dir, de, de_ptr)  (de_ptr = readdir(dir))
+#define CTIME(time_ptr, buf)      (buf = ctime(time_ptr))
 #endif
 
 #define	SWAP_LONG(y) \

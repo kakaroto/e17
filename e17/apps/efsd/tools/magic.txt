@@ -3,7 +3,21 @@
 # This is a heavily tweaked version of the magic file that came with my
 # Debian 2.2. I basically threw out anything I have never heard of or
 # don't consider important enough, new things are at the end of the file.
-# This file is used to generate Efsd's magic database, magic.db
+# This file is used to generate Efsd's magic database, magic.db.
+#
+# The only thing I really changed is a the way in which you specify
+# that any magic value should be accepted (and used in a formatting
+# specifier) -- just use a dot (".") as in:
+#
+# >9      string          .               %.1s.x
+#
+# This accepts any one-character string at offset 9 (".1" precision, see
+# man printf) and outputs it as, e.g., "1.x" or "2.x" etc. It's not better
+# as the original, but more straightforward.
+#
+# CAUTION -- you need to make sure you don't pass a single "-" character
+# as data, otherwise edb_ed will block and wait for input from stdin.
+#
 #                                                                -- cK.
 
 
@@ -18,6 +32,7 @@
 # Basic recognition of Digital UNIX core dumps - Mike Bremford <mike@opac.bl.uk>
 #
 0	string		Core\001	object/core/alpha-COFF
+0	string		Core\002	object/core/alpha-COFF
 
 #------------------------------------------------------------------------------
 # amigaos:  file(1) magic for AmigaOS binary formats:
@@ -118,11 +133,13 @@
 # FLC animation format
 4	leshort		0xAF12			video/flc
 
-
 # SGI and Apple formats
 0	string		MOVI		video/sgi-movie-file
 4	string		moov		video/quicktime
 4	string		mdat		video/quicktime
+
+# Vivo video (Wolfram Kleff)
+3	string		\x0D\x0AVersion:Vivo	video/vivo
 
 #------------------------------------------------------------------------------
 # applix:  file(1) magic for Applixware
@@ -188,10 +205,16 @@
 >19	string	B			EB-hashtable
 >22	string	X			outdated
 
-0	string		-h-		archive/Software Tools format text
+0	string		-h-		archive/Software Tools
 
 0	string		!<arch>		archive/ar-current
 >8	string		__.SYMDEF	random-lib
+>0	belong		=65538		pre-SR9-5
+>0	belong		=65539		post-SR9-5
+>0	beshort		2		object-archive
+>0	beshort		3		shared-library-module
+>0	beshort		4		debug-module
+>0	beshort		5		absolute-code
 0	string		\<ar>		archive/SVR1-ar
 0	string		=<ar>		archive
 
@@ -227,7 +250,7 @@
 >7	byte		9		VAX-VMS
 
 # HPACK archiver (Peter Gutmann, pgut1@cs.aukuni.ac.nz)
-0	string		HPAK		archive/HPACK
+0	string		HPAK		archive/hpack
 
 # JAM Archive volume format, by Dmitry.Kohmanyuk@UA.net
 0	string		\351,\001JAM\		archive/JAM
@@ -264,6 +287,7 @@
 
 # Zoo archiver
 20	lelong		0xfdc4a7dc	archive/Zoo
+>4	byte		>48		v%c
 
 # Shell archives
 10	string		#\ This\ is\ a\ shell\ archive	archive/shell-text
@@ -293,6 +317,7 @@
 >20	belong		1		mono
 >20	belong		2		stereo
 >20	belong		4		quad
+>16	belong		>0		%d-Hz
 
 # DEC systems (e.g. DECstation 5000) use a variant of the Sun/NeXT format
 # that uses little-endian encoding and has a different magic number
@@ -308,6 +333,7 @@
 >20	lelong		1		mono
 >20	lelong		2		stereo
 >20	lelong		4		quad
+>16	lelong		>0		%d-Hz
 
 # Creative Labs AUDIO stuff
 0	string	MThd			audio/midi
@@ -341,6 +367,75 @@
 0	string		PSID			audio/PlaySID
 >14	beshort		=1			single-song
 >14	beshort		>1			multiple-songs
+
+# IRCAM <mpruett@sgi.com>
+0	belong		0x64a30400		audio/ircam/next
+0	belong		0x64a30200		audio/ircam/sun
+0	belong		0x64a30300		audio/ircam/mips
+0	belong		0x0001a364		audio/ircam
+
+# NIST SPHERE <mpruett@sgi.com>
+0	string		NIST_1A\n\ \ \ 1024\n	audio/NIST-SPHERE
+
+# Sample Vision <mpruett@sgi.com>
+0	string		SOUND\ SAMPLE\ DATA\ 	audio/Sample-Vision
+
+# Audio Visual Research <mpruett@sgi.com>
+0	string		2BIT			audio/Audio-Visual-Research
+
+# From Felix von Leitner <leitner@fefe.de>
+0	string		OggS	                audio/Ogg-bitstream
+
+# From Matt Zimmerman <mdz@debian.org>
+0	string		fLaC	                audio/FLAC-compressed
+
+#------------------------------------------------------------------------------
+#
+# Blender file magic
+#
+0	string	BLENDER_	document/blender
+>9	byte	.		%c.x/32-bit
+>8	string	v		little-endian
+>8	string	V		big-endian
+0	string	BLENDER-	document/blender
+>9	byte	.		%c.x/64-bit
+>8	string	v		little-endian
+>8	string	V		big-endian
+
+
+#------------------------------------------------------------------------------
+# bsdi:  file(1) magic for BSD/OS (from BSDI) objects
+#
+
+0	lelong		0314		executable/bsd-os/386
+>16	lelong		>0		unstripped
+>32	byte		0x6a		using-shared-libs
+
+0	lelong		0407		executable/bsd-os/386
+>16	lelong		>0		unstripped
+>32	byte		0x6a		using-shared-libs
+
+0	lelong		0410		executable/bsd-os/386
+>16	lelong		>0		unstripped
+>32	byte		0x6a		using-shared-libs
+
+0	lelong		0413		executable/bsd-os/386
+>16	lelong		>0		unstripped
+>32	byte		0x6a		using-shared-libs
+
+# same as in SunOS 4.x, except for static shared libraries
+
+0	belong&077777777	0600413		executable/bsd-os/sparc
+>16	belong		>0			unstripped
+>36	belong		0xb4100001		using-shared-libs
+
+0	belong&077777777	0600410		executable/bsd-os/sparc
+>16	belong		>0			unstripped
+>36	belong		0xb4100001		using-shared-libs
+
+0	belong&077777777	0600407		executable/bsd-os/sparc
+>16	belong		>0			unstripped
+>36	belong		0xb4100001		using-shared-libs
 
 #------------------------------------------------------------------------------
 # c-lang:  file(1) magic for C programs (or REXX)
@@ -517,6 +612,43 @@
 # lzop from <markus.oberhumer@jk.uni-linz.ac.at>
 0	string		\x89\x4c\x5a\x4f\x00\x0d\x0a\x1a\x0a	archive/lzop
 
+# AFX compressed files (Wolfram Kleff)
+2	string		-afx-		archive/afx
+
+#------------------------------------------------------------------------------
+# Console game magic
+# Toby Deshane <hac@shoelace.digivill.net>
+#    ines:  file(1) magic for Marat's iNES Nintendo Entertainment System
+#           ROM dump format
+0 string NES\032			binary/iNES-ROM
+
+#------------------------------------------------------------------------------
+# gameboy:  file(1) magic for the Nintendo (Color) Gameboy raw ROM format
+#
+0x104 belong 0xCEED6666			binary/Gameboy-ROM
+
+#------------------------------------------------------------------------------
+# genesis:  file(1) magic for the Sega MegaDrive/Genesis raw ROM format
+#
+0x100 string SEGA			binary/Sega-MegaDrive-rom
+0x280 string EAMG                       binary/sega-SuperMagicDrive-ROM
+0x280 string EAGN			binary/sega-SuperMagicDrive-ROM
+
+#------------------------------------------------------------------------------
+# dreamcast:  file(1) uncertain magic for the Sega Dreamcast VMU image format
+#
+0 belong 0x21068028			binary/Sega-Dreamcast-rom
+0 string LCDi				binary/sega-DreamAnimator
+
+#------------------------------------------------------------------------------
+# v64: file(1) uncertain magic for the V64 format N64 ROM dumps
+#
+0 belong 0x37804012			binary/Nintendo-64-rom
+
+#-----------------------------------------------------------------------------
+# Sony Playstation executables (Adam Sjoegren <asjo@diku.dk>) :
+0	string	PS-X\ EXE	        binary/Sony-Playstation
+
 #------------------------------------------------------------------------------
 # database:  file(1) magic for various databases
 #
@@ -556,6 +688,11 @@
 0	string		---\				text/diff
 0	string		Only\ in\			text/diff
 0	string		Common\ subdirectories:\ 	text/diff
+
+# xdelta is like diff(1) for binary files (works for text, too).
+# Available from: ftp://ftp.xcf.berkeley.edu/pub/xdelta/
+0       string          %XDZ            text/xdelta
+>4      string          .               v%.3s
 
 #------------------------------------------------------------------------------
 # elf:  file(1) magic for ELF executables
@@ -694,7 +831,8 @@
 #
 #	http://www.macromedia.com/software/flash/open/
 #
-0	string		FWS		multimedia/Macromedia Flash
+0	string		FWS		document/Macromedia-Flash
+>3	byte		.		v%d
 
 #------------------------------------------------------------------------------
 # fonts:  file(1) magic for font data
@@ -726,28 +864,28 @@
 # This stuff came on a FrameMaker demo tape, most of which is
 # copyright, but this file is "published" as witness the following:
 #
-0	string		\<MakerFile	document/FrameMaker
->11	string		5.5		 5.5
->11	string		5.0		 5.0
->11	string		4.0		 4.0
->11	string		3.0		 3.0
->11	string		2.0		 2.0
->11	string		1.0		 1.0
-0	string		\<MIFFile	document/FrameMaker/MIF
->9	string		4.0		 (4.0)
->9	string		3.0		 (3.0)
->9	string		2.0		 (2.0)
->9	string		1.0		 (1.x)
+0	string		\<MakerFile		document/FrameMaker
+>11	string		5.5			v5.5
+>11	string		5.0			v5.0
+>11	string		4.0			v4.0
+>11	string		3.0			v3.0
+>11	string		2.0			v2.0
+>11	string		1.0			v1.0
+0	string		\<MIFFile		document/FrameMaker/MIF
+>9	string		4.0			v4.0
+>9	string		3.0			v3.0
+>9	string		2.0			v2.0
+>9	string		1.0			v1.x
 0	string		\<MakerDictionary	document/FrameMaker/Dictionary
->17	string		3.0		 (3.0)
->17	string		2.0		 (2.0)
->17	string		1.0		 (1.x)
+>17	string		3.0			v3.0
+>17	string		2.0			v2.0
+>17	string		1.0			v1.x
 0	string		\<MakerScreenFont	document/FrameMaker/Fontfile
-0	string		\<MML		document/FrameMaker/MML
-0	string		\<BookFile	document/FrameMaker/Book
->10	string		3.0		 (3.0
->10	string		2.0		 (2.0
->10	string		1.0		 (1.0
+0	string		\<MML			document/FrameMaker/MML
+0	string		\<BookFile		document/FrameMaker/Book
+>10	string		3.0			v3.0
+>10	string		2.0			v2.0
+>10	string		1.0			v1.0
 
 #------------------------------------------------------------------------------
 # freebsd:  file(1) magic for FreeBSD objects
@@ -890,6 +1028,290 @@
 
 20      string          GIMP            document/GIMP/brush-data
 
+#------------------------------------------------------------------------------
+# hp:  file(1) magic for Hewlett Packard machines (see also "printer")
+#
+# XXX - somebody should figure out whether any byte order needs to be
+# applied to the "TML" stuff; I'm assuming the Apollo stuff is
+# big-endian as it was mostly 68K-based.
+#
+# I think the 500 series was the old stack-based machines, running a
+# UNIX environment atop the "SUN kernel"; dunno whether it was
+# big-endian or little-endian.
+#
+# Daniel Quinlan (quinlan@yggdrasil.com): hp200 machines are 68010 based;
+# hp300 are 68020+68881 based; hp400 are also 68k.  The following basic
+# HP magic is useful for reference, but using "long" magic is a better
+# practice in order to avoid collisions.
+#
+# Guy Harris (guy@netapp.com): some additions to this list came from
+# HP-UX 10.0's "/usr/include/sys/unistd.h" (68030, 68040, PA-RISC 1.1,
+# 1.2, and 2.0).  The 1.2 and 2.0 stuff isn't in the HP-UX 10.0
+# "/etc/magic", though, except for the "archive file relocatable library"
+# stuff, and the 68030 and 68040 stuff isn't there at all - are they not
+# used in executables, or have they just not yet updated "/etc/magic"
+# completely?
+#
+# 0	beshort		200		hp200 (68010) BSD binary
+# 0	beshort		300		hp300 (68020+68881) BSD binary
+# 0	beshort		0x20c		hp200/300 HP-UX binary
+# 0	beshort		0x20d		hp400 (68030) HP-UX binary
+# 0	beshort		0x20e		hp400 (68040?) HP-UX binary
+# 0	beshort		0x20b		PA-RISC1.0 HP-UX binary
+# 0	beshort		0x210		PA-RISC1.1 HP-UX binary
+# 0	beshort		0x211		PA-RISC1.2 HP-UX binary
+# 0	beshort		0x214		PA-RISC2.0 HP-UX binary
+
+#
+# The "misc" stuff needs a byte order; the archives look suspiciously
+# like the old 177545 archives (0xff65 = 0177545).
+#
+#### Old Apollo stuff
+0	beshort		0627		executable/Apollo-m68k-COFF
+>18	beshort		^040000		unstripped
+>22	beshort		>0		v%ld
+0	beshort		0624		executable/apollo-a88k-COFF
+>18	beshort		^040000		unstripped
+>22	beshort		>0		v%ld
+
+#### PA-RISC 1.1
+0	belong 		0x02100106	binary/PA-RISC/v1-1/relocatable
+0	belong 		0x02100107	executable/PA-RISC/v1-1
+>168	belong		&0x00000004	dynamically-linked
+>96	belong		>0		unstripped
+
+0	belong 		0x02100108	executable/PA-RISC-v1-1/shared
+>168	belong&0x4	0x4		dynamically-linked
+>96	belong		>0		unstripped
+
+0	belong 		0x0210010b	executable/PA-RISC-v1-1/demand-load
+>168	belong&0x4	0x4		dynamically-linked
+>96	belong		>0		unstripped
+
+0	belong 		0x0210010e	binary/PA-RISC-v1-1/shared-library
+>96	belong		>0		unstripped
+
+0	belong 		0x0210010d	binary/PA-RISC-v1-1/dll
+>96	belong		>0		unstripped
+
+#### PA-RISC 2.0
+0	belong		0x02140106	binary/PA-RISC-v2
+
+0       belong		0x02140107	executable/PA-RISC-v2
+>168	belong		&0x00000004	dynamically-linked
+>96	belong		>0		unstripped
+
+0       belong		0x02140108	executable/PA-RISC-v2/shared
+>168	belong		&0x00000004	dynamically-linked
+>96	belong		>0		unstripped
+
+0       belong		0x0214010b	executable/PA-RISC-v2/demand-load
+>168	belong		&0x00000004	dynamically linked
+>96	belong		>0		unstripped
+
+0       belong		0x0214010e	binary/PA-RISC-v2/shared-lib
+>96	belong		>0		unstripped
+
+0       belong		0x0214010d	binary/PA-RISC-v2/dll
+>96	belong		>0		unstripped
+
+#### 800
+0	belong 		0x020b0106	binary/PA-RISC-v1/relocatable
+
+0	belong 		0x020b0107	executable/PA-RISC-v1
+>168	belong&0x4	0x4		dynamically-linked
+>96	belong		>0		unstripped
+
+0	belong 		0x020b0108	executable/PA-RISC-v1/shared
+>168	belong&0x4	0x4		dynamically-linked
+>96	belong		>0		unstripped
+
+0	belong 		0x020b010b	executable/PA-RISC-v1/demand-load
+>168	belong&0x4	0x4		dynamically-linked
+>96	belong		>0		unstripped
+
+0	belong 		0x020b010e	executable/PA-RISC-v1/shared-lib
+>96	belong		>0		unstripped
+
+0	belong 		0x020b010d	executable/PA-RISC-v1/dll
+>96	belong		>0		unstripped
+
+#### 500
+0	long		0x02080106	executable/HP-s500/relocatable
+>16	long		>0		v%ld
+
+0	long		0x02080107	executable/HP-s500
+>16	long		>0		v%ld
+
+0	long		0x02080108	executable/HP-s500/pure
+>16	long		>0		v%ld
+
+#### 200
+0	belong 		0x020c0108	executable/HP-s200/pure
+>4	beshort		>0		v%ld
+>8	belong		&0x80000000	save-fp-regs
+>8	belong		&0x40000000	dynamically-linked
+>8	belong		&0x20000000	debuggable
+>36	belong		>0		unstripped
+
+0	belong		0x020c0107	executable/HP-s200
+>4	beshort		>0		v%ld
+>8	belong		&0x80000000	save-fp-regs
+>8	belong		&0x40000000	dynamically-linked
+>8	belong		&0x20000000	debuggable
+>36	belong		>0		unstripped
+
+0	belong		0x020c010b	executable/HP-s200/demand-load
+>4	beshort		>0		v%ld
+>8	belong		&0x80000000	save-fp-regs
+>8	belong		&0x40000000	dynamically-linked
+>8	belong		&0x20000000	debuggable
+>36	belong		>0		unstripped
+
+0	belong		0x020c0106	executable/HP-s200/relocatable
+>4	beshort		>0		v%ld
+>6	beshort		>0		highwater-%d
+>8	belong		&0x80000000	save-fp-regs
+>8	belong		&0x20000000	debuggable
+>8	belong		&0x10000000	pic
+
+0	belong 		0x020a0108	executable/HP-s200/v2-x/pure
+>4	beshort		>0		v%ld
+>36	belong		>0		unstripped
+
+0	belong		0x020a0107	executable/HP-s200/v2-x
+>4	beshort		>0		v%ld
+>36	belong		>0		unstripped
+
+0	belong		0x020c010e	executable/HP-s200/shared-library
+>4	beshort		>0		v%ld
+>6	beshort		>0		highwater-%d
+>36	belong		>0		unstripped
+
+0	belong		0x020c010d	executable/HP-s200/dll
+>4	beshort		>0		v%ld
+>6	beshort		>0		highwater-%d
+>36	belong		>0		unstripped
+
+#### MISC
+0	long		0x0000ff65	archive/HP
+0	long		0x020aff65	archive/HP-s200
+0	long		0x020cff65	archive/HP-s200
+0	long		0x0208ff65	archive/HP-s500
+
+0	long		0x015821a6	binary/core/HP
+
+# addendum to /etc/magic with HP-48sx file-types by phk@data.fls.dk 1jan92
+0	string		HPHP48-		binary/HP48
+>7	byte		>0		rev-%c
+>8	beshort		0x1129		ADR
+>8	beshort		0x3329		REAL
+>8	beshort		0x5529		LREAL
+>8	beshort		0x7729		COMPLX
+>8	beshort		0x9d29		LCOMPLX
+>8	beshort		0xbf29		CHAR
+>8	beshort		0xe829		ARRAY
+>8	beshort		0x0a2a		LNKARRAY
+>8	beshort		0x2c2a		STRING
+>8	beshort		0x4e2a		HXS
+>8	beshort		0x742a		LIST
+>8	beshort		0x962a		DIR
+>8	beshort		0xb82a		ALG
+>8	beshort		0xda2a		UNIT
+>8	beshort		0xfc2a		TAGGED
+>8	beshort		0x1e2b		GROB
+>8	beshort		0x402b		LIB
+>8	beshort		0x622b		BACKUP
+>8	beshort		0x882b		LIBDATA
+>8	beshort		0x9d2d		PROG
+>8	beshort		0xcc2d		CODE
+>8	beshort		0x482e		GNAME
+>8	beshort		0x6d2e		LNAME
+>8	beshort		0x922e		XLIB
+
+0	string		%%HP:		text/HP48
+>6	string		T(0)		T-0
+>6	string		T(1)		T-1
+>6	string		T(2)		T-2
+>6	string		T(3)		T-3
+>10	string		A(D)		A-D
+>10	string		A(R)		A-R
+>10	string		A(G)		A-G
+
+# hpBSD magic numbers
+0	beshort		200		""
+>2	beshort		0407		binary/hp200/impure
+>2	beshort		0410		binary/hp200/read-only
+>2	beshort		0413		binary/hp200/demand-paged
+0	beshort		300		""
+>2	beshort		0407		binary/hp300/impure
+>2	beshort		0410		binary/hp300/read-only
+>2	beshort		0413		binary/hp300/demand-paged
+
+#------------------------------------------------------------------------------
+# ibm370:  file(1) magic for IBM 370 and compatibles.
+#
+# "ibm370" said that 0x15d == 0535 was "ibm 370 pure executable".
+# What the heck *is* "USS/370"?
+# AIX 4.1's "/etc/magic" has
+#
+#	0	short		0535		370 sysV executable 
+#	>12	long		>0		not stripped
+#	>22	short		>0		v%d
+#	>30	long		>0		- 5.2 format
+#	0	short		0530		370 sysV pure executable 
+#	>12	long		>0		not stripped
+#	>22	short		>0		v%d
+#	>30	long		>0		- 5.2 format
+#
+# instead of the "USS/370" versions of the same magic numbers.
+#
+0	beshort		0537		executable/370-XA-sysV
+>12	belong		>0		unstripped
+>22	beshort		>0		v%d
+>30	belong		>0		5-2-format
+0	beshort		0532		executable/370-XA-sysV/pure
+>12	belong		>0		unstripped
+>22	beshort		>0		v%d
+>30	belong		>0		5.2-format
+0	beshort		054001		executable/370-sysV/pure
+>12	belong		>0		unstripped
+0	beshort		055001		executable/370-XA-sysV/pure
+>12	belong		>0		unstripped
+0	beshort		056401		executable/370-sysV
+>12	belong		>0		unstripped
+0	beshort		057401		executable/370-XA-sysV
+>12	belong		>0		unstripped
+0       beshort		0531		executable/SVR2
+>12	belong		>0		unstripped
+>24     belong		>0		v%ld
+0	beshort		0534		executable/SVR2/pure
+>12	belong		>0		unstripped
+>24	belong		>0		v%ld
+0	beshort		0530		executable/SVR2/pure
+>12	belong		>0		unstripped
+>24	belong		>0		v%ld
+0	beshort		0535		executable/SVR2
+>12	belong		>0		unstripped
+>24	belong		>0		v%ld
+
+#------------------------------------------------------------------------------
+# ibm6000:  file(1) magic for RS/6000 and the RT PC.
+#
+0	beshort		0x01df		executable/ibm6000/v3-1
+>12	belong		>0		unstripped
+# Breaks sun4 statically linked execs.
+#0      beshort		0x0103		executable/ibm6000/RT-v2
+#>2	byte		0x50		pure
+#>28	belong		>0		unstripped
+#>6	beshort		>0		v%ld
+0	beshort		0x0104		binary/ibm6000/shared-lib
+0	beshort		0x0105		binary/ibm6000/ctab-data
+0	beshort		0xfe04		binary/ibm6000/structured-file
+0	string		0xabcdef	documemt/AIX/message-catalog
+0	belong		0x000001f9	document/AIX/message-catalog/compiled
+0	string		\<aiaff>	archive/aix
+
 
 #------------------------------------------------------------------------------
 # iff:	file(1) magic for Interchange File Format (see also "audio" & "images")
@@ -964,7 +1386,7 @@
 # 137 P N G \r \n ^Z \n [4-byte length] H E A D [HEAD data] [HEAD crc] ...
 #
 0	string		\x89PNG		image/png
->4	belong		!0x0d0a1a0a	CORRUPTED
+>4	belong		!0x0d0a1a0a	corrupted
 >4	belong		0x0d0a1a0a	""
 >>25	byte		0		grayscale
 >>25	byte		2		color-RGB
@@ -1018,6 +1440,11 @@
 # Utah Raster Toolkit RLE images (janl@ifi.uio.no)
 0	leshort		0xcc52		image/utah-rle
 
+# image file format (Robert Potter, potter@cs.rochester.edu)
+0	string		Imagefile\ version-	image/iff
+# this adds the whole header (inc. version number), informative but longish
+>10	string		.		%s
+
 # Sun raster images, from Daniel Quinlan (quinlan@yggdrasil.com)
 0	belong		0x59a66a95	image/sun-raster
 
@@ -1027,10 +1454,10 @@
 #	http://reality.sgi.com/grafica/sgiimage.html
 #
 0	beshort		474		image/sgi
-#>2	byte		0		 verbatim
->2	byte		1		 RLE
-#>3	byte		1		 normal-precision
->3	byte		2		 high-precision
+#>2	byte		0		verbatim
+>2	byte		1		RLE
+#>3	byte		1		normal-precision
+>3	byte		2		high-precision
 
 2048	string		PCD_IPI		image/kodak-photo-cd
 0	string		PCD_OPA		image/kodak-photo-cd
@@ -1050,6 +1477,69 @@
 0	beshort		0x0A03	image/pcx-2.8
 0	beshort		0x0A05	image/pcx-3
 
+# GEM Image: Version 1, Headerlen 8 (Wolfram Kleff)
+0	belong		0x00010008	image/gem
+
+# GEM Metafile (Wolfram Kleff)
+0	lelong		0x0018FFFF	document/GEM-Metafile
+>4	leshort		.		v%d
+
+#
+# SMJPEG. A custom Motion JPEG format used by Loki Entertainment
+# Software Torbjorn Andersson <d91tan@Update.UU.SE>.
+#
+0	string	\0\nSMJPEG	video/SMJPEG
+>8	belong	.		v%d.x
+>16	string	_SND		""
+>>24	beshort	>0		%d-Hz
+>>26	byte	8		8-bit
+>>26	byte	16		16-bit
+>>27	byte	1		mono
+>>28	byte	2		stereo
+>>32	string	_VID		""
+# >>>48	string	JFIF		JPEG
+>>>40	belong	>0		%d-frames
+>16	string	_VID		""
+# >>32	string	JFIF		JPEG
+>>24	belong	>0		%d-frames
+
+0	string	Paint\ Shop\ Pro\ Image\ File	image/PaintShop-Pro
+
+#------------------------------------------------------------------------------
+# intel:  file(1) magic for x86 Unix
+#
+# Various flavors of x86 UNIX executable/object (other than Xenix, which
+# is in "microsoft").  DOS is in "msdos"; the ambitious soul can do
+# Windows as well.
+#
+# Windows NT belongs elsewhere, as you need x86 and MIPS and Alpha and
+# whatever comes next (HP-PA Hummingbird?).  OS/2 may also go elsewhere
+# as well, if, as, and when IBM makes it portable.
+#
+# The `versions' should be un-commented if they work for you.
+# (Was the problem just one of endianness?)
+#
+0	leshort		0502		executable/basic-16
+>12	lelong		>0		unstripped
+#>22	leshort		>0		v%ld
+0	leshort		0503		executable/basic-16/tv
+>12	lelong		>0		unstripped
+#>22	leshort		>0		v%ld
+0	leshort		0510		executable/x86
+>12	lelong		>0		unstripped
+0	leshort		0511		executable/x86/tv
+>12	lelong		>0		unstripped
+0	leshort		=0512		executable/iAPX-286/small-model
+>12	lelong		>0		unstripped
+#>22	leshort		>0		v%ld
+0	leshort		=0522		executable/iAPX-286/large-model
+>12	lelong		>0		unstripped
+#>22	leshort		>0		v%ld
+0	leshort		=0514		executable/80386-COFF
+>12	lelong		>0		unstripped
+>22	leshort		>0		v%ld
+
+
 #------------------------------------------------------------------------------
 # ispell:  file(1) magic for ispell
 #
@@ -1061,6 +1551,7 @@
 #
 0	leshort&0xFFFC	0x9600		document/ispell/little-endian
 0	beshort&0xFFFC	0x9600		document/ispell/big-endian
+0       string          ISPL            document/ispell/hashfile
 
 #------------------------------------------------------------
 # Java ByteCode
@@ -1070,6 +1561,29 @@
 # Java serialization
 # From Martin Pool (m.pool@pharos.com.au)
 0	beshort		0xaced		binary/java/serialization
+
+#------------------------------------------------------------------------------
+# JPEG images
+# SunOS 5.5.1 had
+#
+#	0	string		\377\330\377\340	JPEG file
+#	0	string		\377\330\377\356	JPG file
+#
+# both of which turn into "JPEG image data" here.
+#
+0	beshort		0xffd8		image/jpeg
+>6	string		JFIF		JFIF
+# HSI is Handmade Software's proprietary JPEG encoding scheme
+0	string		hsi1		image/jpeg/HSI-proprietary
+
+#------------------------------------------------------------------------------
+# lex:  file(1) magic for lex
+#
+#	derived empirically, your offsets may vary!
+53	string		yyprevious	text/c/lex
+21	string		generated\ by\ flex	text/c/flex
+0	string		%{		text/lex-description
+
 
 #------------------------------------------------------------------------------
 # linux:  file(1) magic for Linux files
@@ -1223,15 +1737,293 @@
 # MS-Word Document (Wolfram Kleff)
 0	string	\xD0\xCF\x11\xE0\xA1\xB1\x1A\xE1	document/ms-word
 
-0	string	\376\067\0\043			document/ms-office
-0	string	\320\317\021\340\241\261	document/ms-office
-0	string	\333\245-\0\0\0			document/ms-office
+0	string	\376\067\000\043			document/ms-office
+0	string	\320\317\021\340\241\261		document/ms-office
+0	string	\333\245-\000\000\000			document/ms-office
 #
 2080	string	Microsoft\ Excel\ 5.0\ Worksheet	document/ms-excel-5-0
 ##
 0	belong	0x00001a00	document/Lotus123
 0	belong	0x00000200 	document/Lotus123
 
+# Help files
+0	string	?_\003\000		document/Windows-help
+
+# Windows Metafont .WMF
+0	string	\327\315\306\232\000\000\000\000\000\000	font/ms-windows-metafont
+
+# lnk files windows symlinks
+0	string	\114\000\000\000\001\024\002\000\000\000\000\000\300\000\000\000\000\000\000\106	document/ms-windows-shortcut
+
+#ico files
+0	string	\000\000\001\000\001\000\040\040\020\000\000\000\000\000\350\002\000\000	image/ms-windows-icon
+0	string	\000\000\001\000\004\000\040\040\020\000\000\000\000\000\350\002		image/ms-windows-icon
+0	string	\102\101\050\000\000\000\056\000\000\000\000\000\000\000			image/ms-windows-icon
+0	string	\000\000\001\000\002\000\040\040\010\000\000\000\000\000\350\002		image/ms-windows-icon
+0	string	\000\000\001\000\006\000\020\020\020\000\000\000\000\000\050\001		image/ms-windows-icon
+0	string	\000\000\001\000\002\000\020\020\020\000\000\000\000\000\050\001		image/ms-windows-icon
+
+# WARNING: below line conflicts with Infocom game data Z-machine 3
+0	byte		0x03		document/DBase-3
+0	byte		0x83		document/DBase-3/memos
+0	leshort		0x0006		document/DBase-3/index
+
+#------------------------------------------------------------------------------
+# netbsd:  file(1) magic for NetBSD objects
+#
+# All new-style magic numbers are in network byte order.
+#
+
+0	lelong			000000407	binary/NetBSD/little-endian
+>16	lelong			>0		unstripped
+0	belong			000000407	binary/NetBSD/big-endian
+>16	belong			>0		unstripped
+
+0	belong&0377777777	041400413	""
+>0	byte			&0x80		""
+>>20	lelong			<4096		binary/netbsd/i386/shared-lib
+>>20	lelong			=4096		executable/netbsd/i386/dynamically-linked
+>>20	lelong			>4096		executable/netbsd/i386/dynamically-linked
+>0	byte			^0x80		executable/netbsd/i386
+>16	lelong			>0		executable/netbsd/i386/unstripped
+
+0	belong&0377777777	041400410	executable/NetBSD/i386
+>0	byte			&0x80		dynamically-linked
+>0	byte			^0x80		executable
+>16	lelong			>0		unstripped
+
+0	belong&0377777777	041400407	executable/NetBSD/i386
+>0	byte			&0x80		dynamically-linked
+>16	lelong			>0		unstripped
+
+0	belong&0377777777	041400507	binary/core/NetBSD/i386
+
+0	belong&0377777777	041600413	""
+>0	byte			&0x80		""
+>>20	belong			<8192		binary/NetBSD/m68k/shared-lib
+>>20	belong			=8192		executable/NetBSD/m68k/dynamically-linked
+>>20	belong			>8192		executable/NetBSD/m68kdynamically-linked
+>0	byte			^0x80		executable/NetBSD/m68k
+>16	belong			>0		unstripped
+
+0	belong&0377777777	041600410	executable/NetBSD/m68k
+>0	byte			&0x80		dynamically-linked
+
+0	belong&0377777777	041600407	""
+>0	byte			&0x80		executable/NetBSD/m68k/dynamically-linked
+>0	byte			^0x80		""
+>>0	byte			&0x40		binary/NetBSD/m68k/pic
+>>20	belong			!0		executable/NetBSD/m68k
+>>20	belong			=0		binary/NetBSD/m68k
+>16	belong			>0		unstripped
+
+0	belong&0377777777	041600507	binary/core/NetBSD/m68k
+
+0	belong&0377777777	042000413	""
+>0	byte			&0x80		""
+>>20	belong			<4096		binary/NetBSD/m68k/shared lib
+>>20	belong			=4096		executable/NetBSD/m68k/dynamically-linked
+>>20	belong			>4096		executable/NetBSD/m68k/dynamically-linked
+>0	byte			^0x80		executable/NetBSD/m68k
+>16	belong			>0		unstripped
+
+0	belong&0377777777	042000410	executable/NetBSD/m68k
+>0	byte			&0x80		dynamically-linked
+>0	byte			^0x80		""
+>16	belong			>0		unstripped
+
+0	belong&0377777777	042000407	""
+>0	byte			&0x80		executable/NetBSD/m68k/dynamically-linked
+>0	byte			^0x80		""
+>>0	byte			&0x40		binary/NetBSD/m68k/pic
+>>20	belong			!0		executable/NetBSD/m68k
+>>20	belong			=0		binary/NetBSD/m68k
+>16	belong			>0		unstripped
+
+0	belong&0377777777	042000507	binary/core/NetBSD/m68k
+
+0	belong&0377777777	042200413	""
+>0	byte			&0x80		""
+>>20	lelong			<4096		binary/NetBSD/ns32532/shared lib
+>>20	lelong			=4096		executable/NetBSD/ns32532/dynamically-linked
+>>20	lelong			>4096		executable/NetBSD/ns32532/dynamically-linked
+>0	byte			^0x80		executable/NetBSD/ns32532
+>16	lelong			>0		unstripped
+
+0	belong&0377777777	042200410	""
+>0	byte			&0x80		executable/NetBSD/ns32532/dynamically-linked
+>0	byte			^0x80		executable/NetBSD/ns32532
+>16	lelong			>0		unstripped
+
+0	belong&0377777777	042200407	""
+>0	byte			&0x80		executable/NetBSD/ns32532/dynamically-linked
+>0	byte			^0x80		""
+>>0	byte			&0x40		binary/NetBSD/ns32532/pic
+>>20	lelong			!0		executable/NetBSD/ns32532
+>>20	lelong			=0		binary/NetBSD/ns32532
+>16	lelong			>0		unstripped
+
+0	belong&0377777777	042200507	binary/core/NetBSD/ns32532
+0	belong&0377777777	045200507	binary/core/NetBSD/powerpc
+
+0	belong&0377777777	042400413	""
+>0	byte			&0x80		""
+>>20	belong			<8192		binary/NetBSD/sparc/shared-lib
+>>20	belong			=8192		executable/NetBSD/sparc/dynamically-linked
+>>20	belong			>8192		executable/NetBSD/sparc/dynamically-linked
+>0	byte			^0x80		executable/NetBSD/sparc/
+>16	belong			>0		unstripped
+
+0	belong&0377777777	042400410	""
+>0	byte			&0x80		executable/NetBSD/sparc/dynamically-linked
+>0	byte			^0x80		executable/NetBSD/sparc
+>16	belong			>0		unstripped
+
+0	belong&0377777777	042400407	""
+>0	byte			&0x80		executable/NetBSD/sparc/dynamically-linked
+>0	byte			^0x80		""
+>>0	byte			&0x40		binary/NetBSD/sparc/pic
+>>20	belong			!0		executableNetBSD/sparc
+>>20	belong			=0		binary/NetBSD/sparc/pic
+>16	belong			>0		unstripped
+
+0	belong&0377777777	042400507	binary/core/NetBSD/sparc
+
+0	belong&0377777777	042600413	""
+>0	byte			&0x80		""
+>>20	lelong			<4096		binary/NetBSD/pmax/shared lib
+>>20	lelong			=4096		executable/NetBSD/pmax/dynamically-linked
+>>20	lelong			>4096		executable/NetBSD/pmax/dynamically-linked
+>0	byte			^0x80		executable/NetBSD/pmax
+>16	lelong			>0		unstripped
+
+0	belong&0377777777	042600410	""
+>0	byte			&0x80		executable/NetBSD/pmax/dynamically-linked
+>0	byte			^0x80		executable/NetBSD/pmax
+>16	lelong			>0		unstripped
+
+0	belong&0377777777	042600407	""
+>0	byte			&0x80		executable/NetBSD/pmax/dynamically-linked
+>0	byte			^0x80		""
+>>0	byte			&0x40		binary/NetBSD/pmax/pic
+>>20	lelong			!0		executable/NetBSD/pmax
+>>20	lelong			=0		binary/NetBSD/pmax
+>16	lelong			>0		unstripped
+
+0	belong&0377777777	042600507	binary/core/NetBSD/pmax
+
+0	belong&0377777777	043000413	""
+>0	byte			&0x80		""
+>>20	lelong			<4096		binary/NetBSD/vax/shared-lib
+>>20	lelong			=4096		executable/NetBSD/vax/dynamically-linked
+>>20	lelong			>4096		executable/NetBSD/vax/dynamically-linked
+>0	byte			^0x80		executable/NetBSD/vax
+>16	lelong			>0		unstripped
+
+0	belong&0377777777	043000410	""
+>0	byte			&0x80		executable/NetBSD/vax/dynamically-linked
+>0	byte			^0x80		executable/NetBSD/vax
+>16	lelong			>0		unstripped
+
+0	belong&0377777777	043000407	""
+>0	byte			&0x80		executable/NetBSD/vax/dynamically-linked
+>0	byte			^0x80		""
+>>0	byte			&0x40		binary/NetBSD/vax/pic
+>>20	lelong			!0		executable/NetBSD/vax
+>>20	lelong			=0		binary/NetBSD/vax
+>16	lelong			>0		unstripped
+
+0	belong&0377777777	043000507	binary/core/NetBSD/vax
+
+0	belong&0377777777	045400413	""
+>0	byte			&0x80		""
+>>20	lelong			<4096		binary/NetBSD/vax/shared-lib
+>>20	lelong			=4096		executable/NetBSD/vax/dynamically-linked
+>>20	lelong			>4096		executable/NetBSD/vax/dynamically-linked
+>0	byte			^0x80		executable/NetBSD/vax
+>16	lelong			>0		unstripped
+
+0	belong&0377777777	045400410	""
+>0	byte			&0x80		executable/NetBSD/vax/dynamically-linked
+>0	byte			^0x80		executable/NetBSD/vax
+>16	lelong			>0		unstripped
+
+0	belong&0377777777	045400407	""
+>0	byte			&0x80		executable/NetBSD/vax/dynamically-linked
+>0	byte			^0x80		""
+>>0	byte			&0x40		binary/NetBSD/vax/pic
+>>20	lelong			!0		executable/NetBSD/vax
+>>20	lelong			=0		binary/NetBSD/vax
+>16	lelong			>0		unstripped
+
+0	belong&0377777777	045400507	binary/core/NetBSD/vax
+
+# NetBSD/alpha does not support (and has never supported) a.out objects,
+# so no rules are provided for them.  NetBSD/alpha ELF objects are 
+# dealt with in "elf".
+0	lelong		0x00070185		binary/NetBSD/alpha
+>10	leshort		0x0001			unstripped
+>10	leshort		0x0000			stripped
+0	belong&0377777777	043200507	binary/core/NetBSD/alpha
+
+0	belong&0377777777	043400413	""
+>0	byte			&0x80		""
+>>20	belong			<8192		binary/NetBSD/mips/shared-lib
+>>20	belong			=8192		executable/NetBSD/mips/dynamically-linked
+>>20	belong			>8192		executable/NetBSD/mips/dynamically-linked
+>0	byte			^0x80		executable/NetBSD/mips
+>16	belong			>0		unstripped
+
+0	belong&0377777777	043400410	""
+>0	byte			&0x80		executable/NetBSD/mips/dynamically-linked
+>0	byte			^0x80		executable/NetBSD/mips
+>16	belong			>0		unstripped
+
+0	belong&0377777777	043400407	""
+>0	byte			&0x80		executable/NetBSD/mips/dynamically-linked
+>0	byte			^0x80		""
+>>0	byte			&0x40		executable/NetBSD/mips/pic
+>>20	belong			!0		executable/NetBSD/mips
+>>20	belong			=0		binary/NetBSD/mips
+>16	belong			>0		unstripped
+
+0	belong&0377777777	043400507	binary/core/NetBSD/mips
+
+0	belong&0377777777	043600413	""
+>0	byte			&0x80		""
+>>20	lelong			<8192		binary/NetBSD/arm32/shared-lib
+>>20	lelong			=8192		executable/NetBSD/arm32/dynamically-linked
+>>20	lelong			>8192		executable/NetBSD/arm32/dynamically-linked
+>0	byte			^0x80		executable/NetBSD/arm32
+>16	lelong			>0		unstripped
+
+0	belong&0377777777	043600410	""
+>0	byte			&0x80		executable/NetBSD/arm32/dynamically-linked
+>0	byte			^0x80		executable/NetBSD/arm32
+>16	lelong			>0		unstripped
+
+0	belong&0377777777	043600407	""
+>0	byte			&0x80		executable/NetBSD/arm32/dynamically-linked
+>0	byte			^0x80		""
+>>0	byte			&0x40		executable/NetBSD/arm32/pic
+>>20	lelong			!0		executable/NetBSD/arm32
+>>20	lelong			=0		binary/NetBSD/arm32
+>16	lelong			>0		unstripped
+
+0	belong&0377777777	043600507	binary/core/NetBSD/arm32
+
+#------------------------------------------------------------------------------
+# netscape:  file(1) magic for Netscape files
+# "H. Nanosecond" <aldomel@ix.netcom.com>
+# version 3 and 4 I think
+#
+
+# Netscape Address book  .nab
+0	string \000\017\102\104\000\000\000\000\000\000\001\000\000\000\000\002\000\000\000\002\000\000\004\000		document/Netscape/Address-book
+
+# .snm Caches
+0	string		#\ Netscape\ folder\ cache	document/Netscape/folder-cache
+0	string	\000\036\204\220\000			document/Netscape/folder-cache
 
 #------------------------------------------------------------------------------
 # octave binary data file(1) magic, from Dirk Eddelbuettel <edd@debian.org>
@@ -1354,6 +2146,89 @@
 >12	byte		14	binary/OS9-68K/device-driver
 >12	byte		15	binary/OS9-68K/device-descriptor
 
+#-----------------------------------------------------------------------------
+# palm:  file(1) magic for PalmOS {.prc,.pdb}: applications, docfiles,
+# and hacks
+#
+
+# Variety of PalmOS document types
+# Michael-John Turner <mj@debian.org>
+# Thanks to Hasan Umit Ezerce <humit@tr-net.net.tr> for his DocType 
+60		string	BVokBDIC			document/palm-os/BDicty
+>0    string                  .             "%s"
+
+60		string	DB99DBOS			document/palm-os/DB
+>0    string                  .             "%s"
+
+60		string	vIMGView			document/palm-os/FireViewer
+>0    string                  .             "%s"
+
+60		string	PmDBPmDB			document/palm-os/HanDBase
+>0    string                  .             "%s"
+
+60		string	InfoINDB			document/palm-os/InfoView
+>0    string                  .             "%s"
+
+60		string	ToGoToGo			document/palm-os/iSilo
+>0    string                  .             "%s"
+
+60		string	JfDbJBas			document/palm-os/JFile
+>0    string                  .             "%s"
+
+60		string	JfDbJFil			document/palm-os/JFile-Pro
+>0    string                  .             "%s"
+
+60		string	DATALSdb			document/palm-os/List
+>0    string                  .             "%s"
+
+60		string	Mdb1Mdb1			document/palm-os/MobileDB
+>0    string                  .             "%s"
+
+60		string	PNRdPPrs			document/palm-os/PeanutPress
+>0    string                  .             "%s"
+
+60		string	DataPlkr			document/palm-os/Plucker
+>0    string                  .             "%s"
+
+60		string	DataSprd			document/palm-os/QuickSheet
+>0    string                  .             "%s"
+
+60		string	SM01SMem			document/palm-os/SuperMemo
+>0    string                  .             "%s"
+
+60		string	DataTlPt			document/palm-os/TealDoc
+>0    string                  .             "%s"
+
+60		string	InfoTlIf			document/palm-os/TealInfo
+>0    string                  .             "%s"
+
+60		string	DataTlMl			document/palm-os/TealMeal
+>0    string                  .             "%s"
+
+60		string	DataTlPt			document/palm-os/TealPaint
+>0    string                  .             "%s"
+
+60		string	dataTDBP			document/palm-os/ThinkDB
+>0    string                  .             "%s"
+
+60		string	TdatTide			document/palm-os/Tides
+>0    string                  .             "%s"
+
+60		string	ToRaTRPW			document/palm-os/TomeRaider
+>0    string                  .             "%s"
+
+# Brian Lalor <blalor@hcirisc.cs.binghamton.edu>
+# appl
+60      belong                  0x6170706c      executable/Palm-OS
+>0      string                  .             "%s"
+# TEXt
+60      belong                  0x54455874      document/Palm-OS/AportisDoc
+>0      string                  .             "%s"
+# HACK
+60      belong                  0x4841434b      document/Palm-OS/HackMaster
+>0      string                  .             "%s"
+
+
 #------------------------------------------------------------------------------
 # pdf:  file(1) magic for Portable Document Format
 #
@@ -1411,21 +2286,22 @@
 #
 #	http://www.jtauber.com/music/encoding/niff/spec/
 #
-0	string		RIFF		 RIFF-data/little-endian
+0	string		RIFF		 ""
 # RIFF Palette format
->8	string		PAL		 palette
+>8	string		PAL		 document/riff-palette/little-endian
+>>16	leshort		.		 v%d
 # RIFF Device Independent Bitmap format
->8	string		RDIB		 device-independent-bitmap
+>8	string		RDIB		 image/riff-bitmap/little-endian
 >>16	string		BM		 ""
 >>>30	leshort		12		 OS2-1.x
 >>>30	leshort		64		 OS2-2.x
 >>>30	leshort		40		 Windows-3.x
 # RIFF MIDI format
->8	string		RMID		 MIDI
+>8	string		RMID		 audio/midi/little-endian
 # RIFF Multimedia Movie File format
->8	string		RMMP		 multimedia-movie
+>8	string		RMMP		 videa/riff-multimedia/little-endian
 # Microsoft WAVE format (*.wav)
->8	string		WAVE		 WAVE-audio
+>8	string		WAVE		 audio/wav/little-endian
 >>20	leshort		1		 Microsoft-PCM
 >>>34	leshort		.		 %d bit
 >>22	leshort		=1		 mono
@@ -1433,9 +2309,9 @@
 >>22	leshort		.		 %d channels
 >>24	lelong		.		 %d Hz
 # AVI == Audio Video Interleave
->8      string          AVI\             AVI
+>8      string          AVI\             video/AVI/little-endian
 # Animated Cursor format
->8	string		ACON		 animated-cursor
+>8	string		ACON		 document/riff-animated-cursor/little-endian
 
 #
 # XXX - some of the below may only appear in little-endian form.
@@ -1443,30 +2319,22 @@
 # Also "MV93" appears to be for one form of Macromedia Director
 # files, and "GDMF" appears to be another multimedia format.
 #
-0	string		RIFX		 RIFF-data/big-endian
+0	string		RIFX		 ""
 # RIFF Palette format
->8	string		PAL		 palette
->>16	beshort		.		 version %d
->>18	beshort		.		 %d entries
+>8	string		PAL		 document/riff-palette/big-endian
+>>16	beshort		.		 v%d
 # RIFF Device Independent Bitmap format
->8	string		RDIB		 device-independent-bitmap
+>8	string		RDIB		 image/riff-bitmap/big-endian
 >>16	string		BM		 ""
 >>>30	beshort		12		 OS2 1.x
->>>>34	beshort		.		 %d x
->>>>36	beshort		.		 %d
 >>>30	beshort		64		 OS2 2.x
->>>>34	beshort		.		 %d x
->>>>36	beshort		.		 %d
 >>>30	beshort		40		 Windows 3.x
->>>>34	belong		.		 %d x
->>>>38	belong		.		 %d x
->>>>44	beshort		.		 %d
 # RIFF MIDI format
->8	string		RMID		 MIDI
+>8	string		RMID		 audio/MIDI/bid-endian
 # RIFF Multimedia Movie File format
->8	string		RMMP		 multimedia-movie
+>8	string		RMMP		 video/riff-multimedia/big-endian
 # Microsoft WAVE format (*.wav)
->8	string		WAVE		 WAVE-audio
+>8	string		WAVE		 audio/wav/big-endian
 >>20	leshort		1		 Microsoft-PCM
 >>>34	leshort		.		 %d bit
 >>22	beshort		=1		 mono
@@ -1474,11 +2342,11 @@
 >>22	beshort		.		 %d channels
 >>24	belong		.		 %d Hz
 # AVI == Audio Video Interleave
->8      string          AVI\             AVI
+>8      string          AVI\             video/avi/big-endian
 # Animated Cursor format
->8	string		ACON		 animated-cursor
+>8	string		ACON		 document/riff-animated-cursor/big-endian
 # Notation Interchange File Format (big-endian only)
->8	string		NIFF		 Notation-Interchange-File-Format
+>8	string		NIFF		 document/riff-Notation-Interchange-Format
 
 #------------------------------------------------------------------------------
 #
@@ -1568,7 +2436,7 @@
 # Microsoft Network Monitor capture files.
 #
 0	string		RTSS		binary/capture/NetMon
->6	leshort		0		Unknown
+>6	leshort		0		Unknown-linklayer
 >6	leshort		1		Ethernet
 >6	leshort		2		Token-Ring
 >6	leshort		3		FDDI
@@ -1600,7 +2468,7 @@
 # the main program that uses that format, but there are other programs
 # that use "libpcap", or that use the same capture file format.)
 #
-0	belong		0xa1b2c3d4	binary/capture/tcpdump/big-endian
+0	belong		0xa1b2cd34	binary/capture/tcpdump/big-endian
 >20	belong		0		no-link-layer
 >20	belong		1		Ethernet
 >20	belong		2		3Mb-Ethernet
@@ -1616,7 +2484,7 @@
 >20	belong		12		raw-IP
 >20	belong		13		BSD-OS-SLIP
 >20	belong		14		BSD-OS-PPP
-0	lelong		0xa1b2c3d4	binary/capture/tcpdump/little-endian
+0	lelong		0xa1b2cd34	binary/capture/tcpdump/little-endian
 >20	lelong		0		no-link-layer
 >20	lelong		1		Ethernet
 >20	lelong		2		3Mb-Ethernet
@@ -1632,6 +2500,60 @@
 >20	lelong		12		raw-IP
 >20	lelong		13		BSD-OS-SLIP
 >20	lelong		14		BSD-OS-PPP
+
+0	belong		0xa1b2c3d4	binary/capture/tcpdump-patched/big-endian
+>20	belong		0		no-link-layer
+>20	belong		1		Ethernet
+>20	belong		2		3Mb-Ethernet
+>20	belong		3		AX.25
+>20	belong		4		ProNET
+>20	belong		5		CHAOS
+>20	belong		6		IEEE-802.x
+>20	belong		7		ARCNET
+>20	belong		8		SLIP
+>20	belong		9		PPP
+>20	belong		10		FDDI
+>20	belong		11		RFC-1483-ATM
+>20	belong		12		raw-IP
+>20	belong		13		BSD-OS-SLIP
+>20	belong		14		BSD-OS-PPP
+0	lelong		0xa1b2c3d4	binary/capture/tcpdump-patched/little-endian
+>20	lelong		0		no-link-layer
+>20	lelong		1		Ethernet
+>20	lelong		2		3Mb-Ethernet
+>20	lelong		3		AX.25
+>20	lelong		4		ProNET
+>20	lelong		5		CHAOS
+>20	lelong		6		IEEE-802.x
+>20	lelong		7		ARCNET
+>20	lelong		8		SLIP
+>20	lelong		9		PPP
+>20	lelong		10		FDDI
+>20	lelong		11		RFC-1483-ATM
+>20	lelong		12		raw-IP
+>20	lelong		13		BSD-OS-SLIP
+>20	lelong		14		BSD-OS-PPP
+
+#
+# AIX "iptrace" capture files.
+#
+0	string		iptrace\ 2.0	binary/capture/iptrace
+
+#
+# Novell LANalyzer capture files.
+#
+0	leshort		0x1001		binary/capture/LANalyzer
+0	leshort		0x1007		binary/capture/LANalyzer
+
+#
+# HP-UX "nettl" capture files.
+#
+0	string		\x54\x52\x00\x64\x00	binary/capture/nettl
+
+#
+# RADCOM WAN/LAN Analyzer capture files.
+#
+0	string		\x42\xd2\x00\x34\x12\x66\x22\x88	binary/capture/RADCOM
 
 #------------------------------------------------------------------------------
 # sun:  file(1) magic for Sun machines
@@ -1681,7 +2603,7 @@
 
 # Sun snoop (see RFC 1761, which describes the capture file format).
 #
-0	string		snoop		binary/capture/Snoop
+0	string		snoop		binary/capture/snoop
 
 
 #------------------------------------------------------------------------------
@@ -1764,11 +2686,29 @@
 # Daniel Quinlan, quinlan@yggdrasil.com
 11	string	must\ be\ converted\ with\ BinHex	text/BinHex
 
+#------------------------------------------------------------------------------
+# varied.out:  file(1) magic for various USG systems
+#
+#	Herewith many of the object file formats used by USG systems.
+#	Most have been moved to files for a particular processor,
+#	and deleted if they duplicate other entries.
+#
+# I'm keeping this in because my dad used to work for Perkin-Elmer :) --cK
+#
+0	short		0610		executable/Perkin-Elmer
+# Cray
+6	beshort		0407		executable/cray
+# Ultrix 4.3
+596	string		\130\337\377\377	binary/core/Ultrix
+# gnu gmon magic From: Eugen Dedu <dedu@ese-metz.fr>
+0	string		gmon		document/GNU-prof
+
+#------------------------------------------------------------------------------
 # VAX a.out (32V, BSD)
 #
 0	lelong		0407		executable/VAX
 >16	lelong		>0		unstripped
-0	lelong		0410		executable/VAX/pure
+0	lelong		0410		executable/VAX
 >16	lelong		>0		unstripped
 0	lelong		0413		executable/VAX/demand-paged
 >16	lelong		>0		unstripped
@@ -1780,23 +2720,10 @@
 # The `versions' should be un-commented if they work for you.
 # (Was the problem just one of endianness?)
 #
-0	leshort		0570		executable/VAX/COFF
+0	leshort		0570		executable/VAX
 >12	lelong		>0		unstripped
-0	leshort		0575		executable/VAX/COFF
+0	leshort		0575		executable/VAX
 >12	lelong		>0		unstripped
-
-#------------------------------------------------------------------------------
-# vicar:  file(1) magic for VICAR files.
-#
-# From: Ossama Othman <othman@astrosun.tn.cornell.edu
-# VICAR is JPL's in-house spacecraft image processing program
-# VICAR image
-0	string	LBLSIZE=	image/vicar
-
-#------------------------------------------------------------------------------
-# visx:  file(1) magic for Visx format files
-#
-0	short		0x5555		image/VISX
 
 #------------------------------------------------------------------------------
 # vms:  file(1) magic for VMS executables (experimental)
@@ -1825,7 +2752,16 @@
 0	belong	0x03000000	executable/VMS-Alpha
 >75264	string	PK\003\004	Info-ZIP-SFX
 
+# -----------------------------------------------------------
+# VMware specific files (deducted from version 1.1 and log file entries)
+# Anthon van der Neut (anthon@mnt.org)
+0	belong	0x4d52564e	document/VMware/nvram
+0	belong	0x434f5744	""
+>8	byte	3	 	document/VMware/virtual-disk
+>8	byte	2	 	document/VMware/virtual-disk/undoable
 
+
+# -----------------------------------------------------------
 #WordPerfect type files Version 1.6 - PLEASE DO NOT REMOVE THIS LINE
 1	string	WPC	document
 >8	short	257	WordPerfect/macro
@@ -1850,7 +2786,7 @@
 >8	short	290	WordPerfect/dictionary-rules
 >8	short	295	WordPerfect/spell-rules
 >8	short	299	WordPerfect/settings-file
->8	short	301	WordPerfect/4.2 document
+>8	short	301	WordPerfect/4.2-document
 >8	short	325	WordPerfect/dialog-file
 >8	short	332	WordPerfect/button-bar
 >8	short	513	Shell/macro
@@ -1933,81 +2869,13 @@
 0	lelong		0x206		executable/b.out/Microsoft-8086
 
 #------------------------------------------------------------------------------
-# JPEG images
-# SunOS 5.5.1 had
-#
-#	0	string		\377\330\377\340	JPEG file
-#	0	string		\377\330\377\356	JPG file
-#
-# both of which turn into "JPEG image data" here.
-#
-0	beshort		0xffd8		image/jpeg
->6	string		JFIF		JFIF
-# HSI is Handmade Software's proprietary JPEG encoding scheme
-0	string		hsi1		image/jpeg/HSI-proprietary
-
-#------------------------------------------------------------------------------
-# Mavroyanopoulos Nikos <nmav@hellug.gr>
-# mcrypt:   file(1) magic for mcrypt 2.2.x;
-0      string          \0m\2           binary/mcrypt-2.2
->3     byte            0               blowfish-448
->3     byte            1               DES
->3     byte            2               3DES
->3     byte            3               3-WAY
->3     byte            4               GOST
->3     byte            6               SAFER-SK64
->3     byte            7               SAFER-SK128
->3     byte            8               CAST-128
->3     byte            9               xTEA
->3     byte            10              TWOFISH-128
->3     byte            11              RC2
->3     byte            12              TWOFISH-192
->3     byte            13              TWOFISH-256
->3     byte            14              blowfish-128
->3     byte            15              blowfish-192
->3     byte            16              blowfish-256
->3     byte            100             RC6
->3     byte            101             IDEA
-
-#------------------------------------------------------------------------------
-# palm:  file(1) magic for PalmOS {.prc,.pdb}: applications, docfiles, and hacks
-#
-# Brian Lalor <blalor@hcirisc.cs.binghamton.edu>
-
-# appl
-60      belong                  0x6170706c      executable/PalmOS
-60      belong                  0x54455874      document/palmos/AportisDoc
-
-#------------------------------------------------------------------------------
-# spectrum:  file(1) magic for Spectrum emulator files.
-#
-# John Elliott <jce@seasip.demon.co.uk>
-
-#
-# Spectrum +3DOS header
-#
-0       string          PLUS3DOS\032    binary/Spectrum3
->15     byte            0               BASIC-program
->15     byte            1               number-array
->15     byte            2               character-array
->15     byte            3               memory-block
-
+# X11 Xauthority file (Wolfram Kleff)
+14	string		MIT-MAGIC-COOKIE-1	document/X11/Xauthority
 
 #------------------------------------------------------------------------------
 # New stuff goes here:
 #------------------------------------------------------------------------------
-
-#
-# Blender file magic
-#
-0	string		BLENDER_        document/blender
->9      string          .               %.1s.x
->8      byte            118             little-endian
->8      byte            86              big-endian
-
 #
 # RGB data with alpha layer magic
 #
 0       string          ARGB            image/imlib2-argb
->11	byte            49		alpha
->11	byte            48		no-alpha

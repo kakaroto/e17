@@ -34,7 +34,8 @@ my $db_file;
 my $EFSD_MAGIC_8       = 0;
 my $EFSD_MAGIC_16      = 1;
 my $EFSD_MAGIC_32      = 2;
-my $EFSD_MAGIC_STRING  = 3;
+my $EFSD_MAGIC_DATE    = 3;
+my $EFSD_MAGIC_STRING  = 4;
 
 my $EFSD_MAGIC_TEST_EQUAL     = 0;
 my $EFSD_MAGIC_TEST_NOTEQUAL  = 1;
@@ -42,7 +43,7 @@ my $EFSD_MAGIC_TEST_SMALLER   = 2;
 my $EFSD_MAGIC_TEST_LARGER    = 3;
 my $EFSD_MAGIC_TEST_MASK      = 4;
 my $EFSD_MAGIC_TEST_NOTMASK   = 5;
-my $EFSD_MAGIC_TEST_SUBST     = 6;
+my $EFSD_MAGIC_TEST_ACCEPT    = 6;
 
 my $EFSD_BYTEORDER_HOST       = 0;
 my $EFSD_BYTEORDER_BIG        = 1;
@@ -237,15 +238,15 @@ sub do_it {
 
 #	 print "$line";
 	 
-	 if ($line =~ /^(>*)                                     # level of the test
-	                ((?:0x)??[0-9a-fA-F]+)\s+               # numerical offset
-	                (be|le)??(byte|short|long|string)        # endianness and type, no date
-                        (&(?:0x)??[0-9a-fA-F]+)??\s+               # possibly, a mask for the value
-	                ([!<>&\^=]?)((?:0x)??[0-9a-fA-F]+?|      # test for either a num. value
-                        (?:\\\s+|\S)+|\.)\s+                  # or a string
-#                        (?:\\\s+|\S)+\S|[^x]{1}) \s+            # or a string
-	                (\S.*)\s+$/x)                            # and finally, the comment.
-#	                (\S+\s*)+$/x)                            # and finally, the comment.
+	 if ($line =~ /^(>*)                             # level of the test
+	     ((?:0x)??[0-9a-fA-F]+)\s+                   # numerical offset
+	     (be|le)??(byte|short|long|string|date)      # endianness and type
+	     (&(?:0x)??[0-9a-fA-F]+)??\s+                # possibly, a mask for the value
+	     ([!<>&\^=]?)((?:0x)??[0-9a-fA-F]+?|         # test for either a num. value
+			  (?:\\\s+?|\S)+|\.)\s+          # or a string
+#                         (?:\\\s+|\S)+\S|[^x]{1}) \s+   # or a string
+	     (\S.*)\s+$/x)                               # and finally, the comment.
+#            (\S+\s*)+$/x)                               # and finally, the comment.
 	   {
 	     $level = length($1);
 
@@ -310,6 +311,10 @@ sub do_it {
 	       {
 		 $magic{"type"} = $EFSD_MAGIC_32;
 	       }
+	     elsif ($item eq "date")
+	       {
+		 $magic{"type"} = $EFSD_MAGIC_DATE;
+	       }
 	     else
 	       {
 		 $magic{"type"} = $EFSD_MAGIC_STRING;
@@ -373,14 +378,7 @@ sub do_it {
 		   }
 		 else
 		   {
-		     if ($7 eq ".")
-		       {
-			 $magic{"test"} = $EFSD_MAGIC_TEST_SUBST;
-		       }
-		     else
-		       {
-			 $magic{"test"} = $EFSD_MAGIC_TEST_EQUAL;
-		       }
+		     $magic{"test"} = $EFSD_MAGIC_TEST_EQUAL;
 		   }
 	       }
 	     else
@@ -393,6 +391,7 @@ sub do_it {
 	     if ($item eq ".")
 	       {
 		 $magic{"value"} = $item;
+		 $magic{"test"} = $EFSD_MAGIC_TEST_ACCEPT;
 	       }
 	     elsif ($magic{"type"} == $EFSD_MAGIC_STRING)
 	       {		 
