@@ -3,6 +3,9 @@
 /* Define if you have <sys/wait.h> that is POSIX.1 compatible.  */
 #undef HAVE_SYS_WAIT_H
 
+/* Define if you need to in order for stat and other things to work.  */
+#undef _POSIX_SOURCE
+
 /* Define as the return type of signal handlers (int or void).  */
 #undef RETSIGTYPE
 
@@ -27,4 +30,3 @@
 /* Version number of package */
 #undef VERSION
 
-#undef HAVE_STDARGS
