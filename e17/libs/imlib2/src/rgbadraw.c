@@ -442,54 +442,6 @@ __imlib_TileImageVert(ImlibImage * im)
 }
 
 ImlibUpdate *
-__imlib_draw_pixel(ImlibImage *im, int x, int y, DATA8 r, DATA8 g, DATA8 b,
-		   DATA8 a, ImlibOp op, char make_updates)
-{
-   int tmp;
-   DATA32 *p;
-
-   /*clip to edges */
-   if ((x < 0) || (x >= im->w) || (y < 0) || (y >= im->h))
-      return NULL;
-
-   switch(op)
-   {
-     case OP_COPY:
-	p = &(im->data[im->w * y + x]);
-	BLEND(r, g, b, a, p);
-	if (!make_updates)
-	   return NULL;
-	return __imlib_AddUpdate(NULL, x, y, 1, 1);
-	break;
-     case OP_ADD:
-	p = &(im->data[im->w * y + x]);
-	BLEND_ADD(r, g, b, a, p);
-	if (!make_updates)
-	   return NULL;
-	return __imlib_AddUpdate(NULL, x, y, 1, 1);
-	break;
-     case OP_SUBTRACT:
-	p = &(im->data[im->w * y + x]);
-	BLEND_SUB(r, g, b, a, p);
-	if (!make_updates)
-	   return NULL;
-	return __imlib_AddUpdate(NULL, x, y, 1, 1);
-	break;
-     case OP_RESHADE:
-	p = &(im->data[im->w * y + x]);
-	BLEND_RE(r, g, b, a, p);
-	if (!make_updates)
-	   return NULL;
-	return __imlib_AddUpdate(NULL, x, y, 1, 1);
-	break;
-     default:
-	break;
-   }
-   return NULL;
-}
-
-
-ImlibUpdate *
 __imlib_draw_line(ImlibImage * im, int x1, int y1, int x2, int y2, DATA8 r,
                   DATA8 g, DATA8 b, DATA8 a, ImlibOp op, char make_updates)
 {
