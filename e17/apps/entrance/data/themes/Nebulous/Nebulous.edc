@@ -480,8 +480,8 @@ collections
 		    image
 		    {
 			normal, "menu.png";
-		    }
 		    border, 20 20 20 20;
+		    }
 		}
 	    }
 	    part
@@ -1297,8 +1297,8 @@ collections
 		    image
 		    {
 			normal, "menu.png";
-		    }
 		    border, 20 20 20 20;
+		    }
 		}
 		description
 		{
@@ -1320,8 +1320,8 @@ collections
 		    image
 		    {
 			normal, "menu.png";
-		    }
 		    border, 20 20 20 20;
+		    }
 		}
 	    }
 	    part
