@@ -24,7 +24,7 @@ build-stamp:
 	touch $@
 
 configure-stamp:
-	$(SHELL) -x debian/debianize.sh
+	$(SHELL) debian/debianize.sh
 	test -x autogen.sh && ./autogen.sh
 	./configure $(configure_options)
 	-mv src/themes/Makefile.am.old src/themes/Makefile.am
