@@ -14,59 +14,39 @@
 #include "image.h"
 
 #define OUTBUF_SIZE 16484
-#define INBUF_SIZE 1024
 
-static int handle_buffer (DATA8 *src, unsigned long src_len,
-                          DATA8 **dest, unsigned long *dest_len)
+static int uncompress_file (int src, int dest)
 {
-	static DATA8 outbuf[OUTBUF_SIZE];
-	uLongf outbuf_len = OUTBUF_SIZE;
-	int res;
+	gzFile gf;
+	DATA8 outbuf[OUTBUF_SIZE];
+	int ret = 1, bytes;
 
-	assert (src);
-	assert (src_len);
-	assert (dest);
-	assert (dest_len);
+	gf = gzdopen (dup (src), "rb");
+	if (!gf)
+		return 0;
 
-	res = uncompress (outbuf, &outbuf_len, src, src_len);
+	while (1) {
+		bytes = gzread (gf, outbuf, OUTBUF_SIZE);
 
-	switch (res) {
-		case Z_OK:
-			*dest = outbuf;
-			*dest_len = (unsigned long) outbuf_len;
-			return 1;
-		case Z_BUF_ERROR:
-			return 0;
-		default:
-			*dest = NULL;
-			*dest_len = 0;
-			return 0;
-	}
-}
-
-static void uncompress_file (int src, int dest, off_t size)
-{
-	DATA8 inbuf[INBUF_SIZE], *outbuf;
-	off_t left;
-	ssize_t inlen;
-	unsigned long outlen = 0;
-
-	for (left = size; left; left -= inlen) {
-		inlen = read (src, inbuf, MIN (left, INBUF_SIZE));
-		
-		if (inlen <= 0)
+		if (!bytes)
 			break;
-
-		if (handle_buffer (inbuf, inlen, &outbuf, &outlen))
-			write (dest, outbuf, outlen);
+		else if (bytes == -1) {
+			ret = 0;
+			break;
+		} else
+			write (dest, outbuf, bytes);
 	}
+
+	gzclose (gf);
+
+	return ret;
 }
 
 char load (ImlibImage *im, ImlibProgressFunction progress,
            char progress_granularity, char immediate_load)
 {
 	ImlibLoader *loader;
-	int src, dest;
+	int src, dest, res;
 	char *file, *p, tmp[] = "/tmp/imlib2_loader_zlib-XXXXXX";
 	char real_ext[16];
 	struct stat st;
@@ -102,10 +82,14 @@ char load (ImlibImage *im, ImlibProgressFunction progress,
 		return 0;
 	}
 
-	uncompress_file (src, dest, st.st_size);
-
+	res = uncompress_file (src, dest);
 	close (src);
 	close (dest);
+
+	if (!res) {
+		unlink (tmp);
+		return 0;
+	}
 
 	if (!(loader = __imlib_FindBestLoaderForFile (real_ext, 0))) {
 		unlink (tmp);
