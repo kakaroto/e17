@@ -2562,3 +2562,11 @@ Thu Sep 30 18:54:13 PDT 1999
 (Raster)
 
 added pager group move patch and windowmatces pact for dialogs...
+
+-------------------------------------------------------------------------------
+
+Thu Sep 30 19:28:13 PDT 1999
+(Raster)
+
+add some mroe window matched to brushed metal to accoutn for dialogs
+and have the dialog code and ewin match function work better...

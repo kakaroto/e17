@@ -571,7 +571,7 @@ ShowDialog(Dialog * d)
 		  STATE_NORMAL, 0);
    queue_up = pq;
 
-   ewin = AddInternalToFamily(d->win, 1, NULL, 0, d);
+   ewin = AddInternalToFamily(d->win, 1, "DEFAULT", 0, d);
    XSelectInput(disp, d->win, ExposureMask | PointerMotionMask |
 		EnterWindowMask | LeaveWindowMask |
 		FocusChangeMask | KeyPressMask);

@@ -787,6 +787,7 @@ AddInternalToFamily(Window win, char noshow, char *bname, int type, void *ptr)
    EDBUG(3, "AddInternalToFamily");
    winid = win;
    b = NULL;
+
    if (bname)
      {
 	b = FindItem(bname, 0, LIST_FINDBY_NAME, LIST_TYPE_BORDER);
@@ -1279,6 +1280,9 @@ AdoptInternal(Window win, Border * border, int type, void *ptr)
  * else if (type == 2)
  * MatchEwinToSnapInfoIconbox(ewin, (Iconbox *)ptr);
  * else  */
+   b = MatchEwinByFunction(ewin, MatchEwinBorder);
+   if (b)
+      ewin->border = b;
    MatchEwinToSnapInfo(ewin);
    if (!ewin->border)
      {
