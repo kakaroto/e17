@@ -580,7 +580,6 @@ _epeg_open_header(Epeg_Image *im)
    im->out.w = im->in.w;
    im->out.h = im->in.h;
    
-   im->in.color_space = im->in.jinfo.out_color_space;
    im->color_space = ((im->in.color_space = im->in.jinfo.out_color_space) == JCS_GRAYSCALE)?EPEG_GRAY8:EPEG_YUV8;
 
    for (m = im->in.jinfo.marker_list; m; m = m->next)
