@@ -741,7 +741,11 @@ int main (int argc, char **argv)
 						imlib_image_get_height());
 		  
 	       }
-	       {
+	     imlib_apply_filter("bump_map_point(x=[],y=[],map=test_images/bulb.png);", &x, &y, NULL);
+	     up = imlib_update_append_rect(up, 0, 0,
+					   imlib_image_get_width(),
+					   imlib_image_get_height());
+	     {
 		  Imlib_Updates uu;
 		  
 		  imlib_context_set_color(255, 255, 255, 255);

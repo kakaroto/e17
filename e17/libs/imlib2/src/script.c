@@ -19,7 +19,7 @@
 #define FDEBUG 1
 */
 
-int find_string( char *haystack, char *needle )
+int __imlib_find_string( char *haystack, char *needle )
 {
    if(  strstr( haystack, needle ) != NULL )
      return ( strstr( haystack, needle ) - haystack );
@@ -42,7 +42,7 @@ char *stripwhitespace( char *str )
    return str;
 }
 
-char *copystr( char *str, int start, int end )
+char *__imlib_copystr( char *str, int start, int end )
 {
    int i = 0;
    char *rstr = calloc( 1024, sizeof( char ) );
@@ -55,7 +55,7 @@ char *copystr( char *str, int start, int end )
    return NULL;
 }
 
-pIFunctionParam parse_param( char *param )
+pIFunctionParam __imlib_parse_param( char *param )
 {
    int i;
    
@@ -63,15 +63,15 @@ pIFunctionParam parse_param( char *param )
    if( param != NULL )
    {
       ptr = malloc( sizeof( IFunctionParam ) );
-      i = find_string(param,"=");
+      i = __imlib_find_string(param,"=");
       if( i > 0 )
       {
-	 ptr->key = copystr(param, 0, i-1);
+	 ptr->key = __imlib_copystr(param, 0, i-1);
 	 ptr->type = 1;
 	 if( param[i+1] == '\"' )
-	   ptr->data = (void *)copystr(param, i+2, strlen(param)-2);
+	   ptr->data = (void *)__imlib_copystr(param, i+2, strlen(param)-2);
 	 else
-	   ptr->data = (void *)copystr(param, i+1, strlen(param)-1);
+	   ptr->data = (void *)__imlib_copystr(param, i+1, strlen(param)-1);
 #ifdef FDEBUG
 	 printf( "DEBUG:   -> param [%s]=\"%s\"\n", ptr->key, (char *)ptr->data );
 #endif /* FDEBUG */
@@ -90,7 +90,7 @@ pIFunctionParam parse_param( char *param )
    return NULL;
 }
 
-pIFunction parse_function( char *func )
+pIFunction __imlib_parse_function( char *func )
 {
    int i = 0, in_quote=0, start=0;
    IFunction *ptrfunc = malloc( sizeof( IFunction ) );
@@ -100,7 +100,7 @@ pIFunction parse_function( char *func )
    if( func != NULL )
    {
       func = stripwhitespace( func );
-      ptrfunc->name = copystr( func, 0, find_string( func, "(" ) - 1 );
+      ptrfunc->name = __imlib_copystr( func, 0, __imlib_find_string( func, "(" ) - 1 );
 #ifdef FDEBUG
       printf( "DEBUG:  Function name: \"%s\"\n", ptrfunc->name );
 #endif /* FDEBUG */
@@ -112,15 +112,15 @@ pIFunction parse_function( char *func )
       ptrfunc->params->next = NULL;
       ptrparam = ptrfunc->params;
       
-      start = find_string( func, "(" ) + 1;
+      start = __imlib_find_string( func, "(" ) + 1;
       for( i = start; i < strlen(func); i++ )
       {
 	 if( func[i] == '\"' )
 	    in_quote = (in_quote == 0 ? 1 : 0);
 	 if( !in_quote && (func[i] == ',' || func[i] == ')') )
 	 {
-	    tmpbuf = copystr( func, start, i-1 );
-	    ptrparam->next = parse_param( tmpbuf );
+	    tmpbuf = __imlib_copystr( func, start, i-1 );
+	    ptrparam->next = __imlib_parse_param( tmpbuf );
 	    if( ptrparam->next != NULL )
 	      ptrparam = ptrparam->next;
 	    start = i+1;
@@ -138,13 +138,12 @@ pIFunction parse_function( char *func )
    return ptrfunc;
 }
 
-pIFunction __imlib_script_parse( char *script, ... )
+pIFunction __imlib_script_parse( char *script, va_list param_list )
 {
    int i = 0, in_quote = 0, start = 0, hit_null = 0;
-   IFunction *ptr = parse_function( NULL ), *tmp_fptr = NULL;
+   IFunction *ptr = __imlib_parse_function( NULL ), *tmp_fptr = NULL;
    IFunction *rptr = ptr;
    IFunctionParam *tmp_pptr;
-   va_list param_list;
    void *tmpptr;
 
 #ifdef FDEBUG   
@@ -160,7 +159,7 @@ pIFunction __imlib_script_parse( char *script, ... )
 	    in_quote = (in_quote == 0 ? 1 : 0);
 	 if( ! in_quote && script[i] == ';' )
 	 {
-	    ptr->next = parse_function( copystr( script, start, i-1 ) );
+	    ptr->next = __imlib_parse_function( __imlib_copystr( script, start, i-1 ) );
 	    ptr = ptr->next;
 	    start = i+1;
 	 }
@@ -168,7 +167,6 @@ pIFunction __imlib_script_parse( char *script, ... )
       /* righty now we need to traverse the whole of the function tree and see if we have hit
        * any [], if we have replace it with the next var off the list update the pointer, luverly
        * jubly */
-      va_start( param_list, script );
       for( tmp_fptr = rptr->next; tmp_fptr != NULL; tmp_fptr = tmp_fptr->next )
       {
 	 for( tmp_pptr = tmp_fptr->params; tmp_pptr != NULL; tmp_pptr = tmp_pptr->next )
@@ -198,7 +196,6 @@ pIFunction __imlib_script_parse( char *script, ... )
 	    }
 	 }
       }
-      va_end( param_list );
 #ifdef FDEBUG      
       printf( "DEBUG: Imlib Script Parser End.\n" );
 #endif      
