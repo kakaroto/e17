@@ -50,9 +50,9 @@ static void
 save_config (void)
 {
   char buf[10];
-  Esnprintf (buf, sizeof (buf), "%.3f", opt.cloak_delay);
+  Esnprintf (buf, sizeof (buf), "%f", opt.cloak_delay);
   Epplet_modify_config ("CLOAK_DELAY", buf);
-  Esnprintf (buf, sizeof (buf), "%.3f", opt.draw_interval);
+  Esnprintf (buf, sizeof (buf), "%f", opt.draw_interval);
   Epplet_modify_config ("DRAW_INTERVAL", buf);
   Esnprintf (buf, sizeof (buf), "%d", opt.do_cloak);
   Epplet_modify_config ("DO_CLOAK", buf);
