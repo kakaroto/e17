@@ -32,12 +32,13 @@ OUT=$OUT_DIR"/file.menu"
 
 a=0;
 eesh -e "dialog_ok Menus are being generated... Please Wait."
-window=`eesh -ewait window_list|grep Message`
-for i in $window;do
-	a=$(($a + 1))
-	if [ $a = 1 ];then
-		windowid=$i
-	fi
+WINDOW=`eesh -ewait window_list|grep Message`
+A=0
+for i in $WINDOW;do
+  A=$[ $A + 1 ]
+  if [ $A = 1 ];then
+    WINDOWID=$I
+  fi
 done
 
 e_gen_kde_menu menus_kde $OUT_DIR $OUT_DIR"/kde.menu"
@@ -113,6 +114,6 @@ if [ ! -f "$OUT" ]; then
   echo \"Myth 2\" NULL exec \"myth2\" >> $OUT
 fi
 touch $OUT
-eesh -e "win_op $windowid close"
+eesh -e "win_op "$WINDOWID" close"
 eesh -e "reload_menus"
 eesh -e "dialog_ok Menu generation complete."
