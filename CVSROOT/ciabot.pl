@@ -115,8 +115,17 @@ $dirfiles[0] = "@files" or die "$0: no files specified\n";
 
 # Guess module name.
 
-$module = $dir[0]; $module =~ s#/.*##;
-
+#$module = $dir[0]; $module =~ s#/.*##;
+$_ = $dir[0];
+(my $first, my $second, my $third) = /^((\w*)\/(\w+| )*\/(.*))/;
+if ($first eq 'e17') {
+  $module = $first . "/" . $second . "/" . $third;
+} else if ($first eq 'CVSROOT') {
+  $module = $first;
+} else {
+  $module = $first . "/" . $second;
+}
+   
 
 # Figure out who is doing the update.
 
