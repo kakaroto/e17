@@ -392,7 +392,8 @@ gevas_obj_collection_add_flood_area( GtkgEvasObjCollection* ev,
                 GtkgEvasObjCollection* c = 0;
                 c = gevasevh_selectable_to_collection( s );
                 gevas_obj_collection_add_all( ev, c );
-                gtk_object_unref(GTK_OBJECT(c));
+                gtk_object_destroy(GTK_OBJECT(c));
+//                gtk_object_unref(GTK_OBJECT(c));
             }
         }
         list = list->next;

@@ -194,7 +194,8 @@ void gevasevh_group_selector_movesel(GtkgEvasEvHGroupSelector* ev, gint32 dx, gi
 static void clean( GtkgEvasObjCollection* c )
 {
     if( !c ) return;
-    gtk_object_unref( GTK_OBJECT(c) );
+    gtk_object_destroy( GTK_OBJECT(c) );
+//    gtk_object_unref( GTK_OBJECT(c) );
 }
 
 
