@@ -1619,3 +1619,10 @@ Mon Nov  8 12:03:58 PST 1999
 
 upped the revision in CVS since there is at least one fix past 0.16.2 in cvs
 at this point.  (and we might have to release this later)
+
+-------------------------------------------------------------------------------
+
+Mon Dec  6 20:12:00 PST 1999
+(Mandrake)
+
+changed this to be 0.16.4

@@ -54,7 +54,7 @@ cd "$THEDIR"
 cd "$THEDIR/man"
 
 cat ../dox/E-docs/MAIN | ./e2mp > enlightenment.pod
-pod2man --center="Enlightenment Man Pages" --release="Enlightenment 0.16.2" ./enlightenment.pod > enlightenment.1
+pod2man --center="Enlightenment Man Pages" --release="Enlightenment 0.16.4" ./enlightenment.pod > enlightenment.1
 
 
 cd "$THEDIR"
