@@ -13,6 +13,11 @@ typedef struct _OD_Window OD_Window;
 typedef struct _OD_Dock OD_Dock;
 typedef struct _OD_Icon OD_Icon;
 
+typedef enum {
+  OM_ONTOP = 0,
+  OM_BELOW = 1
+} OD_Mode;
+
 extern OD_Options options;
 extern OD_Dock  dock;
 extern Evas_List *clients;
@@ -61,6 +66,7 @@ void            od_wm_activate_window(Ecore_X_Window win);
 struct _OD_Options {
   int             width, height;
   char           *icon_path;
+  OD_Mode         mode;
 
   int             size, spacing, arrow_size;    // icon-*
   double          zoomfactor, dock_zoom_duration;

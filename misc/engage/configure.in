@@ -79,6 +79,20 @@ else
   AC_DEFINE_UNQUOTED(PACKAGE_LIB_DIR, "${libdir}", [PACKAGE_LIB_DIR])
 fi
 
+PROG="esmart-config";
+AC_PATH_PROG(ESMART_CONFIG, $PROG, "", $PATH)
+if [ test -z $ESMART_CONFIG ]; then
+  echo $PROG " is not in your \$PATH. Please ensure it is.";
+  echo "Read the manual page for you shell as to how to extend your path.";
+  echo "FATAL ERROR. ABORT.";
+  exit -1;
+fi
+esmart_cflags=`$ESMART_CONFIG --cflags`
+esmart_libs=`$ESMART_CONFIG --libs`
+AC_SUBST(esmart_cflags)
+AC_SUBST(esmart_libs)
+
+
 dnl Set PACKAGE_SOURCE_DIR in config.h.
 #packagesrcdir=`cd $srcdir && pwd`
 #AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "$packagesrcdir", [PACKAGE_SOURCE_DIR]])
@@ -93,6 +107,13 @@ ecore_libs=`ecore-config --libs`
 AC_SUBST(ecore_cflags)
 AC_SUBST(ecore_libs)
 
+have_esmart_trans="no"
+dnl Make sure the esmart header/lib is available
+AC_CHECK_HEADER( Esmart/Esmart_Trans.h, 
+  [ AC_DEFINE(HAVE_TRANS_BG, [], [Esmart Pseudo-transparency support]) 
+    have_esmart_trans="yes"  
+  ])
+        
 AC_OUTPUT([
 Makefile
 src/Makefile

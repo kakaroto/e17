@@ -37,7 +37,10 @@ od_dock_init()
 
   for (i = 0; i < 4; i++) {
     dock.background[i] = evas_object_image_add(evas);
-    evas_object_image_alpha_set(dock.background[i], 0);
+    if (options.mode == OM_ONTOP)
+      evas_object_image_alpha_set(dock.background[i], 0);
+    else
+      evas_object_image_alpha_set(dock.background[i], 1);
     evas_object_image_size_set(dock.background[i], 1, height);
     evas_object_image_smooth_scale_set(dock.background[i], 0);
     if (i != OD_BG_FILL)

@@ -1,5 +1,8 @@
 #include "engage.h"
+#include "config.h"
 #include <Ecore_X.h>
+#include <Esmart/Esmart_Trans.h>
+
 #include <X11/Xatom.h>
 #include <X11/Xutil.h>
 #include <X11/Xlib.h>
@@ -20,12 +23,13 @@ static void     handle_mouse_move(void *data, Evas * e, Evas_Object * obj,
 void
 od_window_init()
 {
-  // determine the desktop size
   Ecore_X_Display *dsp;
   Screen         *scr;
   int             def;
   double          res_x, res_y;
+  Evas_Object    *o;
 
+  // determine the desktop size
   dsp = ecore_x_display_get();
   def = DefaultScreen(dsp);
   scr = ScreenOfDisplay(dsp, def);
@@ -39,7 +43,10 @@ od_window_init()
   ecore_evas_title_set(ee, "Engage");
   ecore_evas_name_class_set(ee, "engage", "engage");
   ecore_evas_borderless_set(ee, 1);
-  ecore_evas_shaped_set(ee, 1);
+  if (options.mode == OM_ONTOP)
+    ecore_evas_shaped_set(ee, 1);
+  else
+    ecore_evas_shaped_set(ee, 0);
   ecore_evas_size_min_set(ee, options.width, options.height);
   ecore_evas_size_max_set(ee, options.width, options.height);
   ecore_evas_callback_pre_render_set(ee, od_dock_redraw);
@@ -64,23 +71,36 @@ od_window_init()
                              (int) (res_y - options.height));
   //ecore_x_window_prop_window_type_dock_set(od_window);
   ecore_x_window_prop_sticky_set(od_window, 1);
-  ecore_x_window_prop_layer_set(od_window, ECORE_X_WINDOW_LAYER_ABOVE);
+  if (options.mode == OM_ONTOP)
+    ecore_x_window_prop_layer_set(od_window, ECORE_X_WINDOW_LAYER_ABOVE);
+  else
+    ecore_x_window_prop_layer_set(od_window, ECORE_X_WINDOW_LAYER_BELOW);
   ecore_x_window_prop_desktop_request(od_window, 4294967295L);
 
   ecore_evas_show(ee);
+  
+#ifdef HAVE_TRANS_BG
+  if (options.mode == OM_BELOW) {
+    o = esmart_trans_x11_new(evas);
+    evas_object_layer_set(o, 0);
+    evas_object_move(o, 0, 0);
+    evas_object_resize(o, options.width, options.height);
+    evas_object_name_set(o, "trans");
 
-  Evas_Object    *background = evas_object_image_add(evas);
-
-  evas_object_image_size_set(background, (int) res_x, (int) res_y);
-  evas_object_image_data_update_add(background, 0, 0, (int) res_x, (int) res_y);
-  evas_object_image_fill_set(background, 0.0, 0.0, res_x, res_y);
-  evas_object_image_alpha_set(background, 1);
-  evas_object_resize(background, res_x, res_y);
-  evas_object_move(background, (options.width - res_x) / 2.0,
-                   options.height - res_y);
-  evas_object_layer_set(background, -9998);
-  evas_object_show(background);
-
+    esmart_trans_x11_freshen(o, (int) ((res_x - options.width) / 2.0),
+                             (int) (res_y - options.height),
+                             options.width, options.height);
+    evas_object_show(o);
+  }
+#else
+  o = evas_object_rectangle_add(evas);
+  evas_object_color_set(o, 0, 0, 0, 255);
+  evas_object_layer_set(o, 0);
+  evas_object_move(o, 0, 0);
+  evas_object_resize(o, options.width, options.height);
+  evas_object_name_set(o, "trans");
+  evas_object_show(o);                            
+#endif
 }
 
 static void
