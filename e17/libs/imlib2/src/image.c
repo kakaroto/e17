@@ -1136,7 +1136,9 @@ __imlib_SaveImage(ImlibImage *im, char *file,
 	   *er = LOAD_ERROR_FILE_DOES_NOT_EXIST;
 	return;
      }
-   /* fidn the laoder for the format - if its null use the extension */
+   /* ok - just check all our loaders are up to date */
+   __imlib_RescanLoaders();
+   /* find the laoder for the format - if its null use the extension */
    l = __imlib_FindBestLoaderForFileFormat(file, im->format);
    /* no loader - abort */
    if (!l) 
