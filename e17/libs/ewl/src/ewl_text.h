@@ -41,6 +41,7 @@ void            ewl_text_get_color(Ewl_Text * t, int *r, int *g, int *b,
 				   int *a);
 void            ewl_text_get_text_geometry(Ewl_Text * t, int *xx, int *yy,
 					   int *ww, int *hh);
+inline int      ewl_text_get_length(Ewl_Text *t);
 void            ewl_text_set_style(Ewl_Text * t, char *s);
 void            ewl_text_get_letter_geometry(Ewl_Text * t, int index, int *xx,
 					     int *yy, int *ww, int *hh);

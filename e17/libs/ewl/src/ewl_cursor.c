@@ -38,7 +38,8 @@ void ewl_cursor_init(Ewl_Cursor * c)
 
 	ewl_widget_init(w, "cursor");
 
-	c->position = 1;
+	c->position.start = 1;
+	c->position.end = 1;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -51,20 +52,23 @@ void ewl_cursor_init(Ewl_Cursor * c)
  * Returns no value. Changes the position of the cursor so that the entry
  * widget can update it appropriately.
  */
-void ewl_cursor_set_position(Ewl_Widget * w, unsigned int p)
+void
+ewl_cursor_set_position(Ewl_Cursor * c, unsigned int start, unsigned int end)
 {
-	Ewl_Cursor     *c;
-
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
+	DCHECK_PARAM_PTR("c", c);
 
-	c = EWL_CURSOR(w);
+	if (start == 0)
+		start = 1;
+	c->position.start = start;
 
-	if (p == 0)
-		p = 1;
-	c->position = p;
+	if (end == 0)
+		end = 1;
+	if (end < start)
+		end = start;
+	c->position.end = end;
 
-	ewl_callback_call(w, EWL_CALLBACK_VALUE_CHANGED);
+	ewl_callback_call(EWL_WIDGET(c), EWL_CALLBACK_VALUE_CHANGED);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -73,16 +77,26 @@ void ewl_cursor_set_position(Ewl_Widget * w, unsigned int p)
  * ewl_cursor_get_position - retrieve the position of the cursor
  * @w: the entry cursor to retrieve the current position
  *
- * Returns the current position of the entry widget @w.
+ * Returns the current start position of the cursor widget @w.
  */
-int ewl_cursor_get_position(Ewl_Widget * w)
+unsigned int ewl_cursor_get_start_position(Ewl_Cursor * c)
 {
-	Ewl_Cursor     *c;
-
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("w", w, 0);
+	DCHECK_PARAM_PTR_RET("c", c, 0);
 
-	c = EWL_CURSOR(w);
+	DRETURN_INT(c->position.start, DLEVEL_STABLE);
+}
 
-	DRETURN_INT(c->position, DLEVEL_STABLE);
+/**
+ * ewl_cursor_get_position - retrieve the position of the cursor
+ * @w: the entry cursor to retrieve the current position
+ *
+ * Returns the current end position of the cursor widget @w.
+ */
+unsigned int ewl_cursor_get_end_position(Ewl_Cursor * c)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("c", c, 0);
+
+	DRETURN_INT(c->position.end, DLEVEL_STABLE);
 }

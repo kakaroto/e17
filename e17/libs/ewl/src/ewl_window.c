@@ -5,6 +5,8 @@ Ewd_List       *ewl_window_list = NULL;
 
 void            __ewl_window_realize(Ewl_Widget * w, void *ev_data,
 				     void *user_data);
+void            __ewl_window_unrealize(Ewl_Widget * w, void *ev_data,
+				     void *user_data);
 void            __ewl_window_show(Ewl_Widget * w, void *ev_data,
 				  void *user_data);
 void            __ewl_window_hide(Ewl_Widget * w, void *ev_data,
@@ -393,6 +395,8 @@ int ewl_window_init(Ewl_Window * w)
 
 	ewl_callback_prepend(EWL_WIDGET(w), EWL_CALLBACK_REALIZE,
 			     __ewl_window_realize, NULL);
+	ewl_callback_prepend(EWL_WIDGET(w), EWL_CALLBACK_UNREALIZE,
+			     __ewl_window_unrealize, NULL);
 	ewl_callback_append(EWL_WIDGET(w), EWL_CALLBACK_SHOW,
 			    __ewl_window_show, NULL);
 	ewl_callback_append(EWL_WIDGET(w), EWL_CALLBACK_HIDE,
@@ -479,15 +483,27 @@ void __ewl_window_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 				XEV_IN_OUT | XEV_EXPOSE | XEV_VISIBILITY |
 				XEV_MOUSE_MOVE | XEV_FOCUS);
 
-	/*
-	window->bg_rect = evas_add_rectangle(window->evas);
-	evas_set_color(window->evas, window->bg_rect, 0, 0, 0, 255);
-	evas_set_layer(window->evas, window->bg_rect, LAYER(w) - 1000);
-	evas_show(window->evas, window->bg_rect);
-	*/
-
 	if (window->flags & EWL_WINDOW_BORDERLESS)
 		ecore_window_hint_set_borderless(window->window);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void __ewl_window_unrealize(Ewl_Widget * w, void *ev_data, void *user_data)
+{
+	Ewl_Object     *o;
+	Ewl_Window     *window;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+
+	window = EWL_WINDOW(w);
+	o = EWL_OBJECT(w);
+
+	evas_free(window->evas);
+	window->evas = NULL;
+
+	ecore_window_destroy(window->window);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

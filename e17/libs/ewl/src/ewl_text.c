@@ -60,6 +60,7 @@ ewl_text_init(Ewl_Text * t, char *text)
 
 	t->text = (text ? strdup(text) : strdup(""));
 	t->align = EWL_ALIGNMENT_TOP | EWL_ALIGNMENT_LEFT;
+	t->length = strlen(text);
 
 	/*
 	 * Set up appropriate callbacks for specific events
@@ -115,7 +116,10 @@ ewl_text_set_text(Ewl_Text * t, char *text)
 	if (t->estyle) {
 		estyle_set_text(t->estyle, t->text);
 		__ewl_text_update_size(t);
+		t->length = estyle_length(t->estyle);
 	}
+	else
+		t->length = strlen(t->text);
 
 
 	ewl_widget_configure(w);
@@ -395,6 +399,20 @@ ewl_text_get_text_geometry(Ewl_Text * t, int *xx, int *yy, int *ww, int *hh)
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * ewl_text_get_length - retrieve the length of the text in the widget
+ * @t: the text widget to retrieve text length
+ *
+ * Returns the length of the text enclosed in the widget @t.
+ */
+inline int ewl_text_get_length(Ewl_Text *t)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("t", t, 0);
+
+	DRETURN_INT(t->length, DLEVEL_STABLE);
 }
 
 /**

@@ -9,13 +9,18 @@ typedef struct _ewl_cursor Ewl_Cursor;
 struct _ewl_cursor {
 	Ewl_Widget      widget;
 
-	unsigned int    position;
+	struct {
+		unsigned int start;
+		unsigned int end;
+	} position;
 };
 
 Ewl_Widget     *ewl_cursor_new(void);
 void            ewl_cursor_init(Ewl_Cursor * c);
-void            ewl_cursor_set_position(Ewl_Widget * w, unsigned int p);
-int             ewl_cursor_get_position(Ewl_Widget * w);
+void            ewl_cursor_set_position(Ewl_Cursor * w, unsigned int start,
+					unsigned int end);
+unsigned int    ewl_cursor_get_start_position(Ewl_Cursor * w);
+unsigned int    ewl_cursor_get_end_position(Ewl_Cursor * w);
 
 
 #endif				/* __EWL_CURSOR_H__ */
