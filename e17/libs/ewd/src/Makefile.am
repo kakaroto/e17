@@ -11,7 +11,7 @@ installed_headers_DATA = \
 	ewd_threads.h \
 	ewd_tree.h \
 	ewd_value.h \
-	../ewd-config.h
+	ewd_config.h
 
 libewd_la_CFLAGS = -O6
 

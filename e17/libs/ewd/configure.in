@@ -45,14 +45,14 @@ dnl Set PACKAGE_SOURCE_DIR in config.h.
 packagesrcdir=`cd $srcdir && pwd`
 AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}")
 
-AM_CONFIG_HEADER(ewd-config.h)
-
 AC_SUBST(PTHREAD_LIBS)
+AC_SUBST(HAVE_PTHREADS)
 
 if test x$pthreads = xyes ; then
 AC_CHECK_HEADERS(pthread.h,AC_DEFINE_UNQUOTED(HAVE_PTHREADS, "yes"),
   AC_MSG_ERROR([*** POSIX thread support not found ***]))
 PTHREAD_LIBS=-lpthread
+HAVE_PTHREADS=yes
 fi
 
 dnl Use -Wall if we have gcc.
@@ -70,6 +70,7 @@ Makefile
 ewd-config
 src/Makefile
 test/Makefile
+src/ewd_config.h
 ], [
 chmod +x ewd-config
 ]
