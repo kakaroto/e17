@@ -159,7 +159,7 @@ feh_menu_new(void)
    menus = l;
 
    if (!bg)
-      feh_load_image_char(&bg, opt.menu_bg, NULL);
+      feh_load_image_char(&bg, opt.menu_bg);
    if (bg)
       m->bg = feh_imlib_clone_image(bg);
 
@@ -1360,7 +1360,7 @@ feh_menu_cb_about(feh_menu * m, feh_menu_item * i, void *data)
 
    D_ENTER(4);
 
-   if (feh_load_image_char(&im, PREFIX "/share/feh/images/about.png", NULL) !=
+   if (feh_load_image_char(&im, PREFIX "/share/feh/images/about.png") !=
        0)
    {
       winwid =

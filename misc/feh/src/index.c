@@ -99,8 +99,8 @@ init_index_mode(void)
    feh_imlib_get_text_size(fn, "W", &tw, &th, IMLIB_TEXT_TO_RIGHT);
    /* For now, allow room for the right number of lines with small gaps */
    text_area_h =
-      ((th + 2) *
-       (opt.index_show_name + opt.index_show_size + opt.index_show_dim)) + 5;
+      ((th + 2) * (opt.index_show_name + opt.index_show_size +
+                   opt.index_show_dim)) + 5;
 
    /* This includes the text area for index data */
    tot_thumb_h = opt.thumb_h + text_area_h;
@@ -112,8 +112,8 @@ init_index_mode(void)
          trans_bg = 1;
       else
       {
-         D(3,("Time to apply a background to blend onto\n"));
-         if (feh_load_image_char(&bg_im, opt.bg_file, NULL) != 0)
+         D(3, ("Time to apply a background to blend onto\n"));
+         if (feh_load_image_char(&bg_im, opt.bg_file) != 0)
          {
             bg_w = feh_imlib_image_get_width(bg_im);
             bg_h = feh_imlib_image_get_height(bg_im);
@@ -337,15 +337,14 @@ init_index_mode(void)
 
    /* Create the window title at this point */
 
-    if (!opt.title)
-	   s = estrdup(PACKAGE " [index mode]");
-	else
-	   s = estrdup(feh_printf(opt.title, NULL));
-   
-   if (opt.display && opt.progressive)
+   if (!opt.title)
+      s = estrdup(PACKAGE " [index mode]");
+   else
+      s = estrdup(feh_printf(opt.title, NULL));
+
+   if (opt.display)
    {
-      winwid =
-         winwidget_create_from_image(im_main, s, WIN_TYPE_SINGLE);
+      winwid = winwidget_create_from_image(im_main, s, WIN_TYPE_SINGLE);
       winwidget_show(winwid);
    }
 
@@ -357,12 +356,12 @@ init_index_mode(void)
          filelist = feh_file_remove_from_list(filelist, last);
          last = NULL;
       }
-      D(4,("About to load image %s\n", file->filename));
-      if (feh_load_image(&im_temp, file, NULL) != 0)
+      D(4, ("About to load image %s\n", file->filename));
+      if (feh_load_image(&im_temp, file) != 0)
       {
          if (opt.verbose)
             feh_display_status('.');
-         D(4,("Successfully loaded %s\n", file->filename));
+         D(4, ("Successfully loaded %s\n", file->filename));
          www = opt.thumb_w;
          hhh = opt.thumb_h;
          ww = feh_imlib_image_get_width(im_temp);
@@ -398,7 +397,7 @@ init_index_mode(void)
          {
             DATA8 atab[256];
 
-            D(3,("Applying alpha options\n"));
+            D(3, ("Applying alpha options\n"));
             feh_imlib_image_set_has_alpha(im_thumb, 1);
             memset(atab, opt.alpha_level, sizeof(atab));
             feh_imlib_apply_color_modifier_to_rectangle(im_thumb, 0, 0, www,
@@ -513,7 +512,7 @@ init_index_mode(void)
             feh_display_status('x');
          last = l;
       }
-      if (opt.display && opt.progressive)
+      if (opt.display)
       {
          winwidget_render_image(winwid, 0, 0);
          if (!feh_main_iteration(0))
@@ -539,10 +538,11 @@ init_index_mode(void)
    if (opt.output && opt.output_file)
    {
       char output_buf[1024];
+
       if (opt.output_dir)
-          snprintf(output_buf,1024,"%s/%s", opt.output_dir, opt.output_file);
+         snprintf(output_buf, 1024, "%s/%s", opt.output_dir, opt.output_file);
       else
-          strncpy(output_buf,opt.output_file, 1024);
+         strncpy(output_buf, opt.output_file, 1024);
 
       feh_imlib_save_image(im_main, output_buf);
       if (opt.verbose)
@@ -560,13 +560,8 @@ init_index_mode(void)
 
    if (opt.display)
    {
-      if (opt.progressive && winwid)
-         winwidget_render_image(winwid, 0, 1);
-      else
-      {
-         winwid = winwidget_create_from_image(im_main, s, WIN_TYPE_SINGLE);
-         winwidget_show(winwid);
-      }
+      winwid = winwidget_create_from_image(im_main, s, WIN_TYPE_SINGLE);
+      winwidget_show(winwid);
    }
    else
       feh_imlib_free_image_and_decache(im_main);
@@ -580,7 +575,7 @@ char *
 chop_file_from_full_path(char *str)
 {
    D_ENTER(4);
-   D_RETURN(4,strrchr(str, '/') + 1);
+   D_RETURN(4, strrchr(str, '/') + 1);
 }
 
 static char *
@@ -601,7 +596,7 @@ create_index_size_string(char *file)
    }
 
    snprintf(str, sizeof(str), "%.2fKb", kbs);
-   D_RETURN(4,str);
+   D_RETURN(4, str);
 }
 
 static char *
@@ -611,7 +606,7 @@ create_index_dimension_string(int w, int h)
 
    D_ENTER(4);
    snprintf(str, sizeof(str), "%dx%d", w, h);
-   D_RETURN(4,str);
+   D_RETURN(4, str);
 }
 
 static char *
@@ -622,5 +617,5 @@ create_index_title_string(int num, int w, int h)
    D_ENTER(4);
    snprintf(str, sizeof(str),
             PACKAGE " index - %d thumbnails, %d by %d pixels", num, w, h);
-   D_RETURN(4,str);
+   D_RETURN(4, str);
 }

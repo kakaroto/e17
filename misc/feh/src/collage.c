@@ -60,7 +60,7 @@ init_collage_mode(void)
       {
 
          D(4,("Time to apply a background to blend onto\n"));
-         if (feh_load_image_char(&bg_im, opt.bg_file, NULL) != 0)
+         if (feh_load_image_char(&bg_im, opt.bg_file) != 0)
          {
             bg_w = feh_imlib_image_get_width(bg_im);
             bg_h = feh_imlib_image_get_height(bg_im);
@@ -123,7 +123,7 @@ init_collage_mode(void)
    else
 	  s = estrdup(feh_printf(opt.title, NULL));
    
-   if (opt.display && opt.progressive)
+   if (opt.display)
    {
       winwid =
          winwidget_create_from_image(im_main, s, WIN_TYPE_SINGLE);
@@ -140,7 +140,7 @@ init_collage_mode(void)
          last = NULL;
       }
       D(3,("About to load image %s\n", file->filename));
-      if (feh_load_image(&im_temp, file, NULL) != 0)
+      if (feh_load_image(&im_temp, file) != 0)
       {
          D(3,("Successfully loaded %s\n", file->filename));
          if (opt.verbose)
@@ -205,7 +205,7 @@ init_collage_mode(void)
          if (opt.verbose)
             feh_display_status('x');
       }
-      if (opt.display && opt.progressive)
+      if (opt.display)
       {
          winwidget_render_image(winwid, 0, 0);
          if (!feh_main_iteration(0))
@@ -238,15 +238,10 @@ init_collage_mode(void)
 
    if (opt.display)
    {
-      if (opt.progressive && winwid)
-         winwidget_render_image(winwid, 0, 1);
-      else
-      {
          winwid =
             winwidget_create_from_image(im_main, PACKAGE " [collage mode]",
                                         WIN_TYPE_SINGLE);
          winwidget_show(winwid);
-      }
    }
    else
       feh_imlib_free_image_and_decache(im_main);

@@ -96,9 +96,7 @@ void init_list_mode(void);
 void init_loadables_mode(void);
 void init_unloadables_mode(void);
 void feh_clean_exit(void);
-int feh_load_image(Imlib_Image * im, feh_file * file,
-
-                   Imlib_Progress_Function pfunc);
+int feh_load_image(Imlib_Image * im, feh_file * file);
 void show_mini_usage(void);
 void slideshow_change_image(winwidget winwid, int change);
 void slideshow_pause_toggle(winwidget w);
@@ -108,14 +106,11 @@ void handle_keypress_event(XEvent * ev, Window win);
 void feh_action_run(feh_file * file);
 char *feh_printf(char *str, feh_file * file);
 
-int progressive_load_cb(Imlib_Image im, char percent, int update_x,
-                        int update_y, int update_w, int update_h);
 void feh_draw_checks(winwidget win);
 void cb_slide_timer(void *data);
 void cb_reload_timer(void *data);
 char *feh_http_load_image(char *url);
-int feh_load_image_char(Imlib_Image * im, char *filename,
-                        Imlib_Progress_Function pfunc);
+int feh_load_image_char(Imlib_Image * im, char *filename);
 void feh_draw_filename(winwidget w);
 void feh_display_status(char stat);
 void real_loadables_mode(int loadable);

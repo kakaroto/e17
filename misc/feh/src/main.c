@@ -145,6 +145,8 @@ feh_main_iteration(int block)
             t1 = 0.0;
          ft->in = t1;
       }
+      
+      XSync(disp, False);
       D(5,("I next need to action a timer in %f seconds\n", t1));
       /* Only do a blocking select if there's a timer due, or no events
          waiting */

@@ -341,7 +341,7 @@ feh_file_info_load(feh_file * file, Imlib_Image im)
 
    if (im)
       im1 = im;
-   else if (!feh_load_image(&im1, file, NULL))
+   else if (!feh_load_image(&im1, file))
       D_RETURN(4, 1);
 
    if (!im1)

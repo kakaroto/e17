@@ -105,7 +105,6 @@ cb_reload_timer(void *data)
 void
 feh_reload_image(winwidget w, int resize)
 {
-   Imlib_Progress_Function pfunc = NULL;
    char *title, *new_title;
    int len;
 
@@ -119,22 +118,14 @@ feh_reload_image(winwidget w, int resize)
 
    winwidget_free_image(w);
 
-   /* for now, we do reloads *without* progressive loading */
-   /*
-      if (opt.progressive)
-      pfunc = progressive_load_cb;
-    */
-
    len = strlen(w->name) + sizeof("Reloading: ") + 1;
    new_title = emalloc(len);
    snprintf(new_title, len, "Reloading: %s", w->name);
    title = estrdup(w->name);
    winwidget_rename(w, new_title);
    
-   if ((winwidget_loadimage(w, FEH_FILE(w->file->data), pfunc)) != 0)
+   if ((winwidget_loadimage(w, FEH_FILE(w->file->data))) != 0)
    {
-      if (!pfunc)
-      {
          w->mode = MODE_NORMAL;
          if ((w->im_w != feh_imlib_image_get_width(w->im))
              || (w->im_h != feh_imlib_image_get_height(w->im)))
@@ -154,7 +145,6 @@ feh_reload_image(winwidget w, int resize)
             w->im_h = feh_imlib_image_get_height(w->im);
          }
          winwidget_render_image(w, resize, 1);
-      }
       if (opt.draw_filename)
          feh_draw_filename(w);
    }
@@ -172,7 +162,6 @@ feh_reload_image(winwidget w, int resize)
 void
 slideshow_change_image(winwidget winwid, int change)
 {
-   Imlib_Progress_Function pfunc = NULL;
    int success = 0;
    feh_list *last = NULL;
    int i = 0, file_num = 0;
@@ -258,16 +247,12 @@ slideshow_change_image(winwidget winwid, int change)
       winwidget_rename(winwid, s);
       free(s);
 
-      if (opt.progressive)
-         pfunc = progressive_load_cb;
-      if ((winwidget_loadimage(winwid, FEH_FILE(current_file->data), pfunc))
+      if ((winwidget_loadimage(winwid, FEH_FILE(current_file->data)))
           != 0)
       {
          success = 1;
          winwid->mode = MODE_NORMAL;
          winwid->file = current_file;
-         if (!opt.progressive)
-         {
             if ((winwid->im_w != feh_imlib_image_get_width(winwid->im))
                 || (winwid->im_h != feh_imlib_image_get_height(winwid->im)))
                winwid->had_resize = 1;
@@ -275,7 +260,6 @@ slideshow_change_image(winwidget winwid, int change)
             winwid->im_w = feh_imlib_image_get_width(winwid->im);
             winwid->im_h = feh_imlib_image_get_height(winwid->im);
             winwidget_render_image(winwid, 1, 1);
-         }
          if (opt.draw_filename)
             feh_draw_filename(winwid);
          break;

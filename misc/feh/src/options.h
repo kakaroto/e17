@@ -46,7 +46,6 @@ struct __fehoptions
    unsigned char alpha_level;
    unsigned char aspect;
    unsigned char stretch;
-   unsigned char progressive;
    unsigned char keep_http;
    unsigned char borderless;
    unsigned char randomize;
@@ -60,7 +59,6 @@ struct __fehoptions
    unsigned char unloadables;
    unsigned char reverse;
    unsigned char no_menus;
-   unsigned char progress_gran;
    unsigned char scale_down;
    unsigned char builtin_http;
    unsigned char wget_timestamp;

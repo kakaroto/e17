@@ -64,6 +64,7 @@ init_x_and_imlib(void)
    imlib_context_set_visual(vis);
    imlib_context_set_colormap(cm);
    imlib_context_set_color_modifier(NULL);
+   imlib_context_set_progress_function(NULL);
    imlib_context_set_operation(IMLIB_OP_COPY);
    wmDeleteWindow = XInternAtom(disp, "WM_DELETE_WINDOW", False);
 
@@ -84,22 +85,20 @@ init_x_and_imlib(void)
 }
 
 int
-feh_load_image_char(Imlib_Image * im, char *filename,
-                    Imlib_Progress_Function pfunc)
+feh_load_image_char(Imlib_Image * im, char *filename)
 {
    feh_file *file;
    int i;
 
    D_ENTER(4);
    file = feh_file_new(filename);
-   i = feh_load_image(im, file, pfunc);
+   i = feh_load_image(im, file);
    feh_file_free(file);
    D_RETURN(4, i);
 }
 
 int
-feh_load_image(Imlib_Image * im, feh_file * file,
-               Imlib_Progress_Function pfunc)
+feh_load_image(Imlib_Image * im, feh_file * file)
 {
    Imlib_Load_Error err;
 
@@ -108,9 +107,6 @@ feh_load_image(Imlib_Image * im, feh_file * file,
 
    if (!file || !file->filename)
       D_RETURN(4, 0);
-
-   imlib_context_set_progress_function(pfunc);
-   imlib_context_set_progress_granularity(opt.progress_gran);
 
    /* Handle URLs */
    if ((!strncmp(file->filename, "http://", 7))
@@ -234,105 +230,6 @@ feh_load_image(Imlib_Image * im, feh_file * file,
 
    D(3, ("Loaded ok\n"));
    D_RETURN(4, 1);
-}
-
-int
-progressive_load_cb(Imlib_Image im, char percent, int update_x, int update_y,
-                    int update_w, int update_h)
-{
-   int dest_x = 0, dest_y = 0;
-   int newwin = 0;
-
-   D_ENTER(4);
-   if (!progwin)
-   {
-      weprintf("progwin does not exist - this should not happen");
-      D_RETURN(4, 0);
-   }
-
-   D(4, ("progress is %d\n", percent));
-
-   /* Is this the first progress return for a new image? */
-   /* If so, we have some stuff to set up... */
-   if (progwin->im_w == 0)
-   {
-      D(3, ("First progress load. setting stuff up\n"));
-      progwin->im_w = feh_imlib_image_get_width(im);
-      progwin->im_h = feh_imlib_image_get_height(im);
-      winwidget_reset_image(progwin);
-      if (opt.full_screen)
-      {
-         progwin->im_x = (scr->width - progwin->im_w) >> 1;
-         progwin->im_y = (scr->height - progwin->im_h) >> 1;
-      }
-
-      /* do we need to create a window for the image? */
-      if (!progwin->win)
-      {
-         newwin = 1;
-         D(3, ("Need to create a window for the image\n"));
-         winwidget_create_window(progwin, progwin->im_w, progwin->im_h);
-         winwidget_show(progwin);
-      }
-      else if (!opt.full_screen)
-      {
-         D(3, ("Resizing the window\n"));
-         winwidget_resize(progwin, progwin->im_w, progwin->im_h);
-      }
-
-      winwidget_setup_pixmaps(progwin);
-
-      if (!opt.full_screen)
-         feh_draw_checks(progwin);
-
-      XSetWindowBackgroundPixmap(disp, progwin->win, progwin->bg_pmap);
-
-      if (opt.full_screen)
-         XClearArea(disp, progwin->win, 0, 0, scr->width, scr->height, False);
-      else if (newwin)
-         XClearArea(disp, progwin->win, 0, 0, progwin->w, progwin->h, False);
-   }
-
-   if (opt.full_screen)
-   {
-      dest_x = (scr->width - progwin->im_w) >> 1;
-      dest_y = (scr->height - progwin->im_h) >> 1;
-   }
-
-   if (progwin->has_rotated)
-      feh_imlib_render_image_part_on_drawable_at_size_with_rotation(progwin->
-                                                                    bg_pmap,
-                                                                    im,
-                                                                    update_x,
-                                                                    update_y,
-                                                                    update_w,
-                                                                    update_h,
-                                                                    dest_x +
-                                                                    update_x,
-                                                                    dest_y +
-                                                                    update_y,
-                                                                    update_w,
-                                                                    update_h,
-                                                                    progwin->
-                                                                    im_angle,
-                                                                    1,
-                                                                    feh_imlib_image_has_alpha
-                                                                    (im), 0);
-   else
-      feh_imlib_render_image_part_on_drawable_at_size(progwin->bg_pmap, im,
-                                                      update_x, update_y,
-                                                      update_w, update_h,
-                                                      dest_x + update_x,
-                                                      dest_y + update_y,
-                                                      update_w, update_h, 1,
-                                                      feh_imlib_image_has_alpha
-                                                      (im), 0);
-
-   XClearArea(disp, progwin->win, dest_x + update_x, dest_y + update_y,
-              update_w, update_h, False);
-
-   D_RETURN(4, 1);
-   percent = 0;
 }
 
 char *

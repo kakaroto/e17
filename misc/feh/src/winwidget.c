@@ -109,7 +109,6 @@ winwidget_create_from_file(feh_list * list, char *name, char type)
 {
    winwidget ret = NULL;
    feh_file *file = FEH_FILE(list->data);
-   Imlib_Progress_Function pfunc = NULL;
 
    D_ENTER(4);
 
@@ -124,16 +123,13 @@ winwidget_create_from_file(feh_list * list, char *name, char type)
    else
       ret->name = estrdup(file->filename);
 
-   if (opt.progressive)
-      pfunc = progressive_load_cb;
-
-   if (winwidget_loadimage(ret, file, pfunc) == 0)
+   if (winwidget_loadimage(ret, file) == 0)
    {
       winwidget_destroy(ret);
       D_RETURN(4, NULL);
    }
 
-   if (!opt.progressive || !ret->win)
+   if (!ret->win)
    {
       ret->w = ret->im_w = feh_imlib_image_get_width(ret->im);
       ret->h = ret->im_h = feh_imlib_image_get_height(ret->im);
@@ -577,13 +573,12 @@ winwidget winwidget_get_first_window_of_type(unsigned int type)
 }
 
 int
-winwidget_loadimage(winwidget winwid, feh_file * file,
-                    Imlib_Progress_Function pfunc)
+winwidget_loadimage(winwidget winwid, feh_file * file)
 {
    D_ENTER(4);
    D(4, ("filename %s\n", file->filename));
    progwin = winwid;
-   D_RETURN(4, feh_load_image(&(winwid->im), file, pfunc));
+   D_RETURN(4, feh_load_image(&(winwid->im), file));
 }
 
 void
@@ -613,7 +608,7 @@ winwidget_resize(winwidget winwid, int w, int h)
    if (winwid && ((winwid->w != w) || (winwid->h != h)))
    {
       D(4, ("Really doing a resize\n"));
-      winwidget_clear_background(winwid);
+      /* winwidget_clear_background(winwid); */
       XResizeWindow(disp, winwid->win, w, h);
       winwid->w = (winwid->im_w > scr->width) ? scr->width : w;
       winwid->h = (winwid->im_h > scr->height) ? scr->height : h;

@@ -108,8 +108,7 @@ struct __winwidget
    unsigned char has_rotated;
 };
 
-int winwidget_loadimage(winwidget winwid, feh_file * filename,
-                        Imlib_Progress_Function pfunc);
+int winwidget_loadimage(winwidget winwid, feh_file * filename);
 void winwidget_show(winwidget winwid);
 void winwidget_hide(winwidget winwid);
 void winwidget_destroy_all(void);

@@ -51,11 +51,9 @@ init_parse_options(int argc, char **argv)
    memset(&opt, 0, sizeof(fehoptions));
    opt.display = 1;
    opt.aspect = 1;
-   opt.progressive = 1;
    opt.slideshow_delay = -1.0;
    opt.thumb_w = 60;
    opt.thumb_h = 60;
-   opt.progress_gran = 10;
    opt.menu_font = estrdup("20thcent/12");
    opt.menu_bg = estrdup(PREFIX "/share/feh/images/menubg.png");
    opt.next_button = 1;
@@ -303,7 +301,7 @@ feh_parse_option_array(int argc, char **argv)
 {
    static char stropts[] =
 
-      "a:A:b:BcC:dD:e:f:Fg:GhH:iIj:klL:mM:nNo:O:pPqQrR:sS:tT:uUvVwW:xXy:zZ1:2:3:4:56:78:90:";
+      "a:A:b:BcC:dD:e:f:Fg:GhH:iIj:klL:mM:nNo:O:pqQrR:sS:tT:uUvVwW:xXy:zZ1:2:3:4:56:78:90:";
    static struct option lopts[] = {
       /* actions */
       {"help", 0, 0, 'h'},                  /* okay */
@@ -327,7 +325,6 @@ feh_parse_option_array(int argc, char **argv)
       {"no-menus", 0, 0, 'N'},
       {"full-screen", 0, 0, 'F'},
       {"auto-zoom", 0, 0, 'Z'},
-      {"no-progressive", 0, 0, 'P'},
       {"ignore-aspect", 0, 0, 'X'},
       {"draw_filename", 0, 0, 'd'},
       {"preload", 0, 0, 'p'},
@@ -359,7 +356,6 @@ feh_parse_option_array(int argc, char **argv)
       {"thumb-title", 1, 0, '~'},
       {"bg", 1, 0, 'b'},
       {"fontpath", 1, 0, 'C'},
-      {"progress-gran", 1, 0, '('},
       {"menu-bg", 1, 0, ')'},
       {"next-button", 1, 0, '1'},
       {"zoom-button", 1, 0, '2'},
@@ -477,7 +473,6 @@ feh_parse_option_array(int argc, char **argv)
            break;
         case 'Z':
            opt.auto_zoom = 1;
-           opt.progressive = 0;
            break;
         case 'U':
            opt.loadables = 1;
@@ -487,9 +482,6 @@ feh_parse_option_array(int argc, char **argv)
            break;
         case 'p':
            opt.preload = 1;
-           break;
-        case 'P':
-           opt.progressive = 0;
            break;
         case 'X':
            opt.aspect = 0;
@@ -565,11 +557,6 @@ feh_parse_option_array(int argc, char **argv)
            break;
         case 'g':
            opt.thumb_h = atoi(optarg);
-           break;
-        case '(':
-           opt.progress_gran = atoi(optarg);
-           if (opt.progress_gran > 100)
-              opt.progress_gran = 100;
            break;
         case ')':
            free(opt.menu_bg);
@@ -664,13 +651,6 @@ check_options(void)
       weprintf("you can't use collage mode and index mode together.\n"
                "   I'm going with index");
       opt.collage = 0;
-   }
-
-   if (opt.scale_down && opt.progressive)
-   {
-      weprintf
-         ("currently, --scale-down only works without progressive loading");
-      opt.progressive = 0;
    }
 
    if (opt.full_screen && opt.multiwindow)
@@ -778,16 +758,11 @@ show_usage(void)
            "                            screen. Currently only works with -P\n"
            "  -F, --full-screen         Make the window fullscreen\n"
            "  -Z, --auto-zoom           Zoom picture to screen size in fullscreen mode,\n"
-           "                            is affected by the option --stretch and currently\n"
-           "                            disables progressive loading.\n"
+           "                            is affected by the option --stretch\n"
            "  -w, --multiwindow         Disable slideshow mode. With this setting,\n"
            "                            instead of opening multiple files in slideshow\n"
            "                            mode, multiple windows will be opened.\n"
            "  -x, --borderless          Create borderless windows\n"
-           "  -P, --no-progressive      Disable progressive loading and display of images\n"
-           "      --progress-gran       Granularity of progressive loading (percentage of\n"
-           "                            load at which to incremement the display\n"
-           "                            (default 10).\n"
            "  -d, --draw-filename       Draw the filename at the top-left of the image.\n"
            "      --title TITLE         Use TITLE as the window title in slideshow mode.\n"
            "  -D, --slideshow-delay NUM For slideshow mode, specifies time delay (seconds,\n"
