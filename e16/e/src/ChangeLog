@@ -3403,3 +3403,10 @@ Sun Oct 10 02:58:26 PDT 1999
 (Mandrake)
 
 minor bug in Makefile.am that caused make distcheck to fail
+
+-------------------------------------------------------------------------------
+
+Sun Oct 10 09:33:57 PDT 1999
+(Raster)
+
+mayaswell store the new title in a property.. :)
