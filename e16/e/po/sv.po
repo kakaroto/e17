@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.4\n"
 "POT-Creation-Date: 2000-04-06 05:12+0200\n"
-"PO-Revision-Date: 2000-04-09 17:30+0200\n"
+"PO-Revision-Date: 2000-04-10 17:30+0200\n"
 "Last-Translator: Bernt Holmberg <bernt@grub01.physto.se>\n"
 "Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -1856,7 +1856,7 @@ msgstr "  Nej  "
 
 #: src/settings.c:87 src/settings.c:209
 msgid "Pager scanning speed:"
-msgstr "Sidväxlarskanningshastighet:"
+msgstr "Sidväxlares scanningshastighet:"
 
 #: src/settings.c:88 src/settings.c:210
 msgid "lines per second"
@@ -2043,7 +2043,7 @@ msgstr "Låda"
 
 #: src/settings.c:721 src/settings.c:728 src/settings.c:1951
 msgid "Shaded"
-msgstr "Skymt"
+msgstr "Skuggad"
 
 #: src/settings.c:735 src/settings.c:742 src/settings.c:1966
 msgid "Semi-Solid"
@@ -2054,7 +2054,7 @@ msgid "Translucent"
 msgstr "Genomlysande"
 
 #: src/settings.c:853 src/settings.c:915
-#, c-format, fuzzy
+#, c-format
 msgid "%i Desktops"
 msgstr "%i skrivbord"
 
@@ -2644,7 +2644,7 @@ msgstr ""
 
 #: src/settings.c:4443
 msgid "Remembered Windows Settings"
-msgstr "Ihågkomna fönsterinställningar"
+msgstr "Ihågkommna fönsterinställningar"
 
 #: src/settings.c:4459
 msgid ""
@@ -2652,15 +2652,15 @@ msgid ""
 "Windows Settings Dialog\n"
 msgstr ""
 "Dialog för Enlightenments\n"
-"ihågkomna fönsterinställningar\n"
+"ihågkommna fönsterinställningar\n"
 
 #: src/settings.c:4514
 msgid "Remembered Settings..."
-msgstr "Ihågkomna inställningar..."
+msgstr "Ihågkommna tillval..."
 
 #: src/settings.c:4534
 msgid "There are no active windows with remembered attributes."
-msgstr "Det finns inga aktiva fönster med ihågkomna attribut."
+msgstr "Det finns inga aktiva fönster med ihågkommna attribut."
 
 #: src/setup.c:221
 msgid ""
@@ -2822,7 +2822,7 @@ msgstr ""
 
 #: src/snaps.c:263
 msgid "Remembered Application Attributes"
-msgstr "Ihågkomna applikationsattribut"
+msgstr "Ihågkommna applikationsattribut"
 
 #: src/snaps.c:280
 msgid ""
