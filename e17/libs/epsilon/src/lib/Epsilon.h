@@ -55,8 +55,8 @@ int epsilon_generate (Epsilon * e);
 Epsilon_Info *epsilon_info_get (Epsilon * e);
 void epsilon_info_free (Epsilon_Info * ei);
 
-int epsilon_exif_info_props_as_int_get (Epsilon_Info * ei, long prop);
-const char *epsilon_exif_info_props_as_str_get (Epsilon_Info * ei, long prop);
+int epsilon_info_exif_props_as_int_get (Epsilon_Info * ei, long prop);
+const char *epsilon_info_exif_props_as_str_get (Epsilon_Info * ei, long prop);
 void epsilon_info_exif_props_print (Epsilon_Info * ei);
 int epsilon_info_exif_get (Epsilon_Info * ei);
 
