@@ -224,28 +224,46 @@ ListThemes(int *number)
    return list;
 }
 
+static const char  *
+ThemeCheckPath(const char *path)
+{
+   char                s1[FILEPATH_LEN_MAX];
+
+   Esnprintf(s1, sizeof(s1), "%s/epplets/epplets.cfg", path);
+   if (exists(s1))
+      return path;		/* OK */
+
+   return NULL;			/* Not OK */
+}
+
 static char        *
 ThemeGetPath(const char *path)
 {
-   char                s1[FILEPATH_LEN_MAX], s2[FILEPATH_LEN_MAX];
+   const char         *s;
+   char               *ss, s1[FILEPATH_LEN_MAX], s2[FILEPATH_LEN_MAX];
    int                 len;
 
-   Esnprintf(s1, sizeof(s1), "%s/epplets/epplets.cfg", path);
-   if (!exists(s1))
-      return NULL;
+   /* We only attempt to dereference a DEFAULT link */
+   s = strstr(path, "/DEFAULT");
+   if (s == NULL)
+      return Estrdup(path);
 
-   /* If link, dereference */
-   len = readlink(path, s2, sizeof(s2) - 1);
+   len = readlink(path, s1, sizeof(s1) - 1);
    if (len < 0)
       return Estrdup(path);
 
-   s2[len] = '\0';
-   if (isabspath(s2))
-      return Estrdup(s2);
-
-   Esnprintf(s1, sizeof(s1), "%s/themes/%s", path, s2);
-   if (isdir(s1))
+   s1[len] = '\0';
+   if (isabspath(s1))
       return Estrdup(s1);
+
+   Esnprintf(s2, sizeof(s2) - strlen(s1), "%s", path);
+   ss = strstr(s2, "/DEFAULT");
+   if (ss == NULL)
+      return NULL;
+
+   strcpy(ss + 1, s1);
+   if (isdir(s2))
+      return Estrdup(s2);
 
    /* We should never get here */
    return NULL;
@@ -255,10 +273,11 @@ char               *
 ThemeGetDefault(void)
 {
    static const char  *const dts[] = {
-      "DEFAULT", "BrushedMetal-Tigert", "ShinyMetal", "winter"
+      "DEFAULT", "winter", "BrushedMetal-Tigert", "ShinyMetal"
    };
    char                s[FILEPATH_LEN_MAX];
-   char               *path, **lst;
+   const char         *path;
+   char              **lst;
    int                 i, num;
 
    /* First, try out some defaults */
@@ -266,14 +285,14 @@ ThemeGetDefault(void)
    for (i = 0; i < num; i++)
      {
 	Esnprintf(s, sizeof(s), "%s/themes/%s", EDirUser(), dts[i]);
-	path = ThemeGetPath(s);
+	path = ThemeCheckPath(s);
 	if (path)
-	   return path;
+	   return ThemeGetPath(path);
 
 	Esnprintf(s, sizeof(s), "%s/themes/%s", EDirRoot(), dts[i]);
-	path = ThemeGetPath(s);
+	path = ThemeCheckPath(s);
 	if (path)
-	   return path;
+	   return ThemeGetPath(path);
      }
 
    /* Then, try out all installed themes */
@@ -281,14 +300,16 @@ ThemeGetDefault(void)
    lst = ListThemes(&num);
    for (i = 0; i < num; i++)
      {
-	path = ThemeGetPath(lst[i]);
+	path = ThemeCheckPath(lst[i]);
 	if (path)
 	   break;
      }
    if (lst)
       freestrlist(lst, num);
+   if (path)
+      return ThemeGetPath(path);
 
-   return path;
+   return NULL;
 }
 
 void
