@@ -337,7 +337,9 @@ int term_cursor_anim(Term *term) {
    return 1;
 }
 
+/* FIXME!!! */
 void term_delete_lines(Term *term, int lines) {
+#if 0
    int a, b;
    a = term->scroll_region_start;
    b = term->scroll_in_region;
@@ -346,4 +348,5 @@ void term_delete_lines(Term *term, int lines) {
    term_scroll_up(term, lines);
    term->scroll_region_start = a;
    term->scroll_in_region = b;
+#endif
 }
