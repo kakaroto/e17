@@ -243,7 +243,9 @@ remove all bogus epplet entries from
 ~/.enlightenment/...e_session-XXXXXX.snapshots.0 while E isn't
 running. A more radical approach is to simply delete this file --
 this may cause other settings to be lost, such as those for the
-icon box and the pagers. Sorry for the inconvenience.
+icon box and the pagers.  An even better method proposed by digitalfallout
+is to use the following sed line to clean up the dups and make a backup:
+sed -i.bak -e '/[1-9]\.Epplet$/,/^CMD:/d' .enlightenment/...e_session-XXXXXX.snapshots.0
 @:news_end@
 
 @:news_title@
