@@ -65,7 +65,7 @@ binary-arch: build install
 	dh_testdir
 	dh_testroot
 	dh_installchangelogs 
-	dh_installdocs -plibepsilon0 README AUTHORS
+	dh_installdocs -plibepsilon0 README
 	dh_installdocs -plibepsilon0-dev
 	dh_movefiles
 	dh_link
