@@ -292,7 +292,7 @@ _entice_thumb_load(void *_data, Evas * _e, Evas_Object * _o, void *_ev)
       }
       else
       {
-	  fprintf(stderr, "Error Loading Source Image !!!!\n");
+         fprintf(stderr, "Error Loading Source Image !!!!\n");
       }
    }
    return;
@@ -532,6 +532,7 @@ entice_file_remove(const char *file)
                                       "");
             edje_object_part_text_set(entice->edje, "EnticeFileName", "");
             entice->thumb.list = evas_list_free(entice->thumb.list);
+            entice_current_free();
          }
       }
       else

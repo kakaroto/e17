@@ -598,7 +598,12 @@ entice_image_del(Evas_Object * o)
    {
       if (im->filename)
          free(im->filename);
-      evas_object_del(im->obj);
+      if (im->format)
+         free(im->format);
+      if (im->obj)
+         evas_object_del(im->obj);
+      if (im->clip)
+         evas_object_del(im->clip);
       free(im);
    }
 }

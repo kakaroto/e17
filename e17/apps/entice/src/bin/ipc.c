@@ -104,23 +104,22 @@ ipc_client_data(void *data, int type, void *event)
       char buf[e->size];
 
       snprintf(buf, e->size, "%s", (char *) e->data);
-      switch(e->major)
+      switch (e->major)
       {
-	  case IPC_FILE_APPEND:
-	    entice_file_add(buf);
-	    break;
-	  case IPC_FILE_DISPLAY:
-	    entice_current_image_set(buf);
-	    break;
-	  default:
-	    fprintf(stderr, "Unknown major code sent by client(%d)\n",
-	    e->major);
-	    break;
+        case IPC_FILE_APPEND:
+           entice_file_add(buf);
+           break;
+        case IPC_FILE_DISPLAY:
+           entice_current_image_set(buf);
+           break;
+        default:
+           fprintf(stderr, "Unknown major code sent by client(%d)\n",
+                   e->major);
+           break;
       }
-      /*
+      /* 
          printf("!! Client sent: [%i] [%i] (%i) \"%s\"\n", e->major,
-         e->minor, e->size, buf);
-       */
+         e->minor, e->size, buf); */
    }
    return (1);
 }
@@ -152,10 +151,10 @@ entice_ipc_init(int argc, const char **argv)
       ecore_ipc_server_del(server);
       for (i = 1; i < argc; i++)
       {
-         entice_file_add_job_cb((void*)argv[i], IPC_FILE_APPEND);
+         entice_file_add_job_cb((void *) argv[i], IPC_FILE_APPEND);
       }
-      if(argc > 0)
-	  entice_file_add_job_cb((void*)argv[1], IPC_FILE_DISPLAY);
+      if (argc > 0)
+         entice_file_add_job_cb((void *) argv[1], IPC_FILE_DISPLAY);
       return (1);
    }
    /* Otherwise we create it */
@@ -165,9 +164,8 @@ entice_ipc_init(int argc, const char **argv)
 
       snprintf(buf, PATH_MAX, "%s/.ecore/entice/0", getenv("HOME"));
       unlink(buf);
-      /*
-      printf("creating new server\n");
-       */
+      /* 
+         printf("creating new server\n"); */
       server = ecore_ipc_server_add(ECORE_IPC_LOCAL_USER, IPC_TITLE, 0, NULL);
       if (server == NULL)
          printf("creating new IPC server failed\n");
@@ -177,9 +175,8 @@ entice_ipc_init(int argc, const char **argv)
                               NULL);
       ecore_event_handler_add(ECORE_IPC_EVENT_CLIENT_DATA, ipc_client_data,
                               NULL);
-      /*
-      fprintf(stderr, "Listener Started\n");
-       */
+      /* 
+         fprintf(stderr, "Listener Started\n"); */
    }
    return (0);
 }
@@ -220,7 +217,7 @@ entice_ipc_client_request_image_load(const char *file, int major)
                               NULL);
       ecore_event_handler_add(ECORE_IPC_EVENT_SERVER_DATA, ipc_server_data,
                               NULL);
-      
+
       snprintf(buf, PATH_MAX, "%s", file);
       ecore_ipc_server_send(server, major, 6, 0, 0, 0, buf, strlen(buf) + 1);
       memset(buf, 0, sizeof(buf));
