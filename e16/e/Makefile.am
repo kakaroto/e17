@@ -18,8 +18,7 @@ e.rh.spec \
 configure \
 configure.in \
 econfig.h.in \
-debian/README.THIS \
+debian/READ.THIS \
 debian/dh.tar.gz \
-debian/control \
 debian/rules \
 ABOUT-NLS
