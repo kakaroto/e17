@@ -100,7 +100,6 @@ doc/kernel-doc
 doc/html-customizations.dsl
 doc/Makefile
 test/Makefile
-test/img/Makefile
 ])
 AC_CONFIG_COMMANDS([default],[[
 chmod +x estyle-config

@@ -272,7 +272,6 @@ doc/Makefile
 estyle-config
 src/Makefile
 test/Makefile
-test/img/Makefile
 ], [
 chmod +x estyle-config
 chmod +x doc/kernel-doc
