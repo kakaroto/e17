@@ -77,7 +77,8 @@ double	T2;
 double	S1, S2, S3, S4, S5, S6, S7;
 double	DL0, DL, DD, DGAM, DLS, DF;
 double	L0, L, LS, F, D;
-double	ARG, FAC;
+double	ARG=0.0;
+double  FAC=0.0;
 int	MAX, i, j;
 double	S; 
 
