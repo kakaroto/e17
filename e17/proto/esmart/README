@@ -1,0 +1,33 @@
+Esmart
+------------------------------------------------------------------------------
+
+A collection of evas smart objects.
+
+Only objects with no dependencies outside of the EFL will be included here.
+
+EThumb
+------
+
+  This is a evas smart object version of the freedesktop.org thumbnail spec.
+  A lot of it is ripped from evidence, and I hope if you need to generate
+  quite a few thumbnails this might save you some memory.  Most of the
+  original png code was ripped from loader_png.c in e17/libs/imlib2/loaders
+
+  You need evas, ecore from split and imlib2 for loading lots of formats.
+
+  If you use it lemme know how it goes for you, and if there are errors or
+  more functionality feel free to let me know.
+
+  Corey Donohoe <cdonohoe@memphis.edu>
+
+
+
+Container
+--------
+
+  The container smart object takes care of laying out arbitrary evas objects
+  (including other smart objects) in either a horizontal or vertical layout.
+  Simply set a fill policy, and append the evas objects to lay out, and the 
+  container will take care of the rest.
+
+  Rephorm <rephorm@rephorm.com>
