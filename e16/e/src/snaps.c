@@ -167,6 +167,11 @@ CB_ApplySnap(int val, void *data)
 	ewin = FindItem("", tmp_snap_client, LIST_FINDBY_ID, LIST_TYPE_EWIN);
 	if (ewin)
 	  {
+	     Snapshot           *sn;
+
+	     sn = GetSnapshot(ewin);
+	     ClearSnapshot(sn);
+	     UnsnapshotEwin(ewin);
 	     if (tmp_snap_border)
 		SnapshotEwinBorder(ewin);
 	     if (tmp_snap_desktop)
@@ -186,23 +191,6 @@ CB_ApplySnap(int val, void *data)
 	     if (tmp_snap_cmd)
 		SnapshotEwinCmd(ewin);
 	     SnapshotEwinGroups(ewin, tmp_snap_group);
-	     if ((!tmp_snap_border) &&
-		 (!tmp_snap_desktop) &&
-		 (!tmp_snap_size) &&
-		 (!tmp_snap_location) &&
-		 (!tmp_snap_layer) &&
-		 (!tmp_snap_sticky) &&
-		 (!tmp_snap_icon) &&
-		 (!tmp_snap_shade) &&
-		 (!tmp_snap_cmd) &&
-		 (!tmp_snap_group))
-	       {
-		  Snapshot           *sn;
-
-		  sn = GetSnapshot(ewin);
-		  ClearSnapshot(sn);
-		  UnsnapshotEwin(ewin);
-	       }
 	     SaveSnapInfo();
 	  }
      }

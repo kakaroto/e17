@@ -2917,3 +2917,12 @@ Sun Oct  3 14:47:51 PDT 1999
 (Raster)
 
 read pixmap id like all other id's
+
+-------------------------------------------------------------------------------
+
+Sun Oct  3 16:41:28 PDT 1999
+(Mandrake)
+
+fixed a bug where you couldn't ever delete snapshot information about a window
+without removing all the snapshot specs.  thanks to XStauff for pointing it
+out.
