@@ -1,8 +1,12 @@
 
 EWL 0.0.0 (Development)
+ * Added A Spinner Widget
+ * Added A Seeker Widget
+ * Added Some Special FX Code
+ * Added A Table Widget
  * Added A Entry widget
  * Added A Text widget
- * Added A Box widget (Horisontal or Vertical)
+ * Added A Box widget (Horisontal and Vertical)
  * Added A Button Widget
  * Added A Window Widget
- * Wrote base object hierachy
+ * Wrote core object hierachy

@@ -22,6 +22,9 @@ ewl_container_append_child(Ewl_Widget * parent, Ewl_Widget * child)
 
 	EWL_OBJECT(child)->layer = EWL_OBJECT(parent)->layer+1;
 
+	if (!parent->container.children)
+		ewl_container_new(parent);
+
 	if (ewd_list_is_empty(parent->container.children))
 		ewl_container_show_clip(parent);
 
@@ -44,6 +47,9 @@ ewl_container_prepend_child(Ewl_Widget * parent, Ewl_Widget * child)
 
 	EWL_OBJECT(child)->layer = EWL_OBJECT(parent)->layer+1;
 
+	if (!parent->container.children)
+		 ewl_container_new(parent);
+
 	if (ewd_list_is_empty(parent->container.children))
 		ewl_container_show_clip(parent);
 
@@ -63,8 +69,28 @@ ewl_container_set_free_callback(Ewl_Widget * widget, Ewd_Free_Cb cb)
 }
 
 void
-ewl_container_insert_child(Ewl_Widget * parent, Ewl_Widget * child)
+ewl_container_insert_child(Ewl_Widget * parent, Ewl_Widget * child, int index)
 {
+	CHECK_PARAM_POINTER("parent", parent);
+	CHECK_PARAM_POINTER("child", child);
+
+	child->evas = parent->evas;
+	child->evas_window = parent->evas_window;
+	child->parent = parent;
+
+	EWL_OBJECT(child)->layer = EWL_OBJECT(parent)->layer+1;
+
+	if (!parent->container.children)
+		ewl_container_new(parent);
+
+	if (ewd_list_is_empty(parent->container.children))
+		ewl_container_show_clip(parent);
+
+	if (parent->container.free_cb)
+		ewd_list_set_free_cb(parent->container.children,
+							 parent->container.free_cb);
+
+	ewd_list_goto_index(parent->container.children, index);
 	ewd_list_insert(parent->container.children, child);
 }
 
@@ -79,12 +105,12 @@ ewl_container_get_child_at(Ewl_Widget * widget, int x, int y)
 
 	ewd_list_goto_first(widget->container.children);
 
-	if (widget->type == Ewl_Widget_Table)
-	 {
+	if (widget->type == EWL_WIDGET_TABLE)
+	  {
 	   Ewl_Table_Child * child = NULL;
 
 	   while ((child = ewd_list_next(widget->container.children)) != NULL)
-	    {
+	     {
         if (x >= EWL_OBJECT(child->child)->current.x &&        
             y >= EWL_OBJECT(child->child)->current.y &&
             EWL_OBJECT(child->child)->current.x +
@@ -92,20 +118,20 @@ ewl_container_get_child_at(Ewl_Widget * widget, int x, int y)
             EWL_OBJECT(child->child)->current.y +
 			EWL_OBJECT(child->child)->current.h >= y)
             return child->child;
-		}
-	 }
+		 }
+	  }
 	else
-	 {
+	  {
 	  Ewl_Widget * child = NULL;
 	  while ((child = ewd_list_next(widget->container.children)) != NULL)
-	   {
+	    {
 	    if (x >= EWL_OBJECT(child)->current.x &&
 	  		y >= EWL_OBJECT(child)->current.y &&
 			EWL_OBJECT(child)->current.x + EWL_OBJECT(child)->current.w >= x &&
 			EWL_OBJECT(child)->current.y + EWL_OBJECT(child)->current.h >= y)
 			return child;
-	   }
-	}
+	    }
+	 }
 	return NULL;
 }
 
@@ -124,12 +150,13 @@ ewl_container_get_child_at_recursive(Ewl_Widget * widget, int x, int y)
 
 	child = widget;
 
-	while ((child2 = ewl_container_get_child_at(child, x, y)) != NULL) {
+	while ((child2 = ewl_container_get_child_at(child, x, y)) != NULL)
+	  {
 		if (child2->container.recursive)
 			child = ewl_container_get_child_at(child, x, y);
 		else
 			return child2;
-	}
+	  }
 
 	return NULL;
 }
@@ -137,40 +164,32 @@ ewl_container_get_child_at_recursive(Ewl_Widget * widget, int x, int y)
 void
 ewl_container_clip_box_create(Ewl_Widget * widget)
 {
-    if (!widget->container.clip_box) {
-        int l = 0, r = 0, t = 0, b = 0;
-
-        if (widget->ebits_object)
-            ebits_get_insets(widget->ebits_object, &l, &r, &t, &b);
-
+    if (!widget->container.clip_box)
+	  {
         widget->container.clip_box = evas_add_rectangle(widget->evas);
         evas_set_color(widget->evas, widget->container.clip_box,
                                                 255, 255, 255, 255);
         evas_move(widget->evas, widget->container.clip_box,
-            EWL_OBJECT(widget)->current.x +l, EWL_OBJECT(widget)->current.y +t);
+            EWL_OBJECT(widget)->current.x, EWL_OBJECT(widget)->current.y);
         evas_resize(widget->evas, widget->container.clip_box,
-            EWL_OBJECT(widget)->current.w - (l+r),
-            EWL_OBJECT(widget)->current.h - (t+b));
+            EWL_OBJECT(widget)->current.w,
+            EWL_OBJECT(widget)->current.h);
         evas_set_layer(widget->evas, widget->container.clip_box,
                         EWL_OBJECT(widget)->layer);
-    }
+      }
 }
 
 void
 ewl_container_clip_box_resize(Ewl_Widget * widget)
 {
-    if (widget->container.clip_box) {
-        int l = 0, r = 0, t = 0, b = 0;
-
-        if (widget->ebits_object)
-            ebits_get_insets(widget->ebits_object, &l, &r, &t, &b);
-
+    if (widget->container.clip_box)
+	  {
         evas_move(widget->evas, widget->container.clip_box,
-            EWL_OBJECT(widget)->request.x +l, EWL_OBJECT(widget)->request.y +t);
+            EWL_OBJECT(widget)->request.x, EWL_OBJECT(widget)->request.y);
         evas_resize(widget->evas, widget->container.clip_box,
-            EWL_OBJECT(widget)->request.w - (l+r),
-            EWL_OBJECT(widget)->request.h - (t+b));
-    }
+            EWL_OBJECT(widget)->request.w,
+            EWL_OBJECT(widget)->request.h);
+      }
 }
 
 void
@@ -179,13 +198,10 @@ ewl_container_set_clip(Ewl_Widget * widget)
 	CHECK_PARAM_POINTER("widget", widget);
 
 	if (widget->parent &&
-			widget->parent->container.clip_box &&
+			widget->fx_clip_box &&
 			widget->container.clip_box)
 		evas_set_clip(widget->evas, widget->container.clip_box,
-									widget->parent->container.clip_box);
-
-	if (widget->ebits_object)
-		ebits_set_clip(widget->ebits_object,widget->parent->container.clip_box);
+									widget->fx_clip_box);
 }
 
 void

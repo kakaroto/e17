@@ -43,7 +43,7 @@ ewl_text_new()
 
 	text->font = strdup("borzoib");
 	text->font_size = 15;
-	text->text = strdup("");
+	text->text = NULL;
 	text->color.r = 0;
 	text->color.g = 0;
 	text->color.b = 0;
@@ -59,15 +59,15 @@ ewl_text_init(Ewl_Widget * widget)
 
 	memset(EWL_TEXT(widget), 0, sizeof(Ewl_Text));
 
-	ewl_callback_append(widget, Ewl_Callback_Realize,
+	ewl_callback_append(widget, EWL_CALLBACK_REALIZE,
 											ewl_text_realize, NULL);
-	ewl_callback_append(widget, Ewl_Callback_Show,
+	ewl_callback_append(widget, EWL_CALLBACK_SHOW,
 											ewl_text_show, NULL);
-	ewl_callback_append(widget, Ewl_Callback_Hide,
+	ewl_callback_append(widget, EWL_CALLBACK_HIDE,
 											ewl_text_hide, NULL);
-	ewl_callback_append(widget, Ewl_Callback_Destroy,
+	ewl_callback_append(widget, EWL_CALLBACK_DESTROY,
 											ewl_text_destroy, NULL);
-	ewl_callback_append(widget, Ewl_Callback_Configure,
+	ewl_callback_append(widget, EWL_CALLBACK_CONFIGURE,
 											ewl_text_configure, NULL);
 
 	widget->container.recursive = FALSE;
@@ -86,35 +86,24 @@ ewl_text_init(Ewl_Widget * widget)
 static void
 ewl_text_realize(Ewl_Widget * widget, void * func_data)
 {
-	Ewl_Text_Row * row;
-
 	CHECK_PARAM_POINTER("widget", widget);
-
-	ewl_container_new(widget);
-
-	ewd_list_goto_first(widget->container.children);
-
-	while ((row = ewd_list_next(widget->container.children)) != NULL) {
-		ewl_callback_call(EWL_WIDGET(row), Ewl_Callback_Realize);
-	}
 }
 
 static void
 ewl_text_show(Ewl_Widget * widget, void * func_data)
 {
-	Ewl_Text_Row * row;
+	ewl_fx_clip_box_create(widget);
 
-	ewl_container_set_clip(widget);
+	widget->container.clip_box = widget->fx_clip_box;
 
-	if (!widget->container.children ||
-			ewd_list_is_empty(widget->container.children))
-		return;
+	evas_set_clip(widget->evas,
+				widget->fx_clip_box,
+				widget->parent->container.clip_box);
 
-	ewd_list_goto_first(widget->container.children);
+	if (EWL_TEXT(widget)->text)
+		ewl_text_set_text(widget, strdup(EWL_TEXT(widget)->text));
 
-	while ((row = ewd_list_next(widget->container.children)) != NULL) {
-		ewl_callback_call(EWL_WIDGET(row), Ewl_Callback_Show);
-	}
+	evas_set_color(widget->evas, widget->fx_clip_box, 255, 255, 255, 255);
 }
 
 static void
@@ -131,11 +120,8 @@ ewl_text_hide(Ewl_Widget * widget, void * func_data)
     ewd_list_goto_first(widget->container.children);
 
     while ((row = ewd_list_next(widget->container.children)) != NULL) {
-        ewl_callback_call(EWL_WIDGET(row), Ewl_Callback_Hide);
+        ewl_callback_call(EWL_WIDGET(row), EWL_CALLBACK_HIDE);
     }
-
-	return;
-	func_data = NULL;
 }
 
 static void
@@ -177,10 +163,12 @@ ewl_text_configure(Ewl_Widget * widget, void * func_data)
 
 	y = EWL_OBJECT(widget)->current.y;
 
+	ewl_fx_clip_box_resize(widget);
+
     while ((row = ewd_list_next(widget->container.children)) != NULL) {
 		EWL_OBJECT(row)->request.x = EWL_OBJECT(widget)->current.x;
 		EWL_OBJECT(row)->request.y = y;
-        ewl_callback_call(EWL_WIDGET(row), Ewl_Callback_Configure);
+        ewl_callback_call(EWL_WIDGET(row), EWL_CALLBACK_CONFIGURE);
 		y += EWL_OBJECT(row)->current.h + 2;
 		h += EWL_OBJECT(row)->current.h + 2;
 		if (w < EWL_OBJECT(row)->current.w)
@@ -195,11 +183,6 @@ ewl_text_configure(Ewl_Widget * widget, void * func_data)
 	EWL_OBJECT(widget)->minimum.h = h;
 	EWL_OBJECT(widget)->maximum.w = w;
 	EWL_OBJECT(widget)->maximum.h = h;
-
-	ewl_container_clip_box_resize(widget);
-
-    return;
-    func_data = NULL;
 }
 
 static Ewl_Text_Row *
@@ -226,15 +209,15 @@ ewl_text_row_init(Ewl_Text_Row * row)
 
 	memset(row, 0, sizeof(Ewl_Text_Row));
 
-    ewl_callback_append(EWL_WIDGET(row), Ewl_Callback_Realize,
+    ewl_callback_append(EWL_WIDGET(row), EWL_CALLBACK_REALIZE,
                                             ewl_text_row_realize, NULL);
-    ewl_callback_append(EWL_WIDGET(row), Ewl_Callback_Show,
+    ewl_callback_append(EWL_WIDGET(row), EWL_CALLBACK_SHOW,
                                             ewl_text_row_show, NULL);
-    ewl_callback_append(EWL_WIDGET(row), Ewl_Callback_Hide,
+    ewl_callback_append(EWL_WIDGET(row), EWL_CALLBACK_HIDE,
                                             ewl_text_row_hide, NULL);
-    ewl_callback_append(EWL_WIDGET(row), Ewl_Callback_Destroy,
+    ewl_callback_append(EWL_WIDGET(row), EWL_CALLBACK_DESTROY,
                                             ewl_text_row_destroy, NULL);
-    ewl_callback_append(EWL_WIDGET(row), Ewl_Callback_Configure,
+    ewl_callback_append(EWL_WIDGET(row), EWL_CALLBACK_CONFIGURE,
                                             ewl_text_row_configure, NULL);
 
     EWL_OBJECT(row)->current.w = 10;
@@ -269,9 +252,6 @@ ewl_text_row_realize(Ewl_Widget * widget, void * func_data)
 								EWL_OBJECT(widget)->layer);
 	evas_set_color(widget->evas, EWL_TEXT_ROW(widget)->object,
 					text->color.r, text->color.g, text->color.b, text->color.a);
-
-	return;
-	func_data = NULL;
 }
 
 static void
@@ -283,8 +263,6 @@ ewl_text_row_show(Ewl_Widget * widget, void * func_data)
 
 	evas_set_clip(widget->evas, EWL_TEXT_ROW(widget)->object,
 					widget->parent->container.clip_box);
-
-	return;
 }
 
 static void
@@ -352,16 +330,11 @@ ewl_text_set_text(Ewl_Widget * widget, const char * text)
 	if (widget->container.children)
 		ewd_list_clear(widget->container.children);
 
-	if (!strlen(EWL_TEXT(widget)->text))
-		ewl_container_show_clip(widget);
-
 	IF_FREE(EWL_TEXT(widget)->text);
 	EWL_TEXT(widget)->text = strdup(text);
 
-	if (!strlen(text)) {
-		ewl_container_hide_clip(widget);
+	if (!EWL_OBJECT(widget)->visible)
 		return;
-	}
 
 	/* This is bad bad!!!!!! REALLY BAD hack! FIXME FIXME */
 	string = strdup(text);
@@ -404,7 +377,8 @@ ewl_text_set_text(Ewl_Widget * widget, const char * text)
 
 	ewl_container_append_child(widget, EWL_WIDGET(row));
 
-	ewl_widget_configure(widget->parent);
+	if (widget->parent)
+		ewl_widget_configure(widget->parent);
 }
 
 char *
@@ -444,7 +418,8 @@ ewl_text_set_font(Ewl_Widget * widget, char * font)
 	}
 
 	ewl_widget_configure(widget);
-	ewl_widget_configure(widget->parent);
+	if (widget->parent)
+		ewl_widget_configure(widget->parent);
 }
 
 char *
@@ -479,7 +454,8 @@ ewl_text_set_font_size(Ewl_Widget * widget, int size)
                     EWL_TEXT(widget)->font, EWL_TEXT(widget)->font_size);
     }
 
-	ewl_widget_configure(widget->parent);
+	if (widget->parent)
+		ewl_widget_configure(widget->parent);
 }
 
 void

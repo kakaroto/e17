@@ -36,6 +36,7 @@ ewl_table_new_all(unsigned int homogeneous,
 
 	table = EWL_TABLE(ewl_table_new());
 
+	table->homogeneous = homogeneous;
 	table->columns = columns;
 	table->rows = rows;
 	table->col_spacing = col_spacing;
@@ -51,25 +52,25 @@ ewl_table_init(Ewl_Table * table)
 
 	memset(table, 0, sizeof(Ewl_Table));
 
+	EWL_WIDGET(table)->container.recursive = TRUE;
+	EWL_WIDGET(table)->type = EWL_WIDGET_TABLE;
+
 	table->columns = 0;
 	table->rows = 0;
 	table->homogeneous = 0;
 	table->col_spacing = 2;
 	table->row_spacing = 2;
 
-    ewl_callback_append(EWL_WIDGET(table), Ewl_Callback_Realize,
+    ewl_callback_append(EWL_WIDGET(table), EWL_CALLBACK_REALIZE,
                             ewl_table_realize, NULL);
-    ewl_callback_append(EWL_WIDGET(table), Ewl_Callback_Show,
+    ewl_callback_append(EWL_WIDGET(table), EWL_CALLBACK_SHOW,
                             ewl_table_show, NULL);
-    ewl_callback_append(EWL_WIDGET(table), Ewl_Callback_Hide,
+    ewl_callback_append(EWL_WIDGET(table), EWL_CALLBACK_HIDE,
                             ewl_table_hide, NULL);
-    ewl_callback_append(EWL_WIDGET(table), Ewl_Callback_Destroy,
+    ewl_callback_append(EWL_WIDGET(table), EWL_CALLBACK_DESTROY,
                             ewl_table_destroy, NULL);
-    ewl_callback_append(EWL_WIDGET(table), Ewl_Callback_Configure,
+    ewl_callback_append(EWL_WIDGET(table), EWL_CALLBACK_CONFIGURE,
                             ewl_table_configure, NULL);
-
-	EWL_WIDGET(table)->type = Ewl_Widget_Table;
-	EWL_WIDGET(table)->container.recursive = TRUE;
 
     EWL_OBJECT(table)->current.w = 100;
     EWL_OBJECT(table)->current.h = 50;
@@ -113,16 +114,23 @@ ewl_table_attach(Ewl_Widget * table,
 	child->evas_window = table->evas_window;
 	child->parent = EWL_WIDGET(table);
 	child->object.layer = table->object.layer +1;
-	tb_child->start_col = start_col;
-	tb_child->end_col = end_col;
-	tb_child->start_row = start_row;
-	tb_child->end_row = end_row;
+	tb_child->start_col = start_col -1;
+	tb_child->end_col = end_col -1;
+	tb_child->start_row = start_row -1;
+	tb_child->end_row = end_row -1;
 
-	if (ewd_list_is_empty(table->container.children))
+	if (!table->container.children)
+		ewl_container_new(table);
+
+	if (ewd_list_is_empty(table->container.children)) {
 		ewl_container_show_clip(table);
+		ewl_container_set_clip(table);
+	}
 
 	ewd_list_goto_index(table->container.children, start_col);
 	ewd_list_insert(table->container.children, tb_child);
+
+	ewl_widget_configure(table->parent);
 }
 
 void
@@ -169,11 +177,15 @@ ewl_table_set_row_spacing(Ewl_Widget * widget,
 static void
 ewl_table_realize(Ewl_Widget * widget, void * func_data)
 {
+	char * image = NULL;
+
 	CHECK_PARAM_POINTER("widget", widget);
 
-	ewl_widget_set_ebit(widget, ewl_theme_ebit_get("table", "default", "base"));
+	image = ewl_theme_ebit_get("table", "default", "base");
 
-	ewl_container_new(widget);
+	EWL_TABLE(widget)->ebits_object = ebits_load(image);
+	IF_FREE(image);
+	ebits_add_to_evas(EWL_TABLE(widget)->ebits_object, widget->evas);
 }
 
 static void
@@ -181,9 +193,21 @@ ewl_table_show(Ewl_Widget * widget, void * func_data)
 {
 	CHECK_PARAM_POINTER("widget", widget);
 
-	ebits_show(widget->ebits_object);
+    ewl_fx_clip_box_create(widget);
 
-	ewl_container_set_clip(widget);
+    ebits_show(EWL_TABLE(widget)->ebits_object);
+
+    if (widget->parent && widget->parent->container.clip_box)
+      {
+        evas_set_clip(widget->evas, widget->fx_clip_box,
+                    widget->parent->container.clip_box);
+        ebits_set_clip(EWL_TABLE(widget)->ebits_object,
+                    widget->fx_clip_box);
+        evas_set_clip(widget->evas, widget->container.clip_box,
+                    widget->fx_clip_box);
+      }
+
+	evas_set_color(widget->evas, widget->fx_clip_box, 255, 255, 255, 255);
 }
 
 static void
@@ -208,13 +232,15 @@ ewl_table_configure(Ewl_Widget * widget, void * func_data)
 	int max_row_h[EWL_TABLE(widget)->rows];
 	int x = 0, y = 0;
 	int total_w = 0, total_h = 0, total_w2 = 0;
+	int top_row_h = 0, top_col_w = 0;
 
 	CHECK_PARAM_POINTER("widget", widget);
 
-	if (widget->ebits_object)
-		ebits_get_insets(widget->ebits_object, &l, &r, &t, &b);
+	if (EWL_TABLE(widget)->ebits_object)
+		ebits_get_insets(EWL_TABLE(widget)->ebits_object, &l, &r, &t, &b);
 
-	ewd_list_goto_first(widget->container.children);
+	if (widget->container.children)
+		ewd_list_goto_first(widget->container.children);
 
 	x = EWL_OBJECT(widget)->request.x + l;
 	y = EWL_OBJECT(widget)->request.y + t;
@@ -230,37 +256,43 @@ ewl_table_configure(Ewl_Widget * widget, void * func_data)
 	 }
 
 	/* Really really incomplete atm */
+	if (widget->container.children)
 	for (row=0;row<EWL_TABLE(widget)->rows;row++)
-	 {
-	  for (col=0;col<EWL_TABLE(widget)->columns;col++)
-	   {
-		while ((child = ewd_list_next(widget->container.children)) != NULL)
-		 {
-		  if (child->start_col == col && child->start_row == row)
-		   {
-			if (EWL_OBJECT(child->child)->current.w > max_col_w[col]) {
-			 max_col_w[col] = EWL_OBJECT(child->child)->current.w;
-			 row = 0;
-			 col = 0;
-			 EWL_OBJECT(child->child)->request.x = x -
-			 	(EWL_OBJECT(child->child)->current.w / 2) +
-				(max_col_w[col] / 2);
-			 EWL_OBJECT(child->child)->request.y = y;
-			 x = EWL_OBJECT(widget)->request.x + l;
-			 y = EWL_OBJECT(widget)->request.y + t;
-			 total_h = 0;
-			 total_w = 0;
-			 total_w2 = 0;
-			}
-			if (EWL_OBJECT(child->child)->current.h > max_row_h[row])
-			 max_row_h[row] = EWL_OBJECT(child->child)->current.h;
+	  {
+		for (col=0;col<EWL_TABLE(widget)->columns;col++)
+		  {
+			while ((child = ewd_list_next(widget->container.children)) != NULL)
+			  {
+				if (child->start_col == col && child->start_row == row)
+				  {
+					if (EWL_OBJECT(child->child)->current.w > max_col_w[col])
+					  {
+						max_col_w[col] = EWL_OBJECT(child->child)->current.w;
+						row = 0;
+						col = 0;
+						EWL_OBJECT(child->child)->request.x = x -
+							(EWL_OBJECT(child->child)->current.w / 2) +
+							(max_col_w[col] / 2);
+						EWL_OBJECT(child->child)->request.y = y;
+						x = EWL_OBJECT(widget)->request.x + l;
+						y = EWL_OBJECT(widget)->request.y + t;
+						total_h = 0;
+						total_w = 0;
+						total_w2 = 0;
+					  }
+					if (EWL_OBJECT(child->child)->current.h > max_row_h[row])
+						max_row_h[row] = EWL_OBJECT(child->child)->current.h;
 
-			 EWL_OBJECT(child->child)->request.x = x -
-			 	(EWL_OBJECT(child->child)->current.w / 2) +
-				(max_col_w[col] / 2);
-			 EWL_OBJECT(child->child)->request.y = y;
-		   }
-		 }
+					EWL_OBJECT(child->child)->request.x = x -
+							(EWL_OBJECT(child->child)->current.w / 2) +
+							(max_col_w[col] / 2);
+					EWL_OBJECT(child->child)->request.y = y;
+					if (max_row_h[row] > top_row_h)
+						top_row_h = max_row_h[row];
+					if (max_col_w[col] > top_col_w)
+						top_col_w = max_col_w[col];
+				  }
+		 	  }
 		 ewd_list_goto_first(widget->container.children);
 		 x += max_col_w[col] + EWL_TABLE(widget)->col_spacing;
 		 total_w2 += max_col_w[col] + EWL_TABLE(widget)->col_spacing;
@@ -273,10 +305,40 @@ ewl_table_configure(Ewl_Widget * widget, void * func_data)
 		total_w2 = 0;
 	 }
 
+	if (widget->container.children)
+	ewd_list_goto_first(widget->container.children);
 
-	 ewd_list_goto_first(widget->container.children);
+	if (widget->container.children)
+	if (EWL_TABLE(widget)->homogeneous)
+	  {
+	y = EWL_OBJECT(widget)->request.y + t;
+	for (row=0;row<EWL_TABLE(widget)->rows;row++)
+	  {
+		x = EWL_OBJECT(widget)->request.x + l;
+		for(col=0;col<EWL_TABLE(widget)->columns;col++)
+		  {
+		  	while((child = ewd_list_next(widget->container.children)) != NULL)
+			  {
+				if (child->start_col == col && child->start_row == row)
+				  {
+					EWL_OBJECT(child->child)->request.x = x + (top_col_w / 2) +
+									(EWL_OBJECT(child->child)->current.w / 2);
+					EWL_OBJECT(child->child)->request.y = y + (top_row_h / 2) +
+									(EWL_OBJECT(child->child)->current.h / 2);
+				  }
+			  }
+			ewd_list_goto_first(widget->container.children);
+			x += top_col_w;
+		  }
+		y += max_row_h[row];
+	  }
+	  }
 
-	 while ((child = ewd_list_next(widget->container.children)) != NULL)
+	if (widget->container.children)
+		ewd_list_goto_first(widget->container.children);
+
+	if (widget->container.children)
+	while ((child = ewd_list_next(widget->container.children)) != NULL)
 	  {
 		ewl_widget_configure(EWL_WIDGET(child->child));
 	  }
@@ -290,11 +352,14 @@ ewl_table_configure(Ewl_Widget * widget, void * func_data)
 			EWL_OBJECT(widget)->request.h = (total_h -
 									EWL_TABLE(widget)->row_spacing) + t + b;
 
-        ebits_move(widget->ebits_object, EWL_OBJECT(widget)->request.x,
+        ebits_move(EWL_TABLE(widget)->ebits_object,
+										 EWL_OBJECT(widget)->request.x,
                                          EWL_OBJECT(widget)->request.y);
-        ebits_resize(widget->ebits_object, EWL_OBJECT(widget)->request.w,
-                                           EWL_OBJECT(widget)->request.h);
+        ebits_resize(EWL_TABLE(widget)->ebits_object,
+										EWL_OBJECT(widget)->request.w,
+										EWL_OBJECT(widget)->request.h);
         ewl_container_clip_box_resize(widget);
+		ewl_fx_clip_box_resize(widget);
     }
 
 	EWL_OBJECT(widget)->current.x = EWL_OBJECT(widget)->request.x;

@@ -4,6 +4,7 @@
 
 struct _ewl_table {
 	Ewl_Widget widget;
+	Ebits_Object ebits_object;
 	unsigned int columns;		/* Number of columns */
 	unsigned int rows;			/* Number of rows */
 	unsigned int homogeneous;

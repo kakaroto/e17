@@ -3,6 +3,7 @@
 #include <Edb.h>
 #include <Evas.h>
 #define LIBRARY_NAME "EWL"
+#include <Etox.h>
 #include <Ewd.h>
 
 #include <stdio.h>
@@ -21,28 +22,31 @@
 #endif
 
 enum _ewl_callback_type {
-    Ewl_Callback_Realize,
-    Ewl_Callback_Show,
-    Ewl_Callback_Hide,
-    Ewl_Callback_Destroy,
-    Ewl_Callback_Configure,
-	Ewl_Callback_Key_Down,
-	Ewl_Callback_Key_Up,
-	Ewl_Callback_Mouse_Down,
-	Ewl_Callback_Mouse_Up,
-	Ewl_Callback_Focus_In,
-	Ewl_Callback_Focus_Out,
-	Ewl_Callback_Select,
-	Ewl_Callback_Unselect,
-	Ewl_Callback_Clicked,
-	Ewl_Callback_Released,
-	Ewl_Callback_Hilited,
-    Ewl_Callback_Max
+    EWL_CALLBACK_REALIZE,
+    EWL_CALLBACK_SHOW,
+    EWL_CALLBACK_HIDE,
+    EWL_CALLBACK_DESTROY,
+    EWL_CALLBACK_CONFIGURE,
+	EWL_CALLBACK_KEY_DOWN,
+	EWL_CALLBACK_KEY_UP,
+	EWL_CALLBACK_MOUSE_DOWN,
+	EWL_CALLBACK_MOUSE_UP,
+	EWL_CALLBACK_MOUSE_MOVE,
+	EWL_CALLBACK_FOCUS_IN,
+	EWL_CALLBACK_FOCUS_OUT,
+	EWL_CALLBACK_SELECT,
+	EWL_CALLBACK_UNSELECT,
+	EWL_CALLBACK_CLICKED,
+	EWL_CALLBACK_RELEASED,
+	EWL_CALLBACK_HILITED,
+    EWL_CALLBACK_MAX
 };
 
 typedef enum _ewl_callback_type Ewl_Callback_Type;
 
 typedef struct _ewl_container Ewl_Container;
+
+#include <ewl_enums.h>
 
 #include <ewl_object.h>
 #include <ewl_widget.h>
@@ -64,3 +68,9 @@ typedef struct _ewl_container Ewl_Container;
 #include <ewl_window.h>
 #include <ewl_text.h>
 #include <ewl_entry.h>
+
+/* Playing around */
+#include <ewl_fx.h>
+
+#include <ewl_seeker.h>
+#include <ewl_spinner.h>

@@ -4,18 +4,9 @@ MAINTAINERCLEANFILES = Makefile.in
 CFLAGS			=	-g -W -Wall -Wno-implicit
 INCLUDES		=	-I$(top_srcdir)/src @ebits_cflags@ @ecore_cflags@ @evas_cflags@ @ewd_cflags@
 
-bin_PROGRAMS			=	ewl_test ewl_box_test ewl_table_test
+bin_PROGRAMS			=	ewl_test
+
 ewl_test_DEPENDENCIES	=	$(top_builddir)/src/libewl.la
 ewl_test_SOURCES		=	ewl_test.c
 ewl_test_LDFLAGS		=	-static
 ewl_test_LDADD			=	$(top_builddir)/src/libewl.la
-
-ewl_box_test_DEPENDENCIES   =   $(top_builddir)/src/libewl.la
-ewl_box_test_SOURCES        =   ewl_box_test.c
-ewl_box_test_LDFLAGS        =   -static
-ewl_box_test_LDADD          =   $(top_builddir)/src/libewl.la
-
-ewl_table_test_DEPENDENCIES   =   $(top_builddir)/src/libewl.la
-ewl_table_test_SOURCES        =   ewl_table_test.c
-ewl_table_test_LDFLAGS        =   -static
-ewl_table_test_LDADD          =   $(top_builddir)/src/libewl.la

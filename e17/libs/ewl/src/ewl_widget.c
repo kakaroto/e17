@@ -37,8 +37,17 @@ ewl_widget_realize(Ewl_Widget * widget)
 {
 	CHECK_PARAM_POINTER("widget", widget);
 
+	if (EWL_OBJECT(widget)->realized)
+		return;
+
+	if (!widget->evas && widget->parent && widget->parent->evas)
+	  {
+		EWL_OBJECT(widget)->layer = widget->parent->object.layer + 1;
+		widget->evas = widget->parent->evas;
+	  }
+
 	EWL_OBJECT(widget)->realized = TRUE;
-	ewl_callback_call(widget, Ewl_Callback_Realize);
+	ewl_callback_call(widget, EWL_CALLBACK_REALIZE);
 }
 
 void
@@ -46,14 +55,14 @@ ewl_widget_show(Ewl_Widget * widget)
 {
 	CHECK_PARAM_POINTER("widget", widget);
 
+	if (EWL_OBJECT(widget)->visible)
+		return;
+
 	if (!EWL_OBJECT(widget)->realized)
 		ewl_widget_realize(widget);
 
-	if (widget->parent)
-		ewl_widget_configure(widget->parent);
-
-	ewl_callback_call(widget, Ewl_Callback_Show);
 	EWL_OBJECT(widget)->visible = TRUE;
+	ewl_callback_call(widget, EWL_CALLBACK_SHOW);
 }
 
 void
@@ -61,7 +70,7 @@ ewl_widget_hide(Ewl_Widget * widget)
 {
 	CHECK_PARAM_POINTER("widget", widget);
 
-	ewl_callback_call(widget, Ewl_Callback_Hide);
+	ewl_callback_call(widget, EWL_CALLBACK_HIDE);
 	EWL_OBJECT(widget)->visible = FALSE;
 }
 
@@ -70,7 +79,7 @@ ewl_widget_destroy(Ewl_Widget * widget)
 {
 	CHECK_PARAM_POINTER("widget", widget);
 
-	ewl_callback_call(widget, Ewl_Callback_Destroy);
+	ewl_callback_call(widget, EWL_CALLBACK_DESTROY);
 	EWL_OBJECT(widget)->realized = FALSE;
 }
 
@@ -79,33 +88,5 @@ ewl_widget_configure(Ewl_Widget * widget)
 {
 	CHECK_PARAM_POINTER("widget", widget);
 
-	ewl_callback_call(widget, Ewl_Callback_Configure);
-}
-
-void
-ewl_widget_set_ebit(Ewl_Widget * widget, char * ebit)
-{
-	CHECK_PARAM_POINTER("widget", widget);
-	CHECK_PARAM_POINTER("ebit", ebit);
-
-    if (widget->ebits_object) {
-        ebits_hide(widget->ebits_object);
-        ebits_free(widget->ebits_object);
-    }
-
-	widget->ebits_object = ebits_load(ebit);
-	ebits_add_to_evas(widget->ebits_object, widget->evas);
-	ebits_set_layer(widget->ebits_object, EWL_OBJECT(widget)->layer);
-
-	if (EWL_OBJECT(widget)->visible)
-		ebits_show(widget->ebits_object);
-	ebits_move(widget->ebits_object,
-			EWL_OBJECT(widget)->current.x, EWL_OBJECT(widget)->current.y);
-	ebits_resize(widget->ebits_object,
-			EWL_OBJECT(widget)->current.w, EWL_OBJECT(widget)->current.h);
-
-	if (widget->parent) {
-		evas_set_clip(widget->evas, widget->container.clip_box, widget->parent->container.clip_box);
-		ebits_set_clip(widget->ebits_object, widget->parent->container.clip_box);
-	}
+	ewl_callback_call(widget, EWL_CALLBACK_CONFIGURE);
 }

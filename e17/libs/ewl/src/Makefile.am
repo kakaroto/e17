@@ -14,9 +14,13 @@ installed_headers_DATA = \
 	ewl_container.h \
 	ewl_entry.h \
 	ewl_events.h \
+	ewl_fx.h \
+	ewl_macros.h \
 	ewl_misc.h \
 	ewl_object.h \
 	ewl_prefs.h \
+	ewl_seeker.h \
+	ewl_spinner.h \
 	ewl_text.h \
 	ewl_table.h \
 	ewl_theme.h \
@@ -30,9 +34,12 @@ libewl_la_SOURCES = \
 	ewl_container.c \
 	ewl_entry.c \
 	ewl_events.c \
+	ewl_fx.c \
 	ewl_misc.c \
 	ewl_object.c \
 	ewl_prefs.c \
+	ewl_seeker.c \
+	ewl_spinner.c \
 	ewl_table.c \
 	ewl_text.c \
 	ewl_theme.c \
@@ -40,5 +47,5 @@ libewl_la_SOURCES = \
 	ewl_window.c \
 	getopt.c
 
-libewl_la_LIBADD = @ebits_libs@ @ecore_libs@ @evas_libs@ @ewd_libs@ -lm
+libewl_la_LIBADD = @ebits_libs@ @ecore_libs@ @evas_libs@ @ewd_libs@ -lm -letox
 libewl_la_LDFLAGS = -version-info 0:0:0

@@ -15,10 +15,11 @@ ewl_init(int argc, char ** argv)
 {
 	ewl_init_parse_options(argc, argv);
 
-	if (!e_display_init(NULL)) {
+	if (!e_display_init(NULL))
+	  {
 		fprintf(stderr, "ERRR: Cannot connect to X display!\n");
 		exit(-1);
-	}
+	  }
 
 	e_event_filter_init();
 	e_ev_signal_init();
@@ -27,6 +28,7 @@ ewl_init(int argc, char ** argv)
 	ewl_prefs_init();
 	ewl_theme_init();
 	ewl_ev_init();
+	ewl_fx_init();
 
 	e_event_filter_idle_handler_add(ewl_idle_render, NULL);
 }
@@ -44,10 +46,11 @@ ewl_idle_render(void * data)
 
 	ewd_list_goto_first(ewl_window_list);
 
-	while ((widget = EWL_WIDGET(ewd_list_next(ewl_window_list))) != NULL) {
+	while ((widget = EWL_WIDGET(ewd_list_next(ewl_window_list))) != NULL)
+	  {
 		if (widget->evas)
 			evas_render(widget->evas);
-	}
+	  }
 
 	return;
 	data = NULL;
@@ -81,9 +84,9 @@ ewl_parse_option_array(int argc, char ** argv)
 	int optch = 0, cmdx = 0;
 
 	while ((optch = getopt_long_only(argc, argv, stropts, lopts, &cmdx)) != EOF)
-	 {
+	  {
 		switch (optch)
-		 {
+		  {
 			case 0:
 			  break;
 
@@ -93,6 +96,6 @@ ewl_parse_option_array(int argc, char ** argv)
 
 			default:
 			  break;
-		 }
-	 }
+		  }
+	  }
 }

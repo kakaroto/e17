@@ -35,13 +35,13 @@ ewl_prefs_int_get(char * key)
 {
 	int value = 0;
 
-	if (!key)
-		return value;
+	CHECK_PARAM_POINTER_RETURN("key", key, -1);
 
-	if (user_prefs) {
+	if (user_prefs)
+	  {
 		if (e_db_int_get(user_prefs, key, &value))
 			return value;
-	}
+	  }
 
 	e_db_int_get(global_prefs, key, &value);
 
@@ -51,7 +51,9 @@ ewl_prefs_int_get(char * key)
 int
 ewl_prefs_int_set(char *key, int value)
 {
-    if (!user_prefs || !key)
+	CHECK_PARAM_POINTER_RETURN("key", key, -1);
+
+    if (!user_prefs)
         return FALSE;
 
     e_db_int_set(user_prefs, key, value);
@@ -63,8 +65,7 @@ ewl_prefs_str_get(char *key)
 {
     char *value = NULL;
 
-    if (!key)
-        return NULL;
+	CHECK_PARAM_POINTER_RETURN("key", key, NULL);
 
 	if (!user_prefs || !global_prefs)
 		return NULL;
@@ -80,6 +81,9 @@ ewl_prefs_str_get(char *key)
 int
 ewl_prefs_str_set(char *key, char *value)
 {
+	CHECK_PARAM_POINTER_RETURN("key", key, -1);
+	CHECK_PARAM_POINTER_RETURN("value", value, -1);
+
     if (!user_prefs || !key)
         return FALSE;
 
@@ -88,29 +92,27 @@ ewl_prefs_str_set(char *key, char *value)
     return TRUE;
 }
 
-float
-ewl_prefs_float_get(char *key)
+int
+ewl_prefs_float_get(char *key, float * value)
 {
-    float value;
+	CHECK_PARAM_POINTER_RETURN("key", key, -1);
 
-    if (user_prefs) {
-        if (e_db_float_get(user_prefs, key, &value))
-            return value;
-    }
+	if (user_prefs)
+		return e_db_float_get(user_prefs, key, value);
 
-    e_db_float_get(global_prefs, key, &value);
-
-    return value;
+	return e_db_float_get(global_prefs, key, value);
 }
 
 int
 ewl_prefs_float_set(char *key, float value)
 {
-    if (!user_prefs || !key)
+	CHECK_PARAM_POINTER_RETURN("key", key, -1);
+
+    if (!user_prefs)
         return FALSE;
 
-    e_db_float_set(user_prefs, key, value);
-    return TRUE;
+	e_db_float_set(user_prefs, key, value);
+	return TRUE;
 }
 
 char *
@@ -133,14 +135,38 @@ ewl_prefs_render_method_get()
 
 	str = ewl_prefs_str_get("/evas/render_method");
 
-	if (str) {
+	if (str)
+	  {
 		if (!strcasecmp(str, "software"))
 			return RENDER_METHOD_ALPHA_SOFTWARE;
 		else if (!strcasecmp(str, "hardware"))
 			return RENDER_METHOD_3D_HARDWARE;
 		else if (!strcasecmp(str, "x11"))
 			return RENDER_METHOD_BASIC_HARDWARE;
-	}
+	  }
 
 	return RENDER_METHOD_ALPHA_SOFTWARE;
+}
+
+double
+ewl_prefs_get_fx_max_fps()
+{
+	float val;
+
+
+	if (!ewl_prefs_float_get("/fx/max_fps", &val))
+		val = 20.0;
+
+	return (double)(val);
+}
+
+double
+ewl_prefs_get_fx_timeout()
+{
+	float val;
+
+	if (!ewl_prefs_float_get("/fx/timeout", &val))
+		val = 2.0;
+
+	return (double) (val);
 }

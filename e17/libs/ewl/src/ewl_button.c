@@ -13,21 +13,37 @@ static void ewl_button_mouse_down(Ewl_Widget * widget, void * func_data);
 static void ewl_button_mouse_up(Ewl_Widget * widget, void * func_data);
 static void ewl_button_focus_in(Ewl_Widget * widget, void * func_data);
 static void ewl_button_focus_out(Ewl_Widget * widget, void * func_data);
-
+static void ewl_button_select(Ewl_Widget * widget, void * func_data);
+static void ewl_button_unselect(Ewl_Widget * widget, void * func_data);
 
 static void ewl_button_set_state(Ewl_Widget * widget, void * func_data);
 
 
 Ewl_Widget *
-ewl_button_new(Ewl_Button_Type type)
+ewl_button_new()
 {
 	Ewl_Button * button = NULL;
 
 	button = NEW(Ewl_Button, 1);
 
-	ewl_button_init(EWL_WIDGET(button), type);
+	ewl_button_init(EWL_WIDGET(button), EWL_BUTTON_TYPE_NORMAL);
 
 	return EWL_WIDGET(button);
+}
+
+Ewl_Widget *
+ewl_button_new_with_label(const char * label)
+{
+	Ewl_Widget * button;
+	Ewl_Widget * text;
+
+	button = ewl_button_new(EWL_BUTTON_TYPE_NORMAL);
+
+	text = ewl_text_new();
+	ewl_text_set_text(text, strdup(label));
+	ewl_container_append_child(button, text);
+
+	return button;
 }
 
 static void
@@ -35,34 +51,33 @@ ewl_button_init(Ewl_Widget * widget, Ewl_Button_Type type)
 {
 	CHECK_PARAM_POINTER("widget", widget);
 
-	/* Zero out bogus values before adding anything */
 	memset(EWL_BUTTON(widget), 0, sizeof(Ewl_Button));
 
-	/* Add necessery callback's */
-	ewl_callback_append(widget, Ewl_Callback_Realize,
+	EWL_WIDGET(widget)->type = EWL_WIDGET_BUTTON;
+
+	ewl_callback_append(widget, EWL_CALLBACK_REALIZE,
 							ewl_button_realize, NULL);
-	ewl_callback_append(widget, Ewl_Callback_Show,
+	ewl_callback_append(widget, EWL_CALLBACK_SHOW,
 							ewl_button_show, NULL);
-	ewl_callback_append(widget, Ewl_Callback_Hide,
+	ewl_callback_append(widget, EWL_CALLBACK_HIDE,
 							ewl_button_hide, NULL);
-	ewl_callback_append(widget, Ewl_Callback_Destroy,
+	ewl_callback_append(widget, EWL_CALLBACK_DESTROY,
 							ewl_button_destroy, NULL);
-	ewl_callback_append(widget, Ewl_Callback_Configure,
+	ewl_callback_append(widget, EWL_CALLBACK_CONFIGURE,
 							ewl_button_configure, NULL);
-	ewl_callback_append(widget, Ewl_Callback_Key_Down,
+	ewl_callback_append(widget, EWL_CALLBACK_KEY_DOWN,
 							ewl_button_key_down, NULL);
-	ewl_callback_append(widget, Ewl_Callback_Key_Up,
+	ewl_callback_append(widget, EWL_CALLBACK_KEY_UP,
 							ewl_button_key_up, NULL);
-	ewl_callback_append(widget, Ewl_Callback_Mouse_Down,
+	ewl_callback_append(widget, EWL_CALLBACK_MOUSE_DOWN,
 							ewl_button_mouse_down, NULL);
-	ewl_callback_append(widget, Ewl_Callback_Mouse_Up,
+	ewl_callback_append(widget, EWL_CALLBACK_MOUSE_UP,
 							ewl_button_mouse_up, NULL);
-	ewl_callback_append(widget, Ewl_Callback_Focus_In,
+	ewl_callback_append(widget, EWL_CALLBACK_FOCUS_IN,
 							ewl_button_focus_in, NULL);
-	ewl_callback_append(widget, Ewl_Callback_Focus_Out,
+	ewl_callback_append(widget, EWL_CALLBACK_FOCUS_OUT,
 							ewl_button_focus_out, NULL);
 
-	/* Do this so the button's child wont get any events */
 	widget->container.recursive = FALSE;
 
 	EWL_BUTTON(widget)->type = type;
@@ -80,14 +95,31 @@ ewl_button_init(Ewl_Widget * widget, Ewl_Button_Type type)
 static void
 ewl_button_realize(Ewl_Widget * widget, void * func_data)
 {
+	char * image = NULL;
+
 	CHECK_PARAM_POINTER("widget", widget);
 
-	/* Lets do only this for now */
-	EWL_BUTTON(widget)->state = Ewl_Button_State_Normal;
+	if (EWL_BUTTON(widget)->type == EWL_BUTTON_TYPE_CHECK)
+		image = ewl_theme_ebit_get("button", "check", "base");
+	else if (EWL_BUTTON(widget)->type == EWL_BUTTON_TYPE_NORMAL)
+		image = ewl_theme_ebit_get("button", "default", "base");
+	else if (EWL_BUTTON(widget)->type == EWL_BUTTON_TYPE_RADIO)
+		image = ewl_theme_ebit_get("button", "radio", "base");
 
-	ewl_widget_set_ebit(widget,ewl_theme_ebit_get("button", "default", "base"));
+	EWL_BUTTON(widget)->ebits_object = ebits_load(image);
+	FREE(image);
+	ebits_add_to_evas(EWL_BUTTON(widget)->ebits_object, widget->evas);
+	ebits_set_layer(EWL_BUTTON(widget)->ebits_object, widget->object.layer);
 
-	ewl_container_new(widget);
+	if (widget->container.children)
+	  {
+		Ewl_Widget * child;
+
+		ewd_list_goto_first(widget->container.children);
+
+		while ((child = ewd_list_next(widget->container.children)) != NULL)
+			ewl_widget_realize(child);
+	  }
 }
 
 static void
@@ -95,11 +127,30 @@ ewl_button_show(Ewl_Widget * widget, void * func_data)
 {
 	CHECK_PARAM_POINTER("widget", widget);
 
-	/* Prehaps show it's parent automatically ?
-	 * But that sounds more like the ewl_widget_show's responsibility */
-	ebits_show(widget->ebits_object);
+	ewl_fx_clip_box_create(widget);
 
-	ewl_container_set_clip(widget);
+	ebits_show(EWL_BUTTON(widget)->ebits_object);
+	if (widget->parent && widget->parent->container.clip_box)
+	  {
+		evas_set_clip(widget->evas, widget->fx_clip_box,
+					widget->parent->container.clip_box);
+		ebits_set_clip(EWL_BUTTON(widget)->ebits_object,
+					widget->fx_clip_box);
+		evas_set_clip(widget->evas, widget->container.clip_box,
+					widget->fx_clip_box);
+	  }
+
+	if (widget->container.children)
+	  {
+		Ewl_Widget * child;
+
+		ewd_list_goto_first(widget->container.children);
+
+		while ((child = ewd_list_next(widget->container.children)) != NULL)
+			ewl_widget_show(child);
+	  }
+
+	evas_set_color(widget->evas, widget->fx_clip_box, 255, 255, 255, 255);
 }
 
 static void
@@ -107,8 +158,7 @@ ewl_button_hide(Ewl_Widget * widget, void * func_data)
 {
 	CHECK_PARAM_POINTER("widget", widget);
 
-	/* Maybe hide children to ? */
-	ebits_hide(widget->ebits_object);
+	ebits_hide(EWL_BUTTON(widget)->ebits_object);
 }
 
 static void
@@ -116,7 +166,7 @@ ewl_button_destroy(Ewl_Widget * widget, void * func_data)
 {
 	CHECK_PARAM_POINTER("widget", widget);
 
-	ebits_free(widget->ebits_object);
+	ebits_free(EWL_BUTTON(widget)->ebits_object);
 
 	FREE(EWL_BUTTON(widget));
 }
@@ -125,24 +175,23 @@ static void
 ewl_button_configure(Ewl_Widget * widget, void * func_data)
 {
 	Ewl_Widget * child = NULL;
+	int l = 0, r = 0, t = 0, b = 0;
 
 	CHECK_PARAM_POINTER("widget", widget);
 
 	EWL_OBJECT(widget)->current.x = EWL_OBJECT(widget)->request.x;
 	EWL_OBJECT(widget)->current.y = EWL_OBJECT(widget)->request.y;
 
-/*	DPRINT(8, "Button X %i Y %i", EWL_OBJECT(widget)->request.x,
-								  EWL_OBJECT(widget)->request.y);
-*/
+	if (EWL_BUTTON(widget)->ebits_object)
+		ebits_get_insets(EWL_BUTTON(widget)->ebits_object, &l, &r, &t, &b);
+
 	if (!widget->container.children || !widget->container.children->nodes) {
-		EWL_OBJECT(widget)->request.w = 85;
-		EWL_OBJECT(widget)->request.h = 35;
+		EWL_OBJECT(widget)->request.w = EWL_OBJECT(widget)->minimum.w;
+		EWL_OBJECT(widget)->request.h = EWL_OBJECT(widget)->minimum.h;
 	} else {
 		int w = 6, h = 6, x, y;
-		int l, r, t, b;
-		ewd_list_goto_first(widget->container.children);
 
-		ebits_get_insets(widget->ebits_object, &l, &r, &t, &b);
+		ewd_list_goto_first(widget->container.children);
 
 		x = EWL_OBJECT(widget)->current.x + l + 2;
 		y = EWL_OBJECT(widget)->current.y + t + 2;
@@ -160,15 +209,27 @@ ewl_button_configure(Ewl_Widget * widget, void * func_data)
 		EWL_OBJECT(widget)->request.h = h;
 	}
 
-	if (widget->ebits_object)
-		ebits_move(widget->ebits_object,
+	if (EWL_BUTTON(widget)->ebits_object)
+	  {
+		ebits_move(EWL_BUTTON(widget)->ebits_object,
 			EWL_OBJECT(widget)->request.x, EWL_OBJECT(widget)->request.y);
 
-	if (widget->ebits_object)
-	ebits_resize(widget->ebits_object,
-		EWL_OBJECT(widget)->request.w, EWL_OBJECT(widget)->request.h);
+		ebits_resize(EWL_BUTTON(widget)->ebits_object,
+			EWL_OBJECT(widget)->request.w, EWL_OBJECT(widget)->request.h);
 
-	ewl_container_clip_box_resize(widget);
+		ewl_fx_clip_box_resize(widget);
+	  }
+
+	if (widget->container.clip_box)
+	  {
+		evas_move(widget->evas, widget->container.clip_box,
+					EWL_OBJECT(widget)->current.x + l,
+					EWL_OBJECT(widget)->current.y + t);
+		evas_resize(widget->evas, widget->container.clip_box,
+					EWL_OBJECT(widget)->current.w - (l+r),
+					EWL_OBJECT(widget)->current.h - (t+b));
+	  }
+
 
 	EWL_OBJECT(widget)->current.w = EWL_OBJECT(widget)->request.w;
 	EWL_OBJECT(widget)->current.h = EWL_OBJECT(widget)->request.h;
@@ -188,11 +249,11 @@ ewl_button_key_down(Ewl_Widget * widget, void * func_data)
 	ev = func_data;
 
 	if (!strcmp(ev->key, "Return")) {
-		ewl_button_set_state(widget, (void *) Ewl_Button_State_Clicked);
+		ewl_button_set_state(widget, (void *) EWL_STATE_PRESSED);
 	} else if (!strcmp(ev->key, "XP_Enter")) {
-		ewl_button_set_state(widget, (void *) Ewl_Button_State_Clicked);
+		ewl_button_set_state(widget, (void *) EWL_STATE_PRESSED);
 	} else if (!strcmp(ev->key, "Space")) {
-		ewl_button_set_state(widget, (void *) Ewl_Button_State_Clicked);
+		ewl_button_set_state(widget, (void *) EWL_STATE_PRESSED);
 	}
 }
 
@@ -206,11 +267,11 @@ ewl_button_key_up(Ewl_Widget * widget, void * func_data)
 	ev = func_data;
 
 	if (!strcmp(ev->key, "Return")) {
-		ewl_button_set_state(widget, (void *) Ewl_Button_State_Normal);
+		ewl_button_set_state(widget, (void *) EWL_STATE_NORMAL);
 	} else if (!strcmp(ev->key, "XP_Enter")) {
-		ewl_button_set_state(widget, (void *) Ewl_Button_State_Normal);
+		ewl_button_set_state(widget, (void *) EWL_STATE_NORMAL);
 	} else if (!strcmp(ev->key, "Space")) {
-		ewl_button_set_state(widget, (void *) Ewl_Button_State_Normal);
+		ewl_button_set_state(widget, (void *) EWL_STATE_NORMAL);
 	}
 }
 
@@ -224,7 +285,7 @@ ewl_button_mouse_down(Ewl_Widget * widget, void * func_data)
 	ev = func_data;
 
 	if (ev->button == 1) {
-		ewl_button_set_state(widget, (void *) Ewl_Button_State_Clicked);
+		ewl_button_set_state(widget, (void *) EWL_STATE_PRESSED);
 	} else if (ev->button == 2) {
 	} else if (ev->button == 3) {
 	}
@@ -246,9 +307,9 @@ ewl_button_mouse_up(Ewl_Widget * widget, void * func_data)
 							EWL_OBJECT(widget)->current.w >= ev->x &&
 			EWL_OBJECT(widget)->current.y +
 							EWL_OBJECT(widget)->current.h >= ev->y)
-			ewl_button_set_state(widget, (void *) Ewl_Button_State_Hilited);
+			ewl_button_set_state(widget, (void *) EWL_STATE_HILITED);
 		else
-	        ewl_button_set_state(widget, (void *) Ewl_Button_State_Normal);
+	        ewl_button_set_state(widget, (void *) EWL_STATE_NORMAL);
     } else if (ev->button == 2) {
     } else if (ev->button == 3) {
     }
@@ -257,26 +318,43 @@ ewl_button_mouse_up(Ewl_Widget * widget, void * func_data)
 static void
 ewl_button_set_state(Ewl_Widget * widget, void * func_data)
 {
+	char * image = NULL;
+
 	CHECK_PARAM_POINTER("widget", widget);
 
-	if (EWL_BUTTON(widget)->type == Ewl_Button_Type_Normal) {
-		if ((Ewl_Button_State) func_data == Ewl_Button_State_Normal) {
-			EWL_BUTTON(widget)->state = Ewl_Button_State_Normal;
-			ewl_widget_set_ebit(widget,
-					ewl_theme_ebit_get("button", "default", "base"));
-			ewl_callback_call(widget, Ewl_Callback_Released);
-		} else if ((Ewl_Button_State) func_data == Ewl_Button_State_Hilited) {
-			EWL_BUTTON(widget)->state = Ewl_Button_State_Hilited;
-			ewl_widget_set_ebit(widget,
-					ewl_theme_ebit_get("button", "default", "hilited"));
-			ewl_callback_call(widget, Ewl_Callback_Hilited);
-		} else if ((Ewl_Button_State) func_data == Ewl_Button_State_Clicked) {
-			EWL_BUTTON(widget)->state = Ewl_Button_State_Clicked;
-			ewl_widget_set_ebit(widget,
-					ewl_theme_ebit_get("button", "default", "clicked"));
-			ewl_callback_call(widget, Ewl_Callback_Clicked);
-		}
-	}
+	if (EWL_BUTTON(widget)->type == EWL_BUTTON_TYPE_NORMAL)
+	  {
+		if ((Ewl_State) func_data == EWL_STATE_NORMAL)
+		  {
+			EWL_BUTTON(widget)->state = EWL_STATE_NORMAL;
+			image = ewl_theme_ebit_get("button", "default", "base");
+			ewl_callback_call(widget, EWL_CALLBACK_RELEASED);
+		  }
+		else if ((Ewl_State) func_data == EWL_STATE_HILITED)
+		  {
+			EWL_BUTTON(widget)->state = EWL_STATE_HILITED;
+			image = ewl_theme_ebit_get("button", "default", "hilited");
+			ewl_callback_call(widget, EWL_CALLBACK_HILITED);
+		  }
+		else if ((Ewl_State) func_data == EWL_STATE_PRESSED)
+		  {
+			EWL_BUTTON(widget)->state = EWL_STATE_PRESSED;
+			image = ewl_theme_ebit_get("button", "default", "clicked");
+			ewl_callback_call(widget, EWL_CALLBACK_CLICKED);
+		  }
+		ebits_hide(EWL_BUTTON(widget)->ebits_object);
+		ebits_free(EWL_BUTTON(widget)->ebits_object);
+		EWL_BUTTON(widget)->ebits_object = ebits_load(image);
+		ebits_add_to_evas(EWL_BUTTON(widget)->ebits_object, widget->evas);
+		ebits_set_layer(EWL_BUTTON(widget)->ebits_object,
+							EWL_OBJECT(widget)->layer);
+		if (EWL_OBJECT(widget)->visible)
+			ebits_show(EWL_BUTTON(widget)->ebits_object);
+		ebits_set_clip(EWL_BUTTON(widget)->ebits_object,
+							widget->fx_clip_box);
+		ewl_widget_configure(widget);
+		IF_FREE(image);
+	  }
 }
 
 static void
@@ -284,8 +362,8 @@ ewl_button_focus_in(Ewl_Widget * widget, void * func_data)
 {
 	CHECK_PARAM_POINTER("widget", widget);
 
-	if (EWL_BUTTON(widget)->state != Ewl_Button_State_Clicked)
-		ewl_button_set_state(widget, (void *) Ewl_Button_State_Hilited);
+	if (EWL_BUTTON(widget)->state != EWL_STATE_PRESSED)
+		ewl_button_set_state(widget, (void *) EWL_STATE_HILITED);
 }
 
 static void
@@ -293,6 +371,20 @@ ewl_button_focus_out(Ewl_Widget * widget, void * func_data)
 {
 	CHECK_PARAM_POINTER("widget", widget);
 
-	if (EWL_BUTTON(widget)->state != Ewl_Button_State_Clicked)
-		ewl_button_set_state(widget, (void *) Ewl_Button_State_Normal);
+	if (EWL_BUTTON(widget)->state != EWL_STATE_PRESSED)
+		ewl_button_set_state(widget, (void *) EWL_STATE_NORMAL);
+}
+
+static void
+ewl_button_select(Ewl_Widget * widget, void * func_data)
+{
+	CHECK_PARAM_POINTER("widget", widget);
+
+	
+}
+
+static void
+ewl_button_unselect(Ewl_Widget * widget, void * func_data)
+{
+	CHECK_PARAM_POINTER("widget", widget);
 }

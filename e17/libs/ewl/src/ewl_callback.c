@@ -6,6 +6,8 @@ ewl_callback_append(Ewl_Widget * widget, Ewl_Callback_Type type,
 {
 	Ewl_Callback * callback = NULL;
 
+	CHECK_PARAM_POINTER_RETURN("widget", widget, -1);
+
 	callback = NEW(Ewl_Callback, 1);
 
 	memset(callback, 0, sizeof(Ewl_Callback));
@@ -29,6 +31,8 @@ ewl_callback_prepend(Ewl_Widget * widget, Ewl_Callback_Type type,
 {
 	Ewl_Callback * callback = NULL;
 
+	CHECK_PARAM_POINTER_RETURN("widget", widget, -1);
+
 	callback = NEW(Ewl_Callback, 1);;
 	callback = memset(callback, 0, sizeof(Ewl_Callback));
 
@@ -49,6 +53,8 @@ void
 ewl_callback_del(Ewl_Widget * widget, Ewl_Callback_Type type,
 					int callback_number)
 {
+	CHECK_PARAM_POINTER("widget", widget);
+
 	if (!widget->callbacks[type] ||
 		ewd_list_is_empty(widget->callbacks[type]) ||
 		callback_number < widget->callbacks[type]->nodes)
@@ -65,6 +71,8 @@ ewl_callback_call(Ewl_Widget * widget, Ewl_Callback_Type type)
 {
 	Ewl_Callback * callback = NULL;
 
+	CHECK_PARAM_POINTER("widget", widget);
+
 	if (!widget->callbacks[type] || ewd_list_is_empty(widget->callbacks[type]))
 		return;
 
@@ -79,6 +87,8 @@ void ewl_callback_call_with_data(Ewl_Widget * widget,
 							   Ewl_Callback_Type type, void * func_data)
 {
 	Ewl_Callback * callback = NULL;
+
+	CHECK_PARAM_POINTER("widget", widget);
 
 	if (!widget->callbacks[type] || ewd_list_is_empty(widget->callbacks[type]))
 		return;

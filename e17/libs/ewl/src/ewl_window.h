@@ -6,6 +6,7 @@ typedef struct _ewl_window Ewl_Window;
 
 struct _ewl_window {
 	Ewl_Widget			  widget;
+	Ebits_Object		  ebits_object;
 	Window				  window;
 	char				* title;
 };

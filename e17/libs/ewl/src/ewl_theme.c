@@ -12,6 +12,7 @@ E_DB_File * theme;
 
 char theme_path[PATH_LEN];
 char font_path[PATH_LEN];
+char style_path[PATH_LEN];
 
 void
 ewl_theme_init(void)
@@ -22,15 +23,17 @@ ewl_theme_init(void)
     theme_name = ewl_prefs_theme_name_get();
 
 
-    if (!theme && theme_name[0]) {
+    if (!theme && theme_name[0])
+	  {
         snprintf(theme_path, PATH_LEN, "%s/%s", EWL_GLOBAL_THEMES,
                 theme_name);
         snprintf(theme_file, PATH_LEN, "%s/theme.db", theme_path);
         theme = e_db_open_read(theme_file);
-    }
+      }
 
     /* Got a theme name so lets try to open the theme */
-    if (!theme && theme_name) {
+    if (!theme && theme_name)
+	  {
         /* Absolute path given, so open it there */
         if (theme_name[0] == '/')
             snprintf(theme_path, PATH_LEN, "%s",
@@ -43,17 +46,21 @@ ewl_theme_init(void)
 
         snprintf(theme_file, PATH_LEN, "%s/theme.db", theme_path);
         theme = e_db_open_read(theme_file);
-    }
+      }
 
     /* Ok, stupid user specified a non-existant theme or no theme,
      * so open the default */
-    if (!theme) {
+    if (!theme)
+	  {
         snprintf(theme_path, PATH_LEN, "%s/default", EWL_GLOBAL_THEMES);
         snprintf(theme_file, PATH_LEN, "%s/theme.db", theme_path);
         theme = e_db_open_read(theme_file);
-    }
+      }
 
-    snprintf(font_path, PATH_LEN, "%s/appearance/fonts", theme_path);
+	snprintf(font_path, PATH_LEN, "%s/appearance/fonts", theme_path);
+	snprintf(style_path, PATH_LEN, "%s/appearance/font_styles", theme_path);
+
+	etox_style_add_path(style_path);
 }
 
 char *
@@ -62,9 +69,16 @@ ewl_theme_path()
 	return strdup(theme_path);
 }
 
-char * ewl_theme_font_path()
+char *
+ewl_theme_font_path()
 {
 	return strdup(font_path);
+}
+
+char *
+ewl_theme_font_style_path()
+{
+	return strdup(style_path);
 }
 
 char *
@@ -83,10 +97,11 @@ ewl_theme_ebit_get(char * widget, char * type, char * state)
 
 	if (S_ISREG(st.st_mode))
 		return value;
-	else {
+	else
+	  {
 		DERROR("File\n%s\ndoes not exist, exiting...\n", value);
 		ewl_main_quit();
-	}
+	  }
 
 	return NULL;
 }
