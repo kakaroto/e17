@@ -23,13 +23,17 @@ Known bugs
 TODO for E 16.7
 ~~~~~~~~~~~~~~~
 
-- Shaded window borders are not drawn correctly after restart.
-
 
 Fixed in CVS
 ~~~~~~~~~~~~
 
+- Shaded window borders are not drawn correctly after restart.
+
 - Iconify/deiconfy changes window position if mostly off-screen.
+
+
+Fixed in E 16.7-0.65 (pre3)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 - Language/font handling is broken when using imlib2 to draw text.
 

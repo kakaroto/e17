@@ -2886,3 +2886,16 @@ Fix saving info at exit + shuffle some code around.
 Set stacking order at exit.
 Fix RaiseLower segv.
 Selective Transparency - basic functionality (Jaron Omega <jaron@sock-stream.net>).
+
+-------------------------------------------------------------------------------
+
+Wed Jun  9 02:24:59 CEST 2004
+(Kim)
+
+Fix segv on group member exit + associated cleanups.
+Added some apps to the user menu. Patch by Kirby Kuehl <kkuehl@cisco.com>.
+Deiconify windows to position where it was iconified (whenever possible).
+Fix segv in menu keypress handling.
+Fix borders on initially shaded windows.
+Partial fix to clipped TT font text.
+Put lost warpfocused option back in.
