@@ -449,9 +449,9 @@ Imlib_save_image(ImlibData * id, ImlibImage * im, char *file, ImlibSaveInfo * in
 	}
 
       if (!strcasecmp(ext, "jpeg"))
-	snprintf(cmd, sizeof(cmd), "%%H -quality %i -progressive -outfile %%s", CJPEG_PROG, 100 * info->quality / 256);
+	snprintf(cmd, sizeof(cmd), "%%H -quality %i -progressive -outfile %%s", 100 * info->quality / 256);
       else if (!strcasecmp(ext, "jpg"))
-	snprintf(cmd, sizeof(cmd), "%%H -quality %i -progressive -outfile %%s", CJPEG_PROG, 100 * info->quality / 256);
+	snprintf(cmd, sizeof(cmd), "%%H -quality %i -progressive -outfile %%s", 100 * info->quality / 256);
       else if (!strcasecmp(ext, "bmp"))
 	strcpy(cmd, "%Q %N/ppmtobmp > %s");
       else if (!strcasecmp(ext, "gif"))
