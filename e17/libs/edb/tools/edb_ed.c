@@ -1,4 +1,5 @@
 #include "../src/Edb.h"
+#include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -10,6 +11,128 @@ sort_compare(const void *v1, const void *v2)
 {
    return strcmp(*(char **)v1, *(char **)v2);
 }
+
+static void 
+unescape_string(char *str)
+{
+  int  i;
+  char c, val = 0;
+  char *s;
+
+  for (s = str ; *str != '\0'; str++, s++)
+    {
+      val = 0;
+
+      if (*str == '\\')
+	{	 
+	  if ((c = *(str+1)) == '\0')
+	    break;
+
+	  switch (c)
+	    {
+	    case 'a':       /* bell */
+	      *s = '\a';
+	      break;
+	    case 'b':       /* backspace */
+	      *s = '\b';
+	      break;
+	    case 'f':       /* formfeed */
+	      *s = '\f';
+	      break;
+	    case 'n':       /* newline */
+	      *s = '\n';
+	      break;
+	    case 'r':       /* return */
+	      *s = '\r';
+	      break;
+	    case 't':       /* tab */
+	      *s = '\t';
+	      break;
+	    case 'v':       /* vtab */
+	      *s = '\v';
+	      break;
+	    case 'x':       /* \xn or \xnn -- hex value */	      
+	      {		  
+		char digit;
+		char *ptr;
+		
+		ptr = str;
+		
+		for (i = 0; i < 2; i++)
+		  {
+		    if (*(str+2+i) == '\0')
+		      break;
+		    
+		    digit = *(str+2+i); 
+		    
+		    if (!isxdigit(digit))
+		      break;
+		    
+		    val *= 16;
+		    
+		    if (digit >= 97)
+		      val += 10 + (digit - 'a');
+		    else if (digit >= 65)
+		      val += 10 + (digit - 'A');
+		    else
+		      val += digit - '0';
+		    
+		    *s = val;
+		    ptr++;
+		  }
+		
+		str = ptr;
+	      }
+	      break;
+	    case '0':       /* \nnn -- octal value */
+	    case '1':
+	    case '2':
+	    case '3':
+	    case '4':
+	    case '5':
+	    case '6':
+	    case '7':
+	      {		  
+		char digit;
+		char *ptr;
+		
+		ptr = str;
+		
+		for (i = 0; i < 3; i++)
+		  {
+		    if (*(str+1+i) == '\0')
+		      break;
+		    
+		    digit = *(str+1+i); 
+		    
+		    if (!isdigit(digit))
+		      break;
+		    
+		    val *= 8;
+		    val += digit - '0';		    
+		    *s = val;
+		    ptr++;
+		  }
+		
+		str = ptr;
+	      }
+	      break;
+	    default:
+	      /* Everything else -- just write what's after backslash. */
+	      *s = *(str+1);
+	      break;
+	  }
+	  str++;
+        }
+      else
+	{
+	  *s = *str;
+	}
+    }
+  
+  *s = '\0';
+}
+
 
 int
 main(int argc, char **argv)
@@ -96,6 +219,7 @@ main(int argc, char **argv)
 	       }
 	     else if (!strcmp(type, "str"))
 	       {
+		  unescape_string(data);
 		  e_db_str_set(db, key, data);
 	       }
 	     else if (!strcmp(type, "float"))
