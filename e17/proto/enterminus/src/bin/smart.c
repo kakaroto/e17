@@ -8,6 +8,7 @@ static Evas_Smart *smart;
 Evas_Object *term_new(Evas *evas) {
    Evas_Object *term;
    term = evas_object_smart_add(evas, term_smart_get());
+   TERM_EVENT_TITLE_CHANGE = ecore_event_type_new();
    return term;
 }
 

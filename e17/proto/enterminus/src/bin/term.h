@@ -30,9 +30,9 @@
 #define DPRINT(stuff)
 #endif
 
+int TERM_EVENT_TITLE_CHANGE;
 
-enum Term_Key_Modifiers
-{
+enum Term_Key_Modifiers {
      TERM_KEY_MODIFIER_SHIFT = 0x1,
      TERM_KEY_MODIFIER_CTRL = 0x2,
      TERM_KEY_MODIFIER_ALT = 0x4,
@@ -41,7 +41,12 @@ enum Term_Key_Modifiers
 };
 typedef enum Term_Key_Modifiers Term_Key_Modifiers;
 
+struct _Term_Event_Title_Change {
+   char *title;
+};
+typedef struct _Term_Event_Title_Change Term_Event_Title_Change;
 
+/* are those still global vars? if so, remove them */
 char *ptydev, *ttydev;
 pid_t pid;
 
@@ -184,3 +189,6 @@ Evas_Smart     *term_smart_get();
 
 void            enterm_init(Ecore_Evas *ee, Evas_Object *term);   
 void            enterm_cb_resize(Ecore_Evas *ee);
+
+void            term_event_title_change_free(void *data, void *ev);
+   

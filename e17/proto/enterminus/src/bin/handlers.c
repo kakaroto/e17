@@ -5,6 +5,8 @@ void term_handler_xterm_seq(int op, Term *term) {
    int len;
    int buflen;
    unsigned char c;
+   Term_Event_Title_Change *e;
+   Ecore_Event *event;
    
    c = term_tcanvas_data_pop(term);
    for(len = 0; c != '\007'; len++) {
@@ -22,9 +24,12 @@ void term_handler_xterm_seq(int op, Term *term) {
       if(term->title) free(term->title);
       term->title = malloc(sizeof(buf));
       snprintf(term->title, sizeof(buf), "%s", buf);
+      e = malloc(sizeof(Term_Event_Title_Change));
+      e->title = strdup(term->title);
+      event = ecore_event_add(TERM_EVENT_TITLE_CHANGE, e, 
+			      term_event_title_change_free, NULL);
       /* TODO: MOVE THIS TO FRONTEND CODE */
-      //ecore_x_window_prop_title_set(ecore_evas_software_x11_window_get(term->ee),
-      //			    buf);
+//ecore_x_window_prop_title_set(ecore_evas_software_x11_window_get(term->ee),buf);
       break;
    }
 }
@@ -454,3 +459,12 @@ void term_cb_key_down(void *data, Evas *e, Evas_Object *obj, void *event_info){
 
    }
 }
+
+void term_event_title_change_free(void *data, void *ev) {
+   
+   Term_Event_Title_Change *e;   
+   e = ev;
+   free(e->title);
+   free(e);
+}
+
