@@ -158,13 +158,19 @@ this list is for fresh installs only. It is generally recommended that any
 existing installations of E17 or any of its components be completely removed
 prior to a build, to avoid the problem we often see where the wrong versions of
 the libraries get linked.</p>
-<p>If you have problems building the source, the most common problems involve
+
+<p><b>If you have problems building the source, the most common problems involve
 old versions of the build tools.  If you can't even get autogen.sh to run properly
-you should update automake, autoconf, and gettext.  It's also to have
+you should update libtool, automake, autoconf, and gettext.  It's also to have
 problems with multiple aclocal directories (ie: both /usr/share/aclocal 
-and /usr/local/share/aclocal) which you should fix.  In 99% of all case Enlightenment
-<b>will</b> build, and if it doesn't its a problem on your system or your not
-running Linux.  People are working currently on getting E CVS working on Solaris/SPARC
+and /usr/local/share/aclocal) which you should fix.  <font color="red">Enlightenment DOES 
+build! If it doesn't build, then it is YOUR PROBLEM.  There are people watching almost
+every commit and testing changes as quick as they are made, problems are being fixed
+faster than they can break the build.  If ANY part of E17 doesn't build DO NOT contact the list,
+developers or other people associated with the project, they can't help you debug your broken linux 
+box.</font></b></p>
+
+<p>People are working currently on getting E CVS working on Solaris/SPARC
 and FreeBSD/x86.</p>
 
 <p>
