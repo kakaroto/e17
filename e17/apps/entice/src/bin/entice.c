@@ -10,6 +10,7 @@
 #include <limits.h>
 #include <Esmart/container.h>
 #include <Esmart/E_Thumb.h>
+#include <Esmart/Esmart_Trans.h>
 #include <Epsilon.h>
 #include <string.h>
 #include <sys/types.h>
@@ -95,6 +96,7 @@ entice_init(Ecore_Evas * ee)
    Entice *e = NULL;
    char *layout = NULL;
    Evas_Object *o = NULL;
+   const char *str = NULL;
 
    if ((ee) && (e = (Entice *) malloc(sizeof(Entice))))
    {
@@ -104,6 +106,7 @@ entice_init(Ecore_Evas * ee)
       epsilon_init();
       ecore_evas_geometry_get(ee, &x, &y, &w, &h);
       o = edje_object_add(ecore_evas_get(ee));
+      /* FIXME: Check the return value */
       edje_object_file_set(o, entice_config_theme_get(), "Entice");
       evas_object_name_set(o, "EnticeEdje");
       evas_object_move(o, 0, 0);
@@ -157,6 +160,26 @@ entice_init(Ecore_Evas * ee)
          }
          edje_object_part_swallow(e->edje, "EnticeThumbnailArea",
                                   e->container);
+      }
+      if ((str = edje_object_data_get(o, "entice,window,type")))
+      {
+         if (!strcmp(str, "shaped"))
+         {
+            ecore_evas_shaped_set(ee, 1);
+         }
+         else if (!strcmp(str, "trans"))
+         {
+            Evas_Object *trans = NULL;
+
+            trans = esmart_trans_x11_new(ecore_evas_get(ee));
+            evas_object_layer_set(trans, 0);
+            evas_object_move(trans, 0, 0);
+            evas_object_resize(trans, w, h);
+            evas_object_name_set(trans, "trans");
+
+            esmart_trans_x11_freshen(trans, x, y, w, h);
+            evas_object_show(trans);
+         }
       }
    }
    entice = e;
@@ -293,12 +316,12 @@ _entice_thumb_load(void *_data, Evas * _e, Evas_Object * _o, void *_ev)
          edje_object_part_text_set(entice->edje, "EnticeFileDimensions", buf);
          edje_object_part_text_set(entice->edje, "EnticeFileName",
                                    e_thumb_file_get(o));
-	if((tmpstr = strrchr(e_thumb_file_get(o), '/')))
-	    edje_object_part_text_set(entice->edje, "EnticeFileShortName",
-					tmpstr + 1);
+         if ((tmpstr = strrchr(e_thumb_file_get(o), '/')))
+            edje_object_part_text_set(entice->edje, "EnticeFileShortName",
+                                      tmpstr + 1);
          /* FIXME: Support FileSize also */
 
-	 snprintf(buf, PATH_MAX, "Entice: %s", e_thumb_file_get(o));
+         snprintf(buf, PATH_MAX, "Entice: %s", e_thumb_file_get(o));
          ecore_evas_title_set(entice->ee, buf);
 
          entice->thumb.current =
@@ -731,6 +754,9 @@ entice_fullscreen_toggle(void)
 void
 entice_resize(int w, int h)
 {
+   int ex = 0, ey = 0, ew = 0, eh = 0;
+   Evas_Object *o = NULL;
+
    if (entice && entice->edje && entice->current)
    {
       double ww, hh;
@@ -739,6 +765,11 @@ entice_resize(int w, int h)
       edje_object_part_geometry_get(entice->edje, "EnticeImage", NULL, NULL,
                                     &ww, &hh);
       evas_object_resize(entice->current, ww, hh);
+      if ((o = evas_object_name_find(ecore_evas_get(entice->ee), "trans")))
+      {
+         ecore_evas_geometry_get(entice->ee, &ex, &ey, &ew, &eh);
+         esmart_trans_x11_freshen(o, ex, ey, ew, eh);
+      }
    }
 }
 
