@@ -1,5 +1,22 @@
 #include <Engrave.h>
 
+/**
+ * @file engrave_program.h Engrave_Program object functions.
+ * @brief Contains all of the functions to mainuplulate Engrave_Program objects.
+ */
+
+/**
+ * @defgroup Engrave_Program Engrave_Program: Functions to work with Engrave_Program objects.
+ *
+ * @{
+ */
+
+/**
+ * engrave_program_new - create a new Engrave_Program object.
+ *
+ * @return Returns a pointer to the newly allocated Engrave_Program object
+ * on success or NULL on failure.
+ */
 Engrave_Program *
 engrave_program_new(void)
 {
@@ -8,6 +25,13 @@ engrave_program_new(void)
   return ep;
 }
 
+/**
+ * engrave_program_script_set - attach a script to the program.
+ * @param ep: The Engrave_Program to attach the script too.
+ * @param script: The script to attach to the program.
+ *
+ * @return Returns no value.
+ */
 void
 engrave_program_script_set(Engrave_Program *ep, char *script)
 {
@@ -17,6 +41,13 @@ engrave_program_script_set(Engrave_Program *ep, char *script)
   ep->script = (script ? strdup(script) : NULL);
 }
 
+/**
+ * engrave_program_name_set - set the name of the program.
+ * @param ep: The Engrave_Program to attach the name too.
+ * @param name: The name to attach to the program.
+ *
+ * @return Returns no value.
+ */
 void
 engrave_program_name_set(Engrave_Program *ep, char *name)
 {
@@ -25,6 +56,13 @@ engrave_program_name_set(Engrave_Program *ep, char *name)
   ep->name = (name ? strdup(ep->name) : NULL);
 }
 
+/**
+ * engrave_program_signal_set - set the given signal on the program
+ * @param ep: The Engrave_Program to attach the signal too.
+ * @param signal: The signal to attach to the program.
+ *
+ * @return Returns no value.
+ */
 void
 engrave_program_signal_set(Engrave_Program *ep, char *signal)
 {
@@ -33,6 +71,13 @@ engrave_program_signal_set(Engrave_Program *ep, char *signal)
   ep->signal = (signal ? strdup(signal) : NULL);
 }
 
+/**
+ * engrave_program_source_set - set the source of the program.
+ * @param ep: The Engrave_Program to attach the souce too.
+ * @param source: The name to attach to the group.
+ *
+ * @return Returns no value.
+ */
 void
 engrave_program_source_set(Engrave_Program *ep, char *source)
 {
@@ -41,6 +86,13 @@ engrave_program_source_set(Engrave_Program *ep, char *source)
   ep->source = (source ? strdup(source) : NULL);
 }
 
+/**
+ * engrave_program_target_add - set the target on the program.
+ * @param ep: The Engrave_Program to set the target on.
+ * @param target: The target to set on the program.
+ *
+ * @return Returns no value.
+ */
 void
 engrave_program_target_add(Engrave_Program *ep, char *target)
 {
@@ -48,6 +100,13 @@ engrave_program_target_add(Engrave_Program *ep, char *target)
   ep->targets = evas_list_append(ep->targets, strdup(target));
 }
 
+/**
+ * engrave_program_after_add - add the after to the program.
+ * @param ep: The Engrave_Program to add the after too.
+ * @param after: The after to add to the program.
+ *
+ * @return Returns no value.
+ */
 void
 engrave_program_after_add(Engrave_Program *ep, char *after)
 {
@@ -55,6 +114,14 @@ engrave_program_after_add(Engrave_Program *ep, char *after)
   ep->afters = evas_list_append(ep->afters, strdup(after));
 }
 
+/**
+ * engrave_program_in_set - set the in value of the program.
+ * @param ep: The Engrave_Program to set the in value on.
+ * @param from: The from value to set.
+ * @param range: The range value to set.
+ *
+ * @return Returns no value.
+ */
 void
 engrave_program_in_set(Engrave_Program *ep, double from, double range)
 {
@@ -63,6 +130,17 @@ engrave_program_in_set(Engrave_Program *ep, double from, double range)
   ep->in.range = range;
 }
 
+/**
+ * engrave_program_action_set - set the action for the program.
+ * @param ep: The Engrave_Program to set the action on.
+ * @param action: The Engrave_Action to set on the program.
+ * @param state: The state value to set.
+ * @param state2: The state2 value to set.
+ * @param value: The value value to set.
+ * @param value2: The value2 value to set.
+ *
+ * @return Returns no value.
+ */
 void
 engrave_program_action_set(Engrave_Program *ep, Engrave_Action action,
                                               char *state, char *state2,
@@ -78,6 +156,14 @@ engrave_program_action_set(Engrave_Program *ep, Engrave_Action action,
   ep->value2 = value2;
 }
 
+/**
+ * engrave_program_transition_set - set the transition on the program
+ * @param ep: The Engrave_Program to set the transition on.
+ * @param trans: The Engrave_Transition to set on the program.
+ * @param duration: The duration of the given transition.
+ *
+ * @return Returns no value.
+ */
 void
 engrave_program_transition_set(Engrave_Program *ep, Engrave_Transition trans,
                                                               double duration)
@@ -87,4 +173,7 @@ engrave_program_transition_set(Engrave_Program *ep, Engrave_Transition trans,
   ep->duration = duration;
 }
 
-
+/**
+ * @}
+ */
+ 

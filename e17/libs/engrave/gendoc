@@ -1,0 +1,4 @@
+#!/bin/sh
+## DoxyGen Generic Generation Script
+
+doxygen

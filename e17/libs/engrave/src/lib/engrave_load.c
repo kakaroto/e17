@@ -3,10 +3,31 @@
 #include "Engrave.h"
 #include "engrave_parse.h"
 
+/**
+ * @file engrave_load.h Engrave loading functions
+ * @brief Contains the functions to load either an EDC or EET into Engrave.
+ */
+
+/**
+ * @defgroup Engrave_Load Engrave_Load: Contains the functions to load EDC
+ * and EET files into Engrave.
+ * 
+ * @{
+ */
+
 #define MAIN_EDC_NAME "main_edje_source.edc"
 
 char *engrave_filename = NULL;
 
+/**
+ * engrave_load_edc - load the given edc file into memory.
+ * @param file: The EDC file to load.
+ * @param imdir: The image directory for the EDC file.
+ * @param fontdir: The font directory for the EDC file.
+ *
+ * @return Returns a pointer to a newly allocated Engrave_File object on
+ * success or NULL on failure.
+ */
 Engrave_File *
 engrave_load_edc(char *file, char *imdir, char *fontdir)
 {
@@ -15,6 +36,7 @@ engrave_load_edc(char *file, char *imdir, char *fontdir)
   char buf[4096];
   char tmpf[4096];
 
+  if (!file) return NULL;
   strcpy(tmpf, "/tmp/engrave_parse.edc-tmp-XXXXXX");
   fd = mkstemp(tmpf);
   if (fd >= 0)
@@ -40,12 +62,19 @@ engrave_load_edc(char *file, char *imdir, char *fontdir)
   return(enf);
 }
 
+/**
+ * engrave_load_eet - load the given EET file into memory.
+ * @param filename: The filename of the EET file to load.
+ *
+ * @return Returns a pointer to a newly allocated Engrave_File object on
+ * success or NULL on failure.
+ */
 Engrave_File *
 engrave_load_eet(char *filename)
 {
   Engrave_File *enf = NULL;
   char *cmd = NULL;
-  char *old_fname = (char *)strdup(filename);
+  char *old_fname;
   char *new_fname = NULL;
   char *ptr = NULL;
   int len = 0;
@@ -54,6 +83,9 @@ engrave_load_eet(char *filename)
   static char tmpn[4096];
   char *cpp_extra = NULL;
 
+  if (!filename) return NULL;
+  old_fname = strdup(filename);
+
   memset(tmpn, '\0', sizeof(tmpn));
   strcpy(tmpn, "/tmp/engrave.edc-tmp-XXXXXX");
   if (mkdtemp(tmpn) == NULL) {
@@ -61,7 +93,7 @@ engrave_load_eet(char *filename)
             strerror(errno));
     return 0;
   }
-  work_dir = (char *)strdup(tmpn);
+  work_dir = strdup(tmpn);
 
   ptr = strrchr(old_fname, '/');
   if (ptr == NULL)

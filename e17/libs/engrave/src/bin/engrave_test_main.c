@@ -23,7 +23,7 @@ main(int argc, char ** argv)
     if (!engrave_eet_output(ef, "test.eet"))
         printf("failed to write test.eet\n");
 
-    if (!engrave_file_output(ef, "test.out"))
+    if (!engrave_edc_output(ef, "test.out"))
         printf("failed to write test.out\n");
 
     return 0;

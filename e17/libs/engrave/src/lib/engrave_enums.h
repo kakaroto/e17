@@ -1,6 +1,16 @@
 #ifndef ENGRAVE_ENUMS_H
 #define ENGRAVE_ENUMS_H
 
+/**
+ * @file engrave_enums.h
+ * @brief Contains all of the enumerations used in Engrave
+ */
+
+/**
+ * @defgroup Engrave_Enums Enums: Various Flags and Enumerations used in Engrave.
+ * @{
+ */
+
 typedef enum _Engrave_Image_Type Engrave_Image_Type;
 typedef enum _Engrave_Part_Type Engrave_Part_Type;
 typedef enum _Engrave_Text_Effect Engrave_Text_Effect;
@@ -9,67 +19,94 @@ typedef enum _Engrave_Transition Engrave_Transition;
 typedef enum _Engrave_Aspect_Preference Engrave_Aspect_Preference;
 typedef enum _Engrave_Parse_Section Engrave_Parse_Section;
 
+/**
+ * @enum Engrave_Image_Type
+ * This defines the various types of image compression available.
+ */
 enum _Engrave_Image_Type
 {
-  ENGRAVE_IMAGE_TYPE_RAW,
-  ENGRAVE_IMAGE_TYPE_COMP,
-  ENGRAVE_IMAGE_TYPE_LOSSY,
-  ENGRAVE_IMAGE_TYPE_EXTERNAL,
+  ENGRAVE_IMAGE_TYPE_RAW, /**< No compression, no loss of detail */
+  ENGRAVE_IMAGE_TYPE_COMP, /**< Compress image, no loss of detail */
+  ENGRAVE_IMAGE_TYPE_LOSSY, /**< Lossy compression of image */
   ENGRAVE_IMAGE_TYPE_NUM
-
 };
 
+/**
+ * @enum Engrave_Part_Type
+ * This defines the different part types available.
+ */
 enum _Engrave_Part_Type
 {
-  ENGRAVE_PART_TYPE_IMAGE,
-  ENGRAVE_PART_TYPE_TEXT,
-  ENGRAVE_PART_TYPE_RECT,
-  ENGRAVE_PART_TYPE_SWALLOW,
+  ENGRAVE_PART_TYPE_IMAGE, /**< Part is an image */
+  ENGRAVE_PART_TYPE_TEXT, /**< Part is text */
+  ENGRAVE_PART_TYPE_RECT, /**< Part is a rectangle */
+  ENGRAVE_PART_TYPE_SWALLOW, /**< Part is a swallow */
   ENGRAVE_PART_TYPE_NUM
 };
 
+/**
+ * @enum Engrave_Text_Effect
+ * This defines the different types of effects that can be applied to a
+ * chunk of text.
+ */
 enum _Engrave_Text_Effect
 {
-  ENGRAVE_TEXT_EFFECT_NONE,
-  ENGRAVE_TEXT_EFFECT_PLAIN,
-  ENGRAVE_TEXT_EFFECT_OUTLINE,
-  ENGRAVE_TEXT_EFFECT_SOFT_OUTLINE,
-  ENGRAVE_TEXT_EFFECT_SHADOW,
-  ENGRAVE_TEXT_EFFECT_OUTLINE_SHADOW,
-  ENGRAVE_TEXT_EFFECT_SOFT_SHADOW,
-  ENGRAVE_TEXT_EFFECT_OUTLINE_SOFT_SHADOW,
+  ENGRAVE_TEXT_EFFECT_NONE, /**< No text effect */
+  ENGRAVE_TEXT_EFFECT_PLAIN, /**< Normal text */
+  ENGRAVE_TEXT_EFFECT_OUTLINE, /**< Outlined text */
+  ENGRAVE_TEXT_EFFECT_SOFT_OUTLINE, /**< Soft outlined text */
+  ENGRAVE_TEXT_EFFECT_SHADOW, /**< Shadowed text */
+  ENGRAVE_TEXT_EFFECT_OUTLINE_SHADOW, /**< Outlined and shadowed text */
+  ENGRAVE_TEXT_EFFECT_SOFT_SHADOW, /**< Soft shadowed text */
+  ENGRAVE_TEXT_EFFECT_OUTLINE_SOFT_SHADOW, /**< Outlined and soft shadowed text */
   ENGRAVE_TEXT_EFFECT_NUM
 };
 
+/**
+ * @enum Engrave_Action
+ * The different types of actions that can be performed in a program.
+ */
 enum _Engrave_Action
 {
-  ENGRAVE_ACTION_STATE_SET,
-  ENGRAVE_ACTION_STOP,
-  ENGRAVE_ACTION_SIGNAL_EMIT,
-  ENGRAVE_ACTION_DRAG_VAL_SET,
-  ENGRAVE_ACTION_DRAG_VAL_STEP,
-  ENGRAVE_ACTION_DRAG_VAL_PAGE,
-  ENGRAVE_ACTION_SCRIPT,
+  ENGRAVE_ACTION_STATE_SET, /**< Set the state of a given part */
+  ENGRAVE_ACTION_STOP, /**< Stop the given action */
+  ENGRAVE_ACTION_SIGNAL_EMIT, /**< Emit the given signal */
+  ENGRAVE_ACTION_DRAG_VAL_SET, /**< Set the drag value of a given part */
+  ENGRAVE_ACTION_DRAG_VAL_STEP, /**< Set the drag step of a given part */
+  ENGRAVE_ACTION_DRAG_VAL_PAGE, /**< Set the drag page of a given part */
+  ENGRAVE_ACTION_SCRIPT, /**< Set implictly if a script {} block is included */
   ENGRAVE_ACTION_NUM
 };
 
+/**
+ * @enum Engrave_Transition
+ * The different types of transitions available to a program 
+ */
 enum _Engrave_Transition
 {
-  ENGRAVE_TRANSITION_LINEAR,
-  ENGRAVE_TRANSITION_SINUSOIDAL,
-  ENGRAVE_TRANSITION_ACCELERATE,
-  ENGRAVE_TRANSITION_DECELERATE,
+  ENGRAVE_TRANSITION_LINEAR, /**< A linear transtion */
+  ENGRAVE_TRANSITION_SINUSOIDAL, /**< A sinusoidal transition */
+  ENGRAVE_TRANSITION_ACCELERATE, /**< An accelerating transition */
+  ENGRAVE_TRANSITION_DECELERATE, /**< A decelerating transition */
   ENGRAVE_TRANSITION_NUM
 };
 
+/**
+ * @enum Engrave_Aspect_Preference
+ * The differenty aspect preferences available 
+ */
 enum _Engrave_Aspect_Preference
 {
-  ENGRAVE_ASPECT_PREFERENCE_NONE,
-  ENGRAVE_ASPECT_PREFERENCE_VERTICAL,
-  ENGRAVE_ASPECT_PREFERENCE_HORIZONTAL,
-  ENGRAVE_ASPECT_PREFERENCE_BOTH,
+  ENGRAVE_ASPECT_PREFERENCE_NONE, /**< No aspect preference */
+  ENGRAVE_ASPECT_PREFERENCE_VERTICAL, /**< Vertical aspect preference */
+  ENGRAVE_ASPECT_PREFERENCE_HORIZONTAL, /**< Horizontal aspect preference */
+  ENGRAVE_ASPECT_PREFERENCE_BOTH, /**< Vertical and Horizontal aspect preference */
   ENGRAVE_ASPECT_PREFERENCE_NUM
 };
+
+/**
+ * @}
+ */
 
 #endif
 

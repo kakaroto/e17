@@ -3,6 +3,18 @@
 #include <stdarg.h>
 #include "Engrave.h"
 
+/**
+ * @file engrave_out.h Functions to faciliate outputing the Engrave information.
+ * @brief Provided the needed functions to output the Engrave information into various formats.
+ */
+
+/**
+ * @defgroup Engrave_Out Functions needed to output the Engrave data into
+ * different file formats.
+ *
+ * @{
+ */
+
 static void _engrave_output_group(Engrave_Group *group, FILE *out);
 static void _engrave_output_part(Engrave_Part *part, FILE *out);
 static void _engrave_output_program(Engrave_Program *program, FILE *out);
@@ -10,21 +22,20 @@ static void _engrave_output_state(Engrave_Part *part, Engrave_Part_State *state,
 
 static int level = 0;
 
-char *_image_type_string[ENGRAVE_IMAGE_TYPE_NUM] = {
+static char *_image_type_string[ENGRAVE_IMAGE_TYPE_NUM] = {
         "RAW",
         "COMP",
-        "LOSSY",
-        "USER"
+        "LOSSY"
         };
 
-char *_part_type_string[ENGRAVE_PART_TYPE_NUM] = {
+static char *_part_type_string[ENGRAVE_PART_TYPE_NUM] = {
         "IMAGE",
         "TEXT",
         "RECT",
         "SWALLOW"
         };
 
-char *_text_effect_string[ENGRAVE_TEXT_EFFECT_NUM] = {
+static char *_text_effect_string[ENGRAVE_TEXT_EFFECT_NUM] = {
         "NONE",
         "PLAIN",
         "OUTLINE",
@@ -35,7 +46,7 @@ char *_text_effect_string[ENGRAVE_TEXT_EFFECT_NUM] = {
         "OUTLINE_SOFT_SHADOW"
         };
 
-char *_action_string[ENGRAVE_ACTION_NUM] = {
+static char *_action_string[ENGRAVE_ACTION_NUM] = {
         "STATE_SET",
         "ACTION_STOP",
         "SIGNAL_EMIT",
@@ -45,14 +56,14 @@ char *_action_string[ENGRAVE_ACTION_NUM] = {
         "SCRIPT"
         };
 
-char *_transition_string[ENGRAVE_TRANSITION_NUM] = {
+static char *_transition_string[ENGRAVE_TRANSITION_NUM] = {
         "LINEAR",
         "SINUSOIDAL",
         "ACCELERATE",
         "DECELERATE"
         };
 
-char *_aspect_preference_string[ENGRAVE_ASPECT_PREFERENCE_NUM] = {
+static char *_aspect_preference_string[ENGRAVE_ASPECT_PREFERENCE_NUM] = {
         "NONE",
         "VERTICAL",
         "HORIZONTAL",
@@ -102,6 +113,13 @@ engrave_out_data(FILE *out, char *name, char *fmt, ...)
     FREE(buf);
 }
 
+/** 
+ * engrave_eet_output -- Create an EET file from the in-memory data.
+ * @param engrave_file: The Engrave_File to use to create the EET file.
+ * @param path: The filename to save the EET file too.
+ *
+ * @return Returns 1 on success 0 otherwise.
+ */
 int
 engrave_eet_output(Engrave_File *engrave_file, char *path)
 {
@@ -117,7 +135,7 @@ engrave_eet_output(Engrave_File *engrave_file, char *path)
   }
   close(fd);
 
-  engrave_file_output(engrave_file, tmpn);
+  engrave_edc_output(engrave_file, tmpn);
   /* FIXME images and fonts ??? */
 
   len = strlen(tmpn) + strlen(path) + 13;
@@ -135,8 +153,15 @@ engrave_eet_output(Engrave_File *engrave_file, char *path)
   return 1;
 }
 
+/** 
+ * engrave_edc_output -- Create an EDC file from the in-memory data.
+ * @param engrave_file: The Engrave_File to use to create the EET file.
+ * @param path: The filename to save the EDC file too.
+ *
+ * @return Returns 1 on success 0 otherwise.
+ */
 int
-engrave_file_output(Engrave_File *engrave_file, char *path)
+engrave_edc_output(Engrave_File *engrave_file, char *path)
 {
   FILE *out = NULL;
   Evas_List *l;
@@ -210,7 +235,7 @@ engrave_file_output(Engrave_File *engrave_file, char *path)
   return 1;
 }
 
-void
+static void
 _engrave_output_group(Engrave_Group *group, FILE *out)
 {
   Evas_List *l;
@@ -276,7 +301,7 @@ _engrave_output_group(Engrave_Group *group, FILE *out)
   engrave_out_end(out);   /* group */
 }
 
-void
+static void
 _engrave_output_part(Engrave_Part *part, FILE *out)
 {
   Evas_List *l;
@@ -320,7 +345,7 @@ _engrave_output_part(Engrave_Part *part, FILE *out)
 }
 
 
-void
+static void
 _engrave_output_program(Engrave_Program *program, FILE *out)
 {
   Evas_List *l;
@@ -397,7 +422,7 @@ _engrave_output_program(Engrave_Program *program, FILE *out)
 }
 
 
-void
+static void
 _engrave_output_state(Engrave_Part *part, Engrave_Part_State *state, FILE *out)
 {
   Evas_List *l;
@@ -537,5 +562,9 @@ _engrave_output_state(Engrave_Part *part, Engrave_Part_State *state, FILE *out)
 
   engrave_out_end(out);
 }
+
+/**
+ * @}
+ */
 
 

@@ -6,6 +6,7 @@ engrave_part_state_new(void)
   Engrave_Part_State *state;
 
   state = NEW(Engrave_Part_State, 1);
+  if (!state) return NULL;
 
   /* defaults */
   state->visible = 1;
