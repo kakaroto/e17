@@ -46,7 +46,7 @@ __imlib_ConsumeImage(ImlibImage *im)
 {
    if (im->file)
       free(im->file);
-   if (im->data)
+   if ((IMAGE_FREE_DATA(im)) && (im->data))
       free(im->data);
    if (im->format)
       free(im->format);

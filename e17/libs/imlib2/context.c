@@ -43,6 +43,14 @@ __imlib_FlushContexts(void)
 		pct->next = ctt->next;
 	     if (ctt->palette)
 	       {
+		  int i, num[] = { 256, 128, 64, 32, 16, 8, 1 };
+		  unsigned long pixels[256];
+		  
+		  for (i = 0; i < num[ctt->palette_type]; i++)
+		     pixels[i] = (unsigned long)ctt->palette[i];
+		  XFreeColors(ctt->display, ctt->colormap, pixels, 
+			      num[ctt->palette_type], 0);
+		  
 		  free(ctt->palette);
 		  free(ctt->r_dither);
 		  free(ctt->g_dither);

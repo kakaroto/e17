@@ -64,7 +64,6 @@ void imlib_render_pixmaps_for_whole_image(Imlib_Image image, Display *display,
 					  Colormap colormap, int depth,
 					  Pixmap *pixmap_return,
 					  Pixmap *mask_return,
-					  char anti_aliased_scaling,
 					  char dithered_rendering,
 					  char create_dithered_mask,
 					  Imlib_Color_Modifier color_modifier);
@@ -81,7 +80,6 @@ void imlib_render_pixmaps_for_whole_image_at_size(Imlib_Image image, Display *di
 void imlib_render_image_on_drawable(Imlib_Image image, Display *display,
 				    Drawable drawable, Visual *visual,
 				    Colormap colormap, int depth,
-				    char anti_aliased_scaling,
 				    char dithered_rendering,
 				    char alpha_blending,
 				    int x, int y);

@@ -231,7 +231,7 @@ int main (int argc, char **argv)
 	  {
 	     imlib_blend_image_onto_image(im[i], tmp, 0, 0, w, h, 0, 0, w, h);
 	     imlib_render_image_on_drawable(tmp, disp, win, vis, cm, depth, 
-					    0, dith, 0, 
+					    dith, 0, 
 					    x, y);
 	     memcpy(data2, data1, w * h *sizeof(DATA32));
 	  }

@@ -17,7 +17,8 @@ enum _iflags
    F_UNLOADED          = (1 << 1),
    F_UNCACHEABLE       = (1 << 2),
    F_ALWAYS_CHECK_DISK = (1 << 3),
-   F_INVALID           = (1 << 4)
+   F_INVALID           = (1 << 4),
+   F_DONT_FREE_DATA    = (1 << 5)
 };
 
 struct _imlib_color_modifier
@@ -131,6 +132,7 @@ void              __imlib_DirtyImage(ImlibImage *im);
 # define IMAGE_IS_UNCACHEABLE(im) ((im)->flags & F_UNCACHEABLE)
 # define IMAGE_ALWAYS_CHECK_DISK(im) ((im)->flags & F_ALWAYS_CHECK_DISK)
 # define IMAGE_IS_VALID(im) (!((im)->flags & F_INVALID))
+# define IMAGE_FREE_DATA(im) (!((im)->flags & F_DONT_FREE_DATA))
 
 # define SET_FLAG(flags, f) ((flags) |= (f))
 # define UNSET_FLAG(flags, f) ((flags) &= (~f))
