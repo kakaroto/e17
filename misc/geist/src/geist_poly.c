@@ -113,7 +113,7 @@ geist_poly_update_bounds(geist_poly * poly)
    obj->h = obj->rendered_h = py2 - py1 + 1;
    obj->rendered_x = 0;
    obj->rendered_y = 0;
-   D(4,("new poly bounds: %d,%d %dx%d\n", obj->x, obj->y, obj->w, obj->h));
+   D(4, ("new poly bounds: %d,%d %dx%d\n", obj->x, obj->y, obj->w, obj->h));
 
    D_RETURN_(3);
 }
@@ -229,12 +229,11 @@ geist_poly_render(geist_object * obj, Imlib_Image dest)
 
    if (poly->filled)
       gib_imlib_image_fill_polygon(dest, poly->poly, poly->r, poly->g,
-                                     poly->b, poly->a, obj->alias, 0, 0, 0,
-                                     0);
+                                   poly->b, poly->a, obj->alias, 0, 0, 0, 0);
    else
       gib_imlib_image_draw_polygon(dest, poly->poly, poly->r, poly->g,
-                                     poly->b, poly->a, poly->closed,
-                                     obj->alias, 0, 0, 0, 0);
+                                   poly->b, poly->a, poly->closed, obj->alias,
+                                   0, 0, 0, 0);
 
    D_RETURN_(5);
 }
@@ -264,12 +263,12 @@ geist_poly_render_partial(geist_object * obj, Imlib_Image dest, int x, int y,
 
    if (poly->filled)
       gib_imlib_image_fill_polygon(dest, poly->poly, poly->r, poly->g,
-                                     poly->b, poly->a, obj->alias, dx, dy, dw,
-                                     dh);
+                                   poly->b, poly->a, obj->alias, dx, dy, dw,
+                                   dh);
    else
       gib_imlib_image_draw_polygon(dest, poly->poly, poly->r, poly->g,
-                                     poly->b, poly->a, poly->closed,
-                                     obj->alias, dx, dy, dw, dh);
+                                   poly->b, poly->a, poly->closed, obj->alias,
+                                   dx, dy, dw, dh);
 
 
    D_RETURN_(5);
@@ -286,8 +285,8 @@ geist_poly_duplicate(geist_object * obj)
    poly = GEIST_POLY(obj);
 
    ret =
-      geist_poly_new_from_points(gib_list_dup(poly->points), poly->a,
-                                 poly->r, poly->g, poly->b);
+      geist_poly_new_from_points(gib_list_dup(poly->points), poly->a, poly->r,
+                                 poly->g, poly->b);
    ret->rendered_x = obj->rendered_x;
    ret->rendered_y = obj->rendered_y;
    ret->w = obj->w;
@@ -324,125 +323,185 @@ geist_poly_part_is_transparent(geist_object * obj, int x, int y)
 }
 
 void
-geist_poly_resize(geist_object * obj, int x, int y)
+geist_poly_stretch(geist_object * obj, int x, int y)
 {
    double dx, dy;
-   geist_poly* poly;
+   geist_poly *poly;
    gib_list *l;
    geist_point *p;
+
    D_ENTER(5);
 
    D(5, ("resize to %d,%d\n", x, y));
 
-   poly = (geist_poly*)obj;
-   
-    switch (obj->resize)
+   poly = (geist_poly *) obj;
+
+   switch (obj->resize)
    {
-      case RESIZE_RIGHT:
-	 /* calculate resize ratio*/
-	 dx = (double)(x - obj->x) / (double)obj->w;
+     case RESIZE_RIGHT:
+        /* calculate resize ratio */
+        dx = (double) (x - obj->x) / (double) obj->w;
 
-	 for (l = poly->points; l ;l=l->next)
-	 {
-	    p = (geist_point*) l->data;
-	    p->x = obj->x + (p->x - obj->x) * dx;
-	 }
-	 break;
-	 
-      case RESIZE_LEFT:
-	 /* calculate resize ratio*/
-	 dx = (double)(obj->x - x + obj->w) / (double)obj->w;
+        for (l = poly->points; l; l = l->next)
+        {
+           p = (geist_point *) l->data;
+           p->x = obj->x + (p->x - obj->x) * dx;
+        }
+        break;
 
-	 for (l = poly->points; l ;l=l->next)
-	 {
-	    p = (geist_point*) l->data;
-	    p->x = obj->x + obj->w - (obj->x +obj->w -p->x) * dx;
-	 }
-	 break;
-      
-      case RESIZE_BOTTOM:
-	 /* calculate resize ratio*/
-	 dy = (double)(y - obj->y) / (double)obj->h;
+     case RESIZE_LEFT:
+        dx = (double) (obj->x - x + obj->w) / (double) obj->w;
 
-	 for (l = poly->points; l ;l=l->next)
-	 {
-	    p = (geist_point*) l->data;
-	    p->y = obj->y + (p->y - obj->y) * dy;
-	 }
-	 break;
-  
-      case RESIZE_BOTTOMRIGHT:
-	 /* calculate resize ratio*/
-	 dx = (double)(x - obj->x) / (double)obj->w;
-	 dy = (double)(y - obj->y) / (double)obj->h;
-	 
-	 for (l = poly->points; l ;l=l->next)
-	 {
-	    p = (geist_point*) l->data;
-	    p->x = obj->x + (p->x - obj->x) * dx; 
-	    p->y = obj->y + (p->y - obj->y) * dy;
-	 }
-	 break;
-	 
-      case RESIZE_BOTTOMLEFT:
-	 /* calculate resize ratio*/
-	 dx = (double)(obj->x - x + obj->w) / (double)obj->w; 
-	 dy = (double)(y - obj->y) / (double)obj->h;
-	 
-	 for (l = poly->points; l ;l=l->next)
-	 {
-	    p = (geist_point*) l->data;
-	    p->x = obj->x + obj->w - (obj->x +obj->w -p->x) * dx;
-	    p->y = obj->y + (p->y - obj->y) * dy;
-	 }
-	 break;
-      
-      case RESIZE_TOP:
-	 /* calculate resize ratio*/
-	 dy = (double)(obj->y - y + obj->h) / (double)obj->h;
+        for (l = poly->points; l; l = l->next)
+        {
+           p = (geist_point *) l->data;
+           p->x = obj->x + obj->w - (obj->x + obj->w - p->x) * dx;
+        }
+        break;
 
-	 for (l = poly->points; l ;l=l->next)
-	 {
-	    p = (geist_point*) l->data;
-	    p->y = obj->y + obj->h - (obj->y +obj->h -p->y) * dy;
-	 }
-	 break;
+     case RESIZE_BOTTOM:
+        dy = (double) (y - obj->y) / (double) obj->h;
 
-      case RESIZE_TOPRIGHT:
-	 /* calculate resize ratio*/
-	 dx = (double)(x - obj->x) / (double)obj->w; 
-	 dy = (double)(obj->y - y + obj->h) / (double)obj->h;
-	 
-	 for (l = poly->points; l ;l=l->next)
-	 {
-	    p = (geist_point*) l->data;
-	    p->x = obj->x + (p->x - obj->x) * dx;
-	    p->y = obj->y + obj->h - (obj->y +obj->h -p->y) * dy;
-	 }
-	 break;
-	 
-      case RESIZE_TOPLEFT:
-	 /* calculate resize ratio*/
+        for (l = poly->points; l; l = l->next)
+        {
+           p = (geist_point *) l->data;
+           p->y = obj->y + (p->y - obj->y) * dy;
+        }
+        break;
 
-	 dx = (double)(obj->x - x + obj->w) / (double)obj->w;
-	 dy = (double)(obj->y - y + obj->h) / (double)obj->h;
-	 
-	 for (l = poly->points; l ;l=l->next)
-	 {
-	    p = (geist_point*) l->data;
-	    p->x = obj->x + obj->w - (obj->x + obj->w - p->x) * dx;
-	    p->y = obj->y + obj->w - (obj->y + obj->w - p->y) * dy;
-	 }
-	 break;     
-	 
-      default:
-	 break;
+     case RESIZE_BOTTOMRIGHT:
+        dx = (double) (x - obj->x) / (double) obj->w;
+        dy = (double) (y - obj->y) / (double) obj->h;
+
+        for (l = poly->points; l; l = l->next)
+        {
+           p = (geist_point *) l->data;
+           p->x = obj->x + (p->x - obj->x) * dx;
+           p->y = obj->y + (p->y - obj->y) * dy;
+        }
+        break;
+
+     case RESIZE_BOTTOMLEFT:
+        dx = (double) (obj->x - x + obj->w) / (double) obj->w;
+        dy = (double) (y - obj->y) / (double) obj->h;
+
+        for (l = poly->points; l; l = l->next)
+        {
+           p = (geist_point *) l->data;
+           p->x = obj->x + obj->w - (obj->x + obj->w - p->x) * dx;
+           p->y = obj->y + (p->y - obj->y) * dy;
+        }
+        break;
+
+     case RESIZE_TOP:
+        dy = (double) (obj->y - y + obj->h) / (double) obj->h;
+
+        for (l = poly->points; l; l = l->next)
+        {
+           p = (geist_point *) l->data;
+           p->y = obj->y + obj->h - (obj->y + obj->h - p->y) * dy;
+        }
+        break;
+
+     case RESIZE_TOPRIGHT:
+        dx = (double) (x - obj->x) / (double) obj->w;
+        dy = (double) (obj->y - y + obj->h) / (double) obj->h;
+
+        for (l = poly->points; l; l = l->next)
+        {
+           p = (geist_point *) l->data;
+           p->x = obj->x + (p->x - obj->x) * dx;
+           p->y = obj->y + obj->h - (obj->y + obj->h - p->y) * dy;
+        }
+        break;
+
+     case RESIZE_TOPLEFT:
+        dx = (double) (obj->x - x + obj->w) / (double) obj->w;
+        dy = (double) (obj->y - y + obj->h) / (double) obj->h;
+
+        for (l = poly->points; l; l = l->next)
+        {
+           p = (geist_point *) l->data;
+           p->x = obj->x + obj->w - (obj->x + obj->w - p->x) * dx;
+           p->y = obj->y + obj->w - (obj->y + obj->w - p->y) * dy;
+        }
+        break;
+
+     default:
+        break;
    }
    poly->need_update = TRUE;
    geist_poly_update_imlib_polygon(poly);
    geist_poly_update_bounds(poly);
 
    D_RETURN_(5);
+
+}
+
+
+void
+geist_poly_zoom(geist_object * obj, int x, int y)
+{
+   double dx, center_x;
+   geist_poly *poly;
+   gib_list *l;
+   geist_point *p;
+
+   D_ENTER(5);
+
+   D(5, ("resize to %d,%d\n", x, y));
+
+   poly = (geist_poly *) obj;
+
+   /*calculate center point in proportion to which we will stretch. Notice
+    * the exceedingly hard math. Dont hurt your eyes. Till */
+   center_x = (double) (obj->x + (double) obj->w / 2);
+
+
+   /* calculate resize ratio relative to obj center point */
+   dx = labs((double) x - center_x) / ((double) obj->w / 2);
+
+   if (dx)              /* we dont want our poly to vanish :) */
+   {
+      for (l = poly->points; l; l = l->next)
+      {
+         p = (geist_point *) l->data;
+
+         p->x =
+            (double) obj->x + (double) obj->w / 2 + ((p->x - center_x) * dx);
+         p->y =
+            (double) obj->y + (double) obj->h / 2 + ((p->y - center_x) * dx);
+
+      }
+   }
+   poly->need_update = TRUE;
+   geist_poly_update_imlib_polygon(poly);
+   geist_poly_update_bounds(poly);
+
+   D_RETURN_(5);
+
+}
+
+void
+geist_poly_resize(geist_object * obj, int x, int y)
+{
+   D_ENTER(3);
+
+
+   switch (obj->sizemode)
+   {
+     case SIZEMODE_ZOOM:
+        geist_poly_zoom(obj, x, y);
+        break;
+     case SIZEMODE_STRETCH:
+        geist_poly_stretch(obj, x, y);
+        break;
+
+     default:
+        break;
+   }
+
+   D_RETURN_(3);
 }
 
 void
@@ -500,7 +559,7 @@ refresh_r_cb(GtkWidget * widget, gpointer * obj)
    GEIST_POLY(obj)->r =
       gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(widget));
    geist_object_dirty(GEIST_OBJECT(obj));
-   geist_document_render_updates(GEIST_OBJECT_DOC(obj),1);
+   geist_document_render_updates(GEIST_OBJECT_DOC(obj), 1);
 }
 
 static void
@@ -510,7 +569,7 @@ refresh_g_cb(GtkWidget * widget, gpointer * obj)
    GEIST_POLY(obj)->g =
       gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(widget));
    geist_object_dirty(GEIST_OBJECT(obj));
-   geist_document_render_updates(GEIST_OBJECT_DOC(obj),1);
+   geist_document_render_updates(GEIST_OBJECT_DOC(obj), 1);
 }
 
 static void
@@ -520,7 +579,7 @@ refresh_b_cb(GtkWidget * widget, gpointer * obj)
    GEIST_POLY(obj)->b =
       gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(widget));
    geist_object_dirty(GEIST_OBJECT(obj));
-   geist_document_render_updates(GEIST_OBJECT_DOC(obj),1);
+   geist_document_render_updates(GEIST_OBJECT_DOC(obj), 1);
 }
 
 static void
@@ -530,7 +589,7 @@ refresh_a_cb(GtkWidget * widget, gpointer * obj)
    GEIST_POLY(obj)->a =
       gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(widget));
    geist_object_dirty(GEIST_OBJECT(obj));
-   geist_document_render_updates(GEIST_OBJECT_DOC(obj),1);
+   geist_document_render_updates(GEIST_OBJECT_DOC(obj), 1);
 }
 
 
@@ -657,26 +716,24 @@ geist_poly_rotate(geist_object * obj, double angle)
    angle = angle * 2 * 3.141592654 / 360;
 
    if (!poly || !poly->points)
-	D_RETURN_(3);   
+      D_RETURN_(3);
 
    l = poly->points;
 
-    while (l)
+   while (l)
    {
       p = (geist_point *) l->data;
-      
-      cart_x = p->x - obj->w/2 - obj->x;
-      cart_y = p->y - obj->h/2 - obj->y;
 
-      p->x = obj->x + obj->w/2 + cart_x * cos(angle) - cart_y * sin(angle);
-      p->y = obj->y + obj->h/2 + cart_x * sin(angle) + cart_y * cos(angle);
+      cart_x = p->x - obj->w / 2 - obj->x;
+      cart_y = p->y - obj->h / 2 - obj->y;
+
+      p->x = obj->x + obj->w / 2 + cart_x * cos(angle) - cart_y * sin(angle);
+      p->y = obj->y + obj->h / 2 + cart_x * sin(angle) + cart_y * cos(angle);
 
       l = l->next;
    }
    poly->need_update = TRUE;
    geist_poly_update_bounds(poly);
-    
+
    D_RETURN_(3);
 }
-
-
