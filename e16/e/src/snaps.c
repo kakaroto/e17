@@ -646,15 +646,6 @@ SnapshotEwinGroups(EWin * ewin, char onoff)
 			    sn->groups[j] = groups[j]->index;
 			    sn->num_groups = num_groups;
 			 }
-		       SnapshotEwinBorder(gwins[i]);
-		       SnapshotEwinDesktop(gwins[i]);
-		       SnapshotEwinSize(gwins[i]);
-		       SnapshotEwinLocation(gwins[i]);
-		       SnapshotEwinLayer(gwins[i]);
-		       SnapshotEwinSticky(gwins[i]);
-		       SnapshotEwinIcon(gwins[i]);
-		       SnapshotEwinShade(gwins[i]);
-		       SnapshotEwinCmd(gwins[i]);
 		    }
 		  Efree(groups);
 	       }
