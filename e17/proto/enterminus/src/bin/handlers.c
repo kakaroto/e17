@@ -173,7 +173,7 @@ int term_handler_escape_seq(Term *term) {
        case 'M':
 	 /* ESC [ [ n ] M  Delete n lines (DL), default 1  */
 	 DPRINT((stderr, "ESC [ [ n ] M  Delete n lines (DL)\n"));
-	 //delete_lines(narg ? args[0] : 1);
+	 term_delete_lines(term, narg ? args[0] : 1);
 	 break;
        case 'P':
 	 /* ESC [ [ n ] P  Delete n characters (DCH), default 1 */

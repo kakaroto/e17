@@ -178,6 +178,7 @@ void            term_add_rows(Term *term, int pos, int n);
 void            term_tcanvas_save(Term *term);
 void            term_tcanvas_restore(Term *term);
 void            term_clear_area(Term *term, int x1, int y1, int x2, int y2);
+void            term_delete_lines(Term *term, int lines);
 void            term_scroll_up(Term *term, int rows);
 void            term_scroll_down(Term *term, int rows);
    

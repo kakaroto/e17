@@ -144,6 +144,7 @@ void term_redraw(void *data) {
 
 /* Move cursor up n rows*/
 int term_cursor_move_up(Term *term, int n) {
+   DPRINT((stderr,"Moving cursor up %d rows\n",n));   
    term->tcanvas->cur_row -= n-1;
    if(term->tcanvas->cur_row < 0)
      term->tcanvas->cur_row = 0;
@@ -152,6 +153,7 @@ int term_cursor_move_up(Term *term, int n) {
 
 /* Move cursor down n rows */
 int term_cursor_move_down(Term *term, int n) {
+   DPRINT((stderr,"Moving cursor down %d rows\n",n));   
    term->tcanvas->cur_row += n-1;
    if(term->tcanvas->cur_row >= term->tcanvas->rows)
      term->tcanvas->cur_row = term->tcanvas->rows-1;
@@ -169,6 +171,7 @@ int term_cursor_move_left(Term *term, int n) {
 
 /* Move cursor right n cols */ 
 int term_cursor_move_right(Term *term, int n) {
+   DPRINT((stderr,"Moving cursor right %d cols\n",n));   
    term->tcanvas->cur_col += n-1;
    if(term->tcanvas->cur_col >= term->tcanvas->cols)
      term->tcanvas->cur_col = term->tcanvas->cols-1;
@@ -188,6 +191,7 @@ int term_cursor_move_col(Term *term, int n) {
 
 /* Move to a certain row */
 int term_cursor_move_row(Term *term, int n) {
+   DPRINT((stderr,"Moving cursor to row %d\n",n));   
    term->tcanvas->cur_row = n-1;
    if(term->tcanvas->cur_row < 0)
      term->tcanvas->cur_row = 0;
@@ -211,30 +215,33 @@ void term_cursor_goto(Term *term, int x, int y) {
      term->cur_row =  term->tcanvas->rows-1;
    term->tcanvas->cur_col = term->cur_col;
    term->tcanvas->cur_row = term->tcanvas->scroll_region_start +term->cur_row;
-   printf("Went to %d %d\n",term->cur_col,term->cur_row);
 }
 
 /* Move cursor again to last saved [x,y] */
 void term_cursor_rego(Term *term) {
+   DPRINT((stderr,"Re-going cursor to last saved position\n"));   
    term_cursor_goto(term, term->tcanvas->cur_col, term->tcanvas->cur_row);
 }
 
 /* Delete n rows starting from start */
 void term_delete_rows(Term *term, int start, int n) {
    int i;
-   
+   DPRINT((stderr,"Deleting %d rows from %d\n",n,start));
 }
 
 /* Add n rows starting from pos */
 void term_add_rows(Term *term, int pos, int n) {
+   DPRINT((stderr,"Adding %d rows from %d\n",n,pos));
 }
 
 /* Save the current screen */
 void term_tcanvas_save(Term *term) {   
+   DPRINT((stderr,"Saving current screen\n"));
 }
 
 /* Restore the last saved screen */
 void term_tcanvas_restore(Term *term) {
+   DPRINT((stderr,"Restoring current screen\n"));   
 }
 
 /* clear a certain part of the screen */
@@ -270,7 +277,10 @@ void term_scroll_up(Term *term, int rows) {
 
    if(term->tcanvas->scroll_in_region) {
       /* TODO: implement this */
-      DPRINT((stderr,"Scrolling: in region\n"));
+      DPRINT((stderr,"Scrolling: in region between %d and %d\n",
+	      term->tcanvas->scroll_region_start,
+	      term->tcanvas->scroll_region_end));
+      
    } else {
       DPRINT((stderr,"Scrolling: window\n"));
       /* Going past the virtual scroll buffer, we need to wrap  */
@@ -330,16 +340,16 @@ void term_scroll_up(Term *term, int rows) {
 	    gl = & term->tcanvas->grid[j + (term->tcanvas->cols * i)];
 	    gl->changed = 1;
 	 }
-      }        
+      }
    }
 }
 
 /* scroll window / region down */
 void term_scroll_down(Term *term, int rows) {
    if(term->tcanvas->scroll_in_region) {
-      
+      DPRINT((stderr,"Scrolling: in region\n"));      
    } else {
-      
+      DPRINT((stderr,"Scrolling: window\n"));      
    }
 }
 
@@ -348,4 +358,15 @@ int term_cursor_anim(Term *term) {
    a = 162 + 73 * cos ((ecore_time_get () - term->cursor.last_reset) * 2);
    evas_object_color_set (term->cursor.shape, 100, 100, 100, a);
    return 1;
+}
+
+void term_delete_lines(Term *term, int lines) {
+   int a, b;
+   a = term->tcanvas->scroll_region_start;
+   b = term->tcanvas->scroll_in_region;
+   term->tcanvas->scroll_region_start = term->tcanvas->cur_row;
+   term->tcanvas->scroll_in_region = 0;
+   term_scroll_up(term, lines);
+   term->tcanvas->scroll_region_start = a;
+   term->tcanvas->scroll_in_region = b;
 }
