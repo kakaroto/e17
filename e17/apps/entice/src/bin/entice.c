@@ -8,7 +8,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <limits.h>
-#include <Esmart/container.h>
+#include <Esmart/Esmart_Container.h>
 #include <Esmart/Esmart_Thumb.h>
 #include <Esmart/Esmart_Trans.h>
 #include <Esmart/Esmart_Draggies.h>
@@ -148,18 +148,18 @@ entice_init(Ecore_Evas * ee)
       e->preview = evas_object_image_add(ecore_evas_get(ee));
 
       /* initialize container */
-      e->container = e_container_new(ecore_evas_get(ee));
-      e_container_padding_set(e->container, 4, 4, 4, 4);
-      e_container_spacing_set(e->container, 4);
-      e_container_move_button_set(e->container, 2);
+      e->container = esmart_container_new(ecore_evas_get(ee));
+      esmart_container_padding_set(e->container, 4, 4, 4, 4);
+      esmart_container_spacing_set(e->container, 4);
+      esmart_container_move_button_set(e->container, 2);
       if ((layout =
            edje_file_data_get(entice_config_theme_get(), "container_layout")))
       {
-         e_container_layout_plugin_set(e->container, layout);
+         esmart_container_layout_plugin_set(e->container, layout);
          free(layout);
       }
       else
-         e_container_layout_plugin_set(e->container, "default");
+         esmart_container_layout_plugin_set(e->container, "default");
       evas_object_layer_set(e->container, 0);
       evas_object_color_set(e->container, 255, 255, 255, 255);
 
@@ -170,17 +170,17 @@ entice_init(Ecore_Evas * ee)
 
          if (ew > eh)
          {
-            e_container_fill_policy_set(e->container,
+            esmart_container_fill_policy_set(e->container,
                                         CONTAINER_FILL_POLICY_FILL_Y |
                                         CONTAINER_FILL_POLICY_KEEP_ASPECT);
-            e_container_direction_set(e->container, 0);
+            esmart_container_direction_set(e->container, 0);
          }
          else
          {
-            e_container_fill_policy_set(e->container,
+            esmart_container_fill_policy_set(e->container,
                                         CONTAINER_FILL_POLICY_FILL_X |
                                         CONTAINER_FILL_POLICY_KEEP_ASPECT);
-            e_container_direction_set(e->container, 1);
+            esmart_container_direction_set(e->container, 1);
          }
          edje_object_part_swallow(e->edje, "entice.thumbnail.area",
                                   e->container);
@@ -364,7 +364,7 @@ _entice_thumb_load(void *_data, Evas * _e, Evas_Object * _o, void *_ev)
                              entice_image_file_get(entice->current))))
          {
             edje_object_signal_emit(thumb_edje, "entice,thumb,load", "");
-            e_container_scroll_to(entice->container, thumb_edje);
+            esmart_container_scroll_to(entice->container, thumb_edje);
          }
 
          if (entice->scroller)
@@ -457,7 +457,7 @@ entice_file_add(const char *file)
                   entice->thumb.hash =
                      evas_hash_add(entice->thumb.hash, buf, edje);
 
-                  e_container_element_append(entice->container, edje);
+                  esmart_container_element_append(entice->container, edje);
                   if (evas_list_count(entice->thumb.list) == 1)
                      _entice_thumb_load(o, NULL, NULL, NULL);
                }
@@ -649,7 +649,7 @@ entice_file_remove(const char *file)
             entice->thumb.list = evas_list_remove(entice->thumb.list, obj);
             evas_object_del(obj);
          }
-         e_container_element_remove(entice->container, o);
+         esmart_container_element_remove(entice->container, o);
          evas_object_del(o);
          if (evas_list_count(entice->thumb.list) == 0)
          {
@@ -774,14 +774,14 @@ entice_thumbs_scroll_next_start(void)
 {
    if (entice && entice->container)
    {
-      e_container_scroll_start(entice->container, 1.0);
+      esmart_container_scroll_start(entice->container, 1.0);
    }
 }
 void
 entice_thumbs_scroll_prev_start(void)
 {
    if (entice && entice->container)
-      e_container_scroll_start(entice->container, -1.0);
+      esmart_container_scroll_start(entice->container, -1.0);
 }
 
 void
@@ -789,7 +789,7 @@ entice_thumbs_scroll_stop(void)
 {
    if (entice && entice->container)
    {
-      e_container_scroll_stop(entice->container);
+      esmart_container_scroll_stop(entice->container);
    }
 }
 
