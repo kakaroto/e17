@@ -1,7 +1,5 @@
 <!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook V3.1//EN" [
-<!ENTITY efsd "<function>efsd</function>">
 ]>
-
 
 <book id="etox-api-documentation">
   <bookinfo>
@@ -60,8 +58,54 @@
   <chapter id="introduction">
     <title>Introduction</title>
     <para>
-	Etox is a text library.
+       Etox is a text layout abstraction, built on top of Evas. It is to text,
+       what Ebits is to images. It is intended to abstract text layout to
+       allow different fonts, colors, styles (outline, shadowed, etc.), word
+       wrapping, paragraph layout, columnation and wrapping of text around
+       obstacles in the text area.
     </para>
+ </chapter>
+ <chapter id="howto">
+    <title id="howto.title">How to use Etox</title>
+
+    <section><title>Creating an Etox</title>
+       <para></para>
+    </section>
+
+    <section><title>Manipulating an Etox</title>
+       <Section><title>Moving</title>
+       
+       </Section>
+       <Section><title>Resizing</title>
+	  <para>
+	  </para>
+       </Section>
+       <Section><title>Raising / Lowering</title>
+	  <para></para>
+       </Section>
+       <Section><title>Showing / Hideing</title>
+	  <para></para>
+       </Section>
+       <Section><title>Setting attributes</title>
+	  <para></para>
+       </Section>
+    </section>
+
+    <section><title>Obstacles</title>
+       <para></para>
+    </section>
+
+    <section><title>Font Styles</title>
+       <para></para>
+    </section>
+    
+    <section><title>Alignment</title>
+       <para></para>
+    </section>
+    
+    <section><title>Using etox_set_text</title>
+       <para></para>
+    </section>
   </chapter>
 
   <chapter id="func_reference">
