@@ -480,7 +480,7 @@ main(int argc, char** argv)
      monitor be in-/decremented.
   */
 
-  sleep(30);
+  sleep(15);
 
   /* Stop monitoring home directory */
 

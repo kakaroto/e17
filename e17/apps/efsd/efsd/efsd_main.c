@@ -179,8 +179,10 @@ efsd_handle_listdir_options(char *filename, EfsdFamRequest *efr)
 
   D_ENTER;
 
+  bzero(&ec, sizeof(EfsdCommand));
   ec.efsd_file_cmd.file = filename;
   ec.efsd_file_cmd.id = efr->id;
+  ec.efsd_file_cmd.num_options = 0;
 
   for (i = 0; i < efr->num_options; i++)
     {
@@ -303,7 +305,7 @@ efsd_handle_fam_events(void)
 
 		if (famev.code == FAMAcknowledge)
 		  {
-		    D(("got FAMEndExist for dir listing -- freeing monitor.\n"));
+		    D(("got FAMAcknowledge for dir listing -- freeing monitor.\n"));
 		    efsd_fam_free_monitor(m);
 		  }
 	      }
@@ -354,7 +356,7 @@ efsd_handle_fam_events(void)
 
 		if (famev.code == FAMAcknowledge)
 		  {
-		    D(("got FAMEndExist for dir monitoring -- freeing monitor.\n"));
+		    D(("got FAMAcknowledge for dir monitoring -- freeing monitor.\n"));
 		    efsd_fam_remove_monitor(m);
 		  }
 	      }

@@ -213,7 +213,7 @@ efsd_fam_new_monitor(EfsdCommand *com, int client, EfsdFamMonType type)
   /* If we have options for a listdir events, unhook (not free)
      them from the command, so that they don't get freed in the
      normal command cleanup. They will get cleaned up when we
-     see the end-exists event and the EfsdFamRequest is freed. */
+     see the acknowledge event and the EfsdFamRequest is freed. */
      
   if (com->efsd_file_cmd.num_options > 0)
     {
@@ -407,6 +407,8 @@ efsd_fam_cleanup_client(int client)
 
       if (c)
 	{
+	  D(("Use count: %i\n", m->use_count));
+
 	  if (--(m->use_count) == 0)
 	    {
 	      /* Use count dropped to zero -- stop monitoring. */
