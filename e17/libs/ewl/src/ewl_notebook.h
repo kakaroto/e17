@@ -22,30 +22,30 @@ struct Ewl_Notebook
 
 Ewl_Widget     *ewl_notebook_new(void);
 int             ewl_notebook_init(Ewl_Notebook * n);
-void            ewl_notebook_append_page(Ewl_Notebook * n, Ewl_Widget * c,
-					 Ewl_Widget * l);
-void            ewl_notebook_prepend_page(Ewl_Notebook * n, Ewl_Widget * c,
-					  Ewl_Widget * l);
-void            ewl_notebook_insert_page(Ewl_Notebook * n, Ewl_Widget * c,
-					 Ewl_Widget * l, int p);
+void            ewl_notebook_page_append(Ewl_Notebook * n, Ewl_Widget * c,
+                                                    Ewl_Widget * l);
+void            ewl_notebook_page_prepend(Ewl_Notebook * n, Ewl_Widget * c,
+                                                    Ewl_Widget * l);
+void            ewl_notebook_page_insert(Ewl_Notebook * n, Ewl_Widget * c,
+                                                    Ewl_Widget * l, int p);
 
-void            ewl_notebook_remove_first_page(Ewl_Notebook * n);
-void            ewl_notebook_remove_last_page(Ewl_Notebook * n);
-void            ewl_notebook_remove_page(Ewl_Notebook * n, int i);
-void            ewl_notebook_remove_visible(Ewl_Notebook * n);
+void            ewl_notebook_first_page_remove(Ewl_Notebook * n);
+void            ewl_notebook_last_page_remove(Ewl_Notebook * n);
+void            ewl_notebook_page_remove(Ewl_Notebook * n, int i);
+void            ewl_notebook_visible_page_remove(Ewl_Notebook * n);
 
-void            ewl_notebook_set_tabs_alignment(Ewl_Notebook * n,
-						unsigned int a);
-unsigned int    ewl_notebook_get_tabs_alignment(Ewl_Notebook * n);
+void            ewl_notebook_tabs_alignment_set(Ewl_Notebook * n,
+                                                    unsigned int a);
+unsigned int    ewl_notebook_tabs_alignment_get(Ewl_Notebook * n);
 
-void            ewl_notebook_set_tabs_position(Ewl_Notebook * n,
-					       Ewl_Position p);
-Ewl_Position    ewl_notebook_get_tabs_position(Ewl_Notebook * n);
+void            ewl_notebook_tabs_position_set(Ewl_Notebook * n,
+                                                    Ewl_Position p);
+Ewl_Position    ewl_notebook_tabs_position_get(Ewl_Notebook * n);
 
-void            ewl_notebook_set_tabs_visible(Ewl_Notebook * n, int show);
+void            ewl_notebook_tabs_visible_set(Ewl_Notebook * n, int show);
 
-void            ewl_notebook_set_visible_page(Ewl_Notebook *n, int t);
-int             ewl_notebook_get_visible_page(Ewl_Notebook *n);
+void            ewl_notebook_visible_page_set(Ewl_Notebook *n, int t);
+int             ewl_notebook_visible_page_get(Ewl_Notebook *n);
 
 /*
  * Internally used callbacks, override at your own risk.

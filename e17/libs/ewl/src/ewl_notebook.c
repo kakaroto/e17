@@ -84,7 +84,7 @@ int ewl_notebook_init(Ewl_Notebook * n)
 }
 
 /**
- * ewl_notebook_append_page - append a page to the notebook
+ * ewl_notebook_page_append - append a page to the notebook
  * @n: the notebook to append the page
  * @t: the tab of the new page added
  * @p: the contents of the page added
@@ -92,7 +92,7 @@ int ewl_notebook_init(Ewl_Notebook * n)
  * Returns no value. Appends a page to the list of available pages that will
  * be available for display.
  */
-void ewl_notebook_append_page(Ewl_Notebook * n, Ewl_Widget * t, Ewl_Widget * p)
+void ewl_notebook_page_append(Ewl_Notebook * n, Ewl_Widget * t, Ewl_Widget * p)
 {
 	Ewl_Widget     *w;
 	Ewl_Widget     *b;
@@ -121,7 +121,7 @@ void ewl_notebook_append_page(Ewl_Notebook * n, Ewl_Widget * t, Ewl_Widget * p)
 }
 
 /**
- * ewl_notebook_prepend_page - prepend a page to the notebook
+ * ewl_notebook_page_prepend - prepend a page to the notebook
  * @n: the notebook to prepend the page
  * @t: the tab of the new page added
  * @p: the contents of the page added
@@ -129,7 +129,7 @@ void ewl_notebook_append_page(Ewl_Notebook * n, Ewl_Widget * t, Ewl_Widget * p)
  * Returns no value. Prepends a page to the list of available pages that will
  * be available for display.
  */
-void ewl_notebook_prepend_page(Ewl_Notebook * n, Ewl_Widget * t, Ewl_Widget * p)
+void ewl_notebook_page_prepend(Ewl_Notebook * n, Ewl_Widget * t, Ewl_Widget * p)
 {
 	Ewl_Widget     *w;
 	Ewl_Widget     *b;
@@ -144,7 +144,7 @@ void ewl_notebook_prepend_page(Ewl_Notebook * n, Ewl_Widget * t, Ewl_Widget * p)
 	if (t)
 		ewl_container_child_append(EWL_CONTAINER(b), t);
 	ewl_callback_append(b, EWL_CALLBACK_CLICKED, ewl_notebook_tab_click_cb,
-			    p);
+                            p);
 	ewl_widget_show(b);
 
 	ewl_container_child_prepend(EWL_CONTAINER(n->tab_box), b);
@@ -158,7 +158,7 @@ void ewl_notebook_prepend_page(Ewl_Notebook * n, Ewl_Widget * t, Ewl_Widget * p)
 }
 
 /**
- * ewl_notebook_insert_page - insert a page to the notebook
+ * ewl_notebook_page_insert - insert a page to the notebook
  * @n: the notebook to insert the page
  * @t: the tab of the new page added
  * @p: the contents of the page added
@@ -168,7 +168,7 @@ void ewl_notebook_prepend_page(Ewl_Notebook * n, Ewl_Widget * t, Ewl_Widget * p)
  * be available for display.
  */
 void
-ewl_notebook_insert_page(Ewl_Notebook * n, Ewl_Widget * t, Ewl_Widget * p,
+ewl_notebook_page_insert(Ewl_Notebook * n, Ewl_Widget * t, Ewl_Widget * p,
 			 int pos)
 {
 	Ewl_Widget     *w;
@@ -198,12 +198,12 @@ ewl_notebook_insert_page(Ewl_Notebook * n, Ewl_Widget * t, Ewl_Widget * p,
 }
 
 /**
- * ewl_notebook_remove_first_page - remove the first page from the notebook
+ * ewl_notebook_first_page_remove - remove the first page from the notebook
  * @n: the notebook to remove the first page
  *
  * Returns a pointer to the removed page on success, NULL on failure.
  */
-void ewl_notebook_remove_first_page(Ewl_Notebook * n)
+void ewl_notebook_first_page_remove(Ewl_Notebook * n)
 {
 	Ewl_Widget     *w;
 	Ewl_Widget     *page = NULL;
@@ -229,7 +229,7 @@ void ewl_notebook_remove_first_page(Ewl_Notebook * n)
 			ewl_widget_destroy(tab);
 		if (page == n->visible_page) {
 			n->visible_page = NULL;
-			ewl_notebook_set_visible_page(n, 0);
+			ewl_notebook_visible_page_set(n, 0);
 		}
 		ewl_widget_destroy(page);
 	}
@@ -238,12 +238,12 @@ void ewl_notebook_remove_first_page(Ewl_Notebook * n)
 }
 
 /**
- * ewl_notebook_remove_first_page - remove the last page from the notebook
+ * ewl_notebook_first_page_remove - remove the last page from the notebook
  * @n: the notebook to remove the last page
  *
  * Returns a pointer to the removed page on success, NULL on failure.
  */
-void ewl_notebook_remove_last_page(Ewl_Notebook * n)
+void ewl_notebook_last_page_remove(Ewl_Notebook * n)
 {
 	Ewl_Widget     *w;
 	Ewl_Widget     *page = NULL;
@@ -274,7 +274,7 @@ void ewl_notebook_remove_last_page(Ewl_Notebook * n)
 			ewl_widget_destroy(tab);
 		if (page == n->visible_page) {
 			n->visible_page = NULL;
-			ewl_notebook_set_visible_page(n, 0);
+			ewl_notebook_visible_page_set(n, 0);
 		}
 		ewl_widget_destroy(page);
 	}
@@ -283,13 +283,13 @@ void ewl_notebook_remove_last_page(Ewl_Notebook * n)
 }
 
 /**
- * ewl_notebook_remove_page - remove the specified page from the notebook
+ * ewl_notebook_page_remove - remove the specified page from the notebook
  * @n: the notebook to remove the specified page
  * @i: the position in the list of pages to remove from @n
  *
  * Returns a pointer to the removed page on success, NULL on failure.
  */
-void ewl_notebook_remove_page(Ewl_Notebook * n, int i)
+void ewl_notebook_page_remove(Ewl_Notebook * n, int i)
 {
 	int j = 1;
 	Ewl_Widget     *w;
@@ -319,7 +319,7 @@ void ewl_notebook_remove_page(Ewl_Notebook * n, int i)
 			ewl_widget_destroy(tab);
 		if (page == n->visible_page) {
 			n->visible_page = NULL;
-			ewl_notebook_set_visible_page(n, 0);
+			ewl_notebook_visible_page_set(n, 0);
 		}
 		ewl_widget_destroy(page);
 	}
@@ -328,12 +328,12 @@ void ewl_notebook_remove_page(Ewl_Notebook * n, int i)
 }
 
 /**
- * ewl_notebook_remove_visible - remove the visible page from the notebook
+ * ewl_notebook_visible_page_remove - remove the visible page from the notebook
  * @n: the notebook to remove the visible page
  *
  * Returns no value.
  */
-void ewl_notebook_remove_visible(Ewl_Notebook * n)
+void ewl_notebook_visible_page_remove(Ewl_Notebook * n)
 {
 	Ewl_Widget     *w;
 	Ewl_Widget     *page = NULL;
@@ -377,21 +377,21 @@ void ewl_notebook_remove_visible(Ewl_Notebook * n)
 		 * Set a usable visible page.
 		 */
 		n->visible_page = NULL;
-		ewl_notebook_set_visible_page(n, 0);
+		ewl_notebook_visible_page_set(n, 0);
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
- * ewl_notebook_set_tabs_alignment - set the alignment of a notebooks tabs
+ * ewl_notebook_tabs_alignment_set - set the alignment of a notebooks tabs
  * @n: the notebook to change tab alignment
  * @a: the new alignment for the tabs of @n
  *
  * Returns no value. Changes the alignment of the tabs on @n to @a, and
  * updates the display.
  */
-void ewl_notebook_set_tabs_alignment(Ewl_Notebook * n, unsigned int a)
+void ewl_notebook_tabs_alignment_set(Ewl_Notebook * n, unsigned int a)
 {
 	Ewl_Widget     *w;
 
@@ -408,12 +408,12 @@ void ewl_notebook_set_tabs_alignment(Ewl_Notebook * n, unsigned int a)
 }
 
 /**
- * ewl_notebook_get_tabs_alignment - get the alignment of a notebooks tabs
+ * ewl_notebook_tabs_alignment_get - get the alignment of a notebooks tabs
  * @n: the notebook to get tab alignment
  *
  * Returns the tab alignment of the notebook @n on success, 0 on failure.
  */
-unsigned int ewl_notebook_get_tabs_alignment(Ewl_Notebook * n)
+unsigned int ewl_notebook_tabs_alignment_get(Ewl_Notebook * n)
 {
 	Ewl_Widget     *w;
 
@@ -427,14 +427,14 @@ unsigned int ewl_notebook_get_tabs_alignment(Ewl_Notebook * n)
 }
 
 /**
- * ewl_notebook_set_tabs_position - set a notebooks tab position
+ * ewl_notebook_tabs_position_set - set a notebooks tab position
  * @n: the notebook to change tab position
  * @p: the new position for the tabs of @n
  *
  * Returns no value. Changes the tab position of @n to @p and updates the
  * display.
  */
-void ewl_notebook_set_tabs_position(Ewl_Notebook * n, Ewl_Position p)
+void ewl_notebook_tabs_position_set(Ewl_Notebook * n, Ewl_Position p)
 {
 	Ewl_Widget     *w;
 	char            file[PATH_MAX];
@@ -512,12 +512,12 @@ void ewl_notebook_set_tabs_position(Ewl_Notebook * n, Ewl_Position p)
 }
 
 /**
- * ewl_notebook_get_tabs_position - get the position of a notebooks tabs
+ * ewl_notebook_tabs_position_get - get the position of a notebooks tabs
  * @n: the notebook to retrieve the tab position
  *
  * Returns the position of the tabs in @n on success, 0 on failure.
  */
-Ewl_Position ewl_notebook_get_tabs_position(Ewl_Notebook * n)
+Ewl_Position ewl_notebook_tabs_position_get(Ewl_Notebook * n)
 {
 	Ewl_Widget     *w;
 
@@ -530,13 +530,13 @@ Ewl_Position ewl_notebook_get_tabs_position(Ewl_Notebook * n)
 }
 
 /**
- * ewl_notebook_set_flags - set the flags for a notebook
+ * ewl_notebook_tabs_visible_set - set the visibility of the tabs
  * @n: the notebook to change flags
- * @flags: the new flags for the notebook @n
+ * @show: the sets if the tabs should be shown (0) or not (1)
  *
- * Returns no value. Sets the flags for the notebook @n to @flags.
+ * Returns no value. Sets the visiblity for the tabs
  */
-void ewl_notebook_set_tabs_visible(Ewl_Notebook * n, int show)
+void ewl_notebook_tabs_visible_set(Ewl_Notebook * n, int show)
 {
 	Ewl_Widget     *w;
 
@@ -566,7 +566,7 @@ void ewl_notebook_set_tabs_visible(Ewl_Notebook * n, int show)
  * The notebook @a n switches to the tab number @a t where @a t is between 0
  * and the number of widgets in the notebook.
  */
-void ewl_notebook_set_visible_page(Ewl_Notebook *n, int t)
+void ewl_notebook_visible_page_set(Ewl_Notebook *n, int t)
 {
 	int i = 0;
 	Ewl_Container *c;
@@ -607,7 +607,7 @@ void ewl_notebook_set_visible_page(Ewl_Notebook *n, int t)
  * @return Returns the current page number on success.
  * @brief Retrieves the position of the current page in the notebook @a n.
  */
-int ewl_notebook_get_visible_page(Ewl_Notebook *n)
+int ewl_notebook_visible_page_get(Ewl_Notebook *n)
 {
 	int i = 0;
 	Ewl_Container *c;
