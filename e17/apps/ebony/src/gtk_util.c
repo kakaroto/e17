@@ -1056,3 +1056,72 @@ handle_recent_bgs_append(char *name)
    recent_bgs = g_list_append(recent_bgs, str);
    regen_recent_menu();
 }
+
+/**
+ * export_ok_clicked - ok clicked on the export image file selection
+ * @w - the ok button
+ * @data - the file selection
+ */
+void
+export_ok_clicked(GtkWidget * w, gpointer data)
+{
+   E_Background export_bg;
+   Evas export_evas;
+   Imlib_Image image;
+   gchar *file;
+   gchar errstr[1024];
+   char *dirpath;
+
+   /* Set default options */
+   int width = (export_info.screen.w * export_info.xinerama.h);
+   int height = (export_info.screen.h * export_info.xinerama.v);
+
+   file = gtk_file_selection_get_filename(GTK_FILE_SELECTION(data));
+   dirpath = get_dirpath_from_filename((char *) file);
+   snprintf(export_fileselection_dir, PATH_MAX, "%s/", dirpath);
+   free(dirpath);
+
+   if (!file)
+      return;
+
+   export_bg = e_bg_copy(bg);
+
+   /* Setup Imlib2 */
+   image = imlib_create_image(width, height);
+   imlib_context_set_image(image);
+   imlib_image_clear();
+
+   /* Setup Evas and render */
+   export_evas = evas_new();
+   evas_set_output_method(export_evas, RENDER_METHOD_IMAGE);
+   evas_set_output_image(export_evas, image);
+   evas_set_output_viewport(export_evas, 0, 0, width, height);
+   evas_set_output_size(export_evas, width, height);
+   e_bg_add_to_evas(export_bg, export_evas);
+   e_bg_show(export_bg);
+   evas_render(export_evas);
+
+   imlib_context_set_image(image);
+
+   /* Finally, save image */
+   imlib_save_image(file);
+
+   /* then free stuffs */
+   imlib_free_image_and_decache();
+   e_bg_free(export_bg);
+   evas_free(export_evas);
+
+   g_snprintf(errstr, 1024, "Exported background to %s", (char *) file);
+   ebony_status_message(errstr, EBONY_STATUS_TO);
+
+   gtk_widget_destroy(GTK_WIDGET(data));
+   if (export_ref)
+   {
+      gtk_widget_destroy(export_ref);
+      export_ref = NULL;
+   }
+
+   return;
+   UN(w);
+   UN(data);
+}

@@ -10,6 +10,7 @@
 
 GtkWidget *ebony_status;
 GtkWidget *win_ref, *bg_ref;
+GtkWidget *export_ref;
 
 GList *recent_bgs;
 
@@ -21,6 +22,7 @@ int idle;
 char image_fileselection_dir[PATH_MAX];
 char bg_fileselection_dir[PATH_MAX];
 char save_as_fileselection_dir[PATH_MAX];
+char export_fileselection_dir[PATH_MAX];
 
 #define MAX_RECENT_BG_COUNT 5
 #define EBONY_STATUS_TO 3500
@@ -30,5 +32,20 @@ char save_as_fileselection_dir[PATH_MAX];
     idle = gtk_idle_add(redraw, NULL); \
 }
 #define UN(data) data = 0
+
+struct
+{
+   struct
+   {
+      int w, h;
+   }
+   screen;
+   struct
+   {
+      int v, h;
+   }
+   xinerama;
+}
+export_info;
 
 #endif

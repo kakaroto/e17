@@ -51,5 +51,6 @@ gboolean gradient_two_color_drawing_area_expose(GtkWidget * w,
 
 void regen_recent_menu();
 void handle_recent_bgs_append(char *name);
+void export_ok_clicked(GtkWidget * w, gpointer data);
 
 #endif

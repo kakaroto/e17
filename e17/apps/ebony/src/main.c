@@ -30,7 +30,7 @@ init_globals(void)
    win_ref = NULL;
    ebony_status = NULL;
    bg_ref = NULL;
-
+   export_ref = NULL;
    recent_bgs = NULL;
 
    evas = NULL;
@@ -40,6 +40,7 @@ init_globals(void)
    snprintf(image_fileselection_dir, PATH_MAX, "%s", getenv("HOME"));
    snprintf(bg_fileselection_dir, PATH_MAX, "%s", getenv("HOME"));
    snprintf(save_as_fileselection_dir, PATH_MAX, "%s", getenv("HOME"));
+   snprintf(export_fileselection_dir, PATH_MAX, "%s", getenv("HOME"));
 }
 
 int
