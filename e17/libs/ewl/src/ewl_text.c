@@ -104,7 +104,7 @@ ewl_text_set_text(Ewl_Text * t, char *text)
 	 * Update the estyle if it's been realized at this point.
 	 */
 	if (t->estyle) {
-		double x, y, width, height;
+		Evas_Coord x, y, width, height;
 
 		estyle_set_text(t->estyle, t->text);
 		t->length = estyle_length(t->estyle);
