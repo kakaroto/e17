@@ -13,12 +13,76 @@
 Ecore_Evas     *ee;
 Evas           *evas;
 Ecore_X_Window  od_window;
+static Ecore_Timer *mouse_focus_timer = NULL;
 
+static void     handle_delete_request(Ecore_Evas * _ee);
+static void     handle_pre_render_cb(Ecore_Evas * _ee);
+static void     handle_post_render_cb(Ecore_Evas * _ee);
+static void     handle_mouse_in(Ecore_Evas * _ee);
 static void     handle_mouse_out(Ecore_Evas * _ee);
+static void     handle_focus_out(Ecore_Evas * _ee);
 static void     handle_mouse_down(void *data, Evas * e, Evas_Object * obj,
                                   void *event);
 static void     handle_mouse_move(void *data, Evas * e, Evas_Object * obj,
                                   void *event);
+
+int
+od_window_hide_timer_cb(void *data)
+{
+  if (mouse_focus_timer) {
+    if (dock.state == zooming || dock.state == zoomed) {
+      od_dock_zoom_out();
+      mouse_focus_timer = NULL;
+      return (0);
+    }
+  }
+  return (1);
+}
+static void
+handle_pre_render_cb(Ecore_Evas * _ee)
+{
+  edje_thaw();
+  od_dock_redraw(_ee);
+}
+static void
+handle_post_render_cb(Ecore_Evas * _ee)
+{
+  edje_freeze();
+}
+static void
+handle_delete_cb(Ecore_Evas * _ee)
+{
+  if (_ee != ee)
+    return;
+  ecore_main_loop_quit();
+}
+static void
+handle_focus_out(Ecore_Evas * _ee)
+{
+  if (_ee != ee)
+    return;
+  if (mouse_focus_timer)
+    ecore_timer_del(mouse_focus_timer);
+  mouse_focus_timer = ecore_timer_add(0.5, od_window_hide_timer_cb, NULL);
+}
+static void
+handle_mouse_in(Ecore_Evas * _ee)
+{
+  if (_ee != ee)
+    return;
+  if (mouse_focus_timer)
+    ecore_timer_del(mouse_focus_timer);
+  mouse_focus_timer = NULL;
+}
+static void
+handle_mouse_out(Ecore_Evas * _ee)
+{
+  if (_ee != ee)
+    return;
+  if (mouse_focus_timer)
+    ecore_timer_del(mouse_focus_timer);
+  mouse_focus_timer = ecore_timer_add(0.5, od_window_hide_timer_cb, NULL);
+}
 
 void
 od_window_move()
@@ -94,8 +158,12 @@ od_window_init()
     ecore_evas_shaped_set(ee, 1);
   else
     ecore_evas_shaped_set(ee, 0);
-  ecore_evas_callback_pre_render_set(ee, od_dock_redraw);
+  ecore_evas_callback_post_render_set(ee, handle_post_render_cb);
+  ecore_evas_callback_pre_render_set(ee, handle_pre_render_cb);
+  ecore_evas_callback_delete_request_set(ee, handle_delete_cb);
   ecore_evas_callback_mouse_out_set(ee, handle_mouse_out);
+  ecore_evas_callback_mouse_in_set(ee, handle_mouse_in);
+  ecore_evas_callback_focus_out_set(ee, handle_focus_out);
 
   evas = ecore_evas_get(ee);
   Evas_Object    *eventer = evas_object_rectangle_add(evas);
@@ -150,15 +218,6 @@ od_window_init()
     evas_object_show(o);
 #endif
   }
-}
-
-static void
-handle_mouse_out(Ecore_Evas * _ee)
-{
-  if (_ee != ee)
-    return;
-  if (dock.state == zooming || dock.state == zoomed)
-    od_dock_zoom_out();
 }
 
 static void

@@ -7,6 +7,13 @@
 static int      handle_idle(void *data);
 bool            need_redraw = false;
 
+static int
+exit_cb(void *data, int type, void *event)
+{
+  ecore_main_loop_quit();
+  return (0);
+}
+
 int
 main(int argc, char **argv)
 {
@@ -17,7 +24,7 @@ main(int argc, char **argv)
   od_config_init();
 
   ecore_app_args_set(argc, (const char **) argv);
-//      ecore_event_handler_add(ECORE_EVENT_SIGNAL_EXIT, callback_exit, NULL);
+  ecore_event_handler_add(ECORE_EVENT_SIGNAL_EXIT, exit_cb, NULL);
   ecore_evas_init();
   edje_init();
   edje_frametime_set(1.0 / 30.0);
@@ -35,7 +42,6 @@ main(int argc, char **argv)
   ecore_idle_enterer_add(handle_idle, NULL);
   ecore_main_loop_begin();
 
-  fprintf(stderr, "cleanly shutting down\n");
   edje_shutdown();
   ecore_evas_shutdown();
   ecore_config_save();
