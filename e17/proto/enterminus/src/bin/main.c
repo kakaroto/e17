@@ -1,4 +1,5 @@
 #include "term.h"
+#include "enterm.h"
 
 int main(int argc, char **argv) {
 

@@ -3,7 +3,6 @@
 void term_handler_xterm_seq(int op, Term *term) {
    char buf[512];
    int len;
-   int buflen;
    unsigned char c;
    Term_Event_Title_Change *e;
    Ecore_Event *event;
@@ -32,12 +31,10 @@ void term_handler_xterm_seq(int op, Term *term) {
 
 
 int term_handler_escape_seq(Term *term) {
-   int len;
    int pos;
    int args[NPAR];
    int narg = 0;
    int digit;
-   int rows, cols;
    int i;
    int questionmark;
    unsigned char c;
@@ -125,7 +122,7 @@ int term_handler_escape_seq(Term *term) {
 	    if(args[0] == 1) {
 	       /* erase from start to cursor */
 	       term_clear_area(term, 1, 1, term->tcanvas->cols, 
-			       term->tcanvas->cur_row);
+			       term->cur_row);
 	    }
 	    if(args[0] == 2) {
 	       /* erase whole display */
@@ -135,7 +132,7 @@ int term_handler_escape_seq(Term *term) {
 	 }
 	 else {
 	    /* erase from cursor to end of display */
-	    term_clear_area(term, 1, term->tcanvas->cur_row,
+	    term_clear_area(term, 1, term->cur_row,
 			    term->tcanvas->cols, term->tcanvas->rows);	    
 	 }
 	 break;
@@ -149,20 +146,20 @@ int term_handler_escape_seq(Term *term) {
 	 if(narg) {
 	    if(args[0] == 1) {
 	       /* erase from start of line to cursor */
-	       term_clear_area(term, 1, term->tcanvas->cur_row, 
-			       term->tcanvas->cur_col, term->tcanvas->cur_row);
+	       term_clear_area(term, 1, term->cur_row, 
+			       term->cur_col, term->cur_row);
 	    }
 	    if(args[0] == 2) {
 	       /* erase whole line */
-	       term_clear_area(term, 1, term->tcanvas->cur_row, 
-			       term->tcanvas->cols, term->tcanvas->cur_row);
+	       term_clear_area(term, 1, term->cur_row, 
+			       term->tcanvas->cols, term->cur_row);
 	    }
 	 }
 	 else {
 	    /* erase from cursor to end of line */
-	    term_clear_area(term, term->tcanvas->cur_col, 
-			    term->tcanvas->cur_row, 
-			    term->tcanvas->cols, term->tcanvas->cur_row);
+	    term_clear_area(term, term->cur_col, 
+			    term->cur_row, 
+			    term->tcanvas->cols, term->cur_row);
 	 }
 	 break;
        case 'L':
@@ -178,10 +175,10 @@ int term_handler_escape_seq(Term *term) {
        case 'P':
 	 /* ESC [ [ n ] P  Delete n characters (DCH), default 1 */
 	 DPRINT((stderr, "ESC [ [ n ] P  Delete n characters (DCH)\n"));
-	 term_clear_area(term, term->tcanvas->cur_col, 
-			 term->tcanvas->cur_row, 
-			 term->tcanvas->cur_col + args[0], 
-			 term->tcanvas->cur_row);
+	 term_clear_area(term, term->cur_col, 
+			 term->cur_row, 
+			 term->cur_col + args[0], 
+			 term->cur_row);
 	 break;
        case 'W':
 	 /* ESC [ [ n ] W  Tabulator functions
@@ -402,7 +399,7 @@ int term_handler_escape_seq(Term *term) {
 		   /* cursor position */
 		   
 		    snprintf(buf, sizeof(buf), "\033[%d;%dR",
-		    term->tcanvas->cur_row, term->tcanvas->cur_col);
+		    term->cur_row, term->cur_col);
 		    write(term->cmd_fd.sys, buf, strlen(buf));
 		    
 		   //cmd_write(buf, strlen(buf));
@@ -418,7 +415,7 @@ int term_handler_escape_seq(Term *term) {
 	  * defaults to the full screen
 	  */
 	 DPRINT((stderr, "ESC [ [ t ; b ] r  Set Scrolling Region (CSR)\n"));
-	 term->tcanvas->scroll_region_start = args[0] ? args[0] : 1;
+	 term->tcanvas->scroll_region_start = args[0] ? args[0] : 0;
 	 term->tcanvas->scroll_region_end = args[1] ? args[1] : term->tcanvas->rows;
 	 if(!narg) {
 	    /* Reset scroll region */
@@ -465,13 +462,13 @@ int term_handler_escape_seq(Term *term) {
       break;
     case '7': /* ESC 7 (save cursor position) */
       DPRINT((stderr, "ESC 7 (save cursor pos)\n"));
-      term->tcanvas->saved_cursor_x = term->tcanvas->cur_col;
-      term->tcanvas->saved_cursor_y = term->tcanvas->cur_row;
+      term->tcanvas->saved_cursor_x = term->cur_col;
+      term->tcanvas->saved_cursor_y = term->cur_row;
       break;
     case '8': /* ESC 8 (restore cursor position) */
       DPRINT((stderr, "ESC 8 (restore cursor pos)\n"));      
-      term->tcanvas->cur_col = term->tcanvas->saved_cursor_x;
-      term->tcanvas->cur_row = term->tcanvas->saved_cursor_y;
+      term->cur_col = term->tcanvas->saved_cursor_x;
+      term->cur_row = term->tcanvas->saved_cursor_y;
       break;
     case '=': /* ESC = (set application keypad mode) */
       DPRINT((stderr, "ESC = (set application keypad mode)\n"));      
@@ -483,10 +480,11 @@ int term_handler_escape_seq(Term *term) {
       break;
     case 'M': /* ESC M (reverse linefeed) */
       DPRINT((stderr, "ESC = (reverse linefeed)\n"));      
-      term->tcanvas->cur_row--;
-      if(term->tcanvas->cur_row < term->tcanvas->scroll_region_start) {
-	 term->tcanvas->cur_row = term->tcanvas->scroll_region_start;
+      term->cur_row--;
+      if (term->cur_row < 0) {
+	 /* We moved over the top! Scroll up! */
 	 term_scroll_down(term, 1);
+	 term->cur_row = 0;
       }
       break;
     default:
@@ -570,9 +568,9 @@ void term_cb_key_down(void *data, Evas *e, Evas_Object *obj, void *event_info){
 	return;
      }
    /* fixup upper case chars */
+#if 0
    else if (key_modifiers & TERM_KEY_MODIFIER_SHIFT)
      strupper(keyname);
-#if 0
    if (!strcmp(ev->keyname, "Left"))
      term_entry_cursor_left_move(evas_object_smart_data_get(data));
    else if (!strcmp(ev->keyname, "Right"))
@@ -598,7 +596,7 @@ void term_cb_key_down(void *data, Evas *e, Evas_Object *obj, void *event_info){
      }
    else if ((ev->keyname && strlen(ev->keyname) == 1) ||
 	    !strcmp(keyname, " ")) {
-      char *tmp = ev->string;
+      //char *tmp = ev->string;
       //term_key_down(evas_object_smart_data_get(data),tmp[0]);
       //write(term->cmd_fd.sys, tmp, 1);
 

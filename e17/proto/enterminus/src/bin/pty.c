@@ -102,7 +102,6 @@ struct passwd *find_user(void)
 int execute_command(Term *term)//, int argc, const char **argv)
 {
    char **args;
-   int master;
    struct passwd *pw;
 
    pw = find_user();
