@@ -24,7 +24,7 @@ main(int argc, char *argv[])
    geist_document *doc;
    int err;
 
-   opt.debug_level = 5;
+   opt.debug_level = 1;
    D_ENTER(3);
 
    gtk_init(&argc, &argv);

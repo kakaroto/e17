@@ -23,6 +23,7 @@ static void refresh_size_cb(GtkWidget * widget, gpointer * obj);
 static void refresh_text_cb(GtkWidget * widget, gpointer * obj);
 static void refresh_font_cb(GtkWidget * widget, gpointer * obj);
 static void refresh_just_cb(GtkWidget * widget, gpointer * obj);
+static void refresh_wordwrap_cb(GtkWidget * widget, gpointer * data);
 
 char *text_justifications[] = {
    "Left",
@@ -64,16 +65,19 @@ geist_text_init(geist_text * txt)
    obj->display_props = geist_text_display_props;
    obj->sizemode = SIZEMODE_NONE;
    obj->alignment = ALIGN_CENTER;
+   obj->update_positioning = geist_text_update_positioning;
    geist_object_set_type(obj, GEIST_TYPE_TEXT);
    obj->name = estrdup("New text");
    txt->justification = JUST_LEFT;
+   txt->wordwrap = TRUE;
 
    D_RETURN_(5);
 }
 
 geist_object *
 geist_text_new_with_text(int x, int y, char *fontname, int fontsize,
-                         char *text, int a, int r, int g, int b)
+                         char *text, int justification,
+                         unsigned char wordwrap, int a, int r, int g, int b)
 {
    geist_text *txt;
    geist_object *obj;
@@ -94,6 +98,9 @@ geist_text_new_with_text(int x, int y, char *fontname, int fontsize,
    txt->b = b;
    txt->g = g;
    txt->r = r;
+
+   txt->justification = justification;
+   txt->wordwrap = wordwrap;
 
    obj->x = x;
    obj->y = y;
@@ -191,13 +198,13 @@ geist_text_render_partial(geist_object * obj, Imlib_Image dest, int x, int y,
       sx, sy, sw, sh, dx, dy, dw, dh));
 
    geist_imlib_blend_image_onto_image(dest, im->im, 0, sx, sy, sw, sh, dx, dy,
-                                      dw, dh, 1, 1, obj->alias);
+                                      dw, dh, 1, 1, 0);
 
    D_RETURN_(5);
 }
 
 void
-geist_text_update_image(geist_text * txt)
+geist_text_update_image(geist_text * txt, unsigned char resize)
 {
    geist_object *obj;
 
@@ -209,8 +216,11 @@ geist_text_update_image(geist_text * txt)
       geist_imlib_free_image_and_decache(txt->im);
    txt->im = NULL;
    geist_text_create_image(txt);
-   obj->w = obj->rendered_w;
-   obj->h = obj->rendered_h;
+   if (resize)
+   {
+      obj->w = obj->rendered_w;
+      obj->h = obj->rendered_h;
+   }
    obj->rendered_x = 0;
    obj->rendered_y = 0;
    geist_object_dirty(obj);
@@ -227,7 +237,7 @@ geist_text_change_text(geist_text * txt, char *newtext)
       efree(txt->text);
    txt->text = estrdup(newtext);
 
-   geist_text_update_image(txt);
+   geist_text_update_image(txt, TRUE);
 
    D_RETURN_(3);
 }
@@ -307,7 +317,6 @@ geist_text_create_image(geist_text * txt)
    {
       p = (char *) l->data;
       geist_imlib_get_text_size(txt->fn, p, &ww, &hh, IMLIB_TEXT_TO_RIGHT);
-      /* TODO do justification here */
       switch (txt->justification)
       {
         case JUST_LEFT:
@@ -335,21 +344,12 @@ geist_text_create_image(geist_text * txt)
 void
 geist_text_free_lines(geist_text * txt)
 {
-   geist_list *l;
-
    D_ENTER(3);
 
    if (!txt->lines)
       return;
 
-   l = txt->lines;
-   while (l)
-   {
-      if (l->data)
-         efree(l->data);
-      l = l->next;
-   }
-   geist_list_free(txt->lines);
+   geist_list_free_and_data(txt->lines);
    txt->lines = NULL;
 
    D_RETURN_(3);
@@ -359,21 +359,122 @@ void
 geist_text_calculate_lines(geist_text * txt)
 {
    geist_object *obj;
+   geist_list *ll, *lines = NULL, *list = NULL, *words;
    geist_list *l = NULL;
-   char *string;
    char delim[2] = { '\n', '\0' };
+   int w, line_width;
+   int tw, th;
+   char *p, *pp;
+   char *line = NULL;
+   char *temp;
+   int space_width = 0, m_width = 0, t_width = 0, new_width = 0;
 
    D_ENTER(3);
 
    obj = GEIST_OBJECT(txt);
 
-   /* TODO word wrap when splitting, not just on \n */
    if (!txt->text)
       D_RETURN_(3);
 
-   string = estrdup(txt->text);
-   l = geist_string_split(txt->text, delim);
-   txt->lines = l;
+   lines = geist_string_split(txt->text, delim);
+
+   if (txt->wordwrap && obj->w)
+   {
+      geist_imlib_get_text_size(txt->fn, "M M", &t_width, NULL,
+                                IMLIB_TEXT_TO_RIGHT);
+      geist_imlib_get_text_size(txt->fn, "M", &m_width, NULL,
+                                IMLIB_TEXT_TO_RIGHT);
+      space_width = t_width - (2 * m_width);
+      w = obj->w;
+      l = lines;
+      while (l)
+      {
+         line_width = 0;
+         p = (char *) l->data;
+         D(1, ("got line %s\n", p));
+         /* quick check to see if whole line fits okay */
+         geist_imlib_get_text_size(txt->fn, p, &tw, &th, IMLIB_TEXT_TO_RIGHT);
+         if (tw <= w)
+            list = geist_list_add_end(list, estrdup(p));
+         else if (strlen(p) == 0)
+            list = geist_list_add_end(list, estrdup(""));
+         else if (!strcmp(p, " "))
+            list = geist_list_add_end(list, estrdup(" "));
+         else
+         {
+            words = geist_string_split(p, " ");
+            if (words)
+            {
+               ll = words;
+               while (ll)
+               {
+                  pp = (char *) ll->data;
+                  if (strcmp(pp, " "))
+                  {
+                     D(1, ("got word %s\n", pp));
+                     geist_imlib_get_text_size(txt->fn, pp, &tw, &th,
+                                               IMLIB_TEXT_TO_RIGHT);
+                     if (line_width == 0)
+                        new_width = tw;
+                     else
+                        new_width = line_width + space_width + tw;
+                     if (new_width <= w)
+                     {
+                        /* add word to line */
+                        if (line)
+                        {
+                           temp = g_strdup_printf("%s %s", line, pp);
+                           efree(line);
+                           line = temp;
+                        }
+                        else
+                           line = estrdup(pp);
+                        line_width = new_width;
+                     }
+                     else if (line_width == 0)
+                     {
+                        /* can't fit single word in :/
+                           increase width limit to width of word and jam the bastard
+                           in anyhow */
+                        w = tw;
+                        line = estrdup(pp);
+                        line_width = new_width;
+                     }
+                     else
+                     {
+                        /* finish this line, start next and add word there */
+                        if (line)
+                        {
+                           list = geist_list_add_end(list, estrdup(line));
+                           D(5, ("line finished, is: %s\n", line));
+                           efree(line);
+                           line = NULL;
+                        }
+                        line = estrdup(pp);
+                        line_width = tw;
+                     }
+                  }
+                  ll = ll->next;
+               }
+               if (line)
+               {
+                  /* finish last line */
+                  list = geist_list_add_end(list, estrdup(line));
+                  D(5, ("line finished, is: %s\n", line));
+                  efree(line);
+                  line = NULL;
+                  line_width = 0;
+               }
+               geist_list_free_and_data(words);
+            }
+         }
+         l = l->next;
+      }
+      geist_list_free_and_data(lines);
+      txt->lines = list;
+   }
+   else
+      txt->lines = lines;
 
    D_RETURN_(3);
 }
@@ -398,7 +499,8 @@ geist_text_duplicate(geist_object * obj)
 
    ret =
       geist_text_new_with_text(obj->x, obj->y, txt->fontname, txt->fontsize,
-                               txt->text, txt->a, txt->r, txt->g, txt->b);
+                               txt->text, JUST_LEFT, TRUE, txt->a, txt->r,
+                               txt->g, txt->b);
    ret->rendered_x = obj->rendered_x;
    ret->rendered_y = obj->rendered_y;
    ret->w = obj->w;
@@ -408,11 +510,12 @@ geist_text_duplicate(geist_object * obj)
       ret->state = obj->state;
       ret->alias = obj->alias;
       GEIST_TEXT(ret)->justification = txt->justification;
+      GEIST_TEXT(ret)->wordwrap = txt->wordwrap;
       ret->name =
          g_strjoin(" ", "Copy of", obj->name ? obj->name : "Untitled object",
                    NULL);
    }
-   geist_text_update_image(txt);
+   geist_text_update_image(txt, FALSE);
 
    D_RETURN(3, ret);
 }
@@ -431,6 +534,7 @@ geist_text_resize(geist_object * obj, int x, int y)
 
    D(5, ("resize to %d,%d\n", x, y));
    geist_object_resize_object(obj, x, y);
+   geist_text_update_image(txt, FALSE);
 
    D_RETURN_(5);
 }
@@ -447,7 +551,7 @@ refresh_size_cb(GtkWidget * widget, gpointer * obj)
 
    fontsize = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(widget));
    geist_text_change_font(txt, txt->fontname, fontsize);
-   geist_text_update_image(txt);
+   geist_text_update_image(txt, TRUE);
    geist_document_render_updates(GEIST_OBJECT_DOC(obj));
 }
 
@@ -498,7 +602,7 @@ refresh_font_cb(GtkWidget * widget, gpointer * obj)
 
    if (!geist_text_change_font(txt, fontname, txt->fontsize))
    {
-      geist_text_update_image(txt);
+      geist_text_update_image(txt, TRUE);
       geist_document_render_updates(GEIST_OBJECT_DOC(obj));
    }
 }
@@ -514,7 +618,7 @@ refresh_just_cb(GtkWidget * widget, gpointer * obj)
    just = gtk_entry_get_text(GTK_ENTRY(widget));
 
    txt->justification = geist_text_get_justification_from_string(just);
-   geist_text_update_image(txt);
+   geist_text_update_image(txt, FALSE);
    geist_document_render_updates(GEIST_OBJECT_DOC(obj));
 }
 
@@ -525,7 +629,7 @@ refresh_r_cb(GtkWidget * widget, gpointer * obj)
 
    GEIST_TEXT(obj)->r =
       gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(widget));
-   geist_text_update_image(GEIST_TEXT(obj));
+   geist_text_update_image(GEIST_TEXT(obj), FALSE);
    geist_document_render_updates(GEIST_OBJECT_DOC(obj));
 }
 
@@ -535,7 +639,7 @@ refresh_g_cb(GtkWidget * widget, gpointer * obj)
 
    GEIST_TEXT(obj)->g =
       gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(widget));
-   geist_text_update_image(GEIST_TEXT(obj));
+   geist_text_update_image(GEIST_TEXT(obj), FALSE);
    geist_document_render_updates(GEIST_OBJECT_DOC(obj));
 }
 
@@ -545,7 +649,7 @@ refresh_b_cb(GtkWidget * widget, gpointer * obj)
 
    GEIST_TEXT(obj)->b =
       gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(widget));
-   geist_text_update_image(GEIST_TEXT(obj));
+   geist_text_update_image(GEIST_TEXT(obj), FALSE);
    geist_document_render_updates(GEIST_OBJECT_DOC(obj));
 }
 
@@ -555,7 +659,7 @@ refresh_a_cb(GtkWidget * widget, gpointer * obj)
 
    GEIST_TEXT(obj)->a =
       gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(widget));
-   geist_text_update_image(GEIST_TEXT(obj));
+   geist_text_update_image(GEIST_TEXT(obj), FALSE);
    geist_document_render_updates(GEIST_OBJECT_DOC(obj));
 }
 
@@ -574,7 +678,7 @@ geist_text_display_props(geist_object * obj)
 {
    addtext_ok_data *ok_data = NULL;
    GtkWidget *table, *text_l, *font_l, *size_l, *hbox, *cr_l, *cg_l, *cb_l,
-      *ca_l, *just_l;
+      *ca_l, *just_l, *wordwrap_t;
    int i, num;
    char **fonts;
    GList *list = g_list_alloc();
@@ -598,7 +702,7 @@ geist_text_display_props(geist_object * obj)
    if (!fonts)
       printf("ARGH!\n");
 
-   table = gtk_table_new(5, 2, FALSE);
+   table = gtk_table_new(6, 2, FALSE);
    gtk_container_set_border_width(GTK_CONTAINER(ok_data->win), 5);
    gtk_container_add(GTK_CONTAINER(ok_data->win), table);
 
@@ -657,10 +761,17 @@ geist_text_display_props(geist_object * obj)
    gtk_combo_set_popdown_strings(GTK_COMBO(ok_data->just), list);
    gtk_widget_show(ok_data->just);
 
+   wordwrap_t = gtk_check_button_new_with_label("Wordwrap");
+   gtk_table_attach(GTK_TABLE(table), wordwrap_t, 0, 2, 5, 6,
+                    GTK_FILL | GTK_EXPAND, 0, 2, 2);
+   gtk_widget_show(wordwrap_t);
+
+   gtk_widget_show(table);
+
 
    hbox = gtk_hbox_new(FALSE, 0);
 
-   gtk_table_attach(GTK_TABLE(table), hbox, 0, 2, 5, 6, GTK_FILL | GTK_EXPAND,
+   gtk_table_attach(GTK_TABLE(table), hbox, 0, 2, 6, 7, GTK_FILL | GTK_EXPAND,
                     0, 2, 2);
 
    cr_l = gtk_label_new("R:");
@@ -698,7 +809,8 @@ geist_text_display_props(geist_object * obj)
 
    gtk_widget_show(hbox);
 
-   gtk_widget_show(table);
+   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(wordwrap_t),
+                                GEIST_TEXT(obj)->wordwrap);
 
    gtk_spin_button_set_value(GTK_SPIN_BUTTON(ok_data->cr),
                              GEIST_TEXT(obj)->r);
@@ -733,6 +845,9 @@ geist_text_display_props(geist_object * obj)
                       GTK_SIGNAL_FUNC(refresh_r_cb), (gpointer) obj);
    gtk_signal_connect(GTK_OBJECT(ok_data->size), "changed",
                       GTK_SIGNAL_FUNC(refresh_size_cb), (gpointer) obj);
+   gtk_signal_connect(GTK_OBJECT(wordwrap_t), "clicked",
+                      GTK_SIGNAL_FUNC(refresh_wordwrap_cb), (gpointer) obj);
+
 
    gtk_signal_connect(GTK_OBJECT(GTK_COMBO(ok_data->font)->entry), "changed",
                       GTK_SIGNAL_FUNC(refresh_font_cb), (gpointer) obj);
@@ -766,4 +881,31 @@ geist_text_get_justification_from_string(char *s)
          D_RETURN(3, i);
    }
    D_RETURN(3, 0);
+}
+
+static void
+refresh_wordwrap_cb(GtkWidget * widget, gpointer * data)
+{
+   geist_object *obj;
+
+   D_ENTER(3);
+
+   obj = GEIST_OBJECT(data);
+   GEIST_TEXT(obj)->wordwrap =
+      gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget));
+   geist_text_update_image(GEIST_TEXT(obj), FALSE);
+   geist_document_render_updates(GEIST_OBJECT_DOC(obj));
+
+   D_RETURN_(3);
+}
+
+void geist_text_update_positioning(geist_object *obj)
+{
+   D_ENTER(3);
+
+   geist_object_update_sizemode(obj);
+   geist_object_update_alignment(obj);
+   geist_text_update_image(GEIST_TEXT(obj), FALSE);
+
+   D_RETURN_(3);
 }

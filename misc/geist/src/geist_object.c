@@ -811,7 +811,8 @@ geist_object_int_get_rendered_area(geist_object * obj, int *x, int *y, int *w,
    *y = obj->y + obj->rendered_y;
    *w = obj->rendered_w;
    *h = obj->rendered_h;
-   CLIP(*x, *y, *w, *h, obj->x, obj->y, obj->w, obj->h);
+   /* CLIP(*x, *y, *w, *h, obj->x, obj->y, obj->w, obj->h); */
+   geist_rectangle_clip(x, y, w, h, obj->x, obj->y, obj->w, obj->h);
 
    D(5, ("area %d,%d %dx%d\n", *x, *y, *w, *h));
 

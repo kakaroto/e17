@@ -438,7 +438,7 @@ geist_parse_text_xml(xmlDocPtr doc, xmlNsPtr ns, xmlNodePtr cur)
    g = geist_xml_read_int(cur, "G", 255);
    b = geist_xml_read_int(cur, "B", 255);
    fontsize = geist_xml_read_int(cur, "Fontsize", 12);
-   wordwrap = geist_xml_read_int(cur, "Wordwrap", 0);
+   wordwrap = geist_xml_read_int(cur, "Wordwrap", 1);
 
    cur = cur->children;
    while (cur != NULL)
@@ -452,8 +452,7 @@ geist_parse_text_xml(xmlDocPtr doc, xmlNsPtr ns, xmlNodePtr cur)
          char *temp;
 
          temp = xmlNodeGetContent(cur->children);
-         justification =
-            geist_text_get_justification_from_string(temp);
+         justification = geist_text_get_justification_from_string(temp);
          xmlFree(temp);
       }
       cur = cur->next;
@@ -462,9 +461,9 @@ geist_parse_text_xml(xmlDocPtr doc, xmlNsPtr ns, xmlNodePtr cur)
    if (fontname && text)
    {
       ret =
-         geist_text_new_with_text(0, 0, fontname, fontsize, text, a, r, g, b);
-      GEIST_TEXT(ret)->justification = justification;
-      geist_text_update_image(GEIST_TEXT(ret));
+         geist_text_new_with_text(0, 0, fontname, fontsize, text,
+                                  justification, wordwrap, a, r, g, b);
+      geist_text_update_image(GEIST_TEXT(ret), FALSE);
    }
 
    D_RETURN(3, ret);

@@ -45,15 +45,6 @@
 <geist:Alignment>Center Both</geist:Alignment>
 <geist:Filename>/usr/local/share/geist/images/bulb.png</geist:Filename>
 </geist:Object>
-<geist:Object X="246" Y="16" W="232" H="30" Alias="1" Visible="16" Fontsize="23" R="255" G="24" B="100" A="128" Wordwrap="0">
-<geist:Type>Text</geist:Type>
-<geist:Name>New text</geist:Name>
-<geist:Sizemode>None</geist:Sizemode>
-<geist:Alignment>Center Both</geist:Alignment>
-<geist:Fontname>20thcent</geist:Fontname>
-<geist:Text>So this is geist...</geist:Text>
-<geist:Justification>Left</geist:Justification>
-</geist:Object>
 <geist:Object X="197" Y="154" W="297" H="373" Alias="1" Visible="16" Colormod_A="100" Colormod_R="100" Colormod_G="100" Colormod_B="100">
 <geist:Type>Image</geist:Type>
 <geist:Name>elogo.png</geist:Name>
@@ -67,22 +58,7 @@
 <geist:Sizemode>Stretch</geist:Sizemode>
 <geist:Alignment>None</geist:Alignment>
 </geist:Object>
-<geist:Object X="3" Y="413" W="239" H="15" Alias="1" Visible="16" Fontsize="11" R="100" G="100" B="255" A="255" Wordwrap="0">
-<geist:Type>Text</geist:Type>
-<geist:Name>New text</geist:Name>
-<geist:Sizemode>None</geist:Sizemode>
-<geist:Alignment>Center Both</geist:Alignment>
-<geist:Fontname>20thcent</geist:Fontname>
-<geist:Text>pr0n had to be in there somewhere...</geist:Text>
-<geist:Justification>Left</geist:Justification>
-</geist:Object>
 <geist:Object X="3" Y="406" W="240" H="0" Alias="1" Visible="16" R="255" G="0" B="0" A="255" Start_X="3" Start_Y="406" End_X="243" End_Y="406">
-<geist:Type>XXXXX</geist:Type>
-<geist:Name>New line</geist:Name>
-<geist:Sizemode>Stretch</geist:Sizemode>
-<geist:Alignment>None</geist:Alignment>
-</geist:Object>
-<geist:Object X="5" Y="433" W="237" H="0" Alias="1" Visible="16" R="50" G="50" B="255" A="255" Start_X="5" Start_Y="433" End_X="242" End_Y="433">
 <geist:Type>XXXXX</geist:Type>
 <geist:Name>New line</geist:Name>
 <geist:Sizemode>Stretch</geist:Sizemode>
@@ -135,6 +111,30 @@
 <geist:Sizemode>Zoom</geist:Sizemode>
 <geist:Alignment>Center Both</geist:Alignment>
 <geist:Filename>/usr/local/share/geist/images/paper.png</geist:Filename>
+</geist:Object>
+<geist:Object X="5" Y="433" W="237" H="0" Alias="1" Visible="16" R="50" G="50" B="255" A="255" Start_X="5" Start_Y="433" End_X="242" End_Y="433">
+<geist:Type>XXXXX</geist:Type>
+<geist:Name>New line</geist:Name>
+<geist:Sizemode>Stretch</geist:Sizemode>
+<geist:Alignment>None</geist:Alignment>
+</geist:Object>
+<geist:Object X="246" Y="16" W="239" H="30" Alias="1" Visible="16" Fontsize="23" R="255" G="24" B="100" A="128" Wordwrap="1">
+<geist:Type>Text</geist:Type>
+<geist:Name>New text</geist:Name>
+<geist:Sizemode>None</geist:Sizemode>
+<geist:Alignment>Center Both</geist:Alignment>
+<geist:Fontname>20thcent</geist:Fontname>
+<geist:Text>So this is geist...</geist:Text>
+<geist:Justification>Left</geist:Justification>
+</geist:Object>
+<geist:Object X="3" Y="413" W="239" H="16" Alias="1" Visible="16" Fontsize="11" R="100" G="100" B="255" A="255" Wordwrap="1">
+<geist:Type>Text</geist:Type>
+<geist:Name>New text</geist:Name>
+<geist:Sizemode>None</geist:Sizemode>
+<geist:Alignment>Left</geist:Alignment>
+<geist:Fontname>20thcent</geist:Fontname>
+<geist:Text>pr0n had to be in there somewhere...</geist:Text>
+<geist:Justification>Left</geist:Justification>
 </geist:Object>
 </geist:Objects>
 </geist:Layer>

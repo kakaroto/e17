@@ -153,5 +153,8 @@ void
 geist_imlib_line_clip_and_draw(Imlib_Image dest, int x0, int y0, int x1,
                                int y1, int xmin, int xmax, int ymin, int ymax,
                                int r, int g, int b, int a);
+void
+geist_rectangle_clip(int *x, int *y, int *w, int *h, int xx, int yy, int ww,
+                     int hh);
 
 #endif

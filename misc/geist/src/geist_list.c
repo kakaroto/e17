@@ -60,6 +60,28 @@ geist_list_free(geist_list * l)
    D_RETURN_(4);
 }
 
+void
+geist_list_free_and_data(geist_list * l)
+{
+   geist_list *ll;
+
+   D_ENTER(4);
+
+   if (!l)
+      D_RETURN_(4);
+
+   while (l)
+   {
+      ll = l;
+      l = l->next;
+      efree(ll->data);
+      efree(ll);
+   }
+
+   D_RETURN_(4);
+}
+
+
 geist_list *
 geist_list_add_front(geist_list * root, void *data)
 {
