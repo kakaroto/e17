@@ -22,6 +22,7 @@ static gchar *wait_for_ipc_msg(void);
 
 gchar *e_ipc_msg = NULL;
 GList *keys = NULL;
+char dont_update=0;
 
 
 typedef struct _keybind {
@@ -197,6 +198,42 @@ void
 selection_made(GtkWidget *clist, gint row, gint column, GdkEventButton *event,
 		gpointer data)
 {
+
+	gchar *modstring;
+	gchar *keyused;
+	gchar *actperform;
+	gchar *paramsused;
+	int i;
+
+	if (data) {
+		event = NULL;
+		clist = NULL;
+		column = 0;
+	}
+
+	dont_update = 1;
+	gtk_clist_get_text(GTK_CLIST(clist), row, 0, &modstring);
+	gtk_option_menu_set_history(GTK_OPTION_MENU(act_mod),0);
+	for(i=1;i<20;i++) {
+		if(!strcmp(mod_str[i],modstring)) {
+			gtk_option_menu_set_history(GTK_OPTION_MENU(act_mod),i);
+		}
+	}
+	gtk_clist_get_text(GTK_CLIST(clist), row, 1, &keyused);
+	gtk_entry_set_text(GTK_ENTRY(act_key),keyused);
+	gtk_clist_get_text(GTK_CLIST(clist), row, 2, &actperform);
+	for (i = 0; (actions[i].text); i++) {
+		if(!strcmp(actperform,actions[i].text)) {
+			gtk_clist_select_row(GTK_CLIST(act_clist),i,0);
+		}
+	}
+	gtk_clist_get_text(GTK_CLIST(clist), row, 3, &paramsused);
+	gtk_entry_set_text(GTK_ENTRY(act_params),paramsused);
+
+	printf("%s\n%s\n%s\n%s\n",modstring,keyused,actperform,paramsused);
+
+	dont_update=0;
+
 
 	return;
 }
