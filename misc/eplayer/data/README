@@ -17,7 +17,8 @@ The "eplayer" Edje emits the following signals:
 	action,     SIGNAL_EMIT "SEEK_FORWARD" "seekforward_button";
 	action,     SIGNAL_EMIT "SEEK_BACK" "seekback_button";
 
-	action,     SIGNAL_EMIT "SWITCH_TIME_DISPLAY" "time_text";
+	action,     SIGNAL_EMIT "TOGGLE_TIME_DISPLAY_MODE" "time_text";
+	action,     SIGNAL_EMIT "TOGGLE_REPEAT_MODE" "repeat_mode";
 
 It provides the following parts for text display:
 

@@ -58,21 +58,26 @@ void cb_pause(ePlayer *player, Evas *e, Evas_Object *o, void *event) {
  */
 void cb_track_next(ePlayer *player, Evas *e, Evas_Object *o,
                    void *event) {
+	int play = 0;
+	
 	debug(DEBUG_LEVEL_INFO, "Next File Called\n");
 
 	eplayer_playback_stop(player);
 
 	if (player->playlist->cur_item->next) {
 		player->playlist->cur_item = player->playlist->cur_item->next;
+		play = 1;
+	} else {
+		/* there's no next item, so move to the beginning again */
+		player->playlist->cur_item = player->playlist->items;
+		play = player->cfg.repeat;
+	}
+
+	if (play) {
 		eplayer_playback_start(player, 1);
 		paused = 0;
-	} else {
-		/* there's no next item, so move to the beginning again
-		 * but don't start playing yet.
-		 */
-		player->playlist->cur_item = player->playlist->items;
-		track_open(player); /* refresh track info parts */
-	}
+	} else /* refresh track info parts, but don't start playing yet */
+		track_open(player);
 }
 
 /**
@@ -131,6 +136,11 @@ void cb_time_display_toggle(ePlayer *player, Evas_Object *obj,
                             const char *emission, const char *src) {
 	player->cfg.time_display = !player->cfg.time_display;
 	track_update_time(player);
+}
+
+void cb_repeat_mode_toggle(ePlayer *player, Evas_Object *obj,
+                           const char *emission, const char *src) {
+	player->cfg.repeat = !player->cfg.repeat;
 }
 
 /**

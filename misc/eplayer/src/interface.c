@@ -115,8 +115,12 @@ static int setup_edje(ePlayer *player, Ecore_Evas *ee) {
 	                                cb_volume_lower, player);
 
 	edje_object_signal_callback_add(player->gui.edje,
-	                                "SWITCH_TIME_DISPLAY", "time_text",
+	                                "TOGGLE_TIME_DISPLAY_MODE", "time_text",
 	                                cb_time_display_toggle, player);
+
+	edje_object_signal_callback_add(player->gui.edje,
+	                                "TOGGLE_REPEAT_MODE", "repeat_mode",
+	                                cb_repeat_mode_toggle, player);
 
 	return 1;
 }
@@ -165,6 +169,13 @@ static void setup_playlist(ePlayer *player) {
 		e_container_element_append(player->gui.playlist,
 		                           player->gui.playlist_col[i]);
 	}
+	
+	edje_object_signal_callback_add(player->gui.edje,
+	                                "PLAYLIST_SCROLL_DOWN", "playlist",
+	                                cb_playlist_scroll_down, player);
+	edje_object_signal_callback_add(player->gui.edje,
+	                                "PLAYLIST_SCROLL_UP", "playlist",
+	                                cb_playlist_scroll_up, player);
 }
 
 void show_playlist_item(PlayListItem *pli, void *data) {
@@ -212,13 +223,6 @@ void show_playlist_item(PlayListItem *pli, void *data) {
 		 */
 		player->gui.playlist_font_size[i] = h;
 	}
-	
-	edje_object_signal_callback_add(player->gui.edje,
-	                                "PLAYLIST_SCROLL_DOWN", "playlist",
-	                                cb_playlist_scroll_down, player);
-	edje_object_signal_callback_add(player->gui.edje,
-	                                "PLAYLIST_SCROLL_UP", "playlist",
-	                                cb_playlist_scroll_up, player);
 }
 
 int refresh_volume(void *udata) {

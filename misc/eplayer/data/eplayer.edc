@@ -1161,7 +1161,7 @@ collections {
 					name, "time_text_click";
 					signal, "mouse,up,1";
 					source, "time_text";
-					action, SIGNAL_EMIT, "SWITCH_TIME_DISPLAY", "time_text";
+					action, SIGNAL_EMIT, "TOGGLE_TIME_DISPLAY_MODE", "time_text";
 				}
 
 		/* Seek Backwards */
