@@ -66,7 +66,7 @@ __ewl_entry_init(Ewl_Widget * widget)
 	 * Initialize the inherited container fields
 	 */
 	ewl_container_init(EWL_CONTAINER(widget), 300, 16,
-			   EWL_FILL_POLICY_NORMAL, EWL_ALIGNMENT_CENTER);
+			   EWL_FILL_POLICY_FILL, EWL_ALIGNMENT_CENTER);
 
 	MAX_H(widget) = 16;
 	MIN_H(widget) = 16;
@@ -350,6 +350,8 @@ __ewl_entry_select(Ewl_Widget * w, void *ev_data, void *user_data)
 	e = EWL_ENTRY(w);
 
 	ebits_show(e->cursor);
+
+	printf("sdfsfd\n");
 
 	DLEAVE_FUNCTION;
 }
