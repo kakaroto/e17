@@ -2,6 +2,7 @@
 #define E_THUMB_H
 
 #include<Evas.h>
+#include<Epsilon.h>
 
 /**
  * E_Thumb - In an effort to easily generate thumbnails this smart object
@@ -15,22 +16,13 @@
  */
 struct _E_Thumb
 {
-    struct {
-	int mtime;
-	int w, h;
-	char *name;
-    } thumb, file;	/* info about the thumb and source files */
-    char *uri;		/* uri for the file we're caching */
-    char *format;	/* image format of the real image */
+    Epsilon *e;
+    Epsilon_Info *info;
     Evas_Object *image;	/* thumb image that's displayed */
     double x, y, w, h;	/* smart object location/geometry */
+    int tw, th;
 };
 typedef struct _E_Thumb E_Thumb;
-
-/**
- * e_thumb_init - create the directories ethumb is going to cache to
- */
-void e_thumb_init(void);
 
 /**
  * e_thumb_free - free an E_Thumb smart object 
