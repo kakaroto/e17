@@ -64,10 +64,5 @@ rm -rf $RPM_BUILD_ROOT
 %{prefix}/lib/libgiblib.so
 %{prefix}/lib/libgiblib.la
 %{prefix}/lib/libgiblib.a
-%{prefix}/include/giblib/giblib.h
-%{prefix}/include/giblib/gib_list.h
-%{prefix}/include/giblib/gib_utils.h
-%{prefix}/include/giblib/gib_style.h
-%{prefix}/include/giblib/gib_imlib.h
-%{prefix}/include/giblib/giblib_config.h
+%{prefix}/include/giblib/*
 %{prefix}/bin/giblib-config
