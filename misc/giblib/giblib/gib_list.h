@@ -28,6 +28,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <giblib/giblib_config.h>
 
+#define GIB_LIST(a) ((gib_list*)a)
+
 enum __direction
 { FORWARD, BACK };
 

@@ -1,4 +1,5 @@
-/* giblib.h
+
+/* gib_hash.h
 
 Copyright (C) 1999,2000 Tom Gilbert.
 
@@ -23,12 +24,40 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 */
 
-#ifndef GIBLIB_H
-#define GIBLIB_H
+#ifndef GIB_HASH_H
+#define GIB_HASH_H
 
-#include <giblib/gib_imlib.h>
+#include <giblib/giblib_config.h>
 #include <giblib/gib_list.h>
-#include <giblib/gib_hash.h>
-#include <giblib/gib_style.h>
 
-#endif
+#define GIB_HASH(a) ((gib_hash*)a)
+#define GIB_HASH_NODE(a) ((gib_hash_node*)a)
+
+typedef struct __gib_hash      gib_hash;
+typedef struct __gib_hash_node gib_hash_node;
+
+struct __gib_hash
+{
+	gib_hash_node *base;
+};
+
+struct __gib_hash_node
+{
+   gib_list  list;
+   char     *key;
+};
+
+gib_hash_node *gib_hash_node_new(char *key, void *data);
+void           gib_hash_node_free(gib_hash_node *node);
+void           gib_hash_node_free_and_data(gib_hash_node *node);
+
+gib_hash *gib_hash_new();
+void      gib_hash_free(gib_hash *hash);
+void      gib_hash_free_and_data(gib_hash *hash);
+
+void      gib_hash_set(gib_hash *hash, char *key, void *data);
+void     *gib_hash_get(gib_hash *hash, char *key);
+void      gib_hash_remove(gib_hash *hash, char *key);
+
+
+#endif /* GIB_HASH_H */
