@@ -249,9 +249,9 @@ _key_down_cb (void *data, Evas * e, Evas_Object * o, void *ev)
      switch ((int) evx->key_compose[0])
      {
 	case 127: /* Delete */
-	case 9:	  /* Backspace */
+	case 9:	  /* \t */
 	   break;
-	case 8:	  /* \t */
+	case 8:	  /* Backspace */
 	   esmart_text_entry_buffer_backspace (data);
 	   break;
 	case 13:  /* \r */
