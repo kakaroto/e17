@@ -35,8 +35,12 @@ typedef struct {
 	Ecore_Timer *time_timer;
 
 	pthread_t playback_thread;
-	pthread_mutex_t playback_mutex;
+	
+	pthread_mutex_t playback_stop_mutex;
 	int playback_stop;
+	
+	pthread_mutex_t playback_next_mutex;
+	int playback_next;
 
 	OutputPlugin *output;
 	Evas_List *input_plugins; /* lists all available input plugins */

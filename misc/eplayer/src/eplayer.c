@@ -2,6 +2,7 @@
 /* Edje Overhaul startnig phase 4 - Started 7/30/03 */
 
 #include <config.h>
+#include <Edje.h>
 #include <Edb.h>
 #include <string.h>
 #include <sys/stat.h>
@@ -93,7 +94,8 @@ static void eplayer_free(ePlayer *player) {
 	for (l = player->input_plugins; l; l = l->next)
 		plugin_free(l->data);
 	
-	pthread_mutex_destroy(&player->playback_mutex);
+	pthread_mutex_destroy(&player->playback_stop_mutex);
+	pthread_mutex_destroy(&player->playback_next_mutex);
 	
 	free(player);
 }
@@ -141,7 +143,8 @@ static ePlayer *eplayer_new(const char **args) {
 		return NULL;
 	}
 
-	pthread_mutex_init(&player->playback_mutex, NULL);
+	pthread_mutex_init(&player->playback_next_mutex, NULL);
+	pthread_mutex_init(&player->playback_stop_mutex, NULL);
 	player->playback_stop = 1;
 
 	return player;
@@ -165,11 +168,26 @@ void eplayer_playback_stop(ePlayer *player) {
 	if (player->playback_stop)
 		return;
 
-	pthread_mutex_lock(&player->playback_mutex);
+	pthread_mutex_lock(&player->playback_stop_mutex);
 	player->playback_stop = 1;
-	pthread_mutex_unlock(&player->playback_mutex);
+	pthread_mutex_unlock(&player->playback_stop_mutex);
 
 	pthread_join(player->playback_thread, NULL);
+}
+
+static int check_playback_next(void *udata) {
+	ePlayer *player = udata;
+
+	if (!player->playback_next)
+		return 1;
+
+	pthread_join(player->playback_thread, NULL);
+	player->playback_next = 0;
+
+	edje_object_signal_emit(player->gui.edje,
+	                        "PLAY_NEXT", "next_button");
+
+	return 0; /* stop timer */
 }
 
 /**
@@ -182,12 +200,13 @@ void eplayer_playback_start(ePlayer *player, int rewind_track) {
 	if (rewind_track)
 		track_rewind(player);
 
+	ecore_timer_add(0.5, check_playback_next, player);
 	player->time_timer = ecore_timer_add(0.5, track_update_time,
 	                                     player);
 	
-	pthread_mutex_lock(&player->playback_mutex);
+	pthread_mutex_lock(&player->playback_stop_mutex);
 	player->playback_stop = 0;
-	pthread_mutex_unlock(&player->playback_mutex);
+	pthread_mutex_unlock(&player->playback_stop_mutex);
 
 	pthread_create(&player->playback_thread, NULL,
 	               (void *) &track_play_chunk, player);

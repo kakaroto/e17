@@ -116,8 +116,11 @@ void cb_track_next(ePlayer *player, Evas_Object *o,
 	if (play) {
 		eplayer_playback_start(player, 1);
 		state = PLAYBACK_STATE_PLAYING;
-	} else /* refresh track info parts, but don't start playing yet */
+	} else {
+		/* refresh track info parts, but don't start playing yet */
 		track_open(player);
+		state = PLAYBACK_STATE_STOPPED;
+	}
 }
 
 /**

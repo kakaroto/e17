@@ -25,9 +25,12 @@ void track_play_chunk(void *udata) {
 		pthread_mutex_unlock(&pli->pos_mutex);
 	}
 	
-	if (!player->playback_stop) /* EOF -> move to the next track */
-		edje_object_signal_emit(player->gui.edje,
-		                        "PLAY_NEXT", "next_button");
+	if (!player->playback_stop) {
+		/* EOF -> move to the next track */
+		pthread_mutex_lock(&player->playback_next_mutex);
+		player->playback_next = 1;
+		pthread_mutex_unlock(&player->playback_next_mutex);
+	}
 }
 
 int track_update_time(void *udata) {
