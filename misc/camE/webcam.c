@@ -93,7 +93,11 @@ char *title_font = "arial/8";
 char *ttf_dir = "/usr/X11R6/lib/X11/fonts/TrueType";
 char *archive_ext = "jpg";
 char *grab_archive = NULL;
-int archive_shot_every = 1; /* default to archive every shot */
+int archive_shot_every = 1;     /* default to archive every shot */
+char *archive_thumbnails_dir = NULL;
+int archive_thumbnails_create = 0;	/* default is not to create archive thumbnails */
+int archive_thumbnails_width = 120;
+int archive_thumbnails_height = 90;
 char *grab_blockfile = NULL;
 char *upload_blockfile = NULL;
 char *grab_postprocess = NULL;
@@ -274,24 +278,24 @@ grab_init()
     wb.mode = PWC_WB_AUTO;
     wb.manual_red = 50;
     wb.manual_blue = 50;
-    if(!strcasecmp(pwc_wb_mode, "auto")) {
+    if (!strcasecmp(pwc_wb_mode, "auto")) {
       wb.mode = PWC_WB_AUTO;
-    } else if(!strcasecmp(pwc_wb_mode, "indoor")) {
+    } else if (!strcasecmp(pwc_wb_mode, "indoor")) {
       wb.mode = PWC_WB_INDOOR;
-    } else if(!strcasecmp(pwc_wb_mode, "outdoor")) {
+    } else if (!strcasecmp(pwc_wb_mode, "outdoor")) {
       wb.mode = PWC_WB_OUTDOOR;
-    } else if(!strcasecmp(pwc_wb_mode, "fluorescent")) {
+    } else if (!strcasecmp(pwc_wb_mode, "fluorescent")) {
       wb.mode = PWC_WB_FL;
-    } else if(!strcasecmp(pwc_wb_mode, "manual")) {
+    } else if (!strcasecmp(pwc_wb_mode, "manual")) {
       wb.mode = PWC_WB_MANUAL;
       wb.manual_red = 65535 * ((float) pwc_wb_red / 100);
       wb.manual_blue = 65535 * ((float) pwc_wb_blue / 100);
     } else {
       log("unknown pwc white balance mode '%s' ignored\n", pwc_wb_mode);
     }
-    
+
     if (ioctl(grab_fd, VIDIOCPWCSAWB, &wb) < 0)
-       perror("trying to set pwc white balance mode");
+      perror("trying to set pwc white balance mode");
   }
 
   /* set image source and TV norm */
@@ -633,27 +637,43 @@ void
 archive_jpeg(Imlib_Image im)
 {
   char buffer[1028];
+  char thumbnail_buffer[1028];
   char date[128];
   time_t t;
   struct tm *tm;
-  struct stat st;
   static int shot_counter = 0;
+  Imlib_Image thumbnail_image;
 
   shot_counter++;
 
-  if (grab_archive && archive_shot_every 
-                   && shot_counter >= archive_shot_every) {
+  if (grab_archive && archive_shot_every
+      && shot_counter >= archive_shot_every) {
     time(&t);
     tm = localtime(&t);
     strftime(date, 127, "%Y-%m-%d_%H%M%S", tm);
 
-    do {
-      snprintf(buffer, sizeof(buffer), "%s/webcam_%s.%s", grab_archive, date,
-               archive_ext);
-    }
-    while (stat(buffer, &st) == 0);
+    snprintf(buffer, sizeof(buffer), "%s/webcam_%s.%s", grab_archive, date,
+             archive_ext);
     save_image(im, buffer);
     shot_counter = 0;
+    /* 
+     * if archive thumbnails are enabled we save them here,
+     * same filenames just in "archive_thumbnails_directory" directory
+     * files are saved in the same format as archive
+     */
+    if (archive_thumbnails_create && archive_thumbnails_width
+        && archive_thumbnails_height) {
+      snprintf(thumbnail_buffer, sizeof(buffer), "%s/webcam_%s.%s",
+               archive_thumbnails_dir, date, archive_ext);
+      thumbnail_image =
+        gib_imlib_create_cropped_scaled_image(im, 0, 0,
+                                              gib_imlib_image_get_width(im),
+                                              gib_imlib_image_get_height(im),
+                                              archive_thumbnails_width,
+                                              archive_thumbnails_height, 1);
+      save_image(thumbnail_image, thumbnail_buffer);
+      gib_imlib_free_image_and_decache(thumbnail_image);
+    }
   }
 }
 
@@ -835,7 +855,7 @@ ftp_upload(char *local,
   }
   fstat(fileno(infile), &st);
 
-  if(!post_commands) {
+  if (!post_commands) {
     snprintf(buf, sizeof(buf), "rnfr %s", tmp);
     post_commands = curl_slist_append(post_commands, buf);
     snprintf(buf, sizeof(buf), "rnto %s", remote);
@@ -846,11 +866,11 @@ ftp_upload(char *local,
   if (connections < 1) {
     curl_handle = curl_easy_init();
     connections++;
-    
+
     passwd_string = gib_strjoin(":", ftp_user, ftp_pass, NULL);
     curl_easy_setopt(curl_handle, CURLOPT_USERPWD, passwd_string);
     free(passwd_string);
-    
+
     /* set URL to save to */
     url_string = gib_strjoin("/", "ftp:/", ftp_host, ftp_dir, tmp, NULL);
     curl_easy_setopt(curl_handle, CURLOPT_URL, url_string);
@@ -858,7 +878,7 @@ ftp_upload(char *local,
 
     /* no progress meter please */
     curl_easy_setopt(curl_handle, CURLOPT_NOPROGRESS, 1);
-  
+
     /* shut up completely */
     if (ftp_debug)
       curl_easy_setopt(curl_handle, CURLOPT_VERBOSE, 1);
@@ -866,10 +886,10 @@ ftp_upload(char *local,
       curl_easy_setopt(curl_handle, CURLOPT_MUTE, 1);
 
     curl_easy_setopt(curl_handle, CURLOPT_UPLOAD, 1);
-    
+
     if (!ftp_passive)
       curl_easy_setopt(curl_handle, CURLOPT_FTPPORT, ftp_interface);
-    
+
     curl_easy_setopt(curl_handle, CURLOPT_POSTQUOTE, post_commands);
   }
 
@@ -1186,6 +1206,8 @@ main(int argc,
     title_text = val;
   if (NULL != (val = cfg_get_str("grab", "archive_ext")))
     archive_ext = val;
+  if (NULL != (val = cfg_get_str("grab", "archive_thumbnails_dir")))
+    archive_thumbnails_dir = val;
   if (NULL != (val = cfg_get_str("grab", "logfile")))
     logfile = val;
   if (NULL != (val = cfg_get_str("grab", "ttf_dir")))
@@ -1286,6 +1308,12 @@ main(int argc,
     scale_height = i;
   if (-1 != (i = cfg_get_int("grab", "archive_shot_every")))
     archive_shot_every = i;
+  if (-1 != (i = cfg_get_int("grab", "archive_thumbnails_create")))
+    archive_thumbnails_create = i;
+  if (-1 != (i = cfg_get_int("grab", "archive_thumbnails_width")))
+    archive_thumbnails_width = i;
+  if (-1 != (i = cfg_get_int("grab", "archive_thumbnails_height")))
+    archive_thumbnails_height = i;
   if (-1 != (i = cfg_get_int("grab", "pwc_wb_red")))
     pwc_wb_red = i;
   if (-1 != (i = cfg_get_int("grab", "pwc_wb_blue")))

@@ -85,6 +85,11 @@ archive_ext = jpg
 # determines how many shots are taken before a pic is archived
 # (1 == every pic, 0 == don't archive)
 archive_shot_every = 1
+# create archive thumbnails enable/disable flag and give width/height
+archive_thumbnails_dir    = /opt/images/webcam/thumbnails
+archive_thumbnails_create = 1
+archive_thumbnails_width  = 120
+archive_thumbnails_height = 90
 # jpeg quality (you can save as png etc too, but then quality does squat)
 quality = 80
 input  = 0
