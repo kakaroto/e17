@@ -32,8 +32,6 @@ error_exit(void)
 void
 UpdateGraphics(void)
 {
-  Epplet_save_config();
-
   /* ok, this is cheap. */
   FreeMounts();
   FreeMountPointTypes();
@@ -42,6 +40,36 @@ UpdateGraphics(void)
   SetupDefaults();
   SetupMounts();
   SetupGraphx();
+}
+
+
+void
+ConfigShowMore(void)
+{
+  Epplet_gadget_hide(button_add_long);
+  Epplet_gadget_show(tbox_key);
+  Epplet_gadget_show(tbox_file);
+  Epplet_gadget_show(arrow_left);
+  Epplet_gadget_show(button_add);
+  Epplet_gadget_show(button_del);
+  Epplet_gadget_show(arrow_right);
+  Epplet_gadget_show(label_key);
+  Epplet_gadget_show(label_file);
+}
+
+
+void
+ConfigShowLess(void)
+{
+  Epplet_gadget_show(button_add_long);
+  Epplet_gadget_hide(tbox_key);
+  Epplet_gadget_hide(tbox_file);
+  Epplet_gadget_hide(arrow_left);
+  Epplet_gadget_hide(button_add);
+  Epplet_gadget_hide(button_del);
+  Epplet_gadget_hide(arrow_right);
+  Epplet_gadget_hide(label_key);
+  Epplet_gadget_hide(label_file);
 }
 
 
@@ -123,9 +151,10 @@ Callback_ConfigOK(void *data)
   Callback_BGChange(NULL);
   Callback_TypeChange(NULL);
   SyncConfigs();
+  Epplet_save_config();
   UpdateGraphics();
   
-  Epplet_window_destroy (config_win);
+  Epplet_window_hide (config_win);
   config_win = 0;
   return;
   data = NULL;
@@ -141,6 +170,18 @@ Callback_ConfigApply(void *data)
   SyncConfigs();
   UpdateGraphics();
 
+  /* Oh man. Of course current_type is now invalid. Banging head ... */
+  current_type = types;
+  if (current_type)
+    {
+      Epplet_change_textbox(tbox_key, current_type->key);
+      Epplet_change_textbox(tbox_file, current_type->imagefile);
+    }
+  else
+    {
+      Epplet_change_textbox(tbox_key, "");
+      Epplet_change_textbox(tbox_file, "");
+    }
   return;
   data = NULL;
 }
@@ -150,7 +191,8 @@ static void
 Callback_ConfigCancel(void *data)
 {
   Epplet_load_config();
-  Epplet_window_destroy (config_win);
+  UpdateGraphics();
+  Epplet_window_hide (config_win);
   config_win = 0;
   return;
   data = NULL;
@@ -188,13 +230,16 @@ Callback_TypeChange(void *data)
 static void
 Callback_ConfigLeft(void *data)
 {
-  if (current_type->prev)
+  if (current_type)
     {
-      ModifyMountPointType(current_type, Epplet_textbox_contents(tbox_key),
-			   Epplet_textbox_contents(tbox_file));
-      current_type = current_type->prev;
-      Epplet_change_textbox(tbox_key, current_type->key);
-      Epplet_change_textbox(tbox_file, current_type->imagefile);
+      if (current_type->prev)
+	{
+	  ModifyMountPointType(current_type, Epplet_textbox_contents(tbox_key),
+			       Epplet_textbox_contents(tbox_file));
+	  current_type = current_type->prev;
+	  Epplet_change_textbox(tbox_key, current_type->key);
+	  Epplet_change_textbox(tbox_file, current_type->imagefile);
+	}
     }
   return;
   data = NULL;
@@ -204,13 +249,16 @@ Callback_ConfigLeft(void *data)
 static void
 Callback_ConfigRight(void *data)
 {
-  if (current_type->next)
+  if (current_type)
     {
-      ModifyMountPointType(current_type, Epplet_textbox_contents(tbox_key),
-			   Epplet_textbox_contents(tbox_file));
-      current_type = current_type->next;
-      Epplet_change_textbox(tbox_key, current_type->key);
-      Epplet_change_textbox(tbox_file, current_type->imagefile);
+      if (current_type->next)
+	{
+	  ModifyMountPointType(current_type, Epplet_textbox_contents(tbox_key),
+			       Epplet_textbox_contents(tbox_file));
+	  current_type = current_type->next;
+	  Epplet_change_textbox(tbox_key, current_type->key);
+	  Epplet_change_textbox(tbox_file, current_type->imagefile);
+	}
     }
   return;
   data = NULL;
@@ -220,6 +268,10 @@ Callback_ConfigRight(void *data)
 static void
 Callback_ConfigAdd(void *data)
 {
+  if (num_types == 0)
+    {
+      ConfigShowMore();
+    }
   AddMountPointType(NULL, NULL);
   current_type = types;
   Epplet_reset_textbox(tbox_key);
@@ -233,6 +285,35 @@ Callback_ConfigAdd(void *data)
 static void
 Callback_ConfigDel(void *data)
 {
+  if (current_type)
+    {
+      if (current_type->next)
+	{
+	  current_type = current_type->next;
+	  DeleteMountPointType(current_type->prev);
+	}
+      else if (current_type->prev)
+	{
+	  current_type = current_type->prev;
+	  DeleteMountPointType(current_type->next);
+	}
+      else
+	{
+	  DeleteMountPointType(current_type);
+	  current_type = NULL;
+	}
+    }
+
+  if (current_type)
+    {
+      Epplet_change_textbox(tbox_key, current_type->key);
+      Epplet_change_textbox(tbox_file, current_type->imagefile);
+    }
+  else
+    {
+      ConfigShowLess();
+    }
+
   return;
   data = NULL;
 }
@@ -241,59 +322,61 @@ Callback_ConfigDel(void *data)
 static void
 CallbackConfigure(void *data)
 {
-  if (config_win)
-    return;
-
   current_type = types;
 
-  config_win =
-    Epplet_create_window_config (420, 190 , "E-Mountbox Configuration",
-				 Callback_ConfigOK, &config_win,
-				 Callback_ConfigApply, &config_win,
-				 Callback_ConfigCancel, &config_win);
+  if (!config_win)
+    {
+      config_win =
+	Epplet_create_window_config (420, 190 , "E-Mountbox Configuration",
+				     Callback_ConfigOK, &config_win,
+				     Callback_ConfigApply, &config_win,
+				     Callback_ConfigCancel, &config_win);
+      
+      Epplet_gadget_show (Epplet_create_label (12, 10,
+					       "Default icon",
+					       2));
+      Epplet_gadget_show ((tbox_default = Epplet_create_textbox (NULL, Epplet_query_config("DEFAULT"),
+								 10, 23, 400, 20,
+								 2, Callback_DefaultChange, NULL)));
+      
+      Epplet_gadget_show (Epplet_create_label (12, 55,
+					       "Background",
+					       2));
+      Epplet_gadget_show ((tbox_bg = Epplet_create_textbox (NULL, Epplet_query_config("BG_IMAGE"),
+							    10, 68, 400, 20,
+							    2, Callback_BGChange, NULL)));
+      
+      label_key = Epplet_create_label (12, 100, "Pattern", 2);
+      label_file = Epplet_create_label (72, 100, "Image file", 2);
+      if (current_type)
+	{
+	  tbox_key  = Epplet_create_textbox(NULL, current_type->key, 10, 113, 60, 20, 2, Callback_TypeChange, NULL);
+	  tbox_file = Epplet_create_textbox(NULL, current_type->imagefile, 70, 113, 340, 20, 2, Callback_TypeChange, NULL);
+	}
+      else
+	{
+	  tbox_key  = Epplet_create_textbox(NULL, "", 10, 113, 60, 20, 2, Callback_TypeChange, NULL);
+	  tbox_file = Epplet_create_textbox(NULL, "", 70, 113, 340, 20, 2, Callback_TypeChange, NULL);
+	}
+      arrow_left = Epplet_create_button(NULL, NULL, 170, 140, 0, 0, "ARROW_LEFT", 0, NULL, Callback_ConfigLeft, NULL);
+      button_add = Epplet_create_button("Add", NULL, 187, 140, 24, 12, NULL, 0, NULL, Callback_ConfigAdd, NULL);
+      button_add_long = Epplet_create_button("Add mountpoint type", NULL, 165, 120, 110, 16, NULL, 0, NULL, Callback_ConfigAdd, NULL);
+      button_del = Epplet_create_button("Delete", NULL, 216, 140, 36, 12, NULL, 0, NULL, Callback_ConfigDel, NULL);
+      arrow_right = Epplet_create_button(NULL, NULL, 257, 140, 0, 0, "ARROW_RIGHT", 0, NULL, Callback_ConfigRight, NULL);
+      
+      Epplet_window_pop_context ();
+    }
 
-  Epplet_gadget_show (Epplet_create_label (12, 10,
-					   "Default icon",
-					   2));
-  Epplet_gadget_show ((tbox_default = Epplet_create_textbox (NULL, Epplet_query_config("DEFAULT"),
-							     10, 23, 400, 20,
-							     2, Callback_DefaultChange, NULL)));
-
-  Epplet_gadget_show (Epplet_create_label (12, 55,
-					   "Background",
-					   2));
-  Epplet_gadget_show ((tbox_bg = Epplet_create_textbox (NULL, Epplet_query_config("BG_IMAGE"),
-							     10, 68, 400, 20,
-							     2, Callback_BGChange, NULL)));
-
-
-  Epplet_gadget_show (Epplet_create_label (12, 100,
-					   "Pattern",
-					   2));
-  Epplet_gadget_show (Epplet_create_label (72, 100,
-					   "Image file",
-					   2));
-  Epplet_gadget_show ((tbox_key = Epplet_create_textbox (NULL, current_type->key,
-							 10, 113, 60, 20,
-							 2, Callback_TypeChange, NULL)));
-  Epplet_gadget_show ((tbox_file = Epplet_create_textbox (NULL, current_type->imagefile,
-							 70, 113, 340, 20,
-							 2, Callback_TypeChange, NULL)));
-  Epplet_gadget_show((Epplet_create_button(NULL, NULL, 
-					   170, 140, 0, 0, "ARROW_LEFT", 0, NULL, 
-					   Callback_ConfigLeft, NULL)));
-  Epplet_gadget_show((Epplet_create_button("Add", NULL,
-					   187, 140, 24, 12, NULL, 0, NULL,
-					   Callback_ConfigAdd, NULL)));
-  Epplet_gadget_show((Epplet_create_button("Delete", NULL,
-					   216, 140, 36, 12, NULL, 0, NULL,
-					   Callback_ConfigDel, NULL)));
-  Epplet_gadget_show((Epplet_create_button(NULL, NULL, 
-					   257, 140, 0, 0, "ARROW_RIGHT", 0, NULL, 
-					   Callback_ConfigRight, NULL)));
+  if (current_type)
+    {
+      ConfigShowMore();
+    }
+  else
+    {
+      ConfigShowLess();
+    }
 
   Epplet_window_show (config_win);
-  Epplet_window_pop_context ();
 
   CallbackShowMore(NULL);
   return;
@@ -599,7 +682,6 @@ AddMountPointType(char *key, char *image)
 void
 ModifyMountPointType(MountPointType *mpt, char *key, char *imagefile)
 {
-  ImlibImage *tmp_image = NULL;
 
   if (mpt)
     {
@@ -614,16 +696,58 @@ ModifyMountPointType(MountPointType *mpt, char *key, char *imagefile)
 	  if (mpt->imagefile)
 	    free(mpt->imagefile);
 	  mpt->imagefile = strdup(imagefile);
-	  tmp_image = Imlib_load_image(id, mpt->imagefile);  
-	  if (tmp_image)
-	    {
-	      Imlib_destroy_image(id, mpt->image);
-	      mpt->image = Imlib_clone_scaled_image(id, tmp_image, 44, 32);
-	      Imlib_destroy_image(id, tmp_image);
-	    }
 	}
     }
 }
+
+
+void
+DeleteMountPointType(MountPointType *mpt)
+{
+  if (mpt)
+    {
+      /* is it in the middle */
+      if (mpt->next && mpt->prev)
+	{
+	  mpt->prev->next = mpt->next;
+	  mpt->next->prev = mpt->prev;
+	}
+      /* or at the beginning */
+      else if (mpt->next)
+	{
+	  mpt->next->prev = NULL;
+	  types = mpt->next;
+	}
+      /* or at the end ... */
+      else if (mpt->prev) 
+	{
+	  mpt->prev->next = NULL;
+	}
+
+      num_types--;
+      if (num_types == 0)
+	{
+	  types = NULL;
+	}
+
+      /* free it */
+      if (mpt->key)
+	{
+	  free(mpt->key);
+	}
+      if (mpt->imagefile)
+	{
+	  free(mpt->imagefile);
+	}
+      if (mpt->image)
+	{
+	  Imlib_destroy_image(id, mpt->image);
+	  mpt->image = NULL;
+	}
+      free(mpt);
+    }
+}
+
 
 void
 FreeImages(void)
@@ -1068,8 +1192,8 @@ CallbackExpose(void *data, Window win, int x, int y, int w, int h)
 void
 SetupDefaults(void)
 {
-  int    i, num_results;
-  char  *s, *key = NULL, *image = NULL, *token;
+  int    i, instance, num_results;
+  char  *s, s2[256], *key = NULL, *image = NULL, *token;
   char **results = NULL;
   
   for (i=0; i<(int)(sizeof(defaults)/sizeof(ConfigItem)); i++)
@@ -1077,9 +1201,13 @@ SetupDefaults(void)
       if (!Epplet_query_config(defaults[i].key))
 	Epplet_add_config(defaults[i].key, defaults[i].value);
     }
+  
+  instance = atoi(Epplet_query_config_def("INSTANCE", "0"));
+  Esnprintf(s2, sizeof(s), "%i", ++instance);
+  Epplet_modify_config("INSTANCE", s2);
 
   results = Epplet_query_multi_config("TYPEDEF", &num_results);
-  if (!results)
+  if ((!results) && (instance == 1))
     {
       Epplet_modify_multi_config("TYPEDEF", default_types, (int)(sizeof(default_types)/sizeof(char*)));
       results = Epplet_query_multi_config("TYPEDEF", &num_results);

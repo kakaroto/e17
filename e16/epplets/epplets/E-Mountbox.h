@@ -24,14 +24,6 @@
 #include <dirent.h>
 #include <ctype.h>
 
-#define TYPE_CD 0
-#define TYPE_FD 1
-#define TYPE_ZIP 2
-#define TYPE_JAZZ 3
-#define TYPE_HD 4
-#define TYPE_BG 5
-#define MAXTYPE 6
-
 #define FSTAB      "/etc/fstab"
 #define PROCMOUNTS "/proc/mounts"
 #define ETCMTAB    "/etc/mtab"
@@ -94,6 +86,8 @@ Epplet_gadget   action_area, button_close, button_config, button_help;
 
 /* stuff for the config win */
 Epplet_gadget   tbox_key, tbox_file, tbox_default, tbox_bg;
+Epplet_gadget   arrow_left, arrow_right, button_add, button_del, button_add_long;
+Epplet_gadget   label_key, label_file;
 Window          config_win = 0;
 MountPointType *current_type = NULL;
 
@@ -108,6 +102,8 @@ int             IsTransparent(ImlibImage * im, int x, int y);
 void            UpdateView(int dir, int fast);
 void            FreeImages(void);
 void            UpdateGraphics(void);
+void            ConfigShowMore(void);
+void            ConfigShowLess(void);
 
 /* mount handling */
 void            SetupMounts(void);

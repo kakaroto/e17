@@ -1732,3 +1732,13 @@ Tue Dec 28 00:31:03 EST 1999
 (Christian)
 
 Textboxes can now be hidden.
+
+-------------------------------------------------------------------------------
+
+Tue Dec 28 00:32:07 EST 1999
+(Christian)
+
+More E-Mountbox stuff. Config dialog now changes dynamically, depending
+on whether you have patterns for mathching mountpoint types or not.
+Deleting of mountpoint types should work. Still needs more debugging...
+
