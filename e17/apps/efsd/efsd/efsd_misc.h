@@ -25,6 +25,15 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef __efsd_misc_h
 #define __efsd_misc_h
 
+#ifndef	FALSE
+#define	FALSE	(0)
+#endif
+
+#ifndef	TRUE
+#define	TRUE	(!FALSE)
+#endif
+
+
 #define NEW(X)  ((X*) malloc(sizeof(X)))
 #define FREE(X) { if (X) { free(X); X = NULL; } }
 

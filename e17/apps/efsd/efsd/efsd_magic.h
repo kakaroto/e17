@@ -22,14 +22,11 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 */
-#ifndef __efsd_common_h
-#define __efsd_common_h
+#ifndef __efsd_magic_h
+#define __efsd_magic_h
 
-char   *efsd_get_efsd_dir(void);
-
-char   *efsd_get_socket_file(void);
-void    efsd_remove_socket_file(void);
-
-char   *efsd_get_magic_db(void);
+void       efsd_magic_init(char *dbfile);
+void       efsd_magic_cleanup(void);
+char      *efsd_magic_get(char *filename);
 
 #endif

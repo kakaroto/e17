@@ -11,7 +11,7 @@ bin_PROGRAMS = efsddemo
 efsddemo_SOURCES = \
 efsddemo.c
 
-efsddemo_LDADD = -L$(top_srcdir)/efsd/.libs -lefsd
+efsddemo_LDADD = -L$(top_srcdir)/efsd/.libs -lefsd -ledb
 
 EXTRA_DIST = run_efsddemo.sh
 

@@ -36,12 +36,14 @@ lib_LTLIBRARIES = libefsd.la
 
 libefsd_la_SOURCES   = \
 	efsd.h \
+	efsd_common.h \
+	efsd_common.c \
 	efsd_debug.h \
 	efsd_debug.c \
 	efsd_io.h \
 	efsd_io.c \
-	efsd_common.h \
-	efsd_common.c \
+	efsd_magic.h \
+	efsd_magic.c \
 	efsd_misc.h \
 	efsd_misc.c \
 	efsd_types.h \

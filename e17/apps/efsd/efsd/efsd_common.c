@@ -42,8 +42,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <efsd_debug.h>
 #include <efsd_misc.h>
 
+
 char *
-efsd_get_socket_file(void)
+efsd_get_efsd_dir(void)
 {
   char         *dir = NULL;
   static char  s[4096] = "\0";
@@ -67,7 +68,21 @@ efsd_get_socket_file(void)
   if (!efsd_misc_file_is_dir(s))
     efsd_misc_mkdir(s);
 
-  snprintf(s, sizeof(s), "%s/.e/efsd_socket", dir);
+  D_RETURN_(s);
+}
+
+
+char *
+efsd_get_socket_file(void)
+{
+  static char s[4096] = "\0";
+  
+  D_ENTER;
+
+  if (s[0] != '\0')
+    D_RETURN_(s);
+
+  snprintf(s, sizeof(s), "%s/efsd_socket", efsd_get_efsd_dir());
   s[sizeof(s)-1] = '\0';
 
   D_RETURN_(s);
@@ -81,3 +96,21 @@ efsd_remove_socket_file(void)
   unlink(efsd_get_socket_file());
   D_RETURN;
 }
+
+
+char   *
+efsd_get_magic_db(void)
+{
+  static char s[4096] = "\0";
+  
+  D_ENTER;
+
+  if (s[0] != '\0')
+    D_RETURN_(s);
+
+  snprintf(s, sizeof(s), "%s/magic.db", efsd_get_efsd_dir());
+  s[sizeof(s)-1] = '\0';
+
+  D_RETURN_(s);
+}
+

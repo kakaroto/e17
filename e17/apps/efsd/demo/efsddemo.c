@@ -275,6 +275,15 @@ demo_sighandler(int signal)
 }
 
 
+void
+mime_type_tests(void)
+{
+  printf("Mimetype for /bin: %s\n", efsd_get_file_mimetype("/bin"));
+  printf("Mimetype for xcf: %s\n", efsd_get_file_mimetype("/usr/local/data/xcf/hp.xcf"));
+  printf("Mimetype for tcpdump: %s\n", efsd_get_file_mimetype("/usr/local/devel/norm/traces/normal-slogin-mule-curry.trace"));
+}
+
+
 int
 main(int argc, char** argv)
 {
@@ -297,6 +306,13 @@ main(int argc, char** argv)
     blocking = 0;
   else
     blocking = 1;
+
+  
+  /* Mime type tests ... */
+  mime_type_tests();
+  
+
+  /* Now some fs monitoring tests ... */
   
   /* Open connection to efsd. */
   if ( (ec = efsd_open()) == NULL)

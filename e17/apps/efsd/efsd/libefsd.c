@@ -42,6 +42,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <efsd_debug.h>
 #include <efsd_io.h>
 #include <efsd_common.h>
+#include <efsd_magic.h>
 #include <libefsd.h>
 
 struct efsd_connection
@@ -476,3 +477,18 @@ efsd_readlink(EfsdConnection *ec, char *filename)
 }
 
 
+char *
+efsd_get_file_mimetype(char *filename)
+{
+  static int initialized = 0;
+
+  D_ENTER;
+
+  if (!initialized)
+    {
+      efsd_magic_init(efsd_get_magic_db());
+      initialized = 1;
+    }
+
+  D_RETURN_(efsd_magic_get(filename));
+}

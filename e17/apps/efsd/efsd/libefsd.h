@@ -149,6 +149,8 @@ EfsdCmdId      efsd_stat(EfsdConnection *ec, char *filename);
 /* Returns the file a symlink points to */
 EfsdCmdId      efsd_readlink(EfsdConnection *ec, char *filename);
 
+
+char          *efsd_get_file_mimetype(char *filename);
 #ifdef __cplusplus
 }
 #endif
