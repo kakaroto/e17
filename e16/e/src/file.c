@@ -297,13 +297,11 @@ filedev_map(int dev)
      {
      default:
 	return dev;
-	break;
      case 0:
      case 144:
      case 145:
      case 146:
 	return 1;
-	break;
      }
 #else
    return dev;
