@@ -167,6 +167,7 @@ setup_note(Evas_List ** note, int x, int y, int width, int height,
 	ecore_evas_borderless_set(p->win, 1);
 	ecore_evas_shaped_set(p->win, 1);
 	ecore_evas_title_set(p->win, "An E-Note");
+  ecore_evas_name_class_set(p->win, "Enotes", "Enotes");
 
 	if (main_config->ontop == 1)
 		if (!strcmp(main_config->render_method, "gl")) {

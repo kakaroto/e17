@@ -13,6 +13,7 @@ open_welcome(void)
 
 	welcome->win = ewl_window_new();
 	ewl_window_title_set((Ewl_Window *) welcome->win, "Welcome to E-Notes");
+  ewl_window_class_set((Ewl_Window *) welcome->win, "Enotes");
 	ewl_widget_show(welcome->win);
 	ewl_callback_append(welcome->win, EWL_CALLBACK_DELETE_WINDOW,
 			    (void *) close_welcome_cb, (void *) NULL);

@@ -53,6 +53,7 @@ setup_saveload_win(void)
 	/* Setup the Window */
 	saveload->win = ewl_window_new();
 	ewl_window_title_set((Ewl_Window *) saveload->win, "E-Notes Save/Load");
+  ewl_window_class_set((Ewl_Window *) saveload->win, "Enotes");
 	ewl_object_fill_policy_set((Ewl_Object *) saveload->win,
 				   EWL_FLAG_FILL_ALL);
 	ewl_object_size_request((Ewl_Object *) saveload->win, 400, 350);
