@@ -2,3 +2,9 @@
   similar to that of file(1), ideally with i18n.
 
 * implement a comprehensive test suite.
+
+* File types have a bug that under some circumstances
+  produce the result document/unknown instead of the
+  correct one. Bug in the MF heuristic?
+
+* Issues with monitoring of single files? imon?
