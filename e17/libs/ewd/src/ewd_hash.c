@@ -30,11 +30,12 @@ static int _ewd_hash_node_destroy(Ewd_Hash_Node *node, Ewd_Free_Cb keyd,
 		Ewd_Free_Cb valued);
 
 
-/*
- * Description: Create and initialize a new hash
- * Parameters: 1. hash_func - the function for determining hash position
- *             2. compare - the function for comparing node keys
- * Returns: NULL on error, a new hash on success
+/**
+ * ewd_hash_new - create and initialize a new hash
+ * @hash_func: the function for determining hash position
+ * @compare: the function for comparing node keys
+ *
+ * Returns NULL on error, a new hash on success
  */
 Ewd_Hash *ewd_hash_new(Ewd_Hash_Cb hash_func, Ewd_Compare_Cb compare)
 {
@@ -50,11 +51,12 @@ Ewd_Hash *ewd_hash_new(Ewd_Hash_Cb hash_func, Ewd_Compare_Cb compare)
 	return new_hash;
 }
 
-/*
- * Description: Initialize a hash to some sane starting values
- * Parameters: 1. hash - the hash table to initialize
- *             2. compare - the function for comparing node keys
- * Returns: TRUE on success, FALSE on an error.
+/**
+ * ewd_hash_init - initialize a hash to some sane starting values
+ * @hash - the hash table to initialize
+ * @compare - the function for comparing node keys
+ *
+ * Returns TRUE on success, FALSE on an error.
  */
 int ewd_hash_init(Ewd_Hash *hash, Ewd_Hash_Cb hash_func, Ewd_Compare_Cb compare)
 {
@@ -62,13 +64,8 @@ int ewd_hash_init(Ewd_Hash *hash, Ewd_Hash_Cb hash_func, Ewd_Compare_Cb compare)
 
 	memset(hash, 0, sizeof(Ewd_Hash));
 
-	if (hash_func)
-		hash->hash_func = hash_func;
-	else
-		hash->hash_func = ewd_direct_hash;
-
-	if (compare)
-		hash->compare = compare;
+	hash->hash_func = hash_func;
+	hash->compare = compare;
 
 	hash->buckets = (Ewd_List **)malloc(ewd_prime_table[0] *
 			sizeof(Ewd_List *));
@@ -79,11 +76,12 @@ int ewd_hash_init(Ewd_Hash *hash, Ewd_Hash_Cb hash_func, Ewd_Compare_Cb compare)
 	return TRUE;
 }
 
-/*
- * Description: Set the function called when node's are free'd to free keys
- * Parameters: 1. hash - the hash that this will affect
- *             2. function - the function that will free the node keys
- * Returns: TRUE on success, FALSE on error
+/**
+ * ewd_hash_set_free_key - set the function to destroy the keys of entries
+ * @hash: the hash that this will affect
+ * @function: the function that will free the node keys
+ *
+ * Returns TRUE on success, FALSE on error
  */
 int ewd_hash_set_free_key(Ewd_Hash *hash, Ewd_Free_Cb function)
 {
@@ -97,11 +95,12 @@ int ewd_hash_set_free_key(Ewd_Hash *hash, Ewd_Free_Cb function)
 	return TRUE;
 }
 
-/*
- * Description: Set the function called when node's are free'd to free values
- * Parameters: 1. hash - the hash that this will affect
- *             2. function - the function that will free the node values
- * Returns: TRUE on success, FALSE on error
+/**
+ * ewd_hash_set_free_value - set the function to destroy the value
+ * @hash: the hash that this will affect
+ * @function: the function that will free the node values
+ *
+ * Returns TRUE on success, FALSE on error
  */
 int ewd_hash_set_free_value(Ewd_Hash *hash, Ewd_Free_Cb function)
 {
@@ -115,13 +114,13 @@ int ewd_hash_set_free_value(Ewd_Hash *hash, Ewd_Free_Cb function)
 	return TRUE;
 }
 
-/*
- * Description: Set the key/value pair in the hash table, if node doesn't exist
- *              then create it.
- * Parameters: 1. hash - the hash table to set the the value in
- *             2. key - the key for this value pair
- *             3. value - the value corresponding with the key
- * Returns: TRUE if successful, FALSE if not
+/**
+ * ewd_hash_set - set the key/value pair in the hash table
+ * @hash: the hash table to set the the value in
+ * @key: the key for this value pair
+ * @value: the value corresponding with the key
+ *
+ * Returns TRUE if successful, FALSE if not
  */
 int ewd_hash_set(Ewd_Hash *hash, void *key, void *value)
 {
@@ -144,10 +143,11 @@ int ewd_hash_set(Ewd_Hash *hash, void *key, void *value)
 	return ret;
 }
 
-/*
- * Description: Free the hash table and the data contained inside it
- * Parameters: 1. hash - the hash table to destroy
- * Returns: TRUE on success, FALSE on error
+/**
+ * ewd_hash_destroy - free the hash table and the data contained inside it
+ * @hash - the hash table to destroy
+ *
+ * Returns TRUE on success, FALSE on error
  */
 void ewd_hash_destroy(Ewd_Hash *hash)
 {
@@ -224,7 +224,11 @@ _ewd_hash_add_node(Ewd_Hash *hash, Ewd_Hash_Node *node)
 		_ewd_hash_decrease(hash);
 
 	/* Compute the position in the table */
-	hash_val = EWD_COMPUTE_HASH(hash, node->key);
+	if (!hash->hash_func)
+		hash_val = (unsigned int)node->key %
+			ewd_prime_table[hash->size];
+	else
+		hash_val = EWD_COMPUTE_HASH(hash, node->key);
 
 	/* Create the list if it's not already present */
 	if (!hash->buckets[hash_val])
@@ -279,8 +283,12 @@ void *ewd_hash_remove(Ewd_Hash *hash, void *key)
 	CHECK_PARAM_POINTER_RETURN("hash", hash, NULL);
 
 	EWD_WRITE_LOCK(hash);
+
 	/* Compute the position in the table */
-	hash_val = EWD_COMPUTE_HASH(hash, key);
+	if (!hash->hash_func)
+		hash_val = (unsigned int)key % ewd_prime_table[hash->size];
+	else
+		hash_val = EWD_COMPUTE_HASH(hash, key);
 
 	/*
 	 * If their is a list that could possibly hold the key/value pair
@@ -333,9 +341,17 @@ _ewd_hash_get_node(Ewd_Hash *hash, void *key)
 	CHECK_PARAM_POINTER_RETURN("hash", hash, NULL);
 
 	EWD_READ_LOCK(hash);
-	hash_val = EWD_COMPUTE_HASH(hash, key);
+
+	/* Compute the position in the table */
+	if (!hash->hash_func)
+		hash_val = (unsigned int)key % ewd_prime_table[hash->size];
+	else
+		hash_val = EWD_COMPUTE_HASH(hash, key);
+
+	/* Grab the bucket at the specified position */
 	if (hash->buckets[hash_val])
 		node = _ewd_hash_get_bucket(hash, hash->buckets[hash_val], key);
+
 	EWD_READ_UNLOCK(hash);
 
 	return node;
@@ -395,16 +411,32 @@ _ewd_hash_get_bucket(Ewd_Hash *hash, Ewd_List *bucket, void *key)
 static int
 _ewd_hash_increase(Ewd_Hash *hash)
 {
+	void *old;
+
 	CHECK_PARAM_POINTER_RETURN("hash", hash, FALSE);
 
 	/* Max size reached so return FALSE */
 	if (hash->size == PRIME_TABLE_MAX)
 		return FALSE;
 
+	/*
+	 * Increase the size of the hash and save a pointer to the old data
+	 */
 	hash->size++;
-	hash->buckets = (Ewd_List **)realloc(hash->buckets,
-			ewd_prime_table[hash->size] * sizeof(Ewd_List *));
+	old = hash->buckets;
+
+	/*
+	 * Allocate a new bucket area, of the new larger size
+	 */
+	hash->buckets = (Ewd_List **)malloc(ewd_prime_table[hash->size] *
+			sizeof(Ewd_List *));
+
+	/*
+	 * Make sure the allocation succeeded, if not replace the old data and
+	 * return a failure.
+	 */
 	if (!hash->buckets) {
+		hash->buckets = old;
 		hash->size--;
 		return FALSE;
 	}
@@ -412,13 +444,19 @@ _ewd_hash_increase(Ewd_Hash *hash)
 	/*
 	 * Clear out the newly allocated memory area
 	 */
-	memset(hash->buckets + ewd_prime_table[hash->size - 1], 0,
-			(ewd_prime_table[hash->size] -
-			 ewd_prime_table[hash->size - 1]) * sizeof(Ewd_List *));
+	memset(hash->buckets, 0, ewd_prime_table[hash->size]
+			* sizeof(Ewd_List *));
 	hash->nodes = 0;
-	_ewd_hash_rehash(hash, hash->buckets, hash->size - 1);
 
-	return TRUE;
+	/*
+	 * Now move all of the old data into the new bucket area
+	 */
+	if (_ewd_hash_rehash(hash, old, hash->size - 1)) {
+		FREE(old);
+		return TRUE;
+	}
+
+	return FALSE;
 }
 
 /*
@@ -436,24 +474,36 @@ _ewd_hash_decrease(Ewd_Hash *hash)
 	if (ewd_prime_table[hash->size] == PRIME_MIN)
 		return FALSE;
 
+	/*
+	 * Decrease the hash size and store a pointer to the old data
+	 */
 	hash->size--;
 	old = hash->buckets;
+
+	/*
+	 * Allocate a new area to store the data
+	 */
 	hash->buckets = (Ewd_List **)malloc(ewd_prime_table[hash->size] *
 			sizeof(Ewd_List *));
+
+	/*
+	 * Make sure allocation succeeded otherwise rreturn to the previous
+	 * state
+	 */
 	if (!hash->buckets) {
 		hash->buckets = old;
 		hash->size++;
 		return FALSE;
 	}
+
+	/*
+	 * Zero out the new area
+	 */
 	memset(hash->buckets, 0, ewd_prime_table[hash->size]
 			* sizeof(Ewd_List *));
 	hash->nodes = 0;
 
-	if (hash->nodes > 0 && _ewd_hash_rehash(hash, old, hash->size - 1)) {
-		int i;
-
-		for (i = 0; i < ewd_prime_table[hash->size - 1]; i++)
-			ewd_list_destroy(old[i]);
+	if (_ewd_hash_rehash(hash, old, hash->size - 1)) {
 		FREE(old);
 		return TRUE;
 	}
@@ -485,9 +535,7 @@ _ewd_hash_rehash(Ewd_Hash *hash, Ewd_List **old_table, int old_size)
 
 		/* Loop through re-adding each node to the hash table */
 		while (old && (node = ewd_list_remove_last(old))) {
-/*			EWD_WRITE_UNLOCK(hash); */
 			_ewd_hash_add_node(hash, node);
-/*			EWD_WRITE_LOCK(hash); */
 		}
 
 		/* Now free up the old list space */

@@ -40,6 +40,10 @@ struct _ewd_hash {
 /* Create and initialize a hash */
 Ewd_Hash *ewd_hash_new(Ewd_Hash_Cb hash_func, Ewd_Compare_Cb compare);
 int ewd_hash_init(Ewd_Hash *hash, Ewd_Hash_Cb hash_func, Ewd_Compare_Cb compare);
+
+/* Functions related to freeing the data in the hash table */
+int ewd_hash_set_free_key(Ewd_Hash *hash, Ewd_Free_Cb function);
+int ewd_hash_set_free_value(Ewd_Hash *hash, Ewd_Free_Cb function);
 void ewd_hash_destroy(Ewd_Hash *hash);
 
 /* Retrieve and store data into the hash */
