@@ -837,7 +837,7 @@ CB_AreaDisplayRedraw(int val, void *data)
 		     14 * (9 - tmp_area_y));
    EMapWindow(disp, awin);
 
-   if ((tmp_area_x > 1) || (tmp_area_y > 1))
+   if ((tmp_area_x > 1) || ((9 - tmp_area_y) > 1))
       Esnprintf(s, sizeof(s), "%i x %i\nScreens in size", tmp_area_x,
 		9 - tmp_area_y);
    else

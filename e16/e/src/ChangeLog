@@ -2630,3 +2630,10 @@ Fri Oct  1 11:08:10 PDT 1999
 
 fixed the bug where remembering any state BESIDES location on a dialog window
 would cause it to pop up at -20, -20
+
+-------------------------------------------------------------------------------
+
+Fri Oct  1 11:09:35 PDT 1999
+(Raster)
+
+patch for label in settings dialog
