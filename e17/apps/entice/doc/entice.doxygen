@@ -201,6 +201,7 @@ Entice relies on a lot of libraries most notably
   - Imlib2_loaders (library)
   - Evas (library)
   - Ecore (library)
+  - Embryo (library)
   - Edje (library)
   - Epeg (library)
   - Epsilon (library)
@@ -213,50 +214,72 @@ $ cvs -d:pserver:anonymous@cvs.enlightenment.sf.net:/cvsroot/enligtenment login
 $ cvs -d:pserver:anonymous@cvs.enlightenment.sf.net:/cvsroot/enligtenment \
 co e17/libs/edb e17/libs/eet e17/libs/imlib2 e17/libs/imlib2_loaders \
 e17/libs/evas e17/libs/ecore e17/libs/edje e17/libs/epeg e17/libs/epsilon \
-e17/proto/esmart e17/apps/entice
+e17/libs/esmart e17/apps/entice
 @endverbatim
 
 That should fetch all the libraries you'll need to run entice.
 
+<ol>
+<li>You need Edb from cvs
 @verbatim
-1. You need Edb from cvs
-  cd e17/libs/edb; ./autogen.sh; make; sudo make install
-
-2. You need Eet from cvs
-  cd e17/libs/eet; ./autogen.sh; make; sudo make install
-
-3. You need Imlib2 > 1.1.0 
-  cd e17/libs/imlib2; ./autogen.sh; make; sudo make install
-
-4. You need imlib2_loaders
-  cd e17/libs/imlib2_loaders; ./autogen.sh; make; sudo make install
-
-5. You need Evas from cvs
-  cd e17/libs/evas; ./autogen.sh; make; sudo make install
-  
-6. You need Ecore from cvs
-  cd e17/libs/ecore; ./autogen.sh; make; sudo make install
-
-7. You need Edje from cvs
-  cd e17/libs/edje; ./autogen.sh; make; sudo make install
-
-8. You need Epeg from cvs
-  cd e17/libs/epeg; ./autogen.sh; make; sudo make install
-
-9. You need Epsilon from cvs
-  cd e17/libs/epsilon; ./autogen.sh; make; sudo make install
-
-10. You need Esmart from cvs
-  cd e17/proto/esmart; ./autogen.sh; make; sudo make install
-
-11. You need entice from cvs
-  cd e17/apps/entice; ./autogen.sh; make; sudo make install
-
+$  cd e17/libs/edb; ./autogen.sh; make; sudo make install
 @endverbatim
-
-
-
-
+</li>
+<li>You need Eet from cvs
+@verbatim
+$  cd e17/libs/eet; ./autogen.sh; make; sudo make install
+@endverbatim
+<li>You need Imlib2 > 1.1.0 
+@verbatim
+$  cd e17/libs/imlib2; ./autogen.sh; make; sudo make install
+@endverbatim
+</li>
+<li>You need imlib2_loaders
+@verbatim
+$  cd e17/libs/imlib2_loaders; ./autogen.sh; make; sudo make install
+@endverbatim
+</li>
+<li>You need Evas from cvs
+@verbatim
+$  cd e17/libs/evas; ./autogen.sh; make; sudo make install
+@endverbatim
+</li>
+<li>You need Ecore from cvs
+@verbatim
+$  cd e17/libs/ecore; ./autogen.sh; make; sudo make install
+@endverbatim
+</li>
+<li>You need Embryo from cvs
+@verbatim
+$  cd e17/libs/embryo; ./autogen.sh; make; sudo make install
+@endverbatim
+</li>
+<li>You need Edje from cvs
+@verbatim
+$  cd e17/libs/edje; ./autogen.sh; make; sudo make install
+@endverbatim
+</li>
+<li>You need Epeg from cvs
+@verbatim
+$  cd e17/libs/epeg; ./autogen.sh; make; sudo make install
+@endverbatim
+</li>
+<li>You need Epsilon from cvs
+@verbatim
+$  cd e17/libs/epsilon; ./autogen.sh; make; sudo make install
+@endverbatim
+</li>
+<li>You need Esmart from cvs
+@verbatim
+$  cd e17/libs/esmart; ./autogen.sh; make; sudo make install
+@endverbatim
+</li>
+<li>You need entice from cvs
+@verbatim
+$  cd e17/apps/entice; ./autogen.sh; make; sudo make install
+@endverbatim
+</li>
+</ol>
 
 
 
