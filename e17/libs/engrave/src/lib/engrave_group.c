@@ -35,21 +35,18 @@ engrave_group_free(Engrave_Group *eg)
   IF_FREE(eg->name);
   for (l = eg->parts; l; l = l->next) {
     Engrave_Part *ep = l->data;
-    eg->parts = evas_list_remove(eg->parts, ep);
     engrave_part_free(ep);
   }
   eg->parts = evas_list_free(eg->parts);
 
   for (l = eg->programs; l; l = l->next) {
     Engrave_Program *ep = l->data;
-    eg->programs = evas_list_remove(eg->programs, ep);
     engrave_program_free(ep);
   }
   eg->programs = evas_list_free(eg->programs);
 
   for (l = eg->data; l; l = l->next) {
     Engrave_Data *ed = l->data;
-    eg->data = evas_list_remove(eg->data, ed);
     engrave_data_free(ed);
   }
   eg->data = evas_list_free(eg->data);

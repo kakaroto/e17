@@ -37,7 +37,6 @@ engrave_part_free(Engrave_Part *ep)
 
   for (l = ep->states; l; l = l->next) {
     Engrave_Part_State *eps = l->data;
-    ep->states = evas_list_remove(ep->states, eps);
     engrave_part_state_free(eps);
   }
   ep->states = evas_list_free(ep->states);

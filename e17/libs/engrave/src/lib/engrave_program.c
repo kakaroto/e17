@@ -33,14 +33,12 @@ engrave_program_free(Engrave_Program *ep)
 
   for (l = ep->targets; l; l = l->next) {
     char *d = l->data;
-    ep->targets = evas_list_remove(ep->targets, d);
     IF_FREE(d);
   }
   ep->targets = evas_list_free(ep->targets);
 
   for (l = ep->afters; l; l = l->next) {
     char *d = l->data;
-    ep->afters = evas_list_remove(ep->afters, d);
     IF_FREE(d);
   }
   ep->afters = evas_list_free(ep->afters);

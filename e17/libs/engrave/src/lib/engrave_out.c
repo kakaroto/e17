@@ -106,6 +106,7 @@ engrave_out_data(FILE *out, char *name, char *fmt, ...)
     va_start(ap, fmt);
     vfprintf(out, fmt_new, ap);
     va_end(ap);
+    FREE(fmt_new);
     FREE(buf);
 }
 

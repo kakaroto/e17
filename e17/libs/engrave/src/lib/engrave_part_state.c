@@ -84,6 +84,7 @@ engrave_part_state_free(Engrave_Part_State *eps)
   IF_FREE(eps->text.text);
   IF_FREE(eps->text.text_class);
   IF_FREE(eps->text.font);
+  FREE(eps);
 }
 
 /**

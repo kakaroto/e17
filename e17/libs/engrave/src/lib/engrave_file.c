@@ -32,28 +32,24 @@ engrave_file_free(Engrave_File *ef)
 
   for (l = ef->images; l; l = l->next) {
     Engrave_Image *ei = l->data;
-    ef->images = evas_list_remove(ef->images, ei);
     engrave_image_free(ei);
   }
   ef->images = evas_list_free(ef->images);
 
   for (l = ef->fonts; l; l = l->next) {
     Engrave_Font *font = l->data;
-    ef->fonts = evas_list_remove(ef->fonts, font);
     engrave_font_free(font);
   }
   ef->fonts = evas_list_free(ef->fonts);
 
   for (l = ef->data; l; l = l->next) {
     Engrave_Data *ed = l->data;
-    ef->data = evas_list_remove(ef->data, ed);
     engrave_data_free(ed);
   }
   ef->data = evas_list_free(ef->data);
 
   for (l = ef->groups; l; l = l->next) {
     Engrave_Group *eg = l->data;
-    ef->groups = evas_list_remove(ef->groups, eg);
     engrave_group_free(eg);
   }
   ef->groups = evas_list_free(ef->groups);
