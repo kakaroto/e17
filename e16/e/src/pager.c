@@ -1372,6 +1372,12 @@ PagerHandleMotion(Pager * p, Window win, int x, int y, int in)
      {
 	PagerShowTt(NULL);
      }
+   else if ((in == PAGER_EVENT_MOTION) && ewin->layer <= 0)
+     {
+	if (p->hi_ewin)
+	   PagerHideHi(p);
+	PagerShowTt(ewin);
+     }
    else if ((in == PAGER_EVENT_MOTION) && ewin != p->hi_ewin)
      {
 	int                 wx, wy, ww, wh, ax, ay, cx, cy, px, py;
