@@ -3,7 +3,7 @@
 SUBDIRS = testimages ttfonts
 
 INCLUDES = \
-	-I. $(top_srcdir) \
+	-I. -I$(top_srcdir) \
     @GTK_CFLAGS@ -DPREFIX=\""$(prefix)"\"
 
 bin_PROGRAMS = geist
