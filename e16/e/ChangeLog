@@ -1657,3 +1657,10 @@ Tue Dec 21 11:07:46 PST 1999
 
 added support for freetype in regular location OR in freetype/ subdirectory
 (like the new versions)
+
+-------------------------------------------------------------------------------
+
+Tue Dec 21 15:15:53 PST 1999
+(Mandrake)
+
+added gettext check to autogen.sh
