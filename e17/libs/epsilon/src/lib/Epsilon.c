@@ -221,8 +221,8 @@ epsilon_info_get (Epsilon * e)
 	    p->mimetype = strdup (info.mimetype);
 	}
       epeg_close (im);
-      return (p);
     }
+  else
 #endif
   if ((fp = _epsilon_open_png_file_reading (e->thumb)))
     {
@@ -285,7 +285,7 @@ epsilon_info_get (Epsilon * e)
 }
 
 int
-epsilon_info_has_exif_get (Epsilon_Info * info)
+epsilon_info_exif_get (Epsilon_Info * info)
 {
   if (info)
     {
