@@ -1,2 +1,8 @@
-This is some crap.
+This is the basis for the new configuration engine.
+There are a couple of minor portability issues here that I have to take care
+of since the fat table's binaryness has issues currently.
+
+
 I'm going to play some 0.17 games for a while in here.
+
+		--Mandrake

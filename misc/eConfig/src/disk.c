@@ -83,7 +83,7 @@ _econf_get_data_from_disk(char *loc,unsigned long *length)
 			if((*length =
 				_econf_finddatapointerinpath(paths[i],loc,&position,
 					&timestamp))) {
-				if(timestamp > winningtimestamp) {
+				if(timestamp >= winningtimestamp) {
 					FILE *CONF_TABLE;
 					char confpath[FILEPATH_LEN_MAX];
 
@@ -255,6 +255,7 @@ _econf_save_data_to_disk(void *data, char *loc, unsigned long length,
 	/* This function is supposed to save data out to disk.  it takes the *data
 	 * for key *loc of length length and saves it to the theme at *path.
 	 * *path MUST be supplied externally by the application.
+	 * FIXME: this function is apparently missing some important bits
 	 * This function is internal to eConfig.
 	 */
 

@@ -24,6 +24,6 @@ _econf_timestamp(void)
 	 * FIXME: this function needs to actually do something.
 	 */
 	
-	return 0;
+	return 1;
 
 }
