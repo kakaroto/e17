@@ -330,8 +330,7 @@ HintsProcessClientMessage(XClientMessageEvent * event)
 void
 HintsSetRootInfo(Window win, Pixmap pmap, int color)
 {
-   static Atom         a = 0, aa = 0, aaa = 0;
-   static Window       alive_win = 0;
+   static Atom         a = 0, aa = 0;
 
    EDBUG(6, "HintsSetRootInfo");
 
@@ -339,19 +338,11 @@ HintsSetRootInfo(Window win, Pixmap pmap, int color)
      {
 	a = XInternAtom(disp, "_XROOTPMAP_ID", False);
 	aa = XInternAtom(disp, "_XROOTCOLOR_PIXEL", False);
-	aaa = XInternAtom(disp, "_XROOTWINDOW", False);
-     }
-   if (!alive_win)
-     {
-	alive_win = ECreateWindow(VRoot.win, -100, -100, 1, 1, 0);
-	XChangeProperty(disp, alive_win, aaa, XA_WINDOW, 32, PropModeReplace,
-			(unsigned char *)&alive_win, 1);
-	XChangeProperty(disp, VRoot.win, aaa, XA_WINDOW, 32, PropModeReplace,
-			(unsigned char *)&alive_win, 1);
      }
 
    if (Conf.hints.set_xroot_info_on_root_window)
       win = VRoot.win;
+
    XChangeProperty(disp, win, a, XA_PIXMAP, 32, PropModeReplace,
 		   (unsigned char *)&pmap, 1);
    XChangeProperty(disp, win, aa, XA_CARDINAL, 32, PropModeReplace,
