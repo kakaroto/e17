@@ -1,5 +1,0 @@
-usr/lib/*.so
-usr/lib/*.la
-usr/include
-usr/bin/esd-config
-usr/share/aclocal/esd.m4
