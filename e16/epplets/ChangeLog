@@ -1317,3 +1317,20 @@ more rich over the next few days, then it should stabilise.
 
 Any feature suggestions, send 'em now :)
 
+-------------------------------------------------------------------------------
+
+Sat Dec 04 12:38:14 GMT 1999
+(gilbertt)
+
+Okay. E-ScreenSave now has a working config window which actually changes
+the things config! Its really basic, 'cos the epplet is really basic, but it
+works. Press the configure button to see it :)
+
+It has working Ok, Apply and Cancel buttons, try them and see. There is
+always a dilemna over how stuff like this should work, but in my epplets at
+least, cancel undoes everything you changed since opening the window, even
+stuff you "apply"ed. See it for yourself, it was really easy to do ;)
+
+Hey StriderZ, there's a textbox on there too :) I'll be talking to you later
+about that =P
+

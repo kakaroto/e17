@@ -29,6 +29,7 @@
 #include "E-ScreenSave.h"
 
 Window confwin = 0;
+Epplet_gadget txt;
 
 static void
 choose_random_cloak (void *data)
@@ -333,9 +334,20 @@ delete_cb (void *data, Window win)
 }
 
 static void
+apply_config (void)
+{
+    if(opt.lock_cmd)
+	  free(opt.lock_cmd);
+    opt.lock_cmd=_Strdup(Epplet_textbox_contents(txt));
+    
+  return;
+}
+
+static void
 ok_cb (void *data)
 {
-  printf ("Ok pressed\n");
+  apply_config ();
+  save_config ();
   Epplet_window_destroy (confwin);
   confwin = 0;
 
@@ -346,8 +358,7 @@ ok_cb (void *data)
 static void
 apply_cb (void *data)
 {
-  printf ("Apply pressed\n");
-
+  apply_config ();
   return;
   data = NULL;
 }
@@ -355,23 +366,18 @@ apply_cb (void *data)
 static void
 cancel_cb (void *data)
 {
-  printf ("Cancel pressed\n");
   Epplet_window_destroy (confwin);
   confwin = 0;
+  load_config ();
 
   return;
   data = NULL;
 }
 
-/* Amongst all the fluff, this is the bit that does the actual work. */
 static void
-cb_shoot (void *data)
+cb_config (void *data)
 {
-
-  static int temp = 20;
-  static int temp2 = 50;
-  static int temp3 = 80;
-  Epplet_gadget sld, sld2, sld3, lbl, lbl2;
+  Epplet_gadget lbl1, lbl2, btn_anim;
 
   if (confwin)
     return;
@@ -381,33 +387,37 @@ cb_shoot (void *data)
 				 &confwin, apply_cb, &confwin, cancel_cb,
 				 &confwin);
 
-  Epplet_gadget_show (lbl =
-		      Epplet_create_label (20, 10,
-					   "This window was created using Epplet_create_window_config.",
+  Epplet_gadget_show (lbl1 =
+		      Epplet_create_label (40, 20,
+					   "Please choose a cloak animation",
 					   2));
+  Epplet_gadget_show (btn_anim =
+		      Epplet_create_popupbutton (NULL,
+						 NULL, 20,
+						 20, 12, 12, "ARROW_DOWN",
+						 p));
   Epplet_gadget_show (lbl2 =
-		      Epplet_create_label (20, 25,
-					   "I added this text and the sliders myself.",
-					   2));
+		      Epplet_create_label (20, 45,
+					   "Screensaver lock command:", 2));
+  Epplet_gadget_show (txt =
+		      Epplet_create_textbox (NULL, opt.lock_cmd, 20, 65, 250,
+					     20, 2, NULL, NULL));
 
-  Epplet_gadget_show (sld =
-		      Epplet_create_hslider (20, 50, 100, 0, 100, 1, 5, &temp,
-					     NULL, NULL));
-  Epplet_gadget_show (sld2 =
-		      Epplet_create_hslider (20, 100, 200, 0, 100, 1, 5,
-					     &temp2, NULL, NULL));
-  Epplet_gadget_show (sld3 =
-		      Epplet_create_hslider (20, 150, 300, 0, 100, 1, 5,
-					     &temp3, NULL, NULL));
 
   Epplet_window_show (confwin);
 
   Epplet_window_pop_context ();
 
-#if 0
+  return;
+  data = NULL;
+}
+
+/* Amongst all the fluff, this is the bit that does the actual work. */
+static void
+cb_shoot (void *data)
+{
   if (opt.lock_cmd)
     system (opt.lock_cmd);
-#endif
 
   return;
   data = NULL;
@@ -538,10 +548,17 @@ create_epplet_layout (void)
 			  cb_save_delay, (void *) (&(save_delays[12])));
   Epplet_add_popup_entry (stimer_p, "10 mins", NULL,
 			  cb_save_delay, (void *) (&(save_delays[13])));
+#if 0
   Epplet_gadget_show (btn_conf =
 		      Epplet_create_popupbutton (NULL,
 						 NULL, 34,
 						 2, 12, 12, "CONFIGURE", p));
+#endif
+  Epplet_gadget_show (btn_conf =
+		      Epplet_create_button (NULL,
+					    NULL, 34,
+					    2, 12, 12, "CONFIGURE", 0, NULL,
+					    cb_config, NULL));
   Epplet_gadget_show (btn_col =
 		      Epplet_create_popupbutton (NULL,
 						 EROOT
@@ -551,14 +568,14 @@ create_epplet_layout (void)
 		      Epplet_create_popupbutton (NULL,
 						 EROOT
 						 "/epplet_data/E-ScreenShoot/E-ScreenShoot_minitime.png",
-						 17, 17,
-						 13, 13, NULL, ctimer_p));
+						 17, 17, 13, 13, NULL,
+						 ctimer_p));
   Epplet_gadget_show (btn_stimer =
 		      Epplet_create_popupbutton (NULL,
 						 EROOT
 						 "/epplet_data/E-ScreenShoot/E-ScreenShoot_minitime2.png",
-						 33, 17,
-						 13, 13, NULL, stimer_p));
+						 33, 17, 13, 13, NULL,
+						 stimer_p));
   da = Epplet_create_drawingarea (2, 2, 44, 44);
   win = Epplet_get_drawingarea_window (da);
   buf = Epplet_make_rgb_buf (40, 40);
