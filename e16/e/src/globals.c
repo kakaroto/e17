@@ -29,10 +29,6 @@ const char          e_wm_version[] =
 #else
    "enlightenment-" ENLIGHTENMENT_VERSION;
 #endif
-pid_t               master_pid;
-int                 master_screen;
-int                 display_screens;
-int                 single_screen_mode;
 Display            *disp;
 
 #if !USE_IMLIB2

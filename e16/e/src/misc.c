@@ -163,7 +163,7 @@ EExit(void *code)
 
    SignalsRestore();
 
-   if (master_pid == getpid())
+   if (Mode.wm.master)
      {
 	int                 i;
 

@@ -4214,7 +4214,7 @@ IPC_ForceSave(const char *params, Client * c)
    c = NULL;
    params = NULL;
 
-   if (!(master_pid == getpid()))
+   if (Mode.wm.master)
       return;
 
    if (Conf.autosave)

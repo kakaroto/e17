@@ -156,10 +156,10 @@ CommsSendToMasterWM(const char *s)
 {
    EDBUG(5, "CommsSendToMasterWM");
 
-   if (root.scr == master_screen || master_pid == getpid())
+   if (Mode.wm.master)
       EDBUG_RETURN_;
 
-   CommsDoSend(RootWindow(disp, master_screen), s);
+   CommsDoSend(RootWindow(disp, Mode.wm.master_screen), s);
 
    EDBUG_RETURN_;
 }
@@ -175,13 +175,12 @@ CommsBroadcastToSlaveWMs(const char *s)
 
    EDBUG(5, "CommsBroadcastToSlaveWMs");
 
-   if (root.scr != master_screen || master_pid != getpid()
-       || display_screens < 2 || single_screen_mode != 0)
+   if (!Mode.wm.master || Mode.wm.single)
       EDBUG_RETURN_;
 
-   for (screen = 0; screen < display_screens; screen++)
+   for (screen = 0; screen < Mode.display.screens; screen++)
      {
-	if (screen != master_screen)
+	if (screen != Mode.wm.master_screen)
 	   CommsDoSend(RootWindow(disp, screen), s);
      }
 

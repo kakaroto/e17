@@ -67,7 +67,6 @@ main(int argc, char **argv)
    Mode.mode = MODE_NONE;
    Mode.startup = 1;
 
-   single_screen_mode = 0;
 /*  unsetenv("LD_PRELOAD"); */
 
    /* Initialise internationalisation */
@@ -126,7 +125,7 @@ main(int argc, char **argv)
 	     }
 	   else if (!strcmp("-single", argv[j]))
 	     {
-		single_screen_mode = 1;
+		Mode.wm.single = 1;
 	     }
 	   else if ((!strcmp("-smid", argv[j])) && (argc - j > 1))
 	     {
@@ -223,7 +222,7 @@ main(int argc, char **argv)
    /* run most of the setup */
    AlertInit();			/* Set up all the text bits that belong on the GSOD */
    SignalsSetup();
-   SetupX();
+   SetupX();			/* This is where the we fork per screen */
    BlumFlimFrub();
    ZoomInit();
    SetupDirs();
@@ -280,12 +279,13 @@ main(int argc, char **argv)
 	EnableAllPagers();
 	queue_up = DRAW_QUEUE_ENABLE;
      }
-   if (getpid() == master_pid && init_win_ext)
+
+   /* Kill the E process owning the "init window" */
+   if (Mode.wm.master && init_win_ext)
      {
 	XKillClient(disp, init_win_ext);
 	init_win_ext = 0;
      }
-   HintsSetClientList();
 
    /* sync just to make sure */
    XSync(disp, False);

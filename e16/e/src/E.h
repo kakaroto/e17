@@ -1244,6 +1244,17 @@ EConf;
 /* State parameters */
 typedef struct
 {
+   struct
+   {
+      int                 screens;
+   } display;
+   struct
+   {
+      char                master;	/* We are the master E */
+      char                single;	/* No slaves */
+      pid_t               master_pid;
+      int                 master_screen;
+   } wm;
    int                 debug;
    int                 mode;
    char                place;
@@ -2749,10 +2760,6 @@ char               *Estrndup(const char *s, int n);
  */
 extern const char   e_wm_name[];
 extern const char   e_wm_version[];
-extern pid_t        master_pid;
-extern int          master_screen;
-extern int          display_screens;
-extern int          single_screen_mode;
 extern Display     *disp;
 
 #if !USE_IMLIB2

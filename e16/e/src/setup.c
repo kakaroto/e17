@@ -107,14 +107,15 @@ MapUnmap(int start)
 }
 
 void
-SetupX()
+SetupX(void)
 {
    /* This function sets up all of our connections to X */
 
    EDBUG(6, "SetupX");
 
    /* In case we are going to fork, set up the master pid */
-   master_pid = getpid();
+   Mode.wm.master = 1;
+   Mode.wm.master_pid = getpid();
 
    /* Open a connection to the diplay nominated by the DISPLAY variable */
    if (!dstr)
@@ -137,11 +138,14 @@ SetupX()
 		"startx manual pages before proceeding.\n"));
 	EExit((void *)1);
      }
+
    root.scr = DefaultScreen(disp);
-   display_screens = ScreenCount(disp);
-   master_screen = root.scr;
+   Mode.display.screens = ScreenCount(disp);
+
+   Mode.wm.master_screen = root.scr;
+
    /* Start up on multiple heads, if appropriate */
-   if ((display_screens > 1) && (!single_screen_mode))
+   if ((Mode.display.screens > 1) && (!Mode.wm.single))
      {
 	int                 i;
 	char                subdisplay[255];
@@ -151,41 +155,43 @@ SetupX()
 
 	strcpy(subdisplay, DisplayString(disp));
 
-	for (i = 0; i < display_screens; i++)
+	for (i = 0; i < Mode.display.screens; i++)
 	  {
 	     pid_t               pid;
 
-	     if (i != root.scr)
-	       {
-		  pid = fork();
-		  if (pid)
-		    {
-		       child_count++;
-		       e_children =
-			  Erealloc(e_children, sizeof(pid_t) * child_count);
-		       e_children[child_count - 1] = pid;
-		    }
-		  else
-		    {
-#ifdef SIGSTOP
-		       kill(getpid(), SIGSTOP);
-#endif
-		       /* Find the point to concatenate the screen onto */
-		       dispstr = strchr(subdisplay, ':');
-		       if (NULL != dispstr)
-			 {
-			    dispstr = strchr(dispstr, '.');
-			    if (NULL != dispstr)
-			       *dispstr = '\0';
-			 }
-		       Esnprintf(subdisplay + strlen(subdisplay), 10, ".%d", i);
-		       dstr = Estrdup(subdisplay);
-		       disp = XOpenDisplay(dstr);
+	     if (i == root.scr)
+		continue;
 
-		       root.scr = i;
-		       /* Terminate the loop as I am the child process... */
-		       break;
+	     pid = fork();
+	     if (pid)
+	       {
+		  /* We are the master */
+		  child_count++;
+		  e_children =
+		     Erealloc(e_children, sizeof(pid_t) * child_count);
+		  e_children[child_count - 1] = pid;
+	       }
+	     else
+	       {
+		  /* We are a slave */
+		  Mode.wm.master = 0;
+		  root.scr = i;
+#ifdef SIGSTOP
+		  kill(getpid(), SIGSTOP);
+#endif
+		  /* Find the point to concatenate the screen onto */
+		  dispstr = strchr(subdisplay, ':');
+		  if (NULL != dispstr)
+		    {
+		       dispstr = strchr(dispstr, '.');
+		       if (NULL != dispstr)
+			  *dispstr = '\0';
 		    }
+		  Esnprintf(subdisplay + strlen(subdisplay), 10, ".%d", i);
+		  dstr = Estrdup(subdisplay);
+		  disp = XOpenDisplay(dstr);
+		  /* Terminate the loop as I am the child process... */
+		  break;
 	       }
 	  }
      }
@@ -197,13 +203,17 @@ SetupX()
    /* set up a handler for when the X Connection goes down */
    XSetIOErrorHandler((XIOErrorHandler) HandleXIOError);
 
-   /* initialise imlib */
-#if USE_IMLIB2
+   /* Root defaults */
+   root.scr = DefaultScreen(disp);
    root.win = DefaultRootWindow(disp);
    root.vis = DefaultVisual(disp, root.scr);
    root.depth = DefaultDepth(disp, root.scr);
    root.cmap = DefaultColormap(disp, root.scr);
+   root.w = DisplayWidth(disp, root.scr);
+   root.h = DisplayHeight(disp, root.scr);
 
+   /* initialise imlib */
+#if USE_IMLIB2
    imlib_set_cache_size(2048 * 1024);
    imlib_set_font_cache_size(512 * 1024);
    imlib_set_color_usage(128);
@@ -256,8 +266,6 @@ SetupX()
 	prImlib_Context = NULL;
      }
 #endif
-   root.w = DisplayWidth(disp, root.scr);
-   root.h = DisplayHeight(disp, root.scr);
 
    /* Initialise event handling */
    EventsInit();

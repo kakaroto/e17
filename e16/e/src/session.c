@@ -600,7 +600,7 @@ set_save_props(SmcConn smc_conn, int master_flag)
    n = 0;
    restartVal[n].length = strlen(command);
    restartVal[n++].value = command;
-   if (single_screen_mode)
+   if (Mode.wm.single)
      {
 	restartVal[n].length = strlen(single);
 	restartVal[n++].value = (char *)single;
@@ -660,11 +660,9 @@ set_save_props(SmcConn smc_conn, int master_flag)
 static void
 callback_save_yourself2(SmcConn smc_conn, SmPointer client_data)
 {
-   char                master_flag = (master_pid == getpid());
-
    /* dont need anymore */
    /* autosave(); */
-   if (!master_flag)
+   if (!Mode.wm.master)
      {
 	struct timeval      tv1, tv2;
 
@@ -683,7 +681,7 @@ callback_save_yourself2(SmcConn smc_conn, SmPointer client_data)
 	  }
      }
    stale_sm_file = 1;
-   set_save_props(smc_conn, master_flag);
+   set_save_props(smc_conn, Mode.wm.master);
    SmcSaveYourselfDone(smc_conn, True);
    if (restarting)
       EExit(0);
@@ -694,7 +692,7 @@ static void
 callback_save_yourself(SmcConn smc_conn, SmPointer client_data, int save_style,
 		       Bool shutdown, int interact_style, Bool fast)
 {
-   if (master_pid == getpid())
+   if (Mode.wm.master)
      {
 	char                s[4096];
 
@@ -732,7 +730,7 @@ callback_save_yourself(SmcConn smc_conn, SmPointer client_data, int save_style,
 static void
 callback_die(SmcConn smc_conn, SmPointer client_data)
 {
-   if (master_pid == getpid())
+   if (Mode.wm.master)
       SoundPlay("SOUND_EXIT");
    EExit(0);
    smc_conn = 0;
@@ -973,9 +971,8 @@ static void
 doSMExit(const void *params)
 {
    char                s[1024];
-   char                master_flag, do_master_kill;
+   char                do_master_kill;
 
-   master_flag = (master_pid == getpid())? 1 : 0;
    do_master_kill = 1;
 
    restarting = True;
@@ -1127,9 +1124,7 @@ doSMExit(const void *params)
    char               *real_exec;
    char                sss[FILEPATH_LEN_MAX];
    Window              w;
-   char                master_flag, do_master_kill;
-
-   master_flag = (master_pid == getpid())? 1 : 0;
+   char                do_master_kill;
 
    do_master_kill = 1;
 

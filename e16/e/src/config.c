@@ -4230,7 +4230,7 @@ RecoverUserConfig(void)
 		"configuration and try again?\n"));
 	Conf.autosave = 0;
 	MapUnmap(1);
-	if (getpid() == master_pid && init_win_ext)
+	if (Mode.wm.master && init_win_ext)
 	  {
 	     XKillClient(disp, init_win_ext);
 	     init_win_ext = 0;
