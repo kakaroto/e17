@@ -70,14 +70,15 @@ AC_SUBST(ewd_libs)
 ewd_cflags=`ewd-config --cflags`
 ewd_libs=`ewd-config --libs`
 
+AC_SUBST(estyle_cflags)
+AC_SUBST(estyle_libs)
+estyle_cflags=`estyle-config --cflags`
+estyle_libs=`estyle-config --libs`
+
 AC_SUBST(imlib2_cflags)
 AC_SUBST(imlib2_libs)
 imlib2_cflags=`imlib2-config --cflags`
 imlib2_libs=`imlib2-config --libs`
-
-dnl Checking for Perl:
-AC_PATH_PROG(PERL,perl,0)
-AC_SUBST(PERL)
 
 dnl Look for jade for sgml translations.
 AC_ARG_WITH(dbsheets,
@@ -87,8 +88,6 @@ AC_SUBST(DB_STYLESHEETS)
 AC_PATH_PROG(JADE, jade)
 AM_CONDITIONAL(HAVE_JADE, test "x$JADE" != "x" && test -d "$DB_STYLESHEETS")
 
-
-
 AC_CONFIG_FILES([
 Makefile
 etox-config
@@ -97,13 +96,10 @@ doc/kernel-doc
 doc/html-customizations.dsl
 doc/Makefile
 test/Makefile
-test/fnt/Makefile
 test/img/Makefile
-test/style/Makefile
 ])
 AC_CONFIG_COMMANDS([default],[[
 chmod +x etox-config
-chmod +x doc/kernel-doc
 
 ]],[[]])
 AC_OUTPUT

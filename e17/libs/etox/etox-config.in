@@ -42,11 +42,11 @@ while test $# -gt 0; do
       if test @includedir@ != /usr/include ; then
         includes=-I@includedir@
       fi
-      echo $includes @evas_cflags@ @ewd_cflags@ -I$prefix/include/etox
+      echo $includes @evas_cflags@ @ewd_cflags@ @estyle_cflags@ -I$prefix/include/etox
       ;;
     --libs)
       libdirs=-L@libdir@
-      echo $libdirs -letox @evas_libs@ @ewd_libs@ -lm
+      echo $libdirs -letox @evas_libs@ @ewd_libs@ @estyle_libs@ -lm
       ;;
     *)
       echo "${usage}" 1>&2

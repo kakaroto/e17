@@ -11,24 +11,12 @@ Etox.h
 
 libetox_la_SOURCES = \
 Etox.h \
-Etox_private.h \
 etox.c \
-etox_bit.c \
-etox_color.c \
-etox_create.c \
-etox_get.c \
-etox_loadfile.c \
-etox_object.c \
-etox_callback.c \
-etox_obstacle.c \
-etox_set.c \
-etox_str.c \
-etox_style.c \
-etox_align.c \
-etox_data.c \
-etox_part.c
+etox_line.c \
+etox_context.c \
+etox_obstacle.c
 
 
 libetox_la_LIBADD       = @evas_libs@ @ewd_libs@
 libetox_la_DEPENDENCIES = $(top_builddir)/etox-config.h
-libetox_la_LDFLAGS      = -version-info 0:1:0
+libetox_la_LDFLAGS      = -version-info 0:2:0

@@ -1,0 +1,11 @@
+Etox - An evas based text layout library
+----------------------------------------
+
+Etox provides facilities for multi-line text layout, as well as obstacle
+wrapping and text stylization.
+
+Todo:
++ etox_free
++ obstacle wrapping
++ region selection
++ columnar layout

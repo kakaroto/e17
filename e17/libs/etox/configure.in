@@ -184,6 +184,41 @@ AC_ARG_WITH(ewd,
   fi
 ])  
 
+ESTYLE_CONFIG="estyle-config"
+AC_ARG_WITH(estyle,
+[  --with-estyle-config=FILE   estyle-config script to use (eg /usr/bin/estyle-config)],
+[
+   ESTYLE_CONFIG=$withval
+   AC_CHECK_PROG(ESTYLE_CONFIG_IN_PATH, $ESTYLE_CONFIG, yes, no)
+   if test $ESTYLE_CONFIG_IN_PATH = no; then
+      echo "ERROR:"
+      echo "The estyle-config development script you specified:"
+      echo "$ESTYLE_CONFIG"
+      echo "was not found.  Please check the path and make sure "
+      echo "the script exists and is executable."
+      AC_MSG_ERROR([Fatal Error: no estyle-config detected.])
+      exit;
+   fi
+],
+[
+  AC_CHECK_PROG(ESTYLE_CONFIG_IN_PATH, $ESTYLE_CONFIG, yes, no)
+  if test $ESTYLE_CONFIG_IN_PATH = no; then
+    echo "ERROR:"
+    echo "The estyle-config development script was not found in your execute"
+    echo "path. This may mean one of several things"
+    echo "1. You may not have installed the estyle-devel (or estyle-dev)"
+    echo "   packages."
+    echo "2. You may have estyle installed somewhere not covered by your path."
+    echo ""
+    echo "If this is the case make sure you have the packages installed, AND"
+    echo "that the estyle-config script is in your execute path (see your"
+    echo "shell's manual page on setting the \$PATH environment variable), OR"
+    echo "alternatively, specify the script to use with --with-estyle-config."
+    AC_MSG_ERROR([Fatal Error: no estyle-config detected.])
+    exit;
+  fi
+])  
+
 IMLIB2_CONFIG="imlib2-config"
 AC_ARG_WITH(imlib2,
 [  --with-imlib2-config=FILE   imlib2-config script to use (eg /usr/bin/imlib2-config)],
@@ -244,38 +279,23 @@ AC_SUBST(ewd_libs)
 ewd_cflags=`ewd-config --cflags`
 ewd_libs=`ewd-config --libs`
 
+AC_SUBST(estyle_cflags)
+AC_SUBST(estyle_libs)
+estyle_cflags=`estyle-config --cflags`
+estyle_libs=`estyle-config --libs`
+
 AC_SUBST(imlib2_cflags)
 AC_SUBST(imlib2_libs)
 imlib2_cflags=`imlib2-config --cflags`
 imlib2_libs=`imlib2-config --libs`
 
-
-dnl Checking for Perl:
-AC_PATH_PROG(PERL,perl,0)
-AC_SUBST(PERL)
-
-dnl Look for jade for sgml translations.
-AC_ARG_WITH(dbsheets,
-       [  --with-dbsheets=DIR     use DIR to specify your DocBook stylesheets installation path.],
-       DB_STYLESHEETS="$withval", DB_STYLESHEETS="/usr/lib/sgml/stylesheet/dsssl/docbook/nwalsh")
-AC_SUBST(DB_STYLESHEETS)
-AC_PATH_PROG(JADE, jade)
-AM_CONDITIONAL(HAVE_JADE, test "x$JADE" != "x" && test -d "$DB_STYLESHEETS")
-
-
 AC_OUTPUT([
 Makefile
 etox-config
 src/Makefile
-doc/kernel-doc
-doc/html-customizations.dsl
-doc/Makefile
 test/Makefile
-test/fnt/Makefile
 test/img/Makefile
-test/style/Makefile
 ], [
 chmod +x etox-config
-chmod +x doc/kernel-doc
 ]
 )
