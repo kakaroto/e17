@@ -37,20 +37,60 @@
 		}
 	    }
 	    part {
-		name, "mainimage";
-		type, IMAGE;
+		name, "pulseclip";
+		type, RECT;
 		mouse_events, 0;
-		clip_to, "miclip";
+		description {
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1 { relative, 0.0 0.0; offset, 0 0; }
+		    rel2 { relative, 1.0 1.0; offset, 0 0; }
+		    color, 255 255 255 0;
+		}
+		description {
+		    state, "visible" 0.0;
+		    visible, 1;
+		    rel1 { relative, 0.0 0.0; offset, 0 0; }
+		    rel2 { relative, 1.0 1.0; offset, 0 0; }
+		    color, 255 255 255 128;
+		}
+	    }
 #define MIITEM(sname, simage) \
     description { state, sname 0.0; visible, 1; \
     rel1 { relative, 0.0 0.0; offset, 15 5; } \
     rel2 { relative, 1.0 1.0; offset, -15 -30; } \
     image { normal, simage; } }
+#define PIITEM(sname, simage) \
+    part { name, sname; type, IMAGE; mouse_events, 0;  \
+    clip_to, "pulseclip"; \
+    description { state, "default" 0.0; visible, 0; \
+    rel1 { relative, 0.0 0.0; offset, 15 5; } \
+    rel2 { relative, 1.0 1.0; offset, -15 -30; } \
+    color, 255 255 255 0; image { normal, simage; } } \
+    description { state, "pulse1" 0.0; visible, 1; \
+    rel1 { relative, 0.0 0.0; offset, 15 5; } \
+    rel2 { relative, 1.0 1.0; offset, -15 -30; } \
+    color, 255 255 255 128; image { normal, simage; } } \
+    description { state, "pulse2" 0.0; visible, 1; align, 0.5 0.5; \
+    rel1 { relative, -0.5 -0.5; offset, 15 5; } \
+    rel2 { relative, 1.5 1.5; offset, -15 -30; } \
+    color, 255 255 255 128; image { normal, simage; } } }
 
-MIITEM("default", "volume.png")
-MIITEM("brightness", "brightness.png")
-MIITEM("mute", "noaudio.png")
-MIITEM("sleep", "sleep.png")
-MIITEM("battery", "battery.png")
-	    }
+    part { 
+	name, "mainimage"; 
+	type, IMAGE; 
+	mouse_events, 0; 
+	clip_to, "miclip";
+	MIITEM("default", "volume.png")
+	MIITEM("volume", "volume.png")
+	MIITEM("brightness", "brightness.png")
+	MIITEM("mute", "noaudio.png") 
+	MIITEM("sleep", "sleep.png") 
+	MIITEM("battery1", "battery.png") 
+	MIITEM("battery2", "battery.png") 
+	MIITEM("battery3", "battery.png")
+    }
+    PIITEM("volume", "volume.png")
+    PIITEM("brightness", "brightness.png")
+    PIITEM("mute", "noaudio.png") 
 
