@@ -995,7 +995,10 @@ HandleProperty(XEvent * ev)
    ewin = FindItem(NULL, win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
    if (ewin)
      {
+	Pixmap              pm;
+
 	GrabX();
+	pm = ewin->client.icon_pmap;
 	if (ewin->client.title)
 	   strncpy(title, ewin->client.title, 10240);
 	desktop = ewin->desktop;
@@ -1021,7 +1024,7 @@ HandleProperty(XEvent * ev)
 		if (mode.kde_support)
 		   KDE_UpdateTitle(ewin);
 	     }
-	if (ewin->iconified)
+	if ((ewin->iconified) && (pm != ewin->client.icon_pmap))
 	  {
 	     Iconbox           **ib;
 	     int                 i, j, num;

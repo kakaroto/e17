@@ -1981,3 +1981,10 @@ shen changing numebr of desktops - get rid of the old desktops first before
 chanign the number
 
 dont looses as much accuracy when moving pagers in the pager view.
+
+-------------------------------------------------------------------------------
+
+Sat Sep 18 22:58:43 PDT 1999
+(Raster)
+
+fix recursive call in iconification. :)

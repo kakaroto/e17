@@ -1026,9 +1026,6 @@ UpdateAppIcon(EWin * ewin, int imode)
      default:
 	break;
      }
-   ib = SelectIconboxForEwin(ewin);
-   if ((ewin->iconified) && (ib))
-      RedrawIconbox(ib);
 }
 
 void
