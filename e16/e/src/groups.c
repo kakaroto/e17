@@ -545,10 +545,10 @@ ChooseGroupDialog(EWin * ewin, char *message, char group_select, int action)
 
    table = DialogInitItem(d);
    DialogItemTableSetOptions(table, 2, 0, 0, 0);
-
+/*
    di = DialogAddItem(table, DITEM_IMAGE);
    DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemImageSetFile(di, "pix/place.png");
+   DialogItemImageSetFile(di, "pix/group.png");
 
    di = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetPadding(di, 2, 2, 2, 2);
@@ -562,7 +562,7 @@ ChooseGroupDialog(EWin * ewin, char *message, char group_select, int action)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSeparatorSetOrientation(di, 0);
-
+*/
    di = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetColSpan(di, 2);
    DialogItemSetPadding(di, 2, 2, 2, 2);

@@ -96,7 +96,7 @@ SettingsPager(void)
 
    table = DialogInitItem(d);
    DialogItemTableSetOptions(table, 2, 0, 0, 0);
-
+/*
    di = DialogAddItem(table, DITEM_IMAGE);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemImageSetFile(di, "pix/pager.png");
@@ -113,7 +113,7 @@ SettingsPager(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSeparatorSetOrientation(di, 0);
-
+*/
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
@@ -264,7 +264,7 @@ SettingsFocus(void)
 
    table = DialogInitItem(d);
    DialogItemTableSetOptions(table, 2, 0, 0, 0);
-
+/*
    di = DialogAddItem(table, DITEM_IMAGE);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemImageSetFile(di, "pix/focus.png");
@@ -281,7 +281,7 @@ SettingsFocus(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSeparatorSetOrientation(di, 0);
-
+*/
    radio = di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
@@ -453,7 +453,7 @@ SettingsMoveResize(void)
 
    table = DialogInitItem(d);
    DialogItemTableSetOptions(table, 2, 0, 0, 0);
-
+/*
    di = DialogAddItem(table, DITEM_IMAGE);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemImageSetFile(di, "pix/moveres.png");
@@ -470,7 +470,7 @@ SettingsMoveResize(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSeparatorSetOrientation(di, 0);
-
+*/
    di = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 0, 0);
@@ -692,7 +692,7 @@ SettingsDesktops(void)
 
    table = DialogInitItem(d);
    DialogItemTableSetOptions(table, 2, 0, 0, 0);
-
+/*
    di = DialogAddItem(table, DITEM_IMAGE);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemImageSetFile(di, "pix/desktops.png");
@@ -709,7 +709,7 @@ SettingsDesktops(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSeparatorSetOrientation(di, 0);
-
+*/
    di = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
@@ -851,7 +851,7 @@ void
 SettingsArea(void)
 {
    Dialog             *d;
-   DItem              *table, *di, *area, *slider, *slider2;
+   DItem              *table, *di, *area, *slider, *slider2, *table2;
    char                s[64];
 
    if ((d = FindItem("CONFIGURE_AREA", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG)))
@@ -874,10 +874,9 @@ SettingsArea(void)
    DialogSetTitle(d, "Virtual Deskop Settings");
 
    table = DialogInitItem(d);
-   DialogItemTableSetOptions(table, 3, 0, 0, 0);
-
+   DialogItemTableSetOptions(table, 1, 0, 0, 0);
+/*
    di = DialogAddItem(table, DITEM_NONE);
-
    di = DialogAddItem(table, DITEM_IMAGE);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemImageSetFile(di, "pix/areas.png");
@@ -894,17 +893,15 @@ SettingsArea(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSeparatorSetOrientation(di, 0);
-
+*/
    di = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemSetColSpan(di, 3);
    DialogItemTextSetText(di, "Virtual Desktop size:\n");
 
    di = tmp_area_text = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemSetColSpan(di, 3);
    if ((tmp_area_x > 1) || (tmp_area_y > 1))
       Esnprintf(s, sizeof(s), "%i x %i\nScreens in size", tmp_area_x,
 		9 - tmp_area_y);
@@ -912,11 +909,13 @@ SettingsArea(void)
       Esnprintf(s, sizeof(s), "1\nScreen in size");
    DialogItemTextSetText(di, s);
 
-   di = DialogAddItem(table, DITEM_NONE);
+   table2 = DialogAddItem(table, DITEM_TABLE);
+   DialogItemTableSetOptions(table2, 2, 0, 0, 0);
+   
+   di = DialogAddItem(table2, DITEM_NONE);
 
-   di = slider = DialogAddItem(table, DITEM_SLIDER);
+   di = slider = DialogAddItem(table2, DITEM_SLIDER);
    DialogItemSliderSetMinLength(di, 10);
-   DialogItemSetColSpan(di, 2);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSliderSetBounds(di, 1, 8);
@@ -925,7 +924,7 @@ SettingsArea(void)
    DialogItemSliderSetVal(di, tmp_area_x);
    DialogItemSliderSetValPtr(di, &tmp_area_x);
 
-   di = slider2 = DialogAddItem(table, DITEM_SLIDER);
+   di = slider2 = DialogAddItem(table2, DITEM_SLIDER);
    DialogItemSliderSetMinLength(di, 10);
    DialogItemSliderSetOrientation(di, 0);
    DialogItemSetPadding(di, 2, 2, 2, 2);
@@ -936,23 +935,20 @@ SettingsArea(void)
    DialogItemSliderSetVal(di, tmp_area_y);
    DialogItemSliderSetValPtr(di, &tmp_area_y);
 
-   di = area = DialogAddItem(table, DITEM_AREA);
+   di = area = DialogAddItem(table2, DITEM_AREA);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemSetColSpan(di, 2);
    DialogItemAreaSetSize(di, 160, 120);
 
    DialogItemSetCallback(slider, CB_AreaDisplayRedraw, 0, (void *)area);
    DialogItemSetCallback(slider2, CB_AreaDisplayRedraw, 0, (void *)area);
 
    di = DialogAddItem(table, DITEM_SEPARATOR);
-   DialogItemSetColSpan(di, 3);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSeparatorSetOrientation(di, 0);
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
-   DialogItemSetColSpan(di, 3);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemCheckButtonSetText(di, "Enable edge flip");
@@ -962,12 +958,10 @@ SettingsArea(void)
    di = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemSetColSpan(di, 3);
    DialogItemTextSetText(di, "Resistance at edge of screen:\n");
 
    di = slider = DialogAddItem(table, DITEM_SLIDER);
    DialogItemSliderSetMinLength(di, 10);
-   DialogItemSetColSpan(di, 3);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSliderSetBounds(di, 1, 100);
@@ -977,7 +971,6 @@ SettingsArea(void)
    DialogItemSliderSetValPtr(di, &tmp_edge_resist);
 
    di = DialogAddItem(table, DITEM_SEPARATOR);
-   DialogItemSetColSpan(di, 3);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSeparatorSetOrientation(di, 0);
@@ -1034,7 +1027,7 @@ SettingsPlacement(void)
 
    table = DialogInitItem(d);
    DialogItemTableSetOptions(table, 2, 0, 0, 0);
-
+/*
    di = DialogAddItem(table, DITEM_IMAGE);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemImageSetFile(di, "pix/place.png");
@@ -1051,7 +1044,7 @@ SettingsPlacement(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSeparatorSetOrientation(di, 0);
-
+*/
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
@@ -1134,7 +1127,7 @@ SettingsAutoRaise(void)
 
    table = DialogInitItem(d);
    DialogItemTableSetOptions(table, 2, 0, 0, 0);
-
+/*
    di = DialogAddItem(table, DITEM_IMAGE);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemImageSetFile(di, "pix/raise.png");
@@ -1151,7 +1144,7 @@ SettingsAutoRaise(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSeparatorSetOrientation(di, 0);
-
+*/
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
@@ -1228,7 +1221,7 @@ SettingsTooltips(void)
 
    table = DialogInitItem(d);
    DialogItemTableSetOptions(table, 2, 0, 0, 0);
-
+/*
    di = DialogAddItem(table, DITEM_IMAGE);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemImageSetFile(di, "pix/tips.png");
@@ -1245,7 +1238,7 @@ SettingsTooltips(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSeparatorSetOrientation(di, 0);
-
+*/
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
@@ -1323,7 +1316,7 @@ SettingsAudio(void)
 
    table = DialogInitItem(d);
    DialogItemTableSetOptions(table, 2, 0, 0, 0);
-
+/*
    di = DialogAddItem(table, DITEM_IMAGE);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemImageSetFile(di, "pix/sound.png");
@@ -1340,7 +1333,7 @@ SettingsAudio(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSeparatorSetOrientation(di, 0);
-
+*/
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
@@ -1457,7 +1450,7 @@ SettingsSpecialFX(void)
 
    table = DialogInitItem(d);
    DialogItemTableSetOptions(table, 4, 0, 0, 0);
-
+/*
    di = DialogAddItem(table, DITEM_IMAGE);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemImageSetFile(di, "pix/fx.png");
@@ -1478,7 +1471,7 @@ SettingsSpecialFX(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSeparatorSetOrientation(di, 0);
-
+*/
    di = DialogAddItem(table, DITEM_NONE);
 
    di = DialogAddItem(table, DITEM_NONE);
@@ -2762,7 +2755,7 @@ SettingsBackground(Background * bg)
 
    table = DialogInitItem(d);
    DialogItemTableSetOptions(table, 3, 0, 0, 0);
-
+/*
    di = DialogAddItem(table, DITEM_IMAGE);
    DialogItemSetColSpan(di, 2);
    DialogItemSetPadding(di, 2, 2, 2, 2);
@@ -2780,7 +2773,7 @@ SettingsBackground(Background * bg)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSeparatorSetOrientation(di, 0);
-
+*/
    di = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
@@ -3183,7 +3176,7 @@ void
 SettingsIconbox(char *name)
 {
    Dialog             *d;
-   DItem              *table, *di, *radio1, *radio2, *radio3, *radio4;
+   DItem              *table, *di, *radio1, *radio2, *radio3, *radio4, *table2;
    Iconbox            *ib;
 
    if ((d = FindItem("CONFIGURE_ICONBOX", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG)))
@@ -3219,8 +3212,8 @@ SettingsIconbox(char *name)
    DialogSetTitle(d, "Iconbox Settings");
 
    table = DialogInitItem(d);
-   DialogItemTableSetOptions(table, 3, 0, 0, 0);
-
+   DialogItemTableSetOptions(table, 1, 0, 0, 0);
+/*
    di = DialogAddItem(table, DITEM_IMAGE);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemImageSetFile(di, "pix/iconbox.png");
@@ -3238,11 +3231,10 @@ SettingsIconbox(char *name)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSeparatorSetOrientation(di, 0);
-
+*/
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemSetColSpan(di, 3);
    DialogItemCheckButtonSetText(di, "Transparent background");
    DialogItemCheckButtonSetState(di, tmp_ib_nobg);
    DialogItemCheckButtonSetPtr(di, &tmp_ib_nobg);
@@ -3250,7 +3242,6 @@ SettingsIconbox(char *name)
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemSetColSpan(di, 3);
    DialogItemCheckButtonSetText(di, "Hide border around inner Iconbox");
    DialogItemCheckButtonSetState(di, tmp_ib_cover_hide);
    DialogItemCheckButtonSetPtr(di, &tmp_ib_cover_hide);
@@ -3258,7 +3249,6 @@ SettingsIconbox(char *name)
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemSetColSpan(di, 3);
    DialogItemCheckButtonSetText(di, "Show icon names");
    DialogItemCheckButtonSetState(di, tmp_ib_shownames);
    DialogItemCheckButtonSetPtr(di, &tmp_ib_shownames);
@@ -3266,7 +3256,6 @@ SettingsIconbox(char *name)
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemSetColSpan(di, 3);
    DialogItemCheckButtonSetText(di, "Draw base image behind Icons");
    DialogItemCheckButtonSetState(di, tmp_ib_draw_icon_base);
    DialogItemCheckButtonSetPtr(di, &tmp_ib_draw_icon_base);
@@ -3274,7 +3263,6 @@ SettingsIconbox(char *name)
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemSetColSpan(di, 3);
    DialogItemCheckButtonSetText(di, "Hide scrollbar when not needed");
    DialogItemCheckButtonSetState(di, tmp_ib_scrollbar_hide);
    DialogItemCheckButtonSetPtr(di, &tmp_ib_scrollbar_hide);
@@ -3282,20 +3270,17 @@ SettingsIconbox(char *name)
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemSetColSpan(di, 3);
    DialogItemCheckButtonSetText(di, "Automatically resize to fit Icons");
    DialogItemCheckButtonSetState(di, tmp_ib_auto_resize);
    DialogItemCheckButtonSetPtr(di, &tmp_ib_auto_resize);
 
    di = DialogAddItem(table, DITEM_TEXT);
-   DialogItemSetColSpan(di, 3);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 0, 0);
    DialogItemSetAlign(di, 0, 0);
    DialogItemTextSetText(di, "Alignment of anchoring when automatically resizing:");
 
    di = DialogAddItem(table, DITEM_SLIDER);
-   DialogItemSetColSpan(di, 3);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSliderSetBounds(di, 0, 1024);
@@ -3305,13 +3290,11 @@ SettingsIconbox(char *name)
    DialogItemSliderSetValPtr(di, &tmp_ib_autoresize_anchor);
 
    di = DialogAddItem(table, DITEM_SEPARATOR);
-   DialogItemSetColSpan(di, 3);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSeparatorSetOrientation(di, 0);
 
    di = DialogAddItem(table, DITEM_TEXT);
-   DialogItemSetColSpan(di, 3);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 0, 0);
    DialogItemSetAlign(di, 0, 0);
@@ -3320,7 +3303,6 @@ SettingsIconbox(char *name)
    radio4 = di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemSetColSpan(di, 3);
    DialogItemRadioButtonSetText(di, "Snapshot Windows, Use application icon, Use Enlightement Icon");
    DialogItemRadioButtonSetFirst(di, radio4);
    DialogItemRadioButtonGroupSetVal(di, 0);
@@ -3328,7 +3310,6 @@ SettingsIconbox(char *name)
    di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemSetColSpan(di, 3);
    DialogItemRadioButtonSetText(di, "Use application icon, Use Enlightement Icon, Snapshot Window");
    DialogItemRadioButtonSetFirst(di, radio4);
    DialogItemRadioButtonGroupSetVal(di, 1);
@@ -3336,27 +3317,23 @@ SettingsIconbox(char *name)
    di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemSetColSpan(di, 3);
    DialogItemRadioButtonSetText(di, "Use Enlightement Icon, Snapshot Window");
    DialogItemRadioButtonSetFirst(di, radio4);
    DialogItemRadioButtonGroupSetVal(di, 2);
    DialogItemRadioButtonGroupSetValPtr(radio4, &tmp_ib_mode);
 
    di = DialogAddItem(table, DITEM_SEPARATOR);
-   DialogItemSetColSpan(di, 3);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSeparatorSetOrientation(di, 0);
 
    di = DialogAddItem(table, DITEM_TEXT);
-   DialogItemSetColSpan(di, 3);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 0, 0);
    DialogItemSetAlign(di, 0, 512);
    DialogItemTextSetText(di, "Icon size");
 
    di = DialogAddItem(table, DITEM_SLIDER);
-   DialogItemSetColSpan(di, 3);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSliderSetBounds(di, 4, 128);
@@ -3366,51 +3343,53 @@ SettingsIconbox(char *name)
    DialogItemSliderSetValPtr(di, &tmp_ib_iconsize);
 
    di = DialogAddItem(table, DITEM_SEPARATOR);
-   DialogItemSetColSpan(di, 3);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSeparatorSetOrientation(di, 0);
 
-   di = DialogAddItem(table, DITEM_TEXT);
+   table2 = DialogAddItem(table, DITEM_TABLE);
+   DialogItemTableSetOptions(table2, 3, 0, 0, 0);
+   
+   di = DialogAddItem(table2, DITEM_TEXT);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 0, 0);
    DialogItemSetAlign(di, 0, 512);
    DialogItemTextSetText(di, "Orientation:");
 
-   di = DialogAddItem(table, DITEM_TEXT);
+   di = DialogAddItem(table2, DITEM_TEXT);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 0, 0);
    DialogItemSetAlign(di, 0, 512);
    DialogItemTextSetText(di, "Scrollbar side:");
 
-   di = DialogAddItem(table, DITEM_TEXT);
+   di = DialogAddItem(table2, DITEM_TEXT);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 0, 0);
    DialogItemSetAlign(di, 0, 512);
    DialogItemTextSetText(di, "Scrollbar arrows:");
 
-   radio1 = di = DialogAddItem(table, DITEM_RADIOBUTTON);
+   radio1 = di = DialogAddItem(table2, DITEM_RADIOBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemRadioButtonSetText(di, "Horizontal");
    DialogItemRadioButtonSetFirst(di, radio1);
    DialogItemRadioButtonGroupSetVal(di, 0);
 
-   radio2 = di = DialogAddItem(table, DITEM_RADIOBUTTON);
+   radio2 = di = DialogAddItem(table2, DITEM_RADIOBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemRadioButtonSetText(di, "Left / Top");
    DialogItemRadioButtonSetFirst(di, radio2);
    DialogItemRadioButtonGroupSetVal(di, 0);
 
-   radio3 = di = DialogAddItem(table, DITEM_RADIOBUTTON);
+   radio3 = di = DialogAddItem(table2, DITEM_RADIOBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemRadioButtonSetText(di, "Start");
    DialogItemRadioButtonSetFirst(di, radio3);
    DialogItemRadioButtonGroupSetVal(di, 0);
 
-   di = DialogAddItem(table, DITEM_RADIOBUTTON);
+   di = DialogAddItem(table2, DITEM_RADIOBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemRadioButtonSetText(di, "Vertical");
@@ -3418,7 +3397,7 @@ SettingsIconbox(char *name)
    DialogItemRadioButtonGroupSetVal(di, 1);
    DialogItemRadioButtonGroupSetValPtr(radio1, &tmp_ib_vert);
 
-   di = DialogAddItem(table, DITEM_RADIOBUTTON);
+   di = DialogAddItem(table2, DITEM_RADIOBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemRadioButtonSetText(di, "Right / Bottom");
@@ -3426,27 +3405,27 @@ SettingsIconbox(char *name)
    DialogItemRadioButtonGroupSetVal(di, 1);
    DialogItemRadioButtonGroupSetValPtr(radio2, &tmp_ib_side);
 
-   di = DialogAddItem(table, DITEM_RADIOBUTTON);
+   di = DialogAddItem(table2, DITEM_RADIOBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemRadioButtonSetText(di, "Both ends");
    DialogItemRadioButtonSetFirst(di, radio3);
    DialogItemRadioButtonGroupSetVal(di, 1);
 
-   di = DialogAddItem(table, DITEM_NONE);
-   di = DialogAddItem(table, DITEM_NONE);
+   di = DialogAddItem(table2, DITEM_NONE);
+   di = DialogAddItem(table2, DITEM_NONE);
 
-   di = DialogAddItem(table, DITEM_RADIOBUTTON);
+   di = DialogAddItem(table2, DITEM_RADIOBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemRadioButtonSetText(di, "End");
    DialogItemRadioButtonSetFirst(di, radio3);
    DialogItemRadioButtonGroupSetVal(di, 2);
 
-   di = DialogAddItem(table, DITEM_NONE);
-   di = DialogAddItem(table, DITEM_NONE);
+   di = DialogAddItem(table2, DITEM_NONE);
+   di = DialogAddItem(table2, DITEM_NONE);
 
-   di = DialogAddItem(table, DITEM_RADIOBUTTON);
+   di = DialogAddItem(table2, DITEM_RADIOBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemRadioButtonSetText(di, "None");
@@ -3455,7 +3434,6 @@ SettingsIconbox(char *name)
    DialogItemRadioButtonGroupSetValPtr(radio3, &tmp_ib_arrows);
 
    di = DialogAddItem(table, DITEM_SEPARATOR);
-   DialogItemSetColSpan(di, 3);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSeparatorSetOrientation(di, 0);
@@ -3610,7 +3588,7 @@ SettingsGroups(EWin * ewin)
 
    table = DialogInitItem(d);
    DialogItemTableSetOptions(table, 2, 0, 0, 0);
-
+/*
    di = DialogAddItem(table, DITEM_IMAGE);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemImageSetFile(di, "pix/place.png");
@@ -3627,7 +3605,7 @@ SettingsGroups(EWin * ewin)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSeparatorSetOrientation(di, 0);
-
+*/
    di = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetColSpan(di, 2);
    DialogItemSetPadding(di, 2, 2, 2, 2);
@@ -3800,7 +3778,7 @@ SettingsDefaultGroupControl(void)
 
    table = DialogInitItem(d);
    DialogItemTableSetOptions(table, 2, 0, 0, 0);
-
+/*
    di = DialogAddItem(table, DITEM_IMAGE);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemImageSetFile(di, "pix/place.png");
@@ -3817,7 +3795,7 @@ SettingsDefaultGroupControl(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSeparatorSetOrientation(di, 0);
-
+*/
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);

@@ -1787,3 +1787,11 @@ Wed Sep 15 09:34:16 PDT 1999
 (Raster)
 
 fixe over sealous ewin existance catching.. 
+
+-------------------------------------------------------------------------------
+
+Wed Sep 15 10:46:01 PDT 1999
+(Raster)
+
+get rid of cruft in all settigns boxes - make them smaller so they fit on 
+6480x480 screens 

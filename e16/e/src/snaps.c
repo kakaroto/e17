@@ -227,7 +227,7 @@ SnapshotEwinDialog(EWin * ewin)
 
    table = DialogInitItem(d);
    DialogItemTableSetOptions(table, 4, 0, 0, 0);
-
+/*
    di = DialogAddItem(table, DITEM_IMAGE);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetColSpan(di, 2);
@@ -241,6 +241,13 @@ SnapshotEwinDialog(EWin * ewin)
 			 "Select the attributes of this\n"
 			 "window you wish to Remember\n"
 			 "from now on\n");
+
+   di = DialogAddItem(table, DITEM_SEPARATOR);
+   DialogItemSetColSpan(di, 4);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemSeparatorSetOrientation(di, 0);
+*/
    sn = ewin->snap;
    tmp_snap_client = ewin->client.win;
 
@@ -277,12 +284,6 @@ SnapshotEwinDialog(EWin * ewin)
 	if (sn->groups)
 	   tmp_snap_group = 1;
      }
-
-   di = DialogAddItem(table, DITEM_SEPARATOR);
-   DialogItemSetColSpan(di, 4);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
-   DialogItemSeparatorSetOrientation(di, 0);
 
    di = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetPadding(di, 2, 2, 2, 2);
