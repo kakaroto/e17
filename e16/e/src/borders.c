@@ -1598,7 +1598,7 @@ FreeEwin(EWin * ewin)
    if (ewin->pager)
       PagerKill(ewin->pager);
    if (ewin->ibox)
-      FreeIconbox(ewin->ibox);
+      IconboxDestroy(ewin->ibox);
 
    /* May be an overkill but cannot hurt... */
    DELETE_EWIN_REFERENCE(ewin, mode.ewin);

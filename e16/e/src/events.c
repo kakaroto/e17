@@ -692,7 +692,7 @@ HandleEvent(XEvent * ev)
    if (ev->type <= 35)
       HArray[ev->type].func(ev);
 
-   IconboxHandleEvent(ev);
+   IconboxesHandleEvent(ev);
 
    if (diddeskaccount)
      {

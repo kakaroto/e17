@@ -20,6 +20,7 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+#define DECLARE_STRUCT_ICONBOX
 #include "E.h"
 #include <math.h>
 
@@ -195,7 +196,7 @@ IB_Animate(char iconify, EWin * from, EWin * to)
 }
 
 void
-IconifyEwin(EWin * ewin)
+IconboxIconifyEwin(Iconbox * ib, EWin * ewin)
 {
    static int          call_depth = 0;
    char                was_shaded;
@@ -215,9 +216,6 @@ IconifyEwin(EWin * ewin)
      }
    if (!ewin->iconified)
      {
-	Iconbox            *ib;
-
-	ib = SelectIconboxForEwin(ewin);
 	was_shaded = ewin->shaded;
 	AUDIO_PLAY("SOUND_ICONIFY");
 	if (ib)
@@ -225,11 +223,11 @@ IconifyEwin(EWin * ewin)
 	     if (ib->animate)
 		IB_Animate(1, ewin, ib->ewin);
 	     UpdateAppIcon(ewin, ib->icon_mode);
+	     IconboxAddEwin(ib, ewin);
 	  }
 	HideEwin(ewin);
 	if (was_shaded != ewin->shaded)
 	   InstantShadeEwin(ewin);
-	MakeIcon(ewin);
 	ICCCM_Iconify(ewin);
 	if (ewin == mode.focuswin)
 	  {
@@ -267,6 +265,12 @@ IconifyEwin(EWin * ewin)
 
    HintsSetWindowState(ewin);
    EDBUG_RETURN_;
+}
+
+void
+IconifyEwin(EWin * ewin)
+{
+   IconboxIconifyEwin(SelectIconboxForEwin(ewin), ewin);
 }
 
 void
@@ -360,7 +364,7 @@ MakeIcon(EWin * ewin)
 
    ib = SelectIconboxForEwin(ewin);
    if (ib)
-      AddEwinToIconbox(ib, ewin);
+      IconboxAddEwin(ib, ewin);
 }
 
 void
@@ -370,11 +374,11 @@ RemoveMiniIcon(EWin * ewin)
 
    ib = SelectIconboxForEwin(ewin);
    if (ib)
-      DelEwinFromIconbox(ib, ewin);
+      IconboxDelEwin(ib, ewin);
 }
 
 Iconbox            *
-CreateIconbox(char *name)
+IconboxCreate(char *name)
 {
    Iconbox            *ib;
 
@@ -403,6 +407,7 @@ CreateIconbox(char *name)
    ib->h = 0;
    ib->pos = 0;
    ib->max = 1;
+   ib->force_update = 1;
    ib->arrow1_hilited = 0;
    ib->arrow1_clicked = 0;
    ib->arrow2_hilited = 0;
@@ -452,7 +457,7 @@ CreateIconbox(char *name)
 }
 
 void
-FreeIconbox(Iconbox * ib)
+IconboxDestroy(Iconbox * ib)
 {
    int                 i;
 
@@ -470,8 +475,56 @@ FreeIconbox(Iconbox * ib)
    autosave();
 }
 
+Window
+IconboxGetWin(Iconbox * ib)
+{
+   return ib->win;
+}
+
+static void
+IB_Reconfigure(Iconbox * ib)
+{
+   ImageClass         *ic;
+   EWin               *ewin;
+   int                 extra = 0;
+
+   ewin = ib->ewin;
+   ib->force_update = 1;
+   ewin->client.width.min = 8;
+   ewin->client.height.min = 8;
+   ewin->client.width.max = 16384;
+   ewin->client.height.max = 16384;
+   ewin->client.no_resize_h = 0;
+   ewin->client.no_resize_v = 0;
+
+   if (ib->orientation)
+     {
+	ic = FindItem("ICONBOX_VERTICAL", 0, LIST_FINDBY_NAME,
+		      LIST_TYPE_ICLASS);
+	if (ic)
+	   extra = ic->padding.left + ic->padding.right;
+	ewin->client.width.max = ewin->client.width.min =
+	   ib->iconsize + ib->scroll_thickness + extra;
+	ewin->client.no_resize_h = 1;
+	ib->max_min = ewin->client.height.min;
+     }
+   else
+     {
+	ic = FindItem("ICONBOX_HORIZONTAL", 0, LIST_FINDBY_NAME,
+		      LIST_TYPE_ICLASS);
+	if (ic)
+	   extra = ic->padding.left + ic->padding.right;
+	ewin->client.height.max = ewin->client.height.min =
+	   ib->iconsize + ib->scroll_thickness + extra;
+	ewin->client.no_resize_v = 1;
+	ib->max_min = ewin->client.width.min;
+     }
+
+   ICCCM_MatchSize(ewin);
+}
+
 void
-ShowIconbox(Iconbox * ib)
+IconboxShow(Iconbox * ib)
 {
    EWin               *ewin = NULL;
    XClassHint         *xch;
@@ -492,76 +545,39 @@ ShowIconbox(Iconbox * ib)
    XFree(xch);
    MatchToSnapInfoIconbox(ib);
    ewin = AddInternalToFamily(ib->win, 1, "ICONBOX", EWIN_TYPE_ICONBOX, ib);
+
    if (ewin)
      {
 	Snapshot           *sn;
 
 	ib->ewin = ewin;
-	ewin->client.width.min = 8;
-	ewin->client.height.min = 8;
-	ewin->client.width.max = 16384;
-	ewin->client.height.max = 16384;
-	ewin->client.no_resize_h = 0;
-	ewin->client.no_resize_v = 0;
-	if (ib->orientation)
-	  {
-	     ImageClass         *ic;
-	     int                 extra = 0;
-
-	     ic = FindItem("ICONBOX_VERTICAL", 0, LIST_FINDBY_NAME,
-			   LIST_TYPE_ICLASS);
-	     if (ic)
-		extra = ic->padding.left + ic->padding.right;
-	     ib->ewin->client.width.max = ib->ewin->client.width.min =
-		ib->iconsize + ib->scroll_thickness + extra;
-	     ewin->client.no_resize_h = 1;
-	  }
-	else
-	  {
-	     ImageClass         *ic;
-	     int                 extra = 0;
-
-	     ic = FindItem("ICONBOX_HORIZONTAL", 0, LIST_FINDBY_NAME,
-			   LIST_TYPE_ICLASS);
-	     if (ic)
-		extra = ic->padding.left + ic->padding.right;
-	     ib->ewin->client.height.max = ib->ewin->client.height.min =
-		ib->iconsize + ib->scroll_thickness + extra;
-	     ewin->client.no_resize_v = 1;
-	  }
 	ewin->ibox = ib;
+	IB_Reconfigure(ib);
 	sn = FindSnapshot(ewin);
-	/* get the size right damnit! */
-	if (sn)
-	  {
-	     if (sn->use_wh)
-		IconboxResize(ib, sn->w, sn->h);
-	  }
-	else
-	  {
-	     ResizeEwin(ewin, 160, 160);
-	     MoveEwin(ewin, root.w - (ewin->w), root.h - (ewin->h));
-	  }
 	ConformEwinToDesktop(ewin);
 	ShowEwin(ewin);
-	if (((sn) && (sn->use_sticky) && (sn->sticky)) || (!sn))
-	   MakeWindowSticky(ewin);
-
-	RememberImportantInfoForEwin(ewin);
+	if (sn)
+	  {
+	     ResizeEwin(ewin, ewin->client.w, ewin->client.h);
+	  }
+	else
+	  {
+	     MakeWindowSticky(ewin);
+	     MoveResizeEwin(ewin, root.w - 160, root.h - 160, 160, 160);
+	  }
      }
-   IconboxResize(ib, ib->ewin->client.w, ib->ewin->client.h);
    queue_up = pq;
 }
 
 void
-HideIconbox(Iconbox * ib)
+IconboxHide(Iconbox * ib)
 {
    if (ib->ewin)
       HideEwin(ib->ewin);
 }
 
 void
-AddEwinToIconbox(Iconbox * ib, EWin * ewin)
+IconboxAddEwin(Iconbox * ib, EWin * ewin)
 {
    int                 i;
 
@@ -574,11 +590,11 @@ AddEwinToIconbox(Iconbox * ib, EWin * ewin)
    ib->num_icons++;
    ib->icons = Erealloc(ib->icons, sizeof(EWin *) * ib->num_icons);
    ib->icons[ib->num_icons - 1] = ewin;
-   RedrawIconbox(ib);
+   IconboxRedraw(ib);
 }
 
 void
-DelEwinFromIconbox(Iconbox * ib, EWin * ewin)
+IconboxDelEwin(Iconbox * ib, EWin * ewin)
 {
    int                 i, j;
 
@@ -596,7 +612,7 @@ DelEwinFromIconbox(Iconbox * ib, EWin * ewin)
 		  Efree(ib->icons);
 		  ib->icons = NULL;
 	       }
-	     RedrawIconbox(ib);
+	     IconboxRedraw(ib);
 	     return;
 	  }
      }
@@ -1145,6 +1161,39 @@ SelectIconboxForEwin(EWin * ewin)
 }
 
 void
+IconboxUpdateEwinIcon(Iconbox * ib, EWin * ewin, int icon_mode)
+{
+   int                 i;
+
+   if (ib->icon_mode != icon_mode)
+      return;
+
+   for (i = 0; i < ib->num_icons; i++)
+     {
+	if (ib->icons[i] != ewin)
+	   continue;
+	UpdateAppIcon(ewin, icon_mode);
+	IconboxRedraw(ib);
+	break;
+     }
+}
+
+void
+IconboxesUpdateEwinIcon(EWin * ewin, int icon_mode)
+{
+   Iconbox           **ib;
+   int                 i, num = 0;
+
+   ib = ListAllIconboxes(&num);
+   if (ib)
+     {
+	for (i = 0; i < num; i++)
+	   IconboxUpdateEwinIcon(ib[i], ewin, icon_mode);
+	Efree(ib);
+     }
+}
+
+void
 UpdateAppIcon(EWin * ewin, int imode)
 {
    /* free whatever we had before */
@@ -1234,8 +1283,9 @@ IB_CalcMax(Iconbox * ib)
       ib->max = y - 2;
    else
       ib->max = x - 2;
-   if (ib->max < 1)
-      ib->max = 1;
+
+   if (ib->max < ib->max_min)
+      ib->max = ib->max_min;
 }
 
 static EWin        *
@@ -1854,7 +1904,7 @@ IB_FixPos(Iconbox * ib)
 }
 
 void
-RedrawIconbox(Iconbox * ib)
+IconboxRedraw(Iconbox * ib)
 {
    Pixmap              m = 0;
    char                pq;
@@ -1864,6 +1914,8 @@ RedrawIconbox(Iconbox * ib)
    int                 ib_x0, ib_y0, ib_xlt, ib_ylt, ib_ww, ib_hh;
 
    if (!ib)
+      return;
+   if (!ib->ewin)
       return;
 
    if (ib->orientation)
@@ -1877,98 +1929,21 @@ RedrawIconbox(Iconbox * ib)
 			     LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
      }
 
-   if ((ib->auto_resize) && (ib->ewin))
+   x = ib->ewin->x;
+   y = ib->ewin->y;
+   w = ib->w;
+   h = ib->h;
+
+   if (ib->auto_resize)
      {
 	int                 add = 0;
-	int                 px, py, pw, ph;
 
 	if (ib->ewin->shaded)
 	  {
 	     was_shaded = 1;
 	     UnShadeEwin(ib->ewin);
 	  }
-	x = ib->ewin->x;
-	y = ib->ewin->y;
-	w = ib->ewin->client.w;
-	h = ib->ewin->client.h;
-	if (ib->orientation)
-	  {
-	     if (ib_ic_box)
-		add = ib_ic_box->padding.top + ib_ic_box->padding.bottom;
-	     if (ib->ewin->border)
-	       {
-		  if ((ib->ewin->border->border.top +
-		       ib->ewin->border->border.bottom + add) > root.h)
-		     add =
-			root.h - (ib->ewin->border->border.top +
-				  ib->ewin->border->border.bottom);
-	       }
-	     x = ib->ewin->x;
-	     y = ib->ewin->y +
-		(((ib->ewin->client.h - add) * ib->auto_resize_anchor) >> 10);
-	     w = ib->ewin->client.w;
-	     h = add;
-	     if (ib->ewin->border)
-	       {
-		  if ((ib->ewin->y + ib->ewin->border->border.top +
-		       ib->ewin->border->border.bottom + add) > root.h)
-		    {
-		       x = ib->ewin->x;
-		       y = root.h - (ib->ewin->border->border.top +
-				     ib->ewin->border->border.bottom + add);
-		       w = ib->ewin->client.w;
-		       h = add;
-		    }
-	       }
-	  }
-	else
-	  {
-	     if (ib_ic_box)
-		add = ib_ic_box->padding.left + ib_ic_box->padding.right;
-	     if (ib->ewin->border)
-	       {
-		  if ((ib->ewin->border->border.left +
-		       ib->ewin->border->border.right + add) > root.w)
-		     add =
-			root.w - (ib->ewin->border->border.left +
-				  ib->ewin->border->border.right);
-	       }
-	     x = ib->ewin->x +
-		(((ib->ewin->client.w - add) * ib->auto_resize_anchor) >> 10);
-	     y = ib->ewin->y;
-	     w = add;
-	     h = ib->ewin->client.h;
-	     if (ib->ewin->border)
-	       {
-		  if ((ib->ewin->x + ib->ewin->border->border.left +
-		       ib->ewin->border->border.right + add) > root.w)
-		    {
-		       x = root.w - (ib->ewin->border->border.left +
-				     ib->ewin->border->border.right + add);
-		       y = ib->ewin->y;
-		       w = add;
-		       h = ib->ewin->client.h;
-		    }
-	       }
-	  }
-	px = ib->ewin->x;
-	py = ib->ewin->y;
-	pw = ib->ewin->client.w;
-	ph = ib->ewin->client.h;
-	ib->ewin->x = x;
-	ib->ewin->y = y;
-	ib->ewin->client.w = w;
-	ib->ewin->client.h = h;
-	RememberImportantInfoForEwins(ib->ewin);
-	ib->ewin->x = px;
-	ib->ewin->y = py;
-	ib->ewin->client.w = pw;
-	ib->ewin->client.h = ph;
 
-	x = ib->ewin->x;
-	y = ib->ewin->y;
-	w = ib->ewin->client.w;
-	h = ib->ewin->client.h;
 	IB_CalcMax(ib);
 	if (ib->orientation)
 	  {
@@ -1983,22 +1958,14 @@ RedrawIconbox(Iconbox * ib)
 			root.h - (ib->ewin->border->border.top +
 				  ib->ewin->border->border.bottom);
 	       }
-	     x = ib->ewin->x;
-	     y = ib->ewin->y +
-		(((ib->ewin->client.h - add) * ib->auto_resize_anchor) >> 10);
-	     w = ib->ewin->client.w;
+	     y += (((ib->ewin->client.h - add) * ib->auto_resize_anchor) >> 10);
 	     h = add;
 	     if (ib->ewin->border)
 	       {
 		  if ((ib->ewin->y + ib->ewin->border->border.top +
 		       ib->ewin->border->border.bottom + add) > root.h)
-		    {
-		       x = ib->ewin->x;
-		       y = root.h - (ib->ewin->border->border.top +
-				     ib->ewin->border->border.bottom + add);
-		       w = ib->ewin->client.w;
-		       h = add;
-		    }
+		     y = root.h - (ib->ewin->border->border.top +
+				   ib->ewin->border->border.bottom + add);
 	       }
 	  }
 	else
@@ -2014,38 +1981,32 @@ RedrawIconbox(Iconbox * ib)
 			root.w - (ib->ewin->border->border.left +
 				  ib->ewin->border->border.right);
 	       }
-	     x = ib->ewin->x +
-		(((ib->ewin->client.w - add) * ib->auto_resize_anchor) >> 10);
-	     y = ib->ewin->y;
+	     x += (((ib->ewin->client.w - add) * ib->auto_resize_anchor) >> 10);
 	     w = add;
-	     h = ib->ewin->client.h;
 	     if (ib->ewin->border)
 	       {
 		  if ((ib->ewin->x + ib->ewin->border->border.left +
 		       ib->ewin->border->border.right + add) > root.w)
-		    {
-		       x = root.w - (ib->ewin->border->border.left +
-				     ib->ewin->border->border.right + add);
-		       y = ib->ewin->y;
-		       w = add;
-		       h = ib->ewin->client.h;
-		    }
+		     x = root.w - (ib->ewin->border->border.left +
+				   ib->ewin->border->border.right + add);
 	       }
 	  }
+     }
 
-	if ((x != ib->ewin->x) || (y != ib->ewin->y)
-	    || (w != ib->ewin->client.w) || (h != ib->ewin->client.h))
-	  {
-	     MoveResizeEwin(ib->ewin, x, y, w, h);
-	     EResizeWindow(disp, ib->win, w, h);
-	     ICCCM_Configure(ib->ewin);
-	     EFreePixmap(disp, ib->pmap);
-	     ib->pmap = ECreatePixmap(disp, ib->icon_win, w, h, root.depth);
-	  }
+   if (ib->force_update || (x != ib->ewin->x) || (y != ib->ewin->y)
+       || (w != ib->ewin->client.w) || (h != ib->ewin->client.h))
+     {
 	ib->w = w;
 	ib->h = h;
+	MoveResizeEwin(ib->ewin, x, y, w, h);
+	EResizeWindow(disp, ib->win, w, h);
+	EFreePixmap(disp, ib->pmap);
+	ib->pmap = ECreatePixmap(disp, ib->icon_win, w, h, root.depth);
+	RememberImportantInfoForEwins(ib->ewin);
+	ib->force_update = 0;
      }
-   if ((was_shaded) && (ib->ewin))
+
+   if (was_shaded)
       ShadeEwin(ib->ewin);
 
    pq = queue_up;
@@ -2194,13 +2155,10 @@ RedrawIconbox(Iconbox * ib)
      }
    ESetWindowBackgroundPixmap(disp, ib->icon_win, ib->pmap);
    XClearWindow(disp, ib->icon_win);
-   PropagateShapes(ib->win);
 
-   if (ib->ewin)
-     {
-	ICCCM_GetShapeInfo(ib->ewin);
-	PropagateShapes(ib->ewin->win);
-     }
+   PropagateShapes(ib->win);
+   ICCCM_GetShapeInfo(ib->ewin);
+   PropagateShapes(ib->ewin->win);
 
    queue_up = pq;
 }
@@ -2210,12 +2168,11 @@ IconboxResize(Iconbox * ib, int w, int h)
 {
    if ((ib->w == w) && (ib->h == h))
       return;
-   EResizeWindow(disp, ib->win, w, h);
-   EFreePixmap(disp, ib->pmap);
-   ib->pmap = ECreatePixmap(disp, ib->icon_win, w, h, root.depth);
+
    ib->w = w;
    ib->h = h;
-   RedrawIconbox(ib);
+   ib->force_update = 1;
+   IconboxRedraw(ib);
 }
 
 static void
@@ -2223,7 +2180,7 @@ IB_Scroll(Iconbox * ib, int dir)
 {
    ib->pos += dir;
    IB_FixPos(ib);
-   RedrawIconbox(ib);
+   IconboxRedraw(ib);
 }
 
 static void
@@ -2260,49 +2217,8 @@ IB_ShowMenu(Iconbox * ib, int x, int y)
 void
 IB_CompleteRedraw(Iconbox * ib)
 {
-   ib->ewin->client.width.min = 8;
-   ib->ewin->client.height.min = 8;
-   ib->ewin->client.width.max = 16384;
-   ib->ewin->client.height.max = 16384;
-   ib->ewin->client.no_resize_h = 0;
-   ib->ewin->client.no_resize_v = 0;
-   if (ib->orientation)
-     {
-	ImageClass         *ic;
-	int                 extra = 0;
-
-	ic = FindItem("ICONBOX_VERTICAL", 0, LIST_FINDBY_NAME,
-		      LIST_TYPE_ICLASS);
-	if (ic)
-	   extra = ic->padding.left + ic->padding.right;
-	ib->ewin->client.width.max = ib->ewin->client.width.min =
-	   ib->iconsize + ib->scroll_thickness + extra;
-	ib->ewin->client.no_resize_h = 1;
-     }
-   else
-     {
-	ImageClass         *ic;
-	int                 extra = 0;
-
-	ic = FindItem("ICONBOX_HORIZONTAL", 0, LIST_FINDBY_NAME,
-		      LIST_TYPE_ICLASS);
-	if (ic)
-	   extra = ic->padding.left + ic->padding.right;
-	ib->ewin->client.height.max = ib->ewin->client.height.min =
-	   ib->iconsize + ib->scroll_thickness + extra;
-	ib->ewin->client.no_resize_v = 1;
-     }
-   RedrawIconbox(ib);
-   ResizeEwin(ib->ewin, ib->ewin->client.w, ib->ewin->client.h);
-   RememberImportantInfoForEwins(ib->ewin);
-
-   SnapshotEwinBorder(ib->ewin);
-   SnapshotEwinDesktop(ib->ewin);
-   SnapshotEwinSize(ib->ewin);
-   SnapshotEwinLocation(ib->ewin);
-   SnapshotEwinLayer(ib->ewin);
-   SnapshotEwinSticky(ib->ewin);
-   SnapshotEwinShade(ib->ewin);
+   IB_Reconfigure(ib);
+   IconboxRedraw(ib);
 }
 
 void
@@ -2317,7 +2233,7 @@ IB_Setup(void)
    if (ibl)
      {
 	for (i = 0; i < num; i++)
-	   ShowIconbox(ibl[i]);
+	   IconboxShow(ibl[i]);
 	Efree(ibl);
      }
    lst = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
@@ -2333,16 +2249,18 @@ IB_Setup(void)
 }
 
 void
-IconboxHandleEvent(XEvent * ev)
+IconboxesHandleEvent(XEvent * ev)
 {
    Iconbox           **ib;
    int                 i, num;
 
    if (mode.mode != MODE_NONE)
       return;
+
    ib = ListAllIconboxes(&num);
    if (!ib)
       return;
+
    for (i = 0; i < num; i++)
      {
 	if (ev->xany.window == ib[i]->scroll_win)
@@ -2414,7 +2332,7 @@ IconboxHandleEvent(XEvent * ev)
 			  bs = 1;
 		       ib[i]->pos = ((y + dy + 1) * ib[i]->max) / bs;
 		       IB_FixPos(ib[i]);
-		       RedrawIconbox(ib[i]);
+		       IconboxRedraw(ib[i]);
 		    }
 		  else
 		    {
@@ -2431,7 +2349,7 @@ IconboxHandleEvent(XEvent * ev)
 			  bs = 1;
 		       ib[i]->pos = ((x + dx + 1) * ib[i]->max) / bs;
 		       IB_FixPos(ib[i]);
-		       RedrawIconbox(ib[i]);
+		       IconboxRedraw(ib[i]);
 		    }
 	       }
 	     IB_DrawScroll(ib[i]);

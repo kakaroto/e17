@@ -1551,6 +1551,7 @@ typedef struct _Clone
 }
 Clone;
 
+#ifdef DECLARE_STRUCT_ICONBOX
 struct _iconbox
 {
    /* user settings */
@@ -1573,7 +1574,8 @@ struct _iconbox
    /* internally set stuff */
    int                 w, h;
    int                 pos;
-   int                 max;
+   int                 max, max_min;
+   char                force_update;
    char                arrow1_hilited;
    char                arrow1_clicked;
    char                arrow2_hilited;
@@ -1605,6 +1607,7 @@ struct _iconbox
    int                 knob_length;
 
 };
+#endif /* DECLARE_STRUCT_ICONBOX */
 
 #ifdef DECLARE_STRUCT_PAGER
 struct _pager
@@ -1625,7 +1628,7 @@ struct _pager
    Window              hi_win;
    EWin               *hi_ewin;
 };
-#endif
+#endif /* DECLARE_STRUCT_PAGER */
 
 typedef struct _drawqueue
 {
@@ -2318,19 +2321,23 @@ void                IB_Animate(char iconify, EWin * from, EWin * to);
 void                IconifyEwin(EWin * ewin);
 void                DeIconifyEwin(EWin * ewin);
 void                RemoveMiniIcon(EWin * ewin);
-void                MakeIcon(EWin * ewin);
 void                DockIt(EWin * ewin);
 void                DockDestroy(EWin * ewin);
-Iconbox            *CreateIconbox(char *name);
-void                FreeIconbox(Iconbox * ib);
-void                ShowIconbox(Iconbox * ib);
-void                HideIconbox(Iconbox * ib);
-void                AddEwinToIconbox(Iconbox * ib, EWin * ewin);
-void                DelEwinFromIconbox(Iconbox * ib, EWin * ewin);
-void                RedrawIconbox(Iconbox * ib);
-void                IconboxHandleEvent(XEvent * ev);
-void                UpdateAppIcon(EWin * ewin, int imode);
+Iconbox            *IconboxCreate(char *name);
+void                IconboxDestroy(Iconbox * ib);
+Window              IconboxGetWin(Iconbox * ib);
+void                IconboxShow(Iconbox * ib);
+void                IconboxHide(Iconbox * ib);
+void                IconboxIconifyEwin(Iconbox * ib, EWin * ewin);
+void                IconboxAddEwin(Iconbox * ib, EWin * ewin);
+void                IconboxDelEwin(Iconbox * ib, EWin * ewin);
+void                IconboxRedraw(Iconbox * ib);
 void                IconboxResize(Iconbox * ib, int w, int h);
+void                IconboxUpdateEwinIcon(Iconbox * ib, EWin * ewin,
+					  int icon_mode);
+void                IconboxesUpdateEwinIcon(EWin * ewin, int icon_mode);
+void                IconboxesHandleEvent(XEvent * ev);
+void                UpdateAppIcon(EWin * ewin, int imode);
 void                IB_CompleteRedraw(Iconbox * ib);
 void                IB_Setup(void);
 Iconbox           **ListAllIconboxes(int *num);

@@ -173,7 +173,7 @@ ICCCM_Delete(EWin * ewin)
 	if (ewin->ibox)
 	  {
 	     HideEwin(ewin);
-	     ev.xunmap.window = ewin->ibox->win;
+	     ev.xunmap.window = IconboxGetWin(ewin->ibox);
 	     HandleUnmap(&ev);
 	  }
 	if (ewin->dialog)

@@ -1053,30 +1053,8 @@ HandleProperty(XEvent * ev)
 	     }
 
 	if ((ewin->iconified) && (pm != ewin->client.icon_pmap))
-	  {
-	     Iconbox           **ib;
-	     int                 i, j, num;
+	   IconboxesUpdateEwinIcon(ewin, 1);
 
-	     ib = (Iconbox **) ListItemType(&num, LIST_TYPE_ICONBOX);
-	     if (ib)
-	       {
-		  for (i = 0; i < num; i++)
-		    {
-		       for (j = 0; j < ib[i]->num_icons; j++)
-			 {
-			    if (ib[i]->icons[j] == ewin)
-			      {
-				 if (ib[i]->icon_mode == 1)
-				   {
-				      UpdateAppIcon(ewin, ib[i]->icon_mode);
-				      RedrawIconbox(ib[i]);
-				   }
-			      }
-			 }
-		    }
-		  Efree(ib);
-	       }
-	  }
 	UngrabX();
      }
    else if (win == root.win)
@@ -2121,6 +2099,7 @@ HandleMouseUp(XEvent * ev)
 	     mode.borderpartpress = 0;
 	  }
      }
+
    if (!wasmovres)
      {
 	Pager              *p;
@@ -2247,16 +2226,10 @@ HandleMouseUp(XEvent * ev)
 			       Efree(gwins);
 			 }
 		    }
-		  else if ((ewin) && (ewin->ibox)
-			   &&
-			   (!((p->hi_ewin->ibox) || ((ewin->client.need_input)
-						     && ((ewin->skiptask)
-							 ||
-							 (ewin->
-							  skipwinlist))))))
+		  else if ((ewin) && (ewin->ibox) && (!((p->hi_ewin->ibox)
+							/* || ((ewin->client.need_input) && ((ewin->skiptask) || (ewin->skipwinlist))) */
+						      )))
 		    {
-		       char                was_shaded;
-
 		       gwins =
 			  ListWinGroupMembersForEwin(p->hi_ewin, ACTION_MOVE,
 						     mode.nogroup, &num);
@@ -2265,32 +2238,7 @@ HandleMouseUp(XEvent * ev)
 			    if (!gwins[i]->pager)
 			      {
 				 MoveEwin(gwins[i], gwin_px[i], gwin_py[i]);
-				 ICCCM_Configure(gwins[i]);
-				 was_shaded = gwins[i]->shaded;
-				 if (ewin->ibox)
-				   {
-				      if (ewin->ibox->animate)
-					 IB_Animate(1, gwins[i],
-						    ewin->ibox->ewin);
-				      UpdateAppIcon(gwins[i],
-						    ewin->ibox->icon_mode);
-				   }
-				 HideEwin(gwins[i]);
-				 MoveEwin(gwins[i],
-					  gwin_px[i] +
-					  ((desks.desk
-					    [gwins[i]->
-					     desktop].current_area_x) -
-					   p->hi_ewin->area_x) * root.w,
-					  gwin_py[i] +
-					  ((desks.desk
-					    [gwins[i]->
-					     desktop].current_area_y) -
-					   p->hi_ewin->area_y) * root.h);
-				 if (was_shaded != gwins[i]->shaded)
-				    InstantShadeEwin(gwins[i]);
-				 AddEwinToIconbox(ewin->ibox, gwins[i]);
-				 ICCCM_Iconify(gwins[i]);
+				 IconboxIconifyEwin(ewin->ibox, gwins[i]);
 			      }
 			 }
 		       if (gwins)

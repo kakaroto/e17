@@ -1,4 +1,3 @@
-
 /*
  * Copyright (C) 2000-2003 Carsten Haitzler, Geoff Harrison and various contributors
  *
@@ -1234,9 +1233,11 @@ MatchToSnapInfoPager(Pager * p)
    XClassHint          hint;
    char                buf[1024];
    Snapshot           *sn = NULL;
+   Window              win = PagerGetWin(p);
 
-   if ((!XGetClassHint(disp, PagerGetWin(p), &hint)))
+   if ((!XGetClassHint(disp, win, &hint)))
       return;
+
    if ((hint.res_name) && (hint.res_class))
      {
 	Esnprintf(buf, sizeof(buf), "%s.%s", hint.res_name, hint.res_class);
@@ -1249,7 +1250,7 @@ MatchToSnapInfoPager(Pager * p)
    if (!sn)
       return;
    if (sn->use_xy)
-      EMoveWindow(disp, PagerGetWin(p), sn->x, sn->y);
+      EMoveWindow(disp, win, sn->x, sn->y);
    if (sn->use_wh)
       PagerResize(p, sn->w, sn->h);
 }
@@ -1260,9 +1261,11 @@ MatchToSnapInfoIconbox(Iconbox * ib)
    XClassHint          hint;
    char                buf[1024];
    Snapshot           *sn = NULL;
+   Window              win = IconboxGetWin(ib);
 
-   if ((!XGetClassHint(disp, ib->win, &hint)))
+   if ((!XGetClassHint(disp, win, &hint)))
       return;
+
    if ((hint.res_name) && (hint.res_class))
      {
 	Esnprintf(buf, sizeof(buf), "%s.%s", hint.res_name, hint.res_class);
@@ -1275,9 +1278,9 @@ MatchToSnapInfoIconbox(Iconbox * ib)
    if (!sn)
       return;
    if (sn->use_xy)
-      EMoveWindow(disp, ib->win, sn->x, sn->y);
+      EMoveWindow(disp, win, sn->x, sn->y);
    if (sn->use_wh)
-      IconboxResize(ib, sn->w, sn->h);
+      EResizeWindow(disp, win, sn->w, sn->h);
 }
 
 void
@@ -1430,22 +1433,7 @@ RememberImportantInfoForEwins(EWin * ewin)
    if (gwins)
      {
 	for (i = 0; i < num; i++)
-	  {
-	     if ((gwins[i]->pager) || (gwins[i]->ibox))
-	       {
-		  SnapshotEwinBorder(gwins[i]);
-		  SnapshotEwinDesktop(gwins[i]);
-		  SnapshotEwinSize(gwins[i]);
-		  SnapshotEwinLocation(gwins[i]);
-		  SnapshotEwinLayer(gwins[i]);
-		  SnapshotEwinSticky(gwins[i]);
-		  SnapshotEwinShade(gwins[i]);
-		  SnapshotEwinGroups(gwins[i], gwins[i]->num_groups);
-		  SnapshotEwinSkipLists(gwins[i]);
-		  SnapshotEwinNeverFocus(gwins[i]);
-		  SaveSnapInfo();
-	       }
-	  }
+	   RememberImportantInfoForEwin(gwins[i]);
 	Efree(gwins);
      }
 }

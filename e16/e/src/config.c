@@ -20,6 +20,7 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+#define DECLARE_STRUCT_ICONBOX
 #include "E.h"
 #include "conf.h"
 #include <ctype.h>
@@ -2982,7 +2983,7 @@ Config_Ibox(FILE * ConfigFile)
 	switch (i1)
 	  {
 	  case CONFIG_CLASSNAME:	/* __NAME %s */
-	     ib = CreateIconbox(s2);
+	     ib = IconboxCreate(s2);
 	     break;
 	  case TEXT_ORIENTATION:	/* __ORIENTATION [ __HORIZONTAL | __VERTICAL ] */
 	     if (ib)
@@ -3068,7 +3069,7 @@ Config_Extras(FILE * ConfigFile)
    if (ib)
      {
 	for (i = 0; i < num; i++)
-	   FreeIconbox(ib[i]);
+	   IconboxDestroy(ib[i]);
 	Efree(ib);
      }
    while (GetLine(s, sizeof(s), ConfigFile))

@@ -3602,8 +3602,8 @@ doCreateIconbox(void *params)
 	Iconbox            *ib;
 
 	AUDIO_PLAY("SOUND_NEW_ICONBOX");
-	ib = CreateIconbox(params);
-	ShowIconbox(ib);
+	ib = IconboxCreate(params);
+	IconboxShow(ib);
      }
    else
      {
@@ -3616,8 +3616,8 @@ doCreateIconbox(void *params)
 	   Efree(ibl);
 	Esnprintf(s, sizeof(s), "_IB_%i", num);
 	AUDIO_PLAY("SOUND_NEW_ICONBOX");
-	ib = CreateIconbox(s);
-	ShowIconbox(ib);
+	ib = IconboxCreate(s);
+	IconboxShow(ib);
      }
    autosave();
    EDBUG_RETURN(0);
