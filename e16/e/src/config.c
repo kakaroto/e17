@@ -34,7 +34,7 @@ SkipTillEnd(ConfigFile);\
 return;\
 }
 
-static void 
+static void
 SkipTillEnd(FILE * ConfigFile)
 {
    char                s[FILEPATH_LEN_MAX];
@@ -203,7 +203,7 @@ GetLine(char *s, int size, FILE * f)
    return ret;
 }
 
-void 
+void
 Config_Text(FILE * ConfigFile)
 {
 
@@ -368,7 +368,7 @@ Config_Text(FILE * ConfigFile)
 	 "Done loading a text block.  Outcome is likely not good.\n");
 }
 
-void 
+void
 Config_Slideout(FILE * ConfigFile)
 {
 
@@ -445,7 +445,7 @@ Config_Slideout(FILE * ConfigFile)
 	 "Done loading a Slideout block.  Outcome is likely not good.\n");
 }
 
-void 
+void
 Config_Control(FILE * ConfigFile)
 {
 
@@ -719,7 +719,7 @@ Config_Control(FILE * ConfigFile)
 	 "Done loading a Control block.  Outcome is likely not good.\n");
 }
 
-void 
+void
 Config_MenuStyle(FILE * ConfigFile)
 {
    char                s[FILEPATH_LEN_MAX];
@@ -829,7 +829,7 @@ Config_MenuStyle(FILE * ConfigFile)
 	 "Done loading a Menu block.  Outcome is likely not good.\n");
 }
 
-void 
+void
 Config_Menu(FILE * ConfigFile)
 {
    char                s[FILEPATH_LEN_MAX];
@@ -1063,7 +1063,7 @@ Config_Menu(FILE * ConfigFile)
 	 "Done loading a Menu block.  Outcome is likely not good.\n");
 }
 
-void 
+void
 BorderPartLoad(FILE * ConfigFile, char type, Border * b)
 {
 
@@ -1199,7 +1199,7 @@ BorderPartLoad(FILE * ConfigFile, char type, Border * b)
 	 "Done loading a BorderPart block.  Outcome is likely not good.\n");
 }
 
-void 
+void
 Config_Border(FILE * ConfigFile)
 {
 
@@ -1288,7 +1288,7 @@ Config_Border(FILE * ConfigFile)
 	 "Done loading a Main Border block.  Outcome is likely not good.\n");
 }
 
-void 
+void
 Config_Button(FILE * ConfigFile)
 {
 
@@ -1507,7 +1507,7 @@ Config_Button(FILE * ConfigFile)
    return;
 }
 
-void 
+void
 Config_Desktop(FILE * ConfigFile)
 {
    /* this sets desktop settings */
@@ -1763,7 +1763,7 @@ Config_Desktop(FILE * ConfigFile)
    return;
 }
 
-void 
+void
 Config_ECursor(FILE * ConfigFile)
 {
    ImlibColor          icl, icl2;
@@ -1839,7 +1839,7 @@ Config_ECursor(FILE * ConfigFile)
 	 "Done loading a Desktop block.  Outcome is likely not good.\n");
 }
 
-void 
+void
 Config_Iconbox(FILE * ConfigFile)
 {
    char                s[FILEPATH_LEN_MAX];
@@ -1881,7 +1881,7 @@ Config_Iconbox(FILE * ConfigFile)
 	 "Done loading an Iconbox block.  Outcome is likely not good.\n");
 }
 
-void 
+void
 Config_Sound(FILE * ConfigFile)
 {
 
@@ -1916,7 +1916,7 @@ Config_Sound(FILE * ConfigFile)
 	 "Done loading an Sound block.  Outcome is likely not good.\n");
 }
 
-void 
+void
 Config_ActionClass(FILE * ConfigFile)
 {
 
@@ -1977,11 +1977,13 @@ Config_ActionClass(FILE * ConfigFile)
 	       {
 		  ac = RemoveItem(s2, 0,
 				  LIST_FINDBY_NAME, LIST_TYPE_ACLASS_GLOBAL);
-		  if (!strcmp(s2, "KEYBINDINGS"))
-		     mode.keybinds_changed = 1;
 	       }
 	     if (ac)
-		RemoveActionClass(ac);
+	       {
+		  if (!strcmp(s2, "KEYBINDINGS"))
+		     mode.keybinds_changed = 1;
+		  RemoveActionClass(ac);
+	       }
 	     ac = CreateAclass(s2);
 	     break;
 	  case CONFIG_TYPE:
@@ -2178,7 +2180,7 @@ Config_ActionClass(FILE * ConfigFile)
 	 "Done loading an Action Class block.  Outcome is likely not good.\n");
 }
 
-void 
+void
 Config_ImageClass(FILE * ConfigFile)
 {
 
@@ -2383,7 +2385,7 @@ Config_ImageClass(FILE * ConfigFile)
 	 "Done loading an ImageClass block.  Outcome is likely not good.\n");
 }
 
-void 
+void
 Config_ColorModifier(FILE * ConfigFile)
 {
    char                s[FILEPATH_LEN_MAX];
@@ -2650,7 +2652,7 @@ Config_ColorModifier(FILE * ConfigFile)
    return;
 }
 
-void 
+void
 Config_ToolTip(FILE * ConfigFile)
 {
 
@@ -2748,7 +2750,7 @@ Config_ToolTip(FILE * ConfigFile)
 
 }
 
-void 
+void
 Config_FX(FILE * ConfigFile)
 {
 
@@ -2785,7 +2787,7 @@ Config_FX(FILE * ConfigFile)
 	 "Done loading an FX block.  Outcome is likely not good.\n");
 }
 
-void 
+void
 Config_Extras(FILE * ConfigFile)
 {
    char                s[FILEPATH_LEN_MAX];
@@ -2829,7 +2831,7 @@ Config_Extras(FILE * ConfigFile)
 	 "Done loading an Extras block.  Outcome is likely not good.\n");
 }
 
-void 
+void
 Config_Ibox(FILE * ConfigFile)
 {
 
@@ -2923,7 +2925,7 @@ Config_Ibox(FILE * ConfigFile)
 	 "Done loading an Iconbox block.  Outcome is likely not good.\n");
 }
 
-void 
+void
 Config_WindowMatch(FILE * ConfigFile)
 {
 
@@ -3038,7 +3040,7 @@ Config_WindowMatch(FILE * ConfigFile)
 	 "Done loading an WindowMatch block.  Outcome is likely not good.\n");
 }
 
-int 
+int
 IsWhitespace(const char *s)
 {
    int                 i = 0;
@@ -3149,7 +3151,7 @@ OpenConfigFileForReading(char *path, char preprocess)
    EDBUG_RETURN(0);
 }
 
-int 
+int
 LoadConfigFile(char *f)
 {
    FILE               *ConfigFile;
@@ -3207,7 +3209,7 @@ LoadConfigFile(char *f)
 }
 
 /* Split the process of finding the file from the process of loading it */
-int 
+int
 LoadOpenConfigFile(FILE * ConfigFile)
 {
    int                 i1, i2, fields;
@@ -3444,7 +3446,7 @@ FindNoThemeFile(char *file)
    EDBUG_RETURN(NULL);
 }
 
-int 
+int
 LoadEConfig(char *themelocation)
 {
    char                s[FILEPATH_LEN_MAX], ss[FILEPATH_LEN_MAX];
@@ -3588,7 +3590,7 @@ LoadEConfig(char *themelocation)
 /**************************************************************************/
 
 /* This is only called by the master_pid process (see session.c) */
-void 
+void
 SaveUserControlConfig(FILE * autosavefile)
 {
    Button            **blst;
@@ -3958,7 +3960,7 @@ SaveUserControlConfig(FILE * autosavefile)
    EDBUG_RETURN_;
 }
 
-void 
+void
 RecoverUserConfig(void)
 {
    if (is_autosave)

@@ -3134,3 +3134,10 @@ Wed Oct  6 12:07:04 PDT 1999
 (Mandrake)
 
 a couple of unused parameters should be fixed here (no more warnings I can see)
+
+-------------------------------------------------------------------------------
+
+Wed Oct  6 12:53:33 PDT 1999
+(Raster)
+
+fix keybidnigns_changed flag to work right...
