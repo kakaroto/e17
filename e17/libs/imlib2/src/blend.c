@@ -62,6 +62,7 @@
 
 /* COPY OPS */
 
+#ifdef DO_MMX_ASM
 static DATA8 mmx_data[] = 
 { 
    0,  0,  0,  0,  0,  0,  0,  0, /* zero */
@@ -71,7 +72,8 @@ static DATA8 mmx_data[] =
    0,  0,  0,  255,0,  0,  0,  0, /* mask_alpha */
    255,255,255,255,255,255,0,  0  /* mask */
 };
-   
+#endif
+
 static void
 __imlib_BlendRGBAToRGB(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump, 
 		       int w, int h, ImlibColorModifier *cm)
