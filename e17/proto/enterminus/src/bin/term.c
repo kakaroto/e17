@@ -1,6 +1,5 @@
 #include "term.h"
 
-
 void term_tcanvas_fg_color_set(Term *term, int c) {
    Term_TGlyph *gl;
    gl = &term->tcanvas->grid[term->tcanvas->cur_col + (term->tcanvas->cur_row * term->tcanvas->cols)];
@@ -202,14 +201,22 @@ Term *term_init(Evas_Object *o) {
    term->bg = NULL;
    strcpy(term->font.path, DATADIR);
    strcpy(term->font.face, "VeraMono");
-   term->font.size = 10;
+   term->font.size = 11;
    term->data_ptr = 0;   
    term->font.width = term_font_get_width(term);
    term->font.height = term_font_get_height(term);
-   term->title = NULL;
+   term->title = NULL;     
+   
    evas_font_path_append(term->evas, term->font.path);
-   ecore_timer_add(0.01, term_timers, term);            
-   execute_command(term);//, argc, argv);  
+   ecore_timer_add(0.01, term_timers, term);
+   ecore_timer_add(0.095, term_cursor_anim, term);
+   execute_command(term);//, argc, argv);
+   term->cursor.shape = evas_object_rectangle_add(term->evas);
+   evas_object_resize(term->cursor.shape, term->font.width, term->font.height);
+   evas_object_color_set(term->cursor.shape, 100,100,100,255);	      
+   evas_object_layer_set(term->cursor.shape, 5);
+   evas_object_show(term->cursor.shape);
+   term->cursor.last_reset = ecore_time_get();
    term->cmd_fd.ecore =  ecore_main_fd_handler_add(term->cmd_fd.sys,
 						   ECORE_FD_READ,
 						   term_tcanvas_data, term,

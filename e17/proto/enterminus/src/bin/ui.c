@@ -124,14 +124,20 @@ void term_redraw(void *data) {
 	 //evas_object_layer_set(gl->bg,1);
 	 //evas_object_move(gl->bg, j*term->font.width, i*term->font.height);
 	 //evas_object_show(gl->bg);
-	 tgl->changed = 0;
+	 tgl->changed = 0;	 
+	 
       }
-      if(i + term->tcanvas->scroll_region_start > (term->tcanvas->rows - 1)*term->tcanvas->scroll_size) {	 
+      if(i + term->tcanvas->scroll_region_start > (term->tcanvas->rows - 1)*term->tcanvas->scroll_size) {
 	 ig++;
-      }
+      } 	 
+     
       i2++;
       term->tcanvas->changed_rows[i] = 0;
-   }
+      /* display cursor, note: this is still sort of a hack */
+      evas_object_move(term->cursor.shape, 
+		       term->tcanvas->cur_col*term->font.width, 
+		       i*term->font.height);
+   }   
 }
 
 /* Move cursor up n rows*/
@@ -327,4 +333,11 @@ void term_scroll_down(Term *term, int rows) {
    } else {
       
    }
+}
+
+int term_cursor_anim(Term *term) {
+   int a;
+   a = 128 + 127 * cos ((ecore_time_get () - term->cursor.last_reset) * 2);
+   evas_object_color_set (term->cursor.shape, 100, 100, 100, a);
+   return 1;
 }

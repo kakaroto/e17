@@ -104,6 +104,12 @@ struct _Term_EGlyph {
 
 typedef struct _Term_EGlyph Term_EGlyph;
 
+struct _Term_Cursor {
+   Evas_Object *shape;
+   int          last_reset;
+};
+typedef struct _Term_Cursor Term_Cursor;
+
 struct _Term {
    int           term_id;
    pid_t         pid;
@@ -111,6 +117,7 @@ struct _Term {
    Term_TCanvas *tcanvas;
    Term_EGlyph  *grid;
    Evas_Object  *bg;
+   Term_Cursor   cursor;
    Term_Font     font;
    Evas         *evas;
    Term_Fd       cmd_fd;
@@ -190,3 +197,4 @@ Evas_Smart     *term_smart_get();
 
 void            term_event_title_change_free(void *data, void *ev);
    
+int             term_cursor_anim(Term *term);
