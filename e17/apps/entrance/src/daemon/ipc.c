@@ -78,8 +78,8 @@ _entranced_ipc_client_data(void *data, int type, void *event)
       }
    }
 
-   entranced_debug("_entranced_ipc_client_data: Received [%i] [%i] [%i] \"%s\"\n",
-          e->major, e->minor, e->size, (char *) e->data);
+   entranced_debug("_entranced_ipc_client_data: Received [%i] [%i] [%i] [%i] \"%s\"\n",
+          e->major, e->minor, e->size, e->response, (char *) e->data);
 
    return TRUE;
 }

@@ -382,6 +382,9 @@ entranced_auth_user_add(Entranced_Display *d, const char *homedir)
 
    fclose(auth_file);
    XauUnlockAuth(d->client.authfile);
+   
+   chown(d->client.authfile, d->client.uid, d->client.gid);
+
    entranced_debug("entranced_auth_user_add: Finished writing auth entries to %s\n", d->client.authfile);
 
    return ret;
