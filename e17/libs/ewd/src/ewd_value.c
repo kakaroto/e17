@@ -104,6 +104,8 @@ int ewd_str_compare(void *key1, void *key2)
 
 	if (!key1 || !key2)
 		return ewd_direct_compare(key1, key2);
+	else if (key1 == key2)
+		return 0;
 
 	k1 = (char *) key1;
 	k2 = (char *) key2;
