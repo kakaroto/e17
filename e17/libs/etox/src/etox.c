@@ -71,6 +71,8 @@ etox_new(Evas evas, char *name)
   e->layer = 0;
   e->clip = NULL;
 
+  e->callback_data = NULL;
+
   e->def.align = malloc(sizeof(struct _Etox_Align));
   e->def.align->v = ETOX_ALIGN_TYPE_TOP;
   e->def.align->h = ETOX_ALIGN_TYPE_LEFT;
