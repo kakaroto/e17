@@ -1,3 +1,64 @@
+#define STR(x) #x
+#define CATSTR(x, y) STR(x## y)
+#define CATPNG(x, y) STR(x##y.png)
+#define TOUR_PART(PNAME, ASPECT) \
+description { \
+	state, #PNAME 0.0; \
+	aspect, ASPECT ASPECT; \
+	align, 0.5 0.5; \
+	rel1 { \
+		relative, 0.0 0.0; \
+		offset, 0 0; \
+	} \
+	rel2 { \
+		relative, 1.0 1.0; \
+		offset, -1 -1; \
+	} \
+	image { \
+		normal, CATPNG(PNAME,); \
+	} \
+} \
+description { \
+	state, PNAME 1.0; \
+	aspect, ASPECT ASPECT; \
+	align, 0.5 0.5; \
+	rel1 { \
+		relative, 0.0 0.0; \
+		offset, 0 0; \
+	} \
+	rel2 { \
+		relative, 1.0 1.0; \
+		offset, -1 -1; \
+	} \
+	image { \
+		tween, CATPNG(PNAME,1); \
+		tween, CATPNG(PNAME,2); \
+		normal, CATPNG(PNAME,3); \
+	} \
+}
+
+#define TOUR_PROG(PNAME, PNEXT, TARGET) \
+	program { \
+		name, CATSTR(PNAME,_start); \
+		signal, PNAME; \
+		source, "*"; \
+		action, STATE_SET STR(PNAME) 0.0; \
+		transition, LINEAR 0.0; \
+		target, STR(TARGET); \
+		after, CATSTR(PNAME,_continue); \
+	} \
+	program { \
+		name, CATSTR(PNAME,_continue); \
+		action, STATE_SET STR(PNAME) 1.0; \
+		transition, LINEAR 10.0; \
+		target, STR(TARGET); \
+		after, CATSTR(PNEXT,_trigger); \
+	} \
+	program { \
+		name, CATSTR(PNEXT,_trigger); \
+		action, SIGNAL_EMIT STR(PNEXT) "tour"; \
+	}
+
 images {
 	image, "lilbottom.png" LOSSY 98;
 	image, "banner-top.png" LOSSY 98;
@@ -7,6 +68,9 @@ images {
 	image, "elicit2.png" LOSSY 98;
 	image, "elicit3.png" LOSSY 98;
 	image, "entrance.png" LOSSY 98;
+	image, "entrance1.png" LOSSY 98;
+	image, "entrance2.png" LOSSY 98;
+	image, "entrance3.png" LOSSY 98;
 	image, "e-logo.png" LOSSY 98;
 }
 
@@ -138,58 +202,8 @@ collections {
 					}
 				}
 
-				description {
-					state, "elicit" 0.0;
-					aspect, 1.6 1.6;
-					align, 0.5 0.5;
-					rel1 {
-						relative, 0.0 0.0;
-						offset, 0 0;
-					}
-					rel2 {
-						relative, 1.0 1.0;
-						offset, -1 -1;
-					}
-					image {
-						normal, "elicit.png";
-					}
-				}
-
-				description {
-					state, "elicit" 1.0;
-					aspect, 1.6 1.6;
-					align, 0.5 0.5;
-					rel1 {
-						relative, 0.0 0.0;
-						offset, 0 0;
-					}
-					rel2 {
-						relative, 1.0 1.0;
-						offset, -1 -1;
-					}
-					image {
-						tween, "elicit1.png";
-						tween, "elicit2.png";
-						normal, "elicit3.png";
-					}
-				}
-
-				description {
-					state, "entrance" 0.0;
-					aspect, 1.6 1.6;
-					align, 0.5 0.5;
-					rel1 {
-						relative, 0.0 0.0;
-						offset, 0 0;
-					}
-					rel2 {
-						relative, 1.0 1.0;
-						offset, -1 -1;
-					}
-					image {
-						normal, "entrance.png";
-					}
-				}
+				TOUR_PART(elicit, 1.6)
+				TOUR_PART(entrance, 1.6)
 
 				description {
 					state, "finished" 0.0;
@@ -215,45 +229,14 @@ collections {
 		programs {
 
 			program {
-				name,       "start_tour";
+				name,       "_trigger";
 				signal,     "start_tour";
 				source,     "*";
-				action,     STATE_SET "elicit" 0.0;
-				transition, LINEAR 0.0;
-				target,     "display";
-				after,      "change_text_elicit";
-				after,      "progress_elicit";
+				action,     SIGNAL_EMIT "elicit" "tour";
 			}
 
-			program {
-				name,       "progress_elicit";
-				action,     STATE_SET "elicit" 1.0;
-				transition, LINEAR 10.0;
-				target,     "display";
-			}
-
-			program {
-				name,   "change_text_elicit";
-				action, SIGNAL_EMIT "elicit" "tour";
-				after,  "change_text_entrance";
-			}
-
-			program {
-				name,       "change_text_entrance";
-				signal,     "start_tour";
-				source,     "*";
-				action,     SIGNAL_EMIT "entrance" "tour";
-				in,         10.0 0.0;
-			}
-
-			program {
-				name,       "change_entrance";
-				signal,     "entrance";
-				source,     "tour";
-				action,     STATE_SET "entrance" 0.0;
-				transition, LINEAR 0.0;
-				target,     "display";
-			}
+			TOUR_PROG(elicit, entrance, display);
+			TOUR_PROG(entrance,, display);
 
 		}
 
