@@ -116,7 +116,11 @@ elicit_cb_colors(void *data, Evas_Object *o, const char *sig, const char *src)
   else if (elicit_glob_match(sig, "*,stop"))
   {
     el->flags.changing = 0;
-    if (el->change_sig) free(el->change_sig);
+    if (el->change_sig)
+    {
+      free(el->change_sig);
+      el->change_sig = NULL;
+    }
   }
 }
 
