@@ -62,6 +62,17 @@ void engrave_program_action_set(Engrave_Program *ep, Engrave_Action action,
 void engrave_program_transition_set(Engrave_Program *ep,
                                 Engrave_Transition trans, double duration);
 
+char *engrave_program_name_get(Engrave_Program *ep);
+char *engrave_program_signal_get(Engrave_Program *ep);
+char *engrave_program_source_get(Engrave_Program *ep);
+void engrave_program_action_get(Engrave_Program *ep, Engrave_Action *action,
+                                    char *state, char *state2, 
+                                    double *value, double *value2);
+void engrave_program_transition_get(Engrave_Program *ep, 
+                                    Engrave_Transition *trans, double *duration);
+char *engrave_program_script_get(Engrave_Program *ep);
+void engrave_program_in_get(Engrave_Program *ep, double *from, double *range);
+
 int engrave_program_has_afters(Engrave_Program *ep);
 int engrave_program_has_targets(Engrave_Program *ep);
 

@@ -163,6 +163,155 @@ engrave_program_transition_set(Engrave_Program *ep, Engrave_Transition trans,
 }
 
 /**
+ * engrave_program_name_get - Get the program name
+ * @param ep: The Engrave_Program to get the name from
+ *
+ * @return Returns a pointer to the name of the program or NULL on failure.
+ * This pointer must be free'd by the user.
+ */
+char *
+engrave_program_name_get(Engrave_Program *ep)
+{
+  if (!ep) return NULL;
+  return (ep->name ? strdup(ep->name) : NULL);
+}
+
+/**
+ * engrave_program_signal_get - Get the program signal
+ * @param ep: The Engrave_Program to get the signal from
+ *
+ * @return Returns a pointer to the signal of the program or NULL on failure.
+ * This pointer must be free'd by the user.
+ */
+char *
+engrave_program_signal_get(Engrave_Program *ep)
+{
+  if (!ep) return NULL;
+  return (ep->signal ? strdup(ep->signal) : NULL);
+}
+
+/**
+ * engrave_program_source_get - Get the program source
+ * @param ep: The Engrave_Program to get the source from
+ *
+ * @return Returns a pointer to the source of the program or NULL on failure.
+ * This pointer must be free'd by the user.
+ */
+char *
+engrave_program_source_get(Engrave_Program *ep)
+{
+  if (!ep) return NULL;
+  return (ep->source ? strdup(ep->source) : NULL);
+}
+
+/** 
+ * engrave_program_action_get - Get the action information for the program
+ * @param ep: The Engrave_Program to get the action information from
+ * @param action: Where to store the action setting
+ * @param state: Buffer to put the state value into
+ * @param state2: Buffer to put the state2 value into
+ * @param value: Where to put the value setting
+ * @param value2: Where to put the value2 setting
+ *
+ * @return Returns no value.
+ */
+void
+engrave_program_action_get(Engrave_Program *ep, Engrave_Action *action,
+                                    char *state, char *state2, 
+                                    double *value, double *value2)
+{
+  Engrave_Action a;
+  char *s, *s2;
+  double v, v2;
+
+  if (!ep) {
+    a = ENGRAVE_ACTION_NUM;
+    s = NULL;
+    s2 = NULL;
+    v = 0;
+    v2 = 0;
+  } else {
+    a = ep->action;
+    v = ep->value;
+    v2 = ep->value2;
+    s = ep->state;
+    s2 = ep->state2;
+  }
+  if (action) *action = a;
+  if (value) *value = v;
+  if (value2) *value2 = v2;
+  if (state) 
+    snprintf(state, sizeof(state), "%s", (s ? s : NULL));
+  if (state2)
+    snprintf(state2, sizeof(state2), "%s", (s2 ? s2 : NULL));
+}
+
+/**
+ * engrave_program_transition_get - Get the programs transition information
+ * @param ep: The Engrave_Progarm to get the transition information from
+ * @param trans: Where to store the transition setting
+ * @param duration: Where to store the duration setting
+ *
+ * @return Returns no value.
+ */
+void
+engrave_program_transition_get(Engrave_Program *ep, 
+                                    Engrave_Transition *trans, double *duration)
+{
+  Engrave_Transition t;
+  double d;
+
+  if (!ep) {
+    t = ENGRAVE_TRANSITION_NUM;
+    d = 0;
+  } else {
+    t = ep->transition;
+    d = ep->duration;
+  }
+  if (trans) *trans = t;
+  if (duration) *duration = d;
+}
+
+/**
+ * engrave_program_script_get - Get the script from the program
+ * @param ep: The Engrave_Program to get the script from
+ *
+ * @return Returns a pointer to the script or NULL on failure. This pointer
+ * must be free'd by the user.
+ */
+char *
+engrave_program_script_get(Engrave_Program *ep)
+{
+  if (!ep) return NULL;
+  return (ep->script ? strdup(ep->script) : NULL);
+}
+
+/**
+ * engrave_program_in_get - Get the in data for the program
+ * @param ep: The Engrave_Program to get the in data from
+ * @param from: The place to put the from value
+ * @param range: The place to put the range value
+ * 
+ * @return Returns no value.
+ */
+void
+engrave_program_in_get(Engrave_Program *ep, double *from, double *range)
+{
+  double f, r;
+
+  if (!ep) {
+    f = 0;
+    r = 0;
+  } else {
+    f = ep->in.from;
+    r = ep->in.range;
+  }
+
+  if (from) *from = f;
+  if (range) *range = r;
+}
+
+/**
  * engrave_program_has_targets - See if a program has any targets
  * @param ep: The Engrave_Program to check for targets
  * 

@@ -304,64 +304,83 @@ static void
 _engrave_output_program(Engrave_Program *program, void *data)
 {
   FILE *out = data;
+  char *tmp;
+  Engrave_Action action;
+  double value, value2;
+  char state[125], state2[125];
 
   engrave_out_start(out, "program");
 
-  engrave_out_data(out, "name", "\"%s\"", program->name);
-  engrave_out_data(out, "signal", "\"%s\"", program->signal);
-  engrave_out_data(out, "source", "\"%s\"", program->source);
+  tmp = engrave_program_name_get(program);
+  engrave_out_data(out, "name", "\"%s\"", tmp);
+  if (tmp) free(tmp);
 
-  if(program->action == ENGRAVE_ACTION_STOP)
-  {
-    engrave_out_data(out, "action", "%s", _action_string[program->action]);
-  }
-  else if (program->action == ENGRAVE_ACTION_DRAG_VAL_SET ||
-           program->action == ENGRAVE_ACTION_DRAG_VAL_STEP ||
-           program->action == ENGRAVE_ACTION_DRAG_VAL_PAGE)
-  {
-    engrave_out_data(out, "action", "%s %.2f %.2f",
-            _action_string[program->action], 
-            program->value,
-            program->value2
-            );
-  }
-  else if (program->action == ENGRAVE_ACTION_STATE_SET)
-  {
-    engrave_out_data(out, "action", "%s \"%s\" %.2f",
-            _action_string[program->action],
-            program->state ? program->state : "",
-            program->value
-            );
+  tmp = engrave_program_signal_get(program);
+  engrave_out_data(out, "signal", "\"%s\"", tmp);
+  if (tmp) free(tmp);
 
-    engrave_out_data(out, "transition", "%s %.2f",
-            _transition_string[program->transition],
-            program->duration
-            );
-  }
-  else if (program->action == ENGRAVE_ACTION_SIGNAL_EMIT)
-  {
-    engrave_out_data(out, "action", "%s \"%s\" \"%s\"",
-            _action_string[program->action],
-            program->state,
-            program->state2
-            );
-  }
-  else if(program->action == ENGRAVE_ACTION_SCRIPT) 
-  {
-    if (program->script)
-    {
-      engrave_out_start(out, "script");
-      /* FIXME scripts are wierd ... */
-      fprintf(out, "%s", program->script);
-      engrave_out_end(out);
-    }
+  tmp = engrave_program_source_get(program);
+  engrave_out_data(out, "source", "\"%s\"", tmp);
+  if (tmp) free(tmp);
+
+  engrave_program_action_get(program, &action, state, 
+                              state2, &value, &value2);
+  switch (action) {
+    case ENGRAVE_ACTION_STOP:
+      engrave_out_data(out, "action", "%s", _action_string[action]);
+      break;
+
+    case ENGRAVE_ACTION_DRAG_VAL_SET:
+    case ENGRAVE_ACTION_DRAG_VAL_STEP:
+    case ENGRAVE_ACTION_DRAG_VAL_PAGE:
+      engrave_out_data(out, "action", "%s %.2f %.2f",
+            _action_string[action], value, value2);
+      break;
+
+    case ENGRAVE_ACTION_STATE_SET:
+      {
+        Engrave_Transition transition;
+        double duration;
+
+        engrave_out_data(out, "action", "%s \"%s\" %.2f",
+              _action_string[action], state ? state : "", value);
+
+        engrave_program_transition_get(program, &transition, &duration);
+        engrave_out_data(out, "transition", "%s %.2f",
+              _transition_string[transition], duration);
+      }
+      break;
+
+    case ENGRAVE_ACTION_SIGNAL_EMIT:
+      engrave_out_data(out, "action", "%s \"%s\" \"%s\"",
+            _action_string[action], state, state2);
+      break;
+
+    case ENGRAVE_ACTION_SCRIPT:
+      {
+        char *script = engrave_program_script_get(program);
+        if (script)
+        {
+          engrave_out_start(out, "script");
+          /* FIXME scripts are wierd ... */
+          fprintf(out, "%s", script);
+          engrave_out_end(out);
+          free(script);
+        }
+      }
+      break;
+
+    case ENGRAVE_ACTION_NUM:
+      break;
+
+    default:
+      fprintf(stderr, "Unknown program action: %d\n", action);
+      break;
   }
 
-  if (program->in.from || program->in.range)
-    engrave_out_data(out, "in", "%.2f %.2f",
-            program->in.from,
-            program->in.range
-            );
+  engrave_program_in_get(program, &value, &value2);
+  if (value || value2)
+    engrave_out_data(out, "in", "%.2f %.2f", value, value2 );
 
   engrave_program_target_foreach(program, _engrave_program_output_target, out);
   engrave_program_after_foreach(program, _engrave_program_output_after, out);
