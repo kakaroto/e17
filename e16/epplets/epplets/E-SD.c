@@ -532,6 +532,13 @@ create_epplet_layout (void)
   Epplet_register_mouse_leave_handler (cb_out, NULL);
 }
 
+static void
+clean_exit (void)
+{
+    save_config();
+    Epplet_cleanup();
+}
+
 int
 main (int argc, char **argv)
 {
@@ -540,7 +547,7 @@ main (int argc, char **argv)
   prio = getpriority (PRIO_PROCESS, getpid ());
   setpriority (PRIO_PROCESS, getpid (), prio + 10);
 
-  atexit (Epplet_cleanup);
+  atexit (clean_exit);
 
   /* Initialise random numbers */
   srand (time (0));

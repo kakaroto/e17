@@ -754,3 +754,16 @@ Tue Nov 23 11:03:39 PST 1999
 (KainX)
 
 Fixed a seg fault bug in E-Slides.
+
+-------------------------------------------------------------------------------
+
+Tue Nov 23 21:32:21 GMT 1999
+(gilbertt)
+
+I am such a dufus.
+
+Changed my epplets to actually save their config when you finish your X
+session, instead of only when you click the close button.
+
+How did I let this go unfixed???
+
