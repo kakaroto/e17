@@ -197,6 +197,7 @@ __imlib_DrawGradient(ImlibImage *im, int x, int y, int w, int h,
    else
       len = hh * 16;
    map = __imlib_MapRange(rg, len);
+   if (!map) return;
    
    xx = (int)(32 * sin(((angle + 180) * 2 * 3.141592654) / 360));
    yy = -(int)(32 * cos(((angle + 180) * 2 * 3.141592654) / 360));
