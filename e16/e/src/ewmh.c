@@ -743,7 +743,7 @@ EWMH_ProcessClientMessage(XClientMessageEvent * event)
      }
    else if (event->message_type == _NET_CLOSE_WINDOW)
      {
-	KillEwin(ewin, 0);
+	ActionsCall(ACTION_KILL, ewin, NULL);
      }
    else if (event->message_type == _NET_WM_DESKTOP)
      {

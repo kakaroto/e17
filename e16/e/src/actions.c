@@ -1401,22 +1401,44 @@ doCleanup(EWin * edummy, const void *params)
    edummy = NULL;
 }
 
+static void
+DoKill(EWin * ewin, const void *params __UNUSED__, int nogroup)
+{
+   EWin              **gwins;
+   int                 num, num_groups, i, j;
+
+   if (!ewin)
+      EDBUG_RETURN_;
+
+   gwins = ListWinGroupMembersForEwin(ewin, ACTION_KILL, nogroup, &num);
+   for (i = 0; i < num; i++)
+     {
+	num_groups = gwins[i]->num_groups;
+	for (j = 0; j < num_groups; j++)
+	   RemoveEwinFromGroup(gwins[i], gwins[i]->groups[0]);
+	ICCCM_Delete(gwins[i]);
+	SoundPlay("SOUND_WINDOW_CLOSE");
+     }
+   if (gwins)
+      Efree(gwins);
+
+   EDBUG_RETURN_;
+}
+
 static int
 doKill(EWin * ewin, const void *params)
 {
    EDBUG(6, "doKill");
-   KillEwin(ewin, 0);
+   DoKill(ewin, params, 0);
    EDBUG_RETURN(0);
-   params = NULL;
 }
 
 static int
 doKillNoGroup(EWin * ewin, const void *params)
 {
    EDBUG(6, "doKillNoGroup");
-   KillEwin(ewin, 1);
+   DoKill(ewin, params, 1);
    EDBUG_RETURN(0);
-   params = NULL;
 }
 
 static int

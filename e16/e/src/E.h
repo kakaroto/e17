@@ -1653,7 +1653,6 @@ void                deleteHint(Window win, Atom atom);
 #define EWIN_CHANGE_DESKTOP     (1<<3)
 #define EWIN_CHANGE_LAYER       (1<<4)
 
-void                KillEwin(EWin * ewin, int nogroup);
 void                EwinRefresh(EWin * ewin);
 void                EwinUpdateAfterMoveResize(EWin * ewin, int resize);
 void                ResizeEwin(EWin * ewin, int w, int h);
