@@ -99,7 +99,7 @@ int              efsd_fam_stop_monitor_internal(char *filename);
 
 /* Monitor filename briefly to get directory listing events.
  */
-void             efsd_fam_force_startstop_monitor(EfsdCommand *cmd, int client);
+int              efsd_fam_force_startstop_monitor(EfsdCommand *cmd, int client);
 
 /* Returns value >0 when file is already monitored.
  */

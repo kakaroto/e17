@@ -566,22 +566,13 @@
 # What're the correct byte orders for the nCUBE and the Fujitsu VPP500?
 #
 # updated by Daniel Quinlan (quinlan@yggdrasil.com)
-0	string		\177ELF		binary/elf
->4	byte		0		invalid class
->4	byte		1		32-bit
-# only for MIPS R3000_BE
->>18	beshort		8
->>>36   belong          &0x20           N32
->4	byte		2		64-bit
->5	byte		0		invalid byte order
->5	byte		1		LSB
->>16	leshort		0		no file type,
->>16	leshort		1		relocatable,
->>16	leshort		2		executable,
->>16	leshort		3		shared object,
-# Core handling from Peter Tobias <tobias@server.et-inf.fho-emden.de>
-# corrections by Christian 'Dr. Disk' Hechelmann <drdisk@ds9.au.s.shuttle.de>
->>16	leshort		4		core
+0	string		\177ELF		
+>5	byte		1
+>>16	leshort		0		binary/elf/lsb
+>>16	leshort		1		binary/elf/lsb/relocatable
+>>16	leshort		2		executable/elf/lsb
+>>16	leshort		3		binary/elf/lsb/shared object
+>>16	leshort		4		binary/core/elf/lsb
 >>16	leshort		&0xff00		processor-specific,
 >>18	leshort		0		no machine,
 >>18	leshort		1		AT&T WE32100 - invalid byte order,
@@ -620,10 +611,8 @@
 >>18	leshort		53		Motorola M68HC12,
 >>18	leshort		0x9026		Alpha (unofficial),
 >>20	lelong		0		invalid version
->>20	lelong		1		version 1
 >>36	lelong		1		MathCoPro/FPU/MAU Required
->8	string		>\0		(%s)
->5	byte		2		MSB
+>5	byte		2
 # only for MIPS R3000_BE
 >>18    beshort		8
 # only for 32-bit
@@ -642,11 +631,11 @@
 >>>>48  belong&0xf0000000       0x30000000      mips-4
 >>>>48  belong&0xf0000000       0x40000000      mips-5
 >>>>48  belong&0xf0000000       0x50000000      mips-6
->>16	beshort		0		no file type,
->>16	beshort		1		relocatable,
->>16	beshort		2		executable,
->>16	beshort		3		shared object,
->>16	beshort		4		core
+>>16	beshort		0		binary/elf/msb
+>>16	beshort		1		binary/elf/msb/relocatable,
+>>16	beshort		2		executable/elf/msb
+>>16	beshort		3		binary/shared object/msb
+>>16	beshort		4		binary/core/elf/msb
 >>16	beshort		&0xff00		processor-specific,
 >>18	beshort		0		no machine,
 >>18	beshort		1		AT&T WE32100,
@@ -694,6 +683,8 @@
 >>20	belong		0		invalid version
 >>20	belong		1		version 1
 >>36	belong		1		MathCoPro/FPU/MAU Required
+>4	byte		1		32-bit
+>4	byte		2		64-bit
 
 #------------------------------------------------------------------------------
 # flash:	file(1) magic for Macromedia Flash file format

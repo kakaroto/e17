@@ -267,14 +267,14 @@ main_handle_listdir_options(char *filename, EfsdFamRequest *efr)
   for (i = 0; i < efr->num_options; i++)
     {
       ecmd = efsd_cmd_new();
-      ecmd->efsd_file_cmd.file = strdup(filename);
-      ecmd->efsd_file_cmd.id = efr->id;
 
       switch (efr->options[i].type)
 	{
 	case EFSD_OP_GET_STAT:
 	  D(("Trying stat option on file-exists event on '%s'...\n", filename));
 	  ecmd->type = EFSD_CMD_STAT;
+	  ecmd->efsd_file_cmd.file = strdup(filename);
+	  ecmd->efsd_file_cmd.id = efr->id;
 	  
 	  /* Launch thread -- the command is freed there. */
 	  main_thread_launch(ecmd, efr->client);
@@ -282,6 +282,8 @@ main_handle_listdir_options(char *filename, EfsdFamRequest *efr)
 	case EFSD_OP_GET_LSTAT:
 	  D(("Trying lstat option on file-exists event on '%s'...\n", filename));
 	  ecmd->type = EFSD_CMD_LSTAT;
+	  ecmd->efsd_file_cmd.file = strdup(filename);
+	  ecmd->efsd_file_cmd.id = efr->id;
 	  
 	  /* Launch thread -- the command is freed there. */
 	  main_thread_launch(ecmd, efr->client);
@@ -289,12 +291,26 @@ main_handle_listdir_options(char *filename, EfsdFamRequest *efr)
 	case EFSD_OP_GET_FILETYPE:
 	  D(("Trying getfile option on file-exists event on '%s'...\n", filename));
 	  ecmd->type = EFSD_CMD_GETFILETYPE;
+	  ecmd->efsd_file_cmd.file = strdup(filename);
+	  ecmd->efsd_file_cmd.id = efr->id;
 
 	  /* Launch thread -- the command is freed there. */
 	  main_thread_launch(ecmd, efr->client);
 	  break;
 	case EFSD_OP_GET_META:
-	  D(("Trying get-meta option on file-exists event ...\n"));
+	  {
+	    EfsdOptionGetmeta *op = &(efr->options[i].efsd_op_getmeta);
+
+	    D(("Trying get-meta option on file-exists event ...\n"));
+	    ecmd->type = EFSD_CMD_GETMETA;
+	    ecmd->efsd_get_metadata_cmd.file = strdup(filename);
+	    ecmd->efsd_get_metadata_cmd.key = strdup(op->key);
+	    ecmd->efsd_get_metadata_cmd.datatype = op->datatype;
+	    ecmd->efsd_get_metadata_cmd.id = efr->id;
+
+	    /* Launch thread -- the command is freed there. */
+	    main_thread_launch(ecmd, efr->client);
+	  }
 	  break;
 	case EFSD_OP_ALL:
 	  break;
@@ -334,7 +350,7 @@ main_handle_fam_events(void)
 	  
 	  m = (EfsdFamMonitor*)famev.userdata;
 
-	  /* D(("Handling FAM event %i for file %s\n", famev.code, famev.filename)); */
+	  D(("Handling FAM event %i for file %s\n", famev.code, famev.filename));
 
 	  memset(&ee, 0, sizeof(EfsdEvent));
 	  ee.type = EFSD_EVENT_FILECHANGE;

@@ -366,7 +366,7 @@ efsd_fam_start_monitor(EfsdFamMonType type, EfsdCommand *com, int client)
       if (type == EFSD_FAM_MONITOR_INTERNAL)
 	{
 	  /* Placing this in an extra case saves us the stat ... */
-	  D(("Starting monitoring file %s.\n", m->filename));
+	  D(("Starting internally monitoring file %s.\n", m->filename));
 	  if (FAMMonitorFile_r(&famcon, m->filename, m->fam_req, m) < 0)
 	    {
 	      D(("Starting monitoring %s FAILED.\n", m->filename));
@@ -460,7 +460,7 @@ efsd_fam_is_monitored(char *filename)
 }
 
 
-void
+int
 efsd_fam_force_startstop_monitor(EfsdCommand *com, int client)
 {
   EfsdFamMonitor   *m;
@@ -475,6 +475,7 @@ efsd_fam_force_startstop_monitor(EfsdCommand *com, int client)
 	{
 	  D(("Starting monitoring %s FAILED.\n", m->filename));
 	  efsd_fam_remove_monitor(m);	      
+	  D_RETURN_(-1);
 	}
     }
   else
@@ -483,6 +484,7 @@ efsd_fam_force_startstop_monitor(EfsdCommand *com, int client)
 	{
 	  D(("Starting monitoring %s FAILED.\n", m->filename));
 	  efsd_fam_remove_monitor(m);	      
+	  D_RETURN_(-1);
 	}
     }
 
@@ -493,7 +495,7 @@ efsd_fam_force_startstop_monitor(EfsdCommand *com, int client)
 
   FAMCancelMonitor_r(&famcon, m->fam_req);
 
-  D_RETURN;
+  D_RETURN_(0);
 }
 
 

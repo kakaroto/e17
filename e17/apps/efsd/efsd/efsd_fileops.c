@@ -206,17 +206,16 @@ efsd_file_listdir(EfsdCommand *cmd, int client)
 {
   D_ENTER;
 
-  if (efsd_misc_file_is_dir(cmd->efsd_file_cmd.file))
+  /* List directory or file by adding a FAM monitor to the
+     directory, generating a bunch of "... exists" events,
+     then removing the monitor.
+  */
+  if (efsd_fam_force_startstop_monitor(cmd, client) < 0)
     {
-      /* List directory by adding a FAM monitor to the
-	 directory, generating a bunch of "... exists" events,
-	 then removing the monitor.
-      */
-      efsd_fam_force_startstop_monitor(cmd, client);
-      D_RETURN_(send_reply(cmd, SUCCESS, 0, 0, NULL, client));
+      D_RETURN_(send_reply(cmd, FAILURE, 0, 0, NULL, client));
     }
 
-  D_RETURN_(send_reply(cmd, FAILURE, 0, 0, NULL, client));
+  D_RETURN_(send_reply(cmd, SUCCESS, 0, 0, NULL, client));
 }
 
 

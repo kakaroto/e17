@@ -84,7 +84,7 @@ static int     read_set_metadata_cmd(int sockfd, EfsdCommand *cmd);
 static int     read_get_metadata_cmd(int sockfd, EfsdCommand *cmd);
 static int     read_filechange_event(int sockfd, EfsdEvent *ee);
 static int     read_reply_event(int sockfd, EfsdEvent *ee);
-static int     read_ls_getmeta_op(int sockfd, EfsdOption *eo);
+static int     read_getmeta_op(int sockfd, EfsdOption *eo);
 
 static void    fill_file_cmd(EfsdIOV *iov, EfsdCommand *ec);
 static void    fill_2file_cmd(EfsdIOV *iov, EfsdCommand *ec);
@@ -477,17 +477,17 @@ read_reply_event(int sockfd, EfsdEvent *ee)
 
 
 static int     
-read_ls_getmeta_op(int sockfd, EfsdOption *eo)
+read_getmeta_op(int sockfd, EfsdOption *eo)
 {
   int count = 0, count2;
    
   D_ENTER;
 
-  if ((count = read_string(sockfd, &(eo->efsd_op_ls_getmeta.key))) < 0)
+  if ((count = read_string(sockfd, &(eo->efsd_op_getmeta.key))) < 0)
     D_RETURN_(-1);
   count2 = count;
    
-  if ((count = read_int(sockfd, (int*)&(eo->efsd_op_ls_getmeta.datatype))) < 0)
+  if ((count = read_int(sockfd, (int*)&(eo->efsd_op_getmeta.datatype))) < 0)
     D_RETURN_(-1);
   count2 += count;
 
@@ -812,13 +812,13 @@ fill_option(EfsdIOV *iov, EfsdOption *eo)
     case EFSD_OP_GET_FILETYPE:
       break;
     case EFSD_OP_GET_META:
-      iov->dat[iov->d] = strlen(eo->efsd_op_ls_getmeta.key) + 1;
+      iov->dat[iov->d] = strlen(eo->efsd_op_getmeta.key) + 1;
       
       iov->vec[++iov->v].iov_base = &(iov->dat[iov->d]);
       iov->vec[iov->v].iov_len    = sizeof(int);
-      iov->vec[++iov->v].iov_base = eo->efsd_op_ls_getmeta.key;
+      iov->vec[++iov->v].iov_base = eo->efsd_op_getmeta.key;
       iov->vec[iov->v].iov_len    = iov->dat[iov->d];
-      iov->vec[++iov->v].iov_base = &(eo->efsd_op_ls_getmeta.datatype);
+      iov->vec[++iov->v].iov_base = &(eo->efsd_op_getmeta.datatype);
       iov->vec[iov->v].iov_len    = sizeof(int);
 
       iov->d++;
@@ -1037,7 +1037,7 @@ efsd_io_read_option(int sockfd, EfsdOption *eo)
 	case EFSD_OP_GET_FILETYPE:
 	  break;
 	case EFSD_OP_GET_META:
-	  result = read_ls_getmeta_op(sockfd, eo);
+	  result = read_getmeta_op(sockfd, eo);
 	  break;
 	default:
 	  D(("Unknown option.\n"));

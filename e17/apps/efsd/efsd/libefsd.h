@@ -116,9 +116,9 @@ EfsdCmdId      efsd_remove(EfsdConnection *ec, char *filename,
 */
 EfsdCmdId      efsd_symlink(EfsdConnection *ec, char *from_file, char *to_file);
 
-/* Lists the contents of a directory by starting a FAM
-   monitor for the directory, thus generating an "exists"
-   FAM event for each file in the directory, and then
+/* Lists the contents of a directory (or also a single file)
+   by starting a FAM monitor for the directory, thus generating
+   an "exists" FAM event for each file in the directory, and then
    stopping the monitor afterwards.
 
    You can pass options along with the command, see the
@@ -164,6 +164,7 @@ EfsdCmdId      efsd_set_metadata_float(EfsdConnection *ec, char *key,
 				       char *filename, float val);
 EfsdCmdId      efsd_set_metadata_str(EfsdConnection *ec, char *key,
 				       char *filename, char *val);
+
 EfsdCmdId      efsd_get_metadata(EfsdConnection *ec, char *key,
 				 char *filename, EfsdDatatype datatype);
 
@@ -221,7 +222,7 @@ void          efsd_ops_add(EfsdOptions *ops, EfsdOption *op);
 /* Send stat events for all files seen in a directory: */
 EfsdOption    *efsd_op_get_stat(void);
 
-/* Send stat events for all files seen in a directory: */
+/* Send lstat events for all files seen in a directory: */
 EfsdOption    *efsd_op_get_lstat(void);
 
 /* Send metadata for certain key and data type for all files

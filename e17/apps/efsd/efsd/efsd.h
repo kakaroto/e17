@@ -104,12 +104,13 @@ typedef enum efsd_option_type
 }
 EfsdOptionType;
 
-typedef struct efsd_option_ls_getmeta
+typedef struct efsd_option_getmeta
 {
+  EfsdOptionType      type;
   char               *key;
   EfsdDatatype        datatype;
 }
-EfsdOptionLsGetmeta;
+EfsdOptionGetmeta;
 
 
 /* Options -- only the getmeta option
@@ -119,7 +120,7 @@ EfsdOptionLsGetmeta;
 typedef union efsd_option
 {
   EfsdOptionType      type;
-  EfsdOptionLsGetmeta efsd_op_ls_getmeta;
+  EfsdOptionGetmeta   efsd_op_getmeta;
 }
 EfsdOption;
 

@@ -338,7 +338,10 @@ print_help(void)
 	 "-a                                  All files, also those starting\n"
          "                                    with a dot.\n"
 	 "-s                                  Get stat as well.\n" 
+	 "-ls                                 Get lstat as well.\n" 
 	 "-t                                  Get file type as well.\n\n"
+	 "-m <key> <type>                     Get metadata with given key and type\n"
+	 "                                    as well.\n\n"
 	 "For cp, mv, rm:\n"
 	 "-f                                  Force. Ignore nonexistant files\n"
 	 "                                    when removing, or existing ones\n"
@@ -520,10 +523,10 @@ command_line(EfsdConnection *ec)
 	    }
 	  else if (!strcmp(tok, "ls") || !strcmp(tok, "startmon"))
 	    {
-	      char startmon = 0;
-	      char show_all = 0;
-	      char get_stat = 0;
-	      char get_type = 0;
+	      char startmon = 0, show_all = 0, get_type = 0;
+	      char get_stat = 0, get_lstat = 0, get_meta = 0;
+	      char *meta_key = NULL, *meta_type = NULL;
+	      EfsdDatatype meta_datatype = 0;
 
 	      if (!strcmp(tok, "startmon"))
 		startmon = 1;
@@ -540,10 +543,37 @@ command_line(EfsdConnection *ec)
 		      num_options++;
 		      get_stat = 1;
 		    }
+		  else if (!strcmp(tok, "-ls"))
+		    {
+		      num_options++;
+		      get_stat = 1;
+		    }
 		  else if (!strcmp(tok, "-t"))
 		    {
 		      num_options++;
 		      get_type = 1;
+		    }
+		  else if (!strcmp(tok, "-m"))
+		    {
+		      if ((meta_key = strtok(NULL, " \t\n")) &&
+			  (meta_type = strtok(NULL, " \t\n")))
+			{
+			  get_meta = 1;
+			  num_options++;
+			  
+			  if (!strcmp(meta_type, "int"))
+			    meta_datatype = EFSD_INT;
+			  else if (!strcmp(meta_type, "float"))
+			    meta_datatype = EFSD_FLOAT;
+			  else if (!strcmp(meta_type, "str"))
+			    meta_datatype = EFSD_STRING;
+			  else
+			    {
+			      get_meta = 0;
+			      num_options--;
+			      printf("Unknown data type.\n");
+			    }			  
+			}
 		    }
 		  else
 		    {
@@ -553,9 +583,11 @@ command_line(EfsdConnection *ec)
 			{
 			  ops = efsd_ops_create(num_options);
 
-			  if (show_all) efsd_ops_add(ops, efsd_op_all());
-			  if (get_stat) efsd_ops_add(ops, efsd_op_get_stat());
-			  if (get_type) efsd_ops_add(ops, efsd_op_get_filetype());
+			  if (show_all)  efsd_ops_add(ops, efsd_op_all());
+			  if (get_stat)  efsd_ops_add(ops, efsd_op_get_stat());
+			  if (get_lstat) efsd_ops_add(ops, efsd_op_get_lstat());
+			  if (get_type)  efsd_ops_add(ops, efsd_op_get_filetype());
+			  if (get_meta)  efsd_ops_add(ops, efsd_op_get_metadata(meta_key, meta_datatype));
 			}
 
 		      if (startmon)

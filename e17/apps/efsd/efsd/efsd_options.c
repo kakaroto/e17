@@ -64,8 +64,8 @@ efsd_option_new_get_metadata(char *key, EfsdDatatype type)
   eo = NEW(EfsdOption);
   memset(eo, 0, sizeof(EfsdOption));
   eo->type = EFSD_OP_GET_META;
-  eo->efsd_op_ls_getmeta.key = strdup(key);
-  eo->efsd_op_ls_getmeta.datatype = type;
+  eo->efsd_op_getmeta.key = strdup(key);
+  eo->efsd_op_getmeta.datatype = type;
   D_RETURN_(eo);
 }
 
@@ -140,7 +140,7 @@ efsd_option_cleanup(EfsdOption *eo)
     case EFSD_OP_GET_FILETYPE:
       break;
     case EFSD_OP_GET_META:
-      FREE(eo->efsd_op_ls_getmeta.key);
+      FREE(eo->efsd_op_getmeta.key);
       break;
     default:
       D(("Unknown option.\n"));
