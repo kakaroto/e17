@@ -1,5 +1,5 @@
 # files in source that are needed
-PACKAGE  = efm-test
+PACKAGE  = e16-key-edit
 VERSION  = 0.0.0
 SRCS     = \
     viewer.c menus.c ipc.c
@@ -12,13 +12,13 @@ BUILD    = \
 LIB_DIRS = \
     -L/usr/local/lib -L/usr/X11R6/lib -L/usr/X11/lib -L/usr/dt/lib
 LIBS     = \
-    `gtk-config --libs` -lgdbm -lgdk_imlib
+    `gtk-config --libs`
 CFLAGS   = \
     -O -g -D_GNU_SOURCE $(DEVFLAGS)
 #CFLAGS   = \
 #    -O -g -W -Wall -Wno-unused  -pedantic -pedantic-errors -ansi -D_GNU_SOURCE
 OPTFLAGS   = \
-    -O6 -mpentium -mcpu=pentium -march=pentium -ffast-math -D_GNU_SOURCE
+    -O2 -D_GNU_SOURCE
 INCLUDES = \
     `gtk-config --cflags` -I..
 
