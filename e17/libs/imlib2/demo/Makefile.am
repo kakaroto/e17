@@ -11,8 +11,12 @@ INCLUDES             = -I/usr/X11R6/include -I$(top_srcdir)/libltdl \
 		       -I. -I$(top_srcdir) -I$(top_srcdir)/src \
 		       -I$(top_srcdir)/loaders
 
-bin_PROGRAMS         = imlib2_view
+bin_PROGRAMS         = imlib2_view imlib2_blend
 imlib2_view_SOURCES  = view.c
 imlib2_view_LDADD    = @DLLDFLAGS@ $(top_builddir)/libltdl/libltdlc.la \
+                       -lX11 -lXext -lttf -lImlib2
+
+imlib2_blend_SOURCES  = blend.c
+imlib2_blend_LDADD    = @DLLDFLAGS@ $(top_builddir)/libltdl/libltdlc.la \
                        -lX11 -lXext -lttf -lImlib2
 
