@@ -66,7 +66,7 @@ create_main (void)
   GtkWidget *prop_reset;
   GtkWidget *draft;
   GtkWidget *vbox2;
-  GtkWidget *notebook2;
+  GtkWidget *properties;
   GtkWidget *table5;
   GtkWidget *label24;
   GtkWidget *label25;
@@ -82,8 +82,8 @@ create_main (void)
   GtkWidget *tl_adj_v;
   GtkObject *tl_rel_v_adj;
   GtkWidget *tl_rel_v;
-  GtkWidget *combo3;
-  GtkWidget *tel_rel;
+  GtkWidget *tl_rel_combo;
+  GtkWidget *tl_rel;
   GtkWidget *hseparator4;
   GtkWidget *hseparator3;
   GtkWidget *label29;
@@ -106,7 +106,7 @@ create_main (void)
   GtkWidget *br_adj_v;
   GtkObject *br_rel_v_adj;
   GtkWidget *br_rel_v;
-  GtkWidget *combo6;
+  GtkWidget *br_rel_combo;
   GtkWidget *br_rel;
   GtkWidget *hseparator8;
   GtkWidget *hseparator9;
@@ -120,8 +120,8 @@ create_main (void)
   GtkWidget *label22;
   GtkObject *content_alignment_h_adj;
   GtkWidget *content_alignment_h;
-  GtkObject *spinbutton8_adj;
-  GtkWidget *spinbutton8;
+  GtkObject *content_alignment_v_adj;
+  GtkWidget *content_alignment_v;
   GtkObject *aspect_h_adj;
   GtkWidget *aspect_h;
   GtkObject *aspect_v_adj;
@@ -159,9 +159,9 @@ create_main (void)
   GtkWidget *label9;
   GtkWidget *table2;
   GtkWidget *name;
+  GtkWidget *class_combo;
+  GList *class_combo_items = NULL;
   GtkWidget *class;
-  GList *class_items = NULL;
-  GtkWidget *combo_entry4;
   GtkWidget *label11;
   GtkWidget *label12;
   GtkWidget *label13;
@@ -170,14 +170,14 @@ create_main (void)
   GtkWidget *glade_menuitem;
   GtkWidget *label10;
   GtkWidget *table7;
-  GtkObject *spinbutton23_adj;
-  GtkWidget *spinbutton23;
-  GtkObject *spinbutton24_adj;
-  GtkWidget *spinbutton24;
-  GtkObject *spinbutton25_adj;
-  GtkWidget *spinbutton25;
-  GtkObject *spinbutton26_adj;
-  GtkWidget *spinbutton26;
+  GtkObject *border_l_adj;
+  GtkWidget *border_l;
+  GtkObject *border_r_adj;
+  GtkWidget *border_r;
+  GtkObject *border_t_adj;
+  GtkWidget *border_t;
+  GtkObject *border_b_adj;
+  GtkWidget *border_b;
   GtkWidget *hseparator7;
   GtkWidget *img_normal;
   GtkWidget *img_hilited;
@@ -414,7 +414,7 @@ create_main (void)
    gtk_widget_push_colormap(gdk_cmap);
    /*******/
    
-  view = gtk_drawing_area_new ();
+   view = gtk_drawing_area_new ();
    
    /*******/
    gtk_widget_pop_visual();
@@ -578,26 +578,26 @@ create_main (void)
                     (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
 
-  notebook2 = gtk_notebook_new ();
-  gtk_widget_ref (notebook2);
-  gtk_object_set_data_full (GTK_OBJECT (main), "notebook2", notebook2,
+  properties = gtk_notebook_new ();
+  gtk_widget_ref (properties);
+  gtk_object_set_data_full (GTK_OBJECT (main), "properties", properties,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (notebook2);
-  gtk_box_pack_start (GTK_BOX (vbox2), notebook2, TRUE, TRUE, 0);
-  gtk_widget_set_usize (notebook2, 360, -2);
-  gtk_container_set_border_width (GTK_CONTAINER (notebook2), 2);
-  gtk_notebook_set_tab_pos (GTK_NOTEBOOK (notebook2), GTK_POS_BOTTOM);
-  gtk_notebook_set_scrollable (GTK_NOTEBOOK (notebook2), TRUE);
-  gtk_notebook_set_tab_hborder (GTK_NOTEBOOK (notebook2), 0);
-  gtk_notebook_set_tab_vborder (GTK_NOTEBOOK (notebook2), 0);
-  gtk_notebook_popup_enable (GTK_NOTEBOOK (notebook2));
+  gtk_widget_show (properties);
+  gtk_box_pack_start (GTK_BOX (vbox2), properties, TRUE, TRUE, 0);
+  gtk_widget_set_usize (properties, 360, -2);
+  gtk_container_set_border_width (GTK_CONTAINER (properties), 2);
+  gtk_notebook_set_tab_pos (GTK_NOTEBOOK (properties), GTK_POS_BOTTOM);
+  gtk_notebook_set_scrollable (GTK_NOTEBOOK (properties), TRUE);
+  gtk_notebook_set_tab_hborder (GTK_NOTEBOOK (properties), 0);
+  gtk_notebook_set_tab_vborder (GTK_NOTEBOOK (properties), 0);
+  gtk_notebook_popup_enable (GTK_NOTEBOOK (properties));
 
   table5 = gtk_table_new (7, 3, FALSE);
   gtk_widget_ref (table5);
   gtk_object_set_data_full (GTK_OBJECT (main), "table5", table5,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (table5);
-  gtk_container_add (GTK_CONTAINER (notebook2), table5);
+  gtk_container_add (GTK_CONTAINER (properties), table5);
   gtk_container_set_border_width (GTK_CONTAINER (table5), 4);
   gtk_table_set_row_spacings (GTK_TABLE (table5), 2);
   gtk_table_set_col_spacings (GTK_TABLE (table5), 2);
@@ -680,20 +680,20 @@ create_main (void)
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
-  combo3 = gtk_combo_new ();
-  gtk_widget_ref (combo3);
-  gtk_object_set_data_full (GTK_OBJECT (main), "combo3", combo3,
+  tl_rel_combo = gtk_combo_new ();
+  gtk_widget_ref (tl_rel_combo);
+  gtk_object_set_data_full (GTK_OBJECT (main), "tl_rel_combo", tl_rel_combo,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (combo3);
-  gtk_table_attach (GTK_TABLE (table5), combo3, 1, 3, 3, 4,
+  gtk_widget_show (tl_rel_combo);
+  gtk_table_attach (GTK_TABLE (table5), tl_rel_combo, 1, 3, 3, 4,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
-  tel_rel = GTK_COMBO (combo3)->entry;
-  gtk_widget_ref (tel_rel);
-  gtk_object_set_data_full (GTK_OBJECT (main), "tel_rel", tel_rel,
+  tl_rel = GTK_COMBO (tl_rel_combo)->entry;
+  gtk_widget_ref (tl_rel);
+  gtk_object_set_data_full (GTK_OBJECT (main), "tl_rel", tl_rel,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (tel_rel);
+  gtk_widget_show (tl_rel);
 
   hseparator4 = gtk_hseparator_new ();
   gtk_widget_ref (hseparator4);
@@ -758,14 +758,14 @@ create_main (void)
   gtk_object_set_data_full (GTK_OBJECT (main), "label5", label5,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label5);
-  gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook2), gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook2), 0), label5);
+  gtk_notebook_set_tab_label (GTK_NOTEBOOK (properties), gtk_notebook_get_nth_page (GTK_NOTEBOOK (properties), 0), label5);
 
   table8 = gtk_table_new (7, 3, FALSE);
   gtk_widget_ref (table8);
   gtk_object_set_data_full (GTK_OBJECT (main), "table8", table8,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (table8);
-  gtk_container_add (GTK_CONTAINER (notebook2), table8);
+  gtk_container_add (GTK_CONTAINER (properties), table8);
   gtk_container_set_border_width (GTK_CONTAINER (table8), 4);
   gtk_table_set_row_spacings (GTK_TABLE (table8), 2);
   gtk_table_set_col_spacings (GTK_TABLE (table8), 2);
@@ -848,16 +848,16 @@ create_main (void)
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
-  combo6 = gtk_combo_new ();
-  gtk_widget_ref (combo6);
-  gtk_object_set_data_full (GTK_OBJECT (main), "combo6", combo6,
+  br_rel_combo = gtk_combo_new ();
+  gtk_widget_ref (br_rel_combo);
+  gtk_object_set_data_full (GTK_OBJECT (main), "br_rel_combo", br_rel_combo,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (combo6);
-  gtk_table_attach (GTK_TABLE (table8), combo6, 1, 3, 3, 4,
+  gtk_widget_show (br_rel_combo);
+  gtk_table_attach (GTK_TABLE (table8), br_rel_combo, 1, 3, 3, 4,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
-  br_rel = GTK_COMBO (combo6)->entry;
+  br_rel = GTK_COMBO (br_rel_combo)->entry;
   gtk_widget_ref (br_rel);
   gtk_object_set_data_full (GTK_OBJECT (main), "br_rel", br_rel,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -926,14 +926,14 @@ create_main (void)
   gtk_object_set_data_full (GTK_OBJECT (main), "label6", label6,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label6);
-  gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook2), gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook2), 1), label6);
+  gtk_notebook_set_tab_label (GTK_NOTEBOOK (properties), gtk_notebook_get_nth_page (GTK_NOTEBOOK (properties), 1), label6);
 
   table4 = gtk_table_new (5, 3, FALSE);
   gtk_widget_ref (table4);
   gtk_object_set_data_full (GTK_OBJECT (main), "table4", table4,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (table4);
-  gtk_container_add (GTK_CONTAINER (notebook2), table4);
+  gtk_container_add (GTK_CONTAINER (properties), table4);
   gtk_container_set_border_width (GTK_CONTAINER (table4), 4);
   gtk_table_set_row_spacings (GTK_TABLE (table4), 2);
   gtk_table_set_col_spacings (GTK_TABLE (table4), 2);
@@ -966,13 +966,13 @@ create_main (void)
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
-  spinbutton8_adj = gtk_adjustment_new (0, 0, 100, 0.1, 10, 10);
-  spinbutton8 = gtk_spin_button_new (GTK_ADJUSTMENT (spinbutton8_adj), 1, 1);
-  gtk_widget_ref (spinbutton8);
-  gtk_object_set_data_full (GTK_OBJECT (main), "spinbutton8", spinbutton8,
+  content_alignment_v_adj = gtk_adjustment_new (0, 0, 100, 0.1, 10, 10);
+  content_alignment_v = gtk_spin_button_new (GTK_ADJUSTMENT (content_alignment_v_adj), 1, 1);
+  gtk_widget_ref (content_alignment_v);
+  gtk_object_set_data_full (GTK_OBJECT (main), "content_alignment_v", content_alignment_v,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (spinbutton8);
-  gtk_table_attach (GTK_TABLE (table4), spinbutton8, 2, 3, 1, 2,
+  gtk_widget_show (content_alignment_v);
+  gtk_table_attach (GTK_TABLE (table4), content_alignment_v, 2, 3, 1, 2,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
@@ -1039,14 +1039,14 @@ create_main (void)
   gtk_object_set_data_full (GTK_OBJECT (main), "label7", label7,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label7);
-  gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook2), gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook2), 2), label7);
+  gtk_notebook_set_tab_label (GTK_NOTEBOOK (properties), gtk_notebook_get_nth_page (GTK_NOTEBOOK (properties), 2), label7);
 
   table3 = gtk_table_new (7, 3, FALSE);
   gtk_widget_ref (table3);
   gtk_object_set_data_full (GTK_OBJECT (main), "table3", table3,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (table3);
-  gtk_container_add (GTK_CONTAINER (notebook2), table3);
+  gtk_container_add (GTK_CONTAINER (properties), table3);
   gtk_container_set_border_width (GTK_CONTAINER (table3), 4);
   gtk_table_set_row_spacings (GTK_TABLE (table3), 2);
   gtk_table_set_col_spacings (GTK_TABLE (table3), 2);
@@ -1191,14 +1191,14 @@ create_main (void)
   gtk_object_set_data_full (GTK_OBJECT (main), "label8", label8,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label8);
-  gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook2), gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook2), 3), label8);
+  gtk_notebook_set_tab_label (GTK_NOTEBOOK (properties), gtk_notebook_get_nth_page (GTK_NOTEBOOK (properties), 3), label8);
 
   scrolledwindow4 = gtk_scrolled_window_new (NULL, NULL);
   gtk_widget_ref (scrolledwindow4);
   gtk_object_set_data_full (GTK_OBJECT (main), "scrolledwindow4", scrolledwindow4,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (scrolledwindow4);
-  gtk_container_add (GTK_CONTAINER (notebook2), scrolledwindow4);
+  gtk_container_add (GTK_CONTAINER (properties), scrolledwindow4);
   gtk_container_set_border_width (GTK_CONTAINER (scrolledwindow4), 4);
   gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolledwindow4), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 
@@ -1224,14 +1224,14 @@ create_main (void)
   gtk_object_set_data_full (GTK_OBJECT (main), "label9", label9,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label9);
-  gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook2), gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook2), 4), label9);
+  gtk_notebook_set_tab_label (GTK_NOTEBOOK (properties), gtk_notebook_get_nth_page (GTK_NOTEBOOK (properties), 4), label9);
 
   table2 = gtk_table_new (3, 2, FALSE);
   gtk_widget_ref (table2);
   gtk_object_set_data_full (GTK_OBJECT (main), "table2", table2,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (table2);
-  gtk_container_add (GTK_CONTAINER (notebook2), table2);
+  gtk_container_add (GTK_CONTAINER (properties), table2);
   gtk_container_set_border_width (GTK_CONTAINER (table2), 4);
   gtk_table_set_row_spacings (GTK_TABLE (table2), 2);
   gtk_table_set_col_spacings (GTK_TABLE (table2), 2);
@@ -1245,45 +1245,46 @@ create_main (void)
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
-  class = gtk_combo_new ();
+  class_combo = gtk_combo_new ();
+  gtk_widget_ref (class_combo);
+  gtk_object_set_data_full (GTK_OBJECT (main), "class_combo", class_combo,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (class_combo);
+  gtk_table_attach (GTK_TABLE (table2), class_combo, 1, 2, 1, 2,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  class_combo_items = g_list_append (class_combo_items, _("Decoration"));
+  class_combo_items = g_list_append (class_combo_items, _("Title_Bar"));
+  class_combo_items = g_list_append (class_combo_items, _("Close"));
+  class_combo_items = g_list_append (class_combo_items, _("Iconify"));
+  class_combo_items = g_list_append (class_combo_items, _("Raise"));
+  class_combo_items = g_list_append (class_combo_items, _("Lower"));
+  class_combo_items = g_list_append (class_combo_items, _("Raise_Lower"));
+  class_combo_items = g_list_append (class_combo_items, _("Max_Size"));
+  class_combo_items = g_list_append (class_combo_items, _("Full_Screen"));
+  class_combo_items = g_list_append (class_combo_items, _("Shade"));
+  class_combo_items = g_list_append (class_combo_items, _("Menu"));
+  class_combo_items = g_list_append (class_combo_items, _("Resize"));
+  class_combo_items = g_list_append (class_combo_items, _("Resize_Horizontal"));
+  class_combo_items = g_list_append (class_combo_items, _("Resize_Vertical"));
+  class_combo_items = g_list_append (class_combo_items, _("Icon"));
+  class_combo_items = g_list_append (class_combo_items, _("State"));
+  class_combo_items = g_list_append (class_combo_items, _("Load"));
+  class_combo_items = g_list_append (class_combo_items, _("Geometry"));
+  class_combo_items = g_list_append (class_combo_items, _("Scrollbar_Trough"));
+  class_combo_items = g_list_append (class_combo_items, _("Scrollbar_Bar"));
+  class_combo_items = g_list_append (class_combo_items, _("Scrollbar_Arrow1"));
+  class_combo_items = g_list_append (class_combo_items, _("Scrollbar_Arrow2"));
+  gtk_combo_set_popdown_strings (GTK_COMBO (class_combo), class_combo_items);
+  g_list_free (class_combo_items);
+
+  class = GTK_COMBO (class_combo)->entry;
   gtk_widget_ref (class);
   gtk_object_set_data_full (GTK_OBJECT (main), "class", class,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (class);
-  gtk_table_attach (GTK_TABLE (table2), class, 1, 2, 1, 2,
-                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-  class_items = g_list_append (class_items, _("Decoration"));
-  class_items = g_list_append (class_items, _("Title_Bar"));
-  class_items = g_list_append (class_items, _("Close"));
-  class_items = g_list_append (class_items, _("Iconify"));
-  class_items = g_list_append (class_items, _("Raise"));
-  class_items = g_list_append (class_items, _("Lower"));
-  class_items = g_list_append (class_items, _("Raise_Lower"));
-  class_items = g_list_append (class_items, _("Max_Size"));
-  class_items = g_list_append (class_items, _("Full_Screen"));
-  class_items = g_list_append (class_items, _("Shade"));
-  class_items = g_list_append (class_items, _("Menu"));
-  class_items = g_list_append (class_items, _("Resize"));
-  class_items = g_list_append (class_items, _("Resize_Horizontal"));
-  class_items = g_list_append (class_items, _("Resize_Vertical"));
-  class_items = g_list_append (class_items, _("Icon"));
-  class_items = g_list_append (class_items, _("State"));
-  class_items = g_list_append (class_items, _("Load"));
-  class_items = g_list_append (class_items, _("Geometry"));
-  class_items = g_list_append (class_items, _("Scrollbar_Trough"));
-  class_items = g_list_append (class_items, _("Scrollbar_Bar"));
-  class_items = g_list_append (class_items, _("Scrollbar_Arrow1"));
-  class_items = g_list_append (class_items, _("Scrollbar_Arrow2"));
-  gtk_combo_set_popdown_strings (GTK_COMBO (class), class_items);
-  g_list_free (class_items);
-
-  combo_entry4 = GTK_COMBO (class)->entry;
-  gtk_widget_ref (combo_entry4);
-  gtk_object_set_data_full (GTK_OBJECT (main), "combo_entry4", combo_entry4,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (combo_entry4);
-  gtk_entry_set_text (GTK_ENTRY (combo_entry4), _("Decoration"));
+  gtk_entry_set_editable (GTK_ENTRY (class), FALSE);
+  gtk_entry_set_text (GTK_ENTRY (class), _("Decoration"));
 
   label11 = gtk_label_new (_("Name"));
   gtk_widget_ref (label11);
@@ -1343,55 +1344,55 @@ create_main (void)
   gtk_object_set_data_full (GTK_OBJECT (main), "label10", label10,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label10);
-  gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook2), gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook2), 5), label10);
+  gtk_notebook_set_tab_label (GTK_NOTEBOOK (properties), gtk_notebook_get_nth_page (GTK_NOTEBOOK (properties), 5), label10);
 
   table7 = gtk_table_new (7, 5, FALSE);
   gtk_widget_ref (table7);
   gtk_object_set_data_full (GTK_OBJECT (main), "table7", table7,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (table7);
-  gtk_container_add (GTK_CONTAINER (notebook2), table7);
+  gtk_container_add (GTK_CONTAINER (properties), table7);
   gtk_container_set_border_width (GTK_CONTAINER (table7), 4);
   gtk_table_set_row_spacings (GTK_TABLE (table7), 2);
   gtk_table_set_col_spacings (GTK_TABLE (table7), 2);
 
-  spinbutton23_adj = gtk_adjustment_new (0, 0, 99999, 1, 10, 10);
-  spinbutton23 = gtk_spin_button_new (GTK_ADJUSTMENT (spinbutton23_adj), 1, 0);
-  gtk_widget_ref (spinbutton23);
-  gtk_object_set_data_full (GTK_OBJECT (main), "spinbutton23", spinbutton23,
+  border_l_adj = gtk_adjustment_new (0, 0, 99999, 1, 10, 10);
+  border_l = gtk_spin_button_new (GTK_ADJUSTMENT (border_l_adj), 1, 0);
+  gtk_widget_ref (border_l);
+  gtk_object_set_data_full (GTK_OBJECT (main), "border_l", border_l,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (spinbutton23);
-  gtk_table_attach (GTK_TABLE (table7), spinbutton23, 1, 2, 5, 6,
+  gtk_widget_show (border_l);
+  gtk_table_attach (GTK_TABLE (table7), border_l, 1, 2, 5, 6,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
-  spinbutton24_adj = gtk_adjustment_new (0, 0, 99999, 1, 10, 10);
-  spinbutton24 = gtk_spin_button_new (GTK_ADJUSTMENT (spinbutton24_adj), 1, 0);
-  gtk_widget_ref (spinbutton24);
-  gtk_object_set_data_full (GTK_OBJECT (main), "spinbutton24", spinbutton24,
+  border_r_adj = gtk_adjustment_new (0, 0, 99999, 1, 10, 10);
+  border_r = gtk_spin_button_new (GTK_ADJUSTMENT (border_r_adj), 1, 0);
+  gtk_widget_ref (border_r);
+  gtk_object_set_data_full (GTK_OBJECT (main), "border_r", border_r,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (spinbutton24);
-  gtk_table_attach (GTK_TABLE (table7), spinbutton24, 2, 3, 5, 6,
+  gtk_widget_show (border_r);
+  gtk_table_attach (GTK_TABLE (table7), border_r, 2, 3, 5, 6,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
-  spinbutton25_adj = gtk_adjustment_new (0, 0, 99999, 1, 10, 10);
-  spinbutton25 = gtk_spin_button_new (GTK_ADJUSTMENT (spinbutton25_adj), 1, 0);
-  gtk_widget_ref (spinbutton25);
-  gtk_object_set_data_full (GTK_OBJECT (main), "spinbutton25", spinbutton25,
+  border_t_adj = gtk_adjustment_new (0, 0, 99999, 1, 10, 10);
+  border_t = gtk_spin_button_new (GTK_ADJUSTMENT (border_t_adj), 1, 0);
+  gtk_widget_ref (border_t);
+  gtk_object_set_data_full (GTK_OBJECT (main), "border_t", border_t,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (spinbutton25);
-  gtk_table_attach (GTK_TABLE (table7), spinbutton25, 3, 4, 5, 6,
+  gtk_widget_show (border_t);
+  gtk_table_attach (GTK_TABLE (table7), border_t, 3, 4, 5, 6,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
-  spinbutton26_adj = gtk_adjustment_new (0, 0, 99999, 1, 10, 10);
-  spinbutton26 = gtk_spin_button_new (GTK_ADJUSTMENT (spinbutton26_adj), 1, 0);
-  gtk_widget_ref (spinbutton26);
-  gtk_object_set_data_full (GTK_OBJECT (main), "spinbutton26", spinbutton26,
+  border_b_adj = gtk_adjustment_new (0, 0, 99999, 1, 10, 10);
+  border_b = gtk_spin_button_new (GTK_ADJUSTMENT (border_b_adj), 1, 0);
+  gtk_widget_ref (border_b);
+  gtk_object_set_data_full (GTK_OBJECT (main), "border_b", border_b,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (spinbutton26);
-  gtk_table_attach (GTK_TABLE (table7), spinbutton26, 4, 5, 5, 6,
+  gtk_widget_show (border_b);
+  gtk_table_attach (GTK_TABLE (table7), border_b, 4, 5, 5, 6,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
@@ -1607,14 +1608,14 @@ create_main (void)
   gtk_object_set_data_full (GTK_OBJECT (main), "label36", label36,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label36);
-  gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook2), gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook2), 6), label36);
+  gtk_notebook_set_tab_label (GTK_NOTEBOOK (properties), gtk_notebook_get_nth_page (GTK_NOTEBOOK (properties), 6), label36);
 
   table9 = gtk_table_new (5, 5, FALSE);
   gtk_widget_ref (table9);
   gtk_object_set_data_full (GTK_OBJECT (main), "table9", table9,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (table9);
-  gtk_container_add (GTK_CONTAINER (notebook2), table9);
+  gtk_container_add (GTK_CONTAINER (properties), table9);
   gtk_container_set_border_width (GTK_CONTAINER (table9), 4);
   gtk_table_set_row_spacings (GTK_TABLE (table9), 2);
   gtk_table_set_col_spacings (GTK_TABLE (table9), 2);
@@ -1802,7 +1803,7 @@ create_main (void)
   gtk_object_set_data_full (GTK_OBJECT (main), "label52", label52,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label52);
-  gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook2), gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook2), 7), label52);
+  gtk_notebook_set_tab_label (GTK_NOTEBOOK (properties), gtk_notebook_get_nth_page (GTK_NOTEBOOK (properties), 7), label52);
 
   hbuttonbox1 = gtk_hbutton_box_new ();
   gtk_widget_ref (hbuttonbox1);
@@ -1822,18 +1823,7 @@ create_main (void)
   gtk_container_set_border_width (GTK_CONTAINER (frame1), 2);
   gtk_frame_set_shadow_type (GTK_FRAME (frame1), GTK_SHADOW_IN);
 
-   /*******/
-   gtk_widget_push_visual(gdk_vis);
-   gtk_widget_push_colormap(gdk_cmap);
-   /*******/
-   
   zoom = gtk_drawing_area_new ();
-   
-   /*******/
-   gtk_widget_pop_visual();
-   gtk_widget_pop_colormap();
-   /*******/
-
   gtk_widget_ref (zoom);
   gtk_object_set_data_full (GTK_OBJECT (main), "zoom", zoom,
                             (GtkDestroyNotify) gtk_widget_unref);

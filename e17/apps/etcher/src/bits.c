@@ -76,6 +76,7 @@ _ebits_evaluate_fill(Ebits_Object_Bit_State state)
      }
    evas_set_image_fill(state->o->state.evas, state->object,
 		       0, 0, fill_w, fill_h);
+   evas_resize(state->o->state.evas, state->object, state->w, state->h);
 }
 
 static void
@@ -100,7 +101,7 @@ _ebits_object_calculate(Ebits_Object o)
 	evas_move(state->o->state.evas, state->object, 
 		  o->state.x + state->x, o->state.y + state->y);
 	evas_resize(state->o->state.evas, state->object, 
-		    state->h, state->w);
+		    state->w, state->h);
      }
 }
 
@@ -279,8 +280,8 @@ _ebits_handle_mouse_move (void *_data, Evas _e, Evas_Object _o, int _b, int _x, 
 {
    Ebits_Object_Bit_State state;
    
-   if (state->state == 3) return;
    state = _data;
+   if (state->state == 3) return;
 }
 
 static void
@@ -520,6 +521,141 @@ _ebits_find_description(char *file)
    return d;
 }
 
+#ifdef EDITOR
+Ebits_Object_Description
+ebits_new_description(void)
+{
+   Ebits_Object_Description d = NULL;
+
+   /* new description */
+   d = malloc(sizeof(struct _Ebits_Object_Description));
+   memset(d, 0, sizeof(struct _Ebits_Object_Description));
+   d->step.x = 1;
+   d->step.y = 1;
+   d->min.w = 0;
+   d->min.h = 0;
+   d->max.w = 99999;
+   d->max.h = 99999;
+   d->references = 1;
+   return d;
+}
+
+static void
+_ebits_evaluate(Ebits_Object_Bit_State state)
+{
+   char image[4096];
+   
+   if (state->normal.image)
+     {
+	imlib_context_set_image(state->normal.image);
+	imlib_free_image();
+	state->normal.image = NULL;
+     }
+   if (state->hilited.image)
+     {
+	imlib_context_set_image(state->hilited.image);
+	imlib_free_image();
+	state->hilited.image = NULL;
+     }
+   if (state->clicked.image)
+     {
+	imlib_context_set_image(state->clicked.image);
+	imlib_free_image();
+	state->clicked.image = NULL;
+     }
+   if (state->disabled.image)
+     {
+	imlib_context_set_image(state->disabled.image);
+	imlib_free_image();
+	state->disabled.image = NULL;
+     }
+   if (state->o->description->file)
+     {
+	if (state->description->normal.image)
+	  {
+	     snprintf(image, sizeof(image), "%s:%s", state->o->description->file, state->description->normal.image);
+	     state->normal.image = imlib_load_image(image);
+	  }
+	if (state->description->hilited.image)
+	  {
+	     snprintf(image, sizeof(image), "%s:%s", state->o->description->file, state->description->hilited.image);
+	     state->hilited.image = imlib_load_image(image);
+	  }
+	if (state->description->clicked.image)
+	  {
+	     snprintf(image, sizeof(image), "%s:%s", state->o->description->file, state->description->clicked.image);
+	     state->clicked.image = imlib_load_image(image);
+	  }
+	if (state->description->disabled.image)
+	  {
+	     snprintf(image, sizeof(image), "%s:%s", state->o->description->file, state->description->disabled.image);
+	     state->disabled.image = imlib_load_image(image);
+	  }
+     }
+   _ebits_object_calculate(state->o);
+}
+
+Ebits_Object_Bit_State
+ebits_new_bit(Ebits_Object o, char *file)
+{
+   Ebits_Object_Bit_Description bit;
+   Ebits_Object_Bit_State state;
+   
+   bit = malloc(sizeof(struct _Ebits_Object_Bit_Description));
+   memset(bit, 0, sizeof(struct _Ebits_Object_Bit_Description));
+   state= malloc(sizeof(struct _Ebits_Object_Bit_State));
+   memset(state, 0, sizeof(struct _Ebits_Object_Bit_State));
+   
+   o->bits = evas_list_append(o->bits, state);
+   o->description->bits = evas_list_append(o->description->bits, bit);
+   state->description = bit;
+   state->o = o;
+   
+   bit->normal.image = strdup(file);
+   
+   state->object = evas_add_image_from_file(o->state.evas, 
+					    _ebits_get_file(state->description, state->state));
+   evas_callback_add(o->state.evas, state->object, CALLBACK_MOUSE_DOWN, _ebits_handle_mouse_down, state);
+   evas_callback_add(o->state.evas, state->object, CALLBACK_MOUSE_UP, _ebits_handle_mouse_up, state);
+   evas_callback_add(o->state.evas, state->object, CALLBACK_MOUSE_MOVE, _ebits_handle_mouse_move, state);
+   evas_callback_add(o->state.evas, state->object, CALLBACK_MOUSE_IN, _ebits_handle_mouse_in, state);
+   evas_callback_add(o->state.evas, state->object, CALLBACK_MOUSE_OUT, _ebits_handle_mouse_out, state);
+
+   evas_set_layer(o->state.evas, state->object, o->state.layer);
+   if (o->state.visible) evas_show(o->state.evas, state->object);
+     {
+	int w, h;
+	
+	evas_get_image_size(o->state.evas, state->object, &w, &h);
+	bit->rel1.x = 0;
+	bit->rel1.y = 0;
+	bit->rel1.rx = 0.0;
+	bit->rel1.ry = 0.0;
+	bit->rel1.ax = 0;
+	bit->rel1.ay = 0;
+	bit->rel2.x = -1;
+	bit->rel2.y = -1;
+	bit->rel2.rx = 1.0;
+	bit->rel2.ry = 1.0;
+	bit->rel2.ax = 0;
+	bit->rel2.ay = 0;
+	bit->align.w = 0.5;
+	bit->align.h = 0.5;
+	bit->step.x = 1;
+	bit->step.y = 1;
+	bit->min.w = 0;
+	bit->min.h = 0;
+	bit->max.w = 99999;
+	bit->max.h = 99999;
+     }
+   
+   _ebits_evaluate(state);
+   
+   return state;
+}
+
+#endif
+
 Ebits_Object ebits_load(char *file)
 {
    Ebits_Object o;
@@ -569,7 +705,6 @@ Ebits_Object ebits_load(char *file)
 	  }
 #endif	
      }
-   
    return o;
 }
 
@@ -690,18 +825,18 @@ void ebits_hide(Ebits_Object o)
      }
 }
 
-void ebits_set_layer(Ebits_Object o, int l)
+void ebits_set_layer(Ebits_Object o, int layer)
 {
    Evas_List l;
 
-   if (l == o->state.layer) return;
-   o->state.layer = l;
+   if (layer == o->state.layer) return;
+   o->state.layer = layer;
    for (l = o->bits; l; l = l->next)
      {
 	Ebits_Object_Bit_State state;
 	
 	state = l->data;
-	evas_set_layer(state->o->state.evas, state->object, l);
+	evas_set_layer(state->o->state.evas, state->object, layer);
      }
 }
 
@@ -736,6 +871,8 @@ void ebits_move(Ebits_Object o, double x, double y)
 {
    Evas_List l;
    
+   o->state.x = x;
+   o->state.y = y;
    for (l = o->bits; l; l = l->next)
      {
 	Ebits_Object_Bit_State state;
@@ -748,6 +885,14 @@ void ebits_move(Ebits_Object o, double x, double y)
 
 void ebits_resize(Ebits_Object o, double w, double h)
 {
+   w = (double)(((int)w / o->description->step.x) * o->description->step.x);
+   h = (double)(((int)h / o->description->step.y) * o->description->step.y);
+   if (w > o->description->max.w)      w = o->description->max.w;
+   else if (w < o->description->min.w) w = o->description->min.w;
+   if (h > o->description->max.h)      h = o->description->max.h;
+   else if (h < o->description->min.h) h = o->description->min.h;
+   o->state.w = w;
+   o->state.h = h;
    _ebits_object_calculate(o);
 }
 
@@ -767,8 +912,8 @@ Ebits_Object ebits_new(void)
    o->description = NULL;
    o->state.x = 0;
    o->state.y = 0;
-   o->state.w = 1;
-   o->state.h = 1;
+   o->state.w = 32;
+   o->state.h = 32;
    return o;
 }
 

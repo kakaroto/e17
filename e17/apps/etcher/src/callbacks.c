@@ -7,6 +7,11 @@
 #include <Evas.h>
 #include <gdk/gdkx.h>
 
+#include <stdio.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <string.h>
+
 #include "callbacks.h"
 #include "interface.h"
 #include "support.h"
@@ -20,18 +25,268 @@ gint render_method = 0;
 static int new_evas = 1;
 static Evas_Object o_logo = NULL;
 static Evas_Object o_handle1 = NULL, o_handle2, o_handle3, o_handle4, o_edge1, o_edge2, o_edge3, o_edge4, o_backing, o_pointer = NULL;
+static Evas_Object o_select_rect, o_select_line1, o_select_line2, o_select_line3, o_select_line4;
 static double backing_x, backing_y, backing_w, backing_h;
 static gint draft_mode = 1;
 static gint zoom_x, zoom_y;
 
 static Ebits_Object bits = NULL;
+static Ebits_Object_Bit_State selected_state = NULL;
 
 void zoom_redraw(int xx, int yy);
+static void handle_bg_mouse_down (void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y);
 static void handle_mouse_down (void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y);
 static void handle_mouse_up (void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y);
 static void handle_mouse_move (void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y);
 static gint view_shrink_logo(gpointer data);
 static gint view_scroll_logo(gpointer data);
+
+static void
+update_selection_from_widget(void)
+{
+   GtkWidget *w;
+   
+#define GET_SPIN(name, val) w = gtk_object_get_data(GTK_OBJECT(main_win), name); selected_state->description->val = gtk_spin_button_get_value_as_float(GTK_SPIN_BUTTON(w));
+#define GET_ENTRY(name, val) w = gtk_object_get_data(GTK_OBJECT(main_win), name); if (selected_state->description->val) free(selected_state->description->val); if (!strcmp(gtk_entry_get_text(GTK_ENTRY(w)), "")) selected_state->description->val = NULL; else selected_state->description->val = strdup(gtk_entry_get_text(GTK_ENTRY(w)));
+   if (selected_state)
+     {
+        GET_SPIN("tl_abs_h", rel1.x);
+	GET_SPIN("tl_abs_v", rel1.y);
+	GET_ENTRY("tl_rel", rel1.name);
+	GET_SPIN("tl_rel_h", rel1.rx);
+	GET_SPIN("tl_rel_v", rel1.ry);
+	GET_SPIN("tl_adj_h", rel1.ax);
+	GET_SPIN("tl_adj_v", rel1.ay);
+	
+	GET_SPIN("br_abs_h", rel2.x);
+	GET_SPIN("br_abs_v", rel2.y);
+	GET_ENTRY("br_rel", rel2.name);
+	GET_SPIN("br_rel_h", rel2.rx);
+	GET_SPIN("br_rel_v", rel2.ry);
+	GET_SPIN("br_adj_h", rel2.ax);
+	GET_SPIN("br_adj_v", rel2.ay);
+	
+	GET_SPIN("content_alignment_h", align.w);
+	GET_SPIN("content_alignment_v", align.h);
+	w = gtk_object_get_data(GTK_OBJECT(main_win), "aspect");
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(w)))
+	  {
+	     GET_SPIN("aspect_h", aspect.x);
+	     GET_SPIN("aspect_v", aspect.y);
+	  }
+	else
+	  {
+	     selected_state->description->aspect.x = 0;
+	     selected_state->description->aspect.y = 0;
+	  }
+	GET_SPIN("min_h", min.w);
+	GET_SPIN("min_v", min.h);
+	GET_SPIN("max_h", max.w);
+	GET_SPIN("max_v", max.h);
+	GET_SPIN("step_h", step.x);
+	GET_SPIN("step_v", step.y);
+
+	w = gtk_object_get_data(GTK_OBJECT(main_win), "use_contents_h");
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(w)))
+	   selected_state->description->max.w = 0;
+	w = gtk_object_get_data(GTK_OBJECT(main_win), "use_contents_v");
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(w)))
+	   selected_state->description->max.h = 0;
+	
+	if (selected_state->description->sync)
+	  {
+	     Evas_List ll;
+	     
+	     for (ll = selected_state->description->sync; ll; ll = ll->next)
+		free(ll->data);
+	     evas_list_free(selected_state->description->sync);
+	     selected_state->description->sync = NULL;
+	  }
+	w = gtk_object_get_data(GTK_OBJECT(main_win), "sync_list");
+	  {
+	     GList *l;
+	     
+	     for (l = GTK_CLIST(w)->row_list; l; l = l->next)
+	       {
+		  GtkCListRow *row;
+		  GtkCellText *cell;
+		  
+		  row = l->data;
+		  cell = (GtkCellText *)row->cell;
+		  if (row->state == GTK_STATE_SELECTED)
+		     selected_state->description->sync = 
+		     evas_list_append(selected_state->description->sync, 
+				      strdup(cell->text));
+	       }
+	  }
+	GET_ENTRY("name", name);
+	GET_ENTRY("class", class);
+	GET_ENTRY("img_normal", normal.image);
+	GET_ENTRY("img_hilited", hilited.image);
+	GET_ENTRY("img_clicked", clicked.image);
+	GET_ENTRY("img_disabled", disabled.image);
+	GET_SPIN("border_l", border.l);
+	GET_SPIN("border_r", border.r);
+	GET_SPIN("border_t", border.t);
+	GET_SPIN("border_b", border.b);
+     }
+}
+
+static void
+update_widget_from_selection(void)
+{
+   GtkWidget *w;
+
+#define SET_SPIN(name, val) w = gtk_object_get_data(GTK_OBJECT(main_win), name); gtk_spin_button_set_value(GTK_SPIN_BUTTON(w), selected_state->description->val);
+#define SET_ENTRY(name, val) w = gtk_object_get_data(GTK_OBJECT(main_win), name); if (selected_state->description->val) gtk_entry_set_text(GTK_ENTRY(w), selected_state->description->val); else gtk_entry_set_text(GTK_ENTRY(w), "");
+   if (selected_state)
+     {
+	w = gtk_object_get_data(GTK_OBJECT(main_win), "properties");
+	gtk_widget_set_sensitive(w, 1);
+	SET_SPIN("tl_abs_h", rel1.x);
+	SET_SPIN("tl_abs_v", rel1.y);
+	SET_ENTRY("tl_rel", rel1.name);
+	SET_SPIN("tl_rel_h", rel1.rx);
+	SET_SPIN("tl_rel_v", rel1.ry);
+	SET_SPIN("tl_adj_h", rel1.ax);
+	SET_SPIN("tl_adj_v", rel1.ay);
+	
+	SET_SPIN("br_abs_h", rel2.x);
+	SET_SPIN("br_abs_v", rel2.y);
+	SET_ENTRY("br_rel", rel2.name);
+	SET_SPIN("br_rel_h", rel2.rx);
+	SET_SPIN("br_rel_v", rel2.ry);
+	SET_SPIN("br_adj_h", rel2.ax);
+	SET_SPIN("br_adj_v", rel2.ay);
+	
+	SET_SPIN("content_alignment_h", align.w);
+	SET_SPIN("content_alignment_v", align.h);
+	w = gtk_object_get_data(GTK_OBJECT(main_win), "aspect");
+	if ((selected_state->description->aspect.x > 0) &&
+	    (selected_state->description->aspect.y > 0))
+	   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(w), 1);
+	else
+	   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(w), 0);	   
+	SET_SPIN("aspect_h", aspect.x);
+	SET_SPIN("aspect_v", aspect.y);
+	SET_SPIN("min_h", min.w);
+	SET_SPIN("min_v", min.h);
+	SET_SPIN("max_h", max.w);
+	SET_SPIN("max_v", max.h);
+	SET_SPIN("step_h", step.x);
+	SET_SPIN("step_v", step.y);
+	w = gtk_object_get_data(GTK_OBJECT(main_win), "use_contents_h");
+	if (selected_state->description->max.w == 0)
+	   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(w), 1);
+	else
+	   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(w), 0);
+	w = gtk_object_get_data(GTK_OBJECT(main_win), "use_contents_v");
+	if (selected_state->description->max.h == 0)
+	   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(w), 1);
+	else
+	   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(w), 0);
+	w = gtk_object_get_data(GTK_OBJECT(main_win), "sync_list");
+	gtk_clist_freeze(GTK_CLIST(w));
+	gtk_clist_clear(GTK_CLIST(w));
+	  {
+	     Evas_List l, ll;
+	     
+	     for (l = selected_state->o->description->bits; l; l = l->next)
+	       {
+		  Ebits_Object_Bit_Description bit;
+		  gint row;
+		  gchar *text[1];
+		  
+		  bit = l->data;
+		  if (bit->name) text[0] = bit->name;
+		  else  text[0] = "";
+		  row = gtk_clist_append(GTK_CLIST(w), text);
+		  for (ll = selected_state->description->sync; ll; ll = ll->next)
+		    {
+		       char *name;
+		       
+		       name = ll->data;
+		       if (!strcmp(text[0], name))
+			  gtk_clist_select_row(GTK_CLIST(w), row, 0);
+		    }
+	       }
+	  }
+	gtk_clist_thaw(GTK_CLIST(w));
+	SET_ENTRY("name", name);
+	SET_ENTRY("class", class);
+	SET_ENTRY("img_normal", normal.image);
+	SET_ENTRY("img_hilited", hilited.image);
+	SET_ENTRY("img_clicked", clicked.image);
+	SET_ENTRY("img_disabled", disabled.image);
+	SET_SPIN("border_l", border.l);
+	SET_SPIN("border_r", border.r);
+	SET_SPIN("border_t", border.t);
+	SET_SPIN("border_b", border.b);
+	w = gtk_object_get_data(GTK_OBJECT(main_win), "tile_h");
+	if (selected_state->description->tile.w == 0)
+	   gtk_entry_set_text(GTK_ENTRY(w), "Fill");
+	else if (selected_state->description->tile.w == 1)
+	   gtk_entry_set_text(GTK_ENTRY(w), "Tile");
+	else if (selected_state->description->tile.w == 2)
+	   gtk_entry_set_text(GTK_ENTRY(w), "Tile Integer");
+	w = gtk_object_get_data(GTK_OBJECT(main_win), "tile_v");
+	if (selected_state->description->tile.h == 0)
+	   gtk_entry_set_text(GTK_ENTRY(w), "Fill");
+	else if (selected_state->description->tile.h == 1)
+	   gtk_entry_set_text(GTK_ENTRY(w), "Tile");
+	else if (selected_state->description->tile.h == 2)
+	   gtk_entry_set_text(GTK_ENTRY(w), "Tile Integer");
+     }
+   else
+     {
+	w = gtk_object_get_data(GTK_OBJECT(main_win), "properties");
+	gtk_widget_set_sensitive(w, 0);
+     }
+}
+
+static void
+update_visible_selection(void)
+{
+   if (selected_state)
+     {
+	evas_move(view_evas, o_select_rect, 
+		  selected_state->o->state.x + selected_state->x, selected_state->o->state.y + selected_state->y);
+	evas_resize(view_evas, o_select_rect, selected_state->w, selected_state->h);
+	evas_set_line_xy(view_evas, o_select_line1,
+			 selected_state->o->state.x + selected_state->x,
+			 selected_state->o->state.y + selected_state->y,
+			 selected_state->o->state.x + selected_state->x,
+			 selected_state->o->state.y + selected_state->y + selected_state->h - 1);
+	evas_set_line_xy(view_evas, o_select_line2,
+			 selected_state->o->state.x + selected_state->x + selected_state->w - 1,
+			 selected_state->o->state.y + selected_state->y,
+			 selected_state->o->state.x + selected_state->x + selected_state->w - 1,
+			 selected_state->o->state.y + selected_state->y + selected_state->h - 1);
+	evas_set_line_xy(view_evas, o_select_line3,
+			 selected_state->o->state.x + selected_state->x,
+			 selected_state->o->state.y + selected_state->y,
+			 selected_state->o->state.x + selected_state->x + selected_state->w - 1,
+			 selected_state->o->state.y + selected_state->y);
+	evas_set_line_xy(view_evas, o_select_line4,
+			 selected_state->o->state.x + selected_state->x,
+			 selected_state->o->state.y + selected_state->y + selected_state->h - 1,
+			 selected_state->o->state.x + selected_state->x + selected_state->w - 1,
+			 selected_state->o->state.y + selected_state->y + selected_state->h - 1);
+	evas_show(view_evas, o_select_rect);
+	evas_show(view_evas, o_select_line1);
+	evas_show(view_evas, o_select_line2);
+	evas_show(view_evas, o_select_line3);
+	evas_show(view_evas, o_select_line4);
+     }
+   else
+     {
+	evas_hide(view_evas, o_select_rect);
+	evas_hide(view_evas, o_select_line1);
+	evas_hide(view_evas, o_select_line2);
+	evas_hide(view_evas, o_select_line3);
+	evas_hide(view_evas, o_select_line4);
+     }
+}
 
 gint
 view_redraw(gpointer data)
@@ -95,11 +350,24 @@ zoom_redraw(int xx, int yy)
 }
 
 static void
+handle_bg_mouse_down (void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
+{
+   selected_state = NULL;
+   update_widget_from_selection();
+   update_visible_selection();
+   gtk_idle_add(view_redraw, NULL);
+}
+
+static void
 handle_mouse_down (void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
 {
    evas_put_data(_e, _o, "clicked", (void *)1);
    evas_put_data(_e, _o, "x", (void *)_x);
    evas_put_data(_e, _o, "y", (void *)_y);
+   selected_state = NULL;
+   update_widget_from_selection();
+   update_visible_selection();
+   gtk_idle_add(view_redraw, NULL);
 }
 
 static void
@@ -115,8 +383,8 @@ handle_mouse_move (void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
      {
 	int x, y;
 	
-	x = evas_get_data(_e, _o, "x");
-	y = evas_get_data(_e, _o, "y");
+	x = (int)evas_get_data(_e, _o, "x");
+	y = (int)evas_get_data(_e, _o, "y");
 	evas_put_data(_e, _o, "x", (void *)_x);
 	evas_put_data(_e, _o, "y", (void *)_y);
 	if (_o == o_handle1)
@@ -188,12 +456,52 @@ handle_mouse_move (void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
      }
 }
 
+static void
+handle_bit_mouse_down (void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
+{
+   Ebits_Object_Bit_State state;
+
+   state = _data;
+   selected_state = state;
+   update_visible_selection();
+   gtk_idle_add(view_redraw, NULL);
+   update_widget_from_selection();
+}
+
+static void
+handle_bit_mouse_up (void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
+{
+   Ebits_Object_Bit_State state;
+
+   state = _data;
+   gtk_idle_add(view_redraw, NULL);
+}
+
+static void
+handle_bit_mouse_move (void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
+{
+   Ebits_Object_Bit_State state;
+
+   state = _data;
+   gtk_idle_add(view_redraw, NULL);
+}
+
 gint
 view_configure_handles(gpointer data)
 {
    int w, h;
    GtkWidget *entry;
    gchar buf[32];
+
+   ebits_move(bits, backing_x, backing_y);
+   ebits_resize(bits, backing_w, backing_h);
+   
+   update_visible_selection();
+   
+   backing_x = bits->state.x;
+   backing_y = bits->state.y;
+   backing_w = bits->state.w;
+   backing_h = bits->state.h;
    
    evas_get_image_size(view_evas, o_handle1, &w, &h);
    evas_move(view_evas, o_handle1, backing_x - w, backing_y - h);
@@ -360,7 +668,16 @@ on_file_ok_clicked                     (GtkButton       *button,
 		 ebits_show(bits);
 	   }
      }
-   else
+   else if (gtk_object_get_data(GTK_OBJECT(top), "new_image"))
+     {
+	Ebits_Object_Bit_State state;
+	
+	state = ebits_new_bit(bits, gtk_file_selection_get_filename(GTK_FILE_SELECTION(top)));
+	evas_callback_add(view_evas, state->object, CALLBACK_MOUSE_DOWN, handle_bit_mouse_down, state);
+	evas_callback_add(view_evas, state->object, CALLBACK_MOUSE_UP, handle_bit_mouse_up, state);
+	evas_callback_add(view_evas, state->object, CALLBACK_MOUSE_MOVE, handle_bit_mouse_move, state);
+     }
+   else if (gtk_object_get_data(GTK_OBJECT(top), "save"))
      {
 	if (bits) ebits_save(bits, gtk_file_selection_get_filename(GTK_FILE_SELECTION(top)));
      }
@@ -565,6 +882,7 @@ on_view_expose_event                   (GtkWidget       *widget,
 	evas_set_image_cache(view_evas, 8 * 1024 * 1024);
 	o_bg = evas_add_image_from_file(view_evas,
 					  PACKAGE_SOURCE_DIR"/pixmaps/tile.png");
+	evas_callback_add(view_evas, o_bg, CALLBACK_MOUSE_DOWN, handle_bg_mouse_down, NULL);
 	evas_get_image_size(view_evas, o_bg, &w, &h);
 	evas_set_image_fill(view_evas, o_bg, 0, 0, w, h);
 	evas_show(view_evas, o_bg);
@@ -585,7 +903,37 @@ on_view_expose_event                   (GtkWidget       *widget,
 	backing_h = widget->allocation.height - 64;
 	o_pointer = evas_add_image_from_file(view_evas, PACKAGE_SOURCE_DIR"/pixmaps/pointer.png");
 	evas_set_layer(view_evas, o_pointer, 999);
-	evas_set_pass_events(view_evas, o_pointer, 1);	
+	evas_set_pass_events(view_evas, o_pointer, 1);
+	
+	bits = ebits_new();
+	bits->description = ebits_new_description();
+	ebits_add_to_evas(bits, view_evas);
+	ebits_show(bits);
+	ebits_set_layer(bits, 50);
+	ebits_move(bits, backing_x, backing_y);
+	ebits_resize(bits, backing_w, backing_h);
+	
+	o_select_rect = evas_add_rectangle(view_evas);
+	o_select_line1 = evas_add_line(view_evas);
+	o_select_line2 = evas_add_line(view_evas);
+	o_select_line3 = evas_add_line(view_evas);
+	o_select_line4 = evas_add_line(view_evas);
+	evas_set_color(view_evas, o_select_rect, 0, 0, 0, 128);
+	evas_set_color(view_evas, o_select_line1, 255, 255, 255, 200);
+	evas_set_color(view_evas, o_select_line2, 255, 255, 255, 200);
+	evas_set_color(view_evas, o_select_line3, 255, 255, 255, 200);
+	evas_set_color(view_evas, o_select_line4, 255, 255, 255, 200);
+	evas_set_layer(view_evas, o_select_rect, 100);
+	evas_set_layer(view_evas, o_select_line1, 100);
+	evas_set_layer(view_evas, o_select_line2, 100);
+	evas_set_layer(view_evas, o_select_line3, 100);
+	evas_set_layer(view_evas, o_select_line4, 100);
+	evas_set_pass_events(view_evas, o_select_rect, 1);
+	evas_set_pass_events(view_evas, o_select_line1, 1);
+	evas_set_pass_events(view_evas, o_select_line2, 1);
+	evas_set_pass_events(view_evas, o_select_line3, 1);
+	evas_set_pass_events(view_evas, o_select_line4, 1);
+	
 	gtk_timeout_add(50, view_scroll_logo, NULL);
 	  {
 	     GdkPixmap *src, *mask;
@@ -688,17 +1036,11 @@ void
 on_new_image_clicked                   (GtkButton       *button,
                                         gpointer         user_data)
 {
-   if (!bits)
-     {
-	bits = ebits_new();
-	ebits_add_to_evas(bits, view_evas);
-	ebits_move(bits, backing_x, backing_y);
-	ebits_resize(bits, backing_w, backing_h);
-	ebits_set_layer(bits, 5);
-	if (!draft_mode)
-	   ebits_show(bits);	
-     }
-
+   GtkWidget *file;
+   
+   file = create_filesel();
+   gtk_object_set_data(GTK_OBJECT(file), "new_image", (void *)1);
+   gtk_widget_show(file);
 }
 
 
@@ -706,17 +1048,6 @@ void
 on_new_icon_clicked                    (GtkButton       *button,
                                         gpointer         user_data)
 {
-   if (!bits)
-     {
-	bits = ebits_new();
-	ebits_add_to_evas(bits, view_evas);
-	ebits_move(bits, backing_x, backing_y);
-	ebits_resize(bits, backing_w, backing_h);
-	ebits_set_layer(bits, 5);
-	if (!draft_mode)
-	   ebits_show(bits);	
-     }
-
 }
 
 
@@ -724,17 +1055,6 @@ void
 on_new_text_clicked                    (GtkButton       *button,
                                         gpointer         user_data)
 {
-   if (!bits)
-     {
-	bits = ebits_new();
-	ebits_add_to_evas(bits, view_evas);
-	ebits_move(bits, backing_x, backing_y);
-	ebits_resize(bits, backing_w, backing_h);
-	ebits_set_layer(bits, 5);
-	if (!draft_mode)
-	   ebits_show(bits);	
-     }
-
 }
 
 
@@ -774,7 +1094,11 @@ void
 on_prop_apply_clicked                  (GtkButton       *button,
                                         gpointer         user_data)
 {
-
+   update_selection_from_widget();
+   ebits_move(bits, backing_x, backing_y);
+   ebits_resize(bits, backing_w, backing_h);
+   update_visible_selection();
+   gtk_idle_add(view_redraw, NULL);
 }
 
 
