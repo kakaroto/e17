@@ -1,0 +1,17 @@
+Simple:
+=======
+add mouse selection
+handle up / down movement when lower line longer that top one and v/v
+remove all hardcoded values
+
+Medium:
+=======
+when we reach the top / botton line, up / down need special cases
+
+Hard:
+=====
+add copy / paste (clipboard support)
+
+Insane:
+=======
+ambitious? add color coding
