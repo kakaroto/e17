@@ -802,6 +802,35 @@ imlib_render_image_updates_on_drawable(Imlib_Image image,
    __imlib_SetMaxXImageCount(display, 0);
 }
 
+Imlib_Updates 
+imlib_updates_init(void)
+{
+   return (Imlib_Updates)NULL;
+}
+
+Imlib_Updates 
+imlib_updates_append_updates(Imlib_Updates updates,
+			     Imlib_Updates appended_updates)
+{
+   ImlibUpdate *u, *uu;
+
+   u = (ImlibUpdate *)updates;
+   uu = (ImlibUpdate *)appended_updates;
+   if (!uu)
+      return (Imlib_Updates)u;
+   if (!u)
+      return (Imlib_Updates)uu;
+   while(u)
+     {
+	if (!u->next)
+	  {
+	     u->next = uu;
+	     return u;
+	  }
+	u = u->next;
+     }
+}
+
 void 
 imlib_image_flip_horizontal(Imlib_Image image)
 {
