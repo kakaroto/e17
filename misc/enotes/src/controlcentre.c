@@ -50,7 +50,7 @@ setup_cc(void)
 	evas_object_name_set(cc->dragger, "dragger");
 	evas_object_move(cc->dragger, 0, 0);
 	evas_object_resize(cc->dragger, 250, 250);
-	evas_object_layer_set(cc->dragger, 999);
+	evas_object_layer_set(cc->dragger, 0);
 	evas_object_color_set(cc->dragger, 255, 255, 255, 0);
 	esmart_draggies_button_set(cc->dragger, 1);
 	evas_object_show(cc->dragger);
@@ -62,6 +62,7 @@ setup_cc(void)
 	edje_object_file_set(cc->edje, edjefn, CC_PART);
 	free(edjefn);
 	evas_object_move(cc->edje, 0, 0);
+	evas_object_layer_set(cc->edje, 1);
 	evas_object_resize(cc->edje, 250, 250);
 	evas_object_name_set(cc->edje, "edje");
 	evas_object_pass_events_set(cc->edje, 1);

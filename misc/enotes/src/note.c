@@ -75,8 +75,12 @@ setup_note(Evas_List ** note, int width, int height, char *title, char *content)
 	char           *fontpath = malloc(PATH_MAX);
 	char           *edjefn = malloc(PATH_MAX);
 	char           *datestr;
+	char           *fcontent;
 
 	double          edje_w, edje_h;
+
+	/* Fix Newlines in Content */
+	fcontent=fix_newlines (content);
 
 	/* Get the Note from the Evas_List** */
 	pl = *note;
@@ -102,7 +106,7 @@ setup_note(Evas_List ** note, int width, int height, char *title, char *content)
 	evas_object_name_set(p->dragger, "dragger");
 	evas_object_move(p->dragger, 0, 0);
 	evas_object_resize(p->dragger, width, height);
-	evas_object_layer_set(p->dragger, 999);
+	evas_object_layer_set(p->dragger, 0);
 	evas_object_color_set(p->dragger, 255, 255, 255, 0);
 	esmart_draggies_button_set(p->dragger, 1);
 	evas_object_show(p->dragger);
@@ -114,7 +118,7 @@ setup_note(Evas_List ** note, int width, int height, char *title, char *content)
 	edje_object_file_set(p->edje, edjefn, NOTE_PART);
 	evas_object_name_set(p->edje, "edje");
 	evas_object_move(p->edje, 0, 0);
-	evas_object_layer_set(p->edje, 0);
+	evas_object_layer_set(p->edje, 1);
 
 	edje_object_size_max_get(p->edje, &edje_w, &edje_h);
 	ecore_evas_size_max_set(p->win, edje_w, edje_h);
@@ -157,7 +161,7 @@ setup_note(Evas_List ** note, int width, int height, char *title, char *content)
 	ewl_container_append_child((Ewl_Container *) p->vbox, p->title);
 	ewl_widget_show(p->title);
 
-	p->content = ewl_textarea_new(content);
+	p->content = ewl_textarea_new(fcontent);
 	ewl_container_append_child((Ewl_Container *) p->vbox, p->content);
 	ewl_widget_show(p->content);
 
@@ -181,6 +185,8 @@ setup_note(Evas_List ** note, int width, int height, char *title, char *content)
 		free(edjefn);
 	if (fontpath != NULL)
 		free(fontpath);
+	if (fcontent != NULL)
+		free (fcontent);
 
 	return;
 }

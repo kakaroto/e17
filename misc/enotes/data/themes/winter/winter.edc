@@ -39,6 +39,7 @@ collections
 		name, "bg";
 		type, IMAGE;
 		mouse_events, 0;
+		repeat_events, 1;
 		description {
 		    state, "default" 0.0;
 		    visible, 1;
@@ -59,6 +60,7 @@ collections
 		name, "upleft";
 		type, IMAGE;
 		mouse_events, 0;
+		repeat_events, 1;
 		description {
 		    state, "default" 0.0;
 		    visible, 1;
@@ -79,6 +81,7 @@ collections
 		name, "upright";
 		type, IMAGE;
 		mouse_events, 0;
+		repeat_events, 1;
 		description {
 		    state, "default" 0.0;
 		    visible, 1;
@@ -99,6 +102,7 @@ collections
 		name, "up";
 		type, IMAGE;
 		mouse_events, 0;
+		repeat_events, 1;
 		description {
 		    state, "default" 0.0;
 		    visible, 1;
@@ -119,6 +123,7 @@ collections
 		name, "downleft";
 		type, IMAGE;
 		mouse_events, 0;
+		repeat_events, 1;
 		description {
 		    state, "default" 0.0;
 		    visible, 1;
@@ -139,6 +144,7 @@ collections
 		name, "downright";
 		type, IMAGE;
 		mouse_events, 0;
+		repeat_events, 1;
 		description {
 		    state, "default" 0.0;
 		    visible, 1;
@@ -159,6 +165,7 @@ collections
 		name, "down";
 		type, IMAGE;
 		mouse_events, 0;
+		repeat_events, 1;
 		description {
 		    state, "default" 0.0;
 		    visible, 1;
@@ -179,6 +186,7 @@ collections
 		name, "EnotesContainerOut";
 		type, RECT;
 		mouse_events, 0;
+		repeat_events, 0;
 		description {
 		    state, "default" 0.0;
 		    visible, 1;
@@ -196,6 +204,7 @@ collections
 		name, "EnotesContainer";
 		type, RECT;
 		mouse_events, 0;
+		repeat_events, 0;
 		description {
 		    state, "default" 0.0;
 		    visible, 1;
@@ -215,6 +224,7 @@ collections
 		name, "scr_upleft";
 		type, IMAGE;
 		mouse_events, 0;
+		repeat_events, 0;
 		description {
 		    state, "default" 0.0;
 		    visible, 1;
@@ -236,6 +246,7 @@ collections
 		name, "scr_upright";
 		type, IMAGE;
 		mouse_events, 0;
+		repeat_events, 0;
 		description {
 		    state, "default" 0.0;
 		    visible, 1;
@@ -257,6 +268,7 @@ collections
 		name, "scr_up";
 		type, IMAGE;
 		mouse_events, 0;
+		repeat_events, 0;
 		description {
 		    state, "default" 0.0;
 		    visible, 1;
@@ -278,6 +290,7 @@ collections
 		name, "scr_left";
 		type, IMAGE;
 		mouse_events, 0;
+		repeat_events, 0;
 		description {
 		    state, "default" 0.0;
 		    visible, 1;
@@ -299,6 +312,7 @@ collections
 		name, "scr_right";
 		type, IMAGE;
 		mouse_events, 0;
+		repeat_events, 0;
 		description {
 		    state, "default" 0.0;
 		    visible, 1;
@@ -320,6 +334,7 @@ collections
 		name, "scr_downleft";
 		type, IMAGE;
 		mouse_events, 0;
+		repeat_events, 0;
 		description {
 		    state, "default" 0.0;
 		    visible, 1;
@@ -341,6 +356,7 @@ collections
 		name, "scr_downright";
 		type, IMAGE;
 		mouse_events, 0;
+		repeat_events, 0;
 		description {
 		    state, "default" 0.0;
 		    visible, 1;
@@ -362,6 +378,7 @@ collections
 		name, "scr_down";
 		type, IMAGE;
 		mouse_events, 0;
+		repeat_events, 0;
 		description {
 		    state, "default" 0.0;
 		    visible, 1;
@@ -385,6 +402,7 @@ collections
 		name, "EnotesUser";
 		type, TEXT;
 		mouse_events, 0;
+		repeat_events, 1;
 		effect, TXT_EFFECT;
 		description {
 		    state, "default" 0.0;
@@ -412,6 +430,7 @@ collections
 		name, "EnotesDate";
 		type, TEXT;
 		mouse_events, 0;
+		repeat_events, 1;
 		effect, TXT_EFFECT;
 		description {
 		    state, "default" 0.0;
