@@ -63,6 +63,23 @@
 
 /* COPY OPS */
 
+static int   pow_lut_initialized = 0;
+static DATA8 pow_lut[256][256];
+
+static void
+__imlib_build_pow_lut(void)
+{
+   int i, j;
+   
+   if (pow_lut_initialized) return;
+   pow_lut_initialized = 1;
+   for (i = 0; i < 256; i++)
+     {
+	for (j = 0; j < 256; j++)
+	   pow_lut[i][j] = 255 * pow((double)i / 255, (double)j / 255);
+     }
+}
+
 static void
 __imlib_BlendRGBAToRGB(DATA32 *src, int srcw, DATA32 *dst, int dstw, 
 		       int w, int h, ImlibColorModifier *cm)
@@ -82,8 +99,8 @@ __imlib_BlendRGBAToRGBA(DATA32 *src, int srcw, DATA32 *dst, int dstw,
 			int w, int h, ImlibColorModifier *cm)
 {
    LOOP_START_3
-
-   a = 255 * pow((double)A_VAL(p1) / 255, (double)A_VAL(p2) / 255);
+      
+   a = pow_lut[A_VAL(p1)][A_VAL(p2)];
    
    BLEND_COLOR(a, R_VAL(p2), R_VAL(p1), R_VAL(p2));
    BLEND_COLOR(a, G_VAL(p2), G_VAL(p1), G_VAL(p2));
@@ -92,6 +109,7 @@ __imlib_BlendRGBAToRGBA(DATA32 *src, int srcw, DATA32 *dst, int dstw,
    A_VAL(p2) = A_VAL(p2) + ((A_VAL(p1) * (255 - A_VAL(p2))) / 255);
 
    LOOP_END_WITH_INCREMENT
+
 }
 
 static void
@@ -150,7 +168,7 @@ __imlib_AddBlendRGBAToRGBA(DATA32 *src, int srcw, DATA32 *dst, int dstw,
 {
    LOOP_START_3
 
-   a = 255 * pow((double)A_VAL(p1) / 255, (double)A_VAL(p2) / 255);
+   a = pow_lut[A_VAL(p1)][A_VAL(p2)];
 
    ADD_COLOR_WITH_ALPHA(a, R_VAL(p2), R_VAL(p1), R_VAL(p2));
    ADD_COLOR_WITH_ALPHA(a, G_VAL(p2), G_VAL(p1), G_VAL(p2));
@@ -225,7 +243,7 @@ __imlib_SubBlendRGBAToRGBA(DATA32 *src, int srcw, DATA32 *dst, int dstw,
 {
    LOOP_START_3
 
-   a = 255 * pow((double)A_VAL(p1) / 255, (double)A_VAL(p2) / 255);
+   a = pow_lut[A_VAL(p1)][A_VAL(p2)];
 
    SUB_COLOR_WITH_ALPHA(a, R_VAL(p2), R_VAL(p1), R_VAL(p2));
    SUB_COLOR_WITH_ALPHA(a, G_VAL(p2), G_VAL(p1), G_VAL(p2));
@@ -301,7 +319,7 @@ __imlib_ReBlendRGBAToRGBA(DATA32 *src, int srcw, DATA32 *dst, int dstw,
 {
    LOOP_START_3
 
-   a = 255 * pow((double)A_VAL(p1) / 255, (double)A_VAL(p2) / 255);
+   a = pow_lut[A_VAL(p1)][A_VAL(p2)];
 
    RESHADE_COLOR_WITH_ALPHA(a, R_VAL(p2), R_VAL(p1), R_VAL(p2));
    RESHADE_COLOR_WITH_ALPHA(a, G_VAL(p2), G_VAL(p1), G_VAL(p2));
@@ -983,7 +1001,8 @@ __imlib_BlendRGBAToData(DATA32 *src, int src_w, int src_h, DATA32 *dst,
       h = dst_h - dy;   
    if ((w <= 0) || (h <= 0))
       return;
-   
+
+   __imlib_build_pow_lut();
    blender = __imlib_GetBlendFunction(op, blend, merge_alpha, rgb_src, cm);
    if (blender)
       blender(src + (sy * src_w) + sx, src_w, 
