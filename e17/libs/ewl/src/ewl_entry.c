@@ -71,7 +71,6 @@ int ewl_entry_init(Ewl_Entry * e, char *text)
 			    NULL);
 
 	ewl_entry_set_editable(e, TRUE);
-	ewl_widget_push_tab_order(EWL_WIDGET(e));
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
