@@ -25,6 +25,12 @@
 #include <gtk/gtk.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <netdb.h>
+#include <sys/socket.h>
+
 
 #include "options.h"
 #include "config_file.h"
@@ -45,6 +51,12 @@ gtk_signal_connect(GTK_OBJECT(ob), sig, GTK_SIGNAL_FUNC(func), dat);
 #define PROTO_TCP          0
 #define PROTO_TCP_PERSIST  1
 #define PROTO_UDP          2
+
+#define TCP_ADDR_NEXT      "0.0.0.0.next"
+#define TCP_ADDR_CURRENT   "0.0.0.0.current"
+#define TCP_PORT_CURRENT   "0"
+#define TCP_WEIGHT_CURRENT 0
+#define TCP_WEIGHT_DEFAULT 1
 
 typedef struct _tcp TCP;
 typedef struct _tcp2 TCP2;
@@ -83,6 +95,7 @@ void start_transparent_proxy(char *machine);
  */
 void remote_cp(char *machine1, char *file1, char *machine2, char *file2);
 void gui_save_config(void);
+gchar *ip_addr_next(gchar *addr);
 
 /* globals */
 GtkWidget *tcp_list,   *tcp_list2,  *tcp_frame,  *tcp_addr,   *tcp_port, 
@@ -345,7 +358,11 @@ cb_tcp2_unsel(GtkCList *clist, gint row, gint column, GdkEventButton *event,
 void
 cb_add(GtkButton *button, gpointer user_data)
 {
-   add_tcp("127.0.0.1", "80", METHOD_WLC, PROTO_TCP);
+   if (current_tcp)
+      add_tcp(current_tcp->address, current_tcp->port, current_tcp->method,
+         current_tcp->protocol);
+   else
+      add_tcp("127.0.0.11", "80", METHOD_WLC, PROTO_TCP);
 }
 
 void
@@ -359,7 +376,7 @@ void
 cb_add2(GtkButton *button, gpointer user_data)
 {
    if (current_tcp)
-      add_tcp2(current_tcp, "127.0.0.2", "80", 1);
+      add_tcp2(current_tcp,TCP_ADDR_NEXT,TCP_PORT_CURRENT,TCP_WEIGHT_CURRENT);
 }
 
 void
@@ -426,8 +443,8 @@ cb_about(GtkButton *button, gpointer user_data)
    
    win = gtk_window_new(GTK_WINDOW_TOPLEVEL);
    CONNECT(win, "delete_event", cb_close, win);
-   gtk_window_set_wmclass(GTK_WINDOW(win), "LVS-Gui-About", "LVS");
-   gtk_window_set_title(GTK_WINDOW(win), "LVS About");
+   gtk_window_set_wmclass(GTK_WINDOW(win), "IPVS-Gui-About", "IPVS");
+   gtk_window_set_title(GTK_WINDOW(win), "IPVS About");
    gtk_container_border_width(GTK_CONTAINER(win), 2);
    gtk_window_set_policy(GTK_WINDOW(win), 0, 0, 1);
    gtk_widget_set_usize(win, 512, 400);
@@ -465,8 +482,8 @@ cb_config(GtkButton *button, gpointer user_data)
    
    win = gtk_window_new(GTK_WINDOW_TOPLEVEL);
    CONNECT(win, "delete_event", cb_close, win);
-   gtk_window_set_wmclass(GTK_WINDOW(win), "LVS-Gui-Config", "LVS");
-   gtk_window_set_title(GTK_WINDOW(win), "LVS Gui Configuration Options");
+   gtk_window_set_wmclass(GTK_WINDOW(win), "IPVS-Gui-Config", "IPVS");
+   gtk_window_set_title(GTK_WINDOW(win), "IPVS Gui Configuration Options");
    gtk_container_border_width(GTK_CONTAINER(win), 2);
    gtk_window_set_policy(GTK_WINDOW(win), 0, 0, 1);
    
@@ -475,7 +492,7 @@ cb_config(GtkButton *button, gpointer user_data)
    gtk_table_set_row_spacings(GTK_TABLE(table), 4);
    gtk_table_set_col_spacings(GTK_TABLE(table), 4);
 
-   label = gtk_label_new("LVS configuration editor options");
+   label = gtk_label_new("IPVS configuration editor options");
    gtk_table_attach_defaults(GTK_TABLE(table), label, 0, 2, 0, 1);
 
    align = gtk_alignment_new(0.0, 0.5, 0.0, 1.0);
@@ -487,28 +504,28 @@ cb_config(GtkButton *button, gpointer user_data)
 
    align = gtk_alignment_new(0.0, 0.5, 0.0, 1.0);
    gtk_table_attach_defaults(GTK_TABLE(table), align, 0, 1, 2, 3);
-   label = gtk_label_new("Remote LVS config file");
+   label = gtk_label_new("Remote IPVS config file");
    gtk_container_add(GTK_CONTAINER(align), label);
    e2 = entry = gtk_entry_new();
    gtk_table_attach_defaults(GTK_TABLE(table), entry, 1, 2, 2, 3);
 
    align = gtk_alignment_new(0.0, 0.5, 0.0, 1.0);
    gtk_table_attach_defaults(GTK_TABLE(table), align, 0, 1, 3, 4);
-   label = gtk_label_new("Remote LVS init script");
+   label = gtk_label_new("Remote IPVS init script");
    gtk_container_add(GTK_CONTAINER(align), label);
    e3 = entry = gtk_entry_new();
    gtk_table_attach_defaults(GTK_TABLE(table), entry, 1, 2, 3, 4);
 
    align = gtk_alignment_new(0.0, 0.5, 0.0, 1.0);
    gtk_table_attach_defaults(GTK_TABLE(table), align, 0, 1, 4, 5);
-   label = gtk_label_new("Remote LVS transparent proxy config file");
+   label = gtk_label_new("Remote IPVS transparent proxy config file");
    gtk_container_add(GTK_CONTAINER(align), label);
    e4 = entry = gtk_entry_new();
    gtk_table_attach_defaults(GTK_TABLE(table), entry, 1, 2, 4, 5);
 
    align = gtk_alignment_new(0.0, 0.5, 0.0, 1.0);
    gtk_table_attach_defaults(GTK_TABLE(table), align, 0, 1, 5, 6);
-   label = gtk_label_new("Remote LVS transparent proxy init script");
+   label = gtk_label_new("Remote IPVS transparent proxy init script");
    gtk_container_add(GTK_CONTAINER(align), label);
    e5 = entry = gtk_entry_new();
    gtk_table_attach_defaults(GTK_TABLE(table), entry, 1, 2, 5, 6);
@@ -529,7 +546,7 @@ cb_config(GtkButton *button, gpointer user_data)
 
    align = gtk_alignment_new(0.0, 0.5, 0.0, 1.0);
    gtk_table_attach_defaults(GTK_TABLE(table), align, 0, 1, 8, 9);
-   label = gtk_label_new("Remote LVS user");
+   label = gtk_label_new("Remote IPVS user");
    gtk_container_add(GTK_CONTAINER(align), label);
    e8 = entry = gtk_entry_new();
    gtk_table_attach_defaults(GTK_TABLE(table), entry, 1, 2, 8, 9);
@@ -576,7 +593,7 @@ gui_tcp(GtkWidget *win)
    hbox = gtk_vbox_new(FALSE, 2);
    gtk_container_add(GTK_CONTAINER(win), hbox);
    
-   frame = gtk_frame_new("Externally advertised services");
+   frame = gtk_frame_new("Externally advertised services - Floating Addresses");
    gtk_container_border_width(GTK_CONTAINER(frame), 2);
    gtk_box_pack_start(GTK_BOX(hbox), frame, TRUE, TRUE, 2);
    
@@ -680,7 +697,8 @@ gui_tcp(GtkWidget *win)
    
    gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(vport), list);
    
-   tcp_frame = frame = gtk_frame_new("Internal servers for selected external service");
+   tcp_frame = frame = gtk_frame_new(
+      "Internal back end servers for selected advertised service");
    gtk_container_border_width(GTK_CONTAINER(frame), 2);
    gtk_box_pack_start(GTK_BOX(hbox), frame, TRUE, TRUE, 2);
    
@@ -792,8 +810,8 @@ gui(void)
    
    win = gtk_window_new(GTK_WINDOW_TOPLEVEL);
    CONNECT(win, "delete_event", cb_main_close, win);
-   gtk_window_set_wmclass(GTK_WINDOW(win), "LVS-Gui", "LVS");
-   gtk_window_set_title(GTK_WINDOW(win), "LVS Configuration");
+   gtk_window_set_wmclass(GTK_WINDOW(win), "IPVS-Gui", "IPVS");
+   gtk_window_set_title(GTK_WINDOW(win), "IPVS Configuration");
    gtk_container_border_width(GTK_CONTAINER(win), 2);
    gtk_window_set_policy(GTK_WINDOW(win), 1, 1, 1);
    
@@ -963,13 +981,41 @@ void
 add_tcp2(TCP *t, char *addr, char *port, int weight)
 {
    TCP2 *t2;
-   gchar s_weight[32], *s_text[3];
+   TCP2 *last_t2;
+   GList *list_last;
+   gchar *s_text[3];
+   gchar s_weight[32];
    
    t2 = g_malloc(sizeof(TCP2));
    
-   t2->address = g_strdup(addr);
-   t2->port    = g_strdup(port);
-   t2->weight  = weight;
+   if((list_last=g_list_last(t->servers))==NULL)
+      last_t2=NULL;
+   else
+      last_t2=(TCP2 *)list_last->data;
+
+   if(strcmp(addr, TCP_ADDR_NEXT))
+      t2->address = g_strdup(addr);
+   else
+      if(last_t2==NULL)
+         t2->address = ip_addr_next(t->address);
+      else
+         t2->address = ip_addr_next(last_t2->address);
+   if(strcmp(port, TCP_PORT_CURRENT))
+      t2->port    = g_strdup(port);
+   else
+      if(last_t2==NULL)
+         t2->port = g_strdup(t->port);
+      else
+         t2->port = g_strdup(last_t2->port);
+
+   if(weight!=TCP_WEIGHT_CURRENT)
+      t2->weight  = weight;
+   else
+      if(last_t2==NULL)
+         t2->weight = TCP_WEIGHT_DEFAULT;
+      else
+         t2->weight = last_t2->weight;
+
    
    t->servers = g_list_append(t->servers, t2);
    
@@ -1422,10 +1468,29 @@ remote_cp(char *machine1, char *file1, char *machine2, char *file2)
 
 /* Put GTK values into opt struct and write to disk*/
 
-void gui_save_config(void){
+void 
+gui_save_config(void)
+{
    extern options_t opt;
    
    config_file_write(opt.rc_file);
+}
+
+
+/* Return the numerically next IP address*/
+
+gchar *
+ip_addr_next(gchar *addr)
+{
+   struct in_addr in;
+   struct hostent *hp;
+
+   if((hp=gethostbyname(addr))==NULL){
+      return(NULL);
+   }
+   bcopy(hp->h_addr, &in.s_addr, hp->h_length);
+   in.s_addr=htonl(ntohl(in.s_addr)+1);
+   return(g_strdup(inet_ntoa(in)));
 }
 
 
