@@ -180,10 +180,14 @@ create_toplevel (void)
   GtkWidget *class;
   GtkWidget *label11;
   GtkWidget *label12;
-  GtkWidget *label13;
   GtkWidget *type;
   GtkWidget *type_menu;
   GtkWidget *glade_menuitem;
+  GtkWidget *color_class_combo;
+  GList *color_class_combo_items = NULL;
+  GtkWidget *color_class;
+  GtkWidget *label66;
+  GtkWidget *label13;
   GtkWidget *label10;
   GtkWidget *table7;
   GtkObject *border_l_adj;
@@ -1416,7 +1420,7 @@ create_toplevel (void)
   gtk_widget_show (label9);
   gtk_notebook_set_tab_label (GTK_NOTEBOOK (properties), gtk_notebook_get_nth_page (GTK_NOTEBOOK (properties), 4), label9);
 
-  table2 = gtk_table_new (3, 2, FALSE);
+  table2 = gtk_table_new (4, 2, FALSE);
   gtk_widget_ref (table2);
   gtk_object_set_data_full (GTK_OBJECT (toplevel), "table2", table2,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -1496,23 +1500,13 @@ create_toplevel (void)
                     (GtkAttachOptions) (GTK_FILL), 0, 0);
   gtk_misc_set_alignment (GTK_MISC (label12), 7.45058e-09, 0.5);
 
-  label13 = gtk_label_new (_("Type"));
-  gtk_widget_ref (label13);
-  gtk_object_set_data_full (GTK_OBJECT (toplevel), "label13", label13,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (label13);
-  gtk_table_attach (GTK_TABLE (table2), label13, 0, 1, 2, 3,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (GTK_FILL), 0, 0);
-  gtk_misc_set_alignment (GTK_MISC (label13), 7.45058e-09, 0.5);
-
   type = gtk_option_menu_new ();
   gtk_widget_ref (type);
   gtk_object_set_data_full (GTK_OBJECT (toplevel), "type", type,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (type);
-  gtk_table_attach (GTK_TABLE (table2), type, 1, 2, 2, 3,
-                    (GtkAttachOptions) (GTK_FILL),
+  gtk_table_attach (GTK_TABLE (table2), type, 1, 2, 3, 4,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
   type_menu = gtk_menu_new ();
   glade_menuitem = gtk_menu_item_new_with_label (_("Image"));
@@ -1528,6 +1522,72 @@ create_toplevel (void)
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (type_menu), glade_menuitem);
   gtk_option_menu_set_menu (GTK_OPTION_MENU (type), type_menu);
+
+  color_class_combo = gtk_combo_new ();
+  gtk_widget_ref (color_class_combo);
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "color_class_combo", color_class_combo,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (color_class_combo);
+  gtk_table_attach (GTK_TABLE (table2), color_class_combo, 1, 2, 2, 3,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_combo_set_case_sensitive (GTK_COMBO (color_class_combo), TRUE);
+  color_class_combo_items = g_list_append (color_class_combo_items, "");
+  color_class_combo_items = g_list_append (color_class_combo_items, _("Title BG"));
+  color_class_combo_items = g_list_append (color_class_combo_items, _("Title FG"));
+  color_class_combo_items = g_list_append (color_class_combo_items, _("Border BG"));
+  color_class_combo_items = g_list_append (color_class_combo_items, _("Border FG"));
+  color_class_combo_items = g_list_append (color_class_combo_items, _("Border Button BG"));
+  color_class_combo_items = g_list_append (color_class_combo_items, _("Border Button FG"));
+  color_class_combo_items = g_list_append (color_class_combo_items, _("Button BG"));
+  color_class_combo_items = g_list_append (color_class_combo_items, _("Button FG"));
+  color_class_combo_items = g_list_append (color_class_combo_items, _("Pointer BG"));
+  color_class_combo_items = g_list_append (color_class_combo_items, _("Pointer FG"));
+  color_class_combo_items = g_list_append (color_class_combo_items, _("Background BG"));
+  color_class_combo_items = g_list_append (color_class_combo_items, _("Background FG"));
+  color_class_combo_items = g_list_append (color_class_combo_items, _("Selected BG"));
+  color_class_combo_items = g_list_append (color_class_combo_items, _("Selected FG"));
+  color_class_combo_items = g_list_append (color_class_combo_items, _("Sticky BG"));
+  color_class_combo_items = g_list_append (color_class_combo_items, _("Sticky FG"));
+  color_class_combo_items = g_list_append (color_class_combo_items, _("Disabled BG"));
+  color_class_combo_items = g_list_append (color_class_combo_items, _("Disabled FG"));
+  color_class_combo_items = g_list_append (color_class_combo_items, _("List BG"));
+  color_class_combo_items = g_list_append (color_class_combo_items, _("List FG"));
+  color_class_combo_items = g_list_append (color_class_combo_items, _("Menu BG"));
+  color_class_combo_items = g_list_append (color_class_combo_items, _("Menu FG"));
+  color_class_combo_items = g_list_append (color_class_combo_items, _("Viewport BG"));
+  color_class_combo_items = g_list_append (color_class_combo_items, _("Viewport FG"));
+  color_class_combo_items = g_list_append (color_class_combo_items, _("Base BG"));
+  color_class_combo_items = g_list_append (color_class_combo_items, _("Base FG"));
+  color_class_combo_items = g_list_append (color_class_combo_items, _("Gadget BG"));
+  color_class_combo_items = g_list_append (color_class_combo_items, _("Gadget FG"));
+  gtk_combo_set_popdown_strings (GTK_COMBO (color_class_combo), color_class_combo_items);
+  g_list_free (color_class_combo_items);
+
+  color_class = GTK_COMBO (color_class_combo)->entry;
+  gtk_widget_ref (color_class);
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "color_class", color_class,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (color_class);
+
+  label66 = gtk_label_new (_("Color Class"));
+  gtk_widget_ref (label66);
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "label66", label66,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (label66);
+  gtk_table_attach (GTK_TABLE (table2), label66, 0, 1, 2, 3,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+
+  label13 = gtk_label_new (_("Type"));
+  gtk_widget_ref (label13);
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "label13", label13,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (label13);
+  gtk_table_attach (GTK_TABLE (table2), label13, 0, 1, 3, 4,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_misc_set_alignment (GTK_MISC (label13), 7.45058e-09, 0.5);
 
   label10 = gtk_label_new (_("Properties"));
   gtk_widget_ref (label10);
@@ -2265,7 +2325,7 @@ create_render_method (void)
   GtkWidget *dialog_action_area1;
   GtkWidget *hbuttonbox2;
   GtkWidget *software;
-  GtkWidget *_d_hardware;
+  GtkWidget *_3d_hardware;
 
   render_method = gtk_dialog_new ();
   gtk_object_set_data (GTK_OBJECT (render_method), "render_method", render_method);
@@ -2317,18 +2377,18 @@ create_render_method (void)
   gtk_container_add (GTK_CONTAINER (hbuttonbox2), software);
   GTK_WIDGET_SET_FLAGS (software, GTK_CAN_DEFAULT);
 
-  _d_hardware = gtk_button_new_with_label (_("3D Hardware"));
-  gtk_widget_ref (_d_hardware);
-  gtk_object_set_data_full (GTK_OBJECT (render_method), "_d_hardware", _d_hardware,
+  _3d_hardware = gtk_button_new_with_label (_("3D Hardware"));
+  gtk_widget_ref (_3d_hardware);
+  gtk_object_set_data_full (GTK_OBJECT (render_method), "_3d_hardware", _3d_hardware,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (_d_hardware);
-  gtk_container_add (GTK_CONTAINER (hbuttonbox2), _d_hardware);
-  GTK_WIDGET_SET_FLAGS (_d_hardware, GTK_CAN_DEFAULT);
+  gtk_widget_show (_3d_hardware);
+  gtk_container_add (GTK_CONTAINER (hbuttonbox2), _3d_hardware);
+  GTK_WIDGET_SET_FLAGS (_3d_hardware, GTK_CAN_DEFAULT);
 
   gtk_signal_connect (GTK_OBJECT (software), "clicked",
                       GTK_SIGNAL_FUNC (on_software_clicked),
                       NULL);
-  gtk_signal_connect (GTK_OBJECT (_d_hardware), "clicked",
+  gtk_signal_connect (GTK_OBJECT (_3d_hardware), "clicked",
                       GTK_SIGNAL_FUNC (on_3d_hardware_clicked),
                       NULL);
 

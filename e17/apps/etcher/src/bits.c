@@ -504,6 +504,8 @@ _ebits_find_description(char *file)
 	     bit->name = e_db_str_get(db, key);
 	     snprintf(key, sizeof(key), "/bits/bit/%i/class", i);
 	     bit->class = e_db_str_get(db, key);
+	     snprintf(key, sizeof(key), "/bits/bit/%i/color_class", i);
+	     bit->color_class = e_db_str_get(db, key);
 	     snprintf(key, sizeof(key), "/bits/bit/%i/normal/image", i);
 	     bit->normal.image = e_db_str_get(db, key);
 	     snprintf(key, sizeof(key), "/bits/bit/%i/hilited/image", i);
@@ -680,6 +682,7 @@ ebits_del_bit(Ebits_Object o, Ebits_Object_Bit_State state)
      }
    if (state->description->name) free(state->description->name);
    if (state->description->class) free(state->description->class);
+   if (state->description->color_class) free(state->description->color_class);
    if (state->description->normal.image) free(state->description->normal.image);
    if (state->description->hilited.image) free(state->description->hilited.image);
    if (state->description->clicked.image) free(state->description->clicked.image);
@@ -840,6 +843,7 @@ void ebits_free(Ebits_Object o)
 		  bit = l->data;
 		  if (bit->name) free(bit->name);
 		  if (bit->class) free(bit->class);
+		  if (bit->color_class) free(bit->color_class);
 		  if (bit->normal.image) free(bit->normal.image);
 		  if (bit->hilited.image) free(bit->hilited.image);
 		  if (bit->clicked.image) free(bit->clicked.image);
@@ -1140,6 +1144,8 @@ void ebits_save(Ebits_Object o, char *file)
 	if (bit->name) e_db_str_set(db, key, bit->name);
 	snprintf(key, sizeof(key), "/bits/bit/%i/class", i);
 	if (bit->class) e_db_str_set(db, key, bit->class);
+	snprintf(key, sizeof(key), "/bits/bit/%i/color_class", i);
+	if (bit->color_class) e_db_str_set(db, key, bit->color_class);
 	snprintf(key, sizeof(key), "/bits/bit/%i/normal/image", i);
 	if (bit->normal.image) e_db_str_set(db, key, bit->normal.image);
 	snprintf(key, sizeof(key), "/bits/bit/%i/hilited/image", i);

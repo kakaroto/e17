@@ -182,6 +182,7 @@ update_selection_from_widget(void)
 	
 	GET_ENTRY("name", name);
 	GET_ENTRY("class", class);
+	GET_ENTRY("color_class", color_class);
 	GET_ENTRY("img_normal", normal.image);
 	GET_ENTRY("img_hilited", hilited.image);
 	GET_ENTRY("img_clicked", clicked.image);
@@ -344,6 +345,7 @@ update_widget_from_selection(void)
 	
 	SET_ENTRY("name", name);
 	SET_ENTRY("class", class);
+	SET_ENTRY("color_class", color_class);
 	SET_ENTRY("img_normal", normal.image);
 	SET_ENTRY("img_hilited", hilited.image);
 	SET_ENTRY("img_clicked", clicked.image);

@@ -60,6 +60,7 @@ struct _Ebits_Object_Bit_Description
 {
    char *name;
    char *class;
+   char *color_class;
    struct {
       char *image;
    } normal, hilited, clicked, disabled;
