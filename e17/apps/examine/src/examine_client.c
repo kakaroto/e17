@@ -396,7 +396,7 @@ examine_client_get_val(char *key)
 void
 examine_client_get_val_cb(void)
 {
-  char           *ret, *key, *end, *tmp;
+  char           *ret, *key, *end, *tmp, *bugfix;
   int             tmpi;
   float           tmpd;
   examine_prop   *prop;
@@ -444,8 +444,12 @@ examine_client_get_val_cb(void)
     ewl_container_child_iterate_begin(EWL_CONTAINER(prop->w));
     while (sibling = ewl_container_next_child(EWL_CONTAINER(prop->w))) {
       sibling = EWL_WIDGET(EWL_CONTAINER(sibling)->redirect);
-      if (!strcmp(EWL_TEXT(sibling)->text, ret)) 
+      bugfix = ewl_text_text_get(EWL_TEXT(sibling));
+      if (strcmp(EWL_TEXT(sibling)->text, ret)) 
+        ewl_text_color_set(EWL_TEXT(sibling), 0, 0, 0, 0xFF);
+      else
         ewl_text_color_set(EWL_TEXT(sibling), 0xFF, 0, 0, 0xFF);
+      ewl_text_text_set(EWL_TEXT(sibling), bugfix);
     }
     break;
   default:                     /* PT_STR, PT_RGB */

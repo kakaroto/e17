@@ -173,7 +173,7 @@ void
 cb_choose_theme(Ewl_Widget * w, void *ev_data, void *user_data)
 {
   examine_prop   *change;
-  char           *theme, *ext;
+  char           *theme, *ext, *bugfix;
   Ewl_Widget     *sibling;
 
   change = (examine_prop *) user_data;
@@ -183,9 +183,12 @@ cb_choose_theme(Ewl_Widget * w, void *ev_data, void *user_data)
   ewl_container_child_iterate_begin(EWL_CONTAINER(w->parent));
   while (sibling = ewl_container_next_child(EWL_CONTAINER(w->parent))) {
     sibling = EWL_WIDGET(EWL_CONTAINER(sibling)->redirect);
+    bugfix = ewl_text_text_get(EWL_TEXT(sibling));
     if (strcmp(EWL_TEXT(sibling)->text, theme))
       ewl_text_color_set(EWL_TEXT(sibling), 0, 0, 0, 0xFF);
-    ewl_text_color_set(EWL_TEXT(sibling), 0xFF, 0, 0, 0xFF);
+    else
+      ewl_text_color_set(EWL_TEXT(sibling), 0xFF, 0, 0, 0xFF);
+    ewl_text_text_set(EWL_TEXT(sibling), bugfix);
   }
 
   if (change->value.ptr)
