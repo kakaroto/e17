@@ -49,12 +49,14 @@ EMode               Mode;
 Window              init_win_ext = None;
 #endif
 
-static void         ESetSavePrefix(const char *path);
 static void         ECheckEprog(const char *name);
 static void         EDirUserSet(const char *dir);
+static void         EConfNameSet(const char *dir);
 static void         EDirUserCacheSet(const char *dir);
 static void         EDirsSetup(void);
+static void         ESetSavePrefix(const char *path);
 static void         RunInitPrograms(void);
+static const char  *EConfName(void);
 
 int
 main(int argc, char **argv)
@@ -81,14 +83,15 @@ main(int argc, char **argv)
    if (str)
       Mode.wm.coredump = 1;
 
-#if 0				/* No! */
    str = getenv("ECONFDIR");
    if (str)
       EDirUserSet(str);
+   str = getenv("ECONFNAME");
+   if (str)
+      EConfNameSet(str);
    str = getenv("ECACHEDIR");
    if (str)
       EDirUserCacheSet(str);
-#endif
 
    /* Set up the internal data lists used to find everything */
    ListsInit(LIST_TYPE_COUNT);
@@ -142,9 +145,10 @@ main(int argc, char **argv)
 	  {
 	     SetSMID(argv[++i]);
 	  }
-	else if ((!strcmp("-smfile", argv[i])) && (argc - i > 1))
+	else if ((!strcmp("-p", argv[i]) || !strcmp("--config-prefix", argv[i]))
+		 && (argc - i > 1))
 	  {
-	     ESetSavePrefix(argv[++i]);
+	     EConfNameSet(argv[++i]);
 	  }
 #ifdef USE_EXT_INIT_WIN
 	else if ((!strcmp("-ext_init_win", argv[i])) && (argc - i > 1))
@@ -168,8 +172,8 @@ main(int argc, char **argv)
 		    "\t-ecachedir /path/to/cached/dir\n"
 		    "\t-econfdir /path/to/config/dir\n"
 		    "\t-ext_init_win window_id\n"
+		    "\t[-p | --config-prefix] config_file_prefix\n"
 		    "\t[-s | -single]\n"
-		    "\t-smfile file\n"
 		    "\t[-smid | -clientId | --sm-client-id] id\n"
 		    "\t[-t | -theme] theme\n"
 		    "\t[-v | -verbose]\n"
@@ -222,9 +226,10 @@ main(int argc, char **argv)
    Esetenv("EVERSION", ENLIGHTENMENT_VERSION, 1);
    Esetenv("EROOT", EDirRoot(), 1);
    Esetenv("EBIN", EDirBin(), 1);
-   Esetenv("ETHEME", Mode.theme.path, 1);
    Esetenv("ECONFDIR", EDirUser(), 1);
+   Esetenv("ECONFNAME", EConfName(), 1);
    Esetenv("ECACHEDIR", EDirUserCache(), 1);
+   Esetenv("ETHEME", Mode.theme.path, 1);
 
    /* Unmap the clients */
    MapUnmap(0);
@@ -388,6 +393,7 @@ EExit(int exitcode)
 }
 
 static char        *userDir = NULL;
+static char        *userConf = NULL;
 static char        *cacheDir = NULL;
 
 const char         *
@@ -400,6 +406,26 @@ const char         *
 EDirRoot(void)
 {
    return ENLIGHTENMENT_ROOT;
+}
+
+static void
+EConfNameSet(const char *name)
+{
+   if (userConf)
+      Efree(userConf);
+   userConf = Estrdup(name);
+}
+
+static const char  *
+EConfNameDefault(void)
+{
+   return "e_config";
+}
+
+static const char  *
+EConfName(void)
+{
+   return (userConf) ? userConf : EConfNameDefault();
 }
 
 static void
@@ -538,10 +564,14 @@ default_save_prefix(void)
    if (def_prefix)
       return def_prefix;
 
-   if (Mode.wm.window)
-      Esnprintf(buf, sizeof(buf), "%s/e_config-window", EDirUser());
+   if (userConf)
+      Esnprintf(buf, sizeof(buf), "%s/%s-%d", EDirUser(), EConfName(),
+		VRoot.scr);
+   else if (Mode.wm.window)
+      Esnprintf(buf, sizeof(buf), "%s/%s-window", EDirUser(),
+		EConfNameDefault());
    else
-      Esnprintf(buf, sizeof(buf), "%s/e_config-%s", EDirUser(),
+      Esnprintf(buf, sizeof(buf), "%s/%s-%s", EDirUser(), EConfNameDefault(),
 		Mode.display.name);
    def_prefix = Estrdup(buf);
 
@@ -582,7 +612,7 @@ EGetSavePrefixCommon(void)
    if (pfx)
       return pfx;
 
-   Esnprintf(buf, sizeof(buf), "%s/e_config", EDirUser());
+   Esnprintf(buf, sizeof(buf), "%s/%s", EDirUser(), EConfName());
    pfx = Estrdup(buf);
 
    return pfx;
