@@ -85,8 +85,9 @@ struct __geist_object
    geist_object *(*duplicate) (geist_object * obj);
    unsigned char (*part_is_transparent) (geist_object * obj, int x, int y);
    void (*resize_event) (geist_object * obj, int x, int y);
-   void (*display_props) (geist_object * obj);
+   GtkWidget *(*display_props) (geist_object * obj);
    int props_active;
+   GtkWidget *props_window;
 };
 
 /* allocation functions */
@@ -133,13 +134,15 @@ void geist_object_resize(geist_object * obj, int x, int y);
 void geist_object_int_resize(geist_object * obj, int x, int y);
 void geist_object_resize_object(geist_object * obj, int x, int y);
 
-void geist_object_int_display_props(geist_object * obj);
+GtkWidget *geist_object_int_display_props(geist_object * obj);
 void geist_object_display_props(geist_object * obj);
 void geist_object_dirty_selection(geist_object * obj);
 void geist_object_dirty(geist_object * obj);
-GtkWidget *geist_object_generic_properties(geist_object *obj);
+
+void geist_object_generic_properties(geist_object *obj);
 void geist_object_update_sizemode(geist_object *obj);
 void geist_object_update_alignment(geist_object *obj);
+
 
 
 #define geist_object_set_state(o, s) (o->state |=  s)

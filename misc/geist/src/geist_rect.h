@@ -29,6 +29,6 @@ unsigned char geist_text_part_is_transparent(geist_object * obj, int x,
 
                                              int y);
 void geist_rect_resize(geist_object * obj, int x, int y);
-void geist_rect_display_props(geist_object * obj);
+GtkWidget *geist_rect_display_props(geist_object * obj);
 
 #endif

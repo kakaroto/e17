@@ -37,7 +37,7 @@ Imlib_Image geist_text_create_image(geist_text * txt, int *w, int *h);
 Imlib_Image geist_text_get_rendered_image(geist_object * obj);
 geist_object *geist_text_duplicate(geist_object * obj);
 void geist_text_resize(geist_object * obj, int x, int y);
-void geist_text_display_props (geist_object *obj);
+GtkWidget* geist_text_display_props (geist_object *obj);
 void geist_text_update_image(geist_text * txt);
 int geist_text_change_font(geist_text * txt, char *fontname, int fontsize);
 

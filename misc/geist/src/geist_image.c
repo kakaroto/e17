@@ -2,10 +2,12 @@
 #include "geist_imlib.h"
 #include "geist_image.h"
 
-static gboolean geist_image_props_ok_cb(GtkWidget * widget, gpointer * data);
-static gboolean delete_event_cb (GtkWidget *wdiget, GdkEvent *event, gpointer
-		*data);
-
+typedef struct _cb_data cb_data;
+struct _cb_data 
+{
+	geist_object *obj;
+	GtkWidget *dialog;
+};
 
 geist_object *
 geist_image_new(void)
@@ -276,25 +278,6 @@ geist_image_resize(geist_object * obj, int x, int y)
    D_RETURN_(5);
 }
 
-static gboolean
-geist_image_props_ok_cb(GtkWidget * widget, gpointer * data)
-{
-   geist_object *obj = ((cb_data *)data)->obj;
-   obj ->props_active = 0;
-   gtk_widget_destroy((GtkWidget *) (((cb_data*)data)->dialog));
-   efree(data);
-   return TRUE;
-}
-
-static gboolean
-delete_event_cb (GtkWidget *wdiget, GdkEvent *event, gpointer *data)
-{
-   geist_object *obj = ((cb_data *)data)->obj;
-   obj ->props_active = 0;
-   gtk_widget_destroy((GtkWidget *) (((cb_data*)data)->dialog));
-   efree(data);
-   return TRUE;
-}
 
 static gboolean
 obj_load_cb(GtkWidget * widget, gpointer data)
@@ -351,37 +334,23 @@ geist_image_select_file_cb(GtkWidget *widget, gpointer *data)
    return TRUE;
 }
 
-void
+
+GtkWidget *
 geist_image_display_props(geist_object *obj)
 {
   char *buf;
-  GtkWidget *generic;
   GtkWidget *image_props;
   GtkWidget *table;
   GtkWidget *sel_file_btn;
   GtkWidget *file_entry;
   GtkWidget *antialias_checkb;
-  GtkWidget *ok_btn;
-  cb_data *props_data = emalloc(sizeof(cb_data));
   
+  image_props = gtk_hbox_new(FALSE, 0);
   
-  image_props = gtk_window_new (GTK_WINDOW_TOPLEVEL); 
-  
-  props_data->obj = obj;
-  props_data->dialog = (gpointer) image_props;
-  
-  
-
   table = gtk_table_new ( 4, 2, FALSE);
   gtk_widget_show (table);
   gtk_container_add (GTK_CONTAINER (image_props), table);
   gtk_container_set_border_width (GTK_CONTAINER (image_props), 5);
-  
-  /*Import the generic part of the props dialog*/
-  generic = geist_object_generic_properties(obj);
-  gtk_table_attach(GTK_TABLE(table), generic, 0, 2, 0, 1,GTK_FILL | GTK_EXPAND, 0 ,
-		  2, 2);
-  gtk_widget_show(generic);
   
   sel_file_btn = gtk_button_new_with_label ("Change file");
   gtk_table_attach(GTK_TABLE(table), sel_file_btn, 0, 1, 1 , 2, GTK_FILL | GTK_EXPAND, 0, 2, 2); 
@@ -398,28 +367,14 @@ geist_image_display_props(geist_object *obj)
   gtk_widget_show (antialias_checkb);
   gtk_container_set_border_width (GTK_CONTAINER (antialias_checkb), 10);
 
-  ok_btn = gtk_button_new_with_label("Ok");
   
-  gtk_widget_show (ok_btn);
-  gtk_table_attach (GTK_TABLE (table), ok_btn, 1, 2, 4, 5, GTK_FILL | GTK_EXPAND, 0, 0, 0);
-
-  
-
   buf = (char *) geist_imlib_image_get_filename (geist_object_get_rendered_image(obj));
   gtk_entry_set_text (GTK_ENTRY(file_entry), buf);
   
-  
-  gtk_signal_connect(GTK_OBJECT(ok_btn), "clicked",
-		  			 GTK_SIGNAL_FUNC(geist_image_props_ok_cb), (gpointer)
-		  			props_data);
-  
-  gtk_signal_connect(GTK_OBJECT(image_props), "delete_event",
-                      GTK_SIGNAL_FUNC(delete_event_cb), (gpointer)props_data);
 
   gtk_signal_connect(GTK_OBJECT(sel_file_btn), "clicked",
 		  			 GTK_SIGNAL_FUNC(geist_image_select_file_cb), (gpointer) obj);
   
   
-  gtk_window_set_title (GTK_WINDOW (image_props),buf );
-  gtk_widget_show(image_props);
+  return(image_props);
 }

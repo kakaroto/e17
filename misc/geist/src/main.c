@@ -647,7 +647,11 @@ gboolean obj_del_cb(GtkWidget * widget, gpointer * data)
       obj = GEIST_OBJECT(l->data);
       gtk_signal_handler_block(GTK_OBJECT(obj_list), obj_sel_handler);
       gtk_signal_handler_block(GTK_OBJECT(obj_list), obj_unsel_handler);
-      gtk_clist_remove(GTK_CLIST(obj_list),
+      
+	  if (obj->props_active)
+		  gtk_widget_destroy(obj->props_window);
+	  
+	  gtk_clist_remove(GTK_CLIST(obj_list),
                        gtk_clist_find_row_from_data(GTK_CLIST(obj_list),
                                                     obj));
       gtk_signal_handler_unblock(GTK_OBJECT(obj_list), obj_sel_handler);
