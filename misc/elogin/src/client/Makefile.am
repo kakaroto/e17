@@ -21,5 +21,4 @@ elogin_LDADD = \
 	@evas_libs@ \
 	@ebg_libs@ \
 	@edb_libs@ \
-	@ecore_libs@
-
+	@ecore_libs@ 

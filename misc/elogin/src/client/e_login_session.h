@@ -38,4 +38,7 @@ void e_login_session_init(E_Login_Session e);
 int e_login_session_auth_user(E_Login_Session e);
 void e_login_session_reset_user(E_Login_Session e);
 
+#define X_TESTING 0             /* set to 1 if you wanna run inside a window
+                                   in X */
+
 #endif

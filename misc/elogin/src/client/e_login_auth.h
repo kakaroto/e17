@@ -31,12 +31,15 @@ struct _E_Login_Auth
 };
 typedef struct _E_Login_Auth *E_Login_Auth;
 
-/* 0 on success, 1 on failure */
 E_Login_Auth e_login_auth_new(void);
 void e_login_auth_free(E_Login_Auth e);
+
+/* 0 on success, 1 on failure */
 int e_login_auth_cmp(E_Login_Auth e);
 void e_login_auth_set_pass(E_Login_Auth e, char *str);
-void e_login_auth_set_user(E_Login_Auth e, char *str);
+
+/* 0 on success, 1 on no user by that name */
+int e_login_auth_set_user(E_Login_Auth e, char *str);
 void e_login_auth_setup_environment(E_Login_Auth e);
 
 #endif

@@ -41,5 +41,5 @@ main(int argc, char *argv[])
    setup();
 
    ecore_event_loop();
-   return(0);
+   return (0);
 }

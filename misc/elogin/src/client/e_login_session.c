@@ -16,7 +16,7 @@ e_login_session_new(void)
 
    e->auth = e_login_auth_new();
 
-   return(e);
+   return (e);
 }
 
 void
@@ -25,21 +25,16 @@ e_login_session_init(E_Login_Session e)
    Window win, ewin;
    Evas evas;
 
-#if 1
-   ecore_window_get_geometry(ecore_window_root(), NULL, NULL, &e->geom.w,
-                             &e->geom.h);
-   win = ecore_window_root();
-
-#endif
-
-#if 0	/* for testing in X */
-
+#if X_TESTING
    win = ecore_window_new(0, 0, 0, 640, 480);
    ecore_window_set_events(win, XEV_CONFIGURE | XEV_PROPERTY);
    ecore_window_set_name_class(win, "Elogin Test", "Main");
    e->geom.w = 640;
    e->geom.h = 480;
-
+#else
+   ecore_window_get_geometry(ecore_window_root(), NULL, NULL, &e->geom.w,
+                             &e->geom.h);
+   win = ecore_window_root();
 #endif
 
    ecore_window_move(win, 0, 0);
@@ -70,7 +65,6 @@ e_login_session_init(E_Login_Session e)
    e_bg_set_layer(e->bg, 0);
    e_bg_show(e->bg);
 
-   e_bg_callback_add(e->bg, CALLBACK_MOUSE_DOWN, elogin_bg_mouse_down, e);
    intro_init(e);
 }
 

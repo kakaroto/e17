@@ -39,6 +39,9 @@ _e_login_auth_pam_conv(int num_msg, const struct pam_message **msg,
    return (PAM_SUCCESS);
 }
 
+/* e_login_auth_new
+ * Returns a 0'd out E_Login_Auth Struct
+ */
 E_Login_Auth
 e_login_auth_new(void)
 {
@@ -52,6 +55,9 @@ e_login_auth_new(void)
    return (e);
 }
 
+/* e_login_auth_free
+ * @e the E_Login_Auth struct to be freed
+ */
 void
 e_login_auth_free(E_Login_Auth e)
 {
@@ -66,6 +72,11 @@ e_login_auth_free(E_Login_Auth e)
    free(e);
 }
 
+/*
+ * e_login_auth_cmp - attempt to auth the user
+ * @e The E_Login_Auth struct to attempt to validate on the system
+ * Returns - 0 on success, 1 on error
+ */
 int
 e_login_auth_cmp(E_Login_Auth e)
 {
@@ -102,24 +113,42 @@ e_login_auth_set_pass(E_Login_Auth e, char *str)
       snprintf(e->pass, PATH_MAX, "%s", str);
 }
 
-void
+/*
+ * e_login_auth_set_user - set the username in the struct
+ * @e - the E_Login_Auth to set the user of
+ * @str - a string to set the user to, NULL is fine
+ * Returns - 0 on success, 1 on failure(User not in system)
+ * Check to see if the user exists on the system, if they do, e->user is set
+ * to the passed in string, if they don't, e->user is unmodified.
+ */
+int
 e_login_auth_set_user(E_Login_Auth e, char *str)
 {
+   int result = 0;
+
    if (str)
    {
       snprintf(e->user, PATH_MAX, "%s", str);
-      if (e->pam.pw)            /* should i be freeing here ? */
+      if (e->pam.pw)
       {
+         free(e->pam.pw);
+         e->pam.pw = NULL;
       }
-      e->pam.pw = getpwnam(e->user);
-      endpwent();
-      if (!e->pam.pw)
+      if ((e->pam.pw = getpwnam(e->user)))
+         endpwent();
+      else
       {
-         fprintf(stderr, "Unknown user(%s) to this system\n", e->user);
+         result = 1;
       }
    }
+   return (result);
 }
 
+/*
+ * e_login_auth_setup_environment - setup the users environment
+ * @e the E_Login_Auth to setup
+ * I'm not sure if this is correct, but for now it works.
+ */
 void
 e_login_auth_setup_environment(E_Login_Auth e)
 {
@@ -144,18 +173,19 @@ e_login_auth_setup_environment(E_Login_Auth e)
 }
 
 #if 0
+/* test */
+#define LOOPTEST 0
+
 int
 main(int argc, char *argv[])
 {
    E_Login_Auth e;
-   char *user = "foo";
-   char *pass = "";
    int i;
 
    if (argc < 3)
       exit();
 
-#if 0
+#if LOOPTEST
    for (i = 0; i < 60; i++)
    {
 #endif
@@ -173,7 +203,7 @@ main(int argc, char *argv[])
          printf("Compare was not a success\n");
       }
       e_login_auth_free(e);
-#if 0
+#if LOOPTEST
    }
 #endif
    return (0);

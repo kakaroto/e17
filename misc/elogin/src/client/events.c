@@ -2,9 +2,11 @@
 #include "callbacks.h"
 #include <limits.h>
 
+#define USER_PASS_MAX 32
+
 static struct
 {
-   char buf[PATH_MAX];
+   char buf[USER_PASS_MAX];
    int index;
 }
 typebuffer;
@@ -101,19 +103,31 @@ e_key_down(Ecore_Event * ev)
 
    e = ev->event;
 
-   if (typebuffer.index >= PATH_MAX)
-      return;
 
 #if 0
    fprintf(stderr, "typebuffer.index is %d\n", typebuffer.index);
    fprintf(stderr, "e->key is %s\n", e->key);
    fprintf(stderr, "e->compose is %s\n", e->compose);
 #endif
+
    if (e->key)
    {
-      int length = strlen(e->key);
+      int length = 0;
 
-      if (length > 1)
+      length = strlen(e->key);
+      if (e->mods & ECORE_EVENT_KEY_MODIFIER_CTRL)
+      {
+         switch (*e->key)
+         {
+           case 'u':           /* clear the buffer */
+              memset(&typebuffer.buf, 0, USER_PASS_MAX);
+              typebuffer.index = 0;
+              break;
+           default:
+              break;
+         }
+      }
+      else if (length > 1)
       {
          if (!(strcmp(e->key, "BackSpace")))
          {
@@ -126,43 +140,28 @@ e_key_down(Ecore_Event * ev)
          {
             password_or_user =
                elogin_return_key_cb(e_session, typebuffer.buf);
-            memset(&typebuffer.buf, 0, PATH_MAX);
+            memset(&typebuffer.buf, 0, USER_PASS_MAX);
             typebuffer.index = 0;
          }
+
+         if (typebuffer.index >= USER_PASS_MAX)
+            return;
          else if (!(strcmp(e->key, "space")))
          {
             typebuffer.buf[typebuffer.index++] = ' ';
          }
-         else
-         {
-            fprintf(stderr, "Unknown key down %s\n", e->key);
-         }
       }
       else
       {
-         if (e->mods & ECORE_EVENT_KEY_MODIFIER_CTRL)
-         {
-            switch (*e->key)
-            {
-              case 'u':        /* clear the buffer */
-                 memset(&typebuffer.buf, 0, PATH_MAX);
-                 typebuffer.index = 0;
-                 break;
-              case 'q':
-                 exit(0);
-              default:
-                 typebuffer.buf[typebuffer.index++] = *e->key;
-                 break;
-            }
-         }
-         else
-         {
-            typebuffer.buf[typebuffer.index++] = *e->key;
-         }
+         if (typebuffer.index >= USER_PASS_MAX)
+            return;
+         typebuffer.buf[typebuffer.index++] = *e->key;
       }
    }
    else
    {
+      if (typebuffer.index >= USER_PASS_MAX)
+         return;
       typebuffer.buf[typebuffer.index++] = *e->compose;
    }
    set_text_entry_text(password_or_user, typebuffer.buf);
