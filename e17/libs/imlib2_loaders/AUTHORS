@@ -2,3 +2,5 @@
 XCF loader: Christian Kreibich <cK@whoop.org>, based on
             code from the Gimp (www.gimp.org).
 
+DB loader: The rasterman <raster@rasterman.com>, packaged by
+           Tom Gilbert <tom@linuxbrit.co.uk>

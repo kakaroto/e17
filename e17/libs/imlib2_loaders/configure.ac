@@ -1,6 +1,7 @@
 dnl Process this file with autoconf to create configure.
 
-AC_INIT(src/loader_xcf.c)
+AC_INIT
+AC_CONFIG_SRCDIR([src/loader_xcf.c])
 AM_INIT_AUTOMAKE(imlib2_loaders, 0.0.1)
 AM_CONFIG_HEADER(config.h)
 
@@ -46,9 +47,10 @@ AM_CONDITIONAL(EDB_LOADER, test "$edb_ok" = yes)
 
 AC_SUBST(EDBLIBS)
 
-AC_OUTPUT([
+AC_CONFIG_FILES([
 Makefile
 src/Makefile
 debian/Makefile
 imlib2_loaders.spec
 ])
+AC_OUTPUT

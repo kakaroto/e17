@@ -13,7 +13,7 @@ Source: ftp://ftp.enlightenment.org/enlightenment/e17/libs/%{name}-%{ver}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-root
 Packager: Mark Bainter <mark-e@cymry.org>
 URL: http://www.rasterman.com/raster/imlib.html
-Requires: imlib2
+Requires: imlib2 edb
 Prefix: %{prefix}
 
 %description
@@ -30,10 +30,6 @@ distributed with Imlib2 directly.
 if [ -f configure ]; then
    ./configure --prefix=%{prefix}
 else
-  # can't build as root? gah. ;)
-  sed <autogen.sh 's@$USER@ANNOYING@' >autogen.sh1
-  mv -f autogen.sh1 autogen.sh
-  chmod 0700 autogen.sh
   ./autogen.sh --prefix=%{prefix}
 fi
 
@@ -59,6 +55,8 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{prefix}/lib/loaders/image/*
 
 %changelog
+* Sun Aug 21 2001 Tom Gilbert <tom@linuxbrit.co.uk>
+- Added db loader.
 * Wed Jul 04 2001 Mark Bainter <mark-e@cymry.org>
 - Corrected ftp location.
 * Wed Jun 28 2001 Mark Bainter <mark-e@cymry.org>

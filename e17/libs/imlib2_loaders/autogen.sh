@@ -1,10 +1,5 @@
 #! /bin/sh
 
-if [ "$USER" = "root" ]; then
-  echo "You cannot do this as "$USER" please use a normal user account"
-  exit
-fi
-
 echo
 echo 
 echo "NOTE:"
@@ -19,7 +14,6 @@ THEDIR="`pwd`"
 cd "$srcdir"
 DIE=0
 
-set -x
 autoheader
 libtoolize --ltdl --force --copy
 aclocal
