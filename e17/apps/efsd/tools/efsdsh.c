@@ -78,47 +78,47 @@ void handle_efsd_event(EfsdEvent *ee)
     case EFSD_EVENT_FILECHANGE:
       switch (ee->efsd_filechange_event.changetype)
 	{
-	case EFSD_CHANGE_CHANGED:
+	case EFSD_FILE_CHANGED:
 	  printf("Filechange event for cmd %i: %s changed.\n", 
 		 ee->efsd_filechange_event.id,
 		 ee->efsd_filechange_event.file);
 	  break;
-	case EFSD_CHANGE_DELETED:
+	case EFSD_FILE_DELETED:
 	  printf("Filechange event for cmd %i: %s deleted.\n",
 		 ee->efsd_filechange_event.id,
 		 ee->efsd_filechange_event.file);
 	  break;
-	case EFSD_CHANGE_START_EXEC:
+	case EFSD_FILE_START_EXEC:
 	  printf("Filechange event for cmd %i: %s started.\n",
 		 ee->efsd_filechange_event.id,
 		 ee->efsd_filechange_event.file);
 	  break;
-	case EFSD_CHANGE_STOP_EXEC:
+	case EFSD_FILE_STOP_EXEC:
 	  printf("Filechange event for cmd %i: %s stopped.\n",
 		 ee->efsd_filechange_event.id,
 		 ee->efsd_filechange_event.file);
 	  break;
-	case EFSD_CHANGE_CREATED:
+	case EFSD_FILE_CREATED:
 	  printf("Filechange event for cmd %i: %s created.\n",
 		 ee->efsd_filechange_event.id,
 		 ee->efsd_filechange_event.file);
 	  break;
-	case EFSD_CHANGE_MOVED:
+	case EFSD_FILE_MOVED:
 	  printf("Filechange event for cmd %i: %s moved.\n",
 		 ee->efsd_filechange_event.id,
 		 ee->efsd_filechange_event.file);
 	  break;
-	case EFSD_CHANGE_ACKNOWLEDGE:
+	case EFSD_FILE_ACKNOWLEDGE:
 	  printf("Filechange event for cmd %i: %s acked.\n",
 		 ee->efsd_filechange_event.id,
 		 ee->efsd_filechange_event.file);
 	  break;
-	case EFSD_CHANGE_EXISTS:
+	case EFSD_FILE_EXISTS:
 	  printf("Filechange event for cmd %i: %s exists.\n",
 		 ee->efsd_filechange_event.id,
 		 ee->efsd_filechange_event.file);
 	  break;
-	case EFSD_CHANGE_END_EXISTS:
+	case EFSD_FILE_END_EXISTS:
 	  printf("Filechange event for cmd %i: %s end exists.\n",
 		 ee->efsd_filechange_event.id,
 		 ee->efsd_filechange_event.file);
@@ -537,7 +537,7 @@ command_line(EfsdConnection *ec)
 	  else if (!strcmp(tok, "ls") || !strcmp(tok, "mon_dir") || !strcmp(tok, "mon_file"))
 	    {
 	      char mon_file = 0, mon_dir = 0,  show_all = 0, get_type = 0;
-	      char get_stat = 0, get_lstat = 0, get_meta = 0;
+	      char get_stat = 0, get_lstat = 0, get_meta = 0, sort = 0;
 	      char *meta_key = NULL, *meta_type = NULL;
 	      EfsdDatatype meta_datatype = 0;
 
@@ -567,6 +567,11 @@ command_line(EfsdConnection *ec)
 		    {
 		      num_options++;
 		      get_type = 1;
+		    }
+		  else if (!strcmp(tok, "-sort"))
+		    {
+		      num_options++;
+		      sort = 1;
 		    }
 		  else if (!strcmp(tok, "-m"))
 		    {
@@ -598,11 +603,12 @@ command_line(EfsdConnection *ec)
 			{
 			  ops = efsd_ops_create(num_options);
 
-			  if (show_all)  efsd_ops_add(ops, efsd_op_all());
+			  if (show_all)  efsd_ops_add(ops, efsd_op_list_all());
 			  if (get_stat)  efsd_ops_add(ops, efsd_op_get_stat());
 			  if (get_lstat) efsd_ops_add(ops, efsd_op_get_lstat());
 			  if (get_type)  efsd_ops_add(ops, efsd_op_get_filetype());
 			  if (get_meta)  efsd_ops_add(ops, efsd_op_get_metadata(meta_key, meta_datatype));
+			  if (sort)      efsd_ops_add(ops, efsd_op_sort());
 			}
 
 		      if (mon_dir)
