@@ -31,7 +31,10 @@ char *get_element (char **buffer, char *type)
 		goto err_clean_c;
 
 	/* Move to the end of the found opening tag. */
-	start_tmp += size - 2;
+	start_tmp = strchr(start_tmp, '>');
+	if (!start_tmp)
+		goto err_clean_c;
+	start_tmp++;
 
 	/* Locate the closing tag of the specified type. */
 	snprintf (c, size, "</%s>", type);
