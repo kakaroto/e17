@@ -4433,6 +4433,9 @@ IPC_Debug(const char *params, Client * c __UNUSED__)
    int                 l;
    const char         *p;
 
+   if (!params)
+      return;
+
    p = params;
    l = 0;
    sscanf(p, "%1000s %n", param, &l);
