@@ -1,8 +1,27 @@
-2005-07-25 Ibukun Olumuyiwa <ibukun@computer.org>
+2003-10-24 Ibukun Olumuyiwa <ibukun@computer.org>
+	* src/daemon/spawner.c: Rewrite complete, spawner
+    now works fairly reliably
+	* configure.in: Changed ecore checks, added check for
+	OpenGL engine support
+
+2003-10-22 Corey Donohoe <atmos@atmos.org>
+	* src/client: Support for user faces added
+
+2003-10-21 Corey Donohoe <atmos@atmos.org>
+	* src/client: Implement new session management method
+	with config ability
+
+2003-10-19 Ibukun Olumuyiwa <ibukun@computer.org>
+	* src/client: OpenGL engine support added
+
+2003-10-14 Carsten Haitzler <raster@rasterman.com>
+	* data/themes/default: New default theme
+
+2003-07-25 Ibukun Olumuyiwa <ibukun@computer.org>
 	* src/daemon/spawner.c: Attempt to fix race
 	conditions in process signaling
 
-2005-07-24 Corey Donohoe <atmos@atmos.org>
+2003-07-24 Corey Donohoe <atmos@atmos.org>
 	* src/client: Port UI to Edje, new default theme
 	created
 
