@@ -31,11 +31,6 @@ setup_cc(void)
 	ecore_evas_shaped_set(cc->win, 1);
 	ecore_evas_show(cc->win);
 
-	/* Ecore Callbacks */
-	ecore_evas_callback_resize_set(cc->win, cc_resize);
-	ecore_evas_callback_destroy_set(cc->win, cc_close);
-	ecore_evas_callback_delete_request_set(cc->win, cc_close);
-
 	/* Setup the Canvas, Render-Method and Font Path */
 	cc->evas = ecore_evas_get(cc->win);
 	evas_output_method_set(cc->evas,
@@ -49,7 +44,6 @@ setup_cc(void)
 	cc->dragger = esmart_draggies_new(cc->win);
 	evas_object_name_set(cc->dragger, "dragger");
 	evas_object_move(cc->dragger, 0, 0);
-	evas_object_resize(cc->dragger, 250, 250);
 	evas_object_layer_set(cc->dragger, 0);
 	evas_object_color_set(cc->dragger, 255, 255, 255, 0);
 	esmart_draggies_button_set(cc->dragger, 1);
@@ -63,7 +57,6 @@ setup_cc(void)
 	free(edjefn);
 	evas_object_move(cc->edje, 0, 0);
 	evas_object_layer_set(cc->edje, 1);
-	evas_object_resize(cc->edje, 250, 250);
 	evas_object_name_set(cc->edje, "edje");
 	evas_object_pass_events_set(cc->edje, 1);
 	evas_object_show(cc->edje);
@@ -74,6 +67,13 @@ setup_cc(void)
 	edje_object_size_min_get(cc->edje, &edje_w, &edje_h);
 	ecore_evas_size_min_set(cc->win, edje_w, edje_h);
 	ecore_evas_resize(cc->win, (int) edje_w, (int) edje_h);
+	evas_object_resize(cc->edje, edje_w, edje_h);
+	evas_object_resize(cc->dragger, edje_w, edje_h);
+
+	/* Ecore Callbacks */
+	ecore_evas_callback_resize_set(cc->win, cc_resize);
+	ecore_evas_callback_destroy_set(cc->win, cc_close);
+	ecore_evas_callback_delete_request_set(cc->win, cc_close);
 
 	/* Edje Callbacks */
 	edje_object_signal_callback_add(cc->edje,

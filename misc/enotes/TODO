@@ -18,9 +18,8 @@ I'm liking this! :)
 
     FEATURES:
 
-Pull content and title for all "new notes" from a file rather than the defined values. 
-Optional change of location for note storage to a http based (post/get) method.
+Optional change of location for note storage to a ftp based location.
+
+    MAYBE's:
+
 Investigate the "timing" of a note, as an alert.
-Option for automatic saving of all open notes on exit and loading on startup (us
-e separate storage file for this, always local).
-Add an option to disable the control centre, but make sure the IPC supports the closing of enotes before you do this!
