@@ -83,6 +83,7 @@ main (int argc, char *argv[])
 	     bl->size.h = 1.0;
 	     bl->fill.w = 1.0;
 	     bl->fill.h = 1.0;
+	     bl->inlined = 1;
 	     background->layers = evas_list_append(background->layers, bl);
 	     bl->obj = evas_add_image_from_file(evas, bl->file);
 	     display_layer(bl);
