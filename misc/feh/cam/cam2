@@ -30,7 +30,7 @@ sub add {
 
 usage unless @ARGV;
 GetOptions('help|?|h'                   => \$opt{help},
-           'full-scree|f|giblets-mom|g' => \$opt{fullscreen},
+           'full-screen|f|giblets-mom|g' => \$opt{fullscreen},
 		   'list|l'                     => \$opt{list},
 		   'verbose|v'                  => \$opt{verbose},
 		   'add|a'                      => \$opt{add},
