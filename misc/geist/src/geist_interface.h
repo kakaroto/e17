@@ -42,10 +42,17 @@ geist_gtk_new_document_page(geist_document *doc);
 void nbook_switch_page_cb(GtkNotebook * notebook, GtkNotebookPage * page,
                      guint page_num);
 
-void geist_display_props_window(void);
-void geist_hide_props_window(void);
 void geist_update_props_window(void);
-void geist_clear_props_window(void);
+
+void geist_display_obj_props_window(void);
+void geist_hide_obj_props_window(void);
+void geist_update_obj_props_window(void);
+void geist_clear_obj_props_window(void);
+
+void geist_display_document_props_window(void);
+void geist_hide_document_props_window(void);
+void geist_update_document_props_window(void);
+void geist_clear_document_props_window(void);
 
 extern char *object_types[];
 extern char *object_sizemodes[];

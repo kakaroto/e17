@@ -12,13 +12,22 @@
 
 GtkWidget *mainwin;
 geist_document *current_doc;
-GtkWidget *props_window, *obj_hbox;
+GtkWidget *statusbar;
+
+int obj_props_active = 0;
+int doc_props_active = 0;
+
+/*doc props widgets*/
+GtkWidget *doc_props_window;
+GtkWidget *doc_hbox;
+GtkWidget *doc_name;
+GtkWidget *doc_file_name;
+GtkWidget *cr, *cg, *cb, *ca;
+
+/*generic obj props widgets*/
+GtkWidget *obj_props_window, *obj_hbox;
 GtkWidget *gen_props;
 GtkWidget *table;
-GtkWidget *statusbar;
-int props_active = 0;
-
-/*generic props widgets*/
 GtkWidget *name;
 GtkWidget *sizemode_combo;
 GtkWidget *alignment_combo;
@@ -28,6 +37,8 @@ void refresh_name_cb(GtkWidget * widget, gpointer * obj);
 void refresh_sizemode_cb(GtkWidget * widget, gpointer * obj);
 void refresh_alignment_cb(GtkWidget * widget, gpointer * obj);
 void geist_update_statusbar(geist_document * doc);
+void geist_update_document_props_window(void);
+void geist_update_obj_props_window(void);
 
 typedef struct _geist_confirmation_dialog_data {
 	GtkWidget *dialog;
@@ -120,6 +131,15 @@ geist_create_main_window(void)
    menuitem =
       geist_gtk_create_menuitem(menu, "text...", "", "Add Text",
                                 (GtkFunction) obj_addtext_cb, NULL);
+	
+	menu = geist_gtk_create_submenu(menubar, "Dialogs");
+
+   menuitem =
+      geist_gtk_create_menuitem(menu, "show object properties", "", "Show object
+			properties",(GtkFunction) geist_display_obj_props_window, NULL);
+   menuitem =
+      geist_gtk_create_menuitem(menu, "show document properties", "", "Show
+			document properties",(GtkFunction)geist_display_document_props_window, NULL);
 
    nbook = gtk_notebook_new();
    gtk_notebook_set_tab_pos(GTK_NOTEBOOK(nbook), GTK_POS_BOTTOM);
@@ -196,7 +216,8 @@ nbook_switch_page_cb(GtkNotebook * notebook, GtkNotebookPage * page,
    D_ENTER(3);
 
    current_doc = GEIST_DOCUMENT((geist_list_nth(doc_list, page_num))->data);
-   geist_clear_props_window();
+   geist_clear_obj_props_window();
+	geist_update_document_props_window();
    geist_clear_statusbar();
    geist_document_reset_object_list(current_doc);
 
@@ -429,7 +450,7 @@ gint evbox_buttonpress_cb(GtkWidget * widget, GdkEventButton * event,
       {
          geist_document_unselect_all(doc);
          geist_clear_statusbar();
-         geist_clear_props_window();
+         geist_clear_obj_props_window();
          geist_document_render_updates(doc);
          D_RETURN(5, 1);
       }
@@ -724,8 +745,8 @@ obj_del_cb(GtkWidget * widget, gpointer * data)
       gtk_signal_handler_block(GTK_OBJECT(obj_list), obj_sel_handler);
       gtk_signal_handler_block(GTK_OBJECT(obj_list), obj_unsel_handler);
 
-      if (props_active)
-         geist_clear_props_window();
+      if (obj_props_active)
+         geist_clear_obj_props_window();
 
       geist_clear_statusbar();
 
@@ -876,18 +897,6 @@ menu_cb(GtkWidget * widget, gpointer * data)
 
    D_RETURN(3, TRUE);
 }
-
-static gboolean
-props_delete_event_cb(GtkWidget * widget, GdkEvent * event, gpointer * data)
-{
-   D_ENTER(3);
-   gtk_widget_destroy(props_window);
-   props_active = 0;
-
-   D_RETURN(3, TRUE);
-}
-
-
 
 
 static void
@@ -1059,7 +1068,7 @@ buttons_cb(GtkWidget * widget, gpointer * data)
 }
 
 void
-geist_display_props_window(void)
+geist_display_obj_props_window(void)
 {
    GtkWidget *gen_table, *name_l;
    GtkWidget *sizemode_l;
@@ -1072,14 +1081,14 @@ geist_display_props_window(void)
    int i;
 
    D_ENTER(3);
-   props_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+   obj_props_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
    table = gtk_table_new(2, 4, FALSE);
 
-   gtk_container_set_border_width(GTK_CONTAINER(props_window), 5);
-   gtk_container_add(GTK_CONTAINER(props_window), table);
+   gtk_container_set_border_width(GTK_CONTAINER(obj_props_window), 5);
+   gtk_container_add(GTK_CONTAINER(obj_props_window), table);
 
-   gtk_signal_connect(GTK_OBJECT(props_window), "delete_event",
-                      GTK_SIGNAL_FUNC(props_delete_event_cb), NULL);
+   gtk_signal_connect(GTK_OBJECT(obj_props_window), "delete_event",
+                      GTK_SIGNAL_FUNC(geist_hide_obj_props_window), NULL);
 
    gen_props = gtk_hbox_new(FALSE, 0);
    gtk_table_attach(GTK_TABLE(table), gen_props, 0, 4, 0, 1,
@@ -1213,38 +1222,56 @@ geist_display_props_window(void)
                       "changed", GTK_SIGNAL_FUNC(refresh_alignment_cb), NULL);
    gtk_signal_connect(GTK_OBJECT(GTK_COMBO(sizemode_combo)->entry), "changed",
                       GTK_SIGNAL_FUNC(refresh_sizemode_cb), NULL);
-
-
+	
    gtk_widget_show(gen_table);
    gtk_widget_show(gen_props);
    gtk_widget_show(table);
-   gtk_widget_show(props_window);
+   gtk_widget_show(obj_props_window);
+	
+	obj_props_active = 1;
+	geist_update_obj_props_window();
+
    D_RETURN_(3);
 }
 
 void
-geist_hide_props_window(void)
+geist_hide_obj_props_window(void)
 {
    D_ENTER(3);
-   gtk_widget_destroy(props_window);
-   props_active = 0;
+   if (obj_props_active) 
+	{
+		gtk_widget_destroy(obj_props_window);
+   	obj_props_active = 0;
+	}
    D_RETURN_(3);
 }
 
 void
-geist_clear_props_window(void)
+geist_clear_obj_props_window(void)
 {
-   if (obj_hbox)
-   {
-      gtk_widget_destroy(obj_hbox);
-      obj_hbox = NULL;
-   }
-   if (gen_props)
-      gtk_widget_hide(gen_props);
+   if (obj_props_active)
+	{
+		if (obj_hbox)
+   	{
+     		gtk_widget_destroy(obj_hbox);
+      	obj_hbox = NULL;
+   	}
+   	if (gen_props)
+      	gtk_widget_hide(gen_props);
+	}
 }
 
 void
 geist_update_props_window(void)
+{
+	D_ENTER(3);
+	geist_update_obj_props_window();
+	D_RETURN_(3);
+}
+			
+
+void
+geist_update_obj_props_window(void)
 {
    geist_object *obj;
    GtkWidget *new_hbox;
@@ -1256,13 +1283,9 @@ geist_update_props_window(void)
 
    D_ENTER(3);
 
-   /*display props window if inactive */
-   if (!props_active)
-   {
-      geist_display_props_window();
-      props_active = 1;
-   }
-
+   /*only do something if the props window is there*/
+   if (obj_props_active)
+{	      
    if (obj_hbox)
    {
       gtk_widget_destroy(obj_hbox);
@@ -1323,7 +1346,7 @@ geist_update_props_window(void)
 
 
          gtk_window_set_title(GTK_WINDOW(obj_win), "[multiple selection]");
-         gtk_window_set_title(GTK_WINDOW(props_window),
+         gtk_window_set_title(GTK_WINDOW(obj_props_window),
                               "[multiple selection]");
 
       }
@@ -1353,7 +1376,7 @@ geist_update_props_window(void)
 
          gtk_widget_show(new_hbox);
          gtk_window_set_title(GTK_WINDOW(obj_win), obj->name);
-         gtk_window_set_title(GTK_WINDOW(props_window), obj->name);
+         gtk_window_set_title(GTK_WINDOW(obj_props_window), obj->name);
       }
 
    }
@@ -1368,8 +1391,232 @@ geist_update_props_window(void)
    gtk_signal_handler_unblock_by_func(GTK_OBJECT
                                       (GTK_COMBO(sizemode_combo)->entry),
                                       refresh_sizemode_cb, NULL);
-
+}
    D_RETURN_(3);
+}
+
+void
+refresh_doc_name_cb(GtkWidget * widget, gpointer * data)
+{
+   D_ENTER(3);
+	
+	efree(current_doc->name);
+	current_doc->name = estrdup(gtk_entry_get_text(GTK_ENTRY(widget)));
+	
+   D_RETURN_(3);
+}
+
+void
+refresh_doc_file_name_cb(GtkWidget * widget, gpointer * data)
+{
+	D_ENTER(3);
+	
+	efree(current_doc->filename);
+	current_doc->filename = estrdup(gtk_entry_get_text(GTK_ENTRY(widget)));
+	
+   D_RETURN_(3);
+}
+
+static void
+refresh_bg_cb(GtkWidget * widget, gpointer * data)
+{
+
+	switch (GPOINTER_TO_INT(data))
+	{
+		case 1:
+			current_doc->bg_fill->r = gtk_spin_button_get_value_as_int
+													(GTK_SPIN_BUTTON(widget));
+			break;
+		case 2:
+			current_doc->bg_fill->g = gtk_spin_button_get_value_as_int
+													(GTK_SPIN_BUTTON(widget));
+			break;
+		case 3:
+			current_doc->bg_fill->b = gtk_spin_button_get_value_as_int
+													(GTK_SPIN_BUTTON(widget));
+			break;
+		case 4:
+				current_doc->bg_fill->a = gtk_spin_button_get_value_as_int
+													(GTK_SPIN_BUTTON(widget));
+			break;
+		default:
+			break;
+	}				
+						
+   geist_document_render_full(current_doc, 1);
+}
+
+
+void
+geist_display_document_props_window(void)
+{
+	GtkWidget *table, *frame, *hbox;
+	GtkWidget *name_l, *file_name_l;
+	GtkWidget *cr_l, *cg_l, *cb_l, *ca_l;
+	GtkAdjustment *a1, *a2, *a3, *a4;
+
+	D_ENTER(3);
+	
+	doc_props_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	
+	doc_hbox = gtk_hbox_new(FALSE, 0);
+   gtk_container_add(GTK_CONTAINER(doc_props_window), doc_hbox);
+	
+   table = gtk_table_new(4, 4, FALSE);
+
+   gtk_container_set_border_width(GTK_CONTAINER(doc_props_window), 5);
+   gtk_container_add(GTK_CONTAINER(doc_hbox), table);
+
+	name_l = gtk_label_new("Name:");
+   gtk_table_attach(GTK_TABLE(table), name_l, 0, 1, 0, 1,
+                    GTK_FILL | GTK_EXPAND, 0, 2, 2);
+	gtk_widget_show(name_l);
+	doc_name = gtk_entry_new();
+	gtk_table_attach(GTK_TABLE(table), doc_name, 1, 4, 0, 1,
+                    GTK_FILL | GTK_EXPAND, 0, 2, 2);
+	gtk_widget_show(doc_name);
+	
+	file_name_l = gtk_label_new("Filename:");
+   gtk_table_attach(GTK_TABLE(table), file_name_l, 0, 1, 1, 2,
+                    GTK_FILL | GTK_EXPAND, 0, 2, 2);
+	gtk_widget_show(file_name_l);
+	
+	doc_file_name = gtk_entry_new();
+	gtk_table_attach(GTK_TABLE(table), doc_file_name, 1, 4, 1, 2,
+                    GTK_FILL | GTK_EXPAND, 0, 2, 2);
+	gtk_widget_show(doc_file_name);
+	
+	
+   a1 = (GtkAdjustment *) gtk_adjustment_new(0, 0, 255, 1, 2, 3);
+   a2 = (GtkAdjustment *) gtk_adjustment_new(0, 0, 255, 1, 2, 3);
+   a3 = (GtkAdjustment *) gtk_adjustment_new(0, 0, 255, 1, 2, 3);
+   a4 = (GtkAdjustment *) gtk_adjustment_new(0, 0, 255, 1, 2, 3);
+	
+	frame = gtk_frame_new("Background Colour");
+	hbox = gtk_hbox_new(FALSE, 0);
+	gtk_container_set_border_width(GTK_CONTAINER(hbox), 2);
+   gtk_container_add(GTK_CONTAINER (frame), hbox);
+	gtk_widget_show(frame);
+
+   cr_l = gtk_label_new("R:");
+   gtk_misc_set_alignment(GTK_MISC(cr_l), 1.0, 0.5);
+   gtk_box_pack_start(GTK_BOX(hbox), cr_l, TRUE, FALSE, 2);
+   gtk_widget_show(cr_l);
+
+   cr = gtk_spin_button_new(GTK_ADJUSTMENT(a1), 1, 0);
+   gtk_box_pack_start(GTK_BOX(hbox), cr, TRUE, FALSE, 2);
+   gtk_widget_show(cr);
+
+
+   cg_l = gtk_label_new("G:");
+   gtk_misc_set_alignment(GTK_MISC(cg_l), 1.0, 0.5);
+   gtk_box_pack_start(GTK_BOX(hbox), cg_l, TRUE, FALSE, 2);
+   gtk_widget_show(cg_l);
+
+   cg = gtk_spin_button_new(GTK_ADJUSTMENT(a2), 1, 0);
+   gtk_box_pack_start(GTK_BOX(hbox), cg, TRUE, FALSE, 2);
+   gtk_widget_show(cg);
+
+
+   cb_l = gtk_label_new("B:");
+   gtk_misc_set_alignment(GTK_MISC(cb_l), 1.0, 0.5);
+   gtk_box_pack_start(GTK_BOX(hbox), cb_l, TRUE, FALSE, 2);
+   gtk_widget_show(cb_l);
+
+   cb = gtk_spin_button_new(GTK_ADJUSTMENT(a3), 1, 0);
+   gtk_box_pack_start(GTK_BOX(hbox), cb, TRUE, FALSE, 2);
+   gtk_widget_show(cb);
+
+
+   ca_l = gtk_label_new("A:");
+   gtk_misc_set_alignment(GTK_MISC(ca_l), 1.0, 0.5);
+   gtk_box_pack_start(GTK_BOX(hbox), ca_l, TRUE, FALSE, 2);
+   gtk_widget_show(ca_l);
+
+   ca = gtk_spin_button_new(GTK_ADJUSTMENT(a4), 1, 0);
+   gtk_box_pack_start(GTK_BOX(hbox), ca, TRUE, FALSE, 2);
+   gtk_widget_show(ca);
+
+   gtk_table_attach(GTK_TABLE(table), frame, 0, 4, 2, 3, GTK_FILL | GTK_EXPAND,
+                    0, 2, 2);
+   gtk_widget_show(hbox);
+
+		
+	gtk_signal_connect(GTK_OBJECT(doc_props_window), "delete_event",
+                      GTK_SIGNAL_FUNC(geist_hide_document_props_window), NULL);
+	
+	gtk_signal_connect(GTK_OBJECT(doc_name), "changed",
+                      GTK_SIGNAL_FUNC(refresh_doc_name_cb), NULL);
+	gtk_signal_connect(GTK_OBJECT(doc_file_name), "changed",
+                      GTK_SIGNAL_FUNC(refresh_doc_file_name_cb), NULL);
+	
+	gtk_signal_connect(GTK_OBJECT(cr), "changed",
+                      GTK_SIGNAL_FUNC(refresh_bg_cb), (gpointer) 1);
+   gtk_signal_connect(GTK_OBJECT(cg), "changed",
+                      GTK_SIGNAL_FUNC(refresh_bg_cb), (gpointer) 2);
+   gtk_signal_connect(GTK_OBJECT(cb), "changed",
+                      GTK_SIGNAL_FUNC(refresh_bg_cb), (gpointer) 3);
+   gtk_signal_connect(GTK_OBJECT(ca), "changed",
+                      GTK_SIGNAL_FUNC(refresh_bg_cb), (gpointer) 4);
+
+	
+	
+	gtk_widget_show(table);
+	gtk_widget_show(doc_hbox);
+	gtk_widget_show(doc_props_window);
+	
+	doc_props_active=1;
+	geist_update_document_props_window();
+	D_RETURN_(3);
+}
+
+void
+geist_clear_document_props_window(void)
+{
+	D_ENTER(3);
+	if (doc_props_active)
+		gtk_widget_hide(doc_hbox);
+	D_RETURN_(3);
+}
+
+void
+geist_update_document_props_window(void)
+{
+	D_ENTER(3);
+	if (doc_props_active)
+	{
+		gtk_signal_handler_block_by_func(GTK_OBJECT(doc_name), 
+				refresh_doc_name_cb, NULL);
+		gtk_signal_handler_block_by_func(GTK_OBJECT(doc_file_name),
+				refresh_doc_file_name_cb, NULL);
+		
+		if (current_doc->name)
+            gtk_entry_set_text(GTK_ENTRY(doc_name), current_doc->name);
+
+		if (current_doc->filename)
+            gtk_entry_set_text(GTK_ENTRY(doc_file_name), current_doc->filename);
+		
+		gtk_spin_button_set_value(GTK_SPIN_BUTTON(cr), current_doc->bg_fill->r);
+	   gtk_spin_button_set_value(GTK_SPIN_BUTTON(cg), current_doc->bg_fill->g);
+   	gtk_spin_button_set_value(GTK_SPIN_BUTTON(cb), current_doc->bg_fill->b);
+   	gtk_spin_button_set_value(GTK_SPIN_BUTTON(ca), current_doc->bg_fill->a);
+		
+		gtk_signal_handler_unblock_by_func(GTK_OBJECT(doc_name), 
+				refresh_doc_name_cb, NULL);
+		gtk_signal_handler_unblock_by_func(GTK_OBJECT(doc_file_name),
+				refresh_doc_file_name_cb, NULL);
+	}
+	
+	D_RETURN_(3);
+}
+
+void
+geist_hide_document_props_window(void)
+{
+	D_ENTER(3);
+	gtk_widget_destroy(doc_props_window);
+	doc_props_active = 0;
+	D_RETURN_(3);
 }
 
 
