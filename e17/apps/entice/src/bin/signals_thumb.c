@@ -1,6 +1,6 @@
 #include "signals_thumb.h"
 #include <limits.h>
-#include <Esmart/E_Thumb.h>
+#include <Esmart/Esmart_Thumb.h>
 #include "entice.h"
 
 /** _entice_thumb_load_cb - when a EnticeThumbLoad signal is emitted
@@ -45,7 +45,7 @@ void
 hookup_entice_thumb_signals(Evas_Object * o, Evas_Object * im)
 {
    int i, count;
-   E_Thumb *thumb = NULL;
+   Esmart_Thumb *thumb = NULL;
    char *signals[] = { "entice,thumb,preview", "entice,thumb,load" };
    void (*funcs[]) (void *data, Evas_Object * obj, const char *emission,
                     const char *source) =
@@ -54,6 +54,6 @@ hookup_entice_thumb_signals(Evas_Object * o, Evas_Object * im)
    count = sizeof(signals) / sizeof(char *);
    for (i = 0; i < count; i++)
       edje_object_signal_callback_add(o, signals[i], "", funcs[i], im);
-   if ((thumb = (E_Thumb *) evas_object_smart_data_get(im)))
+   if ((thumb = (Esmart_Thumb *) evas_object_smart_data_get(im)))
       evas_object_pass_events_set(thumb->image, 1);
 }

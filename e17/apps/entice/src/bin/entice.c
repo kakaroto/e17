@@ -9,9 +9,9 @@
 #include <stdlib.h>
 #include <limits.h>
 #include <Esmart/container.h>
-#include <Esmart/E_Thumb.h>
+#include <Esmart/Esmart_Thumb.h>
 #include <Esmart/Esmart_Trans.h>
-#include <Esmart/dragable.h>
+#include <Esmart/Esmart_Draggies.h>
 #include <Epsilon.h>
 #include <string.h>
 #include <sys/types.h>
@@ -307,10 +307,10 @@ _entice_thumb_load(void *_data, Evas * _e, Evas_Object * _o, void *_ev)
       char buf[PATH_MAX];
 
       if ((entice->current) && entice_image_file_get(entice->current)
-          && !strcmp(e_thumb_file_get(o),
+          && !strcmp(esmart_thumb_file_get(o),
                      entice_image_file_get(entice->current)))
          return;
-      e_thumb_freshen(o);
+      esmart_thumb_freshen(o);
 
       if (entice_image_file_get(entice->current)
           && (thumb_edje =
@@ -321,16 +321,17 @@ _entice_thumb_load(void *_data, Evas * _e, Evas_Object * _o, void *_ev)
       edje_object_signal_emit(entice->edje, "entice,image,display,before",
                               "");
 
-      tmp = e_thumb_evas_object_get(o);
+      tmp = esmart_thumb_evas_object_get(o);
       if ((new_current = entice_image_new(tmp)))
       {
-         entice_image_file_set(new_current, e_thumb_file_get(o));
-         entice_image_format_set(new_current, e_thumb_format_get(o));
+         entice_image_file_set(new_current, esmart_thumb_file_get(o));
+         entice_image_format_set(new_current, esmart_thumb_format_get(o));
          entice_image_save_quality_set(new_current,
                                        entice_config_image_quality_get());
 
          new_scroller =
-            e_thumb_new(evas_object_evas_get(o), e_thumb_file_get(o));
+            esmart_thumb_new(evas_object_evas_get(o),
+                             esmart_thumb_file_get(o));
          edje_object_part_geometry_get(entice->edje, "entice.image", NULL,
                                        NULL, &w, &h);
          evas_object_resize(new_current, w, h);
@@ -371,20 +372,20 @@ _entice_thumb_load(void *_data, Evas * _e, Evas_Object * _o, void *_ev)
          entice->scroller = new_scroller;
 
          /* Set the text descriptions for this image */
-         e_thumb_geometry_get(o, &iw, &ih);
+         esmart_thumb_geometry_get(o, &iw, &ih);
          snprintf(buf, PATH_MAX, "%d x %d", iw, ih);
          edje_object_part_text_set(entice->edje,
                                    "entice.image.current.dimensions", buf);
          edje_object_part_text_set(entice->edje,
                                    "entice.image.current.filename.full",
-                                   e_thumb_file_get(o));
-         if ((tmpstr = strrchr(e_thumb_file_get(o), '/')))
+                                   esmart_thumb_file_get(o));
+         if ((tmpstr = strrchr(esmart_thumb_file_get(o), '/')))
             edje_object_part_text_set(entice->edje,
                                       "entice.image.current.filename.short",
                                       tmpstr + 1);
          /* FIXME: Support FileSize also */
 
-         snprintf(buf, PATH_MAX, "Entice: %s", e_thumb_file_get(o));
+         snprintf(buf, PATH_MAX, "Entice: %s", esmart_thumb_file_get(o));
          ecore_evas_title_set(entice->ee, buf);
 
          entice->thumb.current =
@@ -428,7 +429,7 @@ entice_file_add(const char *file)
       snprintf(buf, PATH_MAX, "%s", file);
       if ((evas_hash_find(entice->thumb.hash, buf)) == NULL)
       {
-         if ((o = e_thumb_new(ecore_evas_get(entice->ee), buf)))
+         if ((o = esmart_thumb_new(ecore_evas_get(entice->ee), buf)))
          {
 
             evas_object_layer_set(o,
@@ -864,7 +865,7 @@ entice_preview_thumb(Evas_Object * o)
    {
       double x, y, w, h;
 
-      if (e_thumb_freshen(o) == EPSILON_OK)
+      if (esmart_thumb_freshen(o) == EPSILON_OK)
       {
          if (entice->preview)
          {
@@ -886,7 +887,9 @@ entice_preview_thumb(Evas_Object * o)
             if (swallowed)
             {
                /* don't repreview the same image if cache is same */
-               if (!strcmp(e_thumb_file_get(o), e_thumb_file_get(swallowed)))
+               if (!strcmp
+                   (esmart_thumb_file_get(o),
+                    esmart_thumb_file_get(swallowed)))
                   return;
                edje_object_part_unswallow(entice->edje, swallowed);
                evas_object_del(swallowed);
@@ -894,7 +897,8 @@ entice_preview_thumb(Evas_Object * o)
          }
       }
       if ((newpreview =
-           e_thumb_new(evas_object_evas_get(o), e_thumb_file_get(o))))
+           esmart_thumb_new(evas_object_evas_get(o),
+                            esmart_thumb_file_get(o))))
       {
 
          edje_object_signal_emit(entice->edje, "entice,preview,before", "");
