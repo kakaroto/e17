@@ -66,7 +66,7 @@ dnl Make sure the png header/lib is available
 AC_CHECK_HEADER( png.h, 
   [ AC_DEFINE(HAVE_PNG_H, 1, [png.h available]) 
     have_png="yes" 
-    LIBS="$LIBS -lpng" ], 
+    LIBS="$LIBS -lpng -lz -lm" ], 
   [ AC_MSG_ERROR(Cannot find png.h on your system, try --with-png=) ])
 AC_CHECK_LIB(png, png_create_read_struct, [ 
     AC_DEFINE(HAVE_PNG_LIB, 1, [libpng available]) 
