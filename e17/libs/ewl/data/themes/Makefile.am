@@ -1,4 +1,3 @@
-SUBDIRS = default skeleton
 MAINTAINERCLEANFILES = Makefile.in
 
 EDCS =  default.edc skeleton.edc
@@ -15,5 +14,4 @@ all: $(EETS)
 
 SUFFIXES = .edc .eet
 .edc.eet:
-	(cd $(top_srcdir)/data/themes ; edje_cc -v -id $(@:%.eet=%)/bits/images $< $(top_builddir)/data/themes/$@)
-
+	edje_cc -v -id $(top_builddir)/data/themes/$(<:%.edc=%)/bits/images `basename $<` $@
