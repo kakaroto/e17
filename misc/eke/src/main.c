@@ -6,18 +6,32 @@
 #define CACHE_DIR "~/.e/apps/eke/cache"
 
 static int eke_exit_cb(void *data, int type, void *ev);
-static int eke_find_theme(Eke *eke, const char *thm);
 static void usage(void);
+
+#if BUILD_EDJE_GUI
+static int eke_find_theme(Eke *eke, const char *thm);
+#endif
+
 
 int
 main(int argc, char ** argv)
 {
     Eke eke;
-    char *thm = NULL;
     int i, last_arg = 0;
+#if BUILD_EDJE_GUI
+    char *thm = NULL;
+#endif
 
+#if BUILD_EWL_GUI
     eke.gui.type = EKE_GUI_TYPE_EWL;
+#else
+#if BUILD_EDJE_GUI
+    eke.gui.type = EKE_GUI_TYPE_EDJE;
+#endif
+#endif
+
     for (i = 1; i < argc; i++) {
+#if BUILD_EDJE_GUI
         if (!strncmp(argv[i], "--edje-theme", 12)) {
             if (argc > (i + 1)) {
                 i++;
@@ -29,23 +43,33 @@ main(int argc, char ** argv)
             eke.gui.type = EKE_GUI_TYPE_EDJE;
             last_arg = i;
 
-        } else if (!strncmp(argv[i], "--gui-ewl", 9)) {
+        } 
+#endif
+
+#if BUILD_EWL_GUI
+        if (!strncmp(argv[i], "--gui-ewl", 9)) {
             eke.gui.type = EKE_GUI_TYPE_EWL;
             last_arg = i;
+        }
+#endif
 
-        } else if (!strncmp(argv[i], "--help", 6) 
+        if (!strncmp(argv[i], "--help", 6) 
                 || (!strncmp(argv[i], "-h", 2))) {
             usage();
             return 0;
         }
     }
 
-    if (!thm) thm = strdup("default");
-    if (!eke_find_theme(&eke, thm)) {
-        printf("Unable to locate theme (%s)\n", thm);
-        return 0;
+#if BUILD_EDJE_GUI
+    if (eke.gui.type == EKE_GUI_TYPE_EDJE) {
+        if (!thm) thm = strdup("default");
+        if (!eke_find_theme(&eke, thm)) {
+            printf("Unable to locate theme (%s)\n", thm);
+            return 0;
+        }
+        FREE(thm);
     }
-    FREE(thm);
+#endif
 
     if (!eke_feed_init(CACHE_DIR)) {
         printf("Cannot setup eke\n");
@@ -73,7 +97,8 @@ main(int argc, char ** argv)
             feed = eke_feed_new_from_uri(argv[last_arg]);
 
         } else {
-            printf("incorrect format for URI\n");
+            printf("incorrect format for URI (%s)\n", argv[last_arg]);
+            last_arg ++;
             continue;
         }
         eke_gui_feed_register(&eke, feed);
@@ -101,6 +126,7 @@ eke_exit_cb(void *data, int type, void *ev)
     ev = NULL;
 }
 
+#if BUILD_EDJE_GUI
 static int
 eke_find_theme(Eke *eke, const char *thm)
 {
@@ -123,6 +149,7 @@ eke_find_theme(Eke *eke, const char *thm)
     }
     return 0;
 }
+#endif
 
 static void
 usage(void)
@@ -130,9 +157,14 @@ usage(void)
     printf("\n%s %s\n"
         "Usage: %s [options] [feed] [feed] ...\n\n"
         "  options\n"
+#if BUILD_EWL_GUI
         "   --gui-ewl \t\t -- use the EWL gui\n"
+#endif
+
+#if BUILD_EDJE_GUI
         "   --gui-edje \t\t -- use the Edje gui\n"
         "   --edje-theme <theme>  -- set the theme to use with the Edje gui\n"
+#endif
         "   --help \t\t -- this help\n\n", 
         PACKAGE, VERSION, PACKAGE);
 }
