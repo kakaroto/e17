@@ -1,3 +1,8 @@
+
+These are open issues to work on, in no particular order:
+=========================================================
+
+
 * implement file information retrieval, with results
   similar to that of file(1), ideally with i18n.
 
@@ -8,6 +13,16 @@
   correct one. Bug in the MF heuristic?
 
 * Issues with monitoring of single files? imon?
+  Test dnotify.
 
 * Update efsd_misc_get_user_dir() to also use getpwuid()
   instead of getenv("HOME").
+
+* Move socket file to /tmp to avoid problems when
+  home is nfs-shared.
+
+* Unmounting of e.g. cdroms not working because Efsd
+  keeps monitors around?
+
+* Add event callbacks to libefsd to be able to register
+  handlers instead of having to use switch-case statements.
