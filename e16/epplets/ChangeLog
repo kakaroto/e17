@@ -1714,3 +1714,14 @@ void            Epplet_free_rgb_buf(RGB_buf buf);
 
 I think the user shouldn't have to think about the internals of an RGB_buf
 in order to free it.
+
+-------------------------------------------------------------------------------
+
+Mon Dec 20 18:32:58 EST 1999
+(Christian)
+
+More work on the Mountbox. Changing backgrounds and default icons should
+work on runtime now, modifying and adding mountpoint types too. Deleting
+still needs to be done. Oh, and untested, btw.
+
+Damn. I'm getting sick.

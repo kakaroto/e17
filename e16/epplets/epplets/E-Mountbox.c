@@ -1,4 +1,4 @@
-/* E-Mixer.c
+/* E-Mountbox.c
  *
  * Copyright (C) 1999 Christian Kreibich
  *
@@ -27,6 +27,23 @@ error_exit(void)
   Epplet_cleanup();
   exit(1);
 }
+
+
+void
+UpdateGraphics(void)
+{
+  Epplet_save_config();
+
+  /* ok, this is cheap. */
+  FreeMounts();
+  FreeMountPointTypes();
+  FreeImages();
+
+  SetupDefaults();
+  SetupMounts();
+  SetupGraphx();
+}
+
 
 static void
 CallbackShowMore(void *data)
@@ -102,6 +119,12 @@ CallbackHelp(void *data)
 static void
 Callback_ConfigOK(void *data)
 {
+  Callback_DefaultChange(NULL);
+  Callback_BGChange(NULL);
+  Callback_TypeChange(NULL);
+  SyncConfigs();
+  UpdateGraphics();
+  
   Epplet_window_destroy (config_win);
   config_win = 0;
   return;
@@ -112,6 +135,12 @@ Callback_ConfigOK(void *data)
 static void
 Callback_ConfigApply(void *data)
 {
+  Callback_DefaultChange(NULL);
+  Callback_BGChange(NULL);
+  Callback_TypeChange(NULL);
+  SyncConfigs();
+  UpdateGraphics();
+
   return;
   data = NULL;
 }
@@ -120,6 +149,7 @@ Callback_ConfigApply(void *data)
 static void
 Callback_ConfigCancel(void *data)
 {
+  Epplet_load_config();
   Epplet_window_destroy (config_win);
   config_win = 0;
   return;
@@ -130,6 +160,7 @@ Callback_ConfigCancel(void *data)
 static void
 Callback_DefaultChange(void *data)
 {
+  Epplet_modify_config("DEFAULT", Epplet_textbox_contents(tbox_default));
   return;
   data = NULL;
 }
@@ -138,14 +169,17 @@ Callback_DefaultChange(void *data)
 static void
 Callback_BGChange(void *data)
 {
+  Epplet_modify_config("BG_IMAGE", Epplet_textbox_contents(tbox_bg));
   return;
   data = NULL;
 }
 
 
 static void
-Callback_KeyChange(void *data)
+Callback_TypeChange(void *data)
 {
+  ModifyMountPointType(current_type, Epplet_textbox_contents(tbox_key),
+		       Epplet_textbox_contents(tbox_file));
   return;
   data = NULL;
 }
@@ -156,6 +190,8 @@ Callback_ConfigLeft(void *data)
 {
   if (current_type->prev)
     {
+      ModifyMountPointType(current_type, Epplet_textbox_contents(tbox_key),
+			   Epplet_textbox_contents(tbox_file));
       current_type = current_type->prev;
       Epplet_change_textbox(tbox_key, current_type->key);
       Epplet_change_textbox(tbox_file, current_type->imagefile);
@@ -170,6 +206,8 @@ Callback_ConfigRight(void *data)
 {
   if (current_type->next)
     {
+      ModifyMountPointType(current_type, Epplet_textbox_contents(tbox_key),
+			   Epplet_textbox_contents(tbox_file));
       current_type = current_type->next;
       Epplet_change_textbox(tbox_key, current_type->key);
       Epplet_change_textbox(tbox_file, current_type->imagefile);
@@ -180,7 +218,20 @@ Callback_ConfigRight(void *data)
 
 
 static void
-Callback_FileChange(void *data)
+Callback_ConfigAdd(void *data)
+{
+  AddMountPointType(NULL, NULL);
+  current_type = types;
+  Epplet_reset_textbox(tbox_key);
+  Epplet_reset_textbox(tbox_file);
+  
+  return;
+  data = NULL;
+}
+
+
+static void
+Callback_ConfigDel(void *data)
 {
   return;
   data = NULL;
@@ -224,15 +275,19 @@ CallbackConfigure(void *data)
 					   2));
   Epplet_gadget_show ((tbox_key = Epplet_create_textbox (NULL, current_type->key,
 							 10, 113, 60, 20,
-							 2, Callback_KeyChange, NULL)));
+							 2, Callback_TypeChange, NULL)));
   Epplet_gadget_show ((tbox_file = Epplet_create_textbox (NULL, current_type->imagefile,
 							 70, 113, 340, 20,
-							 2, Callback_FileChange, NULL)));
+							 2, Callback_TypeChange, NULL)));
   Epplet_gadget_show((Epplet_create_button(NULL, NULL, 
 					   170, 140, 0, 0, "ARROW_LEFT", 0, NULL, 
 					   Callback_ConfigLeft, NULL)));
-  Epplet_gadget_show((Epplet_create_button("Add", NULL, 187, 140, 24, 12, NULL, 0, NULL, NULL, NULL)));
-  Epplet_gadget_show((Epplet_create_button("Delete", NULL, 216, 140, 36, 12, NULL, 0, NULL, NULL, NULL)));
+  Epplet_gadget_show((Epplet_create_button("Add", NULL,
+					   187, 140, 24, 12, NULL, 0, NULL,
+					   Callback_ConfigAdd, NULL)));
+  Epplet_gadget_show((Epplet_create_button("Delete", NULL,
+					   216, 140, 36, 12, NULL, 0, NULL,
+					   Callback_ConfigDel, NULL)));
   Epplet_gadget_show((Epplet_create_button(NULL, NULL, 
 					   257, 140, 0, 0, "ARROW_RIGHT", 0, NULL, 
 					   Callback_ConfigRight, NULL)));
@@ -495,7 +550,7 @@ AddMountPoint(char *device, char *path)
 
 
 void            
-AddMountPointType(int index, char *key, char *image)
+AddMountPointType(char *key, char *image)
 {
   MountPointType *newtype = NULL;
   ImlibImage     *tmp_image = NULL;
@@ -526,9 +581,10 @@ AddMountPointType(int index, char *key, char *image)
     {
       if ((types->key == NULL) && (types->image == NULL))
 	{
-	  types->config_index = index;
-	  types->key = strdup(key);
-	  types->imagefile = strdup(image);
+	  if (key)
+	    types->key = strdup(key);
+	  if (image)
+	    types->imagefile = strdup(image);
 	  tmp_image = Imlib_load_image(id, image);  
 	  if (tmp_image)
 	    {
@@ -541,15 +597,46 @@ AddMountPointType(int index, char *key, char *image)
 
 
 void
+ModifyMountPointType(MountPointType *mpt, char *key, char *imagefile)
+{
+  ImlibImage *tmp_image = NULL;
+
+  if (mpt)
+    {
+      if (key)
+	{
+	  if (mpt->key)
+	    free(mpt->key);
+	  mpt->key = strdup(key);
+	}
+      if (imagefile)
+	{
+	  if (mpt->imagefile)
+	    free(mpt->imagefile);
+	  mpt->imagefile = strdup(imagefile);
+	  tmp_image = Imlib_load_image(id, mpt->imagefile);  
+	  if (tmp_image)
+	    {
+	      Imlib_destroy_image(id, mpt->image);
+	      mpt->image = Imlib_clone_scaled_image(id, tmp_image, 44, 32);
+	      Imlib_destroy_image(id, tmp_image);
+	    }
+	}
+    }
+}
+
+void
 FreeImages(void)
 {
   if (bg_image)
     {
       Imlib_destroy_image(id, bg_image);
+      bg_image = NULL;
     }
   if (default_image)
     {
       Imlib_destroy_image(id, default_image);
+      default_image = NULL;
     }
 }
 
@@ -575,6 +662,8 @@ FreeMounts(void)
       current = current->next;
       free(tmp);
     }
+  tiles = NULL;
+  num_tiles = 0;
 }
 
 
@@ -603,6 +692,8 @@ FreeMountPointTypes(void)
       current = current->next;
       free(tmp);
     }
+  types = NULL;
+  num_types = 0;
 }
 
 
@@ -1014,7 +1105,7 @@ SetupDefaults(void)
 	  
 	  if (key && image)
 	    {
-	      AddMountPointType(i, key, image);
+	      AddMountPointType(key, image);
 	    }
 	  free(key);
 	  free(image);
@@ -1028,13 +1119,13 @@ SetupDefaults(void)
 void
 SetupGraphx(void)
 {
+  static int  first_time = 1;
   int         i, j, k, linear, linear_w;
   ImlibImage *tmp = NULL;
   Tile       *tile;
   char       *s = NULL;
 
   s = Epplet_query_config("BG_IMAGE");
-
 
   tmp = Imlib_load_image(id, s);  
   if (!tmp)
@@ -1056,8 +1147,13 @@ SetupGraphx(void)
   Imlib_destroy_image(id, tmp);
 
   /* setup widescreen according to current mounts */
-  window_buf = Epplet_make_rgb_buf(44, 32);  
+  if (!window_buf)
+    window_buf = Epplet_make_rgb_buf(44, 32);  
+  if (widescreen_buf)
+    Epplet_free_rgb_buf(widescreen_buf);
   widescreen_buf = Epplet_make_rgb_buf((44 * num_tiles), 32);  
+  if (widescreen_canvas_buf)
+    Epplet_free_rgb_buf(widescreen_canvas_buf);
   widescreen_canvas_buf = Epplet_make_rgb_buf((44 * num_tiles), 32);  
 
   memcpy(widescreen_buf->im->rgb_data, bg_image->rgb_data,
@@ -1096,31 +1192,67 @@ SetupGraphx(void)
 	}      
     }
 
+  if (first_time)
+    {
+      first_time = 0;
+      Epplet_gadget_show((Epplet_create_button(NULL, NULL, 
+					       2, 34, 0, 0, "ARROW_LEFT", 0, NULL, 
+					       CallbackSlideLeft, NULL)));
+      Epplet_gadget_show((Epplet_create_button(NULL, NULL, 
+					       33, 34, 0, 0, "ARROW_RIGHT", 0, NULL, 
+					       CallbackSlideRight, NULL)));
+      Epplet_gadget_show((action_area = Epplet_create_drawingarea(2, 2, 44, 32)));
+      
+      Epplet_gadget_show((Epplet_create_button("...", NULL, 14, 34, 20, 12, NULL, 0, NULL, CallbackShowMore, NULL)));
+      button_help = Epplet_create_button(NULL, NULL, 3, 3, 0, 0, "HELP", 0, NULL, CallbackHelp, NULL);
+      button_close = Epplet_create_button(NULL, NULL, 33, 3, 0, 0, "CLOSE", 0, NULL, CallbackExit, NULL);
+      button_config = Epplet_create_button(NULL, NULL, 18, 3, 0, 0, "CONFIGURE", 0, NULL, CallbackConfigure, NULL);
+      
+      /*
+	Epplet_register_focus_in_handler(CallbackEnter, NULL);
+	Epplet_register_focus_out_handler(CallbackLeave, NULL);
+      */
+      Epplet_register_expose_handler(CallbackExpose, NULL);
+      Epplet_register_button_release_handler(CallbackButtonUp, NULL);
+      Epplet_register_key_press_handler(CallbackKeyPress, NULL);
+      
+      /* Setup the current view */
+      Epplet_show();
+    }
 
-  Epplet_gadget_show((Epplet_create_button(NULL, NULL, 
-					   2, 34, 0, 0, "ARROW_LEFT", 0, NULL, 
-					   CallbackSlideLeft, NULL)));
-  Epplet_gadget_show((Epplet_create_button(NULL, NULL, 
-					   33, 34, 0, 0, "ARROW_RIGHT", 0, NULL, 
-					   CallbackSlideRight, NULL)));
-  Epplet_gadget_show((action_area = Epplet_create_drawingarea(2, 2, 44, 32)));
-
-  Epplet_gadget_show((Epplet_create_button("...", NULL, 14, 34, 20, 12, NULL, 0, NULL, CallbackShowMore, NULL)));
-  button_help = Epplet_create_button(NULL, NULL, 3, 3, 0, 0, "HELP", 0, NULL, CallbackHelp, NULL);
-  button_close = Epplet_create_button(NULL, NULL, 33, 3, 0, 0, "CLOSE", 0, NULL, CallbackExit, NULL);
-  button_config = Epplet_create_button(NULL, NULL, 18, 3, 0, 0, "CONFIGURE", 0, NULL, CallbackConfigure, NULL);
-
-  /*
-  Epplet_register_focus_in_handler(CallbackEnter, NULL);
-  Epplet_register_focus_out_handler(CallbackLeave, NULL);
-  */
-  Epplet_register_expose_handler(CallbackExpose, NULL);
-  Epplet_register_button_release_handler(CallbackButtonUp, NULL);
-  Epplet_register_key_press_handler(CallbackKeyPress, NULL);
-
-  /* Setup the current view */
-  Epplet_show();
   UpdateView(0, 0);
+}
+
+
+void
+SyncConfigs(void)
+{
+  char          **strings = NULL;
+  char            s[1024];
+  int             i;
+  MountPointType *mpt = NULL;
+
+  strings = (char**)malloc(sizeof(char*) * num_types);
+  if (strings)
+    {
+      for (mpt=types, i=0; mpt; mpt=mpt->next, i++) 
+	{
+	  Esnprintf(s, sizeof(s), "%s  %s", mpt->key, mpt->imagefile);
+	  strings[i] = strdup(s);
+	}
+      /*
+      for (i=0; i<num_types; i++)
+	{
+	  printf("DEBUG: %s\n", strings[i]);
+	  }*/
+
+      Epplet_modify_multi_config("TYPEDEF", strings, num_types);
+
+      for (i=0; i<num_types; i++)
+	if (strings[i])
+	  free(strings[i]);
+      free(strings);
+    }
 }
 
 

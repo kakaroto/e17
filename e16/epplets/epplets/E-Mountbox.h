@@ -1,3 +1,23 @@
+/* E-Mountbox.h
+ *
+ * Copyright (C) 1999 Christian Kreibich
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation; either version 2 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
+ * USA
+ */
+
 #include "epplet.h"
 #include <math.h>
 #include <sys/types.h>
@@ -38,7 +58,6 @@ typedef struct _mountpointtype MountPointType;
 
 struct _mountpointtype
 {
-  int             config_index;
   char           *key;
   char           *imagefile;
   ImlibImage     *image;
@@ -78,9 +97,9 @@ Epplet_gadget   tbox_key, tbox_file, tbox_default, tbox_bg;
 Window          config_win = 0;
 MountPointType *current_type = NULL;
 
-RGB_buf         window_buf;
-RGB_buf         widescreen_buf;
-RGB_buf         widescreen_canvas_buf;
+RGB_buf         window_buf = NULL;
+RGB_buf         widescreen_buf = NULL;
+RGB_buf         widescreen_canvas_buf = NULL;
 char            anim_mount = 0;
 int             is_shown = 0;
 
@@ -88,13 +107,16 @@ int             is_shown = 0;
 int             IsTransparent(ImlibImage * im, int x, int y);
 void            UpdateView(int dir, int fast);
 void            FreeImages(void);
+void            UpdateGraphics(void);
 
 /* mount handling */
 void            SetupMounts(void);
 void            FreeMounts(void);
 void            AddMountPoint(char *device, char *path);
 void            FreeMountPointTypes(void);
-void            AddMountPointType(int index, char *key, char *image);
+void            AddMountPointType(char *key, char *image);
+void            ModifyMountPointType(MountPointType *mpt, char *key, char *imagefile);
+void            DeleteMountPointType(MountPointType *mpt);
 void            Mount(MountPoint * mp);
 void            Umount(MountPoint * mp);
 
@@ -104,6 +126,7 @@ int             ParseProcMounts(void);
 int             ParseEtcMtab(void);
 void            VisitMountPoints(void);
 MountPoint     *FindMountPointByClick(int x, int y);
+void            SyncConfigs(void);
 
 /* callbacks/ handlers */
 /*
@@ -123,10 +146,11 @@ static void     Callback_ConfigApply(void *data);
 static void     Callback_ConfigCancel(void *data);
 static void     Callback_DefaultChange(void *data);
 static void     Callback_BGChange(void *data);
-static void     Callback_KeyChange(void *data);
+static void     Callback_TypeChange(void *data);
 static void     Callback_ConfigLeft(void *data);
 static void     Callback_ConfigRight(void *data);
-static void     Callback_FileChange(void *data);
+static void     Callback_ConfigAdd(void *data);
+static void     Callback_ConfigDel(void *data);
 
 /* config stuff */
 void            SetupDefaults(void);
