@@ -242,7 +242,7 @@ filelist_randomize(feh_file * list)
    if (!list)
       D_RETURN(NULL);
    len = filelist_length(list);
-   if(len <= 1)
+   if (len <= 1)
       D_RETURN(list);
    D(("List(%8p) has %d items.\n", list, len));
    farray = (feh_file **) malloc(sizeof(feh_file *) * len);
@@ -368,14 +368,21 @@ add_file_to_filelist_recursively(char *origpath, unsigned char level)
             filelist file can be saved anywhere and feh will still find the
             images */
          D(("Need to convert filename %s to an absolute form\n", path));
-         /* I SHOULD be able to just use a simple realpath() here, but dumb
-          * old Solaris's realpath doesn't return an absolute path if the path
-          * you give it is relative. Linux and BSD get this right... */
+         /* I SHOULD be able to just use a simple realpath() here, but dumb * 
+            old Solaris's realpath doesn't return an absolute path if the
+            path you give it is relative. Linux and BSD get this right... */
          getcwd(cwd, sizeof(cwd));
          snprintf(temp, sizeof(temp), "%s/%s", cwd, path);
-         realpath(temp, fullpath);
-         free(path);
-         path = estrdup(fullpath);
+         if (realpath(temp, fullpath) != NULL)
+         {
+            free(path);
+            path = estrdup(fullpath);
+         }
+         else
+         {
+            free(path);
+            path = estrdup(temp);
+         }
          D(("Converted path to %s\n", path));
       }
    }

@@ -1,3 +1,8 @@
+Sat May 13 19:54:46 2000  Tom Gilbert  <gilbertt@btinternet.com>
+
+	* Make the menus slightly prettier. I wish I had an artistic bone
+	somewhere in my body...
+
 Sat May 13 18:04:58 2000  Tom Gilbert  <gilbertt@btinternet.com>
 
 	* Use realpath() to cleanup paths before sticking them in a

@@ -53,14 +53,13 @@ init_index_mode(void)
    int thumbnailcount = 0;
    feh_file *file = NULL, *last = NULL;
    int file_num = 0, lines;
+   int index_image_width, index_image_height;
    int x_offset_name = 0, x_offset_dim = 0, x_offset_size = 0;
 
    file_num = filelist_length(filelist);
 
    D_ENTER;
 
-   if (opt.title_font)
-      title_area_h = 50;
 
    if (opt.font)
    {
@@ -73,9 +72,14 @@ init_index_mode(void)
 
    if (opt.title_font)
    {
+      int fh, fw;
+
       title_fn = imlib_load_font(opt.title_font);
       if (!fn)
          title_fn = imlib_load_font("20thcent/22");
+      imlib_context_set_font(title_fn);
+      imlib_get_text_size("W", &fw, &fh);
+      title_area_h = fh + 4;
    }
    else
       title_fn = imlib_load_font("20thcent/22");
@@ -131,8 +135,8 @@ init_index_mode(void)
    }
 
 
-   /* Here we need to whiz through the files, and look at the filenames and * 
-      info in the selected font, work out how much space we need, and *
+   /* Here we need to whiz through the files, and look at the filenames and
+      info in the selected font, work out how much space we need, and
       calculate the size of the image we will require */
 
    if (opt.limit_w && opt.limit_h)
@@ -144,9 +148,9 @@ init_index_mode(void)
 
       /* Work out if this is big enough, and give a warning if not */
 
-      /* Pretend we are limiting width by that specified, loop through, * and 
-         see it we fit in the height specified. If not, continue the * loop,
-         and recommend the final value instead. Carry on and make * the index 
+      /* Pretend we are limiting width by that specified, loop through, and
+         see it we fit in the height specified. If not, continue the loop,
+         and recommend the final value instead. Carry on and make the index
          anyway. */
 
       for (file = filelist; file; file = file->next)
@@ -286,7 +290,9 @@ init_index_mode(void)
 
    x = y = 0;
 
-   im_main = imlib_create_image(w, h + title_area_h);
+   index_image_width = w;
+   index_image_height = h + title_area_h;
+   im_main = imlib_create_image(index_image_width, index_image_height);
 
    if (!im_main)
       eprintf("Imlib error creating index image, are you low on RAM?");
@@ -475,11 +481,16 @@ init_index_mode(void)
 
    if (opt.title_font)
    {
-      /* Put some other text on there... */
+      int fw, fh, fx, fy;
+      char *s;
+
+      s = create_index_title_string(thumbnailcount, w, h);
       imlib_context_set_font(title_fn);
       imlib_context_set_image(im_main);
-      imlib_text_draw(20, h + 10,
-                      create_index_title_string(thumbnailcount, w, h));
+      imlib_get_text_size(s, &fw, &fh);
+      fx = index_image_width - fw >> 1;
+      fy = index_image_height - fh - 2;
+      imlib_text_draw(fx, fy, s);
    }
 
    if (opt.output && opt.output_file)

@@ -316,6 +316,8 @@ feh_handle_event(XEvent * ev)
                 winwid->zoom_mode = 0;
                 opt.zoom_mode = 0;
                 feh_smooth_image(winwid);
+                if (opt.draw_filename)
+                   feh_draw_filename(winwid);
              }
              break;
           case 3:
@@ -344,8 +346,8 @@ feh_handle_event(XEvent * ev)
                  D(("Unselecting menu\n"));
                  MENU_ITEM_SET_NORMAL(ii);
                  menu_root->updates =
-                    imlib_update_append_rect(menu_root->updates, ii->x,
-                                             ii->y, ii->w, ii->h);
+                    imlib_update_append_rect(menu_root->updates, ii->x, ii->y,
+                                             ii->w, ii->h);
                  menu_root->needs_redraw = 1;
               }
            }

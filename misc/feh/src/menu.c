@@ -378,8 +378,12 @@ feh_menu_entry_get_size(feh_menu * m, feh_menu_item * i, int *w, int *h)
          imlib_get_text_size(i->text, &tw, &th);
          imlib_free_font();
       }
-      *w = tw + FEH_MENUITEM_PAD_LEFT + FEH_MENUITEM_PAD_RIGHT;
-      *h = th + FEH_MENUITEM_PAD_TOP + FEH_MENUITEM_PAD_BOTTOM;
+      *w =
+         tw + FEH_MENUITEM_PAD_LEFT + FEH_MENUITEM_PAD_RIGHT +
+         FEH_MENU_FONT_SHADOW_OFF_X;
+      *h =
+         th + FEH_MENUITEM_PAD_TOP + FEH_MENUITEM_PAD_BOTTOM +
+         FEH_MENU_FONT_SHADOW_OFF_Y;
    }
    else
    {
@@ -521,9 +525,11 @@ feh_menu_draw_item(feh_menu * m, feh_menu_item * i, Imlib_Image im, int ox,
          imlib_context_set_image(im);
          imlib_context_set_font(fn);
          imlib_context_set_operation(IMLIB_OP_COPY);
-         imlib_context_set_color(255, 255, 255, 128);
-         imlib_text_draw(i->x - ox + i->text_x + 1,
-                         i->y - oy + FEH_MENUITEM_PAD_TOP + 1, i->text);
+         imlib_context_set_color(0, 0, 0, 60);
+         imlib_text_draw(i->x - ox + i->text_x + FEH_MENU_FONT_SHADOW_OFF_X,
+                         i->y - oy + FEH_MENUITEM_PAD_TOP +
+                         FEH_MENU_FONT_SHADOW_OFF_Y, i->text);
+
          imlib_context_set_color(0, 0, 0, 255);
          imlib_text_draw(i->x - ox + i->text_x,
                          i->y - oy + FEH_MENUITEM_PAD_TOP, i->text);
@@ -565,8 +571,8 @@ feh_menu_draw_item(feh_menu * m, feh_menu_item * i, Imlib_Image im, int ox,
             imlib_blend_image_onto_image(im2, 0, 0, 0, iw, ih,
                                          i->x + i->icon_x - ox,
                                          i->y + FEH_MENUITEM_PAD_TOP +
-                                         (((i->
-                                            h - FEH_MENUITEM_PAD_TOP -
+                                         (((i->h
+                                            - FEH_MENUITEM_PAD_TOP -
                                             FEH_MENUITEM_PAD_BOTTOM) -
                                            oh) / 2) - oy, ow, oh);
             imlib_context_set_image(im2);
@@ -581,8 +587,8 @@ feh_menu_draw_item(feh_menu * m, feh_menu_item * i, Imlib_Image im, int ox,
             D(("selected item\n"));
             feh_menu_draw_submenu_at(i->x + i->sub_x,
                                      i->y + FEH_MENUITEM_PAD_TOP +
-                                     ((i->
-                                       h - FEH_MENUITEM_PAD_TOP -
+                                     ((i->h
+                                       - FEH_MENUITEM_PAD_TOP -
                                        FEH_MENUITEM_PAD_BOTTOM -
                                        FEH_MENU_SUBMENU_H) / 2),
                                      FEH_MENU_SUBMENU_W, FEH_MENU_SUBMENU_H,
@@ -593,8 +599,8 @@ feh_menu_draw_item(feh_menu * m, feh_menu_item * i, Imlib_Image im, int ox,
             D(("unselected item\n"));
             feh_menu_draw_submenu_at(i->x + i->sub_x,
                                      i->y + FEH_MENUITEM_PAD_TOP +
-                                     ((i->
-                                       h - FEH_MENUITEM_PAD_TOP -
+                                     ((i->h
+                                       - FEH_MENUITEM_PAD_TOP -
                                        FEH_MENUITEM_PAD_BOTTOM -
                                        FEH_MENU_SUBMENU_H) / 2),
                                      FEH_MENU_SUBMENU_W, FEH_MENU_SUBMENU_H,
@@ -737,7 +743,7 @@ feh_menu_draw_separator_at(int x, int y, int w, int h, Imlib_Image dst,
    D_ENTER;
    imlib_context_set_image(dst);
    imlib_context_set_color(0, 0, 0, 255);
-   imlib_image_fill_rectangle(x - ox, y - oy, w, h);
+   imlib_image_fill_rectangle(x - ox + 2, y - oy + 2, w - 4, h - 4);
    D_RETURN_;
 }
 
@@ -815,12 +821,14 @@ feh_menu_init(void)
                          NULL);
 #if 0
       feh_menu_item *mi;
+
       mi =
          feh_menu_add_entry(menu_main, "Jump to", NULL, "JUMP", NULL, NULL,
                             NULL);
       mi->func_gen_sub = feh_menu_func_gen_jump;
 #endif
    }
+   feh_menu_add_entry(menu_main, NULL, NULL, NULL, NULL, NULL, NULL);
    if (!opt.full_screen)
       feh_menu_add_entry(menu_main, "About " PACKAGE, NULL, NULL,
                          feh_menu_cb_about, NULL, NULL);
@@ -1001,8 +1009,8 @@ feh_menu_func_gen_jump(feh_menu * m, feh_menu_item * i, void *data)
 
    for (file = filelist; file; file = file->next)
    {
-      feh_menu_add_entry(mm, file->name, NULL, NULL, feh_menu_cb_jump_to, file,
-                         NULL);
+      feh_menu_add_entry(mm, file->name, NULL, NULL, feh_menu_cb_jump_to,
+                         file, NULL);
    }
    D_RETURN(mm);
    i = NULL;
