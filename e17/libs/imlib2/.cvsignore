@@ -23,3 +23,5 @@ loaderpath.h
 *.tar.gz
 imlib2.spec
 .icons
+imlib2-config
+dox
