@@ -3,9 +3,9 @@ SUBDIRS = \
 	dox \
 	eesh \
 	epp \
-    man \
-	src \
+        man \
 	intl \
+	src \
 	po
 
 EXTRA_DIST = \
