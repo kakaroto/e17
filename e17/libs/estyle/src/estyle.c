@@ -568,7 +568,7 @@ Estyle *estyle_split(Estyle *es, unsigned int index)
 	 * Check if the index is within the bounds of the string, and won't
 	 * result in an empty string.
 	 */
-	if (index >= strlen(content) - 1) {
+	if (index >= strlen(content)) {
 		FREE(content);
 		return NULL;
 	}
@@ -605,6 +605,9 @@ Estyle *estyle_split(Estyle *es, unsigned int index)
 	 * Put it on the same layer as the old estyle
 	 */
 	estyle_set_layer(new_es, estyle_get_layer(es));
+
+	if (evas_object_visible_get(es->bit))
+		estyle_show(new_es);
 
 	FREE(content);
 
