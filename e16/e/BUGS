@@ -143,6 +143,10 @@ Feature requests
 
 - "Showing the Desktop" support (_NET_SHOWING_DESKTOP hint).
 
+- "Fullscreen Window" support (_NET_WM_STATE_FULLSCREEN hint).
+
+- Move menu root to ~/.enlightenment/menus/
+
 
 --------------------
 Miscellaneous issues

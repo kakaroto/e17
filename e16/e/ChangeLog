@@ -2797,3 +2797,10 @@ Fix floating window stacking after area/desk switch.
 Put Winops menu on Alt-Ctrl-w.
 Do keybord menu navigation without pointer warping.
 Do menu sliding more cleanly.
+
+-------------------------------------------------------------------------------
+
+Wed May 12 02:10:50 CEST 2004
+(Kim)
+
+Now including rephorm's winter theme.
