@@ -110,11 +110,15 @@ __handle_callbacks(void *_data, Evas _e, Evas_Object _o, int _b, int _x,
   Etox etox = NULL;
   Etox_Callback cb = NULL;
 
-  data = (Etox_Data) _data;
-  cb_bit = (Etox_Callback_Bit) _etox_data_get(data, 0);
+  if (!(data = (Etox_Data) _data))
+    return;
+  printf("data:%p\n", data);
+  if (!(cb_bit = (Etox_Callback_Bit) _etox_data_get(data, 0)))
+    return;
   etox = (Etox) _etox_data_get(data, 1);
   cb = (Etox_Callback) _etox_data_get(data, 2);
 
+  /* FIXME: weird segv at this point sometimes.. :( -redalb */
   cb_bit->func(cb_bit->data, cb, etox, _b, _x, _y);
 }
 
@@ -147,6 +151,9 @@ _etox_callback_create(Etox e, Etox_Callback callback, Evas_Object ev_obj)
 
       /* add Etox_Data to 'junk-list' */
       ewd_list_append(e->callback_data, data);
+
+      printf("%d; bit:%p, func:%p\n", ewd_list_nodes(e->callback_data), 
+                                      cb_bit, cb_bit->func); 
 
       switch (cb_bit->type)
 	{

@@ -5,12 +5,15 @@ Etox_Data
 _etox_data_new(int size)
 {
   Etox_Data data;
+  int i;
 
   if (size < 0)
     return NULL;
 
   data = (Etox_Data) malloc(sizeof(struct _Etox_Data));
   data->value = (void **) calloc(size, sizeof(void *));
+  for (i = 0; i <= size; i++)
+    data->value[i] = NULL;
   data->data_added = 0;
   data->size = size;
 
