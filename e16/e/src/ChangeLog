@@ -1413,3 +1413,11 @@ Wed Sep  8 13:50:50 PDT 1999
 (Mandrake)
 
 A little more refining of kde stuff.  trying to make pager work right.
+
+-------------------------------------------------------------------------------
+
+Wed Sep  8 14:21:49 PDT 1999
+(Raster)
+
+and send events with timestanps later or equal to the input focus timestamp 
+for multihead keypress event passing.
