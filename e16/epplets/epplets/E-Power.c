@@ -24,10 +24,12 @@ cb_timer(void *data)
    if (f)
      {
 	char s[256], s1[32], s2[32], s3[32];
+	int apm_flags, ac_stat, bat_stat, bat_flags;
 	int  i, hours, minutes, up, up2;
+	char *s_ptr;
 	
 	fgets(s, 255, f);
-	sscanf(s, "%*s %*s %*s %*s %*s %*s %s %s %s", s1, s2, s3);
+	sscanf(s, "%*s %*s %x %x %x %x %s %s %s", &apm_flags, &ac_stat, &bat_stat, &bat_flags, s1, s2, s3);
 	s1[strlen(s1) - 1] = 0;
 	bat_val=atoi(s1);
 	if (!strcmp(s3, "sec"))
@@ -48,20 +50,60 @@ cb_timer(void *data)
 	if (prev_count >= 16)
 	   prev_count = 0;
 	
-	hours = time_val / 3600;
-        minutes = (time_val / 60) % 60;
-	if (up2 > 0)
-	   sprintf(s, "%i%% (%i:%02i)\n%i:%02i", bat_val, 
-		   (((100 - bat_val) * 2 * 60) / up2) / 60, 
-		   (((100 - bat_val) * 2 * 60) / up2) % 60, 
-		   hours, minutes);
+        s_ptr = s;
+
+        if( bat_flags != 0xff
+	    && bat_flags & 0x80 )
+	  {
+	    s_ptr += sprintf( s_ptr, "no battery" );
+	  }
 	else
-	   sprintf(s, "%i%%\n%i:%02i", bat_val, hours, minutes);
+	  {
+	    if( bat_val > 0 )
+	      s_ptr += sprintf( s_ptr, "%i%%", bat_val );
+
+	    switch( bat_stat )
+	      {
+		case 0:
+	          s_ptr += sprintf( s_ptr, ", high" );
+		  break;
+		case 1:
+	          s_ptr += sprintf( s_ptr, ", low" );
+		  break;
+		case 2:
+	          s_ptr += sprintf( s_ptr, ", crit." );
+		  break;
+		case 3:
+	          s_ptr += sprintf( s_ptr, ", charge" );
+		  break;
+	      }
+	  }
+	s_ptr += sprintf( s_ptr, "\n" );
+
+
+	if( ac_stat == 1 )
+          {
+	    s_ptr += sprintf(s_ptr, "AC on-line" );
+          }
+        else
+          {
+	    hours = time_val / 3600;
+            minutes = (time_val / 60) % 60;
+	    if (up2 > 0)
+	       s_ptr += sprintf(s_ptr, "(%i:%02i)\n%i:%02i", 
+		       		(((100 - bat_val) * 2 * 60) / up2) / 60, 
+		       		(((100 - bat_val) * 2 * 60) / up2) % 60, 
+		       		hours, minutes);
+	    else
+	       s_ptr += sprintf(s_ptr, "%i:%02i", hours, minutes);
+          }
 	Epplet_change_label(label, s);
+
 	sprintf(s, EROOT"/epplet_icons/E-Power-Bat-%i.png", 
 		((bat_val + 5) / 10) * 10);
 	Epplet_change_image(image, 44, 24, s);
 	Epplet_timer(cb_timer, NULL, 30.0, "TIMER");   
+
 	prev_bat_val = bat_val;
      }
    data = NULL;
