@@ -7,9 +7,6 @@
 
 #include "ee2.h"
 
-/* GTK Widgets */
-GtkWidget *MainWindow, *FileSel, *SaveSel, *area;
-
 /* Xlib Stuff */
 Display *disp = NULL;
 Visual *vis = NULL;
@@ -37,9 +34,9 @@ ee2_init(int argc, char **argv)
   gtk_window_set_policy(GTK_WINDOW(MainWindow), 1, 1, 1);
   gtk_window_set_title(GTK_WINDOW(MainWindow), "Electric Eyes 2");
   gtk_signal_connect(GTK_OBJECT(MainWindow), "delete_event",
-										 GTK_SIGNAL_FUNC(CloseWindow), NULL);
+		     GTK_SIGNAL_FUNC(CloseWindow), NULL);
   gtk_signal_connect(GTK_OBJECT(MainWindow), "destroy",
-										 GTK_SIGNAL_FUNC(CloseWindow), NULL);
+		     GTK_SIGNAL_FUNC(CloseWindow), NULL);
 
   /* The event box that contains the image's drawing area */
   EventBox = gtk_event_box_new();
@@ -52,7 +49,7 @@ ee2_init(int argc, char **argv)
   area = gtk_drawing_area_new();
   gtk_container_add(GTK_CONTAINER(EventBox), area);
   gtk_signal_connect_after(GTK_OBJECT(area), "configure_event",
-													 GTK_SIGNAL_FUNC(a_config), NULL);
+			   GTK_SIGNAL_FUNC(a_config), NULL);
   gtk_widget_show(area);
 
   FileSel = gtk_file_selection_new("Open Image...");
@@ -67,13 +64,13 @@ ee2_init(int argc, char **argv)
   gtk_signal_connect(GTK_OBJECT(GTK_FILE_SELECTION(SaveSel)->ok_button),
 		     "clicked", (GtkSignalFunc) SaveImageAs, SaveSel);
 
+  mod_init();
   about_init();
   browser_init();
-	webcam_init();
-  menus_init();
+  webcam_init();
 	
-	/* make sure everything is peachy for caching */
-	check_cache();
+  /* make sure everything is peachy for caching */
+  check_cache();
 
   if (argc == 2) {
     sprintf(currentimage, "%s", argv[1]);
@@ -86,7 +83,7 @@ ee2_init(int argc, char **argv)
       AddList(argv[c]);
     }
     LoadImage(argv[1]);
-    browser_show();
+    mod_show();
   } else {
     sprintf(currentimage, SPLASHSCREEN);
     LoadImage(currentimage);
@@ -305,8 +302,9 @@ ButtonPressed(GtkWidget * widget, GdkEvent * event, gpointer data)
   if (event->type == GDK_BUTTON_PRESS) {
     event_button = (GdkEventButton *) event;
     if (event_button->button == 3) {
-      gtk_menu_popup(GTK_MENU(RootMenu), NULL, NULL, NULL, NULL,
-		     event_button->button, event_button->time);
+      /*gtk_menu_popup(GTK_MENU(RootMenu), NULL, NULL, NULL, NULL,
+	event_button->button, event_button->time);*/
+      gtk_widget_show(ModWin);
       return TRUE;
     }
   }

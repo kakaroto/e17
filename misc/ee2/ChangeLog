@@ -333,3 +333,15 @@ resources to render an image that isnt really being used.
 
 -------------------------------------------------------------------------------
 
+Sun Mar 19 20:24:08 CST 2000
+(dphase)
+
+TONS of new stuff.  You'll notice that we no longer have menus when you
+right click on the main window.  Now a cool looking controlling window pops
+up that will manage all of the stuff in one organized place.  I have hacked
+browser.c to pack the image browser into the controlling window now -- it
+works _very_ well it looks great.  if anyone has any suggestions, let me
+know, I like hearing from you.
+
+-------------------------------------------------------------------------------
+

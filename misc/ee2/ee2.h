@@ -31,11 +31,17 @@
 # define D(x)  ((void) 0)
 #endif
 
+/* global widgets */
+GtkWidget *MainWindow, *area, *RootMenu, *FileSel, *SaveSel, *ModWin,
+  *ModList, *ModMdi, *BrWin, *BrClist, *area2, *infol, *nfr1, *nlbl;
+
 /* Variables */
-extern GtkWidget *MainWindow, *area, *RootMenu, *FileSel, *SaveSel;
 extern Imlib_Image *im, *bimg, *bg;
 extern int imgw, imgh, winw, winh;
 extern char currentimage[];
+
+GdkPixmap *g_pixmap;
+GdkBitmap *g_bitmap;
 
 char cache[255];
 
@@ -60,6 +66,11 @@ void browser_hide(void);
 void webcam_init(void);
 void webcam_show(void);
 void webcam_hide(void);
+
+void mod_init(void);
+void mod_show(void);
+void mod_hide(void);
+void mod_cb(gpointer);
 
 void check_cache(void);
 int check_cache_file(char *cache_file);
