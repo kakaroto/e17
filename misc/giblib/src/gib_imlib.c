@@ -552,52 +552,6 @@ gib_imlib_image_sharpen(Imlib_Image im, int radius)
    imlib_image_sharpen(radius);
 }
 
-DATA8
-gib_imlib_image_part_is_transparent(Imlib_Image im, int x, int y)
-{
-   Imlib_Color c;
-   int num = 0;
-   int ave = 0;
-   int w, h;
-   int leftmost, rightmost, topmost, bottommost, i, j;
-
-   imlib_context_set_image(im);
-   w = imlib_image_get_width();
-   h = imlib_image_get_height();
-
-   if ((x > w) || (y > h))
-      return 1;
-
-   leftmost = x - 1;
-   if (leftmost < 0)
-      leftmost = 0;
-   rightmost = x + 1;
-   if (rightmost > w)
-      rightmost = w;
-   topmost = y - 1;
-   if (topmost < 0)
-      topmost = 0;
-   bottommost = y + 1;
-   if (bottommost > h)
-      bottommost = h;
-
-   for (i = leftmost; i < rightmost + 1; i++)
-      for (j = topmost; j < bottommost + 1; j++)
-      {
-         imlib_image_query_pixel(i, j, &c);
-         ave += c.alpha;
-         num++;
-      }
-
-   ave = ave / num;
-
-/* TODO Make this fuzziness an OPTION */
-   if (ave > TRANS_THRESHOLD)
-      return 0;
-
-   return 1;
-}
-
 void
 gib_imlib_line_clip_and_draw(Imlib_Image dest, int x0, int y0, int x1,
                                int y1, int cx, int cy, int cw, int ch, int r,

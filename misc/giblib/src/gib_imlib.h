@@ -156,7 +156,6 @@ void gib_imlib_image_blur(Imlib_Image im, int radius);
 void gib_imlib_image_sharpen(Imlib_Image im, int radius);
 void gib_imlib_image_draw_rectangle(Imlib_Image im, int x, int y, int w,
                                       int h, int r, int g, int b, int a);
-DATA8 gib_imlib_image_part_is_transparent(Imlib_Image im, int x, int y);
 void gib_imlib_line_clip_and_draw(Imlib_Image dest, int x0, int y0, int x1,
                                int y1, int cx, int cy, int cw, int ch,
                                int r, int g, int b, int a);
