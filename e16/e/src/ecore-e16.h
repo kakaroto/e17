@@ -266,9 +266,9 @@ void                ecore_x_icccm_state_set_withdrawn(Ecore_X_Window win);
 void                ecore_x_window_prop_string_list_set(Ecore_X_Window win,
 							Ecore_X_Atom atom,
 							char **lst, int num);
-char              **ecore_x_window_prop_string_list_get(Ecore_X_Window win,
+int                 ecore_x_window_prop_string_list_get(Ecore_X_Window win,
 							Ecore_X_Atom atom,
-							int *pnum);
+							char ***plst);
 
 void                ecore_x_window_prop_xid_set(Ecore_X_Window win,
 						Ecore_X_Atom atom,

@@ -183,10 +183,14 @@ ecore_x_window_prop_string_list_set(Ecore_X_Window win, Ecore_X_Atom atom,
 
 /*
  * Get simple string list property
+ *
+ * If the property was successfully fetched the number of items stored in
+ * lst is returned, otherwise -1 is returned.
+ * Note: Return value 0 means that the property exists but has no elements.
  */
-char              **
+int
 ecore_x_window_prop_string_list_get(Ecore_X_Window win, Ecore_X_Atom atom,
-				    int *pnum)
+				    char ***plst)
 {
    char              **pstr = NULL;
    XTextProperty       xtp;
@@ -194,33 +198,38 @@ ecore_x_window_prop_string_list_get(Ecore_X_Window win, Ecore_X_Atom atom,
    char              **list;
    Status              s;
 
-   *pnum = 0;
+   *plst = NULL;
 
    if (!XGetTextProperty(_ecore_x_disp, win, &xtp, atom))
-      return NULL;
+      return -1;
 
    if (xtp.format == 8)
      {
 	s = XmbTextPropertyToTextList(_ecore_x_disp, &xtp, &list, &items);
-	if ((s == Success) && (items > 0))
+	if (s == Success)
 	  {
-	     pstr = Emalloc(items * sizeof(char *));
-	     for (i = 0; i < items; i++)
-		pstr[i] = Estrdup(list[i]);
-	     XFreeStringList(list);
+	     if (items > 0)
+	       {
+		  pstr = Emalloc(items * sizeof(char *));
+		  for (i = 0; i < items; i++)
+		     pstr[i] = Estrdup(list[i]);
+	       }
+	     if (list)
+		XFreeStringList(list);
+	     goto done;
 	  }
      }
-   if (!pstr)
-     {
-	pstr = Emalloc(sizeof(char *));
-	pstr[1] = Estrdup((char *)xtp.value);
-	items = 1;
-     }
 
+   /* Bad format or XmbTextPropertyToTextList failed - Now what? */
+   pstr = Emalloc(sizeof(char *));
+   pstr[0] = Estrdup((char *)xtp.value);
+   items = 1;
+
+ done:
    XFree(xtp.value);
 
-   *pnum = items;
-   return pstr;
+   *plst = pstr;
+   return items;
 }
 
 #ifndef USE_ECORE_X

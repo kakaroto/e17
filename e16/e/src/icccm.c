@@ -552,13 +552,13 @@ ICCCM_GetInfo(EWin * ewin, Atom atom_change)
 
 	_EFREE(ewin->icccm.wm_command);
 
-	argv = ecore_x_window_prop_string_list_get(ewin->client.win,
+	argc = ecore_x_window_prop_string_list_get(ewin->client.win,
 						   ECORE_X_ATOM_WM_COMMAND,
-						   &argc);
-	if (!argv && TryGroup(ewin))
-	   argv = ecore_x_window_prop_string_list_get(ewin->client.group,
+						   &argv);
+	if ((argc < 0) && TryGroup(ewin))
+	   argc = ecore_x_window_prop_string_list_get(ewin->client.group,
 						      ECORE_X_ATOM_WM_COMMAND,
-						      &argc);
+						      &argv);
 
 	ewin->icccm.wm_command =
 	   Estrdup(EstrlistEncodeEscaped(s, sizeof(s), argv, argc));

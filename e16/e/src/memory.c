@@ -146,6 +146,9 @@ EstrlistEncodeEscaped(char *buf, int len, char **lst, int num)
    p = lst[0];
    for (i = 0; i < len - 2; i++)
      {
+	if (!p)			/* A string list should not contain NULL items */
+	   break;
+
 	ch = *p++;
 	switch (ch)
 	  {
