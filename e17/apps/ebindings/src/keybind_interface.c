@@ -278,7 +278,10 @@ add_keybinds_notebook(GtkWidget * w, GtkWidget * note, int sheet)
       key_fields[0] = g_strdup(mod_str[e->modifiers]);
       key_fields[1] = g_strdup(e->key);
       key_fields[2] = g_strdup(e->action);
-      key_fields[3] = g_strdup(e->params);
+      if(e->params)
+	key_fields[3] = g_strdup(e->params);
+      else
+	key_fields[3] = g_strdup("");
 
       gtk_clist_append(GTK_CLIST(clist), key_fields);
       k_entry.count++;
