@@ -26,7 +26,12 @@
 #include <errno.h>
 #include <X11/keysym.h>
 
+#define MENU_ITEM_EVENT_MASK \
+	ButtonPressMask | ButtonReleaseMask | \
+	EnterWindowMask | LeaveWindowMask | PointerMotionMask
+
 static void         MenuRedraw(Menu * m);
+static void         MenuActivateItem(Menu * m, MenuItem * mi);
 static void         MenuDrawItem(Menu * m, MenuItem * mi, char shape);
 
 static void         FileMenuUpdate(int val, void *data);
@@ -134,12 +139,7 @@ MenuHide(Menu * m)
    if (m->win)
       EUnmapWindow(disp, m->win);
 
-   if (m->sel_item)
-     {
-	m->sel_item->state = STATE_NORMAL;
-	MenuDrawItem(m, m->sel_item, 1);
-	m->sel_item = NULL;
-     }
+   MenuActivateItem(m, NULL);
 
    m->stuck = 0;
    m->shown = 0;
@@ -666,9 +666,7 @@ MenuRealize(Menu * m)
    maxx2 = 0;
    has_i = 0;
    has_s = 0;
-   att.event_mask =
-      ButtonPressMask | ButtonReleaseMask | EnterWindowMask | LeaveWindowMask
-      | PointerMotionMask;
+   att.event_mask = MENU_ITEM_EVENT_MASK;
 
    for (i = 0; i < m->num; i++)
      {
@@ -2397,6 +2395,7 @@ MenusEventKeyPress(XEvent * ev)
    KeySym              key;
    Menu               *m;
    MenuItem           *mi;
+   EWin               *ewin;
 
    m = FindMenu(win);
    if (m == NULL)
@@ -2420,10 +2419,10 @@ MenusEventKeyPress(XEvent * ev)
      case XK_Down:
       check_next:
 	mi = MenuFindNextItem(m, mi, 1);
-	goto check_warp;
+	goto check_activate;
      case XK_Up:
 	mi = MenuFindNextItem(m, mi, -1);
-	goto check_warp;
+	goto check_activate;
      case XK_Left:
 	mi = MenuFindParentItem(m);
 	m = m->parent;
@@ -2434,17 +2433,25 @@ MenusEventKeyPress(XEvent * ev)
 	m = mi->child;
 	if (!m || m->num <= 0)
 	   break;
+	ewin = FindEwinByMenu(m);
+	if (ewin == NULL || ewin->state != EWIN_STATE_MAPPED)
+	   break;
 	mi = m->items[0];
 	goto check_menu;
       check_menu:
 	if (!m)
 	   break;
-	goto check_warp;
-      check_warp:
+	goto check_activate;
+      check_activate:
 	if (!mi)
 	   break;
+	if (active_menu && active_item && active_menu != m)
+	   MenuActivateItem(active_menu, NULL);
+	MenuActivateItem(m, mi);
+#if 0
 	XWarpPointer(disp, None, mi->win, 0, 0, 0, 0, mi->text_w / 2,
 		     mi->text_h / 2);
+#endif
 	break;
      case XK_Return:
 	if (!mi->act_id)
@@ -2583,10 +2590,31 @@ struct _mdata
 };
 
 static void
+MenusSetEvents(int on)
+{
+   int                 i, j;
+   Menu               *m;
+   long                event_mask;
+
+   event_mask = (on) ? MENU_ITEM_EVENT_MASK : 0;
+
+   for (i = 0; i < Mode.cur_menu_depth; i++)
+     {
+	m = Mode.cur_menu[i];
+	if (!m)
+	   continue;
+
+	for (j = 0; j < m->num; j++)
+	   XSelectInput(disp, m->items[j]->win, event_mask);
+     }
+}
+
+static void
 SubmenuShowTimeout(int val, void *dat)
 {
    int                 mx, my;
    unsigned int        mw, mh;
+   MenuItem           *mi;
    EWin               *ewin2, *ewin;
    struct _mdata      *data;
 
@@ -2598,10 +2626,11 @@ SubmenuShowTimeout(int val, void *dat)
    if (!FindEwinByMenu(data->m))
       return;
 
-   GetWinXY(data->mi->win, &mx, &my);
-   GetWinWH(data->mi->win, &mw, &mh);
-   MenuShow(data->mi->child, 1);
-   ewin2 = FindEwinByMenu(data->mi->child);
+   mi = data->mi;
+   GetWinXY(mi->win, &mx, &my);
+   GetWinWH(mi->win, &mw, &mh);
+   MenuShow(mi->child, 1);
+   ewin2 = FindEwinByMenu(mi->child);
    if (ewin2)
      {
 	MoveEwin(ewin2,
@@ -2614,8 +2643,8 @@ SubmenuShowTimeout(int val, void *dat)
 	if (Conf.menuslide)
 	   UnShadeEwin(ewin2);
 
-	if (Mode.cur_menu[Mode.cur_menu_depth - 1] != data->mi->child)
-	   Mode.cur_menu[Mode.cur_menu_depth++] = data->mi->child;
+	if (Mode.cur_menu[Mode.cur_menu_depth - 1] != mi->child)
+	   Mode.cur_menu[Mode.cur_menu_depth++] = mi->child;
 
 	if (Conf.menusonscreen)
 	  {
@@ -2649,37 +2678,38 @@ SubmenuShowTimeout(int val, void *dat)
 			      }
 			 }
 		    }
+
+		  /* Disable menu item events while sliding */
+		  MenusSetEvents(0);
 		  SlideEwinsTo(menus, fx, fy, tx, ty, Mode.cur_menu_depth,
 			       Conf.shadespeed);
+		  MenusSetEvents(1);
+
 		  if (Conf.warpmenus)
-		     XWarpPointer(disp, None, None, 0, 0, 0, 0, xdist, ydist);
+		     XWarpPointer(disp, None, mi->win, 0, 0, 0, 0,
+				  mi->text_w / 2, mi->text_h / 2);
 	       }
 	  }
      }
    val = 0;
 }
 
-int
-MenusEventMouseIn(XEvent * ev)
+static void
+MenuActivateItem(Menu * m, MenuItem * mi)
 {
    static struct _mdata mdata;
-   Window              win = ev->xcrossing.window;
-   Menu               *m;
-   MenuItem           *mi;
    int                 i, j;
 
-   m = FindMenuItem(win, &mi);
-   if (m == NULL)
-      return 0;
+   if (m->sel_item)
+     {
+	m->sel_item->state = STATE_NORMAL;
+	MenuDrawItem(m, m->sel_item, 1);
+     }
+
+   m->sel_item = mi;
+
    if (mi == NULL)
-      goto done;
-
-   PagerHideAllHi();
-
-   if ((win == mi->icon_win) && (ev->xcrossing.detail == NotifyAncestor))
-      goto done;
-   if ((win == mi->win) && (ev->xcrossing.detail == NotifyInferior))
-      goto done;
+      return;
 
    mi->state = STATE_HILITED;
    MenuDrawItem(m, mi, 1);
@@ -2716,6 +2746,29 @@ MenusEventMouseIn(XEvent * ev)
 	     DoIn("SUBMENU_SHOW", 0.2, SubmenuShowTimeout, 0, &mdata);
 	  }
      }
+}
+
+int
+MenusEventMouseIn(XEvent * ev)
+{
+   Window              win = ev->xcrossing.window;
+   Menu               *m;
+   MenuItem           *mi;
+
+   m = FindMenuItem(win, &mi);
+   if (m == NULL)
+      return 0;
+   if (mi == NULL)
+      goto done;
+
+   PagerHideAllHi();
+
+   if ((win == mi->icon_win) && (ev->xcrossing.detail == NotifyAncestor))
+      goto done;
+   if ((win == mi->win) && (ev->xcrossing.detail == NotifyInferior))
+      goto done;
+
+   MenuActivateItem(m, mi);
 
  done:
    return 1;
@@ -2739,8 +2792,7 @@ MenusEventMouseOut(XEvent * ev)
    if ((win == mi->win) && (ev->xcrossing.detail == NotifyInferior))
       goto done;
 
-   mi->state = STATE_NORMAL;
-   MenuDrawItem(m, mi, 1);
+   MenuActivateItem(m, NULL);
 
  done:
    return 1;
