@@ -34,7 +34,6 @@ CFLAGS="$CFLAGS -Wall"
 
 AC_CONFIG_FILES([
 Makefile
-giblib.spec
 giblib-config
 giblib.pc
 giblib/Makefile
