@@ -72,6 +72,7 @@ int main (int argc, char **argv)
    int blendtest = 0;
    int rotate = 0;
    int rottest = 0;
+   int scaleup = 0;
    
    for (i = 1; i < argc; i++)
      {
@@ -86,6 +87,8 @@ int main (int argc, char **argv)
 	     interactive = 0;
 	     loop = 1;
 	  }
+	else if (!strcmp(argv[i], "-up"))
+	   scaleup = 1;
 	else if (!strcmp(argv[i], "-blend"))
 	   blend = 1;
 	else if (!strcmp(argv[i], "-blendtest"))
@@ -165,7 +168,10 @@ int main (int argc, char **argv)
      {
 	if (!root)
 	  {
-	     XResizeWindow(disp, win, w, h);
+	     if (scaleup)
+		XResizeWindow(disp, win, w * 4, h * 4);
+	     else
+		XResizeWindow(disp, win, w, h);
 	     XMapWindow(disp, win);
 	  }
 	if (scale)
@@ -178,9 +184,6 @@ int main (int argc, char **argv)
 	XSync(disp, False);
      }
    printf("rend\n");
-   gettimeofday(&timev,NULL);
-   sec1=(int)timev.tv_sec; /* and stores it so we can time outselves */
-   usec1=(int)timev.tv_usec; /* we will use this to vary speed of rot */
 
    if (!blendtest)
      {
@@ -196,13 +199,55 @@ int main (int argc, char **argv)
    imlib_context_set_operation(IMLIB_OP_COPY);
    imlib_context_set_image(im);
    
+   gettimeofday(&timev,NULL);
+   sec1=(int)timev.tv_sec; /* and stores it so we can time outselves */
+   usec1=(int)timev.tv_usec; /* we will use this to vary speed of rot */
+   
    if (loop)
      {
-	for (i = 0; i < w; i++)
+	if (scaleup)
 	  {
-	     imlib_render_image_on_drawable_at_size(0, 0,
-						    w - i, (((w - i) * h) / w));
-	     pixels += (w - i) * (((w - i) * h) / w);
+	     for (i = 0; i < w * 3; i+= 8)
+	       {
+		  if (!blendtest)
+		     imlib_render_image_on_drawable_at_size(0, 0,
+							    w + i, (((w + i) * h) / w));
+		  else
+		    {
+		       Imlib_Image im_tmp;
+		       im_tmp = imlib_create_cropped_scaled_image(0, 0, w, h, 
+								  w + i, (((w + i) * h) / w));
+		       if (im_tmp)
+			 {
+			    imlib_context_set_image(im_tmp);
+			    imlib_free_image();
+			 }
+		       imlib_context_set_image(im);
+		    }
+		  pixels += (w - i) * (((w - i) * h) / w);
+	       }
+	  }
+	else
+	  {
+	     for (i = 0; i < w; i++)
+	       {
+		  if (!blendtest)
+		     imlib_render_image_on_drawable_at_size(0, 0,
+							    w - i, (((w - i) * h) / w));
+		  else
+		    {
+		       Imlib_Image im_tmp;
+		       im_tmp = imlib_create_cropped_scaled_image(0, 0, w, h, 
+								  w - i, (((w - i) * h) / w));
+		       if (im_tmp)
+			 {
+			    imlib_context_set_image(im_tmp);
+			    imlib_free_image();
+			 }
+		       imlib_context_set_image(im);
+		    }
+		  pixels += (w - i) * (((w - i) * h) / w);
+	       }
 	  }
      }
    else if (blendtest)
@@ -520,14 +565,13 @@ int main (int argc, char **argv)
    sec2=(int)timev.tv_sec; /* and stores it so we can time outselves */
    usec2=(int)timev.tv_usec; /* we will use this to vary speed of rot */
    printf("done\n");
-   i = sec2 - sec1;
-   j = usec2 - usec1;
-   while (j < 0)
      {
-	i++;
-	j += 1000000;
+	double t1, t2;
+	
+	t1 = (double)sec1 + ((double)usec1 / 1000000);
+	t2 = (double)sec2 + ((double)usec2 / 1000000);
+	sec = t2 - t1;
      }
-   sec = (double)i + ((double)j / 1000000);
    printf("%3.3f sec, %3.3f M pixels (%i)\n", sec, (double)pixels / 1000000, pixels);
    printf("%3.3f Mpixels / sec\n", (double)(pixels) / (sec * 1000000));
    return 0;
