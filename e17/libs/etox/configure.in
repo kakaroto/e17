@@ -289,11 +289,20 @@ AC_SUBST(imlib2_libs)
 imlib2_cflags=`imlib2-config --cflags`
 imlib2_libs=`imlib2-config --libs`
 
+dnl Look for jade for sgml translations.
+AC_ARG_WITH(dbsheets,
+       [  --with-dbsheets=DIR     use DIR to specify your DocBook stylesheets installation path.],
+       DB_STYLESHEETS="$withval", DB_STYLESHEETS="/usr/lib/sgml/stylesheets/dsssl/docbook/nwalsh")
+AC_SUBST(DB_STYLESHEETS)
+AC_PATH_PROG(JADE, jade)
+AM_CONDITIONAL(HAVE_JADE, test "x$JADE" != "x" && test -d "$DB_STYLESHEETS")
+
 AC_OUTPUT([
 Makefile
 etox-config
 src/Makefile
 test/Makefile
+doc/Makefile
 ], [
 chmod +x etox-config
 ]
