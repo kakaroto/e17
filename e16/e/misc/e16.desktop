@@ -1,0 +1,7 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=E16
+Comment=This session starts the Enlightenment (e16) window manager
+Exec=starte16
+Icon=
+Type=Application

@@ -1,7 +1,7 @@
 [Desktop Entry]
 Encoding=UTF-8
 Name=E-GNOME
-Comment=This session starts GNOME using enlightenment as window manager
+Comment=This session starts GNOME using enlightenment (e16) as window manager
 Exec=starte16 GNOME
 Icon=
 Type=Application
