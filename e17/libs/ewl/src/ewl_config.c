@@ -9,10 +9,7 @@
 static E_DB_File *config_db = NULL;
 
 static int create_user_config(void);
-
 static int open_user_config(void);
-static int open_system_config(void);
-
 static int close_config(void);
 
 extern Ewd_List *ewl_window_list;
@@ -30,7 +27,7 @@ ewl_config_init(void)
 	else
 		create_user_config();
 
-
+	return 1;
 }
 
 static int
@@ -91,21 +88,6 @@ open_user_config(void)
 }
 
 static int
-open_system_config(void)
-{
-	char path[256];
-
-	snprintf(path, 256, PACKAGE_DATA_DIR "/config/system.db");
-
-	config_db = e_db_open_read(path);
-
-	if (config_db)
-		return 1;
-
-	return -1;
-}
-
-static int
 close_config(void)
 {
 	if (config_db)
@@ -156,13 +138,14 @@ ewl_config_set_float(char *k, float v)
 char *
 ewl_config_get_str(char *k)
 {
-	char *ret;
+	char *ret = NULL;
 
-	open_user_config();
+	if ((open_user_config()) != -1)
+	  {
+		  ret = e_db_str_get(config_db, k);
 
-	ret = e_db_str_get(config_db, k);
-
-	close_config();
+		  close_config();
+	  }
 
 	return ret;
 }
@@ -170,13 +153,14 @@ ewl_config_get_str(char *k)
 int
 ewl_config_get_int(char *k, int *v)
 {
-	int ret;
+	int ret = -1;
 
-	open_user_config();
+	if ((open_user_config()) != -1)
+	  {
+		  ret = e_db_int_get(config_db, k, v);
 
-	ret = e_db_int_get(config_db, k, v);
-
-	close_config();
+		  close_config();
+	  }
 
 	return ret;
 }
@@ -184,13 +168,14 @@ ewl_config_get_int(char *k, int *v)
 int
 ewl_config_get_float(char *k, float *v)
 {
-	int ret;
+	int ret = -1;
 
-	open_user_config();
+	if ((open_user_config()) != -1)
+	  {
+		  ret = e_db_float_get(config_db, k, v);
 
-	ret = e_db_float_get(config_db, k, v);
-
-	close_config();
+		  close_config();
+	  }
 
 	return ret;
 }

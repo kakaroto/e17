@@ -63,9 +63,9 @@ main(int argc, char **argv)
 {
 	memset(&e_conf, 0, sizeof(struct _ewl_config_main));
 
-	ewl_config_read_configs();
-
 	ewl_init(argc, argv);
+
+	ewl_config_read_configs();
 
 	ewl_theme_data_set_default("/appearance/box/horizontal/base/visible",
 				   "no");
@@ -513,6 +513,8 @@ ewl_config_defaults_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 void
 ewl_config_exit_cb(Ewl_Widget * w, void *user_data, void *ev_data)
 {
+	ewl_widget_destroy_recursive(e_conf.main_win);
+
 	return;
 	w = NULL;
 	ev_data = NULL;

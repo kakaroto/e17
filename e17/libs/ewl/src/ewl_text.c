@@ -425,7 +425,7 @@ ewl_text_get_index_at(Ewl_Widget * w, double x, double y, int *index)
 	int ret;
 
 	DENTER_FUNCTION;
-	DCHECK_PARAM_PTR("w", w);
+	DCHECK_PARAM_PTR_RET("w", w, -1);
 
 	t = EWL_TEXT(w);
 

@@ -11,6 +11,9 @@ Ewl_Options ewl_options;
 static void ewl_init_parse_options(int argc, char **argv);
 static void ewl_parse_option_array(int argc, char **argv);
 
+void ewl_reread_config(int val, void *data);
+
+
 void
 ewl_init(int argc, char **argv)
 {
