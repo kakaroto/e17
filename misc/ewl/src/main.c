@@ -2,13 +2,14 @@
 #include <stdlib.h>
 #include "ewl.h"
 
-char cb_test_option(int argc, char *argv[]);
-char cb_mouse(EwlWidget *w, EwlEvent *ev, EwlData *d);
-char cb_keydown(EwlWidget *w, EwlEvent *ev, EwlData *d);
+EwlBool cb_test_option(int argc, char *argv[]);
+EwlBool cb_mouse(EwlWidget *w, EwlEvent *ev, EwlData *d);
+EwlBool cb_keydown(EwlWidget *w, EwlEvent *ev, EwlData *d);
+EwlBool cb_resize(EwlWidget *w, EwlEvent *ev, EwlData *d);
 
+EwlWidget *win;
 int main(int argc, char *argv[])
 {
-	EwlWidget *win;
 	EwlWidget *box;
 	EwlWidget *btn;
 	int        t = 0;
@@ -36,6 +37,7 @@ int main(int argc, char *argv[])
 	btn = ewl_button_new_with_label("Test Button");
 	ewl_callback_add(btn, EWL_EVENT_MOUSEDOWN, cb_mouse, NULL);
 	ewl_callback_add(btn, EWL_EVENT_MOUSEUP, cb_mouse, NULL);
+	ewl_callback_add(btn, EWL_EVENT_MOUSEUP, cb_resize, NULL);
 	ewl_box_pack_end(box,btn);
 	ewl_widget_show(btn);
 
@@ -61,7 +63,7 @@ char cb_test_option(int argc, char *argv[])
 	return 1;
 }
 
-char cb_mouse(EwlWidget *w, EwlEvent *ev, EwlData *d)
+EwlBool cb_mouse(EwlWidget *w, EwlEvent *ev, EwlData *d)
 {
 	char evtype[8] = "";
 
@@ -76,9 +78,15 @@ char cb_mouse(EwlWidget *w, EwlEvent *ev, EwlData *d)
 	return TRUE;
 }
 
-char cb_keydown(EwlWidget *w, EwlEvent *ev, EwlData *d)
+EwlBool cb_keydown(EwlWidget *w, EwlEvent *ev, EwlData *d)
 {
 	fprintf(stderr,"keydown in widget 0x%08x\n", (unsigned int) w);
 	ewl_quit();
+	return TRUE;
+}
+
+EwlBool cb_resize(EwlWidget *w, EwlEvent *ev, EwlData *d)
+{
+	ewl_window_resize(win,50,50);
 	return TRUE;
 }

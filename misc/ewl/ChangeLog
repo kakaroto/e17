@@ -757,3 +757,16 @@ in question creates X drawables.
 
 misc cleanups.  fixed the ewlwindow.h header (whoops!).
 
+-----
+20000818-2301-PDT, pabs
+
+- add a EWL_EVENT_RESIZE hook for EWlWindwos -- they __should__ resize
+automatically on resize events now, but they don't -- something is
+really fucked up here.
+- showing and hiding widgets now queues a resize on them ala gtk+
+(well, techincally gtk+ queues a resize on the parent, but we 
+already do soemthign similar with the upward-propagating NEEDS_RESIZE
+flag).
+- misc cleanups to main.c (callbacks should be EWlBool, not char :P).
+- sanity checks on the value passed to XResizeWindow().. whoops. :)
+

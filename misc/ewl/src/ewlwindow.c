@@ -92,6 +92,19 @@ EwlBool _cb_ewl_window_event_handler(EwlWidget *widget, EwlEvent *ev,
 		ewl_widget_set_flag(widget, NEEDS_RESIZE, TRUE);
 		ewl_container_resize_children(widget);
 		break;
+	case EWL_EVENT_RESIZE:
+		fprintf(stderr,"resizing window\n");
+		if (widget->layout->req->w < 1)
+				widget->layout->req->w = 1;
+		if (widget->layout->req->w > EWL_WINDOW_MAX_WIDTH)
+				widget->layout->req->w = EWL_WINDOW_MAX_WIDTH;
+		if (widget->layout->req->h < 1)
+				widget->layout->req->h = 1;
+		if (widget->layout->req->h > EWL_WINDOW_MAX_HEIGHT)
+				widget->layout->req->h = EWL_WINDOW_MAX_HEIGHT;
+		width = widget->layout->req->w;
+		height = widget->layout->req->h;
+		XResizeWindow(s->disp,window->xwin,width,height);
 	default:
 		break;
 	}
@@ -147,6 +160,8 @@ void         ewl_window_init(EwlWindow *win, EwlWindowType type,
 	/*ewl_callback_add(widget,EWL_EVENT_SHOW,_cb_sample_nested,NULL);*/
 	ewl_callback_add(widget, EWL_EVENT_HIDE,
 	                 _cb_ewl_window_event_handler, NULL);
+	ewl_callback_add(widget, EWL_EVENT_RESIZE,
+	                 _cb_ewl_window_event_handler, NULL);
 	ewl_callback_add(widget, EWL_EVENT_EXPOSE,
 	                 _cb_ewl_window_event_handler, NULL);
 	ewl_callback_add(widget, EWL_EVENT_CONFIGURE,
@@ -155,6 +170,7 @@ void         ewl_window_init(EwlWindow *win, EwlWindowType type,
 	/* window properties */
 	win->type	= type;
 
+	fprintf(stderr,"0. ewl_window_init(): w = %d, h = %d\n", w, h);
 	if (w==-1) {
 		if (ewl_theme_get_int("/EwlWindow/width", &t))
 			w = t;
@@ -167,7 +183,9 @@ void         ewl_window_init(EwlWindow *win, EwlWindowType type,
 		else 
 			h = EWL_DEFAULT_WINDOW_HEIGHT;
 	}
+	fprintf(stderr,"1. ewl_window_init(): w = %d, h = %d\n", w, h);
 	ewl_widget_resize(widget,w,h);
+	fprintf(stderr,"2. ewl_window_init(): w = %d, h = %d\n", w, h);
 		
 	if (!title)
 		title = ewl_theme_get_string("/EwlWindow/title");
@@ -187,7 +205,7 @@ void         ewl_window_init(EwlWindow *win, EwlWindowType type,
 	else 
 		win->name_hint  = EWL_DEFAULT_WINDOW_NAME_H;
 
-	win->decoration_hint = TRUE;
+	win->decoration_hint = FALSE;
 
 	FUNC_END("ewl_window_init");
 	return;
@@ -492,7 +510,7 @@ void	ewl_window_move(EwlWidget *widget, int x, int y)
 	FUNC_BGN("ewl_window_move");
 	fprintf(stderr,"ewl_window_move: widget=0x%08x, x = %8d, y = %8d\n",
 		(unsigned int) widget, x, y);
-	ewl_widget_set_rect(widget,&x,&y,0,0);
+	ewl_widget_move(widget,x,y);
 	FUNC_END("ewl_window_move");
 	return;
 }
@@ -502,7 +520,7 @@ void	ewl_window_resize(EwlWidget *widget, int w, int h)
 	FUNC_BGN("ewl_window_resize");
 	fprintf(stderr,"ewl_window_resize: widget=0x%08x, x = %8d, y = %8d\n",
 		(unsigned int) widget, h, w);
-	ewl_widget_set_rect(widget,0,0, (w>-1)?(&w):0,(h>-1)?(&h):0);
+	ewl_widget_resize(widget,(w>-1)?(w):1,(h>-1)?(h):1);
 	FUNC_END("ewl_window_resize");
 	return;
 }
@@ -512,7 +530,7 @@ void	ewl_window_moveresize(EwlWidget *widget, int x, int y, int w, int h)
 	FUNC_BGN("ewl_window_moveresize");
 	fprintf(stderr,"ewl_window_moveresize: widget=0x%08x, x = %8d, y = %8d\n",
 		(unsigned int) widget, w, h);
-	ewl_widget_set_rect(widget,&x, &y, (w>-1)?(&w):0, (h>-1)?(&h):0);
+	ewl_widget_moveresize(widget,x,y,(w>-1)?(w):0,(h>-1)?(h):0);
 	FUNC_END("ewl_window_moveresize");
 	return;
 }

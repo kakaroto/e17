@@ -897,11 +897,17 @@ void       ewl_widget_show(EwlWidget *widget)
 	} else {
 		ewl_widget_set_flag(widget, VISIBLE, TRUE);
 		ewl_widget_set_needs_resize(widget);
-		ev = ewl_event_new();
+		ev = ewl_event_new_by_type(EWL_EVENT_SHOW);
 		if (!ev)	{
 			ewl_debug("ewl_widget_show", EWL_NULL_ERROR, "ev");
 		} else {
-			ev->type = EWL_EVENT_SHOW;
+			ev->widget = widget;
+			ewl_event_queue(ev);
+		}
+		ev = ewl_event_new_by_type(EWL_EVENT_RESIZE);
+		if (!ev)	{
+			ewl_debug("ewl_widget_show", EWL_NULL_ERROR, "ev");
+		} else {
 			ev->widget = widget;
 			ewl_event_queue(ev);
 		}
@@ -933,11 +939,17 @@ void       ewl_widget_hide(EwlWidget *widget)
 		ewl_debug("ewl_widget_hide", EWL_NULL_WIDGET_ERROR, "widget");
 	} else {
 		ewl_widget_set_flag(widget, VISIBLE, FALSE);
-		ev = ewl_event_new();
+		ev = ewl_event_new_by_type(EWL_EVENT_HIDE);
 		if (!ev)	{
 			ewl_debug("ewl_widget_hide", EWL_NULL_ERROR, "ev");
 		} else {
-			ev->type = EWL_EVENT_HIDE;
+			ev->widget = widget;
+			ewl_event_queue(ev);
+		}
+		ev = ewl_event_new_by_type(EWL_EVENT_RESIZE);
+		if (!ev)	{
+			ewl_debug("ewl_widget_show", EWL_NULL_ERROR, "ev");
+		} else {
 			ev->widget = widget;
 			ewl_event_queue(ev);
 		}

@@ -15,9 +15,9 @@ EwlWidget *ewl_widget_new()
 	return w;
 }
 
-char _cb_ewl_widget_event_handler(EwlWidget *w, EwlEvent *ev, EwlData *d)
+EwlBool _cb_ewl_widget_event_handler(EwlWidget *w, EwlEvent *ev, EwlData *d)
 {
-	char propagate = 1;
+	EwlBool propagate = TRUE;
 
 	switch (ev->type)	{
 	case EWL_EVENT_RESIZE:
@@ -52,7 +52,7 @@ void       ewl_widget_init(EwlWidget *w)
 	ewl_widget_set_flag(w, NEEDS_REFRESH, TRUE);
 	ewl_widget_set_flag(w, CAN_RESIZE, TRUE);
 
-	ewl_widget_set_rect(w,&t,&t,&t,&t);
+	/*ewl_widget_set_rect(w,&t,&t,&t,&t);*/
 	ewl_widget_set_padding(w,&t,&t,&t,&t);
 	w->layers=  0;
 	w->layout = ewl_layout_new();
@@ -350,6 +350,7 @@ EwlRect         *ewl_widget_get_rect(EwlWidget *widget)
 void             ewl_widget_set_rect(EwlWidget *widget,
                                      int *x, int *y, int *w, int *h)
 {
+	EwlEvent *ev = NULL;
 	FUNC_BGN("ewl_widget_set_rect");
 	if (!widget) {
 		ewl_debug("ewl_widget_set_rect", EWL_NULL_WIDGET_ERROR, "widget");
@@ -357,8 +358,17 @@ void             ewl_widget_set_rect(EwlWidget *widget,
 		ewl_debug("ewl_widget_set_rect", EWL_GENERIC_ERROR,
 		          "widget cannot be resized");
 	} else {
-		ewl_layout_set_rect(widget->layout,ewl_rect_new_with_values(x,y,w,h));
+		ewl_layout_set_req_rect(widget->layout,
+		                        ewl_rect_new_with_values(x,y,w,h));
+		if (x||y) ewl_widget_set_needs_refresh(widget);
 		if (w||h) ewl_widget_set_needs_resize(widget);
+		ev = ewl_event_new_by_type(EWL_EVENT_RESIZE);
+		if (!ev)	{
+			ewl_debug("ewl_widget_set_rect", EWL_NULL_ERROR, "ev");
+		} else {
+			ev->widget = widget;
+			ewl_event_queue(ev);
+		}
 	}
 	FUNC_END("ewl_widget_set_rect");
 	return;
