@@ -39,7 +39,7 @@ ewl_container_init(Ewl_Container * c, char *appearance, Ewl_Child_Add add,
 	 * Initialize the fields inherited from the widget class
 	 */
 	ewl_widget_init(w, appearance);
-	w->recursive = TRUE;
+	w->flags |= EWL_FLAGS_RECURSIVE;
 
 	/*
 	 * Initialize the fields specific to the container class.
@@ -401,7 +401,7 @@ Ewl_Widget     *ewl_container_get_child_at_recursive(Ewl_Container * widget,
 	 */
 	while ((child2 = ewl_container_get_child_at(EWL_CONTAINER(child),
 						    x, y))) {
-		if (child2->recursive)
+		if (RECURSIVE(child2))
 			child = child2;
 		else
 			DRETURN_PTR(child2, DLEVEL_STABLE);

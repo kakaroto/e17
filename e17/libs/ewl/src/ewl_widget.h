@@ -1,4 +1,3 @@
-
 #ifndef __EWL_WIDGET_H__
 #define __EWL_WIDGET_H__
 
@@ -6,7 +5,8 @@ typedef struct _ewl_widget Ewl_Widget;
 
 #define EWL_WIDGET(widget) ((Ewl_Widget *) widget)
 
-struct _ewl_widget {
+struct _ewl_widget
+{
 	/*
 	 * These fields are the basic information about how this widget
 	 * relates to others.
@@ -27,13 +27,6 @@ struct _ewl_widget {
 	int             layer;
 
 	/*
-	 * This is used to determine whether this is a container class, it
-	 * does break the object heirarchy, but seems the most effective way
-	 * to allow searching for children.
-	 */
-	int             recursive;
-
-	/*
 	 * And these are for keeping track of the appearance, behavior
 	 * states of the widget and the data attached to the widget.
 	 */
@@ -45,10 +38,7 @@ struct _ewl_widget {
 	 * Flags for determining the current visibility of the widget as well
 	 * as if it has been realized
 	 */
-	Ewl_Visibility  visible;
-
-	Ewd_List       *fx;
-	Ewd_List       *fx_queues;
+	Ewl_Widget_Flags       flags;
 };
 
 /*
@@ -151,11 +141,12 @@ void            ewl_widget_disable(Ewl_Widget * w);
  */
 void            ewl_widget_rebuild_appearance(Ewl_Widget *w);
 
-#define RECURSIVE(w) EWL_WIDGET(w)->recursive
+#define RECURSIVE(w) (EWL_WIDGET(w)->flags & EWL_FLAGS_RECURSIVE)
 
-#define REALIZED(w) (EWL_WIDGET(w)->visible & EWL_VISIBILITY_REALIZED)
-#define VISIBLE(w) (EWL_WIDGET(w)->visible & EWL_VISIBILITY_SHOWN)
-#define HIDDEN(w) (!(EWL_WIDGET(w)->visible & EWL_VISIBILITY_SHOWN))
+#define REALIZED(w) (EWL_WIDGET(w)->flags & EWL_FLAGS_REALIZED)
+#define VISIBLE(w) (EWL_WIDGET(w)->flags & EWL_FLAGS_SHOWN)
+#define OBSCURED(w) (EWL_WIDGET(w)->flags & EWL_FLAGS_OBSCURED)
+#define HIDDEN(w) (!(EWL_WIDGET(w)->flags & EWL_FLAGS_SHOWN))
 #define LAYER(w) EWL_WIDGET(w)->layer
 
 #endif				/* __EWL_WIDGET_H__ */

@@ -8,13 +8,16 @@ typedef struct _ewl_object Ewl_Object;
 
 #define EWL_OBJECT(object) ((Ewl_Object *) object)
 
-struct _ewl_object {
-	struct {
+struct _ewl_object
+{
+	struct
+	{
 		int             x, y;
 		unsigned int    w, h;
 	} current;
 
-	struct {
+	struct
+	{
 		unsigned int    w, h;
 	} preferred, maximum, minimum;
 
@@ -23,12 +26,12 @@ struct _ewl_object {
 	 * insets refers to the space padded inside the widget where children
 	 * should not be laid out.
 	 */
-	struct {
+	struct
+	{
 		int             l, r, t, b;
 	} pad, insets;
 
-	Ewl_Fill_Policy fill_policy;
-	Ewl_Alignment   alignment;
+	unsigned int flags;
 };
 
 void            ewl_object_init(Ewl_Object * o);

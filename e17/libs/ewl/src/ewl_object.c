@@ -29,8 +29,7 @@ void ewl_object_init(Ewl_Object * o)
 	/*
 	 * Set the default fill policy and alignment for the object.
 	 */
-	o->fill_policy = EWL_FILL_POLICY_NORMAL;
-	o->alignment = EWL_ALIGNMENT_LEFT | EWL_ALIGNMENT_TOP;
+	o->flags = EWL_FILL_POLICY_NORMAL | EWL_ALIGNMENT_LEFT | EWL_ALIGNMENT_TOP;
 }
 
 /**
@@ -446,9 +445,9 @@ void ewl_object_request_w(Ewl_Object * o, unsigned int w)
 	/*
 	 * Bound the width by the preferred size first.
 	 */
-	if ((w < o->preferred.w && !(o->fill_policy & EWL_FILL_POLICY_HSHRINK))
+	if ((w < o->preferred.w && !(o->flags & EWL_FILL_POLICY_HSHRINK))
 	    || (w > o->preferred.w &&
-		!(o->fill_policy & EWL_FILL_POLICY_HFILL)))
+		!(o->flags & EWL_FILL_POLICY_HFILL)))
 		w = o->preferred.w;
 
 	/*
@@ -485,9 +484,9 @@ void ewl_object_request_h(Ewl_Object * o, unsigned int h)
 	/*
 	 * Bound the width by the preferred size first.
 	 */
-	if ((h < o->preferred.h && !(o->fill_policy & EWL_FILL_POLICY_VSHRINK))
+	if ((h < o->preferred.h && !(o->flags & EWL_FILL_POLICY_VSHRINK))
 	    || (h > o->preferred.h &&
-		!(o->fill_policy & EWL_FILL_POLICY_VFILL)))
+		!(o->flags & EWL_FILL_POLICY_VFILL)))
 		h = o->preferred.h;
 
 	/*
@@ -1019,7 +1018,11 @@ inline void ewl_object_set_alignment(Ewl_Object * o, Ewl_Alignment align)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("o", o);
 
-	o->alignment = align;
+	/*
+	 * Keep the fill policy portion and fill in the alignment.
+	 */
+	o->flags &= EWL_FILL_POLICY_MASK;
+	o->flags |= align;
 
 	if (EWL_WIDGET(o)->parent)
 		ewl_widget_configure(EWL_WIDGET(o)->parent);
@@ -1039,7 +1042,11 @@ inline void ewl_object_set_fill_policy(Ewl_Object * o, Ewl_Fill_Policy fill)
 
 	DCHECK_PARAM_PTR("o", o);
 
-	o->fill_policy = fill;
+	/*
+	 * Keep the alignment portion and fill in the fill policy.
+	 */
+	o->flags &= EWL_ALIGNMENT_MASK;
+	o->flags |= fill;
 
 	if (EWL_WIDGET(o)->parent)
 		ewl_widget_configure(EWL_WIDGET(o)->parent);
@@ -1059,7 +1066,7 @@ inline          Ewl_Alignment ewl_object_get_alignment(Ewl_Object * o)
 
 	DCHECK_PARAM_PTR_RET("o", o, EWL_ALIGNMENT_LEFT);
 
-	DRETURN_INT(o->alignment, DLEVEL_STABLE);
+	DRETURN_INT((o->flags & EWL_ALIGNMENT_MASK), DLEVEL_STABLE);
 }
 
 
@@ -1075,5 +1082,5 @@ inline          Ewl_Fill_Policy ewl_object_get_fill_policy(Ewl_Object * o)
 
 	DCHECK_PARAM_PTR_RET("o", o, EWL_FILL_POLICY_NORMAL);
 
-	DRETURN_INT(o->fill_policy, DLEVEL_STABLE);
+	DRETURN_INT((o->flags & EWL_FILL_POLICY_MASK), DLEVEL_STABLE);
 }

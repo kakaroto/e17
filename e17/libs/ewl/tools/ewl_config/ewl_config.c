@@ -83,7 +83,9 @@ main(int argc, char **argv)
 
 	ewl_init(argc, argv);
 
+	/*
 	avail = ewl_fx_get_available();
+	*/
 
 	ewl_config_read_configs();
 
@@ -257,6 +259,7 @@ main(int argc, char **argv)
 			e_conf.page_debug, e_conf.page_debug_label);
 
 	/* FX Page */
+	/*
 	e_conf.page_fx_label = ewl_text_new("FX Settings");
 	ewl_text_set_font_size(EWL_TEXT(e_conf.page_fx_label), 8);
 	ewl_widget_show(e_conf.page_fx_label);
@@ -379,6 +382,7 @@ main(int argc, char **argv)
 
 	ewl_notebook_append_page(EWL_NOTEBOOK(e_conf.notebook), e_conf.page_fx,
 				 e_conf.page_fx_label);
+	*/
 
 	/* Theme Page */
 	e_conf.page_theme_label = ewl_text_new("Theme Settings");

@@ -103,7 +103,7 @@ void ewl_menu_item_init(Ewl_Menu_Item * item, char *image, char *text)
 	 * level.
 	 */
 	ewl_box_init(EWL_BOX(item), EWL_ORIENTATION_HORIZONTAL);
-	RECURSIVE(item) = FALSE;
+	EWL_WIDGET(item)->flags &= ~EWL_FLAGS_RECURSIVE;
 
 	/*
 	 * Create the icon if one is requested.

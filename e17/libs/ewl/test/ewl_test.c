@@ -62,13 +62,13 @@ void            __create_selectionbar_test_window(Ewl_Widget * w,
 void
 __focus_tree_test_window(Ewl_Widget *w, void *ev_data, void *user_data)
 {
-	printf("Button focus IN\n");
+	printf("Button focus IN, state %s\n", w->bit_state);
 }
 
 void
 __unfocus_tree_test_window(Ewl_Widget *w, void *ev_data, void *user_data)
 {
-	printf("Button focus OUT\n");
+	printf("Button focus OUT, state %s\n", w->bit_state);
 }
 
 void

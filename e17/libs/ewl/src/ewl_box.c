@@ -308,7 +308,7 @@ __ewl_box_configure_calc(Ewl_Box * b, int *fill_size, int *align_size)
 		 * Place the child on a list depending on it's matching
 		 * alignment. First check for top/left alignment.
 		 */
-		if (VISIBLE(child) & EWL_VISIBILITY_SHOWN) {
+		if (VISIBLE(child)) {
 
 			/*
 			 * Set the initial fill size to the preferred size.
@@ -468,7 +468,7 @@ __ewl_box_configure_layout(Ewl_Box * b, int *x, int *y, int *fill,
 	ewd_list_goto_first(EWL_CONTAINER(b)->children);
 	while ((child = ewd_list_next(EWL_CONTAINER(b)->children))) {
 
-		if (VISIBLE(child) & EWL_VISIBILITY_SHOWN) {
+		if (VISIBLE(child)) {
 
 			/*
 			 * Position this child based on the determined values.

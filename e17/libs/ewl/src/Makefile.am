@@ -24,7 +24,6 @@ installed_headers_DATA = \
 	ewl_fileselector.h \
 	ewl_floater.h \
 	ewl_filedialog.h \
-	ewl_fx.h \
 	ewl_grid.h \
 	ewl_image.h \
 	ewl_imenu.h \
@@ -68,7 +67,6 @@ libewl_la_SOURCES = \
 	ewl_fileselector.c \
 	ewl_floater.c \
 	ewl_filedialog.c \
-	ewl_fx.c \
 	ewl_grid.c \
 	ewl_image.c \
 	ewl_imenu.c \

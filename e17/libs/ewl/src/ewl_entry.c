@@ -76,7 +76,7 @@ void ewl_entry_init(Ewl_Entry * e, char *text)
 	ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FILL_POLICY_HSHRINK |
 			EWL_FILL_POLICY_HFILL);
 
-	w->recursive = FALSE;
+	w->flags &= ~EWL_FLAGS_RECURSIVE;
 
 	e->text = ewl_text_new(text);
 	ewl_container_append_child(EWL_CONTAINER(e), e->text);

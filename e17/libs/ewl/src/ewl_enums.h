@@ -91,6 +91,7 @@ enum _ewl_state
  * within it's container.
  */
 typedef enum _ewl_alignment Ewl_Alignment;
+#define EWL_ALIGNMENT_MASK 0xFF
 
 enum _ewl_alignment
 {
@@ -106,30 +107,34 @@ enum _ewl_alignment
  * stretched to fill available space or keep their current size.
  */
 typedef enum _ewl_fill_policy Ewl_Fill_Policy;
+#define EWL_FILL_POLICY_MASK 0xFF00
 
 enum _ewl_fill_policy
 {
 	EWL_FILL_POLICY_NONE = 0,
-	EWL_FILL_POLICY_HSHRINK = 1,
-	EWL_FILL_POLICY_VSHRINK = 2,
+	EWL_FILL_POLICY_HSHRINK = 0x1000,
+	EWL_FILL_POLICY_VSHRINK = 0x2000,
 	EWL_FILL_POLICY_SHRINK =
 	    EWL_FILL_POLICY_HSHRINK | EWL_FILL_POLICY_VSHRINK,
-	EWL_FILL_POLICY_HFILL = 0x10,
-	EWL_FILL_POLICY_VFILL = 0x20,
+	EWL_FILL_POLICY_HFILL = 0x4000,
+	EWL_FILL_POLICY_VFILL = 0x8000,
 	EWL_FILL_POLICY_FILL = EWL_FILL_POLICY_HFILL | EWL_FILL_POLICY_VFILL,
 	EWL_FILL_POLICY_NORMAL = EWL_FILL_POLICY_FILL | EWL_FILL_POLICY_SHRINK
 };
 
 /*
- * Visibility identifies whether a widget is shown and has been realized
+ * Flags identifying whether a widget is shown, has been realized, or is
+ * recursive (ie. a container).
  */
-typedef enum _ewl_visibility Ewl_Visibility;
+typedef enum _ewl_widget_flags Ewl_Widget_Flags;
 
-enum _ewl_visibility
+enum _ewl_widget_flags
 {
-	EWL_VISIBILITY_HIDDEN = 0x0,
-	EWL_VISIBILITY_SHOWN = 0x1,
-	EWL_VISIBILITY_REALIZED = 0x2
+	EWL_FLAGS_HIDDEN = 0x0,
+	EWL_FLAGS_SHOWN = 0x1,
+	EWL_FLAGS_REALIZED = 0x2,
+	EWL_FLAGS_OBSCURED = 0x4,
+	EWL_FLAGS_RECURSIVE = 0x8,
 };
 
 

@@ -1,7 +1,8 @@
 #include <Ewl.h>
 
-#define ROWS 5
+#define ROWS 100
 #define COLS 4
+#define NEST 3
 
 static Ewl_Widget *tree_button;
 
@@ -60,12 +61,14 @@ __create_tree_test_window(Ewl_Widget * w, void *ev_data,
 			ewl_widget_show(entries[col]);
 		}
 
-		if (row % 3 == 0)
+		if (row % NEST == 0)
 			prow = ewl_tree_add(EWL_TREE(tree), NULL, entries);
 		else
 			prow = ewl_tree_add(EWL_TREE(tree), EWL_ROW(prow), entries);
-		ewl_tree_set_row_expanded(EWL_ROW(prow), TRUE);
+		/* ewl_tree_set_row_expanded(EWL_ROW(prow), TRUE); */
 	}
+
+	printf("Tree setup complete!!!\n");
 
 	return;
 	ev_data = NULL;

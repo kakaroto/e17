@@ -11,7 +11,7 @@ void            __ewl_init_parse_options(int argc, char **argv);
 void            __ewl_parse_option_array(int argc, char **argv);
 static void     ewl_reread_config(int val, void *data);
 
-static int      __ewl_configure_check(Ewl_Widget * ppar, Ewl_Widget * w);
+static Ewl_Widget *__ewl_configure_check(Ewl_Widget * ppar, Ewl_Widget * w);
 
 /**
  * ewl_print_warning - this is used by debugging macros for breakpoints
@@ -247,6 +247,7 @@ static void ewl_reread_config(int val, void *data)
  */
 void ewl_configure_request(Ewl_Widget * w)
 {
+	static int longest = 0;
 	Ewl_Window     *win;
 	Ewl_Widget     *search;
 
@@ -262,6 +263,7 @@ void ewl_configure_request(Ewl_Widget * w)
 
 	ewd_list_goto_first(configure_list);
 	while ((search = ewd_list_current(configure_list))) {
+		Ewl_Widget *parent;
 
 		/*
 		 * Check the window.
@@ -270,17 +272,17 @@ void ewl_configure_request(Ewl_Widget * w)
 			DRETURN(DLEVEL_TESTING);
 
 		/*
-		 * If a parent to this widget is already queued then we don't
-		 * need to queue this widget.
+		 * Queue the widget that is the parent.
 		 */
-		if (__ewl_configure_check(search, w))
-			DRETURN(DLEVEL_TESTING);
-
-		/*
-		 * Now remove any widgets that are children of this widget
-		 */
-		if (__ewl_configure_check(w, search))
-			ewd_list_remove(configure_list);
+		if ((parent = __ewl_configure_check(search, w))) {
+			if (parent == search) {
+				DRETURN(DLEVEL_TESTING);
+			}
+			else {
+				ewd_list_remove(configure_list);
+				break;
+			}
+		}
 
 		ewd_list_next(configure_list);
 	}
@@ -290,6 +292,29 @@ void ewl_configure_request(Ewl_Widget * w)
 	 * children widgets should have been removed by this point.
 	 */
 	ewd_list_append(configure_list, w);
+	if (ewd_list_nodes(configure_list) > longest) {
+		longest = ewd_list_nodes(configure_list);
+		printf("SCHEDULING CONFIGURATION OF %d WIDGETS\n", longest);
+	}
+
+	DLEAVE_FUNCTION(DLEVEL_TESTING);
+}
+
+/**
+ * ewl_configure_cancel_request - cancel a request to configure a widget
+ * @w: the widget that no longer needs to be configured
+ *
+ * Returns no value. Remove the widget @w from the list of widgets that need
+ * to be configured.
+ */
+void ewl_configure_cancel_request(Ewl_Widget *w)
+{
+	DENTER_FUNCTION(DLEVEL_TESTING);
+
+	ewd_list_goto(configure_list, w);
+
+	if (ewd_list_current(configure_list) == w)
+		ewd_list_remove(configure_list);
 
 	DLEAVE_FUNCTION(DLEVEL_TESTING);
 }
@@ -297,15 +322,23 @@ void ewl_configure_request(Ewl_Widget * w)
 /*
  * Check to see if @ppar is a parent to @w at some level.
  */
-static int __ewl_configure_check(Ewl_Widget * ppar, Ewl_Widget * w)
+static Ewl_Widget *__ewl_configure_check(Ewl_Widget * ppar, Ewl_Widget * w)
 {
 	DENTER_FUNCTION(DLEVEL_TESTING);
 
+	if (LAYER(w) < LAYER(ppar)) {
+		Ewl_Widget *swap;
+
+		swap = ppar;
+		ppar = w;
+		w = swap;
+	}
+
 	while (w) {
 		if (w == ppar)
-			DRETURN_INT(TRUE, DLEVEL_TESTING);
+			DRETURN_INT(ppar, DLEVEL_TESTING);
 		w = w->parent;
 	}
 
-	DRETURN_INT(FALSE, DLEVEL_TESTING);
+	DRETURN_INT(NULL, DLEVEL_TESTING);
 }

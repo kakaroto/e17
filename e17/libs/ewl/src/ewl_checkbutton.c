@@ -48,7 +48,7 @@ void ewl_checkbutton_init(Ewl_CheckButton * cb, char *label)
 
 	ewl_button_init(b, label);
 	ewl_widget_set_appearance(w, "checkbutton");
-	RECURSIVE(b) = FALSE;
+	w->flags &= ~EWL_FLAGS_RECURSIVE;
 
 	ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FILL_POLICY_NONE);
 /*
