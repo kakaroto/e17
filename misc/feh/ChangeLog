@@ -1,3 +1,8 @@
+Sat Jun 17 20:41:24 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Apend ? and a random number to the image url for webcams so that
+	the image isn't cached. Much better.
+
 Fri Jun 16 22:52:50 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Menus can have a background image now. There is a default one,

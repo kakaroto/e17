@@ -305,6 +305,9 @@ feh_http_load_image(char *url)
    char *tmpname;
    char num[10];
    static long int i = 1;
+   char *newurl = NULL;
+   char randnum[20];
+   int rnum;
 
    D_ENTER;
    snprintf(num, sizeof(num), "%04ld_", i++);
@@ -320,6 +323,10 @@ feh_http_load_image(char *url)
    tmpname = estrjoin("", tmp, "_feh_", strrchr(url, '/') + 1, NULL);
    free(tmp);
 
+   rnum = rand();
+   snprintf(randnum, sizeof(randnum), "%d", rnum);
+   newurl = estrjoin("?", url, randnum, NULL);
+   D(("newurl: %s\n", newurl));
    if ((pid = fork()) < 0)
    {
       weprintf("open url: fork failed:");
@@ -329,10 +336,10 @@ feh_http_load_image(char *url)
    else if (pid == 0)
    {
       if (opt.verbose)
-          execlp("wget", "wget", "--cache", "0", url, "-O", tmpname, NULL);
+          execlp("wget", "wget", "--cache", "0", newurl, "-O", tmpname, NULL);
       else 
-          execlp("wget", "wget", "-q", "--cache", "0", url, "-O", tmpname, NULL);
-      execlp("wget", "wget", "-q", "--cache", "0", url, "-O", tmpname, NULL);
+          execlp("wget", "wget", "-q", "--cache", "0", newurl, "-O", tmpname, NULL);
+      execlp("wget", "wget", "-q", "--cache", "0", newurl, "-O", tmpname, NULL);
       eprintf("url: exec failed: wget:");
    }
    else
@@ -343,9 +350,11 @@ feh_http_load_image(char *url)
       {
          weprintf("url: wget failed to load URL %s\n", url);
          free(tmpname);
+         free(newurl);
          D_RETURN(NULL);
       }
    }
+   free(newurl);
    D_RETURN(tmpname);
 }
 
