@@ -1101,3 +1101,10 @@ Wed Sep  1 16:10:02 PDT 1999
 (Raster)
 
 ok - errant use of the scritp.. this needs to be fixed.. :)
+
+-------------------------------------------------------------------------------
+
+Wed Sep  1 16:34:48 PDT 1999
+(Raster)
+
+fixed movign of groups and transients with parents if movemode != opaque

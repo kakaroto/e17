@@ -1,5 +1,4 @@
 BUGS:
-kainx: translucent and group window moves if move != opaque - fix :)
 raster: handling exposes during move and resize modes > 0 (dont do it)
 raster: must update dox docs fully
 raster: group properties are not remembered :(

@@ -954,6 +954,7 @@ doResizeEnd(void *params)
 static int          start_move_desk = 0;
 static int          start_move_x = 0;
 static int          start_move_y = 0;
+static int          real_move_mode = 0;
 
 static int
 doMoveImpl(void *params, char constrained)
@@ -974,6 +975,9 @@ doMoveImpl(void *params, char constrained)
    if (!ewin)
       EDBUG_RETURN(0);
    mode.moveresize_pending_ewin = ewin;
+   real_move_mode = mode.movemode;
+   if (((ewin->group) || (ewin->has_transients)) && (mode.movemode > 0))
+      mode.movemode = 0;
    if (mode.movemode > 0)
      {
 	FX_Pause();
@@ -1039,6 +1043,7 @@ doMoveEnd(void *params)
 	   UngrabX();
 	if (!mode.moveresize_pending_ewin)
 	   ForceUpdatePagersForDesktop(desks.current);
+	mode.movemode = real_move_mode;
 	EDBUG_RETURN(0);
      }
    mode.mode = MODE_NONE;
@@ -1105,6 +1110,7 @@ doMoveEnd(void *params)
    if (wasresize)
       ForceUpdatePagersForDesktop(desks.current);
    Efree(gwins);
+   mode.movemode = real_move_mode;
    params = NULL;
    EDBUG_RETURN(0);
 }
