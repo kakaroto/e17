@@ -27,8 +27,6 @@ static ETimer      *q_first = NULL;
 static XContext     xid_context = 0;
 static int          win_w = 0;
 static int          win_h = 0;
-static Pixmap       bg_pmap = 0;
-static Pixmap       bg_bg = 0;
 static char         win_vert = 0;
 
 static char        *conf_dir = NULL;
@@ -375,8 +373,6 @@ Epplet_window Epplet_create_window(int w, int h, int x, int y, char *title)
    MWMHints            mwm;
    char               *msg;
    Epplet_window       ret;
-   static GC           gc = 0;
-   XGCValues           gcv;
 
    ret = malloc(sizeof(EppWindow));
    attr.backing_store = NotUseful;
@@ -464,19 +460,6 @@ Epplet_window Epplet_create_window(int w, int h, int x, int y, char *title)
    Epplet_window_push_context(ret);
 
    Epplet_background_properties(win_vert, ret);
-
-#if 0
-   Epplet_imageclass_get_pixmaps("EPPLET_BACKGROUND_HORIZONTAL", "normal",
-				 &ret->bg_bg, &ret->bg_mask, w, h);
-   ret->bg_pmap = XCreatePixmap(disp, ret->win, w, h, id->x.depth);
-   if (!gc)
-      gc = XCreateGC(disp, ret->bg_pmap, 0, &gcv);
-   XCopyArea(disp, ret->bg_bg, ret->bg_pmap, gc, 0, 0, w, h, 0, 0);
-   XSetWindowBackgroundPixmap(disp, ret->win, ret->bg_pmap);
-   XShapeCombineMask(disp, ret->win, ShapeBounding, 0, 0, ret->bg_mask,
-		     ShapeSet);
-   XClearWindow(disp, ret->win);
-#endif
 
    return ret;
 }
