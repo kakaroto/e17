@@ -836,6 +836,8 @@ efsd_monitor_cleanup_client(int client)
 
   D_ENTER;
 
+  efsd_lock_get_read_access(monitors_lock);
+
   for (it = efsd_hash_it_new(monitors); efsd_hash_it_valid(it); efsd_hash_it_next(it))
     {
       m = (EfsdMonitor *) ((efsd_hash_it_item(it))->data);
@@ -869,7 +871,9 @@ efsd_monitor_cleanup_client(int client)
       UNLOCK(&m->use_count_mutex);
     }
 
+  efsd_lock_release_read_access(monitors_lock);
   efsd_hash_it_free(it);
+
   D_RETURN_(FALSE);
 }
 

@@ -148,6 +148,7 @@ efsd_hash_insert(EfsdHash *h, void *key, void *data)
     h->bucket_ends[index] = h->buckets[index];
   
   h->bucket_sizes[index]++;
+
   D_RETURN_(TRUE);
 }
 
