@@ -30,7 +30,6 @@ typedef struct {
 	Ecore_Evas *ee;
 	Evas_Object *edje;
 	Evas_Object *playlist; /* playlist container */
-	/*int playlist_font_size;*/
 } Gui;
 
 typedef struct {
@@ -41,6 +40,7 @@ typedef struct {
 
 typedef struct _ePlayer {
 	const char **args;
+	int opt_start;
 
 	PlayList *playlist;
 	Ecore_Timer *time_timer;

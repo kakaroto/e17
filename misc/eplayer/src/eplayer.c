@@ -150,7 +150,7 @@ static bool load_output_plugin(ePlayer *player) {
 	return !!player->output;
 }
 
-static ePlayer *eplayer_new(const char **args) {
+static ePlayer *eplayer_new() {
 	ePlayer *player;
 	char cfg_file[PATH_MAX + 1];
 
@@ -158,8 +158,6 @@ static ePlayer *eplayer_new(const char **args) {
 		return NULL;
 
 	memset(player, 0, sizeof(ePlayer));
-
-	player->args = args;
 
 	/* load config */
 	config_init(&player->cfg);
@@ -177,6 +175,12 @@ static ePlayer *eplayer_new(const char **args) {
 			      "falling back to default settings!\n");
 	}
 
+	return player;
+}
+
+static int eplayer_setup(ePlayer *player) {
+	assert(player);
+
 	load_input_plugins(player);
 
 	if (!load_output_plugin(player)) {
@@ -184,14 +188,14 @@ static ePlayer *eplayer_new(const char **args) {
 		      player->cfg.output_plugin);
 
 		eplayer_free(player);
-		return NULL;
+		return false;
 	}
 
 	pthread_mutex_init(&player->playback_next_mutex, NULL);
 	pthread_mutex_init(&player->playback_stop_mutex, NULL);
-	player->playback_stop = 1;
+	player->playback_stop = true;
 
-	return player;
+	return true;
 }
 
 /**
@@ -279,7 +283,7 @@ static int load_playlist(void *data) {
 	                                player->cfg.theme);
 	assert(player->playlist);
 
-	for (i = 1; player->args[i]; i++)
+	for (i = player->opt_start; player->args[i]; i++)
 		playlist_load_any(player->playlist, player->args[i], i > 1);
 
 	debug(DEBUG_LEVEL_INFO, "Got %i playlist entries\n",
@@ -294,13 +298,17 @@ static int load_playlist(void *data) {
 	return 0; /* stop idler */
 }
 
-static void handle_args(int argc, char **argv) {
+static void handle_args(int argc, const char **argv, ePlayer *player) {
 	int o;
 	struct option opts[] = {{"help", no_argument, 0, 'h'},
 	                        {"version", no_argument, 0, 'v'},
+	                        {"output", required_argument, 0, 'o'},
+	                        {"engine", required_argument, 0, 'e'},
+	                        {"theme", required_argument, 0, 't'},
 	                        {NULL, 0, NULL, 0}};
 
-	while ((o = getopt_long(argc, argv, "hv", opts, NULL)) != -1) {
+	while ((o = getopt_long(argc, (char **) argv, "hvo:e:t:", opts,
+	                        NULL)) != -1) {
 		switch (o) {
 			case 'h':
 				printf("Usage: eplayer"
@@ -312,21 +320,41 @@ static void handle_args(int argc, char **argv) {
 				       "Copyright (C) 2003-2004 ePlayer project\n\n");
 				exit(1);
 				break;
+			case 'o':
+				snprintf(player->cfg.output_plugin,
+				         sizeof(player->cfg.output_plugin), optarg);
+				break;
+			case 'e':
+				snprintf(player->cfg.evas_engine,
+				         sizeof(player->cfg.evas_engine), optarg);
+				break;
+			case 't':
+				snprintf(player->cfg.theme,
+				         sizeof(player->cfg.theme), optarg);
+				break;
 			default:
 				break;
 		}
 	}
+
+	player->args = argv;
+	player->opt_start = optind;
 }
 
 int main(int argc, const char **argv) {
 	ePlayer *player;
 
-	handle_args(argc, (char **) argv);
-
 	lt_dlinit();
 
-	if (!(player = eplayer_new(argv)))
+	if (!(player = eplayer_new()))
 		return 1;
+
+	handle_args(argc, argv, player);
+
+	if (!eplayer_setup(player)) {
+		eplayer_free(player);
+		return 1;
+	}
 
 	if (!ui_init(player)) {
 		eplayer_free(player);
