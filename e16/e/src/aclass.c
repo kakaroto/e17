@@ -1007,10 +1007,6 @@ AclassSighan(int sig, void *prm __UNUSED__)
 	AclassConfigLoadConfig();
 	AclassConfigLoadUser();
 	break;
-     case ESIGNAL_CONFIGURE:
-	break;
-     case ESIGNAL_EXIT:
-	break;
      }
 }
 

@@ -666,8 +666,6 @@ WindowMatchSighan(int sig, void *prm __UNUSED__)
 	IcondefChecker(0, NULL);
 #endif
 	break;
-     case ESIGNAL_EXIT:
-	break;
      }
 }
 

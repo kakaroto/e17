@@ -1544,6 +1544,8 @@ int                 EobjIsShaped(const EObj * eo);
 #define EDBUG_TYPE_CONFIG       140
 #define EDBUG_TYPE_IPC          141
 #define EDBUG_TYPE_EVENTS       142
+#define EDBUG_TYPE_ICONBOX      143
+
 int                 EventDebug(unsigned int type);
 #else
 #define             EventDebug(type) 0

@@ -847,6 +847,7 @@ doSMExit(int mode, const char *params)
       SessionSave(1);
    EHintsSetInfoOnAll();
    EwinsSetFree();
+   ModulesSignal(ESIGNAL_EXIT, NULL);
    if (Mode.wm.startup && Mode.wm.exiting)
       MapUnmap(1);
 
@@ -857,6 +858,7 @@ doSMExit(int mode, const char *params)
 	if (Mode.wm.master && init_win_ext)
 	   XKillClient(disp, init_win_ext);
 #endif
+	XSync(disp, False);
      }
 
    ss = NULL;

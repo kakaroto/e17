@@ -362,7 +362,10 @@ EExit(int exitcode)
    if (EventDebug(EDBUG_TYPE_SESSION))
       Eprintf("EExit(%d)\n", exitcode);
 
+#if 0				/* FIXME - Remove? */
    SessionSave(1);
+#endif
+   Real_SaveSnapInfo(0, NULL);
 
    if (disp)
      {
@@ -388,9 +391,6 @@ EExit(int exitcode)
      {
 	exitcode = 0;
      }
-
-   Real_SaveSnapInfo(0, NULL);
-   ModulesSignal(ESIGNAL_EXIT, NULL);
 
    exit(exitcode);
 }

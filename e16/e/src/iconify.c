@@ -37,13 +37,20 @@ static void         IconboxesConfigSave(void);
 static Iconbox     *SelectIconboxForEwin(EWin * ewin);
 
 /* Systray stuff */
-static void         SystrayInit(Iconbox * obj, Window win, int screen);
+typedef struct
+{
+   Window              win;
+   char                mapped;
+} SWin;
+
+static void         SystrayInit(Iconbox * ib, Window win, int screen);
+static void         IconboxObjSwinFree(Iconbox * ib, SWin * swin);
 
 typedef union
 {
    void               *obj;
    EWin               *ewin;
-   Window              win;
+   SWin               *swin;
 } IboxOject;
 
 struct _iconbox
@@ -379,7 +386,7 @@ IconboxCreate(const char *name)
 }
 
 static void
-IconboxDestroy(Iconbox * ib)
+IconboxDestroy(Iconbox * ib, int exiting)
 {
    int                 i;
 
@@ -393,13 +400,12 @@ IconboxDestroy(Iconbox * ib)
 	switch (ib->type)
 	  {
 	  case 0:
-	     EwinDeIconify(ib->objs[i].ewin);
+	     if (!exiting)
+		EwinDeIconify(ib->objs[i].ewin);
 	     break;
-#if 0
 	  case 1:
-	     IconboxWindowFree(ib, ib->objs[i].win);
+	     IconboxObjSwinFree(ib, ib->objs[i].swin);
 	     break;
-#endif
 	  }
      }
 
@@ -412,7 +418,9 @@ IconboxDestroy(Iconbox * ib)
    EDestroyWindow(ib->win);
 
    Efree(ib);
-   IconboxesConfigSave();
+
+   if (!exiting)
+      IconboxesConfigSave();
 }
 
 #if 0				/* Not used */
@@ -506,7 +514,7 @@ IconboxEwinRefresh(EWin * ewin)
 static void
 IconboxEwinClose(EWin * ewin)
 {
-   IconboxDestroy(ewin->data);
+   IconboxDestroy(ewin->data, 0);
    ewin->data = NULL;
 }
 
@@ -627,65 +635,24 @@ IconboxObjectDel(Iconbox * ib, void *obj)
 }
 
 static int
-IconboxFindEwin(Iconbox * ib, EWin * ewin)
+IconboxObjEwinFind(Iconbox * ib, EWin * ewin)
 {
    return IconboxObjectFind(ib, ewin);
 }
 
 static void
-IconboxAddEwin(Iconbox * ib, EWin * ewin)
+IconboxObjEwinAdd(Iconbox * ib, EWin * ewin)
 {
    if (IconboxObjectAdd(ib, ewin) == 0)
       IconboxRedraw(ib);
 }
 
 static void
-IconboxDelEwin(Iconbox * ib, EWin * ewin)
+IconboxObjEwinDel(Iconbox * ib, EWin * ewin)
 {
    if (IconboxObjectDel(ib, ewin) == 0)
       IconboxRedraw(ib);
 }
-
-#if 0
-static int
-IconboxFindWindow(Iconbox * ib, Window win)
-{
-   return IconboxObjectFind(ib, (void *)win);
-}
-#endif
-
-static int
-IconboxWindowAdd(Iconbox * ib, Window win)
-{
-   if (IconboxObjectAdd(ib, (void *)win))
-      return -1;
-
-   XReparentWindow(disp, win, ib->icon_win, 0, 0);
-   IconboxRedraw(ib);
-   XMapWindow(disp, win);
-
-   return 0;
-}
-
-static void
-IconboxWindowDel(Iconbox * ib, Window win)
-{
-   if (IconboxObjectDel(ib, (void *)win) == 0)
-      IconboxRedraw(ib);
-}
-
-#if 0
-static void
-IconboxWindowFree(Iconbox * ib __UNUSED__, Window win)
-{
-   Eprintf("IconboxWindowFree %#lx\n", win);
-   if (disp)
-     {
-	EUnmapWindow(disp, win);
-	EReparentWindow(disp, win, VRoot.win, 0, 0);
-     }
-}
-#endif
 
 static void
 IconboxesEwinIconify(EWin * ewin)
@@ -700,7 +667,7 @@ IconboxesEwinIconify(EWin * ewin)
 	if (ib->animate && !ewin->st.showingdesk)
 	   IB_Animate(1, ewin, ib->ewin);
 	UpdateAppIcon(ewin, ib->icon_mode);
-	IconboxAddEwin(ib, ewin);
+	IconboxObjEwinAdd(ib, ewin);
      }
 }
 
@@ -723,7 +690,7 @@ RemoveMiniIcon(EWin * ewin)
 
    ib = SelectIconboxForEwin(ewin);
    if (ib)
-      IconboxDelEwin(ib, ewin);
+      IconboxObjEwinDel(ib, ewin);
 }
 
 static void
@@ -875,7 +842,7 @@ SelectIconboxForEwin(EWin * ewin)
 	     if (ib->type != 0)
 		continue;
 
-	     if (IconboxFindEwin(ib, ewin) < 0)
+	     if (IconboxObjEwinFind(ib, ewin) < 0)
 		continue;
 	     ib_sel = ib;
 	     break;
@@ -921,7 +888,7 @@ IconboxUpdateEwinIcon(Iconbox * ib, EWin * ewin, int icon_mode)
    if (ib->icon_mode != icon_mode)
       return;
 
-   if (IconboxFindEwin(ib, ewin) < 0)
+   if (IconboxObjEwinFind(ib, ewin) < 0)
       return;
 
    UpdateAppIcon(ewin, icon_mode);
@@ -1086,7 +1053,10 @@ IB_CalcMax(Iconbox * ib)
 	  }
 	else
 	  {
-	     w = h = ib->iconsize;
+	     if (ib->objs[i].swin->mapped)
+		w = h = ib->iconsize;
+	     else
+		w = h = 0;
 	  }
 
 	if (ib->draw_icon_base)
@@ -1984,8 +1954,15 @@ IconboxRedraw(Iconbox * ib)
 	  }
 	else
 	  {
-	     w = h = ib->iconsize;
-	     EMoveResizeWindow(ib->objs[i].win, x, y, w, h);
+	     if (ib->objs[i].swin->mapped)
+	       {
+		  w = h = ib->iconsize;
+		  EMoveResizeWindow(ib->objs[i].swin->win, x, y, w, h);
+	       }
+	     else
+	       {
+		  w = h = 0;
+	       }
 	  }
 
 	if (ib->orientation)
@@ -2078,7 +2055,6 @@ IconboxesShow(void)
      }
 }
 
-#if 0
 static void
 IconboxesDestroy(void)
 {
@@ -2090,10 +2066,9 @@ IconboxesDestroy(void)
       return;
 
    for (i = 0; i < num; i++)
-      IconboxDestroy(ibl[i]);
+      IconboxDestroy(ibl[i], 1);
    Efree(ibl);
 }
-#endif
 
 static void
 IboxEventScrollWin(XEvent * ev, void *prm)
@@ -2791,7 +2766,7 @@ IconboxesConfigLoad(void)
 	  case CONFIG_CLASSNAME:	/* __NAME %s */
 	     ib = FindItem(s2, 0, LIST_FINDBY_NAME, LIST_TYPE_ICONBOX);
 	     if (ib)
-		IconboxDestroy(ib);
+		IconboxDestroy(ib, 0);
 	     ib = IconboxCreate(s2);
 	     break;
 	  case TEXT_ORIENTATION:	/* __ORIENTATION [ __HORIZONTAL | __VERTICAL ] */
@@ -2917,11 +2892,9 @@ IconboxesSighan(int sig, void *prm)
 	IconboxesConfigLoad();
 	IconboxesShow();
 	break;
-#if 0
      case ESIGNAL_EXIT:
 	IconboxesDestroy();
 	break;
-#endif
      case ESIGNAL_EWIN_ICONIFY:
 	ewin = (EWin *) prm;
 	IconboxesEwinIconify(ewin);
@@ -3040,25 +3013,201 @@ static Atom         E_XA_MANAGER = 0;
 
 /* XEmbed atoms */
 static Atom         E_XA__XEMBED = 0;
+static Atom         E_XA__XEMBED_INFO = 0;
 
 /* Systray atoms */
 static Atom         _NET_SYSTEM_TRAY_Sx = 0;
 static Atom         _NET_SYSTEM_TRAY_OPCODE = 0;
 static Atom         _NET_SYSTEM_TRAY_MESSAGE_DATA = 0;
 
+static void         SystrayEvent(XEvent * ev, void *prm);
+
 #define SYSTEM_TRAY_REQUEST_DOCK    0
 #define SYSTEM_TRAY_BEGIN_MESSAGE   1
 #define SYSTEM_TRAY_CANCEL_MESSAGE  2
 
+/* _XEMBED client message */
 #define XEMBED_EMBEDDED_NOTIFY      0
 
+/* _XEMBED_INFO property */
+#define XEMBED_MAPPED               (1 << 0)
+
+static int
+SystrayGetXembedInfo(Window win, int *info)
+{
+   unsigned char      *prop_ret;
+   Atom                type_ret;
+   unsigned long       bytes_after, num_ret;
+   int                 format_ret;
+
+   prop_ret = NULL;
+   if (XGetWindowProperty(_ecore_x_disp, win, E_XA__XEMBED_INFO, 0, 0x7fffffff,
+			  False, E_XA__XEMBED_INFO, &type_ret, &format_ret,
+			  &num_ret, &bytes_after, &prop_ret) != Success)
+      return -1;
+
+   if (prop_ret && type_ret == E_XA__XEMBED_INFO && format_ret == 32
+       && num_ret >= 2)
+     {
+	info[0] = ((unsigned long *)prop_ret)[0];
+	info[1] = ((unsigned long *)prop_ret)[1];
+     }
+   else
+     {
+	/* Property invalid or not there. I doubt we ever get here */
+	info[0] = 0;		/* Set protocol version 0 */
+	info[1] = 1;		/* Set mapped */
+	num_ret = 0;
+     }
+   if (prop_ret)
+      XFree(prop_ret);
+
+   return num_ret;
+}
+
+#if 0
+static int
+IconboxFindWindow(Iconbox * ib, Window win)
+{
+   return IconboxObjectFind(ib, (void *)win);
+}
+#endif
+
+/*
+ * Return index, -1 if not found.
+ */
+static int
+IconboxObjSwinFind(Iconbox * ib, Window win)
+{
+   int                 i;
+
+   for (i = 0; i < ib->num_objs; i++)
+      if (ib->objs[i].swin->win == win)
+	 return i;
+
+   return -1;
+}
+
 static void
-SystrayEventClientMessage(void *ib, XClientMessageEvent * ev)
+IconboxObjSwinAdd(Iconbox * ib, Window win)
+{
+   SWin               *swin;
+   int                 xembed_info[2];
+
+   /* Not if already there */
+   if (IconboxObjSwinFind(ib, win) >= 0)
+      return;
+
+   switch (SystrayGetXembedInfo(win, xembed_info))
+     {
+     case -1:			/* Error - assume invalid window */
+	Eprintf("IconboxObjSwinAdd: Hmm.. Invalid window? Ignoring %#lx\n",
+		win);
+	return;
+     case 0:			/* Assume broken - proceed anyway */
+	Eprintf("IconboxObjSwinAdd: Hmm.. No _XEMBED_INFO?\n");
+	break;
+     default:
+	if (EventDebug(EDBUG_TYPE_ICONBOX))
+	   Eprintf("IconboxObjSwinAdd: _XEMBED_INFO: %#lx: %d %d\n", win,
+		   xembed_info[0], xembed_info[1]);
+	break;
+     }
+
+   swin = Emalloc(sizeof(SWin));
+   if (!swin)
+      return;
+
+   if (IconboxObjectAdd(ib, swin))
+      return;			/* This should *really* not be possible */
+
+   swin->win = win;
+   swin->mapped = (xembed_info[1] & XEMBED_MAPPED) != 0;
+
+   ESelectInput(win, PropertyChangeMask);
+
+   XReparentWindow(disp, win, ib->icon_win, 0, 0);
+   if (swin->mapped)
+     {
+	IconboxRedraw(ib);
+	XMapWindow(disp, win);
+     }
+   EventCallbackRegister(win, 0, SystrayEvent, ib);
+
+   /* TBD - Always set protocol version as reported by client */
+   ecore_x_client_message32_send(win, E_XA__XEMBED, NoEventMask,
+				 CurrentTime, XEMBED_EMBEDDED_NOTIFY, 0,
+				 win, xembed_info[0]);
+}
+
+static void
+IconboxObjSwinDel(Iconbox * ib, Window win)
+{
+   int                 i;
+
+   i = IconboxObjSwinFind(ib, win);
+   if (i < 0)
+      return;
+
+   if (IconboxObjectDel(ib, ib->objs[i].swin) == 0)
+      IconboxRedraw(ib);
+}
+
+static void
+IconboxObjSwinMapUnmap(Iconbox * ib, Window win)
+{
+   int                 i, map;
+   SWin               *swin;
+   int                 xembed_info[2];
+
+   i = IconboxObjSwinFind(ib, win);
+   if (i < 0)
+      return;
+
+   swin = ib->objs[i].swin;
+
+   SystrayGetXembedInfo(win, xembed_info);
+   if (EventDebug(EDBUG_TYPE_ICONBOX))
+      Eprintf("IconboxObjSwinMapUnmap: _XEMBED_INFO: %#lx: %d %d\n", win,
+	      xembed_info[0], xembed_info[1]);
+
+   map = (xembed_info[1] & XEMBED_MAPPED) != 0;
+   if (map == swin->mapped)
+      return;
+
+   if (map)
+      XMapWindow(disp, win);
+   else
+      XUnmapWindow(disp, win);
+
+   swin->mapped = map;
+   IconboxRedraw(ib);
+}
+
+static void
+IconboxObjSwinFree(Iconbox * ib __UNUSED__, SWin * swin)
+{
+   if (EventDebug(EDBUG_TYPE_ICONBOX))
+      Eprintf("IconboxObjSwinFree %#lx\n", swin->win);
+   if (disp)
+     {
+	XUnmapWindow(disp, swin->win);
+	XReparentWindow(disp, swin->win, VRoot.win, 0, 0);
+     }
+
+   Efree(swin);
+}
+
+static void
+SystrayEventClientMessage(Iconbox * ib, XClientMessageEvent * ev)
 {
    Window              win;
 
-   Eprintf("ev->type=%ld ev->data.l: %#lx %#lx %#lx %#lx\n", ev->message_type,
-	   ev->data.l[0], ev->data.l[1], ev->data.l[2], ev->data.l[3]);
+   if (EventDebug(EDBUG_TYPE_ICONBOX))
+      Eprintf
+	 ("SystrayEventClientMessage: ev->type=%ld ev->data.l: %#lx %#lx %#lx %#lx\n",
+	  ev->message_type, ev->data.l[0], ev->data.l[1], ev->data.l[2],
+	  ev->data.l[3]);
 
    if (ev->message_type == _NET_SYSTEM_TRAY_OPCODE)
      {
@@ -3066,40 +3215,65 @@ SystrayEventClientMessage(void *ib, XClientMessageEvent * ev)
 	if (win == None)
 	   goto done;
 
-	if (IconboxWindowAdd(ib, win))
-	   goto done;
-
-	/* Should proto be set according to clients _XEMBED_INFO? */
-	ecore_x_client_message32_send(win, E_XA__XEMBED, NoEventMask,
-				      CurrentTime, XEMBED_EMBEDDED_NOTIFY, 0,
-				      ev->window, /*proto */ 1);
+	IconboxObjSwinAdd(ib, win);
      }
    else if (ev->message_type == _NET_SYSTEM_TRAY_MESSAGE_DATA)
      {
-	Eprintf("got message\n");
+	if (EventDebug(EDBUG_TYPE_ICONBOX))
+	   Eprintf("SystrayEventClientMessage: Got data message\n");
      }
  done:
    ;
 }
 
 static void
+SystrayEventClientProperty(Iconbox * ib, XPropertyEvent * ev)
+{
+   if (EventDebug(EDBUG_TYPE_ICONBOX))
+      Eprintf("SystrayEventClientProperty %#lx %ld\n", ev->window, ev->atom);
+
+   if (ev->atom == E_XA__XEMBED_INFO)
+     {
+	IconboxObjSwinMapUnmap(ib, ev->window);
+     }
+}
+
+static void
 SystrayEvent(XEvent * ev, void *prm)
 {
-   Eprintf("SystrayEvent %2d %#lx\n", ev->type, ev->xany.window);
+   Window              win;
+
+   if (EventDebug(EDBUG_TYPE_ICONBOX))
+      Eprintf("SystrayEvent %2d %#lx\n", ev->type, ev->xany.window);
 
    switch (ev->type)
      {
      case DestroyNotify:
-	IconboxWindowDel(prm, ev->xdestroywindow.window);
-	break;
+	win = ev->xdestroywindow.window;
+	goto do_terminate;
+     case ReparentNotify:
+	/* Terminate if reparenting away from systray */
+	if (ev->xreparent.parent == ev->xreparent.event)
+	   break;
+	win = ev->xreparent.window;
+	goto do_terminate;
+
      case ClientMessage:
 	SystrayEventClientMessage(prm, &(ev->xclient));
+	break;
+
+     case PropertyNotify:
+	SystrayEventClientProperty(prm, &(ev->xproperty));
+	break;
+
+      do_terminate:
+	IconboxObjSwinDel(prm, win);
 	break;
      }
 }
 
 static void
-SystrayInit(Iconbox * obj, Window win, int screen)
+SystrayInit(Iconbox * ib, Window win, int screen)
 {
    char                buf[32];
 
@@ -3107,6 +3281,7 @@ SystrayInit(Iconbox * obj, Window win, int screen)
 
    E_XA_MANAGER = XInternAtom(disp, "MANAGER", False);
    E_XA__XEMBED = XInternAtom(disp, "_XEMBED", False);
+   E_XA__XEMBED_INFO = XInternAtom(disp, "_XEMBED_INFO", False);
    _NET_SYSTEM_TRAY_Sx = XInternAtom(disp, buf, False);
    _NET_SYSTEM_TRAY_OPCODE =
       XInternAtom(disp, "_NET_SYSTEM_TRAY_OPCODE", False);
@@ -3122,11 +3297,12 @@ SystrayInit(Iconbox * obj, Window win, int screen)
 	return;
      }
 
-   Eprintf("Window %#lx is now system tray\n", win);
+   if (EventDebug(EDBUG_TYPE_ICONBOX))
+      Eprintf("Window %#lx is now system tray\n", win);
 
    ESelectInput(win, SubstructureRedirectMask | ResizeRedirectMask |
 		SubstructureNotifyMask);
-   EventCallbackRegister(win, 0, SystrayEvent, obj);
+   EventCallbackRegister(win, 0, SystrayEvent, ib);
 
    ecore_x_client_message32_send(VRoot.win, E_XA_MANAGER, StructureNotifyMask,
 				 CurrentTime, _NET_SYSTEM_TRAY_Sx, win, 0, 0);
