@@ -11,7 +11,8 @@ od_config_init()
 {
   ecore_config_default_int("engage.options.width", 1024);
   ecore_config_default_int("engage.options.height", 100);
-  ecore_config_default_string("engage.options.theme", "gentoo");
+  ecore_config_default_theme("engage.options.theme", "gentoo");
+//  ecore_config_set_theme_preview_group("engage.options.theme", "Terminal");
   ecore_config_default_string("engage.options.engine", "software");
   options.icon_path = PACKAGE_DATA_DIR "/icons/";
   ecore_config_default_int_bound("engage.options.mode", OM_BELOW, 0, 1, 1);
@@ -36,7 +37,7 @@ od_config_init()
   options.width = ecore_config_get_int("engage.options.width");
   options.height = ecore_config_get_int("engage.options.height");
   options.engine = ecore_config_get_string("engage.options.engine");
-  options.theme = ecore_config_get_string("engage.options.theme");
+  options.theme = ecore_config_get_theme("engage.options.theme");
   options.mode = ecore_config_get_int("engage.options.mode");
   options.grab_min_icons =
     ecore_config_get_int("engage.options.grab_min_icons");

@@ -15,3 +15,5 @@ configure-stamp
 libtool
 ltmain.sh
 stamp-h1
+stamp-h
+stamp-h.in
