@@ -160,60 +160,11 @@ feh_event_handle_ButtonPress(XEvent * ev)
    {
       D(3, ("Next Button Press event\n"));
       winwid = winwidget_get_from_window(ev->xbutton.window);
-      if ((winwid != NULL) && (winwid->type == WIN_TYPE_SLIDESHOW))
-      {
-         slideshow_change_image(winwid, SLIDE_NEXT);
-      }
-      else if ((winwid != NULL) && (winwid->type == WIN_TYPE_THUMBNAIL))
-      {
-         feh_file *thumbfile;
-         winwidget thumbwin = NULL;
-         int x, y;
-         char *s;
-
-         x = ev->xbutton.x;
-         y = ev->xbutton.y;
-         x -= winwid->im_x;
-         y -= winwid->im_y;
-         x /= winwid->zoom;
-         y /= winwid->zoom;
-         thumbfile = feh_thumbnail_get_file_from_coords(x, y);
-         if (thumbfile)
-         {
-            if (!opt.thumb_title)
-               s = thumbfile->name;
-            else
-               s = feh_printf(opt.thumb_title, thumbfile);
-            thumbwin =
-               winwidget_get_first_window_of_type(WIN_TYPE_THUMBNAIL_VIEWER);
-            if (!thumbwin)
-            {
-               thumbwin =
-                  winwidget_create_from_file(feh_list_add_front
-                                             (NULL, thumbfile), s,
-                                             WIN_TYPE_THUMBNAIL_VIEWER);
-               winwidget_show(thumbwin);
-            }
-            else if (FEH_FILE(thumbwin->file->data) != thumbfile)
-            {
-               free(thumbwin->file);
-               thumbwin->file = feh_list_add_front(NULL, thumbfile);
-               winwidget_rename(thumbwin, s);
-               feh_reload_image(thumbwin, 1);
-            }
-         }
-      }
-   }
-   else if (ev->xbutton.button == opt.pan_button
-            && ((opt.no_pan_ctrl_mask) || (ev->xbutton.state & ControlMask)))
-   {
-      D(3, ("Pan Button Press event\n"));
-      winwid = winwidget_get_from_window(ev->xbutton.window);
       if (winwid != NULL)
       {
-         D(3, ("Pan mode baby!\n"));
-         opt.mode = MODE_PAN;
-         winwid->mode = MODE_PAN;
+         D(3, ("Next button, but could be pan mode\n"));
+         opt.mode = MODE_NEXT;
+         winwid->mode = MODE_NEXT;
          D(3, ("click offset is %d,%d\n", ev->xbutton.x, ev->xbutton.y));
          winwid->click_offset_x = ev->xbutton.x - winwid->im_x;
          winwid->click_offset_y = ev->xbutton.y - winwid->im_y;
@@ -239,7 +190,7 @@ feh_event_handle_ButtonPress(XEvent * ev)
             winwid->im_x = (scr->width - winwid->im_w) >> 1;
             winwid->im_y = (scr->height - winwid->im_h) >> 1;
          }
-         else if(opt.geom)
+         else if (opt.geom)
          {
             winwid->im_x = (opt.geom_w - winwid->im_w) >> 1;
             winwid->im_y = (opt.geom_h - winwid->im_h) >> 1;
@@ -331,11 +282,78 @@ feh_event_handle_ButtonRelease(XEvent * ev)
       D_RETURN_(4);
    }
 
-   if ((ev->xbutton.button == opt.menu_button) &&
-      (((!opt.menu_ctrl_mask) && ((!(ev->xbutton.state & ControlMask)) || ((ev->xbutton.state & ControlMask) && (opt.menu_ctrl_mask))))) && (opt.no_menus))
+   if ((ev->xbutton.button == opt.menu_button)
+       &&
+       (((!opt.menu_ctrl_mask)
+         && ((!(ev->xbutton.state & ControlMask))
+             || ((ev->xbutton.state & ControlMask) && (opt.menu_ctrl_mask)))))
+       && (opt.no_menus))
       winwidget_destroy_all();
-   else if ((ev->xbutton.button == opt.pan_button)
-            || (ev->xbutton.button == opt.rotate_button)
+   else if (ev->xbutton.button == opt.next_button)
+   {
+      winwid = winwidget_get_from_window(ev->xbutton.window);
+      if (opt.mode == MODE_PAN)
+      {
+         if (winwid != NULL)
+         {
+            D(3, ("Disabling pan mode\n"));
+            opt.mode = MODE_NORMAL;
+            winwid->mode = MODE_NORMAL;
+            winwidget_sanitise_offsets(winwid);
+            winwidget_render_image(winwid, 0, 1);
+         }
+      }
+      else
+      {
+         opt.mode = MODE_NORMAL;
+         winwid->mode = MODE_NORMAL;
+         if ((winwid != NULL) && (winwid->type == WIN_TYPE_SLIDESHOW))
+         {
+            slideshow_change_image(winwid, SLIDE_NEXT);
+         }
+         else if ((winwid != NULL) && (winwid->type == WIN_TYPE_THUMBNAIL))
+         {
+            feh_file *thumbfile;
+            winwidget thumbwin = NULL;
+            int x, y;
+            char *s;
+
+            x = ev->xbutton.x;
+            y = ev->xbutton.y;
+            x -= winwid->im_x;
+            y -= winwid->im_y;
+            x /= winwid->zoom;
+            y /= winwid->zoom;
+            thumbfile = feh_thumbnail_get_file_from_coords(x, y);
+            if (thumbfile)
+            {
+               if (!opt.thumb_title)
+                  s = thumbfile->name;
+               else
+                  s = feh_printf(opt.thumb_title, thumbfile);
+               thumbwin =
+                  winwidget_get_first_window_of_type
+                  (WIN_TYPE_THUMBNAIL_VIEWER);
+               if (!thumbwin)
+               {
+                  thumbwin =
+                     winwidget_create_from_file(feh_list_add_front
+                                                (NULL, thumbfile), s,
+                                                WIN_TYPE_THUMBNAIL_VIEWER);
+                  winwidget_show(thumbwin);
+               }
+               else if (FEH_FILE(thumbwin->file->data) != thumbfile)
+               {
+                  free(thumbwin->file);
+                  thumbwin->file = feh_list_add_front(NULL, thumbfile);
+                  winwidget_rename(thumbwin, s);
+                  feh_reload_image(thumbwin, 1);
+               }
+            }
+         }
+      }
+   }
+   else if ((ev->xbutton.button == opt.rotate_button)
             || (ev->xbutton.button == opt.zoom_button))
    {
       D(3, ("Mode-based Button Release event\n"));
@@ -497,7 +515,7 @@ feh_event_handle_MotionNotify(XEvent * ev)
          winwidget_render_image(winwid, 0, 0);
       }
    }
-   else if (opt.mode == MODE_PAN)
+   else if ((opt.mode == MODE_PAN) || (opt.mode == MODE_NEXT))
    {
       int orig_x, orig_y;
 
@@ -506,6 +524,11 @@ feh_event_handle_MotionNotify(XEvent * ev)
       winwid = winwidget_get_from_window(ev->xmotion.window);
       if (winwid)
       {
+         if (opt.mode = MODE_NEXT)
+         {
+            opt.mode = MODE_PAN;
+            winwid->mode = MODE_PAN;
+         }
          D(5, ("Panning\n"));
          orig_x = winwid->im_x;
          orig_y = winwid->im_y;

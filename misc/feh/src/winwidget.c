@@ -326,11 +326,10 @@ winwidget_render_image(winwidget winwid, int resize, int alias)
 
    if (!opt.full_screen
        && ((feh_imlib_image_has_alpha(winwid->im))
-           || (winwid->im_x || winwid->im_y) || (winwid->zoom != 1.0)
+           || (opt.geom) || (winwid->im_x || winwid->im_y) || (winwid->zoom != 1.0)
            || (winwid->w > winwid->im_w || winwid->h > winwid->im_h)
            || (winwid->has_rotated)))
       feh_draw_checks(winwid);
-
 
    if (!opt.full_screen && opt.scale_down
        && ((winwid->w < winwid->im_w) || (winwid->h < winwid->im_h)))
@@ -365,7 +364,7 @@ winwidget_render_image(winwidget winwid, int resize, int alias)
       {
          double ratio = 0.0;
 
-         /* Image is larger than the screen (so want's shrinking), or it's
+         /* Image is larger than the screen (so wants shrinking), or it's
             smaller but wants expanding to fill it */
          ratio =
             feh_calc_needed_zoom(&(winwid->zoom), winwid->im_w, winwid->im_h,
@@ -521,6 +520,7 @@ winwidget_clear_background(winwidget w)
 {
    D_ENTER(4);
    XSetWindowBackgroundPixmap(disp, w->win, feh_create_checks());
+   /* XClearWindow(disp, w->win); */
    D_RETURN_(4);
 }
 
@@ -623,7 +623,6 @@ winwidget_resize(winwidget winwid, int w, int h)
    D_ENTER(4);
    if(opt.geom)
    {
-      winwidget_clear_background(winwid);
       winwid->had_resize = 1;
       return;
    }

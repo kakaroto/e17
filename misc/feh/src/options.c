@@ -58,8 +58,6 @@ init_parse_options(int argc, char **argv)
    opt.menu_bg = estrdup(PREFIX "/share/feh/images/menubg.png");
    opt.next_button = 1;
    opt.zoom_button = 2;
-   opt.pan_button = 3;
-   opt.no_pan_ctrl_mask = 0;
    opt.menu_button = 3;
    opt.menu_ctrl_mask = 0;
    opt.reload_button = 0;
@@ -301,7 +299,7 @@ feh_parse_option_array(int argc, char **argv)
 {
    static char stropts[] =
 
-      "a:A:b:BcC:dD:e:f:Fg:GhH:iIj:klL:mM:nNo:O:pqQrR:sS:tT:uUvVwW:xXy:zZ1:2:3:4:56:78:90:";
+      "a:A:b:BcC:dD:e:f:Fg:GhH:iIj:klL:mM:nNo:O:pqQrR:sS:tT:uUvVwW:xXy:zZ1:2:4:56:78:90:";
    static struct option lopts[] = {
       /* actions */
       {"help", 0, 0, 'h'},                  /* okay */
@@ -360,13 +358,11 @@ feh_parse_option_array(int argc, char **argv)
       {"menu-bg", 1, 0, ')'},
       {"next-button", 1, 0, '1'},
       {"zoom-button", 1, 0, '2'},
-      {"pan-button", 1, 0, '3'},
       {"menu-button", 1, 0, '4'},
       {"rotate-button", 1, 0, '6'},
       {"no-rotate-ctrl-mask", 0, 0, '7'},
       {"blur-button", 1, 0, '8'},
       {"no-blur-ctrl-mask", 0, 0, '9'},
-      {"no-pan-ctrl-mask", 0, 0, '$'},
       {"reload-button", 1, 0, '0'},
       {"start-at", 1, 0, '|'},
       {"rcfile", 1, 0, '_'},
@@ -588,9 +584,6 @@ feh_parse_option_array(int argc, char **argv)
         case '2':
            opt.zoom_button = atoi(optarg);
            break;
-        case '3':
-           opt.pan_button = atoi(optarg);
-           break;
         case '4':
            opt.menu_button = atoi(optarg);
            break;
@@ -608,9 +601,6 @@ feh_parse_option_array(int argc, char **argv)
            break;
         case '9':
            opt.no_blur_ctrl_mask = 1;
-           break;
-        case '$':
-           opt.no_pan_ctrl_mask = 1;
            break;
         case '|':
            opt.start_list_at = atoi(optarg);
@@ -744,6 +734,9 @@ show_usage(void)
            "                            randomise the file list before displaying\n"
            "  -g, --geometry STRING     Limit (and don't change) the window size. Takes\n"
            "                            an X-style geometry string like 640x480.\n"
+           "                            Note that larger images will be zoomed out to fit\n"
+           "                            but you can see them at 1:1 by clicking the zoom\n"
+           "                            button.\n"
            "  -f, --filelist FILE       This option is similar to the playlists used by\n"
            "                            music software. If FILE exists, it will be read\n"
            "                            for a list of files to load, in the order they\n"
@@ -852,10 +845,6 @@ show_usage(void)
            "                            mode (defaults to 1, usually the left button).\n"
            "  -2, --zoom-button B       Use button B to zoom the current image in any\n"
            "                            mode (defaults to 2, usually the middle button).\n"
-           "  -3, --pan-button B        Use button B to pan the current image in any\n"
-           "                            mode (defaults to 3, usually the right button).\n"
-           "      --no-pan-ctrl-mask    Don't require CTRL+Button for panning in\n"
-           "                            any mode -- just use the button (default=off).\n"
            "  -4, --menu-button B       Use CTRL+Button B to activate the menu in any\n"
            "                            mode.  Set to 0 for any button.  This option\n"
            "                            is disabled if the -N or --no-menus option is set\n"
@@ -943,12 +932,14 @@ show_usage(void)
            "                            from the filelist\n"
            " q, Q                       Quit the slideshow\n" "\n"
            " MOUSE ACTIONS\n"
-           " When viewing an image, mouse button 1 moves to the next image (slideshow\n"
-           " mode only), button 2 zooms (click and drag left->right to zoom in, right->\n"
-           " left to zoom out, click once to restore 1x zoom), and mouse button 3 pans.\n"
+           " When viewing an image, a click of mouse button 1 moves to the next image\n"
+           " (slideshow mode only), a drag of mouse button 1 pans the image, if the\n"
+           " viewable window is smaller than the image, button 2 zooms (click and drag\n"
+           " left->right to zoom in, right->left to zoom out, click once to restore\n"
+           " 1x zoom), and mouse button 3 pans.\n"
            " Ctrl+button 1 blurs or sharpens the image (drag left to blur and right to\n"
-           " sharpen).  Ctrl+button 2 rotates the image around the center point.  Ctrl+\n"
-           " button 3 activates the context-sensitive menu.  Buttons can be redefined\n"
+           " sharpen).  Ctrl+button 2 rotates the image around the center point.\n"
+           " Button 3 activates the context-sensitive menu.  Buttons can be redefined\n"
            " with the -1 through -9 (or --*-button) cmdline flags.  All you people\n"
            " with million button mice can remove the ctrl mask with the --no-*-ctrl-mask\n"
            " options.\n" "\n" "See 'man feh' for more detailed information\n"
