@@ -35,7 +35,7 @@ int ewl_ev_init(void)
 				ewl_ev_window_expose, NULL);
 	ecore_event_handler_add(ECORE_X_EVENT_WINDOW_CONFIGURE,
 				ewl_ev_window_configure, NULL);
-	ecore_event_handler_add(ECORE_X_EVENT_WINDOW_DESTROY,
+	ecore_event_handler_add(ECORE_X_EVENT_WINDOW_DELETE_REQUEST,
 				ewl_ev_window_delete, NULL);
 
 	/*
