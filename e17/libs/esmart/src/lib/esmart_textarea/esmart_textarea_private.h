@@ -25,7 +25,7 @@ void              _esmart_textarea_format_insert(Esmart_Text_Area *t, const char
 int               _esmart_textarea_format_next_pos_get(Esmart_Text_Area *t);
 int               _esmart_textarea_format_next_count_get(Esmart_Text_Area *t);
 const char       *_esmart_textarea_format_next_get(Esmart_Text_Area *t, int n);
-void              _esmart_textarea_format_next_dek(Esmart_Text_Area *t, int n);
+void              _esmart_textarea_format_next_del(Esmart_Text_Area *t, int n);
 int               _esmart_textarea_format_prev_pos_get(Esmart_Text_Area *t);
 int               _esmart_textarea_format_prev_count_get(Esmart_Text_Area *t);
 const char       *_esmart_textarea_format_prev_get(Esmart_Text_Area *t, int n);

@@ -190,7 +190,7 @@ _esmart_textarea_format_next_get(Esmart_Text_Area *t, int n)
 }
 
 void
-_esmart_textarea_format_next_dek(Esmart_Text_Area *t, int n)
+_esmart_textarea_format_next_del(Esmart_Text_Area *t, int n)
 {
    evas_object_textblock_format_next_del(t->text, n);
 }

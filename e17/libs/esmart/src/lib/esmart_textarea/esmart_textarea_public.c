@@ -299,7 +299,7 @@ esmart_textarea_format_next_get(Evas_Object *o, int n)
 }
 
 void
-esmart_textarea_format_next_dek(Evas_Object *o, int n)
+esmart_textarea_format_next_del(Evas_Object *o, int n)
 {
    Esmart_Text_Area *t;
    

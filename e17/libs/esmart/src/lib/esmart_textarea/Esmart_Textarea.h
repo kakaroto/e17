@@ -67,7 +67,7 @@ void            esmart_textarea_format_insert(Evas_Object *o, const char *format
 int             esmart_textarea_format_next_pos_get(Evas_Object *o);
 int             esmart_textarea_format_next_count_get(Evas_Object *o);
 const char     *esmart_textarea_format_next_get(Evas_Object *o, int n);
-void            esmart_textarea_format_next_dek(Evas_Object *o, int n);
+void            esmart_textarea_format_next_del(Evas_Object *o, int n);
 int             esmart_textarea_format_prev_pos_get(Evas_Object *o);
 int             esmart_textarea_format_prev_count_get(Evas_Object *o);
 const char     *esmart_textarea_format_prev_get(Evas_Object *o, int n);
