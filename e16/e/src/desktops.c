@@ -1134,11 +1134,11 @@ StackDesktop(int desk)
 	  }
      }
 
-   /* Normal EWins on this desk */
+   /* Normal EWins on this desk (except Desktops) */
    for (i = 0; i < wnum; i++)
      {
 	ewin = lst[i];
-	if (ewin->floating || EwinGetDesk(ewin) != desk)
+	if (ewin->floating || EwinGetDesk(ewin) != desk || ewin->layer == 0)
 	   continue;
 
 	_APPEND_TO_WIN_LIST(ewin->win);
@@ -1164,6 +1164,16 @@ StackDesktop(int desk)
 	   continue;
 
 	_APPEND_TO_WIN_LIST(blst[i]->win);
+     }
+
+   /* Desktop type EWins on this desk */
+   for (i = 0; i < wnum; i++)
+     {
+	ewin = lst[i];
+	if (ewin->floating || EwinGetDesk(ewin) != desk || ewin->layer != 0)
+	   continue;
+
+	_APPEND_TO_WIN_LIST(ewin->win);
      }
 
    if (EventDebug(EDBUG_TYPE_STACKING))
