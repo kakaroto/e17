@@ -11,6 +11,7 @@ images {
 #include "default/bits/misc-images.edc"
 #include "default/bits/progressbar-images.edc"
 #include "default/bits/scrollbar-images.edc"
+#include "default/bits/stock-images.edc"
 #include "default/bits/tree-images.edc"
 #include "default/bits/window-images.edc"
 }
@@ -20,6 +21,11 @@ data {
 	item, "/button/group" "button";
 	item, "/button/label/font" "Vera";
 	item, "/button/label/style" "none";
+	item, "/button/stock_apply/group" "stock_apply";
+	item, "/button/stock_cancel/group" "stock_cancel";
+	item, "/button/stock_ok/group" "stock_ok";
+	item, "/button/stock_open/group" "stock_open";
+	item, "/button/stock_save/group" "stock_save";
 	item, "/button/text/font" "Vera";
 	item, "/button/text/style" "none";
 	item, "/check/group" "checkbox";
@@ -77,14 +83,15 @@ data {
 
 collections {
 #include "default/bits/button-groups.edc"
-#include "default/bits/menu-groups.edc"
 #include "default/bits/checkbox-groups.edc"
-#include "default/bits/tree-groups.edc"
 #include "default/bits/entry-groups.edc"
 #include "default/bits/filedialog-groups.edc"
+#include "default/bits/menu-groups.edc"
 #include "default/bits/misc-groups.edc"
 #include "default/bits/progressbar-groups.edc"
 #include "default/bits/radio-groups.edc"
 #include "default/bits/scrollbar-groups.edc"
+#include "default/bits/stock-groups.edc"
+#include "default/bits/tree-groups.edc"
 #include "default/bits/window-groups.edc"
 }
