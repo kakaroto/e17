@@ -20,6 +20,9 @@
 
 #include "feh.h"
 
+static char *create_index_dimension_string (int w, int h);
+static char *create_index_size_string (char *file);
+
 /* TODO Break this up a bit ;) */
 void
 init_index_mode (void)
@@ -32,7 +35,7 @@ init_index_mode (void)
   winwidget winwid;
   Imlib_Image *bg_im = NULL;
   int tot_thumb_h;
-  int text_area_h = 40;
+  int text_area_h = 50;
   int title_area_h = 100;
   Imlib_Font fn = NULL;
 
@@ -262,9 +265,13 @@ init_index_mode (void)
 	  imlib_blend_image_onto_image (im_temp, 0, 0, 0, ww, hh, xxx, yyy,
 					www, hhh);
 	  /* Now draw on the info text */
-	  D (("Drawing test at %d,%d\n", x, y + opt.thumb_h + 10));
+	  D (("Drawing test at %d,%d\n", x, y + opt.thumb_h + 2));
 	  imlib_text_draw (x, y + opt.thumb_h + 10,
 			   chop_file_from_full_path (files[i]));
+	  imlib_text_draw (x, y + opt.thumb_h + 20,
+			   create_index_dimension_string (ww, hh));
+	  imlib_text_draw (x, y + opt.thumb_h + 30,
+			   create_index_size_string (files[i]));
 
 	  imlib_context_set_image (im_temp);
 	  imlib_free_image_and_decache ();
@@ -315,4 +322,33 @@ char *
 chop_file_from_full_path (char *str)
 {
   return (strrchr (str, '/') + 1);
+}
+
+static char *
+create_index_size_string (char *file)
+{
+  static char str[50];
+  int size = 0;
+  double kbs = 0.0;
+  struct stat st;
+
+  if (stat (file, &st))
+    kbs = 0.0;
+  else
+    {
+      size = st.st_size;
+      kbs = (double) size / 1000;
+    }
+
+  snprintf (str, sizeof (str), "%.2fKb", kbs);
+  return str;
+}
+
+static char *
+create_index_dimension_string (int w, int h)
+{
+  static char str[50];
+
+  snprintf (str, sizeof (str), "%dx%d", w, h);
+  return str;
 }
