@@ -34,6 +34,7 @@ static void cb_close(void *data)
 {
    Epplet_unremember();
    close(fd_mixer);
+   Esync();
    data = NULL;
    exit(0);
 }
