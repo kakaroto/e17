@@ -176,10 +176,12 @@ main(int argc, char **argv)
 		    "\t-ecachedir /path/to/cached/dir\n"
 		    "\t-econfdir /path/to/config/dir\n"
 		    "\t-ext_init_win window_id\n"
+		    "\t[-s | -single]\n"
 		    "\t-smfile file\n"
 		    "\t[-smid | -clientId | --sm-client-id] id\n"
-		    "\t-theme /path/to/theme\n"
-		    "\t[-v | -verbose]\n" "\t[-V | -version | --version]\n");
+		    "\t[-t | -theme] theme\n"
+		    "\t[-v | -verbose]\n"
+		    "\t[-V | -version | --version]\n" "\t-w WxH\n");
 	     exit(0);
 	  }
 	else if ((!strcmp("-V", argv[i])) ||

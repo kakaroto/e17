@@ -2240,6 +2240,7 @@ IpcItem             MenusIpcArray[] = {
     MenusIpc,
     "menus", "mnu",
     "Menu functions",
+    "  menus list               Show existing menus\n"
     "  menus reload             Reload menus.cfg without restarting\n"
     "  menus show <name>        Show named menu\n"}
    ,
