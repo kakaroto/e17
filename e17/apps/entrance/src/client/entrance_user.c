@@ -121,7 +121,7 @@ entrance_user_edje_get(Entrance_User * e, Evas_Object * edje,
             edje_object_part_text_set(o, "EntranceUserName", e->name);
          }
 	    /**
-	     * FIXME: perhaps go so far as to do Gecos type shit
+	     * FIXME: perhaps go so far as to do Gecos type stuff
 	     */
          edje_object_signal_callback_add(o, "UserSelected", "",
                                          user_selected_cb, e);

@@ -277,8 +277,9 @@ entrance_session_user_session_default_set(Entrance_Session * e)
 }
 
 /**
- * entrance_session_start_user_session : If the user is authed, try to log
- * their asses in.
+ * entrance_session_start_user_session: Set up user environment
+ * This function set's up the user's environment, then launches the
+ * requested X session using the login watchdog process
  * @param e - the currently running session
  */
 void
