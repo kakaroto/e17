@@ -149,6 +149,17 @@ FindActionClass(Window win)
 	   if (win == ewin->bits[i].win)
 	      EDBUG_RETURN(ewin->border->part[i].aclass);
      }
+   for (i = 0; i < mode.numdesktops; i++)
+     {
+	ActionClass        *ac;
+
+	if (win == desks.desk[i].win)
+	  {
+	     ac = FindItem("DESKBINDINGS", 0, LIST_FINDBY_NAME,
+			   LIST_TYPE_ACLASS);
+	     EDBUG_RETURN(ac);
+	  }
+     }
    EDBUG_RETURN(NULL);
 }
 
