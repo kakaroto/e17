@@ -230,8 +230,8 @@ memrec_dump_resources(memrec_t *memrec)
 
     for (p = memrec->ptrs, i = 0, total = 0; i < len; i++, p++) {
         total += p->size;
-        fprintf(LIBAST_DEBUG_FD, "RES:   %5lu |  0x%08x | %20s | %6lu | %6lu\n", i, (unsigned) p->ptr, NONULL(p->file), p->line,
-                (unsigned long) p->size);
+        fprintf(LIBAST_DEBUG_FD, "RES:   %5lu |  0x%08lx | %20s | %6lu | %6lu\n",
+                i, (unsigned long) p->ptr, NONULL(p->file), p->line, (unsigned long) p->size);
         /* Flush after every line in case we crash */
         fflush(LIBAST_DEBUG_FD);
     }

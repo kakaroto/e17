@@ -392,3 +392,8 @@ Fri Apr  4 22:59:45 2003                        Michael Jennings (mej)
 
 Finally finished documenting libast.h.
 ----------------------------------------------------------------------
+Tue Apr  8 17:14:32 2003                        Michael Jennings (mej)
+
+Finished documenting libast_internal.h.  Also some 64-bit cleanliness
+fixes.
+----------------------------------------------------------------------

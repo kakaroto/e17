@@ -62,23 +62,77 @@ extern char *libast_program_name, *libast_program_version;
 
 
 /********************************* MEM GOOP ***********************************/
+/**
+ * Filename length limit.
+ *
+ * This is used to limit the maximum length of a source filename.
+ * When tracking memory allocation, the filename and line number for
+ * each MALLOC()/REALLOC()/CALLOC()/FREE() call is recorded.  A small
+ * buffer of static length is used to speed things up.
+ *
+ * @see MALLOC(), REALLOC(), CALLOC(), FREE()
+ * @ingroup DOXGRP_MEM
+ */
 #define LIBAST_FNAME_LEN  20
 
-typedef struct ptr_struct {
-  void *ptr;
-  size_t size;
-  char file[LIBAST_FNAME_LEN + 1];
-  unsigned long line;
+/**
+ * Pointer tracking structure.
+ *
+ * This structure is used by LibAST's memory management system to keep
+ * track of what pointers have been allocated, where they were
+ * allocated, and how much space was requested.
+ *
+ * @see MALLOC(), REALLOC(), CALLOC(), FREE()
+ * @ingroup DOXGRP_MEM
+ */
+typedef struct ptr_t_struct {
+    /** The allocated pointer.  The allocated pointer. */
+    void *ptr;
+    /** The pointer's size, in bytes.  The pointer's size, in bytes. */
+    size_t size;
+    /** Filename.  The file which last (re)allocated the pointer. */
+    char file[LIBAST_FNAME_LEN + 1];
+    /** Line number.  The line number where the pointer was last (re)allocated. */
+    unsigned long line;
 } ptr_t;
-typedef struct memrec_struct {
-  unsigned long cnt;
-  ptr_t *ptrs;
+/**
+ * Pointer list structure.
+ *
+ * This structure is used by LibAST's memory management system to hold
+ * the list of pointers being tracked.  This list is maintained as an
+ * array for simplicity.
+ *
+ * @see MALLOC(), REALLOC(), CALLOC(), FREE(), ptr_t_struct
+ * @ingroup DOXGRP_MEM
+ */
+typedef struct memrec_t_struct {
+    /** Pointer count.  The number of pointers being tracked. */
+    unsigned long cnt;
+    /** Pointer list.  The list of tracked pointers. */
+    ptr_t *ptrs;
 } memrec_t;
 
 
 
 /******************************** CONF GOOP ***********************************/
-/* The context table */
+/**
+ * Convert context name to ID.
+ *
+ * This macro converts a context name as read from a config file into
+ * the corresponding ID number.  If the context name is not found, an
+ * error message is printed, and the ID number of 0 (the "null"
+ * context) is returned.
+ *
+ * @bug This probably should not be a macro.
+ * @bug The @a i parameter really isn't needed.
+ *
+ * @param the_id The return value -- the context ID.
+ * @param n      The name of the context.
+ * @param i      An arbitrary counter variable.
+ *
+ * @see DOXGRP_CONF_CTX
+ * @ingroup DOXGRP_CONF_CTX
+ */
 #define ctx_name_to_id(the_id, n, i) do { \
                                        for ((i)=0; (i) <= ctx_idx; (i)++) { \
                                          if (!strcasecmp((n), context[(i)].name)) { \
@@ -92,19 +146,117 @@ typedef struct memrec_struct {
                                          (the_id) = 0; \
                                        } \
                                      } while (0)
+/**
+ * Convert context ID to name.
+ *
+ * This macro converts a context ID to its name.
+ *
+ * @param id The context ID number.
+ * @return   The name of the context.
+ *
+ * @see DOXGRP_CONF_CTX
+ * @ingroup DOXGRP_CONF_CTX
+ */
 #define ctx_id_to_name(id)         (context[(id)].name)
+/**
+ * Convert context ID to handler.
+ *
+ * This macro returns the function pointer (a ctx_handler_t)
+ * corresponding to the assigned handler function for the given
+ * context.
+ *
+ * @param id The context ID number.
+ * @return   The name of the context.
+ *
+ * @see DOXGRP_CONF_CTX
+ * @ingroup DOXGRP_CONF_CTX
+ */
 #define ctx_id_to_func(id)         (context[(id)].handler)
 
-/* The context state stack.  This keeps track of the current context and each previous one. */
+/*@{*/
+/**
+ * @name Internal Context State Stack Manipulation Macros
+ * Facilitate use of the context state stack.
+ *
+ * These macros provide a function-style interface to the CSS.
+ *
+ * @bug All this goop will be replaced with a spif object class.
+ * @ingroup DOXGRP_CONF_CTX
+ */
+
+/**
+ * Pushes a context onto the stack.  Pushes a context onto the stack.
+ *
+ * @param ctx The context ID for the new context.
+ */
 #define ctx_push(ctx)              conf_register_context_state(ctx)
+/**
+ * Pops a context structure off the stack.  Pops a context structure
+ * off the stack.
+ */
 #define ctx_pop()                  (ctx_state_idx--)
+/**
+ * Returns the context structure atop the stack.  Returns the context
+ * structure atop the stack.
+ *
+ * @return The current context.
+ */
 #define ctx_peek()                 (ctx_state[ctx_state_idx])
+/**
+ * Returns the context ID from the context structure atop the stack.
+ * Returns the context ID from the context structure atop the stack.
+ *
+ * @return The current context ID.
+ */
 #define ctx_peek_id()              (ctx_state[ctx_state_idx].ctx_id)
+/**
+ * Returns the context state from the context structure atop the
+ * stack.  Returns the context state from the context structure atop
+ * the stack.
+ *
+ * @return The current context state.
+ */
 #define ctx_peek_state()           (ctx_state[ctx_state_idx].state)
+/**
+ * Returns the context ID from the context structure one level below
+ * the top of the stack.  Returns the context ID from the context
+ * structure one level below the top of the stack.
+ *
+ * @return The previous context ID.
+ */
 #define ctx_peek_last_id()         (ctx_state[(ctx_state_idx?ctx_state_idx-1:0)].ctx_id)
+/**
+ * Returns the context state from the context structure one level
+ * below the top of the stack.  Returns the context state from the
+ * context structure one level below the top of the stack.
+ *
+ * @return The previous context state.
+ */
 #define ctx_peek_last_state()      (ctx_state[(ctx_state_idx?ctx_state_idx-1:0)].state)
+/**
+ * Sets the current context state.  Sets the current context state.
+ *
+ * @param q The new state for the current context.
+ */
 #define ctx_poke_state(q)          ((ctx_state[ctx_state_idx].state) = (q))
+/**
+ * Gets the current depth of the context stack.  Gets the current
+ * depth of the context stack.
+ *
+ * @return The current context stack depth.
+ */
 #define ctx_get_depth()            (ctx_state_idx)
+/**
+ * Convenience macro for beginning a new context.
+ *
+ * This macro simplifies the beginning of a new context.  The name
+ * read from the config file is turned into a context ID which is then
+ * registered with the parser.  The context handler for the new
+ * context is called with CONF_BEGIN_STRING.  The returned state is
+ * saved in the context structure atop the stack.
+ *
+ * @param idx The word number of the context name.
+ */
 #define ctx_begin(idx)             do { \
                                      char *name; \
                                      name = get_word(idx, buff); \
@@ -114,6 +266,15 @@ typedef struct memrec_struct {
                                      ctx_poke_state(state); \
                                      FREE(name); \
                                    } while (0)
+/**
+ * Convenience macro for ending a context.
+ *
+ * This macro simplifies the ending of a context.  The context handler
+ * for the context is called with CONF_END_STRING.  The old context is
+ * then popped off the stack, and the returned state is saved for the
+ * parent context.
+ *
+ */
 #define ctx_end()                  do { \
                                      if (ctx_get_depth()) { \
                                        state = (*ctx_id_to_func(id))(CONF_END_STRING, ctx_peek_state()); \
@@ -124,35 +285,149 @@ typedef struct memrec_struct {
                                        file_poke_skip(0); \
                                      } \
                                    } while (0)
+/*@}*/
 
-typedef struct context_struct {
-  char *name;
-  ctx_handler_t handler;
+/**
+ * Context structure.
+ *
+ * This structure is used to hold context names and their respective
+ * handlers (#ctx_handler_t).
+ *
+ * @bug This needs to be turned into a spif object class.
+ * @see DOXGRP_CONF_CTX
+ * @ingroup DOXGRP_CONF_CTX
+ */
+typedef struct ctx_t_struct {
+    /**
+     * Context name.
+     *
+     * The string representation of the context name.  The word
+     * immediately after the keyword @c begin is compared with this
+     * value to find the handler for the requested context.  This
+     * comparison is case-insensitive.
+     */
+    char *name;
+    /**
+     * Context handler.
+     *
+     * Pointer to the function which will handle this context.
+     * Context handlers must accept two parameters, a char *
+     * containing either the config file line or a begin/end magic
+     * string, and a void * containing state information; they must
+     * return a void * which will be passed to the next invocation of
+     * the handler as the aforementioned state information parameter.
+     */
+    ctx_handler_t handler;
 } ctx_t;
 
-typedef struct ctx_state_struct {
-  unsigned char ctx_id;
-  void *state;
+/**
+ * Context state structure.
+ *
+ * This structure is used as part of the context stack to track the
+ * current context and its state information.
+ *
+ * @bug This needs to be turned into a spif object class.
+ * @see DOXGRP_CONF_CTX
+ * @ingroup DOXGRP_CONF_CTX
+ */
+typedef struct ctx_state_t_struct {
+    /**
+     * Context ID.
+     *
+     * The ID number of the context.
+     */
+    unsigned char ctx_id;
+    /**
+     * Context state.
+     *
+     * The state for the context.  This holds the state variable in
+     * between calls to the handler (ctx_t_struct#handler).
+     */
+    void *state;
 } ctx_state_t;
 
-/* Built-in functions */
-typedef struct conf_func_struct {
-  char *name;
-  conf_func_ptr_t ptr;
+/**
+ * Built-in config file function.
+ *
+ * This structure holds the name and a pointer to the handler for
+ * built-in config file functions (%get(), %random(), etc.).
+ *
+ * @bug This needs to be turned into a spif object class.
+ * @see DOXGRP_CONF_CTX
+ * @ingroup DOXGRP_CONF_CTX
+ */
+typedef struct conf_func_t_struct {
+    /**
+     * Function name.
+     *
+     * The string representation of the built-in function name, not
+     * including the leading percent sign ('%').
+     */
+    char *name;
+    /**
+     * Function handler pointer.
+     *
+     * Pointer to the handler for the built-in function.
+     */
+    conf_func_ptr_t ptr;
 } conf_func_t;
 
-typedef struct conf_var_struct {
-  char *var, *value;
-  struct conf_var_struct *next;
+/**
+ * Linked list for user-defined config file variables.
+ *
+ * This structure holds the name and value for user-defined config
+ * file variables set/retrieved using the %get() and %put() built-in
+ * functions.
+ *
+ * @bug This needs to be turned into a spif object class.
+ * @see DOXGRP_CONF_CTX, builtin_get(), builtin_put()
+ * @ingroup DOXGRP_CONF_CTX
+ */
+typedef struct conf_var_t_struct {
+    /**
+     * Variable name.
+     *
+     * The string representation of the variable name.  Variable names
+     * ARE case-sensitive!
+     */
+    char *var;
+    /**
+     * Variable value.
+     *
+     * The value of the user-defined variable.  The value must be a
+     * text string (obviously, since the config files are text-based.
+     */
+    char *value;
+    /**
+     * Linked list pointer.
+     *
+     * Pointer to the next variable in the list.
+     */
+    struct conf_var_t_struct *next;
 } conf_var_t;
 
 
 
 /******************************* OPTIONS GOOP **********************************/
 
+/**
+ * Increment and check bad option counter.
+ *
+ * This is a convenience macro which is invoked each time an option
+ * parsing error is encountered.  This macro increments the bad option
+ * count within the parser and checks to see if the count has now
+ * exceeded the threshold.  If so, the registered help handler
+ * (spifopt_settings_t_struct#help_handler) via the
+ * #SPIFOPT_HELPHANDLER() macro.  If not, an error message is printed
+ * noting that behavior may be abnormal but that parsing will
+ * continue.
+ *
+ * @see DOXGRP_OPT
+ * @ingroup DOXGRP_OPT
+ */
 #define CHECK_BAD()  do { \
                        SPIFOPT_BADOPTS_SET(SPIFOPT_BADOPTS_GET() + 1); \
-                       if (SPIFOPT_BADOPTS_GET() >= SPIFOPT_ALLOWBAD_GET()) { \
+                       if (SPIFOPT_BADOPTS_GET() > SPIFOPT_ALLOWBAD_GET()) { \
                          print_error("Error threshold exceeded, giving up.\n"); \
                          SPIFOPT_HELPHANDLER(); \
                        } else { \

@@ -1664,7 +1664,7 @@ extern const char *true_vals[], *false_vals[];
  *  flags; i.e., those which modify option behavior.
  */
 #define SPIFOPT_FLAG_MODMASK              (0xf800)
-/*}@*/
+/*@}*/
 
 /*@{*/
 /**
@@ -1688,7 +1688,7 @@ extern const char *true_vals[], *false_vals[];
  *  flag.  Subsequent calls will parse only non-preparsed options.
  */
 #define SPIFOPT_SETTING_POSTPARSE         (1UL << 0)
-/*}@*/
+/*@}*/
 
 /*@{*/
 /**
@@ -2046,7 +2046,7 @@ extern const char *true_vals[], *false_vals[];
  */
 #define SPIFOPT_ABST_LONG_PP(l, d, f) \
     SPIFOPT_OPTION(0, l, d, (SPIFOPT_FLAG_ABSTRACT | SPIFOPT_FLAG_PREPARSE), f, 0)
-/*}@*/
+/*@}*/
 
 /*@{*/
 /**
@@ -2144,7 +2144,7 @@ extern const char *true_vals[], *false_vals[];
  * @return  0 if option does not require a value, non-zero if it does.
  */
 #define SPIFOPT_OPT_NEEDS_VALUE(n)        (SPIFOPT_OPT_FLAGS(n) & SPIFOPT_FLAG_TYPEMASK_VALUE)
-/*}@*/
+/*@}*/
 
 /*@{*/
 /**
@@ -2201,7 +2201,7 @@ extern const char *true_vals[], *false_vals[];
  * @return  The bitmask (spif_uint32_t) for the option.
  */
 #define SPIFOPT_OPT_MASK(n)               (SPIFOPT_OPTLIST_GET_OPT(n).mask)
-/*}@*/
+/*@}*/
 
 /*@{*/
 /**
@@ -2363,7 +2363,7 @@ extern const char *true_vals[], *false_vals[];
  * @param f A function pointer of type spifopt_helphandler_t.
  */
 #define SPIFOPT_HELPHANDLER_SET(f)        (spifopt_settings.help_handler = (f))
-/*}@*/
+/*@}*/
 
 /**
  * @name Type Definitions
@@ -2521,7 +2521,7 @@ typedef struct spifopt_settings_t_struct {
      */
     spifopt_helphandler_t help_handler;
 } spifopt_settings_t;
-/*}@*/
+/*@}*/
 
 extern spifopt_settings_t spifopt_settings;
 

@@ -308,27 +308,27 @@ spif_str_ncasecmp_with_ptr(spif_str_t self, spif_charptr_t other, size_t cnt)
 size_t
 spif_str_index(spif_str_t self, spif_char_t c)
 {
-    return (size_t) ((int) (index(SPIF_CONST_CAST_C(char *)SPIF_STR_STR(self), c)) - (int) (SPIF_STR_STR(self)));
+    return (size_t) ((long) (index(SPIF_CONST_CAST_C(char *) SPIF_STR_STR(self), c)) - (long) (SPIF_STR_STR(self)));
 }
 
 size_t
 spif_str_rindex(spif_str_t self, spif_char_t c)
 {
-    return (size_t) ((int) (rindex(SPIF_CONST_CAST_C(char *)SPIF_STR_STR(self), c)) - (int) (SPIF_STR_STR(self)));
+    return (size_t) ((long) (rindex(SPIF_CONST_CAST_C(char *) SPIF_STR_STR(self), c)) - (long) (SPIF_STR_STR(self)));
 }
 
 size_t
 spif_str_find(spif_str_t self, spif_str_t other)
 {
-    return (size_t) ((int) (strstr(SPIF_CONST_CAST_C(char *)SPIF_STR_STR(self),
-                                   SPIF_CONST_CAST_C(char *)SPIF_STR_STR(other))) - (int) (SPIF_STR_STR(self)));
+    return (size_t) ((long) (strstr(SPIF_CONST_CAST_C(char *) SPIF_STR_STR(self),
+                                    SPIF_CONST_CAST_C(char *) SPIF_STR_STR(other))) - (long) (SPIF_STR_STR(self)));
 }
 
 size_t
 spif_str_find_from_ptr(spif_str_t self, spif_charptr_t other)
 {
-    return (size_t) ((int) (strstr(SPIF_CONST_CAST_C(char *)SPIF_STR_STR(self),
-                                   SPIF_CONST_CAST_C(char *)other)) - (int) (SPIF_STR_STR(self)));
+    return (size_t) ((long) (strstr(SPIF_CONST_CAST_C(char *) SPIF_STR_STR(self),
+                                    SPIF_CONST_CAST_C(char *) other)) - (long) (SPIF_STR_STR(self)));
 }
 
 spif_str_t
