@@ -317,7 +317,7 @@ EDJE_CB(switch_group) {
 	ui_shutdown_edje(e);
 	ui_init_edje(e, src);
 
-	xmmsc_result_unref(xmmsc_playlist_current_id(e->xmms));
+	xmmsc_result_unref(xmmsc_playback_current_id(e->xmms));
 
 	playlist_container_set(e->playlist, e->gui.playlist);
 	signal_playback_state(e);
@@ -604,7 +604,7 @@ static void handle_current_id(struct _Euphoria *e,
 	}
 }
 
-XMMS_CB(playlist_current_id) {
+XMMS_CB(playback_current_id) {
 	handle_current_id(e, res);
 	XMMS_CB_FINISH(res);
 }
@@ -669,12 +669,6 @@ XMMS_CB(playlist_list) {
 	}
 
 	xmmsc_result_unref(res);
-
-	/* hack: get the current id */
-	res2 = xmmsc_playlist_current_id(e->xmms);
-	xmmsc_result_wait(res2);
-	handle_current_id(e, res2);
-	xmmsc_result_unref(res2);
 }
 
 static void playlist_refill(struct _Euphoria *e) {
@@ -710,7 +704,7 @@ XMMS_CB(playlist_changed) {
 			playlist_item_add(e->playlist, id);
 			break;
 		case XMMSC_PLAYLIST_REMOVE:
-			if (xmmscs_playlist_current_id(e->xmms) == id)
+			if (xmmscs_playback_current_id(e->xmms) == id)
 				xmmsc_playback_stop(e->xmms);
 
 			if ((pli = playlist_item_find_by_id(e->playlist, id)))
