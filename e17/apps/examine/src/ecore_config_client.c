@@ -89,7 +89,7 @@ is_dir(const char *dir)
 
 int
 ecore_config_ipc_init(Ecore_Config_Ipc_Server_List ** srv_list, char *pipe_name,
-                        connstate * cs)
+                      connstate * cs)
 {
   int global     , port, connected;
   struct stat     st;
@@ -240,7 +240,7 @@ ecore_config_ipc_sigexit(void *data, int type, void *event)
 
 int
 ecore_config_ipc_send(Ecore_Config_Ipc_Server_List ** srv_list, int major,
-            int minor, void *data, int size)
+                      int minor, void *data, int size)
 {
   Ecore_Config_Ipc_Server_List *tmp = *srv_list;
   static int      ref = 0;
@@ -265,9 +265,9 @@ ecore_config_ipc_send(Ecore_Config_Ipc_Server_List ** srv_list, int major,
 
   if ((debug >= 2) && (size > 0))
     print_data(data, size);
-
+#ifdef EXSH
   ecore_main_loop_begin();
-
+#endif
   return ECORE_CONFIG_ERR_SUCC;
 }
 

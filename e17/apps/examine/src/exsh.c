@@ -13,6 +13,8 @@
 #include <string.h>
 #include <ctype.h>
 
+#define EXSH 1
+
 #ifdef HAVE_LIBREADLINE
 #  define HISTORY "/.ecore/exsh_history"
 #  if defined(HAVE_READLINE_READLINE_H)
@@ -67,7 +69,7 @@ typedef enum {
 
 
 typedef struct _call {
-  Ecore_Config_Ipc_Call     id;
+  Ecore_Config_Ipc_Call id;
   char           *name;
   para            signature;
   const char     *help;
@@ -622,11 +624,13 @@ main(int argc, char **argv)
 
   ecore_init();
   ecore_app_args_set(argc, (const char **) argv);
-  ecore_event_handler_add(ECORE_EVENT_SIGNAL_EXIT, ecore_config_ipc_sigexit, &cs);
+  ecore_event_handler_add(ECORE_EVENT_SIGNAL_EXIT, ecore_config_ipc_sigexit,
+                          &cs);
 
 reconnect:
   cc++;
-  if ((ret = ecore_config_ipc_init(&server, pipe_name, &cs)) != ECORE_CONFIG_ERR_SUCC)
+  if ((ret =
+       ecore_config_ipc_init(&server, pipe_name, &cs)) != ECORE_CONFIG_ERR_SUCC)
     E(0, "exsh: %sconnect to %s failed: %d\n", (cc > 1) ? "re" : "", pipe_name,
       ret);
   else {

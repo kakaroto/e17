@@ -13,6 +13,13 @@
 
 #include "examine_client.h"
 
+typedef enum Examine_Callback_Type {
+  EX_DATA_SET = 0,
+  EX_DATA_GET = 1,
+  EX_DATA_LIST = 2
+} Examine_Callback_Type;
+
+Examine_Callback_Type expected_type;
 
 char           *examine_client_buf;
 Ecore_Config_Ipc_Server_List *examine_client_server;
@@ -39,7 +46,6 @@ ecore_config_ipc_server_dis(void *data, int type, void *event)
   connstate      *cs = (connstate *) data;
 
   *cs = OFFLINE;
-  ecore_main_loop_quit();
   E(1, "examine: Disconnected.\n");
   return 1;
 }
@@ -65,7 +71,17 @@ ecore_config_ipc_server_sent(void *data, int type, void *event)
     E(3, "OK\n");
   else
     E(2, "result: %d\n", e->response);
-  ecore_main_loop_quit();
+
+  switch (expected_type) {
+  case EX_DATA_GET:
+    examine_client_get_val_cb();
+    break;
+  case EX_DATA_LIST:
+    examine_client_list_props_cb();
+    break;
+  default:
+    break;
+  }
   return 1;
 }
 
@@ -142,10 +158,25 @@ examine_client_send(call * c, char *key, char *val)
     free(m);
 }
 
-examine_prop   *
+void
 examine_client_list_props(void)
 {
   call           *c;
+
+  if (prop_list) {
+    draw_tree(prop_list);
+    return;
+  }
+
+  c = find_call("prop-list");
+  examine_client_send(c, NULL, NULL);
+
+  expected_type = EX_DATA_LIST;
+}
+
+void
+examine_client_list_props_cb(void)
+{
   examine_prop   *prop_tmp;
   char           *label, *typename, *start, *end;
   int             tmpi;
@@ -153,13 +184,6 @@ examine_client_list_props(void)
   char            type[20], range[10], step[5];
   int             mini, maxi;
   float           mind, maxd;
-
-
-  if (prop_list)
-    return prop_list;
-
-  c = find_call("prop-list");
-  examine_client_send(c, NULL, NULL);
 
   if (examine_client_buf && (strlen(examine_client_buf) > 0)) {
 
@@ -204,14 +228,8 @@ examine_client_list_props(void)
 
         if (!strcmp(type, "string")) {
           prop_tmp->type = PT_STR;
-          prop_tmp->value.ptr = strdup(examine_client_get_val(label));
-          prop_tmp->oldvalue.ptr = strdup(examine_client_get_val(label));
         } else if (!strcmp(type, "integer")) {
           prop_tmp->type = PT_INT;
-
-          sscanf(examine_client_get_val(label), "%d", &tmpi);
-          prop_tmp->value.val = tmpi;
-          prop_tmp->oldvalue.val = tmpi;
           if (*range) {
             prop_tmp->bound |= BOUND_BOUND;
             sscanf(range, "%d..%d", &mini, &maxi);
@@ -225,10 +243,6 @@ examine_client_list_props(void)
           }
         } else if (!strcmp(type, "float")) {
           prop_tmp->type = PT_FLT;
-
-          sscanf(examine_client_get_val(label), "%lf", &tmpd);
-          prop_tmp->value.fval = tmpd;
-          prop_tmp->oldvalue.fval = tmpd;
           if (*range) {
             prop_tmp->bound |= BOUND_BOUND;
             sscanf(range, "%lf..%lf", &mind, &maxd);
@@ -242,8 +256,6 @@ examine_client_list_props(void)
           }
         } else if (!strcmp(type, "colour")) {
           prop_tmp->type = PT_RGB;
-          prop_tmp->value.ptr = strdup(label);
-          prop_tmp->oldvalue.ptr = strdup(label);
         } else
           prop_tmp->value.ptr = NULL;
 
@@ -256,7 +268,7 @@ examine_client_list_props(void)
   }
   free(examine_client_buf);
 
-  return prop_list;
+  draw_tree(prop_list);
 }
 
 void
@@ -269,6 +281,7 @@ examine_client_revert_list(void)
     examine_client_revert(prop_item);
     prop_item = prop_item->next;
   }
+  draw_tree(prop_list);
 }
 
 void
@@ -322,26 +335,66 @@ examine_client_save(examine_prop * target)
       examine_client_set_val(target);
     }
   }
-
 }
 
-char           *
+void
 examine_client_get_val(char *key)
 {
-  char           *ret, *end;
   call           *c;
 
   c = find_call("prop-get");
+  expected_type = EX_DATA_GET;
   examine_client_send(c, key, NULL);
+}
+
+void
+examine_client_get_val_cb(void)
+{
+  char           *ret, *key, *end, *tmp;
+  int             tmpi;
+  float           tmpd;
+  examine_prop   *prop;
+
   ret = strstr(examine_client_buf, "=") + 1;
   if (*ret == '"') {
     ret++;
     if (end = strstr(ret, "\""))
       *end = '\0';
   }
+
   if (*(ret + strlen(ret) - 1) == '\n')
     *(ret + strlen(ret) - 1) = '\0';
-  return ret;
+  key = examine_client_buf;
+  tmp = strstr(examine_client_buf, ":");
+  *tmp = '\0';
+
+  prop = prop_list;
+  while (prop) {
+    if (!strcmp(key, prop->key))
+      break;
+    prop = prop->next;
+  }
+  if (!prop)
+    return;
+
+  switch (prop->type) {
+  case PT_INT:
+    sscanf(ret, "%d", &tmpi);
+    prop->value.val = tmpi;
+    prop->oldvalue.val = tmpi;
+    ewl_spinner_set_value(EWL_SPINNER(prop->w), (double) tmpi);
+    break;
+  case PT_FLT:
+    sscanf(ret, "%lf", &tmpd);
+    prop->value.fval = tmpd;
+    prop->oldvalue.fval = tmpd;
+    ewl_spinner_set_value(EWL_SPINNER(prop->w), tmpd);
+    break;
+  default:                     /* PT_STR, PT_RGB */
+    prop->value.ptr = strdup(ret);
+    prop->oldvalue.ptr = strdup(ret);
+    ewl_entry_set_text(EWL_ENTRY(prop->w), ret);
+  }
 }
 
 void
@@ -366,6 +419,8 @@ examine_client_set_val(examine_prop * target)
   }
 
   examine_client_send(c, target->key, valstr);
+
+  expected_type = EX_DATA_SET;
 }
 
 int

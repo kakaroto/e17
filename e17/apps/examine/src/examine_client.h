@@ -1,5 +1,6 @@
 #include "ecore_config_client.h"
 #include "ipc.h"
+#include <Ewl.h>
 
 typedef enum {
   P_NONE = 0,
@@ -15,7 +16,7 @@ typedef enum {
 
 
 typedef struct _call {
-  Ecore_Config_Ipc_Call     id;
+  Ecore_Config_Ipc_Call id;
   char           *name;
   para            signature;
 } call;
@@ -43,6 +44,7 @@ typedef struct examine_prop {
     long            val;
     float           fval;
   } oldvalue;
+  Ewl_Widget       *w;
   struct examine_prop *next;
 } examine_prop;
 
@@ -75,12 +77,12 @@ static call     calls[] = {
 
 
 int             examine_client_send(call * c, char *key, char *val);
-examine_prop   *examine_client_list_props(void);
+void            examine_client_list_props(void);
 void            examine_client_revert_list(void);
 void            examine_client_revert(examine_prop * target);
 void            examine_client_save_list(void);
 void            examine_client_save(examine_prop * target);
-char           *examine_client_get_val(char *key);
+void            examine_client_get_val(char *key);
 void            examine_client_set_val(examine_prop * target);
 int             examine_client_init(char *pipe_name, connstate * cs);
 int             examine_client_exit(void);

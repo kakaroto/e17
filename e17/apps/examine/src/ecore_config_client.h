@@ -14,11 +14,12 @@ int             ecore_config_ipc_server_sent(void *data, int type, void *event);
 /* in client lib */
 const char     *ecore_config_error(int no);
 int             ecore_config_ipc_init(Ecore_Config_Ipc_Server_List ** srv_list,
-                            char *pipe_name, connstate * cs);
+                                      char *pipe_name, connstate * cs);
 int             ecore_config_ipc_exit(Ecore_Config_Ipc_Server_List ** srv_list);
 int             ecore_config_ipc_sigexit(void *data, int type, void *event);
 int             ecore_config_ipc_send(Ecore_Config_Ipc_Server_List ** srv_list,
-                            int major, int minor, void *data, int size);
+                                      int major, int minor, void *data,
+                                      int size);
 int             send_append(char **mp, int *lp, char *dp);
 
 extern int      debug;
