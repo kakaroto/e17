@@ -19,7 +19,6 @@
 #include <ewd_threads.h>
 #include <ewd_value.h>
 #include <ewd_list.h>
-#include <ewd_dlist.h>
 #include <ewd_tree.h>
 #include <ewd_hash.h>
 

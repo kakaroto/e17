@@ -426,7 +426,7 @@ _ewd_hash_decrease(Ewd_Hash *hash)
 			* sizeof(Ewd_List *));
 	hash->nodes = 0;
 
-	if (_ewd_hash_rehash(hash, old, hash->size - 1)) {
+	if (hash->nodes > 0 && _ewd_hash_rehash(hash, old, hash->size - 1)) {
 		int i;
 
 		for (i = 0; i < ewd_prime_table[hash->size - 1]; i++)
@@ -451,7 +451,6 @@ _ewd_hash_rehash(Ewd_Hash *hash, Ewd_List **old_table, int old_size)
 	Ewd_Hash_Node *node;
 	Ewd_List *old;
 
-	printf("Rehashing now: %d nodes\n", hash->nodes);
 	CHECK_PARAM_POINTER_RETURN("hash", hash, FALSE);
 	CHECK_PARAM_POINTER_RETURN("old_table", old_table, FALSE);
 

@@ -5,10 +5,8 @@ installed_headersdir = $(prefix)/include/ewd
 lib_LTLIBRARIES = libewd.la
 installed_headers_DATA = \
 	Ewd.h \
-	ewd_dlist.h \
 	ewd_hash.h \
 	ewd_list.h \
-	ewd_list_private.h \
 	ewd_macros.h \
 	ewd_threads.h \
 	ewd_tree.h \
@@ -18,7 +16,6 @@ installed_headers_DATA = \
 libewd_la_CFLAGS = -O6
 
 libewd_la_SOURCES = \
-	ewd_dlist.c \
 	ewd_hash.c \
 	ewd_list.c \
 	ewd_tree.c \

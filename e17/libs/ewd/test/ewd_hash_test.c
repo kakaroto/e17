@@ -52,9 +52,9 @@ int main()
 
 /*		printf("Key: %d\t", i); */
 		value = (int)HASH_GET(hash, (void *)i);
-		if (!value)
+/*		if (!value)
 			printf("Could not find key: %d\n", i);
-/*	       	fflush(stdout); */
+	       	fflush(stdout); */
 
 	}
 /*	printf("Got through the second loop\n"); */

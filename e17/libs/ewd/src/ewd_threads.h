@@ -1,9 +1,7 @@
 #ifndef _EWD_THREADS_H
 #define _EWD_THREADS_H
 
-/* #undef HAVE_PTHREADS */
-
-#ifdef HAVE_PTHREADS /* pthreads are installed */
+#ifdef HAVE_PTHREADS_H /* pthreads are installed */
 
 #include <pthread.h>
 
@@ -81,6 +79,6 @@ if (function) { \
 
 #define EWD_NO_THREADS(function, arg) if (function) function(arg);
 
-#endif /* HAVE_PTHREADS */
+#endif /* HAVE_PTHREADS_H */
 
 #endif
