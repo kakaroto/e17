@@ -69,6 +69,8 @@ int main (int argc, char **argv)
    int blend = 1;
    int interactive = 1;
    int blendtest = 0;
+   int rotate = 0;
+   int rottest = 0;
    
    for (i = 1; i < argc; i++)
      {
@@ -116,6 +118,18 @@ int main (int argc, char **argv)
 	  {
 	     i++;
 	     str = argv[i];
+	  }
+	else if (!strcmp(argv[i], "-rotate"))
+	   rotate = 1;
+	else if (!strcmp(argv[i], "-rotatetest"))
+	  {
+	     rottest = 1;
+	     interactive = 0;
+	  }
+	else if (!strcmp(argv[i], "-rotatetest2"))
+	  {
+	     rottest = 2;
+	     interactive = 0;
 	  }
 	else
 	   file = argv[i];
@@ -200,6 +214,63 @@ int main (int argc, char **argv)
              imlib_blend_image_onto_image(im2, 0, 0, 0, w, h, 0, 0, w, h);
 	     pixels += (w * h);	     
 	  }
+     }
+   else if (rottest == 1)
+     {
+	Imlib_Image rotim;
+	double ang;
+	int x, y;
+	
+	rotim = imlib_create_rotated_image_test(ang);
+	imlib_context_set_image(rotim);
+	x = imlib_image_get_width();
+	y = imlib_image_get_height();
+	printf("rotating %dx%d cutout\n", x, y);
+	x = (w - x) / 2;
+	y = (h - y) / 2;
+	imlib_free_image_and_decache();
+	imlib_context_set_image(im);
+	imlib_render_image_on_drawable(0, 0);
+	
+	for (ang = 0.0; ang < 6.2831853; ang += 0.031415927) {
+	   imlib_context_set_image(im);
+	   rotim = imlib_create_rotated_image_test(ang);
+	   imlib_context_set_image(rotim);
+	   imlib_render_image_on_drawable(x, y);
+	   pixels += imlib_image_get_width() * imlib_image_get_height();
+	   imlib_free_image_and_decache();
+	}
+     }
+   else if (rottest == 2)
+     {
+	Imlib_Image rotim, im2;
+	double ang;
+	int x, y;
+	
+	rotim = imlib_create_rotated_image_test2(ang);
+	imlib_context_set_image(rotim);
+	x = imlib_image_get_width();
+	y = imlib_image_get_height();
+	printf("rotating inside %dx%d frame\n", x, y);
+	if (!root)
+	   XResizeWindow(disp, win, x, y);
+	imlib_free_image_and_decache();
+	imlib_context_set_image(im);
+	
+	for (ang = 0.0; ang < 6.2831853; ang += 0.031415927) {
+	   imlib_context_set_image(im);
+	   im2 = imlib_create_cropped_scaled_image(0, 0, w, h, x, y);
+	   rotim = imlib_create_rotated_image_test2(ang);
+	   imlib_context_set_blend(1);
+	   imlib_context_set_image(im2);
+	   imlib_blend_image_onto_image(rotim, 0, 0, 0,
+					x, y, 0, 0, x, y);
+	   imlib_render_image_on_drawable(0, 0);
+	   imlib_free_image_and_decache();
+	   imlib_context_set_image(rotim);
+	   pixels += imlib_image_get_width() * imlib_image_get_height();
+	   imlib_free_image_and_decache();
+	}
      }
    else if (interactive)
      {
@@ -296,6 +367,29 @@ int main (int argc, char **argv)
 					       0, 0, w, h,
 					       0, 0, w, h);
 		  first = 0;
+	       }
+	     else if (rotate)
+	       {
+		  Imlib_Image rotim;
+		  double ang = (double)x / 100.0;
+		  int rw, rh, rx, ry;
+		  
+		  imlib_context_set_blend(1);
+		  imlib_context_set_image(im_bg);
+		  rotim = imlib_create_rotated_image_test2(ang);
+		  imlib_context_set_image(rotim);
+		  rw = imlib_image_get_width();
+		  rh = imlib_image_get_height();
+		  rx = (w - rw) / 2;
+		  ry = (h - rh) / 2;
+		  imlib_context_set_image(im);
+		  imlib_blend_image_onto_image(rotim, 0,
+					       0, 0, rw, rh,
+					       rx, ry, rw, rh);
+		  imlib_context_set_image(rotim);
+		  imlib_free_image_and_decache();
+		  imlib_context_set_image(im);
+		  up = imlib_update_append_rect(up, rx, ry, rw, rh);
 	       }
 	       {
 		  Imlib_Updates uu;

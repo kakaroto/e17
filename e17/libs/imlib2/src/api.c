@@ -26,6 +26,8 @@
 #endif
 #include "font.h"
 #include "grad.h"
+#include "rotate.h"
+#include <math.h>
 
 /* convenience macros */
 #define   CAST_IMAGE(im, image) (im) = (ImlibImage *)(image)
@@ -1977,4 +1979,185 @@ imlib_save_image_with_error_return(const char *filename,
    __imlib_SaveImage(im, filename, ctxt_progress_func, 
 		     ctxt_progress_granularity, error_return);
    ctxt_image = prev_ctxt_image;
+}
+
+Imlib_Image
+imlib_create_rotated_image_test(double angle)
+{
+ ImlibImage *im, *im_old;
+ DATA32 *data;
+ int x, y, dx, dy, sz;
+ double x1, y1, d;
+
+ CHECK_PARAM_POINTER_RETURN("imlib_create_rotated_image", "image",
+   ctxt_image, NULL);
+ CAST_IMAGE(im_old, ctxt_image);
+ if ((!(im_old->data)) && (im_old->loader) && (im_old->loader->load))
+  im_old->loader->load(im_old, NULL, 0, 1);
+ if (!(im_old->data))
+  return NULL;
+
+ x1 = (double)(im_old->w) / 2.0;
+ y1 = (double)(im_old->h) / 2.0;
+ d = (double)(im_old->w < im_old->h ? im_old->w : im_old->h) / 2.0;
+ x1 -= sin(angle + atan(1.0)) * d;
+ y1 -= cos(angle + atan(1.0)) * d;
+
+ sz = (int)(d * sqrt(2.0));
+ x = (int)(x1 * _ROTATE_PREC_MAX); y = (int)(y1 * _ROTATE_PREC_MAX);
+ dx = (int)(cos(angle) * _ROTATE_PREC_MAX);
+ dy = -(int)(sin(angle) * _ROTATE_PREC_MAX);
+
+ im = __imlib_CreateImage(sz, sz, NULL);
+ im->data = malloc(sz * sz * sizeof(DATA32));
+ if (!(im->data)) {
+  __imlib_FreeImage(im);
+  return NULL;
+ }
+
+ if (ctxt_anti_alias) {
+  __imlib_RotateAAInside(im_old->data, im->data,
+    im_old->w, im->w, sz, sz, x, y, dx, dy);
+ } else {
+  __imlib_RotateSampleInside(im_old->data, im->data,
+    im_old->w, im->w, sz, sz, x, y, dx, dy);
+ }
+ if (IMAGE_HAS_ALPHA(im_old))
+  SET_FLAG(im->flags, F_HAS_ALPHA);
+
+ return (Imlib_Image)im;
+}
+
+/*\ bigendian and littleendian byte-from-int macro's \*/
+#if __BYTE_ORDER == __LITTLE_ENDIAN
+#define R_VAL(x) (*(((DATA8 *)&(x))+(0)))
+#define G_VAL(x) (*(((DATA8 *)&(x))+(1)))
+#define B_VAL(x) (*(((DATA8 *)&(x))+(2)))
+#define A_VAL(x) (*(((DATA8 *)&(x))+(3)))
+#elif __BYTE_ORDER == __BIG_ENDIAN
+#define A_VAL(x) (*(((DATA8 *)&(x))+(0)))
+#define B_VAL(x) (*(((DATA8 *)&(x))+(1)))
+#define G_VAL(x) (*(((DATA8 *)&(x))+(2)))
+#define R_VAL(x) (*(((DATA8 *)&(x))+(3)))
+#elif __BYTE_ORDER == __PDP_ENDIAN
+#define B_VAL(x) (*(((DATA8 *)&(x))+(0)))
+#define A_VAL(x) (*(((DATA8 *)&(x))+(1)))
+#define R_VAL(x) (*(((DATA8 *)&(x))+(2)))
+#define G_VAL(x) (*(((DATA8 *)&(x))+(3)))
+#else
+#error Unknown byte endianness.
+#endif
+/*\ Helper: Expand an image in all directions with transparent borders
+|*|  Creates a new image, no caching (TODO)
+|*|  Why a separate function?  Because the RGB channels of the borders
+|*|  are important (at least one pixel out, because of interpolation) \*/
+static ImlibImage *
+__imlib_AddTransBorders(ImlibImage *im_old, int width, int height)
+{
+ ImlibImage *im;
+ int x, y, i;
+ DATA32 *p;
+
+ if (width < (im_old->w + 2)) return NULL;
+ if (height < (im_old->h + 2)) return NULL;
+
+ im = __imlib_CreateImage(width, height, NULL);
+ im->data = malloc(width * height * sizeof(DATA32));
+ if (!(im->data)) {
+  __imlib_FreeImage(im);
+  return NULL;
+ }
+ memset(im->data, 0, width * height * sizeof(DATA32));
+ x = (width - im_old->w) / 2;
+ y = (height - im_old->h) / 2;
+
+ for (i = im_old->h; --i >= 0; ) {
+  memcpy(im->data + x + ((y + i) * im->w),
+   im_old->data + (i * im_old->w),
+   im_old->w * sizeof(DATA32));
+ }
+
+ p = im->data + x + ((y - 1) * im->w);
+ for (i = im_old->w; --i >= 0; ) {
+  p[0] = p[im->w];
+  A_VAL(p[0]) = 0;
+  p++;
+ }
+ p = im->data + x + ((y + im_old->h) * im->w);
+ for (i = im_old->w; --i >= 0; ) {
+  p[0] = p[-im->w];
+  A_VAL(p[0]) = 0;
+  p++;
+ }
+ p = im->data + (x - 1) + ((y - 1) * im->w);
+ for (i = im_old->h + 2; --i >= 0; ) {
+  p[0] = p[1];
+  A_VAL(p[0]) = 0;
+  p += im->w;
+ }
+ p = im->data + (x + im_old->w) + ((y - 1) * im->w);
+ for (i = im_old->h + 2; --i >= 0; ) {
+  p[0] = p[-1];
+  A_VAL(p[0]) = 0;
+  p += im->w;
+ }
+ /*\ Useless, actually.. \*/
+ im->border.left = im_old->border.left + x;
+ im->border.top = im_old->border.top + y;
+ im->border.right = im_old->border.right + im->w - x - im_old->w;
+ im->border.bottom = im_old->border.bottom + im->h - y - im_old->h;
+ SET_FLAG(im->flags, F_HAS_ALPHA);
+
+ return im;
+}
+
+Imlib_Image
+imlib_create_rotated_image_test2(double angle)
+{
+ ImlibImage *im, *im_old, *im_tmp;
+ DATA32 *data;
+ int x, y, dx, dy, sz;
+ double x1, y1, d;
+
+ CHECK_PARAM_POINTER_RETURN("imlib_create_rotated_image", "image",
+   ctxt_image, NULL);
+ CAST_IMAGE(im_old, ctxt_image);
+ if ((!(im_old->data)) && (im_old->loader) && (im_old->loader->load))
+  im_old->loader->load(im_old, NULL, 0, 1);
+ if (!(im_old->data))
+  return NULL;
+
+ d = hypot((double)(im_old->w + 4), (double)(im_old->h + 4)) * sqrt(2.0);
+ im_tmp = __imlib_AddTransBorders(im_old, (int)d, (int)d);
+ if (!im_tmp)
+  return NULL;
+
+ d /= 2.0;
+ x1 = d - sin(angle + atan(1.0)) * d;
+ y1 = d - cos(angle + atan(1.0)) * d;
+
+ sz = (int)(d * sqrt(2.0));
+ x = (int)(x1 * _ROTATE_PREC_MAX); y = (int)(y1 * _ROTATE_PREC_MAX);
+ dx = (int)(cos(angle) * _ROTATE_PREC_MAX);
+ dy = -(int)(sin(angle) * _ROTATE_PREC_MAX);
+
+ im = __imlib_CreateImage(sz, sz, NULL);
+ im->data = malloc(sz * sz * sizeof(DATA32));
+ if (!(im->data)) {
+  __imlib_FreeImage(im);
+  return NULL;
+ }
+
+ if (ctxt_anti_alias) {
+  __imlib_RotateAAInside(im_tmp->data, im->data,
+    im_tmp->w, im->w, sz, sz, x, y, dx, dy);
+ } else {
+  __imlib_RotateSampleInside(im_tmp->data, im->data,
+    im_tmp->w, im->w, sz, sz, x, y, dx, dy);
+ }
+ if (IMAGE_HAS_ALPHA(im_tmp))
+  SET_FLAG(im->flags, F_HAS_ALPHA);
+ __imlib_FreeImage(im_tmp);
+
+ return (Imlib_Image)im;
 }
