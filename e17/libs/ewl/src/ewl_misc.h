@@ -32,4 +32,9 @@ int             ewl_in_realize_phase(void);
 void            ewl_evas_destroy(Evas *evas);
 void            ewl_evas_object_destroy(Evas_Object *obj);
 
+/* #define DEBUG_MALLOCDEBUG 1 */
+#ifdef DEBUG_MALLOCDEBUG
+char *strdup(const char *str);
+#endif
+
 #endif				/* __EWL_MISC_H__ */

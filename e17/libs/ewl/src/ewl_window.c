@@ -400,17 +400,18 @@ void ewl_window_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	else
 #endif
 #ifdef HAVE_EVAS_ENGINE_FB
-	else if (!strcmp(render, "fb")) {
+	if (!strcmp(render, "fb")) {
 		Evas_Engine_Info_FB *fbinfo;
 		fbinfo->info.virtual_terminal = 0;
 		fbinfo->info.device_number = 0;
 		fbinfo->info.refresh = 0;
-		fbinfo->info.rotation = ee->rotation;
+		fbinfo->info.rotation = 0;
 		evas_engine_info_set(evas, (Evas_Engine_Info *)fbinfo);
 	}
+	else
 #endif
 #ifdef HAVE_EVAS_ENGINE_SOFTWARE_X11_H
-	{
+	if (!strcmp(render, "software_x11")) {
 		Evas_Engine_Info_Software_X11 *sinfo;
 
 		sinfo = (Evas_Engine_Info_Software_X11 *)info;
@@ -427,6 +428,9 @@ void ewl_window_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 		sinfo->info.debug = 0;
 	}
 #endif
+	else {
+		DRETURN(DLEVEL_STABLE);
+	}
 
 	evas_engine_info_set(evas, info);
 

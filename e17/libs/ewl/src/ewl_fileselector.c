@@ -322,20 +322,15 @@ void ewl_fileselector_directory_adjust (Ewl_Fileselector *fs, char *path)
 			ptr--;
 			*ptr = '\0';
 			ptr = strrchr(path, '/');
-			if (!ptr) {
-				*path = '/';
-				ptr = path + 1;
-			}
-
+			ptr++;
 			*ptr = '\0';
-			snprintf (dir, PATH_MAX, "%s", path);
+
+			if (strcmp(path, "/")) {
+				ptr--;
+				*ptr = '\0';
+			}
 		}
-		else {
-			if (!strcmp (ptr, "/"))
-				snprintf (dir, PATH_MAX, "/%s", ptr);
-			else
-				snprintf (dir, PATH_MAX, "%s", ptr);
-		}
+		snprintf (dir, PATH_MAX, "%s", path);
 	}
 
 	IF_FREE(fs->item);
@@ -348,13 +343,20 @@ void ewl_fileselector_directory_clicked_single_cb(Ewl_Widget * w,
 		void *ev_data, void *user_data)
 {
 	Ewl_Fileselector *fs;
+	char *format;
 	char path[PATH_MAX];
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
 	fs = EWL_FILESELECTOR (user_data);
-	snprintf(path, PATH_MAX, "%s/%s", fs->path,
+
+	if (!strcmp(fs->path, "/"))
+		format = "%s%s";
+	else
+		format = "%s/%s";
+
+	snprintf(path, PATH_MAX, format, fs->path,
 		 ewl_text_get_text(EWL_TEXT(w)));
 
 	ewl_fileselector_directory_adjust (fs, path);
@@ -367,6 +369,7 @@ void ewl_fileselector_directory_clicked_cb(Ewl_Widget * w, void *ev_data,
 {
 	char *dir;
 	char path[PATH_MAX];
+	char *format;
 	Ewl_Fileselector *fs;
 	
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -375,7 +378,12 @@ void ewl_fileselector_directory_clicked_cb(Ewl_Widget * w, void *ev_data,
 	fs = EWL_FILESELECTOR (user_data);
 
 	dir = ewl_text_get_text(EWL_TEXT(w));
-	snprintf(path, PATH_MAX, "%s/%s", fs->path, dir);
+
+	if (!strcmp(fs->path, "/"))
+		format = "%s%s";
+	else
+		format = "%s/%s";
+	snprintf(path, PATH_MAX, format, fs->path, dir);
 
 	IF_FREE(dir);
 	ewl_fileselector_directory_adjust (fs, path);

@@ -687,3 +687,14 @@ int ewl_ecore_exit(void *data, int type, void *event)
 
 	return 1;
 }
+
+#ifdef DEBUG_MALLOCDEBUG
+char *strdup(const char *str)
+{
+	char *dst = malloc(strlen(str) + 1);
+	if (dst)
+		strcpy(dst, str);
+
+	return dst;
+}
+#endif
