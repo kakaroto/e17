@@ -76,7 +76,7 @@ static void
 feh_event_handle_ButtonPress(XEvent * ev)
 {
    winwidget winwid = NULL;
-
+   
    D_ENTER(4);
    /* hide the menus and get the heck out if it's a mouse-click on the
       cover */
@@ -167,6 +167,7 @@ feh_event_handle_ButtonPress(XEvent * ev)
          feh_file *thumbfile;
          winwidget thumbwin = NULL;
          int x, y;
+		 char *s;
 
          x = ev->xbutton.x;
          y = ev->xbutton.y;
@@ -177,14 +178,18 @@ feh_event_handle_ButtonPress(XEvent * ev)
          thumbfile = feh_thumbnail_get_file_from_coords(x, y);
          if (thumbfile)
          {
-            thumbwin =
+			if (!opt.thumb_title)
+			   s = thumbfile->name;
+			else
+			   s = feh_printf(opt.thumb_title, thumbfile);
+			thumbwin =
                winwidget_get_first_window_of_type(WIN_TYPE_THUMBNAIL_VIEWER);
             if (!thumbwin)
             {
                thumbwin =
                   winwidget_create_from_file(feh_list_add_front
                                              (NULL, thumbfile),
-                                             thumbfile->name,
+                                             s,
                                              WIN_TYPE_THUMBNAIL_VIEWER);
                winwidget_show(thumbwin);
             }
@@ -192,7 +197,7 @@ feh_event_handle_ButtonPress(XEvent * ev)
             {
                free(thumbwin->file);
                thumbwin->file = feh_list_add_front(NULL, thumbfile);
-               winwidget_rename(thumbwin, thumbfile->name);
+               winwidget_rename(thumbwin, s);
                feh_reload_image(thumbwin, 1);
             }
          }

@@ -348,6 +348,7 @@ feh_parse_option_array(int argc, char **argv)
       {"font", 1, 0, 'e'},
       {"title-font", 1, 0, '@'},
       {"title", 1, 0, '^'},
+	  {"thumb-title", 1, 0, '~'},
       {"bg", 1, 0, 'b'},
       {"fontpath", 1, 0, 'C'},
       {"progress-gran", 1, 0, '('},
@@ -520,6 +521,9 @@ feh_parse_option_array(int argc, char **argv)
         case '^':
            opt.title = estrdup(optarg);
            break;
+	    case '~':
+		   opt.thumb_title = estrdup(optarg);
+		   break;
         case 'b':
            opt.bg = 1;
            opt.bg_file = estrdup(optarg);
@@ -668,6 +672,14 @@ check_options(void)
                "you might as well use ls ;)\n"
                "loadables only will be shown\n");
       opt.unloadables = 0;
+   }
+
+   if (opt.thumb_title && (!opt.thumbs))
+   {
+	  weprintf("Doesn't make sense to set thumbnail title when not in\n"
+			   "thumbnail mode.\n");
+	  free(opt.thumb_title);
+	  opt.thumb_title = NULL;
    }
    D_RETURN_(4);
 }

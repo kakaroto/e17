@@ -64,6 +64,7 @@ init_thumbnail_mode(void)
    int file_num = 0, lines;
    int index_image_width, index_image_height;
    int x_offset_name = 0, x_offset_dim = 0, x_offset_size = 0;
+   char *s;
 
    file_num = feh_list_length(filelist);
 
@@ -337,11 +338,17 @@ init_thumbnail_mode(void)
                                      0, 255);
    }
 
+   /* Create title now */
+
+   if (!opt.title)
+	  s = estrdup(PACKAGE " [thumbnail mode]");
+   else
+	  s = estrdup(feh_printf(opt.title, NULL)); 
+
    if (opt.display && opt.progressive)
    {
       winwid =
-         winwidget_create_from_image(im_main, PACKAGE " [thumbnail mode]",
-                                     WIN_TYPE_THUMBNAIL);
+         winwidget_create_from_image(im_main, s, WIN_TYPE_THUMBNAIL);
       winwidget_show(winwid);
    }
 
@@ -563,13 +570,14 @@ init_thumbnail_mode(void)
       else
       {
          winwid =
-            winwidget_create_from_image(im_main, PACKAGE " [thumbnail mode]",
-                                        WIN_TYPE_THUMBNAIL);
+            winwidget_create_from_image(im_main, s, WIN_TYPE_THUMBNAIL);
          winwidget_show(winwid);
       }
    }
    else
       feh_imlib_free_image_and_decache(im_main);
+
+   free(s);
    D_RETURN_(3);
 }
 

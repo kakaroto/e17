@@ -1,3 +1,9 @@
+Tue Jun 27 17:16:21 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* More --title stuff from Eric. It now works in thumbnail mode,
+	and an additional --thumb-title can be used to set the title of
+	the individual thumbnail windows.
+
 Sun Jun 25 03:39:57 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Spec file fixes (I suck).
