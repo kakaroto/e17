@@ -1188,3 +1188,55 @@ Thought so.
 I was wondering where all my memory was going...
 ;)
 
+-------------------------------------------------------------------------------
+
+Fri Dec 03 20:11:23 GMT 1999
+(gilbertt)
+
+Right. You can now specify a "vertical" property for your new window. Works
+the same as the vertical parameter in Epplet_init. Uses the same
+imageclasses too.
+
+I had a big headache debugging this, it just didn't seem to work, I knew
+BrushedMetal (the theme I use) had a different (green) vertical pixmap, but
+the windows always came up grey. Just when I was about to go mental, I found
+this in epplet.cfg:
+
+__ICLASS __BGN
+  __NAME EPPLET_BACKGROUND_HORIZONTAL
+  __NORMAL "epplets/images/bg.png"
+  __EDGE_SCALING   2 2 2 2
+__END
+
+__ICLASS __BGN
+  __NAME EPPLET_BACKGROUND_VERTICAL
+  __NORMAL "epplets/images/bg.png"
+  __EDGE_SCALING   2 2 2 2
+__END
+
+Gah. No wonder the images weren't changing!
+
+Is there a reason for this? If not, could it be changed to:
+
+__ICLASS __BGN
+  __NAME EPPLET_BACKGROUND_HORIZONTAL
+  __NORMAL "epplets/images/bg.png"
+  __EDGE_SCALING   2 2 2 2
+__END
+
+__ICLASS __BGN
+  __NAME EPPLET_BACKGROUND_VERTICAL
+  __NORMAL "epplets/images/bg_v.png"
+  __EDGE_SCALING   2 2 2 2
+__END
+
+Please?
+
+Anyway, the vertical stuff works now, and probably did an hour ago, before I
+went off chasing nonexistant bugs :)
+
+I also tidied up some other stuff, and killed another global :)
+
+See E-ScreenSave in cvs for an example, press the "lock" button to see it in
+action :)
+

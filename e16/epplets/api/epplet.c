@@ -8,19 +8,15 @@
 #include <sys/wait.h>
 
 static Display     *disp = NULL;
-static Window       win = 0;
+//static Window       win = 0;
 
 static int          window_num = 0;	/* For window list */
 static Epplet_window *windows = NULL;	/* List of windows to loop though */
 
 static Epplet_window context_win;	/* Current context win */
 static int          window_stack_pos = 0;	/* For context changes */
-
-#if 0
-static Epplet_window window_stack[20];	/* For context changes */
-#endif
 static Epplet_window *window_stack;	/* For context changes */
-static Epplet_window mainwin;	/* Always the main epplet window */
+static Epplet_window mainwin;	        /* Always the main epplet window */
 
 static ImlibData   *id = NULL;
 static Display     *dd = NULL;
@@ -29,7 +25,6 @@ static Window       my_win = 0;
 static Window       root = 0;
 static ETimer      *q_first = NULL;
 static XContext     xid_context = 0;
-static char         win_vert = 0;
 
 static char        *conf_dir = NULL;
 static char        *epplet_name = NULL;
@@ -160,15 +155,6 @@ static void         Epplet_textbox_textsize(Epplet_gadget gadget, int *w,
 					    int *h, char *s);
 static void         Epplet_find_instance(char *name);
 
-/* I don't think I need these two after all :) */
-#if 0
-/* Redraw all epplet windows (excluding the main epplet window) */
-static void         Epplet_draw_windows(void);
-
-/* Redraw window win */
-static void         Epplet_draw_window(Epplet_window win);
-#endif
-
 ImlibData          *
 Epplet_get_imlib_data(void)
 {
@@ -230,6 +216,7 @@ Epplet_Init(char *name,
    char               *msg;
 
    mainwin = malloc(sizeof(EppWindow));
+   mainwin->win_vert = vertical;
    w *= 16;
    h *= 16;
    disp = XOpenDisplay(NULL);
@@ -257,7 +244,7 @@ Epplet_Init(char *name,
       LeaveWindowMask | KeyPressMask | KeyReleaseMask | ButtonMotionMask |
       ExposureMask | FocusChangeMask | PropertyChangeMask |
       VisibilityChangeMask;
-   win = XCreateWindow(disp, DefaultRootWindow(disp), 0, 0, w, h, 0,
+   mainwin->win = XCreateWindow(disp, DefaultRootWindow(disp), 0, 0, w, h, 0,
 		       id->x.depth, InputOutput, Imlib_get_visual(id),
 		       CWOverrideRedirect | CWSaveUnder | CWBackingStore |
 		       CWColormap | CWBackPixel | CWBorderPixel |
@@ -270,15 +257,15 @@ Epplet_Init(char *name,
    mwm.inputMode = 0;
    mwm.status = 0;
    a = XInternAtom(disp, "_MOTIF_WM_HINTS", False);
-   XChangeProperty(disp, win, a, a, 32, PropModeReplace,
+   XChangeProperty(disp, mainwin->win, a, a, 32, PropModeReplace,
 		   (unsigned char *)&mwm, sizeof(MWMHints) / 4);
 
    /* set the window title , name , class */
-   XStoreName(disp, win, epplet_name);
+   XStoreName(disp, mainwin->win, epplet_name);
    xch = XAllocClassHint();
    xch->res_name = epplet_name;
    xch->res_class = "Epplet";
-   XSetClassHint(disp, win, xch);
+   XSetClassHint(disp, mainwin->win, xch);
    XFree(xch);
    /* set the size hints */
    sh.flags = PSize | PMinSize | PMaxSize;
@@ -288,9 +275,9 @@ Epplet_Init(char *name,
    sh.min_height = h;
    sh.max_width = w;
    sh.max_height = h;
-   XSetWMNormalHints(disp, win, &sh);
+   XSetWMNormalHints(disp, mainwin->win, &sh);
    /* set the command hint */
-   XSetCommand(disp, win, argv, argc);
+   XSetCommand(disp, mainwin->win, argv, argc);
    /* set the client machine name */
    if (!uname(&ubuf))
      {
@@ -299,27 +286,26 @@ Epplet_Init(char *name,
 	xtp.format = 8;
 	xtp.value = (unsigned char *)s;
 	xtp.nitems = strlen((char *)(xtp.value));
-	XSetWMClientMachine(disp, win, &xtp);
+	XSetWMClientMachine(disp, mainwin->win, &xtp);
      }
    /* set the icons name property */
-   XSetIconName(disp, win, epplet_name);
+   XSetIconName(disp, mainwin->win, epplet_name);
 
    /* set sticky & arrange ignore */
    val = (1 << 0) /* | (1 << 9) */ ;
    a = XInternAtom(disp, "_WIN_STATE", False);
-   XChangeProperty(disp, win, a, XA_CARDINAL, 32, PropModeReplace,
+   XChangeProperty(disp, mainwin->win, a, XA_CARDINAL, 32, PropModeReplace,
 		   (unsigned char *)&val, 1);
    /* set the default layer to below */
    val = 2;
    a = XInternAtom(disp, "_WIN_LAYER", False);
-   XChangeProperty(disp, win, a, XA_CARDINAL, 32, PropModeReplace,
+   XChangeProperty(disp, mainwin->win, a, XA_CARDINAL, 32, PropModeReplace,
 		   (unsigned char *)&val, 1);
    /* set skip focus, skip winlist dont cover skip taskbar flags */
    val = (1 << 0) | (1 << 1) | (1 << 2) | (1 << 5);
    a = XInternAtom(disp, "_WIN_HINTS", False);
-   XChangeProperty(disp, win, a, XA_CARDINAL, 32, PropModeReplace,
+   XChangeProperty(disp, mainwin->win, a, XA_CARDINAL, 32, PropModeReplace,
 		   (unsigned char *)&val, 1);
-   win_vert = vertical;
    win_name = epplet_name;
    win_version = version;
    win_info = info;
@@ -351,7 +337,6 @@ Epplet_Init(char *name,
 
    mainwin->w = w;
    mainwin->h = h;
-   mainwin->win = win;
    mainwin->bg_pmap = 0;
    mainwin->bg_bg = 0;
    mainwin->bg_mask = 0;
@@ -360,7 +345,7 @@ Epplet_Init(char *name,
 
    Epplet_window_push_context(mainwin);
 
-   Epplet_background_properties(win_vert, mainwin);
+   Epplet_background_properties(mainwin->win_vert, mainwin);
 
    sa.sa_handler = Epplet_handle_child;
    sa.sa_flags = SA_RESTART;
@@ -369,7 +354,7 @@ Epplet_Init(char *name,
 }
 
 Epplet_window
-Epplet_create_window(int w, int h, int x, int y, char *title)
+Epplet_create_window(int w, int h, int x, int y, char *title, char vertical)
 {
    XSetWindowAttributes attr;
    Atom                a;
@@ -380,6 +365,7 @@ Epplet_create_window(int w, int h, int x, int y, char *title)
    Epplet_window       ret;
 
    ret = malloc(sizeof(EppWindow));
+   ret->win_vert = vertical;
    attr.backing_store = NotUseful;
    attr.override_redirect = False;
    attr.colormap = Imlib_get_colormap(id);
@@ -398,7 +384,7 @@ Epplet_create_window(int w, int h, int x, int y, char *title)
 			    CWColormap | CWBackPixel | CWBorderPixel |
 			    CWEventMask, &attr);
 
-   XSetTransientForHint(disp, ret->win, win);
+   XSetTransientForHint(disp, ret->win, mainwin->win);
 
    /* set hints? */
    mwm.flags = MWM_HINTS_DECORATIONS;
@@ -454,7 +440,7 @@ Epplet_create_window(int w, int h, int x, int y, char *title)
 
    Epplet_window_push_context(ret);
 
-   Epplet_background_properties(win_vert, ret);
+   Epplet_background_properties(ret->win_vert, ret);
 
    return ret;
 }
@@ -615,7 +601,7 @@ Epplet_refresh_backgrounds(void)
    for (i = 0; i < window_num; i++)
      {
 	Epplet_window_push_context(windows[i]);
-	Epplet_background_properties(win_vert, windows[i]);
+	Epplet_background_properties(windows[i]->win_vert, windows[i]);
 	Epplet_window_pop_context();
      }
 }
@@ -703,7 +689,7 @@ Epplet_show(void)
 {
    XEvent              ev;
 
-   XMapWindow(disp, win);
+   XMapWindow(disp, mainwin->win);
    /* wait for the window to map */
    XMaskEvent(disp, StructureNotifyMask, &ev);
 }
@@ -713,21 +699,21 @@ Epplet_remember(void)
 {
    char                s[1024];
 
-   Esnprintf(s, sizeof(s), "remember %x none", (unsigned int)win);
+   Esnprintf(s, sizeof(s), "remember %x none", (unsigned int)mainwin->win);
    ECommsSend(s);
-   Esnprintf(s, sizeof(s), "remember %x layer", (unsigned int)win);
+   Esnprintf(s, sizeof(s), "remember %x layer", (unsigned int)mainwin->win);
    ECommsSend(s);
-   Esnprintf(s, sizeof(s), "remember %x border", (unsigned int)win);
+   Esnprintf(s, sizeof(s), "remember %x border", (unsigned int)mainwin->win);
    ECommsSend(s);
-   Esnprintf(s, sizeof(s), "remember %x location", (unsigned int)win);
+   Esnprintf(s, sizeof(s), "remember %x location", (unsigned int)mainwin->win);
    ECommsSend(s);
-   Esnprintf(s, sizeof(s), "remember %x sticky", (unsigned int)win);
+   Esnprintf(s, sizeof(s), "remember %x sticky", (unsigned int)mainwin->win);
    ECommsSend(s);
-   Esnprintf(s, sizeof(s), "remember %x shade", (unsigned int)win);
+   Esnprintf(s, sizeof(s), "remember %x shade", (unsigned int)mainwin->win);
    ECommsSend(s);
-   Esnprintf(s, sizeof(s), "remember %x group", (unsigned int)win);
+   Esnprintf(s, sizeof(s), "remember %x group", (unsigned int)mainwin->win);
    ECommsSend(s);
-   Esnprintf(s, sizeof(s), "remember %x command", (unsigned int)win);
+   Esnprintf(s, sizeof(s), "remember %x command", (unsigned int)mainwin->win);
    ECommsSend(s);
 }
 
@@ -736,14 +722,14 @@ Epplet_unremember(void)
 {
    char                s[1024];
 
-   Esnprintf(s, sizeof(s), "remember %x none", (unsigned int)win);
+   Esnprintf(s, sizeof(s), "remember %x none", (unsigned int)mainwin->win);
    ECommsSend(s);
    ESYNC;
 }
 
 Window Epplet_get_main_window(void)
 {
-   return win;
+   return mainwin->win;
 }
 
 void
@@ -1286,7 +1272,7 @@ void
 Epplet_prune_events(XEvent * ev, int num)
 {
    int                 i, j;
-   char                found, remember;
+   char                found;
 
    /* find only the last moption event */
    found = 0;
@@ -1341,15 +1327,8 @@ Epplet_prune_events(XEvent * ev, int num)
 	  }
      }
    /* any reason to remember the window properties? */
-   remember = 0;
    for (i = 0; i < num; i++)
-     {
-	if ((ev[i].type == ConfigureNotify) && (ev->xconfigure.window == win))
-	   remember = 1;
-	if ((ev[i].type == PropertyNotify) && (ev->xproperty.window == win))
-	   remember = 1;
-     }
-   if (remember)
+	if (((ev[i].type == ConfigureNotify) && (ev->xconfigure.window == mainwin->win)) || ((ev[i].type == PropertyNotify) && (ev->xproperty.window == mainwin->win)))
       Epplet_remember();
 }
 
@@ -3948,7 +3927,7 @@ Epplet_background_properties(char vertical, Epplet_window win)
 
    if (vertical)
       Epplet_imageclass_get_pixmaps("EPPLET_BACKGROUND_VERTICAL", "normal",
-				    &win->bg_bg, &win->bg_mask, win->w, win->h);
+	      &win->bg_bg, &win->bg_mask, win->w, win->h);
    else
       Epplet_imageclass_get_pixmaps("EPPLET_BACKGROUND_HORIZONTAL", "normal",
 				    &win->bg_bg, &win->bg_mask, win->w, win->h);
@@ -3960,7 +3939,7 @@ Epplet_background_properties(char vertical, Epplet_window win)
    XShapeCombineMask(disp, win->win, ShapeBounding, 0, 0, win->bg_mask,
 		     ShapeSet);
    XClearWindow(disp, win->win);
-   win_vert = vertical;
+   win->win_vert = vertical;
    XFreeGC(disp, gc);
 }
 

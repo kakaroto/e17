@@ -339,11 +339,11 @@ cb_shoot (void *data)
   Epplet_gadget sld, sld2, sld3, lbl, btn;
   mywin =
     Epplet_create_window (400, 300, 100, 100,
-			  "See! I told you this stuff was easy ;)");
+			  "See! I told you this stuff was easy ;)",1);
   Epplet_window_show (mywin);
   Epplet_gadget_show (lbl =
 		      Epplet_create_label (20, 10,
-					   "This window was created on its own.",
+					   "This window was created on its own, and is vertical.",
 					   2));
   Epplet_gadget_show (sld =
 		      Epplet_create_hslider (20, 50, 100, 0, 100, 1, 5, &temp,
@@ -363,7 +363,7 @@ cb_shoot (void *data)
 
   mywin2 =
     Epplet_create_window (400, 300, 100, 100,
-			  "See! I told you this stuff was easy ;)");
+			  "See! I told you this stuff was easy ;)",0);
   Epplet_window_show (mywin2);
   Epplet_gadget_show (lbl =
 		      Epplet_create_label (20, 10,
@@ -385,7 +385,7 @@ cb_shoot (void *data)
 
   mywin3 =
     Epplet_create_window (400, 300, 100, 100,
-			  "See! I told you this stuff was easy ;)");
+			  "See! I told you this stuff was easy ;)",0);
   Epplet_window_show (mywin3);
   Epplet_gadget_show (lbl =
 		      Epplet_create_label (20, 10,
