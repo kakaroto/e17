@@ -618,7 +618,6 @@ HandleUnmap(XEvent * ev)
 {
    Window              win = ev->xunmap.window;
    EWin               *ewin;
-   int                 i, num_groups;
 
    EDBUG(5, "HandleUnmap");
    ewin = FindItem(NULL, win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
@@ -638,10 +637,6 @@ HandleUnmap(XEvent * ev)
 	   FocusToEWin(NULL, FOCUS_EWIN_GONE);
 	if (ewin == mode.mouse_over_win)
 	   mode.mouse_over_win = NULL;
-
-	num_groups = ewin->num_groups;
-	for (i = 0; i < num_groups; i++)
-	   RemoveEwinFromGroup(ewin, ewin->groups[0]);
 
 	if (!ewin->iconified)
 	  {

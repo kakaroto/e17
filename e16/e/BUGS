@@ -28,6 +28,8 @@ Known bugs
 Fixed in CVS
 ~~~~~~~~~~~~
 
+- Iconifying a window group breaks it.
+
 - Remembered settings only work for the first instance (WM_CLASS) of an
   application.
 
@@ -38,7 +40,6 @@ Fixed in CVS
 
 - When right clicking a zoomed pager mini-window to get the menu, the
   mini-window and tooltip are not unmapped.
-
 
 Fixed in E 16.6
 ~~~~~~~~~~~~~~~
