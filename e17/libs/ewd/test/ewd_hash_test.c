@@ -41,8 +41,11 @@ int main()
 
         while (i < MAX_VAL) {
                 HASH_SET(hash, (void *)i, (void *)(i + 1));
-		if (i % 10 == 0)
+		if (i % 10 == 0) {
 			HASH_REMOVE(hash, i);
+			if (HASH_GET(hash, (void *)i))
+				printf("Delete failed\n");;
+		}
                 i++;
         }
 /*	printf("Got through the first loop\n"); */

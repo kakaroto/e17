@@ -8,7 +8,7 @@ int main()
 {
         int i = 1;
 
-        Ewd_List *list;
+        Ewd_DList *list;
 
         list = ewd_dlist_new(NULL);
 
@@ -23,6 +23,12 @@ int main()
 		printf("Value: %d\n", i);
 
 	printf("Got through the second loop\n");
+
+	ewd_dlist_goto_last(list);
+	while ((i = (int)ewd_dlist_previous(list)))
+		printf("Value: %d\n", i);
+
+	printf("Got through the third loop\n");
 
 	ewd_dlist_destroy(list);
 
