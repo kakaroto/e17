@@ -488,6 +488,7 @@ ShowDialog(Dialog * d)
    int                 i, w, h, mw, mh;
    EWin               *ewin;
    XTextProperty       xtp;
+   XClassHint         *xch;
 
    SC_Kill();
    if (d->title)
@@ -497,6 +498,11 @@ ShowDialog(Dialog * d)
 	xtp.value = (unsigned char *)(d->title);
 	xtp.nitems = strlen((char *)(xtp.value));
 	XSetWMName(disp, d->win, &xtp);
+	xch = XAllocClassHint();
+	xch->res_name = d->name;
+	xch->res_class = "Enlightenment_Dialog";
+	XSetClassHint(disp, d->win, xch);
+	XFree(xch);
      }
 
    ewin = FindEwinByDialog(d);
