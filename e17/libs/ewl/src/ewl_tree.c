@@ -472,6 +472,8 @@ int ewl_tree_node_init(Ewl_Tree_Node *node)
 	
 	ewl_container_show_notify(EWL_CONTAINER(node),
 				  ewl_tree_node_child_show_cb);
+	ewl_container_hide_notify(EWL_CONTAINER(node),
+				  ewl_tree_node_child_hide_cb);
 	ewl_container_resize_notify(EWL_CONTAINER(node),
 				    ewl_tree_node_resize_cb);
 	ewl_container_remove_notify(EWL_CONTAINER(node),
@@ -558,7 +560,7 @@ ewl_tree_node_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	Ewl_Tree_Node *node;
 	Ewl_Container *c;
 	Ewl_Object *child;
-	int y, width;
+	int y;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -575,6 +577,11 @@ ewl_tree_node_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	child = ecore_list_next(c->children);
 
 	/*
+	printf("Tree node configured at (%d, %d) %d x %d\n", CURRENT_X(w),
+			CURRENT_Y(w), CURRENT_W(w), CURRENT_H(w));
+			*/
+
+	/*
 	 * The first child is the current level row
 	 * are lower nodes and rows.
 	 */
@@ -582,15 +589,17 @@ ewl_tree_node_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 			CURRENT_W(w), ewl_object_get_preferred_h(child));
 	
 	y = CURRENT_Y(w) + ewl_object_get_current_h(child);
-	width = CURRENT_W(w) - CURRENT_X(w) + CURRENT_X(w);
 
 	/*
 	 * All subsequent children are lower nodes and rows.
 	 */
 	while ((child = ecore_list_next(c->children))) {
-		ewl_object_request_geometry(child, CURRENT_X(w), y, width,
-				ewl_object_get_preferred_h(child));
-		y += ewl_object_get_current_h(child);
+		if (VISIBLE(child)) {
+			ewl_object_request_geometry(child, CURRENT_X(w), y,
+						    CURRENT_W(w),
+						    ewl_object_get_preferred_h(child));
+			y += ewl_object_get_current_h(child);
+		}
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -619,7 +628,6 @@ ewl_tree_node_clicked_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 void
 ewl_tree_node_child_show_cb(Ewl_Container *c, Ewl_Widget *w)
 {
-	int width;
 	Ewl_Tree_Node *node;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -629,15 +637,15 @@ ewl_tree_node_child_show_cb(Ewl_Container *c, Ewl_Widget *w)
 	if (ecore_list_nodes(c->children) > 1)
 		ewl_widget_set_state(EWL_WIDGET(c), "expandable");
 
-	if (node->expanded || w == node->row) {
+	if (node->expanded) {
+		ewl_container_prefer_sum(c, EWL_ORIENTATION_VERTICAL);
+	}
+	else {
 		ewl_object_set_preferred_h(EWL_OBJECT(c),
-				PREFERRED_H(c) +
-				ewl_object_get_preferred_h(EWL_OBJECT(w)));
+					   ewl_object_get_preferred_h(EWL_OBJECT(node->row)));
 	}
 
-	width = ewl_object_get_preferred_w(EWL_OBJECT(w));
-	if (PREFERRED_W(c) < width)
-		ewl_object_set_minimum_w(EWL_OBJECT(c), width);
+	ewl_container_prefer_largest(c, EWL_ORIENTATION_HORIZONTAL);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

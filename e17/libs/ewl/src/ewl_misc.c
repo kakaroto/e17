@@ -639,9 +639,11 @@ void ewl_realize_queue()
 	 * top.
 	 */
 	while ((w = ecore_list_remove_first(child_add_list))) {
-		if (w->parent)
-			ewl_container_call_child_show(EWL_CONTAINER(w->parent),
-						      w);
+		/*
+		 * Check visibility in case the realize callback changed it.
+		 */
+		if (VISIBLE(w))
+			ewl_widget_show(w);
 	}
 
 	ewl_exit_realize_phase();

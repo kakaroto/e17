@@ -352,7 +352,7 @@ char           *ewl_theme_data_get_str(Ewl_Widget * w, char *k)
 	if (w)
 		snprintf(key, PATH_MAX, "%s/%s", w->appearance, k);
 	else
-		strcpy(key, k);
+		snprintf(key, PATH_MAX, "%s", k);
 
 	for (temp = key; temp && !ret; temp = strchr(temp, '/')) {
 		if (w && w->theme)
@@ -406,7 +406,7 @@ int ewl_theme_data_get_int(Ewl_Widget * w, char *k)
 	if (w)
 		snprintf(key, PATH_MAX, "%s/%s", w->appearance, k);
 	else
-		strcpy(key, k);
+		snprintf(key, PATH_MAX, "%s", k);
 
 	for (temp = key; temp && !ret; temp = strchr(temp, '/')) {
 		if (w->theme)

@@ -101,7 +101,6 @@ void ewl_widget_realize(Ewl_Widget * w)
 		ewl_widget_realize(w->parent);
 	else if (w->parent || ewl_object_get_toplevel(EWL_OBJECT(w))) {
 		ewl_callback_call(w, EWL_CALLBACK_REALIZE);
-		ewl_widget_show(w);
 	}
 
 	/*
@@ -160,6 +159,9 @@ void ewl_widget_show(Ewl_Widget * w)
 
 	if (REALIZED(w)) {
 		ewl_callback_call(w, EWL_CALLBACK_SHOW);
+		if (w->parent)
+			ewl_container_call_child_show(EWL_CONTAINER(w->parent),
+						      w);
 	}
 	else if (pc) {
 		flags = ewl_object_get_flags(EWL_OBJECT(pc),
@@ -416,7 +418,7 @@ void ewl_widget_set_appearance(Ewl_Widget * w, char *appearance)
 	if (!w->appearance)
 		DRETURN(DLEVEL_STABLE);
 
-	strcpy(w->appearance, appearance);
+	snprintf(w->appearance, al, "%s",  appearance);
 
 	/*
 	 * We don't throw away any inheritance info, so we can just allocate
