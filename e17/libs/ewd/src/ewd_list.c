@@ -828,8 +828,8 @@ int _ewd_list_for_each(Ewd_List *list, Ewd_For_Each function)
 	if (!list || !function)
 		return FALSE;
 
-	for (value = _ewd_list_goto_first(list); value;
-			value = _ewd_list_next(list))
+	_ewd_list_goto_first(list);
+	while ((value = _ewd_list_next(list)) != NULL)
 		function(value);
 
 	return TRUE;
