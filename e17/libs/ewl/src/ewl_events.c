@@ -35,7 +35,7 @@ int ewl_ev_x_mouse_out(void *data, int type, void *_ev);
 int ewl_ev_x_paste(void *data, int type, void *_ev);
 #endif
 
-#ifdef HAVE_EVAS_ENGINE_FB
+#ifdef HAVE_EVAS_ENGINE_FB_H
 int ewl_ev_fb_key_down(void *data, int type, void *_ev);
 int ewl_ev_fb_key_up(void *data, int type, void *_ev);
 int ewl_ev_fb_mouse_down(void *data, int type, void *_ev);
@@ -94,7 +94,7 @@ int ewl_ev_init(void)
 	}
 #endif
 
-#ifdef HAVE_EVAS_ENGINE_FB
+#ifdef HAVE_EVAS_ENGINE_FB_H
 	if (engine & EWL_ENGINE_FB) {
 		ecore_event_handler_add(ECORE_FB_EVENT_KEY_DOWN,
 					ewl_ev_fb_key_down, NULL);
@@ -450,7 +450,7 @@ int ewl_ev_x_paste(void *data, int type, void *e)
 
 #endif
 
-#ifdef HAVE_EVAS_ENGINE_FB
+#ifdef HAVE_EVAS_ENGINE_FB_H
 
 /**
  * @param data: user specified data passed to the function
