@@ -215,7 +215,7 @@ EWin               *const *
 EwinListGetForDesktop(int desk, int *num)
 {
    static EWin       **lst = NULL;
-   static int          nalloc;
+   static int          nalloc = 0;
    int                 i, n, nwins;
    EWin               *ewin;
 
@@ -223,7 +223,7 @@ EwinListGetForDesktop(int desk, int *num)
    nwins = EwinListStack.nwins;
    if (nalloc < nwins)
      {
-	nalloc += 16;
+	nalloc = (nwins + 16) & ~0xf;	/* 16 at the time */
 	lst = Erealloc(lst, nalloc * sizeof(EWin *));
      }
 
