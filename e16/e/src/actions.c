@@ -2466,6 +2466,8 @@ doMaxH(void *params)
    ewin = GetFocusEwin();
    if (ewin)
      {
+	if (ewin->shaded)
+	   EDBUG_RETURN(0);
 	MaxHeight(ewin, (char *)params);
 	RememberImportantInfoForEwin(ewin);
      }
@@ -2483,6 +2485,8 @@ doMaxW(void *params)
    ewin = GetFocusEwin();
    if (ewin)
      {
+	if (ewin->shaded)
+	   EDBUG_RETURN(0);
 	MaxWidth(ewin, (char *)params);
 	RememberImportantInfoForEwin(ewin);
      }
@@ -2500,6 +2504,8 @@ doMax(void *params)
    ewin = GetFocusEwin();
    if (ewin)
      {
+	if (ewin->shaded)
+	   EDBUG_RETURN(0);
 	MaxSize(ewin, (char *)params);
 	RememberImportantInfoForEwin(ewin);
      }
