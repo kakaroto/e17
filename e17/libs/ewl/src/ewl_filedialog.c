@@ -182,19 +182,22 @@ ewl_filedialog_open_init(Ewl_Filedialog * fd, Ewl_Callback_Function cb)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void ewl_filedialog_change_path(Ewl_Widget * w, void *ev_data, void *user_data)
+static void ewl_filedialog_change_path(Ewl_Widget * w, void *ev_data, void *user_data)
 {
+	struct stat          statbuf;
 	Ewl_Filedialog *fd = user_data;
   Ewl_Fileselector *fs = EWL_FILESELECTOR (fd->selector);
 	char *dir;
+	int i;
 
 	dir = ewl_entry_get_text (EWL_ENTRY (w));
 	
-	printf ("Changing path to: %s\n", dir);
-	
-	ewl_fileselector_process_directory (EWL_FILESELECTOR (fs), dir);
+	i = stat (dir, &statbuf);
+	if (S_ISDIR(statbuf.st_mode)) {
+		printf ("Changing path to: %s\n", dir);
+		ewl_fileselector_process_directory (EWL_FILESELECTOR (fs), dir);
+	}
 }
-
 
 static void
 ewl_filedialog_save_init(Ewl_Filedialog * fd, Ewl_Callback_Function cb)
