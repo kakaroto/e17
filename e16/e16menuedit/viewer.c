@@ -586,6 +586,8 @@ save_menus (GtkWidget * widget, gpointer user_data)
   else
     printf ("Successful save\n");
 
+  g_free(buf);
+  
   /* TODO This makes the entry_data structs leak */
   g_node_destroy (node);
   return;
@@ -593,6 +595,7 @@ save_menus (GtkWidget * widget, gpointer user_data)
   user_data = NULL;
 }
 
+/* Get those annoyingly painful CTreeNodes into a useable format */
 gboolean
 tree_to_gnode (GtkCTree * ctree,
 	       guint depth, GNode * gnode, GtkCTreeNode * cnode,
@@ -623,6 +626,7 @@ tree_to_gnode (GtkCTree * ctree,
   data = NULL;
 }
 
+/* Next two functions are co-recursing */
 gint
 write_menu (GNode * node, gchar * file)
 {
