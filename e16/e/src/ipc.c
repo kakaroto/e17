@@ -613,9 +613,15 @@ IPC_Modules(char *params, Client * c)
      {
 	char                param1[FILEPATH_LEN_MAX];
 	char                param2[FILEPATH_LEN_MAX];
+	char                param3[FILEPATH_LEN_MAX];
+
+	param1[0] = 0;
+	param2[0] = 0;
+	param3[0] = 0;
 
 	word(params, 1, param1);
 	word(params, 2, param2);
+	word(params, 3, param3);
 	if (!strcmp(param1, "load"))
 	  {
 	     if (!param2[0])

@@ -2381,3 +2381,12 @@ Sat Sep 25 13:07:52 PDT 1999
 (Raster)
 
 add mroe to the color modifiers comment dialog...
+
+-------------------------------------------------------------------------------
+
+Sun Sep 26 19:37:30 PDT 1999
+(Mandrake)
+
+added patch from Martin Tyler <martin@boo.org>
+fixes segfaults in modules loading with ipc.
+

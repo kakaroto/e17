@@ -21,6 +21,7 @@ typedef struct _ModuleMember
   }
 ModuleMember;
 
+int                 ListLength = 0;
 ModuleMember       *ModuleList;
 
 /* This is a few of our return code DEFINES */
@@ -29,6 +30,7 @@ ModuleMember       *ModuleList;
 #define MODULE_LOAD_FAIL      2
 #define MODULE_UNLOAD_FAIL    3
 #define MODULE_NOT_LOADED     4
+#define MODULE_EXEC_FAIL      5
 
 int
 LoadModule(char *module_name)
@@ -56,20 +58,17 @@ LoadModule(char *module_name)
    /* create or append to ModuleList? */
    if (ModuleList)
      {
-	ModuleList = Erealloc(ModuleList,
-			    ((sizeof(ModuleList) / sizeof(ModuleMember) + 1) *
-			     sizeof(ModuleMember)));
+	ModuleList = Erealloc(ModuleList, ++ListLength * sizeof(ModuleMember));
      }
    else
      {
 	ModuleList = Emalloc(sizeof(ModuleMember));
+	ListLength = 1;
      }
 
    /* Now we'll chunk everything useful into the ModuleList */
-   ModuleList[(sizeof(ModuleList) / sizeof(ModuleMember) - 1)].ModuleName
-      = duplicate(module_name);
-   ModuleList[(sizeof(ModuleList) / sizeof(ModuleMember) - 1)].handle =
-      handle;
+   ModuleList[ListLength - 1].ModuleName = duplicate(module_name);
+   ModuleList[ListLength - 1].handle = handle;
 
    return (0);
 
@@ -79,7 +78,6 @@ int
 UnloadModule(char *module_name)
 {
 
-   int                 ListLength = 0;
    int                 ModuleID;
    int                 i;
 
@@ -88,8 +86,6 @@ UnloadModule(char *module_name)
 
    /* fix the ModuleID */
    ModuleID--;
-
-   ListLength = (sizeof(ModuleList) / sizeof(ModuleMember));
 
    if (dlclose(ModuleList[ModuleID].handle))
       return (MODULE_UNLOAD_FAIL);
@@ -103,8 +99,7 @@ UnloadModule(char *module_name)
 	ModuleList[i].handle = ModuleList[i + 1].handle;
      }
 
-   ModuleList = Erealloc(ModuleList, ((sizeof(ModuleList) / sizeof(ModuleMember)
-				       - 1) * sizeof(ModuleMember)));
+   ModuleList = Erealloc(ModuleList, --ListLength * sizeof(ModuleMember));
 
    return (0);
 
@@ -136,12 +131,9 @@ char               *
 ModuleListAsString(void)
 {
 
-   int                 ListLength = 0;
    int                 i;
 
    char                returnList[FILEPATH_LEN_MAX];
-
-   ListLength = (sizeof(ModuleList) / sizeof(ModuleMember));
 
    returnList[0] = 0;
 
@@ -167,10 +159,7 @@ IsLoadedModule(char *module_name)
     * --Mandrake
     */
 
-   int                 ListLength = 0;
    int                 i;
-
-   ListLength = (sizeof(ModuleList) / sizeof(ModuleMember));
 
    for (i = 0; i < ListLength; i++)
      {
