@@ -3557,3 +3557,14 @@ Epplet_show_about(char *name)
    sprintf(s, "%s/dox %s/epplet_icons/%s.ABOUT", EBIN, EROOT, name);
    Epplet_spawn_command(s);
 }
+
+void
+Epplet_dialog_ok(char *text)
+{
+   char *s;
+   
+   s = malloc(strlen(text) + 32);
+   sprintf(s, "dialog_ok %s", text);
+   ECommsSend(s);
+   free(s);
+}
