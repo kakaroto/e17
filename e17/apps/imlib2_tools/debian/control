@@ -1,0 +1,13 @@
+Source: imlib2-tools
+Section: graphics
+Priority: optional
+Maintainer: Laurence J. Lane <ljlane@debian.org>
+Build-Depends: libpopt-dev, debhelper (>= 3.0)
+Standards-Version: 3.5.6.0
+
+Package: imlib2-tools
+Architecture: any
+Section: graphics
+Depends: ${shlibs:Depends}
+Description: utilities for imlib2
+ utilities and other stuff for imlib2
