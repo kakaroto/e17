@@ -1281,3 +1281,25 @@ FloatEwinAboveDesktops(EWin * ewin)
    EDBUG_RETURN_;
 }
 #endif
+
+void
+DesktopsEventsConfigure(int mode)
+{
+   int                 i;
+   long                event_mask;
+
+   if (mode)
+      event_mask =
+	 PropertyChangeMask | SubstructureRedirectMask |
+	 ButtonPressMask | ButtonReleaseMask;
+   else
+      event_mask =
+	 SubstructureNotifyMask | ButtonPressMask |
+	 ButtonReleaseMask | EnterWindowMask | LeaveWindowMask |
+	 ButtonMotionMask | PropertyChangeMask |
+	 SubstructureRedirectMask | KeyPressMask | KeyReleaseMask
+	 | PointerMotionMask;
+
+   for (i = 0; i < ENLIGHTENMENT_CONF_NUM_DESKTOPS; i++)
+      XSelectInput(disp, desks.desk[i].win, event_mask);
+}

@@ -1747,6 +1747,8 @@ void                EwinChange(EWin * ewin, unsigned int flag);
 void                EwinChangesStart(EWin * ewin);
 void                EwinChangesProcess(EWin * ewin);
 
+void                EwinsEventsConfigure(int mode);
+
 int                 BordersEventExpose(XEvent * ev);
 int                 BordersEventMouseDown(XEvent * ev);
 int                 BordersEventMouseUp(XEvent * ev);
@@ -1871,6 +1873,7 @@ void                DesktopAddEwinToTop(EWin * ewin);
 void                MoveEwinToDesktopAt(EWin * ewin, int num, int x, int y);
 void                GotoDesktopByEwin(EWin * ewin);
 void                FloatEwinAboveDesktops(EWin * ewin);
+void                DesktopsEventsConfigure(int mode);
 
 /* dialog.c */
 Dialog             *DialogCreate(const char *name);

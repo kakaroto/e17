@@ -3167,6 +3167,115 @@ EwinChangesProcess(EWin * ewin)
    EWinChanges.flags = 0;
 }
 
+static void
+EwinEventsConfigure(EWin * ewin, int mode)
+{
+   int                 i;
+
+   if (mode)
+     {
+	XSelectInput(disp, ewin->win,
+		     SubstructureNotifyMask | SubstructureRedirectMask |
+		     PropertyChangeMask | ResizeRedirectMask);
+
+	if (ewin->pager)
+	  {
+#if 0				/* ??? */
+	     XSelectInput(disp, ewin->client.win,
+			  PropertyChangeMask | FocusChangeMask |
+			  ResizeRedirectMask | StructureNotifyMask |
+			  ColormapChangeMask | ButtonPressMask |
+			  ButtonReleaseMask | PointerMotionMask);
+#endif
+	  }
+	else if (ewin->dialog)
+	   XSelectInput(disp, ewin->client.win,
+			PropertyChangeMask | FocusChangeMask |
+			ResizeRedirectMask | StructureNotifyMask |
+			ColormapChangeMask | ExposureMask | KeyPressMask);
+	else
+	   XSelectInput(disp, ewin->client.win,
+			PropertyChangeMask | FocusChangeMask |
+			ResizeRedirectMask | StructureNotifyMask |
+			ColormapChangeMask);
+
+	for (i = 0; i < ewin->border->num_winparts; i++)
+	  {
+	     if (ewin->border->part[i].flags & FLAG_TITLE)
+		XSelectInput(disp, ewin->bits[i].win,
+			     ExposureMask | ButtonPressMask |
+			     ButtonReleaseMask);
+	     else
+		XSelectInput(disp, ewin->bits[i].win,
+			     ButtonPressMask | ButtonReleaseMask);
+	  }
+     }
+   else
+     {
+	XSelectInput(disp, ewin->win,
+		     SubstructureNotifyMask | SubstructureRedirectMask |
+		     EnterWindowMask | LeaveWindowMask | PointerMotionMask
+		     | PropertyChangeMask | ResizeRedirectMask |
+		     ButtonPressMask | ButtonReleaseMask);
+
+	if (ewin->pager)
+	   XSelectInput(disp, ewin->client.win,
+			PropertyChangeMask | EnterWindowMask |
+			LeaveWindowMask | FocusChangeMask |
+			ResizeRedirectMask | StructureNotifyMask |
+			ColormapChangeMask | ButtonPressMask |
+			ButtonReleaseMask | PointerMotionMask);
+	else if (ewin->dialog)
+	   XSelectInput(disp, ewin->client.win,
+			PropertyChangeMask | EnterWindowMask |
+			LeaveWindowMask | FocusChangeMask |
+			ResizeRedirectMask | StructureNotifyMask |
+			ColormapChangeMask | ExposureMask | KeyPressMask);
+	else
+	   XSelectInput(disp, ewin->client.win,
+			PropertyChangeMask | EnterWindowMask |
+			LeaveWindowMask | FocusChangeMask |
+			ResizeRedirectMask | StructureNotifyMask |
+			ColormapChangeMask);
+
+	for (i = 0; i < ewin->border->num_winparts; i++)
+	  {
+	     if (ewin->border->part[i].flags & FLAG_TITLE)
+		XSelectInput(disp, ewin->bits[i].win,
+			     ExposureMask | KeyPressMask | KeyReleaseMask |
+			     ButtonPressMask | ButtonReleaseMask |
+			     EnterWindowMask | LeaveWindowMask |
+			     PointerMotionMask);
+	     else
+		XSelectInput(disp, ewin->bits[i].win,
+			     KeyPressMask | KeyReleaseMask |
+			     ButtonPressMask | ButtonReleaseMask |
+			     EnterWindowMask | LeaveWindowMask |
+			     PointerMotionMask);
+	  }
+     }
+}
+
+void
+EwinsEventsConfigure(int mode)
+{
+   EWin               *const *lst, *ewin;
+   int                 i, num;
+
+   lst = EwinListGetAll(&num);
+   for (i = 0; i < num; i++)
+     {
+	ewin = lst[i];
+
+	EwinEventsConfigure(lst[i], mode);
+
+	/* This is a hack. Maybe we should do something with expose events. */
+	if (mode == 0)
+	   if (Mode.mode == MODE_DESKSWITCH && ewin->sticky && ewin->visible)
+	      EwinRefresh(ewin);
+     }
+}
+
 /*
  * Border event handlers
  */

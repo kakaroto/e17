@@ -336,9 +336,6 @@ FocusToEWin(EWin * ewin, int why)
 void
 FocusNewDeskBegin(void)
 {
-   EWin               *const *lst, *ewin;
-   int                 i, j, num;
-
    if (new_desk_focus_nesting++)
       return;
 
@@ -346,60 +343,14 @@ FocusNewDeskBegin(void)
 
    /* we are about to flip desktops or areas - disable enter and leave events
     * temporarily */
-
-   lst = EwinListGetAll(&num);
-   for (i = 0; i < num; i++)
-     {
-	ewin = lst[i];
-
-	XSelectInput(disp, ewin->win,
-		     SubstructureNotifyMask | SubstructureRedirectMask |
-		     PropertyChangeMask | ResizeRedirectMask);
-
-	if (ewin->pager)
-	  {
-#if 0				/* ??? */
-	     XSelectInput(disp, ewin->client.win,
-			  PropertyChangeMask | FocusChangeMask |
-			  ResizeRedirectMask | StructureNotifyMask |
-			  ColormapChangeMask | ButtonPressMask |
-			  ButtonReleaseMask | PointerMotionMask);
-#endif
-	  }
-	else if (ewin->dialog)
-	   XSelectInput(disp, ewin->client.win,
-			PropertyChangeMask | FocusChangeMask |
-			ResizeRedirectMask | StructureNotifyMask |
-			ColormapChangeMask | ExposureMask | KeyPressMask);
-	else
-	   XSelectInput(disp, ewin->client.win,
-			PropertyChangeMask | FocusChangeMask |
-			ResizeRedirectMask | StructureNotifyMask |
-			ColormapChangeMask);
-
-	for (j = 0; j < ewin->border->num_winparts; j++)
-	  {
-	     if (ewin->border->part[j].flags & FLAG_TITLE)
-		XSelectInput(disp, ewin->bits[j].win,
-			     ExposureMask | ButtonPressMask |
-			     ButtonReleaseMask);
-	     else
-		XSelectInput(disp, ewin->bits[j].win,
-			     ButtonPressMask | ButtonReleaseMask);
-	  }
-     }
-
-   for (i = 0; i < ENLIGHTENMENT_CONF_NUM_DESKTOPS; i++)
-      XSelectInput(disp, desks.desk[i].win,
-		   PropertyChangeMask | SubstructureRedirectMask |
-		   ButtonPressMask | ButtonReleaseMask);
+   EwinsEventsConfigure(1);
+   DesktopsEventsConfigure(1);
 }
 
 void
 FocusNewDesk(void)
 {
-   EWin               *const *lst, *ewin;
-   int                 i, j, num;
+   EWin               *ewin;
 
    EDBUG(4, "FocusNewDesk");
 
@@ -407,64 +358,8 @@ FocusNewDesk(void)
       return;
 
    /* we flipped - re-enable enter and leave events */
-   lst = EwinListGetAll(&num);
-   for (i = 0; i < num; i++)
-     {
-	ewin = lst[i];
-
-	XSelectInput(disp, ewin->win,
-		     SubstructureNotifyMask | SubstructureRedirectMask |
-		     EnterWindowMask | LeaveWindowMask | PointerMotionMask |
-		     PropertyChangeMask | ResizeRedirectMask |
-		     ButtonPressMask | ButtonReleaseMask);
-
-	if (ewin->pager)
-	   XSelectInput(disp, ewin->client.win,
-			PropertyChangeMask | EnterWindowMask |
-			LeaveWindowMask | FocusChangeMask |
-			ResizeRedirectMask | StructureNotifyMask |
-			ColormapChangeMask | ButtonPressMask |
-			ButtonReleaseMask | PointerMotionMask);
-	else if (ewin->dialog)
-	   XSelectInput(disp, ewin->client.win,
-			PropertyChangeMask | EnterWindowMask |
-			LeaveWindowMask | FocusChangeMask |
-			ResizeRedirectMask | StructureNotifyMask |
-			ColormapChangeMask | ExposureMask | KeyPressMask);
-	else
-	   XSelectInput(disp, ewin->client.win,
-			PropertyChangeMask | EnterWindowMask |
-			LeaveWindowMask | FocusChangeMask |
-			ResizeRedirectMask | StructureNotifyMask |
-			ColormapChangeMask);
-
-	for (j = 0; j < ewin->border->num_winparts; j++)
-	  {
-	     if (ewin->border->part[j].flags & FLAG_TITLE)
-		XSelectInput(disp, ewin->bits[j].win,
-			     ExposureMask | KeyPressMask | KeyReleaseMask |
-			     ButtonPressMask | ButtonReleaseMask |
-			     EnterWindowMask | LeaveWindowMask |
-			     PointerMotionMask);
-	     else
-		XSelectInput(disp, ewin->bits[j].win,
-			     KeyPressMask | KeyReleaseMask |
-			     ButtonPressMask | ButtonReleaseMask |
-			     EnterWindowMask | LeaveWindowMask |
-			     PointerMotionMask);
-	  }
-
-	if (Mode.mode == MODE_DESKSWITCH && ewin->sticky && ewin->visible)
-	   EwinRefresh(ewin);
-     }
-
-   for (i = 0; i < ENLIGHTENMENT_CONF_NUM_DESKTOPS; i++)
-      XSelectInput(disp, desks.desk[i].win,
-		   SubstructureNotifyMask | ButtonPressMask |
-		   ButtonReleaseMask | EnterWindowMask | LeaveWindowMask |
-		   ButtonMotionMask | PropertyChangeMask |
-		   SubstructureRedirectMask | KeyPressMask | KeyReleaseMask |
-		   PointerMotionMask);
+   EwinsEventsConfigure(0);
+   DesktopsEventsConfigure(0);
 
    /* Set the mouse-over window */
    ewin = GetEwinByCurrentPointer();
