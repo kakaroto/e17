@@ -21,7 +21,7 @@
 #include <Imlib2.h>
 #include "image.h"
 
-Elogin_View		*main_view = NULL;
+//Elogin_View		*main_view = NULL;
 
 void
 Elogin_ImageSetName(Elogin_Image *im, char *name)
@@ -174,8 +174,8 @@ Elogin_ViewNew (void)
 	Elogin_View		*view;
 
 	view = NEW(Elogin_View, 1);
-	view->frame = e_window_new(default_root, 0, 0, 500, 250);
-	view->win = e_window_new(view->frame, 0, 0, 500, 250);
+	view->frame = e_window_new(default_root);
+	view->win = e_window_new(view->frame);
 	view->w = 500;
 	view->h = 250;
 	view->x = 0;
@@ -204,7 +204,6 @@ Elogin_ViewFree (Elogin_View *view)
 void
 Elogin_Display (void)
 {
-	int x;
 	Pixmap pm;
 	
 	pm = e_pixmap_new(main_view->win, main_view->login_box->im->w, 

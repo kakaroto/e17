@@ -41,7 +41,7 @@ Elogin_WidgetLoad (char *name)
 	}
 	
 	return bit;
-};
+}
 
 static void
 Elogin_WidgetAppend (Ewidget *bbit, Ewidget *bit)

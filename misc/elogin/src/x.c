@@ -27,24 +27,17 @@ static Visual	*default_vis;
 static Colormap	default_cm;
 int				default_depth;
 Window			default_root;
-Elogin_View	*	default_view;
+Elogin_View	*	main_view;
 static Window	focused_win = 0;
 static int		mouse_x = 0, mouse_y = 0;
 
-static void		e_handle_x_error(Display *d, XErrorEvent *ev);
-static void		e_handle_x_io_error(Display *d);
+static void		e_handle_x_io_error(void);
 #ifdef HAS_XINERAMA
 static void		Elogin_XineramaCheck(void);
 #endif
 
 static void
-e_handle_x_error(Display *d, XErrorEvent *ev)
-{
-   /* ignroe all X errors */
-}
-
-static void
-e_handle_x_io_error(Display * d)
+e_handle_x_io_error(void)
 {
    /* FIXME: call clean exit handler */
    exit(1);
@@ -69,7 +62,7 @@ e_window_destroy(Window win)
 }
 
 Window
-e_window_new(Window parent, int x, int y, int w, int h)
+e_window_new(Window parent)
 {
 	Window					win;
 	XSetWindowAttributes	attr;
@@ -82,7 +75,8 @@ e_window_new(Window parent, int x, int y, int w, int h)
 	attr.save_under = False;
 //	attr.do_not_propagate_mask = True;
 	
-	win = XCreateWindow(disp, default_root, mouse_x, mouse_y, 10, 10, 0, default_depth,
+	win = XCreateWindow(disp, parent, mouse_x, mouse_y, 
+			10, 10, 0, default_depth,
 		InputOutput, default_vis, CWOverrideRedirect |
 		CWSaveUnder | CWBackingStore | CWColormap |
 		CWBackPixmap | CWBorderPixel, &attr);
@@ -100,7 +94,7 @@ Pixmap
 e_pixmap_new(Window win, int w, int h, int dep)
 {
 	if (!win)
-		win = default_view->win;
+		win = main_view->win;
 	if (dep == 0)
 		dep = default_depth;
 	return XCreatePixmap(disp, win, w, h, dep);

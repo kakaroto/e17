@@ -50,14 +50,14 @@ struct _elogin_view
 	Elogin_View				*prev, *next;
 };
 
-Elogin_View		*main_view;
 void Elogin_ImageSetName(Elogin_Image *im, char *name);
 void Elogin_ImageSetImage(Elogin_Image *im, Imlib_Image *imlib);
 Elogin_Image *Elogin_LoadImage(char *file);
 Elogin_Image *Elogin_ImageNew();
+Elogin_View		*Elogin_ViewNew();
 void Elogin_LoadAll();
 void Elogin_DisplayAll (Elogin_Image *lbox, Elogin_Image *llogo, 
 		Elogin_Image *lbg, Elogin_Image *lpbox, Elogin_Image *lp1, 
 		Elogin_Image *lp2);
-
+void Elogin_Display(void);
 #endif

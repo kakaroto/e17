@@ -44,12 +44,12 @@
 
 int				default_depth;
 Window			default_root;
-//Elogin_View	*	default_view;
+Elogin_View	*	main_view;
 
 void			e_sync(void);
 void			e_flush(void);
 void			e_window_destroy(Window win);
-Window			e_window_new(Window parent, int x, int y, int w, int h);
+Window			e_window_new(Window parent);
 void			e_window_show(Window win);
 Pixmap			e_pixmap_new(Window win, int w, int h, int dep);
 void			e_pixmap_free(Pixmap pmap);

@@ -26,7 +26,7 @@
 #include <Imlib2.h>
 
 int
-main(int argc, char **argv)
+main(void)
 {
 	
 //	wx =(DisplayWidth(disp, DefaultScreen(disp)) - 500) / 2;

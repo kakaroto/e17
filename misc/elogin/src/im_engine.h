@@ -25,6 +25,5 @@ struct _e_widget
 #define BT_ICON              3
 #define BT_DECOR_ONLY        4
 
-Ewidget	*	Elogin_WidgetLoad(char *name);
-
+Ewidget	*	Elogin_WidgetLoad	(char *name);
 #endif

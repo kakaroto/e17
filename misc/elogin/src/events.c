@@ -18,9 +18,10 @@
 #include "x.h"
 #include "mem.h"
 #include "events.h"
+#include <unistd.h>
 
 static void	Elogin_SetupEvents(void);
-static void	Elogin_TranslateEvents(XEvent *events, int num_events);
+static void	Elogin_TranslateEvents(XEvent *events);
 char	*	Elogin_NukeBoringEvents(XEvent *ev, int num);
 static void	Elogin_HandleEvent(void);
 static void	Elogin_AddEvent(Eevent_Type type, void *event, void (*ev_free) (void *event));
@@ -35,7 +36,6 @@ Eevent		*last_event	= NULL;
 static void
 Elogin_CleanQuit(void)
 {
-	
 	exit(0);
 }
 
@@ -84,7 +84,7 @@ Elogin_SetupEvents(void)
 			if(ok[i])
 			{
 //				printf("ok\n");
-				Elogin_TranslateEvents(&(events[i]), num_events);
+				Elogin_TranslateEvents(&(events[i]));
 			}
 		}
 		FREE(ok);
@@ -141,7 +141,7 @@ Elogin_NukeBoringEvents(XEvent *ev, int num)
 }
 
 static void
-Elogin_TranslateEvents(XEvent *events, int num_events)
+Elogin_TranslateEvents(XEvent *events)
 {
 //	printf("Hey we got to translate an event\n");
 		switch(events->type)
