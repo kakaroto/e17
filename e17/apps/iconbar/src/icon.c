@@ -1,6 +1,6 @@
 #include "icon.h"
 #include "util.h"
-#include "icon_editor.h"
+/* #include "icon_editor.h" */
 
 static void cb_icon(void *data, Evas_Object *o, const char *sig, const char *src);
 static void cb_edit(void *data, Evas_Object *o, const char *sig, const char *src);
@@ -70,9 +70,10 @@ cb_exec(void *data, Evas_Object *o, const char *sig, const char *src)
 static void
 cb_edit(void *data, Evas_Object *o, const char *sig, const char *src)
 {
-
+/*
   Icon *icon = evas_object_data_get(o, "Icon");
   icon_editor_icon_set(icon);
   icon_editor_show();
+*/
 }
 

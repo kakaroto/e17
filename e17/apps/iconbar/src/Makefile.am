@@ -5,8 +5,7 @@ INCLUDES = \
 @evas_cflags@ \
 @edje_cflags@ \
 @ecore_cflags@ \
-@esmart_cflags@ \
-@ewl_cflags@ 
+@esmart_cflags@ 
 
 bin_PROGRAMS = iconbar
 
@@ -16,7 +15,6 @@ iconbar_smart.c \
 icon.c icon.h \
 util.c util.h \
 prefs.c prefs.h \
-icon_editor.c icon_editor.h \
 main.c
 
 iconbar_LDADD = \
@@ -25,9 +23,7 @@ iconbar_LDADD = \
 @edje_libs@ \
 @ecore_libs@ \
 @esmart_libs@ \
-@ewl_libs@ \
 -lesmart_container \
--lesmart_trans_x11 \
--ledje_edit
+-lesmart_trans_x11 
 
 

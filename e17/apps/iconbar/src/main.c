@@ -9,7 +9,7 @@
 #include "util.h"
 #include "config.h"
 #include "prefs.h"
-#include "icon_editor.h"
+/*#include "icon_editor.h" */
 
 static void window_resize(Ecore_Evas *ee);
 static void window_leave(Ecore_Evas *ee);
@@ -45,7 +45,7 @@ main(int argc, char **argv)
   edje_frametime_set(1.0/30.0); 
   iconbar_config_init();
   iconbar_config_geometry_get(&x, &y, &w, &h);
-  icon_editor_init(&argc, argv);
+/*  icon_editor_init(&argc, argv); */
 
   ee = ecore_evas_software_x11_new(NULL, 0, x, y, w, h);
   win = ecore_evas_software_x11_window_get(ee);

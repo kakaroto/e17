@@ -4,7 +4,7 @@
 #include <math.h>
 #include <time.h>
 #include "prefs.h"
-#include "icon_editor.h"
+/* #include "icon_editor.h" */
 
 void iconbar_icon_move(Icon *icon);
 void iconbar_icons_fix(Iconbar *ib);
