@@ -1,3 +1,11 @@
+Thu Aug  9 23:39:02 2001  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Remembered some things I changed a while back and didn't put in
+	here, but they need to be in here or I'll forget forever.
+	* Fixed a race with multiple webcam-viewing feh instances by
+	adding feh PID to the tmp filename used to cache the downloaded
+	images. Other fixups to the remote-getting code.
+
 Thu Aug  9 23:16:58 2001  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Load menu font just once and keep it around.
