@@ -94,7 +94,7 @@ AC_CHECK_HEADERS(security/pam_appl.h, [
 	have_pam=yes
     AC_DEFINE(HAVE_PAM)])
 
-have_crypt = no
+have_crypt=no
 AC_CHECK_LIB(crypt, crypt, [
 	LIBS="$LIBS -lcrypt"
 	have_crypt=yes])
@@ -111,6 +111,25 @@ AC_CHECK_LIB(shadow, getspnam, [
 	AC_DEFINE(HAVE_SHADOW)
 	have_shadow=yes])
 fi
+
+# what Xsession file we're using
+xsession=/etc/X11/xdm/Xsession
+AC_ARG_WITH(xsession,
+	[ --with-xsession=PATH	Specify the location of system Xsession file],
+	[
+	    if test "x$withval" != "xno" ; then
+		xsession=$withval
+	    fi
+	]
+)
+if test ! -x $xsession ; then
+    AC_MSG_WARN([** no $xsession file on this system **])
+    AC_MSG_WARN([** Perhaps you need to specify --with-xsession **])
+    xsession="You should reconfigure --with-xsession"
+fi
+
+AC_DEFINE_UNQUOTED(ENTRANCE_XSESSION, "$xsession")
+AC_SUBST(xsession)
 
 #AC_CONFIG_FILES([src/daemon/entrance_wrapper:src/daemon/entrance_wrapper.in],
 #				[chmod a+x src/daemon/entrance_wrapper])
@@ -139,6 +158,7 @@ echo
 echo "Support for crypt authentication... $have_crypt"
 echo "Support for shadow authentication... $have_shadow"
 echo "Support for PAM authentication...... $have_pam"
+echo "XSession file to use ...... $xsession "
 echo
 echo "Now type 'make' (gmake on some systems) to compile $PACKAGE"
 echo
