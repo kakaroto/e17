@@ -8,7 +8,7 @@ dnl# Check for LibAST and support components
 dnl#    - arg 1 is the env variable to set
 dnl#    - arg 2 is the LIBS variable to use
 dnl#
-AC_DEFUN(AST_CHECK_LIBAST, [
+AC_DEFUN([AST_CHECK_LIBAST], [
     AC_CHECK_PROG(LIBAST_CONFIG, libast-config, libast-config, false)
     if test "$LIBAST_CONFIG" = "false"; then
         $1=0
@@ -69,7 +69,7 @@ AC_DEFUN(AST_CHECK_LIBAST, [
 dnl#
 dnl# LibAST macro for determining integer types by size
 dnl#
-AC_DEFUN(AST_SIZE_TYPE, [
+AC_DEFUN([AST_SIZE_TYPE], [
     BIT_SIZE=[$1]
     BYTE_SIZE=`expr $BIT_SIZE '/' 8`
     case $BYTE_SIZE in
@@ -86,7 +86,7 @@ dnl#
 dnl# LibAST macro for determining regexp support
 dnl#    - arg 1 is the name of the env var to use
 dnl#
-AC_DEFUN(AST_REGEXP_SUPPORT, [
+AC_DEFUN([AST_REGEXP_SUPPORT], [
     if test "${$1}" != "no"; then
         if test "${$1}" = "pcre" -o "${$1}" = "yes" ; then
             GOT_PCRE_HEADER=0
@@ -150,7 +150,7 @@ AC_DEFUN(AST_REGEXP_SUPPORT, [
 dnl#
 dnl# LibAST macro for X11 support
 dnl#
-AC_DEFUN(AST_X11_SUPPORT, [
+AC_DEFUN([AST_X11_SUPPORT], [
     AC_PATH_XTRA
     if test ! -z "$X_CFLAGS"; then
         if test -z "$CPPFLAGS"; then
@@ -180,7 +180,7 @@ AC_DEFUN(AST_X11_SUPPORT, [
 dnl#
 dnl# LibAST macro for Imlib2 support
 dnl#
-AC_DEFUN(AST_IMLIB2_SUPPORT, [
+AC_DEFUN([AST_IMLIB2_SUPPORT], [
     AC_ARG_WITH(imlib,
     [  --with-imlib[=DIR]      compile with Imlib2 support (default)],
     [
@@ -222,7 +222,7 @@ AC_DEFUN(AST_IMLIB2_SUPPORT, [
 dnl#
 dnl# LibAST macro for MMX support
 dnl#
-AC_DEFUN(AST_MMX_SUPPORT, [
+AC_DEFUN([AST_MMX_SUPPORT], [
     AC_MSG_CHECKING(for MMX support)
     HAVE_MMX=""
     AC_ARG_ENABLE(mmx, [  --enable-mmx            enable MMX assembly routines], [
@@ -246,7 +246,7 @@ AC_DEFUN(AST_MMX_SUPPORT, [
 dnl#
 dnl# LibAST macros for standard checks
 dnl#
-AC_DEFUN(AST_STD_CHECKS, [
+AC_DEFUN([AST_STD_CHECKS], [
     AC_PROG_CPP
 
     dnl# These must be run after AC_PROG_CC but before any other macros that use
@@ -282,7 +282,7 @@ AC_DEFUN(AST_STD_CHECKS, [
     dnl# If it's there, what the hell?
     AM_WITH_DMALLOC
 ])
-AC_DEFUN(AST_PROG_CHECKS, [
+AC_DEFUN([AST_PROG_CHECKS], [
     AC_CHECK_PROG(SED, sed, sed, false)
     AC_CHECK_PROG(RM, rm, rm, true)
     AC_CHECK_PROG(CP, cp, cp, false)
@@ -294,7 +294,7 @@ AC_DEFUN(AST_PROG_CHECKS, [
     AC_CHECK_PROG(MV, mv, mv, true)
     AC_LN_S
 ])
-AC_DEFUN(AST_VAR_CHECKS, [
+AC_DEFUN([AST_VAR_CHECKS], [
     AC_CHECK_SIZEOF(char, 1)
     AC_CHECK_SIZEOF(short, 2)
     AC_CHECK_SIZEOF(int, 4)
@@ -314,14 +314,14 @@ AC_DEFUN(AST_VAR_CHECKS, [
     AC_C_CONST
     AC_C_INLINE
 ])
-AC_DEFUN(AST_HEADER_CHECKS, [
+AC_DEFUN([AST_HEADER_CHECKS], [
     AC_HEADER_SYS_WAIT
     AC_CHECK_HEADERS(fcntl.h termios.h sys/ioctl.h sys/select.h sys/time.h \
                      sys/sockio.h sys/byteorder.h malloc.h utmpx.h unistd.h \
                      bsd/signal.h stdarg.h errno.h)
     AC_HEADER_TIME
 ])
-AC_DEFUN(AST_FUNC_CHECKS, [
+AC_DEFUN([AST_FUNC_CHECKS], [
     AC_TYPE_SIGNAL
     AC_CHECK_FUNCS(memmove putenv strsep memmem usleep snprintf vsnprintf \
                    strcasestr strcasechr strcasepbrk strrev strnlen)
@@ -332,7 +332,7 @@ AC_DEFUN(AST_FUNC_CHECKS, [
     dps_rlimit_nproc()
     dps_rlimit_memlock()
 ])
-AC_DEFUN(AST_TYPE_CHECKS, [
+AC_DEFUN([AST_TYPE_CHECKS], [
     AC_TYPE_MODE_T
     AC_CHECK_TYPE(off_t, long)
     AC_TYPE_PID_T
@@ -343,7 +343,7 @@ dnl#
 dnl# LibAST argument macros
 dnl#    - arg 1 is the name of the env var to use
 dnl#
-AC_DEFUN(AST_ARG_DEBUG, [
+AC_DEFUN([AST_ARG_DEBUG], [
     AC_MSG_CHECKING(for debugging level)
     AC_ARG_WITH(debugging, [  --with-debugging[=num]  compile in debugging support.  num >= 0], [
                     if test "$withval" = "yes"; then
@@ -364,7 +364,7 @@ AC_DEFUN(AST_ARG_DEBUG, [
                     $1=4
     ])
 ])
-AC_DEFUN(AST_ARG_REGEXP, [
+AC_DEFUN([AST_ARG_REGEXP], [
     AC_ARG_WITH(regexp,
     [  --with-regexp[=TYPE]  specify the type of regular expression support (bsd, posix, pcre)],
     [$1=$withval], [$1=yes])
@@ -372,7 +372,7 @@ AC_DEFUN(AST_ARG_REGEXP, [
     AC_MSG_CHECKING(for regular expression support)
     AC_MSG_RESULT(${$1})
 ])
-AC_DEFUN(AST_ARG_BACKQUOTE_EXEC, [
+AC_DEFUN([AST_ARG_BACKQUOTE_EXEC], [
     AC_MSG_CHECKING(if backquote execution support should be enabled)
     AC_ARG_WITH(backquote-exec,
         [  --without-backquote-exec   disables the execution of commands from inside config files],
@@ -395,7 +395,7 @@ AC_DEFUN(AST_ARG_BACKQUOTE_EXEC, [
 dnl#
 dnl# LibAST macro for flag post-processing
 dnl#
-AC_DEFUN(AST_FLAGS, [
+AC_DEFUN([AST_FLAGS], [
     CPPFLAGS=`eval eval eval eval eval echo "-I$includedir -I$prefix/include $CPPFLAGS"`
     CPPFLAGS=`echo $CPPFLAGS | tr ' ' '\n' | uniq | grep -v NONE | tr '\n' ' '`
     CFLAGS=${CFLAGS--O}
@@ -407,7 +407,7 @@ AC_DEFUN(AST_FLAGS, [
 dnl#
 dnl# LibAST macro for final status report
 dnl#
-AC_DEFUN(AST_STATUS, [
+AC_DEFUN([AST_STATUS], [
     echo ""
     echo "$PACKAGE $VERSION"
     echo "Configuration:"
@@ -433,7 +433,7 @@ dnl# Used by encouragement. :-)
 dnl#
 
 dnl Check snprintf for overrun potential
-AC_DEFUN(dps_snprintf_oflow, [
+AC_DEFUN([dps_snprintf_oflow], [
     AC_MSG_CHECKING(whether snprintf ignores n)
     AC_CACHE_VAL(dps_cv_snprintf_bug, [
         AC_TRY_RUN(
@@ -470,7 +470,7 @@ exit(0);
 ])
 
 dnl Check vsnprintf for overrun potential
-AC_DEFUN(dps_vsnprintf_oflow, [
+AC_DEFUN([dps_vsnprintf_oflow], [
     AC_MSG_CHECKING(whether vsnprintf ignores n)
     AC_CACHE_VAL(dps_cv_vsnprintf_bug, [
         AC_TRY_RUN(
@@ -516,7 +516,7 @@ int main(void)
 ])
 
 dnl open and symlink interaction bug test
-AC_DEFUN(dps_symlink_open_bug, [
+AC_DEFUN([dps_symlink_open_bug], [
     AC_MSG_CHECKING(security of interaction between symlink and open)
     AC_CACHE_VAL(dps_cv_symlink_open_bug, [
         mkdir conftest.d
@@ -590,7 +590,7 @@ int main(void)
 ])
 
 dnl Check to RLIMIT_NPROC resource limit
-AC_DEFUN(dps_rlimit_nproc, [
+AC_DEFUN([dps_rlimit_nproc], [
     AC_MSG_CHECKING(for working RLIMIT_NPROC resource limit)
     AC_CACHE_VAL(dps_cv_rlimit_nproc, [
         AC_TRY_RUN(
@@ -638,7 +638,7 @@ int main(void)
 ])
 
 dnl Check to RLIMIT_MEMLOCK resource limit
-AC_DEFUN(dps_rlimit_memlock, [
+AC_DEFUN([dps_rlimit_memlock], [
     AC_MSG_CHECKING(for working RLIMIT_MEMLOCK resource limit)
     AC_CACHE_VAL(dps_cv_rlimit_memlock, [
         AC_TRY_RUN(

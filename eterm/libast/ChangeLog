@@ -677,3 +677,7 @@ Fri Jul 23 17:36:45 2004                        Michael Jennings (mej)
 
 Finally we have strict C99 compliance.
 ----------------------------------------------------------------------
+Thu Aug 19 17:23:32 2004                        Michael Jennings (mej)
+
+Patch from Roland Illig <roland.illig@gmx.de> to fix m4 quoting.
+----------------------------------------------------------------------
