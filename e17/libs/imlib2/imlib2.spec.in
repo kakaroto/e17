@@ -21,7 +21,7 @@ Requires: imlib2-loader_argb
 Docdir: %{prefix}/doc
 %description
 Imlib2 is an advanced replacement library for libraries like libXpm that
-provides many more features with much greater flexability and speed than
+provides many more features with much greater flexibility and speed than
 standard libraries, including font rasterization, rotation, RGBA space
 rendering and blending, dynamic binary filters, scripting, and more.
 
