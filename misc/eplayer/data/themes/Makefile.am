@@ -1,1 +1,1 @@
-SUBDIRS = default streamline
+SUBDIRS = default streamline iio
