@@ -1,0 +1,45 @@
+   image, "icon_fit_active.png" RAW;
+   	image, "icon_fit_an1.png" RAW;
+   	image, "icon_fit_an2.png" RAW;
+   	image, "icon_fit_an3.png" RAW;
+   	image, "icon_fit_an4.png" RAW;
+   	image, "icon_fit_an5.png" RAW;	
+   image, "icon_fit_dormant.png" RAW;
+
+   image, "icon_scale_active.png" RAW;
+	image, "icon_scale_an1.png" RAW;
+	image, "icon_scale_an2.png" RAW;
+	image, "icon_scale_an3.png" RAW;
+	image, "icon_scale_an4.png" RAW;
+	image, "icon_scale_an5.png" RAW;
+   image, "icon_scale_dormant.png" RAW;
+
+   image, "icon_seperator_active.png" RAW;
+   image, "icon_seperator_dormant.png" RAW;
+
+   image, "icon_zoom_in_active.png" RAW;
+   	image, "icon_zoomIn_an1.png" RAW;
+   image, "icon_zoom_in_dormant.png" RAW;
+
+   image, "icon_zoom_out_active.png" RAW;
+   	image, "icon_zoomOut_an1.png" RAW;
+   image, "icon_zoom_out_dormant.png" RAW;
+
+   image, "button_prev_normal.png" RAW;
+   image, "button_prev_clicked.png" RAW;
+   image, "button_prev_hilited.png" RAW;
+
+   image, "button_next_normal.png" RAW;
+   image, "button_next_hilited.png" RAW;
+   image, "button_next_clicked.png" RAW;
+
+   image, "button_exit_normal.png" RAW;
+   image, "button_exit_hilited.png" RAW;
+   image, "button_exit_clicked.png" RAW;
+
+   image, "base_to.png" RAW;
+   image, "bg.png" LOSSY 95;
+   image, "panel.png" RAW;
+   image, "Tpanel.png" LOSSY 95;
+   image, "deco.png" RAW;
+   image, "t_cel.png" RAW;

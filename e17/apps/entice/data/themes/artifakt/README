@@ -1,0 +1,25 @@
+// Artifakt/Edje for Entice
+
+Notes/Description
+
+The start of an Edje for Entice.
+
+Using the scrollbutton inside the entice.image part will zoom/in/out
+You can drag the entice.image part aroud. You can resize the entice
+window. min, 400 298; max, 9999 9999;
+ 
+The button_parts on the bottom_left will load previous/next image
+Using "mouse,in" just above the bottom border will call the ToolPanel
+
+There you can: Reset the current Image zoom value. In other words,
+scale to 1:1 ratio ?
+
+Next button: scale image to fit screen ?? /fix me
+
+The next two buttons don't need a description. Zoom In/Zoom Out
+
+Bringing the Mouse over to the left hand side of the screen will call the
+Thumbnail panel. There you can use the scrollbutton to scroll/load/previous
+next image. Clicking on any image will cause it to display the image. 
+
+There still tons of stuff left to fix and draw.
