@@ -30,13 +30,13 @@ struct Ewl_Menubar
 };
 
 /**
- * @def ewl_menubar_h_new()
+ * @def ewl_hmenubar_new()
  * Shortcut to allocate a new horizontal Ewl_Menubar
  */
 #define ewl_hmenubar_new() ewl_menubar_new(EWL_ORIENTATION_HORIZONTAL)
 
 /**
- * @def ewl_menubar_v_new()
+ * @def ewl_vmenubar_new()
  * Shortcut to allocate a new vertical Ewl_Menubar
  */
 #define ewl_vmenubar_new() ewl_menubar_new(EWL_ORIENTATION_VERTICAL)
