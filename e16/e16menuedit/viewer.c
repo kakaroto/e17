@@ -670,6 +670,7 @@ write_menu (GNode * node, gchar * file)
 	printf ("error writing entry\n");
 	return 1;
       }
+  fclose(fp);
 
   return 0;
 }
