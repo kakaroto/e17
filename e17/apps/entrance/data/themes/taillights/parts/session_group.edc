@@ -135,17 +135,18 @@
 		{
 		    state, "default" 0.0;
 		    visible, 1;
+		    min, 20 20;
+		    max, 40 40;
+		    align, 0.5 0.5;
 		    rel1
 		    {
-			relative, 1.0 0.0;
-			offset, 5 6;
-			to, "EntranceSessionTitle";
+			relative, 1.0 0.5;
+			offset, -45 -20;
 		    }
 		    rel2
 		    {
-			relative, 1.0 1.0;
-			offset, 45 0;
-			to, "EntranceSessionTitle";
+			relative, 1.0 0.5;
+			offset, -5 20;
 		    }
 		    color, 255 255 255 0;
 		}
@@ -153,17 +154,18 @@
 		{
 		    state, "hilited" 0.0;
 		    visible, 1;
+		    min, 20 20;
+		    max, 40 40;
+		    align, 0.5 0.5;
 		    rel1
 		    {
-			relative, 1.0 0.0;
-			offset, 5 6;
-			to, "EntranceSessionTitle";
+			relative, 1.0 0.5;
+			offset, -45 -20;
 		    }
 		    rel2
 		    {
-			relative, 1.0 1.0;
-			offset, 45 0;
-			to, "EntranceSessionTitle";
+			relative, 1.0 0.5;
+			offset, -5 20;
 		    }
 		    color, 255 255 255 0;
 		}

@@ -6,6 +6,8 @@
 		description {
 		    state, "default" 0.0;
 		    visible, 1;
+		    min, 55 55;
+		    max, 55 55;
 		    rel1 {
 			relative, 1.0 0.0;
 			offset, 0 2;
@@ -30,6 +32,8 @@
 		description {
 		    state, "mousein" 0.0;
 		    visible, 1;
+		    min, 55 55;
+		    max, 55 55;
 		    rel1 {
 			relative, 1.0 0.0;
 			offset, 0 2;
@@ -53,6 +57,8 @@
 		description {
 		    state, "clicked" 0.0;
 		    visible, 1;
+		    min, 55 55;
+		    max, 55 55;
 		    rel1 {
 			relative, 1.0 0.0;
 			offset, 0 2;
