@@ -281,7 +281,6 @@ int main (int argc, char **argv)
 					       NULL, IMLIB_OP_COPY);
 		  first = 0;
 	       }
-#if 0	     
 	       {
 		  Imlib_Updates uu;
 		  Imlib_Color col;
@@ -294,7 +293,6 @@ int main (int argc, char **argv)
 					     IMLIB_OP_COPY, 1);
 		  up = imlib_updates_append_updates(up, uu);
 	       }
-#endif
 	       {
 		  Imlib_Color_Range rg = NULL;
 		  
