@@ -6,6 +6,8 @@ $Id$
           reflected in eplayer
         * src/eplayer.c, src/track.c, src/interface.c:
           update the track info parts etc on group switch
+        * src/interface.c, src/callbacks.[ch], data/README:
+          added STOP signal
 
 2003-12-04 Tilman Sauerbeck <tilman@code-monkey.de>
         * src/eplayer.c: eplayer.db lives in ~/.e/apps/eplayer now

@@ -8,6 +8,7 @@ int track_update_time(void *udata);
 
 void track_open(ePlayer *player);
 void track_close(ePlayer *player);
+void track_rewind(ePlayer *player);
 
 #endif
 

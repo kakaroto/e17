@@ -7,6 +7,8 @@ void cb_play(void *udata, Evas_Object *obj,
              const char *emission, const char *src);
 void cb_pause(void *udata, Evas_Object *obj,
               const char *emission, const char *src);
+void cb_stop(void *udata, Evas_Object *obj,
+             const char *emission, const char *src);
 
 void cb_track_next(void *udata, Evas_Object *obj,
                    const char *emission, const char *src);

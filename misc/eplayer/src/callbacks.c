@@ -7,7 +7,14 @@
 #include "interface.h"
 #include "utils.h"
 
-static int paused = 0;
+typedef enum {
+	PLAYBACK_STATE_STOPPED,
+	PLAYBACK_STATE_PAUSED,
+	PLAYBACK_STATE_PLAYING
+} PlaybackState;
+
+/*static int paused = 0;*/
+static PlaybackState state = PLAYBACK_STATE_STOPPED;
 
 /**
  * Starts/resumes playback.
@@ -17,16 +24,42 @@ static int paused = 0;
  * @param o
  * @param event
  */
-void cb_play(ePlayer *player, Evas *e, Evas_Object *o, void *event) {
+void cb_play(ePlayer *player, Evas_Object *obj,
+             const char *emission, const char *src) {
 	debug(DEBUG_LEVEL_INFO, "Play callback entered\n");
 
-	if (!paused) { /* restart from beginning */
-		eplayer_playback_stop(player);
-		eplayer_playback_start(player, 1);
-	} else { /* continue playback */
-		eplayer_playback_start(player, 0);
-		paused = 0;
+	switch (state) {
+		case PLAYBACK_STATE_STOPPED:
+		case PLAYBACK_STATE_PAUSED: /* continue playback */
+			eplayer_playback_start(player, 0);
+			break;
+		case PLAYBACK_STATE_PLAYING: /* restart from beginning */
+			eplayer_playback_stop(player);
+			eplayer_playback_start(player, 1);
+			break;
+		default:
+			assert(0);
+			break;
 	}
+	
+	state = PLAYBACK_STATE_PLAYING;
+}
+
+/**
+ * Stops playback.
+ *
+ * @param player
+ * @param e
+ * @param o
+ * @param event
+ */
+void cb_stop(ePlayer *player, Evas_Object *obj,
+             const char *emission, const char *src) {
+	debug(DEBUG_LEVEL_INFO, "Stop callback entered\n");
+
+	eplayer_playback_stop(player);
+	track_rewind(player);
+	state = PLAYBACK_STATE_STOPPED;
 }
 
 /**
@@ -37,15 +70,26 @@ void cb_play(ePlayer *player, Evas *e, Evas_Object *o, void *event) {
  * @param o
  * @param event
  */
-void cb_pause(ePlayer *player, Evas *e, Evas_Object *o, void *event) {
+void cb_pause(ePlayer *player, Evas_Object *obj,
+              const char *emission, const char *src) {
 	debug(DEBUG_LEVEL_INFO, "Pause callback entered\n");
-	
-	if (paused)
-		eplayer_playback_start(player, 0);
-	else
-		eplayer_playback_stop(player);
 
-	paused = !paused;
+	switch (state) {
+		case PLAYBACK_STATE_STOPPED:
+			return;
+			break;
+		case PLAYBACK_STATE_PAUSED:
+			eplayer_playback_start(player, 0);
+			state = PLAYBACK_STATE_PLAYING;
+			break;
+		case PLAYBACK_STATE_PLAYING:
+			eplayer_playback_stop(player);
+			state = PLAYBACK_STATE_PAUSED;
+			break;
+		default:
+			assert(0);
+			break;
+	}
 }
 
 /**
@@ -57,8 +101,8 @@ void cb_pause(ePlayer *player, Evas *e, Evas_Object *o, void *event) {
  * @param o
  * @param event
  */
-void cb_track_next(ePlayer *player, Evas *e, Evas_Object *o,
-                   void *event) {
+void cb_track_next(ePlayer *player, Evas_Object *o,
+                   const char *emission, const char *src) {
 	int play = 1;
 	
 	debug(DEBUG_LEVEL_INFO, "Next File Called\n");
@@ -71,7 +115,7 @@ void cb_track_next(ePlayer *player, Evas *e, Evas_Object *o,
 
 	if (play) {
 		eplayer_playback_start(player, 1);
-		paused = 0;
+		state = PLAYBACK_STATE_PLAYING;
 	} else /* refresh track info parts, but don't start playing yet */
 		track_open(player);
 }
@@ -85,8 +129,8 @@ void cb_track_next(ePlayer *player, Evas *e, Evas_Object *o,
  * @param o
  * @param event
  */
-void cb_track_prev(ePlayer *player, Evas *e, Evas_Object *o,
-                   void *event) {
+void cb_track_prev(ePlayer *player, Evas_Object *obj,
+                   const char *emission, const char *src) {
 	debug(DEBUG_LEVEL_INFO, "Previous File Called\n");
 
 	/* first item on the list: do nothing */
@@ -99,7 +143,7 @@ void cb_track_prev(ePlayer *player, Evas *e, Evas_Object *o,
 	playlist_current_item_prev(player->playlist);
 
 	eplayer_playback_start(player, 1);
-	paused = 0;
+	state = PLAYBACK_STATE_PLAYING;
 }
 
 void cb_volume_raise(ePlayer *player, Evas_Object *obj,
@@ -166,7 +210,7 @@ void cb_playlist_item_play(void *udata, Evas_Object *obj,
 
 	playlist_current_item_set(player->playlist, pli);
 	eplayer_playback_start(player, 1);
-	paused = 0;
+	state = PLAYBACK_STATE_PLAYING;
 }
 
 void cb_playlist_item_selected(void *udata, Evas_Object *obj,
@@ -194,7 +238,7 @@ void cb_seek_forward(void *udata, Evas_Object *obj,
 	eplayer_playback_stop(player);
 	pli->plugin->set_current_pos(pli->plugin->get_current_pos() + 5);
 	eplayer_playback_start(player, 0);
-	paused = 0;
+	state = PLAYBACK_STATE_PLAYING;
 }
 
 void cb_seek_backward(void *udata, Evas_Object *obj,
@@ -215,7 +259,7 @@ void cb_seek_backward(void *udata, Evas_Object *obj,
 		eplayer_playback_start(player, 0);
 	}
 	
-	paused = 0;
+	state = PLAYBACK_STATE_PLAYING;
 }
 
 void cb_eplayer_quit(void *udata, Evas_Object *obj,

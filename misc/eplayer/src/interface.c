@@ -164,6 +164,9 @@ int ui_init_edje(ePlayer *player, const char *name) {
 	edje_object_signal_callback_add(player->gui.edje,
 	                                "PAUSE", "pause_button",
 	                                cb_pause, player);
+	edje_object_signal_callback_add(player->gui.edje,
+	                                "STOP", "stop_button",
+	                                cb_stop, player);
 	
 	edje_object_signal_callback_add(player->gui.edje,
 	                                "VOL_INCR", "vol_incr_button",

@@ -86,3 +86,12 @@ void track_open(ePlayer *player) {
 	}
 }
 
+/**
+ * Rewinds the current track.
+ *
+ * @param player
+ */
+void track_rewind(ePlayer *player) {
+	track_close(player);
+	track_open(player);
+}

@@ -11,6 +11,7 @@ The "eplayer" Edje emits the following signals:
 
 	action,     SIGNAL_EMIT "PAUSE" "pause_button";
 	action,     SIGNAL_EMIT "PLAY" "play_button";
+	action,     SIGNAL_EMIT "STOP" "stop_button";
 
 	action,     SIGNAL_EMIT "SEEK_FORWARD" "seekforward_button";
 	action,     SIGNAL_EMIT "SEEK_BACK" "seekback_button";

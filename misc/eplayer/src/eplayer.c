@@ -179,10 +179,8 @@ void eplayer_playback_stop(ePlayer *player) {
  * @param rewind_track
  */
 void eplayer_playback_start(ePlayer *player, int rewind_track) {
-	if (rewind_track) {
-		track_close(player);
-		track_open(player);
-	}
+	if (rewind_track)
+		track_rewind(player);
 
 	player->time_timer = ecore_timer_add(0.5, track_update_time,
 	                                     player);
