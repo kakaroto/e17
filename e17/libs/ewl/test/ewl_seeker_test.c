@@ -23,6 +23,9 @@ __print_value(Ewl_Widget *w, void *ev_data, void *user_data)
 	s = EWL_SEEKER(w);
 
 	printf("Seeker set to %g\n", ewl_seeker_value_get(s));
+    return;
+    ev_data = NULL;
+    user_data = NULL;
 }
 
 void

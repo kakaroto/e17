@@ -23,6 +23,11 @@ entice_text(void *data, Evas_Object *obj, const char *emission,
 	ewl_text_style_set(EWL_TEXT(label), "none");
 	ewl_text_font_set(EWL_TEXT(label), "Vera", 7);
 	ewl_text_text_append(EWL_TEXT(label), text);
+
+    return;
+    obj = NULL;
+    emission = NULL;
+    source = NULL;
 }
 
 void
@@ -47,6 +52,11 @@ entrance_text(void *data, Evas_Object *obj, const char *emission,
 	ewl_text_style_set(EWL_TEXT(label), "none");
 	ewl_text_font_set(EWL_TEXT(label), "Vera", 7);
 	ewl_text_text_append(EWL_TEXT(label), text);
+    
+    return;
+    obj = NULL;
+    emission = NULL;
+    source = NULL;
 }
 
 void
@@ -72,6 +82,11 @@ elicit_text(void *data, Evas_Object *obj, const char *emission,
 	ewl_text_style_set(EWL_TEXT(label), "none");
 	ewl_text_font_set(EWL_TEXT(label), "Vera", 7);
 	ewl_text_text_append(EWL_TEXT(label), text);
+    
+    return;
+    obj = NULL;
+    emission = NULL;
+    source = NULL;
 }
 
 void
@@ -97,6 +112,11 @@ evidence_text(void *data, Evas_Object *obj, const char *emission,
         ewl_text_style_set(EWL_TEXT(label), "none");
         ewl_text_font_set(EWL_TEXT(label), "Vera", 7);
         ewl_text_text_append(EWL_TEXT(label), text);
+    
+    return;
+    obj = NULL;
+    emission = NULL;
+    source = NULL;
 }
 
 void start_text(Ewl_Widget *w, void *ev_data, void *user_data)
@@ -115,6 +135,10 @@ void start_text(Ewl_Widget *w, void *ev_data, void *user_data)
 	ewl_text_color_set(EWL_TEXT(label), 0, 0, 255, 190);
 	ewl_text_text_append(EWL_TEXT(label), "http://www.enlightenment.org/");
 	ewl_text_color_set(EWL_TEXT(label), 0, 0, 0, 255);
+    
+    return;
+    w = NULL;
+    ev_data = NULL;
 }
 
 void realize_logo_cb(Ewl_Widget *w, void *ev_data, void *user_data)
@@ -127,28 +151,48 @@ void realize_logo_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 			entice_text, user_data);
 	edje_object_signal_callback_add(w->theme_object, "evidence", "tour",
 			evidence_text, user_data);
+
+    return;
+    ev_data = NULL;
 }
 
 void test_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 {
 	printf("%s at: %d, %d (%d x %d)\n", (char *)user_data, CURRENT_X(w),
 			CURRENT_Y(w), CURRENT_W(w), CURRENT_H(w));
+
+    return;
+    ev_data = NULL;
 }
 
 void close_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 {
 	ewl_main_quit();
+
+    return;
+    w = NULL;
+    ev_data = NULL;
+    user_data = NULL;
 }
 
 void button_down(Ewl_Widget *w, void *ev_data, void *user_data)
 {
 	Ewl_Widget *logo = user_data;
 	ewl_widget_state_set(logo, "start_tour");
+
+    return;
+    w = NULL;
+    ev_data = NULL;
 }
 
 void quit_demo(Ewl_Widget *w, void *ev_data, void *user_data)
 {
 	ewl_main_quit();
+
+    return;
+    w = NULL;
+    ev_data = NULL;
+    user_data = NULL;
 }
 
 int main(int argc, char **argv)

@@ -76,6 +76,10 @@ void goto_home(Ewl_Widget *w, void *ev_data, void *user_data)
 	home = getenv("HOME");
 	if (home)
 		ewl_filedialog_set_directory(fd, home);
+
+    return;
+    w = NULL;
+    ev_data = NULL;
 }
 
 void __start_fd (Ewl_Widget *w, void *ev_data, void *user_data)

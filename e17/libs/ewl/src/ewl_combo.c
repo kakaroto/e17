@@ -181,11 +181,11 @@ void ewl_combo_configure_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 	 * Position the popup combo relative to the combo.
 	 */
 	if (EWL_MENU_ITEM(w)->inmenu) {
-		ewl_floater_set_position(EWL_FLOATER(combo->base.popup),
+		ewl_floater_position_set(EWL_FLOATER(combo->base.popup),
 					 CURRENT_W(w), 0);
 	}
 	else {
-		ewl_floater_set_position(EWL_FLOATER(combo->base.popup), 0,
+		ewl_floater_position_set(EWL_FLOATER(combo->base.popup), 0,
 					 CURRENT_H(w));
 	}
 

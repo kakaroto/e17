@@ -5,12 +5,18 @@
 void print_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 {
 	printf("jack shit\n");
+    return;
+    w = NULL;
+    ev_data = NULL;
+    user_data = NULL;
 }
 
 void move_embed_contents_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 {
 	ewl_object_geometry_request(EWL_OBJECT(user_data), CURRENT_X(w),
 				    CURRENT_Y(w), CURRENT_W(w), CURRENT_H(w));
+    return;
+    ev_data = NULL;
 }
 
 int main(int argc, char **argv)

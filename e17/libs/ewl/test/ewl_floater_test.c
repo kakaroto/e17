@@ -58,7 +58,7 @@ __create_floater_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	floater = ewl_floater_new(radio_button[1]);
 	ewl_container_child_append(EWL_CONTAINER(floater_box), floater);
-	ewl_floater_set_position(EWL_FLOATER(floater), 20, 20);
+	ewl_floater_position_set(EWL_FLOATER(floater), 20, 20);
 	ewl_widget_show(floater);
 
 	button[0] = ewl_button_new("With Label");

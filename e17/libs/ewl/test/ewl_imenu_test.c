@@ -37,6 +37,10 @@ __imenu_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	printf("Imenu configured to (%d, %d) %dx%d\n", CURRENT_X(w),
 			CURRENT_Y(w), CURRENT_W(w), CURRENT_H(w));
+    return;
+    w = NULL;
+    ev_data = NULL;
+    user_data = NULL;
 }
 
 void

@@ -75,7 +75,7 @@ void ewl_floater_init(Ewl_Floater * f, Ewl_Widget * parent)
  * @return Returns no value
  * @brief Set the start x/y position of the floater
  */
-void ewl_floater_set_position(Ewl_Floater * f, int x, int y)
+void ewl_floater_position_set(Ewl_Floater * f, int x, int y)
 {
 	DENTER_FUNCTION(DLEVEL_UNSTABLE);
 
@@ -108,7 +108,7 @@ void ewl_floater_set_position(Ewl_Floater * f, int x, int y)
  * Sets the floater @a f to be positioned relative to the
  * position of the widget @a w.
  */
-void ewl_floater_set_relative(Ewl_Floater * f, Ewl_Widget * w)
+void ewl_floater_relative_set(Ewl_Floater * f, Ewl_Widget * w)
 {
 	DENTER_FUNCTION(DLEVEL_UNSTABLE);
 
