@@ -1,3 +1,7 @@
+Mon Aug  20 17:26:19 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
+	* Added x & y padding policy ability to the box children.
+	* Some minor fixes in the box code.
+
 Mon Aug  20 16:30:28 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
 	* Re-imported an old ewl_box.c and integrated it with all new stuff.
 	* Cleaned up some paramenter names in some code.

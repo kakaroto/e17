@@ -18,15 +18,6 @@ struct _ewl_box {
 	unsigned int spacing;
 };
 
-typedef struct _ewl_box_child Ewl_Box_Child;
-#define EWL_BOX_CHILD(child) ((Ewl_Box_Child *) child)
-
-struct _ewl_box_child {
-	Ewl_Widget *widget;
-	int x_padding;
-	int y_padding;
-};
-
 #define ewl_hbox_new() ewl_box_new(EWL_ORIENTATION_HORIZONTAL)
 #define ewl_vbox_new() ewl_box_new(EWL_ORIENTATION_VERTICAL)
 
@@ -34,5 +25,7 @@ struct _ewl_box_child {
 Ewl_Widget *ewl_box_new(Ewl_Orientation orientation);
 void ewl_box_set_orientation(Ewl_Widget * w, Ewl_Orientation o);
 void ewl_box_set_spacing(Ewl_Widget * w, unsigned int spacing);
+void ewl_box_child_set_padding(Ewl_Widget * w, int xp, int yp);
+
 
 #endif				/* __EWL_BOX_H__ */
