@@ -17,23 +17,21 @@ static int      od_dock_zoom_out_slave(void *data);
 void
 od_dock_init()
 {
-  dock.icons = dock.applnks = dock.dicons = dock.minwins = NULL;
-  dock.state = unzoomed;
-  dock.zoom = 1.0;
-  dock.x = 400.0;
-
   int             height = (int) options.size + 2 * (int) options.arrow_size;
   int            *pic1 = (int *) malloc(sizeof(int) * height);
   int            *pic2 = (int *) malloc(sizeof(int) * height);
   int             y;
+  int             i;
 
+  dock.icons = dock.applnks = dock.dicons = dock.minwins = NULL;
+  dock.state = unzoomed;
+  dock.zoom = 1.0;
+  dock.x = 400.0;
   for (y = 0; y < height; y++) {
     pic1[y] = options.bg_fore;
     pic2[y] = options.bg_back;
   }
   pic2[0] = options.bg_fore;
-
-  int             i;
 
   for (i = 0; i < 4; i++) {
     dock.background[i] = evas_object_image_add(evas);
@@ -72,6 +70,8 @@ od_dock_reposition()
 {
   // find the width;
   double          width = 0;
+  double          x = 0.5 * (options.width - width);
+  double          y = options.height - options.arrow_size - 0.5 * options.size;
 
   {
     Evas_List      *item = dock.icons;
@@ -98,8 +98,6 @@ od_dock_reposition()
 				__item = __item->next; \
 			} \
 		}
-  double          x = 0.5 * (options.width - width);
-  double          y = options.height - options.arrow_size - 0.5 * options.size;
 
   POSITION(dock.applnks);
   x += 0.5 * options.spacing;
@@ -160,6 +158,7 @@ od_dock_redraw(Ecore_Evas * ee)
   {
     double          left_end_disp, right_end_disp, middle_disp;
     double          dummy;
+    double          middle = middle_disp + dock.x;
 
     zoom_function((dock.left_pos - dock.x) / (options.size + options.spacing),
                   &dummy, &left_end_disp);
@@ -169,7 +168,6 @@ od_dock_redraw(Ecore_Evas * ee)
                   &dummy, &middle_disp);
     dock.left_end = left_end_disp + dock.x;
     dock.right_end = right_end_disp + dock.x;
-    double          middle = middle_disp + dock.x;
 
     evas_object_move(dock.background[OD_BG_LEFT], dock.left_end,
                      options.height - options.size - 2.0 * options.arrow_size);
@@ -271,6 +269,9 @@ static int
 od_dock_icon_appear(void *data)
 {
   OD_Icon        *icon = (OD_Icon *) data;
+  double          delta =
+    (ecore_time_get() - icon->start_time) / options.icon_appear_duration -
+    icon->scale;
 
   if (!(icon->state & OD_ICON_STATE_APPEARING)) {
     icon->start_time = ecore_time_get();
@@ -279,9 +280,6 @@ od_dock_icon_appear(void *data)
     od_dock_reposition();
   }
   need_redraw = true;
-  double          delta =
-    (ecore_time_get() - icon->start_time) / options.icon_appear_duration -
-    icon->scale;
   icon->scale += delta;
   if (icon->scale < 1.0) {
     double          s = 0.5 * delta * options.size;
