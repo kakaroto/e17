@@ -130,7 +130,7 @@ int menu_regex (char *line, gchar ***data_ptr)
         line = strdup (ss[0].end);
 
         free (data[n]);
-        data[n] = g_strdup (to_utf8 (ss[1].match));
+        data[n] = to_utf8 (ss[1].match);
       }
 
       for (i = 0; i < numsub; i++)
@@ -159,7 +159,7 @@ int menu_regex (char *line, gchar ***data_ptr)
         free (line);
         line = strdup (ss[0].end);
         free (data[n]);
-        data[n] = g_strdup (to_utf8 (ss[1].match));
+        data[n] = to_utf8 (ss[1].match);
       }
 
       for (i = 0; i < numsub; i++)

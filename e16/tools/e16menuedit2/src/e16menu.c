@@ -92,7 +92,7 @@ GtkTreeModel *load_menus_from_disk (void)
 
 	menu_regex (s, &data);
 
-	data[3] = strdup (to_utf8 (buf));
+	data[3] = to_utf8 (buf);
       
         gtk_tree_store_append (store, &iter, NULL);
         gtk_tree_store_set (store, &iter,
