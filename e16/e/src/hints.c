@@ -333,7 +333,7 @@ void
 EHintsSetInfo(const EWin * ewin)
 {
    static Atom         a = 0, aa = 0;
-   CARD32              c[8];
+   int                 c[9];
 
    if (EwinIsInternal(ewin))
       return;
@@ -348,14 +348,13 @@ EHintsSetInfo(const EWin * ewin)
    c[2] = EoGetX(ewin);
    c[3] = EoGetY(ewin);
    c[4] = ewin->iconified;
-   if (ewin->iconified)
-      ICCCM_DeIconify(ewin);
    c[5] = ewin->shaded;
    c[6] = ewin->client.w;
    c[7] = ewin->client.h;
+   c[8] = ewin->docked;
 
-   XChangeProperty(disp, ewin->client.win, a, XA_CARDINAL, 32, PropModeReplace,
-		   (unsigned char *)c, 8);
+   ecore_x_window_prop_card32_set(ewin->client.win, a, c, 9);
+
    XChangeProperty(disp, ewin->client.win, aa, XA_STRING, 8, PropModeReplace,
 		   (unsigned char *)ewin->normal_border->name,
 		   strlen(ewin->normal_border->name) + 1);
@@ -371,11 +370,11 @@ EHintsGetInfo(EWin * ewin)
 {
    static Atom         a = 0, aa = 0;
    Atom                a2;
-   CARD32             *c;
    char               *str;
    unsigned long       lnum, ldummy;
    int                 num, dummy;
    unsigned char      *puc;
+   int                 c[9];
 
    if (EwinIsInternal(ewin))
       return 0;
@@ -385,43 +384,42 @@ EHintsGetInfo(EWin * ewin)
    if (!aa)
       aa = XInternAtom(disp, "ENL_INTERNAL_DATA_BORDER", False);
 
-   puc = NULL;
-   XGetWindowProperty(disp, ewin->client.win, a, 0, 10, True, XA_CARDINAL, &a2,
-		      &dummy, &lnum, &ldummy, &puc);
-   c = (CARD32 *) puc;
-   num = (int)lnum;
-   if ((num >= 8) && (c))
-     {
-	EoSetSticky(ewin, c[1]);
-	EoSetDesk(ewin, c[0]);
-	ewin->client.x = c[2];
-	ewin->client.y = c[3];
-	ewin->client.grav = NorthWestGravity;
-	ewin->iconified = c[4];
-	ewin->shaded = c[5];
-	if (ewin->iconified)
-	  {
-	     ewin->client.start_iconified = 1;
-	     ewin->iconified = 0;
-	  }
-	ewin->client.already_placed = 1;
-	ewin->client.w = c[6];
-	ewin->client.h = c[7];
-	XFree(c);
+   num = ecore_x_window_prop_card32_get(ewin->client.win, a, c, 9);
+   if (num < 8)
+      return 0;
 
-	puc = NULL;
-	XGetWindowProperty(disp, ewin->client.win, aa, 0, 0xffff, True,
-			   XA_STRING, &a2, &dummy, &lnum, &ldummy, &puc);
-	str = (char *)puc;
-	num = (int)lnum;
-	if ((num > 0) && (str))
-	   EwinSetBorderByName(ewin, str, 0);
-	XFree(str);
-	if (EventDebug(EDBUG_TYPE_SNAPS))
-	   Eprintf("Snap get einf  %#lx: %4d+%4d %4dx%4d: %s\n",
-		   ewin->client.win, ewin->client.x, ewin->client.y,
-		   ewin->client.w, ewin->client.h, EwinGetName(ewin));
+   EoSetDesk(ewin, c[0]);
+   EoSetSticky(ewin, c[1]);
+   ewin->client.x = c[2];
+   ewin->client.y = c[3];
+   ewin->iconified = c[4];
+   ewin->shaded = c[5];
+   ewin->client.w = c[6];
+   ewin->client.h = c[7];
+   if (num >= 9)		/* Compatibility */
+      ewin->docked = c[8];
+
+   ewin->client.grav = NorthWestGravity;
+   if (ewin->iconified)
+     {
+	ewin->client.start_iconified = 1;
+	ewin->iconified = 0;
      }
+   ewin->client.already_placed = 1;
+
+   puc = NULL;
+   XGetWindowProperty(disp, ewin->client.win, aa, 0, 0xffff, True,
+		      XA_STRING, &a2, &dummy, &lnum, &ldummy, &puc);
+   str = (char *)puc;
+   num = (int)lnum;
+   if ((num > 0) && (str))
+      EwinSetBorderByName(ewin, str, 0);
+   XFree(str);
+   if (EventDebug(EDBUG_TYPE_SNAPS))
+      Eprintf("Snap get einf  %#lx: %4d+%4d %4dx%4d: %s\n",
+	      ewin->client.win, ewin->client.x, ewin->client.y,
+	      ewin->client.w, ewin->client.h, EwinGetName(ewin));
+
    return 0;
 }
 

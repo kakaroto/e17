@@ -617,6 +617,7 @@ AddToFamily(EWin * ewin, Window win)
      {
 	DockIt(ewin);
 	ewin->props.donthide = 1;
+	ewin->focusclick = 1;
      }
 
    doslide = Conf.mapslide && !Mode.wm.startup;
@@ -1776,6 +1777,9 @@ EwinsSetFree(void)
 	ewin = lst[i];
 	if (EwinIsInternal(ewin))
 	   continue;
+
+	if (ewin->iconified)
+	   ICCCM_DeIconify(ewin);
 
 	/* This makes E determine the client window stacking at exit */
 	EwinInstantUnShade(ewin);
