@@ -46,16 +46,16 @@ feh_wm_set_bg_file(char *file, unsigned char bgmode)
       {
         case BG_MODE_SEAMLESS:
            feh_imlib_image_tile(im);
-           feh_wm_set_bg(NULL, im, 0, 0, 0, 1);
+           feh_wm_set_bg(file, im, 0, 0, 0, 1);
            break;
         case BG_MODE_TILE:
-           feh_wm_set_bg(NULL, im, 0, 0, 0, 1);
+           feh_wm_set_bg(file, im, 0, 0, 0, 1);
            break;
         case BG_MODE_SCALE:
-           feh_wm_set_bg(NULL, im, 0, 1, 0, 1);
+           feh_wm_set_bg(file, im, 0, 1, 0, 1);
            break;
         default:
-           feh_wm_set_bg(NULL, im, 1, 0, 0, 1);
+           feh_wm_set_bg(file, im, 1, 0, 0, 1);
            break;
       }
       feh_imlib_free_image_and_decache(im);
