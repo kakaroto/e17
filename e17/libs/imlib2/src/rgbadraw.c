@@ -1262,6 +1262,114 @@ __imlib_draw_box_clipped(ImlibImage * im, int x, int y, int w, int h,
 }
 
 void
+__imlib_draw_filled_box_clipped(ImlibImage * im, int x, int y, int w, int h,
+                                int clip_xmin, int clip_xmax, int clip_ymin,
+                                int clip_ymax, DATA8 r, DATA8 g, DATA8 b,
+                                DATA8 a, ImlibOp op)
+{
+   int yy, xx, tmp;
+   DATA32 *p;
+   DATA8 nr, ng, nb, rr, gg, bb, aa, na;
+
+   if (x < 0)
+   {
+      w += x;
+      x = 0;
+   }
+   if (w <= 0)
+      return;
+   if ((x + w) > im->w)
+      w = (im->w - x);
+   if (w <= 0)
+      return;
+   if (y < 0)
+   {
+      h += y;
+      y = 0;
+   }
+   if (h <= 0)
+      return;
+   if ((y + h) > im->h)
+      h = (im->h - y);
+   if (h <= 0)
+      return;
+
+   if (clip_xmin < 0)
+      clip_xmin = 0;
+   if (clip_xmax > im->w)
+      clip_xmax = im->w;
+   if (clip_ymin < 0)
+      clip_ymin = 0;
+   if (clip_ymax > im->h)
+      clip_ymax = im->h;
+
+   if (x < clip_xmin)
+   {
+      w -= (clip_xmin - x);
+      x = clip_xmin;
+   }
+   if ((x + w) > clip_xmax)
+      w = clip_xmax - x;
+   if (y < clip_ymin)
+   {
+      h -= (clip_ymin - y);
+      y = clip_ymin;
+   }
+   if ((y + h) > clip_ymax)
+      h = clip_ymax - y;
+
+   switch (op)
+   {
+     case OP_COPY:
+        for (yy = 0; yy < h; yy++)
+        {
+           p = im->data + ((y + yy) * im->w) + x;
+           for (xx = 0; xx < w; xx++)
+           {
+              BLEND(r, g, b, a, p);
+              p++;
+           }
+        }
+        break;
+     case OP_ADD:
+        for (yy = 0; yy < h; yy++)
+        {
+           p = im->data + ((y + yy) * im->w) + x;
+           for (xx = 0; xx < w; xx++)
+           {
+              BLEND_ADD(r, g, b, a, p);
+              p++;
+           }
+        }
+        break;
+     case OP_SUBTRACT:
+        for (yy = 0; yy < h; yy++)
+        {
+           p = im->data + ((y + yy) * im->w) + x;
+           for (xx = 0; xx < w; xx++)
+           {
+              BLEND_SUB(r, g, b, a, p);
+              p++;
+           }
+        }
+        break;
+     case OP_RESHADE:
+        for (yy = 0; yy < h; yy++)
+        {
+           p = im->data + ((y + yy) * im->w) + x;
+           for (xx = 0; xx < w; xx++)
+           {
+              BLEND_RE(r, g, b, a, p);
+              p++;
+           }
+        }
+        break;
+     default:
+        break;
+   }
+}
+
+void
 __imlib_draw_filled_box(ImlibImage * im, int x, int y, int w, int h, DATA8 r,
                         DATA8 g, DATA8 b, DATA8 a, ImlibOp op)
 {

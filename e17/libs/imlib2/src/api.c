@@ -2210,9 +2210,23 @@ imlib_image_fill_rectangle(int x, int y, int width, int height)
       return;
    __imlib_DirtyImage(im);
    __imlib_DirtyPixmapsForImage(im);
-   __imlib_draw_filled_box(im, x, y, width, height, ctxt_color.red,
-                           ctxt_color.green, ctxt_color.blue,
-                           ctxt_color.alpha, ctxt_operation);
+   if (ctxt_cliprect.w)
+   {
+      __imlib_draw_filled_box_clipped(im, x, y, width, height,
+                                      ctxt_cliprect.x,
+                                      ctxt_cliprect.x + ctxt_cliprect.w,
+                                      ctxt_cliprect.y,
+                                      ctxt_cliprect.y + ctxt_cliprect.h,
+                                      ctxt_color.red, ctxt_color.green,
+                                      ctxt_color.blue, ctxt_color.alpha,
+                                      ctxt_operation);
+   }
+   else
+   {
+      __imlib_draw_filled_box(im, x, y, width, height, ctxt_color.red,
+                              ctxt_color.green, ctxt_color.blue,
+                              ctxt_color.alpha, ctxt_operation);
+   }
 }
 
 void
