@@ -5,3 +5,4 @@ usr/lib/*.la
 usr/share/aclocal/*
 usr/bin/*-config
 usr/lib/pkgconfig/*
+usr/lib/esmart/layout/*.a

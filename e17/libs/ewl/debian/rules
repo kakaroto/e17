@@ -67,7 +67,7 @@ binary-indep: build install
 binary-arch: build install
 	dh_testdir
 	dh_testroot
-	dh_installdocs AUTHORS README
+	dh_installdocs AUTHORS README $(CURDIR)/debian/tmp/usr/share/ewl/examples
 	dh_installchangelogs
 	dh_movefiles
 	dh_link
