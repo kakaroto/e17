@@ -264,9 +264,9 @@ void         ewl_window_init(EwlWindow *win, EwlWindowType type,
 
 	str = ewl_theme_get_string("/EwlWindow/class_hint");
 	if (str)
-		win->name_hint = str;
+		win->class_hint = str;
 	else 
-		win->name_hint  = e_string_dup(EWL_DEFAULT_WINDOW_NAME_H);
+		win->class_hint  = e_string_dup(EWL_DEFAULT_WINDOW_CLASS_H);
 
 	win->decoration_hint = FALSE;
 

@@ -83,7 +83,6 @@ struct _EwlWidget	{
 	void (*render)(EwlWidget *wid, EwlData *data);
 	Imlib_Image *rendered;
 	Imlib_Image *bg;
-	int          rendered_w, rendered_h; /* depricated */
 };
 
 /* allocation functions */

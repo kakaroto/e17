@@ -873,3 +873,9 @@ comparisons).
 
 - misc cleanups.
 
+-----
+20000831-1113-PDT, pabs
+
+- fixed another bug in the ewlwindow code reported by RbdPngn.  I
+blame this one on Mr Giblet.
+
