@@ -729,9 +729,8 @@ static void __estyle_style_read(Estyle_Style_Info * info)
 	 * Read in each layer
 	 */
 	for (i = 0; i < layers; i++) {
-		layer =
-		    (Estyle_Style_Layer *)
-		    malloc(sizeof(Estyle_Style_Layer));
+		layer = (Estyle_Style_Layer *)calloc(sizeof(Estyle_Style_Layer),
+						     1);
 
 		sprintf(key, "/layers/%d/stack", i);
 		e_db_int_get(info->style_db, key, &layer->stack);

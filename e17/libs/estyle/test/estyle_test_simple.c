@@ -289,7 +289,7 @@ int main(int argc, char *argv[])
 	/*
 	 * Create an estyle.
 	 */
-	e = estyle_new(evas, string1, "raised");
+	e = estyle_new(evas, string1, "soft_shadow");
 	evas_object_move(e, 100, 100);
 	evas_object_color_set(e, 128, 255, 255, 255);
 	evas_object_clip_set(e, clip_rect);
