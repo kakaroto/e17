@@ -54,7 +54,7 @@ Authors:
 Homepage:   
 ---------
 
-  http://www.klografx.de/
+  http://mandrake.net
 
 
 Misc:
@@ -63,66 +63,13 @@ Misc:
   Thanx to all programers, Owen Taylor and Rasterman (@REDHAT)
   for helping with patches and their knowledge :-)
 
-  type "man qiv" for more information.
   See the Makefile if you have problems compiling.
 
   qiv is designed to work with gtk/gdk 1.0.x and 1.1.x, it also
   should work with ANY version of Imlib of Linux (Intel/Mac),
   Solaris (SunOS) and FreeBSD.
 
-
-Center Problem:
----------------
-  
-  we use only GDK with qiv and no GTK.. so there is a big problem with
-  centering windows on screen and each Window Manager handles this
-  stuff by it own way :-( but we try to show the windows centered on
-  screen..
-
-  Window Mager/Enlightenment/fvwm2 etc. :
-      You don't need to do anything.. (Makefile: WM_HANDLE=0 or "-w
-      0")
-
-  Kwm(KDE)/SCWM etc. :
-      You must set "-DWM_HANDLE=1" in the Makefile or start qiv with
-      "-w 1"..  but this don't works 100% :-(
-
-  Other:
-      Please use "--center, -e" for disabling centering...
-            
-  ps:  you see the center problem only on the first image..
-  pps: if you use FVWM2, WM_HANDLE=0 and --do_grab/-a then you will
-       see the window jump again.. the damm WM sucks <g>.. only the
-       newest like Enlightenment or Window Mager seems to handle the
-       stuff right..  ...but i use still my fvwm2 ;)
-
-
-Thumbnails:
------------
-
-  i don't plan on adding a thumbnail function.  sorry, but qiv is a
-  QUICK image VIEWER and nothing more.  if you want more features
-  (with Imlib) then try Electric Eyes or gqview ...
-
-  
-Image caching:
---------------
-
-  if you want image_caching then comment out the
-  gdk_imlib_kill_image(im); line in main.c, but don't forget to set
-  you cache sizes with imlib_config !  this stuff don't work right
-  here (imlib 1.8 cvs) and on a imlib 1.6 system so i have disabled
-  this nice Imlib feature by killing the images from the buffer.
-
-
-Links:
-------
-
-  ImLib   : http://www.labs.redhat.com/imlib/
-  gtk/gdk : http://www.gtk.org/
-
-
 Contact:
 --------
 
-  Mail bug, reports and comments to Adam Kopacz <Adam.K@klografx.de>
+  Mail bug, reports and comments to Mandrake <mandrake@mandrake.net>
