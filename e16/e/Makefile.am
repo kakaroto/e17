@@ -20,5 +20,4 @@ debian/changelog \
 debian/control \
 debian/copyright \
 debian/ehrc \
-debian/rules \
-man/enlightenment.1
+debian/rules
