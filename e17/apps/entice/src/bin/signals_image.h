@@ -70,4 +70,6 @@ void _entice_quit(void *data, Evas_Object * o, const char *emission,
                   const char *source);
 void _entice_image_modified(void *data, Evas_Object * o, const char *emission,
                             const char *source);
+void _entice_image_save(void *data, Evas_Object * o, const char *emission,
+                        const char *source);
 #endif

@@ -49,7 +49,7 @@ hookup_edje_signals(Evas_Object * o)
       "EnticeImageScrollEastStart", "EnticeImageScrollWestStart",
       "EnticeImageScrollNorthStart", "EnticeImageScrollSouthStart",
       "EnticeImageScrollStop", "EnticeImageModified",
-      "EnticeQuit"
+      "EnticeSaveCurrent", "EnticeQuit"
    };
    edje_callbacks funcs[] = { _entice_delete_current, _entice_remove_current,
       _entice_image_next, _entice_image_prev,
@@ -64,7 +64,7 @@ hookup_edje_signals(Evas_Object * o)
       _entice_image_scroll_east_start, _entice_image_scroll_west_start,
       _entice_image_scroll_north_start, _entice_image_scroll_south_start,
       _entice_image_scroll_stop, _entice_image_modified,
-      _entice_quit, NULL
+      _entice_image_save, _entice_quit, NULL
    };
    count = sizeof(signals) / sizeof(char *);
    for (i = 0; i < count; i++)
@@ -183,6 +183,7 @@ _entice_thumb_load(void *_data, Evas * _e, Evas_Object * _o, void *_ev)
    {
       int iw, ih;
       double w, h;
+      int should_fit = 0;
       char buf[PATH_MAX];
 
       if ((entice->current) && entice_image_file_get(entice->current)
@@ -193,6 +194,7 @@ _entice_thumb_load(void *_data, Evas * _e, Evas_Object * _o, void *_ev)
       tmp = e_thumb_evas_object_get(o);
       new_current = entice_image_new(tmp);
       entice_image_file_set(new_current, e_thumb_file_get(o));
+      entice_image_format_set(new_current, e_thumb_format_get(o));
 
       new_scroller =
          e_thumb_new(evas_object_evas_get(o), e_thumb_file_get(o));
@@ -213,7 +215,7 @@ _entice_thumb_load(void *_data, Evas * _e, Evas_Object * _o, void *_ev)
          entice_image_zoom_set(new_current,
                                entice_image_zoom_get(entice->current));
          if (entice_image_zoom_fit_get(entice->current))
-            entice_image_zoom_fit(new_current);
+            should_fit = 1;
          evas_object_del(entice->current);
          entice->current = NULL;
 
@@ -257,6 +259,9 @@ _entice_thumb_load(void *_data, Evas * _e, Evas_Object * _o, void *_ev)
       edje_object_part_swallow(entice->edje, "EnticeImage", new_current);
       edje_object_part_swallow(entice->edje, "EnticeImageScroller",
                                new_scroller);
+
+      if (should_fit)
+         entice_image_zoom_fit(new_current);
 
       /* let the app know it's ready to be displayed */
       edje_object_signal_emit(entice->edje, "EnticeImageDisplay", "");
@@ -330,7 +335,7 @@ entice_file_add_job_cb(void *data)
       {
          if (file[0] == '/')
             snprintf(buf, PATH_MAX, "%s", file);
-         else if ((strlen(file) > 7) && strncmp(file, "http://", 7))
+         else if ((strlen(file) > 7) && !strncmp(file, "http://", 7))
          {
             fprintf(stderr, "http file request\n");
          }
@@ -603,6 +608,8 @@ entice_preview_thumb(Evas_Object * o)
       if ((newpreview =
            e_thumb_new(evas_object_evas_get(o), e_thumb_file_get(o))))
       {
+
+         edje_object_signal_emit(entice->edje, "EnticeImagePreviewPrep", "");
          edje_object_part_geometry_get(entice->edje, "EnticeImagePreview", &x,
                                        &y, &w, &h);
 
@@ -629,8 +636,10 @@ entice_rotate_image_right(void)
 {
    if (entice && entice->current)
    {
-      entice_image_rotate(entice->current, 1);
-      edje_object_signal_emit(entice->edje, "EnticeImageModified", "");
+      edje_freeze();
+      if (entice_image_rotate(entice->current, 1))
+         edje_object_signal_emit(entice->edje, "EnticeImageModified", "");
+      edje_thaw();
    }
 }
 void
@@ -638,7 +647,43 @@ entice_rotate_image_left(void)
 {
    if (entice && entice->current)
    {
-      entice_image_rotate(entice->current, 3);
-      edje_object_signal_emit(entice->edje, "EnticeImageModified", "");
+      edje_freeze();
+      if (entice_image_rotate(entice->current, 3))
+         edje_object_signal_emit(entice->edje, "EnticeImageModified", "");
+      edje_thaw();
+   }
+}
+void
+entice_flip_vertical(void)
+{
+   if (entice && entice->current)
+   {
+      edje_freeze();
+      if (entice_image_flip(entice->current, 1))
+         edje_object_signal_emit(entice->edje, "EnticeImageModified", "");
+      edje_thaw();
+   }
+}
+void
+entice_flip_horizontal(void)
+{
+   if (entice && entice->current)
+   {
+      edje_freeze();
+      if (entice_image_flip(entice->current, 0))
+         edje_object_signal_emit(entice->edje, "EnticeImageModified", "");
+      edje_thaw();
+   }
+}
+void
+entice_save_image(void)
+{
+   if (entice && entice->current)
+   {
+      edje_freeze();
+      if(entice_image_save(entice->current))
+	  fprintf(stderr, "Saving was successul\n");
+      /* FIXME: Emit a EnticeSaveOk or something signal */
+      edje_thaw();
    }
 }

@@ -179,6 +179,7 @@ void
 _entice_flip_horizontal(void *data, Evas_Object * o, const char *emission,
                         const char *source)
 {
+   entice_flip_horizontal();
    return;
    data = NULL;
    o = NULL;
@@ -191,6 +192,7 @@ void
 _entice_flip_vertical(void *data, Evas_Object * o, const char *emission,
                       const char *source)
 {
+   entice_flip_vertical();
    return;
    data = NULL;
    o = NULL;
@@ -348,6 +350,22 @@ _entice_image_modified(void *data, Evas_Object * o, const char *emission,
 #if DEBUG
    fprintf(stderr, "Image has been modified !!! :)\n");
 #endif
+   return;
+   data = NULL;
+   o = NULL;
+   emission = NULL;
+   source = NULL;
+}
+
+/* EnticeSaveCurrent */
+void
+_entice_image_save(void *data, Evas_Object * o, const char *emission,
+                   const char *source)
+{
+#if DEBUG
+   fprintf(stderr, "Image Save Request !!! :)\n");
+#endif
+   entice_save_image();
    return;
    data = NULL;
    o = NULL;

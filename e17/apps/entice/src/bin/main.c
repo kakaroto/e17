@@ -160,8 +160,10 @@ main(int argc, char *argv[])
          ecore_evas_borderless_set(ee, 0);
          ecore_evas_shaped_set(ee, 0);
 
-         evas_font_cache_set(ecore_evas_get(ee), 1 * 1024 * 1024);
-         evas_image_cache_set(ecore_evas_get(ee), 8 * 1024 * 1024);
+         evas_font_cache_set(ecore_evas_get(ee),
+                             entice_config_font_cache_get() * 1024 * 1024);
+         evas_image_cache_set(ecore_evas_get(ee),
+                              entice_config_image_cache_get() * 1024 * 1024);
 
          evas_font_path_append(ecore_evas_get(ee), PACKAGE_DATA_DIR "/fonts");
          o = evas_object_rectangle_add(ecore_evas_get(ee));

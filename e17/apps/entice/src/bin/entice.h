@@ -60,6 +60,11 @@ void entice_zoom_out(void);
 void entice_zoom_reset(void);
 void entice_fullscreen_toggle(void);
 
+void entice_rotate_image_right(void);
+void entice_rotate_image_left(void);
+void entice_flip_vertical(void);
+void entice_flip_horizontal(void);
+
 void entice_preview_thumb(Evas_Object * o);
 
 #endif

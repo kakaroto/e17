@@ -18,6 +18,34 @@ static Entice_Config *econfig = NULL;
 static void entice_config_generate_original_db(char *filename);
 
 /**
+ * entice_config_font_cache_get - Get the font cache size in megabytes
+ * Returns - value should always be > 0
+ */
+int
+entice_config_font_cache_get(void)
+{
+   int result = 1;
+
+   if ((econfig) && (econfig->cache.font > 0))
+      result = econfig->cache.font;
+   return (result);
+}
+
+/**
+ * entice_config_image_cache_get - Get the font cache size in megabytes
+ * Returns - value should always be > 0
+ */
+int
+entice_config_image_cache_get(void)
+{
+   int result = 4;
+
+   if ((econfig) && (econfig->cache.image > 0))
+      result = econfig->cache.image;
+   return (result);
+}
+
+/**
  * entice_config_theme_get - get the theme name, DO NOT FREE THIS
  * Returns - absolute path to the theme's eet
  */
@@ -162,6 +190,12 @@ entice_config_init(void)
                   }
                }
             }
+            if (!e_db_int_get(db, "/entice/cache/font", &econfig->cache.font))
+               econfig->cache.font = 1;
+            if (!e_db_int_get
+                (db, "/entice/cache/image", &econfig->cache.image))
+               econfig->cache.image = 4;
+
             e_db_close(db);
          }
       }
@@ -176,13 +210,13 @@ entice_config_generate_original_db(char *filename)
    E_DB_File *db = NULL;
 
    char *signals[] = { "EnticeZoomIn", "EnticeZoomOut", "EnticeFullScreen",
-      "EnticeImageNext", "EnticeImagePrev",
-      "EnticeZoomDefault", "EnticeZoomFit",
-      "EnticeQuit", "EnticeRotateLeft", "EnticeRotateRight"
+      "EnticeImageNext", "EnticeImagePrev", "EnticeZoomDefault",
+      "EnticeZoomFit", "EnticeQuit", "EnticeRotateLeft",
+      "EnticeRotateRight", "EnticeFlipH", "EnticeFlipV"
    };
    char *keys[] =
       { "equal", "minus", "f", "space", "BackSpace", "n", "w", "q", "Left",
-      "Right"
+      "Right", "Up", "Down"
    };
    count = sizeof(signals) / sizeof(char *);
 
@@ -201,6 +235,9 @@ entice_config_generate_original_db(char *filename)
             e_db_str_set(db, buf, signals[i]);
          }
          e_db_int_set(db, "/entice/keys/up/count", count);
+         e_db_int_set(db, "/entice/cache/font", 1);
+         e_db_int_set(db, "/entice/cache/image", 8);
+
          e_db_close(db);
          e_db_flush();
       }

@@ -16,7 +16,38 @@
 static void entice_image_resize(Evas_Object * o, double w, double h);
 static int _entice_image_scroll_timer(void *data);
 
+const char *
+entice_image_format_get(Evas_Object * o)
+{
+   char *result = NULL;
+   Entice_Image *im = NULL;
+
+   if ((im = evas_object_smart_data_get(o)))
+      result = im->format;
+   return (result);
+}
+
 void
+entice_image_format_set(Evas_Object * o, const char *format)
+{
+   char buf[PATH_MAX];
+   Entice_Image *im = NULL;
+
+   if ((im = evas_object_smart_data_get(o)))
+   {
+      if (im->format)
+         free(im->format);
+      snprintf(buf, PATH_MAX, "%s", format);
+      im->format = strdup(buf);
+   }
+}
+
+/**
+ * entice_image_rotate - rotate the image using imlib2
+ * @o - the Entice Image Object
+ * @direction - 1 to flip clockwise, 3 to flip counter clockwise
+ */
+int
 entice_image_rotate(Evas_Object * o, int orientation)
 {
    int iw, ih;
@@ -48,12 +79,97 @@ entice_image_rotate(Evas_Object * o, int orientation)
          if (entice_image_zoom_fit_get(o))
             entice_image_zoom_fit(o);
          imlib_free_image();
+         return (1);
       }
    }
+   return (0);
+}
+
+/**
+ * entice_image_flip - flip the image using imlib2
+ * @o - the Entice Image Object
+ * @direction - non-zero to flip vertical, zero to flip horizontal
+ */
+int
+entice_image_flip(Evas_Object * o, int orientation)
+{
+   int iw, ih;
+   double w, h;
+   Entice_Image *im = NULL;
+   Imlib_Image imlib_im = NULL;
+
+   if ((im = evas_object_smart_data_get(o)))
+   {
+      evas_object_image_size_get(im->obj, &iw, &ih);
+      evas_object_geometry_get(o, NULL, NULL, &w, &h);
+
+      if (imlib_im =
+          imlib_create_image_using_copied_data(iw, ih,
+                                               evas_object_image_data_get(im->
+                                                                          obj,
+                                                                          1)))
+      {
+         imlib_context_set_image(imlib_im);
+         if (orientation)
+            imlib_image_flip_horizontal();
+         else
+            imlib_image_flip_vertical();
+
+         im->iw = imlib_image_get_width();
+         im->ih = imlib_image_get_height();
+         evas_object_image_size_set(im->obj, im->iw, im->ih);
+         evas_object_image_data_copy_set(im->obj,
+                                         imlib_image_get_data_for_reading_only
+                                         ());
+         evas_object_resize(o, w, h);
+         /* if we're fitting, it'll need to be recalculated */
+         if (entice_image_zoom_fit_get(o))
+            entice_image_zoom_fit(o);
+         imlib_free_image();
+         return (1);
+      }
+   }
+   return (0);
+}
+
+/**
+ * entice_image_save - save the image using imlib2
+ * @o - the Entice Image Object
+ */
+int
+entice_image_save(Evas_Object * o)
+{
+   int iw, ih;
+   double w, h;
+   Entice_Image *im = NULL;
+   Imlib_Image imlib_im = NULL;
+
+   if ((im = evas_object_smart_data_get(o)))
+   {
+      evas_object_image_size_get(im->obj, &iw, &ih);
+      evas_object_geometry_get(o, NULL, NULL, &w, &h);
+
+      if (imlib_im =
+          imlib_create_image_using_copied_data(iw, ih,
+                                               evas_object_image_data_get(im->
+                                                                          obj,
+                                                                          1)))
+      {
+         imlib_context_set_image(imlib_im);
+         if (im->format && im->filename)
+         {
+            imlib_image_set_format(im->format);
+            imlib_save_image(im->filename);
+         }
+         imlib_free_image();
+         return (1);
+      }
+   }
+   return (0);
 }
 
 void
-entice_image_file_set(Evas_Object * o, char *filename)
+entice_image_file_set(Evas_Object * o, const char *filename)
 {
    char buf[PATH_MAX];
    Entice_Image *im = NULL;

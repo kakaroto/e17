@@ -34,6 +34,7 @@ struct _Entice_Image
       Entice_Scroll_Direction direction;
    } scroll;
    char *filename;              /* we need to keep track of this */
+   char *format;                /* we need to keep track of this too */
    int x, y, w, h, iw, ih;      /* geometry */
    Evas_Object *obj;            /* the image object */
    Evas_Object *clip;           /* clip to this area when we swallow */
@@ -63,6 +64,11 @@ void entice_image_scroll_stop(Evas_Object * o);
 void entice_image_scroll_start(Evas_Object * o, Entice_Scroll_Direction d);
 void entice_image_scroll(Evas_Object * o, Entice_Scroll_Direction d, int val);
 const char *entice_image_file_get(Evas_Object * o);
-void entice_image_rotate(Evas_Object * o, int orientation);
+const char *entice_image_format_get(Evas_Object * o);
+int entice_image_rotate(Evas_Object * o, int direction);
+int entice_image_flip(Evas_Object * o, int direction);
+int entice_image_save(Evas_Object * o);
+void entice_image_file_set(Evas_Object * o, const char *filename);
+void entice_image_format_set(Evas_Object * o, const char *format);
 
 #endif

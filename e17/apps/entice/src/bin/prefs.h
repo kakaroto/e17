@@ -13,6 +13,10 @@ struct _Entice_Config
 {
    char *theme;
    int engine;
+   struct
+   {
+      int image, font;
+   } cache;
 };
 typedef struct _Entice_Config Entice_Config;
 
@@ -21,5 +25,7 @@ void entice_config_init(void);
 /* Accessors */
 const char *entice_config_theme_get(void);
 int entice_config_engine_get(void);
+int entice_config_font_cache_get(void);
+int entice_config_image_cache_get(void);
 
 #endif
