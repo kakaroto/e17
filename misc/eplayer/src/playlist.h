@@ -21,7 +21,6 @@ typedef struct {
 } PlayList;
 
 PlayList *playlist_new(Evas *evas, Evas_List *plugins,
-                       Evas_Object *container,
                        const char *theme);
 void playlist_free(PlayList *pl);
 

@@ -271,7 +271,6 @@ static int load_playlist(void *data) {
 
 	player->playlist = playlist_new(player->gui.evas,
 	                                player->input_plugins,
-	                                player->gui.playlist,
 	                                player->cfg.theme);
 	assert(player->playlist);
 

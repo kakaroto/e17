@@ -170,7 +170,7 @@ bool ui_init_edje(ePlayer *player, const char *name) {
 
 	player->gui.edje = edje_object_add(player->gui.evas);
 	evas_object_name_set(player->gui.edje, "main_edje");
-	
+
 	if (!edje_object_file_set(player->gui.edje,
 	                          find_theme(player->cfg.theme),
 	                          name)) {
@@ -269,6 +269,7 @@ static void setup_playlist(ePlayer *player) {
 	player->gui.playlist = e_container_new(player->gui.evas);
 	assert(player->gui.playlist);
 
+	evas_object_name_set(player->gui.playlist, "PlayList");
 	evas_object_data_set(player->gui.playlist, "ePlayer", player);
 
 	e_container_direction_set(player->gui.playlist, 1);

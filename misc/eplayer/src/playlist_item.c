@@ -151,7 +151,7 @@ PlayListItem *playlist_item_new(const char *file, Evas *evas,
 
 	pli->evas = evas;
 	pli->container = container;
-	pli->theme = theme;//"/home/tilman/.e/apps/eplayer/themes/iio.eet";
+	pli->theme = theme;
 
 	if (!playlist_item_init(pli)) {
 		playlist_item_free(pli);

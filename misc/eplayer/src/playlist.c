@@ -18,7 +18,7 @@
  * @param plugins
  * @return The newly created PlayList.
  */
-PlayList *playlist_new(Evas *evas, Evas_List *plugins, Evas_Object *container,
+PlayList *playlist_new(Evas *evas, Evas_List *plugins,
                        const char *theme) {
 	PlayList *pl;
 
@@ -30,7 +30,7 @@ PlayList *playlist_new(Evas *evas, Evas_List *plugins, Evas_Object *container,
 
 	pl->evas = evas;
 	pl->plugins = plugins;
-	pl->container = container;
+	pl->container = evas_object_name_find(evas, "PlayList");
 	pl->theme = theme;
 
 	return pl;
