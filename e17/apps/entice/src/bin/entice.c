@@ -11,6 +11,7 @@
 #include <Esmart/container.h>
 #include <Esmart/E_Thumb.h>
 #include <Esmart/Esmart_Trans.h>
+#include <Esmart/dragable.h>
 #include <Epsilon.h>
 #include <string.h>
 #include <sys/types.h>
@@ -106,6 +107,7 @@ hookup_edje_signals(Evas_Object * o)
 void
 entice_init(Ecore_Evas * ee)
 {
+   int button = 1;
    int x, y, w, h;
    Entice *e = NULL;
    char *layout = NULL;
@@ -189,7 +191,7 @@ entice_init(Ecore_Evas * ee)
          edje_object_part_swallow(e->edje, "entice.thumbnail.area",
                                   e->container);
       }
-      if ((str = edje_object_data_get(o, "entice.window.type")))
+      if ((str = edje_object_data_get(e->edje, "entice.window.type")))
       {
          fprintf(stderr, "%s entice.window.type\n", str);
          if (!strcmp(str, "shaped"))
@@ -216,6 +218,24 @@ entice_init(Ecore_Evas * ee)
             evas_object_resize(o, w, h);
             evas_object_move(o, 0, 0);
             evas_object_layer_set(o, 0);
+            evas_object_show(o);
+         }
+      }
+      if ((str = edje_object_data_get(e->edje, "entice.window.dragable")))
+      {
+         if (!strcmp(str, "true"))
+         {
+            o = esmart_draggies_new(ee);
+            evas_object_resize(o, w, h);
+            evas_object_move(o, 0, 0);
+            evas_object_layer_set(o, -1);
+            if ((str =
+                 edje_object_data_get(e->edje,
+                                      "entice.window.dragable.button")))
+            {
+               button = atoi(str);
+            }
+            esmart_draggies_button_set(o, button);
             evas_object_show(o);
          }
       }
