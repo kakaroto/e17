@@ -15,7 +15,7 @@ part {
 
 		text {
 			text, "MailBoxCountTotal";
-			font, "Vera";
+			font, "Edje.Vera";
 			size, 8;
 			align, 0.0 0.0;
 		}

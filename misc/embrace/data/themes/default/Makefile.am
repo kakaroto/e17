@@ -15,7 +15,7 @@ theme_DATA = $(EET)
 all: $(EET)
 
 $(EET): $(EDC)
-	edje_cc -v -id images $< $(EET)
+	edje_cc -v -fd fonts -id images $< $(EET)
 
 preview: $(EET)
 	edje $(EET) embrace

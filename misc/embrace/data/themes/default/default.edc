@@ -5,6 +5,10 @@ images {
 	image, "email_new.png" RAW;
 }
 
+fonts {
+#include "fonts/fonts.edc"
+}
+
 collections {
 #include "embrace.edc"
 #include "mailbox.edc"

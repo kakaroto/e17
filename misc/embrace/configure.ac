@@ -110,6 +110,7 @@ Makefile
 data/Makefile
 data/themes/Makefile
 data/themes/default/Makefile
+data/themes/default/fonts/Makefile
 data/themes/default/images/Makefile
 data/themes/default/parts/Makefile
 data/themes/default/programs/Makefile
