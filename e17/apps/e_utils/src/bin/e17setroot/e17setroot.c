@@ -3,6 +3,7 @@
 #include <getopt.h>
 #include <errno.h>
 #include <string.h>
+#include <unistd.h>
 #include <X11/Xatom.h>
 #include <X11/Xlib.h>
 #include <Imlib2.h>
@@ -256,6 +257,9 @@ void _e_bg_bg_eet_gen(char *filename) {
    strcat(esetroot, filename);
    system(esetroot);
    free(esetroot);
+   
+   /* unlink the temp edc */
+   unlink("/tmp/e17setroot_template.edc");
 }
 
 int main(int argc, char **argv)
