@@ -147,7 +147,7 @@ OD_Icon        *
 od_icon_new(const char *name, const char *icon_file)
 {
   OD_Icon        *ret = (OD_Icon *) malloc(sizeof(OD_Icon));
-  char           *path[PATH_MAX];
+  char            path[PATH_MAX];
 
   ret->name = strdup(name);
   ret->scale = 0.0;
