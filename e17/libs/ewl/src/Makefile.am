@@ -26,6 +26,7 @@ installed_headers_DATA = \
 	ewl_grid.h \
 	ewl_image.h \
 	ewl_imenu.h \
+	ewl_list.h \
 	ewl_macros.h \
 	ewl_misc.h \
 	ewl_notebook.h \
