@@ -39,13 +39,13 @@ mkindex -iVO index.jpg .
 imgidx -iVO .fehindex.jpg --limit-width 1200 --thumb-width 90 --thumb-height 90 .
 
 # Show a presentation
-present --fullscreen --sort name
+present --full-screen --sort name
 
 # Booth mode ;-)
-booth --fullscreen --slideshow-delay 20
+booth --full-screen --slideshow-delay 20
 
 # Screw xscreensaver, use feh =)
-screensave --fullscreen --randomize --slideshow-delay 5
+screensave --full-screen --randomize --slideshow-delay 5
 
 # Add <img> tags to your html with ease :-)
 newimg -q -L "<img src=\"%f\" alt=\"feh\" border=\"0\" width=\"%w\" height=\"%h\">"
