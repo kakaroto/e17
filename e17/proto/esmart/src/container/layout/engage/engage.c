@@ -3,8 +3,23 @@
 #include <math.h>
 #include "../../Esmart_Container.h"
 
-Evas_Object *grabber = NULL;
+#define CONTAINER_ZOOMING 0
+#define CONTAINER_ZOOMED 1
+#define CONTAINER_UNZOOMING 2
+#define CONTAINER_UNZOOMED 3
+
+static double zoom = 0.0;
+static double zoom_factor = 2.0;
+static double zoom_duration = 0.2;
+static Evas_Object *grabber = NULL;
+static Ecore_Timer *zoom_timer = NULL;
+static int zoom_state = CONTAINER_UNZOOMED;
+
 int _container_scroll_timer (void *data);
+static void engage_zoom_in (Container * cont);
+static void engage_zoom_out (Container * cont);
+static int engage_zoom_in_slave (void *data);
+static int engage_zoom_out_slave (void *data);
 
 void
 _engage_mouse_grabber_mouse_move_cb (void *data, Evas * evas,
@@ -18,6 +33,8 @@ _engage_mouse_grabber_mouse_in_cb (void *data, Evas * evas, Evas_Object * obj,
 				   void *ev)
 {
   fprintf (stderr, "Mouse in area\n");
+  if (data)
+    engage_zoom_in ((Container *) data);
 }
 
 void
@@ -25,6 +42,8 @@ _engage_mouse_grabber_mouse_out_cb (void *data, Evas * evas,
 				    Evas_Object * obj, void *ev)
 {
   fprintf (stderr, "Mouse out area\n");
+  if (data)
+    engage_zoom_out ((Container *) data);
 }
 
 void
@@ -352,4 +371,79 @@ plugin_init (Container_Layout_Plugin * p)
   p->shutdown = _engage_shutdown;
 
   return 1;
+}
+static void
+engage_zoom_in (Container * cont)
+{
+  if (zoom_timer)
+    ecore_timer_del (zoom_timer);
+  engage_zoom_in_slave (cont);
+  zoom_timer = ecore_timer_add (0.02, engage_zoom_in_slave, cont);
+  _engage_layout (cont);
+}
+
+static void
+engage_zoom_out (Container * cont)
+{
+  if (zoom_timer)
+    ecore_timer_del (zoom_timer);
+  engage_zoom_out_slave (cont);
+  zoom_timer = ecore_timer_add (0.02, engage_zoom_out_slave, cont);
+  _engage_layout (cont);
+}
+static int
+engage_zoom_in_slave (void *data)
+{
+  static double start_time;
+  if (zoom_state == CONTAINER_UNZOOMED)
+    start_time = ecore_time_get ();
+  else if (zoom_state == CONTAINER_UNZOOMING)
+    start_time = ecore_time_get () -
+      (zoom - 1.0) / (zoom_factor - 1.0) * zoom_duration;
+  zoom =
+    (zoom_factor - 1.0) * ((ecore_time_get () - start_time) /
+			   zoom_duration) + 1.0;
+  fprintf (stderr, "zooming in %0.2f\n", zoom);
+  _engage_layout ((Container *) data);
+  if (zoom < zoom_factor)
+    {
+      zoom_state = CONTAINER_ZOOMING;
+      return (1);
+    }
+  else
+    {
+      zoom = zoom_factor;
+      zoom_state = CONTAINER_ZOOMED;
+      zoom_timer = NULL;
+    }
+  return (0);
+}
+
+static int
+engage_zoom_out_slave (void *data)
+{
+  static double start_time;
+
+  if (zoom_state == CONTAINER_ZOOMED)
+    start_time = ecore_time_get ();
+  else if (zoom_state == CONTAINER_ZOOMING)
+    start_time = ecore_time_get () -
+      (zoom - 1.0) / (zoom_factor - 1.0) * zoom_duration;
+  zoom =
+    (zoom_factor - 1.0) * (1.0 - (ecore_time_get () - start_time) /
+			   zoom_duration) + 1.0;
+  fprintf (stderr, "zooming out %0.2f\n", zoom);
+  _engage_layout ((Container *) data);
+  if (zoom > 1.0)
+    {
+      zoom_state = CONTAINER_UNZOOMING;
+      return (1);
+    }
+  else
+    {
+      zoom = 1.0;
+      zoom_state = CONTAINER_UNZOOMED;
+      zoom_timer = NULL;
+    }
+  return (0);
 }
