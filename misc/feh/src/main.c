@@ -113,11 +113,13 @@ main_loop (void)
 		      winwid->zy = ev.xbutton.y;
 		      imlib_context_set_anti_alias (0);
 		      imlib_context_set_dither (0);
-		      imlib_context_set_blend (1);
+		      imlib_context_set_blend (0);
 		      imlib_context_set_drawable (winwid->bg_pmap);
 		      imlib_context_set_image (winwid->blank_im);
 		      imlib_render_image_on_drawable (0, 0);
 		      imlib_context_set_image (winwid->im);
+		      if(imlib_image_has_alpha())
+			    imlib_context_set_blend (1);
 		      imlib_render_image_on_drawable (0, 0);
 		      XSetWindowBackgroundPixmap (disp, winwid->win,
 						  winwid->bg_pmap);
@@ -187,10 +189,6 @@ main_loop (void)
 			  x = ev.xmotion.x;
 			  y = ev.xmotion.y;
 
-			  imlib_context_set_anti_alias (0);
-			  imlib_context_set_dither (0);
-			  imlib_context_set_blend (1);
-
 			  winwid->zoom =
 			    ((double) x - (double) winwid->zx) / 32.0;
 			  if (winwid->zoom < 0)
@@ -226,10 +224,15 @@ main_loop (void)
 			      sw = winwid->im_w;
 			      sh = winwid->im_h;
 			    }
+			  imlib_context_set_anti_alias (0);
+			  imlib_context_set_dither (0);
+			  imlib_context_set_blend (0);
 			  imlib_context_set_drawable (winwid->bg_pmap);
 			  imlib_context_set_image (winwid->blank_im);
 			  imlib_render_image_on_drawable (0, 0);
 			  imlib_context_set_image (winwid->im);
+			  if (imlib_image_has_alpha ())
+			    imlib_context_set_blend (1);
 			  imlib_render_image_part_on_drawable_at_size
 			    (sx, sy, sw, sh, dx, dy, dw, dh);
 			  XSetWindowBackgroundPixmap (disp, winwid->win,
@@ -318,11 +321,13 @@ main_loop (void)
 			}
 		      imlib_context_set_anti_alias (1);
 		      imlib_context_set_dither (1);
-		      imlib_context_set_blend (1);
+		      imlib_context_set_blend (0);
 		      imlib_context_set_drawable (windows[j]->bg_pmap);
 		      imlib_context_set_image (windows[j]->blank_im);
 		      imlib_render_image_on_drawable (0, 0);
 		      imlib_context_set_image (windows[j]->im);
+		      if (imlib_image_has_alpha ())
+			imlib_context_set_blend (1);
 		      imlib_render_image_part_on_drawable_at_size
 			(sx, sy, sw, sh, dx, dy, dw, dh);
 		      XSetWindowBackgroundPixmap (disp, windows[j]->win,

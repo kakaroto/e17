@@ -1,3 +1,9 @@
+Mon Dec 20 17:35:25 1999  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
+
+	* Hehe. Ooops. I only need to blend on zoom if the image *has* an
+	alpha channel. Hehe. Ok, now zooming is *much* faster and
+	smoother, and I am slightly less of an idiot.
+
 Mon Dec 20 16:46:58 1999  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
 
 	* Okay, I'm still a newbie at this X stuff :) Made some
