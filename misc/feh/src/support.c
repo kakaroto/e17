@@ -182,6 +182,7 @@ feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
       }
       XFreePixmap(disp, tmppmap);
       XClearWindow(disp, root);
+      XFlush(disp);
    }
    D_RETURN_(4);
 }

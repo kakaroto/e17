@@ -1,3 +1,17 @@
+Wed Aug 22 17:01:08 2001  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Okay, setting bg from cmdline when not running E was broken,
+	basically because we didn't XFlush before exiting. My bad.
+    * Ugh. I'm trying to emulate Esetroot, by setting the atoms needed to
+    tell Eterm where the bg pixmap is. Of course, when feh exits, the
+    pixmap is cleaned up by X, unless I do an XSetCloseDownMode(disp,
+    RetainPermanent); However, this means all my crap hangs around, I want
+    it to be cleaned up. So anyone know how I can make the pixmap stick
+    around in X, without leaving windows and other pixmaps there too?
+    (Esetroot lets it all hang out basically, but it's non graphical and
+    can afford to. It always exits after doing it's job and the next time
+    you run it, it frees the last pixmap it made).
+
 Mon Aug 20 20:58:47 2001  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* If you specify a font that can't be loaded, feh attempts to fall
