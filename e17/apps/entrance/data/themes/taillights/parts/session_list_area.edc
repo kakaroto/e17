@@ -75,7 +75,7 @@
 		    }
 		}
 	    }
-#define SESSION_LIST_HEIGHT 210
+#define SESSION_LIST_HEIGHT 230
 	    part {
 		name, "session_list_border";
 		type, IMAGE;
@@ -108,7 +108,7 @@
 		    visible, 1;
 		    rel1 {
 			relative, 1.0 0.5;
-			offset, -215 -50;
+			offset, -115 -50;
 		    } rel2 {
 			relative, 1.0 0.5;
 			offset, -25 50;
@@ -124,7 +124,7 @@
 		    visible, 1;
 		    rel1 {
 			relative, 1.0 0.5;
-			offset, -215 -SESSION_LIST_HEIGHT;
+			offset, -245 -SESSION_LIST_HEIGHT;
 		    } rel2 {
 			relative, 1.0 0.5;
 			offset, -25 SESSION_LIST_HEIGHT;
@@ -206,11 +206,11 @@
 		    visible, 1;
 		    rel1 {
 			relative, 0.0 0.0;
-			offset, 4 20;
+			offset, 10 20;
 			to, "session_list_border";
 		    } rel2 {
 			relative, 1.0 1.0;
-			offset, -4 0;
+			offset, -10 0;
 			to, "session_list_border";
 		    }
 		    color, 100 100 100 64;

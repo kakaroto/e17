@@ -1,6 +1,44 @@
 	    part
 	    {
-		name, "EntranceSessionIcon";
+		name, "base_clip";
+		type, RECT;
+		mouse_events, 0;
+		description
+		{
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.0 0.0;
+			offset, 0 0;
+		    }
+		    rel2
+		    {
+			relative, 1.0 1.0;
+			offset, 0 0;
+		    }
+		    color, 255 255 255 127;
+		}
+		description
+		{
+		    state, "hilited" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.0 0.0;
+			offset, 0 0;
+		    }
+		    rel2
+		    {
+			relative, 1.0 1.0;
+			offset, 0 0;
+		    }
+		    color, 255 255 255 255;
+		}
+	    }
+	    part
+	    {
+		name, "base";
 		type, RECT;
 		mouse_events, 1;
 		description
@@ -9,13 +47,80 @@
 		    visible, 1;
 		    rel1
 		    {
-			relative, 1.0 0.5;
-			offset, -46 -18;
+			relative, 0.0 0.0;
+			offset, 0 0;
 		    }
 		    rel2
 		    {
-			relative, 1.0 0.5;
-			offset, -4 18;
+			relative, 1.0 1.0;
+			offset, 0 0;
+		    }
+		    color, 192 192 192 64;
+		}
+		description
+		{
+		    state, "hilited" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.0 0.0;
+			offset, 0 0;
+		    }
+		    rel2
+		    {
+			relative, 1.0 1.0;
+			offset, 0 0;
+		    }
+		    color, 192 192 192 192;
+		}
+	    }
+	    part
+	    {
+		name, "base_border";
+		type, IMAGE;
+		mouse_events, 0;
+		clip_to, "base_clip";
+		description
+		{
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.0 0.0;
+			offset, 0 0;
+		    }
+		    rel2
+		    {
+			relative, 1.0 1.0;
+			offset, 0 0;
+		    }
+		    image {
+			normal, "border-bevel.png";
+		    }
+		    border, 3 3 3 3;
+		}
+	    }
+	    part
+	    {
+		name, "EntranceSessionIcon";
+		type, RECT;
+		mouse_events, 0;
+		clip_to, "base_clip";
+		description
+		{
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 1.0 0.0;
+			offset, -58 5;
+			to, "base";
+		    }
+		    rel2
+		    {
+			relative, 1.0 1.0;
+			offset, -10 -5;
+			to, "base";
 		    }
 		    color, 255 255 255 0;
 		}
@@ -24,8 +129,9 @@
 	    {
 		name, "EntranceSessionTitle";
 		type, TEXT;
-		mouse_events, 1;
+		mouse_events, 0;
 		effect, OUTLINE_SOFT_SHADOW;
+		clip_to, "base_clip";
 		description
 		{
 		    state, "default" 0.0;
@@ -33,8 +139,9 @@
 		    rel1
 		    {
 			relative, 0.0 0.0;
-			offset, -250 0;
-			to, "EntranceSessionIcon";
+			offset, 10 0;
+			to_x, "base";
+			to_y, "EntranceSessionIcon";
 		    }
 		    rel2
 		    {
@@ -49,8 +156,8 @@
 		    {
 			text, "Doesn't Matter";
 			font, "luxisr";
-			size, 13;
-			align, 1.0 0.5;
+			size, 14;
+			align, 1.0 1.0;
 			fit, 0 0;
 		    }
 		}
@@ -61,8 +168,9 @@
 		    rel1
 		    {
 			relative, 0.0 0.0;
-			offset, -250 0;
-			to, "EntranceSessionIcon";
+			offset, 10 0;
+			to_x, "base";
+			to_y, "EntranceSessionIcon";
 		    }
 		    rel2
 		    {
@@ -77,8 +185,8 @@
 		    {
 			text, "Doesn't Matter";
 			font, "luxisr";
-			size, 13;
-			align, 1.0 0.5;
+			size, 14;
+			align, 1.0 1.0;
 			fit, 0 0;
 		    }
 		}

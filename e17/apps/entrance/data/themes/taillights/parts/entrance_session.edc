@@ -111,12 +111,12 @@
 		    state, "default" 0.0;
 		    visible, 1;
 		    rel1 {
-			relative, 0.0 0.0;
-			offset, 6 7;
+			relative, 1.0 0.0;
+			offset, -170 0;
 			to, "entrance_session_button";
 		    } rel2 {
 			relative, 1.0 1.0;
-			offset, -2 -2;
+			offset, 10 0;
 			to, "entrance_session_button";
 		    }
 		    color, 255 255 255 0;

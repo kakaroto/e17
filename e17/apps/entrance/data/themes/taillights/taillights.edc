@@ -182,6 +182,8 @@ collections {
     group
     {
 	name, "Session";
+	min, 200 50;
+	max, 200 50;
 	parts
 	{
 /**
@@ -202,6 +204,8 @@ collections {
     group
     {
 	name, "User";
+	min, 100 80;
+	max, 100 80;
 	parts
 	{
 /**
@@ -217,6 +221,21 @@ collections {
  * UserUnSelected
  */
 #include "programs/user_group_programs.edc"
+
+	}
+    }
+    group
+    {
+	name, "Preview";
+	min, 80 60;
+	max, 60 60;
+	parts
+	{
+#include "parts/preview_group.edc"
+	}
+	programs
+	{
+#include "programs/preview_group.edc"
 
 	}
     }

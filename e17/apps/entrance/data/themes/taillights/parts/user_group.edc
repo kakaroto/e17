@@ -1,5 +1,51 @@
 	    part
 	    {
+		name, "base_outline";
+		type, RECT;
+		mouse_events, 1;
+		description
+		{
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.5 0.5;
+			offset, -50 -40;
+		    }
+		    rel2
+		    {
+			relative, 0.5 0.5;
+			offset, 50 40;
+		    }
+		    color, 0 0 0 255;
+		}
+	    }
+	    part
+	    {
+		name, "base";
+		type, RECT;
+		mouse_events, 1;
+		description
+		{
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.0 0.0;
+			offset, 2 2;
+			to, "base_outline";
+		    }
+		    rel2
+		    {
+			relative, 1.0 1.0;
+			offset, -2 -2;
+			to, "base_outline";
+		    }
+		    color, 192 192 192 192;
+		}
+	    }
+	    part
+	    {
 		name, "EntranceUserIcon";
 		type, RECT;
 		mouse_events, 1;
@@ -9,13 +55,15 @@
 		    visible, 1;
 		    rel1
 		    {
-			relative, 1.0 0.5;
-			offset, -50 -24;
+			relative, 0.0 0.0;
+			offset, 10 10;
+			to, "base";
 		    }
 		    rel2
 		    {
-			relative, 1.0 0.5;
-			offset, -2 24;
+			relative, 1.0 1.0;
+			offset, -10 -10;
+			to, "base";
 		    }
 		    color, 255 255 255 0;
 		}
@@ -32,13 +80,15 @@
 		    visible, 1;
 		    rel1
 		    {
-			relative, 0.0 1.0;
-			offset, 0 -30;
+			relative, 0.5 0.5;
+			offset, -50 0;
+			to, "base";
 		    }
 		    rel2
 		    {
-			relative, 1.0 1.0;
-			offset, 0 0;
+			relative, 0.5 1.0;
+			offset, 50 0;
+			to, "base";
 		    }
 		    color, 255 255 255 192;
 		    color2, 0 0 0 128;
@@ -47,8 +97,8 @@
 		    {
 			text, "Doesn't Matter";
 			font, "luxisr";
-			size, 13;
-			align, 0.0 1.0;
+			size, 15;
+			align, 0.5 1.0;
 			fit, 0 0;
 		    }
 		}
@@ -58,13 +108,15 @@
 		    visible, 1;
 		    rel1
 		    {
-			relative, 0.0 1.0;
-			offset, 0 -30;
+			relative, 0.5 0.5;
+			offset, -50 0;
+			to, "base";
 		    }
 		    rel2
 		    {
-			relative, 1.0 1.0;
-			offset, 0 0;
+			relative, 0.5 1.0;
+			offset, 50 0;
+			to, "base";
 		    }
 		    color, 255 255 255 255;
 		    color2, 0 0 0 255;
@@ -73,8 +125,8 @@
 		    {
 			text, "Doesn't Matter";
 			font, "luxisr";
-			size, 13;
-			align, 0.0 1.0;
+			size, 15;
+			align, 0.5 1.0;
 			fit, 0 0;
 		    }
 		}
