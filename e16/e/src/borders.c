@@ -23,6 +23,9 @@
 #include "E.h"
 #include <sys/time.h>
 
+static void         EwinSetBorderInit(EWin * ewin);
+static void         EwinSetBorderTo(EWin * ewin, Border * b);
+
 #if 0
 #define DELETE_EWIN_REFERENCE(ew, ew_ref) \
 	({ if (ew_ref == ew) { printf("Stale ewin ref (" #ew_ref ")\n"); ew_ref = NULL; } })
@@ -30,27 +33,6 @@
 #define DELETE_EWIN_REFERENCE(ew, ew_ref) \
 	({ if (ew_ref == ew) { ew_ref = NULL; } })
 #endif
-
-void
-SetFrameProperty(EWin * ewin)
-{
-   static Atom         atom_set = 0;
-   CARD32              val[4];
-
-   if (!atom_set)
-      atom_set = XInternAtom(disp, "_E_FRAME_SIZE", False);
-   if (ewin->border)
-     {
-	val[0] = ewin->border->border.left;
-	val[1] = ewin->border->border.right;
-	val[2] = ewin->border->border.top;
-	val[3] = ewin->border->border.bottom;
-     }
-   else
-      val[0] = val[1] = val[2] = val[3] = 0;
-   XChangeProperty(disp, ewin->client.win, atom_set, XA_CARDINAL, 32,
-		   PropModeReplace, (unsigned char *)&val, 4);
-}
 
 void
 KillEwin(EWin * ewin)
@@ -867,14 +849,7 @@ SyncBorderToEwin(EWin * ewin)
    EDBUG(4, "SyncBorderToEwin");
    b = ewin->border;
    ICCCM_GetShapeInfo(ewin);
-   /*   SetEwinBorder(ewin); */
-   SetEwinToBorder(ewin, ewin->border);
-   if (b != ewin->border)
-     {
-	ICCCM_MatchSize(ewin);
-	MoveResizeEwin(ewin, ewin->client.x, ewin->client.y, ewin->client.w,
-		       ewin->client.h);
-     }
+   EwinSetBorder(ewin, b, 1);
    EDBUG_RETURN_;
 }
 
@@ -1237,6 +1212,7 @@ CalcEwinSizes(EWin * ewin)
 	reshape |= DrawEwinWinpart(ewin, i);
 	ewin->bits[i].no_expose = 1;
      }
+
    if ((reshape) || (mode.have_place_grab))
      {
 	if (mode.have_place_grab)
@@ -1259,7 +1235,6 @@ CalcEwinSizes(EWin * ewin)
 EWin               *
 Adopt(Window win)
 {
-   Border             *b;
    EWin               *ewin;
 
    EDBUG(4, "Adopt");
@@ -1278,23 +1253,21 @@ Adopt(Window win)
    MatchEwinToSM(ewin);
    MatchEwinToSnapInfo(ewin);
    ICCCM_GetEInfo(ewin);
+
    if (!ewin->border)
-      SetEwinBorder(ewin);
+      EwinSetBorderInit(ewin);
 
-   b = ewin->border;
-   ewin->border = NULL;
-   ewin->border_new = 1;
-
-   SetEwinToBorder(ewin, b);
    ICCCM_MatchSize(ewin);
    ICCCM_Adopt(ewin);
-   HintsSetWindowState(ewin);
+
+   EwinSetBorderTo(ewin, NULL);
    UngrabX();
+
    if (ewin->shaded)
-     {
-	ewin->shaded = 0;
-	InstantShadeEwin(ewin);
-     }
+      InstantShadeEwin(ewin, 1);
+
+   HintsSetWindowState(ewin);
+
    EDBUG_RETURN(ewin);
 }
 
@@ -1302,7 +1275,6 @@ EWin               *
 AdoptInternal(Window win, Border * border, int type, void *ptr)
 {
    EWin               *ewin;
-   Border             *b;
 
    EDBUG(4, "AdoptInternal");
    GrabX();
@@ -1336,49 +1308,23 @@ AdoptInternal(Window win, Border * border, int type, void *ptr)
    ICCCM_GetShapeInfo(ewin);
    ICCCM_GetGeoms(ewin, 0);
 
-   /* if (type == 1)
-    *   MatchEwinToSnapInfoPager(ewin, (Pager *)ptr);
-    * else if (type == 2)
-    *   MatchEwinToSnapInfoIconbox(ewin, (Iconbox *)ptr);
-    * else  */
-   if (!border)
-     {
-	b = MatchEwinByFunction(ewin,
-				(void
-				 *(*)(EWin *, WindowMatch *))MatchEwinBorder);
-	if (b)
-	  {
-	     ewin->border = b;
-	     SetFrameProperty(ewin);
-	  }
-     }
    MatchEwinToSnapInfo(ewin);
+
+   ewin->border = border;
    if (!ewin->border)
-     {
-	if (border)
-	  {
-	     ewin->border = border;
-	     SetFrameProperty(ewin);
-	  }
-	else
-	   SetEwinBorder(ewin);
-     }
-   b = ewin->border;
-   ewin->border = NULL;
-   ewin->border_new = 1;
-   SetEwinToBorder(ewin, b);
+      EwinSetBorderInit(ewin);
+   EwinSetBorderTo(ewin, NULL);
 
    ICCCM_MatchSize(ewin);
    ICCCM_Adopt(ewin);
-   HintsSetWindowState(ewin);
    UngrabX();
+
    if (ewin->shaded)
-     {
-	ewin->shaded = 0;
-	ShadeEwin(ewin);
-     }
+      InstantShadeEwin(ewin, 1);
+
+   HintsSetWindowState(ewin);
+
    EDBUG_RETURN(ewin);
-   ptr = NULL;
 }
 
 EWin               *
@@ -1453,7 +1399,6 @@ CreateEwin()
    ewin->client.mwm_func_close = 1;
    ewin->border = NULL;
    ewin->previous_border = NULL;
-   ewin->border_new = 0;
    ewin->bits = NULL;
    ewin->sticky = 0;
    ewin->desktop = desks.current;
@@ -1624,13 +1569,13 @@ FreeEwin(EWin * ewin)
    EDBUG_RETURN_;
 }
 
-void
-SetEwinBorder(EWin * ewin)
+static void
+EwinSetBorderInit(EWin * ewin)
 {
    Border             *b;
 
-   EDBUG(4, "SetEwinBorder");
-   b = NULL;
+   EDBUG(4, "EwinSetBorderInit");
+
    ICCCM_GetShapeInfo(ewin);
 
    if ((!ewin->client.mwm_decor_title) && (!ewin->client.mwm_decor_border))
@@ -1645,13 +1590,17 @@ SetEwinBorder(EWin * ewin)
 			      LIST_TYPE_BORDER);
    if (!b)
       b = (Border *) FindItem("DEFAULT", 0, LIST_FINDBY_NAME, LIST_TYPE_BORDER);
+
+   if (!b)
+      b = FindItem("__FALLBACK_BORDER", 0, LIST_FINDBY_NAME, LIST_TYPE_BORDER);
+
    ewin->border = b;
-   SetFrameProperty(ewin);
+
    EDBUG_RETURN_;
 }
 
-void
-SetEwinToBorder(EWin * ewin, Border * b)
+static void
+EwinSetBorderTo(EWin * ewin, Border * b)
 {
    int                 i;
    int                 px = -1, py = -1;
@@ -1659,13 +1608,16 @@ SetEwinToBorder(EWin * ewin, Border * b)
 
    AwaitIclass        *await;
 
-   EDBUG(4, "SetEwinToBorder");
+   EDBUG(4, "EwinSetBorderTo");
 
-   if (!b)
-      b = FindItem("__FALLBACK_BORDER", 0, LIST_FINDBY_NAME, LIST_TYPE_BORDER);
-
-   if ((!b) || (ewin->border == b) || (!ewin->border_new))
+   if (ewin->border == b)
       EDBUG_RETURN_;
+
+   if (b == NULL)
+     {
+	b = ewin->border;
+	ewin->border = NULL;
+     }
 
    if (ewin->border)
      {
@@ -1681,10 +1633,10 @@ SetEwinToBorder(EWin * ewin, Border * b)
 	ewin->bits = NULL;
 	ewin->border->ref_count--;
      }
-   ewin->border_new = 0;
+
    ewin->border = b;
-   SetFrameProperty(ewin);
    b->ref_count++;
+   HintsSetWindowBorder(ewin);
 
    if (b->num_winparts > 0)
       ewin->bits = Emalloc(sizeof(EWinBit) * b->num_winparts);
@@ -1787,6 +1739,38 @@ SetEwinToBorder(EWin * ewin, Border * b)
    PropagateShapes(ewin->win);
 
    EDBUG_RETURN_;
+}
+
+void
+EwinSetBorder(EWin * ewin, Border * b, int apply)
+{
+   if (!b)
+      return;
+
+   if (apply)
+     {
+	if (ewin->border != b)
+	  {
+	     EwinSetBorderTo(ewin, b);
+	     ICCCM_MatchSize(ewin);
+	     MoveResizeEwin(ewin, ewin->x, ewin->y, ewin->client.w,
+			    ewin->client.h);
+	  }
+     }
+   else
+     {
+	ewin->border = b;
+     }
+}
+
+void
+EwinSetBorderByName(EWin * ewin, const char *name, int apply)
+{
+   Border             *b;
+
+   b = (Border *) FindItem(name, 0, LIST_FINDBY_NAME, LIST_TYPE_BORDER);
+
+   EwinSetBorder(ewin, b, apply);
 }
 
 void
@@ -2413,7 +2397,7 @@ MinShadeSize(EWin * ewin, int *mw, int *mh)
 }
 
 void
-InstantShadeEwin(EWin * ewin)
+InstantShadeEwin(EWin * ewin, int force)
 {
    XSetWindowAttributes att;
    int                 b, d;
@@ -2426,8 +2410,9 @@ InstantShadeEwin(EWin * ewin)
       EDBUG_RETURN_;
    if (GetZoomEWin() == ewin)
       EDBUG_RETURN_;
-   if (ewin->shaded)
+   if (ewin->shaded && !force)
       EDBUG_RETURN_;
+
    pq = queue_up;
    queue_up = 0;
    switch (ewin->border->shadedir)

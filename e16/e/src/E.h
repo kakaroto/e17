@@ -998,7 +998,6 @@ typedef struct _ewin
    WinClient           client;
    Border             *border;
    Border             *previous_border;
-   char                border_new;
    EWinBit            *bits;
    int                 flags;
    int                 desktop;
@@ -1787,8 +1786,6 @@ void                SlideEwinsTo(EWin ** ewin, int *fx, int *fy, int *tx,
 void                AddToFamily(Window win);
 EWin               *AddInternalToFamily(Window win, char noshow, char *bname,
 					int type, void *ptr);
-void                SetEwinBorder(EWin * ewin);
-void                SetEwinToBorder(EWin * ewin, Border * b);
 void                HonorIclass(char *s, int id);
 void                SyncBorderToEwin(EWin * ewin);
 void                UpdateBorderInfo(EWin * ewin);
@@ -1818,7 +1815,6 @@ void               *MatchEwinByFunction(EWin * ewin,
 void                RemoveWindowMatch(WindowMatch * wm);
 
 /* borders.c functions */
-void                SetFrameProperty(EWin * ewin);
 void                KillEwin(EWin * ewin);
 void                ResizeEwin(EWin * ewin, int w, int h);
 void                DetermineEwinArea(EWin * ewin);
@@ -1842,10 +1838,13 @@ void                AddBorderPart(Border * b, ImageClass * iclass,
 				  int bxa, int byp, int bya,
 				  char keep_for_shade);
 void                MinShadeSize(EWin * ewin, int *mw, int *mh);
-void                InstantShadeEwin(EWin * ewin);
+void                InstantShadeEwin(EWin * ewin, int force);
 void                InstantUnShadeEwin(EWin * ewin);
 void                ShadeEwin(EWin * ewin);
 void                UnShadeEwin(EWin * ewin);
+void                EwinSetBorder(EWin * ewin, Border * b, int apply);
+void                EwinSetBorderByName(EWin * ewin, const char *name,
+					int apply);
 
 /* iclass.c functions */
 ImageClass         *CreateIclass(void);
@@ -2272,6 +2271,7 @@ void                HintsSetWindowDesktop(EWin * ewin);
 void                HintsSetWindowArea(EWin * ewin);
 void                HintsSetWindowState(EWin * ewin);
 void                HintsSetWindowHints(EWin * ewin);
+void                HintsSetWindowBorder(EWin * ewin);
 void                HintsGetWindowHints(EWin * ewin);
 void                HintsDelWindowHints(EWin * ewin);
 void                HintsProcessPropertyChange(EWin * ewin, Atom atom_change);

@@ -365,11 +365,7 @@ ShowHideWinGroups(EWin * ewin, Group * g, char onoff)
 
 	if (b)
 	  {
-	     gwins[i]->border_new = 1;
-	     SetEwinToBorder(gwins[i], b);
-	     ICCCM_MatchSize(gwins[i]);
-	     MoveResizeEwin(gwins[i], gwins[i]->x, gwins[i]->y,
-			    gwins[i]->client.w, gwins[i]->client.h);
+	     EwinSetBorder(gwins[i], b, 1);
 	     RememberImportantInfoForEwin(gwins[i]);
 	  }
      }

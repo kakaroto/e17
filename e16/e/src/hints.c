@@ -179,6 +179,29 @@ HintsSetWindowHints(EWin * ewin)
    EDBUG_RETURN_;
 }
 
+void
+HintsSetWindowBorder(EWin * ewin)
+{
+   static Atom         atom_set = 0;
+   CARD32              val[4];
+
+   if (!atom_set)
+      atom_set = XInternAtom(disp, "_E_FRAME_SIZE", False);
+
+   if (ewin->border)
+     {
+	val[0] = ewin->border->border.left;
+	val[1] = ewin->border->border.right;
+	val[2] = ewin->border->border.top;
+	val[3] = ewin->border->border.bottom;
+     }
+   else
+      val[0] = val[1] = val[2] = val[3] = 0;
+
+   XChangeProperty(disp, ewin->client.win, atom_set, XA_CARDINAL, 32,
+		   PropModeReplace, (unsigned char *)&val, 4);
+}
+
 /*
  * Functions that set E-internals from X11-properties
  */

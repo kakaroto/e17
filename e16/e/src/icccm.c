@@ -1316,6 +1316,7 @@ ICCCM_GetEInfo(EWin * ewin)
 		  ewin->client.w = c[6];
 		  ewin->client.h = c[7];
 	       }
+	     XFree(c);
 
 	     puc = NULL;
 	     XGetWindowProperty(disp, ewin->client.win, aa, 0, 0xffff, True,
@@ -1323,21 +1324,7 @@ ICCCM_GetEInfo(EWin * ewin)
 	     str = (char *)puc;
 	     num = (int)lnum;
 	     if ((num > 0) && (str))
-	       {
-		  Border             *b = NULL;
-
-		  b = (Border *) FindItem(str, 0, LIST_FINDBY_NAME,
-					  LIST_TYPE_BORDER);
-		  if ((ewin->border) && (strcmp(ewin->border->name, b->name)))
-		     b = NULL;
-		  if (b)
-		    {
-		       ewin->border_new = 1;
-		       ewin->border = b;
-		       SetFrameProperty(ewin);
-		    }
-	       }
-	     XFree(c);
+		EwinSetBorderByName(ewin, str, 0);
 	     XFree(str);
 	  }
 	EDBUG_RETURN(1);

@@ -3986,14 +3986,8 @@ IPC_WinOps(char *params, Client * c)
 	       {
 		  b = (Border *) FindItem(param1, 0,
 					  LIST_FINDBY_NAME, LIST_TYPE_BORDER);
-		  if ((b) && (b != ewin->border))
-		    {
-		       ewin->border_new = 1;
-		       SetEwinToBorder(ewin, b);
-		       ICCCM_MatchSize(ewin);
-		       MoveResizeEwin(ewin, ewin->x, ewin->y,
-				      ewin->client.w, ewin->client.h);
-		    }
+		  if (b)
+		     EwinSetBorder(ewin, b, 1);
 	       }
 	  }
 	else

@@ -227,7 +227,7 @@ IconboxIconifyEwin(Iconbox * ib, EWin * ewin)
 	  }
 	HideEwin(ewin);
 	if (was_shaded != ewin->shaded)
-	   InstantShadeEwin(ewin);
+	   InstantShadeEwin(ewin, 0);
 	ICCCM_Iconify(ewin);
 	if (ewin == mode.focuswin)
 	  {

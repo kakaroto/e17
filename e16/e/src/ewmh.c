@@ -596,8 +596,6 @@ EWMH_GetWindowType(EWin * ewin)
    atom = p_atoms[0];
    if (atom == _NET_WM_WINDOW_TYPE_DESKTOP)
      {
-	Border             *b;
-
 	ewin->layer = 0;
 	ewin->sticky = 1;
 #if 0				/* Should be configurable */
@@ -605,10 +603,7 @@ EWMH_GetWindowType(EWin * ewin)
 #endif
 	ewin->skipfocus = 1;
 	ewin->fixedpos = 1;
-	b = (Border *) FindItem("BORDERLESS", 0, LIST_FINDBY_NAME,
-				LIST_TYPE_BORDER);
-	ewin->border_new = 1;
-	SetEwinToBorder(ewin, b);
+	EwinSetBorderByName(ewin, "BORDERLESS", 0);
      }
    else if (atom == _NET_WM_WINDOW_TYPE_DOCK)
      {

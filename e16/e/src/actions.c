@@ -3124,7 +3124,6 @@ doSetWinBorder(void *params)
      {
 	if (b != gwins[i]->border)
 	  {
-	     gwins[i]->border_new = 1;
 	     AUDIO_PLAY("SOUND_WINDOW_BORDER_CHANGE");
 	     shadechange = 0;
 	     if (gwins[i]->shaded)
@@ -3132,12 +3131,9 @@ doSetWinBorder(void *params)
 		  shadechange = 1;
 		  InstantUnShadeEwin(gwins[i]);
 	       }
-	     SetEwinToBorder(gwins[i], b);
+	     EwinSetBorder(gwins[i], b, 1);
 	     if (shadechange)
-		InstantShadeEwin(gwins[i]);
-	     ICCCM_MatchSize(gwins[i]);
-	     MoveResizeEwin(gwins[i], gwins[i]->x, gwins[i]->y,
-			    gwins[i]->client.w, gwins[i]->client.h);
+		InstantShadeEwin(gwins[i], 0);
 	  }
 	RememberImportantInfoForEwin(gwins[i]);
      }

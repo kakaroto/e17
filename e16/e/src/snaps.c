@@ -1146,7 +1146,6 @@ void
 MatchEwinToSnapInfo(EWin * ewin)
 {
    Snapshot           *sn;
-   Border             *b;
    int                 i;
 
    sn = FindSnapshot(ewin);
@@ -1213,16 +1212,7 @@ MatchEwinToSnapInfo(EWin * ewin)
 	/* FIXME: fill this in */
      }
    if (sn->border_name)
-     {
-	b = (Border *) FindItem(sn->border_name, 0, LIST_FINDBY_NAME,
-				LIST_TYPE_BORDER);
-	if (b)
-	  {
-	     ewin->border_new = 1;
-	     ewin->border = b;
-	     SetFrameProperty(ewin);
-	  }
-     }
+      EwinSetBorderByName(ewin, sn->border_name, 0);
    if (sn->groups)
      {
 	for (i = 0; i < sn->num_groups; i++)
@@ -1320,7 +1310,6 @@ void
 MatchEwinToSnapInfoAfter(EWin * ewin)
 {
    Snapshot           *sn;
-   Border             *b;
    int                 i;
 
    sn = FindSnapshot(ewin);
@@ -1394,7 +1383,7 @@ MatchEwinToSnapInfoAfter(EWin * ewin)
    if (sn->use_shade)
      {
 	if (sn->shade)
-	   InstantShadeEwin(ewin);
+	   InstantShadeEwin(ewin, 0);
 	else
 	   InstantUnShadeEwin(ewin);
      }
@@ -1403,18 +1392,7 @@ MatchEwinToSnapInfoAfter(EWin * ewin)
 	/* FIXME: fill this in */
      }
    if (sn->border_name)
-     {
-	b = (Border *) FindItem(sn->border_name, 0, LIST_FINDBY_NAME,
-				LIST_TYPE_BORDER);
-	if (b)
-	  {
-	     ewin->border_new = 1;
-	     SetEwinToBorder(ewin, b);
-	     ICCCM_MatchSize(ewin);
-	     MoveResizeEwin(ewin, ewin->x, ewin->y, ewin->client.w,
-			    ewin->client.h);
-	  }
-     }
+      EwinSetBorderByName(ewin, sn->border_name, 1);
    if (sn->groups)
      {
 	for (i = 0; i < sn->num_groups; i++)

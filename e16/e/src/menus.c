@@ -295,7 +295,7 @@ MenuShow(Menu * m, char noshow)
 		    ewin->y - desks.desk[ewin->desktop].y);
 	RestackEwin(ewin);
 	if (mode.menuslide)
-	   InstantShadeEwin(ewin);
+	   InstantShadeEwin(ewin, 0);
 	ICCCM_Cmap(NULL);
 	if (!noshow)
 	  {
@@ -304,7 +304,6 @@ MenuShow(Menu * m, char noshow)
 		UnShadeEwin(ewin);
 	  }
 	ewin->menu = m;
-	ewin->dialog = NULL;
      }
 
    m->stuck = 0;
