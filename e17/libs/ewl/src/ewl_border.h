@@ -38,7 +38,12 @@ struct Ewl_Border
 };
 
 Ewl_Widget     *ewl_border_new(char *label);
-void            ewl_border_init(Ewl_Border * b, char *label);
+int             ewl_border_init(Ewl_Border * b, char *label);
 
+/*
+ * Internally used callbacks.
+ */
+void ewl_border_child_size_cb(Ewl_Container *c, Ewl_Widget * w);
+void ewl_border_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data);
 
 #endif				/* __EWL_BORDER_H__ */

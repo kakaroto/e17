@@ -293,6 +293,7 @@ extern"C" {
 
 #include <ewl_misc.h>
 
+#include <ewl_border.h>
 #include <ewl_box.h>
 
 #include <ewl_cell.h>

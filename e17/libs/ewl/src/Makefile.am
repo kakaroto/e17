@@ -8,6 +8,7 @@ installed_headersdir = $(prefix)/include/ewl
 
 installed_headers_DATA = \
 	Ewl.h \
+	ewl_border.h \
 	ewl_box.h \
 	ewl_button.h \
 	ewl_callback.h \
@@ -58,6 +59,7 @@ installed_headers_DATA = \
 	ewl_window.h
 
 libewl_la_SOURCES = \
+	ewl_border.c \
 	ewl_box.c \
 	ewl_button.c \
 	ewl_callback.c \
