@@ -259,7 +259,7 @@ EventsCompress(XEvent * evq, int count)
    /* Debug - should be taken out */
    if (EventDebug(EDBUG_TYPE_COMPRESSION))
       for (i = 0; i < count; i++)
-	 Eprintf("EventsCompress-1 %3d t=%s w=%#lx\n", i,
+	 Eprintf("EventsCompress-1 %3d %s w=%#lx\n", i,
 		 EventName(evq[i].type), evq[i].xany.window);
 
    /* Loop through event list, starting with latest */
@@ -289,8 +289,9 @@ EventsCompress(XEvent * evq, int count)
 		    }
 	       }
 	     if (n && EventDebug(EDBUG_TYPE_COMPRESSION))
-		Eprintf("EventsCompress MotionNotify %#lx n=%4d x,y = %d,%d\n",
-			ev->xmotion.window, n, ev->xmotion.x, ev->xmotion.y);
+		Eprintf("EventsCompress n=%4d %s %#lx x,y = %d,%d\n",
+			n, EventName(ev->type), ev->xmotion.window,
+			ev->xmotion.x, ev->xmotion.y);
 	     break;
 
 	  case Expose:
@@ -325,9 +326,9 @@ EventsCompress(XEvent * evq, int count)
 		  ev->xexpose.height = yb - ya;
 	       }
 	     if (EventDebug(EDBUG_TYPE_COMPRESSION))
-		Eprintf
-		   ("EventsCompress Expose %#lx n=%4d x=%4d-%4d y=%4d-%4d\n",
-		    ev->xexpose.window, n, xa, xb, ya, yb);
+		Eprintf("EventsCompress n=%4d %s %#lx x=%4d-%4d y=%4d-%4d\n",
+			n, EventName(ev->type), ev->xexpose.window,
+			xa, xb, ya, yb);
 	     break;
 
 	  default:
@@ -345,8 +346,8 @@ EventsCompress(XEvent * evq, int count)
 			 }
 		    }
 		  if (n && EventDebug(EDBUG_TYPE_COMPRESSION))
-		     Eprintf("EventsCompress ShapeNotify %#lx n=%4d\n",
-			     ev->xmotion.window, n);
+		     Eprintf("EventsCompress n=%4d %s %#lx\n",
+			     n, EventName(ev->type), ev->xmotion.window);
 	       }
 	     break;
 	  }
@@ -355,7 +356,7 @@ EventsCompress(XEvent * evq, int count)
    /* Debug - should be taken out */
    if (EventDebug(EDBUG_TYPE_COMPRESSION))
       for (i = 0; i < count; i++)
-	 Eprintf("EventsCompress-2 %3d t=%s w=%#lx\n", i,
+	 Eprintf("EventsCompress-1 %3d %s w=%#lx\n", i,
 		 EventName(evq[i].type), evq[i].xany.window);
 }
 
