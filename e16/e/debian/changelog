@@ -1,8 +1,35 @@
-enlightenment (0.16.0-1) unstable; urgency=low
+enlightenment (0.16.0-4.01) unstable; urgency=low
 
-  * New upstream release
+  * YACVSR
 
- -- Laurence J. Lane <ljlane@debian.org>  Sun, 10 Oct 1999 07:25:50 -0400
+ -- Laurence J. Lane <ljlane@debian.org>  Sun, 17 Oct 1999 20:36:39 -0400
+
+enlightenment (0.16.0-4) unstable; urgency=low
+
+  * more corrections for the path length kludge 
+  * addition work to synch cvs and official debs
+
+ -- Laurence J. Lane <ljlane@debian.org>  Sun, 17 Oct 1999 18:03:17 -0400
+
+enlightenment (0.16.0-3) unstable; urgency=low
+
+  * removed alternative theme system, Closes:#47495 
+  * erroneous esound dependency in enlightenment-nosound
+  * removed delimeters around $command in menu-method's 
+    text() function , Closes:#47497
+  * disabled ghttp support, requested
+  * deprecated enlightenment-dox, enlightenment-docs and
+    enlightenment-theme-brushedmetal
+  
+ -- Laurence J. Lane <ljlane@debian.org>  Sat, 16 Oct 1999 06:50:25 -0400
+
+enlightenment (0.16.0-2) unstable; urgency=low
+
+  * New upstream release, Closes:#39109, Closes:#40916, Closes:#39898
+  * menu-method conffiles, Closes:#44843
+  * file.menu style menus, Closes:#45353, Closes:#43181
+  
+ -- Laurence J. Lane <ljlane@debian.org>  Sun, 10 Oct 1999 23:15:37 -0400
 
 Local variables:
 mode: debian-changelog

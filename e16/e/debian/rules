@@ -6,126 +6,60 @@
 # original copyright info:
 # GNU copyright 1997 by Joey Hess.
 
-#SHELL = DH_COMPAT=2 DH_VERBOSE=1 /bin/ash -e
-SHELL = DH_COMPAT=2 /bin/sh -e
+#sh = DH_COMPAT=2 DH_VERBOSE=1 /bin/ash -ex
+#sh = DH_COMPAT=2 /bin/ash -e
+sh = DH_COMPAT=2 /bin/sh -e 
+SHELL := $(sh)
 
-SHELL2 := $(SHELL)
-INSTALL = /usr/bin/install
+VPATH = debian
 pwd := $(shell pwd)
+export DH_OPTIONS=
+e = enlightenment
 
-configure_options = --prefix=/usr --enable-fsstd=yes
-programs = enlightenment enlightenment-nosound enlightenment-dox
-themes = enlightenment-theme-ganymede enlightenment-theme-brushedmetal enlightenment-theme-shinymetal
-
-build: configure-stamp build-stamp
-build-stamp:
+build: 
 	dh_testdir
+	source debian/ehrc; eh_configure
 	$(MAKE)
-	touch $@
-
-configure-stamp:
-	test -x autogen.sh && ./autogen.sh $(configure_options) || \
-	./configure $(configure_options)
-	$(SHELL) debian/debianize.sh
-	mv econfig.h econfig.h.old; sed -n '/LIBESD/ d; w econfig.h' econfig.h.old
-	touch $@
-
+	touch debian/$@
 clean:
 	dh_testdir
 	dh_testroot
-	rm -f build-stamp install-stamp
-	$(MAKE) clean
-	$(MAKE) distclean
-	dh_clean
-
-install: build install-stamp
-install-stamp: SHELL = DH_OPTIONS="-A" $(SHELL2)
-install-stamp: build-stamp
+	if [ -f Makefile ]; then $(MAKE) clean; fi
+	dh_clean debian/build debian/install src/themes/Makefile.old econfig.h econfig.h.old
+  
+install: SHELL = DH_OPTIONS="-A" $(sh)
+install: build
 	dh_testdir
 	dh_testroot
 	dh_clean
-	dh_installdirs
-	
-	$(MAKE) install DESTDIR=$(pwd)/debian/tmp
-	
-	mv debian/menus.cfg debian/tmp/usr/share/enlightenment/config/menus.cfg
+	$(MAKE) install DESTDIR=$(pwd)/debian/${e}
+	source debian/ehrc; eh_install
+	touch debian/$@ 
 
-	(cd debian/tmp; tar  --remove-files --create --file -  ./usr/bin/dox ./usr/share/enlightenment/E-docs) \
-		| (cd debian/enlightenment-dox; tar xpf -); rm -rf debian/tmp/usr/share/enlightenment/E-docs
-	(cd debian/tmp; tar --create --file -  ./) \
-		| (cd debian/enlightenment; tar xpf -)
-	(cd debian/tmp; tar --remove-files --create --file -  ./) \
-		| (cd debian/enlightenment-nosound; tar xpf -)
-	gunzip -dc src/themes/BrushedMetal-Tigert.etheme \
-		| (cd debian/enlightenment-theme-brushedmetal/usr/share/enlightenment/themes/BrushedM; tar xpf -)
-	gunzip -dc  src/themes/ShinyMetal.etheme  \
-		| (cd debian/enlightenment-theme-shinymetal/usr/share/enlightenment/themes/ShinyMetal; tar xpf -)
-	gunzip -dc src/themes/BlueSteel.etheme \
-		| (cd debian/enlightenment-theme-bluesteel/usr/share/enlightenment/themes/BlueSteel; tar xpf -)
-
-	rm -f src/sound.o src/enlightenment
-	$(MAKE) sound.o enlightenment  -C src  CFLAGS+="-DHAVE_LIBESD" SUBDIRS=
-	$(INSTALL) -m 755 src/enlightenment debian/enlightenment/usr/bin/
-	dh_installwm -penlightenment enlightenment
-
-	rm -f src/sound.o src/enlightenment
-	$(MAKE) sound.o enlightenment  -C src ESD_LIBS= SUBDIRS=
-	$(INSTALL) -m 755 src/enlightenment debian/enlightenment-nosound/usr/bin/
-	dh_installwm -penlightenment-nosound enlightenment
-	
-	$(INSTALL) -m 644 NEWS AUTHORS INSTALL README debian/enlightenment-docs/usr/share/doc/enlightenment-docs/
-	$(INSTALL) -m 644  src/ChangeLog debian/enlightenment-docs/usr/share/doc/enlightenment-docs/changelog
-	dh_installchangelogs -penlightenment-docs
-	dh_compress -penlightenment-docs
-	dh_installdocs
-	
-	find debian -path 'debian/enlightenment*/share/doc*' ! -path 'debian/enlightenment-docs*' \
-		-type d -name 'enlightenment*' -print0 | xargs -0r rm -rf
-	
-	for p in $(programs); \
-	do \
-		dh_undocumented -p$$p $$(ls debian/$$p/usr/bin | sed 's#$$#.1 #g' | xargs); \
-	done
-	
-	touch install-stamp
-
-binary-indep: SHELL = DH_OPTIONS="-i" $(SHELL2)
+binary-indep: SHELL = DH_OPTIONS="-i" $(sh)
 binary-indep: build install
 	dh_testversion 2
 	dh_testdir
 	dh_testroot
-	dh_link
 	dh_fixperms
 	dh_installdeb
 	dh_gencontrol
 	dh_md5sums
 	dh_builddeb
 
-binary-arch: SHELL = DH_OPTIONS="-a" $(SHELL2)
+binary-arch: SHELL = DH_OPTIONS="-a" $(sh)
 binary-arch: build install
 	dh_testversion 2
 	dh_testdir
 	dh_testroot
 	dh_installmenu
 	dh_strip
-	dh_link
 	dh_fixperms
 	dh_installdeb
 	dh_shlibdeps
 	dh_gencontrol
 	dh_md5sums
 	dh_builddeb
-
-squash:
-	rm -vf debian/*.debhelper debian/*.substvars debian/*~ debian/debianize.sh; \
-	files=$$(find debian -maxdepth 1 -type f \( -name enlightenment\* -o -name debianize-stub.sh \)); \
-	echo -e "Squashing: ...\n$$files"; \
-	cat -s debian/debianize-stub.sh > debian/debianize.sh; \
-	(for i in $$files; \
-		do echo -e "cat > \"$$i\" <<- \"END\""; \
-		cat $$i ; echo -e "\nEND\n"; \
-	done) | cat -s >> debian/debianize.sh; \
-	echo " ...done!"
 
 binary: binary-indep binary-arch
 .PHONY: build clean binary-indep binary-arch binary install
