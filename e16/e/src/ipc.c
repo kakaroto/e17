@@ -25,6 +25,13 @@
 #include "timestamp.h"
 #include <ctype.h>
 
+#if HAVE___ATTRIBUTE__
+static void         IpcPrintf(const char *fmt, ...)
+   __attribute__ ((__format__(__printf__, 1, 2)));
+#else
+static void         IpcPrintf(const char *fmt, ...);
+#endif
+
 typedef struct _IPCstruct
 {
    void                (*func) (const char *params, Client * c);
@@ -34,6 +41,9 @@ typedef struct _IPCstruct
    const char         *extended_help_text;
 }
 IPCStruct;
+
+#define SS(s) ((s) ? (s) : NoText)
+static const char   NoText[] = "-NONE-";
 
 static size_t       bufsiz;
 static char        *bufptr;
@@ -2957,56 +2967,39 @@ IPC_ButtonShow(const char *params, Client * c)
 }
 
 static void
-IPC_WinList(const char *params, Client * c)
+IPC_WinList(const char *params, Client * c __UNUSED__)
 {
-   char               *ret = NULL;
-   char                buf[FILEPATH_LEN_MAX];
+   char                param1[FILEPATH_LEN_MAX];
    EWin               *const *lst, *e;
    int                 num, i;
-   char                none[] = "-NONE-";
+
+   word(params, 1, param1);
 
    lst = EwinListGetAll(&num);
-   if (lst)
+   for (i = 0; i < num; i++)
      {
-	for (i = 0; i < num; i++)
+	e = lst[i];
+	switch (param1[0])
 	  {
-	     e = lst[i];
-	     if (!e->icccm.wm_name)
-		e->icccm.wm_name = none;
-	     if (params)
-	       {
-		  Esnprintf(buf, sizeof(buf),
-			    "0x%x : %s :: %d : %d %d : %d %d %dx%d\n",
-			    (unsigned)e->client.win, e->icccm.wm_name,
-			    (e->sticky) ? -1 : e->desktop, e->area_x, e->area_y,
-			    e->x, e->y, e->w, e->h);
-	       }
-	     else
-	       {
-		  Esnprintf(buf, sizeof(buf), "0x%x : %s\n",
-			    (unsigned)e->client.win, e->icccm.wm_name);
-	       }
-	     if (!ret)
-	       {
-		  ret = Emalloc(strlen(buf) + 1);
-		  ret[0] = 0;
-	       }
-	     else
-	       {
-		  ret = Erealloc(ret, strlen(ret) + strlen(buf) + 1);
-	       }
-	     strcat(ret, buf);
+	  case '\0':
+	     IpcPrintf("%#lx : %s\n", e->client.win, SS(e->icccm.wm_name));
+	     break;
+	  default:
+	     IpcPrintf("%#lx : %s :: %d : %d %d : %d %d %dx%d\n",
+		       e->client.win, SS(e->icccm.wm_name),
+		       (e->sticky) ? -1 : e->desktop, e->area_x, e->area_y,
+		       e->x, e->y, e->w, e->h);
+	     break;
+	  case 'a':
+	     IpcPrintf("%#10lx : %4d %4d %4dx%4d :: %2d : %d %d : %s\n",
+		       e->client.win, e->x, e->y, e->w, e->h,
+		       (e->sticky) ? -1 : e->desktop, e->area_x, e->area_y,
+		       SS(e->icccm.wm_name));
+	     break;
 	  }
      }
-   if (ret)
-     {
-	CommsSend(c, ret);
-	Efree(ret);
-     }
-   else
-     {
-	CommsSend(c, "");
-     }
+   if (num <= 0)
+      IpcPrintf("No windows\n");
 }
 
 static void
@@ -5654,9 +5647,6 @@ IPC_CallRaw(const char *params, Client * c __UNUSED__)
    ActionsCall(aid, NULL, par);
 }
 
-#define SS(s) ((s) ? (s) : NoText)
-static const char   NoText[] = "-NONE-";
-
 static void
 EwinShowInfo1(const EWin * ewin)
 {
@@ -5762,22 +5752,22 @@ EwinShowInfo2(const EWin * ewin)
 	     "WM_CLASS name.class     %s.%s\n"
 	     "WM_COMMAND              %s\n"
 	     "WM_CLIENT_MACHINE       %s\n"
-	     "Client window           %#10lx   x,y=%4i,%4i   wxh=%4ix%4i\n"
-	     "Frame window            %#10lx   x,y=%4i,%4i   wxh=%4ix%4i\n"
+	     "Client window           %#10lx   x,y %4i,%4i   wxh %4ix%4i\n"
+	     "Frame window            %#10lx   x,y %4i,%4i   wxh %4ix%4i\n"
 	     "Container window        %#10lx\n"
-	     "Border                  %s   lrtb=%3i, %3i, %3i, %3i\n"
+	     "Border                  %s   lrtb %i,%i,%i,%i\n"
 	     "Icon window, pixmap, mask %#10lx, %#10lx, %#10lx\n"
 	     "Is client group leader  %i      Client group leader %#10lx\n"
 	     "Has transients          %i      Transient for %#10lx\n"
-	     "No resize H/V           %i/%i       Shaped      =%i\n"
+	     "No resize H/V           %i/%i       Shaped      %i\n"
 	     "Base, min, max, inc w/h %ix%i, %ix%i, %ix%i %ix%i\n"
 	     "Aspect min, max         %5.5f, %5.5f\n"
-	     "MWM border=%i resizeh=%i title=%i menu=%i minimize=%i maximize=%i\n"
-	     "NeedsInput  =%i   FocusNever  =%i   FocusClick  =%i\n"
-	     "NeverUseArea=%i   FixedPos    =%i\n"
-	     "Desktop     =%i   Layer       =%i\n"
-	     "Iconified   =%i   Sticky      =%i   Shaded      =%i   Docked      =%i\n"
-	     "State       =%i   Visible     =%i   Active      =%i   Floating    =%i\n"
+	     "MWM border %i resizeh %i title %i menu %i minimize %i maximize %i\n"
+	     "NeedsInput   %i   FocusNever   %i   FocusClick   %i\n"
+	     "NeverUseArea %i   FixedPos     %i\n"
+	     "Desktop      %i   Layer        %i\n"
+	     "Iconified    %i   Sticky       %i   Shaded       %i   Docked       %i\n"
+	     "State        %i   Visible      %i   Active       %i   Floating     %i\n"
 	     "Member of groups        %i\n",
 	     SS(ewin->icccm.wm_name),
 	     SS(ewin->icccm.wm_icon_name),
@@ -5836,7 +5826,7 @@ IPC_EwinInfo(const char *params, Client * c __UNUSED__)
      }
    else
      {
-	sscanf(params, "%8x", &win);
+	sscanf(param1, "%x", &win);
 	ewin = (EWin *) FindItem(NULL, win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
 	if (ewin)
 	  {
@@ -5872,7 +5862,7 @@ IPC_EwinInfo2(const char *params, Client * c __UNUSED__)
      }
    else
      {
-	sscanf(params, "%8x", &win);
+	sscanf(param1, "%x", &win);
 	ewin = (EWin *) FindItem(NULL, win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
 	if (ewin)
 	  {
