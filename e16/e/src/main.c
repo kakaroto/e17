@@ -266,17 +266,10 @@ main(int argc, char **argv)
    ShowDesktopControls();
    CheckEvent();
 
-   /* retreive stuff from last time we were loaded if we're restarting */
-   ICCCM_GetMainEInfo();
-
    SetupEnv();
 
    if (Conf.mapslide)
       CreateStartupDisplay(0);
-
-   /* set some more hints */
-   HintsSetDesktopViewport();
-   desks.current = 0;
 
    /* Set up the iconboxes and pagers */
    IB_Setup();
@@ -323,7 +316,6 @@ main(int argc, char **argv)
       autosave();
 
    /* let's make sure we set this up and go to our desk anyways */
-   ICCCM_GetMainEInfo();
    GotoDesktop(desks.current);
    if (desks.current < (Conf.desks.num - 1))
      {

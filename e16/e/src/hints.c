@@ -36,7 +36,12 @@ HintsInit(void)
    Window              win;
 
    EDBUG(6, "HintsInit");
+
    win = ECreateWindow(VRoot.win, -200, -200, 5, 5, 0);
+
+   /* retreive stuff from last time we were loaded if we're restarting */
+   ICCCM_GetMainEInfo();
+
    ICCCM_Init();
 #if ENABLE_GNOME
    GNOME_SetHints(win);

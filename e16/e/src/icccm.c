@@ -1139,7 +1139,7 @@ ICCCM_GetMainEInfo(void)
    num = (int)lnum;
    if ((num > 0) && (c))
      {
-	GotoDesktop(*c);
+	desks.current = *c;
 	XFree(c);
      }
 }
