@@ -9,8 +9,8 @@ static void __ewl_table_configure(Ewl_Widget * w, void *ev_data,
  * small functions... */
 Ewd_List *__ewl_table_configure_normal(Ewl_Table * w, int *rem_w, int *rem_h,
 				       int *nfoc, int *nfor);
-void __ewl_table_configure_fillers(Ewl_Table * t, Ewd_List * l, int *rem_w,
-				   int *rem_h, int *nfoc, int *nfor);
+void __ewl_table_configure_fillers(Ewl_Table * t, Ewd_List * l, int rem_w,
+				   int rem_h, int nfoc, int nfor);
 static void __ewl_table_layout_children(Ewl_Table * w);
 
 /**
@@ -74,21 +74,21 @@ ewl_table_attach(Ewl_Table * t, Ewl_Widget * c,
 		 unsigned int start_col, unsigned int end_col,
 		 unsigned int start_row, unsigned int end_row)
 {
-	Ewl_Table_Child *child;
+	Ewl_Table_Child *c2;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
 	DCHECK_PARAM_PTR("c", c);
 
-	child = NEW(Ewl_Table_Child, 1);
-	memset(child, 0, sizeof(Ewl_Table_Child));
+	c2 = NEW(Ewl_Table_Child, 1);
+	memset(c2, 0, sizeof(Ewl_Table_Child));
 
-	child->start_col = start_col;
-	child->end_col = end_col;
-	child->start_row = start_row;
-	child->end_row = end_row;
+	c2->start_col = start_col;
+	c2->end_col = end_col;
+	c2->start_row = start_row;
+	c2->end_row = end_row;
 
-	ewl_widget_set_data(c, (void *) t, child);
+	ewl_widget_set_data(c, (void *) t, c2);
 
 	ewl_container_append_child(EWL_CONTAINER(t), c);
 
@@ -107,7 +107,7 @@ void
 ewl_table_detach(Ewl_Table * t, unsigned int c, unsigned int r)
 {
 	Ewl_Widget *w;
-	Ewl_Table_Child *child;
+	Ewl_Table_Child *c2;
 
 	DENTER_FUNCTION(DLEVEL_TESTING);
 	DCHECK_PARAM_PTR("t", t);
@@ -119,12 +119,12 @@ ewl_table_detach(Ewl_Table * t, unsigned int c, unsigned int r)
 	w = ewl_table_get_child(t, c, r);
 	ewl_container_remove_child(EWL_CONTAINER(t), w);
 
-	child = ewl_widget_get_data(w, (void *) t);
+	c2 = ewl_widget_get_data(w, (void *) t);
 
-	if (child)
+	if (c2)
 	  {
 		  ewl_widget_del_data(w, (void *) t);
-		  FREE(child);
+		  FREE(c2);
 	  }
 
 	DLEAVE_FUNCTION(DLEVEL_TESTING);
@@ -202,6 +202,7 @@ ewl_table_set_homogeneous(Ewl_Table * t, unsigned int h)
 	EWL_TABLE(t)->homogeneous = h;
 
 	ewl_widget_configure(EWL_WIDGET(t));
+
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
@@ -221,6 +222,7 @@ ewl_table_set_col_spacing(Ewl_Table * t, unsigned int cs)
 	EWL_TABLE(t)->col_spacing = cs;
 
 	ewl_widget_configure(EWL_WIDGET(t));
+
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
@@ -292,22 +294,22 @@ ewl_table_get_column_width(Ewl_Table * t, unsigned int c)
 Ewl_Widget *
 ewl_table_get_child(Ewl_Table * t, unsigned int c, unsigned int r)
 {
-	Ewl_Widget *w;
-	Ewl_Table_Child *child;
+	Ewl_Widget *child;
+	Ewl_Table_Child *c2;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("t", t, NULL);
 
 	ewd_list_goto_first(EWL_CONTAINER(t)->children);
 
-	while ((w = ewd_list_next(EWL_CONTAINER(t)->children)) != NULL)
+	while ((child = ewd_list_next(EWL_CONTAINER(t)->children)) != NULL)
 	  {
-		  child = ewl_widget_get_data(w, (void *) t);
+		  c2 = ewl_widget_get_data(child, (void *) t);
 
-		  if (child && child->start_col <= c &&
-		      child->end_col >= c && child->start_row <= r &&
-		      child->end_row >= r)
-			  DRETURN_PTR(w, DLEVEL_STABLE);
+		  if (c2 && c2->start_col <= c &&
+		      c2->end_col >= c && c2->start_row <= r &&
+		      c2->end_row >= r)
+			  DRETURN_PTR(child, DLEVEL_STABLE);
 	  }
 
 	DRETURN_PTR(NULL, DLEVEL_STABLE);
@@ -449,8 +451,9 @@ __ewl_table_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Table *t;
 	Ewd_List *fillers;
-	int *rem_w, *rem_h, i;
-	int *nfoc, *nfor;
+	Ewl_Widget *c;
+	int rem_w, rem_h, i;
+	int nfoc = 0, nfor = 0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -460,39 +463,62 @@ __ewl_table_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	memset(t->col_w, 0, sizeof(unsigned int) * t->columns);
 	memset(t->row_h, 0, sizeof(unsigned int) * t->rows);
 
-	rem_w = NEW(int, t->rows);
-	rem_h = NEW(int, t->columns);
-
-	nfoc = NEW(int, t->columns);
-	nfor = NEW(int, t->rows);
-
-	memset(rem_w, CURRENT_W(w), sizeof(int) * t->rows);
-	memset(rem_h, CURRENT_H(w), sizeof(int) * t->columns);
-
-	memset(nfoc, 0, sizeof(int) * t->columns);
-	memset(nfor, 0, sizeof(int) * t->rows);
-
-	for (i = 0; i < t->rows; i++)
-		rem_w[i] = CURRENT_W(w) - (t->columns * t->col_spacing);
-
-	for (i = 0; i < t->columns; i++)
-		rem_h[i] = CURRENT_H(w) - (t->rows * t->row_spacing);
+	rem_w = CURRENT_W(w) - (t->col_spacing * (t->columns - 1));
+	rem_h = CURRENT_H(w) - (t->row_spacing * (t->rows - 1));
 
 	/*
 	 * Layout the normal children first, that returns a list of the filler
 	 * children, which are then laid out.
 	 */
-	fillers = __ewl_table_configure_normal(t, rem_w, rem_h, nfoc, nfor);
+	fillers =
+		__ewl_table_configure_normal(t, &rem_w, &rem_h, &nfoc, &nfor);
 
 	if (fillers)
-		__ewl_table_configure_fillers(t, fillers, rem_w, rem_h, nfoc,
-					      nfor);
+	  {
+		  __ewl_table_configure_fillers(t, fillers, rem_w, rem_h,
+						nfoc, nfor);
 
-	FREE(rem_w);
-	FREE(rem_h);
+		  ewd_list_goto_first(fillers);
 
-	FREE(nfoc);
-	FREE(nfor);
+		  while ((c = ewd_list_next(fillers)) != NULL)
+		    {
+			    Ewl_Table_Child *c2;
+			    int col_span, row_span;
+
+			    c2 = ewl_widget_get_data(c, t);
+
+			    col_span = c2->end_col - c2->start_col + 1;
+			    row_span = c2->end_row - c2->start_row + 1;
+
+			    for (i = c2->start_col - 1; i < c2->end_col; i++)
+			      {
+				      if (REQUEST_W(c) -
+					  (t->col_spacing * (col_span -
+							     1)) / col_span >
+					  t->col_w[i])
+					      t->col_w[i] =
+						      REQUEST_W(c) -
+						      (t->col_spacing *
+						       (col_span -
+							1)) / col_span;
+			      }
+
+			    for (i = c2->start_row - 1; i < c2->end_row; i++)
+			      {
+				      if (REQUEST_H(c) -
+					  (t->row_spacing * row_span -
+					   1) / row_span > t->row_h[i])
+					      t->row_h[i] =
+						      REQUEST_H(c) -
+						      (t->row_spacing *
+						       (row_span -
+							1)) / row_span;
+			      }
+		    }
+
+		  ewd_list_clear(fillers);
+		  ewd_list_destroy(fillers);
+	  }
 
 	__ewl_table_layout_children(t);
 
@@ -506,12 +532,11 @@ __ewl_table_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 void
 __ewl_table_normal_span(Ewl_Table * t, Ewl_Widget * c, int *rem_w, int *rem_h)
 {
-	Ewl_Table_Child *child;
+	Ewl_Table_Child *c2;
 	int i;
 	int col_span;
 	int row_span;
 	int req_w, req_h;
-	int totw = 0, toth = 0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -532,52 +557,37 @@ __ewl_table_normal_span(Ewl_Table * t, Ewl_Widget * c, int *rem_w, int *rem_h)
 	REQUEST_W(c) = req_w;
 	REQUEST_H(c) = req_h;
 
-	child = ewl_widget_get_data(c, (void *) t);
+	c2 = ewl_widget_get_data(c, (void *) t);
 
-	if (!child)
-		return;
-
-	col_span = child->end_col - child->start_col + 1;
-	row_span = child->end_row - child->start_row + 1;
+	col_span = c2->end_col - c2->start_col + 1;
+	row_span = c2->end_row - c2->start_row + 1;
 
 	/*
 	 * Split up the size of the child between the col's
 	 * it spans 
 	 */
-	for (i = child->start_col - 1; i < child->end_col; i++)
+	for (i = c2->start_col - 1; i < c2->end_col; i++)
 	  {
-		  totw += t->col_w[i];
+		  *rem_w += t->col_w[i];
 
 		  if (req_w / col_span > t->col_w[i])
 			  t->col_w[i] = req_w / col_span;
+
+		  *rem_w -= t->col_w[i];
 	  }
 
 	/*
 	 * Split up the size of the child between the row's it
 	 * * spans 
 	 */
-	for (i = child->start_row - 1; i < child->end_row; i++)
+	for (i = c2->start_row - 1; i < c2->end_row; i++)
 	  {
-		  toth += t->row_h[i];
+		  *rem_h += t->row_h[i];
 
 		  if (req_h / row_span > t->row_h[i])
 			  t->row_h[i] = req_h / row_span;
-	  }
 
-	for (i = child->start_col - 1; i < child->end_col; i++)
-	  {
-		  if (toth > req_h)
-			  rem_h[i] -= totw;
-		  else
-			  rem_h[i] -= req_h;
-	  }
-
-	for (i = child->start_row - 1; i < child->end_row; i++)
-	  {
-		  if (totw > req_w)
-			  rem_w[i] -= totw;
-		  else
-			  rem_w[i] -= req_w;
+		  *rem_h -= t->row_h[i];
 	  }
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -592,10 +602,11 @@ __ewl_table_configure_normal(Ewl_Table * t, int *rem_w, int *rem_h, int *nfoc,
 {
 	Ewd_List *fillers = NULL;
 	Ewl_Widget *c = NULL;
-	int i, j;
+	int i;
+	int *tnfoc = NULL, *tnfor = NULL;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("t", t, 0);
+	DCHECK_PARAM_PTR_RET("t", t, NULL);
 
 	ewd_list_goto_first(EWL_CONTAINER(t)->children);
 
@@ -606,8 +617,6 @@ __ewl_table_configure_normal(Ewl_Table * t, int *rem_w, int *rem_h, int *nfoc,
 	 */
 	while ((c = ewd_list_next(EWL_CONTAINER(t)->children)) != NULL)
 	  {
-		  Ewl_Table_Child *c2 = NULL;
-
 		  /*
 		   * Normal children are given their requested space, otherwise
 		   * we add them to the list of children to assign the remaining
@@ -617,6 +626,8 @@ __ewl_table_configure_normal(Ewl_Table * t, int *rem_w, int *rem_h, int *nfoc,
 			  __ewl_table_normal_span(t, c, rem_w, rem_h);
 		  else
 		    {
+			    Ewl_Table_Child *c2;
+
 			    if (!fillers)
 				    fillers = ewd_list_new();
 
@@ -624,16 +635,47 @@ __ewl_table_configure_normal(Ewl_Table * t, int *rem_w, int *rem_h, int *nfoc,
 
 			    c2 = ewl_widget_get_data(c, (void *) t);
 
-			    for (i = c2->start_row - 1; i < c2->end_row; i++)
+			    if (!tnfoc)
 			      {
-				      for (j = c2->start_col - 1;
-					   j < c2->end_col; j++)
-					{
-						++nfor[i];
-						++nfoc[j];
-					}
+				      tnfoc = NEW(int, t->columns);
+				      memset(tnfoc, 0,
+					     sizeof(int) * t->columns);
 			      }
+
+			    if (!tnfor)
+			      {
+				      tnfor = NEW(int, t->rows);
+				      memset(tnfor, 0, sizeof(int) * t->rows);
+			      }
+
+			    for (i = c2->start_col - 1; i < c2->end_col; i++)
+				    ++tnfoc[i];
+
+			    for (i = c2->start_row - 1; i < c2->end_row; i++)
+				    ++tnfor[i];
 		    }
+	  }
+
+	if (tnfoc)
+	  {
+		  for (i = 0; i < t->columns; i++)
+		    {
+			    if (tnfoc[i] > *nfoc)
+				    *nfoc = tnfoc[i];
+		    }
+
+		  FREE(tnfoc);
+	  }
+
+	if (tnfor)
+	  {
+		  for (i = 0; i < t->rows; i++)
+		    {
+			    if (tnfor[i] > *nfor)
+				    *nfor = tnfor[i];
+		    }
+
+		  FREE(tnfor);
 	  }
 
 	DRETURN_PTR(fillers, DLEVEL_STABLE);
@@ -643,11 +685,11 @@ __ewl_table_configure_normal(Ewl_Table * t, int *rem_w, int *rem_h, int *nfoc,
  * Fill in widgets that are stretched to fill the column they occupy
  */
 void
-__ewl_table_configure_fillers(Ewl_Table * t, Ewd_List * l, int *rem_w,
-			      int *rem_h, int *nfoc, int *nfor)
+__ewl_table_configure_fillers(Ewl_Table * t, Ewd_List * l, int rem_w,
+			      int rem_h, int nfoc, int nfor)
 {
 	Ewl_Widget *c = NULL;
-	Ewl_Table_Child *child;
+	Ewl_Table_Child *c2;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
@@ -660,30 +702,22 @@ __ewl_table_configure_fillers(Ewl_Table * t, Ewd_List * l, int *rem_w,
 		  int i, req_w = 0, req_h = 0;
 		  int col_span, row_span;
 
-		  child = ewl_widget_get_data(c, (void *) t);
+		  c2 = ewl_widget_get_data(c, (void *) t);
 
 		  /*
 		   * Determine the number of rows and columns this item uses 
 		   */
-		  col_span = child->end_col - child->start_col + 1;
-		  row_span = child->end_row - child->start_row + 1;
+		  col_span = c2->end_col - c2->start_col + 1;
+		  row_span = c2->end_row - c2->start_row + 1;
 
-		  for (i = child->start_col - 1; i < child->end_col; i++)
-		    {
-			    if ((rem_h[i] / nfoc[i] - row_span +
-				 1) * row_span < req_h || !req_h)
-				    req_h = (rem_h[i] /
-					     (nfoc[i] - row_span + 1));
-		    }
+		  req_w = (rem_w / nfor - 1) * col_span;
+		  req_h = (rem_h / nfoc - 1) * row_span;
 
-		  for (i = child->start_row - 1; i < child->end_row; i++)
-		    {
-			    if ((rem_w[i] / nfor[i] - col_span +
-				 1) * col_span < req_w || !req_w)
-				    req_w = (rem_w[i] /
-					     (nfor[i] - col_span + 1));
-		    }
+		  for (i = c2->start_col - 1; i < c2->end_col; i++)
+			  req_w += t->col_w[i];
 
+		  for (i = c2->start_row - 1; i < c2->end_row; i++)
+			  req_h += t->row_h[i];
 
 		  if (MAXIMUM_W(c) && MAXIMUM_W(c) < req_w)
 			  req_w = MAXIMUM_W(c);
@@ -695,22 +729,8 @@ __ewl_table_configure_fillers(Ewl_Table * t, Ewd_List * l, int *rem_w,
 		  else if (MINIMUM_H(c) && MINIMUM_H(c) > req_h)
 			  req_h = MINIMUM_H(c);
 
-		  for (i = child->start_col - 1; i < child->end_col; i++)
-		    {
-			    if (req_w / col_span > t->col_w[i])
-			      {
-				      t->col_w[i] = req_w / col_span;
-			      }
-		    }
-
-		  for (i = child->start_row - 1; i < child->end_row; i++)
-		    {
-			    if (req_h / row_span > t->row_h[i])
-				    t->row_h[i] = req_h / row_span;
-		    }
-
-		  req_w += t->col_spacing * col_span - 1;
-		  req_h += t->row_spacing * row_span - 1;
+		  req_w += t->col_spacing * (col_span - 1);
+		  req_h += t->row_spacing * (row_span - 1);
 
 		  REQUEST_W(c) = req_w;
 		  REQUEST_H(c) = req_h;

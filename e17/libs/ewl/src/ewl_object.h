@@ -92,8 +92,8 @@ inline Ewl_Fill_Policy ewl_object_get_fill_policy(Ewl_Object * o);
 #define MINIMUM_H(o) EWL_OBJECT(o)->minimum.h
 
 #define ewl_object_set_custom_size(o, w, h) \
-	ewl_object_set_minimum_size(EWL_OBJECT(o), w, h); \
-	ewl_object_set_maximum_size(EWL_OBJECT(o), w, h);
+	ewl_object_set_minimum_size(o, w, h); \
+	ewl_object_set_maximum_size(o, w, h);
 
 #define ewl_object_set_custom_width(o, w) \
 	ewl_object_set_maximum_width(o, w); \
