@@ -14,6 +14,7 @@ typedef enum {
 typedef struct {
 	char evas_engine[255];
 	char output_plugin[255];
+	char theme[255];
 	TimeDisplay time_display;
 	int repeat;
 } Config;

@@ -41,6 +41,7 @@ static void config_init(Config *cfg) {
 	         "software");
 	snprintf(cfg->output_plugin, sizeof(cfg->output_plugin),
 	         "OSS");
+	snprintf(cfg->theme, sizeof(cfg->theme), "eplayer");
 }
 
 static int config_load(Config *cfg, const char *file) {
@@ -64,6 +65,11 @@ static int config_load(Config *cfg, const char *file) {
 	
 	if ((str = e_db_str_get(edb, "/eplayer/output_plugin"))) {
 		snprintf(cfg->output_plugin, sizeof(cfg->output_plugin), str);
+		free(str);
+	}
+	
+	if ((str = e_db_str_get(edb, "/eplayer/theme"))) {
+		snprintf(cfg->theme, sizeof(cfg->theme), str);
 		free(str);
 	}
 

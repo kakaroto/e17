@@ -57,15 +57,19 @@ int setup_gui(ePlayer *player) {
 }
 
 static int setup_edje(ePlayer *player, Ecore_Evas *ee) {
+	char eet[PATH_MAX + 1];
 	double edje_w = 0, edje_h = 0;
 
 	debug(DEBUG_LEVEL_INFO, "EDJE: Defining Edje \n");
 
 	player->gui.edje = edje_object_add(player->gui.evas);
 	
-	if (!(edje_object_file_set(player->gui.edje,
-	                     DATA_DIR "/themes/eplayer.eet", "eplayer"))) {
-		debug(DEBUG_LEVEL_CRITICAL, "Cannot load theme!\n");
+	snprintf(eet, sizeof(eet), DATA_DIR "/themes/%s.eet",
+	         player->cfg.theme);
+	
+	if (!edje_object_file_set(player->gui.edje, eet, "eplayer")) {
+		debug(DEBUG_LEVEL_CRITICAL, "Cannot load theme '%s'!\n",
+		      player->cfg.theme);
 		return 0;
 	}
 	
@@ -134,14 +138,16 @@ static void setup_playlist(ePlayer *player) {
 void show_playlist_item(PlayListItem *pli, void *data) {
 	ePlayer *player = data;
 	Evas_Object *o;
-	char len[32];
+	char len[32], eet[PATH_MAX + 1];
 	double w = 0, h = 0;
 
 	/* add the item to the container */
 	o = edje_object_add(player->gui.evas);
 
-	edje_object_file_set(o, DATA_DIR "/themes/eplayer.eet",
-	                     "playlist_item");
+	snprintf(eet, sizeof(eet), DATA_DIR "/themes/%s.eet",
+	         player->cfg.theme);
+
+	edje_object_file_set(o, eet, "playlist_item");
 
 	/* set parts text */
 	snprintf(len, sizeof(len), "%i:%02i", pli->duration / 60,

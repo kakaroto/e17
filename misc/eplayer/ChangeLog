@@ -1,5 +1,9 @@
 $Id$
 
+2003-11-18 Tilman Sauerbeck <tilman@code-monkey.de>
+        * src/interface.c, src/eplayer.c, src/eplayer.h:
+          The theme that's to be used can now be set in eplayer.db
+
 2003-11-17 Tilman Sauerbeck <tilman@code-monkey.de>
         * src/playlist.c: Fixed playlist_load_dir()
         * src/interface.c, data/README:
