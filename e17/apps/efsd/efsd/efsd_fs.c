@@ -688,6 +688,14 @@ efsd_fs_cp(int num_files, char **paths, EfsdFsOps ops)
 	      errno = EEXIST;
 	      D_RETURN_(FALSE);
 	    }
+
+	  if ((efsd_misc_files_identical(src_path, dst_path) == TRUE) ||
+	      (strstr(dst_path, src_path) == dst_path))
+	    {
+	      D("Trying to copy file on top of itself -- aborting.\n");
+	      errno = EEXIST;
+	      D_RETURN_(FALSE);
+	    }
 	  
 	  if (!efsd_fs_rm(dst_path, EFSD_FS_OP_RECURSIVE))
 	    {
@@ -814,6 +822,14 @@ efsd_fs_mv(int num_files, char **paths, EfsdFsOps ops)
 	      D_RETURN_(FALSE);
 	    }
 	  
+	  if ((efsd_misc_files_identical(src_path, dst_path) == TRUE) ||
+	      (strstr(dst_path, src_path) == dst_path))
+	    {
+	      D("Trying to move file on top of itself -- aborting.\n");
+	      errno = EEXIST;
+	      D_RETURN_(FALSE);
+	    }
+
 	  D("Dest %s exists, and force used. Removing.\n", dst_path);
 	  
 	  if (!efsd_fs_rm(dst_path, EFSD_FS_OP_RECURSIVE))
