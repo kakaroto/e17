@@ -227,6 +227,7 @@ grab_init()
    grab_buf.height = grab_height;
 
    ioctl(grab_fd, VIDIOCGMBUF, &vid_mbuf);
+   printf("%s detected\n", grab_cap.name);
 
    /* special philips features */
    if (sscanf(grab_cap.name, "Philips %d webcam", &type) > 0)
@@ -236,7 +237,7 @@ grab_init()
       int gain = -1;
 
       /* philips cam detected, maybe enable special features */
-      printf("Philips %d webcam detected\n", type);
+      printf("enabling pwc-specific features\n");
 
       ioctl(grab_fd, VIDIOCGWIN, &vwin);
       if (vwin.flags & PWC_FPS_MASK)
