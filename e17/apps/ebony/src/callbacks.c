@@ -103,8 +103,8 @@ display_layer(E_Background_Layer *bl)
    set_toggle_value("size_orig_h", bl->size.orig.h);
    set_spin_value("fill_w", bl->fill.w);
    set_spin_value("fill_h", bl->fill.h);
-   set_toggle_value("size_fill_w", bl->fill.orig.w);
-   set_toggle_value("size_fill_h", bl->fill.orig.h);
+   set_toggle_value("fill_orig_w", bl->fill.orig.w);
+   set_toggle_value("fill_orig_h", bl->fill.orig.h);
    busy = 0;
 }
 
