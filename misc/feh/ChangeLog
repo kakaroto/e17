@@ -1,3 +1,7 @@
+Fri May 23 14:23:49 BST 2003  Tom Gilbert <tom@linuxbrit.co.uk>
+
+  * Fix debian bug #193964. segv on 'm' followed by cursor movement.
+
 Fri Apr 11 11:46:55 BST 2003  Tom Gilbert <tom@linuxbrit.co.uk>
 
   * Patch from Eric Dorland <eric.dorland@mail.mcgill.ca>

@@ -46,7 +46,7 @@ feh_event_handle_keypress(XEvent * ev)
    winwid = winwidget_get_from_window(ev->xkey.window);
    
    /* nuke dupe events, unless we're typing text */
-   if (!winwid->caption_entry) {
+   if (winwid && !winwid->caption_entry) {
      while (XCheckTypedWindowEvent(disp, ev->xkey.window, KeyPress, ev));
    }
 
