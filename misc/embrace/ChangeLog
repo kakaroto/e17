@@ -13,6 +13,9 @@ $Id$
           src/plugins/maildir/maildir.c:
           Finally Embrace will tell you when a mailbox cannot be
           loaded due to configuration errors.
+        * src/mailbox.[ch]: mailbox_is_checking_set() now takes a bool
+          and emits MAILBOX_UNSET_CHECKING if the mailbox has been
+          checked.
 
 2004-04-09 Tilman Sauerbeck <tilman -at- code-monkey.de>
         * src/plugins/pop3/pop3.c: The POP3 plugin will now tell you

@@ -288,10 +288,11 @@ void mailbox_poll_interval_set (MailBox *mb, int interval)
 	mb->poll_interval = interval;
 }
 
-void mailbox_is_checking_set (MailBox *mb)
+void mailbox_is_checking_set (MailBox *mb, bool checking)
 {
+	char *sig[] = {"MAILBOX_SET_CHECKING", "MAILBOX_UNSET_CHECKING"};
+
 	assert (mb);
 
-	edje_object_signal_emit (mb->edje, "MAILBOX_SET_CHECKING",
-	                         "Embrace");
+	edje_object_signal_emit (mb->edje, sig[checking], "Embrace");
 }

@@ -53,7 +53,7 @@ void mailbox_property_set (MailBox *mb, char *key, void *data);
 int mailbox_poll_interval_get (MailBox *mb);
 void mailbox_poll_interval_set (MailBox *mb, int interval);
 
-void mailbox_is_checking_set (MailBox *mb);
+void mailbox_is_checking_set (MailBox *mb, bool checking);
 
 Evas_Object *mailbox_edje_get (MailBox *mb);
 int mailbox_width_get (MailBox *mb);
