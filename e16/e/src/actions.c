@@ -2865,6 +2865,7 @@ doAbout(EWin * edummy, const void *params)
 {
    Dialog             *d;
    DItem              *table, *di;
+   char                buf[1024];
 
    EDBUG(6, "doAbout");
    d = FindItem("ABOUT_ENLIGHTENMENT", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG);
@@ -2875,13 +2876,9 @@ doAbout(EWin * edummy, const void *params)
      }
 
    d = DialogCreate("ABOUT_ENLIGHTENMENT");
-   {
-      char                stuff[255];
-
-      Esnprintf(stuff, sizeof(stuff), _("About Enlightenment %s"),
-		ENLIGHTENMENT_VERSION);
-      DialogSetTitle(d, stuff);
-   }
+   Esnprintf(buf, sizeof(buf),
+	     _("About Enlightenment %s"), ENLIGHTENMENT_VERSION);
+   DialogSetTitle(d, buf);
 
    table = DialogInitItem(d);
    DialogItemTableSetOptions(table, 2, 0, 0, 0);
@@ -2893,22 +2890,22 @@ doAbout(EWin * edummy, const void *params)
    di = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemTextSetText(di,
-			 _("Welcome to the " ENLIGHTENMENT_VERSION " version\n"
-			   "of the Enlightenment "
-			   "window manager.\n Enlightenment is still under "
-			   "development, but\n"
-			   "we have tried to iron out all the bugs "
-			   "that\nwe can find. If "
-			   "you find a bug in the software,\n please do "
-			   "not hesitate to send "
-			   "in a bug report.\nSee \"Help\" for information "
-			   "on joining the\n" "mailing list.\n" "\n"
-			   "This code last updated on:\n" E_CHECKOUT_DATE "\n"
-			   "\n" "Good luck. We hope you enjoy the software.\n"
-			   "\n" "The Rasterman - raster@rasterman.com\n"
-			   "Mandrake - mandrake@mandrake.net\n"
-			   "Kim Woelders - kim@woelders.dk\n"));
+   Esnprintf(buf, sizeof(buf),
+	     _("Welcome to the %s version\n"
+	       "of the Enlightenment window manager.\n"
+	       "Enlightenment is still under development, but\n"
+	       "we have tried to iron out all the bugs that\n"
+	       "we can find. If you find a bug in the software,\n"
+	       "please do not hesitate to send in a bug report.\n"
+	       "See \"Help\" for information on joining the\n"
+	       "mailing list.\n" "\n"
+	       "This code was last updated on:\n%s\n" "\n"
+	       "Good luck. We hope you enjoy the software.\n" "\n"
+	       "The Rasterman - raster@rasterman.com\n"
+	       "Mandrake - mandrake@mandrake.net\n"
+	       "Kim Woelders - kim@woelders.dk\n"),
+	     ENLIGHTENMENT_VERSION, E_CHECKOUT_DATE);
+   DialogItemTextSetText(di, buf);
 
    DialogAddButton(d, _("OK"), NULL, 1);
    ShowDialog(d);
