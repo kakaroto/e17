@@ -1306,11 +1306,11 @@ GotoDesktop(int num)
      }
 
    ActionsResume();
+   FocusNewDesk();
 
    if (mode.mode == MODE_DESKSWITCH)
       mode.mode = MODE_NONE;
 
-   FocusNewDesk();
    RedrawPagersForDesktop(pdesk, 0);
    RedrawPagersForDesktop(num, 3);
    ForceUpdatePagersForDesktop(num);

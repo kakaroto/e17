@@ -339,10 +339,12 @@ FocusNewDeskBegin(void)
 	for (i = 0; i < num; i++)
 	  {
 	     ewin = lst[i];
+
 	     XSelectInput(disp, ewin->win,
 			  FocusChangeMask | SubstructureNotifyMask |
 			  SubstructureRedirectMask | PropertyChangeMask |
 			  ResizeRedirectMask);
+
 	     if (ewin->pager)
 	       {
 #if 0
@@ -363,6 +365,7 @@ FocusNewDeskBegin(void)
 			     PropertyChangeMask | FocusChangeMask |
 			     ResizeRedirectMask | StructureNotifyMask |
 			     ColormapChangeMask);
+
 	     for (j = 0; j < ewin->border->num_winparts; j++)
 	       {
 		  if (ewin->border->part[j].flags & FLAG_TITLE)
@@ -401,12 +404,14 @@ FocusNewDesk(void)
 	for (i = 0; i < num; i++)
 	  {
 	     ewin = lst[i];
+
 	     XSelectInput(disp, ewin->win,
 			  FocusChangeMask | SubstructureNotifyMask |
 			  SubstructureRedirectMask | EnterWindowMask |
 			  LeaveWindowMask | PointerMotionMask |
 			  PropertyChangeMask | ResizeRedirectMask |
 			  ButtonPressMask | ButtonReleaseMask);
+
 	     if (ewin->pager)
 		XSelectInput(disp, ewin->client.win,
 			     PropertyChangeMask | EnterWindowMask |
@@ -426,6 +431,7 @@ FocusNewDesk(void)
 			     LeaveWindowMask | FocusChangeMask |
 			     ResizeRedirectMask | StructureNotifyMask |
 			     ColormapChangeMask);
+
 	     for (j = 0; j < ewin->border->num_winparts; j++)
 	       {
 		  if (ewin->border->part[j].flags & FLAG_TITLE)
@@ -441,6 +447,9 @@ FocusNewDesk(void)
 				  EnterWindowMask | LeaveWindowMask |
 				  PointerMotionMask);
 	       }
+
+	     if (mode.mode == MODE_DESKSWITCH)
+		EwinRefresh(ewin);
 	  }
 	Efree(lst);
      }

@@ -24,7 +24,7 @@
 #include "E.h"
 #include <math.h>
 
-static void         IcondefChecker(int val, void *data);
+static void         IconboxRedraw(Iconbox * ib);
 
 #define IB_ANIM_TIME 0.25
 
@@ -522,6 +522,42 @@ IB_Reconfigure(Iconbox * ib)
    ICCCM_MatchSize(ewin);
 }
 
+static void
+IconboxMoveResize(EWin * ewin, int resize)
+{
+   static int          call_depth = 0;	/* Ugly! */
+   Iconbox            *ib = ewin->ibox;
+
+   if (!ib || call_depth > 0)
+      return;
+   call_depth++;
+
+   if (!conf.theme.transparency &&
+       ib->w == ewin->client.w && ib->h == ewin->client.h)
+      return;
+
+   ib->w = ewin->client.w;
+   ib->h = ewin->client.h;
+   ib->force_update = 1;
+   IconboxRedraw(ib);
+   call_depth--;
+}
+
+static void
+IconboxRefresh(EWin * ewin)
+{
+   Iconbox            *ib = ewin->ibox;
+
+   if (!ib)
+      return;
+
+   if (!conf.theme.transparency)
+      return;
+
+   ib->force_update = 1;
+   IconboxRedraw(ib);
+}
+
 void
 IconboxShow(Iconbox * ib)
 {
@@ -551,6 +587,9 @@ IconboxShow(Iconbox * ib)
 
 	ib->ewin = ewin;
 	ewin->ibox = ib;
+	ewin->MoveResize = IconboxMoveResize;
+	ewin->Refresh = IconboxRefresh;
+
 	IB_Reconfigure(ib);
 	sn = FindSnapshot(ewin);
 	ConformEwinToDesktop(ewin);
@@ -1897,7 +1936,7 @@ IB_FixPos(Iconbox * ib)
 
 }
 
-void
+static void
 IconboxRedraw(Iconbox * ib)
 {
    Pixmap              m = 0;
@@ -2155,18 +2194,6 @@ IconboxRedraw(Iconbox * ib)
    PropagateShapes(ib->ewin->win);
 
    queue_up = pq;
-}
-
-void
-IconboxResize(Iconbox * ib, int w, int h)
-{
-   if ((ib->w == w) && (ib->h == h))
-      return;
-
-   ib->w = w;
-   ib->h = h;
-   ib->force_update = 1;
-   IconboxRedraw(ib);
 }
 
 static void

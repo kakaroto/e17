@@ -565,11 +565,22 @@ DialogRedraw(Dialog * d)
    DialogDraw(d);
 }
 
-void
-DialogMove(Dialog * d)
+static void
+DialogMoveResize(EWin * ewin, int resize)
 {
+   Dialog             *d = ewin->dialog;
+
+   if (!d)
+      return;
+
    if (conf.theme.transparency || IclassIsTransparent(d->iclass))
       DialogRedraw(d);
+}
+
+static void
+DialogRefresh(EWin * ewin)
+{
+   DialogMoveResize(ewin, 0);
 }
 
 void
@@ -595,6 +606,7 @@ ShowDialog(Dialog * d)
 	XSetClassHint(disp, d->win, xch);
 	XFree(xch);
      }
+
    ewin = FindEwinByDialog(d);
    if (ewin)
      {
@@ -604,6 +616,7 @@ ShowDialog(Dialog * d)
 	ShowEwin(ewin);
 	return;
      }
+
    if (d->item)
       DialogItemsRealize(d);
 
@@ -678,9 +691,13 @@ ShowDialog(Dialog * d)
 	RestackEwin(ewin);
 	ShowEwin(ewin);
 	ewin->dialog = d;
+	ewin->MoveResize = DialogMoveResize;
+	ewin->Refresh = DialogRefresh;
      }
+
    if (!FindDialog(d->win))
       AddItem(d, d->name, d->win, LIST_TYPE_DIALOG);
+
    XSync(disp, False);
    DialogRedraw(d);
    queue_up = pq;
@@ -2267,18 +2284,18 @@ DialogEventExpose(XEvent * ev)
    DItem              *di;
    int                 x, y, w, h;
 
-   d = FindDialogButton(win, &bnum);
-   if (d)
-     {
-	DialogDrawButton(d, bnum);
-	goto exit;
-     }
-
    d = FindDialog(win);
    if (d)
      {
 	DialogDrawArea(d, ev->xexpose.x, ev->xexpose.y,
 		       ev->xexpose.width, ev->xexpose.height);
+	goto exit;
+     }
+
+   d = FindDialogButton(win, &bnum);
+   if (d)
+     {
+	DialogDrawButton(d, bnum);
 	goto exit;
      }
 

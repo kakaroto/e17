@@ -134,6 +134,24 @@ MenuHide(Menu * m)
    EDBUG_RETURN_;
 }
 
+static void
+MenuMoveResize(EWin * ewin, int resize)
+{
+   Menu               *m = ewin->menu;
+
+   if (!m)
+      return;
+
+   if (conf.theme.transparency || IclassIsTransparent(m->style->bg_iclass))
+      MenuRealize(m);
+}
+
+static void
+MenuRefresh(EWin * ewin)
+{
+   MenuMoveResize(ewin, 0);
+}
+
 void
 MenuShow(Menu * m, char noshow)
 {
@@ -304,6 +322,8 @@ MenuShow(Menu * m, char noshow)
 		UnShadeEwin(ewin);
 	  }
 	ewin->menu = m;
+	ewin->MoveResize = MenuMoveResize;
+	ewin->Refresh = MenuRefresh;
      }
 
    m->stuck = 0;
@@ -549,13 +569,6 @@ MenuRepack(Menu * m)
 	RaiseEwin(ewin);
      }
    EDBUG_RETURN_;
-}
-
-void
-MenuMove(Menu * m)
-{
-   if (conf.theme.transparency || IclassIsTransparent(m->style->bg_iclass))
-      MenuRealize(m);
 }
 
 void
@@ -1768,7 +1781,7 @@ MenuCreateFromDesktopEWins(char *name, MenuStyle * ms, int desk)
 
    MenuItem           *mi;
 
-   EDBUG(5, "MenuCreateFromEWins");
+   EDBUG(5, "MenuCreateFromDesktopEWins");
    m = MenuCreate(name);
    m->style = ms;
 
@@ -1805,7 +1818,7 @@ MenuCreateFromDesktops(char *name, MenuStyle * ms)
 
    MenuItem           *mi;
 
-   EDBUG(5, "MenuCreateFromEWins");
+   EDBUG(5, "MenuCreateFromDesktops");
    m = MenuCreate(name);
    m->style = ms;
    lst = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);

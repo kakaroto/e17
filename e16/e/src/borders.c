@@ -1645,6 +1645,16 @@ EwinSetBorderByName(EWin * ewin, const char *name, int apply)
 }
 
 void
+EwinRefresh(EWin * ewin)
+{
+   if (!ewin)
+      return;
+
+   if (ewin->Refresh)
+      ewin->Refresh(ewin);
+}
+
+void
 EwinUpdateAfterMoveResize(EWin * ewin, int resize)
 {
    if (!ewin)
@@ -1652,207 +1662,12 @@ EwinUpdateAfterMoveResize(EWin * ewin, int resize)
 
    DetermineEwinArea(ewin);
 
-   if (ewin->dialog)
-      DialogMove(ewin->dialog);
-   else if (ewin->menu)
-      MenuMove(ewin->menu);
-   else if (resize && ewin->pager)
-      PagerResize(ewin->pager, ewin->client.w, ewin->client.h);
-   else if (resize && ewin->ibox)
-      IconboxResize(ewin->ibox, ewin->client.w, ewin->client.h);
+   if (ewin->MoveResize)
+      ewin->MoveResize(ewin, resize);
 
    PagerEwinOutsideAreaUpdate(ewin);
    ForceUpdatePagersForDesktop(ewin->desktop);
 }
-
-#if 0
-
-void
-ResizeEwin(EWin * ewin, int w, int h)
-{
-   char                resize = 0;
-
-   EDBUG(3, "ResizeEwin");
-   if ((ewin->client.w != w) || (ewin->client.h != h))
-      resize = 1;
-   ewin->client.w = w;
-   ewin->client.h = h;
-   ICCCM_MatchSize(ewin);
-   if (!ewin->shaded)
-     {
-	ewin->w =
-	   ewin->client.w + ewin->border->border.left +
-	   ewin->border->border.right;
-	ewin->h =
-	   ewin->client.h + ewin->border->border.top +
-	   ewin->border->border.bottom;
-     }
-   EResizeWindow(disp, ewin->win, ewin->w, ewin->h);
-   ICCCM_Configure(ewin);
-   CalcEwinSizes(ewin);
-   if ((mode.mode == MODE_NONE) && (resize))
-     {
-	PagerEwinOutsideAreaUpdate(ewin);
-	ForceUpdatePagersForDesktop(ewin->desktop);
-     }
-   if (ewin->pager)
-      PagerResize(ewin->pager, ewin->client.w, ewin->client.h);
-   else if (ewin->ibox)
-      IconboxResize(ewin->ibox, ewin->client.w, ewin->client.h);
-   EDBUG_RETURN_;
-}
-
-void
-MoveEwin(EWin * ewin, int x, int y)
-{
-   int                 dx, dy;
-   char                move = 0;
-   static int          call_depth = 0;
-
-   EDBUG(3, "MoveEwin");
-   if (call_depth > 256)
-      EDBUG_RETURN_;
-   call_depth++;
-
-   dx = x - ewin->x;
-   dy = y - ewin->y;
-   if ((dx != 0) || (dy != 0))
-      move = 1;
-   ewin->x = x;
-   ewin->y = y;
-   ewin->reqx = x;
-   ewin->reqy = y;
-   EMoveWindow(disp, ewin->win, ewin->x, ewin->y);
-
-   if (mode.mode != MODE_MOVE_PENDING && mode.mode != MODE_MOVE)
-      ICCCM_Configure(ewin);
-
-   DetermineEwinArea(ewin);
-
-   if (ewin->has_transients)
-     {
-	EWin              **lst;
-	int                 i, num;
-
-	lst = ListTransientsFor(ewin->client.win, &num);
-	if (lst)
-	  {
-	     for (i = 0; i < num; i++)
-	       {
-		  if (!((mode.flipp) && (lst[i]->floating))
-		      && (lst[i]->client.mwm_decor_border
-			  || lst[i]->client.mwm_decor_resizeh
-			  || lst[i]->client.mwm_decor_title
-			  || lst[i]->client.mwm_decor_menu
-			  || lst[i]->client.mwm_decor_minimize
-			  || lst[i]->client.mwm_decor_maximize))
-		     MoveEwin(lst[i], lst[i]->x + dx, lst[i]->y + dy);
-	       }
-	     Efree(lst);
-	  }
-     }
-
-   if ((mode.mode == MODE_NONE) && (move))
-     {
-	if (ewin->dialog)
-	   DialogMove(ewin->dialog);
-	else if (ewin->menu)
-	   MenuMove(ewin->menu);
-
-	PagerEwinOutsideAreaUpdate(ewin);
-	ForceUpdatePagersForDesktop(ewin->desktop);
-     }
-
-   call_depth--;
-   EDBUG_RETURN_;
-}
-
-void
-MoveResizeEwin(EWin * ewin, int x, int y, int w, int h)
-{
-   int                 dx, dy;
-   char                change = 0;
-   static int          call_depth = 0;
-
-   EDBUG(3, "MoveResizeEwin");
-   if (call_depth > 256)
-      EDBUG_RETURN_;
-   call_depth++;
-
-   dx = x - ewin->x;
-   dy = y - ewin->y;
-   if ((dx != 0) || (dy != 0) || (w != ewin->w) || (h != ewin->h))
-      change = 1;
-   ewin->x = x;
-   ewin->y = y;
-   ewin->reqx = x;
-   ewin->reqy = y;
-   ewin->client.w = w;
-   ewin->client.h = h;
-   ICCCM_MatchSize(ewin);
-
-   if (!ewin->shaded)
-     {
-	ewin->w =
-	   ewin->client.w + ewin->border->border.left +
-	   ewin->border->border.right;
-	ewin->h =
-	   ewin->client.h + ewin->border->border.top +
-	   ewin->border->border.bottom;
-     }
-
-   EMoveResizeWindow(disp, ewin->win, ewin->x, ewin->y, ewin->w, ewin->h);
-
-   DetermineEwinArea(ewin);
-
-   if ((mode.mode != MODE_MOVE_PENDING && mode.mode != MODE_MOVE)
-       || (mode.have_place_grab))
-      ICCCM_Configure(ewin);
-
-   CalcEwinSizes(ewin);
-   if (ewin->has_transients)
-     {
-	EWin              **lst;
-	int                 i, num;
-
-	lst = ListTransientsFor(ewin->client.win, &num);
-	if (lst)
-	  {
-	     for (i = 0; i < num; i++)
-	       {
-		  if (!((mode.flipp) && (lst[i]->floating))
-		      && (lst[i]->client.mwm_decor_border
-			  || lst[i]->client.mwm_decor_resizeh
-			  || lst[i]->client.mwm_decor_title
-			  || lst[i]->client.mwm_decor_menu
-			  || lst[i]->client.mwm_decor_minimize
-			  || lst[i]->client.mwm_decor_maximize))
-		     MoveEwin(lst[i], lst[i]->x + dx, lst[i]->y + dy);
-	       }
-	     Efree(lst);
-	  }
-     }
-
-   if ((mode.mode == MODE_NONE) && (change))
-     {
-	if (ewin->dialog)
-	   DialogMove(ewin->dialog);
-	else if (ewin->menu)
-	   MenuMove(ewin->menu);
-
-	PagerEwinOutsideAreaUpdate(ewin);
-	ForceUpdatePagersForDesktop(ewin->desktop);
-     }
-   if (ewin->pager)
-      PagerResize(ewin->pager, ewin->client.w, ewin->client.h);
-   else if (ewin->ibox)
-      IconboxResize(ewin->ibox, ewin->client.w, ewin->client.h);
-
-   call_depth--;
-   EDBUG_RETURN_;
-}
-
-#else
 
 #define MR_FLAGS_MOVE   1
 #define MR_FLAGS_RESIZE 2
@@ -1990,8 +1805,6 @@ MoveResizeEwin(EWin * ewin, int x, int y, int w, int h)
 {
    doMoveResizeEwin(ewin, x, y, w, h, MR_FLAGS_MOVE | MR_FLAGS_RESIZE);
 }
-
-#endif
 
 #if 0				/* Unused */
 void

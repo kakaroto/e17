@@ -217,15 +217,20 @@ PagerCreate(void)
    return p;
 }
 
-void
-PagerResize(Pager * p, int w, int h)
+static void
+PagerMoveResize(EWin * ewin, int resize)
 {
+   Pager              *p = ewin->pager;
+   int                 w, h;
    int                 ax, ay, i, cx, cy;
    char                pq;
    ImageClass         *ic;
 
-   if (!conf.pagers.enable)
+   if (!conf.pagers.enable || !p)
       return;
+
+   w = ewin->client.w;
+   h = ewin->client.h;
    if ((w == p->w) && (h == p->h))
       return;
 
@@ -268,6 +273,11 @@ PagerResize(Pager * p, int w, int h)
 
    for (i = 0; i < desks.desk[p->desktop].num; i++)
       PagerEwinUpdateMini(p, desks.desk[p->desktop].list[i]);
+}
+
+static void
+PagerRefresh(EWin * ewin)
+{
 }
 
 void
@@ -317,6 +327,9 @@ PagerShow(Pager * p)
 	ewin->client.width.max = 320 * ax;
 	ewin->client.height.max = 240 * ay;
 	ewin->pager = p;
+	ewin->MoveResize = PagerMoveResize;
+	ewin->Refresh = PagerRefresh;
+
 	p->ewin = ewin;
 	p->visible = 1;
 	sn = FindSnapshot(ewin);

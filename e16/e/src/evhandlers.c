@@ -672,13 +672,11 @@ HandleMapRequest(XEvent * ev)
 void
 HandleExpose(XEvent * ev)
 {
-   Window              win;
+   Window              win = ev->xexpose.window;
    EWin              **ewin;
    int                 i, j, num;
 
    EDBUG(5, "HandleExpose");
-
-   win = ev->xexpose.window;
 
    ewin = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
    for (i = 0; i < num; i++)

@@ -576,6 +576,7 @@ int                 Esnprintf(va_alist);
  * Types
  */
 
+typedef struct _ewin EWin;
 typedef struct _menu Menu;
 typedef struct _menuitem MenuItem;
 typedef struct _menustyle MenuStyle;
@@ -901,7 +902,7 @@ WinClient;
 #define EWIN_TYPE_ICONBOX       0x04
 #define EWIN_TYPE_PAGER         0x08
 
-typedef struct _ewin
+struct _ewin
 {
    Window              win;
    int                 x, y, w, h, reqx, reqy;
@@ -976,8 +977,9 @@ typedef struct _ewin
       char               *wm_name;
       char               *wm_icon_name;
    } ewmh;
-}
-EWin;
+   void                (*MoveResize) (EWin * ewin, int resize);
+   void                (*Refresh) (EWin * ewin);
+};
 
 typedef struct _groupconfig
 {
@@ -1650,6 +1652,7 @@ void                deleteHint(Window win, Atom atom);
 #define EWIN_CHANGE_LAYER       (1<<4)
 
 void                KillEwin(EWin * ewin, int nogroup);
+void                EwinRefresh(EWin * ewin);
 void                EwinUpdateAfterMoveResize(EWin * ewin, int resize);
 void                ResizeEwin(EWin * ewin, int w, int h);
 void                MoveEwin(EWin * ewin, int x, int y);
@@ -1869,7 +1872,6 @@ void                DialogSetExitFunction(Dialog * d,
 					  void (*func) (int val, void *data),
 					  int val, void *data);
 void                DialogRedraw(Dialog * d);
-void                DialogMove(Dialog * d);
 void                ShowDialog(Dialog * d);
 void                DialogClose(Dialog * d);
 
@@ -1947,6 +1949,10 @@ int                 DialogEventMouseDown(XEvent * ev);
 int                 DialogEventMouseUp(XEvent * ev);
 int                 DialogEventMouseIn(XEvent * ev);
 int                 DialogEventMouseOut(XEvent * ev);
+
+/* dock.c */
+void                DockIt(EWin * ewin);
+void                DockDestroy(EWin * ewin);
 
 /* draw.c */
 void                HandleDrawQueue(void);
@@ -2254,8 +2260,6 @@ void                IB_Animate(char iconify, EWin * from, EWin * to);
 void                IconifyEwin(EWin * ewin);
 void                DeIconifyEwin(EWin * ewin);
 void                RemoveMiniIcon(EWin * ewin);
-void                DockIt(EWin * ewin);
-void                DockDestroy(EWin * ewin);
 Iconbox            *IconboxCreate(char *name);
 void                IconboxDestroy(Iconbox * ib);
 Window              IconboxGetWin(Iconbox * ib);
@@ -2264,8 +2268,6 @@ void                IconboxHide(Iconbox * ib);
 void                IconboxIconifyEwin(Iconbox * ib, EWin * ewin);
 void                IconboxAddEwin(Iconbox * ib, EWin * ewin);
 void                IconboxDelEwin(Iconbox * ib, EWin * ewin);
-void                IconboxRedraw(Iconbox * ib);
-void                IconboxResize(Iconbox * ib, int w, int h);
 void                IconboxUpdateEwinIcon(Iconbox * ib, EWin * ewin,
 					  int icon_mode);
 void                IconboxesUpdateEwinIcon(EWin * ewin, int icon_mode);
@@ -2310,7 +2312,6 @@ void                MenuHide(Menu * m);
 void                MenuShow(Menu * m, char noshow);
 void                MenuRepack(Menu * m);
 void                MenuEmpty(Menu * m);
-void                MenuMove(Menu * m);
 MenuItem           *MenuItemCreate(const char *text, ImageClass * iclass,
 				   int action_id, char *action_params,
 				   Menu * child);
@@ -2383,7 +2384,6 @@ void                MWM_SetInfo(void);
 /* pager.c */
 Pager              *PagerCreate(void);
 void                PagerDestroy(Pager * p);
-void                PagerResize(Pager * p, int w, int h);
 void                PagerShow(Pager * p);
 void                PagerHide(Pager * p);
 Pager             **PagersForDesktop(int d, int *num);
