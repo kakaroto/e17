@@ -61,12 +61,13 @@ ewl_widget_realize(Ewl_Widget * w)
 	DENTER_FUNCTION;
 	DCHECK_PARAM_PTR("w", w);
 
-	if (REALIZED(w))
+	if (!w->visible || REALIZED(w))
 		DRETURN;
 
 	w->visible |= EWL_VISIBILITY_REALIZED;
 
 	ewl_callback_call(w, EWL_CALLBACK_REALIZE);
+	ewl_widget_show(w);
 
 	DLEAVE_FUNCTION;
 }
@@ -76,12 +77,6 @@ ewl_widget_show(Ewl_Widget * w)
 {
 	DENTER_FUNCTION;
 	DCHECK_PARAM_PTR("w", w);
-
-	if (w->visible)
-		DRETURN;
-
-	if (!REALIZED(w))
-		ewl_widget_realize(w);
 
 	w->visible |= EWL_VISIBILITY_SHOWN;
 
@@ -96,7 +91,10 @@ ewl_widget_hide(Ewl_Widget * w)
 	DENTER_FUNCTION;
 	DCHECK_PARAM_PTR("w", w);
 
-	w = EWL_VISIBILITY_HIDDEN;
+	if (!w->visible)
+		DRETURN;
+
+	w->visible = EWL_VISIBILITY_HIDDEN;
 
 	ewl_callback_call(w, EWL_CALLBACK_HIDE);
 
@@ -155,7 +153,21 @@ ewl_widget_theme_update(Ewl_Widget * w)
 	DENTER_FUNCTION;
 	DCHECK_PARAM_PTR("w", w);
 
+	if (!REALIZED(w))
+		DRETURN;
+
 	ewl_callback_call(w, EWL_CALLBACK_THEME_UPDATE);
+
+	DLEAVE_FUNCTION;
+}
+
+void
+ewl_widget_reparent(Ewl_Widget * w)
+{
+	DENTER_FUNCTION;
+	DCHECK_PARAM_PTR("w", w);
+
+	ewl_callback_call(w, EWL_CALLBACK_REPARENT);
 
 	DLEAVE_FUNCTION;
 }
@@ -327,7 +339,8 @@ __ewl_widget_show(Ewl_Widget *w, void *event_data, void *user_data)
 	DENTER_FUNCTION;
 	DCHECK_PARAM_PTR("w", w);
 
-	evas_show(w->evas, w->fx_clip_box);
+	if (w->evas && w->fx_clip_box)
+		evas_show(w->evas, w->fx_clip_box);
 
 	DLEAVE_FUNCTION;
 }
@@ -341,7 +354,8 @@ __ewl_widget_hide(Ewl_Widget *w, void *event_data, void *user_data)
 	DENTER_FUNCTION;
 	DCHECK_PARAM_PTR("w", w);
 
-	evas_hide(w->evas, w->fx_clip_box);
+	if (w->evas && w->fx_clip_box)
+		evas_hide(w->evas, w->fx_clip_box);
 
 	DLEAVE_FUNCTION;
 }
@@ -368,7 +382,7 @@ __ewl_widget_realize(Ewl_Widget *w, void *event_data, void *user_data)
 	pc = EWL_CONTAINER(w->parent);
 
 	/*
-	 * clip the fx clip box to the parent clip box
+	 * Clip the fx_clip_box to the parent clip_box.
 	 */
 	if (pc && pc->clip_box)
 		evas_set_clip(w->evas, w->fx_clip_box, pc->clip_box);
@@ -404,8 +418,7 @@ __ewl_widget_configure(Ewl_Widget *w, void *event_data, void *user_data)
 	if (w->fx_clip_box)
 	  {
 		evas_move(w->evas, w->fx_clip_box, CURRENT_X(w), CURRENT_Y(w));
-		evas_resize(w->evas, w->fx_clip_box, CURRENT_W(w),
-				CURRENT_H(w));
+		evas_resize(w->evas, w->fx_clip_box, CURRENT_W(w), CURRENT_H(w));
 	  }
 
 	DLEAVE_FUNCTION;
@@ -515,7 +528,8 @@ __ewl_widget_reparent(Ewl_Widget *w, void *event_data, void *user_data)
 
         LAYER(w) = LAYER(w->parent) + 1;
 
-	ewl_widget_theme_update(w);
+	if (REALIZED(w))
+		ewl_widget_theme_update(w);
 
 	DLEAVE_FUNCTION;
 }

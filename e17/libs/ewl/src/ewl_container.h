@@ -31,11 +31,6 @@ Ewl_Widget *ewl_container_get_child_at(Ewl_Container * widget, int x,
 				       int y);
 Ewl_Widget *ewl_container_get_child_at_recursive(Ewl_Container * widget,
 						 int x, int y);
-void ewl_container_clip_box_create(Ewl_Container * widget);
-void ewl_container_clip_box_resize(Ewl_Container * widget);
-void ewl_container_set_clip(Ewl_Container * widget);
-void ewl_container_show_clip(Ewl_Container * widget);
-void ewl_container_hide_clip(Ewl_Container * widget);
 
 #define RECURSIVE(w) EWL_CONTAINER(w)->recursive
 

@@ -55,18 +55,7 @@ ewl_main()
 {
 	DENTER_FUNCTION;
 
-	/* If we have any windows at this point, we want to configure them
-	   to layout the children correct */
-	if (ewl_window_list && !ewd_list_is_empty(ewl_window_list))
-	  {
-		Ewl_Widget * w;
-
-		ewd_list_goto_first(ewl_window_list);
-
-		while ((w = ewd_list_next(ewl_window_list)) != NULL)
-			ewl_widget_configure(w);
-	  }
-
+	ewl_idle_render(NULL);
 	e_event_loop();
 
 	DLEAVE_FUNCTION;
@@ -89,8 +78,17 @@ ewl_idle_render(void *data)
 
 	ewd_list_goto_first(ewl_window_list);
 
-	while ((widget =
-		EWL_WIDGET(ewd_list_next(ewl_window_list))) != NULL) {
+	while ((widget = EWL_WIDGET(ewd_list_next(ewl_window_list))) != NULL) {
+
+		/*
+		 * If we have any unrealized windows at this point, we want to
+		 * realize and configure them to layout the children correct.
+		 */
+		if (!REALIZED(widget)) {
+			ewl_widget_realize(widget);
+			ewl_widget_configure(widget);
+		}
+
 		if (widget->evas)
 			evas_render(widget->evas);
 	}

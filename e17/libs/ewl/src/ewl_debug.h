@@ -52,7 +52,16 @@
 	return ptr; \
 }
 
-#define DRETURN_FLOAT(num) return num;
+#define DRETURN_FLOAT(num) \
+{ \
+	extern Ewl_Options ewl_options; \
+	if (ewl_options.debug_level >= 15) \
+	  { \
+		fprintf(stderr, "<--  %s:%i\tReturning float %f in %s();\n", \
+			__FILE__, __LINE__, (float) num, __FUNCTION__); \
+	  } \
+	return num; \
+}
 
 #define DRETURN_INT(num) \
 { \

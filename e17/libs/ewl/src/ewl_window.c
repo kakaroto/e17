@@ -109,6 +109,12 @@ __ewl_window_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 	evas_set_layer(w->evas, window->bg_rect, LAYER(w) - 1000);
 	evas_show(w->evas, window->bg_rect);
 
+	e_window_show(EWL_WINDOW(w)->window);
+	e_window_show(w->evas_window);
+
+	if (EWL_WINDOW(w)->borderless)
+		e_window_hint_set_borderless(EWL_WINDOW(w)->window);
+
 	DLEAVE_FUNCTION;
 }
 
@@ -118,14 +124,17 @@ __ewl_window_show(Ewl_Widget * w, void *ev_data, void *user_data)
 	DENTER_FUNCTION;
 	DCHECK_PARAM_PTR("w", w);
 
+	if (!EWL_WINDOW(w)->window)
+		DRETURN;
+
 	e_window_show(EWL_WINDOW(w)->window);
 	e_window_show(w->evas_window);
 
 	if (EWL_WINDOW(w)->borderless)
 		e_window_hint_set_borderless(EWL_WINDOW(w)->window);
-
+/*
 	ewl_widget_configure(w);
-
+*/
 	DLEAVE_FUNCTION;
 }
 

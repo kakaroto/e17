@@ -52,7 +52,7 @@ struct _ewl_widget {
 /* Returns a allocated widget structure */
 Ewl_Widget *ewl_widget_new();
 void ewl_widget_init(Ewl_Widget * w, char *appearance);
-void ewl_widget_reparent(Ewl_Widget * parent, Ewl_Widget * widget);
+void ewl_widget_reparent(Ewl_Widget * widget);
 void ewl_widget_realize(Ewl_Widget * widget);
 void ewl_widget_show(Ewl_Widget * widget);
 void ewl_widget_hide(Ewl_Widget * widget);

@@ -66,7 +66,7 @@ ewl_container_append_child(Ewl_Container * parent, Ewl_Widget * child)
 	child->parent = EWL_WIDGET(parent);
 	ewd_list_append(parent->children, child);
 
-	ewl_callback_call(EWL_WIDGET(child), EWL_CALLBACK_REPARENT);
+	ewl_widget_reparent(child);
 
 	DLEAVE_FUNCTION;
 }
@@ -86,7 +86,7 @@ ewl_container_prepend_child(Ewl_Container * parent, Ewl_Widget * child)
 	child->parent = EWL_WIDGET(parent);
 	ewd_list_prepend(parent->children, child);
 
-	ewl_callback_call(EWL_WIDGET(child), EWL_CALLBACK_REPARENT);
+	ewl_widget_reparent(child);
 
 	DLEAVE_FUNCTION;
 }
@@ -107,7 +107,7 @@ ewl_container_insert_child(Ewl_Container * parent, Ewl_Widget * child,
 	child->parent = EWL_WIDGET(parent);
 	ewd_list_goto_index(parent->children, index);
 	ewd_list_insert(parent->children, child);
-	ewl_callback_call(EWL_WIDGET(child), EWL_CALLBACK_REPARENT);
+	ewl_widget_reparent(child);
 
 	DLEAVE_FUNCTION;
 }
@@ -182,89 +182,6 @@ ewl_container_get_child_at_recursive(Ewl_Container * widget, int x, int y)
 	DRETURN_PTR(NULL);
 }
 
-void
-ewl_container_clip_box_create(Ewl_Container * c)
-{
-	Ewl_Widget * w;
-
-	DENTER_FUNCTION;
-	DCHECK_PARAM_PTR("c", c);
-
-	w = EWL_WIDGET(c);
-
-	if (!c->clip_box)
-	  {
-		c->clip_box = evas_add_rectangle(w->evas);
-		evas_set_color(w->evas, c->clip_box, 255, 255, 255, 0);
-		evas_move(w->evas, c->clip_box, CURRENT_X(w), CURRENT_Y(w));
-		evas_resize(w->evas, c->clip_box,
-			    CURRENT_W(w), CURRENT_H(w));
-		evas_set_layer(w->evas, c->clip_box, LAYER(w));
-		evas_show(w->evas, c->clip_box);
-	  }
-
-	DLEAVE_FUNCTION;
-}
-
-void
-ewl_container_clip_box_resize(Ewl_Container * c)
-{
-	Ewl_Widget * w;
-
-	DENTER_FUNCTION;
-	DCHECK_PARAM_PTR("c", c);
-
-	w = EWL_WIDGET(c);
-
-	if (c->clip_box)
-	  {
-		evas_move(w->evas, c->clip_box, CURRENT_X(w), CURRENT_Y(w));
-		evas_resize(w->evas, c->clip_box, CURRENT_W(w), CURRENT_H(w));
-	  }
-
-	DLEAVE_FUNCTION;
-}
-
-void
-ewl_container_set_clip(Ewl_Container * c)
-{
-	Ewl_Widget * w;
-
-	DENTER_FUNCTION;
-	DCHECK_PARAM_PTR("c", c);
-
-	w = EWL_WIDGET(c);
-
-	if (w->parent && w->fx_clip_box && c->clip_box)
-		evas_set_clip(w->evas, c->clip_box, w->fx_clip_box);
-
-	DLEAVE_FUNCTION;
-}
-
-void
-ewl_container_show_clip(Ewl_Container * widget)
-{
-	DENTER_FUNCTION;
-	DCHECK_PARAM_PTR("widget", widget);
-
-	if (widget->clip_box)
-		evas_show(EWL_WIDGET(widget)->evas, widget->clip_box);
-
-	DLEAVE_FUNCTION;
-}
-
-void
-ewl_container_hide_clip(Ewl_Container * widget)
-{
-	DENTER_FUNCTION;
-	DCHECK_PARAM_PTR("widget", widget);
-
-	if (widget->clip_box)
-		evas_hide(EWL_WIDGET(widget)->evas, widget->clip_box);
-
-	DLEAVE_FUNCTION;
-}
-
 /*
  * When reparenting a container, it's children need the updated information
  * about the container, such as evas and evas_window.
@@ -283,23 +200,60 @@ __ewl_container_reparent(Ewl_Widget * w, void *event_data, void *user_data)
 
 	while ((child = ewd_list_remove_first(old)) != NULL) {
 		ewl_container_append_child(EWL_CONTAINER(w), child);
-		ewl_callback_call(child, EWL_CALLBACK_REPARENT);
+		ewl_widget_reparent(child);
 	}
 
 	ewd_list_destroy(old);
 }
 
+/*
+ * This is the default action to be taken by containers, it involves
+ * creating and showing a clip box, as well as clipping the clip box to parent
+ * clip boxes.
+ */
 static void
 __ewl_container_realize(Ewl_Widget *w, void *event_data, void *user_data)
 {
+	Ewl_Container *c;
+	Ewl_Widget *child;
+
 	DENTER_FUNCTION;
 	DCHECK_PARAM_PTR("w", w);
 
-	ewl_container_clip_box_create(EWL_CONTAINER(w));
+	c = EWL_CONTAINER(w);
 
-	ewl_container_show_clip(EWL_CONTAINER(w));
+	/*
+	 * Create the clip box for this container, this keeps children clipped
+	 * to the wanted area.
+	 */
+	c->clip_box = evas_add_rectangle(w->evas);
+	evas_set_color(w->evas, c->clip_box, 255, 255, 255, 0);
+	evas_move(w->evas, c->clip_box, CURRENT_X(w), CURRENT_Y(w));
+	evas_resize(w->evas, c->clip_box, CURRENT_W(w), CURRENT_H(w));
+	evas_set_layer(w->evas, c->clip_box, LAYER(w));
+	evas_show(w->evas, c->clip_box);
 
-	ewl_container_set_clip(EWL_CONTAINER(w));
+	/*
+	 * Now clip the container portion of this widget to the widget
+	 * fx_clip_box.
+	 */
+	if (w->parent && w->fx_clip_box && c->clip_box)
+		evas_set_clip(w->evas, c->clip_box, w->fx_clip_box);
+
+	if (!c->children)
+		DRETURN;
+
+	/*
+	 * If this container has not yet been realized, then it's children
+	 * haven't either. So we call ewl_widget_reparent to get each child
+	 * to update it's evas related fields to the new information, and then
+	 * realize any of them that should be visible.
+	 */
+	ewd_list_goto_first(c->children);
+	while ((child = ewd_list_next(c->children)) != NULL) {
+		ewl_widget_reparent(child);
+		ewl_widget_realize(child);
+	}
 
 	DLEAVE_FUNCTION;
 }
