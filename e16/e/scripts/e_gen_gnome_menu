@@ -124,7 +124,10 @@ fi
 is_desktop() {
   VAL=`grep "\[Desktop Entry\]" $1`
   if [ -n "$VAL" ]; then
-    VAL=`grep '^Name=' $1 | head -1`
+    VAL=`grep "^Name\[$LANG\]=" $1 | head -1`
+    if [ ! -n "$VAL" ]; then
+      VAL=`grep '^Name=' $1 | head -1`
+    fi
     if [ -n "$VAL" ]; then
       NAME=`echo $VAL | awk -F= '{printf("%s", $2);}'`
       echo $NAME | tr -d '\n'
@@ -245,11 +248,13 @@ for F in $ORDER; do
 	ICO=`get_icon $FF"/.directory"`
     echo \"$NAME\" \"$ICO\" menu \"$MFILE\" >> $OUT
   else
-    NAME=`is_desktop $FF`
-    if [ -n "$NAME" ]; then
-      EXE=`get_exec $FF`
-	  ICO=`get_icon $FF`
-      echo \"$NAME\" \"$ICO\" exec \"$EXE\" >> $OUT
-   fi
+    if [ -r "$FF" ]; then
+      NAME=`is_desktop $FF`
+      if [ -n "$NAME" ]; then
+	EXE=`get_exec $FF`
+	    ICO=`get_icon $FF`
+	echo \"$NAME\" \"$ICO\" exec \"$EXE\" >> $OUT
+      fi
+    fi
   fi
 done

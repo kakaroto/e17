@@ -108,7 +108,10 @@ fi
 is_kdelnk() {
   VAL=`grep "\[KDE Desktop Entry\]" $1`
   if [ -n "$VAL" ]; then
-    VAL=`grep '^Name=' $1 | head -1`
+    VAL=`grep "^Name\[$LANG\]=" $1 | head -1`
+    if [ ! -n "$VAL" ]; then
+      VAL=`grep '^Name=' $1 | head -1`
+    fi
     if [ -n "$VAL" ]; then
       NAME=`echo $VAL | awk -F= '{printf("%s", $2);}'`
       echo $NAME | tr -d '\n'
