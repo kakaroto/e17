@@ -4,7 +4,12 @@
 #define EPPLET_VERSION 	"0.1"
 #define EPPLET_INFO	"Exec a command given by the user"
 
+#define MAX_HIST_LEN	15
+
 Epplet_gadget       textbox = NULL;
+char*		    command_history[MAX_HIST_LEN];
+int		    current_command = 0;
+int		    num_commands = 0;
 
 static void cb_close(void *data);
 static void run_contents(void *data);
@@ -20,11 +25,39 @@ cb_close(void *data)
 static void
 run_contents(void *data)
 {
-	char *command = Epplet_textbox_contents(textbox);
+   char *command = Epplet_textbox_contents(textbox);
+   int i;
+
+   if(num_commands < MAX_HIST_LEN)
+	   command_history[num_commands++] = strdup(command);
+   else
+   {
+	   free(command_history[0]);
+
+	   for(i=0; i < MAX_HIST_LEN; i++)
+		   command_history[i] = command_history[i+1];
+
+	   command_history[MAX_HIST_LEN] = strdup(command);
+   }
+
    Epplet_spawn_command(command);
    Epplet_reset_textbox(textbox);
    return;
    data = NULL;
+}
+
+static void
+hist_last(void *data)
+{
+	//if(current_command >= 0)
+		//Epplet_change_textbox(textbox, command_history[--current_command]);
+}
+
+static void
+hist_next(void *data)
+{
+	//if(current_command < num_commands)
+		//Epplet_change_textbox(textbox, command_history[++current_command]);
 }
 
 int
@@ -38,10 +71,10 @@ main(int argc, char *argv[])
 				 12, 12, "CLOSE", 0, NULL, cb_close, NULL));
 
    Epplet_gadget_show(Epplet_create_button(NULL, NULL, 16, 2,
-		   12, 12, "ARROW_UP", 0, NULL, NULL, NULL));
+		   12, 12, "ARROW_UP", 0, NULL, hist_last, NULL));
 
    Epplet_gadget_show(Epplet_create_button(NULL, NULL, 30, 2,
-		   12, 12, "ARROW_DOWN", 0, NULL, NULL, NULL));
+		   12, 12, "ARROW_DOWN", 0, NULL, hist_next, NULL));
 
    Epplet_gadget_show(Epplet_create_button(NULL, NULL, 44, 2,
 			   12, 12, "PLAY", 0, NULL, run_contents, NULL));

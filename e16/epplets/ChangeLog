@@ -406,4 +406,18 @@ one to make up for the last omission. ;-)
 Thu Nov 11 20:04:39 EST 1999
 (StriderZ)
 
-Added some buttons for later use in controlling the history feature.
+changes to epplets/E-Exec.c 
+
+Added some buttons to E-Exec for later use in controlling the history feature.
+
+-------------------------------------------------------------------------------
+
+Thu Nov 11 20:19:09 EST 1999
+(StriderZ)
+
+changes to epplets/E-Exec.c 
+
+Added some code to do a command history. A change to the api is needed for it
+to work, so I'm committing this first so I don't screw anything up during the
+api modification. currently the relevant code is commented out.
+
