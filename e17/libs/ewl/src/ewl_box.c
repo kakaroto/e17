@@ -48,6 +48,7 @@ static Ewd_List *spread = NULL;
 
 static void     __ewl_box_setup();
 static void     __ewl_box_add(Ewl_Container * c, Ewl_Widget * w);
+static void     __ewl_box_remove(Ewl_Container * c, Ewl_Widget * w);
 static void     __ewl_box_child_resize(Ewl_Container * c, Ewl_Widget * w,
 				       int size, Ewl_Orientation o);
 static void     __ewl_box_configure(Ewl_Widget * w, void *ev_data,
@@ -115,10 +116,10 @@ int ewl_box_init(Ewl_Box * b, Ewl_Orientation o)
 	 */
 	if (o == EWL_ORIENTATION_HORIZONTAL)
 		ewl_container_init(EWL_CONTAINER(b), "hbox", __ewl_box_add,
-				__ewl_box_child_resize, NULL);
+				__ewl_box_child_resize, __ewl_box_remove);
 	else
 		ewl_container_init(EWL_CONTAINER(b), "vbox", __ewl_box_add,
-				__ewl_box_child_resize, NULL);
+				__ewl_box_child_resize, __ewl_box_remove);
 
 	ewl_callback_prepend(w, EWL_CALLBACK_CONFIGURE, __ewl_box_configure,
 			     NULL);
@@ -577,6 +578,40 @@ __ewl_box_add(Ewl_Container * c, Ewl_Widget * w)
 	info->pref_fill_set(EWL_OBJECT(c), osize + temp +
 			(ewd_list_nodes(c->children) > 1 ?
 			 EWL_BOX(c)->spacing : 0));
+}
+
+static void
+__ewl_box_remove(Ewl_Container * c, Ewl_Widget * w)
+{
+	int space = 0;
+	Ewl_Box *b = EWL_BOX(c);
+
+	if (ewd_list_nodes(c->children) > 1)
+		space = b->spacing;
+
+	if (b->orientation == EWL_ORIENTATION_HORIZONTAL) {
+		ewl_object_set_preferred_w(EWL_OBJECT(c),
+				PREFERRED_W(c) -
+				ewl_object_get_preferred_w(EWL_OBJECT(w)) -
+				space);
+
+		if (w == b->max_align) {
+			ewl_container_prefer_largest(c,
+					EWL_ORIENTATION_HORIZONTAL);
+			b->max_align = NULL;
+		}
+	}
+	else {
+		ewl_object_set_preferred_h(EWL_OBJECT(c),
+				PREFERRED_H(c) - 
+				ewl_object_get_preferred_h(EWL_OBJECT(w)) -
+				space);
+		if (w == b->max_align) {
+			ewl_container_prefer_largest(c,
+					EWL_ORIENTATION_HORIZONTAL);
+			b->max_align = NULL;
+		}
+	}
 }
 
 /*
