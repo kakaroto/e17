@@ -1109,9 +1109,9 @@ __imlib_BlendImageToImage(ImlibImage *im_src, ImlibImage *im_dst,
 	/* setup h */
 	h = dh;
 	/* set our scaling up in x / y dir flags */
-	if (dw >= sw)
+	if (dw > sw)
 	   xup = 1;
-	if (dh >= sh)
+	if (dh > sh)
 	   yup = 1;
 	if (!IMAGE_HAS_ALPHA(im_dst))
 	   merge_alpha = 0;
@@ -1132,6 +1132,11 @@ __imlib_BlendImageToImage(ImlibImage *im_src, ImlibImage *im_dst,
 	     /* scale the imagedata for this LINESIZE lines chunk of image */
 	     if (aa)
 	       {
+#ifdef DO_MMX_ASM	/*\ TODO: runtime mmx check \*/
+		  __imlib_Scale_mmx_AARGBA(ypoints, xpoints, buf, xapoints,
+					   yapoints, xup, yup, dxx, dyy + y,
+					   0, 0, dw, hh, dw, im_src->w);
+#else
 		  if (IMAGE_HAS_ALPHA(im_src))
 		     __imlib_ScaleAARGBA(ypoints, xpoints, buf, xapoints,
 					 yapoints, xup, yup, dxx, dyy + y,
@@ -1140,6 +1145,7 @@ __imlib_BlendImageToImage(ImlibImage *im_src, ImlibImage *im_dst,
 		     __imlib_ScaleAARGB(ypoints, xpoints, buf, xapoints,
 					yapoints, xup, yup, dxx, dyy + y,
 					0, 0, dw, hh, dw, im_src->w);
+#endif
 	       }
 	     else
 		__imlib_ScaleSampleRGBA(ypoints, xpoints, buf, dxx, dyy + y,

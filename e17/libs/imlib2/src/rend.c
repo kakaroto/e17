@@ -216,6 +216,13 @@ __imlib_RenderImage(Display *d, ImlibImage *im,
 	     /* scale the imagedata for this LINESIZE lines chunk of image data */
 	     if (antialias)
 	       {
+#ifdef DO_MMX_ASM	/*\ TODO: runtime mmx check \*/
+		  __imlib_Scale_mmx_AARGBA(ypoints, xpoints, buf, xapoints, 
+					   yapoints, xup, yup, 
+					   ((sx * dw) / sw),
+					   ((sy * dh) / sh) + y, 
+					   0, 0, dw, hh, dw, im->w);
+#else
 		  if (IMAGE_HAS_ALPHA(im))
 		     __imlib_ScaleAARGBA(ypoints, xpoints, buf, xapoints, 
 					 yapoints, xup, yup, 
@@ -226,6 +233,7 @@ __imlib_RenderImage(Display *d, ImlibImage *im,
 					yapoints, xup, yup, 
 					((sx * dw) / sw), ((sy * dh) / sh) + y, 
 					0, 0, dw, hh, dw, im->w);
+#endif
 	       }
 	     else
 		__imlib_ScaleSampleRGBA(ypoints, xpoints, buf, 
