@@ -19,4 +19,6 @@ debian/changelog \
 debian/control \
 debian/copyright \
 debian/debianize.sh \
-debian/rules
+debian/rules \
+man/enlightenment.man \
+man/enlightenment.pod

@@ -14,8 +14,8 @@
 # length mode       name
 # ------ ---------- ------------------------------------------
 #    885 -rw-r--r-- e2mp
-#  49547 -rw-r--r-- eout.pod
-#  56198 -rw-r--r-- eout.man
+#  49547 -rw-r--r-- enlightnment.pod
+#  56198 -rw-r--r-- enlightenment.man
 #
 echo=echo
 if mkdir _sh32021; then
@@ -81,12 +81,12 @@ X}
 SHAR_EOF
   : || $echo 'restore of' 'e2mp' 'failed'
 fi
-# ============= eout.pod ==============
-if test -f 'eout.pod' && test "$first_param" != -c; then
-  $echo 'x -' SKIPPING 'eout.pod' '(file already exists)'
+# ============= enlightenment.pod ==============
+if test -f 'enlightenment.pod' && test "$first_param" != -c; then
+  $echo 'x -' SKIPPING 'enlightenment.pod' '(file already exists)'
 else
-  $echo 'x -' extracting 'eout.pod' '(text)'
-  sed 's/^X//' << 'SHAR_EOF' > 'eout.pod' &&
+  $echo 'x -' extracting 'enlightenment.pod' '(text)'
+  sed 's/^X//' << 'SHAR_EOF' > 'enlightenment.pod' &&
 X=pod
 X
 X
@@ -1254,18 +1254,21 @@ Xelse has probably had the same problem that you have.  And if all that still
 Xfails, you might try someone on the irc channel
 X
 SHAR_EOF
-  : || $echo 'restore of' 'eout.pod' 'failed'
+  : || $echo 'restore of' 'enlightenment.pod' 'failed'
 fi
-# ============= eout.man ==============
-if test -f 'eout.man' && test "$first_param" != -c; then
-  $echo 'x -' SKIPPING 'eout.man' '(file already exists)'
+# ============= enlightenment.man ==============
+if test -f 'enlightenment.man' && test "$first_param" != -c; then
+  $echo 'x -' SKIPPING 'enlightenment.man' '(file already exists)'
 else
-  $echo 'x -' extracting 'eout.man' '(text)'
-  sed 's/^X//' << 'SHAR_EOF' > 'eout.man' &&
+  $echo 'x -' extracting 'enlightenment.man' '(text)'
+  sed 's/^X//' << 'SHAR_EOF' > 'enlightenment.man' &&
 X.rn '' }`
 X''' $RCSfile$$Revision$$Date$
 X'''
 X''' $Log$
+X''' Revision 1.1  1999/10/18 17:36:33  mandrake
+X''' added stuff to build man pages via autogen.sh
+X'''
 X'''
 X.de Sh
 X.br
@@ -2621,7 +2624,7 @@ X
 X.IX Header "Frequently Asked Questions: Page 4"
 X
 SHAR_EOF
-  : || $echo 'restore of' 'eout.man' 'failed'
+  : || $echo 'restore of' 'enlightenment.man' 'failed'
 fi
 rm -fr _sh32021
 exit 0
