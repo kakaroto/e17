@@ -42,8 +42,8 @@ char cache[255];
 /* stuff for nolan's mapping code */
 typedef struct pixel_data
 {
-	int mappedx;
-	int mappedy;
+  int mappedx;
+  int mappedy;
 } mapped_pixels;
 void sphere_map_image(GtkWidget *widget, GdkEvent *event, gpointer data);
 mapped_pixels *calc_mapping(int im_width, int im_height, int x, int y);

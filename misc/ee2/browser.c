@@ -22,7 +22,7 @@ void
 browser_init(void)
 {
   GtkWidget *scroller, *hbox1, *hbox2, *vbox1, *vbox2,
-						*frame1, *frame2, *btn, *sep, *cbtn;
+    *frame1, *frame2, *btn, *sep, *cbtn;
 	
   gchar *titles[1]={"Images"};
 
@@ -30,23 +30,23 @@ browser_init(void)
   gtk_container_set_border_width(GTK_CONTAINER(BrWin), 2);
   gtk_window_set_title(GTK_WINDOW(BrWin), "Electric Eyes2 Image Browser");
   gtk_signal_connect_object(GTK_OBJECT(BrWin), "delete_event",
-														GTK_SIGNAL_FUNC(browser_hide), (gpointer) NULL);
+			    GTK_SIGNAL_FUNC(browser_hide), (gpointer) NULL);
   gtk_signal_connect_object(GTK_OBJECT(BrWin), "destroy",
-														GTK_SIGNAL_FUNC(browser_hide), (gpointer) NULL);
+			    GTK_SIGNAL_FUNC(browser_hide), (gpointer) NULL);
 	
   hbox1 = gtk_hbox_new(FALSE, 0);
   gtk_container_add(GTK_CONTAINER(BrWin), hbox1);
 	
-	vbox2 = gtk_vbox_new(FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox1), vbox2, TRUE, TRUE, 0);
+  vbox2 = gtk_vbox_new(FALSE, 0);
+  gtk_box_pack_start(GTK_BOX(hbox1), vbox2, TRUE, TRUE, 0);
 
   scroller = gtk_scrolled_window_new(NULL, NULL);
   gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scroller),
-																 GTK_POLICY_NEVER, GTK_POLICY_ALWAYS);
+				 GTK_POLICY_NEVER, GTK_POLICY_ALWAYS);
   gtk_box_pack_start(GTK_BOX(vbox2), scroller, TRUE, TRUE, 0);
 	
-	hbox2 = gtk_hbox_new(FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox2), hbox2, TRUE, TRUE, 0);
+  hbox2 = gtk_hbox_new(FALSE, 0);
+  gtk_box_pack_start(GTK_BOX(vbox2), hbox2, TRUE, TRUE, 0);
 
   /* clist stuff */
   BrClist = gtk_clist_new_with_titles(1, titles);
@@ -54,80 +54,80 @@ browser_init(void)
   gtk_container_add(GTK_CONTAINER(scroller), BrClist);
   gtk_clist_set_selection_mode(GTK_CLIST(BrClist), GTK_SELECTION_BROWSE);
   gtk_signal_connect(GTK_OBJECT(BrClist), "select_row",
-										 GTK_SIGNAL_FUNC(browser_sel), NULL);
+		     GTK_SIGNAL_FUNC(browser_sel), NULL);
   gtk_widget_show(BrClist);
 	
-	cbtn = gtk_check_button_new_with_label("Hide Image Window");
-	gtk_widget_show(cbtn);
-	gtk_signal_connect(GTK_OBJECT(cbtn), "clicked",
-										 GTK_SIGNAL_FUNC(check_callback), NULL);
-	gtk_box_pack_start(GTK_BOX(hbox2), cbtn, TRUE, TRUE, 0);
+  cbtn = gtk_check_button_new_with_label("Hide Image Window");
+  gtk_widget_show(cbtn);
+  gtk_signal_connect(GTK_OBJECT(cbtn), "clicked",
+		     GTK_SIGNAL_FUNC(check_callback), NULL);
+  gtk_box_pack_start(GTK_BOX(hbox2), cbtn, TRUE, TRUE, 0);
 	
-	vbox1 = gtk_vbox_new(FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox1), vbox1, TRUE, TRUE, 0);
-	gtk_widget_show(vbox1);
+  vbox1 = gtk_vbox_new(FALSE, 0);
+  gtk_box_pack_start(GTK_BOX(hbox1), vbox1, TRUE, TRUE, 0);
+  gtk_widget_show(vbox1);
 	
-	frame1 = gtk_frame_new("Image Preview");
-	gtk_box_pack_start(GTK_BOX(vbox1), frame1, TRUE, TRUE, 0);
-	gtk_widget_show(frame1);
+  frame1 = gtk_frame_new("Image Preview");
+  gtk_box_pack_start(GTK_BOX(vbox1), frame1, TRUE, TRUE, 0);
+  gtk_widget_show(frame1);
 	
-	area2 = gtk_drawing_area_new();
-	gtk_widget_set_usize(area2, 125, 125);
-	gtk_signal_connect_after(GTK_OBJECT(area2), "configure_event",
-													 GTK_SIGNAL_FUNC(b_config), NULL);
-	gtk_container_add(GTK_CONTAINER(frame1), area2);
-	gtk_widget_show(area2);
+  area2 = gtk_drawing_area_new();
+  gtk_widget_set_usize(area2, 125, 125);
+  gtk_signal_connect_after(GTK_OBJECT(area2), "configure_event",
+			   GTK_SIGNAL_FUNC(b_config), NULL);
+  gtk_container_add(GTK_CONTAINER(frame1), area2);
+  gtk_widget_show(area2);
 	
-	frame2 = gtk_frame_new(NULL);
-	gtk_box_pack_start(GTK_BOX(vbox1), frame2, TRUE, TRUE, 0);
-	gtk_frame_set_shadow_type(GTK_FRAME(frame2), GTK_SHADOW_IN);
-	gtk_widget_show(frame2);
+  frame2 = gtk_frame_new(NULL);
+  gtk_box_pack_start(GTK_BOX(vbox1), frame2, TRUE, TRUE, 0);
+  gtk_frame_set_shadow_type(GTK_FRAME(frame2), GTK_SHADOW_IN);
+  gtk_widget_show(frame2);
 	
-	infol = gtk_label_new("\nWaiting...\n\n");
-	gtk_label_set_justify(GTK_LABEL(infol), GTK_JUSTIFY_LEFT);
-	gtk_container_add(GTK_CONTAINER(frame2), infol);
-	gtk_widget_show(infol);
+  infol = gtk_label_new("\nWaiting...\n\n");
+  gtk_label_set_justify(GTK_LABEL(infol), GTK_JUSTIFY_LEFT);
+  gtk_container_add(GTK_CONTAINER(frame2), infol);
+  gtk_widget_show(infol);
 	
-	btn = gtk_button_new_with_label("Load Image");
-	gtk_signal_connect_object(GTK_OBJECT(btn), "clicked",
-														GTK_SIGNAL_FUNC(browser_cb), (gpointer) 1);
-	gtk_box_pack_start(GTK_BOX(vbox1), btn, TRUE, TRUE, 0);
-	gtk_widget_show(btn);
-	
-	btn = gtk_button_new_with_label("Delete Image");
+  btn = gtk_button_new_with_label("Load Image");
+  gtk_signal_connect_object(GTK_OBJECT(btn), "clicked",
+			    GTK_SIGNAL_FUNC(browser_cb), (gpointer) 1);
   gtk_box_pack_start(GTK_BOX(vbox1), btn, TRUE, TRUE, 0);
   gtk_widget_show(btn);
 	
-	btn = gtk_button_new_with_label("Rename Image");
+  btn = gtk_button_new_with_label("Delete Image");
   gtk_box_pack_start(GTK_BOX(vbox1), btn, TRUE, TRUE, 0);
   gtk_widget_show(btn);
 	
-	btn = gtk_button_new_with_label("Clear Image List");
+  btn = gtk_button_new_with_label("Rename Image");
   gtk_box_pack_start(GTK_BOX(vbox1), btn, TRUE, TRUE, 0);
-	gtk_signal_connect_object(GTK_OBJECT(btn), "clicked",
-														GTK_SIGNAL_FUNC(browser_cb), (gpointer) 2);
   gtk_widget_show(btn);
 	
-	sep = gtk_hseparator_new();
-	gtk_box_pack_start(GTK_BOX(vbox1), sep, TRUE, TRUE, 0);
-	gtk_widget_show(sep);
-	
-	btn = gtk_button_new_with_label("Hide");
+  btn = gtk_button_new_with_label("Clear Image List");
   gtk_box_pack_start(GTK_BOX(vbox1), btn, TRUE, TRUE, 0);
-	gtk_signal_connect_object(GTK_OBJECT(btn), "clicked",
-														GTK_SIGNAL_FUNC(browser_hide), (gpointer) NULL);
+  gtk_signal_connect_object(GTK_OBJECT(btn), "clicked",
+			    GTK_SIGNAL_FUNC(browser_cb), (gpointer) 2);
   gtk_widget_show(btn);
 	
-	btn = gtk_button_new_with_label("Exit");
+  sep = gtk_hseparator_new();
+  gtk_box_pack_start(GTK_BOX(vbox1), sep, TRUE, TRUE, 0);
+  gtk_widget_show(sep);
+	
+  btn = gtk_button_new_with_label("Hide");
   gtk_box_pack_start(GTK_BOX(vbox1), btn, TRUE, TRUE, 0);
-	gtk_signal_connect_object(GTK_OBJECT(btn), "clicked",
-														GTK_SIGNAL_FUNC(CloseWindow), (gpointer) NULL);
+  gtk_signal_connect_object(GTK_OBJECT(btn), "clicked",
+			    GTK_SIGNAL_FUNC(browser_hide), (gpointer) NULL);
+  gtk_widget_show(btn);
+	
+  btn = gtk_button_new_with_label("Exit");
+  gtk_box_pack_start(GTK_BOX(vbox1), btn, TRUE, TRUE, 0);
+  gtk_signal_connect_object(GTK_OBJECT(btn), "clicked",
+			    GTK_SIGNAL_FUNC(CloseWindow), (gpointer) NULL);
   gtk_widget_show(btn);
 
   gtk_widget_show(scroller);
-	gtk_widget_show(hbox1);
-	gtk_widget_show(hbox2);
-	gtk_widget_show(vbox2);
+  gtk_widget_show(hbox1);
+  gtk_widget_show(hbox2);
+  gtk_widget_show(vbox2);
 }
 
 void
@@ -151,28 +151,28 @@ AddList(char *foo)
 static void
 browser_cb(gpointer item)
 {
-	int i = (int) item;
+  int i = (int) item;
 	
-	switch(i){
-	 case 1: gtk_widget_show(FileSel); break;
-	 case 2: gtk_clist_clear(GTK_CLIST(BrClist)); break;
-	 default: break;
-	}
+  switch(i){
+  case 1: gtk_widget_show(FileSel); break;
+  case 2: gtk_clist_clear(GTK_CLIST(BrClist)); break;
+  default: break;
+  }
 }
 
 void
 check_callback(GtkWidget * widget, gpointer data)
 {
-	if(GTK_TOGGLE_BUTTON(widget)->active){
-		gtk_widget_hide(MainWindow);
-	} else {
-		gtk_widget_show(MainWindow);
-	}
+  if(GTK_TOGGLE_BUTTON(widget)->active){
+    gtk_widget_hide(MainWindow);
+  } else {
+    gtk_widget_show(MainWindow);
+  }
 }
 
 void
 browser_sel(GtkWidget *clist, gint row, gint column,
-						GdkEventButton *event, gpointer data)
+	    GdkEventButton *event, gpointer data)
 {
   gchar lblt[255];
   char alp[255];
@@ -183,82 +183,82 @@ browser_sel(GtkWidget *clist, gint row, gint column,
   gtk_clist_get_text(GTK_CLIST(clist), row, 0, &cimg);
   
   if(cimg){
-	   cimg = g_strdup(cimg);
-		GetFileStats(cimg);
-		LoadImage(cimg);
-	   imlib_context_set_image(im);
-		DrawImage(im, 0, 0);
+    cimg = g_strdup(cimg);
+    GetFileStats(cimg);
+    LoadImage(cimg);
+    imlib_context_set_image(im);
+    DrawImage(im, 0, 0);
   }
-	if(im){
-		if(imlib_image_has_alpha())
-			sprintf(alp, "YES");
-		else
-			sprintf(alp, "NO");
-		sprintf(lblt, "Resolution: %dx%d\n"
-						"File Size: %d bytes\n"
-						"Last Mod: %s"
-						"Has Alpha: %s",
-						imlib_image_get_width(),
-						imlib_image_get_height(),
-						EFile.Size,
-						(ctime(&EFile.ModTime)),
-						alp);
-		gtk_label_set_text(GTK_LABEL(infol), lblt);
-		prev_draw(im, area2->allocation.width, area2->allocation.height);
+  if(im){
+    if(imlib_image_has_alpha())
+      sprintf(alp, "YES");
+    else
+      sprintf(alp, "NO");
+    sprintf(lblt, "Resolution: %dx%d\n"
+	    "File Size: %d bytes\n"
+	    "Last Mod: %s"
+	    "Has Alpha: %s",
+	    imlib_image_get_width(),
+	    imlib_image_get_height(),
+	    EFile.Size,
+	    (ctime(&EFile.ModTime)),
+	    alp);
+    gtk_label_set_text(GTK_LABEL(infol), lblt);
+    prev_draw(im, area2->allocation.width, area2->allocation.height);
   }
 }
 
 void
 prev_draw(Imlib_Image *im, int w, int h)
 {
-	Pixmap pm_t, mask, thumb;
-	int ww, hh;
+  Pixmap pm_t, mask, thumb;
+  int ww, hh;
 	
-	if(!disp_t){
-		gtk_widget_realize(area2);
-		disp_t = GDK_WINDOW_XDISPLAY(area2->window);
-		win_t = GDK_WINDOW_XWINDOW(area2->window);
-		vis_t = GDK_VISUAL_XVISUAL(gtk_widget_get_visual(area2));
-		cm_t = GDK_COLORMAP_XCOLORMAP(gtk_widget_get_colormap(area2));
-		root_t = GDK_WINDOW_XWINDOW(area2->window);
-		d = imlib_get_visual_depth(disp_t, vis_t);
-	}
-	imlib_context_set_display(disp_t);
-	imlib_context_set_visual(vis_t);
-	imlib_context_set_colormap(cm_t);
+  if(!disp_t){
+    gtk_widget_realize(area2);
+    disp_t = GDK_WINDOW_XDISPLAY(area2->window);
+    win_t = GDK_WINDOW_XWINDOW(area2->window);
+    vis_t = GDK_VISUAL_XVISUAL(gtk_widget_get_visual(area2));
+    cm_t = GDK_COLORMAP_XCOLORMAP(gtk_widget_get_colormap(area2));
+    root_t = GDK_WINDOW_XWINDOW(area2->window);
+    d = imlib_get_visual_depth(disp_t, vis_t);
+  }
+  imlib_context_set_display(disp_t);
+  imlib_context_set_visual(vis_t);
+  imlib_context_set_colormap(cm_t);
 	
-	if(!im)
-		return;
+  if(!im)
+    return;
 	
-	imlib_context_set_image(im);
-	ww = imlib_image_get_width();
-	hh = imlib_image_get_height();
+  imlib_context_set_image(im);
+  ww = imlib_image_get_width();
+  hh = imlib_image_get_height();
 	
-	pm_t = XCreatePixmap(disp_t, win_t, w, h, d);
-	imlib_context_set_drawable(pm_t);
+  pm_t = XCreatePixmap(disp_t, win_t, w, h, d);
+  imlib_context_set_drawable(pm_t);
 
-	bg = NULL;
-	DrawChecks();
-	if(bimg){
-		imlib_context_set_image(bimg);
-		imlib_free_image();
-	}
-	bimg = imlib_create_image(ww, hh);
-	imlib_context_set_image(bimg);
-	Checks(ww, hh);
+  bg = NULL;
+  DrawChecks();
+  if(bimg){
+    imlib_context_set_image(bimg);
+    imlib_free_image();
+  }
+  bimg = imlib_create_image(ww, hh);
+  imlib_context_set_image(bimg);
+  Checks(ww, hh);
 	
-	imlib_blend_image_onto_image(im, 1, 0, 0, ww, hh, 0, 0, ww, hh);
-	imlib_render_image_on_drawable_at_size(0, 0, w, h);
+  imlib_blend_image_onto_image(im, 1, 0, 0, ww, hh, 0, 0, ww, hh);
+  imlib_render_image_on_drawable_at_size(0, 0, w, h);
 	
-	XSetWindowBackgroundPixmap(disp_t, win_t, pm_t);
-	XClearWindow(disp_t, win_t);
-	XFreePixmap(disp_t, pm_t);
-	imlib_context_set_drawable(None);
+  XSetWindowBackgroundPixmap(disp_t, win_t, pm_t);
+  XClearWindow(disp_t, win_t);
+  XFreePixmap(disp_t, pm_t);
+  imlib_context_set_drawable(None);
 }
 
 gboolean
 b_config(GtkWidget *widget, GdkEventConfigure *event, gpointer user_data)
 {
-	prev_draw(im, event->width, event->height);
-	return TRUE;
+  prev_draw(im, event->width, event->height);
+  return TRUE;
 }
