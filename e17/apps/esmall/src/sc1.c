@@ -294,7 +294,7 @@ parseoptions (int argc, char **argv, char *iname, char *oname,
   int arg, i;
   for (arg = 1; arg < argc; arg++)
     {
-      if (argv[arg][0] == '/' || argv[arg][0] == '-')
+      if (argv[arg][0] == '-')
 	{
 	  ptr = &argv[arg][1];
 	  switch (*ptr)
