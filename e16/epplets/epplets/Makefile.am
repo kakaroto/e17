@@ -174,7 +174,7 @@ E-ScreenShoot.ABOUT/E_ScreenShoot_buttons.png  \
 E-ScreenShoot.ABOUT/E_ScreenShoot_cloak.png E-ScreenShoot.ABOUT/MAIN \
 Emix.ABOUT/MAIN E-UrlWatch.ABOUT/MAIN E-PlayCD.ABOUT/EPlayCD.jpg \
 E-PlayCD.ABOUT/MAIN E-PlayCD.ABOUT/E-PlayCD_Controls.png \
-E-GtkRc.ABOUT/MAIN bg.png
+E-GtkRc.ABOUT/MAIN E-GtkRc.ABOUT/bg.png
 
 
 # ICONS = `(cd epplets && ls -1d icons/*.icon | grep -v CVS)`
