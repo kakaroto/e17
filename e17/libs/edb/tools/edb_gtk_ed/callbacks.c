@@ -161,11 +161,9 @@ on_list_select_row                     (GtkCList        *clist,
 	     guint pos;
 
 	     pos = gtk_text_get_length(GTK_TEXT(w));
-	     if (pos > 0)
-	       {
-		  gtk_editable_delete_text(GTK_EDITABLE(w), 0, pos);
-	       }
-	     gtk_editable_insert_text(GTK_EDITABLE(w), val, strlen(val), &pos);
+	     gtk_editable_delete_text(GTK_EDITABLE(w), 0, pos);
+	     gtk_text_insert(GTK_TEXT(w), NULL, NULL, NULL,
+			    val, strlen(val));
 	     free(val);
 	  }
 	else
