@@ -497,8 +497,8 @@ bool embrace_load_ui (Embrace *e)
 	if (!(e->gui.ee = ecore_evas_software_x11_new (NULL, 0, 0, 0, 0, 0)))
 		return false;
 
-	ecore_evas_name_class_set (e->gui.ee, PACKAGE, PACKAGE);
-	ecore_evas_title_set (e->gui.ee, PACKAGE);
+	ecore_evas_title_set (e->gui.ee, "Embrace");
+	ecore_evas_name_class_set (e->gui.ee, "embrace", "Embrace");
 	ecore_evas_borderless_set (e->gui.ee, true);
 
 	e->gui.evas = ecore_evas_get (e->gui.ee);
