@@ -22,6 +22,7 @@ static void _note_menu_bgcolor_yellow (void *data, E_Menu *m, E_Menu_Item *mi);
 static void _note_menu_bgcolor_green (void *data, E_Menu *m, E_Menu_Item *mi);
 static void _note_menu_face_add (void *data, E_Menu *m, E_Menu_Item *mi);    
 static void _note_face_trans_set(void *data, E_Menu *m, E_Menu_Item *mi);
+static void _note_face_font_change(void *data, E_Menu *m, E_Menu_Item *mi);
 
 static int  _note_face_init           (Note_Face *nf);
 static void _note_face_free           (Note_Face *nf);
@@ -258,6 +259,34 @@ _note_menu_bgcolor_blue (void *data, E_Menu *m, E_Menu_Item *mi)
 }
 
 static void
+_note_face_font_change(void *data, E_Menu *m, E_Menu_Item *mi)
+{    
+   
+   Note_Face *face = data;
+   Evas_Object *bg;
+   Esmart_Text_Area_Format *format;
+   char f[10];
+   int pos;
+   
+   pos = esmart_textarea_cursor_pos_get(face->note_object);
+   esmart_textarea_cursor_pos_set(face->note_object, 0);
+   format = esmart_textarea_format_get(face->note_object);
+     
+   switch(e_menu_item_num_get(mi))
+     {
+      case 0:
+	sprintf(f, "font=%s size=%d",format->font, atoi(format->size)+1);
+	esmart_textarea_format_insert(face->note_object, f);
+	break;
+      case 1:
+	sprintf(f, "font=%s size=%d",format->font, atoi(format->size)-1);
+	esmart_textarea_format_insert(face->note_object, f);	
+	break;
+     }   
+   esmart_textarea_cursor_pos_set(face->note_object, pos);
+}
+
+static void
 _note_face_trans_set(void *data, E_Menu *m, E_Menu_Item *mi)
 {    
    
@@ -341,15 +370,17 @@ _note_face_unfocus(void *data, Evas *e, Evas_Object *obj,
 static void
 _note_face_menu_new(Note_Face *face)
 {    
-   E_Menu *mn, *mnbg, *mnt;
+   E_Menu *mn, *mnbg, *mnt, *mnf;
    E_Menu_Item *mi;
 
-   mn = e_menu_new();
-   mnbg = e_menu_new (); // options submenu
-   mnt = e_menu_new (); // trans submenu
+   mn = e_menu_new();    // main menu
+   mnbg = e_menu_new (); // bg submenu
+   mnt = e_menu_new ();  // trans submenu
+   mnf = e_menu_new ();  // fonts submenu
    face->menu = mn;
    face->menu_bg = mnbg;
    face->menu_trans = mnt;
+   face->menu_font = mnf;
 
    mi = e_menu_item_new (mnbg);
    e_menu_item_label_set (mi, "White Bg");
@@ -421,6 +452,19 @@ _note_face_menu_new(Note_Face *face)
    mi = e_menu_item_new(mn);
    e_menu_item_label_set(mi, "Transparency");
    e_menu_item_submenu_set(mi, face->menu_trans);   
+   
+   mi = e_menu_item_new (mnf);
+   e_menu_item_label_set (mi, "Larger");
+   e_menu_item_callback_set (mi, _note_face_font_change, face);
+   
+   mi = e_menu_item_new (mnf);
+   e_menu_item_label_set (mi, "Smaller");
+   e_menu_item_callback_set (mi, _note_face_font_change, face);   
+   
+   mi = e_menu_item_new(mn);
+   e_menu_item_label_set(mi, "Font");
+   e_menu_item_submenu_set(mi, face->menu_font);
+   
    
    mi = e_menu_item_new(mn);
    e_menu_item_label_set(mi, "Delete Note");

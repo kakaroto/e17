@@ -48,6 +48,7 @@ struct _Note_Face
    E_Menu          *menu; 
    E_Menu          *menu_bg;
    E_Menu          *menu_trans;
+   E_Menu          *menu_font;   
    E_Config_DD     *conf_edd;
    Config          *conf;   
 };
