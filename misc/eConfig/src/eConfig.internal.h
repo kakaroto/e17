@@ -72,3 +72,6 @@ unsigned long _econf_finddatapointerinpath(char *path,char *loc,
 void * _econf_get_data_from_disk(char *loc,unsigned long *length);
 int _econf_save_data_to_disk(void *data, char *loc,unsigned long length);
 int _econf_purge_data_from_disk(char *loc);
+int _econf_purge_data_from_disk_at_path(char *loc, char *path);
+int _econf_save_data_to_disk_at_position(unsigned long position,char *path,
+		        unsigned long length, void *data);

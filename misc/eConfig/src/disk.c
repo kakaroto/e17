@@ -83,6 +83,23 @@ void * _econf_get_data_from_disk(char *loc,unsigned long *length) {
 
 }
 
+int _econf_save_data_to_disk_at_position(unsigned long position,char *path,
+		unsigned long length, void *data) {
+
+	if(!position)
+		return 0;
+	if(!path)
+		return 0;
+	if(!length)
+		return 0;
+	if(!data)
+		return 0;
+
+	return 1;
+
+}
+
+
 int _econf_save_data_to_disk(void *data, char *loc, unsigned long length) {
 
 	char **paths;
@@ -97,12 +114,45 @@ int _econf_save_data_to_disk(void *data, char *loc, unsigned long length) {
 
 	if((paths = eConfigPaths(&num))) {
 		int i;
-		int newlength;
+		unsigned long oldlength;
+		unsigned long position;
 		for(i=0;i<num;i++) {
-
+			if((oldlength =
+				_econf_finddatapointerinpath(paths[i],loc,&position))) {
+				if(oldlength >= length) {
+					if(!_econf_save_data_to_disk_at_position(position,paths[i],
+							length,data)) {
+						/* We failed writing to the disk.  This is probably
+						 * bad.
+						 */
+					}
+				} else {
+					if(_econf_purge_data_from_disk_at_path(loc,paths[i])) {
+					} else {
+						/* We failed purging it somehow, even though we found
+						 * it...  This is probably not a good place to be.
+						 */
+					}
+				}
+			}
 		}
 		free(paths);
 	}
+
+	/* We're somehow trying to save data without HAVING anywhere to save it
+	 * to, which is probably a bad thing
+	 */
+
+
+	return 0;
+}
+
+int _econf_purge_data_from_disk_at_path(char *loc, char *path) {
+
+	if(!loc)
+		return 0;
+	if(!path)
+		return 0;
 
 	return 0;
 }
