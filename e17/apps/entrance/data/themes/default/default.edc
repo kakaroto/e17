@@ -158,13 +158,14 @@ images {
    image, "e118.png" LOSSY 95;
    image, "e119.png" LOSSY 95;
    image, "e120.png" LOSSY 95;
-   image, "menu_bottom_center.png"		LOSSY 80;
+/*   image, "menu_bottom_center.png"		LOSSY 80;
    image, "menu_bottom_left.png"		LOSSY 80;
    image, "menu_bottom_right.png"		LOSSY 80;
    image, "menu_top_center.png"		LOSSY 80;
    image, "menu_top_left.png"		LOSSY 80;
    image, "menu_top_right.png"		LOSSY 80;
    image, "menu.png"			LOSSY 80;
+*/
    image, "default_preview.png"		LOSSY 80;
 
 }
@@ -1419,10 +1420,11 @@ collections {
 			offset, 5 20;
 			to, "EntranceSessionListClip";
 		    }
-		    image
+/*		    image
 		    {
 			normal, "menu_top_left.png";
 		    }
+*/
 		}
 	    }
 	    part
@@ -1447,10 +1449,11 @@ collections {
 			offset, 0 20;
 			to, "EntranceSessionListClip";
 		    }
-		    image
+/*		    image
 		    {
 			normal, "menu_top_right.png";
 		    }
+*/
 		}
 	    }
 	    part
@@ -1475,10 +1478,11 @@ collections {
 			offset, -5 20;
 			to, "EntranceSessionListClip";
 		    }
-		    image
+/*		    image
 		    {
 			normal, "menu_top_center.png";
 		    }
+*/
 		}
 	    }
 	    part
@@ -1540,10 +1544,11 @@ collections {
 			offset, -5 0;
 			to, "EntranceSessionListClip";
 		    }
-		    image
+/*		    image
 		    {
 			normal, "menu_bottom_center.png";
 		    }
+*/
 		}
 	    }
 	    part
@@ -1568,10 +1573,11 @@ collections {
 			offset, 5 0;
 			to, "EntranceSessionListClip";
 		    }
-		    image
+/*		    image
 		    {
 			normal, "menu_bottom_left.png";
 		    }
+*/
 		}
 	    }
 	    part
@@ -1596,10 +1602,11 @@ collections {
 			offset, 0 0;
 			to, "EntranceSessionListClip";
 		    }
-		    image
+/*		    image
 		    {
 			normal, "menu_bottom_right.png";
 		    }
+*/
 		}
 	    }
 	    part
