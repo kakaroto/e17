@@ -22,6 +22,9 @@
  */
 #include "E.h"
 
+/* Hmmm... */
+#define HIQ mode.pager_hiq
+
 void
 HandleDrawQueue()
 {
@@ -866,6 +869,444 @@ EBlendPixImg(EWin * ewin, PixImg * s1, PixImg * s2, PixImg * dst, int x, int y,
      }
 /* I dont believe it - you cannot do this to a shared pixmaps to the screen */
 /* XCopyArea(disp, dst->pmap, root.win, dst->gc, x, y, w, h, x, y); */
+}
+
+void
+ScaleLine(Pixmap dest, Window src, int dx, int dy, int sw, int pw, int sy,
+	  int sh)
+{
+   static GC           gc = 0;
+   XGCValues           gcv;
+   int                 x, x2;
+   PixImg             *p_grab = NULL, *p_grab2 = NULL, *p_buf = NULL;
+   XImage             *px_grab = NULL, *px_grab2 = NULL, *px_buf = NULL;
+
+   if (!gc)
+     {
+	gcv.subwindow_mode = IncludeInferiors;
+	gc = XCreateGC(disp, src, GCSubwindowMode, &gcv);
+     }
+
+   p_grab = ECreatePixImg(dest, sw, 1);
+   if (p_grab)
+     {
+	if (HIQ)
+	  {
+	     p_grab2 = ECreatePixImg(dest, sw, 1);
+	     if (!p_grab2)
+	       {
+		  EDestroyPixImg(p_grab);
+		  p_grab = NULL;
+	       }
+	  }
+
+	if (p_grab)
+	  {
+	     p_buf = ECreatePixImg(dest, pw, 1);
+	     if (p_buf)
+	       {
+		  XCopyArea(disp, src, p_grab->pmap, gc, 0, sy, sw, 1, 0, 0);
+		  if (HIQ)
+		     XCopyArea(disp, src, p_grab2->pmap, gc, 0, sy + (sh / 2),
+			       sw, 1, 0, 0);
+		  XSync(disp, False);
+	       }
+	  }
+	else
+	  {
+	     EDestroyPixImg(p_grab);
+	     if (p_grab2)
+		EDestroyPixImg(p_grab2);
+	     p_grab = NULL;
+	  }
+     }
+
+   if (!p_grab)
+     {
+	px_grab = XGetImage(disp, src, 0, sy, sw, 1, 0xffffffff, ZPixmap);
+	if (!px_grab)
+	   return;
+
+	if (HIQ)
+	   px_grab2 =
+	      XGetImage(disp, src, 0, sy + (sh / 2), sw, 1, 0xffffffff,
+			ZPixmap);
+	if (!px_grab2)
+	  {
+	     XDestroyImage(px_grab);
+	     return;
+	  }
+
+	px_buf =
+	   XCreateImage(disp, root.vis, root.depth, ZPixmap, 0, NULL, pw, 1,
+			32, 0);
+	if (!px_buf)
+	  {
+	     XDestroyImage(px_grab);
+	     XDestroyImage(px_grab2);
+	     return;
+	  }
+
+	px_buf->data = malloc(px_buf->bytes_per_line * px_buf->height);
+	if (!px_buf->data)
+	  {
+	     XDestroyImage(px_grab);
+	     XDestroyImage(px_grab2);
+	     XDestroyImage(px_buf);
+	     return;
+	  }
+     }
+
+   if (HIQ)
+     {
+	int                 v1, v2, v3, v4, difx;
+	XImage             *xim1 = NULL, *xim2 = NULL, *xim3 = NULL;
+
+	if (p_grab)
+	  {
+	     xim1 = p_grab->xim;
+	     xim2 = p_grab2->xim;
+	     xim3 = p_buf->xim;
+	  }
+	else
+	  {
+	     xim1 = px_grab;
+	     xim2 = px_grab2;
+	     xim3 = px_buf;
+	  }
+
+	difx = (sw / pw) / 2;
+	switch (IC_RenderDepth())
+	  {
+	  case 24:
+	  case 32:
+	     for (x = 0; x < pw; x++)
+	       {
+		  x2 = (sw * x) / pw;
+		  v1 = XGetPixel(xim1, x2, 0);
+		  v2 = XGetPixel(xim1, x2 + difx, 0);
+		  v3 = XGetPixel(xim2, x2, 0);
+		  v4 = XGetPixel(xim2, x2 + difx, 0);
+		  v1 = ((v1 >> 2) & 0x3f3f3f3f) + ((v2 >> 2) & 0x3f3f3f3f) +
+		     ((v3 >> 2) & 0x3f3f3f3f) + ((v4 >> 2) & 0x3f3f3f3f) +
+		     (v1 & v2 & v3 & v4 & 0x03030303);
+		  XPutPixel(xim3, x, 0, v1);
+	       }
+	     break;
+	  case 16:
+	     for (x = 0; x < pw; x++)
+	       {
+		  x2 = (sw * x) / pw;
+		  v1 = XGetPixel(xim1, x2, 0);
+		  v2 = XGetPixel(xim1, x2 + difx, 0);
+		  v3 = XGetPixel(xim2, x2, 0);
+		  v4 = XGetPixel(xim2, x2 + difx, 0);
+		  v1 = ((v1 >> 2) & ((0x70 << 7) | (0x78 << 2) | (0x70 >> 4)))
+		     +
+		     ((v2 >> 2) & ((0x70 << 7) | (0x78 << 2) | (0x70 >> 4)))
+		     +
+		     ((v3 >> 2) & ((0x70 << 7) | (0x78 << 2) | (0x70 >> 4)))
+		     +
+		     ((v4 >> 2) & ((0x70 << 7) | (0x78 << 2) | (0x70 >> 4)))
+		     + (v1 & v2 & v3 & v4 & ((0x3 << 11) | (0x3 << 5) | (0x3)));
+		  XPutPixel(xim3, x, 0, v1);
+	       }
+	     break;
+	  case 15:
+	     /*        break; */
+	  default:
+	     for (x = 0; x < pw; x++)
+	       {
+		  x2 = (sw * x) / pw;
+		  XPutPixel(xim3, x, 0, XGetPixel(xim1, x2, 0));
+	       }
+	     break;
+	  }
+     }
+   else
+     {
+	XImage             *xim1 = NULL, *xim3 = NULL;
+
+	if (p_grab)
+	  {
+	     xim1 = p_grab->xim;
+	     xim3 = p_buf->xim;
+	  }
+	else
+	  {
+	     xim1 = px_grab;
+	     xim3 = px_buf;
+	  }
+
+	for (x = 0; x < pw; x++)
+	  {
+	     x2 = (sw * x) / pw;
+	     XPutPixel(xim3, x, 0, XGetPixel(xim1, x2, 0));
+	  }
+     }
+
+   if (p_buf)
+     {
+	XShmPutImage(disp, dest, gc, p_buf->xim, 0, 0, dx, dy, pw, 1, False);
+	XSync(disp, False);
+	if (p_grab)
+	   EDestroyPixImg(p_grab);
+	if (p_grab2)
+	   EDestroyPixImg(p_grab2);
+	if (p_buf)
+	   EDestroyPixImg(p_buf);
+     }
+   else
+     {
+	XPutImage(disp, dest, gc, px_buf, 0, 0, dx, dy, pw, 1);
+	if (px_grab)
+	   XDestroyImage(px_grab);
+	if (px_grab2)
+	   XDestroyImage(px_grab2);
+	if (px_buf)
+	   XDestroyImage(px_buf);
+     }
+}
+
+void
+ScaleRect(Pixmap dest, Window src, int sx, int sy, int dx, int dy, int sw,
+	  int sh, int dw, int dh)
+{
+   static GC           gc = 0, gc2 = 0;
+   XGCValues           gcv;
+   int                 y, y2, x, x2;
+   PixImg             *p_grab = NULL, *p_buf = NULL;
+   XImage             *px_grab = NULL, *px_buf = NULL;
+
+   if (sw > root.w * 2)
+      return;
+   if (sh > root.h * 2)
+      return;
+   if (dw > root.w * 2)
+      return;
+   if (dh > root.h * 2)
+      return;
+
+   if (!gc)
+     {
+	gcv.subwindow_mode = IncludeInferiors;
+	gc = XCreateGC(disp, src, GCSubwindowMode, &gcv);
+	gc2 = XCreateGC(disp, src, 0, &gcv);
+     }
+
+   if (HIQ)
+      p_grab = ECreatePixImg(src, sw, dh * 2);
+   else
+      p_grab = ECreatePixImg(src, sw, dh);
+
+   if (p_grab)
+     {
+	p_buf = ECreatePixImg(dest, dw, dh);
+	if (p_buf)
+	  {
+	     if (HIQ)
+	       {
+		  for (y = 0; y < (dh * 2); y++)
+		    {
+		       y2 = (sh * y) / (dh * 2);
+		       XCopyArea(disp, src, p_grab->pmap, gc, sx, sy + y2, sw,
+				 1, 0, y);
+		    }
+	       }
+	     else
+	       {
+		  for (y = 0; y < dh; y++)
+		    {
+		       y2 = (sh * y) / dh;
+		       XCopyArea(disp, src, p_grab->pmap, gc, sx, sy + y2, sw,
+				 1, 0, y);
+		    }
+	       }
+	     XSync(disp, False);
+	  }
+	else
+	  {
+	     EDestroyPixImg(p_grab);
+	     p_grab = NULL;
+	  }
+     }
+
+   if (!p_grab)
+     {
+	if (HIQ)
+	  {
+	     Pixmap              pmap;
+
+	     pmap = ECreatePixmap(disp, src, sw, dh * 2, root.depth);
+	     for (y = 0; y < (dh * 2); y++)
+	       {
+		  y2 = (sh * y) / (dh * 2);
+		  XCopyArea(disp, src, pmap, gc, sx, sy + y2, sw, 1, 0, y);
+	       }
+
+	     px_grab =
+		XGetImage(disp, pmap, 0, 0, sw, dh * 2, 0xffffffff, ZPixmap);
+	     EFreePixmap(disp, pmap);
+	     if (!px_grab)
+		return;
+	  }
+	else
+	  {
+	     Pixmap              pmap;
+
+	     pmap = ECreatePixmap(disp, src, sw, dh, root.depth);
+	     for (y = 0; y < dh; y++)
+	       {
+		  y2 = (sh * y) / dh;
+		  XCopyArea(disp, src, pmap, gc, sx, sy + y2, sw, 1, 0, y);
+	       }
+
+	     px_grab = XGetImage(disp, pmap, 0, 0, sw, dh, 0xffffffff, ZPixmap);
+	     EFreePixmap(disp, pmap);
+	     if (!px_grab)
+		return;
+	  }
+
+	px_buf =
+	   XCreateImage(disp, root.vis, root.depth, ZPixmap, 0, NULL, dw, dh,
+			32, 0);
+	if (!px_buf)
+	  {
+	     XDestroyImage(px_grab);
+	     return;
+	  }
+
+	px_buf->data = malloc(px_buf->bytes_per_line * px_buf->height);
+	if (!px_buf->data)
+	  {
+	     XDestroyImage(px_buf);
+	     XDestroyImage(px_grab);
+	     return;
+	  }
+     }
+
+   if (HIQ)
+     {
+	int                 v1, v2, v3, v4, difx;
+	XImage             *xim1 = NULL, *xim3 = NULL;
+
+	if (p_grab)
+	  {
+	     xim1 = p_grab->xim;
+	     xim3 = p_buf->xim;
+	  }
+	else
+	  {
+	     xim1 = px_grab;
+	     xim3 = px_buf;
+	  }
+
+	difx = (sw / dw) / 2;
+	switch (root.depth)
+	  {
+	  case 24:
+	  case 32:
+	     for (y = 0; y < dh; y++)
+	       {
+		  for (x = 0; x < dw; x++)
+		    {
+		       y2 = (y * 2);
+		       x2 = (sw * x) / dw;
+		       v1 = XGetPixel(xim1, x2, y2);
+		       v2 = XGetPixel(xim1, x2 + difx, y2);
+		       v3 = XGetPixel(xim1, x2, y2 + 1);
+		       v4 = XGetPixel(xim1, x2 + difx, y2 + 1);
+		       v1 = ((v1 >> 2) & 0x3f3f3f3f) +
+			  ((v2 >> 2) & 0x3f3f3f3f) +
+			  ((v3 >> 2) & 0x3f3f3f3f) +
+			  ((v4 >> 2) & 0x3f3f3f3f) +
+			  (v1 & v2 & v3 & v4 & 0x03030303);
+		       XPutPixel(xim3, x, y, v1);
+		    }
+	       }
+	     break;
+	  case 16:
+	     for (y = 0; y < dh; y++)
+	       {
+		  for (x = 0; x < dw; x++)
+		    {
+		       y2 = (y * 2);
+		       x2 = (sw * x) / dw;
+		       v1 = XGetPixel(xim1, x2, y2);
+		       v2 = XGetPixel(xim1, x2 + difx, y2);
+		       v3 = XGetPixel(xim1, x2, y2 + 1);
+		       v4 = XGetPixel(xim1, x2 + difx, y2 + 1);
+		       v1 = ((v1 >> 2) &
+			     ((0x70 << 7) | (0x78 << 2) | (0x70 >> 4))) +
+			  ((v2 >> 2) &
+			   ((0x70 << 7) | (0x78 << 2) | (0x70 >> 4))) +
+			  ((v3 >> 2) &
+			   ((0x70 << 7) | (0x78 << 2) | (0x70 >> 4))) +
+			  ((v4 >> 2) &
+			   ((0x70 << 7) | (0x78 << 2) | (0x70 >> 4))) +
+			  (v1 & v2 & v3 & v4 &
+			   ((0x3 << 11) | (0x3 << 5) | (0x3)));
+		       XPutPixel(xim3, x, y, v1);
+		    }
+	       }
+	     break;
+	  case 15:
+	     /*        break; */
+	  default:
+	     for (y = 0; y < dh; y++)
+	       {
+		  for (x = 0; x < dw; x++)
+		    {
+		       y2 = (y * 2);
+		       x2 = (sw * x) / dw;
+		       XPutPixel(xim3, x, y, XGetPixel(xim1, x2, y2));
+		    }
+	       }
+	     break;
+	  }
+     }
+   else
+     {
+	XImage             *xim1 = NULL, *xim3 = NULL;
+
+	if (p_grab)
+	  {
+	     xim1 = p_grab->xim;
+	     xim3 = p_buf->xim;
+	  }
+	else
+	  {
+	     xim1 = px_grab;
+	     xim3 = px_buf;
+	  }
+
+	for (y = 0; y < dh; y++)
+	  {
+	     for (x = 0; x < dw; x++)
+	       {
+		  x2 = (sw * x) / dw;
+		  XPutPixel(xim3, x, y, XGetPixel(xim1, x2, y));
+	       }
+	  }
+     }
+
+   if (p_buf)
+     {
+	XShmPutImage(disp, dest, gc2, p_buf->xim, 0, 0, dx, dy, dw, dh, False);
+	XSync(disp, False);
+	if (p_grab)
+	   EDestroyPixImg(p_grab);
+	if (p_buf)
+	   EDestroyPixImg(p_buf);
+     }
+   else
+     {
+	XPutImage(disp, dest, gc, px_buf, 0, 0, dx, dy, dw, dh);
+	if (px_grab)
+	   XDestroyImage(px_grab);
+	if (px_buf)
+	   XDestroyImage(px_buf);
+     }
 }
 
 #include <X11/bitmaps/flipped_gray>

@@ -1596,7 +1596,7 @@ FreeEwin(EWin * ewin)
      }
 
    if (ewin->pager)
-      PagerKill(ewin->pager);
+      PagerDestroy(ewin->pager);
    if (ewin->ibox)
       IconboxDestroy(ewin->ibox);
 

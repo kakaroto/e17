@@ -20,7 +20,6 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-#define DECLARE_STRUCT_PAGER
 #include "E.h"
 
 static ToolTip     *ttip = NULL;
@@ -854,73 +853,8 @@ HandleMotion(XEvent * ev)
 	       }
 	  }
      }
-   if (mode.mode == MODE_NONE)
-     {
-	Pager              *p;
 
-	p = FindPager(ev->xmotion.window);
-	if (p)
-	   PagerHandleMotion(p, ev->xmotion.window, ev->xmotion.x,
-			     ev->xmotion.y);
-	else
-	   PagerHandleMotion(NULL, ev->xmotion.window, -99, -99);
-     }
-   if ((mode.mode == MODE_PAGER_DRAG_PENDING) || (mode.mode == MODE_PAGER_DRAG))
-     {
-	Pager              *p;
-
-	mode.mode = MODE_PAGER_DRAG;
-	p = mode.context_pager;
-	if (p)
-	  {
-	     int                 ax, ay, cx, cy, i, num;
-	     EWin              **gwins;
-
-	     cx = desks.desk[p->desktop].current_area_x;
-	     cy = desks.desk[p->desktop].current_area_y;
-	     GetAreaSize(&ax, &ay);
-	     dx = mode.x - mode.px;
-	     dy = mode.y - mode.py;
-	     if (!FindItem
-		 ((char *)p->hi_ewin, 0, LIST_FINDBY_POINTER, LIST_TYPE_EWIN))
-		p->hi_ewin = NULL;
-	     if ((p->hi_ewin) && (!p->hi_ewin->pager)
-		 && (!p->hi_ewin->fixedpos))
-	       {
-		  Window              dw;
-		  int                 px, py;
-
-		  GetWinXY(p->hi_win, &x, &y);
-		  XRaiseWindow(disp, p->hi_win);
-		  x += dx;
-		  y += dy;
-		  EMoveWindow(disp, p->hi_win, x, y);
-		  XTranslateCoordinates(disp, p->win, root.win, 0, 0, &px, &py,
-					&dw);
-		  x -= px + (cx * (p->w / ax));
-		  y -= py + (cy * (p->h / ay));
-		  MoveEwin(p->hi_ewin, (x * root.w * ax) / p->w,
-			   (y * root.h * ay) / p->h);
-	       }
-
-	     gwins =
-		ListWinGroupMembersForEwin(p->hi_ewin, ACTION_MOVE,
-					   mode.nogroup, &num);
-	     for (i = 0; i < num; i++)
-	       {
-		  if ((gwins[i] != p->hi_ewin) && (!gwins[i]->pager)
-		      && (!gwins[i]->fixedpos))
-		    {
-		       GetWinXY(gwins[i]->win, &x, &y);
-		       x += (dx * root.w * ax) / p->w;
-		       y += (dy * root.h * ay) / p->h;
-		       MoveEwin(gwins[i], x, y);
-		    }
-	       }
-	     if (gwins)
-		Efree(gwins);
-	  }
-     }
+   PagersEventMotion(ev);
 
    DialogEventMotion(ev);
 
@@ -951,13 +885,11 @@ HandleDestroy(XEvent * ev)
 	p = FindPager(ev->xdestroywindow.window);
 	if (p)
 	  {
-	     if ((mode.mode == MODE_PAGER_DRAG) && (p->hi_ewin))
-	       {
-		  PagerHideHi(p);
-	       }
+	     PagerHideHi(p);
 	     mode.mode = MODE_NONE;
 	     mode.context_pager = NULL;
 	  }
+
 	if (ewin == mode.ewin)
 	  {
 	     if (mode.slideout)
@@ -1300,13 +1232,14 @@ HandleUnmap(XEvent * ev)
      {
 	if (ewin->pager)
 	  {
-	     if ((mode.mode == MODE_PAGER_DRAG) && (ewin->pager->hi_ewin))
-		PagerHideHi(ewin->pager);
+	     PagerHideHi(ewin->pager);
 	     mode.mode = MODE_NONE;
 	     mode.context_pager = NULL;
 	  }
+
 	if (mode.dockapp_support && ewin->docked)
 	   DockDestroy(ewin);
+
 	if (ewin == mode.ewin)
 	  {
 	     switch (mode.mode)
@@ -1434,8 +1367,6 @@ HandleExpose(XEvent * ev)
 
    EDBUG_RETURN_;
 }
-
-static int         *gwin_px, *gwin_py;
 
 void
 HandleMouseDown(XEvent * ev)
@@ -1678,82 +1609,7 @@ HandleMouseDown(XEvent * ev)
 	  }
      }
 
-   {
-      Pager              *p;
-
-      p = FindPager(ev->xbutton.window);
-      if (p)
-	{
-	   EWin              **gwins;
-
-	   gwins =
-	      ListWinGroupMembersForEwin(p->hi_ewin, ACTION_MOVE,
-					 mode.nogroup, &num);
-	   gwin_px = calloc(num, sizeof(int));
-	   gwin_py = calloc(num, sizeof(int));
-
-	   for (i = 0; i < num; i++)
-	     {
-		gwin_px[i] = gwins[i]->x;
-		gwin_py[i] = gwins[i]->y;
-	     }
-
-	   if (gwins)
-	      Efree(gwins);
-
-	   if (ev->xbutton.window == p->hi_win)
-	     {
-		int                 hx, hy;
-		Window              dw;
-
-		XTranslateCoordinates(disp, p->hi_win, p->win, 0, 0, &hx, &hy,
-				      &dw);
-		ev->xbutton.x += hx;
-		ev->xbutton.y += hy;
-	     }
-	   if ((int)ev->xbutton.button == mode.pager_menu_button)
-	     {
-		if ((ev->xbutton.x >= 0) && (ev->xbutton.y >= 0)
-		    && (ev->xbutton.x < p->w) && (ev->xbutton.y < p->h))
-		   PagerShowMenu(p, ev->xbutton.x, ev->xbutton.y);
-	     }
-	   else if ((int)ev->xbutton.button == mode.pager_win_button)
-	     {
-		ewin = EwinInPagerAt(p, ev->xbutton.x, ev->xbutton.y);
-		if ((ewin) && (!ewin->pager))
-		  {
-		     static int          pgd_x = 0, pgd_y = 0;
-		     static int          pwin_px, pwin_py;
-		     Window              dw;
-		     int                 wx, wy, ww, wh, ax, ay, cx, cy, px, py;
-
-		     PagerHideHi(p);
-		     pwin_px = ewin->x;
-		     pwin_py = ewin->y;
-		     GetAreaSize(&ax, &ay);
-		     cx = desks.desk[p->desktop].current_area_x;
-		     cy = desks.desk[p->desktop].current_area_y;
-		     wx = ((ewin->x + (cx * root.w)) * (p->w / ax)) / root.w;
-		     wy = ((ewin->y + (cy * root.h)) * (p->h / ay)) / root.h;
-		     ww = ((ewin->w) * (p->w / ax)) / root.w;
-		     wh = ((ewin->h) * (p->h / ay)) / root.h;
-		     XTranslateCoordinates(disp, p->win, root.win, 0, 0, &px,
-					   &py, &dw);
-		     EMoveResizeWindow(disp, p->hi_win, px + wx, py + wy, ww,
-				       wh);
-		     ESetWindowBackgroundPixmap(disp, p->hi_win,
-						ewin->mini_pmm.pmap);
-		     EMapRaised(disp, p->hi_win);
-		     GrabThePointer(p->hi_win);
-		     p->hi_visible = 1;
-		     mode.mode = MODE_PAGER_DRAG_PENDING;
-		     mode.context_pager = p;
-		     pgd_x = ewin->x;
-		     pgd_y = ewin->y;
-		  }
-	     }
-	}
-   }
+   PagersEventMouseDown(ev);
 
    EDBUG_RETURN_;
 }
@@ -2101,227 +1957,15 @@ HandleMouseUp(XEvent * ev)
      }
 
    if (!wasmovres)
-     {
-	Pager              *p;
-	int                 pax, pay;
+      PagersEventMouseUp(ev);
 
-	p = FindPager(ev->xbutton.window);
-	if ((p) && ((int)ev->xbutton.button == mode.pager_sel_button))
-	  {
-	     PagerAreaAt(p, ev->xbutton.x, ev->xbutton.y, &pax, &pay);
-	     GotoDesktop(p->desktop);
-	     if (p->desktop != desks.current)
-	       {
-		  AUDIO_PLAY("SOUND_DESKTOP_SHUT");
-	       }
-	     SetCurrentArea(pax, pay);
-	  }
-	else if ((p) && ((int)ev->xbutton.button == mode.pager_win_button))
-	  {
-	     if (ev->xbutton.window == p->hi_win)
-	       {
-		  int                 hx, hy;
-		  Window              dw;
-
-		  XTranslateCoordinates(disp, p->hi_win, p->win, 0, 0, &hx, &hy,
-					&dw);
-		  ev->xbutton.x += hx;
-		  ev->xbutton.y += hy;
-	       }
-	     if (!FindItem
-		 ((char *)p->hi_ewin, 0, LIST_FINDBY_POINTER, LIST_TYPE_EWIN))
-		p->hi_ewin = NULL;
-	     if ((mode.mode == MODE_PAGER_DRAG) && (p->hi_ewin))
-	       {
-		  ewin = NULL;
-		  for (i = 0; i < desks.desk[desks.current].num; i++)
-		    {
-		       EWin               *ew;
-
-		       ew = desks.desk[desks.current].list[i];
-		       if (((ew->pager) || (ew->ibox))
-			   && ((ew->desktop == desks.current) || (ew->sticky)))
-			 {
-			    if ((ev->xbutton.x_root >=
-				 (ew->x + ew->border->border.left))
-				&& (ev->xbutton.x_root <
-				    (ew->x + ew->w - ew->border->border.right))
-				&& (ev->xbutton.y_root >=
-				    (ew->y + ew->border->border.top))
-				&& (ev->xbutton.y_root <
-				    (ew->y + ew->h -
-				     ew->border->border.bottom)))
-			      {
-				 ewin = ew;
-				 i = desks.desk[desks.current].num;
-			      }
-			 }
-		    }
-		  ewin = GetEwinPointerInClient();
-		  if ((ewin) && (ewin->pager))
-		    {
-		       Pager              *pp;
-		       int                 w, h, x, y, ax, ay, cx, cy, px, py;
-		       int                 wx, wy, base_x = 0, base_y = 0;
-		       Window              dw;
-
-		       pp = ewin->pager;
-		       cx = desks.desk[pp->desktop].current_area_x;
-		       cy = desks.desk[pp->desktop].current_area_y;
-		       GetAreaSize(&ax, &ay);
-		       GetWinXY(p->hi_win, &x, &y);
-		       GetWinWH(p->hi_win, &w, &h);
-		       XTranslateCoordinates(disp, pp->win, root.win, 0, 0, &px,
-					     &py, &dw);
-		       wx = ((x - px) -
-			     (cx * (pp->w / ax))) * (root.w / (pp->w / ax));
-		       wy = ((y - py) -
-			     (cy * (pp->h / ay))) * (root.h / (pp->h / ay));
-		       if (((x + w) <= px) || ((y + h) <= py)
-			   || (x >= (px + pp->w)) || (y >= (py + pp->h)))
-			 {
-			    int                 ndesk, nx, ny;
-
-			    ndesk = desks.current;
-			    nx = (int)ev->xbutton.x_root -
-			       desks.desk[desks.current].x -
-			       ((int)p->hi_ewin->w / 2);
-			    ny = (int)ev->xbutton.y_root -
-			       desks.desk[desks.current].y -
-			       ((int)p->hi_ewin->h / 2);
-			    MoveEwin(p->hi_ewin, nx, ny);
-			    if (!p->hi_ewin->sticky)
-			       MoveEwinToDesktop(p->hi_ewin, ndesk);
-			 }
-		       else
-			 {
-			    gwins =
-			       ListWinGroupMembersForEwin(p->hi_ewin,
-							  ACTION_MOVE,
-							  mode.nogroup, &num);
-			    /* get get the location of the base win so we can move the */
-			    /* rest of the windows in the group to the correct offset */
-			    for (i = 0; i < num; i++)
-			       if (gwins[i] == p->hi_ewin)
-				 {
-				    base_x = gwin_px[i];
-				    base_y = gwin_py[i];
-				 }
-			    for (i = 0; i < num; i++)
-			      {
-				 if (!gwins[i]->sticky)
-				    MoveEwinToDesktopAt(gwins[i], pp->desktop,
-							wx + (gwin_px[i] -
-							      base_x),
-							wy + (gwin_py[i] -
-							      base_y));
-				 else
-				    MoveEwin(gwins[i],
-					     ((root.w * ax) + wx +
-					      (gwin_px[i] - base_x)) % root.w,
-					     ((root.h * ay) + wy +
-					      (gwin_py[i] - base_y)) % root.h);
-			      }
-			    if (gwins)
-			       Efree(gwins);
-			 }
-		    }
-		  else if ((ewin) && (ewin->ibox) && (!((p->hi_ewin->ibox)
-							/* || ((ewin->client.need_input) && ((ewin->skiptask) || (ewin->skipwinlist))) */
-						      )))
-		    {
-		       gwins =
-			  ListWinGroupMembersForEwin(p->hi_ewin, ACTION_MOVE,
-						     mode.nogroup, &num);
-		       for (i = 0; i < num; i++)
-			 {
-			    if (!gwins[i]->pager)
-			      {
-				 MoveEwin(gwins[i], gwin_px[i], gwin_py[i]);
-				 IconboxIconifyEwin(ewin->ibox, gwins[i]);
-			      }
-			 }
-		       if (gwins)
-			  Efree(gwins);
-		    }
-		  else
-		    {
-		       int                 ndesk, nx, ny, base_x = 0, base_y =
-			  0, ax, ay;
-
-		       ndesk = desks.current;
-		       nx = (int)ev->xbutton.x_root -
-			  desks.desk[desks.current].x -
-			  ((int)p->hi_ewin->w / 2);
-		       ny = (int)ev->xbutton.y_root -
-			  desks.desk[desks.current].y -
-			  ((int)p->hi_ewin->h / 2);
-		       GetAreaSize(&ax, &ay);
-
-		       gwins =
-			  ListWinGroupMembersForEwin(p->hi_ewin, ACTION_MOVE,
-						     mode.nogroup, &num);
-		       for (i = 0; i < num; i++)
-			  if (gwins[i] == p->hi_ewin)
-			    {
-			       base_x = gwin_px[i];
-			       base_y = gwin_py[i];
-			    }
-		       for (i = 0; i < num; i++)
-			 {
-			    if (!gwins[i]->sticky)
-			       MoveEwin(gwins[i], nx + (gwin_px[i] - base_x),
-					ny + (gwin_py[i] - base_y));
-			    else
-			       MoveEwin(gwins[i],
-					((root.w * ax) + nx +
-					 (gwin_px[i] - base_x)) % root.w,
-					((root.h * ay) + ny +
-					 (gwin_py[i] - base_y)) % root.h);
-			    if (!gwins[i]->sticky)
-			       MoveEwinToDesktop(gwins[i], ndesk);
-			 }
-		       if (gwins)
-			  Efree(gwins);
-		    }
-	       }
-	     else if ((ev->xbutton.x >= 0) && (ev->xbutton.y >= 0)
-		      && (ev->xbutton.x < p->w) && (ev->xbutton.y < p->h))
-	       {
-		  PagerAreaAt(p, ev->xbutton.x, ev->xbutton.y, &pax, &pay);
-		  GotoDesktop(p->desktop);
-		  SetCurrentArea(pax, pay);
-		  ewin = EwinInPagerAt(p, ev->xbutton.x, ev->xbutton.y);
-		  if (ewin)
-		    {
-		       RaiseEwin(ewin);
-		       FocusToEWin(ewin);
-		    }
-	       }
-	     if (p->hi_ewin)
-	       {
-		  RedrawPagersForDesktop(p->hi_ewin->desktop, 3);
-		  ForceUpdatePagersForDesktop(p->hi_ewin->desktop);
-		  p->hi_visible = 1;
-		  PagerHideHi(p);
-	       }
-	     mode.mode = MODE_NONE;
-	     mode.context_pager = NULL;
-	  }
-     }
    mode.destroy = 0;
-   /* unallocate the space that was holding the old positions of the */
-   /* windows */
-   if (gwin_px)
-     {
-	Efree(gwin_px);
-	gwin_px = NULL;
-	Efree(gwin_py);
-	gwin_py = NULL;
-     }
+
    if ((mode.slideout) && (pslideout))
       HideSlideout(mode.slideout, mode.context_win);
+
    click_was_in = 0;
+
    EDBUG_RETURN_;
 }
 
@@ -2419,6 +2063,9 @@ HandleMouseIn(XEvent * ev)
    win = ev->xcrossing.window;
    mode.context_win = win;
 
+   if (PagersEventMouseIn(ev))
+      EDBUG_RETURN_;
+
    {
       Menu               *m;
       MenuItem           *mi;
@@ -2429,7 +2076,6 @@ HandleMouseIn(XEvent * ev)
 	{
 	   int                 j;
 
-	   PagerHideAllHi();
 	   if ((win == mi->icon_win) &&
 	       (ev->xcrossing.detail == NotifyAncestor))
 	      EDBUG_RETURN_;
@@ -2476,7 +2122,6 @@ HandleMouseIn(XEvent * ev)
 	  {
 	     if (win == ewins[i]->bits[j].win)
 	       {
-		  PagerHideAllHi();
 		  if (!clickmenu)
 		    {
 		       mode.noewin = 0;
@@ -2509,7 +2154,6 @@ HandleMouseIn(XEvent * ev)
 	  {
 	     if ((win == buttons[i]->win) || (win == buttons[i]->event_win))
 	       {
-		  PagerHideAllHi();
 		  mode.button = buttons[i];
 		  if (buttons[i]->state == STATE_CLICKED)
 		     buttons[i]->left = 0;
@@ -2552,6 +2196,9 @@ HandleMouseOut(XEvent * ev)
 
    win = ev->xcrossing.window;
    mode.context_win = win;
+
+   if (PagersEventMouseOut(ev))
+      EDBUG_RETURN_;
 
    {
       Menu               *m;

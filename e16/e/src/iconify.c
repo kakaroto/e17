@@ -661,8 +661,8 @@ IB_SnapEWin(EWin * ewin)
    ewin->icon_w = w;
    ewin->icon_h = h;
    ewin->icon_pmm.pmap = ECreatePixmap(disp, ewin->win, w, h, root.depth);
-   PagerScaleRect(ewin->icon_pmm.pmap, ewin->win, 0, 0, 0, 0, ewin->w, ewin->h,
-		  w, h);
+   ScaleRect(ewin->icon_pmm.pmap, ewin->win, 0, 0, 0, 0, ewin->w, ewin->h,
+	     w, h);
    r = EShapeGetRectangles(disp, ewin->win, ShapeBounding, &rn, &ord);
    ewin->icon_pmm.mask = ECreatePixmap(disp, ewin->win, w, h, 1);
    gc = XCreateGC(disp, ewin->icon_pmm.mask, 0, &gcv);

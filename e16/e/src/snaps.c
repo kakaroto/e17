@@ -1252,7 +1252,7 @@ MatchToSnapInfoPager(Pager * p)
    if (sn->use_xy)
       EMoveWindow(disp, win, sn->x, sn->y);
    if (sn->use_wh)
-      PagerResize(p, sn->w, sn->h);
+      EResizeWindow(disp, win, sn->w, sn->h);
 }
 
 void

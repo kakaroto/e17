@@ -2422,7 +2422,6 @@ DialogEventMouseIn(XEvent * ev)
 
    if (d)
      {
-	PagerHideAllHi();
 	DialogActivateButton(win, 0);
      }
    else
@@ -2432,7 +2431,6 @@ DialogEventMouseIn(XEvent * ev)
 	di = FindDialogItem(win, &d);
 	if (di)
 	  {
-	     PagerHideAllHi();
 	     if (di->type == DITEM_AREA)
 	       {
 		  if (di->item.area.event_func)

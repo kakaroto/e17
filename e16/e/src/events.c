@@ -343,7 +343,6 @@ HEnterNotify(XEvent * ev)
 	 */
 	if (ev->xany.window == root.win)
 	  {
-	     PagerHideAllHi();
 	     if (!mode.focuswin || FOCUS_POINTER == mode.focusmode)
 		HandleFocusWindow(root.focuswin);
 	  }
@@ -678,6 +677,8 @@ HandleEvent(XEvent * ev)
 	  }
 	else
 	  {
+	     if (ev->type == KeyPress)
+		PagerHideAllHi();
 	     WarpFocusHandleEvent(ev);
 	     lst = ListItemType(&num, LIST_TYPE_ACLASS_GLOBAL);
 	     if (lst)

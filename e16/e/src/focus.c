@@ -382,11 +382,15 @@ BeginNewDeskFocus(void)
 			  SubstructureRedirectMask | PropertyChangeMask |
 			  ResizeRedirectMask);
 	     if (ewin->pager)
-		XSelectInput(disp, ewin->client.win,
-			     PropertyChangeMask | FocusChangeMask |
-			     ResizeRedirectMask | StructureNotifyMask |
-			     ColormapChangeMask | ButtonPressMask |
-			     ButtonReleaseMask | PointerMotionMask);
+	       {
+#if 0
+		  XSelectInput(disp, ewin->client.win,
+			       PropertyChangeMask | FocusChangeMask |
+			       ResizeRedirectMask | StructureNotifyMask |
+			       ColormapChangeMask | ButtonPressMask |
+			       ButtonReleaseMask | PointerMotionMask);
+#endif
+	       }
 	     else if (ewin->dialog)
 		XSelectInput(disp, ewin->client.win,
 			     PropertyChangeMask | FocusChangeMask |

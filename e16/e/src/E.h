@@ -1627,6 +1627,7 @@ struct _pager
    char                hi_visible;
    Window              hi_win;
    EWin               *hi_ewin;
+   int                 hi_win_w, hi_win_h;
 };
 #endif /* DECLARE_STRUCT_PAGER */
 
@@ -1884,6 +1885,11 @@ PixImg             *ECreatePixImg(Window win, int w, int h);
 void                EDestroyPixImg(PixImg * pi);
 void                EBlendPixImg(EWin * ewin, PixImg * s1, PixImg * s2,
 				 PixImg * dst, int x, int y, int w, int h);
+
+void                ScaleLine(Pixmap dest, Window src, int dx, int dy, int sw,
+			      int pw, int sy, int sh);
+void                ScaleRect(Pixmap dest, Window src, int sx, int sy, int dx,
+			      int dy, int sw, int sh, int dw, int dh);
 
 Imlib_Image        *ELoadImage(char *file);
 void                DrawEwinShape(EWin * ewin, int md, int x, int y, int w,
@@ -2724,31 +2730,19 @@ void                FreeClone(Clone * c);
 void                RemoveClones(void);
 void                CloneDesktop(int d);
 
-void                PagerScaleLine(Pixmap dest, Window src, int dx, int dy,
-				   int sw, int pw, int sy, int sh);
-void                PagerScaleRect(Pixmap dest, Window src, int sx, int sy,
-				   int dx, int dy, int sw, int sh, int dw,
-				   int dh);
-Pager              *CreatePager(void);
-EWin               *EwinInPagerAt(Pager * p, int x, int y);
+Pager              *PagerCreate(void);
+void                PagerDestroy(Pager * p);
 void                PagerResize(Pager * p, int w, int h);
 void                PagerShow(Pager * p);
 void                PagerHide(Pager * p);
-void                PagerTitle(Pager * p, char *title);
-void                PagerKill(Pager * p);
 Pager             **PagersForDesktop(int d, int *num);
 void                RedrawPagersForDesktop(int d, char newbg);
 void                ForceUpdatePagersForDesktop(int d);
-void                PagerEwinUpdateMini(Pager * p, EWin * ewin);
-void                PagerEwinUpdateFromPager(Pager * p, EWin * ewin);
 void                PagerRedraw(Pager * p, char newbg);
 void                PagerForceUpdate(Pager * p);
-void                PagerShowMenu(Pager * p, int x, int y);
 void                PagerReArea(void);
 void                PagerEwinOutsideAreaUpdate(EWin * ewin);
-void                PagerAreaAt(Pager * p, int x, int y, int *ax, int *ay);
 void                UpdatePagerSel(void);
-void                PagerHandleMotion(Pager * p, Window win, int x, int y);
 void                EnableAllPagers(void);
 void                DisableAllPagers(void);
 void                PagerHideHi(Pager * p);
@@ -2761,6 +2755,11 @@ int                 PagerForDesktop(int desk);
 void                DisablePagersForDesktop(int desk);
 Window              PagerGetWin(Pager * p);
 Window              PagerGetHiWin(Pager * p);
+void                PagersEventMotion(XEvent * ev);
+void                PagersEventMouseDown(XEvent * ev);
+void                PagersEventMouseUp(XEvent * ev);
+int                 PagersEventMouseIn(XEvent * ev);
+int                 PagersEventMouseOut(XEvent * ev);
 
 int                 CompareNetVersion(int major, int minor, int patchlevel,
 				      char *date);
