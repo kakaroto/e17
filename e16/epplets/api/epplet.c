@@ -2270,6 +2270,7 @@ struct _gadpopupbutton
    char       clicked;
    Epplet_gadget popup;
    char       popped;
+   char      *std;
    Window     win;
    Pixmap     pmap, mask;
 };
@@ -2390,6 +2391,33 @@ Epplet_remove_popup_entry(Epplet_gadget gadget, int entry_num)
   g->changed = 1;
 }
 
+void *
+Epplet_popup_entry_get_data(Epplet_gadget gadget, int entry_num)
+{
+   GadPopup *g;
+   int i;
+   
+   g = (GadPopup *)gadget;
+   if (!g->entry)
+     return NULL;
+
+   if(entry_num<0)
+     entry_num=g->entry_num+entry_num;
+   if(g->entry_num<entry_num)
+     return NULL;
+
+   return ((g->entry)[entry_num]).data;
+}
+
+int
+Epplet_popup_entry_num( Epplet_gadget gadget )
+{
+   if ( ((GadGeneral*)gadget)->type == E_POPUP )
+     return ((GadPopup*)gadget)->entry_num;
+   else
+     return 0;
+}
+
 void
 Epplet_popup_arrange_contents(Epplet_gadget gadget)
 {
@@ -2498,7 +2526,7 @@ Epplet_pop_popup(Epplet_gadget gadget, Window ww)
 
 Epplet_gadget 
 Epplet_create_popupbutton(char *label, char *image, int x,
-			  int y, int w, int h,
+			  int y, int w, int h, char *std,
 			  Epplet_gadget popup)
 {
    GadPopupButton *g;
@@ -2508,6 +2536,17 @@ Epplet_create_popupbutton(char *label, char *image, int x,
    g->general.type = E_POPUPBUTTON;
    g->x = x;
    g->y = y;
+   g->std = Estrdup(std);
+   if (g->std)
+     {
+        g->w = 12;
+        g->h = 12;
+     }
+   else
+     {
+        g->w = w;
+        g->h = h;
+     }
    g->w = w;
    g->h = h;
    g->pmap = 0;
@@ -2566,16 +2605,26 @@ Epplet_draw_popupbutton(Epplet_gadget eg)
       XFreePixmap(disp, g->mask);
    g->pmap = 0;
    g->mask = 0;
-   Epplet_imageclass_get_pixmaps("EPPLET_BUTTON", state, 
-				 &(g->pmap), &(g->mask), g->w, g->h);
-   if (g->image)
+   if (g->std)
      {
-	ImlibImage *im;
-	
-	ESYNC;
-	im = Imlib_load_image(id, g->image);
-	if (im)
+	char s[1024];
+
+	sprintf(s, "EPPLET_%s", g->std);
+	Epplet_imageclass_get_pixmaps(s, state,
+                                      &(g->pmap), &(g->mask), g->w, g->h);
+     }
+   else
+     {
+	Epplet_imageclass_get_pixmaps("EPPLET_BUTTON", state, 
+				 &(g->pmap), &(g->mask), g->w, g->h);
+	if (g->image)
 	  {
+	     ImlibImage *im;
+
+	     ESYNC;
+	     im = Imlib_load_image(id, g->image);
+	     if (im)
+	       {
 	     int x, y;
 	     
 	     x = (g->w - im->rgb_width) / 2;
@@ -2583,16 +2632,17 @@ Epplet_draw_popupbutton(Epplet_gadget eg)
 	     Imlib_paste_image(id, im, g->pmap, x, y, 
 			       im->rgb_width, im->rgb_height);
 	     Imlib_destroy_image(id, im);
+	       }
 	  }
-     }
-   if (g->label)
-     {
-	int x, y, w, h;
+	if (g->label)
+          {
+	     int x, y, w, h;
 	
-	Epplet_textclass_get_size("EPPLET_BUTTON", &w, &h, g->label);
-	x = (g->w - w) / 2;
-	y = (g->h - h) / 2;
-	Epplet_textclass_draw("EPPLET_BUTTON", state, g->pmap, x, y, g->label);
+	     Epplet_textclass_get_size("EPPLET_BUTTON", &w, &h, g->label);
+	     x = (g->w - w) / 2;
+	     y = (g->h - h) / 2;
+	     Epplet_textclass_draw("EPPLET_BUTTON", state, g->pmap, x, y, g->label);
+	  }
      }
    ESYNC;
    XSetWindowBackgroundPixmap(disp, g->win, g->pmap);
@@ -3410,6 +3460,26 @@ Epplet_gadget_show(Epplet_gadget gadget)
 	break;
      default:
 	break;	
+     }
+}
+
+void *
+Epplet_gadget_get_data( Epplet_gadget gadget )
+{
+   if (! gadget) return NULL;
+
+   switch ( ((GadGeneral*)gadget)->type )
+     {
+     case E_BUTTON:
+       return ((GadButton*)gadget)->data;
+     case E_TOGGLEBUTTON:
+       return ((GadToggleButton*)gadget)->data;
+     case E_HSLIDER:
+       return ((GadHSlider*)gadget)->data;
+     case E_VSLIDER:
+       return ((GadVSlider*)gadget)->data;
+     default:
+       return NULL;
      }
 }
 

@@ -384,7 +384,7 @@ main(int argc, char **argv)
    Epplet_add_popup_entry(p, "Night", NULL, cb_color,     (void *)(&(colors[4 * 9])));
    Epplet_add_popup_entry(p, "Sunrise", NULL, cb_color,   (void *)(&(colors[5 * 9])));
    Epplet_add_popup_entry(p, "Sunset", NULL, cb_color,    (void *)(&(colors[6 * 9])));
-   pop = Epplet_create_popupbutton("Colors", NULL, 6, 24, 36, 12, p);
+   pop = Epplet_create_popupbutton("Colors", NULL, 6, 24, 36, 12, NULL, p);
    Epplet_register_focus_in_handler(cb_in, NULL);
    Epplet_register_focus_out_handler(cb_out, NULL);
    load_conf();

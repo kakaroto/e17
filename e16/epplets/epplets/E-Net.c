@@ -196,8 +196,8 @@ main(int argc, char **argv)
    
    Epplet_gadget_show(load_up = Epplet_create_hbar(16, 3, 46, 12, 0, &up_val));
    Epplet_gadget_show(load_down = Epplet_create_hbar(16, 19, 46, 12, 0, &down_val));
-   Epplet_gadget_show(Epplet_create_popupbutton("In", NULL, 62, 2, 16, 12, p1));
-   Epplet_gadget_show(Epplet_create_popupbutton("Out", NULL, 62, 18, 16, 12, p2));
+   Epplet_gadget_show(Epplet_create_popupbutton("In", NULL, 62, 2, 16, 12, NULL, p1));
+   Epplet_gadget_show(Epplet_create_popupbutton("Out", NULL, 62, 18, 16, 12, NULL, p2));
    Epplet_show();
    Epplet_Loop();
    return 0;

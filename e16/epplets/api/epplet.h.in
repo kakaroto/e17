@@ -228,14 +228,14 @@ Epplet_gadget   Epplet_create_togglebutton(char *label, char *pixmap, int x,
 /* creates a button just like normal button except it pops up the popup */
 /* when clicked */
 Epplet_gadget   Epplet_create_popupbutton(char *label, char *image, int x, 
-					  int y, int w, int h,
+					  int y, int w, int h, char *std,
 					  Epplet_gadget popup);
 /* creates an empty popup */
 Epplet_gadget   Epplet_create_popup(void);
 /* adds an image file pixmaps or label to the popup gadget and calls */
 /* func when it is selected */
 void            Epplet_add_popup_entry(Epplet_gadget gadget, char *label, 
-				       char *pixmap, 
+				       char *pixmap,
 				       void (*func) (void *data), void *data);
 /* remove an entry from a popup gadget */
 /* If entry num is positive or zero then it is relateive to elements */
@@ -244,6 +244,11 @@ void            Epplet_add_popup_entry(Epplet_gadget gadget, char *label,
 /* elements most recently added, -1 is the elemet most recently */
 /* added to the popup*/
 void            Epplet_remove_popup_entry(Epplet_gadget gadget, int entry_num);
+/* get the number of entries in a popup */
+int             Epplet_popup_entry_num(Epplet_gadget gadget);
+/* get the data of a callback of a popup entry */
+void           *Epplet_popup_entry_get_data(Epplet_gadget gadget,
+                                            int entry_num);
 /* creates an image widget of the file image at (x,y) of size (w x h) */
 Epplet_gadget   Epplet_create_image(int x, int y, int w, int h, char *image);
 /* puts a label widget of text label at (x,y) of size size. sizes are 0, 1 */

@@ -457,7 +457,7 @@ main(int argc, char **argv)
 			 (void *) (&(colors[5 * 9])));
   Epplet_add_popup_entry(p, "Sunset", NULL, epplet_color,
 			 (void *) (&(colors[6 * 9])));
-  pop = Epplet_create_popupbutton("Colors", NULL, 5, 25, 36, 12, p);
+  pop = Epplet_create_popupbutton("Colors", NULL, 5, 24, 36, 12, NULL, p);
   p = Epplet_create_popup();
   Epplet_add_popup_entry(p, "1 Gbit", NULL, epplet_bandwidth,
                          (void *)(&(bandwidths[0])));
@@ -498,7 +498,7 @@ main(int argc, char **argv)
                          (void *)(&(bandwidths[18])));
   Epplet_add_popup_entry(p, "75 baud Modem", NULL, epplet_bandwidth,
                          (void *)(&(bandwidths[19])));
-  pop2 = Epplet_create_popupbutton("Bandwidth", NULL, 2, 14, 44, 12, p);
+  pop2 = Epplet_create_popupbutton("Bandwidth", NULL, 2, 14, 44, 12, NULL, p);
   Epplet_register_focus_in_handler(epplet_in, NULL);
   Epplet_register_focus_out_handler(epplet_out, NULL);
   load_conf();

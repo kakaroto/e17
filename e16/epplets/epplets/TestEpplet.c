@@ -141,7 +141,7 @@ main(int argc, char **argv)
    Epplet_add_popup_entry(p, "Entry 4", NULL, NULL, NULL);
    Epplet_gadget_show(Epplet_create_popupbutton("Popup", NULL, 
 						146, 2, 40, 12, 
-						p));
+						NULL, p));
    Epplet_show();
    Epplet_Loop();
    return 0;
