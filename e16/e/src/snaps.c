@@ -592,7 +592,7 @@ SnapshotEwinBorder(EWin * ewin)
    if (ewin->previous_border)
       sn->border_name = Estrdup(ewin->previous_border->name);
    else if (ewin->border)
-      sn->border_name = Estrdup(ewin->border->name);
+      sn->border_name = Estrdup(ewin->normal_border->name);
 }
 
 void

@@ -934,6 +934,7 @@ struct _ewin
    Window              win_container;
    WinClient           client;
    Border             *border;
+   Border             *normal_border;
    Border             *previous_border;
    EWinBit            *bits;
    int                 flags;

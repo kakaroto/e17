@@ -1099,8 +1099,8 @@ ICCCM_SetEInfo(EWin * ewin)
    XChangeProperty(disp, ewin->client.win, a, XA_CARDINAL, 32, PropModeReplace,
 		   (unsigned char *)c, 8);
    XChangeProperty(disp, ewin->client.win, aa, XA_STRING, 8, PropModeReplace,
-		   (unsigned char *)ewin->border->name,
-		   strlen(ewin->border->name) + 1);
+		   (unsigned char *)ewin->normal_border->name,
+		   strlen(ewin->normal_border->name) + 1);
    if (EventDebug(EDBUG_TYPE_SNAPS))
       Eprintf("Snap set einf  %#lx: %4d+%4d %4dx%4d: %s\n",
 	      ewin->client.win, ewin->client.x, ewin->client.y,
