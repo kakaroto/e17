@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.7\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-12-31 01:26+0200\n"
+"POT-Creation-Date: 2004-12-31 11:04+0100\n"
 "PO-Revision-Date: 2004-09-14 20:43-0300\n"
 "Last-Translator: Viktor Kojouharov\n"
 "Language-Team: Bulgarian\n"
@@ -404,6 +404,7 @@ msgstr ""
 "%s\n"
 
 #: src/config.c:179
+#, fuzzy, c-format
 msgid ""
 "Warning:  Configuration error in %s block.\n"
 "Outcome is likely not good.\n"
@@ -1287,7 +1288,7 @@ msgstr ""
 
 #: src/ipc.c:1900
 msgid "Enlightenment IPC Commands Help\n"
-msgstr "Помощ за командите на Enlightenment IPC"
+msgstr "Помощ за командите на Enlightenment IPC\n"
 
 #: src/ipc.c:1904
 msgid ""
@@ -1301,9 +1302,7 @@ msgstr ""
 
 #: src/ipc.c:1906 src/ipc.c:1926 src/ipc.c:1938
 msgid "Commands currently available:\n"
-msgstr ""
-"\n"
-"Достъпни команди:\n"
+msgstr "Достъпни команди:\n"
 
 #: src/ipc.c:1924
 msgid "Use \"help full\" for full descriptions of each command\n"
@@ -2112,7 +2111,7 @@ msgstr "Меки сенки"
 
 #: src/settings.c:1769
 msgid "Fading Speed:\n"
-msgstr "Бързина на изчезване"
+msgstr "Бързина на изчезване\n"
 
 #: src/setup.c:135
 msgid ""
