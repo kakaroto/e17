@@ -3864,3 +3864,11 @@ holy crap I can't believe I didn't see that bug sooner.
 This should fix the "maximize seems to mess up when I have KDE support
 enabled" bug.
 
+
+-------------------------------------------------------------------------------
+
+Sat Nov  6 10:51:24 PST 1999
+(Mandrake)
+
+removed two warnings when compiled with --disable-zoom
+

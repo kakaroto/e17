@@ -239,6 +239,7 @@ GetZoomEWin(void)
 void
 ReZoom(EWin * ewin)
 {
+   ewin = NULL;
 }
 
 char
@@ -261,5 +262,6 @@ ZoomInit(void)
 void
 Zoom(EWin * ewin)
 {
+   ewin = NULL;
 }
 #endif
