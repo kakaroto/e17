@@ -160,7 +160,7 @@ evbox_buttonpress_cb(GtkWidget * widget, GdkEventButton * event)
       geist_object_raise(doc, obj);
       doc->up =
          imlib_update_append_rect(doc->up, obj->x, obj->y, obj->w, obj->h);
-      geist_document_render_updates(doc);
+      /* geist_document_render_updates(doc); */
    }
 
    D_RETURN(5, 1);
@@ -180,7 +180,9 @@ gint evbox_buttonrelease_cb(GtkWidget * widget, GdkEventButton * event)
    gtk_object_set_data_full(GTK_OBJECT(mainwin), "drag", NULL, NULL);
    doc->up =
       imlib_update_append_rect(doc->up, obj->x, obj->y, obj->w, obj->h);
-      geist_document_render_updates(doc);
+   /* geist_document_render_updates(doc); */
+   geist_document_render(doc);
+   geist_document_render_to_gtk_window(doc, darea);
 
    D_RETURN(5, 1);
 }
@@ -202,7 +204,6 @@ evbox_mousemove_cb(GtkWidget * widget, GdkEventMotion * event)
       obj->y = event->y - obj->clicked_y;
       doc->up =
          imlib_update_append_rect(doc->up, obj->x, obj->y, obj->w, obj->h);
-      geist_document_render_updates(doc);
    }
 
    D_RETURN(5, 1);
