@@ -1500,10 +1500,13 @@ FillFlatFileMenu(Menu * m, MenuStyle * ms, char *name, char *file, Menu * parent
 		  Esnprintf(wd, sizeof(wd), "__FM.%s.%i", name, count);
 		  count++;
 		  mm = CreateMenuFromFlatFile(wd, ms, params, parent);
-		  mm->parent = m;
-		  AddItem(mm, mm->name, mm->win, LIST_TYPE_MENU);
-		  mi = CreateMenuItem(txt, icc, 0, NULL, mm);
-		  AddItemToMenu(m, mi);
+		  if (mm)
+		    {
+		       mm->parent = m;
+		       AddItem(mm, mm->name, mm->win, LIST_TYPE_MENU);
+		       mi = CreateMenuItem(txt, icc, 0, NULL, mm);
+		       AddItemToMenu(m, mi);
+		    }
 		  if (txt)
 		     Efree(txt);
 	       }

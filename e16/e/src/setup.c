@@ -226,7 +226,7 @@ SetupX()
 		    }
 		  else
 		    {
-		       pause();
+		       kill(getpid(), SIGSTOP);
 		       /* Find the point to concatenate the screen onto */
 		       dispstr = strchr(subdisplay, ':');
 		       if (NULL != dispstr)

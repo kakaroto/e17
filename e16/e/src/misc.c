@@ -83,7 +83,7 @@ EExit(void *code)
 	     system(sss);
 	  }
 	for (i = 0; i < child_count; i++)
-	   kill(e_children[i], SIGCONT);
+	   kill(e_children[i], SIGINT);
      }
    SaveSnapInfo();
 

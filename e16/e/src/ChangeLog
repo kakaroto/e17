@@ -2204,3 +2204,10 @@ Wed Sep 22 15:37:25 PDT 1999
 
 fixed a bug in kde support that caused E to potentially crash on property
 events upon deletion by a window.
+
+-------------------------------------------------------------------------------
+
+Wed Sep 22 15:41:28 PDT 1999
+(Raster)
+
+some more multihead fixes...
