@@ -180,6 +180,8 @@ __imlib_NewContext(Display *d, Visual *v, Colormap c, int depth)
 	     ct->r_dither = NULL;
 	     ct->g_dither = NULL;
 	     ct->b_dither = NULL;
+             __imlib_RGBA_init((void *)ct->r_dither, (void *)ct->g_dither,
+			       (void *)ct->b_dither, depth, 0);
 	  }
      }
    return ct;
