@@ -3610,3 +3610,24 @@ should have been...
 
 I suspect this broke during the OS/2 merge.  OS/2 maintainer guy, take a look
  at this.
+
+-------------------------------------------------------------------------------
+
+Tue Oct 19 23:22:55 EST 1999
+(Christian)
+
+The Return of The Ganymede Theme.
+
+
+Replaced all previously colormodified images with
+new ones, including these for red rootshells etc :)
+
+Added full support for epplets.
+
+Added a script that allows users to activate buttons
+and that installs default pulldown menues. Just go to
+the Ganymede directory and run ACTIVATE_BUTTONS.
+
+Updated README and dox too. So please nobody send me
+email anymore telling me that the pulldowns don't
+work, ok? They do. Thanks.
