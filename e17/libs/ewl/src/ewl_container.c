@@ -519,6 +519,45 @@ void ewl_container_reset(Ewl_Container * c)
 }
 
 /**
+ * @param c: the container to begin iterating over it's children
+ * @return Returns no value.
+ * @brief Prepare the container to iterate over it's children.
+ *
+ * Notifies the container that it will need to start from the beginning of
+ * it's child list. Do not call this if you want to begin iteration where it
+ * was last left off, but be warned it's possible this won't be where you
+ * expect.
+ */
+void ewl_container_child_iterate_begin(Ewl_Container *c)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("c", c);
+
+	ewd_list_goto_first(c->children);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param c: the container to change child iterator functions
+ * @param i: the iterator function for the container
+ * @return Returns no value.
+ * @brief Changes the iterator function for a container.
+ *
+ * Do not use this unless you know are writing a custom container of your own.
+ */
+void
+ewl_container_set_child_iterator(Ewl_Container *c, Ewl_Container_Iterator i)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("c", c);
+
+	c->iterator = i;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
  * @param c: the container to intercept the callback
  * @param t: the type of callback to intercept
  * @return Returns no value.

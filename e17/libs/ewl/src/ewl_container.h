@@ -58,6 +58,14 @@ typedef void    (*Ewl_Child_Show) (Ewl_Container * c, Ewl_Widget * w);
 typedef void    (*Ewl_Child_Hide) (Ewl_Container * c, Ewl_Widget * w);
 
 /**
+ * A typedef to shorten the definition of the child iterator callbacks. This
+ * callback is container specific and is usually set in the container's init
+ * function. This is used to pick the next child in the list of children for
+ * the container.
+ */
+typedef Ewl_Widget *(*Ewl_Container_Iterator) (Ewl_Widget * w);
+
+/**
  * @struct Ewl_Container
  * Inherits from the Ewl_Widget and expands to allow for placing child widgets
  * within the available space. Also adds notifiers for various child events.
@@ -70,13 +78,15 @@ struct Ewl_Container
 
 	Evas_Object     *clip_box; /**< Clip box to bound widgets inside. */
 
-	Ewl_Container   *redirect; /**< Non-internal widgets placed here */
+	Ewl_Container   *redirect; /**< Alternate parent for children */
 
 	Ewl_Child_Add    child_add; /**< Function called on child add */
 	Ewl_Child_Remove child_remove; /**< Function called on child remove */
 	Ewl_Child_Resize child_resize; /**< Function called on child resize */
 	Ewl_Child_Show   child_show; /**< Function called on child hide */
 	Ewl_Child_Hide   child_hide; /**< Function called on child hide */
+
+	Ewl_Container_Iterator iterator; /**< Function to find next child */
 };
 
 int             ewl_container_init(Ewl_Container * container, char *appearance);
