@@ -1,5 +1,22 @@
-#ifndef E_DB_H
-#define E_DB_H 1
+#ifndef EDB_H
+#define EDB_H 1
+
+#ifdef EAPI
+#undef EAPI
+#endif
+#ifdef WIN32
+# ifdef BUILDING_DLL
+#  define EAPI __declspec(dllexport)
+# else
+#  define EAPI __declspec(dllimport)
+# endif
+#else
+# ifdef GCC_HASCLASSVISIBILITY
+#  define EAPI __attribute__ ((visibility("default")))
+# else
+#  define EAPI
+# endif
+#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -19,7 +36,7 @@ typedef void        E_DB_File;
  * and write access. It returns NULL if not possible,
  * a pointer to an E_DB_File otherwise.
  */
-E_DB_File          *e_db_open(const char *file);
+EAPI E_DB_File          *e_db_open(const char *file);
 
 /**
  * e_db_open_mode - Opens a db with a user-specified mode
@@ -30,7 +47,7 @@ E_DB_File          *e_db_open(const char *file);
  * flags. It returns NULL if not possible, a pointer to an E_DB_File
  * otherwise.
  */
-E_DB_File          *e_db_open_mode(const char *file, int flags);
+EAPI E_DB_File          *e_db_open_mode(const char *file, int flags);
 
 /**
  * e_db_property_set - Sets the value of a Property Field.
@@ -43,7 +60,7 @@ E_DB_File          *e_db_open_mode(const char *file, int flags);
  * database (e.g. Type and Version Information). This function will set the
  * value of a specified property field.
  */
-void                e_db_property_set(E_DB_File *edb, const char *property, const char *value);
+EAPI void                e_db_property_set(E_DB_File *edb, const char *property, const char *value);
 
 
 /**
@@ -54,7 +71,7 @@ void                e_db_property_set(E_DB_File *edb, const char *property, cons
  * This function will retrieve the data stored in the specified property
  * field.
  */
-char                *e_db_property_get(E_DB_File *edb, const char *property);
+EAPI char                *e_db_property_get(E_DB_File *edb, const char *property);
 
 /**
  * e_db_set_type - Convenience function for setting the value
@@ -68,7 +85,7 @@ char                *e_db_property_get(E_DB_File *edb, const char *property);
  * string having leading and trailing seperating characters. The function adds
  * the seperation characters itself.
  */
-void                e_db_set_type(E_DB_File * edb, const char *value);
+EAPI void                e_db_set_type(E_DB_File * edb, const char *value);
 
 /**
  * e_db_is_type - Convenience function for determining if a database is
@@ -80,7 +97,7 @@ void                e_db_set_type(E_DB_File * edb, const char *value);
  * data stored in the database. If a match is found (case-insensitive) then 1
  * is returned, else 0.
  */
-int                 e_db_is_type(E_DB_File * edb, const char *type);
+EAPI int                 e_db_is_type(E_DB_File * edb, const char *type);
 
 /**
  * e_db_open_read - Opens a database for read access only
@@ -90,7 +107,7 @@ int                 e_db_is_type(E_DB_File * edb, const char *type);
  * It returns NULL if that's not possible, a pointer to an
  * E_DB_File otherwise.
  */ 
-E_DB_File          *e_db_open_read(const char *file);
+EAPI E_DB_File          *e_db_open_read(const char *file);
 
 
 /** 
@@ -102,7 +119,7 @@ E_DB_File          *e_db_open_read(const char *file);
  * database. When a database has been closed by all users,
  * calling e_db_flush() writes the database to disk.
  */
-void                e_db_close(E_DB_File * db);
+EAPI void                e_db_close(E_DB_File * db);
 
 /**
  * e_db_data_get - Retrieves generic data from the db for a given key
@@ -115,7 +132,7 @@ void                e_db_close(E_DB_File * db);
  * size of the retrieved data. Returns the retrieved data,
  * which you need to free when you don't need it any longer.
  */
-void               *e_db_data_get(E_DB_File * db, const char *key, int *size_ret);
+EAPI void               *e_db_data_get(E_DB_File * db, const char *key, int *size_ret);
 
 /**
  * e_db_data_set - Writes generic data to a database
@@ -127,7 +144,7 @@ void               *e_db_data_get(E_DB_File * db, const char *key, int *size_ret
  * This function is the generic way to write items of data to a
  * database. 
  */
-void                e_db_data_set(E_DB_File * db, const char *key, const void *data, int size);
+EAPI void                e_db_data_set(E_DB_File * db, const char *key, const void *data, int size);
 
 /**
  * e_db_data_del - Removes a key-data pair in a database
@@ -137,7 +154,7 @@ void                e_db_data_set(E_DB_File * db, const char *key, const void *d
  * This function removed the key and data in a database that
  * the given key points to.
  */
-void                e_db_data_del(E_DB_File * db, const char *key);
+EAPI void                e_db_data_del(E_DB_File * db, const char *key);
 
 /**
  * e_db_usage - returns the number of database files a process uses
@@ -145,7 +162,7 @@ void                e_db_data_del(E_DB_File * db, const char *key);
  * This function returns the number of database files the
  * current process is using at the moment.
  */
-int                 e_db_usage(void);
+EAPI int                 e_db_usage(void);
 
 /**
  * e_db_flush - flushes the contents of unused databases to disk
@@ -153,7 +170,7 @@ int                 e_db_usage(void);
  * This function checks for which databases the use count has
  * dropped to zero and writes their contents out to disk.
  */
-void                e_db_flush(void);
+EAPI void                e_db_flush(void);
 
 /**
  * e_db_runtime_flush - time-sensitive version of @efsd_db_flush
@@ -162,7 +179,7 @@ void                e_db_flush(void);
  * only if they have not been accessed in the last 0.5 seconds.
  * It returns 1 if the databases have been flushed, 0 otherwise.
 */
-int                 e_db_runtime_flush(void);
+EAPI int                 e_db_runtime_flush(void);
 
 /* High-level convenience functions ................... */
 
@@ -177,7 +194,7 @@ int                 e_db_runtime_flush(void);
  * set integer values in a database. It also handles endianness
  * byteorder flips.
  */
-void                e_db_int_set(E_DB_File * db, const char *key, int val);
+EAPI void                e_db_int_set(E_DB_File * db, const char *key, int val);
 
 /**
  * e_db_int_get - convenience function for retrieving integers from a database
@@ -188,7 +205,7 @@ void                e_db_int_set(E_DB_File * db, const char *key, int val);
  * This function retrieves an integer for the given key from a database,
  * handling endianness flips. It returns 1 if the lookup succeeded, 0 otherwise.
  */
-int                 e_db_int_get(E_DB_File * db, const char *key, int *val);
+EAPI int                 e_db_int_get(E_DB_File * db, const char *key, int *val);
 
 /**
  * e_db_float_set - convenience function for writing floats to a database
@@ -200,7 +217,7 @@ int                 e_db_int_get(E_DB_File * db, const char *key, int *val);
  * set float values in a database. It also handles endianness
  * byteorder flips.
  */
-void                e_db_float_set(E_DB_File * db, const char *key, float val);
+EAPI void                e_db_float_set(E_DB_File * db, const char *key, float val);
 
 /**
  * e_db_float_get - convenience function for retrieving floats from a database
@@ -211,7 +228,7 @@ void                e_db_float_set(E_DB_File * db, const char *key, float val);
  * This function retrieves a float for the given key from a database,
  * handling endianness flips. It returns 1 if the lookup succeeded, 0 otherwise.
  */
-int                 e_db_float_get(E_DB_File * db, const char *key, float *val);
+EAPI int                 e_db_float_get(E_DB_File * db, const char *key, float *val);
 
 /**
  * e_db_str_set - convenience function for writing strings to a database
@@ -222,7 +239,7 @@ int                 e_db_float_get(E_DB_File * db, const char *key, float *val);
  * This function is a convenience wrapper around e_db_data_set() to
  * set character strings in a database.
  */
-void                e_db_str_set(E_DB_File * db, const char *key, const char *str);
+EAPI void                e_db_str_set(E_DB_File * db, const char *key, const char *str);
 
 /**
  * e_db_str_get - convenience function for retrieving strings from a database
@@ -233,7 +250,7 @@ void                e_db_str_set(E_DB_File * db, const char *key, const char *st
  * and returns it. When an error occurs, NULL is returned. You must free
  * the string when you're finished using free().
  */
-char               *e_db_str_get(E_DB_File * db, const char *key);
+EAPI char               *e_db_str_get(E_DB_File * db, const char *key);
 
 /**
  * e_db_type_set - sets the encoding of a database item
@@ -247,7 +264,7 @@ char               *e_db_str_get(E_DB_File * db, const char *key);
  * set the types manually when using e_db_int_set(), e_db_float_set()
  * and e_db_str_set().
  */
-void                e_db_type_set(E_DB_File * db, const char *key, const char *type);
+EAPI void                e_db_type_set(E_DB_File * db, const char *key, const char *type);
   
 /**
  * e_db_type_get - returns type of a data item
@@ -258,7 +275,7 @@ void                e_db_type_set(E_DB_File * db, const char *key, const char *t
  * the type is unknown, NULL is returned. Otherwise, you need to 
  * free the result when you're finished, using free().
  */
-char               *e_db_type_get(E_DB_File * db, const char *key);
+EAPI char               *e_db_type_get(E_DB_File * db, const char *key);
 
 /* Dump the db as if it were a list of keys and strings as a list of strings */
 /* so the first string si a key, the seocnd is its string value */
@@ -268,7 +285,7 @@ char               *e_db_type_get(E_DB_File * db, const char *key);
 /* KEY: flim      STRINg VALUE: boo */
 /* Your string list would be: */
 /* "blah", "hello", "nym", "goodbye", "flim", "boo:" */
-char              **e_db_dump_multi_field(const char *file, const char *file2, int *num_ret);
+EAPI char              **e_db_dump_multi_field(const char *file, const char *file2, int *num_ret);
 
 /**
  * e_db_dump_key_list - returns list of keys in a database
@@ -278,7 +295,7 @@ char              **e_db_dump_multi_field(const char *file, const char *file2, i
  * This function returns a list of strings of the keys in the database.
  * You must free the list and the strings in the list when done.
  */
-char              **e_db_dump_key_list(const char *file, int *num_ret);
+EAPI char              **e_db_dump_key_list(const char *file, int *num_ret);
 
 /**
  * e_db_match_keys - returns list of keys matching a pattern
@@ -290,7 +307,7 @@ char              **e_db_dump_key_list(const char *file, int *num_ret);
  * that match the given pattern. The pattern is a shell wildcard pattern.
  * You must free the list and the strings in the list when done.
  */
-char              **e_db_match_keys(E_DB_File *db, const char *pattern, int *num_ret);
+EAPI char              **e_db_match_keys(E_DB_File *db, const char *pattern, int *num_ret);
 
 /* Convenience macros to make setting and getting values form a db easy */ 
 #define E_DB_INT_SET(edb, key, val) \
