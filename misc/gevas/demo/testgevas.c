@@ -460,8 +460,8 @@ void make_selectable( GtkgEvasObj* object )
 	gevasgrad_add_color(ct, 180, 150, 70, 50, 8);
 	gevasgrad_add_color(ct, 180, 150, 70, 60, 8);
 	gevasgrad_add_color(ct, 200, 170, 90, 150, 8);
-//	gevasgrad_add_color(ct, 200, 170, 90, 200, 8);
-//	gevasgrad_add_color(ct, 200, 170, 90, 255, 8);
+/*	gevasgrad_add_color(ct, 200, 170, 90, 200, 8);*/
+/*	gevasgrad_add_color(ct, 200, 170, 90, 255, 8);*/
 	gevasgrad_seal(ct);
 	gevasgrad_set_angle(ct, 315);
 	gevasobj_resize( ct, 200,100);
@@ -505,7 +505,7 @@ void make_text(GtkWidget * gevas)
 	gevasobj_set_layer(ct, 6);
 	gevasobj_show(ct);
 	gevasobj_set_color(ct, 140, 255, 140, 255);
-//	gevasobj_add_evhandler(ct, evh);
+/*	gevasobj_add_evhandler(ct, evh);*/
 	make_selectable( ct );
 
 	ct = t3 =
@@ -662,11 +662,11 @@ int main(int argc, char *argv[])
 
     gevas_new_gtkscrolledwindow( &gevas, &wtoy );
 
-    // The above line is the same as these three, except that it can give more
-    // speed because gevas can optimize redraws knowing that it is in a scrolled window.
-//    wtoy = gtk_scrolled_window_new(NULL, NULL);
-//    gevas = gevas_new();
-//	gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(wtoy), gevas);
+    /* The above line is the same as these three, except that it can give more*/
+    /* speed because gevas can optimize redraws knowing that it is in a scrolled window.*/
+/*    wtoy = gtk_scrolled_window_new(NULL, NULL);*/
+/*    gevas = gevas_new();*/
+/*	gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(wtoy), gevas);*/
 
 
     gtk_container_add(GTK_CONTAINER(window), wtoy);
@@ -674,8 +674,8 @@ int main(int argc, char *argv[])
     
     gtk_widget_set_usize(gevas, 3000, 3000);
 	gtk_window_set_default_size(GTK_WINDOW(window), 800, 600);
-//	gevas_set_checked_bg(gevas, 1);
-//	gevas_set_render_mode( gevas, RENDER_METHOD_3D_HARDWARE ); 
+/*	gevas_set_checked_bg(gevas, 1);*/
+/*	gevas_set_render_mode( gevas, RENDER_METHOD_3D_HARDWARE ); */
     gevas_set_render_mode(gevas, RENDER_METHOD_ALPHA_SOFTWARE);
 	gevas_set_size_request_x(gevas, 200);
 	gevas_set_size_request_y(gevas, 200);
