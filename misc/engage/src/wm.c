@@ -7,12 +7,141 @@
 #include "dmalloc.h"
 #endif
 
+/**
+ * A list of all the X Window clients, data is type OD_Window *
+ */
 Evas_List      *clients = NULL;
+
+/**
+ * A hash of all the X Window clients, window id -> OD_Window* mapping
+ */
+static Evas_Hash *clients_hash = NULL;
+
+/**
+ * A hash of the "current" window for the window class, 
+ * window class -> OD_Window* mapping
+ */
+static Evas_Hash *clients_current = NULL;
 
 static int      od_sync_clients(void *data);
 static int      od_window_id_comp(const void *a, const void *b);
 static Ecore_X_Window *od_wm_get_clients(int *size);
 static bool     od_wm_ignored(Ecore_X_Window win);
+
+OD_Window      *
+od_wm_window_next_by_window_class_get(const char *name)
+{
+  Evas_List      *l = NULL;
+  Evas_List      *tmp = NULL;
+  OD_Window      *win = NULL;
+  OD_Window      *result = NULL;
+  OD_Window      *current = NULL;
+
+#if 0
+  printf("trying to find %s\n", name);
+#endif
+  if ((current = evas_hash_find(clients_current, name))) {
+    clients_current = evas_hash_del(clients_current, name, current);
+    for (l = clients; l; l = l->next) {
+      if ((win = l->data)) {
+        if (od_wm_iconified(win->id))
+          continue;
+        if (win->applnk && win->applnk->data.applnk.winclass) {
+          if (!strcmp(name, win->applnk->data.applnk.winclass)) {
+            tmp = evas_list_append(tmp, win);
+          }
+        }
+      }
+    }
+    for (l = tmp; l; l = l->next) {
+#if 0
+      fprintf(stderr, "%8x %8x\n", ((OD_Window *) l->data)->id, current->id);
+#endif
+      if ((l->data == current) && (l->next)) {
+        result = l->next->data;
+      }
+    }
+    if (!result && tmp)
+      result = tmp->data;
+    evas_list_free(tmp);
+  } else {
+    for (l = clients; l; l = l->next) {
+      if ((win = l->data)) {
+        if (od_wm_iconified(win->id))
+          continue;
+        if (win->applnk && win->applnk->data.applnk.winclass) {
+          if (!strcmp(name, win->applnk->data.applnk.winclass)) {
+            result = win;
+#if 0
+            fprintf(stderr, "%s(%8x)\n", name, win->id);
+#endif
+            break;
+          }
+        }
+      }
+    }
+  }
+  if (result) {
+    clients_current = evas_hash_add(clients_current, name, result);
+  }
+  return (result);
+}
+
+OD_Window      *
+od_wm_window_prev_by_window_class_get(const char *name)
+{
+  Evas_List      *l = NULL;
+  Evas_List      *tmp = NULL;
+  OD_Window      *win = NULL;
+  OD_Window      *result = NULL;
+  OD_Window      *current = NULL;
+
+  if ((current = evas_hash_find(clients_current, name))) {
+    clients_current = evas_hash_del(clients_current, name, current);
+    for (l = clients; l; l = l->next) {
+      if ((win = l->data)) {
+        if (od_wm_iconified(win->id))
+          continue;
+        if (win->applnk && win->applnk->data.applnk.winclass) {
+          if (!strcmp(name, win->applnk->data.applnk.winclass)) {
+            tmp = evas_list_append(tmp, win);
+          }
+        }
+      }
+    }
+    for (l = tmp; l; l = l->next) {
+#if 0
+      fprintf(stderr, "%8x %8x\n", ((OD_Window *) l->data)->id, current->id);
+#endif
+      if ((l->data == current) && (l->prev)) {
+        result = l->prev->data;
+      }
+    }
+    if (!result && tmp && tmp->last)
+      result = tmp->last->data;
+    evas_list_free(tmp);
+  } else {
+    for (l = clients; l; l = l->next) {
+      if ((win = l->data)) {
+        if (win->applnk && win->applnk->data.applnk.winclass) {
+          if (od_wm_iconified(win->id))
+            continue;
+          if (!strcmp(name, win->applnk->data.applnk.winclass)) {
+            result = win;
+#if 0
+            fprintf(stderr, "%s(%8x)\n", name, win->id);
+#endif
+            break;
+          }
+        }
+      }
+    }
+  }
+  if (result) {
+    clients_current = evas_hash_add(clients_current, name, result);
+  }
+  return (result);
+}
 
 char           *
 od_wm_get_winclass(Ecore_X_Window win)
@@ -45,8 +174,8 @@ od_wm_iconified(Ecore_X_Window window)
   Atom           *atom;
 
   if (ecore_x_window_prop_property_get(window, ecore_x_atom_get("WM_STATE"),
-                                       ecore_x_atom_get("WM_STATE"), 32, &atom,
-                                       &size)) {
+                                       ecore_x_atom_get("WM_STATE"), 32,
+                                       (unsigned char **) &atom, &size)) {
     bool            ret = (*atom == IconicState);
 
     free(atom);
@@ -54,7 +183,8 @@ od_wm_iconified(Ecore_X_Window window)
   }
 
   if (ecore_x_window_prop_property_get
-      (window, ecore_x_atom_get("_NET_WM_STATE"), XA_ATOM, 32, &atom, &size)) {
+      (window, ecore_x_atom_get("_NET_WM_STATE"), XA_ATOM, 32,
+       (unsigned char **) &atom, &size)) {
     int             i;
     bool            hidden = false, shaded = false;
 
@@ -76,147 +206,139 @@ void
 od_dock_icons_update_begin()
 {
   ecore_timer_add(1.0, od_sync_clients, NULL);
+}
 
+Evas_Bool
+od_wm_current_window_by_class_fix(Evas_Hash * hash, const char *key,
+                                  void *data, void *fdata)
+{
+  if (data == fdata) {
+    hash = evas_hash_del(hash, key, data);
+    return (0);
+  }
+  return (1);
 }
 
 int
 od_sync_clients(void *data)
 {
-  Evas_List      *current = clients;
+  int             num_clients;
+  char           *title = NULL;
+  char           *winclass = NULL;
+  char            buf[32];
+  OD_Window      *owd = NULL;
+  OD_Window      *owd_tmp = NULL;
+  Evas_List      *dirty = NULL;
   Evas_List      *fresh = NULL;
+  Evas_List      *item = NULL;
+  Evas_List      *to_free = NULL;
+  Ecore_X_Window *win = NULL;
+  Ecore_X_Window *windows = NULL;
 
-  {
-    int             num_clients;
-    Ecore_X_Window *windows = od_wm_get_clients(&num_clients);
+  dirty = clients;
+  clients = NULL;
+  windows = od_wm_get_clients(&num_clients);
+  qsort(windows, num_clients, sizeof(Ecore_X_Window), od_window_id_comp);
+  win = windows;
 
-    qsort(windows, num_clients, sizeof(Ecore_X_Window), od_window_id_comp);
-    Ecore_X_Window *win = windows;
-
-    while (num_clients--) {
-      OD_Window      *owd = (OD_Window *) malloc(sizeof(OD_Window));
-
-      owd->id = *win;
-      owd->applnk = NULL;
-      owd->minwin = NULL;
-      fresh = evas_list_append(fresh, owd);
-      win++;
-    }
-    free(windows);
-  }
-
-  Evas_List      *pcurrent = current;
-  Evas_List      *pfresh = fresh;
-
-  while (pcurrent || pfresh) {
-    OD_Window      *wcurrent = (OD_Window *) (pcurrent ? pcurrent->data : NULL);
-    OD_Window      *wfresh = (OD_Window *) (pfresh ? pfresh->data : NULL);
-
-    if (wcurrent && (!wfresh || wcurrent->id < wfresh->id)) {   // wcurrent disappeared
-#if 0
-      fprintf(stderr, "window disappeared: id=0x%.8x\n", wcurrent->id);
-#endif
-      if (wcurrent->minwin)
-        od_dock_del_icon(wcurrent->minwin);
-      if (wcurrent->applnk) {
-        if (wcurrent->applnk->data.applnk.count == 0) {
-          fprintf(stderr, "eek! applnk %s already has no windows\n",
-                  wcurrent->applnk->name);
-          exit(EXIT_FAILURE);
-        }
-        wcurrent->applnk->data.applnk.count--;
-        if (wcurrent->applnk->data.applnk.count == 0) {
-          od_icon_arrow_hide(wcurrent->applnk);
-          if (wcurrent->applnk->data.applnk.command[0] == '\0')
-            od_dock_del_icon(wcurrent->applnk);
-        }
-      }
-
-      pcurrent = pcurrent->next;
-    } else if (wcurrent && wfresh && wcurrent->id == wfresh->id) {      // update info
-      wfresh->applnk = wcurrent->applnk;
-      wfresh->minwin = wcurrent->minwin;
-      char           *title = NULL;
-
-      if (!wfresh->minwin && od_wm_iconified(wfresh->id)) {
-        wfresh->minwin = od_icon_new_minwin(wfresh->id);
-        od_dock_add_minwin(wfresh->minwin);
-      } else if (wfresh->minwin && !od_wm_iconified(wfresh->id)) {
-        od_dock_del_icon(wfresh->minwin);
-        wfresh->minwin = NULL;
-      } else if (wfresh->minwin &&
-                 strcmp((title =
-                         od_wm_get_title(wcurrent->id)),
-                        wfresh->minwin->name) != 0) {
-        od_icon_name_change(wfresh->minwin, title);
-        if (title)
+  while (num_clients--) {
+    owd = NULL;
+    if (!od_wm_ignored(*win)) {
+      snprintf(buf, 32, "%8x", *win);
+      if ((owd = evas_hash_find(clients_hash, buf))) {
+        dirty = evas_list_remove(dirty, owd);
+        if (!owd->minwin && od_wm_iconified(owd->id)) {
+          owd->minwin = od_icon_new_minwin(owd->id);
+          od_dock_add_minwin(owd->minwin);
+        } else if (owd->minwin && !od_wm_iconified(owd->id)) {
+          od_dock_del_icon(owd->minwin);
+          owd->minwin = NULL;
+        } else if (owd->minwin) {
+          title = od_wm_get_title(owd->id);
+          if (strcmp(title, owd->minwin->name) != 0)
+            od_icon_name_change(owd->minwin, title);
           free(title);
+        }
+      } else {
+        fprintf(stderr, "New %8x window id\n", *win);
+        owd = (OD_Window *) malloc(sizeof(OD_Window));
+        memset(owd, 0, sizeof(OD_Window));
+        owd->id = *win;
+        clients_hash = evas_hash_add(clients_hash, buf, owd);
+        fresh = evas_list_append(fresh, owd);
       }
+      clients = evas_list_append(clients, owd);
+    }
+    win++;
+  }
+  free(windows);
 
-      pcurrent = pcurrent->next;
-      pfresh = pfresh->next;
-    } else if (wfresh && (!wcurrent || wcurrent->id > wfresh->id)) {    // new window: wfresh
-      char           *title = od_wm_get_title(wfresh->id);
-      char           *winclass = od_wm_get_winclass(wfresh->id);
+  /* pending windows that aren't present anymore */
+  to_free = dirty;
+  while (dirty) {
+    if (dirty->data) {
+      owd = dirty->data;
+      snprintf(buf, 32, "%8x", owd->id);
+      fprintf(stderr, "%s no longer exists\n", buf);
 
-#if 0
-      fprintf(stderr,
-              "window appeared: id=0x%.8x, name=\"%s\", winclass=\"%s\"\n",
-              wfresh->id, title, winclass);
-#endif
-
-      if (!od_wm_ignored(wfresh->id)) {
-        {
-          wfresh->applnk = NULL;
-          Evas_List      *item = dock.applnks;
-
-          while (item) {
-            OD_Icon        *applnk = (OD_Icon *) item->data;
-
-            if (strcmp(applnk->data.applnk.winclass, winclass) == 0) {
-              wfresh->applnk = applnk;
-              break;
-            }
-            item = item->next;
+      evas_hash_foreach(clients_current, od_wm_current_window_by_class_fix,
+                        owd);
+      clients_hash = evas_hash_del(clients_hash, buf, owd);
+      if (owd->minwin)
+        od_dock_del_icon(owd->minwin);
+      if ((owd->applnk) && (owd->applnk->data.applnk.count > 0)) {
+        owd->applnk->data.applnk.count--;
+        if (owd->applnk->data.applnk.count == 0) {
+          od_icon_arrow_hide(owd->applnk);
+          if (owd->applnk->data.applnk.command[0] == '\0') {
+            od_dock_del_icon(owd->applnk);
+            free(owd);
           }
         }
-        if (!wfresh->applnk) {
-          wfresh->applnk = od_icon_new_applnk("", winclass);
-          od_dock_add_applnk(wfresh->applnk);
-        }
-        wfresh->applnk->data.applnk.count++;
-        od_icon_arrow_show(wfresh->applnk);
-
-        if (od_wm_iconified(wfresh->id)) {
-          wfresh->minwin = od_icon_new_minwin(wfresh->id);
-          od_dock_add_minwin(wfresh->minwin);
-        } else
-          wfresh->minwin = NULL;
-#ifdef HAVE_IMLIB
-        if (options.grab_app_icons)
-          od_icon_grab(wfresh->applnk, wfresh->id);
-#endif
       }
+    }
+    dirty = dirty->next;
+  }
+  to_free = evas_list_free(to_free);
 
+  to_free = fresh;
+  while (fresh) {
+    if (fresh->data) {
+      owd = fresh->data;
+      title = od_wm_get_title(owd->id);
+      winclass = od_wm_get_winclass(owd->id);
+      item = dock.applnks;
+
+      while (item) {
+        OD_Icon        *applnk = (OD_Icon *) item->data;
+
+        if (strcmp(applnk->data.applnk.winclass, winclass) == 0) {
+          owd->applnk = applnk;
+          break;
+        }
+        item = item->next;
+      }
+      if (!owd->applnk) {
+        owd->applnk = od_icon_new_applnk("", winclass);
+        od_dock_add_applnk(owd->applnk);
+      }
+      owd->applnk->data.applnk.count++;
+      od_icon_arrow_show(owd->applnk);
+      if (od_wm_iconified(owd->id)) {
+        owd->minwin = od_icon_new_minwin(owd->id);
+        od_dock_add_minwin(owd->minwin);
+      }
+#ifdef HAVE_IMLIB
+      if (options.grab_app_icons)
+        od_icon_grab(owd->applnk, owd->id);
+#endif
       free(title);
       free(winclass);
-      pfresh = pfresh->next;
-    } else {
-      fprintf(stderr, "eeek!!!\n");
-      exit(EXIT_FAILURE);
     }
+    fresh->data = NULL;
+    fresh = fresh->next;
   }
-
-  // swap the two lists
-  {
-    clients = fresh;
-    Evas_List      *item = current;
-
-    while (item) {
-      free(item->data);
-      item = evas_list_next(item);
-    }
-    evas_list_free(current);
-  }
+  to_free = evas_list_free(to_free);
   return 1;                     // keep going
 }
 
@@ -232,10 +354,11 @@ od_wm_get_clients(int *size)
   Ecore_X_Window *win_list;
 
   if (!ecore_x_window_prop_property_get(0, ecore_x_atom_get("_NET_CLIENT_LIST"),
-                                        XA_WINDOW, 32, &win_list, size)) {
+                                        XA_WINDOW, 32,
+                                        (unsigned char **) &win_list, size)) {
     if (!ecore_x_window_prop_property_get
-        (0, ecore_x_atom_get("_WIN_CLIENT_LIST"), XA_CARDINAL, 32, &win_list,
-         size)) {
+        (0, ecore_x_atom_get("_WIN_CLIENT_LIST"), XA_CARDINAL, 32,
+         (unsigned char **) &win_list, size)) {
       *size = 0;
       return NULL;
     }
@@ -246,19 +369,22 @@ od_wm_get_clients(int *size)
 bool
 od_wm_ignored(Ecore_X_Window win)
 {
+  bool            result = false;
   static char    *ignore[] = { "engage", "kicker", "", NULL };
   char          **cur = ignore;
   char           *winclass = od_wm_get_winclass(win);
 
   while (*cur) {
     if (strcmp(*cur, winclass) == 0)
-      return true;
+      result = true;
     cur++;
   }
 
   if (ecore_x_window_prop_state_isset(win, ECORE_X_WINDOW_STATE_SKIP_TASKBAR))
-    return true;
-  return false;
+    result = true;
+  if (winclass)
+    free(winclass);
+  return result;
 }
 
 void

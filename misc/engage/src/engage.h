@@ -66,6 +66,8 @@ char           *od_wm_get_winclass(Ecore_X_Window win); // remember to free
 char           *od_wm_get_title(Ecore_X_Window win);    // ditto
 bool            od_wm_iconified(Ecore_X_Window win);
 void            od_wm_activate_window(Ecore_X_Window win);
+OD_Window      *od_wm_window_next_by_window_class_get(const char *);
+OD_Window      *od_wm_window_prev_by_window_class_get(const char *);
 
 struct _OD_Options {
   int             width, height;

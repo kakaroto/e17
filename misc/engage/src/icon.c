@@ -106,7 +106,7 @@ od_icon_grab(OD_Icon * icon, Ecore_X_Window win)
   Pixmap          pmap, mask;
   Evas_Object    *obj = NULL;
 
-  if (!strcmp(evas_object_type_get(icon->pic), "edje"))
+  if (icon->pic && !strcmp(evas_object_type_get(icon->pic), "edje"))
     return;
 
   dsp = ecore_x_display_get();
@@ -178,11 +178,11 @@ od_icon_new(const char *winclass, const char *name, const char *icon_file)
   OD_Icon        *ret = (OD_Icon *) malloc(sizeof(OD_Icon));
   char            path[PATH_MAX];
 
-  Evas_Object    *icon   = NULL;
+  Evas_Object    *icon = NULL;
   Evas_Object    *pic = NULL;
   Evas_Object    *tt_txt = NULL;
   Evas_Object    *tt_shd = NULL;
-  
+
   memset(ret, 0, sizeof(OD_Icon));
   ret->name = strdup(name);
   icon = ret->icon = edje_object_add(evas);
@@ -227,13 +227,15 @@ od_icon_new(const char *winclass, const char *name, const char *icon_file)
       evas_object_image_alpha_set(pic, 1);
       evas_object_image_smooth_scale_set(pic, 1);
       evas_object_pass_events_set(pic, 1);
+      evas_object_intercept_resize_callback_add(pic,
+                                                od_object_resize_intercept_cb,
+                                                NULL);
     }
     ret->pic = pic;
     evas_object_layer_set(pic, 100);
+    evas_object_move(pic, -50, -50);
+    evas_object_resize(pic, 32, 32);
     evas_object_show(pic);
-    evas_object_intercept_resize_callback_add(pic,
-                                              od_object_resize_intercept_cb,
-                                              NULL);
     if (edje_object_part_exists(icon, "EngageIcon")) {
       edje_object_part_swallow(icon, "EngageIcon", pic);
     } else {
@@ -512,10 +514,6 @@ od_icon_edje_win_minimize_cb(void *data, Evas_Object * obj,
           OD_Window      *win = (OD_Window *) l->data;
 
           if (win->applnk == icon && !win->minwin) {
-#if 0
-            clients = evas_list_remove(clients, win);
-            clients = evas_list_append(clients, win);
-#endif
             od_wm_deactivate_window(win->id);
             break;
           }
@@ -550,9 +548,10 @@ static void
 od_icon_edje_win_raise_cb(void *data, Evas_Object * obj, const char *emission, const
                           char *source)
 {
-  pid_t           pid;
+  const char     *winclass = NULL;
   Evas_List      *l = NULL;
   OD_Icon        *icon = NULL;
+  OD_Window      *win = NULL;
 
   if ((icon = (OD_Icon *) data)) {
     if (!strcmp(emission, "engage,window,raise")) {
@@ -561,15 +560,13 @@ od_icon_edje_win_raise_cb(void *data, Evas_Object * obj, const char *emission, c
       case docked_icon:
       case minimised_window:
         for (l = clients; l; l = l->next) {
-          OD_Window      *win = (OD_Window *) l->data;
+          win = (OD_Window *) l->data;
 
           if (win->minwin == icon || win->applnk == icon) {
-            od_wm_activate_window(win->id);
-            /* FIXME : Maintain order
-             * clients = evas_list_remove(clients, win);
-             * clients = evas_list_append(clients, win);
-             */
-            break;
+            if (od_wm_iconified(win->id)) {
+              od_wm_activate_window(win->id);
+              break;
+            }
           }
         }
         break;
@@ -578,13 +575,45 @@ od_icon_edje_win_raise_cb(void *data, Evas_Object * obj, const char *emission, c
       }
     } else if (!strcmp(emission, "engage,window,raise,all")) {
       for (l = clients; l; l = l->next) {
-        OD_Window      *win = (OD_Window *) l->data;
+        win = (OD_Window *) l->data;
 
         if (win->minwin == icon || win->applnk == icon) {
           od_wm_activate_window(win->id);
           ecore_x_window_prop_state_request(win->id,
                                             ECORE_X_WINDOW_STATE_ICONIFIED, 0);
         }
+      }
+    } else if (!strcmp(emission, "engage,window,raise,next")) {
+      switch (icon->type) {
+      case application_link:
+      case docked_icon:
+        if (icon->data.applnk.winclass) {
+          winclass = icon->data.applnk.winclass;
+          if ((win = od_wm_window_next_by_window_class_get(winclass))) {
+            od_wm_activate_window(win->id);
+          }
+        }
+        break;
+      case minimised_window:
+        break;
+      default:
+        break;
+      }
+    } else if (!strcmp(emission, "engage,window,raise,prev")) {
+      switch (icon->type) {
+      case application_link:
+      case docked_icon:
+        if (icon->data.applnk.winclass) {
+          winclass = icon->data.applnk.winclass;
+          if ((win = od_wm_window_prev_by_window_class_get(winclass))) {
+            od_wm_activate_window(win->id);
+          }
+        }
+        break;
+      case minimised_window:
+        break;
+      default:
+        break;
       }
     }
     fprintf(stderr, "Raise got %s from %s\n", emission, icon->name);
