@@ -4,14 +4,17 @@ Version: 1.2.0
 Release: 1.%(date '+%Y%m%d')
 Copyright: BSD
 Group: System Environment/Libraries
-Source: ftp://ftp.enlightenment.org/pub/enlightenment/e17/libs/%{name}-%{version}.tar.gz
-BuildRoot: %{_tmppath}/%{name}-root
-Packager: Michael Jennings <mej@eterm.org>
 URL: http://www.rasterman.com/raster/imlib.html
-#BuildSuggests: freetype-devel xorg-x11-devel
+Source: ftp://ftp.enlightenment.org/pub/enlightenment/e17/libs/%{name}-%{version}.tar.gz
+Packager: %{?_packager:%{_packager}}%{!?_packager:Michael Jennings <mej@eterm.org>}
+Vendor: %{?_vendorinfo:%{_vendorinfo}}%{!?_vendorinfo:The Enlightenment Project (http://www.enlightenment.org/)}
+Distribution: %{?_distribution:%{_distribution}}%{!?_distribution:%{_vendor}}
+#BuildSuggests: xorg-x11-devel
+BuildRequires: freetype-devel XFree86-devel
 Requires: %{name}-loader_jpeg = %{version}
 Requires: %{name}-loader_png = %{version}
 Requires: %{name}-loader_argb = %{version}
+BuildRoot: %{_tmppath}/%{name}-%{version}-root
 
 %description
 Imlib2 is an advanced replacement library for libraries like libXpm that
