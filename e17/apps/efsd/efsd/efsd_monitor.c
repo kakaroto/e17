@@ -599,7 +599,7 @@ efsd_monitor_init(void)
     }
 
   monitors = efsd_hash_new(1023, 10, (EfsdHashFunc)monitor_key_hash,
-			   (EfsdCmpFunc)monitor_key_cmp, monitor_hash_item_free);
+			   (EfsdCmpFunc)monitor_key_cmp, (EfsdFunc)monitor_hash_item_free);
 
   monitors_lock = efsd_lock_new();
 

@@ -320,6 +320,7 @@ dir_copy(char *src_path, struct stat *src_st, char *dst_path)
   struct stat    dst_st;
   DIR           *dir;
   struct dirent  de, *de_ptr;
+  int            success = FALSE;
 
   D_ENTER;
   D("Copying directory %s to %s\n", src_path, dst_path);
@@ -371,14 +372,14 @@ dir_copy(char *src_path, struct stat *src_st, char *dst_path)
 	continue;
 
       if (S_ISDIR(src_st2.st_mode))
-	dir_copy(src, &src_st2, dst);
+	success = dir_copy(src, &src_st2, dst);
       else
-	file_copy(src, &src_st2, dst);
+	success = file_copy(src, &src_st2, dst);
     }
 
   closedir(dir);
 
-  D_RETURN_(TRUE);
+  D_RETURN_(success);
 }
 
 

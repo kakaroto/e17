@@ -51,6 +51,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <efsd_options.h>
 #include <efsd_types.h>
 #include <efsd_queue.h>
+#include <efsd_hash.h>
 #include <libefsd_misc.h>
 #include <libefsd.h>
 
@@ -74,6 +75,9 @@ struct efsd_options
 };
 
 
+static EfsdHash *callbacks_hash = NULL;
+
+
 static char     *libefsd_get_full_path(char *file);
 static int       libefsd_send_command(EfsdConnection *ec, EfsdCommand *com);
 static EfsdCmdId libefsd_get_next_id(void);
@@ -91,6 +95,8 @@ static EfsdCmdId libefsd_set_metadata_internal(EfsdConnection *ec, char *key, ch
 
 static void      libefsd_cmd_queue_add_command(EfsdConnection *ec, EfsdCommand *com);
 static void      libefsd_cmd_queue_process(EfsdConnection *ec);
+
+static void      libefsd_callbacks_init(void);
 
 static char*
 libefsd_get_full_path(char *file)
@@ -345,6 +351,39 @@ libefsd_cmd_queue_process(EfsdConnection *ec)
 }
 
 
+static void         
+libefsd_hash_item_free(EfsdHashItem *it)
+{
+  D_ENTER;
+
+  if (!it)
+    D_RETURN;
+
+  FREE(it->key);
+  efsd_callbacks_cleanup((EfsdEventCallbacks*) it->data);
+  FREE(it);
+
+  D_RETURN;
+}
+
+
+static void      
+libefsd_callbacks_init(void)
+{
+  D_ENTER;
+
+  if (callbacks_hash)
+    D_RETURN;
+
+  callbacks_hash = efsd_hash_new(1023, 100, (EfsdHashFunc)efsd_hash_int,
+				 (EfsdCmpFunc)efsd_hash_cmp_int,
+				 (EfsdFunc)libefsd_hash_item_free);
+
+  D_RETURN;
+}
+
+
+
 /* Efsd API starts here --------------------------------------------- */
 
 
@@ -489,6 +528,119 @@ efsd_wait_event(EfsdConnection *ec, EfsdEvent *ev)
     D_RETURN_(-1);
 
   D_RETURN_(efsd_io_read_event(ec->fd, ev));
+}
+
+
+int
+efsd_dispatch_event(EfsdEvent *ev)
+{
+  EfsdEventCallbacks *callbacks = NULL;
+  EfsdCmdId id = 0;
+  int handled = FALSE;
+
+  D_ENTER;
+
+  if (!ev)
+    D_RETURN_(-1);
+
+  if ( (id = efsd_event_id(ev)) < 0)
+    D_RETURN_(-1);
+
+  callbacks =
+    (EfsdEventCallbacks*) efsd_hash_find(callbacks_hash, (void*) id);
+
+  if (!callbacks)
+    D_RETURN_(FALSE);
+
+  switch (ev->type)
+    {
+    case EFSD_EVENT_FILECHANGE:
+      switch (ev->efsd_filechange_event.changetype)
+	{
+	case EFSD_FILE_CHANGED:
+	  if (callbacks->changed_cb)
+	    {
+	      callbacks->changed_cb(&(ev->efsd_filechange_event));
+	      handled = TRUE;
+	    }
+	  break;
+	case EFSD_FILE_DELETED:
+	  if (callbacks->delete_cb)
+	    {
+	      callbacks->delete_cb(&(ev->efsd_filechange_event));
+	      handled = TRUE;
+	    }
+	  break;
+	case EFSD_FILE_START_EXEC:
+	  if (callbacks->startexec_cb)
+	    {
+	      callbacks->startexec_cb(&(ev->efsd_filechange_event));
+	      handled = TRUE;
+	    }
+	  break;
+	case EFSD_FILE_STOP_EXEC:
+	  if (callbacks->stopexec_cb)
+	    {
+	      callbacks->stopexec_cb(&(ev->efsd_filechange_event));
+	      handled = TRUE;
+	    }
+	  break;
+	case EFSD_FILE_CREATED:
+	  if (callbacks->created_cb)
+	    {
+	      callbacks->created_cb(&(ev->efsd_filechange_event));
+	      handled = TRUE;
+	    }
+	  break;
+	case EFSD_FILE_MOVED:
+	  if (callbacks->moved_cb)
+	    {
+	      callbacks->moved_cb(&(ev->efsd_filechange_event));
+	      handled = TRUE;
+	    }
+	  break;
+	case EFSD_FILE_ACKNOWLEDGE:
+	  if (callbacks->ack_cb)
+	    {
+	      callbacks->ack_cb(&(ev->efsd_filechange_event));
+	      handled = TRUE;
+	    }
+	  break;
+	case EFSD_FILE_EXISTS:
+	  if (callbacks->exists_cb)
+	    {
+	      callbacks->exists_cb(&(ev->efsd_filechange_event));
+	      handled = TRUE;
+	    }
+	  break;
+	case EFSD_FILE_END_EXISTS:
+	  if (callbacks->endexists_cb)
+	    {
+	      callbacks->endexists_cb(&(ev->efsd_filechange_event));
+	      handled = TRUE;
+	    }
+	  break;
+	default:
+	  D_RETURN_(-1);
+	}
+      break;
+    case EFSD_EVENT_REPLY:
+      if (callbacks->reply_cb)
+	{
+	  callbacks->reply_cb(&(ev->efsd_reply_event));
+	}
+      break;
+    case EFSD_EVENT_METADATA_CHANGE:
+      if (callbacks->metadata_cb)
+	{
+	  callbacks->metadata_cb(&(ev->efsd_metachange_event));
+	}
+      break;
+    default:
+      D_RETURN_(-1);
+    }
+
+  D_RETURN_(handled);
 }
 
 
@@ -1317,3 +1469,61 @@ efsd_event_data(EfsdEvent *ee)
   D_RETURN_(NULL);
 }
 
+
+EfsdEventCallbacks *
+efsd_callbacks_create(void)
+{
+  EfsdEventCallbacks *cbs = NULL;
+
+  D_ENTER;
+
+  if (! (cbs = NEW(EfsdEventCallbacks)))
+    D_RETURN_(NULL);
+
+  memset(cbs, 0, sizeof(EfsdEventCallbacks));
+
+  D_RETURN_(cbs);
+}
+
+
+void 
+efsd_callbacks_cleanup(EfsdEventCallbacks *callbacks)
+{
+  D_ENTER;
+
+  FREE(callbacks);
+
+  D_RETURN;
+}
+
+
+EfsdEventCallbacks *
+efsd_callbacks_register(EfsdCmdId id, EfsdEventCallbacks *callbacks)
+{
+  EfsdEventCallbacks *old_callbacks = NULL;
+
+  D_ENTER;
+
+  /* Make sure the hashtable is initialized ... */
+  libefsd_callbacks_init();
+
+  /* Try to change the value. If old_callbacks is NULL, it didn't work. */
+  old_callbacks =  efsd_hash_change_val(callbacks_hash, (void*) id,
+					(void*) callbacks);
+
+  /* If callbacks is NULL, the user wants to remove the callbacks: */
+  if (!callbacks)
+    efsd_hash_remove(callbacks_hash, (void*) id, NULL);
+
+  /* If we got old callbacks, return them. */
+  if (old_callbacks)
+    {
+      D_RETURN_(old_callbacks);
+    }
+  else /* otherwise, this is a new insertion for this id. */
+    {
+      efsd_hash_insert(callbacks_hash, (void*) id, (void*) callbacks);
+    }
+
+  D_RETURN_(NULL);
+}

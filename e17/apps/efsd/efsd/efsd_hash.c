@@ -47,7 +47,7 @@ struct efsd_hash
 
   EfsdHashFunc          hash_func;
   EfsdCmpFunc           cmp_func;
-  EfsdHashItemFreeFunc  free_func;
+  EfsdFunc              free_func;
 };
 
 
@@ -60,8 +60,8 @@ struct efsd_hash_iterator
 
 
 EfsdHash *
-efsd_hash_new(int num_buckets, int bucket_size, EfsdHashFunc hash_func,
-	      EfsdCmpFunc cmp_func, EfsdHashItemFreeFunc free_func)
+efsd_hash_new(int num_buckets, int bucket_size_max, EfsdHashFunc hash_func,
+	      EfsdCmpFunc cmp_func, EfsdFunc free_func)
 {
   EfsdHash *h;
 
@@ -71,7 +71,7 @@ efsd_hash_new(int num_buckets, int bucket_size, EfsdHashFunc hash_func,
   memset(h, 0, sizeof(EfsdHash));
 
   h->num_buckets = num_buckets;
-  h->max_bucket_size = bucket_size;
+  h->max_bucket_size = bucket_size_max;
   h->hash_func = hash_func;
   h->cmp_func = cmp_func;
   h->free_func = free_func;
@@ -110,7 +110,7 @@ efsd_hash_free(EfsdHash* h)
 
 
 void              
-efsd_hash_free_with_func(EfsdHash *h, EfsdHashItemFreeFunc free_func)
+efsd_hash_free_with_func(EfsdHash *h, EfsdFunc free_func)
 {
   D_ENTER;
 
@@ -292,6 +292,30 @@ efsd_hash_change_key(EfsdHash *h, void *key1, void *key2)
 }
 
 
+void *       
+efsd_hash_change_val(EfsdHash *h, void *key, void *data)
+{
+  void         *old;
+  EfsdHashItem *it = NULL;
+
+  D_ENTER;
+
+  if (!h || !key)
+    D_RETURN_(NULL);
+
+  if (! (it = efsd_hash_find(h, key)))
+    {
+      D("Item doesn't exist -- cannot change any content..\n");
+      D_RETURN_(NULL);
+    }
+
+  old = it->data;
+  it->data = data;
+
+  D_RETURN_(old);
+}
+
+
 int       
 efsd_hash_num_buckets(EfsdHash *h)
 {
@@ -318,6 +342,9 @@ efsd_hash_string(EfsdHash *h, char *s)
 
   D_ENTER;
 
+  if (!h)
+    D_RETURN_(0);
+
   ss = s;
 
   for (hash = 0; *s != '\0'; s++)
@@ -326,6 +353,40 @@ efsd_hash_string(EfsdHash *h, char *s)
   /* D("String '%s' hashed to %i\n", ss, hash); */
 
   D_RETURN_(hash);
+}
+
+
+unsigned int      
+efsd_hash_int(EfsdHash *h, int data)
+{
+  unsigned int hash;
+
+  D_ENTER;
+
+  if (!h)
+    D_RETURN_(0);
+
+  hash = data % h->num_buckets;
+
+  D_RETURN_(hash);
+}
+
+
+int               
+efsd_hash_cmp_int(int *i1, int *i2)
+{
+  int  result;
+
+  D_ENTER;
+
+  if (i1 == i2)
+    result = 0;
+  else if (i1 < i2)
+    result = -1;
+  else
+    result = 1;
+
+  D_RETURN_(result);
 }
 
 

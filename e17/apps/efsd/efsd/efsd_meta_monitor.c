@@ -359,7 +359,7 @@ efsd_meta_monitor_init(void)
   D_ENTER;
 
   meta_monitors = efsd_hash_new(1023, 10, (EfsdHashFunc)efsd_hash_string,
-				(EfsdCmpFunc)strcmp, meta_monitor_hash_item_free);
+				(EfsdCmpFunc)strcmp, (EfsdFunc)meta_monitor_hash_item_free);
 
   meta_monitors_lock = efsd_lock_new();
   

@@ -626,7 +626,7 @@ command_line(EfsdConnection *ec)
 		  else if (!strcmp(tok, "-ls"))
 		    {
 		      num_options++;
-		      get_stat = 1;
+		      get_lstat = 1;
 		    }
 		  else if (!strcmp(tok, "-t"))
 		    {

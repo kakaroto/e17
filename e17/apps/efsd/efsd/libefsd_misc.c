@@ -128,9 +128,9 @@ misc_get_socket_file(void)
   if (s[0] != '\0')
     D_RETURN_(s);
 #ifndef __EMX__
-  snprintf(s, sizeof(s), "%s/efsd_socket", misc_get_user_dir());
+  snprintf(s, sizeof(s), "/tmp/.efsd_socket_%u", geteuid());
 #else
-  snprintf(s, sizeof(s), "\\socket\\%s/efsd_socket", misc_get_user_dir());
+  snprintf(s, sizeof(s), "\\socket\\.efsd_socket_%u", geteuid());
 #endif
   s[sizeof(s)-1] = '\0';
   D_RETURN_(s);

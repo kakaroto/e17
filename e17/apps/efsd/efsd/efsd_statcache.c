@@ -201,10 +201,10 @@ efsd_stat_init(void)
   D_ENTER;
 
   stat_cache = efsd_hash_new(1023, 10, (EfsdHashFunc)efsd_hash_string,
-			     (EfsdCmpFunc)strcmp, stat_hash_item_free);
+			     (EfsdCmpFunc)strcmp, (EfsdFunc)stat_hash_item_free);
 
   lstat_cache = efsd_hash_new(1023, 10, (EfsdHashFunc)efsd_hash_string,
-			      (EfsdCmpFunc)strcmp, stat_hash_item_free);
+			      (EfsdCmpFunc)strcmp, (EfsdFunc)stat_hash_item_free);
 
   stat_lock = efsd_lock_new();
   
@@ -217,8 +217,8 @@ efsd_stat_cleanup(void)
 {
   D_ENTER;
 
-  efsd_hash_free_with_func(stat_cache, stat_hash_item_free_no_monitor_update);
-  efsd_hash_free_with_func(lstat_cache, stat_hash_item_free_no_monitor_update);
+  efsd_hash_free_with_func(stat_cache, (EfsdFunc)stat_hash_item_free_no_monitor_update);
+  efsd_hash_free_with_func(lstat_cache, (EfsdFunc)stat_hash_item_free_no_monitor_update);
   efsd_lock_free(stat_lock);
 
   stat_cache = NULL;

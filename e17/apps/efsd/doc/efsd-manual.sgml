@@ -1411,6 +1411,51 @@ if ( (id = efsd_start_monitor_dir(ec, "/some/dir", ops)) < 0)
 
 <refentry>
 <refmeta>
+<refentrytitle><phrase id="API-efsd-dispatch-event">efsd_dispatch_event</phrase></refentrytitle>
+</refmeta>
+<refnamediv>
+ <refname>efsd_dispatch_event</refname>
+ <refpurpose>
+      handles events through the dispatching mechanism.
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis>
+   <funcdef>int <function>efsd_dispatch_event </function></funcdef>
+   <paramdef>EfsdEvent * <parameter>ev</parameter></paramdef>
+  </funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>ev</parameter></term>
+   <listitem>
+    <para>
+      The Efsd event to dispatch.
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+ <title>Description</title>
+ <para>
+   This function looks up the set of callbacks for the command ID contained
+   in the event, and then dispatches this event to the appropriate callback.
+   If no set of callbacks is found or the matching callback isn't defined
+   in the EfsdEventCallbacks struct, nothing happens.
+   </para><para>
+
+   Returns -1 when an error occurs, FALSE when the event didn't get
+   dispatched, and TRUE when it got dispatched.
+ </para>
+</refsect1>
+</refentry>
+
+<refentry>
+<refmeta>
 <refentrytitle><phrase id="API-efsd-wait-event">efsd_wait_event</phrase></refentrytitle>
 </refmeta>
 <refnamediv>
@@ -3711,6 +3756,131 @@ if ( (id = efsd_start_monitor_dir(ec, "/some/dir", ops)) < 0)
 
    This option constructor returns an EfsdOption that causes Efsd to send
    <constant>EFSD_FILE_EXISTS</constant> also for hidden files (starting with a '.').
+ </para>
+</refsect1>
+</refentry>
+
+<refentry>
+<refmeta>
+<refentrytitle><phrase id="API-efsd-callbacks-create">efsd_callbacks_create</phrase></refentrytitle>
+</refmeta>
+<refnamediv>
+ <refname>efsd_callbacks_create</refname>
+ <refpurpose>
+      returns an initialized event callback struct.
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis>
+   <funcdef>EfsdEventCallbacks * <function>efsd_callbacks_create </function></funcdef>
+   <paramdef> <parameter>void</parameter></paramdef>
+  </funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>void</parameter></term>
+   <listitem>
+    <para>
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+ <title>Description</title>
+ <para>
+ </para>
+</refsect1>
+</refentry>
+
+<refentry>
+<refmeta>
+<refentrytitle><phrase id="API-efsd-callbacks-cleanup">efsd_callbacks_cleanup</phrase></refentrytitle>
+</refmeta>
+<refnamediv>
+ <refname>efsd_callbacks_cleanup</refname>
+ <refpurpose>
+      cleans up memory occupied by a callbacks struct.
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis>
+   <funcdef>void <function>efsd_callbacks_cleanup </function></funcdef>
+   <paramdef>EfsdEventCallbacks * <parameter>callbacks</parameter></paramdef>
+  </funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>callbacks</parameter></term>
+   <listitem>
+    <para>
+      callbacks structure to clean up.
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+</refentry>
+
+<refentry>
+<refmeta>
+<refentrytitle><phrase id="API-efsd-callbacks-register">efsd_callbacks_register</phrase></refentrytitle>
+</refmeta>
+<refnamediv>
+ <refname>efsd_callbacks_register</refname>
+ <refpurpose>
+      registers a set of handlers for a particular monitor.
+ </refpurpose>
+</refnamediv>
+<refsynopsisdiv>
+ <title>Synopsis</title>
+  <funcsynopsis>
+   <funcdef>EfsdEventCallbacks * <function>efsd_callbacks_register </function></funcdef>
+   <paramdef>EfsdCmdId <parameter>id</parameter></paramdef>
+   <paramdef>EfsdEventCallbacks * <parameter>callbacks</parameter></paramdef>
+  </funcsynopsis>
+</refsynopsisdiv>
+<refsect1>
+ <title>Arguments</title>
+ <variablelist>
+  <varlistentry>
+   <term><parameter>id</parameter></term>
+   <listitem>
+    <para>
+      Command ID of the monitoring request.
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>callbacks</parameter></term>
+   <listitem>
+    <para>
+      Initialized callback set.
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+</refsect1>
+<refsect1>
+ <title>Description</title>
+ <para>
+   You can register a set of event handlers for a particular file monitor
+   here. Pass the command ID that was returned by the corresponding
+   monitor request call as first argument, and an EfsdEventCallback struct
+   that is initialized properly second. You don't need to initialize
+   callbacks you don't want to use.
+   </para><para>
+
+   If you want to change the set of callbacks for an ID, just call this
+   function again, you'll get the old set in return (and NULL otherwise).
+   Similarly, if you want to remove a callback set for a command ID, just
+   pass NULL as the second argument.
  </para>
 </refsect1>
 </refentry>

@@ -316,6 +316,9 @@ efsd_misc_mkdir(char *filename)
 
   if (mkdir(filename, mode_755) < 0)
     {
+      if (errno == EEXIST && efsd_misc_file_is_dir(filename))
+	D_RETURN_(TRUE);
+
       D_RETURN_(FALSE);
     }
 
@@ -491,36 +494,6 @@ efsd_misc_get_path_only(const char *filename, char *path, int size)
 }
 
 
-void    
-efsd_misc_create_efsd_dir(void)
-{
-  struct passwd *pw = NULL;
-  char           dir[MAXPATHLEN];
-  char           s[MAXPATHLEN];
-
-  D_ENTER;
-
-  if ( (pw = getpwuid(geteuid())))
-    {
-      snprintf(dir, MAXPATHLEN, "%s/.e", pw->pw_dir);
-    }
-  else
-    {
-      snprintf(dir, MAXPATHLEN, "/tmp/.efsd_%u", geteuid());
-    }
-
-  if (!efsd_misc_file_is_dir(dir))
-    efsd_misc_mkdir(dir);
-
-  snprintf(s, sizeof(s), "%s/efsd", dir);
-
-  if (!efsd_misc_file_is_dir(s))
-    efsd_misc_mkdir(s);
-
-  D_RETURN;
-}
-
-
 void
 efsd_misc_remove_socket_file(void)
 {
@@ -545,37 +518,55 @@ efsd_misc_remove_socket_file(void)
 char *
 efsd_misc_get_user_dir(void)
 {
-  char         *dir = NULL;
-  static char   s[MAXPATHLEN] = "\0";
-  
+  struct passwd *pw = NULL;
+  static char    s[MAXPATHLEN] = "\0";
+
   D_ENTER;
 
   if (s[0] != '\0')
     D_RETURN_(s);
 
-  dir = getenv("HOME");
-
-  /* I'm not using getenv("TMPDIR") --
-   * I don't see TMPDIR on Linux, FreeBSD
-   * or Solaris here...
-   */
-
-  /* FIXME -- I need to properly handle the case
-     where I cannot determine the home directory.
-     This will break if multiple users run E on the
-     same machine:
-  */
-
-  if (!dir)
+  if ( (pw = getpwuid(geteuid())))
     {
-      D("WARNING -- NO HOME FOUND\n");
-      dir = "/tmp";
+      snprintf(s, sizeof(s), "%s/.e/efsd", pw->pw_dir);
     }
-
-  snprintf(s, sizeof(s), "%s/.e/efsd", dir);
+  else
+    {
+      snprintf(s, MAXPATHLEN, "/tmp/.efsd_%u", geteuid());
+    }
 
   D_RETURN_(s);
 }
+
+int
+efsd_misc_create_user_dir(void)
+{
+  struct passwd *pw = NULL;
+  char    s[MAXPATHLEN] = "\0";
+
+  D_ENTER;
+
+  if ( (pw = getpwuid(geteuid())))
+    {
+      snprintf(s, sizeof(s), "%s/.e", pw->pw_dir);
+      if (efsd_misc_mkdir(s) < 0)
+	D_RETURN_(FALSE);
+
+      snprintf(s, sizeof(s), "%s/.e/efsd", pw->pw_dir);
+      if (efsd_misc_mkdir(s) < 0)
+	D_RETURN_(FALSE);
+    }
+  else
+    {
+      snprintf(s, MAXPATHLEN, "/tmp/.efsd_%u", geteuid());
+      if (efsd_misc_mkdir(s) < 0)
+	D_RETURN_(FALSE);
+    }
+
+  D_RETURN_(TRUE);
+}
+
+
 
 
 char *
@@ -593,12 +584,15 @@ efsd_misc_get_socket_file(void)
   
   D_ENTER;
 
+  /* The socket file is always created in /tmp to avoid performance
+     issues when a home directory is mounted over a remote filesystem. */
+
   if (s[0] != '\0')
     D_RETURN_(s);
 #ifndef __EMX__
-  snprintf(s, sizeof(s), "%s/efsd_socket", efsd_misc_get_user_dir());
+  snprintf(s, sizeof(s), "/tmp/.efsd_socket_%u", geteuid());
 #else
-  snprintf(s, sizeof(s), "\\socket\\%s/efsd_socket", efsd_misc_get_user_dir());
+  snprintf(s, sizeof(s), "\\socket\\.efsd_socket_%u", geteuid());
 #endif
   s[sizeof(s)-1] = '\0';
   D_RETURN_(s);

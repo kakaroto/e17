@@ -49,20 +49,13 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <fnmatch.h>
 
 /* libxml stuff */
-#include <tree.h>
-#include <parser.h>
+#include <libxml/tree.h>
+#include <libxml/parser.h>
 
 #ifdef __EMX__
 #include <strings.h>
 #endif
 
-#ifdef DEBUG
-#undef DEBUG
-#endif
-
-#ifdef DEBUG_NEST
-#undef DEBUG_NEST
-#endif
 
 #include <efsd.h>
 #include <efsd_debug.h>
@@ -198,6 +191,9 @@ static EfsdByteorder host_byteorder = EFSD_BYTEORDER_LITTLE;
 */
 static EfsdMagic  sys_magic;
 static EfsdMagic  user_magic;
+
+/* Mhmm well ideally there should be separate locking for
+   user magic and system-wide magic ... */
 static EfsdLock  *magic_lock;
 
 /* Filename patterns */
@@ -251,6 +247,8 @@ static void         filetype_magic_cleanup_level(EfsdMagic *em);
 static void         filetype_magic_add_child(EfsdMagic *em_dad, EfsdMagic *em_kid);
 
 static void         filetype_magic_move_match_to_front(EfsdMagic *dad, EfsdMagic *kid);
+static char        *filetype_magic_test_toplevel(EfsdMagic *em, FILE *f,
+						 char *ptr, EfsdMagic **matching_kid);
 static char        *filetype_magic_test_level(EfsdMagic *em, FILE *f,
 					      char *ptr, char stop_when_found,
 					      EfsdMagic **matching_kid);
@@ -1341,6 +1339,25 @@ filetype_magic_test_perform(EfsdMagic *em, FILE *f)
 }
 
 
+/* This is a wrapper call to filetype_magic_test_level() that
+   is intended for calls to the root level of the magic tree
+   structure. It protects access to the tree through readlocks.
+*/
+static char *
+filetype_magic_test_toplevel(EfsdMagic *level, FILE *f,
+			     char *ptr, EfsdMagic **matching_kid)
+{
+  char *result = NULL;
+
+  D_ENTER;
+
+  efsd_lock_get_read_access(magic_lock);
+  result = filetype_magic_test_level(level, f, ptr, TRUE, matching_kid);
+  efsd_lock_release_read_access(magic_lock);
+
+  D_RETURN_(result);
+}
+
 static char *
 filetype_magic_test_level(EfsdMagic *level, FILE *f,
 			  char *ptr, char stop_when_found,
@@ -1588,9 +1605,28 @@ filetype_test_fs(char *filename, struct stat *st, char *type, int len)
   if (!st)
     D_RETURN_(FALSE);
 
+  /* First, determine the basic file type, and if it's a link, check
+     whether it's dead or not. Then, look up the type of the fs that
+     the file lives on. The result is something like "dir/ext2".
+  */
 
   if (S_ISLNK(st->st_mode))
     {
+      char real[MAXPATHLEN];
+      int  real_len = 0;
+      
+      if ( (real_len = readlink(filename, real, real_len) >= 0))
+	{
+	  real[real_len] = '\0';
+	  
+	  if (!efsd_misc_file_exists(real))
+	    broken_link = TRUE;
+	}
+      else
+	{
+	  broken_link = TRUE;
+	}
+
       if (broken_link)	
 	snprintf(type, len, "%s", "broken-link");
       else
@@ -1634,33 +1670,14 @@ filetype_test_fs(char *filename, struct stat *st, char *type, int len)
   snprintf(ptr, len - fslen, "/%s", "unknown-fs");
   D_RETURN_(TRUE);
 #else
+
+  /* Okay, we have the basic file type. Now stat the filesystem,
+     look up the type and complete the file type string. */
+
   if (statfs(filename, &stfs) < 0)
     {
-      if (S_ISLNK(st->st_mode))
-	{
-	  char *lastslash;
-
-	  lastslash = strrchr(filename, '/');
-
-	  if (lastslash)
-	    {
-	      char old = *(lastslash+1);
-
-	      *(lastslash+1) = '\0';
-	      if (statfs(filename, &stfs) < 0)
-		{
-		  *(lastslash+1) = old;
-		  D_RETURN_(FALSE);
-		}
-
-	      *(lastslash+1) = old;
-	      broken_link = TRUE;
-	    }
-	}
-      else
-	{
-	  D_RETURN_(FALSE);
-	}
+      snprintf(ptr, len - fslen, "/%s", "unknown-fs");
+      D_RETURN_(TRUE);
     }
     
 #  ifdef __FreeBSD__
@@ -1763,16 +1780,21 @@ filetype_magic_move_match_to_front(EfsdMagic *dad, EfsdMagic *kid)
   if (!dad || !kid)
     D_RETURN;
 
-  if (!kid->prev)
-    /* Nothing to optimize */
-    D_RETURN;
-
   efsd_lock_get_write_access(magic_lock);
+
+  /* Do NOT move this test above the above line! */
+  if (!kid->prev)
+    {
+      /* Nothing to optimize */
+      efsd_lock_release_write_access(magic_lock);
+      D_RETURN;
+    }
 
   if (kid == dad->last_kid)
     dad->last_kid = kid->prev;
 
-  kid->prev->next = kid->next;
+  if (kid->prev)
+    kid->prev->next = kid->next;
 
   if (kid->next)
     kid->next->prev = kid->prev;
@@ -1799,7 +1821,7 @@ filetype_test_magic(char *filename, char *type, int len)
   if ((f = fopen(filename, "r")) == NULL)
     D_RETURN_(FALSE);
   
-  if (filetype_magic_test_level(sys_magic.kids, f, s, TRUE, &match))
+  if (filetype_magic_test_toplevel(sys_magic.kids, f, s, &match))
     {
       int last;
 
@@ -1816,7 +1838,7 @@ filetype_test_magic(char *filename, char *type, int len)
       D_RETURN_(TRUE);
     }
 
-  if (filetype_magic_test_level(user_magic.kids, f, s, TRUE, &match))
+  if (filetype_magic_test_toplevel(user_magic.kids, f, s, &match))
     {
       int last;
       
@@ -1916,7 +1938,7 @@ filetype_cache_init(void)
 
   filetype_cache = efsd_hash_new(1023, 10, (EfsdHashFunc)efsd_hash_string,
 				 (EfsdCmpFunc)strcmp,
-				 filetype_hash_item_free);
+				 (EfsdFunc)filetype_hash_item_free);
 
   D_RETURN;
 }

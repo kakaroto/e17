@@ -44,6 +44,34 @@ extern "C" {
 typedef struct efsd_connection EfsdConnection;
 typedef struct efsd_options EfsdOptions;
 
+
+/* Function prototype typedefs for the various file change
+   event handlers: */
+
+typedef void (*EfsdFileEventFunc) (EfsdFileChangeEvent *ev);
+typedef void (*EfsdFileMetadataEventFunc) (EfsdMetadataChangeEvent *ev);
+typedef void (*EfsdReplyFunc) (EfsdReplyEvent *ev);
+
+/* And a struct that puts them all together. Look at the
+   efsd_callbacks_... functions */
+typedef struct efsd_event_callbacks
+{
+  EfsdFileEventFunc          changed_cb;
+  EfsdFileEventFunc          delete_cb;
+  EfsdFileEventFunc          startexec_cb;
+  EfsdFileEventFunc          stopexec_cb;
+  EfsdFileEventFunc          created_cb;
+  EfsdFileEventFunc          moved_cb;
+  EfsdFileEventFunc          ack_cb;
+  EfsdFileEventFunc          exists_cb;
+  EfsdFileEventFunc          endexists_cb;
+  EfsdFileMetadataEventFunc  metadata_cb;
+  EfsdReplyFunc              reply_cb;
+}
+EfsdEventCallbacks;
+
+
+
 /**
  * efsd_open - Creates and returns an efsd connection. 
  * 
@@ -99,6 +127,21 @@ int            efsd_events_pending(EfsdConnection *ec);
  * data was available, >= 0 otherwise.
 */
 int            efsd_next_event(EfsdConnection *ec, EfsdEvent *ev);
+
+
+/**
+ * efsd_dispatch_event - handles events through the dispatching mechanism.
+ * @ev: The Efsd event to dispatch.
+ *
+ * This function looks up the set of callbacks for the command ID contained
+ * in the event, and then dispatches this event to the appropriate callback.
+ * If no set of callbacks is found or the matching callback isn't defined
+ * in the EfsdEventCallbacks struct, nothing happens.
+ *
+ * Returns -1 when an error occurs, FALSE when the event didn't get
+ * dispatched, and TRUE when it got dispatched.
+ */
+int            efsd_dispatch_event(EfsdEvent *ev);
 
 
 /** 
@@ -697,6 +740,39 @@ EfsdOption    *efsd_op_sort(void);
  * %EFSD_FILE_EXISTS also for hidden files (starting with a '.').
  */
 EfsdOption    *efsd_op_list_all(void);
+
+
+
+/**
+ * efsd_callbacks_create - returns an initialized event callback struct.
+ *
+ */
+EfsdEventCallbacks *efsd_callbacks_create(void);
+
+/**
+ * efsd_callbacks_cleanup - cleans up memory occupied by a callbacks struct.
+ * @callbacks: callbacks structure to clean up.
+ */
+void efsd_callbacks_cleanup(EfsdEventCallbacks *callbacks);
+
+
+/**
+ * efsd_callbacks_register - registers a set of handlers for a particular monitor.
+ * @id: Command ID of the monitoring request.
+ * @callbacks: Initialized callback set.
+ *
+ * You can register a set of event handlers for a particular file monitor
+ * here. Pass the command ID that was returned by the corresponding
+ * monitor request call as first argument, and an EfsdEventCallback struct
+ * that is initialized properly second. You don't need to initialize
+ * callbacks you don't want to use.
+ *
+ * If you want to change the set of callbacks for an ID, just call this
+ * function again, you'll get the old set in return (and NULL otherwise).
+ * Similarly, if you want to remove a callback set for a command ID, just
+ * pass NULL as the second argument.
+ */
+EfsdEventCallbacks *efsd_callbacks_register(EfsdCmdId id, EfsdEventCallbacks *callbacks);
 
 #ifdef __cplusplus
 }

@@ -57,6 +57,7 @@ libefsd_la_SOURCES   = 				\
 	efsd_types.h efsd_types.c 		\
 	efsd_queue.h libefsd_queue.c 		\
 	efsd_list.h efsd_list.c 		\
+	efsd_hash.h efsd_hash.c 		\
 	libefsd_misc.h libefsd_misc.c 		\
 	libefsd.c
 

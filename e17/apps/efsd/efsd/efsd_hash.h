@@ -39,14 +39,13 @@ EfsdHashItem;
 
 typedef unsigned int (*EfsdHashFunc) (EfsdHash *h, void *data);
 typedef int (*EfsdCmpFunc) (void *d1, void *d2);
-typedef void (*EfsdHashItemFreeFunc) (EfsdHashItem *it);
 
-EfsdHash         *efsd_hash_new(int num_buckets, int bucket_size,
+EfsdHash         *efsd_hash_new(int num_buckets, int bucket_size_max,
 				EfsdHashFunc hash_func, EfsdCmpFunc cmp_func,
-				EfsdHashItemFreeFunc free_func);
+				EfsdFunc free_func);
 
 void              efsd_hash_free(EfsdHash *h);
-void              efsd_hash_free_with_func(EfsdHash *h, EfsdHashItemFreeFunc free_func);
+void              efsd_hash_free_with_func(EfsdHash *h, EfsdFunc free_func);
 int               efsd_hash_insert(EfsdHash *h, void *key, void *data);
 
 /* Returns NULL if item not found or the data of the
@@ -55,11 +54,16 @@ void             *efsd_hash_find(EfsdHash *h, void *key);
 void              efsd_hash_remove(EfsdHash *h, void *key, EfsdFunc free_func);
 void              efsd_hash_change_key(EfsdHash *h, void *key1, void *key2);
 
+/* Replaces the content of a hash item, returning the old content. */
+void             *efsd_hash_change_val(EfsdHash *h, void *key, void *data);
+
 int               efsd_hash_num_buckets(EfsdHash *h);
 int               efsd_hash_max_bucket_size(EfsdHash *h);
 
 /* Standard hash functions: */
 unsigned int      efsd_hash_string(EfsdHash *h, char *data);
+unsigned int      efsd_hash_int(EfsdHash *h, int data);
+int               efsd_hash_cmp_int(int *i1, int *i2);
 
 /* Hash iterators -- iterates over all items
    that are stored inside a hash table */
