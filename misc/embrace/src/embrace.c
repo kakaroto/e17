@@ -567,8 +567,8 @@ void embrace_stop (Embrace *e)
 
 int embrace_signal_get ()
 {
-	last_signal++;
-	assert (last_signal > SIGRTMIN && last_signal != _NSIG);
+	assert (last_signal >= SIGRTMIN);
+	assert (last_signal < SIGRTMAX);
 
-	return last_signal;
+	return ++last_signal;
 }
