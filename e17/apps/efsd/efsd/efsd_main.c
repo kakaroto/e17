@@ -516,6 +516,32 @@ main_handle_fam_events(void)
 	      continue;
 	    }
 
+	  if ((famev.code == FAMChanged) || (famev.code == FAMDeleted))
+	    {
+	      /* A monitored file changed or got deleted
+		 -- therefore, remove the file from the
+		 stat cache. If the file isn't in the cache,
+		 the calls simply return, doing nothing.
+	      */
+	      
+	      if (famev.filename[0] != '/')
+		{
+		  /* The famev.filename is not always
+		     chanonical. We need to fix that.
+		  */
+		  char chanonical[MAXPATHLEN];
+		  
+		  snprintf(chanonical, MAXPATHLEN, "%s/%s", m->filename, famev.filename);
+		  D("Change|remove event for stat cached file %s -- removing from cache.\n", chanonical);
+		  efsd_stat_remove(chanonical, TRUE);
+		}
+	      else
+		{
+		  D("Change|remove event for stat cached file %s -- removing from cache.\n", m->filename);
+		  efsd_stat_remove(m->filename, TRUE);
+		}
+	    }
+
 	  if (emr->client == EFSD_CLIENT_INTERNAL)
 	    {
 	      if ((famev.code == FAMChanged) || (famev.code == FAMCreated))
@@ -543,32 +569,6 @@ main_handle_fam_events(void)
 		      */
 		      signal(SIGALRM, main_reload_user_sighandler);
 		      alarm(3);
-		    }
-		}
-	      
-	      if ((famev.code == FAMChanged) || (famev.code == FAMDeleted))
-		{
-		  /* A monitored file changed or got deleted
-		     -- therefore, remove the file from the
-		     stat cache. If the file isn't in the cache,
-		     the calls simply return, doing nothing.
-		  */
-		  
-		  if (famev.filename[0] != '/')
-		    {
-		      /* The famev.filename is not always
-			 chanonical. We need to fix that.
-		      */
-		      char chanonical[MAXPATHLEN];
-		      
-		      snprintf(chanonical, MAXPATHLEN, "%s/%s", m->filename, famev.filename);
-		      D("Change|remove event for stat cached file %s -- removing from cache.\n", chanonical);
-		      efsd_stat_remove(chanonical, TRUE);
-		    }
-		  else
-		    {
-		      D("Change|remove event for stat cached file %s -- removing from cache.\n", m->filename);
-		      efsd_stat_remove(m->filename, TRUE);
 		    }
 		}
 	    }
