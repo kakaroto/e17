@@ -11,7 +11,14 @@
 
 #define XEMBED_EMBEDDED_NOTIFY      0
 
+typedef struct _Window_List Window_List;
+struct _Window_List {
+  Ecore_X_Window *win;
+  Window_List    *next;
+};
+
 int tray_count = 0;
+Window_List *tray_list = NULL;
 
 /*
  * This or something similar should probably go into ecore_x
@@ -41,10 +48,43 @@ static Display *display;
 static Window root;
 static int tray_init;
 
+void
+od_tray_add(Ecore_X_Window *win) {
+  Window_List *new;
+    
+  new = malloc(sizeof(Window_List));
+  new->win = win;
+  new->next = tray_list;
+  tray_count++;
+  
+  printf("adding icon %x for %s\n", win, ecore_x_window_prop_title_get(win));
+  XReparentWindow (display, win, od_window, 0, 0);  
+  //layout tray area
+}
+
+void
+od_tray_remove(Ecore_X_Window *win) {
+  Window_List *tmp;
+  
+  tmp = tray_list;
+  while (tmp) {
+    if (tmp->win == win)
+      break;
+    tmp = tmp->next;
+  }
+  if (!tmp)
+    return;
+  
+  tray_count--;
+  //layout tray area
+  printf("removing icon %x for %s\n", win, ecore_x_window_prop_title_get(win));
+}
+
 int
 od_tray_msg_cb(void *data, int type, void *event)
 {
   Ecore_X_Event_Client_Message *ev = event;
+  Ecore_X_Event_Window_Destroy *dst = event;
 
   if (type == ECORE_X_EVENT_CLIENT_MESSAGE) {
     if (ev->message_type == ecore_x_atom_get("_NET_SYSTEM_TRAY_OPCODE")) {
@@ -54,6 +94,7 @@ od_tray_msg_cb(void *data, int type, void *event)
       printf("ev->data.l: %#lx %#lx %#lx %#lx\n",
              ev->data.l[0], ev->data.l[1], ev->data.l[2], ev->data.l[3]);
 
+      od_tray_add(ev->data.l[2]);
 #if 0
 /*
  * The window should probably be embedded, not sampled
@@ -67,7 +108,6 @@ od_tray_msg_cb(void *data, int type, void *event)
       od_icon_grab(new, ev->data.l[2]);
       od_dock_add_sysicon(new);
 #endif
-XReparentWindow (display, ev->data.l[2], od_window, 24 * tray_count++, 0);
       
       /* Map the window (will go top-level until reparented) */
       ecore_x_window_show(ev->data.l[2]);
@@ -81,8 +121,7 @@ XReparentWindow (display, ev->data.l[2], od_window, 24 * tray_count++, 0);
     }
   } else if (type == ECORE_X_EVENT_WINDOW_DESTROY ||
              type == ECORE_X_EVENT_WINDOW_HIDE) {
-    /* FIXME - WHY are we never called???? */
-    printf("need to remove\n");
+    od_tray_remove(dst->win);
   }
 
   return 1;
@@ -140,5 +179,4 @@ od_tray_init()
 
   ecore_event_handler_add(ECORE_X_EVENT_CLIENT_MESSAGE, od_tray_msg_cb, NULL);
   ecore_event_handler_add(ECORE_X_EVENT_WINDOW_DESTROY, od_tray_msg_cb, NULL);
-  ecore_event_handler_add(ECORE_X_EVENT_WINDOW_HIDE, od_tray_msg_cb, NULL);
 }
