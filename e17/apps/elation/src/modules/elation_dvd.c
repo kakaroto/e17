@@ -47,6 +47,11 @@ static void frame_resize_cb(void *data, Evas_Object *obj, void *event_info);
 static void length_change_cb(void *data, Evas_Object *obj, void *event_info);
 static void decode_stop_cb(void *data, Evas_Object *obj, void *event_info);
 static void button_num_change_cb(void *data, Evas_Object *obj, void *event_info);
+static void title_change_cb(void *data, Evas_Object *obj, void *event_info);
+static void progress_change_cb(void *data, Evas_Object *obj, void *event_info);
+static void channels_change_cb(void *data, Evas_Object *obj, void *event_info);
+static void ref_change_cb(void *data, Evas_Object *obj, void *event_info);
+static void button_change_cb(void *data, Evas_Object *obj, void *event_info);
 static void key_down_cb(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static int  media_check_timer_cb(void *data);
 static int  media_play_timer_cb(void *data);
@@ -82,6 +87,12 @@ init(Elation_Module *em)
    evas_object_smart_callback_add(pr->video, "length_change",length_change_cb, em);
    evas_object_smart_callback_add(pr->video, "decode_stop", decode_stop_cb, em);
    evas_object_smart_callback_add(pr->video, "button_num_change", button_num_change_cb, em);
+   
+   evas_object_smart_callback_add(pr->video, "title_change", title_change_cb, em);
+   evas_object_smart_callback_add(pr->video, "progress_change", progress_change_cb, em);
+   evas_object_smart_callback_add(pr->video, "channels_change", channels_change_cb, em);
+   evas_object_smart_callback_add(pr->video, "ref_change", ref_change_cb, em);
+   evas_object_smart_callback_add(pr->video, "button_change", button_change_cb, em);
    
    emotion_object_smooth_scale_set(pr->video, 1);
    
@@ -263,7 +274,7 @@ action(Elation_Module *em, int action)
 	     int fd;
 	     
 	     printf("stop...\n");
-	     emotion_object_play_set(pr->video, 0);
+//	     emotion_object_play_set(pr->video, 0);
 	     printf("eject...\n");
 //	     emotion_object_eject(pr->video);
 	     printf("fset...\n");
@@ -279,12 +290,22 @@ action(Elation_Module *em, int action)
 		  evas_object_smart_callback_add(pr->video, "decode_stop", decode_stop_cb, em);
 		  evas_object_smart_callback_add(pr->video, "button_num_change", button_num_change_cb, em);
 		  
+		  evas_object_smart_callback_add(pr->video, "title_change", title_change_cb, em);
+		  evas_object_smart_callback_add(pr->video, "progress_change", progress_change_cb, em);
+		  evas_object_smart_callback_add(pr->video, "channels_change", channels_change_cb, em);
+		  evas_object_smart_callback_add(pr->video, "ref_change", ref_change_cb, em);
+		  evas_object_smart_callback_add(pr->video, "button_change", button_change_cb, em);
+		  
 		  emotion_object_smooth_scale_set(pr->video, 1);
 		  
 		  evas_object_stack_above(pr->video, pr->background1);
+		  evas_object_focus_set(pr->video, 1);
 	       }
 	     else
-	       emotion_object_file_set(pr->video, NULL);
+	       {
+		  emotion_object_file_set(pr->video, NULL);
+		  emotion_object_play_set(pr->video, 0);
+	       }
 	     printf("emit..\n");
 	     edje_object_signal_emit(pr->overlay, "media", "0");
 	     evas_object_hide(pr->background1);
@@ -494,6 +515,69 @@ button_num_change_cb(void *data, Evas_Object *obj, void *event_info)
      pr->menu_visible = 1;
    else
      pr->menu_visible = 0;
+}
+
+static void
+title_change_cb(void *data, Evas_Object *obj, void *event_info)
+{
+   Elation_Module *em;
+   Elation_Module_Private *pr;
+   
+   em = data;
+   pr = em->data;
+   printf("EL video title to: \"%s\"\n", emotion_object_title_get(pr->video));
+}
+
+static void
+progress_change_cb(void *data, Evas_Object *obj, void *event_info)
+{
+   Elation_Module *em;
+   Elation_Module_Private *pr;
+   
+   em = data;
+   pr = em->data;
+   printf("EL progress: \"%s\" %3.3f\n",
+	  emotion_object_progress_info_get(pr->video),
+	  emotion_object_progress_status_get(pr->video));
+}
+
+static void
+channels_change_cb(void *data, Evas_Object *obj, void *event_info)
+{
+   Elation_Module *em;
+   Elation_Module_Private *pr;
+   
+   em = data;
+   pr = em->data;
+   printf("EL channels changed: [AUD %i][VID %i][SPU %i]\n",
+	  emotion_object_audio_channel_count(pr->video),
+	  emotion_object_video_channel_count(pr->video),
+	  emotion_object_spu_channel_count(pr->video));
+}
+
+static void
+ref_change_cb(void *data, Evas_Object *obj, void *event_info)
+{
+   Elation_Module *em;
+   Elation_Module_Private *pr;
+   
+   em = data;
+   pr = em->data;
+   printf("EL video ref to: \"%s\" %i\n",
+	  emotion_object_ref_file_get(pr->video),
+	  emotion_object_ref_num_get(pr->video));
+}
+
+static void
+button_change_cb(void *data, Evas_Object *obj, void *event_info)
+{
+   Elation_Module *em;
+   Elation_Module_Private *pr;
+   
+   em = data;
+   pr = em->data;
+   printf("EL video selected spu button: %i\n",
+	  emotion_object_spu_button_get(pr->video));
 }
 
 static void
