@@ -12,28 +12,28 @@ A Complete listing of Edje parts Entrance is aware of
 -------------------------------------------------------------------------
 | Part Name(state1, state2, ... , staten)	| Type         |  Required |
 -------------------------------------------------------------------------
-| EntrancePassEntry(default) 			| TEXT	       | Yes       |
+| entrance.entry.pass(default) 			| TEXT	       | Yes       |
 -------------------------------------------------------------------------
-| EntranceUserEntry(default) 			| TEXT	       | Yes       |
+| entrance.entry.user(default) 			| TEXT	       | Yes       |
 -------------------------------------------------------------------------
-| EntranceDate(default)		        	| TEXT	       | No        |
+| entrance.date(default)		       	| TEXT	       | No        |
 -------------------------------------------------------------------------
-| EntranceTime(default)		        	| TEXT	       | No        |
+| entrance.time(default)		       	| TEXT	       | No        |
 -------------------------------------------------------------------------
-| EntranceHostname(default)		        | TEXT	       | No        |
+| entrance.hostname(default)		        | TEXT	       | No        |
 -------------------------------------------------------------------------
-| EntranceSession (default)   			| RECT	       | No        |
+| entrance.xsessions.selected (default)   	| RECT	       | No        |
 | The currently selected Session is swallowed   |	       |
 -------------------------------------------------------------------------
-| EntranceFace(default)   			| RECT	       | No        |
+| entrance.users.avatar(default)   		| RECT	       | No        |
 | The currently selected User is swallowed here | 	       |
 -------------------------------------------------------------------------
-| EntranceSessionList (default)   		| RECT	       | No        |
+| entrance.xsessions.list (default)   		| RECT	       | No        |
 | Based on system configuration information the |	       |
 | list of the other group "Sesssion" available  |	       |
 | to the system is contained here		|	       |
 -------------------------------------------------------------------------
-| EntranceUserList(default)   			| RECT	       | No      
+| entrance.users.list(default)   		| RECT	       | No      
 | Based on system configuration information the |	       |
 | list of the users on the systems.  Each user  |	       |
 | has their own edje				|	       |
@@ -44,7 +44,7 @@ programs.
 -------------------------------------------------------------------------
 | Signal		       | Description   		               | Req
 -------------------------------------------------------------------------
-| EntranceUserAuthSuccess      | After successful authentication this  |
+| entrance,user,auth,success   | After successful authentication this  |
 |			       | signal is emitted, you can do your own|
 |			       | animation here if you want.  You must |
 | 			       | emit "entrance,user,auth,success,done" "" | 
@@ -52,25 +52,25 @@ programs.
 |			       | entrance to start your x session      | 
 |			       |"entrance,user,auth,success,done" ""       | Yes
 ---------------------------------------------------------------------------
-| EntranceUserFail	       | When the user is unknown the system   | No
+| entrance,user,fail	       | When the user is unknown the system   | No
 ---------------------------------------------------------------------------
-| EntranceUserAuthFail         | When a user fails a login attempted   | No 
+| entrance,user,auth,fail      | When a user fails a login attempted   | No 
 ---------------------------------------------------------------------------
-| EntranceUserAuth             | When the user is known to the system, | 
+| entrance,user,success        | When the user is known to the system, | 
 |			       | it's time to prompt for their password|
 |			       |				       | No
 ---------------------------------------------------------------------------
-| SessionSelected	       | When the user selects a new session   | 
+| entrance,xsession,selected   | When the user selects a new session   | 
 |			       | The cloned Session item is swallowed  |
-|			       | into EntranceSession		       |
+|			       | into entrance.xsessions.selected      |
 | 			       |				       | No
 ---------------------------------------------------------------------------
-| UserSelected	       	       | When a user is selected from the user |
+| entrance,users,selected      | When a user is selected from the user |
 |			       | list.  The user's icon is cloned and  |
-|			       | swallowed into EntranceFace	       |
+|			       | swallowed into entrance.users.avatar  |
 | 			       |				       | No
 ---------------------------------------------------------------------------
-| UserUnSelected	       | When a user icon choice needs to be   |
+| entrance,users,unselected    | When a user icon choice needs to be   |
 |			       | reset to the default.		       |
 | 			       |				       | No
 ---------------------------------------------------------------------------
@@ -80,23 +80,23 @@ to change states in entrance
 ---------------------------------------------------------------------------
 | Signal		        | Source			        | Req
 ---------------------------------------------------------------------------
-| "In"		        	| Either EntranceUserEntry or           |
-|			        | EntrancePassEntry depending on which  |
+| "In"		        	| Either entrance.entry.user or           |
+|			        | entrance.entry.pass depending on which  |
 |			        | you'd like focus on.		        | No
 ---------------------------------------------------------------------------
-| "Out"		        	| Either EntranceUserEntry or           |
-|			        | EntrancePassEntry depending on which  |
+| "Out"		        	| Either entrance.entry.user or           |
+|			        | entrance.entry.pass depending on which  |
 |			        | you'd like to take focus away from.   | No
 ---------------------------------------------------------------------------
-| EntranceSystemReboot       	| When the system request being rebooted| 
+| entrance,system,reboot       	| When the system request being rebooted| 
 |				| Source should be ""			| No
 ---------------------------------------------------------------------------
-| EntranceSystemHalt	        | When the system requests being halted | 
+| entrance,system,halt	        | When the system requests being halted | 
 |				| Source should be ""			| No
 ---------------------------------------------------------------------------
-| EntranceUserAuthSuccessDone	| When the theme has completed its post |
-|				| auth animation.			|
-|				| Source should be ""			|Yes
+| entrance,user,auth,success,done| When the theme has completed its     |
+|				 | post-auth animation.			|
+|				 | Source should be ""			|Yes
 ----------------------------------------------------------------------------
 
 Example: A basic edc mockup follows.
@@ -183,7 +183,7 @@ group
     parts
     {
 	part {
-	name "EntranceSessionIcon";
+	name "entrance.xsessions.selectedIcon";
 	type, IMAGE;
 	visible, 1;
 	// Doesn't need to be visible, or present, the value of
@@ -191,7 +191,7 @@ group
 	// image or another edje
 	}
 	part {
-	name "EntranceSessionTitle";
+	name "entrance.xsessions.selectedTitle";
 	type, TEXT;
 	visible, 1;
 	text 
@@ -232,7 +232,7 @@ title -> session mapping
 ----------------------------------------------------------------------------
 
 Each Entrance theme will have their own own defined rect we can swallow
-into if they want.  This part should be named EntranceSessionList.
+into if they want.  This part should be named entrance.xsessions.list.
 
 Sesssion edjes will look like the following:
 A basic edc mockup follows.
@@ -244,7 +244,7 @@ group
     parts
     {
 	part {
-	name "EntranceSessionIcon";
+	name "entrance.xsession.icon";
 	type, IMAGE;
 	visible, 1;
 	// Doesn't need to be visible, or present, the value of
@@ -252,7 +252,7 @@ group
 	// image or another edje
 	}
 	part {
-	name "EntranceSessionTitle";
+	name "entrance.xsession.title";
 	type, TEXT;
 	visible, 1;
 	text 
@@ -277,9 +277,9 @@ group
 }
 ----------------------------------------------------------------------------
 On "entrance,xsession,selected" emissions from sessions we do the following:
-1. Query EntranceSessionName for the Session we're selecting
+1. Query entrance.xsessions.selectedName for the Session we're selecting
 2. Lookup the session's edje in in the config system.
-3. Load that edje, register a pointer to the object in EntranceSession
+3. Load that edje, register a pointer to the object in entrance.xsessions.selected
 4. Swallow it into Entrance's main edje in a part called "EnticeSession" if
 the part exists.
 5. Emit a signal to Entrance's main edje called "entrance,xsession,selected"
@@ -287,7 +287,7 @@ the part exists.
 ----------------------------------------------------------------------------
 
 On "entrance,xsession,selected" emissions from entrance's main edje we do the following:
-1. Query the EnticeSession edje for EntranceSessionName
+1. Query the EnticeSession edje for entrance.xsessions.selectedName
 2. Set the session string to EntranceSesssionName 
 (implement entrance_session_xsession_set() )
 
@@ -297,13 +297,13 @@ Loading Sessions:
 "entrance.xsessions.list". If !exist returns.
 2. Create a container object, set direction based on h or w being larger
 3. Iterate over the sessions hashes(evas_hash_foreach)
- 3.a. Load EntranceSession Group from default theme.
- 3.b. Set EntranceSessionTitle for current item
+ 3.a. Load entrance.xsessions.selected Group from default theme.
+ 3.b. Set entrance.xsessions.selectedTitle for current item
  3.c. Load icon from current icon's file
- 3.c.i. Success, swallow it into EntranceSession group
+ 3.c.i. Success, swallow it into entrance.xsessions.selected group
  3.c.ii. Failure, swallow default icon
  3.d  Append current item to container
-4. Swallow container into EntranceSessionList
+4. Swallow container into entrance.xsessions.list
 /*========================================================================*/
 Howto implement login faces in entrance
 ----------------------------------------------------------------------------
@@ -319,7 +319,7 @@ entrance_useradd [options] username
 -d : delete the user from entrance's user db
 
 Each Entrance theme will have their own own defined rect we can swallow
-into if they want.  This part should be named EntranceUserList.
+into if they want.  This part should be named entrance.users.list.
 
 User edjes will look like the following:
 They will have a group called "User", and there will be three part
@@ -340,7 +340,7 @@ collections { group
     parts
     {
 	part {
-	name "EntranceUser";
+	name "entrance.user.icon";
 	type, TEXT;
 	visible, 1;
 	// Doesn't need to be visible, as long as there is other content
@@ -358,7 +358,7 @@ collections { group
 	program {
 	    action, SIGNAL_EMIT "entrance,users,unselected" "";
 	    // Let entrance know "i messed up! i clicked the wrong edje,
-	    // revert back to as if we had never UserSelected in the
+	    // revert back to as if we had never entrance,users,selected in the
 	    // first place.
 	}
     }
@@ -367,7 +367,7 @@ collections { group
 On "entrance,users,selected" emissions from faces we do the following:
 1. Query EntranceUser for the user's name.
 2. Lookup their edje in in the config system.
-3. Load that edje, register a pointer to the object in EntranceSession
+3. Load that edje, register a pointer to the object in entrance.xsessions.selected
 4. Swallow it into Entrance's main edje in a part called "EnticeFace" if
 the part exists.
 5. Emit a signal to Entrance's main edje called "entrance,users,selected"
