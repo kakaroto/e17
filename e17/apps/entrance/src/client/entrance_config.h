@@ -88,23 +88,11 @@ struct _Entrance_Config
    } sessions;
 };
 
-typedef struct _Entrance_Config *Entrance_Config;
+typedef struct _Entrance_Config Entrance_Config;
 
-#if 0
-struct _Entrance_User
-{
-   char *name;
-   char *img;
-   int sys;
-   // void *something
-};
-
-typedef struct _Entrance_User Entrance_User;
-#endif
-
-Entrance_Config entrance_config_parse(char *file);
-void entrance_config_print(Entrance_Config e);
-void entrance_config_free(Entrance_Config e);
-void entrance_config_prepend_recent_user(Entrance_Config e, char *str);
+Entrance_Config *entrance_config_parse(char *file);
+void entrance_config_print(Entrance_Config * e);
+void entrance_config_free(Entrance_Config * e);
+void entrance_config_prepend_recent_user(Entrance_Config * e, char *str);
 
 #endif

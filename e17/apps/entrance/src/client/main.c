@@ -17,7 +17,7 @@
 #define WINW 800
 #define WINH 600
 
-static Entrance_Session session = NULL;
+static Entrance_Session *session = NULL;
 
 /* Callbacks for entrance */
 static char *
@@ -373,18 +373,23 @@ reboot_cb(void *data, Evas_Object * o, const char *emission,
    {
       pid_t pid;
 
-      switch(pid = fork()) {
-          case 0:
-              if(execl("/bin/sh", "/bin/sh", "-c", "/sbin/shutdown -r now", NULL)) {
-                  syslog(LOG_CRIT, "Reboot failed: Unable to execute /sbin/shutdown");
-                  exit(0);
-              }
-          case -1:
-              syslog(LOG_CRIT, "Reboot failed: could not fork to execute shutdown script");
-              break;
-          default:
-              syslog(LOG_INFO, "The system is being rebooted");
-              exit(EXITCODE);
+      switch (pid = fork())
+      {
+        case 0:
+           if (execl
+               ("/bin/sh", "/bin/sh", "-c", "/sbin/shutdown -r now", NULL))
+           {
+              syslog(LOG_CRIT,
+                     "Reboot failed: Unable to execute /sbin/shutdown");
+              exit(0);
+           }
+        case -1:
+           syslog(LOG_CRIT,
+                  "Reboot failed: could not fork to execute shutdown script");
+           break;
+        default:
+           syslog(LOG_INFO, "The system is being rebooted");
+           exit(EXITCODE);
       }
    }
 }
@@ -404,20 +409,26 @@ shutdown_cb(void *data, Evas_Object * o, const char *emission,
             const char *source)
 {
    pid_t pid;
+
    if (session->config->halt.allow)
    {
-      switch(pid = fork()) {
-          case 0:
-              if(execl("/bin/sh", "/bin/sh", "-c", "/sbin/shutdown -h now", NULL)) {
-                  syslog(LOG_CRIT, "Shutdown failed: Unable to execute /sbin/shutdown");
-                  exit(0);
-              }
-          case -1:
-              syslog(LOG_CRIT, "Shutdown failed: could not fork to execute shutdown script");
-              break;
-          default:
-              syslog(LOG_INFO, "The system is being shut down");
-              exit(EXITCODE);
+      switch (pid = fork())
+      {
+        case 0:
+           if (execl
+               ("/bin/sh", "/bin/sh", "-c", "/sbin/shutdown -h now", NULL))
+           {
+              syslog(LOG_CRIT,
+                     "Shutdown failed: Unable to execute /sbin/shutdown");
+              exit(0);
+           }
+        case -1:
+           syslog(LOG_CRIT,
+                  "Shutdown failed: could not fork to execute shutdown script");
+           break;
+        default:
+           syslog(LOG_INFO, "The system is being shut down");
+           exit(EXITCODE);
       }
    }
 }
@@ -523,7 +534,7 @@ main(int argc, char *argv[])
       /* Load our theme as an edje */
       edje = edje_object_add(evas);
       snprintf(buf, PATH_MAX, "%s/themes/%s", PACKAGE_DATA_DIR,
-               session->theme);
+               session->config->theme);
       if (!edje_object_file_set(edje, buf, "Main"))
       {
          fprintf(stderr, "Failed to set %s\n", buf);

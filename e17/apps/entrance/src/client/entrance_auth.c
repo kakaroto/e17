@@ -19,7 +19,7 @@ _entrance_auth_pam_conv(int num_msg, const struct pam_message **msg,
                         struct pam_response **resp, void *appdata_ptr)
 {
    int replies = 0;
-   Entrance_Auth e = appdata_ptr;
+   Entrance_Auth *e = appdata_ptr;
    struct pam_response *reply = NULL;
 
    reply =
@@ -60,12 +60,12 @@ _entrance_auth_pam_conv(int num_msg, const struct pam_message **msg,
 /* entrance_auth_new
  * Returns a 0'd out Entrance_Auth Struct
  */
-Entrance_Auth
+Entrance_Auth *
 entrance_auth_new(void)
 {
-   Entrance_Auth e;
+   Entrance_Auth *e;
 
-   e = (Entrance_Auth) malloc(sizeof(struct _Entrance_Auth));
+   e = (Entrance_Auth *) malloc(sizeof(struct _Entrance_Auth));
    memset(e, 0, sizeof(struct _Entrance_Auth));
    e->env = (char **) malloc(sizeof(char *) * 2);
    e->env[0] = 0;
@@ -76,7 +76,7 @@ entrance_auth_new(void)
  * @e the Entrance_Auth struct to be freed
  */
 void
-entrance_auth_free(Entrance_Auth e)
+entrance_auth_free(Entrance_Auth * e)
 {
 #if HAVE_PAM
    if (e->pam.handle)
@@ -100,7 +100,7 @@ entrance_auth_free(Entrance_Auth e)
  * function and others.
  */
 static int
-_entrance_auth_pam_initialize(Entrance_Auth e)
+_entrance_auth_pam_initialize(Entrance_Auth * e)
 {
    int pamerr;
 
@@ -157,7 +157,7 @@ _entrance_auth_pam_initialize(Entrance_Auth e)
  * Returns - 0 on success, 1 on error
  */
 int
-entrance_auth_cmp_pam(Entrance_Auth e)
+entrance_auth_cmp_pam(Entrance_Auth * e)
 {
    int result = 0;
    int pamerr;
@@ -202,7 +202,7 @@ entrance_auth_cmp_pam(Entrance_Auth e)
 #endif
 
 int
-entrance_auth_cmp_crypt(Entrance_Auth e, Entrance_Config cfg)
+entrance_auth_cmp_crypt(Entrance_Auth * e, Entrance_Config * cfg)
 {
    char *encrypted;
    char *correct = e->pw->pw_passwd;
@@ -232,7 +232,7 @@ entrance_auth_cmp_crypt(Entrance_Auth e, Entrance_Config cfg)
  * Pass it a char* and it'll set it if it should
  */
 void
-entrance_auth_set_pass(Entrance_Auth e, const char *str)
+entrance_auth_set_pass(Entrance_Auth * e, const char *str)
 {
    if (str)
       snprintf(e->pass, PATH_MAX, "%s", str);
@@ -247,7 +247,7 @@ entrance_auth_set_pass(Entrance_Auth e, const char *str)
  * to the passed in string, if they don't, e->user is unmodified.
  */
 int
-entrance_auth_set_user(Entrance_Auth e, const char *str)
+entrance_auth_set_user(Entrance_Auth * e, const char *str)
 {
    int result = 0;
 
@@ -278,7 +278,7 @@ entrance_auth_set_user(Entrance_Auth e, const char *str)
  * I'm not sure if this is correct, but for now it works.
  */
 void
-entrance_auth_setup_environment(Entrance_Auth e)
+entrance_auth_setup_environment(Entrance_Auth * e)
 {
    extern char **environ;
    int size;

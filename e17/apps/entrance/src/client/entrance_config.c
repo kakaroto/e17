@@ -3,12 +3,12 @@
 
 #define REMEMBER_USERS 3
 
-Entrance_Config
+Entrance_Config *
 entrance_config_new(void)
 {
-   Entrance_Config e;
+   Entrance_Config *e;
 
-   e = (Entrance_Config) malloc(sizeof(struct _Entrance_Config));
+   e = (Entrance_Config *) malloc(sizeof(struct _Entrance_Config));
    memset(e, 0, sizeof(struct _Entrance_Config));
 
    e->screens.w = e->screens.h = e->display.w, e->display.h = 1;
@@ -17,7 +17,7 @@ entrance_config_new(void)
 }
 
 static void
-entrance_config_populate(Entrance_Config e, E_DB_File * db)
+entrance_config_populate(Entrance_Config * e, E_DB_File * db)
 {
    char *str;
    int i = 0, num_session = 0, num_user;
@@ -161,10 +161,10 @@ entrance_config_populate(Entrance_Config e, E_DB_File * db)
 #endif
 }
 
-Entrance_Config
+Entrance_Config *
 entrance_config_parse(char *file)
 {
-   Entrance_Config e = NULL;
+   Entrance_Config *e = NULL;
 
    if (file)
    {
@@ -197,7 +197,7 @@ entrance_config_print(Entrance_Config e)
 }*/
 
 void
-entrance_config_free(Entrance_Config e)
+entrance_config_free(Entrance_Config * e)
 {
    if (e)
    {

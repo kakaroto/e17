@@ -11,9 +11,9 @@ extern void user_selected_cb(void *data, Evas_Object * o,
 extern void user_unselected_cb(void *data, Evas_Object * o,
                                const char *emission, const char *source);
 static Evas_Object *_entrance_session_icon_load(Evas_Object * o, char *file);
-static Evas_Object *_entrance_session_load_session(Entrance_Session e,
+static Evas_Object *_entrance_session_load_session(Entrance_Session * e,
                                                    char *key);
-static Evas_Object *_entrance_session_user_load(Entrance_Session e,
+static Evas_Object *_entrance_session_user_load(Entrance_Session * e,
                                                 char *key);
 
 /**
@@ -21,13 +21,12 @@ static Evas_Object *_entrance_session_user_load(Entrance_Session e,
  * Returns a valid Entrance_Session
  * Also Allocates the auth, and parse the config struct 
  */
-Entrance_Session
+Entrance_Session *
 entrance_session_new(void)
 {
-   Entrance_Session e;
-   char theme_path[PATH_MAX];
+   Entrance_Session *e;
 
-   e = (Entrance_Session) malloc(sizeof(struct _Entrance_Session));
+   e = (Entrance_Session *) malloc(sizeof(struct _Entrance_Session));
    memset(e, 0, sizeof(struct _Entrance_Session));
 
    e->auth = entrance_auth_new();
@@ -38,9 +37,6 @@ entrance_session_new(void)
       syslog(LOG_CRIT, "Fatal Error: Unable to read configuration.");
       exit(1);
    }
-   snprintf(theme_path, PATH_MAX, PACKAGE_DATA_DIR "/themes/%s",
-            e->config->theme);
-   e->theme = strdup(e->config->theme);
    e->session = strdup("");
 /* ?
    e->theme->path = strdup(theme_path);
@@ -49,7 +45,7 @@ entrance_session_new(void)
 }
 
 void
-entrance_session_ecore_evas_set(Entrance_Session e, Ecore_Evas * ee)
+entrance_session_ecore_evas_set(Entrance_Session * e, Ecore_Evas * ee)
 {
    Evas *evas = NULL;
 
@@ -75,14 +71,14 @@ entrance_session_ecore_evas_set(Entrance_Session e, Ecore_Evas * ee)
  * entrance_session_free: free the entrance session
  */
 void
-entrance_session_free(Entrance_Session e)
+entrance_session_free(Entrance_Session * e)
 {
    if (e)
    {
       entrance_auth_free(e->auth);
       entrance_config_free(e->config);
       ecore_evas_free(e->ee);
-      free(e->theme);
+      free(e->session);
 
       free(e);
    }
@@ -101,7 +97,7 @@ init_user_edje(Entrance_Session e, char *user)
  * @e - the Entrance_Session to be run
  */
 void
-entrance_session_run(Entrance_Session e)
+entrance_session_run(Entrance_Session * e)
 {
    ecore_evas_show(e->ee);
    ecore_main_loop_begin();
@@ -112,7 +108,7 @@ entrance_session_run(Entrance_Session e)
  * Returns 0 on success errors otherwise
  */
 int
-entrance_session_auth_user(Entrance_Session e)
+entrance_session_auth_user(Entrance_Session * e)
 {
 #ifdef HAVE_PAM
    if (e->config->auth == ENTRANCE_USE_PAM)
@@ -126,10 +122,8 @@ entrance_session_auth_user(Entrance_Session e)
  * entrance_session_user_reset: forget what we know about the current user
  */
 void
-entrance_session_user_reset(Entrance_Session e)
+entrance_session_user_reset(Entrance_Session * e)
 {
-   Evas_Object *obj = NULL;
-
    if (e)
    {
       entrance_auth_free(e->auth);
@@ -145,7 +139,7 @@ entrance_session_user_reset(Entrance_Session e)
  * entrance_session_user_set: forget what we know about the current user
  */
 void
-entrance_session_user_set(Entrance_Session e, char *key)
+entrance_session_user_set(Entrance_Session * e, char *key)
 {
    int result = 0;
    const char *file = NULL;
@@ -217,7 +211,7 @@ entrance_session_user_set(Entrance_Session e, char *key)
 }
 
 void
-entrance_session_start_user_session(Entrance_Session e)
+entrance_session_start_user_session(Entrance_Session * e)
 {
    char buf[PATH_MAX];
    char *session_key = NULL;
@@ -279,7 +273,7 @@ entrance_session_start_user_session(Entrance_Session e)
 }
 
 static void
-entrance_session_xsession_load(Entrance_Session e, char *key)
+entrance_session_xsession_load(Entrance_Session * e, char *key)
 {
    if (e && e->edje)
    {
@@ -302,7 +296,7 @@ entrance_session_xsession_load(Entrance_Session e, char *key)
 }
 
 void
-entrance_session_xsession_set(Entrance_Session e, char *key)
+entrance_session_xsession_set(Entrance_Session * e, char *key)
 {
    char *str = NULL;
    char buf[PATH_MAX];
@@ -326,7 +320,7 @@ entrance_session_xsession_set(Entrance_Session e, char *key)
 }
 
 void
-entrance_session_edje_object_set(Entrance_Session e, Evas_Object * obj)
+entrance_session_edje_object_set(Entrance_Session * e, Evas_Object * obj)
 {
    if (e)
    {
@@ -337,7 +331,7 @@ entrance_session_edje_object_set(Entrance_Session e, Evas_Object * obj)
 }
 
 void
-entrance_session_list_add(Entrance_Session e)
+entrance_session_list_add(Entrance_Session * e)
 {
    Evas_List *l = NULL;
    char *key = NULL;
@@ -377,7 +371,7 @@ entrance_session_list_add(Entrance_Session e)
    }
 }
 void
-entrance_session_user_list_add(Entrance_Session e)
+entrance_session_user_list_add(Entrance_Session * e)
 {
    Evas_Coord w, h;
    char *key = NULL;
@@ -417,7 +411,7 @@ entrance_session_user_list_add(Entrance_Session e)
 }
 
 static Evas_Object *
-_entrance_session_user_load(Entrance_Session e, char *key)
+_entrance_session_user_load(Entrance_Session * e, char *key)
 {
    int result = 0;
    char *icon = NULL;
@@ -505,7 +499,7 @@ _entrance_session_icon_load(Evas_Object * o, char *file)
 }
 
 static Evas_Object *
-_entrance_session_load_session(Entrance_Session e, char *key)
+_entrance_session_load_session(Entrance_Session * e, char *key)
 {
    int result = 0;
    char *icon = NULL;

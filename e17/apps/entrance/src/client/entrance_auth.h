@@ -1,5 +1,5 @@
-#ifndef _E_LOGIN_AUTH
-#define _E_LOGIN_AUTH
+#ifndef _ENTRANCE_AUTH
+#define _ENTRANCE_AUTH
 
 #include "../config.h"
 #include "entrance_config.h"
@@ -50,18 +50,18 @@ struct _Entrance_Auth
    char pass[PATH_MAX];
    char **env;
 };
-typedef struct _Entrance_Auth *Entrance_Auth;
+typedef struct _Entrance_Auth Entrance_Auth;
 
-Entrance_Auth entrance_auth_new(void);
-void entrance_auth_free(Entrance_Auth e);
+Entrance_Auth *entrance_auth_new(void);
+void entrance_auth_free(Entrance_Auth * e);
 
 /* 0 on success, 1 on failure */
-int entrance_auth_cmp_pam(Entrance_Auth e);
-int entrance_auth_cmp_crypt(Entrance_Auth e, Entrance_Config cfg);
-void entrance_auth_set_pass(Entrance_Auth e, const char *str);
+int entrance_auth_cmp_pam(Entrance_Auth * e);
+int entrance_auth_cmp_crypt(Entrance_Auth * e, Entrance_Config * cfg);
+void entrance_auth_set_pass(Entrance_Auth * e, const char *str);
 
 /* 0 on success, 1 on no user by that name */
-int entrance_auth_set_user(Entrance_Auth e, const char *str);
-void entrance_auth_setup_environment(Entrance_Auth e);
+int entrance_auth_set_user(Entrance_Auth * e, const char *str);
+void entrance_auth_setup_environment(Entrance_Auth * e);
 
 #endif

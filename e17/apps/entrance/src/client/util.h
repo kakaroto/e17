@@ -1,5 +1,5 @@
-#ifndef E_LOGIN_UTILS
-#define E_LOGIN_UTILS
+#ifndef ENTRANCE_UTILS
+#define ENTRANCE_UTILS
 
 #include<pwd.h>
 #include<grp.h>
