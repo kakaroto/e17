@@ -322,9 +322,11 @@ ewl_menu_base_destroy_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 void
 ewl_menu_popup_hold_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
-	Ewl_Menu_Base *menu = EWL_MENU_BASE(user_data);
+	Ewl_Menu_Base *menu;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	menu  = EWL_MENU_BASE(user_data);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

@@ -44,7 +44,7 @@ struct Ewl_Spinner
 };
 
 Ewl_Widget     *ewl_spinner_new(void);
-void            ewl_spinner_init(Ewl_Spinner * s);
+int             ewl_spinner_init(Ewl_Spinner * s);
 void            ewl_spinner_set_value(Ewl_Spinner * s, double value);
 double          ewl_spinner_get_value(Ewl_Spinner * s);
 void            ewl_spinner_set_digits(Ewl_Spinner * s, int digits);

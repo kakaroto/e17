@@ -48,7 +48,7 @@ struct Ewl_Table
 
 
 Ewl_Widget     *ewl_table_new(int cols, int rows, char **col_headers);
-void            ewl_table_init(Ewl_Table * t, int cols, int rows,
+int             ewl_table_init(Ewl_Table * t, int cols, int rows,
 			       char **col_headers);
 void            ewl_table_add(Ewl_Table * table, Ewl_Cell * cell, int start_col,
 			      int end_col, int start_row, int end_row);

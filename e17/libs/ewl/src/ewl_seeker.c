@@ -31,12 +31,12 @@ Ewl_Widget     *ewl_seeker_new(Ewl_Orientation o)
  * Initializes the seeker @a s to the orientation @a orientation to default
  * values and callbacks.
  */
-void ewl_seeker_init(Ewl_Seeker * s, Ewl_Orientation orientation)
+int ewl_seeker_init(Ewl_Seeker * s, Ewl_Orientation orientation)
 {
 	Ewl_Widget     *w;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("s", s);
+	DCHECK_PARAM_PTR_RET("s", s, FALSE);
 
 	w = EWL_WIDGET(s);
 
@@ -101,7 +101,7 @@ void ewl_seeker_init(Ewl_Seeker * s, Ewl_Orientation orientation)
 	ewl_container_notify_callback(EWL_CONTAINER(s),
 			EWL_CALLBACK_MOUSE_MOVE);
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+	DRETURN_INT(FALSE, DLEVEL_STABLE);
 }
 
 

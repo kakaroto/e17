@@ -27,12 +27,12 @@ Ewl_Widget     *ewl_spinner_new()
  *
  * Sets the fields and callbacks of the spinner @a s their default values.
  */
-void ewl_spinner_init(Ewl_Spinner * s)
+int ewl_spinner_init(Ewl_Spinner * s)
 {
 	Ewl_Widget     *w;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("s", s);
+	DCHECK_PARAM_PTR_RET("s", s, FALSE);
 
 	w = EWL_WIDGET(s);
 
@@ -89,7 +89,7 @@ void ewl_spinner_init(Ewl_Spinner * s)
 	ewl_callback_append(s->button_decrease, EWL_CALLBACK_KEY_DOWN,
 			    ewl_spinner_key_down_cb, NULL);
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+	DRETURN_INT(FALSE, DLEVEL_STABLE);
 }
 
 /**

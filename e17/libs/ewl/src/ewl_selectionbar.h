@@ -28,11 +28,10 @@ struct _ewl_selectionbar {
 	int             OPEN;	/* Boolean, open or closed */
 };
 
-Ewl_Widget     *ewl_selectionbar_new(Ewl_Widget * parent);
-void            ewl_selectionbar_init(Ewl_Selectionbar * s,
-				      Ewl_Widget * parent);
-void            ewl_selectionbar_set_size(Ewl_Selectionbar * s, int w, int h1,
-					  int h2);
+Ewl_Widget *ewl_selectionbar_new(Ewl_Widget * parent);
+int        ewl_selectionbar_init(Ewl_Selectionbar * s, Ewl_Widget * parent);
+void       ewl_selectionbar_set_size(Ewl_Selectionbar * s, int w, int h1,
+				     int h2);
 
 /*
  * Internally used callbacks, override at your own risk.

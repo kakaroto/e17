@@ -37,14 +37,14 @@ Ewl_Widget     *ewl_selectionbar_new(Ewl_Widget * parent)
  * Returns no value. Sets up the default callbacks and values for the
  * the selectionbar
  */
-void ewl_selectionbar_init(Ewl_Selectionbar * s, Ewl_Widget * parent)
+int ewl_selectionbar_init(Ewl_Selectionbar * s, Ewl_Widget * parent)
 {
 	Ewl_Widget     *w;
 	Ewl_Embed      *embed;
 
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("s", s);
+	DCHECK_PARAM_PTR_RET("s", s, FALSE);
 
 
 	w = EWL_WIDGET(s);
@@ -59,7 +59,7 @@ void ewl_selectionbar_init(Ewl_Selectionbar * s, Ewl_Widget * parent)
 
 	s->bar = NEW(Ewl_Container, 1);
 	if (!s->bar)
-		DRETURN(DLEVEL_STABLE);
+		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
 	if (!ewl_container_init(EWL_CONTAINER(s->bar), "selectionbar"))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
@@ -104,7 +104,7 @@ void ewl_selectionbar_init(Ewl_Selectionbar * s, Ewl_Widget * parent)
 	s->OPEN = 1;
 	s->mouse_x = 0;
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+	DRETURN_INT(FALSE, DLEVEL_STABLE);
 }
 
 

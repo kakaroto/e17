@@ -36,15 +36,15 @@ Ewl_Widget     *ewl_table_new(int cols, int rows, char **col_headers)
  * Responsible for setting up default values and callbacks withing the table
  * structure
  */
-void ewl_table_init(Ewl_Table * t, int cols, int rows, char **col_headers)
+int ewl_table_init(Ewl_Table * t, int cols, int rows, char **col_headers)
 {
 	Ewl_Widget	*button;
 	Ewl_Cell	*cell;
 	int             i;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("t", t);
-	DCHECK_PARAM_PTR("col_headers", col_headers);
+	DCHECK_PARAM_PTR_RET("t", t, FALSE);
+	DCHECK_PARAM_PTR_RET("col_headers", col_headers, FALSE);
 
 	/*
 	 * Iniitialize the tables inherited fields
@@ -91,7 +91,7 @@ void ewl_table_init(Ewl_Table * t, int cols, int rows, char **col_headers)
 	ewl_callback_append(EWL_WIDGET(t), EWL_CALLBACK_CONFIGURE,
 			    ewl_table_configure_cb, NULL);
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+	DRETURN_INT(FALSE, DLEVEL_STABLE);
 }
 
 
