@@ -94,22 +94,22 @@ extern "C" {
 	 typedef struct _GtkgEvas GtkgEvas;
 	typedef struct _GtkgEvasClass GtkgEvasClass;
 
-	struct _GtkgEvas {
-		GtkWidget widget;
+struct _GtkgEvas {
+	GtkWidget widget;
 
-		Evas evas;				// the evas we are using to render stuff with.
+	Evas evas;				// the evas we are using to render stuff with.
 
-		gboolean show_checked_bg;	// Are we showing a checked bg? (mainly for testing)
-		Evas_Object checked_bg;	// Object for the bg.
+	gboolean show_checked_bg;	// Are we showing a checked bg? (mainly for testing)
+	Evas_Object checked_bg;	// Object for the bg.
 
 
-		gint size_request_x;	// Size to request
-		gint size_request_y;	//
+	gint size_request_x;	// Size to request
+	gint size_request_y;	//
 
-		Evas_Render_Method render_method;
-		guint current_idle;		// handles queue render callback
+	Evas_Render_Method render_method;
+	guint current_idle;		// handles queue render callback
 
-		GdkEvent *current_event;	// so that evas callbacks can get the gdk event.
+	GdkEvent *current_event;	// so that evas callbacks can get the gdk event.
 
 	/** Handles the middle button gimp style scroll option */
 	/*
@@ -134,10 +134,22 @@ extern "C" {
 
 	};
 
-	struct _GtkgEvasClass {
-		GtkWidgetClass parent_class;
+struct _GtkgEvasClass {
+
+  GtkWidgetClass parent_class;
 
   /** protected **/
+  void (*_register_gevasobj)( GtkgEvas* thisp, GtkObject* gobj );
+
+  /** public **/
+  GtkObject* (*get_object_under_mouse)( GtkgEvas* ev );
+  GtkObject* (*object_in_rect)(GtkgEvas* ev, double x, double y, double w, double h);
+  GtkObject* (*object_at_position)(GtkgEvas* ev, double x, double y);
+  GtkObject* (*object_get_named)(GtkgEvas* ev, char *name);
+
+};
+
+/** protected **/
 
 	guint gevas_get_type(void);
 	GtkWidget *gevas_new(void);

@@ -975,7 +975,7 @@ void gevas_get_drawable_size( GtkgEvas *object, int* w, int *h ) {
   g_return_if_fail(GTK_IS_GEVAS(object));
 
   ev = GTK_GEVAS(object);
-  evas_get_drawable_size( ev->evas, &w, &h );
+  evas_get_drawable_size( ev->evas, w, h );
 }
 
 static void gevas_set_arg(GtkObject * object, GtkArg * arg, guint arg_id)
