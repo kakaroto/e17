@@ -284,6 +284,7 @@ int amx_Callback(AMX * amx, cell index, cell * result, cell * params)
 int amx_Debug(AMX * amx)
 {
 
+	amx = NULL;
 	return AMX_ERR_DEBUG;
 
 }
@@ -314,7 +315,7 @@ static int amx_BrowseRelocate(AMX * amx)
 	int debug;
 
 #if !defined NODBGCALLS
-	int last_sym_global;
+	int last_sym_global = 0;
 
 #endif							/*  */
 #if defined __GNUC__ || defined ASM32 || defined JIT
@@ -908,21 +909,16 @@ int memorySetAccess(void *addr, int len, int access)
 
 #else							/* #if defined __WIN32 __ */
 
-// TODO: Add cases for Linux, Unix, OS/2, ...
+/* TODO: Add cases for Linux, Unix, OS/2, ... */
 
-// DOS32 has no imposed limits on its segments.
-#if defined __BORLANDC__ || defined __WATCOMC__
-#pragma argsused
-#endif							/*  */
+/* DOS32 has no imposed limits on its segments. */
+
 int memoryFullAccess(void *addr, int len)
 {
 	return 1;
 }
 
 
-#if defined __BORLANDC__ || defined __WATCOMC__
-#pragma argsused
-#endif							/*  */
 int memorySetAccess(void *addr, int len, int access)
 {
 	return 1;
@@ -994,11 +990,12 @@ int amx_InitJIT(AMX * amx, void *reloc_table, void *native_code)
 
 #else							/* #if defined JIT */
 
-#if defined __BORLANDC__ || defined __WATCOMC__
-#pragma argsused
-#endif							/*  */
 int amx_InitJIT(AMX * amx, void *compiled_program, void *reloc_table)
 {
+
+	amx = NULL;
+	compiled_program = NULL;
+	reloc_table = NULL;
 
 	return AMX_ERR_INIT_JIT;
 
@@ -1299,22 +1296,23 @@ int amx_Exec(AMX * amx, cell * retval, int index, int numparams,...)
 		&&op_file, &&op_line, &&op_symbol, &&op_srange,
 		&&op_jump_pri, &&op_switch, &&op_casetbl};
 
-		AMX_HEADER *hdr;
+		AMX_HEADER *hdr=NULL;
 
-		AMX_FUNCSTUB *func;
+		AMX_FUNCSTUB *func=NULL;
 
-		uchar *code, *data;
+		uchar *code=NULL;
+		uchar *data=NULL;
 
-		cell pri, alt, stk, frm, hea, *cip;
+		cell pri=0, alt=0, stk=0, frm=0, hea=0, *cip=NULL;
 
-		cell offs;
+		cell offs=0;
 
 		int num, i;
 
 		va_list ap;
 
 #if !defined NODBGCALLS
-		int debug;
+		int debug=0;
 
 #endif							/*  */
 
@@ -4404,7 +4402,7 @@ int amx_GetString(char *dest, cell * source) {
 	if (*source > UCHAR_MAX) {
 
 		/* source string is packed */
-		cell c;
+		cell c = 0;
 
 		int i = sizeof(cell) - 1;
 
