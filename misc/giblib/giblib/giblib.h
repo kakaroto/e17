@@ -26,9 +26,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef GIBLIB_H
 #define GIBLIB_H
 
+#include <giblib/gib_btree.h>
 #include <giblib/gib_imlib.h>
-#include <giblib/gib_list.h>
 #include <giblib/gib_hash.h>
+#include <giblib/gib_list.h>
 #include <giblib/gib_style.h>
 
 #endif

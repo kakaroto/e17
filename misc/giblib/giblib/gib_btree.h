@@ -1,5 +1,4 @@
-
-/* gib_hash.h
+/* gib_btree.h
 
 Copyright (C) 1999,2000 Paul Duncan.
 
@@ -24,40 +23,34 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 */
 
-#ifndef GIB_HASH_H
-#define GIB_HASH_H
+#ifndef _GIB_BTREE_H
+#define _GIB_BTREE_H
 
 #include <giblib/giblib_config.h>
-#include <giblib/gib_list.h>
 
-#define GIB_HASH(a) ((gib_hash*)a)
-#define GIB_HASH_NODE(a) ((gib_hash_node*)a)
+#define GIB_BTREE(a) ((gib_btree*)a)
 
-typedef struct __gib_hash      gib_hash;
-typedef struct __gib_hash_node gib_hash_node;
+typedef struct __gib_btree gib_btree;
 
-struct __gib_hash
-{
-	gib_hash_node *base;
+struct __gib_btree {
+	void  *data;
+	int    val;
+	gib_btree *left,
+	          *right;
 };
 
-struct __gib_hash_node
-{
-   gib_list  list;
-   char     *key;
-};
+gib_btree *gib_btree_new(void *data, int sort_val);
+void       gib_btree_free(gib_btree *tree);
+void       gib_btree_free_and_data(gib_btree *tree);
 
-gib_hash_node *gib_hash_node_new(char *key, void *data);
-void           gib_hash_node_free(gib_hash_node *node);
-void           gib_hash_node_free_and_data(gib_hash_node *node);
+void       gib_btree_free_leaf(gib_btree *tree);
+void       gib_btree_free_leaf_and_data(gib_btree *tree);
 
-gib_hash *gib_hash_new();
-void      gib_hash_free(gib_hash *hash);
-void      gib_hash_free_and_data(gib_hash *hash);
+gib_btree *gib_btree_add(gib_btree *tree, gib_btree *branch);
+gib_btree *gib_btree_remove(gib_btree *tree, gib_btree *leaf);
+gib_btree *gib_btree_remove_branch(gib_btree *tree, gib_btree *branch);
 
-void      gib_hash_set(gib_hash *hash, char *key, void *data);
-void     *gib_hash_get(gib_hash *hash, char *key);
-void      gib_hash_remove(gib_hash *hash, char *key);
+gib_btree *gib_btree_find(gib_btree *tree, int val);
+gib_btree *gib_btree_find_by_data(gib_btree *tree, unsigned char (*find_func)(gib_btree *tree, void *data), void *data);
 
-
-#endif /* GIB_HASH_H */
+#endif /* _BIG_BTREE_H */
