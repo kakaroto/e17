@@ -70,6 +70,7 @@ Eke_Feed *eke_feed_new(const char *name, const char *srv, int port,
 void eke_feed_proxy_set(Eke_Feed *feed, const char *srv, int port,
                         const char *uname, const char *passwd);
 int eke_feed_update(void *data);
+int eke_feed_update_execute(Eke_Feed *feed);
 
 void eke_feed_name_set(Eke_Feed *feed, const char *name);
 
