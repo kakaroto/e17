@@ -66,7 +66,6 @@ GtkWidget *
 	GtkWidget *pixmap4;
 	GtkWidget *hbox1;
 	GtkWidget *lodalabel_;
-	GtkWidget *progressbar2;
 	GtkWidget *percentdone;
 	GtkTooltips *tooltips;
 
@@ -234,9 +233,9 @@ GtkWidget *
 	gtk_widget_show(lodalabel_);
 	gtk_box_pack_start(GTK_BOX(hbox1), lodalabel_, FALSE, FALSE, 3);
 
-	progressbar2 = gtk_progress_bar_new();
-	gtk_widget_show(progressbar2);
-	gtk_box_pack_start(GTK_BOX(hbox1), progressbar2, FALSE, FALSE, 0);
+	progress_bar = gtk_progress_bar_new();
+	gtk_widget_show(progress_bar);
+	gtk_box_pack_start(GTK_BOX(hbox1), progress_bar, FALSE, FALSE, 0);
 
 	percentdone = gtk_label_new("##:##:## remaining\n##:##:## done");
 	gtk_widget_show(percentdone);

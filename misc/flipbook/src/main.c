@@ -43,6 +43,8 @@ static volatile int number_loaded = 0;
 G_LOCK_DEFINE_STATIC (num_threads);
 static volatile int num_threads = 0;
 
+extern GtkWidget *progress_bar;
+
 int total_frames;
 
 extern GtkTooltips *tooltips;
@@ -74,9 +76,14 @@ loader_thread(void *args)
 		number_loaded++;
 		G_UNLOCK(number_loaded);
 		if(load_index < total_frames) {
-			printf("thread %d: loading number %d\n",thread_num,load_index);
+			float percentage = 0;
+			percentage = ((load_index+1) * (100 / total_frames)) * 0.01;
+			gdk_threads_enter();
+			gtk_progress_set_percentage(GTK_PROGRESS(progress_bar),percentage);
+			gdk_threads_leave();
+			printf("thread %d: loading number %d (%f done)\n",thread_num,load_index,percentage);
 		}
-		sleep(0);
+		sleep(1);
 	}
 
 	return NULL;

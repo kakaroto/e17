@@ -154,3 +154,10 @@ Mon Jan  3 00:09:59 PST 2000
 (Mandrake)
 
 stubs for threaded loader.
+
+---------------------------------------------------------------------------
+
+Mon Jan  3 00:50:12 PST 2000
+(Mandrake)
+
+now it updates the progress bar safely.

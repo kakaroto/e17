@@ -33,3 +33,4 @@ GtkWidget *create_movie_info(void);
 GtkTooltips *tooltips;
 GtkAccelGroup *accel_group;
 GtkWidget *file_selector;
+GtkWidget *progress_bar;
