@@ -1022,7 +1022,7 @@ BackgroundsConfigLoad(FILE * fs)
 			       bg = BackgroundCreate(name, &xclr, bg1, i1, i2,
 						     i3, i4, i5, i6, bg2, j1,
 						     j2, j3, j4, j5);
-			    DesktopSetBg(atoi(s2), bg, 0);
+			    DeskSetBg(atoi(s2), bg, 0);
 			 }
 		    }
 	       }
@@ -1034,7 +1034,7 @@ BackgroundsConfigLoad(FILE * fs)
 			   (Conf.backgrounds.user))
 			 {
 			    if (bg)
-			       DesktopSetBg(atoi(s2), bg, 0);
+			       DeskSetBg(atoi(s2), bg, 0);
 			 }
 		    }
 	       }
@@ -1327,7 +1327,7 @@ CB_ConfigureBG(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
 	for (i = 0; i < DesksGetNumber(); i++)
 	  {
 	     if (DeskGetBackground(i) == tmp_bg)
-		DesktopSetBg(i, tmp_bg, 1);
+		DeskSetBg(i, tmp_bg, 1);
 	  }
 
 	{
@@ -1496,7 +1496,7 @@ CB_ConfigureNewBG(Dialog * d __UNUSED__, int val __UNUSED__,
    DialogItemSliderSetVal(bg_sel_slider, 0);
    DialogDrawItems(bg_sel_dialog, bg_sel_slider, 0, 0, 99999, 99999);
 
-   DesktopSetBg(DesksGetCurrent(), tmp_bg, 0);
+   DeskSetBg(DesksGetCurrent(), tmp_bg, 0);
 
    BG_RedrawView(0);
 
@@ -1534,7 +1534,7 @@ CB_ConfigureDelBG(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
 	  }
      }
 
-   DesktopSetBg(DesksGetCurrent(), bg, 0);
+   DeskSetBg(DesksGetCurrent(), bg, 0);
    if (val == 0)
       BackgroundDestroy(tmp_bg);
    else
@@ -1730,7 +1730,7 @@ CB_BGAreaEvent(int val __UNUSED__, void *data)
 	  {
 	     BackgroundImagesKeep(tmp_bg, 0);
 	     BgDialogSetNewCurrent(bglist[tmp_bg_selected]);
-	     DesktopSetBg(DesksGetCurrent(), tmp_bg, 0);
+	     DeskSetBg(DesksGetCurrent(), tmp_bg, 0);
 	     autosave();
 	  }
 	if (bglist)
@@ -1802,7 +1802,7 @@ CB_BGPrev(Dialog * d __UNUSED__, int val __UNUSED__, void *data __UNUSED__)
 	if ((bglist[i] == tmp_bg) && (i > 0))
 	  {
 	     BGSettingsGoTo(bglist[i - 1]);
-	     DesktopSetBg(DesksGetCurrent(), bglist[i - 1], 0);
+	     DeskSetBg(DesksGetCurrent(), bglist[i - 1], 0);
 	     break;
 	  }
      }
@@ -1822,7 +1822,7 @@ CB_BGNext(Dialog * d __UNUSED__, int val __UNUSED__, void *data __UNUSED__)
 	if ((bglist[i] == tmp_bg) && (i < (num - 1)))
 	  {
 	     BGSettingsGoTo(bglist[i + 1]);
-	     DesktopSetBg(DesksGetCurrent(), bglist[i + 1], 0);
+	     DeskSetBg(DesksGetCurrent(), bglist[i + 1], 0);
 	     break;
 	  }
      }
@@ -2352,7 +2352,7 @@ SettingsBackground(Background * bg)
     * above here
     * --Mandrake
     */
-   RefreshDesktop(DesksGetCurrent());
+   DeskRefresh(DesksGetCurrent());
 }
 
 /*
@@ -2490,7 +2490,7 @@ BackgroundSet2(const char *name, const char *params)
 	     for (i = 0; i < DesksGetNumber(); i++)
 	       {
 		  if (DeskGetBackground(i) == bg)
-		     DesktopSetBg(i, bg, 0);
+		     DeskSetBg(i, bg, 0);
 	       }
 	  }
      }
@@ -2598,7 +2598,7 @@ BackgroundsIpc(const char *params, Client * c __UNUSED__)
 
 	num = DesksGetCurrent();
 	sscanf(p, "%d %n", &num, &len);
-	DesktopSetBg(num, bg, 1);
+	DeskSetBg(num, bg, 1);
 	autosave();
      }
    else if (!strncmp(cmd, "xget", 2))
@@ -2644,7 +2644,7 @@ IPC_BackgroundUse(const char *params, Client * c __UNUSED__)
 	if (!w[0])
 	   break;
 	i = atoi(w);
-	DesktopSetBg(i, bg, 1);
+	DeskSetBg(i, bg, 1);
      }
    autosave();
 }
@@ -2682,7 +2682,7 @@ IPC_BackgroundColormodifierSet(const char *params, Client * c __UNUSED__)
 	for (i = 0; i < DesksGetNumber(); i++)
 	  {
 	     if ((desks.desk[i].bg == bg) && (desks.desk[i].viewable))
-		RefreshDesktop(i);
+		DeskRefresh(i);
 	  }
      }
 }

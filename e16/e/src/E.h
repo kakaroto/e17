@@ -1364,22 +1364,20 @@ void                DesksResize(int w, int h);
 
 void                SlideWindowTo(Window win, int fx, int fy, int tx, int ty,
 				  int speed);
-void                RefreshDesktop(int num);
-void                DesktopsRefresh(void);
-void                DesktopSetBg(int desk, Background * bg, int refresh);
+void                DeskRefresh(int num);
+void                DesksRefresh(void);
+void                DeskSetBg(int desk, Background * bg, int refresh);
 int                 DesktopAt(int x, int y);
-void                GotoDesktop(int num);
-void                MoveDesktop(int num, int x, int y);
-void                RaiseDesktop(int num);
-void                LowerDesktop(int num);
-void                HideDesktop(int num);
-void                ShowDesktop(int num);
+void                DeskGoto(int num);
+void                DeskRaise(int num);
+void                DeskLower(int num);
+void                DeskMove(int num, int x, int y);
+void                DeskHide(int num);
+void                DeskShow(int num);
 void                StackDesktops(void);
 void                StackDesktop(int num);
-void                DesktopAddEwinToBottom(EWin * ewin);
-void                DesktopAddEwinToTop(EWin * ewin);
-void                GotoDesktopByEwin(EWin * ewin);
-void                DesktopsEventsConfigure(int mode);
+void                DeskGotoByEwin(EWin * ewin);
+void                DesksEventsConfigure(int mode);
 void                DeskDragStart(int desk);
 void                DeskDragMotion(void);
 

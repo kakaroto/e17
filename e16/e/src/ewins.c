@@ -737,7 +737,7 @@ AddToFamily(EWin * ewin, Window win)
 	     desk = EoGetDesk(ewin2);
 	     if (!Mode.wm.startup && Conf.focus.switchfortransientmap &&
 		 !ewin->iconified)
-		GotoDesktopByEwin(ewin2);
+		DeskGotoByEwin(ewin2);
 	  }
      }
 
@@ -780,7 +780,7 @@ AddToFamily(EWin * ewin, Window win)
 	     /* if the loser has manual placement on and the app asks to be on */
 	     /*  a desktop, then send E to that desktop so the user can place */
 	     /* the window there */
-	     GotoDesktop(desk);
+	     DeskGoto(desk);
 
 	     XQueryPointer(disp, VRoot.win, &root_return, &junk, &rx, &ry, &wx,
 			   &wy, &mask);
@@ -840,7 +840,7 @@ AddToFamily(EWin * ewin, Window win)
 	/* if the loser has manual placement on and the app asks to be on */
 	/*  a desktop, then send E to that desktop so the user can place */
 	/* the window there */
-	GotoDesktop(desk);
+	DeskGoto(desk);
 
 	XQueryPointer(disp, VRoot.win, &root_return, &junk, &rx, &ry, &wx, &wy,
 		      &mask);

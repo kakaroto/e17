@@ -75,7 +75,7 @@ TransparencySet(int transparency)
    TransparencyMakeColorModifier();
 
    if (changed)
-      DesktopsRefresh();
+      DesksRefresh();
 }
 
 #else

@@ -709,7 +709,7 @@ EWMH_ProcessClientMessage(XClientMessageEvent * ev)
     */
    if (ev->message_type == ECORE_X_ATOM_NET_CURRENT_DESKTOP)
      {
-	GotoDesktop(ev->data.l[0]);
+	DeskGoto(ev->data.l[0]);
 	goto done;
      }
    else if (ev->message_type == ECORE_X_ATOM_NET_DESKTOP_VIEWPORT)

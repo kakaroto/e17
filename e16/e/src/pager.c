@@ -1602,7 +1602,7 @@ PagerEventMouseUp(Pager * p, XEvent * ev)
 	if (win != Mode.last_bpress || !in_pager)
 	   goto done;
 	PagerAreaAt(p, px, py, &pax, &pay);
-	GotoDesktop(p->desktop);
+	DeskGoto(p->desktop);
 	if (p->desktop != DesksGetCurrent())
 	   SoundPlay("SOUND_DESKTOP_SHUT");
 	SetCurrentArea(pax, pay);
@@ -1677,7 +1677,7 @@ PagerEventMouseUp(Pager * p, XEvent * ev)
 	     if (!in_pager)
 		break;
 	     PagerAreaAt(p, px, py, &pax, &pay);
-	     GotoDesktop(p->desktop);
+	     DeskGoto(p->desktop);
 	     SetCurrentArea(pax, pay);
 	     ewin = EwinInPagerAt(p, px, py);
 	     if (ewin)
@@ -2214,7 +2214,7 @@ PagersSighan(int sig, void *prm)
 	ForceUpdatePagersForDesktop(desks.order[0]);
 	UpdatePagerSel();
 #endif
-	/* GotoDesktop */
+	/* DeskGoto */
 	desk = DesksGetCurrent();
 	if (pdesk >= 0)
 	   RedrawPagersForDesktop(pdesk, 0);

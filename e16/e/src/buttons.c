@@ -735,8 +735,8 @@ ButtonEventMotion(Button * b, XEvent * ev __UNUSED__)
 	     ButtonMoveRelative(b, dx, dy);
 	     if (Conf.deskmode == MODE_DESKRAY)
 	       {
-		  MoveDesktop(Mode.deskdrag, DeskGetX(Mode.deskdrag),
-			      DeskGetY(Mode.deskdrag) + dy);
+		  DeskMove(Mode.deskdrag, DeskGetX(Mode.deskdrag),
+			   DeskGetY(Mode.deskdrag) + dy);
 	       }
 	  }
      }

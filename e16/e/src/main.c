@@ -264,7 +264,7 @@ main(int argc, char **argv)
    Mode.queue_up = DRAW_QUEUE_ENABLE;
 
    /* let's make sure we set this up and go to our desk anyways */
-   GotoDesktop(DesksGetCurrent());
+   DeskGoto(DesksGetCurrent());
    ecore_x_sync();
 
 #ifdef SIGCONT

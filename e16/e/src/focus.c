@@ -307,7 +307,7 @@ FocusToEWin(EWin * ewin, int why)
    /* NB! ewin != NULL */
 
    if (do_follow)
-      GotoDesktopByEwin(ewin);
+      DeskGotoByEwin(ewin);
 
    if (Conf.autoraise.enable)
      {
@@ -374,7 +374,7 @@ FocusNewDeskBegin(void)
    /* we are about to flip desktops or areas - disable enter and leave events
     * temporarily */
    EwinsEventsConfigure(0);
-   DesktopsEventsConfigure(0);
+   DesksEventsConfigure(0);
 }
 
 static void
@@ -404,7 +404,7 @@ FocusNewDesk(void)
 
    /* we flipped - re-enable enter and leave events */
    EwinsEventsConfigure(1);
-   DesktopsEventsConfigure(1);
+   DesksEventsConfigure(1);
 
    /* Set the mouse-over window */
    ewin = GetEwinByCurrentPointer();

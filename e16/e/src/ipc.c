@@ -675,7 +675,7 @@ IPC_WinOps(const char *params, Client * c __UNUSED__)
 	     IpcPrintf("focused: %s", (ewin == GetFocusEwin())? "yes" : "no");
 	     goto done;
 	  }
-	GotoDesktopByEwin(ewin);
+	DeskGotoByEwin(ewin);
 	if (ewin->iconified)
 	   EwinOpIconify(ewin, 0);
 	if (ewin->shaded)

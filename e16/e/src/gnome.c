@@ -783,7 +783,7 @@ GNOME_ProcessClientMessage(XClientMessageEvent * event)
      }
    if (event->message_type == a3)
      {
-	GotoDesktop(event->data.l[0]);
+	DeskGoto(event->data.l[0]);
 	return;
      }
    if (event->message_type == a4)

@@ -1292,7 +1292,7 @@ MoveEwinToDesktopAt(EWin * ewin, int desk, int x, int y)
 #if 0				/* Not necessary when the the _XROOT... atoms are initially set on each desk */
 	/* Refresh bg before apps are planted so they can pick it up */
 	DeskSetViewable(desk, 1);
-	RefreshDesktop(desk);
+	DeskRefresh(desk);
 #endif
 	EoSetDesk(ewin, desk);
 	SnapshotEwinUpdate(ewin, SNAP_USE_DESK);
