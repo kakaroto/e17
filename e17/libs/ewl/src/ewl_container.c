@@ -254,8 +254,11 @@ void ewl_container_remove_child(Ewl_Container * pc, Ewl_Widget * child)
 	/*
 	 * If the child isn't found, then this isn't it's parent.
 	 */
-	if (!temp)
+	if (!temp) {
+		if (pc->clip_box)
+			evas_object_hide(pc->clip_box);
 		DRETURN(DLEVEL_STABLE);
+	}
 
 	/*
 	 * Remove the child from the parent and set the childs parent to NULL
@@ -263,7 +266,7 @@ void ewl_container_remove_child(Ewl_Container * pc, Ewl_Widget * child)
 	ewd_list_remove(pc->children);
 	ewl_container_call_child_remove(pc, child);
 
-	if (ewd_list_is_empty(pc->children))
+	if (ewd_list_is_empty(pc->children) && pc->clip_box)
 		evas_object_hide(pc->clip_box);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -782,7 +785,8 @@ void ewl_container_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	/*
 	 * Only show it if there are children, otherwise we get a colored box.
 	 */
-	evas_object_show(c->clip_box);
+	if (c->clip_box)
+		evas_object_show(c->clip_box);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
