@@ -69,7 +69,7 @@ void            od_wm_activate_window(Ecore_X_Window win);
 
 struct _OD_Options {
   int             width, height;
-  char           *icon_path, *theme;
+  char           *icon_path, *theme, *engine;
   OD_Mode         mode;
   int             grab_min_icons, grab_app_icons;
 

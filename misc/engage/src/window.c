@@ -71,10 +71,24 @@ od_window_init()
   res_x = scr->width;
   res_y = scr->height;
 
-  ee = ecore_evas_software_x11_new(NULL, 0,
-                                   (int) ((res_x - options.width) / 2.0),
-                                   (int) (res_y - options.height),
-                                   options.width, options.height);
+  if (!(strcmp(options.engine, "gl")))
+    ee = ecore_evas_gl_x11_new(NULL, 0,
+                               (int) ((res_x - options.width) / 2.0),
+                               (int) (res_y - options.height),
+                               options.width, options.height);
+  else
+  {
+    if (strcmp(options.engine, "software"))
+    {
+      fprintf(stderr, "Warning: Invalid engine type \"%s\" specified in config.\n");
+      fprintf(stderr, "         Defaulting to software engine.\n");
+    }
+    ee = ecore_evas_software_x11_new(NULL, 0,
+                                     (int) ((res_x - options.width) / 2.0),
+                                     (int) (res_y - options.height),
+                                     options.width, options.height);
+  }
+  
   ecore_evas_title_set(ee, "Engage");
   ecore_evas_name_class_set(ee, "engage", "engage");
   ecore_evas_borderless_set(ee, 1);
