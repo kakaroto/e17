@@ -8,3 +8,5 @@ edocdata_DATA = @edocdata@
 edocdata_PROGRAMS = @edocexec@
 
 EXTRA_DIST = $(edocdata_DATA)
+EXTRA_PROGRAMS = 
+

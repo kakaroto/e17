@@ -16,3 +16,4 @@
 
 #undef WITH_TARTY_WARP
 
+#undef WITH_ZOOM
