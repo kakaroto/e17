@@ -12,16 +12,21 @@
 #include <sys/soundcard.h>
 #endif
 
+Epplet_gadget vs_master, vs_pcm, vs_lin, vs_cda, b_close, b_help;
+
 int open_mixer(void);
 int read_volume(int);
 void set_volume(void *);
 void initialize_channels(void);
 
 #define MIXER_DEV	"/dev/mixer"
+#if 0
+# define debug
+#endif
 
 typedef struct _MIX_CHANNEL {
-   int id;
-   int value;
+	int id;
+	int value;
 } MIX_CHANNEL;
 
 int fd_mixer = 0;
@@ -77,8 +82,10 @@ int read_volume(int channel)
 {
    unsigned char lrvl[4];
    if (ioctl(fd_mixer, MIXER_READ(channels[channel].id), lrvl) == -1) {
+#ifdef debug	   
       fprintf(stderr, "Error reading volume for channel #%d\n",
 	      channel);
+#endif
       return 0;
    }   
    channels[channel].value = (100 - (lrvl[0] + lrvl[1])/2) / 5;   
@@ -113,9 +120,22 @@ void initialize_channels(void)
    channels[3].value = read_volume(3);
 }
 
+/* callback_function to update the volumes with a timer */
+static void update_volumes_callback(void *data)
+{
+	channels[0].value = read_volume(0);
+	channels[1].value = read_volume(1);
+	channels[2].value = read_volume(2);
+	channels[3].value = read_volume(3);
+	Epplet_gadget_data_changed (vs_master);
+	Epplet_gadget_data_changed (vs_pcm);
+	Epplet_gadget_data_changed (vs_lin);
+	Epplet_gadget_data_changed (vs_cda);
+	Epplet_timer (update_volumes_callback, NULL, 0.5, "TIMER");
+}
+
 int main(int argc, char *argv[])
 {
-   Epplet_gadget vs_master, vs_pcm, vs_lin, vs_cda, b_close, b_help;
    
    if (!open_mixer())
       return 1;
@@ -147,6 +167,7 @@ int main(int argc, char *argv[])
    Epplet_gadget_show(b_help);
    
    Epplet_show();
+   Epplet_timer (update_volumes_callback, NULL, 0.5, "TIMER");
    Epplet_Loop();   
    return 0;
 }
