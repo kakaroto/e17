@@ -44,15 +44,13 @@ win_mouse_in_cb(Ecore_Evas * ee)
 static void
 win_resize_cb(Ecore_Evas * ee)
 {
-   int w, h;
-   Evas *e = NULL;
-
-   if ((e = ecore_evas_get(ee)))
+   int x, y, w, h;
+   if (ee)
    {
-      ecore_evas_geometry_get(ee, NULL, NULL, &w, &h);
+      ecore_evas_geometry_get(ee, &x, &y, &w, &h);
+      entice_config_geometry_set(x, y, w, h);
       entice_resize(w, h);
    }
-
 }
 
 /**
@@ -62,8 +60,12 @@ win_resize_cb(Ecore_Evas * ee)
 static void
 win_move_cb(Ecore_Evas * ee)
 {
-   return;
-   ee = NULL;
+   int x, y, w, h;
+   if (ee)
+   {
+      ecore_evas_geometry_get(ee, &x, &y, &w, &h);
+      entice_config_geometry_set(x, y, w, h);
+   }
 }
 
 /**
@@ -73,6 +75,12 @@ win_move_cb(Ecore_Evas * ee)
 static void
 win_del_cb(Ecore_Evas * ee)
 {
+   int x, y, w, h;
+   if (ee)
+   {
+      ecore_evas_geometry_get(ee, &x, &y, &w, &h);
+      entice_config_geometry_set(x, y, w, h);
+   }
    ecore_main_loop_quit();
    return;
    ee = NULL;
@@ -126,6 +134,7 @@ int
 main(int argc, char *argv[])
 {
    int i = 0;
+   int x, y, w, h;
 
    ecore_init();
    ecore_app_args_set(argc, (const char **) argv);
@@ -140,10 +149,11 @@ main(int argc, char *argv[])
       edje_frametime_set(1.0 / 60.0);
 
       entice_config_init();
+      entice_config_geometry_get(&x, &y, &w, &h);
       if (entice_config_engine_get() == GL_X11)
-         ee = ecore_evas_gl_x11_new(NULL, 0, 0, 0, 320, 240);
+         ee = ecore_evas_gl_x11_new(NULL, 0, x, y, w, h);
       else
-         ee = ecore_evas_software_x11_new(NULL, 0, 0, 0, 320, 240);
+         ee = ecore_evas_software_x11_new(NULL, 0, x, y, w, h);
 
       if (ee)
       {
@@ -186,7 +196,7 @@ main(int argc, char *argv[])
               default:
                  break;
             }
-            ecore_evas_resize(ee, 640, 480);
+            ecore_evas_move_resize(ee, x, y, w, h);
             ecore_evas_show(ee);
             ecore_main_loop_begin();
          }

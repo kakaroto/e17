@@ -17,6 +17,7 @@ struct _Entice_Config
    {
       int image, font;
    } cache;
+   int x, y, w, h;
 };
 typedef struct _Entice_Config Entice_Config;
 
@@ -27,5 +28,7 @@ const char *entice_config_theme_get(void);
 int entice_config_engine_get(void);
 int entice_config_font_cache_get(void);
 int entice_config_image_cache_get(void);
+void entice_config_geometry_get(int *x, int *y, int *w, int *h);
+void entice_config_geometry_set(int x, int y, int w, int h);
 
 #endif
