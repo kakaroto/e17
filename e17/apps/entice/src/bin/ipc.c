@@ -33,7 +33,7 @@ ipc_server_del(void *data, int type, void *event)
    Ecore_Ipc_Event_Server_Del *e;
 
    e = (Ecore_Ipc_Event_Server_Del *) event;
-   // fprintf(stderr, "Server delete\n");
+   /* fprintf(stderr, "Server delete\n"); */
    return (1);
 }
 
@@ -49,8 +49,9 @@ ipc_server_data(void *data, int type, void *event)
    Ecore_Ipc_Event_Server_Data *e;
 
    e = (Ecore_Ipc_Event_Server_Data *) event;
-   printf("!! Server sent: [%i] [%i] (%i) \"%s\"\n", e->major, e->minor,
-          e->size, e->data);
+   /* 
+      printf("!! Server sent: [%i] [%i] (%i) \"%s\"\n", e->major, e->minor,
+      e->size, e->data); */
    return (1);
 }
 
@@ -101,7 +102,7 @@ ipc_client_data(void *data, int type, void *event)
    {
       char buf[e->size];
 
-      snprintf(buf, e->size, "%s", e->data);
+      snprintf(buf, e->size, "%s", (char *) e->data);
       entice_file_add(buf);
       /* 
          printf("!! Client sent: [%i] [%i] (%i) \"%s\"\n", e->major,
@@ -180,7 +181,6 @@ void
 entice_ipc_client_request_image_load(const char *file)
 {
    Ecore_Ipc_Server *server = NULL;
-   char buf[PATH_MAX];
 
    /* we definitely fail if we can't connect to ecore_ipc */
    if (ecore_ipc_init() < 1)
@@ -200,13 +200,15 @@ entice_ipc_client_request_image_load(const char *file)
                               NULL);
 
       snprintf(buf, PATH_MAX, "%s", file);
-      ecore_ipc_server_send(server, 5, 6, 0, 0, 0, buf, sizeof(buf));
+      ecore_ipc_server_send(server, 5, 6, 0, 0, 0, buf, strlen(buf) + 1);
       memset(buf, 0, sizeof(buf));
       ecore_ipc_server_del(server);
    }
+#if DEBUG
    else
    {
       fprintf(stderr, "ERROR: Unable to connect to entice IPC Server\n");
    }
+#endif
 
 }

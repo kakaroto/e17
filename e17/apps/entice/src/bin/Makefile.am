@@ -1,7 +1,7 @@
 ## Process this file with automake to produce Makefile.in
 
 INCLUDES = \
-	-I../lib \
+	-Wall -I../lib \
 	@esmart_cflags@ \
 	@evas_cflags@ \
 	@edb_cflags@ \

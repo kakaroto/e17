@@ -16,6 +16,52 @@
 static void entice_image_resize(Evas_Object * o, Evas_Coord w, Evas_Coord h);
 static int _entice_image_scroll_timer(void *data);
 
+void
+entice_image_x_scroll_offset_add(Evas_Object * o, Evas_Coord offset)
+{
+   Entice_Image *im = NULL;
+
+   if ((im = evas_object_smart_data_get(o)))
+   {
+#if DEBUG
+      fprintf(stderr, "Adding X OFfset: %0.2f\n", offset);
+#endif
+      im->scroll.x += offset;
+   }
+
+}
+void
+entice_image_y_scroll_offset_add(Evas_Object * o, Evas_Coord offset)
+{
+   Entice_Image *im = NULL;
+
+   if ((im = evas_object_smart_data_get(o)))
+   {
+#if DEBUG
+      fprintf(stderr, "Adding Y OFfset: %0.2f\n", offset);
+#endif
+      im->scroll.y += offset;
+   }
+
+}
+void
+entice_image_geometry_get(Evas_Object * o, Evas_Coord * x, Evas_Coord * y,
+                          Evas_Coord * w, Evas_Coord * h)
+{
+   Entice_Image *im = NULL;
+
+   if ((im = evas_object_smart_data_get(o)))
+   {
+      if (x)
+         *x = im->x;
+      if (y)
+         *y = im->y;
+      if (w)
+         *w = im->w;
+      if (h)
+         *h = im->h;
+   }
+}
 const char *
 entice_image_format_get(Evas_Object * o)
 {
@@ -60,11 +106,10 @@ entice_image_rotate(Evas_Object * o, int orientation)
       evas_object_image_size_get(im->obj, &iw, &ih);
       evas_object_geometry_get(o, &x, &y, &w, &h);
 
-      if (imlib_im =
-          imlib_create_image_using_copied_data(iw, ih,
-                                               evas_object_image_data_get(im->
-                                                                          obj,
-                                                                          1)))
+      if ((imlib_im =
+           imlib_create_image_using_copied_data(iw, ih,
+                                                evas_object_image_data_get
+                                                (im->obj, 1))))
       {
          imlib_context_set_image(imlib_im);
          imlib_image_orientate(orientation);
@@ -104,11 +149,10 @@ entice_image_flip(Evas_Object * o, int orientation)
       evas_object_image_size_get(im->obj, &iw, &ih);
       evas_object_geometry_get(o, &x, &y, &w, &h);
 
-      if (imlib_im =
-          imlib_create_image_using_copied_data(iw, ih,
-                                               evas_object_image_data_get(im->
-                                                                          obj,
-                                                                          1)))
+      if ((imlib_im =
+           imlib_create_image_using_copied_data(iw, ih,
+                                                evas_object_image_data_get
+                                                (im->obj, 1))))
       {
          imlib_context_set_image(imlib_im);
          if (orientation)
@@ -151,11 +195,10 @@ entice_image_save(Evas_Object * o)
       evas_object_image_size_get(im->obj, &iw, &ih);
       evas_object_geometry_get(o, NULL, NULL, &w, &h);
 
-      if (imlib_im =
-          imlib_create_image_using_copied_data(iw, ih,
-                                               evas_object_image_data_get(im->
-                                                                          obj,
-                                                                          1)))
+      if ((imlib_im =
+           imlib_create_image_using_copied_data(iw, ih,
+                                                evas_object_image_data_get
+                                                (im->obj, 1))))
       {
          imlib_context_set_image(imlib_im);
          if (im->format && im->filename)
@@ -208,7 +251,9 @@ entice_image_zoom_fit_get(Evas_Object * o)
    Entice_Image *im = NULL;
 
    if ((im = evas_object_smart_data_get(o)))
+   {
       result = im->fit;
+   }
    return (result);
 }
 
@@ -348,6 +393,7 @@ entice_image_zoom_fit(Evas_Object * o)
       else
          im->zoom = ((double) (im->ih) / (double) im->h);
       im->fit = 1;
+      im->scroll.x = im->scroll.y = 0;
       entice_image_resize(o, im->w, im->h);
    }
 }
@@ -594,16 +640,16 @@ static void
 entice_image_move(Evas_Object * o, double x, double y)
 {
    Entice_Image *im = NULL;
-   Evas_Coord w, h;
-    
+
    if ((im = evas_object_smart_data_get(o)))
    {
-       if(im->dx == x && im->dy == y) return;
-      evas_object_geometry_get(im->obj, NULL, NULL, &w, &h);
-      im->scroll.x -= (im->dx - x);
-      im->scroll.y -= (im->dy - y);
-      im->dx = x;
-      im->dy = y;
+      if (im->x == x && im->y == y)
+         return;
+      im->dx = im->x - x;
+      im->dy = im->y - y;
+
+      im->x = x;
+      im->y = y;
       entice_image_resize(o, im->w, im->h);
    }
 }
@@ -753,6 +799,17 @@ entice_image_new(Evas_Object * image)
       im->ih = h;
    }
    return (o);
+}
+
+void
+entice_image_dragable_state_set(Evas_Object * o, int state)
+{
+   Entice_Image *im = NULL;
+
+   if ((im = evas_object_smart_data_get(o)))
+   {
+      im->state = state;
+   }
 }
 
 /*==========================================================================

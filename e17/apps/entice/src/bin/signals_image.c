@@ -374,3 +374,26 @@ _entice_image_save(void *data, Evas_Object * o, const char *emission,
    emission = NULL;
    source = NULL;
 }
+
+/* drag,* */
+void
+_entice_image_drag_stop(void *data, Evas_Object * o, const char *emission,
+                        const char *source)
+{
+#if DEBUG
+   fprintf(stderr, "Drag stopped\n");
+#endif
+   if ((source) && !strcmp(source, "EnticeImage"))
+      entice_dragable_image_set(0);
+}
+
+void
+_entice_image_drag_start(void *data, Evas_Object * o, const char *emission,
+                         const char *source)
+{
+#if DEBUG
+   fprintf(stderr, "Drag started\n");
+#endif
+   if ((source) && !strcmp(source, "EnticeImage"))
+      entice_dragable_image_set(1);
+}

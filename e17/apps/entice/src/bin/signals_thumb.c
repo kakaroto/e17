@@ -14,7 +14,7 @@ _entice_thumb_load_cb(void *data, Evas_Object * o, const char *emission,
                       const char *source)
 {
    if (data)
-      _entice_thumb_load(data, NULL, NULL, NULL);
+      entice_thumb_load_ethumb(data);
    else
       fprintf(stderr, "load request with null data\n");
 }
@@ -131,7 +131,6 @@ hookup_entice_thumb_signals(Evas_Object * o, Evas_Object * im)
       void (*func) (void *data, Evas_Object * o, const char *emission,
                     const char *source);
    } edje_callbacks;
-
    char *signals[] = { "EnticeThumbPreview", "EnticeThumbLoad" };
    edje_callbacks funcs[] = { _entice_thumb_preview_cb,
       _entice_thumb_load_cb

@@ -14,6 +14,14 @@
 
 typedef struct _Entice_Image Entice_Image;
 typedef enum _Entice_Image_Scroll_Direction Entice_Scroll_Direction;
+typedef enum _Entice_Image_Moving_State Entice_Image_Moving_State;
+
+enum _Entice_Image_Moving_State
+{
+   ENTICE_IMAGE_MOVE_DEFAULT = 0,
+   ENTICE_IMAGE_MOVE_DRAGGING,
+   ENTICE_IMAGE_MOVE_FIXING
+};
 
 enum _Entice_Image_Scroll_Direction
 {
@@ -30,11 +38,13 @@ struct _Entice_Image
    struct
    {
       Ecore_Timer *timer;
-      double velocity, start_time, x, y;
+      double velocity, start_time, x, y, dx, dy;
       Entice_Scroll_Direction direction;
    } scroll;
    char *filename;              /* we need to keep track of this */
    char *format;                /* we need to keep track of this too */
+   Entice_Image_Moving_State state;
+   /* current moving state */
    int x, y, w, h, iw, ih;      /* geometry */
    Evas_Coord dx, dy;
    Evas_Object *obj;            /* the image object */
@@ -71,5 +81,10 @@ int entice_image_flip(Evas_Object * o, int direction);
 int entice_image_save(Evas_Object * o);
 void entice_image_file_set(Evas_Object * o, const char *filename);
 void entice_image_format_set(Evas_Object * o, const char *format);
-
+void entice_image_dragable_set(Evas_Object * o, int dragging);
+void entice_image_geometry_get(Evas_Object * o, Evas_Coord * x,
+                               Evas_Coord * y, Evas_Coord * w,
+                               Evas_Coord * h);
+void entice_image_x_scroll_offset_add(Evas_Object * o, Evas_Coord offset);
+void entice_image_y_scroll_offset_add(Evas_Object * o, Evas_Coord offset);
 #endif

@@ -68,5 +68,9 @@ void entice_flip_horizontal(void);
 void entice_preview_thumb(Evas_Object * o);
 void entice_delete_current(void);
 void entice_remove_current(void);
+void entice_save_image(void);
+void entice_thumb_load_ethumb(Evas_Object * o);
+void entice_dragable_image_set(int state);
+
 
 #endif
