@@ -1,20 +1,6 @@
-* Must write saver api
-* must turn into shared lib
-* Must comment:
-    blend.c
-    color.c
-    colormod.c
-    context.c
-    draw.c
-    file.c
-    font.c
-    format.c
-    grab.c
-    grad.c
-    image.c
-    rgba.c
-    rgbadraw.c
-    scale.c
-    updates.c
-    ximage.c
-    
+* write generic "slow path" renderign code and make sure all fast 
+path rendering is correct for that visual
+* formalize loader/saver api
+* fix loaders to only build if libs are present
+* move db loader/saver to use edb
+
