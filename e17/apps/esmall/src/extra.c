@@ -1,6 +1,6 @@
-char * strlwr(char * str)
+char *strlwr(char *str)
 {
-	char * i;
+	char *i;
 
 	if (!str)
 		return 0;
