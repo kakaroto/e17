@@ -98,43 +98,8 @@ feh_event_handle_ButtonPress(XEvent * ev)
    if (!opt.no_menus && EV_IS_MENU_BUTTON(ev)) {
       D(3, ("Menu Button Press event\n"));
       winwid = winwidget_get_from_window(ev->xbutton.window);
-      if (winwid != NULL)
-      {
-         int x, y, b;
-         unsigned int c;
-         Window r;
-
-         XQueryPointer(disp, winwid->win, &r, &r, &x, &y, &b, &b, &c);
-         if (winwid->type == WIN_TYPE_ABOUT)
-         {
-            if (!menu_about_win)
-               feh_menu_init_about_win();
-            feh_menu_show_at_xy(menu_about_win, winwid, x, y);
-         }
-         else if (winwid->type == WIN_TYPE_SINGLE)
-         {
-            if (!menu_single_win)
-               feh_menu_init_single_win();
-            feh_menu_show_at_xy(menu_single_win, winwid, x, y);
-         }
-         else if (winwid->type == WIN_TYPE_THUMBNAIL)
-         {
-            if (!menu_thumbnail_win)
-               feh_menu_init_thumbnail_win();
-            feh_menu_show_at_xy(menu_thumbnail_win, winwid, x, y);
-         }
-         else if (winwid->type == WIN_TYPE_THUMBNAIL_VIEWER)
-         {
-            if (!menu_single_win)
-               feh_menu_init_thumbnail_viewer();
-            feh_menu_show_at_xy(menu_thumbnail_viewer, winwid, x, y);
-         }
-         else
-         {
-            if (!menu_main)
-               feh_menu_init_main();
-            feh_menu_show_at_xy(menu_main, winwid, x, y);
-         }
+      if (winwid != NULL) {
+        winwidget_show_menu(winwid);
       }
    }
    else if ((ev->xbutton.button == opt.rotate_button)
@@ -273,16 +238,7 @@ feh_event_handle_ButtonRelease(XEvent * ev)
             feh_menu_item *i = NULL;
 
             i = feh_menu_find_selected(m);
-            /* watch out for this. I put it this way around so the menu
-               goes away *before* we perform the action, if we start
-               freeing menus on hiding, it will break ;-) */
-            if ((i) && (i->func)) {
-              feh_menu_hide(menu_root, False);
-              feh_main_iteration(0);
-              (i->func) (m, i, i->data);
-              if(m->func_free)
-                 m->func_free(m, m->data);
-            }
+            feh_menu_item_activate(m, i);
          }
       }
       D_RETURN_(4);

@@ -99,6 +99,7 @@ struct _feh_menu_item
    void (*func_free) (void *data);
    void *data;
    feh_menu_item *next;
+   feh_menu_item *prev;
    unsigned char is_toggle;
    int text_x, icon_x, sub_x, toggle_x;
    int x, y, w, h;
@@ -116,6 +117,7 @@ struct _feh_menu
    int visible;
    feh_menu_item *items;
    feh_menu *next;
+   feh_menu *prev;
    Imlib_Updates updates;
    Imlib_Image bg;
    int needs_redraw;
@@ -172,6 +174,13 @@ void feh_redraw_menus(void);
 feh_menu *feh_menu_get_from_window(Window win);
 void feh_raise_all_menus(void);
 void feh_menu_free(feh_menu * m);
+feh_menu_item *feh_menu_find_selected_r(feh_menu *m, feh_menu **parent);
+void feh_menu_select_prev(feh_menu *selected_menu, feh_menu_item *selected_item);
+void feh_menu_select_next(feh_menu *selected_menu, feh_menu_item *selected_item);
+void feh_menu_item_activate(feh_menu *selected_menu, 
+                            feh_menu_item *selected_item);
+void feh_menu_select_parent(feh_menu *selected_menu, feh_menu_item *selected_item);
+void feh_menu_select_submenu(feh_menu *selected_menu, feh_menu_item *selected_item);
 
 extern feh_menu *menu_root;
 extern feh_menu *menu_single_win;

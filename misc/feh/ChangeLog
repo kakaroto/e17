@@ -1,3 +1,15 @@
+Thu Dec 05 01:28:44 GMT 2002  Tom Gilbert <tom@linuxbrit.co.uk>
+
+  * Keyboard control for menus :)
+  * Press 'm' to open the menu, escape to close it, arrow keys (or hjkl) to
+    navigate and space or enter to activate.
+
+Wed Dec 04 23:12:44 GMT 2002  Tom Gilbert <tom@linuxbrit.co.uk>
+
+  * Changed the way the menus work - you don't have to hold the mouse button
+    down to keep them open any more. I prefer the old way but that way doesn't
+    allow keyboard menu control.
+
 Wed Dec 04 21:30:29 GMT 2002  Tom Gilbert <tom@linuxbrit.co.uk>
 
   * Found a couple of case statements without breaks in options.c

@@ -38,16 +38,71 @@ handle_keypress_event(XEvent * ev, Window win)
    XKeyEvent *kev;
    winwidget winwid = NULL;
    int curr_screen = 0;
+   feh_menu_item *selected_item;
+   feh_menu *selected_menu;
 
    D_ENTER(4);
-
-   winwid = winwidget_get_from_window(win);
-   if (winwid == NULL)
-      D_RETURN_(4);
 
    kev = (XKeyEvent *) ev;
    len = XLookupString(&ev->xkey, (char *) kbuf, sizeof(kbuf), &keysym, NULL);
 
+   /* menus are showing, so this is a menu control keypress */
+   if (ev->xbutton.window == menu_cover) {
+     selected_item = feh_menu_find_selected_r(menu_root, &selected_menu);
+     switch (keysym) {
+       case XK_Escape:
+         feh_menu_hide(menu_root, True);
+         break;
+       case XK_Left:
+         feh_menu_select_parent(selected_menu, selected_item);
+         break;
+       case XK_Down:
+         feh_menu_select_next(selected_menu, selected_item);
+         break;
+       case XK_Up:
+         feh_menu_select_prev(selected_menu, selected_item);
+         break;
+       case XK_Right:
+         feh_menu_select_submenu(selected_menu, selected_item);
+         break;
+       case XK_Return:
+         feh_menu_item_activate(selected_menu, selected_item);
+         break;
+       default:
+         break;
+     }
+     if (len <= 0 || len > (int) sizeof(kbuf))
+        D_RETURN_(4);
+     kbuf[len] = '\0';
+
+     switch (*kbuf)
+     {
+       case 'h':
+         feh_menu_select_parent(selected_menu, selected_item);
+         break;
+       case 'j':
+         feh_menu_select_next(selected_menu, selected_item);
+         break;
+       case 'k':
+         feh_menu_select_prev(selected_menu, selected_item);
+         break;
+       case 'l':
+         feh_menu_select_submenu(selected_menu, selected_item);
+         break;
+       case ' ':
+         feh_menu_item_activate(selected_menu, selected_item);
+         break;
+       default:
+         break;
+     }
+     
+     D_RETURN_(4);
+   }
+
+   winwid = winwidget_get_from_window(win);
+   if (winwid == NULL)
+      D_RETURN_(4);
+   
    switch (keysym)
    {
      case XK_Left:
@@ -61,6 +116,9 @@ handle_keypress_event(XEvent * ev, Window win)
      case XK_Page_Up:
         if (opt.slideshow)
            slideshow_change_image(winwid, SLIDE_JUMP_BACK);
+        break;
+     case XK_Escape:
+        winwidget_destroy_all();
         break;
      case XK_Page_Down:
         if (opt.slideshow)
@@ -151,7 +209,6 @@ handle_keypress_event(XEvent * ev, Window win)
 
    if (len <= 0 || len > (int) sizeof(kbuf))
       D_RETURN_(4);
-
    kbuf[len] = '\0';
 
    switch (*kbuf)
@@ -176,9 +233,9 @@ handle_keypress_event(XEvent * ev, Window win)
      case 'R':
         feh_reload_image(winwid, 0);
         break;
-	 case 'h':
-	 case 'H':
-		slideshow_pause_toggle(winwid);
+     case 'h':
+     case 'H':
+        slideshow_pause_toggle(winwid);
         break;
      case 's':
      case 'S':
@@ -191,6 +248,10 @@ handle_keypress_event(XEvent * ev, Window win)
      case 'w':
      case 'W':
         winwidget_size_to_image(winwid);
+        break;
+     case 'm':
+     case 'M':
+        winwidget_show_menu(winwid);
         break;
      case 'x':
      case 'X':

@@ -944,3 +944,41 @@ void winwidget_get_geometry(winwidget winwid, int *rect) {
   winwid->h = rect[3];
   D_RETURN_(4);
 }
+
+void winwidget_show_menu(winwidget winwid) {
+  int x, y, b;
+  unsigned int c;
+  Window r;
+
+  XQueryPointer(disp, winwid->win, &r, &r, &x, &y, &b, &b, &c);
+  if (winwid->type == WIN_TYPE_ABOUT)
+  {
+    if (!menu_about_win)
+        feh_menu_init_about_win();
+    feh_menu_show_at_xy(menu_about_win, winwid, x, y);
+  }
+  else if (winwid->type == WIN_TYPE_SINGLE)
+  {
+    if (!menu_single_win)
+        feh_menu_init_single_win();
+    feh_menu_show_at_xy(menu_single_win, winwid, x, y);
+  }
+  else if (winwid->type == WIN_TYPE_THUMBNAIL)
+  {
+    if (!menu_thumbnail_win)
+        feh_menu_init_thumbnail_win();
+    feh_menu_show_at_xy(menu_thumbnail_win, winwid, x, y);
+  }
+  else if (winwid->type == WIN_TYPE_THUMBNAIL_VIEWER)
+  {
+    if (!menu_single_win)
+        feh_menu_init_thumbnail_viewer();
+    feh_menu_show_at_xy(menu_thumbnail_viewer, winwid, x, y);
+  }
+  else
+  {
+    if (!menu_main)
+        feh_menu_init_main();
+    feh_menu_show_at_xy(menu_main, winwid, x, y);
+  }
+}

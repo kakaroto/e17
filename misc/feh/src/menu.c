@@ -193,6 +193,7 @@ feh_menu_new(void)
   m->visible = 0;
   m->items = NULL;
   m->next = NULL;
+  m->prev = NULL;
   m->updates = NULL;
   m->needs_redraw = 1;
   m->func_free = NULL;
@@ -285,6 +286,122 @@ feh_menu_find_selected(feh_menu * m)
 }
 
 feh_menu_item *
+feh_menu_find_selected_r(feh_menu * m, feh_menu **parent)
+{
+  feh_menu_item *i, *ii;
+  feh_menu *mm;
+
+  D_ENTER(4);
+
+  D(5, ("menu %p\n", m));
+
+  for (i = m->items; i; i = i->next) {
+    if (MENU_ITEM_IS_SELECTED(i)) {
+      if (parent)
+        *parent = m;
+      D_RETURN(4, i);
+    } else if (i->submenu) {
+      mm = feh_menu_find(i->submenu);
+      if (mm)
+        ii = feh_menu_find_selected_r(mm, parent);
+      if (ii) {
+        D_RETURN(4, ii);
+      }
+    }
+  }
+  if (parent)
+    *parent = m;
+  D_RETURN(4, NULL);
+}
+
+void
+feh_menu_select_next(feh_menu *selected_menu, feh_menu_item *selected_item) {
+  feh_menu_item *i;
+  if (!selected_item) {
+    /* jump to first item, select it */
+    feh_menu_select(selected_menu, selected_menu->items);
+  } else {
+    i = selected_item;
+    while (1) {
+      i = i->next;
+      if (!i)
+        i = selected_menu->items;
+      if (i->func || i->submenu || i->func_gen_sub || i->text) {
+        break;
+      }
+    }
+    feh_menu_deselect_selected(selected_menu);
+    feh_menu_select(selected_menu, i);
+  }
+}
+
+void
+feh_menu_select_prev(feh_menu *selected_menu, feh_menu_item *selected_item) {
+  feh_menu_item *i, *ii;
+  if (!selected_item) {
+    /* jump to last item, select it */
+    for (i = selected_menu->items; i->next; i = i->next);
+    feh_menu_select(selected_menu, i);
+  } else {
+    i = selected_item;
+    while (1) {
+      i = i->prev;
+      if (!i) {
+        i = selected_menu->items;
+        for (ii = selected_menu->items; ii->next; ii = ii->next);
+        i = ii;
+      }
+      if (i->func || i->submenu || i->func_gen_sub || i->text) {
+        break;
+      }
+    }
+    feh_menu_deselect_selected(selected_menu);
+    feh_menu_select(selected_menu, i);
+  }
+}
+
+void
+feh_menu_select_parent(feh_menu *selected_menu, feh_menu_item *selected_item) {
+  feh_menu *m;
+  feh_menu_item *i;
+  /* find the parent menu's item which refers to this menu's name */
+  if (selected_menu->prev) {
+    m = selected_menu->prev;
+    for (i = m->items; i; i = i->next) {
+      if(i->submenu && !strcmp(i->submenu, selected_menu->name))
+        break;
+    }
+    /* shouldn't ever happen */
+    if (i == NULL)
+      i = m->items;
+    feh_menu_deselect_selected(selected_menu);
+    feh_menu_select(m, i);
+  }
+}
+
+void
+feh_menu_select_submenu(feh_menu *selected_menu, feh_menu_item *selected_item) {
+  if (selected_menu->next) {
+    feh_menu_deselect_selected(selected_menu);
+    feh_menu_select(selected_menu->next, selected_menu->next->items);
+  }
+}
+
+void feh_menu_item_activate(feh_menu *m, 
+                            feh_menu_item *i) {
+  /* watch out for this. I put it this way around so the menu
+      goes away *before* we perform the action, if we start
+      freeing menus on hiding, it will break ;-) */
+  if ((i) && (i->func)) {
+    feh_menu_hide(menu_root, False);
+    feh_main_iteration(0);
+    (i->func) (m, i, i->data);
+    if(m->func_free)
+        m->func_free(m, m->data);
+  }
+}
+
+feh_menu_item *
 feh_menu_find_at_xy(feh_menu * m,
                     int x,
                     int y)
@@ -332,6 +449,7 @@ feh_menu_select(feh_menu * m,
   m->updates = imlib_update_append_rect(m->updates, i->x, i->y, i->w, i->h);
   m->needs_redraw = 1;
   if (m->next) {
+    m->next->prev = NULL;
     feh_menu_hide(m->next, TRUE);
     m->next = NULL;
   }
@@ -348,9 +466,7 @@ feh_menu_select(feh_menu * m,
 }
 
 void
-feh_menu_show_at(feh_menu * m,
-                 int x,
-                 int y)
+feh_menu_show_at(feh_menu * m, int x, int y)
 {
   D_ENTER(4);
 
@@ -367,8 +483,9 @@ feh_menu_show_at(feh_menu * m,
                     InputOnly, vis, CWOverrideRedirect | CWDontPropagate,
                     &attr);
     XSelectInput(disp, menu_cover,
-                 ButtonPressMask | ButtonReleaseMask | EnterWindowMask |
-                 LeaveWindowMask | PointerMotionMask | ButtonMotionMask);
+      KeyPressMask | ButtonPressMask | ButtonReleaseMask | 
+      EnterWindowMask | LeaveWindowMask | PointerMotionMask | 
+      ButtonMotionMask);
 
     XRaiseWindow(disp, menu_cover);
     XMapWindow(disp, menu_cover);
@@ -444,6 +561,7 @@ feh_menu_show_at_submenu(feh_menu * m,
   my = parent_m->y + i->y - FEH_MENU_PAD_TOP;
   m->fehwin = parent_m->fehwin;
   parent_m->next = m;
+  m->prev = parent_m;
   feh_menu_move(m, mx, my);
   feh_menu_show(m);
   D_RETURN_(4);
@@ -509,6 +627,7 @@ feh_menu_hide(feh_menu * m,
   if (!m->visible)
     D_RETURN_(4);
   if (m->next) {
+    m->next->prev = NULL;
     feh_menu_hide(m->next, func_free);
     m->next = NULL;
   }
@@ -588,6 +707,7 @@ feh_menu_add_entry(feh_menu * m,
   mi->data = data;
   mi->func_gen_sub = NULL;
   mi->next = NULL;
+  mi->prev = NULL;
 
   if (!m->items)
     m->items = mi;
@@ -595,6 +715,7 @@ feh_menu_add_entry(feh_menu * m,
     for (ptr = m->items; ptr; ptr = ptr->next) {
       if (!ptr->next) {
         ptr->next = mi;
+        mi->prev = ptr;
         break;
       }
     }
