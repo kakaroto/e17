@@ -2,7 +2,7 @@
 
 print "=pod\n\n\n\n";
 
-print "=head1 NAME\n\n\nEnlightenment\n\n\n\n";
+print "=head1 NAME\n\n\nEnlightenment - The Window Manager that dares to do what others don't\n\n\n\n";
 
 print "=head1 WARNING\n\n\n";
 
