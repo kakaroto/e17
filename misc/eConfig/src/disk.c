@@ -365,3 +365,20 @@ _econf_purge_data_from_disk(char *loc)
 	return num_undeleted;
 
 }
+
+int
+_econf_create_new_data_repository(char *path)
+{
+
+	/* This function will create all the stub files necessary for a new
+	 * repository, as well as create the directory they're housed in.
+	 * This function is internal to eConfig
+	 * FIXME: this function doesn't do anything yet.
+	 */
+
+	if(!path)
+		return 0;
+
+	return 0;
+
+}

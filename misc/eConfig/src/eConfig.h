@@ -29,7 +29,7 @@ void            *eConfigGetData(char *loc, unsigned long *length);
 void            *eConfigRefreshData(char *loc, unsigned long *length);
 int              eConfigUnloadData(char *loc);
 int              eConfigStoreData(char *loc, void *data, unsigned long length,
-                        char local);
+                                  char *path);
 
 int              eConfigExportData(char *loc,char local);
 

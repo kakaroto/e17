@@ -120,3 +120,20 @@ eConfigUnloadData(char *loc)
 	return 0;
 
 }
+
+int
+eConfigStoreData(char *loc, void *data, unsigned long length, char *path)
+{
+
+	if(!loc)
+		return 0;
+	if(!data)
+		return 0;
+	if(!length)
+		return 0;
+	if(!path)
+		return 0;
+
+	return 0;
+
+}
