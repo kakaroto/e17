@@ -811,3 +811,19 @@ Now save all urls processed to ~/.Urls
 
 Auto e-mailing to your mom is not yet supported.
 
+-------------------------------------------------------------------------------
+
+Wed Nov 24 18:29:19 GMT 1999
+(gilbertt)
+
+E-UrlWatch.
+
+Changed size. Added buttons to allow several different "modes" of action.
+When you have a url in the X paste buffer, each button will grab the url,
+and perform a configurable action upon it. The three are www, ftp, and get.
+The default is gnome-moz-remote for the first two, and wget for the third.
+The epplet is extremely ugly right now, but I'm working on the code atm, so
+ignore that :)
+
+More cool stuff to come :)
+
