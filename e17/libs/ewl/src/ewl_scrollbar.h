@@ -52,7 +52,10 @@ struct Ewl_Scrollbar
 	unsigned int    buttons_alignment; /**< The ordering of buttons */
 
 	double          fill_percentage; /**< The ratio of size for draggable */
+	double          start_time; /**< Time scrolling began */
+	Ecore_Timer    *timer; /**< Repeating timer for scrolling */
 	Ewl_ScrollBar_Flags flag; /**< Flags to indicate part visibility */
+	signed char     direction;
 };
 
 /**

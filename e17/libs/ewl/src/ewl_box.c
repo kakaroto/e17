@@ -179,6 +179,19 @@ void ewl_box_set_orientation(Ewl_Box * b, Ewl_Orientation o)
 }
 
 /**
+ * @param b: the box to retrieve orientation
+ * @return Returns the orientation value of the box @a b.
+ * @brief Retrieves the orientation of the box
+ */
+Ewl_Orientation ewl_box_get_orientation(Ewl_Box *b)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("b", b, 0);
+
+	DRETURN_INT(b->orientation, DLEVEL_STABLE);
+}
+
+/**
  * @param b: the box to change homogeneous layout
  * @param h: the boolean value to change the layout mode to
  * @return Returns no value.

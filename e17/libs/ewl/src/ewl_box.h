@@ -59,6 +59,7 @@ struct Ewl_Box
 Ewl_Widget     *ewl_box_new(Ewl_Orientation orientation);
 int             ewl_box_init(Ewl_Box * box, Ewl_Orientation orientation);
 void            ewl_box_set_orientation(Ewl_Box * b, Ewl_Orientation o);
+Ewl_Orientation ewl_box_get_orientation(Ewl_Box * b);
 void            ewl_box_set_spacing(Ewl_Box * b, int spacing);
 void            ewl_box_set_homogeneous(Ewl_Box *b, int h);
 

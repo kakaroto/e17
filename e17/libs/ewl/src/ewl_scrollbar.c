@@ -2,10 +2,12 @@
 #include <Ewl.h>
 
 
-void            __ewl_scrollbar_decrement(Ewl_Widget * w, void *ev_data,
+void            __ewl_scrollbar_scroll_start(Ewl_Widget * w, void *ev_data,
 					  void *user_data);
-void            __ewl_scrollbar_increment(Ewl_Widget * w, void *ev_data,
+void            __ewl_scrollbar_scroll_stop(Ewl_Widget * w, void *ev_data,
 					  void *user_data);
+
+int             __ewl_scrollbar_timer(void *data);
 
 
 /**
@@ -84,18 +86,30 @@ void ewl_scrollbar_init(Ewl_Scrollbar * s, Ewl_Orientation orientation)
 	if (orientation == EWL_ORIENTATION_HORIZONTAL) {
 		ewl_callback_append(s->button_increment,
 				EWL_CALLBACK_MOUSE_DOWN,
-				__ewl_scrollbar_increment, s);
+				__ewl_scrollbar_scroll_start, s);
+		ewl_callback_append(s->button_increment,
+				EWL_CALLBACK_MOUSE_UP,
+				__ewl_scrollbar_scroll_stop, s);
 		ewl_callback_append(s->button_decrement,
 				EWL_CALLBACK_MOUSE_DOWN,
-				__ewl_scrollbar_decrement, s);
+				__ewl_scrollbar_scroll_start, s);
+		ewl_callback_append(s->button_decrement,
+				EWL_CALLBACK_MOUSE_UP,
+				__ewl_scrollbar_scroll_stop, s);
 	}
 	else {
 		ewl_callback_append(s->button_increment,
 				EWL_CALLBACK_MOUSE_DOWN,
-				__ewl_scrollbar_decrement, s);
+				__ewl_scrollbar_scroll_start, s);
+		ewl_callback_append(s->button_increment,
+				EWL_CALLBACK_MOUSE_UP,
+				__ewl_scrollbar_scroll_stop, s);
 		ewl_callback_append(s->button_decrement,
 				EWL_CALLBACK_MOUSE_DOWN,
-				__ewl_scrollbar_increment, s);
+				__ewl_scrollbar_scroll_start, s);
+		ewl_callback_append(s->button_decrement,
+				EWL_CALLBACK_MOUSE_UP,
+				__ewl_scrollbar_scroll_stop, s);
 	}
 
 	/*
@@ -348,55 +362,85 @@ Ewl_ScrollBar_Flags ewl_scrollbar_get_flag(Ewl_Scrollbar * s)
 /*
  * Decrement the value of the scrollbar's seeker portion
  */
-void __ewl_scrollbar_decrement(Ewl_Widget * w, void *ev_data, void *user_data)
+void
+__ewl_scrollbar_scroll_start(Ewl_Widget * w, void *ev_data, void *user_data)
 {
-	double          v;
 	Ewl_Scrollbar  *s;
+	Ewl_Orientation o;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
 	s = EWL_SCROLLBAR(user_data);
+	if (w == s->button_increment)
+		s->direction = 1;
+	else
+		s->direction = -1;
 
 	/*
-	 * ewl_seeker_decrease(EWL_SEEKER(s->seeker));
+	 * Need to scroll in the opposite direction for the vertical
+	 * scrollbar.
 	 */
+	o = ewl_box_get_orientation(EWL_BOX(s));
+	if (o == EWL_ORIENTATION_VERTICAL)
+		s->direction = -s->direction;
 
-	v = ewl_seeker_get_value(EWL_SEEKER(s->seeker));
-	v -= 0.05;
-
-	if (v < 0.0)
-		v = 0.0;
-
-	ewl_seeker_set_value(EWL_SEEKER(s->seeker), v);
+	s->start_time = ecore_time_get();
+	s->timer = ecore_timer_add(0.02, __ewl_scrollbar_timer, s);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-/*
- * Decrement the value of the scrollbar's seeker portion
- */
-void __ewl_scrollbar_increment(Ewl_Widget * w, void *ev_data, void *user_data)
+void
+__ewl_scrollbar_scroll_stop(Ewl_Widget * w, void *ev_data, void *user_data)
 {
-	double          v;
-	Ewl_Scrollbar  *s;
+	Ewl_Scrollbar *s;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
 
 	s = EWL_SCROLLBAR(user_data);
 
-	/*
-	 * ewl_seeker_increase(EWL_SEEKER(s->seeker));
-	 */
+	ecore_timer_del(s->timer);
 
-	v = ewl_seeker_get_value(EWL_SEEKER(s->seeker));
-	v += 0.05;
-
-	if (v > 1.0)
-		v = 1.0;
-
-	ewl_seeker_set_value(EWL_SEEKER(s->seeker), v);
+	s->timer = NULL;
+	s->direction = 0;
+	s->start_time = 0;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+int __ewl_scrollbar_timer(void *data)
+{
+	Ewl_Scrollbar  *s;
+	double          dt;
+	double          value;
+	int             velocity;
+	char            tmp[PATH_MAX];
+
+	s = EWL_SCROLLBAR(data);
+
+	dt = ecore_time_get() - s->start_time;
+	value = ewl_seeker_get_value(EWL_SEEKER(s->seeker));
+
+	/*
+	 * Check the theme for a velocity setting and bring it within normal
+	 * useable bounds.
+	 */
+	snprintf(tmp, PATH_MAX, "%s/velocity", EWL_WIDGET(s)->appearance);
+	velocity = ewl_theme_data_get_int(EWL_WIDGET(s), tmp);
+	if (velocity < 1)
+		velocity = 1;
+	else if (velocity > 10)
+		velocity = 10;
+
+	/*
+	 * Move the value of the seeker based on the direction of it's motion
+	 * and the velocity setting.
+	 */
+	value += (double)(s->direction) * 10 * (1 - exp(-dt)) *
+		 ((double)(velocity) / 100.0);
+
+	ewl_seeker_set_value(EWL_SEEKER(s->seeker), value);
+
+	return 1;
 }
