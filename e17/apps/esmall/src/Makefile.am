@@ -10,7 +10,3 @@ small_SOURCES = \
 	sc7.c \
 	scvars.c \
 	sc.h
-
-LDADD = -lm
-
-INCLUDES=-I$(top_srcdir) -I$(includedir) -I..
