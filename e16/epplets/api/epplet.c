@@ -1,4 +1,6 @@
+#ifndef __LCLINT__
 #include "config.h"
+#endif
 #include "epplet.h"
 #include <errno.h>
 #include <sys/utsname.h>
@@ -405,7 +407,8 @@ Epplet_unremember(void)
    ESYNC;
 }
 
-Window Epplet_get_main_window(void)
+Window
+Epplet_get_main_window(void)
 {
    return win;
 }
@@ -1476,7 +1479,74 @@ Epplet_reset_textbox(Epplet_gadget eg)
 	free(g->contents);
 	g->contents = NULL;
      }
+
    g->cursor_pos = g->text_offset = 0;
+   Epplet_draw_textbox(eg);
+}
+
+void
+Epplet_textbox_insert(Epplet_gadget eg, char *new_contents)
+{
+   GadTextBox         *g;
+   int                 len, w, h;
+   char               *s, *line_break;
+
+   if (!new_contents || ((len = strlen(new_contents)) == 0))
+      return;
+
+   g = (GadTextBox *) eg;
+
+   if (g->contents)
+      s = (char *)malloc(sizeof(char) * (len + strlen(g->contents) + 1));
+
+   else
+      s = (char *)malloc(sizeof(char) * (len + 1));
+
+   if ((line_break = strchr(new_contents, '\n')))
+     {
+	*line_break = '\0';	//get rid of the new line
+     }
+
+   if (s)
+     {
+	*s = '\0';
+
+	if (g->contents)
+	   strcpy(s, g->contents);
+
+	strcat(s, new_contents);
+
+	if (g->contents)
+	   free(g->contents);
+
+	g->contents = s;
+     }
+   else
+     {
+	printf("Couldn't alloc mem\n");
+	return;
+     }
+
+   if (line_break)
+     {
+	if (g->func)
+	   (*(g->func)) (g->data);
+     }
+
+   Epplet_textbox_textsize(g, &w, &h, g->contents);
+
+   g->text_offset = 0;
+
+   while (w > g->w)
+     {
+	Epplet_textbox_textsize(g, &w, &h, (g->contents + g->text_offset));
+	g->text_offset++;
+	if (g->text_offset >= strlen(g->contents))
+	   break;
+     }
+
+   g->cursor_pos = g->contents ? strlen(g->contents) : 0;
+
    Epplet_draw_textbox(eg);
 }
 
@@ -1499,36 +1569,39 @@ Epplet_change_textbox(Epplet_gadget eg, char *new_contents)
    else if (g->contents != NULL)
       free(g->contents);
 
-   if (strchr(new_contents, '\n'))
+   if ((s = strchr(new_contents, '\n')))
      {
-	s = strchr(new_contents, '\n');
-	*s = 0;
+	*s = '\0';		//kill new line
 
 	s = (char *)malloc(sizeof(char) * len + 1);
 
-	strcpy(s, new_contents);
-	g->contents = Estrdup(new_contents);
-	Epplet_draw_textbox(eg);
-	if (g->func)
-	   (*(g->func)) (g->data);
-     }
-   else
-     {
-
-	Epplet_textbox_textsize(g, &w, &h, new_contents);
-
-	g->text_offset = 0;
-
-	while (w > g->w)
+	if (s)
 	  {
-	     Epplet_textbox_textsize(g, &w, &h,
-				     (new_contents + g->text_offset));
-	     g->text_offset++;
-	  }
+	     strcpy(s, new_contents);
+	     g->contents = s;
+	     Epplet_draw_textbox(eg);
 
-	g->cursor_pos = strlen(new_contents);
-	g->contents = Estrdup(new_contents);
+	     if (g->func)
+		(*(g->func)) (g->data);
+	  }
+	else
+	   printf("Couldn't allocate memory.\n");
      }
+
+   Epplet_textbox_textsize(g, &w, &h, new_contents);
+
+   g->text_offset = 0;
+
+   while (w > g->w)
+     {
+	Epplet_textbox_textsize(g, &w, &h, (new_contents + g->text_offset));
+	g->text_offset++;
+	if (g->text_offset >= strlen(new_contents))
+	   break;
+     }
+
+   g->cursor_pos = strlen(new_contents);
+   g->contents = Estrdup(new_contents);
 
    Epplet_draw_textbox(eg);
 }
@@ -2049,7 +2122,8 @@ typedef struct
 }
 GadDrawingArea;
 
-Epplet_gadget Epplet_create_drawingarea(int x, int y, int w, int h)
+Epplet_gadget
+Epplet_create_drawingarea(int x, int y, int w, int h)
 {
    GadDrawingArea     *g;
    XSetWindowAttributes attr;
@@ -2296,7 +2370,8 @@ typedef struct
 }
 GadHBar;
 
-Epplet_gadget Epplet_create_hbar(int x, int y, int w, int h, char dir, int *val)
+Epplet_gadget
+Epplet_create_hbar(int x, int y, int w, int h, char dir, int *val)
 {
    GadHBar            *g;
    XSetWindowAttributes attr;
@@ -2364,7 +2439,8 @@ typedef struct
 }
 GadVBar;
 
-Epplet_gadget Epplet_create_vbar(int x, int y, int w, int h, char dir, int *val)
+Epplet_gadget
+Epplet_create_vbar(int x, int y, int w, int h, char dir, int *val)
 {
    GadHBar            *g;
    XSetWindowAttributes attr;
@@ -2429,7 +2505,8 @@ typedef struct
 }
 GadImage;
 
-Epplet_gadget Epplet_create_image(int x, int y, int w, int h, char *image)
+Epplet_gadget
+Epplet_create_image(int x, int y, int w, int h, char *image)
 {
    GadImage           *g;
 
@@ -2494,7 +2571,8 @@ typedef struct
 }
 GadLabel;
 
-Epplet_gadget Epplet_create_label(int x, int y, char *label, char size)
+Epplet_gadget
+Epplet_create_label(int x, int y, char *label, char size)
 {
    GadLabel           *g;
 
@@ -2648,7 +2726,8 @@ struct _gadpopupbutton
    Pixmap              pmap, mask;
 };
 
-Epplet_gadget Epplet_create_popup(void)
+Epplet_gadget
+Epplet_create_popup(void)
 {
    GadPopup           *g;
    XSetWindowAttributes attr;
@@ -3062,7 +3141,8 @@ Epplet_change_label(Epplet_gadget gadget, char *label)
    Epplet_draw_label(gadget, 0);
 }
 
-Window Epplet_get_drawingarea_window(Epplet_gadget gadget)
+Window
+Epplet_get_drawingarea_window(Epplet_gadget gadget)
 {
    GadDrawingArea     *g;
 
@@ -3231,16 +3311,9 @@ Epplet_event(Epplet_gadget gadget, XEvent * ev)
 
 		if (ev->xbutton.button == 2)
 		  {
-		     s = (char *)malloc(sizeof(char) * 1024);
-
-		     if (s)
-		       {
-			  s = XFetchBuffer(disp, &nbytes_return, 0);
-			  Epplet_change_textbox(g, s);
-			  free(s);
-		       }
-		     else
-			printf("Couldn't allocate memory\n");
+		     s = XFetchBuffer(disp, &nbytes_return, 0);
+		     if (nbytes_return)
+			Epplet_textbox_insert(g, s);
 		  }
 	     }
 	     break;
@@ -4125,7 +4198,8 @@ Epplet_draw_outline(Window win, int x, int y, int w, int h, int r, int g, int b)
 		  (unsigned int)(h - 1));
 }
 
-RGB_buf Epplet_make_rgb_buf(int w, int h)
+RGB_buf
+Epplet_make_rgb_buf(int w, int h)
 {
    RGB_buf             buf;
    unsigned char      *data;

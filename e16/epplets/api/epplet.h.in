@@ -236,6 +236,7 @@ void Epplet_reset_textbox(Epplet_gadget eg);
 
 /* Change the contents of a textbox */
 void Epplet_change_textbox(Epplet_gadget eg, char *new_contents);
+void Epplet_textbox_insert(Epplet_gadget eg, char *new_contents);
 
 /* create drawing area at (x,y) of size (w x h) */
 Epplet_gadget   Epplet_create_drawingarea(int x, int y, int w, int h);
