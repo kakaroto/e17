@@ -330,7 +330,7 @@ Epplet_unremember(void)
 {
    char   s[1024];
 
-   sprintf(s, "remember 0x%x none", (unsigned int)win);
+   sprintf(s, "remember %x none", (unsigned int)win);
    ECommsSend(s);
 }
 
