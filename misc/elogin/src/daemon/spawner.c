@@ -199,7 +199,6 @@ void
 elogin_exit(int signum)
 {
    int status = 0;
-   int x_status = 0;
    pid_t pid;
 
    if (signum == SIGTERM)
@@ -217,21 +216,11 @@ elogin_exit(int signum)
          printf("INFO: Elogin process died.\n");
          if (d->display)
          {
-            /* Allow things to settle down (in case X died as well) */
+            /* Die Hard Like Bruce Willis */
+            kill(d->pid.x, SIGTERM);
             sleep(1);
+            d->display = NULL;
 
-            /* check to see if X is still alive before restarting elogin */
-            if (!waitpid(d->pid.x, &x_status, WNOHANG))
-            {
-               kill(d->pid.x, SIGTERM);
-               sleep(1);
-            }
-            else
-            {
-               /* Die Hard Like Bruce Willis */
-               kill(d->pid.x, SIGTERM);
-               d->display = NULL;
-            }
             spawn_x();
             spawn_elogin();
          }
