@@ -7,7 +7,6 @@
 
 static Evas_List __bit_descriptions = NULL;
 
-Ebits_Object_Bit_State _ebits_get_bit_name(Ebits_Object o, char *name);
 static Ebits_Object_Description _ebits_find_description(char *file);
 static char *_ebits_get_file(Ebits_Object_Bit_Description d, int state);
 #ifdef EDITOR
@@ -21,7 +20,7 @@ static void _ebits_object_calculate(Ebits_Object o);
 #define EBITS_FILE_REDIRECT "%s:/images/%s"
 /* #define LENIENT 1 */
 
-Ebits_Object_Bit_State _ebits_get_bit_name(Ebits_Object o, char *name)
+Ebits_Object_Bit_State ebits_get_bit_name(Ebits_Object o, char *name)
 {
    Evas_List l;
    
@@ -135,7 +134,7 @@ _ebits_calculate(Ebits_Object_Bit_State state)
      {
 	Ebits_Object_Bit_State  state2;
 	
-	state2 = _ebits_get_bit_name(state->o, state->description->rel1.name);
+	state2 = ebits_get_bit_name(state->o, state->description->rel1.name);
 	if (state2)
 	  {
 	     _ebits_calculate(state2);
@@ -166,7 +165,7 @@ _ebits_calculate(Ebits_Object_Bit_State state)
      {
 	Ebits_Object_Bit_State  state2;
 	
-	state2 = _ebits_get_bit_name(state->o, state->description->rel2.name);
+	state2 = ebits_get_bit_name(state->o, state->description->rel2.name);
 	if (state2)
 	  {
 	     _ebits_calculate(state2);
@@ -275,7 +274,7 @@ _ebits_sync_bits(Ebits_Object_Bit_State state)
      {
 	Ebits_Object_Bit_State state2;
 
-	state2 = _ebits_get_bit_name(state->o, l->data);
+	state2 = ebits_get_bit_name(state->o, l->data);
 	if ((state2) && (state2 != state) && (!state2->syncing))
 	  {
 	     state2->state = state->state;

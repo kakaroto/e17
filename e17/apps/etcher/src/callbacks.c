@@ -21,10 +21,8 @@
 #include "bits.h"
 #include "preferences.h"
 #include "splash.h"
-
-extern GtkWidget *main_win;
-extern GtkWidget *pref_dialog;
-extern char etcher_config[4096];
+#include "globals.h"
+#include "recent.h"
 
 Evas view_evas = NULL;
 gint render_method = 0;
@@ -596,36 +594,39 @@ zoom_redraw(int xx, int yy)
 			    zoom->allocation.height, -1);
    else
       pmap = zoom->window;
+
    gdk_draw_rectangle(pmap, gc, 1, 0, 0, zoom->allocation.width, zoom->allocation.height);
+
    for (y = 0; y < (zoom->allocation.height + 1) / zoom_scale; y++)
      {
-	int i;
-	
-	for (i = 0; i < zoom_scale; i++)
-	  {
-	     gdk_window_copy_area(pmap, gc, 
-				  0, (y * zoom_scale) + i, 
-				  view->window,
-				  xx - ((zoom->allocation.width + 1) / (2*zoom_scale)),
-				  yy - ((zoom->allocation.height + 1) / (2*zoom_scale)) + y,
-				  (zoom->allocation.width + 1) / zoom_scale,
-				  1);
-	  }
+       int i;
+       
+       for (i = 0; i < zoom_scale; i++)
+	 {
+	   gdk_window_copy_area(pmap, gc, 
+				0, (y * zoom_scale) + i, 
+				view->window,
+				xx - ((zoom->allocation.width + 1) / (2*zoom_scale)),
+				yy - ((zoom->allocation.height + 1) / (2*zoom_scale)) + y,
+				(zoom->allocation.width + 1) / zoom_scale,
+				1);
+	 }
      }
    for (x = ((zoom->allocation.width + 1) / zoom_scale) - 1; x >= 0; x--)
      {
-	int i;
-	
-	for (i = zoom_scale-1; i >= 0; i--)
-	  {
-	     gdk_window_copy_area(pmap, gc, 
-				  (x * zoom_scale) + i, 0, 
-				  pmap,
-				  x, 0,
-				  1,
-				  zoom->allocation.height);
-	  }
+       int i;
+       
+       for (i = zoom_scale-1; i >= 0; i--)
+	 {
+	   gdk_window_copy_area(pmap, gc, 
+				(x * zoom_scale) + i, 0, 
+				pmap,
+				x, 0,
+				1,
+				zoom->allocation.height);
+	 }
      }
+
    if (zoom_method == 0)
      {
 	gdk_window_copy_area(zoom->window, gc, 
@@ -852,7 +853,7 @@ handle_adjuster_mouse_move (void *_data, Evas _e, Evas_Object _o, int _b, int _x
 	     
 	     state = NULL;
 	     if (selected_state->description->rel1.name)
-		state = _ebits_get_bit_name(bits, selected_state->description->rel1.name);
+		state = ebits_get_bit_name(bits, selected_state->description->rel1.name);
 	     rw = bits->state.w;
 	     rh = bits->state.h;
 	     if (state)
@@ -887,7 +888,7 @@ handle_adjuster_mouse_move (void *_data, Evas _e, Evas_Object _o, int _b, int _x
 	     
 	     state = NULL;
 	     if (selected_state->description->rel2.name)
-		state = _ebits_get_bit_name(bits, selected_state->description->rel2.name);
+		state = ebits_get_bit_name(bits, selected_state->description->rel2.name);
 	     rw = bits->state.w;
 	     rh = bits->state.h;
 	     if (state)
@@ -1042,10 +1043,9 @@ on_file_ok_clicked                     (GtkButton       *button,
 	newbits = ebits_load(gtk_file_selection_get_filename(GTK_FILE_SELECTION(top)));
 
 	if (!newbits)
-	  {
-	    return;
-	  }
-
+	  return;
+	
+	recent_add_file(gtk_file_selection_get_filename(GTK_FILE_SELECTION(top)));
 	selected_state = NULL;
 
 	if (bits)
@@ -1295,6 +1295,47 @@ on_preferences1_activate               (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
    pref_preferences1_activate(menuitem, user_data);
+}
+
+
+void
+on_recent0_activate                    (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+  recent_load(0);
+}
+
+
+void
+on_recent1_activate                    (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+  recent_load(1);
+}
+
+
+void
+on_recent2_activate                    (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+  recent_load(2);
+}
+
+
+void
+on_recent3_activate                    (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+  recent_load(3);
+}
+
+
+void
+on_recent4_activate                    (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+  recent_load(4);
+
 }
 
 
@@ -2107,7 +2148,8 @@ void
 on_zoomin_clicked                      (GtkButton       *button,
                                         gpointer         user_data)
 {
-  zoom_scale++;
+  if (zoom_scale < 10)
+    zoom_scale++;
   zoom_redraw(zoom_x, zoom_y);
 }
 

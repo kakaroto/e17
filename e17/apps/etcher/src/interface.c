@@ -24,15 +24,21 @@ create_toplevel (void)
   GtkWidget *toplevel;
   GtkWidget *vbox1;
   GtkWidget *menubar1;
-  GtkWidget *flie1;
-  GtkWidget *flie1_menu;
-  GtkAccelGroup *flie1_menu_accels;
+  GtkWidget *file1;
+  GtkWidget *file1_menu;
+  GtkAccelGroup *file1_menu_accels;
   GtkWidget *open1;
   GtkWidget *save1;
   GtkWidget *save_as1;
   GtkWidget *separator1;
   GtkWidget *preferences1;
   GtkWidget *separator2;
+  GtkWidget *recent0;
+  GtkWidget *recent1;
+  GtkWidget *recent2;
+  GtkWidget *recent3;
+  GtkWidget *recent4;
+  GtkWidget *separator4;
   GtkWidget *exit1;
   GtkWidget *edit1;
   GtkWidget *edit1_menu;
@@ -294,47 +300,47 @@ create_toplevel (void)
   gtk_widget_show (menubar1);
   gtk_box_pack_start (GTK_BOX (vbox1), menubar1, FALSE, FALSE, 0);
 
-  flie1 = gtk_menu_item_new_with_label (_("File"));
-  gtk_widget_ref (flie1);
-  gtk_object_set_data_full (GTK_OBJECT (toplevel), "flie1", flie1,
+  file1 = gtk_menu_item_new_with_label (_("File"));
+  gtk_widget_ref (file1);
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "file1", file1,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (flie1);
-  gtk_container_add (GTK_CONTAINER (menubar1), flie1);
+  gtk_widget_show (file1);
+  gtk_container_add (GTK_CONTAINER (menubar1), file1);
 
-  flie1_menu = gtk_menu_new ();
-  gtk_widget_ref (flie1_menu);
-  gtk_object_set_data_full (GTK_OBJECT (toplevel), "flie1_menu", flie1_menu,
+  file1_menu = gtk_menu_new ();
+  gtk_widget_ref (file1_menu);
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "file1_menu", file1_menu,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_menu_item_set_submenu (GTK_MENU_ITEM (flie1), flie1_menu);
-  flie1_menu_accels = gtk_menu_ensure_uline_accel_group (GTK_MENU (flie1_menu));
+  gtk_menu_item_set_submenu (GTK_MENU_ITEM (file1), file1_menu);
+  file1_menu_accels = gtk_menu_ensure_uline_accel_group (GTK_MENU (file1_menu));
 
   open1 = gtk_menu_item_new_with_label (_("Open..."));
   gtk_widget_ref (open1);
   gtk_object_set_data_full (GTK_OBJECT (toplevel), "open1", open1,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (open1);
-  gtk_container_add (GTK_CONTAINER (flie1_menu), open1);
+  gtk_container_add (GTK_CONTAINER (file1_menu), open1);
 
   save1 = gtk_menu_item_new_with_label (_("Save"));
   gtk_widget_ref (save1);
   gtk_object_set_data_full (GTK_OBJECT (toplevel), "save1", save1,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (save1);
-  gtk_container_add (GTK_CONTAINER (flie1_menu), save1);
+  gtk_container_add (GTK_CONTAINER (file1_menu), save1);
 
   save_as1 = gtk_menu_item_new_with_label (_("Save As..."));
   gtk_widget_ref (save_as1);
   gtk_object_set_data_full (GTK_OBJECT (toplevel), "save_as1", save_as1,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (save_as1);
-  gtk_container_add (GTK_CONTAINER (flie1_menu), save_as1);
+  gtk_container_add (GTK_CONTAINER (file1_menu), save_as1);
 
   separator1 = gtk_menu_item_new ();
   gtk_widget_ref (separator1);
   gtk_object_set_data_full (GTK_OBJECT (toplevel), "separator1", separator1,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (separator1);
-  gtk_container_add (GTK_CONTAINER (flie1_menu), separator1);
+  gtk_container_add (GTK_CONTAINER (file1_menu), separator1);
   gtk_widget_set_sensitive (separator1, FALSE);
 
   preferences1 = gtk_menu_item_new_with_label (_("Preferences..."));
@@ -342,22 +348,80 @@ create_toplevel (void)
   gtk_object_set_data_full (GTK_OBJECT (toplevel), "preferences1", preferences1,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (preferences1);
-  gtk_container_add (GTK_CONTAINER (flie1_menu), preferences1);
+  gtk_container_add (GTK_CONTAINER (file1_menu), preferences1);
 
   separator2 = gtk_menu_item_new ();
   gtk_widget_ref (separator2);
   gtk_object_set_data_full (GTK_OBJECT (toplevel), "separator2", separator2,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (separator2);
-  gtk_container_add (GTK_CONTAINER (flie1_menu), separator2);
+  gtk_container_add (GTK_CONTAINER (file1_menu), separator2);
   gtk_widget_set_sensitive (separator2, FALSE);
+
+  recent0 = gtk_menu_item_new_with_label (_("item2"));
+  gtk_widget_ref (recent0);
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "recent0", recent0,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (recent0);
+  gtk_container_add (GTK_CONTAINER (file1_menu), recent0);
+  gtk_widget_add_accelerator (recent0, "activate", accel_group,
+                              GDK_1, GDK_CONTROL_MASK,
+                              GTK_ACCEL_VISIBLE);
+
+  recent1 = gtk_menu_item_new_with_label (_("item3"));
+  gtk_widget_ref (recent1);
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "recent1", recent1,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (recent1);
+  gtk_container_add (GTK_CONTAINER (file1_menu), recent1);
+  gtk_widget_add_accelerator (recent1, "activate", accel_group,
+                              GDK_2, GDK_CONTROL_MASK,
+                              GTK_ACCEL_VISIBLE);
+
+  recent2 = gtk_menu_item_new_with_label (_("item4"));
+  gtk_widget_ref (recent2);
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "recent2", recent2,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (recent2);
+  gtk_container_add (GTK_CONTAINER (file1_menu), recent2);
+  gtk_widget_add_accelerator (recent2, "activate", accel_group,
+                              GDK_3, GDK_CONTROL_MASK,
+                              GTK_ACCEL_VISIBLE);
+
+  recent3 = gtk_menu_item_new_with_label (_("item5"));
+  gtk_widget_ref (recent3);
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "recent3", recent3,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (recent3);
+  gtk_container_add (GTK_CONTAINER (file1_menu), recent3);
+  gtk_widget_add_accelerator (recent3, "activate", accel_group,
+                              GDK_4, GDK_CONTROL_MASK,
+                              GTK_ACCEL_VISIBLE);
+
+  recent4 = gtk_menu_item_new_with_label (_("item6"));
+  gtk_widget_ref (recent4);
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "recent4", recent4,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (recent4);
+  gtk_container_add (GTK_CONTAINER (file1_menu), recent4);
+  gtk_widget_add_accelerator (recent4, "activate", accel_group,
+                              GDK_5, GDK_CONTROL_MASK,
+                              GTK_ACCEL_VISIBLE);
+
+  separator4 = gtk_menu_item_new ();
+  gtk_widget_ref (separator4);
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "separator4", separator4,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (separator4);
+  gtk_container_add (GTK_CONTAINER (file1_menu), separator4);
+  gtk_widget_set_sensitive (separator4, FALSE);
 
   exit1 = gtk_menu_item_new_with_label (_("Exit"));
   gtk_widget_ref (exit1);
   gtk_object_set_data_full (GTK_OBJECT (toplevel), "exit1", exit1,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (exit1);
-  gtk_container_add (GTK_CONTAINER (flie1_menu), exit1);
+  gtk_container_add (GTK_CONTAINER (file1_menu), exit1);
 
   edit1 = gtk_menu_item_new_with_label (_("Edit"));
   gtk_widget_ref (edit1);
@@ -2172,6 +2236,21 @@ create_toplevel (void)
                       NULL);
   gtk_signal_connect (GTK_OBJECT (preferences1), "activate",
                       GTK_SIGNAL_FUNC (on_preferences1_activate),
+                      NULL);
+  gtk_signal_connect (GTK_OBJECT (recent0), "activate",
+                      GTK_SIGNAL_FUNC (on_recent0_activate),
+                      NULL);
+  gtk_signal_connect (GTK_OBJECT (recent1), "activate",
+                      GTK_SIGNAL_FUNC (on_recent1_activate),
+                      NULL);
+  gtk_signal_connect (GTK_OBJECT (recent2), "activate",
+                      GTK_SIGNAL_FUNC (on_recent2_activate),
+                      NULL);
+  gtk_signal_connect (GTK_OBJECT (recent3), "activate",
+                      GTK_SIGNAL_FUNC (on_recent3_activate),
+                      NULL);
+  gtk_signal_connect (GTK_OBJECT (recent4), "activate",
+                      GTK_SIGNAL_FUNC (on_recent4_activate),
                       NULL);
   gtk_signal_connect (GTK_OBJECT (exit1), "activate",
                       GTK_SIGNAL_FUNC (on_exit1_activate),

@@ -9,14 +9,7 @@
 #include "interface.h"
 #include "support.h"
 #include "bits.h"
-
-extern gint         render_method;
-extern gint         zoom_method;
-extern GtkWidget   *main_win;
-extern char         etcher_config[4096];
-extern Evas_Object  o_bg;
-extern Evas         view_evas;
-extern guint        current_idle;
+#include "globals.h"
 
 GtkWidget *pref_dialog = NULL;
 GtkWidget *color_dialog = NULL;

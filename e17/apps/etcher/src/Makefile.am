@@ -7,13 +7,15 @@ INCLUDES = \
 bin_PROGRAMS = etcher
 
 etcher_SOURCES = \
-	main.c \
+	etcher.c etcher.h \
 	support.c support.h \
 	interface.c interface.h \
 	callbacks.c callbacks.h \
 	bits.c bits.h \
 	preferences.c preferences.h \
-	splash.c splash.h
+	splash.c splash.h \
+	recent.c recent.h \
+	globals.h
 
 etcher_LDADD = @evas_libs@ @edb_libs@ -lm @GTK_LIBS@ $(INTLLIBS)
 

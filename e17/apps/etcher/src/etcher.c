@@ -13,13 +13,10 @@
 #include "interface.h"
 #include "support.h"
 #include "preferences.h"
+#include "recent.h"
+#include "globals.h"
 
 GtkWidget *main_win;
-extern Evas view_evas;
-extern gint render_method;
-extern gint zoom_method;
-extern gboolean no_splash;
-extern char *load_file;
 GdkVisual *gdk_vis = NULL;
 GdkColormap *gdk_cmap = NULL;
 
@@ -90,6 +87,7 @@ main (int argc, char *argv[])
    /*******/
    
    main_win = create_toplevel();
+   recent_init();
 
    /*******/
    gtk_widget_pop_visual();
