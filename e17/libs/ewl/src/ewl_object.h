@@ -103,13 +103,13 @@ int             ewl_object_get_current_h(Ewl_Object * o);
 
 void            ewl_object_set_preferred_size(Ewl_Object * o, int w, int h);
 void            ewl_object_preferred_size_sum_get(Ewl_Object * o, int *w, int *h);
-void            ewl_object_preferred_size_get(Ewl_Object * o, int *w, int *h);
+void            ewl_object_get_preferred_size(Ewl_Object * o, int *w, int *h);
 void            ewl_object_set_preferred_w(Ewl_Object * o, int w);
 int             ewl_object_preferred_w_sum_get(Ewl_Object * o);
-int             ewl_object_preferred_w_get(Ewl_Object * o);
+int             ewl_object_get_preferred_w(Ewl_Object * o);
 void            ewl_object_set_preferred_h(Ewl_Object * o, int h);
 int             ewl_object_preferred_h_sum_get(Ewl_Object * o);
-int             ewl_object_preferred_h_get(Ewl_Object * o);
+int             ewl_object_get_preferred_h(Ewl_Object * o);
 
 void            ewl_object_request_geometry(Ewl_Object * o, int x, int y,
 					    int w, int h);
