@@ -194,8 +194,16 @@ entrance_session_user_reset(Entrance_Session * e)
 {
    if (e)
    {
+      Evas_Object *obj = NULL;
+
       entrance_auth_free(e->auth);
       e->auth = entrance_auth_new();
+      if ((obj =
+           edje_object_part_swallow_get(e->edje, "entrance.user.avatar")))
+      {
+         edje_object_part_unswallow(e->edje, obj);
+         evas_object_del(obj);
+      }
       edje_object_signal_emit(e->edje, "In", "entrance.entry.user");
    }
 }
@@ -203,7 +211,7 @@ entrance_session_user_reset(Entrance_Session * e)
 /**
  * entrance_session_user_set: forget what we know about the current user,
  * load what info we can from the entrance user parameter, so we have a new
- * user in our "entrance.users.avatar" edje
+ * user in our "entrance.user.avatar" edje
  * @param e - the entrance sesssion currently running
  * @param eu - the new entrance user we're setting as "current"
  */
@@ -216,7 +224,8 @@ entrance_session_user_set(Entrance_Session * e, Entrance_User * eu)
 
    if (e && eu)
    {
-      if ((obj = edje_object_part_swallow_get(e->edje, "entrance.users.avatar")))
+      if ((obj =
+           edje_object_part_swallow_get(e->edje, "entrance.user.avatar")))
       {
          edje_object_part_unswallow(e->edje, obj);
          evas_object_del(obj);
@@ -244,12 +253,14 @@ entrance_session_user_set(Entrance_Session * e, Entrance_User * eu)
                result = entrance_session_auth_user(e);
                if (result == 0)
                {
-                  if (edje_object_part_exists(e->edje, "entrance.users.avatar"))
+                  if (edje_object_part_exists
+                      (e->edje, "entrance.user.avatar"))
                   {
-                     edje_object_part_swallow(e->edje, "entrance.users.avatar", obj);
+                     edje_object_part_swallow(e->edje, "entrance.user.avatar",
+                                              obj);
                   }
-                  edje_object_signal_emit(e->edje, "entrance,user,auth,success",
-                                          "");
+                  edje_object_signal_emit(e->edje,
+                                          "entrance,user,auth,success", "");
                   e->authed = 1;
                }
                else
@@ -263,13 +274,14 @@ entrance_session_user_set(Entrance_Session * e, Entrance_User * eu)
             {
 #endif
                evas_object_layer_set(obj, evas_object_layer_get(e->edje));
-               if (edje_object_part_exists(e->edje, "entrance.users.avatar"))
+               if (edje_object_part_exists(e->edje, "entrance.user.avatar"))
                {
-                  edje_object_part_swallow(e->edje, "entrance.users.avatar", obj);
+                  edje_object_part_swallow(e->edje, "entrance.user.avatar",
+                                           obj);
                }
                edje_object_signal_emit(e->edje, "In", "entrance.entry.pass");
                edje_object_signal_emit(e->edje, "entrance,user,success", "");
-               edje_object_signal_emit(e->edje, "entrance,users,selected", "");
+               edje_object_signal_emit(e->edje, "entrance,user,selected", "");
 #if 0
             }
 #endif
@@ -277,7 +289,8 @@ entrance_session_user_set(Entrance_Session * e, Entrance_User * eu)
          else
          {
             evas_object_del(obj);
-            /* edje_object_signal_emit(e->edje, "In", "entrance.entry.pass"); */
+            /* edje_object_signal_emit(e->edje, "In", "entrance.entry.pass"); 
+             */
             edje_object_signal_emit(e->edje, "entrance,user,fail", "");
          }
       }
@@ -449,7 +462,9 @@ entrance_session_x_session_set(Entrance_Session * e, Entrance_X_Session * exs)
             free(e->session);
          e->session = strdup(exs->session);
 
-         old_o = edje_object_part_swallow_get(e->edje, "entrance.xsessions.selected");
+         old_o =
+            edje_object_part_swallow_get(e->edje,
+                                         "entrance.xsessions.selected");
          if (old_o)
          {
             edje_object_part_unswallow(e->edje, old_o);
@@ -457,7 +472,6 @@ entrance_session_x_session_set(Entrance_Session * e, Entrance_X_Session * exs)
          }
          edje_object_part_swallow(e->edje, "entrance.xsessions.selected", o);
          evas_object_layer_set(o, evas_object_layer_get(e->edje));
-         edje_object_signal_emit(e->edje, "SessionDefaultChanged", "");
          edje_object_signal_emit(e->edje, "entrance,xsession,selected", "");
       }
    }
@@ -498,8 +512,8 @@ entrance_session_xsession_list_add(Entrance_Session * e)
 
    if (!e || !e->edje || !e->config)
       return;
-   edje_object_part_geometry_get(e->edje, "entrance.xsessions.list", NULL, NULL,
-                                 &w, &h);
+   edje_object_part_geometry_get(e->edje, "entrance.xsessions.list", NULL,
+                                 NULL, &w, &h);
    if ((container = esmart_container_new(evas_object_evas_get(e->edje))))
    {
       esmart_container_padding_set(container, 0, 0, 0, 0);
@@ -568,8 +582,8 @@ entrance_session_user_list_add(Entrance_Session * e)
 
    if (!e || !e->edje)
       return;
-   edje_object_part_geometry_get(e->edje, "entrance.users.list", NULL, NULL, &w,
-                                 &h);
+   edje_object_part_geometry_get(e->edje, "entrance.users.list", NULL, NULL,
+                                 &w, &h);
    if ((container = esmart_container_new(evas_object_evas_get(e->edje))))
    {
       esmart_container_padding_set(container, 0, 0, 0, 0);

@@ -132,10 +132,12 @@ focus_swap(Evas_Object * o, int selecto)
       }
       esmart_text_entry_text_set(o, "");
    }
-   else if (!strcmp(esmart_text_entry_edje_part_get(o), "entrance.entry.user"))
+   else
+      if (!strcmp(esmart_text_entry_edje_part_get(o), "entrance.entry.user"))
    {
       oo =
-         evas_object_name_find(evas_object_evas_get(o), "entrance.entry.pass");
+         evas_object_name_find(evas_object_evas_get(o),
+                               "entrance.entry.pass");
    }
    if (oo)
    {
@@ -365,7 +367,8 @@ user_unselected_cb(void *data, Evas_Object * o, const char *emission,
    if (session && data)
    {
       entrance_session_user_reset(session);
-/*      edje_object_signal_emit(o, "entrance,user,fail", "");*/
+      /* 
+         edje_object_signal_emit(o, "entrance,user,auth,fail", ""); */
    }
 }
 
@@ -463,8 +466,8 @@ shutdown_cb(void *data, Evas_Object * o, const char *emission,
  * default session to be executed when they log in.
  */
 static void
-_session_set(void *data, Evas_Object * o, const char *emission,
-             const char *source)
+_user_session_set(void *data, Evas_Object * o, const char *emission,
+                  const char *source)
 {
    Entrance_Session *e = NULL;
 
@@ -732,23 +735,23 @@ main(int argc, char *argv[])
    }
 #endif
    if (!testing)
-     {
-	Ecore_X_Window *roots;
-        int num, i;
-	
-	 num = 0;
-	roots = ecore_x_window_root_list(&num);
-	if (roots)
-	  {
-	     for (i = 0; i < num; i++)
-	       {
-		  ecore_x_window_background_color_set(roots[i], 0);
-		  ecore_x_window_cursor_show(roots[i], 0);
-	       }
-	     free(roots);
-	     ecore_x_sync();
-	  }
-     }
+   {
+      Ecore_X_Window *roots;
+      int num, i;
+
+      num = 0;
+      roots = ecore_x_window_root_list(&num);
+      if (roots)
+      {
+         for (i = 0; i < num; i++)
+         {
+            ecore_x_window_background_color_set(roots[i], 0);
+            ecore_x_window_cursor_show(roots[i], 0);
+         }
+         free(roots);
+         ecore_x_sync();
+      }
+   }
    ecore_event_handler_add(ECORE_EVENT_SIGNAL_EXIT, exit_cb, NULL);
    ecore_idle_enterer_add(idler_before_cb, NULL);
 
@@ -863,8 +866,8 @@ main(int argc, char *argv[])
          update the Time */
       if (edje_object_part_exists(edje, "entrance.time"))
       {
-         edje_object_signal_callback_add(edje, "Go", "entrance.time", set_time,
-                                         o);
+         edje_object_signal_callback_add(edje, "Go", "entrance.time",
+                                         set_time, o);
          edje_object_signal_emit(edje, "Go", "entrance.time");
          timer = ecore_timer_add(0.5, timer_cb, edje);
       }
@@ -872,8 +875,8 @@ main(int argc, char *argv[])
          already running to automatically update the Date */
       if (edje_object_part_exists(edje, "entrance.date"))
       {
-         edje_object_signal_callback_add(edje, "Go", "entrance.date", set_date,
-                                         o);
+         edje_object_signal_callback_add(edje, "Go", "entrance.date",
+                                         set_date, o);
          edje_object_signal_emit(edje, "Go", "entrance.date");
          if (!timer)
             timer = ecore_timer_add(0.5, timer_cb, edje);
@@ -928,14 +931,14 @@ main(int argc, char *argv[])
        * callbacks have been added, otherwise show might not trigger all
        * the desired events 
        */
-      edje_object_signal_callback_add(edje, "entrance,user,auth,success,done", "",
-                                      done_cb, e);
+      edje_object_signal_callback_add(edje, "entrance,user,auth,success,done",
+                                      "", done_cb, e);
       edje_object_signal_callback_add(edje, "entrance,system,reboot", "",
                                       reboot_cb, e);
       edje_object_signal_callback_add(edje, "entrance,system,halt", "",
                                       shutdown_cb, e);
-      edje_object_signal_callback_add(edje, "SessionDefaultSet", "",
-                                      _session_set, session);
+      edje_object_signal_callback_add(edje, "entrance,user,xsession,set", "",
+                                      _user_session_set, session);
       evas_object_show(edje);
       /* set focus to user input by default */
       edje_object_signal_emit(edje, "In", "entrance.entry.user");
@@ -950,23 +953,23 @@ main(int argc, char *argv[])
       entrance_ipc_session_set(session);
       entrance_session_run(session);
 
-   if (!testing)
-     {
-	Ecore_X_Window *roots;
-        int num, i;
-	
-	 num = 0;
-	roots = ecore_x_window_root_list(&num);
-	if (roots)
-	  {
-	     for (i = 0; i < num; i++)
-	       {
-		  ecore_x_window_cursor_show(roots[i], 1);
-	       }
-	     free(roots);
-	     ecore_x_sync();
-	  }
-     }
+      if (!testing)
+      {
+         Ecore_X_Window *roots;
+         int num, i;
+
+         num = 0;
+         roots = ecore_x_window_root_list(&num);
+         if (roots)
+         {
+            for (i = 0; i < num; i++)
+            {
+               ecore_x_window_cursor_show(roots[i], 1);
+            }
+            free(roots);
+            ecore_x_sync();
+         }
+      }
       if (session->authed)
       {
          entrance_session_start_user_session(session);

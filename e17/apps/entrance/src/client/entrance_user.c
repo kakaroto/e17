@@ -81,7 +81,7 @@ entrance_user_free(Entrance_User * e)
 
 /**
  * entrance_user_edje_get : get the Evas_Object(edje||image) that is
- * specified in config db.  Their "entrance.users.avatar"
+ * specified in config db.  Their "entrance.user.avatar"
  * @param e - the Entrance_User to get the edje for
  * @param edje - a pointer to the main edje in entrance
  * @return NULL on failure, a valid Evas_Object on success
@@ -122,9 +122,9 @@ entrance_user_edje_get(Entrance_User * e, Evas_Object * edje,
 	    /**
 	     * FIXME: perhaps go so far as to do Gecos type stuff
 	     */
-         edje_object_signal_callback_add(o, "entrance,users,selected", "",
+         edje_object_signal_callback_add(o, "entrance,user,selected", "",
                                          user_selected_cb, e);
-         edje_object_signal_callback_add(o, "entrance,users,unselected", "",
+         edje_object_signal_callback_add(o, "entrance,user,unselected", "",
                                          user_unselected_cb, e);
          evas_object_show(result);
       }

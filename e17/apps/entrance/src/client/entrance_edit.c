@@ -2016,15 +2016,15 @@ main(int argc, char *argv[])
 #if 0
       if (edje_object_part_exists(edje, "entrance.time"))
       {
-         edje_object_signal_callback_add(edje, "Go", "entrance.time", set_time,
-                                         o);
+         edje_object_signal_callback_add(edje, "Go", "entrance.time",
+                                         set_time, o);
          edje_object_signal_emit(edje, "Go", "entrance.time");
          timer = ecore_timer_add(0.5, timer_cb, edje);
       }
       if (edje_object_part_exists(edje, "entrance.date"))
       {
-         edje_object_signal_callback_add(edje, "Go", "entrance.date", set_date,
-                                         o);
+         edje_object_signal_callback_add(edje, "Go", "entrance.date",
+                                         set_date, o);
          edje_object_signal_emit(edje, "Go", "entrance.date");
          if (!timer)
             timer = ecore_timer_add(0.5, timer_cb, edje);

@@ -324,7 +324,7 @@ entrance_auth_setup_environment(Entrance_Auth * e)
 #else
    environ = NULL;
 #endif
-   
+
    e->env = environ;
    setenv("XAUTHORITY", buf, 1);
    setenv("TERM", "vt100", 0);  // TERM=linux?
