@@ -2968,3 +2968,9 @@ local headers are found before system ones.
 
 _______________________________________________
 
+Thu Apr  3 20:48:27 EST 2003
+(KainX)
+
+Minor Makefile.am tweak which apparently helps portability.
+
+_______________________________________________

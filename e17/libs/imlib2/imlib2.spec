@@ -1,7 +1,7 @@
 Summary: Powerful image loading and rendering library
 Name: imlib2
-Version: 1.0.6
-Release: 4
+Version: 1.0.7
+Release: 0.1
 Copyright: BSD
 Group: System Environment/Libraries
 Source: ftp://ftp.enlightenment.org/pub/enlightenment/e17/libs/%{name}-%{version}.tar.gz
@@ -133,14 +133,10 @@ make DESTDIR=$RPM_BUILD_ROOT install
 rm -rf $RPM_BUILD_ROOT
 
 %post
-%ifos linux
-/sbin/ldconfig
-%endif
+test -x /sbin/ldconfig && /sbin/ldconfig
 
 %postun
-%ifos linux
-/sbin/ldconfig
-%endif
+test -x /sbin/ldconfig && /sbin/ldconfig
 
 %files
 %defattr(-,root,root,0755)
