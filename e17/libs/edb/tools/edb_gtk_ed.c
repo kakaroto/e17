@@ -998,8 +998,8 @@ on_delete_clicked                     (GtkButton       *button,
    top = gtk_widget_get_toplevel(GTK_WIDGET(button));
    w = gtk_object_get_data(GTK_OBJECT(top), "list");
    gtk_clist_get_text(GTK_CLIST(w), row_selected, 1, &text);
-   gtk_clist_remove(GTK_CLIST(w), row_selected);
    E_DB_DEL(db_file, text);
+   gtk_clist_remove(GTK_CLIST(w), row_selected);
    e_db_flush();
 }
 
