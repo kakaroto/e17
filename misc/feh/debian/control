@@ -1,14 +1,21 @@
 Source: feh
-Section: x11
+Section: graphics
 Priority: optional
 Maintainer: Laurence J. Lane <ljlane@debian.org>
-Standards-Version: 3.0.1.1
+Build-Depends: xlibs-dev, freetype2-dev, libimlib2-dev, debhelper (>= 2.0)
+Standards-Version: 3.1.1.1
 
 Package: feh
 Architecture: any
+Section: graphics
 Depends: ${shlibs:Depends}
 Recommends: wget
-Description: feh, the image viewer
- feh is Tom Gilbert's most awesome image viewer based on the world
- famous imlib2 imaging library. feh includes a free starter pr0n
- kit!
+Description: imlib2 based image viewer
+ feh is a fast, lightweight image viewer which uses imlib2. It is
+ commandline-driven and supports multiple images through
+ slideshows, thumbnail browsing or multiple windows, and montages
+ or index prints (using truetype fonts to display file info).
+ Advanced features include fast dynamic zooming, progressive
+ loading, loading via HTTP (with reload support for watching
+ webcams), recursive file opening (slideshow of a directory
+ hierarchy), and mousewheel/keyboard control.
