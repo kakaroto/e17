@@ -112,40 +112,43 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 <p>
 Enlightenment has been written by:<br>
 <br>
-The Rasterman (Carsten Haitzler)<br>
-Mandrake (Geoff Harrison)<br>
-Chutt (Isaac Richards)<br>
-Sung-Hyun Nam<br>
-Kimball Thurston<br>
-Michael Kellen<br>
-Frederic Devernay<br>
-Felix Bellaby<br>
-Michael Jennings (KainX)<br>
-Christian Kreibich<br>
-Peter Kjellerstedt<br>
-Troy Pesola<br>
-Owen Taylor<br>
-Stalyn<br>
-Knut Neumann<br>
-Nathan Heagy<br>
-Simon [unknown last name]<br>
-Brent A. Nelson<br>
-Graham A MacDonald<br>
-Martin Tyler<br>
-Jesse Michael<br>
-Paul Duncan<br>
-Daniel Erat<br>
-Tom Gilbert<br>
-Peter Alm<br>
-Ben FrantzDale<br>
-<br>
-And many others.
+The Rasterman (Carsten Haitzler),<br>
+Mandrake (Geoff Harrison),<br>
+Chutt (Isaac Richards),<br>
+Michael Jennings (KainX),<br>
+Christian Kreibich (cK),<br>
+Sung-Hyun Nam,
+Kimball Thurston,<br>
+Michael Kellen,
+Frederic Devernay,<br>
+Felix Bellaby,
+Peter Kjellerstedt,<br>
+Troy Pesola,
+Owen Taylor,<br>
+Stalyn,
+Knut Neumann,<br>
+Nathan Heagy,
+Simon [something],<br>
+Brent Nelson,
+Martin Tyler,<br>
+Graham MacDonald,
+Jesse Michael,<br>
+Paul Duncan,
+Daniel Erat,<br>
+Tom Gilbert,
+Peter Alm,<br>
+Ben FrantzDale,
+Hallvar Helleseth,<br>
+Kameran Kashani,
+Carl Strasen,<br>
+And many others.<br>
+(see AUTHORS file).
 <p>
 A big thanks to several companies that helped support Enlightenment.
 <p>
 Red Hat Software (www.redhat.com) for allowing developers resources and time
 to work on Enlightenment.
-<p>
+<br>
 VA Linux Systems (www.valinux.com) for providing hardware, bandwidth, Coke, and
 the patience to hire a couple of loony bin candidates to work on something we
 (and hopefully you) think is interesting.
@@ -157,10 +160,9 @@ the E mailing list, on #E on IRC on EFnet and all E users who have provided
 feedback and debugging information, bug-fixes, patches and support. A big
 thanks goes out to all of you who make a project like this possible.
 <p>
-In addition people should be aware that E makes use of other projects - such
+In addition we'd like to thank several other projects - such
 as XFree86, Imlib, Esound, Freetype and many others, The people working on 
-projects that provide infrastructure that E can use and build on should not
-be forgotten.
+these equally important projects should not be forgotten.
 
 
 
