@@ -18,6 +18,7 @@ static void
 cb_close(void *data)
 {
    Epplet_cleanup();
+   Epplet_unremember();
    exit(0);
    data = NULL;
 }
