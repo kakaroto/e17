@@ -191,6 +191,12 @@ if (__xim) XDestroyImage(__xim);}
 #include <sys/types.h>
 #include <unistd.h>
 
+#if HAVE___ATTRIBUTE__
+#define __UNUSED__ __attribute__((unused))
+#else
+#define __UNUSED__
+#endif
+
 /* workaround for 64bit architectures - xlib expects 32bit CARDINALS to be */
 /* long's on 64bit machines... thus well the CARD32's Im unsing shoudl be.. */
 #define CARD32 long

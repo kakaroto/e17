@@ -7,7 +7,7 @@
 dnl AM_PATH_ESD([MINIMUM-VERSION, [ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND]]])
 dnl Test for ESD, and define ESD_CFLAGS and ESD_LIBS
 dnl
-AC_DEFUN(AM_PATH_ESD,
+AC_DEFUN([AM_PATH_ESD],
 [dnl 
 dnl Get the cflags and libraries from the esd-config script
 dnl
@@ -162,4 +162,18 @@ int main ()
   AC_SUBST(ESD_LIBS)
   rm -f conf.esdtest
 ])
+
+AC_DEFUN([AC_C___ATTRIBUTE__],
+[
+  AC_MSG_CHECKING(for __attribute__)
+  AC_CACHE_VAL(ac_cv___attribute__, [
+  AC_TRY_COMPILE([#include <stdlib.h>],
+  [int func(int x); int foo(int x __attribute__ ((unused))) { exit(1); }],
+  ac_cv___attribute__=yes, ac_cv___attribute__=no)])
+  if test "$ac_cv___attribute__" = "yes"; then
+    AC_DEFINE(HAVE___ATTRIBUTE__, 1, [Define to 1 if your compiler has __attribute__])
+  fi
+  AC_MSG_RESULT($ac_cv___attribute__)
+])
+
 AC_DEFUN([AM_GNU_GETTEXT_VERSION], [])

@@ -178,8 +178,8 @@ EwinListRaise(EWinList * ewl, EWin * ewin, int mode)
 /*
  * The global stacking and focus lists
  */
-EWinList            EwinListFocus = { "Focus" };
-EWinList            EwinListStack = { "Stack" };
+EWinList            EwinListFocus = { "Focus", 0, 0, NULL };
+EWinList            EwinListStack = { "Stack", 0, 0, NULL };
 
 EWin              **
 EwinListGetStacking(int *num)

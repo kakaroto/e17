@@ -45,7 +45,7 @@ ImlibSetFgColorFromGC(Display * disp, GC gc, Colormap cm)
 
 void
 EFont_draw_string(Display * disp, Drawable win, GC gc, int x, int y, char *text,
-		  Efont * f, Visual * vis, Colormap cm)
+		  Efont * f, Visual * vis __UNUSED__, Colormap cm)
 {
    Imlib_Image         im;
    int                 w, h, ascent, descent;
@@ -98,7 +98,7 @@ void
 Efont_extents(Efont * f, char *text, int *font_ascent_return,
 	      int *font_descent_return, int *width_return,
 	      int *max_ascent_return, int *max_descent_return,
-	      int *lbearing_return, int *rbearing_return)
+	      int *lbearing_return __UNUSED__, int *rbearing_return __UNUSED__)
 {
    int                 height;
 
