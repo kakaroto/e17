@@ -430,15 +430,12 @@ _engrave_output_state(Engrave_Part_State *state, Engrave_Part *part, void *data)
 
   tmp = engrave_part_state_rel1_to_x_get(state);
   tmp2 = engrave_part_state_rel1_to_y_get(state);
-  if (tmp || tmp2)
+  if (tmp && (!tmp2 || !strcmp(tmp, tmp2)))
+    engrave_out_data(out, "to", "\"%s\"", tmp);
+  else
   {
-    if (!tmp || !tmp2 || !strcmp(tmp, tmp2))
-      engrave_out_data(out, "to", "\"%s\"", tmp);
-    else
-    {
-      engrave_out_data(out, "to_x", "\"%s\"", tmp);
-      engrave_out_data(out, "to_y", "\"%s\"", tmp2);
-    }
+    if (tmp) engrave_out_data(out, "to_x", "\"%s\"", tmp);
+    if (tmp2) engrave_out_data(out, "to_y", "\"%s\"", tmp2);
   }
 
   engrave_out_end(out);
@@ -454,15 +451,12 @@ _engrave_output_state(Engrave_Part_State *state, Engrave_Part *part, void *data)
 
   tmp = engrave_part_state_rel2_to_x_get(state);
   tmp2 = engrave_part_state_rel2_to_y_get(state);
-  if (tmp || tmp2)
+  if (tmp && (!tmp2 || !strcmp(tmp, tmp2)))
+    engrave_out_data(out, "to", "\"%s\"", tmp);
+  else 
   {
-    if (!tmp || !tmp2 || !strcmp(tmp, tmp2))
-      engrave_out_data(out, "to", "\"%s\"", tmp);
-    else
-    {
-      engrave_out_data(out, "to_x", "\"%s\"", tmp);
-      engrave_out_data(out, "to_y", "\"%s\"", tmp2);
-    }
+    if (tmp) engrave_out_data(out, "to_x", "\"%s\"", tmp);
+    if (tmp2) engrave_out_data(out, "to_y", "\"%s\"", tmp2);
   }
 
   engrave_out_end(out);
