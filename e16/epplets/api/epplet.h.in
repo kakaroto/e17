@@ -207,6 +207,19 @@ Epplet_gadget   Epplet_create_button(char *label, char *image, int x, int y,
 				     int w, int h, char *std, Window parent,
 				     Epplet_gadget pop_parent,
 				     void (*func) (void *data), void *data);
+
+/* create a textbox at coordinates (x, y), with 'image' as bg, 'contents' as
+ * the default contents, w, h, and 'size' as the font size. When ENTER is
+ * pressed in the textbox, 'func' is executed.
+ * */
+Epplet_gadget       Epplet_create_textbox(char *image, char *contents, int x,
+                                          int y, int w, int h, char size,
+                                          void (*func) (void *data),
+                                          void *data);
+
+/* Retreive the current contents of the textbox */
+char               *Epplet_textbox_contents(Epplet_gadget g);
+
 /* create drawing area at (x,y) of size (w x h) */
 Epplet_gadget   Epplet_create_drawingarea(int x, int y, int w, int h);
 /* create horizontal slider at x, y of length len. the minimum length is 9 */
