@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (C) 1999 Hallvar Helleseth (hallvar@ii.uib.no)
+# Copyright (C) 1999-2003 Hallvar Helleseth (hallvar@ii.uib.no)
 # 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to
