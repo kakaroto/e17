@@ -546,56 +546,6 @@ ewl_fx_timer_del(Ewl_Widget * w, char *name)
 }
 
 /**
- * ewl_fx_calculate_interval - determine the interval between frames
- * @fps: the desired frames per second
- *
- * Returns the interval between frames on success, 0 on failure.
- */
-double
-ewl_fx_calculate_interval(double fps)
-{
-	double ival = 0;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-
-	/*
-	 * Need to check fps to ensure we don't get a divide by zero error.
-	 */
-	DCHECK_PARAM_PTR_RET("fps", fps, 0.0);
-
-	ival = 1 / fps;
-
-	D(DLEVEL_STABLE, "interval = %f", ival);
-
-	DRETURN_FLOAT(ival, DLEVEL_STABLE);
-}
-
-/**
- * ewl_fx_calculate_step - determine the step between frames
- * @start_val: the beginning value of the step
- * @end_val: the ending value of the step
- * @fps: the frames per second of the animation
- */
-double
-ewl_fx_calculate_step(double start_val, double end_val, double fps)
-{
-	double step = 0;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-
-	step = 1 / fps;
-
-	if (end_val > start_val)
-		step *= (end_val - start_val);
-	else if (start_val > end_val)
-		step *= (start_val - end_val);
-
-	D(DLEVEL_STABLE, "step = %f", step);
-
-	DRETURN_FLOAT(step, DLEVEL_STABLE);
-}
-
-/**
  * ewl_fx_clip_box_get_color - retrieve the current color of the fx clip box
  * @w: the widget to check the clip box color
  * @r: a pointer to the integer to store the red value
