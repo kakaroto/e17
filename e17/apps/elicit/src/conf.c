@@ -57,8 +57,7 @@ char *
 elicit_config_theme_get()
 {
   char *theme = ecore_config_get_string("/settings/theme");
-
-  return theme ? theme : "winter";
+  return theme;
 }
 
 void
@@ -104,7 +103,7 @@ elicit_config_listener(const char *key, const Ecore_Config_Type type, const int 
     case ELICIT_CONF_TAG_THEME:
       if (el->gui)
       {
-        elicit_ui_theme_set(el, ecore_config_get_string(key));
+        elicit_ui_theme_set(el, ecore_config_get_string(key), "elicit");
       }
       break;
   }

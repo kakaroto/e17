@@ -99,6 +99,77 @@ elicit_cb_colors(void *data, Evas_Object *o, const char *sig, const char *src)
 }
 
 void
+elicit_cb_switch(void *data, Evas_Object *o, const char *sig, const char *src)
+{
+  Elicit *el = data;
+  /* FIXME: i may need to free something here... */
+  char *theme = elicit_config_theme_get();
+  char *file = elicit_theme_find(theme);
+  char group[PATH_MAX];
+  Evas_List *groups = edje_file_collection_list(file);
+  Evas_List *l;
+
+  sscanf(sig, "elicit,switch,%s", group);
+
+  printf("switch group to: %s\n", group);
+
+  for (l = groups; l; l = l->next)
+  {
+    char *gp = l->data;
+    if (!strcmp(gp, group))
+    {
+      elicit_ui_theme_set(el, theme, group); 
+      return;
+    }
+  }
+  printf("Error: group %s does not exist in file %s\n", group, file);
+}
+
+void
+elicit_cb_resize_sig(void *data, Evas_Object *o, const char *sig, const char *src)
+{
+  Elicit *el = data;
+  int ow = 0, oh = 0;
+  int w = 0, h = 0;
+  int dw = 0, dh = 0;
+  char arg[PATH_MAX];
+  char *wstr, *hstr, *sub;
+  int ret;
+  int woff = 0, hoff = 0;
+
+  ecore_evas_geometry_get(el->ee, NULL, NULL, &ow, &oh);
+
+  /* if we have an arg */
+  if (sscanf(sig, "elicit,resize,%s,%s", arg))
+  {
+    wstr = arg;
+    sub = strstr(arg, ",");
+    printf("arg: %s :: sub: %s\n", arg, sub);
+    sub[0] = '\0';
+    hstr = sub + 1;
+
+    if (wstr[0] == '+') woff = 1;
+    else if (wstr[0] == '-') woff = -1;
+    if (hstr[0] == '+') hoff = 1;
+    else if (hstr[0] == '-') hoff = -1;
+
+    printf("h: %s, w: %s off:(%d,%d)\n", hstr, wstr, hoff, woff);
+    if (woff != 0) wstr = wstr + 1;
+    if (hoff != 0) hstr = hstr + 1;
+    printf("h: %s, w: %s off:(%d,%d)\n", hstr, wstr, hoff, woff);
+    w = atoi(wstr);
+    h = atoi(hstr);
+
+    printf("resize: (%d, %d) (%d, %d)\n", w, h, woff, hoff);
+    ecore_evas_resize(el->ee,
+                      woff ? ow + w * woff : w,
+                      hoff ? oh + h * hoff : h);
+  }
+
+  
+}
+
+void
 elicit_cb_copy(void *data, Evas_Object *o, const char *sig, const char *src)
 {
   Elicit *el = data;
@@ -118,7 +189,7 @@ elicit_timer_color(void *data)
   /* we're done */
   if (!el->flags.changing)
   {
-    if (0 && el->change_timer)
+    if (el->change_timer)
     {
       ecore_timer_del(el->change_timer);
       el->change_timer = NULL;

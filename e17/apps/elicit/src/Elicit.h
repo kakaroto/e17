@@ -53,7 +53,7 @@ struct _Elicit
 };
 
 void elicit_ui_update_text(Elicit *el);
-void elicit_ui_theme_set(Elicit *el, char *name);
+void elicit_ui_theme_set(Elicit *el, char *name, char *group);
 
 #endif
 
