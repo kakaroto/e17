@@ -30,3 +30,11 @@ Embrace what mailboxes you want to have monitored etc.
 
 For an example, please see create_embrace_cfg.sh, which can be found
 in the Embrace data directory.
+
+
+Usage
+-----
+
+Just run embrace and watch it monitoring your mailboxes :)
+You can force a mailbox check by clicking the mailbox icon with the right
+mouse button.
