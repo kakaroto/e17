@@ -1806,7 +1806,7 @@ imlib_create_color_range(void)
 }
 
 void 
-imlib_free_color_range(Imlib_Color_Range color_range)
+imlib_free_color_range(void)
 {
    CHECK_PARAM_POINTER("imlib_free_color_range", "color_range", ctxt_color_range);
    __imlib_FreeRange((ImlibRange *)ctxt_color_range);

@@ -208,7 +208,7 @@ void imlib_image_scroll_rect(int x, int y, int width, int height, int delta_x, i
 void imlib_image_copy_rect(int x, int y, int width, int height, int new_x,int new_y);
 
 Imlib_Color_Range imlib_create_color_range(void);
-void imlib_free_color_range(Imlib_Color_Range color_range);
+void imlib_free_color_range(void);
 void imlib_add_color_to_color_range(int distance_away);
 void imlib_image_fill_color_range_rectangle(int x, int y, int width, int height, double angle);
 
