@@ -192,6 +192,10 @@ init_montage_mode (void)
 	  imlib_context_set_image (im_temp);
 	  ww = imlib_image_get_width ();
 	  hh = imlib_image_get_height ();
+	  if(imlib_image_has_alpha())
+		imlib_context_set_blend (1);
+	  else 
+		imlib_context_set_blend (0);
 
 	  if (opt.aspect)
 	    {
@@ -231,10 +235,6 @@ init_montage_mode (void)
 	      /* TODO */
 	      D (("Applying alpha options\n"));
 	    }
-	  if(imlib_image_has_alpha())
-		imlib_context_set_blend (1);
-	  else 
-		imlib_context_set_blend (0);
 	  imlib_blend_image_onto_image (im_temp, 0, 0, 0, ww, hh, xxx, yyy,
 					www, hhh);
 	  imlib_context_set_image (im_temp);

@@ -40,8 +40,6 @@ init_index_mode (void)
   int title_area_h = 0;
   Imlib_Font fn = NULL;
   Imlib_Font title_fn = NULL;
-  int im_per_col = 0;
-  int im_per_row = 0;
   int text_area_w = 0;
   int tw = 0, th = 0;
   int fw, fh;
@@ -204,8 +202,8 @@ init_index_mode (void)
 	      text_area_w = fw;
 
 	    if (text_area_w > opt.thumb_w)
-              text_area_w += 5;
-	    
+	      text_area_w += 5;
+
 	    if ((x > w - text_area_w))
 	      {
 		x = 0;
@@ -258,6 +256,10 @@ init_index_mode (void)
 	  ww = imlib_image_get_width ();
 	  hh = imlib_image_get_height ();
 	  thumbnailcount++;
+	  if (imlib_image_has_alpha ())
+	    imlib_context_set_blend (1);
+	  else
+	    imlib_context_set_blend (0);
 
 	  if (opt.aspect)
 	    {
@@ -339,10 +341,6 @@ init_index_mode (void)
 
 	  /* Draw now */
 
-	  if (imlib_image_has_alpha ())
-	    imlib_context_set_blend (1);
-	  else
-	    imlib_context_set_blend (0);
 	  imlib_blend_image_onto_image (im_temp, 0, 0, 0, ww, hh, xxx, yyy,
 					www, hhh);
 
@@ -375,8 +373,7 @@ init_index_mode (void)
       imlib_context_set_font (title_fn);
       imlib_context_set_image (im_main);
       imlib_text_draw (20, h + 10,
-		       create_index_title_string (im_per_row * im_per_col, w,
-						  h));
+		       create_index_title_string (thumbnailcount, w, h));
     }
 
   if (opt.output && opt.output_file)
