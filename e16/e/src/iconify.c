@@ -545,7 +545,6 @@ IconboxShow(Iconbox * ib)
    XFree(xch);
    MatchToSnapInfoIconbox(ib);
    ewin = AddInternalToFamily(ib->win, 1, "ICONBOX", EWIN_TYPE_ICONBOX, ib);
-
    if (ewin)
      {
 	Snapshot           *sn;
@@ -563,7 +562,8 @@ IconboxShow(Iconbox * ib)
 	else
 	  {
 	     MakeWindowSticky(ewin);
-	     MoveResizeEwin(ewin, root.w - 160, root.h - 160, 160, 160);
+	     MoveResizeEwin(ewin, root.w - 160, root.h - ewin->client.h,
+			    160, ewin->client.h);
 	  }
      }
    queue_up = pq;
