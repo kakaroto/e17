@@ -189,7 +189,7 @@ od_icon_new(const char *winclass, const char *name, const char *icon_file)
 {
   const char     *icon_part = NULL;
   OD_Icon        *ret = NULL;
-  char            path[PATH_MAX];
+  char           *path;
 
   Evas_Object    *icon = NULL;
   Evas_Object    *pic = NULL;
@@ -205,11 +205,7 @@ od_icon_new(const char *winclass, const char *name, const char *icon_file)
   ret->name = strdup(name);
   icon = ret->icon = edje_object_add(evas);
 
-  if ((strstr(options.theme, "/")))
-    snprintf(path, PATH_MAX, options.theme);
-  else
-    snprintf(path, PATH_MAX, PACKAGE_DATA_DIR "/themes/%s.eet", options.theme);
-
+  path = ecore_config_theme_with_path_from_name_get(options.theme);
   if (edje_object_file_set(icon, path, "Main") > 0) {
 #if 0
     fprintf(stderr, "Trying to find part for %s\n", winclass);
@@ -293,6 +289,7 @@ od_icon_new(const char *winclass, const char *name, const char *icon_file)
     evas_object_del(icon);
     ret->icon = NULL;
   }
+  free(path);
 
   return ret;
 }
