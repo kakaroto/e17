@@ -246,7 +246,7 @@ efsd_hash_change_key(EfsdHash *h, void *key1, void *key2)
 	{
 	  EfsdList *new_last;
 	  
-	  D(("Hash bucket overflow -- removing last item.\n"));
+	  D(("Hash bucket overflow in re-keying -- removing last item.\n"));
 	  
 	  new_last = efsd_list_prev(h->bucket_ends[index]);
 	  h->buckets[index] = efsd_list_remove(h->buckets[index],

@@ -39,6 +39,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <efsd_fam_r.h>
 #include <efsd_fam.h>
 #include <efsd_filetype.h>
+#include <efsd_statcache.h>
 
 
 EfsdHash *monitors = NULL;
@@ -117,6 +118,13 @@ fam_free_monitor(EfsdFamMonitor *m)
   if (!m)
     D_RETURN;
 
+  /* We need to make sure that if the monitored file is in
+     the statcache, it gets removed from the cache now.
+     Otherwise, 
+  */
+  efsd_stat_remove(m->filename);
+
+
   FREE(m->filename);
   FREE(m->fam_req);
 
@@ -182,6 +190,8 @@ fam_free_request(EfsdFamRequest *efr)
 static void             
 fam_hash_item_free(EfsdHashItem *it)
 {
+  EfsdFamMonitor *m = NULL;
+
   D_ENTER;
 
   if (!it)
@@ -191,8 +201,21 @@ fam_hash_item_free(EfsdHashItem *it)
      so we don't need to free it separately.
   */
 
-  /* Data is an EfsdFamMonitor: */
-  fam_free_monitor(it->data);
+  /* Data is an EfsdFamMonitor -- and this is a problem:
+     If we free the monitor right away, we'll segfault
+     if an event is reported for this monitor. Thus
+     we need to stop the monitor, thus causing it to be
+     freed when we see the corresponding FAMAcknowledge.
+  */
+
+  m = (EfsdFamMonitor*)it->data;
+
+  if (m->finished)
+    fam_free_monitor(m);
+  else
+    FAMCancelMonitor_r(&famcon, m->fam_req);
+
+  it->data = NULL;
   FREE(it);
   
   D_RETURN;
@@ -268,8 +291,8 @@ fam_del_monitor(EfsdCommand *com, int client)
 
   if (m)
     {
-      D(("Decrementing usecount for monitoring file %s.\n",
-	 com->efsd_file_cmd.file));
+      D(("Decrementing usecount for monitoring file %s, %s.\n",
+	 com->efsd_file_cmd.file, m->filename));
 
       if (--(m->use_count) == 0)
 	{
@@ -521,6 +544,8 @@ efsd_fam_remove_monitor(EfsdFamMonitor *m)
 
   if (!m)
     D_RETURN;
+  
+  m->finished = TRUE;
 
   if (m->registered)
     {

@@ -384,7 +384,7 @@ main_handle_fam_events(void)
 	  
 	  m = (EfsdFamMonitor*)famev.userdata;
 
-	  /* D(("Handling FAM event %i for file %s\n", famev.code, famev.filename)); */
+	  D(("Handling FAM event %i for file %s\n", famev.code, famev.filename));
 
 	  memset(&ee, 0, sizeof(EfsdEvent));
 	  ee.type = EFSD_EVENT_FILECHANGE;

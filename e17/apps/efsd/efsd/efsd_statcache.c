@@ -58,6 +58,7 @@ stat_hash_item_free(EfsdHashItem *it)
      stop the monitor. If it has already been stopped,
      the hashtable lookup will fail anyway.
   */
+  D(("Item %s falling out of statcache.\n", (char*)it->key));
   efsd_fam_stop_monitor_internal(it->key);
 
   /* Key is a string -- simple to free: */

@@ -62,9 +62,16 @@ typedef struct efsd_fam_monitor
   /* use count for this monitor     */
   int                   use_count;
 
-  /* whether this monitor is
-     registered internally          */
+  /* whether this monitor is registered
+     internally (the monitors used for
+     only listing files are not).
+  */
   char                  registered;
+
+  /* whether this monitor can safely
+     be deleted, because there won't
+     be any further FAM events */
+  char                  finished;
 
   /* Which clients monitor this file,
      and with what command id.
@@ -79,11 +86,10 @@ EfsdFamMonitor;
 void             efsd_fam_init(void);
 void             efsd_fam_cleanup(void);
 
-/* This one frees the monitor and removes
-   it from the list of monitors.
+/* This one frees the monitor and removes it from
+   the list of registered monitors.
 */
 void             efsd_fam_remove_monitor(EfsdFamMonitor *m);
-
 
 /* High-level API for monitoring stuff -- refcounting
    & co are handled inside. Return >= 0 on success.
