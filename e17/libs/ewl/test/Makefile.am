@@ -39,3 +39,8 @@ ewl_embed_test_SOURCES		=	ewl_embed_test.c
 
 # ewl_embed_test_LDFLAGS		=	
 ewl_embed_test_LDADD			=	$(top_builddir)/src/libewl.la @edje_libs@ @ecore_libs@ @evas_libs@
+
+EXTRA_DIST = $(ewl_test_SOURCES) $(ewl_embed_test_SOURCES)
+
+exampledir = $(pkgdatadir)/examples/
+example_DATA = $(ewl_test_SOURCES) $(ewl_embed_test_SOURCES)
