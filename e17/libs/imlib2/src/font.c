@@ -408,6 +408,25 @@ __imlib_calc_advance(ImlibFont *f, int *adv_w, int *adv_h, const char *text)
    *adv_h = ph;
 }
 
+int
+__imlib_calc_inset(ImlibFont *f, const char *text)
+{
+   int                 i;
+   TT_Glyph_Metrics    gmetrics;
+   
+   for (i = 0; text[i]; i++)
+     {
+	unsigned char       j;
+	
+	j = text[i];
+	if (!TT_VALID(f->glyphs[j]))
+	   continue;
+	TT_Get_Glyph_Metrics(f->glyphs[j], &gmetrics);
+	return ((-gmetrics.bearingX) / 64);
+     }
+   return 0;
+}
+
 void
 __imlib_render_str(ImlibImage *im, ImlibFont *fn, int drx, int dry, const char *text,
 		   DATA8 r, DATA8 g, DATA8 b, DATA8 a,

@@ -1714,6 +1714,17 @@ void imlib_get_text_advance(const char *text,
       *vertical_advance_return = h;
 }
 
+int imlib_get_text_inset(const char *text)
+{
+   ImlibFont *fn;
+   int w, h;
+
+   CHECK_PARAM_POINTER_RETURN("imlib_get_text_advance", "font", ctxt_font, 0);
+   CHECK_PARAM_POINTER_RETURN("imlib_get_text_advance", "text", text, 0);
+   fn = (ImlibFont *) ctxt_font;
+   return __imlib_calc_inset(fn, text);
+}
+
 void
 imlib_add_path_to_font_path(const char *path)
 {

@@ -1507,6 +1507,13 @@ font. The advances are not adjusted for rotation so you will have to translate
 the advances (which are calculated as if the text was drawn horizontally
 from left to right) depending on the text orientation.</blockquote>
 
+<pre>
+<b><tt><font color="#660000"><font size=+2>int imlib_get_text_inset(const char *text);</font></font></tt></b></pre>
+
+<blockquote>This function returns the inset of the first character of the
+text string passed in using the current font and returns that value in pixels.
+</blockquote>
+
 <pre><b><tt><font color="#660000"><font size=+2>void imlib_add_path_to_font_path(const char *path);</font></font></tt></b></pre>
 
 <blockquote>This function adds the directory path to the end of the current

@@ -1,4 +1,5 @@
 #include <X11/Xlib.h>
+#include <X11/Xutil.h>
 #include <X11/extensions/XShm.h>
 #include "common.h"
 #include "colormod.h"
@@ -11,6 +12,7 @@
 #include "grab.h"
 #include "blend.h"
 #include "rend.h"
+#include "rotate.h"
 
 /* size of the lines per segment we scale / render at a time */
 #define LINESIZE 16
@@ -354,11 +356,7 @@ __imlib_RenderImageSkewed(Display *d, ImlibImage *im, Drawable w, Drawable m,
 			  char dither_mask, ImlibColorModifier *cmod,
 			  ImlibOp op)
 {
-   XImage *xim = NULL, *mxim = NULL;
    Context *ct;
-   static GC gc = 0;
-   static GC gcm = 0;
-   XGCValues gcv;
    int dx1, dy1, dx2, dy2, dw, dh, tsx, tsy;
    ImlibImage *back;
 

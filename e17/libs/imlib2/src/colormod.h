@@ -1,6 +1,17 @@
 #ifndef __COLORMOD
 #define __COLORMOD 1
 
+#include "common.h"
+#include <time.h>
+#include <string.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <ctype.h>
+#include <errno.h>
+#include <X11/Xlib.h>
+#include "image.h"
+
 typedef struct _imlib_color_modifier    ImlibColorModifier;
 
 struct _imlib_color_modifier
@@ -48,7 +59,7 @@ void                 __imlib_CmodSetTables(ImlibColorModifier *cm, DATA8 *r,
 					   DATA8 *g, DATA8 *b, DATA8 *a);
 void                 __imlib_CmodReset(ImlibColorModifier *cm);
 void                 __imlib_DataCmodApply(DATA32 *data, int w, int h, 
-					   int jump, int *fl,
+					   int jump, ImlibImageFlags *fl,
 					   ImlibColorModifier *cm);
 
 void                 __imlib_CmodGetTables(ImlibColorModifier *cm, DATA8 *r, 

@@ -77,7 +77,7 @@ __imlib_CmodReset(ImlibColorModifier *cm)
 
 void
 __imlib_DataCmodApply(DATA32 *data, int w, int h, int jump, 
-		      int *fl, ImlibColorModifier *cm)
+		      ImlibImageFlags *fl, ImlibColorModifier *cm)
 {
    int     x, y;
    DATA32 *p;
