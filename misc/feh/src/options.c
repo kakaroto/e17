@@ -902,9 +902,11 @@ feh_create_default_config(char *rcfile)
            "screensave --full-screen --randomize --slideshow-delay 5\n" "\n"
            "# Add <img> tags to your html with ease :-)\n"
            "newimg -q -L \"<img src=\\\"%%f\\\" alt=\\\"feh\\\" border=\\\"0\\\" width=\\\"%%w\\\" height=\\\"%%h\\\">\"\n"
-           "\n" "# Different menus\n" "chrome --menu-bg " PREFIX
-           "/share/feh/images/menubg_chrome.png\n" "brushed --menu-bg " PREFIX
-           "/share/feh/images/menubg_brushed.png\n");
+           "\n" "# Different menus\n" 
+           "chrome --menu-bg " PREFIX "/share/feh/images/menubg_chrome.png\n"
+           "brushed --menu-bg " PREFIX "/share/feh/images/menubg_brushed.png\n"
+           "pastel --menu-bg " PREFIX "/share/feh/images/menubg_pastel.png\n"
+           );
    fclose(fp);
 
    D_RETURN_;
