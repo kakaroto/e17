@@ -3,7 +3,7 @@
 
 #include "eplayer.h"
 
-int track_play_chunk(void *udata);
+void track_play_chunk(void *udata);
 int track_update_time(void *udata);
 
 void track_open(ePlayer *player);

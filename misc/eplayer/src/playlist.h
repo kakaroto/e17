@@ -3,6 +3,7 @@
 
 #include <Evas.h>
 #include <limits.h>
+#include <pthread.h>
 #include "plugin.h"
 
 #ifdef __cplusplus
@@ -17,6 +18,9 @@ typedef struct {
 	int duration;
 	int channels; /* number of channels */
 	long sample_rate; /* sample rate */
+
+	int current_pos;
+	pthread_mutex_t pos_mutex;
 
 	InputPlugin *plugin; /* plugin that's used for this item */
 } PlayListItem;

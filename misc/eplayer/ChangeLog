@@ -1,5 +1,9 @@
 $Id$
 
+2003-10-25 Tilman Sauerbeck <tilman@code-monkey.de>
+       * src/eplayer.c, src/track.c: Put the decoding/playing
+         code in a separate thread
+
 2003-10-24 Tilman Sauerbeck <tilman@code-monkey.de>
         * src/input/avcodec: Added libavcodec input plugin
         * src/input/avcodec/avcodec.c: Now uses libavformat to read

@@ -17,12 +17,13 @@ static int paused = 0;
  */
 void cb_play(ePlayer *player, Evas *e, Evas_Object *o, void *event) {
 #ifdef DEBUG
-	printf("Play callback entered\n");
+	printf("DEBUG: Play callback entered\n");
 #endif
 
-	if (!paused) /* restart from beginning */
+	if (!paused) { /* restart from beginning */
+		eplayer_playback_stop(player);
 		eplayer_playback_start(player, 1);
-	else { /* continue playback */
+	} else { /* continue playback */
 		eplayer_playback_start(player, 0);
 		paused = 0;
 	}
@@ -38,13 +39,13 @@ void cb_play(ePlayer *player, Evas *e, Evas_Object *o, void *event) {
  */
 void cb_pause(ePlayer *player, Evas *e, Evas_Object *o, void *event) {
 #ifdef DEBUG
-	printf("Pause callback entered\n");
+	printf("DEBUG: Pause callback entered\n");
 #endif
 	
 	if (paused)
 		eplayer_playback_start(player, 0);
 	else
-		eplayer_playback_stop(player, 0);
+		eplayer_playback_stop(player);
 
 	paused = !paused;
 }
@@ -64,7 +65,7 @@ void cb_track_next(ePlayer *player, Evas *e, Evas_Object *o,
 	printf("DEBUG: Next File Called\n");
 #endif
 
-	eplayer_playback_stop(player, 0);
+	eplayer_playback_stop(player);
 
 	if (player->playlist->cur_item->next) {
 		player->playlist->cur_item = player->playlist->cur_item->next;
@@ -97,7 +98,7 @@ void cb_track_prev(ePlayer *player, Evas *e, Evas_Object *o,
 	if (!player->playlist->cur_item->prev)
 		return;
 
-	eplayer_playback_stop(player, 0);
+	eplayer_playback_stop(player);
 	
 	/* Get the previous list item */
 	player->playlist->cur_item = player->playlist->cur_item->prev;
@@ -179,7 +180,9 @@ void cb_seek_forward(void *udata, Evas_Object *obj,
 	/* We don't care if you seek past the file, the play loop
 	 * will catch EOF and play next file
 	 */
+	eplayer_playback_stop(player);
 	pli->plugin->set_current_pos(pli->plugin->get_current_pos() + 5);
+	eplayer_playback_start(player, 0);
 }
 
 void cb_seek_backward(void *udata, Evas_Object *obj,
@@ -191,9 +194,12 @@ void cb_seek_backward(void *udata, Evas_Object *obj,
 #ifdef DEBUG
 	printf("DEBUG: Seeking backward - Current Pos: %i\n", cur_time);
 #endif
+	eplayer_playback_stop(player);
 
 	if (cur_time < 6) /* restart from the beginning */
 		eplayer_playback_start(player, 1);
-	else
+	else {
 		pli->plugin->set_current_pos(cur_time - 5);
+		eplayer_playback_start(player, 0);
+	}
 }

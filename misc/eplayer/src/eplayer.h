@@ -2,6 +2,7 @@
 #define __EPLAYER_H
 
 #include <Ecore.h>
+#include <pthread.h>
 #include "playlist.h"
 #include "plugin.h"
 
@@ -26,8 +27,11 @@ typedef struct {
 
 typedef struct {
 	PlayList *playlist;
-	Ecore_Idler *play_idler;
 	Ecore_Timer *time_timer;
+
+	pthread_t playback_thread;
+	pthread_mutex_t playback_mutex;
+	int playback_stop;
 
 	OutputPlugin *output;
 	Evas_List *input_plugins; /* lists all available input plugins */
@@ -36,7 +40,7 @@ typedef struct {
 	Gui gui;
 } ePlayer;
 
-void eplayer_playback_stop(ePlayer *player, int rewind_track);
+void eplayer_playback_stop(ePlayer *player);
 void eplayer_playback_start(ePlayer *player, int rewind_track);
 
 #endif

@@ -76,6 +76,9 @@ static void eplayer_free(ePlayer *player) {
 	if (!player)
 		return;
 
+	eplayer_playback_stop(player);
+	track_close(player);
+
 	playlist_free(player->playlist);
 
 	/* unload plugins */
@@ -84,6 +87,8 @@ static void eplayer_free(ePlayer *player) {
 
 	for (l = player->input_plugins; l; l = l->next)
 		plugin_free(l->data);
+	
+	pthread_mutex_destroy(&player->playback_mutex);
 	
 	free(player);
 }
@@ -131,6 +136,8 @@ static ePlayer *eplayer_new() {
 		return NULL;
 	}
 
+	pthread_mutex_init(&player->playback_mutex, NULL);
+
 	return player;
 }
 
@@ -138,17 +145,10 @@ static ePlayer *eplayer_new() {
  * Stops playback.
  *
  * @param player
- * @param rewind_track
  */
-void eplayer_playback_stop(ePlayer *player, int rewind_track) {
+void eplayer_playback_stop(ePlayer *player) {
 	if (!player)
 		return;
-
-	/* stop the playloop */
-	if (player->play_idler) {
-		ecore_idler_del(player->play_idler);
-		player->play_idler = NULL;
-	}
 
 	/* stop the timer that updates the time part */
 	if (player->time_timer) {
@@ -156,10 +156,11 @@ void eplayer_playback_stop(ePlayer *player, int rewind_track) {
 		player->time_timer = NULL;
 	}
 
-	if (rewind_track) {
-		track_close(player);
-		track_open(player);
-	}
+	pthread_mutex_lock(&player->playback_mutex);
+	player->playback_stop = 1;
+	pthread_mutex_unlock(&player->playback_mutex);
+
+	pthread_join(player->playback_thread, NULL);
 }
 
 /**
@@ -174,18 +175,20 @@ void eplayer_playback_start(ePlayer *player, int rewind_track) {
 		track_open(player);
 	}
 
-	/* start the playloop */
-	player->play_idler = ecore_idler_add(track_play_chunk, player);
 	player->time_timer = ecore_timer_add(0.5, track_update_time,
 	                                     player);
+	
+	pthread_mutex_lock(&player->playback_mutex);
+	player->playback_stop = 0;
+	pthread_mutex_unlock(&player->playback_mutex);
+
+	pthread_create(&player->playback_thread, NULL,
+	               (void *) &track_play_chunk, player);
 }
 
 int main(int argc, const char **argv) {
 	ePlayer *player;
 	int i;
-
-	if (!(player = eplayer_new()))
-		return 1;
 
 	if (argc == 1) {
 		printf("%s v%s  - Usage: %s playlist.m3u [file.ogg] [some/dir] ...\n\n",
@@ -193,14 +196,12 @@ int main(int argc, const char **argv) {
 		return 1;
 	}
 	
-	/* Parse Args */
-	for (i = 1; i < argc; i++) {
-#ifdef DEBUG
-		printf("Adding file to playlist: %s\n", argv[i]);
-#endif
-		
+	if (!(player = eplayer_new()))
+		return 1;
+	
+	/* add files/directories/m3u's to the playlist */
+	for (i = 1; i < argc; i++)
 		playlist_load_any(player->playlist, argv[i], i > 1);
-	}
 	
 	if (!player->playlist->num) {
 		fprintf(stderr, "No files loaded!\n");
