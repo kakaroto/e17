@@ -42,8 +42,10 @@ ActionMoveStart(EWin * ewin, void *params, char constrained, int nogroup)
 
    mode_moveresize_ewin = ewin;
    real_move_mode = conf.movemode;
+#if 0				/* Why do this? Let's see what happens if we don't :) */
    if (((ewin->groups) || (ewin->has_transients)) && (conf.movemode > 0))
       conf.movemode = 0;
+#endif
    if (conf.movemode > 0)
      {
 	FX_Pause();
