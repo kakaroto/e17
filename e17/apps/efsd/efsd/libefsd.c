@@ -35,7 +35,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <signal.h>
 
 #ifdef __EMX__
-#include <strings.h>  /* eeek... OS/2 has bzero(...) there */
+#include <strings.h>
 #include <sys/select.h>
 #define getcwd _getcwd2
 #endif
@@ -126,7 +126,7 @@ file_cmd(EfsdConnection *ec, EfsdCommandType type, char *file,
   if (!ec || !file || file[0] == '\0')
     D_RETURN_(-1);
 
-  bzero(&cmd, sizeof(EfsdCommand));
+  memset(&cmd, 0, sizeof(EfsdCommand));
 
   cmd.type = type;
   cmd.efsd_file_cmd.id = get_next_id();
@@ -191,7 +191,7 @@ efsd_open(void)
       fprintf(stderr, "libefsd: socket() error.\n"); D_RETURN_(NULL);
     }
 
-  bzero(&cli_sun, sizeof(cli_sun));
+  memset(&cli_sun, 0, sizeof(cli_sun));
   cli_sun.sun_family = AF_UNIX;
   strncpy(cli_sun.sun_path, efsd_misc_get_socket_file(), sizeof(cli_sun.sun_path));
 

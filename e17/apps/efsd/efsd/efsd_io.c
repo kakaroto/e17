@@ -125,7 +125,7 @@ read_data(int sockfd, void *dest, int size)
 
   iov[0].iov_base = dest;
   iov[0].iov_len  = size;
-  bzero(&msg, sizeof(struct msghdr));
+  memset(&msg, 0, sizeof(struct msghdr));
   msg.msg_iov = iov;
   msg.msg_iovlen = 1;
 
@@ -836,7 +836,7 @@ efsd_io_write_command(int sockfd, EfsdCommand *ec)
   if (!ec)
     D_RETURN_(-1);
 
-  bzero(&msg, sizeof(struct msghdr));
+  memset(&msg, 0, sizeof(struct msghdr));
   msg.msg_iov = iov;
   msg.msg_iovlen = fill_command(iov, ec);
 
@@ -913,7 +913,7 @@ efsd_io_write_event(int sockfd, EfsdEvent *ee)
   if (!ee)
     D_RETURN_(-1);
 
-  bzero(&msg, sizeof(struct msghdr));
+  memset(&msg, 0, sizeof(struct msghdr));
   msg.msg_iov = iov;
   msg.msg_iovlen = fill_event(iov, ee);
 
@@ -969,7 +969,7 @@ efsd_io_write_option(int sockfd, EfsdOption *eo)
   if (!eo)
     D_RETURN_(-1);
 
-  bzero(&msg, sizeof(struct msghdr));
+  memset(&msg, 0, sizeof(struct msghdr));
   msg.msg_iov = iov;
   msg.msg_iovlen = fill_option(iov, eo);
 

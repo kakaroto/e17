@@ -36,7 +36,7 @@ efsd_option_new_get_stat(void)
 
   D_ENTER;
   eo = NEW(EfsdOption);
-  bzero(eo, sizeof(EfsdOption));
+  memset(eo, 0, sizeof(EfsdOption));
   eo->type = EFSD_OP_LS_GET_STAT;
   D_RETURN_(eo);
 }
@@ -49,7 +49,7 @@ efsd_option_new_get_metadata(char *key, EfsdDatatype type)
 
   D_ENTER;
   eo = NEW(EfsdOption);
-  bzero(eo, sizeof(EfsdOption));
+  memset(eo, 0, sizeof(EfsdOption));
   eo->type = EFSD_OP_LS_GET_META;
   eo->efsd_op_ls_getmeta.key = strdup(key);
   eo->efsd_op_ls_getmeta.datatype = type;
@@ -64,7 +64,7 @@ efsd_option_new_get_mimetype(void)
 
   D_ENTER;
   eo = NEW(EfsdOption);
-  bzero(eo, sizeof(EfsdOption));
+  memset(eo, 0, sizeof(EfsdOption));
   eo->type = EFSD_OP_LS_GET_MIME;
   D_RETURN_(eo);
 }
@@ -77,7 +77,7 @@ efsd_option_new_force(void)
 
   D_ENTER;
   eo = NEW(EfsdOption);
-  bzero(eo, sizeof(EfsdOption));
+  memset(eo, 0, sizeof(EfsdOption));
   eo->type = EFSD_OP_FS_FORCE;
   D_RETURN_(eo);
 }
@@ -90,7 +90,7 @@ efsd_option_new_recursive(void)
 
   D_ENTER;
   eo = NEW(EfsdOption);
-  bzero(eo, sizeof(EfsdOption));
+  memset(eo, 0, sizeof(EfsdOption));
   eo->type = EFSD_OP_FS_RECURSIVE;
   D_RETURN_(eo);
 }

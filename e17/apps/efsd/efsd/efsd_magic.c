@@ -305,7 +305,7 @@ magic_new(char *key, char *params)
   D_ENTER;
 
   em = NEW(EfsdMagic);
-  bzero(em, sizeof(EfsdMagic));
+  memset(em, 0, sizeof(EfsdMagic));
 
   sprintf(params, "%s", "/offset");
   e_db_int_get(magic_db, key, &dummy);
@@ -702,6 +702,8 @@ magic_test_perform(EfsdMagic *em, FILE *f)
 
 	D(("Performing string test for '%s', len = %i\n", (char*)em->value, em->value_len));
 
+	/* Fixme: add remaining string tests. */
+
 	if (memcmp(s, em->value, em->value_len) == 0)
 	  {
 	    D(("...succeeded.\n"));
@@ -1078,7 +1080,7 @@ efsd_magic_init(void)
       D_RETURN_(0);
     }
 
-  bzero(&magic, sizeof(EfsdMagic));
+  memset(&magic, 0, sizeof(EfsdMagic));
   ptr = key;
 
   magic_init_level(key, ptr, &magic);
