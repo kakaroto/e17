@@ -639,7 +639,6 @@ void
 archive_jpeg(Imlib_Image im)
 {
   char buffer[PATH_MAX];
-  char thumbnail_buffer[PATH_MAX];
   char date[128];
   char year[5];
   char month[3];
@@ -665,7 +664,7 @@ archive_jpeg(Imlib_Image im)
       snprintf(buffer, sizeof(buffer), "%s/%s", grab_archive, year);
       if (access(buffer, F_OK) == -1) {
         mkdir(buffer, 0777);
-        log("Create new subdir %s\n", buffer);
+        log("Created new archive subdir %s\n", buffer);
       }
 
       snprintf(buffer, sizeof(buffer), "%s/%s/%s", grab_archive, year,
@@ -702,7 +701,7 @@ archive_jpeg(Imlib_Image im)
         snprintf(buffer, sizeof(buffer), "%s/%s", archive_thumbnails_dir, year);
         if (access(buffer, F_OK) == -1) {
           mkdir(buffer, 0777);
-          log("Create new subdir %s\n", buffer);
+          log("Created new archive subdir %s\n", buffer);
         }
 
         snprintf(buffer, sizeof(buffer), "%s/%s/%s", archive_thumbnails_dir,
@@ -722,7 +721,7 @@ archive_jpeg(Imlib_Image im)
         snprintf(buffer, sizeof(buffer), "%s/%s/%s/%s/%s.%s",
                  archive_thumbnails_dir, year, month, day, date, archive_ext);
       } else {
-        snprintf(thumbnail_buffer, sizeof(buffer), "%s/webcam_%s.%s",
+        snprintf(buffer, sizeof(buffer), "%s/webcam_%s.%s",
           archive_thumbnails_dir, date, archive_ext);
       }
       thumbnail_image =
@@ -731,7 +730,7 @@ archive_jpeg(Imlib_Image im)
                                               gib_imlib_image_get_height(im),
                                               archive_thumbnails_width,
                                               archive_thumbnails_height, 1);
-      save_image(thumbnail_image, thumbnail_buffer);
+      save_image(thumbnail_image, buffer);
       gib_imlib_free_image_and_decache(thumbnail_image);
     }
   }
