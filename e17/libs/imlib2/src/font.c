@@ -37,12 +37,24 @@ __imlib_create_font_raster(int width, int height)
    TT_Raster_Map      *rmap;
    
    rmap = malloc(sizeof(TT_Raster_Map));
+   if (!rmap)
+      return NULL;
    rmap->width = (width + 3) & -4;
    rmap->rows = height;
    rmap->flow = TT_Flow_Up;
    rmap->cols = rmap->width;
    rmap->size = rmap->rows * rmap->width;
+   if (!rmap->size <= 0)
+     {
+	free(rmap);
+	return NULL;
+     }
    rmap->bitmap = malloc(rmap->size);
+   if (!rmap->bitmap)
+     {
+	free(rmap);
+	return NULL;
+     }
    memset(rmap->bitmap, 0, rmap->size);
    return rmap;
 }
@@ -409,8 +421,6 @@ __imlib_render_str(ImlibImage *im, ImlibFont *fn, int drx, int dry, char *text,
    TT_Get_Glyph_Metrics(fn->glyphs[j], &metrics);
    x_offset = (-metrics.bearingX) / 64;
    y_offset = -(fn->max_descent / 64);
-   xor = x_offset;
-   yor = rmap->rows - y_offset;
 
    /* figure out the size this text string is going to be */
    __imlib_calc_size(fn, &w, &h, text);
@@ -456,150 +466,153 @@ __imlib_render_str(ImlibImage *im, ImlibFont *fn, int drx, int dry, char *text,
       return;
    /* create a scratch pad for it */
    rmap = __imlib_create_font_raster(w, h);
-   rmap->flow = TT_Flow_Up;
-   /* render the text into the scratch pad */
-   for (i = 0; text[i]; i++)
+   if (rmap)
      {
-	j = text[i];	
-	if (!TT_VALID(fn->glyphs[j]))
-	   continue;	
-	TT_Get_Glyph_Metrics(fn->glyphs[j], &metrics);
-	
-	xmin = metrics.bbox.xMin & -64;
-	ymin = metrics.bbox.yMin & -64;
-	xmax = (metrics.bbox.xMax + 63) & -64;
-	ymax = (metrics.bbox.yMax + 63) & -64;
-	
-	rtmp = fn->glyphs_cached_right[j];
-	if (!rtmp)
+	rmap->flow = TT_Flow_Up;
+	/* render the text into the scratch pad */
+	for (i = 0; text[i]; i++)
 	  {
-	     rtmp = __imlib_create_font_raster(((xmax - xmin) / 64) + 1, 
-					       ((ymax - ymin) / 64) + 1);
-	     TT_Get_Glyph_Pixmap(fn->glyphs[j], rtmp, -xmin, -ymin);
-	     fn->glyphs_cached_right[j] = rtmp;
-	     fn->mem_use += 
-		(((xmax - xmin) / 64) + 1) *
-		(((ymax - ymin) / 64) + 1);
-	  }
-	if (rtmp)
-	  {
+	     j = text[i];	
+	     if (!TT_VALID(fn->glyphs[j]))
+		continue;	
+	     TT_Get_Glyph_Metrics(fn->glyphs[j], &metrics);
 	     
-	     /* Blit-or the resulting small pixmap into the biggest one */
-	     /* We do that by hand, and provide also clipping.          */
+	     xmin = metrics.bbox.xMin & -64;
+	     ymin = metrics.bbox.yMin & -64;
+	     xmax = (metrics.bbox.xMax + 63) & -64;
+	     ymax = (metrics.bbox.yMax + 63) & -64;
 	     
-	     xmin = (xmin >> 6) + x_offset;
-	     ymin = (ymin >> 6) + y_offset;
-	     xmax = (xmax >> 6) + x_offset;
-	     ymax = (ymax >> 6) + y_offset;
-	     
-	     /* Take care of comparing xmin and ymin with signed values!  */
-	     /* This was the cause of strange misplacements when Bit.rows */
-	     /* was unsigned.                                             */
-	     
-	     if ((xmin >= (int)rmap->width) || (ymin >= (int)rmap->rows) ||
-		 (xmax < 0) || (ymax < 0))
-		continue;
-	     
-	     /* Note that the clipping check is performed _after_ rendering */
-	     /* the glyph in the small bitmap to let this function return   */
-	     /* potential error codes for all glyphs, even hidden ones.     */
-	     
-	     /* In exotic glyphs, the bounding box may be larger than the   */
-	     /* size of the small pixmap.  Take care of that here.          */
-	     
-	     if (xmax - xmin + 1 > rtmp->width)
-		xmax = xmin + rtmp->width - 1;	
-	     if (ymax - ymin + 1 > rtmp->rows)
-		ymax = ymin + rtmp->rows - 1;
-	     
-	     /* set up clipping and cursors */	
-	     iread = 0;
-	     if (ymin < 0)
+	     rtmp = fn->glyphs_cached_right[j];
+	     if (!rtmp)
 	       {
-		  iread -= ymin * rtmp->cols;
-		  ioff = 0;
-		  ymin = 0;
+		  rtmp = __imlib_create_font_raster(((xmax - xmin) / 64) + 1, 
+						    ((ymax - ymin) / 64) + 1);
+		  TT_Get_Glyph_Pixmap(fn->glyphs[j], rtmp, -xmin, -ymin);
+		  fn->glyphs_cached_right[j] = rtmp;
+		  fn->mem_use += 
+		     (((xmax - xmin) / 64) + 1) *
+		     (((ymax - ymin) / 64) + 1);
 	       }
-	     else
-		ioff = (rmap->rows - ymin - 1) * rmap->cols;	
-	     if (ymax >= rmap->rows)
-		ymax = rmap->rows - 1;
-	     
-	     if (xmin < 0)
+	     if (rtmp)
 	       {
-		  iread -= xmin;
-		  xmin = 0;
-	       }
-	     else
-		ioff += xmin;
-	     if (xmax >= rmap->width)
-		xmax = rmap->width - 1;
-	     
-	     _read = (char *)rtmp->bitmap + iread;
-	     _off = (char *)rmap->bitmap + ioff;	
-	     for (y = ymin; y <= ymax; y++)
-	       {
-		  read = _read;
-		  off = _off;
 		  
-		  for (x = xmin; x <= xmax; x++)
+		  /* Blit-or the resulting small pixmap into the biggest one */
+		  /* We do that by hand, and provide also clipping.          */
+		  
+		  xmin = (xmin >> 6) + x_offset;
+		  ymin = (ymin >> 6) + y_offset;
+		  xmax = (xmax >> 6) + x_offset;
+		  ymax = (ymax >> 6) + y_offset;
+		  
+		  /* Take care of comparing xmin and ymin with signed values!  */
+		  /* This was the cause of strange misplacements when Bit.rows */
+		  /* was unsigned.                                             */
+		  
+		  if ((xmin >= (int)rmap->width) || (ymin >= (int)rmap->rows) ||
+		      (xmax < 0) || (ymax < 0))
+		     continue;
+		  
+		  /* Note that the clipping check is performed _after_ rendering */
+		  /* the glyph in the small bitmap to let this function return   */
+		  /* potential error codes for all glyphs, even hidden ones.     */
+		  
+		  /* In exotic glyphs, the bounding box may be larger than the   */
+		  /* size of the small pixmap.  Take care of that here.          */
+		  
+		  if (xmax - xmin + 1 > rtmp->width)
+		     xmax = xmin + rtmp->width - 1;	
+		  if (ymax - ymin + 1 > rtmp->rows)
+		     ymax = ymin + rtmp->rows - 1;
+		  
+		  /* set up clipping and cursors */	
+		  iread = 0;
+		  if (ymin < 0)
 		    {
-		       *off |= *read;
-		       off++;
-		       read++;
+		       iread -= ymin * rtmp->cols;
+		       ioff = 0;
+		       ymin = 0;
 		    }
-		  _read += rtmp->cols;
-		  _off -= rmap->cols;
+		  else
+		     ioff = (rmap->rows - ymin - 1) * rmap->cols;	
+		  if (ymax >= rmap->rows)
+		     ymax = rmap->rows - 1;
+		  
+		  if (xmin < 0)
+		    {
+		       iread -= xmin;
+		       xmin = 0;
+		    }
+		  else
+		     ioff += xmin;
+		  if (xmax >= rmap->width)
+		     xmax = rmap->width - 1;
+		  
+		  _read = (char *)rtmp->bitmap + iread;
+		  _off = (char *)rmap->bitmap + ioff;	
+		  for (y = ymin; y <= ymax; y++)
+		    {
+		       read = _read;
+		       off = _off;
+		       
+		       for (x = xmin; x <= xmax; x++)
+			 {
+			    *off |= *read;
+			    off++;
+			    read++;
+			 }
+		       _read += rtmp->cols;
+		       _off -= rmap->cols;
+		    }
 	       }
+	     x_offset += metrics.advance / 64;
 	  }
-	x_offset += metrics.advance / 64;
-     }
-   /* temporary RGBA buffer to build */
-   if ((rmap->rows > 0) && (rmap->cols > 0))
-     {
-	tmp = malloc(rmap->rows * rmap->cols * sizeof(DATA32));
-	p = tmp;
-	read = rmap->bitmap;
-	/* build the buffer */
-	for (x = 0; x < rmap->size; x++)
+	/* temporary RGBA buffer to build */
+	if ((rmap->rows > 0) && (rmap->cols > 0))
 	  {
-	     *p = lut[(int)(*read)];
-	     p++;
-	     read++;
+	     tmp = malloc(rmap->rows * rmap->cols * sizeof(DATA32));
+	     p = tmp;
+	     read = rmap->bitmap;
+	     /* build the buffer */
+	     for (x = 0; x < rmap->size; x++)
+	       {
+		  *p = lut[(int)(*read)];
+		  p++;
+		  read++;
+	       }
+	     /* blend buffer onto image */
+	     im2.data = tmp;
+	     im2.w = rmap->cols;
+	     im2.h = rmap->rows;
+	     if (blur > 0)
+		__imlib_BlurImage(&im2, blur);
+	     switch(dir)
+	       {
+	       case 0: /* to right */
+		  break;
+	       case 1: /* to left */
+		  __imlib_FlipImageHoriz(&im2);
+		  __imlib_FlipImageVert(&im2);
+		  break;
+	       case 2: /* to down */
+		  __imlib_FlipImageDiagonal(&im2);
+		  break;
+	       case 3: /* to up */
+		  __imlib_FlipImageDiagonal(&im2);
+		  __imlib_FlipImageHoriz(&im2);
+		  __imlib_FlipImageVert(&im2);
+		  break;
+	       default:
+		  break;
+	       }
+	     tmp = im2.data;
+	     __imlib_BlendRGBAToData(tmp, im2.w, im2.h,
+				     im->data, im->w, im->h,
+				     0, 0, drx, dry, im2.w, im2.h,
+				     1, IMAGE_HAS_ALPHA(im), NULL, op);
+	     free(tmp);
 	  }
-	/* blend buffer onto image */
-	im2.data = tmp;
-	im2.w = rmap->cols;
-	im2.h = rmap->rows;
-	if (blur > 0)
-	   __imlib_BlurImage(&im2, blur);
-	switch(dir)
-	  {
-	  case 0: /* to right */
-	     break;
-	  case 1: /* to left */
-	     __imlib_FlipImageHoriz(&im2);
-	     __imlib_FlipImageVert(&im2);
-	     break;
-	  case 2: /* to down */
-	     __imlib_FlipImageDiagonal(&im2);
-	     break;
-	  case 3: /* to up */
-	     __imlib_FlipImageDiagonal(&im2);
-	     __imlib_FlipImageHoriz(&im2);
-	     __imlib_FlipImageVert(&im2);
-	     break;
-	  default:
-	     break;
-	  }
-	tmp = im2.data;
-	__imlib_BlendRGBAToData(tmp, im2.w, im2.h,
-				im->data, im->w, im->h,
-				0, 0, drx, dry, im2.w, im2.h,
-				1, IMAGE_HAS_ALPHA(im), NULL, op);
-	free(tmp);
+	__imlib_destroy_font_raster(rmap);   
      }
-   __imlib_destroy_font_raster(rmap);   
 }
 
 int
