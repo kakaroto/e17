@@ -98,11 +98,11 @@ main(int argc, char *argv[])
                              geist_rect_new_of_size(25, 175, 200, 300, 50,
                                                     255, 255, 0));
    geist_document_add_object(doc,
-                             geist_line_new_from_to(5, 5, 200, 200, 255, 0, 0,
+                             geist_line_new_from_to(5, 5, 200, 200, 255, 255, 0,
                                                     0));
    geist_document_add_object(doc,
-                             geist_line_new_from_to(5, 200, 200, 5, 255, 0, 0,
-                                                    0));
+                             geist_line_new_from_to(5, 200, 200, 5, 255, 50, 50,
+                                                    255));
 
    geist_document_render_full(doc, 1);
 

@@ -203,6 +203,9 @@ geist_line_resize(geist_object * obj, int x, int y)
    line = GEIST_LINE(obj);
 
    D(5, ("resize to %d,%d\n", x, y));
+   
+   x += obj->clicked_x;
+   y += obj->clicked_y;
 
    start_x = line->start.x + obj->x;
    start_y = line->start.y + obj->y;
@@ -589,8 +592,8 @@ geist_line_click_is_selection(geist_object * obj, int x, int y)
    geist_line *line;
    int i;
    double gradient;
-   int line_y;
-   int ox, oy, ow, oh;
+   int line_y, line_x;
+   int ox, oy, ow, oh, dy, dx;
 
    D_ENTER(3);
 
@@ -618,7 +621,7 @@ geist_line_click_is_selection(geist_object * obj, int x, int y)
    }
 
    /* need to handle special cases of vertical lines, otherwise the gradient
-    * is infinite. This obviously leads to tricky maths ;-) */
+      is infinite. This obviously leads to tricky maths ;-) */
    if ((clip_x1 >= clip_x0 - 5) && (clip_x1 <= clip_x0 + 5))
    {
       if ((x >= clip_x0 - 5) && (x <= clip_x0 + 5) && (y >= clip_y0 - 5)
@@ -626,15 +629,146 @@ geist_line_click_is_selection(geist_object * obj, int x, int y)
          D_RETURN(3, 1);
    }
 
-   /* do some maths ;-) */
-   gradient = ((double) clip_y1 - clip_y0) / ((double) clip_x1 - clip_x0);
-   D(5, ("gradient %f\n", gradient));
-   for (i = x - 5; i < x + 6; i++)
-   {
-      line_y = (gradient * (i - clip_x0)) + clip_y0;
-      if ((y >= line_y - 5) && (y <= line_y + 5))
-         D_RETURN(3, 1);
-   }
+      gradient = ((double) clip_y1 - clip_y0) / ((double) clip_x1 - clip_x0);
+      D(5, ("gradient %f\n", gradient));
+      if (clip_x0 < clip_x1)
+      {
+         if (clip_y0 < clip_y1)
+         {
+            /*  a 
+             *   \
+             *    \
+             *     \
+             *      b
+             */
+            dy = clip_y1 - clip_y0;
+            dx = clip_x1 - clip_x0;
+            if (dx > dy)
+            {
+               /* shallow */
+               D(5, ("shallow downwards line left to right\n"));
+               for (i = x - 5; i < x + 6; i++)
+               {
+                  line_y = (gradient * (i - clip_x0)) + clip_y0;
+                  if ((y >= line_y - 5) && (y <= line_y + 5))
+                     D_RETURN(3, 1);
+               }
+            }
+            else
+            {
+               /* steep */
+               D(5, ("steep downwards line left to right\n"));
+               for (i = y - 5; i < y + 6; i++)
+               {
+                  line_x = ((1 / gradient) * (i - clip_y0)) + clip_x0;
+                  if ((x >= line_x - 5) && (x <= line_x + 5))
+                     D_RETURN(3, 1);
+               }
+            }
+         }
+         else
+         {
+            /*      b
+             *     /
+             *    /
+             *   /
+             *  a
+             */
+            dy = clip_y0 - clip_y1;
+            dx = clip_x1 - clip_x0;
+            if (dx > dy)
+            {
+               /* shallow */
+               D(5, ("shallow upwards line left to right\n"));
+               for (i = x - 5; i < x + 6; i++)
+               {
+                  line_y = (gradient * (i - clip_x0)) + clip_y0;
+                  if ((y >= line_y - 5) && (y <= line_y + 5))
+                     D_RETURN(3, 1);
+               }
+            }
+            else
+            {
+               /* steep */
+               D(5, ("steep upwards line left to right\n"));
+               for (i = y - 5; i < y + 6; i++)
+               {
+                  line_x = ((1 / gradient) * (i - clip_y0)) + clip_x0;
+                  if ((x >= line_x - 5) && (x <= line_x + 5))
+                     D_RETURN(3, 1);
+               }
+            }
+         }
+      }
+      else
+      {
+         if (clip_y0 < clip_y1)
+         {
+            /*      a
+             *     /
+             *    /
+             *   /
+             *  b
+             */
+            dy = clip_y1 - clip_y0;
+            dx = clip_x0 - clip_x1;
+            if (dx > dy)
+            {
+               /* shallow */
+               D(5, ("shallow downwards line right to left\n"));
+               for (i = x - 5; i < x + 6; i++)
+               {
+                  line_y = (gradient * (i - clip_x0)) + clip_y0;
+                  if ((y >= line_y - 5) && (y <= line_y + 5))
+                     D_RETURN(3, 1);
+               }
+            }
+            else
+            {
+               /* steep */
+               D(5, ("steep downwards line right to left\n"));
+               for (i = y - 5; i < y + 6; i++)
+               {
+                  line_x = ((1 / gradient) * (i - clip_y0)) + clip_x0;
+                  if ((x >= line_x - 5) && (x <= line_x + 5))
+                     D_RETURN(3, 1);
+               }
+            }
+         }
+         else
+         {
+            /*  b
+             *   \
+             *    \
+             *     \
+             *      a
+             */
+            dy = clip_y0 - clip_y1;
+            dx = clip_x0 - clip_x1;
+            if (dx > dy)
+            {
+               /* shallow */
+               D(5, ("shallow upwards line right to left\n"));
+               for (i = x - 5; i < x + 6; i++)
+               {
+                  line_y = (gradient * (i - clip_x0)) + clip_y0;
+                  if ((y >= line_y - 5) && (y <= line_y + 5))
+                     D_RETURN(3, 1);
+               }
+            }
+            else
+            {
+               /* steep */
+               D(5, ("steep upwards line right to left\n"));
+               for (i = y - 5; i < y + 6; i++)
+               {
+                  line_x = ((1 / gradient) * (i - clip_y0)) + clip_x0;
+                  if ((x >= line_x - 5) && (x <= line_x + 5))
+                     D_RETURN(3, 1);
+               }
+            }
+         }
+      }
 
    D_RETURN(3, 0);
 }
@@ -705,7 +839,6 @@ Imlib_Updates geist_line_get_updates(geist_object * obj)
                   up = imlib_update_append_rect(up, line_x - 2, i - 2, 4, 4);
                }
             }
-
          }
          else
          {
@@ -830,7 +963,6 @@ geist_line_update_dimensions_relative (geist_object *obj, int w_offset,
 		y = obj->y + line->end.y + h_offset;
 	else
 		y = obj->y + line->end.y - h_offset;
-	
 	
 	geist_line_resize(obj, x, y);
 	
