@@ -6,6 +6,8 @@ $Id$
           has its own Edje object
         * data/README, src/eplayer.c: Added two signals,
           PLAYBACK_STARTED and PLAYBACK_STOPPED
+        * src/callbacks.c: The playlist marker now always follows
+          the track that's being played
 
 2004-01-24 Tilman Sauerbeck <tilman -at- code-monkey.de>
         * src/eplayer.c, src/plugin.c: Switched to libltdl

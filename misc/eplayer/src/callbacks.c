@@ -30,11 +30,6 @@ static PlaybackState state = PLAYBACK_STATE_STOPPED;
 
 /**
  * Starts/resumes playback.
- *
- * @param player
- * @param e
- * @param o
- * @param event
  */
 EDJE_CB(play) {
 	int res;
@@ -61,11 +56,6 @@ EDJE_CB(play) {
 
 /**
  * Stops playback.
- *
- * @param player
- * @param e
- * @param o
- * @param event
  */
 EDJE_CB(stop) {
 	debug(DEBUG_LEVEL_INFO, "Stop callback entered\n");
@@ -77,11 +67,6 @@ EDJE_CB(stop) {
 
 /**
  * Pauses/resumes playback.
- *
- * @param player
- * @param e
- * @param o
- * @param event
  */
 EDJE_CB(pause) {
 	debug(DEBUG_LEVEL_INFO, "Pause callback entered\n");
@@ -105,17 +90,26 @@ EDJE_CB(pause) {
 }
 
 /**
+ * Hilight the current playlist item.
+ * This automatically un-highlights all other items
+ * (see EDJE_CB(playlist_item_selected).
+ */
+static void hilight_current_track(ePlayer *player) {
+	PlayListItem *pli;
+	
+	if (!(pli = playlist_current_item_get(player->playlist)))
+		return;
+
+	edje_object_signal_emit(pli->edje, "PLAYLIST_ITEM_SELECTED", "");
+}
+
+/**
  * Moves to the next track and plays it, except when we're going
  * back to the beginning of the playlist.
- *
- * @param player
- * @param e
- * @param o
- * @param event
  */
 EDJE_CB(track_next) {
-	int play = 1;
-	
+	bool play = true;
+
 	debug(DEBUG_LEVEL_INFO, "Next File Called\n");
 
 	eplayer_playback_stop(player);
@@ -132,16 +126,13 @@ EDJE_CB(track_next) {
 		track_open(player);
 		state = PLAYBACK_STATE_STOPPED;
 	}
+
+	hilight_current_track(player);
 }
 
 /**
  * Moves to the previous track and plays it, except when we're
  * at the first track already.
- *
- * @param player
- * @param e
- * @param o
- * @param event
  */
 EDJE_CB(track_prev) {
 	debug(DEBUG_LEVEL_INFO, "Previous File Called\n");
@@ -157,6 +148,8 @@ EDJE_CB(track_prev) {
 
 	if (eplayer_playback_start(player, true))
 		state = PLAYBACK_STATE_PLAYING;
+	
+	hilight_current_track(player);
 }
 
 EDJE_CB(volume_raise) {
