@@ -1,3 +1,12 @@
+Wed Aug 23 16:20:39 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Added "New line..." buttons and menu entry.
+	* Fixed multiple resizing of lines. This works more sanely now,
+	but still doesn't feel right. How should multiple lines resize
+	together? Tricky.
+	* Fixed a bug where steep vertical lines couldn't be
+	selected. Just an oversight in the check_click member.
+
 Wed Aug 23 14:12:05 2000  Till Adam    <Till_Adam@bigfoot.com>
 
         ^* added _update_position_relative and _update_dimensions_relative as

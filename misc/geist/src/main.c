@@ -23,6 +23,7 @@ main(int argc, char *argv[])
    GtkWidget *obj_win;
    geist_document *doc;
    geist_object *obj;
+   int err;
 
    opt.debug_level = 5;
    D_ENTER(3);
@@ -34,7 +35,18 @@ main(int argc, char *argv[])
    imlib_init(mainwin);
 
    obj_win = geist_create_object_list();
+   gtk_clist_freeze(GTK_CLIST(obj_list));
 
+   doc = geist_document_load_xml("test.xml", &err);
+   if (!doc)
+      weprintf("failed to load test xml file\n");
+   else
+   {
+      geist_gtk_new_document_page(doc);
+      geist_document_render_full(doc, 1);
+   }
+
+#if 0
    doc = geist_document_new(500, 500);
    geist_document_rename(doc, "Test Document");
    geist_gtk_new_document_page(doc);
@@ -44,13 +56,11 @@ main(int argc, char *argv[])
    doc->bg_fill->b = 237;
    doc->bg_fill->a = 255;
 
-   gtk_clist_freeze(GTK_CLIST(obj_list));
-
    obj =
       geist_image_new_from_file(0, 0, PREFIX "/share/geist/images/laet.jpg");
    geist_image_change_opacity(obj, 60);
-   if(obj)
-       geist_document_add_object(doc,obj);
+   if (obj)
+      geist_document_add_object(doc, obj);
    geist_document_add_object(doc,
                              geist_text_new_with_text(0, 405, "20thcent", 16,
                                                       "Some pr0n - I have to.",
@@ -98,13 +108,14 @@ main(int argc, char *argv[])
                              geist_rect_new_of_size(25, 175, 200, 300, 50,
                                                     255, 255, 0));
    geist_document_add_object(doc,
-                             geist_line_new_from_to(5, 5, 200, 200, 255, 255, 0,
-                                                    0));
+                             geist_line_new_from_to(5, 5, 200, 200, 255, 255,
+                                                    0, 0));
    geist_document_add_object(doc,
-                             geist_line_new_from_to(5, 200, 200, 5, 255, 50, 50,
-                                                    255));
+                             geist_line_new_from_to(5, 200, 200, 5, 255, 50,
+                                                    50, 255));
 
    geist_document_render_full(doc, 1);
+#endif
 
    gtk_clist_thaw(GTK_CLIST(obj_list));
    gtk_main();

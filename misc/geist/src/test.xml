@@ -1,0 +1,141 @@
+<?xml version="1.0"?>
+<Geist xmlns:geist="http://www.linuxbrit.co.uk/geist">
+  <geist:Document Width="500" Height="500">
+    <geist:Name>Test Document</geist:Name>
+    <geist:Fill R="155" G="216" B="237" A="255"/>
+    <geist:Layers>
+      <geist:Layer Alpha="0" X_Offset="0" Y_Offset="0" Visible="1">
+        <geist:Name>New layer</geist:Name>
+        <geist:Objects>
+          <geist:Object Alpha="0" X="292" Y="130" W="100" H="100" Alias="0" Visible="16" R="255" G="0" B="0" A="106">
+            <geist:Type>Rect</geist:Type>
+            <geist:Name>New rectangle</geist:Name>
+            <geist:Sizemode>Stretch</geist:Sizemode>
+            <geist:Alignment>None</geist:Alignment>
+          </geist:Object>
+          <geist:Object Alpha="0" X="175" Y="125" W="48" H="48" Alias="0" Visible="16" Opacity="100">
+            <geist:Type>Image</geist:Type>
+            <geist:Name>bulb.png</geist:Name>
+            <geist:Sizemode>Zoom</geist:Sizemode>
+            <geist:Alignment>Center Both</geist:Alignment>
+            <geist:Filename>/usr/local/share/geist/images/bulb.png</geist:Filename>
+          </geist:Object>
+          <geist:Object Alpha="0" X="304" Y="194" W="128" H="140" Alias="0" Visible="16" R="0" G="255" B="0" A="100">
+            <geist:Type>Rect</geist:Type>
+            <geist:Name>New rectangle</geist:Name>
+            <geist:Sizemode>Stretch</geist:Sizemode>
+            <geist:Alignment>None</geist:Alignment>
+          </geist:Object>
+          <geist:Object Alpha="0" X="183" Y="152" W="176" H="240" Alias="0" Visible="16" R="255" G="255" B="0" A="100">
+            <geist:Type>Rect</geist:Type>
+            <geist:Name>New rectangle</geist:Name>
+            <geist:Sizemode>Stretch</geist:Sizemode>
+            <geist:Alignment>None</geist:Alignment>
+          </geist:Object>
+          <geist:Object Alpha="0" X="316" Y="274" W="103" H="149" Alias="0" Visible="16" R="0" G="0" B="255" A="100">
+            <geist:Type>Rect</geist:Type>
+            <geist:Name>New rectangle</geist:Name>
+            <geist:Sizemode>Stretch</geist:Sizemode>
+            <geist:Alignment>None</geist:Alignment>
+          </geist:Object>
+          <geist:Object Alpha="0" X="0" Y="0" W="218" H="400" Alias="0" Visible="16" Opacity="60">
+            <geist:Type>Image</geist:Type>
+            <geist:Name>laet.jpg</geist:Name>
+            <geist:Sizemode>Zoom</geist:Sizemode>
+            <geist:Alignment>Center Both</geist:Alignment>
+            <geist:Filename>/usr/local/share/geist/images/laet.jpg</geist:Filename>
+          </geist:Object>
+          <geist:Object Alpha="0" X="103" Y="171" W="48" H="48" Alias="0" Visible="16" Opacity="100">
+            <geist:Type>Image</geist:Type>
+            <geist:Name>globe.png</geist:Name>
+            <geist:Sizemode>Zoom</geist:Sizemode>
+            <geist:Alignment>Center Both</geist:Alignment>
+            <geist:Filename>/usr/local/share/geist/images/globe.png</geist:Filename>
+          </geist:Object>
+          <geist:Object Alpha="0" X="83" Y="171" W="48" H="48" Alias="0" Visible="16" Opacity="100">
+            <geist:Type>Image</geist:Type>
+            <geist:Name>globe.png</geist:Name>
+            <geist:Sizemode>Zoom</geist:Sizemode>
+            <geist:Alignment>Center Both</geist:Alignment>
+            <geist:Filename>/usr/local/share/geist/images/globe.png</geist:Filename>
+          </geist:Object>
+          <geist:Object Alpha="0" X="251" Y="70" W="48" H="48" Alias="0" Visible="16" Opacity="100">
+            <geist:Type>Image</geist:Type>
+            <geist:Name>mush.png</geist:Name>
+            <geist:Sizemode>Zoom</geist:Sizemode>
+            <geist:Alignment>Center Both</geist:Alignment>
+            <geist:Filename>/usr/local/share/geist/images/mush.png</geist:Filename>
+          </geist:Object>
+          <geist:Object Alpha="0" X="322" Y="65" W="48" H="48" Alias="0" Visible="16" Opacity="100">
+            <geist:Type>Image</geist:Type>
+            <geist:Name>mail.png</geist:Name>
+            <geist:Sizemode>Zoom</geist:Sizemode>
+            <geist:Alignment>Center Both</geist:Alignment>
+            <geist:Filename>/usr/local/share/geist/images/mail.png</geist:Filename>
+          </geist:Object>
+          <geist:Object Alpha="0" X="87" Y="273" W="48" H="48" Alias="0" Visible="16" Opacity="100">
+            <geist:Type>Image</geist:Type>
+            <geist:Name>paper.png</geist:Name>
+            <geist:Sizemode>Zoom</geist:Sizemode>
+            <geist:Alignment>Center Both</geist:Alignment>
+            <geist:Filename>/usr/local/share/geist/images/paper.png</geist:Filename>
+          </geist:Object>
+          <geist:Object Alpha="0" X="418" Y="152" W="48" H="48" Alias="0" Visible="16" Opacity="100">
+            <geist:Type>Image</geist:Type>
+            <geist:Name>bulb.png</geist:Name>
+            <geist:Sizemode>Zoom</geist:Sizemode>
+            <geist:Alignment>Center Both</geist:Alignment>
+            <geist:Filename>/usr/local/share/geist/images/bulb.png</geist:Filename>
+          </geist:Object>
+          <geist:Object Alpha="0" X="246" Y="16" W="232" H="30" Alias="0" Visible="16" Fontsize="23" R="255" G="24" B="100" A="128" Wordwrap="0">
+            <geist:Type>Text</geist:Type>
+            <geist:Name>New text</geist:Name>
+            <geist:Sizemode>None</geist:Sizemode>
+            <geist:Alignment>Center Both</geist:Alignment>
+            <geist:Fontname>20thcent</geist:Fontname>
+            <geist:Text>So this is geist...</geist:Text>
+          </geist:Object>
+          <geist:Object Alpha="0" X="197" Y="154" W="297" H="373" Alias="0" Visible="16" Opacity="100">
+            <geist:Type>Image</geist:Type>
+            <geist:Name>elogo.png</geist:Name>
+            <geist:Sizemode>Zoom</geist:Sizemode>
+            <geist:Alignment>Center Both</geist:Alignment>
+            <geist:Filename>/usr/local/share/geist/images/elogo.png</geist:Filename>
+          </geist:Object>
+          <geist:Object Alpha="0" X="359" Y="389" W="107" H="50" Alias="0" Visible="16" R="255" G="255" B="255" A="50">
+            <geist:Type>Rect</geist:Type>
+            <geist:Name>New rectangle</geist:Name>
+            <geist:Sizemode>Stretch</geist:Sizemode>
+            <geist:Alignment>None</geist:Alignment>
+          </geist:Object>
+          <geist:Object Alpha="0" X="3" Y="413" W="239" H="15" Alias="0" Visible="16" Fontsize="11" R="100" G="100" B="255" A="255" Wordwrap="0">
+            <geist:Type>Text</geist:Type>
+            <geist:Name>New text</geist:Name>
+            <geist:Sizemode>None</geist:Sizemode>
+            <geist:Alignment>Center Both</geist:Alignment>
+            <geist:Fontname>20thcent</geist:Fontname>
+            <geist:Text>pr0n had to be in there somewhere...</geist:Text>
+          </geist:Object>
+          <geist:Object Alpha="0" X="3" Y="406" W="240" H="0" Alias="0" Visible="16" R="255" G="0" B="0" A="255" Start_X="3" Start_Y="406" End_X="243" End_Y="406">
+            <geist:Type>XXXXX</geist:Type>
+            <geist:Name>New line</geist:Name>
+            <geist:Sizemode>Stretch</geist:Sizemode>
+            <geist:Alignment>None</geist:Alignment>
+          </geist:Object>
+          <geist:Object Alpha="0" X="5" Y="433" W="237" H="0" Alias="0" Visible="16" R="50" G="50" B="255" A="255" Start_X="5" Start_Y="433" End_X="242" End_Y="433">
+            <geist:Type>XXXXX</geist:Type>
+            <geist:Name>New line</geist:Name>
+            <geist:Sizemode>Stretch</geist:Sizemode>
+            <geist:Alignment>None</geist:Alignment>
+          </geist:Object>
+          <geist:Object Alpha="0" X="19" Y="445" W="225" H="36" Alias="0" Visible="16" R="0" G="80" B="0" A="50">
+            <geist:Type>Rect</geist:Type>
+            <geist:Name>New rectangle</geist:Name>
+            <geist:Sizemode>Stretch</geist:Sizemode>
+            <geist:Alignment>None</geist:Alignment>
+          </geist:Object>
+        </geist:Objects>
+      </geist:Layer>
+    </geist:Layers>
+  </geist:Document>
+</Geist>
