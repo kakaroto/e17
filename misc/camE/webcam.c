@@ -337,8 +337,8 @@ archive_jpeg(Imlib_Image im)
 
       do
       {
-         snprintf(buffer, sizeof(buffer), "%s/webcam_%s.%s", archive_ext, grab_archive,
-                  date);
+         snprintf(buffer, sizeof(buffer), "%s/webcam_%s.%s", grab_archive,
+                  date, archive_ext);
       }
       while (stat(buffer, &st) == 0);
       gib_imlib_save_image(im, buffer);
@@ -855,8 +855,11 @@ main(int argc, char *argv[])
                 || !upload_blockfile)
             {
                log("uploading via scp\n");
-               snprintf(buf, sizeof(buf), "scp -BCq %s %s", temp_file,
-                        scp_target);
+               snprintf(buf, sizeof(buf), "scp -BCq %s %s:%s/%s", temp_file,
+                        scp_target, ftp_dir, ftp_tmp);
+               system(buf);
+               snprintf (buf, sizeof(buf), "ssh -nq %s 'mv %s/%s %s/%s'",
+                             scp_target, ftp_dir, ftp_tmp, ftp_dir, ftp_file);
                system(buf);
                log("shot uploaded\n");
                if (action_post_upload)

@@ -16,6 +16,12 @@ debug = 0
 # Actually do the upload? If do = 0, just take and archive pics.
 do = 1
 
+# you can set ftp->do to 0 above and use scp instead - you still need
+# the dir, file and tmp settings in the ftp section for this to work.
+
+[scp]
+# target = user@host
+
 [grab]
 device = /dev/video0
 # store temp image on local machine
