@@ -24,14 +24,6 @@
 #include "E.h"
 #include <sys/time.h>
 
-typedef struct _awaiticlass
-{
-   Window              client_win;
-   int                 ewin_bit;
-   ImageClass         *iclass;
-}
-AwaitIclass;
-
 #define EWIN_BORDER_PART_EVENT_MASK \
   (KeyPressMask | KeyReleaseMask | ButtonPressMask | ButtonReleaseMask | \
    EnterWindowMask | LeaveWindowMask | PointerMotionMask)
@@ -509,9 +501,6 @@ void
 EwinBorderSetTo(EWin * ewin, const Border * b)
 {
    int                 i;
-   char                s[1024];
-
-   AwaitIclass        *await;
 
    if (ewin->border == b)
       return;
