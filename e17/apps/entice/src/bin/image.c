@@ -107,7 +107,7 @@ entice_image_rotate(Evas_Object * o, int orientation)
       evas_object_geometry_get(o, &x, &y, &w, &h);
 
       if ((imlib_im =
-           imlib_create_image_using_copied_data(iw, ih,
+           imlib_create_image_using_copied_data(im->iw, im->ih,
                                                 evas_object_image_data_get
                                                 (im->obj, 1))))
       {
@@ -116,6 +116,7 @@ entice_image_rotate(Evas_Object * o, int orientation)
          im->iw = imlib_image_get_width();
          im->ih = imlib_image_get_height();
          evas_object_image_size_set(im->obj, im->iw, im->ih);
+         evas_object_image_fill_set(im->obj, 0.0, 0.0, im->iw, im->ih);
          evas_object_image_data_copy_set(im->obj,
                                          imlib_image_get_data_for_reading_only
                                          ());
@@ -201,6 +202,7 @@ entice_image_save(Evas_Object * o)
          if (im->format && im->filename)
          {
             char *tmp = NULL;
+            char tmpfile[PATH_MAX];
             Imlib_Load_Error err;
 
             imlib_image_set_has_alpha((char)
@@ -208,11 +210,13 @@ entice_image_save(Evas_Object * o)
             imlib_image_attach_data_value("quality", NULL, im->quality, NULL);
             if ((tmp = strrchr(im->filename, '.')))
                imlib_image_set_format(tmp + 1);
-            imlib_save_image_with_error_return(im->filename, &err);
+            snprintf(tmpfile, PATH_MAX, "%s.%d", im->filename, getpid());
+            imlib_save_image_with_error_return(tmpfile, &err);
             switch (err)
             {
               case 0:
-                 result = 1;
+                 if (!rename(tmpfile, im->filename))
+                    result = 1;
                  break;
               default:
                  fprintf(stderr, "Unable to save file(%d)", (int) err);
