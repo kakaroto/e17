@@ -325,7 +325,11 @@ save (ImlibImage *im, ImlibProgressFunction progress,
 	buflen = ((im->w * im->h * sizeof(DATA32) * 101) / 100) + 12;
 #ifdef WORDS_BIGENDIAN
 	  {
+	     int i;
 	     DATA32 *buf2;
+
+	     for (i = 0; i < 8; i++)
+		SWAP32(header[i]);
 	     
 	     buf2 = malloc((((im->w * im->h * 101) / 100) + 3) * sizeof(DATA32));
 	     if (buf2)
