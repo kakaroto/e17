@@ -140,6 +140,11 @@ sub ProcessFile {
 	local $Name, $Exec, $Icon, $Cats, $Type, $File;
 	local $c;
 
+	if (! -f "$f")  {
+		print "Not found: $f\n" if $dbg ge 1;
+		return;
+	}
+
 	# Global ref no
 	$N++;
 
@@ -147,7 +152,7 @@ sub ProcessFile {
 	$Cats = shift;
 	$Type = shift;
 
-	open(FI,$f) or die "Not found: $f\n";
+	open(FI,$f) or return;
 	while (<FI>) {
 		if (/^Name=(.*)$/) {
 			$Name = $1;
@@ -323,10 +328,10 @@ sub MakeAppsMenu {
 	}
 
 	# Make top- and sub-menus
-	open(FTopM, ">$dir/index.menu") or die "What? $dir/index.menu";
+	open(FTopM, ">$dir/index.menu") or die "*** Couldn't create $dir/index.menu\n";
 	print FTopM "\"$type Menu\"\n";
 	foreach $m (sort(keys(%menus))) {
-		open(FSubM, ">$dir/$m.menu") or die "What? $dir/$m.menu";
+		open(FSubM, ">$dir/$m.menu") or die "*** Couldn't create $dir/$m.menu\n";
 		print "- Submenu: $m\n" if $dbg ge 2;
 		print FTopM "\"$m\" \"\" menu \"$dir/$m.menu\"\n";
 		print FSubM "\"$m\"\n";
