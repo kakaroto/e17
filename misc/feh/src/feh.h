@@ -47,10 +47,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <signal.h>
 #include <sys/wait.h>
 #include <Imlib2.h>
+#include <giblib/giblib.h>
 
 #include "config.h"
 #include "structs.h"
-#include "feh_imlib2.h"
 #include "menu.h"
 
 #include "utils.h"
@@ -84,8 +84,6 @@ enum slide_change
 { SLIDE_NEXT, SLIDE_PREV, SLIDE_FIRST, SLIDE_LAST, SLIDE_JUMP_FWD,
    SLIDE_JUMP_BACK
 };
-enum direction
-{ FORWARD, BACK };
 
 typedef void (*sighandler_t) (int);
 

@@ -89,7 +89,7 @@ struct __winwidget
    GC gc;
    Pixmap bg_pmap;
    char *name;
-   feh_list *file;
+   gib_list *file;
    unsigned char visible;
 
    /* Stuff for zooming */
@@ -123,7 +123,7 @@ void winwidget_destroy_xwin(winwidget winwid);
 int winwidget_count(void);
 
 winwidget winwidget_get_from_window(Window win);
-winwidget winwidget_create_from_file(feh_list * filename, char *name,
+winwidget winwidget_create_from_file(gib_list * filename, char *name,
 
                                      char type);
 winwidget winwidget_create_from_image(Imlib_Image im, char *name, char type);

@@ -24,7 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 #include "feh.h"
-#include "feh_list.h"
+#include "gib_list.h"
 #include "filelist.h"
 #include "winwidget.h"
 #include "timers.h"
@@ -340,7 +340,7 @@ feh_event_handle_ButtonRelease(XEvent * ev)
                if (!thumbwin)
                {
                   thumbwin =
-                     winwidget_create_from_file(feh_list_add_front
+                     winwidget_create_from_file(gib_list_add_front
                                                 (NULL, thumbfile), s,
                                                 WIN_TYPE_THUMBNAIL_VIEWER);
                   winwidget_show(thumbwin);
@@ -348,7 +348,7 @@ feh_event_handle_ButtonRelease(XEvent * ev)
                else if (FEH_FILE(thumbwin->file->data) != thumbfile)
                {
                   free(thumbwin->file);
-                  thumbwin->file = feh_list_add_front(NULL, thumbfile);
+                  thumbwin->file = gib_list_add_front(NULL, thumbfile);
                   winwidget_rename(thumbwin, s);
                   feh_reload_image(thumbwin, 1);
                }
@@ -591,10 +591,10 @@ feh_event_handle_MotionNotify(XEvent * ev)
          {
             Imlib_Image temp;
 
-            temp = feh_imlib_create_rotated_image(winwid->im, 0.0);
-            winwid->im_w = feh_imlib_image_get_width(temp);
-            winwid->im_h = feh_imlib_image_get_height(temp);
-            feh_imlib_free_image_and_decache(temp);
+            temp = gib_imlib_create_rotated_image(winwid->im, 0.0);
+            winwid->im_w = gib_imlib_image_get_width(temp);
+            winwid->im_h = gib_imlib_image_get_height(temp);
+            gib_imlib_free_image_and_decache(temp);
             if (!winwid->full_screen && !opt.geom)
                winwidget_resize(winwid, winwid->im_w, winwid->im_h);
             winwid->has_rotated = 1;
@@ -618,17 +618,17 @@ feh_event_handle_MotionNotify(XEvent * ev)
 
          D(5, ("Blurring\n"));
 
-         temp = feh_imlib_clone_image(winwid->im);
+         temp = gib_imlib_clone_image(winwid->im);
          blur_radius = (((double) ev->xmotion.x / winwid->w) * 20) - 10;
          D(5, ("angle: %d\n", blur_radius));
          if (blur_radius > 0)
-            feh_imlib_image_sharpen(temp, blur_radius);
+            gib_imlib_image_sharpen(temp, blur_radius);
          else
-            feh_imlib_image_blur(temp, 0 - blur_radius);
+            gib_imlib_image_blur(temp, 0 - blur_radius);
          ptr = winwid->im;
          winwid->im = temp;
          winwidget_render_image(winwid, 0, 0);
-         feh_imlib_free_image_and_decache(winwid->im);
+         gib_imlib_free_image_and_decache(winwid->im);
          winwid->im = ptr;
       }
    }
@@ -647,12 +647,12 @@ feh_event_handle_MotionNotify(XEvent * ev)
             x = ev->xmotion.x - winwid->im_x;
             y = ev->xmotion.y - winwid->im_y;
             orig_im = winwid->im;
-            winwid->im = feh_imlib_clone_image(orig_im);
+            winwid->im = gib_imlib_clone_image(orig_im);
             imlib_context_set_image(winwid->im);
             imlib_apply_filter("bump_map_point(x=[],y=[],map=" PREFIX
                                "/share/feh/images/about.png);", &x, &y);
             winwidget_render_image(winwid, 0, 1);
-            feh_imlib_free_image_and_decache(winwid->im);
+            gib_imlib_free_image_and_decache(winwid->im);
             winwid->im = orig_im;
          }
          else if (winwid->type == WIN_TYPE_THUMBNAIL)
@@ -671,27 +671,27 @@ feh_event_handle_MotionNotify(XEvent * ev)
                   Imlib_Image origwin;
 
                   origwin = winwid->im;
-                  winwid->im = feh_imlib_clone_image(origwin);
-                  feh_imlib_image_fill_rectangle(winwid->im, thumbnail->x,
+                  winwid->im = gib_imlib_clone_image(origwin);
+                  gib_imlib_image_fill_rectangle(winwid->im, thumbnail->x,
                                                  thumbnail->y, thumbnail->w,
                                                  thumbnail->h, 50, 50, 255,
                                                  100);
-                  feh_imlib_image_draw_rectangle(winwid->im, thumbnail->x,
+                  gib_imlib_image_draw_rectangle(winwid->im, thumbnail->x,
                                                  thumbnail->y, thumbnail->w,
                                                  thumbnail->h, 255, 255, 255,
                                                  255);
-                  feh_imlib_image_draw_rectangle(winwid->im, thumbnail->x + 1,
+                  gib_imlib_image_draw_rectangle(winwid->im, thumbnail->x + 1,
                                                  thumbnail->y + 1,
                                                  thumbnail->w - 2,
                                                  thumbnail->h - 2, 0, 0, 0,
                                                  255);
-                  feh_imlib_image_draw_rectangle(winwid->im, thumbnail->x + 2,
+                  gib_imlib_image_draw_rectangle(winwid->im, thumbnail->x + 2,
                                                  thumbnail->y + 2,
                                                  thumbnail->w - 4,
                                                  thumbnail->h - 4, 255, 255,
                                                  255, 255);
                   winwidget_render_image(winwid, 0, 1);
-                  feh_imlib_free_image_and_decache(winwid->im);
+                  gib_imlib_free_image_and_decache(winwid->im);
                   winwid->im = origwin;
                }
                else

@@ -78,6 +78,9 @@ struct __fehoptions
    char *customlist;
    char *menu_bg;
    char *rcfile;
+   char *menu_style;
+
+   gib_style *menu_style_l;
 
    unsigned char next_button;
    unsigned char zoom_button;

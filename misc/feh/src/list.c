@@ -24,14 +24,14 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 #include "feh.h"
-#include "feh_list.h"
+#include "gib_list.h"
 #include "filelist.h"
 #include "options.h"
 
 void
 init_list_mode(void)
 {
-   feh_list *l;
+   gib_list *l;
    feh_file *file = NULL;
    int j = 0;
 
@@ -82,7 +82,7 @@ void
 real_loadables_mode(int loadable)
 {
    feh_file *file;
-   feh_list *l;
+   gib_list *l;
 
    D_ENTER(4);
    opt.quiet = 1;
@@ -102,7 +102,7 @@ real_loadables_mode(int loadable)
             if (opt.action)
                feh_action_run(file);
          }
-         feh_imlib_free_image_and_decache(im);
+         gib_imlib_free_image_and_decache(im);
       }
       else
       {

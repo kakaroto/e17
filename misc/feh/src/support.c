@@ -45,7 +45,7 @@ feh_wm_set_bg_file(char *file, unsigned char bgmode)
       switch (bgmode)
       {
         case BG_MODE_SEAMLESS:
-           feh_imlib_image_tile(im);
+           gib_imlib_image_tile(im);
            feh_wm_set_bg(NULL, im, 0, 0, 0, 1);
            break;
         case BG_MODE_TILE:
@@ -58,7 +58,7 @@ feh_wm_set_bg_file(char *file, unsigned char bgmode)
            feh_wm_set_bg(file, im, 1, 0, 0, 1);
            break;
       }
-      feh_imlib_free_image_and_decache(im);
+      gib_imlib_free_image_and_decache(im);
       feh_file_free(fil);
    }
 }
@@ -81,7 +81,7 @@ feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
       snprintf(bgfil, sizeof(bgfil), "%s/.%s.png", getenv("HOME"), bgname);
       imlib_context_set_image(im);
       imlib_image_set_format("png");
-      feh_imlib_save_image(im, bgfil);
+      gib_imlib_save_image(im, bgfil);
       D(3, ("bg saved as %s\n", bgfil));
       fil = bgfil;
    }
@@ -169,7 +169,7 @@ feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
          w = scr->width;
          h = scr->height;
          pmap_d1 = XCreatePixmap(disp, root, scr->width, scr->height, depth);
-         feh_imlib_render_image_on_drawable_at_size(pmap_d1, im, 0, 0,
+         gib_imlib_render_image_on_drawable_at_size(pmap_d1, im, 0, 0,
                                                     scr->width, scr->height,
                                                     1, 0, 1);
          fehbg = estrjoin(" ", "feh --bg-scale", fil, NULL);
@@ -185,17 +185,17 @@ feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
          gcval.foreground = BlackPixel(disp, DefaultScreen(disp));
          gc = XCreateGC(disp, root, GCForeground, &gcval);
          XFillRectangle(disp, pmap_d1, gc, 0, 0, scr->width, scr->height);
-         x = (scr->width - feh_imlib_image_get_width(im)) >> 1;
-         y = (scr->height - feh_imlib_image_get_height(im)) >> 1;
-         feh_imlib_render_image_on_drawable(pmap_d1, im, x, y, 1, 0, 0);
+         x = (scr->width - gib_imlib_image_get_width(im)) >> 1;
+         y = (scr->height - gib_imlib_image_get_height(im)) >> 1;
+         gib_imlib_render_image_on_drawable(pmap_d1, im, x, y, 1, 0, 0);
          XFreeGC(disp, gc);
          fehbg = estrjoin(" ", "feh --bg-center", fil, NULL);
       } else {
-         w = feh_imlib_image_get_width(im);
-         h = feh_imlib_image_get_height(im);
+         w = gib_imlib_image_get_width(im);
+         h = gib_imlib_image_get_height(im);
          pmap_d1 =
             XCreatePixmap(disp, root, w, h, depth);
-         feh_imlib_render_image_on_drawable(pmap_d1, im, 0, 0, 1, 0, 0);
+         gib_imlib_render_image_on_drawable(pmap_d1, im, 0, 0, 1, 0, 0);
          fehbg = estrjoin(" ", "feh --bg-tile", fil, NULL);
       }
 

@@ -1,3 +1,13 @@
+Sat Jan 26 16:20:43 GMT 2002  Tom Gilbert <tom@linuxbrit.co.uk>
+
+  * Use giblib fontstyles for menus, instead of hardcoding the shadow.
+
+Sat Jan 26 15:34:26 GMT 2002  Tom Gilbert <tom@linuxbrit.co.uk>
+
+  * make sure fullscreen windows are really fullscreen.
+  * Haha! feh uses giblib now, pointless me maintaining two list
+    implementations and two imlib2 wrappers. Plus now I can add fontstyles :)
+
 Sat Jan 26 14:10:54 GMT 2002  Tom Gilbert <tom@linuxbrit.co.uk>
 
   * Goodbye, non-free fonts, hello, free font. Turns out the guy who made

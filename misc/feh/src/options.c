@@ -24,7 +24,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 #include "feh.h"
-#include "feh_list.h"
 #include "filelist.h"
 #include "options.h"
 
@@ -57,6 +56,7 @@ init_parse_options(int argc, char **argv)
    opt.menu_font = estrdup(DEFAULT_MENU_FONT);
    opt.font = estrdup(DEFAULT_FONT);
    opt.menu_bg = estrdup(PREFIX "/share/feh/images/menubg.png");
+   opt.menu_style = estrdup(PREFIX "/share/feh/fonts/menu.style");
    opt.next_button = 1;
    opt.zoom_button = 2;
    opt.menu_button = 3;
@@ -88,7 +88,7 @@ init_parse_options(int argc, char **argv)
          here, as files specified on the commandline end up at the *end* of
          the combined filelist, in the specified order. */
       D(3, ("About to load filelist from file\n"));
-      filelist = feh_list_cat(filelist, feh_read_filelist(opt.filelistfile));
+      filelist = gib_list_cat(filelist, feh_read_filelist(opt.filelistfile));
    }
 
    D(4, ("Options parsed\n"));
@@ -96,7 +96,7 @@ init_parse_options(int argc, char **argv)
    if(opt.bgmode)
       D_RETURN_(4);
 
-   if (feh_list_length(filelist) == 0)
+   if (gib_list_length(filelist) == 0)
       show_mini_usage();
 
    check_options();
@@ -375,6 +375,7 @@ feh_parse_option_array(int argc, char **argv)
       {"bg-center", 1, 0, 201},
       {"bg-scale", 1, 0, 202},
       {"bg-seamless", 1, 0, 203},
+      {"menu-style", 1, 0, 204},
       {0, 0, 0, 0}
    };
    int optch = 0, cmdx = 0, i = 0;
@@ -639,6 +640,10 @@ feh_parse_option_array(int argc, char **argv)
            opt.bgmode = BG_MODE_SEAMLESS;
            opt.output_file = estrdup(optarg);
            break;
+        case 204:
+           free(opt.menu_style);
+           opt.menu_style = estrdup(optarg);
+           break;
         default:
            break;
       }
@@ -875,6 +880,7 @@ show_usage(void)
            "      --fontpath PATH       Specify an extra directory to look in for fonts,\n"
            "                            can be used multiple times to add multiple paths.\n"
            "  -M, --menu-font FONT      Use FONT for the font in menus.\n"
+           "      --menu-style FILE     Use FILE as the style descriptor for menu text.\n"
            "      --menu-bg BG          Use BG for the background image in menus.\n"
            "  -N, --no-menus            Don't load or show any menus.\n"
            "  -1, --next-button B       Use button B to advance to the next image in any\n"

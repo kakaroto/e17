@@ -6,19 +6,21 @@
 --blank-lines-after-procedures
 --no-blank-lines-after-commas
 --break-before-boolean-operator
---braces-after-if-line
 --brace-indent 0
---braces-after-struct-decl-line
+--braces-on-if-line
+--braces-on-struct-decl-line
 --no-comment-delimiters-on-blank-lines
---dont-cuddle-else
+--cuddle-else
+--cuddle-do-while
+--break-function-decl-args
 --else-endif-column 1
 --space-after-cast
 --declaration-indentation 2
 -ndj
 --dont-format-first-column-comments
 --ignore-newlines
---indent-level 3
---parameter-indentation 3
+--indent-level 2
+--parameter-indentation 2
 --continue-at-parentheses
 --no-space-after-function-call-names
 --procnames-start-lines
@@ -27,7 +29,7 @@
 --comment-line-length 78
 --case-indentation 2
 --case-brace-indentation 0
---continuation-indentation 3
+--continuation-indentation 2
 --tab-size 99
 --line-length 78
---comment-indentation 45
+--comment-indentation 25

@@ -24,7 +24,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 #include "feh.h"
-#include "feh_list.h"
 #include "filelist.h"
 #include "winwidget.h"
 #include "options.h"
@@ -91,8 +90,8 @@ winwidget_create_from_image(Imlib_Image im, char *name, char type)
    ret->type = type;
 
    ret->im = im;
-   ret->w = ret->im_w = feh_imlib_image_get_width(ret->im);
-   ret->h = ret->im_h = feh_imlib_image_get_height(ret->im);
+   ret->w = ret->im_w = gib_imlib_image_get_width(ret->im);
+   ret->h = ret->im_h = gib_imlib_image_get_height(ret->im);
 
    if (name)
       ret->name = estrdup(name);
@@ -108,7 +107,7 @@ winwidget_create_from_image(Imlib_Image im, char *name, char type)
 }
 
 winwidget
-winwidget_create_from_file(feh_list * list, char *name, char type)
+winwidget_create_from_file(gib_list * list, char *name, char type)
 {
    winwidget ret = NULL;
    feh_file *file = FEH_FILE(list->data);
@@ -134,11 +133,11 @@ winwidget_create_from_file(feh_list * list, char *name, char type)
 
    if (!ret->win)
    {
-      ret->w = ret->im_w = feh_imlib_image_get_width(ret->im);
-      ret->h = ret->im_h = feh_imlib_image_get_height(ret->im);
+      ret->w = ret->im_w = gib_imlib_image_get_width(ret->im);
+      ret->h = ret->im_h = gib_imlib_image_get_height(ret->im);
       D(3,
         ("image is %dx%d pixels, format %s\n", ret->w, ret->h,
-         feh_imlib_image_format(ret->im)));
+         gib_imlib_image_format(ret->im)));
    if(opt.full_screen)
       ret->full_screen = True;
       winwidget_create_window(ret, ret->w, ret->h);
@@ -241,6 +240,7 @@ winwidget_create_window(winwidget ret, int w, int h)
       xsz.x = 0;
       xsz.y = 0;
       XSetWMNormalHints(disp, ret->win, &xsz);
+      XMoveWindow(disp, ret->win, 0,0);
    }
 
    /* set the icon name property */
@@ -331,7 +331,7 @@ winwidget_render_image(winwidget winwid, int resize, int alias)
    winwidget_setup_pixmaps(winwid);
 
    if (!winwid->full_screen
-       && ((feh_imlib_image_has_alpha(winwid->im)) || (opt.geom)
+       && ((gib_imlib_image_has_alpha(winwid->im)) || (opt.geom)
            || (winwid->im_x || winwid->im_y) || (winwid->zoom != 1.0)
            || (winwid->w > winwid->im_w || winwid->h > winwid->im_h)
            || (winwid->has_rotated)))
@@ -449,7 +449,7 @@ winwidget_render_image(winwidget winwid, int resize, int alias)
 
    D(5, ("winwidget_render(): winwid->im_angle = %f\n", winwid->im_angle));
    if (winwid->has_rotated)
-      feh_imlib_render_image_part_on_drawable_at_size_with_rotation(winwid->
+      gib_imlib_render_image_part_on_drawable_at_size_with_rotation(winwid->
                                                                     bg_pmap,
                                                                     winwid->
                                                                     im, sx,
@@ -462,10 +462,10 @@ winwidget_render_image(winwidget winwid, int resize, int alias)
                                                                     1, 1,
                                                                     alias);
    else
-      feh_imlib_render_image_part_on_drawable_at_size(winwid->bg_pmap,
+      gib_imlib_render_image_part_on_drawable_at_size(winwid->bg_pmap,
                                                       winwid->im, sx, sy, sw,
                                                       sh, dx, dy, dw, dh, 1,
-                                                      feh_imlib_image_has_alpha
+                                                      gib_imlib_image_has_alpha
                                                       (winwid->im), alias);
 
    if (opt.draw_filename)
@@ -518,10 +518,10 @@ feh_create_checks(void)
          for (x = 0; x < 16; x += 8)
          {
             if (onoff)
-               feh_imlib_image_fill_rectangle(checks, x, y, 8, 8, 144, 144,
+               gib_imlib_image_fill_rectangle(checks, x, y, 8, 8, 144, 144,
                                               144, 255);
             else
-               feh_imlib_image_fill_rectangle(checks, x, y, 8, 8, 100, 100,
+               gib_imlib_image_fill_rectangle(checks, x, y, 8, 8, 100, 100,
                                               100, 255);
             onoff++;
             if (onoff == 2)
@@ -529,7 +529,7 @@ feh_create_checks(void)
          }
       }
       checks_pmap = XCreatePixmap(disp, root, 16, 16, depth);
-      feh_imlib_render_image_on_drawable(checks_pmap, checks, 0, 0, 1, 0, 0);
+      gib_imlib_render_image_on_drawable(checks_pmap, checks, 0, 0, 1, 0, 0);
    }
    D_RETURN(4, checks_pmap);
 }
@@ -590,7 +590,7 @@ winwidget_destroy(winwidget winwid)
       free(winwid->file);
    }
    if (winwid->im)
-      feh_imlib_free_image_and_decache(winwid->im);
+      gib_imlib_free_image_and_decache(winwid->im);
    free(winwid);
    D_RETURN_(4);
 }
@@ -651,6 +651,8 @@ winwidget_show(winwidget winwid)
    if (!winwid->visible)
    {
       XMapWindow(disp, winwid->win);
+      if(opt.full_screen)
+        XMoveWindow(disp, winwid->win, 0,0);
       /* wait for the window to map */
       D(4, ("Waiting for window to map\n"));
       XMaskEvent(disp, StructureNotifyMask, &ev);
@@ -771,7 +773,7 @@ winwidget_free_image(winwidget w)
 {
    D_ENTER(4);
    if (w->im)
-      feh_imlib_free_image_and_decache(w->im);
+      gib_imlib_free_image_and_decache(w->im);
    w->im = NULL;
    w->im_w = 0;
    w->im_h = 0;

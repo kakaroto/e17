@@ -28,7 +28,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 typedef struct __fehtimer _fehtimer;
 typedef _fehtimer *fehtimer;
-typedef struct __feh_list feh_list;
 typedef struct __feh_file feh_file;
 typedef struct __feh_file_info feh_file_info;
 typedef struct __winwidget _winwidget;

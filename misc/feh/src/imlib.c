@@ -24,7 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 #include "feh.h"
-#include "feh_list.h"
+#include "gib_list.h"
 #include "filelist.h"
 #include "winwidget.h"
 #include "options.h"
@@ -614,7 +614,7 @@ feh_draw_zoom(winwidget w)
       D_RETURN_(4);
 
    if (!fn)
-      fn = feh_imlib_load_font(DEFAULT_FONT);
+      fn = gib_imlib_load_font(DEFAULT_FONT);
 
    if (!fn)
    {
@@ -626,7 +626,7 @@ feh_draw_zoom(winwidget w)
             (int) (w->im_w * w->zoom), (int) (w->im_h * w->zoom));
 
    /* Work out how high the font is */
-   feh_imlib_get_text_size(fn, buf, &tw, &th, IMLIB_TEXT_TO_RIGHT);
+   gib_imlib_get_text_size(fn, buf, NULL, &tw, &th, IMLIB_TEXT_TO_RIGHT);
 
    tw += 2;
    th += 2;
@@ -634,14 +634,14 @@ feh_draw_zoom(winwidget w)
    if (!im)
       eprintf("Couldn't create image. Out of memory?");
 
-   feh_imlib_image_fill_rectangle(im, 0, 0, tw, th, 0, 0, 0, 255);
+   gib_imlib_image_fill_rectangle(im, 0, 0, tw, th, 0, 0, 0, 255);
 
-   feh_imlib_text_draw(im, fn, 1, 1, buf, IMLIB_TEXT_TO_RIGHT, 255, 255, 255,
+   gib_imlib_text_draw(im, fn, NULL, 1, 1, buf, IMLIB_TEXT_TO_RIGHT, 255, 255, 255,
                        255);
 
-   feh_imlib_render_image_on_drawable(w->bg_pmap, im, 0, w->h - th, 1, 0, 0);
+   gib_imlib_render_image_on_drawable(w->bg_pmap, im, 0, w->h - th, 1, 0, 0);
 
-   feh_imlib_free_image_and_decache(im);
+   gib_imlib_free_image_and_decache(im);
    D_RETURN_(4);
 }
 
@@ -661,9 +661,9 @@ feh_draw_filename(winwidget w)
    if (!fn)
    {
       if (w->full_screen)
-         fn = feh_imlib_load_font(DEFAULT_FONT_BIG);
+         fn = gib_imlib_load_font(DEFAULT_FONT_BIG);
       else
-         fn = feh_imlib_load_font(DEFAULT_FONT);
+         fn = gib_imlib_load_font(DEFAULT_FONT);
    }
 
    if (!fn)
@@ -673,7 +673,7 @@ feh_draw_filename(winwidget w)
    }
 
    /* Work out how high the font is */
-   feh_imlib_get_text_size(fn, FEH_FILE(w->file->data)->filename, &tw, &th,
+   gib_imlib_get_text_size(fn, FEH_FILE(w->file->data)->filename, NULL, &tw, &th,
                            IMLIB_TEXT_TO_RIGHT);
 
    tw += 2;
@@ -682,14 +682,14 @@ feh_draw_filename(winwidget w)
    if (!im)
       eprintf("Couldn't create image. Out of memory?");
 
-   feh_imlib_image_fill_rectangle(im, 0, 0, tw, th, 0, 0, 0, 255);
+   gib_imlib_image_fill_rectangle(im, 0, 0, tw, th, 0, 0, 0, 255);
 
-   feh_imlib_text_draw(im, fn, 1, 1, FEH_FILE(w->file->data)->filename,
+   gib_imlib_text_draw(im, fn, NULL, 1, 1, FEH_FILE(w->file->data)->filename,
                        IMLIB_TEXT_TO_RIGHT, 255, 255, 255, 255);
 
-   feh_imlib_render_image_on_drawable(w->bg_pmap, im, 0, 0, 1, 0, 0);
+   gib_imlib_render_image_on_drawable(w->bg_pmap, im, 0, 0, 1, 0, 0);
 
-   feh_imlib_free_image_and_decache(im);
+   gib_imlib_free_image_and_decache(im);
    D_RETURN_(4);
 }
 
@@ -707,7 +707,7 @@ feh_display_status(char stat)
    D(5, ("filelist %p, filelist->next %p\n", filelist, filelist->next));
 
    if (!init_len)
-      init_len = feh_list_length(filelist);
+      init_len = gib_list_length(filelist);
 
    if (i)
    {
@@ -723,7 +723,7 @@ feh_display_status(char stat)
          int len;
          char buf[50];
 
-         len = feh_list_length(filelist);
+         len = gib_list_length(filelist);
          snprintf(buf, sizeof(buf), " %5d/%d (%d)\n[%3d%%] ", i, init_len,
                   len, ((int) ((float) i / init_len * 100)));
          fprintf(stdout, buf);
@@ -753,9 +753,9 @@ void feh_edit_inplace_orient(winwidget w, int orientation) {
 
   ret = feh_load_image(&old, FEH_FILE(w->file->data));
   if(ret) {
-    feh_imlib_image_orientate(old, orientation);
-    feh_imlib_save_image(old, FEH_FILE(w->file->data)->filename);
-    feh_imlib_free_image(old);
+    gib_imlib_image_orientate(old, orientation);
+    gib_imlib_save_image(old, FEH_FILE(w->file->data)->filename);
+    gib_imlib_free_image(old);
     feh_reload_image(w, 1);
   } else {
     wprintf("failed to load image from disk to edit it in place\n");

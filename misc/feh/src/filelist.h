@@ -60,17 +60,17 @@ feh_file *feh_file_new(char *filename);
 void feh_file_free(feh_file * file);
 feh_file_info *feh_file_info_new(void);
 void feh_file_info_free(feh_file_info * info);
-feh_list *feh_file_rm_and_free(feh_list * list, feh_list * file);
+gib_list *feh_file_rm_and_free(gib_list * list, gib_list * file);
 void add_file_to_filelist_recursively(char *origpath, unsigned char level);
 void add_file_to_rm_filelist(char *file);
 void delete_rm_files(void);
-feh_list *feh_file_info_preload(feh_list * list);
+gib_list *feh_file_info_preload(gib_list * list);
 int feh_file_info_load(feh_file * file, Imlib_Image im);
 void feh_prepare_filelist(void);
-int feh_write_filelist(feh_list * list, char *filename);
-feh_list *feh_read_filelist(char *filename);
+int feh_write_filelist(gib_list * list, char *filename);
+gib_list *feh_read_filelist(char *filename);
 char *feh_absolute_path(char *path);
-feh_list *feh_file_remove_from_list(feh_list * list, feh_list * l);
+gib_list *feh_file_remove_from_list(gib_list * list, gib_list * l);
 void feh_save_filelist();
 
 int feh_cmp_name(void *file1, void *file2);
@@ -81,7 +81,7 @@ int feh_cmp_pixels(void *file1, void *file2);
 int feh_cmp_size(void *file1, void *file2);
 int feh_cmp_format(void *file1, void *file2);
 
-extern feh_list *filelist;
-extern feh_list *current_file;
+extern gib_list *filelist;
+extern gib_list *current_file;
 
 #endif

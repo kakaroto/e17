@@ -6,7 +6,7 @@ AUTOMAKE_OPTIONS = 1.4 foreign
 MAINTAINERCLEANFILES = Makefile.in				
 
 testfonts_DATA = \
-helmetr.ttf
+helmetr.ttf menu.style
 
 testfontsdir=$(prefix)/share/feh/fonts
 

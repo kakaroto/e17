@@ -25,7 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "feh.h"
 #include "winwidget.h"
-#include "feh_list.h"
+#include "gib_list.h"
 #include "filelist.h"
 #include "options.h"
 
@@ -41,7 +41,7 @@ init_collage_mode(void)
    Imlib_Image bg_im = NULL, im_thumb = NULL;
    feh_file *file = NULL;
    unsigned char trans_bg = 0;
-   feh_list *l, *last = NULL;
+   gib_list *l, *last = NULL;
    int file_num = 0;
    char *s;
 
@@ -49,7 +49,7 @@ init_collage_mode(void)
 
    mode = "collage";
 
-   file_num = feh_list_length(filelist);
+   file_num = gib_list_length(filelist);
 
    /* Use bg image dimensions for default size */
    if (opt.bg && opt.bg_file)
@@ -62,8 +62,8 @@ init_collage_mode(void)
          D(4,("Time to apply a background to blend onto\n"));
          if (feh_load_image_char(&bg_im, opt.bg_file) != 0)
          {
-            bg_w = feh_imlib_image_get_width(bg_im);
-            bg_h = feh_imlib_image_get_height(bg_im);
+            bg_w = gib_imlib_image_get_width(bg_im);
+            bg_h = gib_imlib_image_get_height(bg_im);
          }
       }
    }
@@ -102,18 +102,18 @@ init_collage_mode(void)
       eprintf("Imlib error creating image");
 
    if (bg_im)
-      feh_imlib_blend_image_onto_image(im_main, bg_im,
-                                       feh_imlib_image_has_alpha(bg_im), 0, 0,
+      gib_imlib_blend_image_onto_image(im_main, bg_im,
+                                       gib_imlib_image_has_alpha(bg_im), 0, 0,
                                        bg_w, bg_h, 0, 0, w, h, 1, 0, 0);
    else if (trans_bg)
    {
-      feh_imlib_image_fill_rectangle(im_main, 0, 0, w, h, 0, 0, 0, 0);
-      feh_imlib_image_set_has_alpha(im_main, 1);
+      gib_imlib_image_fill_rectangle(im_main, 0, 0, w, h, 0, 0, 0, 0);
+      gib_imlib_image_set_has_alpha(im_main, 1);
    }
    else
    {
       /* Colour the background */
-      feh_imlib_image_fill_rectangle(im_main, 0, 0, w, h, 0, 0, 0, 255);
+      gib_imlib_image_fill_rectangle(im_main, 0, 0, w, h, 0, 0, 0, 255);
    }
 
    /* Create the title string */
@@ -147,8 +147,8 @@ init_collage_mode(void)
             feh_display_status('.');
          www = opt.thumb_w;
          hhh = opt.thumb_h;
-         ww = feh_imlib_image_get_width(im_temp);
-         hh = feh_imlib_image_get_height(im_temp);
+         ww = gib_imlib_image_get_width(im_temp);
+         hh = gib_imlib_image_get_height(im_temp);
 
          if (opt.aspect)
          {
@@ -176,28 +176,28 @@ init_collage_mode(void)
          D(5,("image going on at x=%d, y=%d\n", xxx, yyy));
 
          im_thumb =
-            feh_imlib_create_cropped_scaled_image(im_temp, 0, 0, ww, hh, www,
+            gib_imlib_create_cropped_scaled_image(im_temp, 0, 0, ww, hh, www,
                                                   hhh, 1);
-         feh_imlib_free_image_and_decache(im_temp);
+         gib_imlib_free_image_and_decache(im_temp);
 
          if (opt.alpha)
          {
             DATA8 atab[256];
 
             D(4,("Applying alpha options\n"));
-            feh_imlib_image_set_has_alpha(im_thumb, 1);
+            gib_imlib_image_set_has_alpha(im_thumb, 1);
             memset(atab, opt.alpha_level, sizeof(atab));
-            feh_imlib_apply_color_modifier_to_rectangle(im_thumb, 0, 0, www,
+            gib_imlib_apply_color_modifier_to_rectangle(im_thumb, 0, 0, www,
                                                         hhh, NULL, NULL, NULL,
                                                         atab);
          }
-         feh_imlib_blend_image_onto_image(im_main, im_thumb,
-                                          feh_imlib_image_has_alpha(im_thumb),
+         gib_imlib_blend_image_onto_image(im_main, im_thumb,
+                                          gib_imlib_image_has_alpha(im_thumb),
                                           0, 0, www, hhh, xxx, yyy, www, hhh,
                                           1,
-                                          feh_imlib_image_has_alpha(im_thumb),
+                                          gib_imlib_image_has_alpha(im_thumb),
                                           0);
-         feh_imlib_free_image_and_decache(im_thumb);
+         gib_imlib_free_image_and_decache(im_thumb);
       }
       else
       {
@@ -222,13 +222,13 @@ init_collage_mode(void)
         snprintf(output_buf,1024,"%s/%S", opt.output_dir, opt.output_file);
       else 
         strncpy(output_buf,opt.output_file, 1024);
-      feh_imlib_save_image(im_main, output_buf);
+      gib_imlib_save_image(im_main, output_buf);
       if (opt.verbose)
       {
          int tw, th;
 
-         tw = feh_imlib_image_get_width(im_main);
-         th = feh_imlib_image_get_height(im_main);
+         tw = gib_imlib_image_get_width(im_main);
+         th = gib_imlib_image_get_height(im_main);
          fprintf(stdout, PACKAGE " - File saved as %s\n", output_buf);
          fprintf(stdout,
                  "    - Image is %dx%d pixels and contains %d thumbnails\n",
@@ -237,7 +237,7 @@ init_collage_mode(void)
    }
 
    if (!opt.display)
-      feh_imlib_free_image_and_decache(im_main);
+      gib_imlib_free_image_and_decache(im_main);
    free(s);
    D_RETURN_(4);
 }

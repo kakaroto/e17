@@ -24,7 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 #include "feh.h"
-#include "feh_list.h"
+#include "gib_list.h"
 #include "filelist.h"
 #include "timers.h"
 #include "winwidget.h"
@@ -36,7 +36,7 @@ init_slideshow_mode(void)
    winwidget w = NULL;
    int success = 0;
    char *s = NULL;
-   feh_list *l = NULL, *last = NULL;
+   gib_list *l = NULL, *last = NULL;
    feh_file *file = NULL;
 
    D_ENTER(3);
@@ -44,7 +44,7 @@ init_slideshow_mode(void)
    mode = "slideshow";
    if (opt.start_list_at)
    {
-      l = feh_list_get_num(filelist, opt.start_list_at);
+      l = gib_list_nth(filelist, opt.start_list_at);
       opt.start_list_at = 0;                /* for next time */
    }
    else
@@ -128,22 +128,22 @@ feh_reload_image(winwidget w, int resize)
    if ((winwidget_loadimage(w, FEH_FILE(w->file->data))) != 0)
    {
       w->mode = MODE_NORMAL;
-      if ((w->im_w != feh_imlib_image_get_width(w->im))
-          || (w->im_h != feh_imlib_image_get_height(w->im)))
+      if ((w->im_w != gib_imlib_image_get_width(w->im))
+          || (w->im_h != gib_imlib_image_get_height(w->im)))
          w->had_resize = 1;
       if (w->has_rotated)
       {
          Imlib_Image temp;
 
-         temp = feh_imlib_create_rotated_image(w->im, 0.0);
-         w->im_w = feh_imlib_image_get_width(temp);
-         w->im_h = feh_imlib_image_get_height(temp);
-         feh_imlib_free_image_and_decache(temp);
+         temp = gib_imlib_create_rotated_image(w->im, 0.0);
+         w->im_w = gib_imlib_image_get_width(temp);
+         w->im_h = gib_imlib_image_get_height(temp);
+         gib_imlib_free_image_and_decache(temp);
       }
       else
       {
-         w->im_w = feh_imlib_image_get_width(w->im);
-         w->im_h = feh_imlib_image_get_height(w->im);
+         w->im_w = gib_imlib_image_get_width(w->im);
+         w->im_h = gib_imlib_image_get_height(w->im);
       }
       winwidget_render_image(w, resize, 1);
    }
@@ -162,14 +162,14 @@ void
 slideshow_change_image(winwidget winwid, int change)
 {
    int success = 0;
-   feh_list *last = NULL;
+   gib_list *last = NULL;
    int i = 0, file_num = 0;
    int jmp = 1;
    char *s;
 
    D_ENTER(4);
 
-   file_num = feh_list_length(filelist);
+   file_num = gib_list_length(filelist);
 
    /* Without this, clicking a one-image slideshow reloads it. Not very *
       intelligent behaviour :-) */
@@ -182,7 +182,7 @@ slideshow_change_image(winwidget winwid, int change)
       then loop forward to find a loadable one. */
    if (change == SLIDE_FIRST)
    {
-      current_file = feh_list_last(filelist);
+      current_file = gib_list_last(filelist);
       change = SLIDE_NEXT;
    }
    else if (change == SLIDE_LAST)
@@ -198,10 +198,10 @@ slideshow_change_image(winwidget winwid, int change)
       switch (change)
       {
         case SLIDE_NEXT:
-           current_file = feh_list_jump(filelist, current_file, FORWARD, 1);
+           current_file = gib_list_jump(filelist, current_file, FORWARD, 1);
            break;
         case SLIDE_PREV:
-           current_file = feh_list_jump(filelist, current_file, BACK, 1);
+           current_file = gib_list_jump(filelist, current_file, BACK, 1);
            break;
         case SLIDE_JUMP_FWD:
            if (file_num < 5)
@@ -212,7 +212,7 @@ slideshow_change_image(winwidget winwid, int change)
               jmp = file_num / 20;
            if (!jmp)
               jmp = 2;
-           current_file = feh_list_jump(filelist, current_file, FORWARD, jmp);
+           current_file = gib_list_jump(filelist, current_file, FORWARD, jmp);
            /* important. if the load fails, we only want to step on ONCE to
               try the next file, not another jmp */
            change = SLIDE_NEXT;
@@ -226,7 +226,7 @@ slideshow_change_image(winwidget winwid, int change)
               jmp = file_num / 20;
            if (!jmp)
               jmp = 2;
-           current_file = feh_list_jump(filelist, current_file, BACK, jmp);
+           current_file = gib_list_jump(filelist, current_file, BACK, jmp);
            /* important. if the load fails, we only want to step back ONCE to
               try the previous file, not another jmp */
            change = SLIDE_NEXT;
@@ -251,12 +251,12 @@ slideshow_change_image(winwidget winwid, int change)
          success = 1;
          winwid->mode = MODE_NORMAL;
          winwid->file = current_file;
-         if ((winwid->im_w != feh_imlib_image_get_width(winwid->im))
-             || (winwid->im_h != feh_imlib_image_get_height(winwid->im)))
+         if ((winwid->im_w != gib_imlib_image_get_width(winwid->im))
+             || (winwid->im_h != gib_imlib_image_get_height(winwid->im)))
             winwid->had_resize = 1;
          winwidget_reset_image(winwid);
-         winwid->im_w = feh_imlib_image_get_width(winwid->im);
-         winwid->im_h = feh_imlib_image_get_height(winwid->im);
+         winwid->im_w = gib_imlib_image_get_width(winwid->im);
+         winwid->im_h = gib_imlib_image_get_height(winwid->im);
          winwidget_render_image(winwid, 1, 1);
          break;
       }
@@ -310,8 +310,8 @@ slideshow_create_name(feh_file * file)
          strlen(PACKAGE " [slideshow mode] - ") + strlen(file->filename) + 1;
       s = emalloc(len);
       snprintf(s, len, PACKAGE " [%d of %d] - %s",
-               feh_list_num(filelist, current_file) + 1,
-               feh_list_length(filelist), file->filename);
+               gib_list_num(filelist, current_file) + 1,
+               gib_list_length(filelist), file->filename);
    }
    else
    {
@@ -417,12 +417,12 @@ feh_printf(char *str, feh_file * file)
               strcat(ret, mode);
               break;
            case 'l':
-              snprintf(buf, sizeof(buf), "%d", feh_list_length(filelist));
+              snprintf(buf, sizeof(buf), "%d", gib_list_length(filelist));
               strcat(ret, buf);
               break;
            case 'u':
               snprintf(buf, sizeof(buf), "%d",
-                       current_file != NULL ? feh_list_num(filelist,
+                       current_file != NULL ? gib_list_num(filelist,
                                                            current_file) +
                        1 : 0);
               strcat(ret, buf);
@@ -457,7 +457,7 @@ feh_filelist_image_remove(winwidget winwid, char do_delete)
    if (winwid->type == WIN_TYPE_SLIDESHOW)
    {
       char *s;
-      feh_list *doomed;
+      gib_list *doomed;
 
       doomed = current_file;
       slideshow_change_image(winwid, SLIDE_NEXT);
@@ -497,7 +497,7 @@ void slideshow_save_image(winwidget win)
    if(!opt.quiet)
       printf("saving image to filename '%s'\n", tmpname);
 
-   feh_imlib_save_image(win->im, tmpname);
+   gib_imlib_save_image(win->im, tmpname);
    free(tmpname);
    D_RETURN_(4);
 }

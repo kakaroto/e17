@@ -24,17 +24,17 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 #include "feh.h"
-#include "feh_list.h"
+#include "gib_list.h"
 #include "filelist.h"
 #include "options.h"
 
-feh_list *filelist = NULL;
-feh_list *current_file = NULL;
+gib_list *filelist = NULL;
+gib_list *current_file = NULL;
 extern int errno;
 int file_num = 0;
 
 
-static feh_list *rm_filelist = NULL;
+static gib_list *rm_filelist = NULL;
 
 feh_file *
 feh_file_new(char *filename)
@@ -105,20 +105,20 @@ feh_file_info_free(feh_file_info * info)
    D_RETURN_(4);
 }
 
-feh_list *
-feh_file_rm_and_free(feh_list * list, feh_list * l)
+gib_list *
+feh_file_rm_and_free(gib_list * list, gib_list * l)
 {
    D_ENTER(4);
    unlink(FEH_FILE(l->data)->filename);
    D_RETURN(4, feh_file_remove_from_list(list, l));
 }
 
-feh_list *
-feh_file_remove_from_list(feh_list * list, feh_list * l)
+gib_list *
+feh_file_remove_from_list(gib_list * list, gib_list * l)
 {
    D_ENTER(4);
    feh_file_free(FEH_FILE(l->data));
-   D_RETURN(4, feh_list_remove(list, l));
+   D_RETURN(4, gib_list_remove(list, l));
 }
 
 /* Recursive */
@@ -148,7 +148,7 @@ add_file_to_filelist_recursively(char *origpath, unsigned char level)
       {
          /* Its a url */
          D(3, ("Adding url %s to filelist\n", path));
-         filelist = feh_list_add_front(filelist, feh_file_new(path));
+         filelist = gib_list_add_front(filelist, feh_file_new(path));
          /* We'll download it later... */
          free(path);
          D_RETURN_(5);
@@ -231,7 +231,7 @@ add_file_to_filelist_recursively(char *origpath, unsigned char level)
    else if (S_ISREG(st.st_mode))
    {
       D(5, ("Adding regular file %s to filelist\n", path));
-      filelist = feh_list_add_front(filelist, feh_file_new(path));
+      filelist = gib_list_add_front(filelist, feh_file_new(path));
    }
    free(path);
    D_RETURN_(5);
@@ -241,14 +241,14 @@ void
 add_file_to_rm_filelist(char *file)
 {
    D_ENTER(4);
-   rm_filelist = feh_list_add_front(rm_filelist, feh_file_new(file));
+   rm_filelist = gib_list_add_front(rm_filelist, feh_file_new(file));
    D_RETURN_(4);
 }
 
 void
 delete_rm_files(void)
 {
-   feh_list *l;
+   gib_list *l;
 
    D_ENTER(4);
    for (l = rm_filelist; l; l = l->next)
@@ -256,12 +256,12 @@ delete_rm_files(void)
    D_RETURN_(4);
 }
 
-feh_list *
-feh_file_info_preload(feh_list * list)
+gib_list *
+feh_file_info_preload(gib_list * list)
 {
-   feh_list *l;
+   gib_list *l;
    feh_file *file = NULL;
-   feh_list *remove_list = NULL;
+   gib_list *remove_list = NULL;
 
    D_ENTER(4);
    if (opt.verbose)
@@ -275,7 +275,7 @@ feh_file_info_preload(feh_list * list)
       if (feh_file_info_load(file, NULL))
       {
          D(3, ("Failed to load file %p\n", file));
-         remove_list = feh_list_add_front(remove_list, l);
+         remove_list = gib_list_add_front(remove_list, l);
          if (opt.verbose)
             feh_display_status('x');
       }
@@ -288,9 +288,9 @@ feh_file_info_preload(feh_list * list)
    if (remove_list)
    {
       for (l = remove_list; l; l = l->next)
-         filelist = list = feh_list_remove(list, (feh_list *) l->data);
+         filelist = list = gib_list_remove(list, (gib_list *) l->data);
 
-      feh_list_free(remove_list);
+      gib_list_free(remove_list);
    }
 
    D_RETURN(4, list);
@@ -349,19 +349,19 @@ feh_file_info_load(feh_file * file, Imlib_Image im)
 
    file->info = feh_file_info_new();
 
-   file->info->width = feh_imlib_image_get_width(im1);
-   file->info->height = feh_imlib_image_get_height(im1);
+   file->info->width = gib_imlib_image_get_width(im1);
+   file->info->height = gib_imlib_image_get_height(im1);
 
-   file->info->has_alpha = feh_imlib_image_has_alpha(im1);
+   file->info->has_alpha = gib_imlib_image_has_alpha(im1);
 
    file->info->pixels = file->info->width * file->info->height;
 
-   file->info->format = estrdup(feh_imlib_image_format(im1));
+   file->info->format = estrdup(gib_imlib_image_format(im1));
 
    file->info->size = st.st_size;
 
    if (need_free && im1)
-      feh_imlib_free_image_and_decache(im1);
+      gib_imlib_free_image_and_decache(im1);
    D_RETURN(4, 0);
 }
 
@@ -427,7 +427,7 @@ feh_prepare_filelist(void)
    {
       /* For these sort options, we have to preload images */
       filelist = feh_file_info_preload(filelist);
-      if (!feh_list_length(filelist))
+      if (!gib_list_length(filelist))
          show_mini_usage();
    }
 
@@ -438,34 +438,34 @@ feh_prepare_filelist(void)
         if (opt.randomize)
         {
            /* Randomize the filename order */
-           filelist = feh_list_randomize(filelist);
+           filelist = gib_list_randomize(filelist);
         }
         else if (!opt.reverse)
         {
            /* Let's reverse the list. Its back-to-front right now ;) */
-           filelist = feh_list_reverse(filelist);
+           filelist = gib_list_reverse(filelist);
         }
         break;
      case SORT_NAME:
-        filelist = feh_list_sort(filelist, feh_cmp_name);
+        filelist = gib_list_sort(filelist, feh_cmp_name);
         break;
      case SORT_FILENAME:
-        filelist = feh_list_sort(filelist, feh_cmp_filename);
+        filelist = gib_list_sort(filelist, feh_cmp_filename);
         break;
      case SORT_WIDTH:
-        filelist = feh_list_sort(filelist, feh_cmp_width);
+        filelist = gib_list_sort(filelist, feh_cmp_width);
         break;
      case SORT_HEIGHT:
-        filelist = feh_list_sort(filelist, feh_cmp_height);
+        filelist = gib_list_sort(filelist, feh_cmp_height);
         break;
      case SORT_PIXELS:
-        filelist = feh_list_sort(filelist, feh_cmp_pixels);
+        filelist = gib_list_sort(filelist, feh_cmp_pixels);
         break;
      case SORT_SIZE:
-        filelist = feh_list_sort(filelist, feh_cmp_size);
+        filelist = gib_list_sort(filelist, feh_cmp_size);
         break;
      case SORT_FORMAT:
-        filelist = feh_list_sort(filelist, feh_cmp_format);
+        filelist = gib_list_sort(filelist, feh_cmp_format);
         break;
      default:
         break;
@@ -475,17 +475,17 @@ feh_prepare_filelist(void)
    if (opt.reverse && (opt.sort != SORT_NONE))
    {
       D(3, ("Reversing filelist as requested\n"));
-      filelist = feh_list_reverse(filelist);
+      filelist = gib_list_reverse(filelist);
    }
 
    D_RETURN_(4);
 }
 
 int
-feh_write_filelist(feh_list * list, char *filename)
+feh_write_filelist(gib_list * list, char *filename)
 {
    FILE *fp;
-   feh_list *l;
+   gib_list *l;
 
    D_ENTER(4);
 
@@ -507,11 +507,11 @@ feh_write_filelist(feh_list * list, char *filename)
    D_RETURN(4, 1);
 }
 
-feh_list *
+gib_list *
 feh_read_filelist(char *filename)
 {
    FILE *fp;
-   feh_list *list = NULL;
+   gib_list *list = NULL;
    char s[1024], s1[1024];
 
    D_ENTER(4);
@@ -536,7 +536,7 @@ feh_read_filelist(char *filename)
          continue;
       D(5, ("Got filename %s from filelist file\n", s1));
       /* Add it to the new list */
-      list = feh_list_add_front(list, feh_file_new(s1));
+      list = gib_list_add_front(list, feh_file_new(s1));
    }
    fclose(fp);
 

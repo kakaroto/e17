@@ -2,7 +2,7 @@ dnl Process this file with autoconf to create configure.
 
 AC_INIT
 AC_CONFIG_SRCDIR([src/main.c])
-AM_INIT_AUTOMAKE(feh, 1.1.1)
+AM_INIT_AUTOMAKE(feh, 1.2.0)
 AM_CONFIG_HEADER(src/config.h)
 
 AC_PROG_CC
@@ -28,6 +28,18 @@ IMLIB_LIBS=`imlib2-config --libs`
 IMLIB_CFLAGS=`imlib2-config --cflags`
 AC_SUBST(IMLIB_LIBS)
 AC_SUBST(IMLIB_CFLAGS)
+
+AC_PATH_GENERIC(giblib, 1.2.2, [
+  AC_SUBST(GIBLIB_LIBS)
+  AC_SUBST(GIBLIB_CFLAGS) ],
+  AC_MSG_ERROR(Cannot find giblib: Is giblib-config in the path?) )
+
+dnl the above doesn't work for some reason :/
+GIBLIB_LIBS=`giblib-config --libs`
+GIBLIB_CFLAGS=`giblib-config --cflags`
+AC_SUBST(GIBLIB_LIBS)
+AC_SUBST(GIBLIB_CFLAGS)
+
 LIBS="$LIBS -lm"
 
 AC_CHECK_FUNC(getopt_long,,[LIBOBJS="$LIBOBJS getopt.o getopt1.o"])
