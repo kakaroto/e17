@@ -29,7 +29,7 @@ build-stamp:
 	dh_testdir
 
 
-	$(MAKE) 
+	SUBDIRS=src $(MAKE) 
 
 	touch build-stamp
 

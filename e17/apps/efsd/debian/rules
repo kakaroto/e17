@@ -1,63 +1,41 @@
 #!/usr/bin/make -f
 # Sample debian/rules that uses debhelper. 
 # GNU copyright 1997 by Joey Hess.
-#
-# This version is for a hypothetical package that builds an
-# architecture-dependant package, as well as an architecture-independent
-# package.
-
-# Uncomment this to turn on verbose mode. 
-#export DH_VERBOSE=1
-
-# This is the debhelper compatability version to use.
-export DH_COMPAT=2
-
-# This has to be exported to make some magic below work.
+export DH_COMPAT=3
 export DH_OPTIONS
 
-INSTALL=/usr/bin/install
+INSTALL=/usr/bin/install -o root -g root
 package=efsd
 
 configure: configure-stamp
 configure-stamp:
 	./autogen.sh --prefix=/usr || ./configure --prefix=/usr
-	touch configure-stamp
+	touch $@
 
 build: configure build-stamp
 build-stamp:
 	dh_testdir
-
-
 	$(MAKE) 
-
-	touch build-stamp
+	touch $@
 
 clean:
 	dh_testdir
 	rm -f build-stamp configure-stamp
-
 	-$(MAKE) distclean
-	-rm -f configure-stamp build-stamp
-
 	dh_clean
 
 install: DH_OPTIONS=
 install: build 
 	dh_testdir
-	dh_testroot
 	dh_clean -k
 	dh_installdirs
-
-	$(MAKE) install DESTDIR=$(shell pwd)/debian/$(package)/
+	$(MAKE) install DESTDIR=$(CURDIR)/debian/$(package)/
 
 binary-indep:
 
-# Build architecture-dependent files here.
-# Pass -a to all debhelper commands in this target to reduce clutter.
 binary-arch: DH_OPTIONS=-a
 binary-arch: build install
-	# Need this version of debhelper for DH_OPTIONS to work.
-	dh_testversion 2 
+	dh_testversion 3 
 	dh_testdir
 	dh_testroot
 	dh_installdocs AUTHORS README

@@ -48,10 +48,14 @@ install: build
 	$(MAKE) install DESTDIR=$(shell pwd)/debian/$(package)/
 	
 	$(INSTALL) -d debian/$(package)-dev/usr/share/man/man1
-	$(INSTALL) -d debian/$(package)-dev/usr/lib
+	$(INSTALL) -d debian/$(package)-dev/usr/lib/loaders/filter
+	$(INSTALL) -d debian/$(package)-dev/usr/lib/loaders/image
+
 	$(INSTALL) debian/imlib2-config.1 debian/$(package)-dev/usr/share/man/man1
 	mv debian/$(package)/usr/{include,bin} debian/$(package)-dev/usr
 	mv debian/$(package)/usr/lib/*.{so,la,a} debian/$(package)-dev/usr/lib/
+	mv debian/$(package)/usr/lib/loaders/filter/*.{la,a} debian/$(package)-dev/usr/lib/loaders/filter
+	mv debian/$(package)/usr/lib/loaders/image/*.{la,a} debian/$(package)-dev/usr/lib/loaders/image
 
 	$(INSTALL) -d debian/$(package)-dev/usr/share/doc/$(package)-dev/html
 	$(INSTALL) -m 644 doc/*.{html,gif} debian/$(package)-dev/usr/share/doc/$(package)-dev/html
