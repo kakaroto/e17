@@ -1,5 +1,7 @@
 #include "entrance.h"
 #include "entrance_config.h"
+#include "entrance_user.h"
+
 /**
 @file entrance_config.c
 @brief System-wide configuration options for various settings in Entrance
@@ -72,24 +74,37 @@ entrance_config_populate(Entrance_Config * e, E_DB_File * db)
       e->time.string = strdup("%l:%M:%S %p");
    if (e_db_int_get(db, "/entrance/user/count", &num_user))
    {
+      Entrance_User *eu = NULL;
       char *user = NULL;
-      char *edje_file = NULL;
+      char *icon = NULL;
+      char *session = NULL;
 
       for (i = 0; i < num_user; i++)
       {
          snprintf(buf, PATH_MAX, "/entrance/user/%d/user", i);
          if ((user = e_db_str_get(db, buf)))
          {
-            snprintf(buf, PATH_MAX, "/entrance/user/%d/edje", i);
-            if ((edje_file = e_db_str_get(db, buf)))
+            snprintf(buf, PATH_MAX, "/entrance/user/%d/icon", i);
+            icon = e_db_str_get(db, buf);
+            snprintf(buf, PATH_MAX, "/entrance/user/%d/session", i);
+            session = e_db_str_get(db, buf);
+
+            if ((eu = entrance_user_new(user, icon, session)))
             {
-               e->users.hash = evas_hash_add(e->users.hash, user, edje_file);
-               e->users.keys = evas_list_append(e->users.keys, user);
+               e->users.hash = evas_hash_add(e->users.hash, user, eu);
+               e->users.keys = evas_list_append(e->users.keys, eu);
             }
             else
+            {
                free(user);
+               if (icon)
+                  free(icon);
+               if (session)
+                  free(session);
+            }
          }
       }
+      /* FIXME syslog(LOG_NORMAL, "Loaded %d users", num_user) */
    }
    else
    {
@@ -233,6 +248,55 @@ entrance_config_free(Entrance_Config * e)
       if (e->after.string)
          free(e->after.string);
       free(e);
+   }
+}
+
+/**
+ *
+ */
+void
+entrance_config_user_list_write(Entrance_Config * e)
+{
+   int i = 0;
+   Evas_List *l = NULL;
+   E_DB_File *db = NULL;
+   Entrance_User *eu = NULL;
+   char file[PATH_MAX], buf[PATH_MAX];
+
+   snprintf(file, PATH_MAX, "%s/entrance_config.db", PACKAGE_CFG_DIR);
+   if ((db = e_db_open(file)))
+   {
+      for (l = e->users.keys; l; l = l->next, i++)
+      {
+         if ((eu = (Entrance_User *) l->data))
+         {
+            if (eu->name)
+            {
+               snprintf(buf, PATH_MAX, "/entrance/user/%d/user", i);
+               e_db_str_set(db, buf, eu->name);
+            }
+            if (eu->session)
+            {
+               snprintf(buf, PATH_MAX, "/entrance/user/%d/session", i);
+               e_db_str_set(db, buf, eu->session);
+            }
+            if (eu->icon)
+            {
+               snprintf(buf, PATH_MAX, "/entrance/user/%d/icon", i);
+               e_db_str_set(db, buf, eu->icon);
+            }
+         }
+         else
+            i--;
+      }
+      snprintf(buf, PATH_MAX, "/entrance/user/count");
+      e_db_int_set(db, buf, i);
+      e_db_close(db);
+      e_db_flush();
+   }
+   else
+   {
+      fprintf(stderr, "Unable to open %s, sure you're root?", file);
    }
 }
 

@@ -94,5 +94,6 @@ Entrance_Config *entrance_config_parse(char *file);
 void entrance_config_print(Entrance_Config * e);
 void entrance_config_free(Entrance_Config * e);
 void entrance_config_prepend_recent_user(Entrance_Config * e, char *str);
+void entrance_config_user_list_write(Entrance_Config * e);
 
 #endif

@@ -14,6 +14,7 @@
 
 #include "entrance_auth.h"
 #include "entrance_config.h"
+#include "entrance_user.h"
 
 struct _Entrance_Session
 {
@@ -34,7 +35,8 @@ void entrance_session_free(Entrance_Session * e);
 void entrance_session_run(Entrance_Session * e);
 int entrance_session_auth_user(Entrance_Session * e);
 void entrance_session_user_reset(Entrance_Session * e);
-void entrance_session_user_set(Entrance_Session * e, char *user);
+void entrance_session_user_set(Entrance_Session * e, Entrance_User * user);
+void entrance_session_user_session_default_set(Entrance_Session * e);
 void entrance_session_start_user_session(Entrance_Session * e);
 void entrance_session_xsession_set(Entrance_Session * e,
                                    const char *xsession);

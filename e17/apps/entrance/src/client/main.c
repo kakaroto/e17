@@ -326,7 +326,7 @@ user_selected_cb(void *data, Evas_Object * o, const char *emission,
 {
    if (session && data)
    {
-      entrance_session_user_set(session, (char *) data);
+      entrance_session_user_set(session, (Entrance_User *) data);
    }
 }
 
@@ -431,7 +431,17 @@ shutdown_cb(void *data, Evas_Object * o, const char *emission,
       }
    }
 }
+static void
+_session_set(void *data, Evas_Object * o, const char *emission,
+             const char *source)
+{
+   Entrance_Session *e = NULL;
 
+   if ((e = (Entrance_Session *) data))
+   {
+      entrance_session_user_session_default_set(e);
+   }
+}
 static void
 entrance_help(char **argv)
 {
@@ -439,12 +449,10 @@ entrance_help(char **argv)
    printf("Usage: %s [OPTION]...\n\n", argv[0]);
    printf
       ("---------------------------------------------------------------------------\n");
-   printf
-      ("  -c, --config=CONFIG          Specify a custom config file\n");
+   printf("  -c, --config=CONFIG          Specify a custom config file\n");
    printf
       ("  -d, --display=DISPLAY        Specify which display Entrance should use\n");
-   printf
-      ("  -h, --help                   Display this help message\n");
+   printf("  -h, --help                   Display this help message\n");
    printf
       ("  -g, --geometry=WIDTHxHEIGHT  Specify the size of the Entrance window.\n");
    printf
@@ -455,8 +463,7 @@ entrance_help(char **argv)
       ("                               either the name of an installed theme, or an\n");
    printf
       ("                               arbitrary path to an eet file (use ./ for\n");
-   printf
-      ("                               the current directory).\n");
+   printf("                               the current directory).\n");
    printf
       ("  -T, --test                   Enable testing mode. This will cause xterm\n");
    printf
@@ -471,8 +478,7 @@ entrance_help(char **argv)
       ("Note: To automatically launch an X server that will be managed, please use\n");
    printf
       ("      entranced instead of entrance. Entrance requires an existing X server\n");
-   printf
-      ("      to run. Run entranced --help for more information.\n\n");
+   printf("      to run. Run entranced --help for more information.\n\n");
    exit(0);
 }
 
@@ -756,6 +762,8 @@ main(int argc, char *argv[])
                                       reboot_cb, e);
       edje_object_signal_callback_add(edje, "EntranceSystemHalt", "",
                                       shutdown_cb, e);
+      edje_object_signal_callback_add(edje, "SessionDefaultSet", "",
+                                      _session_set, session);
       /* 
        * It's useful to delay showing of your edje till all your
        * callbacks have been added, otherwise show might not trigger all
@@ -778,8 +786,8 @@ main(int argc, char *argv[])
 
       if (session->authed)
          entrance_session_start_user_session(session);
-
-      ecore_evas_shutdown();
+      else
+         ecore_evas_shutdown();
       entrance_session_free(session);
       edje_shutdown();
       ecore_x_shutdown();
