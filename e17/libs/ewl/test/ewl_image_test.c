@@ -151,6 +151,8 @@ __create_image_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	if ((__image_exists(PACKAGE_DATA_DIR "/images/e-logo.png")) != -1)
 		image_file = strdup(PACKAGE_DATA_DIR "/images/e-logo.png");
+	else if ((__image_exists(PACKAGE_SOURCE_DIR "/data/images/e-logo.png")) != -1)
+		image_file = strdup(PACKAGE_SOURCE_DIR "/data/images/e-logo.png");
 	else if ((__image_exists("./data/images/e-logo.png")) != -1)
 		image_file = strdup("./data/images/e-logo.png");
 	else if ((__image_exists("../data/images/e-logo.png")) != -1)

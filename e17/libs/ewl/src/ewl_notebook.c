@@ -502,7 +502,7 @@ void __ewl_notebook_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Notebook   *n;
 	int x, y;
-	unsigned int width, height;
+	int width, height;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);

@@ -19,12 +19,12 @@ typedef struct
 	 * Function pointers for getting the dimension of the widget that we
 	 * care about.
 	 */
-	void            (*pref_fill_set) (Ewl_Object * ob, unsigned int size);
-	unsigned int             (*fill_ask) (Ewl_Object * ob);
-	void            (*fill_set) (Ewl_Object * ob, unsigned int size);
+	void            (*pref_fill_set) (Ewl_Object * ob, int size);
+	int             (*fill_ask) (Ewl_Object * ob);
+	void            (*fill_set) (Ewl_Object * ob, int size);
 
-	unsigned int    (*align_ask) (Ewl_Object * ob);
-	void            (*align_set) (Ewl_Object * ob, unsigned int size);
+	int    (*align_ask) (Ewl_Object * ob);
+	void            (*align_set) (Ewl_Object * ob, int size);
 
 } Box_Orientation;
 
@@ -273,9 +273,9 @@ __ewl_box_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	int             total_fill = 0;
 	int             x, y;
-	unsigned int    width, height;
+	int    width, height;
 	int            *fill, *align;
-	unsigned int   *fill_size, *align_size;
+	int   *fill_size, *align_size;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -342,9 +342,9 @@ __ewl_box_configure_homogeneous(Ewl_Widget *w, void *ev_data, void *user_data)
 {
 	int             i, num;
 	int             x, y;
-	unsigned int    width, height;
+	int             width, height;
 	int            *fill;
-	unsigned int   *fill_size;
+	int            *fill_size;
 	int             remainder;
 	Ewl_Object     *child;
 	Ewl_Box        *b;
@@ -412,7 +412,7 @@ static void
 __ewl_box_configure_calc(Ewl_Box * b, int *fill_size, int *align_size)
 {
 	Ewl_Object     *child;
-	unsigned int    initial;
+	int    initial;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -651,7 +651,7 @@ __ewl_box_configure_child(Ewl_Box * b, Ewl_Object * c, int *x, int *y,
 static void
 __ewl_box_add(Ewl_Container * c, Ewl_Widget * w)
 {
-	unsigned int             space = 0;
+	int             space = 0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 

@@ -749,7 +749,7 @@ void __ewl_widget_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 	char           *i = NULL;
 	char           *key = NULL;
 	char           *group = NULL;
-	double          width, height;
+	Evas_Coord      width, height;
 	Ewl_Embed      *emb = NULL;
 	Ewl_Container  *pc = NULL;
 
@@ -862,8 +862,8 @@ void __ewl_widget_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 		 * Propagate minimum sizes from the bit theme to the widget.
 		 */
 		edje_object_size_min_get(w->theme_object, &width, &height);
-		i_l = (unsigned int)(width);
-		i_t = (unsigned int)(height);
+		i_l = (int)(width);
+		i_t = (int)(height);
 
 		if (i_l && MINIMUM_W(w) == EWL_OBJECT_MIN_SIZE)
 			ewl_object_set_minimum_w(EWL_OBJECT(w), i_l);
@@ -875,8 +875,8 @@ void __ewl_widget_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 		 * Propagate maximum sizes from the bit theme to the widget.
 		 */
 		edje_object_size_max_get(w->theme_object, &width, &height);
-		i_l = (unsigned int)(width);
-		i_t = (unsigned int)(height);
+		i_l = (int)(width);
+		i_t = (int)(height);
 
 		if (i_l && MAXIMUM_W(w) == EWL_OBJECT_MAX_SIZE)
 			ewl_object_set_maximum_w(EWL_OBJECT(w), i_l);

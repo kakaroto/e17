@@ -115,7 +115,7 @@ ewl_text_set_text(Ewl_Text * t, char *text)
 		t->length = estyle_length(t->estyle);
 		evas_object_geometry_get(t->estyle, &x, &y, &width, &height);
 		ewl_object_set_preferred_size(EWL_OBJECT(t),
-				(unsigned int)(width), (unsigned int)(height));
+					      (int)(width), (int)(height));
 	}
 	else
 		t->length = strlen(t->text);
@@ -170,7 +170,7 @@ ewl_text_set_font(Ewl_Text * t, char *f)
 	 * Change the font for the estyle.
 	 */
 	if (t->estyle) {
-		double x, y, width, height;
+		Evas_Coord x, y, width, height;
 
 		/*
 		 * Change the font and then update the size of the widget
@@ -178,7 +178,7 @@ ewl_text_set_font(Ewl_Text * t, char *f)
 		estyle_set_font(t->estyle, t->font, t->font_size);
 		evas_object_geometry_get(t->estyle, &x, &y, &width, &height);
 		ewl_object_set_preferred_size(EWL_OBJECT(t),
-				(unsigned int)(width), (unsigned int)(height));
+					      (int)(width), (int)(height));
 	}
 
 	ewl_widget_configure(w);
@@ -229,7 +229,7 @@ ewl_text_set_font_size(Ewl_Text * t, int s)
 	 * Change the font for the estyle.
 	 */
 	if (t->estyle) {
-		double x, y, width, height;
+		Evas_Coord x, y, width, height;
 
 		/*
 		 * Change the font and then update the size of the widget
@@ -237,7 +237,7 @@ ewl_text_set_font_size(Ewl_Text * t, int s)
 		estyle_set_font(t->estyle, t->font, t->font_size);
 		evas_object_geometry_get(t->estyle, &x, &y, &width, &height);
 		ewl_object_set_preferred_size(EWL_OBJECT(t),
-				(unsigned int)(width), (unsigned int)(height));
+					      (int)(width), (int)(height));
 	}
 
 	ewl_widget_configure(w);
@@ -359,7 +359,7 @@ ewl_text_set_style(Ewl_Text * t, char *s)
 	 * Change the font for the estyle.
 	 */
 	if (t->estyle) {
-		double x, y, width, height;
+		Evas_Coord x, y, width, height;
 
 		/*
 		 * Change the font and then update the size of the widget
@@ -367,7 +367,7 @@ ewl_text_set_style(Ewl_Text * t, char *s)
 		estyle_set_style(t->estyle, t->style);
 		evas_object_geometry_get(t->estyle, &x, &y, &width, &height);
 		ewl_object_set_preferred_size(EWL_OBJECT(t),
-				(unsigned int)(width), (unsigned int)(height));
+					      (int)(width), (int)(height));
 	}
 	t->overrides |= EWL_TEXT_OVERRIDE_STYLE;
 
@@ -392,7 +392,7 @@ ewl_text_set_style(Ewl_Text * t, char *s)
 void
 ewl_text_get_text_geometry(Ewl_Text * t, int *xx, int *yy, int *ww, int *hh)
 {
-	double ex, ey, ew, eh;
+	Evas_Coord ex, ey, ew, eh;
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
 
@@ -448,7 +448,7 @@ void
 ewl_text_get_letter_geometry(Ewl_Text * t, int i, int *xx, int *yy,
 			     int *ww, int *hh)
 {
-	double ex = 0, ey = 0, ew = 0, eh = 0;
+	Evas_Coord ex = 0, ey = 0, ew = 0, eh = 0;
 	Ewl_Widget     *w;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -490,7 +490,7 @@ int
 ewl_text_get_letter_geometry_at(Ewl_Text * t, int x, int y,
 				int *tx, int *ty, int *tw, int *th)
 {
-	double ex = 0, ey = 0, ew = 0, eh = 0;
+	Evas_Coord ex = 0, ey = 0, ew = 0, eh = 0;
 	int             i = 0;
 	Ewl_Widget     *w;
 
@@ -501,8 +501,8 @@ ewl_text_get_letter_geometry_at(Ewl_Text * t, int x, int y,
 
 
 	if (t->estyle) {
-		i = estyle_text_at_position(t->estyle, (double)x, (double)y,
-				&ex, &ey, &ew, &eh);
+		i = estyle_text_at_position(t->estyle, (Evas_Coord)(x),
+				(Evas_Coord)(y), &ex, &ey, &ew, &eh);
 	}
 
 	if (tx)
@@ -556,10 +556,11 @@ ewl_text_get_index_at(Ewl_Text * t, int x, int y)
 	w = EWL_WIDGET(t);
 
 	DRETURN_INT(t->
-		    estyle ? estyle_text_at_position(t->estyle, (double) x,
-						     (double) y, NULL,
-						     NULL, NULL, NULL) : 0,
-		    DLEVEL_STABLE);
+		    estyle ? estyle_text_at_position(t->estyle,
+						     (Evas_Coord)(x),
+						     (Evas_Coord)(y),
+						     NULL, NULL, NULL, NULL) :
+		    0, DLEVEL_STABLE);
 }
 
 void
@@ -568,7 +569,7 @@ __ewl_text_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 	Ewl_Text       *t;
 	Ewl_Embed      *emb;
 	char            key[PATH_MAX];
-	double          x, y, width, height;
+	Evas_Coord      x, y, width, height;
 
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -628,8 +629,8 @@ __ewl_text_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 	evas_object_show(t->estyle);
 
 	evas_object_geometry_get(t->estyle, &x, &y, &width, &height);
-	ewl_object_set_preferred_size(EWL_OBJECT(t),
-			(unsigned int)(width), (unsigned int)(height));
+	ewl_object_set_preferred_size(EWL_OBJECT(t), (int)(width),
+				      (int)(height));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

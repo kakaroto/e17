@@ -27,8 +27,8 @@ void __ewl_embed_smart_raise(Evas_Object *obj);
 void __ewl_embed_smart_lower(Evas_Object *obj);
 void __ewl_embed_smart_stack_above(Evas_Object *obj, Evas_Object *above);
 void __ewl_embed_smart_stack_below(Evas_Object *obj, Evas_Object *below);
-void __ewl_embed_smart_move(Evas_Object *obj, double x, double y);
-void __ewl_embed_smart_resize(Evas_Object *obj, double w, double h);
+void __ewl_embed_smart_move(Evas_Object *obj, Evas_Coord x, Evas_Coord y);
+void __ewl_embed_smart_resize(Evas_Object *obj, Evas_Coord w, Evas_Coord h);
 void __ewl_embed_smart_show(Evas_Object *obj);
 void __ewl_embed_smart_hide(Evas_Object *obj);
 void __ewl_embed_smart_color_set(Evas_Object *obj, int r, int g, int b, int a);
@@ -484,7 +484,7 @@ void __ewl_embed_smart_stack_below(Evas_Object *obj, Evas_Object *below)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void __ewl_embed_smart_move(Evas_Object *obj, double x, double y)
+void __ewl_embed_smart_move(Evas_Object *obj, Evas_Coord x, Evas_Coord y)
 {
 	Ewl_Embed *emb;
 
@@ -496,7 +496,7 @@ void __ewl_embed_smart_move(Evas_Object *obj, double x, double y)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void __ewl_embed_smart_resize(Evas_Object *obj, double w, double h)
+void __ewl_embed_smart_resize(Evas_Object *obj, Evas_Coord w, Evas_Coord h)
 {
 	Ewl_Embed *emb;
 

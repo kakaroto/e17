@@ -1,7 +1,7 @@
 EWL README
 ----------
-EWL stands for Enlightenment Widget Library. It provides a widget abstraction
-to creating GUI's using evas and ebits. The use of ebits allows for easy
+EWL stands for Enlightened Widget Library. It provides a widget abstraction
+to creating GUI's using evas and edje. The use of edje allows for easy
 creation of fairly advanced themes.
 
 More information can be found at http://www.enlightenment.org/pages/ewl.html

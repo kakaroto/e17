@@ -150,6 +150,7 @@ test/Makefile
 tools/Makefile
 tools/ewl_config/Makefile
 data/Makefile
+data/images/Makefile
 data/themes/Makefile
 data/themes/default/Makefile
 data/themes/default/bits/Makefile

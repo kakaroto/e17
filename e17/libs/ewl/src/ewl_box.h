@@ -38,7 +38,7 @@ struct Ewl_Box
 	Ewl_Container   container; /**< Inherit from Ewl_Container */
 
 	Ewl_Orientation orientation; /**< Indicate the orientation of layout */
-	unsigned int    spacing; /**< Space between each widget in the box */
+	int    spacing; /**< Space between each widget in the box */
 
 	unsigned int    homogeneous; /**< Flag indicating space assignemnt */
 };

@@ -291,7 +291,7 @@ void ewl_configure_request(Ewl_Widget * w)
 	 */
 	if (w->parent) {
 		int x, y;
-		unsigned int width, height;
+		int width, height;
 		Ewl_Widget *p = w->parent;
 
 		ewl_object_get_current_geometry(EWL_OBJECT(w), &x, &y, &width,

@@ -596,7 +596,7 @@ __ewl_grid_auto_resize(Ewl_Container * p, Ewl_Widget * child, int size,
 	Ewl_Grid_Info  *info;
 	int             i, num_spread = 1;
 	Ewl_Grid_Child *cdata;
-	unsigned int    (*widget_size) (Ewl_Object * o);
+	int             (*widget_size) (Ewl_Object * o);
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 

@@ -351,7 +351,7 @@ void __ewl_seeker_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	Ewl_Seeker     *s;
 	double          s1, s2;
 	int             dx, dy;
-	unsigned int    dw, dh;
+	int             dw, dh;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -440,7 +440,7 @@ __ewl_seeker_button_mouse_move(Ewl_Widget * w, void *ev_data, void *user_data)
 	Ewl_Seeker *s;
 	int mx, my;
 	int dx, dy;
-	unsigned int dw, dh;
+	int dw, dh;
 	double scale;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -471,7 +471,7 @@ __ewl_seeker_button_mouse_move(Ewl_Widget * w, void *ev_data, void *user_data)
 	dh = CURRENT_H(s);
 
 	if (s->orientation == EWL_ORIENTATION_HORIZONTAL) {
-		unsigned int adjust;
+		int adjust;
 
 		adjust = ewl_object_get_current_w(EWL_OBJECT(s->button));
 		dw -= adjust;
@@ -490,7 +490,7 @@ __ewl_seeker_button_mouse_move(Ewl_Widget * w, void *ev_data, void *user_data)
 		scale = (double)(mx - dx) / (double)dw;
 	}
 	else {
-		unsigned int adjust;
+		int adjust;
 
 		adjust = ewl_object_get_current_h(EWL_OBJECT(s->button));
 		dh -= adjust;

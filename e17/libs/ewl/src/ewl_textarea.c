@@ -273,7 +273,7 @@ void __ewl_textarea_reparent(Ewl_Widget * w, void *ev_data, void *user_data)
  */
 void __ewl_textarea_update_size(Ewl_TextArea * ta)
 {
-	double x, y, width, height;
+	Evas_Coord x, y, width, height;
 
 	/*
 	 * Adjust the properties of the widget to indicate the size of the text.
@@ -287,13 +287,13 @@ void __ewl_textarea_update_size(Ewl_TextArea * ta)
 	 * Set the preferred size to the size of the etox and request that
 	 * size for the widget.
 	 */
-	ewl_object_set_preferred_size(EWL_OBJECT(ta), (unsigned int)(width),
-			(unsigned int)(height));
+	ewl_object_set_preferred_size(EWL_OBJECT(ta), (int)(width),
+				      (int)(height));
 
 	/*
 	 * FIXME: Should we really be doing this? Probably not, test it out
 	 * more thoroughly.
 	 */
-	ewl_object_set_custom_size(EWL_OBJECT(ta), (unsigned int)(width),
-			(unsigned int)(height));
+	ewl_object_set_custom_size(EWL_OBJECT(ta), (int)(width),
+				   (int)(height));
 }

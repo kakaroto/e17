@@ -471,8 +471,8 @@ ewl_container_prefer_largest(Ewl_Container *c, Ewl_Orientation o)
 {
 	Ewl_Object *child;
 	int curr_size, max_size = 0;
-	unsigned int (*get_size)(Ewl_Object *object);
-	void (*set_size)(Ewl_Object *object, unsigned int size);
+	int (*get_size)(Ewl_Object *object);
+	void (*set_size)(Ewl_Object *object, int size);
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
