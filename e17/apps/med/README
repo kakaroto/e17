@@ -1,0 +1,70 @@
+E17 prototype menu editor
+
+Be aware this may corrupt your E17 popup apps menu.
+You've been warned!  You can backup your menu database beforehand
+by making a copy of ~/.e/behavior/apps_menu.db.  If you destroy
+your menu, delete this file and restart E, or copy the original
+from /usr/local/share/enlightenment/data/config/behavior/default/
+(at least on my system, this may differ based on your install.)
+
+------------ Building
+
+./configure
+make
+
+Now run src/med (or 'make install' as root)
+
+------------ Use
+
+Browse the menu with mouse movement.  Clicking on an entry
+box will let you edit.
+
+The return key doesn't save changes anymore, now there
+is a commit/discard tool.  You'll see a pair of boxes (buttons or text
+are coming, I haven't decided which yet)  appear below the edit area
+when you start to edit.  The menu will lock until you choose one of the
+options, left (green) is commit, right (red) is discard.
+
+New entry, submenu or separator:
+Drag from the 'new entry' tool to the location in the menu to add.
+Item inserts at dropped location, pushing down all entries.
+(Yeah, this means you can't add at the bottom of the menu.  It's
+coming!)
+
+Delete menu item:
+Drag if off the menu and drop it.  Dropping it on the menu will leave it
+in place (although someday this may move items.)
+
+------------ Source notes
+
+The following files are snapshots from the E source and haven't
+been modified (from e17/apps/e):
+
+src/config.c
+src/config.h
+med/exec.c
+med/exec.h
+med/util.c
+med/util.h
+
+------------
+
+files for configure support:
+
+NEWS
+ChangeLog
+autogen.sh
+acsite.m4
+acconfig.h
+
+Makefile.am
+configure.in
+
+src/Makefile.am
+
+------------
+
+Sep 3, 2001
+Kevin Brosius
+Cobra@compuserve.com
+
