@@ -4,26 +4,26 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: enlightenment 0.16.6\n"
+"Project-Id-Version: enlightenment 0.17.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-08-20 23:03+0200\n"
-"PO-Revision-Date: 2000-04-10 16:10:30+0900\n"
-"Last-Translator: Sung-Hyun Nam <namsh@kldp.org>\n"
-"Language-Team: Korean <ko@li.org>\n"
+"POT-Creation-Date: 2000-04-10 16:10:30+0900\n"
+"PO-Revision-Date: 2004-08-29 01:02:30+0900\n"
+"Last-Translator: Michael Kim <lavnrose@e.sarang.net>\n"
+"Language-Team: Korean <translation-team-ko@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=euc-kr\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: src/actions.c:266
 msgid "ActionClass Error!"
-msgstr "ActionClass ¿¡·¯!"
+msgstr "ActionClass ì˜¤ë¥˜!"
 
 #: src/actions.c:266 src/backgrounds.c:192 src/borders.c:2275
 #: src/buttons.c:124 src/cmclass.c:91 src/cursors.c:142 src/iclass.c:169
 #: src/tclass.c:59 src/tooltips.c:662
 #, c-format
 msgid "%u references remain\n"
-msgstr "%u°³ÀÇ ÂüÁ¶°¡ ³²¾ÆÀÖ½À´Ï´Ù\n"
+msgstr "%uê°œì˜ ì°¸ì¡°ê°€ ë‚¨ì•„ìˆìŠµë‹ˆë‹¤\n"
 
 #: src/actions.c:676
 #, c-format
@@ -33,10 +33,10 @@ msgid ""
 "This program could not be executed.\n"
 "This is because the file does not exist.\n"
 msgstr ""
-"´ÙÀ½ ÇÁ·Î±×·¥À» ½ÇÇàÁß ¿¡·¯°¡ ¹ß»ıÇß½À´Ï´Ù:\n"
+"ë‹¤ìŒ í”„ë¡œê·¸ë¨ì„ ì‹¤í–‰ì¤‘ ì˜¤ë¥˜ê°€ ë°œìƒí–ˆìŠµë‹ˆë‹¤:\n"
 "%s\n"
-"ÀÌ ÇÁ·Î±×·¥Àº ½ÇÇàµÉ ¼ö ¾ø½À´Ï´Ù.\n"
-"ÀÌ ÇÁ·Î±×·¥ÀÌ Á¸ÀçÇÏÁö ¾Ê±â ¶§¹®ÀÔ´Ï´Ù.\n"
+"ì´ í”„ë¡œê·¸ë¨ì€ ì‹¤í–‰ë  ìˆ˜ ì—†ìŠµë‹ˆë‹¤.\n"
+"ì´ í”„ë¡œê·¸ë¨ì´ ì¡´ì¬í•˜ì§€ ì•Šê¸° ë•Œë¬¸ì…ë‹ˆë‹¤.\n"
 
 #: src/actions.c:684
 #, c-format
@@ -49,13 +49,13 @@ msgid ""
 "page for that shell and read up how to change or add to your\n"
 "execution path.\n"
 msgstr ""
-"´ÙÀ½ ÇÁ·Î±×·¥À» ½ÇÇàÁß ¿¡·¯°¡ ¹ß»ıÇß½À´Ï´Ù:\n"
+"ë‹¤ìŒ í”„ë¡œê·¸ë¨ì„ ì‹¤í–‰ì¤‘ ì˜¤ë¥˜ê°€ ë°œìƒí–ˆìŠµë‹ˆë‹¤:\n"
 "%s\n"
-"ÀÌ ÇÁ·Î±×·¥Àº ½ÇÇàµÉ ¼ö ¾ø½À´Ï´Ù.\n"
-"¾Æ¸¶µµ ´ç½ÅÀÇ ½©ÀÎ %s°¡ ÀÌ ÇÁ·Î±×·¥À» °æ·Î¿¡¼­ Ã£À» ¼ö\n"
-"¾ø±â ¶§¹®ÀÏ °Ì´Ï´Ù. ´ç½ÅÀÇ ½©ÀÇ µµ¿ò¸»À» ÀĞÀ¸¼Å¼­ °æ·Î\n"
-"¸¦ ¼³Á¤ÇÏ´Â ¹æ¹ıÀ» ¹è¿ì½Å ÈÄ °æ·Î¸¦ Á¦´ë·Î ¼³Á¤ÇÏ½Ã±â\n"
-"¹Ù¶ø´Ï´Ù.\n"
+"ì´ í”„ë¡œê·¸ë¨ì€ ì‹¤í–‰ë  ìˆ˜ ì—†ìŠµë‹ˆë‹¤.\n"
+"ì•„ë§ˆë„ ë‹¹ì‹ ì˜ ì‰˜ì¸ %sê°€ ì´ í”„ë¡œê·¸ë¨ì„ ê²½ë¡œì—ì„œ ì°¾ì„ ìˆ˜\n"
+"ì—†ê¸° ë•Œë¬¸ì¼ ê²ë‹ˆë‹¤. ë‹¹ì‹ ì˜ ì‰˜ì˜ ë„ì›€ë§ì„ ì½ìœ¼ì…”ì„œ ê²½ë¡œ\n"
+"ë¥¼ ì„¤ì •í•˜ëŠ” ë°©ë²•ì„ ë°°ìš°ì‹  í›„ ê²½ë¡œë¥¼ ì œëŒ€ë¡œ ì„¤ì •í•˜ì‹œê¸°\n"
+"ë°”ëë‹ˆë‹¤.\n"
 
 #: src/actions.c:704
 #, c-format
@@ -67,12 +67,12 @@ msgid ""
 "is a file, and you are allowed to execute it. I suggest you look\n"
 "into this.\n"
 msgstr ""
-"´ÙÀ½ ÇÁ·Î±×·¥À» ½ÇÇàÁß ¿¡·¯°¡ ¹ß»ıÇß½À´Ï´Ù:\n"
+"ë‹¤ìŒ í”„ë¡œê·¸ë¨ì„ ì‹¤í–‰ì¤‘ ì˜¤ë¥˜ê°€ ë°œìƒí–ˆìŠµë‹ˆë‹¤:\n"
 "%s\n"
-"ÀÌ ÇÁ·Î±×·¥Àº ½ÇÇàµÉ ¼ö ¾ø½À´Ï´Ù.\n"
-"¿Ö ½ÇÇàÇÒ ¼ö ¾ø´Â Áö¸¦ ¾Ë ¼ö ¾ø½À´Ï´Ù. ÀÌ ÆÄÀÏÀº Á¸ÀçÇÏ¸ç,\n"
-"´ç½ÅÀÌ ½ÇÇàÇÒ ¼ö ÀÖµµ·Ï µÇ¾î ÀÖ½À´Ï´Ù. ÀÌ ÆÄÀÏÀÇ ³»¿ëÀ»\n"
-"ÇÑ ¹ø È®ÀÎÇØ º¸½Ã±â ¹Ù¶ø´Ï´Ù.\n"
+"ì´ í”„ë¡œê·¸ë¨ì€ ì‹¤í–‰ë  ìˆ˜ ì—†ìŠµë‹ˆë‹¤.\n"
+"ì™œ ì‹¤í–‰í•  ìˆ˜ ì—†ëŠ” ì§€ë¥¼ ì•Œ ìˆ˜ ì—†ìŠµë‹ˆë‹¤. ì´ íŒŒì¼ì€ ì¡´ì¬í•˜ë©°,\n"
+"ë‹¹ì‹ ì´ ì‹¤í–‰í•  ìˆ˜ ìˆë„ë¡ ë˜ì–´ ìˆìŠµë‹ˆë‹¤. ì´ íŒŒì¼ì˜ ë‚´ìš©ì„\n"
+"í•œ ë²ˆ í™•ì¸í•´ ë³´ì‹œê¸° ë°”ëë‹ˆë‹¤.\n"
 
 #: src/actions.c:715
 #, c-format
@@ -83,11 +83,11 @@ msgid ""
 "This is because the file exists, is a file, but you are unable\n"
 "to execute it because you do not have execute access to this file.\n"
 msgstr ""
-"´ÙÀ½ ÇÁ·Î±×·¥À» ½ÇÇàÁß ¿¡·¯°¡ ¹ß»ıÇß½À´Ï´Ù:\n"
+"ë‹¤ìŒ í”„ë¡œê·¸ë¨ì„ ì‹¤í–‰ì¤‘ ì˜¤ë¥˜ê°€ ë°œìƒí–ˆìŠµë‹ˆë‹¤:\n"
 "%s\n"
-"ÀÌ ÇÁ·Î±×·¥Àº ½ÇÇàµÉ ¼ö ¾ø½À´Ï´Ù.\n"
-"ÀÌ ÆÄÀÏÀÌ Á¸ÀçÇÏÁö¸¸ ´ç½ÅÀº ÀÌ ÆÄÀÏÀ» ½ÇÇàÇÒ ¼ö ÀÖ´Â ±ÇÇÑÀ»\n"
-"°¡Áö°í ÀÖÁö ¾Ê½À´Ï´Ù.\n"
+"ì´ í”„ë¡œê·¸ë¨ì€ ì‹¤í–‰ë  ìˆ˜ ì—†ìŠµë‹ˆë‹¤.\n"
+"ì´ íŒŒì¼ì´ ì¡´ì¬í•˜ì§€ë§Œ ë‹¹ì‹ ì€ ì´ íŒŒì¼ì„ ì‹¤í–‰í•  ìˆ˜ ìˆëŠ” ê¶Œí•œì„\n"
+"ê°€ì§€ê³  ìˆì§€ ì•ŠìŠµë‹ˆë‹¤.\n"
 
 #: src/actions.c:731
 #, c-format
@@ -97,10 +97,10 @@ msgid ""
 "This program could not be executed.\n"
 "This is because the file is in fact a directory.\n"
 msgstr ""
-"´ÙÀ½ ÇÁ·Î±×·¥À» ½ÇÇàÁß ¿¡·¯°¡ ¹ß»ıÇß½À´Ï´Ù:\n"
+"ë‹¤ìŒ í”„ë¡œê·¸ë¨ì„ ì‹¤í–‰ì¤‘ ì˜¤ë¥˜ê°€ ë°œìƒí–ˆìŠµë‹ˆë‹¤:\n"
 "%s\n"
-"ÀÌ ÇÁ·Î±×·¥Àº ½ÇÇàµÉ ¼ö ¾ø½À´Ï´Ù.\n"
-"ÀÌ°ÍÀº ÆÄÀÏÀÌ ¾Æ´Ï°í µğ·ºÅä¸®ÀÔ´Ï´Ù.\n"
+"ì´ í”„ë¡œê·¸ë¨ì€ ì‹¤í–‰ë  ìˆ˜ ì—†ìŠµë‹ˆë‹¤.\n"
+"ì´ê²ƒì€ íŒŒì¼ì´ ì•„ë‹ˆê³  ë””ë ‰í† ë¦¬ì…ë‹ˆë‹¤.\n"
 
 #: src/actions.c:739
 #, c-format
@@ -110,15 +110,15 @@ msgid ""
 "This program could not be executed.\n"
 "This is because the file is not a regular file.\n"
 msgstr ""
-"´ÙÀ½ ÇÁ·Î±×·¥À» ½ÇÇàÁß ¿¡·¯°¡ ¹ß»ıÇß½À´Ï´Ù:\n"
+"ë‹¤ìŒ í”„ë¡œê·¸ë¨ì„ ì‹¤í–‰ì¤‘ ì˜¤ë¥˜ê°€ ë°œìƒí–ˆìŠµë‹ˆë‹¤:\n"
 "%s\n"
-"ÀÌ ÇÁ·Î±×·¥Àº ½ÇÇàµÉ ¼ö ¾ø½À´Ï´Ù.\n"
-"ÀÌ°ÍÀº ÀÏ¹İÀûÀÎ ÆÄÀÏÀÌ ¾Æ´Ï±â ¶§¹®ÀÔ´Ï´Ù.\n"
+"ì´ í”„ë¡œê·¸ë¨ì€ ì‹¤í–‰ë  ìˆ˜ ì—†ìŠµë‹ˆë‹¤.\n"
+"ì´ê²ƒì€ ì¼ë°˜ì ì¸ íŒŒì¼ì´ ì•„ë‹ˆê¸° ë•Œë¬¸ì…ë‹ˆë‹¤.\n"
 
 #: src/actions.c:2858
 #, c-format
 msgid "About Enlightenment %s"
-msgstr "ÀÎ¶óÀÌÆ°¸ÕÆ® %s¿¡ ´ëÇÏ¿©"
+msgstr "ì¸ë¼ì´íŠ¼ë¨¼íŠ¸ %sì— ëŒ€í•˜ì—¬"
 
 #: src/actions.c:2872
 #, c-format
@@ -141,6 +141,23 @@ msgid ""
 "Mandrake - mandrake@mandrake.net\n"
 "Kim Woelders - kim@woelders.dk\n"
 msgstr ""
+"ì¸ë¼ì´íŠ¼ë¨¼íŠ¸ ì°½ ê´€ë¦¬ì %s ë²„ì „ì„ ì‚¬ìš©í•˜ê²Œ\n"
+" ëœê²ƒì„ í™˜ì˜í•©ë‹ˆë‹¤.\n"
+"ì¸ë¼ì´íŠ¼ë¨¼íŠ¸ëŠ” ì•„ì§ ê°œë°œë²„ì „ì…ë‹ˆë‹¤. ê·¸ëŸ¬ë‚˜, ìš°ë¦¬ëŠ” \n"
+"ìš°ë¦¬ê°€ ë°œê²¬í•  ìˆ˜ ìˆëŠ”  ëª¨ë“  ë²Œë ˆë¥¼ ìˆ˜ì •í•˜ì—¬ ë°°í¬\n"
+"í•©ë‹ˆë‹¤. ë§Œì•½ ì´ ì†Œí”„íŠ¸ì›¨ì–´ì—ì„œ ë²Œë ˆë¥¼ ë°œê²¬í•˜ê²Œ ëœë‹¤ë©´,\n"
+"ë²Œë ˆ ë³´ê³  í•˜ëŠ”ê²ƒì„ ê·€ì°®ê²Œ ìƒê°í•˜ì§€ ë§ˆì‹­ì‹œì˜¤.\n"
+"ë©”ì¼ë§ ë¦¬ìŠ¤íŠ¸ì— ê°€ì…í•˜ê³ ì í•œë‹¤ë©´ \"ë„ì›€ë§\"ì„\n"
+"ë³´ì‹­ì‹œì˜¤.\n"
+"\n"
+"ì´ ì½”ë“œì˜ ë§ˆì§€ë§‰ ìˆ˜ì •ì‹œê°„:\n"
+"%s\n"
+"\n"
+"í–‰ìš´ì„ ë¹•ë‹ˆë‹¤. ìš°ë¦¬ëŠ” ë‹¹ì‹ ì´ ì´ í”„ë¡œê·¸ë¨ì„ ì¦ê²ê²Œ ì‚¬ìš©í•˜ê¸¸\n"
+"ë°”ëë‹ˆë‹¤.\n"
+"The Rasterman - raster@rasterman.com\n"
+"Mandrake - mandrake@mandrake.net\n"
+"Kim Woelders - kim@woelders.dk\n"
 
 #: src/actions.c:2888 src/dialog.c:2130 src/dialog.c:2171 src/groups.c:677
 #: src/settings.c:336 src/settings.c:609 src/settings.c:980
@@ -150,11 +167,11 @@ msgstr ""
 #: src/settings.c:3906 src/settings.c:4262 src/settings.c:4563
 #: src/settings.c:4740 src/settings.c:4958 src/snaps.c:570 src/sound.c:304
 msgid "OK"
-msgstr "È®ÀÎ"
+msgstr "í™•ì¸"
 
 #: src/actions.c:2999
 msgid "  Pick the group the window will belong to:  \n"
-msgstr "  Ã¢ÀÌ ¼ÓÇÒ ±×·ì ¼±ÅÃ:  \n"
+msgstr "  ì°½ì´ ì†í•  ê·¸ë£¹ ì„ íƒ:  \n"
 
 #: src/actions.c:3223
 msgid ""
@@ -168,30 +185,30 @@ msgid ""
 "\n"
 msgstr ""
 "\n"
-"  ÀÌ ¼ø°£¿¡´Â ÇöÀç ±×·ìÀÌ ¾ø½À´Ï´Ù.  \n"
-"  ÇöÀç ±×·ìÀº ´ç½ÅÀÌ ¸¶Áö¸·À¸·Î »ı¼ºÇÑ °ÍÀ» ¸»ÇÕ´Ï´Ù,  \n"
-"  ±×¸®°í, ´ç½ÅÀÌ »õ·Î¿î °É »ı¼ºÇÏ°Å³ª ¸¶Áö¸·°É ¾ø¾Ù  \n"
-"  ¶§±îÁö Á¸ÀçÇÕ´Ï´Ù.  \n"
+"  ì´ ìˆœê°„ì—ëŠ” í˜„ì¬ ê·¸ë£¹ì´ ì—†ìŠµë‹ˆë‹¤.  \n"
+"  í˜„ì¬ ê·¸ë£¹ì€ ë‹¹ì‹ ì´ ë§ˆì§€ë§‰ìœ¼ë¡œ ìƒì„±í•œ ê²ƒì„ ë§í•©ë‹ˆë‹¤,  \n"
+"  ê·¸ë¦¬ê³ , ë‹¹ì‹ ì´ ìƒˆë¡œìš´ ê±¸ ìƒì„±í•˜ê±°ë‚˜ ë§ˆì§€ë§‰ê±¸ ì—†ì•¨  \n"
+"  ë•Œê¹Œì§€ ì¡´ì¬í•©ë‹ˆë‹¤.  \n"
 "\n"
-"  Ã¢ÀÌ ¼ÓÇÒ ´Ù¸¥ ±×·ìÀ» ¿©±â¿¡¼­ ¼±ÅÃÇÏ½Ê½Ã¿À:  \n"
+"  ì°½ì´ ì†í•  ë‹¤ë¥¸ ê·¸ë£¹ì„ ì—¬ê¸°ì—ì„œ ì„ íƒí•˜ì‹­ì‹œì˜¤:  \n"
 "\n"
 
 #: src/actions.c:3243
 msgid "   Select the group to remove the window from.  "
-msgstr "   Ã¢À» »èÁ¦ÇÒ ±×·ìÀ» ¼±ÅÃÇÏ½Ê½Ã¿À.   "
+msgstr "   ì°½ì„ ì‚­ì œí•  ê·¸ë£¹ì„ ì„ íƒí•˜ì‹­ì‹œì˜¤.   "
 
 #: src/actions.c:3255
 msgid "  Select the group to break  "
-msgstr "  ¾ø¾Ù ±×·ìÀ» ¼±ÅÃÇÏ½Ê½Ã¿À  "
+msgstr "  ì—†ì•¨ ê·¸ë£¹ì„ ì„ íƒí•˜ì‹­ì‹œì˜¤  "
 
 #: src/actions.c:3282
 #, c-format
 msgid "You have been warned about the dangers of Zoom mode\n"
-msgstr "È®´ë ¸ğµå°¡ ¾ó¸¶³ª À§ÇèÇÑ °ÇÁö °æ°íÇß½À´Ï´Ù\n"
+msgstr "í™•ëŒ€ ëª¨ë“œê°€ ì–¼ë§ˆë‚˜ ìœ„í—˜í•œ ê±´ì§€ ê²½ê³ í–ˆìŠµë‹ˆë‹¤\n"
 
 #: src/actions.c:3285
 msgid "Warning !!!"
-msgstr "°æ°í !!!"
+msgstr "ê²½ê³  !!!"
 
 #: src/actions.c:3286
 msgid ""
@@ -208,74 +225,74 @@ msgid ""
 "If your Server does not behave well then you will probably\n"
 "have to avoid using this feature.\n"
 msgstr ""
-"ÀÌ ±â´ÉÀº Vid Mode ExtensionÀÌ¶ó´Â X ¼­¹öÀÇ ±â´ÉÀ»\n"
-"»ç¿ëÇÕ´Ï´Ù. ÀÌ ±â´ÉÀº XFree86 ¼­¹ö°¡ Á¦°øÇÏ±â´Â ÇÏÁö¸¸\n"
-"¼­¹ö¿¡¼­ ¸¹ÀÌ »ç¿ëµÇ´Â ±â´ÉÀÌ ¾Æ´Ï±â ¶§¹®¿¡ ÃæºĞÈ÷\n"
-"°ËÁõµÇÁö ¾Ê¾Ò½À´Ï´Ù.\n"
+"ì´ ê¸°ëŠ¥ì€ Vid Mode Extensionì´ë¼ëŠ” X ì„œë²„ì˜ ê¸°ëŠ¥ì„\n"
+"ì‚¬ìš©í•©ë‹ˆë‹¤. ì´ ê¸°ëŠ¥ì€ XFree86 ì„œë²„ê°€ ì œê³µí•˜ê¸°ëŠ” í•˜ì§€ë§Œ\n"
+"ì„œë²„ì—ì„œ ë§ì´ ì‚¬ìš©ë˜ëŠ” ê¸°ëŠ¥ì´ ì•„ë‹ˆê¸° ë•Œë¬¸ì— ì¶©ë¶„íˆ\n"
+"ê²€ì¦ë˜ì§€ ì•Šì•˜ìŠµë‹ˆë‹¤.\n"
 "\n"
-"´ç½ÅÀÇ X ¼­¹ö°¡ ¿ä±¸µÈ ¸ğµå·Î ºü¸£°Ô ÀüÈ¯ÇÏÁö ¸ø ÇÒ ¼ö°¡\n"
-"ÀÖ°í ¸ØÃâ ¼öµµ ÀÖ½º¸ç, È­¸éÀÌ ±úÁú ¼öµµ ÀÖ°í, ´Ü¼øÇÏ°Ô\n"
-"¸ğµå¸¦ ÀüÈ¯ÇÏÁö ¾ÊÀ» ¼öµµ ÀÖ½À´Ï´Ù.\n"
+"ë‹¹ì‹ ì˜ X ì„œë²„ê°€ ìš”êµ¬ëœ ëª¨ë“œë¡œ ë¹ ë¥´ê²Œ ì „í™˜í•˜ì§€ ëª» í•  ìˆ˜ê°€\n"
+"ìˆê³  ë©ˆì¶œ ìˆ˜ë„ ìˆìŠ¤ë©°, í™”ë©´ì´ ê¹¨ì§ˆ ìˆ˜ë„ ìˆê³ , ë‹¨ìˆœí•˜ê²Œ\n"
+"ëª¨ë“œë¥¼ ì „í™˜í•˜ì§€ ì•Šì„ ìˆ˜ë„ ìˆìŠµë‹ˆë‹¤.\n"
 "\n"
-"ÀÌ°ÍÀº °æ°íÀÌ¸ç ÀÌ¹ø¿¡ ´Ü ÇÑ¹ø¸¸ Ãâ·ÂµË´Ï´Ù.\n"
-"´ç½ÅÀÇ ¼­¹ö°¡ Á¦´ë·Î µ¿ÀÛÇÏÁö ¾Ê´Â´Ù¸é ´ç½ÅÀº ¾ÕÀ¸·Î\n"
-"ÀÌ ±â´ÉÀ» »ç¿ëÇÏÁö ¸»¾Æ¾ß ÇÕ´Ï´Ù.\n"
+"ì´ê²ƒì€ ê²½ê³ ì´ë©° ì´ë²ˆì— ë‹¨ í•œë²ˆë§Œ ì¶œë ¥ë©ë‹ˆë‹¤.\n"
+"ë‹¹ì‹ ì˜ ì„œë²„ê°€ ì œëŒ€ë¡œ ë™ì‘í•˜ì§€ ì•ŠëŠ”ë‹¤ë©´ ë‹¹ì‹ ì€ ì•ìœ¼ë¡œ\n"
+"ì´ ê¸°ëŠ¥ì„ ì‚¬ìš©í•˜ì§€ ë§ì•„ì•¼ í•©ë‹ˆë‹¤.\n"
 
 #: src/alert.c:45 src/alert.c:75
 msgid "Enlightenment Message Dialog"
-msgstr "ÀÎ¶óÀÌÆ°¸ÕÆ® ¸Ş½ÃÁö ´ëÈ­»óÀÚ"
+msgstr "ì¸ë¼ì´íŠ¼ë¨¼íŠ¸ ë©”ì‹œì§€ ëŒ€í™”ìƒì"
 
 #: src/alert.c:46 src/alert.c:76 src/memory.c:210 src/memory.c:286
 #: src/memory.c:304 src/memory.c:380
 msgid "Ignore this"
-msgstr "¹«½Ã"
+msgstr "ë¬´ì‹œ"
 
 #: src/alert.c:47 src/alert.c:77 src/memory.c:211 src/memory.c:286
 #: src/memory.c:305 src/memory.c:380 src/memory.c:395
 msgid "Restart Enlightenment"
-msgstr "ÀÎ¶óÀÌÆ°¸ÕÆ® Àç½ÃÀÛ"
+msgstr "ì¸ë¼ì´íŠ¼ë¨¼íŠ¸ ì¬ì‹œì‘"
 
 #: src/alert.c:48 src/alert.c:78 src/events.c:61 src/memory.c:211
 #: src/memory.c:287 src/memory.c:305 src/memory.c:381 src/memory.c:396
 #: src/setup.c:301
 msgid "Quit Enlightenment"
-msgstr "ÀÎ¶óÀÌÆ°¸ÕÆ® Á¾·á"
+msgstr "ì¸ë¼ì´íŠ¼ë¨¼íŠ¸ ì¢…ë£Œ"
 
 #: src/alert.c:327
 msgid "Enlightenment Error"
-msgstr "ÀÎ¶óÀÌÆ°¸ÕÆ® ¿¡·¯"
+msgstr "ì¸ë¼ì´íŠ¼ë¨¼íŠ¸ ì˜¤ë¥˜"
 
 #: src/alert.c:329
 msgid "Ignore"
-msgstr "¹«½Ã"
+msgstr "ë¬´ì‹œ"
 
 #: src/alert.c:331
 msgid "Restart"
-msgstr "Àç½ÃÀÛ"
+msgstr "ì¬ì‹œì‘"
 
 #: src/alert.c:333
 msgid "Exit"
-msgstr "Á¾·á"
+msgstr "ì¢…ë£Œ"
 
 #: src/backgrounds.c:192
 msgid "Background Error!"
-msgstr "¹è°æ ¿¡·¯!"
+msgstr "ë°°ê²½ ì˜¤ë¥˜!"
 
 #: src/borders.c:2275
 msgid "Border Error!"
-msgstr "º¸´õ ¿¡·¯!"
+msgstr "í…Œë‘ë¦¬ ì˜¤ë¥˜!"
 
 #: src/buttons.c:124
 msgid "Button Error!"
-msgstr "¹öÆ° ¿¡·¯!"
+msgstr "ë²„íŠ¼ ì˜¤ë¥˜!"
 
 #: src/cmclass.c:91
 msgid "ColorModClass Error!"
-msgstr "ColorModClass ¿¡·¯!"
+msgstr "ColorModClass ì˜¤ë¥˜!"
 
 #: src/comms.c:351
 msgid "E IPC Error"
-msgstr "E IPC ¿¡·¯"
+msgstr "E IPC ì˜¤ë¥˜"
 
 #: src/comms.c:352
 #, c-format
@@ -287,10 +304,10 @@ msgid ""
 "\n"
 "%s\n"
 msgstr ""
-"¸ğ¸£´Â Å¬¶óÀÌ¾ğÆ® ¸Ş½ÃÁö ¼ö½Å.\n"
-"Å¬¶óÀÌ¾ğÆ® ÀÌ¸§: %s\n"
-"Å¬¶óÀÌ¾ğÆ® ¹öÀü: %s\n"
-"¸Ş½ÃÁö ³»¿ë:\n"
+"ëª¨ë¥´ëŠ” í´ë¼ì´ì–¸íŠ¸ ë©”ì‹œì§€ ìˆ˜ì‹ .\n"
+"í´ë¼ì´ì–¸íŠ¸ ì´ë¦„: %s\n"
+"í´ë¼ì´ì–¸íŠ¸ ë²„ì „: %s\n"
+"ë©”ì‹œì§€ ë‚´ìš©:\n"
 "\n"
 "%s\n"
 
@@ -301,7 +318,7 @@ msgstr ""
 #: src/config.c:3072 src/config.c:3217 src/config.c:3419
 #, c-format
 msgid "CONFIG: ignoring extra data in \"%s\"\n"
-msgstr "CONFIG: \"%s\"¿¡ ÀÖ´Â ´õ ¸¹Àº µ¥ÀÌÅ¸´Â ¹«½ÃÇÕ´Ï´Ù\n"
+msgstr "CONFIG: \"%s\"ì— ìˆëŠ” ë” ë§ì€ ë°ì´íƒ€ëŠ” ë¬´ì‹œí•©ë‹ˆë‹¤\n"
 
 #: src/config.c:361 src/config.c:599 src/config.c:676 src/config.c:1027
 #: src/config.c:1144 src/config.c:1380 src/config.c:1507 src/config.c:1613
@@ -310,7 +327,7 @@ msgstr "CONFIG: \"%s\"¿¡ ÀÖ´Â ´õ ¸¹Àº µ¥ÀÌÅ¸´Â ¹«½ÃÇÕ´Ï´Ù\n"
 #: src/config.c:3427
 #, c-format
 msgid "CONFIG: missing required data in \"%s\"\n"
-msgstr "CONFIG: \"%s\"¿¡ ¿ä±¸µÇ´Â µ¥ÀÌÅ¸°¡ ¾ø½À´Ï´Ù\n"
+msgstr "CONFIG: \"%s\"ì— ìš”êµ¬ë˜ëŠ” ë°ì´íƒ€ê°€ ì—†ìŠµë‹ˆë‹¤\n"
 
 #: src/config.c:557 src/config.c:631
 #, c-format
@@ -320,26 +337,26 @@ msgid ""
 "%s\n"
 "Will ignore and continue...\n"
 msgstr ""
-"°æ°í: ÇöÀçÀÇ ÅØ½ºÆ® Á¤ÀÇ Áß°£¿¡ ÀÖ´Â ´ÙÀ½ ÅØ½ºÆ®¿¡ ´ëÇØ\n"
-"¹«¾ùÀ» ÇØ¾ß µÉ Áö¸¦ ¸ğ¸£°Ú½À´Ï´Ù:\n"
+"ê²½ê³ : í˜„ì¬ì˜ í…ìŠ¤íŠ¸ ì •ì˜ ì¤‘ê°„ì— ìˆëŠ” ë‹¤ìŒ í…ìŠ¤íŠ¸ì— ëŒ€í•´\n"
+"ë¬´ì—‡ì„ í•´ì•¼ ë  ì§€ë¥¼ ëª¨ë¥´ê² ìŠµë‹ˆë‹¤:\n"
 "%s\n"
-"¹«½ÃÇÏ°í °è¼Ó ÁøÇàÇÒ °Ì´Ï´Ù...\n"
+"ë¬´ì‹œí•˜ê³  ê³„ì† ì§„í–‰í•  ê²ë‹ˆë‹¤...\n"
 
 #: src/config.c:563
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading a text block.  Outcome is likely not good.\n"
 msgstr ""
-"°æ°í: ¼³Á¤ÀÌ ÅØ½ºÆ® ºí·°À» ÀĞ±âµµ Àü¿¡ ³¡³­ °Í °°½À´Ï´Ù\n"
-"Ç¥½Ã°¡ ³ª»Ú°Ô µÉ Áöµµ ¸ğ¸£°Ú½À´Ï´Ù.\n"
+"ê²½ê³ : ì„¤ì •ì´ í…ìŠ¤íŠ¸ ë¸”ëŸ­ì„ ì½ê¸°ë„ ì „ì— ëë‚œ ê²ƒ ê°™ìŠµë‹ˆë‹¤\n"
+"í‘œì‹œê°€ ë‚˜ì˜ê²Œ ë  ì§€ë„ ëª¨ë¥´ê² ìŠµë‹ˆë‹¤.\n"
 
 #: src/config.c:637
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading a Slideout block.  Outcome is likely not good.\n"
 msgstr ""
-"°æ°í: ¼³Á¤ÀÌ ½½¸®ÀÌµå¾Æ¿ô ºí·°À» ÀĞ±âµµ Àü¿¡ ³¡³­ °Í °°½À´Ï´Ù\n"
-"Ç¥½Ã°¡ ³ª»Ú°Ô µÉ Áöµµ ¸ğ¸£°Ú½À´Ï´Ù.\n"
+"ê²½ê³ : ì„¤ì •ì´ ìŠ¬ë¦¬ì´ë“œì•„ì›ƒ ë¸”ëŸ­ì„ ì½ê¸°ë„ ì „ì— ëë‚œ ê²ƒ ê°™ìŠµë‹ˆë‹¤\n"
+"í‘œì‹œê°€ ë‚˜ì˜ê²Œ ë  ì§€ë„ ëª¨ë¥´ê² ìŠµë‹ˆë‹¤.\n"
 
 #: src/config.c:989
 #, c-format
@@ -349,78 +366,78 @@ msgid ""
 "%s\n"
 "Will ignore and continue...\n"
 msgstr ""
-"°æ°í: ÇöÀçÀÇ ÄÁÆ®·Ñ Á¤ÀÇ Áß°£¿¡ ÀÖ´Â ´ÙÀ½ ÅØ½ºÆ®¿¡ ´ëÇØ\n"
-"¹«¾ùÀ» ÇØ¾ß µÉ Áö¸¦ ¸ğ¸£°Ú½À´Ï´Ù:\n"
+"ê²½ê³ : í˜„ì¬ì˜ ì»¨íŠ¸ë¡¤ ì •ì˜ ì¤‘ê°„ì— ìˆëŠ” ë‹¤ìŒ í…ìŠ¤íŠ¸ì— ëŒ€í•´\n"
+"ë¬´ì—‡ì„ í•´ì•¼ ë  ì§€ë¥¼ ëª¨ë¥´ê² ìŠµë‹ˆë‹¤:\n"
 "%s\n"
-"¹«½ÃÇÏ°í °è¼Ó ÁøÇàÇÒ °Ì´Ï´Ù...\n"
+"ë¬´ì‹œí•˜ê³  ê³„ì† ì§„í–‰í•  ê²ë‹ˆë‹¤...\n"
 
 #: src/config.c:995
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading a Control block.  Outcome is likely not good.\n"
 msgstr ""
-"°æ°í: ¼³Á¤ÀÌ ÄÁÆ®·Ñ ºí·°À» ÀĞ±âµµ Àü¿¡ ³¡³­ °Í °°½À´Ï´Ù\n"
-"Ç¥½Ã°¡ ³ª»Ú°Ô µÉ Áöµµ ¸ğ¸£°Ú½À´Ï´Ù.\n"
+"ê²½ê³ : ì„¤ì •ì´ ì»¨íŠ¸ë¡¤ ë¸”ëŸ­ì„ ì½ê¸°ë„ ì „ì— ëë‚œ ê²ƒ ê°™ìŠµë‹ˆë‹¤\n"
+"í‘œì‹œê°€ ë‚˜ì˜ê²Œ ë  ì§€ë„ ëª¨ë¥´ê² ìŠµë‹ˆë‹¤.\n"
 
 #: src/config.c:1104 src/config.c:1333
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading a Menu block.  Outcome is likely not good.\n"
 msgstr ""
-"°æ°í: ¼³Á¤ÀÌ ¸Ş´º ºí·°À» ÀĞ±âµµ Àü¿¡ ³¡³­ °Í °°½À´Ï´Ù\n"
-"Ç¥½Ã°¡ ³ª»Ú°Ô µÉ Áöµµ ¸ğ¸£°Ú½À´Ï´Ù.\n"
+"ê²½ê³ : ì„¤ì •ì´ ë©”ë‰´ ë¸”ëŸ­ì„ ì½ê¸°ë„ ì „ì— ëë‚œ ê²ƒ ê°™ìŠµë‹ˆë‹¤\n"
+"í‘œì‹œê°€ ë‚˜ì˜ê²Œ ë  ì§€ë„ ëª¨ë¥´ê² ìŠµë‹ˆë‹¤.\n"
 
 #: src/config.c:1469
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading a BorderPart block.  Outcome is likely not good.\n"
 msgstr ""
-"°æ°í: ¼³Á¤ÀÌ º¸´õºÎºĞ ºí·°À» ÀĞ±âµµ Àü¿¡ ³¡³­ °Í °°½À´Ï´Ù\n"
-"Ç¥½Ã°¡ ³ª»Ú°Ô µÉ Áöµµ ¸ğ¸£°Ú½À´Ï´Ù.\n"
+"ê²½ê³ : ì„¤ì •ì´ í…Œë‘ë¦¬ë¶€ë¶„ ë¸”ëŸ­ì„ ì½ê¸°ë„ ì „ì— ëë‚œ ê²ƒ ê°™ìŠµë‹ˆë‹¤\n"
+"í‘œì‹œê°€ ë‚˜ì˜ê²Œ ë  ì§€ë„ ëª¨ë¥´ê² ìŠµë‹ˆë‹¤.\n"
 
 #: src/config.c:1558
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading a Main Border block.  Outcome is likely not good.\n"
 msgstr ""
-"°æ°í: ¼³Á¤ÀÌ ¸ŞÀÎº¸´õ ºí·°À» ÀĞ±âµµ Àü¿¡ ³¡³­ °Í °°½À´Ï´Ù\n"
-"Ç¥½Ã°¡ ³ª»Ú°Ô µÉ Áöµµ ¸ğ¸£°Ú½À´Ï´Ù.\n"
+"ê²½ê³ : ì„¤ì •ì´ ë©”ì¸í…Œë‘ë¦¬ ë¸”ëŸ­ì„ ì½ê¸°ë„ ì „ì— ëë‚œ ê²ƒ ê°™ìŠµë‹ˆë‹¤\n"
+"í‘œì‹œê°€ ë‚˜ì˜ê²Œ ë  ì§€ë„ ëª¨ë¥´ê² ìŠµë‹ˆë‹¤.\n"
 
 #: src/config.c:1776
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading a Button block.  Outcome is likely not good.\n"
 msgstr ""
-"°æ°í: ¼³Á¤ÀÌ ¹öÆ° ºí·°À» ÀĞ±âµµ Àü¿¡ ³¡³­ °Í °°½À´Ï´Ù\n"
-"Ç¥½Ã°¡ ³ª»Ú°Ô µÉ Áöµµ ¸ğ¸£°Ú½À´Ï´Ù.\n"
+"ê²½ê³ : ì„¤ì •ì´ ë²„íŠ¼ ë¸”ëŸ­ì„ ì½ê¸°ë„ ì „ì— ëë‚œ ê²ƒ ê°™ìŠµë‹ˆë‹¤\n"
+"í‘œì‹œê°€ ë‚˜ì˜ê²Œ ë  ì§€ë„ ëª¨ë¥´ê² ìŠµë‹ˆë‹¤.\n"
 
 #: src/config.c:2021 src/config.c:2101
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading a Desktop block.  Outcome is likely not good.\n"
 msgstr ""
-"°æ°í: ¼³Á¤ÀÌ µ¥½ºÅ©Å¾ ºí·°À» ÀĞ±âµµ Àü¿¡ ³¡³­ °Í °°½À´Ï´Ù\n"
-"Ç¥½Ã°¡ ³ª»Ú°Ô µÉ Áöµµ ¸ğ¸£°Ú½À´Ï´Ù.\n"
+"ê²½ê³ : ì„¤ì •ì´ ë°ìŠ¤í¬íƒ‘ ë¸”ëŸ­ì„ ì½ê¸°ë„ ì „ì— ëë‚œ ê²ƒ ê°™ìŠµë‹ˆë‹¤\n"
+"í‘œì‹œê°€ ë‚˜ì˜ê²Œ ë  ì§€ë„ ëª¨ë¥´ê² ìŠµë‹ˆë‹¤.\n"
 
 #: src/config.c:2113
 msgid "Easter Egg!  Iconboxes aren't implemented yet.\n"
-msgstr "¾ÆÀÌÄÜ»óÀÚ´Â ¾ÆÁ÷ ±¸ÇöµÇÁö ¾Ê¾Ò½À´Ï´Ù.\n"
+msgstr "ì•„ì´ì½˜ìƒìëŠ” ì•„ì§ êµ¬í˜„ë˜ì§€ ì•Šì•˜ìŠµë‹ˆë‹¤.\n"
 
 #: src/config.c:2143
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading an Iconbox block.  Outcome is likely not good.\n"
 msgstr ""
-"°æ°í: ¼³Á¤ÀÌ ¾ÆÀÌÄÜ»óÀÚ ºí·°À» ÀĞ±âµµ Àü¿¡ ³¡³­ °Í °°½À´Ï´Ù\n"
-"Ç¥½Ã°¡ ³ª»Ú°Ô µÉ Áöµµ ¸ğ¸£°Ú½À´Ï´Ù.\n"
+"ê²½ê³ : ì„¤ì •ì´ ì•„ì´ì½˜ìƒì ë¸”ëŸ­ì„ ì½ê¸°ë„ ì „ì— ëë‚œ ê²ƒ ê°™ìŠµë‹ˆë‹¤\n"
+"í‘œì‹œê°€ ë‚˜ì˜ê²Œ ë  ì§€ë„ ëª¨ë¥´ê² ìŠµë‹ˆë‹¤.\n"
 
 #: src/config.c:2177
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading an Sound block.  Outcome is likely not good.\n"
 msgstr ""
-"°æ°í: ¼³Á¤ÀÌ »ç¿îµå ºí·°À» ÀĞ±âµµ Àü¿¡ ³¡³­ °Í °°½À´Ï´Ù\n"
-"Ç¥½Ã°¡ ³ª»Ú°Ô µÉ Áöµµ ¸ğ¸£°Ú½À´Ï´Ù.\n"
+"ê²½ê³ : ì„¤ì •ì´ ì‚¬ìš´ë“œ ë¸”ëŸ­ì„ ì½ê¸°ë„ ì „ì— ëë‚œ ê²ƒ ê°™ìŠµë‹ˆë‹¤\n"
+"í‘œì‹œê°€ ë‚˜ì˜ê²Œ ë  ì§€ë„ ëª¨ë¥´ê² ìŠµë‹ˆë‹¤.\n"
 
 #: src/config.c:2430
 #, c-format
@@ -430,18 +447,18 @@ msgid ""
 "%s\n"
 "Will ignore and continue...\n"
 msgstr ""
-"°æ°í: ÇöÀçÀÇ ¾×¼ÇÅ¬·¡½º Á¤ÀÇ Áß°£¿¡ ÀÖ´Â ´ÙÀ½ ÅØ½ºÆ®¿¡ ´ëÇØ\n"
-"¹«¾ùÀ» ÇØ¾ß µÉ Áö¸¦ ¸ğ¸£°Ú½À´Ï´Ù:\n"
+"ê²½ê³ : í˜„ì¬ì˜ ì•¡ì…˜í´ë˜ìŠ¤ ì •ì˜ ì¤‘ê°„ì— ìˆëŠ” ë‹¤ìŒ í…ìŠ¤íŠ¸ì— ëŒ€í•´\n"
+"ë¬´ì—‡ì„ í•´ì•¼ ë  ì§€ë¥¼ ëª¨ë¥´ê² ìŠµë‹ˆë‹¤:\n"
 "%s\n"
-"¹«½ÃÇÏ°í °è¼Ó ÁøÇàÇÒ °Ì´Ï´Ù...\n"
+"ë¬´ì‹œí•˜ê³  ê³„ì† ì§„í–‰í•  ê²ë‹ˆë‹¤...\n"
 
 #: src/config.c:2444
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading an Action Class block.  Outcome is likely not good.\n"
 msgstr ""
-"°æ°í: ¼³Á¤ÀÌ ¾×¼Ç Å¬·¡½º ºí·°À» ÀĞ±âµµ Àü¿¡ ³¡³­ °Í °°½À´Ï´Ù\n"
-"Ç¥½Ã°¡ ³ª»Ú°Ô µÉ Áöµµ ¸ğ¸£°Ú½À´Ï´Ù.\n"
+"ê²½ê³ : ì„¤ì •ì´ ì•¡ì…˜ í´ë˜ìŠ¤ ë¸”ëŸ­ì„ ì½ê¸°ë„ ì „ì— ëë‚œ ê²ƒ ê°™ìŠµë‹ˆë‹¤\n"
+"í‘œì‹œê°€ ë‚˜ì˜ê²Œ ë  ì§€ë„ ëª¨ë¥´ê² ìŠµë‹ˆë‹¤.\n"
 
 #: src/config.c:2639
 #, c-format
@@ -451,18 +468,18 @@ msgid ""
 "%s\n"
 "Will ignore and continue...\n"
 msgstr ""
-"°æ°í: ÇöÀçÀÇ ÀÌ¹ÌÁöÅ¬·¡½º Á¤ÀÇ Áß°£¿¡ ÀÖ´Â ´ÙÀ½ ÅØ½ºÆ®¿¡ ´ëÇØ\n"
-"¹«¾ùÀ» ÇØ¾ß µÉ Áö¸¦ ¸ğ¸£°Ú½À´Ï´Ù:\n"
+"ê²½ê³ : í˜„ì¬ì˜ ì´ë¯¸ì§€í´ë˜ìŠ¤ ì •ì˜ ì¤‘ê°„ì— ìˆëŠ” ë‹¤ìŒ í…ìŠ¤íŠ¸ì— ëŒ€í•´\n"
+"ë¬´ì—‡ì„ í•´ì•¼ ë  ì§€ë¥¼ ëª¨ë¥´ê² ìŠµë‹ˆë‹¤:\n"
 "%s\n"
-"¹«½ÃÇÏ°í °è¼Ó ÁøÇàÇÒ °Ì´Ï´Ù...\n"
+"ë¬´ì‹œí•˜ê³  ê³„ì† ì§„í–‰í•  ê²ë‹ˆë‹¤...\n"
 
 #: src/config.c:2646
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading an ImageClass block.  Outcome is likely not good.\n"
 msgstr ""
-"°æ°í: ¼³Á¤ÀÌ ÀÌ¹ÌÁöÅ¬·¡½º ºí·°À» ÀĞ±âµµ Àü¿¡ ³¡³­ °Í °°½À´Ï´Ù\n"
-"Ç¥½Ã°¡ ³ª»Ú°Ô µÉ Áöµµ ¸ğ¸£°Ú½À´Ï´Ù.\n"
+"ê²½ê³ : ì„¤ì •ì´ ì´ë¯¸ì§€í´ë˜ìŠ¤ ë¸”ëŸ­ì„ ì½ê¸°ë„ ì „ì— ëë‚œ ê²ƒ ê°™ìŠµë‹ˆë‹¤\n"
+"í‘œì‹œê°€ ë‚˜ì˜ê²Œ ë  ì§€ë„ ëª¨ë¥´ê² ìŠµë‹ˆë‹¤.\n"
 
 #: src/config.c:2885
 #, c-format
@@ -472,10 +489,10 @@ msgid ""
 "%s\n"
 "Will ignore and continue...\n"
 msgstr ""
-"°æ°í: ÇöÀçÀÇ »ö ¼öÁ¤ÀÚ Á¤ÀÇ Áß°£¿¡ ÀÖ´Â ´ÙÀ½ ÅØ½ºÆ®¿¡ ´ëÇØ\n"
-"¹«¾ùÀ» ÇØ¾ß µÉ Áö¸¦ ¸ğ¸£°Ú½À´Ï´Ù:\n"
+"ê²½ê³ : í˜„ì¬ì˜ ìƒ‰ ìˆ˜ì •ì ì •ì˜ ì¤‘ê°„ì— ìˆëŠ” ë‹¤ìŒ í…ìŠ¤íŠ¸ì— ëŒ€í•´\n"
+"ë¬´ì—‡ì„ í•´ì•¼ ë  ì§€ë¥¼ ëª¨ë¥´ê² ìŠµë‹ˆë‹¤:\n"
 "%s\n"
-"¹«½ÃÇÏ°í °è¼Ó ÁøÇàÇÒ °Ì´Ï´Ù...\n"
+"ë¬´ì‹œí•˜ê³  ê³„ì† ì§„í–‰í•  ê²ë‹ˆë‹¤...\n"
 
 #: src/config.c:2909
 msgid ""
@@ -483,8 +500,8 @@ msgid ""
 "Done loading an ColorModifier block.\n"
 "Outcome is likely not good.\n"
 msgstr ""
-"°æ°í: ¼³Á¤ÀÌ »ö ¼öÁ¤ÀÚ ºí·°À» ÀĞ±âµµ Àü¿¡ ³¡³­ °Í °°½À´Ï´Ù\n"
-"Ç¥½Ã°¡ ³ª»Ú°Ô µÉ Áöµµ ¸ğ¸£°Ú½À´Ï´Ù.\n"
+"ê²½ê³ : ì„¤ì •ì´ ìƒ‰ ìˆ˜ì •ì ë¸”ëŸ­ì„ ì½ê¸°ë„ ì „ì— ëë‚œ ê²ƒ ê°™ìŠµë‹ˆë‹¤\n"
+"í‘œì‹œê°€ ë‚˜ì˜ê²Œ ë  ì§€ë„ ëª¨ë¥´ê² ìŠµë‹ˆë‹¤.\n"
 
 #: src/config.c:3000
 #, c-format
@@ -494,26 +511,26 @@ msgid ""
 "%s\n"
 "Will ignore and continue...\n"
 msgstr ""
-"°æ°í: ÇöÀçÀÇ ÅøÆÁ Á¤ÀÇ Áß°£¿¡ ÀÖ´Â ´ÙÀ½ ÅØ½ºÆ®¿¡ ´ëÇØ\n"
-"¹«¾ùÀ» ÇØ¾ß µÉ Áö¸¦ ¸ğ¸£°Ú½À´Ï´Ù:\n"
+"ê²½ê³ : í˜„ì¬ì˜ íˆ´íŒ ì •ì˜ ì¤‘ê°„ì— ìˆëŠ” ë‹¤ìŒ í…ìŠ¤íŠ¸ì— ëŒ€í•´\n"
+"ë¬´ì—‡ì„ í•´ì•¼ ë  ì§€ë¥¼ ëª¨ë¥´ê² ìŠµë‹ˆë‹¤:\n"
 "%s\n"
-"¹«½ÃÇÏ°í °è¼Ó ÁøÇàÇÒ °Ì´Ï´Ù...\n"
+"ë¬´ì‹œí•˜ê³  ê³„ì† ì§„í–‰í•  ê²ë‹ˆë‹¤...\n"
 
 #: src/config.c:3007
 msgid ""
 "Warning: Configuration appears to have ended before we were\n"
 "Done loading an ToolTip block.  Outcome is likely not good.\n"
 msgstr ""
-"°æ°í: ¼³Á¤ÀÌ ÅøÆÁ ºí·°À» ÀĞ±âµµ Àü¿¡ ³¡³­ °Í °°½À´Ï´Ù\n"
-"Ç¥½Ã°¡ ³ª»Ú°Ô µÉ Áöµµ ¸ğ¸£°Ú½À´Ï´Ù.\n"
+"ê²½ê³ : ì„¤ì •ì´ íˆ´íŒ ë¸”ëŸ­ì„ ì½ê¸°ë„ ì „ì— ëë‚œ ê²ƒ ê°™ìŠµë‹ˆë‹¤\n"
+"í‘œì‹œê°€ ë‚˜ì˜ê²Œ ë  ì§€ë„ ëª¨ë¥´ê² ìŠµë‹ˆë‹¤.\n"
 
 #: src/config.c:3045
 msgid ""
 "Warning: Configuration appears to have ended before we were\n"
 "Done loading an FX block.  Outcome is likely not good.\n"
 msgstr ""
-"°æ°í: ¼³Á¤ÀÌ FX ºí·°À» ÀĞ±âµµ Àü¿¡ ³¡³­ °Í °°½À´Ï´Ù\n"
-"Ç¥½Ã°¡ ³ª»Ú°Ô µÉ Áöµµ ¸ğ¸£°Ú½À´Ï´Ù.\n"
+"ê²½ê³ : ì„¤ì •ì´ FX ë¸”ëŸ­ì„ ì½ê¸°ë„ ì „ì— ëë‚œ ê²ƒ ê°™ìŠµë‹ˆë‹¤\n"
+"í‘œì‹œê°€ ë‚˜ì˜ê²Œ ë  ì§€ë„ ëª¨ë¥´ê² ìŠµë‹ˆë‹¤.\n"
 
 #: src/config.c:3135
 #, c-format
@@ -523,18 +540,18 @@ msgid ""
 "%s\n"
 "Will ignore and continue...\n"
 msgstr ""
-"°æ°í: ÇöÀçÀÇ ¾ÆÀÌÄÜ»óÀÚ Á¤ÀÇ Áß°£¿¡ ÀÖ´Â ´ÙÀ½ ÅØ½ºÆ®¿¡ ´ëÇØ\n"
-"¹«¾ùÀ» ÇØ¾ß µÉ Áö¸¦ ¸ğ¸£°Ú½À´Ï´Ù:\n"
+"ê²½ê³ : í˜„ì¬ì˜ ì•„ì´ì½˜ìƒì ì •ì˜ ì¤‘ê°„ì— ìˆëŠ” ë‹¤ìŒ í…ìŠ¤íŠ¸ì— ëŒ€í•´\n"
+"ë¬´ì—‡ì„ í•´ì•¼ ë  ì§€ë¥¼ ëª¨ë¥´ê² ìŠµë‹ˆë‹¤:\n"
 "%s\n"
-"¹«½ÃÇÏ°í °è¼Ó ÁøÇàÇÒ °Ì´Ï´Ù...\n"
+"ë¬´ì‹œí•˜ê³  ê³„ì† ì§„í–‰í•  ê²ë‹ˆë‹¤...\n"
 
 #: src/config.c:3143
 msgid ""
 "Warning: Configuration appears to have ended before we were\n"
 "Done loading an Iconbox block.  Outcome is likely not good.\n"
 msgstr ""
-"°æ°í: ¼³Á¤ÀÌ ¾ÆÀÌÄÜ»óÀÚ ºí·°À» ÀĞ±âµµ Àü¿¡ ³¡³­ °Í °°½À´Ï´Ù\n"
-"Ç¥½Ã°¡ ³ª»Ú°Ô µÉ Áöµµ ¸ğ¸£°Ú½À´Ï´Ù.\n"
+"ê²½ê³ : ì„¤ì •ì´ ì•„ì´ì½˜ìƒì ë¸”ëŸ­ì„ ì½ê¸°ë„ ì „ì— ëë‚œ ê²ƒ ê°™ìŠµë‹ˆë‹¤\n"
+"í‘œì‹œê°€ ë‚˜ì˜ê²Œ ë  ì§€ë„ ëª¨ë¥´ê² ìŠµë‹ˆë‹¤.\n"
 
 #: src/config.c:3179
 #, c-format
@@ -544,18 +561,18 @@ msgid ""
 "%s\n"
 "Will ignore and continue...\n"
 msgstr ""
-"°æ°í: ÇöÀçÀÇ ¿¢½ºÆ®¶ó Á¤ÀÇ Áß°£¿¡ ÀÖ´Â ´ÙÀ½ ÅØ½ºÆ®¿¡ ´ëÇØ\n"
-"¹«¾ùÀ» ÇØ¾ß µÉ Áö¸¦ ¸ğ¸£°Ú½À´Ï´Ù:\n"
+"ê²½ê³ : í˜„ì¬ì˜ ì—‘ìŠ¤íŠ¸ë¼ ì •ì˜ ì¤‘ê°„ì— ìˆëŠ” ë‹¤ìŒ í…ìŠ¤íŠ¸ì— ëŒ€í•´\n"
+"ë¬´ì—‡ì„ í•´ì•¼ ë  ì§€ë¥¼ ëª¨ë¥´ê² ìŠµë‹ˆë‹¤:\n"
 "%s\n"
-"¹«½ÃÇÏ°í °è¼Ó ÁøÇàÇÒ °Ì´Ï´Ù...\n"
+"ë¬´ì‹œí•˜ê³  ê³„ì† ì§„í–‰í•  ê²ë‹ˆë‹¤...\n"
 
 #: src/config.c:3187
 msgid ""
 "Warning: Configuration appears to have ended before we were\n"
 "Done loading an Extras block.  Outcome is likely not good.\n"
 msgstr ""
-"°æ°í: ¼³Á¤ÀÌ ¿¢½ºÆ®¶ó ºí·°À» ÀĞ±âµµ Àü¿¡ ³¡³­ °Í °°½À´Ï´Ù\n"
-"Ç¥½Ã°¡ ³ª»Ú°Ô µÉ Áöµµ ¸ğ¸£°Ú½À´Ï´Ù.\n"
+"ê²½ê³ : ì„¤ì •ì´ ì—‘ìŠ¤íŠ¸ë¼ ë¸”ëŸ­ì„ ì½ê¸°ë„ ì „ì— ëë‚œ ê²ƒ ê°™ìŠµë‹ˆë‹¤\n"
+"í‘œì‹œê°€ ë‚˜ì˜ê²Œ ë  ì§€ë„ ëª¨ë¥´ê² ìŠµë‹ˆë‹¤.\n"
 
 #: src/config.c:3293
 #, c-format
@@ -565,18 +582,18 @@ msgid ""
 "%s\n"
 "Will ignore and continue...\n"
 msgstr ""
-"°æ°í: ÇöÀçÀÇ À©µµ¿ì¸ÅÄ¡ Á¤ÀÇ Áß°£¿¡ ÀÖ´Â ´ÙÀ½ ÅØ½ºÆ®¿¡ ´ëÇØ\n"
-"¹«¾ùÀ» ÇØ¾ß µÉ Áö¸¦ ¸ğ¸£°Ú½À´Ï´Ù:\n"
+"ê²½ê³ : í˜„ì¬ì˜ ìœˆë„ìš°ë§¤ì¹˜ ì •ì˜ ì¤‘ê°„ì— ìˆëŠ” ë‹¤ìŒ í…ìŠ¤íŠ¸ì— ëŒ€í•´\n"
+"ë¬´ì—‡ì„ í•´ì•¼ ë  ì§€ë¥¼ ëª¨ë¥´ê² ìŠµë‹ˆë‹¤:\n"
 "%s\n"
-"¹«½ÃÇÏ°í °è¼Ó ÁøÇàÇÒ °Ì´Ï´Ù...\n"
+"ë¬´ì‹œí•˜ê³  ê³„ì† ì§„í–‰í•  ê²ë‹ˆë‹¤...\n"
 
 #: src/config.c:3300
 msgid ""
 "Warning: Configuration appears to have ended before we were\n"
 "Done loading an WindowMatch block.  Outcome is likely not good.\n"
 msgstr ""
-"°æ°í: ¼³Á¤ÀÌ À©µµ¿ì¸ÅÄ¡ ºí·°À» ÀĞ±âµµ Àü¿¡ ³¡³­ °Í °°½À´Ï´Ù\n"
-"Ç¥½Ã°¡ ³ª»Ú°Ô µÉ Áöµµ ¸ğ¸£°Ú½À´Ï´Ù.\n"
+"ê²½ê³ : ì„¤ì •ì´ ìœˆë„ìš°ë§¤ì¹˜ ë¸”ëŸ­ì„ ì½ê¸°ë„ ì „ì— ëë‚œ ê²ƒ ê°™ìŠµë‹ˆë‹¤\n"
+"í‘œì‹œê°€ ë‚˜ì˜ê²Œ ë  ì§€ë„ ëª¨ë¥´ê² ìŠµë‹ˆë‹¤.\n"
 
 #: src/config.c:3329
 #, c-format
@@ -588,24 +605,24 @@ msgid ""
 "This is probably due to either the program not existing or\n"
 "it not being able to be executed by you.\n"
 msgstr ""
-"µµ¿ÍÁÖ¼¼¿ä! epp¸¦ Ã£À» ¼ö ¾ø½À´Ï´Ù!\n"
-"ÀÎ¶óÀÌÆ°¸ÕÆ®´Â epp¸¦ ¿©±â¿¡¼­ Ã£À»·Á°í Çß½À´Ï´Ù:\n"
+"ë„ì™€ì£¼ì„¸ìš”! eppë¥¼ ì°¾ì„ ìˆ˜ ì—†ìŠµë‹ˆë‹¤!\n"
+"ì¸ë¼ì´íŠ¼ë¨¼íŠ¸ëŠ” eppë¥¼ ì—¬ê¸°ì—ì„œ ì°¾ì„ë ¤ê³  í–ˆìŠµë‹ˆë‹¤:\n"
 "%s\n"
-"ÀÌ°ÍÀº ½É°¢ÇÑ ¿¡·¯ÀÔ´Ï´Ù.\n"
-"ÇÁ·Î±×·¥ÀÌ ¾øÀ» ¼öµµ ÀÖ°í, ´ç½ÅÀÌ ½ÇÇà±ÇÇÑÀ» °¡Áö°í\n"
-"ÀÖÁö ¸øÇÒ ¼öµµ ÀÖ½À´Ï´Ù.\n"
+"ì´ê²ƒì€ ì‹¬ê°í•œ ì˜¤ë¥˜ì…ë‹ˆë‹¤.\n"
+"í”„ë¡œê·¸ë¨ì´ ì—†ì„ ìˆ˜ë„ ìˆê³ , ë‹¹ì‹ ì´ ì‹¤í–‰ê¶Œí•œì„ ê°€ì§€ê³ \n"
+"ìˆì§€ ëª»í•  ìˆ˜ë„ ìˆìŠµë‹ˆë‹¤.\n"
 
 #: src/config.c:3436
 msgid "Theme versioning ERROR"
-msgstr "Å×¸¶ ¹öÀü ¿¡·¯"
+msgstr "í…Œë§ˆ ë²„ì „ ì˜¤ë¥˜"
 
 #: src/config.c:3437 src/config.c:3466
 msgid "Restart with Defaults"
-msgstr "±âº» Å×¸¶·Î Àç½ÃÀÛ"
+msgstr "ê¸°ë³¸ í…Œë§ˆë¡œ ì¬ì‹œì‘"
 
 #: src/config.c:3438 src/config.c:3467
 msgid "Abort and Exit"
-msgstr "Áß´ÜÇÏ°í Á¾·á"
+msgstr "ì¤‘ë‹¨í•˜ê³  ì¢…ë£Œ"
 
 #: src/config.c:3439
 #, c-format
@@ -627,25 +644,25 @@ msgid ""
 "a while and this theme takes advantages of new\n"
 "features in Enlightenment in new versions.\n"
 msgstr ""
-"¿¡·¯:\n"
+"ì˜¤ë¥˜:\n"
 "\n"
-"´ç½ÅÀÌ »ç¿ëÇÏ·Á´Â Å×¸¶ÀÇ ¼³Á¤ÀÌ È£È¯µÇÁö ¾Ê´Â °ÍÀÔ´Ï´Ù\n"
-"ÀÌ Å×¸¶ÀÇ ¼³Á¤ ¹öÀüÀº %iÀÔ´Ï´Ù. ÇÊ¿äÇÑ ¼³Á¤ ¹öÀüÀº %i\n"
-"ÀÌ¾î¾ß ÇÕ´Ï´Ù.\n"
+"ë‹¹ì‹ ì´ ì‚¬ìš©í•˜ë ¤ëŠ” í…Œë§ˆì˜ ì„¤ì •ì´ í˜¸í™˜ë˜ì§€ ì•ŠëŠ” ê²ƒì…ë‹ˆë‹¤\n"
+"ì´ í…Œë§ˆì˜ ì„¤ì • ë²„ì „ì€ %iì…ë‹ˆë‹¤. í•„ìš”í•œ ì„¤ì • ë²„ì „ì€ %i\n"
+"ì´ì–´ì•¼ í•©ë‹ˆë‹¤.\n"
 "\n"
-"Å×¸¶ÀÇ ÀúÀÚ³ª °ü¸®ÀÚ¿¡°Ô ¿¬¶ôÇÏ¿© ÇöÀç ¹öÀüÀÇ\n"
-"ÀÎ¶óÀÌÆ°¸ÕÆ®¿¡¼­ µ¿ÀÛÇÏµµ·Ï ¼öÁ¤ÇÒ ¼ö ÀÖµµ·Ï ÇÏ½Ê½Ã¿À\n"
-"¹öÀü ¹øÈ£¸¦ ¸ÂÃß±â À§ÇØ¼­ ±×µéÀº ÇöÀçÀÇ ¼³Á¤À» °»½Å\n"
-"ÇØ¾ß¸¸ ÇÕ´Ï´Ù.\n"
+"í…Œë§ˆì˜ ì €ìë‚˜ ê´€ë¦¬ìì—ê²Œ ì—°ë½í•˜ì—¬ í˜„ì¬ ë²„ì „ì˜\n"
+"ì¸ë¼ì´íŠ¼ë¨¼íŠ¸ì—ì„œ ë™ì‘í•˜ë„ë¡ ìˆ˜ì •í•  ìˆ˜ ìˆë„ë¡ í•˜ì‹­ì‹œì˜¤\n"
+"ë²„ì „ ë²ˆí˜¸ë¥¼ ë§ì¶”ê¸° ìœ„í•´ì„œ ê·¸ë“¤ì€ í˜„ì¬ì˜ ì„¤ì •ì„ ê°±ì‹ \n"
+"í•´ì•¼ë§Œ í•©ë‹ˆë‹¤.\n"
 "\n"
-"Å×¸¶ÀÇ ¹öÀü¿¡ ÀÎ¶óÀÌÆ°¸ÕÆ®ÀÇ °Íº¸´Ù ³ô´Ù¸é ´ç½ÅÀÌ ¾ÆÁ÷\n"
-"¿À·¡µÈ ÀÎ¶óÀÌÆ°¸ÕÆ®¸¦ »ç¿ëÇÏ°í ÀÖ´Ù´Â °ÍÀÔ´Ï´Ù. ÀÌ Å×¸¶´Â\n"
-"»õ·Î¿î ÀÎ¶óÀÌÆ°¸ÕÆ®ÀÇ ±â´ÉÀ» »ç¿ëÇÏ¹Ç·Î »õ ÀÎ¶óÀÌÆ°¸ÕÆ®¸¦\n"
-"»ç¿ëÇÏ½Ê½Ã¿À\n"
+"í…Œë§ˆì˜ ë²„ì „ì— ì¸ë¼ì´íŠ¼ë¨¼íŠ¸ì˜ ê²ƒë³´ë‹¤ ë†’ë‹¤ë©´ ë‹¹ì‹ ì´ ì•„ì§\n"
+"ì˜¤ë˜ëœ ì¸ë¼ì´íŠ¼ë¨¼íŠ¸ë¥¼ ì‚¬ìš©í•˜ê³  ìˆë‹¤ëŠ” ê²ƒì…ë‹ˆë‹¤. ì´ í…Œë§ˆëŠ”\n"
+"ìƒˆë¡œìš´ ì¸ë¼ì´íŠ¼ë¨¼íŠ¸ì˜ ê¸°ëŠ¥ì„ ì‚¬ìš©í•˜ë¯€ë¡œ ìƒˆ ì¸ë¼ì´íŠ¼ë¨¼íŠ¸ë¥¼\n"
+"ì‚¬ìš©í•˜ì‹­ì‹œì˜¤\n"
 
 #: src/config.c:3465
 msgid "User Config Version ERROR"
-msgstr "»ç¿ëÀÚ ¼³Á¤ ¹öÀü ¿¡·¯"
+msgstr "ì‚¬ìš©ì ì„¤ì • ë²„ì „ ì˜¤ë¥˜"
 
 #: src/config.c:3468
 #, c-format
@@ -663,16 +680,16 @@ msgid ""
 "defaults. You can then modify your configuration to\n"
 "your liking again safely.\n"
 msgstr ""
-"¿¡·¯:\n"
+"ì˜¤ë¥˜:\n"
 "\n"
-"ÇöÀç ¼³Á¤ÀÌ ÀÎ¶óÀÌÆ°¸ÕÆ®¿Í È£È¯µÇÁö ¾Ê½À´Ï´Ù.\n"
-"ÀÌ Å×¸¶ÀÇ ¼³Á¤ ¹öÀüÀº %iÀÌ¸ç È£È¯µÇ±â À§ÇØ¼­´Â ¹öÀüÀÌ\n"
-"%iÀÌ¾î¾ß ÇÕ´Ï´Ù.\n"
+"í˜„ì¬ ì„¤ì •ì´ ì¸ë¼ì´íŠ¼ë¨¼íŠ¸ì™€ í˜¸í™˜ë˜ì§€ ì•ŠìŠµë‹ˆë‹¤.\n"
+"ì´ í…Œë§ˆì˜ ì„¤ì • ë²„ì „ì€ %iì´ë©° í˜¸í™˜ë˜ê¸° ìœ„í•´ì„œëŠ” ë²„ì „ì´\n"
+"%iì´ì–´ì•¼ í•©ë‹ˆë‹¤.\n"
 "\n"
-"¸¸ÀÏ ¹æ±İÀü¿¡ »õ ¹öÀüÀÇ E·Î ¾÷±×·¹ÀÌµåÇÏ¼Ì´Ù¸é\n"
-"±âº» Å×¸¶·Î Àç½ÃÀÛÇÏ¸é ÇöÀçÀÇ »ç¿ëÀÚ ¼³Á¤ÀÌ ½Ã½ºÅÛ\n"
-"±âº» °ªÀ¸·Î ¹Ù²î°Ô µÉ °ÍÀÔ´Ï´Ù. ´ç½ÅÀº ¼³Á¤°ªµéÀ»\n"
-"´ç½ÅÀÌ ¿øÇÏ´Â °ªÀ¸·Î ¾ÈÀüÇÏ°Ô ¹Ù²Ü ¼ö ÀÖÀ» °ÍÀÔ´Ï´Ù.\n"
+"ë§Œì¼ ë°©ê¸ˆì „ì— ìƒˆ ë²„ì „ì˜ Eë¡œ ì—…ê·¸ë ˆì´ë“œí•˜ì…¨ë‹¤ë©´\n"
+"ê¸°ë³¸ í…Œë§ˆë¡œ ì¬ì‹œì‘í•˜ë©´ í˜„ì¬ì˜ ì‚¬ìš©ì ì„¤ì •ì´ ì‹œìŠ¤í…œ\n"
+"ê¸°ë³¸ ê°’ìœ¼ë¡œ ë°”ë€Œê²Œ ë  ê²ƒì…ë‹ˆë‹¤. ë‹¹ì‹ ì€ ì„¤ì •ê°’ë“¤ì„\n"
+"ë‹¹ì‹ ì´ ì›í•˜ëŠ” ê°’ìœ¼ë¡œ ì•ˆì „í•˜ê²Œ ë°”ê¿€ ìˆ˜ ìˆì„ ê²ƒì…ë‹ˆë‹¤.\n"
 
 #: src/config.c:3710
 #, c-format
@@ -683,11 +700,11 @@ msgid ""
 "This may be due to lack of disk space, quota or\n"
 "filesystem permissions.\n"
 msgstr ""
-"°æ°í!\n"
-"ÆÄÀÏ¿¡ ¾²´ø Áß ¿¡·¯°¡ ¹ß»ıÇß½À´Ï´Ù:\n"
+"ê²½ê³ !\n"
+"íŒŒì¼ì— ì“°ë˜ ì¤‘ ì˜¤ë¥˜ê°€ ë°œìƒí–ˆìŠµë‹ˆë‹¤:\n"
 "%s\n"
-"µğ½ºÅ© °ø°£ÀÌ ºÎÁ·ÇÏ°Å³ª ÄõÅÍ È¤Àº ÆÄÀÏ ½Ã½ºÅÛ¿¡\n"
-"¾²±â°¡ Çã¿ëµÇÁö ¾ÊÀ» ¼öµµ ÀÖ½À´Ï´Ù.\n"
+"ë””ìŠ¤í¬ ê³µê°„ì´ ë¶€ì¡±í•˜ê±°ë‚˜ ì¿¼í„° í˜¹ì€ íŒŒì¼ ì‹œìŠ¤í…œì—\n"
+"ì“°ê¸°ê°€ í—ˆìš©ë˜ì§€ ì•Šì„ ìˆ˜ë„ ìˆìŠµë‹ˆë‹¤.\n"
 
 #: src/config.c:3718
 #, c-format
@@ -698,26 +715,31 @@ msgid ""
 " %s/themes/\n"
 "Proceeding from here is mostly pointless.\n"
 msgstr ""
+"í…Œë§ˆ ë””ë ‰í† ë¦¬ì—ì„œ ì–´ë– í•œ í…Œë§ˆë„ ë°œê²¬í•˜ì§€ ëª»í–ˆìŠµë‹ˆë‹¤:\n"
+" %s/themes/\n"
+"í˜¹ì€ ì‚¬ìš©ì í…Œë§ˆ ë””ë ‰í† ë¦¬:\n"
+" %s/themes/\n"
+"í˜„ì¬ ë™ì‘ ì´ìƒ ì§„í–‰ í•  ìˆ˜ ì—†ìŠµë‹ˆë‹¤.\n"
 
 #: src/config.c:3768
 msgid "Enlightenment Starting..."
-msgstr "ÀÎ¶óÀÌÆ°¸ÕÆ® ½ÃÀÛÁß..."
+msgstr "ì¸ë¼ì´íŠ¼ë¨¼íŠ¸ ì‹œì‘ì¤‘..."
 
 #: src/config.c:4230
 msgid "Recover system config?"
-msgstr "½Ã½ºÅÛ ¼³Á¤À» º¹±¸ÇÒ±î¿ä?"
+msgstr "ì‹œìŠ¤í…œ ì„¤ì •ì„ ë³µêµ¬í• ê¹Œìš”?"
 
 #: src/config.c:4230
 msgid "Yes, Attempt recovery"
-msgstr "¿¹, º¹±¸¸¦ ½Ãµµ"
+msgstr "ì˜ˆ, ë³µêµ¬ë¥¼ ì‹œë„"
 
 #: src/config.c:4231
 msgid "Restart and try again"
-msgstr "Àç½ÃÀÛÇØ¼­ ´Ù½Ã ½Ãµµ"
+msgstr "ì¬ì‹œì‘í•´ì„œ ë‹¤ì‹œ ì‹œë„"
 
 #: src/config.c:4231
 msgid "Quit and give up"
-msgstr "Á¾·áÇÏ°í ¹ö¸²"
+msgstr "ì¢…ë£Œí•˜ê³  ë²„ë¦¼"
 
 #: src/config.c:4233
 msgid ""
@@ -730,18 +752,18 @@ msgid ""
 "Do you wish Enlightenment to recover its original system\n"
 "configuration and try again?\n"
 msgstr ""
-"ÀÎ¶óÀÌÆ°¸ÕÆ®°¡ ÀÚµ¿À¸·Î ÀúÀåµÈ ¼³Á¤ ÆÄÀÏÀ» ºĞ¼®ÇÏ´ø Áß ¿¡·¯¸¦\n"
-"¸¸³µ½À´Ï´Ù.\n"
+"ì¸ë¼ì´íŠ¼ë¨¼íŠ¸ê°€ ìë™ìœ¼ë¡œ ì €ì¥ëœ ì„¤ì • íŒŒì¼ì„ ë¶„ì„í•˜ë˜ ì¤‘ ì˜¤ë¥˜ë¥¼\n"
+"ë§Œë‚¬ìŠµë‹ˆë‹¤.\n"
 "\n"
-"ÆÄÀÏ ½Ã½ºÅÛ ¿¡·¯°Å³ª, ÀÛÀº ¹ö±× È¤Àº ¼Ë´Ù¿îÀÌ Àß¸øµÇ¾úÀ» ¼ö\n"
-"ÀÖ½À´Ï´Ù.\n"
+"íŒŒì¼ ì‹œìŠ¤í…œ ì˜¤ë¥˜ê±°ë‚˜, ì‘ì€ ë²„ê·¸ í˜¹ì€ ì…§ë‹¤ìš´ì´ ì˜ëª»ë˜ì—ˆì„ ìˆ˜\n"
+"ìˆìŠµë‹ˆë‹¤.\n"
 "\n"
-"ÀÎ¶óÀÌÆ°¸ÕÆ®°¡ ±âº»ÀûÀÎ ½Ã½ºÅÛ ¼³Á¤À¸·Î º¹±¸ÇÑ ÈÄ ´Ù½Ã ½ÃµµÇØ\n"
-"º¸±â¸¦ ¿øÇÏ½Ê´Ï±î?\n"
+"ì¸ë¼ì´íŠ¼ë¨¼íŠ¸ê°€ ê¸°ë³¸ì ì¸ ì‹œìŠ¤í…œ ì„¤ì •ìœ¼ë¡œ ë³µêµ¬í•œ í›„ ë‹¤ì‹œ ì‹œë„í•´\n"
+"ë³´ê¸°ë¥¼ ì›í•˜ì‹­ë‹ˆê¹Œ?\n"
 
 #: src/cursors.c:142
 msgid "ECursor Error!"
-msgstr "ECursor ¿¡·¯!"
+msgstr "ECursor ì˜¤ë¥˜!"
 
 #: src/desktops.c:351
 msgid ""
@@ -753,13 +775,13 @@ msgid ""
 "Click middle mouse button for a list of all\n"
 "applications currently running.\n"
 msgstr ""
-"¸¶¿ì½º ¹öÆ°À» ´©¸¥ »óÅÂ¿¡¼­ µ¥½ºÅ©Å¾À»\n"
-"¾ÕµÚ·Î ²øÀ» ¼ö ÀÖµµ·Ï ¸¶¿ì½º¸¦ ²ø¾î\n"
-"º¸½Ê½Ã¿À.\n"
-"¸ğµç µ¥½ºÅ©Å¾°ú ±× ¾ÈÀÇ ÀÀ¿ëÇÁ·Î±×·¥µéÀÇ\n"
-"¸®½ºÆ®¸¦ º¸·Á¸é ¿À¸¥ÂÊ ¸¶¿ì½º ¹öÆ°À» Å¬¸¯ÇÏ¼¼¿ä\n"
-"ÇöÀç ½ÇÇàÁßÀÎ ¸ğµç ÀÀ¿ëÇÁ·Î±×·¥µéÀ» º¸½Ã·Á¸é\n"
-"°¡¿îµ¥ ¸¶¿ì½º ¹öÆ°À» Å¬¸¯ÇÏ¼¼¿ä.\n"
+"ë§ˆìš°ìŠ¤ ë²„íŠ¼ì„ ëˆ„ë¥¸ ìƒíƒœì—ì„œ ë°ìŠ¤í¬íƒ‘ì„\n"
+"ì•ë’¤ë¡œ ëŒì„ ìˆ˜ ìˆë„ë¡ ë§ˆìš°ìŠ¤ë¥¼ ëŒì–´\n"
+"ë³´ì‹­ì‹œì˜¤.\n"
+"ëª¨ë“  ë°ìŠ¤í¬íƒ‘ê³¼ ê·¸ ì•ˆì˜ ì‘ìš©í”„ë¡œê·¸ë¨ë“¤ì˜\n"
+"ë¦¬ìŠ¤íŠ¸ë¥¼ ë³´ë ¤ë©´ ì˜¤ë¥¸ìª½ ë§ˆìš°ìŠ¤ ë²„íŠ¼ì„ í´ë¦­í•˜ì„¸ìš”\n"
+"í˜„ì¬ ì‹¤í–‰ì¤‘ì¸ ëª¨ë“  ì‘ìš©í”„ë¡œê·¸ë¨ë“¤ì„ ë³´ì‹œë ¤ë©´\n"
+"ê°€ìš´ë° ë§ˆìš°ìŠ¤ ë²„íŠ¼ì„ í´ë¦­í•˜ì„¸ìš”.\n"
 
 #: src/desktops.c:363
 msgid ""
@@ -770,36 +792,36 @@ msgid ""
 "Click middle mouse button for a list of all\n"
 "applications currently running.\n"
 msgstr ""
-"ÀÌ°ÍÀº ·çÆ® µ¥½ºÅ©Å¾ÀÔ´Ï´Ù.\n"
-"·çÆ® µ¥½ºÅ©Å¾Àº ²øÀ» ¼ö ¾ø½À´Ï´Ù.\n"
-"¸ğµç µ¥½ºÅ©Å¾°ú ±× ¾ÈÀÇ ÀÀ¿ëÇÁ·Î±×·¥µéÀÇ\n"
-"¸®½ºÆ®¸¦ º¸·Á¸é ¿À¸¥ÂÊ ¸¶¿ì½º ¹öÆ°À» Å¬¸¯ÇÏ¼¼¿ä\n"
-"ÇöÀç ½ÇÇàÁßÀÎ ¸ğµç ÀÀ¿ëÇÁ·Î±×·¥µéÀ» º¸½Ã·Á¸é\n"
-"°¡¿îµ¥ ¸¶¿ì½º ¹öÆ°À» Å¬¸¯ÇÏ¼¼¿ä.\n"
+"ì´ê²ƒì€ ë£¨íŠ¸ ë°ìŠ¤í¬íƒ‘ì…ë‹ˆë‹¤.\n"
+"ë£¨íŠ¸ ë°ìŠ¤í¬íƒ‘ì€ ëŒì„ ìˆ˜ ì—†ìŠµë‹ˆë‹¤.\n"
+"ëª¨ë“  ë°ìŠ¤í¬íƒ‘ê³¼ ê·¸ ì•ˆì˜ ì‘ìš©í”„ë¡œê·¸ë¨ë“¤ì˜\n"
+"ë¦¬ìŠ¤íŠ¸ë¥¼ ë³´ë ¤ë©´ ì˜¤ë¥¸ìª½ ë§ˆìš°ìŠ¤ ë²„íŠ¼ì„ í´ë¦­í•˜ì„¸ìš”\n"
+"í˜„ì¬ ì‹¤í–‰ì¤‘ì¸ ëª¨ë“  ì‘ìš©í”„ë¡œê·¸ë¨ë“¤ì„ ë³´ì‹œë ¤ë©´\n"
+"ê°€ìš´ë° ë§ˆìš°ìŠ¤ ë²„íŠ¼ì„ í´ë¦­í•˜ì„¸ìš”.\n"
 
 #: src/desktops.c:384
 msgid ""
 "Click here to raise this desktop\n"
 "to the top.\n"
 msgstr ""
-"µ¥½ºÅ©Å¾À» Á¦ÀÏ À§·Î ¿Ã¸®±â À§ÇØ¼­´Â\n"
-"¿©±â¸¦ Å¬¸¯ÇÏ¼¼¿ä.\n"
+"ë°ìŠ¤í¬íƒ‘ì„ ì œì¼ ìœ„ë¡œ ì˜¬ë¦¬ê¸° ìœ„í•´ì„œëŠ”\n"
+"ì—¬ê¸°ë¥¼ í´ë¦­í•˜ì„¸ìš”.\n"
 
 #: src/desktops.c:399
 msgid ""
 "Click here to lower this desktop\n"
 "to the bottom.\n"
 msgstr ""
-"µ¥½ºÅ©Å¾À» Á¦ÀÏ ¹ØÀ¸·Î ³»¸®±â À§ÇØ¼­´Â\n"
-"¿©±â¸¦ Å¬¸¯ÇÏ¼¼¿ä.\n"
+"ë°ìŠ¤í¬íƒ‘ì„ ì œì¼ ë°‘ìœ¼ë¡œ ë‚´ë¦¬ê¸° ìœ„í•´ì„œëŠ”\n"
+"ì—¬ê¸°ë¥¼ í´ë¦­í•˜ì„¸ìš”.\n"
 
 #: src/dialog.c:2171
 msgid "Attention !!!"
-msgstr "ÁÖ¸ñ !!!"
+msgstr "ì£¼ëª© !!!"
 
 #: src/events.c:60
 msgid "X server setup error"
-msgstr "X ¼­¹ö ¼³Á¤ ¿¡·¯"
+msgstr "X ì„œë²„ ì„¤ì • ì˜¤ë¥˜"
 
 #: src/events.c:62
 msgid ""
@@ -812,18 +834,18 @@ msgid ""
 "\n"
 "Exiting.\n"
 msgstr ""
-"½É°¢ÇÑ ¿¡·¯:\n"
+"ì‹¬ê°í•œ ì˜¤ë¥˜:\n"
 "\n"
-"X ¼­¹ö°¡ ½¦ÀÌÇÁ È®ÀåÀ» Áö¿øÇÏÁö ¾Ê½À´Ï´Ù.\n"
-"ÀÎ¶óÀÌÆ°¸ÕÆ®°¡ ½ÇÇàµÇ·Á¸é ¹İµå½Ã ÇÊ¿äÇÑ ±â´ÉÀÔ´Ï´Ù.\n"
+"X ì„œë²„ê°€ ì‰ì´í”„ í™•ì¥ì„ ì§€ì›í•˜ì§€ ì•ŠìŠµë‹ˆë‹¤.\n"
+"ì¸ë¼ì´íŠ¼ë¨¼íŠ¸ê°€ ì‹¤í–‰ë˜ë ¤ë©´ ë°˜ë“œì‹œ í•„ìš”í•œ ê¸°ëŠ¥ì…ë‹ˆë‹¤.\n"
 "\n"
-"X ¼­¹ö°¡ ³Ê¹« ¿À·¡µÈ °ÍÀÌ°Å³ª È¯°æ¼³Á¤ÀÌ Àß¸øµÇ¾úÀ» °ÍÀÔ´Ï´Ù.\n"
+"X ì„œë²„ê°€ ë„ˆë¬´ ì˜¤ë˜ëœ ê²ƒì´ê±°ë‚˜ í™˜ê²½ì„¤ì •ì´ ì˜ëª»ë˜ì—ˆì„ ê²ƒì…ë‹ˆë‹¤.\n"
 "\n"
-"Á¾·á.\n"
+"ì¢…ë£Œ.\n"
 
 #: src/fx.c:247
 msgid "Starting up Ripples FX..."
-msgstr "¹°°á Æ¯¼öÈ¿°ú¸¦ ½ÃÀÛÁß..."
+msgstr "ë¬¼ê²° íŠ¹ìˆ˜íš¨ê³¼ë¥¼ ì‹œì‘ì¤‘..."
 
 #: src/fx.c:248
 msgid ""
@@ -839,16 +861,16 @@ msgid ""
 "it off.\n"
 msgstr ""
 "\n"
-"¹°°á Æ¯¼öÈ¿°ú¸¦ Áö±İ ¸· ½ÃÀÛÇß½À´Ï´Ù.\n"
+"ë¬¼ê²° íŠ¹ìˆ˜íš¨ê³¼ë¥¼ ì§€ê¸ˆ ë§‰ ì‹œì‘í–ˆìŠµë‹ˆë‹¤.\n"
 "\n"
-"µ¥½ºÅ©Å¾ ¹è°æÀ» °¡±îÀÌ¿¡¼­ º¸½Ã¸é, ±×¸®°í ¹è°æÀÌ ´Ü¼øÇÑ\n"
-"»öÀ» »ç¿ëÇÏÁö ¾Ê´Â´Ù¸é (°¡·É ÅØ½ºÃÄ³ª ÀÌ¹ÌÁö ¹è°æ »ç¿ë)\n"
-"È­¸éÀÇ ¹Ù´Ú¿¡ ±× À§ÀÇ ¸ğµç °ÍÀ» ºñÄ¡¸é¼­ \"¹°°á\"ÀÌ ÀÌ´Â\n"
-"È£¼ö°°Àº °É º¸½Ç ¼ö ÀÖÀ» °ÍÀÔ´Ï´Ù.\n"
+"ë°ìŠ¤í¬íƒ‘ ë°°ê²½ì„ ê°€ê¹Œì´ì—ì„œ ë³´ì‹œë©´, ê·¸ë¦¬ê³  ë°°ê²½ì´ ë‹¨ìˆœí•œ\n"
+"ìƒ‰ì„ ì‚¬ìš©í•˜ì§€ ì•ŠëŠ”ë‹¤ë©´ (ê°€ë ¹ í…ìŠ¤ì³ë‚˜ ì´ë¯¸ì§€ ë°°ê²½ ì‚¬ìš©)\n"
+"í™”ë©´ì˜ ë°”ë‹¥ì— ê·¸ ìœ„ì˜ ëª¨ë“  ê²ƒì„ ë¹„ì¹˜ë©´ì„œ \"ë¬¼ê²°\"ì´ ì´ëŠ”\n"
+"í˜¸ìˆ˜ê°™ì€ ê±¸ ë³´ì‹¤ ìˆ˜ ìˆì„ ê²ƒì…ë‹ˆë‹¤.\n"
 
 #: src/fx.c:395
 msgid "Starting up Raindrops FX..."
-msgstr "·¹ÀÎµå·Ó Æ¯¼öÈ¿°ú¸¦ ½ÃÀÛÁß..."
+msgstr "ë ˆì¸ë“œë¡­ íŠ¹ìˆ˜íš¨ê³¼ë¥¼ ì‹œì‘ì¤‘..."
 
 #: src/fx.c:396
 msgid ""
@@ -864,19 +886,19 @@ msgid ""
 "it off.\n"
 msgstr ""
 "\n"
-"·¹ÀÎµå·Ó Æ¯¼öÈ¿°ú¸¦ Áö±İ ¸· ½ÃÀÛÇß½À´Ï´Ù.\n"
+"ë ˆì¸ë“œë¡­ íŠ¹ìˆ˜íš¨ê³¼ë¥¼ ì§€ê¸ˆ ë§‰ ì‹œì‘í–ˆìŠµë‹ˆë‹¤.\n"
 "\n"
-"µ¥½ºÅ©Å¾ ¹è°æÀ» °¡±îÀÌ¿¡¼­ º¸½Ã¸é, ±×¸®°í ¹è°æÀÌ ´Ü¼øÇÑ\n"
-"»öÀ» »ç¿ëÇÏÁö ¾Ê´Â´Ù¸é (°¡·É ÅØ½ºÃÄ³ª ÀÌ¹ÌÁö ¹è°æ »ç¿ë)\n"
-"¹è°æ¿¡ ºñ°¡ ³»·Á¼­ Æ¢´Â Çö»óÀ» º¸½Ç ¼ö ÀÖÀ» °ÍÀÔ´Ï´Ù.\n"
-"ÀÌ ±â´ÉÀº CPU¸¦ ¸¹ÀÌ »ç¿ëÇÕ´Ï´Ù.\n"
+"ë°ìŠ¤í¬íƒ‘ ë°°ê²½ì„ ê°€ê¹Œì´ì—ì„œ ë³´ì‹œë©´, ê·¸ë¦¬ê³  ë°°ê²½ì´ ë‹¨ìˆœí•œ\n"
+"ìƒ‰ì„ ì‚¬ìš©í•˜ì§€ ì•ŠëŠ”ë‹¤ë©´ (ê°€ë ¹ í…ìŠ¤ì³ë‚˜ ì´ë¯¸ì§€ ë°°ê²½ ì‚¬ìš©)\n"
+"ë°°ê²½ì— ë¹„ê°€ ë‚´ë ¤ì„œ íŠ€ëŠ” í˜„ìƒì„ ë³´ì‹¤ ìˆ˜ ìˆì„ ê²ƒì…ë‹ˆë‹¤.\n"
+"ì´ ê¸°ëŠ¥ì€ CPUë¥¼ ë§ì´ ì‚¬ìš©í•©ë‹ˆë‹¤.\n"
 "\n"
-"ÀÌ È¿°ú¸¦ »ç¿ëÇÏÁö ¾ÊÀ¸·Á¸é ÀÌ ¿É¼ÇÀ» ´Ù½Ã ¼±ÅÃÇÏ½Ã¸é\n"
-"µË´Ï´Ù.\n"
+"ì´ íš¨ê³¼ë¥¼ ì‚¬ìš©í•˜ì§€ ì•Šìœ¼ë ¤ë©´ ì´ ì˜µì…˜ì„ ë‹¤ì‹œ ì„ íƒí•˜ì‹œë©´\n"
+"ë©ë‹ˆë‹¤.\n"
 
 #: src/fx.c:686
 msgid "Starting up Waves FX..."
-msgstr "ÆÄµµ Æ¯¼öÈ¿°ú¸¦ ½ÃÀÛÁß..."
+msgstr "íŒŒë„ íŠ¹ìˆ˜íš¨ê³¼ë¥¼ ì‹œì‘ì¤‘..."
 
 #: src/fx.c:687
 msgid ""
@@ -892,19 +914,19 @@ msgid ""
 "it off.\n"
 msgstr ""
 "\n"
-"ÆÄµµ Æ¯¼öÈ¿°ú¸¦ Áö±İ ¸· ½ÃÀÛÇß½À´Ï´Ù.\n"
+"íŒŒë„ íŠ¹ìˆ˜íš¨ê³¼ë¥¼ ì§€ê¸ˆ ë§‰ ì‹œì‘í–ˆìŠµë‹ˆë‹¤.\n"
 "\n"
-"µ¥½ºÅ©Å¾ ¹è°æÀ» °¡±îÀÌ¿¡¼­ º¸½Ã¸é, ±×¸®°í ¹è°æÀÌ ´Ü¼øÇÑ\n"
-"»öÀ» »ç¿ëÇÏÁö ¾Ê´Â´Ù¸é (°¡·É ÅØ½ºÃÄ³ª ÀÌ¹ÌÁö ¹è°æ »ç¿ë)\n"
-"È­¸éÀÇ ¹Ù´Ú¿¡ ±× À§ÀÇ ¸ğµç °ÍÀ» ºñÄ¡¸é¼­ \"ÆÄµµ\"Ä¡´Â\n"
-"È£¼ö°°Àº °É º¸½Ç ¼ö ÀÖÀ» °ÍÀÔ´Ï´Ù.\n"
+"ë°ìŠ¤í¬íƒ‘ ë°°ê²½ì„ ê°€ê¹Œì´ì—ì„œ ë³´ì‹œë©´, ê·¸ë¦¬ê³  ë°°ê²½ì´ ë‹¨ìˆœí•œ\n"
+"ìƒ‰ì„ ì‚¬ìš©í•˜ì§€ ì•ŠëŠ”ë‹¤ë©´ (ê°€ë ¹ í…ìŠ¤ì³ë‚˜ ì´ë¯¸ì§€ ë°°ê²½ ì‚¬ìš©)\n"
+"í™”ë©´ì˜ ë°”ë‹¥ì— ê·¸ ìœ„ì˜ ëª¨ë“  ê²ƒì„ ë¹„ì¹˜ë©´ì„œ \"íŒŒë„\"ì¹˜ëŠ”\n"
+"í˜¸ìˆ˜ê°™ì€ ê±¸ ë³´ì‹¤ ìˆ˜ ìˆì„ ê²ƒì…ë‹ˆë‹¤.\n"
 "\n"
-"ÀÌ È¿°ú¸¦ »ç¿ëÇÏÁö ¾ÊÀ¸·Á¸é ÀÌ ¿É¼ÇÀ» ´Ù½Ã ¼±ÅÃÇÏ½Ã¸é\n"
-"µË´Ï´Ù.\n"
+"ì´ íš¨ê³¼ë¥¼ ì‚¬ìš©í•˜ì§€ ì•Šìœ¼ë ¤ë©´ ì´ ì˜µì…˜ì„ ë‹¤ì‹œ ì„ íƒí•˜ì‹œë©´\n"
+"ë©ë‹ˆë‹¤.\n"
 
 #: src/fx.c:874
 msgid "Starting up imagespinners FX..."
-msgstr "ÀÌ¹ÌÁö½ºÇÇ³Ê Æ¯¼öÈ¿°ú ½ÃÀÛ..."
+msgstr "ì´ë¯¸ì§€ìŠ¤í”¼ë„ˆ íŠ¹ìˆ˜íš¨ê³¼ ì‹œì‘..."
 
 #: src/fx.c:875
 msgid ""
@@ -915,14 +937,14 @@ msgid ""
 "it off.\n"
 msgstr ""
 "\n"
-"ÀÌ¹ÌÁö½ºÇÇ³Ê Æ¯¼öÈ¿°ú¸¦ Áö±İ ¸· ½ÃÀÛÇß½À´Ï´Ù.\n"
+"ì´ë¯¸ì§€ìŠ¤í”¼ë„ˆ íŠ¹ìˆ˜íš¨ê³¼ë¥¼ ì§€ê¸ˆ ë§‰ ì‹œì‘í–ˆìŠµë‹ˆë‹¤.\n"
 "\n"
-"ÀÌ È¿°ú¸¦ »ç¿ëÇÏÁö ¾ÊÀ¸·Á¸é ÀÌ ¿É¼ÇÀ» ´Ù½Ã ¼±ÅÃÇÏ½Ã¸é\n"
-"µË´Ï´Ù.\n"
+"ì´ íš¨ê³¼ë¥¼ ì‚¬ìš©í•˜ì§€ ì•Šìœ¼ë ¤ë©´ ì´ ì˜µì…˜ì„ ë‹¤ì‹œ ì„ íƒí•˜ì‹œë©´\n"
+"ë©ë‹ˆë‹¤.\n"
 
 #: src/groups.c:119 src/groups.c:141
 msgid "Cannot comply"
-msgstr "µû¸¦ ¼ö ¾ø½À´Ï´Ù"
+msgstr "ë”°ë¥¼ ìˆ˜ ì—†ìŠµë‹ˆë‹¤"
 
 #: src/groups.c:120 src/groups.c:142
 msgid ""
@@ -930,13 +952,13 @@ msgid ""
 "members of a group. You cannot add these windows\n"
 "to a group.\n"
 msgstr ""
-"¾ÆÀÌÄÜ»óÀÚÀÇ ÆäÀÌÀú´Â ±×·ìÀÇ ¸â¹ö°¡ µÉ ¼ö\n"
-"¾ø½À´Ï´Ù. ÀÌ Ã¢µéÀ» ±×·ì¿¡ Ãß°¡ÇÒ ¼ö ¾ø\n"
-"½À´Ï´Ù.\n"
+"ì•„ì´ì½˜ìƒìì˜ í˜ì´ì €ëŠ” ê·¸ë£¹ì˜ ë©¤ë²„ê°€ ë  ìˆ˜\n"
+"ì—†ìŠµë‹ˆë‹¤. ì´ ì°½ë“¤ì„ ê·¸ë£¹ì— ì¶”ê°€í•  ìˆ˜ ì—†\n"
+"ìŠµë‹ˆë‹¤.\n"
 
 #: src/groups.c:583 src/groups.c:592 src/groups.c:600 src/settings.c:4383
 msgid "Window Group Error"
-msgstr "Ã¢ ±×·ì ¿¡·¯"
+msgstr "ì°½ ê·¸ë£¹ ì˜¤ë¥˜"
 
 #: src/groups.c:585
 msgid ""
@@ -947,9 +969,9 @@ msgid ""
 "\n"
 msgstr ""
 "\n"
-"  ÀÌ Ã¢Àº ÇöÀç ¾î¶² ±×·ì¿¡µµ ¼ÓÇØÀÖÁö ¾Ê½À´Ï´Ù.  \n"
-"  Àû¾îµµ ÇÏ³ª ÀÌ»óÀÇ ±×·ì¿¡ ¼ÓÇÑ Ã¢¸¸ ±×·ìÀ¸·ÎºÎÅÍ  \n"
-"  Ã¢À» »èÁ¦ÇÏ°Å³ª ±×·ìÀ» Á¦°ÅÇÒ ¼ö ÀÖ½À´Ï´Ù.\n"
+"  ì´ ì°½ì€ í˜„ì¬ ì–´ë–¤ ê·¸ë£¹ì—ë„ ì†í•´ìˆì§€ ì•ŠìŠµë‹ˆë‹¤.  \n"
+"  ì ì–´ë„ í•˜ë‚˜ ì´ìƒì˜ ê·¸ë£¹ì— ì†í•œ ì°½ë§Œ ê·¸ë£¹ìœ¼ë¡œë¶€í„°  \n"
+"  ì°½ì„ ì‚­ì œí•˜ê±°ë‚˜ ê·¸ë£¹ì„ ì œê±°í•  ìˆ˜ ìˆìŠµë‹ˆë‹¤.\n"
 "\n"
 
 #: src/groups.c:593
@@ -961,9 +983,9 @@ msgid ""
 "\n"
 msgstr ""
 "\n"
-"  ÇöÀç ¾î¶² ±×·ìµµ Á¸ÀçÇÏÁö ¾Ê°Å³ª ÀÌ Ã¢ÀÌ  \n"
-"  Á¸ÀçÇÏ´Â ¾î¶² ±×·ì¿¡ ¼ÓÇØÀÖ½À´Ï´Ù.  \n"
-"  ¸ÕÀú ´Ù¸¥ ±×·ìÀ» ½ÃÀÛÇÏ¼Å¾ß ÇÕ´Ï´Ù.  \n"
+"  í˜„ì¬ ì–´ë–¤ ê·¸ë£¹ë„ ì¡´ì¬í•˜ì§€ ì•Šê±°ë‚˜ ì´ ì°½ì´  \n"
+"  ì¡´ì¬í•˜ëŠ” ì–´ë–¤ ê·¸ë£¹ì— ì†í•´ìˆìŠµë‹ˆë‹¤.  \n"
+"  ë¨¼ì € ë‹¤ë¥¸ ê·¸ë£¹ì„ ì‹œì‘í•˜ì…”ì•¼ í•©ë‹ˆë‹¤.  \n"
 "\n"
 
 #: src/groups.c:602
@@ -973,20 +995,20 @@ msgid ""
 "\n"
 msgstr ""
 "\n"
-"  ÇöÀç ¾î¶² ±×·ìµµ ¾ø½À´Ï´Ù. ¸ÕÀú ±×·ìÀ» ½ÃÀÛÇÏ¼Å¾ß ÇÕ´Ï´Ù.\n"
+"  í˜„ì¬ ì–´ë–¤ ê·¸ë£¹ë„ ì—†ìŠµë‹ˆë‹¤. ë¨¼ì € ê·¸ë£¹ì„ ì‹œì‘í•˜ì…”ì•¼ í•©ë‹ˆë‹¤.\n"
 "\n"
 
 #: src/groups.c:617
 msgid "Window Group Selection"
-msgstr "Ã¢ ±×·ì ¼±ÅÃ"
+msgstr "ì°½ ê·¸ë£¹ ì„ íƒ"
 
 #: src/groups.c:632
 msgid ""
 "Enlightenment Window Group\n"
 "Selection Dialog\n"
 msgstr ""
-"ÀÎ¶óÀÌÆ°¸ÕÆ® Ã¢ ±×·ì\n"
-"¼±ÅÃ ´ëÈ­»óÀÚ\n"
+"ì¸ë¼ì´íŠ¼ë¨¼íŠ¸ ì°½ ê·¸ë£¹\n"
+"ì„ íƒ ëŒ€í™”ìƒì\n"
 
 #: src/groups.c:678 src/pager.c:926 src/settings.c:338 src/settings.c:611
 #: src/settings.c:982 src/settings.c:1205 src/settings.c:1441
@@ -995,7 +1017,7 @@ msgstr ""
 #: src/settings.c:3456 src/settings.c:3908 src/settings.c:4264
 #: src/settings.c:4565 src/settings.c:4742 src/settings.c:4960 src/snaps.c:572
 msgid "Close"
-msgstr "´İ±â"
+msgstr "ë‹«ê¸°"
 
 #: src/handlers.c:62
 #, c-format
@@ -1009,14 +1031,14 @@ msgid ""
 "re-compile Enlightenment and possibly any support libraries\n"
 "that you got in binary format to run Enlightenment.\n"
 msgstr ""
-"ÀÎ¶óÀÌÆ°¸ÕÆ®°¡ Àß¸øµÈ ¸í·ÉÀ» ¼öÇàÇÏ¿´½À´Ï´Ù.\n"
+"ì¸ë¼ì´íŠ¼ë¨¼íŠ¸ê°€ ì˜ëª»ëœ ëª…ë ¹ì„ ìˆ˜í–‰í•˜ì˜€ìŠµë‹ˆë‹¤.\n"
 "\n"
-"ÀÌ°ÍÀº ´ëºÎºĞ ÀÎ¶óÀÌÆ°¸ÕÆ®°¡ Áö¿øÇÏµµ·Ï ÄÄÆÄÀÏ µÈ\n"
-"ÇÁ·Î¼¼¼­¿Í ´ç½ÅÀÌ °¡Áø ÇÁ·Î¼¼¼­°¡ 100%% È£È¯µÇÁö ¾Ê±â\n"
-"¶§¹®ÀÔ´Ï´Ù.\n"
-"´ç½ÅÀÇ ½Ã½ºÅÛ¿¡ ¸Â´Â ÆĞÅ°Áö¸¦ »õ·Î ±¸ÇÏ½Ã°Å³ª\n"
-"ÀÎ¶óÀÌÆ°¸ÕÆ®¿Í ÀÎ¶óÀÌÆ°¸ÕÆ®¸¦ ½ÇÇàÇÏ´Â µ¥\n"
-"ÇÊ¿äÇÑ ¶óÀÌºê·¯¸®¸¦ ´Ù½Ã ÄÄÆÄÀÏÇÏ½Ã±â ¹Ù¶ø´Ï´Ù.\n"
+"ì´ê²ƒì€ ëŒ€ë¶€ë¶„ ì¸ë¼ì´íŠ¼ë¨¼íŠ¸ê°€ ì§€ì›í•˜ë„ë¡ ì»´íŒŒì¼ ëœ\n"
+"í”„ë¡œì„¸ì„œì™€ ë‹¹ì‹ ì´ ê°€ì§„ í”„ë¡œì„¸ì„œê°€ 100%% í˜¸í™˜ë˜ì§€ ì•Šê¸°\n"
+"ë•Œë¬¸ì…ë‹ˆë‹¤.\n"
+"ë‹¹ì‹ ì˜ ì‹œìŠ¤í…œì— ë§ëŠ” íŒ¨í‚¤ì§€ë¥¼ ìƒˆë¡œ êµ¬í•˜ì‹œê±°ë‚˜\n"
+"ì¸ë¼ì´íŠ¼ë¨¼íŠ¸ì™€ ì¸ë¼ì´íŠ¼ë¨¼íŠ¸ë¥¼ ì‹¤í–‰í•˜ëŠ” ë°\n"
+"í•„ìš”í•œ ë¼ì´ë¸ŒëŸ¬ë¦¬ë¥¼ ë‹¤ì‹œ ì»´íŒŒì¼í•˜ì‹œê¸° ë°”ëë‹ˆë‹¤.\n"
 
 #: src/handlers.c:76
 msgid ""
@@ -1031,15 +1053,15 @@ msgid ""
 "send in a useful bug report with backtrace information and variable\n"
 "dumps etc.\n"
 msgstr ""
-"ÀÎ¶óÀÌÆ°¸ÕÆ®°¡ ºÎµ¿¼Ò¼öÁ¡ ¿¹¿Ü¸¦ ´çÇß½À´Ï´Ù.\n"
+"ì¸ë¼ì´íŠ¼ë¨¼íŠ¸ê°€ ë¶€ë™ì†Œìˆ˜ì  ì˜ˆì™¸ë¥¼ ë‹¹í–ˆìŠµë‹ˆë‹¤.\n"
 "\n"
-"ÀÌ°ÍÀº ÀÎ¶óÀÌÆ°¸ÕÆ®³ª Áö¿ø ¶óÀÌºê·¯¸®°¡ Àß¸øµÈ »ê¼ú µ¿ÀÛÀ»\n"
-"¼öÇàÇß´Ù´Â °ÍÀ» ÀÇ¹ÌÇÕ´Ï´Ù (´ëºÎºĞÀÇ °æ¿ì 0À¸·Î ³ª´©±â).\n"
-"ÀÌ°ÍÀº ´ëºÎºĞÀÇ °æ¿ì ¹ö±×ÀÔ´Ï´Ù. Áö±İ Àç½ÃÀÛÇÏ½Ê½Ã¿À.\n"
-"´ç½ÅÀÌ ¹®Á¦¸¦ °íÄ¡´Â °É µ½±â¸¦ ¿øÇÏ½Ã¸é µğ¹ö±× Á¤º¸¸¦\n"
-"°¡Áöµµ·Ï ÀÎ¶óÀÌÆ°¸ÕÆ®¸¦ ´Ù½Ã ÄÄÆÄÀÏÇÏ¼Å¼­ gdb¿¡¼­ ÀÎ¶óÀÌ\n"
-"Æ°¸ÕÆ®¸¦ ´Ù½Ã ½ÇÇàÇÏ½Å ÈÄ ¾îµğ¿¡¼­ Á×´Â Áö¸¦ ¹éÆ®·¹ÀÌ½º\n"
-"ÇÏ¼Å¼­ ¹éÆ®·¹ÀÌ½º¿Í º¯¼öµéÀÇ °ª¿¡ ´ëÇÑ Á¤º¸¸¦ º¸³»ÁÖ½Ê½Ã¿À.\n"
+"ì´ê²ƒì€ ì¸ë¼ì´íŠ¼ë¨¼íŠ¸ë‚˜ ì§€ì› ë¼ì´ë¸ŒëŸ¬ë¦¬ê°€ ì˜ëª»ëœ ì‚°ìˆ  ë™ì‘ì„\n"
+"ìˆ˜í–‰í–ˆë‹¤ëŠ” ê²ƒì„ ì˜ë¯¸í•©ë‹ˆë‹¤ (ëŒ€ë¶€ë¶„ì˜ ê²½ìš° 0ìœ¼ë¡œ ë‚˜ëˆ„ê¸°).\n"
+"ì´ê²ƒì€ ëŒ€ë¶€ë¶„ì˜ ê²½ìš° ë²„ê·¸ì…ë‹ˆë‹¤. ì§€ê¸ˆ ì¬ì‹œì‘í•˜ì‹­ì‹œì˜¤.\n"
+"ë‹¹ì‹ ì´ ë¬¸ì œë¥¼ ê³ ì¹˜ëŠ” ê±¸ ë•ê¸°ë¥¼ ì›í•˜ì‹œë©´ ë””ë²„ê·¸ ì •ë³´ë¥¼\n"
+"ê°€ì§€ë„ë¡ ì¸ë¼ì´íŠ¼ë¨¼íŠ¸ë¥¼ ë‹¤ì‹œ ì»´íŒŒì¼í•˜ì…”ì„œ gdbì—ì„œ ì¸ë¼ì´\n"
+"íŠ¼ë¨¼íŠ¸ë¥¼ ë‹¤ì‹œ ì‹¤í–‰í•˜ì‹  í›„ ì–´ë””ì—ì„œ ì£½ëŠ” ì§€ë¥¼ ë°±íŠ¸ë ˆì´ìŠ¤\n"
+"í•˜ì…”ì„œ ë°±íŠ¸ë ˆì´ìŠ¤ì™€ ë³€ìˆ˜ë“¤ì˜ ê°’ì— ëŒ€í•œ ì •ë³´ë¥¼ ë³´ë‚´ì£¼ì‹­ì‹œì˜¤.\n"
 
 #: src/handlers.c:95
 msgid ""
@@ -1054,15 +1076,15 @@ msgid ""
 "useful bug report with backtrace information and variable\n"
 "dumps etc.\n"
 msgstr ""
-"ÀÎ¶óÀÌÆ°¸ÕÆ®°¡ ¼¼±×¸ÕÆ® ¹ÙÀÌ¿Ã·¹ÀÌ¼Ç (Segfault)¸¦ ´çÇß½À´Ï´Ù\n"
+"ì¸ë¼ì´íŠ¼ë¨¼íŠ¸ê°€ ì„¸ê·¸ë¨¼íŠ¸ ë°”ì´ì˜¬ë ˆì´ì…˜ (Segfault)ë¥¼ ë‹¹í–ˆìŠµë‹ˆë‹¤\n"
 "\n"
-"ÀÌ°ÍÀº ÀÎ¶óÀÌÆ°¸ÕÆ®³ª Áö¿ø ¶óÀÌºê·¯¸®°¡ Çã¿ëµÇÁö ¾ÊÀº ½Ã½ºÅÛ\n"
-"¸Ş¸ğ¸®¿¡ Á¢±ÙÇß´Ù´Â °ÍÀ» ÀÇ¹ÌÇÕ´Ï´Ù. ÀÌ°ÍÀº ¹ö±×°¡ È®½ÇÇÕ´Ï´Ù.\n"
-"Áö±İ Àç½ÃÀÛÇÏ½Ê½Ã¿À.\n"
-"´ç½ÅÀÌ ¹®Á¦¸¦ °íÄ¡´Â °É µ½±â¸¦ ¿øÇÏ½Ã¸é µğ¹ö±× Á¤º¸¸¦\n"
-"°¡Áöµµ·Ï ÀÎ¶óÀÌÆ°¸ÕÆ®¸¦ ´Ù½Ã ÄÄÆÄÀÏÇÏ¼Å¼­ gdb¿¡¼­ ÀÎ¶óÀÌ\n"
-"Æ°¸ÕÆ®¸¦ ´Ù½Ã ½ÇÇàÇÏ½Å ÈÄ ¾îµğ¿¡¼­ Á×´Â Áö¸¦ ¹éÆ®·¹ÀÌ½º\n"
-"ÇÏ¼Å¼­ ¹éÆ®·¹ÀÌ½º¿Í º¯¼öµéÀÇ °ª¿¡ ´ëÇÑ Á¤º¸¸¦ º¸³»ÁÖ½Ê½Ã¿À.\n"
+"ì´ê²ƒì€ ì¸ë¼ì´íŠ¼ë¨¼íŠ¸ë‚˜ ì§€ì› ë¼ì´ë¸ŒëŸ¬ë¦¬ê°€ í—ˆìš©ë˜ì§€ ì•Šì€ ì‹œìŠ¤í…œ\n"
+"ë©”ëª¨ë¦¬ì— ì ‘ê·¼í–ˆë‹¤ëŠ” ê²ƒì„ ì˜ë¯¸í•©ë‹ˆë‹¤. ì´ê²ƒì€ ë²„ê·¸ê°€ í™•ì‹¤í•©ë‹ˆë‹¤.\n"
+"ì§€ê¸ˆ ì¬ì‹œì‘í•˜ì‹­ì‹œì˜¤.\n"
+"ë‹¹ì‹ ì´ ë¬¸ì œë¥¼ ê³ ì¹˜ëŠ” ê±¸ ë•ê¸°ë¥¼ ì›í•˜ì‹œë©´ ë””ë²„ê·¸ ì •ë³´ë¥¼\n"
+"ê°€ì§€ë„ë¡ ì¸ë¼ì´íŠ¼ë¨¼íŠ¸ë¥¼ ë‹¤ì‹œ ì»´íŒŒì¼í•˜ì…”ì„œ gdbì—ì„œ ì¸ë¼ì´\n"
+"íŠ¼ë¨¼íŠ¸ë¥¼ ë‹¤ì‹œ ì‹¤í–‰í•˜ì‹  í›„ ì–´ë””ì—ì„œ ì£½ëŠ” ì§€ë¥¼ ë°±íŠ¸ë ˆì´ìŠ¤\n"
+"í•˜ì…”ì„œ ë°±íŠ¸ë ˆì´ìŠ¤ì™€ ë³€ìˆ˜ë“¤ì˜ ê°’ì— ëŒ€í•œ ì •ë³´ë¥¼ ë³´ë‚´ì£¼ì‹­ì‹œì˜¤.\n"
 
 #: src/handlers.c:111
 msgid ""
@@ -1072,23 +1094,23 @@ msgid ""
 "It is highly unusual to cause Bus Errors on operational\n"
 "hardware.\n"
 msgstr ""
-"ÀÎ¶óÀÌÆ°¸ÕÆ®°¡ ¹ö½º ¿¡·¯¸¦ ´çÇß½À´Ï´Ù.\n"
+"ì¸ë¼ì´íŠ¼ë¨¼íŠ¸ê°€ ë²„ìŠ¤ ì˜¤ë¥˜ë¥¼ ë‹¹í–ˆìŠµë‹ˆë‹¤.\n"
 "\n"
-"´ç½ÅÀÇ ÇÏµå¿ş¾î³ª OS¸¦ Á¡°ËÇÏ½Ã±â¸¦ ¹Ù¶ø´Ï´Ù.\n"
-"µ¿ÀÛÁßÀÎ ÇÏµå¿ş¾î¿¡¼­ ¹ö½º¿¡·¯°¡ »ı±â´Â °ÍÀº\n"
-"ÀÏ¹İÀûÀÎ ÀÏÀº ¾Æ´Õ´Ï´Ù.\n"
+"ë‹¹ì‹ ì˜ í•˜ë“œì›¨ì–´ë‚˜ OSë¥¼ ì ê²€í•˜ì‹œê¸°ë¥¼ ë°”ëë‹ˆë‹¤.\n"
+"ë™ì‘ì¤‘ì¸ í•˜ë“œì›¨ì–´ì—ì„œ ë²„ìŠ¤ì˜¤ë¥˜ê°€ ìƒê¸°ëŠ” ê²ƒì€\n"
+"ì¼ë°˜ì ì¸ ì¼ì€ ì•„ë‹™ë‹ˆë‹¤.\n"
 
 #: src/handlers.c:218
 msgid "Another Window Manager is already running"
-msgstr "´Ù¸¥ Ã¢ °ü¸®ÀÚ±â ÀÌ¹Ì ¼öÇàÁßÀÔ´Ï´Ù"
+msgstr "ë‹¤ë¥¸ ì°½ ê´€ë¦¬ìê¸° ì´ë¯¸ ìˆ˜í–‰ì¤‘ì…ë‹ˆë‹¤"
 
 #: src/handlers.c:219
 msgid "OK (edit file)"
-msgstr "È®ÀÎ (ÆÄÀÏ ÆíÁı)"
+msgstr "í™•ì¸ (íŒŒì¼ í¸ì§‘)"
 
 #: src/handlers.c:219
 msgid "Cancel (do NOT edit)"
-msgstr "Ãë¼Ò (ÆíÁı ¾ÊÇÔ)"
+msgstr "ì·¨ì†Œ (í¸ì§‘ ì•Ší•¨)"
 
 #: src/handlers.c:220
 msgid ""
@@ -1109,27 +1131,27 @@ msgid ""
 "\n"
 "It is possible that this MAY not properly edit your files.\n"
 msgstr ""
-"´Ù¸¥ Ã¢ °ü¸®ÀÚ°¡ ÀÌ¹Ì ¼öÇàÁßÀÔ´Ï´Ù.\n"
+"ë‹¤ë¥¸ ì°½ ê´€ë¦¬ìê°€ ì´ë¯¸ ìˆ˜í–‰ì¤‘ì…ë‹ˆë‹¤.\n"
 "\n"
-"¼º°øÀûÀ¸·Î ÀÎ¶óÀÌÆ°¸ÕÆ®¸¦ ½ÇÇàÇÏ·Á¸é ¸ÕÀú ÇöÀç ½ÇÇàÁßÀÎ\n"
-"Ã¢ °ü¸®ÀÚ¸¦ Á¾·áÇØ¾ß¸¸ ÇÕ´Ï´Ù.\n"
+"ì„±ê³µì ìœ¼ë¡œ ì¸ë¼ì´íŠ¼ë¨¼íŠ¸ë¥¼ ì‹¤í–‰í•˜ë ¤ë©´ ë¨¼ì € í˜„ì¬ ì‹¤í–‰ì¤‘ì¸\n"
+"ì°½ ê´€ë¦¬ìë¥¼ ì¢…ë£Œí•´ì•¼ë§Œ í•©ë‹ˆë‹¤.\n"
 "\n"
-"´ç½ÅÀÌ ¾ÆÁ÷ ´ç½ÅÀÇ ½ÃÀÛÆÄÀÏÀ» ÆíÁıÇÏÁö ¾Ê¾Ò´Ù¸é,\n"
-"ÀÎ¶óÀÌÆ°¸ÕÆ®°¡ ´ç½ÅÀ» À§ÇØ¼­ ÆíÁıÀ» ÇÒ ¼ö ÀÖ½À´Ï´Ù.\n"
-"±×·¯¸é ´ç½ÅÀÌ ÇöÀçÀÇ Ã¢ °ü¸®ÀÚ¸¦ Á¾·áÇÑ ÈÄ ´Ù½Ã\n"
-"·Î±×ÀÎÇÏ¸é ÀÎ¶óÀÌÆ°¸ÕÆ®°¡ ½ÇÇàµÉ °Í ÀÔ´Ï´Ù.\n"
+"ë‹¹ì‹ ì´ ì•„ì§ ë‹¹ì‹ ì˜ ì‹œì‘íŒŒì¼ì„ í¸ì§‘í•˜ì§€ ì•Šì•˜ë‹¤ë©´,\n"
+"ì¸ë¼ì´íŠ¼ë¨¼íŠ¸ê°€ ë‹¹ì‹ ì„ ìœ„í•´ì„œ í¸ì§‘ì„ í•  ìˆ˜ ìˆìŠµë‹ˆë‹¤.\n"
+"ê·¸ëŸ¬ë©´ ë‹¹ì‹ ì´ í˜„ì¬ì˜ ì°½ ê´€ë¦¬ìë¥¼ ì¢…ë£Œí•œ í›„ ë‹¤ì‹œ\n"
+"ë¡œê·¸ì¸í•˜ë©´ ì¸ë¼ì´íŠ¼ë¨¼íŠ¸ê°€ ì‹¤í–‰ë  ê²ƒ ì…ë‹ˆë‹¤.\n"
 
 #: src/handlers.c:231 src/session.c:1199
 msgid "Are you sure?"
-msgstr "È®½ÇÇÑ°¡¿ä?"
+msgstr "í™•ì‹¤í•œê°€ìš”?"
 
 #: src/handlers.c:231
 msgid "YES (edit file)"
-msgstr "¿¹ (ÆÄÀÏ ÆíÁı)"
+msgstr "ì˜ˆ (íŒŒì¼ í¸ì§‘)"
 
 #: src/handlers.c:232
 msgid "NO (do not edit)"
-msgstr "¾Æ´Ï¿À (ÆíÁı ¾ÊÇÔ)"
+msgstr "ì•„ë‹ˆì˜¤ (í¸ì§‘ ì•Ší•¨)"
 
 #: src/handlers.c:233
 msgid ""
@@ -1141,36 +1163,36 @@ msgid ""
 "\n"
 "Are you ABSOLUTELY sure?\n"
 msgstr ""
-"Á¤¸»·Î ÀÎ¶óÀÌÆ°¸ÕÆ®°¡ ½ÃÀÛÆÄÀÏÀ» ÆíÁıÇÏ±â¸¦ ¿øÇÏ½Ê´Ï±î?\n"
+"ì •ë§ë¡œ ì¸ë¼ì´íŠ¼ë¨¼íŠ¸ê°€ ì‹œì‘íŒŒì¼ì„ í¸ì§‘í•˜ê¸°ë¥¼ ì›í•˜ì‹­ë‹ˆê¹Œ?\n"
 "\n"
-"¸¸¾à ´ç½ÅÀÇ ½ÃÀÛ ÆÄÀÏÀÌ ³Ê¹« ¸¹ÀÌ º¯ÇüµÈ °ÍÀÌ¶ó¸é\n"
-"Á¦´ë·Î µ¿ÀÛÇÏÁö ¾ÊÀ» ¼öµµ ÀÖ½À´Ï´Ù.\n"
+"ë§Œì•½ ë‹¹ì‹ ì˜ ì‹œì‘ íŒŒì¼ì´ ë„ˆë¬´ ë§ì´ ë³€í˜•ëœ ê²ƒì´ë¼ë©´\n"
+"ì œëŒ€ë¡œ ë™ì‘í•˜ì§€ ì•Šì„ ìˆ˜ë„ ìˆìŠµë‹ˆë‹¤.\n"
 "\n"
-"Á¤¸»·Î È®½ÇÇÕ´Ï±î?\n"
+"ì •ë§ë¡œ í™•ì‹¤í•©ë‹ˆê¹Œ?\n"
 
 #: src/iclass.c:169
 msgid "ImageClass Error!"
-msgstr "ImageClass ¿¡·¯!"
+msgstr "ImageClass ì˜¤ë¥˜!"
 
 #: src/iconify.c:2256
 msgid "Iconbox Options"
-msgstr "¾ÆÀÌÄÜ»óÀÚ ¿É¼Ç"
+msgstr "ì•„ì´ì½˜ìƒì ì˜µì…˜"
 
 #: src/iconify.c:2260
 msgid "This Iconbox Settings..."
-msgstr "ÀÌ ¾ÆÀÌÄÜ»óÀÚ ¼³Á¤..."
+msgstr "ì´ ì•„ì´ì½˜ìƒì ì„¤ì •..."
 
 #: src/iconify.c:2265
 msgid "Close Iconbox"
-msgstr "¾ÆÀÌÄÜ»óÀÚ ´İ±â"
+msgstr "ì•„ì´ì½˜ìƒì ë‹«ê¸°"
 
 #: src/iconify.c:2268
 msgid "Create New Iconbox"
-msgstr "»õ ¾ÆÀÌÄÜ»óÀÚ »ı¼º"
+msgstr "ìƒˆ ì•„ì´ì½˜ìƒì ìƒì„±"
 
 #: src/ipc.c:1664
 msgid "Message"
-msgstr "¸Ş½ÃÁö"
+msgstr "ë©”ì‹œì§€"
 
 #: src/ipc.c:3919
 #, c-format
@@ -1178,12 +1200,12 @@ msgid ""
 "Enlightenment Version : %s\n"
 "code is current to    : %s\n"
 msgstr ""
-"ÀÎ¶óÀÌÆ°¸ÕÆ® ¹öÀü : %s\n"
-"ÇöÀçÀÇ ÄÚµå       : %s\n"
+"ì¸ë¼ì´íŠ¼ë¨¼íŠ¸ ë²„ì „ : %s\n"
+"í˜„ì¬ì˜ ì½”ë“œ       : %s\n"
 
 #: src/ipc.c:6481
 msgid "Enlightenment IPC Commands Help"
-msgstr "ÀÎ¶óÀÌÆ°¸ÕÆ® IPC ¸í·É µµ¿ò¸»"
+msgstr "ì¸ë¼ì´íŠ¼ë¨¼íŠ¸ IPC ëª…ë ¹ ë„ì›€ë§"
 
 #: src/ipc.c:6485 src/ipc.c:6513
 msgid ""
@@ -1191,7 +1213,7 @@ msgid ""
 "commands currently available:\n"
 msgstr ""
 "\n"
-"ÇöÀç »ç¿ë°¡´ÉÇÑ ¸í·É:\n"
+"í˜„ì¬ ì‚¬ìš©ê°€ëŠ¥í•œ ëª…ë ¹:\n"
 
 #: src/ipc.c:6486
 msgid ""
@@ -1199,18 +1221,17 @@ msgid ""
 "use \"help <command>\" for an individual description\n"
 "\n"
 msgstr ""
-"¸ğµç ¸í·É¿¡ ´ëÇÑ ¼³¸íÀ» º¸½Ã·Á¸é \"help all\"À» »ç¿ëÇÏ½Ê½Ã¿À\n"
-"°¢°¢ÀÇ ¼³¸íÀ» º¸½Ã·Á¸é \"help <¸í·É>\"À» »ç¿ëÇÏ½Ê½Ã¿À\n"
+"ëª¨ë“  ëª…ë ¹ì— ëŒ€í•œ ì„¤ëª…ì„ ë³´ì‹œë ¤ë©´ \"help all\"ì„ ì‚¬ìš©í•˜ì‹­ì‹œì˜¤\n"
+"ê°ê°ì˜ ì„¤ëª…ì„ ë³´ì‹œë ¤ë©´ \"help <ëª…ë ¹>\"ì„ ì‚¬ìš©í•˜ì‹­ì‹œì˜¤\n"
 "\n"
 
 #: src/ipc.c:6514
 msgid "use \"help <command>\" for an individual description\n"
-msgstr "°¢°¢ÀÇ ¼³¸íÀ» º¸½Ã·Á¸é \"help <¸í·É>\"À» »ç¿ëÇÏ½Ê½Ã¿À\n"
+msgstr "ê°ê°ì˜ ì„¤ëª…ì„ ë³´ì‹œë ¤ë©´ \"help <ëª…ë ¹>\"ì„ ì‚¬ìš©í•˜ì‹­ì‹œì˜¤\n"
 
 #: src/ipc.c:6516
-#, fuzzy
 msgid "      <command>   : <description>\n"
-msgstr "<¸í·É> : <¼³¸í>\n"
+msgstr "      <ëª…ë ¹> : <ì„¤ëª…>\n"
 
 #: src/main.c:178
 #, c-format
@@ -1218,12 +1239,12 @@ msgid ""
 "Enlightenment Version: %s\n"
 "Last updated on: %s\n"
 msgstr ""
-"ÀÎ¶óÀÌÆ°¸ÕÆ® ¹öÀü: %s\n"
-"¸¶Áö¸· °»½Å: %s\n"
+"ì¸ë¼ì´íŠ¼ë¨¼íŠ¸ ë²„ì „: %s\n"
+"ë§ˆì§€ë§‰ ê°±ì‹ : %s\n"
 
 #: src/memory.c:210 src/memory.c:304
 msgid "Cannot allocate enough memory"
-msgstr "ÃæºĞÇÑ ¸Ş¸ğ¸®¸¦ ÇÒ´çÇÒ ¼ö ¾ø½À´Ï´Ù"
+msgstr "ì¶©ë¶„í•œ ë©”ëª¨ë¦¬ë¥¼ í• ë‹¹í•  ìˆ˜ ì—†ìŠµë‹ˆë‹¤"
 
 #: src/memory.c:212
 #, c-format
@@ -1243,24 +1264,24 @@ msgid ""
 "The malloc requested was at %s, line %d\n"
 " "
 msgstr ""
-"°æ°í!!!!!!\n"
+"ê²½ê³ !!!!!!\n"
 "\n"
-"%i ¹ÙÀÌÆ® (%3.0f Kb È¤Àº %3.1f Mb) ÇÒ´çÀÌ ½ÇÆĞÇß½À´Ï´Ù.\n"
+"%i ë°”ì´íŠ¸ (%3.0f Kb í˜¹ì€ %3.1f Mb) í• ë‹¹ì´ ì‹¤íŒ¨í–ˆìŠµë‹ˆë‹¤.\n"
 "\n"
-"ÅÍ¹«´Ï¾øÀÌ ¸¹Àº ¸Ş¸ğ¸®¸¦ ÇÒ´çÇÏ·Á°í Çß´Ù¸é ÀÌ°ÍÀº\n"
-"¹ö±×ÀÌ°Å³ª ´ç½ÅÀÇ ½Ã½ºÅÛÀÌ ½ÇÁ¦ ¹× °¡»ó ¸Ş¸ğ¸®°¡\n"
-"¹Ù´Ú³ª¼­ ÇÒ´çÀ» ÇÒ ¼ö ¾ø¾ú±â ¶§¹®ÀÔ´Ï´Ù.\n"
+"í„°ë¬´ë‹ˆì—†ì´ ë§ì€ ë©”ëª¨ë¦¬ë¥¼ í• ë‹¹í•˜ë ¤ê³  í–ˆë‹¤ë©´ ì´ê²ƒì€\n"
+"ë²„ê·¸ì´ê±°ë‚˜ ë‹¹ì‹ ì˜ ì‹œìŠ¤í…œì´ ì‹¤ì œ ë° ê°€ìƒ ë©”ëª¨ë¦¬ê°€\n"
+"ë°”ë‹¥ë‚˜ì„œ í• ë‹¹ì„ í•  ìˆ˜ ì—†ì—ˆê¸° ë•Œë¬¸ì…ë‹ˆë‹¤.\n"
 "\n"
-"´ç½ÅÀÌ ¸Ş¸ğ¸®°¡ ÀÛÀº ½Ã½ºÅÛÀ» »ç¿ëÇÑ´Ù¸é ´õ ¸¹Àº ¸Ş¸ğ¸®¸¦\n"
-"±¸ÀÔÇÏ½Ã°Å³ª ½º¿Ò ¿µ¿ªÀ» ´Ã¸®½Ã°Å³ª ÀÎ¶óÀÌÆ°¸ÕÆ®°¡ ÀÚ¿øÀ»\n"
-"Àû°Ô »ç¿ëÇÏµµ·Ï ¿©·¯ ±â´ÉµéÀ» ¸·À¸½Ê½Ã¿À.\n"
+"ë‹¹ì‹ ì´ ë©”ëª¨ë¦¬ê°€ ì‘ì€ ì‹œìŠ¤í…œì„ ì‚¬ìš©í•œë‹¤ë©´ ë” ë§ì€ ë©”ëª¨ë¦¬ë¥¼\n"
+"êµ¬ì…í•˜ì‹œê±°ë‚˜ ìŠ¤ì™‘ ì˜ì—­ì„ ëŠ˜ë¦¬ì‹œê±°ë‚˜ ì¸ë¼ì´íŠ¼ë¨¼íŠ¸ê°€ ìì›ì„\n"
+"ì ê²Œ ì‚¬ìš©í•˜ë„ë¡ ì—¬ëŸ¬ ê¸°ëŠ¥ë“¤ì„ ë§‰ìœ¼ì‹­ì‹œì˜¤.\n"
 "\n"
-"¸Ş¸ğ¸® ÇÒ´ç ¿äÃ»Àº %s, %d ¶óÀÎ¿¡¼­ ÀÌ·ç¾îÁ³½À´Ï´Ù.\n"
+"ë©”ëª¨ë¦¬ í• ë‹¹ ìš”ì²­ì€ %s, %d ë¼ì¸ì—ì„œ ì´ë£¨ì–´ì¡ŒìŠµë‹ˆë‹¤.\n"
 " "
 
 #: src/memory.c:285
 msgid "Error in reallocating memory that hasn't been allocated"
-msgstr "ÀÌ¹Ì ÇÒ´çµÇ¾ú´ø ¸Ş¸ğ¸®¸¦ ÀçÇÒ´çÇÏ´ø Áß ¿¡·¯"
+msgstr "ì´ë¯¸ í• ë‹¹ë˜ì—ˆë˜ ë©”ëª¨ë¦¬ë¥¼ ì¬í• ë‹¹í•˜ë˜ ì¤‘ ì˜¤ë¥˜"
 
 #: src/memory.c:288
 #, c-format
@@ -1276,15 +1297,15 @@ msgid ""
 "\n"
 "The error occurred at %s, line %d.\n"
 msgstr ""
-"°æ°í!!!!!!\n"
+"ê²½ê³ !!!!!!\n"
 "\n"
-"%i ¹ÙÀÌÆ® (%3.0f Kb È¤Àº %3.1f Mb)ÀÇ ÀçÇÒ´çÀ» %x Æ÷ÀÎÅÍ¿¡ ´ëÇØ\n"
-"½ÃµµÇÏ¿´½À´Ï´Ù. ÀÌ°ÍÀº ÇÒ´çµÈ ÀûÀÌ ¾ø°Å³ª ÀÌ¹Ì ÇØÁ¦µÈ ¸Ş¸ğ¸®\n"
-"Æ÷ÀÎÅÍÀÔ´Ï´Ù.\n"
+"%i ë°”ì´íŠ¸ (%3.0f Kb í˜¹ì€ %3.1f Mb)ì˜ ì¬í• ë‹¹ì„ %x í¬ì¸í„°ì— ëŒ€í•´\n"
+"ì‹œë„í•˜ì˜€ìŠµë‹ˆë‹¤. ì´ê²ƒì€ í• ë‹¹ëœ ì ì´ ì—†ê±°ë‚˜ ì´ë¯¸ í•´ì œëœ ë©”ëª¨ë¦¬\n"
+"í¬ì¸í„°ì…ë‹ˆë‹¤.\n"
 "\n"
-"ÀÌ°ÍÀº ¸í¹éÇÏ°Ô ¹ö±×ÀÔ´Ï´Ù. ¾Ë·ÁÁÖ½Ã±â ¹Ù¶ø´Ï´Ù.\n"
+"ì´ê²ƒì€ ëª…ë°±í•˜ê²Œ ë²„ê·¸ì…ë‹ˆë‹¤. ì•Œë ¤ì£¼ì‹œê¸° ë°”ëë‹ˆë‹¤.\n"
 "\n"
-"ÀÌ ¿¡·¯´Â %s, %d ¶óÀÎ¿¡¼­ ¹ß»ıÇß½À´Ï´Ù.\n"
+"ì´ ì˜¤ë¥˜ëŠ” %s, %d ë¼ì¸ì—ì„œ ë°œìƒí–ˆìŠµë‹ˆë‹¤.\n"
 
 #: src/memory.c:306
 #, c-format
@@ -1304,24 +1325,24 @@ msgid ""
 "The realloc requested was at %s, line %d\n"
 " "
 msgstr ""
-"°æ°í!!!!!!\n"
+"ê²½ê³ !!!!!!\n"
 "\n"
-"%i ¹ÙÀÌÆ® (%3.0f Kb È¤Àº %3.1f Mb)ÀÇ ÀçÇÒ´çÀÌ ½ÇÆĞÇß½À´Ï´Ù.\n"
+"%i ë°”ì´íŠ¸ (%3.0f Kb í˜¹ì€ %3.1f Mb)ì˜ ì¬í• ë‹¹ì´ ì‹¤íŒ¨í–ˆìŠµë‹ˆë‹¤.\n"
 "\n"
-"ÅÍ¹«´Ï¾øÀÌ ¸¹Àº ¸Ş¸ğ¸®¸¦ ÇÒ´çÇÏ·Á°í Çß´Ù¸é ÀÌ°ÍÀº\n"
-"¹ö±×ÀÌ°Å³ª ´ç½ÅÀÇ ½Ã½ºÅÛÀÌ ½ÇÁ¦ ¹× °¡»ó ¸Ş¸ğ¸®°¡\n"
-"¹Ù´Ú³ª¼­ ÇÒ´çÀ» ÇÒ ¼ö ¾ø¾ú±â ¶§¹®ÀÔ´Ï´Ù.\n"
+"í„°ë¬´ë‹ˆì—†ì´ ë§ì€ ë©”ëª¨ë¦¬ë¥¼ í• ë‹¹í•˜ë ¤ê³  í–ˆë‹¤ë©´ ì´ê²ƒì€\n"
+"ë²„ê·¸ì´ê±°ë‚˜ ë‹¹ì‹ ì˜ ì‹œìŠ¤í…œì´ ì‹¤ì œ ë° ê°€ìƒ ë©”ëª¨ë¦¬ê°€\n"
+"ë°”ë‹¥ë‚˜ì„œ í• ë‹¹ì„ í•  ìˆ˜ ì—†ì—ˆê¸° ë•Œë¬¸ì…ë‹ˆë‹¤.\n"
 "\n"
-"´ç½ÅÀÌ ¸Ş¸ğ¸®°¡ ÀÛÀº ½Ã½ºÅÛÀ» »ç¿ëÇÑ´Ù¸é ´õ ¸¹Àº ¸Ş¸ğ¸®¸¦\n"
-"±¸ÀÔÇÏ½Ã°Å³ª ½º¿Ò ¿µ¿ªÀ» ´Ã¸®½Ã°Å³ª ÀÎ¶óÀÌÆ°¸ÕÆ®°¡ ÀÚ¿øÀ»\n"
-"Àû°Ô »ç¿ëÇÏµµ·Ï ¿©·¯ ±â´ÉµéÀ» ¸·À¸½Ê½Ã¿À.\n"
+"ë‹¹ì‹ ì´ ë©”ëª¨ë¦¬ê°€ ì‘ì€ ì‹œìŠ¤í…œì„ ì‚¬ìš©í•œë‹¤ë©´ ë” ë§ì€ ë©”ëª¨ë¦¬ë¥¼\n"
+"êµ¬ì…í•˜ì‹œê±°ë‚˜ ìŠ¤ì™‘ ì˜ì—­ì„ ëŠ˜ë¦¬ì‹œê±°ë‚˜ ì¸ë¼ì´íŠ¼ë¨¼íŠ¸ê°€ ìì›ì„\n"
+"ì ê²Œ ì‚¬ìš©í•˜ë„ë¡ ì—¬ëŸ¬ ê¸°ëŠ¥ë“¤ì„ ë§‰ìœ¼ì‹­ì‹œì˜¤.\n"
 "\n"
-"¸Ş¸ğ¸® ÀçÇÒ´ç ¿äÃ»Àº %s, %d ¶óÀÎ¿¡¼­ ÀÌ·ç¾îÁ³½À´Ï´Ù.\n"
+"ë©”ëª¨ë¦¬ ì¬í• ë‹¹ ìš”ì²­ì€ %s, %d ë¼ì¸ì—ì„œ ì´ë£¨ì–´ì¡ŒìŠµë‹ˆë‹¤.\n"
 " "
 
 #: src/memory.c:379
 msgid "Error in freeing memory that hasn't been allocated"
-msgstr "ÇÒ´ç¹Ş¾Ò´ø ¸Ş¸ğ¸®¸¦ ÇØÁ¦ÇÏ´ø Áß ¿¡·¯"
+msgstr "í• ë‹¹ë°›ì•˜ë˜ ë©”ëª¨ë¦¬ë¥¼ í•´ì œí•˜ë˜ ì¤‘ ì˜¤ë¥˜"
 
 #: src/memory.c:382
 #, c-format
@@ -1336,23 +1357,23 @@ msgid ""
 "\n"
 "The error occurred at %s, line %d.\n"
 msgstr ""
-"°æ°í!!!!!!\n"
+"ê²½ê³ !!!!!!\n"
 "\n"
-"%x Æ÷ÀÎÅÍ¿¡ ´ëÇÑ ÇØÁ¦°¡ ½ÃµµµÇ¾ú´Â µ¥, ÀÌ°ÍÀº ÇÒ´çµÈ ÀûÀÌ\n"
-"¾ø´Â ¸Ş¸ğ¸®¿¡ ´ëÇÑ Æ÷ÀÎÅÍÀÌ°Å³ª, È¤Àº ÀÌ¹Ì ÇØÁ¦µÈ ¸Ş¸ğ¸®¿¡\n"
-"´ëÇÑ Æ÷ÀÎÅÍÀÔ´Ï´Ù.\n"
+"%x í¬ì¸í„°ì— ëŒ€í•œ í•´ì œê°€ ì‹œë„ë˜ì—ˆëŠ” ë°, ì´ê²ƒì€ í• ë‹¹ëœ ì ì´\n"
+"ì—†ëŠ” ë©”ëª¨ë¦¬ì— ëŒ€í•œ í¬ì¸í„°ì´ê±°ë‚˜, í˜¹ì€ ì´ë¯¸ í•´ì œëœ ë©”ëª¨ë¦¬ì—\n"
+"ëŒ€í•œ í¬ì¸í„°ì…ë‹ˆë‹¤.\n"
 "\n"
-"ÀÌ°ÍÀº ¸í¹éÇÏ°Ô ¹ö±×ÀÌ¹Ç·Î ¾Ë·ÁÁÖ½Ã±â ¹Ù¶ø´Ï´Ù.\n"
+"ì´ê²ƒì€ ëª…ë°±í•˜ê²Œ ë²„ê·¸ì´ë¯€ë¡œ ì•Œë ¤ì£¼ì‹œê¸° ë°”ëë‹ˆë‹¤.\n"
 "\n"
-"ÀÌ ¿¡·¯´Â %s, %d ¶óÀÎ¿¡¼­ ¹ß»ıÇß½À´Ï´Ù.\n"
+"ì´ ì˜¤ë¥˜ëŠ” %s, %d ë¼ì¸ì—ì„œ ë°œìƒí–ˆìŠµë‹ˆë‹¤.\n"
 
 #: src/memory.c:394
 msgid "Error in attempting to free NULL pointer"
-msgstr "³Î Æ÷ÀÎÅÍ¸¦ ÇØÁ¦ÇÏ·Á°í ½Ãµµ"
+msgstr "ë„ í¬ì¸í„°ë¥¼ í•´ì œí•˜ë ¤ê³  ì‹œë„"
 
 #: src/memory.c:395
 msgid "Ignore this (safe)"
-msgstr "¹«½Ã (¾ÈÀü)"
+msgstr "ë¬´ì‹œ (ì•ˆì „)"
 
 #: src/memory.c:397
 #, c-format
@@ -1367,37 +1388,37 @@ msgid ""
 "The pointer value was %x.\n"
 "The error occurred at %s, line %d.\n"
 msgstr ""
-"°æ°í!!!!!!\n"
+"ê²½ê³ !!!!!!\n"
 "\n"
-"ÀÎ¶óÀÌÆ°¸ÕÆ®°¡ ³Î Æ÷ÀÎÅÍ¸¦ ÇØÁ¦ÇÏ·Á°í ÇÏ¿´½À´Ï´Ù.\n"
+"ì¸ë¼ì´íŠ¼ë¨¼íŠ¸ê°€ ë„ í¬ì¸í„°ë¥¼ í•´ì œí•˜ë ¤ê³  í•˜ì˜€ìŠµë‹ˆë‹¤.\n"
 "\n"
-"ÀÌ°ÍÀº ¸í¹éÇÏ°Ô ¹ö±×ÀÌ¹Ç·Î ¾Ë·ÁÁÖ½Ã±â ¹Ù¶ø´Ï´Ù.\n"
-"ÀÌ ¿¡·¯¸¦ ¹«½ÃÇÏ°í ÀÎ¶óÀÌÆ°¸ÕÆ®¸¦ °è¼Ó ½ÇÇàÇÏ´Â °ÍÀº ¾ÈÀüÇÕ´Ï´Ù.\n"
+"ì´ê²ƒì€ ëª…ë°±í•˜ê²Œ ë²„ê·¸ì´ë¯€ë¡œ ì•Œë ¤ì£¼ì‹œê¸° ë°”ëë‹ˆë‹¤.\n"
+"ì´ ì˜¤ë¥˜ë¥¼ ë¬´ì‹œí•˜ê³  ì¸ë¼ì´íŠ¼ë¨¼íŠ¸ë¥¼ ê³„ì† ì‹¤í–‰í•˜ëŠ” ê²ƒì€ ì•ˆì „í•©ë‹ˆë‹¤.\n"
 "\n"
-"Æ÷ÀÎÅÍ °ªÀº %x ÀÌ¾ú½À´Ï´Ù.\n"
-"ÀÌ ¿¡·¯´Â %s, %d ¶óÀÎ¿¡¼­ ¹ß»ıÇß½À´Ï´Ù.\n"
+"í¬ì¸í„° ê°’ì€ %x ì´ì—ˆìŠµë‹ˆë‹¤.\n"
+"ì´ ì˜¤ë¥˜ëŠ” %s, %d ë¼ì¸ì—ì„œ ë°œìƒí–ˆìŠµë‹ˆë‹¤.\n"
 
 #: src/menus.c:1710
 msgid "Go to this Desktop"
-msgstr "ÀÌ µ¥½ºÅ©Å¾À¸·Î °¡±â"
+msgstr "ì´ ë°ìŠ¤í¬íƒ‘ìœ¼ë¡œ ê°€ê¸°"
 
 #: src/menus.c:1725 src/menus.c:1748
 #, c-format
 msgid "Desktop %i"
-msgstr "µ¥½ºÅ©Å¾ %i"
+msgstr "ë°ìŠ¤í¬íƒ‘ %i"
 
 #: src/menus.c:1778
 msgid "Show/Hide this group"
-msgstr "ÀÌ ±×·ì º¸¿©ÁÖ±â/¼û±â±â"
+msgstr "ì´ ê·¸ë£¹ ë³´ì—¬ì£¼ê¸°/ìˆ¨ê¸°ê¸°"
 
 #: src/menus.c:1781
 msgid "Iconify this group"
-msgstr "ÀÌ ±×·ì ¾ÆÀÌÄÜÈ­"
+msgstr "ì´ ê·¸ë£¹ ì•„ì´ì½˜í™”"
 
 #: src/menus.c:1795
 #, c-format
 msgid "Group %i"
-msgstr "±×·ì %i"
+msgstr "ê·¸ë£¹ %i"
 
 #: src/misc.c:43
 #, c-format
@@ -1415,21 +1436,20 @@ msgid ""
 "packages, someone manually deleting that program or perhaps\n"
 "an error in installing Enlightenment.\n"
 msgstr ""
-"!!!!!!!! ¿¡·¯ ¿¡·¯ ¿¡·¯ ¿¡·¯ !!!!!!!!\n"
+"!!!!!!!! ì˜¤ë¥˜ ì˜¤ë¥˜ ì˜¤ë¥˜ ì˜¤ë¥˜ !!!!!!!!\n"
 "\n"
-"ÀÎ¶óÀÌÆ°¸ÕÆ®ÀÇ ½ÇÇà µµ±¸µéÀ» ´ÙÀ½¿¡¼­ Ã£À» ¼ö ¾ø½À´Ï´Ù:\n"
+"ì¸ë¼ì´íŠ¼ë¨¼íŠ¸ì˜ ì‹¤í–‰ ë„êµ¬ë“¤ì„ ë‹¤ìŒì—ì„œ ì°¾ì„ ìˆ˜ ì—†ìŠµë‹ˆë‹¤:\n"
 "\n"
 "%s\n"
-"ÀÌ°ÍÀº ½É°¢ÇÑ ¿¡·¯ÀÌ¸ç ÀÎ¶óÀÌÆ°¸ÕÆ®´Â ½ÇÇàµÉ ¼ö ¾ø½À´Ï´Ù.\n"
-"ÀÌ ¹®Á¦¸¦ °íÄ¡½Ã±â¸¦ ¹Ù¶ó¸ç ÀÎ½ºÅçÀÌ Á¦´ë·Î µÇ¾ú´Â Áö¸¦\n"
-"È®ÀÎÇÏ½Ã±â ¹Ù¶ø´Ï´Ù.\n"
+"ì´ê²ƒì€ ì‹¬ê°í•œ ì˜¤ë¥˜ì´ë©° ì¸ë¼ì´íŠ¼ë¨¼íŠ¸ëŠ” ì‹¤í–‰ë  ìˆ˜ ì—†ìŠµë‹ˆë‹¤.\n"
+"ì´ ë¬¸ì œë¥¼ ê³ ì¹˜ì‹œê¸°ë¥¼ ë°”ë¼ë©° ì¸ìŠ¤í†¨ì´ ì œëŒ€ë¡œ ë˜ì—ˆëŠ” ì§€ë¥¼\n"
+"í™•ì¸í•˜ì‹œê¸° ë°”ëë‹ˆë‹¤.\n"
 "\n"
-"ÀÌ ÀÏÀÌ ¹ß»ıÇÑ ÀÌÀ¯´Â ÆĞÅ°Áö°¡ Àß¸ø ¸¸µé¾î Á³µç Áö ´©±º°¡\n"
-"¼ÕÀ¸·Î ÇÁ·Î±×·¥À» Áö¿üµç Áö ¾Æ´Ï¸é ÀÎ¶óÀÌÆ°¸ÕÆ® ÀÎ½ºÅçÀÌ\n"
-"Àß¸øµÈ °ÍÀÔ´Ï´Ù.\n"
+"ì´ ì¼ì´ ë°œìƒí•œ ì´ìœ ëŠ” íŒ¨í‚¤ì§€ê°€ ì˜ëª» ë§Œë“¤ì–´ ì¡Œë“  ì§€ ëˆ„êµ°ê°€\n"
+"ì†ìœ¼ë¡œ í”„ë¡œê·¸ë¨ì„ ì§€ì› ë“  ì§€ ì•„ë‹ˆë©´ ì¸ë¼ì´íŠ¼ë¨¼íŠ¸ ì¸ìŠ¤í†¨ì´\n"
+"ì˜ëª»ëœ ê²ƒì…ë‹ˆë‹¤.\n"
 
 #: src/misc.c:56
-#, fuzzy, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
 "\n"
@@ -1440,54 +1460,54 @@ msgid ""
 "Please rectify this situation and ensure it is installed\n"
 "correctly.\n"
 msgstr ""
-"!!!!!!!! ¿¡·¯ ¿¡·¯ ¿¡·¯ ¿¡·¯ !!!!!!!!\n"
+"!!!!!!!! ì˜¤ë¥˜ ì˜¤ë¥˜ ì˜¤ë¥˜ ì˜¤ë¥˜ !!!!!!!!\n"
 "\n"
-"ÀÎ¶óÀÌÆ°¸ÕÆ®ÀÇ dox ÆÄÀÏÀ» ½ÇÇà½ÃÅ³ ¼ö°¡ ¾ø½À´Ï´Ù:\n"
+"ì¸ë¼ì´íŠ¼ë¨¼íŠ¸ì˜ dox íŒŒì¼ì„ ì‹¤í–‰ì‹œí‚¬ ìˆ˜ê°€ ì—†ìŠµë‹ˆë‹¤:\n"
 "\n"
 "%s\n"
-"ÀÌ°ÍÀº ½É°¢ÇÑ ¿¡·¯ÀÌ¸ç ÀÎ¶óÀÌÆ°¸ÕÆ®´Â ½ÇÇàµÉ ¼ö ¾ø½À´Ï´Ù.\n"
-"ÀÌ ¹®Á¦¸¦ °íÄ¡½Ã±â¸¦ ¹Ù¶ó¸ç dox°¡ ÀÎ½ºÅçÀÌ Á¦´ë·Î µÇ¾ú´Â\n"
-"Áö¸¦ È®ÀÎÇÏ½Ã±â ¹Ù¶ø´Ï´Ù.\n"
+"ì´ê²ƒì€ ì‹¬ê°í•œ ì˜¤ë¥˜ì´ë©° ì¸ë¼ì´íŠ¼ë¨¼íŠ¸ëŠ” ì‹¤í–‰ë  ìˆ˜ ì—†ìŠµë‹ˆë‹¤.\n"
+"ì´ ë¬¸ì œë¥¼ ê³ ì¹˜ì‹œê¸°ë¥¼ ë°”ë¼ë©° doxê°€ ì¸ìŠ¤í†¨ì´ ì œëŒ€ë¡œ ë˜ì—ˆëŠ”\n"
+"ì§€ë¥¼ í™•ì¸í•˜ì‹œê¸° ë°”ëë‹ˆë‹¤.\n"
 
 #: src/pager.c:919
 msgid "Window Options"
-msgstr "Ã¢ ¿É¼Ç"
+msgstr "ì°½ ì˜µì…˜"
 
 #: src/pager.c:923
 msgid "Iconify"
-msgstr "¾ÆÀÌÄÜÈ­"
+msgstr "ì•„ì´ì½˜í™”"
 
 #: src/pager.c:929
 msgid "Annihilate"
-msgstr "Àü¸ê½ÃÅ´"
+msgstr "ì „ë©¸ì‹œí‚´"
 
 #: src/pager.c:932
 msgid "Stick / Unstick"
-msgstr "°íÂø / Àâ¾Æ¶À"
+msgstr "ê³ ì°© / ì¡ì•„ë—Œ"
 
 #: src/pager.c:943
 msgid "Desktop Options"
-msgstr "µ¥½ºÅ©Å¾ ¿É¼Ç"
+msgstr "ë°ìŠ¤í¬íƒ‘ ì˜µì…˜"
 
 #: src/pager.c:946
 msgid "Pager Settings..."
-msgstr "ÆäÀÌÀú ¼³Á¤..."
+msgstr "í˜ì´ì € ì„¤ì •..."
 
 #: src/pager.c:950
 msgid "Snapshotting On"
-msgstr "½º³À¼¦ »ç¿ë"
+msgstr "ìŠ¤ëƒ…ìƒ· ì‚¬ìš©"
 
 #: src/pager.c:954
 msgid "Snapshotting Off"
-msgstr "½º³À¼¦ »ç¿ë¾ÊÇÔ"
+msgstr "ìŠ¤ëƒ…ìƒ· ì‚¬ìš©ì•Ší•¨"
 
 #: src/pager.c:960
 msgid "High Quality On"
-msgstr "°íÇØ»óµµ »ç¿ë"
+msgstr "ê³ í•´ìƒë„ ì‚¬ìš©"
 
 #: src/pager.c:964
 msgid "High Quality Off"
-msgstr "°íÇØ»óµµ »ç¿ë¾ÊÇÔ"
+msgstr "ê³ í•´ìƒë„ ì‚¬ìš©ì•Ší•¨"
 
 #: src/session.c:264
 msgid ""
@@ -1495,17 +1515,17 @@ msgid ""
 "You may have run out of disk space, not have permission\n"
 "to write to your filing system or other similar problems.\n"
 msgstr ""
-"Å¬¶óÀÌ¾ğÆ® ¼¼¼Ç ÀúÀå ÆÄÀÏÀ» ¾²´ø Áß ¿¡·¯°¡ ¹ß»ıÇß½À´Ï´Ù.\n"
-"µğ½ºÅ© °ø°£ÀÌ ¾ø°Å³ª ÆÄÀÏ ½Ã½ºÅÛ¿¡ ´ëÇÑ ¾²±â°¡ Çã¿ëµÇÁö\n"
-"¾Ê°Å³ª ÀÌ¿Í ºñ½ÁÇÑ ¹®Á¦ÀÏ °ÍÀÔ´Ï´Ù.\n"
+"í´ë¼ì´ì–¸íŠ¸ ì„¸ì…˜ ì €ì¥ íŒŒì¼ì„ ì“°ë˜ ì¤‘ ì˜¤ë¥˜ê°€ ë°œìƒí–ˆìŠµë‹ˆë‹¤.\n"
+"ë””ìŠ¤í¬ ê³µê°„ì´ ì—†ê±°ë‚˜ íŒŒì¼ ì‹œìŠ¤í…œì— ëŒ€í•œ ì“°ê¸°ê°€ í—ˆìš©ë˜ì§€\n"
+"ì•Šê±°ë‚˜ ì´ì™€ ë¹„ìŠ·í•œ ë¬¸ì œì¼ ê²ƒì…ë‹ˆë‹¤.\n"
 
 #: src/session.c:453
 msgid ""
 "There was an error saving your autosave data - filing\n"
 "system problems.\n"
 msgstr ""
-"ÀÚµ¿ÀúÀå µ¥ÀÌÅ¸¸¦ ÀúÀåÇÏ´ø Áß ¿¡·¯°¡ ¹ß»ıÇß½À´Ï´Ù.\n"
-"ÆÄÀÏ ½Ã½ºÅÛ ¹®Á¦ÀÔ´Ï´Ù.\n"
+"ìë™ì €ì¥ ë°ì´íƒ€ë¥¼ ì €ì¥í•˜ë˜ ì¤‘ ì˜¤ë¥˜ê°€ ë°œìƒí–ˆìŠµë‹ˆë‹¤.\n"
+"íŒŒì¼ ì‹œìŠ¤í…œ ë¬¸ì œì…ë‹ˆë‹¤.\n"
 
 #: src/session.c:861
 msgid ""
@@ -1521,17 +1541,17 @@ msgid ""
 "\n"
 "... I hope.\n"
 msgstr ""
-"¿¡·¯!\n"
+"ì˜¤ë¥˜!\n"
 "\n"
-"¼¼¼Ç ¸Ş´ÏÀú¿ÍÀÇ ¿¬°áÀÌ ²÷°å½À´Ï´Ù.\n"
-"¾îÀÌ ¼¼¼Ç ¸Ş´ÏÀú... ÀÌ¸® ¿À¼¼¿ä... »À´Ù±Í¶óµµ µå¸±±î¿ä?\n"
-"Á¦¹ß ¿À¼¼¿ä! »ßÁöÁö ¸¶¼¼¿ä! ³ª»Û ³à¼®. ÂÁ. ¼¼¼Ç ¸Ş´ÏÀú¾øÀÌ\n"
-"°è¼Ó ÁøÇàÇÒ °Ì´Ï´Ù.\n"
+"ì„¸ì…˜ ë©”ë‹ˆì €ì™€ì˜ ì—°ê²°ì´ ëŠê²¼ìŠµë‹ˆë‹¤.\n"
+"ì–´ì´ ì„¸ì…˜ ë©”ë‹ˆì €... ì´ë¦¬ ì˜¤ì„¸ìš”... ë¼ˆë‹¤ê·€ë¼ë„ ë“œë¦´ê¹Œìš”?\n"
+"ì œë°œ ì˜¤ì„¸ìš”! ì‚ì§€ì§€ ë§ˆì„¸ìš”! ë‚˜ìœ ë…€ì„. ì©. ì„¸ì…˜ ë©”ë‹ˆì €ì—†ì´\n"
+"ê³„ì† ì§„í–‰í•  ê²ë‹ˆë‹¤.\n"
 "\n"
-"¾îÂ·µç Àú´Â »ì¾Æ³²À» °Ì´Ï´Ù.\n"
+"ì–´ì¨Œë“  ì €ëŠ” ì‚´ì•„ë‚¨ì„ ê²ë‹ˆë‹¤.\n"
 "\n"
 "\n"
-"... ±×·¯±æ ¹Ù¶ø´Ï´Ù.\n"
+"... ê·¸ëŸ¬ê¸¸ ë°”ëë‹ˆë‹¤.\n"
 
 #: src/session.c:1200
 msgid ""
@@ -1543,87 +1563,87 @@ msgid ""
 msgstr ""
 "\n"
 "\n"
-"    Á¤¸»·Î ·Î±×¾Æ¿ôÇÏ±â¸¦ ¹Ù¶ó½Ê´Ï±î ?   \n"
+"    ì •ë§ë¡œ ë¡œê·¸ì•„ì›ƒí•˜ê¸°ë¥¼ ë°”ë¼ì‹­ë‹ˆê¹Œ ?   \n"
 "\n"
 "\n"
 
 #: src/session.c:1203
 msgid "  Yes, Log Out  "
-msgstr "  ¿¹, ·Î±×¾Æ¿ô  "
+msgstr "  ì˜ˆ, ë¡œê·¸ì•„ì›ƒ  "
 
 #: src/session.c:1204
 msgid "  No  "
-msgstr "  ¾Æ´Ï¿À  "
+msgstr "  ì•„ë‹ˆì˜¤  "
 
 #: src/settings.c:94 src/settings.c:219
 msgid "Pager scanning speed:"
-msgstr "ÆäÀÌÀú ½ºÄ³´× ¼Óµµ:"
+msgstr "í˜ì´ì € ìŠ¤ìºë‹ ì†ë„:"
 
 #: src/settings.c:95 src/settings.c:220
 msgid "lines per second"
-msgstr "ÃÊ´ç ÁÙ¼ö"
+msgstr "ì´ˆë‹¹ ì¤„ìˆ˜"
 
 #: src/settings.c:133
 msgid "Pager Settings"
-msgstr "ÆäÀÌÀú ¼³Á¤"
+msgstr "í˜ì´ì € ì„¤ì •"
 
 #: src/settings.c:148
 msgid ""
 "Enlightenment Desktop & Area\n"
 "Pager Settings Dialog\n"
 msgstr ""
-"ÀÎ¶óÀÌÆ°¸ÕÆ® µ¥½ºÅ©Å¾°ú ¿µ¿ª\n"
-"ÆäÀÌÀú ¼³Á¤ ´ëÈ­»óÀÚ\n"
+"ì¸ë¼ì´íŠ¼ë¨¼íŠ¸ ë°ìŠ¤í¬íƒ‘ê³¼ ì˜ì—­\n"
+"í˜ì´ì € ì„¤ì • ëŒ€í™”ìƒì\n"
 
 #: src/settings.c:162
 msgid "Enable pager display"
-msgstr "ÆäÀÌÀú Ç¥½Ã °¡´É"
+msgstr "í˜ì´ì € í‘œì‹œ ê°€ëŠ¥"
 
 #: src/settings.c:171
 msgid "Make miniature snapshots of the screen"
-msgstr "Ãà¼ÒµÈ È­¸éÀÇ ½º³À¼¦ ¸¸µé±â"
+msgstr "ì¶•ì†Œëœ í™”ë©´ì˜ ìŠ¤ëƒ…ìƒ· ë§Œë“¤ê¸°"
 
 #: src/settings.c:181
 msgid "Smooth high quality snapshots in snapshot mode"
-msgstr "½º³À¼¦ ¸ğµå¿¡¼­ ºÎµå·¯¿î °íÇØ»óµµ ½º³À¼¦"
+msgstr "ìŠ¤ëƒ…ìƒ· ëª¨ë“œì—ì„œ ë¶€ë“œëŸ¬ìš´ ê³ í•´ìƒë„ ìŠ¤ëƒ…ìƒ·"
 
 #: src/settings.c:191
 msgid "Zoom in on pager windows when mouse is over them"
-msgstr "¸¶¿ì½º°¡ ÆäÀÌÀú ¾ÈÀÇ Ã¢ À§¿¡ ÀÖÀ» ¶§ ±× Ã¢ È®´ë"
+msgstr "ë§ˆìš°ìŠ¤ê°€ í˜ì´ì € ì•ˆì˜ ì°½ ìœ„ì— ìˆì„ ë•Œ ê·¸ ì°½ í™•ëŒ€"
 
 #: src/settings.c:201
 msgid "Pop up window title when mouse is over the window"
-msgstr "¸¶¿ì½º°¡ ÆäÀÌÀú ¾ÈÀÇ Ã¢ À§¿¡ ÀÖÀ» ¶§ ±× Ã¢ Á¦¸ñ º¸¿©ÁÖ±â"
+msgstr "ë§ˆìš°ìŠ¤ê°€ í˜ì´ì € ì•ˆì˜ ì°½ ìœ„ì— ìˆì„ ë•Œ ê·¸ ì°½ ì œëª© ë³´ì—¬ì£¼ê¸°"
 
 #: src/settings.c:210
 msgid "Continuously scan screen to update pager"
-msgstr "ÆäÀÌÀú¸¦ °»½ÅÇÏ±â À§ÇØ ¿¬¼ÓÀûÀ¸·Î È­¸é ½ºÄµ"
+msgstr "í˜ì´ì €ë¥¼ ê°±ì‹ í•˜ê¸° ìœ„í•´ ì—°ì†ì ìœ¼ë¡œ í™”ë©´ ìŠ¤ìº”"
 
 #: src/settings.c:239
 msgid "Mouse button to select and drag windows:"
-msgstr "Ã¢À» ¼±ÅÃÇÏ°í ²ø±â À§ÇÑ ¸¶¿ì½º ¹öÆ°:"
+msgstr "ì°½ì„ ì„ íƒí•˜ê³  ëŒê¸° ìœ„í•œ ë§ˆìš°ìŠ¤ ë²„íŠ¼:"
 
 #: src/settings.c:245 src/settings.c:277 src/settings.c:309
 #: src/settings.c:2272
 msgid "Left"
-msgstr "¿ŞÂÊ"
+msgstr "ì™¼ìª½"
 
 #: src/settings.c:253 src/settings.c:285 src/settings.c:317
 msgid "Middle"
-msgstr "Áß°£"
+msgstr "ì¤‘ê°„"
 
 #: src/settings.c:261 src/settings.c:293 src/settings.c:325
 #: src/settings.c:2279
 msgid "Right"
-msgstr "¿À¸¥ÂÊ"
+msgstr "ì˜¤ë¥¸ìª½"
 
 #: src/settings.c:271
 msgid "Mouse button to select desktops:"
-msgstr "µ¥½ºÅ©Å¾À» ¼±ÅÃÇÒ ¸¶¿ì½º ¹öÆ°"
+msgstr "ë°ìŠ¤í¬íƒ‘ì„ ì„ íƒí•  ë§ˆìš°ìŠ¤ ë²„íŠ¼"
 
 #: src/settings.c:303
 msgid "Mouse button to display pager menu:"
-msgstr "ÆäÀÌÀú ¸Ş´º¸¦ Ç¥½ÃÇÒ ¸¶¿ì½º ¹öÆ°:"
+msgstr "í˜ì´ì € ë©”ë‰´ë¥¼ í‘œì‹œí•  ë§ˆìš°ìŠ¤ ë²„íŠ¼:"
 
 #: src/settings.c:337 src/settings.c:610 src/settings.c:981
 #: src/settings.c:1204 src/settings.c:1440 src/settings.c:1593
@@ -1632,175 +1652,174 @@ msgstr "ÆäÀÌÀú ¸Ş´º¸¦ Ç¥½ÃÇÒ ¸¶¿ì½º ¹öÆ°:"
 #: src/settings.c:3907 src/settings.c:4263 src/settings.c:4564
 #: src/settings.c:4741 src/settings.c:4959 src/snaps.c:571
 msgid "Apply"
-msgstr "Àû¿ë"
+msgstr "ì ìš©"
 
 #: src/settings.c:423
 msgid "Focus Settings"
-msgstr "Æ÷Ä¿½º ¼³Á¤"
+msgstr "í¬ì»¤ìŠ¤ ì„¤ì •"
 
 #: src/settings.c:438
 msgid ""
 "Enlightenment Focus\n"
 "Settings Dialog\n"
 msgstr ""
-"ÀÎ¶óÀÌÆ°¸ÕÆ® Æ÷Ä¿½º\n"
-"¼³Á¤ ´ëÈ­»óÀÚ\n"
+"ì¸ë¼ì´íŠ¼ë¨¼íŠ¸ í¬ì»¤ìŠ¤\n"
+"ì„¤ì • ëŒ€í™”ìƒì\n"
 
 #: src/settings.c:451
 msgid "Focus follows pointer"
-msgstr "Æ÷Ä¿½º°¡ Æ÷ÀÎÅÍ µû¶ó°¨"
+msgstr "í¬ì»¤ìŠ¤ê°€ í¬ì¸í„° ë”°ë¼ê°"
 
 #: src/settings.c:459
 msgid "Focus follows pointer sloppily"
-msgstr "Æ÷Ä¿½º°¡ Æ÷ÀÎÅÍ¸¦ Àû´çÈ÷ µû¶ó°¨"
+msgstr "í¬ì»¤ìŠ¤ê°€ í¬ì¸í„°ë¥¼ ì ë‹¹íˆ ë”°ë¼ê°"
 
 #: src/settings.c:467
 msgid "Focus follows mouse clicks"
-msgstr "Æ÷Ä¿½º°¡ ¸¶¿ì½º Å¬¸¯À» µû¶ó°¨"
+msgstr "í¬ì»¤ìŠ¤ê°€ ë§ˆìš°ìŠ¤ í´ë¦­ì„ ë”°ë¼ê°"
 
 #: src/settings.c:482
 msgid "Clicking in a window always raises it"
-msgstr "Ã¢¾È¿¡¼­ Å¬¸¯ÇÏ¸é Ç×»ó Ã¢À» À§·Î ¿Ã¸²"
+msgstr "ì°½ì•ˆì—ì„œ í´ë¦­í•˜ë©´ í•­ìƒ ì°½ì„ ìœ„ë¡œ ì˜¬ë¦¼"
 
 #: src/settings.c:496
 msgid "All new windows first get the focus"
-msgstr "¸ğµç »õ·Î¿î Ã¢ÀÌ ¸ÕÀú Æ÷Ä¿½º¸¦ °¡Áü"
+msgstr "ëª¨ë“  ìƒˆë¡œìš´ ì°½ì´ ë¨¼ì € í¬ì»¤ìŠ¤ë¥¼ ê°€ì§"
 
 #: src/settings.c:504
 msgid "Only new dialog windows get the focus"
-msgstr "¿ÀÁ÷ »õ·Î¿î ´ëÈ­»óÀÚ Ã¢¸¸ Æ÷Ä¿½º °¡Áü"
+msgstr "ì˜¤ì§ ìƒˆë¡œìš´ ëŒ€í™”ìƒì ì°½ë§Œ í¬ì»¤ìŠ¤ ê°€ì§"
 
 #: src/settings.c:514
 msgid "Only new dialogs whose owner is focused get the focus"
-msgstr "¿ÀÁ÷ Æ÷Ä¿½º¸¦ °¡Áø Ã¢ÀÇ »õ·Î¿î ´ëÈ­»óÀÚ¸¸ Æ÷Ä¿½º °¡Áü"
+msgstr "ì˜¤ì§ í¬ì»¤ìŠ¤ë¥¼ ê°€ì§„ ì°½ì˜ ìƒˆë¡œìš´ ëŒ€í™”ìƒìë§Œ í¬ì»¤ìŠ¤ ê°€ì§"
 
 #: src/settings.c:522
 msgid "Raise windows on focus switch"
-msgstr "Æ÷Ä¿½º°¡ ¹Ù²ğ ¶§ Ã¢ ¿Ã¸®±â"
+msgstr "í¬ì»¤ìŠ¤ê°€ ë°”ë€” ë•Œ ì°½ ì˜¬ë¦¬ê¸°"
 
 #: src/settings.c:532
 msgid "Send mouse pointer to window on focus switch"
-msgstr "Æ÷Ä¿½º°¡ ¹Ù²ğ ¶§ ¸¶¿ì½º Æ÷ÀÎÅÍ¸¦ ±× Ã¢À¸·Î º¸³¿"
+msgstr "í¬ì»¤ìŠ¤ê°€ ë°”ë€” ë•Œ ë§ˆìš°ìŠ¤ í¬ì¸í„°ë¥¼ ê·¸ ì°½ìœ¼ë¡œ ë³´ëƒ„"
 
 #: src/settings.c:547
 msgid "Display and use focus list"
-msgstr "Æ÷Ä¿½º ¸ñ·ÏÀ» Ç¥½ÃÇÏ°í »ç¿ë"
+msgstr "í¬ì»¤ìŠ¤ ëª©ë¡ì„ í‘œì‹œí•˜ê³  ì‚¬ìš©"
 
 #: src/settings.c:555
 msgid "Include sticky windows in focus list"
-msgstr "Æ÷Ä¿½º ¸ñ·Ï¿¡ ½ºÆ½Å° Ã¢ Æ÷ÇÔ"
+msgstr "í¬ì»¤ìŠ¤ ëª©ë¡ì— ìŠ¤í‹±í‚¤ ì°½ í¬í•¨"
 
 #: src/settings.c:563
 msgid "Include shaded windows in focus list"
-msgstr "Æ÷Ä¿½º ¸ñ·Ï¿¡ À½¿µ Ã¢ Æ÷ÇÔ"
+msgstr "í¬ì»¤ìŠ¤ ëª©ë¡ì— ìŒì˜ ì°½ í¬í•¨"
 
 #: src/settings.c:572
 msgid "Include iconified windows in focus list"
-msgstr "Æ÷Ä¿½º ¸ñ·Ï¿¡ ¾ÆÀÌÄÜ Ã¢ Æ÷ÇÔ"
+msgstr "í¬ì»¤ìŠ¤ ëª©ë¡ì— ì•„ì´ì½˜ ì°½ í¬í•¨"
 
 #: src/settings.c:580
 msgid "Focus windows while switching"
-msgstr "¹Ù²Ù´Â µ¿¾È¿¡ Ã¢ Æ÷Ä¿½º"
+msgstr "ë°”ê¾¸ëŠ” ë™ì•ˆì— ì°½ í¬ì»¤ìŠ¤"
 
 #: src/settings.c:588
 msgid "Raise windows after focus switch"
-msgstr "Æ÷Ä¿½º°¡ ¹Ù²ï ÈÄ¿¡ Ã¢ ¿Ã¸®±â"
+msgstr "í¬ì»¤ìŠ¤ê°€ ë°”ë€ í›„ì— ì°½ ì˜¬ë¦¬ê¸°"
 
 #: src/settings.c:598
 msgid "Send mouse pointer to window after focus switch"
-msgstr "Æ÷Ä¿½º°¡ ¹Ù²ï ÈÄ ¸¶¿ì½º Æ÷ÀÎÅÍ¸¦ ±× Ã¢À¸·Î º¸³¿"
+msgstr "í¬ì»¤ìŠ¤ê°€ ë°”ë€ í›„ ë§ˆìš°ìŠ¤ í¬ì¸í„°ë¥¼ ê·¸ ì°½ìœ¼ë¡œ ë³´ëƒ„"
 
 #: src/settings.c:807
 msgid "Move & Resize Settings"
-msgstr "ÀÌµ¿°ú Å©±âÁ¶Á¤ ¼³Á¤"
+msgstr "ì´ë™ê³¼ í¬ê¸°ì¡°ì • ì„¤ì •"
 
 #: src/settings.c:822
 msgid ""
 "Enlightenment Move & Resize\n"
 "Method Settings Dialog\n"
 msgstr ""
-"ÀÎ¶óÀÌÆ°¸ÕÆ® ÀÌµ¿°ú Å©±âÁ¶Á¤\n"
-"¹æ¹ı ¼³Á¤ ´ëÈ­»óÀÚ\n"
+"ì¸ë¼ì´íŠ¼ë¨¼íŠ¸ ì´ë™ê³¼ í¬ê¸°ì¡°ì •\n"
+"ë°©ë²• ì„¤ì • ëŒ€í™”ìƒì\n"
 
 #: src/settings.c:836
 msgid "Move Methods:"
-msgstr "ÀÌµ¿ ¹æ¹ı:"
+msgstr "ì´ë™ ë°©ë²•:"
 
 #: src/settings.c:842
 msgid "Resize Methods:"
-msgstr "Å©±âÁ¶Á¤ ¹æ¹ı:"
+msgstr "í¬ê¸°ì¡°ì • ë°©ë²•:"
 
 #: src/settings.c:847 src/settings.c:855 src/settings.c:2133
 #: src/settings.c:3324
 msgid "Opaque"
-msgstr "ºÒÅõ¸í"
+msgstr "ë¶ˆíˆ¬ëª…"
 
 #: src/settings.c:863 src/settings.c:871 src/settings.c:2148
 msgid "Technical"
-msgstr "°ø¿¹"
+msgstr "ê³µì˜ˆ"
 
 #: src/settings.c:879 src/settings.c:887 src/settings.c:2163
 msgid "Box"
-msgstr "»óÀÚ"
+msgstr "ìƒì"
 
 #: src/settings.c:895 src/settings.c:903 src/settings.c:2178
 msgid "Shaded"
-msgstr "À½¿µ"
+msgstr "ìŒì˜"
 
 #: src/settings.c:911 src/settings.c:919 src/settings.c:2193
 msgid "Semi-Solid"
-msgstr "¹İ°íÃ¼"
+msgstr "ë°˜ê³ ì²´"
 
 #: src/settings.c:928
 msgid "Translucent"
-msgstr "¹İÅõ¸í"
+msgstr "ë°˜íˆ¬ëª…"
 
 #: src/settings.c:947
 msgid "Move/Resize Geometry Info Postion:"
-msgstr ""
+msgstr "ì´ë™/í¬ê¸°ë³€ê²½ ìœ„ì¹˜ ì •ë³´:"
 
 #: src/settings.c:953
 msgid "Window Center (O/T/B Methods)"
-msgstr ""
+msgstr "í™”ë©´ ê°€ìš´ë° (O/T/B ë©”ì†Œë“œ)"
 
 #: src/settings.c:961
 msgid "Always Screen corner"
-msgstr ""
+msgstr "í•­ìƒ í™”ë©´ì˜ ê°€ì¥ìë¦¬"
 
 #: src/settings.c:969
 msgid "Don't show"
-msgstr ""
+msgstr "ë³´ì´ì§€ ì•ŠìŒ"
 
 #: src/settings.c:1098 src/settings.c:1161
 #, c-format
 msgid "%i Desktops"
-msgstr "%i µ¥½ºÅ©Å¾"
+msgstr "%i ë°ìŠ¤í¬íƒ‘"
 
 #: src/settings.c:1100 src/settings.c:1163
 #, c-format
 msgid "%i Desktop"
-msgstr "%i µ¥½ºÅ©Å¾"
+msgstr "%i ë°ìŠ¤í¬íƒ‘"
 
 #: src/settings.c:1125
 msgid "Multiple Desktop Settings"
-msgstr "¿©·¯ µ¥½ºÅ©Å¾ ¼³Á¤"
+msgstr "ì—¬ëŸ¬ ë°ìŠ¤í¬íƒ‘ ì„¤ì •"
 
 #: src/settings.c:1140
 msgid ""
 "Enlightenment Multiple Desktop\n"
 "Settings Dialog\n"
 msgstr ""
-"ÀÎ¶óÀÌÆ°¸ÕÆ® ¿©·¯ µ¥½ºÅ©Å¾\n"
-"¼³Á¤ ´ëÈ­»óÀÚ\n"
+"ì¸ë¼ì´íŠ¼ë¨¼íŠ¸ ì—¬ëŸ¬ ë°ìŠ¤í¬íƒ‘\n"
+"ì„¤ì • ëŒ€í™”ìƒì\n"
 
 #: src/settings.c:1154
 msgid "Number of virtual desktops:\n"
-msgstr "°¡»ó µ¥½ºÅ©Å¾ ¼ö:\n"
+msgstr "ê°€ìƒ ë°ìŠ¤í¬íƒ‘ ìˆ˜:\n"
 
 #: src/settings.c:1193
-#, fuzzy
 msgid "Wrap desktops around"
-msgstr "°¡»ó µ¥½ºÅ©Å¾ ÁÖº¯À» °ãÄ¡±â"
+msgstr "ê°€ìƒ ë°ìŠ¤í¬íƒ‘ ì´ë™ì„ ë°˜ë³µ"
 
 #: src/settings.c:1291 src/settings.c:1360
 #, c-format
@@ -1809,7 +1828,7 @@ msgid ""
 "Screens in size"
 msgstr ""
 "%i x %i\n"
-"È­¸é Å©±â"
+"í™”ë©´ í¬ê¸°"
 
 #: src/settings.c:1294 src/settings.c:1363
 msgid ""
@@ -1817,264 +1836,260 @@ msgid ""
 "Screen in size"
 msgstr ""
 "1\n"
-"È­¸é Å©±â"
+"í™”ë©´ í¬ê¸°"
 
 #: src/settings.c:1324
 msgid "Virtual Desktop Settings"
-msgstr "°¡»ó µ¥½ºÅ©Å¾ ¼³Á¤"
+msgstr "ê°€ìƒ ë°ìŠ¤í¬íƒ‘ ì„¤ì •"
 
 #: src/settings.c:1342
 msgid ""
 "Enlightenment Virtual Desktop\n"
 "Settings Dialog\n"
 msgstr ""
-"ÀÎ¶óÀÌÆ°¸ÕÆ® °¡»ó µ¥½ºÅ©Å¾\n"
-"¼³Á¤ ´ëÈ­»óÀÚ\n"
+"ì¸ë¼ì´íŠ¼ë¨¼íŠ¸ ê°€ìƒ ë°ìŠ¤í¬íƒ‘\n"
+"ì„¤ì • ëŒ€í™”ìƒì\n"
 
 #: src/settings.c:1354
 msgid "Virtual Desktop size:\n"
-msgstr "°¡»ó µ¥½ºÅ©Å¾ Å©±â:\n"
+msgstr "ê°€ìƒ ë°ìŠ¤í¬íƒ‘ í¬ê¸°:\n"
 
 #: src/settings.c:1408
 msgid "Wrap virtual desktops around"
-msgstr "°¡»ó µ¥½ºÅ©Å¾ ÁÖº¯À» °ãÄ¡±â"
+msgstr "ê°€ìƒ ë°ìŠ¤í¬íƒ‘ ì£¼ë³€ì„ ê²¹ì¹˜ê¸°"
 
 #: src/settings.c:1415
 msgid "Enable edge flip"
-msgstr "¿¡Áö ÇÃ¸³ »ç¿ë"
+msgstr "ì—ì§€ í”Œë¦½ ì‚¬ìš©"
 
 #: src/settings.c:1422
 msgid "Resistance at edge of screen:\n"
-msgstr "½ºÅ©¸° º¯µÎ¸®¿¡¼­ÀÇ ÀúÇ×°¨:\n"
+msgstr "ìŠ¤í¬ë¦° ë³€ë‘ë¦¬ì—ì„œì˜ ì €í•­ê°:\n"
 
 #: src/settings.c:1503
 msgid "Window Placement Settings"
-msgstr "Ã¢ ¹èÄ¡ ¼³Á¤"
+msgstr "ì°½ ë°°ì¹˜ ì„¤ì •"
 
 #: src/settings.c:1518
 msgid ""
 "Enlightenment Window Placement\n"
 "Settings Dialog\n"
 msgstr ""
-"ÀÎ¶óÀÌÆ°¸ÕÆ® Ã¢ À§Ä¡\n"
-"¼³Á¤ ´ëÈ­»óÀÚ\n"
+"ì¸ë¼ì´íŠ¼ë¨¼íŠ¸ ì°½ ìœ„ì¹˜\n"
+"ì„¤ì • ëŒ€í™”ìƒì\n"
 
 #: src/settings.c:1534
 msgid "Dialog windows appear together with their owner"
-msgstr "´ëÈ­»óÀÚ´Â ±× ¼ÒÀ¯ÀÚ¿Í ÇÔ²² ³ªÅ¸³²"
+msgstr "ëŒ€í™”ìƒìëŠ” ê·¸ ì†Œìœ ìì™€ í•¨ê»˜ ë‚˜íƒ€ë‚¨"
 
 #: src/settings.c:1543
 msgid "Switch to desktop where dialog appears"
-msgstr "´ëÈ­»óÀÚ°¡ ³ªÅ¸³­ µ¥½ºÅ©Å¾À¸·Î ÀüÈ¯"
+msgstr "ëŒ€í™”ìƒìê°€ ë‚˜íƒ€ë‚œ ë°ìŠ¤í¬íƒ‘ìœ¼ë¡œ ì „í™˜"
 
 #: src/settings.c:1551
 msgid "Place windows manually"
-msgstr "Ã¢À» ¼öµ¿À¸·Î ¹èÄ¡"
+msgstr "ì°½ì„ ìˆ˜ë™ìœ¼ë¡œ ë°°ì¹˜"
 
 #: src/settings.c:1559
-#, fuzzy
 msgid "Place windows under mouse"
-msgstr "Ã¢À» ¼öµ¿À¸·Î ¹èÄ¡"
+msgstr "ì°½ì„ ë§ˆìš°ìŠ¤ ì•„ë˜ì— ë°°ì¹˜"
 
 #: src/settings.c:1567
-#, fuzzy
 msgid "Ignore struts"
-msgstr "¹«½Ã"
+msgstr "ë¬´ì‹œ"
 
 #: src/settings.c:1580
-#, fuzzy
 msgid "Place windows on another head when full"
-msgstr "Ã¢À» ¼öµ¿À¸·Î ¹èÄ¡"
+msgstr "ë‹¤ë¥¸ì°½ ë³´ë‹¤ ìœ„ì— ë°°ì¹˜"
 
 #: src/settings.c:1640
 msgid "Autoraise Settings"
-msgstr "ÀÚµ¿¿Ã¸®±â ¼³Á¤"
+msgstr "ìë™ì˜¬ë¦¬ê¸° ì„¤ì •"
 
 #: src/settings.c:1655
 msgid ""
 "Enlightenment Automatic Raising\n"
 "of Windows Settings Dialog\n"
 msgstr ""
-"ÀÎ¶óÀÌÆ°¸ÕÆ® Ã¢ ÀÚµ¿ ¿Ã¸®±â\n"
-"¼³Á¤ ´ëÈ­»óÀÚ\n"
+"ì¸ë¼ì´íŠ¼ë¨¼íŠ¸ ì°½ ìë™ ì˜¬ë¦¬ê¸°\n"
+"ì„¤ì • ëŒ€í™”ìƒì\n"
 
 #: src/settings.c:1669
 msgid "Raise Windows Automatically"
-msgstr "Ã¢À» ÀÚµ¿À¸·Î ¿Ã¸®±â"
+msgstr "ì°½ì„ ìë™ìœ¼ë¡œ ì˜¬ë¦¬ê¸°"
 
 #: src/settings.c:1677
 msgid "Autoraise delay:"
-msgstr "ÀÚµ¿¿Ã¸®±â Áö¿¬:"
+msgstr "ìë™ì˜¬ë¦¬ê¸° ì§€ì—°:"
 
 #: src/settings.c:1740
 msgid "Tooltip Settings"
-msgstr "ÅøÆÁ ¼³Á¤"
+msgstr "íˆ´íŒ ì„¤ì •"
 
 #: src/settings.c:1755
 msgid ""
 "Enlightenment Tooltip\n"
 "Settings Dialog\n"
 msgstr ""
-"ÀÎ¶óÀÌÆ°¸ÕÆ® ÅøÆÁ\n"
-"¼³Á¤ ´ëÈ­»óÀÚ\n"
+"ì¸ë¼ì´íŠ¼ë¨¼íŠ¸ íˆ´íŒ\n"
+"ì„¤ì • ëŒ€í™”ìƒì\n"
 
 #: src/settings.c:1768
 msgid "Display Tooltips"
-msgstr "ÅøÆÁ Ç¥½Ã"
+msgstr "íˆ´íŒ í‘œì‹œ"
 
 #: src/settings.c:1776
 msgid "Display Root Window Tips"
-msgstr "·çÆ® Ã¢ ÆÁ Ç¥½Ã"
+msgstr "ë£¨íŠ¸ ì°½ íŒ í‘œì‹œ"
 
 #: src/settings.c:1784
 msgid "Tooltip Delay:\n"
-msgstr "ÅøÆÁ Áö¿¬:\n"
+msgstr "íˆ´íŒ ì§€ì—°:\n"
 
 #: src/settings.c:1841
 msgid "Miscellaneous Settings"
-msgstr "±âÅ¸ ¼³Á¤"
+msgstr "ê¸°íƒ€ ì„¤ì •"
 
 #: src/settings.c:1856
 msgid ""
 "Enlightenment Miscellaneous\n"
 "Settings Dialog\n"
 msgstr ""
-"ÀÎ¶óÀÌÆ°¸ÕÆ® ±âÅ¸\n"
-"¼³Á¤ ´ëÈ­»óÀÚ\n"
+"ì¸ë¼ì´íŠ¼ë¨¼íŠ¸ ê¸°íƒ€\n"
+"ì„¤ì • ëŒ€í™”ìƒì\n"
 
 #: src/settings.c:1870
 msgid "Enable Dialog Headers"
-msgstr "´ëÈ­»óÀÚ ¸Ó¸® »ç¿ë"
+msgstr "ëŒ€í™”ìƒì ë¨¸ë¦¬ ì‚¬ìš©"
 
 #: src/settings.c:1923
 msgid "Audio Settings"
-msgstr "¿Àµğ¿À ¼³Á¤"
+msgstr "ì˜¤ë””ì˜¤ ì„¤ì •"
 
 #: src/settings.c:1938
 msgid ""
 "Enlightenment Audio\n"
 "Settings Dialog\n"
 msgstr ""
-"ÀÎ¶óÀÌÆ°¸ÕÆ® ¿Àµğ¿À\n"
-"¼³Á¤ ´ëÈ­»óÀÚ\n"
+"ì¸ë¼ì´íŠ¼ë¨¼íŠ¸ ì˜¤ë””ì˜¤\n"
+"ì„¤ì • ëŒ€í™”ìƒì\n"
 
 #: src/settings.c:1951
 msgid "Enable sounds"
-msgstr "»ç¿îµå »ç¿ë"
+msgstr "ì‚¬ìš´ë“œ ì‚¬ìš©"
 
 #: src/settings.c:1960
 msgid ""
 "Audio not available since EsounD was not\n"
 "present at the time of compilation."
 msgstr ""
-"ÄÄÆÄÀÏ ´ç½Ã EsounD°¡ ¾ø¾ú±â ¶§¹®¿¡\n"
-"¿Àµğ¿À´Â »ç¿ëÇÒ ¼ö ¾ø½À´Ï´Ù."
+"ì»´íŒŒì¼ ë‹¹ì‹œ EsounDê°€ ì—†ì—ˆê¸° ë•Œë¬¸ì—\n"
+"ì˜¤ë””ì˜¤ëŠ” ì‚¬ìš©í•  ìˆ˜ ì—†ìŠµë‹ˆë‹¤."
 
 #: src/settings.c:2082
 msgid "Special FX Settings"
-msgstr "Æ¯¼öÈ¿°ú ¼³Á¤"
+msgstr "íŠ¹ìˆ˜íš¨ê³¼ ì„¤ì •"
 
 #: src/settings.c:2097
 msgid ""
 "Enlightenment Special Effects\n"
 "Settings Dialog\n"
 msgstr ""
-"ÀÎ¶óÀÌÆ°¸ÕÆ® Æ¯¼ö È¿°ú\n"
-"¼³Á¤ ´ëÈ­»óÀÚ\n"
+"ì¸ë¼ì´íŠ¼ë¨¼íŠ¸ íŠ¹ìˆ˜ íš¨ê³¼\n"
+"ì„¤ì • ëŒ€í™”ìƒì\n"
 
 #: src/settings.c:2120
 msgid "Slide Method:"
-msgstr "¹Ì²ô·¯Áü ¹æ¹ı:"
+msgstr "ë¯¸ë„ëŸ¬ì§ ë°©ë²•:"
 
 #: src/settings.c:2126
 msgid "Slide desktops around when changing"
-msgstr "µ¥½ºÅ©Å¾ ¹Ù²Ü ¶§ ¹Ì²ô·¯Áü"
+msgstr "ë°ìŠ¤í¬íƒ‘ ë°”ê¿€ ë•Œ ë¯¸ë„ëŸ¬ì§"
 
 #: src/settings.c:2141
 msgid "Slide windows around when cleaning up"
-msgstr "±ú²ıÇÏ°Ô ÇÒ ¶§ Ã¢ ¹Ì²ô·¯Áü"
+msgstr "ê¹¨ë—í•˜ê²Œ í•  ë•Œ ì°½ ë¯¸ë„ëŸ¬ì§"
 
 #: src/settings.c:2156
 msgid "Slide windows in when they appear"
-msgstr "Ã¢ÀÌ ³ªÅ¸³¯ ¶§ ¹Ì²ô·¯Áü"
+msgstr "ì°½ì´ ë‚˜íƒ€ë‚  ë•Œ ë¯¸ë„ëŸ¬ì§"
 
 #: src/settings.c:2171
 msgid "Animated display of menus"
-msgstr "¸Ş´º Ç¥½Ã ¿¡´Ï¸ŞÀÌÆ®"
+msgstr "ë©”ë‰´ í‘œì‹œ ì—ë‹ˆë©”ì´íŠ¸"
 
 #: src/settings.c:2186
 msgid "Always pop up menus on screen"
-msgstr "Ç×»ó È­¸é¿¡ ¸Ş´º¸¦ ÆË¾÷"
+msgstr "í•­ìƒ í™”ë©´ì— ë©”ë‰´ë¥¼ íŒì—…"
 
 #: src/settings.c:2202
 msgid "Warp pointer after moving menus"
-msgstr "¸Ş´º¸¦ ¿òÁ÷ÀÎ ÈÄ¿¡ Æ÷ÀÎÅÍ µÚÁı±â"
+msgstr "ë©”ë‰´ë¥¼ ì›€ì§ì¸ í›„ì— í¬ì¸í„° ë’¤ì§‘ê¸°"
 
 #: src/settings.c:2211
 msgid "Use saveunders to reduce window exposures"
-msgstr "Ã¢ ³ëÃâÀ» ÁÙÀÌ±â À§ÇØ ¼¼ÀÌºê¾ğ´õ »ç¿ë"
+msgstr "ì°½ ë…¸ì¶œì„ ì¤„ì´ê¸° ìœ„í•´ ì„¸ì´ë¸Œì–¸ë” ì‚¬ìš©"
 
 #: src/settings.c:2220
 msgid "Animate shading and unshading of windows"
-msgstr "Ã¢ Á¢°í ÆîÄ¥ ¶§ ¿¡´Ï¸ŞÀÌÆ®"
+msgstr "ì°½ ì ‘ê³  í¼ì¹  ë•Œ ì—ë‹ˆë©”ì´íŠ¸"
 
 #: src/settings.c:2234
 msgid "Display desktop dragbar"
-msgstr "µ¥½ºÅ©Å¾ ²ø±â¸·´ë Ç¥½Ã"
+msgstr "ë°ìŠ¤í¬íƒ‘ ëŒê¸°ë§‰ëŒ€ í‘œì‹œ"
 
 #: src/settings.c:2243
 msgid "Drag bar position:"
-msgstr "²ø±â¸·´ë À§Ä¡:"
+msgstr "ëŒê¸°ë§‰ëŒ€ ìœ„ì¹˜:"
 
 #: src/settings.c:2254
 msgid "Top"
-msgstr "À§"
+msgstr "ìœ„"
 
 #: src/settings.c:2261
 msgid "Bottom"
-msgstr "¾Æ·¡"
+msgstr "ì•„ë˜"
 
 #: src/settings.c:2298
 msgid "Desktop Slide speed: (slow)\n"
-msgstr "µ¥½ºÅ©Å¾ ¹Ì²ô·¯Áü ¼Óµµ: (´À¸²)\n"
+msgstr "ë°ìŠ¤í¬íƒ‘ ë¯¸ë„ëŸ¬ì§ ì†ë„: (ëŠë¦¼)\n"
 
 #: src/settings.c:2314 src/settings.c:2336 src/settings.c:2358
 #: src/settings.c:2380
 msgid "(fast)\n"
-msgstr "(ºü¸§)\n"
+msgstr "(ë¹ ë¦„)\n"
 
 #: src/settings.c:2320
 msgid "Cleanup Slide speed: (slow)\n"
-msgstr "Ã»¼Ò ¹Ì²ô·¯Áü ¼Óµµ: (´À¸²)\n"
+msgstr "ì²­ì†Œ ë¯¸ë„ëŸ¬ì§ ì†ë„: (ëŠë¦¼)\n"
 
 #: src/settings.c:2342
 msgid "Appear Slide speed: (slow)\n"
-msgstr "³ªÅ¸³² ¹Ì²ô·¯Áü ¼Óµµ: (´À¸²)\n"
+msgstr "ë‚˜íƒ€ë‚¨ ë¯¸ë„ëŸ¬ì§ ì†ë„: (ëŠë¦¼)\n"
 
 #: src/settings.c:2364
 msgid "Window Shading speed: (slow)\n"
-msgstr "Ã¢ Á¢±â ¼Óµµ: (´À¸²)\n"
+msgstr "ì°½ ì ‘ê¸° ì†ë„: (ëŠë¦¼)\n"
 
 #: src/settings.c:2393
 msgid "Effects"
-msgstr ""
+msgstr "íš¨ê³¼"
 
 #: src/settings.c:2399
-#, fuzzy
 msgid "Enable Effect: Raindrops"
-msgstr "·¹ÀÎµå·ÓÀ» Ç¥½ÃÇÒ ¼ö ¾ø½À´Ï´Ù"
+msgstr "íš¨ê³¼ ì‚¬ìš©: ë¹—ë°©ìš¸"
 
 #: src/settings.c:2406
 msgid "Ripples"
-msgstr ""
+msgstr "ì”ë¬¼ê²°"
 
 #: src/settings.c:2414
 msgid "Waves"
-msgstr ""
+msgstr "ë¬¼ê²°"
 
 #: src/settings.c:2624 src/settings.c:3855
 msgid "-NONE-"
-msgstr "-¾øÀ½-"
+msgstr "-ì—†ìŒ-"
 
 #: src/settings.c:2626 src/settings.c:3857
 #, c-format
@@ -2083,138 +2098,131 @@ msgid ""
 "Name: %s\n"
 "File: %s\n"
 msgstr ""
-"¹è°æ Á¤ÀÇ Á¤º¸:\n"
-"ÀÌ¸§: %s\n"
-"ÆÄÀÏ: %s\n"
+"ë°°ê²½ ì •ì˜ ì •ë³´:\n"
+"ì´ë¦„: %s\n"
+"íŒŒì¼: %s\n"
 
 #: src/settings.c:2847 src/settings.c:2849
 msgid ""
 "No\n"
 "Background"
 msgstr ""
-"¹è°æ\n"
-"¾øÀ½"
+"ë°°ê²½\n"
+"ì—†ìŒ"
 
 #: src/settings.c:2980 src/settings.c:3746
 #, c-format
 msgid "Unused backgrounds freed after %2i:%02i:%02i"
-msgstr "»ç¿ëµÇÁö ¾Ê´Â ¹è°æÀº %2i:%2i:%2iÈÄ¿¡ ÇØÁ¦"
+msgstr "ì‚¬ìš©ë˜ì§€ ì•ŠëŠ” ë°°ê²½ì€ %2i:%2i:%2ií›„ì— í•´ì œ"
 
 #: src/settings.c:3194 src/settings.c:3875
 #, c-format
 msgid "Theme transparency: %2d"
-msgstr ""
+msgstr "í…Œë§ˆ íˆ¬ëª…ë„: %2d"
 
 #: src/settings.c:3238
 msgid "Selective Transparency Settings"
-msgstr ""
+msgstr "í…Œë§ˆ íˆ¬ëª…ë„ ì„¤ì •"
 
 #: src/settings.c:3250
-#, fuzzy
 msgid ""
 "Enlightenment Selective Transparency\n"
 "Settings Dialog\n"
 msgstr ""
-"ÀÎ¶óÀÌÆ°¸ÕÆ® ÅøÆÁ\n"
-"¼³Á¤ ´ëÈ­»óÀÚ\n"
+"ì¸ë¼ì´íŠ¼ë¨¼íŠ¸ í…Œë§ˆ íˆ¬ëª…ë„ ì„¤ì •\n"
+"ì„¤ì • ëŒ€í™”ìƒì\n"
 
 #: src/settings.c:3264
 msgid "Changes Might Require Restart:"
-msgstr ""
+msgstr "ì„¤ì •ì„ ë³€ê²½í•˜ë ¤ë©´ ì¬ì‹œì‘ í•´ì•¼ í•©ë‹ˆë‹¤:"
 
 #: src/settings.c:3282
-#, fuzzy
 msgid "Borders:"
-msgstr "º¸´õ ½ºÅ¸ÀÏ"
+msgstr "í…Œë‘ë¦¬"
 
 #: src/settings.c:3289
 msgid "Menus:"
-msgstr ""
+msgstr "ë©”ë‰´:"
 
 #: src/settings.c:3296
 msgid "Hilights:"
-msgstr ""
+msgstr "í™œì„±í™”:"
 
 #: src/settings.c:3303
 msgid "E Widgets:"
-msgstr ""
+msgstr "E ìœ„ì ¯:"
 
 #: src/settings.c:3310
 msgid "E Dialogs:"
-msgstr ""
+msgstr "E ëŒ€í™”ìƒì:"
 
 #: src/settings.c:3317
-#, fuzzy
 msgid "Tooltips:"
-msgstr "ÅøÆÁ Áö¿¬:\n"
+msgstr "ë„ì›€ë§:"
 
 #: src/settings.c:3367
-#, fuzzy
 msgid "Background"
-msgstr ""
-"¹è°æ\n"
-"¾øÀ½"
+msgstr "ë°°ê²½í™”ë©´"
 
 #: src/settings.c:3413
-#, fuzzy
 msgid "Glass"
-msgstr "Å¬·¡½º:"
+msgstr "ìœ ë¦¬íš¨ê³¼"
 
 #: src/settings.c:3507
 msgid "Desktop Background Settings"
-msgstr "µ¥½ºÅ©Å¾ ¹è°æ ¼³Á¤"
+msgstr "ë°ìŠ¤í¬íƒ‘ ë°°ê²½ ì„¤ì •"
 
 #: src/settings.c:3523
 msgid ""
 "Enlightenment Desktop\n"
 "Background Settings Dialog\n"
 msgstr ""
-"ÀÎ¶óÀÌÆ°¸ÕÆ® µ¥½ºÅ©Å¾\n"
-"¹è°æ ¼³Á¤ ´ëÈ­»óÀÚ\n"
+"ì¸ë¼ì´íŠ¼ë¨¼íŠ¸ ë°ìŠ¤í¬íƒ‘\n"
+"ë°°ê²½ ì„¤ì • ëŒ€í™”ìƒì\n"
 
 #: src/settings.c:3536
 msgid "BG Colour\n"
-msgstr "¹è°æ »ö\n"
+msgstr "ë°°ê²½ ìƒ‰\n"
 
 #: src/settings.c:3547
 msgid "Move to Front\n"
-msgstr "¾ÕÀ¸·Î ÀÌµ¿\n"
+msgstr "ì•ìœ¼ë¡œ ì´ë™\n"
 
 #: src/settings.c:3554
 msgid "Duplicate\n"
-msgstr "º¹Á¦\n"
+msgstr "ë³µì œ\n"
 
 #: src/settings.c:3560
 msgid "Unlist\n"
-msgstr "¸ñ·Ï¿¡¼­ »èÁ¦\n"
+msgstr "ëª©ë¡ì—ì„œ ì‚­ì œ\n"
 
 #: src/settings.c:3566
 msgid "Delete File\n"
-msgstr "ÆÄÀÏ »èÁ¦\n"
+msgstr "íŒŒì¼ ì‚­ì œ\n"
 
 #: src/settings.c:3575
 msgid "Red:\n"
-msgstr "Àû»ö:\n"
+msgstr "ì ìƒ‰:\n"
 
 #: src/settings.c:3589
 msgid "Use background image"
-msgstr "¹è°æ ÀÌ¹ÌÁö »ç¿ë"
+msgstr "ë°°ê²½ ì´ë¯¸ì§€ ì‚¬ìš©"
 
 #: src/settings.c:3597
 msgid "Green:\n"
-msgstr "³ì»ö:\n"
+msgstr "ë…¹ìƒ‰:\n"
 
 #: src/settings.c:3611
 msgid "Keep aspect on scale"
-msgstr "Å©±âÁ¶Á¤½Ã ¸ğ¾ç À¯Áö"
+msgstr "í¬ê¸°ì¡°ì •ì‹œ ëª¨ì–‘ ìœ ì§€"
 
 #: src/settings.c:3619
 msgid "Blue:\n"
-msgstr "Ã»»ö:\n"
+msgstr "ì²­ìƒ‰:\n"
 
 #: src/settings.c:3633
 msgid "Tile image across background"
-msgstr "¹è°æ¿¡ »ç¿ëÇÒ Å¸ÀÏ ÀÌ¹ÌÁö"
+msgstr "ë°°ê²½ì— ì‚¬ìš©í•  íƒ€ì¼ ì´ë¯¸ì§€"
 
 #: src/settings.c:3649
 msgid ""
@@ -2224,148 +2232,147 @@ msgid ""
 "and\n"
 "Alignment\n"
 msgstr ""
-"¹è°æ\n"
-"ÀÌ¹ÌÁö\n"
-"Å©±âÁ¶Á¤\n"
-"±×¸®°í\n"
-"À§Ä¡Á¶Á¤\n"
+"ë°°ê²½\n"
+"ì´ë¯¸ì§€\n"
+"í¬ê¸°ì¡°ì •\n"
+"ê·¸ë¦¬ê³ \n"
+"ìœ„ì¹˜ì¡°ì •\n"
 
 #: src/settings.c:3730
 msgid "Use dithering in Hi-Colour"
-msgstr "°í»ö»ó¿¡¼­ µğ´õ¸µ »ç¿ë"
+msgstr "ê³ ìƒ‰ìƒì—ì„œ ë””ë”ë§ ì‚¬ìš©"
 
 #: src/settings.c:3737
 msgid "Background overrides theme"
-msgstr "Å×¸¶ÀÇ ¹è°æ »ç¿ë¾ÊÇÔ"
+msgstr "í…Œë§ˆì˜ ë°°ê²½ ì‚¬ìš©ì•Ší•¨"
 
 #: src/settings.c:3793
 msgid "Pre-scan BG's"
-msgstr "¹è°æ ¹Ì¸® ½ºÄµ"
+msgstr "ë°°ê²½ ë¯¸ë¦¬ ìŠ¤ìº”"
 
 #: src/settings.c:3803
 msgid "Sort by File"
-msgstr "ÆÄÀÏ·Î Á¤·Ä"
+msgstr "íŒŒì¼ë¡œ ì •ë ¬"
 
 #: src/settings.c:3809
 msgid "Sort by Attr."
-msgstr "¼Ó¼ºÀ¸·Î Á¤·Ä"
+msgstr "ì†ì„±ìœ¼ë¡œ ì •ë ¬"
 
 #: src/settings.c:3815
 msgid "Sort by Image"
-msgstr "ÀÌ¹ÌÁö·Î Á¤·Ä"
+msgstr "ì´ë¯¸ì§€ë¡œ ì •ë ¬"
 
 #: src/settings.c:3884
-#, fuzzy
 msgid "Advanced Settings\n"
-msgstr "ÆäÀÌÀú ¼³Á¤"
+msgstr "ì„¸ë¶€ ì„¤ì •\n"
 
 #: src/settings.c:4013
 msgid "Iconbox Settings"
-msgstr "¾ÆÀÌÄÜ»óÀÚ ¼³Á¤"
+msgstr "ì•„ì´ì½˜ìƒì ì„¤ì •"
 
 #: src/settings.c:4031
 msgid ""
 "Enlightenment Iconbox\n"
 "Settings Dialog\n"
 msgstr ""
-"ÀÎ¶óÀÌÆ°¸ÕÆ® ¾ÆÀÌÄÜ»óÀÚ\n"
-"¼³Á¤ ´ëÈ­»óÀÚ\n"
+"ì¸ë¼ì´íŠ¼ë¨¼íŠ¸ ì•„ì´ì½˜ìƒì\n"
+"ì„¤ì • ëŒ€í™”ìƒì\n"
 
 #: src/settings.c:4042
 msgid "Transparent background"
-msgstr "Åõ¸í ¹è°æ"
+msgstr "íˆ¬ëª… ë°°ê²½"
 
 #: src/settings.c:4049
 msgid "Hide border around inner Iconbox"
-msgstr "³»ºÎ ¾ÆÀÌÄÜ»óÀÚÀÇ °¡ÀåÀÚ¸® ¼û±â±â"
+msgstr "ë‚´ë¶€ ì•„ì´ì½˜ìƒìì˜ ê°€ì¥ìë¦¬ ìˆ¨ê¸°ê¸°"
 
 #: src/settings.c:4056
 msgid "Show icon names"
-msgstr "¾ÆÀÌÄÜ ÀÌ¸§ º¸¿©ÁÖ±â"
+msgstr "ì•„ì´ì½˜ ì´ë¦„ ë³´ì—¬ì£¼ê¸°"
 
 #: src/settings.c:4063
 msgid "Draw base image behind Icons"
-msgstr "¾ÆÀÌÄÜ µÚ¿¡ ±âº» ÀÌ¹ÌÁö ±×¸®±â"
+msgstr "ì•„ì´ì½˜ ë’¤ì— ê¸°ë³¸ ì´ë¯¸ì§€ ê·¸ë¦¬ê¸°"
 
 #: src/settings.c:4070
 msgid "Hide scrollbar when not needed"
-msgstr "ÇÊ¿ä¾øÀ» ¶§ ½ºÅ©·Ñ¹Ù ¼û±â±â"
+msgstr "í•„ìš”ì—†ì„ ë•Œ ìŠ¤í¬ë¡¤ë°” ìˆ¨ê¸°ê¸°"
 
 #: src/settings.c:4077
 msgid "Automatically resize to fit Icons"
-msgstr "¾ÆÀÌÄÜ¿¡ ¸ÂÃß±â À§ÇØ ÀÚµ¿À¸·Î Å©±âÁ¶Á¤"
+msgstr "ì•„ì´ì½˜ì— ë§ì¶”ê¸° ìœ„í•´ ìë™ìœ¼ë¡œ í¬ê¸°ì¡°ì •"
 
 #: src/settings.c:4085
 msgid "Animate when iconifying to this Iconbox"
-msgstr "ÀÌ ¾ÆÀÌÄÜ»óÀÚ·Î ¾ÆÀÌÄÜÈ­ÇÒ ¶§ ¿¡´Ï¸ŞÀÌÆ®"
+msgstr "ì´ ì•„ì´ì½˜ìƒìë¡œ ì•„ì´ì½˜í™”í•  ë•Œ ì—ë‹ˆë©”ì´íŠ¸"
 
 #: src/settings.c:4095
 msgid "Alignment of anchoring when automatically resizing:"
-msgstr "ÀÚµ¿À¸·Î Å©±âÁ¶Á¤½Ã Á¤·Ä:"
+msgstr "ìë™ìœ¼ë¡œ í¬ê¸°ì¡°ì •ì‹œ ì •ë ¬:"
 
 #: src/settings.c:4117
 msgid "Icon image display policy (if one operation fails, try the next):"
-msgstr "¾ÆÀÌÄÜ ÀÌ¹ÌÁö Ç¥½Ã Á¤Ã¥ (ÇÑ µ¿ÀÛ ½ÇÆĞ½Ã ´ÙÀ½ ½Ãµµ):"
+msgstr "ì•„ì´ì½˜ ì´ë¯¸ì§€ í‘œì‹œ ì •ì±… (í•œ ë™ì‘ ì‹¤íŒ¨ì‹œ ë‹¤ìŒ ì‹œë„):"
 
 #: src/settings.c:4124
 msgid "Snapshot Windows, Use application icon, Use Enlightenment Icon"
-msgstr "Ã¢ ½º³À¼¦, ÀÀ¿ëÇÁ·Î±×·¥ ¾ÆÀÌÄÜ »ç¿ë, ÀÎ¶óÀÌÆ°¸ÕÆ® ¾ÆÀÌÄÜ »ç¿ë"
+msgstr "ì°½ ìŠ¤ëƒ…ìƒ·, ì‘ìš©í”„ë¡œê·¸ë¨ ì•„ì´ì½˜ ì‚¬ìš©, ì¸ë¼ì´íŠ¼ë¨¼íŠ¸ ì•„ì´ì½˜ ì‚¬ìš©"
 
 #: src/settings.c:4133
 msgid "Use application icon, Use Enlightenment Icon, Snapshot Window"
-msgstr "ÀÀ¿ëÇÁ·Î±×·¥ ¾ÆÀÌÄÜ »ç¿ë, ÀÎ¶óÀÌÆ°¸ÕÆ® ¾ÆÀÌÄÜ »ç¿ë, Ã¢ ½º³À¼¦"
+msgstr "ì‘ìš©í”„ë¡œê·¸ë¨ ì•„ì´ì½˜ ì‚¬ìš©, ì¸ë¼ì´íŠ¼ë¨¼íŠ¸ ì•„ì´ì½˜ ì‚¬ìš©, ì°½ ìŠ¤ëƒ…ìƒ·"
 
 #: src/settings.c:4141
 msgid "Use Enlightenment Icon, Snapshot Window"
-msgstr "ÀÎ¶óÀÌÆ°¸ÕÆ® ¾ÆÀÌÄÜ »ç¿ë, Ã¢ ½º³À¼¦"
+msgstr "ì¸ë¼ì´íŠ¼ë¨¼íŠ¸ ì•„ì´ì½˜ ì‚¬ìš©, ì°½ ìŠ¤ëƒ…ìƒ·"
 
 #: src/settings.c:4155
 msgid "Icon size"
-msgstr "¾ÆÀÌÄÜ Å©±â"
+msgstr "ì•„ì´ì½˜ í¬ê¸°"
 
 #: src/settings.c:4178
 msgid "Orientation:"
-msgstr "¹æÀ§:"
+msgstr "ë°©ìœ„:"
 
 #: src/settings.c:4184
 msgid "Scrollbar side:"
-msgstr "½ºÅ©·Ñ¹Ù »çÀÌµå:"
+msgstr "ìŠ¤í¬ë¡¤ë°” ì‚¬ì´ë“œ:"
 
 #: src/settings.c:4190
 msgid "Scrollbar arrows:"
-msgstr "½ºÅ©·Ñ¹Ù ¹æÇâ:"
+msgstr "ìŠ¤í¬ë¡¤ë°” ë°©í–¥:"
 
 #: src/settings.c:4195
 msgid "Horizontal"
-msgstr "¼öÆò"
+msgstr "ìˆ˜í‰"
 
 #: src/settings.c:4202
 msgid "Left / Top"
-msgstr "¿ŞÂÊ / À§"
+msgstr "ì™¼ìª½ / ìœ„"
 
 #: src/settings.c:4209
 msgid "Start"
-msgstr "½ÃÀÛ"
+msgstr "ì‹œì‘"
 
 #: src/settings.c:4216
 msgid "Vertical"
-msgstr "¼öÁ÷"
+msgstr "ìˆ˜ì§"
 
 #: src/settings.c:4224
 msgid "Right / Bottom"
-msgstr "¿À¸¥ÂÊ / ¾Æ·¡"
+msgstr "ì˜¤ë¥¸ìª½ / ì•„ë˜"
 
 #: src/settings.c:4232
 msgid "Both ends"
-msgstr "¾çÂÊ ³¡"
+msgstr "ì–‘ìª½ ë"
 
 #: src/settings.c:4242
 msgid "End"
-msgstr "³¡"
+msgstr "ë"
 
 #: src/settings.c:4252
 msgid "None"
-msgstr "¾øÀ½"
+msgstr "ì—†ìŒ"
 
 #: src/settings.c:4385
 msgid ""
@@ -2374,110 +2381,108 @@ msgid ""
 "\n"
 msgstr ""
 "\n"
-"  ÀÌ Ã¢Àº ÇöÀç ¾î¶² ±×·ì¿¡µµ ¼ÓÇØÀÖÁö ¾Ê½À´Ï´Ù.  \n"
+"  ì´ ì°½ì€ í˜„ì¬ ì–´ë–¤ ê·¸ë£¹ì—ë„ ì†í•´ìˆì§€ ì•ŠìŠµë‹ˆë‹¤.  \n"
 "\n"
 
 #: src/settings.c:4408
 msgid "Window Group Settings"
-msgstr "Ã¢ ±×·ì ¼³Á¤"
+msgstr "ì°½ ê·¸ë£¹ ì„¤ì •"
 
 #: src/settings.c:4423
 msgid ""
 "Enlightenment Window Group\n"
 "Settings Dialog\n"
 msgstr ""
-"ÀÎ¶óÀÌÆ°¸ÕÆ® Ã¢ ±×·ì\n"
-"¼³Á¤ ´ëÈ­»óÀÚ\n"
+"ì¸ë¼ì´íŠ¼ë¨¼íŠ¸ ì°½ ê·¸ë£¹\n"
+"ì„¤ì • ëŒ€í™”ìƒì\n"
 
 #: src/settings.c:4438
 msgid "   Pick the group to configure:   "
-msgstr "   ¼³Á¤ÇÒ ±×·ì ¼±ÅÃ:   "
+msgstr "   ì„¤ì •í•  ê·¸ë£¹ ì„ íƒ:   "
 
 #: src/settings.c:4474
 msgid ""
 "  The following actions are  \n"
 "  applied to all group members:  "
 msgstr ""
-"  ´ÙÀ½ µ¿ÀÛÀº ¸ğµç ±×·ì  \n"
-"  ¸â¹ö¿¡°Ô Àû¿ëµË´Ï´Ù:  "
+"  ë‹¤ìŒ ë™ì‘ì€ ëª¨ë“  ê·¸ë£¹  \n"
+"  ë©¤ë²„ì—ê²Œ ì ìš©ë©ë‹ˆë‹¤:  "
 
 #: src/settings.c:4483 src/settings.c:4653
 msgid "Changing Border Style"
-msgstr "°¡ÀåÀÚ¸® Çü½Ä ¹Ù²Ş"
+msgstr "ê°€ì¥ìë¦¬ í˜•ì‹ ë°”ê¿ˆ"
 
 #: src/settings.c:4493 src/settings.c:4661
 msgid "Iconifying"
-msgstr "¾ÆÀÌÄÜÈ­"
+msgstr "ì•„ì´ì½˜í™”"
 
 #: src/settings.c:4503 src/settings.c:4669
 msgid "Killing"
-msgstr "Á×ÀÌ±â"
+msgstr "ì£½ì´ê¸°"
 
 #: src/settings.c:4513 src/settings.c:4677
 msgid "Moving"
-msgstr "ÀÌµ¿"
+msgstr "ì´ë™"
 
 #: src/settings.c:4523 src/settings.c:4685
 msgid "Raising/Lowering"
-msgstr "¿Ã¸®±â/³»¸®±â"
+msgstr "ì˜¬ë¦¬ê¸°/ë‚´ë¦¬ê¸°"
 
 #: src/settings.c:4533 src/settings.c:4693
 msgid "Sticking"
-msgstr "°íÂø"
+msgstr "ê³ ì°©"
 
 #: src/settings.c:4543 src/settings.c:4701
 msgid "Shading"
-msgstr "Á¢±â"
+msgstr "ì ‘ê¸°"
 
 #: src/settings.c:4553 src/settings.c:4709
 msgid "Mirror Shade/Iconify/Stick"
-msgstr "Á¢±â/¾ÆÀÌÄÜÈ­/°íÂø °Å¿ï"
+msgstr "ì ‘ê¸°/ì•„ì´ì½˜í™”/ê³ ì°© ê±°ìš¸"
 
 #: src/settings.c:4611
 msgid "Default Group Control Settings"
-msgstr "±âº» ±×·ì Á¶Á¤ ¼³Á¤"
+msgstr "ê¸°ë³¸ ê·¸ë£¹ ì¡°ì • ì„¤ì •"
 
 #: src/settings.c:4626
 msgid ""
 "Enlightenment Default\n"
 "Group Control Settings Dialog\n"
 msgstr ""
-"ÀÎ¶óÀÌÆ°¸ÕÆ® ±âº» ±×·ì\n"
-"Á¶Á¤ ¼³Á¤ ´ëÈ­»óÀÚ\n"
+"ì¸ë¼ì´íŠ¼ë¨¼íŠ¸ ê¸°ë³¸ ê·¸ë£¹\n"
+"ì¡°ì • ì„¤ì • ëŒ€í™”ìƒì\n"
 
 #: src/settings.c:4641
-#, fuzzy
 msgid " Per-group settings: "
-msgstr "ÆäÀÌÀú ¼³Á¤"
+msgstr "ê·¸ë£¹ ì„¤ì •: "
 
 #: src/settings.c:4724
 msgid " Global settings: "
-msgstr ""
+msgstr " ê³µí†µ ì„¤ì •: "
 
 #: src/settings.c:4730
-#, fuzzy
 msgid "Swap Window Locations"
-msgstr "Ã¢ ¿É¼Ç"
+msgstr "ì°½ ìœ„ì¹˜ ë°”ê¿ˆ"
 
 #: src/settings.c:4859
 msgid "Remembered Windows Settings"
-msgstr "±â¾ïÇÒ Ã¢ ¼³Á¤"
+msgstr "ê¸°ì–µí•  ì°½ ì„¤ì •"
 
 #: src/settings.c:4875
 msgid ""
 "Enlightenment Remembered\n"
 "Windows Settings Dialog\n"
 msgstr ""
-"ÀÎ¶óÀÌÆ°¸ÕÆ® ±â¾ïÇÒ\n"
-"Ã¢ ¼³Á¤ ´ëÈ­»óÀÚ\n"
+"ì¸ë¼ì´íŠ¼ë¨¼íŠ¸ ê¸°ì–µí• \n"
+"ì°½ ì„¤ì • ëŒ€í™”ìƒì\n"
 
 #: src/settings.c:4930
 msgid "Remembered Settings..."
-msgstr "±â¾ïÇÒ ¼³Á¤..."
+msgstr "ê¸°ì–µí•  ì„¤ì •..."
 
 #: src/settings.c:4949
 msgid "There are no active windows with remembered attributes."
-msgstr "¼Ó¼ºÀ» ±â¾ïÇÒ È°¼ºÈ­µÈ Ã¢ÀÌ ¾ø½À´Ï´Ù"
+msgstr "ì†ì„±ì„ ê¸°ì–µí•  í™œì„±í™”ëœ ì°½ì´ ì—†ìŠµë‹ˆë‹¤"
 
 #: src/setup.c:134
 msgid ""
@@ -2492,24 +2497,24 @@ msgid ""
 "administrator, or Xserver vendor, or read the X, xdm and\n"
 "startx manual pages before proceeding.\n"
 msgstr ""
-"ÀÎ¶óÀÌÆ°¸ÕÆ®°¡ ½© DISPLAY È¯°æº¯¼ö¿¡¼­ ÁöÁ¤µÈ Ç¥½ÃÀåÄ¡¿¡\n"
-"¿¬°áÇÒ ¼ö°¡ ¾ø½À´Ï´Ù. ´ç½ÅÀº ÀÎ¶óÀÌÆ°¸ÕÆ®°¡ ¿¬°áÇÒ ¼ö ÀÖ\n"
-"´Â Ç¥½ÃÀåÄ¡¸¦ °¡¸®Å°µµ·Ï ÀÌ °ªÀ» ¼³Á¤ÇÏ½Ç ¼ö ÀÖ½À´Ï´Ù.\n"
-"¾îÂ¼¸é ´ç½ÅÀÌ X ¼­¹ö¸¦ ½ÇÇà½ÃÅ°Áö ¾Ê¾ÒÀ» ¼öµµ ÀÖ°í, ±×\n"
-"Ç¥½ÃÀåÄ¡¿¡ ¿¬°áÇÒ ¼ö ÀÖ´Â ±ÇÇÑÀÌ ¾øÀ¸½Ç ¼öµµ ÀÖ½À´Ï´Ù.\n"
-"´Ù½Ã ½ÃµµÇÏ±â Àü¿¡ ¸ğµç °ÍÀÌ Á¤»óÀÎÁö¸¦ È®ÀÎÇÏ¼¼¿ä.\n"
+"ì¸ë¼ì´íŠ¼ë¨¼íŠ¸ê°€ ì‰˜ DISPLAY í™˜ê²½ë³€ìˆ˜ì—ì„œ ì§€ì •ëœ í‘œì‹œì¥ì¹˜ì—\n"
+"ì—°ê²°í•  ìˆ˜ê°€ ì—†ìŠµë‹ˆë‹¤. ë‹¹ì‹ ì€ ì¸ë¼ì´íŠ¼ë¨¼íŠ¸ê°€ ì—°ê²°í•  ìˆ˜ ìˆ\n"
+"ëŠ” í‘œì‹œì¥ì¹˜ë¥¼ ê°€ë¦¬í‚¤ë„ë¡ ì´ ê°’ì„ ì„¤ì •í•˜ì‹¤ ìˆ˜ ìˆìŠµë‹ˆë‹¤.\n"
+"ì–´ì©Œë©´ ë‹¹ì‹ ì´ X ì„œë²„ë¥¼ ì‹¤í–‰ì‹œí‚¤ì§€ ì•Šì•˜ì„ ìˆ˜ë„ ìˆê³ , ê·¸\n"
+"í‘œì‹œì¥ì¹˜ì— ì—°ê²°í•  ìˆ˜ ìˆëŠ” ê¶Œí•œì´ ì—†ìœ¼ì‹¤ ìˆ˜ë„ ìˆìŠµë‹ˆë‹¤.\n"
+"ë‹¤ì‹œ ì‹œë„í•˜ê¸° ì „ì— ëª¨ë“  ê²ƒì´ ì •ìƒì¸ì§€ë¥¼ í™•ì¸í•˜ì„¸ìš”.\n"
 "\n"
-"xdmÀÌ³ª startx¸¦ ½ÇÇàÇÏ¹Ç·Î¼­ X ¼­¹ö¸¦ ¶ç¿ì½Ã°Å³ª ·ÎÄÃ\n"
-"½Ã½ºÅÛ °ü¸®ÀÚ È¤Àº X ¼­¹ö Á¦ÀÛ»ç¿¡ ¿¬¶ôÇÏ°Å³ª X, xdm°ú\n"
-"startx µîÀÇ µµ¿ò¸»À» ¹Ì¸® ÀĞ¾îº¸½Ã±â ¹Ù¶ø´Ï´Ù.\n"
+"xdmì´ë‚˜ startxë¥¼ ì‹¤í–‰í•˜ë¯€ë¡œì„œ X ì„œë²„ë¥¼ ë„ìš°ì‹œê±°ë‚˜ ë¡œì»¬\n"
+"ì‹œìŠ¤í…œ ê´€ë¦¬ì í˜¹ì€ X ì„œë²„ ì œì‘ì‚¬ì— ì—°ë½í•˜ê±°ë‚˜ X, xdmê³¼\n"
+"startx ë“±ì˜ ë„ì›€ë§ì„ ë¯¸ë¦¬ ì½ì–´ë³´ì‹œê¸° ë°”ëë‹ˆë‹¤.\n"
 
 #: src/setup.c:300
 msgid "X server version error"
-msgstr "X ¼­¹ö ¹öÀü ¿¡·¯"
+msgstr "X ì„œë²„ ë²„ì „ ì˜¤ë¥˜"
 
 #: src/setup.c:300
 msgid "Ignore this error"
-msgstr "ÀÌ ¿¡·¯ ¹«½Ã"
+msgstr "ì´ ì˜¤ë¥˜ ë¬´ì‹œ"
 
 #: src/setup.c:302
 #, c-format
@@ -2521,12 +2526,12 @@ msgid ""
 "server is one the author of Enlightenment neither have\n"
 "access to, nor have heard of.\n"
 msgstr ""
-"°æ°í:\n"
-"ÀÌ°ÍÀº X11 ¼­¹ö°¡ ¾Æ´Õ´Ï´Ù. X%i ÇÁ·ÎÅäÄİÀ» Áö¿øÇÏ´Â±º¿ä.\n"
-"ÀÌ°ÍÀº ÀÎ¶óÀÌÆ°¸ÕÆ®°¡ µ¿ÀÛÇÏÁö ¾Ê°Å³ª Àß¸ø µ¿ÀÛµÉ ¼ö\n"
-"ÀÖÀ½À» ÀÇ¹ÌÇÕ´Ï´Ù. X11º¸´Ù ³ªÁß ¹öÀüÀÌ¶ó¸é ´ç½ÅÀÇ ¼­¹ö´Â\n"
-"ÀÎ¶óÀÌÆ°¸ÕÆ®ÀÇ ÀúÀÚ°¡ µé¾îº¸Áöµµ ¸øÇß°Å³ª »ç¿ëÇØ º¸Áö\n"
-"¸øÇÑ °ÍÀÓ¿¡ ºĞ¸íÇÕ´Ï´Ù.\n"
+"ê²½ê³ :\n"
+"ì´ê²ƒì€ X11 ì„œë²„ê°€ ì•„ë‹™ë‹ˆë‹¤. X%i í”„ë¡œí† ì½œì„ ì§€ì›í•˜ëŠ”êµ°ìš”.\n"
+"ì´ê²ƒì€ ì¸ë¼ì´íŠ¼ë¨¼íŠ¸ê°€ ë™ì‘í•˜ì§€ ì•Šê±°ë‚˜ ì˜ëª» ë™ì‘ë  ìˆ˜\n"
+"ìˆìŒì„ ì˜ë¯¸í•©ë‹ˆë‹¤. X11ë³´ë‹¤ ë‚˜ì¤‘ ë²„ì „ì´ë¼ë©´ ë‹¹ì‹ ì˜ ì„œë²„ëŠ”\n"
+"ì¸ë¼ì´íŠ¼ë¨¼íŠ¸ì˜ ì €ìê°€ ë“¤ì–´ë³´ì§€ë„ ëª»í–ˆê±°ë‚˜ ì‚¬ìš©í•´ ë³´ì§€\n"
+"ëª»í•œ ê²ƒì„ì— ë¶„ëª…í•©ë‹ˆë‹¤.\n"
 
 #: src/setup.c:473
 #, c-format
@@ -2535,9 +2540,9 @@ msgid ""
 "This is a fatal condition.\n"
 "Please remove this file\n"
 msgstr ""
-"µğ·ºÅä¸® %s´Â ¸í¹éÇÏ°Ô µğ·ºÅä¸®°¡ ¾Æ´Õ´Ï´Ù.\n"
-"ÀÌ°ÍÀº ½É°¢ÇÑ »óÈ²ÀÔ´Ï´Ù.\n"
-"ÀÌ ÆÄÀÏÀ» »èÁ¦ÇÏ½Ê½Ã¿À\n"
+"ë””ë ‰í† ë¦¬ %sëŠ” ëª…ë°±í•˜ê²Œ ë””ë ‰í† ë¦¬ê°€ ì•„ë‹™ë‹ˆë‹¤.\n"
+"ì´ê²ƒì€ ì‹¬ê°í•œ ìƒí™©ì…ë‹ˆë‹¤.\n"
+"ì´ íŒŒì¼ì„ ì‚­ì œí•˜ì‹­ì‹œì˜¤\n"
 
 #: src/setup.c:479
 #, c-format
@@ -2547,10 +2552,10 @@ msgid ""
 "Please check the ownership and permissions of this\n"
 "directory and take steps to rectify this.\n"
 msgstr ""
-"%s¸¦ ½ÇÇàÇÏÁö ¸¶½Ê½Ã¿À\n"
-"ÀÌ°ÍÀº ½É°¢ÇÑ »óÈ²ÀÔ´Ï´Ù.\n"
-"ÀÌ µğ·ºÅä¸®¿¡ ´ëÇÑ ¼ÒÀ¯ÀÚ ¹× Çã¿ë±ÇÇÑÀ» È®ÀÎÇÏ½Ã°í\n"
-"ÀÌ »óÈ²À» °íÄ¡µµ·Ï ÇÏ½Ê½Ã¿À.\n"
+"%së¥¼ ì‹¤í–‰í•˜ì§€ ë§ˆì‹­ì‹œì˜¤\n"
+"ì´ê²ƒì€ ì‹¬ê°í•œ ìƒí™©ì…ë‹ˆë‹¤.\n"
+"ì´ ë””ë ‰í† ë¦¬ì— ëŒ€í•œ ì†Œìœ ì ë° í—ˆìš©ê¶Œí•œì„ í™•ì¸í•˜ì‹œê³ \n"
+"ì´ ìƒí™©ì„ ê³ ì¹˜ë„ë¡ í•˜ì‹­ì‹œì˜¤.\n"
 
 #: src/setup.c:487
 #, c-format
@@ -2560,10 +2565,10 @@ msgid ""
 "Please check the ownership and permissions of this\n"
 "directory and take steps to rectify this.\n"
 msgstr ""
-"%s¸¦ ÀĞÁö ¸¶½Ê½Ã¿À\n"
-"ÀÌ°ÍÀº ½É°¢ÇÑ »óÈ²ÀÔ´Ï´Ù.\n"
-"ÀÌ µğ·ºÅä¸®¿¡ ´ëÇÑ ¼ÒÀ¯ÀÚ ¹× Çã¿ë±ÇÇÑÀ» È®ÀÎÇÏ½Ã°í\n"
-"ÀÌ »óÈ²À» °íÄ¡µµ·Ï ÇÏ½Ê½Ã¿À.\n"
+"%së¥¼ ì½ì§€ ë§ˆì‹­ì‹œì˜¤\n"
+"ì´ê²ƒì€ ì‹¬ê°í•œ ìƒí™©ì…ë‹ˆë‹¤.\n"
+"ì´ ë””ë ‰í† ë¦¬ì— ëŒ€í•œ ì†Œìœ ì ë° í—ˆìš©ê¶Œí•œì„ í™•ì¸í•˜ì‹œê³ \n"
+"ì´ ìƒí™©ì„ ê³ ì¹˜ë„ë¡ í•˜ì‹­ì‹œì˜¤.\n"
 
 #: src/setup.c:494
 #, c-format
@@ -2573,14 +2578,14 @@ msgid ""
 "Please check the ownership and permissions of this\n"
 "directory and take steps to rectify this.\n"
 msgstr ""
-"%s¿¡ ¾²Áö ¸¶½Ê½Ã¿À\n"
-"ÀÌ°ÍÀº ½É°¢ÇÑ »óÈ²ÀÔ´Ï´Ù.\n"
-"ÀÌ µğ·ºÅä¸®¿¡ ´ëÇÑ ¼ÒÀ¯ÀÚ ¹× Çã¿ë±ÇÇÑÀ» È®ÀÎÇÏ½Ã°í\n"
-"ÀÌ »óÈ²À» °íÄ¡µµ·Ï ÇÏ½Ê½Ã¿À.\n"
+"%sì— ì“°ì§€ ë§ˆì‹­ì‹œì˜¤\n"
+"ì´ê²ƒì€ ì‹¬ê°í•œ ìƒí™©ì…ë‹ˆë‹¤.\n"
+"ì´ ë””ë ‰í† ë¦¬ì— ëŒ€í•œ ì†Œìœ ì ë° í—ˆìš©ê¶Œí•œì„ í™•ì¸í•˜ì‹œê³ \n"
+"ì´ ìƒí™©ì„ ê³ ì¹˜ë„ë¡ í•˜ì‹­ì‹œì˜¤.\n"
 
 #: src/snaps.c:283
 msgid "Remembered Application Attributes"
-msgstr "±â¾ïÇÒ ÀÀ¿ëÇÁ·Î±×·¥ ¼Ó¼º"
+msgstr "ê¸°ì–µí•  ì‘ìš©í”„ë¡œê·¸ë¨ ì†ì„±"
 
 #: src/snaps.c:300
 msgid ""
@@ -2588,77 +2593,77 @@ msgid ""
 "window you wish to Remember\n"
 "from now on\n"
 msgstr ""
-"ÀÌÁ¦ºÎÅÍ ±â¾ïÇÏ°íÀÚ ÇÏ´Â\n"
-"ÀÌ Ã¢ÀÇ ¼Ó¼ºÀ» ¼±ÅÃÇÏ½Ã±â\n"
-"¹Ù¶ø´Ï´Ù\n"
+"ì´ì œë¶€í„° ê¸°ì–µí•˜ê³ ì í•˜ëŠ”\n"
+"ì´ ì°½ì˜ ì†ì„±ì„ ì„ íƒí•˜ì‹œê¸°\n"
+"ë°”ëë‹ˆë‹¤\n"
 
 #: src/snaps.c:358
 msgid "Title:"
-msgstr "Á¦¸ñ:"
+msgstr "ì œëª©:"
 
 #: src/snaps.c:373
 msgid "Name:"
-msgstr "ÀÌ¸§:"
+msgstr "ì´ë¦„:"
 
 #: src/snaps.c:389
 msgid "Class:"
-msgstr "Å¬·¡½º:"
+msgstr "í´ë˜ìŠ¤:"
 
 #: src/snaps.c:405
 msgid "Command:"
-msgstr "¸í·É:"
+msgstr "ëª…ë ¹:"
 
 #: src/snaps.c:452
 msgid "Location"
-msgstr "À§Ä¡"
+msgstr "ìœ„ì¹˜"
 
 #: src/snaps.c:460
 msgid "Border style"
-msgstr "º¸´õ ½ºÅ¸ÀÏ"
+msgstr "í…Œë‘ë¦¬ ìŠ¤íƒ€ì¼"
 
 #: src/snaps.c:468
 msgid "Size"
-msgstr "Å©±â"
+msgstr "í¬ê¸°"
 
 #: src/snaps.c:476
 msgid "Desktop"
-msgstr "µ¥½ºÅ©Å¾"
+msgstr "ë°ìŠ¤í¬íƒ‘"
 
 #: src/snaps.c:484
 msgid "Shaded state"
-msgstr "½¦ÀÌµå »óÅÂ"
+msgstr "ì‰ì´ë“œ ìƒíƒœ"
 
 #: src/snaps.c:492
 msgid "Sticky state"
-msgstr "½ºÆ½Å° »óÅÂ"
+msgstr "ìŠ¤í‹±í‚¤ ìƒíƒœ"
 
 #: src/snaps.c:500
 msgid "Stacking layer"
-msgstr "°èÃş ½ºÅÃÅ·"
+msgstr "ê³„ì¸µ ìŠ¤íƒí‚¹"
 
 #: src/snaps.c:508
 msgid "Window List Skip"
-msgstr "Ã¢ ¸ñ·Ï °Ç³Ê¶Ü"
+msgstr "ì°½ ëª©ë¡ ê±´ë„ˆëœ€"
 
 #: src/snaps.c:517
 msgid "Never Focus"
-msgstr "Æ÷Ä¿½º °®Áö¾ÊÀ½"
+msgstr "í¬ì»¤ìŠ¤ ê°–ì§€ì•ŠìŒ"
 
 #: src/snaps.c:537
 msgid "Restart application on login"
-msgstr "·Î±×ÀÎ½Ã ÀÀ¿ëÇÁ·Î±×·¥ ½ÃÀÛ"
+msgstr "ë¡œê·¸ì¸ì‹œ ì‘ìš©í”„ë¡œê·¸ë¨ ì‹œì‘"
 
 #: src/snaps.c:559
 msgid "Remember this window's group(s)"
-msgstr "ÀÌ Ã¢ÀÇ ±×·ì ±â¾ï"
+msgstr "ì´ ì°½ì˜ ê·¸ë£¹ ê¸°ì–µ"
 
 #: src/snaps.c:948
 msgid "Error saving snaps file\n"
-msgstr "½º³À ÆÄÀÏ ÀúÀå ¿¡·¯\n"
+msgstr "ìŠ¤ëƒ… íŒŒì¼ ì €ì¥ ì˜¤ë¥˜\n"
 
 #: src/sound.c:76
 msgid "Error finding sound file"
-msgstr "»ç¿îµå ÆÄÀÏ Ã£±â ¿¡·¯"
+msgstr "ì‚¬ìš´ë“œ íŒŒì¼ ì°¾ê¸° ì˜¤ë¥˜"
 
 #: src/sound.c:77
 #, c-format
@@ -2669,15 +2674,15 @@ msgid ""
 "Enlightenment will continue to operate, but you\n"
 "may wish to check your configuration settings.\n"
 msgstr ""
-"°æ°í!  ÀÎ¶óÀÌÆ°¸ÕÆ®°¡ ´ÙÀ½ »ç¿îµå ÆÄÀÏÀ»\n"
-"ÀĞ¾îµéÀÏ ¼ö ¾ø½À´Ï´Ù:\n"
+"ê²½ê³ !  ì¸ë¼ì´íŠ¼ë¨¼íŠ¸ê°€ ë‹¤ìŒ ì‚¬ìš´ë“œ íŒŒì¼ì„\n"
+"ì½ì–´ë“¤ì¼ ìˆ˜ ì—†ìŠµë‹ˆë‹¤:\n"
 "%s\n"
-"ÀÎ¶óÀÌÆ°¸ÕÆ®´Â µ¿ÀÛÀ» °è¼ÓÇÒ °ÍÀÔ´Ï´Ù¸¸\n"
-"´ç½ÅÀÇ È¯°æ¼³Á¤À» È®ÀÎÇØ º¸½Ã±â ¹Ù¶ø´Ï´Ù.\n"
+"ì¸ë¼ì´íŠ¼ë¨¼íŠ¸ëŠ” ë™ì‘ì„ ê³„ì†í•  ê²ƒì…ë‹ˆë‹¤ë§Œ\n"
+"ë‹¹ì‹ ì˜ í™˜ê²½ì„¤ì •ì„ í™•ì¸í•´ ë³´ì‹œê¸° ë°”ëë‹ˆë‹¤.\n"
 
 #: src/sound.c:304
 msgid "Error initialising sound"
-msgstr "»ç¿îµå ÃÊ±âÈ­ ¿¡·¯"
+msgstr "ì‚¬ìš´ë“œ ì´ˆê¸°í™” ì˜¤ë¥˜"
 
 #: src/sound.c:305
 msgid ""
@@ -2685,30 +2690,29 @@ msgid ""
 "communicating with the audio server (Esound). Audio will\n"
 "now be disabled.\n"
 msgstr ""
-"¿Àµğ¿À°¡ »ç¿ëµÇµµ·Ï µÇ¾ú½À´Ï´Ù¸¸ ¿Àµğ¿À ¼­¹ö (Esound)¿Í\n"
-"Åë½Å ¿¡·¯°¡ ¹ß»ıÇß½À´Ï´Ù. ¿Àµğ¿À´Â Áö±İºÎÅÍ »ç¿ëµÇÁö\n"
-"¾ÊÀ» °ÍÀÔ´Ï´Ù.\n"
+"ì˜¤ë””ì˜¤ê°€ ì‚¬ìš©ë˜ë„ë¡ ë˜ì—ˆìŠµë‹ˆë‹¤ë§Œ ì˜¤ë””ì˜¤ ì„œë²„ (Esound)ì™€\n"
+"í†µì‹  ì˜¤ë¥˜ê°€ ë°œìƒí–ˆìŠµë‹ˆë‹¤. ì˜¤ë””ì˜¤ëŠ” ì§€ê¸ˆë¶€í„° ì‚¬ìš©ë˜ì§€\n"
+"ì•Šì„ ê²ƒì…ë‹ˆë‹¤.\n"
 
 #: src/tclass.c:59
 msgid "TextClass Error!"
-msgstr "TextClass ¿¡·¯!"
+msgstr "TextClass ì˜¤ë¥˜!"
 
 #: src/theme.c:68
-#, fuzzy, c-format
 msgid "Theme %s does not contain a %s file\n"
-msgstr "Å×¸¶°¡ sound.cfg ÆÄÀÏÀ» °¡Áö°í ÀÖÁö ¾Ê½À´Ï´Ù\n"
+msgstr "í…Œë§ˆ %s ì€(ëŠ”) %s íŒŒì¼ì„ ê°€ì§€ê³  ìˆì§€ ì•ŠìŠµë‹ˆë‹¤\n"
 
 #: src/theme.c:363
 msgid "Unknown\n"
-msgstr "¸ğ¸§\n"
+msgstr "ëª¨ë¦„\n"
 
 #: src/theme.c:376 src/theme.c:383
 msgid "Theme file/directory does not exist\n"
-msgstr "Å×¸¶ ÆÄÀÏ/µğ·ºÅä¸®°¡ ¾ø½À´Ï´Ù\n"
+msgstr "í…Œë§ˆ íŒŒì¼/ë””ë ‰í† ë¦¬ê°€ ì—†ìŠµë‹ˆë‹¤\n"
 
 #: src/theme.c:400
 msgid "Bad Theme"
-msgstr "Àß¸øµÈ Å×¸¶"
+msgstr "ì˜ëª»ëœ í…Œë§ˆ"
 
 #: src/theme.c:401
 #, c-format
@@ -2721,434 +2725,74 @@ msgid ""
 "The reason this theme is bad is:\n"
 "%s"
 msgstr ""
-"Å×¸¶:\n"
+"í…Œë§ˆ:\n"
 "%s\n"
-"Àß¸ø ¸¸µé¾îÁø Å×¸¶ ÆĞÅ°ÁöÀÌ¹Ç·Î »ç¿ëµÇÁö ¾ÊÀ» °ÍÀÔ´Ï´Ù.\n"
-"ÀÎ¶óÀÌÆ°¸ÕÆ®´Â DEFAULT Å×¸¶¸¦ »ç¿ëÇÒ °ÍÀÔ´Ï´Ù.\n"
+"ì˜ëª» ë§Œë“¤ì–´ì§„ í…Œë§ˆ íŒ¨í‚¤ì§€ì´ë¯€ë¡œ ì‚¬ìš©ë˜ì§€ ì•Šì„ ê²ƒì…ë‹ˆë‹¤.\n"
+"ì¸ë¼ì´íŠ¼ë¨¼íŠ¸ëŠ” DEFAULT í…Œë§ˆë¥¼ ì‚¬ìš©í•  ê²ƒì…ë‹ˆë‹¤.\n"
 "\n"
-"ÀÌ Å×¸¶°¡ Àß¸øµÈ ÀÌÀ¯´Â:\n"
+"ì´ í…Œë§ˆê°€ ì˜ëª»ëœ ì´ìœ ëŠ”:\n"
 "%s"
 
 #: src/tooltips.c:662
 msgid "ToolTip Error!"
-msgstr "ÅøÆÁ ¿¡·¯!"
+msgstr "íˆ´íŒ ì˜¤ë¥˜!"
 
 #: config/strings.c:4
-#, fuzzy
 msgid "Focus Settings ..."
-msgstr "Æ÷Ä¿½º ¼³Á¤"
+msgstr "ì´ˆì  ì„¤ì •"
 
 #: config/strings.c:5
-#, fuzzy
 msgid "Move & Resize Settings ..."
-msgstr "ÀÌµ¿°ú Å©±âÁ¶Á¤ ¼³Á¤"
+msgstr "ì´ë™ê³¼ í¬ê¸°ì¡°ì • ì„¤ì •"
 
 #: config/strings.c:6
-#, fuzzy
 msgid "Pager Settings ..."
-msgstr "ÆäÀÌÀú ¼³Á¤..."
+msgstr "í˜ì´ì € ì„¤ì •..."
 
 #: config/strings.c:7
-#, fuzzy
 msgid "Window Placement Settings ..."
-msgstr "Ã¢ ¹èÄ¡ ¼³Á¤"
+msgstr "ì°½ ë°°ì¹˜ ì„¤ì •"
 
 #: config/strings.c:8
-#, fuzzy
 msgid "Multiple Desktop Settings ..."
-msgstr "¿©·¯ µ¥½ºÅ©Å¾ ¼³Á¤"
+msgstr "ì—¬ëŸ¬ ë°ìŠ¤í¬íƒ‘ ì„¤ì •"
 
 #: config/strings.c:9
-#, fuzzy
 msgid "Virtual Desktop Settings ..."
-msgstr "°¡»ó µ¥½ºÅ©Å¾ ¼³Á¤"
+msgstr "ê°€ìƒ ë°ìŠ¤í¬íƒ‘ ì„¤ì •"
 
 #: config/strings.c:10
-#, fuzzy
 msgid "Autoraise Settings ..."
-msgstr "ÀÚµ¿¿Ã¸®±â ¼³Á¤"
+msgstr "ìë™ì˜¬ë¦¬ê¸° ì„¤ì •"
 
 #: config/strings.c:11
-#, fuzzy
 msgid "Tooltip Settings ..."
-msgstr "ÅøÆÁ ¼³Á¤"
+msgstr "íˆ´íŒ ì„¤ì •"
 
 #: config/strings.c:12
-#, fuzzy
 msgid "Audio Settings ..."
-msgstr "¿Àµğ¿À ¼³Á¤"
+msgstr "ì˜¤ë””ì˜¤ ì„¤ì •"
 
 #: config/strings.c:13
-#, fuzzy
 msgid "Group Settings ..."
-msgstr "ÆäÀÌÀú ¼³Á¤..."
+msgstr "í˜ì´ì € ì„¤ì •..."
 
 #: config/strings.c:14
-#, fuzzy
 msgid "Remember Settings ..."
-msgstr "±â¾ïÇÒ ¼³Á¤..."
+msgstr "ê¸°ì–µí•  ì„¤ì •..."
 
 #: config/strings.c:15
-#, fuzzy
 msgid "Special FX Settings ..."
-msgstr "Æ¯¼öÈ¿°ú ¼³Á¤"
+msgstr "íŠ¹ìˆ˜íš¨ê³¼ ì„¤ì •"
 
 #: config/strings.c:16
-#, fuzzy
 msgid "Desktop Background Settings ..."
-msgstr "µ¥½ºÅ©Å¾ ¹è°æ ¼³Á¤"
+msgstr "ë°ìŠ¤í¬íƒ‘ ë°°ê²½ ì„¤ì •"
 
 #: config/strings.c:17
-#, fuzzy
 msgid "Miscellaneous Settings ..."
-msgstr "±âÅ¸ ¼³Á¤"
+msgstr "ê¸°íƒ€ ì„¤ì •"
 
 #: config/strings.c:18
 msgid "Legacy E-conf tool ..."
-msgstr ""
-
-#~ msgid "Unable to display raindrops"
-#~ msgstr "·¹ÀÎµå·ÓÀ» Ç¥½ÃÇÒ ¼ö ¾ø½À´Ï´Ù"
-
-#~ msgid ""
-#~ "\n"
-#~ "Enlightenment is unable to display raindrops on this\n"
-#~ "display because Shared memory is not available on this\n"
-#~ "X-Server.\n"
-#~ "\n"
-#~ "This may be due to Enlightenment being a remote client\n"
-#~ "running over the network, a MIT-SHM incapable X-server,\n"
-#~ "having run out of SHM ID's on the system or Shared\n"
-#~ "Memory support being turned off in Imlib\n"
-#~ "\n"
-#~ "You may correct this by either running `imlib_config'\n"
-#~ "or copying the system imrc (/usr/etc/imrc) to ~/.imrc\n"
-#~ "and editing it, enabling shared memory.\n"
-#~ "\n"
-#~ msgstr ""
-#~ "\n"
-#~ "ÀÎ¶óÀÌÆ°¸ÕÆ®°¡ ·¹ÀÎµå·ÓÀ» Ç¥½ÃÇÒ ¼ö ¾ø½À´Ï´Ù.\n"
-#~ "¿Ö³ÄÇÏ¸é ÀÌ X ¼­¹ö¿¡¼­´Â °ø¿ä ¸Ş¸ğ¸®¸¦ »ç¿ëÇÒ ¼ö\n"
-#~ "¾ø±â ¶§¹®ÀÔ´Ï´Ù.\n"
-#~ "\n"
-#~ "ÀÌ°ÍÀº ¾Æ¸¶µµ ³×Æ®¿öÅ© »ó¿¡¼­ ¸®¸ğÆ® Å¬¶óÀÌ¾ğÆ®·Î\n"
-#~ "ÀÎ¶óÀÌÆ°¸ÕÆ®°¡ ½ÇÇàÁßÀÌ°Å³ª, MIT-SHMÀ» Áö¿øÇÏ´Â\n"
-#~ "X ¼­¹ö°¡ ½Ã½ºÅÛ¿¡¼­ SHM ID°¡ ¹Ù´Ú³µ°Å³ª ImlibÀÇ\n"
-#~ "°øÀ¯ ¸Ş¸ğ¸® Áö¿ø±â´ÉÀÌ ²¨Á®ÀÖ±â ¶§¹®ÀÏ °ÍÀÔ´Ï´Ù.\n"
-#~ "\n"
-#~ "´ç½ÅÀº `imlib_config'¸¦ ½ÇÇàÇØ¼­ ÀÌ°ÍÀ» °íÄ¡°Å³ª\n"
-#~ "½Ã½ºÅÛ imrc (/usr/etc/imrc)¸¦ ~/.imrc·Î º¹»çÇØ¼­\n"
-#~ "°øÀ¯ ¸Ş¸ğ¸®¸¦ Áö¿øÇÏµµ·Ï ÆíÁıÇÏ½Ç ¼ö ÀÖ½À´Ï´Ù.\n"
-#~ "\n"
-
-#~ msgid ""
-#~ "\n"
-#~ "Enlightenment is unable to display raindrops on this\n"
-#~ "display because shared pixmaps are not available on this\n"
-#~ "X-Server.\n"
-#~ "\n"
-#~ "This may be due to either the X-Server not implementing\n"
-#~ "shared pixmaps, or shared pixmaps being disabled in\n"
-#~ "Imlib's configuration.\n"
-#~ "\n"
-#~ "You may correct this by either running `imlib_config'\n"
-#~ "or copying the system imrc (/usr/etc/imrc) to ~/.imrc\n"
-#~ "and editing it, enabling shared pixmaps.\n"
-#~ "\n"
-#~ msgstr ""
-#~ "\n"
-#~ "ÀÎ¶óÀÌÆ°¸ÕÆ®°¡ ·¹ÀÎµå·ÓÀ» Ç¥½ÃÇÒ ¼ö ¾ø½À´Ï´Ù.\n"
-#~ "¿Ö³ÄÇÏ¸é ÀÌ X ¼­¹ö¿¡¼­´Â °ø¿ä ÇÈ½º¸Ê¸¦ »ç¿ëÇÒ ¼ö\n"
-#~ "¾ø±â ¶§¹®ÀÔ´Ï´Ù.\n"
-#~ "\n"
-#~ "ÀÌ°ÍÀº ¾Æ¸¶µµ X ¼­¹ö°¡ °øÀ¯ ÇÈ½º¸ÊÀ» Áö¿øÇÏÁö\n"
-#~ "¾Ê°Å³ª Imlib È¯°æ ¼³Á¤¿¡¼­ °øÀ¯ ÇÈ½º¸Ê Áö¿ø\n"
-#~ "±â´ÉÀÌ ²¨Á®ÀÖ±â ¶§¹®ÀÔ´Ï´Ù.\n"
-#~ "\n"
-#~ "´ç½ÅÀº `imlib_config'¸¦ ½ÇÇàÇØ¼­ ÀÌ°ÍÀ» °íÄ¡°Å³ª\n"
-#~ "½Ã½ºÅÛ imrc (/usr/etc/imrc)¸¦ ~/.imrc·Î º¹»çÇØ¼­\n"
-#~ "°øÀ¯ ÇÈ½º¸Ê¸¦ Áö¿øÇÏµµ·Ï ÆíÁıÇÏ½Ç ¼ö ÀÖ½À´Ï´Ù.\n"
-#~ "\n"
-
-#~ msgid "Warning!"
-#~ msgstr "°æ°í!"
-
-#~ msgid ""
-#~ "\n"
-#~ "You seem to have an X Server capable of Shared Memory\n"
-#~ "but it is incapable of doing ZPixmap Shared pixmaps\n"
-#~ "(The server does not claim to be able to do them).\n"
-#~ "\n"
-#~ "The pager in Enlightenment will run slowly in snapshot\n"
-#~ "mode if you continue to use that mode of the pager\n"
-#~ "under these conditions.\n"
-#~ "\n"
-#~ "It is suggested you change the settings on your pager to\n"
-#~ "disable snapshots to improve performance.\n"
-#~ "\n"
-#~ msgstr ""
-#~ "\n"
-#~ "´ç½ÅÀº °øÀ¯ ¸Ş¸ğ¸®¸¦ Áö¿øÇÏ´Â X ¼­¹ö¸¦ °¡Áö°í °è½Å °ÍÀ¸·Î\n"
-#~ "»ı°¢µË´Ï´Ù¸¸ ZPixmap °øÀ¯ ÇÈ½º¸ÊÀº Áö¿øÇÏÁö ¾Ê½À´Ï´Ù\n"
-#~ "(ÀÌ ¼­¹ö´Â ±× ÀÏÀ» ÇÒ ¼ö ÀÖ´Ù°í ¾Ë·ÁÁÖÁö ¾Ê½À´Ï´Ù).\n"
-#~ "\n"
-#~ "ÀÎ¶óÀÌÆ°¸ÕÆ®ÀÇ ÆäÀÌÀú´Â ÀÌ Á¶°ÇÇÏ¿¡¼­ ´ç½ÅÀÌ °è¼ÓÇØ¼­\n"
-#~ "½º³À¼¦ ¸ğµå¸¦ »ç¿ëÇÏ·Á°í ÇÏ´Â °æ¿ì ´À¸®°Ô ½ÇÇàµÉ ¼ö\n"
-#~ "¹Û¿¡ ¾ø½À´Ï´Ù.\n"
-#~ "\n"
-#~ "¼º´ÉÀ» ³ôÀÌ±â À§ÇØ¼­´Â ÆäÀÌÀúÀÇ ¼³Á¤¿¡¼­ ½º³À¼¦ ±â´ÉÀ»\n"
-#~ "²ô½Ê½Ã¿À.\n"
-#~ "\n"
-
-#~ msgid ""
-#~ "\n"
-#~ "Your X Server is capable of doing Shared Memory but you do\n"
-#~ "not have Shared Pixmaps enabled in your Imlib configuration.\n"
-#~ "\n"
-#~ "Please enable Shared Pixmaps in your Imlib configuration\n"
-#~ "then restart Enlightenment to gain better performance for\n"
-#~ "the pagers when snapshot mode is enabled.\n"
-#~ "\n"
-#~ msgstr ""
-#~ "\n"
-#~ "´ç½ÅÀÇ X ¼­¹ö´Â °øÀ¯ ¸Ş¸ğ¸®¸¦ Áö¿øÇÏÁö¸¸ ´ç½ÅÀÌ Imlib\n"
-#~ "¼³Á¤¿¡¼­ °øÀ¯ ÇÈ½º¸Ê ±â´ÉÀ» ²°½À´Ï´Ù.\n"
-#~ "\n"
-#~ "Imlib ¼³Á¤¿¡¼­ °øÀ¯ ÇÈ½º¸Ê ±â´ÉÀ» ÄÒ ÈÄ¿¡ ÀÎ¶óÀÌÆ°¸ÕÆ®¸¦\n"
-#~ "Àç½ÃÀÛÇÏ½Ã¸é ÆäÀÌÀú¿¡¼­ ½º³À¼¦ ±â´ÉÀ» »ç¿ëÇÒ ¶§ ´õ ³ªÀº\n"
-#~ "¼º´ÉÀ» ¾òÀ¸½Ç ¼ö ÀÖÀ» °ÍÀÔ´Ï´Ù.\n"
-#~ "\n"
-
-#~ msgid ""
-#~ "\n"
-#~ "You seem to be running Enlightenment over a network Connection\n"
-#~ "or on an X Server that does not support Shared Memory, or you\n"
-#~ "have disabled MIT-SHM Shared memory in your Imlib configuration.\n"
-#~ "This means the Enlightenment Pager will perform slowly and use\n"
-#~ "more system resources than it would when Shared Memory is\n"
-#~ "available.\n"
-#~ "\n"
-#~ "To improve performance please either enable MIT-SHM Shared Memory\n"
-#~ "in your Imlib config, if you disabled it, or disable Pager\n"
-#~ "snapshots.\n"
-#~ "\n"
-#~ msgstr ""
-#~ "\n"
-#~ "´ç½ÅÀº ÀÎ¶óÀÌÆ°¸ÕÆ®¸¦ ³×Æ®¿öÅ©¸¦ ÅëÇØ ½ÇÇàÇÑ °ÍÀ¸·Î º¸ÀÔ´Ï´Ù.\n"
-#~ "È¤Àº X ¼­¹ö°¡ °øÀ¯ ¸Ş¸ğ¸®¸¦ Áö¿øÇÏÁö ¾Ê°Å³ª ´ç½ÅÀÇ Imlib\n"
-#~ "¼³Á¤¿¡¼­ MIT-SHM °øÀ¯ ¸Ş¸ğ¸® Áö¿ø±â´ÉÀ» ²ô½Å °Í °°½À´Ï´Ù.\n"
-#~ "ÀÌ°ÍÀº ÀÎ¶óÀÌÆ°¸ÕÆ® ÆÄ¼­°¡ ´À¸®°Ô ¼öÇàµÉ °Å¶ó´Â °Í°ú\n"
-#~ "°øÀ¯ ¸Ş¸ğ¸®°¡ »ç¿ë°¡´ÉÇÒ ¶§º¸´Ù ´õ ¸¹Àº ½Ã½ºÅÛ ÀÚ¿øÀ» »ç¿ëÇÒ\n"
-#~ "°ÍÀÓÀ» ÀÇ¹ÌÇÕ´Ï´Ù.\n"
-#~ "\n"
-#~ "¼º´ÉÀ» ³ôÀÌ±â À§ÇØ¼­´Â Imlib ¼³Á¤¿¡¼­ MIT-SHM °øÀ¯ ¸Ş¸ğ¸®¸¦\n"
-#~ "Áö¿øÇÏµµ·Ï ¼öÁ¤ÇÏ½ÃµçÁö ¾Æ´Ï¸é ÆäÀÌÀú ½º³À¼¦À» »ç¿ëÇÏÁö\n"
-#~ "¸¶½Ê½Ã¿À.\n"
-#~ "\n"
-
-#~ msgid "Imlib initialisation error"
-#~ msgstr "Imlib ÃÊ±âÈ­ ¿¡·¯"
-
-#~ msgid ""
-#~ "FATAL ERROR:\n"
-#~ "\n"
-#~ "Enlightenment is unable to initialise Imlib.\n"
-#~ "\n"
-#~ "This is unusual. Unable to continue.\n"
-#~ "Exiting.\n"
-#~ msgstr ""
-#~ "½É°¢ÇÑ ¿¡·¯:\n"
-#~ "\n"
-#~ "ÀÎ¶óÀÌÆ°¸ÕÆ®°¡ ImlibÀ» ÃÊ±âÈ­ÇÒ ¼ö ¾ø½À´Ï´Ù.\n"
-#~ "\n"
-#~ "ÀÌ»óÇÑ ÀÏÀÌ·Î±º¿ä. °è¼Ó ÁøÇàÇÒ ¼ö ¾ø½À´Ï´Ù.\n"
-#~ "Á¾·á.\n"
-
-#~ msgid ""
-#~ "FATAL ERROR:\n"
-#~ "\n"
-#~ "Enlightenment is unable to initialise Fnlib.\n"
-#~ "\n"
-#~ "This is unusual. Unable to continue.\n"
-#~ "Exiting.\n"
-#~ msgstr ""
-#~ "½É°¢ÇÑ ¿¡·¯:\n"
-#~ "\n"
-#~ "ÀÎ¶óÀÌÆ°¸ÕÆ®°¡ FnlibÀ» ÃÊ±âÈ­ÇÒ ¼ö ¾ø½À´Ï´Ù.\n"
-#~ "\n"
-#~ "ÀÌ»óÇÑ ÀÏÀÌ·Î±º¿ä. °è¼Ó ÁøÇàÇÒ ¼ö ¾ø½À´Ï´Ù.\n"
-#~ "Á¾·á.\n"
-
-#~ msgid "Welcome to the "
-#~ msgstr "Welcome to the "
-
-#~ msgid ""
-#~ "Enlightenment has just experienced some major problems in\n"
-#~ "attempting to load the theme you specified or the default\n"
-#~ "configuration directory:\n"
-#~ "%s/config/\n"
-#~ "This will prevent Enlightenment from loading any configuration\n"
-#~ "files at all.\n"
-#~ "Since this couldn't be found Enlightenment is probably not\n"
-#~ "going to find any configuration files anywhere on your\n"
-#~ "system, and so it will have almost no configuration loaded\n"
-#~ "when it starts up. This is most likely the sign of a bad\n"
-#~ "installation of Enlightenment if this directory is missing.\n"
-#~ "The likely causes are that the package was improperly built,\n"
-#~ "if a binary package, or 'make install' hasn't been typed\n"
-#~ "or during the installation the directory above was not\n"
-#~ "able to be copied over for installation perhaps due to\n"
-#~ "permissions or lack of disk space. It also could be that the\n"
-#~ "config directory has been inadvertently deleted since\n"
-#~ "installation.\n"
-#~ "This is a serious problem and should be rectified immediately\n"
-#~ "Please contact your system administrator or package maintainer.\n"
-#~ "If you are the administrator of your own system please\n"
-#~ "consult the documentation that came with Enlightenment for\n"
-#~ "additional information.\n"
-#~ msgstr ""
-#~ "ÀÎ¶óÀÌÆ°¸ÕÆ®°¡ ´ç½ÅÀÌ ¸í½ÃÇÑ Å×¸¶ È¤Àº ±âº» ¼³Á¤ µğ·ºÅä¸®ÀÇ\n"
-#~ "Å×¸¶¸¦ ÀĞ´Â Áß Áß´ëÇÑ ¹®Á¦°¡ ¹ß»ıÇß½À´Ï´Ù:\n"
-#~ "%s/config/\n"
-#~ "ÀÎ¶óÀÌÆ°¸ÕÆ®´Â ´õ ÀÌ»ó ¼³Á¤ÆÄÀÏÀ» ÀĞ¾îµéÀÏ ¼ö ¾ø½À´Ï´Ù.\n"
-#~ "ÀÎ¶óÀÌÆ°¸ÕÆ®°¡ ´ç½ÅÀÇ ½Ã½ºÅÛ¿¡¼­ ¾î¶² ¼³Á¤ÆÄÀÏµµ ÀĞ¾î\n"
-#~ "µéÀÏ ¼ö ¾ø¾úÀ¸¹Ç·Î ½ÃÀÛÇÒ ¶§ ¼³Á¤°ª ¾øÀÌ ½ÃÀÛµÇ¾ú½À´Ï´Ù.\n"
-#~ "µğ·ºÅä¸®°¡ ¾ø´Ù¸é ÀÎ¶óÀÌÆ°¸ÕÆ®°¡ Àß¸ø ÀÎ½ºÅçµÈ °ÍÀ»\n"
-#~ "ÀÇ¹ÌÇÕ´Ï´Ù. ¸¸ÀÏ ÀÌÁø ÆĞÅ°Áö¶ó¸é ÆĞÅ°Áö°¡ Àß¸ø ¸¸µé¾î\n"
-#~ "Áø °ÍÀÔ´Ï´Ù. ¸¸ÀÏ 'make install'À» ÇÏ½Å °ÍÀÌ¶ó¸é ÀÎ½º\n"
-#~ "Åç µµÁß¿¡ »ó±âÇÑ µğ·ºÅä¸®¸¦ µğ½ºÅ© °ø°£ ºÎÁ·ÀÌ³ª ¾²±â\n"
-#~ "±ÇÇÑÀ» °¡ÁöÁö ¸øÇÑ ÀÌÀ¯µî¿¡ ÀÇÇØ »ı¼ºÇÏÁö ¸øÇÑ °ÍÀÔ´Ï´Ù.\n"
-#~ "¹°·Ğ ÀÎ½ºÅçÈÄ¿¡ ¾î¶² ÀÌÀ¯¿¡ ¼³Á¤ µğ·ºÅä¸®°¡ Áö¿öÁ³À»\n"
-#~ "¼öµµ ÀÖ½À´Ï´Ù.\n"
-#~ "ÀÌ°ÍÀº ½É°¢ÇÑ ¹®Á¦ÀÌ¸ç Áï½Ã °íÃÄÁ®¾ß¸¸ ÇÕ´Ï´Ù.\n"
-#~ "½Ã½ºÅÛ °ü¸®ÀÚ È¤Àº ÆĞÅ°Áö °ü¸®ÀÚ¿¡°Ô ¿¬¶ôÇÏ½Ê½Ã¿À.\n"
-#~ "¸¸ÀÏ ´ç½ÅÀÌ ½Ã½ºÅÛ °ü¸®ÀÚ¶ó¸é ÀÎ¶óÀÌÆ°¸ÕÆ®¿¡ Æ÷ÇÔµÇ¾î\n"
-#~ "ÀÖ´Â ¹®¼­¸¦ ÀĞ¾îº¸½Ã¸é ´õ ¸¹Àº Á¤º¸¸¦ ¾òÀ¸½Ç ¼ö ÀÖ½À´Ï´Ù.\n"
-
-#~ msgid ""
-#~ "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
-#~ "\n"
-#~ "Enlightenment's DEFAULT installed theme is missing or inadequately\n"
-#~ "configured to be a useful DEFAULT theme.\n"
-#~ "\n"
-#~ "This is a fatal error and Enlightenment will cease to run.\n"
-#~ "Please rectify this situation and ensure it is installed\n"
-#~ "correctly. The DEFAULT theme Enlightenment comes with normally\n"
-#~ "is BrushedMetal-Tigert and this theme is adequate for a DEFAULT\n"
-#~ "theme.\n"
-#~ msgstr ""
-#~ "!!!!!!!! ¿¡·¯ ¿¡·¯ ¿¡·¯ ¿¡·¯ !!!!!!!!\n"
-#~ "\n"
-#~ "ÀÎ¶óÀÌÆ°¸ÕÆ®ÀÇ DEFAULT Å×¸¶°¡ ¾ø°Å³ª »ç¿ë°¡´ÉÇÑ DEFAULT Å×¸¶°¡\n"
-#~ "Àß¸ø ¼³Á¤µÇ¾ú½À´Ï´Ù.\n"
-#~ "\n"
-#~ "ÀÌ°ÍÀº ½É°¢ÇÑ ¿¡·¯ÀÌ¸ç ÀÎ¶óÀÌÆ°¸ÕÆ®´Â ½ÇÇàµÉ ¼ö ¾ø½À´Ï´Ù.\n"
-#~ "ÀÌ ¹®Á¦¸¦ °íÄ¡½Ã±â¸¦ ¹Ù¶ó¸ç ÀÎ½ºÅçÀÌ Á¦´ë·Î µÇ¾ú´Â Áö¸¦\n"
-#~ "È®ÀÎÇÏ½Ã±â ¹Ù¶ø´Ï´Ù. ÀÎ¶óÀÌÆ°¸ÕÆ®¿¡ µû¶ó¿À´Â DEFAULT Å×¸¶´Â\n"
-#~ "º¸Åë BrushedMetal-TigertÀÌ°í, ÀÌ Å×¸¶°¡ DEFAULT Å×¸¶·Î\n"
-#~ "¼³Á¤µÇ¾î ÀÖ½À´Ï´Ù.\n"
-
-#~ msgid "Theme does not contain a borders.cfg file\n"
-#~ msgstr "Å×¸¶°¡ borders.cfg ÆÄÀÏÀ» °¡Áö°í ÀÖÁö ¾Ê½À´Ï´Ù\n"
-
-#~ msgid "Theme does not contain a buttons.cfg file\n"
-#~ msgstr "Å×¸¶°¡ buttons.cfg ÆÄÀÏÀ» °¡Áö°í ÀÖÁö ¾Ê½À´Ï´Ù\n"
-
-#~ msgid "Theme does not contain a colormodifiers.cfg file\n"
-#~ msgstr "Å×¸¶°¡ colormodifiers.cfg ÆÄÀÏÀ» °¡Áö°í ÀÖÁö ¾Ê½À´Ï´Ù\n"
-
-#~ msgid "Theme does not contain a cursors.cfg file\n"
-#~ msgstr "Å×¸¶°¡ cursors.cfg ÆÄÀÏÀ» °¡Áö°í ÀÖÁö ¾Ê½À´Ï´Ù\n"
-
-#~ msgid "Theme does not contain a desktops.cfg file\n"
-#~ msgstr "Å×¸¶°¡ desktops.cfg ÆÄÀÏÀ» °¡Áö°í ÀÖÁö ¾Ê½À´Ï´Ù\n"
-
-#~ msgid "Theme does not contain a imageclasses.cfg file\n"
-#~ msgstr "Å×¸¶°¡ imageclasses.cfg ÆÄÀÏÀ» °¡Áö°í ÀÖÁö ¾Ê½À´Ï´Ù\n"
-
-#~ msgid "Theme does not contain a init.cfg file\n"
-#~ msgstr "Å×¸¶°¡ init.cfg ÆÄÀÏÀ» °¡Áö°í ÀÖÁö ¾Ê½À´Ï´Ù\n"
-
-#~ msgid "Theme does not contain a menustyles.cfg file\n"
-#~ msgstr "Å×¸¶°¡ menustyles.cfg ÆÄÀÏÀ» °¡Áö°í ÀÖÁö ¾Ê½À´Ï´Ù\n"
-
-#~ msgid "Theme does not contain a slideouts.cfg file\n"
-#~ msgstr "Å×¸¶°¡ slideouts.cfg ÆÄÀÏÀ» °¡Áö°í ÀÖÁö ¾Ê½À´Ï´Ù\n"
-
-#~ msgid "Theme does not contain a tooltips.cfg file\n"
-#~ msgstr "Å×¸¶°¡ tooltips.cfg ÆÄÀÏÀ» °¡Áö°í ÀÖÁö ¾Ê½À´Ï´Ù\n"
-
-#~ msgid "Theme does not contain a windowmatches.cfg file\n"
-#~ msgstr "Å×¸¶°¡ windowmatches.cfg ÆÄÀÏÀ» °¡Áö°í ÀÖÁö ¾Ê½À´Ï´Ù\n"
-
-#~ msgid "Theme contains a menus.cfg file\n"
-#~ msgstr "Å×¸¶°¡ menus.cfg ÆÄÀÏÀ» °¡Áö°í ÀÖ½À´Ï´Ù\n"
-
-#~ msgid "Theme contains a control.cfg file\n"
-#~ msgstr "Å×¸¶°¡ control.cfg ÆÄÀÏÀ» °¡Áö°í ÀÖ½À´Ï´Ù\n"
-
-#~ msgid "Theme contains a keybindings.cfg file\n"
-#~ msgstr "Å×¸¶°¡ keybindings.cfg ÆÄÀÏÀ» °¡Áö°í ÀÖ½À´Ï´Ù\n"
-
-#~ msgid "error"
-#~ msgstr "¿¡·¯"
-
-#~ msgid ""
-#~ "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
-#~ "\n"
-#~ "Enlightenment's documentation is not present or correctly installed\n"
-#~ "\n"
-#~ "This is a fatal error and Enlightenment will cease to run.\n"
-#~ "Please rectify this situation and ensure it is installed\n"
-#~ "correctly.\n"
-#~ "\n"
-#~ "The reason this could be missing is due to badly created\n"
-#~ "packages, someone manually deleting those files or perhaps\n"
-#~ "an error in installing Enlightenment.\n"
-#~ msgstr ""
-#~ "!!!!!!!! ¿¡·¯ ¿¡·¯ ¿¡·¯ ¿¡·¯ !!!!!!!!\n"
-#~ "\n"
-#~ "ÀÎ¶óÀÌÆ°¸ÕÆ®ÀÇ ¹®¼­µéÀ» Ã£À» ¼ö ¾ø½À´Ï´Ù\n"
-#~ "\n"
-#~ "ÀÌ°ÍÀº ½É°¢ÇÑ ¿¡·¯ÀÌ¸ç ÀÎ¶óÀÌÆ°¸ÕÆ®´Â ½ÇÇàµÉ ¼ö ¾ø½À´Ï´Ù.\n"
-#~ "ÀÌ ¹®Á¦¸¦ °íÄ¡½Ã±â¸¦ ¹Ù¶ó¸ç ÀÎ½ºÅçÀÌ Á¦´ë·Î µÇ¾ú´Â Áö¸¦\n"
-#~ "È®ÀÎÇÏ½Ã±â ¹Ù¶ø´Ï´Ù.\n"
-#~ "\n"
-#~ "ÀÌ ÀÏÀÌ ¹ß»ıÇÑ ÀÌÀ¯´Â ÆĞÅ°Áö°¡ Àß¸ø ¸¸µé¾î Á³µç Áö ´©±º°¡\n"
-#~ "¼ÕÀ¸·Î ±× ÆÄÀÏµéÀ» Áö¿üµç Áö ¾Æ´Ï¸é ÀÎ¶óÀÌÆ°¸ÕÆ® ÀÎ½ºÅçÀÌ\n"
-#~ "Àß¸øµÈ °ÍÀÔ´Ï´Ù.\n"
-
-#~ msgid "Module is Already Loaded.\n"
-#~ msgstr "¸ğµâÀÌ ÀÌ¹Ì ÀûÀçµÇ¾ú½À´Ï´Ù.\n"
-
-#~ msgid "Module Failed During Load.\n"
-#~ msgstr "¸ğµâÀÌ ÀûÀç µµÁß ½ÇÆĞÇß½À´Ï´Ù.\n"
-
-#~ msgid "Module Unload Failed.\n"
-#~ msgstr "¸ğµâ ³»¸®±â°¡ ½ÇÆĞÇß½À´Ï´Ù.\n"
-
-#~ msgid "Module is not Loaded.\n"
-#~ msgstr "¸ğµâÀÌ ÀûÀçµÇÁö ¾Ê¾Ò½À´Ï´Ù.\n"
-
-#~ msgid "Unknown Module Error.\n"
-#~ msgstr "¸ğ¸£´Â ¸ğµâ ¿¡·¯.\n"
-
-#~ msgid "Enlightenment's message of the day"
-#~ msgstr "ÀÎ¶óÀÌÆ°¸ÕÆ® ¿À´ÃÀÇ ¸Ş½ÃÁö"
-
-#~ msgid "KDE Settings"
-#~ msgstr "KDE ¼³Á¤"
-
-#~ msgid ""
-#~ "Enlightenment KDE\n"
-#~ "Settings Dialog\n"
-#~ msgstr ""
-#~ "ÀÎ¶óÀÌÆ°¸ÕÆ® KDE\n"
-#~ "¼³Á¤ ´ëÈ­»óÀÚ\n"
-
-#~ msgid "Enable KDE Support"
-#~ msgstr "KDE Áö¿ø »ç¿ë"
-
-#, fuzzy
-#~ msgid "Move & Resize Settings Example"
-#~ msgstr "ÀÌµ¿°ú Å©±âÁ¶Á¤ ¼³Á¤"
+msgstr "ê¸°ì¡´ ì™¸ë¶€ E ì„¤ì • ë„êµ¬ ..."
