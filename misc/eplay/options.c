@@ -99,7 +99,7 @@ int options_read(int argc, char **argv)
 				do_grab = 1;
 				break;
 			case 'v':
-				g_print("qiv (Quick Image Viewer) v%s\n", VERSION);
+				g_print("eplay (e flipbook) v%s\n", VERSION);
 				gdk_exit(0);
 				break;
 			case 'o':
