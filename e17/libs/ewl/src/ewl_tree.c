@@ -114,6 +114,9 @@ void ewl_tree_set_headers(Ewl_Tree *tree, char **headers)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("tree", tree);
 
+	if (!EWL_CONTAINER(tree)->children)
+		DRETURN(DLEVEL_STABLE);
+
 	row = ewd_list_goto_first(EWL_CONTAINER(tree)->children);
 	ewd_list_goto_first(EWL_CONTAINER(row)->children);
 
@@ -262,6 +265,7 @@ Ewl_Widget *ewl_tree_add_text_row(Ewl_Tree *tree, Ewl_Row *prow, char **text)
 void ewl_tree_remove_row(Ewl_Tree *tree, Ewl_Row *row)
 {
 	Ewl_Widget *w;
+	Ewl_Container *c;
 	Ewl_Tree_Node *node;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -270,9 +274,12 @@ void ewl_tree_remove_row(Ewl_Tree *tree, Ewl_Row *row)
 	DCHECK_PARAM_PTR("row", row);
 
 	node = EWL_TREE_NODE(EWL_WIDGET(row)->parent);
+	c = EWL_CONTAINER(row);
 
-	while ((w = ewd_list_goto_first(EWL_CONTAINER(row)->children)))
-		ewl_container_remove_child(EWL_CONTAINER(row), w);
+	if (c->children) {
+		while ((w = ewd_list_goto_first(c->children)))
+			ewl_container_remove_child(c, w);
+	}
 
 	ewl_widget_destroy(EWL_WIDGET(node));
 
@@ -459,6 +466,9 @@ void ewl_tree_node_expand(Ewl_Tree_Node *node)
 
 	node->expanded = EWL_TREE_NODE_EXPANDED;
 
+	if (!EWL_CONTAINER(node)->children)
+		DRETURN(DLEVEL_STABLE);
+
 	ewd_list_goto_first(EWL_CONTAINER(node)->children);
 	ewd_list_next(EWL_CONTAINER(node)->children);
 
@@ -485,6 +495,9 @@ ewl_tree_node_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 		DRETURN(DLEVEL_STABLE);
 
 	c = EWL_CONTAINER(w);
+
+	if (!c->children)
+		DRETURN(DLEVEL_STABLE);
 
 	ewd_list_goto_first(c->children);
 	child = ewd_list_next(c->children);

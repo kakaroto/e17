@@ -1238,7 +1238,8 @@ ewl_widget_mouse_up_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 
 	if (ewl_object_has_state(EWL_OBJECT(w), EWL_FLAG_STATE_HILITED)) {
 		ewl_widget_set_state(w, "hilited");
-		ewl_callback_call(w, EWL_CALLBACK_CLICKED);
+		ewl_callback_call_with_event_data(w, EWL_CALLBACK_CLICKED,
+						  ev_data);
 	} else
 		ewl_widget_set_state(w, "normal");
 }

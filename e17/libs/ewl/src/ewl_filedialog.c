@@ -151,12 +151,22 @@ ewl_filedialog_open_init(Ewl_Filedialog * fd, Ewl_Callback_Function cb)
 	ewl_widget_show(fd->selector);
 
 	od->box = ewl_box_new(EWL_ORIENTATION_HORIZONTAL);
+	ewl_object_set_fill_policy(EWL_OBJECT(od->box), EWL_FLAG_FILL_HFILL |
+							EWL_FLAG_FILL_HSHRINK);
 	ewl_box_set_spacing(EWL_BOX(od->box), 4);
 	ewl_object_set_padding(EWL_OBJECT(od->box), 10, 10, 10, 10);
+	/*
 	ewl_object_set_fill_policy(EWL_OBJECT(od->box), EWL_FLAG_FILL_NONE);
+	*/
 	ewl_object_set_alignment(EWL_OBJECT(od->box), EWL_FLAG_ALIGN_RIGHT);
 	ewl_container_append_child(EWL_CONTAINER(vbox), od->box);
 	ewl_widget_show(od->box);
+
+	fd->entry = ewl_entry_new ("");
+	ewl_container_append_child(EWL_CONTAINER(od->box), fd->entry);
+	ewl_callback_append (fd->entry, EWL_CALLBACK_VALUE_CHANGED,
+			ewl_filedialog_change_path, fd);
+	ewl_widget_show (fd->entry);
 
 	od->open = ewl_button_new("Open");
 	ewl_object_set_fill_policy(EWL_OBJECT(od->open), EWL_FLAG_FILL_NONE);
@@ -173,12 +183,6 @@ ewl_filedialog_open_init(Ewl_Filedialog * fd, Ewl_Callback_Function cb)
 
 	fd->dialog = (void *) od;
 
-	fd->entry = ewl_entry_new ("");
-	ewl_container_append_child(EWL_CONTAINER(vbox), fd->entry);
-	ewl_callback_append (fd->entry, EWL_CALLBACK_VALUE_CHANGED,
-			ewl_filedialog_change_path, fd);
-	ewl_widget_show (fd->entry);
-	
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 

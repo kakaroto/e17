@@ -128,6 +128,7 @@ char ewl_password_get_obscure(Ewl_Password * e)
 
 /**
  * @param e: set the obscuring character for a passwords text
+ * @param o: the character to obscure the password characters
  * @return Returns no value.
  * @brief Sets the character used to obscure the text for a password.
  */
