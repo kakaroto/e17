@@ -3,6 +3,7 @@
 part {
 	name, "MailBoxCountTotal";
 	type, TEXT;
+	repeat_events, true;
 
 	description {
 		color, 255 255 255 255;
