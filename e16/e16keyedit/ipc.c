@@ -40,6 +40,7 @@ static void ListFreeClient(void *ptr);
 extern gchar in_init;
 extern gint gdk_error_warnings;
 
+
 gint CommsInit(void (*msg_receive_func) (gchar * msg))
 {
 	Window win;
