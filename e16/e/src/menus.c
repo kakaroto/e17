@@ -684,7 +684,7 @@ RealizeMenu(Menu * m)
 {
    int                 i, maxh = 0, maxw =
 
-   0,                  maxx1, maxx2, w, h, x, y, r, mmw, mmh;
+      0, maxx1, maxx2, w, h, x, y, r, mmw, mmh;
    unsigned int        iw, ih;
    ImlibImage         *im;
    XSetWindowAttributes att;
@@ -1016,10 +1016,10 @@ CreateMenuFromDirectory(char *name, MenuStyle * ms, char *dir)
    struct stat         st;
    const char         *chmap =
 #ifndef __EMX__
-   "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_";
+      "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_";
 
 #else
-   "0123456789abcdefghijklmnopqrstuvwxyz€‚ƒ„…†‡ˆŠ‹ŒŽ‘’“”•–—˜™-_";
+      "0123456789abcdefghijklmnopqrstuvwxyz€‚ƒ„…†‡ˆŠ‹ŒŽ‘’“”•–—˜™-_";
 
 #endif
    FILE               *f;
@@ -1047,7 +1047,7 @@ CreateMenuFromDirectory(char *name, MenuStyle * ms, char *dir)
 	   cc = st.st_ctime;
 	Esnprintf(cs, sizeof(cs),
 		  "%s/cached/img/.%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c",
-		  UserEDir(),
+		  UserCacheDir(),
 		  chmap[(aa >> 0) & 0x3f],
 		  chmap[(aa >> 6) & 0x3f],
 		  chmap[(aa >> 12) & 0x3f],
@@ -1100,14 +1100,13 @@ CreateMenuFromDirectory(char *name, MenuStyle * ms, char *dir)
 				 ImlibColor          icl;
 				 char                tile = 1, keep_asp = 0;
 				 int                 width, height, scalex =
-				 0,                  scaley = 0;
-				 int                 scr_asp, im_asp, w2,
-				                     h2;
+				    0, scaley = 0;
+				 int                 scr_asp, im_asp, w2, h2;
 				 int                 maxw = 48, maxh = 48;
 				 int                 justx = 512, justy = 512;
 
 				 Esnprintf(s2, sizeof(s2), "%s/cached/img/%s",
-					   UserEDir(), s3);
+					   UserCacheDir(), s3);
 				 width = im->rgb_width;
 				 height = im->rgb_height;
 				 h2 = maxh;
@@ -1193,7 +1192,8 @@ CreateMenuFromDirectory(char *name, MenuStyle * ms, char *dir)
 			    ic = CreateIclass();
 			    ic->name = duplicate("`");
 			    ic->norm.normal = CreateImageState();
-			    Esnprintf(stmp, sizeof(stmp), "cached/img/%s", s3);
+			    Esnprintf(stmp, sizeof(stmp), "%s/cached/img/%s",
+				      UserCacheDir(), s3);
 			    ic->norm.normal->im_file = duplicate(stmp);
 			    ic->norm.normal->unloadable = 1;
 			    IclassPopulate(ic);
@@ -1319,7 +1319,7 @@ CreateMenuFromDirectory(char *name, MenuStyle * ms, char *dir)
 			    chmap[(cc >> 6) & 0x3f],
 			    chmap[(cc >> 12) & 0x3f],
 			    chmap[(cc >> 18) & 0x3f],
-			  chmap[(cc >> 24) & 0x3f], chmap[(cc >> 28) & 0x3f]);
+			    chmap[(cc >> 24) & 0x3f], chmap[(cc >> 28) & 0x3f]);
 		  bg =
 		     (Background *) FindItem(s3, 0, LIST_FINDBY_NAME,
 					     LIST_TYPE_BACKGROUND);
@@ -1334,12 +1334,12 @@ CreateMenuFromDirectory(char *name, MenuStyle * ms, char *dir)
 			    ImlibColor          icl;
 			    char                tile = 1, keep_asp = 0;
 			    int                 width, height, scalex =
-			    0,                  scaley = 0;
+			       0, scaley = 0;
 			    int                 scr_asp, im_asp, w2, h2;
 			    int                 maxw = 48, maxh = 48;
 
 			    Esnprintf(s2, sizeof(s2), "%s/cached/img/%s",
-				      UserEDir(), s3);
+				      UserCacheDir(), s3);
 			    width = im->rgb_width;
 			    height = im->rgb_height;
 			    h2 = maxh;
@@ -1412,7 +1412,8 @@ CreateMenuFromDirectory(char *name, MenuStyle * ms, char *dir)
 		       ic = CreateIclass();
 		       ic->name = duplicate("`");
 		       ic->norm.normal = CreateImageState();
-		       Esnprintf(stmp, sizeof(stmp), "cached/img/%s", s3);
+		       Esnprintf(stmp, sizeof(stmp), "%s/cached/img/%s",
+				 UserCacheDir(), s3);
 		       ic->norm.normal->im_file = duplicate(stmp);
 		       ic->norm.normal->unloadable = 1;
 		       IclassPopulate(ic);
@@ -1702,7 +1703,7 @@ CreateMenuFromGnome(char *name, MenuStyle * ms, char *dir)
 		  if (f)
 		    {
 		       char               *iname = NULL, *exec = NULL, *texec =
-		       NULL,              *tmp;
+			  NULL, *tmp;
 		       char               *en_name = NULL;
 
 		       while (fgets(s, sizeof(s), f))
@@ -1714,7 +1715,8 @@ CreateMenuFromGnome(char *name, MenuStyle * ms, char *dir)
 			    else if (name_buf[0] &&
 				     !strncmp(s, name_buf, strlen(name_buf)))
 			       iname = duplicate(&(s[strlen(name_buf)]));
-			    else if (!strncmp(s, "TryExec=", strlen("TryExec=")))
+			    else
+			       if (!strncmp(s, "TryExec=", strlen("TryExec=")))
 			       texec = duplicate(&(s[strlen("TryExec=")]));
 			    else if (!strncmp(s, "Exec=", strlen("Exec=")))
 			       exec = duplicate(&(s[strlen("Exec=")]));

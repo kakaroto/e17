@@ -2044,7 +2044,7 @@ CB_ConfigureBG(int val, void *data)
 	   ImlibImage         *im;
 	   Pixmap              p2;
 
-	   Esnprintf(s, sizeof(s), "%s/cached/bgsel/%s", UserEDir(),
+	   Esnprintf(s, sizeof(s), "%s/cached/bgsel/%s", UserCacheDir(),
 		     tmp_bg->name);
 	   p2 = ECreatePixmap(disp, root.win, 64, 48, root.depth);
 	   SetBackgroundTo(id, p2, tmp_bg, 0);
@@ -2487,13 +2487,13 @@ BG_RedrawView(char nuke_old)
 		    }
 		  else
 		    {
-		       Esnprintf(s, sizeof(s), "cached/bgsel/%s",
-				 bglist[i]->name);
+		       Esnprintf(s, sizeof(s), "%s/cached/bgsel/%s",
+				 UserCacheDir(), bglist[i]->name);
 		       im = ELoadImage(s);
 		       if (!im)
 			 {
 			    Esnprintf(s, sizeof(s), "%s/cached/bgsel/%s",
-				      UserEDir(), bglist[i]->name);
+				      UserCacheDir(), bglist[i]->name);
 			    p2 = ECreatePixmap(disp, pmap, 64, 48, id->x.depth);
 			    SetBackgroundTo(id, p2, bglist[i], 0);
 			    XCopyArea(disp, p2, pmap, gc, 0, 0, 64, 48, x + 4,

@@ -1008,8 +1008,9 @@ PagerRedraw(Pager * p, char newbg)
 		       uniq = GetUniqueBGString(desks.desk[p->desktop].bg);
 		       Esnprintf(s, sizeof(s),
 				 "%s/cached/pager/%s.%i.%i.%s",
-				 UserEDir(), desks.desk[p->desktop].bg->name,
-				 (p->w / ax), (p->h / ay), uniq);
+				 UserCacheDir(),
+				 desks.desk[p->desktop].bg->name, (p->w / ax),
+				 (p->h / ay), uniq);
 		       Efree(uniq);
 
 		       im = Imlib_load_image(id, s);

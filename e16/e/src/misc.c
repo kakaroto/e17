@@ -29,6 +29,7 @@ extern char        *__XOS2RedirRoot(const char *);
 void                EdgeTimeout(int val, void *data);
 
 static char        *dir = NULL;
+static char        *cacheDir = NULL;
 
 void
 BlumFlimFrub(void)
@@ -155,6 +156,20 @@ UserEDir(void)
       dir = duplicate(buf);
    }
    return dir;
+}
+
+void
+SetCacheDir(char *d)
+{
+   cacheDir = duplicate(d);
+}
+
+char               *
+UserCacheDir(void)
+{
+   if (!cacheDir)
+      cacheDir = duplicate(UserEDir());
+   return cacheDir;
 }
 
 int

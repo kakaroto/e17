@@ -105,10 +105,6 @@ main(int argc, char **argv)
    {
       int                 j = 0;
 
-      /* Set a default location for the "previous session" data when
-       * we do not actually have a previous session. */
-      SetSMFile(NULL);
-
       /* Now we're going to interpret any of the commandline parameters
        * that are passed to it -- Well, at least the ones that we
        * understand.
@@ -123,6 +119,10 @@ main(int argc, char **argv)
 	   else if ((!strcmp("-econfdir", argv[j])) && (argc - j > 1))
 	     {
 		SetEDir(argv[++j]);
+	     }
+	   else if ((!strcmp("-ecachedir", argv[j])) && (argc - j > 1))
+	     {
+		SetCacheDir(argv[++j]);
 	     }
 	   else if ((!strcmp("-display", argv[j])) && (argc - j > 1))
 	     {
@@ -163,6 +163,7 @@ main(int argc, char **argv)
 		printf("enlightenment options:                      \n"
 		       "\t-theme /path/to/theme                     \n"
 		       "\t-econfdir /path/to/.enlightenment/conf/dir\n"
+		       "\t-ecachedir /path/to/cached/dir            \n"
 		       "\t[-smid | -clientId | --sm-client-id] id   \n"
 		       "\t-smfile file                              \n"
 		       "\t-ext_init_win window_id                   \n"
@@ -181,6 +182,10 @@ main(int argc, char **argv)
 		exit(0);
 	     }
 	}
+
+      /* Set a default location for the "previous session" data when
+       * we do not actually have a previous session. */
+      SetSMFile(NULL);
    }
 
    if (themepath[0] == 0)

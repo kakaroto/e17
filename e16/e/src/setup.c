@@ -684,27 +684,27 @@ SetupDirs()
       md(s);
    else
       ChkDir(s);
-   Esnprintf(s, sizeof(s), "%s/cached", UserEDir());
+   Esnprintf(s, sizeof(s), "%s/cached", UserCacheDir());
    if (!exists(s))
       md(s);
    else
       ChkDir(s);
-   Esnprintf(s, sizeof(s), "%s/cached/img", UserEDir());
+   Esnprintf(s, sizeof(s), "%s/cached/img", UserCacheDir());
    if (!exists(s))
       md(s);
    else
       ChkDir(s);
-   Esnprintf(s, sizeof(s), "%s/cached/cfg", UserEDir());
+   Esnprintf(s, sizeof(s), "%s/cached/cfg", UserCacheDir());
    if (!exists(s))
       md(s);
    else
       ChkDir(s);
-   Esnprintf(s, sizeof(s), "%s/cached/bgsel", UserEDir());
+   Esnprintf(s, sizeof(s), "%s/cached/bgsel", UserCacheDir());
    if (!exists(s))
       md(s);
    else
       ChkDir(s);
-   Esnprintf(s, sizeof(s), "%s/cached/pager", UserEDir());
+   Esnprintf(s, sizeof(s), "%s/cached/pager", UserCacheDir());
    if (!exists(s))
       md(s);
    else
@@ -730,6 +730,8 @@ SetupEnv()
    Esnprintf(s, sizeof(s), "%i", getpid());
    Esetenv("EPID", s, 1);
    Esetenv("ETHEME", themepath, 1);
+   Esetenv("ECONFDIR", UserEDir(), 1);
+   Esetenv("ECACHEDIR", UserCacheDir(), 1);
 
 #ifdef __EMX__
    Esetenv("EMXSHELL", "sh.exe", 1);
@@ -737,7 +739,8 @@ SetupEnv()
    return;
 }
 
-Window MakeExtInitWin(void)
+Window
+MakeExtInitWin(void)
 {
    Display            *d2;
    Window              win;
