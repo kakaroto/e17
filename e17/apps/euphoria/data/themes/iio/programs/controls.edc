@@ -46,7 +46,7 @@
 			name, 			"_switch_mode_1";
 			signal, 			"mouse,down,1";
 			source, 			"left_bar";
-			action, 			SIGNAL_EMIT "SWITCH_GROUP", "euphoria";
+			action, 			SIGNAL_EMIT "SWITCH_GROUP", "euphoria_small";
 	}
 
 	program {
@@ -89,14 +89,14 @@
 			name, 			"__switch_mode_1";
 			signal, 			"mouse,down,1";
 			source, 			"right_bar";
-			action, 			SIGNAL_EMIT "SWITCH_GROUP", "euphoria";
+			action, 			SIGNAL_EMIT "SWITCH_GROUP", "euphoria_small";
 	} 
 
 	program {
 			name, 			"switch_mode_2";
 			signal, 			"mouse,down,1,double";
 			source, 			"small_base";
-			action, 			SIGNAL_EMIT "SWITCH_GROUP", "euphoria";
+			action, 			SIGNAL_EMIT "SWITCH_GROUP", "euphoria_small";
 	}
 
 
