@@ -778,7 +778,7 @@ HandleMotion(XEvent * ev)
 	int                 tx[256];
 	int                 ty[256];
 	static int          menu_scroll_dist = 4;
-	int                 my_width, my_height, x_org, y_org;
+	int                 my_width, my_height, x_org, y_org, head_num = 0;
 
 	my_width = root.w;
 	my_height = root.h;
@@ -809,6 +809,7 @@ HandleMotion(XEvent * ev)
 				      my_height = screens[i].height;
 				      x_org = screens[i].x_org;
 				      y_org = screens[i].y_org;
+				      head_num = i;
 				   }
 			      }
 			 }
@@ -922,28 +923,41 @@ HandleMotion(XEvent * ev)
 		  if (xdist > my_height)
 		     xdist = my_height * SCROLL_RATIO;
 
-		  for (i = 0; i < mode.cur_menu_depth; i++)
+		  if (mode.cur_menu_depth)
 		    {
-		       menus[i] = NULL;
-		       if (mode.cur_menu[i])
+#ifdef HAS_XINERAMA
+		       ewin = FindEwinByMenu(mode.cur_menu[0]);
+		       if (ewin->head == head_num)
 			 {
-			    ewin = FindEwinByMenu(mode.cur_menu[i]);
-			    if (ewin)
+#endif
+			    for (i = 0; i < mode.cur_menu_depth; i++)
 			      {
-				 menus[i] = ewin;
-				 fx[i] = ewin->x;
-				 fy[i] = ewin->y;
-				 tx[i] = ewin->x + xdist;
-				 ty[i] = ewin->y + ydist;
+				 menus[i] = NULL;
+				 if (mode.cur_menu[i])
+				   {
+				      ewin = FindEwinByMenu(mode.cur_menu[i]);
+				      if (ewin)
+					{
+					   menus[i] = ewin;
+					   fx[i] = ewin->x;
+					   fy[i] = ewin->y;
+					   tx[i] = ewin->x + xdist;
+					   ty[i] = ewin->y + ydist;
+					}
+				   }
 			      }
+			    SlideEwinsTo(menus, fx, fy, tx, ty,
+					 mode.cur_menu_depth, mode.shadespeed);
+			    if (((xdist != 0) || (ydist != 0))
+				&& (mode.warpmenus))
+			       XWarpPointer(disp, None, None, 0, 0, 0, 0, xdist,
+					    ydist);
+#ifdef HAS_XINERAMA
 			 }
+#endif
 		    }
-		  SlideEwinsTo(menus, fx, fy, tx, ty, mode.cur_menu_depth,
-			       mode.shadespeed);
 	       }
 	  }
-	if (((xdist != 0) || (ydist != 0)) && (mode.warpmenus))
-	   XWarpPointer(disp, None, None, 0, 0, 0, 0, xdist, ydist);
      }
    if (mode.mode == MODE_NONE)
      {

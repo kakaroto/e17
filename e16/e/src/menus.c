@@ -275,6 +275,7 @@ ShowMenu(Menu * m, char noshow)
    int                 x, y;
    int                 wx = 0, wy = 0;	/* wx, wy added to stop menus */
    unsigned int        w, h, mw, mh;	/* from appearing offscreen */
+   int                 head_num = 0;
 
    EDBUG(5, "ShowMenu");
    if ((m->num <= 0) || (!m->style))
@@ -383,6 +384,7 @@ ShowMenu(Menu * m, char noshow)
 					   y_origin = screens[i].y_org;
 					   width = screens[i].width;
 					   height = screens[i].height;
+					   head_num = i;
 					}
 				   }
 			      }
@@ -451,6 +453,7 @@ ShowMenu(Menu * m, char noshow)
      {
 	DesktopRemoveEwin(ewin);
 	ewin->layer = 99;
+	ewin->head = head_num;
 	DesktopAddEwinToTop(ewin);
 	if (ewin->desktop != 0)
 	   MoveEwin(ewin, ewin->x - desks.desk[ewin->desktop].x,

@@ -4624,3 +4624,10 @@ Mon Apr 10 12:45:00 PDT 2000
 (Mandrake)
 
 redid all the xinerama menu code
+
+-------------------------------------------------------------------------------
+
+Mon Apr 10 15:01:10 PDT 2000
+(Mandrake)
+
+fixed the rest of xinerama menu usage (please test under non-xinerama)
