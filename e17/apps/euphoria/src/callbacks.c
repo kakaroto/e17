@@ -423,23 +423,22 @@ cb_key_release(void *data, Evas *evas, Evas_Object *obj, void *event_info) {
 
 /* Callback to to close the filedialog window */
 static void destroy_ewl_filedialog(Ewl_Widget * w, void *ev_data,
-                            void *user_data)
-{
+                            void *user_data) {
 	ewl_widget_destroy(w);
 	_fd_win = NULL;
 }
 
 static void cb_file_dialog_value_changed(Ewl_Widget *w, void *ev_data,
-                                         void *udata) 
-{
+                                         void *udata) {
 	Euphoria *e = udata;
 
-	if (ev_data)
-	{
+	if (ev_data) {
 	    char buf[PATH_MAX];
+
 	    snprintf(buf, PATH_MAX, "file://%s", (char*)ev_data);
 	    xmmsc_playlist_add(e->xmms, buf);
 	}
+
 	ewl_widget_hide(_fd_win);
 }
 
@@ -522,21 +521,22 @@ XMMS_CB(playback_playtime) {
 XMMS_CB(playback_currentid) {
 	unsigned int id = (unsigned int) arg;
 	unsigned int *ids = NULL;
+
 	/* if there's no current item, use the first one instead */
 	id = MAX(id, 1);
-	if((id = xmmscs_playback_current_id(e->xmms)) < 1)
-	{
-	    if((ids = xmmscs_playlist_list(e->xmms)))
-	    {
-		if(ids[0])
-		    id = ids[0];
-	    }
+
+	if ((id = xmmscs_playback_current_id(e->xmms)) < 1) {
+	    if ((ids = xmmscs_playlist_list(e->xmms))) {
+			if (ids[0])
+				id = ids[0];
+		}
 	}
-	if(id >= 1)
-	{
-	    playlist_set_current(e->playlist, id);
-	    xmmsc_playlist_get_mediainfo(e->xmms, id);
+
+	if (id >= 1) {
+		playlist_set_current(e->playlist, id);
+		xmmsc_playlist_get_mediainfo(e->xmms, id);
 	}
+
 	hilight_current_track(e);
 }
 
@@ -586,18 +586,18 @@ XMMS_CB(playlist_remove) {
 	unsigned int id = (unsigned int) arg;
 	
 	/* FIXME: I think this is xmms2, id is always 0, stopping segv */
-	if(id < 1)
+	if (id < 1)
 	    fprintf(stderr, "Is %d what really was removed??? :)\n", id);
-	else
-	{
+	else {
 	    pli = playlist_item_find_by_id(e->playlist, id);
 	    assert(pli);
 	    playlist_item_remove(e->playlist, pli);
 	}
 }
+
 XMMS_CB(playlist_clear) {
 	PlayListItem *pli;
-	
+
 	playlist_remove_all(e->playlist);
 	/* FIXME: Set the text in the player to the default */
 }

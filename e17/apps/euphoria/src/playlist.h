@@ -27,7 +27,7 @@ void playlist_free(PlayList *pl);
 
 void playlist_container_set(PlayList *pl, Evas_Object *container);
 
-bool playlist_load_file(PlayList *pl, const char *file, bool append);
+void playlist_load_file(PlayList *pl, const char *uri, bool append);
 bool playlist_load_dir(PlayList *pl, const char *dir, bool append);
 bool playlist_load_any(PlayList *pl, const char *path, bool append);
 

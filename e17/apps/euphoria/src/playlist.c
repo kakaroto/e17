@@ -125,28 +125,18 @@ PlayListItem *playlist_set_current(PlayList *pl, unsigned int id)
 	PlayListItem *pli = NULL;
 
 	assert(pl);
-	if((pli = playlist_item_find_by_id (pl, id)))
-	{
-	    pl->current_item = pli;
-	}
+
+	if ((pli = playlist_item_find_by_id (pl, id)))
+		pl->current_item = pli;
 	else
-	{
-	    fprintf(stderr, "%p %d\n", pl, id); 
-	}
+		fprintf(stderr, "%p %d\n", pl, id); 
+
 	return pli;
 }
-bool
-playlist_load_file(PlayList *pl, const char *fileuri, bool append)
-{
-    if(pl)
-    {
-	if(fileuri)
-	{
-	    xmmsc_playlist_add(pl->xmms, (char*)fileuri);
-	    return(true);
-	}
-    }
-    else
-	fprintf(stderr, "Playlist was NULL in playlist_load_file\n");
-    return(false);
+
+void playlist_load_file(PlayList *pl, const char *uri, bool append) {
+	assert(pl);
+	assert(fileuri);
+
+	xmmsc_playlist_add(pl->xmms, (char *) uri);
 }
