@@ -47,10 +47,10 @@ typedef struct {
 #include "mailbox.h"
 #include "embrace_plugin.h"
 
+#if 0
 static void on_edje_signal_exec (void *udata, Evas_Object *o,
                                  const char *emission, const char *src)
 {
-#if 0
 	MailBox *mb = udata;
 	const char *cmd, *path;
 	char tmp[PATH_MAX + 1];
@@ -64,8 +64,8 @@ static void on_edje_signal_exec (void *udata, Evas_Object *o,
 	snprintf (tmp, sizeof (tmp), cmd, path);
 
 	ecore_exe_run (tmp, NULL);
-#endif
 }
+#endif
 
 MailBox *mailbox_new (Evas *evas, const char *theme)
 {
