@@ -1,3 +1,15 @@
+/*
+ * esmart_main.c
+ * 
+ * a test program for the thumbnail and container smart objects.
+ * usage: esmart_test file1 [file2] [file3] ...
+ *
+ * esmart_test creates thumbnails out of all valid image files given
+ * as arguments, and puts them into a horizontal container.
+ * click on the white background to scroll the contents.
+ */
+
+
 #include <stdio.h>
 #include <Ecore.h>
 #include <Ecore_Evas.h>
@@ -29,6 +41,32 @@ exit_cb(void *ev, int ev_type, void *data)
 {
     ecore_main_loop_quit();
     return(0);
+}
+
+static int
+bg_down_cb(void *data, Evas *evas, Evas_Object *obj, void *event_info)
+{
+  Evas_Event_Mouse_Down *event = event_info;
+  Evas_Object *cont = data;
+  double x, w;
+  
+  evas_object_geometry_get(obj, &x, NULL, &w, NULL);
+  if (event->canvas.x < x + w/2)
+    e_container_scroll_start(cont, -1);
+  else
+    e_container_scroll_start(cont, 1);
+  
+
+}
+
+static int
+bg_up_cb(void *data, Evas *evas, Evas_Object *obj, void *event_info)
+{
+  Evas_Event_Mouse_Up *event = event_info;
+  Evas_Object *cont = data;
+
+  printf("up!\n");
+  e_container_scroll_stop(cont);
 }
 
 int
@@ -71,7 +109,10 @@ main(int argc, char *argv[])
 	e_container_fill_policy_set(cont,
 				    CONTAINER_FILL_POLICY_FILL_Y | 
 				    CONTAINER_FILL_POLICY_KEEP_ASPECT);
-	
+
+	evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_DOWN, bg_down_cb, cont);
+	evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_UP, bg_up_cb, cont);
+
 	while(--argc)
 	{
 	    if((o = e_thumb_new(ecore_evas_get(ee), argv[argc])))
