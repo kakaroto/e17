@@ -232,6 +232,7 @@ void etox_append_text(Evas_Object * obj, char *text)
 		et->length -= end->length;
 		et->h -= end->h;
 		etox_line_merge_append(end, start);
+		etox_line_minimize(end);
 		etox_line_free(start);
 		if (lines)
 			end->length++;
@@ -322,6 +323,7 @@ void etox_prepend_text(Evas_Object * obj, char *text)
 		et->length -= end->length;
 		et->h -= end->h;
 		etox_line_merge_prepend(start, end);
+		etox_line_minimize(end);
 		etox_line_free(start);
 		if (et->lines->next)
 			start->length++;
@@ -420,6 +422,8 @@ void etox_insert_text(Evas_Object * obj, char *text, int index)
 	lines = evas_list_remove(lines, temp);
 	len = start->length;
 	etox_line_merge_append(start, temp);
+	etox_line_minimize(start);
+	etox_line_free(temp);
 	et->length += start->length - len;
 	if (start->w > et->tw)
 		et->tw = start->w;
@@ -436,9 +440,11 @@ void etox_insert_text(Evas_Object * obj, char *text, int index)
 		end = ll->next->data;
 		len = temp->length;
 		etox_line_merge_prepend(temp, end);
+		etox_line_minimize(end);
 		et->length += temp->length - len;
 		if (end->w > et->tw)
 			et->tw = end->w;
+		etox_line_free(temp);
 	}
 
 	/*
@@ -486,7 +492,7 @@ void etox_delete_text(Evas_Object * obj, unsigned int index, unsigned int len)
 	bit = etox_line_index_to_bit(start, &index);
 	etox_line_split(start, bit, index);
 
-	index ++;
+	index++;
 	idx = etox_index_to_line(et, &index);
 	if (!idx) return;
 
@@ -501,12 +507,13 @@ void etox_delete_text(Evas_Object * obj, unsigned int index, unsigned int len)
 	 * these +1's are here cuz the etox length seems to be +1 for some
 	 * reason so this just accomidates that
 	 */
-	if (idx->length == len + 1) {
+	if (idx->length == len) {
 		etox_line_remove(idx, bit);
 		evas_list_remove(et->lines, idx);
 		etox_line_free(idx);
 
-	} else if (idx->length > (len + 1)) {
+	}
+	else if (idx->length > len) {
 		Etox_Line *end = NULL;
 		Evas_Object *b2; 
 
@@ -514,7 +521,7 @@ void etox_delete_text(Evas_Object * obj, unsigned int index, unsigned int len)
 		b2 = etox_line_index_to_bit(idx, &index);
 		etox_line_split(idx, b2, index);
 
-		index = orig_index + len + 2;
+		index = orig_index + len + 1;
 		end = etox_index_to_line(et, &index);
 
 		etox_line_merge_append(start, end);
