@@ -525,25 +525,21 @@ cb_iconbar(void *data, Evas_Object *o, const char *sig, const char *src)
   Iconbar *ib;
 
   ib = (Iconbar *)data;
-
   if (!strcmp(sig, "scroll,1,start"))
   {
-    ib->scroll_timer = ecore_timer_add(0.05, positive_scroll_timer, ib);
+      e_container_scroll_start(ib->cont, -1);
   }
   else if (!strcmp(sig, "scroll,2,start"))
   {
-    ib->scroll_timer = ecore_timer_add(0.05, negative_scroll_timer, ib);
+      e_container_scroll_start(ib->cont, 1);
   }
-  
   else if (!strcmp(sig, "scroll,1,stop"))
   {
-      ecore_timer_del(ib->scroll_timer);
-      ib->scroll_timer = NULL;
+      e_container_scroll_stop(ib->cont);
   }
   else if (!strcmp(sig, "scroll,2,stop"))
   {
-      ecore_timer_del(ib->scroll_timer);
-      ib->scroll_timer = NULL;
+      e_container_scroll_stop(ib->cont);
   }
   if (!strcmp(sig, "mouse,clicked,1"))
   {
