@@ -148,6 +148,9 @@ Sylvain GIL <sylvain.gil@solsoft.fr>
 
 Gergely Egervary <mauzi@poli.hu>
         po files for hungarian
+
+Bob Arendt <rdarendt@cwcom.net>
+        64-bit fixes for e and epplets
 	
 And others whose names we probably forgot to add (email us and we'll put you
 in here)
