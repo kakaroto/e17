@@ -234,7 +234,6 @@ SetupX()
    root.scr = DefaultScreen(disp);
    display_screens = ScreenCount(disp);
    master_screen = root.scr;
-
    /* Start up on multiple heads, if appropriate */
    if ((display_screens > 1) && (!single_screen_mode))
      {
@@ -273,7 +272,7 @@ SetupX()
 			    if (NULL != dispstr)
 			       *dispstr = '\0';
 			 }
-		       Esnprintf(subdisplay + strlen(subdisplay), 255, ".%d",
+		       Esnprintf(subdisplay + strlen(subdisplay), 10, ".%d",
 				 i);
 		       dstr = duplicate(subdisplay);
 		       disp = XOpenDisplay(dstr);

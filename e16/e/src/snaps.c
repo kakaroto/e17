@@ -962,7 +962,7 @@ LoadSnapInfo(void)
    Esnprintf(buf, sizeof(buf), "%s.snapshots.%i", GetSMFile(), root.scr);
    if (!exists(buf))
       Esnprintf(buf, sizeof(buf), "%s.snapshots.%i", GetGenericSMFile(),
-		root.scr);
+                root.scr);
 #ifndef __EMX__
    f = fopen(buf, "r");
 #else
