@@ -132,6 +132,10 @@ evas_libs=`evas-config --libs`
 AC_OUTPUT([
 Makefile
 etox-config
+data/Makefile
+data/fonts/Makefile
+data/images/Makefile
+data/styles/Makefile
 src/Makefile
 src/style/Makefile
 test/Makefile
