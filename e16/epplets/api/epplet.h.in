@@ -357,6 +357,7 @@ void            Epplet_change_label(Epplet_gadget gadget, char *label);
 /* Create a window of width w, height h, with title title, using the themes
  * vertical (1), or horizontal (0) background */
 Window Epplet_create_window(int w,int h,char *title, char vertical);
+Window Epplet_create_window_borderless(int w,int h,char *title, char vertical);
 
 /* Create a config window, of width w, height h, with title title, using the
  * functions listed for ok, apply and cancel. If you specify any of the

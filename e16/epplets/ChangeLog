@@ -1495,3 +1495,16 @@ Thu Dec  9 14:29:50 EST 1999
 
 The Mountbox reacts to left and right cursor keys now. Also added a Jazz drive
 image for piercer <piercer13@home.com>. Config dialog coming soon.
+
+-------------------------------------------------------------------------------
+
+Thu Dec 09 20:49:42 GMT 1999
+(gilbertt)
+
+Hrm. If nobody minds... I've added:
+
+Window Epplet_create_window_borderless(int w,int h,char *title, char vertical);
+
+In case anyone fancies a borderless window. Or two. For displaying things. In
+windows. Without borders. For whatever reason. Erm. I'll stop now.
+
