@@ -1483,11 +1483,6 @@ void                DockDestroy(EWin * ewin);
 void                HandleDrawQueue(void);
 char                IsPropagateEwinOnQueue(EWin * ewin);
 
-void                ScaleLine(Pixmap dest, Window src, int dx, int dy, int sw,
-			      int pw, int sy, int sh);
-void                ScaleRect(Pixmap dest, Window src, int sx, int sy, int dx,
-			      int dy, int sw, int sh, int dw, int dh);
-
 Imlib_Image        *ELoadImage(const char *file);
 void                DrawEwinShape(EWin * ewin, int md, int x, int y, int w,
 				  int h, char firstlast);

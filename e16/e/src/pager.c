@@ -127,6 +127,35 @@ PagerDestroy(Pager * p)
 }
 
 static void
+ScaleRect(Window src, Pixmap dst, Pixmap * pdst, int sx, int sy, int sw, int sh,
+	  int dx, int dy, int dw, int dh, int scale)
+{
+   Imlib_Image        *im;
+   Pixmap              pmap, mask;
+   GC                  gc;
+
+   scale = (scale) ? 2 : 1;
+
+   imlib_context_set_drawable(src);
+   im = imlib_create_scaled_image_from_drawable(None, sx, sy, sw, sh,
+						scale * dw, scale * dh, 1, 0);
+   imlib_context_set_image(im);
+   imlib_render_pixmaps_for_whole_image_at_size(&pmap, &mask, dw, dh);
+   if (pdst)
+     {
+	*pdst = pmap;
+     }
+   else
+     {
+	gc = ECreateGC(dst, 0, NULL);
+	XCopyArea(disp, pmap, dst, gc, 0, 0, dw, dh, dx, dy);
+	EFreeGC(gc);
+	imlib_free_pixmap_and_mask(pmap);
+     }
+   imlib_free_image();
+}
+
+static void
 PagerUpdateTimeout(int val __UNUSED__, void *data)
 {
    Pager              *p;
@@ -171,14 +200,27 @@ PagerUpdateTimeout(int val __UNUSED__, void *data)
    xx = cx * ww;
    yy = cy * hh;
    phase = p->update_phase;
+#if 0
+   /* Due to a bug in imlib2 <= 1.2.0 we have to scan left->right in stead
+    * of top->bottom, at least for now. */
    y = ((phase & 0xfffffff8) + offsets[phase % 8]) % hh;
    y2 = (y * VRoot.h) / hh;
 
-   ScaleLine(p->pmap, VRoot.win, xx, yy + y, VRoot.w, ww, y2, (VRoot.h / hh));
+   ScaleRect(VRoot.win, p->pmap, NULL, 0, y2, VRoot.w, VRoot.h / hh,
+	     xx, yy + y, ww, 1, Conf.pagers.hiq);
    EClearArea(p->win, xx, yy + y, ww, 1, False);
+   y2 = p->h;
+#else
+   y = ((phase & 0xfffffff8) + offsets[phase % 8]) % ww;
+   y2 = (y * VRoot.w) / ww;
 
+   ScaleRect(VRoot.win, p->pmap, NULL, y2, 0, VRoot.w / ww, VRoot.h,
+	     xx + y, yy, 1, hh, Conf.pagers.hiq);
+   EClearArea(p->win, xx + y, yy, 1, hh, False);
+   y2 = p->w;
+#endif
    p->update_phase++;
-   if (p->update_phase >= p->h)
+   if (p->update_phase >= y2)
      {
 	int                 i, num;
 	EWin               *const *lst;
@@ -245,11 +287,10 @@ PagerEwinUpdateMini(Pager * p, EWin * ewin)
 	  }
 	else
 	  {
-	     ewin->mini_pmm.type = 0;
-	     ewin->mini_pmm.pmap = ECreatePixmap(p->win, w, h, VRoot.depth);
+	     ewin->mini_pmm.type = 1;
 	     ewin->mini_pmm.mask = None;
-	     ScaleRect(ewin->mini_pmm.pmap, EoGetWin(ewin), 0, 0, 0, 0,
-		       EoGetW(ewin), EoGetH(ewin), w, h);
+	     ScaleRect(EoGetWin(ewin), None, &ewin->mini_pmm.pmap, 0, 0,
+		       EoGetW(ewin), EoGetH(ewin), 0, 0, w, h, Conf.pagers.hiq);
 	  }
      }
 
@@ -471,7 +512,8 @@ PagerForceUpdate(Pager * p)
    xx = cx * ww;
    yy = cy * hh;
 
-   ScaleRect(p->pmap, VRoot.win, 0, 0, xx, yy, VRoot.w, VRoot.h, ww, hh);
+   ScaleRect(VRoot.win, p->pmap, NULL, 0, 0, VRoot.w, VRoot.h, xx, yy, ww, hh,
+	     Conf.pagers.hiq);
    EClearWindow(p->win);
 
    lst = EwinListGetForDesk(&num, p->desktop);
