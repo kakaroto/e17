@@ -7,6 +7,9 @@
 
 typedef void Epsilon_Exif_Info;
 
+#define EPSILON_ED_CAM	0x02	/* Camera-specific info. */
+#define EPSILON_ED_IMG	0x04	/* Image-specific info. */
+
 struct _Epsilon
 {
   char *hash;
@@ -55,8 +58,11 @@ int epsilon_generate (Epsilon * e);
 Epsilon_Info *epsilon_info_get (Epsilon * e);
 void epsilon_info_free (Epsilon_Info * ei);
 
-int epsilon_info_exif_props_as_int_get (Epsilon_Info * ei, long prop);
-const char *epsilon_info_exif_props_as_str_get (Epsilon_Info * ei, long prop);
+int epsilon_info_exif_props_as_int_get (Epsilon_Info * ei, unsigned short lvl,
+					long prop);
+const char *epsilon_info_exif_props_as_str_get (Epsilon_Info * ei,
+						unsigned short lvl,
+						long prop);
 void epsilon_info_exif_props_print (Epsilon_Info * ei);
 int epsilon_info_exif_get (Epsilon_Info * ei);
 

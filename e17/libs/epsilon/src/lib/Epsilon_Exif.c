@@ -11,12 +11,12 @@ static void
 _epsilon_exif_info_props_get (struct exifprop *list, unsigned short lvl,
 			      int pas);
 int
-epsilon_info_exif_props_as_int_get (Epsilon_Info * ei, long prop)
+epsilon_info_exif_props_as_int_get (Epsilon_Info * ei, unsigned short lvl,
+				    long prop)
 {
   const char *n;
   struct exifprop *list;
   int pas = TRUE;
-  unsigned short lvl = ED_IMG;
 
   if (!ei || !ei->eei)
     return (-1);
@@ -47,12 +47,12 @@ epsilon_info_exif_props_as_int_get (Epsilon_Info * ei, long prop)
 }
 
 const char *
-epsilon_info_exif_props_as_string_get (Epsilon_Info * ei, long prop)
+epsilon_info_exif_props_as_string_get (Epsilon_Info * ei, unsigned short lvl,
+				       long prop)
 {
   const char *n;
   struct exifprop *list;
   int pas = TRUE;
-  unsigned short lvl = ED_IMG;
 
   if (!ei || !ei->eei)
     return (NULL);
@@ -69,6 +69,7 @@ epsilon_info_exif_props_as_string_get (Epsilon_Info * ei, long prop)
 
       if (list->lvl == ED_OVR || list->lvl == ED_BAD)
 	list->lvl = ED_VRB;
+
       if (list->lvl == lvl)
 	{
 	  n = list->descr ? list->descr : list->name;
@@ -129,6 +130,7 @@ _epsilon_exif_info_props_get (struct exifprop *list, unsigned short lvl,
 	    case EXIF_T_EXPMODE:
 	    case 0xa002:
 	    case 0xa003:
+	    case 0x010f:
 	      if (list->str)
 		printf ("%s%s%s\n", n, " : ", list->str);
 	      else

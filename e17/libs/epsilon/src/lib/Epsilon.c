@@ -20,7 +20,8 @@
 #define THUMBNAIL_SIZE 256
 #include "exiftags/exif.h"
 
-extern int epsilon_info_exif_props_as_int_get (Epsilon_Info * ei, long prop);
+extern int epsilon_info_exif_props_as_int_get (Epsilon_Info * ei, unsigned
+					       short lvl, long prop);
 extern void epsilon_exif_info_free (Epsilon_Exif_Info * eei);
 /*
  * epsilon_exif_info_get
@@ -274,11 +275,13 @@ epsilon_info_get (Epsilon * e)
     {
       if (p->w == 0)
 	{
-	  p->w = epsilon_info_exif_props_as_int_get (p, 0xa002);
+	  p->w =
+	    epsilon_info_exif_props_as_int_get (p, EPSILON_ED_IMG, 0xa002);
 	}
       if (p->h == 0)
 	{
-	  p->h = epsilon_info_exif_props_as_int_get (p, 0xa003);
+	  p->h =
+	    epsilon_info_exif_props_as_int_get (p, EPSILON_ED_IMG, 0xa003);
 	}
     }
   return (p);
