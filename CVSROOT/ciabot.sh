@@ -14,8 +14,8 @@ To: cia@users.sf.net
 Content-Type: text/plain;
 Subject: Announce $projectname
 
-commit by $uname:
-Files: $@
+Commit by: $uname
+Where:     $@
 $message
 EOF
 
