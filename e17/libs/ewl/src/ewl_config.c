@@ -8,16 +8,16 @@
 
 static E_DB_File *config_db = NULL;
 
+void            __ewl_color_class_free(void *data);
 void            __create_user_config(void);
 
 static int      __open_config_db(const char *name);
 static void     __close_config_db(void);
-
 static int      __config_exists(char *name);
 
-Ewl_Config ewl_config;
-
 extern Ewd_List *ewl_embed_list;
+
+Ewl_Config ewl_config;
 
 /**
  * @return Returns true on success, false on failure.
@@ -35,6 +35,9 @@ int ewl_config_init(void)
 		__close_config_db();
 	else
 		__create_user_config();
+
+	if (__config_exists("system") == -1)
+		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -210,9 +213,21 @@ char *ewl_config_get_render_method()
  */
 void ewl_config_reread_and_apply(void)
 {
+	int             cc;
 	Ewl_Config      nc;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	/*
+	 * Clean out some memory first, this is likely to get re-used if the
+	 * values have not changed.
+	 */
+	IF_FREE(ewl_config.evas.render_method);
+	IF_FREE(ewl_config.theme.name);
+	if (ewl_config.theme.cclasses) {
+		ewd_list_destroy(ewl_config.theme.cclasses);
+		ewl_config.theme.cclasses = NULL;
+	}
 
 	nc.debug.enable = ewl_config_get_int("system", "/debug/enable");
 	nc.debug.level = ewl_config_get_int("system", "/debug/level");
@@ -222,6 +237,48 @@ void ewl_config_reread_and_apply(void)
 	    ewl_config_get_str("system", "/evas/render_method");
 	nc.theme.name = ewl_config_get_str("system", "/theme/name");
 	nc.theme.cache = ewl_config_get_int("system", "/theme/cache");
+	nc.theme.cclass_override = ewl_config_get_int("system",
+			"/theme/color_classes/override");
+
+	nc.theme.cclasses = NULL;
+	if (nc.theme.cclass_override) {
+		int i;
+
+		nc.theme.cclasses = ewd_list_new();
+		ewd_list_set_free_cb(nc.theme.cclasses, __ewl_color_class_free);
+		cc = ewl_config_get_int("system", "/theme/color_classes/count");
+		for (i = 0; i < cc; i++) {
+			char key[PATH_MAX];
+			Ewl_Color_Class *cclass;
+
+			cclass = NEW(Ewl_Color_Class, 1);
+
+			snprintf(key, PATH_MAX,
+					"/theme/color_classes/%d/name", i);
+			cclass->name = ewl_config_get_str("system", key);
+			if (cclass->name) {
+				snprintf(key, PATH_MAX,
+						"/theme/color_classes/%d/r", i);
+				cclass->r = ewl_config_get_int("system", key);
+
+				snprintf(key, PATH_MAX,
+						"/theme/color_classes/%d/g", i);
+				cclass->g = ewl_config_get_int("system", key);
+
+				snprintf(key, PATH_MAX,
+						"/theme/color_classes/%d/b", i);
+				cclass->b = ewl_config_get_int("system", key);
+
+				snprintf(key, PATH_MAX,
+						"/theme/color_classes/%d/a", i);
+				cclass->a = ewl_config_get_int("system", key);
+
+				ewd_list_append(nc.theme.cclasses, cclass);
+			}
+			else
+				FREE(cclass);
+		}
+	}
 
 	if (ewl_embed_list && !ewd_list_is_empty(ewl_embed_list)) {
 		Ewl_Embed      *e;
@@ -246,9 +303,6 @@ void ewl_config_reread_and_apply(void)
 		}
 	}
 
-	IF_FREE(ewl_config.evas.render_method);
-	IF_FREE(ewl_config.theme.name);
-
 	ewl_config.debug.enable = nc.debug.enable;
 	ewl_config.debug.level = nc.debug.level;
 	ewl_config.evas.font_cache = nc.evas.font_cache;
@@ -256,6 +310,20 @@ void ewl_config_reread_and_apply(void)
 	ewl_config.evas.render_method = nc.evas.render_method;
 	ewl_config.theme.name = nc.theme.name;
 	ewl_config.theme.cache = nc.theme.cache;
+	ewl_config.theme.cclass_override = nc.theme.cclass_override;
+	ewl_config.theme.cclasses = nc.theme.cclasses;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void __ewl_color_class_free(void *data)
+{
+	Ewl_Color_Class *class = data;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	FREE(class->name);
+	FREE(class);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -275,11 +343,11 @@ void __create_user_config(void)
 	}
 
 	snprintf(pe, PATH_MAX, "%s/.e", home);
-	mkdir(pe, 0755);
+	mkdir(pe, 0700);
 	snprintf(pe, PATH_MAX, "%s/.e/ewl", home);
-	mkdir(pe, 0755);
+	mkdir(pe, 0700);
 	snprintf(pe, PATH_MAX, "%s/.e/ewl/config", home);
-	mkdir(pe, 0755);
+	mkdir(pe, 0700);
 
 	ewl_config_set_int("system", "/debug/enable", 0);
 	ewl_config_set_int("system", "/debug/level", 0);

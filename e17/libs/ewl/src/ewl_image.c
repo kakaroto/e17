@@ -265,7 +265,6 @@ void __ewl_image_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 
 		if (i->path)
 			evas_object_image_file_set(i->image, i->path, NULL);
-
 	}
 
 	evas_object_layer_set(i->image, ewl_widget_get_layer_sum(w));

@@ -15,9 +15,8 @@ struct _ewl_config_main
 	Ewl_Widget *page_evas_label;
 	Ewl_Widget *page_evas;
 	Ewl_Widget *render_method_label;
-	Ewl_Widget *render_method_software;
-	Ewl_Widget *render_method_hardware;
-	Ewl_Widget *render_method_x11;
+	Ewl_Widget *render_method_software_x11;
+	Ewl_Widget *render_method_gl_x11;
 	Ewl_Widget *font_cache_label;
 	Ewl_Widget *font_cache;
 	Ewl_Widget *image_cache_label;
@@ -32,8 +31,6 @@ struct _ewl_config_main
 	Ewl_Widget *page_fx_label;
 	Ewl_Widget *page_fx;
 	Ewl_Widget *global_label;
-	Ewl_Widget *global_fps_label;
-	Ewl_Widget *global_fps;
 	Ewl_Widget *fx_separator1;
 	Ewl_Widget *plugins_label;
 	Ewl_Widget *effects_table;
@@ -154,26 +151,18 @@ main(int argc, char **argv)
 				   e_conf.render_method_label);
 	ewl_widget_show(e_conf.render_method_label);
 
-	e_conf.render_method_software =
-		ewl_radiobutton_new("Software Engine");
+	e_conf.render_method_software_x11 =
+		ewl_radiobutton_new("Software X11 Engine");
 	ewl_container_append_child(EWL_CONTAINER(e_conf.page_evas),
-				   e_conf.render_method_software);
-	ewl_widget_show(e_conf.render_method_software);
+				   e_conf.render_method_software_x11);
+	ewl_widget_show(e_conf.render_method_software_x11);
 
-	e_conf.render_method_hardware =
-		ewl_radiobutton_new("Hardware Engine");
-	ewl_radiobutton_set_chain(e_conf.render_method_hardware,
-				  e_conf.render_method_software);
+	e_conf.render_method_gl_x11 = ewl_radiobutton_new("GL X11 Engine");
+	ewl_radiobutton_set_chain(e_conf.render_method_gl_x11,
+				  e_conf.render_method_software_x11);
 	ewl_container_append_child(EWL_CONTAINER(e_conf.page_evas),
-				   e_conf.render_method_hardware);
-	ewl_widget_show(e_conf.render_method_hardware);
-
-	e_conf.render_method_x11 = ewl_radiobutton_new("X11 Engine");
-	ewl_radiobutton_set_chain(e_conf.render_method_x11,
-				  e_conf.render_method_hardware);
-	ewl_container_append_child(EWL_CONTAINER(e_conf.page_evas),
-				   e_conf.render_method_x11);
-	ewl_widget_show(e_conf.render_method_x11);
+				   e_conf.render_method_gl_x11);
+	ewl_widget_show(e_conf.render_method_gl_x11);
 
 	e_conf.font_cache_label = ewl_text_new("Font Cache (kB)");
 	ewl_container_append_child(EWL_CONTAINER(e_conf.page_evas),
@@ -299,7 +288,7 @@ ewl_config_read_config(Ewl_Config * conf)
 	conf->evas.render_method =
 		ewl_config_get_str("system", "/evas/render_method");
 	if (!conf->evas.render_method)
-		conf->evas.render_method = strdup("software");
+		conf->evas.render_method = strdup("software_x11");
 
 	conf->evas.font_cache =
 		ewl_config_get_int("system", "/evas/font_cache");
@@ -325,8 +314,6 @@ ewl_config_read_config(Ewl_Config * conf)
 
 	conf->theme.cache = ewl_config_get_int("system", "/theme/cache");
 
-	conf->fx.fps = ewl_config_get_int("system", "/fx/fps");
-
 	return 1;
 }
 
@@ -334,16 +321,13 @@ void
 ewl_set_settings(Ewl_Config * c)
 {
 	if (c->evas.render_method
-	    && !strncasecmp(c->evas.render_method, "software", 8))
-		ewl_radiobutton_set_checked(e_conf.render_method_software, 1);
+	    && !strncasecmp(c->evas.render_method, "software_x11", 8))
+		ewl_radiobutton_set_checked(e_conf.render_method_software_x11, 1);
 	else if (c->evas.render_method
-		 && !strncasecmp(c->evas.render_method, "hardware", 8))
-		ewl_radiobutton_set_checked(e_conf.render_method_hardware, 1);
-	else if (c->evas.render_method
-		 && !strncasecmp(c->evas.render_method, "x11", 3))
-		ewl_radiobutton_set_checked(e_conf.render_method_x11, 1);
+		 && !strncasecmp(c->evas.render_method, "gl_x11", 8))
+		ewl_radiobutton_set_checked(e_conf.render_method_gl_x11, 1);
 	else
-		ewl_radiobutton_set_checked(e_conf.render_method_software, 1);
+		ewl_radiobutton_set_checked(e_conf.render_method_software_x11, 1);
 
 	ewl_spinner_set_value(EWL_SPINNER(e_conf.font_cache),
 			      (double) (c->evas.font_cache) / 1024.0);
@@ -354,9 +338,6 @@ ewl_set_settings(Ewl_Config * c)
 			c->debug.enable);
 	ewl_spinner_set_value(EWL_SPINNER(e_conf.debug_level),
 			(double) (c->debug.level));
-
-	ewl_spinner_set_value(EWL_SPINNER(e_conf.global_fps),
-			(double) (c->fx.fps));
 
 	ewl_entry_set_text(EWL_ENTRY(e_conf.theme_name), c->theme.name);
 
@@ -372,12 +353,10 @@ ewl_get_settings(void)
 	c = NEW(Ewl_Config, 1);
 	memset(c, 0, sizeof(Ewl_Config));
 
-	if (ewl_radiobutton_is_checked(e_conf.render_method_software))
-		c->evas.render_method = strdup("software");
-	else if (ewl_radiobutton_is_checked(e_conf.render_method_hardware))
-		c->evas.render_method = strdup("hardware");
-	else if (ewl_radiobutton_is_checked(e_conf.render_method_x11))
-		c->evas.render_method = strdup("x11");
+	if (ewl_radiobutton_is_checked(e_conf.render_method_software_x11))
+		c->evas.render_method = strdup("software_x11");
+	else if (ewl_radiobutton_is_checked(e_conf.render_method_gl_x11))
+		c->evas.render_method = strdup("gl_x11");
 
 	c->evas.font_cache =
 		(float)(ewl_spinner_get_value(EWL_SPINNER(e_conf.font_cache)))
@@ -404,7 +383,6 @@ ewl_get_settings(void)
 		c->theme.name = strdup("default");
 
 	c->theme.cache = ewl_checkbutton_is_checked(EWL_CHECKBUTTON(e_conf.theme_cache));
-	c->fx.fps = ewl_spinner_get_value(EWL_SPINNER(e_conf.global_fps));
 
 	return c;
 }
@@ -425,7 +403,6 @@ ewl_save_config(Ewl_Config * c)
 
 	ewl_config_set_str("system", "/theme/name", c->theme.name);
 	ewl_config_set_int("system", "/theme/cache", c->theme.cache);
-	ewl_config_set_int("system", "/fx/fps", c->fx.fps);
 }
 
 void
@@ -500,7 +477,7 @@ ewl_config_exit_cb(Ewl_Widget * w, void *user_data, void *ev_data)
 	     nc->evas.image_cache != oc.evas.image_cache ||
 	     strcasecmp(nc->evas.render_method, oc.evas.render_method) ||
 	     strcmp(nc->theme.name, oc.theme.name) ||
-	     nc->theme.cache != oc.theme.cache || nc->fx.fps != oc.fx.fps) &&
+	     nc->theme.cache != oc.theme.cache) &&
 			!confirm.win)
 		ewl_config_create_confirm_dialog();
 	else

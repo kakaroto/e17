@@ -211,12 +211,13 @@ int ewl_window_init(Ewl_Window * w)
 
 void __ewl_window_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 {
-	Ewl_Object     *o;
-	Ewl_Embed      *embed;
-	Ewl_Window     *window;
-	char           *font_path;
-	Ewd_List       *paths;
-	char           *render;
+	Ewl_Object       *o;
+	Ewl_Embed        *embed;
+	Ewl_Window       *window;
+	char             *font_path;
+	Ewd_List         *paths;
+	char             *render;
+	Evas_Engine_Info *info = NULL;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -251,6 +252,18 @@ void __ewl_window_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 	embed->evas = evas_new();
 	evas_output_method_set(embed->evas,
 			evas_render_method_lookup(render));
+
+	info = evas_engine_info_get(embed->evas);
+	if (!info) {
+		fprintf(stderr, "Unable to use %s engine for rendering, "
+				"falling back to software_x11\n", render);
+		FREE(render);
+		render = strdup("software_x11");
+		evas_output_method_set(embed->evas,
+				evas_render_method_lookup(render));
+		info = evas_engine_info_get(embed->evas);
+	}
+
 	evas_output_size_set(embed->evas, ewl_object_get_current_w(o),
 			ewl_object_get_current_h(o));
 	evas_output_viewport_set(embed->evas, ewl_object_get_current_x(o),
@@ -259,39 +272,37 @@ void __ewl_window_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 			ewl_object_get_current_h(o));
 
 	if (!strcmp(render, "gl_x11")) {
-		Evas_Engine_Info_GL_X11 *info;
+		Evas_Engine_Info_GL_X11 *glinfo;
 
-		info = (Evas_Engine_Info_GL_X11 *)
-			evas_engine_info_get(embed->evas);
+		glinfo = (Evas_Engine_Info_GL_X11 *)info;
 
-		info->info.display = ecore_x_display_get();
-		info->info.visual = DefaultVisual(info->info.display,
-				DefaultScreen(info->info.display));
-		info->info.colormap = DefaultColormap(info->info.display,
-				DefaultScreen(info->info.display));
-		info->info.drawable = window->window;
-		info->info.depth = DefaultDepth(info->info.display,
-				DefaultScreen(info->info.display));
-		evas_engine_info_set(embed->evas, (Evas_Engine_Info *)info);
+		glinfo->info.display = ecore_x_display_get();
+		glinfo->info.visual = DefaultVisual(glinfo->info.display,
+				DefaultScreen(glinfo->info.display));
+		glinfo->info.colormap = DefaultColormap(glinfo->info.display,
+				DefaultScreen(glinfo->info.display));
+		glinfo->info.drawable = window->window;
+		glinfo->info.depth = DefaultDepth(glinfo->info.display,
+				DefaultScreen(glinfo->info.display));
 	}
 	else {
-		Evas_Engine_Info_Software_X11 *info;
+		Evas_Engine_Info_Software_X11 *sinfo;
 
-		info = (Evas_Engine_Info_Software_X11 *)
-			evas_engine_info_get(embed->evas);
+		sinfo = (Evas_Engine_Info_Software_X11 *)info;
 
-		info->info.display = ecore_x_display_get();
-		info->info.visual = DefaultVisual(info->info.display,
-				DefaultScreen(info->info.display));
-		info->info.colormap = DefaultColormap(info->info.display,
-				DefaultScreen(info->info.display));
-		info->info.drawable = window->window;
-		info->info.depth = DefaultDepth(info->info.display,
-				DefaultScreen(info->info.display));
-		info->info.rotation = 0;
-		info->info.debug = 0;
-		evas_engine_info_set(embed->evas, (Evas_Engine_Info *)info);
+		sinfo->info.display = ecore_x_display_get();
+		sinfo->info.visual = DefaultVisual(sinfo->info.display,
+				DefaultScreen(sinfo->info.display));
+		sinfo->info.colormap = DefaultColormap(sinfo->info.display,
+				DefaultScreen(sinfo->info.display));
+		sinfo->info.drawable = window->window;
+		sinfo->info.depth = DefaultDepth(sinfo->info.display,
+				DefaultScreen(sinfo->info.display));
+		sinfo->info.rotation = 0;
+		sinfo->info.debug = 0;
 	}
+
+	evas_engine_info_set(embed->evas, info);
 
 	paths = ewl_theme_font_path_get();
 	ewd_list_goto_first(paths);
