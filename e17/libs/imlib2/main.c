@@ -316,7 +316,7 @@ int main (int argc, char **argv)
 		    }
 		  imlib_image_fill_color_range_rectangle(im, 60, 60, 256, 256, 
 							 rg, (double)x,
-							 IMLIB_OP_COPY);
+							 IMLIB_OP_RESHADE);
 		  up = imlib_update_append_rect(up, 60, 60, 256, 256);
 	       }
 	     if (fon)

@@ -154,7 +154,7 @@ ng = gg + ((tmp + (tmp >> 8) + 0x80) >> 8);\
 tmp = ((b1) - bb) * (a1);\
 nb = bb + ((tmp + (tmp >> 8) + 0x80) >> 8);\
 tmp = (a1) + aa;\
-na =  (tmp | ((tmp & 256) - ((tmp & 256) >> 8)));\
+na =  (tmp | ((tmp & 256) - ((tmp & 256) >> 9)));\
 (dest) = (na << 24) | (nr << 16) | (ng << 8) | nb;
 
 #define BLEND_ADD(r1, g1, b1, a1, dest) \
@@ -163,13 +163,13 @@ gg = ((dest) >> 8 ) & 0xff;\
 rr = ((dest) >> 16) & 0xff;\
 aa = ((dest) >> 24) & 0xff;\
 tmp = rr + (((r1) * (a1)) >> 8);\
-nr = (tmp | ((tmp & 256) - ((tmp & 256) >> 8)));\
+nr = (tmp | ((tmp & 256) - ((tmp & 256) >> 9))) & 0xff;\
 tmp = gg + (((g1) * (a1)) >> 8);\
-ng = (tmp | ((tmp & 256) - ((tmp & 256) >> 8)));\
+ng = (tmp | ((tmp & 256) - ((tmp & 256) >> 9))) & 0xff;\
 tmp = bb + (((b1) * (a1)) >> 8);\
-nb = (tmp | ((tmp & 256) - ((tmp & 256) >> 8)));\
+nb = (tmp | ((tmp & 256) - ((tmp & 256) >> 9))) & 0xff;\
 tmp = (a1) + aa;\
-na =  (tmp | ((tmp & 256) - ((tmp & 256) >> 8)));\
+na =  (tmp | ((tmp & 256) - ((tmp & 256) >> 9)));\
 (dest) = (na << 24) | (nr << 16) | (ng << 8) | nb;
 
 #define BLEND_SUB(r1, g1, b1, a1, dest) \
@@ -184,7 +184,7 @@ ng = tmp & (~(tmp >> 8));\
 tmp = bb - (((b1) * (a1)) >> 8);\
 nb = tmp & (~(tmp >> 8));\
 tmp = (a1) + aa;\
-na =  (tmp | ((tmp & 256) - ((tmp & 256) >> 8)));\
+na =  (tmp | ((tmp & 256) - ((tmp & 256) >> 9)));\
 (dest) = (na << 24) | (nr << 16) | (ng << 8) | nb;
 
 #define BLEND_RE(r1, g1, b1, a1, dest) \
@@ -193,13 +193,13 @@ gg = ((dest) >> 8 ) & 0xff;\
 rr = ((dest) >> 16) & 0xff;\
 aa = ((dest) >> 24) & 0xff;\
 tmp = rr + ((((r1) - 127) * (a1)) >> 7);\
-nr = (tmp | ((tmp & 256) - ((tmp & 256) >> 8))) & (~(tmp >> 8));\
+nr = (tmp | ((tmp & 256) - ((tmp & 256) >> 8))) & (~(tmp >> 9)) & 0xff;\
 tmp = gg + ((((g1) - 127) * (a1)) >> 7);\
-ng = (tmp | ((tmp & 256) - ((tmp & 256) >> 8))) & (~(tmp >> 8));\
+ng = (tmp | ((tmp & 256) - ((tmp & 256) >> 8))) & (~(tmp >> 9)) & 0xff;\
 tmp = bb + ((((b1) - 127) * (a1)) >> 7);\
-nb = (tmp | ((tmp & 256) - ((tmp & 256) >> 8))) & (~(tmp >> 8));\
+nb = (tmp | ((tmp & 256) - ((tmp & 256) >> 8))) & (~(tmp >> 9)) & 0xff;\
 tmp = (a1) + aa;\
-na =  (tmp | ((tmp & 256) - ((tmp & 256) >> 8)));\
+na =  (tmp | ((tmp & 256) - ((tmp & 256) >> 9)));\
 (dest) = (na << 24) | (nr << 16) | (ng << 8) | nb;
 
 void
