@@ -253,20 +253,20 @@ void         ewl_window_init(EwlWindow *win, EwlWindowType type,
 	if (!title)
 		title = ewl_theme_get_string("/EwlWindow/title");
 	if (!title)
-		title = EWL_DEFAULT_WINDOW_TITLE;
+		title = e_string_dup(EWL_DEFAULT_WINDOW_TITLE);
 	win->title = title;
 
 	str = ewl_theme_get_string("/EwlWindow/name_hint");
 	if (str)
 		win->name_hint = str;
 	else 
-		win->name_hint  = EWL_DEFAULT_WINDOW_NAME_H;
+		win->name_hint  = e_string_dup(EWL_DEFAULT_WINDOW_NAME_H);
 
 	str = ewl_theme_get_string("/EwlWindow/class_hint");
 	if (str)
 		win->name_hint = str;
 	else 
-		win->name_hint  = EWL_DEFAULT_WINDOW_NAME_H;
+		win->name_hint  = e_string_dup(EWL_DEFAULT_WINDOW_NAME_H);
 
 	win->decoration_hint = FALSE;
 
