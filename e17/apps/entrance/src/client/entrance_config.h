@@ -99,7 +99,6 @@ struct _Entrance_Config
    struct
    {
       Evas_Hash *hash;
-      Evas_Hash *icons;
       Evas_List *keys;
    } sessions;
 };
@@ -111,5 +110,6 @@ void entrance_config_print(Entrance_Config * e);
 void entrance_config_free(Entrance_Config * e);
 void entrance_config_prepend_recent_user(Entrance_Config * e, char *str);
 void entrance_config_user_list_write(Entrance_Config * e);
+int entrance_config_save(Entrance_Config * e, const char *file);
 
 #endif

@@ -12,6 +12,7 @@
 #include <Esmart/container.h>
 #include "entrance.h"
 #include "entrance_session.h"
+#include "entrance_x_session.h"
 #include "EvasTextEntry.h"
 
 #define WINW 800
@@ -313,7 +314,9 @@ session_item_selected_cb(void *data, Evas_Object * o, const char *emission,
 {
    if (session && data)
    {
-      entrance_session_xsession_set(session, (char *) data);
+      Entrance_X_Session *exs = (Entrance_X_Session *) data;
+
+      entrance_session_xsession_set(session, exs->name);
    }
 }
 

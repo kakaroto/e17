@@ -1,6 +1,7 @@
 #include "entrance.h"
 #include "entrance_config.h"
 #include "entrance_user.h"
+#include "entrance_x_session.h"
 
 /**
 @file entrance_config.c
@@ -31,6 +32,14 @@ entrance_config_new(void)
 static void
 entrance_config_populate(Entrance_Config * e, E_DB_File * db)
 {
+   Entrance_User *eu = NULL;
+   char *user = NULL;
+   char *icon = NULL;
+   char *session = NULL;
+
+   char *title = NULL;
+   Entrance_X_Session *exs;
+
    char *str;
    int i = 0, num_session = 0, num_user;
    char buf[PATH_MAX];
@@ -80,11 +89,6 @@ entrance_config_populate(Entrance_Config * e, E_DB_File * db)
       e->halt = 0;
    if (e_db_int_get(db, "/entrance/user/count", &num_user))
    {
-      Entrance_User *eu = NULL;
-      char *user = NULL;
-      char *icon = NULL;
-      char *session = NULL;
-
       for (i = 0; i < num_user; i++)
       {
          snprintf(buf, PATH_MAX, "/entrance/user/%d/user", i);
@@ -98,7 +102,7 @@ entrance_config_populate(Entrance_Config * e, E_DB_File * db)
             if ((eu = entrance_user_new(user, icon, session)))
             {
                e->users.hash = evas_hash_add(e->users.hash, user, eu);
-               e->users.keys = evas_list_append(e->users.keys, user);
+               e->users.keys = evas_list_append(e->users.keys, eu->name);
             }
             else
             {
@@ -120,22 +124,21 @@ entrance_config_populate(Entrance_Config * e, E_DB_File * db)
    /* session hash and font list */
    if (e_db_int_get(db, "/entrance/session/count", &num_session))
    {
-      char *key = NULL;
-      char *icon = NULL;
-      char *value = NULL;
-
       for (i = 0; i < num_session; i++)
       {
          snprintf(buf, PATH_MAX, "/entrance/session/%d/title", i);
-         key = e_db_str_get(db, buf);
+         title = e_db_str_get(db, buf);
          snprintf(buf, PATH_MAX, "/entrance/session/%d/session", i);
-         value = e_db_str_get(db, buf);
+         session = e_db_str_get(db, buf);
          snprintf(buf, PATH_MAX, "/entrance/session/%d/icon", i);
          icon = e_db_str_get(db, buf);
 
-         e->sessions.hash = evas_hash_add(e->sessions.hash, key, value);
-         e->sessions.icons = evas_hash_add(e->sessions.icons, key, icon);
-         e->sessions.keys = evas_list_append(e->sessions.keys, key);
+         if ((exs = entrance_x_session_new(title, icon, session)))
+         {
+            e->sessions.keys = evas_list_append(e->sessions.keys, title);
+            e->sessions.hash =
+               evas_hash_add(e->sessions.hash, exs->name, exs);
+         }
       }
    }
    /* 
@@ -220,59 +223,164 @@ void
 entrance_config_print(Entrance_Config * e)
 {
    int i = 0;
-   char *str = NULL;
+   char buf[PATH_MAX];
    Entrance_User *eu;
+   Entrance_X_Session *exs;
    Evas_List *l = NULL;
-   char *strings[] = { "Theme Edje %s\n",
-      "Pointer Image %s\n", "Date Format %s\n", "Time Format %s\n",
-      "Greeting Before %s\n", "Greeting After %s\n"
+   char *strings[] = { "/entrance/theme",
+      "/entrance/pointer", "/entrance/date_format", "/entrance/time_format",
+      "/entrance/greeting/before", "/entrance/greeting/after"
    };
    char *values[] = { e->theme, e->pointer, e->date.string,
       e->time.string, e->before.string, e->after.string
    };
    int ssize = sizeof(strings) / sizeof(char *);
 
-   char *intstrings[] = { "Use Evas GL %d\n", "Allow reboot %d\n",
-      "Allow Shutdown %d\n",
-      "Remember Users who login %d\n",
-      "Number of users to remember %d\n",
-      "Authentication Mode %d\n"
+   char *intstrings[] = { "/entrance/engine", "/entrance/system/reboot",
+      "/entrance/system/halt", "/entrance/users/remember",
+      "/entrance/users/remember_n", "/entrance/auth"
    };
    int intvalues[] = { e->engine, e->reboot, e->halt, e->users.remember,
       e->users.remember_n, e->auth
    };
    int intsize = sizeof(intstrings) / sizeof(int);
 
-   char *userstrings[] = { "\nUsername %s\n", "XSession %s\n",
-      "Icon file %s\n"
-   };
-
    for (i = 0; i < ssize; i++)
    {
-      printf(strings[i], values[i]);
+      printf("%s %s\n", strings[i], values[i]);
    }
    for (i = 0; i < intsize; i++)
    {
-      printf(intstrings[i], intvalues[i]);
+      printf("%s %d\n", intstrings[i], intvalues[i]);
    }
-   for (l = e->users.keys; l; l = l->next)
+   for (i = 0, l = e->users.keys; l; l = l->next, i++)
    {
       if ((eu = evas_hash_find(e->users.hash, (char *) l->data)))
       {
-         printf(userstrings[0], eu->name);
-         printf(userstrings[1], eu->session);
-         printf(userstrings[2], eu->icon);
-
+         snprintf(buf, PATH_MAX, "/entrance/user/%d/user", i);
+         printf("%s %s\n", buf, eu->name);
+         snprintf(buf, PATH_MAX, "/entrance/user/%d/session", i);
+         printf("%s %s\n", buf, eu->session);
+         snprintf(buf, PATH_MAX, "/entrance/user/%d/icon", i);
+         printf("%s %s\n", buf, eu->icon);
+      }
+      else
+         i--;
+   }
+   snprintf(buf, PATH_MAX, "/entrance/user/count");
+   printf("%s %d\n", buf, i);
+   for (i = 0, l = e->sessions.keys; l; l = l->next, i++)
+   {
+      if (l->data)
+      {
+         if ((exs = evas_hash_find(e->sessions.hash, (char *) l->data)))
+         {
+            snprintf(buf, PATH_MAX, "/entrance/session/%d/title", i);
+            printf("%s %s\n", buf, exs->name);
+            snprintf(buf, PATH_MAX, "/entrance/session/%d/session", i);
+            printf("%s %s\n", buf, exs->session);
+            snprintf(buf, PATH_MAX, "/entrance/session/%d/icon", i);
+            printf("%s %s\n", buf, exs->icon);
+         }
       }
    }
-   for (l = e->sessions.keys; l; l = l->next)
+   snprintf(buf, PATH_MAX, "/entrance/session/count");
+   printf("%s %d\n", buf, i);
+}
+
+void
+entrance_config_edb_save(Entrance_Config * e, E_DB_File * db)
+{
+   int i = 0;
+   char buf[PATH_MAX];
+   Entrance_User *eu;
+   Entrance_X_Session *exs;
+   Evas_List *l = NULL;
+   char *strings[] = { "/entrance/theme",
+      "/entrance/pointer", "/entrance/date_format", "/entrance/time_format",
+      "/entrance/greeting/before", "/entrance/greeting/after"
+   };
+   char *values[] = { e->theme, e->pointer, e->date.string,
+      e->time.string, e->before.string, e->after.string
+   };
+   int ssize = sizeof(strings) / sizeof(char *);
+
+   char *intstrings[] = { "/entrance/engine", "/entrance/system/reboot",
+      "/entrance/system/halt", "/entrance/users/remember",
+      "/entrance/users/remember_n", "/entrance/auth"
+   };
+   int intvalues[] = { e->engine, e->reboot, e->halt, e->users.remember,
+      e->users.remember_n, e->auth
+   };
+   int intsize = sizeof(intstrings) / sizeof(int);
+
+   for (i = 0; i < ssize; i++)
    {
-      printf("\n%s\n", (char *) l->data);
-      if ((str = evas_hash_find(e->sessions.icons, (char *) l->data)))
-         printf("Session Icon File: %s\n", str);
-      if ((str = evas_hash_find(e->sessions.hash, (char *) l->data)))
-         printf("XSession exec string %s\n", str);
+      e_db_str_set(db, strings[i], values[i]);
    }
+   for (i = 0; i < intsize; i++)
+   {
+      e_db_int_set(db, intstrings[i], intvalues[i]);
+   }
+   for (i = 0, l = e->users.keys; l; l = l->next, i++)
+   {
+      if ((eu = evas_hash_find(e->users.hash, (char *) l->data)))
+      {
+         snprintf(buf, PATH_MAX, "/entrance/user/%d/user", i);
+         e_db_str_set(db, buf, eu->name);
+         snprintf(buf, PATH_MAX, "/entrance/user/%d/session", i);
+         e_db_str_set(db, buf, eu->session);
+         snprintf(buf, PATH_MAX, "/entrance/user/%d/icon", i);
+         e_db_str_set(db, buf, eu->icon);
+      }
+      else
+         i--;
+   }
+   snprintf(buf, PATH_MAX, "/entrance/user/count");
+   e_db_int_set(db, buf, i);
+   for (i = 0, l = e->sessions.keys; l; l = l->next, i++)
+   {
+      if (l->data)
+      {
+         if ((exs = evas_hash_find(e->sessions.hash, (char *) l->data)))
+         {
+            snprintf(buf, PATH_MAX, "/entrance/session/%d/title", i);
+            e_db_str_set(db, buf, exs->name);
+            snprintf(buf, PATH_MAX, "/entrance/session/%d/session", i);
+            e_db_str_set(db, buf, exs->session);
+            snprintf(buf, PATH_MAX, "/entrance/session/%d/icon", i);
+            e_db_str_set(db, buf, exs->icon);
+         }
+      }
+   }
+   snprintf(buf, PATH_MAX, "/entrance/session/count");
+   e_db_int_set(db, buf, i);
+}
+
+int
+entrance_config_save(Entrance_Config * e, const char *file)
+{
+   if (file)
+   {
+      char buf[PATH_MAX];
+      E_DB_File *db = NULL;
+
+      snprintf(buf, PATH_MAX, "%s.tmp.db", file);
+      if ((db = e_db_open(buf)))
+      {
+         entrance_config_edb_save(e, db);
+         e_db_close(db);
+         e_db_flush();
+         return (rename(buf, file));
+      }
+#if 0
+      else
+      {
+         entrance_config_print(e);
+      }
+#endif
+   }
+   return (1);
 }
 
 /**

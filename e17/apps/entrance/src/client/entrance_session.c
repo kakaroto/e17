@@ -27,8 +27,6 @@ static void _entrance_session_user_list_fix(Entrance_Session * e);
 static void entrance_session_xsession_load(Entrance_Session * e,
                                            const char *key);
 
-Evas_Object *entrance_session_xsession_edje_load(Entrance_Session * e,
-                                                 const char *key);
 /**
  * entrance_session_new: allocate a new  Entrance_Session
  * @param config - parse this config file instead of the normal system one
@@ -368,12 +366,15 @@ entrance_session_xsession_load(Entrance_Session * e, const char *key)
 {
    if (e && e->edje)
    {
-      char *str = NULL;
+      char buf[PATH_MAX];
+      Entrance_X_Session *exs = NULL;
       Evas_Object *o = NULL, *old_o = NULL;
 
-      if ((o = entrance_session_xsession_edje_load(e, key)))
+      if ((exs = evas_hash_find(e->config->sessions.hash, key)))
       {
-         if ((str = evas_hash_find(e->config->sessions.hash, key)))
+         snprintf(buf, PATH_MAX, PACKAGE_DATA_DIR "/themes/%s",
+                  e->config->theme);
+         if ((o = entrance_x_session_edje_get(exs, e->edje, buf)))
          {
             if (e->session)
                free(e->session);
@@ -448,7 +449,9 @@ entrance_session_edje_object_set(Entrance_Session * e, Evas_Object * obj)
 void
 entrance_session_list_add(Entrance_Session * e)
 {
+   char buf[PATH_MAX];
    Evas_List *l = NULL;
+   Entrance_X_Session *exs = NULL;
    const char *key = NULL;
    Evas_Coord w, h;
    Evas_Object *edje = NULL;
@@ -476,12 +479,17 @@ entrance_session_list_add(Entrance_Session * e)
          e_container_direction_set(container, 1);
       }
 
+      snprintf(buf, PATH_MAX, PACKAGE_DATA_DIR "/themes/%s",
+               e->config->theme);
       for (l = e->config->sessions.keys; l; l = l->next)
       {
          key = (const char *) l->data;
-         if ((edje = entrance_session_xsession_edje_load(e, key)))
+         if ((exs = evas_hash_find(e->config->sessions.hash, key)))
          {
-            e_container_element_append(container, edje);
+            if ((edje = entrance_x_session_edje_get(exs, e->edje, buf)))
+            {
+               e_container_element_append(container, edje);
+            }
          }
       }
       edje_object_part_swallow(e->edje, "EntranceSessionList", container);
@@ -561,6 +569,7 @@ entrance_session_default_xsession_get(Entrance_Session * e)
    return (result);
 }
 
+#if 0
 /**
  * given the key, try loading an instance
  * of the "Session" group from the current theme.  printf on failure. :(
@@ -587,7 +596,7 @@ entrance_session_xsession_edje_load(Entrance_Session * e, const char *key)
    icon = (char *) evas_hash_find(e->config->sessions.icons, key);
    return (entrance_x_session_xsession_load(e->edje, buf, icon, key));
 }
-
+#endif
 
 /**
  * _entrance_session_user_list_fix : update the user's list with the current

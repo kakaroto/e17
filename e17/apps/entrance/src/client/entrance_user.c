@@ -39,7 +39,10 @@ entrance_user_new(char *user, char *icon, char *session)
    {
       memset(e, 0, sizeof(Entrance_User));
       e->name = user;
-      e->icon = icon;
+      if (icon)
+         e->icon = icon;
+      else
+         e->icon = strdup("default.eet");
       e->session = session;
    }
    return (e);
@@ -128,7 +131,7 @@ entrance_user_edje_get(Entrance_User * e, Evas_Object * edje,
       }
       else
       {
-         fprintf(stderr, "Failed on: %s(%s)\n", e->name, e->icon);
+         fprintf(stderr, "Failed on: %s(%s)\n", e->name, file);
          evas_object_del(o);
          o = NULL;
       }
