@@ -3,7 +3,7 @@ LEX_FILE=edje.l
 PARSE_FILE=edje.y
 
 all: lexer parser
-	$(CC) lex.yy.c edje_cc.tab.c main.c -lfl -o edje_cc
+	$(CC) lex.yy.c edje_cc.tab.c main.c etcher_parse.c -lfl -levas -o edje_cc
 
 lexer: $(LEX_FILE)
 	flex $(LEX_FILE)

@@ -16,6 +16,7 @@ typedef struct _Etcher_Image Etcher_Image;
 typedef struct _Etcher_Font Etcher_Font;
 typedef struct _Etcher_Group Etcher_Group;
 typedef struct _Etcher_Part Etcher_Part;
+typedef struct _Etcher_Program Etcher_Program;
 typedef struct _Etcher_Part_State Etcher_Part_State;
 
 
@@ -80,7 +81,8 @@ struct _Etcher_File
 {
   Evas_List *images;
   Evas_List *fonts;
-  
+  Evas_List *data;
+  Evas_List *groups;  
 };
 
 struct _Etcher_Data
@@ -91,7 +93,7 @@ struct _Etcher_Data
 
 struct _Etcher_Image
 {
-  char *image;
+  char *name;
   char *path;
   Etcher_Image_Type type;
   double value;
@@ -107,7 +109,10 @@ struct _Etcher_Font
 struct _Etcher_Group
 {
   char *name;
-  int min, max;
+  struct
+  {
+    int w, h;
+  } min, max;
 
   Evas_List *parts;
   Evas_List *programs;
@@ -169,7 +174,7 @@ struct _Etcher_Part_State
   struct
   {
     double w, h;
-    unsigned char prefer; /* NEITHER = 0, VERTICAL = 1, HORIZONTAL = 2 */
+    Etcher_Aspect_Preference prefer;
   } aspect;
 
   struct
@@ -177,7 +182,12 @@ struct _Etcher_Part_State
     struct
     {
       double x, y;
-    } relative, offset;
+    } relative;
+    
+    struct
+    {
+      int x, y;
+    } offset;
     
     char *to_x;
     char *to_y;
@@ -192,16 +202,16 @@ struct _Etcher_Part_State
   struct
   {
     int l, r, t, b;
-  };
+  } border;
 
   struct
   {
-    unsigned char r, g, b, a;
+    int r, g, b, a;
   } color, color2, color3;
 
   struct
   {
-    char           smooth; 
+    int           smooth; 
 
     struct
     {
@@ -222,7 +232,7 @@ struct _Etcher_Part_State
     int            size; 
 
     struct {
-      unsigned char x, y;
+      int x, y;
     } fit, min;
 
     struct {

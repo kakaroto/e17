@@ -73,7 +73,7 @@ font_statement: font
 	;
 
 font: FONT COLON STRING STRING SEMICOLON {
-		printf("got font '%s' named (%s)\n", $3, $4);
+                printf("got font '%s' named (%s)\n", $3, $4);
 	}
 	;
 
