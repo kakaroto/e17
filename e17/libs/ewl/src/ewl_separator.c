@@ -1,8 +1,5 @@
 #include <Ewl.h>
 
-void            __ewl_separator_realize(Ewl_Widget * w, void *ev_data,
-					void *user_data);
-
 /**
  * ewl_separator_new - allocate a new separator widget
  * @o: the orientation of the newly allocated separator widget
@@ -40,13 +37,13 @@ void ewl_separator_init(Ewl_Separator * s, Ewl_Orientation o)
 
 	w = EWL_WIDGET(s);
 
-	ewl_widget_init(w, "separator");
+	if (o == EWL_ORIENTATION_HORIZONTAL)
+		ewl_widget_init(w, "hseparator");
+	else
+		ewl_widget_init(w, "vseparator");
 
 	ewl_object_set_alignment(EWL_OBJECT(s), EWL_ALIGNMENT_LEFT);
 	ewl_object_set_fill_policy(EWL_OBJECT(s), EWL_FILL_POLICY_FILL);
-
-	ewl_callback_append(w, EWL_CALLBACK_REALIZE,
-			    __ewl_separator_realize, NULL);
 
 	s->orientation = o;
 
@@ -57,6 +54,8 @@ void ewl_separator_init(Ewl_Separator * s, Ewl_Orientation o)
  * Setup the ewl object's maximum size based on the max size of the ebits
  * object.
  */
+/* FIXME: This should be redundant, as this is done in the widget realize
+ * callback.
 void __ewl_separator_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -67,9 +66,9 @@ void __ewl_separator_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 
 		ebits_get_max_size(w->ebits_object, &ww, &hh);
 
-		/* ewl_object_set_preferred_size(EWL_OBJECT(w), ww, hh); */
 		ewl_object_set_maximum_size(EWL_OBJECT(w), ww, hh);
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
+*/
