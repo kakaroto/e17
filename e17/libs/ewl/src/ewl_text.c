@@ -16,11 +16,9 @@ void            __ewl_text_reparent(Ewl_Widget * w, void *ev_data,
 void            __ewl_text_update_size(Ewl_Text * t);
 
 /**
- * ewl_text_new - allocate a new text widget
- * @text: the text to display
- *
- * Returns a pointer to a newly allocated text widget on success, NULL on
- * failure.
+ * @param text: the text to display
+ * @return Returns a pointer a new text widget on success, NULL on failure.
+ * @brief Allocate a new text widget
  */
 Ewl_Widget *
 ewl_text_new(char *text)
@@ -38,12 +36,12 @@ ewl_text_new(char *text)
 }
 
 /**
- * ewl_text_init - initialize a text widget to default values and callbacks
- * @t: the text widget to initialize to default values and callbacks
- * @text: the text to display
+ * @param t: the text widget to initialize to default values and callbacks
+ * @param text: the text to display
+ * @return Returns no value.
+ * @brief Initialize a text widget to default values and callbacks
  *
- * Returns no value. Sets the fields and callbacks of the text widget @t to
- * their defaults.
+ * Sets the fields and callbacks of the text widget @a t to their defaults.
  */
 void
 ewl_text_init(Ewl_Text * t, char *text)
@@ -83,11 +81,12 @@ ewl_text_init(Ewl_Text * t, char *text)
 }
 
 /**
- * ewl_text_set_text - set the text of a text widget
- * @t: the text widget to set the text
- * @text: the new text for the text widget @t
+ * @param t: the text widget to set the text
+ * @param text: the new text for the text widget @a t
+ * @return Returns no value.
+ * @brief Set the text of a text widget
  *
- * Returns no value. Sets the text of the text widget @t to @text.
+ * Sets the text of the text widget @a t to @a text.
  */
 void
 ewl_text_set_text(Ewl_Text * t, char *text)
@@ -128,10 +127,9 @@ ewl_text_set_text(Ewl_Text * t, char *text)
 }
 
 /**
- * ewl_text_get_text - retrieve the text of a text widget
- * @t: the text widget to retrieve the text
- *
- * Returns a pointer to a copy of the text in @t on success, NULL on failure.
+ * @param t: the text widget to retrieve the text
+ * @return Returns a copy of text in @a t on success, NULL on failure.
+ * @brief Retrieve the text of a text widget
  */
 char *
 ewl_text_get_text(Ewl_Text * t)
@@ -147,11 +145,12 @@ ewl_text_get_text(Ewl_Text * t)
 }
 
 /**
- * ewl_text_set_font - set the font of a text widget
- * @t: the text widget to set the font
- * @f: the name of the font to use for the text widget
+ * @param t: the text widget to set the font
+ * @param f: the name of the font to use for the text widget
+ * @return Returns no value.
+ * @brief Set the font of a text widget
  *
- * Returns no value. Sets the name of the font for text widget @t to @f and
+ * Sets the name of the font for text widget @a t to @a f and
  * updates the display to use that font.
  */
 void
@@ -187,11 +186,9 @@ ewl_text_set_font(Ewl_Text * t, char *f)
 }
 
 /**
- * ewl_text_get_font - retrieve the font used by a text widget
- * @t: the text widget to get the font
- *
- * Returns a pointer to a copy of the font name used by @t on success, NULL on
- * failure.
+ * @param t: the text widget to get the font
+ * @return Returns a copy of the font used by @a t on success, NULL on failure.
+ * @brief Retrieve the font used by a text widget
  */
 char *
 ewl_text_get_font(Ewl_Text * t)
@@ -207,11 +204,12 @@ ewl_text_get_font(Ewl_Text * t)
 }
 
 /**
- * ewl_text_set_font_size - set the font size of a text widget
- * @t: the text widget to set the font size
- * @s: the font size to use for the text widget
+ * @param t: the text widget to set the font size
+ * @param s: the font size to use for the text widget
+ * @return Returns no value.
+ * @brief Set the font size of a text widget
  *
- * Returns no value. Sets the font size for the text widget @t to @s.
+ * Sets the font size for text widget @a t to @a s.
  */
 void
 ewl_text_set_font_size(Ewl_Text * t, int s)
@@ -243,10 +241,9 @@ ewl_text_set_font_size(Ewl_Text * t, int s)
 }
 
 /**
- * ewl_text_get_font_size - retrieve the font size of a text widget
- * @t: the text widget to retrieve the font size
- *
- * Returns the font size of the text widget on success, 0 on failure.
+ * @param t: the text widget to retrieve the font size
+ * @return Returns the font size of the text widget on success, 0 on failure.
+ * @brief Retrieve the font size of a text widget
  */
 int
 ewl_text_get_font_size(Ewl_Text * t)
@@ -262,15 +259,16 @@ ewl_text_get_font_size(Ewl_Text * t)
 }
 
 /**
- * ewl_text_set_color - set the color of the text for a text widget
- * @t: the text widget to set the color
- * @r: the red value for the color
- * @g: the green value for the color
- * @b: the blue value for the color
- * @a: the alpha value for the color
+ * @param t: the text widget to set the color
+ * @param r: the red value for the color
+ * @param g: the green value for the color
+ * @param b: the blue value for the color
+ * @param a: the alpha value for the color
+ * @return Returns no value.
+ * @brief Set the color of the text for a text widget
  *
- * Returns no value. Sets the color of the text in the text widget @t to the
- * new color values specified.
+ * Sets the color of the text in the text widget @a t to the new color values
+ * specified.
  */
 void
 ewl_text_set_color(Ewl_Text * t, int r, int g, int b, int a)
@@ -297,14 +295,15 @@ ewl_text_set_color(Ewl_Text * t, int r, int g, int b, int a)
 }
 
 /**
- * ewl_text_get_color - get the color of the text in a text widget
- * @t: the text widget to get the color
- * @r: a pointer to the integer to store the red value
- * @g: a pointer to the integer to store the green value
- * @b: a pointer to the integer to store the blue value
- * @a: a pointer to the integer to store the alpha value
+ * @param t: the text widget to get the color
+ * @param r: a pointer to the integer to store the red value
+ * @param g: a pointer to the integer to store the green value
+ * @param b: a pointer to the integer to store the blue value
+ * @param a: a pointer to the integer to store the alpha value
+ * @return Returns no value.
+ * @brief Get the color of the text in a text widget
  *
- * Returns no value. Stores the color values into any non-NULL color pointers.
+ * Stores the color values into any non-NULL color pointers.
  */
 void
 ewl_text_get_color(Ewl_Text * t, int *r, int *g, int *b, int *a)
@@ -332,12 +331,13 @@ ewl_text_get_color(Ewl_Text * t, int *r, int *g, int *b, int *a)
 }
 
 /**
- * ewl_text_set_style - set the text style for a text widget
- * @t: the text widget to set the text style
- * @s: the name of the style to be set for the text
+ * @param t: the text widget to set the text style
+ * @param s: the name of the style to be set for the text
+ * @brief Set the text style for a text widget
  *
- * Returns no value. Changes the text style of the text widget @t to the style
- * identified by the name @s.
+ * @return Returns no value.
+ * Changes the text style of the text widget @a t to the style identified by the
+ * name @a s.
  */
 void
 ewl_text_set_style(Ewl_Text * t, char *s)
@@ -368,15 +368,16 @@ ewl_text_set_style(Ewl_Text * t, char *s)
 }
 
 /**
- * ewl_text_get_text_geometry - retrieve the geometry of a text widget
- * @t: the text widget to retrieve geometry
- * @xx: a pointer to an integer to store the x coordinate
- * @yy: a pointer to an integer to store the y coordinate
- * @ww: a pointer to an integer to store the width
- * @hh: a pointer to an integer to store the height
+ * @param t: the text widget to retrieve geometry
+ * @param xx: a pointer to an integer to store the x coordinate
+ * @param yy: a pointer to an integer to store the y coordinate
+ * @param ww: a pointer to an integer to store the width
+ * @param hh: a pointer to an integer to store the height
+ * @return Returns no value.
+ * @brief Retrieve the geometry of a text widget
  *
- * Returns no value. Stores the position and size of the text in the text
- * widget @t into the integers pointed to by @xx, @yy, @ww, and @hh
+ * Stores the position and size of the text in the text
+ * widget @a t into the integers pointed to by @a xx, @a yy, @a ww, and @a hh
  * respectively.
  */
 void
@@ -408,10 +409,10 @@ ewl_text_get_text_geometry(Ewl_Text * t, int *xx, int *yy, int *ww, int *hh)
 }
 
 /**
- * ewl_text_get_length - retrieve the length of the text in the widget
- * @t: the text widget to retrieve text length
+ * @brief Retrieve the length of the text in the widget
+ * @param t: the text widget to retrieve text length
  *
- * Returns the length of the text enclosed in the widget @t.
+ * Returns the length of the text enclosed in the widget @a t.
  */
 inline int ewl_text_get_length(Ewl_Text *t)
 {
@@ -422,16 +423,17 @@ inline int ewl_text_get_length(Ewl_Text *t)
 }
 
 /**
- * ewl_text_get_letter_geometry - retrieve the geomtry of a specific letter
- * @t: the widget that holds the text to retrieve a letters geometry
- * @i: the index of the letter in the text to retrieve geometry
- * @xx: a pointer to an integer to store the x coordinate of the letter
- * @yy: a pointer to an integer to store the y coordinate of the letter
- * @ww: a pointer to an integer to store the width of the letter
- * @hh: a pointer to an integer to store the height of the letter
+ * @param t: the widget that holds the text to retrieve a letters geometry
+ * @param i: the index of the letter in the text to retrieve geometry
+ * @param xx: a pointer to an integer to store the x coordinate of the letter
+ * @param yy: a pointer to an integer to store the y coordinate of the letter
+ * @param ww: a pointer to an integer to store the width of the letter
+ * @param hh: a pointer to an integer to store the height of the letter
+ * @return Returns no value.
+ * @brief Retrieve the geomtry of a specific letter
  *
- * Returns no value. Stores the geometry of the letter at index @i of the text
- * widget @t into @xx, @yy, @ww, and @hh respectively.
+ * Stores the geometry of the letter at index @a i of the text
+ * widget @a t into @a xx, @a yy, @a ww, and @a hh respectively.
  */
 void
 ewl_text_get_letter_geometry(Ewl_Text * t, int i, int *xx, int *yy,
@@ -462,17 +464,18 @@ ewl_text_get_letter_geometry(Ewl_Text * t, int i, int *xx, int *yy,
 }
 
 /**
- * ewl_text_get_letter_geometry_at - get the letter geometry at coordinates
- * @t: the text widget to get the letter geometry by coordinates
- * @x: the x coordinate to check for letter geometry
- * @y: the y coordinate to check for letter geometry
- * @tx: the x coordinate of the letter that intersects @x, @y
- * @ty: the y coordinate of the letter that intersects @x, @y
- * @tw: the width of the letter that intersects @x, @y
- * @th: the height of the letter that intersects @x, @y
+ * @param t: the text widget to get the letter geometry by coordinates
+ * @param x: the x coordinate to check for letter geometry
+ * @param y: the y coordinate to check for letter geometry
+ * @param tx: the x coordinate of the letter that intersects @a x, @a y
+ * @param ty: the y coordinate of the letter that intersects @a x, @a y
+ * @param tw: the width of the letter that intersects @a x, @a y
+ * @param th: the height of the letter that intersects @a x, @a y
+ * @brief Get the letter geometry at coordinates
  *
- * Returns no value. Stores the geometry of a letter at specified coordinates
- * @x, @y of text widget @t into @tx, @ty, @tw, and @th.
+ * @return Returns no value.
+ * Stores the geometry of a letter at specified coordinates
+ * @a x, @a y of text widget @a t into @a tx, @a ty, @a tw, and @a th.
  */
 int
 ewl_text_get_letter_geometry_at(Ewl_Text * t, int x, int y,
@@ -506,11 +509,12 @@ ewl_text_get_letter_geometry_at(Ewl_Text * t, int x, int y,
 }
 
 /**
- * ewl_text_set_alignment - set the alignment of the text in a text widget
- * @t: the text widget to change text alignment
- * @a: the new alignment for the text in @t
+ * @param t: the text widget to change text alignment
+ * @param a: the new alignment for the text in @a t
+ * @return Returns no value.
+ * @brief Set the alignment of the text in a text widget
  *
- * Returns no value. Changes the alignment of the text in @t to @a.
+ * Changes the alignment of the text in @a t to @a a.
  */
 void
 ewl_text_set_alignment(Ewl_Text * t, Ewl_Alignment a)
@@ -526,13 +530,11 @@ ewl_text_set_alignment(Ewl_Text * t, Ewl_Alignment a)
 }
 
 /**
- * ewl_text_get_index_at - get the index of the letter at coordinates
- * @t: the text widget to find the letter index by coordinates
- * @x: the x coordinate to check for the letter index
- * @y: the y coordinate to check for the letter index
- *
- * Returns the index of the letter at the coordinates @x, @y in the text
- * widget @t.
+ * @param t: the text widget to find the letter index by coordinates
+ * @param x: the x coordinate to check for the letter index
+ * @param y: the y coordinate to check for the letter index
+ * @return Returns the index of the letter at the coordinates.
+ * @brief Get the index of the letter at coordinates
  */
 int
 ewl_text_get_index_at(Ewl_Text * t, int x, int y)

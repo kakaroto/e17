@@ -2,22 +2,40 @@
 #ifndef __EWL_TEXT_H
 #define __EWL_TEXT_H
 
-typedef struct _ewl_text Ewl_Text;
+/**
+ * @file ewl_text.h
+ * @brief Defines the Ewl_Text class to provide text display in a single line.
+ */
 
+/**
+ * Inherits from the Ewl_Widget and provides single line text display.
+ */
+typedef struct Ewl_Text Ewl_Text;
+
+/**
+ * @def EWL_TEXT(text)
+ * Typecast a pointer to an Ewl_Text pointer.
+ */
 #define EWL_TEXT(text) ((Ewl_Text *) text)
 
-struct _ewl_text {
-	Ewl_Widget      widget;
-	Evas_Object         *estyle;
+/**
+ * @struct Ewl_Text
+ * Inherit from the Ewl_Widget and extend to provide single line text display
+ * capabilities.
+ */
+struct Ewl_Text
+{
+	Ewl_Widget      widget; /**< Inherit from Ewl_Widget */
+	Evas_Object    *estyle; /**< Pointer to estyle displaying text */
 
-	char           *text;
-	char           *font;
-	char           *style;
-	int             font_size;
-	int             align;
-	int             length;
-	int             r, g, b, a;
-	int             overrides;
+	char           *text; /**< The text contents of the estyle */
+	char           *font; /**< Name of the font used by the estyle */
+	char           *style; /**< Name of the stylization on the estyle */
+	int             font_size; /**< The size of the font in the estyle */
+	int             align; /**< Alignment of the estyle within the widget */
+	int             length; /**< Length of the text in the estyle */
+	int             r, g, b, a; /**< Text color of the estyle */
+	int             overrides; /**< Bitmask of programmer set properties */
 };
 
 typedef enum
