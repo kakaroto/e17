@@ -43,13 +43,13 @@ load(ImlibImage *im, progress_func *progress, char progress_granularity, char im
   /* if immediate_load is 1, then dont delay image laoding as below, or */
   /* already data in this image - dont load it again */
   if (im->data)
-      return 0;
+    return 0;
   fd = open(im->file, O_RDONLY);
   if (fd < 0)
-      return 0;
+    return 0;
   gif = DGifOpenFileHandle(fd);
   if (!gif)
-      return 0;
+    return 0;
   do {
     if (DGifGetRecordType(gif, &rec) == GIF_ERROR) {
       PrintGifError();
@@ -120,10 +120,10 @@ load(ImlibImage *im, progress_func *progress, char progress_granularity, char im
   /* set the format string member to the lower-case full extension */
   /* name for the format - so example names would be: */
   /* "png", "jpeg", "tiff", "ppm", "pgm", "pbm", "gif", "xpm" ... */
-   im->w = w;
-   im->h = h;
-   if (!im->format)
-      im->format = strdup("gif");
+  im->w = w;
+  im->h = h;
+  if (!im->format)
+    im->format = strdup("gif");
   if (im->loader || immediate_load || progress) {
     bg = gif->SBackGroundColor;
     cmap = (gif->Image.ColorMap ? gif->Image.ColorMap : gif->SColorMap);
