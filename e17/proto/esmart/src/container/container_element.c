@@ -95,6 +95,53 @@ void e_container_element_remove(Evas_Object *container, Evas_Object *element)
   _container_scale_scroll(cont, old_length);
 }
 
+void e_container_element_destroy(Evas_Object *container, Evas_Object 
+*element)
+{
+  Container *cont;
+  Container_Element *el;
+
+  int old_length;
+  cont = _container_fetch(container);
+  if (!cont) return;
+
+  old_length = e_container_elements_length_get(container);
+
+  el = evas_object_data_get(element, "Container_Element");
+  evas_object_del (el->obj);
+  evas_object_del (el->grabber);
+  cont->elements = evas_list_remove(cont->elements, el);
+  free (el);
+
+  _container_elements_fix(cont);
+  _container_scale_scroll(cont, old_length);
+}
+
+void e_container_empty (Evas_Object *container)
+{
+  Container *cont;
+  Evas_List *l;
+
+  cont = _container_fetch(container);
+
+  if (!cont)
+    return;
+
+  for (l = cont->elements; l; l = l->next)
+  {
+    Container_Element *el = l->data;
+
+    printf ("removing %p\n", el->obj);
+    printf ("not implemented yet!\n");
+
+    /*
+    e_container_element_destroy (container, el->obj);
+    */
+  }
+
+}
+
+
 Evas_List *e_container_elements_get(Evas_Object *container)
 {
   Container *cont;
