@@ -1206,6 +1206,11 @@ typedef struct
    } display;
    struct
    {
+      char                pointer_grab_active;
+      Window              pointer_grab_window;
+   } grabs;
+   struct
+   {
       char                master;	/* We are the master E */
       char                single;	/* No slaves */
       char                window;	/* Running in virtual root window */
@@ -1239,7 +1244,6 @@ typedef struct
    char                have_place_grab;
    char                action_inhibit;
    char                justclicked;
-   char                click_focus_grabbed;
    EWin               *focuswin;
    EWin               *mouse_over_ewin;
    int                 px, py, x, y;

@@ -3522,7 +3522,7 @@ IPC_FocusMode(const char *params, Client * c)
 	if (!strcmp(params, "click"))
 	  {
 	     Conf.focus.mode = MODE_FOCUS_CLICK;
-	     Mode.click_focus_grabbed = 1;
+	     Mode.grabs.pointer_grab_active = 1;
 	  }
 	else if (!strcmp(params, "pointer"))
 	  {
@@ -3535,14 +3535,14 @@ IPC_FocusMode(const char *params, Client * c)
 	else if (!strcmp(params, "clicknograb"))
 	  {
 	     Conf.focus.mode = MODE_FOCUS_CLICK;
-	     Mode.click_focus_grabbed = 0;
+	     Mode.grabs.pointer_grab_active = 0;
 	  }
 	else if (!strcmp(params, "?"))
 	  {
 	     Esnprintf(buf, sizeof(buf), "Focus Mode: ");
 	     if (Conf.focus.mode == MODE_FOCUS_CLICK)
 	       {
-		  if (Mode.click_focus_grabbed)
+		  if (Mode.grabs.pointer_grab_active)
 		    {
 		       strcat(buf, "click");
 		    }
@@ -5839,23 +5839,18 @@ IPC_EwinInfo2(const char *params, Client * c __UNUSED__)
 }
 
 static void
-IPC_MiscInfo(const char *params __UNUSED__, Client * c)
+IPC_MiscInfo(const char *params __UNUSED__, Client * c __UNUSED__)
 {
-   char                buf[FILEPATH_LEN_MAX];
-   char                buf3[FILEPATH_LEN_MAX];
+   IpcPrintf("stuff:\n");
 
-   Esnprintf(buf, sizeof(buf), "stuff:\n");
    if (Mode.focuswin)
-     {
-	Esnprintf(buf3, sizeof(buf3), "mode.focuswin - %8x\n",
-		  (unsigned)Mode.focuswin->client.win);
-	strcat(buf, buf3);
-     }
+      IpcPrintf(" mode.focuswin - %#lx\n", Mode.focuswin->client.win);
+
    if (Mode.cur_menu_mode)
-     {
-	strcat(buf, "cur_menu_mode is set\n");
-     }
-   CommsSend(c, buf);
+      IpcPrintf(" cur_menu_mode is set\n");
+
+   IpcPrintf("Pointer grab on=%d win=%#lx\n",
+	     Mode.grabs.pointer_grab_active, Mode.grabs.pointer_grab_window);
 }
 
 static void

@@ -22,8 +22,6 @@
  */
 #include "E.h"
 
-static Window       grab_window;
-
 void
 GrabActionKey(Action * a)
 {
@@ -80,12 +78,12 @@ void
 GrabTheButtons(Window win)
 {
    EDBUG(4, "GrabTheButtons");
-   if (Mode.click_focus_grabbed)
+   if (Mode.grabs.pointer_grab_active)
       EDBUG_RETURN_;
    XGrabPointer(disp, win, True, ButtonPressMask | ButtonReleaseMask,
 		GrabModeAsync, GrabModeAsync, None, None, CurrentTime);
-   grab_window = win;
-   Mode.click_focus_grabbed = 1;
+   Mode.grabs.pointer_grab_window = win;
+   Mode.grabs.pointer_grab_active = 1;
    EDBUG_RETURN_;
 }
 
@@ -95,7 +93,7 @@ GrabThePointer(Window win, int csr)
    int                 ret;
 
    EDBUG(4, "GrabThePointer");
-   if (Mode.click_focus_grabbed)
+   if (Mode.grabs.pointer_grab_active)
       EDBUG_RETURN(1);
    ret =
       XGrabPointer(disp, win, True,
@@ -103,8 +101,8 @@ GrabThePointer(Window win, int csr)
 		   ButtonMotionMask | EnterWindowMask | LeaveWindowMask,
 		   GrabModeAsync, GrabModeAsync, None, ECsrGet(csr),
 		   CurrentTime);
-   grab_window = win;
-   Mode.click_focus_grabbed = 1;
+   Mode.grabs.pointer_grab_window = win;
+   Mode.grabs.pointer_grab_active = 1;
    EDBUG_RETURN(ret);
 }
 
@@ -114,7 +112,7 @@ GrabConfineThePointer(Window win, int csr)
    int                 ret;
 
    EDBUG(4, "GrabThePointer");
-   if (Mode.click_focus_grabbed)
+   if (Mode.grabs.pointer_grab_active)
       EDBUG_RETURN(1);
    ret =
       XGrabPointer(disp, win, True,
@@ -122,8 +120,8 @@ GrabConfineThePointer(Window win, int csr)
 		   ButtonMotionMask | EnterWindowMask | LeaveWindowMask,
 		   GrabModeAsync, GrabModeAsync, win, ECsrGet(csr),
 		   CurrentTime);
-   grab_window = win;
-   Mode.click_focus_grabbed = 1;
+   Mode.grabs.pointer_grab_window = win;
+   Mode.grabs.pointer_grab_active = 1;
    EDBUG_RETURN(ret);
 }
 
@@ -131,10 +129,10 @@ void
 UnGrabTheButtons()
 {
    EDBUG(4, "UnGrabTheButtons");
-   if (!Mode.click_focus_grabbed)
+   if (!Mode.grabs.pointer_grab_active)
       EDBUG_RETURN_;
    XUngrabPointer(disp, CurrentTime);
-   Mode.click_focus_grabbed = 0;
-   grab_window = 0;
+   Mode.grabs.pointer_grab_active = 0;
+   Mode.grabs.pointer_grab_window = None;
    EDBUG_RETURN_;
 }
