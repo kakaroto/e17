@@ -724,6 +724,9 @@ Config_Control(FILE * ConfigFile)
 	  case CONTROL_WARPSTICKY:
 	     mode.warpsticky = i2;
 	     break;
+	  case CONTROL_WARPSHADED:
+	     mode.warpshaded = i2;
+	     break;
 	  case DESKTOP_HIQUALITYBG:
 	     desks.hiqualitybg = i2;
 	     break;
@@ -3834,6 +3837,7 @@ SaveUserControlConfig(FILE * autosavefile)
 	fprintf(autosavefile, "351 %i\n", (int)mode.menusonscreen);
 	fprintf(autosavefile, "666 %i\n", (int)mode.warpmenus);
 	fprintf(autosavefile, "667 %i\n", (int)mode.warpsticky);
+	fprintf(autosavefile, "668 %i\n", (int)mode.warpshaded);
 	fprintf(autosavefile, "1350 %i\n", (int)mode.user_bg);
 	fprintf(autosavefile, "1351 %i\n", (int)mode.pager_zoom);
 	fprintf(autosavefile, "1352 %i\n", (int)mode.pager_title);

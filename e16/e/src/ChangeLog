@@ -4317,3 +4317,13 @@ Also fixes a couple of bugs with the current -econfdir option.
 I've tested this fairly well, as has Bob, but let me know if there are any
 problems.
 
+
+-------------------------------------------------------------------------------
+
+Thu Mar 16 23:02:49 GMT 2000
+(gilbertt)
+
+Patch from Marius Aamodt Eriksen <marius@linux.com>. Provides option to
+include shaded windows in focuslist. Now all we need is an "include
+iconified windows" option...
+

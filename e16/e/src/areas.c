@@ -337,13 +337,13 @@ SetCurrentArea(int ax, int ay)
 				     lst[i]->x -
 				     (root.w *
 				      (ax -
-				       desks.desk[desks.current].
-				       current_area_x)),
+				       desks.desk[desks.
+						  current].current_area_x)),
 				     lst[i]->y -
 				     (root.h *
 				      (ay -
-				       desks.desk[desks.current].
-				       current_area_y)));
+				       desks.desk[desks.
+						  current].current_area_y)));
 			    if (setflip)
 			       mode.flipp = 0;
 			    lst[i]->area_x = a1;
@@ -374,13 +374,13 @@ SetCurrentArea(int ax, int ay)
 					     x -
 					     (root.w *
 					      (ax -
-					       desks.desk[desks.
-							  current].current_area_x)),
+					       desks.desk[desks.current].
+					       current_area_x)),
 					     y -
 					     (root.h *
 					      (ay -
-					       desks.desk[desks.
-							  current].current_area_y)));
+					       desks.desk[desks.current].
+					       current_area_y)));
 			      }
 			 }
 		       /* if we're not moving it... move it across */
@@ -399,13 +399,13 @@ SetCurrentArea(int ax, int ay)
 				     lst[i]->x -
 				     (root.w *
 				      (ax -
-				       desks.desk[desks.current].
-				       current_area_x)),
+				       desks.desk[desks.
+						  current].current_area_x)),
 				     lst[i]->y -
 				     (root.h *
 				      (ay -
-				       desks.desk[desks.current].
-				       current_area_y)));
+				       desks.desk[desks.
+						  current].current_area_y)));
 			    if (setflip)
 			       mode.flipp = 0;
 			    lst[i]->area_x = a1;

@@ -325,6 +325,7 @@ static char         tmp_warp_after_focus;
 static char         tmp_raise_after_focus;
 static char         tmp_display_warp;
 static char         tmp_warpsticky;
+static char         tmp_warpshaded;
 static char         tmp_clickalways;
 
 static void         CB_ConfigureFocus(int val, void *data);
@@ -344,6 +345,7 @@ CB_ConfigureFocus(int val, void *data)
 	mode.raise_after_next_focus = tmp_raise_after_focus;
 	mode.display_warp = tmp_display_warp;
 	mode.warpsticky = tmp_warpsticky;
+	mode.warpshaded = tmp_warpshaded;
 #endif /* WITH_TARTY_WARP */
 	mode.clickalways = tmp_clickalways;
 	FixFocus();
@@ -377,6 +379,7 @@ SettingsFocus(void)
    tmp_warp_after_focus = mode.warp_after_next_focus;
    tmp_display_warp = mode.display_warp;
    tmp_warpsticky = mode.warpsticky;
+   tmp_warpshaded = mode.warpshaded;
 #endif /* WITH_TARTY_WARP */
    tmp_clickalways = mode.clickalways;
 
@@ -512,6 +515,14 @@ SettingsFocus(void)
    DialogItemCheckButtonSetText(di, _("Include sticky windows in focus list"));
    DialogItemCheckButtonSetState(di, tmp_warpsticky);
    DialogItemCheckButtonSetPtr(di, &tmp_warpsticky);
+
+   di = DialogAddItem(table, DITEM_CHECKBUTTON);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemSetColSpan(di, 2);
+   DialogItemCheckButtonSetText(di, _("Include shaded windows in focus list"));
+   DialogItemCheckButtonSetState(di, tmp_warpshaded);
+   DialogItemCheckButtonSetPtr(di, &tmp_warpshaded);
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
