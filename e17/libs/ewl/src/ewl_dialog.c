@@ -190,7 +190,7 @@ ewl_dialog_init (Ewl_Dialog *dialog, Ewl_Position pos)
  * @brief Convenient function to add widgets in the vbox.
  */
 void
-ewl_dialog_add_widget (Ewl_Dialog *dialog, Ewl_Widget *w)
+ewl_dialog_widget_add (Ewl_Dialog *dialog, Ewl_Widget *w)
 {
   DENTER_FUNCTION(DLEVEL_STABLE);
   DCHECK_PARAM_PTR("d", dialog);
@@ -233,7 +233,7 @@ ewl_dialog_add_widget (Ewl_Dialog *dialog, Ewl_Widget *w)
  * @brief Add a (stock) button on the right of the action_area of @a dialog.
  */
 Ewl_Widget *
-ewl_dialog_add_button (Ewl_Dialog *dialog, char *button_text,
+ewl_dialog_button_add (Ewl_Dialog *dialog, char *button_text,
 		       int response_id)
 {
   Ewl_Widget *button;
@@ -266,7 +266,7 @@ ewl_dialog_add_button (Ewl_Dialog *dialog, char *button_text,
  * @brief Same as ewl_dialog_add_button(), but add the button on the left.
  */
 Ewl_Widget *
-ewl_dialog_add_button_left (Ewl_Dialog *dialog, char *button_text,
+ewl_dialog_button_left_add (Ewl_Dialog *dialog, char *button_text,
 			    int response_id)
 {
   Ewl_Widget *button;
@@ -297,7 +297,7 @@ ewl_dialog_add_button_left (Ewl_Dialog *dialog, char *button_text,
  * @brief Checks if @a dialog has a separator or not.
  */
 unsigned int
-ewl_dialog_get_has_separator (Ewl_Dialog *dialog)
+ewl_dialog_has_separator_get (Ewl_Dialog *dialog)
 {
   DENTER_FUNCTION(DLEVEL_STABLE);
   DCHECK_PARAM_PTR_RET("d", dialog, 0);
@@ -315,7 +315,7 @@ ewl_dialog_get_has_separator (Ewl_Dialog *dialog)
  * @brief Sets the separator of @a dialog.
  */
 void
-ewl_dialog_set_has_separator (Ewl_Dialog *dialog,
+ewl_dialog_has_separator_set (Ewl_Dialog *dialog,
 			      unsigned int has_sep)
 {
   Ewl_Widget *child;

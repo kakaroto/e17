@@ -75,16 +75,16 @@ struct _Ewl_Dialog
 Ewl_Widget *ewl_dialog_new (Ewl_Position pos);
 int         ewl_dialog_init (Ewl_Dialog *dialog, Ewl_Position pos);
 
-void        ewl_dialog_add_widget      (Ewl_Dialog *dialog, Ewl_Widget *w);
-Ewl_Widget *ewl_dialog_add_button      (Ewl_Dialog *dialog, 
+void        ewl_dialog_widget_add      (Ewl_Dialog *dialog, Ewl_Widget *w);
+Ewl_Widget *ewl_dialog_button_add      (Ewl_Dialog *dialog, 
 					char       *button_text,
 					int         response_id);
-Ewl_Widget *ewl_dialog_add_button_left (Ewl_Dialog *dialog, 
+Ewl_Widget *ewl_dialog_button_left_add (Ewl_Dialog *dialog, 
 					char       *button_text,
 					int         response_id);
 
-unsigned int ewl_dialog_get_has_separator (Ewl_Dialog *dialog);
-void         ewl_dialog_set_has_separator (Ewl_Dialog *dialog,
+unsigned int ewl_dialog_has_separator_get (Ewl_Dialog *dialog);
+void         ewl_dialog_has_separator_set (Ewl_Dialog *dialog,
 					   unsigned int has_sep);
 
 /**

@@ -139,8 +139,8 @@ int ewl_button_stock_init(Ewl_Button_Stock * b, char *stock_id)
  * button in the action_area of a dialog, just use
  * ewl_container_child_append(dialog, button) or 
  * ewl_container_child_prepend(dialog, button). Use this way to add
- * buttons, instead of ewl_dialog_add_button() or
- * ewl_dialog_add_button_left().
+ * buttons, instead of ewl_dialog_button_add() or
+ * ewl_dialog_button_left_add().
  */
 Ewl_Widget *
 ewl_button_stock_new_with_id (char *stock_id,

@@ -57,7 +57,7 @@ typedef struct _Ewl_Button_Stock Ewl_Button_Stock;
  * way to add the image is the use of stock icons. Stock icons are
  * pre-defined icons, referenced by a Id. These icons have also a
  * label, which set the label of the button and an Id in order to
- * identify a response (see ewl_dialog_set_button()).
+ * identify a response (see ewl_dialog_button_set()).
  */
 struct _Ewl_Button_Stock
 {
