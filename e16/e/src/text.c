@@ -104,7 +104,7 @@ TextGetState(TextClass * tclass, int active, int sticky, int state)
 }
 
 char              **
-TextGetLines(char *text, int *count)
+TextGetLines(const char *text, int *count)
 {
    int                 i, j, k;
    char              **list = NULL;
@@ -228,8 +228,8 @@ TextStateLoadFont(TextState * ts)
 }
 
 void
-TextSize(TextClass * tclass, int active, int sticky, int state, char *text,
-	 int *width, int *height, int fsize)
+TextSize(TextClass * tclass, int active, int sticky, int state,
+	 const char *text, int *width, int *height, int fsize)
 {
    char              **lines;
    int                 i, num_lines;

@@ -379,7 +379,7 @@ DialogDestroy(Dialog * d)
 }
 
 void
-DialogSetText(Dialog * d, char *text)
+DialogSetText(Dialog * d, const char *text)
 {
    int                 w, h;
 
@@ -395,7 +395,7 @@ DialogSetText(Dialog * d, char *text)
 }
 
 void
-DialogSetTitle(Dialog * d, char *title)
+DialogSetTitle(Dialog * d, const char *title)
 {
    if (d->title)
       Efree(d->title);

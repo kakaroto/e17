@@ -888,7 +888,7 @@ EventShow(const XEvent * ev)
 {
    Window              win = ev->xany.window;
    const char         *name = EventName(ev->type);
-   const char         *txt;
+   char               *txt;
 
    switch (ev->type)
      {

@@ -2324,11 +2324,11 @@ void                SlideoutsHideIfContextWin(Window win);
 /* text.c functions */
 TextState          *TextGetState(TextClass * tclass, int active, int sticky,
 				 int state);
-char              **TextGetLines(char *text, int *count);
+char              **TextGetLines(const char *text, int *count);
 void                TextStateLoadFont(TextState * ts);
 void                TextSize(TextClass * tclass, int active, int sticky,
-			     int state, char *text, int *width, int *height,
-			     int fsize);
+			     int state, const char *text, int *width,
+			     int *height, int fsize);
 void                TextDraw(TextClass * tclass, Window win, int active,
 			     int sticky, int state, char *text, int x, int y,
 			     int w, int h, int fsize, int justification);
@@ -2581,8 +2581,8 @@ void                DialogDestroy(Dialog * d);
 void                DialogBindKey(Dialog * d, char *key,
 				  void (*func) (int val, void *data), int val,
 				  void *data);
-void                DialogSetText(Dialog * d, char *text);
-void                DialogSetTitle(Dialog * d, char *title);
+void                DialogSetText(Dialog * d, const char *text);
+void                DialogSetTitle(Dialog * d, const char *title);
 void                DialogSetExitFunction(Dialog * d,
 					  void (*func) (int val, void *data),
 					  int val, void *data);
