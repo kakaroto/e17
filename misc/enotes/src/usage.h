@@ -41,6 +41,8 @@ POSIX     GNU               TYPE    DESCRITION\n\
 \n\
 -r        --render-method   STR     Render Method\n\
 -t        --theme           STR     Theme\n\
+-C        --control-centre  INT     Enable/Disable the Control\n\
+                                    Centre.\n\
 -i        --intro           INT     Display the Intro.\n\
 \n\
 -X        --cc-x            INT     Control Centre X Positioning.\n\
@@ -66,6 +68,7 @@ static struct option long_options[] = {
 	{"config-file", 1, 0, 'c'},
 	{"render-method", 1, 0, 'r'},
 	{"theme", 1, 0, 't'},
+	{"control-centre", 1, 0, 'C'},
 	{"intro", 1, 0, 'i'},
 	{"debug", 1, 0, 'd'},
 	{"cc-x", 1, 0, 'X'},

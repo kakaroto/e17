@@ -133,6 +133,7 @@ fill_tree(void)
 		setup_settings_opt_int(settings->tree, "Note - Height:",
 				       main_config->note->height);
 
+	settings->cc = setup_settings_opt_int (settings->tree, "Control Centre [0=No 1=Yes]:", main_config->controlcentre);
 	settings->cc_x =
 		setup_settings_opt_int(settings->tree, "Control Centre - X:",
 				       main_config->cc->x);
@@ -150,6 +151,7 @@ fill_tree(void)
 	settings->debug =
 		setup_settings_opt_int(settings->tree, "Debugging Level [0-2]:",
 				       main_config->debug);
+
 	return;
 }
 

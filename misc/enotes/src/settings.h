@@ -48,7 +48,7 @@ typedef struct {
 	Ewl_Widget     *revertbtn;
 	Ewl_Widget     *closebtn;
 	Settings_Opt    render_method, theme, intro, note_x, note_y, note_w,
-		note_h, cc_x, cc_y, cc_w, cc_h, debug;
+		note_h, cc_x, cc_y, cc_w, cc_h, debug, cc;
 } Settings;
 
 extern MainConfig *main_config;

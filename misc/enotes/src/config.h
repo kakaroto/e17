@@ -29,6 +29,7 @@
 typedef struct {
 	char           *render_method;
 	char           *theme;
+	int             controlcentre;
 	int             intro;
 	int             debug;
 	struct _conf_note {

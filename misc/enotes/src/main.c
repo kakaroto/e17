@@ -61,8 +61,10 @@ main(int argc, char *argv[])
 		dml("Efl Successfully Initiated", 1);
 
 		/* Begin the Control Centre */
-		setup_cc();
-		dml("Control Centre Setup", 1);
+		if (main_config->controlcentre==1) {
+			setup_cc();
+			dml("Control Centre Setup", 1);
+		}
 
 		/* Display the Introduction Note */
 		if (main_config->intro == 1) {

@@ -65,6 +65,9 @@ read_usage_configuration(MainConfig * p, int argc, char *argv[])
 				free(main_config->theme);
 			main_config->theme = strdup(optarg);
 			break;
+		case 'C':
+			main_config->controlcentre = atoi (optarg);
+			break;
 		case 'i':
 			main_config->intro = atoi(optarg);
 			break;

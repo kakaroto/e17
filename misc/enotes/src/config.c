@@ -97,6 +97,8 @@ processopt(XmlEntry * info, MainConfig * p)
 		if (p->theme != NULL)
 			free(p->theme);
 		p->theme = strdup(info->value);
+	} else if (!strcmp(info->name, "controlcentre")) {
+		p->controlcentre=atoi(info->value);
 	} else if (!strcmp(info->name, "intro")) {
 		p->intro = atoi(info->value);
 	} else if (!strcmp(info->name, "debug")) {
