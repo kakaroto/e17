@@ -6410,27 +6410,27 @@
   <mtest data="short" byteorder="be" type="eq">
     <offset>0</offset>
     <magic>0x9900</magic>
-    <descr>docmument/pgp/key-public-ring/</descr>
+    <descr>document/pgp/key-public-ring/</descr>
   </mtest>
   <mtest data="short" byteorder="be" type="eq">
     <offset>0</offset>
     <magic>0x9501</magic>
-    <descr>docmument/pgp/key-security-ring/</descr>
+    <descr>document/pgp/key-security-ring/</descr>
   </mtest>
   <mtest data="short" byteorder="be" type="eq">
     <offset>0</offset>
     <magic>0x9500</magic>
-    <descr>docmument/pgp/key-security-ring/</descr>
+    <descr>document/pgp/key-security-ring/</descr>
   </mtest>
   <mtest data="short" byteorder="be" type="eq">
     <offset>0</offset>
     <magic>0xa600</magic>
-    <descr>docmument/pgp/encrypted-data/</descr>
+    <descr>document/pgp/encrypted-data/</descr>
   </mtest>
   <mtest data="string" byteorder="host" type="eq">
     <offset>0</offset>
     <magic>-----BEGIN PGP</magic>
-    <descr>docmument/pgp/armored-data/</descr>
+    <descr>document/pgp/armored-data/</descr>
     <mtest data="string" byteorder="host" type="eq">
       <offset>15</offset>
       <magic>PUBLIC KEY BLOCK-</magic>
@@ -7478,32 +7478,32 @@
     <offset>0</offset>
     <magic>0x00010108</magic>
     <mask>0x00ffffff</mask>
-    <descr/>
+    <descr>executable/</descr>
     <mtest data="byte" byteorder="host" type="and">
       <offset>0</offset>
       <magic>0x80</magic>
-      <descr>executable/sun-mc68010/</descr>
+      <descr>sun-mc68010/</descr>
     </mtest>
     <mtest data="byte" byteorder="host" type="nand">
       <offset>0</offset>
       <magic>0x80</magic>
-      <descr>executable/sun-mc68010/</descr>
+      <descr>sun-mc68010/</descr>
     </mtest>
   </mtest>
   <mtest data="long" byteorder="be" type="eq">
     <offset>0</offset>
     <magic>0x00010107</magic>
     <mask>0x00ffffff</mask>
-    <descr/>
+    <descr>executable/</descr>
     <mtest data="byte" byteorder="host" type="and">
       <offset>0</offset>
       <magic>0x80</magic>
-      <descr>executable/sun-mc68010/</descr>
+      <descr>sun-mc68010/</descr>
     </mtest>
     <mtest data="byte" byteorder="host" type="nand">
       <offset>0</offset>
       <magic>0x80</magic>
-      <descr>executable/sun-mc68010/</descr>
+      <descr>sun-mc68010/</descr>
     </mtest>
   </mtest>
   <mtest data="long" byteorder="be" type="eq">
