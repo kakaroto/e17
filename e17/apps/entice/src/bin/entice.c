@@ -82,6 +82,7 @@ entice_init(Ecore_Evas * ee)
 {
    Entice *e = NULL;
    Evas_Object *o = NULL;
+   int x, y, w, h;
 
    if ((ee) && (e = (Entice *) malloc(sizeof(Entice))))
    {
@@ -89,10 +90,12 @@ entice_init(Ecore_Evas * ee)
       e->ee = ee;
 
       e_thumb_init();
+      ecore_evas_geometry_get(ee, &x, &y, &w, &h);
       o = edje_object_add(ecore_evas_get(ee));
       edje_object_file_set(o, entice_config_theme_get(), "Entice");
       evas_object_name_set(o, "EnticeEdje");
       evas_object_move(o, 0, 0);
+      evas_object_resize(o, w, h);
       hookup_edje_signals(o);
       evas_object_show(o);
       e->edje = o;
