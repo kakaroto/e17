@@ -9,6 +9,7 @@
 #include "util.h"
 #include "config.h"
 #include "prefs.h"
+#include "icon_editor.h"
 
 static void window_resize(Ecore_Evas *ee);
 static void window_leave(Ecore_Evas *ee);
@@ -42,6 +43,7 @@ main(int argc, char **argv)
   edje_frametime_set(1.0/30.0); 
   iconbar_config_init();
   iconbar_config_geometry_get(&x, &y, &w, &h);
+  icon_editor_init(&argc, argv);
 
   ee = ecore_evas_software_x11_new(NULL, 0, x, y, w, h);
   win = ecore_evas_software_x11_window_get(ee);
@@ -59,7 +61,7 @@ main(int argc, char **argv)
   ecore_evas_sticky_set(ee, iconbar_config_sticky_get());
   ecore_evas_avoid_damage_set(ee, 1);
   ecore_x_window_prop_xy_set(win, x, y);
-  ecore_x_window_prop_layer_set(win, 1);
+  //ecore_x_window_prop_layer_set(win, 1);
 
   iconbar_config_ecore_evas_set(ee);
 #ifdef HAVE_TRANS_BG
@@ -103,7 +105,7 @@ main(int argc, char **argv)
 	if((edjew > 0) && (edjeh > 0))
 	{
 	    if (edjew > INT_MAX) edjew = INT_MAX;
-	    if (edjeh > INT_MAX) edjew = INT_MAX;
+	    if (edjeh > INT_MAX) edjeh = INT_MAX;
 	    ecore_evas_size_max_set(ee, (int)edjew, (int)edjeh);
 	}
 	if(iconbar_config_sticky_get() > 0)
@@ -138,6 +140,7 @@ main(int argc, char **argv)
   ecore_main_loop_begin();
   
   iconbar_config_free();
+  evas_object_del(iconbar);
   edje_shutdown();
   ecore_evas_shutdown();
   ecore_shutdown();

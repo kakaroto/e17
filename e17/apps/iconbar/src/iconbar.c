@@ -1,41 +1,19 @@
 #include "iconbar.h"
+#include "icon.h"
 #include "util.h"
 #include <math.h>
 #include <time.h>
 #include "prefs.h"
-
-/* smart object handlers */
-void iconbar_add(Evas_Object *o);
-void iconbar_del(Evas_Object *o);
-void iconbar_layer_set(Evas_Object *o, int l);
-void iconbar_raise(Evas_Object *o);
-void iconbar_lower(Evas_Object *o);
-void iconbar_stack_above(Evas_Object *o, Evas_Object *above);
-void iconbar_stack_below(Evas_Object *o, Evas_Object *below);
-void iconbar_move(Evas_Object *o, double x, double y);
-void iconbar_resize(Evas_Object *o, double w, double h);
-void iconbar_show(Evas_Object *o);
-void iconbar_hide(Evas_Object *o);
-void iconbar_color_set(Evas_Object *o, int r, int g, int b, int a);
-void iconbar_clip_set(Evas_Object *o, Evas_Object *clip);
-void iconbar_clip_unset(Evas_Object *o);
+#include "icon_editor.h"
 
 void iconbar_icon_move(Icon *icon);
 void iconbar_icons_fix(Iconbar *ib);
 void iconbar_icons_load(Iconbar *ib);
 void write_out_order(void *data);
 
-
 static int clock_timer(void *data);
 static void cb_iconbar(void *data, Evas_Object *o, const char *sig, const char *src);
-static void cb_icon(void *data, Evas_Object *o, const char *sig, const char *src);
-static void cb_exec(void *data, Evas_Object *o, const char *sig, const char *src);
 static void cb_window(void *data, Evas_Object *o, const char *sig, const char *src);
-
-
-/* keep this global, so it only has to be created once */
-static Evas_Smart *smart = NULL;
-
 
 Evas_Object *
 iconbar_new(Evas *evas)
@@ -46,6 +24,7 @@ iconbar_new(Evas *evas)
   
   return iconbar;
 }
+
 Evas_Object *
 iconbar_gui_get(Evas_Object *o)
 {
@@ -57,6 +36,7 @@ iconbar_gui_get(Evas_Object *o)
     }
     return(NULL);
 }
+
 /* set the path for data (bits, order, icons) */
 void
 iconbar_path_set(Evas_Object *obj, char *path)
@@ -118,236 +98,6 @@ iconbar_path_get(Evas_Object *obj)
     return NULL;
 }
 
-Evas_Smart *
-iconbar_smart_get()
-{
-  if (smart) return smart;
-
-  smart = evas_smart_new ("iconbar",
-                          iconbar_add,
-                          iconbar_del,
-                          iconbar_layer_set,
-                          iconbar_raise,
-                          iconbar_lower,
-                          iconbar_stack_above,
-                          iconbar_stack_below,
-                          iconbar_move,
-                          iconbar_resize,
-                          iconbar_show,
-                          iconbar_hide,
-                          iconbar_color_set,
-                          iconbar_clip_set,
-                          iconbar_clip_unset,
-                          NULL
-                          );
-
-  return smart;
-
-}
-
-
-/*********** smart object functions **************/
-void
-iconbar_add(Evas_Object *o)
-{
-  Iconbar *ib;
-  Evas *evas;
-
-  ib = (Iconbar *)malloc(sizeof(Iconbar));
-  memset(ib, 0, sizeof(Iconbar));
-
-  evas_object_smart_data_set(o, ib);
-  ib->obj = o;
-  
-  evas = evas_object_evas_get(o);
-
-  ib->cont = e_container_new(evas);
-  e_container_direction_set(ib->cont, 1);
-  e_container_spacing_set(ib->cont, 5);
-  e_container_alignment_set(ib->cont, CONTAINER_ALIGN_CENTER);
-  e_container_fill_policy_set(ib->cont, CONTAINER_FILL_POLICY_FILL_X |
-                                        CONTAINER_FILL_POLICY_KEEP_ASPECT);
-  e_container_move_button_set(ib->cont, 2);
-}
-
-
-void
-iconbar_del(Evas_Object *o)
-{
-  Iconbar *ib;
-
-  ib = evas_object_smart_data_get(o);
-}
-
-void
-iconbar_layer_set(Evas_Object *o, int l)
-{
-  Iconbar *ib;
-
-  ib = evas_object_smart_data_get(o);
-
-  if (ib->gui)
-    evas_object_layer_set(ib->gui, l);
-}
-
-void
-iconbar_raise(Evas_Object *o)
-{
-  Iconbar *ib;
-
-  ib = evas_object_smart_data_get(o);
-
-  if (ib->gui)
-    evas_object_raise(ib->gui);
-}
-
-void
-iconbar_lower(Evas_Object *o)
-{
-  Iconbar *ib;
-
-  ib = evas_object_smart_data_get(o);
-
-  if (ib->gui)
-    evas_object_lower(ib->gui);
-}
-
-void
-iconbar_stack_above(Evas_Object *o, Evas_Object *above)
-{
-  Iconbar *ib;
-
-  ib = evas_object_smart_data_get(o);
-  evas_object_stack_above(ib->gui, above);
-}
-
-void
-iconbar_stack_below(Evas_Object *o, Evas_Object *below)
-{
-  Iconbar *ib;
-
-  ib = evas_object_smart_data_get(o);
-  evas_object_stack_below(ib->gui, below);
-}
-
-void
-iconbar_move(Evas_Object *o, double x, double y)
-{
-  Iconbar *ib;
-
-  ib = evas_object_smart_data_get(o);
-
-  if (ib->gui)
-    evas_object_move(ib->gui, x, y);
-//  iconbar_icons_fix(ib);
-}
-
-void
-iconbar_resize(Evas_Object *o, double w, double h)
-{
-  Iconbar *ib;
-
-  ib = evas_object_smart_data_get(o);
-
-  if (ib->gui)
-    evas_object_resize(ib->gui, w, h);
-
-  if (w > h)
-  {
-    e_container_direction_set(ib->cont, 0);
-    e_container_fill_policy_set(ib->cont, CONTAINER_FILL_POLICY_FILL_Y |
-                                          CONTAINER_FILL_POLICY_KEEP_ASPECT);
-    e_container_padding_set(ib->cont, 5, 5, 11, 11);
-  }
-  else
-  {
-    e_container_direction_set(ib->cont, 1);
-    e_container_fill_policy_set(ib->cont, CONTAINER_FILL_POLICY_FILL_X |
-                                          CONTAINER_FILL_POLICY_KEEP_ASPECT);
-    e_container_padding_set(ib->cont, 11, 11, 5, 5);
-  }
-}
-
-void
-iconbar_show(Evas_Object *o)
-{
-  Iconbar *ib;
-
-  ib = evas_object_smart_data_get(o);
-
-  /* show the iconbar */
-  if (ib->gui)
-    evas_object_show(ib->gui);
-
-  evas_object_show(ib->cont);
-}
-
-void
-iconbar_hide(Evas_Object *o)
-{
-  Iconbar *ib;
-//Evas_List *l;
-
-  ib = evas_object_smart_data_get(o);
-
-  if (ib->gui)
-    evas_object_hide(ib->gui);
-
-  evas_object_hide(ib->cont);
-}
-
-void
-iconbar_color_set(Evas_Object *o, int r, int g, int b, int a)
-{
-  Iconbar *ib;
-
-  ib = evas_object_smart_data_get(o);
-  evas_object_color_set(ib->gui, r, g, b, a);
-}
-
-void
-iconbar_clip_set(Evas_Object *o, Evas_Object *clip)
-{
-  Iconbar *ib;
-
-  ib = evas_object_smart_data_get(o);
-  evas_object_clip_set(ib->gui, clip);
-}
-
-void
-iconbar_clip_unset(Evas_Object *o)
-{
-  Iconbar *ib;
-
-  ib = evas_object_smart_data_get(o);
-  evas_object_clip_unset(ib->gui);
-}
-
-Icon *
-iconbar_icon_new(Iconbar *ib, char *path)
-{
-  Evas *evas;
-  Icon *ic;
-
-  evas = evas_object_evas_get(ib->obj);
-  ic = (Icon *)malloc(sizeof(Icon));
-  memset(ic, 0, sizeof(Icon));
-
-  ic->iconbar = ib;
-  ic->file = (char *)strdup(path);
-  
-  /* load up the icon edje FIXME make sure it loaded... */
-  
-  ic->image = edje_object_add(evas);
-  edje_object_file_set(ic->image, ic->file, "icon");
-  evas_object_data_set(ic->image, "Icon", ic);
-  evas_object_resize(ic->image, 32, 32);
-  evas_object_show(ic->image);
-
-  edje_object_signal_callback_add(ic->image, "exec*", "*", cb_exec, ic);
-  edje_object_signal_callback_add(ic->image, "mouse*", "*", cb_icon, ic);
-  return ic;
-}
 
 void
 iconbar_icons_load(Iconbar *ib)
@@ -377,7 +127,7 @@ iconbar_icons_load(Iconbar *ib)
     closedir(dirp);
   }
 
-  /* add them to the container as specified in order.txt */
+  /* add them to the container as specified in config.db */
   {
     Evas_List *l, *ll;
     char buf[PATH_MAX];
@@ -486,36 +236,11 @@ cb_iconbar(void *data, Evas_Object *o, const char *sig, const char *src)
       int layer = evas_object_layer_get(ib->gui);
       evas_object_layer_set(ib->gui, layer - 1);
       evas_object_layer_set(ib->gui, layer);
+
     }
   }
 }
 
-static void
-cb_icon(void *data, Evas_Object *o, const char *sig, const char *src)
-{
-  /* FIXME put icon dragging stuff in here */
-  if (!strcmp(sig, "mouse,down,2"))
-  {
-  }
-  else if (!strcmp(sig, "mouse,up,2"))
-  {
-  }
-  else if (!strcmp(sig, "mouse,move"))
-  {
-  }
-}
-
-static void
-cb_exec(void *data, Evas_Object *o, const char *sig, const char *src)
-{
-  char *exec = (char *)(sig+5);
- 
-  if (!exec_run_in_dir(exec, get_user_home()))
-  {
-    printf("Error: failed to run \"%s\"\n", exec);
-  }
-
-}
 static void
 cb_window(void *data, Evas_Object *o, const char *sig, const char *src)
 {
@@ -556,6 +281,7 @@ cb_window(void *data, Evas_Object *o, const char *sig, const char *src)
   }
 }
 
+
 static int
 clock_timer(void *data)
 {
@@ -572,4 +298,18 @@ clock_timer(void *data)
       return(1);
     }
     return(0);
+}
+
+/*
+ * Make sure the container, icons, etc have the proper stacking 
+ * This is a bit hackish, and probably due to a container bug
+ */
+void
+iconbar_fix(Evas_Object *obj)
+{
+  Evas_Object *gui = iconbar_gui_get(obj);
+  int layer = evas_object_layer_get(gui);
+
+  evas_object_layer_set(gui, layer - 1);
+  evas_object_layer_set(gui, layer);
 }
