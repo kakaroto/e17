@@ -732,12 +732,17 @@ static void
 IB_SnapEWin(EWin * ewin)
 {
    /* Make snapshot of window */
-   int                 w, h, scale;
+   int                 w, h, ww, hh, scale;
    Iconbox            *ib;
    Imlib_Image        *im;
    Drawable            draw;
 
    if (!EwinIsMapped(ewin))
+      return;
+
+   ww = EoGetW(ewin);
+   hh = EoGetH(ewin);
+   if (ww <= 0 || hh <= 0)
       return;
 
    w = 40;
@@ -754,18 +759,18 @@ IB_SnapEWin(EWin * ewin)
    w *= scale;
    h *= scale;
 
-   if (EoGetW(ewin) > EoGetH(ewin))
-      h = (w * EoGetH(ewin)) / EoGetW(ewin);
+   if (ww > hh)
+      h = (w * hh) / ww;
    else
-      w = (h * EoGetW(ewin)) / EoGetH(ewin);
+      w = (h * ww) / hh;
    if (w < 4)
       w = 4;
    if (h < 4)
       h = 4;
-   if (w > EoGetW(ewin) || h > EoGetH(ewin))
+   if (w > ww || h > hh)
      {
-	w = EoGetW(ewin);
-	h = EoGetH(ewin);
+	w = ww;
+	h = hh;
      }
 
 #if USE_COMPOSITE
@@ -776,8 +781,8 @@ IB_SnapEWin(EWin * ewin)
 
 	mask = EWindowGetShapePixmap(EoGetWin(ewin));
 	imlib_context_set_drawable(draw);
-	im = imlib_create_scaled_image_from_drawable(mask, 0, 0, EoGetW(ewin),
-						     EoGetH(ewin), w, h, 1, 0);
+	im = imlib_create_scaled_image_from_drawable(mask, 0, 0, ww, hh,
+						     w, h, 1, 0);
 	imlib_context_set_image(im);
 	imlib_image_set_has_alpha(1);	/* Should be set by imlib? */
      }
@@ -786,8 +791,8 @@ IB_SnapEWin(EWin * ewin)
      {
 	draw = EoGetWin(ewin);
 	imlib_context_set_drawable(draw);
-	im = imlib_create_scaled_image_from_drawable(None, 0, 0, EoGetW(ewin),
-						     EoGetH(ewin), w, h, 1, 1);
+	im = imlib_create_scaled_image_from_drawable(None, 0, 0, ww, hh,
+						     w, h, 1, 1);
 	imlib_context_set_image(im);
 	imlib_image_set_has_alpha(1);	/* Should be set by imlib? */
      }
