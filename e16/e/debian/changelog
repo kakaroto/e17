@@ -1,3 +1,9 @@
+enlightenment-cvs (0.16-0) unstable; urgency=low
+
+  * Package names changed to reflect CVS version
+  
+ -- Lawrence J Lane <ljlane@debian.org>  Fri, 17 Sep 1999 12:13:14 -0700
+ 
 enlightenment-cvs (0.15-0.11) unstable; urgency=low
 
   * Package names changed to reflect CVS version

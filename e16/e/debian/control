@@ -1,14 +1,14 @@
 Source: enlightenment-cvs
 Section: x11
 Priority: optional
-Maintainer: Brian M. Almeida <bma@debian.org>
+Maintainer: Lawrence J Lane <ljlane@debian.org>
 Standards-Version: 2.4.0.0
 
 Package: enlightenment-cvs-docs
 Architecture: all
-Recommends: enlightenment-cvs (>= 0.15)
-Replaces: enlightenment-docs (<< 0.15-0.11)
-Conflicts: enlightenment-docs (<< 0.15-0.11)
+Recommends: enlightenment-cvs (>= 0.16)
+Replaces: enlightenment-docs (<< 0.16-0)
+Conflicts: enlightenment-docs (<< 0.16-0)
 Provides: enlightenment-docs
 Description: All documentation for Enlightenment and its themes
  How to make a theme, how to customize E, FAQ, README, the works
@@ -17,8 +17,8 @@ Package: enlightenment-cvs
 Architecture: any
 Depends: ${shlibs:Depends}, enlightenment-cvs-docs, enlightenment-cvs-theme
 Suggests: dox-cvs, esound-cvs
-Replaces: enlightenment (<< 0.15-0.11)
-Conflicts: enlightenment (<< 0.15-0.11)
+Replaces: enlightenment (<< 0.16-0)
+Conflicts: enlightenment (<< 0.16-0)
 Provides: enlightenment
 Description: The Enlightenment Window Manager
  The Enlightnment Window Manager, whose motto is "Time to rethink everything".
@@ -30,9 +30,9 @@ Description: The Enlightenment Window Manager
 Package: enlightenment-cvs-theme
 Architecture: all
 Depends: enlightenment-cvs-docs
-Recommends: enlightenment-cvs(>= 0.15)
-Replaces: enlightenment-theme (<< 0.15-0.11)
-Conflicts: enlightenment-theme (<< 0.15-0.11)
+Recommends: enlightenment-cvs(>= 0.16)
+Replaces: enlightenment-theme (<< 0.16-0)
+Conflicts: enlightenment-theme (<< 0.16-0)
 Provides: enlightenment-theme
 Description: Themes pictures and config files need by the Enlightenment WM
  This package contains the graphics, sounds, and font needed for a minimal
@@ -43,8 +43,8 @@ Package: dox-cvs
 Architecture: any
 Depends: ${shlibs:Depends}
 Recommends: enlightenment-cvs
-Replaces: dox (<< 0.15-0.11)
-Conflicts: dox (<< 0.15-0.11)
+Replaces: dox (<< 0.16-0)
+Conflicts: dox (<< 0.16-0)
 Provides: dox
 Description: Dox is the Enlightened help program
  Dox is Rasterman's little creation for Enlightenment and other Enlightened

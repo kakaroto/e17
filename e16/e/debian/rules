@@ -12,7 +12,7 @@ configure: configure.in
 
 Makefile: configure
 	@echo "--- Configuring"
-	./configure --enable-fsstd=yes --prefix=/usr \
+	./configure --disable-upgrade --enable-fsstd=yes --prefix=/usr \
 					--bindir=/usr/X11R6/bin
 
 build: Makefile build-stamp
