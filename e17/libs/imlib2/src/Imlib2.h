@@ -156,6 +156,7 @@ Imlib_Updates imlib_updates_merge_for_rendering(Imlib_Updates updates, int w, in
 void          imlib_updates_free(Imlib_Updates updates);
 Imlib_Updates imlib_updates_get_next(Imlib_Updates updates);
 void          imlib_updates_get_coordinates(Imlib_Updates updates, int *x_return, int *y_return, int *width_return, int *height_return);
+void          imlib_updates_set_coordinates(Imlib_Updates updates, int x, int y, int width, int height);
 void          imlib_render_image_updates_on_drawable(Imlib_Updates updates, int x, int y);
 Imlib_Updates imlib_updates_init(void);
 Imlib_Updates imlib_updates_append_updates(Imlib_Updates updates, Imlib_Updates appended_updates);

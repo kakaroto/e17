@@ -1201,6 +1201,20 @@ imlib_updates_get_coordinates(Imlib_Updates updates,
 }
 
 void 
+imlib_updates_set_coordinates(Imlib_Updates updates, int x, int y, 
+			      int width, int height)
+{
+   ImlibUpdate *u;
+   
+   CHECK_PARAM_POINTER("imlib_updates_set_coordinates", "updates", updates);
+   u = (ImlibUpdate *)updates;
+   u->x = x;
+   u->y = y;
+   u->w = width;
+   u->h = height;
+}
+
+void 
 imlib_render_image_updates_on_drawable(Imlib_Updates updates,
 				       int x, int y)
 {
