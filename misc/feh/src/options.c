@@ -293,7 +293,7 @@ feh_parse_option_array(int argc, char **argv)
 {
    static char stropts[] =
 
-      "a:A:b:BcC:dD:e:f:Fg:hH:iIklL:mM:nNo:O:pPqrR:sS:t:T:uUvVwW:xXy:zZ1:2:3:4:56:7";
+      "a:A:b:BcC:dD:e:f:Fg:hH:iIklL:mM:nNo:O:pPqrR:sS:t:T:uUvVwW:xXy:zZ1:2:3:4:56:78:9";
    static struct option lopts[] = {
       /* actions */
       {"help", 0, 0, 'h'},                  /* okay */
@@ -351,6 +351,8 @@ feh_parse_option_array(int argc, char **argv)
       {"menu-button", 1, 0, '4'},
       {"rotate-button", 1, 0, '6'},
       {"no-rotate-ctrl-mask", 0, 0, '7'},
+      {"blur-button", 1, 0, '8'},
+      {"no-blur-ctrl-mask", 0, 0, '9'},
       {"rcfile", 1, 0, '_'},
       {0, 0, 0, 0}
    };
@@ -565,6 +567,12 @@ feh_parse_option_array(int argc, char **argv)
            break;
         case '7':
            opt.no_rotate_ctrl_mask = 1;
+           break;
+        case '8':
+           opt.blur_button = atoi(optarg);
+           break;
+        case '9':
+           opt.no_blur_ctrl_mask = 1;
            break;
         default:
            break;
@@ -794,6 +802,10 @@ show_usage(void)
            "                            any mode (default=2).\n"
            "  -7, --no-rotate-ctrl-mask Don't require CTRL+Button for rotation in\n"
            "                            any mode -- just use the button (default=off).\n"
+           "  -8, --blur-button B       Use CTRL+Button B to blur the current image in\n"
+           "                            any mode (default=1).\n"
+           "  -9, --no-blur-ctrl-mask   Don't require CTRL+Button for blurring in\n"
+           "                            any mode -- just use the button (default=off).\n"
            " FORMAT SPECIFIERS\n"
            "                            %%f image path/filename\n"
            "                            %%n image name\n"
@@ -916,15 +928,14 @@ feh_create_default_config(char *rcfile)
            "screensave --full-screen --randomize --slideshow-delay 5\n" "\n"
            "# Add <img> tags to your html with ease :-)\n"
            "newimg -q -L \"<img src=\\\"%%f\\\" alt=\\\"feh\\\" border=\\\"0\\\" width=\\\"%%w\\\" height=\\\"%%h\\\">\"\n"
-           "\n" "# Different menus\n" 
-           "chrome --menu-bg " PREFIX "/share/feh/images/menubg_chrome.png\n"
-           "brushed --menu-bg " PREFIX "/share/feh/images/menubg_brushed.png\n"
-           "pastel --menu-bg " PREFIX "/share/feh/images/menubg_pastel.png\n"
-           "aluminium --menu-bg " PREFIX "/share/feh/images/menubg_aluminium.png\n"
-           "wood --menu-bg " PREFIX "/share/feh/images/menubg_wood.png\n"
-           "aqua --menu-bg " PREFIX "/share/feh/images/menubg_aqua.png\n"
-           "britney --menu-bg " PREFIX "/share/feh/images/menubg_britney.png\n"
-           );
+           "\n" "# Different menus\n" "chrome --menu-bg " PREFIX
+           "/share/feh/images/menubg_chrome.png\n" "brushed --menu-bg " PREFIX
+           "/share/feh/images/menubg_brushed.png\n" "pastel --menu-bg " PREFIX
+           "/share/feh/images/menubg_pastel.png\n" "aluminium --menu-bg "
+           PREFIX "/share/feh/images/menubg_aluminium.png\n" "wood --menu-bg "
+           PREFIX "/share/feh/images/menubg_wood.png\n" "aqua --menu-bg "
+           PREFIX "/share/feh/images/menubg_aqua.png\n" "britney --menu-bg "
+           PREFIX "/share/feh/images/menubg_britney.png\n");
    fclose(fp);
 
    D_RETURN_;
