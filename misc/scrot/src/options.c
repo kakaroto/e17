@@ -84,7 +84,7 @@ scrot_parse_option_array(int argc, char **argv)
            opt.delay = atoi(optarg);
            break;
         case 'e':
-           opt.exec = estrdup(optarg);
+           opt.exec = gib_estrdup(optarg);
            break;
         case 'm':
            opt.multidisp = 1;
@@ -127,7 +127,7 @@ scrot_parse_option_array(int argc, char **argv)
                opt.thumb_file = name_thumbnail(opt.output_file);
          }
          else
-            weprintf("unrecognised option %s\n", argv[optind++]);
+            gib_weprintf("unrecognised option %s\n", argv[optind++]);
       }
    }
 
@@ -144,7 +144,7 @@ name_thumbnail(char *name)
    size_t diff = 0;
 
    length = strlen(name) + 7;
-   new_title = emalloc(length);
+   new_title = gib_emalloc(length);
 
    dot_pos = strrchr(name, '.');
    if (dot_pos)

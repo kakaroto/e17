@@ -40,8 +40,8 @@ main(int argc,
   init_x_and_imlib(NULL, 0);
 
   if (!opt.output_file) {
-    opt.output_file = estrdup("%Y-%m-%d-%H%M%S_$wx$h_scrot.png");
-    opt.thumb_file = estrdup("%Y-%m-%d-%H%M%S_$wx$h_scrot-thumb.png");
+    opt.output_file = gib_estrdup("%Y-%m-%d-%H%M%S_$wx$h_scrot.png");
+    opt.thumb_file = gib_estrdup("%Y-%m-%d-%H%M%S_$wx$h_scrot-thumb.png");
   }
 
 
@@ -57,7 +57,7 @@ main(int argc,
   }
 
   if (!image)
-    eprintf("no image grabbed");
+    gib_eprintf("no image grabbed");
 
   imlib_context_set_image(image);
   imlib_image_attach_data_value("quality", NULL, opt.quality, NULL);
@@ -65,7 +65,7 @@ main(int argc,
   filename = im_printf(opt.output_file, NULL, image);
   gib_imlib_save_image_with_error_return(image, filename, &err);
   if (err)
-    eprintf("Saving to file %s failed\n", filename);
+    gib_eprintf("Saving to file %s failed\n", filename);
   if (opt.thumb) {
     int cwidth, cheight;
 
@@ -76,12 +76,12 @@ main(int argc,
                                             cwidth * opt.thumb / 100,
                                             cheight * opt.thumb / 100, 1);
     if (thumbnail == NULL)
-      eprintf("Unable to create scaled Image\n");
+      gib_eprintf("Unable to create scaled Image\n");
     else {
       filename = im_printf(opt.thumb_file, NULL, thumbnail);
       gib_imlib_save_image_with_error_return(thumbnail, filename, &err);
       if (err)
-        eprintf("Saving thumbnail %s failed\n", filename);
+        gib_eprintf("Saving thumbnail %s failed\n", filename);
     }
   }
   if (opt.exec)
@@ -173,12 +173,12 @@ scrot_sel_and_grab_image(void)
        (disp, root, False,
         ButtonMotionMask | ButtonPressMask | ButtonReleaseMask, GrabModeAsync,
         GrabModeAsync, root, cursor, CurrentTime) != GrabSuccess))
-    eprintf("couldn't grab pointer:");
+    gib_eprintf("couldn't grab pointer:");
 
   if ((XGrabKeyboard
        (disp, root, False, GrabModeAsync, GrabModeAsync,
         CurrentTime) != GrabSuccess))
-    eprintf("couldn't grab keyboard:");
+    gib_eprintf("couldn't grab keyboard:");
 
 
   while (1) {
@@ -250,7 +250,7 @@ scrot_sel_and_grab_image(void)
     count = select(fdsize, &fdset, NULL, NULL, NULL);
     if ((count < 0)
         && ((errno == ENOMEM) || (errno == EINVAL) || (errno == EBADF)))
-      eprintf("Connection to X display lost");
+      gib_eprintf("Connection to X display lost");
   }
   if (rect_w) {
     XDrawRectangle(disp, root, gc, rect_x, rect_y, rect_w, rect_h);
@@ -456,7 +456,7 @@ im_printf(char *str,
     } else
       strncat(ret, c, 1);
   }
-  return estrdup(ret);
+  return gib_estrdup(ret);
 }
 
 Window
@@ -534,7 +534,7 @@ scrot_grab_shot_multi(void)
 
   dispstr = DisplayString(disp);
 
-  subdisp = estrdup(DisplayString(disp));
+  subdisp = gib_estrdup(DisplayString(disp));
 
   for (i = 0; i < screens; i++) {
     dispstr = strchr(subdisp, ':');
