@@ -35,7 +35,7 @@ html-docs: docs html-customizations.dsl
 	- cd figures && cp -f *.png ../$(FULLNAME)/figures
 	- cd figures && cp -f *.jpg ../$(FULLNAME)/figures
 	cp -f stylesheet.css $(FULLNAME)/stylesheet.css
-	tar cfvz --exclude=CVS $(FULLNAME).tar.gz $(FULLNAME)
+	tar cfvz $(FULLNAME).tar.gz $(FULLNAME)
 
 html-filetypes: filetypes.xsl
 	$(mkinstalldirs) ./$(FULLNAME)/filetypes
