@@ -77,11 +77,39 @@ int alsa_configure(int channels, int rate, int bits, int bigendian) {
 }
 
 int alsa_play(unsigned char *data, int len) {
-	int frames = len / frame_size;
+	int frames = len / frame_size, written;
 	
 	assert(pcm);
 
-	return (snd_pcm_writei(pcm, data, frames) > 0);
+	/* there's still data to write */
+	while (frames > 0) {
+		if ((written = snd_pcm_writei(pcm, data, frames)) > 0) {
+			/* success: play the next frame */
+			frames -= written;
+			data += written * frame_size;
+			
+			continue;
+		}
+
+		/* error handling */
+		if (written == -EAGAIN)
+			continue;
+		else if (written == -EPIPE)
+			snd_pcm_prepare(pcm);
+		else if (written == -ESTRPIPE) {
+			/* wait until the suspend flag is released */
+			while ((written = snd_pcm_resume(pcm)) == -EAGAIN)
+				sleep(1);
+	
+			if (written < 0) {
+				/* can't wake up device, reset it */
+				snd_pcm_prepare(pcm);
+				return 0;
+			}
+		}
+	}
+
+	return 1;
 }
 
 int alsa_volume_get(int *left, int *right) {
