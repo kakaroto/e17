@@ -32,6 +32,9 @@ struct _ewl_fileselector {
 	Ewl_Widget     *dirs;	/* directory table */
 	Ewl_Widget     *files;	/* file table */
 
+	char           *path; /* current fileselector path */
+	char           *item; /* current selected item in the fileselector */
+
 	Ewl_Callback_Function file_clicked;
 };
 
@@ -40,6 +43,7 @@ Ewl_Widget     *ewl_fileselector_new(Ewl_Callback_Function file_clicked);
 void            ewl_fileselector_init(Ewl_Fileselector * fs,
 				      Ewl_Callback_Function fc);
 char *ewl_fileselector_get_filename (Ewl_Widget *row);
+char *ewl_fileselector_get_path (Ewl_Fileselector *fs);
 
 /*
  * Internally used callbacks, override at your own risk.
@@ -56,8 +60,8 @@ void ewl_fileselector_directory_clicked(Ewl_Widget * w, void *ev_data,
  */
 void ewl_filedialog_file_clicked_cb(Ewl_Widget * w, void *ev_data, 
 				    void *user_data);
-void ewl_filedialog_file_double_clicked_cb(Ewl_Widget * w, void *ev_data,
-					   void *user_data);
+void ewl_filedialog_directory_clicked_single_cb(Ewl_Widget * w, void *ev_data,
+		                void *user_data);
 void ewl_filedialog_directory_clicked_cb(Ewl_Widget * w, void *ev_data, 
 					 void *user_data);
 

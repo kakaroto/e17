@@ -11,6 +11,8 @@ struct Ewl_Filedialog
 	Ewl_Filedialog_Type type;
 
 	Ewl_Widget     *selector;	/* Ewl_Fileselector */
+	Ewl_Widget     *path_label; /* label to display current path */
+	Ewl_Widget     *entry; /* entry for manual input or current selected */
 	void           *dialog;	/* open or save dialog */
 };
 
