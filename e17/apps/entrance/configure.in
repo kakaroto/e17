@@ -10,7 +10,7 @@ AM_PROG_CC_STDC
 AC_HEADER_STDC
 
 if test "x${prefix}" = "xNONE"; then
-	AC_DEFINE_UNQUOTED(PREFIX, "/usr/local/", [Install prefix])
+	AC_DEFINE_UNQUOTED(PREFIX, "/usr/local", [Install prefix])
 else
 	AC_DEFINE_UNQUOTED(PREFIX, "${prefix}", [Install prefix])
 fi
@@ -20,8 +20,12 @@ AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "$PACKAGE_DATA_DIR", [Shared data directory
 AC_EXPAND_DIR(PACKAGE_BIN_DIR, "$bindir")
 AC_DEFINE_UNQUOTED(PACKAGE_BIN_DIR, "$PACKAGE_BIN_DIR", [Location of binaries])
 
-AC_EXPAND_DIR(PACKAGE_CFG_DIR, "$sysconfdir")
-AC_DEFINE_UNQUOTED(PACKAGE_CFG_DIR, "$PACKAGE_CFG_DIR", [Location of configuration data])
+# Override autosplat's destination dir settings
+test $sysconfdir = '${prefix}/etc' && sysconfdir="/etc"
+test $localstatedir = '${prefix}/var' && localstatedir="/var/lib"
+
+AC_DEFINE_UNQUOTED(PACKAGE_CFG_DIR, "${sysconfdir}", [Config data directory])
+AC_DEFINE_UNQUOTED(PACKAGE_STATE_DIR, "${localstatedir}/${PACKAGE}", [State data directory])
 
 dnl Set PACKAGE_SOURCE_DIR in config.h.
 packagesrcdir=`cd $srcdir && pwd`
