@@ -1,5 +1,10 @@
 $Id$
 
+2004-05-09 Tilman Sauerbeck <tilman -at- code-monkey.de>
+        * src/embrace.c: Added standard arguments -h and
+          -v. The evas engine and theme to use can now be
+          specified on the commandline as well.
+
 2004-05-05 Tilman Sauerbeck <tilman -at- code-monkey.de>
         * src/embrace.c: embrace_signal_get() now always returns -1
           indicating failure in case the OS doesn't know about

@@ -35,6 +35,7 @@
 #include <dirent.h>
 #include <ltdl.h>
 #include <signal.h>
+#include <getopt.h>
 
 #include "embrace.h"
 #include "mailbox.h"
@@ -314,31 +315,38 @@ static char *find_theme (const char *name)
 
 static bool config_load_misc (Embrace *e, E_DB_File *edb)
 {
-	char *str, *theme;
+	char *str = NULL, *theme;
 	bool ret = false;
 
 	assert (e);
 	assert (edb);
 
-	if ((str = e_db_str_get (edb, "/" PACKAGE "/evas_engine"))) {
+	/* only load the values from the EDB if they haven't been overriden
+	 * in argv.
+	 */
+	if (!*e->cfg.evas_engine
+	    && (str = e_db_str_get (edb, "/" PACKAGE "/evas_engine"))) {
 		snprintf (e->cfg.evas_engine, sizeof (e->cfg.evas_engine),
 		          "%s", str);
 		free (str);
+		str = NULL;
 	}
 
-	if (!(str = e_db_str_get (edb, "/" PACKAGE "/theme"))) {
+	if (!*e->cfg.theme
+	    && !(str = e_db_str_get (edb, "/" PACKAGE "/theme"))) {
 		fprintf (stderr, "'theme' not specified, "
-		         "falling back to the default theme instead!\n");
+		         "falling back to the default theme!\n");
 		str = strdup ("default");
 	}
 
-	if ((theme = find_theme (str))) {
+	if ((theme = find_theme (str ? str : e->cfg.theme))) {
 		snprintf (e->cfg.theme, sizeof (e->cfg.theme), "%s", theme);
 		ret = true;
 	} else
-		fprintf (stderr, "Cannot find theme '%s'!\n", str);
+		fprintf (stderr, "Cannot find theme '%s'!\n", e->cfg.theme);
 
-	free (str);
+	if (str)
+		free (str);
 
 	return ret;
 }
@@ -681,6 +689,59 @@ void embrace_free (Embrace *e)
 	free (e);
 }
 
+static void embrace_config_init (Embrace *e)
+{
+	assert (e);
+
+	*e->cfg.evas_engine = 0;
+	*e->cfg.theme = 0;
+}
+
+static bool handle_args (Embrace *e)
+{
+	int argc = 0, o;
+	char **argv = NULL;
+	bool ret = true;
+	struct option opts[] = {{"help", no_argument, 0, 'h'},
+	                        {"version", no_argument, 0, 'v'},
+	                        {"engine", required_argument, 0, 'e'},
+	                        {"theme", required_argument, 0, 't'},
+	                        {NULL, 0, NULL, 0}};
+
+	assert (e);
+
+	ecore_app_args_get (&argc, &argv);
+
+	while ((o = getopt_long (argc, (char **) argv, "hve:t:",
+	                         opts, NULL)) != -1) {
+		switch (o) {
+			case 'h':
+				printf ("Usage: embrace [options]\n"
+				        "Options:\n"
+				        "  -v, --version       print version and exit\n"
+				        "  -h, --help          print help and exit\n"
+				        "  -e, --engine=name   specifiy engine to use\n"
+				        "  -t, --theme=name    specify theme to use\n");
+				ret = false;
+				break;
+			case 'v':
+				printf ("Embrace " VERSION "\n");
+				ret = false;
+				break;
+			case 'e':
+				snprintf (e->cfg.evas_engine, sizeof (e->cfg.evas_engine),
+				          "%s", optarg);
+				break;
+			case 't':
+				snprintf (e->cfg.theme, sizeof (e->cfg.theme),
+				          "%s", optarg);
+				break;
+		}
+	}
+
+	return ret;
+}
+
 bool embrace_init (Embrace *e)
 {
 	assert (e);
@@ -688,6 +749,11 @@ bool embrace_init (Embrace *e)
 #ifdef SIGRTMIN
 	last_signal = SIGRTMIN;
 #endif
+
+	embrace_config_init (e);
+
+	if (!handle_args (e))
+		return false;
 
 	if (!embrace_load_config (e)) {
 		fprintf (stderr, "Cannot load config!\n");
