@@ -1,6 +1,7 @@
 #ifndef ESMART_OBJECT_TRANS
 #define ESMART_OBJECT_TRANS
 #include <Evas.h>
+#include <Ecore_X.h>
 
 typedef struct _Esmart_Trans_X11 Esmart_Trans_X11;
 
