@@ -247,7 +247,7 @@ setup_attribs( GtkgEvasSprite* ev, GHashTable* hash_args )
 
 
 
-
+#if 0
 static void
 load_from_metadata(
     gpointer data,
@@ -381,8 +381,125 @@ load_from_metadata(
     g_free(strbuf1);
 
 }
+#endif
 
 
+
+typedef struct _sprite_load_from_metadata_data sprite_load_from_metadata_data;
+struct _sprite_load_from_metadata_data
+{
+    gevas_metadata_find_edb_data d;
+
+    gboolean    loaded;
+    
+    GtkgEvasSprite* ev;
+};
+
+
+void
+sprite_load_from_metadata_f(gevas_metadata_find_edb_data* d)
+{
+    sprite_load_from_metadata_data* data = (sprite_load_from_metadata_data*)d;
+    E_DB_File* edb        = 0;
+    char*      edb_prefix = 0;
+    gboolean   loaded     = 1;
+    GtkgEvasSprite* ev    = 0;
+
+    printf("sprite_load_from_metadata() TOP\n");
+
+    g_return_if_fail(d        != NULL);
+    g_return_if_fail(data->ev != NULL);
+    if(data->loaded)
+        return;
+    ev = data->ev;
+    
+    edb_prefix = url_args_lookup_str(d->hash_args, "prefix", "" );
+
+    printf("sprite_load_from_metadata() edb_full_path:%s\n",d->edb_full_path);
+    printf("sprite_load_from_metadata() edb_prefix   :%s\n",edb_prefix);
+
+    
+    /* load the data */
+    if( edb = e_db_open( d->edb_full_path ))
+    {
+        gint  idx   = 0;
+        gint  count = 0;
+        char* t     = 0;
+        gint  n     = 0;
+
+        count = edb_lookup_int( edb, 0, "%s/%s", edb_prefix, "Count",0 );
+
+        for( idx = 0; loaded && idx < count ; idx++ )
+        {
+            GtkgEvasImage* o = gevasimage_new();
+            char* image_name = 0;
+
+            image_name = edb_lookup_str( edb, "", "%s/%d/Location", edb_prefix, idx,0 );
+            printf("load_from_metadata() image_name:%s\n",image_name);
+
+            if(!(o = gevasimage_new_from_metadata( ev->gevas, image_name )))
+            {
+                gevas_obj_collection_clear( ev->col );
+                loaded=0;
+            }
+            else
+            {
+                gevas_obj_collection_add( ev->col, GTK_GEVASOBJ(o) );
+            }
+            g_free(image_name);
+        }
+
+        if(loaded && !(idx < count))
+        {
+            char* p = edb_prefix;
+            GHashTable* def_hash_args = g_hash_table_new( g_str_hash, g_str_equal );
+                
+            data->loaded = 1;
+
+            edb_to_hash_int( edb, def_hash_args, "default_frame_delay", p, 0 );
+            edb_to_hash_int( edb, def_hash_args, "x", p, 0 );
+            edb_to_hash_int( edb, def_hash_args, "y", p, 0 );
+            edb_to_hash_int( edb, def_hash_args, "visible", p, 0 );
+            edb_to_hash_int( edb, def_hash_args, "play_forever", p, 0 );
+            
+            setup_attribs( ev, def_hash_args );
+            setup_attribs( ev, d->hash_args );
+
+            hash_str_str_clean( def_hash_args );
+        }
+        e_db_close(edb);
+    }
+    
+    
+}
+
+
+gboolean
+gevas_sprite_load_from_metadata( GtkgEvasSprite* ev, const char* loc )
+{
+    sprite_load_from_metadata_data data;
+    gevas_metadata_find_edb_data* d = (gevas_metadata_find_edb_data*)&data;
+    
+	g_return_val_if_fail(ev != NULL,0);
+	g_return_val_if_fail(loc!= NULL,0);
+	g_return_val_if_fail(GTK_IS_GEVAS_SPRITE(ev),0);
+	g_return_val_if_fail(GTK_IS_GEVAS_OBJ_COLLECTION(ev->col),0);
+	g_return_val_if_fail(GTK_IS_GEVAS(ev->gevas),0);
+
+
+    d->  edb_postfix   = loc;
+    d->  edb_found_f   = sprite_load_from_metadata_f;
+    data.ev            = ev;
+    data.loaded        = 0;
+    
+
+    gevas_metadata_find_edb_with_data( ev->gevas, d );
+    return data.loaded;
+}
+
+
+
+#if 0 
 gboolean
 gevas_sprite_load_from_metadata( GtkgEvasSprite* ev, const char* loc )
 {
@@ -400,6 +517,8 @@ gevas_sprite_load_from_metadata( GtkgEvasSprite* ev, const char* loc )
 
     printf("SPRITE gevas_sprite_load_from_metadata() loc:%s\n", loc );
 
+
+    sprite_load_from_metadata_f
     
     if( gevas_get_metadata_prefix_list(ev->gevas))
     {
@@ -410,6 +529,8 @@ gevas_sprite_load_from_metadata( GtkgEvasSprite* ev, const char* loc )
     
     return ev->metadata_load_loaded;
 }
+
+#endif
 
 gint
 gevas_sprite_get_size( GtkgEvasSprite* ev )

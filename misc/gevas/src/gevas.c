@@ -36,6 +36,25 @@
  */
 
 #include "config.h"
+
+#include <Evas.h>
+#include <Edb.h>
+
+#include <gevas.h>
+#include <gevasev_handler.h>
+#include <gevas_util.h>
+
+#include <gtk/gtkmain.h>
+#include <gtk/gtkselection.h>
+#include <gdk/gdkx.h>
+#include <gdk/gdkkeysyms.h>
+
+#include <stdio.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+#include <string.h>
+
 /* Always disable NLS, since we have no config.h; 
  * a real app would not do this of course.
  */
@@ -59,15 +78,6 @@
 #define bindtextdomain(Domain,Directory) (Domain)
 #endif							/* ENABLE_NLS */
 
-#include <Evas.h>
-
-#include "gevas.h"
-#include "gevasev_handler.h"
-
-#include <gtk/gtkmain.h>
-#include <gtk/gtkselection.h>
-#include <gdk/gdkx.h>
-#include <gdk/gdkkeysyms.h>
 
 #define GEVAS_CHECKED_BG_IMAGE_FILENAME    PACKAGE_DATA_DIR"/checks.png"
 
@@ -1535,3 +1545,525 @@ GList* gevas_get_image_prefix_list   ( GtkgEvas *ev )
     return ev->image_prefix_list;
 }
 
+
+/******************************************************************************/
+/******************************************************************************/
+/******************************************************************************/
+/******************************************************************************/
+/******************************************************************************/
+/******************************************************************************/
+/** These can be used to find an edb file using prefixs and optionally call ***/
+/** a function when a valid edb file is found *********************************/
+/******************************************************************************/
+
+
+gboolean
+gevas_file_exists(const char* fmt, ... )
+{
+  gchar *full_filename;
+  struct stat s;
+  gint status;
+  va_list args;
+  gchar* fn = NULL;
+
+  va_start (args, fmt);
+  fn = g_strdup_vprintf( fmt, args );
+  va_end (args);
+  
+  status = stat (fn, &s);
+  g_free(fn);
+  if (status == 0 && S_ISREG (s.st_mode))
+  {
+      return 1;
+  }
+  
+  return 0;
+}
+
+
+
+
+enum _gevas_metadata_type
+{
+    MD_STRING=1,
+    MD_INT,
+    MD_DATA,
+    MD_DUMMY,
+};
+typedef enum _gevas_metadata_type gevas_metadata_type;
+
+
+
+
+static void
+metadata_find_edb_cb( 
+    gpointer data,
+    gpointer user_data
+    )
+{
+    const char* fully_qualified_prefix = data;
+    gevas_metadata_find_edb_data* d = (gevas_metadata_find_edb_data*)user_data;
+    GtkgEvas* ev      = 0;
+    E_DB_File* edb    = 0;
+    char* k           = 0;
+    char* filen       = 0;
+    char* full_buffer = 0;
+    char* edb_prefix  = 0;
+    char* strbuf1     = 0;
+    GHashTable* hash_args = 0;
+    gboolean has_imlib2_colon_in_name = 0;
+    gboolean ok       = 1;
+
+    /* Assert and init */
+    g_return_if_fail(d != NULL);
+	g_return_if_fail(fully_qualified_prefix!= NULL);
+    g_return_if_fail(GTK_IS_GEVAS(d->gevas));
+    if( d->loaded )
+    {
+        return;
+    }
+    ev = d->gevas;
+
+    /* create the filename buffer */
+    if( strlen( fully_qualified_prefix ))
+    {
+        full_buffer = g_strconcat( fully_qualified_prefix,
+                                   "/", d->edb_postfix, 0 );
+    }
+    else
+    {
+        full_buffer = g_strdup(d->edb_postfix);
+    }
+
+    
+    /* get filename and extra args */
+    printf("full_buffer:%s\n",full_buffer );
+    filen = strbuf1 = url_file_name_part_new( full_buffer );
+    d->hash_args    = url_args_to_hash( full_buffer );
+    g_free(full_buffer);
+
+    printf("metadata_find_edb_cb() checking for file exists:%s\n",filen);
+
+    if( strstr( filen, ":" ))
+    {
+        struct stat s;
+        char* p = strstr( filen, ":" );
+
+        has_imlib2_colon_in_name = 1;
+        *p = '\0';
+        if(!stat (filen, &s) && S_ISREG (s.st_mode))
+        {
+            *p = ':';
+        }
+        else
+        {
+            ok = 0;
+        }
+    }
+    
+
+    /* If we have a winner, call the callback and get out of here */
+    if(ok && (has_imlib2_colon_in_name || gevas_file_exists( filen )))
+    {
+        printf("metadata_find_edb_cb() file exists!! :%s\n",filen);
+
+        d->edb_full_path = g_strdup(filen);
+
+        if( d->edb_found_f )
+        {
+            printf("metadata_find_edb_cb() file exists calling f\n");
+            d->edb_found_f( d );
+        }
+        
+
+        d->loaded=1;
+    }
+    
+    hash_str_str_clean( d->hash_args );
+    g_free(strbuf1);
+}
+
+
+gchar*
+gevas_metadata_find_edb_with_data( GtkgEvas *ev, gevas_metadata_find_edb_data* data)
+{
+    char* no_prefix = "";
+
+    g_return_if_fail(ev   != NULL);
+    g_return_if_fail(data != NULL);
+	g_return_if_fail(GTK_IS_GEVAS(ev));
+
+    data->loaded        = 0;
+    data->gevas         = ev;
+    data->edb_full_path = 0;
+    data->hash_args     = 0;
+    
+    if( gevas_get_metadata_prefix_list(ev))
+    {
+        g_list_foreach( gevas_get_metadata_prefix_list(ev),
+                        metadata_find_edb_cb, data);
+    }
+    metadata_find_edb_cb((gpointer)no_prefix, data);
+
+    return data->loaded ? data->edb_full_path : g_strdup(data->edb_postfix);
+}
+
+gchar*
+gevas_metadata_find_edb( GtkgEvas *ev, const gchar* loc )
+{
+    char* no_prefix = "";
+    gevas_metadata_find_edb_data data;
+
+    g_return_if_fail(ev  != NULL);
+    g_return_if_fail(loc != NULL);
+	g_return_if_fail(GTK_IS_GEVAS(ev));
+
+    memset( &data, 0, sizeof(gevas_metadata_find_edb_data));
+    data.edb_postfix   = loc;
+    return gevas_metadata_find_edb_with_data( ev, &data );
+}
+
+
+
+
+/******************************************************************************/
+/******************************************************************************/
+/******************************************************************************/
+/******************************************************************************/
+/******************************************************************************/
+/******************************************************************************/
+/** These can be used to lookup a key in a metadata chain *********************/
+/******************************************************************************/
+
+
+
+/*
+ * Note that we can pass extra args as long as gevas_metadata_find_edb_data
+ * is the first static arg in the struct, then the edb finding functions
+ * will work ok, and we get to pass in our own data.
+ */
+typedef struct _metadata_lookup_x_data metadata_lookup_x_data;
+struct _metadata_lookup_x_data 
+{
+    gevas_metadata_find_edb_data d;
+
+    gpointer    def;
+    const char* key;
+    gboolean    loaded;
+    gpointer    loaded_data;
+    
+    gevas_metadata_type md_type;
+
+};
+
+
+
+void
+gevas_metadata_lookup_x(gevas_metadata_find_edb_data* d)
+{
+    metadata_lookup_x_data* data = (metadata_lookup_x_data*)d;
+    E_DB_File* edb    = 0;
+
+    printf("gevas_metadata_lookup_x() %d\n",data->loaded);
+
+    g_return_if_fail(d != NULL);
+    if(data->loaded)
+        return;
+    
+
+    printf("gevas_metadata_lookup_x() key:%s edb_full_path:%s\n", data->key,
+           d->edb_full_path);
+    
+    
+    /* load the data */
+    if( edb = e_db_open( d->edb_full_path ))
+    {
+        switch(data->md_type)
+        {
+        case MD_STRING:
+            data->loaded_data = edb_lookup_str( edb, (char*)data->def, "%s", data->key );
+            if( data->loaded_data && data->def && strcmp( data->loaded_data, data->def ))
+            {
+                printf("gevas_metadata_lookup_x() loaded_data:%s\n",data->loaded_data);
+                data->loaded=1;
+            }
+            break;
+
+        case MD_INT:
+            data->loaded_data = (gpointer)edb_lookup_int( edb,
+                                                          (gint)data->def,
+                                                          "%s", data->key );
+            if( data->loaded_data != data->def && data->def )
+            {
+                data->loaded=1;
+            }
+            break;
+
+        default:
+            fprintf(stderr,"metadata type not coded yet!\n");
+            
+        }
+        
+        e_db_close(edb);
+    }
+    
+    
+}
+
+
+
+gchar*
+gevas_metadata_lookup_string(
+    GtkgEvas *ev,
+    const char* loc,
+    const char* def,
+    const char* fmt, ... )
+{
+    char* no_prefix = "";
+    metadata_lookup_x_data data;
+    gevas_metadata_find_edb_data* d = (gevas_metadata_find_edb_data*)&data;
+    va_list args;
+    gchar* key = NULL;
+
+    g_return_if_fail(ev  != NULL);
+    g_return_if_fail(loc != NULL);
+	g_return_if_fail(GTK_IS_GEVAS(ev));
+
+    va_start (args, fmt);
+    key = g_strdup_vprintf( fmt, args );
+    va_end (args);
+
+    d->  edb_postfix   = loc;
+    d->  edb_found_f   = gevas_metadata_lookup_x;
+    d->  loaded        = 0;
+    data.key           = key;
+    data.def           = g_strdup(def);
+    data.md_type       = MD_STRING;
+    data.loaded        = 0;
+
+    gevas_metadata_find_edb_with_data( ev, d );
+    g_free(key);
+    
+    if(!data.loaded)
+    {
+        return data.def;
+    }
+    g_free(data.def);
+    return data.loaded_data;
+}
+
+
+gint
+gevas_metadata_lookup_int(
+    GtkgEvas *ev,
+    const char* loc,
+    const char* def,
+    const char* fmt, ... )
+{
+    char* no_prefix = "";
+    metadata_lookup_x_data data;
+    gevas_metadata_find_edb_data* d = (gevas_metadata_find_edb_data*)&data;
+    va_list args;
+    gchar* key = NULL;
+
+    g_return_if_fail(ev  != NULL);
+    g_return_if_fail(loc != NULL);
+	g_return_if_fail(GTK_IS_GEVAS(ev));
+
+    va_start (args, fmt);
+    key = g_strdup_vprintf( fmt, args );
+    va_end (args);
+
+    d->  edb_postfix   = loc;
+    d->  edb_found_f   = gevas_metadata_lookup_x;
+    data.key           = key;
+    data.def           = g_strdup(def);
+    data.md_type       = MD_INT;
+
+    gevas_metadata_find_edb_with_data( ev, d );
+    g_free(key);
+    
+    if(!data.loaded)
+    {
+        return data.def;
+    }
+    g_free(data.def);
+    return data.loaded_data;
+}
+
+
+
+
+
+
+/******************************************************************************/
+/******************************************************************************/
+/******************************************************************************/
+/******************************************************************************/
+/******************************************************************************/
+/******************************************************************************/
+
+
+#if 0 
+
+struct _metadata_lookup_x_data 
+{
+    gpointer    def;
+    char*       edb_postfix;
+    const char* key;
+
+    gboolean loaded;
+    gpointer loaded_data;
+    gevas_metadata_type md_type;
+
+    GtkgEvas* gevas;
+};
+typedef struct _metadata_lookup_x_data metadata_lookup_x_data;
+
+
+static void
+metadata_lookup_x_cb( 
+    gpointer data,
+    gpointer user_data
+    )
+{
+    const char* fully_qualified_prefix = data;
+    metadata_lookup_x_data* d = (metadata_lookup_x_data*)user_data;
+    GtkgEvas* ev      = 0;
+    E_DB_File* edb    = 0;
+    char* k           = 0;
+    char* full_buffer = 0;
+    char* filen       = 0;
+    char* edb_prefix  = 0;
+    char* strbuf1     = 0;
+    GHashTable* hash_args = 0;
+
+    /* Assert and init */
+    g_return_if_fail(d != NULL);
+	g_return_if_fail(fully_qualified_prefix!= NULL);
+    g_return_if_fail(GTK_IS_GEVAS(d->gevas));
+    if( d->loaded )
+    {
+        return;
+    }
+    ev = d->gevas;
+
+    /* create the filename buffer */
+    if( strlen( fully_qualified_prefix ))
+    {
+        full_buffer = g_strconcat( fully_qualified_prefix,
+                                   "/", d->edb_postfix, 0 );
+    }
+    else
+    {
+        full_buffer = g_strdup(d->edb_postfix);
+    }
+
+    
+    /* get filename and extra args */
+    printf("full_buffer:%s\n",full_buffer );
+    filen = strbuf1 = url_file_name_part_new( full_buffer );
+    hash_args       = url_args_to_hash( full_buffer );
+    g_free(full_buffer);
+
+    
+    /* load the data */
+    if( edb = e_db_open(filen) )
+    {
+        switch(d->md_type)
+        {
+        case MD_STRING:
+            d->loaded_data = edb_lookup_str( edb, (char*)d->def, "%s", d->key );
+            if( d->loaded_data && d->def && strcmp( d->loaded_data, d->def ))
+            {
+                d->loaded=1;
+            }
+            break;
+
+        case MD_INT:
+            d->loaded_data = (gpointer)edb_lookup_int( edb, (gint)d->def, "%s", d->key );
+            if( d->loaded_data != d->def && d->def )
+            {
+                d->loaded=1;
+            }
+            break;
+
+        default:
+            fprintf(stderr,"metadata type not coded yet!\n");
+            
+        }
+        
+        e_db_close(edb);
+    }
+        
+    hash_str_str_clean( hash_args );
+    g_free(strbuf1);
+
+}
+
+
+gchar*
+gevas_metadata_lookup_x( GtkgEvas *ev, metadata_lookup_x_data* d )
+{
+    char* no_prefix = "";
+
+    g_return_if_fail(ev != NULL);
+    g_return_if_fail(d  != NULL);
+	g_return_if_fail(GTK_IS_GEVAS(ev));
+
+    d->loaded      = 0;
+    d->loaded_data = 0;
+    d->gevas       = ev;
+    
+    if( gevas_get_metadata_prefix_list(ev))
+    {
+        g_list_foreach( gevas_get_metadata_prefix_list(ev),
+                        metadata_lookup_x_cb, d);
+    }
+    metadata_lookup_x_cb((gpointer)no_prefix, d);
+
+    return d->loaded ? d->loaded_data : d->def;
+}
+
+
+
+
+
+
+
+gchar*
+gevas_metadata_lookup_string(
+    GtkgEvas *ev,
+    const char* loc,
+    const char* def,
+    const char* fmt, ... )
+{
+    metadata_lookup_x_data data;
+    gchar* ret;
+    va_list args;
+    gchar* key = NULL;
+    
+    g_return_if_fail(ev != NULL);
+	g_return_if_fail(GTK_IS_GEVAS(ev));
+
+    va_start (args, fmt);
+    key = g_strdup_vprintf( fmt, args );
+    va_end (args);
+
+    data.edb_postfix = loc;
+    data.key         = key;
+    data.def         = g_strdup(def);
+    data.md_type     = MD_STRING;
+    
+    ret = gevas_metadata_lookup_x( ev, &data );
+    if(ret != data.def)
+    {
+        g_free(def);
+    }
+    
+    g_free(key);
+    return ret;
+}
+
+
+#endif

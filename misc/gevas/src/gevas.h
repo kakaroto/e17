@@ -227,7 +227,30 @@ struct _GtkgEvasClass {
 								 gint * delta);
 	void _register_gevasobj(GtkgEvas * thisp, GtkObject * gobj);
 
-void gevas_get_drawable_size( GtkgEvas *object, int* w, int *h );
+    void gevas_get_drawable_size( GtkgEvas *object, int* w, int *h );
+
+    typedef struct _gevas_metadata_find_edb_data gevas_metadata_find_edb_data;
+    struct _gevas_metadata_find_edb_data
+    {
+        gboolean  loaded;
+        const gchar* edb_postfix;
+        GtkgEvas*    gevas;
+    
+        gchar*       edb_full_path;
+        GHashTable*  hash_args;
+
+        void (*edb_found_f) (gevas_metadata_find_edb_data* d);
+    };
+    
+
+    gchar* gevas_metadata_lookup_string(
+        GtkgEvas *ev,
+        const char* loc,
+        const char* def,
+        const char* fmt, ... );
+
+    gboolean gevas_file_exists(const char* fmt, ... );
+
 
 
 	void gevas_gtk_marshal_BOOL__POINTER_POINTER_INT_INT_INT(GtkObject * object,

@@ -55,21 +55,24 @@ extern "C" {
 typedef struct _GtkgEvasImage GtkgEvasImage;
 typedef struct _GtkgEvasImageClass GtkgEvasImageClass;
 
-struct _GtkgEvasImage {
-    GtkgEvasObj gobj;
 
-    gchar* image_filename;
+    struct _GtkgEvasImage {
+        GtkgEvasObj gobj;
 
-    // These are both temp data used in _load_from_metadata 
-    gboolean       metadata_load_loaded;
-    const char *   metadata_load_postfix;
-    
-};
+        gchar* image_filename;
+
+        // These are both temp data used in _load_from_metadata 
+        gboolean       metadata_load_loaded;
+        const char*    metadata_load_postfix;
+        GHashTable*    metadata_load_hash;
+        
+
+    };
 
 	struct _GtkgEvasImageClass {
 		GtkgEvasObjClass parent_class;
 
-		 Evas(*_gevas_evas) (GtkObject * object);
+        Evas(*_gevas_evas) (GtkObject * object);
 
 		void (*set_image_fill) (GtkgEvasObj * object, double x, double y,
 								double w, double h);

@@ -28,6 +28,11 @@
  *
  */
 
+
+/*
+  FIXME: merge the load_from_metadata() with the foreach() stuff for edb prefixs in gevas.
+*/
+
 /* If this widget was in an application or library, 
  * this i18n stuff would be in some other header file.
  * (in Gtk, gtkintl.h; in the Gnome libraries, libgnome/gnome-i18nP.h; 
@@ -301,6 +306,9 @@ setup_attribs( GtkgEvasImage* ev, GHashTable* hash_args )
 
 
 
+    
+
+
 static void
 load_from_metadata(
     gpointer data,
@@ -346,31 +354,18 @@ load_from_metadata(
     printf("image load_from_metadata() filen1      :%s\n",filen);
     printf("image load_from_metadata() full_buffer :%s\n",full_buffer);
 
-    if( strstr( full_buffer, "#edb" ))
+    if( strstr(filen,":") || gevas_file_exists("%s",filen))
     {
-        E_DB_File* edb = 0;
-        char* k = "Image";
-        
-        if( edb = e_db_open(filen) )
-        {
-            k = edb_lookup_str( edb, "", "%s", 
-                                url_args_lookup_str(hash_args, "prefix", k ));
-                                
-            e_db_close(edb);
-        }
-        printf("Image load_from_metadata() k:%s\n",k);
-        
-        
-        gevasimage_set_image_name(ev, k);
-        
-    }
-    else
-    {
+        printf("image load_from_metadata() filen1 EXISTS!     :%s\n",filen);
         gevasimage_set_image_name(ev, filen);
+        ev->metadata_load_loaded = 1;
+        setup_attribs( ev, hash_args );
     }
-    
-    ev->metadata_load_loaded = 1;
-    setup_attribs( ev, hash_args );
+
+    if(ev->metadata_load_hash)
+    {
+        setup_attribs( ev, ev->metadata_load_hash);
+    }
     
     hash_str_str_clean( hash_args );
     g_free(full_buffer);
@@ -384,12 +379,37 @@ gevasimage_load_from_metadata( GtkgEvasObj * object, const char* loc )
 {
 	GtkgEvasImage *ev;
     char* no_prefix = "";
+    GHashTable* h=0;
 
     g_return_val_if_fail(object != NULL,0);
 	g_return_val_if_fail(GTK_IS_GEVASIMAGE(object),0);
 	g_return_val_if_fail(GTK_IS_GEVAS(gevasobj_get_gevas(GTK_OBJECT(object))),0);
     
     ev = GTK_GEVASIMAGE(object);
+
+    ev->metadata_load_hash = 0;
+    
+    if( strstr( loc, "#edb" ))
+    {
+        char* p = 0;
+        printf("gevasimage_load_from_metadata() edb in URL... old loc:%s\n",loc);
+
+        h = url_args_to_hash( loc );
+        p = url_args_lookup_str( h, "prefix", "prefix" );
+        ev->metadata_load_hash = h;
+
+        printf("gevasimage_load_from_metadata() edb in URL... p:%s\n",p);
+
+
+        loc = gevas_metadata_lookup_string(
+            gevasobj_get_gevas(GTK_OBJECT(ev)),
+            loc, "", "%s", p, 0);
+
+        g_free(p);
+        
+
+        printf("gevasimage_load_from_metadata() edb in URL... NEW loc:%s\n",loc);
+    }
 
     ev->metadata_load_loaded = 0;
     ev->metadata_load_postfix = loc;
@@ -401,6 +421,8 @@ gevasimage_load_from_metadata( GtkgEvasObj * object, const char* loc )
         g_list_foreach( gevas_get_image_prefix_list(gevasobj_get_gevas(GTK_OBJECT(ev))),
                         load_from_metadata, ev);
     }
+    
+    if(h) hash_str_str_clean(h);
     
     return ev->metadata_load_loaded;
 }
@@ -414,7 +436,7 @@ GtkgEvasImage *gevasimage_new_from_metadata( GtkgEvas* gevas, const char* loc )
         return 0;
     
     gevasobj_set_gevas(o, gevas);
-    b = gevasimage_load_from_metadata(o, loc );
+    b = gevasimage_load_from_metadata( GTK_GEVASOBJ(o), loc );
     if(!b)
     {
         gtk_object_unref( GTK_OBJECT(o) );
