@@ -30,6 +30,8 @@
 	.type __imlib_mmx_copy_rgba_to_rgb,@function
 .global __imlib_mmx_copy_rgba_to_rgba
 	.type __imlib_mmx_copy_rgba_to_rgba,@function
+.global __imlib_mmx_copy_rgb_to_rgba
+	.type __imlib_mmx_copy_rgb_to_rgba,@function
 .global __imlib_mmx_add_blend_rgba_to_rgb
 	.type __imlib_mmx_add_blend_rgba_to_rgb,@function
 .global __imlib_mmx_add_blend_rgba_to_rgba
@@ -60,13 +62,15 @@
 .align 8
 /*\ Some useful masks \*/
 m0X000000: .byte   0,   0,   0,   0,   0,   0, 255,   0
+m10000000: .byte   0,   0,   0,   0,   0,   0,   0,   1
 m00XXXXXX: .byte 255, 255, 255, 255, 255, 255,   0,   0
 mVX000000: .byte   0,   0,   0,   0,   0,   0, 255, 127
+mV0000000: .byte   0,   0,   0,   0,   0,   0,   0, 128
 m0XXX0XXX: .byte 255, 255, 255,   0, 255, 255, 255,   0
 mX000X000: .byte   0,   0,   0, 255,   0,   0,   0, 255
 m10001000: .byte   0,   0,   0,   1,   0,   0,   0,   1
 m000V0V0V: .byte 127,   0, 127,   0, 127,   0,   0,   0
-mIX000000: .byte   0,   0,   0,   0,   0,   0, 255,  63
+mI0000000: .byte   0,   0,   0,   0,   0,   0,   0,  64
 m0VVV0VVV: .byte 127, 127, 127,   0, 127, 127, 127,   0
 
 
@@ -179,7 +183,7 @@ __imlib_mmx_blend_rgba_to_rgba:
 	ENTER
 
 	pxor %mm4, %mm4
-	movq m0X000000, %mm5
+	movq m10000000, %mm5
 	movq m00XXXXXX, %mm6
 
 	decl %edx
@@ -195,8 +199,11 @@ __imlib_mmx_blend_rgba_to_rgba:
 	movd (%esi, %ecx, 4), %mm1
 	movd (%edi, %ecx, 4), %mm2
 
-	/*\ Get alpha from source and unpack/copy to eight bytes \*/
-	movq %mm1, %mm3
+	/*\ Get alpha from source and target, a = src + (255 - dest) \*/
+	movq %mm2, %mm3
+	pxor %mm6, %mm3
+	paddusb %mm1, %mm3
+	/*\ Unpack/copy to eight bytes \*/
 	punpcklbw %mm3, %mm3
 	punpckhwd %mm3, %mm3
 	punpckhdq %mm3, %mm3
@@ -209,7 +216,7 @@ __imlib_mmx_blend_rgba_to_rgba:
 	/*\ d = d + (a * (s - d)) \*/
 	psubw %mm2, %mm1
 	/*\ Make the alpha channel that gets multiplied to the
-	|*|  alpha value 255, so the resulting alpha value is
+	|*|  alpha value 256, so the resulting alpha value is
 	|*|  the sum of the source and destination alpha value.
 	\*/
 	pand %mm6, %mm1
@@ -236,6 +243,7 @@ __imlib_mmx_blend_rgba_to_rgba:
 
 .end_blend_rgba:
 	LEAVE
+
 
 __imlib_mmx_copy_rgba_to_rgb:
 	ENTER
@@ -336,6 +344,52 @@ __imlib_mmx_copy_rgba_to_rgba:
 	jns .for_loop_y_copy_rgba
 
 .end_copy_rgba:
+	LEAVE
+
+
+__imlib_mmx_copy_rgb_to_rgba:
+	ENTER
+
+	movq mX000X000, %mm5
+
+	decl %edx
+	js .end_copy_rgb_rgba
+	decl %ebx
+	js .end_copy_rgb_rgba
+.for_loop_y_copy_rgb_rgba:
+	/*\ Load width \*/
+	movl %ebx, %ecx
+
+	/*\ Check for oddness \*/
+	sarl $1, %ecx
+	jc .for_loop_x_copy_rgb_rgba
+
+	/*\ Load source, make alpha 0xff, save destination \*/
+	movd (%esi, %ecx, 8), %mm1
+	por %mm5, %mm1
+	movd %mm1, (%edi, %ecx, 8)
+
+	jz .skip_x_copy_rgb_rgba
+
+.for_loop_x_copy_rgb_rgba:
+	/*\ Load source, save destination \*/
+	movq (%esi, %ecx, 8), %mm1
+	por %mm5, %mm1
+	movq %mm1, (%edi, %ecx, 8)
+	
+	decl %ecx
+	jns .for_loop_x_copy_rgb_rgba
+.skip_x_copy_rgb_rgba:
+
+	/*\ Add row widths \*/
+	movl sw, %ecx
+	leal (%esi, %ecx, 4), %esi
+	movl dw, %ecx
+	leal (%edi, %ecx, 4), %edi
+	decl %edx
+	jns .for_loop_y_copy_rgb_rgba
+
+.end_copy_rgb_rgba:
 	LEAVE
 
 
@@ -619,7 +673,7 @@ __imlib_mmx_subtract_blend_rgba_to_rgba:
 	ENTER
 
 	pxor %mm4, %mm4
-	movq mVX000000, %mm5
+	movq mV0000000, %mm5
 
 	decl %edx
 	js .end_subtract_blend_rgba
@@ -641,10 +695,10 @@ __imlib_mmx_subtract_blend_rgba_to_rgba:
 	punpckhdq %mm3, %mm3
 	psrlw $1, %mm3
 
-	/*\ Make the alpha value that gets multiplied to the
-	|*|  alpha channels 0x7fff, so the resulting alpha value is
-	|*|  the sum of the source and destination alpha values.
+	/*\ Make alpha value that gets multiplied with alpha channel
+	|*| 0x8000, (-1.0), so that the alpha result is s + d
 	\*/
+	psrlq $16, %mm3
 	por %mm5, %mm3
 
 	/*\ Unpack source and destination, bytes to words \*/
@@ -852,7 +906,7 @@ __imlib_mmx_reshade_blend_rgba_to_rgba:
 	ENTER
 
 	pxor %mm4, %mm4
-	movq mIX000000, %mm5
+	movq mI0000000, %mm5
 	movq m000V0V0V, %mm6
 
 	decl %edx
@@ -876,9 +930,10 @@ __imlib_mmx_reshade_blend_rgba_to_rgba:
 	psrlw $1, %mm3
 
 	/*\ Make the alpha value that gets multiplied to the
-	|*|  alpha channels 0x3fff, so the resulting alpha value is
+	|*|  alpha channels 0x4000, so the resulting alpha value is
 	|*|  the sum of the source and destination alpha values.
 	\*/
+	psrlq $16, %mm3
 	por %mm5, %mm3
 
 	/*\ Unpack source and destination, bytes to words \*/
@@ -994,6 +1049,7 @@ __imlib_mmx_reshade_copy_rgba_to_rgb:
 
 .end_reshade_copy_rgb:
 	LEAVE
+
 
 __imlib_mmx_reshade_copy_rgba_to_rgba:
 	ENTER

@@ -27,6 +27,7 @@
 #include "font.h"
 #include "grad.h"
 #include "rotate.h"
+#include "filter.h"
 #include <math.h>
 
 /* convenience macros */
@@ -80,6 +81,7 @@ static Imlib_Image             ctxt_image                = NULL;
 static Imlib_Progress_Function ctxt_progress_func        = NULL;
 static char                    ctxt_progress_granularity = 0;
 static char                    ctxt_dither_mask          = 0;
+static Imlib_Filter            ctxt_filter               = NULL;
 
 /* context setting/getting functions */
 void
@@ -2234,4 +2236,103 @@ imlib_blend_image_onto_image_at_angle(Imlib_Image source_image,
 				    source_width, source_height, destination_x1,
 				    destination_y1, destination_x2, destination_y2,
 				    ctxt_color_modifier, ctxt_operation);
+}
+
+void
+imlib_image_filter(void)
+{
+   ImlibImage *im;
+
+   CHECK_PARAM_POINTER("imlib_image_filter", "image", ctxt_image);
+   CHECK_PARAM_POINTER("imlib_image_filter", "filter", ctxt_filter);
+   CAST_IMAGE(im, ctxt_image);
+   if ((!(im->data)) && (im->loader) && (im->loader->load))
+      im->loader->load(im, NULL, 0, 1);
+   if (!(im->data))
+      return;
+   __imlib_DirtyImage(im);
+   __imlib_DirtyPixmapsForImage(im);
+   __imlib_FilterImage(im, (ImlibFilter *)ctxt_filter);
+}
+
+Imlib_Filter
+imlib_create_filter(int initsize)
+{
+   return (Imlib_Filter)__imlib_CreateFilter(initsize);
+}
+
+void
+imlib_free_filter(void)
+{
+   CHECK_PARAM_POINTER("imlib_free_filter", "filter", ctxt_filter);
+   __imlib_FreeFilter((ImlibFilter *)ctxt_filter);
+   ctxt_filter = NULL;
+}
+
+void
+imlib_context_set_filter(Imlib_Filter filter)
+{
+   ctxt_filter = filter;
+}
+
+void
+imlib_filter_set(int xoff, int yoff, int a, int r, int g, int b)
+{
+   ImlibFilter *fil;
+   CHECK_PARAM_POINTER("imlib_filter_set", "filter", ctxt_filter);
+   fil = (ImlibFilter *)ctxt_filter;
+   __imlib_FilterSetColor(&fil->alpha, xoff, yoff, a, 0, 0, 0);
+   __imlib_FilterSetColor(&fil->red,   xoff, yoff, 0, r, 0, 0);
+   __imlib_FilterSetColor(&fil->green, xoff, yoff, 0, 0, g, 0);
+   __imlib_FilterSetColor(&fil->blue,  xoff, yoff, 0, 0, 0, b);
+}
+
+void
+imlib_filter_set_alpha(int xoff, int yoff, int a, int r, int g, int b)
+{
+   ImlibFilter *fil;
+   CHECK_PARAM_POINTER("imlib_filter_set_alpha", "filter", ctxt_filter);
+   fil = (ImlibFilter *)ctxt_filter;
+   __imlib_FilterSetColor(&fil->alpha, xoff, yoff, a, r, g, b);
+}
+
+void
+imlib_filter_set_red(int xoff, int yoff, int a, int r, int g, int b)
+{
+   ImlibFilter *fil;
+   CHECK_PARAM_POINTER("imlib_filter_set_red", "filter", ctxt_filter);
+   fil = (ImlibFilter *)ctxt_filter;
+   __imlib_FilterSetColor(&fil->red, xoff, yoff, a, r, g, b);
+}
+
+void
+imlib_filter_set_green(int xoff, int yoff, int a, int r, int g, int b)
+{
+   ImlibFilter *fil;
+   CHECK_PARAM_POINTER("imlib_filter_set_green", "filter", ctxt_filter);
+   fil = (ImlibFilter *)ctxt_filter;
+   __imlib_FilterSetColor(&fil->green, xoff, yoff, a, r, g, b);
+}
+
+void
+imlib_filter_set_blue(int xoff, int yoff, int a, int r, int g, int b)
+{
+   ImlibFilter *fil;
+   CHECK_PARAM_POINTER("imlib_filter_set_blue", "filter", ctxt_filter);
+   fil = (ImlibFilter *)ctxt_filter;
+   __imlib_FilterSetColor(&fil->blue, xoff, yoff, a, r, g, b);
+}
+
+void
+imlib_filter_constants(int a, int r, int g, int b)
+{
+   CHECK_PARAM_POINTER("imlib_filter_constants", "filter", ctxt_filter);
+   __imlib_FilterConstants((ImlibFilter *)ctxt_filter, a, r, g, b);
+}
+
+void
+imlib_filter_divisors(int a, int r, int g, int b)
+{
+   CHECK_PARAM_POINTER("imlib_filter_divisors", "filter", ctxt_filter);
+   __imlib_FilterDivisors((ImlibFilter *)ctxt_filter, a, r, g, b);
 }

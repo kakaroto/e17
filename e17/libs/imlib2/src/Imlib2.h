@@ -14,6 +14,7 @@ typedef void * Imlib_Color_Modifier;
 typedef void * Imlib_Updates;
 typedef void * Imlib_Font;
 typedef void * Imlib_Color_Range;
+typedef void * Imlib_Filter;
 typedef struct _imlib_border Imlib_Border;
 typedef struct _imlib_color Imlib_Color;
 typedef struct _imlib_rectangle Imlib_Rectangle;
@@ -230,6 +231,18 @@ void imlib_save_image_with_error_return(const char *filename, Imlib_Load_Error *
 
 Imlib_Image imlib_create_rotated_image(double angle);
 void        imlib_blend_image_onto_image_at_angle(Imlib_Image source_image, char merge_alpha, int source_x, int source_y, int source_width, int source_height, int destination_x1, int destination_y1, int destination_x2, int destination_y2);
+
+void imlib_image_filter(void);
+Imlib_Filter imlib_create_filter(int initsize);
+void imlib_context_set_filter(Imlib_Filter filter);
+void imlib_free_filter(void);
+void imlib_filter_set(int xoff, int yoff, int a, int r, int g, int b);
+void imlib_filter_set_alpha(int xoff, int yoff, int a, int r, int g, int b);
+void imlib_filter_set_red(int xoff, int yoff, int a, int r, int g, int b);
+void imlib_filter_set_green(int xoff, int yoff, int a, int r, int g, int b);
+void imlib_filter_set_blue(int xoff, int yoff, int a, int r, int g, int b);
+void imlib_filter_constants(int a, int r, int g, int b);
+void imlib_filter_divisors(int a, int r, int g, int b);
    
 /* need to add polygon fill code */
 

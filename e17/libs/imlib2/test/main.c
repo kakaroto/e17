@@ -70,6 +70,7 @@ int main (int argc, char **argv)
    int blend = 1;
    int interactive = 1;
    int blendtest = 0;
+   int filter = 0;
    int rotate = 0;
    int rottest = 0;
    int scaleup = 0;
@@ -125,6 +126,11 @@ int main (int argc, char **argv)
 	  }
 	else if (!strcmp(argv[i], "-rotate"))
 	   rotate = 1;
+	else if (!strcmp(argv[i], "-filter"))
+	  {
+	     filter = atoi(argv[++i]);
+	     interactive = 0;
+	  }
 	else if (!strcmp(argv[i], "-rotatetest"))
 	  {
 	     rottest = 1;
@@ -307,6 +313,77 @@ int main (int argc, char **argv)
 	   pixels += w * h;
 	}
 	imlib_free_image();
+     }
+   else if (filter)
+     {
+	imlib_context_set_filter(imlib_create_filter(0));
+	switch (filter) {
+	default:
+	case 1:
+	   /*\ Blur filter \*/
+	   imlib_filter_set( 0,  0, 0, 8, 8, 8);
+	   imlib_filter_set(-1,  0, 0, 4, 4, 4);
+	   imlib_filter_set( 0, -1, 0, 4, 4, 4);
+	   imlib_filter_set( 1,  0, 0, 4, 4, 4);
+	   imlib_filter_set( 0,  1, 0, 4, 4, 4);
+	   imlib_filter_set(-2,  0, 0, 1, 1, 1);
+	   imlib_filter_set( 0, -2, 0, 1, 1, 1);
+	   imlib_filter_set( 2,  0, 0, 1, 1, 1);
+	   imlib_filter_set( 0,  2, 0, 1, 1, 1);
+	   imlib_filter_set(-1, -1, 0, 1, 1, 1);
+	   imlib_filter_set(-1,  1, 0, 1, 1, 1);
+	   imlib_filter_set( 1, -1, 0, 1, 1, 1);
+	   imlib_filter_set( 1,  1, 0, 1, 1, 1);
+	   break;
+	case 2:
+	   /*\ Sharpen filter \*/
+	   imlib_filter_set( 0,  0,  0,  5,  5,  5);
+	   imlib_filter_set(-1,  0,  0, -1, -1, -1);
+	   imlib_filter_set( 0, -1,  0, -1, -1, -1);
+	   imlib_filter_set( 1,  0,  0, -1, -1, -1);
+	   imlib_filter_set( 0,  1,  0, -1, -1, -1);
+	   break;
+	case 3:
+	   /*\ Color blur filter \*/
+	   imlib_filter_set( 0,  0,  0,  3,  3,  3);
+	   imlib_filter_set(-1, -1,  0,  1,  0,  0);
+	   imlib_filter_set( 1, -1,  0,  0,  1,  0);
+	   imlib_filter_set( 0,  1,  0,  0,  0,  1);
+	   break;
+	case 4:
+	   /*\ Emboss filter \*/
+	   imlib_filter_set_red  (-1, -1, 0, -1, -1, -1);
+	   imlib_filter_set_red  ( 0,  0, 0,  1,  1,  1);
+	   imlib_filter_set_green(-1, -1, 0, -1, -1, -1);
+	   imlib_filter_set_green( 0,  0, 0,  1,  1,  1);
+	   imlib_filter_set_blue (-1, -1, 0, -1, -1, -1);
+	   imlib_filter_set_blue ( 0,  0, 0,  1,  1,  1);
+
+	   imlib_filter_constants(0, 256, 256, 256);
+	   imlib_filter_divisors (0,   2,   2,   2);
+	   break;
+	case 5:
+	   /*\ Grayscale filter \*/
+	   imlib_filter_set_red  (0, 0, 0, 80, 1, 1);
+	   imlib_filter_set_green(0, 0, 0, 1, 80, 1);
+	   imlib_filter_set_blue (0, 0, 0, 1, 1, 80);
+	   break;
+	case 6:
+	   /*\ Saturation filter \*/
+	   imlib_filter_set_red  (0, 0, 0, 80, -1, -1);
+	   imlib_filter_set_green(0, 0, 0, -1, 80, -1);
+	   imlib_filter_set_blue (0, 0, 0, -1, -1, 80);
+	   break;
+	}
+	pixels = 0;
+	imlib_render_image_on_drawable_at_size(0, 0, w, h);
+	for (i = 0; i < w; i++)
+	  {
+	     imlib_image_filter();
+	     imlib_render_image_on_drawable_at_size(0, 0, w, h);
+	     pixels += w * h;
+	  }
+	imlib_free_filter();
      }
    else if (interactive)
      {
