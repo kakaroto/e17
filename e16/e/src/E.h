@@ -1279,11 +1279,11 @@ void                BordersSetupFallback(void);
 int                 ButtonsConfigLoad(FILE * fs);
 Button             *ButtonCreate(const char *name, int id, ImageClass * ic,
 				 ActionClass * aclass, TextClass * tclass,
-				 char *label, char ontop, int flags, int minw,
-				 int maxw, int minh, int maxh, int xo, int yo,
-				 int xa, int xr, int ya, int yr, int xsr,
-				 int xsa, int ysr, int ysa, char simg, int desk,
-				 char sticky);
+				 const char *label, char ontop, int flags,
+				 int minw, int maxw, int minh, int maxh, int xo,
+				 int yo, int xa, int xr, int ya, int yr,
+				 int xsr, int xsa, int ysr, int ysa, char simg,
+				 int desk, char sticky);
 void                ButtonDestroy(Button * b);
 void                ButtonShow(Button * b);
 void                ButtonHide(Button * b);

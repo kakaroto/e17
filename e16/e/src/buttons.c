@@ -74,10 +74,10 @@ static void         ButtonHandleEvents(XEvent * ev, void *btn);
 
 Button             *
 ButtonCreate(const char *name, int id, ImageClass * iclass,
-	     ActionClass * aclass, TextClass * tclass, char *label, char ontop,
-	     int flags, int minw, int maxw, int minh, int maxh, int xo, int yo,
-	     int xa, int xr, int ya, int yr, int xsr, int xsa, int ysr, int ysa,
-	     char simg, int desk, char sticky)
+	     ActionClass * aclass, TextClass * tclass, const char *label,
+	     char ontop, int flags, int minw, int maxw, int minh, int maxh,
+	     int xo, int yo, int xa, int xr, int ya, int yr, int xsr, int xsa,
+	     int ysr, int ysa, char simg, int desk, char sticky)
 {
    Button             *b;
 
@@ -106,8 +106,6 @@ ButtonCreate(const char *name, int id, ImageClass * iclass,
       b->tclass = TextclassFind(NULL, 0);
    if (b->tclass)
       b->tclass->ref_count++;
-
-   b->label = label;
 
    b->flags = flags;
    b->visible = 0;
