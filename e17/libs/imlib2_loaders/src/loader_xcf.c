@@ -313,6 +313,7 @@ extern void combine_pixels_hue (DATA8* src, int src_w, int src_h, DATA8* dest, i
 extern void combine_pixels_sat (DATA8* src, int src_w, int src_h, DATA8* dest, int dest_w, int dest_h, int dest_x, int dest_y);
 extern void combine_pixels_val (DATA8* src, int src_w, int src_h, DATA8* dest, int dest_w, int dest_h, int dest_x, int dest_y);
 extern void combine_pixels_col (DATA8* src, int src_w, int src_h, DATA8* dest, int dest_w, int dest_h, int dest_x, int dest_y);
+extern void combine_pixels_diss (DATA8* src, int src_w, int src_h, DATA8* dest, int dest_w, int dest_h, int dest_x, int dest_y);
 
 
 /* ---------------------------------------------------------------------------- globals ------------ */
@@ -1511,8 +1512,12 @@ flatten_image(void)
 				 l->offset_x, l->offset_y);
 	      break;
 	    case DISSOLVE_MODE:
+	      combine_pixels_diss(l->data, l->width, l->height,
+				  image->data, image->width, image->height,
+				  l->offset_x, l->offset_y);
+	      break;
 
-	      /* None of those is actually valid for layer blending, fall through: */
+	      /* None of the following is actually valid for layer blending, fall through: */
 	    case BEHIND_MODE:
 	    case REPLACE_MODE:
 	    case ERASE_MODE:
