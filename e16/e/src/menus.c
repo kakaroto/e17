@@ -1686,7 +1686,6 @@ CreateMenuFromGnome(char *name, MenuStyle * ms, char *dir)
 		  if (f)
 		    {
 		       char               *iname = NULL, *exec = NULL, *texec =
-
 			  NULL, *tmp;
 		       char               *en_name = NULL;
 

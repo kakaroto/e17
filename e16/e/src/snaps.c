@@ -1190,25 +1190,21 @@ MatchEwinToSnapInfoAfter(EWin * ewin)
 		  if (sn->use_desktop)
 		     MoveEwin(ewin,
 			      sn->x +
-			      ((sn->
-				area_x -
+			      ((sn->area_x -
 				desks.desk[ewin->desktop].current_area_x) *
 			       root.w),
 			      sn->y +
-			      ((sn->
-				area_y -
+			      ((sn->area_y -
 				desks.desk[ewin->desktop].current_area_y) *
 			       root.h));
 		  else
 		     MoveEwin(ewin,
 			      sn->x +
-			      ((sn->
-				area_x -
+			      ((sn->area_x -
 				desks.desk[desks.current].current_area_x) *
 			       root.w),
 			      sn->y +
-			      ((sn->
-				area_y -
+			      ((sn->area_y -
 				desks.desk[desks.current].current_area_y) *
 			       root.h));
 	       }

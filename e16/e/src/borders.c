@@ -1228,9 +1228,9 @@ CalcEwinWinpart(EWin * ewin, int i)
 
 	iclass = ewin->border->part[i].iclass;
 	tclass = ewin->border->part[i].tclass;
-	TextSize(tclass, \ewin->active, \ewin->sticky, \ewin->bits[i].state,
-		 \ewin->client.title, \&max, \&dummyheight,
-		 \h - (iclass->padding.top + iclass->padding.bottom) \);
+	TextSize(tclass, ewin->active, ewin->sticky, ewin->bits[i].state,
+		 ewin->client.title, &max, &dummyheight,
+		 h - (iclass->padding.top + iclass->padding.bottom));
 	max += iclass->padding.left + iclass->padding.right;
 
 	if (w > max)

@@ -33,9 +33,9 @@ AddEToFile(char *file)
    char                foundwm = 0;
    char               *wms[] = {
       "wmaker", "afterstep", "fvwm", "fvwm2", "twm", "mwm", "vtwm", "ctwm",
-	 "gwm",
+      "gwm",
       "mlvwm", "kwm", "olwm", "wm2", "wmx", "olvwm", "9wm", "blackbox", "awm",
-	 "uwm",
+      "uwm",
       "amiwm", "dtwm", "4dwm", "scwm", "fvwm95", "fvwm95-2", "tvtwm", "bowman",
       "qwm", "icewm", "qvwm", "gnome-session", "xsm", "startkde"
    };

@@ -491,8 +491,8 @@ HandleMotion(XEvent * ev)
 								gwins[i]->w)
 							       &&
 							       (!(IN_RANGE
-								  (gwins[i]->
-								   reqx,
+								  (gwins
+								   [i]->reqx,
 								   gwins[i]->x,
 								   mode.
 								   edge_snap_dist)))))))
@@ -515,8 +515,8 @@ HandleMotion(XEvent * ev)
 								gwins[i]->h)
 							       &&
 							       (!(IN_RANGE
-								  (gwins[i]->
-								   reqy,
+								  (gwins
+								   [i]->reqy,
 								   gwins[i]->y,
 								   mode.
 								   edge_snap_dist)))))))
@@ -2504,8 +2504,8 @@ HandleMouseUp(XEvent * ev)
 				   }
 				 HideEwin(gwins[i]);
 				 MoveEwin(gwins[i], gwin_px[i] +
-					  ((desks.
-					    desk[gwins[i]->desktop].
+					  ((desks.desk
+					    [gwins[i]->desktop].
 					    current_area_x) -
 					   p->hi_ewin->area_x) * root.w,
 					  gwin_py[i] +
