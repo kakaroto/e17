@@ -289,7 +289,8 @@ _engage_free(Engage *e)
 
    while (e->bars)
      _engage_bar_free(e->bars->data);
-   e_object_unref(E_OBJECT(e->apps));
+   if (e->apps)
+     e_object_unref(E_OBJECT(e->apps));
 
    E_FREE(e->conf->appdir);
    e_app_change_callback_del(_engage_app_change, e);
