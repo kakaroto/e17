@@ -25,7 +25,7 @@
 #ifndef DDEBUG_H
 #define DDEBUG_H
 
-#define DDEBUG 5
+/* #define DDEBUG 5 */
 
 #ifdef WITH_DMALLOC
 #include <dmalloc.h>
@@ -88,7 +88,7 @@
    } \
       fflush(stdout); \
   }
-#define D_ENTER
+#define D_ENTER(a)
 #define D_RETURN(i, a) \
   { \
       return(a); \
@@ -99,8 +99,8 @@
   }
 #endif
 #else
-#define D(i,a)
-#define D_ENTER
+#define D(i,a) 
+#define D_ENTER(a)
 #define D_RETURN(i, a) \
   { \
       return (a); \

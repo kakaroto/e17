@@ -123,11 +123,7 @@ void geist_layer_raise_object(geist_document *doc, geist_object * obj)
          if(ob == obj)
          {
             D(4, ("Found object %p - popping to end of list\n", obj));
-            D(4, ("Layer->objects %p\n", lay->objects));
-            geist_debug_print_list(lay->objects);
             lay->objects = geist_list_pop_to_end(lay->objects, ll);
-            D(4, ("Layer->objects %p\n", lay->objects));
-            geist_debug_print_list(lay->objects);
             D_RETURN_(4);
          }
       }

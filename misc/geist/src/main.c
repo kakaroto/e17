@@ -99,6 +99,18 @@ main(int argc, char *argv[])
    geist_document_add_object(doc,
                              geist_image_new_from_file(275, 145,
                                                        "testimages/bulb.png"));
+   geist_document_add_object(doc,
+                             geist_image_new_from_file(375, 70,
+                                                       "testimages/mail.png"));
+
+   geist_document_add_object(doc,
+                             geist_image_new_from_file(275, 345,
+                                                       "testimages/mush.png"));
+
+   geist_document_add_object(doc,
+                             geist_image_new_from_file(175, 5,
+                                                       "testimages/paper.png"));
+
 
    geist_document_render(doc);
    gtk_window_set_default_size(GTK_WINDOW(mainwin), doc->w, doc->h);
