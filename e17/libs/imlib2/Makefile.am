@@ -11,6 +11,8 @@ MAINTAINERCLEANFILES = INSTALL Makefile.in aclocal.m4 config.guess \
 
 SUBDIRS		     = libltdl loaders src filters
 
+bin_SCRIPTS = imlib2-config
+
 EXTRA_DIST = \
 imlib2.spec.in \
 imlib2.spec \

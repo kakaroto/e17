@@ -74,6 +74,30 @@ if test x$ag_cv_func_fopen_binary = xyes; then
 	    [Define this if we can use the "b" mode for fopen safely.])
 fi
 
+AC_PATH_X
+AC_PATH_XTRA
+
+if test "x$x_includes" = "x"; then
+  x_includes="/usr/include"
+fi
+  
+x_cflags="$X_CFLAGS"
+x_ldflags="$X_LDFLAGS"
+x_libs="$X_LIBS $X_EXTRA_LIBS"
+  
+AC_CHECK_LIB(X11, XOpenDisplay, x_libs="$x_libs",
+  AC_MSG_ERROR([ERROR: libX11 not found.]); exit,
+  $X_LDFLAGS $X_EXTRA_LIBS $X_LIBS)
+AC_CHECK_LIB(Xext, XShmAttach, x_libs="-lXext $x_libs",
+             AC_CHECK_LIB(XextSam, XShmAttach,
+	                  x_libs="-lXextSam -lXext $x_libs",
+			  AC_MSG_ERROR([ERROR: XShm not found.]); exit,
+			  $x_libs),
+             $x_libs)
+AC_CHECK_LIB(Xext, XShapeCombineMask, x_libs="-lXext $x_libs",
+	     AC_MSG_ERROR([ERROR: XShape not found.]); exit,
+	     $x_libs)
+																	
 LTLIBOBJS=`echo "$LIBOBJS" | sed 's,.o ,.lo ,g;s,.o$,.lo,'`
 AC_SUBST(LTLIBOBJS)
 
@@ -116,7 +140,18 @@ echo ""
 AC_MSG_ERROR([Fatal Error: no FreeType header files detected.])
 fi
 fi
+AC_CHECK_LIB(dl, dlopen, dlopen_libs=-ldl, [
+], -ldl)
 
-AC_OUTPUT(Makefile loaders/Makefile src/Makefile test/Makefile \
+AC_SUBST(x_cflags)
+AC_SUBST(x_includes)
+AC_SUBST(x_ldflags)
+AC_SUBST(x_libs)
+AC_SUBST(dlopen_libs)
+
+AC_OUTPUT(imlib2-config Makefile loaders/Makefile src/Makefile test/Makefile \
           filters/Makefile demo/Makefile dox/Makefile imlib2.spec,
-[test -z "$CONFIG_HEADERS" || echo timestamp > stamp-h])
+[
+test -z "$CONFIG_HEADERS" || echo timestamp > stamp-h;
+chmod +x imlib2-config
+])
