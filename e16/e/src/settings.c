@@ -2466,9 +2466,9 @@ CB_ConfigureBG(int val, void *data)
 
    if (val < 2)
      {
-	conf.desktop_bg_timeout = tmp_bg_timeout;
-	conf.desks.hiqualitybg = tmp_hiq;
-	conf.user_bg = tmp_userbg;
+	conf.backgrounds.timeout = tmp_bg_timeout;
+	conf.backgrounds.hiquality = tmp_hiq;
+	conf.backgrounds.user = tmp_userbg;
 	ESetColor(&(tmp_bg->bg_solid), tmp_bg_r, tmp_bg_g, tmp_bg_b);
 	tmp_bg->bg_tile = tmp_bg_tile;
 	tmp_bg->bg.keep_aspect = tmp_bg_keep_aspect;
@@ -3305,9 +3305,9 @@ SettingsBackground(Background * bg)
    tmp_bg_yjust = 1024 - bg->bg.yjust;
    tmp_bg_xperc = bg->bg.xperc;
    tmp_bg_yperc = 1024 - bg->bg.yperc;
-   tmp_hiq = conf.desks.hiqualitybg;
-   tmp_userbg = conf.user_bg;
-   tmp_bg_timeout = conf.desktop_bg_timeout;
+   tmp_hiq = conf.backgrounds.hiquality;
+   tmp_userbg = conf.backgrounds.user;
+   tmp_bg_timeout = conf.backgrounds.timeout;
 
    d = bg_sel_dialog = DialogCreate("CONFIGURE_BG");
    DialogSetTitle(d, _("Desktop Background Settings"));

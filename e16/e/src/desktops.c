@@ -237,7 +237,7 @@ MoveToDeskTop(int num)
    i = 0;
    while ((j < 0) && (i < ENLIGHTENMENT_CONF_NUM_DESKTOPS))
      {
-	if (deskorder[i] == num)
+	if (desks.order[i] == num)
 	   j = i;
 	i++;
      }
@@ -246,8 +246,8 @@ MoveToDeskTop(int num)
    if (j > 0)
      {
 	for (i = j - 1; i >= 0; i--)
-	   deskorder[i + 1] = deskorder[i];
-	deskorder[0] = num;
+	   desks.order[i + 1] = desks.order[i];
+	desks.order[0] = num;
      }
    EDBUG_RETURN_;
 }
@@ -262,7 +262,7 @@ MoveToDeskBottom(int num)
    i = 0;
    while ((j < 0) && (i < ENLIGHTENMENT_CONF_NUM_DESKTOPS))
      {
-	if (deskorder[i] == num)
+	if (desks.order[i] == num)
 	   j = i;
 	i++;
      }
@@ -271,8 +271,8 @@ MoveToDeskBottom(int num)
    if (j < ENLIGHTENMENT_CONF_NUM_DESKTOPS - 1)
      {
 	for (i = j; i < ENLIGHTENMENT_CONF_NUM_DESKTOPS - 1; i++)
-	   deskorder[i] = deskorder[i + 1];
-	deskorder[ENLIGHTENMENT_CONF_NUM_DESKTOPS - 1] = num;
+	   desks.order[i] = desks.order[i + 1];
+	desks.order[ENLIGHTENMENT_CONF_NUM_DESKTOPS - 1] = num;
      }
    EDBUG_RETURN_;
 }
@@ -550,7 +550,7 @@ SetBackgroundTo(Window win, Background * dsk, char setbg)
    gc = 0;
    rt = imlib_context_get_dither();
 
-   if (conf.desks.hiqualitybg)
+   if (conf.backgrounds.hiquality)
      {
 	imlib_context_set_dither(1);
 #if 0
@@ -644,7 +644,7 @@ SetBackgroundTo(Window win, Background * dsk, char setbg)
 	     /* Put image 1:1 onto the current root window */
 	     dpmap = pmap;
 	  }
-	else if (hasbg && !hasfg && dsk->bg_tile)
+	else if (hasbg && !hasfg && dsk->bg_tile && !conf.theme_transparency)
 	  {
 	     /* BG only, tiled */
 	     dpmap = ECreatePixmap(disp, win, w, h, depth);
@@ -764,7 +764,7 @@ InitDesktopBgs()
      {
 	d = &desks.desk[i];
 	d->bg = NULL;
-	deskorder[i] = i;
+	desks.order[i] = i;
 	d->num = 0;
 	d->list = NULL;
 	d->tag = NULL;
@@ -1171,11 +1171,11 @@ DesktopAt(int x, int y)
 
    for (i = 0; i < ENLIGHTENMENT_CONF_NUM_DESKTOPS; i++)
      {
-	if ((x >= desks.desk[deskorder[i]].x)
-	    && (x < (desks.desk[deskorder[i]].x + root.w))
-	    && (y >= desks.desk[deskorder[i]].y)
-	    && (y < (desks.desk[deskorder[i]].y + root.h)))
-	   EDBUG_RETURN(deskorder[i]);
+	if ((x >= desks.desk[desks.order[i]].x)
+	    && (x < (desks.desk[desks.order[i]].x + root.w))
+	    && (y >= desks.desk[desks.order[i]].y)
+	    && (y < (desks.desk[desks.order[i]].y + root.h)))
+	   EDBUG_RETURN(desks.order[i]);
      }
 
    EDBUG_RETURN(0);
@@ -1352,7 +1352,7 @@ MoveDesktop(int num, int x, int y)
 	i = 0;
 	while ((n < 0) && (i < ENLIGHTENMENT_CONF_NUM_DESKTOPS))
 	  {
-	     if (deskorder[i] == num)
+	     if (desks.order[i] == num)
 		n = i;
 	     i++;
 	  }
@@ -1360,10 +1360,10 @@ MoveDesktop(int num, int x, int y)
 	  {
 	     for (i = n + 1; i < ENLIGHTENMENT_CONF_NUM_DESKTOPS; i++)
 	       {
-		  if ((desks.desk[deskorder[i]].viewable)
-		      && (desks.desk[deskorder[i]].bg))
-		     desks.desk[deskorder[i]].bg->last_viewed = time(NULL);
-		  desks.desk[deskorder[i]].viewable = 0;
+		  if ((desks.desk[desks.order[i]].viewable)
+		      && (desks.desk[desks.order[i]].bg))
+		     desks.desk[desks.order[i]].bg->last_viewed = time(NULL);
+		  desks.desk[desks.order[i]].viewable = 0;
 	       }
 	  }
      }
@@ -1374,14 +1374,14 @@ MoveDesktop(int num, int x, int y)
 
 	while ((n < 0) && (i < ENLIGHTENMENT_CONF_NUM_DESKTOPS))
 	  {
-	     if (deskorder[i] == num)
+	     if (desks.order[i] == num)
 		n = i;
 	     i++;
 	  }
 
 	if (n >= 0)
 	  {
-	     if (desks.desk[deskorder[n]].viewable)
+	     if (desks.desk[desks.order[n]].viewable)
 	       {
 		  v = 1;
 	       }
@@ -1393,24 +1393,24 @@ MoveDesktop(int num, int x, int y)
 	     for (i = n + 1; i < ENLIGHTENMENT_CONF_NUM_DESKTOPS; i++)
 	       {
 
-		  if ((!desks.desk[deskorder[i]].viewable) && (v))
+		  if ((!desks.desk[desks.order[i]].viewable) && (v))
 		    {
-		       desks.desk[deskorder[i]].viewable = v;
-		       RefreshDesktop(deskorder[i]);
+		       desks.desk[desks.order[i]].viewable = v;
+		       RefreshDesktop(desks.order[i]);
 		    }
 		  else
 		    {
-		       if ((!v) && (desks.desk[deskorder[i]].viewable)
-			   && (desks.desk[deskorder[i]].bg))
+		       if ((!v) && (desks.desk[desks.order[i]].viewable)
+			   && (desks.desk[desks.order[i]].bg))
 			 {
-			    desks.desk[deskorder[i]].bg->last_viewed =
+			    desks.desk[desks.order[i]].bg->last_viewed =
 			       time(NULL);
 			 }
-		       desks.desk[deskorder[i]].viewable = v;
+		       desks.desk[desks.order[i]].viewable = v;
 		    }
 
-		  if ((desks.desk[deskorder[i]].x == 0)
-		      && (desks.desk[deskorder[i]].y == 0))
+		  if ((desks.desk[desks.order[i]].x == 0)
+		      && (desks.desk[desks.order[i]].y == 0))
 		    {
 		       v = 0;
 		    }
@@ -1449,7 +1449,7 @@ RaiseDesktop(int num)
       EDBUG_RETURN_;
 
    FocusNewDeskBegin();
-   CloneDesktop(deskorder[0]);
+   CloneDesktop(desks.order[0]);
    desks.desk[num].viewable = 1;
    RefreshDesktop(num);
    MoveToDeskTop(num);
@@ -1458,7 +1458,7 @@ RaiseDesktop(int num)
      {
 	for (i = ENLIGHTENMENT_CONF_NUM_DESKTOPS - 1; i > 0; i--)
 	  {
-	     HideDesktop(deskorder[i]);
+	     HideDesktop(desks.order[i]);
 	  }
      }
    StackDesktops();
@@ -1490,16 +1490,16 @@ LowerDesktop(int num)
    FocusNewDeskBegin();
    CloneDesktop(num);
    MoveToDeskBottom(num);
-   UncoverDesktop(deskorder[0]);
+   UncoverDesktop(desks.order[0]);
    HideDesktop(num);
    StackDesktops();
-   desks.current = deskorder[0];
+   desks.current = desks.order[0];
    MoveStickyWindowsToCurrentDesk();
    FocusNewDesk();
    FX_DeskChange();
    RemoveClones();
-   RedrawPagersForDesktop(deskorder[0], 3);
-   ForceUpdatePagersForDesktop(deskorder[0]);
+   RedrawPagersForDesktop(desks.order[0], 3);
+   ForceUpdatePagersForDesktop(desks.order[0]);
    UpdatePagerSel();
    HandleDrawQueue();
    HintsSetCurrentDesktop();
@@ -1547,7 +1547,7 @@ ShowDesktop(int num)
    if (num == 0)
      {
 	for (i = ENLIGHTENMENT_CONF_NUM_DESKTOPS - 1; i > 0; i--)
-	   HideDesktop(deskorder[i]);
+	   HideDesktop(desks.order[i]);
      }
    else
      {
@@ -1627,10 +1627,10 @@ StackDesktop(int num)
      }
    for (i = 0; i < ENLIGHTENMENT_CONF_NUM_DESKTOPS; i++)
      {
-	if (deskorder[i] == 0)
+	if (desks.order[i] == 0)
 	   break;
 
-	_APPEND_TO_WIN_LIST(desks.desk[deskorder[i]].win);
+	_APPEND_TO_WIN_LIST(desks.desk[desks.order[i]].win);
      }
    if (blst)
      {
@@ -1945,7 +1945,7 @@ DesktopAccounting()
 	for (i = 0; i < num; i++)
 	  {
 	     if ((lst[i]->pmap == 0) ||
-		 ((now - lst[i]->last_viewed) <= conf.desktop_bg_timeout))
+		 ((now - lst[i]->last_viewed) <= conf.backgrounds.timeout))
 		continue;
 
 	     for (j = 0; j < ENLIGHTENMENT_CONF_NUM_DESKTOPS; j++)

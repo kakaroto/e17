@@ -761,7 +761,7 @@ Config_Control(FILE * ConfigFile)
 	     conf.warplist.warpfocused = i2;
 	     break;
 	  case DESKTOP_HIQUALITYBG:
-	     conf.desks.hiqualitybg = i2;
+	     conf.backgrounds.hiquality = i2;
 	     break;
 	  case DESKTOP_AREA_SIZE:
 	     sscanf(s, "%i %i %i", &i1, &i2, &i3);
@@ -784,7 +784,7 @@ Config_Control(FILE * ConfigFile)
 	     conf.slidespeedcleanup = i2;
 	     break;
 	  case CONTROL_DESKTOP_BG_TIMEOUT:
-	     conf.desktop_bg_timeout = i2;
+	     conf.backgrounds.timeout = i2;
 	     break;
 	  case CONTROL_BUTTON_MOVE_RESISTANCE:
 	     conf.button_move_resistance = i2;
@@ -808,7 +808,10 @@ Config_Control(FILE * ConfigFile)
 	     conf.pagers.snap = i2;
 	     break;
 	  case CONTROL_USER_BG:
-	     conf.user_bg = i2;
+	     conf.backgrounds.user = i2;
+	     break;
+	  case CONTROL_THEME_TRANSPARENCY:
+	     conf.theme_transparency = i2;
 	     break;
 	  case CONTROL_DOCKSTARTPOS:
 	     sscanf(s, "%*s %d %d ", &conf.dock.startx, &conf.dock.starty);
@@ -1783,7 +1786,8 @@ Config_Desktop(FILE * ConfigFile)
 		  if ((atoi(s2) < ENLIGHTENMENT_CONF_NUM_DESKTOPS)
 		      && (atoi(s2) >= 0))
 		    {
-		       if ((desks.desk[atoi(s2)].bg == NULL) || (conf.user_bg))
+		       if ((desks.desk[atoi(s2)].bg == NULL) ||
+			   (conf.backgrounds.user))
 			 {
 #if !USE_IMLIB2
 			    if ((prImlib_Context) && (atoi(s2) == 0))
@@ -1816,7 +1820,8 @@ Config_Desktop(FILE * ConfigFile)
 		  if ((atoi(s2) < ENLIGHTENMENT_CONF_NUM_DESKTOPS)
 		      && (atoi(s2) >= 0))
 		    {
-		       if ((desks.desk[atoi(s2)].bg == NULL) || (conf.user_bg))
+		       if ((desks.desk[atoi(s2)].bg == NULL) ||
+			   (conf.backgrounds.user))
 			 {
 			    if (bg)
 			      {
@@ -3839,7 +3844,7 @@ SaveUserControlConfig(FILE * autosavefile)
 	fprintf(autosavefile, "315 %i\n", (int)conf.mapslide);
 	fprintf(autosavefile, "316 %i\n", (int)conf.slidespeedmap);
 	fprintf(autosavefile, "317 %i\n", (int)conf.slidespeedcleanup);
-	fprintf(autosavefile, "320 %i\n", (int)conf.desktop_bg_timeout);
+	fprintf(autosavefile, "320 %i\n", (int)conf.backgrounds.timeout);
 	fprintf(autosavefile, "321 %i\n", (int)conf.button_move_resistance);
 	fprintf(autosavefile, "400 %i\n", (int)conf.desks.dragdir);
 	fprintf(autosavefile, "401 %i\n", (int)conf.desks.dragbar_width);
@@ -3847,7 +3852,7 @@ SaveUserControlConfig(FILE * autosavefile)
 	fprintf(autosavefile, "403 %i\n", (int)conf.desks.dragbar_length);
 	fprintf(autosavefile, "404 %i\n", (int)conf.desks.slidein);
 	fprintf(autosavefile, "405 %i\n", (int)conf.desks.slidespeed);
-	fprintf(autosavefile, "406 %i\n", (int)conf.desks.hiqualitybg);
+	fprintf(autosavefile, "406 %i\n", (int)conf.backgrounds.hiquality);
 	fprintf(autosavefile, "1370 %i\n", (int)conf.dockapp_support);
 	fprintf(autosavefile, "325 %i\n", (int)conf.dock.dirmode);
 	fprintf(autosavefile, "326 %i\n", (int)conf.shadespeed);
@@ -3892,7 +3897,7 @@ SaveUserControlConfig(FILE * autosavefile)
 	fprintf(autosavefile, "668 %i\n", (int)conf.warplist.warpshaded);
 	fprintf(autosavefile, "669 %i\n", (int)conf.warplist.warpiconified);
 	fprintf(autosavefile, "670 %i\n", (int)conf.warplist.warpfocused);
-	fprintf(autosavefile, "1350 %i\n", (int)conf.user_bg);
+	fprintf(autosavefile, "1350 %i\n", (int)conf.backgrounds.user);
 	fprintf(autosavefile, "1351 %i\n", (int)conf.pagers.zoom);
 	fprintf(autosavefile, "1352 %i\n", (int)conf.pagers.title);
 	fprintf(autosavefile, "1353 %i\n",
@@ -3914,6 +3919,7 @@ SaveUserControlConfig(FILE * autosavefile)
 	fprintf(autosavefile, "1368 %i\n", (int)conf.tooltips.showroottooltip);
 	fprintf(autosavefile, "1369 %i %i %i\n", (int)conf.pagers.sel_button,
 		(int)conf.pagers.win_button, (int)conf.pagers.menu_button);
+	fprintf(autosavefile, "1373 %i\n", (int)conf.theme_transparency);
 #ifdef  HAS_XINERAMA
 	fprintf(autosavefile, "2013 %i\n", (int)conf.extra_head);
 #endif

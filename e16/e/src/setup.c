@@ -365,6 +365,9 @@ SetupX()
    conf.areas.wraparound = 0;
    conf.autoraise.enable = 0;
    conf.autoraise.delay = 0.5;
+   conf.backgrounds.hiquality = 1;
+   conf.backgrounds.user = 1;
+   conf.backgrounds.timeout = 240;
    conf.desks.num = 2;
    conf.desks.wraparound = 0;
    conf.desks.dragdir = 2;
@@ -373,7 +376,6 @@ SetupX()
    conf.desks.dragbar_length = 0;
    conf.desks.slidein = 1;
    conf.desks.slidespeed = 6000;
-   conf.desks.hiqualitybg = 1;
    conf.dialogs.headers = 0;
    conf.dock.dirmode = DOCK_DOWN;
    conf.dock.startx = 0;
@@ -436,7 +438,6 @@ SetupX()
    conf.slidespeedcleanup = 8000;
    conf.shadespeed = 8000;
    conf.animate_shading = 1;
-   conf.desktop_bg_timeout = 240;
    conf.sound = 1;
    conf.button_move_resistance = 5;
    conf.autosave = 1;
@@ -445,7 +446,6 @@ SetupX()
    conf.menuslide = 0;
    conf.menusonscreen = 1;
    conf.warpmenus = 1;
-   conf.user_bg = 1;
    conf.manual_placement = 0;
    conf.edge_flip_resistance = 15;
 

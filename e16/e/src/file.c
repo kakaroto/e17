@@ -1116,7 +1116,7 @@ findLocalizedFile(char *fname)
    return 0;
 }
 
-#if 0 /* Not used */
+#if 0				/* Not used */
 void
 rmrf(const char *path)
 {

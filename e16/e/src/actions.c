@@ -1870,7 +1870,7 @@ doDesktopBgTimeoutSet(EWin * edummy, void *params)
 {
    EDBUG(6, "doDesktopBgTimeoutSet");
    if (params)
-      conf.desktop_bg_timeout = atoi((char *)params);
+      conf.backgrounds.timeout = atoi((char *)params);
    autosave();
    EDBUG_RETURN(0);
 }
@@ -2034,13 +2034,13 @@ doHiQualityBgSet(EWin * edummy, void *params)
 {
    EDBUG(6, "doHiQualityBgSet");
    if (params)
-      conf.desks.hiqualitybg = atoi((char *)params);
+      conf.backgrounds.hiquality = atoi((char *)params);
    else
      {
-	if (conf.desks.hiqualitybg)
-	   conf.desks.hiqualitybg = 0;
+	if (conf.backgrounds.hiquality)
+	   conf.backgrounds.hiquality = 0;
 	else
-	   conf.desks.hiqualitybg = 1;
+	   conf.backgrounds.hiquality = 1;
      }
    autosave();
    EDBUG_RETURN(0);

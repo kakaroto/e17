@@ -1263,7 +1263,7 @@ HandleComms(XClientMessageEvent * ev)
 	     else if (!strcmp(w, "DESKTOPBGTIMEOUT:"))
 	       {
 		  word(s, wd, w);
-		  conf.desktop_bg_timeout = atoi(w);
+		  conf.backgrounds.timeout = atoi(w);
 	       }
 	     else if (!strcmp(w, "SOUND:"))
 	       {
@@ -1375,7 +1375,7 @@ HandleComms(XClientMessageEvent * ev)
 	     else if (!strcmp(w, "HIQUALITYBG:"))
 	       {
 		  word(s, wd, w);
-		  conf.desks.hiqualitybg = atoi(w);
+		  conf.backgrounds.hiquality = atoi(w);
 	       }
 	     else if (!strcmp(w, "TRANSIENTSFOLLOWLEADER:"))
 	       {
@@ -1523,7 +1523,7 @@ HandleComms(XClientMessageEvent * ev)
 		  conf.primaryicondir, conf.movemode, conf.resizemode,
 		  conf.slidemode, conf.cleanupslide, conf.mapslide,
 		  conf.slidespeedmap, conf.slidespeedcleanup, conf.shadespeed,
-		  conf.desktop_bg_timeout, conf.sound,
+		  conf.backgrounds.timeout, conf.sound,
 		  conf.button_move_resistance, conf.autosave,
 		  conf.memory_paranoia, conf.tooltips.enable,
 		  conf.tooltips.delay, conf.autoraise.enable,
@@ -1532,7 +1532,7 @@ HandleComms(XClientMessageEvent * ev)
 		  conf.desks.dragdir, conf.desks.dragbar_width,
 		  conf.desks.dragbar_ordering, conf.desks.dragbar_length,
 		  conf.desks.slidein, conf.desks.slidespeed,
-		  conf.desks.hiqualitybg, conf.focus.transientsfollowleader,
+		  conf.backgrounds.hiquality, conf.focus.transientsfollowleader,
 		  conf.focus.switchfortransientmap, a, b,
 		  conf.focus.all_new_windows_get_focus,
 		  conf.focus.new_transients_get_focus,

@@ -347,11 +347,6 @@ int                 Esnprintf(va_alist);
 #define SPANS_COMMON(x1, w1, x2, w2) \
    (!((((x2) + (w2)) <= (x1)) || ((x2) >= ((x1) + (w1)))))
 
-#define ENLIGHTENMENT_CONF_NUM_DESKTOPS 32
-/* the cast is so -1 will == UINT_MAX */
-#define DESKTOPS_WRAP_NUM(x) \
- (((unsigned int) (x)) % conf.desks.num)
-
 #define LIST_FINDBY_NAME        0
 #define LIST_FINDBY_ID          1
 #define LIST_FINDBY_BOTH        2
@@ -1101,10 +1096,16 @@ typedef struct _desk
 }
 Desk;
 
+#define ENLIGHTENMENT_CONF_NUM_DESKTOPS 32
+/* the cast is so -1 will == UINT_MAX */
+#define DESKTOPS_WRAP_NUM(x) \
+ (((unsigned int) (x)) % conf.desks.num)
+
 typedef struct _desktops
 {
    int                 current;
    Desk                desk[ENLIGHTENMENT_CONF_NUM_DESKTOPS];
+   int                 order[ENLIGHTENMENT_CONF_NUM_DESKTOPS];
 }
 Desktops;
 
@@ -1143,6 +1144,12 @@ typedef struct
    } autoraise;
    struct
    {
+      char                hiquality;
+      char                user;
+      int                 timeout;
+   } backgrounds;
+   struct
+   {
       int                 num;
       char                wraparound;
       int                 dragdir;
@@ -1151,7 +1158,6 @@ typedef struct
       int                 dragbar_length;
       char                slidein;
       int                 slidespeed;
-      char                hiqualitybg;
    } desks;
    struct
    {
@@ -1224,7 +1230,6 @@ typedef struct
    int                 slidespeedcleanup;
    char                animate_shading;
    int                 shadespeed;
-   int                 desktop_bg_timeout;
    char                sound;
    int                 button_move_resistance;
    char                autosave;
@@ -1237,9 +1242,9 @@ typedef struct
    char                manual_placement_mouse_pointer;
    char                warpmenus;
    int                 edge_flip_resistance;
-   char                user_bg;
    GroupConfig         group_config;
    char                group_swapmove;
+   int                 theme_transparency;
 
    /* Not used */
    char                primaryicondir;
@@ -2723,7 +2728,6 @@ extern Desktops     desks;
 extern Window       init_win1;
 extern Window       init_win2;
 extern Window       init_win_ext;
-extern int          deskorder[ENLIGHTENMENT_CONF_NUM_DESKTOPS];
 
 #define FILEPATH_LEN_MAX 4096
 extern char         themepath[FILEPATH_LEN_MAX];
