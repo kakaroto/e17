@@ -72,17 +72,10 @@ TextStateLoadFont(TextState * ts)
 	ss = strchr(dup, '/');
 	if (ss)
 	  {
-	     char                *lang = setlocale(LC_MESSAGES, NULL);
-
 	     *ss = ' ';
 	     word(dup, 1, w);
-	     if ( lang != NULL && lang[0] != '\0' )
-	       {
-		  sprintf(s, "%s/%s.%s.ttf", docdir, w, lang);
-		  if ( !exists(s) ) *s = '\0';
-	       }
-	     if ( !*s )
-	       sprintf(s, "%s/%s.ttf", docdir, w);
+	     sprintf(s, "%s/%s.ttf", docdir, w);
+	     findLocalizedFile(s);
 	     word(dup, 2, w);
 	     ts->efont = Efont_load(s, atoi(w));
 	     if (ts->efont)

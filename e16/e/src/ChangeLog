@@ -1074,7 +1074,6 @@ ways for you to change what your (Mandrake) message in ChangeLog shows up as,
 as well as an easy entry point for you to add your own indent style
 (see %names and %indents hashes)
 
-
 -------------------------------------------------------------------------------
 
 Wed Sep  1 14:40:22 PDT 1999
@@ -1088,12 +1087,10 @@ as well as remembers to display the cvs commit as it happens.
 Wed Sep  1 16:09:21 PDT 1999
 (Raster)
 
-
 -------------------------------------------------------------------------------
 
 Wed Sep  1 16:09:47 PDT 1999
 (Raster)
-
 
 -------------------------------------------------------------------------------
 
@@ -1720,8 +1717,6 @@ Added group borders to BrushedMetal, also made the groups be visualized when
 they are switched in one of the groups dialogs. Apparently there's a bug
 with imageclasses that use transparency, probably an Imlib issue.
 
-
-
 -------------------------------------------------------------------------------
 
 Tue Sep 14 10:53:14 PDT 1999
@@ -1747,7 +1742,6 @@ Tue Sep 14 15:34:11 EDT 1999
 
 Don't use the fallback border for group borders. 
 
-
 -------------------------------------------------------------------------------
 
 Tue Sep 14 15:54:25 EDT 1999
@@ -1757,14 +1751,12 @@ Ooops, the middle button in the titlebar did raise/lower and show/hide
 group borders at the same time. Changed show/hide group borders
 to shift-middleclick.
 
-
 -------------------------------------------------------------------------------
 
 Wed Sep 14 18:52:24 EDT 1999
 (Christian)
 
 I hope this fixes the segfault that Technoir reported.
-
 
 -------------------------------------------------------------------------------
 
@@ -1832,7 +1824,6 @@ Thu Sep 16 16:33:08 EDT 1999
 
 Don't snapshot group borders.
 
-
 -------------------------------------------------------------------------------
 
 Thu Sep 16 13:59:43 PDT 1999
@@ -1895,7 +1886,6 @@ well, it would HELP if I used XA_STRING on those :)
 MOST of the taskbar works now.
 still have to do updates of title setting KWM_WIN_TITLE.
 
-
 -------------------------------------------------------------------------------
 
 Thu Sep 16 18:59:43 PDT 1999
@@ -1905,7 +1895,6 @@ IMPORTANT TODO ITEM:   kde support and desktops other than 0 cause things to
 segfault.
 Needs fixing.  BIG bug.  if you turn "kde off" in your eesh it will fix that,
 or if you want kde support only use desktop 0 for now.  'nuff said.
-
 
 -------------------------------------------------------------------------------
 
@@ -2019,7 +2008,6 @@ minor fix that should keep kpanel win_add's from duplicating on map.
 (hopefully) - this fixes the desktop change window duplication bugs, too.  I
 might have some stacking issues to deal with.
 
-
 -------------------------------------------------------------------------------
 
 Mon Sep 20 11:53:55 PDT 1999
@@ -2054,7 +2042,6 @@ added important TODO item for kde support :
 
 mandrake:   um, don't use close from the kpanel menu right yet.  that's a bad idea.  in fact, I wouldn't use ANY of the kpanel windowops things yet.  (nasty)
 
-
 -------------------------------------------------------------------------------
 
 Mon Sep 20 15:20:56 PDT 1999
@@ -2077,7 +2064,6 @@ menu.
 
 Added some group issues to TODO file. I hope I get to finish that
 during this week.
-
 
 -------------------------------------------------------------------------------
 
@@ -2120,7 +2106,6 @@ weren't reset after closing some dialogs.
 
 Tweaked the user name mapping in ecvs so that it works on my
 lappy :)
- 
 
 -------------------------------------------------------------------------------
 
@@ -2188,7 +2173,6 @@ the remember dialog not coming up bug.. fixed.. :)
 *should* have fixed soem multihead issues - have still to test..
 (shoudl restart correctly, exit correcttly, restart anotherwm correctly and
 restart themes correctly)
-
 
 -------------------------------------------------------------------------------
 
@@ -2268,7 +2252,6 @@ Ok, groups behave inconsistent if you use them over
 multiple desktops and via the titlebar or the menu,
 so group effects are limited to the current desktop
 for now.
-
 
 -------------------------------------------------------------------------------
 
@@ -2367,7 +2350,6 @@ Fri Sep 24 16:43:48 EST 1999
 
 Grrr. Added more bugs.
 
-
 -------------------------------------------------------------------------------
 
 Sat Sep 25 13:03:34 PDT 1999
@@ -2389,7 +2371,6 @@ Sun Sep 26 19:37:30 PDT 1999
 
 added patch from Martin Tyler <martin@boo.org>
 fixes segfaults in modules loading with ipc.
-
 
 -------------------------------------------------------------------------------
 
@@ -2446,7 +2427,6 @@ Mon Sep 27 13:31:26 PDT 1999
 (Mandrake)
 
 oops, forgot an EDBUG init in those functions
-
 
 -------------------------------------------------------------------------------
 
@@ -2585,7 +2565,6 @@ Thu Sep 30 22:36:37 PDT 1999
 
 added KDE Support config dialog
 
-
 -------------------------------------------------------------------------------
 
 Thu Sep 30 23:05:53 PDT 1999
@@ -2681,7 +2660,6 @@ Fri Oct  1 16:17:41 PDT 1999
 (Mandrake)
 
 I can't reproduce the transparency issue bug.
-
 
 -------------------------------------------------------------------------------
 
@@ -2786,7 +2764,6 @@ xmms behavior patches)
 
 Sat Oct  2 17:27:31 PDT 1999
 (Raster)
-
 
 add dialog to explain pagers and iconboxes arent part of a group... :)
 
@@ -3374,7 +3351,6 @@ entry for it.  - I've redone a lot of this theme from the ground up.  it still
 has a ways to go - a little more eterm autotheme tinkering as well as redoing
 the epplet config (which I just copied straight from brushed metal)
 
-
 -------------------------------------------------------------------------------
 
 Sun Oct 10 01:32:17 PDT 1999
@@ -3561,7 +3537,6 @@ sed through and use a single reference point to build that at some point)
 
 also fixed some of the EMX stuff
 
-
 -------------------------------------------------------------------------------
 
 Mon Oct 18 17:42:03 PDT 1999
@@ -3639,7 +3614,6 @@ Wed Oct 20 11:38:40 PDT 1999
 
 I broke a small portion of code in OS/2
 
-
 -------------------------------------------------------------------------------
 
 Wed Oct 20 11:43:14 PDT 1999
@@ -3691,7 +3665,6 @@ Wed Oct 20 18:09:59 PDT 1999
 
 updated man pages.
 Now it should automatically build from the e/dox/E-docs/MAIN file
-
 
 -------------------------------------------------------------------------------
 
@@ -3781,7 +3754,6 @@ Wed Oct 27 15:02:57 EST 1999
 New backgrounds for the dialogs, menus and the documentation.
 I grew bored with the old ones. Opinions welcome :)
 
-
 -------------------------------------------------------------------------------
 
 Wed Oct 27 12:36:22 PDT 1999
@@ -3820,7 +3792,6 @@ I can't think of why this would be segfaulting or how this code could have
 gotten called if there were no border, but I think this must be the segfault
 I received in email. *shrug*
 
-
 -------------------------------------------------------------------------------
 
 Thu Oct 28 13:07:01 PDT 1999
@@ -3843,7 +3814,6 @@ Sat Oct 30 12:37:48 PDT 1999
 
 fixed KDE from accidentally closing when we didn't mean to exit.
 
-
 -------------------------------------------------------------------------------
 
 Wed Nov  3 00:45:47 EST 1999
@@ -3854,7 +3824,6 @@ the close button in groups dialogs. Hey who among the
 gentlemen around here removed the apply button? He missed
 that :)
  
-
 -------------------------------------------------------------------------------
 
 Fri Nov  5 14:24:02 PST 1999
@@ -3864,14 +3833,12 @@ holy crap I can't believe I didn't see that bug sooner.
 This should fix the "maximize seems to mess up when I have KDE support
 enabled" bug.
 
-
 -------------------------------------------------------------------------------
 
 Sat Nov  6 10:51:24 PST 1999
 (Mandrake)
 
 removed two warnings when compiled with --disable-zoom
-
 
 -------------------------------------------------------------------------------
 
@@ -3908,7 +3875,6 @@ fix some clipping code for arrage stuff...
 Sat Nov  6 15:07:24 PST 1999
 (Mandrake)
 
-
 Fixed a bug in KDE support where windows would place themselves underneath the
 kpanel occasionally.  it shouldn't ever do that again :)
 
@@ -3919,7 +3885,6 @@ Sat Nov  6 16:09:57 PST 1999
 
 Fixed a bug where selecting a window on another desktop using kpanel wouldn't
 change the current desktop in kpanel (workaround for kpanel bug)
-
 
 -------------------------------------------------------------------------------
 
@@ -4105,7 +4070,6 @@ you can get an extended list using "window_list extended"
 returns the following format:
 "window_id : title :: desktop : area_x area_y : x_coordinate y_coordinate
 
-
 -------------------------------------------------------------------------------
 
 Tue Dec 21 22:29:49 PST 1999
@@ -4197,7 +4161,6 @@ Fixed issues on platforms with unsigned chars.
 Mon Jan 31 10:50:09 PST 2000
 (Raster)
 
-
 text compression works wiht multi-byte stuff now thanks to masahiko :)
 
 -------------------------------------------------------------------------------
@@ -4221,7 +4184,6 @@ Default behaviour is not changed, the setting is saved and loaded correctly.
 
 *Clenches and awaits cl00batting*
 
-
 -------------------------------------------------------------------------------
 
 Sun Feb 20 18:10:30 GMT 2000
@@ -4238,7 +4200,6 @@ and gkrellm etc out of it...
 
 Feel free to revert the commit if it's inappropriate...
 
-
 -------------------------------------------------------------------------------
 
 Mon Feb 21 20:46:52 GMT 2000
@@ -4254,7 +4215,6 @@ windows bring up root menus...
 
 Lots of changes, so check for bugs =)
 
-
 -------------------------------------------------------------------------------
 
 Mon Feb 21 21:48:34 GMT 2000
@@ -4262,14 +4222,12 @@ Mon Feb 21 21:48:34 GMT 2000
 
 Warning removal. I was a bad boy.
 
-
 -------------------------------------------------------------------------------
 
 Mon Feb 21 21:50:20 GMT 2000
 (gilbertt)
 
 and this.
-
 
 -------------------------------------------------------------------------------
 
@@ -4291,7 +4249,6 @@ remember windowid sticky command size ...
 This streamlines epplets in particular, and speeds up Epplet_remember by a
 factor of 8. (Significant on certain boxen).
 
-
 -------------------------------------------------------------------------------
 
 Sun Feb 27 15:39:37 GMT 2000
@@ -4299,14 +4256,12 @@ Sun Feb 27 15:39:37 GMT 2000
 
 *cough*. Now the remember ipc should actually *work*. Sorry ;)
 
-
 -------------------------------------------------------------------------------
 
 Sun Feb 27 15:54:11 GMT 2000
 (gilbertt)
 
 remove a debugging printf
-
 
 -------------------------------------------------------------------------------
 
@@ -4319,14 +4274,12 @@ list options into one winop: "Skip Window Lists", and one remember option.
 The actions are still defined to do stuff individually, but users have no
 need of that sort of granularity. Much nicer now :)
 
-
 -------------------------------------------------------------------------------
 
 Mon Feb 28 19:39:46 GMT 2000
 (gilbertt)
 
 64-bit fixes from Bob Arendt <rdarendt@cwcom.net>
-
 
 -------------------------------------------------------------------------------
 
@@ -4336,7 +4289,6 @@ Tue Feb 29 19:44:59 GMT 2000
 Hehe. Typo stopped the list skip thing being loaded from the .snaps.x file.
 Fixed.
 
-
 -------------------------------------------------------------------------------
 
 Tue Mar 14 18:57:38 CET 2000
@@ -4344,3 +4296,11 @@ Tue Mar 14 18:57:38 CET 2000
 
 Small fix for people who want to pop up
 menus using their keyboard.
+
+-------------------------------------------------------------------------------
+
+Tue Mar 14 20:23:53 CET 2000
+(Saur)
+
+Added patch from Masahiko Mori <masa@cthulhu.engr.sgi.com>
+to improve localization support (I modified the patch somewhat).

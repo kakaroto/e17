@@ -56,3 +56,10 @@ Sun Dec 26 22:54:57 PST 1999
 
 Added patch from Yukihiro Nakai <nakai@internetsolutions.co.jp>
 to add setlocale to dox.c
+-----------------------------------------------------------------
+
+Tue Mar 14 20:23:53 CET 2000
+(Saur)
+
+Added patch from Masahiko Mori <masa@cthulhu.engr.sgi.com>
+to improve localization support (I modified the patch somewhat).

@@ -544,16 +544,9 @@ RenderPage(Window win, int page_num, int w, int h)
    if (pg->background)
      {
 	char                tmp[4096];
-	char                *lang = setlocale(LC_MESSAGES, NULL);
 
-	tmp[0] = '\0';
-	if ( lang != NULL && lang[0] != '\0' )
-	  {  
-	     sprintf(tmp, "%s/%s.%s", docdir, pg->background, lang);
-	     if ( !exists(tmp) ) tmp[0] = '\0';
-	  }
-	if ( !tmp[0] )
-	  sprintf(tmp, "%s/%s", docdir, pg->background);
+	sprintf(tmp, "%s/%s", docdir, pg->background);
+	findLocalizedFile(tmp);
 	im = Imlib_load_image(id, tmp);
 	if (im)
 	  {
@@ -808,7 +801,7 @@ RenderPage(Window win, int page_num, int w, int h)
 
 			    while (txt_disp[(point + cnt)])
 			      {
-				len = mblen( txt_disp + point + cnt, strlen(txt_disp) - point - cnt);
+				len = mblen( txt_disp + point + cnt, MB_CUR_MAX);
 				if ( len < 0 )
 				  {
 				     cnt++;

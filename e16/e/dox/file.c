@@ -669,10 +669,10 @@ word_mb(char *s, int num, char *wd, int *spaceflag)
 
    while (s[i])
      {
-	int          len, oldflg=0;
+	int          len, oldflg=1;
 
 
-	len = mblen( s + i, strlen( s + i ) );
+	len = mblen( s + i, MB_CUR_MAX );
 	if ( len < 0 )		{ i++; continue; }
 
 	/*  Check multibyte character class */
@@ -953,4 +953,43 @@ pathtofile(char *file)
 	free(s);
      }
    return (NULL);
+}
+
+int
+findLocalizedFile(char *fname)
+{
+#ifndef __EMX__
+   char               *tmp, *lang, *p[3];
+   int                 i;
+
+   if (!(lang = setlocale(LC_MESSAGES, NULL)))
+     return 0;
+
+   tmp = strdup(fname);
+   lang = strdup(lang); 	/* lang may be in static space, thus it must
+				 * be duplicated before we change it below */
+   p[0] = lang + strlen(lang);
+   p[1] = strchr(lang, '.');
+   p[2] = strchr(lang, '_');
+
+   for (i = 0; i < 3; i++)
+     {
+	if (p[i] == NULL)
+          continue;
+
+	*p[i] = '\0';
+	sprintf(fname, "%s.%s", tmp, lang);
+	if (exists(fname))
+	  {
+	    free(tmp);
+	    free(lang);
+	    return 1;
+	  }
+     }
+   strcpy(fname, tmp);
+   free(tmp);
+   free(lang);
+#endif
+
+   return 0;
 }

@@ -263,7 +263,8 @@ cp(char *s, char *ss)
    EDBUG_RETURN_;
 }
 
-time_t moddate(char *s)
+time_t 
+moddate(char *s)
 {
    struct stat         st;
 
@@ -1078,4 +1079,43 @@ pathtofile(char *file)
    free(p);
 #endif
    EDBUG_RETURN(NULL);
+}
+
+int
+findLocalizedFile(char *fname)
+{
+#ifndef __EMX__
+   char               *tmp, *lang, *p[3];
+   int                 i;
+
+   if (!(lang = setlocale(LC_MESSAGES, NULL)))
+      return 0;
+
+   tmp = strdup(fname);
+   lang = strdup(lang);		/* lang may be in static space, thus it must
+				 * be duplicated before we change it below */
+   p[0] = lang + strlen(lang);
+   p[1] = strchr(lang, '.');
+   p[2] = strchr(lang, '_');
+
+   for (i = 0; i < 3; i++)
+     {
+	if (p[i] == NULL)
+	   continue;
+
+	*p[i] = '\0';
+	sprintf(fname, "%s.%s", tmp, lang);
+	if (isfile(fname))
+	  {
+	     free(tmp);
+	     free(lang);
+	     return 1;
+	  }
+     }
+   strcpy(fname, tmp);
+   free(tmp);
+   free(lang);
+#endif
+
+   return 0;
 }

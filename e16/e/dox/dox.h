@@ -225,6 +225,7 @@ char               *fileof(char *s);
 char               *fullfileof(char *s);
 char               *pathtoexec(char *file);
 char               *pathtofile(char *file);
+int                 findLocalizedFile(char *fname);
 
 void                AddPage(Object * obj);
 void                AddObject(Object * obj);

@@ -12,7 +12,3 @@ EXTRA_SCRIPTS =
 
 install-data-local:
 	$(mkinstalldirs) $(DESTDIR)$(edocdatadir)
-
-# Japanese
-	gzip -d -c < $(srcdir)/MAIN-ja | (cd $(DESTDIR)$(edocdatadir); tar -xmf -)
-	rm -f $(srcdir)/MAIN-ja
