@@ -68,6 +68,7 @@ extern spif_str_t spif_str_show(spif_str_t, spif_charptr_t, spif_str_t, size_t);
 extern spif_cmp_t spif_str_comp(spif_str_t, spif_str_t);
 extern spif_str_t spif_str_dup(spif_str_t);
 extern spif_classname_t spif_str_type(spif_str_t);
+
 extern spif_bool_t spif_str_append(spif_str_t, spif_str_t);
 extern spif_bool_t spif_str_append_char(spif_str_t, spif_char_t);
 extern spif_bool_t spif_str_append_from_ptr(spif_str_t, spif_charptr_t);
@@ -76,6 +77,7 @@ extern spif_cmp_t spif_str_casecmp_with_ptr(spif_str_t, spif_charptr_t);
 extern spif_bool_t spif_str_clear(spif_str_t, spif_char_t);
 extern spif_cmp_t spif_str_cmp(spif_str_t, spif_str_t);
 extern spif_cmp_t spif_str_cmp_with_ptr(spif_str_t, spif_charptr_t);
+extern spif_bool_t spif_str_downcase(spif_str_t);
 extern spif_stridx_t spif_str_find(spif_str_t, spif_str_t);
 extern spif_stridx_t spif_str_find_from_ptr(spif_str_t, spif_charptr_t);
 extern spif_stridx_t spif_str_index(spif_str_t, spif_char_t);
@@ -83,6 +85,9 @@ extern spif_cmp_t spif_str_ncasecmp(spif_str_t, spif_str_t, spif_stridx_t);
 extern spif_cmp_t spif_str_ncasecmp_with_ptr(spif_str_t, spif_charptr_t, spif_stridx_t);
 extern spif_cmp_t spif_str_ncmp(spif_str_t, spif_str_t, spif_stridx_t);
 extern spif_cmp_t spif_str_ncmp_with_ptr(spif_str_t, spif_charptr_t, spif_stridx_t);
+extern spif_bool_t spif_str_prepend(spif_str_t, spif_str_t);
+extern spif_bool_t spif_str_prepend_char(spif_str_t, spif_char_t);
+extern spif_bool_t spif_str_prepend_from_ptr(spif_str_t, spif_charptr_t);
 extern spif_bool_t spif_str_reverse(spif_str_t);
 extern spif_stridx_t spif_str_rindex(spif_str_t, spif_char_t);
 extern spif_bool_t spif_str_splice(spif_str_t, spif_stridx_t, spif_stridx_t, spif_str_t);
@@ -92,6 +97,7 @@ extern spif_charptr_t spif_str_substr_to_ptr(spif_str_t, spif_stridx_t, spif_str
 extern double spif_str_to_float(spif_str_t);
 extern size_t spif_str_to_num(spif_str_t, int);
 extern spif_bool_t spif_str_trim(spif_str_t);
+extern spif_bool_t spif_str_upcase(spif_str_t);
 SPIF_DECL_PROPERTY_FUNC_C(str, spif_stridx_t, size);
 SPIF_DECL_PROPERTY_FUNC_C(str, spif_stridx_t, len);
 

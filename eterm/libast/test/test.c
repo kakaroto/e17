@@ -44,6 +44,7 @@ int test_tok(void);
 int test_url(void);
 int test_list(void);
 int test_vector(void);
+int test_map(void);
 int test_socket(void);
 int test_regexp(void);
 
@@ -1444,6 +1445,283 @@ test_vector(void)
 }
 
 int
+test_map(void)
+{
+    unsigned short i;
+    spif_map_t testmap;
+    spif_obj_t ret;
+    spif_str_t key, value;
+    spif_url_t homepage;
+    spif_list_t testlist;
+    spif_iterator_t it;
+    size_t j;
+
+    for (i = 0; i < 1; i++) {
+        if (i == 0) {
+            TEST_NOTICE("*** Testing map interface, linked_list class:");
+            testmap = SPIF_MAP_NEW(linked_list);
+#if 0
+        } else if (i == 1) {
+            TEST_NOTICE("*** Testing map interface, dlinked_list class:");
+            testmap = SPIF_MAP_NEW(dlinked_list);
+        } else if (i == 2) {
+            TEST_NOTICE("*** Testing map interface, array class:");
+            testmap = SPIF_MAP_NEW(array);
+        } else if (i == 3) {
+#endif
+        }
+
+        TEST_BEGIN("SPIF_MAP_SET() macro");
+        key = spif_str_new_from_ptr("name");
+        value = spif_str_new_from_ptr("Bob");
+        TEST_FAIL_IF(SPIF_MAP_SET(testmap, key, value));
+        spif_str_done(key);
+        spif_str_done(value);
+        spif_str_init_from_ptr(key, "rank");
+        spif_str_init_from_ptr(value, "Dweeb");
+        TEST_FAIL_IF(SPIF_MAP_SET(testmap, key, value));
+        spif_str_done(key);
+        spif_str_done(value);
+        spif_str_init_from_ptr(key, "serial number");
+        spif_str_init_from_ptr(value, "123456");
+        TEST_FAIL_IF(SPIF_MAP_SET(testmap, key, value));
+        spif_str_done(key);
+        spif_str_done(value);
+        spif_str_init_from_ptr(key, "homepage");
+        homepage = spif_url_new_from_ptr("http://www.dweeb.com/");
+        TEST_FAIL_IF(SPIF_MAP_SET(testmap, key, homepage));
+        spif_str_done(key);
+        spif_url_del(homepage);
+        spif_str_init_from_ptr(key, "e-mail");
+        spif_str_init_from_ptr(value, "bob@dweeb.com");
+        TEST_FAIL_IF(SPIF_MAP_SET(testmap, key, value));
+        spif_str_done(key);
+        spif_str_done(value);
+        spif_str_init_from_ptr(key, "loser");
+        spif_str_init_from_ptr(value, "YES");
+        TEST_FAIL_IF(SPIF_MAP_SET(testmap, key, value));
+        spif_str_del(key);
+        spif_str_del(value);
+        TEST_PASS();
+
+        TEST_BEGIN("SPIF_MAP_COUNT() macro");
+        TEST_FAIL_IF(SPIF_MAP_COUNT(testmap) != 6);
+        TEST_PASS();
+
+        TEST_BEGIN("SPIF_MAP_GET() macro");
+        key = spif_str_new_from_ptr("serial number");
+        value = SPIF_CAST(str) SPIF_MAP_GET(testmap, key);
+        TEST_FAIL_IF(SPIF_STR_ISNULL(value));
+        TEST_FAIL_IF(!SPIF_OBJ_IS_STR(value));
+        TEST_FAIL_IF(!SPIF_CMP_IS_EQUAL(spif_str_cmp_with_ptr(value, "123456")));
+        spif_str_done(key);
+        spif_str_init_from_ptr(key, "loser");
+        value = SPIF_CAST(str) SPIF_MAP_GET(testmap, key);
+        TEST_FAIL_IF(SPIF_STR_ISNULL(value));
+        TEST_FAIL_IF(!SPIF_OBJ_IS_STR(value));
+        TEST_FAIL_IF(!SPIF_CMP_IS_EQUAL(spif_str_cmp_with_ptr(value, "YES")));
+        spif_str_done(key);
+        spif_str_init_from_ptr(key, "name");
+        value = SPIF_CAST(str) SPIF_MAP_GET(testmap, key);
+        TEST_FAIL_IF(SPIF_STR_ISNULL(value));
+        TEST_FAIL_IF(!SPIF_OBJ_IS_STR(value));
+        TEST_FAIL_IF(!SPIF_CMP_IS_EQUAL(spif_str_cmp_with_ptr(value, "Bob")));
+        spif_str_done(key);
+        spif_str_init_from_ptr(key, "e-mail");
+        value = SPIF_CAST(str) SPIF_MAP_GET(testmap, key);
+        TEST_FAIL_IF(SPIF_STR_ISNULL(value));
+        TEST_FAIL_IF(!SPIF_OBJ_IS_STR(value));
+        TEST_FAIL_IF(!SPIF_CMP_IS_EQUAL(spif_str_cmp_with_ptr(value, "bob@dweeb.com")));
+        spif_str_done(key);
+        spif_str_init_from_ptr(key, "rank");
+        value = SPIF_CAST(str) SPIF_MAP_GET(testmap, key);
+        TEST_FAIL_IF(SPIF_STR_ISNULL(value));
+        TEST_FAIL_IF(!SPIF_OBJ_IS_STR(value));
+        TEST_FAIL_IF(!SPIF_CMP_IS_EQUAL(spif_str_cmp_with_ptr(value, "Dweeb")));
+        spif_str_done(key);
+        spif_str_init_from_ptr(key, "homepage");
+        homepage = SPIF_CAST(url) SPIF_MAP_GET(testmap, key);
+        TEST_FAIL_IF(SPIF_URL_ISNULL(homepage));
+        TEST_FAIL_IF(!SPIF_OBJ_IS_URL(homepage));
+        TEST_FAIL_IF(!SPIF_CMP_IS_EQUAL(spif_str_cmp_with_ptr(SPIF_STR(homepage), "http://www.dweeb.com/")));
+        spif_str_del(key);
+        TEST_PASS();
+
+        TEST_BEGIN("SPIF_MAP_GET_KEYS() macro");
+        testlist = SPIF_LIST_NEW(array);
+        SPIF_MAP_GET_KEYS(testmap, testlist);
+        TEST_FAIL_IF(SPIF_LIST_COUNT(testlist) != SPIF_MAP_COUNT(testmap));
+        key = spif_str_new_from_ptr("serial number");
+        TEST_FAIL_IF(!SPIF_LIST_CONTAINS(testlist, key));
+        spif_str_done(key);
+        spif_str_init_from_ptr(key, "loser");
+        TEST_FAIL_IF(!SPIF_LIST_CONTAINS(testlist, key));
+        spif_str_done(key);
+        spif_str_init_from_ptr(key, "name");
+        TEST_FAIL_IF(!SPIF_LIST_CONTAINS(testlist, key));
+        spif_str_done(key);
+        spif_str_init_from_ptr(key, "e-mail");
+        TEST_FAIL_IF(!SPIF_LIST_CONTAINS(testlist, key));
+        spif_str_done(key);
+        spif_str_init_from_ptr(key, "rank");
+        TEST_FAIL_IF(!SPIF_LIST_CONTAINS(testlist, key));
+        spif_str_done(key);
+        spif_str_init_from_ptr(key, "homepage");
+        TEST_FAIL_IF(!SPIF_LIST_CONTAINS(testlist, key));
+        spif_str_del(key);
+        value = spif_str_new_from_ptr("123456");
+        TEST_FAIL_IF(SPIF_LIST_CONTAINS(testlist, value));
+        spif_str_done(value);
+        spif_str_init_from_ptr(value, "YES");
+        TEST_FAIL_IF(SPIF_LIST_CONTAINS(testlist, value));
+        spif_str_done(value);
+        spif_str_init_from_ptr(value, "Bob");
+        TEST_FAIL_IF(SPIF_LIST_CONTAINS(testlist, value));
+        spif_str_done(value);
+        spif_str_init_from_ptr(value, "bob@dweeb.com");
+        TEST_FAIL_IF(SPIF_LIST_CONTAINS(testlist, value));
+        spif_str_done(value);
+        spif_str_init_from_ptr(value, "Dweeb");
+        TEST_FAIL_IF(SPIF_LIST_CONTAINS(testlist, value));
+        spif_str_del(value);
+        homepage = spif_url_new_from_ptr("http://www.dweeb.com/");
+        TEST_FAIL_IF(SPIF_LIST_CONTAINS(testlist, homepage));
+        spif_url_del(homepage);
+        SPIF_LIST_DEL(testlist);
+        TEST_PASS();
+
+        TEST_BEGIN("SPIF_MAP_GET_PAIRS() macro");
+        testlist = SPIF_LIST_NEW(array);
+        SPIF_MAP_GET_PAIRS(testmap, testlist);
+        TEST_FAIL_IF(SPIF_LIST_COUNT(testlist) != SPIF_MAP_COUNT(testmap));
+        SPIF_LIST_DEL(testlist);
+        TEST_PASS();
+
+        TEST_BEGIN("SPIF_MAP_GET_VALUES() macro");
+        testlist = SPIF_LIST_NEW(array);
+        SPIF_MAP_GET_VALUES(testmap, testlist);
+        TEST_FAIL_IF(SPIF_LIST_COUNT(testlist) != SPIF_MAP_COUNT(testmap));
+        key = spif_str_new_from_ptr("serial number");
+        TEST_FAIL_IF(SPIF_LIST_CONTAINS(testlist, key));
+        spif_str_done(key);
+        spif_str_init_from_ptr(key, "loser");
+        TEST_FAIL_IF(SPIF_LIST_CONTAINS(testlist, key));
+        spif_str_done(key);
+        spif_str_init_from_ptr(key, "name");
+        TEST_FAIL_IF(SPIF_LIST_CONTAINS(testlist, key));
+        spif_str_done(key);
+        spif_str_init_from_ptr(key, "e-mail");
+        TEST_FAIL_IF(SPIF_LIST_CONTAINS(testlist, key));
+        spif_str_done(key);
+        spif_str_init_from_ptr(key, "rank");
+        TEST_FAIL_IF(SPIF_LIST_CONTAINS(testlist, key));
+        spif_str_done(key);
+        spif_str_init_from_ptr(key, "homepage");
+        TEST_FAIL_IF(SPIF_LIST_CONTAINS(testlist, key));
+        spif_str_del(key);
+        value = spif_str_new_from_ptr("123456");
+        TEST_FAIL_IF(!SPIF_LIST_CONTAINS(testlist, value));
+        spif_str_done(value);
+        spif_str_init_from_ptr(value, "YES");
+        TEST_FAIL_IF(!SPIF_LIST_CONTAINS(testlist, value));
+        spif_str_done(value);
+        spif_str_init_from_ptr(value, "Bob");
+        TEST_FAIL_IF(!SPIF_LIST_CONTAINS(testlist, value));
+        spif_str_done(value);
+        spif_str_init_from_ptr(value, "bob@dweeb.com");
+        TEST_FAIL_IF(!SPIF_LIST_CONTAINS(testlist, value));
+        spif_str_done(value);
+        spif_str_init_from_ptr(value, "Dweeb");
+        TEST_FAIL_IF(!SPIF_LIST_CONTAINS(testlist, value));
+        spif_str_del(value);
+        homepage = spif_url_new_from_ptr("http://www.dweeb.com/");
+        TEST_FAIL_IF(!SPIF_LIST_CONTAINS(testlist, homepage));
+        spif_url_del(homepage);
+        SPIF_LIST_DEL(testlist);
+        TEST_PASS();
+
+        TEST_BEGIN("SPIF_MAP_ITERATOR(), SPIF_MAP_HAS_KEY(), and SPIF_MAP_HAS_VALUE() macros");
+        for (j = 0, it = SPIF_MAP_ITERATOR(testmap); SPIF_ITERATOR_HAS_NEXT(it); j++) {
+            spif_objpair_t tmp;
+
+            tmp = SPIF_CAST(objpair) SPIF_ITERATOR_NEXT(it);
+            TEST_FAIL_IF(SPIF_OBJPAIR_ISNULL(tmp));
+            TEST_FAIL_IF(!SPIF_MAP_HAS_KEY(testmap, tmp->key));
+            TEST_FAIL_IF(!SPIF_MAP_HAS_VALUE(testmap, tmp->value));
+        }
+        TEST_FAIL_IF(j != 6);
+        TEST_FAIL_IF(SPIF_ITERATOR_HAS_NEXT(it));
+        TEST_FAIL_IF(!SPIF_OBJ_ISNULL(SPIF_ITERATOR_NEXT(it)));
+        SPIF_ITERATOR_DEL(it);
+        TEST_PASS();
+
+        TEST_BEGIN("SPIF_MAP_REMOVE() macro");
+        key = spif_str_new_from_ptr("name");
+        value = spif_str_new_from_ptr("Bob");
+        ret = SPIF_MAP_REMOVE(testmap, key);
+        TEST_FAIL_IF(SPIF_OBJ_ISNULL(ret));
+        TEST_FAIL_IF(!SPIF_OBJ_COMP(ret, value));
+        TEST_FAIL_IF(SPIF_MAP_HAS_KEY(testmap, key));
+        SPIF_OBJ_DEL(ret);
+        spif_str_done(key);
+        spif_str_done(value);
+        spif_str_init_from_ptr(key, "rank");
+        spif_str_init_from_ptr(value, "Dweeb");
+        ret = SPIF_MAP_REMOVE(testmap, key);
+        TEST_FAIL_IF(SPIF_OBJ_ISNULL(ret));
+        TEST_FAIL_IF(!SPIF_OBJ_COMP(ret, value));
+        TEST_FAIL_IF(SPIF_MAP_HAS_KEY(testmap, key));
+        SPIF_OBJ_DEL(ret);
+        spif_str_done(key);
+        spif_str_done(value);
+        spif_str_init_from_ptr(key, "serial number");
+        spif_str_init_from_ptr(value, "123456");
+        ret = SPIF_MAP_REMOVE(testmap, key);
+        TEST_FAIL_IF(SPIF_OBJ_ISNULL(ret));
+        TEST_FAIL_IF(!SPIF_OBJ_COMP(ret, value));
+        TEST_FAIL_IF(SPIF_MAP_HAS_KEY(testmap, key));
+        SPIF_OBJ_DEL(ret);
+        spif_str_done(key);
+        spif_str_done(value);
+        spif_str_init_from_ptr(key, "homepage");
+        homepage = spif_url_new_from_ptr("http://www.dweeb.com/");
+        ret = SPIF_MAP_REMOVE(testmap, key);
+        TEST_FAIL_IF(SPIF_OBJ_ISNULL(ret));
+        TEST_FAIL_IF(!SPIF_OBJ_COMP(ret, homepage));
+        TEST_FAIL_IF(SPIF_MAP_HAS_KEY(testmap, key));
+        SPIF_OBJ_DEL(ret);
+        spif_str_done(key);
+        spif_url_del(homepage);
+        spif_str_init_from_ptr(key, "e-mail");
+        spif_str_init_from_ptr(value, "bob@dweeb.com");
+        ret = SPIF_MAP_REMOVE(testmap, key);
+        TEST_FAIL_IF(SPIF_OBJ_ISNULL(ret));
+        TEST_FAIL_IF(!SPIF_OBJ_COMP(ret, value));
+        TEST_FAIL_IF(SPIF_MAP_HAS_KEY(testmap, key));
+        SPIF_OBJ_DEL(ret);
+        spif_str_done(key);
+        spif_str_done(value);
+        spif_str_init_from_ptr(key, "loser");
+        spif_str_init_from_ptr(value, "YES");
+        ret = SPIF_MAP_REMOVE(testmap, key);
+        TEST_FAIL_IF(SPIF_OBJ_ISNULL(ret));
+        TEST_FAIL_IF(!SPIF_OBJ_COMP(ret, value));
+        TEST_FAIL_IF(SPIF_MAP_HAS_KEY(testmap, key));
+        SPIF_OBJ_DEL(ret);
+        spif_str_del(key);
+        spif_str_del(value);
+        TEST_FAIL_IF(SPIF_MAP_COUNT(testmap) != 0);
+        TEST_PASS();
+
+        /*SPIF_SHOW(testmap, stdout);*/
+        SPIF_MAP_DEL(testmap);
+    }
+
+    TEST_PASSED("map interface");
+    return 0;
+}
+
+int
 test_socket(void)
 {
     spif_socket_t src1, dest1, src2, dest2, listen1, listen2;
@@ -1911,6 +2189,9 @@ main(int argc, char *argv[])
         return ret;
     }
     if ((ret = test_vector()) != 0) {
+        return ret;
+    }
+    if ((ret = test_map()) != 0) {
         return ret;
     }
     if ((ret = test_socket()) != 0) {

@@ -633,3 +633,9 @@ Wed Mar  3 12:25:22 2004                        Michael Jennings (mej)
 New and improved autogen stuff.  Prefers autoconf 2.13 and automake
 1.4, but it's also been tested with autoconf 2.57 and automake 1.6.3.
 ----------------------------------------------------------------------
+Wed Mar 10 17:15:14 2004                        Michael Jennings (mej)
+
+Working map implementation using the linked_list class.
+
+Added some new string functions.
+----------------------------------------------------------------------
