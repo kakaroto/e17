@@ -638,6 +638,12 @@ check_options(void)
       opt.collage = 0;
    }
 
+   if(opt.scale_down && opt.progressive)
+   {
+      weprintf("currently, --scale-down only works without progressive loading");
+      opt.progressive = 0;
+   }
+   
    if (opt.index)
    {
       if (opt.font || opt.title_font)
