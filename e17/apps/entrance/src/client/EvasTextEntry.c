@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <string.h>
+#include <Ecore.h>
 #include <Ecore_X.h>
 #include <stdlib.h>
 #include "EvasTextEntry.h"
