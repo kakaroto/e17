@@ -14,9 +14,6 @@ AM_WITH_DMALLOC
 AM_PATH_GTK(1.2.0, ,
             AC_MSG_ERROR(Cannot find GTK: Is gtk-config in path?))
 
-dnl Add the languages which your application supports here.
-ALL_LINGUAS="de"
-AM_GNU_GETTEXT
 
 dnl Set PACKAGE_LOCALE_DIR in config.h.
 if test "x${prefix}" = "xNONE"; then
@@ -69,11 +66,9 @@ AC_SUBST(edb_libs)
 AC_SUBST(imlib2_cflags)
 AC_SUBST(imlib2_libs)
 
-AC_OUTPUT([ m4/Makefile 
+AC_OUTPUT([
 Makefile
 etcher.spec
 src/Makefile
-intl/Makefile
-po/Makefile.in
 ])
 
