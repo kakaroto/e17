@@ -1,0 +1,246 @@
+/*
+ * $Id$
+ *
+ * Copyright (C) 2004 Tilman Sauerbeck (tilman at code-monkey de)
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of version 2 of the GNU General Public License as
+ * published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
+ */
+
+#include <Ecore.h>
+#include <Ecore_X.h>
+#include <Ecore_X_Cursor.h>
+
+#include <X11/Xlib.h>
+#include <Imlib2.h>
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+#include <limits.h>
+#include <signal.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+
+#define _GNU_SOURCE
+#include <getopt.h>
+
+#define VERSION "0.0.1"
+
+/* FIXME: should be configurable, but i'm too lazy to add the necessary
+ * sanity checks :)
+ */
+#define FILE_FMT "enthrall_dump%.5lu"
+
+typedef struct {
+	Ecore_X_Display *disp;
+
+	int fps;
+	int quality;
+
+	struct {
+		Ecore_X_Window id;
+		int w, h;
+	} window;
+
+	struct {
+		Imlib_Image id;
+		int w, h;
+	} cursor;
+
+	unsigned long frame_count;
+} Enthrall;
+
+static int
+on_timer (void *udata)
+{
+	Enthrall *e = udata;
+	Imlib_Image im;
+	Bool b;
+	int ptr_x = 0, ptr_y = 0;
+	char buf[PATH_MAX];
+	Window dw, childw = None;
+	unsigned int unused;
+
+	/* FIXME: check whether e->window.id still points to a
+	 *        valid window. not sure whether this really should be
+	 *        done every time we enter this function.
+	 */
+
+	snprintf (buf, sizeof (buf), FILE_FMT".jpeg", e->frame_count);
+
+	im = imlib_create_image_from_drawable (0, 0, 0,
+	                                       e->window.w, e->window.h,
+	                                       true);
+	imlib_context_set_image (im);
+
+	/* if we have a cursor, find out where it's at */
+	if (e->cursor.id) {
+		b = XQueryPointer (e->disp, e->window.id, &dw, &childw,
+		                   &unused, &unused, &ptr_x, &ptr_y, &unused);
+
+		if (b == True && childw != None)
+			imlib_blend_image_onto_image (e->cursor.id, true, 0, 0,
+			                              e->cursor.w, e->cursor.h,
+			                              ptr_x, ptr_y,
+			                              e->cursor.w, e->cursor.h);
+	}
+
+	imlib_image_attach_data_value ("quality", NULL, e->quality, NULL);
+	imlib_image_set_format ("jpeg");
+
+	imlib_save_image (buf);
+	imlib_free_image ();
+
+	e->frame_count++;
+
+	return 1; /* keep going */
+}
+
+static void
+show_usage ()
+{
+	printf ("enthrall " VERSION "\n\n"
+	        "Usage: enthrall [options]\n\n"
+	        "Options:\n"
+	        "  -f, --fps=FPS         "
+	        "frames per second (1-50, default: 25)\n"
+	        "  -q, --quality=QUALITY "
+	        "JPEG quality (0-100, default: 90)\n"
+	        "  -w, --window=WINDOW   "
+	        "window to grab\n");
+}
+
+static void
+init_imlib (Enthrall *e)
+{
+	/* FIXME: check whether this actually improves performance */
+	imlib_set_cache_size (0);
+
+	imlib_context_set_display (e->disp);
+	imlib_context_set_visual (DefaultVisual (e->disp,
+	                          DefaultScreen (e->disp)));
+	imlib_context_set_colormap (DefaultColormap (e->disp,
+	                            DefaultScreen (e->disp)));
+	imlib_context_set_drawable (e->window.id);
+}
+
+bool
+file_exists (char *file)
+{
+	struct stat st;
+
+	if (!file || !*file)
+		return false;
+
+	return !stat (file, &st);
+}
+
+int
+main (int argc, char **argv)
+{
+	Enthrall e;
+	double start;
+	struct option options[] = {
+		{"help", no_argument, NULL, 'h'},
+		{"fps", required_argument, NULL, 'f'},
+		{"quality", required_argument, NULL, 'q'},
+		{"window", required_argument, NULL, 'w'},
+		{NULL, no_argument, NULL, 0}};
+	int c;
+
+	memset (&e, 0, sizeof (Enthrall));
+
+	e.fps = 25;
+	e.quality = 90;
+
+	while ((c = getopt_long (argc, argv, "hf:q:w:", options, NULL)) != -1) {
+		int base;
+
+		switch (c) {
+			case 'h':
+				show_usage ();
+				return EXIT_SUCCESS;
+			case 'f':
+				e.fps = atoi (optarg);
+				break;
+			case 'q':
+				e.quality = atoi (optarg);
+				break;
+			case 'w':
+				base = strncasecmp (optarg, "0x", 2) ? 10 : 16;
+				e.window.id = strtoul (optarg, NULL, base);
+				break;
+		}
+	}
+
+	if (!e.window.id) {
+		show_usage ();
+
+		return EXIT_FAILURE;
+	}
+
+	if (e.quality < 0 || e.quality > 100) {
+		show_usage ();
+
+		return EXIT_FAILURE;
+	}
+
+	if (e.fps < 1 || e.fps > 50) {
+		show_usage ();
+
+		return EXIT_FAILURE;
+	}
+
+	ecore_init ();
+	ecore_x_init (NULL);
+
+	start = ecore_time_get ();
+
+	e.disp = ecore_x_display_get ();
+
+	if (file_exists ("pointer.png")) {
+		e.cursor.id = imlib_load_image ("pointer.png");
+		imlib_context_set_image (e.cursor.id);
+		e.cursor.w = imlib_image_get_width ();
+		e.cursor.h = imlib_image_get_height ();
+	}
+
+	ecore_x_window_geometry_get (e.window.id, NULL, NULL,
+	                             &e.window.w, &e.window.h);
+
+	init_imlib (&e);
+
+	ecore_timer_add (1.0 / e.fps, on_timer, &e);
+
+	ecore_main_loop_begin ();
+
+	ecore_x_shutdown ();
+	ecore_shutdown ();
+
+	if (e.cursor.id) {
+		imlib_context_set_image (e.cursor.id);
+		imlib_free_image ();
+	}
+
+	printf ("Wrote %lu frames in %f seconds.\n\n", e.frame_count,
+	        ecore_time_get () - start);
+	printf ("Suggested MEncoder call to encode the video:\n\n"
+	        "mencoder \"mf://*.jpeg\" \\\n"
+	        "    -mf w=%i:h=%i:fps=%i:type=jpeg -ovc lavc \\\n"
+	        "    -lavcopts vcodec=mpeg4:vbitrate=16000:vhq \\\n"
+	        "    -o out.avi\n\n", e.window.w, e.window.h, e.fps);
+
+	return EXIT_SUCCESS;
+}
