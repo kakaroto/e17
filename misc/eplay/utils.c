@@ -113,22 +113,11 @@ void finish(int sig)
 	gdk_exit(0);
 }
 
-/*
-   Update selected image index image_idx
-   Direction determines if the next or the previous
-   image is selected.
- */
-void next_image(char direction)
-{
-	image_idx = (image_idx + 1 + images) % images;
-}
-
 void usage(char *name, int exit_status)
 {
-	g_print("qiv (Quick Image Viewer) v%s\n"
-			"Usage: %s [options] files ...\n"
-			"See 'man qiv' or type '%s --help' for options.\n\n"
-			,VERSION, name, name);
+	g_print("eplay (the e flipbook) v%s\n"
+			"Usage: %s files ...\n"
+			,VERSION, name);
 
 	gdk_exit(exit_status);
 }
@@ -137,65 +126,9 @@ void show_help(char *name, int exit_status)
 {
 	int i;
 
-	g_print("\nqiv (Quick Image Viewer) v%s\n"
-			"Usage: %s [options] files ...\n\n"
+	g_print("\neplay (the e flipbook) v%s\n"
+			"Usage: %s files ...\n\n"
 			,VERSION, name);
-
-	g_print("General options:\n"
-			"     --help, -h          : This help screen\n"
-			"     --display <disp>    : Open qiv window on display <disp>\n"
-			"     --wm, -w x          : Window Manager handling (0-2)\n"
-			"     --center, -e        : Disable window centering. Use this if no -w x works.\n"
-			"     --root, -x          : Set image as desktop background (centered/and exit)\n"
-			"     --root_t, -y        : Set image as desktop background (tiled/and exit)\n"
-			"     --root_s, -z        : Set image as desktop background (stretched/and exit)\n"
-			"     --maxpect, -m       : Zoom to screen size while preserving aspect ratio\n"
-			"     --scale_down, -t    : Shrink image(s) which are larger than screen size\n"
-			"                           to fit.\n"
-			"     --fullscreen, -f    : Use fullscreen window on start-up\n"
-			"     --brightness, -b x  : Set brightness to x (-32..32)\n"
-			"     --contrast, -c x    : Set contrast to x (-32..32)\n"
-			"     --gamma, -g x       : Set gamma to x (-32..32)\n"
-			"     --no_filter, -n     : Do not filter images by extension\n"
-			"     --no_statusbar, -i  : Disable statusbar in fullscreen_mode\n"
-	 "     --transparency, -p  : Enable transparency for transparent images\n"
-			"     --do_grab, -a       : Grab the pointer in windowed mode\n"
-			"     --version, -v       : Print version information and exit\n"
-			"     --bg_color, -o x    : Set root background color to 24 bit hex RGB tripple x\n"
-			"Slideshow options:\n"
-			"     --slide, -s         : Start slideshow immediately\n"
-			"     --random, -r        : Random order\n"
-			"     --delay,-d <delay>  : Wait <delay> seconds between images [default=3]\n\n"
-			"Please look into 'man qiv' for some examples.\n\n"
-			"Keys:\n"
-			"     space/PgDn/left button/scroll down\t\tnext picture\n"
-			"     backspace/PgUp/right button/scroll up\tprevious picture\n"
-			"     d/D/delete\t\t\t\t\tmove picture to .qiv-trash\n"
-			"     +/=\t\t\t\t\tzoom_in  (10%%)\n"
-			"     -\t\t\t\t\t\tzoom_out (10%%)\n"
-			"     f\t\t\t\t\t\tfullscreen mode on/off\n"
-			"     t\t\t\t\t\t\tscale_down on/off\n"
-			"     s\t\t\t\t\t\tslide show on/off\n"
-			"     r\t\t\t\t\t\trandom order (slideshow) on/off\n"
-			"     b\t\t\t\t\t\t- brightness\n"
-			"     B\t\t\t\t\t\t+ brightness\n"
-			"     c\t\t\t\t\t\t- contrast\n"
-			"     C\t\t\t\t\t\t+ contrast\n"
-			"     g\t\t\t\t\t\t- gamma\n"
-			"     G\t\t\t\t\t\t+ gamma\n"
-			"     h\t\t\t\t\t\tflip horizontal\n"
-			"     v\t\t\t\t\t\tflip vertical\n"
-			"     right arrow\t\t\t\trotate right\n"
-			"     left arrow\t\t\t\t\trotate left\n"
-			"     jtx<return>\t\t\t\tjump to image number x\n"
-			"     jfx<return>\t\t\t\tjump forward x images\n"
-			"     jbx<return>\t\t\t\tjump backward x images\n"
-			"     enter/return\t\t\t\treset zoom and color settings\n"
-			"     i\t\t\t\t\t\tstatusbar on/off\n"
-			"     x\t\t\t\t\t\tcenter image on background\n"
-			"     y\t\t\t\t\t\ttile image on background\n"
-			"     z\t\t\t\t\t\tstretch image on background\n"
-			"     q/ESC/middle button\t\t\texit\n\n");
 
 	g_print("Valid image extensions:\n");
 
@@ -203,8 +136,8 @@ void show_help(char *name, int exit_status)
 		g_print("%s%s", image_extensions[i], (i == 8) ? "\n" : " ");
 	g_print("\n\n");
 
-	g_print("Homepage: http://www.klografx.de/\n"
-			"Please mail bug reports and comments to Adam Kopacz <Adam.K@klografx.de>\n\n");
+	g_print("Homepage: http://mandrake.net/\n"
+			"Please mail bug reports and comments to Mandrake <mandrake@mandrake.net>\n\n");
 
 	gdk_exit(exit_status);
 }

@@ -53,34 +53,20 @@ int main(int argc, char **argv)
 
 	cmap = gdk_colormap_get_system();
 
-	/* StatusBar background: ORANGE */
-	text_background_color.red = 65535;
-	text_background_color.green = 47534;
-	text_background_color.blue = 0;
-
 	if (!gdk_color_alloc(cmap, &text_background_color))
 		fprintf(stderr, "qiv: couldn't allocate color (text_background_color)\n");
-
-	/* error_background: BLUE */
-	color_blue.red = 0;
-	color_blue.green = 0;
-	color_blue.blue = 65535;
 
 	if (!gdk_color_alloc(cmap, &color_blue)) {
 		fprintf(stderr, "qiv: couldn't allocate color (color_blue),\nusing black...\n");
 	}
-	/* background: BLACK */
-	if (!bg_set) {
-		color_bg.red = 0;
-		color_bg.green = 0;
-		color_bg.blue = 0;
-	}
+	color_bg.red = 0;
+	color_bg.green = 0;
+	color_bg.blue = 0;
 	if (!gdk_color_alloc(cmap, &color_bg)) {
 		fprintf(stderr, "qiv: couldn't allocate color (color_bg)");
 	}
 	screen_x = gdk_screen_width();
 	screen_y = gdk_screen_height();
-	/* cursor = gdk_cursor_new(CURSOR);*/
 
 	slide = 1;
 
@@ -107,14 +93,6 @@ int main(int argc, char **argv)
 
 void qiv_exit(int code)
 {
-	{
-		int i=0;
-		for(i=0;i<images+1;i++) {
-			if(p[i]) {
-				gdk_imlib_free_pixmap(p[i]);
-			}
-		}
-	}
 	g_main_destroy(MainLoop);
 	finish(SIGTERM);			/* deprecated, subject to change */
 };
@@ -127,7 +105,7 @@ void qiv_exit(int code)
 void qiv_handle_timer(gpointer data)
 {
 	if (*(char *) data || slide) {
-		next_image(0);
+		image_idx = (image_idx + 1 + images) % images;
 		qiv_load_image();
 	}
 }

@@ -1,9 +1,9 @@
 /*
    Module       : image.c
    Purpose      : Routines dealing with image display
-   More         : see qiv README
+   More         : see eplay README
    Policy       : GNU GPL
-   Homepage     : http://www.klografx.de/
+   Homepage     : http://mandrake.net
  */
 
 #include <stdio.h>
@@ -29,11 +29,6 @@ void qiv_load_image()
 	}
 
 
-/*    reset_display_settings(&win_x,&win_y,&w,&h); */
-
-	/* desktop-background -> exit */
-
-
 	if (first) {
 		w = org_w = im->rgb_width;
 		h = org_h = im->rgb_height;
@@ -47,15 +42,10 @@ void qiv_load_image()
 		attr.height = screen_y;
 		parent = NULL;
 		win = gdk_window_new(parent, &attr, ATTRIBUTES_MASK);
-		/* gdk_window_set_cursor(win, cursor); */
 		gdk_window_show(win);
 		gc = gdk_gc_new(win);
 		first = 0;
-		if (!im) {
-			gdk_window_set_background(win, &color_blue);
-		} else {
-			gdk_window_set_background(win, &color_bg);
-		}
+		gdk_window_set_background(win, &color_bg);
 		gdk_keyboard_grab(win, FALSE, CurrentTime);
 		gdk_pointer_grab(win, FALSE, event_mask, NULL, cursor, CurrentTime);
 		gdk_window_set_hints(win, win_x, win_y, w, h, w, h, GDK_HINT_MIN_SIZE |
@@ -90,8 +80,6 @@ void reset_display_settings(gint * win_x, gint * win_y, gint * w, gint * h)
 void update_image(char image_error, gint win_x, gint win_y, gint w, gint h, GdkImlibColorModifier mod)
 {
 
-	/* gdk_imlib_set_image_modifier(im, &mod); */
-
 	gdk_imlib_free_pixmap(p[image_idx]);	/* killing old pixmap */
 	if(!p[image_idx]) {
 		gdk_imlib_render(im, w, h);		/* Imlib render ... */
@@ -100,5 +88,4 @@ void update_image(char image_error, gint win_x, gint win_y, gint w, gint h, GdkI
 
 	gdk_draw_pixmap(win, gc, p[image_idx], 0, 0, win_x, win_y, w, h);
 	gdk_window_show(win);		/* display image */
-/*	gdk_flush(); */
 }
