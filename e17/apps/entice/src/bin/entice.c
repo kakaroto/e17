@@ -230,63 +230,70 @@ _entice_thumb_load(void *_data, Evas * _e, Evas_Object * _o, void *_ev)
       edje_object_signal_emit(entice->edje, "EnticeImageDisplayPrep", "");
 
       tmp = e_thumb_evas_object_get(o);
-      new_current = entice_image_new(tmp);
-      entice_image_file_set(new_current, e_thumb_file_get(o));
-      entice_image_format_set(new_current, e_thumb_format_get(o));
-      entice_image_save_quality_set(new_current,
-                                    entice_config_image_quality_get());
-
-      new_scroller =
-         e_thumb_new(evas_object_evas_get(o), e_thumb_file_get(o));
-      edje_object_part_geometry_get(entice->edje, "EnticeImage", NULL, NULL,
-                                    &w, &h);
-      evas_object_resize(new_current, w, h);
-      evas_object_show(new_current);
-
-      edje_object_part_geometry_get(entice->edje, "EnticeImageScroller", NULL,
-                                    NULL, &w, &h);
-      evas_object_resize(new_scroller, w, h);
-      evas_object_show(new_scroller);
-
-      if (entice->current)
+      if ((new_current = entice_image_new(tmp)))
       {
-         entice_image_zoom_set(new_current,
-                               entice_image_zoom_get(entice->current));
-         if (entice_image_zoom_fit_get(entice->current))
-            should_fit = 1;
-         entice_current_free();
+         entice_image_file_set(new_current, e_thumb_file_get(o));
+         entice_image_format_set(new_current, e_thumb_format_get(o));
+         entice_image_save_quality_set(new_current,
+                                       entice_config_image_quality_get());
+
+         new_scroller =
+            e_thumb_new(evas_object_evas_get(o), e_thumb_file_get(o));
+         edje_object_part_geometry_get(entice->edje, "EnticeImage", NULL,
+                                       NULL, &w, &h);
+         evas_object_resize(new_current, w, h);
+         evas_object_show(new_current);
+
+         edje_object_part_geometry_get(entice->edje, "EnticeImageScroller",
+                                       NULL, NULL, &w, &h);
+         evas_object_resize(new_scroller, w, h);
+         evas_object_show(new_scroller);
+
+         if (entice->current)
+         {
+            entice_image_zoom_set(new_current,
+                                  entice_image_zoom_get(entice->current));
+            if (entice_image_zoom_fit_get(entice->current))
+               should_fit = 1;
+            entice_current_free();
+         }
+         entice->current = new_current;
+         if ((thumb_edje =
+              evas_hash_find(entice->thumb.hash,
+                             entice_image_file_get(entice->current))))
+            edje_object_signal_emit(thumb_edje, "EnticeThumbLoaded", "");
+
+         if (entice->scroller)
+            evas_object_del(entice->scroller);
+         entice->scroller = new_scroller;
+
+         /* Set the text descriptions for this image */
+         e_thumb_geometry_get(o, &iw, &ih);
+         snprintf(buf, PATH_MAX, "%d x %d", iw, ih);
+         edje_object_part_text_set(entice->edje, "EnticeFileDimensions", buf);
+         edje_object_part_text_set(entice->edje, "EnticeFileName",
+                                   e_thumb_file_get(o));
+         snprintf(buf, PATH_MAX, "Entice: %s", e_thumb_file_get(o));
+         ecore_evas_title_set(entice->ee, buf);
+
+         entice->thumb.current =
+            evas_list_find_list(entice->thumb.list, _data);
+
+         /* swallow the images */
+         edje_object_part_swallow(entice->edje, "EnticeImage", new_current);
+         edje_object_part_swallow(entice->edje, "EnticeImageScroller",
+                                  new_scroller);
+
+         if (should_fit)
+            entice_image_zoom_fit(new_current);
+
+         /* let the app know it's ready to be displayed */
+         edje_object_signal_emit(entice->edje, "EnticeImageDisplay", "");
       }
-      entice->current = new_current;
-      if ((thumb_edje =
-           evas_hash_find(entice->thumb.hash,
-                          entice_image_file_get(entice->current))))
-         edje_object_signal_emit(thumb_edje, "EnticeThumbLoaded", "");
-
-      if (entice->scroller)
-         evas_object_del(entice->scroller);
-      entice->scroller = new_scroller;
-
-      /* Set the text descriptions for this image */
-      e_thumb_geometry_get(o, &iw, &ih);
-      snprintf(buf, PATH_MAX, "%d x %d", iw, ih);
-      edje_object_part_text_set(entice->edje, "EnticeFileDimensions", buf);
-      edje_object_part_text_set(entice->edje, "EnticeFileName",
-                                e_thumb_file_get(o));
-      snprintf(buf, PATH_MAX, "Entice: %s", e_thumb_file_get(o));
-      ecore_evas_title_set(entice->ee, buf);
-
-      entice->thumb.current = evas_list_find_list(entice->thumb.list, _data);
-
-      /* swallow the images */
-      edje_object_part_swallow(entice->edje, "EnticeImage", new_current);
-      edje_object_part_swallow(entice->edje, "EnticeImageScroller",
-                               new_scroller);
-
-      if (should_fit)
-         entice_image_zoom_fit(new_current);
-
-      /* let the app know it's ready to be displayed */
-      edje_object_signal_emit(entice->edje, "EnticeImageDisplay", "");
+      else
+      {
+	  fprintf(stderr, "Error Loading Source Image !!!!\n");
+      }
    }
    return;
    _e = NULL;
@@ -518,7 +525,6 @@ entice_file_remove(const char *file)
          }
          e_container_element_remove(entice->container, o);
          evas_object_del(o);
-         entice_current_free();
          if (evas_list_count(entice->thumb.list) == 0)
          {
             entice->thumb.current = NULL;
