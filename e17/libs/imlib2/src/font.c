@@ -176,19 +176,25 @@ __imlib_load_font(char *fontname)
 	     free(name);
 	     return NULL;
 	  }
-	sprintf(tmp, "%s/%s.ttf", fpath[j], name);
+	sprintf(tmp, "%s.ttf", name);
 	if (__imlib_FileIsFile(tmp))
 	   file = strdup(tmp);
 	else
 	  {
-	     sprintf(tmp, "%s/%s.TTF", fpath[j], name);
+	     sprintf(tmp, "%s/%s.ttf", fpath[j], name);
 	     if (__imlib_FileIsFile(tmp))
 		file = strdup(tmp);
 	     else
 	       {
-		  sprintf(tmp, "%s/%s", fpath[j], name);
+		  sprintf(tmp, "%s/%s.TTF", fpath[j], name);
 		  if (__imlib_FileIsFile(tmp))
 		     file = strdup(tmp);
+		  else
+		    {
+		       sprintf(tmp, "%s/%s", fpath[j], name);
+		       if (__imlib_FileIsFile(tmp))
+			  file = strdup(tmp);
+		    }
 	       }
 	  }
 	free(tmp);
