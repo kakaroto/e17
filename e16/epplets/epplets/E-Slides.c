@@ -28,6 +28,7 @@ double delay = 5.0;
 char **filenames = NULL, *path, *zoom_cmd;
 unsigned char paused = 0;
 Window zoom_win = None;
+int w = 3, h = 3;
 
 static char **dirscan(char *dir, unsigned long *num);
 static void change_image(void *data);
@@ -138,7 +139,7 @@ change_image(void *data) {
   }
   Imlib_destroy_image(Epplet_get_imlib_data(), im);  /* Destroy the image, but keep it in cache. */
 
-  Epplet_change_image(picture, 42, 42, filenames[idx]);
+  Epplet_change_image(picture, (w * 16 - 6), (h * 16 - 6), filenames[idx]);
   INC_PIC();
 
   Epplet_remove_timer("CHANGE_IMAGE");
@@ -259,12 +260,27 @@ parse_config(void) {
 int
 main(int argc, char **argv) {
 
-  int prio;
+  int prio, j = 0;
 
   prio = getpriority(PRIO_PROCESS, getpid());
   setpriority(PRIO_PROCESS, getpid(), prio + 10);
   atexit(Epplet_cleanup);
-  Epplet_Init("E-Slides", "0.2", "Enlightenment Slideshow Epplet", 3, 3, argc, argv, 0);
+
+  for (j = 1; j < argc; j++) {
+    if ((!strcmp("-w", argv[j])) && (argc - j > 1)) {
+      w = atoi(argv[++j]);
+      if (w < 3) {
+        w = 3;
+      }
+    } else if ((!strcmp("-h", argv[j])) && (argc - j > 1)) {
+      h = atoi(argv[++j]);
+      if (h < 3) {
+        h = 3;
+      }
+    }
+  }
+
+  Epplet_Init("E-Slides", "0.3", "Enlightenment Slideshow Epplet", w, h, argc, argv, 0);
   Epplet_load_config();
   parse_config();
   filenames = dirscan(path, &image_cnt);
@@ -279,12 +295,12 @@ main(int argc, char **argv) {
   chdir(path);
   
   close_button = Epplet_create_button(NULL, NULL, 3, 3, 0, 0, "CLOSE", 0, NULL, close_cb, NULL);
-  zoom_button = Epplet_create_button(NULL, NULL, 33, 3, 0, 0, "EJECT", 0, NULL, zoom_cb, NULL);
-  prev_button = Epplet_create_button(NULL, NULL, 3, 33, 0, 0, "PREVIOUS", 0, NULL, play_cb, (void *) (-1));
-  play_button = Epplet_create_button(NULL, NULL, 18, 33, 0, 0, "PLAY", 0, NULL, play_cb, (void *) (1));
-  pause_button = Epplet_create_button(NULL, NULL, 18, 33, 0, 0, "PAUSE", 0, NULL, play_cb, (void *) (0));
-  next_button = Epplet_create_button(NULL, NULL, 33, 33, 0, 0, "NEXT", 0, NULL, play_cb, (void *) (2));
-  picture = Epplet_create_image(3, 3, 42, 42, "/dev/null");
+  zoom_button = Epplet_create_button(NULL, NULL, ((16 * w) - 15), 3, 0, 0, "EJECT", 0, NULL, zoom_cb, NULL);
+  prev_button = Epplet_create_button(NULL, NULL, 3, ((16 * h) - 15), 0, 0, "PREVIOUS", 0, NULL, play_cb, (void *) (-1));
+  play_button = Epplet_create_button(NULL, NULL, ((16 * w / 2) - 6), ((16 * h) - 15), 0, 0, "PLAY", 0, NULL, play_cb, (void *) (1));
+  pause_button = Epplet_create_button(NULL, NULL, ((16 * w / 2) - 6), ((16 * h) - 15), 0, 0, "PAUSE", 0, NULL, play_cb, (void *) (0));
+  next_button = Epplet_create_button(NULL, NULL, ((16 * w) - 15), ((16 * h) - 15), 0, 0, "NEXT", 0, NULL, play_cb, (void *) (2));
+  picture = Epplet_create_image(3, 3, ((w * 16) - 6), ((h * 16) - 6), "/dev/null");
   Epplet_show();
   Epplet_register_focus_in_handler(in_cb, NULL);
   Epplet_register_focus_out_handler(out_cb, NULL);

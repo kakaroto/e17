@@ -973,3 +973,13 @@ Mon Nov 29 14:08:10 GMT 1999
 
 Tidied up E-UrlWatch lots. Its pretty lean now.
 
+-------------------------------------------------------------------------------
+
+Mon Nov 29 16:03:53 PST 1999
+(KainX)
+
+Added support for specifying the width and height (in epplet units, 16 pixels)
+of the E-Slides window.  -w <width> and -h <height> are the options.  The
+default is the traditional 3x3, of course.  Note that this cannot be done via
+config file options since the size is set before the config loader can be
+called.
