@@ -460,7 +460,7 @@ ewl_entry_mouse_double_click_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	if (ev->clicks == 2) {
 		bp = ewl_cursor_get_base_position(EWL_CURSOR(e->cursor));
 
-	s = ewl_entry_get_text(e);
+		s = ewl_entry_get_text(e);
       
 		if (s[bp-1] != ' ') {
 			if (s[bp] != ' ') {
@@ -469,8 +469,15 @@ ewl_entry_mouse_double_click_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 					while ((index-->0) && (s[index] != ' ')){}
 					ewl_cursor_set_base(EWL_CURSOR(e->cursor), index+2);
 					index = bp-1;
-					while ((index++<len) && (s[index] != ' ')){}
+					while ((index++<len) &&	(s[index] != ' ')){}
+					if (index > len) index--;
 					ewl_cursor_select_to(EWL_CURSOR(e->cursor), index);
+				}
+				else {
+					index = bp-1;
+					while ((index-->0) && (s[index] != ' ')){}
+					ewl_cursor_set_base(EWL_CURSOR(e->cursor), index+2);
+					ewl_cursor_select_to(EWL_CURSOR(e->cursor), len);
 				}
 			}
 			else
