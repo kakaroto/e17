@@ -283,14 +283,18 @@ gboolean table_save_func (GtkTreeModel *model, GtkTreePath *path,
 
   menu_file[depth] = g_strdup (realfile);
 
+#ifdef WRITE_FILE
   /* create recursiv new menu subdirectory */
   dirname = g_path_get_dirname (realfile);
   mkdir_with_parent (dirname, 0755);
   g_free (dirname);
+#endif /* WRITE_FILE */
 
   if (depth > 0)
   {
+#ifdef WRITE_FILE  
     menu_ptr = fopen (menu_file[depth-1], "a+");
+#endif /* WRITE_FILE */  
     if (menu_ptr == NULL)
     {
       printf ("Couldn't save menu to: %s\n", menu_file[depth-1]);

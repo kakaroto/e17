@@ -119,10 +119,10 @@ int main (int argc, char *argv[])
   }
 
   g_free (filename_properties);
-  free (emenu_path);
-
+  
   gtk_main ();
 
+  free (emenu_path);
   g_free (glade_file);
 
   return 0;
