@@ -114,11 +114,11 @@ load_config (void)
   if (opt.www_command)
     free (opt.www_command);
   opt.www_command =
-    _Strdup (Epplet_query_config_def ("WWW_COMMAND", "gnome-moz-remote"));
+    _Strdup (Epplet_query_config_def ("WWW_COMMAND", "gnome-moz-remote --newwin"));
   if (opt.ftp_command)
     free (opt.ftp_command);
   opt.ftp_command =
-    _Strdup (Epplet_query_config_def ("FTP_COMMAND", "gnome-moz-remote"));
+    _Strdup (Epplet_query_config_def ("FTP_COMMAND", "gnome-moz-remote --newwin"));
   if (opt.get_command)
     free (opt.get_command);
   opt.get_command =
