@@ -56,6 +56,7 @@ void ewl_scrollpane_init(Ewl_ScrollPane * s)
 
 	ewl_container_init(EWL_CONTAINER(s), "scrollpane", __ewl_scrollpane_add,
 			__ewl_scrollpane_child_resize, NULL);
+	ewl_object_set_fill_policy(EWL_OBJECT(s), EWL_FILL_POLICY_ALL);
 
 	/*
 	 * Create the container to hold the contents and it's configure
@@ -63,6 +64,7 @@ void ewl_scrollpane_init(Ewl_ScrollPane * s)
 	 */
 	s->box = ewl_cell_new();
 	ewl_widget_set_appearance(EWL_WIDGET(s->box), "scrollbox");
+	ewl_object_set_fill_policy(EWL_OBJECT(s->box), EWL_FILL_POLICY_SHRINK);
 
 	/*
 	 * Create the scrollbars for the scrollpane.
@@ -221,8 +223,8 @@ void __ewl_scrollpane_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	 * Update the fill percentage on the scrollbars based on available space
 	 * for the content.
 	 */
-	b_width = ewl_object_get_minimum_w(EWL_OBJECT(s->box));
-	b_height = ewl_object_get_minimum_h(EWL_OBJECT(s->box));
+	b_width = ewl_object_get_preferred_w(EWL_OBJECT(s->box));
+	b_height = ewl_object_get_preferred_h(EWL_OBJECT(s->box));
 	ewl_scrollbar_set_fill_percentage(EWL_SCROLLBAR(s->hscrollbar),
 					  (double) content_w /
 					  (double) b_width);
