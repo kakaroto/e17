@@ -11,8 +11,6 @@
 #undef PACKAGE_LIB_DIR
 #undef PACKAGE_DATA_DIR
 
-#undef BC_LOCATION
-
 /* Define if you have the fmemopen function.  */
 #undef HAVE_FMEMOPEN
 

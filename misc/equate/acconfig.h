@@ -3,4 +3,3 @@
 #undef PACKAGE_LIB_DIR
 #undef PACKAGE_DATA_DIR
 
-#undef BC_LOCATION

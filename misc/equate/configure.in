@@ -83,9 +83,6 @@ dnl Set PACKAGE_SOURCE_DIR in config.h.
 packagesrcdir=`cd $srcdir && pwd`
 AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}")
 
-bcloc=`which bc`
-AC_DEFINE_UNQUOTED(BC_LOCATION, "${bcloc}")
-
 ewl_cflags=`ewl-config --cflags`
 ewl_libs=`ewl-config --libs`
 AC_SUBST(ewl_cflags)

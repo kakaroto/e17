@@ -16,3 +16,4 @@ main.c
 equate_LDADD = @ewl_libs@ 
 
 equate_CFLAGS = @ewl_cflags@
+

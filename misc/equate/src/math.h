@@ -1,12 +1,13 @@
-char
-*math_append (char *key);
+#include "structs.h"
 
-char 
-*math_exec (void);
+double equate_eval();
+double equate_eval_node(equate_node *input);
 
-char
-*math_clear (void);
+void equate_parse_val();
+void equate_parse_mult();
+void equate_parse_div();
+void equate_parse_add();
+void equate_parse_sub();
 
-void
-math_init (void);
-
+void equate_clear();
+void equate_clear_node(equate_node *node);

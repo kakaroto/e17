@@ -1,129 +1,110 @@
-#include "Equate.h"
+#include "math.h"
+#include "structs.h"
 
-#include <signal.h>
-#include <limits.h>
-#include <stdio.h>
-#include <sys/types.h>
-#include <unistd.h>
-#include <sys/socket.h>
+#include <stdlib.h>
 
-int calc[2];
-char *buffer;
+equate_node *root=NULL;
+equate_node *lastop=NULL;
 
-void
-err_msg (const char *str)
-{
-  fprintf (stderr, "%s\n", str);
-  exit (1);
-}
-static void
-sig_pipe (int signo)
-{
-  err_msg ("SIGPIPE caught\n");
+int pres[5] ={
+  9,2,2,3,3};
+
+void parse_oper(equate_operator type);
+
+double equate_eval() {
+  return equate_eval_node(root);
 }
 
-char
-*math_append (char *key)
-{
-  int n = strlen (buffer);
-  int m = strlen (key);
-
-  E (4, "Execing %s ...\n", key);
-  memcpy (&buffer[n], key, m);
-  buffer[n + m] = 0;
-  E (5, "appended to: %s\n", buffer);
-
-  return buffer;
-}
-
-char
-*math_clear (void)
-{
-  buffer[0] = 0;
-  E (5, "cleared current calculation:\n", NULL);
+double equate_eval_node(equate_node *node) {
+  if (node->type == OP_VAL)
+    return node->payload.val;
+  else if (node->type == OP_ADD)
+    return equate_eval_node(node->payload.left) + equate_eval_node(node->right);
+  else if (node->type == OP_SUB)
+    return equate_eval_node(node->payload.left) - equate_eval_node(node->right);
+  else if (node->type == OP_MUL)
+    return equate_eval_node(node->payload.left) * equate_eval_node(node->right);
+  else if (node->type == OP_DIV)
+    return equate_eval_node(node->payload.left) / equate_eval_node(node->right);
   
-  return "0.0";
-}              
+  return 0;
+}
 
-char 
-*math_exec (void)
-{
-  int n = strlen (buffer), i;
-  char line[PATH_MAX];
-
-  if (n <= 0)
+void equate_parse_val(double val) {
+  equate_node *node;
+  if (!(node=malloc(sizeof(equate_node))))
     return;
 
-  buffer[n] = '\n';
-  buffer[++n] = 0;
-
-  E (2, "Evaluating %d chars:%s", n, buffer);
-
-  for (i = 0; i < n; i++)
-    E (9, "(char %d is %d)\n", i, buffer[i]);
-
-  write (calc[0], buffer, n);
-
-  n = strlen (line);
-  if ((n = read (calc[0], line, PATH_MAX)) < 0)
-    {
-      err_msg ("parent: read error from pipe");
-    }
-  if (n == 0)
-    {
-      err_msg ("parent: child closed pipe");
-      return;
-    }
-  line[n - 1] = 0;		/* cut off the traing CR while delimiting the string */
-
-  buffer[0] = 0;
-  return line;
+  node->type=OP_VAL;
+  node->payload.val=val;
+  
+  if (lastop) {
+    lastop->right=node;
+    lastop=NULL;
+  }
+  else
+    root=node;
+  printf("op_val %f\n", val);
 }
 
+void equate_parse_mult() {
+  parse_oper(OP_MUL);
+  printf("op_mul\n");
+}
 
-void
-math_init (void)
-{
+void equate_parse_div() {
+  parse_oper(OP_DIV);
+  printf("op_div\n");
+} 
+  
+void equate_parse_add() {
+  parse_oper(OP_ADD);
+  printf("op_add\n");
+} 
+  
+void equate_parse_sub() {
+  parse_oper(OP_SUB);
+  printf("op_sub\n");
+}  
 
-  int n;
-  pid_t pid;
-  char line[PATH_MAX];
+void equate_clear() {
+  equate_clear_node(root);
+  printf("clear\n");
+}
 
-  if (signal (SIGPIPE, sig_pipe) == SIG_ERR)
-    err_msg ("Signal Error");
-  else if (socketpair (PF_LOCAL, SOCK_STREAM, 0, calc) < 0)
-    err_msg ("Pipe Error");
-  else if ((pid = fork ()) < 0)
-    {
-      err_msg ("Fork Failure");
+void equate_clear_node(equate_node *node) {
+  if (node->payload.left) 
+    equate_clear_node(node->payload.left);
+  if (node->right)
+    equate_clear_node(node->right);
+  free(node);
+}
+
+void parse_oper(equate_operator type) {
+  equate_node *node;
+  equate_node *x;
+  equate_node *lastx;
+  if (!(node=malloc(sizeof(equate_node))))
+    return;
+
+  node->type=type;
+
+  x=root;
+  lastx = NULL;
+  while(x) {
+    if (pres[x->type] >= pres[type]) {
+      if (lastx == NULL) {
+        node->payload.left = root;
+        root = node;
+      } else {
+        node->payload.left = lastx->right;
+        lastx->right=node;
+      }
+      break;
     }
-  else if (pid > 0)
-    {
-      close (calc[1]);
-      /* now we continue as normal and load the ewl widgets etc */
-    }
-  else
-    {
-      close (calc[0]);
-      if (calc[1] != STDIN_FILENO)
-	{
-	  if (dup2 (calc[1], STDIN_FILENO) != STDIN_FILENO)
-	    {
-	      err_msg ("Dup2 error to stdin");
-	    }
-	}
-      if (calc[1] != STDOUT_FILENO)
-	{
-	  if (dup2 (calc[1], STDOUT_FILENO) != STDOUT_FILENO)
-	    {
-	      err_msg ("Dup2 error to stdout");
-	    }
-	}
-      if (execl (BC_LOCATION, "bc", "-l", NULL) < 0)
-	err_msg ("Execl error");
-      exit (0);
-    }
+    lastx=x;
+    x = x->right;
+  }
 
-  buffer = (char *)malloc (BUFLEN);
-  buffer[0] = 0;
+  lastop=node;
 }

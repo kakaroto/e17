@@ -6,6 +6,9 @@ Ewl_Widget *main_win;
 Ewl_Widget *main_box;
 Ewl_Widget *display;
 
+char tmp[BUFLEN];
+char disp[BUFLEN];
+
 typedef struct equate_button
 {
   int row;
@@ -19,26 +22,27 @@ typedef struct equate_button
 } equate_button;
 
 void calc_append (Ewl_Widget * w, void *ev_data, void *user_data);
-void calc_exec (Ewl_Widget * w, void *ev_data, void *user_data);
 void calc_clear (Ewl_Widget * w, void *ev_data, void *user_data);
+void calc_op (Ewl_Widget * w, void *ev_data, void *user_data);
+void calc_exec(void);
 
 static equate_button buttons[] = {
-  {2, 1, 1, 1, "/", "/", (void *)calc_append, NULL},
-  {2, 2, 1, 1, "*", "*", (void *)calc_append, NULL},
-  {2, 3, 1, 1, "-", "-", (void *)calc_append, NULL},
-  {2, 4, 1, 1, "+", "+", (void *)calc_append, NULL},
+  {2, 1, 1, 1, "/", "/", (void *)calc_op, NULL},
+  {2, 2, 1, 1, "*", "*", (void *)calc_op, NULL},
+  {2, 3, 1, 1, "-", "-", (void *)calc_op, NULL},
+  {2, 4, 1, 1, "+", "+", (void *)calc_op, NULL},
   {3, 1, 1, 1, "7", "7", (void *)calc_append, NULL},
   {3, 2, 1, 1, "8", "8", (void *)calc_append, NULL},
   {3, 3, 1, 1, "9", "9", (void *)calc_append, NULL},
-  {3, 4, 1, 1, "(", "(", (void *)calc_append, NULL},
+//  {3, 4, 1, 1, "(", "(", (void *)calc_append, NULL},
   {4, 1, 1, 1, "4", "4", (void *)calc_append, NULL},
   {4, 2, 1, 1, "5", "5", (void *)calc_append, NULL},
   {4, 3, 1, 1, "6", "6", (void *)calc_append, NULL},
-  {4, 4, 1, 1, ")", ")", (void *)calc_append, NULL},
+//  {4, 4, 1, 1, ")", ")", (void *)calc_append, NULL},
   {5, 1, 1, 1, "1", "1", (void *)calc_append, NULL},
   {5, 2, 1, 1, "2", "2", (void *)calc_append, NULL},
   {5, 3, 1, 1, "3", "3", (void *)calc_append, NULL},
-  {5, 4, 2, 1, "=", "=", (void *)calc_exec, NULL},
+  {5, 4, 2, 1, "=", "=", (void *)calc_op, NULL},
   {6, 1, 1, 1, "c", "c", (void *)calc_clear, NULL},
   {6, 2, 1, 1, "0", "0", (void *)calc_append, NULL},
   {6, 3, 1, 1, ".", ".", (void *)calc_append, NULL},
@@ -48,25 +52,78 @@ void
 update_display (char *text)
 {
   ewl_text_set_text ((Ewl_Text *) display, text);
-  E (2, "Evaluated to '%s'.\n", text);
 }
 
 void
 calc_append (Ewl_Widget * w, void *ev_data, void *user_data)
 {
-  update_display (math_append(user_data));
+  char key;
+  int len;
+  
+  key=(char) *((char *) user_data);
+  len=strlen(tmp);
+  tmp[len]=key;
+  tmp[len+1]='\0';
+  len=strlen(disp);
+  disp[len]=key;
+  disp[len+1]='\0';
+  update_display(disp);
 }
 
 void
-calc_exec (Ewl_Widget * w, void *ev_data, void *user_data)
+calc_op (Ewl_Widget * w, void *ev_data, void *user_data)
 {
-  update_display (math_exec());
+  char key;
+  double val;
+  int len;
+  
+  sscanf(tmp, "%lf", &val);
+  equate_parse_val(val);
+
+  tmp[0]='\0';
+  key=(char) *((char *) user_data);
+  switch (key) {
+    case '+':
+      equate_parse_add();
+      break;
+    case '-':
+      equate_parse_sub();
+      break;
+    case '*':
+      equate_parse_mult();
+      break;
+    case '/':
+      equate_parse_div();
+      break;
+    case '=':
+      calc_exec();
+      break;
+  }
+
+  if (key!='=') {
+    len=strlen(disp);
+    disp[len]=key;
+    disp[len+1]='\0';
+    update_display(disp);
+  } else
+    disp[0]='\0';
+}
+
+void
+calc_exec (void)
+{
+  char res[BUFLEN];
+  snprintf(res, BUFLEN, "%f", equate_eval());
+  update_display (res);
 }
 
 void
 calc_clear (Ewl_Widget * w, void *ev_data, void *user_data)
 {
-  update_display (math_clear());
+  equate_clear();
+  update_display("0.0");
+  tmp[0]='\0';
+  disp[0]='\0';
 }
 
 void
@@ -127,6 +184,8 @@ draw_interface (void)
   Ewl_Widget *cell[count];
   Ewl_Widget *displaycell;
 
+  tmp[0]='\0';
+  disp[0]='\0';
 
   main_win = ewl_window_new ();
   ewl_window_set_title (EWL_WINDOW (main_win), "Equate");
