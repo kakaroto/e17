@@ -101,6 +101,14 @@ p             {
 		color:#ffffff;
               }
 
+p.items       {
+		text-align:right;
+		font-family:arial,helvetica,lucida;
+		font-size:10pt;
+		color:#e0e0ff;
+		margin-bottom:5px;	
+              }
+
 p.contenttitle  {
 		  margin-top:10px;
 		  text-align:center;
@@ -115,3 +123,10 @@ pre             { font-family:courier;
 		  font-size:10pt;
 		  text-align:left;
 		}
+
+ul	     {
+		text-align:left;
+		font-family:arial,helvetica,lucida;
+		font-size:10pt;
+		color:#ffffff;
+              }
