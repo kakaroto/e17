@@ -1503,8 +1503,7 @@ FileMenuUpdate(int val __UNUSED__, void *data)
       return;
 
    /* if the menu is up dont update */
-   if ((MenusActive() || (Mode.menus.clicked))
-       && (Mode.menus.current_depth > 0))
+   if (MenusActive() || Mode.menus.clicked)
       goto done;
 
    if (!exists(m->data))
