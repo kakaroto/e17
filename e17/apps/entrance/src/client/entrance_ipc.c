@@ -1,13 +1,12 @@
 /*==========================================================================
  * Filename: entrance_ipc.c
  *========================================================================*/
-#include <Ecore.h>
-#include <Ecore_Ipc.h>
-#include <limits.h>
-#include <stdio.h>
+#include "entrance_ipc.h"
 
 #define IPC_TITLE "entrance_ipc"
 static Ecore_Ipc_Server *server = NULL;
+
+static Entrance_Session *_session = NULL;
 
 /**
  * _entrance_ipc_server_add - when we connect to the ipc daemon
@@ -52,9 +51,28 @@ _entrance_ipc_server_data(void *data, int type, void *event)
 {
    Ecore_Ipc_Event_Server_Data *e;
 
-   e = (Ecore_Ipc_Event_Server_Data *) event;
-   printf("_entrance_ipc_server_data: Received [%i] [%i] (%i) \"%s\"\n", e->major, e->minor,
-          e->size, (char *) e->data);
+   if ((e = (Ecore_Ipc_Event_Server_Data *) event) && _session)
+   {
+      printf("_entrance_ipc_server_data: Received [%i] [%i] (%i) \"%s\"\n",
+             e->major, e->minor, e->size, (char *) e->data);
+
+      if (e->major == E_XAUTH_ACK)
+      {
+         printf("_entrance_ipc_server_data: Xauthority write success\n");
+         ecore_main_loop_quit();
+      }
+      else if (e->major == E_XAUTH_NAK)
+      {
+         printf("_entrance_ipc_server_data: Xauthority write failure!\n");
+         /* For now we'll attempt to start the user session regardless */
+         ecore_main_loop_quit();
+      }
+      else
+      {
+         printf("_entrance_ipc_server_data: Invalid message received\n");
+      }
+   }
+         
    return TRUE;
 }
 
@@ -102,8 +120,10 @@ _entrance_ipc_client_data(void *data, int type, void *event)
    Ecore_Ipc_Event_Client_Data *e;
 
    e = (Ecore_Ipc_Event_Client_Data *) event;
-   printf("_entrance_ipc_client_data: Sent [%i] [%i] (%i) \"%s\"\n", e->major, e->minor,
-          e->size, (char *) e->data);
+
+   printf("_entrance_ipc_client_data: Received [%i] [%i] (%i) \"%s\"\n", 
+          e->major, e->minor, e->size, (char *) e->data);
+
    return TRUE;
 }
 
@@ -163,3 +183,25 @@ entrance_ipc_shutdown(void)
    ecore_ipc_shutdown();
    fprintf(stderr, "entrance_ipc_shutdown: Success\n");
 }
+
+int
+entrance_ipc_connected_get(void)
+{
+   return server && ecore_ipc_server_connected_get(server);
+}
+
+void
+entrance_ipc_session_set(Entrance_Session *session)
+{
+   _session = session;
+}
+
+void
+entrance_ipc_request_xauth(char *homedir, uid_t uid, gid_t gid)
+{
+   ecore_ipc_server_send(server, E_XAUTH_REQ, E_UID, 0, 0, (int) uid, "", 0);
+   ecore_ipc_server_send(server, E_XAUTH_REQ, E_GID, 0, 0, (int) gid, "", 0);
+   ecore_ipc_server_send(server, E_XAUTH_REQ, E_HOMEDIR, 0, 0, 0, homedir,
+                         strlen(homedir));
+}
+

@@ -303,7 +303,7 @@ done_cb(void *data, Evas_Object * o, const char *emission, const char *source)
        * receive the cookie back from server
        */
    }
-   ecore_main_loop_quit();
+   entrance_session_setup_user_session(session);
 }
 
 /**
@@ -852,6 +852,7 @@ main(int argc, char *argv[])
 #endif
 
       entrance_session_ecore_evas_set(session, e);
+      entrance_ipc_session_set(session);
       entrance_session_run(session);
 
       if (session->authed)
@@ -862,9 +863,9 @@ main(int argc, char *argv[])
       else
       {
          entrance_session_free(session);
-         entrance_ipc_shutdown();
          ecore_evas_shutdown();
       }
+      entrance_ipc_shutdown();
       edje_shutdown();
       ecore_x_shutdown();
       ecore_shutdown();

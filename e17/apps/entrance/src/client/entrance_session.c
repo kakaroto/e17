@@ -277,13 +277,34 @@ entrance_session_user_session_default_set(Entrance_Session * e)
 }
 
 /**
- * entrance_session_start_user_session: Set up user environment
- * This function set's up the user's environment, then launches the
- * requested X session using the login watchdog process
+ * entrance_session_setup_user_session: Setup user session
+ * Set up user's environment, including environment variables,
+ * Xauth cookie and any other necessary parameters
+ * @param e The current Entrance Session
+ */
+void
+entrance_session_setup_user_session(Entrance_Session *e)
+{
+   char *homedir;
+   
+   entrance_auth_setup_environment(e->auth);
+   homedir = getenv("HOME");
+   if (entrance_ipc_connected_get())
+      entrance_ipc_request_xauth(homedir, e->auth->pw->pw_uid, 
+                                          e->auth->pw->pw_gid);
+   else
+      /* No daemon available, assume no xauth */
+      ecore_main_loop_quit();
+}
+
+/**
+ * entrance_session_start_user_session: Launch user session
+ * This function launches the requested X session using the 
+ * login watchdog process
  * @param e - the currently running session
  */
 void
-entrance_session_start_user_session(Entrance_Session * e)
+entrance_session_start_user_session(Entrance_Session *e)
 {
    char buf[PATH_MAX];
    char *session_key = NULL;
@@ -343,6 +364,7 @@ entrance_session_start_user_session(Entrance_Session * e)
            syslog(LOG_CRIT, "Unable to set group id.");
         if (setuid(e->auth->pw->pw_uid))
            syslog(LOG_CRIT, "Unable to set user id.");
+        entrance_auth_clear_pass(e->auth);
         entrance_auth_free(e->auth);
         e->auth = NULL;
         execl("/bin/sh", "/bin/sh", "-c", buf, NULL);
@@ -357,7 +379,6 @@ entrance_session_start_user_session(Entrance_Session * e)
    _entrance_session_user_list_fix(e);
    /* clear users's password out of memory */
    entrance_auth_clear_pass(e->auth);
-   entrance_ipc_shutdown();
    /* this bypasses a race condition where entrance loses its x connection */
    /* before the wm gets it and x goes and resets itself */
    sleep(10);
