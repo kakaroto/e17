@@ -13,7 +13,7 @@ entrance_SOURCES = \
 	entrance_x_session.c entrance_x_session.h \
 	entrance_ipc.c entrance_ipc.h \
 	util.c util.h \
-	main.c 
+	entrance.h main.c 
 
 entrance_LDADD = @edje_libs@ @ecore_libs@ @edb_libs@ @evas_libs@ \
 @esmart_libs@ -lesmart_container -lesmart_text_entry

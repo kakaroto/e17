@@ -1,4 +1,4 @@
-EXTRA_DIST= taillights.edc images.edc
+EXTRA_DIST= taillights.edc
 SUBDIRS = parts programs fonts images
 DB = taillights.eet
 CC = edje_cc

@@ -3,7 +3,7 @@
 SUBDIRS = data config src
 
 EXTRA_DIST = \
-	autogen.sh README AUTHORS COPYING
+	autogen.sh README AUTHORS COPYING entrance.spec
 
 MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess \
                        config.h.in config.sub configure install-sh \
