@@ -129,8 +129,8 @@ od_config_init(void)
 
   ecore_config_argb_create("engage.options.tt_txt_color", "#00000000", 'c', "text-color", "Text color");
   ecore_config_argb_create("engage.options.tt_shd_color", "#7f000000", 'C', "shadow-color", "Text shadow color");
-  ecore_config_argb_create("engage.options.bg_fore", "#7f000000", 'b', "bg-main-color", "Background main color");
-  ecore_config_argb_create("engage.options.bg_back", "#7fffffff", 'B', "bg-outline-color", "Background outline color");
+  ecore_config_argb_create("engage.options.bg_fore", "#7f000000", 'B', "bg-outline-color", "Background outline color");
+  ecore_config_argb_create("engage.options.bg_back", "#7fffffff", 'b', "bg-main-color", "Background main color");
 
   ecore_config_string_create("engage.options.tt_fa", "Vera", 'f', "font",
                              "The font to use for application titles etc.");
