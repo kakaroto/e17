@@ -145,6 +145,32 @@ int  e_container_fit_y_get(Evas_Object *container)
   return cont->fit_y;
 }
 
+void e_container_alignment_set(Evas_Object *container, 
+                               Container_Alignment align)
+{
+  Container *cont;
+  
+  cont = _container_fetch(container);
+  if (!cont) return;
+
+  if (cont->align == align) return;
+  
+  cont->align = align;
+
+  _container_elements_fix(cont);
+  
+}
+
+Container_Alignment e_container_alignment_get(Evas_Object *container)
+{
+  Container *cont;
+  
+  cont = _container_fetch(container);
+  if (!cont) return 0;
+
+  return cont->align;
+}
+
 void e_container_scroll_set(Evas_Object *container, int scroll)
 {
   Container *cont;
@@ -275,7 +301,7 @@ Evas_List *e_container_elements_get(Evas_Object *container)
   Evas_List *l, *ll = NULL;
   
   cont = _container_fetch(container);
-  if (!cont) return;
+  if (!cont) return NULL;
 
   for (l = cont->elements; l; l = l->next)
   {
@@ -381,15 +407,15 @@ _container_elements_fix(Container *cont)
     /* vertical */
     if (cont->direction)
     {
-      if (cont->fit_x)
-      {
-      }
-      if (cont->fit_y)
-      {
-      }
-
       /* FIXME: do other alignments also */
-      ix = ax + (aw - ew) / 2;
+
+      if (cont->align == CONTAINER_ALIGN_LEFT)
+        ix = ax;
+      else if (cont->align == CONTAINER_ALIGN_CENTER)
+        ix = ax + (aw - ew) / 2;
+      else if (cont->align == CONTAINER_ALIGN_RIGHT)
+        ix = ax + aw - ew;
+
       evas_object_move(el->obj, ix, iy);
       evas_object_move(el->grabber, ix, iy);
       iy += eh + cont->spacing;
@@ -398,19 +424,22 @@ _container_elements_fix(Container *cont)
     /* horizontal */
     else
     {
-      if (cont->fit_x)
-      {
-      }
-      if (cont->fit_y)
-      {
-      }
 
-      /* FIXME: do other alignments also */
-      iy = ay + (ah - eh) / 2;
+      if (cont->align == CONTAINER_ALIGN_TOP)
+        iy = ay;
+      else if (cont->align == CONTAINER_ALIGN_CENTER)
+        ix = ay + (ah - eh) / 2;
+      else if (cont->align == CONTAINER_ALIGN_BOTTOM)
+        iy = ay + ah - eh;
+        
       evas_object_move(el->obj, ix, iy);
       evas_object_move(el->grabber, ix, iy);
       ix += ew + cont->spacing;
     }
+
+   
+    evas_object_geometry_get(el->obj, NULL, NULL, &ew, &eh);
+    evas_object_resize(el->grabber, ew, eh);
   }
 
 

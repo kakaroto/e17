@@ -16,11 +16,31 @@
 ****/
 typedef struct _Container Container;
 typedef struct _Container_Element Container_Element;
+typedef enum _Container_Alignment Container_Alignment;
+typedef enum _Container_Fill_Policy Container_Fill_Policy;
 
-#define CONTAINER_ALIGN_LEFT   0;
-#define CONTAINER_ALIGN_RIGHT  1;
-#define CONTAINER_ALIGN_CENTER 2;
+enum _Container_Alignment
+{
+  CONTAINER_ALIGN_CENTER,
+  CONTAINER_ALIGN_LEFT,
+  CONTAINER_ALIGN_RIGHT,
+  CONTAINER_ALIGN_BOTTOM = CONTAINER_ALIGN_LEFT,
+  CONTAINER_ALIGN_TOP = CONTAINER_ALIGN_RIGHT
+};
 
+enum _Container_Fill_Policy
+{
+  CONTAINER_FILL_POLICY_NONE = 0,
+  CONTAINER_FILL_POLICY_KEEP_ASPECT = 0x01,
+  CONTAINER_FILL_POLICY_FILL_X = 0x02,
+  CONTAINER_FILL_POLICY_FILL_Y = 0x04,
+  CONTAINER_FILL_POLICY_FILL = 
+    CONTAINER_FILL_POLICY_FILL_X | CONTAINER_FILL_POLICY_FILL_Y,
+  CONTAINER_FILL_POLICY_FIT_X = 0x08,
+  CONTAINER_FILL_POLICY_FIT_Y = 0x16,
+  CONTAINER_FILL_POLICY_FIT = 
+    CONTAINER_FILL_POLICY_FIT_X | CONTAINER_FILL_POLICY_FIT_Y
+};
 
 struct _Container
 {
@@ -41,7 +61,7 @@ struct _Container
   int direction;        /* 0 = horizontal or 1 = vertical */
   int fit_x, fit_y;     /* shrink elements if area is smaller than them */
   int fill_x, fill_y;   /* make elements fill the container */
-  int align;            /* CONTAINER_ALIGN_LEFT, _CENTER, or _RIGHT */
+  Container_Alignment align;  /* CONTAINER_ALIGN_LEFT, _CENTER, or _RIGHT */
   int move_button;      /* which button to move elements with? (0 for none) */
 
   int scroll;
@@ -81,6 +101,10 @@ void e_container_fit_x_set(Evas_Object *container, int fit_x);
 int  e_container_fit_x_get(Evas_Object *container);
 void e_container_fit_y_set(Evas_Object *container, int fit_y);
 int  e_container_fit_y_get(Evas_Object *container);
+
+void e_container_alignment_set(Evas_Object *container,
+                               Container_Alignment align);
+Container_Alignment e_container_alignment_get(Evas_Object *container);
 
 void e_container_scroll_set(Evas_Object *container, int scroll);
 int  e_container_scroll_get(Evas_Object *container);

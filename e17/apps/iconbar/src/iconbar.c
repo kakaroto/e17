@@ -74,6 +74,7 @@ iconbar_path_set(Evas_Object *obj, char *path)
   evas_object_show(ib->cont);
   edje_object_part_swallow(ib->gui, "icons", ib->cont); //was clip
   e_container_spacing_set(ib->cont, 5);
+  e_container_alignment_set(ib->cont, CONTAINER_ALIGN_CENTER);
   e_container_callback_order_change_set(ib->cont, write_out_order, ib);
 
   edje_object_signal_callback_add(ib->gui, "mouse,*", "*", cb_iconbar, ib);
