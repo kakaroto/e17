@@ -3,7 +3,7 @@ dnl Process this file with autoconf to produce a configure script.
 AC_INIT
 AC_CONFIG_SRCDIR([giblib/gib_list.c])
 AM_CONFIG_HEADER(giblib/giblib_config.h)
-AM_INIT_AUTOMAKE(giblib, 1.2.0, no-define)
+AM_INIT_AUTOMAKE(giblib, 1.2.1, no-define)
 
 AC_ISC_POSIX
 AC_PROG_CC
