@@ -1,3 +1,11 @@
+0.1.0:
+Finish callbacks for E_App and handle mappings more memory-efficiently
+-i and -I to ignore running apps (only show launch items) and ignore min apps (
+  for folk who prefer their own iconbox)
+Seperate behaviour edje from iconsets.
+
+
+Future:
 ability to screenshot instead of window icon for minimised apps
 a "background cache" when in on top mode stops so many window resizes
 different orientations, so it can be used vertically
