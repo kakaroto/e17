@@ -1109,11 +1109,7 @@ ConformEwinToDesktop(EWin * ewin)
    if ((ewin->iconified) && (ewin->parent != desks.desk[ewin->desktop].win))
      {
 	ewin->parent = desks.desk[ewin->desktop].win;
-#if 0
-	DesktopAddEwinToTop(ewin);
-#else
 	EwinListStackingRaise(ewin);
-#endif
 	EReparentWindow(disp, ewin->win, desks.desk[ewin->desktop].win, ewin->x,
 			ewin->y);
 	ICCCM_Configure(ewin);
@@ -1136,11 +1132,7 @@ ConformEwinToDesktop(EWin * ewin)
    else if (ewin->parent != desks.desk[ewin->desktop].win)
      {
 	ewin->parent = desks.desk[ewin->desktop].win;
-#if 0
-	DesktopAddEwinToTop(ewin);
-#else
 	EwinListStackingRaise(ewin);
-#endif
 	EReparentWindow(disp, ewin->win, desks.desk[ewin->desktop].win, ewin->x,
 			ewin->y);
 	StackDesktops();
@@ -1698,84 +1690,33 @@ UncoverDesktop(int desk)
 void
 MoveEwinToDesktop(EWin * ewin, int desk)
 {
-   int                 pdesk;
-
-   EDBUG(3, "MoveEwinToDesktop");
-/*   ewin->sticky = 0; */
-   ewin->floating = 0;
-   pdesk = ewin->desktop;
-   ewin->desktop = DESKTOPS_WRAP_NUM(desk);
-   ConformEwinToDesktop(ewin);
-   if (ewin->has_transients)
-     {
-	EWin              **lst;
-	int                 i, nn;
-
-	lst = ListTransientsFor(ewin->client.win, &nn);
-	if (lst)
-	  {
-	     for (i = 0; i < nn; i++)
-	       {
-		  MoveEwinToDesktop(lst[i], desk);
-	       }
-	     Efree(lst);
-	  }
-     }
-   ForceUpdatePagersForDesktop(pdesk);
-   ForceUpdatePagersForDesktop(ewin->desktop);
-   EDBUG_RETURN_;
+   MoveEwinToDesktopAt(ewin, desk, ewin->x, ewin->y);
 }
-
-#if 0
-void
-DesktopAddEwinToTop(EWin * ewin)
-{
-   EDBUG(5, "DesktopAddEwinToTop");
-
-   if ((ewin->desktop < 0)
-       || (ewin->desktop > ENLIGHTENMENT_CONF_NUM_DESKTOPS - 1))
-      EDBUG_RETURN_;
-
-   EwinListStackingRaise(ewin);
-   ForceUpdatePagersForDesktop(ewin->desktop);
-
-   EDBUG_RETURN_;
-}
-
-void
-DesktopAddEwinToBottom(EWin * ewin)
-{
-   EDBUG(5, "DesktopAddEwinToBottom");
-
-   if ((ewin->desktop < 0)
-       || (ewin->desktop > ENLIGHTENMENT_CONF_NUM_DESKTOPS - 1))
-      EDBUG_RETURN_;
-
-   EwinListStackingLower(ewin);
-   ForceUpdatePagersForDesktop(ewin->desktop);
-
-   EDBUG_RETURN_;
-}
-#endif
 
 void
 MoveEwinToDesktopAt(EWin * ewin, int desk, int x, int y)
 {
+   int                 pdesk;
    int                 dx, dy;
 
    EDBUG(3, "MoveEwinToDesktopAt");
-/*   ewin->sticky = 0; */
+
    ewin->floating = 0;
-   if (desk != ewin->desktop && !ewin->sticky)
+
+   pdesk = ewin->desktop;
+   desk = DESKTOPS_WRAP_NUM(desk);
+   if (desk != pdesk && !ewin->sticky)
      {
-	ForceUpdatePagersForDesktop(ewin->desktop);
+	ForceUpdatePagersForDesktop(pdesk);
 	ewin->desktop = DESKTOPS_WRAP_NUM(desk);
      }
+
    dx = x - ewin->x;
    dy = y - ewin->y;
    ewin->x = x;
    ewin->y = y;
    ConformEwinToDesktop(ewin);
+
    if (ewin->has_transients)
      {
 	EWin              **lst;
@@ -1792,7 +1733,9 @@ MoveEwinToDesktopAt(EWin * ewin, int desk, int x, int y)
 	     Efree(lst);
 	  }
      }
+
    ForceUpdatePagersForDesktop(desk);
+
    EDBUG_RETURN_;
 }
 
