@@ -6,7 +6,7 @@ static char    *long_text =
 	"the new text area.\n"
 	"It's possible that it contains\n"
 	"unprintable characters such\n"
-	"as  or extremely long\n"
+	"as \t or extremely long\n"
 	"lines. Beware, it may\n"
 	"trigger bugs in etox or\n"
 	"ewl\nso\ntrace\ncarefully. Now it's time for some "
@@ -24,29 +24,7 @@ static char    *long_text =
 	"when displaying large text regions. This message will "
 	"now be repeated to do a little stress testing.\n"
 	"\n"
-	"\n"
-	"This is a long string to test\n"
-	"the effectiveness of\n"
-	"the new text area.\n"
-	"It's possible that it contains\n"
-	"unprintable characters such\n"
-	"as  or extremely long\n"
-	"lines. Beware, it may\n"
-	"trigger bugs in etox or\n"
-	"ewl\nso\ntrace\ncarefully. Now it's time for some "
-	"gibberish to make this thing longer and to test the "
-	"scrollbars. There's probably not enough text here\n"
-	"to really push etox, but hopefully it will give a "
-	"better idea of the speed\n"
-	"Right now selection of text and click to position\n"
-	"need quite a bit of work, as well as keyboard\n"
-	"navigation and focus control\n"
-	"We really need to get some better text in here at\n"
-	"some point, since this is pretty lame\n"
-	"but we need long strings to test it effectively.\n"
-	"I have heard a couple reports of major slowdowns\n"
-	"when displaying large text regions. This message will "
-	"now be repeated to do a little stress testing.";
+	"\n";
 
 static Ewl_Widget *textarea_button;
 
@@ -80,7 +58,7 @@ __create_textarea_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_window_set_name(EWL_WINDOW(textarea_win), "EWL Test Application");
 	ewl_window_set_class(EWL_WINDOW(textarea_win), "EFL Test Application");
 	ewl_object_set_fill_policy(EWL_OBJECT(textarea_win), EWL_FLAG_FILL_ALL);
-	ewl_object_request_size(EWL_OBJECT(textarea_win), 100, 100);
+	ewl_object_request_size(EWL_OBJECT(textarea_win), 200, 150);
 	ewl_callback_append(textarea_win, EWL_CALLBACK_DELETE_WINDOW,
 			    __destroy_textarea_test_window, NULL);
 	ewl_widget_show(textarea_win);
@@ -96,6 +74,12 @@ __create_textarea_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	 * Create the textarea to be displayed.
 	 */
 	textarea = ewl_text_new(long_text);
+	ewl_text_color_set(EWL_TEXT(textarea), 255, 0, 0, 255);
+	ewl_text_text_append(EWL_TEXT(textarea), long_text);
+	ewl_text_color_set(EWL_TEXT(textarea), 0, 255, 0, 255);
+	ewl_text_text_append(EWL_TEXT(textarea), long_text);
+	ewl_text_color_set(EWL_TEXT(textarea), 0, 0, 255, 255);
+	ewl_text_text_append(EWL_TEXT(textarea), long_text);
 	ewl_container_append_child(EWL_CONTAINER(scrollpane), textarea);
 	ewl_widget_show(textarea);
 
