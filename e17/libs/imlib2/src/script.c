@@ -156,6 +156,7 @@ IFunctionParam *__imlib_script_parse_parameters( Imlib_Image im, char *parameter
 		 D( "EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEK" );
 	  /*     printf( "Using pointer variable %p\n", ptr->data );*/
 	       ptr->type = VAR_PTR;
+         free(value);
 	    }
 	    else
 	    {
