@@ -111,7 +111,7 @@ int ewd_dlist_nodes(Ewd_DList * list)
 {
 	CHECK_PARAM_POINTER_RETURN("list", list, FALSE);
 
-	return ewd_dlist_nodes(EWD_LIST(list));
+	return ewd_list_nodes(EWD_LIST(list));
 }
 
 /*
