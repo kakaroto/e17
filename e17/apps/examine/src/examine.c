@@ -109,6 +109,9 @@ render_ewl(void)
   char           *prop_list;
   int             tmpi;
   double          tmpd;
+  char            type[20], range[10], step[5];
+  int             mini, maxi;
+  double          mind, maxd; 
 
   prop_list = examine_client_list_props();
   if (prop_list && (strlen(prop_list) > 0)) {
@@ -161,24 +164,54 @@ render_ewl(void)
         cell[1] = ewl_cell_new();
         text[0] = ewl_text_new(label);
 
-        if (!strcmp(typename, "string"))
+        type[0]='\0';
+        range[0]='\0';
+        step[0]='\0';
+        sscanf(typename, "%s%*s%s%*s%s", &type, &range, &step);
+        
+        if(type[strlen(type)-1]==',')
+          type[strlen(type)-1]='\0';
+        if(*range)
+          if(range[strlen(range)-1]==',')
+            range[strlen(range)-1]='\0';
+                    
+        if (!strcmp(type, "string"))
           text[1] = ewl_entry_new(examine_client_get_val(label));
-        else if (!strcmp(typename, "integer")) {
+        else if (!strcmp(type, "integer")) {
           text[1] = ewl_spinner_new();
           ewl_spinner_set_digits(EWL_SPINNER(text[1]), 0);
           ewl_spinner_set_step(EWL_SPINNER(text[1]), 1);
           sscanf(examine_client_get_val(label), "%d", &tmpi);
           ewl_spinner_set_value(EWL_SPINNER(text[1]), tmpi);
-        } else if (!strcmp(typename, "float")) {
+          if (*range) {
+            sscanf(range, "%d..%d", &mini, &maxi);
+            ewl_spinner_set_min_val(EWL_SPINNER(text[1]), mini);
+            ewl_spinner_set_max_val(EWL_SPINNER(text[1]), maxi);
+          }
+          if (*step) {
+            sscanf(step, "%d", &tmpi);
+            ewl_spinner_set_step(EWL_SPINNER(text[1]), tmpi);
+          }                                            
+        } else if (!strcmp(type, "float")) {
           text[1] = ewl_spinner_new();
 //          ewl_spinner_set_digits(EWL_SPINNER(text[1]), 0);
 //          ewl_spinner_set_step(EWL_SPINNER(text[1]), 1);
           sscanf(examine_client_get_val(label), "%lf", &tmpd);
           ewl_spinner_set_value(EWL_SPINNER(text[1]), tmpd);
-        } else if (!strcmp(typename, "colour"))
+          if (*range) {
+            sscanf(range, "%lf..%lf", &mind, &maxd);
+            ewl_spinner_set_min_val(EWL_SPINNER(text[1]), mind);
+            ewl_spinner_set_max_val(EWL_SPINNER(text[1]), maxd);
+          }
+          if (*step) {
+            sscanf(step, "%lf", &tmpd);
+            ewl_spinner_set_step(EWL_SPINNER(text[1]), tmpd);
+          }
+        } else if (!strcmp(type, "colour"))
           text[1] = ewl_entry_new(examine_client_get_val(label));
         else
           text[1] = ewl_text_new(typename);
+        
 
         ewl_container_append_child(EWL_CONTAINER(cell[0]), text[0]);
         ewl_container_append_child(EWL_CONTAINER(cell[1]), text[1]);
