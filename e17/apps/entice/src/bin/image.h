@@ -20,6 +20,7 @@ void                e_flip_h_current_image(void);
 void                e_flip_v_current_image(void);
 
 void                e_delete_current_image(void);
+void                e_save_current_image(void);
 void                e_display_current_image(void);
 
 void                next_image(void *data, Evas * e, Evas_Object * obj,

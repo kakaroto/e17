@@ -253,7 +253,7 @@ e_flip_object(Evas_Object *obj, int direction)
    else
          imlib_image_flip_vertical();
 
-   /* Get image data from Imblib */
+   /* Get image data from Imlib */
    image_data = imlib_image_get_data_for_reading_only();
 
    /* Set Evas Image Data */
@@ -409,6 +409,50 @@ e_delete_current_image(void)
 
    e_display_current_image();
 }
+
+void
+e_save_current_image(void)
+{
+   int w;
+   int h;
+   Image *im;
+   DATA32 *image_data;
+   Imlib_Image image;
+   int alpha_team; /* Speed Racer! */
+   const char *format;
+
+   if (!current_image || !current_image->data || !o_image)
+       return;
+
+   im = (Image *) (current_image->data);
+
+   /* Get image data from Evas */
+   evas_object_image_size_get(o_image, &w, &h);
+   image_data = evas_object_image_data_get(o_image, 0);
+   if (!image_data)
+     {
+         evas_object_image_data_set(o_image, image_data);
+         return;
+     }
+
+   /* Set up imlib image */
+   image = imlib_create_image_using_copied_data(w, h, image_data);
+   evas_object_image_data_set(o_image, image_data);
+   imlib_context_set_image(image);
+
+   alpha_team = evas_object_image_alpha_get(o_image);
+   format = strrchr(im->file, '.') + 1;
+
+   /* Save Image */
+   imlib_image_set_format(format);
+   imlib_image_set_has_alpha(alpha_team);  /* Go Speed, Go */
+   imlib_save_image(im->file);
+
+
+   /* Free Imlib image */
+   imlib_free_image();
+}
+   
 
 void
 e_display_current_image(void)

@@ -240,6 +240,10 @@ e_key_down(Ecore_Event * ev)
      {
 	e_delete_current_image();
      }
+   else if (!strcmp(e->key, "s"))
+     {
+	e_save_current_image();
+     }
    else if (!strcmp(e->key, "Escape"))
      {
 	exit(0);
