@@ -361,7 +361,7 @@ void etox_line_get_text(Etox_Line * line, char *buf, int len)
 	char *temp;
 	Evas_Object *es;
 	Evas_List *l;
-	int sum = 0;
+	int sum = 0, pos = 0;
 
 	CHECK_PARAM_POINTER("line", line);
 	CHECK_PARAM_POINTER("buf", buf);
@@ -371,8 +371,11 @@ void etox_line_get_text(Etox_Line * line, char *buf, int len)
 	 * of the buffer. Then append a \n to the buffer at the end of the
 	 * line.
 	 */
+	if (len < 1) return;
+	buf[0] = 0;
 	for (l = line->bits; l; l = l->next) {
 		int t;
+		int tlen;
 		es = l->data;
 
 		sum += etox_style_length(es);
@@ -384,8 +387,15 @@ void etox_line_get_text(Etox_Line * line, char *buf, int len)
 			temp = "\t";
 		else
 			temp = etox_style_get_text(es);
-		if (snprintf(buf, len, "%s%s", buf, temp) < len)
-			fprintf(stderr, "WARNING! Etox concatenated a line.");
+		tlen = strlen(temp);
+		if (pos + tlen < len) {
+			pos += tlen;
+			strcat(buf, temp);
+		}
+		else {
+			strncat(buf, temp, (len - pos));
+			pos = len - 1;
+		}
 		free(temp);
 	}
 	line->length = sum;
@@ -539,6 +549,7 @@ etox_line_unwrap(Etox *et, Etox_Line *line)
 			if (t == ETOX_BIT_TYPE_WRAP_MARKER) {
 				line->bits = evas_list_remove(line->bits,
 							      marker);
+				evas_object_del(marker);
 			}
 		}
 

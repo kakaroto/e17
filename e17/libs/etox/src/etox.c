@@ -12,7 +12,7 @@ static void etox_unset_clip(Evas_Object * et);
 
 static Evas_List *_etox_break_text(Etox * et, char *text);
 
-Evas_Smart *etox_smart = NULL;
+static Evas_Smart *etox_smart = NULL;
 
 /**
  * etox_new - create a new etox with default settings
@@ -26,12 +26,14 @@ Evas_Object *etox_new(Evas *evas)
 
 	CHECK_PARAM_POINTER_RETURN("evas", evas, NULL);
 
-	if (!etox_smart)
+	if (!etox_smart) {
+		evas_font_path_append(evas, PACKAGE_DATA_DIR "/fonts");
 		etox_smart = evas_smart_new("etox_smart", NULL, etox_free,
 				etox_set_layer, NULL, NULL, NULL, NULL,
 				etox_move, etox_resize, etox_show, etox_hide,
 				NULL, etox_set_clip, etox_unset_clip,
 				NULL);
+	}
 
 	/*
 	 * Create the etox and assign it's evas to draw on.
@@ -39,7 +41,6 @@ Evas_Object *etox_new(Evas *evas)
 	et = (Etox *) calloc(1, sizeof(Etox));
 
 	et->evas = evas;
-	evas_font_path_append(evas, PACKAGE_DATA_DIR "/fonts");
 	et->smart_obj = evas_object_smart_add(evas, etox_smart);
 	evas_object_smart_data_set(et->smart_obj, et);
 
@@ -684,7 +685,7 @@ char *etox_get_text(Evas_Object * obj)
 	 * etox_get_length() includes the \n's at the end of each line
 	 * whereas et->length does not.
 	 */
-	ret = (char *) calloc(et->length, sizeof(char));
+	ret = (char *) calloc(et->length + 1, sizeof(char));
 
 	temp = ret;
 
@@ -693,7 +694,7 @@ char *etox_get_text(Evas_Object * obj)
 	 */
 	for (l = et->lines; l; l = l->next) {
 		line = l->data;
-		etox_line_get_text(line, temp, et->length);
+		etox_line_get_text(line, temp, et->length + 1);
 
 		/*
 		 * FIXME: Currently, in etox_line_get_text(), line->length
@@ -937,7 +938,16 @@ static void etox_resize(Evas_Object * obj, Evas_Coord w, Evas_Coord h)
 	 * Layout lines if appropriate.
 	 */
 	if (et->lines)
-		etox_layout(et);
+     	  {
+	     char *text;
+	     
+	     text = etox_get_text(obj);
+	     if (text)
+	       {
+		  etox_set_text(obj, text);
+		  free(text);
+	       }
+	  }
 
 	/*
 	 * Adjust the clip box to display the contents correctly. We need to
