@@ -6,6 +6,9 @@
 #include "scale.h"
 
 /*
+ * Thanks to Ryan Gustafson <ryan_gustafson@yahoo.com> fro the reduction in
+ * size of this file with lots of macros.. :)
+ * 
  * These operations are over a rectangular region in each of the images. The
  * macros below provide common code for looping over the region.  The pointers
  * 'p1' and 'p2' point to the current pixel.
