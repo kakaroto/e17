@@ -1013,6 +1013,8 @@ __imlib_LoadImage(const char *file, ImlibProgressFunction progress,
    ImlibLoader *best_loader;
    char loader_ret = 0;
 
+   if (!file) return NULL;
+   if (file[0] == 0) return NULL;
    /* see if we alreayd have the image cached */
    im = __imlib_FindCachedImage(file);
    /* if we found a cached image and we shoudl always check that it is */

@@ -66,6 +66,11 @@ __imlib_RenderGetPixel(Display *d, Drawable w, Visual *v, Colormap cm, int depth
 				((g >> 3) & 0x1b) |
 				((b >> 6) & 0x02)];
 	     break;
+	   case 7: /* 666 */
+	     return ct->palette[((int)(((double)r / 255) * 5.0) * 36) + 
+				((int)(((double)g / 255) * 5.0) * 6 ) +
+				((int)(((double)b / 255) * 5.0)     )];
+	     break;
 	   default:
 	     return 0;
 	  }

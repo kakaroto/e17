@@ -1,3 +1,4 @@
+
 #include "common.h"
 #ifndef X_DISPLAY_MISSING
 #include <X11/Xlib.h>
@@ -467,7 +468,7 @@ static DATA8 _dither_a1[8 * 8 * 256];
 #ifdef WORDS_BIGENDIAN
 #define WRITE2_RGBA_RGB666(src, dest)                                      \
 {                                                                          \
- *((DATA16 *)dest) = (_dither_color_lut[(_dither_666r[(src[1] >> 16) & 0xff]     ) + \
+ *((DATA32 *)dest) = (_dither_color_lut[(_dither_666r[(src[1] >> 16) & 0xff]     ) + \
                                         (_dither_666g[(src[1] >> 8 ) & 0xff]     ) + \
                                         (_dither_666b[(src[1]      ) & 0xff]     )]) | \
                      (_dither_color_lut[(_dither_666r[(src[0] >> 16) & 0xff]     ) + \
@@ -477,7 +478,7 @@ static DATA8 _dither_a1[8 * 8 * 256];
 }
 #define WRITE4_RGBA_RGB666(src, dest)                                      \
 {                                                                          \
- *((DATA16 *)dest) = (_dither_color_lut[(_dither_666r[(src[3] >> 16) & 0xff]     ) + \
+ *((DATA32 *)dest) = (_dither_color_lut[(_dither_666r[(src[3] >> 16) & 0xff]     ) + \
                                         (_dither_666g[(src[3] >> 8 ) & 0xff]     ) + \
                                         (_dither_666b[(src[3]      ) & 0xff]     )]) | \
                      (_dither_color_lut[(_dither_666r[(src[2] >> 16) & 0xff]     ) + \
@@ -494,7 +495,7 @@ static DATA8 _dither_a1[8 * 8 * 256];
 #else
 #define WRITE2_RGBA_RGB666(src, dest)                                      \
 {                                                                          \
- *((DATA16 *)dest) = (_dither_color_lut[(_dither_666r[(src[0] >> 16) & 0xff]     ) + \
+ *((DATA32 *)dest) = (_dither_color_lut[(_dither_666r[(src[0] >> 16) & 0xff]     ) + \
                                         (_dither_666g[(src[0] >> 8 ) & 0xff]     ) + \
                                         (_dither_666b[(src[0]      ) & 0xff]     )]) | \
                      (_dither_color_lut[(_dither_666r[(src[1] >> 16) & 0xff]     ) + \
@@ -504,7 +505,7 @@ static DATA8 _dither_a1[8 * 8 * 256];
 }
 #define WRITE4_RGBA_RGB666(src, dest)                                      \
 {                                                                          \
- *((DATA16 *)dest) = (_dither_color_lut[(_dither_666r[(src[0] >> 16) & 0xff]     ) + \
+ *((DATA32 *)dest) = (_dither_color_lut[(_dither_666r[(src[0] >> 16) & 0xff]     ) + \
                                         (_dither_666g[(src[0] >> 8 ) & 0xff]     ) + \
                                         (_dither_666b[(src[0]      ) & 0xff]     )]) | \
                      (_dither_color_lut[(_dither_666r[(src[1] >> 16) & 0xff]     ) + \
