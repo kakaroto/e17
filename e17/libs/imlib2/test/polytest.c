@@ -12,21 +12,21 @@
 
 #include "Imlib2.h"
 
-Display *disp;
-Window win;
-Visual *vis;
-Colormap cm;
-int depth;
+Display            *disp;
+Window              win;
+Visual             *vis;
+Colormap            cm;
+int                 depth;
 
 int
 main(int argc, char **argv)
 {
-   int w, h;
-   Imlib_Image im_bg = NULL;
-   XEvent ev;
-   KeySym keysym;
-   static char kbuf[20];
-   ImlibPolygon poly, poly1, poly2;
+   int                 w, h;
+   Imlib_Image         im_bg = NULL;
+   XEvent              ev;
+   KeySym              keysym;
+   static char         kbuf[20];
+   ImlibPolygon        poly, poly1, poly2;
 
    /**
     * First tests to determine which rendering task to perform
@@ -36,8 +36,8 @@ main(int argc, char **argv)
    depth = DefaultDepth(disp, DefaultScreen(disp));
    cm = DefaultColormap(disp, DefaultScreen(disp));
    win =
-      XCreateSimpleWindow(disp, DefaultRootWindow(disp), 0, 0, 100, 100, 0, 0,
-                          0);
+       XCreateSimpleWindow(disp, DefaultRootWindow(disp), 0, 0, 100, 100, 0, 0,
+                           0);
    XSelectInput(disp, win,
                 ButtonPressMask | ButtonReleaseMask | ButtonMotionMask |
                 PointerMotionMask | ExposureMask | KeyPressMask);
@@ -80,47 +80,47 @@ main(int argc, char **argv)
    imlib_polygon_add_point(poly2, 270, 70);
 
    while (1)
-   {
-      do
-      {
-         XNextEvent(disp, &ev);
-         switch (ev.type)
-         {
-           case ButtonRelease:
-              exit(0);
-              break;
-           case KeyPress:
-              XLookupString(&ev.xkey, (char *) kbuf, sizeof(kbuf), &keysym,
-                            NULL);
-              switch (*kbuf)
-              {
-                case ' ':
-                   imlib_context_set_anti_alias(!imlib_context_get_anti_alias
-                                                ());
-                   printf("AA is %s\n",
-                          imlib_context_get_anti_alias()? "on" : "off");
-                   break;
-                case 'q':
-                   exit(0);
-                default:
-                   break;
-              }
-              break;
-           default:
-              break;
+     {
+        do
+          {
+             XNextEvent(disp, &ev);
+             switch (ev.type)
+               {
+                 case ButtonRelease:
+                    exit(0);
+                    break;
+                 case KeyPress:
+                    XLookupString(&ev.xkey, (char *)kbuf, sizeof(kbuf), &keysym,
+                                  NULL);
+                    switch (*kbuf)
+                      {
+                        case ' ':
+                           imlib_context_set_anti_alias
+                               (!imlib_context_get_anti_alias());
+                           printf("AA is %s\n",
+                                  imlib_context_get_anti_alias()? "on" : "off");
+                           break;
+                        case 'q':
+                           exit(0);
+                        default:
+                           break;
+                      }
+                    break;
+                 default:
+                    break;
 
-         }
-      }
-      while (XPending(disp));
+               }
+          }
+        while (XPending(disp));
 
-      imlib_context_set_image(im_bg);
-      imlib_context_set_color(0, 0, 0, 255);
-      imlib_image_fill_rectangle(0, 0, w, h);
-      imlib_context_set_color(255, 255, 255, 255);
-      imlib_image_fill_polygon(poly);
-      imlib_image_fill_polygon(poly1);
-      imlib_image_fill_polygon(poly2);
-      imlib_render_image_on_drawable(0, 0);
-   }
+        imlib_context_set_image(im_bg);
+        imlib_context_set_color(0, 0, 0, 255);
+        imlib_image_fill_rectangle(0, 0, w, h);
+        imlib_context_set_color(255, 255, 255, 255);
+        imlib_image_fill_polygon(poly);
+        imlib_image_fill_polygon(poly1);
+        imlib_image_fill_polygon(poly2);
+        imlib_render_image_on_drawable(0, 0);
+     }
    return 0;
 }

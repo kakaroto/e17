@@ -23,9 +23,9 @@
 #include "image.h"
 
 char                load(ImlibImage * im, ImlibProgressFunction progress,
-			 char progress_granularity, char immediate_load);
+                         char progress_granularity, char immediate_load);
 char                save(ImlibImage * im, ImlibProgressFunction progress,
-			 char progress_granularity);
+                         char progress_granularity);
 void                formats(ImlibLoader * l);
 
 static int
@@ -83,16 +83,16 @@ load(ImlibImage * im, ImlibProgressFunction progress,
 
    if ((strlen(ptr + 1) >= 2) && (!strcmp(ptr + 1, "gz")))
      {
-	sprintf(str_gz, "gzip -d %s -c > %s/%s", im->real_file, tmpdir,
-		pure_filename(file));
+        sprintf(str_gz, "gzip -d %s -c > %s/%s", im->real_file, tmpdir,
+                pure_filename(file));
      }
    else if ((strlen(ptr + 1) >= 3) && (!strcmp(ptr + 1, "bz2")))
      {
-	sprintf(str_gz, "bzip2 -d %s -c > %s/%s", im->real_file, tmpdir,
-		pure_filename(file));
+        sprintf(str_gz, "bzip2 -d %s -c > %s/%s", im->real_file, tmpdir,
+                pure_filename(file));
      }
    else
-      return 0;			/* Eeek why we are here? */
+      return 0;                 /* Eeek why we are here? */
    if (system(str_gz) < 0)
       return 0;
    free(im->real_file);
@@ -105,8 +105,8 @@ load(ImlibImage * im, ImlibProgressFunction progress,
       sub_loader->load(im, progress, progress_granularity, 1);
    else
      {
-	unlink(im->real_file);
-	return 0;
+        unlink(im->real_file);
+        return 0;
      }
    unlink(im->real_file);
    free(im->real_file);
@@ -133,6 +133,6 @@ formats(ImlibLoader * l)
       l->num_formats = (sizeof(list_formats) / sizeof(char *));
       l->formats = malloc(sizeof(char *) * l->num_formats);
       for (i = 0; i < l->num_formats; i++)
-	 l->formats[i] = strdup(list_formats[i]);
+         l->formats[i] = strdup(list_formats[i]);
    }
 }

@@ -2974,3 +2974,11 @@ Thu Apr  3 20:48:27 EST 2003
 Minor Makefile.am tweak which apparently helps portability.
 
 _______________________________________________
+
+Sat Jul 12 21:06:14 EDT 2003
+(KainX)
+
+Patch from Yuri Hudobin <glassy_ape@users.sourceforge.net>
+for Freetype2 support.
+
+_______________________________________________

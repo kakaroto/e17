@@ -6,121 +6,121 @@
 #include "image.h"
 #include "blend.h"
 
-static DATABIG mod_count = 0;
+static DATABIG      mod_count = 0;
 
 ImlibColorModifier *
 __imlib_CreateCmod(void)
 {
    ImlibColorModifier *cm;
-   int i;
-   
+   int                 i;
+
    cm = malloc(sizeof(ImlibColorModifier));
    cm->modification_count = mod_count;
    for (i = 0; i < 256; i++)
      {
-	cm->red_mapping[i] = (DATA8)i;
-	cm->green_mapping[i] = (DATA8)i;
-	cm->blue_mapping[i] = (DATA8)i;
-	cm->alpha_mapping[i] = (DATA8)i;
+        cm->red_mapping[i] = (DATA8) i;
+        cm->green_mapping[i] = (DATA8) i;
+        cm->blue_mapping[i] = (DATA8) i;
+        cm->alpha_mapping[i] = (DATA8) i;
      }
    return cm;
 }
 
 void
-__imlib_FreeCmod(ImlibColorModifier *cm)
+__imlib_FreeCmod(ImlibColorModifier * cm)
 {
    free(cm);
 }
 
 void
-__imlib_CmodChanged(ImlibColorModifier *cm)
+__imlib_CmodChanged(ImlibColorModifier * cm)
 {
    mod_count++;
    cm->modification_count = mod_count;
 }
 
 void
-__imlib_CmodSetTables(ImlibColorModifier *cm,
-		      DATA8 *r, DATA8 *g, DATA8 *b, DATA8 *a)
+__imlib_CmodSetTables(ImlibColorModifier * cm,
+                      DATA8 * r, DATA8 * g, DATA8 * b, DATA8 * a)
 {
-   int i;
-   
+   int                 i;
+
    for (i = 0; i < 256; i++)
      {
-	if (r)
-	   cm->red_mapping[i] = r[i];
-	if (g)
-	   cm->green_mapping[i] = g[i];
-	if (b)
-	   cm->blue_mapping[i] = b[i];
-	if (a)
-	   cm->alpha_mapping[i] = a[i];
+        if (r)
+           cm->red_mapping[i] = r[i];
+        if (g)
+           cm->green_mapping[i] = g[i];
+        if (b)
+           cm->blue_mapping[i] = b[i];
+        if (a)
+           cm->alpha_mapping[i] = a[i];
      }
    __imlib_CmodChanged(cm);
 }
 
 void
-__imlib_CmodReset(ImlibColorModifier *cm)
+__imlib_CmodReset(ImlibColorModifier * cm)
 {
-   int i;
-   
+   int                 i;
+
    for (i = 0; i < 256; i++)
      {
-	cm->red_mapping[i] = (DATA8)i;
-	cm->green_mapping[i] = (DATA8)i;
-	cm->blue_mapping[i] = (DATA8)i;
-	cm->alpha_mapping[i] = (DATA8)i;
+        cm->red_mapping[i] = (DATA8) i;
+        cm->green_mapping[i] = (DATA8) i;
+        cm->blue_mapping[i] = (DATA8) i;
+        cm->alpha_mapping[i] = (DATA8) i;
      }
    __imlib_CmodChanged(cm);
 }
 
 void
-__imlib_DataCmodApply(DATA32 *data, int w, int h, int jump, 
-		      ImlibImageFlags *fl, ImlibColorModifier *cm)
+__imlib_DataCmodApply(DATA32 * data, int w, int h, int jump,
+                      ImlibImageFlags * fl, ImlibColorModifier * cm)
 {
-   int     x, y;
-   DATA32 *p;
-   DATA8   r, g, b, a;
-   
+   int                 x, y;
+   DATA32             *p;
+   DATA8               r, g, b, a;
+
    /* We might be adding alpha */
    if (fl && !(*fl & F_HAS_ALPHA))
      {
-	p = data;
-	for (y = 0; y < h; y++)
-	  {
-	     for (x = 0; x < w; x++)
-	       {
-		  R_VAL(p) = R_CMOD(cm, R_VAL(p));
-		  G_VAL(p) = G_CMOD(cm, G_VAL(p));
-		  B_VAL(p) = B_CMOD(cm, B_VAL(p));
-		  A_VAL(p) = A_CMOD(cm, 255);
-		  p++;
-	       }
-	     p += jump;
-	  }
-	if (A_CMOD(cm, 255) != 255)
-	   *fl |= F_HAS_ALPHA;
-	return;
+        p = data;
+        for (y = 0; y < h; y++)
+          {
+             for (x = 0; x < w; x++)
+               {
+                  R_VAL(p) = R_CMOD(cm, R_VAL(p));
+                  G_VAL(p) = G_CMOD(cm, G_VAL(p));
+                  B_VAL(p) = B_CMOD(cm, B_VAL(p));
+                  A_VAL(p) = A_CMOD(cm, 255);
+                  p++;
+               }
+             p += jump;
+          }
+        if (A_CMOD(cm, 255) != 255)
+           *fl |= F_HAS_ALPHA;
+        return;
      }
 
    p = data;
    for (y = 0; y < h; y++)
      {
-	for (x = 0; x < w; x++)
-	  {
-	     R_VAL(p) = R_CMOD(cm, R_VAL(p));
-	     G_VAL(p) = G_CMOD(cm, G_VAL(p));
-	     B_VAL(p) = B_CMOD(cm, B_VAL(p));
-	     A_VAL(p) = A_CMOD(cm, A_VAL(p));
-	     p++;
-	  }
-	p += jump;
+        for (x = 0; x < w; x++)
+          {
+             R_VAL(p) = R_CMOD(cm, R_VAL(p));
+             G_VAL(p) = G_CMOD(cm, G_VAL(p));
+             B_VAL(p) = B_CMOD(cm, B_VAL(p));
+             A_VAL(p) = A_CMOD(cm, A_VAL(p));
+             p++;
+          }
+        p += jump;
      }
 }
 
 void
-__imlib_CmodGetTables(ImlibColorModifier *cm, DATA8 *r, DATA8 *g, 
-		      DATA8 *b, DATA8 *a)
+__imlib_CmodGetTables(ImlibColorModifier * cm, DATA8 * r, DATA8 * g,
+                      DATA8 * b, DATA8 * a)
 {
    if (r)
       memcpy(r, cm->red_mapping, (256 * sizeof(DATA8)));
@@ -133,86 +133,122 @@ __imlib_CmodGetTables(ImlibColorModifier *cm, DATA8 *r, DATA8 *g,
 }
 
 void
-__imlib_CmodModBrightness(ImlibColorModifier *cm, double v)
+__imlib_CmodModBrightness(ImlibColorModifier * cm, double v)
 {
-   int i, val, val2;
-   
+   int                 i, val, val2;
+
    val = (int)(v * 255);
    for (i = 0; i < 256; i++)
      {
-	val2 = (int)cm->red_mapping[i] + val;
-	if (val2 < 0) val2 = 0; if (val2 > 255) val2 = 255;
-	cm->red_mapping[i] = (DATA8)val2;
+        val2 = (int)cm->red_mapping[i] + val;
+        if (val2 < 0)
+           val2 = 0;
+        if (val2 > 255)
+           val2 = 255;
+        cm->red_mapping[i] = (DATA8) val2;
 
-	val2 = (int)cm->green_mapping[i] + val;
-	if (val2 < 0) val2 = 0; if (val2 > 255) val2 = 255;
-	cm->green_mapping[i] = (DATA8)val2;
+        val2 = (int)cm->green_mapping[i] + val;
+        if (val2 < 0)
+           val2 = 0;
+        if (val2 > 255)
+           val2 = 255;
+        cm->green_mapping[i] = (DATA8) val2;
 
-	val2 = (int)cm->blue_mapping[i] + val;
-	if (val2 < 0) val2 = 0; if (val2 > 255) val2 = 255;
-	cm->blue_mapping[i] = (DATA8)val2;
+        val2 = (int)cm->blue_mapping[i] + val;
+        if (val2 < 0)
+           val2 = 0;
+        if (val2 > 255)
+           val2 = 255;
+        cm->blue_mapping[i] = (DATA8) val2;
 
-	val2 = (int)cm->alpha_mapping[i] + val;
-	if (val2 < 0) val2 = 0; if (val2 > 255) val2 = 255;
-	cm->alpha_mapping[i] = (DATA8)val2;
+        val2 = (int)cm->alpha_mapping[i] + val;
+        if (val2 < 0)
+           val2 = 0;
+        if (val2 > 255)
+           val2 = 255;
+        cm->alpha_mapping[i] = (DATA8) val2;
      }
 }
 
 void
-__imlib_CmodModContrast(ImlibColorModifier *cm, double v)
+__imlib_CmodModContrast(ImlibColorModifier * cm, double v)
 {
-   int i, val2;
-   
+   int                 i, val2;
+
    for (i = 0; i < 256; i++)
      {
-	val2 = (int)(((double)cm->red_mapping[i] - 127) * v) + 127;
-	if (val2 < 0) val2 = 0; if (val2 > 255) val2 = 255;
-	cm->red_mapping[i] = (DATA8)val2;
+        val2 = (int)(((double)cm->red_mapping[i] - 127) * v) + 127;
+        if (val2 < 0)
+           val2 = 0;
+        if (val2 > 255)
+           val2 = 255;
+        cm->red_mapping[i] = (DATA8) val2;
 
-	val2 = (int)(((double)cm->green_mapping[i] - 127) * v) + 127;
-	if (val2 < 0) val2 = 0; if (val2 > 255) val2 = 255;
-	cm->green_mapping[i] = (DATA8)val2;
-	
-	val2 = (int)(((double)cm->blue_mapping[i] - 127) * v) + 127;
-	if (val2 < 0) val2 = 0; if (val2 > 255) val2 = 255;
-	cm->blue_mapping[i] = (DATA8)val2;
-	
-	val2 = (int)(((double)cm->alpha_mapping[i] - 127) * v) + 127;
-	if (val2 < 0) val2 = 0; if (val2 > 255) val2 = 255;
-	cm->alpha_mapping[i] = (DATA8)val2;
+        val2 = (int)(((double)cm->green_mapping[i] - 127) * v) + 127;
+        if (val2 < 0)
+           val2 = 0;
+        if (val2 > 255)
+           val2 = 255;
+        cm->green_mapping[i] = (DATA8) val2;
+
+        val2 = (int)(((double)cm->blue_mapping[i] - 127) * v) + 127;
+        if (val2 < 0)
+           val2 = 0;
+        if (val2 > 255)
+           val2 = 255;
+        cm->blue_mapping[i] = (DATA8) val2;
+
+        val2 = (int)(((double)cm->alpha_mapping[i] - 127) * v) + 127;
+        if (val2 < 0)
+           val2 = 0;
+        if (val2 > 255)
+           val2 = 255;
+        cm->alpha_mapping[i] = (DATA8) val2;
      }
 }
 
 void
-__imlib_CmodModGamma(ImlibColorModifier *cm, double v)
+__imlib_CmodModGamma(ImlibColorModifier * cm, double v)
 {
-   int i, val2;
+   int                 i, val2;
 
    if (v < 0.01)
       v = 0.01;
    for (i = 0; i < 256; i++)
      {
-	val2 = (int)(pow(((double)cm->red_mapping[i] / 255), (1 / v)) * 255);
-	if (val2 < 0) val2 = 0; if (val2 > 255) val2 = 255;
-	cm->red_mapping[i] = (DATA8)val2;
+        val2 = (int)(pow(((double)cm->red_mapping[i] / 255), (1 / v)) * 255);
+        if (val2 < 0)
+           val2 = 0;
+        if (val2 > 255)
+           val2 = 255;
+        cm->red_mapping[i] = (DATA8) val2;
 
-	val2 = (int)(pow(((double)cm->green_mapping[i] / 255), (1 / v)) * 255);
-	if (val2 < 0) val2 = 0; if (val2 > 255) val2 = 255;
-	cm->green_mapping[i] = (DATA8)val2;
-	
-	val2 = (int)(pow(((double)cm->blue_mapping[i] / 255), (1 / v)) * 255);
-	if (val2 < 0) val2 = 0; if (val2 > 255) val2 = 255;
-	cm->blue_mapping[i] = (DATA8)val2;
-	
-	val2 = (int)(pow(((double)cm->alpha_mapping[i] / 255), (1 / v)) * 255);
-	if (val2 < 0) val2 = 0; if (val2 > 255) val2 = 255;
-	cm->alpha_mapping[i] = (DATA8)val2;
+        val2 = (int)(pow(((double)cm->green_mapping[i] / 255), (1 / v)) * 255);
+        if (val2 < 0)
+           val2 = 0;
+        if (val2 > 255)
+           val2 = 255;
+        cm->green_mapping[i] = (DATA8) val2;
+
+        val2 = (int)(pow(((double)cm->blue_mapping[i] / 255), (1 / v)) * 255);
+        if (val2 < 0)
+           val2 = 0;
+        if (val2 > 255)
+           val2 = 255;
+        cm->blue_mapping[i] = (DATA8) val2;
+
+        val2 = (int)(pow(((double)cm->alpha_mapping[i] / 255), (1 / v)) * 255);
+        if (val2 < 0)
+           val2 = 0;
+        if (val2 > 255)
+           val2 = 255;
+        cm->alpha_mapping[i] = (DATA8) val2;
      }
 }
 
 #if 0
 void
-__imlib_ImageCmodApply(ImlibImage *im, ImlibColorModifier *cm)
+__imlib_ImageCmodApply(ImlibImage * im, ImlibColorModifier * cm)
 {
    __imlib_DataCmodApply(im->data, im->w, im->h, 0, cm);
 }

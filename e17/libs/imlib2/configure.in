@@ -6,14 +6,28 @@ AM_INIT_AUTOMAKE(imlib2, 1.0.7)
 
 AM_CONFIG_HEADER(config.h)
 
-freetype_libs=-lttf
-AC_ARG_WITH(ttf,
-        [  --with-ttf=DIR          use freetype rooted at <DIR>],
-        [freetype_libs="$freetype_libs -L$withval/lib"
-		freetype_includes="-I$withval/include"
-		CPPFLAGS="$CPPFLAGS $freetype_includes"
-        LIBS="$LIBS $freetype_libs"
+dnl here was freetype stuff (1)
+
+AC_ARG_WITH(freetype-config,
+	    [  --with-freetype-config=FREETYPE_CONFIG    use freetype-config specified ],
+	    [
+	     PROG_CONFIG=$withval;
+	     echo "using "$PROG_CONFIG" for freetype-config";
+	     ],[
+		PROG="freetype-config";
+		AC_PATH_PROG(PROG_CONFIG, $PROG, "", $PATH)
 		])
+if [ test -z $PROG_CONFIG ]; then
+    echo $PROG " is not in your \$PATH. Please ensure it is.";
+    echo "You may need to install the librarya and/or development packages";
+    echo "that contain this configure-script.";
+    echo "FATAL ERROR. ABORT.";
+    exit -1;
+fi
+freetype_cflags=`$PROG_CONFIG --cflags`
+freetype_libs=`$PROG_CONFIG --libs`
+
+dnl /here was freetype stuff (1)
 
 mmx=no
 AC_ARG_ENABLE(mmx,[  --enable-mmx            attempt compiling using mmx assembly [default=yes]],
@@ -120,45 +134,15 @@ AC_SUBST(X_OBJS)
 LTLIBOBJS=`echo "$LIBOBJS" | sed 's,.o ,.lo ,g;s,.o$,.lo,'`
 AC_SUBST(LTLIBOBJS)
 
-AC_CHECK_LIB(ttf, TT_Init_FreeType, TTF_LIBS=-lttf, [
-echo ""
-echo "ERROR: Imlib 2 needs a system with libttf.so (TrueType Font Library)"
-echo "You can obtain it from:"
-echo "ftp://ftp.enlightenment.org/pub/enlightenment/"
-echo "ftp://www.rasterman.com/pub/enlightenment/"
-echo "You can also obtain it from:"
-echo "http://www.freetype.org/"
-echo ""
-AC_MSG_ERROR([Fatal Error: no FreeType detected.])], -lm)
 
-AC_CHECK_HEADERS(freetype.h freetype/freetype.h freetype1/freetype/freetype.h, [ break])
-AC_CHECK_HEADER(freetype.h, [ ftype=yes ], [ ftype=no ])
-AC_CHECK_HEADER(freetype/freetype.h, [ ftype_ftype=yes ], [ ftype_ftype=no ])
-AC_CHECK_HEADER(freetype1/freetype/freetype.h, [ ftype1_ftype=yes ], [ ftype1_ftype=no ])
+dnl here was freetype headers checking
 
-if test x$ftype = xno; then
-if test x$ftype_ftype = xno; then
-if test x$ftype1_ftype = xno; then
-echo ""
-echo "ERROR: freetype.h not found in freetype.h or freetype/freetype.h include"
-echo "paths. (ie /usr/include, /usr/local/include etc.). You need the freetype"
-echo "header files to build Imlib 2. This may mean you have to install the"
-echo "freetype-devel packages for your distribution or if all else fails"
-echo "find the source for freetype and install that somewhere where Imlib 2"
-echo "can find the header files."
-echo ""
-echo "You can obtain it from:"
-echo "ftp://ftp.enlightenment.org/pub/enlightenment/"
-echo "ftp://www.rasterman.com/pub/enlightenment/"
-echo "You can also obtain it from:"
-echo "http://www.freetype.org/"
-echo "You can obtain some truetype fonts from:"
-echo "http://voyager.cns.ohiou.edu/~sadkins/web_library/fonts/font_archive/"
-echo ""
-AC_MSG_ERROR([Fatal Error: no FreeType header files detected.])
-fi
-fi
-fi
+
+
+dnl /here was freetype headers checking
+
+
+
 AC_CHECK_LIB(dl, dlopen, dlopen_libs=-ldl)
 
 EXTRA_LIBS="-L/usr/local/lib -L/usr/X11R6/lib"
@@ -304,7 +288,10 @@ AC_SUBST(x_ldflags)
 AC_SUBST(x_libs)
 AC_SUBST(dlopen_libs)
 AC_SUBST(freetype_libs)
-AC_SUBST(freetype_includes)
+AC_SUBST(freetype_cflags)
+
+dnl AC_SUBST(freetype_libs)
+dnl AC_SUBST(freetype_includes)
 
 AC_OUTPUT(imlib2-config imlib2.pc Makefile loaders/Makefile src/Makefile test/Makefile \
           filters/Makefile demo/Makefile doc/Makefile \

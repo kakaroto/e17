@@ -8,5 +8,5 @@ Description: Powerful image loading and rendering library
 Version: @VERSION@
 Requires: @REQUIREMENTS@
 Libs: -L${libdir} -lImlib2 @freetype_libs@ -lm @x_libs@ @x_ldflags@ @dlopen_libs@
-Cflags: -I${includedir} @x_includes@ @freetype_includes@
+Cflags: -I${includedir} @x_includes@ @freetype_cflags@
 

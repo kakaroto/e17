@@ -13,12 +13,13 @@
 #include "file.h"
 #include "loaderpath.h"
 
-static ImlibImage *images = NULL;
+static ImlibImage  *images = NULL;
+
 #ifndef X_DISPLAY_MISSING
 static ImlibImagePixmap *pixmaps = NULL;
 #endif
 static ImlibLoader *loaders = NULL;
-static int cache_size = 4096 * 1024;
+static int          cache_size = 4096 * 1024;
 
 /* attach a string key'd data and/or int value to an image that cna be */
 /* looked up later by its string key */
@@ -26,7 +27,7 @@ void
 __imlib_AttachTag(ImlibImage * im, const char *key, int val, void *data,
                   ImlibDataDestructorFunction destructor)
 {
-   ImlibImageTag *t;
+   ImlibImageTag      *t;
 
    /* no string key? abort */
    if (!key)
@@ -48,44 +49,44 @@ __imlib_AttachTag(ImlibImage * im, const char *key, int val, void *data,
 }
 
 /* look up a tage by its key on the image it was attached to */
-ImlibImageTag *
+ImlibImageTag      *
 __imlib_GetTag(ImlibImage * im, const char *key)
 {
-   ImlibImageTag *t;
+   ImlibImageTag      *t;
 
    t = im->tags;
    while (t)
-   {
-      if (!strcmp(t->key, key))
-         return t;
-      t = t->next;
-   }
+     {
+        if (!strcmp(t->key, key))
+           return t;
+        t = t->next;
+     }
    /* no tag found - return NULL */
    return NULL;
 }
 
 /* remove a tag by looking it up by its key and removing it from */
 /* the list of keys */
-ImlibImageTag *
+ImlibImageTag      *
 __imlib_RemoveTag(ImlibImage * im, const char *key)
 {
-   ImlibImageTag *t, *tt;
+   ImlibImageTag      *t, *tt;
 
    tt = NULL;
    t = im->tags;
    while (t)
-   {
-      if (!strcmp(t->key, key))
-      {
-         if (tt)
-            tt->next = t->next;
-         else
-            im->tags = t->next;
-         return t;
-      }
-      tt = t;
-      t = t->next;
-   }
+     {
+        if (!strcmp(t->key, key))
+          {
+             if (tt)
+                tt->next = t->next;
+             else
+                im->tags = t->next;
+             return t;
+          }
+        tt = t;
+        t = t->next;
+     }
    /* no tag found - NULL */
    return NULL;
 }
@@ -105,15 +106,15 @@ __imlib_FreeTag(ImlibImage * im, ImlibImageTag * t)
 void
 __imlib_FreeAllTags(ImlibImage * im)
 {
-   ImlibImageTag *t, *tt;
+   ImlibImageTag      *t, *tt;
 
    t = im->tags;
    while (t)
-   {
-      tt = t;
-      t = t->next;
-      __imlib_FreeTag(im, tt);
-   }
+     {
+        tt = t;
+        t = t->next;
+        __imlib_FreeTag(im, tt);
+     }
 }
 
 /* set the cache size */
@@ -135,10 +136,10 @@ __imlib_GetCacheSize(void)
 }
 
 /* create an image data struct and fill it in */
-ImlibImage *
+ImlibImage         *
 __imlib_ProduceImage(void)
 {
-   ImlibImage *im;
+   ImlibImage         *im;
 
    im = malloc(sizeof(ImlibImage));
    memset(im, 0, sizeof(ImlibImage));
@@ -158,9 +159,9 @@ void
 __imlib_ConsumeImage(ImlibImage * im)
 {
 #ifndef X_DISPLAY_MISSING
-ImlibImagePixmap *ip;
+   ImlibImagePixmap   *ip;
 #endif
-  
+
    __imlib_FreeAllTags(im);
    if (im->file)
       free(im->file);
@@ -177,42 +178,42 @@ ImlibImagePixmap *ip;
    ip = pixmaps;
    while (ip)
      {
-	if (ip->image == im)
-	  {
-	     ip->image = NULL;
-	     ip->dirty = 1;
-	  }
-	ip = ip->next;
+        if (ip->image == im)
+          {
+             ip->image = NULL;
+             ip->dirty = 1;
+          }
+        ip = ip->next;
      }
 #endif
 }
 
-ImlibImage *
+ImlibImage         *
 __imlib_FindCachedImage(const char *file)
 {
-   ImlibImage *im, *previous_im;
+   ImlibImage         *im, *previous_im;
 
    im = images;
    previous_im = NULL;
    /* go through the images list */
    while (im)
-   {
-      /* if the filenames match and it's valid */
-      if ((!strcmp(file, im->file)) && (IMAGE_IS_VALID(im)))
-      {
-         /* move the image to the head of the pixmap list */
-         if (previous_im)
-         {
-            previous_im->next = im->next;
-            im->next = images;
-            images = im;
-         }
-         /* return it */
-         return im;
-      }
-      previous_im = im;
-      im = im->next;
-   }
+     {
+        /* if the filenames match and it's valid */
+        if ((!strcmp(file, im->file)) && (IMAGE_IS_VALID(im)))
+          {
+             /* move the image to the head of the pixmap list */
+             if (previous_im)
+               {
+                  previous_im->next = im->next;
+                  im->next = images;
+                  images = im;
+               }
+             /* return it */
+             return im;
+          }
+        previous_im = im;
+        im = im->next;
+     }
    return NULL;
 }
 
@@ -228,23 +229,23 @@ __imlib_AddImageToCache(ImlibImage * im)
 void
 __imlib_RemoveImageFromCache(ImlibImage * im)
 {
-   ImlibImage *current_im, *previous_im;
+   ImlibImage         *current_im, *previous_im;
 
    current_im = images;
    previous_im = NULL;
    while (current_im)
-   {
-      if (im == current_im)
-      {
-         if (previous_im)
-            previous_im->next = im->next;
-         else
-            images = im->next;
-         return;
-      }
-      previous_im = current_im;
-      current_im = current_im->next;
-   }
+     {
+        if (im == current_im)
+          {
+             if (previous_im)
+                previous_im->next = im->next;
+             else
+                images = im->next;
+             return;
+          }
+        previous_im = current_im;
+        current_im = current_im->next;
+     }
 }
 
 /* work out how much we have floaitng aroudn in our speculative cache */
@@ -252,88 +253,88 @@ __imlib_RemoveImageFromCache(ImlibImage * im)
 int
 __imlib_CurrentCacheSize(void)
 {
-   ImlibImage *im;
+   ImlibImage         *im;
+
 #ifndef X_DISPLAY_MISSING
-   ImlibImagePixmap *ip;
+   ImlibImagePixmap   *ip;
 #endif
-   int current_cache = 0;
+   int                 current_cache = 0;
 
    /* go through the image cache */
    im = images;
    while (im)
-   {
-      /* mayaswell clean out stuff thats invalid that we dont need anymore */
-      if (im->references == 0)
-      {
-         if (!(IMAGE_IS_VALID(im)))
-         {
-            ImlibImage *tmp_im;
-	    
-	    tmp_im = im;
-            im = im->next;
-            __imlib_RemoveImageFromCache(tmp_im);
-            __imlib_ConsumeImage(tmp_im);
+     {
+        /* mayaswell clean out stuff thats invalid that we dont need anymore */
+        if (im->references == 0)
+          {
+             if (!(IMAGE_IS_VALID(im)))
+               {
+                  ImlibImage         *tmp_im;
+
+                  tmp_im = im;
+                  im = im->next;
+                  __imlib_RemoveImageFromCache(tmp_im);
+                  __imlib_ConsumeImage(tmp_im);
 #ifndef X_DISPLAY_MISSING
-	    ip = pixmaps;
-	    while (ip)
-	      {
-		 if (ip->image == tmp_im)
-		   {
-		      ip->image = NULL;
-		      ip->dirty = 1;
-		   }
-		 ip = ip->next;
-	      }
+                  ip = pixmaps;
+                  while (ip)
+                    {
+                       if (ip->image == tmp_im)
+                         {
+                            ip->image = NULL;
+                            ip->dirty = 1;
+                         }
+                       ip = ip->next;
+                    }
 #endif
-            continue;
-         }
-         /* it's valid but has 0 ref's - append to cache size count */
-         else
-            current_cache += im->w * im->h * sizeof(DATA32);
-      }
-      im = im->next;
-   }
+                  continue;
+               }
+             /* it's valid but has 0 ref's - append to cache size count */
+             else
+                current_cache += im->w * im->h * sizeof(DATA32);
+          }
+        im = im->next;
+     }
 #ifndef X_DISPLAY_MISSING
    /* go through the pixmaps */
    ip = pixmaps;
    while (ip)
-   {
-      /* if the pixmap has 0 references */
-      if (ip->references == 0)
-      {
-         /* if the image is invalid */
-         if ((ip->dirty) || 
-	     ((ip->image) && (!(IMAGE_IS_VALID(ip->image)))))
-         {
-            ImlibImagePixmap *tmp_ip;
-	    
-	    tmp_ip = ip;
-            ip = ip->next;
-            __imlib_RemoveImagePixmapFromCache(tmp_ip);
-            __imlib_ConsumeImagePixmap(tmp_ip);
-            continue;
-         }
-         else
-         {
-            /* add the pixmap data size to the cache size */
-            if (ip->pixmap)
-            {
-               if (ip->depth < 8)
-                  current_cache += ip->w * ip->h * (ip->depth / 8);
-               else if (ip->depth == 8)
-                  current_cache += ip->w * ip->h;
-               else if (ip->depth <= 16)
-                  current_cache += ip->w * ip->h * 2;
-               else if (ip->depth <= 32)
-                  current_cache += ip->w * ip->h * 4;
-            }
-            /* if theres a mask add it too */
-            if (ip->mask)
-               current_cache += ip->w * ip->h / 8;
-         }
-      }
-      ip = ip->next;
-   }
+     {
+        /* if the pixmap has 0 references */
+        if (ip->references == 0)
+          {
+             /* if the image is invalid */
+             if ((ip->dirty) || ((ip->image) && (!(IMAGE_IS_VALID(ip->image)))))
+               {
+                  ImlibImagePixmap   *tmp_ip;
+
+                  tmp_ip = ip;
+                  ip = ip->next;
+                  __imlib_RemoveImagePixmapFromCache(tmp_ip);
+                  __imlib_ConsumeImagePixmap(tmp_ip);
+                  continue;
+               }
+             else
+               {
+                  /* add the pixmap data size to the cache size */
+                  if (ip->pixmap)
+                    {
+                       if (ip->depth < 8)
+                          current_cache += ip->w * ip->h * (ip->depth / 8);
+                       else if (ip->depth == 8)
+                          current_cache += ip->w * ip->h;
+                       else if (ip->depth <= 16)
+                          current_cache += ip->w * ip->h * 2;
+                       else if (ip->depth <= 32)
+                          current_cache += ip->w * ip->h * 4;
+                    }
+                  /* if theres a mask add it too */
+                  if (ip->mask)
+                     current_cache += ip->w * ip->h / 8;
+               }
+          }
+        ip = ip->next;
+     }
 #endif
    return current_cache;
 }
@@ -342,54 +343,54 @@ __imlib_CurrentCacheSize(void)
 void
 __imlib_CleanupImageCache(void)
 {
-   ImlibImage *im, *im_last;
-   int current_cache;
-   char operation = 1;
+   ImlibImage         *im, *im_last;
+   int                 current_cache;
+   char                operation = 1;
 
    current_cache = __imlib_CurrentCacheSize();
    im_last = NULL;
    im = images;
    /* remove 0 ref count invalid (dirty) images */
    while (im)
-   {
-      im_last = im;
-      im = im->next;
-      if ((im_last->references <= 0) && (!(IMAGE_IS_VALID(im_last))))
-      {
-         __imlib_RemoveImageFromCache(im_last);
-         __imlib_ConsumeImage(im_last);
-      }
-   }
+     {
+        im_last = im;
+        im = im->next;
+        if ((im_last->references <= 0) && (!(IMAGE_IS_VALID(im_last))))
+          {
+             __imlib_RemoveImageFromCache(im_last);
+             __imlib_ConsumeImage(im_last);
+          }
+     }
    /* while the cache size of 0 ref coutn data is bigger than the set value */
    /* clean out the oldest members of the imaeg cache */
    while ((current_cache > cache_size) && (operation))
-   {
-      im_last = NULL;
-      operation = 0;
-      im = images;
-      while (im)
-      {
-         if (im->references <= 0)
-            im_last = im;
-         im = im->next;
-      }
-      if (im_last)
-      {
-         __imlib_RemoveImageFromCache(im_last);
-         __imlib_ConsumeImage(im_last);
-         operation = 1;
-      }
-      if (operation)
-	current_cache = __imlib_CurrentCacheSize();
-   }
+     {
+        im_last = NULL;
+        operation = 0;
+        im = images;
+        while (im)
+          {
+             if (im->references <= 0)
+                im_last = im;
+             im = im->next;
+          }
+        if (im_last)
+          {
+             __imlib_RemoveImageFromCache(im_last);
+             __imlib_ConsumeImage(im_last);
+             operation = 1;
+          }
+        if (operation)
+           current_cache = __imlib_CurrentCacheSize();
+     }
 }
 
 #ifndef X_DISPLAY_MISSING
 /* create a pixmap cache data struct */
-ImlibImagePixmap *
+ImlibImagePixmap   *
 __imlib_ProduceImagePixmap(void)
 {
-   ImlibImagePixmap *ip;
+   ImlibImagePixmap   *ip;
 
    ip = malloc(sizeof(ImlibImagePixmap));
    memset(ip, 0, sizeof(ImlibImagePixmap));
@@ -414,69 +415,69 @@ __imlib_ConsumeImagePixmap(ImlibImagePixmap * ip)
       XFreePixmap(ip->display, ip->pixmap);
    if (ip->mask)
       XFreePixmap(ip->display, ip->mask);
-   if (ip->file) free(ip->file);
+   if (ip->file)
+      free(ip->file);
    free(ip);
 }
 
-ImlibImagePixmap *
+ImlibImagePixmap   *
 __imlib_FindCachedImagePixmap(ImlibImage * im, int w, int h, Display * d,
                               Visual * v, int depth, int sx, int sy, int sw,
                               int sh, Colormap cm, char aa, char hiq,
                               char dmask, DATABIG modification_count)
 {
-   ImlibImagePixmap *ip, *previous_ip;
+   ImlibImagePixmap   *ip, *previous_ip;
 
    ip = pixmaps;
    previous_ip = NULL;
    /* go through the pixmap list */
    while (ip)
-   {
-      /* if all the pixmap attributes match */
-      if ((ip->w == w) && (ip->h == h) && (ip->depth == depth) && (!ip->dirty)
-          && (ip->visual == v) && (ip->display == d)
-          && (ip->source_x == sx) && (ip->source_x == sy)
-          && (ip->source_w == sw) && (ip->source_h == sh)
-          && (ip->colormap == cm) && (ip->antialias == aa)
-          && (ip->modification_count == modification_count)
-          && (ip->dither_mask == dmask)
-          && (ip->border.left == im->border.left)
-          && (ip->border.right == im->border.right)
-          && (ip->border.top == im->border.top)
-          && (ip->border.bottom == im->border.bottom) &&
-	  (((im->file) && (ip->file) && !strcmp(im->file, ip->file)) ||
-	   ((!im->file) && (!ip->file) && (im == ip->image)))
-	  )
-      {
-         /* move the pixmap to the head of the pixmap list */
-         if (previous_ip)
-         {
-            previous_ip->next = ip->next;
-            ip->next = pixmaps;
-            pixmaps = ip;
-         }
-         /* return it */
-         return ip;
-      }
-      previous_ip = ip;
-      ip = ip->next;
-   }
+     {
+        /* if all the pixmap attributes match */
+        if ((ip->w == w) && (ip->h == h) && (ip->depth == depth) && (!ip->dirty)
+            && (ip->visual == v) && (ip->display == d)
+            && (ip->source_x == sx) && (ip->source_x == sy)
+            && (ip->source_w == sw) && (ip->source_h == sh)
+            && (ip->colormap == cm) && (ip->antialias == aa)
+            && (ip->modification_count == modification_count)
+            && (ip->dither_mask == dmask)
+            && (ip->border.left == im->border.left)
+            && (ip->border.right == im->border.right)
+            && (ip->border.top == im->border.top)
+            && (ip->border.bottom == im->border.bottom) &&
+            (((im->file) && (ip->file) && !strcmp(im->file, ip->file)) ||
+             ((!im->file) && (!ip->file) && (im == ip->image))))
+          {
+             /* move the pixmap to the head of the pixmap list */
+             if (previous_ip)
+               {
+                  previous_ip->next = ip->next;
+                  ip->next = pixmaps;
+                  pixmaps = ip;
+               }
+             /* return it */
+             return ip;
+          }
+        previous_ip = ip;
+        ip = ip->next;
+     }
    return NULL;
 }
 
-ImlibImagePixmap *
+ImlibImagePixmap   *
 __imlib_FindCachedImagePixmapByID(Display * d, Pixmap p)
 {
-   ImlibImagePixmap *ip;
+   ImlibImagePixmap   *ip;
 
    ip = pixmaps;
    /* go through the pixmap list */
    while (ip)
-   {
-      /* if all the pixmap attributes match */
-      if ((ip->pixmap == p) && (ip->display == d))
-         return ip;
-      ip = ip->next;
-   }
+     {
+        /* if all the pixmap attributes match */
+        if ((ip->pixmap == p) && (ip->display == d))
+           return ip;
+        ip = ip->next;
+     }
    return NULL;
 }
 
@@ -492,72 +493,72 @@ __imlib_AddImagePixmapToCache(ImlibImagePixmap * ip)
 void
 __imlib_RemoveImagePixmapFromCache(ImlibImagePixmap * ip)
 {
-   ImlibImagePixmap *current_ip, *previous_ip;
+   ImlibImagePixmap   *current_ip, *previous_ip;
 
    current_ip = pixmaps;
    previous_ip = NULL;
    while (current_ip)
-   {
-      if (ip == current_ip)
-      {
-         if (previous_ip)
-            previous_ip->next = ip->next;
-         else
-            pixmaps = ip->next;
-         return;
-      }
-      previous_ip = current_ip;
-      current_ip = current_ip->next;
-   }
+     {
+        if (ip == current_ip)
+          {
+             if (previous_ip)
+                previous_ip->next = ip->next;
+             else
+                pixmaps = ip->next;
+             return;
+          }
+        previous_ip = current_ip;
+        current_ip = current_ip->next;
+     }
 }
 
 /* clean out 0 reference count & dirty pixmaps from the cache */
 void
 __imlib_CleanupImagePixmapCache(void)
 {
-   ImlibImagePixmap *ip, *ip_last;
-   int current_cache;
-   char operation = 0;
+   ImlibImagePixmap   *ip, *ip_last;
+   int                 current_cache;
+   char                operation = 0;
 
    current_cache = __imlib_CurrentCacheSize();
    ip_last = NULL;
    ip = pixmaps;
    while (ip)
-   {
-      ip_last = ip;
-      ip = ip->next;
-      if ((ip_last->references <= 0) && (ip_last->dirty))
-      {
-         __imlib_RemoveImagePixmapFromCache(ip_last);
-         __imlib_ConsumeImagePixmap(ip_last);
-      }
-   }
+     {
+        ip_last = ip;
+        ip = ip->next;
+        if ((ip_last->references <= 0) && (ip_last->dirty))
+          {
+             __imlib_RemoveImagePixmapFromCache(ip_last);
+             __imlib_ConsumeImagePixmap(ip_last);
+          }
+     }
    while ((current_cache > cache_size) && (operation))
-   {
-      ip_last = NULL;
-      operation = 0;
-      ip = pixmaps;
-      while (ip)
-      {
-         if (ip->references <= 0)
-            ip_last = ip;
-         ip = ip->next;
-      }
-      if (ip_last)
-      {
-         __imlib_RemoveImagePixmapFromCache(ip_last);
-         __imlib_ConsumeImagePixmap(ip_last);
-         operation = 1;
-      }
-      if (operation)
-	current_cache = __imlib_CurrentCacheSize();
-   }
+     {
+        ip_last = NULL;
+        operation = 0;
+        ip = pixmaps;
+        while (ip)
+          {
+             if (ip->references <= 0)
+                ip_last = ip;
+             ip = ip->next;
+          }
+        if (ip_last)
+          {
+             __imlib_RemoveImagePixmapFromCache(ip_last);
+             __imlib_ConsumeImagePixmap(ip_last);
+             operation = 1;
+          }
+        if (operation)
+           current_cache = __imlib_CurrentCacheSize();
+     }
 }
 #endif
 
 #define LOADERS_UNINITIALISED -4444
 
-static int errors = LOADERS_UNINITIALISED;
+static int          errors = LOADERS_UNINITIALISED;
 
 static void
 LTDL_Init(void)
@@ -565,22 +566,22 @@ LTDL_Init(void)
    /* Do this only once! */
 
    if ((errors == LOADERS_UNINITIALISED))
-   {
-      errors = lt_dlinit();
+     {
+        errors = lt_dlinit();
 
-      /* Initialise libltdl's memory management. */
-      lt_dlmalloc = malloc;
-      lt_dlfree = free;
-   }
+        /* Initialise libltdl's memory management. */
+        lt_dlmalloc = malloc;
+        lt_dlfree = free;
+     }
 
    /* Failing ltdl initialisation makes continuing somewhat futile... */
    if (errors != 0)
-   {
-      const char *dlerror = lt_dlerror();
+     {
+        const char         *dlerror = lt_dlerror();
 
-      fprintf(stderr, "ERROR: failed to initialise ltdl: %s\n", dlerror);
-      exit(1);
-   }
+        fprintf(stderr, "ERROR: failed to initialise ltdl: %s\n", dlerror);
+        exit(1);
+     }
 }
 
 void
@@ -592,11 +593,11 @@ LTDL_Exit(void)
 
 /* try dlopen()ing the file if we succeed finish filling out the malloced */
 /* loader struct and return it */
-ImlibLoader *
+ImlibLoader        *
 __imlib_ProduceLoader(char *file)
 {
-   ImlibLoader *l;
-   void (*l_formats) (ImlibLoader * l);
+   ImlibLoader        *l;
+   void                (*l_formats) (ImlibLoader * l);
 
    LTDL_Init();
 
@@ -605,19 +606,19 @@ __imlib_ProduceLoader(char *file)
    l->formats = NULL;
    l->handle = lt_dlopenext(file);
    if (!l->handle)
-   {
-      free(l);
-      return NULL;
-   }
+     {
+        free(l);
+        return NULL;
+     }
    l->load = lt_dlsym(l->handle, "load");
    l->save = lt_dlsym(l->handle, "save");
    l_formats = lt_dlsym(l->handle, "formats");
    if ((!(l->load)) || (!(l->save)) || (!(l_formats)))
-   {
-      lt_dlclose(l->handle);
-      free(l);
-      return NULL;
-   }
+     {
+        lt_dlclose(l->handle);
+        free(l);
+        return NULL;
+     }
    l_formats(l);
    l->file = strdup(file);
    l->next = NULL;
@@ -626,38 +627,40 @@ __imlib_ProduceLoader(char *file)
 
 /* list all the filenames of loaders  int he system loaders dir and the user */
 /* loader dir */
-char **
+char              **
 __imlib_ListLoaders(int *num_ret)
 {
-   char **list = NULL, **l, *s;
-   int num, i, pi = 0;
+   char              **list = NULL, **l, *s;
+   int                 num, i, pi = 0;
 
    *num_ret = 0;
    /* same for system loader path */
-   s = (char *) malloc(sizeof(SYS_LOADERS_PATH) + 6 + 1);
+   s = (char *)malloc(sizeof(SYS_LOADERS_PATH) + 6 + 1);
    sprintf(s, SYS_LOADERS_PATH "/image");
-#ifndef __EMX__   
-   l = __imlib_FileDir(s, &num);
-#else   
-   l = __imlib_FileDir(__XOS2RedirRoot(s), &num);
-#endif   
-   if (num > 0)
-   {
-      *num_ret += num;
-      list = realloc(list, sizeof(char *) * *num_ret);
-
-      for (i = 0; i < num; i++)
-      {
-         s = (char *) realloc(s, sizeof(SYS_LOADERS_PATH) + 7 + strlen(l[i]) + 1);
-         sprintf(s, SYS_LOADERS_PATH "/image/%s", l[i]);
 #ifndef __EMX__
-	 list[pi + i] = strdup(s);
+   l = __imlib_FileDir(s, &num);
 #else
-	 list[pi + i] = strdup(__XOS2RedirRoot(s));
+   l = __imlib_FileDir(__XOS2RedirRoot(s), &num);
 #endif
-      }
-      __imlib_FileFreeDirList(l, num);
-   }
+   if (num > 0)
+     {
+        *num_ret += num;
+        list = realloc(list, sizeof(char *) * *num_ret);
+
+        for (i = 0; i < num; i++)
+          {
+             s = (char *)realloc(s,
+                                 sizeof(SYS_LOADERS_PATH) + 7 + strlen(l[i]) +
+                                 1);
+             sprintf(s, SYS_LOADERS_PATH "/image/%s", l[i]);
+#ifndef __EMX__
+             list[pi + i] = strdup(s);
+#else
+             list[pi + i] = strdup(__XOS2RedirRoot(s));
+#endif
+          }
+        __imlib_FileFreeDirList(l, num);
+     }
    free(s);
 
    /* List currently contains *everything in there* we need to weed out
@@ -669,12 +672,12 @@ __imlib_ListLoaders(int *num_ret)
    return list;
 }
 
-char **
+char              **
 __imlib_TrimLoaderList(char **list, int *num)
 {
-   int i, n, size = 0;
+   int                 i, n, size = 0;
 
-   char **ret = NULL;
+   char              **ret = NULL;
 
    if (!list)
       return NULL;
@@ -684,26 +687,26 @@ __imlib_TrimLoaderList(char **list, int *num)
    n = *num;
 
    for (i = 0; i < n; i++)
-   {
-      char *ext;
+     {
+        char               *ext;
 
-      if (!list[i])
-         continue;
-      ext = strrchr(list[i], '.');
-      if (ext)
-      {
-         *ext = '\0';
-         /* Don't add the same loader multiple times... */
-         if (!__imlib_ItemInList(ret, size, list[i]))
-         {
-            ret = realloc(ret, sizeof(char *) * (size + 1));
+        if (!list[i])
+           continue;
+        ext = strrchr(list[i], '.');
+        if (ext)
+          {
+             *ext = '\0';
+             /* Don't add the same loader multiple times... */
+             if (!__imlib_ItemInList(ret, size, list[i]))
+               {
+                  ret = realloc(ret, sizeof(char *) * (size + 1));
 
-            ret[size++] = strdup(list[i]);
-         }
-      }
-      if (list[i])
-         free(list[i]);
-   }
+                  ret[size++] = strdup(list[i]);
+               }
+          }
+        if (list[i])
+           free(list[i]);
+     }
    if (list)
       free(list);
    *num = size;
@@ -713,7 +716,7 @@ __imlib_TrimLoaderList(char **list, int *num)
 int
 __imlib_ItemInList(char **list, int size, char *item)
 {
-   int i;
+   int                 i;
 
    if (!size)
       return 0;
@@ -723,10 +726,10 @@ __imlib_ItemInList(char **list, int size, char *item)
       return 0;
 
    for (i = 0; i < size; i++)
-   {
-      if (!strcmp(list[i], item))
-         return 1;
-   }
+     {
+        if (!strcmp(list[i], item))
+           return 1;
+     }
    return 0;
 }
 
@@ -739,25 +742,25 @@ __imlib_ConsumeLoader(ImlibLoader * l)
    if (l->handle)
       lt_dlclose(l->handle);
    if (l->formats)
-   {
-      int i;
+     {
+        int                 i;
 
-      for (i = 0; i < l->num_formats; i++)
-         free(l->formats[i]);
-      free(l->formats);
-   }
+        for (i = 0; i < l->num_formats; i++)
+           free(l->formats[i]);
+        free(l->formats);
+     }
    free(l);
 }
 
 void
 __imlib_RescanLoaders(void)
 {
-   static time_t last_scan_time = 0;
-   static time_t last_modified_home_time = 0;
-   static time_t last_modified_system_time = 0;
-   time_t current_time;
-   char *s, *home;
-   char do_reload = 0;
+   static time_t       last_scan_time = 0;
+   static time_t       last_modified_home_time = 0;
+   static time_t       last_modified_system_time = 0;
+   time_t              current_time;
+   char               *s, *home;
+   char                do_reload = 0;
 
    /* dont stat the dir and rescan if we checked in the last 5 seconds */
    current_time = time(NULL);
@@ -770,20 +773,20 @@ __imlib_RescanLoaders(void)
 #else
    if (__imlib_FileIsDir(__XOS2RedirRoot(SYS_LOADERS_PATH "/image/")))
 #endif
-   {
+     {
 #ifndef __EMX__
-      current_time = __imlib_FileModDate(SYS_LOADERS_PATH "/image/");
+        current_time = __imlib_FileModDate(SYS_LOADERS_PATH "/image/");
 #else
-      current_time =
-         __imlib_FileModDate(__XOS2RedirRoot(SYS_LOADERS_PATH "/image/"));
+        current_time =
+            __imlib_FileModDate(__XOS2RedirRoot(SYS_LOADERS_PATH "/image/"));
 #endif
-      if (current_time > last_modified_system_time)
-      {
-         /* yup - set the "do_reload" flag */
-         do_reload = 1;
-         last_modified_system_time = current_time;
-      }
-   }
+        if (current_time > last_modified_system_time)
+          {
+             /* yup - set the "do_reload" flag */
+             do_reload = 1;
+             last_modified_system_time = current_time;
+          }
+     }
    /* if we dont ned to reload the loaders - get out now */
    if (!do_reload)
       return;
@@ -795,15 +798,15 @@ __imlib_RescanLoaders(void)
 void
 __imlib_RemoveAllLoaders(void)
 {
-   ImlibLoader *l, *il;
+   ImlibLoader        *l, *il;
 
    l = loaders;
    while (l)
-   {
-      il = l;
-      l = l->next;
-      __imlib_ConsumeLoader(il);
-   }
+     {
+        il = l;
+        l = l->next;
+        __imlib_ConsumeLoader(il);
+     }
    loaders = NULL;
 }
 
@@ -812,8 +815,8 @@ __imlib_RemoveAllLoaders(void)
 void
 __imlib_LoadAllLoaders(void)
 {
-   int i, num;
-   char **list;
+   int                 i, num;
+   char              **list;
 
    /* list all the loaders imlib can find */
    list = __imlib_ListLoaders(&num);
@@ -824,30 +827,30 @@ __imlib_LoadAllLoaders(void)
    /* go through the list of filenames for loader .so's and load them */
    /* (or try) and if it succeeds, append to our loader list */
    for (i = num - 1; i >= 0; i--)
-   {
-      ImlibLoader *l;
+     {
+        ImlibLoader        *l;
 
-      l = __imlib_ProduceLoader(list[i]);
-      if (l)
-      {
-         l->next = loaders;
-         loaders = l;
-      }
-      if (list[i])
-         free(list[i]);
-   }
+        l = __imlib_ProduceLoader(list[i]);
+        if (l)
+          {
+             l->next = loaders;
+             loaders = l;
+          }
+        if (list[i])
+           free(list[i]);
+     }
    free(list);
 }
 
-ImlibLoader *
+ImlibLoader        *
 __imlib_FindBestLoaderForFile(const char *file)
 {
-   char *extension, *lower, *rfile;
-   ImlibLoader *l = NULL;
+   char               *extension, *lower, *rfile;
+   ImlibLoader        *l = NULL;
 
    /* use the file extension for a "best guess" as to what loader to try */
    /* first at any rate */
-   
+
    rfile = __imlib_FileRealFile(file);
    extension = __imlib_FileExtension(rfile);
    free(rfile);
@@ -856,10 +859,10 @@ __imlib_FindBestLoaderForFile(const char *file)
    /* extensions that file format could have */
    lower = extension;
    while (*lower)
-   {
-      *lower = tolower(*lower);
-      lower++;
-   }
+     {
+        *lower = tolower(*lower);
+        lower++;
+     }
    if (!extension)
       return NULL;
    /* go through the loaders - first loader that claims to handle that */
@@ -876,77 +879,77 @@ __imlib_FindBestLoaderForFile(const char *file)
    /* of the same format */
    l = loaders;
    while (l)
-   {
-      int i;
+     {
+        int                 i;
 
-      /* go through all the formats that loader supports */
-      for (i = 0; i < l->num_formats; i++)
-      {
-         /* does it match ? */
-         if (!strcmp(l->formats[i], extension))
-         {
-            /* free the memory allocated for the extension */
-            free(extension);
-            /* return the loader */
-            return l;
-         }
-      }
-      l = l->next;
-   }
+        /* go through all the formats that loader supports */
+        for (i = 0; i < l->num_formats; i++)
+          {
+             /* does it match ? */
+             if (!strcmp(l->formats[i], extension))
+               {
+                  /* free the memory allocated for the extension */
+                  free(extension);
+                  /* return the loader */
+                  return l;
+               }
+          }
+        l = l->next;
+     }
    /* free the memory allocated for the extension */
    free(extension);
    /* return the loader */
    return l;
 }
 
-ImlibLoader *
+ImlibLoader        *
 __imlib_FindBestLoaderForFileFormat(const char *file, char *format)
 {
-   char *extension, *lower;
-   ImlibLoader *l = NULL;
+   char               *extension, *lower;
+   ImlibLoader        *l = NULL;
 
    /* if the format is provided ("png" "jpg" etc.) use that */
    if (format)
       extension = strdup(format);
    /* otherwise us the extension */
    else
-   {
-      extension = __imlib_FileExtension(file);
-      /* change the extension to all lower case as all "types" are listed as */
-      /* lower case strings fromt he loader that represent all the possible */
-      /* extensions that file format could have */
-      if (extension)
-	{
-	   lower = extension;
-	   while (*lower)
-	     {
-		*lower = tolower(*lower);
-		lower++;
-	     }
-	}
-   }
+     {
+        extension = __imlib_FileExtension(file);
+        /* change the extension to all lower case as all "types" are listed as */
+        /* lower case strings fromt he loader that represent all the possible */
+        /* extensions that file format could have */
+        if (extension)
+          {
+             lower = extension;
+             while (*lower)
+               {
+                  *lower = tolower(*lower);
+                  lower++;
+               }
+          }
+     }
    if (!extension)
       return NULL;
    /* look through the loaders one by one to see if one matches that format */
    l = loaders;
    while (l)
-   {
-      int i;
+     {
+        int                 i;
 
-      /* go through all the formats that loader supports */
-      for (i = 0; i < l->num_formats; i++)
-      {
-         /* does it match ? */
-         if (!strcmp(l->formats[i], extension))
-         {
-            /* free the memory allocated for the extension */
-            free(extension);
-            /* return the loader */
-            return l;
-         }
-      }
-      l = l->next;
-   }
+        /* go through all the formats that loader supports */
+        for (i = 0; i < l->num_formats; i++)
+          {
+             /* does it match ? */
+             if (!strcmp(l->formats[i], extension))
+               {
+                  /* free the memory allocated for the extension */
+                  free(extension);
+                  /* return the loader */
+                  return l;
+               }
+          }
+        l = l->next;
+     }
    /* free the memory allocated for the extension */
    free(extension);
    /* return the loader */
@@ -965,10 +968,10 @@ __imlib_SetImageAlphaFlag(ImlibImage * im, char alpha)
 
 /* create a new image struct from data passed that is wize w x h then return */
 /* a pointer to that image sturct */
-ImlibImage *
+ImlibImage         *
 __imlib_CreateImage(int w, int h, DATA32 * data)
 {
-   ImlibImage *im;
+   ImlibImage         *im;
 
    im = __imlib_ProduceImage();
    im->w = w;
@@ -979,62 +982,64 @@ __imlib_CreateImage(int w, int h, DATA32 * data)
    return im;
 }
 
-ImlibImage *
+ImlibImage         *
 __imlib_LoadImage(const char *file, ImlibProgressFunction progress,
                   char progress_granularity, char immediate_load,
                   char dont_cache, ImlibLoadError * er)
 {
-   ImlibImage *im;
-   ImlibLoader *best_loader;
-   char loader_ret = 0;
+   ImlibImage         *im;
+   ImlibLoader        *best_loader;
+   char                loader_ret = 0;
 
-   if (!file) return NULL;
-   if (file[0] == 0) return NULL;
+   if (!file)
+      return NULL;
+   if (file[0] == 0)
+      return NULL;
    /* see if we alreayd have the image cached */
    im = __imlib_FindCachedImage(file);
    /* if we found a cached image and we shoudl always check that it is */
    /* accurate to the disk conents if they changed since we last loaded */
    /* and that it is still a valid image */
    if ((im) && (IMAGE_IS_VALID(im)))
-   {
-      if (IMAGE_ALWAYS_CHECK_DISK(im))
-      {
-         time_t current_modified_time;
+     {
+        if (IMAGE_ALWAYS_CHECK_DISK(im))
+          {
+             time_t              current_modified_time;
 
-         current_modified_time = __imlib_FileModDate(file);
-         /* if the file on disk is newer than the cached one */
-         if (current_modified_time > im->moddate)
-         {
-            /* invalidate image */
-            SET_FLAG(im->flags, F_INVALID);
-         }
-         else
-         {
-            /* image is ok to re-use - program is just being stupid loading */
-            /* the same data twice */
-            im->references++;
-            return im;
-         }
-      }
-      else
-      {
-         im->references++;
-         return im;
-      }
-   }
+             current_modified_time = __imlib_FileModDate(file);
+             /* if the file on disk is newer than the cached one */
+             if (current_modified_time > im->moddate)
+               {
+                  /* invalidate image */
+                  SET_FLAG(im->flags, F_INVALID);
+               }
+             else
+               {
+                  /* image is ok to re-use - program is just being stupid loading */
+                  /* the same data twice */
+                  im->references++;
+                  return im;
+               }
+          }
+        else
+          {
+             im->references++;
+             return im;
+          }
+     }
    /* either image in cache is invalid or we dont even have it in cache */
    /* so produce a new one and load an image into that */
    im = __imlib_ProduceImage();
    im->file = strdup(file);
-   if(__imlib_IsRealFile(file))
+   if (__imlib_IsRealFile(file))
      {
-	im->real_file = strdup(im->file);
-	im->key = NULL;
+        im->real_file = strdup(im->file);
+        im->key = NULL;
      }
    else
      {
-	im->real_file = __imlib_FileRealFile(file);
-	im->key = __imlib_FileKey(file);
+        im->real_file = __imlib_FileRealFile(file);
+        im->key = __imlib_FileKey(file);
      }
    im->moddate = __imlib_FileModDate(file);
    /* ok - just check all our loaders are up to date */
@@ -1044,92 +1049,92 @@ __imlib_LoadImage(const char *file, ImlibProgressFunction progress,
    errno = 0;
    if (best_loader)
       loader_ret =
-         best_loader->load(im, progress, progress_granularity,
-                           immediate_load);
+          best_loader->load(im, progress, progress_granularity, immediate_load);
    /* width is still 0 - the loader didnt manage to do anything */
    if (im->w == 0)
-   {
-      ImlibLoader *l, *previous_l = NULL;
+     {
+        ImlibLoader        *l, *previous_l = NULL;
 
-      errno = 0;
-      l = loaders;
-      /* run through all loaders and try load until one succeeds */
-      while ((l) && (im->w == 0))
-      {
-         /* if its not the best loader that alreayd failed - try load */
-         if (l != best_loader)
-            loader_ret =
-               l->load(im, progress, progress_granularity, immediate_load);
-         /* if it failed - advance */
-         if (im->w == 0)
-         {
-            previous_l = l;
-            l = l->next;
-         }
-      }
-      /* if we have a loader then its the loader that succeeded */
-      /* move the successful loader to the head of the list */
-      /* as long as it's not alreayd at the head of the list */
-      if ((l) && (previous_l))
-      {
-         im->loader = l;
-         previous_l->next = l->next;
-         l->next = loaders;
-         loaders = l;
-      }
-      if (im->w > 0) im->loader = l;
-   }
+        errno = 0;
+        l = loaders;
+        /* run through all loaders and try load until one succeeds */
+        while ((l) && (im->w == 0))
+          {
+             /* if its not the best loader that alreayd failed - try load */
+             if (l != best_loader)
+                loader_ret =
+                    l->load(im, progress, progress_granularity, immediate_load);
+             /* if it failed - advance */
+             if (im->w == 0)
+               {
+                  previous_l = l;
+                  l = l->next;
+               }
+          }
+        /* if we have a loader then its the loader that succeeded */
+        /* move the successful loader to the head of the list */
+        /* as long as it's not alreayd at the head of the list */
+        if ((l) && (previous_l))
+          {
+             im->loader = l;
+             previous_l->next = l->next;
+             l->next = loaders;
+             loaders = l;
+          }
+        if (im->w > 0)
+           im->loader = l;
+     }
    else
       im->loader = best_loader;
    /* all loaders have been tried and they all failed. free the skeleton */
    /* image struct we had and return NULL */
    if (im->w == 0)
-   {
-      /* if the caller wants an error return */
-      if (er)
-	{
-	   /* set to a default fo no error */
-	   *er = LOAD_ERROR_NONE;
-	   /* if the errno is set */
-	   if (errno != 0)
-	     {
-		/* default to unknown error */
-		*er = LOAD_ERROR_UNKNOWN;
-		/* standrad fopen() type errors translated */
-		if (errno == EEXIST)
-		  *er = LOAD_ERROR_FILE_DOES_NOT_EXIST;
-		else if (errno == EISDIR)
-		  *er = LOAD_ERROR_FILE_IS_DIRECTORY;
-		else if (errno == EISDIR)
-		  *er = LOAD_ERROR_FILE_IS_DIRECTORY;
-		else if (errno == EACCES)
-		  *er = LOAD_ERROR_PERMISSION_DENIED_TO_READ;
-		else if (errno == ENAMETOOLONG)
-		  *er = LOAD_ERROR_PATH_TOO_LONG;
-		else if (errno == ENOENT)
-		  *er = LOAD_ERROR_PATH_COMPONENT_NON_EXISTANT;
-		else if (errno == ENOTDIR)
-		  *er = LOAD_ERROR_PATH_COMPONENT_NOT_DIRECTORY;
-		else if (errno == EFAULT)
-		  *er = LOAD_ERROR_PATH_POINTS_OUTSIDE_ADDRESS_SPACE;
-		else if (errno == ELOOP)
-		  *er = LOAD_ERROR_TOO_MANY_SYMBOLIC_LINKS;
-		else if (errno == ENOMEM)
-		  *er = LOAD_ERROR_OUT_OF_MEMORY;
-		else if (errno == EMFILE)
-		  *er = LOAD_ERROR_OUT_OF_FILE_DESCRIPTORS;
-		if (*er != LOAD_ERROR_UNKNOWN)
-                  {
-                     /* free the stuct we created */
-                     __imlib_ConsumeImage(im);
-                     return NULL;
-                  }
-	     }
-	   errno = 0;
-	}
-      __imlib_ConsumeImage(im);
-      return NULL;
-   }
+     {
+        /* if the caller wants an error return */
+        if (er)
+          {
+             /* set to a default fo no error */
+             *er = LOAD_ERROR_NONE;
+             /* if the errno is set */
+             if (errno != 0)
+               {
+                  /* default to unknown error */
+                  *er = LOAD_ERROR_UNKNOWN;
+                  /* standrad fopen() type errors translated */
+                  if (errno == EEXIST)
+                     *er = LOAD_ERROR_FILE_DOES_NOT_EXIST;
+                  else if (errno == EISDIR)
+                     *er = LOAD_ERROR_FILE_IS_DIRECTORY;
+                  else if (errno == EISDIR)
+                     *er = LOAD_ERROR_FILE_IS_DIRECTORY;
+                  else if (errno == EACCES)
+                     *er = LOAD_ERROR_PERMISSION_DENIED_TO_READ;
+                  else if (errno == ENAMETOOLONG)
+                     *er = LOAD_ERROR_PATH_TOO_LONG;
+                  else if (errno == ENOENT)
+                     *er = LOAD_ERROR_PATH_COMPONENT_NON_EXISTANT;
+                  else if (errno == ENOTDIR)
+                     *er = LOAD_ERROR_PATH_COMPONENT_NOT_DIRECTORY;
+                  else if (errno == EFAULT)
+                     *er = LOAD_ERROR_PATH_POINTS_OUTSIDE_ADDRESS_SPACE;
+                  else if (errno == ELOOP)
+                     *er = LOAD_ERROR_TOO_MANY_SYMBOLIC_LINKS;
+                  else if (errno == ENOMEM)
+                     *er = LOAD_ERROR_OUT_OF_MEMORY;
+                  else if (errno == EMFILE)
+                     *er = LOAD_ERROR_OUT_OF_FILE_DESCRIPTORS;
+                  if (*er != LOAD_ERROR_UNKNOWN)
+                    {
+                       /* free the stuct we created */
+                       __imlib_ConsumeImage(im);
+                       return NULL;
+                    }
+               }
+             errno = 0;
+          }
+        __imlib_ConsumeImage(im);
+        return NULL;
+     }
 
    /* the load succeeded - make sure the image is referenced then add */
    /* it to our cache if dont_cache isn't set */
@@ -1145,27 +1150,27 @@ __imlib_LoadImage(const char *file, ImlibProgressFunction progress,
 
 #ifndef X_DISPLAY_MISSING
 /* find an imagepixmap cache entry by the display and pixmap id */
-ImlibImagePixmap *
+ImlibImagePixmap   *
 __imlib_FindImlibImagePixmapByID(Display * d, Pixmap p)
 {
-   ImlibImagePixmap *ip;
+   ImlibImagePixmap   *ip;
 
    ip = pixmaps;
    /* go through the pixmap list */
    while (ip)
-   {
-      /* if all the pixmap ID & Display match */
-      if ((ip->pixmap == p) && (ip->display == d))
-      {
+     {
+        /* if all the pixmap ID & Display match */
+        if ((ip->pixmap == p) && (ip->display == d))
+          {
 #ifdef DEBUG_CACHE
-         fprintf(stderr,
-                 "[Imlib2]  Match found.  Reference count is %d, pixmap 0x%08x, mask 0x%08x\n",
-                 ip->references, ip->pixmap, ip->mask);
+             fprintf(stderr,
+                     "[Imlib2]  Match found.  Reference count is %d, pixmap 0x%08x, mask 0x%08x\n",
+                     ip->references, ip->pixmap, ip->mask);
 #endif
-         return ip;
-      }
-      ip = ip->next;
-   }
+             return ip;
+          }
+        ip = ip->next;
+     }
    return NULL;
 }
 #endif
@@ -1176,56 +1181,55 @@ __imlib_FreeImage(ImlibImage * im)
 {
    /* if the refcount is positive */
    if (im->references >= 0)
-   {
-      /* reduce a reference from the count */
-      im->references--;
-      /* if its uncachchable ... */
-      if (IMAGE_IS_UNCACHEABLE(im))
-      {
-         /* and we're down to no references for the image then free it */
-         if (im->references == 0)
-            __imlib_ConsumeImage(im);
-      }
-      /* otherwise clean up our cache if the image becoem 0 ref count */
-      else if (im->references == 0)
-         __imlib_CleanupImageCache();
-   }
+     {
+        /* reduce a reference from the count */
+        im->references--;
+        /* if its uncachchable ... */
+        if (IMAGE_IS_UNCACHEABLE(im))
+          {
+             /* and we're down to no references for the image then free it */
+             if (im->references == 0)
+                __imlib_ConsumeImage(im);
+          }
+        /* otherwise clean up our cache if the image becoem 0 ref count */
+        else if (im->references == 0)
+           __imlib_CleanupImageCache();
+     }
 }
-
 
 #ifndef X_DISPLAY_MISSING
 /* free a cached pixmap */
 void
 __imlib_FreePixmap(Display * d, Pixmap p)
 {
-   ImlibImagePixmap *ip;
+   ImlibImagePixmap   *ip;
 
    /* find the pixmap in the cache by display and id */
    ip = __imlib_FindImlibImagePixmapByID(d, p);
    if (ip)
-   {
-      /* if tis positive reference count */
-      if (ip->references > 0)
-      {
-         /* dereference it by one */
-         ip->references--;
+     {
+        /* if tis positive reference count */
+        if (ip->references > 0)
+          {
+             /* dereference it by one */
+             ip->references--;
 #ifdef DEBUG_CACHE
-         fprintf(stderr,
-                 "[Imlib2]  Reference count is now %d for pixmap 0x%08x\n",
-                 ip->references, ip->pixmap);
+             fprintf(stderr,
+                     "[Imlib2]  Reference count is now %d for pixmap 0x%08x\n",
+                     ip->references, ip->pixmap);
 #endif
-         /* if it becaume 0 reference count - clean the cache up */
-         if (ip->references == 0)
-            __imlib_CleanupImagePixmapCache();
-      }
-   }
+             /* if it becaume 0 reference count - clean the cache up */
+             if (ip->references == 0)
+                __imlib_CleanupImagePixmapCache();
+          }
+     }
    else
-   {
+     {
 #ifdef DEBUG_CACHE
-      fprintf(stderr, "[Imlib2]  Pixmap 0x%08x not found.  Freeing.\n", p);
+        fprintf(stderr, "[Imlib2]  Pixmap 0x%08x not found.  Freeing.\n", p);
 #endif
-      XFreePixmap(d, p);
-   }
+        XFreePixmap(d, p);
+     }
 }
 
 /* mark all pixmaps generated from this image as dirty so the cache code */
@@ -1234,17 +1238,17 @@ __imlib_FreePixmap(Display * d, Pixmap p)
 void
 __imlib_DirtyPixmapsForImage(ImlibImage * im)
 {
-   ImlibImagePixmap *ip;
+   ImlibImagePixmap   *ip;
 
    ip = pixmaps;
    /* go through the pixmap list */
    while (ip)
-   {
-      /* if image matches */
-      if (ip->image == im)
-         ip->dirty = 1;
-      ip = ip->next;
-   }
+     {
+        /* if image matches */
+        if (ip->image == im)
+           ip->dirty = 1;
+        ip = ip->next;
+     }
    __imlib_CleanupImagePixmapCache();
 }
 #endif
@@ -1263,15 +1267,15 @@ __imlib_SaveImage(ImlibImage * im, const char *file,
                   ImlibProgressFunction progress, char progress_granularity,
                   ImlibLoadError * er)
 {
-   ImlibLoader *l;
-   char e, *pfile;
+   ImlibLoader        *l;
+   char                e, *pfile;
 
    if (!file)
-   {
-      if (er)
-         *er = LOAD_ERROR_FILE_DOES_NOT_EXIST;
-      return;
-   }
+     {
+        if (er)
+           *er = LOAD_ERROR_FILE_DOES_NOT_EXIST;
+        return;
+     }
    /* ok - just check all our loaders are up to date */
    __imlib_RescanLoaders();
    /* set the filename to the saved one */
@@ -1283,24 +1287,24 @@ __imlib_SaveImage(ImlibImage * im, const char *file,
    l = __imlib_FindBestLoaderForFileFormat(im->real_file, im->format);
    /* no loader - abort */
    if (!l)
-   {
-      if (er)
-         *er = LOAD_ERROR_NO_LOADER_FOR_FILE_FORMAT;
-      /* set the filename back to the laoder image filename */
-      free(im->file);
-      im->file = pfile;
-      return;
-   }
+     {
+        if (er)
+           *er = LOAD_ERROR_NO_LOADER_FOR_FILE_FORMAT;
+        /* set the filename back to the laoder image filename */
+        free(im->file);
+        im->file = pfile;
+        return;
+     }
    /* no saver function in loader - abort */
    if (!l->save)
-   {
-      if (er)
-         *er = LOAD_ERROR_NO_LOADER_FOR_FILE_FORMAT;
-      /* set the filename back to the laoder image filename */
-      free(im->file);
-      im->file = pfile;
-      return;
-   }
+     {
+        if (er)
+           *er = LOAD_ERROR_NO_LOADER_FOR_FILE_FORMAT;
+        /* set the filename back to the laoder image filename */
+        free(im->file);
+        im->file = pfile;
+        return;
+     }
    /* if they want an error returned - assume none by default */
    if (er)
       *er = LOAD_ERROR_NONE;
@@ -1313,33 +1317,33 @@ __imlib_SaveImage(ImlibImage * im, const char *file,
 
    /* if there's an error return and the save faile (e = 0) figure it out */
    if ((er) && (e == 0))
-   {
-      *er = LOAD_ERROR_UNKNOWN;
-      if (errno == EEXIST)
-         *er = LOAD_ERROR_FILE_DOES_NOT_EXIST;
-      else if (errno == EISDIR)
-         *er = LOAD_ERROR_FILE_IS_DIRECTORY;
-      else if (errno == EISDIR)
-         *er = LOAD_ERROR_FILE_IS_DIRECTORY;
-      else if (errno == EACCES)
-         *er = LOAD_ERROR_PERMISSION_DENIED_TO_WRITE;
-      else if (errno == ENAMETOOLONG)
-         *er = LOAD_ERROR_PATH_TOO_LONG;
-      else if (errno == ENOENT)
-         *er = LOAD_ERROR_PATH_COMPONENT_NON_EXISTANT;
-      else if (errno == ENOTDIR)
-         *er = LOAD_ERROR_PATH_COMPONENT_NOT_DIRECTORY;
-      else if (errno == EFAULT)
-         *er = LOAD_ERROR_PATH_POINTS_OUTSIDE_ADDRESS_SPACE;
-      else if (errno == ELOOP)
-         *er = LOAD_ERROR_TOO_MANY_SYMBOLIC_LINKS;
-      else if (errno == ENOMEM)
-         *er = LOAD_ERROR_OUT_OF_MEMORY;
-      else if (errno == EMFILE)
-         *er = LOAD_ERROR_OUT_OF_FILE_DESCRIPTORS;
-      else if (errno == ENOSPC)
-         *er = LOAD_ERROR_OUT_OF_DISK_SPACE;
-      else if (errno == EROFS)
-         *er = LOAD_ERROR_PERMISSION_DENIED_TO_WRITE;
-   }
+     {
+        *er = LOAD_ERROR_UNKNOWN;
+        if (errno == EEXIST)
+           *er = LOAD_ERROR_FILE_DOES_NOT_EXIST;
+        else if (errno == EISDIR)
+           *er = LOAD_ERROR_FILE_IS_DIRECTORY;
+        else if (errno == EISDIR)
+           *er = LOAD_ERROR_FILE_IS_DIRECTORY;
+        else if (errno == EACCES)
+           *er = LOAD_ERROR_PERMISSION_DENIED_TO_WRITE;
+        else if (errno == ENAMETOOLONG)
+           *er = LOAD_ERROR_PATH_TOO_LONG;
+        else if (errno == ENOENT)
+           *er = LOAD_ERROR_PATH_COMPONENT_NON_EXISTANT;
+        else if (errno == ENOTDIR)
+           *er = LOAD_ERROR_PATH_COMPONENT_NOT_DIRECTORY;
+        else if (errno == EFAULT)
+           *er = LOAD_ERROR_PATH_POINTS_OUTSIDE_ADDRESS_SPACE;
+        else if (errno == ELOOP)
+           *er = LOAD_ERROR_TOO_MANY_SYMBOLIC_LINKS;
+        else if (errno == ENOMEM)
+           *er = LOAD_ERROR_OUT_OF_MEMORY;
+        else if (errno == EMFILE)
+           *er = LOAD_ERROR_OUT_OF_FILE_DESCRIPTORS;
+        else if (errno == ENOSPC)
+           *er = LOAD_ERROR_OUT_OF_DISK_SPACE;
+        else if (errno == EROFS)
+           *er = LOAD_ERROR_PERMISSION_DENIED_TO_WRITE;
+     }
 }
