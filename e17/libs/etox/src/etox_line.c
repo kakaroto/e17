@@ -31,27 +31,16 @@ Etox_Line *etox_line_new(char align)
 void etox_line_free(Etox_Line * line)
 {
 	Estyle *bit;
-	Evas_List *l;
 
 	CHECK_PARAM_POINTER("line", line);
 
 	/*
-	 * Only traverse the list if there are bits present.
+	 * Free all of the bits on the line.
 	 */
-	if (line->bits) {
-
-		/*
-		 * Free all of the bits on the line.
-		 */
-		for (l = line->bits; l; l = l->next) {
-			bit = l->data;
-			estyle_free(bit);
-		}
-
-		/*
-		 * Clean up the remaining list
-		 */
-		evas_list_free(line->bits);
+	while (line->bits) {
+		bit = line->bits->data;
+		estyle_free(bit);
+		line->bits = evas_list_remove(line->bits, bit);
 	}
 
 	FREE(line);
