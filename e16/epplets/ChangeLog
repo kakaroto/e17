@@ -32,3 +32,11 @@ access config data.
 Also note the function name changes:  Epplet_save_config(),
 Epplet_query_config_data(), and Epplet_modify_config_data().
 
+-------------------------------------------------------------------------------
+
+Fri Oct 22 22:48:20 PDT 1999
+(KainX)
+
+Multiple instance and config file support for E-Cpu, E-Net, and E-Biff. :-)
+
+-------------------------------------------------------------------------------

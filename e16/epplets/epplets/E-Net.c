@@ -82,30 +82,27 @@ static void
 save_conf(void)
 {
    char s[1024];
-   FILE *f;
-   
-   sprintf(s, "%s/.enetloadrc", getenv("HOME"));
-   f = fopen(s, "w");
-   if (f)
-     {
-	fprintf(f, "%f %f\n", upstream_max, downstream_max);
-	fclose(f);
-     }
+
+   sprintf(s, "%f", upstream_max);
+   Epplet_modify_config_data("upstream_max", s);
+   sprintf(s, "%f", downstream_max);
+   Epplet_modify_config_data("downstream_max", s);
+   Epplet_save_config();
 }
 
 static void
 load_conf(void)
 {
-   char s[1024];
-   FILE *f;
-   
-   sprintf(s, "%s/.enetloadrc", getenv("HOME"));
-   f = fopen(s, "r");
-   if (f)
-     {
-	fscanf(f, "%f %f\n", &upstream_max, &downstream_max);
-	fclose(f);
-     }
+   char *s;
+
+   s = Epplet_query_config_data("upstream_max");
+   if (s) {
+     upstream_max = (double) atof(s);
+   }
+   s = Epplet_query_config_data("downstream_max");
+   if (s) {
+     downstream_max = (double) atof(s);
+   }
 }
 
 static void
@@ -137,9 +134,11 @@ main(int argc, char **argv)
 {
    Epplet_gadget p1, p2;   
    
-   load_conf();
    Epplet_Init("E-Net", "0.1", "Enlightenment Network Load Epplet",
 	       5, 2, argc, argv, 0);
+   Epplet_load_config(NULL, 0);
+   load_conf();
+
    Epplet_timer(cb_timer, NULL, 0.333, "TIMER");
    Epplet_gadget_show(Epplet_create_button(NULL, NULL,
 					   2, 2, 0, 0, "CLOSE", 0, NULL,

@@ -360,6 +360,10 @@ char           *Epplet_query_config_data(char *key);
 /* Use this to change or add a config setting.                              */
 void            Epplet_modify_config_data(char *key, char *value);
 
+/* If you *know* a key doesn't exist, use this to add it.  It takes less    */
+/* time than the above function.                                            */
+void            Epplet_add_config_data(char *key, char *value);
+
 /* This lets you save your current config settings. This is done automati-  */
 /* cally when you call Epplet_cleanup(), so you only need to call this when */
 /* you want to force the configs to disk for some reason.                   */

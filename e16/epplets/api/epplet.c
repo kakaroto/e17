@@ -3742,8 +3742,8 @@ Epplet_get_instance(void)
    return epplet_instance;
 }
 
-static void
-Epplet_config_add_data(char *key, char *value)
+void
+Epplet_add_config_data(char *key, char *value)
 {
   config_dict->entries = realloc(config_dict->entries, sizeof(ConfigItem) * (config_dict->num_entries + 1));
   config_dict->entries[config_dict->num_entries].key = strdup(key);
@@ -3784,7 +3784,7 @@ Epplet_load_config(ConfigItem *defaults, int num_defaults)
                 {
                   continue;
                 }
-              Epplet_config_add_data(s2, s3);
+              Epplet_add_config_data(s2, s3);
 	    }
 	  fclose(f);
 	  return;
@@ -3805,7 +3805,7 @@ Epplet_load_config(ConfigItem *defaults, int num_defaults)
 	    {
               ConfigItem *ci = defaults + i;
 
-              Epplet_config_add_data(ci->key, ci->value);
+              Epplet_add_config_data(ci->key, ci->value);
 	    }
 	}
     }
@@ -3881,7 +3881,7 @@ Epplet_modify_config_data(char *key, char *value)
 	}
 
       /* so we couldn't find the key, thus add it ...*/
-      Epplet_config_add_data(key, value);
+      Epplet_add_config_data(key, value);
     }
   else
     {
@@ -3891,7 +3891,7 @@ Epplet_modify_config_data(char *key, char *value)
 	{
 	  config_dict->num_entries = 0;
 	  config_dict->entries = malloc(sizeof(ConfigItem));
-          Epplet_config_add_data(key, value);
+          Epplet_add_config_data(key, value);
 	}
     }
 }

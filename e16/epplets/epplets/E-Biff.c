@@ -10,7 +10,7 @@ extern void Epplet_redraw(void);
 
 #define MAIL_PATH       "/var/spool/mail"
 #define MAIL_PROG       "Eterm -t mutt"
-#define POLL_INTERVAL   2.0
+#define POLL_INTERVAL   "2.0"
 #define NOMAIL_IMAGE    EROOT "/epplet_icons/nomail.png"
 #define NEWMAIL_IMAGE   EROOT "/epplet_icons/newmail.png"
 #define SEVEN_IMAGE     EROOT "/epplet_icons/7of9.png"
@@ -32,7 +32,11 @@ char *folder_path = NULL, *mailprog = MAIL_PROG, *sound = NULL,
   *seven_image = SEVEN_IMAGE;
 int mp_pid = 0;
 int beep = 1;
-double interval = POLL_INTERVAL;
+double interval = 2.0;
+ConfigItem defaults[] = { { "mailprog", MAIL_PROG }, { "interval", POLL_INTERVAL }, { "beep", "1" }, { "no_mail_image", NOMAIL_IMAGE },
+                          { "new_mail_image", NEWMAIL_IMAGE }, { "seven_image", SEVEN_IMAGE }
+                        };
+int num_defaults = 6;
 
 static void mailcheck_cb(void *data);
 static void close_cb(void *data);
@@ -40,9 +44,7 @@ static void mailprog_cb(void *data);
 static void help_cb(void *data);
 static void in_cb(void *data, Window w);
 static void out_cb(void *data, Window w);
-static void save_conf(void);
-static void load_conf(void);
-static void save_cb(void *data);
+static void process_conf(void);
 
 static void
 mailcheck_cb(void *data)
@@ -83,7 +85,6 @@ close_cb(void *data)
 {
   Epplet_unremember();
   Esync();
-  Epplet_cleanup();
   data = NULL;
   exit(0);
 }
@@ -121,80 +122,56 @@ out_cb(void *data, Window w)
 }
 
 static void
-save_conf(void) {
+process_conf(void) {
 
-  FILE *fp;
-  char buff[255];
-  static const char *homedir = NULL;
+  char *s;
+  char s2[10];
 
-  if (homedir == NULL) {
-    homedir = (getenv("HOME") ? getenv("HOME") : ".");
+  s = Epplet_query_config_data("mailbox");
+  if (s) {
+    folder_path = s;
   }
-  sprintf(buff, "%s/.ebiffrc", homedir);
-  if ((fp = fopen(buff, "wt")) == NULL) {
-    char err[255];
-
-    sprintf(err, "Unable to open %s for writing -- %s.  Config file cannot be saved.\n",
-            buff, strerror(errno));
-    Epplet_dialog_ok(err);
-    return;
+  s = Epplet_query_config_data("mailprog");
+  if (s) {
+    mailprog = s;
+  } else {
+    Epplet_add_config_data("mailprog", mailprog);
   }
-  fprintf(fp, "mailbox %s\n", folder_path);
-  fprintf(fp, "mailprog %s\n", mailprog);
-  fprintf(fp, "interval %3.1f\n", interval);
-  fprintf(fp, "beep %d\n", beep);
-  fprintf(fp, "no mail image %s\n", nomail_image);
-  fprintf(fp, "new mail image %s\n", newmail_image);
-  fprintf(fp, "seven image %s\n", seven_image);
-  if (sound != NULL) {
-    fprintf(fp, "sound %s\n", sound);
+  s = Epplet_query_config_data("interval");
+  if (s) {
+    interval = (double) atof(s);
+  } else {
+    sprintf(s2, "%3.2f", interval);
+    Epplet_add_config_data("interval", interval);
   }
-  fclose(fp);
-}
-
-static void
-load_conf(void) {
-
-  FILE *fp;
-  char buff[1024], name[255], *p;
-  unsigned char line = 0;
-  static const char *homedir = NULL;
-
-  if (homedir == NULL) {
-    homedir = (getenv("HOME") ? getenv("HOME") : ".");
+  s = Epplet_query_config_data("beep");
+  if (s) {
+    beep = (!strcasecmp(s, "1"));
+  } else {
+    Epplet_add_config_data("beep", ((beep) ? ("1") : ("0")));
   }
-  sprintf(name, "%s/.ebiffrc", homedir);
-  if ((fp = fopen(name, "rt")) == NULL) {
-    return;
+  s = Epplet_query_config_data("no_mail_image");
+  if (s) {
+    nomail_image = s;
+  } else {
+    Epplet_add_config_data("no_mail_image", nomail_image);
   }
-  for (; fgets(buff, sizeof(buff), fp);) {
-    line++;
-    p = strchr(buff, '\n');
-    *p = 0;
-    if (BEGMATCH(buff, "mailbox ")) {
-      folder_path = strdup(buff + sizeof("mailbox ") - 1);
-    } else if (BEGMATCH(buff, "mailprog ")) {
-      mailprog = strdup(buff + sizeof("mailprog ") - 1);
-    } else if (BEGMATCH(buff, "interval ")) {
-      sscanf(buff, "%*s %lf", &interval);
-    } else if (BEGMATCH(buff, "beep ")) {
-      sscanf(buff, "%*s %d", &beep);
-    } else if (BEGMATCH(buff, "no mail image ")) {
-      nomail_image = strdup(buff + sizeof("no mail image ") - 1);
-    } else if (BEGMATCH(buff, "new mail image ")) {
-      newmail_image = strdup(buff + sizeof("new mail image ") - 1);
-    } else if (BEGMATCH(buff, "seven image ")) {
-      seven_image = strdup(buff + sizeof("seven image ") - 1);
-    } else if (BEGMATCH(buff, "sound ")) {
-      sound = strdup(buff + sizeof("sound ") - 1);
-    } else {
-      char err[255];
-
-      sprintf(err, "Unrecognized identifier at line %d, file %s:  %s\n", line, name, buff);
-      Epplet_dialog_ok(err);
-    }
+  s = Epplet_query_config_data("new_mail_image");
+  if (s) {
+    newmail_image = s;
+  } else {
+    Epplet_add_config_data("new_mail_image", newmail_image);
   }
-  fclose(fp);
+  s = Epplet_query_config_data("seven_image");
+  if (s) {
+    seven_image = s;
+  } else {
+    Epplet_add_config_data("seven_image", seven_image);
+  }
+  s = Epplet_query_config_data("sound");
+  if (s) {
+    sound = s;
+  }
 }
 
 int
@@ -204,9 +181,10 @@ main(int argc, char **argv)
 
   prio = getpriority(PRIO_PROCESS, getpid());
   setpriority(PRIO_PROCESS, getpid(), prio + 10);
-  atexit(save_conf);
-  Epplet_Init("E-Biff", "0.4", "Enlightenment Mailbox Checker Epplet", 3, 3, argc, argv, 0);
-  load_conf();
+  atexit(Epplet_cleanup);
+  Epplet_Init("E-Biff", "0.5", "Enlightenment Mailbox Checker Epplet", 3, 3, argc, argv, 0);
+  Epplet_load_config(defaults, num_defaults);
+  process_conf();
   if (folder_path == NULL) {
     if ((folder_path = getenv("MAIL")) == NULL) {
       char *username = getenv("LOGNAME");
@@ -221,6 +199,7 @@ main(int argc, char **argv)
       sprintf(folder_path, MAIL_PATH "/%s", username);
       D(("Generated folder path of \"%s\"\n", folder_path));
     }
+    Epplet_modify_config_data("mailbox", folder_path);
   }
   close_button = Epplet_create_button(NULL, NULL, 2, 2, 0, 0, "CLOSE", 0, NULL, close_cb, NULL);
   help_button = Epplet_create_button(NULL, NULL, 18, 2, 0, 0, "HELP", 0, NULL, help_cb, NULL);
