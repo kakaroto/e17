@@ -205,9 +205,6 @@ main(int argc, char **argv)
 	    dbfile = argv[i];
 	  }
 
-        if (!add && !del && !get)
-	  continue;
-
 	if (!dbfile)
 	  {
 	    fprintf(stderr, "No database file specified!\n  %s -h for details\n", argv[0]);
@@ -224,9 +221,16 @@ main(int argc, char **argv)
 	    exit(-1);
 	  }
 
+	if (!add && !del && !get && i < argc-1)
+	  continue;
+
 	if ((add) || (del) || (get))
 	  {
-	    db = e_db_open(dbfile);
+	    if (get)	      
+	      db = e_db_open_read(dbfile);
+	    else
+	      db = e_db_open(dbfile);
+
 	    if (!db)
 	      {
 		fprintf(stderr, "Database file %s cannot be opened!\n  %s -h for details\n", dbfile, argv[0]);
@@ -348,7 +352,7 @@ main(int argc, char **argv)
 	    char **keys;
 	    int keys_num;
 	    
-	    db = e_db_open(dbfile);
+	    db = e_db_open_read(dbfile);
 	    if (!db)
 	      {
 		fprintf(stderr, "Database file %s cannot be opened!\n  %s -h for details\n", dbfile, argv[0]);
