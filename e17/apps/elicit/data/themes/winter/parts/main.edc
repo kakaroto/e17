@@ -154,6 +154,26 @@
           }
           border, 7 8 7 8;
         }
+        description {
+          state, "hidden" 0.0;
+          min, 0 0;
+          max, 9999 9999;
+          color, 0 0 0 0;
+          rel1 {
+            to, "center";
+            relative, 0.0 0.0;
+            offset, 6 13;
+          }
+          rel2 {
+            to, "center";
+            relative, 1.0 1.0;
+            offset, -6 -39;
+          }
+          image {
+            normal, "roundedbox.png";
+          }
+          border, 7 8 7 8;
+        }
       }
       
   //-- swatch --//
@@ -181,6 +201,26 @@
           state, "default" 0.0;
           min, 22 22;
           max, 22 22;
+          rel1 {
+            to, "center";
+            relative, 0.0 1.0;
+            offset, 6 -34;
+          }
+          rel2 {
+            to, "center";
+            relative, 0.0 1.0;
+            offset, 28 -12;
+          }
+          image {
+            normal, "roundedbox.png";
+          }
+          border, 7 8 7 8;
+        }
+        description {
+          state, "hidden" 0.0;
+          min, 22 22;
+          max, 22 22;
+          color, 0 0 0 0;
           rel1 {
             to, "center";
             relative, 0.0 1.0;
