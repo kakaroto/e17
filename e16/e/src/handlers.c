@@ -62,7 +62,7 @@ HandleSigIll(int num)
 	     "binary of Enlightenment that was compiled for a make or model\n"
 	       "of CPU not 100%% identical or compatible with yours. Please\n"
 		 "either obtain the correct package for your system, or\n"
-	       "re-compile enlightenment and possibly any support libraries\n"
+	       "re-compile Enlightenment and possibly any support libraries\n"
 		 "that you got in binary format to run Enlightenment.\n"));
    doExit("error");
    EDBUG_RETURN_;
@@ -237,7 +237,7 @@ EHandleXError(Display * d, XErrorEvent * ev)
 	     Alert(_
 		   ("Are you absolutely sure you want to have Enlightenment\n"
 		    "edit your startup files for you?\n" "\n"
-		  "If your startup files are highly customized this may not\n"
+		  "If your startup files are highly customised this may not\n"
 		    "work.\n" "\n" "Are you ABSOLUTELY sure?\n"));
 	     RESET_ALERT;
 	     AddE();

@@ -531,7 +531,7 @@ CreatePager(void)
 		       "but it is incapable of doing ZPixmap Shared pixmaps\n"
 			"(The server does not claim to be able to do them).\n"
 			     "\n"
-			     "The pager in enlightenment will run slowly in snapshot\n"
+			     "The pager in Enlightenment will run slowly in snapshot\n"
 			"mode if you continue to use that mode of the pager\n"
 			     "under these conditions.\n"
 			     "\n"
@@ -547,7 +547,7 @@ CreatePager(void)
 			   "not have Shared Pixmaps enabled in your Imlib configuration.\n"
 			   "\n"
 			   "Please enable Shared Pixmaps in your Imlib configuration\n"
-			   "then restart enlightenment to gain better performance for\n"
+			   "then restart Enlightenment to gain better performance for\n"
 			   "the pagers when snapshot mode is enabled.\n"
 			   "\n"));
 	       }

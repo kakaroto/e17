@@ -4077,3 +4077,13 @@ Tue Dec 21 08:02:15 PST 1999
 (Raster)
 
 add in patches from 2 AUTHORS for internationalisation...
+
+-------------------------------------------------------------------------------
+
+Tue Dec 21 08:12:29 PST 1999
+(Raster)
+
+fix some consitancies for text but peter um.. :) not all that patch was 
+typos.. the original spelling was correct. I was using "English" not "American"
+:) (note Enlish spelligns for colour is coloUr not color, and initialise is 
+with an S not a Z in English) :)
