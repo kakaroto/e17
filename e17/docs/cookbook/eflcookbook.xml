@@ -23,6 +23,7 @@
  <!ENTITY ecore_config_listener SYSTEM "xml/ecore/ecore_config_listener.xml">
  <!ENTITY ecore_ipc_intro SYSTEM "xml/ecore/ecore_ipc_intro.xml">
  <!ENTITY ecore_timers SYSTEM "xml/ecore/ecore_timers.xml">
+ <!ENTITY ecore_con_server_intro SYSTEM "xml/ecore/ecore_con_server_intro.xml">
 
  <!-- evas -->
  <!ENTITY evas_ecore_setup SYSTEM "xml/evas/evas_ecore_setup.xml">
