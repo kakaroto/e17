@@ -937,3 +937,10 @@ Sun Nov 28 21:52:12 GMT 1999
 
 Made the screensaver lock command configurable in E-ScreenSave.
 
+-------------------------------------------------------------------------------
+
+Mon Nov 29 01:08:58 GMT 1999
+(gilbertt)
+
+Hrm. A segfault with a certain form of url. Fixed.
+

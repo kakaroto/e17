@@ -33,7 +33,7 @@ static void display_string (char *string);
 static void handle_url (char *url, char *type);
 static void add_url_to_popup (char *url);
 static int url_in_popup (char *url);
-static char * validate_url (char *url);
+static char *validate_url (char *url);
 
 static void
 choose_random_cloak (void *data)
@@ -427,7 +427,6 @@ add_url_to_url_list (char *url)
 static void
 add_url_to_popup (char *url)
 {
-
   D (("In add_url_to_popup: adding = -->%s<--\n", url));
 
   add_url_to_url_list (url);
@@ -706,6 +705,8 @@ url_in_popup (char *url)
 static void
 display_string (char *string)
 {
+  D (("In display_string: String -->%s<--\n", string));
+
   if (dtext.str)
     free (dtext.str);
   dtext.str = _Strdup (string);
@@ -724,8 +725,6 @@ handle_url (char *url, char *type)
     return;
 
   D (("In handle_url: url -->%s<--\n", url));
-
-  display_string (url);
 
   if (!strcmp (type, "www"))
     {
@@ -772,6 +771,8 @@ cb_shoot (void *data)
     return;
 
   D (("In cb_shoot: valid url -->%s<--\n", validurl));
+
+  display_string (validurl);
 
   handle_url (validurl, data);
 
