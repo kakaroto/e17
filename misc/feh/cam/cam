@@ -17,6 +17,7 @@ my $POST = "";
 # Options
 my $help        = '';
 my $fullscreen  = '';
+my $geometry    = '';
 my $list        = '';
 my $verbose     = '';
 my $add         = '';
@@ -36,8 +37,9 @@ my $ref = "";
 my %bms = ();
 
 GetOptions('help|?|h'                    => \$help,
-           'full-screen|f|giblets-mom|g' => \$fullscreen,
+           'full-screen|f|giblets-mom' => \$fullscreen,
            'list|l'                      => \$list,
+           'geometry|g'                  => \$geometry,
            'verbose|v'                   => \$verbose,
            'add|a'                       => \$add,
            'keep-images|k|save-pr0n'     => \$keep,
@@ -57,6 +59,10 @@ if ($verbose)    {
 if ($fullscreen) {
       $PRE =~ s/-w//;
       $PRE .= " --full-screen --auto-zoom ";
+}
+
+if ($geometry) {
+  $PRE .= " --geometry $geometry ";
 }
 
 # if requested, add a key/url pair to bookmarks file
@@ -170,6 +176,8 @@ Usage:
     Start feh in full-screen mode (aka -g and --giblets-mom \"viewing\" mode).
   cam [-k|--keep-images] keys
     Save each image in the current directory (aka --save-pr0n).
+  cam [-g|--geometry] xxx
+    Use window geometry xxx (e.g. 640x480).
   cam [-v|--verbose] options
     Start feh in verbose mode (feh -V).
   cam <-h|-?|--help>
