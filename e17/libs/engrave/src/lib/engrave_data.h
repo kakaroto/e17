@@ -27,7 +27,7 @@ struct _Engrave_Data
   int int_value; /**< The data int value */
 };
 
-Engrave_Data * engrave_data_new(char *key, char *value);
+Engrave_Data * engrave_data_new(const char *key, const char *value);
 void engrave_data_free(Engrave_Data *ed);
 
 char *engrave_data_key_get(Engrave_Data *ed);

@@ -11,7 +11,7 @@
  * success or NULL on failure.
  */
 Engrave_Image *
-engrave_image_new(char *name, Engrave_Image_Type type, double value)
+engrave_image_new(const char *name, Engrave_Image_Type type, double value)
 {
   Engrave_Image *image;
 

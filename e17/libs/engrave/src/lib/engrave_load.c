@@ -18,7 +18,7 @@ char *engrave_filename = NULL;
  * success or NULL on failure.
  */
 Engrave_File *
-engrave_load_edc(char *file, char *imdir, char *fontdir)
+engrave_load_edc(const char *file, const char *imdir, const char *fontdir)
 {
   Engrave_File *enf;
   int fd;
@@ -59,7 +59,7 @@ engrave_load_edc(char *file, char *imdir, char *fontdir)
  * success or NULL on failure.
  */
 Engrave_File *
-engrave_load_eet(char *filename)
+engrave_load_eet(const char *filename)
 {
   Engrave_File *enf = NULL;
   char *cmd = NULL;

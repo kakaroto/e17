@@ -172,7 +172,7 @@ struct _Engrave_Part_State
 Engrave_Part_State * engrave_part_state_new(void);
 void engrave_part_state_free(Engrave_Part_State *eps);
 
-void engrave_part_state_name_set(Engrave_Part_State *eps, char *name, 
+void engrave_part_state_name_set(Engrave_Part_State *eps, const char *name, 
                                                           double value);
 char *engrave_part_state_name_get(Engrave_Part_State *eps, double *value);
 
@@ -187,16 +187,16 @@ void engrave_part_state_aspect_preference_set(Engrave_Part_State *eps,
 void engrave_part_state_rel1_relative_set(Engrave_Part_State *eps, 
                                                         int x, int y);
 void engrave_part_state_rel1_offset_set(Engrave_Part_State *eps, int x, int y);
-void engrave_part_state_rel1_to_set(Engrave_Part_State *eps, char *to);
-void engrave_part_state_rel1_to_x_set(Engrave_Part_State *eps, char *to);
-void engrave_part_state_rel1_to_y_set(Engrave_Part_State *eps, char *to);
+void engrave_part_state_rel1_to_set(Engrave_Part_State *eps, const char *to);
+void engrave_part_state_rel1_to_x_set(Engrave_Part_State *eps, const char *to);
+void engrave_part_state_rel1_to_y_set(Engrave_Part_State *eps, const char *to);
 
 void engrave_part_state_rel2_relative_set(Engrave_Part_State *eps, 
                                                         int x, int y);
 void engrave_part_state_rel2_offset_set(Engrave_Part_State *eps, int x, int y);
-void engrave_part_state_rel2_to_set(Engrave_Part_State *eps, char *to);
-void engrave_part_state_rel2_to_x_set(Engrave_Part_State *eps, char *to);
-void engrave_part_state_rel2_to_y_set(Engrave_Part_State *eps, char *to);
+void engrave_part_state_rel2_to_set(Engrave_Part_State *eps, const char *to);
+void engrave_part_state_rel2_to_x_set(Engrave_Part_State *eps, const char *to);
+void engrave_part_state_rel2_to_y_set(Engrave_Part_State *eps, const char *to);
 
 void engrave_part_state_image_normal_set(Engrave_Part_State *eps, 
                                                     Engrave_Image *im);
@@ -206,7 +206,7 @@ void engrave_part_state_image_tween_add(Engrave_Part_State *eps,
 void engrave_part_state_image_border_set(Engrave_Part_State *eps, 
                                         int l, int r, int t, int b);
 void engrave_part_state_color_class_set(Engrave_Part_State *eps,
-                                                        char *class);
+                                                        const char *class);
 void engrave_part_state_color_set(Engrave_Part_State *eps, 
                                         int r, int g, int b, int a);
 void engrave_part_state_color2_set(Engrave_Part_State *eps, 
@@ -224,10 +224,12 @@ void engrave_part_state_fill_origin_offset_set(Engrave_Part_State *eps,
 void engrave_part_state_fill_size_offset_set(Engrave_Part_State *eps,
                                                 int x, int y);
 
-void engrave_part_state_text_text_set(Engrave_Part_State *eps, char *text);
+void engrave_part_state_text_text_set(Engrave_Part_State *eps, 
+                                                        const char *text);
 void engrave_part_state_text_text_class_set(Engrave_Part_State *eps, 
-                                                            char *text);
-void engrave_part_state_text_font_set(Engrave_Part_State *eps, char *font);
+                                                        const char *text);
+void engrave_part_state_text_font_set(Engrave_Part_State *eps, 
+                                                        const char *font);
 void engrave_part_state_text_size_set(Engrave_Part_State *eps, int size);
 void engrave_part_state_text_fit_set(Engrave_Part_State *eps, int x, int y);
 void engrave_part_state_text_min_set(Engrave_Part_State *eps, int x, int y);

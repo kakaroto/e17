@@ -59,7 +59,7 @@ engrave_program_free(Engrave_Program *ep)
  * @return Returns no value.
  */
 void
-engrave_program_script_set(Engrave_Program *ep, char *script)
+engrave_program_script_set(Engrave_Program *ep, const char *script)
 {
   if (!ep) return;
   IF_FREE(ep->script);
@@ -75,7 +75,7 @@ engrave_program_script_set(Engrave_Program *ep, char *script)
  * @return Returns no value.
  */
 void
-engrave_program_name_set(Engrave_Program *ep, char *name)
+engrave_program_name_set(Engrave_Program *ep, const char *name)
 {
   if (!ep) return;
   IF_FREE(ep->name);
@@ -90,7 +90,7 @@ engrave_program_name_set(Engrave_Program *ep, char *name)
  * @return Returns no value.
  */
 void
-engrave_program_signal_set(Engrave_Program *ep, char *signal)
+engrave_program_signal_set(Engrave_Program *ep, const char *signal)
 {
   if (!ep) return;
   IF_FREE(ep->signal);
@@ -105,7 +105,7 @@ engrave_program_signal_set(Engrave_Program *ep, char *signal)
  * @return Returns no value.
  */
 void
-engrave_program_source_set(Engrave_Program *ep, char *source)
+engrave_program_source_set(Engrave_Program *ep, const char *source)
 {
   if (!ep) return;
   IF_FREE(ep->source);
@@ -120,7 +120,7 @@ engrave_program_source_set(Engrave_Program *ep, char *source)
  * @return Returns no value.
  */
 void
-engrave_program_target_add(Engrave_Program *ep, char *target)
+engrave_program_target_add(Engrave_Program *ep, const char *target)
 {
   if (!ep || !target) return;
   ep->targets = evas_list_append(ep->targets, strdup(target));
@@ -134,7 +134,7 @@ engrave_program_target_add(Engrave_Program *ep, char *target)
  * @return Returns no value.
  */
 void
-engrave_program_after_add(Engrave_Program *ep, char *after)
+engrave_program_after_add(Engrave_Program *ep, const char *after)
 {
   if (!ep || !after) return;
   ep->afters = evas_list_append(ep->afters, strdup(after));
@@ -169,7 +169,8 @@ engrave_program_in_set(Engrave_Program *ep, double from, double range)
  */
 void
 engrave_program_action_set(Engrave_Program *ep, Engrave_Action action,
-                                              char *state, char *state2,
+                                              const char *state, 
+                                              const char *state2,
                                               double value, double value2)
 {
   if (!ep) return;

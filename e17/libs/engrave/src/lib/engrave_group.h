@@ -46,8 +46,8 @@ void engrave_group_data_add(Engrave_Group *eg, Engrave_Data *ed);
 void engrave_group_part_add(Engrave_Group *eg, Engrave_Part *ep);
 void engrave_group_program_add(Engrave_Group *eg, Engrave_Program *ep);
 
-void engrave_group_script_set(Engrave_Group *eg, char *script);
-void engrave_group_name_set(Engrave_Group *eg, char *name);
+void engrave_group_script_set(Engrave_Group *eg, const char *script);
+void engrave_group_name_set(Engrave_Group *eg, const char *name);
 void engrave_group_min_size_set(Engrave_Group *eg, int w, int h);
 void engrave_group_max_size_set(Engrave_Group *eg, int w, int h);
 

@@ -137,7 +137,7 @@ engrave_file_group_last_get(Engrave_File *ef)
  * corresponding image can be found.
  */
 Engrave_Image *
-engrave_file_image_by_name_find(Engrave_File *ef, char *name)
+engrave_file_image_by_name_find(Engrave_File *ef, const char *name)
 {
   Evas_List *l;
   for (l = ef->images; l; l = l->next)

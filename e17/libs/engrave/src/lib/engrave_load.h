@@ -13,8 +13,9 @@
  * @{
  */
 
-Engrave_File *engrave_load_edc(char *file, char *imdir, char *fontdir);
-Engrave_File *engrave_load_eet(char *filename);
+Engrave_File *engrave_load_edc(const char *file, const char *imdir, 
+                                            const char *fontdir);
+Engrave_File *engrave_load_eet(const char *filename);
 
 /**
  * @}

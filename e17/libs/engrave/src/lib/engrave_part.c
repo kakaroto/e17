@@ -80,7 +80,7 @@ engrave_part_repeat_events_set(Engrave_Part *ep, int val)
  * @return Returns no value.
  */
 void
-engrave_part_name_set(Engrave_Part *ep, char *name)
+engrave_part_name_set(Engrave_Part *ep, const char *name)
 {
   if (!ep) return;
   IF_FREE(ep->name);
@@ -274,7 +274,7 @@ engrave_part_effect_set(Engrave_Part *ep, Engrave_Text_Effect effect)
  * @return Returns no value.
  */
 void
-engrave_part_clip_to_set(Engrave_Part *ep, char *clip_to)
+engrave_part_clip_to_set(Engrave_Part *ep, const char *clip_to)
 {
   if (!ep) return;
   IF_FREE(ep->clip_to);
@@ -325,7 +325,7 @@ engrave_part_dragable_y_set(Engrave_Part *ep, int y, int step, int count)
  * @return Returns no value.
  */
 void
-engrave_part_dragable_confine_set(Engrave_Part *ep, char *confine)
+engrave_part_dragable_confine_set(Engrave_Part *ep, const char *confine)
 {
   if (!ep) return;
   IF_FREE(ep->dragable.confine);
@@ -371,7 +371,7 @@ engrave_part_state_add(Engrave_Part *ep, Engrave_Part_State *eps)
  */
 Engrave_Part_State *
 engrave_part_state_by_name_value_find(Engrave_Part *ep, 
-                                            char *name, double val)
+                                    const char *name, double val)
 {
   Evas_List *l;
   if (!ep || !name) return NULL;

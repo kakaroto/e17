@@ -26,7 +26,7 @@ struct _Engrave_Font
   char *path; /**< The font path */
 };
 
-Engrave_Font *engrave_font_new(char *path, char *name);
+Engrave_Font *engrave_font_new(const char *path, const char *name);
 void engrave_font_free(Engrave_Font *ef);
 
 char *engrave_font_name_get(Engrave_Font *ef);

@@ -10,7 +10,7 @@
  * NULL on failure.
  */
 Engrave_Data *
-engrave_data_new(char *key, char *value)
+engrave_data_new(const char *key, const char *value)
 {
   Engrave_Data *data;
   data = NEW(Engrave_Data, 1);

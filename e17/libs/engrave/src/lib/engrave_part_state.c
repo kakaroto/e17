@@ -100,7 +100,8 @@ engrave_part_state_free(Engrave_Part_State *eps)
  * @return Returns no value 
  */
 void
-engrave_part_state_name_set(Engrave_Part_State *eps, char *name, double value)
+engrave_part_state_name_set(Engrave_Part_State *eps, const char *name, 
+                                                          double value)
 {
   if (!eps) return;
   IF_FREE(eps->name);
@@ -289,7 +290,7 @@ engrave_part_state_rel2_offset_set(Engrave_Part_State *eps, int x, int y)
  * @return Returns no value 
  */
 void
-engrave_part_state_rel1_to_x_set(Engrave_Part_State *eps, char *to)
+engrave_part_state_rel1_to_x_set(Engrave_Part_State *eps, const char *to)
 {
   if (!eps) return;
   IF_FREE(eps->rel1.to_x);
@@ -304,7 +305,7 @@ engrave_part_state_rel1_to_x_set(Engrave_Part_State *eps, char *to)
  * @return Returns no value 
  */
 void
-engrave_part_state_rel2_to_x_set(Engrave_Part_State *eps, char *to)
+engrave_part_state_rel2_to_x_set(Engrave_Part_State *eps, const char *to)
 {
   if (!eps) return;
   IF_FREE(eps->rel2.to_x);
@@ -319,7 +320,7 @@ engrave_part_state_rel2_to_x_set(Engrave_Part_State *eps, char *to)
  * @return Returns no value 
  */
 void
-engrave_part_state_rel1_to_y_set(Engrave_Part_State *eps, char *to)
+engrave_part_state_rel1_to_y_set(Engrave_Part_State *eps, const char *to)
 {
   if (!eps) return;
   IF_FREE(eps->rel1.to_y);
@@ -334,7 +335,7 @@ engrave_part_state_rel1_to_y_set(Engrave_Part_State *eps, char *to)
  * @return Returns no value 
  */
 void
-engrave_part_state_rel2_to_y_set(Engrave_Part_State *eps, char *to)
+engrave_part_state_rel2_to_y_set(Engrave_Part_State *eps, const char *to)
 {
   if (!eps) return;
   IF_FREE(eps->rel2.to_y);
@@ -349,7 +350,7 @@ engrave_part_state_rel2_to_y_set(Engrave_Part_State *eps, char *to)
  * @return Returns no value 
  */
 void
-engrave_part_state_rel1_to_set(Engrave_Part_State *eps, char *to)
+engrave_part_state_rel1_to_set(Engrave_Part_State *eps, const char *to)
 {
   engrave_part_state_rel1_to_x_set(eps, to);
   engrave_part_state_rel1_to_y_set(eps, to);
@@ -363,7 +364,7 @@ engrave_part_state_rel1_to_set(Engrave_Part_State *eps, char *to)
  * @return Returns no value 
  */
 void
-engrave_part_state_rel2_to_set(Engrave_Part_State *eps, char *to)
+engrave_part_state_rel2_to_set(Engrave_Part_State *eps, const char *to)
 {
   engrave_part_state_rel2_to_x_set(eps, to);
   engrave_part_state_rel2_to_y_set(eps, to);
@@ -428,7 +429,7 @@ engrave_part_state_image_border_set(Engrave_Part_State *eps,
  * @return Returns no value 
  */
 void
-engrave_part_state_color_class_set(Engrave_Part_State *eps, char *class)
+engrave_part_state_color_class_set(Engrave_Part_State *eps, const char *class)
 {
   if (!eps) return;
   IF_FREE(eps->color_class);
@@ -588,7 +589,7 @@ engrave_part_state_fill_size_offset_set(Engrave_Part_State *eps,
  * @return Returns no value 
  */
 void
-engrave_part_state_text_text_set(Engrave_Part_State *eps, char *text)
+engrave_part_state_text_text_set(Engrave_Part_State *eps, const char *text)
 {
   if (!eps) return;
   IF_FREE(eps->text.text);
@@ -604,7 +605,7 @@ engrave_part_state_text_text_set(Engrave_Part_State *eps, char *text)
  */
 void
 engrave_part_state_text_text_class_set(Engrave_Part_State *eps,
-                                                char *text_class)
+                                                const char *text_class)
 {
   if (!eps) return;
   IF_FREE(eps->text.text_class);
@@ -620,7 +621,7 @@ engrave_part_state_text_text_class_set(Engrave_Part_State *eps,
  */
 void
 engrave_part_state_text_font_set(Engrave_Part_State *eps,
-                                                char *font)
+                                                const char *font)
 {
   if (!eps) return;
   IF_FREE(eps->text.font);

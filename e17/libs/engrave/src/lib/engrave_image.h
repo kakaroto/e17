@@ -28,7 +28,7 @@ struct _Engrave_Image
   double value;             /**< Compression value for image */
 };
 
-Engrave_Image *engrave_image_new(char *name, 
+Engrave_Image *engrave_image_new(const char *name, 
                     Engrave_Image_Type type, double value);
 Engrave_Image *engrave_image_dup(Engrave_Image *from);
 void engrave_image_free(Engrave_Image *ef);

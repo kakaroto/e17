@@ -116,7 +116,7 @@ engrave_out_data(FILE *out, char *name, char *fmt, ...)
  * @return Returns 1 on success 0 otherwise.
  */
 int
-engrave_eet_output(Engrave_File *engrave_file, char *path)
+engrave_eet_output(Engrave_File *engrave_file, const char *path)
 {
   static char tmpn[1024];
   int len = 0, fd = 0, ret = 0;
@@ -156,7 +156,7 @@ engrave_eet_output(Engrave_File *engrave_file, char *path)
  * @return Returns 1 on success 0 otherwise.
  */
 int
-engrave_edc_output(Engrave_File *engrave_file, char *path)
+engrave_edc_output(Engrave_File *engrave_file, const char *path)
 {
   FILE *out = NULL;
   

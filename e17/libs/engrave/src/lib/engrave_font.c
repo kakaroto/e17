@@ -10,7 +10,7 @@
  * or NULL on failure.
  */
 Engrave_Font *
-engrave_font_new(char *path, char *name)
+engrave_font_new(const char *path, const char *name)
 {
   Engrave_Font *ef;
   ef = NEW(Engrave_Font, 1);

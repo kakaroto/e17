@@ -80,7 +80,7 @@ engrave_group_data_add(Engrave_Group *eg, Engrave_Data *ed)
  * @return Returns no value.
  */
 void
-engrave_group_script_set(Engrave_Group *eg, char *script)
+engrave_group_script_set(Engrave_Group *eg, const char *script)
 {
   if (!eg) return;
   IF_FREE(eg->script);
@@ -95,7 +95,7 @@ engrave_group_script_set(Engrave_Group *eg, char *script)
  * @return Returns no value.
  */
 void
-engrave_group_name_set(Engrave_Group *eg, char *name)
+engrave_group_name_set(Engrave_Group *eg, const char *name)
 {
   if (!eg) return;
   IF_FREE(eg->name);
