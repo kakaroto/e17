@@ -1901,3 +1901,18 @@ Added basic texture mapping for the cube. It does not take lighting into
 effect, and the damn texture is pixilating as it spins, but it works :P I'll
 fix the pixilating and add light and alpha blending in in a bit.
 
+-------------------------------------------------------------------------------
+
+Thu Jan 27 20:13:06 CST 2000
+(thebard)
+
+Fixed the pixilating problem. Im not using mipmaps cause i dont feel like
+spending the time. deal with it. :P I am seperating out the specular light
+so we get nice lighting and material properties with the texture. Yeah. The
+effect fails with Invalid value to GLX_lightmodel_size on my box when running
+in GLX hardware. It runs fine and looks nice in software MESA. I'm gonna
+spend some time tracking down the glx bug. Not much else to do in this epplet,
+It pretty much demos all the stuff i wanted to show. Go out and build
+3D spinning load meters and stuff now!
+
+

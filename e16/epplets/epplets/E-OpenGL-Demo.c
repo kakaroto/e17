@@ -149,6 +149,8 @@ setup_rotating_cube(void)
 
 	if(gTexturing == 1)
 		glEnable(GL_TEXTURE_2D);
+	else
+		glDisable(GL_TEXTURE_2D);
 
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 	glBindTexture(GL_TEXTURE_2D, gTextureObject);
@@ -184,6 +186,7 @@ enable_lighting(void)
 	glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
 	glLightfv(GL_LIGHT0, GL_DIFFUSE, white_light);
 	glLightfv(GL_LIGHT0, GL_SPECULAR, white_light);
+	//glLightModeli(GL_LIGHT_MODEL_COLOR_CONTROL, GL_SEPARATE_SPECULAR_COLOR);
 
 	/* We enable the lights, but notice we dont set the position till later */
 	glEnable(GL_LIGHTING);
@@ -382,9 +385,11 @@ int
 main(int argc, char **argv)
 {
 	GLXContext cx;
-	int prio, hold;
+	int prio;
 	Epplet_gadget objectPopup, lightingPopup, texturePopup;
 	FILE *textureFile;
+	/* This has to be an unsignned byte, otherwise you'll loose the 8th
+	   bit to the sign since the texture is 8 bits per color component. */
 	GLubyte textureArray[3*64*64];
 
 	prio = getpriority(PRIO_PROCESS, getpid());
@@ -461,10 +466,9 @@ main(int argc, char **argv)
 
 	/* Lets load teh texture */
   if((textureFile = fopen(EROOT "/epplet_data/E-OpenGL-Demo/cube_texture.RGB", "rb")) == NULL)
-	printf("Heh dipshitm it didnt work!\n");
+	printf("Failed to load the cube texture file!\n");
 	else {
-		hold = fread(textureArray, sizeof(GLubyte), 3*64*64, textureFile);
-		printf("Size=%i\n", hold);
+		fread(textureArray, sizeof(GLubyte), 3*64*64, textureFile);
 		fclose(textureFile);
 
 		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
@@ -473,8 +477,8 @@ main(int argc, char **argv)
 
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 64, 64, 0, GL_RGB, GL_UNSIGNED_BYTE,
 			textureArray);
 	}
