@@ -442,7 +442,7 @@ geist_poly_stretch(geist_object * obj, int x, int y)
 void
 geist_poly_zoom(geist_object * obj, int x, int y)
 {
-   double dx, center_x;
+   double dx, center_x,center_y;
    geist_poly *poly;
    gib_list *l;
    geist_point *p;
@@ -456,7 +456,7 @@ geist_poly_zoom(geist_object * obj, int x, int y)
    /*calculate center point in proportion to which we will stretch. Notice
     * the exceedingly hard math. Dont hurt your eyes. Till */
    center_x = (double) (obj->x + (double) obj->w / 2);
-
+   center_y = (double) (obj->y + (double) obj->h / 2);
 
    /* calculate resize ratio relative to obj center point */
    dx = labs((double) x - center_x) / ((double) obj->w / 2);
@@ -470,7 +470,7 @@ geist_poly_zoom(geist_object * obj, int x, int y)
          p->x =
             (double) obj->x + (double) obj->w / 2 + ((p->x - center_x) * dx);
          p->y =
-            (double) obj->y + (double) obj->h / 2 + ((p->y - center_x) * dx);
+            (double) obj->y + (double) obj->h / 2 + ((p->y - center_y) * dx);
 
       }
    }
