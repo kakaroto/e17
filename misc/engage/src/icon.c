@@ -67,7 +67,7 @@ od_icon_new_minwin(Ecore_X_Window win)
 
   od_icon_mapping_get(winclass, &name, &icon_name);
   char           *icon_path = od_icon_path_get(icon_name);
-#if 0
+#if 1
 #  ifdef HAVE_IMLIB
   OD_Icon        *ret = od_icon_grab(title, win);
 #  else
@@ -98,19 +98,21 @@ od_icon_grab(const char *name, Ecore_X_Window win)
   dsp = ecore_x_display_get();
   scr = DefaultScreen(dsp);
   hints = XGetWMHints(dsp, win);
+  ecore_x_pixmap_geometry_get(hints->icon_pixmap, &x, &y, &w, &h);
   imlib_context_set_display(dsp);
   imlib_context_set_visual(DefaultVisual(dsp, scr));
   imlib_context_set_colormap(DefaultColormap(dsp, scr));
   imlib_context_set_dither_mask(0);
   imlib_context_set_drawable(hints->icon_pixmap);
   
-  ecore_x_pixmap_geometry_get(hints->icon_pixmap, &x, &y, &w, &h);
   printf("size is %d, %d, %d, %d\n", x, y, w, h);
   //XSync(dsp, False);
-  img = imlib_create_image_from_drawable(hints->icon_mask, x, y, w, h, 0);
-      
-  //evas_object_image_pixels_import(ret->icon, imlib_image_get_data());
-  //imlib_free_image();
+//img = imlib_create_image_from_drawable(hints->icon_mask, x, y, w, h, 0);
+  img = imlib_create_image_from_drawable(0, x, y, w, h, 0);
+  imlib_context_set_image(img);
+
+  evas_object_image_pixels_import(ret->icon, imlib_image_get_data());
+  imlib_free_image();
 
   XFree(hints);
   return ret;
