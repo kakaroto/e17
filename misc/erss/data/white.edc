@@ -146,7 +146,7 @@ collections {
             signal, "mouse,down,1";
             source, "article";
             action, STATE_SET "clicked" 0.0;
-            transition, LINEAR, 0.0;
+            transition, LINEAR 0.0;
             target, "article";
          }
          program {
@@ -162,7 +162,7 @@ collections {
 				signal, "mouse,in";
 				source, "article";
 				action, STATE_SET "over" 0.0;
-				transition, LINEAR, 0.0;
+				transition, LINEAR 0.0;
 				target, "article";
 			}
 
@@ -171,7 +171,7 @@ collections {
 				signal, "mouse,out";
 				source, "article";
 				action, STATE_SET "default" 0.0;
-				transition, SINUSOIDAL, 0.3;
+				transition, SINUSOIDAL 0.3;
 				target, "article";
 			}
 	}

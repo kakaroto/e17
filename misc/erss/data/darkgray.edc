@@ -108,7 +108,7 @@ collections {
 				signal, "mouse,in";
 				source, "article";
 				action, STATE_SET "over" 0.0;
-				transition, LINEAR, 0.0;
+				transition, LINEAR 0.0;
 				target, "article";
 			}
 
@@ -117,7 +117,7 @@ collections {
 				signal, "mouse,out";
 				source, "article";
 				action, STATE_SET "default" 0.0;
-				transition, SINUSOIDAL, 0.8;
+				transition, SINUSOIDAL 0.8;
 				target, "article";
 			}
 		}
