@@ -45,6 +45,7 @@ geist_image_init(geist_image * img)
    obj->sizemode = SIZEMODE_ZOOM;
    obj->alignment = ALIGN_CENTER;
    obj->display_props = geist_image_display_props;
+   img->opacity = FULL_OPACITY;
 
    D_RETURN_(5);
 }
@@ -222,9 +223,9 @@ geist_image_duplicate(geist_object * obj)
       ret->rendered_y = obj->rendered_y;
       ret->h = obj->h;
       ret->w = obj->w;
-      ret->opacity = obj->opacity;
-      if(ret->opacity != FULL_OPACITY)
-         geist_object_alter_image_opacity(ret, ret->opacity);
+      GEIST_IMAGE(ret)->opacity = img->opacity;
+      if(GEIST_IMAGE(ret)->opacity != FULL_OPACITY)
+         geist_image_change_opacity(ret, GEIST_IMAGE(ret)->opacity);
       ret->state = obj->state;
       ret->alias = obj->alias;
       ret->name =
@@ -259,7 +260,7 @@ refresh_image_opacity_cb(GtkWidget * widget, gpointer * obj)
    int p;
 
    p = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(widget));
-   geist_object_alter_image_opacity(GEIST_OBJECT(obj), p);
+   geist_image_change_opacity(GEIST_OBJECT(obj), p);
    geist_object_dirty(GEIST_OBJECT(obj));
    geist_document_render_updates(GEIST_OBJECT_DOC(obj));
 }
@@ -375,7 +376,7 @@ geist_image_display_props(geist_object * obj)
                     0, 2, 2);
    gtk_widget_show(imo);
 
-   gtk_spin_button_set_value(GTK_SPIN_BUTTON(imo), obj->opacity);
+   gtk_spin_button_set_value(GTK_SPIN_BUTTON(imo), GEIST_IMAGE(obj)->opacity);
    gtk_signal_connect(GTK_OBJECT(imo), "changed",
                       GTK_SIGNAL_FUNC(refresh_image_opacity_cb),
                       (gpointer) obj);
@@ -383,4 +384,43 @@ geist_image_display_props(geist_object * obj)
    gtk_widget_show(imo);
    return (image_props);
 
+}
+
+void
+geist_image_change_opacity(geist_object * obj, int op)
+{
+   geist_image *im = NULL;
+   int w, h, i;
+   double ra, ha;
+   DATA8 atab[256];
+   D_ENTER(3);
+
+   im = (geist_image *) obj;
+   if (!im->orig_im)
+   {
+      im->orig_im = geist_imlib_clone_image(im->im);
+   }
+   else
+   {
+      geist_imlib_free_image_and_decache(im->im);
+      im->im = geist_imlib_clone_image(im->orig_im);
+   }
+
+   w = geist_imlib_image_get_width(im->orig_im);
+   h = geist_imlib_image_get_height(im->orig_im);
+
+   geist_imlib_image_set_has_alpha(im->im, 1);
+
+   for (i = 0; i < 256; i++)
+   {
+      if ((ra = modf((double) (i) * ((double) op / (double) 100), &ha)) > 0.5)
+         ha++;
+      atab[i] = (DATA8) (ha);
+   }
+
+   geist_imlib_apply_color_modifier_to_rectangle(im->im, 0, 0, w, h, NULL,
+                                                 NULL, NULL, atab);
+   im->opacity = op;
+
+   D_RETURN_(5);
 }

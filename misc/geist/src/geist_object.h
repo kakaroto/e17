@@ -92,8 +92,6 @@ struct __geist_object
    int alignment;
    /* object state */
    unsigned long int state;
-   /* image opacity */
-   int opacity;
    void (*free) (geist_object * obj);
    void (*render) (geist_object * obj, Imlib_Image im);
    void (*render_selected) (geist_object * obj, Imlib_Image im,
@@ -108,7 +106,6 @@ struct __geist_object
    GtkWidget *(*display_props) (geist_object * obj);
    void (*get_rendered_area) (geist_object * obj, int *x, int *y,
                                            int *w, int *h);
-   void (*image_alter_opacity) (geist_object * obj, int p);
    int (*check_resize_click) (geist_object * obj, int x, int y);
    void (*get_resize_box_coords) (geist_object * obj, int resize, int *x,
                                  int *y);
@@ -182,8 +179,6 @@ void geist_object_get_rendered_area(geist_object * obj, int *x, int *y,
 void geist_object_int_get_rendered_area(geist_object * obj, int *x, int *y,
                                         int *w, int *h);
 
-void geist_object_alter_image_opacity(geist_object * obj, int p);
-void geist_object_int_alter_image_opacity(geist_object * obj, int p);
 
 void geist_object_get_clipped_render_areas(geist_object * obj, int x, int y,
                                            int w, int h, int *sx, int *sy,

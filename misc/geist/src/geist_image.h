@@ -12,6 +12,7 @@ struct __geist_image
    geist_object object;
    char *filename;
    Imlib_Image im, orig_im;
+   int opacity;
 };
 
 geist_object *geist_image_new(void);
@@ -27,6 +28,7 @@ Imlib_Image geist_image_get_rendered_image(geist_object * obj);
 geist_object *geist_image_duplicate(geist_object * obj);
 void geist_image_resize(geist_object * obj, int x, int y);
 GtkWidget * geist_image_display_props(geist_object *obj);
+void geist_image_change_opacity(geist_object * obj, int p);
 
 
 #endif

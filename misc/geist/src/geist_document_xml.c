@@ -468,9 +468,11 @@ geist_parse_image_xml(xmlDocPtr doc, xmlNsPtr ns, xmlNodePtr cur)
 {
    geist_object *ret = NULL;
    char *filename = NULL;
+   int opacity;
 
    D_ENTER(3);
 
+   opacity = geist_xml_read_int(cur, "Opacity", FULL_OPACITY);
    cur = cur->childs;
    while (cur != NULL)
    {
@@ -484,6 +486,12 @@ geist_parse_image_xml(xmlDocPtr doc, xmlNsPtr ns, xmlNodePtr cur)
    if (filename)
    {
       ret = geist_image_new_from_file(0, 0, filename);
+      if (ret)
+      {
+         GEIST_IMAGE(ret)->opacity = opacity;
+         if (GEIST_IMAGE(ret)->opacity != FULL_OPACITY)
+            geist_image_change_opacity(ret, GEIST_IMAGE(ret)->opacity);
+      }
       xmlFree(filename);
    }
    else
@@ -628,7 +636,7 @@ geist_save_image_xml(geist_image * img, xmlNodePtr parent, xmlNsPtr ns)
 {
    D_ENTER(3);
 
-   /* FILENAME */
+   geist_xml_write_int(parent, "Opacity", img->opacity);
    xmlNewTextChild(parent, ns, "Filename", img->filename);
 
    D_RETURN_(3);
