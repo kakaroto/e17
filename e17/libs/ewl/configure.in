@@ -286,9 +286,11 @@ edje_libs=`$EDJE_CONFIG --libs`
 
 AC_SUBST(emotion_cflags)
 AC_SUBST(emotion_libs)
+AC_SUBST(ewl_media_include)
 if [ test $EMOTION_CONFIG_IN_PATH = yes ]; then
   emotion_cflags=`$EMOTION_CONFIG --cflags`
   emotion_libs=`$EMOTION_CONFIG --libs`
+  ewl_media_include="#include <ewl_media.h>"
   AC_CHECK_HEADERS(Emotion.h, [
       AM_CONDITIONAL(BUILD_EMOTION_SUPPORT, true)
     ], [
@@ -305,6 +307,7 @@ AC_OUTPUT([
 Makefile
 ewl.pc
 ewl-config
+src/Ewl.h
 src/Makefile
 test/Makefile
 tools/Makefile

@@ -1,5 +1,7 @@
 ## Process this file with automake to produce Makefile.in
 
+MAINTAINERCLEANFILES = Ewl.h.in
+
 INCLUDES = @edje_cflags@ @ecore_cflags@ @edb_cflags@ @evas_cflags@ @etox_cflags@ @emotion_cflags@
 
 lib_LTLIBRARIES = libewl.la
