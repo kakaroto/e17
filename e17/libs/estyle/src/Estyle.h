@@ -38,15 +38,24 @@ void estyle_hide(Estyle * es);
  * Content and appearance manipulators
  */
 void estyle_move(Estyle *es, int x, int y);
+
 void estyle_set_clip(Estyle *es, Evas_Object clip);
+
 char *estyle_get_text(Estyle * es);
 void estyle_set_text(Estyle * es, char *text);
+
+char *estyle_get_font(Estyle *es);
+void estyle_set_font(Estyle * es, char *name, int size);
+
 int estyle_get_layer(Estyle * es);
 void estyle_set_layer(Estyle * es, int layer);
+
 char *estyle_get_style(Estyle * es);
 void estyle_set_style(Estyle * es, char *name);
+
 void estyle_set_color(Estyle * es, int r, int g, int b, int a);
 void estyle_get_color(Estyle *es, int *r, int *g, int *b, int *a);
+
 void estyle_lookup_color_db(char *name, int *r, int *g, int *b, int *a);
 void estyle_set_color_db(Estyle * es, char *name);
 

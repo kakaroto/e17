@@ -425,6 +425,8 @@ void estyle_set_font(Estyle * es, char *name, int size)
 	es->font_size = size;
 
 	evas_set_font(es->evas, es->bit, es->font, es->font_size);
+	if (es->style)
+		estyle_style_set_font(es);
 }
 
 /**
