@@ -34,6 +34,7 @@
  <!ENTITY evoak_hello_eh SYSTEM "xml/evoak/evoak_hello_eh.xml">
 
  <!-- imlib2 -->
+ <!ENTITY imlib_watermark SYSTEM "xml/imlib/imlib_watermark.xml">
  <!ENTITY imlib_scale SYSTEM "xml/imlib/imlib_scale.xml">
  <!ENTITY imlib_free_rotate SYSTEM "xml/imlib/imlib_free_rotate.xml">
  <!ENTITY imlib_90_rotate SYSTEM "xml/imlib/imlib_90_rotate.xml">

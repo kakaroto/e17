@@ -1,0 +1,114 @@
+<section>
+<sectioninfo>
+  <author>
+    <firstname>Ben</firstname>
+    <surname>Rockwood</surname>
+    <email>benr@cuddletech.com</email>
+    <othername>technikolor</othername>
+  </author>
+  <date>6 July 2004</date>
+</sectioninfo>
+
+<title>Recipe: Image Watermarking</title>
+
+
+<para>
+With so many individuals putting so many images online its easy to forget where they
+came from and hard to ensure that copyrighted material isn't inadvertently misused.  Simply
+adding a watermark image, such as your sites logo, to each of your images can solve both 
+these problems.  But adding watermarks manual is a long and repetitive task.  Imlib2 can
+easily be used to solve this problem.  What we need to do is take an input image,
+and then specify a watermark image (your logo), position the watermark on the input image
+and then save it out to a new image which we'll use on the site.  The app would look 
+something like this: 
+</para>
+
+<example>
+<title>Imlib2 WaterMark Program</title>
+<programlisting>
+#define X_DISPLAY_MISSING
+#include &lt;Imlib2.h&gt;
+#include &lt;stdio.h&gt;
+
+int main(int argc, char **argv){
+
+    Imlib_Image image_input, image_watermark, image_output;
+    int     w_input, h_input;
+    int     w_watermark, h_watermark;
+    char    watermark[] = "watermark.png";
+
+    if(argc &gt; 1)  {
+        printf("Input image is: %s\n", argv[1]);
+        printf("Watermark is: %s\n", watermark);
+    }
+    else {
+        printf("Usage: %s input_image output_imagename\n", argv[0]);
+        exit(1);
+    }
+
+    image_input = imlib_load_image(argv[1]);
+    if(image_input) {
+        imlib_context_set_image(image_input);
+        w_input = imlib_image_get_width();
+        h_input = imlib_image_get_height();
+        printf("Input size is: %d by %d\n", w_input, h_input);
+        image_output = imlib_clone_image();
+    }
+
+    image_watermark = imlib_load_image(watermark);
+    if(image_watermark) {
+        imlib_context_set_image(image_watermark);
+        w_watermark = imlib_image_get_width();
+        h_watermark = imlib_image_get_height();
+        printf("WaterMark size is: %d by %d\n", 
+		w_watermark, h_watermark);
+    }
+
+    if(image_output) {
+        int dest_x, dest_y;
+
+        dest_x = w_input - w_watermark;
+        dest_y = h_input - h_watermark;
+        imlib_context_set_image(image_output);
+
+        imlib_blend_image_onto_image(image_watermark, 0, 
+		0, 0, w_watermark, h_watermark, 
+		dest_x, dest_y, w_watermark, h_watermark);
+        imlib_save_image(argv[2]);
+        printf("Wrote watermarked image to filename: %s\n", argv[2]);
+    }
+
+
+        return(0);
+}
+
+</programlisting>
+</example>
+
+<para>
+Looking at the example, we first do some really basic argument checking, accepting an input image as the first argument
+and an output image name for our watermarked copy.
+Using <function>imlib_load_image()</function> we load the input image and then grab its dimensions using the get functions.
+With the <function>imlib_clone_image()</function> function we can create a copy of the input image, which will be the base of our
+watermarked output.  Next we load the watermark image, and notice that we then use <function>imlib_context_set_image()</function>
+to change the context from the input image (image_input) to the watermark image (image_watermark).  Now we grab the images
+dimensions as well.  In the final block we do two simple calculations to determine the positioning of the watermark on the
+output image, in this case I want the watermark on the bottom right-hand corner.  The magic function that really does the
+work in this program is <function>imlib_blend_image_onto_image()</function>.  Notice that we change context to the output
+image before proceeding.  The blend function will, as the name suggests, blend two images together which we refer to
+as the source and destination image.  
+The blend function blends a source image onto the current image context which we designate as the destination.
+The arguments supplied to 
+<function>imlib_blend_image_onto_image()</function> can look tricky, we need to tell it which source to use (the watermark), 
+whether to merge the alpha channel (0 for no), the dimensions of the source image (x, y, w, h) and the dimensions of the 
+destination image (x, y, w, h).    You'll notice that in the example we set the x and y positions of the source (watermark)
+image to 0 and then use the full width.  The destination (input image) is set to the bottom right hand corner minus
+the dimensions of the watermark, and then we specify the width and height of the watermark.
+Finally, we use the <function>imlib_save_image()</function> function to save the output image.
+</para>
+
+<para>
+While this example should be significantly improved for real use, it outlines the basics of Imlib2 blending 
+to solves a very common problem efficiently.
+</para>
+</section>
