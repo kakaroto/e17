@@ -11,7 +11,7 @@ elicit_shots_init(Elicit *el)
 
     el->shots.cont = esmart_container_new(el->evas); 
   
-    dir = (char *)edje_object_data_get(el->gui, "swatches.direction");
+    dir = (char *)edje_object_data_get(el->gui, "shots.direction");
     if (dir && (dir[0] == 'h' || dir[0] == 'H'))
       el->shots.dir = CONTAINER_DIRECTION_HORIZONTAL;
     else
@@ -147,6 +147,7 @@ elicit_shots_load(Elicit *el)
     void *data = NULL;
     int size = 0;
     Evas_Coord mw, mh;
+    char *theme;
   
     sh = calloc(1, sizeof(Elicit_Shot));
   
@@ -164,10 +165,12 @@ elicit_shots_load(Elicit *el)
   
     sh->obj = edje_object_add(el->evas);
     sh->shot = evas_object_image_add(el->evas);
-  
+ 
+    theme = elicit_config_theme_get(el);
     edje_object_file_set(sh->obj, 
-                         elicit_theme_find(elicit_config_theme_get(el)),
+                         elicit_theme_find(theme),
                          "shot");
+    free(theme);
     edje_object_size_min_get(sh->obj, &mw, &mh);
     if (mw != 0 && mh != 0)
       evas_object_resize(sh->obj, mw, mh);
@@ -218,6 +221,7 @@ elicit_shot_save_cb(void *data, Evas_Object *o, const char *emission, const char
   Evas_Coord mw, mh;
   double length;
   Evas_Coord w, h;
+  char *theme;
 
   /* don't save an empty shot */
   if (!el->flags.shot_taken) return;
@@ -228,10 +232,14 @@ elicit_shot_save_cb(void *data, Evas_Object *o, const char *emission, const char
   sh->shot = evas_object_image_add(el->evas);
   sh->name = strdup("Unnamed");
 
+  theme = elicit_config_theme_get(el);
   edje_object_file_set(sh->obj, 
-                       elicit_theme_find(elicit_config_theme_get(el)),
+                       elicit_theme_find(theme),
                        "shot");
-    edje_object_size_min_get(sh->obj, &mw, &mh);
+
+  free(theme);
+  edje_object_size_min_get(sh->obj, &mw, &mh);
+
   if (mw != 0 && mh != 0)
     evas_object_resize(sh->obj, mw, mh);
   else

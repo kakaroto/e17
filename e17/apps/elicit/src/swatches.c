@@ -124,6 +124,7 @@ elicit_swatches_load(Elicit *el)
   int i;
   int r, g, b;
   char buf[PATH_MAX];
+  char *theme;
 
   snprintf(buf, PATH_MAX, "%s/.e/apps/%s/swatches.db", getenv("HOME"), el->app_name);
 
@@ -153,9 +154,12 @@ elicit_swatches_load(Elicit *el)
     sw->obj = edje_object_add(el->evas);
     sw->rect = evas_object_rectangle_add(el->evas);
   
+    theme = elicit_config_theme_get(el);
     edje_object_file_set(sw->obj, 
-                         elicit_theme_find(elicit_config_theme_get(el)),
+                         elicit_theme_find(theme),
                          "swatch");
+    free(theme);
+
     edje_object_size_min_get(sw->obj, &mw, &mh);
     if (mw != 0 && mh != 0)
       evas_object_resize(sw->obj, mw, mh);
@@ -200,6 +204,7 @@ elicit_swatch_save_cb(void *data, Evas_Object *o, const char *emission, const ch
   Evas_Coord mw, mh;
   double length;
   Evas_Coord w, h;
+  char *theme;
 
   sw = calloc(1, sizeof(Elicit_Swatch));
 
@@ -210,9 +215,12 @@ elicit_swatch_save_cb(void *data, Evas_Object *o, const char *emission, const ch
   sw->b = el->color.b;
   sw->name = strdup(el->color.hex);
 
+  theme = elicit_config_theme_get(el);
   edje_object_file_set(sw->obj, 
-                       elicit_theme_find(elicit_config_theme_get(el)),
+                       elicit_theme_find(theme),
                        "swatch");
+  free(theme);
+
   edje_object_size_min_get(sw->obj, &mw, &mh);
   if (mw != 0 && mh != 0)
     evas_object_resize(sw->obj, mw, mh);

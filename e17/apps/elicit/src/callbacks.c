@@ -59,18 +59,7 @@ void elicit_cb_pick(void *data, Evas_Object *o, const char *sig, const char *src
   {
     el->flags.picking = 0;
   }
-  else if (!strcmp(sig, "mouse,move"))
-  {
-    if (el->flags.picking == 1)
-    {
-      elicit_util_color_at_pointer_get(&(el->color.r), &(el->color.g), &(el->color.b));
-      evas_object_color_set(el->swatch, el->color.r, el->color.g, el->color.b, 255);
-      elicit_util_colors_set_from_rgb(el);
-      elicit_ui_update(el);
-    }
-  }
 }
-
 
 void elicit_cb_shoot(void *data, Evas_Object *o, const char *sig, const char *src)
 {
@@ -85,28 +74,41 @@ void elicit_cb_shoot(void *data, Evas_Object *o, const char *sig, const char *sr
   {
     el->flags.shooting = 0;
   }
-  else if (!strcmp(sig, "mouse,move"))
+}
+
+void elicit_cb_move(void *data, Evas_Object *o, const char *sig, const char *src)
+{
+  Elicit *el = data;
+
+  if (el->flags.picking == 1)
   {
-    if (el->flags.shooting == 1)
-    {
-      Evas_Coord sw, sh;
-      double w, h;
+    elicit_util_color_at_pointer_get(&(el->color.r), &(el->color.g), &(el->color.b));
+    evas_object_color_set(el->swatch, el->color.r, el->color.g, el->color.b, 255);
+    elicit_util_colors_set_from_rgb(el);
+    elicit_ui_update(el);
+  }
 
-      evas_object_geometry_get(el->shot, NULL, NULL, &sw, &sh);
+  if (el->flags.shooting == 1)
+  {
+    Evas_Coord sw, sh;
+    double w, h;
 
-      if (el->zoom < 1.0) el->zoom = 1.0;
+    evas_object_geometry_get(el->shot, NULL, NULL, &sw, &sh);
 
-      w = sw * (1 / el->zoom);
-      h = sh * (1 / el->zoom);
-      elicit_util_shoot(el->shot, (int)w, (int)h);
-    }
+    if (el->zoom < 1.0) el->zoom = 1.0;
+
+    w = sw * (1 / el->zoom);
+    h = sh * (1 / el->zoom);
+    elicit_util_shoot(el->shot, (int)w, (int)h);
   }
 }
+
 
 void
 elicit_cb_colors(void *data, Evas_Object *o, const char *sig, const char *src)
 {
   Elicit *el = data;
+
   if (elicit_glob_match(sig, "*,start"))
   {
     el->flags.changing = 1;
@@ -146,6 +148,8 @@ elicit_cb_switch(void *data, Evas_Object *o, const char *sig, const char *src)
       return;
     }
   }
+  free(theme);
+  edje_file_collection_list_free(groups);
   printf("Error: group %s does not exist in file %s\n", group, file);
 }
 
@@ -295,6 +299,7 @@ void
 elicit_cb_thaw(void *data, Evas_Object *o, const char *sig, const char *src)
 {
   Elicit *el = data;
+
   edje_object_thaw(el->gui);
 }
 

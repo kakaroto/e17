@@ -27,7 +27,7 @@ main (int argc, char **argv)
     return 1;
   }
 
-  ecore_app_args_set(argc, argv);
+  ecore_app_args_set(argc, (const char **)argv);
 
   el = calloc(1, sizeof(Elicit));
   if (!el)
@@ -95,6 +95,8 @@ main (int argc, char **argv)
 int
 setup(int argc, char **argv, Elicit *el)
 {
+  char *theme; 
+
   elicit_config_init(el);
 
   ecore_evas_borderless_set(el->ee, 1);
@@ -127,10 +129,14 @@ setup(int argc, char **argv, Elicit *el)
   evas_object_name_set(el->draggie, "draggie");
   evas_object_show(el->draggie);
 
-  elicit_ui_theme_set(el, elicit_config_theme_get(el), "elicit");
+  theme = elicit_config_theme_get(el);
+  elicit_ui_theme_set(el, theme, "elicit");
+  free(theme);
+
   elicit_swatches_init(el);
   elicit_shots_init(el);
   elicit_themes_init(el);
+
   elicit_ui_update(el);
   return 0;
 }
@@ -171,8 +177,7 @@ elicit_ui_theme_set(Elicit *el, char *theme, char *group)
 
   /* set up edje callbacks */
   edje_object_signal_callback_add(el->gui, "elicit,pick,*", "*", elicit_cb_pick, el);
-  edje_object_signal_callback_add(el->gui, "mouse,move", "*", elicit_cb_pick, el);
-  edje_object_signal_callback_add(el->gui, "mouse,move", "*", elicit_cb_shoot, el);
+  edje_object_signal_callback_add(el->gui, "mouse,move", "*", elicit_cb_move, el);
   edje_object_signal_callback_add(el->gui, "elicit,shoot,*", "*", elicit_cb_shoot, el);
   edje_object_signal_callback_add(el->gui, "elicit,quit", "*", elicit_cb_exit, el);
   edje_object_signal_callback_add(el->gui, "elicit,color,*", "*", elicit_cb_colors, el);
@@ -205,7 +210,7 @@ void
 elicit_ui_update_text(Elicit *el)
 {
   char buf[100];
- 
+
   snprintf(buf, sizeof(buf)-1, "%d", el->color.r);
   edje_object_part_text_set(el->gui, "red-val", buf); 
   edje_object_part_text_set(el->gui, "red-val2", buf); 

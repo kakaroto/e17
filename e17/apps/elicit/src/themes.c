@@ -1,7 +1,6 @@
 #include "Elicit.h"
 
-void elicit_theme_load_cb(void *data, Evas_Object *o, const char *emission, const char *source);
-void elicit_theme_name_show_cb(void *data, Evas_Object *o, const char *emission, const char *source);
+void _elicit_themes_update_scroll_bar(Elicit *el);
 
 int
 elicit_themes_init(Elicit *el)
@@ -43,6 +42,8 @@ elicit_themes_init(Elicit *el)
 
     }
   }
+
+  ecore_idle_enterer_add(elicit_themes_scroll_idler, el);
 }
 
 void
@@ -243,6 +244,7 @@ int
 elicit_themes_scroll_idler(void *data)
 {
   Elicit *el = data;
+
   if (el->themes.scrolling)
   {
     _elicit_themes_update_scroll_bar(el);
