@@ -274,25 +274,25 @@ save_settings(void)
 	p = xml_write(locfn);
 
 	xml_write_append_entry(p, "render_method",
-			       ewl_entry_get_text((Ewl_Entry *) settings->
+			       ewl_entry_text_get((Ewl_Entry *) settings->
 						  render_method.entry));
 	xml_write_append_entry(p, "theme",
-			       ewl_entry_get_text((Ewl_Entry *) settings->theme.
+			       ewl_entry_text_get((Ewl_Entry *) settings->theme.
 						  entry));
 	xml_write_append_entry(p, "intro",
-			       ewl_entry_get_text((Ewl_Entry *) settings->intro.
+			       ewl_entry_text_get((Ewl_Entry *) settings->intro.
 						  entry));
 	xml_write_append_entry(p, "controlcentre",
-			       ewl_entry_get_text((Ewl_Entry *) settings->
+			       ewl_entry_text_get((Ewl_Entry *) settings->
 						  cc.entry));
 	xml_write_append_entry(p, "debug",
-			       ewl_entry_get_text((Ewl_Entry *) settings->debug.
+			       ewl_entry_text_get((Ewl_Entry *) settings->debug.
 						  entry));
 	xml_write_append_entry(p, "autosave",
-			       ewl_entry_get_text((Ewl_Entry *) settings->
+			       ewl_entry_text_get((Ewl_Entry *) settings->
 						  autosave.entry));
 	xml_write_append_entry(p, "welcome",
-			       ewl_entry_get_text((Ewl_Entry *) settings->
+			       ewl_entry_text_get((Ewl_Entry *) settings->
 						  welcome.entry));
 
 	xml_write_end(p);

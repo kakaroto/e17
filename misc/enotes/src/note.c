@@ -96,7 +96,7 @@ remove_note(Evas_List * note)
 
 	/** 
 	 * FIXME: When you can get the row and its child text, compare
-	 * it to the ewl_entry_get_text(p->title) value and remove the row
+	 * it to the ewl_entry_text_get(p->title) value and remove the row
 	 * from the tree at this point.  Reporting that you've done so with
 	 * dml ("Removed note from save/load list", 2); or something.  When ewl
 	 * will let you do these things.
@@ -404,16 +404,16 @@ timer_val_compare(void *data)
 	if (p->txt_title != NULL) {
 		if (strcmp
 		    (p->txt_title,
-		     ewl_entry_get_text((Ewl_Entry *) p->title))) {
+		     ewl_entry_text_get((Ewl_Entry *) p->title))) {
 			if (saveload != NULL)
 				ewl_saveload_revert(NULL, NULL, saveload->tree);
 
 			free(p->txt_title);
 			p->txt_title =
-				ewl_entry_get_text((Ewl_Entry *) p->title);
+				ewl_entry_text_get((Ewl_Entry *) p->title);
 		}
 	} else {
-		p->txt_title = ewl_entry_get_text((Ewl_Entry *) p->title);
+		p->txt_title = ewl_entry_text_get((Ewl_Entry *) p->title);
 	}
 	return (1);
 }
@@ -475,7 +475,7 @@ get_title_by_note(Evas_List * note)
 {
 	Note           *p = evas_list_data(note);
 
-	return (ewl_entry_get_text((Ewl_Entry *) p->title));
+	return (ewl_entry_text_get((Ewl_Entry *) p->title));
 }
 
 /**
