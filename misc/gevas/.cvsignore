@@ -1,4 +1,5 @@
 Makefile
+ltconfig
 Makefile.in
 stamp-h.in
 stamp-h
