@@ -360,7 +360,7 @@ __ewl_checkbutton_theme_update(Ewl_Widget * w, void *ev_data,
 	/*
 	 * Don't want to update anything if the widget isn't realized. 
 	 */
-	if (!w->object.realized)
+	if (!REALIZED(w))
 		DRETURN;
 
 	b = EWL_CHECKBUTTON(w);

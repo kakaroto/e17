@@ -36,7 +36,7 @@ main(int argc, char ** argv)
 		"The Enlightenment Widget Library Developer Test Program");
 	ewl_callback_append(main_win, EWL_CALLBACK_DELETE_WINDOW,
 		__close_main_widow, NULL);
-	ewl_window_resize(main_win, 275, 79);
+	ewl_window_resize(main_win, 299, 79);
 	ewl_widget_show(main_win);
 
 	main_hbox = ewl_hbox_new();
@@ -46,7 +46,9 @@ main(int argc, char ** argv)
 	vbox[0] = ewl_vbox_new();
 	ewl_box_set_spacing(vbox[0], 5);
 	ewl_container_append_child(EWL_CONTAINER(main_hbox), vbox[0]);
-	ewl_widget_show(vbox[0]);
+/*	ewl_theme_data_set(vbox[0],
+		"/appearance/box/vertical/base/visible", "no");
+*/	ewl_widget_show(vbox[0]);
 
 	button[0] = ewl_button_new("Ewl_Box");
 	ewl_object_set_custom_size(button[0], 100, 17);
@@ -70,7 +72,9 @@ main(int argc, char ** argv)
         vbox[1] = ewl_vbox_new();
         ewl_box_set_spacing(vbox[1], 5);
 	ewl_container_append_child(EWL_CONTAINER(main_hbox), vbox[1]);
-        ewl_widget_show(vbox[1]);
+/*        ewl_theme_data_set(vbox[1], 
+                "/appearance/box/vertical/base/visible", "no");
+  */      ewl_widget_show(vbox[1]);
 
         button[3] = ewl_button_new("Ewl_Image");
         ewl_object_set_custom_size(button[3], 100, 17);
@@ -91,7 +95,9 @@ main(int argc, char ** argv)
         vbox[2] = ewl_vbox_new();
         ewl_box_set_spacing(vbox[2], 5);
 	ewl_container_append_child(EWL_CONTAINER(main_hbox), vbox[2]);
-        ewl_widget_show(vbox[2]);
+/*        ewl_theme_data_set(vbox[2], 
+                "/appearance/box/vertical/base/visible", "no");
+  */      ewl_widget_show(vbox[2]);
 
         button[6] = ewl_button_new("Ewl_Spinner");
         ewl_object_set_custom_size(button[6], 100, 17);

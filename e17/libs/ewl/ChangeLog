@@ -1,3 +1,6 @@
+Tue Aug  21 18:46:45 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
+	* Fixed some unwanted behaviour in the Ewl_Box code.
+
 Tue Aug  21 16:17:49 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
 	* Improved __ewl_button_update_label a bit.
 	* Made the size of the Ewl_Text etox area allways be the actual size

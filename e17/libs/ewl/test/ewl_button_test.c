@@ -26,6 +26,8 @@ __create_button_test_window(Ewl_Widget * w, void * ev_data, void * user_data)
 	if (button_win_realized)
 		return;
 
+	button_win_realized = 0;
+
 	button_win = ewl_window_new();
 	ewl_window_resize(button_win, 92, 167);
 	ewl_callback_append(button_win, EWL_CALLBACK_DELETE_WINDOW,

@@ -517,11 +517,15 @@ __ewl_vbox_configure_fillers(Ewl_Widget * w, Ewd_List * f, int rh)
 
 		  if (MAXIMUM_W(c) && MAXIMUM_W(c) < REQUEST_W(w) - ll - rr)
 			  REQUEST_W(c) = MAXIMUM_W(c);
+		  else if (MINIMUM_W(c) && MINIMUM_W(c) > REQUEST_W(w) - ll -rr)
+		  	  REQUEST_W(c) = MINIMUM_W(c);
 		  else
 			  REQUEST_W(c) = REQUEST_W(w) - ll - rr - xp;
 
 		  if (MAXIMUM_H(c) && MAXIMUM_H(c) < nh)
 			  REQUEST_H(c) = MAXIMUM_H(c);
+		  else if (MINIMUM_H(c) && MINIMUM_H(c) > nh)
+		  	  REQUEST_H(c) = MINIMUM_H(c);
 		  else
 			  REQUEST_H(c) = nh - yp;
 	  }
@@ -536,16 +540,19 @@ __ewl_vbox_layout_children(Ewl_Widget * w)
 	Ewl_Widget *c;
 	int y, l = 0, r = 0, t = 0, b = 0;
 	int xp, yp;
+	int min_w = 0, min_h = 0;
 
 	DENTER_FUNCTION;
 	DCHECK_PARAM_PTR("w", w);
 
 	box = EWL_BOX(w);
 
+	min_h -= box->spacing;
+
 	if (w->ebits_object)
 		ebits_get_insets(w->ebits_object, &l, &r, &t, &b);
 
-	y = REQUEST_Y(w) + t - box->spacing;
+	y = REQUEST_Y(w) + t;
 
 	if (!EWL_CONTAINER(w)->children ||
 		ewd_list_is_empty(EWL_CONTAINER(w)->children))
@@ -572,11 +579,18 @@ __ewl_vbox_layout_children(Ewl_Widget * w)
 			    			(REQUEST_W(c) / 2);
                     }
 
-		  REQUEST_Y(c) = y + box->spacing + yp;
+		  REQUEST_Y(c) = y + yp;
 		  y += REQUEST_H(c) + box->spacing + yp;
 
 		  ewl_widget_configure(c);
+
+		  if (MINIMUM_W(c) > min_w)
+			  min_w += MINIMUM_W(c);
+
+		  min_h += MINIMUM_H(c) + box->spacing;
 	  }
+
+	ewl_object_set_minimum_size(EWL_OBJECT(w), min_w, min_h);
 
 	DLEAVE_FUNCTION;
 }
@@ -767,16 +781,19 @@ __ewl_hbox_layout_children(Ewl_Widget * w)
 	Ewl_Widget *c;
 	int x, l = 0, r = 0, t = 0, b = 0;
 	int xp, yp;
+	int min_w = 0, min_h = 0;
 
 	DENTER_FUNCTION;
 	DCHECK_PARAM_PTR("w", w);
 
 	box = EWL_BOX(w);
 
+	min_w -= box->spacing;
+
 	if (w->ebits_object)
 		ebits_get_insets(w->ebits_object, &l, &r, &t, &b);
 
-	x = REQUEST_X(w) + l - box->spacing;
+	x = REQUEST_X(w) + l;
 
 	ewd_list_goto_first(EWL_CONTAINER(w)->children);
 
@@ -797,11 +814,18 @@ __ewl_hbox_layout_children(Ewl_Widget * w)
 			    			(REQUEST_H(c) / 2);
 		    }
 
-		  REQUEST_X(c) = x + box->spacing + xp;
+		  REQUEST_X(c) = x + xp;
 		  x += REQUEST_W(c) + box->spacing + xp;
 
 		  ewl_widget_configure(c);
+
+		  min_w += MINIMUM_W(c) + box->spacing;
+
+		  if (MINIMUM_H(c) > min_h)
+		  	min_h += MINIMUM_H(c);
 	  }
+
+	ewl_object_set_minimum_size(EWL_OBJECT(w), min_w, min_h);
 
 	DLEAVE_FUNCTION;
 }
