@@ -1939,30 +1939,49 @@ span(ImlibImage * im, int y, edgeRec * pt1, edgeRec * pt2, DATA8 r, DATA8 g,
    if (ix1 == ix2)
       return;
    
-   do
-   {
-      p = &(im->data[(im->w * y) + ix1]);
-      switch (op)
-      {
-        case OP_RESHADE:
-           BLEND_RE(r, g, b, a, p);
-           break;
-        case OP_SUBTRACT:
-           BLEND_SUB(r, g, b, a, p);
-           break;
-        case OP_ADD:
-           BLEND_ADD(r, g, b, a, p);
-           break;
-        case OP_COPY:
-           BLEND(r, g, b, a, p);
-           break;
-        default:
-           break;
-      }
-
-      ix1++;
-   }
-   while (ix1 < ix2);
+   p = &(im->data[(im->w * y) + ix1]);
+   switch (op)
+     {
+	/* unrolled loop - on loop inside each render mode per span */
+     case OP_RESHADE:
+	do
+	  {
+	     BLEND_RE(r, g, b, a, p);
+	     p++;
+	     ix1++;
+	  }
+	while (ix1 < ix2);
+	break;
+     case OP_SUBTRACT:
+	do
+	  {
+	     BLEND_SUB(r, g, b, a, p);
+	     p++;
+	     ix1++;
+	  }
+	while (ix1 < ix2);
+	break;
+     case OP_ADD:
+	do
+	  {
+	     BLEND_ADD(r, g, b, a, p);
+	     p++;
+	     ix1++;
+	  }
+	while (ix1 < ix2);
+	break;
+     case OP_COPY:
+	do
+	  {
+	     BLEND(r, g, b, a, p);
+	     p++;
+	     ix1++;
+	  }
+	while (ix1 < ix2);
+	break;
+     default:
+	break;
+     }
 }
 
 void
