@@ -370,7 +370,13 @@ ActionsCall(unsigned int id, EWin * ewin, void *params)
    if (af->need_ewin)
      {
 	if (ewin == NULL)
-	   ewin = GetContextEwin();
+	  {
+	     if (params)
+		ewin = FindItem(NULL, atoi((char *)params), LIST_FINDBY_ID,
+				LIST_TYPE_EWIN);
+	     if (ewin == NULL)
+		ewin = GetContextEwin();
+	  }
 
 	if (ewin == NULL)
 	   return -1;
@@ -3317,7 +3323,7 @@ static ActionFunction ActionFunctions[ACTION_NUMBEROF] = {
    {0, 0, 0, 0, doToolTipSet},	/* ACTION_TOOLTIP_SET */
    {0, 0, 0, 0, doFocusNext},	/* ACTION_FOCUS_NEXT */
    {0, 0, 0, 0, doFocusPrev},	/* ACTION_FOCUS_PREV */
-   {0, 0, 0, 0, doFocusSet},	/* ACTION_FOCUS_SET */
+   {1, 0, 0, 0, doFocusSet},	/* ACTION_FOCUS_SET */
    {0, 0, 0, 0, doBackgroundSet},	/* ACTION_BACKGROUND_SET */
    {0, 0, 1, 0, doAreaSet},	/* ACTION_AREA_SET */
    {0, 0, 1, 0, doAreaMoveBy},	/* ACTION_MOVE_BY */
