@@ -283,9 +283,9 @@ void setup(void)
 		evas_engine_info_set(evas, (Evas_Engine_Info *)info);
 	}
 
-	evas_object_image_cache_set(evas, MAX_IMAGE_CACHE);
-	evas_object_font_cache_set(evas, MAX_FONT_CACHE);
-	evas_object_font_path_append(evas, FONT_DIRECTORY);
+	evas_image_cache_set(evas, MAX_IMAGE_CACHE);
+	evas_font_cache_set(evas, MAX_FONT_CACHE);
+	evas_font_path_append(evas, FONT_DIRECTORY);
 
 	/* get the window ID for the evas created for us */
 

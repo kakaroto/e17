@@ -80,7 +80,7 @@ void ewl_window_font_path_add(char *path)
 	ewd_list_goto_first(ewl_window_list);
 	while ((win = ewd_list_next(ewl_window_list)))
 		if (REALIZED(win))
-			evas_object_font_path_append(win->evas, path);
+			evas_font_path_append(win->evas, path);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -469,7 +469,7 @@ void __ewl_window_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 	paths = ewl_theme_font_path_get();
 	ewd_list_goto_first(paths);
 	while ((font_path = ewd_list_next(paths)))
-		evas_object_font_path_append(window->evas, font_path);
+		evas_font_path_append(window->evas, font_path);
 
 	window->evas_window = window->window;
 	ecore_window_set_events(window->evas_window, XEV_KEY | XEV_BUTTON |

@@ -48,7 +48,7 @@ Etox *etox_new(Evas *evas)
 	/*
 	 * Set up the default font
 	 */
-	evas_object_font_path_append(evas,
+	evas_font_path_append(evas,
 			PACKAGE_DATA_DIR "/fonts");
 	et->context->font = strdup("nationff");
 	et->context->font_size = 14;

@@ -244,14 +244,14 @@ void ewl_config_reread_and_apply(void)
 				continue;
 
 			if (nc.evas.font_cache) {
-				evas_object_font_cache_flush(w->evas);
-				evas_object_font_cache_set(w->evas,
+				evas_font_cache_flush(w->evas);
+				evas_font_cache_set(w->evas,
 						    nc.evas.font_cache);
 			}
 
 			if (nc.evas.image_cache) {
-				evas_object_image_cache_flush(w->evas);
-				evas_object_image_cache_set(w->evas,
+				evas_image_cache_flush(w->evas);
+				evas_image_cache_set(w->evas,
 						     nc.evas.image_cache);
 			}
 		}

@@ -391,7 +391,7 @@ save(ImlibImage * im, ImlibProgressFunction progress,
 /* extensions this loader can load. eg: */
 /* loader->formats = { "jpeg", "jpg"}; */
 /* giving permutations is a good idea. case sensitivity is irrelevant */
-/* your laoder CAN load more than one format if it likes - like: */
+/* your loader CAN load more than one format if it likes - like: */
 /* loader->formats = { "gif", "png", "jpeg", "jpg"} */
 /* if it can load those formats. */
 void
