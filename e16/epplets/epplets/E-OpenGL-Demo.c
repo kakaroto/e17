@@ -36,33 +36,58 @@ Epplet_gadget da, b_close, b_help;
 Window	win;
 Display *dpy;
 static GLfloat spin = 0.0;
+GLuint squareList;
 
 static void cb_in(void *data, Window w);
 static void cb_out(void *data, Window w);
 static void cb_timer(void *data);
 static void cb_close(void *data);
 static void cb_help(void *data);
-static void raw_rotating_square(void);
+static void setup_rotating_square(void);
+static void draw_rotating_triangle(void);
 
 #define DEBUG 0
+
+static void
+setup_rotating_square(void)
+{
+	GLfloat x=40.0;
+
+	squareList = glGenLists(1);
+	glNewList(squareList, GL_COMPILE);
+		glBegin(GL_QUADS);
+			glColor3f(1.0, 0, 0);
+			glVertex3f(-x, -x, 0);
+			glColor3f(0, 1.0, 0);
+			glVertex3f(-x, x, 0);
+			glColor3f(0, 0, 1.0);
+			glVertex3f(x, x, 0);
+			glColor3f(1, 0, 1);
+			glVertex3f(x, -x, 0);
+		glEnd();
+		glPopMatrix();
+	glEndList();
+}
+
 static void
 draw_rotating_square(void)
 {
-	if(!DEBUG) { 
 	glClear(GL_COLOR_BUFFER_BIT);
 	glPushMatrix();
 	glRotatef(spin, 0.0, 0.0, 1.0);
-	glColor3f(1.0, 1.0, 1.0);
-	glRectf(-25.0, -25.0, 25.0, 25.0);
-	glPopMatrix();
-	glXSwapBuffers(dpy,win);
-	}
+	glCallList(squareList);
+  glXSwapBuffers(dpy,win);
+}
+
+static void
+draw_rotating_triangle(void)
+{
 }
 
 static void
 cb_timer(void *data)
 {
-	spin = spin + 10.0;
+	spin = spin + 1.0;
 	if (spin > 360.0)
 		spin = spin - 360.0;
 
@@ -135,18 +160,22 @@ main(int argc, char **argv)
 
 	cx = Epplet_bind_double_GL(da);
 
-	glViewport (0, 0, (GLsizei) 60, (GLsizei) 60);
+	/* To properly center the viewport, -2, -2 isntead of 0, 0 must be used.
+	Why? I have no freak'n idea. For some reason in Ortho everything is
+	coming ot 2 pixes shifted right and up. I'll look into it when I'm bored
+	or something */
+	glViewport (-2, -2, 60, 60);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	glOrtho(-50.0, 50.0, -50.0, 50.0, -1.0, 1.0);
+	glOrtho(-60.0, 60.0, -60.0, 60.0, -1.0, 1.0);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 		
 	glClearColor(0,0,0,0);
-	glShadeModel(GL_FLAT);
+	glShadeModel(GL_SMOOTH);
 
 	Epplet_show();
-	draw_rotating_square();
+	setup_rotating_square();
 	
 	Epplet_Loop();
 	return 0;

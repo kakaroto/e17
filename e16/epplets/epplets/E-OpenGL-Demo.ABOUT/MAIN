@@ -10,5 +10,5 @@ The Useless Demo application that aspires to be a rotating light mapped, texture
 By Wayde Milas - 2000
 <p>
 This epplet will some day show a spinning light mapped cube with selectable
-textures. The idea until then is to sue it as a testbed for adding OpenGL
+textures. The idea until then is to use it as a test-bed for adding OpenGL
 code into the epplets api.
