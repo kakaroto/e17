@@ -1,0 +1,35 @@
+/* XPM */
+static char *fx_mod[] = {
+/* width height num_colors chars_per_pixel */
+"    20    20        8            1",
+/* colors */
+". c #000000",
+"# c #682c00",
+"a c #9ca0a8",
+"b c #a86c00",
+"c c #bcc0cc",
+"d c #cc980c",
+"e c #f0f0fc",
+"f c None",
+/* pixels */
+"ffffffffffffffffffff",
+"ff....ffffffffffffff",
+"ff.eee......ffffffff",
+"ff.ecc.eeee....fffff",
+"ff.ecca.ecccccc.ffff",
+"ff.ecca.eaaaaaaa.fff",
+"ff.ecca.ea.....a..ff",
+"ff..aa.....d.f....ff",
+"fff......dd#.fff...f",
+"ffffffff..d#.fffffff",
+"fffffffff.d#..ffffff",
+"fffffffff.db#.ffffff",
+"fffffffff.db#.ffffff",
+"fffffffff.db#..fffff",
+"fffffffff.dbb#.fffff",
+"fffffffff.dbb#.fffff",
+"fffffffff.dbb#.fffff",
+"fffffffff.d###.fffff",
+"fffffffff...#..fffff",
+"fffffffffff...ffffff"
+};

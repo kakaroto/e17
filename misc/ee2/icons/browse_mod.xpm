@@ -1,0 +1,35 @@
+/* XPM */
+static char *browse_mod[] = {
+/* width height num_colors chars_per_pixel */
+"    20    20        8            1",
+/* colors */
+". c #000000",
+"# c #3366ff",
+"a c #6699ff",
+"b c #66ccff",
+"c c None",
+"d c #ff6633",
+"e c #ff9966",
+"f c #ffcc66",
+/* pixels */
+"cccccccccccccccccccc",
+"c......ccccccccccccc",
+"c.ffff.ccccccccccccc",
+"c.ffff.c.c.ccccccccc",
+"c.feee.c.ccc...c.c.c",
+"c.feee.c.c.c.c.c.c.c",
+"c.fedd.c.c.c.c.c.c.c",
+"c.fedd.c.c.c.c.c...c",
+"c.eddd.ccccccccccccc",
+"c......ccccccccccccc",
+"cccccccccccccccccccc",
+"c......ccccccccccccc",
+"c.bbbb.ccccccccccccc",
+"c.bbbb.c.ccccccccc.c",
+"c.baaa.ccc.c.c.c.c.c",
+"c.baaa.c.c.c.c.c.c.c",
+"c.ba##.c.c...c.c.c.c",
+"c.ba##.c.cc.cc...c.c",
+"c.a###.ccccccccccccc",
+"c......ccccccccccccc"
+};
