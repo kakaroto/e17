@@ -40,13 +40,14 @@ collections {
 				mouse_events, 0;
 				description {
 					state, "default" 0.0;
+					aspect, 1.0 1.0;
 					rel1 {
-						relative, 0.0 1.0;
-						offset, 0 -121;
+						relative, 0.0 0.75;
+						offset, 0 -1;
 					}
 					rel2 {
-						relative, 0.0 1.0;
-						offset, 320 -1;
+						relative, 1.0 1.0;
+						offset, -1 -1;
 					}
 					image {
 						normal, "lilbottom.png";
