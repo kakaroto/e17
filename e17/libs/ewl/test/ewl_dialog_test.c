@@ -114,7 +114,7 @@ __create_dialog_test_window (Ewl_Widget * w,
 		       EWL_CALLBACK_FUNCTION (__destroy_dialog_test_window), NULL);
 
   hbox = ewl_hbox_new ();
-  ewl_dialog_add_widget (EWL_DIALOG (dialog_win), hbox);
+  ewl_dialog_widget_add (EWL_DIALOG (dialog_win), hbox);
   ewl_widget_show (hbox);
 
   image = ewl_image_new ("my_image.png", NULL);
