@@ -429,13 +429,16 @@ Epplet_Init(char *name,
    Atom                atom_list[8];
    int                 atom_count;
 #endif
+   ImlibInitParams     iip;
 
    mainwin = malloc(sizeof(EppWindow));
    mainwin->win_vert = vertical;
    w *= 16;
    h *= 16;
    disp = XOpenDisplay(NULL);
-   id = Imlib_init(disp);
+   iip.flags = PARAMS_VISUALID;
+   iip.visualid = XVisualIDFromVisual(DefaultVisual(disp, DefaultScreen(disp)));
+   id = Imlib_init_with_params(disp, &iip);
    if (!disp)
      {
 	fprintf(stderr, "Epplet Error: Cannot open display\n");
@@ -5472,7 +5475,7 @@ Epplet_show_about(char *name)
 {
    char                s[1024];
 
-   Esnprintf(s, sizeof(s), EBIN "/dox " EROOT "/epplet_data/%s/%s.ABOUT",
+   Esnprintf(s, sizeof(s), EBIN "/edox " EROOT "/epplet_data/%s/%s.ABOUT",
 	     name, name);
    Epplet_spawn_command(s);
 }
