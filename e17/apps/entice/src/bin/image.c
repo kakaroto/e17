@@ -336,7 +336,7 @@ entice_image_scroll(Evas_Object * o, Entice_Scroll_Direction d, int val)
            break;
         default:
 #if DEBUG
-           fprintf(stderr, "SCrolling WTF\n");
+           fprintf(stderr, "Scrolling WTF\n");
 #endif
            break;
       }
@@ -388,10 +388,16 @@ entice_image_zoom_fit(Evas_Object * o)
 
    if ((im = evas_object_smart_data_get(o)))
    {
+      double wfactor, hfactor;
+      wfactor = (double) (im->iw) / (double) (im->w);
+      hfactor = (double) (im->ih) / (double) (im->h);
+      /*
       if (im->iw > im->ih)
          im->zoom = ((double) (im->iw) / (double) im->w);
       else
          im->zoom = ((double) (im->ih) / (double) im->h);
+	 */
+      im->zoom = (wfactor > hfactor ? wfactor : hfactor);
       im->fit = 1;
       entice_image_resize(o, im->w, im->h);
    }
