@@ -51,7 +51,7 @@ void
 elicit_config_shutdown()
 {
   elicit_config_save();
-  ecore_config_exit();
+  ecore_config_shutdown();
 }
 
 char *
