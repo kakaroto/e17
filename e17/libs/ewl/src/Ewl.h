@@ -40,6 +40,7 @@
 #include <ewl_theme.h>
 
 #include <ewl_button.h>
+#include <ewl_floater.h>
 #include <ewl_window.h>
 #include <ewl_text.h>
 #include <ewl_entry.h>

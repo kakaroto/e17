@@ -236,7 +236,7 @@ ewl_ev_key_up(Ecore_Event * _ev)
 static void
 ewl_ev_mouse_down(Ecore_Event * _ev)
 {
-	Ewl_Widget *widget;
+	Ewl_Widget *widget = NULL;
 	Ewl_Window *window;
 	Ecore_Event_Mouse_Down *ev;
 
@@ -248,8 +248,7 @@ ewl_ev_mouse_down(Ecore_Event * _ev)
 	if (!window)
 		DRETURN(DLEVEL_STABLE);
 
-	widget = ewl_container_get_child_at_recursive(EWL_CONTAINER(window),
-						      ev->x, ev->y);
+	widget = ewl_window_get_child_at(window, ev->x, ev->y);
 
 	/*
 	 * Determine whether this widget has already been selected, if not,
@@ -348,8 +347,7 @@ ewl_ev_mouse_move(Ecore_Event * _ev)
 	if (!window)
 		DRETURN(DLEVEL_STABLE);
 
-	widget = ewl_container_get_child_at_recursive(EWL_CONTAINER(window),
-						      ev->x, ev->y);
+	widget = ewl_window_get_child_at(window, ev->x, ev->y);
 
 	if (widget && !(widget->state & EWL_STATE_DISABLED))
 	  {

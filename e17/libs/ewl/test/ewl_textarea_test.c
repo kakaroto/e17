@@ -8,7 +8,14 @@ static char *long_text = "This is a long string to test\n"
 			"as  or extremely long\n"
 			"lines. Beware, it may\n"
 			"trigger bugs in etox or\n"
-			"ewl\nso\ntrace\ncarefully.";
+			"ewl\nso\ntrace\ncarefully. Now it's time for some "
+			"gibberish to make this thing longer and to test the "
+			"scrollbars. There's probably not enough text here\n"
+			"to really push etox, but hopefully it will give a "
+			"better idea of the speed\n"
+			"Right now selection of text and click to position\n"
+			"need quite a bit of work, as well as keyboard\n"
+			"navigation and focus control\n";
 
 static Ewl_Widget *textarea_button;
 

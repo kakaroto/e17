@@ -3,7 +3,6 @@
 
 Ewd_List *ewl_window_list = NULL;
 
-static void __ewl_window_init(Ewl_Window * w);
 static void __ewl_window_realize(Ewl_Widget * w, void *ev_data,
 				 void *user_data);
 static void __ewl_window_show(Ewl_Widget * w, void *ev_data, void *user_data);
@@ -30,176 +29,9 @@ ewl_window_new()
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
 	ZERO(w, Ewl_Window, 1);
-	__ewl_window_init(w);
+	ewl_window_init(w);
 
 	DRETURN_PTR(EWL_WIDGET(w), DLEVEL_STABLE);
-}
-
-static void
-__ewl_window_init(Ewl_Window * w)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-
-	/*
-	 * Initialize the fields of the inherited container class
-	 */
-	ewl_box_init(EWL_BOX(w), EWL_ORIENTATION_VERTICAL);
-	ewl_widget_set_appearance(EWL_WIDGET(w),
-				  "/appearance/window/default");
-	ewl_object_set_current_size(EWL_OBJECT(w), 256, 256);
-	ewl_object_request_size(EWL_OBJECT(w), 256, 256);
-
-	w->title = strdup("EWL!");
-
-	ewl_callback_prepend(EWL_WIDGET(w), EWL_CALLBACK_REALIZE,
-			     __ewl_window_realize, NULL);
-	ewl_callback_append(EWL_WIDGET(w), EWL_CALLBACK_SHOW,
-			    __ewl_window_show, NULL);
-	ewl_callback_append(EWL_WIDGET(w), EWL_CALLBACK_HIDE,
-			    __ewl_window_hide, NULL);
-	ewl_callback_prepend(EWL_WIDGET(w), EWL_CALLBACK_DESTROY,
-			     __ewl_window_destroy, NULL);
-	/*
-	 * Override the default configure callbacks since the window
-	 * has special needs for placement.
-	 */
-	ewl_callback_prepend(EWL_WIDGET(w), EWL_CALLBACK_CONFIGURE,
-			     __ewl_window_configure, NULL);
-
-	LAYER(w) = -1000;
-
-	ewd_list_append(ewl_window_list, w);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-static void
-__ewl_window_realize(Ewl_Widget * w, void *ev_data, void *user_data)
-{
-	Ewl_Window *window;
-	char *font_path;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-
-	window = EWL_WINDOW(w);
-
-	window->window = ecore_window_new(0, CURRENT_X(w), CURRENT_Y(w),
-					  CURRENT_W(w), CURRENT_H(w));
-	ecore_window_set_events(window->window, XEV_CONFIGURE);
-	ecore_window_set_name_class(window->window, "EWL", "EWL!");
-	ecore_window_set_min_size(window->window, MINIMUM_W(w), MINIMUM_H(w));
-	ecore_window_set_max_size(window->window, MAXIMUM_W(w), MAXIMUM_H(w));
-	ecore_window_set_title(window->window, window->title);
-
-	ecore_window_set_delete_inform(window->window);
-
-	font_path = ewl_theme_font_path();
-
-	w->evas = evas_new_all(ecore_display_get(),
-			       window->window, 0, 0,
-			       CURRENT_W(w),
-			       CURRENT_H(w),
-			       ewl_config_get_render_method(),
-			       216, 1024 * 1024 * 2,
-			       1024 * 1024 * 5, font_path);
-
-	w->evas_window = evas_get_window(w->evas);
-	ecore_window_set_events(w->evas_window, XEV_KEY | XEV_BUTTON |
-				XEV_IN_OUT | XEV_EXPOSE | XEV_VISIBILITY |
-				XEV_MOUSE_MOVE | XEV_FOCUS);
-
-	window->bg_rect = evas_add_rectangle(w->evas);
-	evas_set_color(w->evas, window->bg_rect, 0, 0, 0, 255);
-	evas_set_layer(w->evas, window->bg_rect, LAYER(w) - 1000);
-	evas_show(w->evas, window->bg_rect);
-
-	if (window->borderless)
-		ecore_window_hint_set_borderless(window->window);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-static void
-__ewl_window_show(Ewl_Widget * w, void *ev_data, void *user_data)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-
-	if (!EWL_WINDOW(w)->window)
-		DRETURN(DLEVEL_STABLE);
-
-	if (EWL_WINDOW(w)->borderless)
-		ecore_window_hint_set_borderless(EWL_WINDOW(w)->window);
-
-	ecore_window_show(EWL_WINDOW(w)->window);
-	ecore_window_show(w->evas_window);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-static void
-__ewl_window_hide(Ewl_Widget * widget, void *ev_data, void *user_data)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("widget", widget);
-
-	ecore_window_hide(widget->evas_window);
-	ecore_window_hide(EWL_WINDOW(widget)->window);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-static void
-__ewl_window_destroy(Ewl_Widget * w, void *ev_data, void *user_data)
-{
-	Ewl_Window *win;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-
-	win = EWL_WINDOW(w);
-
-	IF_FREE(win->title);
-
-	ecore_window_hide(w->evas_window);
-	ecore_window_hide(win->window);
-
-	ecore_window_destroy(w->evas_window);
-	ecore_window_destroy(win->window);
-
-	IF_FREE(win->title);
-
-	if (ewd_list_goto(ewl_window_list, w))
-		ewd_list_remove(ewl_window_list);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-static void
-__ewl_window_configure(Ewl_Widget * w, void *ev_data, void *user_data)
-{
-	Ewl_Window *win;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-
-	win = EWL_WINDOW(w);
-	ewl_object_apply_requested(EWL_OBJECT(w));
-
-	if (win->bg_rect)
-	  {
-		  evas_move(w->evas, win->bg_rect, 0, 0);
-		  evas_resize(w->evas, win->bg_rect, CURRENT_W(w),
-			      CURRENT_H(w));
-	  }
-
-	ecore_window_resize(w->evas_window, CURRENT_W(w), CURRENT_H(w));
-	evas_set_output_size(w->evas, CURRENT_W(w), CURRENT_H(w));
-	evas_set_output_viewport(w->evas, 0, 0, CURRENT_W(w), CURRENT_H(w));
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -461,6 +293,292 @@ ewl_window_move(Ewl_Widget * w, int x, int y)
 
 	if (REALIZED(w))
 		ecore_window_move(win->window, x, y);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * ewl_window_floater_add - add a floating widget to a window
+ * @w: the window to add a floating widget
+ * @f: the floating widget to be added to the window
+ *
+ * Returns no value. Adds a floating widget @f to the list of available floating
+ * widgets for the window @w. 
+ */
+void
+ewl_window_floater_add(Ewl_Window *w, Ewl_Floater *f)
+{
+	DENTER_FUNCTION(DLEVEL_UNSTABLE);
+
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_PARAM_PTR("f", f);
+
+	if (!w->floaters)
+		w->floaters = ewd_list_new();
+
+	LAYER(f) = w->float_layer;
+	w->float_layer++;
+
+	ewd_list_append(w->floaters, f);
+
+	ewl_widget_configure(EWL_WIDGET(w));
+
+	DLEAVE_FUNCTION(DLEVEL_UNSTABLE);
+}
+
+/**
+ * ewl_window_floater_remove - remove a floater from a window
+ * @w: the window that contains the floater
+ * @f: the floater to be removed
+ *
+ * Returns no value. Removes the floating widget from the window.
+ */
+void
+ewl_window_floater_remove(Ewl_Window *w, Ewl_Floater *f)
+{
+	DENTER_FUNCTION(DLEVEL_UNSTABLE);
+
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_PARAM_PTR("f", f);
+
+	if (!w->floaters)
+		DRETURN(DLEVEL_UNSTABLE);
+
+	ewd_list_goto(w->floaters, f);
+	ewd_list_remove(w->floaters);
+
+	ewl_widget_configure(EWL_WIDGET(w));
+
+	DLEAVE_FUNCTION(DLEVEL_UNSTABLE);
+}
+
+Ewl_Widget *
+ewl_window_get_child_at(Ewl_Window *win, int x, int y)
+{
+	Ewl_Widget *widget = NULL;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	DCHECK_PARAM_PTR_RET("win", win, NULL);
+
+	/*
+	 * First check the window for any floaters that intersect
+	 */
+	if (win->floaters) {
+		Ewl_Container *f;
+
+		ewd_list_goto_first(win->floaters);
+		while (!widget && (f = ewd_list_next(win->floaters))) {
+			widget = ewl_container_get_child_at_recursive(
+					EWL_CONTAINER(f), x, y);
+			if (widget == EWL_WIDGET(f))
+				widget = NULL;
+		}
+	}
+
+	/*
+	 * If no floating widgets matched, then find it in the normal layout
+	 */
+	if (!widget)
+		widget = ewl_container_get_child_at_recursive(
+				EWL_CONTAINER(win), x, y);
+
+	DRETURN_PTR(widget, DLEVEL_STABLE);
+}
+
+/**
+ * ewl_window_init - initialize a window to default values and callbacks
+ * @w: the window to be initialized to default values and callbacks
+ *
+ * Returns no value. Sets the values and callbacks of a window @w to their
+ * defaults.
+ */
+void
+ewl_window_init(Ewl_Window * w)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+
+	/*
+	 * Initialize the fields of the inherited container class
+	 */
+	ewl_box_init(EWL_BOX(w), EWL_ORIENTATION_VERTICAL);
+	ewl_widget_set_appearance(EWL_WIDGET(w),
+				  "/appearance/window/default");
+	ewl_object_set_current_size(EWL_OBJECT(w), 256, 256);
+	ewl_object_request_size(EWL_OBJECT(w), 256, 256);
+
+	w->title = strdup("EWL!");
+
+	ewl_callback_prepend(EWL_WIDGET(w), EWL_CALLBACK_REALIZE,
+			     __ewl_window_realize, NULL);
+	ewl_callback_append(EWL_WIDGET(w), EWL_CALLBACK_SHOW,
+			    __ewl_window_show, NULL);
+	ewl_callback_append(EWL_WIDGET(w), EWL_CALLBACK_HIDE,
+			    __ewl_window_hide, NULL);
+	ewl_callback_prepend(EWL_WIDGET(w), EWL_CALLBACK_DESTROY,
+			     __ewl_window_destroy, NULL);
+	/*
+	 * Override the default configure callbacks since the window
+	 * has special needs for placement.
+	 */
+	ewl_callback_prepend(EWL_WIDGET(w), EWL_CALLBACK_CONFIGURE,
+			     __ewl_window_configure, NULL);
+
+	LAYER(w) = -1000;
+	w->float_layer = 1000;
+
+	ewd_list_append(ewl_window_list, w);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static void
+__ewl_window_realize(Ewl_Widget * w, void *ev_data, void *user_data)
+{
+	Ewl_Window *window;
+	char *font_path;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+
+	window = EWL_WINDOW(w);
+
+	window->window = ecore_window_new(0, CURRENT_X(w), CURRENT_Y(w),
+					  CURRENT_W(w), CURRENT_H(w));
+	ecore_window_set_events(window->window, XEV_CONFIGURE);
+	ecore_window_set_name_class(window->window, "EWL", "EWL!");
+	ecore_window_set_min_size(window->window, MINIMUM_W(w), MINIMUM_H(w));
+	ecore_window_set_max_size(window->window, MAXIMUM_W(w), MAXIMUM_H(w));
+	ecore_window_set_title(window->window, window->title);
+
+	ecore_window_set_delete_inform(window->window);
+
+	font_path = ewl_theme_font_path();
+
+	w->evas = evas_new_all(ecore_display_get(),
+			       window->window, 0, 0,
+			       CURRENT_W(w),
+			       CURRENT_H(w),
+			       ewl_config_get_render_method(),
+			       216, 1024 * 1024 * 2,
+			       1024 * 1024 * 5, font_path);
+
+	w->evas_window = evas_get_window(w->evas);
+	ecore_window_set_events(w->evas_window, XEV_KEY | XEV_BUTTON |
+				XEV_IN_OUT | XEV_EXPOSE | XEV_VISIBILITY |
+				XEV_MOUSE_MOVE | XEV_FOCUS);
+
+	window->bg_rect = evas_add_rectangle(w->evas);
+	evas_set_color(w->evas, window->bg_rect, 0, 0, 0, 255);
+	evas_set_layer(w->evas, window->bg_rect, LAYER(w) - 1000);
+	evas_show(w->evas, window->bg_rect);
+
+	if (window->borderless)
+		ecore_window_hint_set_borderless(window->window);
+
+	/*
+	 * Reparent and realize floating widgets
+	 */
+	if (window->floaters) {
+		Ewl_Widget *f;
+
+		ewd_list_goto_first(window->floaters);
+		while ((f = EWL_WIDGET(ewd_list_next(window->floaters)))) {
+			ewl_widget_set_parent(f, w);
+			if (VISIBLE(f))
+				ewl_widget_realize(f);
+		}
+	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static void
+__ewl_window_show(Ewl_Widget * w, void *ev_data, void *user_data)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+
+	if (!EWL_WINDOW(w)->window)
+		DRETURN(DLEVEL_STABLE);
+
+	if (EWL_WINDOW(w)->borderless)
+		ecore_window_hint_set_borderless(EWL_WINDOW(w)->window);
+
+	ecore_window_show(EWL_WINDOW(w)->window);
+	ecore_window_show(w->evas_window);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static void
+__ewl_window_hide(Ewl_Widget * widget, void *ev_data, void *user_data)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("widget", widget);
+
+	ecore_window_hide(widget->evas_window);
+	ecore_window_hide(EWL_WINDOW(widget)->window);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static void
+__ewl_window_destroy(Ewl_Widget * w, void *ev_data, void *user_data)
+{
+	Ewl_Window *win;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+
+	win = EWL_WINDOW(w);
+
+	IF_FREE(win->title);
+
+	ecore_window_hide(w->evas_window);
+	ecore_window_hide(win->window);
+
+	ecore_window_destroy(w->evas_window);
+	ecore_window_destroy(win->window);
+
+	IF_FREE(win->title);
+
+	if (win->floaters)
+		ewd_list_for_each(win->floaters,
+				EWD_FOR_EACH(ewl_widget_destroy));
+
+	if (ewd_list_goto(ewl_window_list, w))
+		ewd_list_remove(ewl_window_list);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static void
+__ewl_window_configure(Ewl_Widget * w, void *ev_data, void *user_data)
+{
+	Ewl_Window *win;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+
+	win = EWL_WINDOW(w);
+	ewl_object_apply_requested(EWL_OBJECT(w));
+
+	if (win->bg_rect)
+	  {
+		  evas_move(w->evas, win->bg_rect, 0, 0);
+		  evas_resize(w->evas, win->bg_rect, CURRENT_W(w),
+			      CURRENT_H(w));
+	  }
+
+	ecore_window_resize(w->evas_window, CURRENT_W(w), CURRENT_H(w));
+	evas_set_output_size(w->evas, CURRENT_W(w), CURRENT_H(w));
+	evas_set_output_viewport(w->evas, 0, 0, CURRENT_W(w), CURRENT_H(w));
+
+	if (win->floaters)
+		ewd_list_for_each(win->floaters,
+				EWD_FOR_EACH(ewl_widget_configure));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

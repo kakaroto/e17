@@ -19,6 +19,7 @@ installed_headers_DATA = \
 	ewl_entry.h \
 	ewl_enums.h \
 	ewl_events.h \
+	ewl_floater.h \
 	ewl_fx.h \
 	ewl_image.h \
 	ewl_list.h \
@@ -50,6 +51,7 @@ libewl_la_SOURCES = \
 	ewl_cursor.c \
 	ewl_entry.c \
 	ewl_events.c \
+	ewl_floater.c \
 	ewl_fx.c \
 	ewl_image.c \
 	ewl_list.c \
