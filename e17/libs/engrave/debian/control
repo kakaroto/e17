@@ -9,8 +9,8 @@ Package: libengrave0-dev
 Section: devel
 Architecture: any
 Depends: libc6-dev | libc-dev
-Provides: libepeg-dev
-Conflicts: libepeg-dev
+Provides: libengrave-dev
+Conflicts: libengrave-dev
 Description: Enlightenment edje EDC parsing library development files
  This package contains headers and static libraries for development with
  libengrave.
