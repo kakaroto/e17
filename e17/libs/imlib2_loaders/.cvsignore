@@ -13,3 +13,6 @@ config.guess
 libltdl
 ltmain.sh
 aclocal.m4
+install-sh
+missing
+mkinstalldirs

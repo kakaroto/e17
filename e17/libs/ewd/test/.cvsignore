@@ -1,0 +1,10 @@
+.deps
+.libs
+Makefile
+Makefile.in
+ewd_dlist_test
+ewd_hash_test
+ewd_index_test
+ewd_list_test
+ewd_threads_test
+ewd_tree_test

@@ -25,3 +25,6 @@ imlib2.spec
 .icons
 imlib2-config
 dox
+install-sh
+missing
+mkinstalldirs
