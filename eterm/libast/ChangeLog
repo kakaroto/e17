@@ -234,3 +234,9 @@ Wed May 22 08:59:38 2002                        Michael Jennings (mej)
 Stupid typo.  Doing too much perl, I guess.  cpp uses "#elif," not
 "#elsif."
 ----------------------------------------------------------------------
+Sun May 26 22:37:43 2002                        Michael Jennings (mej)
+
+Updated performance testing to be scaled.  The default is a quicker
+performance test than before, but now we can also choose to run
+anywhere from scratching the surface to a very thorough pounding.
+----------------------------------------------------------------------

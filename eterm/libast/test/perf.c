@@ -33,8 +33,8 @@ static const char cvs_ident[] = "$Id$";
 unsigned long tnum = 0;
 struct timeval time1, time2;
 double time_diff;
-long prof_counter;
-size_t rep_cnt, rep_base;
+size_t prof_counter;
+size_t rep_cnt = 0, rep_mult = 100;
 
 int perf_macros(void);
 int perf_strings(void);
@@ -52,6 +52,8 @@ perf_macros(void)
     char sc1 = 'X', sc2 = 'K';
     int si1 = 472, si2 = 8786345;
     unsigned long sl1 = 0x98765432, sl2 = 0xffeeddff;
+
+    PERF_SET_REPS(10000);
 
     PERF_BEGIN("MEMSET() macro");
     PERF_TEST(MEMSET(memset_test, '!', CONST_STRLEN(memset_test)););
@@ -91,6 +93,8 @@ perf_strings(void)
 #endif
     char **slist;
 
+    PERF_SET_REPS(1000);
+
     PERF_BEGIN("left_str() function");
     PERF_TEST(s1 = left_str("bugger all", 3); FREE(s1););
     PERF_TEST(s2 = left_str("testing 1-2-3", 7); FREE(s2););
@@ -111,6 +115,8 @@ perf_strings(void)
     PERF_TEST(s3 = right_str(NULL, 0); FREE(s3););
     PERF_TEST(s4 = right_str("eat me", 0); FREE(s4););
     PERF_END();
+
+    PERF_SET_REPS(10);
 
 #ifdef HAVE_REGEX_H
     PERF_BEGIN("regexp_match() function");
@@ -179,6 +185,8 @@ perf_options(void)
         SPIFOPT_ARGS_LONG("foo", "foo", foo)
     };
 
+    PERF_SET_REPS(100);
+
     PERF_BEGIN("spifopt_parse() function");
     SPIFOPT_OPTLIST_SET(opts1);
     SPIFOPT_NUMOPTS_SET(sizeof(opts1) / sizeof(spifopt_t));
@@ -217,6 +225,8 @@ perf_obj(void)
     spif_obj_t testobj;
     spif_class_t cls;
 
+    PERF_SET_REPS(100);
+
     PERF_BEGIN("spif_obj create/delete");
     PERF_TEST(testobj = spif_obj_new(); spif_obj_del(testobj););
     PERF_END();
@@ -239,6 +249,8 @@ perf_str(void)
     signed char buff[4096] = "abcde";
     signed char tmp2[] = "string #1\nstring #2";
     spif_charptr_t foo;
+
+    PERF_SET_REPS(100);
 
     PERF_BEGIN("spif_str create/delete");
     PERF_TEST(teststr = spif_str_new(); spif_str_del(teststr););
@@ -381,6 +393,8 @@ perf_tok(void)
     signed char tmp3[] = "\"this is one token\" and this \'over here\' is \"another one\"";
     signed char tmp4[] = "\"there shouldn't be\"\' any problems at\'\"\"\'\'\' \'\"all parsing this\"";
 
+    PERF_SET_REPS(10);
+
     PERF_BEGIN("spif_tok_new_from_ptr() function");
     PERF_TEST(testtok = spif_tok_new_from_ptr(tmp); spif_tok_del(testtok););
     PERF_END();
@@ -421,6 +435,8 @@ perf_url(void)
     spif_charptr_t tmp3 = "/path/to/some/file.jpg";
     spif_charptr_t tmp4 = "pop3://dummy:moo@pop.nowhere.com:110";
 
+    PERF_SET_REPS(100);
+
     PERF_BEGIN("spif_url_new_from_ptr() function");
     PERF_TEST(testurl = spif_url_new_from_ptr(tmp1); spif_url_del(testurl););
     PERF_TEST(testurl2 = spif_url_new_from_ptr(tmp2); spif_url_del(testurl2););
@@ -440,6 +456,8 @@ perf_list(void)
     spif_list_t testlist;
     spif_str_t s, s2;
     size_t idx, len;
+
+    PERF_SET_REPS(1);
 
     for (i = 0; i < 3; i++) {
         if (i == 0) {
@@ -518,7 +536,7 @@ perf_list(void)
         PERF_TEST(s2 = SPIF_CAST(str) SPIF_LIST_REMOVE_AT(testlist, idx); if (!SPIF_STR_ISNULL(s2)) {spif_str_del(s2);});
         PERF_END();
 
-        SPIF_SHOW(testlist, stderr);
+        /*SPIF_SHOW(testlist, stderr);*/
         SPIF_LIST_DEL(testlist);
     }
 
@@ -532,9 +550,14 @@ main(int argc, char *argv[])
     int ret = 0;
     struct timeval t1, t2;
     spifopt_t options[] = {
+        SPIFOPT_INT_PP('m', "multiplier", "multiplying factor for test runs (default 100)", rep_mult)
     };
 
-    DEBUG_LEVEL = 5;
+    DEBUG_LEVEL = 0;
+    SPIFOPT_OPTLIST_SET(options);
+    SPIFOPT_NUMOPTS_SET(sizeof(options) / sizeof(spifopt_t));
+    SPIFOPT_ALLOWBAD_SET(0);
+    spifopt_parse(argc, argv);
 
     gettimeofday(&t1, NULL);
 
@@ -562,8 +585,7 @@ main(int argc, char *argv[])
     if ((ret = perf_list()) != 0) {
         return ret;
     }
-    MALLOC_DUMP();
-    return 0;
+    /*MALLOC_DUMP();*/
 
     gettimeofday(&t2, NULL);
 

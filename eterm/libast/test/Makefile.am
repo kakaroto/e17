@@ -16,6 +16,6 @@ test: libast-test
 	$(top_builddir)/test/libast-test
 
 perf: libast-perf
-	$(top_builddir)/test/libast-perf
+	$(top_builddir)/test/libast-perf $(PERFOPTS)
 
 .PHONY: test

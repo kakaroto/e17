@@ -24,7 +24,7 @@
 #ifndef _LIBAST_PERF_H_
 #  define _LIBAST_PERF_H_
 
-#  define PERF_ITERATIONS      100000
+#  define PERF_SET_REPS(c)     do {rep_cnt = (c) * rep_mult; if (rep_cnt < (c)) {rep_cnt = (size_t) -1;}} while (0)
 #  define TDIFF(t1, t2)        (((t2).tv_sec + ((double) (t2).tv_usec / 1000000.0)) \
                                  - ((t1).tv_sec + ((double) (t1).tv_usec / 1000000.0)))
 #  define PERF_BEGIN(s)        do { \
@@ -32,7 +32,7 @@
                                    printf("Profiling " s "..."); \
                                    fflush(stdout); \
                                    gettimeofday(&time1, NULL); \
-                                   for (prof_counter = 0; prof_counter < PERF_ITERATIONS; prof_counter++) { 
+                                   for (prof_counter = 0; prof_counter < rep_cnt; prof_counter++) { 
 #  define PERF_TEST(x)             do { tnum++; x ; } while (0)
 #  define PERF_END()               } \
                                    gettimeofday(&time2, NULL); \
