@@ -509,6 +509,10 @@ static void *_ewd_list_remove_last(Ewd_List * list)
 	if (prev) {
 		prev->next = NULL;
 		list->last = prev;
+		if (list->current == old) {
+			list->current = prev;
+			list->index--;
+		}
 	}
 	else
 		list->first = list->current = list->last = NULL;
