@@ -8,7 +8,7 @@
 /* #undef HAVE_LIBSM */
 #define PACKAGE_LOCALE_DIR "/usr/local//locale"
 #define PACKAGE_DATA_DIR "/usr/local/share/enotes"
-#define PACKAGE_SOURCE_DIR "/home/tom/misc/tmp"
+#define PACKAGE_SOURCE_DIR "/home/aje/e/cvs/misc/enotes"
 #define PACKAGE_BIN_DIR "${exec_prefix}/bin"
 #define PACKAGE_LIB_DIR "${exec_prefix}/lib"
 
