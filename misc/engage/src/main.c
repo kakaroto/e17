@@ -49,10 +49,9 @@ main(int argc, char **argv)
 
   od_window_init();
   od_dock_init();
-#if 1
-  // this is not getting added until we have a LOT more work done!!!
-  od_tray_init();
-#endif
+
+  if (options.tray)
+    od_tray_init();
 
   od_icon_add_path(options.icon_path);
   ecore_config_evas_font_path_apply(evas);

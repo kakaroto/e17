@@ -91,9 +91,6 @@ od_icon_grab(OD_Icon * icon, Ecore_X_Window win)
   Evas_Object    *obj = NULL;
 
   assert(icon);
-  if (icon->pic && !strcmp(evas_object_type_get(icon->pic), "edje"))
-    return;
-
   dsp = ecore_x_display_get();
   scr = DefaultScreen(dsp);
 
@@ -120,13 +117,12 @@ od_icon_grab(OD_Icon * icon, Ecore_X_Window win)
   img = imlib_create_image_from_drawable(mask, x, y, w, h, 0);
   imlib_context_set_image(img);
 
-#if 0
-  /* This will only be necessary if we move to non image objects as pics */
   if ((obj = edje_object_part_swallow_get(icon->icon, "EngageIcon"))) {
-    edje_object_part_unswallow(icon->icon, obj);
-    evas_object_del(obj);
+    edje_object_part_unswallow(icon->icon, icon->pic);
+    evas_object_del(icon->pic);
+    icon->pic = evas_object_image_add(evas);
   }
-#endif
+
   evas_object_image_size_set(icon->pic, w, h);
   evas_object_image_data_copy_set(icon->pic,
                                   imlib_image_get_data_for_reading_only());
@@ -251,10 +247,6 @@ od_icon_reload(OD_Icon * in)
   }
   free(path);
 
-#ifdef HAVE_IMLIB
-  if (options.grab_min_icons != 0)
-    od_icon_grab(in, in->data.minwin.window);
-#endif
   if (in->data.applnk.count > 0)
     od_icon_arrow_show(in);
 }

@@ -95,6 +95,7 @@ struct _OD_Options {
   char           *tt_fa;        // font name
   int             tt_fs;        // font size
   double          icon_appear_duration;
+  int             tray, ignore_run, ignore_min;
 };
 
 struct _OD_Window {

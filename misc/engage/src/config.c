@@ -6,7 +6,7 @@
 
 #ifdef HAVE_EWL
 #include <Ewl.h>
-Ewl_Widget     *menu, *menu_win;
+Ewl_Widget     *menu, *menu_win, *menu_app_name;
 Evas_Object    *embed;
 int             init;
 
@@ -130,6 +130,13 @@ od_config_init(void)
                             "appear-time",
                             "Time taken (in seconds) for new icons to appear");
 
+  ecore_config_boolean_create("engage.options.tray", 1, 'T', "tray",
+                              "Enable system tray");
+  ecore_config_boolean_create("engage.options.ignore_running", 0, 'i',
+                              "ignore-running", "Ignore running apps");
+  ecore_config_boolean_create("engage.options.ignore_iconified", 0, 'I',
+                              "ignore-iconified", "Ignore iconified windows");
+
   ecore_config_load();
   ret = ecore_config_args_parse();
 
@@ -167,6 +174,10 @@ od_config_init(void)
   options.icon_appear_duration =
     ecore_config_float_get("engage.options.icon_appear_duration");
 
+  options.tray = ecore_config_boolean_get("engage.options.tray");
+  options.ignore_run = ecore_config_boolean_get("engage.options.ignore_running");
+  options.ignore_min = ecore_config_boolean_get("engage.options.ignore_iconified");
+
   return ret;
 }
 
@@ -185,12 +196,10 @@ void
 od_config_menu_out_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
   int             x, y;
-
   evas_pointer_output_xy_get(evas, &x, &y);
   if (x <= menu_x + 1 || x >= (menu_x + menu_width) ||
       y <= menu_y + 1 || y >= (menu_y + menu_height))
     od_config_menu_hide();
-
 }
 
 void
@@ -224,7 +233,7 @@ od_config_menu_init(void)
     return;
   init = 1;
   /* FIXME: nasty nasty, we need to request the size, not code it in */
-  menu_height = 87;
+  menu_height = 87; //121;
   menu_width = 100;
 
   menu_win = ewl_embed_new();
@@ -252,6 +261,18 @@ od_config_menu_init(void)
                       od_config_menu_out_cb, NULL);
   ewl_container_child_append(EWL_CONTAINER(menu_box), menu);
   /* *don't* show the menu, we only want the popup */
+/*
+  item = ewl_menu_item_new(NULL, "<name goes here>");
+  ewl_container_child_append(EWL_CONTAINER(menu), item);
+  ewl_callback_append(item, EWL_CALLBACK_SELECT, od_config_menu_config_cb, NULL);
+  ewl_widget_show(item);
+  menu_app_name = item;
+
+  item = ewl_menu_separator_new();
+  ewl_container_child_append(EWL_CONTAINER(menu), item);
+  ewl_widget_show(item);
+*/
+
 
   item = ewl_menu_item_new(NULL, "Icon Zooming");
   ewl_container_child_append(EWL_CONTAINER(menu), item);
@@ -285,11 +306,44 @@ void
 od_config_menu_draw(Evas_Coord x, Evas_Coord y)
 {
   Evas_Coord      menu_off_x, menu_off_y;
+  Evas_List      *l;
+  Evas_Coord      minx, maxx;
+  char           *menu_text_launcher, *menu_text_not_launcher;
 
   menu_off_x = 5;
   menu_off_y = 5;
 
   od_config_menu_init();
+  
+  minx = x - options.size / 2 ;
+  maxx = x + options.size / 2;
+
+  menu_text_launcher = "don't keep \"%s\" in docker";
+  menu_text_not_launcher = "keep \"%s\" in docker";
+  l = dock.icons;
+  while (l) {
+    OD_Icon *icon;
+    icon = l->data;
+    if (icon->x >= minx && icon->x <= maxx) {
+      int len;
+      char *full;
+      if (icon->launcher) {
+        len = strlen(menu_text_launcher) + strlen(icon->winclass) - 1;
+	full = malloc(len);
+        snprintf(full, len, menu_text_launcher, icon->winclass);
+      } else {
+        len = strlen(menu_text_not_launcher) + strlen(icon->winclass) - 1;
+	full = malloc(len);
+        snprintf(full, len, menu_text_not_launcher, icon->winclass);
+      }
+      printf("context menu on %s\n", icon->name);
+//      ewl_menu_item_text_set(EWL_MENU_ITEM(menu_app_name), full);
+      free(full);
+      break;
+    }
+    l = l->next;
+  }
+
   if (x - menu_off_x + menu_width > options.width)
     menu_x = options.width - menu_width;
   else if (x < menu_off_x)

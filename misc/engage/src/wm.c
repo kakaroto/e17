@@ -293,7 +293,7 @@ od_sync_clients(void *data)
       snprintf(buf, 32, "%8x", *win);
       if ((owd = evas_hash_find(clients_hash, buf))) {
         dirty = evas_list_remove(dirty, owd);
-        if (!owd->minwin && od_wm_iconified(owd->id)) {
+        if (!owd->minwin && od_wm_iconified(owd->id) && !options.ignore_min) {
           owd->minwin = od_icon_new_minwin(owd->id, od_wm_get_title(owd->id),
                                            od_wm_get_winclass(owd->id));
           od_dock_add_minwin(owd->minwin);
@@ -370,12 +370,13 @@ od_sync_clients(void *data)
       }
       if (!owd->applnk) {
         owd->applnk = od_icon_new_applnk(od_icon_mapping_get(winclass), title, winclass);
-        od_dock_add_applnk(owd->applnk);
+	if (!options.ignore_run)
+          od_dock_add_applnk(owd->applnk);
       }
       owd->applnk->data.applnk.count++;
       if (owd->applnk->data.applnk.count == 1)
         od_icon_arrow_show(owd->applnk);
-      if (od_wm_iconified(owd->id)) {
+      if (od_wm_iconified(owd->id) && !options.ignore_min) {
         owd->minwin = od_icon_new_minwin(owd->id, title, winclass);
         od_dock_add_minwin(owd->minwin);
       }
