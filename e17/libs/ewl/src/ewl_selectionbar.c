@@ -287,6 +287,7 @@ ewl_selectionbar_focus_out_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	Ewl_Widget     *child;
 	Ewl_Embed      *embed;
 	Ewl_Object     *o;
+	Ewl_Event_Mouse_Out *ev = ev_data;
 
 	int             mx, my;
 	int             wx, wy;
@@ -305,12 +306,8 @@ ewl_selectionbar_focus_out_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	 */
 	embed = ewl_embed_widget_find(w);
 
-	/*
-	 * FIXME: This is not in ecore yet.
-	 */
-	/* ecore_pointer_xy(embed->evas_window, &mx, &my); */
-	mx = 0;
-	my = 0;
+	mx = ev->x;
+	my = ev->y;
 
 	wx = CURRENT_X(o);
 	wy = CURRENT_Y(o);
