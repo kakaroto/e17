@@ -1,7 +1,9 @@
 #include "../src/eConfig.h"
 #include "../src/eConfig.internal.h"
 
-int main(int argc, char **argv) {
+int
+main(int argc, char **argv)
+{
 	
 	char **stuff;
 	int num;

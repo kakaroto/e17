@@ -1,7 +1,9 @@
 #include "eConfig.internal.h"
 #include "eConfig.h"
 
-int    eConfigUpdateCache(void) {
+int 
+eConfigUpdateCache(void)
+{
 
 	/* this function should force an update of all the cache in memory
 	 * currently it does nothing :)
@@ -12,7 +14,9 @@ int    eConfigUpdateCache(void) {
 
 }
 
-void   eConfigSetCacheSize(unsigned long newsize) {
+void
+eConfigSetCacheSize(unsigned long newsize)
+{
 
 	/* This function allows an application to set the cache size
 	 * that eConfig will use.
@@ -26,7 +30,9 @@ void   eConfigSetCacheSize(unsigned long newsize) {
 
 }
 
-unsigned long  eConfigGetCacheSize(void) {
+unsigned long 
+eConfigGetCacheSize(void)
+{
 
 	/* This function will return the current cachesize that 
 	 * eConfig is using.
@@ -37,7 +43,9 @@ unsigned long  eConfigGetCacheSize(void) {
 
 }
 
-unsigned long eConfigGetCacheFilled(void) {
+unsigned long 
+eConfigGetCacheFilled(void)
+{
 
 	/* This function will return the current amount of filled data
 	 * that eConfig has used in the cache size.  Useful for displaying

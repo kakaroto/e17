@@ -2,8 +2,10 @@
 #include "eConfig.h"
 
 
-unsigned long _econf_finddatapointerinpath(char *path,char *loc,
-                                           unsigned long *position) {
+unsigned long
+_econf_finddatapointerinpath(char *path,char *loc,
+                             unsigned long *position)
+{
 
 	/* This function is internal to eConfig
 	 * its goal is to see if it can find the data specified (loc)
@@ -39,7 +41,9 @@ unsigned long _econf_finddatapointerinpath(char *path,char *loc,
 
 }
 
-void * _econf_get_data_from_disk(char *loc,unsigned long *length) {
+void *
+_econf_get_data_from_disk(char *loc,unsigned long *length)
+{
 
 	/* This function is internal to eConfig
 	 * it searches all the themepaths to find the correct data.
@@ -85,8 +89,10 @@ void * _econf_get_data_from_disk(char *loc,unsigned long *length) {
 
 }
 
-int _econf_save_data_to_disk_at_position(unsigned long position,char *path,
-		unsigned long length, void *data) {
+int
+_econf_save_data_to_disk_at_position(unsigned long position,char *path,
+                                     unsigned long length, void *data)
+{
 
 	/* This function is pretty simplistic.  it just saves out a bit of *data to
 	 * the theme at *path, into the data file at position, and knows it is
@@ -126,7 +132,9 @@ int _econf_save_data_to_disk_at_position(unsigned long position,char *path,
 
 }
 
-int _econf_new_fat_entry_to_disk(char *loc, unsigned long length, char *path) {
+int
+_econf_new_fat_entry_to_disk(char *loc, unsigned long length, char *path)
+{
 
 	/* This function creates a new FAT table entry at the specified location
 	 * *path for the variable *loc of length length. 
@@ -165,7 +173,10 @@ int _econf_new_fat_entry_to_disk(char *loc, unsigned long length, char *path) {
 
 }
 
-int _econf_save_data_to_disk(void *data, char *loc, unsigned long length, char local) {
+int
+_econf_save_data_to_disk(void *data, char *loc, unsigned long length,
+                         char local)
+{
 
 	/* This function is supposed to save data out to disk.  it really needs to
 	 * be slapped since it really isn't doing what I think it should be doing.
@@ -221,7 +232,9 @@ int _econf_save_data_to_disk(void *data, char *loc, unsigned long length, char l
 
 }
 
-int _econf_purge_data_from_disk_at_path(char *loc, char *path) {
+int
+_econf_purge_data_from_disk_at_path(char *loc, char *path)
+{
 
 	/* This function is supposed to "dirty" the data inside of a disk at any
 	 * particular location.  typically used because your data is:
@@ -276,7 +289,9 @@ int _econf_purge_data_from_disk_at_path(char *loc, char *path) {
 
 }
 
-int _econf_purge_data_from_disk(char *loc) {
+int
+_econf_purge_data_from_disk(char *loc)
+{
 
 	/* This tries to remove a value completely from all writable config files.
 	 * It searches the path and dirties the contents using

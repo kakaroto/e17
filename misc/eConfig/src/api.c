@@ -2,7 +2,9 @@
 #include "eConfig.h"
 
 
-void *eConfigGetData(char *loc, unsigned long *length) {
+void *
+eConfigGetData(char *loc, unsigned long *length)
+{
 
 	/* This function will take a key (loc) and return arbitrary data from the
 	 * first convenient location it finds in the themepath.  See path.c for
@@ -38,13 +40,16 @@ void *eConfigGetData(char *loc, unsigned long *length) {
 	}
 
 	eConfigUpdateCache();
+
 	*length = 0;
 	return NULL;
 
 }
 
 
-void *eConfigRefreshData(char *loc, unsigned long *length) {
+void *
+eConfigRefreshData(char *loc, unsigned long *length)
+{
 
 	/* This function will take a key (loc) and return arbitrary data from the
 	 * first convenient location it finds in the themepath.  See path.c for
@@ -80,7 +85,9 @@ void *eConfigRefreshData(char *loc, unsigned long *length) {
 
 }
 
-int eConfigUnloadData(char *loc) {
+int
+eConfigUnloadData(char *loc)
+{
 
 	/* This function will unload the data for you at the location specified.
 	 * You should use this function instead of freeing the data you retreived
@@ -109,6 +116,7 @@ int eConfigUnloadData(char *loc) {
 	}
 
 	eConfigUpdateCache();
+
 	return 0;
 
 }
