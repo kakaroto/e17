@@ -703,7 +703,7 @@ GNOME_SetWMNameVer(void)
 {
    static Atom         atom_set = 0, atom_set2 = 0;
    const char         *wm_name = "Enlightenment";
-   const char         *wm_version = "0.16.0";
+   const char         *wm_version = ENLIGHTENMENT_VERSION;
 
    EDBUG(6, "GNOME_SetWMNameVer");
    if (!atom_set)
