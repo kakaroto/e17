@@ -275,7 +275,26 @@ static void gevasimage_set_arg(GtkObject * object, GtkArg * arg, guint arg_id)
 
 	switch (arg_id) {
 		case ARG_IMAGENAME:
-			{
+            if( GTK_GEVASOBJ(ev)->eobj )
+            {
+				Evas_Object* o = GTK_GEVASOBJ(ev)->eobj;
+
+				gstr = GTK_VALUE_STRING(*arg);
+                g_free(ev->image_filename);
+                ev->image_filename = g_strdup(gstr);
+                
+                evas_object_image_file_set( o, ev->image_filename, NULL);
+                {
+                    int w=0, h=0;
+
+                    evas_object_image_size_get( o, &w, &h );
+                    evas_object_image_fill_set( o, 0, 0, w, h );
+                    evas_object_resize( o, w, h );
+                }
+                fprintf(stderr,"ARG_IMAGENAME(s): %s %lx\n", ev->image_filename, EVAS(ev) );
+            }
+            else
+            {
 				Evas_Object* o;
 
 				gstr = GTK_VALUE_STRING(*arg);
@@ -307,6 +326,7 @@ static void gevasimage_set_arg(GtkObject * object, GtkArg * arg, guint arg_id)
                 }
                 fprintf(stderr,"ARG_IMAGENAME(e2): %s %lx\n",gstr, EVAS(ev) );
             }
+            gevasobj_queue_redraw( GTK_GEVASOBJ( object ) );
 			break;
 
 
