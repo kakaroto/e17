@@ -249,9 +249,9 @@ void FileOpen(GtkWidget *widget, GtkFileSelection *fs)
 	printf("%d - %d\n", imgw, imgh);
 	imlib_render_image_on_drawable_at_size(0, 0, imgw, imgh);
 	printf("%d - %d\n", imgw, imgh);
-	gtk_widget_set_usize(area, imgw, imgh);
-	gtk_widget_set_usize(EventBox, imgw, imgh);
 	gtk_widget_set_usize(MainWindow, imgw, imgh);
+	gtk_widget_set_usize(EventBox, imgw, imgh);
+	gtk_widget_set_usize(area, imgw, imgh);
 	gtk_widget_show(area);
 }
 
@@ -332,9 +332,9 @@ void Flip3(GtkWidget *widget, GdkEvent *event, gpointer data)
 	imlib_image_flip_diagonal();
 	imgw = imlib_image_get_width();
 	imgh = imlib_image_get_height();
-	gtk_widget_set_usize(area, imgw, imgh);
-	gtk_widget_set_usize(EventBox, imgw, imgh);
 	gtk_widget_set_usize(MainWindow, imgw, imgh);
+	gtk_widget_set_usize(EventBox, imgw, imgh);
+	gtk_widget_set_usize(area, imgw, imgh);
 	imlib_render_image_on_drawable(0, 0);
 	gtk_widget_show(area);
 }
@@ -383,9 +383,9 @@ gboolean a_config(GtkWidget *widget,
 	
 	/* only happens once! */
 	if(im && i == 0){
-		gtk_widget_set_usize(area, imgw, imgh);
-		gtk_widget_set_usize(EventBox, imgw, imgh);
 		gtk_widget_set_usize(MainWindow, imgw, imgh);
+		gtk_widget_set_usize(EventBox, imgw, imgh);
+		gtk_widget_set_usize(area, imgw, imgh);
 	}
 	
 	printf("configure event\n");
