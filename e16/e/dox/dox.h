@@ -181,7 +181,7 @@ extern Drawable     vIcDrw;
 #define ENCOING_ISO_8859_3 2
 #define ENCOING_ISO_8859_4 3
 
-#if defined(HAVE_WCTYPE_H) && defined(HAVE_WCHAR_T)
+#if defined(HAVE_WCTYPE_H) && defined(HAVE_WCHAR_T) && !defined(__FreeBSD__)
 #define USE_WORD_MB
 #endif
 
