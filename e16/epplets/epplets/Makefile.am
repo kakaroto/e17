@@ -3,7 +3,7 @@
 bindir = $(EBIN)
 
 bin_PROGRAMS = E-Load.epplet E-Clock.epplet E-Time.epplet E-Net.epplet \
-E-Cpu.epplet EppletTest.epplet E-Biff.epplet E-Power.epplet EMix.epplet
+E-Cpu.epplet EppletTest.epplet E-Biff.epplet E-Power.epplet Emix.epplet
 
 E_Load_epplet_SOURCES = E-Load.c
 E_Load_epplet_DEPENDENCIES = $(top_srcdir)/api/libepplet.la
