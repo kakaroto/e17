@@ -51,6 +51,7 @@ void            ewl_entry_text_set(Ewl_Entry * e, char *t);
 char           *ewl_entry_text_get(Ewl_Entry * e);
 void            ewl_entry_editable_set(Ewl_Entry *e, unsigned int edit);
 void            ewl_entry_multiline_set(Ewl_Entry * e, int m);
+int             ewl_entry_multiline_get(Ewl_Entry * e);
 
 void ewl_entry_cursor_left_move(Ewl_Entry * e);
 void ewl_entry_cursor_previous_word_move(Ewl_Entry * e);

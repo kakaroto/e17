@@ -120,6 +120,19 @@ void ewl_entry_multiline_set(Ewl_Entry * e, int m)
 }
 
 /**
+ * @param e: the entry widget to retrieve the multiline flag
+ * @return Returns the multiline flag on success, -1 on failure.
+ * @brief Get the text from an entry widget
+ */
+int ewl_entry_multiline_get(Ewl_Entry * e)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("e", e, -1);
+
+	DRETURN_INT(e->multiline, DLEVEL_STABLE);
+}
+
+/**
  * @param e: the entry widget to change the text
  * @param t: the text to set for the entry widget
  * @return Returns no value.
@@ -720,8 +733,50 @@ void ewl_entry_cursor_next_word_move(Ewl_Entry * e)
  */
 void ewl_entry_cursor_down_move(Ewl_Entry * e)
 {
-	if (e->multiline)
-		printf( "ewl_entry_cursor_down_move: %08x\n", (int) e );
+	char *s;
+	int nlen, nline, nend;
+	int lpos, start, len = 0;
+	int bp;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("e", e);
+
+	if (e->multiline) {
+		len = ewl_text_length_get(EWL_TEXT(e->text));
+		nline = start = bp = ewl_cursor_base_position_get(EWL_CURSOR(e->cursor));
+
+		s = ewl_entry_text_get(e);
+
+		while( --start > 1 && s[start] != '\n' )
+			;
+
+		if( s[start] == '\n' )
+			start++;
+
+		lpos = bp - start - 1;
+
+		while( nline < len && s[nline++] != '\n' )
+			;
+
+		nend = nline;
+
+		while( nend < len && s[nend++] != '\n' )
+			;
+
+		nlen = nend - nline;
+
+		if( nlen >= lpos )
+			lpos += nline + 1;
+		else
+			lpos = nend - 1;
+
+		if (e->in_select_mode)
+			ewl_cursor_select_to(EWL_CURSOR(e->cursor), lpos);
+		else
+			ewl_cursor_base_set(EWL_CURSOR(e->cursor), lpos);
+
+		ewl_widget_configure(EWL_WIDGET(e));
+	}
 }
 
 /*
@@ -729,8 +784,51 @@ void ewl_entry_cursor_down_move(Ewl_Entry * e)
  */
 void ewl_entry_cursor_up_move(Ewl_Entry * e)
 {
-	if (e->multiline)
-		printf( "ewl_entry_cursor_up_move: %08x\n", (int) e );
+	char *s;
+	int plen, pline, pend;
+	int lpos, start, len = 0;
+	int bp;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("e", e);
+
+	if (e->multiline) {
+		len = ewl_text_length_get(EWL_TEXT(e->text));
+		start = bp = ewl_cursor_base_position_get(EWL_CURSOR(e->cursor));
+
+		s = ewl_entry_text_get(e);
+
+		while( --start > 1 && s[start] != '\n' )
+			;
+
+		if( s[start] == '\n' )
+			start++;
+
+		lpos = bp - start - 1;
+		pline = start - 1;
+
+		while( --pline > 1 && s[pline] != '\n' )
+			;
+
+		pend = pline;
+
+		while( ++pend < len && s[pend] != '\n' )
+			;
+
+		plen = pend - pline;
+
+		if( plen >= lpos )
+			lpos += pline + 1;
+		else
+			lpos = pend - 1;
+
+		if (e->in_select_mode)
+			ewl_cursor_select_to(EWL_CURSOR(e->cursor), lpos);
+		else
+			ewl_cursor_base_set(EWL_CURSOR(e->cursor), lpos);
+
+		ewl_widget_configure(EWL_WIDGET(e));
+	}
 }
 
 /*
@@ -757,12 +855,6 @@ void ewl_entry_cursor_home_move(Ewl_Entry * e)
 		} else {
 			bp = 1;
 		}
-
-#if 0
-		printf( "ewl_entry_cursor_home\n" );
-		printf( "text is: (0x%02x) %s\n", s[bp-1], &s[bp-1] );
-		printf( "position is: %d\n", bp-1 );
-#endif
 	}
 
 	if (e->in_select_mode)
@@ -790,6 +882,21 @@ void ewl_entry_cursor_end_move(Ewl_Entry * e)
 
 	if (s) {
 		l = strlen(s);
+
+		if (e->multiline) {
+			int bp;
+
+			bp = ewl_cursor_base_position_get(EWL_CURSOR(e->cursor));
+
+			if (bp < l) {
+				while ((++bp < l) && (s[bp] != '\n'));
+			} else {
+				bp = l;
+			}
+
+			l = bp;
+		}
+
 		FREE(s);
 	}
 
