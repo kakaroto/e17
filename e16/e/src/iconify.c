@@ -321,7 +321,6 @@ DeIconifyEwin(EWin * ewin)
 	ShowEwin(ewin);
 	ICCCM_DeIconify(ewin);
 	FocusToEWin(ewin);
-	mode.destroy = 1;
 	if (ewin->has_transients)
 	  {
 	     EWin              **lst, *e;

@@ -1288,8 +1288,6 @@ typedef struct _emode
    Colormap            current_cmap;
    char                autosave;
    char                memory_paranoia;
-   char                destroy;
-   char                adestroy;
    Slideout           *slideout;
    Window              context_win;
    char                tooltips;

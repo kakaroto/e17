@@ -391,8 +391,6 @@ SetupX()
    mode.next_move_x_plus = 0;
    mode.next_move_y_plus = 0;
    mode.mode = MODE_NONE;
-   mode.destroy = 0;
-   mode.adestroy = 0;
    mode.deskmode = MODE_NONE;
    mode.place = 0;
    mode.flipp = 0;

@@ -26,6 +26,8 @@
 #include <process.h>
 #endif
 
+static char mode_action_destroy = 0;
+
 ActionClass        *
 CreateAclass(char *name)
 {
@@ -291,7 +293,7 @@ RemoveActionClass(ActionClass * ActionClassToRemove)
    if (ActionClassToRemove->tooltipstring)
       Efree(ActionClassToRemove->tooltipstring);
    Efree(ActionClassToRemove);
-   mode.adestroy = 1;
+   mode_action_destroy = 1;
 
    EDBUG_RETURN_;
 }
@@ -411,11 +413,11 @@ EventAclass(XEvent * ev, ActionClass * a)
 	break;
      }
 
-   mode.adestroy = 0;
+   mode_action_destroy = 0;
 
    for (i = 0; i < a->num; i++)
      {
-	if (!mode.adestroy)
+	if (!mode_action_destroy)
 	  {
 	     act = a->list[i];
 	     ok = 0;
@@ -472,12 +474,12 @@ EventAclass(XEvent * ev, ActionClass * a)
 		    }
 	       }
 	  }
-	if (mode.adestroy)
+	if (mode_action_destroy)
 	   break;
      }
    if (reset_ewin)
       mode.ewin = NULL;
-   mode.adestroy = 0;
+   mode_action_destroy = 0;
    EDBUG_RETURN(val);
 }
 
@@ -499,7 +501,7 @@ handleAction(ActionType * Action)
     * if so, we'd best not stick around here 
     */
 
-   if (mode.adestroy)
+   if (mode_action_destroy)
       EDBUG_RETURN(0);
    /* If there is another action in this series, (now that
     * we're sure we didn't already die) perform it

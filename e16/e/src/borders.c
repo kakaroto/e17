@@ -403,7 +403,6 @@ AddToFamily(Window win)
 	     ConformEwinToDesktop(ewin);
 	     ShowEwin(ewin);
 	     ICCCM_DeIconify(ewin);
-	     mode.destroy = 1;
 	  }
 	EDBUG_RETURN_;
      }

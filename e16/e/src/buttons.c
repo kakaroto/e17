@@ -675,7 +675,6 @@ ButtonsEventMouseUp(XEvent * ev, int wasmovres, int wasdrag)
 	ButtonDraw(buttons[i]);
 	if ((buttons[i]->aclass) && (!wasdrag) && (!wasmovres))
 	   EventAclass(ev, buttons[i]->aclass);
-	mode.destroy = 0;
 	last_bpress = 0;
 	used = 1;
 	break;

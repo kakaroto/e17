@@ -1694,7 +1694,6 @@ HandleMouseUp(XEvent * ev)
 	XSendEvent(disp, bpress_win, False, SubstructureNotifyMask, ev);
      }
    mode.context_win = click_was_in;
-   mode.destroy = 0;
    pslideout = mode.slideout;
    if (mode.slideout)
      {
@@ -1863,7 +1862,6 @@ HandleMouseUp(XEvent * ev)
 	     if (EventAclass(ev, ac))
 	       {
 		  mode.borderpartpress = 0;
-		  mode.destroy = 0;
 		  if ((mode.slideout) && (pslideout))
 		     HideSlideout(mode.slideout, mode.context_win);
 		  click_was_in = 0;
@@ -1875,8 +1873,6 @@ HandleMouseUp(XEvent * ev)
 
    if (!wasmovres)
       PagersEventMouseUp(ev);
-
-   mode.destroy = 0;
 
  exit:
    if ((mode.slideout) && (pslideout))
