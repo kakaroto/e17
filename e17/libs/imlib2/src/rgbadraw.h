@@ -30,9 +30,64 @@
 (s1_y != s2_y) ? (p_y <= MAX(s1_y, s2_y) && p_y >= MIN(s1_y, s2_y)) : (p_x <= MAX(s1_x, s2_x) && p_x >= MIN(s1_x, s2_x))
 
 #define SWAP(a,b) {int _tmp_; _tmp_ = a; a = b; b = _tmp_;}
-   
+
 #define __imlib_point_on_segment(p_x, p_y, s1_x, s1_y, s2_x, s2_y) \
 __imlib_segments_intersect(p_x, p_y, p_x, p_y, s1_x, s1_y, s2_x, s2_y)
+
+#define __imlib_draw_set_point(im, x, y, r, g, b, a, op) \
+{                                              \
+   DATA32 *p; int tmp;                         \
+   if (XY_IN_RECT((x), (y), 0, 0, im->w, im->h)) { \
+      p = &(im->data[(im->w * (y)) + (x)]);        \
+      switch (op) {                            \
+        case OP_RESHADE:                       \
+           BLEND_RE(r, g, b, a, p);            \
+           break;                              \
+        case OP_SUBTRACT:                      \
+           BLEND_SUB(r, g, b, a, p);           \
+           break;                              \
+        case OP_ADD:                           \
+           BLEND_ADD(r, g, b, a, p);           \
+           break;                              \
+        case OP_COPY:                          \
+           BLEND(r, g, b, a, p);               \
+           break;                              \
+        default:                               \
+           break;                              \
+      } \
+   } \
+}
+
+#define __imlib_draw_set_point_clipped(im, x, y, clip_xmin, clip_xmax, clip_ymin, clip_ymax, r, g, b, a, op)                                      \
+{ DATA32 *p; int tmp;                                            \
+   if (XY_IN_RECT((x), (y), 0, 0, im->w, im->h))                     \
+   {                                                             \
+      if (XY_IN_RECT                                             \
+          ((x), (y), clip_xmin, clip_ymin, clip_xmax - clip_xmin,    \
+           clip_ymax - clip_ymin))                               \
+      {                                                          \
+         p = &(im->data[(im->w * (y)) + (x)]);                       \
+         switch (op)                                             \
+         {                                                       \
+           case OP_RESHADE:                                      \
+              BLEND_RE(r, g, b, a, p);                           \
+              break;                                             \
+           case OP_SUBTRACT:                                     \
+              BLEND_SUB(r, g, b, a, p);                          \
+              break;                                             \
+           case OP_ADD:                                          \
+              BLEND_ADD(r, g, b, a, p);                          \
+              break;                                             \
+           case OP_COPY:                                         \
+              BLEND(r, g, b, a, p);                              \
+              break;                                             \
+           default:                                              \
+              break;                                             \
+         }                                                       \
+      }                                                          \
+   }                                                             \
+}
+
 
 typedef struct _edgerec
 {
@@ -121,12 +176,6 @@ void __imlib_draw_polygon_clipped(ImlibImage * im, ImlibPoly poly,
 void __imlib_polygon_get_bounds(ImlibPoly poly, int *px1, int *py1, int *px2,
 
                                 int *py2);
-void __imlib_draw_set_point(ImlibImage * im, int x, int y, DATA8 r, DATA8 g,
-                            DATA8 b, DATA8 a, ImlibOp op);
-void __imlib_draw_set_point_clipped(ImlibImage * im, int x, int y,
-                                    int clip_xmin, int clip_xmax,
-                                    int clip_ymin, int clip_ymax, DATA8 r,
-                                    DATA8 g, DATA8 b, DATA8 a, ImlibOp op);
 void __imlib_draw_ellipse(ImlibImage * im, int xc, int yc, int aa, int bb,
                           DATA8 r, DATA8 g, DATA8 b, DATA8 a, ImlibOp op);
 void __imlib_draw_ellipse_clipped(ImlibImage * im, int xc, int yc, int aa,
@@ -137,16 +186,15 @@ void __imlib_draw_polygon_filled(ImlibImage * im, ImlibPoly poly,
                                  int clip_xmin, int clip_xmax, int clip_ymin,
                                  int clip_ymax, DATA8 r, DATA8 g, DATA8 b,
                                  DATA8 a, ImlibOp op);
-void __imlib_fill_ellipse(ImlibImage * im, int xc, int yc, int aa,
-                                  int bb, int clip_xmin, int clip_xmax,
-                                  int clip_ymin, int clip_ymax, DATA8 r,
-                                  DATA8 g, DATA8 b, DATA8 a, ImlibOp op);
+void __imlib_fill_ellipse(ImlibImage * im, int xc, int yc, int aa, int bb,
+                          int clip_xmin, int clip_xmax, int clip_ymin,
+                          int clip_ymax, DATA8 r, DATA8 g, DATA8 b, DATA8 a,
+                          ImlibOp op);
 unsigned char __imlib_polygon_contains_point(ImlibPoly poly, int x, int y);
 unsigned char __imlib_segments_intersect(int r1_x, int r1_y, int r2_x,
                                          int r2_y, int s1_x, int s1_y,
                                          int s2_x, int s2_y);
 double __imlib_point_delta_from_line(int p_x, int p_y, int s1_x, int s1_y,
-
                                      int s2_x, int s2_y);
 void __spanlist_clip(edgeRec * table1, edgeRec * table2, int *sy, int *ey,
                      int xmin, int xmax, int ymin, int ymax);

@@ -1901,72 +1901,6 @@ __imlib_draw_ellipse_clipped(ImlibImage * im, int xc, int yc, int aa, int bb,
 }
 
 
-void
-__imlib_draw_set_point(ImlibImage * im, int x, int y, DATA8 r, DATA8 g,
-                       DATA8 b, DATA8 a, ImlibOp op)
-{
-   DATA32 *p;
-   int tmp;
-
-   if (XY_IN_RECT(x, y, 0, 0, im->w, im->h))
-   {
-      p = &(im->data[(im->w * y) + x]);
-      switch (op)
-      {
-        case OP_RESHADE:
-           BLEND_RE(r, g, b, a, p);
-           break;
-        case OP_SUBTRACT:
-           BLEND_SUB(r, g, b, a, p);
-           break;
-        case OP_ADD:
-           BLEND_ADD(r, g, b, a, p);
-           break;
-        case OP_COPY:
-           BLEND(r, g, b, a, p);
-           break;
-        default:
-           break;
-      }
-   }
-}
-
-void
-__imlib_draw_set_point_clipped(ImlibImage * im, int x, int y, int clip_xmin,
-                               int clip_xmax, int clip_ymin, int clip_ymax,
-                               DATA8 r, DATA8 g, DATA8 b, DATA8 a, ImlibOp op)
-{
-   DATA32 *p;
-   int tmp;
-
-   if (XY_IN_RECT(x, y, 0, 0, im->w, im->h))
-   {
-      if (XY_IN_RECT
-          (x, y, clip_xmin, clip_ymin, clip_xmax - clip_xmin,
-           clip_ymax - clip_ymin))
-      {
-         p = &(im->data[(im->w * y) + x]);
-         switch (op)
-         {
-           case OP_RESHADE:
-              BLEND_RE(r, g, b, a, p);
-              break;
-           case OP_SUBTRACT:
-              BLEND_SUB(r, g, b, a, p);
-              break;
-           case OP_ADD:
-              BLEND_ADD(r, g, b, a, p);
-              break;
-           case OP_COPY:
-              BLEND(r, g, b, a, p);
-              break;
-           default:
-              break;
-         }
-      }
-   }
-}
-
 static void
 edge(edgeRec * table, ImlibPoint * pt1, ImlibPoint * pt2)
 {
@@ -2003,9 +1937,8 @@ span(ImlibImage * im, int y, edgeRec * pt1, edgeRec * pt2, DATA8 r, DATA8 g,
    ix1 = pt1->x;
    ix2 = pt2->x;
    if (ix1 == ix2)
-   {
       return;
-   }
+   
    do
    {
       p = &(im->data[(im->w * y) + ix1]);
