@@ -96,7 +96,8 @@ struct __fehoptions
    int sort;
    int debug_level;
    unsigned char adjust_reload;
-
+   unsigned int start_list_at;
+   
    unsigned char mode;
 };
 

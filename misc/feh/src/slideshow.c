@@ -41,8 +41,13 @@ init_slideshow_mode(void)
    D_ENTER(3);
 
    mode = "slideshow";
-
-   for (l = filelist; l; l = l->next)
+   if (opt.start_list_at) {
+      l = feh_list_get_num(filelist, opt.start_list_at);
+      opt.start_list_at = 0; /* for next time */
+   } else {
+      l = filelist;
+   }
+   for (; l; l = l->next)
    {
       file = FEH_FILE(l->data);
       if (last)

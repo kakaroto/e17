@@ -1,3 +1,10 @@
+Thu Aug  3 23:04:38 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Patch from David LaBissoniere <labiss@usit.net>
+	Adds a --start-at NUM option for jumping to number NUM of the
+	filelist (either from a file or the commandline).
+	* Thanks David.
+
 Fri Jul 28 21:07:32 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Added --scale-down to automatically scale images down if they

@@ -235,6 +235,29 @@ feh_list_num(feh_list * root, feh_list * l)
 }
 
 feh_list *
+feh_list_get_num(feh_list * root, unsigned int num)
+{
+   unsigned int i;
+   feh_list * l;
+   
+   D_ENTER(4);
+
+   if (num > (unsigned int)feh_list_length(root)) {
+      weprintf("there aren't that many files in this list\n");
+      D_RETURN(4,root);
+   }
+   l = root;
+   for (i = 1; l; ++i )
+   {
+      if(i == num)
+         D_RETURN(4,l);
+      l = l->next;
+   }
+   D_RETURN(4,root);
+}
+
+      
+feh_list *
 feh_list_remove(feh_list * root, feh_list * l)
 {
    D_ENTER(4);

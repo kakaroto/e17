@@ -362,6 +362,7 @@ feh_parse_option_array(int argc, char **argv)
       {"no-rotate-ctrl-mask", 0, 0, '7'},
       {"blur-button", 1, 0, '8'},
       {"no-blur-ctrl-mask", 0, 0, '9'},
+      {"start-at", 1, 0, '|'},
       {"rcfile", 1, 0, '_'},
       {"debug-level", 1, 0, '+'},
       {0, 0, 0, 0}
@@ -598,6 +599,9 @@ feh_parse_option_array(int argc, char **argv)
            break;
         case '9':
            opt.no_blur_ctrl_mask = 1;
+           break;
+        case '|':
+           opt.start_list_at = atoi(optarg);
            break;
         case 't':
            opt.thumbs = 1;
