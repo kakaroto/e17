@@ -551,7 +551,7 @@ clock_timer(void *data)
     if((ib = (Iconbar*)data))
     {
       _tm = localtime(&_time);
-      strftime(buf, PATH_MAX, "%l:%M %p", _tm);
+      strftime(buf, PATH_MAX, iconbar_config_time_format_get(), _tm);
       edje_object_part_text_set(ib->gui, "clock", buf);
       return(1);
     }

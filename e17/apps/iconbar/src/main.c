@@ -54,6 +54,7 @@ main(int argc, char **argv)
   ecore_evas_shaped_set(ee, iconbar_config_shaped_get());
   ecore_evas_withdrawn_set(ee, iconbar_config_withdrawn_get());
   ecore_evas_sticky_set(ee, iconbar_config_sticky_get());
+  ecore_evas_avoid_damage_set(ee, 1);
 
   iconbar_config_ecore_evas_set(ee);
 #ifdef HAVE_TRANS_BG
