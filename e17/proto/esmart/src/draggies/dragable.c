@@ -180,7 +180,11 @@ esmart_dragable_object_new (Evas * evas)
 static Evas_Smart *
 _esmart_dragable_object_smart_get ()
 {
-  Evas_Smart *smart = NULL;
+  static Evas_Smart *smart = NULL;
+
+  if (smart)
+     return smart;
+  
   smart = evas_smart_new ("esmart_dragable_object",
 			  _esmart_dragable_object_add,
 			  _esmart_dragable_object_del,
