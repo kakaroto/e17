@@ -16,7 +16,7 @@ pkg_LTLIBRARIES	     = png.la jpeg.la pnm.la argb.la
 
 png_la_SOURCES	     = loader_png.c
 png_la_LDFLAGS	     = -no-undefined -module -avoid-version
-png_la_LIBADD	     = -lpng -lz -lX11 -lXext
+png_la_LIBADD	     = -lpng -lz
 
 jpeg_la_SOURCES	     = loader_jpeg.c
 jpeg_la_LDFLAGS	     = -no-undefined -module -avoid-version
