@@ -43,9 +43,11 @@ static const char *_engage_main_orientation[] =
 {"left", "right", "top", "bottom"};
 
 /* module private routines */
-static Engage   *_engage_new();
+static Engage *_engage_new();
 static void    _engage_free(Engage *e);
 static void    _engage_app_change(void *data, E_App *a, E_App_Change ch);
+static void    _engage_dotorder_app_add(Engage *e, char *name);
+static void    _engage_dotorder_app_del(Engage *e, char *name);
 static void    _engage_config_menu_new(Engage *e);
 
 /* xdnd alpha code - this is a temp */
@@ -435,6 +437,48 @@ _engage_app_change(void *data, E_App *a, E_App_Change ch)
 	     break;
 	  }
      }
+}
+
+static char*
+_engage_dotorder_locate(Engage *e)
+{
+   char *homedir;
+   char buf[4096];
+
+   homedir = e_user_homedir_get();
+   if (homedir)
+     {
+	snprintf(buf, sizeof(buf), "%s/.e/e/applications/%s/.order", homedir,
+	    e->conf->appdir);
+	free(homedir);
+	return strdup(buf);
+     }
+   return NULL;
+}
+
+static void
+_engage_dotorder_app_add(Engage *e, char *name)
+{
+   FILE *f;
+   char *dotorder;
+
+   dotorder = _engage_dotorder_locate(e);
+   if (!dotorder)
+     return;
+   f = fopen(dotorder, "ab");
+   if (f)
+     {
+	fputs("\n", f);
+	fputs(name, f);
+	fclose(f);
+     }
+   free(dotorder);
+}
+
+static void
+_engage_dotorder_app_del(Engage *e, char *name)
+{
+   printf("FIXME, remove an app from .order\n");
 }
 
 static Engage_Bar *
@@ -918,11 +962,22 @@ _engage_cb_event_dnd_selection(void *data, int type, void *event)
 {
    Ecore_X_Event_Selection_Notify *ev;
    int i;
+   Engage_Bar *eb;
 
    ev = event;
-   
+   eb = data;
    for (i = 0; i < ev->num_files; i++)
-      printf("ENGAGE DND GOT %s\n", ev->files[i]);
+     {
+	char *name, *path, *ext;
+	ext = strstr(ev->files[i], ".eapp");
+	if (!ext)
+	  continue;
+	path = ecore_file_get_dir(ev->files[i]);
+	/* FIXME test here, we might need to copy it to .../all/ */
+	name = ecore_file_get_file(ev->files[i]);
+
+	_engage_dotorder_app_add(eb->engage, name);
+     }
    ecore_x_dnd_send_finished();
    return 1;
 }
