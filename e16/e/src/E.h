@@ -1313,15 +1313,6 @@ typedef struct _handlestruct
 }
 HandleStruct;
 
-typedef struct _IPCstruct
-{
-   void                (*func) (char *params, Client * c);
-   char               *commandname;
-   char               *help_text;
-   char               *extended_help_text;
-}
-IPCStruct;
-
 typedef struct _tooltip
 {
    char               *name;

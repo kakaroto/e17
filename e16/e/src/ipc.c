@@ -1,4 +1,3 @@
-
 /*
  * Copyright (C) 2000 Carsten Haitzler, Geoff Harrison and various contributors
  *
@@ -24,6 +23,16 @@
 #include "E.h"
 #include "timestamp.h"
 
+typedef struct _IPCstruct
+{
+   void                (*func) (char *params, Client * c);
+   char               *commandname;
+   char               *nick;
+   char               *help_text;
+   char               *extended_help_text;
+}
+IPCStruct;
+
 /* IPC array member function declarations */
 
 /* this is needed for the IPC array below to not give us any warnings
@@ -33,72 +42,72 @@
  * --Mandrake
  */
 
-void                IPC_Help(char *params, Client * c);
-void                IPC_Version(char *params, Client * c);
-void                IPC_Copyright(char *params, Client * c);
-void                IPC_AutoSave(char *params, Client * c);
-void                IPC_DefaultTheme(char *params, Client * c);
-void                IPC_Restart(char *params, Client * c);
-void                IPC_RestartWM(char *params, Client * c);
-void                IPC_RestartTheme(char *params, Client * c);
-void                IPC_Exit(char *params, Client * c);
-void                IPC_ForceSave(char *params, Client * c);
-void                IPC_SMFile(char *params, Client * c);
-void                IPC_ListThemes(char *params, Client * c);
-void                IPC_GotoDesktop(char *params, Client * c);
-void                IPC_ShowIcons(char *params, Client * c);
-void                IPC_FocusMode(char *params, Client * c);
-void                IPC_AdvancedFocus(char *params, Client * c);
-void                IPC_NumDesks(char *params, Client * c);
-void                IPC_NumAreas(char *params, Client * c);
-void                IPC_WinOps(char *params, Client * c);
-void                IPC_WinList(char *params, Client * c);
-void                IPC_GotoArea(char *params, Client * c);
-void                IPC_ButtonShow(char *params, Client * c);
-void                IPC_ActiveNetwork(char *params, Client * c);
-void                IPC_FX(char *params, Client * c);
-void                IPC_MoveMode(char *params, Client * c);
-void                IPC_ResizeMode(char *params, Client * c);
-void                IPC_GeomInfoMode(char *params, Client * c);
-void                IPC_Pager(char *params, Client * c);
-void                IPC_InternalList(char *params, Client * c);
-void                IPC_SetFocus(char *params, Client * c);
-void                IPC_DialogOK(char *params, Client * c);
-void                IPC_SoundClass(char *params, Client * c);
-void                IPC_ImageClass(char *params, Client * c);
-void                IPC_TextClass(char *params, Client * c);
-void                IPC_ActionClass(char *params, Client * c);
-void                IPC_ColorModifierClass(char *params, Client * c);
-void                IPC_Border(char *params, Client * c);
-void                IPC_Button(char *params, Client * c);
-void                IPC_Background(char *params, Client * c);
-void                IPC_Cursor(char *params, Client * c);
-void                IPC_PlaySoundClass(char *params, Client * c);
-void                IPC_ListClassMembers(char *params, Client * c);
-void                IPC_GeneralInfo(char *params, Client * c);
-void                IPC_Modules(char *params, Client * c);
-void                IPC_DockConfig(char *params, Client * c);
+static void         IPC_Help(char *params, Client * c);
+static void         IPC_Version(char *params, Client * c);
+static void         IPC_Copyright(char *params, Client * c);
+static void         IPC_AutoSave(char *params, Client * c);
+static void         IPC_DefaultTheme(char *params, Client * c);
+static void         IPC_Restart(char *params, Client * c);
+static void         IPC_RestartWM(char *params, Client * c);
+static void         IPC_RestartTheme(char *params, Client * c);
+static void         IPC_Exit(char *params, Client * c);
+static void         IPC_ForceSave(char *params, Client * c);
+static void         IPC_SMFile(char *params, Client * c);
+static void         IPC_ListThemes(char *params, Client * c);
+static void         IPC_GotoDesktop(char *params, Client * c);
+static void         IPC_ShowIcons(char *params, Client * c);
+static void         IPC_FocusMode(char *params, Client * c);
+static void         IPC_AdvancedFocus(char *params, Client * c);
+static void         IPC_NumDesks(char *params, Client * c);
+static void         IPC_NumAreas(char *params, Client * c);
+static void         IPC_WinOps(char *params, Client * c);
+static void         IPC_WinList(char *params, Client * c);
+static void         IPC_GotoArea(char *params, Client * c);
+static void         IPC_ButtonShow(char *params, Client * c);
+static void         IPC_ActiveNetwork(char *params, Client * c);
+static void         IPC_FX(char *params, Client * c);
+static void         IPC_MoveMode(char *params, Client * c);
+static void         IPC_ResizeMode(char *params, Client * c);
+static void         IPC_GeomInfoMode(char *params, Client * c);
+static void         IPC_Pager(char *params, Client * c);
+static void         IPC_InternalList(char *params, Client * c);
+static void         IPC_SetFocus(char *params, Client * c);
+static void         IPC_DialogOK(char *params, Client * c);
+static void         IPC_SoundClass(char *params, Client * c);
+static void         IPC_ImageClass(char *params, Client * c);
+static void         IPC_TextClass(char *params, Client * c);
+static void         IPC_ActionClass(char *params, Client * c);
+static void         IPC_ColorModifierClass(char *params, Client * c);
+static void         IPC_Border(char *params, Client * c);
+static void         IPC_Button(char *params, Client * c);
+static void         IPC_Background(char *params, Client * c);
+static void         IPC_Cursor(char *params, Client * c);
+static void         IPC_PlaySoundClass(char *params, Client * c);
+static void         IPC_ListClassMembers(char *params, Client * c);
+static void         IPC_GeneralInfo(char *params, Client * c);
+static void         IPC_Modules(char *params, Client * c);
+static void         IPC_DockConfig(char *params, Client * c);
 
 #if ENABLE_KDE
-void                IPC_KDE(char *params, Client * c);
+static void         IPC_KDE(char *params, Client * c);
 #endif
-void                IPC_MemDebug(char *params, Client * c);
-void                IPC_Remember(char *params, Client * c);
-void                IPC_CurrentTheme(char *params, Client * c);
-void                IPC_Nop(char *params, Client * c);
-void                IPC_Xinerama(char *params, Client * c);
-void                IPC_ConfigPanel(char *params, Client * c);
-void                IPC_RememberList(char *params, Client * c);
+static void         IPC_MemDebug(char *params, Client * c);
+static void         IPC_Remember(char *params, Client * c);
+static void         IPC_CurrentTheme(char *params, Client * c);
+static void         IPC_Nop(char *params, Client * c);
+static void         IPC_Xinerama(char *params, Client * c);
+static void         IPC_ConfigPanel(char *params, Client * c);
+static void         IPC_RememberList(char *params, Client * c);
 
 /* Changes By Asmodean_ <naru@caltech.edu> / #E@Efnet
  * 
  * IPC_ReloadMenus(...) / reload_menus - Reloads menus from menus.cfg */
 
-void                IPC_ReloadMenus(char *params, Client * c);
+static void         IPC_ReloadMenus(char *params, Client * c);
 
-void                IPC_GroupInfo(char *params, Client * c);
-void                IPC_GroupOps(char *params, Client * c);
-void                IPC_Group(char *params, Client * c);
+static void         IPC_GroupInfo(char *params, Client * c);
+static void         IPC_GroupOps(char *params, Client * c);
+static void         IPC_Group(char *params, Client * c);
 
 /* the IPC Array */
 
@@ -125,34 +134,34 @@ void                IPC_Group(char *params, Client * c);
 IPCStruct           IPCArray[] = {
    {
     IPC_Help,
-    "help",
+    "help", "?",
     "gives you this help screen",
     "Additional parameters will retrieve help on many topics - "
     "\"help <command>\".\nuse \"help all\" for a list of commands."},
    {
     IPC_Version,
-    "version",
+    "version", "ver",
     "displays the current version of Enlightenment running",
     NULL},
    {
     IPC_Nop,
-    "nop",
+    "nop", NULL,
     "IPC No-operation - returns nop",
     NULL},
    {
     IPC_Copyright,
-    "copyright",
+    "copyright", NULL,
     "displays copyright information for Enlightenment",
     NULL},
    {
     IPC_AutoSave,
-    "autosave",
+    "autosave", NULL,
     "toggle the Automatic Saving Feature",
     "Use \"autosave ?\" to list the current status\n"
     "use \"autosave on\" or \"autosave off\" to toggle the status"},
    {
     IPC_DefaultTheme,
-    "default_theme",
+    "default_theme", NULL,
     "toggle the default theme",
     "Use \"default_theme ?\" to get the current default theme\n"
     "use \"default_theme /path/to/theme\"\n"
@@ -160,34 +169,34 @@ IPCStruct           IPCArray[] = {
     "\"list_themes\" command"},
    {
     IPC_Restart,
-    "restart",
+    "restart", NULL,
     "Restart Enlightenment",
     NULL},
    {
     IPC_RestartWM,
-    "restart_wm",
+    "restart_wm", NULL,
     "Restart another window manager",
     "Use \"restart_wm <wmname>\" to start another window manager.\n"
     "Example: \"restart_wm fvwm\""},
    {
     IPC_RestartTheme,
-    "restart_theme",
+    "restart_theme", NULL,
     "Restart with another theme",
     "Use \"restart_theme <themename>\" to restart enlightenment "
     "with another theme\nExample: \"restart_theme icE\""},
    {
     IPC_Exit,
-    "exit",
+    "exit", "q",
     "Exit Enlightenment",
     NULL},
    {
     IPC_ForceSave,
-    "save_config",
+    "save_config", "s",
     "Force Enlightenment to save settings now",
     NULL},
    {
     IPC_SMFile,
-    "sm_file",
+    "sm_file", NULL,
     "Change the default prefix used for session saves",
     "Average users are encouraged not to touch this setting.\n"
     "Use \"sm_file ?\" to retrieve the current session management "
@@ -195,12 +204,12 @@ IPCStruct           IPCArray[] = {
     "to change."},
    {
     IPC_ListThemes,
-    "list_themes",
+    "list_themes", "tl",
     "List currently available themes",
     NULL},
    {
     IPC_GotoDesktop,
-    "goto_desktop",
+    "goto_desktop", "sd",
     "Change currently active destkop",
     "Use \"goto_desktop num\" to go to a specific desktop.\n"
     "Use \"goto_desktop next\" and \"goto_desktop prev\" to go to "
@@ -208,7 +217,7 @@ IPCStruct           IPCArray[] = {
     "Use \"goto_desktop ?\" to find out what desktop you are " "currently on"},
    {
     IPC_GotoArea,
-    "goto_area",
+    "goto_area", "sa",
     "Change currently active area",
     "Use \"goto_area <horiz> <vert>\" to go to a specific desktop.\n"
     "Use \"goto_desktop next <vert/horiz>\" and \"goto_desktop "
@@ -217,13 +226,13 @@ IPCStruct           IPCArray[] = {
     "you are currently on"},
    {
     IPC_ShowIcons,
-    "show_icons",
+    "show_icons", NULL,
     "Obsolete - Toggle the display of icons on the desktop",
     "Use \"show_icons on\" and \"show_icons off\" to change this setting\n"
     "Use \"show_icons ?\" to retrieve the current setting"},
    {
     IPC_FocusMode,
-    "focus_mode",
+    "focus_mode", "sf",
     "Change the current focus mode setting",
     "Use \"focus_mode <mode>\" to change the focus mode.\n"
     "Use \"focus_mode ?\" to retrieve the current setting\n" "Focus Types:\n"
@@ -237,7 +246,7 @@ IPCStruct           IPCArray[] = {
     "the desktop background the last window does not lose the focus"},
    {
     IPC_AdvancedFocus,
-    "advanced_focus",
+    "advanced_focus", "sfa",
     "Toggle Advanced Focus Settings",
     "use \"advanced_focus <option> <on/off/?>\" to change.\n"
     "the options you may set are:\n"
@@ -261,20 +270,20 @@ IPCStruct           IPCArray[] = {
     "manual_placement_mouse_pointer: place all new windows under mouse pointer"},
    {
     IPC_NumDesks,
-    "num_desks",
+    "num_desks", "snd",
     "Change the number of available desktops",
     "Use \"num_desks <num>\" to change the available number of desktops.\n"
     "Use \"num_desks ?\" to retrieve the current setting"},
    {
     IPC_NumAreas,
-    "num_areas",
+    "num_areas", "sna",
     "Change the size of the virtual desktop",
     "Use \"num_areas <width> <height>\" to change the size of the "
     "virtual desktop.\nExample: \"num_areas 2 2\" makes 2x2 "
     "virtual destkops\nUse \"num_areas ?\" to retrieve the " "current setting"},
    {
     IPC_WinOps,
-    "win_op",
+    "win_op", "wop",
     "Change a property of a specific window",
     "Use \"win_op <windowid> <property> <value>\" to change the "
     "property of a window\nYou can use the \"window_list\" "
@@ -298,7 +307,7 @@ IPCStruct           IPCArray[] = {
     "current window"},
    {
     IPC_WinList,
-    "window_list",
+    "window_list", "wl",
     "Get a list of currently open windows",
     "the list will be returned in the following "
     "format - \"window_id : title\"\n"
@@ -307,7 +316,7 @@ IPCStruct           IPCArray[] = {
     "desktop : area_x area_y : x_coordinate y_coordinate\""},
    {
     IPC_ButtonShow,
-    "button_show",
+    "button_show", NULL,
     "Show or Hide buttons on desktop",
     "use \"button_show <button/buttons/all_buttons_except/all> "
     "<BUTTON_STRING>\"\nexamples: \"button_show buttons all\" "
@@ -316,13 +325,13 @@ IPCStruct           IPCArray[] = {
     "(removes all buttons with CONFIG in the start)"},
    {
     IPC_ActiveNetwork,
-    "active_network",
+    "active_network", NULL,
     "Enable or disable networking",
     "use \"active_network <on/off>\" to toggle\n"
     "use \"active_network ?\" to test status"},
    {
     IPC_FX,
-    "fx",
+    "fx", NULL,
     "Toggle various effects on/off",
     "Use \"fx <effect> <mode>\" to set the mode of a particular effect\n"
     "Use \"fx <effect> ?\" to get the current mode\n"
@@ -350,7 +359,7 @@ IPCStruct           IPCArray[] = {
     "   (i.e. 0.5) or greater (1.3, 3.5, etc)"},
    {
     IPC_DockConfig,
-    "dock",
+    "dock", NULL,
     "Enable/Disable dock, or change dock position and direction",
     "use \"dock support <on/off/?>\" to test, enable, or disable the dock\n"
     "use \"dock direction <up/down/left/right/?>\" to set or "
@@ -359,25 +368,25 @@ IPCStruct           IPCArray[] = {
     "use \"dock start_pos x y\" to set the starting x y coords"},
    {
     IPC_MoveMode,
-    "move_mode",
+    "move_mode", "smm",
     "Toggle the Window move mode",
     "use \"move_mode <opaque/lined/box/shaded/semi-solid/translucent>\" "
     "to set\nuse \"move_mode ?\" to get the current mode"},
    {
     IPC_ResizeMode,
-    "resize_mode",
+    "resize_mode", "srm",
     "Toggle the Window resize mode",
     "use \"resize_mode <opaque/lined/box/shaded/semi-solid>\" "
     "to set\nuse \"resize_mode ?\" to get the current mode"},
    {
     IPC_GeomInfoMode,
-    "geominfo_mode",
+    "geominfo_mode", "sgm",
     "Change position of geometry info display during Window move or resize",
     "use \"geominfo_mode <center/corner/never>\" "
     "to set\nuse \"geominfo_mode ?\" to get the current mode"},
    {
     IPC_Pager,
-    "pager",
+    "pager", NULL,
     "Toggle the status of the Pager and various pager settings",
     "use \"pager <on/off>\" to set the current mode\nuse \"pager ?\" "
     "to get the current mode\n"
@@ -389,7 +398,7 @@ IPCStruct           IPCArray[] = {
     "use \"pager scanrate <#>\" to toggle number of line update " "per second"},
    {
     IPC_InternalList,
-    "internal_list",
+    "internal_list", "il",
     "Retrieve a list of internal items",
     "use \"internal_list <pagers/menus/dialogs/internal_ewin>\"\n"
     "to retrieve a list of various internal window types.\n"
@@ -397,57 +406,57 @@ IPCStruct           IPCArray[] = {
     "dialogs currently)\n"},
    {
     IPC_SetFocus,
-    "set_focus",
+    "set_focus", "wf",
     "Set/Retrieve focused window",
     "use \"set_focus <win_id>\" to focus a new window\n"
     "use \"set_focus ?\" to retrieve the currently focused window"},
    {
     IPC_DialogOK,
-    "dialog_ok",
+    "dialog_ok", "dok",
     "Pop up a dialog box with an OK button",
     "use \"dialog_ok <message>\" to pop up a dialog box."},
    {
     IPC_ListClassMembers,
-    "list_class",
+    "list_class", "cl",
     "List all members of a class",
     "use \"list_class <classname>\" to get back a list of class members\n"
     "available classes are:\n" "sounds\n" "actions\n" "backgrounds\n"
     "borders\n" "text\n" "images\n" "cursors\n" "buttons"},
    {
     IPC_PlaySoundClass,
-    "play_sound",
+    "play_sound", "ps",
     "Plays a soundclass via E",
     "use \"play_sound <soundclass>\" to play a sound.\n"
     "use \"list_class sounds\" to get a list of available sounds"},
    {
     IPC_SoundClass,
-    "soundclass",
+    "soundclass", NULL,
     "Create/Delete soundclasses",
     "use \"soundclass create <classname> <filename>\" to create\n"
     "use \"soundclass delete <classname>\" to delete"},
    {
     IPC_ImageClass,
-    "imageclass",
+    "imageclass", NULL,
     "Create/delete/modify/apply an ImageClass",
     "This doesn't do anything yet."},
    {
     IPC_ActionClass,
-    "actionclass",
+    "actionclass", NULL,
     "Create/Delete/Modify an ActionClass",
     "This doesn't do anything yet."},
    {
     IPC_ColorModifierClass,
-    "colormod",
+    "colormod", NULL,
     "Create/Delete/Modify a ColorModifierClass",
     "This doesn't do anything yet."},
    {
     IPC_TextClass,
-    "textclass",
+    "textclass", NULL,
     "Create/Delete/Modify/apply a TextClass",
     "This doesn't do anything yet."},
    {
     IPC_Background,
-    "background",
+    "background", NULL,
     "Create/Delete/Modify a Background",
     "use \"background\" to list all defined backgrounds.\n"
     "use \"background <name>\" to delete a background.\n"
@@ -456,43 +465,43 @@ IPCStruct           IPCArray[] = {
     "(get available types from \"background <name> ?\"."},
    {
     IPC_Border,
-    "border",
+    "border", NULL,
     "Create/Delete/Modify a Border",
     "This doesn't do anything yet."},
    {
     IPC_Cursor,
-    "cursor",
+    "cursor", NULL,
     "Create/Delete/Modify a Cursor",
     "This doesn't do anything yet."},
    {
     IPC_Button,
-    "button",
+    "button", NULL,
     "Create/Delete/Modify a Button",
     "This doesn't do anything yet."},
    {
     IPC_GeneralInfo,
-    "general_info",
+    "general_info", NULL,
     "Retrieve some general information",
     "use \"general_info <info>\" to retrieve information\n"
     "available info is: screen_size"},
    {
     IPC_Modules,
-    "module",
+    "module", NULL,
     "Load/Unload/List Modules",
     NULL},
    {
     IPC_ReloadMenus,
-    "reload_menus",
+    "reload_menus", NULL,
     "Reload menus.cfg without restarting (Asmodean_)",
     NULL},
    {
     IPC_GroupInfo,
-    "group_info",
+    "group_info", "gl",
     "Retrieve some info on groups",
     "use \"group_info [group_index]\""},
    {
     IPC_GroupOps,
-    "group_op",
+    "group_op", "gop",
     "Group operations",
     "use \"group_op <windowid> <property> [<value>]\" to perform "
     "group operations on a window.\n" "Available group_op commands are:\n"
@@ -503,7 +512,7 @@ IPCStruct           IPCArray[] = {
     "  group_op <windowid> showhide\n"},
    {
     IPC_Group,
-    "group",
+    "group", "gc",
     "Group commands",
     "use \"group <groupid> <property> <value>\" to set group properties.\n"
     "Available group commands are:\n"
@@ -518,13 +527,13 @@ IPCStruct           IPCArray[] = {
 #if ENABLE_KDE
    {
     IPC_KDE,
-    "kde",
+    "kde", NULL,
     "Turns on and off KDE support",
     "use \"kde on\" and \"kde off\" to enable/disable support"},
 #endif
    {
     IPC_MemDebug,
-    "dump_mem_debug",
+    "dump_mem_debug", NULL,
     "Dumps memory debugging information out to e.mem.out",
     "Use this command to have E dump its current memory debugging table\n"
     "to the e.mem.out file. NOTE: please read comments at the top of\n"
@@ -535,7 +544,7 @@ IPCStruct           IPCArray[] = {
     "and the chunk size.\n"},
    {
     IPC_Remember,
-    "remember",
+    "remember", NULL,
     "Remembers parameters for client window ID x",
     "usage:\n" "  remember <windowid> <parameter>...\n"
     "  where parameter is one of: all, none, border, desktop, size,\n"
@@ -543,17 +552,17 @@ IPCStruct           IPCArray[] = {
     "  Multiple parameters may be given."},
    {
     IPC_CurrentTheme,
-    "current_theme",
+    "current_theme", "tc",
     "Returns the name of the currently used theme",
     NULL},
    {
     IPC_Xinerama,
-    "xinerama",
+    "xinerama", NULL,
     "return xinerama information about your current system",
     NULL},
    {
     IPC_ConfigPanel,
-    "configpanel",
+    "configpanel", NULL,
     "open up a config window",
     "usage:\n" "  configpanel <panelname>\n"
     "  where panelname is one of the following: focus, moveresize,\n"
@@ -561,7 +570,7 @@ IPCStruct           IPCArray[] = {
     "  audio, fx, bg, group_defaults, remember"},
    {
     IPC_RememberList,
-    "list_remember",
+    "list_remember", NULL,
     "Retrieve a list of remembered windows and their attributes.",
     "usage:\n" "  list_remember [full]\n"
     "  Retrieve a list of remembered windows.  with full, the list\n"
@@ -577,7 +586,7 @@ IPCStruct           IPCArray[] = {
  * - Mandrake
  */
 
-void
+static void
 IPC_ConfigPanel(char *params, Client * c)
 {
    int                 i = 0;
@@ -632,14 +641,12 @@ IPC_ConfigPanel(char *params, Client * c)
    else
      {
 	CommsSend(c, "Error: no panel specified");
-
      }
 }
 
-void
+static void
 IPC_Xinerama(char *params, Client * c)
 {
-
    params = NULL;
 #ifdef HAS_XINERAMA
    if (xinerama_active)
@@ -672,19 +679,16 @@ IPC_Xinerama(char *params, Client * c)
 #else
    CommsSend(c, "Xinerama is disabled on your system");
 #endif
-
-   return;
 }
 
-void
+static void
 IPC_Nop(char *params, Client * c)
 {
    CommsSend(c, "nop");
    params = NULL;
-   return;
 }
 
-void
+static void
 IPC_Remember(char *params, Client * c)
 {
    char                buf[FILEPATH_LEN_MAX];
@@ -698,7 +702,7 @@ IPC_Remember(char *params, Client * c)
 	Window              win = 0;
 	EWin               *ewin;
 
-	sscanf(params, "%8x", (int *)&win);
+	sscanf(params, "%x", (int *)&win);
 	ewin = FindItem(NULL, (int)win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
 	if (ewin)
 	  {
@@ -748,14 +752,12 @@ IPC_Remember(char *params, Client * c)
 
    if (buf[0])
       CommsSend(c, buf);
-   return;
 }
 
 #if ENABLE_KDE
-void
+static void
 IPC_KDE(char *params, Client * c)
 {
-
    char                buf[FILEPATH_LEN_MAX];
 
    buf[0] = 0;
@@ -793,14 +795,12 @@ IPC_KDE(char *params, Client * c)
 
    if (buf[0])
       CommsSend(c, buf);
-   return;
 }
 #endif
 
-void
+static void
 IPC_Modules(char *params, Client * c)
 {
-
    char                buf[FILEPATH_LEN_MAX];
 
    buf[0] = 0;
@@ -875,14 +875,11 @@ IPC_Modules(char *params, Client * c)
 
    if (buf[0])
       CommsSend(c, buf);
-
-   return;
 }
 
-void
+static void
 IPC_DockConfig(char *params, Client * c)
 {
-
    char                buf[FILEPATH_LEN_MAX];
 
    buf[0] = 0;
@@ -1026,15 +1023,11 @@ IPC_DockConfig(char *params, Client * c)
 
    if (buf[0])
       CommsSend(c, buf);
-
-   return;
-
 }
 
-void
+static void
 IPC_GeneralInfo(char *params, Client * c)
 {
-
    char                buf[FILEPATH_LEN_MAX];
 
    buf[0] = 0;
@@ -1057,12 +1050,9 @@ IPC_GeneralInfo(char *params, Client * c)
 
    if (buf[0])
       CommsSend(c, buf);
-
-   return;
-
 }
 
-void
+static void
 IPC_Button(char *params, Client * c)
 {
 
@@ -1126,11 +1116,9 @@ IPC_Button(char *params, Client * c)
 
    if (buf[0])
       CommsSend(c, buf);
-
-   return;
 }
 
-void
+static void
 IPC_Background(char *params, Client * c)
 {
    char                buf[FILEPATH_LEN_MAX];
@@ -1343,14 +1331,11 @@ IPC_Background(char *params, Client * c)
 
    if (buf[0])
       CommsSend(c, buf);
-
-   return;
 }
 
-void
+static void
 IPC_Border(char *params, Client * c)
 {
-
    char                buf[FILEPATH_LEN_MAX];
 
    buf[0] = 0;
@@ -1411,14 +1396,11 @@ IPC_Border(char *params, Client * c)
 
    if (buf[0])
       CommsSend(c, buf);
-
-   return;
 }
 
-void
+static void
 IPC_Cursor(char *params, Client * c)
 {
-
    char                buf[FILEPATH_LEN_MAX];
 
    buf[0] = 0;
@@ -1479,11 +1461,9 @@ IPC_Cursor(char *params, Client * c)
 
    if (buf[0])
       CommsSend(c, buf);
-
-   return;
 }
 
-void
+static void
 IPC_TextClass(char *params, Client * c)
 {
    char                pq;
@@ -1622,14 +1602,11 @@ IPC_TextClass(char *params, Client * c)
 
    if (buf[0])
       CommsSend(c, buf);
-
-   return;
 }
 
-void
+static void
 IPC_ColorModifierClass(char *params, Client * c)
 {
-
    char                buf[FILEPATH_LEN_MAX];
 
    buf[0] = 0;
@@ -1693,14 +1670,11 @@ IPC_ColorModifierClass(char *params, Client * c)
 
    if (buf[0])
       CommsSend(c, buf);
-
-   return;
 }
 
-void
+static void
 IPC_ActionClass(char *params, Client * c)
 {
-
    char                buf[FILEPATH_LEN_MAX];
 
    buf[0] = 0;
@@ -1762,11 +1736,9 @@ IPC_ActionClass(char *params, Client * c)
 
    if (buf[0])
       CommsSend(c, buf);
-
-   return;
 }
 
-void
+static void
 IPC_ImageClass(char *params, Client * c)
 {
    char                pq;
@@ -1984,14 +1956,11 @@ IPC_ImageClass(char *params, Client * c)
 
    if (buf[0])
       CommsSend(c, buf);
-
-   return;
 }
 
-void
+static void
 IPC_SoundClass(char *params, Client * c)
 {
-
    char                buf[FILEPATH_LEN_MAX];
 
    buf[0] = 0;
@@ -2049,11 +2018,9 @@ IPC_SoundClass(char *params, Client * c)
 
    if (buf[0])
       CommsSend(c, buf);
-
-   return;
 }
 
-void
+static void
 IPC_PlaySoundClass(char *params, Client * c)
 {
    char                buf[FILEPATH_LEN_MAX];
@@ -2077,15 +2044,11 @@ IPC_PlaySoundClass(char *params, Client * c)
 
    if (buf[0])
       CommsSend(c, buf);
-
-   return;
-
 }
 
-void
+static void
 IPC_ListClassMembers(char *params, Client * c)
 {
-
    char               *buf = NULL;
    char                buf2[FILEPATH_LEN_MAX];
    int                 num, i;
@@ -2266,18 +2229,17 @@ IPC_ListClassMembers(char *params, Client * c)
      }
    else
       CommsSend(c, "Error: no class selected");
+
    if (buf)
      {
 	CommsSend(c, buf);
 	Efree(buf);
      }
-   return;
 }
 
-void
+static void
 IPC_DialogOK(char *params, Client * c)
 {
-
    char                buf[FILEPATH_LEN_MAX];
 
    buf[0] = 0;
@@ -2291,14 +2253,11 @@ IPC_DialogOK(char *params, Client * c)
 
    if (buf[0])
       CommsSend(c, buf);
-
-   return;
 }
 
-void
+static void
 IPC_SetFocus(char *params, Client * c)
 {
-
    char                buf[FILEPATH_LEN_MAX];
 
    buf[0] = 0;
@@ -2324,7 +2283,7 @@ IPC_SetFocus(char *params, Client * c)
 	  {
 	     unsigned int        win;
 
-	     sscanf(params, "%8x", &win);
+	     sscanf(params, "%x", &win);
 	     my_focused_win = FindEwinByChildren(win);
 	     if (my_focused_win)
 		FocusToEWin(my_focused_win);
@@ -2337,15 +2296,11 @@ IPC_SetFocus(char *params, Client * c)
 
    if (buf[0])
       CommsSend(c, buf);
-
-   return;
-
 }
 
-void
+static void
 IPC_AdvancedFocus(char *params, Client * c)
 {
-
    char                buf[FILEPATH_LEN_MAX];
 
    buf[0] = 0;
@@ -2727,15 +2682,11 @@ IPC_AdvancedFocus(char *params, Client * c)
 
    if (buf[0])
       CommsSend(c, buf);
-
-   return;
-
 }
 
-void
+static void
 IPC_InternalList(char *params, Client * c)
 {
-
    char                buf[FILEPATH_LEN_MAX];
    char                buf2[FILEPATH_LEN_MAX];
 
@@ -2809,15 +2760,11 @@ IPC_InternalList(char *params, Client * c)
       CommsSend(c, buf);
    else
       CommsSend(c, "");
-
-   return;
-
 }
 
-void
+static void
 IPC_Pager(char *params, Client * c)
 {
-
    char                buf[FILEPATH_LEN_MAX];
    char                param1[FILEPATH_LEN_MAX];
    char                param2[FILEPATH_LEN_MAX];
@@ -3041,15 +2988,11 @@ IPC_Pager(char *params, Client * c)
 
    if (buf[0])
       CommsSend(c, buf);
-
-   return;
-
 }
 
-void
+static void
 IPC_MoveMode(char *params, Client * c)
 {
-
    char                buf[FILEPATH_LEN_MAX];
 
    buf[0] = 0;
@@ -3112,15 +3055,11 @@ IPC_MoveMode(char *params, Client * c)
 
    if (buf[0])
       CommsSend(c, buf);
-
-   return;
-
 }
 
-void
+static void
 IPC_ResizeMode(char *params, Client * c)
 {
-
    char                buf[FILEPATH_LEN_MAX];
 
    buf[0] = 0;
@@ -3177,15 +3116,11 @@ IPC_ResizeMode(char *params, Client * c)
 
    if (buf[0])
       CommsSend(c, buf);
-
-   return;
-
 }
 
-void
+static void
 IPC_GeomInfoMode(char *params, Client * c)
 {
-
    char                buf[FILEPATH_LEN_MAX];
 
    buf[0] = 0;
@@ -3230,15 +3165,11 @@ IPC_GeomInfoMode(char *params, Client * c)
 
    if (buf[0])
       CommsSend(c, buf);
-
-   return;
-
 }
 
-void
+static void
 IPC_FX(char *params, Client * c)
 {
-
    char                buf[FILEPATH_LEN_MAX];
 
    buf[0] = 0;
@@ -3707,12 +3638,9 @@ IPC_FX(char *params, Client * c)
 
    if (buf[0])
       CommsSend(c, buf);
-
-   return;
-
 }
 
-void
+static void
 IPC_ActiveNetwork(char *params, Client * c)
 {
    char                buf[FILEPATH_LEN_MAX];
@@ -3764,10 +3692,9 @@ IPC_ActiveNetwork(char *params, Client * c)
 
    if (buf[0])
       CommsSend(c, buf);
-   return;
 }
 
-void
+static void
 IPC_ButtonShow(char *params, Client * c)
 {
    c = NULL;
@@ -3779,16 +3706,14 @@ IPC_ButtonShow(char *params, Client * c)
      {
 	doHideShowButton(NULL);
      }
-   return;
 }
 
-void
+static void
 IPC_WinList(char *params, Client * c)
 {
-
    char               *ret = NULL;
    char                buf[FILEPATH_LEN_MAX];
-   EWin              **lst;
+   EWin              **lst, *e;
    int                 num, i;
    char                none[] = "-NONE-";
 
@@ -3797,20 +3722,21 @@ IPC_WinList(char *params, Client * c)
      {
 	for (i = 0; i < num; i++)
 	  {
-	     if (!lst[i]->client.title)
-		lst[i]->client.title = none;
+	     e = lst[i];
+	     if (!e->client.title)
+		e->client.title = none;
 	     if (params)
 	       {
 		  Esnprintf(buf, sizeof(buf),
 			    "%8x : %s :: %d : %d %d : %d %d\n",
-			    lst[i]->client.win, lst[i]->client.title,
-			    lst[i]->desktop, lst[i]->area_x, lst[i]->area_y,
-			    lst[i]->x, lst[i]->y);
+			    e->client.win, e->client.title,
+			    (e->sticky) ? -1 : e->desktop, e->area_x, e->area_y,
+			    e->x, e->y);
 	       }
 	     else
 	       {
-		  Esnprintf(buf, sizeof(buf), "%8x : %s\n", lst[i]->client.win,
-			    lst[i]->client.title);
+		  Esnprintf(buf, sizeof(buf), "%8x : %s\n", e->client.win,
+			    e->client.title);
 	       }
 	     if (!ret)
 	       {
@@ -3838,10 +3764,9 @@ IPC_WinList(char *params, Client * c)
 
 }
 
-void
+static void
 IPC_GotoArea(char *params, Client * c)
 {
-
    char                buf[FILEPATH_LEN_MAX];
    char                param1[FILEPATH_LEN_MAX];
    char                param2[FILEPATH_LEN_MAX];
@@ -3911,15 +3836,11 @@ IPC_GotoArea(char *params, Client * c)
 
    if (buf[0])
       CommsSend(c, buf);
-
-   return;
-
 }
 
-void
+static void
 IPC_WinOps(char *params, Client * c)
 {
-
    char                buf[FILEPATH_LEN_MAX];
 
    buf[0] = 0;
@@ -3951,7 +3872,7 @@ IPC_WinOps(char *params, Client * c)
 	  }
 	else
 	  {
-	     sscanf(windowid, "%8x", &win);
+	     sscanf(windowid, "%x", &win);
 	  }
 	word(params, 2, operation);
 	if (!operation[0])
@@ -4409,15 +4330,11 @@ IPC_WinOps(char *params, Client * c)
 
    if (buf[0])
       CommsSend(c, buf);
-
-   return;
-
 }
 
-void
+static void
 IPC_NumAreas(char *params, Client * c)
 {
-
    char                buf[FILEPATH_LEN_MAX];
 
    buf[0] = 0;
@@ -4446,15 +4363,11 @@ IPC_NumAreas(char *params, Client * c)
 
    if (buf[0])
       CommsSend(c, buf);
-
-   return;
-
 }
 
-void
+static void
 IPC_NumDesks(char *params, Client * c)
 {
-
    char                buf[FILEPATH_LEN_MAX];
 
    buf[0] = 0;
@@ -4477,15 +4390,11 @@ IPC_NumDesks(char *params, Client * c)
 
    if (buf[0])
       CommsSend(c, buf);
-
-   return;
-
 }
 
-void
+static void
 IPC_FocusMode(char *params, Client * c)
 {
-
    char                buf[FILEPATH_LEN_MAX];
 
    buf[0] = 0;
@@ -4548,20 +4457,16 @@ IPC_FocusMode(char *params, Client * c)
 
    if (buf[0])
       CommsSend(c, buf);
-
-   return;
-
 }
 
-void
+static void
 IPC_ShowIcons(char *params, Client * c)
 {
 }
 
-void
+static void
 IPC_GotoDesktop(char *params, Client * c)
 {
-
    char                buf[FILEPATH_LEN_MAX];
 
    buf[0] = 0;
@@ -4591,14 +4496,11 @@ IPC_GotoDesktop(char *params, Client * c)
 
    if (buf[0])
       CommsSend(c, buf);
-
-   return;
 }
 
-void
+static void
 IPC_ListThemes(char *params, Client * c)
 {
-
    char              **list, *buf = NULL;
    int                 i, num;
 
@@ -4631,15 +4533,11 @@ IPC_ListThemes(char *params, Client * c)
      {
 	CommsSend(c, "");
      }
-
-   return;
-
 }
 
-void
+static void
 IPC_SMFile(char *params, Client * c)
 {
-
    char                buf[FILEPATH_LEN_MAX];
 
    buf[0] = 0;
@@ -4662,31 +4560,26 @@ IPC_SMFile(char *params, Client * c)
 
    if (buf[0])
       CommsSend(c, buf);
-
-   return;
-
 }
 
-void
+static void
 IPC_ForceSave(char *params, Client * c)
 {
-
    c = NULL;
    params = NULL;
 
    if (!(master_pid == getpid()))
       return;
+
    if (mode.autosave)
       SaveUserControlConfig(fopen(GetGenericSMFile(), "w"));
    else
       rm(GetGenericSMFile());
-   return;
 }
 
-void
+static void
 IPC_Restart(char *params, Client * c)
 {
-
    c = NULL;
    params = NULL;
 
@@ -4694,10 +4587,9 @@ IPC_Restart(char *params, Client * c)
 
 }
 
-void
+static void
 IPC_RestartWM(char *params, Client * c)
 {
-
    char                buf[FILEPATH_LEN_MAX];
 
    if (params)
@@ -4711,15 +4603,11 @@ IPC_RestartWM(char *params, Client * c)
 	Esnprintf(buf, sizeof(buf), "Error: no window manager specified");
 	CommsSend(c, buf);
      }
-
-   return;
-
 }
 
-void
+static void
 IPC_RestartTheme(char *params, Client * c)
 {
-
    char                buf[FILEPATH_LEN_MAX];
 
    if (params)
@@ -4733,27 +4621,22 @@ IPC_RestartTheme(char *params, Client * c)
 	Esnprintf(buf, sizeof(buf), "Error: no theme specified");
 	CommsSend(c, buf);
      }
-   return;
 }
 
-void
+static void
 IPC_Exit(char *params, Client * c)
 {
-
    c = NULL;
 
    if (params)
       doExit("quit");
    else
       doExit("logout");
-   return;
-
 }
 
-void
+static void
 IPC_DefaultTheme(char *params, Client * c)
 {
-
    char                buf[FILEPATH_LEN_MAX];
 
    buf[0] = 0;
@@ -4785,15 +4668,11 @@ IPC_DefaultTheme(char *params, Client * c)
 
    if (buf[0])
       CommsSend(c, buf);
-
-   return;
-
 }
 
-void
+static void
 IPC_CurrentTheme(char *params, Client * c)
 {
-
    char                buf[FILEPATH_LEN_MAX];
 
    buf[0] = 0;
@@ -4802,14 +4681,13 @@ IPC_CurrentTheme(char *params, Client * c)
 
    if (buf[0])
       CommsSend(c, buf);
-   return;
+
    params = NULL;
 }
 
-void
+static void
 IPC_AutoSave(char *params, Client * c)
 {
-
    char                buf[FILEPATH_LEN_MAX];
 
    buf[0] = 0;
@@ -4836,26 +4714,30 @@ IPC_AutoSave(char *params, Client * c)
      {
 	Esnprintf(buf, sizeof(buf), "Unknown autosave state: %s", params);
      }
+
    if (buf[0])
       CommsSend(c, buf);
-
-   return;
-
 }
 
-void
+static int
+ipccmp(void *p1, void *p2)
+{
+   return strcmp(((IPCStruct *) p1)->commandname,
+		 ((IPCStruct *) p2)->commandname);
+}
+
+static void
 IPC_Help(char *params, Client * c)
 {
-
    char                buf[FILEPATH_LEN_MAX];
    char                buf2[FILEPATH_LEN_MAX];
-   int                 i, j, numIPC;
-   unsigned int        k;
-   char              **commandname_list;
+   int                 i, l, numIPC;
+   IPCStruct         **lst, *ipc;
 
    buf[0] = 0;
    buf2[0] = 0;
    numIPC = sizeof(IPCArray) / sizeof(IPCStruct);
+
    Esnprintf(buf, sizeof(buf), _("Enlightenment IPC Commands Help"));
 
    if (!params)
@@ -4865,35 +4747,26 @@ IPC_Help(char *params, Client * c)
 	       _("use \"help all\" for descriptions of each command\n"
 		 "use \"help <command>\" for an individual description\n\n"));
 
-	commandname_list = Emalloc(numIPC * sizeof(char *));
+	lst = (IPCStruct **) Emalloc(numIPC * sizeof(IPCStruct *));
 
 	for (i = 0; i < numIPC; i++)
-	   commandname_list[i] = IPCArray[i].commandname;
+	   lst[i] = &IPCArray[i];
 
-	Quicksort((void **)commandname_list, 0, numIPC - 1,
-		  (int (*)(void *, void *))&strcmp);
+	Quicksort((void **)lst, 0, numIPC - 1, ipccmp);
 
-	i = 0;
-	while (i < numIPC)
+	l = strlen(buf);
+	for (i = 0; i < numIPC; i++)
 	  {
-	     for (j = 0; j < 3; j++)
-	       {
-		  strcat(buf2, commandname_list[i]);
-
-		  /* suggest some parens here */
-		  for (k = 0; k < (3 - strlen(commandname_list[i]) / 8); k++)
-		     strcat(buf2, "\t");
-
-		  if (++i >= numIPC)
-		     break;
-	       }
-
-	     strcat(buf, buf2);
-	     strcat(buf, "\n");
-	     buf2[0] = 0;
+	     ipc = lst[i];
+	     l += sprintf(buf + l, "  %-16s %-3s  ", ipc->commandname,
+			  (ipc->nick) ? ipc->nick : "");
+	     if ((i % 3) == 2)
+		l += sprintf(buf + l, "\n");
 	  }
+	if (i % 3)
+	   l += sprintf(buf + l, "\n");
 
-	Efree(commandname_list);
+	Efree(lst);
      }
    else
      {
@@ -4903,49 +4776,53 @@ IPC_Help(char *params, Client * c)
 	     strcat(buf,
 		    _("use \"help <command>\" "
 		      "for an individual description\n"));
-	     strcat(buf, _("<command> : <description>\n"));
+	     strcat(buf, _("      <command>   : <description>\n"));
+
+	     l = strlen(buf);
 	     for (i = 0; i < numIPC; i++)
 	       {
-		  strcat(buf, IPCArray[i].commandname);
-		  strcat(buf, " : ");
-		  strcat(buf, IPCArray[i].help_text);
-		  strcat(buf, "\n");
+		  ipc = &IPCArray[i];
+
+		  if (ipc->nick)
+		     sprintf(buf2, "%s", ipc->nick);
+		  else
+		     buf2[0] = '\0';
+
+		  l += sprintf(buf + l, "%14s %3s: %s\n",
+			       ipc->commandname, buf2, ipc->help_text);
 	       }
 	  }
 	else
 	  {
-	     int                 found = 0;
-
+	     l = strlen(buf);
 	     for (i = 0; i < numIPC; i++)
 	       {
-		  if (!strcmp(IPCArray[i].commandname, params))
-		    {
-		       found = 1;
-		       strcat(buf, " : ");
-		       strcat(buf, IPCArray[i].commandname);
-		       strcat(buf, "\n--------------------------------\n");
-		       strcat(buf, IPCArray[i].help_text);
-		       strcat(buf, "\n");
-		       if (IPCArray[i].extended_help_text)
-			 {
-			    strcat(buf, IPCArray[i].extended_help_text);
-			    strcat(buf, "\n");
-			 }
-		    }
+		  ipc = &IPCArray[i];
+		  if (strcmp(params, ipc->commandname) &&
+		      (ipc->nick == NULL || strcmp(params, ipc->nick)))
+		     continue;
+
+		  if (ipc->nick)
+		     sprintf(buf2, " (%s)", ipc->nick);
+		  else
+		     buf2[0] = '\0';
+
+		  l += sprintf(buf + l,
+			       " : %s%s\n--------------------------------\n%s\n",
+			       ipc->commandname, buf2, ipc->help_text);
+		  if (ipc->extended_help_text)
+		     l += sprintf(buf + l, "%s\n", ipc->extended_help_text);
 	       }
 	  }
      }
 
    if (buf)
       CommsSend(c, buf);
-
-   return;
 }
 
-void
+static void
 IPC_Copyright(char *params, Client * c)
 {
-
    char                buf[FILEPATH_LEN_MAX];
 
    params = NULL;
@@ -4993,15 +4870,11 @@ IPC_Copyright(char *params, Client * c)
 
    if (buf)
       CommsSend(c, buf);
-
-   return;
-
 }
 
-void
+static void
 IPC_Version(char *params, Client * c)
 {
-
    char                buf[FILEPATH_LEN_MAX];
 
    params = NULL;
@@ -5014,9 +4887,6 @@ IPC_Version(char *params, Client * c)
 
    if (buf)
       CommsSend(c, buf);
-
-   return;
-
 }
 
 /* The IPC Handler */
@@ -5029,27 +4899,25 @@ IPC_Version(char *params, Client * c)
 int
 HandleIPC(char *params, Client * c)
 {
-
    int                 i;
    int                 numIPC;
    char                w[FILEPATH_LEN_MAX];
+   IPCStruct          *ipc;
 
    numIPC = sizeof(IPCArray) / sizeof(IPCStruct);
 
    word(params, 1, w);
    for (i = 0; i < numIPC; i++)
      {
-	if (!strcmp(w, IPCArray[i].commandname))
+	ipc = &IPCArray[i];
+	if (!strcmp(w, ipc->commandname) ||
+	    (ipc->nick && !strcmp(w, ipc->nick)))
 	  {
 	     word(params, 2, w);
 	     if (w)
-	       {
-		  IPCArray[i].func(atword(params, 2), c);
-	       }
+		ipc->func(atword(params, 2), c);
 	     else
-	       {
-		  IPCArray[i].func(NULL, c);
-	       }
+		ipc->func(NULL, c);
 	     return 1;
 	  }
      }
@@ -5057,27 +4925,26 @@ HandleIPC(char *params, Client * c)
    return 0;
 }
 
+#if 0
 /* The External function designed for attaching to a dialog box
  * to return a message back to an external app telling you what
  * button was depressed
  */
 
-void
+static void
 ButtonIPC(int val, void *data)
 {
-
    val = 0;
    data = NULL;
-
-   return;
 }
+#endif
 
 /*
  * Reloads the menus.cfg file from cache, 
  *
  */
 
-void
+static void
 IPC_ReloadMenus(char *params, Client * c)
 {
    /*
@@ -5128,10 +4995,9 @@ IPC_ReloadMenus(char *params, Client * c)
    c = NULL;
 }
 
-void
+static void
 IPC_GroupInfo(char *params, Client * c)
 {
-
    char                buf[FILEPATH_LEN_MAX];
    char                buf2[FILEPATH_LEN_MAX];
    Group             **groups = NULL;
@@ -5205,15 +5071,11 @@ IPC_GroupInfo(char *params, Client * c)
 
    if (buf)
       CommsSend(c, buf);
-
-   return;
-
 }
 
-void
+static void
 IPC_GroupOps(char *params, Client * c)
 {
-
    char                buf[FILEPATH_LEN_MAX];
    Group              *group = current_group;
    char                groupid[FILEPATH_LEN_MAX];
@@ -5231,7 +5093,7 @@ IPC_GroupOps(char *params, Client * c)
 	operation[0] = 0;
 	param1[0] = 0;
 	word(params, 1, windowid);
-	sscanf(windowid, "%8x", &win);
+	sscanf(windowid, "%x", &win);
 	word(params, 2, operation);
 
 	if (!operation[0])
@@ -5321,15 +5183,11 @@ IPC_GroupOps(char *params, Client * c)
 
    if (buf)
       CommsSend(c, buf);
-
-   return;
-
 }
 
-void
+static void
 IPC_Group(char *params, Client * c)
 {
-
    char                buf[FILEPATH_LEN_MAX];
 
    buf[0] = 0;
@@ -5468,39 +5326,25 @@ IPC_Group(char *params, Client * c)
 
    if (buf)
       CommsSend(c, buf);
-
-   return;
-
 }
 
-void
+static void
 IPC_MemDebug(char *params, Client * c)
 {
    EDisplayMemUse();
-   return;
+
    params = NULL;
    c = NULL;
 }
 
-void
+static void
 IPC_RememberList(char *params, Client * c)
 {
    Snapshot          **lst;
    int                 i, j, num, f;
-   char                buf[FILEPATH_LEN_MAX * 2],	/* hope 2x doesn't break anything */
-    
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-             buf2[FILEPATH_LEN_MAX], fullstr[FILEPATH_LEN_MAX], nstr[] = "null";
+   char                buf[FILEPATH_LEN_MAX * 2];	/* hope 2x doesn't break anything */
+   char                buf2[FILEPATH_LEN_MAX], fullstr[FILEPATH_LEN_MAX],
+      nstr[] = "null";
 
    buf[0] = 0;
    buf2[0] = 0;
@@ -5613,5 +5457,4 @@ IPC_RememberList(char *params, Client * c)
 
    if (buf)
       CommsSend(c, buf);
-   return;
 }
