@@ -718,3 +718,10 @@ Fixed some warnings in Moon.c, changed <epplet.h> to "epplet.h" in
 E-MoonClock.c, fixed problem with blank_epplet in my cloak stuff.
 Can't remember what else.
 
+-------------------------------------------------------------------------------
+
+Sat Nov 20 18:00:11 EST 1999
+(StriderZ)
+
+Added a popup command history to E-Exec and made it wider.
+
