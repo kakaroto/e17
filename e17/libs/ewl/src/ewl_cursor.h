@@ -43,13 +43,13 @@ struct Ewl_Cursor
 
 Ewl_Widget     *ewl_cursor_new(void);
 void            ewl_cursor_init(Ewl_Cursor * c);
-void            ewl_cursor_set_position(Ewl_Cursor * w, unsigned int start,
+void            ewl_cursor_position_set(Ewl_Cursor * w, unsigned int start,
 					unsigned int end);
-void            ewl_cursor_set_base(Ewl_Cursor *c, unsigned int pos);
+void            ewl_cursor_base_set(Ewl_Cursor *c, unsigned int pos);
 void            ewl_cursor_select_to(Ewl_Cursor *c, unsigned int pos);
-unsigned int    ewl_cursor_get_base_position(Ewl_Cursor * w);
-unsigned int    ewl_cursor_get_start_position(Ewl_Cursor * w);
-unsigned int    ewl_cursor_get_end_position(Ewl_Cursor * w);
+unsigned int    ewl_cursor_base_position_get(Ewl_Cursor * w);
+unsigned int    ewl_cursor_start_position_get(Ewl_Cursor * w);
+unsigned int    ewl_cursor_end_position_get(Ewl_Cursor * w);
 
 /**
  * @}

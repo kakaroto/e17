@@ -54,7 +54,7 @@ void ewl_cursor_init(Ewl_Cursor * c)
  * Sets the initial position that will be used when determining layout when
  * start or end positions change.
  */
-void ewl_cursor_set_base(Ewl_Cursor *c, unsigned int pos)
+void ewl_cursor_base_set(Ewl_Cursor *c, unsigned int pos)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("c", c);
@@ -78,7 +78,7 @@ void ewl_cursor_set_base(Ewl_Cursor *c, unsigned int pos)
  * appropriately.
  */
 void
-ewl_cursor_set_position(Ewl_Cursor * c, unsigned int start, unsigned int end)
+ewl_cursor_position_set(Ewl_Cursor * c, unsigned int start, unsigned int end)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("c", c);
@@ -135,7 +135,7 @@ void ewl_cursor_select_to(Ewl_Cursor *c, unsigned int pos)
  * @return Returns the current base position.
  * @brief Retrieve the current base position.
  */
-unsigned int ewl_cursor_get_base_position(Ewl_Cursor *c)
+unsigned int ewl_cursor_base_position_get(Ewl_Cursor *c)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("c", c, 0);
@@ -148,7 +148,7 @@ unsigned int ewl_cursor_get_base_position(Ewl_Cursor *c)
  * @return Returns the current start position of the cursor @a c.
  * @brief Retrieve the start position of the cursor
  */
-unsigned int ewl_cursor_get_start_position(Ewl_Cursor * c)
+unsigned int ewl_cursor_start_position_get(Ewl_Cursor * c)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("c", c, 0);
@@ -161,7 +161,7 @@ unsigned int ewl_cursor_get_start_position(Ewl_Cursor * c)
  * @return Returns the current end position of the cursor widget @a c.
  * @brief Retrieve the end position of the cursor
  */
-unsigned int ewl_cursor_get_end_position(Ewl_Cursor * c)
+unsigned int ewl_cursor_end_position_get(Ewl_Cursor * c)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("c", c, 0);
