@@ -28,7 +28,7 @@ __imlib_FileKey(const char *file)
 	int go;
 	
 	go = 0;
-	p1 = file;
+	p1 = (char *)file;
 	p2 = newfile;
 	while (p1[0])
 	  {
@@ -61,7 +61,7 @@ __imlib_FileRealFile(const char *file)
      {
 	char *p1, *p2;
 	
-	p1 = file;
+	p1 = (char *)file;
 	p2 = newfile;
 	while (p1[0])
 	  {
