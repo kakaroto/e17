@@ -553,7 +553,7 @@ static gint gevas_event(GtkWidget * widget, GdkEvent * event)
 					evas_event_move(ev->evas, x, y);
 
 
-                    printf("evas_event_move() x:%d y:%d \n",x,y);
+//                    printf("evas_event_move() x:%d y:%d \n",x,y);
                     
                     /*
                     {
