@@ -24,6 +24,7 @@ main(int argc, char **argv)
   Evas_List *l = NULL;
   Evas_Object *o = NULL;
   Ecore_Evas *ee = NULL;
+  Ecore_X_Window win;
   Evas_Coord edjew = 0, edjeh = 0;
   Evas_Object *iconbar = NULL;
 
@@ -43,6 +44,7 @@ main(int argc, char **argv)
   iconbar_config_geometry_get(&x, &y, &w, &h);
 
   ee = ecore_evas_software_x11_new(NULL, 0, x, y, w, h);
+  win = ecore_evas_software_x11_window_get(ee);
   ecore_evas_callback_mouse_in_set(ee, window_enter);
   ecore_evas_callback_mouse_out_set(ee, window_leave);
   ecore_evas_callback_resize_set(ee, window_resize);
@@ -56,6 +58,8 @@ main(int argc, char **argv)
   ecore_evas_withdrawn_set(ee, iconbar_config_withdrawn_get());
   ecore_evas_sticky_set(ee, iconbar_config_sticky_get());
   ecore_evas_avoid_damage_set(ee, 1);
+  ecore_x_window_prop_xy_set(win, x, y);
+  ecore_x_window_prop_layer_set(win, -1);
 
   iconbar_config_ecore_evas_set(ee);
 #ifdef HAVE_TRANS_BG
@@ -130,7 +134,6 @@ main(int argc, char **argv)
   evas_object_show(iconbar);
   
   ecore_evas_show(ee);
-  ecore_evas_move_resize(ee, x, y, w, h);
 
   ecore_main_loop_begin();
   
