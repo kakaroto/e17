@@ -70,6 +70,7 @@ __create_button_test_window(Ewl_Widget * w, void * ev_data, void * user_data)
 	ewl_widget_show(radio_button[0]);
 
 	radio_button[1] = ewl_radiobutton_new(NULL);
+	ewl_radiobutton_set_chain(radio_button[1], radio_button[0]);
 	ewl_container_append_child(EWL_CONTAINER(main_vbox), radio_button[1]);
 	ewl_object_set_alignment(EWL_OBJECT(radio_button[1]), EWL_ALIGNMENT_LEFT);
 	ewl_widget_show(radio_button[1]);

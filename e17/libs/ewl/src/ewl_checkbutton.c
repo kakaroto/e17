@@ -99,15 +99,20 @@ void
 __ewl_checkbutton_mouse_down(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_CheckButton * cb;
+	int oc;
 
 	DENTER_FUNCTION;
 	DCHECK_PARAM_PTR("w", w);
 
 	cb = EWL_CHECKBUTTON(w);
+	oc = cb->checked;
 
 	cb->checked ^= 1;
 
 	__ewl_checkbutton_update_check(w);
+
+	if (oc != cb->checked)
+		ewl_callback_call(w, EWL_CALLBACK_VALUE_CHANGED);
 
 	DLEAVE_FUNCTION;
 }
