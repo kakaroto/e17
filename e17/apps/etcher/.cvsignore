@@ -12,3 +12,6 @@ Makefile
 config.cache
 etcher.spec
 .icons
+install-sh
+missing
+mkinstalldirs

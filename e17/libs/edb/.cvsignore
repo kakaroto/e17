@@ -17,3 +17,6 @@ ltconfig
 config.h.in
 libltdl
 edb-config
+install-sh
+missing
+mkinstalldirs
