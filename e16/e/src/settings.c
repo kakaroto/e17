@@ -1178,8 +1178,8 @@ SettingsAutoRaise(void)
    di = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 0, 0);
-   DialogItemSetAlign(di, 1024, 512);
-   DialogItemTextSetText(di, "Autoraise delay:\n");
+   DialogItemSetAlign(di, 0, 512);
+   DialogItemTextSetText(di, "Autoraise delay:");
 
    di = DialogAddItem(table, DITEM_SLIDER);
    DialogItemSetPadding(di, 2, 2, 2, 2);
