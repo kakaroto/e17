@@ -2961,3 +2961,10 @@ Sun Oct  3 18:23:28 PDT 1999
 (Raster)
 
 flippy iconify anim + resize DOWN not UP with icons if > iconsize
+
+-------------------------------------------------------------------------------
+
+Sun Oct  3 18:28:53 PDT 1999
+(Raster)
+
+flippy icon patch :)
