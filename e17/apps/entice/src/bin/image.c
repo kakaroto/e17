@@ -63,7 +63,6 @@ _im_move_cb(void *data, Evas * evas, Evas_Object * obj, void *ev)
          {
             ww = im->iw / im->zoom;
             hh = im->ih / im->zoom;
-            evas_object_geometry_get(im->obj, &ox, &oy, NULL, NULL);
             evas_object_move(im->obj, e->cur.canvas.x - im->mouse.off_x,
                              e->cur.canvas.y - im->mouse.off_y);
             evas_object_geometry_get(im->obj, &ox, &oy, NULL, NULL);
