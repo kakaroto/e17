@@ -9,7 +9,7 @@ Known bugs
 - E may lose control over a window if it is iconified and de-iconified
   shortly after.
 
-- Switching desktop changes stacking (sticky windows raised above non-sticky).
+- Custom group member settings are lost when all members are closed.
 
 - Various minor focus issues.
   Exact steps to reproduce are welcome.
@@ -26,11 +26,22 @@ Known bugs
 TODO for E 16.7
 ~~~~~~~~~~~~~~~
 
-- ?
+- Don't trash the configuration all the time.
+- Floating windows must be restacked properly when "un-floated".
+- Restack properly when window layer is changed.
+- Maximise breaks shaped borders (resize doesn't ?).
+- Desktop switch seems to miss certain transparent border part updates.
+
+- Remove e/src/themes (now in e/ethemes).
+- Remove e/dox/E-docs (now in e/edox-data).
+
+? eesh/libedit ?
 
 
 Fixed in CVS
 ~~~~~~~~~~~~
+
+- Switching desktop changes stacking (sticky windows raised above non-sticky).
 
 - Quoting in execute actions doesn't work.
 ! It is now possible to do useful things like
