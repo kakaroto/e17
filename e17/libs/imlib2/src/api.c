@@ -3240,7 +3240,7 @@ imlib_image_draw_pixel(int x, int y, char make_updates)
       return NULL;
    __imlib_DirtyImage(im);
    __imlib_DirtyPixmapsForImage(im);
-   if (ctx->cliprect.w)
+   if (ctx->cliprect.w == 0)
    {
       __imlib_draw_set_point(im, x, y,
                         (DATA8) ctx->color.red,
