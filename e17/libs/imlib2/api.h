@@ -77,6 +77,8 @@ void        imlib_set_cache_size(int bytes);
 int         imlib_get_color_usage(void);
 void        imlib_set_color_usage(int max);
 
+int         imlib_get_visual_depth(Display *display, Visual *visual);
+
 /* image loading functions */
 Imlib_Image imlib_load_image(char *file);
 Imlib_Image imlib_load_image_with_progress_callback(char *file,

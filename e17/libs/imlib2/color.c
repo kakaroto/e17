@@ -1,9 +1,29 @@
 #include <X11/Xlib.h>
+#include <X11/Xutil.h>
 #include "common.h"
 #include "color.h"
 
 DATA8  _pal_type = 0;
 DATA16 _max_colors = 256;
+
+int
+__imlib_XActualDepth(Display *d, Visual *v)
+{
+   XVisualInfo xvi, *xvir;   
+   int         depth = 0, num;
+   
+   xvi.visual = v;
+   xvi.visualid = XVisualIDFromVisual(v);
+   xvir = XGetVisualInfo(d, VisualIDMask, &xvi, &num);
+   if (xvir)
+     {
+	depth = xvir[0].depth;
+	if ((depth == 16) && (xvir->red_mask != 0xf800))
+	   depth = 15;
+	XFree(xvir);
+     }
+   return depth;
+}
 
 DATA8 *
 __imlib_AllocColorTable(Display *d, Colormap cmap, DATA8 *type_return)

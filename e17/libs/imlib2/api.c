@@ -51,6 +51,12 @@ imlib_set_color_usage(int max)
    _max_colors = max;
 }
 
+int 
+imlib_get_visual_depth(Display *display, Visual *visual)
+{
+   return __imlib_XActualDepth(display, visual);
+}
+
 Imlib_Image 
 imlib_load_image(char *file)
 {
