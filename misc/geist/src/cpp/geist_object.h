@@ -29,7 +29,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "geist.h"
 
 // exceptions
-class eNoChildren { };  // can't add or remove children to a leaf
+class eNoChildren : public eGeneric { };  // can't add or remove children to a leaf
 
 typedef int Coord;
 struct Point 

@@ -23,6 +23,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 */
 
+#ifndef GEIST_H
+#define GEIST_H
+
 #include <X11/Xlib.h>
 #include <Imlib2.h>
 #include <iostream>
@@ -40,4 +43,8 @@ using std::string;
 #define D(a,b) GeistDebug::instance()->print(a,b)
 #else
 #define D(a,b)
+#endif
+
+class eGeneric { }; // generic exception class
+
 #endif
