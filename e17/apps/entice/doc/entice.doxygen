@@ -29,14 +29,14 @@ A handy, quick, themeable image viewer.
 <ul>
     <li><a href="./index.html#theme_groups">Entice's Appearance: Edje Groups</a>
     <ul>
-	<li><a href="./index.html#theme_entice_image_parts">The EnticeImage Group</a></li>
-	<li><a href="./index.html#theme_entice_thumb_parts">The EnticeThumb Group</a></li>
+	<li><a href="./index.html#theme_entice_parts">The entice Group</a></li>
+	<li><a href="./index.html#theme_entice_thumb_parts">The entice.thumb Group</a></li>
     </ul>
     </li>
     <li><a href="./index.html#theme_signals">Communicating with Entice : Edje Signals</a>
     <ul>
 	<li><a href="./index.html#theme_entice_progs">Signals your theme can emit to Entice</a></li>
-	<li><a href="./index.html#theme_entice_thumb_progs">Signals your thumbnails can emit to communicate with entice</a></li>
+	<li><a href="./index.html#theme_entice_thumb_progs">Signals your thumbnails can emit to entice</a></li>
 	<li><a href="./index.html#theme_entice_entice_progs">Signals your theme should be aware of</a></li>
     </ul>
     </li>
@@ -111,8 +111,8 @@ $ cp winter.eet ~/.e/apps/entice/themes/
 
 @subsection theme_groups Edje groups that makeup Entice
 <ul>
-<li name="theme_entice_image_parts">
-<h2>Entice Group : Edje Parts</h2>
+<li>
+<h2 id="theme_entice_parts">entice Group : Edje Parts</h2>
 <span><em>Entice</em>: the main entice edje, fills the entire window</span>
     <ul>
     <li><em>entice.image.current.filename.full</em>:(TEXT) the full path to the file currently displayed</li>
@@ -127,17 +127,17 @@ $ cp winter.eet ~/.e/apps/entice/themes/
     <li><em>entice.thumbnail.area</em>:(RECT) Entice contains a filelist, and the themer is allowed to create a region that that will contain a list of thumbnails.</li>
     </ul>
 </li>
-<li name="theme_entice_thumb_parts"><h2>EnticeThumb Group : Edje Parts</h2>
-<span><em>EnticeThumb</em>:All the thumbnails take on this look</span>
+<li><h2 id="theme_entice_thumb_parts">entice.thumb Group : Edje Parts</h2>
+<span><em>entice.thumb</em>:All the thumbnails take on this look</span>
     <ul>
-	<li><em>EnticeThumb</em>:(RECT) the decorations for thumbnails</li>
+	<li><em>entice.thumb</em>:(RECT) the decorations for thumbnails</li>
     </ul>
 </li>
 </ul>
 
 @subsection theme_signals Communicating with Entice : Edje Signals
 <ul> 
-    <li name="theme_entice_progs"><h2>Entice Group : Edje Signals</h2>
+    <li><h2 id="theme_entice_progs">entice Group : Edje Signals</h2>
     <span><em>Entice</em>: The themer can emit signals to ask for state changes in entice.  This includes things like telling Entice to "load the next image" or "delete this image from the filelist".</span>
     <ul>
 	<li><em>entice,image,current,delete</em>:("") deletes the currently displayed image from the filelist, AND from disk</li>
@@ -168,8 +168,8 @@ $ cp winter.eet ~/.e/apps/entice/themes/
 	<li><em>entice,image,fit,window</em>:("") Not Impelemented</li>
     </ul>
 </li>
-<li name="theme_entice_thumb_progs">
-<h2>EnticeThumb Group : Edje Signals</h2>
+<li>
+<h2 id="theme_entice_thumb_progs">entice.thumb Group : Edje Signals</h2>
 <span><em>entice.thumb</em>:All the thumbnails take on this look</span>
     <ul>
 	<li><em>entice,thumb,preview</em>:("") Send this thumbnail to the previewer.  </li>
@@ -180,7 +180,7 @@ $ cp winter.eet ~/.e/apps/entice/themes/
 	<li><em>entice,thumb,remove</em>:("") Remove this thumbnail from entice's filelist.</li>
     </ul>
 </li>
-<li name="theme_entice_progs"><h2>Entice : Entice Signals</h2>
+<li><h2 id="theme_entice_entice_progs">entice Group : Entice Signals</h2>
 <span><em>Entice</em>:Signals your theme should trap that Entice will emit</span>
     <ul>
 	<li><em>entice,image,display</em>:("") When a new image is displayed.  </li>
