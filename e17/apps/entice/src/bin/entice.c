@@ -55,7 +55,8 @@ hookup_edje_signals(Evas_Object * o)
       "EnticeImageScrollStop", "EnticeImageModified",
       "EnticeImageSave", "EnticeQuit", NULL
    };
-   edje_callbacks funcs[] = { _entice_delete_current, _entice_remove_current,
+   void (*funcs[])(void *data, Evas_Object *o, const char *emission,
+   const char *source) = { _entice_delete_current, _entice_remove_current,
       _entice_image_next, _entice_image_prev,
       _entice_zoom_in, _entice_zoom_out,
       _entice_zoom_in_focused, _entice_zoom_out_focused,
@@ -72,7 +73,7 @@ hookup_edje_signals(Evas_Object * o)
    };
    count = sizeof(signals) / sizeof(char *);
    for (i = 0; i < count; i++)
-      edje_object_signal_callback_add(o, signals[i], "", funcs[i].func, NULL);
+      edje_object_signal_callback_add(o, signals[i], "", funcs[i], NULL);
 
    edje_object_signal_callback_add(o, "drag,stop", "EnticeImage",
                                    _entice_image_drag_stop, NULL);
@@ -320,6 +321,21 @@ entice_file_add(const char *file)
    return (result);
 }
 
+int
+entice_file_is_dir(char *file)
+{
+   struct stat st;
+
+   if (file)
+   {
+      if (stat(file, &st) < 0)
+         return (0);
+      if (S_ISDIR(st.st_mode))
+         return (1);
+   }
+   return (0);
+}
+
 void
 entice_file_add_dir_job_cb(void *data)
 {
@@ -346,21 +362,6 @@ entice_file_add_dir_job_cb(void *data)
       }
    }
 
-}
-
-int
-entice_file_is_dir(char *file)
-{
-   struct stat st;
-
-   if (file)
-   {
-      if (stat(file, &st) < 0)
-         return (0);
-      if (S_ISDIR(st.st_mode))
-         return (1);
-   }
-   return (0);
 }
 
 /**
