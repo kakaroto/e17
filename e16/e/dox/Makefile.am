@@ -1,4 +1,4 @@
-EXTRA_DIST = ChangeLog README
+EXTRA_DIST = README
 
 bin_PROGRAMS = edox
 

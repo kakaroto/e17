@@ -1,6 +1,6 @@
 SUBDIRS =
 
-EXTRA_DIST = README ChangeLog ewmh.c gnome.c snprintf.c
+EXTRA_DIST = ewmh.c gnome.c snprintf.c
 
 bin_PROGRAMS = enlightenment
 
