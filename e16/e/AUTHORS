@@ -187,5 +187,9 @@ Masahiko Mori <masa@cthulhu.engr.sgi.com>
 Laurence J. Lane <ljlane@debian.org>
 	minor stuff no one ever notices
 
+(Real name?) <monkeyiq@flashmail.com>
+    Patch for the option to position windows
+    centered under the mouse pointer.
+
 And others whose names we probably forgot to add (email us and we'll put you
 in here)
