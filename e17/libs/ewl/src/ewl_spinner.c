@@ -68,8 +68,8 @@ int ewl_spinner_init(Ewl_Spinner * s)
 			EWL_FLAG_FILL_NONE);
 	ewl_widget_show(s->button_decrease);
 
-	s->min_val = -50.0;
-	s->max_val = 50.0;
+	s->min_val = INT_MIN;
+	s->max_val = INT_MAX;
 	s->value = 0.0;
 	s->step = 0.1;
 	s->digits = 2;
