@@ -699,7 +699,7 @@ __imlib_GrabDrawableToRGBA(DATA32 * data, int ox, int oy, int ow, int oh,
              btab[i] = cols[i].blue >> 8;
           }
      }
-   __imlib_GrabXImageToRGBA(data, ox, oy, ow, oh,
+   __imlib_GrabXImageToRGBA(data, ox + clipx, oy + clipy, ow, oh,
                             d, xim, mxim, v, xatt.depth, x, y, w, h, 0);
 
    /* destroy the Ximage */
