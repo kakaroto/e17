@@ -5,7 +5,6 @@ AUTOMAKE_OPTIONS     = 1.4 foreign
 # A list of all the files in the current directory which can be regenerated
 MAINTAINERCLEANFILES = Makefile.in
 
-LDFLAGS		     = -L/usr/X11R6/lib
 INCLUDES             = -I. -I$(top_srcdir) -I$(top_srcdir)/src \
 		       -I$(top_builddir)/src \
                        -I$(top_srcdir)/loaders \
@@ -30,16 +29,16 @@ libImlib2_la_SOURCES = scale.c image.c blend.c file.c rgbadraw.c api.c \
 EXTRA_libImlib2_la_SOURCES = rend.c ximage.c rgba.c color.c grab.c draw.c \
 			     context.c color.h context.h draw.h grab.h rend.h \
 			     rgba.h ximage.h $(MMX_SRCS)
-libImlib2_la_LDFLAGS      = -version-info 2:2:1
+libImlib2_la_LDFLAGS      = $(LDFLAGS) -L/usr/X11R6/lib -version-info 2:2:1
 
 if HAVE_MMX
 libImlib2_la_LIBADD   = $(X_OBJS) @DLLDFLAGS@ $(MMX_OBJS) \
                        -lltdl \
-                       $(x_libs) $(freetype_libs) $(LDFLAGS) -lm
+                       $(x_libs) $(freetype_libs) -lm
 libImlib2_la_DEPENDENCIES = $(top_builddir)/config.h $(X_OBJS) $(MMX_OBJS)
 else
 libImlib2_la_LIBADD   = $(X_OBJS) @DLLDFLAGS@ \
                        -lltdl \
-                       $(x_libs) $(freetype_libs) $(LDFLAGS) -lm
+                       $(x_libs) $(freetype_libs) -lm
 libImlib2_la_DEPENDENCIES = $(top_builddir)/config.h $(X_OBJS)
 endif
