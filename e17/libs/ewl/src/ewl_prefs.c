@@ -9,11 +9,12 @@
 #define EWL_GLOBAL_CONFIG		PACKAGE_DATA_DIR "/config/system.db"
 
 /* The paths to the config files */
-char user_config[PATH_LEN];
-char global_config[PATH_LEN];
+static char user_config[PATH_LEN];
+static char global_config[PATH_LEN];
 
-E_DB_File *user_prefs;
-E_DB_File *global_prefs;
+static E_DB_File *user_prefs;
+static E_DB_File *global_prefs;
+static E_DB_File *prefs_db;
 
 void
 ewl_prefs_init(void)
@@ -27,8 +28,17 @@ ewl_prefs_init(void)
 	global_prefs = e_db_open_read(EWL_GLOBAL_CONFIG);
 
 	if (!user_prefs && !global_prefs)
-		fprintf(stderr,
-			"Warning!\nNeither Global or user config db found\n");
+	  {
+		  fprintf(stderr,
+			  "Warning!\nNeither Global or user config db found\n");
+
+		  ewl_main_quit();
+	  }
+
+	if (user_prefs)
+		prefs_db = user_prefs;
+	else
+		prefs_db = global_prefs;
 }
 
 int
@@ -38,13 +48,7 @@ ewl_prefs_int_get(char *key)
 
 	CHECK_PARAM_POINTER_RETURN("key", key, -1);
 
-	if (user_prefs)
-	  {
-		  if (e_db_int_get(user_prefs, key, &value))
-			  return value;
-	  }
-
-	e_db_int_get(global_prefs, key, &value);
+	e_db_int_get(prefs_db, key, &value);
 
 	return value;
 }
@@ -58,26 +62,19 @@ ewl_prefs_int_set(char *key, int value)
 		return FALSE;
 
 	e_db_int_set(user_prefs, key, value);
+
 	return TRUE;
 }
 
 char *
 ewl_prefs_str_get(char *key)
 {
-	char *value = NULL;
-
 	CHECK_PARAM_POINTER_RETURN("key", key, NULL);
 
-	if (!user_prefs || !global_prefs)
+	if (!prefs_db)
 		return NULL;
 
-	if (user_prefs)
-	  {
-		  value = e_db_str_get(user_prefs, key);
-		  if (value)
-			  return value;
-	  }
-	return e_db_str_get(global_prefs, key);
+	return e_db_str_get(prefs_db, key);
 }
 
 int
@@ -99,10 +96,7 @@ ewl_prefs_float_get(char *key, float *value)
 {
 	CHECK_PARAM_POINTER_RETURN("key", key, -1);
 
-	if (user_prefs)
-		return e_db_float_get(user_prefs, key, value);
-
-	return e_db_float_get(global_prefs, key, value);
+	return e_db_float_get(prefs_db, key, value);
 }
 
 int
@@ -114,6 +108,7 @@ ewl_prefs_float_set(char *key, float value)
 		return FALSE;
 
 	e_db_float_set(user_prefs, key, value);
+
 	return TRUE;
 }
 

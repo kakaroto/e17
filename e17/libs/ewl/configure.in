@@ -12,8 +12,6 @@ AC_C_CONST
 AM_ENABLE_SHARED
 AM_PROG_LIBTOOL
 
-AM_WITH_DMALLOC
-
 dnl Set PACKAGE_LOCALE_DIR in config.h.
 if test "x${prefix}" = "xNONE"; then
   AC_DEFINE_UNQUOTED(PACKAGE_LOCALE_DIR, "${ac_default_prefix}/${DATADIRNAME}/locale")

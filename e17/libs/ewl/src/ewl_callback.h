@@ -35,7 +35,8 @@ void ewl_callback_call(Ewl_Widget * widget, Ewl_Callback_Type type);
 void ewl_callback_call_with_event_data(Ewl_Widget * widget,
 				       Ewl_Callback_Type type,
 				       void *event_data);
-void ewl_callback_set_user_data(Ewl_Widget * w, Ewl_Callback_Type type, Ewl_Cb_Func func, void * user_data);
+void ewl_callback_set_user_data(Ewl_Widget * w, Ewl_Callback_Type type,
+				Ewl_Cb_Func func, void *user_data);
 
 
 #endif

@@ -14,7 +14,7 @@ static char theme_path[PATH_LEN];
 /* A global table of theme data that has the default settings */
 static Ewd_Hash *def_theme_data;
 
-static const char * theme_keys[] = {
+static const char *theme_keys[] = {
 	"/appearance/box/horizontal/base",
 	"/appearance/box/horizontal/base.bits.db",
 	"/appearance/box/horizontal/base/visible", "yes",
@@ -242,6 +242,7 @@ ewl_theme_image_get(Ewl_Widget * w, char *k)
 {
 	char *path;
 	char *data;
+	struct stat st;
 
 	DENTER_FUNCTION;
 	DCHECK_PARAM_PTR_RET("w", w, NULL);
@@ -260,7 +261,12 @@ ewl_theme_image_get(Ewl_Widget * w, char *k)
 		  FREE(data);
 	  }
 	else			/* Absolute path given, so return it */
-		path = data;;
+		path = data;
+
+	stat(path, &st);
+
+	if (!S_ISREG(st.st_mode))
+		printf("Couldn't stat %s\n", path);
 
 	DRETURN_PTR(path);
 }

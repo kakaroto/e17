@@ -9,12 +9,14 @@ static void __ewl_seeker_hide(Ewl_Widget * w, void *event_data,
 			      void *user_data);
 static void __ewl_seeker_destroy(Ewl_Widget * w, void *event_data,
 				 void *user_data);
-static void __ewl_seeker_destroy_recursive(Ewl_Widget * w, void *event_data,
-					   void *user_data);
 static void __ewl_seeker_configure(Ewl_Widget * w, void *event_data,
 				   void *user_data);
 static void __ewl_seeker_theme_update(Ewl_Widget * w, void *event_data,
 				      void *user_data);
+static void __ewl_seeker_dragbar_mouse_down(Ewl_Widget * w, void *event_data,
+					    void *user_data);
+static void __ewl_seeker_dragbar_mouse_up(Ewl_Widget * w, void *event_data,
+					  void *user_data);
 static void __ewl_seeker_dragbar_mouse_move(Ewl_Widget * w, void *event_data,
 					    void *user_data);
 static void __ewl_seeker_mouse_up(Ewl_Widget * w, void *event_data,
@@ -125,8 +127,12 @@ __ewl_seeker_init(Ewl_Seeker * s, Ewl_Orientation orientation)
 	 * type
 	 */
 	memset(s, 0, sizeof(Ewl_Seeker));
-	ewl_container_init(EWL_CONTAINER(w), EWL_WIDGET_SEEKER, 100, 15,
-			   512, 15);
+	if (orientation == EWL_ORIENTATION_HORIZONTAL)
+		ewl_container_init(EWL_CONTAINER(w), EWL_WIDGET_SEEKER, 100,
+				   15, 999999, 15);
+	else
+		ewl_container_init(EWL_CONTAINER(w), EWL_WIDGET_SEEKER, 15,
+				   100, 15, 99999);
 
 	s->orientation = orientation;
 
@@ -139,8 +145,6 @@ __ewl_seeker_init(Ewl_Seeker * s, Ewl_Orientation orientation)
 	ewl_callback_append(w, EWL_CALLBACK_HIDE, __ewl_seeker_hide, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_DESTROY,
 			    __ewl_seeker_destroy, NULL);
-	ewl_callback_append(w, EWL_CALLBACK_DESTROY_RECURSIVE,
-			    __ewl_seeker_destroy_recursive, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE,
 			    __ewl_seeker_configure, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_THEME_UPDATE,
@@ -189,26 +193,53 @@ __ewl_seeker_realize(Ewl_Widget * w, void *event_data, void *user_data)
 		evas_set_clip(w->evas, w->fx_clip_box,
 			      EWL_CONTAINER(w->parent)->clip_box);
 
+	ewl_container_clip_box_create(EWL_CONTAINER(w));
+
+	ewl_container_show_clip(EWL_CONTAINER(w));
+
+	ewl_container_set_clip(EWL_CONTAINER(w));
+
 	/*
 	 * Create a button that will act as the dragbar and append it to the
 	 * seeker.
 	 */
 	dragbar = ewl_button_new(NULL);
 
-	/*
-	 * Override the default theme for buttons
-	 */
 	if (s->orientation == EWL_ORIENTATION_HORIZONTAL)
-		ewl_theme_data_set(dragbar, "/appearance/button/default/base",
-				   "/appearance/seeker/horizontal/dragbar.bits.db");
-	else
-		ewl_theme_data_set(dragbar, "/appearance/button/default/base",
-				   "/appearance/seeker/vertical/dragbar.bits.db");
+	  {
+		  REQUEST_W(dragbar) = 32;
 
+		  ewl_theme_data_set(dragbar,
+				     "/appearance/button/default/clicked",
+				     "/appearance/seeker/horizontal/dragbar-clicked.bits.db");
+		  ewl_theme_data_set(dragbar,
+				     "/appearance/button/default/hilited",
+				     "/appearance/seeker/horizontal/dragbar-hilited.bits.db");
+		  ewl_theme_data_set(dragbar,
+				     "/appearance/button/default/base",
+				     "/appearance/seeker/horizontal/dragbar-base.bits.db");
+	  }
+	else
+	  {
+		  REQUEST_H(dragbar) = 32;
+		  ewl_theme_data_set(dragbar,
+				     "/appearance/button/default/clicked",
+				     "/appearance/seeker/vertical/dragbar-clicked.bits.db");
+		  ewl_theme_data_set(dragbar,
+				     "/appearance/button/default/hilited",
+				     "/appearance/seeker/vertical/dragbar-hilited.bits.db");
+		  ewl_theme_data_set(dragbar,
+				     "/appearance/button/default/base",
+				     "/appearance/seeker/vertical/dragbar-base.bits.db");
+	  }
 	/*
 	 * Append a callback for catching mouse movements on the dragbar and
 	 * add the dragbar to the seeker
 	 */
+	ewl_callback_append(dragbar, EWL_CALLBACK_MOUSE_DOWN,
+			    __ewl_seeker_dragbar_mouse_down, NULL);
+	ewl_callback_append(dragbar, EWL_CALLBACK_MOUSE_UP,
+			    __ewl_seeker_dragbar_mouse_up, NULL);
 	ewl_callback_append(dragbar, EWL_CALLBACK_MOUSE_MOVE,
 			    __ewl_seeker_dragbar_mouse_move, NULL);
 	ewl_container_append_child(EWL_CONTAINER(s), dragbar);
@@ -250,16 +281,6 @@ __ewl_seeker_destroy(Ewl_Widget * w, void *event_data, void *user_data)
 	ewl_callback_del_all(w);
 
 	ewl_theme_deinit_widget(w);
-
-	DLEAVE_FUNCTION;
-}
-
-static void
-__ewl_seeker_destroy_recursive(Ewl_Widget * w, void *event_data,
-			       void *user_data)
-{
-	DENTER_FUNCTION;
-	DCHECK_PARAM_PTR("w", w);
 
 	DLEAVE_FUNCTION;
 }
@@ -320,18 +341,40 @@ __ewl_seeker_configure(Ewl_Widget * w, void *event_data, void *user_data)
 	ewl_object_get_current_geometry(EWL_OBJECT(dragbar), &new_x, &new_y,
 					&new_w, &new_h);
 
+	ebits_get_insets(w->ebits_object, &l, &r, &t, &b);
+
+	if (EWL_CONTAINER(w)->clip_box)
+	  {
+		  evas_move(w->evas, EWL_CONTAINER(w)->clip_box,
+			    req_x + l, req_y + t);
+		  evas_resize(w->evas, EWL_CONTAINER(w)->clip_box,
+			      req_w - (l + r), req_h - (t + b));
+	  }
 	/*
 	 * Calculate the dragbar's new position
 	 */
-	ebits_get_insets(w->ebits_object, &l, &r, &t, &b);
 
 	val = s->value / s->range;
 
-	new_x = req_x + l;
-	new_y = req_y + t;
-	new_h = req_h - (t + b);
+	if (s->orientation == EWL_ORIENTATION_HORIZONTAL)
+		new_x = req_x + l - (new_w / 2);
+	else
+		new_y = req_y + t - (new_h / 2);
 
-	new_x += ((req_w - (l + r)) - new_w) * val;
+	if (s->orientation == EWL_ORIENTATION_HORIZONTAL)
+		new_y = req_y + t;
+	else
+		new_x = req_x + l;
+
+	if (s->orientation == EWL_ORIENTATION_HORIZONTAL)
+		new_h = req_h - (t + b);
+	else
+		new_w = req_w - (l + r);
+
+	if (s->orientation == EWL_ORIENTATION_HORIZONTAL)
+		new_x += ((req_w - (l + r))) * val;
+	else
+		new_y += ((req_h - (t + b))) * val;
 
 	/*
 	 * Now apply the new position to the dragbar
@@ -368,12 +411,12 @@ __ewl_seeker_theme_update(Ewl_Widget * w, void *event_data, void *user_data)
 	/*
 	 * Check if GFX should be visible or not 
 	 */
-	if (s->orientation == EWL_ORIENTATION_VERTICAL)
-		v = ewl_theme_data_get(w,
-				       "/appearance/seeker/vertical/base/visible");
-	else
+	if (s->orientation == EWL_ORIENTATION_HORIZONTAL)
 		v = ewl_theme_data_get(w,
 				       "/appearance/seeker/horizontal/base/visible");
+	else
+		v = ewl_theme_data_get(w,
+				       "/appearance/seeker/vertical/base/visible");
 
 	/*
 	 * Check if this piece should be visible, if so grab the path to it's
@@ -381,12 +424,12 @@ __ewl_seeker_theme_update(Ewl_Widget * w, void *event_data, void *user_data)
 	 */
 	if (v && *v == 'y')
 	  {
-		  if (s->orientation == EWL_ORIENTATION_VERTICAL)
+		  if (s->orientation == EWL_ORIENTATION_HORIZONTAL)
 			  i = ewl_theme_image_get(w,
 						  "/appearance/seeker/horizontal/base");
 		  else
 			  i = ewl_theme_image_get(w,
-						  "/appearance/seeker/horizontal/base");
+						  "/appearance/seeker/vertical/base");
 		  FREE(v);
 	  }
 
@@ -443,7 +486,54 @@ __ewl_seeker_mouse_move(Ewl_Widget * w, void *event_data, void *user_data)
 	dragbar = ewd_list_current(EWL_CONTAINER(w)->children);
 
 	ewl_callback_call_with_event_data(EWL_WIDGET(dragbar),
-		EWL_CALLBACK_MOUSE_MOVE, event_data);
+					  EWL_CALLBACK_MOUSE_MOVE,
+					  event_data);
+}
+
+static void
+__ewl_seeker_dragbar_mouse_down(Ewl_Widget * w, void *event_data,
+				void *user_data)
+{
+	Ev_Mouse_Down *ev;
+	Ewl_Seeker *s;
+	int tmp;
+	int x, y, width, height;
+
+	DENTER_FUNCTION;
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_PARAM_PTR("event_data", event_data);
+
+	ev = event_data;
+
+	s = EWL_SEEKER(w->parent);
+
+	ewl_object_get_current_geometry(EWL_OBJECT(w), &x, &y, &width,
+					&height);
+
+	if (s->orientation == EWL_ORIENTATION_HORIZONTAL)
+		tmp = (x + width) - ev->x;
+	else
+		tmp = (y + height) - ev->y;
+
+	ewl_callback_set_user_data(w, EWL_CALLBACK_MOUSE_MOVE,
+				   __ewl_seeker_dragbar_mouse_move,
+				   (void *) tmp);
+
+	DLEAVE_FUNCTION;
+}
+
+static void
+__ewl_seeker_dragbar_mouse_up(Ewl_Widget * w, void *event_data,
+			      void *user_data)
+{
+	DENTER_FUNCTION;
+	DCHECK_PARAM_PTR("w", w);
+
+	ewl_callback_set_user_data(w, EWL_CALLBACK_MOUSE_MOVE,
+				   __ewl_seeker_dragbar_mouse_move,
+				   (void *) -1);
+
+	DLEAVE_FUNCTION;
 }
 
 /*
@@ -453,13 +543,25 @@ static void
 __ewl_seeker_dragbar_mouse_move(Ewl_Widget * w, void *event_data,
 				void *user_data)
 {
-	Ewl_Widget *parent;
 	Ev_Mouse_Move *ev;
+	Ewl_Seeker *s;
+	double val;
+	int x, y, width, height;
+	int req_x, req_y;
+	int l, r, t, b;
 
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_PARAM_PTR("event_data", event_data);
 
+	if (user_data < 0)
+		DRETURN;
+
 	ev = event_data;
+
+	s = EWL_SEEKER(w->parent);
+
+	ewl_object_get_current_geometry(EWL_OBJECT(w), &x, &y, &width,
+					&height);
 
 	/*
 	 * If the pointer is not pressed we don't care about mouse movements.
@@ -467,25 +569,59 @@ __ewl_seeker_dragbar_mouse_move(Ewl_Widget * w, void *event_data,
 	if (!(w->state & EWL_STATE_PRESSED))
 		DRETURN;
 
-	parent = EWL_WIDGET(w)->parent;
+	if (w->parent->ebits_object)
+		ebits_get_insets(w->parent->ebits_object, &l, &r, &t, &b);
 
 	/*
 	 * The direction of the dragbar move depends on the orientation of the
 	 * parent seeker.
 	 */
-	if (EWL_SEEKER(parent)->orientation == EWL_ORIENTATION_HORIZONTAL)
+	if (EWL_SEEKER(w->parent)->orientation == EWL_ORIENTATION_HORIZONTAL)
 	  {
-		if (user_data != NULL)
-		  {
-			printf("%i\n", user_data);
-		  }
+		  req_x = ev->x + (int) user_data - width;
+
+		  if (req_x <= CURRENT_X(w->parent) + l - (width / 2))
+			  req_x = (CURRENT_X(w->parent) + l) - (width / 2);
+
+		  if (req_x >=
+		      CURRENT_X(w->parent) - (width / 2) +
+		      (CURRENT_W(w->parent)))
+			  req_x = CURRENT_X(w->parent) +
+				  (CURRENT_W(w->parent) - l) - (width / 2);
+
+		  REQUEST_X(w) = req_x;
+
+		  x = (req_x + (width / 2)) - (CURRENT_X(w->parent) + l);
+
+		  val = (double) x / (double) CURRENT_W(w->parent);
+
+		  val *= s->range;
+
+		  s->value = val * s->range;
 	  }
 	else
 	  {
+		  req_y = ev->y + (int) user_data - height;
 
+		  if (req_y <= CURRENT_Y(w->parent) + t - (height / 2))
+			  req_y = (CURRENT_Y(w->parent) + t) - (height / 2);
+
+		  if (req_y >=
+		      CURRENT_Y(w->parent) - (height / 2) +
+		      (CURRENT_H(w->parent)))
+			  req_y = CURRENT_Y(w->parent) +
+				  (CURRENT_H(w->parent) - t) - (height / 2);
+
+		  REQUEST_Y(w) = req_y;
+
+		  y = (req_y + (height / 2)) - (CURRENT_Y(w->parent) + t);
+
+		  val = (double) y / (double) CURRENT_H(w->parent);
+
+		  s->value = val * s->range;
 	  }
 
-	ewl_widget_theme_update(parent);
+	ewl_widget_configure(w);
 
 	DLEAVE_FUNCTION;
 }
@@ -498,13 +634,13 @@ __ewl_seeker_mouse_down(Ewl_Widget * w, void *event_data, void *user_data)
 {
 	Ewl_Seeker *s;
 	Ewl_Widget *dragbar;
-
-	Ev_Mouse_Move *ev = (Ev_Mouse_Move *) event_data;
+	Ev_Mouse_Move *ev;
 	int x, y, width, height;
-	int tmp;
 
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_PARAM_PTR("event_data", event_data);
+
+	ev = event_data;
 
 	w->state |= EWL_STATE_PRESSED;
 	s = EWL_SEEKER(w);
@@ -520,25 +656,9 @@ __ewl_seeker_mouse_down(Ewl_Widget * w, void *event_data, void *user_data)
 	 */
 	if (EWL_SEEKER(w)->orientation == EWL_ORIENTATION_HORIZONTAL)
 	  {
-		  if (ev->x > x + width)
-		    {
-	  		tmp = ev->x - (x + width);
-			ewl_callback_set_user_data(dragbar,
-				EWL_CALLBACK_MOUSE_MOVE,
-				__ewl_seeker_dragbar_mouse_move,
-				(void *) tmp);
-		    }
 	  }
 	else
 	  {
-                  if (ev->y > y + height)
-                    {
-                        tmp = ev->y - (y + height);
-                        ewl_callback_set_user_data(dragbar, 
-                                EWL_CALLBACK_MOUSE_MOVE,
-                                __ewl_seeker_dragbar_mouse_move, 
-                                (void *) tmp);
-                    }
 	  }
 
 	ewl_widget_theme_update(w);
@@ -549,20 +669,10 @@ __ewl_seeker_mouse_down(Ewl_Widget * w, void *event_data, void *user_data)
 static void
 __ewl_seeker_mouse_up(Ewl_Widget * w, void *event_data, void *user_data)
 {
-	Ewl_Widget * dragbar;
-
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_PARAM_PTR("event_data", event_data);
 
 	w->state &= ~EWL_STATE_PRESSED;
-
-	ewd_list_goto_first(EWL_CONTAINER(w)->children);
-	dragbar = ewd_list_current(EWL_CONTAINER(w)->children);
-
-	ewl_callback_set_user_data(dragbar, 
-				   EWL_CALLBACK_MOUSE_MOVE,
-				   __ewl_seeker_dragbar_mouse_move, 
-				   NULL);
 
 	DLEAVE_FUNCTION;
 }
