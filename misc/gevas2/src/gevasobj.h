@@ -62,11 +62,11 @@ extern "C" {
 
 		GSList *ev_handlers;
 
-	/**  These are here so that gevastwin can override them
-	  *  on an object basis, otherwise gevastwin would have
-	  *  to check EVERY gevasobj added to the canvas, not 
-	  *  just the ones that it is interested in. A slight RAM loss.
-	 **/
+        /**  These are here so that gevastwin can override them
+         *  on an object basis, otherwise gevastwin would have
+         *  to check EVERY gevasobj added to the canvas, not 
+         *  just the ones that it is interested in. A slight RAM loss.
+         **/
 		void (*move) (GtkgEvasObj * object, double x, double y);
 
 	};
@@ -99,6 +99,7 @@ extern "C" {
 		int (*get_alpha) (GtkgEvasObj * object);
 		void (*set_alpha) (GtkgEvasObj * object, int a);
 		void (*get_location) (GtkgEvasObj * object, double *x, double *y);
+        void (*get_size)(GtkgEvasObj * object, double *w, double *h);
 
 		void (*add_evhandler) (GtkgEvasObj * object, GtkObject * h);
 		void (*remove_evhandler) (GtkgEvasObj * object, GtkObject * h);
@@ -152,7 +153,7 @@ extern "C" {
 	void gevasobj_get_geometry(GtkgEvasObj * object, double *x, double *y,
 							   double *w, double *h);
 	void gevasobj_get_location(GtkgEvasObj * object, double *x, double *y);
-    void gevasobj_get_size(GtkgEvasObj * object, double *w, double *h);
+    void gevasobj_get_size(    GtkgEvasObj * object, double *w, double *h);
     void gevasobj_show(GtkgEvasObj * object);
 	void gevasobj_hide(GtkgEvasObj * object);
 	void gevasobj_set_visible(GtkgEvasObj * object, gboolean v);

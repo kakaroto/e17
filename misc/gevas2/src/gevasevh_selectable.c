@@ -55,6 +55,8 @@
  */
 
 #include "config.h"
+#include "gevas_sprite.h"
+
 #define GEVASEVH_SELECTABLE_KEY		"GEVAS::GEVASEVH_SELECTABLE_KEY"
 
 /* Always disable NLS, since we have no config.h; 
@@ -114,6 +116,8 @@ static gint col_item_move_relative(
 {
     GtkgEvasEvHSelectable* s = 0;
 
+    printf("col_item_move_relative(1) x:%p y:%p ev:%p o:%p\n", x,y,ev,o );
+    
     g_return_val_if_fail(x     != NULL, GEVASOBJ_SIG_VETO);
 	g_return_val_if_fail(y     != NULL, GEVASOBJ_SIG_VETO);
 	g_return_val_if_fail(ev    != NULL, GEVASOBJ_SIG_VETO);
@@ -122,7 +126,7 @@ static gint col_item_move_relative(
 	g_return_val_if_fail( GTK_IS_GEVASOBJ(o), GEVASOBJ_SIG_VETO);
 	g_return_val_if_fail(GTK_IS_GEVASEVH_SELECTABLE(ev), GEVASOBJ_SIG_VETO);
 
-//    printf("col_item_move_rel() x:%f y:%f\n",*x,*y);
+    printf("col_item_move_rel(2) x:%f y:%f\n",*x,*y);
 
     
     if( o != ev->normal && o != ev->selected )
@@ -133,10 +137,13 @@ static gint col_item_move_relative(
         gint vx, vy, vw, vh;
         double objw, objh;
 
+        printf("col_item_move_relative(3) ev->gevas:%p o->eobj:%p\n", ev->gevas, o->eobj );
+        
+        
         gevas_get_viewport_area( ev->gevas, &vx, &vy, &vw, &vh );
         gevasobj_get_size( o, &objw, &objh );
 
-         printf("col_item_move() x:%d y:%d objw:%f objh:%f\n",*x,*y,objw,objh); 
+        printf("col_item_move_relative(4) x:%d y:%d objw:%f objh:%f\n",*x,*y,objw,objh); 
 
           // selected image is larger than standard image, and we dont mind of the lips
           // go over the edge of the display.
@@ -175,7 +182,11 @@ gevas_selectable_get_backref(
 
     g_return_val_if_fail(GTK_IS_GEVASOBJ(o),0);
 
-
+    if( !o->eobj )
+    {
+        return 0;
+    }
+    
     return evas_object_data_get( _gevas_get_obj(GTK_OBJECT(o)),
                                  GEVASEVH_SELECTABLE_KEY );
 }
@@ -215,6 +226,15 @@ static GEVASEV_HANDLER_PRIORITY gevasev_selectable_get_priority( GtkgEvasEvH* ev
 	return GEVASEV_HANDLER_PRIORITY_HI;
 }
 
+static void sprite_item_add(
+    GtkgEvasObjCollection* col,
+    GtkgEvasObj* o,
+    GtkgEvasEvHSelectable* ev )
+{
+    gevas_selectable_set_backref( ev, o );
+}
+
+
 /**/
 /* Attachs the handler, we also put outself in the evasobj so that things can*/
 /* be done faster later.*/
@@ -232,6 +252,22 @@ void gevasevh_selectable_set_normal_gevasobj(
 
     printf("Setting backref for ev:%p on obj:%p\n",ev,ev->normal);
     gevas_selectable_set_backref( ev, ev->normal );
+
+    if( GTK_IS_GEVAS_SPRITE( nor ) )
+    {
+        GtkgEvasSprite* sprite = GTK_GEVAS_SPRITE( nor );
+
+        gtk_signal_connect( GTK_OBJECT(sprite->col), "add",
+                            GTK_SIGNAL_FUNC(sprite_item_add), ev );
+
+        Evas_List* li=0;
+        for( li=sprite->col->selected_objs; li; li = li->next)
+        {
+            if(li->data)
+                gevas_selectable_set_backref( ev, GTK_GEVASOBJ( li->data ) );
+        }
+        
+    }
 }
 
 void gevasevh_selectable_set_selector( GtkgEvasEvHSelectable* evh, GtkObject* evh_selector )
@@ -308,6 +344,20 @@ gevasevh_selectable_to_collection( GtkgEvasEvHSelectable* ev )
 
     gevas_obj_collection_add( c, ev->normal );
     gevas_obj_collection_add( c, ev->selected );
+
+    if( GTK_IS_GEVAS_SPRITE( ev->normal ) )
+    {
+        GtkgEvasSprite* sprite = GTK_GEVAS_SPRITE( ev->normal );
+
+        Evas_List* li=0;
+        for( li=sprite->col->selected_objs; li; li = li->next)
+        {
+            if(li->data)
+                gevas_obj_collection_add( c, GTK_GEVASOBJ( li->data ) );
+        }
+        
+    }
+    
 
     return c;
 }
@@ -450,6 +500,8 @@ gevasev_selectable_mouse_move(GtkObject * object, GtkObject * gevasobj, int _b,
 	ev = GTK_GEVASEVH_SELECTABLE(object);
     evh_sel = GTK_GEVASEVH_GROUP_SELECTOR(ev->evh_selector);
 
+    printf("gevasev_selectable_mouse_move() this:%p tracking:%d\n", object, ev->tracking );
+    
     if( ev->tracking )
 	{
 		gint32 dx=0, dy=0;
@@ -457,12 +509,13 @@ gevasev_selectable_mouse_move(GtkObject * object, GtkObject * gevasobj, int _b,
 		dx = _x - ev->tracking_x;
 		dy = _y - ev->tracking_y;
 /*        printf("selectable_mouse_move() ev:%p  dx:%d dy:%d\n",ev, dx,dy); */
-        
-		gevasevh_group_selector_movesel( evh_sel, dx, dy );
+
+        gevasevh_group_selector_movesel( evh_sel, dx, dy );
 		ev->tracking_x = _x;
 		ev->tracking_y = _y;
 
-		return GEVASEV_HANDLER_RET_CHOMP;
+        
+        return GEVASEV_HANDLER_RET_CHOMP;
 	}
 
 	if( gevasevh_group_selector_isinsel( evh_sel, ev ))
@@ -568,6 +621,8 @@ static gint col_item_move_absolute(
 {
     GtkgEvasEvHSelectable* s = 0;
 
+    printf("col_item_move_absolute(1) x:%p y:%p ev:%p o:%p\n", x,y,ev,o );
+    
 	g_return_val_if_fail(o     != NULL, GEVASOBJ_SIG_VETO);
 	g_return_val_if_fail(x     != NULL, GEVASOBJ_SIG_VETO);
 	g_return_val_if_fail(y     != NULL, GEVASOBJ_SIG_VETO);
@@ -576,7 +631,7 @@ static gint col_item_move_absolute(
 	g_return_val_if_fail( GTK_IS_GEVASOBJ(o), GEVASOBJ_SIG_VETO);
 	g_return_val_if_fail( GTK_IS_GEVASEVH_SELECTABLE(ev), GEVASOBJ_SIG_VETO);
 
-    printf("col_item_move_absolute() x:%f y:%f\n",*x,*y);
+    printf("col_item_move_absolute(2) x:%f y:%f\n",*x,*y);
 
     if( o == ev->selected )
     {

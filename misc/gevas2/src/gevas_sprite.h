@@ -37,6 +37,7 @@
 #include <gtk/gtk.h>
 
 #include "gevastrans_alphawipe.h"
+#include "gevas_obj_collection.h"
 
 #ifdef __cplusplus
 extern "C" {

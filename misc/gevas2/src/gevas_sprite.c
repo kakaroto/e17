@@ -355,6 +355,16 @@ static void _gevasobj_get_location(GtkgEvasObj * object, double *x, double *y)
     Evas_List* li=0;
     gevasobj_get_location( getActiveObject( ev ), x, y );
 }
+static void _gevasobj_get_size(GtkgEvasObj * object, double *w, double *h)
+{
+	GtkgEvasSprite *ev;
+	g_return_if_fail(object != NULL);
+	g_return_if_fail(GTK_IS_GEVAS_SPRITE(object));
+    ev = GTK_GEVAS_SPRITE(object);
+    Evas_List* li=0;
+    gevasobj_get_size( getActiveObject( ev ), w, h );
+}
+
 
 static void _gevasobj_add_evhandler(GtkgEvasObj * object, GtkObject * h)
 {
@@ -385,6 +395,19 @@ static void _gevasobj_remove_evhandler(GtkgEvasObj * object, GtkObject * h)
 }
 
 
+static void _gevasobj_move(GtkgEvasObj * object, double x, double y)
+{
+	GtkgEvasSprite *ev;
+	g_return_if_fail(object != NULL);
+	g_return_if_fail(GTK_IS_GEVAS_SPRITE(object));
+    ev = GTK_GEVAS_SPRITE(object);
+    Evas_List* li=0;
+
+    for( li=ev->col->selected_objs; li; li = li->next)
+    {
+        if(li->data) gevasobj_move( GTK_GEVASOBJ( li->data ), x, y );
+    }
+}
 
 
 /********************************************************************************/
@@ -471,6 +494,7 @@ void gevas_sprite_move_relative( GtkgEvasSprite* ev, gint32 dx, gint32 dy )
 
     gevas_obj_collection_move_relative( ev->col, dx, dy );
 }
+
 
 void gevas_sprite_hide(          GtkgEvasSprite* ev )
 {
@@ -1234,12 +1258,13 @@ gevas_sprite_class_init(GtkgEvasSpriteClass * klass)
 	gok->get_geometry = _gevasobj_get_geometry;
 	gok->show = _gevasobj_show;
 	gok->hide = _gevasobj_hide;
-	gok->get_color = _gevasobj_get_color;
-	gok->set_name = _gevasobj_set_name;
-	gok->get_name = _gevasobj_get_name;
-	gok->get_alpha = _gevasobj_get_alpha;
-	gok->set_alpha = _gevasobj_set_alpha;
+	gok->get_color    = _gevasobj_get_color;
+	gok->set_name     = _gevasobj_set_name;
+	gok->get_name     = _gevasobj_get_name;
+	gok->get_alpha    = _gevasobj_get_alpha;
+	gok->set_alpha    = _gevasobj_set_alpha;
 	gok->get_location = _gevasobj_get_location;
+	gok->get_size     = _gevasobj_get_size;
 
 	gok->add_evhandler = _gevasobj_add_evhandler;
 	gok->remove_evhandler = _gevasobj_remove_evhandler;
@@ -1272,6 +1297,8 @@ gevas_sprite_init(GtkgEvasSprite * ev)
 
     ev->frame_trans_f_size = 40;
     ev->frame_trans_f = g_array_new( 1, 1, sizeof(geTransAlphaWipe*));
+
+	GTK_GEVASOBJ(ev)->move = _gevasobj_move;
 }
 
 

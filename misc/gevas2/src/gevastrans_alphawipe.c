@@ -104,7 +104,7 @@ static gboolean blendf(gpointer user_data)
     if( done )
         {
             printf("blend complete\n");
-            gevasobj_hide( fobj );
+//            gevasobj_hide( fobj );
             free( blendst );
         }
     return !done;
@@ -127,7 +127,7 @@ static void _perform( geTransAlphaWipe* ev, GtkgEvasObj* fobj, GtkgEvasObj* tobj
     
     gevasobj_set_alpha( tobj, 0 );
     gevasobj_show( tobj );
-    
+
     ev->m_blendTimer = g_timeout_add( ev->m_blendTimerInterval, blendf, s );
 }
 

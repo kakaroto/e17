@@ -184,6 +184,10 @@ void gevasevh_group_selector_movesel(GtkgEvasEvHGroupSelector* ev, gint32 dx, gi
 	g_return_if_fail(ev != NULL);
 	g_return_if_fail(GTK_IS_GEVASEVH_GROUP_SELECTOR(ev));
 
+    printf("gevasevh_group_selector_movesel() col.sz:%ld \n",
+           gevas_obj_collection_get_size(  ev->col ) );
+
+    
     gevas_obj_collection_move_relative( ev->col, dx, dy );
 }
 

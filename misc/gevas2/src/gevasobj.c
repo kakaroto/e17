@@ -39,6 +39,7 @@
 
 
 #include "project.h"
+#include "gevas_sprite.h"
 
 /* Always disable NLS, since we have no config.h; 
  * a real app would not do this of course.
@@ -309,7 +310,7 @@ void _gevasobj_get_location(GtkgEvasObj * object, double *x, double *y)
 	double w, h;
     evas_object_geometry_get( EVASO(object), x, y, &w, &h);
 }
-void gevasobj_get_size(GtkgEvasObj * object, double *w, double *h)
+void _gevasobj_get_size(GtkgEvasObj * object, double *w, double *h)
 {
 	double x, y;
     evas_object_geometry_get( EVASO(object), &x, &y, w, h);
@@ -368,6 +369,20 @@ void _gevasobj_add_evhandler(GtkgEvasObj * object, GtkObject * h)
 	}
 	else
 		ev->ev_handlers = g_slist_append(ev->ev_handlers, h);
+
+    if( GTK_IS_GEVAS_SPRITE( object ) )
+    {
+        GtkgEvasSprite* sprite = GTK_GEVAS_SPRITE( object );
+
+        Evas_List* li=0;
+        for( li=sprite->col->selected_objs; li; li = li->next)
+        {
+            if(li->data)
+                gevasobj_add_evhandler( GTK_GEVASOBJ( li->data ), h );
+        }
+        
+    }
+    
 }
 
 void _gevasobj_remove_evhandler(GtkgEvasObj * object, GtkObject * h)
@@ -492,6 +507,7 @@ static void gevasobj_class_init(GtkgEvasObjClass * klass)
 	klass->get_alpha = _gevasobj_get_alpha;
 	klass->set_alpha = _gevasobj_set_alpha;
 	klass->get_location = _gevasobj_get_location;
+	klass->get_size = _gevasobj_get_size;
 
 	klass->add_evhandler = _gevasobj_add_evhandler;
 	klass->remove_evhandler = _gevasobj_remove_evhandler;
@@ -710,7 +726,10 @@ void gevasobj_get_location(GtkgEvasObj * object, double *x, double *y)
 {
 	VTAB->get_location(object, x, y);
 }
-
+void gevasobj_get_size(GtkgEvasObj * object, double *w, double *h)
+{
+	VTAB->get_size(object, w, h );
+}
 void gevasobj_show(GtkgEvasObj * object)
 {
     gevasobj_set_visible( object, 1 );
