@@ -24,7 +24,7 @@
 #include <Edb.h>
 #include <Esmart/Esmart_Container.h>
 #include <Esmart/Esmart_Draggies.h>
-#include <Esmart/Esmart_Trans.h>
+#include <Esmart/Esmart_Trans_X11.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

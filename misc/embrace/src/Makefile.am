@@ -18,6 +18,7 @@ embrace_LDADD = @ECORE_LIBS@  \
                 @EVAS_LIBS@   \
                 @EDJE_LIBS@   \
                 @ESMART_LIBS@ \
-                @DL_LIBS@
+                @DL_LIBS@     \
+                -lesmart_container -lesmart_draggies -lesmart_trans_x11
 
 embrace_LDFLAGS = -export-dynamic
