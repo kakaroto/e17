@@ -2138,7 +2138,7 @@ static int
 _engage_border_ignore(E_Border *bd)
 {
    /* FIXME - this needs to be saved in config */
-   static char *ignores[] = { "Gkrellm2", NULL};
+   static char *ignores[] = { "Gkrellm2", "panel", NULL};
    char       **cur;
    
    for (cur = ignores; *cur; cur++)
