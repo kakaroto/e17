@@ -138,7 +138,7 @@ collections {
         signal, "mouse,in";
         source, "grabber";
         action, STATE_SET "over" 0.0;
-        transition, LINEAR, 0.0;
+        transition, LINEAR 0.0;
         target, "icon";
       }
       program {
@@ -146,7 +146,7 @@ collections {
         signal, "mouse,out";
         source, "grabber";
         action, STATE_SET "default" 0.0;
-        transition, SINUSOIDAL, 1.0;
+        transition, SINUSOIDAL 1.0;
         target, "icon";
       }
         
@@ -158,14 +158,14 @@ collections {
         signal, "mouse,in";
         source, "grabber";
         action, STATE_SET "pulse1" 0.0;
-        transition, LINEAR, 0.01;
+        transition, LINEAR 0.01;
         target, "pulser";
         after, "pulse2";
       }
       program {
         name, "pulse2";
         action, STATE_SET "pulse2" 0.0;
-        transition, LINEAR, 0.5;
+        transition, LINEAR 0.5;
         target, "pulser";
         after, "pulse";
       }
@@ -196,7 +196,7 @@ collections {
       }
       
       program {
-        name, "exec";
+        name, "exec2";
         signal, "mouse,clicked,3";
         source, "grabber";
         action, SIGNAL_EMIT "edit" "iconbar";
