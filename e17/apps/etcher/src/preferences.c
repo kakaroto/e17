@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <string.h>
 #include <Edb.h>
 #include <gdk/gdkx.h>
 #include "preferences.h"
@@ -12,8 +13,8 @@ extern gint       zoom_method;
 extern GtkWidget *main_win;
 extern char       etcher_config[4096];
 
-GtkWidget *dialog;
-GtkWidget *color_dialog;
+GtkWidget *pref_dialog = NULL;
+GtkWidget *color_dialog = NULL;
 
 /* previous context */
 Imlib_Image im_old;
@@ -23,6 +24,8 @@ Window win;
 DATA8  colors[3] = {255, 255, 255};
 DATA8  colors_old[3];
 char   etcher_config[4096];
+char  *grid_image_file = NULL;
+char  *grid_image_file_old = NULL;
 
 static void pref_update_preview(void);
 static void pref_colors_ok(GtkWidget *widget, gpointer data);
@@ -35,32 +38,41 @@ pref_update_preview(void)
   static gboolean first = TRUE;
   static Imlib_Image grid_im = NULL;
   static Imlib_Color_Modifier colormod = NULL;
-  static int w, h, ww, hh;
+  static int w, h;
 
   DATA8 rt[256], gt[256], bt[256], at[256];
   Imlib_Image im;
-  int i, d;
+  int ww, hh, i, x, y, d;
 
   GtkWidget * wid;
+
+  if (grid_image_file)
+    free(grid_image_file);
+
+  grid_image_file = strdup(gtk_entry_get_text(GTK_ENTRY(gtk_object_get_data(GTK_OBJECT(pref_dialog), "entry1"))));
+
+  grid_im = imlib_load_image(grid_image_file);
+
+  if (!grid_im)
+    return;
 
   if (first)
     {
       first = FALSE;
 
-      wid = gtk_object_get_data(GTK_OBJECT(dialog), "pref_da");
-      grid_im = imlib_load_image(PACKAGE_DATA_DIR"/pixmaps/tile.png");
+      wid = gtk_object_get_data(GTK_OBJECT(pref_dialog), "pref_da");
       d = imlib_get_visual_depth(imlib_context_get_display(), imlib_context_get_visual());
       colormod = imlib_create_color_modifier();
 
-      imlib_context_set_image(grid_im);
-      
-      ww = imlib_image_get_width();
-      hh = imlib_image_get_height();	
       w  = wid->allocation.width;
       h  = wid->allocation.height;
 
       pm = XCreatePixmap(imlib_context_get_display(), win, w, h, d);
     }
+
+  imlib_context_set_image(grid_im);      
+  ww = imlib_image_get_width();
+  hh = imlib_image_get_height();	
       
   imlib_context_set_image(grid_im);
   imlib_context_set_drawable(pm);    
@@ -81,7 +93,15 @@ pref_update_preview(void)
   imlib_set_color_modifier_tables(rt, gt, bt, at);
   imlib_apply_color_modifier();
   
-  imlib_render_image_on_drawable(0, 0);
+  x = y = 0;
+  do {
+    do {
+      imlib_render_image_on_drawable(x, y);	  
+      x += ww;
+    } while (x < w);    
+    x = 0;
+    y += hh;
+  } while (y < h);
 
   XSetWindowBackgroundPixmap(imlib_context_get_display(), win, pm);
   XClearWindow(imlib_context_get_display(), win);
@@ -104,6 +124,10 @@ pref_colors_cancel(GtkWidget *widget,  gpointer data)
   colors[2] = colors_old[2];
 
   pref_update_preview();
+
+  if (grid_image_file)
+    free(grid_image_file);
+  grid_image_file = strdup(grid_image_file_old);
 
   gtk_widget_hide(color_dialog);
 }
@@ -143,42 +167,70 @@ pref_init(void)
 
 
 void
+pref_defaults(void)
+{
+  GtkWidget *dialog;
+
+  E_DB_STR_SET(etcher_config, "/grid/image", PACKAGE_DATA_DIR "/pixmaps/tile.png");  
+  e_db_flush();
+
+  dialog = create_render_method();
+  gtk_widget_show(dialog);
+  
+  gtk_main ();
+}
+
+void
 pref_preferences1_activate               (GtkMenuItem     *menuitem,
 					  gpointer         user_data)
 {
    GtkWidget *wid;
+   int config_ok;
+   char * s = NULL;
    
-   dialog = create_preferences();
+   if (!pref_dialog)
+     pref_dialog = create_preferences();
    
    if (render_method == 0)
      {
-	wid = gtk_object_get_data(GTK_OBJECT(dialog), "render1");
+	wid = gtk_object_get_data(GTK_OBJECT(pref_dialog), "render1");
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(wid), 1);
      }
    else
      {
-	wid = gtk_object_get_data(GTK_OBJECT(dialog), "render2");
+	wid = gtk_object_get_data(GTK_OBJECT(pref_dialog), "render2");
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(wid), 1);
      }
 
    if (zoom_method == 0)
      {
-	wid = gtk_object_get_data(GTK_OBJECT(dialog), "zoom1");
+	wid = gtk_object_get_data(GTK_OBJECT(pref_dialog), "zoom1");
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(wid), 1);
      }
    else
      {
-	wid = gtk_object_get_data(GTK_OBJECT(dialog), "zoom2");
+	wid = gtk_object_get_data(GTK_OBJECT(pref_dialog), "zoom2");
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(wid), 1);
      }
    
-   wid = gtk_object_get_data(GTK_OBJECT(dialog), "pref_da");
+   wid = gtk_object_get_data(GTK_OBJECT(pref_dialog), "pref_da");
    gtk_widget_realize(wid);
    win = GDK_WINDOW_XWINDOW(wid->window);
 
-   pref_update_preview();
+   wid = gtk_object_get_data(GTK_OBJECT(pref_dialog), "entry1");
+   E_DB_STR_GET(etcher_config, "/grid/image", s, config_ok);
+   if (s)
+     {
+       gtk_entry_set_text(GTK_ENTRY(wid), s);
 
-   gtk_widget_show(dialog);
+       if (grid_image_file_old)
+	 free(grid_image_file_old);
+
+       grid_image_file_old = strdup(s);
+       free(s);
+     }
+
+   gtk_widget_show(pref_dialog);
 }
 
 
@@ -203,12 +255,13 @@ pref_ok_clicked                          (GtkButton       *button,
    
    E_DB_INT_SET(etcher_config, "/display/render_method", (int)render_method);
    E_DB_INT_SET(etcher_config, "/display/zoom_method", (int)zoom_method);
+   E_DB_STR_SET(etcher_config, "/grid/image", grid_image_file);
    e_db_flush();
 
    imlib_context_set_image(im_old);
    imlib_context_set_drawable(pm_old);
 
-   gtk_widget_destroy(top);
+   gtk_widget_hide(top);
 }
 
 
@@ -221,8 +274,18 @@ pref_cancel_clicked                      (GtkButton       *button,
    imlib_context_set_image(im_old);
    imlib_context_set_drawable(pm_old);
 
+   if (grid_image_file)
+     {
+       free(grid_image_file);
+       grid_image_file = NULL;
+     }
+   if (grid_image_file_old)
+     {
+       grid_image_file = strdup(grid_image_file_old);
+     }
+
    top = gtk_widget_get_toplevel(GTK_WIDGET(button));
-   gtk_widget_destroy(top);
+   gtk_widget_hide(top);
 }
 
 
@@ -269,5 +332,13 @@ pref_color_changed(GtkWidget *widget, GtkColorSelection * colorsel)
   E_DB_INT_SET(etcher_config, "/grid/b", colors[2]);
   e_db_flush();
 
+  pref_update_preview();
+}
+
+
+void
+pref_gridimage_changed                   (GtkEditable     *editable,
+					  gpointer         user_data)
+{
   pref_update_preview();
 }

@@ -2362,6 +2362,8 @@ create_preferences (void)
   GtkWidget *frame10;
   GtkWidget *frame11;
   GtkWidget *pref_da;
+  GtkWidget *entry1;
+  GtkWidget *button2;
   GtkWidget *button1;
   GtkWidget *dialog_action_area2;
   GtkWidget *hbuttonbox3;
@@ -2505,7 +2507,7 @@ create_preferences (void)
   gtk_box_pack_start (GTK_BOX (vbox8), frame7, FALSE, FALSE, 0);
   gtk_container_set_border_width (GTK_CONTAINER (frame7), 4);
 
-  vbox9 = gtk_vbox_new (FALSE, 2);
+  vbox9 = gtk_vbox_new (FALSE, 4);
   gtk_widget_ref (vbox9);
   gtk_object_set_data_full (GTK_OBJECT (preferences), "vbox9", vbox9,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -2519,7 +2521,6 @@ create_preferences (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (frame10);
   gtk_box_pack_start (GTK_BOX (vbox9), frame10, TRUE, TRUE, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (frame10), 2);
 
   frame11 = gtk_frame_new (NULL);
   gtk_widget_ref (frame11);
@@ -2535,15 +2536,28 @@ create_preferences (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (pref_da);
   gtk_container_add (GTK_CONTAINER (frame11), pref_da);
-  gtk_widget_set_usize (pref_da, 80, 80);
+  gtk_widget_set_usize (pref_da, -2, 80);
 
-  button1 = gtk_button_new_with_label (_("Select tint color ..."));
+  entry1 = gtk_entry_new ();
+  gtk_widget_ref (entry1);
+  gtk_object_set_data_full (GTK_OBJECT (preferences), "entry1", entry1,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (entry1);
+  gtk_box_pack_start (GTK_BOX (vbox9), entry1, FALSE, FALSE, 0);
+
+  button2 = gtk_button_new_with_label (_("Select Grid Image"));
+  gtk_widget_ref (button2);
+  gtk_object_set_data_full (GTK_OBJECT (preferences), "button2", button2,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (button2);
+  gtk_box_pack_start (GTK_BOX (vbox9), button2, FALSE, FALSE, 0);
+
+  button1 = gtk_button_new_with_label (_("Select Tint Color"));
   gtk_widget_ref (button1);
   gtk_object_set_data_full (GTK_OBJECT (preferences), "button1", button1,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (button1);
   gtk_box_pack_start (GTK_BOX (vbox9), button1, FALSE, FALSE, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (button1), 2);
 
   dialog_action_area2 = GTK_DIALOG (preferences)->action_area;
   gtk_object_set_data (GTK_OBJECT (preferences), "dialog_action_area2", dialog_action_area2);
@@ -2575,6 +2589,12 @@ create_preferences (void)
 
   gtk_signal_connect (GTK_OBJECT (preferences), "delete_event",
                       GTK_SIGNAL_FUNC (on_preferences_delete_event),
+                      NULL);
+  gtk_signal_connect (GTK_OBJECT (entry1), "changed",
+                      GTK_SIGNAL_FUNC (on_gridimage_changed),
+                      NULL);
+  gtk_signal_connect (GTK_OBJECT (button2), "clicked",
+                      GTK_SIGNAL_FUNC (on_selectimage_clicked),
                       NULL);
   gtk_signal_connect (GTK_OBJECT (button1), "clicked",
                       GTK_SIGNAL_FUNC (on_tintcolor_button_clicked),

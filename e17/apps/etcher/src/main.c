@@ -58,12 +58,7 @@ main (int argc, char *argv[])
 
    if (!pref_init())
      {
-	GtkWidget *dialog;
-	
-	dialog = create_render_method();
-	gtk_widget_show(dialog);
-	
-	gtk_main ();
+       pref_defaults();
      }
 
    view_evas = evas_new();

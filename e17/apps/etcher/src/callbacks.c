@@ -25,6 +25,7 @@ if (current_idle) gtk_idle_remove(current_idle);\
 current_idle = gtk_idle_add(view_redraw, NULL);
 
 extern GtkWidget *main_win;
+extern GtkWidget *pref_dialog;
 extern char etcher_config[4096];
 
 Evas view_evas = NULL;
@@ -1265,6 +1266,13 @@ on_file_ok_clicked                     (GtkButton       *button,
 		     gtk_file_selection_get_filename(GTK_FILE_SELECTION(top)));
 	e_db_flush();
      }
+   else if (gtk_object_get_data(GTK_OBJECT(top), "grid_image"))
+     {
+	GtkWidget *w;
+	
+	w = gtk_object_get_data(GTK_OBJECT(pref_dialog), "entry1");
+	gtk_entry_set_text(GTK_ENTRY(w), gtk_file_selection_get_filename(GTK_FILE_SELECTION(top)));
+     }
    else if (gtk_object_get_data(GTK_OBJECT(top), "save"))
      {
 	char *file;
@@ -2193,7 +2201,7 @@ void
 on_cancel_clicked                      (GtkButton       *button,
                                         gpointer         user_data)
 {
-   pref_ok_clicked(button, user_data);
+   pref_cancel_clicked(button, user_data);
 }
 
 
@@ -2222,3 +2230,39 @@ on_tintcolor_button_clicked            (GtkButton       *button,
 {
   pref_tintcolor_button_clicked(button, user_data);
 }
+
+void
+on_selectimage_clicked                 (GtkButton       *button,
+                                        gpointer         user_data)
+{
+   GtkWidget *file;
+   
+   file = create_filesel();
+   gtk_object_set_data(GTK_OBJECT(file), "grid_image", (void *)1);
+     {
+	char *dir = NULL;
+	int ok = 0;
+	
+	E_DB_STR_GET(etcher_config, "/grid/image", dir, ok);
+	if (ok)
+	  {
+	     gtk_file_selection_set_filename(GTK_FILE_SELECTION(file), dir);
+	     free(dir);
+	  }
+	else
+	  {
+	     gtk_file_selection_set_filename(GTK_FILE_SELECTION(file), PACKAGE_DATA_DIR"/examples/images/");
+	  }
+	e_db_flush();
+     }
+   gtk_widget_show(file);  
+}
+
+
+void
+on_gridimage_changed                   (GtkEditable     *editable,
+                                        gpointer         user_data)
+{
+  pref_gridimage_changed(editable, user_data);
+}
+

@@ -4629,12 +4629,11 @@ instead of Xinerama for better X performance.</label>
 		<name>vbox9</name>
 		<border_width>5</border_width>
 		<homogeneous>False</homogeneous>
-		<spacing>2</spacing>
+		<spacing>4</spacing>
 
 		<widget>
 		  <class>GtkFrame</class>
 		  <name>frame10</name>
-		  <border_width>2</border_width>
 		  <label>Preview</label>
 		  <label_xalign>0</label_xalign>
 		  <shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
@@ -4654,23 +4653,58 @@ instead of Xinerama for better X performance.</label>
 		    <widget>
 		      <class>GtkDrawingArea</class>
 		      <name>pref_da</name>
-		      <width>80</width>
 		      <height>80</height>
 		    </widget>
 		  </widget>
 		</widget>
 
 		<widget>
+		  <class>GtkEntry</class>
+		  <name>entry1</name>
+		  <can_focus>True</can_focus>
+		  <signal>
+		    <name>changed</name>
+		    <handler>on_gridimage_changed</handler>
+		    <last_modification_time>Wed, 13 Sep 2000 23:01:14 GMT</last_modification_time>
+		  </signal>
+		  <editable>True</editable>
+		  <text_visible>True</text_visible>
+		  <text_max_length>0</text_max_length>
+		  <text></text>
+		  <child>
+		    <padding>0</padding>
+		    <expand>False</expand>
+		    <fill>False</fill>
+		  </child>
+		</widget>
+
+		<widget>
+		  <class>GtkButton</class>
+		  <name>button2</name>
+		  <can_focus>True</can_focus>
+		  <signal>
+		    <name>clicked</name>
+		    <handler>on_selectimage_clicked</handler>
+		    <last_modification_time>Wed, 13 Sep 2000 22:30:00 GMT</last_modification_time>
+		  </signal>
+		  <label>Select Grid Image</label>
+		  <child>
+		    <padding>0</padding>
+		    <expand>False</expand>
+		    <fill>False</fill>
+		  </child>
+		</widget>
+
+		<widget>
 		  <class>GtkButton</class>
 		  <name>button1</name>
-		  <border_width>2</border_width>
 		  <can_focus>True</can_focus>
 		  <signal>
 		    <name>clicked</name>
 		    <handler>on_tintcolor_button_clicked</handler>
 		    <last_modification_time>Wed, 13 Sep 2000 20:08:31 GMT</last_modification_time>
 		  </signal>
-		  <label>Select tint color ...</label>
+		  <label>Select Tint Color</label>
 		  <child>
 		    <padding>0</padding>
 		    <expand>False</expand>
