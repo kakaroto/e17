@@ -21,7 +21,6 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
-#include <signal.h>
 
 static char        *userDir = NULL;
 static char        *cacheDir = NULL;
@@ -111,53 +110,6 @@ EDirUserCache(void)
    if (!cacheDir)
       cacheDir = Estrdup(EDirUser());
    return cacheDir;
-}
-
-int
-EExit(int exitcode)
-{
-   int                 i;
-
-   EDBUG(9, "EExit");
-
-   SaveSession(1);
-
-   if (disp)
-     {
-	UngrabX();
-	UnGrabTheButtons();
-
-	/* This mechanism is only needed when the SM is unavailable: */
-	SetEInfoOnAll();
-
-	/* XSetInputFocus(disp, None, RevertToParent, CurrentTime); */
-	/* I think this is a better way to release the grabs: (felix) */
-	XSetInputFocus(disp, PointerRoot, RevertToPointerRoot, CurrentTime);
-	XSelectInput(disp, VRoot.win, 0);
-	XCloseDisplay(disp);
-     }
-
-   XSetErrorHandler((XErrorHandler) NULL);
-   XSetIOErrorHandler((XIOErrorHandler) NULL);
-
-   SignalsRestore();
-
-   if (Mode.wm.master)
-     {
-	SoundExit();
-	ThemeCleanup();
-	for (i = 0; i < child_count; i++)
-	   kill(e_children[i], SIGINT);
-     }
-   else
-     {
-	exitcode = 0;
-     }
-
-   Real_SaveSnapInfo(0, NULL);
-
-   exit(exitcode);
-   EDBUG_RETURN(exitcode);
 }
 
 /* This is a general quicksort algorithm, using median-of-three strategy.

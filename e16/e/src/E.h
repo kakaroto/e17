@@ -1735,7 +1735,6 @@ void                EwinSetBorder(EWin * ewin, Border * b, int apply);
 void                EwinSetBorderByName(EWin * ewin, const char *name,
 					int apply);
 void                DetermineEwinFloat(EWin * ewin, int dx, int dy);
-void                SetEInfoOnAll(void);
 EWin               *GetEwinPointerInClient(void);
 EWin               *GetEwinByCurrentPointer(void);
 EWin               *GetFocusEwin(void);
@@ -2299,6 +2298,7 @@ void                ICCCM_SetEInfo(EWin * ewin);
 int                 ICCCM_GetEInfo(EWin * ewin);
 void                ICCCM_SetMainEInfo(void);
 void                ICCCM_GetMainEInfo(void);
+void                ICCCM_SetEInfoOnAll(void);
 
 /* iclass.c */
 void                TransparencySet(int transparency);
@@ -2423,7 +2423,6 @@ void                EDirUserSet(const char *d);
 char               *EDirUser(void);
 void                EDirUserCacheSet(const char *d);
 char               *EDirUserCache(void);
-int                 EExit(int exitcode);
 void                Quicksort(void **a, int l, int r,
 			      int (*CompareFunc) (void *d1, void *d2));
 void                Eprintf(const char *fmt, ...);
@@ -2512,6 +2511,7 @@ void                MatchToSnapInfoPager(Pager * p);
 void                MatchToSnapInfoIconbox(Iconbox * ib);
 void                SaveSession(int shutdown);
 void                autosave(void);
+int                 EExit(int exitcode);
 
 /* settings.c */
 void                SettingsPager(void);

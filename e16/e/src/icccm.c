@@ -1203,3 +1203,24 @@ ICCCM_GetEInfo(EWin * ewin)
      }
    EDBUG_RETURN(0);
 }
+
+void
+ICCCM_SetEInfoOnAll(void)
+{
+   int                 i, num;
+   EWin               *const *lst;
+
+   EDBUG(5, "SetEInfoOnAll");
+
+   if (EventDebug(EDBUG_TYPE_SESSION))
+      Eprintf("SetEInfoOnAll\n");
+
+   lst = EwinListGetAll(&num);
+   for (i = 0; i < num; i++)
+      if (!(lst[i]->internal))
+	 ICCCM_SetEInfo(lst[i]);
+
+   ICCCM_SetMainEInfo();
+
+   EDBUG_RETURN_;
+}

@@ -106,22 +106,6 @@ DetermineEwinFloat(EWin * ewin, int dx, int dy)
    EDBUG_RETURN_;
 }
 
-void
-SetEInfoOnAll()
-{
-   int                 i, num;
-   EWin               *const *lst;
-
-   EDBUG(5, "SetEInfoOnAll");
-
-   lst = EwinListGetAll(&num);
-   for (i = 0; i < num; i++)
-      ICCCM_SetEInfo(lst[i]);
-   ICCCM_SetMainEInfo();
-
-   EDBUG_RETURN_;
-}
-
 EWin               *
 GetEwinByCurrentPointer(void)
 {

@@ -23,6 +23,7 @@
 #include "E.h"
 #include <errno.h>
 #include <fcntl.h>
+#include <signal.h>
 #include <sys/time.h>
 
 #ifndef DEFAULT_SH_PATH
@@ -938,6 +939,9 @@ LogoutCB(int val __UNUSED__, void *data __UNUSED__)
 void
 SaveSession(int shutdown)
 {
+   if (EventDebug(EDBUG_TYPE_SESSION))
+      Eprintf("SaveSession(%d)\n", shutdown);
+
    /* dont' need anymore */
    /* autosave(); */
 #ifdef HAVE_X11_SM_SMLIB_H
@@ -972,6 +976,10 @@ static void
 doSMExit(const void *params)
 {
    char                s[1024];
+   Window              win = None;
+
+   if (EventDebug(EDBUG_TYPE_SESSION))
+      Eprintf("doSMExit: %p\n", params);
 
    restarting = True;
 
@@ -981,11 +989,8 @@ doSMExit(const void *params)
 
    SaveWindowStates();
    if (!params)
-     {
-	SaveSession(1);
-	if (disp)
-	   SetEInfoOnAll();
-     }
+      SaveSession(1);
+   ICCCM_SetEInfoOnAll();
 
    if (disp)
       XSelectInput(disp, VRoot.win, 0);
@@ -1006,7 +1011,7 @@ doSMExit(const void *params)
      {
 	SoundPlay("SOUND_WAIT");
 	if (disp)
-	   init_win_ext = MakeExtInitWin();
+	   win = MakeExtInitWin();
 
 	if (disp)
 	  {
@@ -1020,13 +1025,13 @@ doSMExit(const void *params)
 			  "exec %s -single -ext_init_win %li -theme %s "
 			  "-econfdir %s -ecachedir %s "
 			  "-smfile %s -smid %s", command,
-			  init_win_ext, Conf.theme.name, EDirUser(),
+			  win, Conf.theme.name, EDirUser(),
 			  EDirUserCache(), sm_file, sm_client_id);
 	     else
 		Esnprintf(s, sizeof(s),
 			  "exec %s -single -ext_init_win %li -theme %s "
 			  "-econfdir %s -ecachedir %s "
-			  "-smfile %s", command, init_win_ext,
+			  "-smfile %s", command, win,
 			  Conf.theme.name, EDirUser(), EDirUserCache(),
 			  sm_file);
 	     execl(DEFAULT_SH_PATH, DEFAULT_SH_PATH, "-c", s, NULL);
@@ -1038,13 +1043,13 @@ doSMExit(const void *params)
 			  "exec %s -single -ext_init_win %li "
 			  "-econfdir %s -ecachedir %s "
 			  "-smfile %s -smid %s", command,
-			  init_win_ext, EDirUser(), EDirUserCache(),
+			  win, EDirUser(), EDirUserCache(),
 			  sm_file, sm_client_id);
 	     else
 		Esnprintf(s, sizeof(s),
 			  "exec %s -single -ext_init_win %li"
 			  "-econfdir %s -ecachedir %s "
-			  "-smfile %s", command, init_win_ext,
+			  "-smfile %s", command, win,
 			  EDirUser(), EDirUserCache(), sm_file);
 	     execl(DEFAULT_SH_PATH, DEFAULT_SH_PATH, "-c", s, NULL);
 	  }
@@ -1052,7 +1057,7 @@ doSMExit(const void *params)
    else if (!strcmp((char *)s, "restart_theme"))
      {
 	SoundPlay("SOUND_WAIT");
-	init_win_ext = MakeExtInitWin();
+	win = MakeExtInitWin();
 	if (atword(params, 1) && strlen((char *)params) < 1024)
 	  {
 	     sscanf(params, "%*s %1000s", s);
@@ -1067,14 +1072,14 @@ doSMExit(const void *params)
 	   Esnprintf(s, sizeof(s),
 		     "exec %s -single -ext_init_win %li -theme %s "
 		     "-econfdir %s -ecachedir %s "
-		     "-smfile %s -smid %s", command, init_win_ext,
+		     "-smfile %s -smid %s", command, win,
 		     userthemepath, EDirUser(), EDirUserCache(), sm_file,
 		     sm_client_id);
 	else
 	   Esnprintf(s, sizeof(s),
 		     "exec %s -ext_init_win %li -theme %s "
 		     "-econfdir %s -ecachedir %s "
-		     "-smfile %s -single", command, init_win_ext,
+		     "-smfile %s -single", command, win,
 		     userthemepath, EDirUser(), EDirUserCache(), sm_file);
 	execl(DEFAULT_SH_PATH, DEFAULT_SH_PATH, "-c", s, NULL);
      }
@@ -1098,14 +1103,11 @@ doSMExit(const void *params)
    char                s[1024];
    char               *real_exec;
    char                sss[FILEPATH_LEN_MAX];
-   Window              w;
+   Window              win;
 
    if (!params)
-     {
-	SaveSession(1);
-	if (disp)
-	   SetEInfoOnAll();
-     }
+      SaveSession(1);
+   ICCCM_SetEInfoOnAll();
 
    if (params)
      {
@@ -1117,7 +1119,7 @@ doSMExit(const void *params)
 	if (!strcmp(s, "restart"))
 	  {
 	     SoundPlay("SOUND_WAIT");
-	     w = MakeExtInitWin();
+	     win = MakeExtInitWin();
 	     XCloseDisplay(disp);
 	     disp = NULL;
 
@@ -1126,7 +1128,7 @@ doSMExit(const void *params)
 		  Esnprintf(sss, sizeof(sss),
 			    "exec %s -single -ext_init_win %li -theme %s "
 			    "-econfdir %s -ecachedir %s", command,
-			    w, Conf.theme.name, EDirUser(), EDirUserCache());
+			    win, Conf.theme.name, EDirUser(), EDirUserCache());
 		  execl(DEFAULT_SH_PATH, DEFAULT_SH_PATH, "-c", sss, NULL);
 	       }
 	     else
@@ -1134,20 +1136,20 @@ doSMExit(const void *params)
 		  Esnprintf(sss, sizeof(sss),
 			    "exec %s -single -ext_init_win %li "
 			    "-econfdir %s -ecachedir %s", command,
-			    w, EDirUser(), EDirUserCache());
+			    win, EDirUser(), EDirUserCache());
 		  execl(DEFAULT_SH_PATH, DEFAULT_SH_PATH, "-c", sss, NULL);
 	       }
 	  }
 	else if (!strcmp(s, "restart_theme"))
 	  {
 	     SoundPlay("SOUND_WAIT");
-	     w = MakeExtInitWin();
+	     win = MakeExtInitWin();
 	     XCloseDisplay(disp);
 	     disp = NULL;
 	     sscanf(params, "%*s %1000s", s);
 	     Esnprintf(sss, sizeof(sss),
 		       "exec %s -single -ext_init_win %li -theme %s "
-		       "-econfdir %s -ecachedir %s", command, w, s,
+		       "-econfdir %s -ecachedir %s", command, win, s,
 		       EDirUser(), EDirUserCache());
 	     execl(DEFAULT_SH_PATH, DEFAULT_SH_PATH, "-c", sss, NULL);
 	  }
@@ -1220,4 +1222,54 @@ SessionExit(const void *param)
 
    doSMExit(param);
    return 0;
+}
+
+int
+EExit(int exitcode)
+{
+   int                 i;
+
+   EDBUG(9, "EExit");
+
+   if (EventDebug(EDBUG_TYPE_SESSION))
+      Eprintf("EExit(%p)\n", exitcode);
+
+   SaveSession(1);
+
+   if (disp)
+     {
+	UngrabX();
+	UnGrabTheButtons();
+
+	/* This mechanism is only needed when the SM is unavailable: */
+	ICCCM_SetEInfoOnAll();
+
+	/* XSetInputFocus(disp, None, RevertToParent, CurrentTime); */
+	/* I think this is a better way to release the grabs: (felix) */
+	XSetInputFocus(disp, PointerRoot, RevertToPointerRoot, CurrentTime);
+	XSelectInput(disp, VRoot.win, 0);
+	XCloseDisplay(disp);
+     }
+
+   XSetErrorHandler((XErrorHandler) NULL);
+   XSetIOErrorHandler((XIOErrorHandler) NULL);
+
+   SignalsRestore();
+
+   if (Mode.wm.master)
+     {
+	SoundExit();
+	ThemeCleanup();
+	for (i = 0; i < child_count; i++)
+	   kill(e_children[i], SIGINT);
+     }
+   else
+     {
+	exitcode = 0;
+     }
+
+   Real_SaveSnapInfo(0, NULL);
+
+   exit(exitcode);
+   EDBUG_RETURN(exitcode);
 }
