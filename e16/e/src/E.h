@@ -442,8 +442,9 @@ int                 Esnprintf(va_alist);
 #define ACTION_LOWER_NG               94
 #define ACTION_STICK_NG               95
 #define ACTION_SHADE_NG               96
+#define ACTION_RAISE_LOWER_NG         97
 /* false number excluding the above list */
-#define ACTION_NUMBEROF               97
+#define ACTION_NUMBEROF               98
 
 #define MODE_NONE                 0
 #define MODE_MOVE                 1
@@ -1971,7 +1972,6 @@ int                 doResizeH(void *params);
 int                 doResizeV(void *params);
 int                 doResizeEnd(void *params);
 int                 doMoveEnd(void *params);
-int                 doMoveEndNoGroup(void *params);
 int                 doRaise(void *params);
 int                 doRaiseNoGroup(void *params);
 int                 doLower(void *params);
@@ -2052,20 +2052,13 @@ int                 doConfigure(void *params);
 int                 doInsertKeys(void *params);
 int                 doCreateIconbox(void *params);
 int                 doRaiseLower(void *params);
+int                 doRaiseLowerNoGroup(void *params);
 int                 doStartGroup(void *params);
 int                 doAddToGroup(void *params);
 int                 doRemoveFromGroup(void *params);
 int                 doBreakGroup(void *params);
 int                 doShowHideGroup(void *params);
 int                 doZoom(void *params);
-int                 doSetWindowBorderNoGroup(void *params);
-int                 doIconifyNoGoup(void *params);
-int                 doKillNoGroup(void *params);
-int                 doMoveNoGroup(void *params);
-int                 doRaiseNoGroup(void *params);
-int                 doLowerNoGroup(void *params);
-int                 doStickNoGroup(void *params);
-int                 doShadeNoGroup(void *params);
 int                 initFunctionArray(void);
 
 void                GrabActionKey(Action * a);

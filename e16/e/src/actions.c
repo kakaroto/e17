@@ -3378,12 +3378,29 @@ doCreateIconbox(void *params)
    EDBUG_RETURN(0);
 }
 
+static int
+FindEwinInList(EWin * ewin, EWin ** gwins, int num)
+{
+   int                 i;
+
+   if (ewin && gwins)
+     {
+	for (i = 0; i < num; i++)
+	  {
+	     if (ewin == gwins[i])
+		return 1;
+	  }
+     }
+
+   return 0;
+}
+
 int
 doRaiseLower(void *params)
 {
    EWin               *ewin;
    EWin              **gwins;
-   int                 i, num, j;
+   int                 i, num, j, raise = 0;
 
    EDBUG(6, "doRaiseLower");
    if (InZoom())
@@ -3397,7 +3414,7 @@ doRaiseLower(void *params)
    if (!ewin)
       EDBUG_RETURN(0);
 
-   gwins = ListWinGroupMembersForEwin(ewin, ACTION_NONE, 0, &num);
+   gwins = ListWinGroupMembersForEwin(ewin, ACTION_RAISE_LOWER, mode.nogroup, &num);
    for (j = 0; j < num; j++)
      {
 	ewin = gwins[j];
@@ -3405,26 +3422,47 @@ doRaiseLower(void *params)
 	  {
 	     for (i = 0; i < desks.desk[ewin->desktop].num - 1; i++)
 	       {
-		  if (desks.desk[ewin->desktop].list[i]->layer == ewin->layer)
+		  if (desks.desk[ewin->desktop].list[i]->layer == ewin->layer &&
+		      (desks.desk[ewin->desktop].list[i] == ewin ||
+		       !FindEwinInList(desks.desk[ewin->desktop].list[i], gwins, num)))
 		    {
-		       if (desks.desk[ewin->desktop].list[i] == ewin)
-			 {
-			    AUDIO_PLAY("SOUND_LOWER");
-			    LowerEwin(ewin);
-			 }
-		       else
-			 {
-			    AUDIO_PLAY("SOUND_RAISE");
-			    RaiseEwin(ewin);
-			 }
-		       i = desks.desk[ewin->desktop].num;
+		       if (desks.desk[ewin->desktop].list[i] != ewin)
+			  raise = 1;
+
+		       j = num;
+		       break;
 		    }
 	       }
 	  }
      }
+
+   if (!raise)
+     {
+	AUDIO_PLAY("SOUND_LOWER");
+	for (j = 0; j < num; j++)
+	   LowerEwin(gwins[j]);
+     }
+   else
+     {
+	AUDIO_PLAY("SOUND_RAISE");
+	for (j = 0; j < num; j++)
+	   RaiseEwin(gwins[j]);
+     }
+
    Efree(gwins);
 
    EDBUG_RETURN(0);
+}
+
+int
+doRaiseLowerNoGroup(void *params)
+{
+   int                 result;
+
+   mode.nogroup = 1;
+   result = doRaiseLower(params);
+   mode.nogroup = 0;
+   return result;
 }
 
 int
@@ -3681,6 +3719,7 @@ initFunctionArray(void)
    ActionFunctions[ACTION_LOWER_NG] = (int (*)(void *))(doLowerNoGroup);
    ActionFunctions[ACTION_STICK_NG] = (int (*)(void *))(doStickNoGroup);
    ActionFunctions[ACTION_SHADE_NG] = (int (*)(void *))(doShadeNoGroup);
+   ActionFunctions[ACTION_RAISE_LOWER_NG] = (int (*)(void *))(doRaiseLowerNoGroup);
 
    EDBUG_RETURN(0);
 }

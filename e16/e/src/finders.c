@@ -292,6 +292,7 @@ ListWinGroupMembersForEwin(EWin * ewin, int action, char nogroup, int *num)
 		  break;
 	       case ACTION_RAISE:
 	       case ACTION_LOWER:
+	       case ACTION_RAISE_LOWER:
 		  if (!ewin->groups[i]->cfg.raise)
 		     daddy_says_no_no = 1;
 		  break;

@@ -2300,6 +2300,9 @@ HandleMouseUp(XEvent * ev)
 			    UpdateAppIcon(p->hi_ewin, ewin->ibox->icon_mode);
 			 }
 		       HideEwin(p->hi_ewin);
+		       MoveEwin(p->hi_ewin,
+				pwin_px + ((desks.desk[p->hi_ewin->desktop].current_area_x) - p->hi_ewin->area_x) * root.w,
+				pwin_py + ((desks.desk[p->hi_ewin->desktop].current_area_y) - p->hi_ewin->area_y) * root.h);
 		       if (was_shaded != p->hi_ewin->shaded)
 			  InstantShadeEwin(p->hi_ewin);
 		       AddEwinToIconbox(ewin->ibox, p->hi_ewin);

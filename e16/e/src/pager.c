@@ -577,6 +577,7 @@ PagerShow(Pager * p)
    EWin               *ewin = NULL;
    XClassHint         *xch;
    char                s[64];
+   char                pq;
 
    if (!mode.show_pagers)
       return;
@@ -591,6 +592,8 @@ PagerShow(Pager * p)
    xch->res_class = "Enlightenment_Pager";
    XSetClassHint(disp, p->win, xch);
    XFree(xch);
+   pq = queue_up;
+   queue_up = 0;
    if (p->border_name)
       ewin = AddInternalToFamily(p->win, 1, p->border_name);
    else
@@ -626,27 +629,31 @@ PagerShow(Pager * p)
 	       {
 		  if ((sn->use_shade) && (sn->shade))
 		     InstantUnShadeEwin(ewin);
+		  p->w = 0;
+		  p->h = 0;
 		  ResizeEwin(ewin, sn->w, sn->h);
-		  if ((sn->use_shade) && (sn->shade))
-		     InstantShadeEwin(ewin);
+		  PagerRedraw(p, 1);
 	       }
 	  }
 	/* no snapshots ? first time ? make a row on the bottom left up */
 	else
-	   MoveEwin(ewin, 0,
-		    root.h - ((mode.numdesktops - p->desktop) * ewin->h));
+	  {
+	     MoveEwin(ewin, 0,
+		      root.h - ((mode.numdesktops - p->desktop) * ewin->h));
+	     /* force a redraw & resize */
+	     pw = p->w;
+	     ph = p->h;
+	     p->w = 0;
+	     p->h = 0;
+	     PagerResize(p, pw, ph);
+	     PagerRedraw(p, 1);
+	  }
 	ConformEwinToDesktop(ewin);
-	DesktopAddEwinToTop(ewin);
-	/* force a redraw & resize */
-	pw = p->w;
-	ph = p->h;
-	p->w = 0;
-	p->h = 0;
-	PagerResize(p, pw, ph);
-	PagerRedraw(p, 1);
 	/* show the pager ewin */
 	DesktopRemoveEwin(ewin);
 	DesktopAddEwinToTop(ewin);
+	if ((sn) && (sn->use_shade) && (sn->shade))
+	   ShadeEwin(ewin);
 	ShowEwin(ewin);
 	RememberImportantInfoForEwin(ewin);
 	if (SNAP)
@@ -655,6 +662,7 @@ PagerShow(Pager * p)
 	     if (mode.pager_scanspeed > 0)
 		DoIn(s, 1 / ((double)mode.pager_scanspeed), PagerUpdateTimeout, 0, p);
 	  }
+	queue_up = pq;
 	AddItem(p, "PAGER", p->win, LIST_TYPE_PAGER);
      }
 }

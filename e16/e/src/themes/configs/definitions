@@ -315,6 +315,15 @@
 #define __A_CREATE_ICONBOX 86
 #define __A_RAISE_LOWER 87
 #define __A_ZOOM 88
+#define __A_SET_WINDOW_BORDER_NG 89
+#define __A_ICONIFY_NG 90
+#define __A_KILL_NG 91
+#define __A_MOVE_NG 92
+#define __A_RAISE_NG 93
+#define __A_LOWER_NG 94
+#define __A_STICK_NG 95
+#define __A_SHADE_NG 96
+#define __A_RAISE_LOWER_NG 97
 
 #define __MODIFIER_KEY 101
 #define __TYPE 102

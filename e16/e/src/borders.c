@@ -2582,6 +2582,7 @@ ShadeEwin(EWin * ewin)
    struct timeval      timev1, timev2;
    int                 dsec, dusec;
    double              tm;
+   char                pq;
 
    EDBUG(4, "ShadeEwin");
 
@@ -2596,6 +2597,7 @@ ShadeEwin(EWin * ewin)
       EDBUG_RETURN_;
    if ((ewin->border) && (!strcmp(ewin->border->name, "BORDERLESS")))
       EDBUG_RETURN_;
+   pq = queue_up;
    queue_up = 0;
    speed = mode.shadespeed;
    spd = 32;
@@ -2826,7 +2828,7 @@ ShadeEwin(EWin * ewin)
       EShapeCombineShape(disp, ewin->win_container, ShapeBounding, 0, 0,
 			 ewin->client.win, ShapeBounding, ShapeSet);
    PropagateShapes(ewin->win);
-   queue_up = 1;
+   queue_up = pq;
    GNOME_SetHint(ewin);
    if (mode.mode == MODE_NONE)
      {
@@ -2845,12 +2847,14 @@ UnShadeEwin(EWin * ewin)
    struct timeval      timev1, timev2;
    int                 dsec, dusec;
    double              tm;
+   char                pq;
 
    EDBUG(4, "UnShadeEwin");
    if (GetZoomEWin() == ewin)
       EDBUG_RETURN_;
    if (!ewin->shaded)
       EDBUG_RETURN_;
+   pq = queue_up;
    queue_up = 0;
    speed = mode.shadespeed;
    spd = 32;
@@ -3102,12 +3106,11 @@ UnShadeEwin(EWin * ewin)
 	break;
      }
    UngrabX();
-   queue_up = 0;
    if (ewin->client.shaped)
       EShapeCombineShape(disp, ewin->win_container, ShapeBounding, 0, 0,
 			 ewin->client.win, ShapeBounding, ShapeSet);
    PropagateShapes(ewin->win);
-   queue_up = 1;
+   queue_up = pq;
    GNOME_SetHint(ewin);
    if (mode.mode == MODE_NONE)
      {

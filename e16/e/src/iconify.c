@@ -124,6 +124,9 @@ IconifyEwin(EWin * ewin)
 	     UpdateAppIcon(ewin, ib->icon_mode);
 	  }
 	HideEwin(ewin);
+	MoveEwin(ewin,
+		 ewin->x + ((desks.desk[ewin->desktop].current_area_x) - ewin->area_x) * root.w,
+		 ewin->y + ((desks.desk[ewin->desktop].current_area_y) - ewin->area_y) * root.h);
 	if (was_shaded != ewin->shaded)
 	   InstantShadeEwin(ewin);
 	MakeIcon(ewin);
@@ -340,7 +343,10 @@ ShowIconbox(Iconbox * ib)
    EWin               *ewin = NULL;
    XClassHint         *xch;
    XTextProperty       xtp;
+   char                pq;
 
+   pq = queue_up;
+   queue_up = 0;
    xtp.encoding = XA_STRING;
    xtp.format = 8;
    xtp.value = (unsigned char *)("Iconbox");
@@ -401,8 +407,6 @@ ShowIconbox(Iconbox * ib)
 	     if ((sn->use_shade) && (sn->shade))
 		InstantUnShadeEwin(ewin);
 	     ResizeEwin(ewin, sn->w, sn->h);
-	     if ((sn->use_shade) && (sn->shade))
-		InstantShadeEwin(ewin);
 	     if (sn->use_xy)
 		MoveEwin(ewin, sn->x, sn->y);
 	  }
@@ -411,10 +415,13 @@ ShowIconbox(Iconbox * ib)
 	ConformEwinToDesktop(ewin);
 	DesktopRemoveEwin(ewin);
 	DesktopAddEwinToTop(ewin);
+	if ((sn) && (sn->use_shade) && (sn->shade))
+	   ShadeEwin(ewin);
 	ShowEwin(ewin);
 	RememberImportantInfoForEwin(ewin);
      }
    IconboxResize(ib, ib->ewin->client.w, ib->ewin->client.h);
+   queue_up = pq;
 }
 
 void
