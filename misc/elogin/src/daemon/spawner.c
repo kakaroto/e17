@@ -49,13 +49,15 @@ fork_and_exit(void)
         break;
      default:
         if (write_elogind_pidfile(elogind_pid))
-           fprintf(stderr, "%d is the pid, but I couldn't write to %s",
+        {
+           fprintf(stderr, "%d is the pid, but I couldn't write to %s\n",
                    elogind_pid, PIDFILE);
+           kill(elogind_pid, SIGKILL);
+           exit(1);
+        }
+
         exit(0);
    }
-   close(0);
-   close(1);
-   close(2);
 }
 
 /**
@@ -70,28 +72,57 @@ int
 main(int argc, char **argv)
 {
    int c;
-    
+   char *d_opt_str = "nodaemon";
+   int nodaemon = 0;
+   struct option d_opt;
+   pid_t elogind_pid = getpid();
+
+   d_opt.name = d_opt_str;
+   d_opt.has_arg = 0;
+   d_opt.flag = NULL;
+   d_opt.val = 2;
+
    putenv("DISPLAY");
    /* get command line arguments */
    while (1)
    {
-      c = getopt(argc, argv, "d:");
+      c = getopt_long_only(argc, argv, "d:", &d_opt, NULL);
       if (c == -1)
          break;
       switch (c)
       {
         case 'd':              /* display */
-	   setenv("DISPLAY", optarg, 1);
+           setenv("DISPLAY", optarg, 1);
+           break;
+        case 2:                /* nodaemon */
+           nodaemon = 1;
            break;
         default:
+           fprintf(stderr, "Warning: Unknown command line option\n");
            exit(1);
       }
    }
-    
-   if(!getenv("DISPLAY"))
-       setenv("DISPLAY", X_DISP, 1);
 
-   fork_and_exit();
+   if (!getenv("DISPLAY"))
+      setenv("DISPLAY", X_DISP, 1);
+
+   if (nodaemon)
+   {
+      if (write_elogind_pidfile(elogind_pid))
+      {
+         fprintf(stderr, "%d is the pid, but I couldn't write to %s\n",
+                 elogind_pid, PIDFILE);
+         exit(1);
+      }
+   }
+   else
+   {
+      fork_and_exit();
+   }
+   close(0);
+   close(1);
+   close(2);
+
    /* register child signal handler */
    signal(SIGCHLD, elogin_exit);
    signal(SIGHUP, elogin_exit);
@@ -100,10 +131,11 @@ main(int argc, char **argv)
    d = spawner_display_new();
 
    /* Check to make sure elogin binary is executable */
-   if(access(ELOGIN, X_OK))
+   if (access(ELOGIN, X_OK))
    {
-	   fprintf(stderr, "Elogin: Fatal Error: Cannot execute elogin binary. Aborting.");
-	   exit(1);
+      fprintf(stderr,
+              "Elogin: Fatal Error: Cannot execute elogin binary. Aborting.");
+      exit(1);
    }
 
    /* run X */
@@ -166,6 +198,7 @@ void
 elogin_exit(int signum)
 {
    int status = 0;
+   int x_status = 0;
    pid_t pid;
 
    while ((pid = waitpid(-1, &status, 0)) > 0)
@@ -175,10 +208,21 @@ elogin_exit(int signum)
          printf("INFO: Elogin process died.\n");
          if (d->display)
          {
-            XSync(d->display, False);
-            XCloseDisplay(d->display);
-            d->display = NULL;
-            kill(d->pid.x, SIGTERM);
+            /* Allow things to settle down (in case X died as well) */
+            sleep(1);
+
+            /* check to see if X is still alive before restarting elogin */
+            if (!waitpid(d->pid.x, &x_status, WNOHANG))
+            {
+               XSync(d->display, False);
+               spawn_elogin();
+            }
+            else
+            {
+               d->display = NULL;
+               spawn_x();
+               spawn_elogin();
+            }
          }
       }
       else if (pid == d->pid.x)
@@ -186,8 +230,8 @@ elogin_exit(int signum)
          printf("INFO: X Server died.\n");
          if (d->display)
          {
-            XSync(d->display, False);
-            XCloseDisplay(d->display);
+            /* URM...don't try to XSync on a non-existent X process. SIGPIPE
+               here */
             d->display = NULL;
          }
          if (d->status == LAUNCHING)
