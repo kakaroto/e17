@@ -157,13 +157,12 @@ e_key_down(Ecore_Event * ev)
          if (typebuffer.buf_index >= USER_PASS_MAX)
             return;
          else if (!(strcmp(e->key, "space")))
-         {
             typebuffer.buf[typebuffer.buf_index++] = ' ';
-         }
          else if (!(strcmp(e->key, "period")))
-         {
             typebuffer.buf[typebuffer.buf_index++] = '.';
-         }
+		 else if (!(strcmp(e->key, "comma")))
+			 typebuffer.buf[typebuffer.buf_index++] = ',';
+		 
       }
       else
       {
