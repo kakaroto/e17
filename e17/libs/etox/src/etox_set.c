@@ -108,13 +108,11 @@ etox_set_text(Etox e, ...)
   if (!e) 
     return;
 
-  if (!e->bits)
-    {
-      e->bits = ewd_list_new();
-      ewd_list_set_free_cb(e->bits, EWD_FREE_CB(_etox_bit_free));
-    }
-  else
-    ewd_list_clear(e->bits);
+  if (e->bits)
+    ewd_list_destroy(e->bits);
+
+  e->bits = ewd_list_new();
+  ewd_list_set_free_cb(e->bits, EWD_FREE_CB(_etox_bit_free));
 
   va_start(ap, e);
 
