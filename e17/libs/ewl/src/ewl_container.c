@@ -22,7 +22,6 @@ ewl_container_init(Ewl_Container * widget, int type, int min_w, int min_h,
 	 * Initialize the fields specific to the container class.
 	 */
 	widget->children = ewd_list_new();
-	ewl_container_clip_box_create(widget);
 
 	/*
 	 * All containers need to perform the function of updating the
@@ -51,7 +50,7 @@ ewl_container_append_child(Ewl_Container * parent, Ewl_Widget * child)
 	child->evas_window = EWL_WIDGET(parent)->evas_window;
 	child->parent = EWL_WIDGET(parent);
 
-	EWL_OBJECT(child)->layer = EWL_OBJECT(parent)->layer + 1;
+	LAYER(child) = LAYER(parent) + 1;
 
 	if (ewd_list_is_empty(parent->children))
 		ewl_container_show_clip(parent);
@@ -156,22 +155,36 @@ ewl_container_get_child_at(Ewl_Container * widget, int x, int y)
 				    return child->widget;
 		    }
 	  }
-	else
+	else if (EWL_WIDGET(widget)->type == EWL_WIDGET_BOX)
 	  {
-		  Ewl_Widget *child = NULL;
-		  while ((child =
-			  ewd_list_next(EWL_CONTAINER(widget)->children)) !=
-			 NULL)
+		  Ewl_Box_Child *child = NULL;
+
+		  while ((child = ewd_list_next(widget->children)) != NULL)
 		    {
-			    if (x >= EWL_OBJECT(child)->current.x
-				&& y >= EWL_OBJECT(child)->current.y
-				&& EWL_OBJECT(child)->current.x +
-				EWL_OBJECT(child)->current.w >= x
-				&& EWL_OBJECT(child)->current.y +
-				EWL_OBJECT(child)->current.h >= y)
-				    return child;
+			    if (x >= EWL_OBJECT(child->widget)->current.x
+				&& y >= EWL_OBJECT(child->widget)->current.y
+				&& EWL_OBJECT(child->widget)->current.x +
+				EWL_OBJECT(child->widget)->current.w >= x
+				&& EWL_OBJECT(child->widget)->current.y +
+				EWL_OBJECT(child->widget)->current.h >= y)
+				    return child->widget;
 		    }
 	  }
+	{
+		Ewl_Widget *child = NULL;
+		while ((child =
+			ewd_list_next(EWL_CONTAINER(widget)->children)) !=
+		       NULL)
+		  {
+			  if (x >= EWL_OBJECT(child)->current.x
+			      && y >= EWL_OBJECT(child)->current.y
+			      && EWL_OBJECT(child)->current.x +
+			      EWL_OBJECT(child)->current.w >= x
+			      && EWL_OBJECT(child)->current.y +
+			      EWL_OBJECT(child)->current.h >= y)
+				  return child;
+		  }
+	}
 
 	return NULL;
 }

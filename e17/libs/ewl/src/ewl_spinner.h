@@ -5,12 +5,13 @@
 struct _ewl_spinner
 {
 	Ewl_Widget widget;
-	Ewl_Widget *entry;
-	Ewl_Widget *button_increase, *button_decrease;
 	double min_val;
 	double max_val;
 	double value;
 	int digits;
+	Ewl_Widget *entry;
+	Ewl_Widget *button_increase;
+	Ewl_Widget *button_decrease;
 };
 
 typedef struct _ewl_spinner Ewl_Spinner;

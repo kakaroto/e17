@@ -106,6 +106,20 @@ ewl_entry_realize(Ewl_Widget * w, void *event_data, void *user_data)
 
 	CHECK_PARAM_POINTER("w", w);
 
+	{
+		Evas_Object *clip_box;
+
+		clip_box = evas_add_rectangle(w->evas);
+		evas_set_color(w->evas, clip_box, 255, 255, 255, 255);
+		evas_set_layer(w->evas, clip_box, LAYER(w) - 1);
+		if (w->parent && EWL_CONTAINER(w->parent)->clip_box)
+			evas_set_clip(w->evas, clip_box,
+				      EWL_CONTAINER(w->parent)->clip_box);
+		w->fx_clip_box = clip_box;
+		EWL_CONTAINER(w)->clip_box = clip_box;
+
+	}
+
 	image = ewl_theme_image_get(w, "/appearance/entry/default/base");
 
 	w->ebits_object = ebits_load(image);
@@ -126,14 +140,6 @@ ewl_entry_realize(Ewl_Widget * w, void *event_data, void *user_data)
 	ewl_text_set_font_size(EWL_ENTRY(w)->text, 10);
 	ewl_widget_realize(EWL_WIDGET(EWL_ENTRY(w)->text));
 
-	ewl_fx_clip_box_create(w);
-	ewl_container_show_clip(EWL_CONTAINER(w));
-
-	ebits_set_clip(w->ebits_object, w->fx_clip_box);
-	evas_set_clip(w->evas, w->fx_clip_box,
-		      EWL_CONTAINER(w->parent)->clip_box);
-	evas_set_clip(w->evas, EWL_CONTAINER(w)->clip_box, w->fx_clip_box);
-	evas_show(w->evas, w->fx_clip_box);
 	ebits_show(w->ebits_object);
 
 	ebits_set_clip(EWL_ENTRY(w)->cursor, w->fx_clip_box);
@@ -141,8 +147,6 @@ ewl_entry_realize(Ewl_Widget * w, void *event_data, void *user_data)
 	ewl_widget_show(EWL_ENTRY(w)->text);
 
 	evas_show(w->evas, EWL_CONTAINER(w)->clip_box);
-
-	evas_set_color(w->evas, w->fx_clip_box, 255, 255, 255, 255);
 
 	DLEAVE_FUNCTION;
 }
@@ -153,8 +157,6 @@ ewl_entry_show(Ewl_Widget * widget, void *event_data, void *user_data)
 	DENTER_FUNCTION;
 
 	CHECK_PARAM_POINTER("widget", widget);
-
-	evas_show(widget->evas, EWL_CONTAINER(widget)->clip_box);
 
 	evas_show(widget->evas, widget->fx_clip_box);
 

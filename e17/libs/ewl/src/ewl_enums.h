@@ -92,4 +92,14 @@ enum _ewl_fill_policy
 	EWL_FILL_POLICY_FILL
 };
 
+typedef enum _ewl_position Ewl_Position;
+
+enum _ewl_position
+{
+	EWL_POSITION_TOP,
+	EWL_POSITION_LEFT,
+	EWL_POSITION_RIGHT,
+	EWL_POSITION_BOTTOM
+};
+
 #endif /* __EWL_ENUMS_H__ */

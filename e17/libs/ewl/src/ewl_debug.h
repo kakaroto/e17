@@ -121,5 +121,14 @@
 	  } \
 }
 
+#define DCHECK_PARAM_INT_RET(str, ptr, ret) \
+{ \
+        if (!ptr) \
+          { \
+                fprintf(stderr, "NULL param %s in %s.. returning %i\n", \
+                                str, __FUNCTION__, (int) ret); \
+                return ret; \
+          } \
+}
 
 #endif /* __EWL_DEBUG_H__ */

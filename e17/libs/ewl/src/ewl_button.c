@@ -145,20 +145,59 @@ __ewl_button_realize(Ewl_Widget * w, void *event_data, void *user_data)
 
 	b = EWL_BUTTON(w);
 
-	ewl_fx_clip_box_create(w);
+	{
+		Evas_Object *clip_box;
 
-	if (w->parent && EWL_CONTAINER(w->parent)->clip_box)
-		evas_set_clip(w->evas, w->fx_clip_box,
-			      EWL_CONTAINER(w->parent)->clip_box);
+		clip_box = evas_add_rectangle(w->evas);
+		evas_set_color(w->evas, clip_box, 255, 255, 255, 255);
+		evas_set_layer(w->evas, clip_box, LAYER(w) - 1);
+		if (w->parent && EWL_CONTAINER(w->parent)->clip_box)
+			evas_set_clip(w->evas, clip_box,
+				      EWL_CONTAINER(w->parent)->clip_box);
+		w->fx_clip_box = clip_box;
+
+	}
+
+	{
+		Evas_Object *clip_box;
+
+		clip_box = evas_add_rectangle(w->evas);
+		evas_set_color(w->evas, clip_box, 255, 255, 255, 255);
+		evas_set_layer(w->evas, clip_box, LAYER(w));
+		evas_set_clip(w->evas, clip_box, w->fx_clip_box);
+		evas_show(w->evas, clip_box);
+
+		EWL_CONTAINER(w)->clip_box = clip_box;
+	}
+
 
 	if (b->label)
 	  {
+		  char *tmp;
+		  int fs = 20;
+
+		  tmp = ewl_theme_data_get(w,
+					   "/appearance/button/default/text/font_size");
+
+		  if (tmp)
+			  fs = atoi(tmp);
+
+		  IF_FREE(tmp);
+
+		  tmp = ewl_theme_data_get(w,
+					   "/appearance/button/default/text/font");
+
 		  t = ewl_text_new();
 		  ewl_text_set_text(t, b->label);
-		  ewl_text_set_font_size(t, 10);
+		  if (tmp)
+			  ewl_text_set_font(t, tmp);
+		  else
+			  ewl_text_set_font(t, "borzoib");
+		  ewl_text_set_font_size(t, fs);
 		  ewl_container_append_child(EWL_CONTAINER(b), t);
-
 		  ewl_widget_realize(t);
+
+		  IF_FREE(tmp);
 	  }
 
 	ewl_widget_theme_update(w);
@@ -268,9 +307,16 @@ __ewl_button_configure(Ewl_Widget * w, void *event_data, void *user_data)
 	  {
 		  ebits_move(w->ebits_object, req_x, req_y);
 		  ebits_resize(w->ebits_object, req_w, req_h);
+	  }
 
+	if (w->fx_clip_box)
+	  {
 		  evas_move(w->evas, w->fx_clip_box, req_x, req_y);
 		  evas_resize(w->evas, w->fx_clip_box, req_w, req_h);
+	  }
+
+	if (EWL_CONTAINER(w)->clip_box)
+	  {
 		  evas_move(w->evas, EWL_CONTAINER(w)->clip_box, req_x,
 			    req_y);
 		  evas_resize(w->evas, EWL_CONTAINER(w)->clip_box, req_w,

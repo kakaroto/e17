@@ -295,9 +295,11 @@ __ewl_checkbutton_configure(Ewl_Widget * w, void *event_data, void *user_data)
 
 	ewl_widget_configure(t);
 
+	cur_w = CURRENT_W(t);
+	cur_h = CURRENT_H(t);
+
 	ewl_object_set_current_geometry(EWL_OBJECT(w), req_x, req_y,
 					req_w + 3 + cur_w, req_h);
-
 
 	DLEAVE_FUNCTION;
 }
@@ -341,6 +343,8 @@ __ewl_checkbutton_mouse_down(Ewl_Widget * w, void *event_data,
 	b->checked = b->checked ? 0 : 1;
 
 	ewl_widget_theme_update(w);
+
+	ewl_callback_call(w, EWL_CALLBACK_VALUE_CHANGED);
 
 	DLEAVE_FUNCTION;
 }

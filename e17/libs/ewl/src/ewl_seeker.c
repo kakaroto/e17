@@ -56,6 +56,9 @@ ewl_seeker_set_value(Ewl_Widget * w, double v)
 	DENTER_FUNCTION;
 	DCHECK_PARAM_PTR("w", w);
 
+	if (v > EWL_SEEKER(w)->range)
+		v = EWL_SEEKER(w)->range;
+
 	EWL_SEEKER(w)->value = v;
 
 	ewl_widget_configure(w);
@@ -545,7 +548,7 @@ __ewl_seeker_dragbar_mouse_move(Ewl_Widget * w, void *event_data,
 {
 	Ev_Mouse_Move *ev;
 	Ewl_Seeker *s;
-	double val;
+	double val, oval;
 	int x, y, width, height;
 	int req_x, req_y;
 	int l, r, t, b;
@@ -597,7 +600,9 @@ __ewl_seeker_dragbar_mouse_move(Ewl_Widget * w, void *event_data,
 
 		  val *= s->range;
 
-		  s->value = val * s->range;
+		  oval = s->value;
+
+		  s->value = val;
 	  }
 	else
 	  {
@@ -618,10 +623,18 @@ __ewl_seeker_dragbar_mouse_move(Ewl_Widget * w, void *event_data,
 
 		  val = (double) y / (double) CURRENT_H(w->parent);
 
+		  oval = s->value;
+
 		  s->value = val * s->range;
 	  }
 
+	if (s->value > s->range)
+		s->value = s->range;
+
 	ewl_widget_configure(w);
+
+	if (oval != s->value)
+		ewl_callback_call(EWL_WIDGET(s), EWL_CALLBACK_VALUE_CHANGED);
 
 	DLEAVE_FUNCTION;
 }

@@ -3,19 +3,6 @@
 #define __EWL_WINDOW_H__
 
 /*
- * We want to support a variety of window types, including normal windows,
- * dialog boxes, and MacOS X style drop down dialogs.
- */
-typedef enum _ewl_window_type Ewl_Window_Type;
-
-enum _ewl_window_type
-{
-	EWL_WINDOW_NORMAL,
-	EWL_WINDOW_DIALOG,
-	EWL_WINDOW_DROPDOWN
-};
-
-/*
  * The window structure is mostly a container for holding widgets and a
  * wrapper around the xlib window.
  */
@@ -25,7 +12,10 @@ struct _ewl_window
 {
 	Ewl_Container widget;
 	Window window;
+	Evas_Object bg_rect;
+	Ebits_Object *ebits_object;
 	char *title;
+	int borderless;
 };
 
 #define EWL_WINDOW(widget) ((Ewl_Window *) widget)
@@ -38,5 +28,7 @@ void ewl_window_set_min_size(Ewl_Widget * widget, int w, int h);
 void ewl_window_set_max_size(Ewl_Widget * widget, int w, int h);
 void ewl_window_set_title(Ewl_Widget * widget, char *title);
 char *ewl_window_get_title(Ewl_Widget * widget);
+void ewl_window_set_borderless(Ewl_Widget * w);
+void ewl_window_move(Ewl_Widget * w, int x, int y);
 
 #endif

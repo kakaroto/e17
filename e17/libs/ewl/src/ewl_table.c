@@ -341,34 +341,34 @@ __ewl_table_init(Ewl_Table * t)
 static void
 __ewl_table_realize(Ewl_Widget * w, void *event_data, void *user_data)
 {
-	char *image = NULL;
-
 	CHECK_PARAM_POINTER("w", w);
 
-	image = ewl_theme_image_get(w, "/appearance/table/default/base");
+	{
+		Evas_Object *clip_box;
 
-	EWL_TABLE(w)->ebits_bg = ebits_load(image);
-	IF_FREE(image);
+		clip_box = evas_add_rectangle(w->evas);
+		evas_set_color(w->evas, clip_box, 255, 255, 255, 255);
+		evas_set_layer(w->evas, clip_box, LAYER(w) - 1);
+		if (w->parent && EWL_CONTAINER(w->parent)->clip_box)
+			evas_set_clip(w->evas, clip_box,
+				      EWL_CONTAINER(w->parent)->clip_box);
+		w->fx_clip_box = clip_box;
 
-	ebits_add_to_evas(EWL_TABLE(w)->ebits_bg, w->evas);
-	ebits_set_layer(EWL_TABLE(w)->ebits_bg, EWL_OBJECT(w)->layer);
+	}
 
-	ewl_fx_clip_box_create(w);
-	ewl_container_clip_box_create(EWL_CONTAINER(w));
+	{
+		Evas_Object *clip_box;
 
-	ebits_show(EWL_TABLE(w)->ebits_bg);
+		clip_box = evas_add_rectangle(w->evas);
+		evas_set_color(w->evas, clip_box, 255, 255, 255, 255);
+		evas_set_layer(w->evas, clip_box, LAYER(w));
+		evas_set_clip(w->evas, clip_box, w->fx_clip_box);
+		evas_show(w->evas, clip_box);
 
+		EWL_CONTAINER(w)->clip_box = clip_box;
+	}
 
-	if (w->parent && EWL_CONTAINER(w->parent)->clip_box)
-	  {
-		  evas_set_clip(w->evas, w->fx_clip_box,
-				EWL_CONTAINER(w->parent)->clip_box);
-
-	  }
-
-	ebits_set_clip(EWL_TABLE(w)->ebits_bg, w->fx_clip_box);
-
-	evas_set_color(w->evas, w->fx_clip_box, 255, 255, 255, 255);
+	ewl_widget_theme_update(w);
 }
 
 /*
@@ -481,8 +481,12 @@ __ewl_table_configure_gfx(Ewl_Widget * w)
 	ewl_object_requested_geometry(EWL_OBJECT(w), &t_req_x, &t_req_y,
 				      &t_req_w, &t_req_h);
 
-	ebits_move(EWL_TABLE(w)->ebits_bg, t_req_x, t_req_y);
-	ebits_resize(EWL_TABLE(w)->ebits_bg, t_req_w, t_req_h);
+	if (EWL_TABLE(w)->ebits_bg)
+	  {
+		  ebits_move(EWL_TABLE(w)->ebits_bg, t_req_x, t_req_y);
+		  ebits_resize(EWL_TABLE(w)->ebits_bg, t_req_w, t_req_h);
+	  }
+
 	ewl_fx_clip_box_resize(w);
 }
 

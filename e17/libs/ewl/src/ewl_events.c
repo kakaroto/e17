@@ -31,8 +31,9 @@ ewl_ev_init(void)
 	e_event_filter_handler_add(EV_WINDOW_CONFIGURE,
 				   ewl_ev_window_configure);
 	e_event_filter_handler_add(EV_WINDOW_DELETE, ewl_ev_window_delete);
-	e_event_filter_handler_add(EV_WINDOW_REPARENT,
-				   ewl_ev_window_reparent);
+
+/*	e_event_filter_handler_add(EV_WINDOW_REPARENT,
+				   ewl_ev_window_reparent);*/
 	e_event_filter_handler_add(EV_KEY_DOWN, ewl_ev_key_down);
 	e_event_filter_handler_add(EV_KEY_UP, ewl_ev_key_up);
 	e_event_filter_handler_add(EV_MOUSE_DOWN, ewl_ev_mouse_down);

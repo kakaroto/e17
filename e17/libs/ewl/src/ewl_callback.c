@@ -166,3 +166,19 @@ ewl_callback_set_user_data(Ewl_Widget * w, Ewl_Callback_Type type,
 
 	DLEAVE_FUNCTION;
 }
+
+void
+ewl_callback_del_type(Ewl_Widget * w, Ewl_Callback_Type t)
+{
+	DENTER_FUNCTION;
+	DCHECK_PARAM_PTR("w", w);
+
+	if (!w->callbacks[t])
+		DRETURN;
+
+	ewd_list_clear(w->callbacks[t]);
+	ewd_list_destroy(w->callbacks[t]);
+	w->callbacks[t] = NULL;
+
+	DLEAVE_FUNCTION;
+}

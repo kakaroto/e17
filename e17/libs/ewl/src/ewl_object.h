@@ -74,8 +74,14 @@ int ewl_object_get_layer(Ewl_Object * o);
 #define MAX_W(o) EWL_OBJECT(o)->maximum.w
 #define MAX_H(o) EWL_OBJECT(o)->maximum.h
 
+#define MAXIMUM_W(o) EWL_OBJECT(o)->maximum.w
+#define MAXIMUM_H(o) EWL_OBJECT(o)->maximum.h
+
 #define MIN_W(o) EWL_OBJECT(o)->minimum.w
 #define MIN_H(o) EWL_OBJECT(o)->minimum.h
+
+#define MINIMUM_W(o) EWL_OBJECT(o)->minimum.w
+#define MINIMUM_H(o) EWL_OBJECT(o)->minimum.h
 
 #define REALIZED(o) EWL_OBJECT(o)->realized
 #define VISIBLE(o) EWL_OBJECT(o)->visible

@@ -20,14 +20,27 @@ struct _ewl_box
 	unsigned int spacing;
 };
 
+typedef struct _ewl_box_child Ewl_Box_Child;
+#define EWL_BOX_CHILD(child) ((Ewl_Box_Child *) child)
+
+struct _ewl_box_child
+{
+	Ewl_Widget *widget;
+	Ewl_Alignment alignment;
+	Ewl_Fill_Policy fill_policy;
+};
+
 #define ewl_hbox_new() ewl_box_new(EWL_ORIENTATION_HORIZONTAL)
 #define ewl_vbox_new() ewl_box_new(EWL_ORIENTATION_VERTICAL)
 
 
 Ewl_Widget *ewl_box_new(int orientation);
-void ewl_box_set_orientation(Ewl_Widget * widget,
-			     Ewl_Orientation orientation);
-void ewl_box_set_spacing(Ewl_Widget * widget, unsigned int spacing);
-void ewl_box_set_homogeneous(Ewl_Widget * widget, unsigned int homogeneous);
+void ewl_box_set_orientation(Ewl_Widget * w, Ewl_Orientation orientation);
+void ewl_box_set_spacing(Ewl_Widget * w, unsigned int spacing);
+void ewl_box_set_homogeneous(Ewl_Widget * w, unsigned int homogeneous);
+void ewl_box_append_child(Ewl_Widget * w, Ewl_Widget * c, Ewl_Fill_Policy p,
+			  Ewl_Alignment a);
+void ewl_box_prepend_child(Ewl_Widget * w, Ewl_Widget * c, Ewl_Fill_Policy p,
+			   Ewl_Alignment a);
 
 #endif /* __EWL_BOX_H__ */
