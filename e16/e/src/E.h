@@ -798,6 +798,7 @@ typedef struct _winclient
      Constraints         width, height;
      int                 base_w, base_h;
      int                 w_inc, h_inc;
+     int                 grav;
      double              aspect_min, aspect_max;
      char                already_placed;
      char                mwm_decor_border;

@@ -520,56 +520,12 @@ ICCCM_GetGeoms(EWin * ewin, Atom atom_change)
 	     if ((hint.flags & USPosition) ||
 		 ((hint.flags & PPosition)))
 	       {
-/* OK I tried to be ICCCM compliant but it seems apps arent.
- * if (hint.flags & PWinGravity)
- * {
- * switch (hint.win_gravity)
- * {
- * case NorthWestGravity:
- * ewin->client.x = x;
- * ewin->client.y = y;
- * break;
- * case NorthGravity:
- * ewin->client.x = x - (w >> 1);
- * ewin->client.y = y;
- * break;
- * case NorthEastGravity:
- * ewin->client.x = x - w;
- * ewin->client.y = y;
- * break;
- * case EastGravity:
- * ewin->client.x = x - w;
- * ewin->client.y = y - (h >> 1);
- * break;
- * case SouthEastGravity:
- * ewin->client.x = x - w;
- * ewin->client.y = y - h;
- * break;
- * case SouthGravity:
- * ewin->client.x = x - (w >> 1);
- * ewin->client.y = y - h;
- * break;
- * case SouthWestGravity:
- * ewin->client.x = x;
- * ewin->client.y = y - h;
- * break;
- * case WestGravity:
- * ewin->client.x = x;
- * ewin->client.y = y - (h >> 1);
- * break;
- * case CenterGravity:
- * ewin->client.x = x - (w >> 1);
- * ewin->client.y = y - (h >> 1);
- * break;
- * default:
- * break;
- * }
- * }
- * else */
-		  {
-		     ewin->client.x = x;
-		     ewin->client.y = y;
-		  }
+		  if (hint.flags & PWinGravity)
+		     ewin->client.grav = hint.win_gravity;
+		  else
+		     ewin->client.grav = NorthWestGravity;
+		  ewin->client.x = x;
+		  ewin->client.y = y;
 		  if ((hint.flags & PPosition) && (!ewin->sticky))
 		    {
 		       int                 dsk;

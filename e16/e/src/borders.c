@@ -623,6 +623,44 @@ AddToFamily(Window win)
      {
 	x = ewin->client.x;
 	y = ewin->client.y;
+	switch (ewin->client.grav)
+	  {
+	  case NorthWestGravity:
+	     break;
+	  case NorthGravity:
+	     if (ewin->border)
+		y -= ewin->border->border.top + 2;
+	     break;
+	  case NorthEastGravity:
+	     if (ewin->border)
+		x -= ewin->border->border.left + 2;
+	     break;
+	  case EastGravity:
+	     if (ewin->border)
+		x -= ewin->border->border.left + 2;
+	     break;
+	  case SouthEastGravity:
+	     if (ewin->border)
+	       {
+		  x -= ewin->border->border.left + 2;
+		  y -= ewin->border->border.top + 2;
+	       }
+	     break;
+	  case SouthGravity:
+	     if (ewin->border)
+		y -= ewin->border->border.top + 2;
+	     break;
+	  case SouthWestGravity:
+	     if (ewin->border)
+		y -= ewin->border->border.top + 2;
+	     break;
+	  case WestGravity:
+	     break;
+	  case CenterGravity:
+	     break;
+	  default:
+	     break;
+	  }
      }
    /* add it to our list of managed clients */
    AddItem(ewin, "EWIN", ewin->client.win, LIST_TYPE_EWIN);

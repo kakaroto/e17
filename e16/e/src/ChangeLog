@@ -3050,3 +3050,10 @@ Tue Oct  5 11:09:53 PDT 1999
 let the sun AWT developers have a better day finding out the frame size.. 
 now lest wait for sun to producea patch/new version of awt that uses 
 this property :)
+
+-------------------------------------------------------------------------------
+
+Tue Oct  5 11:54:49 PDT 1999
+(Raster)
+
+handle window gravities correctly... :)
