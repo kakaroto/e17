@@ -40,6 +40,16 @@ make
 %install
 make DESTDIR=$RPM_BUILD_ROOT install
 
+# Make all the aircut3.ttf and bg.png files symlinks to 1 of each.
+cd $RPM_BUILD_ROOT%{eroot}/epplet_data
+for i in aircut3.ttf bg.png ; do
+  install -m 644 $RPM_BUILD_DIR/%{name}-%{ver}/epplets/E-Cpu.ABOUT/$i .
+  for j in `find . -name $i -print` ; do
+    rm -f $j
+    ln -s ../../$i $j
+  done
+done
+
 %post
 test -x %{ebin}/e_gen_menu && %{ebin}/e_gen_menu
 /sbin/ldconfig
