@@ -23,7 +23,6 @@ static Evas_Object o_handle1 = NULL, o_handle2, o_handle3, o_handle4, o_edge1, o
 static double backing_x, backing_y, backing_w, backing_h;
 static gint draft_mode = 1;
 static gint zoom_x, zoom_y;
-static gint need_zoom_draw = 0;
 
 static Ebits_Object bits = NULL;
 
@@ -38,11 +37,7 @@ gint
 view_redraw(gpointer data)
 {
    evas_render(view_evas);
-   if (need_zoom_draw)
-     {
-	need_zoom_draw = 0;
-	zoom_redraw(zoom_x, zoom_y);
-     }
+   zoom_redraw(zoom_x, zoom_y);
    return FALSE;
 }
 
@@ -488,13 +483,12 @@ on_view_motion_notify_event            (GtkWidget       *widget,
 {
    zoom_x = event->x;
    zoom_y = event->y;
-   need_zoom_draw = 1;
    if (o_pointer)
      {
 	evas_move(view_evas, o_pointer, event->x, event->y);
-	gtk_idle_add(view_redraw, NULL);
      }
    evas_event_move(view_evas, event->x, event->y);
+   gtk_idle_add(view_redraw, NULL);
    return FALSE;
 }
 
@@ -653,7 +647,6 @@ on_zoom_configure_event                (GtkWidget       *widget,
                                         GdkEventConfigure *event,
                                         gpointer         user_data)
 {
-   need_zoom_draw = 1;
    gtk_idle_add(view_redraw, NULL);
    return FALSE;
 }
@@ -664,7 +657,6 @@ on_zoom_expose_event                   (GtkWidget       *widget,
                                         GdkEventExpose  *event,
                                         gpointer         user_data)
 {
-   need_zoom_draw = 1;
    gtk_idle_add(view_redraw, NULL);
    return FALSE;
 }
