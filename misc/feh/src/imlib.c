@@ -172,4 +172,6 @@ progress (Imlib_Image im, char percent, int update_x, int update_y,
   XClearArea (disp, progwin->win, update_x, update_y, update_w, update_h,
 	      False);
   XFlush (disp);
+  return;
+  percent = 0;
 }

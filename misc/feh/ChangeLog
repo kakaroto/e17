@@ -1,3 +1,7 @@
+Wed Dec 22 02:17:01 1999  Michael Jennings <mej@eterm.org>
+
+	* Removed a warning, and added "make testclean"
+
 Tue Dec 21 23:28:20 1999  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
 
 	* More modify.c submissions from Andrew, and some initial menu

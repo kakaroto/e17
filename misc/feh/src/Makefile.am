@@ -19,5 +19,8 @@ test:
 	    ./$$i ; \
 	  fi ; \
 	done
-	
+
+testclean:
+	-rm -f _test*.jpg
+
 SUBDIRS = ttfonts

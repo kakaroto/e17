@@ -59,3 +59,6 @@ SUBDIRS = src
 
 test:
 	(cd src && $(MAKE) test)
+
+testclean:
+	(cd src && $(MAKE) testclean)
