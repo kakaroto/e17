@@ -558,8 +558,8 @@ e_db_dump_multi_field(char *file, char *file2, int *num_ret)
 		  MEMCPY(ret.dptr, list[*num_ret - 1], char, ret.dsize);
 		  
 		  list[*num_ret - 1][ret.dsize] = 0;
-		  key = dbm_nextkey(dbf1->dbf);
 	       }
+	     key = dbm_nextkey(dbf1->dbf);
 	  }
 	e_db_close(db1);
      }
@@ -612,10 +612,10 @@ e_db_dump_multi_field(char *file, char *file2, int *num_ret)
 		       MEMCPY(ret.dptr, list[*num_ret - 1], char, ret.dsize);
 		       
 		       list[*num_ret - 1][ret.dsize] = 0;
-		       key = dbm_nextkey(dbf1->dbf);
 		    }
 		  FREE(s);
 	       }
+	     key = dbm_nextkey(dbf1->dbf);
 	  }
 	e_db_close(db2);
      }
