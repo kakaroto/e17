@@ -165,6 +165,8 @@ typedef struct cmdlineoptions
   unsigned char randomize:1;
   unsigned char full_screen:1;
   unsigned char draw_filename:1;
+  unsigned char list:1;
+  unsigned char quiet:1;
 
   char *output_file;
   char *bg_file;
@@ -189,6 +191,7 @@ void init_parse_options (int argc, char **argv);
 void init_montage_mode (void);
 void init_index_mode (void);
 void init_slideshow_mode (void);
+void init_list_mode (void);
 int feh_load_image (Imlib_Image ** im, feh_file file);
 void add_file_to_filelist_recursively (char *path, unsigned char level);
 void show_mini_usage (void);

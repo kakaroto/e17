@@ -1,3 +1,16 @@
+Thu Mar 16 17:46:39 2000  Tom Gilbert  <gilbertt@btinternet.com>
+
+	* Added -l, --list mode. Doesn't display images, just analyses
+	them a little and spits out an 'ls' style listing with some basic
+	info. Useful in scripts. I intend to extend this somewhat soon.
+
+Thu Mar 16 16:40:19 2000  Tom Gilbert  <gilbertt@btinternet.com>
+
+	* Added -q, --quiet option. Stops non-fatal image load errors
+	being reported. Useful when you want to do feh * on a directory
+	with some images, some other stuff. You'll only see what imlib2
+	can load.
+
 Wed Mar 15 21:32:48 2000  Tom Gilbert  <gilbertt@btinternet.com>
 
 	* Fixed bug using the short versions of --limit-width and

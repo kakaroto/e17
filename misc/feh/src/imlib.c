@@ -133,37 +133,49 @@ feh_load_image (Imlib_Image ** im, feh_file file)
       switch (err)
 	{
 	case IMLIB_LOAD_ERROR_FILE_DOES_NOT_EXIST:
-	  weprintf ("%s - File does not exist", file->filename);
+	  if (!opt.quiet)
+	    weprintf ("%s - File does not exist", file->filename);
 	  break;
 	case IMLIB_LOAD_ERROR_FILE_IS_DIRECTORY:
-	  weprintf ("%s - Directory specified for image filename",
-		    file->filename);
+	  if (!opt.quiet)
+	    weprintf ("%s - Directory specified for image filename",
+		      file->filename);
 	  break;
 	case IMLIB_LOAD_ERROR_PERMISSION_DENIED_TO_READ:
-	  weprintf
-	    ("%s - You don't have read access to that directory",
-	     file->filename);
+	  if (!opt.quiet)
+	    weprintf
+	      ("%s - You don't have read access to that directory",
+	       file->filename);
 	  break;
 	case IMLIB_LOAD_ERROR_NO_LOADER_FOR_FILE_FORMAT:
-	  weprintf
-	    ("%s - You don't have an Imlib2 loader for that file format",
-	     file->filename);
+	  if (!opt.quiet)
+	    weprintf
+	      ("%s - You don't have an Imlib2 loader for that file format",
+	       file->filename);
 	  break;
 	case IMLIB_LOAD_ERROR_PATH_TOO_LONG:
-	  weprintf ("%s - Path specified is too long", file->filename);
+	  if (!opt.quiet)
+	    weprintf ("%s - Path specified is too long", file->filename);
 	  break;
 	case IMLIB_LOAD_ERROR_PATH_COMPONENT_NON_EXISTANT:
-	  weprintf ("%s - Path component does not exist", file->filename);
+	  if (!opt.quiet)
+	    weprintf ("%s - Path component does not exist", file->filename);
 	  break;
 	case IMLIB_LOAD_ERROR_PATH_COMPONENT_NOT_DIRECTORY:
-	  weprintf ("%s - Path component is not a directory", file->filename);
+	  if (!opt.quiet)
+	    weprintf ("%s - Path component is not a directory",
+		      file->filename);
 	  break;
 	case IMLIB_LOAD_ERROR_PATH_POINTS_OUTSIDE_ADDRESS_SPACE:
 	  /* wtf? :) */
-	  weprintf ("%s - Path points outside address space", file->filename);
+	  if (!opt.quiet)
+	    weprintf ("%s - Path points outside address space",
+		      file->filename);
 	  break;
 	case IMLIB_LOAD_ERROR_TOO_MANY_SYMBOLIC_LINKS:
-	  weprintf ("%s - Too many levels of symbolic links", file->filename);
+	  if (!opt.quiet)
+	    weprintf ("%s - Too many levels of symbolic links",
+		      file->filename);
 	  break;
 	case IMLIB_LOAD_ERROR_OUT_OF_MEMORY:
 	  eprintf ("While loading %s - Out of memory", file->filename);
@@ -173,16 +185,20 @@ feh_load_image (Imlib_Image ** im, feh_file file)
 		   file->filename);
 	  break;
 	case IMLIB_LOAD_ERROR_PERMISSION_DENIED_TO_WRITE:
-	  weprintf ("%s - Cannot write to directory", file->filename);
+	  if (!opt.quiet)
+	    weprintf ("%s - Cannot write to directory", file->filename);
 	  break;
 	case IMLIB_LOAD_ERROR_OUT_OF_DISK_SPACE:
-	  weprintf ("%s - Cannot write - out of disk space", file->filename);
+	  if (!opt.quiet)
+	    weprintf ("%s - Cannot write - out of disk space",
+		      file->filename);
 	  break;
 	case IMLIB_LOAD_ERROR_UNKNOWN:
 	default:
-	  weprintf
-	    ("While loading %s - Unknown error. Attempting to continue",
-	     file->filename);
+	  if (!opt.quiet)
+	    weprintf
+	      ("While loading %s - Unknown error. Attempting to continue",
+	       file->filename);
 	  break;
 	}
       return 0;
@@ -337,12 +353,12 @@ feh_draw_filename (winwidget w)
   Imlib_Image *im = NULL;
 
   if (!fn)
-  {
-      if(opt.full_screen)
-	    fn = imlib_load_font ("20thcent/16");
+    {
+      if (opt.full_screen)
+	fn = imlib_load_font ("20thcent/16");
       else
-	    fn = imlib_load_font ("20thcent/10");
-  }
+	fn = imlib_load_font ("20thcent/10");
+    }
 
   if (!fn)
     {
@@ -353,7 +369,7 @@ feh_draw_filename (winwidget w)
   imlib_context_set_font (fn);
   imlib_context_set_direction (IMLIB_TEXT_TO_RIGHT);
   imlib_context_set_color (0, 0, 0, 255);
-  imlib_context_set_blend(1);
+  imlib_context_set_blend (1);
   imlib_context_set_drawable (w->bg_pmap);
 
   /* Work out how high the font is */
@@ -364,7 +380,7 @@ feh_draw_filename (winwidget w)
     eprintf ("Couldn't create image. Out of memory?");
 
   imlib_context_set_image (im);
-  imlib_image_fill_rectangle(0,0,tw, th);
+  imlib_image_fill_rectangle (0, 0, tw, th);
   imlib_context_set_color (255, 255, 255, 255);
 
   imlib_text_draw (0, 0, w->file->filename);
@@ -372,7 +388,7 @@ feh_draw_filename (winwidget w)
   imlib_render_image_on_drawable (0, 0);
 
   imlib_free_image_and_decache ();
-  imlib_context_set_image(w->im);
+  imlib_context_set_image (w->im);
 
   XSetWindowBackgroundPixmap (disp, w->win, w->bg_pmap);
   XClearArea (disp, w->win, 0, 0, tw, th, False);

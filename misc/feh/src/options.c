@@ -25,7 +25,7 @@ static void check_options (void);
 void
 init_parse_options (int argc, char **argv)
 {
-  static char stropts[] = "a:AbBcdD:f:FhH:ikmo:O:PrR:stTvVwW:xy:z:";
+  static char stropts[] = "a:AbBcdD:f:FhH:iklmo:O:PqrR:stTvVwW:xy:z:";
   static struct option lopts[] = {
     /* actions and macros */
     {"help", 0, 0, 'h'},
@@ -46,6 +46,8 @@ init_parse_options (int argc, char **argv)
     {"noprogressive", 0, 0, 'P'},
     {"ignoreaspect", 0, 0, 'A'},
     {"draw_filename", 0, 0, 'd'},
+    {"list", 0, 0, 'l'},
+    {"quiet", 0, 0, 'q'},
     /* options with values */
     {"output", 1, 0, 'o'},
     {"output-only", 1, 0, 'O'},
@@ -97,11 +99,17 @@ init_parse_options (int argc, char **argv)
 	case 'i':
 	  opt.index = 1;
 	  break;
+	case 'l':
+	  opt.list = 1;
+	  break;
 	case 't':
 	  opt.thumbs = 1;
 	  break;
 	case 'V':
 	  opt.verbose = 1;
+	  break;
+	case 'q':
+	  opt.quiet = 1;
 	  break;
 	case 'x':
 	  opt.borderless = 1;
@@ -231,6 +239,7 @@ check_options (void)
 	  opt.font = opt.title_font = NULL;
 	}
     }
+
   if (opt.full_screen && opt.multiwindow)
     {
       weprintf
@@ -239,11 +248,11 @@ check_options (void)
       opt.multiwindow = 0;
     }
 
-  if ( 0 && opt.draw_filename && !opt.full_screen)
+  if (opt.list && (opt.multiwindow || opt.montage || opt.index))
     {
-      weprintf
-	("Filename drawing is reserved for full screen mode.");
-      opt.draw_filename = 0;
+      weprintf ("list mode can't be combined with other processing modes,\n"
+		"   list mode disabled.");
+      opt.list = 0;
     }
 }
 
@@ -278,6 +287,10 @@ show_usage (void)
 	   "  -h, --help                display this help and exit\n"
 	   "  -v, --version             output version information and exit\n"
 	   "  -V, --verbose             output useful information, progress bars, etc\n"
+	   "  -q, --quiet               Don't report non-fatal errors for failed loads\n"
+	   "                            Verbose and quiet modes are not mutually exclusive,\n"
+	   "                            the first controls informational messages, the\n"
+	   "                            second only errors.\n"
 	   "  -r, --recursive           Recursively expand any directories in FILE to\n"
 	   "                            the content of those directories. (Take it easy)\n"
 	   "  -c, --randomize           When viewing multiple files in a slideshow,\n"
@@ -299,6 +312,9 @@ show_usage (void)
 	   "                            if caching, on exit. This option prevents this\n"
 	   "                            so that you get to keep the local copies.\n"
 	   "                            They will be in /tmp with \"feh\" in the name.\n"
+	   "  -l, --list                Don't display info. Analyse them and display an\n"
+	   "                            'ls' style listing. Useful in scripts hunt out\n"
+	   "                            images of a certain size/resolution/type etc\n"
 	   "  -m, --montage             Enable montage mode. Montage mode creates a new\n"
 	   "                            image consisting of a grid of thumbnails of the\n"
 	   "                            images specified using FILE... When montage mode\n"

@@ -26,8 +26,7 @@ extern int errno;
 
 static feh_file rm_filelist = NULL;
 
-feh_file
-filelist_newitem (char *filename)
+feh_file filelist_newitem (char *filename)
 {
   feh_file newfile;
   char *s;
@@ -57,8 +56,7 @@ feh_file_free (feh_file file)
   free (file);
 }
 
-feh_file
-feh_file_rm_and_free (feh_file list, feh_file file)
+feh_file feh_file_rm_and_free (feh_file list, feh_file file)
 {
   D (("In feh_file_rm_and_free\n"));
   unlink (file->filename);
@@ -66,8 +64,7 @@ feh_file_rm_and_free (feh_file list, feh_file file)
 }
 
 
-feh_file
-filelist_addtofront (feh_file root, feh_file newfile)
+feh_file filelist_addtofront (feh_file root, feh_file newfile)
 {
   D (("In filelist_addtofront\n"));
   newfile->next = root;
@@ -92,7 +89,8 @@ filelist_length (feh_file file)
   return length;
 }
 
-feh_file filelist_last (feh_file file)
+feh_file
+filelist_last (feh_file file)
 {
   D (("In filelist_last\n"));
   if (file)
@@ -103,7 +101,8 @@ feh_file filelist_last (feh_file file)
   return file;
 }
 
-feh_file filelist_first (feh_file file)
+feh_file
+filelist_first (feh_file file)
 {
   D (("In filelist_first\n"));
   if (file)
@@ -114,8 +113,7 @@ feh_file filelist_first (feh_file file)
   return file;
 }
 
-feh_file
-filelist_reverse (feh_file list)
+feh_file filelist_reverse (feh_file list)
 {
   feh_file last;
 
@@ -131,8 +129,7 @@ filelist_reverse (feh_file list)
   return last;
 }
 
-feh_file
-filelist_randomize (feh_file list)
+feh_file filelist_randomize (feh_file list)
 {
   int len, r, i;
   feh_file *farray, f;
@@ -195,8 +192,7 @@ filelist_num (feh_file list, feh_file file)
   return -1;
 }
 
-feh_file
-filelist_remove_file (feh_file list, feh_file file)
+feh_file filelist_remove_file (feh_file list, feh_file file)
 {
   D (("In filelist_remove_file\n"));
   if (!file)
@@ -245,17 +241,22 @@ add_file_to_filelist_recursively (char *path, unsigned char level)
 	{
 	case ENOENT:
 	case ENOTDIR:
-	  weprintf ("%s does not exist - skipping", path);
+	  if (!opt.quiet)
+	    weprintf ("%s does not exist - skipping", path);
 	  break;
 	case ELOOP:
-	  weprintf ("%s - too many levels of symbolic links - skipping",
-		    path);
+	  if (!opt.quiet)
+	    weprintf ("%s - too many levels of symbolic links - skipping",
+		      path);
 	  break;
 	case EACCES:
-	  weprintf ("you don't have permission to open %s - skipping", path);
+	  if (!opt.quiet)
+	    weprintf ("you don't have permission to open %s - skipping",
+		      path);
 	  break;
 	default:
-	  weprintf ("couldn't open %s ", path);
+	  if (!opt.quiet)
+	    weprintf ("couldn't open %s ", path);
 	  break;
 	}
       return;
@@ -270,8 +271,9 @@ add_file_to_filelist_recursively (char *path, unsigned char level)
 	  DIR *dir;
 	  if ((dir = opendir (path)) == NULL)
 	    {
-	      weprintf ("couldn't open directory %s, errno:%d :", path,
-			errno);
+	      if (!opt.quiet)
+		weprintf ("couldn't open directory %s, errno:%d :", path,
+			  errno);
 	      return;
 	    }
 	  de = readdir (dir);
