@@ -116,8 +116,15 @@ EfsdCmdId      efsd_symlink(EfsdConnection *ec, char *from_file, char *to_file);
    monitor for the directory, thus generating an "exists"
    FAM event for each file in the directory, and then
    stopping the monitor afterwards.
+
+   If you want to automatically generate other events
+   for the files in the directory, add options as you
+   see fit. NUM_OPTIONS is the number of options, all
+   the other options are passed using calls to the
+   efsd_op_... calls (see below).
 */
-EfsdCmdId      efsd_listdir(EfsdConnection *ec, char *dirname);
+EfsdCmdId      efsd_listdir(EfsdConnection *ec, char *dirname,
+			    int num_options, ...);
 
 /* Create a directory. Behaves like "mkdir -p", i.e. it can
    create directories recursively. Multiple slashes are
@@ -151,6 +158,29 @@ EfsdCmdId      efsd_readlink(EfsdConnection *ec, char *filename);
 
 /* Returns the mimetype for a file */
 EfsdCmdId      efsd_get_mimetype(EfsdConnection *ec, char *filename);
+
+
+/* Command options:
+ */
+
+/* Send stat events for all files seen in a directory: */
+EfsdOption    *efsd_op_ls_get_stat(void);
+
+/* Send metadata for certain key and data type for all files
+   seen in a directory. The key is duplicated inside, i.e.
+   you need not allocate a copy of the string before passing.
+*/
+EfsdOption    *efsd_op_ls_get_metadata(char *key, EfsdDatatype type);
+
+/* Send MIME type for all files seen in a directory
+*/
+EfsdOption    *efsd_op_ls_get_mimetype(void);
+
+/* "Force" option for commands like rm, cp, as known and loved
+   on the command line.
+*/
+EfsdOption    *efsd_op_fs_force(void);
+EfsdOption    *efsd_op_fs_recursive(void);
 
 #ifdef __cplusplus
 }

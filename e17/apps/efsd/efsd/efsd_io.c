@@ -64,6 +64,7 @@ static int     read_set_metadata_cmd(int sockfd, EfsdCommand *cmd);
 static int     read_get_metadata_cmd(int sockfd, EfsdCommand *cmd);
 static int     read_filechange_event(int sockfd, EfsdEvent *ee);
 static int     read_reply_event(int sockfd, EfsdEvent *ee);
+static int     read_ls_getmeta_op(int sockfd, EfsdOption *eo);
 
 static int     fill_file_cmd(struct iovec *iov, EfsdCommand *ec);
 static int     fill_2file_cmd(struct iovec *iov, EfsdCommand *ec);
@@ -75,8 +76,9 @@ static int     fill_filechange_event(struct iovec *iov, EfsdEvent *ee);
 static int     fill_reply_event(struct iovec *iov, EfsdEvent *ee);
 static int     fill_event(struct iovec *iov, EfsdEvent *ee);
 static int     fill_command(struct iovec *iov, EfsdCommand *ec);
+static int     fill_option(struct iovec *iov, EfsdOption *eo);
 
-static int     len1, len2;
+static int     len1, len2, op_len1;
 
 static int 
 read_data(int sockfd, void *dest, int size)
@@ -231,7 +233,7 @@ write_data(int sockfd, struct msghdr *msg)
 static int     
 read_file_cmd(int sockfd, EfsdCommand *ec)
 {
-  int count = 0, count2;
+  int count = 0, count2, i;
    
   D_ENTER;
 
@@ -239,13 +241,21 @@ read_file_cmd(int sockfd, EfsdCommand *ec)
     D_RETURN_(-1);
   count2 = count;
    
-  if ((count = read_int(sockfd, &(ec->efsd_file_cmd.options))) < 0)
-    D_RETURN_(-1);
-  count2 += count;
-
   if ((count = read_string(sockfd, &(ec->efsd_file_cmd.file))) < 0)
     D_RETURN_(-1);
   count2 += count;
+
+  if ((count = read_int(sockfd, &(ec->efsd_file_cmd.num_options))) < 0)
+    D_RETURN_(-1);
+  count2 += count;
+
+  ec->efsd_file_cmd.options = (EfsdOption*)
+    malloc(sizeof(EfsdOption) *	ec->efsd_file_cmd.num_options);
+  
+  for (i = 0; i < ec->efsd_file_cmd.num_options; i++)
+    {
+      efsd_io_read_option(sockfd, &(ec->efsd_file_cmd.options[i]));
+    }
 
   D_RETURN_(count2);
 }
@@ -254,17 +264,13 @@ read_file_cmd(int sockfd, EfsdCommand *ec)
 static int     
 read_2file_cmd(int sockfd, EfsdCommand *ec)
 {
-  int count = 0, count2;
+  int count = 0, count2, i;
    
   D_ENTER;
 
   if ((count = read_int(sockfd, &(ec->efsd_2file_cmd.id))) < 0)
     D_RETURN_(-1);
   count2 = count;
-
-  if ((count = read_int(sockfd, &(ec->efsd_2file_cmd.options))) < 0)
-    D_RETURN_(-1);
-  count2 += count;
 
   if ((count = read_string(sockfd, &(ec->efsd_2file_cmd.file1))) < 0)
     D_RETURN_(-1);
@@ -274,6 +280,18 @@ read_2file_cmd(int sockfd, EfsdCommand *ec)
     D_RETURN_(-1);
   count2 += count;
   
+  if ((count = read_int(sockfd, &(ec->efsd_2file_cmd.num_options))) < 0)
+    D_RETURN_(-1);
+  count2 += count;
+
+  ec->efsd_2file_cmd.options = (EfsdOption*)
+    malloc(sizeof(EfsdOption) *	ec->efsd_2file_cmd.num_options);
+  
+  for (i = 0; i < ec->efsd_2file_cmd.num_options; i++)
+    {
+      efsd_io_read_option(sockfd, &(ec->efsd_2file_cmd.options[i]));
+    }
+
   D_RETURN_(count2);
 }
 
@@ -427,6 +445,25 @@ read_reply_event(int sockfd, EfsdEvent *ee)
 }
 
 
+static int     
+read_ls_getmeta_op(int sockfd, EfsdOption *eo)
+{
+  int count = 0, count2;
+   
+  D_ENTER;
+
+  if ((count = read_string(sockfd, &(eo->efsd_op_ls_getmeta.key))) < 0)
+    D_RETURN_(-1);
+  count2 = count;
+   
+  if ((count = read_int(sockfd, (int*)&(eo->efsd_op_ls_getmeta.datatype))) < 0)
+    D_RETURN_(-1);
+  count2 += count;
+
+  D_RETURN_(count2);
+}
+
+
 static int
 fill_file_cmd(struct iovec *iov, EfsdCommand *ec)
 {
@@ -440,12 +477,12 @@ fill_file_cmd(struct iovec *iov, EfsdCommand *ec)
   iov[n].iov_len    = sizeof(EfsdCommandType);
   iov[++n].iov_base = &ec->efsd_file_cmd.id;
   iov[n].iov_len    = sizeof(EfsdCmdId);
-  iov[++n].iov_base = &ec->efsd_file_cmd.options;
-  iov[n].iov_len    = sizeof(EfsdOption);
   iov[++n].iov_base = &len1;
   iov[n].iov_len    = sizeof(int);
   iov[++n].iov_base = ec->efsd_file_cmd.file;
   iov[n].iov_len    = len1;
+  iov[++n].iov_base = &ec->efsd_file_cmd.num_options;
+  iov[n].iov_len    = sizeof(int);
 
   D_RETURN_(n+1);
 }
@@ -465,8 +502,6 @@ fill_2file_cmd(struct iovec *iov, EfsdCommand *ec)
   iov[n].iov_len    = sizeof(EfsdCommandType);
   iov[++n].iov_base = &ec->efsd_2file_cmd.id;
   iov[n].iov_len    = sizeof(EfsdCmdId);
-  iov[++n].iov_base = &ec->efsd_2file_cmd.options;
-  iov[n].iov_len    = sizeof(EfsdOption);
   iov[++n].iov_base = &len1;
   iov[n].iov_len    = sizeof(int);
   iov[++n].iov_base = ec->efsd_2file_cmd.file1;
@@ -475,6 +510,8 @@ fill_2file_cmd(struct iovec *iov, EfsdCommand *ec)
   iov[n].iov_len    = sizeof(int);
   iov[++n].iov_base = ec->efsd_2file_cmd.file2;
   iov[n].iov_len    = len2;
+  iov[++n].iov_base = &ec->efsd_2file_cmd.num_options;
+  iov[n].iov_len    = sizeof(int);
 
   D_RETURN_(n+1);
 }
@@ -646,6 +683,7 @@ fill_event(struct iovec *iov, EfsdEvent *ee)
       n = fill_reply_event(iov, ee);
       break;
     default:
+      D(("Unknown event.\n"));
     }
 
   D_RETURN_(n);
@@ -688,11 +726,49 @@ fill_command(struct iovec *iov, EfsdCommand *ec)
       n = fill_close_cmd(iov, ec);
       break;
     default:
+      D(("Unknown command.\n"));
     }
 
   D_RETURN_(n);
 }
 
+
+static int     
+fill_option(struct iovec *iov, EfsdOption *eo)
+{
+  int   n = 0;
+
+  D_ENTER;
+
+  iov[n].iov_base   = &eo->type;
+  iov[n].iov_len    = sizeof(EfsdOptionType);
+  
+  switch (eo->type)
+    {
+    case EFSD_OP_FS_FORCE:
+      break;
+    case EFSD_OP_FS_RECURSIVE:
+      break;
+    case EFSD_OP_LS_GET_STAT:
+      break;
+    case EFSD_OP_LS_GET_MIME:
+      break;
+    case EFSD_OP_LS_GET_META:
+      op_len1 = strlen(eo->efsd_op_ls_getmeta.key) + 1;
+      
+      iov[++n].iov_base = &op_len1;
+      iov[n].iov_len    = sizeof(int);
+      iov[++n].iov_base = eo->efsd_op_ls_getmeta.key;
+      iov[n].iov_len    = op_len1;
+      iov[++n].iov_base = &(eo->efsd_op_ls_getmeta.datatype);
+      iov[n].iov_len    = sizeof(int);
+      break;
+    default:
+      D(("Unknown option.\n"));
+    }
+
+  D_RETURN_(n);
+}
 
 
 /* Non-static stuff below: */
@@ -715,7 +791,7 @@ efsd_io_write_command(int sockfd, EfsdCommand *ec)
 
   if ((n = write_data(sockfd, &msg)) < 0)
     {
-      perror("Error:");
+      perror("Error writing command:");
       D_RETURN_(-1);
     }
 
@@ -779,6 +855,7 @@ efsd_io_write_event(int sockfd, EfsdEvent *ee)
 {
   struct iovec    iov[MAX_IOVEC];
   struct msghdr   msg;
+  int             n;
 
   D_ENTER;
 
@@ -789,7 +866,13 @@ efsd_io_write_event(int sockfd, EfsdEvent *ee)
   msg.msg_iov = iov;
   msg.msg_iovlen = fill_event(iov, ee);
 
-  D_RETURN_(write_data(sockfd, &msg));
+  if ((n = write_data(sockfd, &msg)) < 0)
+    {
+      perror("Error writing event:");
+      D_RETURN_(-1);
+    }
+
+  D_RETURN_(0);
 }
 
 
@@ -816,6 +899,67 @@ efsd_io_read_event(int sockfd, EfsdEvent *ee)
 	  break;
 	default:
 	  D(("Unknown event.\n"));
+	}
+    }
+
+  D_RETURN_(count + result);
+}
+
+
+int      
+efsd_io_write_option(int sockfd, EfsdOption *eo)
+{
+  struct iovec    iov[MAX_IOVEC];
+  struct msghdr   msg;
+  int             n;
+
+  D_ENTER;
+
+  if (!eo)
+    D_RETURN_(-1);
+
+  bzero(&msg, sizeof(struct msghdr));
+  msg.msg_iov = iov;
+  msg.msg_iovlen = fill_option(iov, eo);
+
+  if ((n = write_data(sockfd, &msg)) < 0)
+    {
+      perror("Error writing event:");
+      D_RETURN_(-1);
+    }
+
+  D_RETURN_(0);
+}
+
+
+int      
+efsd_io_read_option(int sockfd, EfsdOption *eo)
+{
+  int result = -1;
+  int count = 0;
+   
+  D_ENTER;
+
+  if (!eo)
+    D_RETURN_(-1);
+
+  if ((count = read_int(sockfd, (int*)&(eo->type))) >= 0)
+    {
+      switch (eo->type)
+	{
+	case EFSD_OP_FS_FORCE:
+	  break;
+	case EFSD_OP_FS_RECURSIVE:
+	  break;
+	case EFSD_OP_LS_GET_STAT:
+	  break;
+	case EFSD_OP_LS_GET_MIME:
+	  break;
+	case EFSD_OP_LS_GET_META:
+	  result = read_ls_getmeta_op(sockfd, eo);
+	  break;
+	default:
+	  D(("Unknown option.\n"));
 	}
     }
 

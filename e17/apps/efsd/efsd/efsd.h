@@ -91,10 +91,32 @@ typedef enum efsd_datatype
 }
 EfsdDatatype;
 
-typedef enum efsd_option
+typedef enum efsd_option_type
 {
-  FORCE         = (1 << 0),
-  RECURSIVE     = (1 << 1)
+  EFSD_OP_FS_FORCE,
+  EFSD_OP_FS_RECURSIVE,
+  EFSD_OP_LS_GET_STAT,
+  EFSD_OP_LS_GET_MIME,
+  EFSD_OP_LS_GET_META
+}
+EfsdOptionType;
+
+typedef struct efsd_option_ls_getmeta
+{
+  char               *key;
+  EfsdDatatype        datatype;
+}
+EfsdOptionLsGetmeta;
+
+
+/* Options -- only the getmeta option
+   needs further parameters, all others
+   are defined simply through their type.
+*/
+typedef union efsd_option
+{
+  EfsdOptionType      type;
+  EfsdOptionLsGetmeta efsd_op_ls_getmeta;
 }
 EfsdOption;
 
@@ -108,8 +130,9 @@ typedef struct efsd_file_cmd
 {
   EfsdCommandType     type;
   EfsdCmdId           id;
-  int                 options;
   char               *file;
+  int                 num_options;
+  EfsdOption         *options;
 }
 EfsdFileCmd;
 
@@ -120,9 +143,10 @@ typedef struct efsd_2file_cmd
 {
   EfsdCommandType     type;
   EfsdCmdId           id;
-  int                 options;
   char               *file1;
   char               *file2;
+  int                 num_options;
+  EfsdOption         *options;
 }
 Efsd2FileCmd;
 

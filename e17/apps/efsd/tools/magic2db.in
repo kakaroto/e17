@@ -169,6 +169,7 @@ sub do_it {
   my $item;
   my %magic;
   my $dropped_level;
+  my $value_prefix = "";
 
   open (MAGIC, $magic_file)
     or die "Can't open magic file $magic_file: ";
@@ -187,13 +188,13 @@ sub do_it {
 
 #	 print "$line";
 	 
-	 if ($line =~ /^(>*)                                # level of the test
-	                ((?:0x)??[0-9a-fA-F]+) \s+          # numerical offset
-	                (be|le)??(byte|short|long|string)   # endianness and type, no date
-                        (&(?:0x)??[0-9a-fA-F]+)?? \s+       # possibly, a mask for the value
-	                ([!<>&\^=]?)((?:0x)??[0-9a-fA-F]+?| # test for either a num. value
+	 if ($line =~ /^(>*)                                 # level of the test
+	                ((?:0x)??[0-9a-fA-F]+) \s+           # numerical offset
+	                (be|le)??(byte|short|long|string)    # endianness and type, no date
+                        (&(?:0x)??[0-9a-fA-F]+)?? \s+        # possibly, a mask for the value
+	                ([!<>&\^=]?)((?:0x)??[0-9a-fA-F]+?|  # test for either a num. value
                         (?:\\\s+|\S){2,}|[^x]{1}) \s+        # or a string
-	                (.*)$/x)                            # and finally, the comment.
+	                (.*)$/x)                             # and finally, the comment.
 	   {
 	     $level = length($1);
 
@@ -283,15 +284,39 @@ sub do_it {
 		   }
 		 elsif ($item eq "&")
 		   {
-		     $magic{"test"} = $EFSD_MAGIC_TEST_MASK;
+		     if ($magic{"type"} == $EFSD_MAGIC_STRING)
+		       {
+			 $value_prefix = "&";
+			 $magic{"test"} = $EFSD_MAGIC_TEST_EQUAL;
+		       }
+		     else
+		       {
+			 $magic{"test"} = $EFSD_MAGIC_TEST_MASK;
+		       }
 		   }
 		 elsif ($item eq "^")
 		   {
-		     $magic{"test"} = $EFSD_MAGIC_TEST_NOTMASK;
+		     if ($magic{"type"} == $EFSD_MAGIC_STRING)
+		       {
+			 $value_prefix = "^";
+			 $magic{"test"} = $EFSD_MAGIC_TEST_EQUAL;
+		       }
+		     else
+		       {
+			 $magic{"test"} = $EFSD_MAGIC_TEST_NOTMASK;
+		       }
 		   }
 		 elsif ($item eq "!")
 		   {
-		     $magic{"test"} = $EFSD_MAGIC_TEST_NOTEQUAL;
+		     if ($magic{"type"} == $EFSD_MAGIC_STRING)
+		       {
+			 $value_prefix = "!";
+			 $magic{"test"} = $EFSD_MAGIC_TEST_EQUAL;
+		       }
+		     else
+		       {
+			 $magic{"test"} = $EFSD_MAGIC_TEST_NOTEQUAL;
+		       }
 		   }
 		 else
 		   {
@@ -306,8 +331,8 @@ sub do_it {
 	     # Write value:
 	     $item = $7;
 	     if ($magic{"type"} eq $EFSD_MAGIC_STRING)
-	       {
-		 $magic{"value"} = $item;
+	       {		 
+		 $magic{"value"} = $value_prefix . $item;
 	       }
 	     else
 	       {

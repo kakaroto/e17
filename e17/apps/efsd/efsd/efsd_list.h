@@ -33,7 +33,8 @@ EfsdList *efsd_list_head(EfsdList *l);
 EfsdList *efsd_list_next(EfsdList *l);
 EfsdList *efsd_list_prev(EfsdList *l);
 
-/* Appends item to end of list and returns pointer to it. */
+/* Appends item to end of list and returns pointer to
+   the new item (NOT to the list!). */
 EfsdList *efsd_list_append(EfsdList *l, void *data);
 
 /* Prepends item and returns pointer to it. */

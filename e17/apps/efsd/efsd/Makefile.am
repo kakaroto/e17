@@ -32,6 +32,8 @@ efsd_SOURCES = \
 	efsd_list.c \
 	efsd_misc.h \
 	efsd_misc.c \
+	efsd_options.h \
+	efsd_options.c \
 	efsd_types.h \
 	efsd_types.c
 
@@ -48,6 +50,8 @@ libefsd_la_SOURCES   = \
 	efsd_debug.c \
 	efsd_io.h \
 	efsd_io.c \
+	efsd_options.h \
+	efsd_options.c \
 	efsd_types.h \
 	efsd_types.c \
 	libefsd.c

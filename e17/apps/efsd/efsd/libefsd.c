@@ -23,6 +23,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 */
 #include <stdlib.h>
+#include <stdarg.h>
 #include <stdio.h>
 #include <fcntl.h>
 #include <sys/types.h>
@@ -43,6 +44,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <efsd_debug.h>
 #include <efsd_io.h>
 #include <efsd_common.h>
+#include <efsd_options.h>
+#include <efsd_macros.h>
 #include <libefsd.h>
 
 struct efsd_connection
@@ -346,10 +349,53 @@ efsd_symlink(EfsdConnection *ec, char *from_file, char *to_file)
 
 
 EfsdCmdId      
-efsd_listdir(EfsdConnection *ec, char *dirname)
+efsd_listdir(EfsdConnection *ec, char *dirname,
+	     int num_options, ...)
 {
+  va_list ap;
+  int i, j, result;
+  EfsdOption *op;
+  EfsdOption **ops = NULL;
+
   D_ENTER;
-  D_RETURN_(file_cmd(ec, EFSD_CMD_LISTDIR, dirname));
+
+  va_start (ap, num_options);
+  ops = (EfsdOption **) malloc(sizeof(EfsdOption*) * num_options);
+
+  if (!ops)
+    D_RETURN_(-1);
+
+  for (i = 0, j = 0; i < num_options; i++)
+    {
+      op = va_arg(ap, EfsdOption*);
+
+      /* sanity check -- pass only options that make sense. */
+      if ((op->type == EFSD_OP_LS_GET_STAT) ||
+	  (op->type == EFSD_OP_LS_GET_MIME) ||
+	  (op->type == EFSD_OP_LS_GET_META))
+	{
+	  ops = realloc(ops, sizeof(EfsdOption*) * ++j);
+	  ops[j-1] = op; 
+	}
+      else
+	{
+	  efsd_option_cleanup(op);
+	  FREE(op);
+	}
+    }
+
+  result = file_cmd(ec, EFSD_CMD_LISTDIR, dirname);
+  
+  for (i = 0; i < j; i++)
+    {
+      efsd_option_cleanup(ops[i]);
+      FREE(ops[i]);
+    }
+
+  FREE(ops);
+  va_end (ap);
+
+  D_RETURN_(result);
 }
 
 
@@ -482,4 +528,44 @@ efsd_get_mimetype(EfsdConnection *ec, char *filename)
 {
   D_ENTER;
   D_RETURN_(file_cmd(ec, EFSD_CMD_GETMIME, filename));
+}
+
+
+EfsdOption    *
+efsd_op_ls_get_stat(void)
+{
+  D_ENTER;
+  D_RETURN_(efsd_option_new_ls_get_stat());
+}
+
+
+EfsdOption    *
+efsd_op_ls_get_metadata(char *key, EfsdDatatype type)
+{
+  D_ENTER;
+  D_RETURN_(efsd_option_new_ls_get_metadata(key, type));
+}
+
+
+EfsdOption    *
+efsd_op_ls_get_mimetype(void)
+{
+  D_ENTER;
+  D_RETURN_(efsd_option_new_ls_get_mimetype());
+}
+
+
+EfsdOption    *
+efsd_op_fs_force(void)
+{
+  D_ENTER;
+  D_RETURN_(efsd_option_new_fs_force());
+}
+
+
+EfsdOption    *
+efsd_op_fs_recursive(void)
+{
+  D_ENTER;
+  D_RETURN_(efsd_option_new_fs_recursive());
 }

@@ -374,6 +374,9 @@ efsd_handle_connections(void)
 	      D(("Reading command ...\n"));
 	      if ( (num_read = efsd_io_read_command(clientfd[i], &ecmd)) >= 0)
 		{
+		  /* handle command -- it is queued if the
+		     resulting event cannot be sent ...
+		  */
 		  if (efsd_handle_client_command(&ecmd, i) < 0)
 		    {
 		      D(("Failed to write command, command queued.\n"));

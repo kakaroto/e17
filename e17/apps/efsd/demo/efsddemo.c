@@ -360,7 +360,7 @@ main(int argc, char** argv)
     printf("Couldn't issue mv command.\n");
 
   /* List contents of a directory */
-  if ((id = efsd_listdir(ec, "/usr/local/enlightenment/bin")) >= 0)
+  if ((id = efsd_listdir(ec, "/usr/local/enlightenment/bin", 0)) >= 0)
     printf("Listing directory, command ID %i\n", id);
   else
     printf("Couldn't issue ls command.\n");

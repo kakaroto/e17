@@ -35,6 +35,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <efsd_misc.h>
 #include <efsd_common.h>
 #include <efsd_macros.h>
+#include <efsd_options.h>
 #include <efsd_types.h>
 
 void
@@ -167,7 +168,6 @@ efsd_cmd_cleanup(EfsdCommand *ec)
   switch (ec->type)
     {
     case EFSD_CMD_REMOVE:
-    case EFSD_CMD_LISTDIR:
     case EFSD_CMD_MAKEDIR:
     case EFSD_CMD_CHMOD:
     case EFSD_CMD_STARTMON:
@@ -175,6 +175,21 @@ efsd_cmd_cleanup(EfsdCommand *ec)
     case EFSD_CMD_STAT:
     case EFSD_CMD_READLINK:
       FREE(ec->efsd_file_cmd.file);
+      break;
+    case EFSD_CMD_LISTDIR:
+      {
+	int i;
+
+	FREE(ec->efsd_file_cmd.file);
+	if (ec->efsd_file_cmd.num_options > 0)
+	  {
+	    for (i = 0; i < ec->efsd_file_cmd.num_options; i++)
+	      {
+		efsd_option_cleanup(&(ec->efsd_file_cmd.options[i]));
+	      }
+	  }
+	FREE(ec->efsd_file_cmd.options);
+      }
       break;
     case EFSD_CMD_MOVE:
     case EFSD_CMD_SYMLINK:

@@ -22,18 +22,19 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 */
-#ifndef efsd_io_h
-#define efsd_io_h
+#ifndef efsd_options_h
+#define efsd_options_h
 
 #include <efsd.h>
 
-int      efsd_io_write_command(int sockfd, EfsdCommand *ecom);
-int      efsd_io_read_command(int sockfd, EfsdCommand *ecom);
+/* Those fill in an existing EfsdOption struct ... */
+EfsdOption  *efsd_option_new_ls_get_stat(void);
+EfsdOption  *efsd_option_new_ls_get_metadata(char *key, EfsdDatatype type);
+EfsdOption  *efsd_option_new_ls_get_mimetype(void);
+EfsdOption  *efsd_option_new_fs_force(void);
+EfsdOption  *efsd_option_new_fs_recursive(void);
 
-int      efsd_io_write_event(int sockfd, EfsdEvent *ee);
-int      efsd_io_read_event(int sockfd, EfsdEvent *ee);
-
-int      efsd_io_write_option(int sockfd, EfsdOption *eo);
-int      efsd_io_read_option(int sockfd, EfsdOption *eo);
+/* ... and this one cleans up. The struct is NOT freed. */
+void    efsd_option_cleanup(EfsdOption *eo);
 
 #endif
