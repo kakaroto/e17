@@ -3,6 +3,8 @@ gettext internationalisation support & patch
 fix to allow setting of which mouse button do what on the pager
 fix to border width handlign in icccm
 fix to warp foucs
+translations into many different languages (de,fr,hu,nl,ru,and more coming)
+
 
 The Road to 0.17 (post 0.16.x):
 File Manager Preview Application (you'll hopefully get a chance to see a little bit of a preview of what E's filemanager will look like)
