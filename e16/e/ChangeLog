@@ -2254,3 +2254,13 @@ Sat Nov 22 17:22:33 CET 2003
 Enable focusing desktop app windows (e.g. nautilus), "breaks" sloppy focus
 when using such.
 Various fixups after imlib2 port.
+
+-------------------------------------------------------------------------------
+
+Mon Nov 24 18:08:11 CET 2003
+(Kim)
+
+Attempt to fix "walking" iconboxes in certain themes when not anchored
+left or top.
+Re-enable iconifying by dragging from pager to iconbox.
+Iconbox namespace and code shuffling.
