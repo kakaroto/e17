@@ -55,7 +55,8 @@ winwidget_allocate (void)
   return ret;
 }
 
-winwidget winwidget_create_from_image (Imlib_Image * im, char *name)
+winwidget
+winwidget_create_from_image (Imlib_Image * im, char *name)
 {
   winwidget ret = NULL;
 
@@ -82,7 +83,8 @@ winwidget winwidget_create_from_image (Imlib_Image * im, char *name)
   return ret;
 }
 
-winwidget winwidget_create_from_file (char *filename, char *name)
+winwidget
+winwidget_create_from_file (char *filename, char *name)
 {
   winwidget ret = NULL;
 
@@ -129,9 +131,15 @@ winwidget_create_window (winwidget ret, int w, int h)
 {
   XSetWindowAttributes attr;
   XClassHint *xch;
-  XSizeHints sh;
+  Screen *scr;
 
   D (("In winwidget_create_window\n"));
+
+  scr = ScreenOfDisplay (disp, DefaultScreen (disp));
+  if (w > scr->width)
+    w = scr->width;
+  if (h > scr->height)
+    h = scr->height;
 
   attr.backing_store = NotUseful;
   attr.override_redirect = False;
@@ -158,23 +166,12 @@ winwidget_create_window (winwidget ret, int w, int h)
   xch->res_class = "feh";
   XSetClassHint (disp, ret->win, xch);
   XFree (xch);
-  /* set the size hints */
-  sh.flags = PSize | PMinSize | PMaxSize;
-  sh.width = w;
-  sh.height = h;
-  sh.min_width = w;
-  sh.min_height = h;
-  sh.max_width = w;
-  sh.max_height = h;
-  XSetWMNormalHints (disp, ret->win, &sh);
-
   /* set the icons name property */
   XSetIconName (disp, ret->win, "feh");
   /* set the command hint */
   XSetCommand (disp, ret->win, cmdargv, cmdargc);
 
   winwidget_register (ret);
-
 }
 
 void
@@ -353,25 +350,13 @@ winwidget_unregister (winwidget win)
   XDeleteContext (disp, win->win, xid_context);
 }
 
-winwidget winwidget_get_from_window (Window win)
+winwidget
+winwidget_get_from_window (Window win)
 {
-#if 0
-  /* Loop through windows */
-  int i;
-  D (("In winwidget_get_from_window, Window is %ld\n", win));
-  for (i = 0; i < window_num; i++)
-    {
-      if (windows[i]->win == win)
-	return windows[i];
-    }
-  D (("Oh dear, returning NULL from winwidget_get_from_window\n"));
-  return NULL;
-#endif
-
   winwidget ret = NULL;
 
-  D(("About to XFindContext\n"));
-  if (XFindContext (disp, win, xid_context, (XPointer *) &ret) != XCNOENT)
+  D (("About to XFindContext\n"));
+  if (XFindContext (disp, win, xid_context, (XPointer *) & ret) != XCNOENT)
     return ret;
   else
     return NULL;

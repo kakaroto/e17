@@ -22,7 +22,6 @@
 #include "main.h"
 #include "modify.h"
 
-/* Main is here! Main kicks ass. FEAR MAIN :) */
 int
 main (int argc, char **argv)
 {

@@ -3,31 +3,14 @@ Things I need to do to this thang ::)
 Feel free to add stuff to it. I am very happy to delete any lines other
 people add =P
 
-o Checkerboard bg [HIGH PRIORITY]
-  I currently use a checkerboard bg for zooming out. This is very cool ::)
-  But. I create one per window, at the same size as the image the window
-  contains. This is not good. It uses memory, lots of. What I need to do is
-  to create a small tile of that pattern, and tile it onto each image when
-  needed.
-
 o Setting the X background
   May as well...
 
 o Index mode
-  Currently very hard coded, needs more options, and more dynamism. I need
-  to check font metrics and center the text, make sure it isn't too big,
-  etc.
+  I need to be able to center the text.
 
 o Montage mode
   Need to do transparent blending for images with no alpha channel
 
 o Menu.
-  Need to create a right-click menu for doing stuff with. Maybe I'll steal
-  the menu code from Eterm ;-)
-
-o Slideshow mode
-  Move to next image on timer. User-defined interval. (Pinch DoIn from e ;)
-
-o Slideshow mode
-  Urm. I'm starting to *really* like this mode, so I think I might make it
-  the default...
+  Need to create a right-click menu for doing stuff with.

@@ -1,8 +1,8 @@
 Principle author.
 Tom Gilbert <gilbertt@tomgilbert.freeserve.co.uk>
 
-Image modification functions (modify.c)
 Andrew Glover <aglover@axe.net>
+    - Image modification functions (modify.c)
 
 Thanks to:
 Michael Jennings <mej@eterm.org>
