@@ -216,7 +216,7 @@ init_collage_mode(void)
    {
       char output_buf[1024];
       if (opt.output_dir)
-        snprintf(output_buf,1024,"%s/%S", opt.output_dir, opt.output_file);
+        snprintf(output_buf,1024,"%s/%s", opt.output_dir, opt.output_file);
       else 
         strncpy(output_buf,opt.output_file, 1024);
       gib_imlib_save_image(im_main, output_buf);

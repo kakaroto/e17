@@ -1045,7 +1045,7 @@ show_usage(void)
            " <KEYPAD RIGHT>             Move the image to the right\n"
            " <KEYPAD +>                 Zoom in\n"
            " <KEYPAD ->                 Zoom out\n"
-           " <KEYPAD *>                 Zoom to 100%\n"
+           " <KEYPAD *>                 Zoom to 100%%\n"
            " <KEYPAD />                 Zoom to fit the window\n" "\n"
            " MOUSE ACTIONS\n"
            " When viewing an image, a click of mouse button 1 moves to the next image\n"

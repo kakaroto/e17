@@ -254,16 +254,12 @@ feh_load_image(Imlib_Image * im, feh_file * file)
 char *
 feh_http_load_image(char *url)
 {
-   char *tmp;
    char *tmpname;
    char *tmpname_timestamper = NULL;
    char *basename;
-   char cppid[10];
-   static long int i = 1;
    char *newurl = NULL;
    char randnum[20];
    int rnum;
-   pid_t ppid;
    char *path = NULL;
 
    D_ENTER(4);
@@ -287,7 +283,7 @@ feh_http_load_image(char *url)
       pid_t ppid;
 
       ppid = getpid();
-      snprintf(cppid, sizeof(cppid), "%06ld", ppid);
+      snprintf(cppid, sizeof(cppid), "%06ld", (long)ppid);
       tmpname_timestamper =
          estrjoin("", "/tmp/feh_", cppid, "_", basename, NULL);
    }
@@ -545,12 +541,12 @@ feh_http_load_image(char *url)
          if (opt.wget_timestamp)
          {
             execlp("wget", "wget", "-N", "-O", tmpname_timestamper, newurl,
-                   quiet, NULL);
+                   quiet, (char*) NULL);
          }
          else
          {
             execlp("wget", "wget", "--cache", "0", newurl, "-O", tmpname,
-                   quiet, NULL);
+                   quiet, (char*) NULL);
          }
          eprintf("url: exec failed: wget:");
       }
@@ -760,7 +756,6 @@ feh_draw_caption(winwidget w)
    int x, y;
    Imlib_Image im = NULL;
    static DATA8 atab[256];
-   struct stat st;
    char *p;
    gib_list *lines, *l;
    static gib_style *caption_style = NULL;
@@ -932,8 +927,8 @@ feh_display_status(char stat)
 }
 
 void feh_edit_inplace_orient(winwidget w, int orientation) {
-  int orient, ret;
-  Imlib_Image old, new;
+  int ret;
+  Imlib_Image old;
   D_ENTER(4);
   if(!w->file
     || !w->file->data 

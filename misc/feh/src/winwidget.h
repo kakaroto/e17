@@ -115,6 +115,7 @@ struct __winwidget
 
 int winwidget_loadimage(winwidget winwid, feh_file * filename);
 void winwidget_show(winwidget winwid);
+void winwidget_show_menu(winwidget winwid);
 void winwidget_hide(winwidget winwid);
 void winwidget_destroy_all(void);
 void winwidget_free_image(winwidget w);

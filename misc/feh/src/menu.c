@@ -302,10 +302,10 @@ feh_menu_find_selected_r(feh_menu * m, feh_menu **parent)
       D_RETURN(4, i);
     } else if (i->submenu) {
       mm = feh_menu_find(i->submenu);
-      if (mm)
+      if (mm) {
         ii = feh_menu_find_selected_r(mm, parent);
-      if (ii) {
-        D_RETURN(4, ii);
+      	if (ii)
+       		D_RETURN(4, ii);
       }
     }
   }
@@ -1053,8 +1053,6 @@ feh_menu_draw_toggle_at(int x,
                         int oy,
                         int on)
 {
-  int xc, yc;
-
   D_ENTER(5);
   x -= ox;
   y -= oy;
@@ -1251,7 +1249,6 @@ feh_menu_init_common()
   int num_desks, i;
   char buf[30];
   feh_menu *m;
-  feh_menu_item *mi;
 
   D_ENTER(4);
 
@@ -1838,7 +1835,6 @@ feh_menu_cb_sort_randomize(feh_menu * m,
   i = NULL;
   data = NULL;
 }
-
 
 static feh_menu *
 feh_menu_func_gen_jump(feh_menu * m,

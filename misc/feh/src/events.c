@@ -527,7 +527,7 @@ feh_event_handle_MotionNotify(XEvent * ev)
       winwid = winwidget_get_from_window(ev->xmotion.window);
       if (winwid)
       {
-         if (opt.mode = MODE_NEXT)
+         if (opt.mode == MODE_NEXT)
          {
             opt.mode = MODE_PAN;
             winwid->mode = MODE_PAN;

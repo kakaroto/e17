@@ -172,13 +172,10 @@ stroflen(char c, int l)
 /* free the result please */
 char *feh_unique_filename(char *path, char *basename)
 {
-   char *tmp;
    char *tmpname;
-   char *tmpname_timestamper = NULL;
    char num[10];
    char cppid[10];
    static long int i = 1;
-   int rnum;
    struct stat st;
    pid_t ppid;
 
@@ -188,7 +185,7 @@ char *feh_unique_filename(char *path, char *basename)
       i = 1;
 
    ppid = getpid();
-   snprintf(cppid, sizeof(cppid), "%06ld", ppid);
+   snprintf(cppid, sizeof(cppid), "%06ld", (long)ppid);
 
    /* make sure file doesn't exist */
    do

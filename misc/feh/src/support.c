@@ -161,7 +161,6 @@ feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
       XGCValues gcvalues;
       GC gc;
       int w, h;
-      XImage *xi;
 
       D(3, ("Falling back to XSetRootWindowPixmap\n"));
       
