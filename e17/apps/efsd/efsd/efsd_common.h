@@ -31,5 +31,6 @@ char   *efsd_get_socket_file(void);
 void    efsd_remove_socket_file(void);
 
 char   *efsd_get_magic_db(void);
+char   *efsd_get_patterns_db(void);
 
 #endif

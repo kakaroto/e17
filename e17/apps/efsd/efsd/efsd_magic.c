@@ -32,9 +32,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <sys/param.h>
 #include <sys/statfs.h>
 #include <sys/un.h>
+#include <netinet/in.h>
 #include <string.h>
 #include <unistd.h>
 #include <errno.h>
+#include <fnmatch.h>
 #include <Edb.h>
 
 #ifdef __EMX__
@@ -54,6 +56,16 @@ typedef enum efsd_magic_type
   EFSD_MAGIC_STRING
 }
 EfsdMagicType;
+
+typedef enum efsd_magic_test
+{
+  EFSD_MAGIC_TEST_EQUAL,
+  EFSD_MAGIC_TEST_SMALLER,
+  EFSD_MAGIC_TEST_LARGER,
+  EFSD_MAGIC_TEST_MASK,
+  EFSD_MAGIC_TEST_NOTMASK
+}
+EfsdMagicTest;
 
 typedef enum efsd_byteorder
 {
@@ -88,6 +100,7 @@ typedef struct efsd_magic
 
   int                 use_mask;
   int                 mask;
+  EfsdMagicTest       test;
 
   char               *mimetype;
 
@@ -129,7 +142,7 @@ static EfsdByteorder host_byteorder = EFSD_BYTEORDER_SMALL;
 #define	NTFS_SUPER_MAGIC      0x5346544e
 
 
-/* The root node of the magic checks tree. It's test-related
+/* The root node of the magic checks tree. Its test-related
    entries aren't used, it's only a container for the first
    level's list of EfsdMagics.
 */
@@ -138,6 +151,14 @@ static EfsdMagic  magic;
 /* The db where everything is stored. */
 static E_DB_File *magic_db = NULL;
 
+static char     **patterns = NULL;
+static char     **pattern_mimetypes = NULL;
+static int        num_patterns;
+
+/* db helper functions */
+int               e_db_int8_t_get(E_DB_File * db, char *key, u_int8_t *val);
+int               e_db_int16_t_get(E_DB_File * db, char *key, u_int16_t *val);
+int               e_db_int32_t_get(E_DB_File * db, char *key, u_int32_t *val);
 
 static EfsdMagic *magic_new(char *key, char *params);
 static void       magic_free(EfsdMagic *em);
@@ -146,11 +167,53 @@ static void       magic_add_child(EfsdMagic *em_dad, EfsdMagic *em_kid);
 static char      *magic_test_level(EfsdMagic *em, FILE *f);
 static char      *magic_test_perform(EfsdMagic *em, FILE *f);
 static void       magic_init_level(char *key, char *ptr, EfsdMagic *em_parent);
+static void       pattern_init(char *pattern_dbfile);
 static void       fix_byteorder(EfsdMagic *em);
 
 static char      *magic_test_fs(char *filename);
 static char      *magic_test_data(char *filename);
-static char      *magic_test_extension(char *filename);
+static char      *magic_test_pattern(char *filename);
+
+int               
+e_db_int8_t_get(E_DB_File * db, char *key, u_int8_t *val)
+{
+  int result;
+  int v;
+  
+  D_ENTER;
+  
+  result = e_db_int_get(db, key, &v);
+  *val = (u_int8_t)v;
+  D_RETURN_(result);
+}
+
+
+int               
+e_db_int16_t_get(E_DB_File * db, char *key, u_int16_t *val)
+{
+  int result;
+  int v;
+  
+  D_ENTER;
+  
+  result = e_db_int_get(db, key, &v);
+  *val = (u_int16_t)v;
+  D_RETURN_(result);
+}
+
+
+int               
+e_db_int32_t_get(E_DB_File * db, char *key, u_int32_t *val)
+{
+  int result;
+  int v;
+  
+  D_ENTER;
+  
+  result = e_db_int_get(db, key, &v);
+  *val = (u_int32_t)v;
+  D_RETURN_(result);
+}
 
 
 static EfsdMagic *
@@ -176,10 +239,18 @@ magic_new(char *key, char *params)
   switch (em->type)
     {
     case EFSD_MAGIC_8:
+      em->value = NEW(u_int8_t);
+      e_db_int8_t_get(magic_db, key, (u_int8_t*)em->value);
+      fix_byteorder(em);
+      break;
     case EFSD_MAGIC_16:
+      em->value = NEW(u_int16_t);
+      e_db_int16_t_get(magic_db, key, (u_int16_t*)em->value);
+      fix_byteorder(em);
+      break;
     case EFSD_MAGIC_32:
-      em->value = malloc(sizeof(int));
-      e_db_int_get(magic_db, key, (int*)em->value);      
+      em->value = NEW(u_int32_t);
+      e_db_int32_t_get(magic_db, key, (u_int32_t*)em->value);
       fix_byteorder(em);
       break;
     case EFSD_MAGIC_STRING:
@@ -193,6 +264,9 @@ magic_new(char *key, char *params)
     em->use_mask = TRUE;
   else
     em->use_mask = FALSE;
+
+  sprintf(params, "%s", "/test");
+  e_db_int_get(magic_db, key, (int*)&em->test);
 
   sprintf(params, "%s", "/mimetype");
   em->mimetype = e_db_str_get(magic_db, key);
@@ -272,7 +346,7 @@ magic_add_child(EfsdMagic *em_dad, EfsdMagic *em_kid)
 static void
 fix_byteorder(EfsdMagic *em)
 {
-  size_t size = 0;
+  int    size = 0;
   int    i;
   char   tmp[4];
   char  *data;
@@ -340,7 +414,7 @@ magic_test_perform(EfsdMagic *em, FILE *f)
 
 	fread(&val, sizeof(val), 1, f);
 	if (em->use_mask)
-	  val &= em->mask;
+	  val &= (u_int8_t)em->mask;
 
 	if (val == *((u_int8_t*)em->value))
 	  { D_RETURN_(em->mimetype); }
@@ -353,7 +427,7 @@ magic_test_perform(EfsdMagic *em, FILE *f)
 
 	fread(&val, sizeof(val), 1, f);
 	if (em->use_mask)
-	  val &= em->mask;
+	  val &= (u_int16_t)em->mask;
 
 	if (val == *((u_int16_t*)em->value))
 	  { D_RETURN_(em->mimetype); }
@@ -365,7 +439,7 @@ magic_test_perform(EfsdMagic *em, FILE *f)
 
 	fread(&val, sizeof(val), 1, f);
 	if (em->use_mask)
-	  val &= em->mask;
+	  val &= (u_int32_t)em->mask;
 
 	D(("Performing long test: %x == %x\n", val, *((u_int32_t*)em->value)));
 
@@ -596,23 +670,80 @@ magic_test_data(char *filename)
 }
 
 
-static char      *
-magic_test_extension(char *filename)
+static void       
+pattern_init(char *pattern_dbfile)
 {
+  E_DB_File *db;
+  int i;
+ 
   D_ENTER;
+
+  patterns = e_db_dump_key_list(pattern_dbfile, &num_patterns);
+
+  if (num_patterns > 0)
+    {
+      pattern_mimetypes = malloc(sizeof(char*) * num_patterns);
+      
+      db = e_db_open(pattern_dbfile);
+      
+      for (i = 0; i < num_patterns; i++)
+	pattern_mimetypes[i] = e_db_str_get(db, patterns[i]);
+      
+      e_db_close(db);
+    }  
+
+  D_RETURN;
+}
+
+
+static char      *
+magic_test_pattern(char *filename)
+{
+  char *ptr;
+  int   i;
+
+  D_ENTER;
+
+  if (!filename)
+    D_RETURN_(NULL);
+
+  for (i = 0; i < num_patterns; i++)
+    {
+      ptr = strrchr(filename, '/');
+      if (!ptr)
+	ptr = filename;
+      else
+	ptr++;
+
+      D(("Testing for pattern: %s\n", ptr));
+
+      if (!fnmatch(patterns[i], ptr, FNM_PATHNAME | FNM_PERIOD))
+	{
+	  D_RETURN(pattern_mimetypes[i]);
+	}
+    }
+
   D_RETURN_(NULL);
 }
 
 
 void       
-efsd_magic_init(char *dbfile)
+efsd_magic_init(char *magic_dbfile, char *pattern_dbfile)
 {
   char        key[MAXPATHLEN];
   char       *ptr;
 
   D_ENTER;
+
+  if (!magic_dbfile || magic_dbfile[0] == '\0' ||
+      !pattern_dbfile || pattern_dbfile[0] == '\0')
+    {
+      D(("Missing db files.\n"));
+      D_RETURN;
+    }
   
-  magic_db = e_db_open_read(dbfile);
+  magic_db = e_db_open_read(magic_dbfile);
+
   if (!magic_db)
     { 
       D(("Could not open magic db!\n"));
@@ -625,6 +756,8 @@ efsd_magic_init(char *dbfile)
   magic_init_level(key, ptr, &magic);
   e_db_close(magic_db);
 
+  pattern_init(pattern_dbfile);
+
   D_RETURN;
 }
 
@@ -632,10 +765,21 @@ efsd_magic_init(char *dbfile)
 void       
 efsd_magic_cleanup(void)
 {
+  int i;
+
   D_ENTER;
 
   magic_cleanup_level(&magic);
   magic.kids = NULL;
+
+  for (i = 0; i < num_patterns; i++)
+    {
+      FREE(patterns[i]);
+      FREE(pattern_mimetypes[i]);
+    }
+
+  FREE(patterns);
+  FREE(pattern_mimetypes);
 
   D_RETURN;
 }
@@ -660,11 +804,11 @@ efsd_magic_get(char *filename)
 
   D(("magic: data check failed.\n"));
 
-  result = magic_test_extension(filename);
+  result = magic_test_pattern(filename);
   if (result)
     D_RETURN_(result);
 
-  D(("magic: file extension check failed.\n"));
+  D(("magic: file pattern check failed.\n"));
   
   D_RETURN_(NULL);
 }

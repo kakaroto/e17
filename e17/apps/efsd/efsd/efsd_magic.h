@@ -25,8 +25,21 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef __efsd_magic_h
 #define __efsd_magic_h
 
-void       efsd_magic_init(char *dbfile);
+/* Initializes the magic tests from a given db file,
+   and the patterns from a second one.
+ */
+void       efsd_magic_init(char *magic_dbfile,
+			   char *pattern_dbfile);
+
+/* Clears the current magic test hierarchy.
+ */
 void       efsd_magic_cleanup(void);
+
+/* Returns mimetype for a given file, NULL when
+   nothing could be found. If you want to keep
+   the result around, strdup() it. Otherwise,
+   you don't have to free it.
+*/
 char      *efsd_magic_get(char *filename);
 
 #endif

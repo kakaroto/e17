@@ -232,8 +232,8 @@ void handle_efsd_event(EfsdEvent *ee)
 		       ee->efsd_reply_event.command.efsd_file_cmd.file);
 
 	    if (S_ISDIR(st->st_mode))
-		printf("%s is a directory.\n",
-		       ee->efsd_reply_event.command.efsd_file_cmd.file);
+	      printf("%s is a directory.\n",
+		     ee->efsd_reply_event.command.efsd_file_cmd.file);
 
 	  }
 	  break;
@@ -276,11 +276,14 @@ demo_sighandler(int signal)
 
 
 void
-mime_type_tests(void)
+mime_type_tests(int argc, char** argv)
 {
-  printf("Mimetype for /bin: %s\n", efsd_get_file_mimetype("/bin"));
-  printf("Mimetype for xcf: %s\n", efsd_get_file_mimetype("/usr/local/data/xcf/hp.xcf"));
-  printf("Mimetype for tcpdump: %s\n", efsd_get_file_mimetype("/usr/local/devel/norm/traces/normal-slogin-mule-curry.trace"));
+  int i;
+
+  for (i = 0; i < argc; i++)
+    {
+      printf("Mimetype for '%s': '%s'\n", argv[i], efsd_get_file_mimetype(argv[i]));
+    }
 }
 
 
@@ -309,7 +312,10 @@ main(int argc, char** argv)
 
   
   /* Mime type tests ... */
-  mime_type_tests();
+  if (blocking)
+    mime_type_tests(argc-1, &argv[1]);
+  else
+    mime_type_tests(argc-2, &argv[2]);
   
 
   /* Now some fs monitoring tests ... */

@@ -486,7 +486,8 @@ efsd_get_file_mimetype(char *filename)
 
   if (!initialized)
     {
-      efsd_magic_init(efsd_get_magic_db());
+      efsd_magic_init(efsd_get_magic_db(),
+		      efsd_get_patterns_db());
       initialized = 1;
     }
 

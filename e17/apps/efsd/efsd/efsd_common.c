@@ -114,3 +114,19 @@ efsd_get_magic_db(void)
   D_RETURN_(s);
 }
 
+
+char   *
+efsd_get_patterns_db(void)
+{
+  static char s[4096] = "\0";
+  
+  D_ENTER;
+
+  if (s[0] != '\0')
+    D_RETURN_(s);
+
+  snprintf(s, sizeof(s), "%s/patterns.db", efsd_get_efsd_dir());
+  s[sizeof(s)-1] = '\0';
+
+  D_RETURN_(s);
+}
