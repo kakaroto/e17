@@ -1,7 +1,7 @@
 #include "epplet.h"
 
 #define EPPLET_NAME 	"E-Exec"
-#define EPPLET_VERSION 	"0.1"
+#define EPPLET_VERSION 	"0.2"
 #define EPPLET_INFO	"Exec a command given by the user"
 
 #define MAX_HIST_LEN	15
@@ -97,23 +97,24 @@ main(int argc, char *argv[])
 {
    atexit(Epplet_cleanup);
 
-   Epplet_Init(EPPLET_NAME, EPPLET_VERSION, EPPLET_INFO, 5, 2, argc, argv, 0);
+   Epplet_Init(EPPLET_NAME, EPPLET_VERSION, EPPLET_INFO, 4, 3, argc, argv, 0);
 
    Epplet_gadget_show(Epplet_create_button(NULL, NULL, 2, 2,
 				 12, 12, "CLOSE", 0, NULL, cb_close, NULL));
-   //Epplet_gadget_show(Epplet_create_label(18, 2, "E-Exec", 2));
 
-   Epplet_gadget_show(Epplet_create_button(NULL, NULL, 16, 2,
+   Epplet_gadget_show(Epplet_create_label(18, 2, "E-Exec", 2));
+
+   Epplet_gadget_show(Epplet_create_button(NULL, NULL, 2, 16,
 		   12, 12, "ARROW_UP", 0, NULL, hist_last, NULL));
 
-   Epplet_gadget_show(Epplet_create_button(NULL, NULL, 30, 2,
+   Epplet_gadget_show(Epplet_create_button(NULL, NULL, 16, 16,
 		   12, 12, "ARROW_DOWN", 0, NULL, hist_next, NULL));
 
-   Epplet_gadget_show(Epplet_create_button(NULL, NULL, 44, 2,
+   Epplet_gadget_show(Epplet_create_button(NULL, NULL, 44, 16,
 			   12, 12, "PLAY", 0, NULL, run_contents, NULL));
 
    textbox =
-      Epplet_create_textbox(NULL, NULL, 2, 16, 76, 14, 2, run_contents, NULL);
+      Epplet_create_textbox(NULL, NULL, 2, 32, 60, 14, 2, run_contents, NULL);
 
    Epplet_gadget_show(textbox);
 
