@@ -524,29 +524,26 @@ ICCCM_GetGeoms(EWin * ewin, Atom atom_change)
 }
 
 static char        *
-WinGetWMCommand(Window win)
+Estrlistjoin(char **pstr, int nstr)
 {
-   int                 cargc, i, size;
-   char              **cargv, *s;
+   int                 i, size;
+   char               *s;
+
+   if (!pstr || nstr <= 0)
+      return NULL;
 
    s = NULL;
 
-   if (!XGetCommand(disp, win, &cargv, &cargc))
-      return NULL;
-   if (cargc <= 0)
-      return NULL;
-
-   size = strlen(cargv[0]) + 1;
+   size = strlen(pstr[0]) + 1;
    s = Emalloc(size);
-   strcpy(s, cargv[0]);
-   for (i = 1; i < cargc; i++)
+   strcpy(s, pstr[0]);
+   for (i = 1; i < nstr; i++)
      {
-	size += strlen(cargv[i]) + 1;
+	size += strlen(pstr[i]) + 1;
 	s = Erealloc(s, size);
 	strcat(s, " ");
-	strcat(s, cargv[i]);
+	strcat(s, pstr[i]);
      }
-   XFreeStringList(cargv);
 
    return s;
 }
@@ -554,11 +551,10 @@ WinGetWMCommand(Window win)
 void
 ICCCM_GetInfo(EWin * ewin, Atom atom_change)
 {
-   XClassHint          hint;
-   XTextProperty       xtp;
-
    if (atom_change == 0 || atom_change == ECORE_X_ATOM_WM_CLASS)
      {
+	XClassHint          hint;
+
 	_EFREE(ewin->icccm.wm_res_name);
 	_EFREE(ewin->icccm.wm_res_class);
 
@@ -576,52 +572,45 @@ ICCCM_GetInfo(EWin * ewin, Atom atom_change)
      {
 	_EFREE(ewin->icccm.wm_command);
 
-	ewin->icccm.wm_command = WinGetWMCommand(ewin->client.win);
-
+	ewin->icccm.wm_command_argv =
+	   ecore_x_window_prop_string_list_get(ewin->client.win,
+					       ECORE_X_ATOM_WM_COMMAND,
+					       &(ewin->icccm.wm_command_argc));
 	if (!ewin->icccm.wm_command && ewin->client.win != ewin->client.group)
-	   ewin->icccm.wm_command = WinGetWMCommand(ewin->client.group);
+	   ewin->icccm.wm_command_argv =
+	      ecore_x_window_prop_string_list_get(ewin->client.group,
+						  ECORE_X_ATOM_WM_COMMAND,
+						  &(ewin->icccm.
+						    wm_command_argc));
+	ewin->icccm.wm_command =
+	   Estrlistjoin(ewin->icccm.wm_command_argv,
+			ewin->icccm.wm_command_argc);
      }
 
    if (atom_change == 0 || atom_change == ECORE_X_ATOM_WM_CLIENT_MACHINE)
      {
 	_EFREE(ewin->icccm.wm_machine);
 
-	if (XGetWMClientMachine(disp, ewin->client.win, &xtp) ||
-	    XGetWMClientMachine(disp, ewin->client.group, &xtp))
-	  {
-	     ewin->icccm.wm_machine = Estrdup((char *)xtp.value);
-	     XFree(xtp.value);
-	  }
+	ewin->icccm.wm_machine =
+	   ecore_x_window_prop_string_get(ewin->client.win,
+					  ECORE_X_ATOM_WM_CLIENT_MACHINE);
+	if (!ewin->icccm.wm_machine && ewin->client.win != ewin->client.group)
+	   ewin->icccm.wm_machine =
+	      ecore_x_window_prop_string_get(ewin->client.group,
+					     ECORE_X_ATOM_WM_CLIENT_MACHINE);
      }
 
    if (atom_change == 0 || atom_change == ECORE_X_ATOM_WM_ICON_NAME)
      {
 	_EFREE(ewin->icccm.wm_icon_name);
 
-	if (XGetWMIconName(disp, ewin->client.win, &xtp) ||
-	    XGetWMIconName(disp, ewin->client.group, &xtp))
-	  {
-	     if (xtp.encoding == XA_STRING)
-	       {
-		  ewin->icccm.wm_icon_name = Estrdup((char *)xtp.value);
-	       }
-	     else
-	       {
-		  char              **cl;
-		  Status              status;
-		  int                 n;
-
-		  status = XmbTextPropertyToTextList(disp, &xtp, &cl, &n);
-		  if (status >= Success && n > 0 && cl[0])
-		    {
-		       ewin->icccm.wm_icon_name = Estrdup(cl[0]);
-		       XFreeStringList(cl);
-		    }
-		  else
-		     ewin->icccm.wm_icon_name = Estrdup((char *)xtp.value);
-	       }
-	     XFree(xtp.value);
-	  }
+	ewin->icccm.wm_icon_name =
+	   ecore_x_window_prop_string_get(ewin->client.win,
+					  ECORE_X_ATOM_WM_ICON_NAME);
+	if (!ewin->icccm.wm_icon_name && ewin->client.win != ewin->client.group)
+	   ewin->icccm.wm_icon_name =
+	      ecore_x_window_prop_string_get(ewin->client.group,
+					     ECORE_X_ATOM_WM_ICON_NAME);
      }
 
    if (atom_change == 0 || atom_change == ECORE_X_ATOM_WM_WINDOW_ROLE)

@@ -225,8 +225,6 @@ SetupX(const char *dstr)
    if (Mode.wm.window)
      {
 	XSetWindowAttributes attr;
-	XClassHint         *xch;
-	XTextProperty       xtp;
 
 	/* Running E in its own virtual root window */
 	attr.backing_store = NotUseful;
@@ -242,16 +240,8 @@ SetupX(const char *dstr)
 				  CWBorderPixel, &attr);
 	ERegisterWindow(VRoot.win);
 
-	xtp.encoding = XA_STRING;
-	xtp.format = 8;
-	xtp.value = (unsigned char *)("Enlightenment");
-	xtp.nitems = strlen((char *)(xtp.value));
-	XSetWMName(disp, VRoot.win, &xtp);
-	xch = XAllocClassHint();
-	xch->res_name = (char *)"Virtual-Root";
-	xch->res_class = (char *)"Enlightenment";
-	XSetClassHint(disp, VRoot.win, xch);
-	XFree(xch);
+	HintsSetWindowName(VRoot.win, "Enlightenment");
+	HintsSetWindowClass(VRoot.win, "Virtual-Root", "Enlightenment");
 
 	EMapWindow(VRoot.win);
 

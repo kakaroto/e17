@@ -259,10 +259,8 @@ CommsInit(void)
 
    Esnprintf(s, sizeof(s), "WINID %8x", (int)comms_win);
    XA_ENLIGHTENMENT_COMMS = XInternAtom(disp, "ENLIGHTENMENT_COMMS", False);
-   XChangeProperty(disp, comms_win, XA_ENLIGHTENMENT_COMMS, XA_STRING, 8,
-		   PropModeReplace, (unsigned char *)s, strlen(s));
-   XChangeProperty(disp, VRoot.win, XA_ENLIGHTENMENT_COMMS, XA_STRING, 8,
-		   PropModeReplace, (unsigned char *)s, strlen(s));
+   ecore_x_window_prop_string_set(comms_win, XA_ENLIGHTENMENT_COMMS, s);
+   ecore_x_window_prop_string_set(VRoot.win, XA_ENLIGHTENMENT_COMMS, s);
 
    XA_ENL_MSG = XInternAtom(disp, "ENL_MSG", False);
 }

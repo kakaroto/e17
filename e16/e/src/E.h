@@ -745,6 +745,8 @@ struct _ewin
       char               *wm_res_class;
       char               *wm_role;
       char               *wm_command;
+      int                 wm_command_argc;
+      char              **wm_command_argv;
       char               *wm_machine;
    } icccm;
    struct

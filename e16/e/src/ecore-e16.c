@@ -28,28 +28,6 @@
 #define _ATOM_GET(name) \
    XInternAtom(_ecore_x_disp, name, False)
 
-#define _ATOM_SET_STRING(win, atom, string) \
-   XChangeProperty(_ecore_x_disp, win, atom, XA_STRING, 8, PropModeReplace, \
-                   (unsigned char *)string, strlen(string))
-#define _ATOM_SET_STRING_LIST(win, atom, string, cnt) \
-   XChangeProperty(_ecore_x_disp, win, atom, XA_STRING, 8, PropModeReplace, \
-                   (unsigned char *)string, cnt)
-#define _ATOM_SET_UTF8_STRING(win, atom, string) \
-   XChangeProperty(_ecore_x_disp, win, atom, ECORE_X_ATOM_UTF8_STRING, 8, PropModeReplace, \
-                   (unsigned char *)string, strlen(string))
-#define _ATOM_SET_UTF8_STRING_LIST(win, atom, string, cnt) \
-   XChangeProperty(_ecore_x_disp, win, atom, ECORE_X_ATOM_UTF8_STRING, 8, PropModeReplace, \
-                   (unsigned char *)string, cnt)
-#define _ATOM_SET_WINDOW(win, atom, p_wins, cnt) \
-   XChangeProperty(_ecore_x_disp, win, atom, XA_WINDOW, 32, PropModeReplace, \
-                   (unsigned char *)p_wins, cnt)
-#define _ATOM_SET_ATOM(win, atom, p_atom, cnt) \
-   XChangeProperty(_ecore_x_disp, win, atom, XA_ATOM, 32, PropModeReplace, \
-                   (unsigned char *)p_atom, cnt)
-#define _ATOM_SET_CARD32(win, atom, p_val, cnt) \
-   XChangeProperty(_ecore_x_disp, win, atom, XA_CARDINAL, 32, PropModeReplace, \
-                   (unsigned char *)p_val, cnt)
-
 /* Window property change actions (must match _NET_WM_STATE_... ones) */
 #define ECORE_X_PROP_LIST_REMOVE    0
 #define ECORE_X_PROP_LIST_ADD       1
@@ -121,7 +99,8 @@ ecore_x_window_prop_card32_set(Ecore_X_Window win, Ecore_X_Atom atom,
 			       unsigned int *val, unsigned int num)
 {
 #if SIZEOF_INT == SIZEOF_LONG
-   _ATOM_SET_CARD32(win, atom, val, num);
+   XChangeProperty(_ecore_x_disp, win, atom, XA_CARDINAL, 32, PropModeReplace,
+		   (unsigned char *)val, num);
 #else
    unsigned long      *pl;
    unsigned int        i;
@@ -131,7 +110,8 @@ ecore_x_window_prop_card32_set(Ecore_X_Window win, Ecore_X_Atom atom,
       return;
    for (i = 0; i < num; i++)
       pl[i] = val[i];
-   _ATOM_SET_CARD32(win, atom, pl, num);
+   XChangeProperty(_ecore_x_disp, win, atom, XA_CARDINAL, 32, PropModeReplace,
+		   (unsigned char *)pl, num);
    free(pl);
 #endif
 }
@@ -183,18 +163,73 @@ ecore_x_window_prop_card32_get(Ecore_X_Window win, Ecore_X_Atom atom,
    return num;
 }
 
-#if 0				/* Unused */
+/*
+ * Set simple string list property
+ */
+void
+ecore_x_window_prop_string_list_set(Ecore_X_Window win, Ecore_X_Atom atom,
+				    char **lst, int num)
+{
+   XTextProperty       xtp;
+
+   if (XmbTextListToTextProperty(_ecore_x_disp, (char **)lst, num,
+				 XStringStyle, &xtp) != Success)
+      return;
+   XSetTextProperty(_ecore_x_disp, win, &xtp, atom);
+   XFree(xtp.value);
+}
+
+/*
+ * Get simple string list property
+ */
+char              **
+ecore_x_window_prop_string_list_get(Ecore_X_Window win, Ecore_X_Atom atom,
+				    int *pnum)
+{
+   char              **pstr = NULL;
+   XTextProperty       xtp;
+   int                 i, items;
+   char              **list;
+   Status              s;
+
+   *pnum = 0;
+
+   if (!XGetTextProperty(_ecore_x_disp, win, &xtp, atom))
+      return NULL;
+
+   if (xtp.format == 8)
+     {
+	s = XmbTextPropertyToTextList(_ecore_x_disp, &xtp, &list, &items);
+	if ((s == Success) && (items > 0))
+	  {
+	     pstr = Emalloc(items * sizeof(char *));
+	     for (i = 0; i < items; i++)
+		pstr[i] = Estrdup(list[i]);
+	     XFreeStringList(list);
+	  }
+     }
+   if (!pstr)
+     {
+	pstr = Emalloc(sizeof(char *));
+	pstr[1] = Estrdup((char *)xtp.value);
+	items = 1;
+     }
+
+   XFree(xtp.value);
+
+   *pnum = items;
+   return pstr;
+}
+
 /*
  * Set simple string property
- * NB! No encoding conversion done.
  */
 void
 ecore_x_window_prop_string_set(Ecore_X_Window win, Ecore_X_Atom atom,
 			       const char *str)
 {
-   _ATOM_SET_STRING(win, atom, str);
+   ecore_x_window_prop_string_list_set(win, atom, (char **)(&str), 1);
 }
-#endif
 
 /*
  * Get simple string property
@@ -203,29 +238,29 @@ char               *
 ecore_x_window_prop_string_get(Ecore_X_Window win, Ecore_X_Atom atom)
 {
    XTextProperty       xtp;
-   char               *str = NULL;
+   char               *str;
+   int                 items;
+   char              **list;
+   Status              s;
 
-   if (XGetTextProperty(_ecore_x_disp, win, &xtp, atom))
+   if (!XGetTextProperty(_ecore_x_disp, win, &xtp, atom))
+      return NULL;
+
+   if (xtp.format == 8)
      {
-	int                 items;
-	char              **list;
-	Status              s;
-
-	if (xtp.format == 8)
+	s = XmbTextPropertyToTextList(_ecore_x_disp, &xtp, &list, &items);
+	if ((s == Success) && (items > 0))
 	  {
-	     s = XmbTextPropertyToTextList(_ecore_x_disp, &xtp, &list, &items);
-	     if ((s == Success) && (items > 0))
-	       {
-		  str = Estrdup(*list);
-		  XFreeStringList(list);
-	       }
-	     else
-		str = Estrdup((char *)xtp.value);
+	     str = Estrdup(*list);
+	     XFreeStringList(list);
 	  }
 	else
 	   str = Estrdup((char *)xtp.value);
-	XFree(xtp.value);
      }
+   else
+      str = Estrdup((char *)xtp.value);
+
+   XFree(xtp.value);
 
    return str;
 }
@@ -237,7 +272,8 @@ static void
 _ecore_x_window_prop_string_utf8_set(Ecore_X_Window win, Ecore_X_Atom atom,
 				     const char *str)
 {
-   _ATOM_SET_UTF8_STRING(win, atom, str);
+   XChangeProperty(_ecore_x_disp, win, atom, ECORE_X_ATOM_UTF8_STRING, 8,
+		   PropModeReplace, (unsigned char *)str, strlen(str));
 }
 
 /*
@@ -650,6 +686,12 @@ ecore_x_icccm_save_yourself_send(Ecore_X_Window win, Ecore_X_Time ts)
 }
 #endif
 
+void
+ecore_x_icccm_title_set(Ecore_X_Window win, const char *title)
+{
+   return ecore_x_window_prop_string_set(win, ECORE_X_ATOM_WM_NAME, title);
+}
+
 char               *
 ecore_x_icccm_title_get(Ecore_X_Window win)
 {
@@ -857,9 +899,11 @@ ecore_x_netwm_wm_identify(Ecore_X_Window root, Ecore_X_Window check,
 				  &check, 1);
    ecore_x_window_prop_window_set(check, ECORE_X_ATOM_NET_SUPPORTING_WM_CHECK,
 				  &check, 1);
-   _ATOM_SET_UTF8_STRING(check, ECORE_X_ATOM_NET_WM_NAME, wm_name);
+   _ecore_x_window_prop_string_utf8_set(check, ECORE_X_ATOM_NET_WM_NAME,
+					wm_name);
    /* This one isn't mandatory */
-   _ATOM_SET_UTF8_STRING(root, ECORE_X_ATOM_NET_WM_NAME, wm_name);
+   _ecore_x_window_prop_string_utf8_set(root, ECORE_X_ATOM_NET_WM_NAME,
+					wm_name);
 }
 
 /*
@@ -909,7 +953,9 @@ ecore_x_netwm_desk_names_set(Ecore_X_Window root, unsigned int n_desks,
 	len += l;
      }
 
-   _ATOM_SET_UTF8_STRING_LIST(root, ECORE_X_ATOM_NET_DESKTOP_NAMES, buf, len);
+   XChangeProperty(_ecore_x_disp, root, ECORE_X_ATOM_NET_DESKTOP_NAMES,
+		   ECORE_X_ATOM_UTF8_STRING, 8, PropModeReplace,
+		   (unsigned char *)buf, len);
 
    free(buf);
 }

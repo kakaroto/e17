@@ -111,6 +111,8 @@ void                ecore_x_icccm_delete_window_send(Ecore_X_Window win,
 void                ecore_x_icccm_take_focus_send(Ecore_X_Window win,
 						  Ecore_X_Time ts);
 
+void                ecore_x_icccm_title_set(Ecore_X_Window win,
+					    const char *title);
 char               *ecore_x_icccm_title_get(Ecore_X_Window win);
 
 /* NETWM (EWMH) */
@@ -260,6 +262,13 @@ int                 ecore_x_netwm_opacity_get(Ecore_X_Window win,
 void                ecore_x_icccm_state_set_iconic(Ecore_X_Window win);
 void                ecore_x_icccm_state_set_normal(Ecore_X_Window win);
 void                ecore_x_icccm_state_set_withdrawn(Ecore_X_Window win);
+
+void                ecore_x_window_prop_string_list_set(Ecore_X_Window win,
+							Ecore_X_Atom atom,
+							char **lst, int num);
+char              **ecore_x_window_prop_string_list_get(Ecore_X_Window win,
+							Ecore_X_Atom atom,
+							int *pnum);
 
 void                ecore_x_window_prop_xid_set(Ecore_X_Window win,
 						Ecore_X_Atom atom,

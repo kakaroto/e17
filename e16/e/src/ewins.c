@@ -211,6 +211,8 @@ EwinDestroy(EWin * ewin)
       Efree(ewin->icccm.wm_role);
    if (ewin->icccm.wm_command)
       Efree(ewin->icccm.wm_command);
+   if (ewin->icccm.wm_command_argv)
+      freestrlist(ewin->icccm.wm_command_argv, ewin->icccm.wm_command_argc);
    if (ewin->icccm.wm_machine)
       Efree(ewin->icccm.wm_machine);
 #if ENABLE_EWMH
