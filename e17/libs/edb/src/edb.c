@@ -144,7 +144,7 @@ edb_open(fname, type, flags, mode, edbenv, edbinfo, edbpp)
 	}
 
 	/* Allocate the DB structure, reference the DB_ENV structure. */
-	if ((ret = __os_calloc(1, sizeof(DB), &edbp)) != 0)
+	if ((ret = __edb_os_calloc(1, sizeof(DB), &edbp)) != 0)
 		return (ret);
 	edbp->edbenv = edbenv;
 
@@ -300,7 +300,7 @@ open_retry:	if (LF_ISSET(DB_CREATE)) {
 		 * sizes, we limit the default pagesize to 16K.
 		 */
 		if (edbp->pgsize == 0) {
-			if ((ret = __os_ioinfo(real_name,
+			if ((ret = __edb_os_ioinfo(real_name,
 			    fd, NULL, NULL, &iopsize)) != 0) {
 				__edb_err(edbenv,
 				    "%s: %s", real_name, strerror(ret));
@@ -327,13 +327,13 @@ open_retry:	if (LF_ISSET(DB_CREATE)) {
 		 * that the meta-data for all access methods fits in 512
 		 * bytes, and that no database will be smaller than that.
 		 */
-		if ((ret = __os_read(fd, mbuf, sizeof(mbuf), &nr)) != 0)
+		if ((ret = __edb_os_read(fd, mbuf, sizeof(mbuf), &nr)) != 0)
 			goto err;
 
 		if (LF_ISSET(DB_FCNTL_LOCKING))
 			edbp->saved_open_fd = fd;
 		else
-			(void)__os_close(fd);
+			(void)__edb_os_close(fd);
 		fd = -1;
 
 		if (nr != sizeof(mbuf)) {
@@ -358,7 +358,7 @@ open_retry:	if (LF_ISSET(DB_CREATE)) {
 			 */
 			if (retry_cnt++ < 3 &&
 			    !LF_ISSET(DB_CREATE | DB_TRUNCATE)) {
-				__os_sleep(1, 0);
+				__edb_os_sleep(1, 0);
 				goto open_retry;
 			}
 			if (type == DB_UNKNOWN) {
@@ -510,7 +510,7 @@ empty:	/*
 		F_SET(edbp, DB_AM_MLOCAL);
 
 		if (edbenv == NULL) {
-			if ((ret = __os_calloc(1,
+			if ((ret = __edb_os_calloc(1,
 			    sizeof(DB_ENV), &edbp->mp_edbenv)) != 0)
 				goto err;
 
@@ -579,13 +579,13 @@ empty:	/*
 			    (u_int32_t *)edbp->fileid)) != 0)
 				goto err;
 		} else
-			if ((ret = __os_fileid(edbenv,
+			if ((ret = __edb_os_fileid(edbenv,
 			    real_name, 1, edbp->fileid)) != 0)
 				goto err;
 
 	/* No further use for the real name. */
 	if (real_name != NULL)
-		__os_freestr(real_name);
+		__edb_os_freestr(real_name);
 	real_name = NULL;
 
 	/*
@@ -683,7 +683,7 @@ empty:	/*
 einval:	ret = EINVAL;
 err:	/* Close the file descriptor. */
 	if (fd != -1)
-		(void)__os_close(fd);
+		(void)__edb_os_close(fd);
 
 	/* Discard the log file id. */
 	if (edbp->log_fileid != 0)
@@ -699,12 +699,12 @@ err:	/* Close the file descriptor. */
 
 	/* If we allocated a DB_ENV, discard it. */
 	if (edbp->mp_edbenv != NULL)
-		__os_free(edbp->mp_edbenv, sizeof(DB_ENV));
+		__edb_os_free(edbp->mp_edbenv, sizeof(DB_ENV));
 
 	if (real_name != NULL)
-		__os_freestr(real_name);
+		__edb_os_freestr(real_name);
 	if (edbp != NULL)
-		__os_free(edbp, sizeof(DB));
+		__edb_os_free(edbp, sizeof(DB));
 
 	return (ret);
 }
@@ -766,7 +766,7 @@ __edb_close(edbp, flags)
 		ret = t_ret;
 
 	if (edbp->saved_open_fd != -1) {
-		(void)__os_close(edbp->saved_open_fd);
+		(void)__edb_os_close(edbp->saved_open_fd);
 		edbp->saved_open_fd = -1;
 	}
 
@@ -776,10 +776,10 @@ __edb_close(edbp, flags)
 
 	/* If we allocated a DB_ENV, discard it. */
 	if (edbp->mp_edbenv != NULL)
-		__os_free(edbp->mp_edbenv, sizeof(DB_ENV));
+		__edb_os_free(edbp->mp_edbenv, sizeof(DB_ENV));
 
 	/* Free the DB. */
-	__os_free(edbp, sizeof(*edbp));
+	__edb_os_free(edbp, sizeof(*edbp));
 
 	return (ret);
 }

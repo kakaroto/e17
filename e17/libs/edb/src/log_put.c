@@ -317,7 +317,7 @@ __log_flush(edblp, lsn)
 			return (ret);
 
 	/* Sync all writes to disk. */
-	if ((ret = __os_fsync(edblp->lfd)) != 0) {
+	if ((ret = __edb_os_fsync(edblp->lfd)) != 0) {
 		__edb_panic(edblp->edbenv, ret);
 		return (ret);
 	}
@@ -434,8 +434,8 @@ __log_write(edblp, addr, len)
 	 * Seek to the offset in the file (someone may have written it
 	 * since we last did).
 	 */
-	if ((ret = __os_seek(edblp->lfd, 0, 0, lp->w_off, 0, SEEK_SET)) != 0 ||
-	    (ret = __os_write(edblp->lfd, addr, len, &nw)) != 0) {
+	if ((ret = __edb_os_seek(edblp->lfd, 0, 0, lp->w_off, 0, SEEK_SET)) != 0 ||
+	    (ret = __edb_os_write(edblp->lfd, addr, len, &nw)) != 0) {
 		__edb_panic(edblp->edbenv, ret);
 		return (ret);
 	}
@@ -487,7 +487,7 @@ log_file(edblp, lsn, namep, len)
 		return (ENOMEM);
 	}
 	(void)strcpy(namep, name);
-	__os_freestr(name);
+	__edb_os_freestr(name);
 
 	return (0);
 }
@@ -505,7 +505,7 @@ __log_newfd(edblp)
 
 	/* Close any previous file descriptor. */
 	if (edblp->lfd != -1) {
-		(void)__os_close(edblp->lfd);
+		(void)__edb_os_close(edblp->lfd);
 		edblp->lfd = -1;
 	}
 
@@ -515,7 +515,7 @@ __log_newfd(edblp)
 	    edblp->lfname, &name, &edblp->lfd, DB_CREATE | DB_SEQUENTIAL)) != 0)
 		__edb_err(edblp->edbenv, "log_put: %s: %s", name, strerror(ret));
 
-	__os_freestr(name);
+	__edb_os_freestr(name);
 	return (ret);
 }
 
@@ -584,7 +584,7 @@ __log_name(edblp, filenumber, namep, fdp, flags)
 	 */
 	if ((ret = __edb_open(oname,
 	    flags, flags, edblp->lp->persist.mode, fdp)) == 0) {
-		__os_freestr(*namep);
+		__edb_os_freestr(*namep);
 		*namep = oname;
 		return (0);
 	}
@@ -597,6 +597,6 @@ __log_name(edblp, filenumber, namep, fdp, flags)
 	 * old-style name, but we expected it to exist and we weren't just
 	 * looking for any log file.  That's not a likely error.
 	 */
-err:	__os_freestr(oname);
+err:	__edb_os_freestr(oname);
 	return (ret);
 }

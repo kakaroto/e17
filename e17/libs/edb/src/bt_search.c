@@ -356,11 +356,11 @@ __bam_stkgrow(cp)
 
 	entries = cp->esp - cp->sp;
 
-	if ((ret = __os_calloc(entries * 2, sizeof(EPG), &p)) != 0)
+	if ((ret = __edb_os_calloc(entries * 2, sizeof(EPG), &p)) != 0)
 		return (ret);
 	memcpy(p, cp->sp, entries * sizeof(EPG));
 	if (cp->sp != cp->stack)
-		__os_free(cp->sp, entries * sizeof(EPG));
+		__edb_os_free(cp->sp, entries * sizeof(EPG));
 	cp->sp = p;
 	cp->csp = p + entries;
 	cp->esp = p + entries * 2;

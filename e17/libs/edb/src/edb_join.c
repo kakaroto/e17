@@ -84,13 +84,13 @@ __edb_join(primary, curslist, flags, edbcp)
 	edbc = NULL;
 	jc = NULL;
 
-	if ((ret = __os_calloc(1, sizeof(DBC), &edbc)) != 0)
+	if ((ret = __edb_os_calloc(1, sizeof(DBC), &edbc)) != 0)
 		goto err;
 
-	if ((ret = __os_calloc(1, sizeof(JOIN_CURSOR), &jc)) != 0)
+	if ((ret = __edb_os_calloc(1, sizeof(JOIN_CURSOR), &jc)) != 0)
 		goto err;
 
-	if ((ret = __os_malloc(256, NULL, &jc->j_key.data)) != 0)
+	if ((ret = __edb_os_malloc(256, NULL, &jc->j_key.data)) != 0)
 		goto err;
 	jc->j_key.ulen = 256;
 	F_SET(&jc->j_key, DB_DBT_USERMEM);
@@ -98,7 +98,7 @@ __edb_join(primary, curslist, flags, edbcp)
 	for (jc->j_curslist = curslist;
 	    *jc->j_curslist != NULL; jc->j_curslist++)
 		;
-	if ((ret = __os_calloc((jc->j_curslist - curslist + 1),
+	if ((ret = __edb_os_calloc((jc->j_curslist - curslist + 1),
 	    sizeof(DBC *), &jc->j_curslist)) != 0)
 		goto err;
 	for (i = 0; curslist[i] != NULL; i++) {
@@ -122,12 +122,12 @@ __edb_join(primary, curslist, flags, edbcp)
 
 err:	if (jc != NULL) {
 		if (jc->j_curslist != NULL)
-			__os_free(jc->j_curslist,
+			__edb_os_free(jc->j_curslist,
 			    (jc->j_curslist - curslist + 1) * sizeof(DBC *));
-		__os_free(jc, sizeof(JOIN_CURSOR));
+		__edb_os_free(jc, sizeof(JOIN_CURSOR));
 	}
 	if (edbc != NULL)
-		__os_free(edbc, sizeof(DBC));
+		__edb_os_free(edbc, sizeof(DBC));
 	return (ret);
 }
 
@@ -189,7 +189,7 @@ retry:
 
 	if (ret == ENOMEM) {
 		jc->j_key.ulen <<= 1;
-		if ((ret = __os_realloc(&jc->j_key.data, jc->j_key.ulen)) != 0)
+		if ((ret = __edb_os_realloc(&jc->j_key.data, jc->j_key.ulen)) != 0)
 			return (ret);
 		goto retry;
 	}
@@ -208,7 +208,7 @@ retry2:			if ((ret = ((*cpp)->c_get)(*cpp,
 				break;
 			if (ret == ENOMEM) {
 				jc->j_key.ulen <<= 1;
-				if ((ret = __os_realloc(&jc->j_key.data,
+				if ((ret = __edb_os_realloc(&jc->j_key.data,
 				    jc->j_key.ulen)) != 0)
 					return (ret);
 				goto retry2;
@@ -262,10 +262,10 @@ __edb_join_close(edbc)
 	for (i = 0; jc->j_curslist[i] != NULL; i++)
 		F_CLR(jc->j_curslist[i], DBC_CONTINUE | DBC_KEYSET);
 
-	__os_free(jc->j_curslist, 0);
-	__os_free(jc->j_key.data, jc->j_key.ulen);
-	__os_free(jc, sizeof(JOIN_CURSOR));
-	__os_free(edbc, sizeof(DBC));
+	__edb_os_free(jc->j_curslist, 0);
+	__edb_os_free(jc->j_key.data, jc->j_key.ulen);
+	__edb_os_free(jc, sizeof(JOIN_CURSOR));
+	__edb_os_free(edbc, sizeof(DBC));
 
 	return (0);
 }

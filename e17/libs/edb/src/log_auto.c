@@ -52,7 +52,7 @@ int __log_register_log(logp, txnid, ret_lsnp, flags,
 	    + sizeof(u_int32_t) + (uid == NULL ? 0 : uid->size)
 	    + sizeof(id)
 	    + sizeof(ftype);
-	if ((ret = __os_malloc(logrec.size, NULL, &logrec.data)) != 0)
+	if ((ret = __edb_os_malloc(logrec.size, NULL, &logrec.data)) != 0)
 		return (ret);
 
 	bp = logrec.data;
@@ -95,7 +95,7 @@ int __log_register_log(logp, txnid, ret_lsnp, flags,
 	ret = __log_put(logp, ret_lsnp, (DBT *)&logrec, flags);
 	if (txnid != NULL)
 		txnid->last_lsn = *ret_lsnp;
-	__os_free(logrec.data, 0);
+	__edb_os_free(logrec.data, 0);
 	return (ret);
 }
 
@@ -153,7 +153,7 @@ __log_register_print(notused1, edbtp, lsnp, notused2, notused3)
 	printf("\tid: %lu\n", (u_long)argp->id);
 	printf("\tftype: 0x%lx\n", (u_long)argp->ftype);
 	printf("\n");
-	__os_free(argp, 0);
+	__edb_os_free(argp, 0);
 	return (0);
 }
 
@@ -169,7 +169,7 @@ __log_register_read(recbuf, argpp)
 	u_int8_t *bp;
 	int ret;
 
-	ret = __os_malloc(sizeof(__log_register_args) +
+	ret = __edb_os_malloc(sizeof(__log_register_args) +
 	    sizeof(DB_TXN), NULL, &argp);
 	if (ret != 0)
 		return (ret);

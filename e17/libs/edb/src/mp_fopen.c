@@ -119,7 +119,7 @@ __memp_fopen(edbmp, mfp, path, flags, mode, pagesize, needlock, finfop, retp)
 	}
 
 	/* Allocate and initialize the per-process structure. */
-	if ((ret = __os_calloc(1, sizeof(DB_MPOOLFILE), &edbmfp)) != 0)
+	if ((ret = __edb_os_calloc(1, sizeof(DB_MPOOLFILE), &edbmfp)) != 0)
 		return (ret);
 	edbmfp->edbmp = edbmp;
 	edbmfp->fd = -1;
@@ -160,7 +160,7 @@ __memp_fopen(edbmp, mfp, path, flags, mode, pagesize, needlock, finfop, retp)
 		 * environments where an off_t is 32-bits, but still run where
 		 * offsets are 64-bits, and they pay us a lot of money.
 		 */
-		if ((ret = __os_ioinfo(rpath,
+		if ((ret = __edb_os_ioinfo(rpath,
 		    edbmfp->fd, &mbytes, &bytes, NULL)) != 0) {
 			__edb_err(edbenv, "%s: %s", rpath, strerror(ret));
 			goto err;
@@ -188,7 +188,7 @@ __memp_fopen(edbmp, mfp, path, flags, mode, pagesize, needlock, finfop, retp)
 		 * other process joining the party.
 		 */
 		if (finfop->fileid == NULL) {
-			if ((ret = __os_fileid(edbenv, rpath, 0, iedbuf)) != 0)
+			if ((ret = __edb_os_fileid(edbenv, rpath, 0, iedbuf)) != 0)
 				goto err;
 			finfop->fileid = iedbuf;
 		}
@@ -268,7 +268,7 @@ __memp_fopen(edbmp, mfp, path, flags, mode, pagesize, needlock, finfop, retp)
 		}
 	}
 	if (rpath != NULL)
-		__os_freestr(rpath);
+		__edb_os_freestr(rpath);
 
 	LOCKHANDLE(edbmp, edbmp->mutexp);
 	TAILQ_INSERT_TAIL(&edbmp->edbmfq, edbmfp, q);
@@ -282,11 +282,11 @@ err:	/*
 	 * never get to here after we have successfully allocated it.
 	 */
 	if (rpath != NULL)
-		__os_freestr(rpath);
+		__edb_os_freestr(rpath);
 	if (edbmfp->fd != -1)
-		(void)__os_close(edbmfp->fd);
+		(void)__edb_os_close(edbmfp->fd);
 	if (edbmfp != NULL)
-		__os_free(edbmfp, sizeof(DB_MPOOLFILE));
+		__edb_os_free(edbmfp, sizeof(DB_MPOOLFILE));
 	return (ret);
 }
 
@@ -450,7 +450,7 @@ memp_fclose(edbmfp)
 		}
 		UNLOCKHANDLE(edbmp, edbmp->mutexp);
 
-		(void)__os_sleep(1, 0);
+		(void)__edb_os_sleep(1, 0);
 	}
 	UNLOCKHANDLE(edbmp, edbmp->mutexp);
 
@@ -469,7 +469,7 @@ memp_fclose(edbmfp)
 		    "%s: %s", __memp_fn(edbmfp), strerror(ret));
 
 	/* Close the file; temporary files may not yet have been created. */
-	if (edbmfp->fd != -1 && (t_ret = __os_close(edbmfp->fd)) != 0) {
+	if (edbmfp->fd != -1 && (t_ret = __edb_os_close(edbmfp->fd)) != 0) {
 		__edb_err(edbmp->edbenv,
 		    "%s: %s", __memp_fn(edbmfp), strerror(t_ret));
 		if (ret != 0)
@@ -484,7 +484,7 @@ memp_fclose(edbmfp)
 	}
 
 	/* Discard the DB_MPOOLFILE structure. */
-	__os_free(edbmfp, sizeof(DB_MPOOLFILE));
+	__edb_os_free(edbmfp, sizeof(DB_MPOOLFILE));
 
 	return (ret);
 }

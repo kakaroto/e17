@@ -129,7 +129,7 @@ __edb_retcopy(edbt, data, len, memp, memsize, edb_malloc)
 	 * memory pointer is allowed to be NULL.
 	 */
 	if (F_ISSET(edbt, DB_DBT_MALLOC)) {
-		if ((ret = __os_malloc(len, edb_malloc, &edbt->data)) != 0)
+		if ((ret = __edb_os_malloc(len, edb_malloc, &edbt->data)) != 0)
 			return (ret);
 	} else if (F_ISSET(edbt, DB_DBT_USERMEM)) {
 		if (len != 0 && (edbt->data == NULL || edbt->ulen < len))
@@ -138,7 +138,7 @@ __edb_retcopy(edbt, data, len, memp, memsize, edb_malloc)
 		return (EINVAL);
 	} else {
 		if (len != 0 && (*memsize == 0 || *memsize < len)) {
-			if ((ret = __os_realloc(memp, len)) != 0) {
+			if ((ret = __edb_os_realloc(memp, len)) != 0) {
 				*memsize = 0;
 				return (ret);
 			}

@@ -185,7 +185,7 @@ __memp_pgread(edbmfp, bhp, can_create)
 		edb_io.pgno = bhp->pgno;
 		edb_io.buf = bhp->buf;
 
-		ret = __os_io(&edb_io, DB_IO_READ, &nr);
+		ret = __edb_os_io(&edb_io, DB_IO_READ, &nr);
 	}
 
 	created = 0;
@@ -355,7 +355,7 @@ __memp_pgwrite(edbmfp, bhp, restartp, wrotep)
 	edb_io.pagesize = edb_io.bytes = mfp->stat.st_pagesize;
 	edb_io.pgno = bhp->pgno;
 	edb_io.buf = bhp->buf;
-	if ((ret = __os_io(&edb_io, DB_IO_WRITE, &nw)) != 0) {
+	if ((ret = __edb_os_io(&edb_io, DB_IO_WRITE, &nw)) != 0) {
 		__edb_panic(edbenv, ret);
 		fail = "write";
 		goto syserr;
@@ -422,7 +422,7 @@ __memp_pgwrite(edbmfp, bhp, restartp, wrotep)
 	 */
 	if (dosync) {
 		UNLOCKREGION(edbmp);
-		syncfail = __os_fsync(edbmfp->fd) != 0;
+		syncfail = __edb_os_fsync(edbmfp->fd) != 0;
 		LOCKREGION(edbmp);
 		if (syncfail)
 			F_SET(mp, MP_LSN_RETRY);
@@ -580,11 +580,11 @@ __memp_upgrade(edbmp, edbmfp, mfp)
 		ret = 1;
 	} else {
 		/* Swap the descriptors and set the upgrade flag. */
-		(void)__os_close(edbmfp->fd);
+		(void)__edb_os_close(edbmfp->fd);
 		edbmfp->fd = fd;
 		F_SET(edbmfp, MP_UPGRADE);
 		ret = 0;
 	}
-	__os_freestr(rpath);
+	__edb_os_freestr(rpath);
 	return (ret);
 }

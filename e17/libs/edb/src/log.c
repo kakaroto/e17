@@ -56,10 +56,10 @@ log_open(path, flags, mode, edbenv, lpp)
 		return (ret);
 
 	/* Create and initialize the DB_LOG structure. */
-	if ((ret = __os_calloc(1, sizeof(DB_LOG), &edblp)) != 0)
+	if ((ret = __edb_os_calloc(1, sizeof(DB_LOG), &edblp)) != 0)
 		return (ret);
 
-	if (path != NULL && (ret = __os_strdup(path, &edblp->dir)) != 0)
+	if (path != NULL && (ret = __edb_os_strdup(path, &edblp->dir)) != 0)
 		goto err;
 
 	edblp->edbenv = edbenv;
@@ -80,7 +80,7 @@ log_open(path, flags, mode, edbenv, lpp)
 	if (path == NULL)
 		edblp->reginfo.path = NULL;
 	else
-		if ((ret = __os_strdup(path, &edblp->reginfo.path)) != 0)
+		if ((ret = __edb_os_strdup(path, &edblp->reginfo.path)) != 0)
 			goto err;
 	edblp->reginfo.file = DB_DEFAULT_LOG_FILE;
 	edblp->reginfo.mode = mode;
@@ -148,10 +148,10 @@ err:	if (edblp->reginfo.addr != NULL) {
 	}
 
 	if (edblp->reginfo.path != NULL)
-		__os_freestr(edblp->reginfo.path);
+		__edb_os_freestr(edblp->reginfo.path);
 	if (edblp->dir != NULL)
-		__os_freestr(edblp->dir);
-	__os_free(edblp, sizeof(*edblp));
+		__edb_os_freestr(edblp->dir);
+	__edb_os_free(edblp, sizeof(*edblp));
 	return (ret);
 }
 
@@ -317,8 +317,8 @@ __log_find(edblp, find_first, valp)
 	}
 
 	/* Get the list of file names. */
-	ret = __os_dirlist(dir, &names, &fcnt);
-	__os_freestr(p);
+	ret = __edb_os_dirlist(dir, &names, &fcnt);
+	__edb_os_freestr(p);
 	if (ret != 0) {
 		__edb_err(edblp->edbenv, "%s: %s", dir, strerror(ret));
 		return (ret);
@@ -350,7 +350,7 @@ __log_find(edblp, find_first, valp)
 	*valp = logval;
 
 	/* Discard the list. */
-	__os_dirfree(names, fcnt);
+	__edb_os_dirfree(names, fcnt);
 
 	return (0);
 }
@@ -375,24 +375,24 @@ __log_valid(edblp, number, set_persist)
 	/* Try to open the log file. */
 	if ((ret = __log_name(edblp,
 	    number, &fname, &fd, DB_RDONLY | DB_SEQUENTIAL)) != 0) {
-		__os_freestr(fname);
+		__edb_os_freestr(fname);
 		return (ret);
 	}
 
 	/* Try to read the header. */
-	if ((ret = __os_seek(fd, 0, 0, sizeof(HDR), 0, SEEK_SET)) != 0 ||
-	    (ret = __os_read(fd, &persist, sizeof(LOGP), &nw)) != 0 ||
+	if ((ret = __edb_os_seek(fd, 0, 0, sizeof(HDR), 0, SEEK_SET)) != 0 ||
+	    (ret = __edb_os_read(fd, &persist, sizeof(LOGP), &nw)) != 0 ||
 	    nw != sizeof(LOGP)) {
 		if (ret == 0)
 			ret = EIO;
 
-		(void)__os_close(fd);
+		(void)__edb_os_close(fd);
 
 		__edb_err(edblp->edbenv,
 		    "Ignoring log file: %s: %s", fname, strerror(ret));
 		goto err;
 	}
-	(void)__os_close(fd);
+	(void)__edb_os_close(fd);
 
 	/* Validate the header. */
 	if (persist.magic != DB_LOGMAGIC) {
@@ -420,7 +420,7 @@ __log_valid(edblp, number, set_persist)
 	}
 	ret = 0;
 
-err:	__os_freestr(fname);
+err:	__edb_os_freestr(fname);
 	return (ret);
 }
 
@@ -451,27 +451,27 @@ log_close(edblp)
 	ret = __edb_rdetach(&edblp->reginfo);
 
 	/* Close open files, release allocated memory. */
-	if (edblp->lfd != -1 && (t_ret = __os_close(edblp->lfd)) != 0 && ret == 0)
+	if (edblp->lfd != -1 && (t_ret = __edb_os_close(edblp->lfd)) != 0 && ret == 0)
 		ret = t_ret;
 	if (edblp->c_edbt.data != NULL)
-		__os_free(edblp->c_edbt.data, edblp->c_edbt.ulen);
+		__edb_os_free(edblp->c_edbt.data, edblp->c_edbt.ulen);
 	if (edblp->c_fd != -1 &&
-	    (t_ret = __os_close(edblp->c_fd)) != 0 && ret == 0)
+	    (t_ret = __edb_os_close(edblp->c_fd)) != 0 && ret == 0)
 		ret = t_ret;
 	if (edblp->edbentry != NULL) {
 		for (i = 0; i < edblp->edbentry_cnt; i++)
 			if (edblp->edbentry[i].name != NULL)
-				__os_freestr(edblp->edbentry[i].name);
-		__os_free(edblp->edbentry,
+				__edb_os_freestr(edblp->edbentry[i].name);
+		__edb_os_free(edblp->edbentry,
 		    (edblp->edbentry_cnt * sizeof(DB_ENTRY)));
 	}
 
 	if (edblp->dir != NULL)
-		__os_freestr(edblp->dir);
+		__edb_os_freestr(edblp->dir);
 
 	if (edblp->reginfo.path != NULL)
-		__os_freestr(edblp->reginfo.path);
-	__os_free(edblp, sizeof(*edblp));
+		__edb_os_freestr(edblp->reginfo.path);
+	__edb_os_free(edblp, sizeof(*edblp));
 
 	return (ret);
 }
@@ -492,12 +492,12 @@ log_unlink(path, force, edbenv)
 	memset(&reginfo, 0, sizeof(reginfo));
 	reginfo.edbenv = edbenv;
 	reginfo.appname = DB_APP_LOG;
-	if (path != NULL && (ret = __os_strdup(path, &reginfo.path)) != 0)
+	if (path != NULL && (ret = __edb_os_strdup(path, &reginfo.path)) != 0)
 		return (ret);
 	reginfo.file = DB_DEFAULT_LOG_FILE;
 	ret = __edb_runlink(&reginfo, force);
 	if (reginfo.path != NULL)
-		__os_freestr(reginfo.path);
+		__edb_os_freestr(reginfo.path);
 	return (ret);
 }
 
@@ -519,7 +519,7 @@ log_stat(edblp, gspp, edb_malloc)
 
 	LOG_PANIC_CHECK(edblp);
 
-	if ((ret = __os_malloc(sizeof(**gspp), edb_malloc, gspp)) != 0)
+	if ((ret = __edb_os_malloc(sizeof(**gspp), edb_malloc, gspp)) != 0)
 		return (ret);
 
 	/* Copy out the global statistics. */

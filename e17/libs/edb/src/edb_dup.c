@@ -227,12 +227,12 @@ __edb_dsplit(edbc, hp, indxp, size, newfunc)
 	pgsize = edbp->pgsize;
 
 	/* Create a temporary page to do compaction onto. */
-	if ((ret = __os_malloc(pgsize, NULL, &tp)) != 0)
+	if ((ret = __edb_os_malloc(pgsize, NULL, &tp)) != 0)
 		return (ret);
 
 	/* Create new page for the split. */
 	if ((ret = newfunc(edbc, P_DUPLICATE, &np)) != 0) {
-		__os_free(tp, pgsize);
+		__edb_os_free(tp, pgsize);
 		return (ret);
 	}
 
@@ -289,7 +289,7 @@ __edb_dsplit(edbc, hp, indxp, size, newfunc)
 		if ((ret = __edb_split_log(edbp->edbenv->lg_info,
 		    edbc->txn, &LSN(h), 0, DB_SPLITOLD, edbp->log_fileid,
 		    PGNO(h), &page_edbt, &LSN(h))) != 0) {
-			__os_free(tp, pgsize);
+			__edb_os_free(tp, pgsize);
 			return (ret);
 		}
 		LSN(tp) = LSN(h);
@@ -340,7 +340,7 @@ __edb_dsplit(edbc, hp, indxp, size, newfunc)
 	memcpy(h, tp, LOFFSET(tp));
 	memcpy((u_int8_t *)h + HOFFSET(tp),
 	    (u_int8_t *)tp + HOFFSET(tp), pgsize - HOFFSET(tp));
-	__os_free(tp, pgsize);
+	__edb_os_free(tp, pgsize);
 
 	if (DB_LOGGING(edbc)) {
 		/*

@@ -31,13 +31,13 @@ static const char sccsid[] = "@(#)os_sleep.c	10.12 (Sleepycat) 10/12/98";
 #include "os_jump.h"
 
 /*
- * __os_sleep --
+ * __edb_os_sleep --
  *	Yield the processor for a period of time.
  *
- * PUBLIC: int __os_sleep __P((u_long, u_long));
+ * PUBLIC: int __edb_os_sleep __P((u_long, u_long));
  */
 int
-__os_sleep(secs, usecs)
+__edb_os_sleep(secs, usecs)
 	u_long secs, usecs;		/* Seconds and microseconds. */
 {
 	struct timeval t;

@@ -38,13 +38,13 @@ static const char sccsid[] = "@(#)os_dir.c	10.19 (Sleepycat) 10/12/98";
 #include "os_jump.h"
 
 /*
- * __os_dirlist --
+ * __edb_os_dirlist --
  *	Return a list of the files in a directory.
  *
- * PUBLIC: int __os_dirlist __P((const char *, char ***, int *));
+ * PUBLIC: int __edb_os_dirlist __P((const char *, char ***, int *));
  */
 int
-__os_dirlist(dir, namesp, cntp)
+__edb_os_dirlist(dir, namesp, cntp)
 	const char *dir;
 	char ***namesp;
 	int *cntp;
@@ -63,11 +63,11 @@ __os_dirlist(dir, namesp, cntp)
 	for (arraysz = cnt = 0; (dp = readdir(dirp)) != NULL; ++cnt) {
 		if (cnt >= arraysz) {
 			arraysz += 100;
-			if ((ret = __os_realloc(&names,
+			if ((ret = __edb_os_realloc(&names,
 			    arraysz * sizeof(names[0]))) != 0)
 				goto nomem;
 		}
-		if ((ret = __os_strdup(dp->d_name, &names[cnt])) != 0)
+		if ((ret = __edb_os_strdup(dp->d_name, &names[cnt])) != 0)
 			goto nomem;
 	}
 	(void)closedir(dirp);
@@ -77,18 +77,18 @@ __os_dirlist(dir, namesp, cntp)
 	return (0);
 
 nomem:	if (names != NULL)
-		__os_dirfree(names, cnt);
+		__edb_os_dirfree(names, cnt);
 	return (ret);
 }
 
 /*
- * __os_dirfree --
+ * __edb_os_dirfree --
  *	Free the list of files.
  *
- * PUBLIC: void __os_dirfree __P((char **, int));
+ * PUBLIC: void __edb_os_dirfree __P((char **, int));
  */
 void
-__os_dirfree(names, cnt)
+__edb_os_dirfree(names, cnt)
 	char **names;
 	int cnt;
 {
@@ -96,6 +96,6 @@ __os_dirfree(names, cnt)
 		__edb_jump.j_dirfree(names, cnt);
 
 	while (cnt > 0)
-		__os_free(names[--cnt], 0);
-	__os_free(names, 0);
+		__edb_os_free(names[--cnt], 0);
+	__edb_os_free(names, 0);
 }

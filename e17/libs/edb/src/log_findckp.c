@@ -83,13 +83,13 @@ __log_findckp(lp, lsnp)
 	next_lsn = last_ckp;
 	do {
 		if (F_ISSET(lp, DB_AM_THREAD))
-			__os_free(data.data, data.size);
+			__edb_os_free(data.data, data.size);
 
 		if ((ret = log_get(lp, &next_lsn, &data, DB_SET)) != 0)
 			return (ret);
 		if ((ret = __txn_ckp_read(data.data, &ckp_args)) != 0) {
 			if (F_ISSET(lp, DB_AM_THREAD))
-				__os_free(data.data, data.size);
+				__edb_os_free(data.data, data.size);
 			return (ret);
 		}
 		if (IS_ZERO_LSN(ckp_lsn))
@@ -106,7 +106,7 @@ __log_findckp(lp, lsnp)
 		}
 		last_ckp = next_lsn;
 		next_lsn = ckp_args->last_ckp;
-		__os_free(ckp_args, sizeof(*ckp_args));
+		__edb_os_free(ckp_args, sizeof(*ckp_args));
 
 		/*
 		 * Keep looping until either you 1) run out of checkpoints,
@@ -118,7 +118,7 @@ __log_findckp(lp, lsnp)
 	    log_compare(&final_ckp, &last_ckp) == 0));
 
 	if (F_ISSET(lp, DB_AM_THREAD))
-		__os_free(data.data, data.size);
+		__edb_os_free(data.data, data.size);
 
 	/*
 	 * At this point, either, next_lsn is ZERO or ckp_lsn is the
@@ -132,7 +132,7 @@ __log_findckp(lp, lsnp)
 get_first:	if ((ret = log_get(lp, &last_ckp, &data, DB_FIRST)) != 0)
 			return (ret);
 		if (F_ISSET(lp, DB_AM_THREAD))
-			__os_free(data.data, data.size);
+			__edb_os_free(data.data, data.size);
 	}
 	*lsnp = last_ckp;
 

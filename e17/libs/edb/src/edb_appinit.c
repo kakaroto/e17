@@ -159,7 +159,7 @@ edb_appinit(edb_home, edb_config, edbenv, flags)
 	}
 
 	/* Set up the tmp directory path. */
-	if (edbenv->edb_tmp_dir == NULL && (ret = __os_tmpdir(edbenv, flags)) != 0)
+	if (edbenv->edb_tmp_dir == NULL && (ret = __edb_os_tmpdir(edbenv, flags)) != 0)
 		goto err;
 
 	/*
@@ -283,17 +283,17 @@ edb_appexit(edbenv)
 
 	/* Free allocated memory. */
 	if (edbenv->edb_home != NULL)
-		__os_freestr(edbenv->edb_home);
+		__edb_os_freestr(edbenv->edb_home);
 	if ((p = edbenv->edb_data_dir) != NULL) {
 		for (; *p != NULL; ++p)
-			__os_freestr(*p);
-		__os_free(edbenv->edb_data_dir,
+			__edb_os_freestr(*p);
+		__edb_os_free(edbenv->edb_data_dir,
 		    edbenv->data_cnt * sizeof(char **));
 	}
 	if (edbenv->edb_log_dir != NULL)
-		__os_freestr(edbenv->edb_log_dir);
+		__edb_os_freestr(edbenv->edb_log_dir);
 	if (edbenv->edb_tmp_dir != NULL)
-		__os_freestr(edbenv->edb_tmp_dir);
+		__edb_os_freestr(edbenv->edb_tmp_dir);
 
 	return (ret);
 }
@@ -301,7 +301,7 @@ edb_appexit(edbenv)
 #define	DB_ADDSTR(str) {						\
 	if ((str) != NULL) {						\
 		/* If leading slash, start over. */			\
-		if (__os_abspath(str)) {				\
+		if (__edb_os_abspath(str)) {				\
 			p = start;					\
 			slash = 0;					\
 		}							\
@@ -357,9 +357,9 @@ __edb_appname(edbenv, appname, dir, file, tmp_oflags, fdp, namep)
 	 * path, we're done.  If the directory is, simply append the file and
 	 * return.
 	 */
-	if (file != NULL && __os_abspath(file))
-		return (__os_strdup(file, namep));
-	if (dir != NULL && __os_abspath(dir)) {
+	if (file != NULL && __edb_os_abspath(file))
+		return (__edb_os_strdup(file, namep));
+	if (dir != NULL && __edb_os_abspath(dir)) {
 		a = dir;
 		goto done;
 	}
@@ -456,7 +456,7 @@ retry:	switch (appname) {
 	if (0) {
 tmp:		if (edbenv == NULL || !F_ISSET(edbenv, DB_ENV_APPINIT)) {
 			memset(&etmp, 0, sizeof(etmp));
-			if ((ret = __os_tmpdir(&etmp, DB_USE_ENVIRON)) != 0)
+			if ((ret = __edb_os_tmpdir(&etmp, DB_USE_ENVIRON)) != 0)
 				return (ret);
 			tmp_free = 1;
 			a = etmp.edb_tmp_dir;
@@ -477,9 +477,9 @@ done:	len =
 	 */
 #define	DB_TRAIL	"XXXXXX"
 	if ((ret =
-	    __os_malloc(len + sizeof(DB_TRAIL) + 10, NULL, &start)) != 0) {
+	    __edb_os_malloc(len + sizeof(DB_TRAIL) + 10, NULL, &start)) != 0) {
 		if (tmp_free)
-			__os_freestr(etmp.edb_tmp_dir);
+			__edb_os_freestr(etmp.edb_tmp_dir);
 		return (ret);
 	}
 
@@ -492,7 +492,7 @@ done:	len =
 
 	/* Discard any space allocated to find the temp directory. */
 	if (tmp_free) {
-		__os_freestr(etmp.edb_tmp_dir);
+		__edb_os_freestr(etmp.edb_tmp_dir);
 		tmp_free = 0;
 	}
 
@@ -500,8 +500,8 @@ done:	len =
 	 * If we're opening a data file, see if it exists.  If it does,
 	 * return it, otherwise, try and find another one to open.
 	 */
-	if (data_entry != -1 && __os_exists(start, NULL) != 0) {
-		__os_freestr(start);
+	if (data_entry != -1 && __edb_os_exists(start, NULL) != 0) {
+		__edb_os_freestr(start);
 		a = b = c = NULL;
 		goto retry;
 	}
@@ -509,12 +509,12 @@ done:	len =
 	/* Create the file if so requested. */
 	if (tmp_create &&
 	    (ret = __edb_tmp_open(edbenv, tmp_oflags, start, fdp)) != 0) {
-		__os_freestr(start);
+		__edb_os_freestr(start);
 		return (ret);
 	}
 
 	if (namep == NULL)
-		__os_freestr(start);
+		__edb_os_freestr(start);
 	else
 		*namep = start;
 	return (0);
@@ -553,7 +553,7 @@ __edb_home(edbenv, edb_home, flags)
 	if (p == NULL)
 		return (0);
 
-	return (__os_strdup(p, &edbenv->edb_home));
+	return (__edb_os_strdup(p, &edbenv->edb_home));
 }
 
 /*
@@ -572,7 +572,7 @@ __edb_parse(edbenv, s)
 	 * We need to strdup the argument in case the caller passed us
 	 * static data.
 	 */
-	if ((ret = __os_strdup(s, &local_s)) != 0)
+	if ((ret = __edb_os_strdup(s, &local_s)) != 0)
 		return (ret);
 
 	/*
@@ -607,31 +607,31 @@ illegal:	ret = EINVAL;
 #define	DATA_INIT_CNT	20			/* Start with 20 data slots. */
 	if (!strcmp(name, "DB_DATA_DIR")) {
 		if (edbenv->edb_data_dir == NULL) {
-			if ((ret = __os_calloc(DATA_INIT_CNT,
+			if ((ret = __edb_os_calloc(DATA_INIT_CNT,
 			    sizeof(char **), &edbenv->edb_data_dir)) != 0)
 				goto err;
 			edbenv->data_cnt = DATA_INIT_CNT;
 		} else if (edbenv->data_next == edbenv->data_cnt - 1) {
 			edbenv->data_cnt *= 2;
-			if ((ret = __os_realloc(&edbenv->edb_data_dir,
+			if ((ret = __edb_os_realloc(&edbenv->edb_data_dir,
 			    edbenv->data_cnt * sizeof(char **))) != 0)
 				goto err;
 		}
 		p = &edbenv->edb_data_dir[edbenv->data_next++];
 	} else if (!strcmp(name, "DB_LOG_DIR")) {
 		if (edbenv->edb_log_dir != NULL)
-			__os_freestr(edbenv->edb_log_dir);
+			__edb_os_freestr(edbenv->edb_log_dir);
 		p = &edbenv->edb_log_dir;
 	} else if (!strcmp(name, "DB_TMP_DIR")) {
 		if (edbenv->edb_tmp_dir != NULL)
-			__os_freestr(edbenv->edb_tmp_dir);
+			__edb_os_freestr(edbenv->edb_tmp_dir);
 		p = &edbenv->edb_tmp_dir;
 	} else
 		goto err;
 
-	ret = __os_strdup(value, p);
+	ret = __edb_os_strdup(value, p);
 
-err:	__os_freestr(local_s);
+err:	__edb_os_freestr(local_s);
 	return (ret);
 }
 
@@ -655,7 +655,7 @@ __edb_tmp_open(edbenv, flags, path, fdp)
 	 * Check the target directory; if you have six X's and it doesn't
 	 * exist, this runs for a *very* long time.
 	 */
-	if ((ret = __os_exists(path, &isdir)) != 0) {
+	if ((ret = __edb_os_exists(path, &isdir)) != 0) {
 		__edb_err(edbenv, "%s: %s", path, strerror(ret));
 		return (ret);
 	}

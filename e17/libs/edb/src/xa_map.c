@@ -76,7 +76,7 @@ __edb_rmid_to_env(rmid, envp, open_ok)
 #define	XA_FLAGS \
 	DB_CREATE | DB_INIT_LOCK | DB_INIT_LOG | DB_INIT_MPOOL | DB_INIT_TXN
 
-	if (__os_calloc(1, sizeof(DB_ENV), &env) != 0)
+	if (__edb_os_calloc(1, sizeof(DB_ENV), &env) != 0)
 		return (1);
 
 	if (edb_appinit(edbhome, NULL, env, XA_FLAGS) != 0) 
@@ -91,7 +91,7 @@ __edb_rmid_to_env(rmid, envp, open_ok)
 	return (0);
 
 err1:	(void)edb_appexit(env);
-err:	__os_free(env, sizeof(DB_ENV));
+err:	__edb_os_free(env, sizeof(DB_ENV));
 	return (1);
 }
 
@@ -143,7 +143,7 @@ __edb_map_rmid(rmid, env)
 	int rmid;
 	DB_ENV *env;
 {
-	if (__os_calloc(1, sizeof(DB_TXN), &env->xa_txn) != 0)
+	if (__edb_os_calloc(1, sizeof(DB_TXN), &env->xa_txn) != 0)
 		return (XAER_RMERR);
 	env->xa_txn->txnid = TXN_INVALID;
 	env->xa_rmid = rmid;
@@ -172,7 +172,7 @@ __edb_unmap_rmid(rmid)
 
 	TAILQ_REMOVE(&DB_GLOBAL(edb_envq), e, links);
 	if (e->xa_txn != NULL)
-		__os_free(e->xa_txn, sizeof(DB_TXN));
+		__edb_os_free(e->xa_txn, sizeof(DB_TXN));
 	return (0);
 }
 
@@ -242,11 +242,11 @@ __edb_map_rmid_name(rmid, edbhome)
 	struct __rmname *entry;
 	int ret;
 
-	if ((ret = __os_malloc(sizeof(struct __rmname), NULL, &entry)) != 0)
+	if ((ret = __edb_os_malloc(sizeof(struct __rmname), NULL, &entry)) != 0)
 		return (ret);
 
-	if ((ret = __os_strdup(edbhome, &entry->edbhome)) != 0) {
-		__os_free(entry, sizeof(struct __rmname));
+	if ((ret = __edb_os_strdup(edbhome, &entry->edbhome)) != 0) {
+		__edb_os_free(entry, sizeof(struct __rmname));
 		return (ret);
 	}
 
@@ -296,8 +296,8 @@ __edb_unmap_rmid_name(rmid)
 		next = TAILQ_NEXT(np, links);
 		if (np->rmid == rmid) {
 			TAILQ_REMOVE(&DB_GLOBAL(edb_nameq), np, links);
-			__os_freestr(np->edbhome);
-			__os_free(np, sizeof(struct __rmname));
+			__edb_os_freestr(np->edbhome);
+			__edb_os_free(np, sizeof(struct __rmname));
 			return;
 		}
 	}

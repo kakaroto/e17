@@ -40,13 +40,13 @@ static const char sccsid[] = "@(#)os_alloc.c	10.10 (Sleepycat) 10/12/98";
  */
 
 /*
- * __os_strdup --
+ * __edb_os_strdup --
  *	The strdup(3) function for DB.
  *
- * PUBLIC: int __os_strdup __P((const char *, void *));
+ * PUBLIC: int __edb_os_strdup __P((const char *, void *));
  */
 int
-__os_strdup(str, storep)
+__edb_os_strdup(str, storep)
 	const char *str;
 	void *storep;
 {
@@ -57,7 +57,7 @@ __os_strdup(str, storep)
 	*(void **)storep = NULL;
 
 	size = strlen(str) + 1;
-	if ((ret = __os_malloc(size, NULL, &p)) != 0)
+	if ((ret = __edb_os_malloc(size, NULL, &p)) != 0)
 		return (ret);
 
 	memcpy(p, str, size);
@@ -67,13 +67,13 @@ __os_strdup(str, storep)
 }
 
 /*
- * __os_calloc --
+ * __edb_os_calloc --
  *	The calloc(3) function for DB.
  *
- * PUBLIC: int __os_calloc __P((size_t, size_t, void *));
+ * PUBLIC: int __edb_os_calloc __P((size_t, size_t, void *));
  */
 int
-__os_calloc(num, size, storep)
+__edb_os_calloc(num, size, storep)
 	size_t num, size;
 	void *storep;
 {
@@ -81,7 +81,7 @@ __os_calloc(num, size, storep)
 	int ret;
 
 	size *= num;
-	if ((ret = __os_malloc(size, NULL, &p)) != 0)
+	if ((ret = __edb_os_malloc(size, NULL, &p)) != 0)
 		return (ret);
 
 	memset(p, 0, size);
@@ -91,13 +91,13 @@ __os_calloc(num, size, storep)
 }
 
 /*
- * __os_malloc --
+ * __edb_os_malloc --
  *	The malloc(3) function for DB.
  *
- * PUBLIC: int __os_malloc __P((size_t, void *(*)(size_t), void *));
+ * PUBLIC: int __edb_os_malloc __P((size_t, void *(*)(size_t), void *));
  */
 int
-__os_malloc(size, edb_malloc, storep)
+__edb_os_malloc(size, edb_malloc, storep)
 	size_t size;
 	void *(*edb_malloc) __P((size_t)), *storep;
 {
@@ -132,13 +132,13 @@ __os_malloc(size, edb_malloc, storep)
 }
 
 /*
- * __os_realloc --
+ * __edb_os_realloc --
  *	The realloc(3) function for DB.
  *
- * PUBLIC: int __os_realloc __P((void *, size_t));
+ * PUBLIC: int __edb_os_realloc __P((void *, size_t));
  */
 int
-__os_realloc(storep, size)
+__edb_os_realloc(storep, size)
 	void *storep;
 	size_t size;
 {
@@ -148,7 +148,7 @@ __os_realloc(storep, size)
 
 	/* If we haven't yet allocated anything yet, simply call malloc. */
 	if (ptr == NULL)
-		return (__os_malloc(size, NULL, storep));
+		return (__edb_os_malloc(size, NULL, storep));
 
 	/* Never allocate 0 bytes -- some C libraries don't like it. */
 	if (size == 0)
@@ -177,13 +177,13 @@ __os_realloc(storep, size)
 }
 
 /*
- * __os_free --
+ * __edb_os_free --
  *	The free(3) function for DB.
  *
- * PUBLIC: void __os_free __P((void *, size_t));
+ * PUBLIC: void __edb_os_free __P((void *, size_t));
  */
 void
-__os_free(ptr, size)
+__edb_os_free(ptr, size)
 	void *ptr;
 	size_t size;
 {
@@ -199,13 +199,13 @@ __os_free(ptr, size)
 }
 
 /*
- * __os_freestr --
+ * __edb_os_freestr --
  *	The free(3) function for DB, freeing a string.
  *
- * PUBLIC: void __os_freestr __P((void *));
+ * PUBLIC: void __edb_os_freestr __P((void *));
  */
 void
-__os_freestr(ptr)
+__edb_os_freestr(ptr)
 	void *ptr;
 {
 #ifdef DIAGNOSTIC

@@ -83,7 +83,7 @@ __edb_cursor(edbp, txn, edbcp, flags)
 	else {
 		DB_THREAD_UNLOCK(edbp);
 
-		if ((ret = __os_calloc(1, sizeof(DBC), &edbc)) != 0)
+		if ((ret = __edb_os_calloc(1, sizeof(DBC), &edbc)) != 0)
 			return (ret);
 
 		edbc->edbp = edbp;
@@ -163,7 +163,7 @@ __edb_cursor(edbp, txn, edbcp, flags)
 	*edbcp = edbc;
 	return (0);
 
-err:	__os_free(edbc, sizeof(*edbc));
+err:	__edb_os_free(edbc, sizeof(*edbc));
 	return (ret);
 }
 
@@ -293,10 +293,10 @@ __edb_c_destroy(edbc)
 
 	/* Free up allocated memory. */
 	if (edbc->rkey.data != NULL)
-		__os_free(edbc->rkey.data, edbc->rkey.ulen);
+		__edb_os_free(edbc->rkey.data, edbc->rkey.ulen);
 	if (edbc->rdata.data != NULL)
-		__os_free(edbc->rdata.data, edbc->rdata.ulen);
-	__os_free(edbc, sizeof(*edbc));
+		__edb_os_free(edbc->rdata.data, edbc->rdata.ulen);
+	__edb_os_free(edbc, sizeof(*edbc));
 
 	return (0);
 }

@@ -84,13 +84,13 @@ __ram_open(edbp, edbinfo)
 	int ret, t_ret;
 
 	/* Allocate and initialize the private btree structure. */
-	if ((ret = __os_calloc(1, sizeof(BTREE), &t)) != 0)
+	if ((ret = __edb_os_calloc(1, sizeof(BTREE), &t)) != 0)
 		return (ret);
 	edbp->internal = t;
 	__bam_setovflsize(edbp);
 
 	/* Allocate and initialize the private recno structure. */
-	if ((ret = __os_calloc(1, sizeof(*rp), &rp)) != 0)
+	if ((ret = __edb_os_calloc(1, sizeof(*rp), &rp)) != 0)
 		return (ret);
 	/* Link in the private recno structure. */
 	t->recno = rp;
@@ -179,11 +179,11 @@ err:	/* If we mmap'd a source file, discard it. */
 
 	/* If we opened a source file, discard it. */
 	if (rp->re_fd != -1)
-		(void)__os_close(rp->re_fd);
+		(void)__edb_os_close(rp->re_fd);
 	if (rp->re_source != NULL)
-		__os_freestr(rp->re_source);
+		__edb_os_freestr(rp->re_source);
 
-	__os_free(rp, sizeof(*rp));
+	__edb_os_free(rp, sizeof(*rp));
 
 	return (ret);
 }
@@ -455,14 +455,14 @@ __ram_close(edbp)
 
 	/* Close any backing source file descriptor. */
 	if (rp->re_fd != -1)
-		(void)__os_close(rp->re_fd);
+		(void)__edb_os_close(rp->re_fd);
 
 	/* Free any backing source file name. */
 	if (rp->re_source != NULL)
-		__os_freestr(rp->re_source);
+		__edb_os_freestr(rp->re_source);
 
 	/* Free allocated memory. */
-	__os_free(rp, sizeof(RECNO));
+	__edb_os_free(rp, sizeof(RECNO));
 	((BTREE *)edbp->internal)->recno = NULL;
 
 	/* Close the underlying btree. */
@@ -910,7 +910,7 @@ __ram_update(edbc, recno, can_create)
 	if (F_ISSET(edbp, DB_RE_FIXEDLEN)) {
 		if (edbc->rdata.ulen < rp->re_len) {
 			if ((ret =
-			    __os_realloc(&edbc->rdata.data, rp->re_len)) != 0) {
+			    __edb_os_realloc(&edbc->rdata.data, rp->re_len)) != 0) {
 				edbc->rdata.ulen = 0;
 				edbc->rdata.data = NULL;
 				return (ret);
@@ -967,7 +967,7 @@ __ram_source(edbp, rp, fname)
 	 * compiler will perpetrate, doing the comparison in a portable way is
 	 * flatly impossible.  Hope that mmap fails if the file is too large.
 	 */
-	if ((ret = __os_ioinfo(rp->re_source,
+	if ((ret = __edb_os_ioinfo(rp->re_source,
 	    rp->re_fd, &mbytes, &bytes, NULL)) != 0) {
 		__edb_err(edbp->edbenv, "%s: %s", rp->re_source, strerror(ret));
 		return (ret);
@@ -1051,7 +1051,7 @@ __ram_writeback(edbc)
 
 	/* Get rid of any backing file descriptor, just on GP's. */
 	if (rp->re_fd != -1) {
-		(void)__os_close(rp->re_fd);
+		(void)__edb_os_close(rp->re_fd);
 		rp->re_fd = -1;
 	}
 
@@ -1079,7 +1079,7 @@ __ram_writeback(edbc)
 	 */
 	delim = rp->re_delim;
 	if (F_ISSET(edbp, DB_RE_FIXEDLEN)) {
-		if ((ret = __os_malloc(rp->re_len, NULL, &pad)) != 0)
+		if ((ret = __edb_os_malloc(rp->re_len, NULL, &pad)) != 0)
 			goto err;
 		memset(pad, rp->re_pad, rp->re_len);
 	} else
@@ -1088,7 +1088,7 @@ __ram_writeback(edbc)
 		switch (ret = edbp->get(edbp, NULL, &key, &data, 0)) {
 		case 0:
 			if ((ret =
-			    __os_write(fd, data.data, data.size, &nw)) != 0)
+			    __edb_os_write(fd, data.data, data.size, &nw)) != 0)
 				goto err;
 			if (nw != (ssize_t)data.size) {
 				ret = EIO;
@@ -1098,7 +1098,7 @@ __ram_writeback(edbc)
 		case DB_KEYEMPTY:
 			if (F_ISSET(edbp, DB_RE_FIXEDLEN)) {
 				if ((ret =
-				    __os_write(fd, pad, rp->re_len, &nw)) != 0)
+				    __edb_os_write(fd, pad, rp->re_len, &nw)) != 0)
 					goto err;
 				if (nw != (ssize_t)rp->re_len) {
 					ret = EIO;
@@ -1111,7 +1111,7 @@ __ram_writeback(edbc)
 			goto done;
 		}
 		if (!F_ISSET(edbp, DB_RE_FIXEDLEN)) {
-			if ((ret = __os_write(fd, &delim, 1, &nw)) != 0)
+			if ((ret = __edb_os_write(fd, &delim, 1, &nw)) != 0)
 				goto err;
 			if (nw != 1) {
 				ret = EIO;
@@ -1122,7 +1122,7 @@ __ram_writeback(edbc)
 
 err:
 done:	/* Close the file descriptor. */
-	if ((t_ret = __os_close(fd)) != 0 || ret == 0)
+	if ((t_ret = __edb_os_close(fd)) != 0 || ret == 0)
 		ret = t_ret;
 
 	if (ret == 0)
@@ -1154,7 +1154,7 @@ __ram_fmap(edbc, top)
 	rp = ((BTREE *)(edbp->internal))->recno;
 
 	if (edbc->rdata.ulen < rp->re_len) {
-		if ((ret = __os_realloc(&edbc->rdata.data, rp->re_len)) != 0) {
+		if ((ret = __edb_os_realloc(&edbc->rdata.data, rp->re_len)) != 0) {
 			edbc->rdata.ulen = 0;
 			edbc->rdata.data = NULL;
 			return (ret);

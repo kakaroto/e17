@@ -61,7 +61,7 @@ __bam_stat(edbp, spp, edb_malloc, flags)
 		return (0);
 
 	/* Allocate and clear the structure. */
-	if ((ret = __os_malloc(sizeof(*sp), edb_malloc, &sp)) != 0)
+	if ((ret = __edb_os_malloc(sizeof(*sp), edb_malloc, &sp)) != 0)
 		goto err;
 	memset(sp, 0, sizeof(*sp));
 

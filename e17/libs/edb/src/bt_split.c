@@ -275,7 +275,7 @@ __bam_page(edbc, pp, cp)
 	    cp->page->level, TYPE(cp->page));
 
 	/* Create new left page for the split. */
-	if ((ret = __os_malloc(edbp->pgsize, NULL, &lp)) != 0)
+	if ((ret = __edb_os_malloc(edbp->pgsize, NULL, &lp)) != 0)
 		goto err;
 	P_INIT(lp, edbp->pgsize, cp->page->pgno,
 	    ISINTERNAL(cp->page) ?  PGNO_INVALID : cp->page->prev_pgno,
@@ -346,7 +346,7 @@ __bam_page(edbc, pp, cp)
 	memcpy(cp->page, lp, LOFFSET(lp));
 	memcpy((u_int8_t *)cp->page + HOFFSET(lp),
 	    (u_int8_t *)lp + HOFFSET(lp), edbp->pgsize - HOFFSET(lp));
-	__os_free(lp, edbp->pgsize);
+	__edb_os_free(lp, edbp->pgsize);
 	lp = NULL;
 
 	/* Finish the next-page link. */
@@ -369,7 +369,7 @@ __bam_page(edbc, pp, cp)
 	return (0);
 
 err:	if (lp != NULL)
-		__os_free(lp, edbp->pgsize);
+		__edb_os_free(lp, edbp->pgsize);
 	if (rp != NULL)
 		(void)__bam_free(edbc, rp);
 	if (tp != NULL) {

@@ -52,7 +52,7 @@ memp_open(path, flags, mode, edbenv, retp)
 	cachesize = edbenv == NULL ? 0 : edbenv->mp_size;
 
 	/* Create and initialize the DB_MPOOL structure. */
-	if ((ret = __os_calloc(1, sizeof(DB_MPOOL), &edbmp)) != 0)
+	if ((ret = __edb_os_calloc(1, sizeof(DB_MPOOL), &edbmp)) != 0)
 		return (ret);
 	LIST_INIT(&edbmp->edbregq);
 	TAILQ_INIT(&edbmp->edbmfq);
@@ -97,7 +97,7 @@ memp_open(path, flags, mode, edbenv, retp)
 	return (0);
 
 err:	if (edbmp != NULL)
-		__os_free(edbmp, sizeof(DB_MPOOL));
+		__edb_os_free(edbmp, sizeof(DB_MPOOL));
 	return (ret);
 }
 
@@ -120,7 +120,7 @@ memp_close(edbmp)
 	/* Discard DB_MPREGs. */
 	while ((mpreg = LIST_FIRST(&edbmp->edbregq)) != NULL) {
 		LIST_REMOVE(mpreg, q);
-		__os_free(mpreg, sizeof(DB_MPREG));
+		__edb_os_free(mpreg, sizeof(DB_MPREG));
 	}
 
 	/* Discard DB_MPOOLFILEs. */
@@ -140,8 +140,8 @@ memp_close(edbmp)
 		ret = t_ret;
 
 	if (edbmp->reginfo.path != NULL)
-		__os_freestr(edbmp->reginfo.path);
-	__os_free(edbmp, sizeof(DB_MPOOL));
+		__edb_os_freestr(edbmp->reginfo.path);
+	__edb_os_free(edbmp, sizeof(DB_MPOOL));
 
 	return (ret);
 }
@@ -176,12 +176,12 @@ memp_unlink(path, force, edbenv)
 	memset(&reginfo, 0, sizeof(reginfo));
 	reginfo.edbenv = edbenv;
 	reginfo.appname = DB_APP_NONE;
-	if (path != NULL && (ret = __os_strdup(path, &reginfo.path)) != 0)
+	if (path != NULL && (ret = __edb_os_strdup(path, &reginfo.path)) != 0)
 		return (ret);
 	reginfo.file = DB_DEFAULT_MPOOL_FILE;
 	ret = __edb_runlink(&reginfo, force);
 	if (reginfo.path != NULL)
-		__os_freestr(reginfo.path);
+		__edb_os_freestr(reginfo.path);
 	return (ret);
 }
 
@@ -201,7 +201,7 @@ memp_register(edbmp, ftype, pgin, pgout)
 
 	MP_PANIC_CHECK(edbmp);
 
-	if ((ret = __os_malloc(sizeof(DB_MPREG), NULL, &mpr)) != 0)
+	if ((ret = __edb_os_malloc(sizeof(DB_MPREG), NULL, &mpr)) != 0)
 		return (ret);
 
 	mpr->ftype = ftype;

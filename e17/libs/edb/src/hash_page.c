@@ -936,13 +936,13 @@ __ham_replpair(edbc, edbt, make_dup)
 
 			/* Now we can delete the item. */
 			if ((ret = __ham_del_pair(edbc, 0)) != 0) {
-				__os_free(tdata.data, tdata.size);
+				__edb_os_free(tdata.data, tdata.size);
 				goto err;
 			}
 
 			/* Now shift old data around to make room for new. */
 			if (change > 0) {
-				 if ((ret = __os_realloc(&tdata.data,
+				 if ((ret = __edb_os_realloc(&tdata.data,
 				     tdata.size + change)) != 0)
 					return (ret);
 				memset((u_int8_t *)tdata.data + tdata.size,
@@ -962,9 +962,9 @@ __ham_replpair(edbc, edbt, make_dup)
 
 			/* Now add the pair. */
 			ret = __ham_add_el(edbc, &tmp, &tdata, type);
-			__os_free(tdata.data, tdata.size);
+			__edb_os_free(tdata.data, tdata.size);
 		}
-err:		__os_free(tmp.data, tmp.size);
+err:		__edb_os_free(tmp.data, tmp.size);
 		return (ret);
 	}
 
@@ -1177,7 +1177,7 @@ __ham_split_page(edbc, obucket, nbucket)
 		}
 	}
 	if (big_buf != NULL)
-		__os_free(big_buf, big_len);
+		__edb_os_free(big_buf, big_len);
 
 	/*
 	 * If the original bucket spanned multiple pages, then we've got

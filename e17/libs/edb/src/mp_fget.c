@@ -85,7 +85,7 @@ memp_fget(edbmfp, pgnoaddr, flags, addrp)
 	 * we get a new page to ensure contention.
 	 */
 	if (DB_GLOBAL(edb_pageyield))
-		__os_yield(1);
+		__edb_os_yield(1);
 #endif
 
 	/* Initialize remaining local variables. */
@@ -206,7 +206,7 @@ memp_fget(edbmfp, pgnoaddr, flags, addrp)
 			 * simply be swapping between the two locks.
 			 */
 			if (!first)
-				__os_yield(1);
+				__edb_os_yield(1);
 
 			LOCKBUFFER(edbmp, bhp);
 			/* Wait for I/O to finish... */

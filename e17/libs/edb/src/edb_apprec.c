@@ -239,7 +239,7 @@ msgerr:		__edb_err(edbenv, "Recovery function for LSN %lu %lu failed",
 out:	F_SET(lp, is_thread);
 	__edb_txnlist_end(txninfo);
 	if (ckp_args != NULL)
-		__os_free(ckp_args, sizeof(*ckp_args));
+		__edb_os_free(ckp_args, sizeof(*ckp_args));
 
 	return (ret);
 }

@@ -26,16 +26,16 @@ static const char sccsid[] = "@(#)os_tmpdir.c	10.3 (Sleepycat) 10/13/98";
 #endif
 
 /*
- * __os_tmpdir --
+ * __edb_os_tmpdir --
  *	Set the temporary directory path.
  *
  * The order of items in the list structure and the order of checks in
  * the environment are documented.
  *
- * PUBLIC: int __os_tmpdir __P((DB_ENV *, u_int32_t));
+ * PUBLIC: int __edb_os_tmpdir __P((DB_ENV *, u_int32_t));
  */
 int
-__os_tmpdir(edbenv, flags)
+__edb_os_tmpdir(edbenv, flags)
 	DB_ENV *edbenv;
 	u_int32_t flags;
 {
@@ -97,17 +97,17 @@ __os_tmpdir(edbenv, flags)
 
 		if (!Special2FSSpec(kTemporaryFolderType,
 		    kOnSystemDisk, 0, &spec))
-			(void)__os_strdup(FSp2FullPath(&spec), &p);
+			(void)__edb_os_strdup(FSp2FullPath(&spec), &p);
 	}
 #endif
 
 	/* Step through the list looking for a possibility. */
 	if (p == NULL)
 		for (lp = list; *lp != NULL; ++lp)
-			if (__os_exists(p = *lp, NULL) == 0)
+			if (__edb_os_exists(p = *lp, NULL) == 0)
 				break;
 	if (p == NULL)
 		return (0);
 
-	return (__os_strdup(p, &edbenv->edb_tmp_dir));
+	return (__edb_os_strdup(p, &edbenv->edb_tmp_dir));
 }

@@ -147,7 +147,7 @@ __edb_xa_close(xa_info, rmid, flags)
 	if ((t_ret = edb_appexit(env)) != 0 && ret == 0)
 		ret = t_ret;
 
-	__os_free(env, sizeof(DB_ENV));
+	__edb_os_free(env, sizeof(DB_ENV));
 
 	return (ret == 0 ? XA_OK : XAER_RMERR);
 }
@@ -422,7 +422,7 @@ __edb_xa_recover(xids, count, rmid, flags)
 		if (__edb_rmid_to_env(rmid, &env, 0) == XA_OK)
 			return (XAER_PROTO);
 
-		if ((ret = __os_calloc(1, sizeof(DB_ENV), &env)) != 0)
+		if ((ret = __edb_os_calloc(1, sizeof(DB_ENV), &env)) != 0)
 			return (XAER_RMERR);
 
 		if (__edb_rmid_to_name(rmid, &edbhome) != 0)
@@ -514,7 +514,7 @@ __edb_xa_recover(xids, count, rmid, flags)
 			memcpy(xidp->data, argp->xid.data, argp->xid.size);
 			ret++;
 			xidp++;
-			__os_free(argp, sizeof(*argp));
+			__edb_os_free(argp, sizeof(*argp));
 			if (ret == count)
 				goto done;
 			break;
@@ -535,7 +535,7 @@ out:		__edb_txnlist_end(log->xa_info);
 
 err3:	(void)__edb_unmap_rmid(rmid);
 err2:	(void)edb_appexit(env);
-err1:	__os_free(env, sizeof(DB_ENV));
+err1:	__edb_os_free(env, sizeof(DB_ENV));
 	return (XAER_RMERR);
 }
 

@@ -245,7 +245,7 @@ __memp_ropen(edbmp, path, cachesize, mode, is_private, flags)
 	if (path == NULL)
 		edbmp->reginfo.path = NULL;
 	else
-		if ((ret = __os_strdup(path, &edbmp->reginfo.path)) != 0)
+		if ((ret = __edb_os_strdup(path, &edbmp->reginfo.path)) != 0)
 			return (ret);
 	edbmp->reginfo.file = DB_DEFAULT_MPOOL_FILE;
 	edbmp->reginfo.mode = mode;
@@ -267,7 +267,7 @@ __memp_ropen(edbmp, path, cachesize, mode, is_private, flags)
 
 	if ((ret = __edb_rattach(&edbmp->reginfo)) != 0) {
 		if (edbmp->reginfo.path != NULL)
-			__os_freestr(edbmp->reginfo.path);
+			__edb_os_freestr(edbmp->reginfo.path);
 		return (ret);
 	}
 
@@ -326,6 +326,6 @@ err:	UNLOCKREGION(edbmp);
 		(void)memp_unlink(path, 1, edbmp->edbenv);
 
 	if (edbmp->reginfo.path != NULL)
-		__os_freestr(edbmp->reginfo.path);
+		__edb_os_freestr(edbmp->reginfo.path);
 	return (ret);
 }

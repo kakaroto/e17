@@ -87,7 +87,7 @@ log_archive(edblp, listp, flags, edb_malloc)
 		if ((ret = log_get(edblp, &stable_lsn, &rec, DB_LAST)) != 0)
 			return (ret);
 		if (F_ISSET(edblp, DB_AM_THREAD))
-			__os_free(rec.data, rec.size);
+			__edb_os_free(rec.data, rec.size);
 		fnum = stable_lsn.file;
 		break;
 	case 0:
@@ -110,7 +110,7 @@ log_archive(edblp, listp, flags, edb_malloc)
 #define	LIST_INCREMENT	64
 	/* Get some initial space. */
 	array_size = 10;
-	if ((ret = __os_malloc(sizeof(char *) * array_size, NULL, &array)) != 0)
+	if ((ret = __edb_os_malloc(sizeof(char *) * array_size, NULL, &array)) != 0)
 		return (ret);
 	array[0] = NULL;
 
@@ -118,15 +118,15 @@ log_archive(edblp, listp, flags, edb_malloc)
 	for (n = 0; fnum > 0; --fnum) {
 		if ((ret = __log_name(edblp, fnum, &name, NULL, 0)) != 0)
 			goto err;
-		if (__os_exists(name, NULL) != 0) {
-			__os_freestr(name);
+		if (__edb_os_exists(name, NULL) != 0) {
+			__edb_os_freestr(name);
 			name = NULL;
 			break;
 		}
 
 		if (n >= array_size - 1) {
 			array_size += LIST_INCREMENT;
-			if ((ret = __os_realloc(&array,
+			if ((ret = __edb_os_realloc(&array,
 			    sizeof(char *) * array_size)) != 0)
 				goto err;
 		}
@@ -134,11 +134,11 @@ log_archive(edblp, listp, flags, edb_malloc)
 		if (LF_ISSET(DB_ARCH_ABS)) {
 			if ((ret = __absname(pref, name, &array[n])) != 0)
 				goto err;
-			__os_freestr(name);
+			__edb_os_freestr(name);
 		} else if ((p = __edb_rpath(name)) != NULL) {
-			if ((ret = __os_strdup(p + 1, &array[n])) != 0)
+			if ((ret = __edb_os_strdup(p + 1, &array[n])) != 0)
 				goto err;
-			__os_freestr(name);
+			__edb_os_freestr(name);
 		} else
 			array[n] = name;
 
@@ -165,11 +165,11 @@ log_archive(edblp, listp, flags, edb_malloc)
 
 err:	if (array != NULL) {
 		for (arrayp = array; *arrayp != NULL; ++arrayp)
-			__os_freestr(*arrayp);
-		__os_free(array, sizeof(char *) * array_size);
+			__edb_os_freestr(*arrayp);
+		__edb_os_free(array, sizeof(char *) * array_size);
 	}
 	if (name != NULL)
-		__os_freestr(name);
+		__edb_os_freestr(name);
 	return (ret);
 }
 
@@ -192,7 +192,7 @@ __build_data(edblp, pref, listp, edb_malloc)
 
 	/* Get some initial space. */
 	array_size = 10;
-	if ((ret = __os_malloc(sizeof(char *) * array_size, NULL, &array)) != 0)
+	if ((ret = __edb_os_malloc(sizeof(char *) * array_size, NULL, &array)) != 0)
 		return (ret);
 	array[0] = NULL;
 
@@ -210,7 +210,7 @@ __build_data(edblp, pref, listp, edb_malloc)
 		memcpy(&rectype, rec.data, sizeof(rectype));
 		if (rectype != DB_log_register) {
 			if (F_ISSET(edblp, DB_AM_THREAD)) {
-				__os_free(rec.data, rec.size);
+				__edb_os_free(rec.data, rec.size);
 				rec.data = NULL;
 			}
 			continue;
@@ -224,22 +224,22 @@ __build_data(edblp, pref, listp, edb_malloc)
 
 		if (n >= array_size - 1) {
 			array_size += LIST_INCREMENT;
-			if ((ret = __os_realloc(&array,
+			if ((ret = __edb_os_realloc(&array,
 			    sizeof(char *) * array_size)) != 0)
 				goto lg_free;
 		}
 
-		if ((ret = __os_strdup(argp->name.data, &array[n])) != 0) {
+		if ((ret = __edb_os_strdup(argp->name.data, &array[n])) != 0) {
 lg_free:		if (F_ISSET(&rec, DB_DBT_MALLOC) && rec.data != NULL)
-				__os_free(rec.data, rec.size);
+				__edb_os_free(rec.data, rec.size);
 			goto err1;
 		}
 
 		array[++n] = NULL;
-		__os_free(argp, 0);
+		__edb_os_free(argp, 0);
 
 		if (F_ISSET(edblp, DB_AM_THREAD)) {
-			__os_free(rec.data, rec.size);
+			__edb_os_free(rec.data, rec.size);
 			rec.data = NULL;
 		}
 	}
@@ -270,7 +270,7 @@ lg_free:		if (F_ISSET(&rec, DB_DBT_MALLOC) && rec.data != NULL)
 		}
 		for (++nxt; nxt < n &&
 		    strcmp(array[last], array[nxt]) == 0; ++nxt) {
-			__os_freestr(array[nxt]);
+			__edb_os_freestr(array[nxt]);
 			array[nxt] = NULL;
 		}
 
@@ -280,24 +280,24 @@ lg_free:		if (F_ISSET(&rec, DB_DBT_MALLOC) && rec.data != NULL)
 			goto err2;
 
 		/* If the file doesn't exist, ignore it. */
-		if (__os_exists(real_name, NULL) != 0) {
-			__os_freestr(real_name);
-			__os_freestr(array[last]);
+		if (__edb_os_exists(real_name, NULL) != 0) {
+			__edb_os_freestr(real_name);
+			__edb_os_freestr(array[last]);
 			array[last] = NULL;
 			continue;
 		}
 
 		/* Rework the name as requested by the user. */
-		__os_freestr(array[last]);
+		__edb_os_freestr(array[last]);
 		array[last] = NULL;
 		if (pref != NULL) {
 			ret = __absname(pref, real_name, &array[last]);
-			__os_freestr(real_name);
+			__edb_os_freestr(real_name);
 			if (ret != 0)
 				goto err2;
 		} else if ((p = __edb_rpath(real_name)) != NULL) {
-			ret = __os_strdup(p + 1, &array[last]);
-			__os_freestr(real_name);
+			ret = __edb_os_strdup(p + 1, &array[last]);
+			__edb_os_freestr(real_name);
 			if (ret != 0)
 				goto err2;
 		} else
@@ -322,13 +322,13 @@ err2:	/*
 	 */
 	if (array != NULL)
 		for (; nxt < n; ++nxt)
-			__os_freestr(array[nxt]);
+			__edb_os_freestr(array[nxt]);
 	/* FALLTHROUGH */
 
 err1:	if (array != NULL) {
 		for (arrayp = array; *arrayp != NULL; ++arrayp)
-			__os_freestr(*arrayp);
-		__os_free(array, array_size * sizeof(char *));
+			__edb_os_freestr(*arrayp);
+		__edb_os_free(array, array_size * sizeof(char *));
 	}
 	return (ret);
 }
@@ -346,11 +346,11 @@ __absname(pref, name, newnamep)
 	char *newname;
 
 	l_name = strlen(name);
-	isabspath = __os_abspath(name);
+	isabspath = __edb_os_abspath(name);
 	l_pref = isabspath ? 0 : strlen(pref);
 
 	/* Malloc space for concatenating the two. */
-	if ((ret = __os_malloc(l_pref + l_name + 2, NULL, &newname)) != 0)
+	if ((ret = __edb_os_malloc(l_pref + l_name + 2, NULL, &newname)) != 0)
 		return (ret);
 	*newnamep = newname;
 
@@ -385,7 +385,7 @@ __usermem(listp, edb_malloc)
 	len += sizeof(char *);
 
 	/* Allocate it and set up the pointers. */
-	if ((ret = __os_malloc(len, edb_malloc, &array)) != 0)
+	if ((ret = __edb_os_malloc(len, edb_malloc, &array)) != 0)
 		return (ret);
 
 	strp = (char *)(array + (orig - *listp) + 1);
@@ -397,13 +397,13 @@ __usermem(listp, edb_malloc)
 		*arrayp = strp;
 		strp += len + 1;
 
-		__os_freestr(*orig);
+		__edb_os_freestr(*orig);
 	}
 
 	/* NULL-terminate the list. */
 	*arrayp = NULL;
 
-	__os_free(*listp, 0);
+	__edb_os_free(*listp, 0);
 	*listp = array;
 
 	return (0);

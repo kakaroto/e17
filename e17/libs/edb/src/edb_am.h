@@ -51,7 +51,7 @@
 
 #define	REC_CLOSE {							\
 	if (argp != NULL)						\
-		__os_free(argp, sizeof(*argp));				\
+		__edb_os_free(argp, sizeof(*argp));				\
 	if (edbc != NULL)						\
 		edbc->c_close(edbc);					\
 	return (ret);							\
@@ -66,7 +66,7 @@
 }
 #define	REC_NOOP_CLOSE {						\
 	if (argp != NULL)						\
-		__os_free(argp, sizeof(*argp));				\
+		__edb_os_free(argp, sizeof(*argp));				\
 	return (ret);							\
 }
 

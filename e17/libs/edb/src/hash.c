@@ -287,11 +287,11 @@ __ham_c_init(edbc)
 	HASH_CURSOR *new_curs;
 	int ret;
 
-	if ((ret = __os_calloc(1, sizeof(struct cursor_t), &new_curs)) != 0)
+	if ((ret = __edb_os_calloc(1, sizeof(struct cursor_t), &new_curs)) != 0)
 		return (ret);
 	if ((ret =
-	    __os_malloc(edbc->edbp->pgsize, NULL, &new_curs->split_buf)) != 0) {
-		__os_free(new_curs, sizeof(*new_curs));
+	    __edb_os_malloc(edbc->edbp->pgsize, NULL, &new_curs->split_buf)) != 0) {
+		__edb_os_free(new_curs, sizeof(*new_curs));
 		return (ret);
 	}
 
@@ -338,8 +338,8 @@ __ham_c_destroy(edbc)
 
 	hcp = (HASH_CURSOR *)edbc->internal;
 	if (hcp->split_buf != NULL)
-		__os_free(hcp->split_buf, edbc->edbp->pgsize);
-	__os_free(hcp, sizeof(HASH_CURSOR));
+		__edb_os_free(hcp->split_buf, edbc->edbp->pgsize);
+	__edb_os_free(hcp, sizeof(HASH_CURSOR));
 
 	return (0);
 }
@@ -1213,7 +1213,7 @@ __ham_init_edbt(edbt, size, bufp, sizep)
 
 	memset(edbt, 0, sizeof(*edbt));
 	if (*sizep < size) {
-		if ((ret = __os_realloc(bufp, size)) != 0) {
+		if ((ret = __edb_os_realloc(bufp, size)) != 0) {
 			*sizep = 0;
 			return (ret);
 		}

@@ -173,7 +173,7 @@ retry:
 
 	/* If we've switched files, discard the current fd. */
 	if (edblp->c_lsn.file != nlsn.file && edblp->c_fd != -1) {
-		(void)__os_close(edblp->c_fd);
+		(void)__edb_os_close(edblp->c_fd);
 		edblp->c_fd = -1;
 	}
 
@@ -198,17 +198,17 @@ retry:
 			fail = np;
 			goto err1;
 		}
-		__os_freestr(np);
+		__edb_os_freestr(np);
 		np = NULL;
 	}
 
 	/* Seek to the header offset and read the header. */
 	if ((ret =
-	    __os_seek(edblp->c_fd, 0, 0, nlsn.offset, 0, SEEK_SET)) != 0) {
+	    __edb_os_seek(edblp->c_fd, 0, 0, nlsn.offset, 0, SEEK_SET)) != 0) {
 		fail = "seek";
 		goto err1;
 	}
-	if ((ret = __os_read(edblp->c_fd, &hdr, sizeof(HDR), &nr)) != 0) {
+	if ((ret = __edb_os_read(edblp->c_fd, &hdr, sizeof(HDR), &nr)) != 0) {
 		fail = "read";
 		goto err1;
 	}
@@ -264,7 +264,7 @@ retry:
 	 * We're calling malloc(3) with a region locked.  This isn't
 	 * a good idea.
 	 */
-	if ((ret = __os_malloc(len, NULL, &tbuf)) != 0)
+	if ((ret = __edb_os_malloc(len, NULL, &tbuf)) != 0)
 		goto err1;
 
 	/*
@@ -273,7 +273,7 @@ retry:
 	 * buffer.  Note, the information may be garbage if we're in recovery,
 	 * so don't read past the end of the buffer's memory.
 	 */
-	if ((ret = __os_read(edblp->c_fd, tbuf, len, &nr)) != 0) {
+	if ((ret = __edb_os_read(edblp->c_fd, tbuf, len, &nr)) != 0) {
 		fail = "read";
 		goto err1;
 	}
@@ -291,7 +291,7 @@ retry:
 	if ((ret = __edb_retcopy(edbt, tbuf, len,
 	    &edblp->c_edbt.data, &edblp->c_edbt.ulen, NULL)) != 0)
 		goto err1;
-	__os_free(tbuf, 0);
+	__edb_os_free(tbuf, 0);
 	tbuf = NULL;
 
 cksum:	if (hdr.cksum != __ham_func4(edbt->data, edbt->size)) {
@@ -322,8 +322,8 @@ err1:	if (!silent)
 			__edb_err(edblp->edbenv,
 			    "log_get: %s: %s", fail, strerror(ret));
 err2:	if (np != NULL)
-		__os_freestr(np);
+		__edb_os_freestr(np);
 	if (tbuf != NULL)
-		__os_free(tbuf, 0);
+		__edb_os_free(tbuf, 0);
 	return (ret);
 }

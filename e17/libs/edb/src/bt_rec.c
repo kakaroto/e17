@@ -306,8 +306,8 @@ __bam_split_recover(logp, edbtp, lsnp, redo, info)
 			goto done;
 
 		/* Allocate and initialize new left/right child pages. */
-		if ((ret = __os_malloc(file_edbp->pgsize, NULL, &_lp)) != 0 ||
-		    (ret = __os_malloc(file_edbp->pgsize, NULL, &_rp)) != 0)
+		if ((ret = __edb_os_malloc(file_edbp->pgsize, NULL, &_lp)) != 0 ||
+		    (ret = __edb_os_malloc(file_edbp->pgsize, NULL, &_rp)) != 0)
 			goto out;
 		if (rootsplit) {
 			P_INIT(_lp, file_edbp->pgsize, argp->left,
@@ -495,9 +495,9 @@ out:	/* Free any pages that weren't dirtied. */
 
 	/* Free any allocated space. */
 	if (_lp != NULL)
-		__os_free(_lp, file_edbp->pgsize);
+		__edb_os_free(_lp, file_edbp->pgsize);
 	if (_rp != NULL)
-		__os_free(_rp, file_edbp->pgsize);
+		__edb_os_free(_rp, file_edbp->pgsize);
 
 	REC_CLOSE;
 }
@@ -845,7 +845,7 @@ __bam_repl_recover(logp, edbtp, lsnp, redo, info)
 		 */
 		memset(&edbt, 0, sizeof(edbt));
 		edbt.size = argp->prefix + argp->suffix + argp->repl.size;
-		if ((ret = __os_malloc(edbt.size, NULL, &edbt.data)) != 0)
+		if ((ret = __edb_os_malloc(edbt.size, NULL, &edbt.data)) != 0)
 			goto err;
 		p = edbt.data;
 		memcpy(p, bk->data, argp->prefix);
@@ -855,7 +855,7 @@ __bam_repl_recover(logp, edbtp, lsnp, redo, info)
 		memcpy(p, bk->data + (bk->len - argp->suffix), argp->suffix);
 
 		ret = __bam_ritem(edbc, pagep, argp->indx, &edbt);
-		__os_free(edbt.data, edbt.size);
+		__edb_os_free(edbt.data, edbt.size);
 		if (ret != 0)
 			goto err;
 
@@ -869,7 +869,7 @@ __bam_repl_recover(logp, edbtp, lsnp, redo, info)
 		 */
 		memset(&edbt, 0, sizeof(edbt));
 		edbt.size = argp->prefix + argp->suffix + argp->orig.size;
-		if ((ret = __os_malloc(edbt.size, NULL, &edbt.data)) != 0)
+		if ((ret = __edb_os_malloc(edbt.size, NULL, &edbt.data)) != 0)
 			goto err;
 		p = edbt.data;
 		memcpy(p, bk->data, argp->prefix);
@@ -879,7 +879,7 @@ __bam_repl_recover(logp, edbtp, lsnp, redo, info)
 		memcpy(p, bk->data + (bk->len - argp->suffix), argp->suffix);
 
 		ret = __bam_ritem(edbc, pagep, argp->indx, &edbt);
-		__os_free(edbt.data, edbt.size);
+		__edb_os_free(edbt.data, edbt.size);
 		if (ret != 0)
 			goto err;
 

@@ -178,8 +178,8 @@ lock_detect(lt, flags, atype)
 			    "warning: unable to abort locker %lx",
 			    (u_long)idmap[killid].id);
 	}
-	__os_free(bitmap, 0);
-	__os_free(idmap, 0);
+	__edb_os_free(bitmap, 0);
+	__edb_os_free(idmap, 0);
 
 	return (ret);
 }
@@ -232,19 +232,19 @@ retry:	count = lt->region->nlockers;
 	 * We can probably save the malloc's between iterations just
 	 * reallocing if necessary because count grew by too much.
 	 */
-	if ((ret = __os_calloc((size_t)count,
+	if ((ret = __edb_os_calloc((size_t)count,
 	    sizeof(u_int32_t) * nentries, &bitmap)) != 0)
 		return (ret);
 
-	if ((ret = __os_calloc(sizeof(u_int32_t), nentries, &tmpmap)) != 0) {
-		__os_free(bitmap, sizeof(u_int32_t) * nentries);
+	if ((ret = __edb_os_calloc(sizeof(u_int32_t), nentries, &tmpmap)) != 0) {
+		__edb_os_free(bitmap, sizeof(u_int32_t) * nentries);
 		return (ret);
 	}
 
 	if ((ret =
-	    __os_calloc((size_t)count, sizeof(locker_info), &id_array)) != 0) {
-		__os_free(bitmap, count * sizeof(u_int32_t) * nentries);
-		__os_free(tmpmap, sizeof(u_int32_t) * nentries);
+	    __edb_os_calloc((size_t)count, sizeof(locker_info), &id_array)) != 0) {
+		__edb_os_free(bitmap, count * sizeof(u_int32_t) * nentries);
+		__edb_os_free(tmpmap, sizeof(u_int32_t) * nentries);
 		return (ret);
 	}
 
@@ -253,9 +253,9 @@ retry:	count = lt->region->nlockers;
 	 */
 	LOCK_LOCKREGION(lt);
 	if (lt->region->nlockers > count) {
-		__os_free(bitmap, count * sizeof(u_int32_t) * nentries);
-		__os_free(tmpmap, sizeof(u_int32_t) * nentries);
-		__os_free(id_array, count * sizeof(locker_info));
+		__edb_os_free(bitmap, count * sizeof(u_int32_t) * nentries);
+		__edb_os_free(tmpmap, sizeof(u_int32_t) * nentries);
+		__edb_os_free(id_array, count * sizeof(locker_info));
 		goto retry;
 	}
 
@@ -380,7 +380,7 @@ retry:	count = lt->region->nlockers;
 	*nlockers = id;
 	*idmap = id_array;
 	*bmp = bitmap;
-	__os_free(tmpmap, sizeof(u_int32_t) * nentries);
+	__edb_os_free(tmpmap, sizeof(u_int32_t) * nentries);
 	return (0);
 }
 
@@ -479,7 +479,7 @@ __dd_debug(edbenv, idmap, bitmap, nlockers)
 	/* Allocate space to print 10 bytes per item waited on. */
 #undef	MSGBUF_LEN
 #define	MSGBUF_LEN ((nlockers + 1) * 10 + 64)
-	if ((ret = __os_malloc(MSGBUF_LEN, NULL, &msgbuf)) != 0)
+	if ((ret = __edb_os_malloc(MSGBUF_LEN, NULL, &msgbuf)) != 0)
 		return;
 
 	nentries = ALIGN(nlockers, 32) / 32;
@@ -497,6 +497,6 @@ __dd_debug(edbenv, idmap, bitmap, nlockers)
 		__edb_err(edbenv, msgbuf);
 	}
 
-	__os_free(msgbuf, MSGBUF_LEN);
+	__edb_os_free(msgbuf, MSGBUF_LEN);
 }
 #endif

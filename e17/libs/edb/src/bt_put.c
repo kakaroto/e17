@@ -684,7 +684,7 @@ __bam_fixed(edbc, edbt)
 	 * only a short-term use.
 	 */
 	if (edbc->rdata.ulen < rp->re_len) {
-		 if ((ret = __os_realloc(&edbc->rdata.data, rp->re_len)) != 0) {
+		 if ((ret = __edb_os_realloc(&edbc->rdata.data, rp->re_len)) != 0) {
 			edbc->rdata.ulen = 0;
 			edbc->rdata.data = NULL;
 			return (ret);
@@ -733,7 +733,7 @@ __bam_partial(edbc, edbt, h, indx, nbytes, flags)
 
 	/* We use the record data return memory, it's only a short-term use. */
 	if (edbc->rdata.ulen < nbytes) {
-		 if ((ret = __os_realloc(&edbc->rdata.data, nbytes)) != 0) {
+		 if ((ret = __edb_os_realloc(&edbc->rdata.data, nbytes)) != 0) {
 			edbc->rdata.ulen = 0;
 			edbc->rdata.data = NULL;
 			return (ret);

@@ -61,7 +61,7 @@ loop:	infop->addr = NULL;
 	infop->fd = -1;
 	infop->segid = INVALID_SEGID;
 	if (infop->name != NULL) {
-		__os_freestr(infop->name);
+		__edb_os_freestr(infop->name);
 		infop->name = NULL;
 	}
 	F_CLR(infop, REGION_CANGROW | REGION_CREATED);
@@ -96,7 +96,7 @@ loop:	infop->addr = NULL;
 	 * than either anonymous memory or a shared file.
 	 */
 	if (malloc_possible && F_ISSET(infop, REGION_PRIVATE)) {
-		if ((ret = __os_malloc(infop->size, NULL, &infop->addr)) != 0)
+		if ((ret = __edb_os_malloc(infop->size, NULL, &infop->addr)) != 0)
 			return (ret);
 
 		/*
@@ -224,7 +224,7 @@ loop:	infop->addr = NULL;
 		 * And yes, this makes me want to take somebody and kill them,
 		 * but I can't think of any other solution.
 		 */
-		if ((ret = __os_ioinfo(infop->name,
+		if ((ret = __edb_os_ioinfo(infop->name,
 		    infop->fd, &mbytes, &bytes, NULL)) != 0)
 			goto errmsg;
 		size = mbytes * MEGABYTE + bytes;
@@ -239,7 +239,7 @@ loop:	infop->addr = NULL;
 			if (size < sizeof(RLAYOUT))
 				goto retry;
 			if ((ret =
-			    __os_read(infop->fd, &rl, sizeof(rl), &nr)) != 0)
+			    __edb_os_read(infop->fd, &rl, sizeof(rl), &nr)) != 0)
 				goto retry;
 			if (rl.valid != DB_REGIONMAGIC)
 				goto retry;
@@ -354,10 +354,10 @@ region_init:
 		 * the file.
 		 */
 		if (F_ISSET(infop, REGION_ANONYMOUS)) {
-			if ((ret = __os_seek(infop->fd, 0, 0, 0, 0, 0)) != 0)
+			if ((ret = __edb_os_seek(infop->fd, 0, 0, 0, 0, 0)) != 0)
 				goto err;
 			if ((ret =
-			    __os_write(infop->fd, rlp, sizeof(*rlp), &nw)) != 0)
+			    __edb_os_write(infop->fd, rlp, sizeof(*rlp), &nw)) != 0)
 				goto err;
 		}
 	} else {
@@ -420,16 +420,16 @@ retry:		/* Discard the region. */
 
 		/* Discard the backing file. */
 		if (infop->fd != -1) {
-			(void)__os_close(infop->fd);
+			(void)__edb_os_close(infop->fd);
 			infop->fd = -1;
 
 			if (F_ISSET(infop, REGION_CREATED))
-				(void)__os_unlink(infop->name);
+				(void)__edb_os_unlink(infop->name);
 		}
 
 		/* Discard the name. */
 		if (infop->name != NULL) {
-			__os_freestr(infop->name);
+			__edb_os_freestr(infop->name);
 			infop->name = NULL;
 		}
 
@@ -439,7 +439,7 @@ retry:		/* Discard the region. */
 		 */
 		if (ret == 0) {
 			if (++retry_cnt <= 3) {
-				__os_sleep(retry_cnt * 2, 0);
+				__edb_os_sleep(retry_cnt * 2, 0);
 				goto loop;
 			}
 			ret = EAGAIN;
@@ -482,8 +482,8 @@ retry:		/* Discard the region. */
 			F_SET(infop, REGION_REMOVED);
 			F_CLR(infop, REGION_CANGROW);
 
-			(void)__os_close(infop->fd);
-			(void)__os_unlink(infop->name);
+			(void)__edb_os_close(infop->fd);
+			(void)__edb_os_unlink(infop->name);
 		}
 
 	return (ret);
@@ -515,7 +515,7 @@ __edb_rdetach(infop)
 	 * action required is freeing the memory.
 	 */
 	if (F_ISSET(infop, REGION_MALLOC)) {
-		__os_free(infop->addr, 0);
+		__edb_os_free(infop->addr, 0);
 		goto done;
 	}
 
@@ -549,7 +549,7 @@ __edb_rdetach(infop)
 	(void)__edb_mutex_unlock(&rlp->lock, infop->fd);
 
 	/* Close the backing file descriptor. */
-	(void)__os_close(infop->fd);
+	(void)__edb_os_close(infop->fd);
 	infop->fd = -1;
 
 	/* Discard our mapping of the region. */
@@ -561,13 +561,13 @@ __edb_rdetach(infop)
 		if ((t_ret =
 		    __edb_unlinkregion(infop->name, infop) != 0) && ret == 0)
 			ret = t_ret;
-		if ((t_ret = __os_unlink(infop->name) != 0) && ret == 0)
+		if ((t_ret = __edb_os_unlink(infop->name) != 0) && ret == 0)
 			ret = t_ret;
 	}
 
 done:	/* Discard the name. */
 	if (infop->name != NULL) {
-		__os_freestr(infop->name);
+		__edb_os_freestr(infop->name);
 		infop->name = NULL;
 	}
 
@@ -629,8 +629,8 @@ __edb_runlink(infop, force)
 	 * (REGION_PRIVATE) ones, regardless of whether or not it's used to
 	 * back the region.  If that file doesn't exist, we're done.
 	 */
-	if (__os_exists(name, NULL) != 0) {
-		__os_freestr(name);
+	if (__edb_os_exists(name, NULL) != 0) {
+		__edb_os_freestr(name);
 		return (0);
 	}
 
@@ -641,12 +641,12 @@ __edb_runlink(infop, force)
 	 */
 	if ((ret = __edb_open(name, DB_RDONLY, DB_RDONLY, 0, &fd)) != 0)
 		goto errmsg;
-	if ((ret = __os_ioinfo(name, fd, &mbytes, &bytes, NULL)) != 0)
+	if ((ret = __edb_os_ioinfo(name, fd, &mbytes, &bytes, NULL)) != 0)
 		goto errmsg;
 	size = mbytes * MEGABYTE + bytes;
 
 	if (size <= sizeof(RLAYOUT)) {
-		if ((ret = __os_read(fd, &rl, sizeof(rl), &nr)) != 0)
+		if ((ret = __edb_os_read(fd, &rl, sizeof(rl), &nr)) != 0)
 			goto errmsg;
 		if (rl.valid != DB_REGIONMAGIC) {
 			__edb_err(infop->edbenv,
@@ -673,16 +673,16 @@ __edb_runlink(infop, force)
 	 * because some architectures (e.g., Win32) won't unlink a file if
 	 * open file descriptors remain.
 	 */
-	(void)__os_close(fd);
-	if ((t_ret = __os_unlink(name)) != 0 && ret == 0)
+	(void)__edb_os_close(fd);
+	if ((t_ret = __edb_os_unlink(name)) != 0 && ret == 0)
 		ret = t_ret;
 
 	if (0) {
 errmsg:		__edb_err(infop->edbenv, "%s: %s", name, strerror(ret));
-err:		(void)__os_close(fd);
+err:		(void)__edb_os_close(fd);
 	}
 
-	__os_freestr(name);
+	__edb_os_freestr(name);
 	return (ret);
 }
 
@@ -745,7 +745,7 @@ __edb_growregion(infop, increment)
 	char buf[DB_VMPAGESIZE];
 
 	/* Seek to the end of the region. */
-	if ((ret = __os_seek(infop->fd, 0, 0, 0, 0, SEEK_END)) != 0)
+	if ((ret = __edb_os_seek(infop->fd, 0, 0, 0, 0, SEEK_END)) != 0)
 		goto err;
 
 	/* Write nuls to the new bytes. */
@@ -760,7 +760,7 @@ __edb_growregion(infop, increment)
 		/* Extend the region by writing each new page. */
 		for (i = 0; i < increment; i += DB_VMPAGESIZE) {
 			if ((ret =
-			    __os_write(infop->fd, buf, sizeof(buf), &nw)) != 0)
+			    __edb_os_write(infop->fd, buf, sizeof(buf), &nw)) != 0)
 				goto err;
 			if (nw != sizeof(buf))
 				goto eio;
@@ -776,10 +776,10 @@ __edb_growregion(infop, increment)
 		 */
 		pages = (increment - DB_VMPAGESIZE) / MEGABYTE;
 		relative = (increment - DB_VMPAGESIZE) % MEGABYTE;
-		if ((ret = __os_seek(infop->fd,
+		if ((ret = __edb_os_seek(infop->fd,
 		    MEGABYTE, pages, relative, 0, SEEK_CUR)) != 0)
 			goto err;
-		if ((ret = __os_write(infop->fd, buf, sizeof(buf), &nw)) != 0)
+		if ((ret = __edb_os_write(infop->fd, buf, sizeof(buf), &nw)) != 0)
 			goto err;
 		if (nw != sizeof(buf))
 			goto eio;
@@ -802,18 +802,18 @@ __edb_growregion(infop, increment)
 		if (DB_GLOBAL(edb_region_init)) {
 			pages = increment / MEGABYTE;
 			relative = increment % MEGABYTE;
-			if ((ret = __os_seek(infop->fd,
+			if ((ret = __edb_os_seek(infop->fd,
 			    MEGABYTE, pages, relative, 1, SEEK_END)) != 0)
 				goto err;
 
 			/* Write a byte to each page. */
 			for (i = 0; i < increment; i += DB_VMPAGESIZE) {
 				if ((ret =
-				    __os_write(infop->fd, buf, 1, &nr)) != 0)
+				    __edb_os_write(infop->fd, buf, 1, &nr)) != 0)
 					goto err;
 				if (nr != 1)
 					goto eio;
-				if ((ret = __os_seek(infop->fd,
+				if ((ret = __edb_os_seek(infop->fd,
 				    0, 0, DB_VMPAGESIZE - 1, 0, SEEK_CUR)) != 0)
 					goto err;
 			}

@@ -22,13 +22,13 @@ static const char sccsid[] = "@(#)os_rw.c	10.11 (Sleepycat) 10/12/98";
 #include "os_jump.h"
 
 /*
- * __os_io --
+ * __edb_os_io --
  *	Do an I/O.
  *
- * PUBLIC: int __os_io __P((DB_IO *, int, ssize_t *));
+ * PUBLIC: int __edb_os_io __P((DB_IO *, int, ssize_t *));
  */
 int
-__os_io(edb_iop, op, niop)
+__edb_os_io(edb_iop, op, niop)
 	DB_IO *edb_iop;
 	int op;
 	ssize_t *niop;
@@ -57,17 +57,17 @@ slow:
 	if (edb_iop->mutexp != NULL)
 		(void)__edb_mutex_lock(edb_iop->mutexp, edb_iop->fd_lock);
 
-	if ((ret = __os_seek(edb_iop->fd_io,
+	if ((ret = __edb_os_seek(edb_iop->fd_io,
 	    edb_iop->pagesize, edb_iop->pgno, 0, 0, SEEK_SET)) != 0)
 		goto err;
 	switch (op) {
 	case DB_IO_READ:
 		ret =
-		    __os_read(edb_iop->fd_io, edb_iop->buf, edb_iop->bytes, niop);
+		    __edb_os_read(edb_iop->fd_io, edb_iop->buf, edb_iop->bytes, niop);
 		break;
 	case DB_IO_WRITE:
 		ret =
-		    __os_write(edb_iop->fd_io, edb_iop->buf, edb_iop->bytes, niop);
+		    __edb_os_write(edb_iop->fd_io, edb_iop->buf, edb_iop->bytes, niop);
 		break;
 	}
 
@@ -79,13 +79,13 @@ err:	if (edb_iop->mutexp != NULL)
 }
 
 /*
- * __os_read --
+ * __edb_os_read --
  *	Read from a file handle.
  *
- * PUBLIC: int __os_read __P((int, void *, size_t, ssize_t *));
+ * PUBLIC: int __edb_os_read __P((int, void *, size_t, ssize_t *));
  */
 int
-__os_read(fd, addr, len, nrp)
+__edb_os_read(fd, addr, len, nrp)
 	int fd;
 	void *addr;
 	size_t len;
@@ -109,13 +109,13 @@ __os_read(fd, addr, len, nrp)
 }
 
 /*
- * __os_write --
+ * __edb_os_write --
  *	Write to a file handle.
  *
- * PUBLIC: int __os_write __P((int, void *, size_t, ssize_t *));
+ * PUBLIC: int __edb_os_write __P((int, void *, size_t, ssize_t *));
  */
 int
-__os_write(fd, addr, len, nwp)
+__edb_os_write(fd, addr, len, nwp)
 	int fd;
 	void *addr;
 	size_t len;

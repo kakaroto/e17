@@ -26,11 +26,11 @@ static const char sccsid[] = "@(#)os_spin.c	10.10 (Sleepycat) 10/12/98";
 
 #if defined(HAVE_PSTAT_GETDYNAMIC)
 /*
- * __os_pstat_getdynamic --
+ * __edb_os_pstat_getdynamic --
  *	HP/UX.
  */
 static int
-__os_pstat_getdynamic()
+__edb_os_pstat_getdynamic()
 {
 	struct pst_dynamic psd;
 
@@ -41,11 +41,11 @@ __os_pstat_getdynamic()
 
 #if defined(HAVE_SYSCONF) && defined(_SC_NPROCESSORS_ONLN)
 /*
- * __os_sysconf --
+ * __edb_os_sysconf --
  *	Solaris, Linux.
  */
 static int
-__os_sysconf()
+__edb_os_sysconf()
 {
 	int nproc;
 
@@ -54,13 +54,13 @@ __os_sysconf()
 #endif
 
 /*
- * __os_spin --
+ * __edb_os_spin --
  *	Return the number of default spins before blocking.
  *
- * PUBLIC: int __os_spin __P((void));
+ * PUBLIC: int __edb_os_spin __P((void));
  */
 int
-__os_spin()
+__edb_os_spin()
 {
 	/*
 	 * If the application specified a value or we've already figured it
@@ -76,10 +76,10 @@ __os_spin()
 
 	DB_GLOBAL(edb_tsl_spins) = 1;
 #if defined(HAVE_PSTAT_GETDYNAMIC)
-	DB_GLOBAL(edb_tsl_spins) = __os_pstat_getdynamic();
+	DB_GLOBAL(edb_tsl_spins) = __edb_os_pstat_getdynamic();
 #endif
 #if defined(HAVE_SYSCONF) && defined(_SC_NPROCESSORS_ONLN)
-	DB_GLOBAL(edb_tsl_spins) = __os_sysconf();
+	DB_GLOBAL(edb_tsl_spins) = __edb_os_sysconf();
 #endif
 
 	/*
@@ -92,16 +92,16 @@ __os_spin()
 }
 
 /*
- * __os_yield --
+ * __edb_os_yield --
  *	Yield the processor.
  *
- * PUBLIC: void __os_yield __P((u_long));
+ * PUBLIC: void __edb_os_yield __P((u_long));
  */
 void
-__os_yield(usecs)
+__edb_os_yield(usecs)
 	u_long usecs;
 {
 	if (__edb_jump.j_yield != NULL && __edb_jump.j_yield() == 0)
 		return;
-	__os_sleep(0, usecs);
+	__edb_os_sleep(0, usecs);
 }

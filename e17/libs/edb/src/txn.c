@@ -137,7 +137,7 @@ txn_open(path, flags, mode, edbenv, mgrpp)
 	maxtxns = edbenv->tx_max != 0 ? edbenv->tx_max : 20;
 
 	/* Now, create the transaction manager structure and set its fields. */
-	if ((ret = __os_calloc(1, sizeof(DB_TXNMGR), &tmgrp)) != 0)
+	if ((ret = __edb_os_calloc(1, sizeof(DB_TXNMGR), &tmgrp)) != 0)
 		return (ret);
 
 	/* Initialize the transaction manager structure. */
@@ -154,7 +154,7 @@ txn_open(path, flags, mode, edbenv, mgrpp)
 	if (path == NULL)
 		tmgrp->reginfo.path = NULL;
 	else
-		if ((ret = __os_strdup(path, &tmgrp->reginfo.path)) != 0)
+		if ((ret = __edb_os_strdup(path, &tmgrp->reginfo.path)) != 0)
 			goto err;
 	tmgrp->reginfo.file = DEFAULT_TXN_FILE;
 	tmgrp->reginfo.mode = mode;
@@ -210,8 +210,8 @@ err:	if (tmgrp->reginfo.addr != NULL) {
 	}
 
 	if (tmgrp->reginfo.path != NULL)
-		__os_freestr(tmgrp->reginfo.path);
-	__os_free(tmgrp, sizeof(*tmgrp));
+		__edb_os_freestr(tmgrp->reginfo.path);
+	__edb_os_free(tmgrp, sizeof(*tmgrp));
 	return (ret);
 }
 
@@ -249,7 +249,7 @@ txn_begin(tmgrp, parent, txnpp)
 
 	TXN_PANIC_CHECK(tmgrp);
 
-	if ((ret = __os_calloc(1, sizeof(DB_TXN), &txn)) != 0)
+	if ((ret = __edb_os_calloc(1, sizeof(DB_TXN), &txn)) != 0)
 		return (ret);
 
 	txn->parent = parent;
@@ -257,7 +257,7 @@ txn_begin(tmgrp, parent, txnpp)
 	txn->mgrp = tmgrp;
 	txn->flags = TXN_MALLOC;
 	if ((ret = __txn_begin(txn)) != 0) {
-		__os_free(txn, sizeof(DB_TXN));
+		__edb_os_free(txn, sizeof(DB_TXN));
 		txn = NULL;
 	}
 	if (txn != NULL && parent != NULL)
@@ -542,8 +542,8 @@ txn_close(tmgrp)
 		ret = t_ret;
 
 	if (tmgrp->reginfo.path != NULL)
-		__os_freestr(tmgrp->reginfo.path);
-	__os_free(tmgrp, sizeof(*tmgrp));
+		__edb_os_freestr(tmgrp->reginfo.path);
+	__edb_os_free(tmgrp, sizeof(*tmgrp));
 
 	return (ret);
 }
@@ -564,12 +564,12 @@ txn_unlink(path, force, edbenv)
 	memset(&reginfo, 0, sizeof(reginfo));
 	reginfo.edbenv = edbenv;
 	reginfo.appname = DB_APP_NONE;
-	if (path != NULL && (ret = __os_strdup(path, &reginfo.path)) != 0)
+	if (path != NULL && (ret = __edb_os_strdup(path, &reginfo.path)) != 0)
 		return (ret);
 	reginfo.file = DEFAULT_TXN_FILE;
 	ret = __edb_runlink(&reginfo, force);
 	if (reginfo.path != NULL)
-		__os_freestr(reginfo.path);
+		__edb_os_freestr(reginfo.path);
 	return (ret);
 }
 
@@ -668,7 +668,7 @@ __txn_end(txnp, is_commit)
 		TAILQ_REMOVE(&mgr->txn_chain, txnp, links);
 		UNLOCK_TXNTHREAD(mgr);
 
-		__os_free(txnp, sizeof(*txnp));
+		__edb_os_free(txnp, sizeof(*txnp));
 	}
 
 	return (0);
@@ -714,7 +714,7 @@ __txn_undo(txnp)
 			ret =
 			    mgr->recover(logp, &redbt, &key_lsn, TXN_UNDO, NULL);
 			if (F_ISSET(logp, DB_AM_THREAD) && redbt.data != NULL) {
-				__os_free(redbt.data, redbt.size);
+				__edb_os_free(redbt.data, redbt.size);
 				redbt.data = NULL;
 			}
 		}
@@ -940,7 +940,7 @@ txn_stat(mgr, statp, edb_malloc)
 	 * that have been created since we unlocked the region.
 	 */
 	nbytes = sizeof(DB_TXN_STAT) + sizeof(DB_TXN_ACTIVE) * (nactive + 200);
-	if ((ret = __os_malloc(nbytes, edb_malloc, &stats)) != 0)
+	if ((ret = __edb_os_malloc(nbytes, edb_malloc, &stats)) != 0)
 		return (ret);
 
 	LOCK_TXNREGION(mgr);
@@ -1011,7 +1011,7 @@ __txn_freekids(txnp)
 			LOCK_TXNTHREAD(mgr);
 			TAILQ_REMOVE(&mgr->txn_chain, kids, links);
 			UNLOCK_TXNTHREAD(mgr);
-			__os_free(kids, sizeof(*kids));
+			__edb_os_free(kids, sizeof(*kids));
 		}
 	}
 }

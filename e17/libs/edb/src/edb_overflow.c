@@ -115,10 +115,10 @@ __edb_goff(edbp, edbt, tlen, pgno, bpp, bpsz)
 		}
 	} else if (F_ISSET(edbt, DB_DBT_MALLOC)) {
 		if ((ret =
-		    __os_malloc(needed, edbp->edb_malloc, &edbt->data)) != 0)
+		    __edb_os_malloc(needed, edbp->edb_malloc, &edbt->data)) != 0)
 			return (ret);
 	} else if (*bpsz == 0 || *bpsz < needed) {
-		if ((ret = __os_realloc(bpp, needed)) != 0)
+		if ((ret = __edb_os_realloc(bpp, needed)) != 0)
 			return (ret);
 		*bpsz = needed;
 		edbt->data = *bpp;
@@ -372,7 +372,7 @@ __edb_moff(edbp, edbt, pgno, tlen, cmpfunc, cmpp)
 		    &local_edbt, tlen, pgno, &buf, &bufsize)) != 0)
 			return (ret);
 		*cmpp = cmpfunc(&local_edbt, edbt);
-		__os_free(buf, bufsize);
+		__edb_os_free(buf, bufsize);
 		return (0);
 	}
 

@@ -43,13 +43,13 @@ __mpe_fsync(fd)
 #endif
 
 /*
- * __os_fsync --
+ * __edb_os_fsync --
  *	Flush a file descriptor.
  *
- * PUBLIC: int __os_fsync __P((int));
+ * PUBLIC: int __edb_os_fsync __P((int));
  */
 int
-__os_fsync(fd)
+__edb_os_fsync(fd)
 	int fd;
 {
 	int ret;

@@ -219,7 +219,7 @@ dnl of a character count.  We assume that the return value of snprintf and
 dnl vsprintf etc. will be the same as sprintf, and check the easy one.
 AC_CACHE_CHECK([for int type sprintf return value], db_cv_sprintf_count, [dnl
 AC_TRY_RUN([main(){char buf[20]; exit(sprintf(buf, "XXX") != 3);}],
-	[db_cv_sprintf_count=yes], [db_cv_sprintf_count=no])])
+      	[db_cv_sprintf_count=yes], [db_cv_sprintf_count=no])])
 if test "$db_cv_sprintf_count" = no; then
 	AC_DEFINE(SPRINTF_RET_CHARPNT)
 fi

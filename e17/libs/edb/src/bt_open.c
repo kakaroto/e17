@@ -77,7 +77,7 @@ __bam_open(edbp, edbinfo)
 	int ret;
 
 	/* Allocate and initialize the private btree structure. */
-	if ((ret = __os_calloc(1, sizeof(BTREE), &t)) != 0)
+	if ((ret = __edb_os_calloc(1, sizeof(BTREE), &t)) != 0)
 		return (ret);
 	edbp->internal = t;
 
@@ -142,7 +142,7 @@ __bam_open(edbp, edbinfo)
 
 einval:	ret = EINVAL;
 
-err:	__os_free(t, sizeof(BTREE));
+err:	__edb_os_free(t, sizeof(BTREE));
 	return (ret);
 }
 
@@ -156,7 +156,7 @@ int
 __bam_close(edbp)
 	DB *edbp;
 {
-	__os_free(edbp->internal, sizeof(BTREE));
+	__edb_os_free(edbp->internal, sizeof(BTREE));
 	edbp->internal = NULL;
 
 	return (0);

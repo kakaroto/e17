@@ -57,7 +57,7 @@ int __ham_insdel_log(logp, txnid, ret_lsnp, flags,
 	    + sizeof(*pagelsn)
 	    + sizeof(u_int32_t) + (key == NULL ? 0 : key->size)
 	    + sizeof(u_int32_t) + (data == NULL ? 0 : data->size);
-	if ((ret = __os_malloc(logrec.size, NULL, &logrec.data)) != 0)
+	if ((ret = __edb_os_malloc(logrec.size, NULL, &logrec.data)) != 0)
 		return (ret);
 
 	bp = logrec.data;
@@ -107,7 +107,7 @@ int __ham_insdel_log(logp, txnid, ret_lsnp, flags,
 	ret = log_put(logp, ret_lsnp, (DBT *)&logrec, flags);
 	if (txnid != NULL)
 		txnid->last_lsn = *ret_lsnp;
-	__os_free(logrec.data, 0);
+	__edb_os_free(logrec.data, 0);
 	return (ret);
 }
 
@@ -168,7 +168,7 @@ __ham_insdel_print(notused1, edbtp, lsnp, notused2, notused3)
 	}
 	printf("\n");
 	printf("\n");
-	__os_free(argp, 0);
+	__edb_os_free(argp, 0);
 	return (0);
 }
 
@@ -184,7 +184,7 @@ __ham_insdel_read(recbuf, argpp)
 	u_int8_t *bp;
 	int ret;
 
-	ret = __os_malloc(sizeof(__ham_insdel_args) +
+	ret = __edb_os_malloc(sizeof(__ham_insdel_args) +
 	    sizeof(DB_TXN), NULL, &argp);
 	if (ret != 0)
 		return (ret);
@@ -262,7 +262,7 @@ int __ham_newpage_log(logp, txnid, ret_lsnp, flags,
 	    + sizeof(*pagelsn)
 	    + sizeof(next_pgno)
 	    + sizeof(*nextlsn);
-	if ((ret = __os_malloc(logrec.size, NULL, &logrec.data)) != 0)
+	if ((ret = __edb_os_malloc(logrec.size, NULL, &logrec.data)) != 0)
 		return (ret);
 
 	bp = logrec.data;
@@ -304,7 +304,7 @@ int __ham_newpage_log(logp, txnid, ret_lsnp, flags,
 	ret = log_put(logp, ret_lsnp, (DBT *)&logrec, flags);
 	if (txnid != NULL)
 		txnid->last_lsn = *ret_lsnp;
-	__os_free(logrec.data, 0);
+	__edb_os_free(logrec.data, 0);
 	return (ret);
 }
 
@@ -352,7 +352,7 @@ __ham_newpage_print(notused1, edbtp, lsnp, notused2, notused3)
 	printf("\tnextlsn: [%lu][%lu]\n",
 	    (u_long)argp->nextlsn.file, (u_long)argp->nextlsn.offset);
 	printf("\n");
-	__os_free(argp, 0);
+	__edb_os_free(argp, 0);
 	return (0);
 }
 
@@ -368,7 +368,7 @@ __ham_newpage_read(recbuf, argpp)
 	u_int8_t *bp;
 	int ret;
 
-	ret = __os_malloc(sizeof(__ham_newpage_args) +
+	ret = __edb_os_malloc(sizeof(__ham_newpage_args) +
 	    sizeof(DB_TXN), NULL, &argp);
 	if (ret != 0)
 		return (ret);
@@ -437,7 +437,7 @@ int __ham_splitmeta_log(logp, txnid, ret_lsnp, flags,
 	    + sizeof(ovflpoint)
 	    + sizeof(spares)
 	    + sizeof(*metalsn);
-	if ((ret = __os_malloc(logrec.size, NULL, &logrec.data)) != 0)
+	if ((ret = __edb_os_malloc(logrec.size, NULL, &logrec.data)) != 0)
 		return (ret);
 
 	bp = logrec.data;
@@ -467,7 +467,7 @@ int __ham_splitmeta_log(logp, txnid, ret_lsnp, flags,
 	ret = log_put(logp, ret_lsnp, (DBT *)&logrec, flags);
 	if (txnid != NULL)
 		txnid->last_lsn = *ret_lsnp;
-	__os_free(logrec.data, 0);
+	__edb_os_free(logrec.data, 0);
 	return (ret);
 }
 
@@ -510,7 +510,7 @@ __ham_splitmeta_print(notused1, edbtp, lsnp, notused2, notused3)
 	printf("\tmetalsn: [%lu][%lu]\n",
 	    (u_long)argp->metalsn.file, (u_long)argp->metalsn.offset);
 	printf("\n");
-	__os_free(argp, 0);
+	__edb_os_free(argp, 0);
 	return (0);
 }
 
@@ -526,7 +526,7 @@ __ham_splitmeta_read(recbuf, argpp)
 	u_int8_t *bp;
 	int ret;
 
-	ret = __os_malloc(sizeof(__ham_splitmeta_args) +
+	ret = __edb_os_malloc(sizeof(__ham_splitmeta_args) +
 	    sizeof(DB_TXN), NULL, &argp);
 	if (ret != 0)
 		return (ret);
@@ -590,7 +590,7 @@ int __ham_splitdata_log(logp, txnid, ret_lsnp, flags,
 	    + sizeof(pgno)
 	    + sizeof(u_int32_t) + (pageimage == NULL ? 0 : pageimage->size)
 	    + sizeof(*pagelsn);
-	if ((ret = __os_malloc(logrec.size, NULL, &logrec.data)) != 0)
+	if ((ret = __edb_os_malloc(logrec.size, NULL, &logrec.data)) != 0)
 		return (ret);
 
 	bp = logrec.data;
@@ -628,7 +628,7 @@ int __ham_splitdata_log(logp, txnid, ret_lsnp, flags,
 	ret = log_put(logp, ret_lsnp, (DBT *)&logrec, flags);
 	if (txnid != NULL)
 		txnid->last_lsn = *ret_lsnp;
-	__os_free(logrec.data, 0);
+	__edb_os_free(logrec.data, 0);
 	return (ret);
 }
 
@@ -679,7 +679,7 @@ __ham_splitdata_print(notused1, edbtp, lsnp, notused2, notused3)
 	printf("\tpagelsn: [%lu][%lu]\n",
 	    (u_long)argp->pagelsn.file, (u_long)argp->pagelsn.offset);
 	printf("\n");
-	__os_free(argp, 0);
+	__edb_os_free(argp, 0);
 	return (0);
 }
 
@@ -695,7 +695,7 @@ __ham_splitdata_read(recbuf, argpp)
 	u_int8_t *bp;
 	int ret;
 
-	ret = __os_malloc(sizeof(__ham_splitdata_args) +
+	ret = __edb_os_malloc(sizeof(__ham_splitdata_args) +
 	    sizeof(DB_TXN), NULL, &argp);
 	if (ret != 0)
 		return (ret);
@@ -768,7 +768,7 @@ int __ham_replace_log(logp, txnid, ret_lsnp, flags,
 	    + sizeof(u_int32_t) + (olditem == NULL ? 0 : olditem->size)
 	    + sizeof(u_int32_t) + (newitem == NULL ? 0 : newitem->size)
 	    + sizeof(makedup);
-	if ((ret = __os_malloc(logrec.size, NULL, &logrec.data)) != 0)
+	if ((ret = __edb_os_malloc(logrec.size, NULL, &logrec.data)) != 0)
 		return (ret);
 
 	bp = logrec.data;
@@ -820,7 +820,7 @@ int __ham_replace_log(logp, txnid, ret_lsnp, flags,
 	ret = log_put(logp, ret_lsnp, (DBT *)&logrec, flags);
 	if (txnid != NULL)
 		txnid->last_lsn = *ret_lsnp;
-	__os_free(logrec.data, 0);
+	__edb_os_free(logrec.data, 0);
 	return (ret);
 }
 
@@ -882,7 +882,7 @@ __ham_replace_print(notused1, edbtp, lsnp, notused2, notused3)
 	printf("\n");
 	printf("\tmakedup: %lu\n", (u_long)argp->makedup);
 	printf("\n");
-	__os_free(argp, 0);
+	__edb_os_free(argp, 0);
 	return (0);
 }
 
@@ -898,7 +898,7 @@ __ham_replace_read(recbuf, argpp)
 	u_int8_t *bp;
 	int ret;
 
-	ret = __os_malloc(sizeof(__ham_replace_args) +
+	ret = __edb_os_malloc(sizeof(__ham_replace_args) +
 	    sizeof(DB_TXN), NULL, &argp);
 	if (ret != 0)
 		return (ret);
@@ -981,7 +981,7 @@ int __ham_newpgno_log(logp, txnid, ret_lsnp, flags,
 	    + sizeof(new_type)
 	    + sizeof(*pagelsn)
 	    + sizeof(*metalsn);
-	if ((ret = __os_malloc(logrec.size, NULL, &logrec.data)) != 0)
+	if ((ret = __edb_os_malloc(logrec.size, NULL, &logrec.data)) != 0)
 		return (ret);
 
 	bp = logrec.data;
@@ -1022,7 +1022,7 @@ int __ham_newpgno_log(logp, txnid, ret_lsnp, flags,
 	ret = log_put(logp, ret_lsnp, (DBT *)&logrec, flags);
 	if (txnid != NULL)
 		txnid->last_lsn = *ret_lsnp;
-	__os_free(logrec.data, 0);
+	__edb_os_free(logrec.data, 0);
 	return (ret);
 }
 
@@ -1070,7 +1070,7 @@ __ham_newpgno_print(notused1, edbtp, lsnp, notused2, notused3)
 	printf("\tmetalsn: [%lu][%lu]\n",
 	    (u_long)argp->metalsn.file, (u_long)argp->metalsn.offset);
 	printf("\n");
-	__os_free(argp, 0);
+	__edb_os_free(argp, 0);
 	return (0);
 }
 
@@ -1086,7 +1086,7 @@ __ham_newpgno_read(recbuf, argpp)
 	u_int8_t *bp;
 	int ret;
 
-	ret = __os_malloc(sizeof(__ham_newpgno_args) +
+	ret = __edb_os_malloc(sizeof(__ham_newpgno_args) +
 	    sizeof(DB_TXN), NULL, &argp);
 	if (ret != 0)
 		return (ret);
@@ -1159,7 +1159,7 @@ int __ham_ovfl_log(logp, txnid, ret_lsnp, flags,
 	    + sizeof(free_pgno)
 	    + sizeof(ovflpoint)
 	    + sizeof(*metalsn);
-	if ((ret = __os_malloc(logrec.size, NULL, &logrec.data)) != 0)
+	if ((ret = __edb_os_malloc(logrec.size, NULL, &logrec.data)) != 0)
 		return (ret);
 
 	bp = logrec.data;
@@ -1191,7 +1191,7 @@ int __ham_ovfl_log(logp, txnid, ret_lsnp, flags,
 	ret = log_put(logp, ret_lsnp, (DBT *)&logrec, flags);
 	if (txnid != NULL)
 		txnid->last_lsn = *ret_lsnp;
-	__os_free(logrec.data, 0);
+	__edb_os_free(logrec.data, 0);
 	return (ret);
 }
 
@@ -1235,7 +1235,7 @@ __ham_ovfl_print(notused1, edbtp, lsnp, notused2, notused3)
 	printf("\tmetalsn: [%lu][%lu]\n",
 	    (u_long)argp->metalsn.file, (u_long)argp->metalsn.offset);
 	printf("\n");
-	__os_free(argp, 0);
+	__edb_os_free(argp, 0);
 	return (0);
 }
 
@@ -1251,7 +1251,7 @@ __ham_ovfl_read(recbuf, argpp)
 	u_int8_t *bp;
 	int ret;
 
-	ret = __os_malloc(sizeof(__ham_ovfl_args) +
+	ret = __edb_os_malloc(sizeof(__ham_ovfl_args) +
 	    sizeof(DB_TXN), NULL, &argp);
 	if (ret != 0)
 		return (ret);
@@ -1324,7 +1324,7 @@ int __ham_copypage_log(logp, txnid, ret_lsnp, flags,
 	    + sizeof(nnext_pgno)
 	    + sizeof(*nnextlsn)
 	    + sizeof(u_int32_t) + (page == NULL ? 0 : page->size);
-	if ((ret = __os_malloc(logrec.size, NULL, &logrec.data)) != 0)
+	if ((ret = __edb_os_malloc(logrec.size, NULL, &logrec.data)) != 0)
 		return (ret);
 
 	bp = logrec.data;
@@ -1374,7 +1374,7 @@ int __ham_copypage_log(logp, txnid, ret_lsnp, flags,
 	ret = log_put(logp, ret_lsnp, (DBT *)&logrec, flags);
 	if (txnid != NULL)
 		txnid->last_lsn = *ret_lsnp;
-	__os_free(logrec.data, 0);
+	__edb_os_free(logrec.data, 0);
 	return (ret);
 }
 
@@ -1430,7 +1430,7 @@ __ham_copypage_print(notused1, edbtp, lsnp, notused2, notused3)
 	}
 	printf("\n");
 	printf("\n");
-	__os_free(argp, 0);
+	__edb_os_free(argp, 0);
 	return (0);
 }
 
@@ -1446,7 +1446,7 @@ __ham_copypage_read(recbuf, argpp)
 	u_int8_t *bp;
 	int ret;
 
-	ret = __os_malloc(sizeof(__ham_copypage_args) +
+	ret = __edb_os_malloc(sizeof(__ham_copypage_args) +
 	    sizeof(DB_TXN), NULL, &argp);
 	if (ret != 0)
 		return (ret);

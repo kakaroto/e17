@@ -22,13 +22,13 @@ static const char sccsid[] = "@(#)os_seek.c	10.11 (Sleepycat) 10/12/98";
 #include "os_jump.h"
 
 /*
- * __os_seek --
+ * __edb_os_seek --
  *	Seek to a page/byte offset in the file.
  *
- * PUBLIC: int __os_seek __P((int, size_t, edb_pgno_t, u_int32_t, int, int));
+ * PUBLIC: int __edb_os_seek __P((int, size_t, edb_pgno_t, u_int32_t, int, int));
  */
 int
-__os_seek(fd, pgsize, pageno, relative, isrewind, whence)
+__edb_os_seek(fd, pgsize, pageno, relative, isrewind, whence)
 	int fd;
 	size_t pgsize;
 	edb_pgno_t pageno;

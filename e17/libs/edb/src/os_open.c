@@ -90,13 +90,13 @@ __edb_open(name, arg_flags, ok_flags, mode, fdp)
 #endif
 
 	/* Open the file. */
-	if ((ret = __os_open(name, flags, mode, fdp)) != 0)
+	if ((ret = __edb_os_open(name, flags, mode, fdp)) != 0)
 		return (ret);
 
 #if !defined(_WIN32)
 	/* Delete any temporary file; done for Win32 by _O_TEMPORARY. */
 	if (arg_flags & DB_TEMPORARY) {
-		(void)__os_unlink(name);
+		(void)__edb_os_unlink(name);
 #if defined(HAVE_SIGFILLSET)
 		(void)sigprocmask(SIG_SETMASK, &oset, NULL);
 #endif
@@ -112,7 +112,7 @@ __edb_open(name, arg_flags, ok_flags, mode, fdp)
 	if (fcntl(*fdp, F_SETFD, 1) == -1) {
 		ret = errno;
 
-		(void)__os_close(*fdp);
+		(void)__edb_os_close(*fdp);
 		return (ret);
 	}
 #endif
@@ -120,13 +120,13 @@ __edb_open(name, arg_flags, ok_flags, mode, fdp)
 }
 
 /*
- * __os_open --
+ * __edb_os_open --
  *	Open a file.
  *
- * PUBLIC: int __os_open __P((const char *, int, int, int *));
+ * PUBLIC: int __edb_os_open __P((const char *, int, int, int *));
  */
 int
-__os_open(name, flags, mode, fdp)
+__edb_os_open(name, flags, mode, fdp)
 	const char *name;
 	int flags, mode, *fdp;
 {
@@ -136,13 +136,13 @@ __os_open(name, flags, mode, fdp)
 }
 
 /*
- * __os_close --
+ * __edb_os_close --
  *	Close a file descriptor.
  *
- * PUBLIC: int __os_close __P((int));
+ * PUBLIC: int __edb_os_close __P((int));
  */
 int
-__os_close(fd)
+__edb_os_close(fd)
 	int fd;
 {
 	int ret;

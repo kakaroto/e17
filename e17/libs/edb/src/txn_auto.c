@@ -42,7 +42,7 @@ int __txn_regop_log(logp, txnid, ret_lsnp, flags,
 		lsnp = &txnid->last_lsn;
 	logrec.size = sizeof(rectype) + sizeof(txn_num) + sizeof(DB_LSN)
 	    + sizeof(opcode);
-	if ((ret = __os_malloc(logrec.size, NULL, &logrec.data)) != 0)
+	if ((ret = __edb_os_malloc(logrec.size, NULL, &logrec.data)) != 0)
 		return (ret);
 
 	bp = logrec.data;
@@ -61,7 +61,7 @@ int __txn_regop_log(logp, txnid, ret_lsnp, flags,
 	ret = log_put(logp, ret_lsnp, (DBT *)&logrec, flags);
 	if (txnid != NULL)
 		txnid->last_lsn = *ret_lsnp;
-	__os_free(logrec.data, 0);
+	__edb_os_free(logrec.data, 0);
 	return (ret);
 }
 
@@ -99,7 +99,7 @@ __txn_regop_print(notused1, edbtp, lsnp, notused2, notused3)
 	    (u_long)argp->prev_lsn.offset);
 	printf("\topcode: %lu\n", (u_long)argp->opcode);
 	printf("\n");
-	__os_free(argp, 0);
+	__edb_os_free(argp, 0);
 	return (0);
 }
 
@@ -115,7 +115,7 @@ __txn_regop_read(recbuf, argpp)
 	u_int8_t *bp;
 	int ret;
 
-	ret = __os_malloc(sizeof(__txn_regop_args) +
+	ret = __edb_os_malloc(sizeof(__txn_regop_args) +
 	    sizeof(DB_TXN), NULL, &argp);
 	if (ret != 0)
 		return (ret);
@@ -163,7 +163,7 @@ int __txn_ckp_log(logp, txnid, ret_lsnp, flags,
 	logrec.size = sizeof(rectype) + sizeof(txn_num) + sizeof(DB_LSN)
 	    + sizeof(*ckp_lsn)
 	    + sizeof(*last_ckp);
-	if ((ret = __os_malloc(logrec.size, NULL, &logrec.data)) != 0)
+	if ((ret = __edb_os_malloc(logrec.size, NULL, &logrec.data)) != 0)
 		return (ret);
 
 	bp = logrec.data;
@@ -190,7 +190,7 @@ int __txn_ckp_log(logp, txnid, ret_lsnp, flags,
 	ret = log_put(logp, ret_lsnp, (DBT *)&logrec, flags);
 	if (txnid != NULL)
 		txnid->last_lsn = *ret_lsnp;
-	__os_free(logrec.data, 0);
+	__edb_os_free(logrec.data, 0);
 	return (ret);
 }
 
@@ -231,7 +231,7 @@ __txn_ckp_print(notused1, edbtp, lsnp, notused2, notused3)
 	printf("\tlast_ckp: [%lu][%lu]\n",
 	    (u_long)argp->last_ckp.file, (u_long)argp->last_ckp.offset);
 	printf("\n");
-	__os_free(argp, 0);
+	__edb_os_free(argp, 0);
 	return (0);
 }
 
@@ -247,7 +247,7 @@ __txn_ckp_read(recbuf, argpp)
 	u_int8_t *bp;
 	int ret;
 
-	ret = __os_malloc(sizeof(__txn_ckp_args) +
+	ret = __edb_os_malloc(sizeof(__txn_ckp_args) +
 	    sizeof(DB_TXN), NULL, &argp);
 	if (ret != 0)
 		return (ret);
@@ -307,7 +307,7 @@ int __txn_xa_regop_log(logp, txnid, ret_lsnp, flags,
 	    + sizeof(gtrid)
 	    + sizeof(bqual)
 	    + sizeof(*begin_lsn);
-	if ((ret = __os_malloc(logrec.size, NULL, &logrec.data)) != 0)
+	if ((ret = __edb_os_malloc(logrec.size, NULL, &logrec.data)) != 0)
 		return (ret);
 
 	bp = logrec.data;
@@ -347,7 +347,7 @@ int __txn_xa_regop_log(logp, txnid, ret_lsnp, flags,
 	ret = log_put(logp, ret_lsnp, (DBT *)&logrec, flags);
 	if (txnid != NULL)
 		txnid->last_lsn = *ret_lsnp;
-	__os_free(logrec.data, 0);
+	__edb_os_free(logrec.data, 0);
 	return (ret);
 }
 
@@ -399,7 +399,7 @@ __txn_xa_regop_print(notused1, edbtp, lsnp, notused2, notused3)
 	printf("\tbegin_lsn: [%lu][%lu]\n",
 	    (u_long)argp->begin_lsn.file, (u_long)argp->begin_lsn.offset);
 	printf("\n");
-	__os_free(argp, 0);
+	__edb_os_free(argp, 0);
 	return (0);
 }
 
@@ -415,7 +415,7 @@ __txn_xa_regop_read(recbuf, argpp)
 	u_int8_t *bp;
 	int ret;
 
-	ret = __os_malloc(sizeof(__txn_xa_regop_args) +
+	ret = __edb_os_malloc(sizeof(__txn_xa_regop_args) +
 	    sizeof(DB_TXN), NULL, &argp);
 	if (ret != 0)
 		return (ret);
@@ -475,7 +475,7 @@ int __txn_child_log(logp, txnid, ret_lsnp, flags,
 	logrec.size = sizeof(rectype) + sizeof(txn_num) + sizeof(DB_LSN)
 	    + sizeof(opcode)
 	    + sizeof(parent);
-	if ((ret = __os_malloc(logrec.size, NULL, &logrec.data)) != 0)
+	if ((ret = __edb_os_malloc(logrec.size, NULL, &logrec.data)) != 0)
 		return (ret);
 
 	bp = logrec.data;
@@ -496,7 +496,7 @@ int __txn_child_log(logp, txnid, ret_lsnp, flags,
 	ret = log_put(logp, ret_lsnp, (DBT *)&logrec, flags);
 	if (txnid != NULL)
 		txnid->last_lsn = *ret_lsnp;
-	__os_free(logrec.data, 0);
+	__edb_os_free(logrec.data, 0);
 	return (ret);
 }
 
@@ -535,7 +535,7 @@ __txn_child_print(notused1, edbtp, lsnp, notused2, notused3)
 	printf("\topcode: %lu\n", (u_long)argp->opcode);
 	printf("\tparent: %lu\n", (u_long)argp->parent);
 	printf("\n");
-	__os_free(argp, 0);
+	__edb_os_free(argp, 0);
 	return (0);
 }
 
@@ -551,7 +551,7 @@ __txn_child_read(recbuf, argpp)
 	u_int8_t *bp;
 	int ret;
 
-	ret = __os_malloc(sizeof(__txn_child_args) +
+	ret = __edb_os_malloc(sizeof(__txn_child_args) +
 	    sizeof(DB_TXN), NULL, &argp);
 	if (ret != 0)
 		return (ret);

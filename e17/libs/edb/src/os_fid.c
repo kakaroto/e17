@@ -24,13 +24,13 @@ static const char sccsid[] = "@(#)os_fid.c	10.12 (Sleepycat) 7/21/98";
 #include "common_ext.h"
 
 /*
- * __os_fileid --
+ * __edb_os_fileid --
  *	Return a unique identifier for a file.
  *
- * PUBLIC: int __os_fileid __P((DB_ENV *, const char *, int, u_int8_t *));
+ * PUBLIC: int __edb_os_fileid __P((DB_ENV *, const char *, int, u_int8_t *));
  */
 int
-__os_fileid(edbenv, fname, timestamp, fidp)
+__edb_os_fileid(edbenv, fname, timestamp, fidp)
 	DB_ENV *edbenv;
 	const char *fname;
 	int timestamp;

@@ -95,7 +95,7 @@ __txn_regop_recover(logp, edbtp, lsnp, redo, info)
 
 	if (ret == 0)
 		*lsnp = argp->prev_lsn;
-	__os_free(argp, 0);
+	__edb_os_free(argp, 0);
 
 	return (ret);
 }
@@ -158,7 +158,7 @@ __txn_xa_regop_recover(logp, edbtp, lsnp, redo, info)
 
 	if (ret == 0)
 		*lsnp = argp->prev_lsn;
-	__os_free(argp, 0);
+	__edb_os_free(argp, 0);
 
 	return (ret);
 }
@@ -196,7 +196,7 @@ __txn_ckp_recover(logp, edbtp, lsnp, redo, info)
 		__edb_txnlist_gen(info, redo ? -1 : 1);
 
 	*lsnp = argp->last_ckp;
-	__os_free(argp, 0);
+	__edb_os_free(argp, 0);
 	return (DB_TXN_CKP);
 }
 
@@ -241,7 +241,7 @@ __txn_child_recover(logp, edbtp, lsnp, redo, info)
 
 	if (ret == 0)
 		*lsnp = argp->prev_lsn;
-	__os_free(argp, 0);
+	__edb_os_free(argp, 0);
 
 	return (ret);
 }

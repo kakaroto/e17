@@ -53,7 +53,7 @@ memp_stat(edbmp, gspp, fspp, edb_malloc)
 	if (gspp != NULL) {
 		*gspp = NULL;
 
-		if ((ret = __os_malloc(sizeof(**gspp), edb_malloc, gspp)) != 0)
+		if ((ret = __edb_os_malloc(sizeof(**gspp), edb_malloc, gspp)) != 0)
 			return (ret);
 
 		LOCKREGION(edbmp);
@@ -90,7 +90,7 @@ memp_stat(edbmp, gspp, fspp, edb_malloc)
 
 		/* Allocate space for the pointers. */
 		len = (len + 1) * sizeof(DB_MPOOL_FSTAT *);
-		if ((ret = __os_malloc(len, edb_malloc, fspp)) != 0)
+		if ((ret = __edb_os_malloc(len, edb_malloc, fspp)) != 0)
 			return (ret);
 
 		LOCKREGION(edbmp);
@@ -103,7 +103,7 @@ memp_stat(edbmp, gspp, fspp, edb_malloc)
 			name = __memp_fns(edbmp, mfp);
 			nlen = strlen(name);
 			len = sizeof(DB_MPOOL_FSTAT) + nlen + 1;
-			if ((ret = __os_malloc(len, edb_malloc, tfsp)) != 0)
+			if ((ret = __edb_os_malloc(len, edb_malloc, tfsp)) != 0)
 				return (ret);
 			**tfsp = mfp->stat;
 			(*tfsp)->file_name = (char *)

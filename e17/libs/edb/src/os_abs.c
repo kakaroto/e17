@@ -18,13 +18,13 @@ static const char sccsid[] = "@(#)os_abs.c	10.9 (Sleepycat) 7/21/98";
 #include "edb_int.h"
 
 /*
- * __os_abspath --
+ * __edb_os_abspath --
  *	Return if a path is an absolute path.
  *
- * PUBLIC: int __os_abspath __P((const char *));
+ * PUBLIC: int __edb_os_abspath __P((const char *));
  */
 int
-__os_abspath(path)
+__edb_os_abspath(path)
 	const char *path;
 {
 #ifndef __EMX__

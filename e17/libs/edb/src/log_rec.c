@@ -128,7 +128,7 @@ __log_register_recover(logp, edbtp, lsnp, redo, info)
 			if (edbe->edbp != NULL && --edbe->refcount == 0) {
 				ret = edbe->edbp->close(edbe->edbp, 0);
 				if (edbe->name != NULL) {
-					__os_freestr(edbe->name);
+					__edb_os_freestr(edbe->name);
 					edbe->name = NULL;
 				}
 				(void)__log_rem_logid(logp, argp->id);
@@ -156,7 +156,7 @@ __log_register_recover(logp, edbtp, lsnp, redo, info)
 
 out:	F_CLR(logp, DBC_RECOVER);
 	if (argp != NULL)
-		__os_free(argp, 0);
+		__edb_os_free(argp, 0);
 	return (ret);
 }
 
@@ -202,7 +202,7 @@ __log_open_file(lp, argp)
 	if (edbe != NULL && edbe->edbp != NULL) {
                 (void)edbe->edbp->close(edbe->edbp, 0);
 		if (edbe->name != NULL)
-			__os_freestr(edbe->name);
+			__edb_os_freestr(edbe->name);
                 edbe->name = NULL;
 		(void)__log_rem_logid(lp, argp->id);
         }
@@ -274,7 +274,7 @@ __log_add_logid(logp, edbp, name, ndx)
 	 * number of available slots.
 	 */
 	if (logp->edbentry_cnt <= ndx) {
-		if ((ret = __os_realloc(&logp->edbentry,
+		if ((ret = __edb_os_realloc(&logp->edbentry,
 		    (ndx + DB_GROW_SIZE) * sizeof(DB_ENTRY))) != 0)
 			goto err;
 
@@ -290,7 +290,7 @@ __log_add_logid(logp, edbp, name, ndx)
 
 	/* Make space for the name and copy it in. */
 	if (name != NULL) {
-		if ((ret = __os_malloc(strlen(name) + 1, 
+		if ((ret = __edb_os_malloc(strlen(name) + 1, 
 		    NULL, &logp->edbentry[ndx].name)) != 0)
 			goto err;
 		strcpy(logp->edbentry[ndx].name, name);

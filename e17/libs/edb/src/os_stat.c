@@ -22,13 +22,13 @@ static const char sccsid[] = "@(#)os_stat.c	10.18 (Sleepycat) 10/12/98";
 #include "os_jump.h"
 
 /*
- * __os_exists --
+ * __edb_os_exists --
  *	Return if the file exists.
  *
- * PUBLIC: int __os_exists __P((const char *, int *));
+ * PUBLIC: int __edb_os_exists __P((const char *, int *));
  */
 int
-__os_exists(path, isdirp)
+__edb_os_exists(path, isdirp)
 	const char *path;
 	int *isdirp;
 {
@@ -54,15 +54,15 @@ __os_exists(path, isdirp)
 }
 
 /*
- * __os_ioinfo --
+ * __edb_os_ioinfo --
  *	Return file size and I/O size; abstracted to make it easier
  *	to replace.
  *
- * PUBLIC: int __os_ioinfo
+ * PUBLIC: int __edb_os_ioinfo
  * PUBLIC:    __P((const char *, int, u_int32_t *, u_int32_t *, u_int32_t *));
  */
 int
-__os_ioinfo(path, fd, mbytesp, bytesp, iosizep)
+__edb_os_ioinfo(path, fd, mbytesp, bytesp, iosizep)
 	const char *path;
 	int fd;
 	u_int32_t *mbytesp, *bytesp, *iosizep;

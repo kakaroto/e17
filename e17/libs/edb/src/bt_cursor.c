@@ -126,7 +126,7 @@ __bam_c_init(edbc)
 	CURSOR *cp;
 	int ret;
 
-	if ((ret = __os_calloc(1, sizeof(CURSOR), &cp)) != 0)
+	if ((ret = __edb_os_calloc(1, sizeof(CURSOR), &cp)) != 0)
 		return (ret);
 
 	edbp = edbc->edbp;
@@ -138,9 +138,9 @@ __bam_c_init(edbc)
 	 * in advance.
 	 */
 	if (edbp->type == DB_RECNO || F_ISSET(edbp, DB_BT_RECNUM)) {
-		if ((ret = __os_malloc(sizeof(edb_recno_t),
+		if ((ret = __edb_os_malloc(sizeof(edb_recno_t),
 		    NULL, &edbc->rkey.data)) != 0) {
-			__os_free(cp, sizeof(CURSOR));
+			__edb_os_free(cp, sizeof(CURSOR));
 			return (ret);
 		}
 		edbc->rkey.ulen = sizeof(edb_recno_t);
@@ -218,7 +218,7 @@ __bam_c_destroy(edbc)
 	DBC *edbc;
 {
 	/* Discard the structures. */
-	__os_free(edbc->internal, sizeof(CURSOR));
+	__edb_os_free(edbc->internal, sizeof(CURSOR));
 
 	return (0);
 }
@@ -743,7 +743,7 @@ __bam_c_rget(edbc, data, flags)
 	__bam_stkrel(edbc, 0);
 
 err:	(void)memp_fput(edbp->mpf, cp->page, 0);
-	__os_free(edbt.data, edbt.size);
+	__edb_os_free(edbt.data, edbt.size);
 	return (ret);
 }
 
@@ -1851,7 +1851,7 @@ btd:	/*
 
 err:
 done:	if (delete_page)
-		__os_free(edbt.data, edbt.size);
+		__edb_os_free(edbt.data, edbt.size);
 
 	if (local_page) {
 		/*
@@ -1908,6 +1908,6 @@ __bam_c_getstack(edbc, cp)
 err:	if (h != NULL)
 		(void)memp_fput(edbp->mpf, h, 0);
 	if (edbt.data != NULL)
-		__os_free(edbt.data, edbt.size);
+		__edb_os_free(edbt.data, edbt.size);
 	return (ret);
 }

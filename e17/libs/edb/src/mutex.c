@@ -159,7 +159,7 @@ __edb_mutex_init(mp, off)
 #else
 	TSL_INIT(&mp->tsl_resource);
 #endif
-	mp->spins = __os_spin();
+	mp->spins = __edb_os_spin();
 #else
 	mp->off = off;
 #endif
@@ -215,7 +215,7 @@ __edb_mutex_lock(mp, fd)
 			}
 
 		/* Yield the processor; wait 1ms initially, up to 1 second. */
-		__os_yield(usecs);
+		__edb_os_yield(usecs);
 		if ((usecs <<= 1) > SECOND)
 			usecs = SECOND;
 	}
@@ -234,7 +234,7 @@ __edb_mutex_lock(mp, fd)
 		 * up to 1 second.
 		 */
 		for (usecs = MS(1); mp->pid != 0;) {
-			__os_yield(usecs);
+			__edb_os_yield(usecs);
 			if ((usecs <<= 1) > SECOND)
 				usecs = SECOND;
 		}

@@ -157,7 +157,7 @@ __edb_add_recovery(edbenv, func, ndx)
 
 	/* Check if we have to grow the table. */
 	if (ndx >= dispatch_size) {
-		if ((ret = __os_realloc(&dispatch_table,
+		if ((ret = __edb_os_realloc(&dispatch_table,
 		    (DB_user_BEGIN + dispatch_size) *
 		    sizeof(dispatch_table[0]))) != 0)
 			return (ret);
@@ -183,7 +183,7 @@ __edb_txnlist_init(retp)
 	DB_TXNHEAD *headp;
 	int ret;
 
-	if ((ret = __os_malloc(sizeof(DB_TXNHEAD), NULL, &headp)) != 0)
+	if ((ret = __edb_os_malloc(sizeof(DB_TXNHEAD), NULL, &headp)) != 0)
 		return (ret);
 
 	LIST_INIT(&headp->head);
@@ -209,7 +209,7 @@ __edb_txnlist_add(listp, txnid)
 	DB_TXNLIST *elp;
 	int ret;
 
-	if ((ret = __os_malloc(sizeof(DB_TXNLIST), NULL, &elp)) != 0)
+	if ((ret = __edb_os_malloc(sizeof(DB_TXNLIST), NULL, &elp)) != 0)
 		return (ret);
 
 	elp->txnid = txnid;
@@ -263,9 +263,9 @@ __edb_txnlist_end(listp)
 	hp = (DB_TXNHEAD *)listp;
 	while ((p = LIST_FIRST(&hp->head)) != LIST_END(&hp->head)) {
 		LIST_REMOVE(p, links);
-		__os_free(p, 0);
+		__edb_os_free(p, 0);
 	}
-	__os_free(listp, sizeof(DB_TXNHEAD));
+	__edb_os_free(listp, sizeof(DB_TXNHEAD));
 }
 
 /*

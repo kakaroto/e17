@@ -139,7 +139,7 @@ err:		/*
 	UNLOCK_LOGREGION(edblp);
 
 	if (fullname != NULL)
-		__os_freestr(fullname);
+		__edb_os_freestr(fullname);
 
 	return (ret);
 }

@@ -31,10 +31,10 @@ static const char sccsid[] = "@(#)os_map.c	10.24 (Sleepycat) 10/12/98";
 #include "common_ext.h"
 
 #ifdef HAVE_MMAP
-static int __os_map __P((char *, int, size_t, int, int, int, void **));
+static int __edb_os_map __P((char *, int, size_t, int, int, int, void **));
 #endif
 #ifdef HAVE_SHMGET
-static int __os_shmget __P((REGINFO *));
+static int __edb_os_shmget __P((REGINFO *));
 #endif
 
 /*
@@ -159,14 +159,14 @@ __edb_mapregion(path, infop)
 #ifdef HAVE_MMAP_ANONYMOUS
 		if (!called && F_ISSET(infop, REGION_PRIVATE)) {
 			called = 1;
-			ret = __os_map(path,
+			ret = __edb_os_map(path,
 			    infop->fd, infop->size, 1, 1, 0, &infop->addr);
 		}
 #endif
 #ifdef HAVE_SHMGET
 		if (!called) {
 			called = 1;
-			ret = __os_shmget(infop);
+			ret = __edb_os_shmget(infop);
 		}
 #endif
 #ifdef HAVE_MMAP
@@ -183,7 +183,7 @@ __edb_mapregion(path, infop)
 				return (EINVAL);
 			}
 
-			ret = __os_map(path,
+			ret = __edb_os_map(path,
 			    infop->fd, infop->size, 1, 1, 0, &infop->addr);
 		}
 #endif
@@ -201,14 +201,14 @@ __edb_mapregion(path, infop)
 			/* Mmap(2) regions that aren't anonymous can grow. */
 			F_SET(infop, REGION_CANGROW);
 
-			ret = __os_map(path,
+			ret = __edb_os_map(path,
 			    infop->fd, infop->size, 1, 0, 0, &infop->addr);
 		}
 #endif
 #ifdef HAVE_SHMGET
 		if (!called) {
 			called = 1;
-			ret = __os_shmget(infop);
+			ret = __edb_os_shmget(infop);
 		}
 #endif
 	}
@@ -300,7 +300,7 @@ __edb_mapfile(path, fd, len, is_rdonly, addr)
 		return (__edb_jump.j_map(path, fd, len, 0, 0, is_rdonly, addr));
 
 #ifdef HAVE_MMAP
-	return (__os_map(path, fd, len, 0, 0, is_rdonly, addr));
+	return (__edb_os_map(path, fd, len, 0, 0, is_rdonly, addr));
 #else
 	return (EINVAL);
 #endif
@@ -329,11 +329,11 @@ __edb_unmapfile(addr, len)
 
 #ifdef HAVE_MMAP
 /*
- * __os_map --
+ * __edb_os_map --
  *	Call the mmap(2) function.
  */
 static int
-__os_map(path, fd, len, is_region, is_anonymous, is_rdonly, addr)
+__edb_os_map(path, fd, len, is_region, is_anonymous, is_rdonly, addr)
 	char *path;
 	int fd, is_region, is_anonymous, is_rdonly;
 	size_t len;
@@ -401,7 +401,7 @@ __os_map(path, fd, len, is_region, is_anonymous, is_rdonly, addr)
  * discussing user responsibility for on-disk and in-memory synchronization.
  */
 #ifdef VMS
-	if (__os_fsync(fd) == -1)
+	if (__edb_os_fsync(fd) == -1)
 		return(errno);
 #endif
 
@@ -420,11 +420,11 @@ __os_map(path, fd, len, is_region, is_anonymous, is_rdonly, addr)
 
 #ifdef HAVE_SHMGET
 /*
- * __os_shmget --
+ * __edb_os_shmget --
  *	Call the shmget(2) family of functions.
  */
 static int
-__os_shmget(infop)
+__edb_os_shmget(infop)
 	REGINFO *infop;
 {
 	if (F_ISSET(infop, REGION_CREATED) &&

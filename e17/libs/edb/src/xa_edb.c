@@ -84,7 +84,7 @@ edb_xa_open(fname, type, flags, mode, edbinfo, edbpp)
 	 * function pointers into it.  The internal pointer references
 	 * the real underlying DB handle.
 	 */
-	if ((ret = __os_calloc(1, sizeof(DB), &edbp)) != 0) {
+	if ((ret = __edb_os_calloc(1, sizeof(DB), &edbp)) != 0) {
 		(void)real_edbp->close(real_edbp, 0);
 		return (ret);
 	}
@@ -125,7 +125,7 @@ __xa_close(edbp, flags)
 	real_edbp = (DB *)edbp->internal;
 	ret = real_edbp->close(real_edbp, flags);
 
-	__os_free(edbp, sizeof(DB));
+	__edb_os_free(edbp, sizeof(DB));
 	return (ret);
 }
 
@@ -151,7 +151,7 @@ __xa_cursor(edbp, txn, edbcp, flags)
 	 * function pointers into it.  The internal pointer references
 	 * the real underlying DBC handle.
 	 */
-	if ((ret = __os_calloc(1, sizeof(DBC), &edbc)) != 0) {
+	if ((ret = __edb_os_calloc(1, sizeof(DBC), &edbc)) != 0) {
 		(void)real_edbc->c_close(real_edbc);
 		return (ret);
 	}
@@ -263,7 +263,7 @@ __xa_c_close(edbc)
 	ret = real_edbc->c_close(real_edbc);
 
 	TAILQ_REMOVE(&edbc->edbp->active_queue, edbc, links);
-	__os_free(edbc, sizeof(DBC));
+	__edb_os_free(edbc, sizeof(DBC));
 
 	return (ret);
 }

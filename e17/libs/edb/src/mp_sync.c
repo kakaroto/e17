@@ -63,7 +63,7 @@ memp_sync(edbmp, lsnp)
 	nalloc = mp->stat.st_page_dirty + mp->stat.st_page_dirty / 2 + 10;
 	UNLOCKREGION(edbmp);
 
-	if ((ret = __os_malloc(nalloc * sizeof(BH *), NULL, &bharray)) != 0)
+	if ((ret = __edb_os_malloc(nalloc * sizeof(BH *), NULL, &bharray)) != 0)
 		return (ret);
 
 	LOCKREGION(edbmp);
@@ -239,7 +239,7 @@ err:		/*
 			F_CLR(bhp, BH_WRITE);
 	}
 	UNLOCKREGION(edbmp);
-	__os_free(bharray, nalloc * sizeof(BH *));
+	__edb_os_free(bharray, nalloc * sizeof(BH *));
 	return (ret);
 }
 
@@ -338,7 +338,7 @@ __memp_fsync(edbmfp)
 	nalloc = mp->stat.st_page_dirty + mp->stat.st_page_dirty / 2 + 10;
 	UNLOCKREGION(edbmp);
 
-	if ((ret = __os_malloc(nalloc * sizeof(BH *), NULL, &bharray)) != 0)
+	if ((ret = __edb_os_malloc(nalloc * sizeof(BH *), NULL, &bharray)) != 0)
 		return (ret);
 
 	LOCKREGION(edbmp);
@@ -419,7 +419,7 @@ __memp_fsync(edbmfp)
 
 err:	UNLOCKREGION(edbmp);
 
-	__os_free(bharray, nalloc * sizeof(BH *));
+	__edb_os_free(bharray, nalloc * sizeof(BH *));
 
 	/*
 	 * Sync the underlying file as the last thing we do, so that the OS
@@ -430,7 +430,7 @@ err:	UNLOCKREGION(edbmp);
 	 * issues.
 	 */
 	if (ret == 0)
-		return (incomplete ? DB_INCOMPLETE : __os_fsync(edbmfp->fd));
+		return (incomplete ? DB_INCOMPLETE : __edb_os_fsync(edbmfp->fd));
 	return (ret);
 }
 

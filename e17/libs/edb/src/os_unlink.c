@@ -22,13 +22,13 @@ static const char sccsid[] = "@(#)os_unlink.c	10.7 (Sleepycat) 10/12/98";
 #include "os_jump.h"
 
 /*
- * __os_unlink --
+ * __edb_os_unlink --
  *	Remove a file.
  *
- * PUBLIC: int __os_unlink __P((const char *));
+ * PUBLIC: int __edb_os_unlink __P((const char *));
  */
 int
-__os_unlink(path)
+__edb_os_unlink(path)
 	const char *path;
 {
 	int ret;

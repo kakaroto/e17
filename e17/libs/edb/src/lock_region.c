@@ -56,7 +56,7 @@ lock_open(path, flags, mode, edbenv, ltp)
 		return (ret);
 
 	/* Create the lock table structure. */
-	if ((ret = __os_calloc(1, sizeof(DB_LOCKTAB), &lt)) != 0)
+	if ((ret = __edb_os_calloc(1, sizeof(DB_LOCKTAB), &lt)) != 0)
 		return (ret);
 	lt->edbenv = edbenv;
 
@@ -81,7 +81,7 @@ lock_open(path, flags, mode, edbenv, ltp)
 	if (path == NULL)
 		lt->reginfo.path = NULL;
 	else
-		if ((ret = __os_strdup(path, &lt->reginfo.path)) != 0)
+		if ((ret = __edb_os_strdup(path, &lt->reginfo.path)) != 0)
 			goto err;
 	lt->reginfo.file = DB_DEFAULT_LOCK_FILE;
 	lt->reginfo.mode = mode;
@@ -146,8 +146,8 @@ err:	if (lt->reginfo.addr != NULL) {
 	}
 
 	if (lt->reginfo.path != NULL)
-		__os_freestr(lt->reginfo.path);
-	__os_free(lt, sizeof(*lt));
+		__edb_os_freestr(lt->reginfo.path);
+	__edb_os_free(lt, sizeof(*lt));
 	return (ret);
 }
 
@@ -274,8 +274,8 @@ lock_close(lt)
 		return (ret);
 
 	if (lt->reginfo.path != NULL)
-		__os_freestr(lt->reginfo.path);
-	__os_free(lt, sizeof(*lt));
+		__edb_os_freestr(lt->reginfo.path);
+	__edb_os_free(lt, sizeof(*lt));
 
 	return (0);
 }
@@ -292,12 +292,12 @@ lock_unlink(path, force, edbenv)
 	memset(&reginfo, 0, sizeof(reginfo));
 	reginfo.edbenv = edbenv;
 	reginfo.appname = DB_APP_NONE;
-	if (path != NULL && (ret = __os_strdup(path, &reginfo.path)) != 0)
+	if (path != NULL && (ret = __edb_os_strdup(path, &reginfo.path)) != 0)
 		return (ret);
 	reginfo.file = DB_DEFAULT_LOCK_FILE;
 	ret = __edb_runlink(&reginfo, force);
 	if (reginfo.path != NULL)
-		__os_freestr(reginfo.path);
+		__edb_os_freestr(reginfo.path);
 	return (ret);
 }
 
@@ -485,7 +485,7 @@ lock_stat(lt, gspp, edb_malloc)
 
 	LOCK_PANIC_CHECK(lt);
 
-	if ((ret = __os_malloc(sizeof(**gspp), edb_malloc, gspp)) != 0)
+	if ((ret = __edb_os_malloc(sizeof(**gspp), edb_malloc, gspp)) != 0)
 		return (ret);
 
 	/* Copy out the global statistics. */
