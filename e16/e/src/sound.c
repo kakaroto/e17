@@ -259,10 +259,10 @@ SoundInit()
       sound_fd = fd;
    else
      {
-	ASSIGN_ALERT(gettext("Error initialising sound"),
+	ASSIGN_ALERT(gettext("Error initializing sound"),
 		     gettext("OK"), " ", " ");
 	Alert(gettext
-	      ("Audio was enabled for Enlightenemnt but there was an error\n"
+	      ("Audio was enabled for Enlightenment but there was an error\n"
 	       "communicating with the audio server (Esound). Audio will\n"
 	       "now be disabled.\n"));
 	RESET_ALERT;

@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ENLIGHTENMENT CVS\n"
-"POT-Creation-Date: 1999-12-09 21:00+0300\n"
+"POT-Creation-Date: 1999-12-15 16:52+0100\n"
 "PO-Revision-Date: 1999-12-09 21:00+0300\n"
 "Last-Translator: Vladimir STEPANOV <stepanov@bird.iki.rssi.ru>\n"
 "Language-Team: RUSSIAN <ru@li.org>\n"
@@ -86,7 +86,7 @@ msgid ""
 "There was an error running the program:\n"
 "%s\n"
 "This program could not be executed.\n"
-"This is because the file is infact a directory.\n"
+"This is because the file is in fact a directory.\n"
 msgstr ""
 "Ошибка при выполнении программы:\n"
 "%s\n"
@@ -106,29 +106,29 @@ msgstr ""
 "Программа не может быть выполнена,\n"
 "так как файл не является обычным файлом.\n"
 
-#: src/actions.c:3134
+#: src/actions.c:3139
 #, c-format
 msgid "About Enlightenment %s"
 msgstr "О Enlightenment %s"
 
-#: src/actions.c:3150
+#: src/actions.c:3155
 msgid "Welcome to the "
 msgstr "Добро пожаловать в "
 
-#: src/actions.c:3172 src/dialog.c:304 src/groups.c:694 src/settings.c:312
+#: src/actions.c:3177 src/dialog.c:304 src/groups.c:694 src/settings.c:312
 #: src/settings.c:541 src/settings.c:706 src/settings.c:883
 #: src/settings.c:1107 src/settings.c:1211 src/settings.c:1312
-#: src/settings.c:1419 src/settings.c:1481 src/settings.c:1570
-#: src/settings.c:1968 src/settings.c:3361 src/settings.c:3712
-#: src/settings.c:4011 src/settings.c:4149 src/snaps.c:509 src/sound.c:263
+#: src/settings.c:1419 src/settings.c:1481 src/settings.c:1571
+#: src/settings.c:1969 src/settings.c:3362 src/settings.c:3713
+#: src/settings.c:4012 src/settings.c:4150 src/snaps.c:509 src/sound.c:263
 msgid "OK"
 msgstr ""
 
-#: src/actions.c:3326
+#: src/actions.c:3331
 msgid "  Pick the group the window will belong to:  \n"
 msgstr "  Выберите группу, к которой будет принадлежать окно:  \n"
 
-#: src/actions.c:3676
+#: src/actions.c:3682
 msgid ""
 "\n"
 "  There's no current group at the moment.  \n"
@@ -148,23 +148,23 @@ msgstr ""
 "  Выберите другую группу, к которой будет принадлежать окно, здесь:  \n"
 "\n"
 
-#: src/actions.c:3710
+#: src/actions.c:3716
 msgid "   Select the group to remove the window from.  "
 msgstr "   Выберите группу, из которой нужно убрать это окно.  "
 
-#: src/actions.c:3735
+#: src/actions.c:3741
 msgid "  Select the group to break  "
 msgstr "  Выберите группу, которую хотите разорвать  "
 
-#: src/actions.c:3763
+#: src/actions.c:3769
 msgid "You have been warned about the dangers of Zoom mode\n"
 msgstr "Вас предупреждали об опасностях режима изменения разрешения\n"
 
-#: src/actions.c:3766
+#: src/actions.c:3772
 msgid "Warning !!!"
 msgstr "Предупреждение !!!"
 
-#: src/actions.c:3768
+#: src/actions.c:3774
 msgid ""
 "This feature is heavily reliant on a feature of your\n"
 "X Server called the Vid Mode Extension. This feature exists\n"
@@ -232,19 +232,19 @@ msgid "E IPC Error"
 msgstr "Ошибка E IPC"
 
 #: src/config.c:242 src/config.c:477 src/config.c:557 src/config.c:831
-#: src/config.c:949 src/config.c:1191 src/config.c:1320 src/config.c:1427
-#: src/config.c:1643 src/config.c:1891 src/config.c:1961 src/config.c:2057
-#: src/config.c:2314 src/config.c:2531 src/config.c:2795 src/config.c:2888
-#: src/config.c:2965 src/config.c:3066 src/config.c:3389
+#: src/config.c:949 src/config.c:1191 src/config.c:1320 src/config.c:1426
+#: src/config.c:1642 src/config.c:1890 src/config.c:1960 src/config.c:2056
+#: src/config.c:2313 src/config.c:2530 src/config.c:2794 src/config.c:2887
+#: src/config.c:2964 src/config.c:3065 src/config.c:3387
 #, c-format
 msgid "CONFIG: ignoring extra data in \"%s\"\n"
 msgstr "CONFIG: игнорирую лишние данные в \"%s\"\n"
 
 #: src/config.c:248 src/config.c:483 src/config.c:565 src/config.c:837
-#: src/config.c:955 src/config.c:1197 src/config.c:1326 src/config.c:1435
-#: src/config.c:1651 src/config.c:1897 src/config.c:1967 src/config.c:2065
-#: src/config.c:2320 src/config.c:2539 src/config.c:2801 src/config.c:3072
-#: src/config.c:3397
+#: src/config.c:955 src/config.c:1197 src/config.c:1326 src/config.c:1434
+#: src/config.c:1650 src/config.c:1896 src/config.c:1966 src/config.c:2064
+#: src/config.c:2319 src/config.c:2538 src/config.c:2800 src/config.c:3071
+#: src/config.c:3395
 #, c-format
 msgid "CONFIG: missing required data in \"%s\"\n"
 msgstr "CONFIG: в \"%s\" отсутствуют требуемые данные\n"
@@ -323,7 +323,7 @@ msgstr ""
 "Предупреждение:  Похоже, кофигурирование завершилось до\n"
 "окончания загрузки блока Main Border.  Результат сомнителен...\n"
 
-#: src/config.c:1599
+#: src/config.c:1598
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading a Button block.  Outcome is likely not good.\n"
@@ -331,7 +331,7 @@ msgstr ""
 "Предупреждение:  Похоже, кофигурирование завершилось до\n"
 "окончания загрузки блока Button.  Результат сомнителен...\n"
 
-#: src/config.c:1856 src/config.c:1936
+#: src/config.c:1855 src/config.c:1935
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading a Desktop block.  Outcome is likely not good.\n"
@@ -339,11 +339,11 @@ msgstr ""
 "Предупреждение:  Похоже, кофигурирование завершилось до\n"
 "окончания загрузки блока Desktop.  Результат сомнителен...\n"
 
-#: src/config.c:1948
+#: src/config.c:1947
 msgid "Easter Egg!  Iconboxes aren't implemented yet.\n"
 msgstr "Елки-палки!  Iconbox-ы еще не сделаны.\n"
 
-#: src/config.c:1980
+#: src/config.c:1979
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading an Iconbox block.  Outcome is likely not good.\n"
@@ -351,7 +351,7 @@ msgstr ""
 "Предупреждение:  Похоже, кофигурирование завершилось до\n"
 "окончания загрузки блока Iconbox.  Результат сомнителен...\n"
 
-#: src/config.c:2016
+#: src/config.c:2015
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading an Sound block.  Outcome is likely not good.\n"
@@ -359,7 +359,7 @@ msgstr ""
 "Предупреждение:  Похоже, кофигурирование завершилось до\n"
 "окончания загрузки блока Sound.  Результат сомнителен...\n"
 
-#: src/config.c:2269
+#: src/config.c:2268
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -372,7 +372,7 @@ msgstr ""
 "%s\n"
 "Игнорирую и продолжаю...\n"
 
-#: src/config.c:2284
+#: src/config.c:2283
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading an Action Class block.  Outcome is likely not good.\n"
@@ -380,7 +380,7 @@ msgstr ""
 "Предупреждение:  Похоже, кофигурирование завершилось до\n"
 "окончания загрузки блока ActionClass.  Результат сомнителен...\n"
 
-#: src/config.c:2483
+#: src/config.c:2482
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -393,7 +393,7 @@ msgstr ""
 "%s\n"
 "Игнорирую и продолжаю...\n"
 
-#: src/config.c:2491
+#: src/config.c:2490
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading an ImageClass block.  Outcome is likely not good.\n"
@@ -401,7 +401,7 @@ msgstr ""
 "Предупреждение:  Похоже, кофигурирование завершилось до\n"
 "окончания загрузки блока ImageClass.  Результат сомнителен...\n"
 
-#: src/config.c:2731
+#: src/config.c:2730
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -414,7 +414,7 @@ msgstr ""
 "%s\n"
 "Игнорирую и продолжаю...\n"
 
-#: src/config.c:2756
+#: src/config.c:2755
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading an ColorModifier block.\n"
@@ -423,7 +423,7 @@ msgstr ""
 "Предупреждение:  Похоже, кофигурирование завершилось до\n"
 "окончания загрузки блока ColorModifier.  Результат сомнителен...\n"
 
-#: src/config.c:2849
+#: src/config.c:2848
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -436,7 +436,7 @@ msgstr ""
 "%s\n"
 "Игнорирую и продолжаю...\n"
 
-#: src/config.c:2856
+#: src/config.c:2855
 msgid ""
 "Warning: Configuration appears to have ended before we were\n"
 "Done loading an ToolTip block.  Outcome is likely not good.\n"
@@ -444,7 +444,7 @@ msgstr ""
 "Предупреждение:  Похоже, кофигурирование завершилось до\n"
 "окончания загрузки блока ToolTip.  Результат сомнителен...\n"
 
-#: src/config.c:2894
+#: src/config.c:2893
 msgid ""
 "Warning: Configuration appears to have ended before we were\n"
 "Done loading an FX block.  Outcome is likely not good.\n"
@@ -452,7 +452,7 @@ msgstr ""
 "Предупреждение:  Похоже, кофигурирование завершилось до\n"
 "окончания загрузки блока FX.  Результат сомнителен...\n"
 
-#: src/config.c:2930
+#: src/config.c:2929
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -465,7 +465,7 @@ msgstr ""
 "%s\n"
 "Игнорирую и продолжаю...\n"
 
-#: src/config.c:2938
+#: src/config.c:2937
 msgid ""
 "Warning: Configuration appears to have ended before we were\n"
 "Done loading an Extras block.  Outcome is likely not good.\n"
@@ -473,7 +473,7 @@ msgstr ""
 "Предупреждение:  Похоже, кофигурирование завершилось до\n"
 "окончания загрузки блока Extras.  Результат сомнителен...\n"
 
-#: src/config.c:3028
+#: src/config.c:3027
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -486,7 +486,7 @@ msgstr ""
 "%s\n"
 "Игнорирую и продолжаю...\n"
 
-#: src/config.c:3036
+#: src/config.c:3035
 msgid ""
 "Warning: Configuration appears to have ended before we were\n"
 "Done loading an Iconbox block.  Outcome is likely not good.\n"
@@ -494,7 +494,7 @@ msgstr ""
 "Предупреждение: Похоже, кофигурирование завершилось до\n"
 "окончания загрузки блока Iconbox.  Результат сомнителен...\n"
 
-#: src/config.c:3143
+#: src/config.c:3142
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -507,7 +507,7 @@ msgstr ""
 "%s\n"
 "Игнорирую и продолжаю...\n"
 
-#: src/config.c:3150
+#: src/config.c:3149
 msgid ""
 "Warning: Configuration appears to have ended before we were\n"
 "Done loading an WindowMatch block.  Outcome is likely not good.\n"
@@ -515,7 +515,7 @@ msgstr ""
 "Предупреждение: Похоже, кофигурирование завершилось до\n"
 "окончания загрузки блока WindowMatch.  Результат сомнителен...\n"
 
-#: src/config.c:3199
+#: src/config.c:3198
 #, c-format
 msgid ""
 "Help! Cannot find epp!\n"
@@ -532,23 +532,23 @@ msgstr ""
 "Возможно, ошибка вызвана отсутствием программы,\n"
 "или же программа не может быть выполнена Вами.\n"
 
-#: src/config.c:3206
+#: src/config.c:3205
 msgid "error"
 msgstr "ошибка"
 
-#: src/config.c:3407
+#: src/config.c:3405
 msgid "Theme versioning ERROR"
 msgstr "ОШИБКА версии темы"
 
-#: src/config.c:3408 src/config.c:3442
+#: src/config.c:3406 src/config.c:3440
 msgid "Restart with Defaults"
 msgstr "Перезапуск \"по умолчанию\""
 
-#: src/config.c:3409 src/config.c:3443
+#: src/config.c:3407 src/config.c:3441
 msgid "Abort and Exit"
 msgstr "Выход"
 
-#: src/config.c:3410
+#: src/config.c:3408
 #, c-format
 msgid ""
 "ERROR:\n"
@@ -585,11 +585,11 @@ msgstr ""
 "window manager, и эта тема уже использует преимущества новых\n"
 "возможностей Enlightenment.\n"
 
-#: src/config.c:3441
+#: src/config.c:3439
 msgid "User Config Version ERROR"
 msgstr "ОШИБКА версии пользовательской конфигурации"
 
-#: src/config.c:3444
+#: src/config.c:3442
 #, c-format
 msgid ""
 "ERROR:\n"
@@ -618,7 +618,7 @@ msgstr ""
 "После этого Вы сможете изменить свою конфигурацию в соответствии\n"
 "с Вашими предпочтениями.\n"
 
-#: src/config.c:3658
+#: src/config.c:3656
 #, c-format
 msgid ""
 "WARNING!\n"
@@ -634,7 +634,7 @@ msgstr ""
 "установленной для Вас квотой\n"
 "или правами доступа файловой системы.\n"
 
-#: src/config.c:3669
+#: src/config.c:3667
 #, c-format
 msgid ""
 "Enlightenment has just experienced some major problems in\n"
@@ -687,27 +687,27 @@ msgstr ""
 "Если администратор - Вы сами, то дополнительную информацию Вы можете\n"
 "найти в документации к Enlightenment.\n"
 
-#: src/config.c:3735
+#: src/config.c:3734
 msgid "Enlightenment Starting..."
 msgstr "Запуск Enlightenment..."
 
-#: src/config.c:4163
+#: src/config.c:4162
 msgid "Recover system config?"
 msgstr "Восстановить системную конфигурацию?"
 
-#: src/config.c:4164
+#: src/config.c:4163
 msgid "Yes, Attempt recovery"
 msgstr "Да, попробуем..."
 
-#: src/config.c:4165
+#: src/config.c:4164
 msgid "Restart and try again"
 msgstr "Перезапуск и еще одна попытка"
 
-#: src/config.c:4166
+#: src/config.c:4165
 msgid "Quit and give up"
 msgstr "Выход (сдаюсь...)"
 
-#: src/config.c:4168
+#: src/config.c:4167
 msgid ""
 "Enlightenment has encountered parsing errors in your autosaved\n"
 "configuration.\n"
@@ -786,17 +786,17 @@ msgstr ""
 msgid "Attention !!!"
 msgstr "Внимание !!!"
 
-#: src/fx.c:253
+#: src/fx.c:254
 msgid "Starting up Ripples FX..."
 msgstr "Запускаем спецэффект Рябь..."
 
-#: src/fx.c:254
+#: src/fx.c:255
 msgid ""
 "\n"
 "You have just started the Ripples Effect.\n"
 "\n"
 "If you look closely on your desktop background, and if it\n"
-"doesn't have a solid colour (ie has a background texture or\n"
+"doesn't have a solid color (ie has a background texture or\n"
 "image), you will see a pool of water at the bottom of your\n"
 "screen that reflects everything above it and \"ripples\".\n"
 "\n"
@@ -814,11 +814,11 @@ msgstr ""
 "Для запрета этого спецэффекта, просто выберите снова этот пункт в меню\n"
 "(он работает как переключатель).\n"
 
-#: src/fx.c:386 src/fx.c:405
+#: src/fx.c:387 src/fx.c:406
 msgid "Unable to display raindrops"
 msgstr "Невозможно показать дождевые капли"
 
-#: src/fx.c:387
+#: src/fx.c:388
 msgid ""
 "\n"
 "Enlightenment is unable to display raindrops on this\n"
@@ -854,14 +854,14 @@ msgstr ""
 "памяти.\n"
 "\n"
 
-#: src/fx.c:406
+#: src/fx.c:407
 msgid ""
 "\n"
 "Enlightenment is unable to display raindrops on this\n"
 "display because shared pixmaps are not available on this\n"
 "X-Server.\n"
 "\n"
-"This may be due to either the X-Server not implimenting\n"
+"This may be due to either the X-Server not implementing\n"
 "shared pixmaps, or shared pixmaps being disabled in\n"
 "Imlib's configuration.\n"
 "\n"
@@ -886,17 +886,17 @@ msgstr ""
 "пиктограмм.\n"
 "\n"
 
-#: src/fx.c:422
+#: src/fx.c:423
 msgid "Starting up Raindrops FX..."
 msgstr "Запускаем спецэффект Дождь..."
 
-#: src/fx.c:423
+#: src/fx.c:424
 msgid ""
 "\n"
 "You have just started the Raindrops Effect.\n"
 "\n"
 "If you look closely on your desktop background, and if it\n"
-"doesn't have a solid colour (ie has a background texture or\n"
+"doesn't have a solid color (ie has a background texture or\n"
 "image), you will see \"raindrops\" hit the background and\n"
 "make little splashes. This Effect can be VERY CPU intensive.\n"
 "\n"
@@ -915,17 +915,17 @@ msgstr ""
 "Для запрета этого спецэффекта, просто выберите снова этот пункт в меню\n"
 "(он работает как переключатель).\n"
 
-#: src/fx.c:717
+#: src/fx.c:718
 msgid "Starting up Waves FX..."
 msgstr "Запускаем спецэффект Волны..."
 
-#: src/fx.c:718
+#: src/fx.c:719
 msgid ""
 "\n"
 "You have just started the Waves Effect.\n"
 "\n"
 "If you look closely on your desktop background, and if it\n"
-"doesn't have a solid colour (ie has a background texture or\n"
+"doesn't have a solid color (ie has a background texture or\n"
 "image), you will see a pool of water at the bottom of your\n"
 "screen that reflects everything above it and \"waves\".\n"
 "\n"
@@ -943,11 +943,11 @@ msgstr ""
 "Для запрета этого спецэффекта, просто выберите снова этот пункт в меню\n"
 "(он работает как переключатель).\n"
 
-#: src/fx.c:883
+#: src/fx.c:884
 msgid "Starting up imagespinners FX..."
 msgstr "Запускаем спецэффект imagespinners..."
 
-#: src/fx.c:884
+#: src/fx.c:885
 msgid ""
 "\n"
 "You have just started the imagespinners Effect.\n"
@@ -975,7 +975,7 @@ msgstr ""
 "членами группы. Вы не можете добавить эти окна в группу\n"
 "в группу.\n"
 
-#: src/groups.c:603 src/groups.c:612 src/groups.c:620 src/settings.c:3834
+#: src/groups.c:603 src/groups.c:612 src/groups.c:620 src/settings.c:3835
 msgid "Window Group Error"
 msgstr "Ошибка Группы Окон"
 
@@ -1022,12 +1022,12 @@ msgstr ""
 msgid "Window Group Selection"
 msgstr "Выбор Группы Окон"
 
-#: src/groups.c:695 src/pager.c:1277 src/settings.c:314 src/settings.c:543
+#: src/groups.c:695 src/pager.c:1278 src/settings.c:314 src/settings.c:543
 #: src/settings.c:708 src/settings.c:885 src/settings.c:1109
 #: src/settings.c:1213 src/settings.c:1314 src/settings.c:1421
-#: src/settings.c:1483 src/settings.c:1572 src/settings.c:1970
-#: src/settings.c:3363 src/settings.c:3714 src/settings.c:4013
-#: src/settings.c:4151
+#: src/settings.c:1483 src/settings.c:1573 src/settings.c:1971
+#: src/settings.c:3364 src/settings.c:3715 src/settings.c:4014
+#: src/settings.c:4152
 msgid "Close"
 msgstr "Закрыть"
 
@@ -1040,7 +1040,7 @@ msgid ""
 "binary of Enlightenment that was compiled for a make or model\n"
 "of CPU not 100% identical or compatible with yours. Please\n"
 "either obtain the correct package for your system, or\n"
-"re-compile enlightenment and possibly any support libraries\n"
+"re-compile Enlightenment and possibly any support libraries\n"
 "that you got in binary format to run Enlightenment.\n"
 msgstr ""
 "Enlightenment выполнил запрещенную операцию.\n"
@@ -1163,7 +1163,7 @@ msgstr ""
 "\n"
 "ВОЗМОЖНО, Ваши файлы будут отредактированы неверно.\n"
 
-#: src/handlers.c:234 src/session.c:1159
+#: src/handlers.c:234 src/session.c:1166
 msgid "Are you sure?"
 msgstr "Вы уверены?"
 
@@ -1180,7 +1180,7 @@ msgid ""
 "Are you absolutely sure you want to have Enlightenment\n"
 "edit your startup files for you?\n"
 "\n"
-"If your startup files are highly customised this may not\n"
+"If your startup files are highly customized this may not\n"
 "work.\n"
 "\n"
 "Are you ABSOLUTELY sure?\n"
@@ -1209,11 +1209,11 @@ msgstr "Закрыть Iconbox"
 msgid "Create New Iconbox"
 msgstr "Сделать новый Iconbox"
 
-#: src/ipc.c:4622
+#: src/ipc.c:4705
 msgid "Enlightenment IPC Commands Help"
 msgstr "Справка по командам Enlightenment IPC"
 
-#: src/ipc.c:4626 src/ipc.c:4665
+#: src/ipc.c:4709 src/ipc.c:4748
 msgid ""
 "\n"
 "commands currently available:\n"
@@ -1221,7 +1221,7 @@ msgstr ""
 "\n"
 "доступные команды:\n"
 
-#: src/ipc.c:4628
+#: src/ipc.c:4711
 msgid ""
 "use \"help all\" for descriptions of each command\n"
 "use \"help <command>\" for an individual description\n"
@@ -1231,15 +1231,15 @@ msgstr ""
 "\"help <команда>\": описание команды\n"
 "\n"
 
-#: src/ipc.c:4666
+#: src/ipc.c:4749
 msgid "use \"help <command>\" for an individual description\n"
 msgstr "\"help <команда>\": описание команды\n"
 
-#: src/ipc.c:4668
+#: src/ipc.c:4751
 msgid "<command> : <description>\n"
 msgstr "<команда> : <описание>\n"
 
-#: src/ipc.c:4775
+#: src/ipc.c:4858
 #, c-format
 msgid ""
 "Enlightenment Version : %s\n"
@@ -1287,7 +1287,7 @@ msgstr "Невозможно выделить достаточно памяти"
 msgid ""
 "WARNING!!!!!!\n"
 "\n"
-"Allocation for %i bytes (%3.0f Kb or %3.1f Mb) did not succeed.\n"
+"Allocation for %i bytes (%3.0f kB or %3.1f MB) did not succeed.\n"
 "\n"
 "Either this is a bug where ridiculous amounts of memory\n"
 "are being allocated, or your system has run out of both\n"
@@ -1302,7 +1302,7 @@ msgid ""
 msgstr ""
 "ПРЕДУПРЕЖДЕНИЕ!!!!!!\n"
 "\n"
-"Попытка выделить %i байт (%3.0f Kb или %3.1f Mb) не удалась.\n"
+"Попытка выделить %i байт (%3.0f kB или %3.1f MB) не удалась.\n"
 "\n"
 "Либо эта ошибка связана с запросом на выделение нелепого количества\n"
 "памяти, либо в Вашей системе заняты полностью и RAM, и SWAP - в этом\n"
@@ -1325,18 +1325,18 @@ msgstr "Ошибка: запрос на повторное выделение не выделенной памяти"
 msgid ""
 "WARNING!!!!!!\n"
 "\n"
-"Re-allocation for %i bytes (%3.0f Kb or %f3.1 Mb)\n"
+"Re-allocation for %i bytes (%3.0f kB or %3.1f MB)\n"
 "for pointer %x is attempting to re-allocate memory for a\n"
 "memory chunk that has not been allocated or has already been\n"
 "freed.\n"
 "\n"
 "This is definitely a bug. Please report it.\n"
 "\n"
-"The error occured at %s, line %d.\n"
+"The error occurred at %s, line %d.\n"
 msgstr ""
 "ПРЕДУПРЕЖДЕНИЕ!!!!!!\n"
 "\n"
-"Повторное выделение %i байт (%3.0f Kb или %f3.1 Mb)\n"
+"Повторное выделение %i байт (%3.0f kB или %3.1f MB)\n"
 "для указателя %x: попытка повторного выделения\n"
 "памяти для буфера, который не был выделен, или уже\n"
 "освобожден.\n"
@@ -1350,7 +1350,7 @@ msgstr ""
 msgid ""
 "WARNING!!!!!!\n"
 "\n"
-"Re-allocation for %i bytes (%3.0f Kb or %3.1f Mb) did not succeed.\n"
+"Re-allocation for %i bytes (%3.0f kB or %3.1f MB) did not succeed.\n"
 "\n"
 "Either this is a bug where ridiculous amounts of memory\n"
 "are being allocated, or your system has run out of both\n"
@@ -1365,7 +1365,7 @@ msgid ""
 msgstr ""
 "ПРЕДУПРЕЖДЕНИЕ!!!!!!\n"
 "\n"
-"Повторное выделение %i байт (%3.0f Kb или %3.1f Mb) не удалась.\n"
+"Повторное выделение %i байт (%3.0f kB или %3.1f MB) не удалась.\n"
 "\n"
 "Либо эта ошибка связана с запросом на выделение нелепого количества\n"
 "памяти, либо в Вашей системе заняты полностью и RAM, и SWAP - в этом\n"
@@ -1394,7 +1394,7 @@ msgid ""
 "\n"
 "This is definitely a bug. Please report it.\n"
 "\n"
-"The error occured at %s, line %d.\n"
+"The error occurred at %s, line %d.\n"
 msgstr ""
 "ПРЕДУПРЕЖДЕНИЕ!!!!!!\n"
 "\n"
@@ -1425,7 +1425,7 @@ msgid ""
 "It is safe to ignore this error and continue running Enlightenment.\n"
 "\n"
 "The pointer value was %x.\n"
-"The error occured at %s, line %d.\n"
+"The error occurred at %s, line %d.\n"
 msgstr ""
 "ПРЕДУПРЕЖДЕНИЕ!!!!!!\n"
 "\n"
@@ -1438,29 +1438,29 @@ msgstr ""
 "pointer = %x.\n"
 "Ошибка возникла в %s, строка %d.\n"
 
-#: src/menus.c:1919
+#: src/menus.c:1918
 msgid "Go to this Desktop"
 msgstr "Перейти на этот рабочий стол"
 
-#: src/menus.c:1936
+#: src/menus.c:1935
 #, c-format
 msgid "Desktop %i"
 msgstr "Рабочий стол %i"
 
-#: src/menus.c:1999
+#: src/menus.c:1998
 msgid "Show/Hide this group"
 msgstr "Показать/спрятать эту группу"
 
-#: src/menus.c:2003
+#: src/menus.c:2002
 msgid "Iconify this group"
 msgstr "Свернуть эту группу"
 
-#: src/menus.c:2016
+#: src/menus.c:2015
 #, c-format
 msgid "Group %i"
 msgstr "Группа %i"
 
-#: src/misc.c:60
+#: src/misc.c:61
 #, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
@@ -1489,7 +1489,7 @@ msgstr ""
 "кем-то удалены, программа стерта кем-либо, либо ошибка в\n"
 "установке Enlightenment.\n"
 
-#: src/misc.c:76
+#: src/misc.c:77
 #, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
@@ -1510,7 +1510,7 @@ msgstr ""
 "Пожалуйста, разберитесь в ситуации и убедитесь, что\n"
 "\"dox\" установлен правильно.\n"
 
-#: src/misc.c:98
+#: src/misc.c:99
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
 "\n"
@@ -1536,7 +1536,7 @@ msgstr ""
 "кем-то удалены, программа стерта кем-либо, либо ошибка в\n"
 "установке Enlightenment.\n"
 
-#: src/misc.c:122
+#: src/misc.c:123
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
 "\n"
@@ -1560,63 +1560,63 @@ msgstr ""
 "\"BrushedMetal-Tigert\" - руководствуйтесь установками в этой\n"
 "теме при настройке Вашей темы \"по умолчанию\".\n"
 
-#: src/misc.c:422
+#: src/misc.c:423
 msgid "Theme does not contain a borders.cfg file\n"
 msgstr "В теме отсутствует файл borders.cfg\n"
 
-#: src/misc.c:428
+#: src/misc.c:429
 msgid "Theme does not contain a buttons.cfg file\n"
 msgstr "В теме отсутствует файл buttons.cfg\n"
 
-#: src/misc.c:435
+#: src/misc.c:436
 msgid "Theme does not contain a colormodifiers.cfg file\n"
 msgstr "В теме отсутствует файл colormodifiers.cfg\n"
 
-#: src/misc.c:441
+#: src/misc.c:442
 msgid "Theme does not contain a cursors.cfg file\n"
 msgstr "В теме отсутствует файл cursors.cfg\n"
 
-#: src/misc.c:447
+#: src/misc.c:448
 msgid "Theme does not contain a desktops.cfg file\n"
 msgstr "В теме отсутствует файл desktops.cfg\n"
 
-#: src/misc.c:453
+#: src/misc.c:454
 msgid "Theme does not contain a imageclasses.cfg file\n"
 msgstr "В теме отсутствует файл imageclasses.cfg\n"
 
-#: src/misc.c:459
+#: src/misc.c:460
 msgid "Theme does not contain a init.cfg file\n"
 msgstr "В теме отсутствует файл init.cfg\n"
 
-#: src/misc.c:465
+#: src/misc.c:466
 msgid "Theme does not contain a menustyles.cfg file\n"
 msgstr "В теме отсутствует файл menustyles.cfg\n"
 
-#: src/misc.c:471
+#: src/misc.c:472
 msgid "Theme does not contain a slideouts.cfg file\n"
 msgstr "В теме отсутствует файл slideouts.cfg\n"
 
-#: src/misc.c:478
+#: src/misc.c:479
 msgid "Theme does not contain a sound.cfg file\n"
 msgstr "В теме отсутствует файл sound.cfg\n"
 
-#: src/misc.c:485
+#: src/misc.c:486
 msgid "Theme does not contain a tooltips.cfg file\n"
 msgstr "В теме отсутствует файл tooltips.cfg\n"
 
-#: src/misc.c:492
+#: src/misc.c:493
 msgid "Theme does not contain a windowmatches.cfg file\n"
 msgstr "В теме отсутствует файл windowmatches.cfg\n"
 
-#: src/misc.c:498
+#: src/misc.c:499
 msgid "Theme contains a menus.cfg file\n"
 msgstr "Тема содержит файл menus.cfg\n"
 
-#: src/misc.c:504
+#: src/misc.c:505
 msgid "Theme contains a control.cfg file\n"
 msgstr "Тема содержит файл control.cfg\n"
 
-#: src/misc.c:510
+#: src/misc.c:511
 msgid "Theme contains a keybindings.cfg file\n"
 msgstr "Тема содержит файл keybindings.cfg\n"
 
@@ -1640,18 +1640,18 @@ msgstr "Модуль не загружен.\n"
 msgid "Unknown Module Error.\n"
 msgstr "Неопознанная ошибка модуля.\n"
 
-#: src/pager.c:527 src/pager.c:543 src/pager.c:558
+#: src/pager.c:528 src/pager.c:544 src/pager.c:559
 msgid "Warning!"
 msgstr "Предупреждение!"
 
-#: src/pager.c:528
+#: src/pager.c:529
 msgid ""
 "\n"
 "You seem to have an X Server capable of Shared Memory\n"
 "but it is incapable of doing ZPixmap Shared pixmaps\n"
 "(The server does not claim to be able to do them).\n"
 "\n"
-"The pager in enlightenment will run slowly in snapshot\n"
+"The pager in Enlightenment will run slowly in snapshot\n"
 "mode if you continue to use that mode of the pager\n"
 "under these conditions.\n"
 "\n"
@@ -1672,14 +1672,14 @@ msgstr ""
 "скорость работы.\n"
 "\n"
 
-#: src/pager.c:544
+#: src/pager.c:545
 msgid ""
 "\n"
 "Your X Server is capable of doing Shared Memory but you do\n"
 "not have Shared Pixmaps enabled in your Imlib configuration.\n"
 "\n"
 "Please enable Shared Pixmaps in your Imlib configuration\n"
-"then restart enlightenment to gain better performance for\n"
+"then restart Enlightenment to gain better performance for\n"
 "the pagers when snapshot mode is enabled.\n"
 "\n"
 msgstr ""
@@ -1693,7 +1693,7 @@ msgstr ""
 "отображения экрана.\n"
 "\n"
 
-#: src/pager.c:559
+#: src/pager.c:560
 msgid ""
 "\n"
 "You seem to be running Enlightenment over a network Connection\n"
@@ -1721,47 +1721,47 @@ msgstr ""
 "отключали, либо отключите режим отображения экрана.\n"
 "\n"
 
-#: src/pager.c:1268
+#: src/pager.c:1269
 msgid "Window Options"
 msgstr "Окно"
 
-#: src/pager.c:1274
+#: src/pager.c:1275
 msgid "Iconify"
 msgstr "Свернуть"
 
-#: src/pager.c:1281
+#: src/pager.c:1282
 msgid "Annihilate"
 msgstr "Уничтожить"
 
-#: src/pager.c:1286
+#: src/pager.c:1287
 msgid "Stick / Unstick"
 msgstr "Закрепить / Освободить"
 
-#: src/pager.c:1299
+#: src/pager.c:1300
 msgid "Desktop Options"
 msgstr "Рабочий стол"
 
-#: src/pager.c:1305
+#: src/pager.c:1306
 msgid "Pager Settings..."
 msgstr "Установки Pager-а..."
 
-#: src/pager.c:1310
+#: src/pager.c:1311
 msgid "Snapshotting On"
 msgstr "Включить отображение экрана"
 
-#: src/pager.c:1315
+#: src/pager.c:1316
 msgid "Snapshotting Off"
 msgstr "Выключить отображение экрана"
 
-#: src/pager.c:1322
+#: src/pager.c:1323
 msgid "High Quality On"
 msgstr "Высокое качество"
 
-#: src/pager.c:1327
+#: src/pager.c:1328
 msgid "High Quality Off"
 msgstr "Низкое качество"
 
-#: src/session.c:245
+#: src/session.c:246
 msgid ""
 "There was an error writing the clients session save file.\n"
 "You may have run out of disk space, not have permission\n"
@@ -1771,7 +1771,7 @@ msgstr ""
 "Возможные причины: закончилось место на диске, отсутствие прав\n"
 "на запись, а также другие проблемы файловой системы.\n"
 
-#: src/session.c:437
+#: src/session.c:438
 msgid ""
 "There was an error saving your autosave data - filing\n"
 "system problems.\n"
@@ -1781,7 +1781,7 @@ msgstr ""
 "на запись, а также другие проблемы файловой системы.\n"
 
 #. Less of the hope.... E survives
-#: src/session.c:1019
+#: src/session.c:1026
 msgid ""
 "ERROR!\n"
 "\n"
@@ -1807,7 +1807,7 @@ msgstr ""
 "\n"
 "... надеюсь.\n"
 
-#: src/session.c:1161
+#: src/session.c:1168
 msgid ""
 "\n"
 "\n"
@@ -1821,11 +1821,11 @@ msgstr ""
 "\n"
 "\n"
 
-#: src/session.c:1165
+#: src/session.c:1172
 msgid "  Yes, Log Out  "
 msgstr "  Да, хочу  "
 
-#: src/session.c:1166
+#: src/session.c:1173
 msgid "  No  "
 msgstr "  Нет  "
 
@@ -1870,7 +1870,7 @@ msgid "Mouse button to select and drag windows:"
 msgstr "Кнопка для выбора и перемещения окон:"
 
 #: src/settings.c:221 src/settings.c:253 src/settings.c:285
-#: src/settings.c:1852
+#: src/settings.c:1853
 msgid "Left"
 msgstr "Левая"
 
@@ -1879,7 +1879,7 @@ msgid "Middle"
 msgstr "Средняя"
 
 #: src/settings.c:237 src/settings.c:269 src/settings.c:301
-#: src/settings.c:1859
+#: src/settings.c:1860
 msgid "Right"
 msgstr "Правая"
 
@@ -1893,9 +1893,9 @@ msgstr "Кнопка для отображения меню Pager-а:"
 
 #: src/settings.c:313 src/settings.c:542 src/settings.c:707 src/settings.c:884
 #: src/settings.c:1108 src/settings.c:1212 src/settings.c:1313
-#: src/settings.c:1420 src/settings.c:1482 src/settings.c:1571
-#: src/settings.c:1969 src/settings.c:3362 src/settings.c:3713
-#: src/settings.c:4012 src/settings.c:4150 src/snaps.c:510
+#: src/settings.c:1420 src/settings.c:1482 src/settings.c:1572
+#: src/settings.c:1970 src/settings.c:3363 src/settings.c:3714
+#: src/settings.c:4013 src/settings.c:4151 src/snaps.c:510
 msgid "Apply"
 msgstr "Применить"
 
@@ -1940,7 +1940,7 @@ msgid "Send mouse pointer to window on focus switch"
 msgstr "Посылать курсор в окно при получении фокуса"
 
 #: src/settings.c:511
-msgid "Display and use focuslist"
+msgid "Display and use focus list"
 msgstr "Отображать и использовать список окон для передачи фокуса"
 
 #: src/settings.c:520
@@ -1963,23 +1963,23 @@ msgstr "Режимы перемещения:"
 msgid "Resize Methods:"
 msgstr "Режимы изменения размера:"
 
-#: src/settings.c:622 src/settings.c:629 src/settings.c:1716
+#: src/settings.c:622 src/settings.c:629 src/settings.c:1717
 msgid "Opaque"
 msgstr "Как есть"
 
-#: src/settings.c:636 src/settings.c:643 src/settings.c:1733
+#: src/settings.c:636 src/settings.c:643 src/settings.c:1734
 msgid "Technical"
 msgstr "Технический"
 
-#: src/settings.c:650 src/settings.c:657 src/settings.c:1749
+#: src/settings.c:650 src/settings.c:657 src/settings.c:1750
 msgid "Box"
 msgstr "Границы окна"
 
-#: src/settings.c:664 src/settings.c:671 src/settings.c:1764
+#: src/settings.c:664 src/settings.c:671 src/settings.c:1765
 msgid "Shaded"
 msgstr "Затененный"
 
-#: src/settings.c:678 src/settings.c:685 src/settings.c:1779
+#: src/settings.c:678 src/settings.c:685 src/settings.c:1780
 msgid "Semi-Solid"
 msgstr "Полу-непрозрачный"
 
@@ -2098,7 +2098,7 @@ msgstr "Установки звука"
 msgid "Enable sounds"
 msgstr "Включить поддержу звука"
 
-#: src/settings.c:1560
+#: src/settings.c:1561
 msgid ""
 "Audio not available since EsounD was not\n"
 "present at the time of compilation."
@@ -2106,86 +2106,86 @@ msgstr ""
 "Звуковые эффекты недоступны, так как во время компиляции\n"
 "не была обнаружена библиотека EsounD."
 
-#: src/settings.c:1667
+#: src/settings.c:1668
 msgid "Special FX Settings"
 msgstr "Установки спецэффектов"
 
-#: src/settings.c:1702
+#: src/settings.c:1703
 msgid "Slide Method:"
 msgstr ""
 
-#: src/settings.c:1709
+#: src/settings.c:1710
 msgid "Slide desktops around when changing"
 msgstr ""
 
-#: src/settings.c:1726
+#: src/settings.c:1727
 msgid "Slide windows around when cleaning up"
 msgstr ""
 
-#: src/settings.c:1742
+#: src/settings.c:1743
 msgid "Slide windows in when they appear"
 msgstr ""
 
-#: src/settings.c:1757
+#: src/settings.c:1758
 msgid "Animated display of menus"
 msgstr ""
 
-#: src/settings.c:1772
+#: src/settings.c:1773
 msgid "Always pop up menus on screen"
 msgstr ""
 
-#: src/settings.c:1790
+#: src/settings.c:1791
 msgid "Use saveunders to reduce window exposures"
 msgstr ""
 
-#: src/settings.c:1800
+#: src/settings.c:1801
 msgid "Animate shading and unshading of windows"
 msgstr ""
 
-#: src/settings.c:1814
+#: src/settings.c:1815
 msgid "Display desktop dragbar"
 msgstr ""
 
-#: src/settings.c:1823
+#: src/settings.c:1824
 msgid "Drag bar position:"
 msgstr ""
 
-#: src/settings.c:1834
+#: src/settings.c:1835
 msgid "Top"
 msgstr ""
 
-#: src/settings.c:1841
+#: src/settings.c:1842
 msgid "Bottom"
 msgstr ""
 
-#: src/settings.c:1878
+#: src/settings.c:1879
 msgid "Desktop Slide speed: (slow)\n"
 msgstr ""
 
-#: src/settings.c:1894 src/settings.c:1916 src/settings.c:1938
-#: src/settings.c:1960
+#: src/settings.c:1895 src/settings.c:1917 src/settings.c:1939
+#: src/settings.c:1961
 msgid "(fast)\n"
 msgstr ""
 
-#: src/settings.c:1900
+#: src/settings.c:1901
 msgid "Cleanup Slide speed: (slow)\n"
 msgstr ""
 
-#: src/settings.c:1922
+#: src/settings.c:1923
 msgid "Appear Slide speed: (slow)\n"
 msgstr ""
 
-#: src/settings.c:1944
+#: src/settings.c:1945
 msgid "Window Shading speed: (slow)\n"
 msgstr ""
 
-#: src/settings.c:2226 src/settings.c:2348 src/settings.c:2604
-#: src/settings.c:2727 src/settings.c:3346
+#: src/settings.c:2227 src/settings.c:2349 src/settings.c:2605
+#: src/settings.c:2728 src/settings.c:3347
 msgid "-NONE-"
 msgstr "-ПУСТО-"
 
-#: src/settings.c:2229 src/settings.c:2351 src/settings.c:2607
-#: src/settings.c:2730 src/settings.c:3349
+#: src/settings.c:2230 src/settings.c:2352 src/settings.c:2608
+#: src/settings.c:2731 src/settings.c:3350
 #, c-format
 msgid ""
 "Background definition information:\n"
@@ -2196,7 +2196,7 @@ msgstr ""
 "Название: %s\n"
 "Файл: %s\n"
 
-#: src/settings.c:2482 src/settings.c:2484
+#: src/settings.c:2483 src/settings.c:2485
 msgid ""
 "No\n"
 "Background"
@@ -2204,60 +2204,60 @@ msgstr ""
 "Без\n"
 "рисунка"
 
-#: src/settings.c:2669 src/settings.c:3237
+#: src/settings.c:2670 src/settings.c:3238
 #, c-format
 msgid "Unused backgrounds freed after %2i:%02i:%02i"
 msgstr "Освобождать неиcпользуемые картинки после %2i:%02i:%02i"
 
-#: src/settings.c:3000
+#: src/settings.c:3001
 msgid "Desktop Background Settings"
 msgstr "Установки фонового рисунка"
 
-#: src/settings.c:3026
+#: src/settings.c:3027
 msgid "BG Color\n"
 msgstr "Цвет фона\n"
 
-#: src/settings.c:3037
+#: src/settings.c:3038
 msgid "Move to Front\n"
 msgstr "Переместить вперед\n"
 
-#: src/settings.c:3044
+#: src/settings.c:3045
 msgid "Duplicate\n"
 msgstr "Дублировать\n"
 
-#: src/settings.c:3050
+#: src/settings.c:3051
 msgid "Unlist\n"
 msgstr "Убрать\n"
 
-#: src/settings.c:3056
+#: src/settings.c:3057
 msgid "Delete File\n"
 msgstr "Стереть файл\n"
 
-#: src/settings.c:3065
+#: src/settings.c:3066
 msgid "Red:\n"
 msgstr "Красный:\n"
 
-#: src/settings.c:3079
+#: src/settings.c:3080
 msgid "Use background image"
 msgstr "Использовать картинку"
 
-#: src/settings.c:3087
+#: src/settings.c:3088
 msgid "Green:\n"
 msgstr "Зеленый:\n"
 
-#: src/settings.c:3101
+#: src/settings.c:3102
 msgid "Keep aspect on scale"
 msgstr "Сохранять аспектное отношение"
 
-#: src/settings.c:3109
+#: src/settings.c:3110
 msgid "Blue:\n"
 msgstr "Синий:\n"
 
-#: src/settings.c:3123
+#: src/settings.c:3124
 msgid "Tile image across background"
 msgstr "Расположить картинку черепицей"
 
-#: src/settings.c:3139
+#: src/settings.c:3140
 msgid ""
 "Background\n"
 "Image\n"
@@ -2271,184 +2271,184 @@ msgstr ""
 "фонового\n"
 "рисунка\n"
 
-#: src/settings.c:3220
+#: src/settings.c:3221
 msgid "Use dithering in Hi-Color"
 msgstr ""
 
-#: src/settings.c:3227
+#: src/settings.c:3228
 msgid "Background overrides theme"
 msgstr "Фоновый рисунок перекрывает установки темы"
 
-#: src/settings.c:3284
+#: src/settings.c:3285
 msgid "Prescan BG's"
 msgstr "Предв.сканировать"
 
-#: src/settings.c:3294
+#: src/settings.c:3295
 msgid "Sort by File"
 msgstr "По имени файла"
 
-#: src/settings.c:3300
+#: src/settings.c:3301
 msgid "Sort by Attr."
 msgstr "По аттрибутам"
 
-#: src/settings.c:3306
+#: src/settings.c:3307
 msgid "Sort by Image"
 msgstr "По имени"
 
-#: src/settings.c:3462
+#: src/settings.c:3463
 msgid "Iconbox Settings"
 msgstr "Установки Iconbox"
 
-#: src/settings.c:3488
+#: src/settings.c:3489
 msgid "Transparent background"
 msgstr "Прозрачный фон"
 
-#: src/settings.c:3496
+#: src/settings.c:3497
 msgid "Hide border around inner Iconbox"
 msgstr "Прятать рамку внутри Iconbox"
 
-#: src/settings.c:3503
+#: src/settings.c:3504
 msgid "Show icon names"
 msgstr "Показывать имена иконок"
 
-#: src/settings.c:3510
+#: src/settings.c:3511
 msgid "Draw base image behind Icons"
 msgstr "Рисовать основной фон под иконками"
 
-#: src/settings.c:3517
+#: src/settings.c:3518
 msgid "Hide scrollbar when not needed"
 msgstr "Прятать полосу прокрутки, когда она не нужна"
 
-#: src/settings.c:3525
+#: src/settings.c:3526
 msgid "Automatically resize to fit Icons"
 msgstr "Автоматически менять размер по количеству иконок"
 
-#: src/settings.c:3534
+#: src/settings.c:3535
 msgid "Animate when iconifying to this Iconbox"
 msgstr "Анимировать сворачивание в этот Iconbox"
 
-#: src/settings.c:3544
+#: src/settings.c:3545
 msgid "Alignment of anchoring when automatically resizing:"
 msgstr ""
 
-#: src/settings.c:3566
+#: src/settings.c:3567
 msgid "Icon image display policy (if one operation fails, try the next):"
 msgstr ""
 
-#: src/settings.c:3573
+#: src/settings.c:3574
 msgid "Snapshot Windows, Use application icon, Use Enlightenment Icon"
 msgstr ""
 
-#: src/settings.c:3582
+#: src/settings.c:3583
 msgid "Use application icon, Use Enlightenment Icon, Snapshot Window"
 msgstr ""
 
-#: src/settings.c:3591
+#: src/settings.c:3592
 msgid "Use Enlightenment Icon, Snapshot Window"
 msgstr ""
 
-#: src/settings.c:3605
+#: src/settings.c:3606
 msgid "Icon size"
 msgstr ""
 
-#: src/settings.c:3628
+#: src/settings.c:3629
 msgid "Orientation:"
 msgstr ""
 
-#: src/settings.c:3634
+#: src/settings.c:3635
 msgid "Scrollbar side:"
 msgstr ""
 
-#: src/settings.c:3640
+#: src/settings.c:3641
 msgid "Scrollbar arrows:"
 msgstr ""
 
-#: src/settings.c:3645
+#: src/settings.c:3646
 msgid "Horizontal"
 msgstr ""
 
-#: src/settings.c:3652
+#: src/settings.c:3653
 msgid "Left / Top"
 msgstr ""
 
-#: src/settings.c:3659
+#: src/settings.c:3660
 msgid "Start"
 msgstr ""
 
-#: src/settings.c:3666
+#: src/settings.c:3667
 msgid "Vertical"
 msgstr ""
 
-#: src/settings.c:3674
+#: src/settings.c:3675
 msgid "Right / Bottom"
 msgstr ""
 
-#: src/settings.c:3682
+#: src/settings.c:3683
 msgid "Both ends"
 msgstr ""
 
-#: src/settings.c:3692
+#: src/settings.c:3693
 msgid "End"
 msgstr ""
 
-#: src/settings.c:3702
+#: src/settings.c:3703
 msgid "None"
 msgstr ""
 
-#: src/settings.c:3836
+#: src/settings.c:3837
 msgid ""
 "\n"
 "  This window currently does not belong to any groups.  \n"
 "\n"
 msgstr ""
 
-#: src/settings.c:3859
+#: src/settings.c:3860
 msgid "Window Group Settings"
 msgstr ""
 
-#: src/settings.c:3886
+#: src/settings.c:3887
 msgid "   Pick the group to configure:   "
 msgstr ""
 
-#: src/settings.c:3922
+#: src/settings.c:3923
 msgid ""
 "  The following actions are  \n"
 "  applied to all group members:  "
 msgstr ""
 
-#: src/settings.c:3931 src/settings.c:4083
+#: src/settings.c:3932 src/settings.c:4084
 msgid "Changing Border Style"
 msgstr ""
 
-#: src/settings.c:3941 src/settings.c:4091
+#: src/settings.c:3942 src/settings.c:4092
 msgid "Iconifying"
 msgstr ""
 
-#: src/settings.c:3951 src/settings.c:4099
+#: src/settings.c:3952 src/settings.c:4100
 msgid "Killing"
 msgstr ""
 
-#: src/settings.c:3961 src/settings.c:4107
+#: src/settings.c:3962 src/settings.c:4108
 msgid "Moving"
 msgstr ""
 
-#: src/settings.c:3971 src/settings.c:4115
+#: src/settings.c:3972 src/settings.c:4116
 msgid "Raising/Lowering"
 msgstr ""
 
-#: src/settings.c:3981 src/settings.c:4123
+#: src/settings.c:3982 src/settings.c:4124
 msgid "Sticking"
 msgstr ""
 
-#: src/settings.c:3991 src/settings.c:4131
+#: src/settings.c:3992 src/settings.c:4132
 msgid "Shading"
 msgstr ""
 
-#: src/settings.c:4001 src/settings.c:4139
+#: src/settings.c:4002 src/settings.c:4140
 msgid "Mirror Shade/Iconify/Stick"
 msgstr ""
 
-#: src/settings.c:4057
+#: src/settings.c:4058
 msgid "Default Group Control Settings"
 msgstr "Установки группы по умолчанию"
 
@@ -2483,16 +2483,16 @@ msgid ""
 msgstr ""
 
 #: src/setup.c:328
-msgid "Imlib initialisation error"
+msgid "Imlib initialization error"
 msgstr ""
 
 #: src/setup.c:330
 msgid ""
 "FATAL ERROR:\n"
 "\n"
-"Enlightenment is unable to initialise Imlib.\n"
+"Enlightenment is unable to initialize Imlib.\n"
 "\n"
-"This is unusual. Unable to contiune.\n"
+"This is unusual. Unable to continue.\n"
 "Exiting.\n"
 msgstr ""
 
@@ -2500,9 +2500,9 @@ msgstr ""
 msgid ""
 "FATAL ERROR:\n"
 "\n"
-"Enlightenment is unable to initialise Fnlib.\n"
+"Enlightenment is unable to initialize Fnlib.\n"
 "\n"
-"This is unusual. Unable to contiune.\n"
+"This is unusual. Unable to continue.\n"
 "Exiting.\n"
 msgstr ""
 
@@ -2518,14 +2518,14 @@ msgstr "Игнорировать эту ошибку"
 #, c-format
 msgid ""
 "WARNING:\n"
-"This is not an X11 Xserver. It infact talks the X%i protocol.\n"
+"This is not an X11 Xserver. It in fact talks the X%i protocol.\n"
 "This may mean Enlightenment will either not function, or\n"
 "function incorrectly. If it is later than X11, then your\n"
 "server is one the author of Enlightenment neither have\n"
 "access to, nor have heard of.\n"
 msgstr ""
 
-#: src/setup.c:623
+#: src/setup.c:624
 #, c-format
 msgid ""
 "The directory %s is apparently not a directory\n"
@@ -2533,7 +2533,7 @@ msgid ""
 "Please remove this file\n"
 msgstr ""
 
-#: src/setup.c:630
+#: src/setup.c:631
 #, c-format
 msgid ""
 "Do not have execute access to %s\n"
@@ -2542,7 +2542,7 @@ msgid ""
 "directory and take steps to rectify this.\n"
 msgstr ""
 
-#: src/setup.c:638
+#: src/setup.c:639
 #, c-format
 msgid ""
 "Do not have read access to %s\n"
@@ -2551,7 +2551,7 @@ msgid ""
 "directory and take steps to rectify this.\n"
 msgstr ""
 
-#: src/setup.c:646
+#: src/setup.c:647
 #, c-format
 msgid ""
 "Do not have write access to %s\n"
@@ -2619,12 +2619,12 @@ msgid ""
 msgstr ""
 
 #: src/sound.c:262
-msgid "Error initialising sound"
+msgid "Error initializing sound"
 msgstr "Ошибка инициализации звука"
 
 #: src/sound.c:265
 msgid ""
-"Audio was enabled for Enlightenemnt but there was an error\n"
+"Audio was enabled for Enlightenment but there was an error\n"
 "communicating with the audio server (Esound). Audio will\n"
 "now be disabled.\n"
 msgstr ""

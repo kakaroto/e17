@@ -719,7 +719,7 @@ runApp(char *exe, char *params)
 				  ("There was an error running the program:\n"
 				   "%s\n"
 				   "This program could not be executed.\n"
-				   "This is because the file is infact "
+				   "This is because the file is in fact "
 				   "a directory.\n"), (char *)path);
 		       /* its not a file or a dir */
 		       else

@@ -508,7 +508,7 @@ SettingsFocus(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
-   DialogItemCheckButtonSetText(di, gettext("Display and use focuslist"));
+   DialogItemCheckButtonSetText(di, gettext("Display and use focus list"));
    DialogItemCheckButtonSetState(di, tmp_display_warp);
    DialogItemCheckButtonSetPtr(di, &tmp_display_warp);
 

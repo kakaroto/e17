@@ -325,13 +325,13 @@ SetupX()
    id = Imlib_init(disp);
    if (!id)
      {
-	ASSIGN_ALERT(gettext("Imlib initialisation error"),
+	ASSIGN_ALERT(gettext("Imlib initialization error"),
 		     "", "", gettext("Quit Enlightenment"));
 	Alert(gettext("FATAL ERROR:\n"
 		      "\n"
-		      "Enlightenment is unable to initialise Imlib.\n"
+		      "Enlightenment is unable to initialize Imlib.\n"
 		      "\n"
-		      "This is unusual. Unable to contiune.\n" "Exiting.\n"));
+		      "This is unusual. Unable to continue.\n" "Exiting.\n"));
 	RESET_ALERT;
 	EExit((void *)1);
      }
@@ -342,9 +342,9 @@ SetupX()
 		     "", "", gettext("Quit Enlightenment"));
 	Alert(gettext("FATAL ERROR:\n"
 		      "\n"
-		      "Enlightenment is unable to initialise Fnlib.\n"
+		      "Enlightenment is unable to initialize Fnlib.\n"
 		      "\n"
-		      "This is unusual. Unable to contiune.\n" "Exiting.\n"));
+		      "This is unusual. Unable to continue.\n" "Exiting.\n"));
 	RESET_ALERT;
 	EExit((void *)1);
      }
@@ -405,7 +405,7 @@ SetupX()
 		     gettext("Ignore this error"),
 		     "", gettext("Quit Enlightenment"));
 	Alert(gettext("WARNING:\n"
-	     "This is not an X11 Xserver. It infact talks the X%i protocol.\n"
+	     "This is not an X11 Xserver. It in fact talks the X%i protocol.\n"
 		  "This may mean Enlightenment will either not function, or\n"
 		  "function incorrectly. If it is later than X11, then your\n"
 		    "server is one the author of Enlightenment neither have\n"

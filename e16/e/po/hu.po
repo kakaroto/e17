@@ -2,10 +2,11 @@
 # Copyright (C) 1999 Free Software Foundation, Inc.
 # Gergely Egerváry <mauzi@poli.hu>, 1999.
 #
+#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Enlightenment DR 0.16\n"
-"POT-Creation-Date: 1999-12-12 13:35+0100\n"
+"POT-Creation-Date: 1999-12-15 16:52+0100\n"
 "PO-Revision-Date: 1999-12-12 13:38+0200\n"
 "Last-Translator: Gergely Egerváry <mauzi@poli.hu>\n"
 "Language-Team: Hungarian <hu@li.org>\n"
@@ -61,7 +62,7 @@ msgid ""
 "There was an error running the program:\n"
 "%s\n"
 "This program could not be executed.\n"
-"This is because the file is infact a directory.\n"
+"This is because the file is in fact a directory.\n"
 msgstr ""
 
 #: src/actions.c:727
@@ -85,9 +86,9 @@ msgstr "Üdvözöl az "
 #: src/actions.c:3177 src/dialog.c:304 src/groups.c:694 src/settings.c:312
 #: src/settings.c:541 src/settings.c:706 src/settings.c:883
 #: src/settings.c:1107 src/settings.c:1211 src/settings.c:1312
-#: src/settings.c:1419 src/settings.c:1481 src/settings.c:1570
-#: src/settings.c:1968 src/settings.c:3361 src/settings.c:3712
-#: src/settings.c:4011 src/settings.c:4149 src/snaps.c:509 src/sound.c:263
+#: src/settings.c:1419 src/settings.c:1481 src/settings.c:1571
+#: src/settings.c:1969 src/settings.c:3362 src/settings.c:3713
+#: src/settings.c:4012 src/settings.c:4150 src/snaps.c:509 src/sound.c:263
 msgid "OK"
 msgstr "OK"
 
@@ -574,7 +575,7 @@ msgid ""
 "You have just started the Ripples Effect.\n"
 "\n"
 "If you look closely on your desktop background, and if it\n"
-"doesn't have a solid colour (ie has a background texture or\n"
+"doesn't have a solid color (ie has a background texture or\n"
 "image), you will see a pool of water at the bottom of your\n"
 "screen that reflects everything above it and \"ripples\".\n"
 "\n"
@@ -611,7 +612,7 @@ msgid ""
 "display because shared pixmaps are not available on this\n"
 "X-Server.\n"
 "\n"
-"This may be due to either the X-Server not implimenting\n"
+"This may be due to either the X-Server not implementing\n"
 "shared pixmaps, or shared pixmaps being disabled in\n"
 "Imlib's configuration.\n"
 "\n"
@@ -631,7 +632,7 @@ msgid ""
 "You have just started the Raindrops Effect.\n"
 "\n"
 "If you look closely on your desktop background, and if it\n"
-"doesn't have a solid colour (ie has a background texture or\n"
+"doesn't have a solid color (ie has a background texture or\n"
 "image), you will see \"raindrops\" hit the background and\n"
 "make little splashes. This Effect can be VERY CPU intensive.\n"
 "\n"
@@ -649,7 +650,7 @@ msgid ""
 "You have just started the Waves Effect.\n"
 "\n"
 "If you look closely on your desktop background, and if it\n"
-"doesn't have a solid colour (ie has a background texture or\n"
+"doesn't have a solid color (ie has a background texture or\n"
 "image), you will see a pool of water at the bottom of your\n"
 "screen that reflects everything above it and \"waves\".\n"
 "\n"
@@ -681,7 +682,7 @@ msgid ""
 "to a group.\n"
 msgstr ""
 
-#: src/groups.c:603 src/groups.c:612 src/groups.c:620 src/settings.c:3834
+#: src/groups.c:603 src/groups.c:612 src/groups.c:620 src/settings.c:3835
 msgid "Window Group Error"
 msgstr "Ablakcsoport hiba"
 
@@ -717,9 +718,9 @@ msgstr "Ablakcsoport kiválasztása"
 #: src/groups.c:695 src/pager.c:1278 src/settings.c:314 src/settings.c:543
 #: src/settings.c:708 src/settings.c:885 src/settings.c:1109
 #: src/settings.c:1213 src/settings.c:1314 src/settings.c:1421
-#: src/settings.c:1483 src/settings.c:1572 src/settings.c:1970
-#: src/settings.c:3363 src/settings.c:3714 src/settings.c:4013
-#: src/settings.c:4151
+#: src/settings.c:1483 src/settings.c:1573 src/settings.c:1971
+#: src/settings.c:3364 src/settings.c:3715 src/settings.c:4014
+#: src/settings.c:4152
 msgid "Close"
 msgstr "Bezár"
 
@@ -732,7 +733,7 @@ msgid ""
 "binary of Enlightenment that was compiled for a make or model\n"
 "of CPU not 100% identical or compatible with yours. Please\n"
 "either obtain the correct package for your system, or\n"
-"re-compile enlightenment and possibly any support libraries\n"
+"re-compile Enlightenment and possibly any support libraries\n"
 "that you got in binary format to run Enlightenment.\n"
 msgstr ""
 
@@ -822,7 +823,7 @@ msgid ""
 "Are you absolutely sure you want to have Enlightenment\n"
 "edit your startup files for you?\n"
 "\n"
-"If your startup files are highly customised this may not\n"
+"If your startup files are highly customized this may not\n"
 "work.\n"
 "\n"
 "Are you ABSOLUTELY sure?\n"
@@ -867,7 +868,8 @@ msgstr ""
 
 #: src/ipc.c:4749
 msgid "use \"help <command>\" for an individual description\n"
-msgstr "írja be: \"help <parancs>\" az egyes parancsok leírásának megjelenítéséhez\n"
+msgstr ""
+"írja be: \"help <parancs>\" az egyes parancsok leírásának megjelenítéséhez\n"
 
 #: src/ipc.c:4751
 msgid "<command> : <description>\n"
@@ -919,7 +921,7 @@ msgstr ""
 msgid ""
 "WARNING!!!!!!\n"
 "\n"
-"Allocation for %i bytes (%3.0f Kb or %3.1f Mb) did not succeed.\n"
+"Allocation for %i bytes (%3.0f kB or %3.1f MB) did not succeed.\n"
 "\n"
 "Either this is a bug where ridiculous amounts of memory\n"
 "are being allocated, or your system has run out of both\n"
@@ -942,14 +944,14 @@ msgstr ""
 msgid ""
 "WARNING!!!!!!\n"
 "\n"
-"Re-allocation for %i bytes (%3.0f Kb or %f3.1 Mb)\n"
+"Re-allocation for %i bytes (%3.0f kB or %3.1f MB)\n"
 "for pointer %x is attempting to re-allocate memory for a\n"
 "memory chunk that has not been allocated or has already been\n"
 "freed.\n"
 "\n"
 "This is definitely a bug. Please report it.\n"
 "\n"
-"The error occured at %s, line %d.\n"
+"The error occurred at %s, line %d.\n"
 msgstr ""
 
 #: src/memory.c:301
@@ -957,7 +959,7 @@ msgstr ""
 msgid ""
 "WARNING!!!!!!\n"
 "\n"
-"Re-allocation for %i bytes (%3.0f Kb or %3.1f Mb) did not succeed.\n"
+"Re-allocation for %i bytes (%3.0f kB or %3.1f MB) did not succeed.\n"
 "\n"
 "Either this is a bug where ridiculous amounts of memory\n"
 "are being allocated, or your system has run out of both\n"
@@ -986,7 +988,7 @@ msgid ""
 "\n"
 "This is definitely a bug. Please report it.\n"
 "\n"
-"The error occured at %s, line %d.\n"
+"The error occurred at %s, line %d.\n"
 msgstr ""
 
 #: src/memory.c:396
@@ -1008,7 +1010,7 @@ msgid ""
 "It is safe to ignore this error and continue running Enlightenment.\n"
 "\n"
 "The pointer value was %x.\n"
-"The error occured at %s, line %d.\n"
+"The error occurred at %s, line %d.\n"
 msgstr ""
 
 #: src/menus.c:1918
@@ -1183,7 +1185,7 @@ msgid ""
 "but it is incapable of doing ZPixmap Shared pixmaps\n"
 "(The server does not claim to be able to do them).\n"
 "\n"
-"The pager in enlightenment will run slowly in snapshot\n"
+"The pager in Enlightenment will run slowly in snapshot\n"
 "mode if you continue to use that mode of the pager\n"
 "under these conditions.\n"
 "\n"
@@ -1199,7 +1201,7 @@ msgid ""
 "not have Shared Pixmaps enabled in your Imlib configuration.\n"
 "\n"
 "Please enable Shared Pixmaps in your Imlib configuration\n"
-"then restart enlightenment to gain better performance for\n"
+"then restart Enlightenment to gain better performance for\n"
 "the pagers when snapshot mode is enabled.\n"
 "\n"
 msgstr ""
@@ -1352,7 +1354,7 @@ msgid "Mouse button to select and drag windows:"
 msgstr "Egérgomb az ablakok kiválasztásához:"
 
 #: src/settings.c:221 src/settings.c:253 src/settings.c:285
-#: src/settings.c:1852
+#: src/settings.c:1853
 msgid "Left"
 msgstr "Bal"
 
@@ -1361,7 +1363,7 @@ msgid "Middle"
 msgstr "Középsõ"
 
 #: src/settings.c:237 src/settings.c:269 src/settings.c:301
-#: src/settings.c:1859
+#: src/settings.c:1860
 msgid "Right"
 msgstr "Jobb"
 
@@ -1375,9 +1377,9 @@ msgstr "Egérgomb a pager menü megjelenítéséhez"
 
 #: src/settings.c:313 src/settings.c:542 src/settings.c:707 src/settings.c:884
 #: src/settings.c:1108 src/settings.c:1212 src/settings.c:1313
-#: src/settings.c:1420 src/settings.c:1482 src/settings.c:1571
-#: src/settings.c:1969 src/settings.c:3362 src/settings.c:3713
-#: src/settings.c:4012 src/settings.c:4150 src/snaps.c:510
+#: src/settings.c:1420 src/settings.c:1482 src/settings.c:1572
+#: src/settings.c:1970 src/settings.c:3363 src/settings.c:3714
+#: src/settings.c:4013 src/settings.c:4151 src/snaps.c:510
 msgid "Apply"
 msgstr "Alkalmaz"
 
@@ -1422,7 +1424,7 @@ msgid "Send mouse pointer to window on focus switch"
 msgstr ""
 
 #: src/settings.c:511
-msgid "Display and use focuslist"
+msgid "Display and use focus list"
 msgstr "Fókuszlista megjelenítése és használata"
 
 #: src/settings.c:520
@@ -1445,23 +1447,23 @@ msgstr "Mozgatás módja:"
 msgid "Resize Methods:"
 msgstr "Átméretezés módja:"
 
-#: src/settings.c:622 src/settings.c:629 src/settings.c:1716
+#: src/settings.c:622 src/settings.c:629 src/settings.c:1717
 msgid "Opaque"
 msgstr "Átlátszatlan"
 
-#: src/settings.c:636 src/settings.c:643 src/settings.c:1733
+#: src/settings.c:636 src/settings.c:643 src/settings.c:1734
 msgid "Technical"
 msgstr "Mûszaki"
 
-#: src/settings.c:650 src/settings.c:657 src/settings.c:1749
+#: src/settings.c:650 src/settings.c:657 src/settings.c:1750
 msgid "Box"
 msgstr "Keretes"
 
-#: src/settings.c:664 src/settings.c:671 src/settings.c:1764
+#: src/settings.c:664 src/settings.c:671 src/settings.c:1765
 msgid "Shaded"
 msgstr "Árnyékolt"
 
-#: src/settings.c:678 src/settings.c:685 src/settings.c:1779
+#: src/settings.c:678 src/settings.c:685 src/settings.c:1780
 msgid "Semi-Solid"
 msgstr ""
 
@@ -1580,7 +1582,7 @@ msgstr "Hang beállításai"
 msgid "Enable sounds"
 msgstr "Hangok engedélyezése"
 
-#: src/settings.c:1560
+#: src/settings.c:1561
 msgid ""
 "Audio not available since EsounD was not\n"
 "present at the time of compilation."
@@ -1588,86 +1590,86 @@ msgstr ""
 "A hangbeállítás nem elérhetõ, mert az EsounD\n"
 "nem volt jelen a program fordításakor."
 
-#: src/settings.c:1667
+#: src/settings.c:1668
 msgid "Special FX Settings"
 msgstr "Speciális effektek beállításai"
 
-#: src/settings.c:1702
+#: src/settings.c:1703
 msgid "Slide Method:"
 msgstr "Csúsztatás módja:"
 
-#: src/settings.c:1709
+#: src/settings.c:1710
 msgid "Slide desktops around when changing"
 msgstr "Az asztalok csúszva animálódnak váltásukkor"
 
-#: src/settings.c:1726
+#: src/settings.c:1727
 msgid "Slide windows around when cleaning up"
 msgstr "Az ablakok csúszva animálódnak when cleaning up"
 
-#: src/settings.c:1742
+#: src/settings.c:1743
 msgid "Slide windows in when they appear"
 msgstr "Az ablakok csúszva animálódnak amikor megjelennek"
 
-#: src/settings.c:1757
+#: src/settings.c:1758
 msgid "Animated display of menus"
 msgstr "Menük animálása"
 
-#: src/settings.c:1772
+#: src/settings.c:1773
 msgid "Always pop up menus on screen"
 msgstr "A menük mindig a képben jelennek meg"
 
-#: src/settings.c:1790
+#: src/settings.c:1791
 msgid "Use saveunders to reduce window exposures"
 msgstr ""
 
-#: src/settings.c:1800
+#: src/settings.c:1801
 msgid "Animate shading and unshading of windows"
 msgstr "Ablakok árnyékolásának animálása"
 
-#: src/settings.c:1814
+#: src/settings.c:1815
 msgid "Display desktop dragbar"
 msgstr "Dragbar megjelenítése"
 
-#: src/settings.c:1823
+#: src/settings.c:1824
 msgid "Drag bar position:"
 msgstr "Dragbar elhelyezkedése:"
 
-#: src/settings.c:1834
+#: src/settings.c:1835
 msgid "Top"
 msgstr "Fent"
 
-#: src/settings.c:1841
+#: src/settings.c:1842
 msgid "Bottom"
 msgstr "Lent"
 
-#: src/settings.c:1878
+#: src/settings.c:1879
 msgid "Desktop Slide speed: (slow)\n"
 msgstr "Asztal animáció sebessége: (lassú)\n"
 
-#: src/settings.c:1894 src/settings.c:1916 src/settings.c:1938
-#: src/settings.c:1960
+#: src/settings.c:1895 src/settings.c:1917 src/settings.c:1939
+#: src/settings.c:1961
 msgid "(fast)\n"
 msgstr "(gyors)\n"
 
-#: src/settings.c:1900
+#: src/settings.c:1901
 msgid "Cleanup Slide speed: (slow)\n"
 msgstr "Cleanup animáció sebessége: (lassú)\n"
 
-#: src/settings.c:1922
+#: src/settings.c:1923
 msgid "Appear Slide speed: (slow)\n"
 msgstr "Megjelenítési animáció sebessége: (lassú)\n"
 
-#: src/settings.c:1944
+#: src/settings.c:1945
 msgid "Window Shading speed: (slow)\n"
 msgstr "Ablakok árnyékolásának sebessége: (lassú)\n"
 
-#: src/settings.c:2226 src/settings.c:2348 src/settings.c:2604
-#: src/settings.c:2727 src/settings.c:3346
+#: src/settings.c:2227 src/settings.c:2349 src/settings.c:2605
+#: src/settings.c:2728 src/settings.c:3347
 msgid "-NONE-"
 msgstr "-NINCS-"
 
-#: src/settings.c:2229 src/settings.c:2351 src/settings.c:2607
-#: src/settings.c:2730 src/settings.c:3349
+#: src/settings.c:2230 src/settings.c:2352 src/settings.c:2608
+#: src/settings.c:2731 src/settings.c:3350
 #, c-format
 msgid ""
 "Background definition information:\n"
@@ -1678,7 +1680,7 @@ msgstr ""
 "Név: %s\n"
 "File: %s\n"
 
-#: src/settings.c:2482 src/settings.c:2484
+#: src/settings.c:2483 src/settings.c:2485
 msgid ""
 "No\n"
 "Background"
@@ -1686,60 +1688,60 @@ msgstr ""
 "Nincs\n"
 "Háttér"
 
-#: src/settings.c:2669 src/settings.c:3237
+#: src/settings.c:2670 src/settings.c:3238
 #, c-format
 msgid "Unused backgrounds freed after %2i:%02i:%02i"
 msgstr "A használaton kívüli háttérképek felszabadítása %2i:%02i:%02i után"
 
-#: src/settings.c:3000
+#: src/settings.c:3001
 msgid "Desktop Background Settings"
 msgstr "Asztalháttér beállításai"
 
-#: src/settings.c:3026
+#: src/settings.c:3027
 msgid "BG Color\n"
 msgstr "Háttérszín\n"
 
-#: src/settings.c:3037
+#: src/settings.c:3038
 msgid "Move to Front\n"
 msgstr "Elõre mozgatás\n"
 
-#: src/settings.c:3044
+#: src/settings.c:3045
 msgid "Duplicate\n"
 msgstr "Másolás\n"
 
-#: src/settings.c:3050
+#: src/settings.c:3051
 msgid "Unlist\n"
 msgstr "Elrejtés\n"
 
-#: src/settings.c:3056
+#: src/settings.c:3057
 msgid "Delete File\n"
 msgstr "File törlése\n"
 
-#: src/settings.c:3065
+#: src/settings.c:3066
 msgid "Red:\n"
 msgstr "Piros:\n"
 
-#: src/settings.c:3079
+#: src/settings.c:3080
 msgid "Use background image"
 msgstr "Háttérkép alkalmazása"
 
-#: src/settings.c:3087
+#: src/settings.c:3088
 msgid "Green:\n"
 msgstr "Zöld:\n"
 
-#: src/settings.c:3101
+#: src/settings.c:3102
 msgid "Keep aspect on scale"
 msgstr "Arányok megtartása átméretezéskor"
 
-#: src/settings.c:3109
+#: src/settings.c:3110
 msgid "Blue:\n"
 msgstr "Kék:\n"
 
-#: src/settings.c:3123
+#: src/settings.c:3124
 msgid "Tile image across background"
 msgstr "Mozaikszerû elrendezés"
 
-#: src/settings.c:3139
+#: src/settings.c:3140
 msgid ""
 "Background\n"
 "Image\n"
@@ -1752,131 +1754,132 @@ msgstr ""
 "és\n"
 "elhelyezkedése\n"
 
-#: src/settings.c:3220
+#: src/settings.c:3221
 msgid "Use dithering in Hi-Color"
 msgstr "Színek elmosása Hi-Color módban"
 
-#: src/settings.c:3227
+#: src/settings.c:3228
 msgid "Background overrides theme"
 msgstr "A háttér felülírja a theme beállításait"
 
-#: src/settings.c:3284
+#: src/settings.c:3285
 msgid "Prescan BG's"
 msgstr "Frissítés"
 
-#: src/settings.c:3294
+#: src/settings.c:3295
 msgid "Sort by File"
 msgstr "Filenév szerint rendez"
 
-#: src/settings.c:3300
+#: src/settings.c:3301
 msgid "Sort by Attr."
 msgstr "Attributum szerint rendez"
 
-#: src/settings.c:3306
+#: src/settings.c:3307
 msgid "Sort by Image"
 msgstr "Kép szerint rendez"
 
-#: src/settings.c:3462
+#: src/settings.c:3463
 msgid "Iconbox Settings"
 msgstr "Iconbox beállításai"
 
-#: src/settings.c:3488
+#: src/settings.c:3489
 msgid "Transparent background"
 msgstr "Átlátszó háttér"
 
-#: src/settings.c:3496
+#: src/settings.c:3497
 msgid "Hide border around inner Iconbox"
 msgstr "Belsõ keret elrejtése"
 
-#: src/settings.c:3503
+#: src/settings.c:3504
 msgid "Show icon names"
 msgstr "Ikonnevek megjelenítése"
 
-#: src/settings.c:3510
+#: src/settings.c:3511
 msgid "Draw base image behind Icons"
 msgstr "Háttér kirajzolása az ikonok mögé"
 
-#: src/settings.c:3517
+#: src/settings.c:3518
 msgid "Hide scrollbar when not needed"
 msgstr "Gördítõsáv elrejtése, amikor nem szükséges"
 
-#: src/settings.c:3525
+#: src/settings.c:3526
 msgid "Automatically resize to fit Icons"
 msgstr "Automatikus átméretezés, hogy az ikonok elférjenek"
 
-#: src/settings.c:3534
+#: src/settings.c:3535
 msgid "Animate when iconifying to this Iconbox"
 msgstr "Animálás kicsinyítéskor"
 
-#: src/settings.c:3544
+#: src/settings.c:3545
 msgid "Alignment of anchoring when automatically resizing:"
 msgstr ""
 
-#: src/settings.c:3566
+#: src/settings.c:3567
 msgid "Icon image display policy (if one operation fails, try the next):"
-msgstr "Ikonmegjelenítés rendje (ha az egyik nem sikerül, megpróbálja a következõt):"
+msgstr ""
+"Ikonmegjelenítés rendje (ha az egyik nem sikerül, megpróbálja a következõt):"
 
-#: src/settings.c:3573
+#: src/settings.c:3574
 msgid "Snapshot Windows, Use application icon, Use Enlightenment Icon"
 msgstr "Miniatúra, Program ikon, Enlightenment ikon"
 
-#: src/settings.c:3582
+#: src/settings.c:3583
 msgid "Use application icon, Use Enlightenment Icon, Snapshot Window"
 msgstr "Program ikon, Enlightenment ikon, Miniatúra"
 
-#: src/settings.c:3591
+#: src/settings.c:3592
 msgid "Use Enlightenment Icon, Snapshot Window"
 msgstr "Enlightenment ikon, Miniatúra"
 
-#: src/settings.c:3605
+#: src/settings.c:3606
 msgid "Icon size"
 msgstr "Ikonok mérete"
 
-#: src/settings.c:3628
+#: src/settings.c:3629
 msgid "Orientation:"
 msgstr "Irány:"
 
-#: src/settings.c:3634
+#: src/settings.c:3635
 msgid "Scrollbar side:"
 msgstr "Gördítõsáv helye:"
 
-#: src/settings.c:3640
+#: src/settings.c:3641
 msgid "Scrollbar arrows:"
 msgstr "Nyíl a gördítõsávon:"
 
-#: src/settings.c:3645
+#: src/settings.c:3646
 msgid "Horizontal"
 msgstr "Vízszintes"
 
-#: src/settings.c:3652
+#: src/settings.c:3653
 msgid "Left / Top"
 msgstr "Bal / Fent"
 
-#: src/settings.c:3659
+#: src/settings.c:3660
 msgid "Start"
 msgstr "Elején"
 
-#: src/settings.c:3666
+#: src/settings.c:3667
 msgid "Vertical"
 msgstr "Függõleges"
 
-#: src/settings.c:3674
+#: src/settings.c:3675
 msgid "Right / Bottom"
 msgstr "Jobb / Lent"
 
-#: src/settings.c:3682
+#: src/settings.c:3683
 msgid "Both ends"
 msgstr "Mindkét végén"
 
-#: src/settings.c:3692
+#: src/settings.c:3693
 msgid "End"
 msgstr "Végén"
 
-#: src/settings.c:3702
+#: src/settings.c:3703
 msgid "None"
 msgstr "Nincs"
 
-#: src/settings.c:3836
+#: src/settings.c:3837
 msgid ""
 "\n"
 "  This window currently does not belong to any groups.  \n"
@@ -1886,53 +1889,53 @@ msgstr ""
 "  Ez az ablak nem tartozik egy csoporthoz sem.  \n"
 "\n"
 
-#: src/settings.c:3859
+#: src/settings.c:3860
 msgid "Window Group Settings"
 msgstr "Ablakcsoportok beállításai"
 
-#: src/settings.c:3886
+#: src/settings.c:3887
 msgid "   Pick the group to configure:   "
 msgstr "   Válasszon ki egy csoportot a beállításhoz:   "
 
-#: src/settings.c:3922
+#: src/settings.c:3923
 msgid ""
 "  The following actions are  \n"
 "  applied to all group members:  "
 msgstr ""
 
-#: src/settings.c:3931 src/settings.c:4083
+#: src/settings.c:3932 src/settings.c:4084
 msgid "Changing Border Style"
 msgstr "Kerettípus váltás"
 
-#: src/settings.c:3941 src/settings.c:4091
+#: src/settings.c:3942 src/settings.c:4092
 msgid "Iconifying"
 msgstr "Kicsinyítés"
 
-#: src/settings.c:3951 src/settings.c:4099
+#: src/settings.c:3952 src/settings.c:4100
 msgid "Killing"
 msgstr ""
 
-#: src/settings.c:3961 src/settings.c:4107
+#: src/settings.c:3962 src/settings.c:4108
 msgid "Moving"
 msgstr "Mozgatás"
 
-#: src/settings.c:3971 src/settings.c:4115
+#: src/settings.c:3972 src/settings.c:4116
 msgid "Raising/Lowering"
 msgstr ""
 
-#: src/settings.c:3981 src/settings.c:4123
+#: src/settings.c:3982 src/settings.c:4124
 msgid "Sticking"
 msgstr "Rögzítés"
 
-#: src/settings.c:3991 src/settings.c:4131
+#: src/settings.c:3992 src/settings.c:4132
 msgid "Shading"
 msgstr "Árnyékolás"
 
-#: src/settings.c:4001 src/settings.c:4139
+#: src/settings.c:4002 src/settings.c:4140
 msgid "Mirror Shade/Iconify/Stick"
 msgstr ""
 
-#: src/settings.c:4057
+#: src/settings.c:4058
 msgid "Default Group Control Settings"
 msgstr "Csoportok alapbeállításai"
 
@@ -1969,16 +1972,16 @@ msgid ""
 msgstr ""
 
 #: src/setup.c:328
-msgid "Imlib initialisation error"
+msgid "Imlib initialization error"
 msgstr ""
 
 #: src/setup.c:330
 msgid ""
 "FATAL ERROR:\n"
 "\n"
-"Enlightenment is unable to initialise Imlib.\n"
+"Enlightenment is unable to initialize Imlib.\n"
 "\n"
-"This is unusual. Unable to contiune.\n"
+"This is unusual. Unable to continue.\n"
 "Exiting.\n"
 msgstr ""
 
@@ -1986,9 +1989,9 @@ msgstr ""
 msgid ""
 "FATAL ERROR:\n"
 "\n"
-"Enlightenment is unable to initialise Fnlib.\n"
+"Enlightenment is unable to initialize Fnlib.\n"
 "\n"
-"This is unusual. Unable to contiune.\n"
+"This is unusual. Unable to continue.\n"
 "Exiting.\n"
 msgstr ""
 
@@ -2004,7 +2007,7 @@ msgstr "Hiba átlépése"
 #, c-format
 msgid ""
 "WARNING:\n"
-"This is not an X11 Xserver. It infact talks the X%i protocol.\n"
+"This is not an X11 Xserver. It in fact talks the X%i protocol.\n"
 "This may mean Enlightenment will either not function, or\n"
 "function incorrectly. If it is later than X11, then your\n"
 "server is one the author of Enlightenment neither have\n"
@@ -2105,12 +2108,12 @@ msgid ""
 msgstr ""
 
 #: src/sound.c:262
-msgid "Error initialising sound"
+msgid "Error initializing sound"
 msgstr ""
 
 #: src/sound.c:265
 msgid ""
-"Audio was enabled for Enlightenemnt but there was an error\n"
+"Audio was enabled for Enlightenment but there was an error\n"
 "communicating with the audio server (Esound). Audio will\n"
 "now be disabled.\n"
 msgstr ""
