@@ -25,4 +25,4 @@
 # or
 #DEFAULT (echo ""; id; echo %{sVv}; date; cat) >> $CVSROOT/CVSROOT/commitlog
 CVSROOT $CVSROOT/CVSROOT/syncmail %{sVv} raster@rasterman.com
-DEFAULT $CVSROOT/CVSROOT/syncmail %{sVv} enlightenment-cvs@lists.sourceforge.net
+DEFAULT $CVSROOT/CVSROOT/syncmail "($USER) %{sVv}" enlightenment-cvs@lists.sourceforge.net
