@@ -169,6 +169,7 @@ Imlib_Image gib_imlib_create_image_from_drawable(Drawable d, Pixmap mask,
                                                  char need_to_grab_x);
 void gib_imlib_parse_color(char *col, int *r, int *g, int *b, int *a);
 void gib_imlib_parse_fontpath(char *path);
+Imlib_Font gib_imlib_load_font(char *name);
 
 #ifdef __cplusplus
 }
