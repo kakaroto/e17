@@ -47,13 +47,14 @@ void ewl_progressbar_init(Ewl_Progressbar * p)
 	ewl_container_append_child(EWL_CONTAINER(p), p->bar);
 	ewl_widget_show(p->bar);
 
-	p->text = ewl_text_new("test");
-	ewl_object_set_alignment(EWL_OBJECT(p->text),
+	p->label = ewl_text_new(NULL);
+	ewl_object_set_alignment(EWL_OBJECT(p->label),
 			EWL_FLAG_ALIGN_CENTER);
-	ewl_container_append_child(EWL_CONTAINER(p), p->text);
-	ewl_widget_show(p->text);
+	ewl_container_append_child(EWL_CONTAINER(p), p->label);
+	ewl_widget_show(p->label);
 
 	p->value = 0.0;
+	p->range = 100.0;
 	
 	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE, 
 			__ewl_progressbar_configure, NULL);
@@ -64,22 +65,32 @@ void ewl_progressbar_init(Ewl_Progressbar * p)
 
 /**
  * @param p: the progressbar whose value will be changed
- * @param v: the new value the statusbar
+ * @param v: the new value of the statusbar
  * @return Returns no value.
  * @brief Set the value of the progressbars location
  */
 void ewl_progressbar_set_value(Ewl_Progressbar * p, double v)
 {
+	char c[10];
+	
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("p", p);
 
 	if (v == p->value)
 		DRETURN(DLEVEL_STABLE);
 
+	if (p->value >= p->range)
+		DRETURN(DLEVEL_STABLE);
+
 	if (v < 0)
 		v = 0;
 
 	p->value = v;
+
+	if (!p->auto_label) {
+		snprintf (c, sizeof (c), "%.0lf", p->value);
+		ewl_text_set_text(EWL_TEXT(p->label), c);
+	}
 
 	ewl_widget_configure(EWL_WIDGET(p));
 	ewl_callback_call(EWL_WIDGET(p), EWL_CALLBACK_VALUE_CHANGED);
@@ -101,22 +112,114 @@ double ewl_progressbar_get_value(Ewl_Progressbar * p)
 	DRETURN_FLOAT(p->value, DLEVEL_STABLE);
 }
 
-
 /**
- * @param p: the progressbars whose text will be changed
- * @param text: the new text
- * @return Returns no value
- * @brief Sets the given text on the progressbar
- */
-void ewl_progressbar_set_text (Ewl_Progressbar * p, char *text)
+ * @param p: the progressbar whose range will be changed
+ * @param r: the new range of the statusbar
+ * @return Returns no value.
+ * @brief Set the range of the progressbar. Cannot be less then 1.
+ */    
+void ewl_progressbar_set_range (Ewl_Progressbar * p, double r)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("p", p);
 
-	if (text)
-		ewl_text_set_text(EWL_TEXT(p->text), text);
+	if (r == p->range)
+		DRETURN(DLEVEL_STABLE);
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE)
+	if (r < 1)
+		DRETURN(DLEVEL_STABLE);
+
+	p->range = r;
+
+	ewl_widget_configure(EWL_WIDGET(p));
+	ewl_callback_call(EWL_WIDGET(p), EWL_CALLBACK_VALUE_CHANGED);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param p: the progressbars to retrieve the range
+ * @return Returns 0 on failure, the value of the progressbars location on success.
+ * @brief Retrieve the current range of the progressbars (default 100)
+ */
+double ewl_progressbar_get_range (Ewl_Progressbar * p)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("p", p, -1);
+	
+	DRETURN_FLOAT(p->range, DLEVEL_STABLE);
+}
+
+
+/**
+ * @param p: the progressbars whose text will be changed
+ * @param label: the new label
+ * @return Returns no value
+ * @brief Sets the given text on the progressbar
+ */
+void ewl_progressbar_set_label (Ewl_Progressbar * p, char *label)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("p", p);
+
+	p->auto_label = TRUE;
+	
+	if (label)
+		ewl_text_set_text(EWL_TEXT(p->label), label);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param p: the progressbars whose label will be changed
+ * @param format_string: format string for the new label
+ * @return Returns no value
+ * @brief Sets the given format string on the progressbar (%lf of %lf beers)
+ */
+void ewl_progressbar_set_custom_label (Ewl_Progressbar * p, char *format_string)
+{
+	char label[PATH_MAX];
+	
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("p", p);
+
+	p->auto_label = TRUE;
+
+	if (format_string) {
+		snprintf (label, PATH_MAX, format_string, p->value, p->range);
+		ewl_text_set_text(EWL_TEXT(p->label), label);
+	}
+	
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param p: the progressbars whose label will be hidden
+ * @return Returns no value
+ * @brief Hides the given progressbars label
+ */
+void ewl_progressbar_label_hide (Ewl_Progressbar * p) {
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("p", p);
+	
+	p->auto_label = TRUE;
+	ewl_text_set_text(EWL_TEXT(p->label), "");
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param p: the progressbars whose label will be shown
+ * @return Returns no value
+ * @brief Shows the given progressbars label
+ */
+void ewl_progressbar_label_show (Ewl_Progressbar * p) {
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("p", p);
+
+	p->auto_label = FALSE;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 
@@ -141,7 +244,10 @@ void __ewl_progressbar_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	dw = CURRENT_W(p);
 	dh = CURRENT_H(p);
 
-	ewl_object_request_geometry(EWL_OBJECT(p->bar), dx, dy, dw * p->value, dh);
+	ewl_object_request_geometry (EWL_OBJECT(p->bar), dx, dy, 
+			dw * (p->value / p->range), dh);
+
+	ewl_object_place (EWL_OBJECT(p->label), dx, dy, dw, dh);
 	
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

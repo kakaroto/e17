@@ -51,6 +51,9 @@ void            ewl_scrollpane_set_vscrollbar_flag(Ewl_ScrollPane * s,
 Ewl_ScrollBar_Flags ewl_scrollpane_get_hscrollbar_flag(Ewl_ScrollPane * s);
 Ewl_ScrollBar_Flags ewl_scrollpane_get_vscrollbar_flag(Ewl_ScrollPane * s);
 
+double          ewl_scrollpane_get_hscrollbar_value(Ewl_ScrollPane *s);
+double          ewl_scrollpane_get_vscrollbar_value(Ewl_ScrollPane *s);
+
 /**
  * @}
  */

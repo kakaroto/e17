@@ -6,6 +6,12 @@ images {
 collections {
    group {
       name, "progressbar";
+      data {
+	      item,        "pad/left" "4";
+	      item,        "pad/right" "4";
+	      item,        "pad/top" "4";
+	      item,        "pad/bottom" "4";
+      }
       parts {
 	 part {
 	    name,          "background";
@@ -34,7 +40,7 @@ collections {
 
    group {
       name, "bar";
-      min, 20 20;
+      min, 1 10;
       parts {
 
 	 part {

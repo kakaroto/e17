@@ -33,10 +33,12 @@ typedef struct Ewl_Progressbar Ewl_Progressbar;
  */
 struct Ewl_Progressbar
 {
-	Ewl_Container   container; /**< Inherit from Ewl_Container */
-	Ewl_Widget      *bar;      /**< The moving bar on top */
-	Ewl_Widget      *text;     /**< text label on the bar */
-	double          value;     /**< current value of the progressbar */
+	Ewl_Container   container;  /**< Inherit from Ewl_Container */
+	Ewl_Widget      *bar;       /**< The moving bar on top */
+	Ewl_Widget      *label;     /**< text label on the bar */
+	double          value;      /**< current value of the progressbar */
+	double          range;      /**< the maximum range of the progressbar */
+	int             auto_label;  /**< flag if user is setting label or not */
 };
 
 
@@ -44,8 +46,15 @@ Ewl_Widget *ewl_progressbar_new();
 void ewl_progressbar_init (Ewl_Progressbar * p);
 
 void ewl_progressbar_set_value (Ewl_Progressbar * p, double v);
-double ewl_progressbar_get_value(Ewl_Progressbar * p);
+double ewl_progressbar_get_value (Ewl_Progressbar * p);
 
-void ewl_progressbar_set_text (Ewl_Progressbar * p, char *text);
+void ewl_progressbar_set_range (Ewl_Progressbar * p, double r);
+double ewl_progressbar_get_range (Ewl_Progressbar * p);
+
+void ewl_progressbar_set_label (Ewl_Progressbar * p, char *label);
+void ewl_progressbar_set_custom_label (Ewl_Progressbar * p, char *format_string);
+
+void ewl_progressbar_label_show (Ewl_Progressbar * p);
+void ewl_progressbar_label_hide (Ewl_Progressbar * p);
 
 #endif				/* __EWL_PROGRESSBAR_H__ */

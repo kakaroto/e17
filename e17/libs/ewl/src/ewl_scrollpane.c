@@ -1,4 +1,3 @@
-
 #include <Ewl.h>
 
 void            __ewl_scrollpane_configure(Ewl_Widget * w, void *ev_data,
@@ -170,6 +169,34 @@ Ewl_ScrollBar_Flags ewl_scrollpane_get_vscrollbar_flag(Ewl_ScrollPane * s)
 	f = ewl_scrollbar_get_flag(EWL_SCROLLBAR(s->vscrollbar));
 
 	DRETURN_INT(f, DLEVEL_STABLE);
+}
+
+/**
+ * @param s: the scrollpane to retrieve it's horizontal scrollbar value
+ * @return Returns the value of the horizontal scrollbar in @a s on success.
+ * @brief Retrieves the value of the horizontal scrollbar in @a s.
+ */
+double ewl_scrollpane_get_hscrollbar_value(Ewl_ScrollPane *s)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("s", s, 0.0);
+
+	DRETURN_FLOAT(ewl_scrollbar_get_value(EWL_SCROLLBAR(s->hscrollbar)),
+			DLEVEL_STABLE);
+}
+
+/**
+ * @param s: the scrollpane to retrieve it's vertical scrollbar value
+ * @return Returns the value of the vertical scrollbar in @a s on success.
+ * @brief Retrieves the value of the vertical scrollbar in @a s.
+ */
+double ewl_scrollpane_get_vscrollbar_value(Ewl_ScrollPane *s)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("s", s, 0.0);
+
+	DRETURN_FLOAT(ewl_scrollbar_get_value(EWL_SCROLLBAR(s->vscrollbar)),
+			DLEVEL_STABLE);
 }
 
 /*
