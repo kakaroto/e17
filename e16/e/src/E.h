@@ -900,6 +900,7 @@ typedef struct
    struct
    {
       char               *name;
+      char               *extra_path;
    } theme;
 #ifdef ENABLE_THEME_TRANSPARENCY
    struct

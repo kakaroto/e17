@@ -155,19 +155,26 @@ append_merge_dir(char *dir, char ***list, int *count)
 char              **
 ThemesList(int *number)
 {
-   char                s[FILEPATH_LEN_MAX], **list = NULL;
-   char               *def = NULL, *def2 = NULL;
-   int                 count = 0;
+   char                paths[4096];
+   char                buf[4096], *s, **list = NULL;
+   int                 len, count = 0;
 
-   Esnprintf(s, sizeof(s), "%s/themes", EDirUser());
-   def = append_merge_dir(s, &list, &count);
-   if (def)
-      Efree(def);
+   Esnprintf(paths, sizeof(paths), "%s/themes:%s/themes:%s", EDirUser(),
+	     EDirRoot(), (Conf.theme.extra_path) ? Conf.theme.extra_path : "");
 
-   Esnprintf(s, sizeof(s), "%s/themes", EDirRoot());
-   def2 = append_merge_dir(s, &list, &count);
-   if (def2)
-      Efree(def2);
+   count = 0;
+   for (s = paths;;)
+     {
+	len = 0;
+	sscanf(s, "%4095[^:]%n", buf, &len);
+
+	if (len > 0)
+	   append_merge_dir(buf, &list, &count);
+
+	s += len;
+	if (*s++ != ':')
+	   break;
+     }
 
    *number = count;
    return list;
@@ -444,8 +451,10 @@ ThemesIpc(const char *params, Client * c __UNUSED__)
    if (!p || cmd[0] == '?')
      {
 	IpcPrintf("Name: %s\n", Conf.theme.name);
-	IpcPrintf("Path: %s\n", Mode.theme.path);
-	IpcPrintf("User: %s\n", ThemeGetDefault());
+	IpcPrintf("Full: %s\n", Mode.theme.path);
+	IpcPrintf("Default: %s\n", ThemeGetDefault());
+	IpcPrintf("Path: %s/themes:%s/themes:%s", EDirUser(), EDirRoot(),
+		  (Conf.theme.extra_path) ? Conf.theme.extra_path : "");
      }
    else if (!strncmp(cmd, "list", 2))
      {
@@ -479,6 +488,7 @@ IpcItem             ThemeIpcArray[] = {
 
 static const CfgItem ThemeCfgItems[] = {
    CFG_ITEM_STR(Conf.theme, name),
+   CFG_ITEM_STR(Conf.theme, extra_path),
 };
 #define N_CFG_ITEMS (sizeof(ThemeCfgItems)/sizeof(CfgItem))
 
