@@ -7,10 +7,14 @@ AM_INIT_AUTOMAKE(imlib2, 1.0.7)
 
 AM_CONFIG_HEADER(config.h)
 
+freetype_libs=-lttf
 AC_ARG_WITH(ttf,
         [  --with-ttf=DIR          use freetype rooted at <DIR>],
-        [CPPFLAGS="$CPPFLAGS -I$withval/include"
-        LIBS="-L$withval/lib $LIBS"])
+        [freetype_libs="$freetype_libs -L$withval/lib"
+		freetype_includes="-I$withval/include"
+		CPPFLAGS="$CPPFLAGS $freetype_includes"
+        LIBS="$LIBS $freetype_libs"
+		])
 
 mmx=no
 AC_ARG_ENABLE(mmx,[  --enable-mmx            attempt compiling using mmx assembly [default=yes]],
@@ -218,6 +222,7 @@ if test "$png_ok" = yes; then
   AC_MSG_RESULT($png_ok)
   if test "$png_ok" = yes; then
     PNGLIBS="-lpng -lz -lm"
+	REQUIREMENTS=libpng12
   else
     AC_MSG_WARN(*** Native PNG support will not be built (PNG header file not found) ***)
   fi
@@ -311,14 +316,17 @@ AC_SUBST(JPEGLIBS)
 AC_SUBST(PNGLIBS)
 AC_SUBST(TIFFLIBS)
 AC_SUBST(GIFLIBS)
+AC_SUBST(REQUIREMENTS)
 
 AC_SUBST(x_cflags)
 AC_SUBST(x_includes)
 AC_SUBST(x_ldflags)
 AC_SUBST(x_libs)
 AC_SUBST(dlopen_libs)
+AC_SUBST(freetype_libs)
+AC_SUBST(freetype_includes)
 
-AC_CONFIG_FILES([imlib2-config Makefile loaders/Makefile src/Makefile test/Makefile \
+AC_CONFIG_FILES([imlib2-config imlib2.pc Makefile loaders/Makefile src/Makefile test/Makefile \
           filters/Makefile demo/Makefile doc/Makefile \
 	  ])
 AC_CONFIG_COMMANDS([default],[[

@@ -15,6 +15,7 @@ bin_SCRIPTS = imlib2-config
 
 EXTRA_DIST = \
 imlib2.spec \
+imlib2.pc.in \
 demo/Makefile.am \
 demo/Makefile.in \
 demo/view.c \
@@ -43,3 +44,7 @@ test/ttfonts/cinema.ttf \
 test/ttfonts/grunge.ttf \
 test/ttfonts/morpheus.ttf \
 test/ttfonts/notepad.ttf
+
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = imlib2.pc
+
