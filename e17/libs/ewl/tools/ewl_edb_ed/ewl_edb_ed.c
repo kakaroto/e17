@@ -14,7 +14,7 @@ typedef enum {
 static Ewl_Edb_Type current_type = EWL_EDB_TYPE_NONE;
 static Ewl_Widget *key_name_box = NULL;
 static Ewl_Widget *val_box = NULL;
-static Ewl_Widget *table = NULL;
+static Ewl_Widget *tree = NULL;
 
 void win_del_cb(Ewl_Widget *w, void *event, void *data);
 void open_file_cb(Ewl_Widget *w, void *event, void *data);
@@ -28,8 +28,7 @@ void type_sel_cb(Ewl_Widget *w, void *event, void *data);
 int main(int argc, char ** argv) {
     Ewl_Widget *win = NULL, *box = NULL, *o = NULL;
     Ewl_Widget *menu_box = NULL, *hbox = NULL;
-    Ewl_Widget *scroll = NULL, *combo = NULL;
-	Ewl_Widget *box2 = NULL;
+    Ewl_Widget *combo = NULL, *box2 = NULL;
 
     if (!ewl_init(&argc, argv)) {
         printf("Unable to init ewl\n");
@@ -59,18 +58,15 @@ int main(int argc, char ** argv) {
     ewl_container_append_child(EWL_CONTAINER(box), hbox);
     ewl_widget_show(hbox);
 
-    scroll = ewl_scrollpane_new();
-    ewl_container_append_child(EWL_CONTAINER(hbox), scroll);
-    ewl_widget_show(scroll);
-
-	/* create the table */
+	/* create the tree */
 	{
 		char * headers [] = {
 				"type", "key", "value"
 		};
-	    table = ewl_table_new(3, 10, headers);
-	    ewl_container_append_child(EWL_CONTAINER(scroll), table);
-	    ewl_widget_show(table);
+	    tree = ewl_tree_new(3);
+	    ewl_container_append_child(EWL_CONTAINER(hbox), tree);
+		ewl_tree_set_headers(EWL_TREE(tree), headers);
+	    ewl_widget_show(tree);
 	}
 
 	box2 = ewl_vbox_new();
@@ -223,14 +219,12 @@ void open_file_cb(Ewl_Widget *w, void *event, void *data) {
 	}
 
 	key_list = e_db_dump_key_list(file, &num_ret);	
-
 	{
-		Ewl_Widget *cell = NULL;
 		int i = 0;
 
 		for(i = 0; i < num_ret; i++) {
 			if (key_list[i] != NULL) {
-				Ewl_Widget *o = NULL;
+				Ewl_Widget * widgets[3];
 				char *type = e_db_type_get(db_file, key_list[i]);
 				char val[512];
 
@@ -251,27 +245,16 @@ void open_file_cb(Ewl_Widget *w, void *event, void *data) {
 					snprintf(val, sizeof(val), "%d", integer);
 				}
 
-				cell = ewl_cell_new();
-				o = ewl_text_new(type);
-				ewl_container_append_child(EWL_CONTAINER(cell), o);
-				ewl_widget_show(o);
-				ewl_widget_show(cell);
-				ewl_table_add(EWL_TABLE(table), EWL_CELL(cell), 1, 1, i+2, i+2);
+				widgets[0] = ewl_text_new(type);
+				ewl_widget_show(widgets[0]);
 
-				cell = ewl_cell_new();
-				o = ewl_text_new(key_list[i]);
-				ewl_container_append_child(EWL_CONTAINER(cell), o);
-				ewl_widget_show(o);
-				ewl_widget_show(cell);
-				ewl_table_add(EWL_TABLE(table), EWL_CELL(cell), 2, 2, i+2, i+2);
+				widgets[1] = ewl_text_new(key_list[i]);
+				ewl_widget_show(widgets[1]);
 
-				cell = ewl_cell_new();
-				o = ewl_text_new(val);
-				ewl_container_append_child(EWL_CONTAINER(cell), o);
-				ewl_widget_show(o);
-				ewl_widget_show(cell);
-				ewl_table_add(EWL_TABLE(table), EWL_CELL(cell), 3, 3, i+2, i+2);
+				widgets[2] = ewl_text_new(val);
+				ewl_widget_show(widgets[2]);
 
+				ewl_tree_add_row(EWL_TREE(tree), NULL, widgets);
 				free(key_list[i]);
 			}
 		}
@@ -341,6 +324,7 @@ void type_sel_cb(Ewl_Widget *w, void *event, void *data) {
 void add_cb(Ewl_Widget *w, void *event, void *data) {
 	char *key = ewl_entry_get_text(EWL_ENTRY(key_name_box));
 	char *val = ewl_entry_get_text(EWL_ENTRY(val_box));
+	Ewl_Widget *widgets[3];
 
 	if ((key == NULL)  || (val == NULL))
 		return;
@@ -349,29 +333,47 @@ void add_cb(Ewl_Widget *w, void *event, void *data) {
 		case EWL_EDB_TYPE_INT:
 			{
 				int ival = atoi(val);
+				widgets[0] = ewl_text_new("int");
+				ewl_widget_show(widgets[0]);
 				e_db_int_set(db_file, key, ival);
 			}
 			break;
 
 		case EWL_EDB_TYPE_STR:
+			widgets[0] = ewl_text_new("str");
+			ewl_widget_show(widgets[0]);
 			e_db_str_set(db_file, key, val);
 			break;
 
 		case EWL_EDB_TYPE_FLOAT:
 			{
 				float fval = atof(val);
+				widgets[0] = ewl_text_new("float");
+				ewl_widget_show(widgets[0]);
 				e_db_float_set(db_file, key, fval);
 			}
 			break;
 
 		case EWL_EDB_TYPE_DATA:
+			widgets[0] = ewl_text_new("data");
+			ewl_widget_show(widgets[0]);
 			e_db_data_set(db_file, key, val, strlen(val));
+			free(val);
+			val = strdup("");
 			break;
 
 		default:
 			printf("No type selected\n");
 			break;
 	}
+
+	widgets[1] = ewl_text_new(key);
+	ewl_widget_show(widgets[1]);
+
+	widgets[2] = ewl_text_new(val);
+	ewl_widget_show(widgets[2]);
+
+	ewl_tree_add_row(EWL_TREE(tree), NULL, widgets);
 
 	return;
 	w = NULL;
@@ -380,7 +382,8 @@ void add_cb(Ewl_Widget *w, void *event, void *data) {
 }
 
 void delete_cb(Ewl_Widget *w, void *event, void *data) {
-	char *current_key = ewl_table_get_selected(EWL_TABLE(table));
+	char *current_key = NULL;
+//	char *current_key = ewl_table_get_selected(EWL_TABLE(table));
 
 	if (current_key == NULL)
 		return;
