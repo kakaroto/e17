@@ -33,7 +33,7 @@ collections
     group {
 	name, "Main";
 	min, 250 250;
-	max, 9999, 9999;
+	max, 9999 9999;
 	parts {
 	    part {
 		name, "bg";
