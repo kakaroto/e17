@@ -171,12 +171,6 @@ imlib_font_utf8_get_next(unsigned char *buf, int *iindex)
         r |= (d4 & 0x3f);
 
      }
-   if (r < 0xdfff && d > 0xd800)
-     {
-        /* ill-formed says Table 3.1B in the */
-        /* Unicode 3.2 std */
-        return 0;
-     }
    *iindex = index;
    return r;
 }
