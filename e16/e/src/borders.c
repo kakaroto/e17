@@ -2333,6 +2333,11 @@ InstantShadeEwin(EWin * ewin)
 
    EDBUG(4, "InstantShadeEwin");
 
+   if ((ewin->border->border.left == 0) &&
+       (ewin->border->border.right == 0) &&
+       (ewin->border->border.top == 0) &&
+       (ewin->border->border.bottom == 0))
+      EDBUG_RETURN_;
    if (GetZoomEWin() == ewin)
       EDBUG_RETURN_;
    if (ewin->shaded)
@@ -2515,6 +2520,11 @@ ShadeEwin(EWin * ewin)
 
    EDBUG(4, "ShadeEwin");
 
+   if ((ewin->border->border.left == 0) &&
+       (ewin->border->border.right == 0) &&
+       (ewin->border->border.top == 0) &&
+       (ewin->border->border.bottom == 0))
+      EDBUG_RETURN_;
    if (GetZoomEWin() == ewin)
       EDBUG_RETURN_;
    if (ewin->shaded)

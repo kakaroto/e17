@@ -6,6 +6,7 @@ void
 IconifyEwin(EWin * ewin)
 {
    static int          call_depth = 0;
+   char                was_shaded = 0;
 
    if (!ewin)
       EDBUG_RETURN_;
@@ -23,6 +24,11 @@ IconifyEwin(EWin * ewin)
      {
 	call_depth--;
 	return;
+     }
+   if (ewin->shaded)
+     {
+	InstantUnShadeEwin(ewin);
+	was_shaded = 1;
      }
    if (!ewin->iconified)
      {
@@ -54,6 +60,8 @@ IconifyEwin(EWin * ewin)
 	     Efree(lst);
 	  }
      }
+   if (was_shaded)
+      InstantShadeEwin(ewin);
    call_depth--;
 }
 
@@ -2003,11 +2011,16 @@ IconboxHandleEvent(XEvent * ev)
 	if (ev->xany.window == ib[i]->scroll_win)
 	  {
 	     if (ev->type == ButtonPress)
-		ib[i]->scrollbox_clicked = 1;
+	       {
+		  if (ev->xbutton.button == 1)
+		     ib[i]->scrollbox_clicked = 1;
+		  else if (ev->xbutton.button == 3)
+		     IB_ShowMenu(ib[i], ev->xbutton.x, ev->xbutton.y);
+	       }
 	     else if ((ev->type == ButtonRelease) && (ib[i]->scrollbox_clicked))
 	       {
 		  int                 x, y, w, h;
-
+		  
 		  ib[i]->scrollbox_clicked = 0;
 		  GetWinXY(ib[i]->scrollbar_win, &x, &y);
 		  GetWinWH(ib[i]->scrollbar_win, &w, &h);
@@ -2020,12 +2033,17 @@ IconboxHandleEvent(XEvent * ev)
 	if (ev->xany.window == ib[i]->scrollbar_win)
 	  {
 	     static int          px, py;
-
+	     
 	     if (ev->type == ButtonPress)
 	       {
-		  px = ev->xbutton.x_root;
-		  py = ev->xbutton.y_root;
-		  ib[i]->scrollbar_clicked = 1;
+		  if (ev->xbutton.button == 1)
+		    {
+		       px = ev->xbutton.x_root;
+		       py = ev->xbutton.y_root;
+		       ib[i]->scrollbar_clicked = 1;
+		    }
+		  else if (ev->xbutton.button == 3)
+		     IB_ShowMenu(ib[i], ev->xbutton.x, ev->xbutton.y);
 	       }
 	     else if ((ev->type == ButtonRelease) && (ib[i]->scrollbar_clicked))
 		ib[i]->scrollbar_clicked = 0;
@@ -2037,12 +2055,12 @@ IconboxHandleEvent(XEvent * ev)
 	       {
 		  int                 dx, dy, bs, x, y;
 		  ImageClass         *ic;
-
+		  
 		  dx = ev->xmotion.x_root - px;
 		  dy = ev->xmotion.y_root - py;
 		  px = ev->xmotion.x_root;
 		  py = ev->xmotion.y_root;
-
+		  
 		  if (ib[i]->orientation)
 		    {
 		       ic = FindItem("ICONBOX_SCROLLBAR_BASE_VERTICAL", 0, LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
@@ -2081,7 +2099,12 @@ IconboxHandleEvent(XEvent * ev)
 	else if (ev->xany.window == ib[i]->arrow1_win)
 	  {
 	     if (ev->type == ButtonPress)
-		ib[i]->arrow1_clicked = 1;
+	       {
+		  if (ev->xbutton.button == 1)
+		     ib[i]->arrow1_clicked = 1;
+		  else if (ev->xbutton.button == 3)
+		     IB_ShowMenu(ib[i], ev->xbutton.x, ev->xbutton.y);
+	       }
 	     else if ((ev->type == ButtonRelease) && (ib[i]->arrow1_clicked))
 	       {
 		  ib[i]->arrow1_clicked = 0;
@@ -2096,7 +2119,12 @@ IconboxHandleEvent(XEvent * ev)
 	else if (ev->xany.window == ib[i]->arrow2_win)
 	  {
 	     if (ev->type == ButtonPress)
-		ib[i]->arrow2_clicked = 1;
+	       {
+		  if (ev->xbutton.button == 1)
+		     ib[i]->arrow2_clicked = 1;
+		  else if (ev->xbutton.button == 3)
+		     IB_ShowMenu(ib[i], ev->xbutton.x, ev->xbutton.y);
+	       }
 	     else if ((ev->type == ButtonRelease) && (ib[i]->arrow2_clicked))
 	       {
 		  ib[i]->arrow2_clicked = 0;
@@ -2114,7 +2142,7 @@ IconboxHandleEvent(XEvent * ev)
 	       {
 		  if (ev->xbutton.button == 1)
 		     ib[i]->icon_clicked = 1;
-		  else
+		  else if (ev->xbutton.button == 3)
 		     IB_ShowMenu(ib[i], ev->xbutton.x, ev->xbutton.y);
 	       }
 	     else if ((ev->type == ButtonRelease) && (ib[i]->icon_clicked))
@@ -2123,15 +2151,15 @@ IconboxHandleEvent(XEvent * ev)
 		  EWin              **gwins;
 		  int                 j, num;
 		  char                iconified;
-
+		  
 		  ib[i]->icon_clicked = 0;
 		  ewin = IB_FindIcon(ib[i], ev->xbutton.x, ev->xbutton.y);
-
+		  
 		  if (ewin)
 		    {
 		       gwins = ListWinGroupMembersForEwin(ewin, ACTION_ICONIFY, &num);
 		       iconified = ewin->iconified;
-
+		       
 		       if (gwins)
 			 {
 			    for (j = 0; j < num; j++)

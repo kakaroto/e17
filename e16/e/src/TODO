@@ -2,7 +2,6 @@ user: spacers in menus
 user: "default button" indicator for the default "enter" activated button
 user: add submenu resistance / timeout for running across to a submenu
 user: add "virtual" resistance boxes
-user: resistance is still in effect for iconified window
 user: finer grained control on selecting icon display policy
 kainx: translucent and group window moves if move != opaque - fix :)
 kainx: new tooltip stuff doesnt saccoutn for 2x extra in calculating iconbox
@@ -14,11 +13,6 @@ raster: add dnd to iconbox
 raster: option to turn off iconbox cover
 raster: icoify animation suport
 raster: changing virtual desktop size screws up pager content draws.
-raster: forbid iconifying of the iconbox
-raster: forbid shading of any window if its borderless
-raster: forbid chaning to a borderless window if the window is shaded
-raster: unshade windows before iconifying then shade again
-raster: accept right click on scrollbar and cover win for iconbox
 raster: sound.cfg classes to add / support in theme..
 SOUND_MENU_SHOW - whenever a menu is popped up.
 SOUND_RESIZE_START - the start of any window resize

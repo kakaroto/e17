@@ -2851,7 +2851,7 @@ doSetWinBorder(void *params)
    EWin               *ewin;
    EWin              **gwins = NULL;
    int                 i, num;
-   char                buf[1024];
+   char                buf[1024], has_shaded;
    Border             *b;
 
    EDBUG(6, "doSetWinBorder");
@@ -2869,6 +2869,20 @@ doSetWinBorder(void *params)
    b = (Border *) FindItem(buf, 0, LIST_FINDBY_NAME, LIST_TYPE_BORDER);
    if (!b)
       EDBUG_RETURN(0);
+   has_shaded = 0;
+   for (i = 0; i < num; i++)
+     {
+	if (gwins[i]->shaded)
+	   has_shaded = 1;
+     }
+   if (has_shaded)
+     {
+	if ((b->border.left == 0) &&
+	    (b->border.right == 0) &&
+	    (b->border.top == 0) &&
+	    (b->border.bottom == 0))
+	   EDBUG_RETURN(0);
+     }
    for (i = 0; i < num; i++)
      {
 	if (b != gwins[i]->border)
