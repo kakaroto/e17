@@ -101,6 +101,7 @@ cloak_draw (void *data)
     case 0:
       {
 	blank_buf ();
+	Epplet_timer (cloak_draw, NULL, opt.draw_interval, "DRAW_TIMER");
 	break;
       }
     case 1:
