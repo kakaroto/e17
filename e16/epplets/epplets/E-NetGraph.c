@@ -17,26 +17,33 @@
 
 /* global variables */
 RGB_buf             buf;
-Window              win;
+Window              win, config_win = None;
 unsigned char      *rgb_pointer_start = NULL;
 
-Epplet_gadget       close_button;
+Epplet_gadget       close_button, cfg_button, dev_popup, dev_button, cfg_tb_in, cfg_tb_out, cfg_tb_bg, cfg_tb_dev;
 
 long                total_bytes_in = 0;
 long                total_bytes_out = 0;
 int                 old_in_y = 0, old_out_y = 39;
 struct timeval      last_time;
 
-char               *device_string = NULL;
+char               *device_string = NULL, *cfg_device_string = NULL;
 long                max_bytes_in_per_sec = 8192;
 long                max_bytes_out_per_sec = 8192;
 int                 in_color[3];
 int                 out_color[3];
 int                 bg_color[3];
-int                 log_scale = 0;
+int                 log_scale = 0, cfg_log_scale = 0;
 unsigned int        in_color_hex = 0x0040c0;
 unsigned int        out_color_hex = 0xc000c0;
 unsigned int        bg_color_hex = 0x000000;
+
+static int delete_cb(void *data, Window win);
+static void apply_config(void);
+static void ok_cb(void *data);
+static void apply_cb(void *data);
+static void cancel_cb(void *data);
+static void config_cb(void *data);
 
 /* functions */
 static void
@@ -51,17 +58,15 @@ timer_draw(void *data)
    float               intensity;
    long                elapsed_microseconds;
    struct timeval      current_time;
+   char                err[255];
 
-   invalid = net_get_bytes_inout(device_string, &new_total_bytes_in, &new_total_bytes_out);
-   if (invalid)
-     {
-	char                err[255];
-
-	Esnprintf(err, sizeof(err), "Unable to get network device statistics for %s:  %s", device_string, net_strerror(invalid));
-	Epplet_dialog_ok(err);
-	Esync();
-	exit(-1);
-     }
+   for (; (invalid = net_get_bytes_inout(device_string, &new_total_bytes_in, &new_total_bytes_out)) != 0; ) {
+     Esnprintf(err, sizeof(err), "Unable to get network device statistics for %s:  %s", device_string, net_strerror(invalid));
+     Epplet_dialog_ok(err);
+     Esync();
+     config_cb(NULL);
+     return;
+   }
    if (new_total_bytes_in != -1.0)
      {
        if (total_bytes_in == 0)
@@ -190,6 +195,7 @@ cb_in(void *data, Window w)
 {
    if (w == Epplet_get_main_window())
      {
+       Epplet_gadget_show(cfg_button);
        Epplet_gadget_show(close_button);
      }
    return;
@@ -201,10 +207,146 @@ cb_out(void *data, Window w)
 {
    if (w == Epplet_get_main_window())
      {
+       Epplet_gadget_hide(cfg_button);
        Epplet_gadget_hide(close_button);
      }
    return;
    data = NULL;
+}
+
+static int
+delete_cb(void *data, Window win)
+{
+  config_win = None;
+  return 1;
+  win = (Window) 0;
+  data = NULL;
+}
+
+static void
+apply_config(void)
+{
+  char *s;
+
+  device_string = cfg_device_string;
+  Epplet_modify_config("device", device_string);
+
+  s = Epplet_textbox_contents(cfg_tb_in);
+  if (strlen(s)) {
+    Epplet_modify_config("in_color", s);
+    in_color_hex = strtoul(s, (char **) NULL, 0);
+    in_color[0] = in_color_hex >> 16;
+    in_color[1] = (in_color_hex >> 8) & 0xff;
+    in_color[2] = in_color_hex & 0xff;
+  }
+  s = Epplet_textbox_contents(cfg_tb_out);
+  if (strlen(s)) {
+    Epplet_modify_config("out_color", s);
+    out_color_hex = strtoul(s, (char **) NULL, 0);
+    out_color[0] = out_color_hex >> 16;
+    out_color[1] = (out_color_hex >> 8) & 0xff;
+    out_color[2] = out_color_hex & 0xff;
+  }
+  s = Epplet_textbox_contents(cfg_tb_bg);
+  if (strlen(s)) {
+    Epplet_modify_config("bg_color", s);
+    bg_color_hex = strtoul(s, (char **) NULL, 0);
+    bg_color[0] = bg_color_hex >> 16;
+    bg_color[1] = (bg_color_hex >> 8) & 0xff;
+    bg_color[2] = bg_color_hex & 0xff;
+  }
+
+  log_scale = cfg_log_scale;
+  Epplet_modify_config("log_scale", (log_scale ? "1" : "0"));
+
+  timer_draw(NULL);
+}
+
+static void
+ok_cb(void *data)
+{
+  apply_config();
+  Epplet_save_config();
+  Epplet_window_destroy(config_win);
+  config_win = None;
+  return;
+  data = NULL;
+}
+
+static void
+apply_cb(void *data)
+{
+  apply_config();
+  return;
+  data = NULL;
+}
+
+static void
+cancel_cb(void *data)
+{
+  Epplet_window_destroy(config_win);
+  config_win = None;
+  return;
+  data = NULL;
+}
+
+static void
+dev_popup_cb(void *data)
+{
+  cfg_device_string = (char *) data;
+  Epplet_change_textbox(cfg_tb_dev, cfg_device_string);
+}
+
+static void
+config_cb(void *data)
+{
+  char buff[128];
+  static char **devices = NULL;
+  Epplet_gadget dev_popup;
+  unsigned long i;
+
+  if (config_win) {
+    return;
+  }
+
+  config_win = Epplet_create_window_config(200, 230, "E-NetGraph Configuration", ok_cb, NULL, apply_cb, NULL, cancel_cb, NULL);
+
+  dev_popup = Epplet_create_popup();
+  if (!devices) {
+    devices = net_get_devices(NULL);
+  }
+  if (devices) {
+    for (i = 0; devices[i]; i++) {
+      Epplet_add_popup_entry(dev_popup, devices[i], NULL, dev_popup_cb, (void *) devices[i]);
+    }
+  }
+  cfg_device_string = device_string;
+
+  Epplet_gadget_show(Epplet_create_label(4, 4, "Interface to monitor...", 2));
+  Epplet_gadget_show(cfg_tb_dev = Epplet_create_textbox(NULL, device_string, 4, 18, 178, 20, 2, NULL, NULL));
+  Epplet_gadget_show(Epplet_create_popupbutton(NULL, NULL, 185, 22, 12, 12, "ARROW_UP", dev_popup));
+
+  sprintf(buff, "0x%02x%02x%02x", in_color[0], in_color[1], in_color[2]);
+  Epplet_gadget_show(Epplet_create_label(4, 50, "Color for incoming packets:", 2));
+  Epplet_gadget_show(cfg_tb_in = Epplet_create_textbox(NULL, buff, 4, 64, 192, 20, 2, NULL, NULL));
+
+  sprintf(buff, "0x%02x%02x%02x", out_color[0], out_color[1], out_color[2]);
+  Epplet_gadget_show(Epplet_create_label(4, 96, "Color for outgoing packets:", 2));
+  Epplet_gadget_show(cfg_tb_out = Epplet_create_textbox(NULL, buff, 4, 110, 192, 20, 2, NULL, NULL));
+
+  sprintf(buff, "0x%02x%02x%02x", bg_color[0], bg_color[1], bg_color[2]);
+  Epplet_gadget_show(Epplet_create_label(4, 142, "Color for window background:", 2));
+  Epplet_gadget_show(cfg_tb_bg = Epplet_create_textbox(NULL, buff, 4, 156, 192, 20, 2, NULL, NULL));
+
+  cfg_log_scale = log_scale;
+  Epplet_gadget_show(Epplet_create_togglebutton(NULL, NULL, 4, 188, 12, 12, &cfg_log_scale, NULL, NULL));
+  Epplet_gadget_show(Epplet_create_label(20, 188, "Use logarithmic scale?", 2));
+
+  Epplet_window_show(config_win);
+  Epplet_window_pop_context();
+
+  return;
+  data = NULL;
 }
 
 static void
@@ -221,8 +363,7 @@ load_config(void)
    out_color_hex = strtol(s, (char **)NULL, 0);
    s = Epplet_query_config_def("bg_color", "0");
    bg_color_hex = strtol(s, (char **)NULL, 0);
-   if (strlen(Epplet_query_config_def("log_scale", "")))
-      log_scale = 1;
+   log_scale = atoi(Epplet_query_config_def("log_scale", "0"));
 }
 
 int
@@ -362,8 +503,8 @@ main(int argc, char **argv)
    win = Epplet_get_drawingarea_window(drawingarea);
    rgb_pointer_start = Epplet_get_rgb_pointer(buf);
 
-   close_button = Epplet_create_button(NULL, NULL, 0, 0, 0, 0, "CLOSE",
-				       win, NULL, cb_close, NULL);
+   close_button = Epplet_create_std_button("CLOSE", 2, 2, cb_close, NULL);
+   cfg_button = Epplet_create_std_button("CONFIGURE", 33, 2, config_cb, NULL);
    Epplet_register_focus_in_handler(cb_in, NULL);
    Epplet_register_focus_out_handler(cb_out, NULL);
 

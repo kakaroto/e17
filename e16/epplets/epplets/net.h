@@ -30,7 +30,7 @@
 #define NONULL(x)       ((x) ? (x) : (""))
 
 /* Returns an array containing the names of all valid network devices on the system */
-extern char **net_get_devices(void);
+extern char **net_get_devices(unsigned long *count);
 
 /* Stores the number of bytes received and transmitted by device into
    the supplied pointers.  Returns 0 on success, a valid errno value on

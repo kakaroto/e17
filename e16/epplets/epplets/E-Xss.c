@@ -351,8 +351,6 @@ main(int argc, char **argv) {
   prev_button = Epplet_create_button(NULL, NULL, 3, 33, 0, 0, "PREVIOUS", 0, NULL, play_cb, (void *) (-1));
   next_button = Epplet_create_button(NULL, NULL, 33, 33, 0, 0, "NEXT", 0, NULL, play_cb, (void *) (1));
   cfg_button = Epplet_create_std_button("CONFIGURE", 18, 3, config_cb, NULL);
-  Epplet_gadget_show(prev_button);
-  Epplet_gadget_show(next_button);
   Epplet_show();
 
   Epplet_register_focus_in_handler(in_cb, NULL);

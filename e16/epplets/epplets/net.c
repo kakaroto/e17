@@ -48,10 +48,39 @@
 #endif
 
 char **
-net_get_devices(void) {
+net_get_devices(unsigned long *count) {
+
+  FILE *fp;
+  char buff[256], **names = NULL, *s;
+  unsigned long i;
+
+  names = (char **) malloc(sizeof(char *));
+  memset(names, 0, sizeof(char *));
 
 #ifdef linux
-  return ((char **) NULL);
+  fp = fopen("/proc/net/dev", "r");
+  if (fp == NULL) {
+    return ((char **) NULL);
+  }
+  fgets(buff, sizeof(buff), fp);
+  fgets(buff, sizeof(buff), fp);
+
+  for (i = 0; fgets(buff, sizeof(buff), fp); ) {
+    s = strchr(buff, ':');
+    if (!s) {
+      continue;
+    }
+    *s = 0;
+    for (s = buff; isspace(*s); s++);
+    names[i] = strdup(s);
+    names = (char **) realloc(names, sizeof(char *) * ((++i) + 1));
+    names[i] = (char *) NULL;
+  }
+  if (count) {
+    *count = i;
+  }
+  fclose(fp);
+  return (names);
 #elif defined(__sun__)
   return ((char **) NULL);
 #else
@@ -69,7 +98,7 @@ net_get_bytes_inout(const char *device, double *in_bytes, double *out_bytes) {
   kstat_named_t kned[100];
 #elif defined(linux)
   unsigned char match = 0;
-  static FILE *fp;
+  FILE *fp;
   char buff[256], *colon = NULL, dev[64], in_str[64], out_str[64];
 #endif
 

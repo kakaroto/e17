@@ -212,8 +212,6 @@ change_image(void *data)
     filenames[idx] = NULL;
     INC_PIC();
   }
-  Imlib_destroy_image(Epplet_get_imlib_data(), im);	/* Destroy the image, but keep it in cache. */
-
   new_w = (w * 16 - 6);
   new_h = (h * 16 - 6);
   if (maintain_aspect) {
@@ -224,6 +222,8 @@ change_image(void *data)
       new_w *= ratio;
     }
   }
+  Imlib_destroy_image(Epplet_get_imlib_data(), im);	/* Destroy the image, but keep it in cache. */
+
   new_x = ((w * 16) / 2) - (new_w / 2);
   new_y = ((h * 16) / 2) - (new_h / 2);
   Epplet_move_change_image(picture, new_x, new_y, new_w, new_h, filenames[idx]);
@@ -403,7 +403,6 @@ apply_config(void)
       path = strdup(buff);
       Epplet_modify_config("image_dir", path);
       idx = 0;
-      change_image(NULL);
     }
   }
 
@@ -420,6 +419,7 @@ apply_config(void)
   maintain_aspect = cfg_maintain_aspect;
   sprintf(buff, "%d", maintain_aspect);
   Epplet_modify_config("maintain_aspect", buff);
+  change_image(NULL);
 }
 
 static void
@@ -545,9 +545,6 @@ get_images(char *image_path)
     Esnprintf(err, sizeof(err), "Unable to find any files in %s!", image_path);
     Epplet_dialog_ok(err);
     Esync();
-    if (!filenames) {
-      exit(-1);
-    }
     return 0;
   } else if (idx >= cnt) {
     idx = 0;
@@ -596,7 +593,6 @@ main(int argc, char **argv)
   Epplet_Init("E-Slides", "0.3", "Enlightenment Slideshow Epplet", w, h, argc, argv, 0);
   Epplet_load_config();
   parse_config();
-  get_images(path);
 
   cfg_popup = Epplet_create_popup();
   Epplet_add_popup_entry(cfg_popup, "Set Background", NULL, cfg_popup_cb, (void *) 0);
@@ -616,7 +612,11 @@ main(int argc, char **argv)
   Epplet_register_focus_in_handler(in_cb, NULL);
   Epplet_register_focus_out_handler(out_cb, NULL);
 
-  change_image(NULL);		/* Set everything up */
+  if (get_images(path)) {
+    change_image(NULL);
+  } else {
+    config_cb(NULL);
+  }
   Epplet_Loop();
 
   return 0;
