@@ -146,7 +146,7 @@
         making sure that an &efsd; instance isn't already running).
       </para>
       <para>
-        &efsd; has only few requirements. Right now they are
+        &efsd; has a few requirements. Right now they are
 
 	<itemizedlist mark="opencircle">
 	  <listitem>
@@ -154,12 +154,27 @@
               FAM, the File Alteration Monitor, available at
               <ulink url="http://oss.sgi.com/projects/fam">SGI's Open Source site</ulink>.
             </para>
+	    <para>
+              FAM is used to implement &efsd;'s file monitoring.
+            </para>
           </listitem>
 	  <listitem>
 	    <para>
               Edb, the Enlightenment Database, based on BerkeleyDB. It's available on
               Enlightenment's SourceForge 
               <ulink url="http://prdownloads.sourceforge.net/enlightenment">download page</ulink>.
+            </para>
+	    <para>
+              Edb is used to implement &efsd;'s file metadata handling.
+            </para>
+          </listitem>
+	  <listitem>
+	    <para>
+	      libxml2, available at
+              <ulink url="http://www.xmlsoft.org">XMLSoft</ulink>.
+            </para>
+	    <para>
+              &efsd; uses libxml2 to store the filetype database.
             </para>
           </listitem>
 	</itemizedlist>
@@ -324,7 +339,7 @@ if ( (id = efsd_makedir(ec, "foo/bar")) < 0)
 	  </programlisting>
 
 	  <note>
-	    <title>A return value &lt; 0 does not mean that an error occured when processing the command.</title>
+	    <title>A return value &lt; 0 does not mean that an error occurred when processing the command.</title>
 	    <para>
 	      It means that the command didn't get sent to the server in the
 	      first place. Errors during actual execution of the commands are
@@ -431,7 +446,7 @@ if (FD_ISSET(fd, &amp;fdset))
 	    <title>After you finished handling the event, you need to clean up the structure.</title>
             <para>
               Use <link linkend="API-efsd-event-cleanup"><function>efsd_event_cleanup()</function></link>
-              to release any memore that was read into the <classname>EfsdEvent</classname> structure.
+              to release any memory that was read into the <classname>EfsdEvent</classname> structure.
             </para>
 	  </caution>
 	  </para>
@@ -581,7 +596,7 @@ while (efsd_wait_event(ec, &amp;ee) >= 0)
 	    </listitem>
 	  </itemizedlist>
 
-	Finally, <classname>EfsdEvent.file</classname> contains the chanonical name of
+	Finally, <classname>EfsdEvent.file</classname> contains the canonical name of
 	the file on which the event is reported.
 	</para>
 
@@ -703,10 +718,10 @@ while (efsd_wait_event(ec, &amp;ee) >= 0)
 	    </listitem>
 	  </itemizedlist>
 
-	  &lefsd;'s API provides one function for each of these datatypes, those calls are
+	  &lefsd;'s API provides one function for each of these data types, those calls are
 	  <link linkend="API-efsd-set-metadata-int"><function>efsd_set_metadata_int()</function></link>,
 	  <link linkend="API-efsd-set-metadata-float"><function>efsd_set_metadata_float()</function></link>,
-	  <link linkend="API-efsd-set-metadata-str"><function>efsd_set_metadata_str()</function></link> and
+	  <link linkend="API-efsd-set-metadata-str"><function>efsd_set_metadata_sir()</function></link> and
 	  <link linkend="API-efsd-set-metadata-raw"><function>efsd_set_metadata_raw()</function></link>.
 	  Those functions should be self-explanatory. When using <link linkend="API-efsd-set-metadata-raw">
 	  <function>efsd_set_metadata_raw()</function></link>, you need to pass the type of the data
@@ -757,7 +772,7 @@ while (efsd_wait_event(ec, &amp;ee) >= 0)
 	  The well-known UNIX <command>file</command> command uses a smarter approach: it
 	  uses a multi-level approach that examines files, with each level providing less
 	  reliable information in case a previous level failed. Roughly, files are scanned
-	  on the OS level (exmining the result of <function>stat()</function> results) and
+	  on the OS level (examining the result of <function>stat()</function> results) and
 	  searched for typical <emphasis>magic</emphasis> bytestrings in order to reliably
 	  determine the file's type. See the manpage for more details.
         </para>
@@ -1123,7 +1138,7 @@ if ( (id = efsd_start_monitor_dir(ec, "/some/dir", ops)) < 0)
     <title>&efsdsh; - An Interactive &efsd; Client</title>
     <para>    	     
       The &efsd; distribution comes with a useful tool for testing and playing with &efsd;
-      -- that's &efsdsh;, the &efsd; shell <footnote><para>"Shell" is a bit of exageration, since &efsdsh;
+      -- that's &efsdsh;, the &efsd; shell <footnote><para>"Shell" is a bit of exaggeration, since &efsdsh;
       provides only a small subset of a real shell's functionality.</para></footnote>. It provides
       a simplified command line prompt, where you can send commands to &efsd; in the usual fashion, i.e.
       a directory copy command is <function>cp -r /some/dir /some/other/dir</function> etc.
