@@ -3295,3 +3295,34 @@ Optionally show icons in focus list (Andreas Volz).
 Inhibit tooltips while showing focus list or menus.
 Systray fixes.      
 
+
+-------------------------------------------------------------------------------
+
+Tue Mar  1 20:43:25 CET 2005
+(Kim)
+
+--- 0.16.8 0.05 ---
+Clean up atom stuff.
+Sync with ecore_x, some ecore_x candidates.
+Set _NET_FRAME_EXTENTS in stead of _E_FRAME_SIZE.
+Handle misbehaving apps sending client messages for withdrawn windows.
+Include README-0.16.8 in rpm.
+Fix key bindings for keysym names longer than 15 chars.
+64 bit arch.
+Enable function calls on "eesh set ..." to do reconfiguration.
+Ipc function cleanups/changes.
+Implement window matches doing window ops.
+Snapshot code updates, optionally track changes.
+Compatibility fix for E-Slides.
+Fix saving window settings on exit/restart.
+Added command to list keybindings.
+Show all (not only used) snaps in "Remember Settings ..." dialog.
+Bulgarian translation update (Viktor Kojouharov).
+Iconbox/systray fixes.
+Require imlib2 >= 1.2.0.
+Fix floating window stacking. Make menus floating.
+Fix client list order.
+Enable additional theme dir paths.
+Desktop fixes, namespace cleanups.
+Fix some memleaks.
+Handle startup window stacking via object stack.
