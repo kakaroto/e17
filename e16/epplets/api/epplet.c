@@ -5552,6 +5552,8 @@ Epplet_find_instance(char *name)
 		  continue;
 	       }
 	  }
+	srand(getpid());
+	usleep((rand() & 0xfffff));
 	if ((fd = open(s, (O_WRONLY | O_EXCL | O_CREAT), 0600)) < 0)
 	  {
 	     /* Apparently another process just came in under us and created it.  Next! */
