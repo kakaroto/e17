@@ -1,3 +1,18 @@
+Sat Jun 17 12:57:49 PDT 2000 Paul Duncan <pabs@pablotron.org>
+   
+   * wget is now quied by dfeault (wget -q). it's verbose if the
+   -V or --verbose flag is passed to feh.  Your terminal will
+   thank you.
+   * mirrored the same change too cam.  cam -V or cam --version
+   will enable verbose mode for feh and the forked wgets.
+   * the second mouse button now zooms again, and the third button
+   pans.
+   * added menu-button option too (-4 or --menu-button). ctrl+the
+   menu button brings up the menu.  defaults to the right mouse
+   button, and you can set it to 0 for any button (including ones
+   >3, there's no bounds checking).  This feature is disabled by
+   the -N or --no-menus flag.
+
 Sat Jun 17 20:41:24 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Apend ? and a random number to the image url for webcams so that
