@@ -552,6 +552,14 @@ HandleMouseIn(XEvent * ev)
 
    EDBUG(5, "HandleMouseIn");
 
+   if (ev->xcrossing.mode == NotifyGrab &&
+       ev->xcrossing.detail == NotifyInferior)
+     {
+	Mode.grabs.pointer_grab_window = win;
+	if (!Mode.grabs.pointer_grab_active)
+	   Mode.grabs.pointer_grab_active = 2;
+     }
+
    if (Mode.mode != MODE_NONE)
       EDBUG_RETURN_;
 
@@ -590,6 +598,13 @@ HandleMouseOut(XEvent * ev)
    Window              win = ev->xcrossing.window;
 
    EDBUG(5, "HandleMouseOut");
+
+   if (ev->xcrossing.mode == NotifyGrab &&
+       ev->xcrossing.detail == NotifyInferior)
+     {
+	Mode.grabs.pointer_grab_window = None;
+	Mode.grabs.pointer_grab_active = 0;
+     }
 
    if (Mode.mode != MODE_NONE)
       EDBUG_RETURN_;

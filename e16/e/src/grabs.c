@@ -95,9 +95,6 @@ GrabPointerSet(Window win, unsigned int csr, int confine)
    int                 ret = -1;
    Window              confine_to = (confine) ? win : None;
 
-   if (Mode.grabs.pointer_grab_active)
-      goto done;
-
    ret = XGrabPointer(disp, win, True,
 		      ButtonPressMask | ButtonReleaseMask | PointerMotionMask |
 		      ButtonMotionMask | EnterWindowMask | LeaveWindowMask,
@@ -107,7 +104,6 @@ GrabPointerSet(Window win, unsigned int csr, int confine)
    Mode.grabs.pointer_grab_window = win;
    Mode.grabs.pointer_grab_active = 1;
 
- done:
    if (EventDebug(EDBUG_TYPE_GRABS))
       Eprintf("GrabPointerSet: %#lx, ret=%d\n", Mode.grabs.pointer_grab_window,
 	      ret);
@@ -118,12 +114,8 @@ GrabPointerSet(Window win, unsigned int csr, int confine)
 void
 GrabPointerRelease(void)
 {
-   if (!Mode.grabs.pointer_grab_active)
-      goto done;
-
    XUngrabPointer(disp, CurrentTime);
 
- done:
    if (EventDebug(EDBUG_TYPE_GRABS))
       Eprintf("GrabPointerRelease: %#lx\n", Mode.grabs.pointer_grab_window);
 

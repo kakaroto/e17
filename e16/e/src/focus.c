@@ -470,6 +470,8 @@ FocusHandleClick(Window win)
 	FocusToEWin(ewin, FOCUS_CLICK);
 
 	/* allow click to pass thorugh */
+	if (EventDebug(EDBUG_TYPE_GRABS))
+	   Eprintf("FocusHandleClick %#lx %#lx\n", win, ewin->win_container);
 	if (win == ewin->win_container)
 	  {
 	     XSync(disp, False);
