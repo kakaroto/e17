@@ -54,6 +54,8 @@ static unsigned int warpFocusKey = 0;
 static int          warplist_num = 0;
 static WarplistItem *warplist;
 
+#define ICON_PAD 2
+
 static void
 WarpFocusShowTitle(EWin * ewin)
 {
@@ -61,7 +63,7 @@ WarpFocusShowTitle(EWin * ewin)
    ImageClass         *ic;
    char                pq;
    int                 i, x, y, w, h, num, ww, hh;
-   static int          mw, mh;
+   static int          mw, mh, tw, th;
    char                s[1024];
 
    tc = TextclassFind("WARPFOCUS", 0);
@@ -116,17 +118,21 @@ WarpFocusShowTitle(EWin * ewin)
 	       }
 	     Efree(lst);
 	  }
-	if (Conf.warplist.icon_mode != 0)
-	   w += (ic->padding.left + ic->padding.right + 2 * h);
-	else
-	   w += (ic->padding.left + ic->padding.right);
+
+	tw = w;			/* Text size */
+	th = h;
+	w += (ic->padding.left + ic->padding.right);
 	h += (ic->padding.top + ic->padding.bottom);
+	if (Conf.warplist.icon_mode != 0)
+	   w += h;
+	mw = w;			/* Focus list item size */
+	mh = h;
+
 	GetPointerScreenAvailableArea(&x, &y, &ww, &hh);
 	x += (ww - w) / 2;
 	y += (hh - h * warplist_num) / 2;
-	mw = w;
-	mh = h;
 	EMoveResizeWindow(warpFocusTitleWindow, x, y, w, (h * warplist_num));
+
 	for (i = 0; i < warplist_num; i++)
 	  {
 	     EMoveResizeWindow(warplist[i].win, 0, (h * i), mw, mh);
@@ -137,6 +143,7 @@ WarpFocusShowTitle(EWin * ewin)
 		ImageclassApply(ic, warplist[i].win, mw, mh, 0, 0, STATE_NORMAL,
 				0, ST_WARPLIST);
 	  }
+
 	PropagateShapes(warpFocusTitleWindow);
 	EMapWindow(warpFocusTitleWindow);
 
@@ -156,9 +163,6 @@ WarpFocusShowTitle(EWin * ewin)
 	if (warplist[i].ewin)
 	  {
 	     int                 state;
-	     int                 text_h, text_w;
-	     int                 icon_size =
-		mh - ((ic->padding.top + ic->padding.bottom) / 2);
 
 	     state = (ewin == warplist[i].ewin) ? STATE_CLICKED : STATE_NORMAL;
 
@@ -168,28 +172,23 @@ WarpFocusShowTitle(EWin * ewin)
 	     /* New icon stuff */
 	     if (Conf.warplist.icon_mode != 0)
 	       {
-		  TextSize(tc, 0, 0, 0, warplist[i].txt, &text_w, &text_h, 17);
+		  int                 icon_size = mh - 2 * ICON_PAD;
+
 		  TextDraw(tc, warplist[i].win, 0, 0, state, warplist[i].txt,
-			   icon_size + 1.5 * ic->padding.left,
-			   (mh - text_h) / 2, mw, mh, 0, 0);
+			   ic->padding.left + mh, ic->padding.top,
+			   tw, th, 0, 0);
 
 		  UpdateAppIcon(warplist[i].ewin, Conf.warplist.icon_mode);
-
 		  if (!warplist[i].ewin->icon_image)
-		     return;
+		     continue;
 
 		  imlib_context_set_image(warplist[i].ewin->icon_image);
-
 		  imlib_context_set_drawable(warplist[i].win);
-
 		  imlib_context_set_blend(1);
-		  imlib_render_image_on_drawable_at_size(ic->padding.left,
-							 (ic->padding.top +
-							  ic->padding.bottom) /
-							 4, icon_size,
-							 icon_size);
+		  imlib_render_image_on_drawable_at_size(ic->padding.left +
+							 ICON_PAD, ICON_PAD,
+							 icon_size, icon_size);
 		  imlib_context_set_blend(0);
-
 	       }
 	     else
 	       {
