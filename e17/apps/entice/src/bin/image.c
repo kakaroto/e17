@@ -117,9 +117,7 @@ entice_image_rotate(Evas_Object * o, int orientation)
          im->ih = imlib_image_get_height();
          evas_object_image_size_set(im->obj, im->iw, im->ih);
          evas_object_image_fill_set(im->obj, 0.0, 0.0, im->iw, im->ih);
-         evas_object_image_data_copy_set(im->obj,
-                                         imlib_image_get_data_for_reading_only
-                                         ());
+         evas_object_image_data_copy_set(im->obj, imlib_image_get_data());
          evas_object_resize(o, w, h);
          /* if we're fitting, it'll need to be recalculated */
          if (entice_image_zoom_fit_get(o))
@@ -212,6 +210,8 @@ entice_image_save(Evas_Object * o)
                imlib_image_set_format(tmp + 1);
             snprintf(tmpfile, PATH_MAX, "%s.%d", im->filename, getpid());
             imlib_save_image_with_error_return(tmpfile, &err);
+            evas_image_cache_flush(evas_object_evas_get(im->obj));
+            unlink(im->filename);
             switch (err)
             {
               case 0:
@@ -787,15 +787,19 @@ entice_image_clip_unset(Evas_Object * o)
 static Evas_Smart *
 entice_image_get(void)
 {
-   Evas_Smart *s = NULL;
+   static Evas_Smart *s = NULL;
 
-   s = evas_smart_new("EnticeImage", entice_image_add, entice_image_del,
-                      entice_image_layer_set, entice_image_raise,
-                      entice_image_lower, entice_image_stack_above,
-                      entice_image_stack_below, entice_image_move,
-                      entice_image_resize, entice_image_show,
-                      entice_image_hide, entice_image_color_set,
-                      entice_image_clip_set, entice_image_clip_unset, NULL);
+   if (!s)
+   {
+      s = evas_smart_new("EnticeImage", entice_image_add, entice_image_del,
+                         entice_image_layer_set, entice_image_raise,
+                         entice_image_lower, entice_image_stack_above,
+                         entice_image_stack_below, entice_image_move,
+                         entice_image_resize, entice_image_show,
+                         entice_image_hide, entice_image_color_set,
+                         entice_image_clip_set, entice_image_clip_unset,
+                         NULL);
+   }
    return (s);
 }
 

@@ -229,12 +229,15 @@ _entice_thumb_load(void *_data, Evas * _e, Evas_Object * _o, void *_ev)
       int iw, ih;
       Evas_Coord w, h;
       int should_fit = 0;
+      int cache;
       char buf[PATH_MAX];
 
       if ((entice->current) && entice_image_file_get(entice->current)
           && !strcmp(e_thumb_file_get(o),
                      entice_image_file_get(entice->current)))
          return;
+      e_thumb_freshen(o);
+
       if (entice_image_file_get(entice->current)
           && (thumb_edje =
               evas_hash_find(entice->thumb.hash,
@@ -779,17 +782,35 @@ entice_preview_thumb(Evas_Object * o)
    {
       double x, y, w, h;
 
-      if (entice->preview)
+      if (e_thumb_freshen(o) == EPSILON_OK)
       {
-         swallowed =
-            edje_object_part_swallow_get(entice->edje, "EnticeImagePreview");
-         if (swallowed)
+         if (entice->preview)
          {
-            /* don't repreview the same image */
-            if (!strcmp(e_thumb_file_get(o), e_thumb_file_get(swallowed)))
-               return;
-            edje_object_part_unswallow(entice->edje, swallowed);
-            evas_object_del(swallowed);
+            swallowed =
+               edje_object_part_swallow_get(entice->edje,
+                                            "EnticeImagePreview");
+            if (swallowed)
+            {
+               edje_object_part_unswallow(entice->edje, swallowed);
+               evas_object_del(swallowed);
+            }
+         }
+      }
+      else
+      {
+         if (entice->preview)
+         {
+            swallowed =
+               edje_object_part_swallow_get(entice->edje,
+                                            "EnticeImagePreview");
+            if (swallowed)
+            {
+               /* don't repreview the same image if cache is same */
+               if (!strcmp(e_thumb_file_get(o), e_thumb_file_get(swallowed)))
+                  return;
+               edje_object_part_unswallow(entice->edje, swallowed);
+               evas_object_del(swallowed);
+            }
          }
       }
       if ((newpreview =
@@ -804,7 +825,8 @@ entice_preview_thumb(Evas_Object * o)
           * make it almost inivisble before swallowing, without this we get
           * an artifact immediately before a preview request happens 
           */
-         evas_object_resize(newpreview, 2, 2);
+         evas_object_move(newpreview, -50, -50);
+         evas_object_resize(newpreview, 48, 48);
          edje_object_part_swallow(entice->edje, "EnticeImagePreview",
                                   newpreview);
          evas_object_show(newpreview);
