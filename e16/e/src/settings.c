@@ -4424,6 +4424,8 @@ CB_RememberWindowSettings(int val, void *data)
    val = 0;
    if (!data)
       return;
+   if (!ewin)
+      return;
    ewin = (EWin *) data;
    SnapshotEwinDialog(ewin);
 }
