@@ -429,6 +429,7 @@ main(int argc, char **argv)
 	     else if (ev.xbutton.window == win_next)
 	       {
 		  int prev_pagenum;
+		  
 		  Imlib_apply_image(id, im_next1, win_next);
 		  FREE_LINKS;
 		  prev_pagenum = pagenum;
@@ -436,16 +437,16 @@ main(int argc, char **argv)
 		  pagenum = FixPage(pagenum);
 		  if (pagenum != prev_pagenum)
 		    {
+		       page_hist_pos++;
 		       if (page_hist_pos >= page_hist_len)
 			 {
 			    page_hist_len++;
 			    page_hist = realloc(page_hist,
 						sizeof(int) * page_hist_len);
-			    page_hist[page_hist_len - 1] = pagenum;
-			    page_hist_pos = page_hist_len - 1;
+			    page_hist[page_hist_pos] = pagenum;
 			 }
 		       else
-			  page_hist_pos++;
+			  page_hist[page_hist_pos] = pagenum;
 		       l = RenderPage(draw, pagenum, w, h);
 		       UPDATE;
 		    }
