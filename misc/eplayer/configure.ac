@@ -81,33 +81,6 @@ fi
 LIBS=$tmp
 AM_CONDITIONAL(HAVE_VORBIS, test "$have_vorbis" = "yes")
 
-dnl Check for libavcodec
-tmp=$LIBS
-
-AM_CONDITIONAL(HAVE_AVCODEC, false) 
-AC_ARG_ENABLE(debug,
-        [  --enable-avcodec          Build AVcodec support (default: no)], 
-
-	[
-	AC_CHECK_LIB(avcodec, avcodec_init,
-		[have_avcodec="yes"; LIBS="$LIBS -lavcodec"], have_avcodec="no")
-
-	if test "x$have_avcodec" = "xyes"; then
-		AC_CHECK_LIB(avformat, av_register_all,
-		[
-			AVCODEC_CFLAGS="-I/usr/include/ffmpeg"
-			AVCODEC_LIBS="-lavcodec -lavformat"
-		
-			AC_SUBST(AVCODEC_CFLAGS)
-			AC_SUBST(AVCODEC_LIBS)
-		], have_avcodec="no")
-	fi
-
-	LIBS=$tmp
-	AM_CONDITIONAL(HAVE_AVCODEC, test x"$have_avcodec" = x"yes") 
-	], have_avcodec="no")
-	
-
 dnl Check for OSS
 AC_CHECK_HEADERS(sys/soundcard.h machine/soundcard.h, [have_oss="yes"; break], have_oss="no")
 AM_CONDITIONAL(HAVE_OSS, test x"$have_oss" = "xyes")
@@ -133,7 +106,6 @@ etc/Makefile
 m4/Makefile
 src/Makefile
 src/input/Makefile
-src/input/avcodec/Makefile
 src/input/vorbis/Makefile
 src/output/Makefile
 src/output/alsa/Makefile
@@ -147,7 +119,6 @@ echo
 echo
 echo "Input Plugins"
 echo
-echo "AVCodec.......: $have_avcodec"
 echo "Ogg Vorbis....: $have_vorbis"
 echo
 echo
