@@ -305,6 +305,7 @@ void etox_line_merge_append(Etox_Line * line1, Etox_Line * line2)
 		bit = line2->bits->data;
 		line1->bits = evas_list_append(line1->bits, bit);
 		line2->bits = evas_list_remove(line2->bits, bit);
+		line1->length += etox_style_length(bit);
 
         	etox_selections_update(bit, line1);
 	}
@@ -314,7 +315,6 @@ void etox_line_merge_append(Etox_Line * line1, Etox_Line * line2)
 	line1->w += line2->w;
 	if (line2->h > line1->h)
 		line1->h = line2->h;
-	line1->length += line2->length;
 }
 
 /*
@@ -338,6 +338,7 @@ void etox_line_merge_prepend(Etox_Line * line1, Etox_Line * line2)
 		bit = line1->bits->data;
 		line2->bits = evas_list_prepend(line2->bits, bit);
 		line1->bits = evas_list_remove(line1->bits, bit);
+		line2->length += etox_style_length(bit);
 	}
 	/*
 	 * Adjust the height, width and length of the merged line.
@@ -345,7 +346,6 @@ void etox_line_merge_prepend(Etox_Line * line1, Etox_Line * line2)
 	line2->w += line1->w;
 	if (line1->h > line2->h)
 		line2->h = line1->h;
-	line2->length += line1->length;
 }
 
 /*

@@ -252,6 +252,8 @@ void etox_append_text(Evas_Object * obj, char *text)
 		et->length += start->length;
 		et->lines = evas_list_append(et->lines, start);
 		lines = evas_list_remove(lines, start);
+		if (start->w > et->tw)
+			et->tw = start->w;
 	}
 
 	/*
@@ -341,6 +343,8 @@ void etox_prepend_text(Evas_Object * obj, char *text)
 		et->length += end->length;
 		et->lines = evas_list_prepend(et->lines, end);
 		lines = evas_list_remove(lines, end);
+		if (end->w > et->tw)
+			et->tw = end->w;
 	}
 
 	/*
@@ -362,6 +366,7 @@ void etox_prepend_text(Evas_Object * obj, char *text)
  */
 void etox_insert_text(Evas_Object * obj, char *text, int index)
 {
+	int len;
 	Etox *et;
 	Evas_Object *bit;
 	Evas_List *lines = NULL, *ll;
@@ -409,7 +414,11 @@ void etox_insert_text(Evas_Object * obj, char *text, int index)
 	 */
 	temp = lines->data;
 	lines = evas_list_remove(lines, temp);
+	len = start->length;
 	etox_line_merge_append(start, temp);
+	et->length += start->length - len;
+	if (start->w > et->tw)
+		et->tw = start->w;
 
 	/*
 	 * Now merge the end of the added text with the remainder of the
@@ -421,7 +430,11 @@ void etox_insert_text(Evas_Object * obj, char *text, int index)
 		lines = evas_list_remove(lines, temp);
 		ll = evas_list_find_list(et->lines, start);
 		end = ll->next->data;
+		len = temp->length;
 		etox_line_merge_prepend(temp, end);
+		et->length += temp->length - len;
+		if (end->w > et->tw)
+			et->tw = end->w;
 	}
 
 	/*
@@ -429,14 +442,12 @@ void etox_insert_text(Evas_Object * obj, char *text, int index)
 	 */
 	while (lines) {
 		end = lines->data;
-
-		if (end->w > et->tw)
-			et->tw = end->w;
-
 		et->h += end->h;
 		et->length += end->length;
 		et->lines = evas_list_append_relative(et->lines, end, start);
 		lines = evas_list_remove(lines, end);
+		if (end->w > et->tw)
+			et->tw = end->w;
 		start = end;
 	}
 
@@ -1276,7 +1287,7 @@ void etox_layout(Etox * et)
 
 	CHECK_PARAM_POINTER("et", et);
 
-	if (!et->flags & ETOX_SOFT_WRAP)
+	if (!(et->flags & ETOX_SOFT_WRAP))
 		et->w = 0;
 
 	if (!et->w)
@@ -1346,8 +1357,8 @@ void etox_layout(Etox * et)
 		 * the width affects alignment.
 		 */
 		if ((et->flags & ETOX_SOFT_WRAP) && (line->w > et->w)) {
-				etox_line_wrap(et, line);
-				etox_line_layout(line);
+			etox_line_wrap(et, line);
+			etox_line_layout(line);
 		}
 
 		l = l->next;
@@ -1361,17 +1372,14 @@ void etox_layout(Etox * et)
 	et->th = et->h;
 	
 
-	if (et->flags & ETOX_SOFT_WRAP)
-	{
+	if (et->flags & ETOX_SOFT_WRAP) {
 		evas_object_resize(et->clip, et->w, et->h);
 		evas_object_resize(et->smart_obj, et->w, et->h);
 	}
-	else
-	{
+	else {
 		evas_object_resize(et->clip, et->tw, et->th);
 		evas_object_resize(et->smart_obj, et->tw, et->th);
 	}
-
 }
 
 Etox_Line *
