@@ -835,22 +835,19 @@ HandleMotion(XEvent * ev)
 	     if ((p->hi_ewin) && (!p->hi_ewin->pager) &&
 		 (!p->hi_ewin->fixedpos))
 	       {
-		  GetWinXY(p->hi_win, &x, &y);
-		  XRaiseWindow(disp, p->hi_win);
-		  EMoveWindow(disp, p->hi_win, x + dx, y + dy);
-	       }
-	     if ((p->hi_ewin) && (!p->hi_ewin->pager) &&
-		 (!p->hi_ewin->fixedpos))
-	       {
 		  Window              dw;
 		  int                 px, py;
 
+		  GetWinXY(p->hi_win, &x, &y);
+		  XRaiseWindow(disp, p->hi_win);
+		  x += dx;
+		  y += dy;
+		  EMoveWindow(disp, p->hi_win, x, y);
 		  XTranslateCoordinates(disp, p->win, root.win, 0, 0, &px, &py, &dw);
-		  MoveEwin(p->hi_ewin,
-			   ((x + dx - px) - (cx * (p->w / ax))) *
-			   (root.w / (p->w / ax)),
-			   ((y + dy - py) - (cy * (p->h / ay))) *
-			   (root.h / (p->h / ay)));
+		  x -= px + (cx * (p->w / ax));
+		  y -= py + (cy * (p->h / ay));
+		  MoveEwin(p->hi_ewin, (x * root.w * ax) / p->w,
+			   (y * root.h * ay) / p->h);
 	       }
 	  }
      }

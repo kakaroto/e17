@@ -1971,3 +1971,13 @@ Fri Sep 17 15:55:05 PDT 1999
 (Mandrake)
 
 fix minor casting bug
+
+-------------------------------------------------------------------------------
+
+Sat Sep 18 11:04:41 PDT 1999
+(Raster)
+
+shen changing numebr of desktops - get rid of the old desktops first before
+chanign the number
+
+dont looses as much accuracy when moving pagers in the pager view.
