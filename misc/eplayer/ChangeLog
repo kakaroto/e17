@@ -1,8 +1,11 @@
 $Id$
 
+2003-11-10 Tilman Sauerbeck <tilman@code-monkey.de>
+        * src/playlist.c: Misc fixes
+
 2003-10-25 Tilman Sauerbeck <tilman@code-monkey.de>
-       * src/eplayer.c, src/track.c: Put the decoding/playing
-         code in a separate thread
+        * src/eplayer.c, src/track.c: Put the decoding/playing
+          code in a separate thread
 
 2003-10-24 Tilman Sauerbeck <tilman@code-monkey.de>
         * src/input/avcodec: Added libavcodec input plugin

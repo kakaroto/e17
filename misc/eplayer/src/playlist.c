@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <dirent.h>
+#include <unistd.h>
 #include "playlist.h"
 #include "utils.h"
 
@@ -228,17 +229,19 @@ int playlist_load_m3u(PlayList *pl, const char *file, int append) {
 	PlayListItem *pli = NULL;
 	Evas_List *tmp = NULL;
 	FILE *fp;
-	char buf[1024], path[PATH_MAX + 1], *dir, *ptr;
+	char buf[PATH_MAX + 1], path[PATH_MAX + 1], dir[PATH_MAX + 1];
+	char *ptr;
 
 	if (!pl || !(fp = fopen(file, "r")))
 		return 0;
 
-	/* get the directory */
-	dir = strdup(file);
-	ptr = strrchr(dir, '/');
-	*ptr = 0;
+	if ((ptr = strrchr(file, '/'))) {
+		snprintf(dir, sizeof(dir), "%s", file);
+		dir[ptr - file] = 0;
+	} else
+		getcwd(dir, sizeof(dir));
 
-	while (fgets(buf, sizeof (buf), fp)) {
+	while (fgets(buf, sizeof(buf), fp)) {
 		if (!(ptr = strstrip(buf)) || !*ptr || *ptr == '#')
 			continue;
 		else if (*ptr != '/') {
@@ -254,7 +257,6 @@ int playlist_load_m3u(PlayList *pl, const char *file, int append) {
 	}
 
 	fclose(fp);
-	free(dir);
 
 	tmp = evas_list_reverse(tmp);
 	
@@ -278,15 +280,15 @@ int playlist_load_m3u(PlayList *pl, const char *file, int append) {
  * @return Boolean success or failure.
  */
 int playlist_load_any(PlayList *pl, const char *path, int append) {
-	char *ptr = NULL;
+	int len;
 	
 	if (is_dir(path))
 		return playlist_load_dir(pl, path, append);
 
 	/* FIXME we check for m3u using the suffix :/ */
-	ptr = (char *) &path[strlen(path) - 3];
-
-	if (!strcasecmp(ptr, "m3u"))
+	len = strlen(path) - 3;
+	
+	if (len >= 0 && !strcasecmp(&path[len], "m3u"))
 		return playlist_load_m3u(pl, path, append);
 	else
 		return playlist_load_file(pl, path, append);
