@@ -17,4 +17,4 @@ etox_style_style.h
 
 libetox_style_la_LIBADD       = @evas_libs@ @ecore_libs@
 libetox_style_la_DEPENDENCIES = $(top_builddir)/config.h
-libetox_style_la_LDFLAGS      = -version-info 0:9:0 -static
+libetox_style_la_LDFLAGS      = -version-info 0:9:0
