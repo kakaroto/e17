@@ -39,13 +39,18 @@ struct Ewl_Embed
 	void           *evas_window; /**< The window holding the evas. */
 
 	Evas_Object    *smart; /**< Object to manipulate Ewl_Embed from evas */
-	Ecore_List       *tab_order; /**< Order of widgets to send focus on tab */
+	Evas_Object    *ev_clip; /**< Clip box to receive evas events */
+	Ecore_List     *tab_order; /**< Order of widgets to send focus on tab */
+
+	int             max_layer; /**< The maximum widget layer used */
 };
 
 Ewl_Widget     *ewl_embed_new(void);
 int             ewl_embed_init(Ewl_Embed * win);
 Evas_Object    *ewl_embed_set_evas(Ewl_Embed *emb, Evas *evas,
 				   void *evas_window);
+int             ewl_embed_get_max_layer(Ewl_Embed *embed);
+void            ewl_embed_set_max_layer(Ewl_Embed *embed, int layer);
 void            ewl_embed_feed_key_down(Ewl_Embed *embed, char *keyname,
 					unsigned int modifiers);
 void            ewl_embed_feed_key_up(Ewl_Embed *embed, char *keyname,
@@ -72,6 +77,7 @@ void            ewl_embed_coord_to_screen(Ewl_Embed *e, int xx, int yy,
  */
 void ewl_embed_realize_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_embed_unrealize_cb(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_embed_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data);
 void ewl_embed_destroy_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 
 /**

@@ -2,6 +2,11 @@
 #include <Ecore_Evas.h>
 #include <Ewl.h>
 
+void print_cb(Ewl_Widget *w, void *ev_data, void *user_data)
+{
+	printf("jack shit\n");
+}
+
 void move_embed_contents_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 {
 	ewl_object_request_geometry(EWL_OBJECT(user_data), CURRENT_X(w),
@@ -32,6 +37,7 @@ int main(int argc, char **argv)
 
 	button = ewl_button_new("This button does jack shit");
 	ewl_container_append_child(EWL_CONTAINER(embed), button);
+	ewl_callback_append(button, EWL_CALLBACK_CLICKED, print_cb, button);
 	ewl_widget_show(button);
 
 	ewl_callback_append(embed, EWL_CALLBACK_CONFIGURE,

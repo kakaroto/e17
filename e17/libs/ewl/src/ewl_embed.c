@@ -99,8 +99,10 @@ int ewl_embed_init(Ewl_Embed * w)
 			     ewl_embed_unrealize_cb, NULL);
 	ewl_callback_prepend(EWL_WIDGET(w), EWL_CALLBACK_DESTROY,
 			     ewl_embed_destroy_cb, NULL);
+	ewl_callback_prepend(EWL_WIDGET(w), EWL_CALLBACK_CONFIGURE,
+			     ewl_embed_configure_cb, NULL);
 
-	LAYER(w) = -1000;
+	w->max_layer = LAYER(w) = -1000;
 
 	ecore_list_append(ewl_embed_list, w);
 
@@ -169,6 +171,23 @@ ewl_embed_set_evas(Ewl_Embed *emb, Evas *evas, void *evas_window)
 	}
 
 	DRETURN_PTR(emb->smart, DLEVEL_STABLE);
+}
+
+int ewl_embed_get_max_layer(Ewl_Embed *embed)
+{
+	int layer;
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	layer = embed->max_layer;
+
+	DRETURN_INT(layer, DLEVEL_STABLE);
+}
+
+void ewl_embed_set_max_layer(Ewl_Embed *embed, int layer)
+{
+	if (REALIZED(embed))
+		evas_object_layer_set(embed->ev_clip, layer);
+	embed->max_layer = layer;
 }
 
 /**
@@ -661,39 +680,49 @@ void ewl_embed_realize_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 	Ewl_Embed *emb = EWL_EMBED(w);
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	if (w->fx_clip_box) {
+	emb->ev_clip = evas_object_rectangle_add(emb->evas);
+
+	if (w->fx_clip_box)
 		evas_object_clip_set(emb->smart, w->fx_clip_box);
-		evas_object_repeat_events_set(w->fx_clip_box, FALSE);
+
+	if (emb->ev_clip) {
+		/*
+		if (w->fx_clip_box)
+			evas_object_clip_set(w->fx_clip_box, emb->ev_clip);
+			*/
+		evas_object_color_set(emb->ev_clip, 0, 0, 0, 0);
+		evas_object_show(emb->ev_clip);
+		evas_object_repeat_events_set(emb->ev_clip, FALSE);
 
 		/*
 		 * Catch mouse events processed through the evas
 		 */
-		evas_object_event_callback_add(w->fx_clip_box,
+		evas_object_event_callback_add(emb->ev_clip,
 				EVAS_CALLBACK_MOUSE_IN,
 				ewl_embed_evas_mouse_in_cb, emb);
-		evas_object_event_callback_add(w->fx_clip_box,
+		evas_object_event_callback_add(emb->ev_clip,
 				EVAS_CALLBACK_MOUSE_OUT,
 				ewl_embed_evas_mouse_out_cb, emb);
-		evas_object_event_callback_add(w->fx_clip_box,
+		evas_object_event_callback_add(emb->ev_clip,
 				EVAS_CALLBACK_MOUSE_DOWN,
 				ewl_embed_evas_mouse_down_cb, emb);
-		evas_object_event_callback_add(w->fx_clip_box,
+		evas_object_event_callback_add(emb->ev_clip,
 				EVAS_CALLBACK_MOUSE_UP,
 				ewl_embed_evas_mouse_up_cb, emb);
-		evas_object_event_callback_add(w->fx_clip_box,
+		evas_object_event_callback_add(emb->ev_clip,
 				EVAS_CALLBACK_MOUSE_MOVE,
 				ewl_embed_evas_mouse_move_cb, emb);
-		evas_object_event_callback_add(w->fx_clip_box,
+		evas_object_event_callback_add(emb->ev_clip,
 				EVAS_CALLBACK_MOUSE_WHEEL,
 				ewl_embed_evas_mouse_wheel_cb, emb);
 
 		/*
 		 * Catch key events processed through the evas
 		 */
-		evas_object_event_callback_add(w->fx_clip_box,
+		evas_object_event_callback_add(emb->ev_clip,
 				EVAS_CALLBACK_KEY_DOWN,
 				ewl_embed_evas_key_down_cb, emb);
-		evas_object_event_callback_add(w->fx_clip_box,
+		evas_object_event_callback_add(emb->ev_clip,
 				EVAS_CALLBACK_KEY_UP, ewl_embed_evas_key_up_cb,
 				emb);
 	}
@@ -709,6 +738,23 @@ void ewl_embed_unrealize_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 		evas_object_smart_data_set(EWL_EMBED(w)->smart, NULL);
 		ewl_evas_object_destroy(EWL_EMBED(w)->smart);
 		EWL_EMBED(w)->smart = NULL;
+	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void ewl_embed_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+{
+	Ewl_Embed      *emb = EWL_EMBED(w);
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+
+	if (emb->ev_clip) {
+		evas_object_move(emb->ev_clip, (Evas_Coord)(CURRENT_X(w)),
+				 (Evas_Coord)(CURRENT_Y(w)));
+		evas_object_resize(emb->ev_clip, (Evas_Coord)(CURRENT_W(w)),
+				   (Evas_Coord)(CURRENT_H(w)));
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -923,7 +969,7 @@ ewl_embed_evas_mouse_out_cb(void *data, Evas *e, Evas_Object *obj,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	embed = evas_object_smart_data_get(obj);
+	embed = data;
 	ewl_embed_feed_mouse_out(embed, ev->canvas.x, ev->canvas.y,
 				 ewl_ev_get_modifiers());
 
@@ -939,7 +985,7 @@ ewl_embed_evas_mouse_down_cb(void *data, Evas *e, Evas_Object *obj,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	embed = evas_object_smart_data_get(obj);
+	embed = data;
 	ewl_embed_feed_mouse_down(embed, ev->button, 1, ev->canvas.x,
 				  ev->canvas.y, ewl_ev_get_modifiers());
 
@@ -955,7 +1001,7 @@ ewl_embed_evas_mouse_up_cb(void *data, Evas *e, Evas_Object *obj,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	embed = evas_object_smart_data_get(obj);
+	embed = data;
 	ewl_embed_feed_mouse_up(embed, ev->button, ev->canvas.x,
 				  ev->canvas.y, ewl_ev_get_modifiers());
 
@@ -971,7 +1017,7 @@ ewl_embed_evas_mouse_move_cb(void *data, Evas *e, Evas_Object *obj,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	embed = evas_object_smart_data_get(obj);
+	embed = data;
 	ewl_embed_feed_mouse_move(embed, ev->canvas.x, ev->canvas.y,
 				  ewl_ev_get_modifiers());
 
@@ -996,7 +1042,7 @@ ewl_embed_evas_key_down_cb(void *data, Evas *e, Evas_Object *obj,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	embed = evas_object_smart_data_get(obj);
+	embed = data;
 	ewl_embed_feed_key_down(embed, ev->keyname, ewl_ev_get_modifiers());
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -1011,7 +1057,7 @@ ewl_embed_evas_key_up_cb(void *data, Evas *e, Evas_Object *obj,
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	embed = evas_object_smart_data_get(obj);
+	embed = data;
 	ewl_embed_feed_key_up(embed, ev->keyname, ewl_ev_get_modifiers());
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);

@@ -1009,9 +1009,13 @@ void ewl_widget_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 		evas_object_pass_events_set(w->fx_clip_box, TRUE);
 	}
 
-	if (w->fx_clip_box)
-		evas_object_layer_set(w->fx_clip_box,
-				ewl_widget_get_layer_sum(w));
+	if (w->fx_clip_box) {
+		int sum;
+		sum = ewl_widget_get_layer_sum(w);
+		if (sum > ewl_embed_get_max_layer(emb))
+			ewl_embed_set_max_layer(emb, sum);
+		evas_object_layer_set(w->fx_clip_box, sum);
+	}
 
 	pc = EWL_CONTAINER(w->parent);
 
