@@ -28,13 +28,45 @@ _eapp_edit_save(Ewl_Widget *w, void *ev, void *data) {
 
   if (icon_file) {
     Engrave_File *eet;
-    Engrave_Group *icon;
-/*
-    eet = engrave_load_eet(file);
+    Engrave_Image *image;
+    Engrave_Group *grp;
+    Engrave_Part *part;
+    Engrave_Part_State *ps;
+    char *idir, *ifile;
+
+    ifile = strrchr(icon_file, '/');
+    *ifile = '\0';
+    idir = strdup(icon_file);
+
+    *ifile = '/';
+    ifile ++;
+
+    eet = engrave_file_new();
+    engrave_file_image_dir_set(eet, idir);
+    engrave_file_font_dir_set(eet, idir);
+    image = engrave_image_new(ifile, ENGRAVE_IMAGE_TYPE_COMP, 0);
+    engrave_file_image_add(eet, image);
+
+    grp = engrave_group_new();
+    engrave_group_name_set(grp, "icon");
+    engrave_group_max_size_set(grp, 48, 48);
+    engrave_file_group_add(eet, grp);
+
+    part = engrave_part_new(ENGRAVE_PART_TYPE_IMAGE);
+    engrave_part_name_set(part, "image");
+    engrave_part_mouse_events_set(part, 0);
+    engrave_group_part_add(grp, part);
+
+    ps = engrave_part_state_new();
+    engrave_part_state_name_set(ps, "default", 0.0);
+    engrave_part_state_aspect_set(ps, 1.0, 1.0);
+    engrave_part_state_image_normal_set(ps, image);
+    engrave_part_state_add(part, ps);
 
     engrave_eet_output(eet, file);
-*/  
-    printf("FEEBLY waiting for dj2 before we write data to the .eapp\n");
+    engrave_file_free(eet);
+
+    free(idir);
   } 
   
   /* if the file does not exist it should do now... */
