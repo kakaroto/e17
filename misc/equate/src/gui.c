@@ -150,7 +150,13 @@ do_key (void *ev_data, int action)
   if (ev->key_compose)
     E (6, "Key pressed: %s\n", ev->key_compose);
 
-  int bc = sizeof (buttons) / sizeof (equate_button);
+  int bc;
+  if (buttons == sci_buttons)
+    bc = sizeof (sci_buttons);
+  else
+    bc = sizeof (basic_buttons);
+  bc /= sizeof (equate_button);
+
   equate_button *but = buttons;
 
   while (bc-- > 0)
