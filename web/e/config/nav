@@ -8,6 +8,10 @@
   <td><a href="news.html">News</a></td>
 </tr>
 <tr>
+  <td valign="middle"><a href="docs.html"><img border=0 src="img/nav_docs.gif" alt="Documentation"></a></td>
+  <td><a href="docs.html">Documentation</a></td>
+</tr>
+<tr>
   <td valign="middle"><a href="faq.html"><img border=0 src="img/nav_info.gif" alt="Info + FAQs"></a></td>
   <td><a href="faq.html">FAQs</a></td>
 </tr>
