@@ -111,9 +111,9 @@ feh_event_handle_ButtonPress(XEvent * ev)
                feh_menu_init_single_win();
             feh_menu_show_at_xy(menu_single_win, winwid, x, y);
          }
-         else if(winwid->type == WIN_TYPE_THUMBNAIL)
+         else if (winwid->type == WIN_TYPE_THUMBNAIL)
          {
-            if(!menu_thumbnail_win)
+            if (!menu_thumbnail_win)
                feh_menu_init_thumbnail_win();
             feh_menu_show_at_xy(menu_thumbnail_win, winwid, x, y);
          }
@@ -475,12 +475,13 @@ feh_event_handle_MotionNotify(XEvent * ev)
          winwid->im_y =
             (winwid->h / 2) - (winwid->im_click_offset_y * winwid->zoom);
 
+         
          winwidget_render_image(winwid, 0, 0);
       }
    }
    else if (opt.mode == MODE_PAN)
    {
-      int x, xx, y, yy, orig_x, orig_y;
+      int orig_x, orig_y;
 
       while (XCheckTypedWindowEvent
              (disp, ev->xmotion.window, MotionNotify, ev));
@@ -491,27 +492,10 @@ feh_event_handle_MotionNotify(XEvent * ev)
          orig_x = winwid->im_x;
          orig_y = winwid->im_y;
 
-         x = ev->xmotion.x - winwid->click_offset_x;
-         y = ev->xmotion.y - winwid->click_offset_y;
+         winwid->im_x = ev->xmotion.x - winwid->click_offset_x;
+         winwid->im_y = ev->xmotion.y - winwid->click_offset_y;
 
-         xx = winwid->w - (winwid->im_w * winwid->zoom);
-         yy = winwid->h - (winwid->im_h * winwid->zoom);
-
-         /* stick to left/right hand side */
-         if ((x < 10) && (x > -10))
-            winwid->im_x = 0;
-         else if (xx && ((x < xx + 10) && (x > xx - 10)))
-            winwid->im_x = xx;
-         else
-            winwid->im_x = x;
-
-         /* stick to top/bottom */
-         if ((y < 10) && (y > -10))
-            winwid->im_y = 0;
-         else if (yy && ((y < yy + 10) && (y > yy - 10)))
-            winwid->im_y = yy;
-         else
-            winwid->im_y = y;
+         winwidget_sanitise_offsets(winwid);
 
          if ((winwid->im_x != orig_x) || (winwid->im_y != orig_y))
             winwidget_render_image(winwid, 0, 0);
