@@ -498,6 +498,9 @@ timer_val_compare(void *data)
 	} else {
 		p->txt_title = get_title_by_note_struct(p);
 	}
+
+	update_enote_title (p->edje,p->txt_title);
+	
 	return (1);
 }
 
