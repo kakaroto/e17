@@ -162,3 +162,4 @@ int main ()
   AC_SUBST(ESD_LIBS)
   rm -f conf.esdtest
 ])
+AC_DEFUN([AM_GNU_GETTEXT_VERSION], [])

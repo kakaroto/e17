@@ -49,11 +49,11 @@ if(($ARGV[0] =~ /com/) || ($ARGV[0] =~ /ci/)) {
 	@ARGV2 = @ARGV;
 	$ARGV2[0] = "update";
 
-	print "Force updating ChangeLog and removing timestamp.h\n";
+	print "Force updating ChangeLog and removing src/timestamp.h\n";
 	unlink "ChangeLog";
 	system("cvs -z3 update ChangeLog");
-	unlink "timestamp.h";
-	system("cvs -z3 update timestamp.h");
+	unlink "src/timestamp.h";
+	system("cvs -z3 update src/timestamp.h");
 
 	print "Updating the files you are committing.\n";
 	system("cvs -z3 @ARGV2 2>&1 |tee errors");
@@ -71,7 +71,7 @@ if(($ARGV[0] =~ /com/) || ($ARGV[0] =~ /ci/)) {
 	unlink "errors" if (-f "errors");
 
 
-	print "Creating new timestamp.h\n";
+	print "Creating new src/timestamp.h\n";
 	open TS, ">timestamp.h";
 	print TS "#define E_CHECKOUT_DATE \"\$Date\$\"\n";
 	close TS;
@@ -94,7 +94,7 @@ if(($ARGV[0] =~ /com/) || ($ARGV[0] =~ /ci/)) {
 
 		$found = 0;
 		foreach(@ARGV) {
-			if(/timestamp\.h$/) {
+			if(/src\/timestamp\.h$/) {
 				$found = 1;
 			}
 		}

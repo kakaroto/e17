@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.5\n"
-"POT-Creation-Date: 2003-04-02 18:08-0500\n"
+"POT-Creation-Date: 2003-04-06 20:36-0400\n"
 "PO-Revision-Date: 2000-03-07 12:08+0100\n"
 "Last-Translator: Terje Røsten <terjeros@phys.ntnu.no>\n"
 "Language-Team: Norwegian <no@li.org>\n"
@@ -1310,7 +1310,7 @@ msgstr "Start Enlightenment på nytt"
 
 #: src/main.c:92 src/memory.c:193 src/memory.c:271 src/memory.c:290
 #: src/memory.c:367 src/memory.c:384 src/setup.c:293 src/setup.c:326
-#: src/setup.c:338 src/setup.c:400
+#: src/setup.c:338 src/setup.c:387
 msgid "Quit Enlightenment"
 msgstr "Avslutt Enlightenment"
 
@@ -2790,15 +2790,15 @@ msgstr ""
 "Dette er uhyre uvanlig. Kan ikke fortsette.\n"
 "Avslutter.\n"
 
-#: src/setup.c:399
+#: src/setup.c:386
 msgid "X server version error"
 msgstr "Feil ved versjonen til X serveren"
 
-#: src/setup.c:399
+#: src/setup.c:386
 msgid "Ignore this error"
 msgstr "Overse denne feilen"
 
-#: src/setup.c:402
+#: src/setup.c:389
 #, c-format
 msgid ""
 "WARNING:\n"
@@ -2814,7 +2814,7 @@ msgstr ""
 "Forfatteren av Enlightenment kjenner ikke til X Servere\n"
 "med versjone høyere enn X 11.\n"
 
-#: src/setup.c:637
+#: src/setup.c:624
 #, c-format
 msgid ""
 "The directory %s is apparently not a directory\n"
@@ -2825,7 +2825,7 @@ msgstr ""
 "Dette er fatalt.\n"
 "Vær vennlig og fjern denne filen.\n"
 
-#: src/setup.c:644
+#: src/setup.c:631
 #, c-format
 msgid ""
 "Do not have execute access to %s\n"
@@ -2838,7 +2838,7 @@ msgstr ""
 "Vær vennlig og sjekk eierskap og rettigheter til \n"
 "denne katalogen og gjør nødvendige endringer.\n"
 
-#: src/setup.c:653
+#: src/setup.c:640
 #, c-format
 msgid ""
 "Do not have read access to %s\n"
@@ -2851,7 +2851,7 @@ msgstr ""
 "Vær vennlig og sjekk eierskap og rettigheter til \n"
 "denne katalogen og gjør nødvendige endringer.\n"
 
-#: src/setup.c:661
+#: src/setup.c:648
 #, c-format
 msgid ""
 "Do not have write access to %s\n"

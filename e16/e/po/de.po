@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.5\n"
-"POT-Creation-Date: 2003-04-02 18:08-0500\n"
+"POT-Creation-Date: 2003-04-06 20:36-0400\n"
 "PO-Revision-Date: 2000-03-29 21:12+0200\n"
 "Last-Translator: Matthias Warkus <mawa@iname.com>\n"
 "Language-Team: Enlightenment l10n <e-develop@enlightenment.org>\n"
@@ -1497,7 +1497,7 @@ msgstr "Enlightenment neu starten"
 # src/setup.c:341 src/setup.c:403
 #: src/main.c:92 src/memory.c:193 src/memory.c:271 src/memory.c:290
 #: src/memory.c:367 src/memory.c:384 src/setup.c:293 src/setup.c:326
-#: src/setup.c:338 src/setup.c:400
+#: src/setup.c:338 src/setup.c:387
 msgid "Quit Enlightenment"
 msgstr "Enlightenment verlassen"
 
@@ -3239,17 +3239,17 @@ msgstr ""
 "Breche ab.\n"
 
 # src/setup.c:402
-#: src/setup.c:399
+#: src/setup.c:386
 msgid "X server version error"
 msgstr "X-Server-Versionsfehler"
 
 # src/setup.c:403
-#: src/setup.c:399
+#: src/setup.c:386
 msgid "Ignore this error"
 msgstr "Ignorieren Sie diesen Fehler"
 
 # src/setup.c:404
-#: src/setup.c:402
+#: src/setup.c:389
 #, c-format
 msgid ""
 "WARNING:\n"
@@ -3267,7 +3267,7 @@ msgstr ""
 "dem er auch nie Zugriff hatte.\n"
 
 # src/setup.c:633
-#: src/setup.c:637
+#: src/setup.c:624
 #, c-format
 msgid ""
 "The directory %s is apparently not a directory\n"
@@ -3279,7 +3279,7 @@ msgstr ""
 "Bitte entfernen Sie diese Datei.\n"
 
 # src/setup.c:639
-#: src/setup.c:644
+#: src/setup.c:631
 #, c-format
 msgid ""
 "Do not have execute access to %s\n"
@@ -3293,7 +3293,7 @@ msgstr ""
 "Verzeichnisses und berichtigen Sie das Problem.\n"
 
 # src/setup.c:647
-#: src/setup.c:653
+#: src/setup.c:640
 #, c-format
 msgid ""
 "Do not have read access to %s\n"
@@ -3307,7 +3307,7 @@ msgstr ""
 "Verzeichnisses und berichtigen Sie das Problem.\n"
 
 # src/setup.c:655
-#: src/setup.c:661
+#: src/setup.c:648
 #, c-format
 msgid ""
 "Do not have write access to %s\n"

@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.5\n"
-"POT-Creation-Date: 2003-04-02 18:08-0500\n"
+"POT-Creation-Date: 2003-04-06 20:36-0400\n"
 "PO-Revision-Date: 2000-07-30 22:39+0200\n"
 "Last-Translator: Fatih Demir <kabalak@gmx.net>\n"
 "Language-Team: Turkish <tr@li.org>\n"
@@ -1304,7 +1304,7 @@ msgstr "Enlightenment'i yeniden baþlat"
 
 #: src/main.c:92 src/memory.c:193 src/memory.c:271 src/memory.c:290
 #: src/memory.c:367 src/memory.c:384 src/setup.c:293 src/setup.c:326
-#: src/setup.c:338 src/setup.c:400
+#: src/setup.c:338 src/setup.c:387
 msgid "Quit Enlightenment"
 msgstr "Enlightenment'ten çýk"
 
@@ -2794,15 +2794,15 @@ msgstr ""
 "Bu anormaldir . Devam edecek durum kalmadý .\n"
 "Bitiriyorum .\n"
 
-#: src/setup.c:399
+#: src/setup.c:386
 msgid "X server version error"
 msgstr "X sunucu nesil hatasý"
 
-#: src/setup.c:399
+#: src/setup.c:386
 msgid "Ignore this error"
 msgstr "Bu hatayý gözardý et"
 
-#: src/setup.c:402
+#: src/setup.c:389
 #, c-format
 msgid ""
 "WARNING:\n"
@@ -2819,7 +2819,7 @@ msgstr ""
 "daha yeniyse , o zaman Enlightenment'in yazarlarýnýn\n"
 "hiç duymadýðý yada eriþemediði bir tanesi idir .\n"
 
-#: src/setup.c:637
+#: src/setup.c:624
 #, c-format
 msgid ""
 "The directory %s is apparently not a directory\n"
@@ -2830,7 +2830,7 @@ msgstr ""
 "Bu aðýr bir hataya yol açtý .\n"
 "Lütfen o dosyayý sil yada baþka bir yere taþý .\n"
 
-#: src/setup.c:644
+#: src/setup.c:631
 #, c-format
 msgid ""
 "Do not have execute access to %s\n"
@@ -2843,7 +2843,7 @@ msgstr ""
 "Lütfen bu dizinin sahipliðini ve ulaþým\n"
 "haklarýný bir gözden geçir .\n"
 
-#: src/setup.c:653
+#: src/setup.c:640
 #, c-format
 msgid ""
 "Do not have read access to %s\n"
@@ -2856,7 +2856,7 @@ msgstr ""
 "Lütfen bu dizinin sahipliðini ve ulaþým\n"
 "haklarýný bir gözden geçir .\n"
 
-#: src/setup.c:661
+#: src/setup.c:648
 #, c-format
 msgid ""
 "Do not have write access to %s\n"

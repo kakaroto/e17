@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.5\n"
-"POT-Creation-Date: 2003-04-02 18:08-0500\n"
+"POT-Creation-Date: 2003-04-06 20:36-0400\n"
 "PO-Revision-Date: 2000-04-10 16:10:30+0900\n"
 "Last-Translator: Sung-Hyun Nam <namsh@kldp.org>\n"
 "Language-Team: Korean <ko@li.org>\n"
@@ -1293,7 +1293,7 @@ msgstr "인라이튼먼트 재시작"
 
 #: src/main.c:92 src/memory.c:193 src/memory.c:271 src/memory.c:290
 #: src/memory.c:367 src/memory.c:384 src/setup.c:293 src/setup.c:326
-#: src/setup.c:338 src/setup.c:400
+#: src/setup.c:338 src/setup.c:387
 msgid "Quit Enlightenment"
 msgstr "인라이튼먼트 종료"
 
@@ -2783,15 +2783,15 @@ msgstr ""
 "이상한 일이로군요. 계속 진행할 수 없습니다.\n"
 "종료.\n"
 
-#: src/setup.c:399
+#: src/setup.c:386
 msgid "X server version error"
 msgstr "X 서버 버전 에러"
 
-#: src/setup.c:399
+#: src/setup.c:386
 msgid "Ignore this error"
 msgstr "이 에러 무시"
 
-#: src/setup.c:402
+#: src/setup.c:389
 #, c-format
 msgid ""
 "WARNING:\n"
@@ -2808,7 +2808,7 @@ msgstr ""
 "인라이튼먼트의 저자가 들어보지도 못했거나 사용해 보지\n"
 "못한 것임에 분명합니다.\n"
 
-#: src/setup.c:637
+#: src/setup.c:624
 #, c-format
 msgid ""
 "The directory %s is apparently not a directory\n"
@@ -2819,7 +2819,7 @@ msgstr ""
 "이것은 심각한 상황입니다.\n"
 "이 파일을 삭제하십시오\n"
 
-#: src/setup.c:644
+#: src/setup.c:631
 #, c-format
 msgid ""
 "Do not have execute access to %s\n"
@@ -2832,7 +2832,7 @@ msgstr ""
 "이 디렉토리에 대한 소유자 및 허용권한을 확인하시고\n"
 "이 상황을 고치도록 하십시오.\n"
 
-#: src/setup.c:653
+#: src/setup.c:640
 #, c-format
 msgid ""
 "Do not have read access to %s\n"
@@ -2845,7 +2845,7 @@ msgstr ""
 "이 디렉토리에 대한 소유자 및 허용권한을 확인하시고\n"
 "이 상황을 고치도록 하십시오.\n"
 
-#: src/setup.c:661
+#: src/setup.c:648
 #, c-format
 msgid ""
 "Do not have write access to %s\n"

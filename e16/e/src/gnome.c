@@ -767,6 +767,19 @@ GNOME_SetHints(void)
    GNOME_SetDeskNames();
    GNOME_SetAreaCount();
    GNOME_SetWMCheck();
+   {
+      Atom                atom_set;
+      CARD32              val;
+
+      atom_set = XInternAtom(disp, "_WIN_DESKTOP_BUTTON_PROXY", False);
+      bpress_win = ECreateWindow(root.win, -80, -80, 24, 24, 0);
+      val = bpress_win;
+      XChangeProperty(disp, root.win, atom_set, XA_CARDINAL, 32,
+                      PropModeReplace, (unsigned char *)&val, 1);
+      XChangeProperty(disp, bpress_win, atom_set, XA_CARDINAL, 32,
+                      PropModeReplace, (unsigned char *)&val, 1);
+   }
+
    EDBUG_RETURN_;
 }
 

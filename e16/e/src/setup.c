@@ -378,19 +378,6 @@ SetupX()
    mode.xselect = 0;
    /* Init XKB to pick up release of alt modifier */
    WarpFocusInitEvents();
-   {
-      Atom                atom_set;
-      CARD32              val;
-
-      atom_set = XInternAtom(disp, "_WIN_DESKTOP_BUTTON_PROXY", False);
-      bpress_win = ECreateWindow(root.win, -80, -80, 24, 24, 0);
-      val = bpress_win;
-      XChangeProperty(disp, root.win, atom_set, XA_CARDINAL, 32,
-                      PropModeReplace, (unsigned char *)&val, 1);
-      XChangeProperty(disp, bpress_win, atom_set, XA_CARDINAL, 32,
-                      PropModeReplace, (unsigned char *)&val, 1);
-   }
-
    XSync(disp, False);
 
    /* warn, if necessary about X version problems */

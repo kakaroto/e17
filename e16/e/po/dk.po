@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.5\n"
-"POT-Creation-Date: 2003-04-02 18:08-0500\n"
+"POT-Creation-Date: 2003-04-06 20:36-0400\n"
 "PO-Revision-Date: 2000-03-02 16:23+0100\n"
 "Last-Translator: Birger Langkjer <birger.langkjer@image.dk>\n"
 "Language-Team: Dansk/Danish <sslug-locale@sslug.dk>\n"
@@ -1113,7 +1113,7 @@ msgstr "Genstart Enlightenment"
 
 #: src/main.c:92 src/memory.c:193 src/memory.c:271 src/memory.c:290
 #: src/memory.c:367 src/memory.c:384 src/setup.c:293 src/setup.c:326
-#: src/setup.c:338 src/setup.c:400
+#: src/setup.c:338 src/setup.c:387
 msgid "Quit Enlightenment"
 msgstr "Afslut Enlightenment"
 
@@ -2420,15 +2420,15 @@ msgstr ""
 "Det er usædvanligt. Kan ikke fortsætte.\n"
 "Afslutter.\n"
 
-#: src/setup.c:399
+#: src/setup.c:386
 msgid "X server version error"
 msgstr "X-tjener versionsfejl"
 
-#: src/setup.c:399
+#: src/setup.c:386
 msgid "Ignore this error"
 msgstr "Ignorér denne fejl"
 
-#: src/setup.c:402
+#: src/setup.c:389
 #, c-format
 msgid ""
 "WARNING:\n"
@@ -2445,7 +2445,7 @@ msgstr ""
 "tjener enten én som Enlightenments forfatter ikke har adgang\n"
 "til eller har hørt om.\n"
 
-#: src/setup.c:637
+#: src/setup.c:624
 #, c-format
 msgid ""
 "The directory %s is apparently not a directory\n"
@@ -2456,7 +2456,7 @@ msgstr ""
 "Det er en fatal omstændighed.\n"
 "Fjern venligst denne fil.\n"
 
-#: src/setup.c:644
+#: src/setup.c:631
 #, c-format
 msgid ""
 "Do not have execute access to %s\n"
@@ -2465,7 +2465,7 @@ msgid ""
 "directory and take steps to rectify this.\n"
 msgstr ""
 
-#: src/setup.c:653
+#: src/setup.c:640
 #, c-format
 msgid ""
 "Do not have read access to %s\n"
@@ -2474,7 +2474,7 @@ msgid ""
 "directory and take steps to rectify this.\n"
 msgstr ""
 
-#: src/setup.c:661
+#: src/setup.c:648
 #, c-format
 msgid ""
 "Do not have write access to %s\n"

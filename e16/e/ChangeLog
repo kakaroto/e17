@@ -1796,3 +1796,10 @@ Thu Apr  3 11:32:31 EST 2003
 
 Patch from Kim Woelders <kim@woelders.dk> to properly set
 _NET_DESKTOP_GEOMETRY on desktop resize.
+
+-------------------------------------------------------------------------------
+
+Sun Apr  6 20:53:20 EDT 2003
+(KainX)
+
+Latest patch for EWMH from Kim.

@@ -49,6 +49,7 @@ echo "Generating configuration files for Enlightenment, please wait...."
 #echo " gettextize -f"
 #gettextize -f
 echo "  setup-gettext.sh"
+grep 'AM_GNU_GETTEXT_VERSION' configure.in >/dev/null 2>&1 || sh ./setup-gettext.sh --install
 sh ./setup-gettext.sh
 echo "  aclocal $ACLOCAL_FLAGS"
 aclocal $ACLOCAL_FLAGS

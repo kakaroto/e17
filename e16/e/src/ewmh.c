@@ -252,6 +252,7 @@ EWMH_Init(void)
    win = ECreateWindow(root.win, -200, -200, 5, 5, 0);
    _ATOM_SET_WINDOW(_NET_SUPPORTING_WM_CHECK, root.win, &win, 1);
    _ATOM_SET_WINDOW(_NET_SUPPORTING_WM_CHECK, win, &win, 1);
+   _ATOM_SET_STRING(_NET_WM_NAME, win, wm_name);
 
    EWMH_SetDesktopCount();
    EWMH_SetDesktopNames();
@@ -595,16 +596,23 @@ EWMH_GetWindowType(EWin * ewin)
         ewin->skipwinlist = 1;
         ewin->focusclick = 1;
         ewin->skipfocus = 1;
+        ewin->never_use_area = 1;
 #if 0                           /* I suggest to configure it explicitly if the behavior is desired */
         ewin->layer = 5;
 #endif
+     }
+   else if (atom == _NET_WM_WINDOW_TYPE_UTILITY)
+     {
+        /* Epplets hit this */
+        ewin->skiptask = 1;
+        ewin->skipwinlist = 1;
+        ewin->skipfocus = 1;
+        ewin->never_use_area = 1;
      }
 #if 0
    else if (atom == _NET_WM_WINDOW_TYPE_TOOLBAR)
       else
    if (atom == _NET_WM_WINDOW_TYPE_MENU)
-      else
-   if (atom == _NET_WM_WINDOW_TYPE_UTILITY)
       else
    if (atom == _NET_WM_WINDOW_TYPE_SPLASH)
       else
