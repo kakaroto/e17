@@ -170,13 +170,36 @@ ewl_text_hide(Ewl_Widget * w, void *ev_data, void *user_data)
 static void
 ewl_text_destroy(Ewl_Widget * w, void *ev_data, void *user_data)
 {
+	Ewl_Text * t;
+
+	DENTER_FUNCTION;
 	DCHECK_PARAM_PTR("w", w);
 
-	evas_hide(w->evas, w->fx_clip_box);
-	evas_unset_clip(w->evas, w->fx_clip_box);
-	evas_del_object(w->evas, w->fx_clip_box);
+	t = EWL_TEXT(w);
+
+	if (w->fx_clip_box)
+	  {
+		evas_hide(w->evas, w->fx_clip_box);
+		evas_unset_clip(w->evas, w->fx_clip_box);
+		evas_del_object(w->evas, w->fx_clip_box);
+	  }
+
+	if (t->tox)
+	  {
+		etox_hide(t->tox);
+/*		etox_set_unclip(t->tox); XXX: Not implemented yet */
+		etox_free(t->tox);
+	  }
+
+	IF_FREE(t->text);
+
+	ewl_theme_deinit_widget(w);
+
+	ewl_callback_clear(w);
 
 	FREE(w);
+
+	DLEAVE_FUNCTION;
 }
 
 static void
