@@ -2,7 +2,7 @@
 
 INCLUDES = @evas_cflags@ @imlib_cflags@ @ecore_cflags@
 
-SUBDIRS = container thumb trans draggies entry
+SUBDIRS = container thumb trans draggies entry file_dialog
 
 lib_LTLIBRARIES = libesmart.la
 
@@ -14,12 +14,14 @@ libesmart_la_LIBADD 	= container/libecontainer.la \
 			  thumb/libethumb.la  trans/libesmart_trans.la \
 			  draggies/libecore_evas_dragable.la \
 			  entry/libesmart_text_entry.la \
+			  file_dialog/libesmart_file_dialog.la \
 			  @evas_libs@ @imlib_libs@ @ecore_libs@ -lm
 
 libesmart_la_DEPENDENCIES = container/libecontainer.la \
 			    thumb/libethumb.la \
 			    draggies/libecore_evas_dragable.la \
 			    entry/libesmart_text_entry.la \
+			    file_dialog/libesmart_file_dialog.la \
 			    trans/libesmart_trans.la
 			  
 #libesmart_la_LDFLAGS = -version-info 1:0:0

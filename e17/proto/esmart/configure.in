@@ -127,6 +127,7 @@ src/thumb/Makefile
 src/trans/Makefile
 src/draggies/Makefile
 src/entry/Makefile
+src/file_dialog/Makefile
 ], [
 chmod +x esmart-config
 ]
