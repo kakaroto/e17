@@ -33,6 +33,7 @@ geist_object_init(geist_object * obj)
    obj->part_is_transparent = geist_object_int_part_is_transparent;
    obj->display_props = geist_object_int_display_props;
    obj->resize_event = geist_object_int_resize;
+   obj->get_rendered_area = geist_object_int_get_rendered_area;
    obj->name = estrdup("Untitled Object");
 
    D_RETURN_(5);
@@ -668,36 +669,36 @@ geist_object_update_alignment(geist_object * obj)
         break;
      case ALIGN_HCENTER:
         obj->rendered_x = (obj->w - obj->rendered_w) / 2;
-		
+
         break;
      case ALIGN_VCENTER:
-        obj->rendered_y = (obj->h - obj->rendered_h) / 2;		  
+        obj->rendered_y = (obj->h - obj->rendered_h) / 2;
         break;
      case ALIGN_LEFT:
-		  obj->rendered_x = 0;
+        obj->rendered_x = 0;
         break;
      case ALIGN_RIGHT:
-		  obj->rendered_x = (obj->w - obj->rendered_w);
+        obj->rendered_x = (obj->w - obj->rendered_w);
         break;
      case ALIGN_TOP:
-		  obj->rendered_y = 0;
+        obj->rendered_y = 0;
         break;
      case ALIGN_BOTTOM:
-		  obj->rendered_y = (obj->h - obj->rendered_h);
+        obj->rendered_y = (obj->h - obj->rendered_h);
         break;
      default:
         printf("implement me!\n");
         break;
    }
-	
-	/*move the object up if its box becomes to small*/   
-	if ((obj->y + obj->h) < (obj->y + obj->rendered_y + obj->rendered_h))
-		 obj->rendered_y = (obj->h - obj->rendered_h);
-		  
-	/*move the object left if its box becomes to small*/   
-	if ((obj->x + obj->w) < (obj->x + obj->rendered_x + obj->rendered_w))
-		 obj->rendered_x = (obj->w - obj->rendered_w);
-		  
+
+   /*move the object up if its box becomes to small */
+   if ((obj->y + obj->h) < (obj->y + obj->rendered_y + obj->rendered_h))
+      obj->rendered_y = (obj->h - obj->rendered_h);
+
+   /*move the object left if its box becomes to small */
+   if ((obj->x + obj->w) < (obj->x + obj->rendered_x + obj->rendered_w))
+      obj->rendered_x = (obj->w - obj->rendered_w);
+
    D_RETURN_(5);
 }
 
@@ -711,20 +712,64 @@ geist_object_int_display_props(geist_object * obj)
    return (box);
 }
 
+/* WOOKIE */
+void
+geist_object_get_rendered_area(geist_object * obj, int *x, int *y, int *w,
+                               int *h)
+{
+   D_ENTER(3);
+
+   obj->get_rendered_area(obj, x, y, w, h);
+
+   D_RETURN_(3);
+}
+
+void
+geist_object_int_get_rendered_area(geist_object * obj, int *x, int *y, int *w,
+                                   int *h)
+{
+   D_ENTER(3);
+
+   if (obj->rendered_x > 0)
+      *x = obj->x + obj->rendered_x;
+   else
+      *x = obj->x;
+   if (obj->rendered_y > 0)
+      *y = obj->y + obj->rendered_y;
+   else
+      *y = obj->y;
+
+   if ((obj->x + obj->w) < (*x + obj->rendered_w))
+      *w = (obj->x + obj->w) - *x;
+   else
+      *w = obj->rendered_w;
+   if ((obj->y + obj->h) < (*y + obj->rendered_h))
+      *h = (obj->y + obj->h) - *y;
+   else
+      *h = obj->rendered_h;
+
+   D(5,
+     ("\nobject\t%d,%d %dx%d\nrendered\t%d,%d %dx%d\narea\t%d,%d %dx%d\n\n",
+      obj->x, obj->y, obj->w, obj->h, obj->rendered_x, obj->rendered_y,
+      obj->rendered_w, obj->rendered_h, *x, *y, *w, *h));
+
+   D_RETURN_(3);
+}
+
+
 void
 geist_object_dirty(geist_object * obj)
 {
+   int x, y, w, h;
+
    D_ENTER(5);
 
-   D(5,
-     ("adding dirty rect %d,%d %dx%d\n", obj->x + obj->rendered_x,
-      obj->y + obj->rendered_y, obj->rendered_w, obj->rendered_h));
+   geist_object_get_rendered_area(obj, &x, &y, &w, &h);
+
+   D(5, ("adding dirty rect %d,%d %dx%d\n", x, y, w, h));
 
    GEIST_OBJECT_DOC(obj)->up =
-      imlib_update_append_rect(GEIST_OBJECT_DOC(obj)->up,
-                               obj->x + obj->rendered_x,
-                               obj->y + obj->rendered_y, obj->rendered_w,
-                               obj->rendered_h);
+      imlib_update_append_rect(GEIST_OBJECT_DOC(obj)->up, x, y, w, h);
    geist_object_dirty_selection(obj);
    D_RETURN_(5);
 }
@@ -813,9 +858,9 @@ geist_object_get_type_from_string(char *s)
 }
 
 void
-geist_object_debug_print_values(geist_object *obj)
+geist_object_debug_print_values(geist_object * obj)
 {
-  printf("values: x%d y%d w%d h%d rx%d ry%d rw%d rh%d\n",
-			obj->x, obj->y, obj->w, obj->h, obj->rendered_x, 
-			obj->rendered_y, obj->rendered_w, obj->rendered_h);
-}	  
+   printf("values: x%d y%d w%d h%d rx%d ry%d rw%d rh%d\n", obj->x, obj->y,
+          obj->w, obj->h, obj->rendered_x, obj->rendered_y, obj->rendered_w,
+          obj->rendered_h);
+}

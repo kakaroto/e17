@@ -101,21 +101,18 @@ geist_layer_find_clicked_object(geist_layer * layer, int x, int y)
 {
    geist_list *l;
    geist_object *ret = NULL, *obj;
+   int ox, oy, ow, oh;
 
    D_ENTER(4);
 
    for (l = layer->objects; l; l = l->next)
    {
       obj = ((geist_object *) l->data);
+      geist_object_get_rendered_area(obj, &ox, &oy, &ow, &oh);
       if (geist_object_get_state(obj, VISIBLE)
-          &&
-          (XY_IN_RECT
-           (x, y, obj->x + obj->rendered_x, obj->y + obj->rendered_y,
-            obj->rendered_w, obj->rendered_h)))
+          && (XY_IN_RECT(x, y, ox, oy, ow, oh)))
       {
-         if (!geist_object_part_is_transparent
-             (obj, x - (obj->x + obj->rendered_x),
-              y - (obj->y + obj->rendered_y)))
+         if (!geist_object_part_is_transparent(obj, x - ox, y - oy))
             ret = obj;
       }
    }

@@ -1,3 +1,11 @@
+Sun Aug 20 01:10:36 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* nolan pointed out that the _object_dirty() function dirties the
+	whole rendered image size, even if the object has been resized
+	smaller than the rendered size. This also effects
+	click-selection. Fixed now with a obj->get_rendered_area() member
+	fuction. Thanks nolan :)
+
 Fri Aug 18 00:37:25 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Check for libxml. Test whether it is installed to
