@@ -584,7 +584,8 @@ handle_bit_mouse_down (void *_data, Evas _e, Evas_Object _o, int _b, int _x, int
 
    state = _data;
    selected_state = state;
-   update_visible_selection();
+   if (draft_mode)
+      update_visible_selection();
    update_widget_from_selection();
    gtk_idle_add(view_redraw, NULL);
 }
@@ -1515,6 +1516,47 @@ on_draft_toggled                       (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
 {
    draft_mode = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(togglebutton));
+   if (draft_mode)
+     {
+	evas_show(view_evas, o_handle1);
+	evas_show(view_evas, o_handle2);
+	evas_show(view_evas, o_handle3);
+	evas_show(view_evas, o_handle4);
+	evas_show(view_evas, o_edge1);
+	evas_show(view_evas, o_edge2);
+	evas_show(view_evas, o_edge3);
+	evas_show(view_evas, o_edge4);
+	evas_show(view_evas, o_backing);
+	if (selected_state)
+	  {
+	     evas_show(view_evas, o_select_rect);
+	     evas_show(view_evas, o_select_line1);
+	     evas_show(view_evas, o_select_line2);
+	     evas_show(view_evas, o_select_line3);
+	     evas_show(view_evas, o_select_line4);
+	  }
+     }
+   else
+     {
+	evas_hide(view_evas, o_handle1);
+	evas_hide(view_evas, o_handle2);
+	evas_hide(view_evas, o_handle3);
+	evas_hide(view_evas, o_handle4);
+	evas_hide(view_evas, o_edge1);
+	evas_hide(view_evas, o_edge2);
+	evas_hide(view_evas, o_edge3);
+	evas_hide(view_evas, o_edge4);
+	evas_hide(view_evas, o_backing);
+	if (selected_state)
+	  {
+	     evas_hide(view_evas, o_select_rect);
+	     evas_hide(view_evas, o_select_line1);
+	     evas_hide(view_evas, o_select_line2);
+	     evas_hide(view_evas, o_select_line3);
+	     evas_hide(view_evas, o_select_line4);
+	  }
+     }
+   gtk_idle_add(view_redraw, NULL);
 }
 
 
