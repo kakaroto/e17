@@ -175,24 +175,34 @@ entice_init(Ecore_Evas * ee)
          edje_object_part_swallow(e->edje, "EnticeThumbnailArea",
                                   e->container);
       }
-      if ((str = edje_object_data_get(o, "entice,window,type")))
+      if ((str = edje_object_data_get(o, "entice.window.type")))
       {
+         fprintf(stderr, "%s entice.window.type\n", str);
          if (!strcmp(str, "shaped"))
          {
+            ecore_evas_borderless_set(ee, 1);
             ecore_evas_shaped_set(ee, 1);
          }
          else if (!strcmp(str, "trans"))
          {
-            Evas_Object *trans = NULL;
+            o = esmart_trans_x11_new(ecore_evas_get(ee));
+            evas_object_layer_set(o, 0);
+            evas_object_move(o, 0, 0);
+            evas_object_resize(o, w, h);
+            evas_object_name_set(o, "trans");
 
-            trans = esmart_trans_x11_new(ecore_evas_get(ee));
-            evas_object_layer_set(trans, 0);
-            evas_object_move(trans, 0, 0);
-            evas_object_resize(trans, w, h);
-            evas_object_name_set(trans, "trans");
-
-            esmart_trans_x11_freshen(trans, x, y, w, h);
-            evas_object_show(trans);
+            esmart_trans_x11_freshen(o, x, y, w, h);
+            evas_object_show(o);
+            ecore_evas_borderless_set(ee, 1);
+         }
+         else
+         {
+            o = evas_object_rectangle_add(ecore_evas_get(ee));
+            evas_object_color_set(o, 255, 255, 255, 255);
+            evas_object_resize(o, w, h);
+            evas_object_move(o, 0, 0);
+            evas_object_layer_set(o, 0);
+            evas_object_show(o);
          }
       }
    }
@@ -382,12 +392,15 @@ entice_file_add(const char *file)
          if ((o = e_thumb_new(ecore_evas_get(entice->ee), buf)))
          {
 
+            evas_object_layer_set(o,
+                                  evas_object_layer_get(entice->container));
             edje = edje_object_add(ecore_evas_get(entice->ee));
             if (edje_object_file_set
                 (edje, entice_config_theme_get(), "EnticeThumb"))
             {
-               evas_object_layer_set(o, 0);
-               evas_object_layer_set(edje, 0);
+               evas_object_layer_set(edje,
+                                     evas_object_layer_get(entice->
+                                                           container));
                if (edje_object_part_exists(edje, "EnticeThumb"))
                {
                   entice->thumb.list =

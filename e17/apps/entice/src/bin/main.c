@@ -194,6 +194,7 @@ main(int argc, char *argv[])
 {
    int pnum = -1;
    int x, y, w, h;
+   Ecore_Evas *ee = NULL;
 
    if (argc > 1)
       pnum = entice_pipe_foo(argc, (const char **) argv);
@@ -204,8 +205,6 @@ main(int argc, char *argv[])
 
    if (ecore_evas_init())
    {
-      Evas_Object *o = NULL;
-      Ecore_Evas *ee = NULL;
 
       edje_init();
       edje_frametime_set(1.0 / 60.0);
@@ -231,8 +230,6 @@ main(int argc, char *argv[])
 
             ecore_evas_name_class_set(ee, "Entice", "Main");
             ecore_evas_title_set(ee, "Entice !!!!");
-            ecore_evas_borderless_set(ee, 0);
-            ecore_evas_shaped_set(ee, 0);
 
             evas_font_cache_set(ecore_evas_get(ee),
                                 entice_config_font_cache_get() * 1024 * 1024);
@@ -242,13 +239,6 @@ main(int argc, char *argv[])
 
             evas_font_path_append(ecore_evas_get(ee),
                                   PACKAGE_DATA_DIR "/fonts");
-            o = evas_object_rectangle_add(ecore_evas_get(ee));
-            evas_object_color_set(o, 255, 255, 255, 255);
-            evas_object_resize(o, 5555, 5555);
-            evas_object_move(o, 0, 0);
-            evas_object_layer_set(o, 0);
-            evas_object_show(o);
-
             entice_init(ee);
             ecore_evas_move_resize(ee, x, y, w, h);
             ecore_evas_show(ee);
