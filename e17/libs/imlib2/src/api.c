@@ -2347,6 +2347,57 @@ imlib_blend_image_onto_image_skewed(Imlib_Image source_image,
 				   ctxt_color_modifier, ctxt_operation);
 }
 
+void 
+imlib_render_image_on_drawable_skewed(int source_x, int source_y,
+				      int source_width, int source_height,
+				      int destination_x, int destination_y,
+				      int h_angle_x, int h_angle_y,
+				      int v_angle_x, int v_angle_y)
+{
+   ImlibImage *im;
+   
+   CHECK_PARAM_POINTER("imlib_render_image_on_drawable_skewed", "image", ctxt_image);
+   CAST_IMAGE(im, ctxt_image);
+   if ((!(im->data)) && (im->loader) && (im->loader->load))
+      im->loader->load(im, NULL, 0, 1);
+   if (!(im->data))
+      return;
+   CAST_IMAGE(im, ctxt_image);
+   __imlib_RenderImageSkewed(ctxt_display, im, ctxt_drawable, ctxt_mask,
+			     ctxt_visual, ctxt_colormap, ctxt_depth,
+			     source_x, source_y, source_width, source_height,
+			     destination_x, destination_y,
+			     h_angle_x, h_angle_y, v_angle_x, v_angle_y,
+			     ctxt_anti_alias, ctxt_dither, ctxt_blend,
+			     ctxt_dither_mask, ctxt_color_modifier,
+			     ctxt_operation);
+}
+
+void 
+imlib_render_image_on_drawable_at_angle(int source_x, int source_y,
+					int source_width, int source_height,
+					int destination_x, int destination_y,
+					int angle_x, int angle_y)
+{
+   ImlibImage *im;
+   
+   CHECK_PARAM_POINTER("imlib_render_image_on_drawable_at_angle", "image", ctxt_image);
+   CAST_IMAGE(im, ctxt_image);
+   if ((!(im->data)) && (im->loader) && (im->loader->load))
+      im->loader->load(im, NULL, 0, 1);
+   if (!(im->data))
+      return;
+   CAST_IMAGE(im, ctxt_image);
+   __imlib_RenderImageSkewed(ctxt_display, im, ctxt_drawable, ctxt_mask,
+			     ctxt_visual, ctxt_colormap, ctxt_depth,
+			     source_x, source_y, source_width, source_height,
+			     destination_x, destination_y,
+			     angle_x, angle_y, 0, 0,
+			     ctxt_anti_alias, ctxt_dither, ctxt_blend,
+			     ctxt_dither_mask, ctxt_color_modifier,
+			     ctxt_operation);
+}
+
 void
 imlib_image_filter(void)
 {

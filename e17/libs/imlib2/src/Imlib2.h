@@ -257,6 +257,17 @@ Imlib_Image imlib_create_rotated_image(double angle);
 void        imlib_blend_image_onto_image_at_angle(Imlib_Image source_image, char merge_alpha, int source_x, int source_y, int source_width, int source_height, int destination_x, int destination_y, int angle_x, int angle_y);
 void        imlib_blend_image_onto_image_skewed(Imlib_Image source_image, char merge_alpha, int source_x, int source_y, int source_width, int source_height, int destination_x, int destination_y, int h_angle_x, int h_angle_y, int v_angle_x, int v_angle_y);
 
+void imlib_render_image_on_drawable_skewed(int source_x, int source_y,
+					   int source_width, int source_height,
+					   int destination_x, int destination_y,
+					   int h_angle_x, int h_angle_y,
+					   int v_angle_x, int v_angle_y);
+
+void imlib_render_image_on_drawable_at_angle(int source_x, int source_y,
+					   int source_width, int source_height,
+					   int destination_x, int destination_y,
+					   int angle_x, int angle_y);
+
 void imlib_image_filter(void);
 Imlib_Filter imlib_create_filter(int initsize);
 void imlib_context_set_filter(Imlib_Filter filter);
