@@ -1301,6 +1301,34 @@ ewl_object_remove_flags(Ewl_Object *o, unsigned int flags, unsigned int mask)
 }
 
 /**
+ * @param o: the parameter to retrieve the current value of object alignment
+ * @return Returns the current setting of the object alignment for @a o.
+ * @brief Retrieves the current setting of the object alignment for @a o.
+ */
+unsigned int
+ewl_object_get_alignment(Ewl_Object *o)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("o", o);
+
+	DRETURN_INT(ewl_object_get_flags(o, EWL_FLAGS_ALIGN_MASK), DLEVEL_STABLE);
+}
+
+/**
+ * @param o: the parameter to retrieve the current value of object fill policy
+ * @return Returns the current setting of the object fill policy for @a o.
+ * @brief Retrieves the current setting of the object fill policy for @a o.
+ */
+unsigned int
+ewl_object_get_fill_policy(Ewl_Object *o)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("o", o);
+
+	DRETURN_INT(ewl_object_get_flags(o, EWL_FLAGS_FILL_MASK), DLEVEL_STABLE);
+}
+
+/**
  * @param o: the parameter to retrieve the current value of object flags
  * @param mask: get only the flags specified in mask
  * @return Returns the current setting of the object flags for @a o.

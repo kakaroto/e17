@@ -133,29 +133,12 @@ void            ewl_object_get_maximum_size(Ewl_Object * o, int *w, int *h);
 inline int	ewl_object_get_maximum_w(Ewl_Object * o);
 inline int	ewl_object_get_maximum_h(Ewl_Object * o);
 
+unsigned int		ewl_object_get_alignment(Ewl_Object * o);
 inline void     ewl_object_set_alignment(Ewl_Object * o, unsigned int align);
 void            ewl_object_place(Ewl_Object *o, int x, int y, int w, int h);
 
-/**
- * @def ewl_object_get_alignment(o)
- * @param o: the object to retrieve the alignment value
- * @return Returns the value stored in the objects alignment attribute.
- * @brief Retrieve the value of the objects alignment
- */
-#define ewl_object_get_alignment(o) \
-	ewl_object_get_flags(o, EWL_FLAGS_ALIGN_MASK)
-
-
+unsigned int		ewl_object_get_fill_policy(Ewl_Object * o);
 inline void     ewl_object_set_fill_policy(Ewl_Object * o, unsigned int fill);
-
-/**
- * @def ewl_object_get_fill_policy(o)
- * @param o: the object to retrieve the fill policy value
- * @return Returns the value stored in the objects fill policy attribute.
- * @brief Retrieve the value of the objects fill policy
- */
-#define ewl_object_get_fill_policy(o) \
-	ewl_object_get_flags(o, EWL_FLAGS_FILL_MASK)
 
 /*
  * Padding setting and retrieval functions.
