@@ -53,8 +53,19 @@ _open_feed(void *data, Evas_Object *obj, const char *em, const char *src)
     src = NULL;
 }
 void
-eke_gui_edje_item_init(Evas_Object *o, const char *label, const char *link,
-const char *body)
+eke_gui_edje_item_size_min_get(Evas_Object *o, Evas_Coord *w, Evas_Coord *h)
+{
+  Eke_Gui_Edje_Item *data;
+  
+  if((data = evas_object_smart_data_get(o)))
+  {
+      edje_object_size_min_get(data->obj, w, h);
+  }
+        
+}
+void
+eke_gui_edje_item_init(Evas_Object *o, const char *label, const char *date,
+const char *link, const char *body)
 {
   Eke_Gui_Edje_Item *data;
   
@@ -76,12 +87,24 @@ const char *body)
             edje_object_part_text_set(data->obj, "link", "");
         }
     }
+    if(edje_object_part_exists(data->obj, "date"))
+    {
+        if(date) {
+            edje_object_part_text_set(data->obj, "date", date);
+        } else {
+            edje_object_part_text_set(data->obj, "date", "");
+        }
+    }
     if(edje_object_part_exists(data->obj, "body"))
     {
         if(body) {
             Evas_Object *desc;
             Etox_Context *ctx;
-
+            
+            if((desc = edje_object_part_swallow_get(data->obj, "body"))) 
+            {
+                evas_object_del(desc);
+            }
             desc = etox_new(evas_object_evas_get(o));
             ctx = etox_get_context(desc);
             etox_context_set_color(ctx, 0, 0, 0, 255);
@@ -105,24 +128,20 @@ const char *body)
 Evas_Object*
 eke_gui_edje_item_new(Evas *e, const char *file, const char *group)
 {
-  char buf[PATH_MAX], buf2[PATH_MAX];
   Evas_Object *result = NULL;
   Eke_Gui_Edje_Item *data = NULL;
+  Evas_Coord w = (Evas_Coord)0.0, h = (Evas_Coord)0.0;
 
-  snprintf(buf, PATH_MAX, "%s", file);
-  snprintf(buf2, PATH_MAX, "%s", group);
-//    printf(stderr, "NEW:%s,%s\n", file, group);
   if((result = eke_gui_edje_item_object_new(e)))
   {
     if((data = evas_object_smart_data_get(result)))
     {
         data->obj = edje_object_add(e);
-//  printf("%s\n", buf);
-//  printf("%s\n", buf2);
         if(edje_object_file_set(data->obj, file, group) == 1)
         {
-                evas_object_move(data->obj, -250, 80);
-                evas_object_resize(data->obj, 350, 80);
+            evas_object_move(data->obj, -9999, -9999);
+            edje_object_size_min_get(data->obj, &w, &h);
+            evas_object_resize(data->obj, w, h);
         } else {
             fprintf(stderr, "edje_file_set_error %d\n", 
                     edje_object_load_error_get(data->obj));
@@ -196,9 +215,18 @@ void
 _eke_gui_edje_item_object_del(Evas_Object *o)
 {
   Eke_Gui_Edje_Item *data;
-  
+    Evas_Object *obj = NULL;
+
   if((data = evas_object_smart_data_get(o)))
   {
+      if(data->obj) 
+      {
+        if((obj = edje_object_part_swallow_get(data->obj, "body"))) 
+        {
+            evas_object_del(obj);
+        }
+        evas_object_del(data->obj);
+      }
     free(data);
   }
 }

@@ -11,10 +11,11 @@ struct _Eke_Gui_Edje_Item
     Evas_Coord x, y, w, h;
 };
 
-Evas_Object*
-eke_gui_edje_item_new(Evas *e, const char *file, const char *group);
-void
-eke_gui_edje_item_init(Evas_Object *o, const char *label, const char *txt,
-const char *body);
+Evas_Object* eke_gui_edje_item_new(Evas *e, 
+                                    const char *file, const char *group);
+void eke_gui_edje_item_init(Evas_Object *o, const char *label, 
+                    const char *date, const char *link, const char *body);
+void eke_gui_edje_item_size_min_get(Evas_Object *o, 
+                                    Evas_Coord *w, Evas_Coord *h);
 
 #endif

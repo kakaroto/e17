@@ -10,6 +10,8 @@
 
 static void eke_gui_edje_win_del_cb(Ecore_Evas *ee);
 static void eke_gui_edje_win_resize_cb(Ecore_Evas *ee);
+static void eke_gui_edje_feed_container_scroll_cb(void *data, 
+                        Evas_Object *o, const char *src, const char *em);
 
 typedef struct Eke_Gui_Edje_Feed Eke_Gui_Edje_Feed;
 struct Eke_Gui_Edje_Feed
@@ -77,7 +79,7 @@ eke_gui_edje_create(Eke *eke)
     esmart_container_padding_set(o, 0, 0, 0, 0);
     esmart_container_spacing_set(o, 0);
     esmart_container_move_button_set(o, 2);
-    esmart_container_fill_policy_set(o, CONTAINER_FILL_POLICY_NONE);
+    esmart_container_fill_policy_set(o, CONTAINER_FILL_POLICY_FILL_X);
     esmart_container_direction_set(o, CONTAINER_DIRECTION_VERTICAL);
     edje_object_part_swallow(edje, "feeds.list.items", o);
     evas_object_show(o);
@@ -139,18 +141,28 @@ eke_gui_edje_feed_change(Eke *eke, Eke_Feed *feed)
     if((part = edje_object_part_swallow_get(eke->gui.edje.edje, 
                                                     "feed.body"))) {
         edje_object_part_unswallow(eke->gui.edje.edje, part);
+        evas_object_hide(part);
     }
     edje_object_part_swallow(eke->gui.edje.edje, "feed.body", disp->body);
     edje_object_part_geometry_get(eke->gui.edje.edje, "feed.body",
                                                         NULL, NULL, &w, &h);
+    edje_object_signal_callback_del(eke->gui.edje.edje, "drag",
+                                    "feed.body.scroll", 
+                                    eke_gui_edje_feed_container_scroll_cb);
+    edje_object_signal_callback_add(eke->gui.edje.edje, "drag",
+                                    "feed.body.scroll",
+                                    eke_gui_edje_feed_container_scroll_cb,
+                                    disp->body);
 
     esmart_container_empty(disp->body);
     ecore_list_goto_first(feed->items);
     edje_object_file_get(eke->gui.edje.edje, &file, NULL);
     while ((item = ecore_list_next(feed->items)) != NULL) {
         if((obj = eke_gui_edje_item_new(evas, eke->gui.edje.theme, "feed.body.item"))) {
-            eke_gui_edje_item_init(obj, item->title, item->link, item->desc);
-            evas_object_resize(obj, w, 150);
+            eke_gui_edje_item_init(obj, item->title, item->date, item->link, item->desc);
+            eke_gui_edje_item_size_min_get(obj, &w, &h);
+            if ((w > 0) && (h > 0))
+                evas_object_resize(obj, w, h);
             evas_object_show(obj);
             esmart_container_element_append(disp->body, obj);
         }
@@ -196,3 +208,41 @@ eke_gui_edje_win_resize_cb(Ecore_Evas *ee)
 }
 
 
+static void
+eke_gui_edje_feed_container_scroll_cb(void *data, Evas_Object *o, 
+                                    const char *em, const char *src)
+{
+    double sx = 0.0, sy = 0.0;
+    double container_length = 0.0;
+    Evas_Object *container = NULL;
+    Evas_Coord cw = (Evas_Coord)0.0, ch = (Evas_Coord)0.0;
+
+    if((container = (Evas_Object*)data)) {
+        
+        edje_object_part_geometry_get(o, "feed.body", NULL, NULL, &cw, &ch);
+        container_length = esmart_container_elements_length_get(container);
+        edje_object_part_drag_value_get(o, src, &sx, &sy);
+        switch (esmart_container_direction_get(container))
+        {
+            case CONTAINER_DIRECTION_HORIZONTAL:
+                if(container_length > cw) 
+                {
+                    container_length -= cw;
+                    esmart_container_scroll_offset_set(container,
+                                              - (int) (sx * container_length));
+                }
+                break;
+            case CONTAINER_DIRECTION_VERTICAL:
+                if(container_length > ch) 
+                {
+                    container_length -= ch;
+                    esmart_container_scroll_offset_set(container,
+                                              - (int) (sy * container_length));
+                }
+                break;
+            default:
+                fprintf(stderr, "Unknown Container Orientation\n");
+                break;
+        }
+    }
+}
