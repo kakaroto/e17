@@ -11,14 +11,14 @@ EDJE_FLAGS = \
 @EDJE_DEF@
 
 filesdir = $(pkgdatadir)/themes
-files_DATA = $(NAME).eet
+files_DATA = $(NAME).edj
 
 EXTRA_DIST = $(NAME).edc
 
-$(NAME).eet: Makefile $(NAME).edc
+$(NAME).edj: Makefile $(NAME).edc
 	$(EDJE_CC) $(EDJE_FLAGS) \
 	$(top_srcdir)/data/themes/$(NAME)/$(NAME).edc \
-	$(top_builddir)/data/themes/$(NAME)/$(NAME).eet
+	$(top_builddir)/data/themes/$(NAME)/$(NAME).edj
 
 clean-local:
-	rm -f *.eet
+	rm -f *.edj

@@ -52,7 +52,7 @@ entrance_config_populate(Entrance_Config * e, E_DB_File * db)
    if ((str = e_db_str_get(db, "/entrance/theme")))
       e->theme = str;
    else
-      e->theme = strdup("default.eet");
+      e->theme = strdup("default.edj");
 
    if ((str = e_db_str_get(db, "/entrance/pointer")))
       e->pointer = str;

@@ -717,7 +717,7 @@ _entrance_session_user_list_fix(Entrance_Session * e)
             }
          }
       }
-      snprintf(buf, PATH_MAX, "default.eet");
+      snprintf(buf, PATH_MAX, "default.edj");
       if ((eu = entrance_user_new(e->auth->user, buf, e->session)))
       {
          e->config->users.hash =

@@ -45,7 +45,7 @@ entrance_x_session_free(Entrance_X_Session * e)
 
 /**
  * given the filename, create a new evas object(edje or image) with the
- * contents of file.  file can either bea valid edje eet or anything your
+ * contents of file.  file can either be a valid edje or anything your
  * evas has images loaders for.
  * FIXME: Should this be its own smart object, user images are done similar 
  * FIXME: Should it support a "key" paramater as well

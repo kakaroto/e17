@@ -526,7 +526,7 @@ entrance_help(char **argv)
    printf
       ("                               either the name of an installed theme, or an\n");
    printf
-      ("                               arbitrary path to an eet file (use ./ for\n");
+      ("                               arbitrary path to an edj file (use ./ for\n");
    printf("                               the current directory).\n");
    printf
       ("  -T, --test                   Enable testing mode. This will cause xterm\n");
@@ -684,11 +684,11 @@ main(int argc, char *argv[])
            {
               theme = calloc(1, PATH_MAX);
               t = strrchr((const char *) optarg, '.');
-              if (t && !strcmp(t, ".eet"))
+              if (t && !strcmp(t, ".edj"))
                  snprintf(theme, PATH_MAX, "%s/themes/%s", PACKAGE_DATA_DIR,
                           optarg);
               else
-                 snprintf(theme, PATH_MAX, "%s/themes/%s.eet",
+                 snprintf(theme, PATH_MAX, "%s/themes/%s.edj",
                           PACKAGE_DATA_DIR, optarg);
            }
            break;

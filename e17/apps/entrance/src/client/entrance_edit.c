@@ -370,7 +370,7 @@ interp_return_key(void *data, const char *str)
             snprintf(buf, PATH_MAX, PACKAGE_DATA_DIR "/themes/%s", new_str);
             if (is_valid_theme_eet(o, buf))
             {
-               fprintf(stderr, "You found a valid eet\n");
+               fprintf(stderr, "You found a valid edje\n");
                if (ecco.config->theme)
                   free(ecco.config->theme);
                ecco.config->theme = new_str;
@@ -380,7 +380,7 @@ interp_return_key(void *data, const char *str)
             }
             else
             {
-               fprintf(stderr, "You found a invalid eet\n");
+               fprintf(stderr, "You found a invalid edje\n");
                esmart_text_entry_text_set(o, ecco.config->theme);
                free(new_str);
             }
@@ -1950,7 +1950,7 @@ main(int argc, char *argv[])
       evas_font_path_append(evas, PACKAGE_DATA_DIR "/data/fonts");
 
       edje = edje_object_add(evas);
-      snprintf(buf, PATH_MAX, "%s/ecco/ecco.eet", PACKAGE_DATA_DIR);
+      snprintf(buf, PATH_MAX, "%s/ecco/ecco.edj", PACKAGE_DATA_DIR);
       if (edje_object_file_set(edje, buf, "Main") > 0)
       {
          evas_object_move(edje, 0, 0);
