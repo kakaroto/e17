@@ -30,7 +30,7 @@ Ewl_Widget     *ewl_radiobutton_new(char *label)
  * Associates @a w with the same chain as @a c, in order to
  * ensure that only one radio button of that group is checked at any time.
  */
-void ewl_radiobutton_set_chain(Ewl_RadioButton *rb, Ewl_RadioButton *crb)
+void ewl_radiobutton_chain_set(Ewl_RadioButton *rb, Ewl_RadioButton *crb)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("rb", rb);
@@ -104,11 +104,11 @@ void ewl_radiobutton_clicked_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 		ecore_list_goto_first(rb->chain);
 
 		while ((c = ecore_list_next(rb->chain)) != NULL) {
-			ewl_checkbutton_set_checked(c, 0);
+			ewl_checkbutton_checked_set(c, 0);
 		}
 	}
 
-	ewl_checkbutton_set_checked(cb, 1);
+	ewl_checkbutton_checked_set(cb, 1);
 
 	if (oc != ewl_checkbutton_is_checked(cb))
 		ewl_callback_call(w, EWL_CALLBACK_VALUE_CHANGED);

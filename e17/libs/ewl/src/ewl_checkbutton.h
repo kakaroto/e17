@@ -49,8 +49,8 @@ void            ewl_checkbutton_init(Ewl_CheckButton * cb, char *label);
  * Shortcut for dereferencing the checkbutton to update the checked state of
  * the Ewl_Check.
  */
-#define ewl_checkbutton_set_checked(cb, c) \
-	ewl_check_set_checked(EWL_CHECK(EWL_CHECKBUTTON(cb)->check), c)
+#define ewl_checkbutton_checked_set(cb, c) \
+	ewl_check_checked_set(EWL_CHECK(EWL_CHECKBUTTON(cb)->check), c)
 
 /**
  * @def ewl_checkbutton_is_checked(cb);
@@ -60,7 +60,7 @@ void            ewl_checkbutton_init(Ewl_CheckButton * cb, char *label);
 #define ewl_checkbutton_is_checked(cb) \
 	ewl_check_is_checked(EWL_CHECK(EWL_CHECKBUTTON(cb)->check))
 
-void            ewl_checkbutton_set_label_position(Ewl_Widget * w,
+void            ewl_checkbutton_label_position_set(Ewl_Widget * w,
 						   Ewl_Position p);
 
 void            ewl_checkbutton_clicked_cb(Ewl_Widget * w, void *ev_data,

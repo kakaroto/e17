@@ -108,25 +108,25 @@ void __notebook_create_main_page(Ewl_Widget * notebook)
 	ewl_widget_show(button_atop);
 
 	button_aleft = ewl_radiobutton_new("Left");
-	ewl_radiobutton_set_checked(button_aleft, 1);
+	ewl_radiobutton_checked_set(button_aleft, 1);
 	ewl_container_child_append(EWL_CONTAINER(avbox), button_aleft);
-	ewl_radiobutton_set_chain(EWL_RADIOBUTTON(button_aleft),
+	ewl_radiobutton_chain_set(EWL_RADIOBUTTON(button_aleft),
 				  EWL_RADIOBUTTON(button_atop));
 	ewl_callback_append(button_aleft, EWL_CALLBACK_VALUE_CHANGED,
 			    __notebook_change_alignment, notebook);
 	ewl_widget_show(button_aleft);
 
 	button_acenter = ewl_radiobutton_new("Center");
-	ewl_radiobutton_set_chain(EWL_RADIOBUTTON(button_acenter),
+	ewl_radiobutton_chain_set(EWL_RADIOBUTTON(button_acenter),
 				  EWL_RADIOBUTTON(button_aleft));
-	ewl_radiobutton_set_checked(button_acenter, 1);
+	ewl_radiobutton_checked_set(button_acenter, 1);
 	ewl_container_child_append(EWL_CONTAINER(avbox), button_acenter);
 	ewl_callback_append(button_acenter, EWL_CALLBACK_VALUE_CHANGED,
 			    __notebook_change_alignment, notebook);
 	ewl_widget_show(button_acenter);
 
 	button_aright = ewl_radiobutton_new("Right");
-	ewl_radiobutton_set_chain(EWL_RADIOBUTTON(button_aright),
+	ewl_radiobutton_chain_set(EWL_RADIOBUTTON(button_aright),
 				  EWL_RADIOBUTTON(button_acenter));
 	ewl_container_child_append(EWL_CONTAINER(avbox), button_aright);
 	ewl_callback_append(button_aright, EWL_CALLBACK_VALUE_CHANGED,
@@ -134,7 +134,7 @@ void __notebook_create_main_page(Ewl_Widget * notebook)
 	ewl_widget_show(button_aright);
 
 	button_abottom = ewl_radiobutton_new("Bottom");
-	ewl_radiobutton_set_chain(EWL_RADIOBUTTON(button_abottom),
+	ewl_radiobutton_chain_set(EWL_RADIOBUTTON(button_abottom),
 				  EWL_RADIOBUTTON(button_aright));
 	ewl_container_child_append(EWL_CONTAINER(avbox), button_abottom);
 	ewl_callback_append(button_abottom, EWL_CALLBACK_VALUE_CHANGED,
@@ -157,7 +157,7 @@ void __notebook_create_main_page(Ewl_Widget * notebook)
 	ewl_widget_show(button_pleft);
 
 	button_pright = ewl_radiobutton_new("Right");
-	ewl_radiobutton_set_chain(EWL_RADIOBUTTON(button_pright),
+	ewl_radiobutton_chain_set(EWL_RADIOBUTTON(button_pright),
 				  EWL_RADIOBUTTON(button_pleft));
 	ewl_container_child_append(EWL_CONTAINER(pvbox), button_pright);
 	ewl_callback_append(button_pright, EWL_CALLBACK_VALUE_CHANGED,
@@ -165,8 +165,8 @@ void __notebook_create_main_page(Ewl_Widget * notebook)
 	ewl_widget_show(button_pright);
 
 	button_ptop = ewl_radiobutton_new("Top");
-	ewl_radiobutton_set_checked(button_ptop, 1);
-	ewl_radiobutton_set_chain(EWL_RADIOBUTTON(button_ptop),
+	ewl_radiobutton_checked_set(button_ptop, 1);
+	ewl_radiobutton_chain_set(EWL_RADIOBUTTON(button_ptop),
 				  EWL_RADIOBUTTON(button_pright));
 	ewl_container_child_append(EWL_CONTAINER(pvbox), button_ptop);
 	ewl_callback_append(button_ptop, EWL_CALLBACK_VALUE_CHANGED,
@@ -174,7 +174,7 @@ void __notebook_create_main_page(Ewl_Widget * notebook)
 	ewl_widget_show(button_ptop);
 
 	button_pbottom = ewl_radiobutton_new("Bottom");
-	ewl_radiobutton_set_chain(EWL_RADIOBUTTON(button_pbottom),
+	ewl_radiobutton_chain_set(EWL_RADIOBUTTON(button_pbottom),
 				  EWL_RADIOBUTTON(button_ptop));
 	ewl_container_child_append(EWL_CONTAINER(pvbox), button_pbottom);
 	ewl_callback_append(button_pbottom, EWL_CALLBACK_VALUE_CHANGED,

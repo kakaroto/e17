@@ -69,7 +69,7 @@ void ewl_checkbutton_init(Ewl_CheckButton * cb, char *label)
  *
  * Changes the position of the label associated with the check button.
  */
-void ewl_checkbutton_set_label_position(Ewl_Widget * w, Ewl_Position p)
+void ewl_checkbutton_label_position_set(Ewl_Widget * w, Ewl_Position p)
 {
 	Ewl_Button     *b;
 	Ewl_CheckButton *cb;
@@ -117,9 +117,9 @@ void ewl_checkbutton_clicked_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	cb = EWL_CHECKBUTTON(w);
 
 	if (ewl_check_is_checked(EWL_CHECK(cb->check)))
-		ewl_check_set_checked(EWL_CHECK(cb->check), FALSE);
+		ewl_check_checked_set(EWL_CHECK(cb->check), FALSE);
 	else
-		ewl_check_set_checked(EWL_CHECK(cb->check), TRUE);
+		ewl_check_checked_set(EWL_CHECK(cb->check), TRUE);
 	ewl_callback_call(w, EWL_CALLBACK_VALUE_CHANGED);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);

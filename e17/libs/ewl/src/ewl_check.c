@@ -31,7 +31,7 @@ Ewl_Widget     *ewl_check_new()
  * Changes the checked status of the check and updates it's appearance to
  * reflect the change.
  */
-void ewl_check_set_checked(Ewl_Check * cb, int c)
+void ewl_check_checked_set(Ewl_Check * cb, int c)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("cb", cb);

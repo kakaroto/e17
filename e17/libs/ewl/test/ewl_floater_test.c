@@ -49,7 +49,7 @@ __create_floater_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_widget_show(radio_button[0]);
 
 	radio_button[1] = ewl_radiobutton_new(NULL);
-	ewl_radiobutton_set_chain(EWL_RADIOBUTTON(radio_button[1]), 
+	ewl_radiobutton_chain_set(EWL_RADIOBUTTON(radio_button[1]), 
 				  EWL_RADIOBUTTON(radio_button[0]));
 	ewl_container_child_append(EWL_CONTAINER(floater_box), radio_button[1]);
 	ewl_object_alignment_set(EWL_OBJECT(radio_button[1]),
