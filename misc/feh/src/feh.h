@@ -152,6 +152,7 @@ typedef struct cmdlineoptions
   unsigned char stretch;
   unsigned char progressive;
   unsigned char modify_mode;
+  unsigned char keep_http;
 
   char *output_file;
   char *bg_file;
@@ -212,6 +213,8 @@ void feh_add_unique_timer (void (*func) (void *data),void *data, double in);
 void cb_slide_timer(void *data);
 void cb_reload_timer(void *data);
 char *http_load_image (char *url);
+void add_file_to_rm_filelist (char *file);
+void delete_rm_files(void);
 
 
 /* Imlib stuff */

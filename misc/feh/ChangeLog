@@ -1,3 +1,16 @@
+Tue Jan 11 20:52:19 2000  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
+
+	* Okay. The cached images are now deleted. The filenames are no
+	  longer crap. ("Unique prefix"_feh_"original filename")
+	* New option -k, --keep-http, tell feh *not* to delete the files,
+	  so that you can later claim them from /tmp. Saves you
+	  downloading them again if you like them.
+	* A happy side effect of this is that if you use -k and -R to keep
+	  http and reload, and point the thing at a webcam, you'll capture
+	  each frame and save it as a separate image.
+	* I *can't* imagine why anyone would *want* that, but I thought
+	  I'd pass it on ;-)
+
 Tue Jan 11 19:51:40 2000  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
 
 	* Caching of images loaded via http. When in slideshow mode, and

@@ -84,17 +84,19 @@ feh_load_image (Imlib_Image ** im, char *filename)
       if (tmpname == NULL)
 	return 0;
       *im = imlib_load_image_with_error_return (tmpname, &err);
-      if((opt.slideshow) && (opt.reload == 0))
-      {
+      if ((opt.slideshow) && (opt.reload == 0))
+	{
 	  /* Http, no reload, slideshow. Let's keep this image on hand... */
-	  replace_file_in_filelist(filename,tmpname);
-      }
+	  replace_file_in_filelist (filename, tmpname);
+	}
       else
-      {
+	{
 	  /* Don't cache the image if we're doing reload + http (webcams
 	   * etc) */
-	  unlink (tmpname);
-      }
+	  if (!opt.keep_http)
+	    unlink (tmpname);
+	}
+      add_file_to_rm_filelist (tmpname);
       free (tmpname);
     }
   else
@@ -232,11 +234,17 @@ http_load_image (char *url)
 {
   int pid;
   int status;
+  char *tmp;
   char *tmpname;
+  char pref[] = "feh_";
 
-  tmpname = tempnam ("/tmp", NULL);
-  if (tmpname == NULL)
+  tmp = tempnam ("/tmp", pref);
+  if (tmp == NULL)
     eprintf ("Error creating unique filename:");
+
+  /* Modify tempname to make it a little more useful... */
+  tmpname = strjoin ("", tmp, "_", strrchr (url, '/') + 1, NULL);
+  free(tmp);
 
   if ((pid = fork ()) < 0)
     {

@@ -58,6 +58,7 @@ init_parse_options (int argc, char **argv)
   opt.modify_mode = MODIFY_MODE_NONE;
   opt.slideshow_delay = 0;
   opt.reload=0;
+  opt.keep_http=0;
 
   opt.thumb_w = 60;
   opt.thumb_h = 60;
@@ -76,7 +77,9 @@ init_parse_options (int argc, char **argv)
       else if ((!strcmp (argv[i], "--thumbs")) || (!strcmp (argv[i], "-t")))
 	opt.thumbs = 1;
       else if ((!strcmp (argv[i], "--verbose")) || (!strcmp (argv[i], "-V")))
-	opt.verbose = 1;
+	    opt.verbose = 1;
+      else if ((!strcmp (argv[i], "--keep-http")) || (!strcmp (argv[i], "-k")))
+            opt.keep_http = 1;
       else if ((!strcmp (argv[i], "--stretch")) || (!strcmp (argv[i], "-s")))
 	opt.stretch = 1;
       else if ((!strcmp (argv[i], "--noprogressive"))
@@ -215,6 +218,7 @@ show_usage (void)
 	   "  Where FILE is an imlib 2 readable image file.\n"
 	   "  Multiple files are supported.\n"
 	   "  Urls are supported. They must begin with htpp:// and you must have wget\n"
+	   "  installed to download the files.\n"
 	   "  -h, --help                display this help and exit\n"
 	   "  -v, --version             output version information and exit\n"
 	   "  -V, --verbose             output useful information, progress bars, etc\n"
@@ -229,6 +233,11 @@ show_usage (void)
 	   "  -R, --reload NUM          Use this option to tell feh to reload an image\n"
 	   "                            after NUM seconds. Useful for viewing webcams\n"
 	   "                            view http, or even on your local machine.\n"
+	   "  -k, --keep-http           When viewing files using http, feh normally\n"
+	   "                            deletes the local copies after viewing, or,\n"
+	   "                            if caching, on exit. This option prevents this\n"
+	   "                            so that you get to keep the local copies.\n"
+	   "                            They will be in /tmp with \"feh\" in the name.\n"
 	   "  -m, --montage             Enable montage mode. Montage mode creates a new\n"
 	   "                            image consisting of a grid of thumbnails of the\n"
 	   "                            images specified using FILE... When montage mode\n"

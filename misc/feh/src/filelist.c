@@ -20,6 +20,9 @@
 
 #include "feh.h"
 
+static int rm_file_num;
+static char **rm_files;
+
 void
 add_file_to_filelist (char *file)
 {
@@ -59,7 +62,8 @@ replace_file_in_filelist (char *olds, char *news)
     {
       if (!strcmp (olds, files[i]))
 	{
-	  free (files[i]);
+	  /* I can't do this, 'cos I don't copy strings into filelist */
+	  /* free (files[i]); */
 	  files[i] = estrdup (news);
 	  break;
 	}
@@ -147,5 +151,31 @@ add_file_to_filelist_recursively (char *path, unsigned char enough)
     {
       /* Ignore this strange thing :) */
       D (("Non dir, non regular file encountered - %s\n", path));
+    }
+}
+
+void
+add_file_to_rm_filelist (char *file)
+{
+  D (("In add_file_to_rm_filelist\n"));
+  rm_file_num++;
+  if (rm_files)
+    rm_files = erealloc (rm_files, rm_file_num * sizeof (char *));
+  else
+    rm_files = emalloc (rm_file_num * sizeof (char *));
+  rm_files[rm_file_num - 1] = estrdup (file);
+}
+
+void
+delete_rm_files (void)
+{
+  int i;
+  D (("In delete_rm_files\n"));
+  if (opt.keep_http)
+    return;
+  for (i = 0; i < rm_file_num; i++)
+    {
+      if (rm_files[i])
+	unlink (rm_files[i]);
     }
 }
