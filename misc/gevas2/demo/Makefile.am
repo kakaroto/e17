@@ -1,7 +1,7 @@
 ## Process this file with automake to produce Makefile.in
 
 INCLUDES = \
-	-I$(top_srcdir)/intl -I$(srcdir) -I../src -I.. -I. -I$(topdir)/src \
+	-I$(top_srcdir)/intl -I$(srcdir) -I$(top_srcdir)/src -I.. -I. \
 	@GTK_CFLAGS@ @evas_cflags@ @edb_cflags@ \
 	-I/usr/local/include
 
