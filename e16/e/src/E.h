@@ -922,7 +922,6 @@ typedef struct
 #endif
    struct
    {
-      char                icon_mode;
       char                enable;
       char                showsticky;
       char                showshaded;
@@ -930,6 +929,7 @@ typedef struct
       char                warpfocused;
       char                raise_on_select;
       char                warp_on_select;
+      int                 icon_mode;
    } warplist;
    int                 deskmode;
    int                 slidemode;
