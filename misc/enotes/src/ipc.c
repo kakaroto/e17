@@ -88,10 +88,8 @@ void handle_ipc_message(void *data){
 	Ecore_Timer    *close;
 	char           *msg;
 	char           *content;
+	p = parse_message((char *)data);
 
-  p = NULL;
-  if (data)
-    p = parse_message((char *)data);
 	if (p) {
 		if (p->cmd == NOTE) {
 			if (p->data) {
