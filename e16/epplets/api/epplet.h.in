@@ -273,7 +273,9 @@ void            Epplet_gadget_destroy(Epplet_gadget gadget);
 void            Epplet_gadget_hide(Epplet_gadget gadget);
 /* show a gadget */
 void            Epplet_gadget_show(Epplet_gadget gadget);
-/* if you cnaged the value a gadget is pointing to call this on the gadget */
+/* get the callback data from a gadget */
+void			*Epplet_gadget_get_data(Epplet_gadget gadget);
+/* if you chaged the value a gadget is pointing to call this on the gadget */
 /* so it can update and redraw */
 void            Epplet_gadget_data_changed(Epplet_gadget gadget);
 /* change the popup a popbutton brings up and destroy the popup it currently */
