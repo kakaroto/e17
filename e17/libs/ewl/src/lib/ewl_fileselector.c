@@ -544,7 +544,10 @@ static void ewl_fileselector_path_setup(Ewl_Fileselector * fs, char *path)
 	Ecore_List *dirs, *files;
 	char *path2;
 	char *title;
-
+ 
+	/* FIXME: clearing the lists is maybe not sufficient/correct */
+        ewl_tree_selected_clear(fs->list_dirs);
+        ewl_tree_selected_clear(fs->list_files);
 	ewl_container_reset(EWL_CONTAINER(fs->list_dirs));
 	ewl_container_reset(EWL_CONTAINER(fs->list_files));
 	ewl_entry_text_set(EWL_ENTRY(fs->entry_file), "");
