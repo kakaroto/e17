@@ -1,0 +1,12 @@
+<page columns=1 padding=16 name=front background=bg.png linkcolor=#88dddd>
+<font face=aircut3/32 color=#ffffff>
+<p align=50%>
+E-Pants
+<font face=aircut3/18 color=#88eeff>
+<p align=50%>
+Pants On!
+<font face=aircut3/12 color=#ffffff>
+<p align=50%>
+By Horms - 2001
+<p>
+Monitor status of pants on a system.

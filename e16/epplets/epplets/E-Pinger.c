@@ -117,7 +117,7 @@ bg_system (char *command)
    extern char **environ;
    extern int errno;
 
-   /* Seat reaper so we don't get zombies */
+   /* Set reaper so we don't get zombies */
    signal(SIGCHLD, (void(*)(int))pinger_reaper);
    
    if (command == NULL || *command == '\0') {
@@ -451,10 +451,7 @@ main(int argc, char **argv)
 	       6, 1, argc, argv, 0);
    Epplet_timer(cb_timer, NULL, 0.05, "TIMER");
 
-   /* Seat reaper so we don't get zombies */
-   signal(SIGCHLD, (void(*)(int))pinger_reaper);
-   
-   /* Seat reaper so we don't get zombies */
+   /* Set reaper so we don't get zombies */
    signal(SIGCHLD, (void(*)(int))pinger_reaper);
    
    log_entries=0;
@@ -463,7 +460,7 @@ main(int argc, char **argv)
                                   2, 2, 0, 0, "CLOSE", 0, NULL,
                                   cb_close, NULL);
    b_configure = Epplet_create_button(NULL, NULL,
-                                 66, 2, 0, 0, "CONFIGURE", win, NULL,
+                                 68, 2, 0, 0, "CONFIGURE", win, NULL,
                                  cb_configure, NULL);
    b_help = Epplet_create_button(NULL, NULL,
                                  82, 2, 0, 0, "HELP", win, NULL,
@@ -483,7 +480,7 @@ main(int argc, char **argv)
    p_log = Epplet_create_popup();
    
    pb_log=Epplet_create_popupbutton("Flim", NULL, 0, 0, 96, 16, NULL, p_log);
-   pb_log_small=Epplet_create_popupbutton("Flim", NULL, 16, 0, 48, 16, 
+   pb_log_small=Epplet_create_popupbutton("Flim", NULL, 15, 0, 52, 16, 
 						NULL, p_log);
    Epplet_gadget_show(pb_log);
 

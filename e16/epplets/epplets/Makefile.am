@@ -1,14 +1,19 @@
 # $Id$
 
+
 bindir = $(EBIN)
+edatadir = $(EROOT)
+
+
 
 bin_PROGRAMS = E-Load.epplet E-Clock.epplet E-Time.epplet E-Net.epplet \
-E-Cpu.epplet E-Biff.epplet E-Power.epplet @TEST_PROGS@ @MIXER_PROGS@ @GL_PROGS@ \
-E-MemWatch.epplet E-Disk.epplet E-Areas.epplet E-Magic.epplet E-Toolbox.epplet \
-E-NetFlame.epplet E-Sys.epplet E-ScreenShoot.epplet E-Slides.epplet \
-E-Xss.epplet E-Mountbox.epplet E-Exec.epplet @ESD_PROGS@ @PLAYCD_PROGS@ \
-E-ScreenSave.epplet E-NetGraph.epplet E-MoonClock.epplet E-UrlWatch.epplet \
-E-LoadMeter.epplet E-GtkRc.epplet E-Pinger.epplet
+E-Cpu.epplet E-Biff.epplet E-Power.epplet @TEST_PROGS@ @MIXER_PROGS@ \
+@GL_PROGS@ E-MemWatch.epplet E-Disk.epplet E-Areas.epplet E-Magic.epplet \
+E-Toolbox.epplet E-NetFlame.epplet E-Sys.epplet E-ScreenShoot.epplet \
+E-Slides.epplet E-Xss.epplet E-Mountbox.epplet E-Exec.epplet @ESD_PROGS@ \
+@PLAYCD_PROGS@ E-ScreenSave.epplet E-NetGraph.epplet E-MoonClock.epplet \
+E-UrlWatch.epplet E-LoadMeter.epplet E-GtkRc.epplet E-Pinger.epplet \
+E-Pants.epplet
 
 
 EXTRA_PROGRAMS = EppletTest.epplet EppletConfigTest.epplet E-Mixer.epplet \
@@ -129,7 +134,8 @@ E_Xss_epplet_DEPENDENCIES = $(top_builddir)/api/libepplet.la
 E_Xss_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
 
 E_ScreenShoot_epplet_SOURCES = \
-E-ScreenShoot.c E-ScreenShoot.h cloak.c utils.c utils.h cloak.h E-ScreenShoot_ftp.c E-ScreenShoot_ftp.h
+E-ScreenShoot.c E-ScreenShoot.h cloak.c utils.c utils.h cloak.h \
+E-ScreenShoot_ftp.c E-ScreenShoot_ftp.h
 E_ScreenShoot_epplet_DEPENDENCIES = $(top_builddir)/api/libepplet.la
 E_ScreenShoot_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
 
@@ -164,13 +170,17 @@ E_Pinger_epplet_SOURCES = E-Pinger.c
 E_Pinger_epplet_DEPENDENCIES = $(top_builddir)/api/libepplet.la
 E_Pinger_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
 
+E_Pants_epplet_SOURCES = E-Pants.c
+E_Pants_epplet_DEPENDENCIES = $(top_builddir)/api/libepplet.la
+E_Pants_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
+
 INCLUDES = -I. -I$(top_builddir)/api -I$(top_srcdir)/api -I$(top_srcdir) -I.. -I$(includedir) -I$(prefix)/include -I/usr/local/include $(X_CFLAGS) @SGI_DEFINES@
 LDADD = $(top_builddir)/api/libepplet.la -L$(libdir) -L$(prefix)/lib -L/usr/local/lib $(LIBS) $(X_LIBS)
 
 # You can use the following command to generate this line:
 # ABOUT_DOCS = `(cd epplets && ls -1d *.ABOUT/* 2>/dev/null | grep -v CVS)`
-ABOUT_DOCS = E-Clock.ABOUT/MAIN E-Cpu.ABOUT/MAIN E-Cpu.ABOUT/aircut3.ttf  \
-E-Cpu.ABOUT/bg.png E-Mixer.ABOUT/MAIN E-Mixer.ABOUT/E-Mixer-standard.png \
+ABOUT_DOCS = E-Clock.ABOUT/MAIN E-Cpu.ABOUT/MAIN \
+E-Mixer.ABOUT/MAIN E-Mixer.ABOUT/E-Mixer-standard.png \
 E-Mixer.ABOUT/E-Mixer-tall.png E-Mixer.ABOUT/E-Mixer-wide.png \
 E-MoonClock.ABOUT/MAIN E-Mountbox.ABOUT/MAIN E-Mountbox.ABOUT/shot.png \
 E-Mountbox.ABOUT/shot_unmounted.png E-Mountbox.ABOUT/dialog.png \
@@ -180,111 +190,130 @@ E-ScreenShoot.ABOUT/E_ScreenShoot_buttons.png  \
 E-ScreenShoot.ABOUT/E_ScreenShoot_cloak.png E-ScreenShoot.ABOUT/MAIN \
 Emix.ABOUT/MAIN E-UrlWatch.ABOUT/MAIN E-PlayCD.ABOUT/EPlayCD.jpg \
 E-PlayCD.ABOUT/MAIN E-PlayCD.ABOUT/E-PlayCD_Controls.png \
-E-GtkRc.ABOUT/MAIN E-Pinger.ABOUT/MAIN
+E-GtkRc.ABOUT/MAIN E-Pinger.ABOUT/MAIN E-Pants.ABOUT/MAIN
 
 
 # ICONS = `(cd epplets && ls -1d icons/*.icon | grep -v CVS)`
-ICONS = icons/E-Biff.icon icons/E-Clock.icon icons/E-Cpu.icon icons/E-Disk.icon \
-icons/E-Load.icon icons/E-MemWatch.icon icons/E-Mixer.icon icons/E-MoonClock.icon \
-icons/E-Mountbox.icon icons/E-Net.icon icons/E-NetFlame.icon icons/E-Power.icon \
-icons/E-SD.icon icons/E-ScreenSave.icon icons/E-ScreenShoot.icon \
-icons/E-Slides.icon icons/E-Sys.icon icons/E-Time.icon icons/E-Xss.icon \
-icons/Emix.icon icons/E-UrlWatch.icon icons/E-Magic.icon icons/E-PlayCD.icon \
+ICONS = icons/E-Biff.icon icons/E-Clock.icon icons/E-Cpu.icon \
+icons/E-Disk.icon icons/E-Load.icon icons/E-MemWatch.icon icons/E-Mixer.icon \
+icons/E-MoonClock.icon icons/E-Mountbox.icon icons/E-Net.icon \
+icons/E-NetFlame.icon icons/E-Power.icon icons/E-SD.icon \
+icons/E-ScreenSave.icon icons/E-ScreenShoot.icon icons/E-Slides.icon \
+icons/E-Sys.icon icons/E-Time.icon icons/E-Xss.icon icons/Emix.icon \
+icons/E-UrlWatch.icon icons/E-Magic.icon icons/E-PlayCD.icon \
 icons/E-OpenGL-Demo.icon icons/E-GtkRc.icon icons/E-Pinger.icon \
-icons/E-Pinger.icon.bg
+icons/E-Pinger.icon.bg icons/E-Pants.icon
 
 # DATA_FILES = `(cd epplets && ls -1d *-data/* 2>/dev/null | grep -v CVS)`
 
-DATA_FILES = E-Biff-data/7of9.png E-Biff-data/newmail.png E-Biff-data/nomail.png \
-E-Clock-data/E-Clock-Image.png E-MoonClock-data/E-MoonClock-01.png \
-E-MoonClock-data/E-MoonClock-02.png E-MoonClock-data/E-MoonClock-03.png \
-E-MoonClock-data/E-MoonClock-04.png E-MoonClock-data/E-MoonClock-05.png \
-E-MoonClock-data/E-MoonClock-06.png E-MoonClock-data/E-MoonClock-07.png \
-E-MoonClock-data/E-MoonClock-08.png E-MoonClock-data/E-MoonClock-09.png \
-E-MoonClock-data/E-MoonClock-10.png E-MoonClock-data/E-MoonClock-11.png \
-E-MoonClock-data/E-MoonClock-12.png E-MoonClock-data/E-MoonClock-13.png \
-E-MoonClock-data/E-MoonClock-14.png E-MoonClock-data/E-MoonClock-15.png \
-E-MoonClock-data/E-MoonClock-16.png E-MoonClock-data/E-MoonClock-17.png \
-E-MoonClock-data/E-MoonClock-18.png E-MoonClock-data/E-MoonClock-19.png \
-E-MoonClock-data/E-MoonClock-20.png E-MoonClock-data/E-MoonClock-21.png \
-E-MoonClock-data/E-MoonClock-22.png E-MoonClock-data/E-MoonClock-23.png \
-E-MoonClock-data/E-MoonClock-24.png E-MoonClock-data/E-MoonClock-25.png \
-E-MoonClock-data/E-MoonClock-26.png E-MoonClock-data/E-MoonClock-27.png \
-E-MoonClock-data/E-MoonClock-28.png E-MoonClock-data/E-MoonClock-29.png \
-E-MoonClock-data/E-MoonClock-30.png E-MoonClock-data/E-MoonClock-31.png \
-E-MoonClock-data/E-MoonClock-32.png E-MoonClock-data/E-MoonClock-33.png \
-E-MoonClock-data/E-MoonClock-34.png E-MoonClock-data/E-MoonClock-35.png \
-E-MoonClock-data/E-MoonClock-36.png E-MoonClock-data/E-MoonClock-37.png \
-E-MoonClock-data/E-MoonClock-38.png E-MoonClock-data/E-MoonClock-39.png \
-E-MoonClock-data/E-MoonClock-40.png E-MoonClock-data/E-MoonClock-41.png \
-E-MoonClock-data/E-MoonClock-42.png E-MoonClock-data/E-MoonClock-43.png \
-E-MoonClock-data/E-MoonClock-44.png E-MoonClock-data/E-MoonClock-45.png \
-E-MoonClock-data/E-MoonClock-46.png E-MoonClock-data/E-MoonClock-47.png \
-E-MoonClock-data/E-MoonClock-48.png E-MoonClock-data/E-MoonClock-49.png \
-E-MoonClock-data/E-MoonClock-50.png E-MoonClock-data/E-MoonClock-51.png \
-E-MoonClock-data/E-MoonClock-52.png E-MoonClock-data/E-MoonClock-53.png \
-E-MoonClock-data/E-MoonClock-54.png E-MoonClock-data/E-MoonClock-55.png \
-E-MoonClock-data/E-MoonClock-56.png E-MoonClock-data/E-MoonClock-57.png \
-E-MoonClock-data/E-MoonClock-58.png E-MoonClock-data/E-MoonClock-59.png \
-E-MoonClock-data/E-MoonClock-60.png E-Mountbox-data/E-Mountbox-bg.png \
-E-Mountbox-data/E-Mountbox-blockdev.png E-Mountbox-data/E-Mountbox-cd.png \
-E-Mountbox-data/E-Mountbox-floppy.png E-Mountbox-data/E-Mountbox-zip.png \
-E-Mountbox-data/E-Mountbox-jazz.png \
+DATA_FILES = E-Biff-data/7of9.png E-Biff-data/newmail.png \
+E-Biff-data/nomail.png E-Clock-data/E-Clock-Image.png \
+E-MoonClock-data/E-MoonClock-01.png E-MoonClock-data/E-MoonClock-02.png \
+E-MoonClock-data/E-MoonClock-03.png E-MoonClock-data/E-MoonClock-04.png \
+E-MoonClock-data/E-MoonClock-05.png E-MoonClock-data/E-MoonClock-06.png \
+E-MoonClock-data/E-MoonClock-07.png E-MoonClock-data/E-MoonClock-08.png \
+E-MoonClock-data/E-MoonClock-09.png E-MoonClock-data/E-MoonClock-10.png \
+E-MoonClock-data/E-MoonClock-11.png E-MoonClock-data/E-MoonClock-12.png \
+E-MoonClock-data/E-MoonClock-13.png E-MoonClock-data/E-MoonClock-14.png \
+E-MoonClock-data/E-MoonClock-15.png E-MoonClock-data/E-MoonClock-16.png \
+E-MoonClock-data/E-MoonClock-17.png E-MoonClock-data/E-MoonClock-18.png \
+E-MoonClock-data/E-MoonClock-19.png E-MoonClock-data/E-MoonClock-20.png \
+E-MoonClock-data/E-MoonClock-21.png E-MoonClock-data/E-MoonClock-22.png \
+E-MoonClock-data/E-MoonClock-23.png E-MoonClock-data/E-MoonClock-24.png \
+E-MoonClock-data/E-MoonClock-25.png E-MoonClock-data/E-MoonClock-26.png \
+E-MoonClock-data/E-MoonClock-27.png E-MoonClock-data/E-MoonClock-28.png \
+E-MoonClock-data/E-MoonClock-29.png E-MoonClock-data/E-MoonClock-30.png \
+E-MoonClock-data/E-MoonClock-31.png E-MoonClock-data/E-MoonClock-32.png \
+E-MoonClock-data/E-MoonClock-33.png E-MoonClock-data/E-MoonClock-34.png \
+E-MoonClock-data/E-MoonClock-35.png E-MoonClock-data/E-MoonClock-36.png \
+E-MoonClock-data/E-MoonClock-37.png E-MoonClock-data/E-MoonClock-38.png \
+E-MoonClock-data/E-MoonClock-39.png E-MoonClock-data/E-MoonClock-40.png \
+E-MoonClock-data/E-MoonClock-41.png E-MoonClock-data/E-MoonClock-42.png \
+E-MoonClock-data/E-MoonClock-43.png E-MoonClock-data/E-MoonClock-44.png \
+E-MoonClock-data/E-MoonClock-45.png E-MoonClock-data/E-MoonClock-46.png \
+E-MoonClock-data/E-MoonClock-47.png E-MoonClock-data/E-MoonClock-48.png \
+E-MoonClock-data/E-MoonClock-49.png E-MoonClock-data/E-MoonClock-50.png \
+E-MoonClock-data/E-MoonClock-51.png E-MoonClock-data/E-MoonClock-52.png \
+E-MoonClock-data/E-MoonClock-53.png E-MoonClock-data/E-MoonClock-54.png \
+E-MoonClock-data/E-MoonClock-55.png E-MoonClock-data/E-MoonClock-56.png \
+E-MoonClock-data/E-MoonClock-57.png E-MoonClock-data/E-MoonClock-58.png \
+E-MoonClock-data/E-MoonClock-59.png E-MoonClock-data/E-MoonClock-60.png \
+E-Mountbox-data/E-Mountbox-bg.png E-Mountbox-data/E-Mountbox-blockdev.png \
+E-Mountbox-data/E-Mountbox-cd.png E-Mountbox-data/E-Mountbox-floppy.png \
+E-Mountbox-data/E-Mountbox-zip.png E-Mountbox-data/E-Mountbox-jazz.png \
 E-Power-data/E-Power-Bat-0.png E-Power-data/E-Power-Bat-10.png \
 E-Power-data/E-Power-Bat-100.png E-Power-data/E-Power-Bat-20.png \
 E-Power-data/E-Power-Bat-30.png E-Power-data/E-Power-Bat-40.png \
 E-Power-data/E-Power-Bat-50.png E-Power-data/E-Power-Bat-60.png \
 E-Power-data/E-Power-Bat-70.png E-Power-data/E-Power-Bat-80.png \
-E-Power-data/E-Power-Bat-90.png E-SD-data/E-SD_minitime.png E-SD-data/E-SD_standby.png \
-E-ScreenShoot-data/E-ScreenShoot_col.png E-ScreenShoot-data/E-ScreenShoot_minitime.png \
-E-ScreenShoot-data/E-ScreenShoot_minitime2.png E-ScreenShoot-data/E-ScreenShoot_root.png \
-E-ScreenShoot-data/E-ScreenShoot_shoot.png E-ScreenShoot-data/E-ScreenShoot_time.png \
-E-ScreenShoot-data/E-ScreenShoot_win.png Emix-data/Emix.AUTHORS Emix-data/Emix.COPYING \
+E-Power-data/E-Power-Bat-90.png E-SD-data/E-SD_minitime.png \
+E-SD-data/E-SD_standby.png \
+E-ScreenShoot-data/E-ScreenShoot_col.png \
+E-ScreenShoot-data/E-ScreenShoot_minitime.png \
+E-ScreenShoot-data/E-ScreenShoot_minitime2.png \
+E-ScreenShoot-data/E-ScreenShoot_root.png \
+E-ScreenShoot-data/E-ScreenShoot_shoot.png \
+E-ScreenShoot-data/E-ScreenShoot_time.png \
+E-ScreenShoot-data/E-ScreenShoot_win.png \
+Emix-data/Emix.AUTHORS Emix-data/Emix.COPYING \
 Emix-data/Emix.README Emix-data/Emix.TODO E-UrlWatch-data/wooeep.wav \
-E-Magic-data/answers.txt E-Magic-data/8ball.png E-OpenGL-Demo-data/cube_texture.RGB \
+E-Magic-data/answers.txt E-Magic-data/8ball.png \
+E-OpenGL-Demo-data/cube_texture.RGB \
 E-Toolbox-data/eterm.png E-Toolbox-data/mail.png E-Toolbox-data/netscape.png \
 E-Toolbox-data/ee2.png E-Toolbox-data/folder.png E-Toolbox-data/linux.png \
-E-Toolbox-data/sample.cfg E-Toolbox-data/popup-sample.cfg E-Toolbox-data/default.cfg
+E-Toolbox-data/sample.cfg E-Toolbox-data/popup-sample.cfg \
+E-Toolbox-data/default.cfg
 
-EXTRA_DIST = ${ICONS} ${ABOUT_DOCS} ${DATA_FILES}
 
-NEED_FONT = E-Clock E-Mixer E-MoonClock E-Mountbox E-NetFlame E-Power E-SD E-ScreenSave E-ScreenShoot Emix E-UrlWatch E-PlayCD E-OpenGL-Demo E-GtkRc E-Pinger
-NEED_BG = E-Clock E-Mixer E-MoonClock E-Mountbox E-NetFlame E-Power E-SD E-ScreenSave E-ScreenShoot Emix E-UrlWatch E-PlayCD E-OpenGL-Demo E-GtkRc E-Pinger
-BG_SRC = E-Cpu.ABOUT/bg.png
-FONT_SRC = E-Cpu.ABOUT/aircut3.ttf
+NEED_FONT = E-Clock E-Mixer E-MoonClock E-Mountbox E-NetFlame E-Power E-SD \
+E-ScreenSave E-ScreenShoot Emix E-UrlWatch E-PlayCD E-OpenGL-Demo E-GtkRc \
+E-Pinger E-Pants E-Cpu
+NEED_BG = E-Clock E-Mixer E-MoonClock E-Mountbox E-NetFlame E-Power E-SD \
+E-ScreenSave E-ScreenShoot Emix E-UrlWatch E-PlayCD E-OpenGL-Demo E-GtkRc \
+E-Pinger E-Pants E-Cpu
+BG_SRC = bg.png
+FONT_SRC = aircut3.ttf
+
+EXTRA_DIST = ${ICONS} ${ABOUT_DOCS} ${DATA_FILES} ${BG_SRC} ${FONT_SRC}
 
 install-data-hook:
-	$(mkinstalldirs) $(DESTDIR)$(EROOT)/epplet_icons
-	$(mkinstalldirs) $(DESTDIR)$(EROOT)/epplet_data
+	$(mkinstalldirs) $(DESTDIR)$(edatadir)/epplet_icons
+	$(mkinstalldirs) $(DESTDIR)$(edatadir)/epplet_data
 	@for i in `echo $(bin_PROGRAMS) | sed 's/\.epplet//g'`; do \
 	  if test -d $${i}-data ; then \
-	    echo $(mkinstalldirs) $(DESTDIR)$(EROOT)/epplet_data/$$i ; \
-	    $(mkinstalldirs) $(DESTDIR)$(EROOT)/epplet_data/$$i ; \
+	    echo $(mkinstalldirs) $(DESTDIR)$(edatadir)/epplet_data/$$i ; \
+	    $(mkinstalldirs) $(DESTDIR)$(edatadir)/epplet_data/$$i ; \
 	    data=`echo $$i-data/* | sed s#$$i-data/CVS##`;\
-	    echo $(INSTALL_DATA) $$data $(DESTDIR)$(EROOT)/epplet_data/$$i/ ; \
-	    $(INSTALL_DATA) $$data $(DESTDIR)$(EROOT)/epplet_data/$$i/ ; \
+	    echo $(INSTALL_DATA) $$data $(DESTDIR)$(edatadir)/epplet_data/$$i/ ; \
+	    $(INSTALL_DATA) $$data $(DESTDIR)$(edatadir)/epplet_data/$$i/ ; \
 	  fi ; \
 	  if test -d $${i}.ABOUT ; then \
-	    echo $(mkinstalldirs) $(DESTDIR)$(EROOT)/epplet_data/$$i/$${i}.ABOUT ; \
-	    $(mkinstalldirs) $(DESTDIR)$(EROOT)/epplet_data/$$i/$${i}.ABOUT ; \
+	    echo $(mkinstalldirs) $(DESTDIR)$(edatadir)/epplet_data/$$i/$${i}.ABOUT ; \
+	    $(mkinstalldirs) $(DESTDIR)$(edatadir)/epplet_data/$$i/$${i}.ABOUT ; \
 	    ABOUT=`echo $$i.ABOUT/* | sed s#$$i.ABOUT/CVS##`;\
-	    echo $(INSTALL_DATA) $$ABOUT $(DESTDIR)$(EROOT)/epplet_data/$$i/$${i}.ABOUT/ ; \
-	    $(INSTALL_DATA) $$ABOUT $(DESTDIR)$(EROOT)/epplet_data/$$i/$${i}.ABOUT/ ; \
+	    echo $(INSTALL_DATA) $$ABOUT $(DESTDIR)$(edatadir)/epplet_data/$$i/$${i}.ABOUT/ ; \
+	    $(INSTALL_DATA) $$ABOUT $(DESTDIR)$(edatadir)/epplet_data/$$i/$${i}.ABOUT/ ; \
 	  fi ; \
 	  if test -f icons/$${i}.icon ; then \
-	    echo $(INSTALL_DATA) $(srcdir)/icons/$${i}.icon $(DESTDIR)$(EROOT)/epplet_icons/ ; \
-	    $(INSTALL_DATA) $(srcdir)/icons/$${i}.icon $(DESTDIR)$(EROOT)/epplet_icons/ ; \
+	    echo $(INSTALL_DATA) $(srcdir)/icons/$${i}.icon $(DESTDIR)$(edatadir)/epplet_icons/ ; \
+	    $(INSTALL_DATA) $(srcdir)/icons/$${i}.icon $(DESTDIR)$(edatadir)/epplet_icons/ ; \
 	  fi ; \
 	done
-	@for i in $(NEED_BG) ; do \
-	  echo $(mkinstalldirs) $(DESTDIR)$(EROOT)/epplet_data/$$i/$${i}.ABOUT ; \
-	  $(mkinstalldirs) $(DESTDIR)$(EROOT)/epplet_data/$$i/$${i}.ABOUT ; \
-	  echo $(INSTALL_DATA) $(srcdir)/$(BG_SRC) $(DESTDIR)$(EROOT)/epplet_data/$$i/$${i}.ABOUT/ ; \
-	  $(INSTALL_DATA) $(srcdir)/$(BG_SRC) $(DESTDIR)$(EROOT)/epplet_data/$$i/$${i}.ABOUT/ || : ; \
+	$(INSTALL_DATA) $(srcdir)/$(BG_SRC) $(DESTDIR)$(edatadir)/epplet_data/
+	$(INSTALL_DATA) $(srcdir)/$(FONT_SRC) $(DESTDIR)$(edatadir)/epplet_data/
+	@cd $(DESTDIR)$(edatadir)/epplet_data/ ; \
+	for i in $(NEED_BG) ; do \
+	  about_dir="$(DESTDIR)$(edatadir)/epplet_data/$$i/$${i}.ABOUT" ; \
+	  echo "test -d  $$about_dir || $(mkinstalldirs) $$about_dir" ; \
+	  test -d  $$about_dir || $(mkinstalldirs) $$about_dir ; \
+	  echo "ln -sf ../../$(BG_SRC) $$about_dir || :" ; \
+	  ln -sf ../../$(BG_SRC) $$about_dir || : ; \
 	done
-	@for i in $(NEED_FONT) ; do \
-	  echo $(mkinstalldirs) $(DESTDIR)$(EROOT)/epplet_data/$$i/$${i}.ABOUT ; \
-	  $(mkinstalldirs) $(DESTDIR)$(EROOT)/epplet_data/$$i/$${i}.ABOUT ; \
-	  echo $(INSTALL_DATA) $(srcdir)/$(FONT_SRC) $(DESTDIR)$(EROOT)/epplet_data/$$i/$${i}.ABOUT/ ; \
-	  $(INSTALL_DATA) $(srcdir)/$(FONT_SRC) $(DESTDIR)$(EROOT)/epplet_data/$$i/$${i}.ABOUT/ || : ; \
+	@cd $(DESTDIR)$(edatadir)/epplet_data/ ; \
+	for i in $(NEED_FONT) ; do \
+	  about_dir="$(DESTDIR)$(edatadir)/epplet_data/$$i/$${i}.ABOUT" ; \
+	  echo "test -d  $$about_dir || $(mkinstalldirs) $$about_dir" ; \
+	  test -d  $$about_dir || $(mkinstalldirs) $$about_dir ; \
+	  echo "ln -sf ../../$(FONT_SRC) $$about_dir || :" ; \
+	  ln -sf ../../$(FONT_SRC) $$about_dir || : ; \
 	done
