@@ -580,6 +580,7 @@ EWMH_GetWindowType(EWin * ewin)
 	ewin->skiptask = 1;
 	ewin->skipwinlist = 1;
 	ewin->skipfocus = 1;
+	ewin->focusclick = 1;
 	ewin->never_use_area = 1;
      }
    else if (atom == _NET_WM_WINDOW_TYPE_UTILITY)
@@ -660,9 +661,9 @@ EWMH_ProcessClientMessage(XClientMessageEvent * event)
    char               *name = XGetAtomName(disp, event->message_type);
 
    printf
-      ("EWMH_ProcessClientMessage: ev_type=%s(%d) ev_win=%#x data[0-3]= %08x %08x %08x %08x\n",
-       name, event->message_type, event->window, event->data.l[0],
-       event->data.l[1], event->data.l[2], event->data.l[3]);
+      ("EWMH_ProcessClientMessage: ev_type=%s(%d) ev_win=%#x data[0-3]= %08lx %08lx %08lx %08lx\n",
+       name, (unsigned)event->message_type, (unsigned)event->window,
+       event->data.l[0], event->data.l[1], event->data.l[2], event->data.l[3]);
    XFree(name);
 #endif
    EDBUG(6, "EWMH_ProcessClientMessage");
@@ -689,16 +690,11 @@ EWMH_ProcessClientMessage(XClientMessageEvent * event)
    if (event->message_type == _NET_ACTIVE_WINDOW)
      {
 	if (ewin->iconified)
-	  {
-	     DeIconifyEwin(ewin);
-	  }
-	else
-	  {
-	     RaiseEwin(ewin);
-	     if (ewin->shaded)
-		UnShadeEwin(ewin);
-	     FocusToEWin(ewin);
-	  }
+	   DeIconifyEwin(ewin);
+	RaiseEwin(ewin);
+	if (ewin->shaded)
+	   UnShadeEwin(ewin);
+	FocusToEWin(ewin);
      }
    else if (event->message_type == _NET_CLOSE_WINDOW)
      {
