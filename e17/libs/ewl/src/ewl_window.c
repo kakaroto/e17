@@ -345,15 +345,15 @@ void
 ewl_window_set_max_size(Ewl_Widget * widget, int w, int h)
 {
 	DENTER_FUNCTION;
-	DCHECK_PARAM_PTR("w", w);
+	DCHECK_PARAM_PTR("widget", widget);
 
-	EWL_OBJECT(w)->maximum.w = w;
-	EWL_OBJECT(w)->maximum.h = h;
+	EWL_OBJECT(widget)->maximum.w = w;
+	EWL_OBJECT(widget)->maximum.h = h;
 
-	if (!REALIZED(w))
+	if (!REALIZED(widget))
 		return;
 
-	e_window_set_max_size(EWL_WINDOW(w)->window, w, h);
+	e_window_set_max_size(EWL_WINDOW(widget)->window, w, h);
 
 	DLEAVE_FUNCTION;
 }
