@@ -12,7 +12,7 @@ Packager: %{?_packager:%{_packager}}%{!?_packager:%{_vendor}}
 Vendor: %{?_vendorinfo:%{_vendorinfo}}%{!?_vendorinfo:%{_vendor}}
 Distribution: %{?_distribution:%{_distribution}}%{!?_distribution:%{_vendor}}
 #BuildSuggests: freeglut-devel xorg-x11-devel
-BuildRequires: imlib2-devel XFree86-devel
+BuildRequires: imlib-devel XFree86-devel
 Requires: enlightenment >= 0.16.0
 Provides: epplets = %{version}
 Obsoletes: epplets
