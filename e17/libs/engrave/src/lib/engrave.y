@@ -62,6 +62,9 @@
 
 %%
 
+start: { section = BASE; } edjes
+    ;
+
 edjes: /* blank */
 	| images edjes 
 	| fonts edjes
