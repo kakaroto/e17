@@ -483,8 +483,8 @@ CreatePager(void)
    attr.background_pixel = 0;
    attr.save_under = False;
    p->win = ECreateWindow(root.win, 0, 0, ((48 * root.w) / root.h) * ax, 48 * ay, 0);
-   p->pmap = ECreatePixmap(disp, p->win, ((48 * root.w) / root.h) * ax, 48 * ay, root.depth);
-   p->bgpmap = ECreatePixmap(disp, p->win, ((48 * root.w) / root.h) * ax, 48, root.depth);
+   p->pmap = ECreatePixmap(disp, p->win, ((48 * root.w) / root.h) * ax, 48 * ay, id->x.depth);
+   p->bgpmap = ECreatePixmap(disp, p->win, ((48 * root.w) / root.h) * ax, 48, id->x.depth);
    ESetWindowBackgroundPixmap(disp, p->win, p->pmap);
    XSelectInput(disp, p->win, ButtonPressMask | ButtonReleaseMask |
 		PointerMotionMask);
@@ -515,7 +515,7 @@ CreatePager(void)
 void
 PagerResize(Pager * p, int w, int h)
 {
-   int                 ax, ay, i;
+   int                 ax, ay, i, cx, cy;
    char                pq;
    ImageClass         *ic;
 
@@ -531,8 +531,8 @@ PagerResize(Pager * p, int w, int h)
    p->h = h;
    p->dw = w / ax;
    p->dh = h / ay;
-   p->pmap = ECreatePixmap(disp, p->win, p->w, p->h, root.depth);
-   p->bgpmap = ECreatePixmap(disp, p->win, p->w / ax, p->h / ay, root.depth);
+   p->pmap = ECreatePixmap(disp, p->win, p->w, p->h, id->x.depth);
+   p->bgpmap = ECreatePixmap(disp, p->win, p->w / ax, p->h / ay, id->x.depth);
    if (p->visible)
       PagerRedraw(p, 1);
    ESetWindowBackgroundPixmap(disp, p->win, p->pmap);
@@ -552,7 +552,10 @@ PagerResize(Pager * p, int w, int h)
    ic = FindItem("PAGER_SEL", 0, LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
    if (ic)
      {
-	EResizeWindow(disp, p->sel_win, w / ax, h / ay);
+	cx = desks.desk[p->desktop].current_area_x;
+	cy = desks.desk[p->desktop].current_area_y;
+	EMoveResizeWindow(disp, p->sel_win, cx * p->dw, cy * p->dh,
+			  w / ax, h / ay);
 	IclassApply(ic, p->sel_win, w / ax, h / ay, 0, 0, STATE_NORMAL, 0);
      }
    queue_up = pq;
@@ -652,8 +655,10 @@ PagerKill(Pager * p)
    EDestroyWindow(disp, p->win);
    if (p->hi_win)
       EDestroyWindow(disp, p->hi_win);
-   EFreePixmap(disp, p->pmap);
-   EFreePixmap(disp, p->bgpmap);
+   if (p->pmap)
+      EFreePixmap(disp, p->pmap);
+   if (p->bgpmap)
+      EFreePixmap(disp, p->bgpmap);
    if (p->border_name)
       Efree(p->border_name);
    Efree(p);
@@ -832,7 +837,7 @@ void
 PagerRedraw(Pager * p, char newbg)
 {
    int                 i, x, y, ax, ay, cx, cy;
-   static GC           gc = 0;
+   GC                  gc;
    XGCValues           gcv;
    int                 c1, c2, r, g, b;
 
@@ -864,8 +869,6 @@ PagerRedraw(Pager * p, char newbg)
    GetAreaSize(&ax, &ay);
    cx = desks.desk[p->desktop].current_area_x;
    cy = desks.desk[p->desktop].current_area_y;
-   if (!gc)
-      gc = XCreateGC(disp, p->pmap, 0, &gcv);
    r = 0;
    g = 0;
    b = 0;
@@ -874,17 +877,19 @@ PagerRedraw(Pager * p, char newbg)
    g = 255;
    b = 255;
    c2 = Imlib_best_color_match(id, &r, &g, &b);
+   gc = XCreateGC(disp, p->pmap, 0, &gcv);
    if ((newbg > 0) && (newbg < 3))
      {
 	if (!SNAP)
 	  {
 	     ImageClass         *ic = NULL;
 
-	     Imlib_free_pixmap(id, p->bgpmap);
-	     ic = FindItem("PAGER_BACKGROUND", 0, LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
+	     EFreePixmap(disp, p->bgpmap);
+	     ic = FindItem("PAGER_BACKGROUND", 0,
+			   LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
 	     if (ic)
-		IclassApplyCopy(ic, p->win, p->w / ax, p->h / ay, 0, 0, STATE_NORMAL,
-				&(p->bgpmap), NULL);
+		IclassApplyCopy(ic, p->win, p->w / ax, p->h / ay,
+				0, 0, STATE_NORMAL, &(p->bgpmap), NULL);
 	  }
 	else
 	  {
@@ -897,22 +902,24 @@ PagerRedraw(Pager * p, char newbg)
 		  uniq = GetUniqueBGString(desks.desk[p->desktop].bg);
 		  Esnprintf(s, sizeof(s),
 			    "%s/cached/pager/%s.%i.%i.%s",
-		     UserEDir(), desks.desk[p->desktop].bg->name, (p->w / ax),
-			    (p->h / ay), uniq);
+			    UserEDir(), desks.desk[p->desktop].bg->name,
+			    (p->w / ax), (p->h / ay), uniq);
 		  Efree(uniq);
 
 		  im = Imlib_load_image(id, s);
 		  if (im)
 		    {
-		       Imlib_free_pixmap(id, p->bgpmap);
+		       EFreePixmap(disp, p->bgpmap);
 		       Imlib_render(id, im, (p->w / ax), (p->h / ay));
-		       p->bgpmap = Imlib_move_image(id, im);
+		       p->bgpmap = Imlib_copy_image(id, im);
 		       Imlib_destroy_image(id, im);
 		    }
 		  else
 		    {
-		       SetBackgroundTo(id, p->bgpmap, desks.desk[p->desktop].bg, 0);
-		       im = Imlib_create_image_from_drawable(id, p->bgpmap, 0, 0, 0,
+		       SetBackgroundTo(id, p->bgpmap,
+				       desks.desk[p->desktop].bg, 0);
+		       im = Imlib_create_image_from_drawable(id, p->bgpmap,
+							     0, 0, 0,
 							     (p->w / ax),
 							     (p->h / ay));
 		       Imlib_save_image_to_ppm(id, im, s);
@@ -925,7 +932,8 @@ PagerRedraw(Pager * p, char newbg)
 		  XSetForeground(disp, gc, c1);
 		  XDrawRectangle(disp, p->bgpmap, gc, 0, 0, p->dw, p->dh);
 		  XSetForeground(disp, gc, c2);
-		  XFillRectangle(disp, p->bgpmap, gc, 1, 1, p->dw - 2, p->dh - 2);
+		  XFillRectangle(disp, p->bgpmap, gc, 1, 1,
+				 p->dw - 2, p->dh - 2);
 	       }
 	  }
      }
@@ -957,9 +965,7 @@ PagerRedraw(Pager * p, char newbg)
 		    }
 		  XCopyArea(disp, ewin->mini_pmap, p->pmap, gc, 0, 0, ww, wh, wx, wy);
 		  if (ewin->mini_mask)
-		    {
-		       XSetClipMask(disp, gc, None);
-		    }
+		     XSetClipMask(disp, gc, None);
 	       }
 	     else
 	       {
@@ -971,7 +977,11 @@ PagerRedraw(Pager * p, char newbg)
 	  }
      }
    if (newbg < 2)
-      XClearWindow(disp, p->win);
+     {
+	ESetWindowBackgroundPixmap(disp, p->win, p->pmap);
+	XClearWindow(disp, p->win);
+     }
+   XFreeGC(disp, gc);
 }
 
 void
@@ -1037,13 +1047,21 @@ PagerReArea(void)
      {
 	for (i = 0; i < pnum; i++)
 	  {
-	     pl[i]->w = 0;
-	     pl[i]->h = 0;
 	     w = pl[i]->dw * ax;
 	     h = pl[i]->dh * ay;
-	     PagerResize(pl[i], w, h);
 	     if (pl[i]->ewin)
-		ResizeEwin(pl[i]->ewin, w, h);
+	       {
+		  double              aspect;
+
+		  aspect = ((double)root.w) / ((double)root.h);
+		  pl[i]->ewin->client.w_inc = ax * 4;
+		  pl[i]->ewin->client.h_inc = ay * 8;
+		  pl[i]->ewin->client.aspect_min = aspect * ((double)ax / (double)ay);
+		  pl[i]->ewin->client.aspect_max = aspect * ((double)ax / (double)ay);
+		  MoveResizeEwin(pl[i]->ewin,
+				 pl[i]->ewin->x, pl[i]->ewin->y,
+				 w, h);
+	       }
 	  }
 	Efree(pl);
      }

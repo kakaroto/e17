@@ -460,16 +460,11 @@ ESetWindowBackgroundPixmap(Display * d, Window win, Pixmap pmap)
    xid = FindXID(win);
    if (xid)
      {
-	if (xid->bgpmap != pmap)
-	  {
-	     xid->bgpmap = pmap;
-	     XSetWindowBackgroundPixmap(d, win, pmap);
-	  }
-     }
-   else
-     {
+	xid->bgpmap = pmap;
 	XSetWindowBackgroundPixmap(d, win, pmap);
      }
+   else
+      XSetWindowBackgroundPixmap(d, win, pmap);
 }
 
 void

@@ -78,29 +78,29 @@ HandleDrawQueue()
 	       {
 		  if ((lst[i]->win == dq->win) && (lst[i]->redraw_pager))
 		    {
-		       switch (dq->newbg)
+		       switch (lst[i]->newbg)
 			 {
 			 case 0:
-			    if (lst[i]->newbg == 1)
-			       dq->newbg = 1;
-			    if (lst[i]->newbg == 2)
-			       dq->newbg = 1;
+			    if (dq->newbg == 1)
+			       lst[i]->newbg = 1;
+			    else if (dq->newbg == 2)
+			       lst[i]->newbg = 1;
 			    break;
 			 case 1:
 			    break;
 			 case 2:
-			    if (lst[i]->newbg == 1)
-			       dq->newbg = 1;
-			    else if (lst[i]->newbg == 0)
-			       dq->newbg = 1;
+			    if (dq->newbg == 1)
+			       lst[i]->newbg = 1;
+			    else if (dq->newbg == 0)
+			       lst[i]->newbg = 1;
 			    break;
 			 case 3:
-			    if (lst[i]->newbg == 0)
-			       dq->newbg = 0;
-			    else if (lst[i]->newbg == 1)
-			       dq->newbg = 1;
-			    else if (lst[i]->newbg == 2)
-			       dq->newbg = 2;
+			    if (dq->newbg == 1)
+			       lst[i]->newbg = 1;
+			    else if (dq->newbg == 0)
+			       lst[i]->newbg = 0;
+			    else if (dq->newbg == 2)
+			       lst[i]->newbg = 2;
 			    break;
 			 default:
 			    break;

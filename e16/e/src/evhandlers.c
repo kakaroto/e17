@@ -1289,20 +1289,13 @@ HandleUnmap(XEvent * ev)
      }
    if (ewin)
      {
-	Pager              *p;
-
-	p = FindPager(ev->xdestroywindow.window);
-	if (p)
+	if (ewin->pager)
 	  {
-	     if ((mode.mode == MODE_PAGER_DRAG) && (p->hi_ewin))
-	       {
-		  PagerHideHi(p);
-	       }
+	     if ((mode.mode == MODE_PAGER_DRAG) && (ewin->pager->hi_ewin))
+		PagerHideHi(ewin->pager);
 	     mode.mode = MODE_NONE;
 	     mode.context_pager = NULL;
 	  }
-	if (ewin->pager)
-	   PagerHideHi(ewin->pager);
 	if (ewin->docked)
 	   DockDestroy(ewin);
 	if (ewin == mode.ewin)
@@ -2168,7 +2161,7 @@ HandleMouseUp(XEvent * ev)
 	int                 pax, pay;
 
 	p = FindPager(ev->xbutton.window);
-	if (p)
+	if ((p) && (ev->xbutton.button == 1))
 	  {
 	     if (ev->xbutton.window == p->hi_win)
 	       {
