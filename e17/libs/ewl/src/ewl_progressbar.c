@@ -1,6 +1,8 @@
 #include <Ewl.h>
 
 void __ewl_progressbar_configure(Ewl_Widget * w, void *ev_data, void *user_data);
+void __ewl_progressbar_child_add (Ewl_Container *c, Ewl_Widget *w);
+void __ewl_progressbar_child_resize(Ewl_Container *c, Ewl_Widget *w, int size, Ewl_Orientation o);
 
 
 /**
@@ -37,7 +39,9 @@ void ewl_progressbar_init(Ewl_Progressbar * p)
 	w = EWL_WIDGET(p);
 
 	ewl_container_init(EWL_CONTAINER(w), "progressbar",
-			NULL, NULL, NULL);
+			__ewl_progressbar_child_add, 
+			__ewl_progressbar_child_add, 
+			NULL);
 
 	p->bar = NEW(Ewl_Widget, 1);
 	if (!p->bar)
@@ -88,7 +92,10 @@ void ewl_progressbar_set_value(Ewl_Progressbar * p, double v)
 	p->value = v;
 
 	if (!p->auto_label) {
-		snprintf (c, sizeof (c), "%.0lf", p->value);
+		/* 
+		 * Do a precentage calculation as a default label.
+		 */
+		snprintf (c, sizeof (c), "%.0lf%%", (p->value / p->range) * 100);
 		ewl_text_set_text(EWL_TEXT(p->label), c);
 	}
 
@@ -251,4 +258,27 @@ void __ewl_progressbar_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
+
+
+void __ewl_progressbar_child_add (Ewl_Container *c, Ewl_Widget *w)
+{
+	Ewl_Progressbar *p = EWL_PROGRESSBAR (c);
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void __ewl_progressbar_child_resize(Ewl_Container *c, Ewl_Widget *w, 
+		int size, Ewl_Orientation o)
+{
+	Ewl_Progressbar *p = EWL_PROGRESSBAR (c);
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
 
