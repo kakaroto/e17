@@ -883,10 +883,15 @@ HandleMotion(XEvent * ev)
 	     GetAreaSize(&ax, &ay);
 	     dx = mode.x - mode.px;
 	     dy = mode.y - mode.py;
-	     GetWinXY(p->hi_win, &x, &y);
-	     XRaiseWindow(disp, p->hi_win);
-	     EMoveWindow(disp, p->hi_win, x + dx, y + dy);
-	     if ((p->hi_ewin) && (!p->hi_ewin->pager))
+	     if ((p->hi_ewin) && (!p->hi_ewin->pager) && 
+		 (!p->hi_ewin->fixedpos))
+	       {
+		  GetWinXY(p->hi_win, &x, &y);
+		  XRaiseWindow(disp, p->hi_win);
+		  EMoveWindow(disp, p->hi_win, x + dx, y + dy);
+	       }
+	     if ((p->hi_ewin) && (!p->hi_ewin->pager) && 
+		 (!p->hi_ewin->fixedpos))
 	       {
 		  Window              dw;
 		  int                 px, py;

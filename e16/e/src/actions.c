@@ -988,6 +988,8 @@ doMoveImpl(void *params, char constrained)
    ewin = mode.ewin = GetFocusEwin();
    if (!ewin)
       EDBUG_RETURN(0);
+   if (ewin->fixedpos)
+      EDBUG_RETURN(0);
    mode.moveresize_pending_ewin = ewin;
    real_move_mode = mode.movemode;
    if (((ewin->groups) || (ewin->has_transients)) && (mode.movemode > 0))
