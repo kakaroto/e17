@@ -37,15 +37,18 @@ main (int argc, char **argv)
     init_montage_mode ();
   else if (opt.index)
     init_index_mode ();
-  else if (opt.slideshow)
-    init_slideshow_mode ();
   else if (opt.multiwindow)
     init_multiwindow_mode ();
+  else
+    {
+      /* Slideshow mode is now the default. 'Cos its spiffy */
+      opt.slideshow = 1;
+      init_slideshow_mode ();
+    }
 
   main_loop ();
   return 0;
 }
-
 
 void
 main_loop (void)
@@ -56,13 +59,16 @@ main_loop (void)
   struct timeval tval;
   fd_set fdset;
   double t1;
-  int xfd, count, fdsize, j;
+  int xfd = 0, count = 0, fdsize = 0, j = 0;
   /* A global zoom mode to save cpu on motionnotify */
   int zoom_mode = 0;
 
   D (("In main_loop, window_num is %d\n", window_num));
   if (window_num == 0)
     exit (0);
+
+  xfd = ConnectionNumber (disp);
+  fdsize = xfd + 1;
 
   for (;;)
     {
@@ -80,8 +86,7 @@ main_loop (void)
 	      break;
 	    case KeyPress:
 	      D (("Received KeyPress event\n"));
-	      if (opt.slideshow)
-		handle_keypress_event (&ev, ev.xkey.window);
+	      handle_keypress_event (&ev, ev.xkey.window);
 	      break;
 	    case ButtonPress:
 	      D (("Received ButtonPress event\n"));
@@ -138,7 +143,6 @@ main_loop (void)
 			slideshow_change_image (winwid, SLIDE_NEXT);
 		    }
 		  break;
-
 		default:
 		  D (("Recieved other ButtonPress event\n"));
 		  break;
@@ -166,11 +170,11 @@ main_loop (void)
 		}
 	      break;
 	    case MotionNotify:
-	      D (("Received MotionNotify event\n"));
 	      /* If zoom mode is set, then a window needs zooming, 'cos
-	       * button 2 must be pressed */
+	       * button 2 is pressed */
 	      if (zoom_mode)
 		{
+		  D (("Received MotionNotify event that I care about\n"));
 		  winwid = winwidget_get_from_window (ev.xmotion.window);
 		  if (winwid != NULL)
 		    {
@@ -233,6 +237,8 @@ main_loop (void)
 			  XClearWindow (disp, winwid->win);
 			  XFlush (disp);
 			  winwid->timeout = 1;
+			  D (("A window has timeout set\n"));
+			  timeout = 1;
 			}
 		    }
 		}
@@ -251,49 +257,25 @@ main_loop (void)
 	    }
 	  if (window_num == 0)
 	    exit (0);
-	  t1 = 0.2;
-	  tval.tv_sec = (long) t1;
-	  tval.tv_usec = (long) ((t1 - ((double) tval.tv_sec)) * 1000000);
-	  xfd = ConnectionNumber (disp);
-	  fdsize = xfd + 1;
-	  FD_ZERO (&fdset);
-	  FD_SET (xfd, &fdset);
 
-	  /* See if any windows need updating */
-	  for (j = 0; j < window_num; j++)
-	    if (windows[j]->timeout)
-	      {
-		timeout = 1;
-		D (("A window has timeout set\n"));
-		break;
-	      }
 	  D (("Performing select, timeout is %d\n", timeout));
+	  /* If a window has a smooth timeout set, but it is NOT still
+	   * zooming, wait 0.2 secs and then smooth it ::) */
 	  if (timeout && !zoom_mode)
 	    {
+	      t1 = 0.2;
+	      tval.tv_sec = (long) t1;
+	      tval.tv_usec = (long) ((t1 - ((double) tval.tv_sec)) * 1000000);
+	      FD_ZERO (&fdset);
+	      FD_SET (xfd, &fdset);
 	      D (("oo Performing wait then pass-thru select\n"));
 	      count = select (fdsize, &fdset, NULL, NULL, &tval);
 	      D (("oo Performed wait then pass-thru select\n"));
-	    }
-	  else if (!XPending (disp))
-	    {
-	      D (("oo Performing holding select\n"));
-	      count = select (fdsize, &fdset, NULL, NULL, NULL);
-	      D (("oo Performed holding select\n"));
-	    }
-	  else
-	    {
-	      /* Hrm. There's stuff I need to go back and do. No point
-	       * waiting for new events from X when I know there are some
-	       * in the queue */
-	      count = 0;
-	    }
-	  if (count < 0)
-	    {
-	      if ((errno == ENOMEM) || (errno == EINVAL) || (errno == EBADF))
-		exit (1);
-	    }
-	  else if ((timeout) && (!zoom_mode) && (count == 0))
-	    {
+	      if ((count < 0)
+		  && ((errno == ENOMEM) || (errno == EINVAL)
+		      || (errno == EBADF)))
+		eprintf ("Connection to X display lost");
+
 	      for (j = 0; j < window_num; j++)
 		{
 		  if (windows[j]->timeout)
@@ -351,6 +333,22 @@ main_loop (void)
 		      timeout = 0;
 		    }
 		}
+	    }
+	  else if (!XPending (disp))
+	    {
+	      /* Ok, there's no stuff I need to go back and do. (No point
+	       * waiting for new events from X when I know there are some
+	       * in the queue), so I can sit and block while waiting for
+	       * new events */
+	      FD_ZERO (&fdset);
+	      FD_SET (xfd, &fdset);
+	      D (("oo Performing blocking select\n"));
+	      count = select (fdsize, &fdset, NULL, NULL, NULL);
+	      D (("oo Performed blocking select\n"));
+	      if ((count < 0)
+		  && ((errno == ENOMEM) || (errno == EINVAL)
+		      || (errno == EBADF)))
+		eprintf ("Connection to X display lost");
 	    }
 	}
       if (window_num == 0)

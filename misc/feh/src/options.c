@@ -38,7 +38,7 @@ init_parse_options (int argc, char **argv)
   opt.montage = 0;
   opt.index = 0;
   opt.thumbs = 0;
-  opt.slideshow = 1;
+  opt.slideshow = 0;
   opt.recursive = 0;
   opt.output = 0;
   opt.output_file = NULL;
@@ -67,7 +67,7 @@ init_parse_options (int argc, char **argv)
       else if ((!strcmp (argv[i], "--version")) || (!strcmp (argv[i], "-v")))
 	show_version ();
       else if ((!strcmp (argv[i], "--montage")) || (!strcmp (argv[i], "-m")))
-	opt.montage = 1;
+	  opt.montage = 1;
       else if ((!strcmp (argv[i], "--index")) || (!strcmp (argv[i], "-i")))
 	opt.index = 1;
       else if ((!strcmp (argv[i], "--thumbs")) || (!strcmp (argv[i], "-t")))

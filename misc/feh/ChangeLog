@@ -1,3 +1,11 @@
+Mon Dec 20 16:46:58 1999  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
+
+	* Okay, I'm still a newbie at this X stuff :) Made some
+	optimisations to the main loop which speed things up a
+	bunch.
+	* Added better error handling when loading images.
+	* The Q or q key can now be used to exit the app in any mode.
+
 Mon Dec 20 15:22:43 1999  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
 
 	* Added some utility functions, so I don't have to write

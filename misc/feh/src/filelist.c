@@ -52,7 +52,7 @@ add_file_to_filelist_recursively (char *path, unsigned char enough)
 
   if (stat (path, &st))
     {
-      fprintf (stderr, PACKAGE " - file %s does not exist\n", path);
+      weprintf ("%s - file does not exist", path);
       return;
     }
   if (S_ISDIR (st.st_mode))
@@ -63,10 +63,7 @@ add_file_to_filelist_recursively (char *path, unsigned char enough)
 	  struct dirent *de;
 	  DIR *dir;
 	  if ((dir = opendir (path)) == NULL)
-	    {
-	      fprintf (stderr, "Error opening dir %s\n", path);
-	      exit (1);
-	    }
+	      eprintf ("Error opening dir %s", path);
 	  de = readdir (dir);
 	  while (de != NULL)
 	    {
@@ -77,11 +74,7 @@ add_file_to_filelist_recursively (char *path, unsigned char enough)
 
 		  /* Add one for the "/" and one for the '/0' */
 		  len = strlen (path) + strlen (de->d_name) + 2;
-		  if ((file = malloc (len)) == NULL)
-		    {
-		      fprintf (stderr, PACKAGE " - Out of memory\n");
-		      exit (1);
-		    }
+		  file = emalloc (len);
 		  /* Remember NOT to free this. add_file_to_filelist doesn't
 		   * duplicate and we need the filelist for the lifetime of the
 		   * app. */

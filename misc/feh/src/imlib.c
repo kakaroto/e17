@@ -26,7 +26,7 @@ init_x_and_imlib (void)
   D (("In init_x_and_imlib\n"));
   disp = XOpenDisplay (NULL);
   if (!disp)
-      eprintf ("Cannot open display");
+    eprintf ("Cannot open display");
   vis = DefaultVisual (disp, DefaultScreen (disp));
   depth = DefaultDepth (disp, DefaultScreen (disp));
   cm = DefaultColormap (disp, DefaultScreen (disp));
@@ -41,7 +41,6 @@ int
 feh_load_image (Imlib_Image ** im, char *filename)
 {
   Imlib_Load_Error err;
-  unsigned char must_exit = 0;
 
   D (("In feh_load_image: filename %s\n", filename));
 
@@ -53,60 +52,58 @@ feh_load_image (Imlib_Image ** im, char *filename)
   if ((err) || (!im))
     {
       /* Check error code */
-      fprintf (stderr,
-	       PACKAGE " - error loading %s - ", filename);
       switch (err)
 	{
 	case IMLIB_LOAD_ERROR_FILE_DOES_NOT_EXIST:
-	  fprintf (stderr, "File does not exist\n");
+	  weprintf ("%s - File does not exist", filename);
 	  break;
 	case IMLIB_LOAD_ERROR_FILE_IS_DIRECTORY:
-	  fprintf (stderr, "Directory specified for image filename\n");
+	  weprintf ("%s - Directory specified for image filename", filename);
 	  break;
 	case IMLIB_LOAD_ERROR_PERMISSION_DENIED_TO_READ:
-	  fprintf (stderr, "You do not have read access to that directory\n");
+	  weprintf
+	    ("%s - You don't have read access to that directory", filename);
 	  break;
 	case IMLIB_LOAD_ERROR_NO_LOADER_FOR_FILE_FORMAT:
-	  fprintf (stderr,
-		   "Imlib2 cannot find a loader for that file format\n");
+	  weprintf
+	    ("%s - You don't have an Imlib2 loader for that file format",
+	     filename);
 	  break;
 	case IMLIB_LOAD_ERROR_PATH_TOO_LONG:
-	  fprintf (stderr, "Path specified is too long\n");
+	  weprintf ("%s - Path specified is too long", filename);
 	  break;
 	case IMLIB_LOAD_ERROR_PATH_COMPONENT_NON_EXISTANT:
-	  fprintf (stderr, "Path component does not exist\n");
+	  weprintf ("%s - Path component does not exist", filename);
 	  break;
 	case IMLIB_LOAD_ERROR_PATH_COMPONENT_NOT_DIRECTORY:
-	  fprintf (stderr, "Path component is not a directory\n");
+	  weprintf ("%s - Path component is not a directory", filename);
 	  break;
 	case IMLIB_LOAD_ERROR_PATH_POINTS_OUTSIDE_ADDRESS_SPACE:
 	  /* wtf? :) */
-	  fprintf (stderr, "Path points outside address space\n");
+	  weprintf ("%s - Path points outside address space", filename);
 	  break;
 	case IMLIB_LOAD_ERROR_TOO_MANY_SYMBOLIC_LINKS:
-	  fprintf (stderr, "Too many levels of symbolic links\n");
+	  weprintf ("%s - Too many levels of symbolic links", filename);
 	  break;
 	case IMLIB_LOAD_ERROR_OUT_OF_MEMORY:
-	  fprintf (stderr, "Out of memory\n");
-	  must_exit = 1;
+	  eprintf ("While loading %s - Out of memory", filename);
 	  break;
 	case IMLIB_LOAD_ERROR_OUT_OF_FILE_DESCRIPTORS:
-	  fprintf (stderr, "Out of file descriptors\n");
-	  must_exit = 1;
+	  eprintf ("While loading %s - Out of file descriptors", filename);
 	  break;
 	case IMLIB_LOAD_ERROR_PERMISSION_DENIED_TO_WRITE:
-	  fprintf (stderr, "Cannot write to directory\n");
+	  weprintf ("%s - Cannot write to directory", filename);
 	  break;
 	case IMLIB_LOAD_ERROR_OUT_OF_DISK_SPACE:
-	  fprintf (stderr, "Cannot write - out of disk space\n");
+	  weprintf ("%s - Cannot write - out of disk space", filename);
 	  break;
 	case IMLIB_LOAD_ERROR_UNKNOWN:
 	default:
-	  fprintf (stderr, "Unknown error. Attempting to continue\n");
+	  weprintf
+	    ("While loading %s - Unknown error. Attempting to continue",
+	     filename);
 	  break;
 	}
-      if (must_exit)
-	exit (1);
       return 0;
     }
   D (("Loaded ok\n"));

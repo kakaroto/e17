@@ -20,8 +20,6 @@
 
 #include "feh.h"
 
-static int actual_file_num = 0;
-
 void
 init_slideshow_mode (void)
 {
@@ -48,7 +46,7 @@ init_slideshow_mode (void)
 	free (s);
     }
   if (!success)
-      eprintf ("No valid images found for loading");
+    show_mini_usage ();
 }
 
 void
@@ -180,29 +178,36 @@ handle_keypress_event (XEvent * ev, Window win)
   switch (keysym)
     {
     case XK_Left:
-      slideshow_change_image (winwid, SLIDE_PREV);
+      if (opt.slideshow)
+	slideshow_change_image (winwid, SLIDE_PREV);
       break;
     case XK_Right:
-      slideshow_change_image (winwid, SLIDE_NEXT);
+      if (opt.slideshow)
+	slideshow_change_image (winwid, SLIDE_NEXT);
       break;
     case XK_Delete:
       /* I could do with some confirmation here */
       /* How about holding ctrl? */
-      if (kev->state & ControlMask)
+      if (opt.slideshow)
 	{
-	  unlink (files[opt.cur_slide]);
-	  files[opt.cur_slide] = NULL;
-	  actual_file_num--;
-	  slideshow_change_image (winwid, SLIDE_NEXT);
+	  if (kev->state & ControlMask)
+	    {
+	      unlink (files[opt.cur_slide]);
+	      files[opt.cur_slide] = NULL;
+	      actual_file_num--;
+	      slideshow_change_image (winwid, SLIDE_NEXT);
+	    }
 	}
       break;
     case XK_Home:
     case XK_KP_Home:
-      slideshow_change_image (winwid, SLIDE_FIRST);
+      if (opt.slideshow)
+	slideshow_change_image (winwid, SLIDE_FIRST);
       break;
     case XK_End:
     case XK_KP_End:
-      slideshow_change_image (winwid, SLIDE_LAST);
+      if (opt.slideshow)
+	slideshow_change_image (winwid, SLIDE_LAST);
       break;
     default:
       break;
@@ -214,11 +219,13 @@ handle_keypress_event (XEvent * ev, Window win)
   kbuf[len] = '\0';
   if (*kbuf == 'n' || *kbuf == 'N' || *kbuf == ' ')
     {
-      slideshow_change_image (winwid, SLIDE_NEXT);
+      if (opt.slideshow)
+	slideshow_change_image (winwid, SLIDE_NEXT);
     }
   else if (*kbuf == 'p' || *kbuf == 'P' || *kbuf == '\b')
     {
-      slideshow_change_image (winwid, SLIDE_PREV);
+      if (opt.slideshow)
+	slideshow_change_image (winwid, SLIDE_PREV);
     }
   else if (*kbuf == 'q' || *kbuf == 'Q')
     {

@@ -28,6 +28,8 @@ init_multiwindow_mode (void)
 
   D (("In init_multiwindow_mode\n"));
 
+  actual_file_num = file_num;
+
   for (i = 0; i < file_num; i++)
     {
       char *s = NULL;
@@ -41,6 +43,8 @@ init_multiwindow_mode (void)
 	  if (!opt.progressive)
 	    winwidget_show (w);
 	}
+      else
+	actual_file_num--;
       free (s);
     }
 }

@@ -165,3 +165,4 @@ extern fehoptions opt;
 extern int file_num;
 extern char **files;
 extern winwidget progwin;
+extern int actual_file_num;

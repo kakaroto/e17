@@ -27,7 +27,7 @@ eprintf (char *fmt, ...)
   va_list args;
 
   fflush (stdout);
-  fprintf (stderr, "%s ERROR:", PACKAGE);
+  fprintf (stderr, "%s ERROR: ", PACKAGE);
 
   va_start (args, fmt);
   vfprintf (stderr, fmt, args);

@@ -30,3 +30,4 @@ fehoptions opt;
 int file_num = 0;
 char **files = NULL;
 winwidget progwin = NULL;
+int actual_file_num = 0;
