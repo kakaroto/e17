@@ -1915,3 +1915,14 @@ action anyway).
 Attempt #2 to fix fullscreen mode with XFree86-4.3.
 Fiddling a bit with _NET_ACTIVE_WINDOW hint handling.
 Clean compile of (normally disabled) debug stuff.
+
+-------------------------------------------------------------------------------
+
+Sun Jun  8 15:26:35 CEST 2003
+(Kim)
+
+Oops - the scripts dropped out a while back - too much cleaning.
+The scripts are now back in, under $EROOT/scripts, nicely stashed away as they
+should be.
+
+Remove raised pager mini-window after pager click w.o. drag.
