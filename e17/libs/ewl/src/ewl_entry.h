@@ -31,24 +31,24 @@ typedef struct Ewl_Entry Ewl_Entry;
  */
 struct Ewl_Entry
 {
-	Ewl_Container   container; /**< Inherit from Ewl_Container */
+	Ewl_Container container;      /**< Inherit from Ewl_Container */
 
-	char           *text;         /**< The initial text in the entry */
-	int             length;       /**< Length of the text displayed */
-	Evas_Object    *etox;         /**< Etox does the actual layout work */
-	Etox_Context   *context;      /**< Contains various format settings */
-	Ecore_DList    *ops;          /**< Series of operations to apply */
-	Ecore_DList    *applied;      /**< Applied set of operations */
+	char         *text;           /**< The initial text in the entry */
+	int           length;         /**< Length of the text displayed */
+	Evas_Object  *etox;           /**< Etox does the actual layout work */
+	Etox_Context *context;        /**< Contains various format settings */
+	Ecore_DList  *ops;            /**< Series of operations to apply */
+	Ecore_DList  *applied;        /**< Applied set of operations */
 
-	Ewl_Widget     *cursor;       /**< Provide Ewl_Entry_Cursor for cursor display */
-	Ewl_Widget     *selection;    /**< Provied Ewl_Entry_Selection for selection display */
+	Ewl_Widget   *cursor;         /**< Cursor widget */
+	Ecore_List   *selections;     /**< List of selections for display */
 
-	int             offset;       /**< Starting position of cursor in text */
-	int             editable;     /**< Flag to indicate if user can edit text */
-	Ecore_Timer    *timer;        /**< Time until scrolling text on select */
-	double          start_time;   /**< Time timer started */
-	int             in_select_mode; /**< Do keyboard cursor movements select? */
-	int             multiline;    /**< Do we deal with multiple lines of text? */
+	int           offset;         /**< Starting position of scrolling */
+	int           editable;       /**< Flag indicating user can edit text */
+	Ecore_Timer  *timer;          /**< Time until next text scrolling */
+	double        start_time;     /**< Time timer started */
+	int           in_select_mode; /**< keyboard cursor movements select? */
+	int           multiline;      /**< Deal with multiple lines of text? */
 };
 
 Ewl_Widget     *ewl_entry_new(char *text);
@@ -74,20 +74,22 @@ void            ewl_entry_style_set(Ewl_Entry *e, char *style);
 char           *ewl_entry_style_get(Ewl_Entry *e);
 
 void            ewl_entry_color_set(Ewl_Entry *e, int r, int g, int b, int a);
-void            ewl_entry_color_get(Ewl_Entry *e, int *r, int *g, int *b, int *a);
+void            ewl_entry_color_get(Ewl_Entry *e, int *r, int *g, int *b,
+				    int *a);
 
 void            ewl_entry_align_set(Ewl_Entry *e, unsigned int align);
 unsigned int    ewl_entry_align_get(Ewl_Entry *e);
 
 void            ewl_entry_index_select(Ewl_Entry *e, int si, int ei);
 void            ewl_entry_coord_select(Ewl_Entry *e, int sx, int sy, int ex,
-				   int ey);
+				       int ey);
 
 void            ewl_entry_index_geometry_map(Ewl_Entry *e, int index, int *xx,
-					 int *yy, int *ww, int *hh);
+					     int *yy, int *ww, int *hh);
 int             ewl_entry_coord_index_map(Ewl_Entry *e, int x, int y);
-int             ewl_entry_coord_geometry_map(Ewl_Entry *e, int x, int y, int *xx,
-					 int *yy, int *ww, int *hh);
+int             ewl_entry_coord_geometry_map(Ewl_Entry *e, int x, int y,
+					     int *xx, int *yy,
+					     int *ww, int *hh);
 
 void            ewl_entry_cursor_left_move(Ewl_Entry * e);
 void            ewl_entry_cursor_right_move(Ewl_Entry * e);
@@ -205,15 +207,18 @@ typedef struct Ewl_Entry_Selection Ewl_Entry_Selection;
 struct Ewl_Entry_Selection
 {
 	Ewl_Widget      widget;
-	unsigned int start;
+	Etox_Selection *select;
+	unsigned int    start;
 	unsigned int    end;
 };
 
 Ewl_Widget *ewl_entry_selection_new(void);
 void ewl_entry_selection_init(Ewl_Entry_Selection *s);
-void ewl_entry_selection_start_position_set(Ewl_Entry_Selection *s, unsigned int start);
+void ewl_entry_selection_start_position_set(Ewl_Entry_Selection *s,
+					    unsigned int start);
 int ewl_entry_selection_start_position_get(Ewl_Entry_Selection *s);
-void ewl_entry_selection_end_position_set(Ewl_Entry_Selection *s, unsigned int end);
+void ewl_entry_selection_end_position_set(Ewl_Entry_Selection *s,
+					  unsigned int end);
 int ewl_entry_selection_end_position_get(Ewl_Entry_Selection *s);
 void ewl_entry_selection_select_to(Ewl_Entry_Selection *s, unsigned int pos);
 
