@@ -4009,7 +4009,7 @@ Tile Integer
 	<name>frame1</name>
 	<border_width>2</border_width>
 	<label_xalign>0</label_xalign>
-	<shadow_type>GTK_SHADOW_IN</shadow_type>
+	<shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
 	<child>
 	  <left_attach>2</left_attach>
 	  <right_attach>3</right_attach>
@@ -4036,7 +4036,7 @@ Tile Integer
 	    <class>GtkFrame</class>
 	    <name>frame6</name>
 	    <label_xalign>0</label_xalign>
-	    <shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
+	    <shadow_type>GTK_SHADOW_IN</shadow_type>
 	    <child>
 	      <padding>0</padding>
 	      <expand>True</expand>
@@ -4079,7 +4079,9 @@ Tile Integer
 
 	    <widget>
 	      <class>GtkButton</class>
-	      <name>button1</name>
+	      <name>zoomin</name>
+	      <border_width>2</border_width>
+	      <tooltip>Click to zoom in further</tooltip>
 	      <can_focus>True</can_focus>
 	      <events>GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</events>
 	      <signal>
@@ -4097,7 +4099,9 @@ Tile Integer
 
 	    <widget>
 	      <class>GtkButton</class>
-	      <name>button2</name>
+	      <name>zoomout</name>
+	      <border_width>2</border_width>
+	      <tooltip>Click to zoom out further</tooltip>
 	      <can_focus>True</can_focus>
 	      <events>GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</events>
 	      <signal>

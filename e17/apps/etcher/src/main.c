@@ -87,8 +87,18 @@ main (int argc, char *argv[])
    add_pixmap_directory (PACKAGE_DATA_DIR "/pixmaps");
    add_pixmap_directory (PACKAGE_SOURCE_DIR "/pixmaps");
    
+   /*******/
+   gtk_widget_push_visual(gdk_vis);
+   gtk_widget_push_colormap(gdk_cmap);
+   /*******/
    
    main_win = create_toplevel();
+
+   /*******/
+   gtk_widget_pop_visual();
+   gtk_widget_pop_colormap();
+   /*******/
+   
      {
 	GtkWidget *w;
 	gchar *text;

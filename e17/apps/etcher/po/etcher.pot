@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2000-09-12 16:02+0200\n"
+"POT-Creation-Date: 2000-09-12 09:53-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -406,19 +406,27 @@ msgstr ""
 msgid "+"
 msgstr ""
 
-#: src/interface.c:2055
+#: src/interface.c:2054
+msgid "Click to zoom in further"
+msgstr ""
+
+#: src/interface.c:2057
 msgid "-"
 msgstr ""
 
-#: src/interface.c:2181
+#: src/interface.c:2064
+msgid "Click to zoom out further"
+msgstr ""
+
+#: src/interface.c:2185
 msgid "Select File"
 msgstr ""
 
-#: src/interface.c:2226
+#: src/interface.c:2230
 msgid "Select your display method"
 msgstr ""
 
-#: src/interface.c:2246
+#: src/interface.c:2250
 msgid ""
 "Please select your preferred display method.\n"
 "\n"
@@ -441,53 +449,53 @@ msgid ""
 "You have been warned."
 msgstr ""
 
-#: src/interface.c:2266
+#: src/interface.c:2270
 msgid "Software"
 msgstr ""
 
-#: src/interface.c:2274
+#: src/interface.c:2278
 msgid "3D Hardware"
 msgstr ""
 
-#: src/interface.c:2319
+#: src/interface.c:2323
 msgid "Etcher Preferences"
 msgstr ""
 
-#: src/interface.c:2353
+#: src/interface.c:2357
 msgid "Display Window"
 msgstr ""
 
-#: src/interface.c:2369
+#: src/interface.c:2373
 msgid "Use software rendered display method"
 msgstr ""
 
-#: src/interface.c:2377
+#: src/interface.c:2381
 msgid "Use 3D accelerated display method"
 msgstr ""
 
-#: src/interface.c:2385
+#: src/interface.c:2389
 msgid ""
 "If you change your display preferences you will\n"
 "have to restart Etcher for them to take effect."
 msgstr ""
 
-#: src/interface.c:2393
+#: src/interface.c:2397
 msgid "Zoom Window"
 msgstr ""
 
-#: src/interface.c:2409
+#: src/interface.c:2413
 msgid ""
 "Use smooth zoom display\n"
 "(use pixmaps for zooming)"
 msgstr ""
 
-#: src/interface.c:2417
+#: src/interface.c:2421
 msgid ""
 "Zoom directly in the framebuffer\n"
 "(If you use Xinerama select this)"
 msgstr ""
 
-#: src/interface.c:2425
+#: src/interface.c:2429
 msgid ""
 "Xinerama users note, Xinerama has severe\n"
 "performance issues and Etcher brings out one\n"
@@ -496,11 +504,11 @@ msgid ""
 "instead of Xinerama for better X performance."
 msgstr ""
 
-#: src/interface.c:2445
+#: src/interface.c:2449
 msgid "OK"
 msgstr ""
 
-#: src/interface.c:2453
+#: src/interface.c:2457
 msgid "Cancel"
 msgstr ""
 

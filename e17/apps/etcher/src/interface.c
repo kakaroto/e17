@@ -258,8 +258,8 @@ create_toplevel (void)
   GtkWidget *frame6;
   GtkWidget *zoom;
   GtkWidget *hbox2;
-  GtkWidget *button1;
-  GtkWidget *button2;
+  GtkWidget *zoomin;
+  GtkWidget *zoomout;
   GtkTooltips *tooltips;
 
   tooltips = gtk_tooltips_new ();
@@ -2007,7 +2007,6 @@ create_toplevel (void)
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (GTK_FILL), 0, 0);
   gtk_container_set_border_width (GTK_CONTAINER (frame1), 2);
-  gtk_frame_set_shadow_type (GTK_FRAME (frame1), GTK_SHADOW_IN);
 
   vbox7 = gtk_vbox_new (FALSE, 2);
   gtk_widget_ref (vbox7);
@@ -2023,6 +2022,7 @@ create_toplevel (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (frame6);
   gtk_box_pack_start (GTK_BOX (vbox7), frame6, TRUE, TRUE, 0);
+  gtk_frame_set_shadow_type (GTK_FRAME (frame6), GTK_SHADOW_IN);
 
   zoom = gtk_drawing_area_new ();
   gtk_widget_ref (zoom);
@@ -2044,21 +2044,25 @@ create_toplevel (void)
   gtk_box_pack_start (GTK_BOX (vbox7), hbox2, FALSE, TRUE, 0);
   gtk_widget_set_usize (hbox2, -2, 20);
 
-  button1 = gtk_button_new_with_label (_("+"));
-  gtk_widget_ref (button1);
-  gtk_object_set_data_full (GTK_OBJECT (toplevel), "button1", button1,
+  zoomin = gtk_button_new_with_label (_("+"));
+  gtk_widget_ref (zoomin);
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "zoomin", zoomin,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (button1);
-  gtk_box_pack_start (GTK_BOX (hbox2), button1, FALSE, TRUE, 0);
-  gtk_widget_set_events (button1, GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK);
+  gtk_widget_show (zoomin);
+  gtk_box_pack_start (GTK_BOX (hbox2), zoomin, FALSE, TRUE, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (zoomin), 2);
+  gtk_tooltips_set_tip (tooltips, zoomin, _("Click to zoom in further"), NULL);
+  gtk_widget_set_events (zoomin, GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK);
 
-  button2 = gtk_button_new_with_label (_("-"));
-  gtk_widget_ref (button2);
-  gtk_object_set_data_full (GTK_OBJECT (toplevel), "button2", button2,
+  zoomout = gtk_button_new_with_label (_("-"));
+  gtk_widget_ref (zoomout);
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "zoomout", zoomout,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (button2);
-  gtk_box_pack_start (GTK_BOX (hbox2), button2, FALSE, TRUE, 0);
-  gtk_widget_set_events (button2, GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK);
+  gtk_widget_show (zoomout);
+  gtk_box_pack_start (GTK_BOX (hbox2), zoomout, FALSE, TRUE, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (zoomout), 2);
+  gtk_tooltips_set_tip (tooltips, zoomout, _("Click to zoom out further"), NULL);
+  gtk_widget_set_events (zoomout, GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK);
 
   gtk_signal_connect (GTK_OBJECT (toplevel), "delete_event",
                       GTK_SIGNAL_FUNC (on_main_delete_event),
@@ -2159,10 +2163,10 @@ create_toplevel (void)
   gtk_signal_connect (GTK_OBJECT (zoom), "configure_event",
                       GTK_SIGNAL_FUNC (on_zoom_configure_event),
                       NULL);
-  gtk_signal_connect (GTK_OBJECT (button1), "clicked",
+  gtk_signal_connect (GTK_OBJECT (zoomin), "clicked",
                       GTK_SIGNAL_FUNC (on_zoomin_clicked),
                       NULL);
-  gtk_signal_connect (GTK_OBJECT (button2), "clicked",
+  gtk_signal_connect (GTK_OBJECT (zoomout), "clicked",
                       GTK_SIGNAL_FUNC (on_zoomout_clicked),
                       NULL);
 
