@@ -85,11 +85,15 @@ int ewl_theme_init(void)
 
 		if (((stat(theme_db_path, &st)) == 0) && S_ISDIR(st.st_mode)) {
 			snprintf(theme_db_path, PATH_MAX, PACKAGE_DATA_DIR
-					"/theme/%s/theme.db", theme_name);
+					"/themes/%s/theme.db", theme_name);
 
 			theme_db = e_db_open_read(theme_db_path);
-			if (theme_db)
+			if (theme_db) {
+				snprintf(theme_db_path, PATH_MAX,
+						PACKAGE_DATA_DIR "/themes/%s",
+						theme_name);
 				theme_path = strdup(theme_db_path);
+			}
 		}
 		else {
 			snprintf(theme_db_path, PATH_MAX, PACKAGE_DATA_DIR
