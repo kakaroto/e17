@@ -10,7 +10,15 @@ o Checkerboard bg [HIGH PRIORITY]
   to create a small tile of that pattern, and tile it onto each image when
   needed.
 
-o Setting the X background [LOW PRIORITY]
+o Progressive loading
+  This will be very cool. Unfortunately, it will be tricky to implement for
+  multiple windows, so I will have to rework my window creation functions,
+  and it will be awkward to do without being able to attach data to the
+  Imlib progress function. Although... I could attach the data to the
+  image...
+
+o Setting the X background
+  May as well...
 
 o Index mode
   Currently very hard coded, needs more options, and more dynamism. I need

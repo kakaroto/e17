@@ -1,2 +1,2 @@
 #!/bin/bash
-./feh $1 -r -V -o _test8.jpg -m --bg testimages/pngs/bg.png --thumb-width 100 --thumb-height 100 testimages/pngs/*
+./feh $1 -r -V -o _test8.jpg -m --bg testimages/pngs/bg.png --thumb-width 100 --thumb-height 100 testimages/pngs
