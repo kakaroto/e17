@@ -159,7 +159,7 @@
           <phrase>Image of &efsd; Architecture</phrase>
         </textobject>
         <caption>
-          <para>&efsd; Architecture</para>
+          <para>&efsd; Architecture.</para>
         </caption>
       </mediaobject>
 
@@ -431,11 +431,138 @@ while (efsd_wait_event(ec, &amp;ee) >= 0)
             efsd_event_cleanup()</function></link>.
           </para>
         </section>
+
+	<section>
+	  <title>Handling Event Types</title>
+          <para>
+	There are two kinds of reply events that you can receive:
+
+	  <itemizedlist mark="opencircle">
+	    <listitem>
+	      <para>
+                <emphasis>Reply Events</emphasis>, which report the result of a
+	        command that was sent to &efsd;. There exist subtypes for the various
+                kinds of replies that different commands require.
+	      </para>
+	    </listitem>
+	    <listitem>
+	      <para>
+                <emphasis>Filechange Events</emphasis>, which report that an
+	        aspect of a monitored file has changed (more about file monitoring
+                in Section <link linkend="monitoring" endterm="monitoring.title"></link>).
+              </para>
+	    </listitem>
+	  </itemizedlist>
+
+         An <classname>EfsdEvent</classname> is a union of the possible event
+	 types, and can be distinguished through <function>type</function> fields,
+         usually in <function>switch</function> statements. The following figure illustrates
+	 the concept.	 
+	</para>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="figures/union.eps" format="eps">
+          </imageobject>
+          <imageobject>
+            <imagedata fileref="figures/union.gif" format="gif">
+          </imageobject>
+          <textobject>
+            <phrase>Image of EfsdEvent structure</phrase>
+          </textobject>
+          <caption>
+            <para>The <classname>EfsdEvent</classname> Structure.</para>
+          </caption>
+        </mediaobject>
+
+	<para>
+	The <classname>EfsdEvent.type</classname> field can be used to determine the kind of event, either
+	<constant>EFSD_EVENT_FILECHANGE</constant> or <constant>EFSD_EVENT_REPLY</constant>.
+	In the former case, <classname>EfsdEvent.efsd_filechange_event.id</classname> contains
+	the command ID that caused this filechange event to be generated <footnote><para>
+        Recall that you get the command ID whenever you issue an &efsd; command.</para></footnote>.
+	<classname>EfsdEvent.efsd_filechange_event.changetype</classname> describes the type
+	of change, with meanings as follows:
+
+	  <itemizedlist mark="opencircle">
+	    <listitem>
+	      <para>
+		<constant>EFSD_FILE_CHANGED</constant> means that the properties of a file,
+		as determined through <function>stat()</function>, changed.
+	      </para>
+	    </listitem>
+	    <listitem>
+	      <para>
+		<constant>EFSD_FILE_DELETED</constant> means that a monitored file was
+		deleted or renamed.
+              </para>
+	    </listitem>
+	    <listitem>
+	      <para>
+		<constant>EFSD_FILE_START_EXEC</constant> means that an executable or
+		library started executing.
+              </para>
+	    </listitem>
+	    <listitem>
+	      <para>
+		<constant>EFSD_FILE_STOP_EXEC</constant> means that an executable stopped
+		execution.
+              </para>
+	    </listitem>
+	    <listitem>
+	      <para>
+		<constant>EFSD_FILE_CREATED</constant> means that a file was created in
+		a monitored directory.
+              </para>
+	    </listitem>
+	    <listitem>
+	      <para>
+		<constant>EFSD_FILE_ACKNOWLEDGE</constant> is the confirmation from &efsd;
+		that no more events will be received on a monitor that was previously
+		stopped, using <link linkend="API-efsd-stop-monitor"><function>efsd_stop_monitor()
+		</function></link>.
+              </para>
+	    </listitem>
+	    <listitem>
+	      <para>
+		<constant>EFSD_FILE_EXISTS</constant> events are received when a file
+		is started to be monitored. When the file is a directory and directory
+		monitoring was requested, <constant>EFSD_FILE_EXISTS</constant> events
+		are received for every file in the directory. Note that by default,
+		hidden files (starting with a dot) are excluded.
+              </para>
+	    </listitem>
+	    <listitem>
+	      <para>
+		<constant>EFSD_FILE_END_EXISTS</constant> means that the client has
+		received all <constant>EFSD_FILE_EXISTS</constant> events.
+              </para>
+	    </listitem>
+	  </itemizedlist>
+
+	Finally, <classname>EfsdEvent.file</classname> contains the chanonical name of
+	the file on which the event is reported.
+	</para>
+
+	<para>
+	When <classname>EfsdEvent.type</classname> is <constant>EFSD_EVENT_REPLY</constant>,
+	<classname>EfsdEvent.command</classname> contains the command that caused this
+	reply event, <classname>EfsdEvent.status</classname> is the outcome (either <constant>
+	SUCCESS</constant> or <constant>FAILURE</constant>), <classname>EfsdEvent.errorcode</classname>
+	is the value of the <function>errno</function> variable when an error occurred,
+	<classname>EfsdEvent.data_len</classname> is the length of any received binary data
+	in bytes, and <classname>EfsdEvent.data</classname> is a pointer to the data itself.	
+	</para>
+
+        </section>
       </section>
 
       <section id="monitoring">
 	<title id="monitoring.title">Monitoring and Listing Files</title>
 	<para>
+	&efsd; allows you to monitor files and directories. Monitoring means that your
+	client is notified when files are modified, created or removed. You can monitor
+	both single files or entire directories.
 	</para>
       </section>
 
