@@ -117,9 +117,18 @@ typedef struct _GtkgEvasImageClass GtkgEvasImageClass;
     void gevasimage_ensure_smallerthan_with_ratio( GtkgEvasImage* gi,
                                                    int MaxDesiredWidthOrHeight );
 
+    /**
+     * Its assumed that rgbadata is around for as long as the gevasimage is
+     */ 
     void gevasimage_load_from_rgba32data( GtkgEvasImage* gi,
                                           guint32* rgbadata,
                                           int w, int h );
+    /**
+     * rgba data is copied.
+     */
+    void gevasimage_load_copy_from_rgba32data( GtkgEvasImage* gi,
+                                               guint32* rgbadata,
+                                               int w, int h );
 
 
 #ifdef __cplusplus

@@ -5,7 +5,7 @@ ICON_FILES   = *png
 EXTRA_DIST   = $(ICON_FILES)
 pkgdata_DATA = $(ICON_FILES)
 
-icondir = @ICON_INSTALL_DIR@
-icon_DATA = $(ICON_FILES)
+#icondir = ${RPM_BUILD_ROOT}/@ICON_INSTALL_DIR@
+#icon_DATA = $(ICON_FILES)
 
 

@@ -200,7 +200,7 @@ GtkObject* gevas_object_get_named(GtkgEvas * ev, char *name)
 
 void gevas_add_fontpath(GtkgEvas * ev, const gchar * path)
 {
-    evas_object_font_path_append(EVAS(ev), (char*)path);
+    evas_font_path_append(EVAS(ev), (char*)path);
     fprintf(stderr," GEVAS add font path: %s\n", path);
 }
 
@@ -1486,11 +1486,11 @@ static void gevas_set_arg(GtkObject*  object, GtkArg * arg, guint arg_id)
 /* 			break; */
 
 		case ARG_FONT_CACHE:
-            evas_object_font_cache_set( ev->evas, GTK_VALUE_INT(*arg));
+            evas_font_cache_set( ev->evas, GTK_VALUE_INT(*arg));
 			break;
 
 		case ARG_IMAGE_CACHE:
-            evas_object_image_cache_set(ev->evas, GTK_VALUE_INT(*arg));
+            evas_image_cache_set(ev->evas, GTK_VALUE_INT(*arg));
 			break;
 
 		case ARG_SIZE_REQUEST_X:
@@ -1546,10 +1546,10 @@ static void gevas_get_arg(GtkObject* object, GtkArg * arg, guint arg_id)
 			GTK_VALUE_POINTER(*arg) = ev->evas;
 			break;
 		case ARG_FONT_CACHE:
-			GTK_VALUE_INT(*arg) = evas_object_font_cache_get(ev->evas);
+			GTK_VALUE_INT(*arg) = evas_font_cache_get(ev->evas);
 			break;
 		case ARG_IMAGE_CACHE:
-            GTK_VALUE_INT(*arg) = evas_object_image_cache_get(ev->evas);
+            GTK_VALUE_INT(*arg) = evas_image_cache_get(ev->evas);
 			break;
 		case ARG_SIZE_REQUEST_X:
 			GTK_VALUE_INT(*arg) = ev->size_request_x;

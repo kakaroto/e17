@@ -337,13 +337,16 @@ static void gevasimage_set_arg(GtkObject * object, GtkArg * arg, guint arg_id)
 	}
 }
 
-void gevasimage_load_from_rgba32data( GtkgEvasImage* object,
-                                      guint32* rgbadata,
-                                      int w, int h )
+static void __gevasimage_load_from_rgba32data( GtkgEvasImage* object,
+                                               guint32* rgbadata,
+                                               int w, int h,
+                                               int copydata )
 {
     double x=0;
     double y=0;
     int layer = 0;
+    fprintf( stderr, "gevasimage_load_from_rgba32data(1) x:%f y:%f w:%d h:%d layer:%d\n",
+             x, y, w, h, layer );
     GtkgEvasImage *ev;
     Evas_Object* eo;
     g_return_if_fail(object != NULL);
@@ -366,17 +369,38 @@ void gevasimage_load_from_rgba32data( GtkgEvasImage* object,
     eo = evas_object_image_add( EVAS(ev) );
     _gevas_set_obj( GTK_OBJECT(ev), eo);
 
-    gevasobj_resize( GTK_GEVASOBJ(ev), w, h );
-//    evas_object_resize( eo, w, h );
+//    gevasobj_resize( GTK_GEVASOBJ(ev), w, h );
+    evas_object_resize( eo, w, h );
     evas_object_image_size_set( eo, w, h );
-    evas_object_image_data_set( eo, (int*)(rgbadata) );
+    if( copydata )
+        evas_object_image_data_copy_set( eo, (int*)(rgbadata) );
+    else
+        evas_object_image_data_set( eo, (int*)(rgbadata) );
+    
     evas_object_image_fill_set( eo, 0, 0, w, h );
 
+    fprintf( stderr, "gevasimage_load_from_rgba32data(2) x:%f y:%f w:%d h:%d layer:%d\n",
+             x, y, w, h, layer );
+    
     gevasobj_set_location( GTK_GEVASOBJ(object), x, y );
     gevasobj_set_layer( GTK_GEVASOBJ(object), layer );
     gevasobj_queue_redraw( GTK_GEVASOBJ( object ) );
 }
 
+void gevasimage_load_from_rgba32data( GtkgEvasImage* object,
+                                      guint32* rgbadata,
+                                      int w, int h )
+{
+    __gevasimage_load_from_rgba32data( object, rgbadata, w, h, 0 );
+}
+
+void gevasimage_load_copy_from_rgba32data( GtkgEvasImage* object,
+                                           guint32* rgbadata,
+                                           int w, int h )
+{
+    __gevasimage_load_from_rgba32data( object, rgbadata, w, h, 1 );
+}
+    
 
 
 static void gevasimage_get_arg(GtkObject * object, GtkArg * arg, guint arg_id)
