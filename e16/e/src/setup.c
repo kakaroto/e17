@@ -492,7 +492,7 @@ SetupX()
    mode.autoraise = 0;
    mode.autoraisetime = 0.5;
    mode.memory_paranoia = 1;
-   mode.save_under = 1;
+   mode.save_under = 0;
    mode.cur_menu_mode = 0;
    mode.cur_menu_depth = 0;
    for (i = 0; i < 256; i++)
@@ -555,7 +555,7 @@ SetupX()
    desks.slidein = 1;
    desks.slidespeed = 6000;
    desks.hiqualitybg = 1;
-   SetAreaSize(2, 2);
+   SetAreaSize(2, 1);
 
    for (i = 0; i < ENLIGHTENMENT_CONF_NUM_DESKTOPS; task_menu[i++] = NULL);
 
