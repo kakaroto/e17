@@ -20,12 +20,12 @@ MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess \
 #	  done \
 #	fi
 
-dist-hook:
-	if test -d data; then \
-	  mkdir $(distdir)/data; \
-	  for d in data/*; do \
-	      cp -ar $$d $(distdir)/data; \
-	  done \
-	fi
+#dist-hook:
+#	if test -d data; then \
+#	  mkdir $(distdir)/data; \
+#	  for d in data/*; do \
+#	      cp -ar $$d $(distdir)/data; \
+#	  done \
+#	fi
 
 EXTRA_DIST = README AUTHORS COPYING entice.spec

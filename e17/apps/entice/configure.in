@@ -135,7 +135,10 @@ src/Makefile
 src/bin/Makefile
 data/Makefile
 data/fonts/Makefile
+data/images/Makefile
 data/themes/Makefile
 data/themes/default/Makefile
+data/themes/default/parts/Makefile
+data/themes/default/programs/Makefile
 ])
 
