@@ -25,6 +25,20 @@ else
   AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${datadir}/${PACKAGE}")
 fi
 
+if test "x${libdir}" = 'x${prefix}/share'; then
+  if test "x${prefix}" = "xNONE"; then
+    container_plugin_dir=${ac_default_prefix}/lib/${PACKAGE}/layout
+  else
+    container_plugin_dir=${prefix}/lib/${PACKAGE}/layout
+  fi
+else
+  container_plugin_dir=${libdir}/${PACKAGE}/layout
+fi
+#FIXME: remove this and get it working correctly
+container_plugin_dir="/usr/local/lib/esmart/layout"
+AC_DEFINE_UNQUOTED(CONTAINER_PLUGIN_DIR, "${container_plugin_dir}")
+AC_SUBST(container_plugin_dir)
+
 changequote(,)dnl
 if test "x$GCC" = "xyes"; then
   case " $CFLAGS " in
@@ -89,6 +103,8 @@ AC_SUBST(epsilon_cflags)
 AC_PATH_PROG(PERL, perl, 0)
 AC_SUBST(PERL)
 
+
+
 AC_OUTPUT([
 Makefile
 esmart.pc
@@ -98,6 +114,8 @@ test/Makefile
 data/Makefile
 data/images/Makefile
 src/container/Makefile
+src/container/layout/Makefile
+src/container/layout/default/Makefile
 src/thumb/Makefile
 src/trans/Makefile
 src/draggies/Makefile
