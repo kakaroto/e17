@@ -45,6 +45,9 @@ static void    _engage_free(Engage *e);
 static void    _engage_app_change(void *data, E_App *a, E_App_Change ch);
 static void    _engage_config_menu_new(Engage *e);
 
+static int     _engage_cb_event_border_iconify(void *data, int type, void *event);
+static int     _engage_cb_event_border_uniconify(void *data, int type, void *event);
+
 static Engage_Bar *_engage_bar_new(Engage *e, E_Container *con);
 static void    _engage_bar_free(Engage_Bar *eb);
 static void    _engage_bar_menu_new(Engage_Bar *eb);
@@ -482,6 +485,10 @@ _engage_bar_new(Engage *e, E_Container *con)
    edje_object_signal_emit(eb->bar_object, "passive", "");
    */
 
+   ecore_event_handler_add(E_EVENT_BORDER_HIDE,
+	 _engage_cb_event_border_iconify, eb);
+   ecore_event_handler_add(E_EVENT_BORDER_SHOW,
+	 _engage_cb_event_border_uniconify, eb);
    return eb;
 }
 
@@ -696,6 +703,31 @@ _engage_config_menu_new(Engage *e)
 
    e->config_menu = mn;
 }
+
+static int
+_engage_cb_event_border_iconify(void *data, int type, void *event)
+{
+   printf("not implemented iconify listener\n");
+
+   /*FIXME
+    * check that were are the bar in the right zone
+    *
+    * add icon to list, marking as iconified (instances of ++)
+    */
+}
+
+static int
+_engage_cb_event_border_uniconify(void *data, int type, void *event)
+{
+   printf("not implemented uniconify listener\n");
+
+   /*FIXME
+    * check that were are the bar in the right zone
+    *
+    * remove icon from list, if instances == 0 and it is only an iconic icon
+    */
+}
+
 
 #if 0
 static void
