@@ -209,8 +209,7 @@ void etox_line_layout(Etox_Line * line)
 		x = line->et->x + (line->et->w / 2) - (line->w / 2);
 	}
 
-	if ((line->et->context->flags & ETOX_SOFT_WRAP) &&
-			(line->x < line->et->x))
+	if ((line->et->flags & ETOX_SOFT_WRAP) && (x < line->et->x))
 		x = line->et->x;
 
 	/*
