@@ -15,6 +15,7 @@ geist_object_state;
 struct __geist_object
 {
    char *name;
+   geist_object_type type;
    int w;
    int h;
    int x;
@@ -40,10 +41,13 @@ geist_object *geist_object_new(void);
 void geist_object_init(geist_object * obj);
 void geist_object_free(geist_object * obj);
 
+geist_object_type geist_object_get_type(geist_object *obj);
+void geist_object_set_type(geist_object *obj, geist_object_type type);
 void geist_object_render(geist_object * obj, Imlib_Image dest);
 void geist_object_render_selected(geist_object * obj, Imlib_Image dest, unsigned char multiple);
 void geist_object_render_partial(geist_object *obj, Imlib_Image dest, int x, int y, int w, int h);
 void geist_object_show(geist_object * obj);
+void geist_object_hide(geist_object * obj);
 void geist_object_raise(geist_document *doc, geist_object * obj);
 void geist_object_int_free(geist_object * obj);
 void geist_object_int_render(geist_object *obj, Imlib_Image dest);

@@ -63,6 +63,7 @@ geist_text_init(geist_text * txt)
    obj->render_selected = geist_object_int_render_selected;
    obj->render_partial = geist_text_render_partial;
    obj->get_rendered_image= geist_text_get_rendered_image;
+	geist_object_set_type(obj,GEIST_TYPE_TEXT);
 
    D_RETURN_(5);
 }
@@ -186,6 +187,7 @@ geist_text_change_text(geist_text * txt, char *newtext)
       free(txt->text);
    if (txt->im)
       geist_imlib_free_image_and_decache(txt->im);
+	txt->text = estrdup(newtext);
    txt->im = geist_text_create_image(txt, &obj->w, &obj->h);
 
    D_RETURN_(3);

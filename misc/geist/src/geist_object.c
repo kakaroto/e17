@@ -21,6 +21,7 @@ geist_object_init(geist_object * obj)
       eprintf("bug. no object to init.");
 
    memset(obj, 0, sizeof(geist_object));
+	geist_object_set_type(obj,GEIST_TYPE_OBJECT);
    obj->free = geist_object_int_free;
    obj->render = geist_object_int_render;
    obj->render_selected = geist_object_int_render_selected;
@@ -60,6 +61,17 @@ geist_object_free(geist_object * obj)
    free(obj);
 
    D_RETURN_(5);
+}
+
+geist_object_type geist_object_get_type(geist_object *obj)
+{
+	return obj->type;
+}
+
+void geist_object_set_type(geist_object *obj, geist_object_type type)
+{
+	obj->type = type;
+	return;
 }
 
 void
@@ -119,6 +131,17 @@ geist_object_show(geist_object * obj)
 
    D_RETURN_(3);
 }
+
+void
+geist_object_hide(geist_object * obj)
+{
+   D_ENTER(3);
+
+   obj->visible = FALSE;
+
+   D_RETURN_(3);
+}
+
 
 void
 geist_object_raise(geist_document * doc, geist_object * obj)
