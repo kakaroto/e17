@@ -30,11 +30,9 @@ void            __ewl_entry_child_resize(Ewl_Container * entry,
 					 Ewl_Orientation o);
 
 /**
- * ewl_entry_new - allocate and initialize a new entry widget
- * @text: the initial text to display in the widget
- *
- * Returns a newly allocated and initialized entry widget on success, NULL on
- * failure.
+ * @param text: the initial text to display in the widget
+ * @return Returns a new entry widget on success, NULL on failure.
+ * @brief Allocate and initialize a new entry widget
  */
 Ewl_Widget     *ewl_entry_new(char *text)
 {
@@ -54,12 +52,12 @@ Ewl_Widget     *ewl_entry_new(char *text)
 }
 
 /**
- * ewl_entry_init - initialize an entry widget to default values
- * @e: the entry widget to initialize
- * @text: the initial text to display in the widget
+ * @param e: the entry widget to initialize
+ * @param text: the initial text to display in the widget
+ * @return Returns no value.
+ * @brief Initialize an entry widget to default values
  *
- * Returns no value. Initializes the entry widget @e to it's default values
- * and callbacks.
+ * Initializes the entry widget @a e to it's default values and callbacks.
  */
 void ewl_entry_init(Ewl_Entry * e, char *text)
 {
@@ -104,11 +102,12 @@ void ewl_entry_init(Ewl_Entry * e, char *text)
 }
 
 /**
- * ewl_entry_set_text - set the text for an entry widget
- * @e: the entry widget to change the text
- * @t: the text to set for the entry widget
+ * @param e: the entry widget to change the text
+ * @param t: the text to set for the entry widget
+ * @return Returns no value.
+ * @brief Set the text for an entry widget
  *
- * Returns no value. Change the text of the entry widget @e to the string @t.
+ * Change the text of the entry widget @a e to the string @a t.
  */
 void ewl_entry_set_text(Ewl_Entry * e, char *t)
 {
@@ -126,11 +125,9 @@ void ewl_entry_set_text(Ewl_Entry * e, char *t)
 }
 
 /**
- * ewl_entry_get_text - get the text from an entry widget
- * @e: the entry widget to retrieve the text
- *
- * Returns the text contained in the entry widget @e on success, NULL on
- * failure.
+ * @param e: the entry widget to retrieve the text
+ * @return Returns the entry text on success, NULL on failure.
+ * @brief Get the text from an entry widget
  */
 char           *ewl_entry_get_text(Ewl_Entry * e)
 {
@@ -145,11 +142,10 @@ char           *ewl_entry_get_text(Ewl_Entry * e)
 }
 
 /**
- * ewl_entry_set_editable - change the ability to edit the text in an entry
- * @e: then entry to change
- * @edit: a boolean value indicating the ability to edit the entry
- *
- * Returns no value.
+ * @param e: then entry to change
+ * @param edit: a boolean value indicating the ability to edit the entry
+ * @return Returns no value.
+ * @brief Change the ability to edit the text in an entry
  */
 void
 ewl_entry_set_editable(Ewl_Entry *e, unsigned int edit)
