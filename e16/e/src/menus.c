@@ -953,15 +953,10 @@ BrackgroundCreateFromImage(const char *bgid, const char *file,
 
    bg = FindItem(bgid, 0, LIST_FINDBY_NAME, LIST_TYPE_BACKGROUND);
 
-   if (bg && (!exists(thumb) || moddate(thumb) < moddate(file)))
-     {
-	/* The thumbnail is gone or outdated - regererate */
-	BackgroundDestroy(bg);
-	bg = NULL;
-     }
-
-   if (bg)
+   if (bg && exists(thumb) && moddate(thumb) > moddate(file))
       return bg;
+
+   /* The thumbnail is gone or outdated - regererate */
 
    im = imlib_load_image(file);
    if (!im)
@@ -983,6 +978,10 @@ BrackgroundCreateFromImage(const char *bgid, const char *file,
    imlib_image_set_format("png");
    imlib_save_image(thumb);
    imlib_free_image_and_decache();
+
+   /* Quit if the background itself already exists */
+   if (bg)
+      return bg;
 
    scr_asp = (VRoot.w << 16) / VRoot.h;
    im_asp = (width << 16) / height;
