@@ -38,7 +38,6 @@ install: build
 binary-indep: build install
 
 binary-arch: build install
-	dh_testversion 2.0
 	dh_testdir
 	dh_testroot
 	dh_installdocs AUTHORS README
