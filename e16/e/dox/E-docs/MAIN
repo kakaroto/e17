@@ -243,6 +243,9 @@ _Intro_To_Settings(settings)
 _Window_Groups(groups)
 <br>
 _Desktop_Backgrounds(backgrounds)
+<br>
+_Tooltips(tooltips)
+<br>
 
 
 
@@ -724,6 +727,7 @@ allow you to move the pager about, just like the titlebar of any window.
 
 <page columns=1 padding=16 name=iconbox background=Edoc_bg.png linkcolor=#88dddd>
 <font face=rothwell/25 color=#ffffff>
+<img src=E_iconbox.png x=300 y=90>
 <p>
 The Iconbox
 <font face=aircut3/12 color=#ffffff>
@@ -777,6 +781,7 @@ so wish.
 
 
 <page columns=1 padding=16 name=settings background=Edoc_bg.png linkcolor=#88dddd>
+<img src=E_settings_menu.png x=240 y=87>
 <font face=rothwell/25 color=#ffffff>
 <p>
 Settings
@@ -942,6 +947,15 @@ all the various settings for each individual background available.
 
 
 
+
+
+
+
+<page columns=1 padding=16 name=tooltips background=Edoc_bg.png linkcolor=#88dddd>
+<font face=rothwell/25 color=#ffffff>
+<p>
+Tooltips
+<p>
 
 
 
