@@ -111,6 +111,12 @@ feh_event_handle_ButtonPress(XEvent * ev)
                feh_menu_init_single_win();
             feh_menu_show_at_xy(menu_single_win, winwid, x, y);
          }
+         else if(winwid->type == WIN_TYPE_THUMBNAIL)
+         {
+            if(!menu_thumbnail_win)
+               feh_menu_init_thumbnail_win();
+            feh_menu_show_at_xy(menu_thumbnail_win, winwid, x, y);
+         }
          else if (winwid->type == WIN_TYPE_THUMBNAIL_VIEWER)
          {
             if (!menu_single_win)

@@ -1,3 +1,7 @@
+Sat Jun 24 17:00:59 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Context menu for thumbnail mode.
+
 Sat Jun 24 16:44:19 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Fix for segv when tring to get image info for a generated (not

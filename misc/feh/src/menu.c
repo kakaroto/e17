@@ -36,6 +36,7 @@ feh_menu *menu_main = NULL;
 feh_menu *menu_single_win = NULL;
 feh_menu *menu_about_win = NULL;
 feh_menu *menu_thumbnail_viewer = NULL;
+feh_menu *menu_thumbnail_win = NULL;
 feh_menu *menu_bg = NULL;
 static feh_menu_list *menus = NULL;
 static int common_menus = 0;
@@ -337,6 +338,9 @@ feh_menu_show_at_xy(feh_menu * m, winwidget winwid, int x, int y)
 {
    D_ENTER;
 
+   if(!m)
+      D_RETURN_;
+   
    if (m->calc)
       feh_menu_calc_size(m);
    m->fehwin = winwid;
@@ -360,7 +364,7 @@ feh_menu_show_at_submenu(feh_menu * m, feh_menu * parent_m, feh_menu_item * i)
 
    D_ENTER;
 
-   if(!m)
+   if (!m)
       D_RETURN_;
 
    if (m->calc)
@@ -692,8 +696,8 @@ feh_menu_draw_item(feh_menu * m, feh_menu_item * i, Imlib_Image im, int ox,
             feh_imlib_blend_image_onto_image(im, im2, 0, 0, 0, iw, ih,
                                              i->x + i->icon_x - ox,
                                              i->y + FEH_MENUITEM_PAD_TOP +
-                                             (((i->h
-                                                - FEH_MENUITEM_PAD_TOP -
+                                             (((i->
+                                                h - FEH_MENUITEM_PAD_TOP -
                                                 FEH_MENUITEM_PAD_BOTTOM) -
                                                oh) / 2) - oy, ow, oh, 1, 1,
                                              1);
@@ -708,8 +712,8 @@ feh_menu_draw_item(feh_menu * m, feh_menu_item * i, Imlib_Image im, int ox,
             D(("selected item\n"));
             feh_menu_draw_submenu_at(i->x + i->sub_x,
                                      i->y + FEH_MENUITEM_PAD_TOP +
-                                     ((i->h
-                                       - FEH_MENUITEM_PAD_TOP -
+                                     ((i->
+                                       h - FEH_MENUITEM_PAD_TOP -
                                        FEH_MENUITEM_PAD_BOTTOM -
                                        FEH_MENU_SUBMENU_H) / 2),
                                      FEH_MENU_SUBMENU_W, FEH_MENU_SUBMENU_H,
@@ -720,8 +724,8 @@ feh_menu_draw_item(feh_menu * m, feh_menu_item * i, Imlib_Image im, int ox,
             D(("unselected item\n"));
             feh_menu_draw_submenu_at(i->x + i->sub_x,
                                      i->y + FEH_MENUITEM_PAD_TOP +
-                                     ((i->h
-                                       - FEH_MENUITEM_PAD_TOP -
+                                     ((i->
+                                       h - FEH_MENUITEM_PAD_TOP -
                                        FEH_MENUITEM_PAD_BOTTOM -
                                        FEH_MENU_SUBMENU_H) / 2),
                                      FEH_MENU_SUBMENU_W, FEH_MENU_SUBMENU_H,
@@ -1164,6 +1168,35 @@ feh_menu_init_single_win(void)
 }
 
 void
+feh_menu_init_thumbnail_win(void)
+{
+   feh_menu *m;
+
+   D_ENTER;
+   if (!common_menus)
+      feh_menu_init_common();
+
+   menu_thumbnail_win = feh_menu_new();
+   menu_thumbnail_win->name = estrdup("THUMBWIN");
+
+   feh_menu_add_entry(menu_thumbnail_win, "File", NULL, "THUMBWIN_FILE", NULL,
+                      NULL, NULL);
+   m = feh_menu_new();
+   m->name = estrdup("THUMBWIN_FILE");
+   feh_menu_add_entry(m, "Reset", NULL, NULL, feh_menu_cb_reset, NULL, NULL);
+   feh_menu_add_entry(m, "Background", NULL, "BACKGROUND", NULL, NULL, NULL);
+   feh_menu_add_entry(menu_thumbnail_win, NULL, NULL, NULL, NULL, NULL, NULL);
+   feh_menu_add_entry(menu_thumbnail_win, "About " PACKAGE, NULL, NULL,
+                      feh_menu_cb_about, NULL, NULL);
+   feh_menu_add_entry(menu_thumbnail_win, "Close", NULL, NULL, feh_menu_cb_close,
+                      NULL, NULL);
+   feh_menu_add_entry(menu_thumbnail_win, "Exit", NULL, NULL, feh_menu_cb_exit,
+                      NULL, NULL);
+   D_RETURN_;
+}
+
+
+void
 feh_menu_init_thumbnail_viewer(void)
 {
    feh_menu *m;
@@ -1502,9 +1535,9 @@ feh_menu_func_gen_info(feh_menu * m, feh_menu_item * i, void *data)
 
    D_ENTER;
 
-   if(!m->fehwin->file)
+   if (!m->fehwin->file)
       D_RETURN(NULL);
-   
+
    file = FEH_FILE(m->fehwin->file->data);
    im = m->fehwin->im;
    if (!im)

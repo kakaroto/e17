@@ -135,6 +135,7 @@ void feh_menu_init_single_win(void);
 void feh_menu_init_about_win(void);
 void feh_menu_init_common(void);
 void feh_menu_init_thumbnail_viewer(void);
+void feh_menu_init_thumbnail_win(void);
 void feh_menu_draw_to_buf(feh_menu * m, Imlib_Image im, int ox, int oy);
 void feh_menu_draw_menu_bg(feh_menu * m, Imlib_Image im, int ox, int oy);
 void feh_menu_draw_submenu_at(int x, int y, int w, int h, Imlib_Image dst,
@@ -154,6 +155,7 @@ extern feh_menu *menu_root;
 extern feh_menu *menu_single_win;
 extern feh_menu *menu_about_win;
 extern feh_menu *menu_thumbnail_viewer;
+extern feh_menu *menu_thumbnail_win;
 extern Window menu_cover;
 
 #endif
