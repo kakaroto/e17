@@ -25,6 +25,7 @@ static char *create_index_size_string (char *file);
 static char *create_index_title_string (int num, int w, int h);
 
 /* TODO Break this up a bit ;) */
+/* TODO s/bit/lot */
 void
 init_index_mode (void)
 {
@@ -140,7 +141,6 @@ init_index_mode (void)
       h = opt.limit_h;
 
       /* Work out if this is big enough, and give a warning if not */
-      /* TODO */
 
       /* Pretend we are limiting width by that specified, loop through,
        * and see it we fit in the height specified. If not, continue the
@@ -384,7 +384,6 @@ init_index_mode (void)
 	    }
 
 	  /* Draw now */
-
 	  imlib_blend_image_onto_image (im_temp, 0, 0, 0, ww, hh, xxx, yyy,
 					www, hhh);
 
