@@ -39,7 +39,10 @@ view_redraw(gpointer data)
 {
    evas_render(view_evas);
    if (need_zoom_draw)
-      zoom_redraw(zoom_x, zoom_y);
+     {
+	need_zoom_draw = 0;
+	zoom_redraw(zoom_x, zoom_y);
+     }
    return FALSE;
 }
 
