@@ -26,34 +26,56 @@
 static int          area_w = 3;
 static int          area_h = 3;
 
-#define AREA_FIX(ax, ay) \
-if (ax < 0) \
-{ \
-if (conf.areas.wraparound) \
-ax = area_w - 1; \
-else \
-ax = 0; \
-} \
-else if (ax >= area_w) \
-{ \
-if (conf.areas.wraparound) \
-ax = 0; \
-else \
-ax = area_w - 1; \
-} \
-if (ay < 0) \
-{ \
-if (conf.areas.wraparound) \
-ay = area_h - 1; \
-else \
-ay = 0; \
-} \
-else if (ay >= area_h) \
-{ \
-if (conf.areas.wraparound) \
-ay = 0; \
-else \
-ay = area_h - 1; \
+void
+AreaFix(int *ax, int *ay)
+{
+   if (*ax < 0)
+     {
+	if (conf.areas.wraparound)
+	   *ax = area_w - 1;
+	else
+	   *ax = 0;
+     }
+   else if (*ax >= area_w)
+     {
+	if (conf.areas.wraparound)
+	   *ax = 0;
+	else
+	   *ax = area_w - 1;
+     }
+
+   if (*ay < 0)
+     {
+	if (conf.areas.wraparound)
+	   *ay = area_h - 1;
+	else
+	   *ay = 0;
+     }
+   else if (*ay >= area_h)
+     {
+	if (conf.areas.wraparound)
+	   *ay = 0;
+	else
+	   *ay = area_h - 1;
+     }
+}
+
+static int
+AreaXYToLinear(int ax, int ay)
+{
+   AreaFix(&ax, &ay);
+   return (ay * area_w) + ax;
+}
+
+static void
+AreaLinearToXY(int a, int *ax, int *ay)
+{
+   if (a < 0)
+      a = 0;
+   else if (a >= (area_w * area_h))
+      a = (area_w * area_h) - 1;
+   *ay = a / area_w;
+   *ax = a - (*ay * area_w);
 }
 
 void
@@ -71,7 +93,9 @@ SetNewAreaSize(int ax, int ay)
    GetAreaSize(&a, &b);
    if ((a == ax) && (b == ay))
       return;
+
    SetAreaSize(ax, ay);
+
    lst = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
    if (lst)
      {
@@ -87,6 +111,7 @@ SetNewAreaSize(int ax, int ay)
 	  }
 	Efree(lst);
      }
+
    GetCurrentArea(&a, &b);
    if (a >= ax)
      {
@@ -134,7 +159,7 @@ void
 InitCurrentArea(int ax, int ay)
 {
    EDBUG(4, "InitCurrentArea");
-   AREA_FIX(ax, ay);
+   AreaFix(&ax, &ay);
    desks.desk[desks.current].current_area_x = ax;
    desks.desk[desks.current].current_area_y = ay;
    EDBUG_RETURN_;
@@ -143,45 +168,23 @@ InitCurrentArea(int ax, int ay)
 void
 SetCurrentLinearArea(int a)
 {
-   if (a < 0)
-      a = 0;
-   else if (a >= (area_w * area_h))
-      a = (area_w * area_h) - 1;
-   SetCurrentArea(a - ((a / area_w) * area_w), (a / area_w));
+   int                 ax, ay;
+
+   AreaLinearToXY(a, &ax, &ay);
+   SetCurrentArea(ax, ay);
 }
 
 int
 GetCurrentLinearArea(void)
 {
-   return ((desks.desk[desks.current].current_area_y * area_w) +
-	   desks.desk[desks.current].current_area_x);
+   return AreaXYToLinear(desks.desk[desks.current].current_area_x,
+			 desks.desk[desks.current].current_area_y);
 }
 
 void
 MoveCurrentLinearAreaBy(int a)
 {
    SetCurrentLinearArea(GetCurrentLinearArea() + a);
-}
-
-void
-MoveEwinToLinearArea(EWin * ewin, int a)
-{
-   if (a < 0)
-      a = 0;
-   else if (a >= (area_w * area_h))
-      a = (area_w * area_h) - 1;
-   MoveEwinToArea(ewin, a - ((a / area_w) * area_w), (a / area_w));
-}
-
-void
-MoveEwinLinearAreaBy(EWin * ewin, int a)
-{
-   a += (ewin->area_y * area_w) + (ewin->area_x);
-   if (a < 0)
-      a = 0;
-   else if (a >= (area_w * area_h))
-      a = (area_w * area_h) - 1;
-   MoveEwinToArea(ewin, a - ((a / area_w) * area_w), (a / area_w));
 }
 
 void
@@ -249,7 +252,7 @@ SetCurrentArea(int ax, int ay)
        || (mode.mode == MODE_RESIZE_V))
       EDBUG_RETURN_;
 
-   AREA_FIX(ax, ay);
+   AreaFix(&ax, &ay);
    if ((ax == desks.desk[desks.current].current_area_x)
        && (ay == desks.desk[desks.current].current_area_y))
       EDBUG_RETURN_;
@@ -446,29 +449,6 @@ SetCurrentArea(int ax, int ay)
 }
 
 void
-MoveEwinToArea(EWin * ewin, int ax, int ay)
-{
-   EDBUG(4, "MoveEwinToArea");
-   AREA_FIX(ax, ay);
-   MoveEwin(ewin, ewin->x + (root.w * (ax - ewin->area_x)),
-	    ewin->y + (root.h * (ay - ewin->area_y)));
-   ewin->area_x = ax;
-   ewin->area_y = ay;
-   HintsSetWindowArea(ewin);
-   EDBUG_RETURN_;
-}
-
-void
-SetEwinToCurrentArea(EWin * ewin)
-{
-   EDBUG(4, "SetEwinToCurrentArea");
-   ewin->area_x = desks.desk[ewin->desktop].current_area_x;
-   ewin->area_y = desks.desk[ewin->desktop].current_area_y;
-   HintsSetWindowArea(ewin);
-   EDBUG_RETURN_;
-}
-
-void
 MoveCurrentAreaBy(int ax, int ay)
 {
    EDBUG(4, "MoveCurrentAreaBy");
@@ -476,4 +456,19 @@ MoveCurrentAreaBy(int ax, int ay)
    SetCurrentArea(desks.desk[desks.current].current_area_x + ax,
 		  desks.desk[desks.current].current_area_y + ay);
    EDBUG_RETURN_;
+}
+
+void
+MoveEwinToLinearArea(EWin * ewin, int a)
+{
+   int                 ax, ay;
+
+   AreaLinearToXY(a, &ax, &ay);
+   MoveEwinToArea(ewin, ax, ay);
+}
+
+void
+MoveEwinLinearAreaBy(EWin * ewin, int a)
+{
+   MoveEwinToLinearArea(ewin, AreaXYToLinear(ewin->area_x, ewin->area_y) + a);
 }

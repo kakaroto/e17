@@ -25,6 +25,7 @@
 
 static void         EwinSetBorderInit(EWin * ewin);
 static void         EwinSetBorderTo(EWin * ewin, Border * b);
+static void         DetermineEwinArea(EWin * ewin);
 
 #if 0
 #define DELETE_EWIN_REFERENCE(ew, ew_ref) \
@@ -400,73 +401,46 @@ AddToFamily(Window win)
    DetermineEwinArea(ewin);
    ResizeEwin(ewin, ewin->client.w, ewin->client.h);
 
-   /* tag the parent window if this is a transient */
    if (ewin->client.transient)
      {
-	ewin2 =
-	   FindItem(NULL, ewin->client.transient_for, LIST_FINDBY_ID,
-		    LIST_TYPE_EWIN);
+	/* tag the parent window if this is a transient */
+	ewin2 = FindItem(NULL, ewin->client.transient_for, LIST_FINDBY_ID,
+			 LIST_TYPE_EWIN);
 	if (ewin2)
 	   ewin2->has_transients++;
-     }
-   if ((conf.focus.transientsfollowleader) && (ewin->client.transient))
-     {
-	ewin2 =
-	   FindItem(NULL, ewin->client.transient_for, LIST_FINDBY_ID,
-		    LIST_TYPE_EWIN);
-	if (ewin2)
+
+	if (conf.focus.transientsfollowleader)
 	  {
-	     ewin->desktop = ewin2->desktop;
-	     if ((conf.focus.switchfortransientmap)
-		 && (ewin->desktop != desks.current) && (!ewin->iconified))
+	     if (!ewin2)
+		ewin2 = FindItem(NULL, ewin->client.group, LIST_FINDBY_ID,
+				 LIST_TYPE_EWIN);
+
+	     if (!ewin2)
 	       {
-		  GotoDesktop(ewin->desktop);
-		  SetCurrentArea(ewin2->area_x, ewin2->area_y);
+		  lst = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
+		  for (i = 0; i < num; i++)
+		    {
+		       if ((lst[i]->iconified) ||
+			   (ewin->client.group != lst[i]->client.group))
+			  continue;
+
+		       ewin2 = lst[i];
+		       break;
+		    }
+		  if (lst)
+		     Efree(lst);
 	       }
-	  }
-	else
-	  {
-	     ewin2 =
-		FindItem(NULL, ewin->client.group, LIST_FINDBY_ID,
-			 LIST_TYPE_EWIN);
+
 	     if (ewin2)
 	       {
 		  ewin->desktop = ewin2->desktop;
-		  if ((conf.focus.switchfortransientmap)
-		      && (ewin->desktop != desks.current) && (!ewin->iconified))
-		    {
-		       GotoDesktop(ewin->desktop);
-		       SetCurrentArea(ewin2->area_x, ewin2->area_y);
-		    }
-	       }
-	     else
-	       {
-		  lst = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
-		  if ((lst) && (num > 0))
-		    {
-		       for (i = 0; i < num; i++)
-			 {
-			    if ((!lst[i]->iconified)
-				&& (ewin->client.group == lst[i]->client.group))
-			      {
-				 ewin->desktop = lst[i]->desktop;
-				 if ((conf.focus.switchfortransientmap)
-				     && (ewin->desktop != desks.current)
-				     && (!ewin->iconified))
-				   {
-				      GotoDesktop(ewin->desktop);
-				      SetCurrentArea(lst[i]->area_x,
-						     lst[i]->area_y);
-				   }
-				 i = num;
-			      }
-			 }
-		       Efree(lst);
-		    }
+		  if ((conf.focus.switchfortransientmap) && (!ewin->iconified))
+		     GotoDesktopByEwin(ewin2);
 	       }
 	  }
      }
-   /* if it hasnt been planed on a desktop - assing it the current desktop */
+
+   /* if it hasn't been planted on a desktop - assign it the current desktop */
    if (ewin->desktop < 0)
      {
 	ewin->desktop = desks.current;
@@ -591,6 +565,7 @@ AddToFamily(Window win)
 	     break;
 	  }
      }
+
    /* add it to our list of managed clients */
    AddItem(ewin, "EWIN", ewin->client.win, LIST_TYPE_EWIN);
    DesktopAddEwinToTop(ewin);
@@ -611,6 +586,7 @@ AddToFamily(Window win)
 	IconifyEwin(ewin);
 	EDBUG_RETURN_;
      }
+
    /* if we should slide it in and are not currently in the middle of a slide */
    if ((manplace) && (!ewin->client.already_placed))
      {
@@ -1697,28 +1673,6 @@ ResizeEwin(EWin * ewin, int w, int h)
 }
 
 void
-DetermineEwinArea(EWin * ewin)
-{
-   int                 pax, pay;
-
-   EDBUG(4, "DetermineEwinArea");
-
-   pax = ewin->area_x;
-   pay = ewin->area_y;
-   ewin->area_x =
-      (ewin->x + (ewin->w / 2) +
-       (desks.desk[ewin->desktop].current_area_x * root.w)) / root.w;
-   ewin->area_y =
-      (ewin->y + (ewin->h / 2) +
-       (desks.desk[ewin->desktop].current_area_y * root.h)) / root.h;
-   if ((pax != ewin->area_x) || (pay != ewin->area_y))
-     {
-	HintsSetWindowArea(ewin);
-     }
-   EDBUG_RETURN_;
-}
-
-void
 MoveEwin(EWin * ewin, int x, int y)
 {
    int                 dx, dy;
@@ -1726,12 +1680,10 @@ MoveEwin(EWin * ewin, int x, int y)
    static int          call_depth = 0;
 
    EDBUG(3, "MoveEwin");
-   call_depth++;
    if (call_depth > 256)
-     {
-	call_depth--;
-	EDBUG_RETURN_;
-     }
+      EDBUG_RETURN_;
+   call_depth++;
+
    dx = x - ewin->x;
    dy = y - ewin->y;
    if ((dx != 0) || (dy != 0))
@@ -1741,9 +1693,12 @@ MoveEwin(EWin * ewin, int x, int y)
    ewin->reqx = x;
    ewin->reqy = y;
    EMoveWindow(disp, ewin->win, ewin->x, ewin->y);
+
    if (mode.mode != MODE_MOVE_PENDING && mode.mode != MODE_MOVE)
       ICCCM_Configure(ewin);
+
    DetermineEwinArea(ewin);
+
    if (ewin->has_transients)
      {
 	EWin              **lst;
@@ -1766,6 +1721,7 @@ MoveEwin(EWin * ewin, int x, int y)
 	     Efree(lst);
 	  }
      }
+
    if ((mode.mode == MODE_NONE) && (move))
      {
 	if (ewin->dialog)
@@ -1776,6 +1732,7 @@ MoveEwin(EWin * ewin, int x, int y)
 	PagerEwinOutsideAreaUpdate(ewin);
 	ForceUpdatePagersForDesktop(ewin->desktop);
      }
+
    call_depth--;
    EDBUG_RETURN_;
 }
@@ -1788,12 +1745,10 @@ MoveResizeEwin(EWin * ewin, int x, int y, int w, int h)
    static int          call_depth = 0;
 
    EDBUG(3, "MoveResizeEwin");
-   call_depth++;
    if (call_depth > 256)
-     {
-	call_depth--;
-	EDBUG_RETURN_;
-     }
+      EDBUG_RETURN_;
+   call_depth++;
+
    dx = x - ewin->x;
    dy = y - ewin->y;
    if ((dx != 0) || (dy != 0) || (w != ewin->w) || (h != ewin->h))
@@ -1805,6 +1760,7 @@ MoveResizeEwin(EWin * ewin, int x, int y, int w, int h)
    ewin->client.w = w;
    ewin->client.h = h;
    ICCCM_MatchSize(ewin);
+
    if (!ewin->shaded)
      {
 	ewin->w =
@@ -1814,11 +1770,15 @@ MoveResizeEwin(EWin * ewin, int x, int y, int w, int h)
 	   ewin->client.h + ewin->border->border.top +
 	   ewin->border->border.bottom;
      }
+
    EMoveResizeWindow(disp, ewin->win, ewin->x, ewin->y, ewin->w, ewin->h);
+
    DetermineEwinArea(ewin);
+
    if ((mode.mode != MODE_MOVE_PENDING && mode.mode != MODE_MOVE)
        || (mode.have_place_grab))
       ICCCM_Configure(ewin);
+
    CalcEwinSizes(ewin);
    if (ewin->has_transients)
      {
@@ -2999,10 +2959,72 @@ UnShadeEwin(EWin * ewin)
    EDBUG_RETURN_;
 }
 
+void
+EwinSetArea(EWin * ewin, int ax, int ay)
+{
+   if (ax == ewin->area_x && ay == ewin->area_y)
+      return;
+
+   ewin->area_x = ax;
+   ewin->area_y = ay;
+
+   HintsSetWindowArea(ewin);
+}
+
+static void
+DetermineEwinArea(EWin * ewin)
+{
+   int                 ax, ay;
+
+   EDBUG(4, "DetermineEwinArea");
+
+   ax = (ewin->x + (ewin->w / 2) +
+	 (desks.desk[ewin->desktop].current_area_x * root.w)) / root.w;
+   ay = (ewin->y + (ewin->h / 2) +
+	 (desks.desk[ewin->desktop].current_area_y * root.h)) / root.h;
+
+   AreaFix(&ax, &ay);
+   EwinSetArea(ewin, ax, ay);
+
+   EDBUG_RETURN_;
+}
+
+void
+MoveEwinToArea(EWin * ewin, int ax, int ay)
+{
+   EDBUG(4, "MoveEwinToArea");
+   AreaFix(&ax, &ay);
+   MoveEwin(ewin, ewin->x + (root.w * (ax - ewin->area_x)),
+	    ewin->y + (root.h * (ay - ewin->area_y)));
+   EwinSetArea(ewin, ax, ay);
+   EDBUG_RETURN_;
+}
+
+void
+SetEwinToCurrentArea(EWin * ewin)
+{
+   EwinSetArea(ewin, desks.desk[ewin->desktop].current_area_x,
+	       desks.desk[ewin->desktop].current_area_y);
+}
+
 int
 EwinGetDesk(EWin * ewin)
 {
    return (ewin->sticky) ? desks.current : ewin->desktop;
+}
+
+int
+EwinIsOnScreen(EWin * ewin)
+{
+   int                 desk;
+
+   desk = EwinGetDesk(ewin);
+   if (desk != desks.current)
+      return 0;
+   if (ewin->area_x != desks.desk[desk].current_area_x ||
+       ewin->area_y != desks.desk[desk].current_area_y)
+      return 0;
+   return 1;
 }
 
 int

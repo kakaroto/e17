@@ -1885,6 +1885,16 @@ MoveEwinToDesktopAt(EWin * ewin, int num, int x, int y)
    EDBUG_RETURN_;
 }
 
+void
+GotoDesktopByEwin(EWin * ewin)
+{
+   if (!ewin->sticky)
+     {
+	GotoDesktop(ewin->desktop);
+	SetCurrentArea(ewin->area_x, ewin->area_y);
+     }
+}
+
 #if 0				/* Unused */
 void
 FloatEwinAboveDesktops(EWin * ewin)

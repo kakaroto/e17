@@ -2534,11 +2534,8 @@ doFocusSet(EWin * ewin, void *params)
 {
    EDBUG(6, "doFocusSet");
 
-   if (!ewin->sticky)
-     {
-	GotoDesktop(ewin->desktop);
-	SetCurrentArea(ewin->area_x, ewin->area_y);
-     }
+   GotoDesktopByEwin(ewin);
+
    if (ewin->iconified)
       DeIconifyEwin(ewin);
    if (ewin->shaded)

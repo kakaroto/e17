@@ -71,7 +71,6 @@ FocusCycle(int inc)
    for (i = 0; i < num0; i++)
      {
 	ewin = lst0[i];
-	DetermineEwinArea(ewin);
 	if (((ewin->sticky) || (ewin->desktop == desks.current)) &&
 	    ((ewin->area_x == ax) && (ewin->area_y == ay)) &&
 	    (!ewin->skipfocus) && (!ewin->neverfocus) &&
@@ -157,8 +156,7 @@ FocusFix(void)
 void
 FocusToEWin(EWin * ewin, int why)
 {
-   int                 ax, ay;
-   int                 do_set = 0;
+   int                 do_follow = 0;
 
    EDBUG(4, "FocusToEWin");
 #if 0
@@ -186,12 +184,12 @@ FocusToEWin(EWin * ewin, int why)
 
 	if (conf.focus.all_new_windows_get_focus)
 	  {
-	     do_set = 2;
+	     do_follow = 2;
 	  }
 	else if (conf.focus.new_transients_get_focus)
 	  {
 	     if (ewin->client.transient)
-		do_set = 2;
+		do_follow = 2;
 	  }
 	else if (conf.focus.new_transients_get_focus_if_group_focused)
 	  {
@@ -200,14 +198,14 @@ FocusToEWin(EWin * ewin, int why)
 	     ewin2 = FindItem(NULL, ewin->client.transient_for,
 			      LIST_FINDBY_ID, LIST_TYPE_EWIN);
 	     if ((ewin2) && (mode.focuswin == ewin2))
-		do_set = 2;
+		do_follow = 2;
 	  }
 	else if (mode.place)
 	  {
-	     do_set = 1;
+	     do_follow = 1;
 	  }
 
-	if (!do_set)
+	if (!do_follow)
 	   EDBUG_RETURN_;
 	break;
 
@@ -234,6 +232,12 @@ FocusToEWin(EWin * ewin, int why)
    if (ewin->menu)
       EDBUG_RETURN_;
 
+   if (do_follow && !mode.startup)
+      GotoDesktopByEwin(ewin);
+
+   if (!EwinIsOnScreen(ewin))
+      EDBUG_RETURN_;
+
    if (conf.autoraise.enable)
      {
 	RemoveTimerEvent("AUTORAISE_TIMEOUT");
@@ -241,22 +245,6 @@ FocusToEWin(EWin * ewin, int why)
 	if (conf.focus.mode != MODE_FOCUS_CLICK)
 	   DoIn("AUTORAISE_TIMEOUT", conf.autoraise.delay, AutoraiseTimeout,
 		ewin->client.win, NULL);
-     }
-
-   if (EwinGetDesk(ewin) != desks.current)
-     {
-	GotoDesktop(ewin->desktop);
-     }
-
-   if ((!ewin->fixedpos) && (!ewin->sticky))
-     {
-	GetCurrentArea(&ax, &ay);
-	if ((ax != ewin->area_x) || (ay != ewin->area_y))
-	  {
-	     if ((ewin->x >= root.w) || (ewin->y >= root.h)
-		 || ((ewin->x + ewin->w) < 0) || ((ewin->y + ewin->h) < 0))
-		SetCurrentArea(ewin->area_x, ewin->area_y);
-	  }
      }
 
    if ((conf.focus.raise_on_next_focus && (why == FOCUS_NEXT)) ||

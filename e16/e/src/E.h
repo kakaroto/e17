@@ -1716,7 +1716,11 @@ EWin               *AdoptInternal(Window win, Border * border, int type,
 				  void *ptr);
 EWin               *CreateEwin(void);
 void                FreeEwin(EWin * ewin);
+void                EwinSetArea(EWin * ewin, int ax, int ay);
+void                MoveEwinToArea(EWin * ewin, int ax, int ay);
+void                SetEwinToCurrentArea(EWin * ewin);
 int                 EwinGetDesk(EWin * ewin);
+int                 EwinIsOnScreen(EWin * ewin);
 int                 EwinWinpartIndex(EWin * ewin, Window win);
 
 int                 BordersEventMouseDown(XEvent * ev);
@@ -1740,7 +1744,6 @@ void                RemoveWindowMatch(WindowMatch * wm);
 /* borders.c functions */
 void                KillEwin(EWin * ewin, int nogroup);
 void                ResizeEwin(EWin * ewin, int w, int h);
-void                DetermineEwinArea(EWin * ewin);
 void                MoveEwin(EWin * ewin, int x, int y);
 void                MoveResizeEwin(EWin * ewin, int x, int y, int w, int h);
 void                FloatEwin(EWin * ewin);
@@ -1928,6 +1931,7 @@ void                DesktopAddEwinToBottom(EWin * ewin);
 void                DesktopAddEwinToTop(EWin * ewin);
 void                DesktopRemoveEwin(EWin * ewin);
 void                MoveEwinToDesktopAt(EWin * ewin, int num, int x, int y);
+void                GotoDesktopByEwin(EWin * ewin);
 void                FloatEwinAboveDesktops(EWin * ewin);
 void                DesktopAccounting(void);
 
@@ -2270,14 +2274,14 @@ void                ShowAllTaskMenu(void);
 void                ShowDeskMenu(void);
 void                ShowGroupMenu(void);
 
+/* areas.c */
+void                AreaFix(int *ax, int *ay);
 void                SetNewAreaSize(int ax, int ay);
 void                GetCurrentArea(int *ax, int *ay);
 void                SetAreaSize(int aw, int ah);
 void                GetAreaSize(int *aw, int *ah);
 void                InitCurrentArea(int ax, int ay);
 void                SetCurrentArea(int ax, int ay);
-void                MoveEwinToArea(EWin * ewin, int ax, int ay);
-void                SetEwinToCurrentArea(EWin * ewin);
 void                MoveCurrentAreaBy(int ax, int ay);
 void                SetCurrentLinearArea(int a);
 int                 GetCurrentLinearArea(void);
