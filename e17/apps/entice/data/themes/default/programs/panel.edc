@@ -8,6 +8,15 @@
 		target, "PanelClip";
 		target, "PanelMouseArea";
 		target, "entice.preview.confine";
+		in, 0.4 0.0;
+	    }
+	    program
+	    {
+		name, 	"ShowPanelKill";
+		signal, "mouse,out";
+		source, "PanelMouseArea";
+		action, ACTION_STOP;
+		target, "ShowPanel";
 	    }
 	    program
 	    {
