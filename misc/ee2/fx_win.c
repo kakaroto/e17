@@ -1,11 +1,13 @@
 #include "ee2.h"
 
+GtkWidget *t1;
+
 void
 fx_init(void)
 {
   GtkWidget *nfr1, *nlbl, *vbox1, *sep, *btn;
 	GtkWidget *b1, *b2;
-	GtkWidget *v1, *c1, *l1, *t1;
+	GtkWidget *v1, *c1, *l1;
 	GtkAdjustment *adj;
 
 	GtkWidget *dead = gtk_label_new("  ");
@@ -33,6 +35,8 @@ fx_init(void)
 	gtk_box_pack_start(GTK_BOX(b1), t1, TRUE, TRUE, 0);
 
 	btn = gtk_button_new_with_label("Blur");
+	gtk_signal_connect(GTK_OBJECT(btn), "clicked",
+										GTK_SIGNAL_FUNC(fx_blur), NULL);
 	gtk_widget_show(btn);
 	gtk_box_pack_start(GTK_BOX(b1), btn, FALSE, FALSE, 0);
 
@@ -45,3 +49,11 @@ fx_init(void)
   gtk_widget_show(vbox1);
 }
 
+void
+fx_blur(void)
+{
+	gint blum = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(t1));
+	imlib_context_set_image(im);
+	imlib_image_blur((int)blum);
+	DrawImage(im, imlib_image_get_width(), imlib_image_get_height());
+}
