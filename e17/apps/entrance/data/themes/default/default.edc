@@ -985,7 +985,7 @@ collections {
 	       }
 	       image {
 		  normal: "e17_panel.png";
-		  border: 3 3 3 3;
+		  border: 2 2 2 2;
 	       }
 	    }
 	 }
@@ -1059,7 +1059,7 @@ collections {
 	       }
 	       image {
 		  normal: "e17_panel.png";
-		  border: 3 3 3 3;
+		  border: 2 2 2 2;
 	       }
 	    }
 	 }
