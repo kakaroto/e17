@@ -432,7 +432,11 @@ CfgItemListNamedItemSet(const CfgItem * pcl, int ncl, const char *item,
    ci = CfgItemFind(pcl, ncl, item);
    if (!ci)
       return -1;
-   CfgItemSetFromString(ci, value);
+
+   if (ci->func)
+      ci->func(ci->ptr, value);
+   else
+      CfgItemSetFromString(ci, value);
 
    return 0;
 }

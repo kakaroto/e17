@@ -30,6 +30,7 @@ typedef struct
    void               *ptr;
    char                type;
    long                dflt;
+   void                (*func) (void *item, const char *value);
 } CfgItem;
 
 typedef enum
@@ -40,12 +41,16 @@ typedef enum
    ITEM_TYPE_STRING
 } cfg_item_type_e;
 
-#define CFG_ITEM_BOOL(conf, name, dflt)  { #name, &conf.name, ITEM_TYPE_BOOL, dflt }
-#define CFG_ITEM_INT(conf, name, dflt)   { #name, &conf.name, ITEM_TYPE_INT, dflt }
-#define CFG_ITEM_STR(conf, name)         { #name, &conf.name, ITEM_TYPE_STRING, 0 }
+#define CFG_ITEM_BOOL(conf, name, dflt)  { #name, &conf.name, ITEM_TYPE_BOOL, dflt, NULL }
+#define CFG_ITEM_INT(conf, name, dflt)   { #name, &conf.name, ITEM_TYPE_INT, dflt, NULL }
+#define CFG_ITEM_STR(conf, name)         { #name, &conf.name, ITEM_TYPE_STRING, 0, NULL }
+
+#define CFG_FUNC_BOOL(conf, name, dflt, func)  { #name, &conf.name, ITEM_TYPE_BOOL, dflt, func }
+#define CFG_FUNC_INT(conf, name, dflt, func)   { #name, &conf.name, ITEM_TYPE_INT, dflt, func }
+#define CFG_FUNC_STR(conf, name, func)         { #name, &conf.name, ITEM_TYPE_STRING, 0, func }
 
 /* Change to this? */
-#define CFR_ITEM_BOOL(conf, name, dflt)  { #name, &conf, ITEM_TYPE_BOOL, dflt }
+#define CFR_ITEM_BOOL(conf, name, dflt)  { #name, &conf, ITEM_TYPE_BOOL, dflt, NULL }
 
 const CfgItem      *CfgItemFind(const CfgItem * pcl, int ncl, const char *name);
 void                CfgItemToString(const CfgItem * ci, char *buf, int len);

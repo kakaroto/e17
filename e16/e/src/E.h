@@ -808,8 +808,8 @@ typedef struct
       int                 num;
       int                 dragdir;
       int                 dragbar_width;
-      int                 dragbar_ordering;
       int                 dragbar_length;
+      int                 dragbar_ordering;
       char                desks_wraparound;
       char                slidein;
       int                 slidespeed;

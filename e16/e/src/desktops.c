@@ -69,6 +69,19 @@ DeskControlsCreate(Desk * d)
    int                 x[3], y[3], w[3], h[3], m, n, o;
    const char         *t;
 
+   if (Conf.desks.dragdir < 0 || Conf.desks.dragdir > 3)
+      Conf.desks.dragdir = 2;
+   if (Conf.desks.dragbar_ordering < 0 || Conf.desks.dragbar_ordering > 5)
+      Conf.desks.dragbar_ordering = 1;
+   if (Conf.desks.dragbar_width < 0)
+      Conf.desks.dragbar_width = 0;
+   else if (Conf.desks.dragbar_width > 64)
+      Conf.desks.dragbar_width = 64;
+   if (Conf.desks.dragbar_length < 0)
+      Conf.desks.dragbar_length = 0;
+   else if (Conf.desks.dragbar_length > VRoot.w)
+      Conf.desks.dragbar_length = VRoot.w;
+
    Esnprintf(s, sizeof(s), "DRAGBAR_DESKTOP_%i", d->num);
 
    ac = FindItem(s, 0, LIST_FINDBY_NAME, LIST_TYPE_ACLASS);
@@ -1524,7 +1537,7 @@ DeskDragdirSet(const char *params)
 static void
 DeskDragbarOrderSet(const char *params)
 {
-   char                pd;
+   int                 pd;
 
    pd = Conf.desks.dragbar_ordering;
 
@@ -2367,18 +2380,54 @@ IpcItem             DesktopsIpcArray[] = {
 };
 #define N_IPC_FUNCS (sizeof(DesktopsIpcArray)/sizeof(IpcItem))
 
+static void
+DesksCfgFuncCount(void *item __UNUSED__, const char *value)
+{
+   ChangeNumberOfDesktops(atoi(value));
+}
+
+static void
+DesksCfgFuncDragdir(void *item __UNUSED__, const char *value)
+{
+   DeskDragdirSet(value);
+}
+
+static void
+DesksCfgFuncDragdbarOrder(void *item __UNUSED__, const char *value)
+{
+   DeskDragbarOrderSet(value);
+}
+
+static void
+AreasCfgFuncSizeX(void *item __UNUSED__, const char *value)
+{
+   int                 ax, ay;
+
+   GetAreaSize(&ax, &ay);
+   SetNewAreaSize(atoi(value), ay);
+}
+
+static void
+AreasCfgFuncSizeY(void *item __UNUSED__, const char *value)
+{
+   int                 ax, ay;
+
+   GetAreaSize(&ax, &ay);
+   SetNewAreaSize(ax, atoi(value));
+}
+
 static const CfgItem DesktopsCfgItems[] = {
-   CFG_ITEM_INT(Conf.desks, num, 2),
-   CFG_ITEM_INT(Conf.desks, dragdir, 2),
+   CFG_FUNC_INT(Conf.desks, num, 2, DesksCfgFuncCount),
+   CFG_FUNC_INT(Conf.desks, dragdir, 2, DesksCfgFuncDragdir),
    CFG_ITEM_INT(Conf.desks, dragbar_width, 16),
-   CFG_ITEM_INT(Conf.desks, dragbar_ordering, 1),
    CFG_ITEM_INT(Conf.desks, dragbar_length, 0),
+   CFG_FUNC_INT(Conf.desks, dragbar_ordering, 1, DesksCfgFuncDragdbarOrder),
    CFG_ITEM_BOOL(Conf.desks, desks_wraparound, 0),
    CFG_ITEM_BOOL(Conf.desks, slidein, 1),
    CFG_ITEM_INT(Conf.desks, slidespeed, 6000),
 
-   CFG_ITEM_INT(Conf.desks, areas_nx, 2),
-   CFG_ITEM_INT(Conf.desks, areas_ny, 1),
+   CFG_FUNC_INT(Conf.desks, areas_nx, 2, AreasCfgFuncSizeX),
+   CFG_FUNC_INT(Conf.desks, areas_ny, 1, AreasCfgFuncSizeY),
    CFG_ITEM_BOOL(Conf.desks, areas_wraparound, 0),
 };
 #define N_CFG_ITEMS (sizeof(DesktopsCfgItems)/sizeof(CfgItem))
