@@ -552,6 +552,13 @@ MenuRepack(Menu * m)
 }
 
 void
+MenuMove(Menu * m)
+{
+   if (IclassIsTransparent(m->style->bg_iclass))
+      MenuRealize(m);
+}
+
+void
 MenuAddItem(Menu * menu, MenuItem * item)
 {
    EDBUG(5, "MenuAddItem");
@@ -830,6 +837,8 @@ MenuDrawItem(Menu * m, MenuItem * mi, char shape)
    queue_up = 0;
 
    mi_pmm = &(mi->pmm[(int)(mi->state)]);
+   if (IclassIsTransparent(m->style->bg_iclass))
+      FreePmapMask(mi_pmm);
    if (!mi_pmm->pmap)
      {
 	if (mi->text)

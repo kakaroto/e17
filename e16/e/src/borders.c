@@ -1803,7 +1803,7 @@ ResizeEwin(EWin * ewin, int w, int h)
      }
    if (ewin->pager)
       PagerResize(ewin->pager, ewin->client.w, ewin->client.h);
-   if (ewin->ibox)
+   else if (ewin->ibox)
       IconboxResize(ewin->ibox, ewin->client.w, ewin->client.h);
    EDBUG_RETURN_;
 }
@@ -1880,6 +1880,11 @@ MoveEwin(EWin * ewin, int x, int y)
      }
    if ((mode.mode == MODE_NONE) && (move))
      {
+	if (ewin->dialog)
+	   DialogMove(ewin->dialog);
+	else if (ewin->menu)
+	   MenuMove(ewin->menu);
+
 	PagerEwinOutsideAreaUpdate(ewin);
 	ForceUpdatePagersForDesktop(ewin->desktop);
      }
@@ -1948,15 +1953,22 @@ MoveResizeEwin(EWin * ewin, int x, int y, int w, int h)
 	     Efree(lst);
 	  }
      }
+
    if ((mode.mode == MODE_NONE) && (change))
      {
+	if (ewin->dialog)
+	   DialogMove(ewin->dialog);
+	else if (ewin->menu)
+	   MenuMove(ewin->menu);
+
 	PagerEwinOutsideAreaUpdate(ewin);
 	ForceUpdatePagersForDesktop(ewin->desktop);
      }
    if (ewin->pager)
       PagerResize(ewin->pager, ewin->client.w, ewin->client.h);
-   if (ewin->ibox)
+   else if (ewin->ibox)
       IconboxResize(ewin->ibox, ewin->client.w, ewin->client.h);
+
    call_depth--;
    EDBUG_RETURN_;
 }

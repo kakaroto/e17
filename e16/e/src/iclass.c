@@ -22,6 +22,8 @@
  */
 #include "E.h"
 
+#define ENABLE_TRANSPARENCY USE_IMLIB2
+
 ImageClass         *
 CreateIclass()
 {
@@ -68,8 +70,6 @@ FreeImageState(ImageState * i)
 	imlib_free_image();
 	i->im = NULL;
      }
-   if (i->transp)
-      Efree(i->transp);
    if (i->border)
       Efree(i->border);
 
@@ -148,8 +148,8 @@ CreateImageState()
    is->im_file = NULL;
    is->real_file = NULL;
    is->unloadable = 0;
+   is->transparent = 0;
    is->im = NULL;
-   is->transp = NULL;
    is->border = NULL;
    is->pixmapfillstyle = FILL_STRETCH;
    ESetColor(&(is->bg), 160, 160, 160);
@@ -177,6 +177,9 @@ ImageStatePopulate(ImageState * is)
    EAllocColor(&is->lo);
    EAllocColor(&is->hihi);
    EAllocColor(&is->lolo);
+
+   if (is->transparent)
+      is->unloadable = 1;
 
    EDBUG_RETURN_;
 }
@@ -471,8 +474,14 @@ IclassPopulate(ImageClass * iclass)
 	     cm->ref_count++;
 	  }
      }
-   EDBUG_RETURN_;
 
+   EDBUG_RETURN_;
+}
+
+int
+IclassIsTransparent(ImageClass * ic)
+{
+   return ic && ic->norm.normal && ic->norm.normal->transparent;
 }
 
 static ImageState  *
@@ -525,14 +534,299 @@ IclassGetImageState2(ImageClass * iclass, int state, int active, int sticky)
    return is;
 }
 
+static void
+ImageStateMakePmapMask(ImageState * is, Drawable win, PmapMask * pmm,
+		       int make_mask, int w, int h)
+{
+   int                 apply;
+   int                 ww, hh;
+   PmapMask            pmml;
+   Pixmap              mask = 0;
+
+#if ENABLE_TRANSPARENCY
+   Pixmap              pmap = 0;
+   Imlib_Image        *ii = NULL;
+
+   /*
+    * is->transparent flags:
+    *   0x01: Use desktop background pixmap as base
+    *   0x02: Use root window as base (use only for transients, if at all)
+    *   0x04: Don't apply image mask to result
+    */
+#endif
+
+   apply = !pmm;
+   if (!pmm)
+      pmm = &pmml;
+
+   imlib_context_set_drawable(win);
+   imlib_context_set_image(is->im);
+
+   if (is->border)
+      imlib_image_set_border(is->border);
+
+   ww = imlib_image_get_width();
+   hh = imlib_image_get_height();
+
+   pmm->type = 1;
+   pmm->pmap = pmm->mask = 0;
+
+#if ENABLE_TRANSPARENCY
+   if (is->transparent && is->pixmapfillstyle == FILL_STRETCH &&
+       imlib_image_has_alpha())
+     {
+	Window              cr;
+	Pixmap              bg;
+	int                 xx, yy;
+
+	/* Create the background base image */
+	bg = root.win;
+	if ((is->transparent & 0x02) == 0 &&
+	    desks.desk[desks.current].bg && desks.desk[desks.current].bg->pmap)
+	   bg = desks.desk[desks.current].bg->pmap;
+	XTranslateCoordinates(disp, win, root.win, 0, 0, &xx, &yy, &cr);
+	imlib_context_set_drawable(bg);
+	ii = imlib_create_image_from_drawable(0, xx, yy, w, h, 1);
+	imlib_context_set_image(ii);
+	imlib_context_set_drawable(win);
+     }
+#endif
+
+   if (is->pixmapfillstyle == FILL_STRETCH)
+     {
+#if ENABLE_TRANSPARENCY
+	if (ii)
+	  {
+	     imlib_context_set_blend(1);
+	     imlib_context_set_operation(IMLIB_OP_COPY);
+	     imlib_blend_image_onto_image(is->im, 0, 0, 0, ww, hh, 0, 0, w, h);
+	     imlib_context_set_blend(0);
+	  }
+#endif
+	pmm->type = 1;
+	imlib_render_pixmaps_for_whole_image_at_size(&pmm->pmap, &pmm->mask,
+						     w, h);
+	mask = pmm->mask;
+#if ENABLE_TRANSPARENCY
+	if (ii && make_mask && (is->transparent & 0x04) == 0)
+	  {
+	     /* Make the scaled clip mask to be used (is this really the way?) */
+	     imlib_context_set_image(is->im);
+	     imlib_render_pixmaps_for_whole_image_at_size(&pmap, &mask, w, h);
+	  }
+#endif
+     }
+   else
+     {
+	int                 cw, ch, pw, ph;
+
+	pw = w;
+	ph = h;
+	if (is->pixmapfillstyle & FILL_TILE_H)
+	   pw = ww;
+	if (is->pixmapfillstyle & FILL_TILE_V)
+	   ph = hh;
+	if (is->pixmapfillstyle & FILL_INT_TILE_H)
+	  {
+	     cw = w / ww;
+	     if (cw * ww < w)
+		cw++;
+	     if (cw < 1)
+		cw = 1;
+	     pw = w / cw;
+	  }
+	if (is->pixmapfillstyle & FILL_INT_TILE_V)
+	  {
+	     ch = h / hh;
+	     if (ch * hh < h)
+		ch++;
+	     if (ch < 1)
+		ch = 1;
+	     ph = h / ch;
+	  }
+	imlib_render_pixmaps_for_whole_image_at_size(&pmm->pmap, &pmm->mask,
+						     pw, ph);
+     }
+
+   if (apply)
+     {
+	/* Rendering on drawable */
+	if (is->pixmapfillstyle == FILL_STRETCH)
+	  {
+	     if (pmm->pmap)
+	       {
+		  ESetWindowBackgroundPixmap(disp, win, pmm->pmap);
+		  EShapeCombineMask(disp, win, ShapeBounding, 0, 0,
+				    mask, ShapeSet);
+	       }
+	  }
+	else
+	  {
+	     if (pmm->pmap)
+	       {
+		  ESetWindowBackgroundPixmap(disp, win, pmm->pmap);
+		  if (pmm->mask)
+		     EShapeCombineMaskTiled(disp, win, ShapeBounding, 0, 0,
+					    pmm->mask, ShapeSet, w, h);
+	       }
+	  }
+	FreePmapMask(pmm);
+	XClearWindow(disp, win);
+     }
+   else
+     {
+	/* Making pmap/mask */
+	if (is->pixmapfillstyle == FILL_STRETCH)
+	  {
+	     /* pmap and mask are already rendered at the correct size */
+	  }
+	else
+	  {
+	     /* Create new full sized pixmaps and fill them with the */
+	     /* pmap and mask tiles                                  */
+	     Pixmap              tp = 0, tm = 0;
+	     GC                  gc;
+	     XGCValues           gcv;
+
+	     tp = ECreatePixmap(disp, win, w, h, root.depth);
+	     gcv.fill_style = FillTiled;
+	     gcv.tile = pmm->pmap;
+	     gcv.ts_x_origin = 0;
+	     gcv.ts_y_origin = 0;
+	     gc = XCreateGC(disp, tp, GCFillStyle | GCTile |
+			    GCTileStipXOrigin | GCTileStipYOrigin, &gcv);
+	     XFillRectangle(disp, tp, gc, 0, 0, w, h);
+	     XFreeGC(disp, gc);
+	     if (pmm->mask)
+	       {
+		  tm = ECreatePixmap(disp, win, w, h, 1);
+		  gcv.fill_style = FillTiled;
+		  gcv.tile = pmm->mask;
+		  gcv.ts_x_origin = 0;
+		  gcv.ts_y_origin = 0;
+		  gc = XCreateGC(disp, tm, GCFillStyle | GCTile |
+				 GCTileStipXOrigin | GCTileStipYOrigin, &gcv);
+		  XFillRectangle(disp, tm, gc, 0, 0, w, h);
+		  XFreeGC(disp, gc);
+	       }
+	     FreePmapMask(pmm);
+	     pmm->type = 0;
+	     pmm->pmap = tp;
+	     pmm->mask = tm;
+	  }
+     }
+
+#if ENABLE_TRANSPARENCY
+   if (pmap)
+      imlib_free_pixmap_and_mask(pmap);
+   if (ii)
+     {
+	imlib_context_set_image(ii);
+	imlib_free_image();
+     }
+#endif
+}
+
+static void
+ImageStateDrawBevel(ImageState * is, Drawable win, GC gc, int w, int h)
+{
+   switch (is->bevelstyle)
+     {
+     case BEVEL_AMIGA:
+	XSetForeground(disp, gc, is->hihi.pixel);
+	XDrawLine(disp, win, gc, 0, 0, w - 2, 0);
+	XDrawLine(disp, win, gc, 0, 0, 0, h - 2);
+	XSetForeground(disp, gc, is->lolo.pixel);
+	XDrawLine(disp, win, gc, 1, h - 1, w - 1, h - 1);
+	XDrawLine(disp, win, gc, w - 1, 1, w - 1, h - 1);
+	break;
+     case BEVEL_MOTIF:
+	XSetForeground(disp, gc, is->hi.pixel);
+	XDrawLine(disp, win, gc, 0, 0, w - 1, 0);
+	XDrawLine(disp, win, gc, 0, 0, 0, h - 1);
+	XDrawLine(disp, win, gc, 1, 1, w - 2, 1);
+	XDrawLine(disp, win, gc, 1, 1, 1, h - 2);
+	XSetForeground(disp, gc, is->lo.pixel);
+	XDrawLine(disp, win, gc, 0, h - 1, w - 1, h - 1);
+	XDrawLine(disp, win, gc, w - 1, 1, w - 1, h - 1);
+	XDrawLine(disp, win, gc, 1, h - 2, w - 2, h - 2);
+	XDrawLine(disp, win, gc, w - 2, 2, w - 2, h - 2);
+	break;
+     case BEVEL_NEXT:
+	XSetForeground(disp, gc, is->hihi.pixel);
+	XDrawLine(disp, win, gc, 0, 0, w - 1, 0);
+	XDrawLine(disp, win, gc, 0, 0, 0, h - 1);
+	XSetForeground(disp, gc, is->hi.pixel);
+	XDrawLine(disp, win, gc, 1, 1, w - 2, 1);
+	XDrawLine(disp, win, gc, 1, 1, 1, h - 2);
+	XSetForeground(disp, gc, is->lolo.pixel);
+	XDrawLine(disp, win, gc, 1, h - 1, w - 1, h - 1);
+	XDrawLine(disp, win, gc, w - 1, 1, w - 1, h - 1);
+	XSetForeground(disp, gc, is->lo.pixel);
+	XDrawLine(disp, win, gc, 2, h - 2, w - 2, h - 2);
+	XDrawLine(disp, win, gc, w - 2, 2, w - 2, h - 2);
+	break;
+     case BEVEL_DOUBLE:
+	XSetForeground(disp, gc, is->hi.pixel);
+	XDrawLine(disp, win, gc, 0, 0, w - 2, 0);
+	XDrawLine(disp, win, gc, 0, 0, 0, h - 2);
+	XSetForeground(disp, gc, is->lo.pixel);
+	XDrawLine(disp, win, gc, 1, 1, w - 3, 1);
+	XDrawLine(disp, win, gc, 1, 1, 1, h - 3);
+	XSetForeground(disp, gc, is->lo.pixel);
+	XDrawLine(disp, win, gc, 1, h - 1, w - 1, h - 1);
+	XDrawLine(disp, win, gc, w - 1, 1, w - 1, h - 1);
+	XSetForeground(disp, gc, is->hi.pixel);
+	XDrawLine(disp, win, gc, 2, h - 2, w - 2, h - 2);
+	XDrawLine(disp, win, gc, w - 2, 2, w - 2, h - 2);
+	break;
+     case BEVEL_WIDEDOUBLE:
+	XSetForeground(disp, gc, is->hihi.pixel);
+	XDrawLine(disp, win, gc, 0, 0, w - 1, 0);
+	XDrawLine(disp, win, gc, 0, 0, 0, h - 1);
+	XSetForeground(disp, gc, is->hi.pixel);
+	XDrawLine(disp, win, gc, 1, 1, w - 2, 1);
+	XDrawLine(disp, win, gc, 1, 1, 1, h - 2);
+	XDrawLine(disp, win, gc, 3, h - 4, w - 4, h - 4);
+	XDrawLine(disp, win, gc, w - 4, 3, w - 4, h - 4);
+	XSetForeground(disp, gc, is->lolo.pixel);
+	XDrawLine(disp, win, gc, 1, h - 1, w - 1, h - 1);
+	XDrawLine(disp, win, gc, w - 1, 1, w - 1, h - 1);
+	XSetForeground(disp, gc, is->lo.pixel);
+	XDrawLine(disp, win, gc, 2, h - 2, w - 2, h - 2);
+	XDrawLine(disp, win, gc, w - 2, 2, w - 2, h - 2);
+	XDrawLine(disp, win, gc, 3, 3, w - 4, 3);
+	XDrawLine(disp, win, gc, 3, 3, 3, h - 4);
+	break;
+     case BEVEL_THINPOINT:
+	XSetForeground(disp, gc, is->hi.pixel);
+	XDrawLine(disp, win, gc, 0, 0, w - 2, 0);
+	XDrawLine(disp, win, gc, 0, 0, 0, h - 2);
+	XSetForeground(disp, gc, is->lo.pixel);
+	XDrawLine(disp, win, gc, 1, h - 1, w - 1, h - 1);
+	XDrawLine(disp, win, gc, w - 1, 1, w - 1, h - 1);
+	XSetForeground(disp, gc, is->hihi.pixel);
+	XDrawLine(disp, win, gc, 0, 0, 1, 0);
+	XDrawLine(disp, win, gc, 0, 0, 0, 1);
+	XSetForeground(disp, gc, is->lolo.pixel);
+	XDrawLine(disp, win, gc, w - 2, h - 1, w - 1, h - 1);
+	XDrawLine(disp, win, gc, w - 1, h - 2, w - 1, h - 1);
+	XSync(disp, False);
+	break;
+     case BEVEL_THICKPOINT:
+	XSetForeground(disp, gc, is->hi.pixel);
+	XDrawRectangle(disp, win, gc, 0, 0, w - 1, h - 1);
+	break;
+     default:
+	break;
+     }
+}
+
 void
 IclassApply(ImageClass * iclass, Window win, int w, int h, int active,
 	    int sticky, int state, char expose)
 {
    ImageState         *is;
-   XGCValues           gcv;
-   GC                  gc;
-   Pixmap              pmap, mask;
 
    EDBUG(4, "IclassApply");
 
@@ -579,199 +873,39 @@ IclassApply(ImageClass * iclass, Window win, int w, int h, int active,
    if (!is)
       EDBUG_RETURN_;
 
-   imlib_context_set_drawable(win);
    if (!expose)
      {
-	if (is->im_file)
+	if (is->im == NULL && is->im_file)
+	   ImageStateRealize(is);
+
+	if (is->im)
 	  {
-	     /* has bg pixmap */
-	     if (!is->im)
-		ImageStateRealize(is);
+	     ImageStateMakePmapMask(is, win, NULL, 1, w, h);
 
-	     if (is->im)
-	       {
-		  imlib_context_set_image(is->im);
-
-		  /* if image, render */
-		  if (is->pixmapfillstyle == FILL_STRETCH)
-		    {
-		       imlib_render_pixmaps_for_whole_image_at_size(&pmap,
-								    &mask, w,
-								    h);
-		       if (pmap)
-			 {
-			    ESetWindowBackgroundPixmap(disp, win, pmap);
-			    EShapeCombineMask(disp, win, ShapeBounding, 0,
-					      0, mask, ShapeSet);
-			    imlib_free_pixmap_and_mask(pmap);
-			 }
-		    }
-		  else
-		    {
-		       int                 cw, ch, pw, ph;
-		       Pixmap              tm = 0;
-		       GC                  gc;
-		       XGCValues           gcv;
-
-		       pw = w;
-		       ph = h;
-		       if (is->pixmapfillstyle & FILL_TILE_H)
-			  pw = imlib_image_get_width();
-		       if (is->pixmapfillstyle & FILL_TILE_V)
-			  ph = imlib_image_get_height();
-		       if (is->pixmapfillstyle & FILL_INT_TILE_H)
-			 {
-			    cw = w / imlib_image_get_width();
-			    if (cw * imlib_image_get_width() < w)
-			       cw++;
-			    if (cw < 1)
-			       cw = 1;
-			    pw = w / cw;
-			 }
-		       if (is->pixmapfillstyle & FILL_INT_TILE_V)
-			 {
-			    ch = h / imlib_image_get_height();
-			    if (ch * imlib_image_get_height() < h)
-			       ch++;
-			    if (ch < 1)
-			       ch = 1;
-			    ph = h / ch;
-			 }
-		       imlib_render_pixmaps_for_whole_image_at_size(&pmap,
-								    &mask, pw,
-								    ph);
-		       if (mask)
-			 {
-			    gcv.fill_style = FillTiled;
-			    gcv.tile = mask;
-			    gcv.ts_x_origin = 0;
-			    gcv.ts_y_origin = 0;
-			    tm = ECreatePixmap(disp, win, w, h, 1);
-			    gc = XCreateGC(disp, tm,
-					   GCFillStyle | GCTile |
-					   GCTileStipXOrigin |
-					   GCTileStipYOrigin, &gcv);
-			    XFillRectangle(disp, tm, gc, 0, 0, w, h);
-			    XFreeGC(disp, gc);
-			    EShapeCombineMask(disp, win, ShapeBounding, 0,
-					      0, tm, ShapeSet);
-			    EFreePixmap(disp, tm);
-			 }
-		       ESetWindowBackgroundPixmap(disp, win, pmap);
-		       imlib_free_pixmap_and_mask(pmap);
-		    }
-	       }
-	  }
-	if (!is->im)
-	   /* bg color */
-	   ESetWindowBackground(disp, win, is->bg.pixel);
-	else if (is->im_file)
-	  {
-	     /* if unloadable - then unload */
 	     if ((is->unloadable) || (mode.memory_paranoia))
 	       {
+		  imlib_context_set_image(is->im);
 		  imlib_free_image();
 		  is->im = NULL;
 	       }
 	  }
+	else
+	  {
+	     ESetWindowBackground(disp, win, is->bg.pixel);
+	     XClearWindow(disp, win);
+	  }
      }
-   XClearWindow(disp, win);
-   /* if there is a bevel to draw, draw it */
+
    if (is->bevelstyle != BEVEL_NONE)
      {
+	XGCValues           gcv;
+	GC                  gc;
+
 	gc = XCreateGC(disp, win, 0, &gcv);
-	switch (is->bevelstyle)
-	  {
-	  case BEVEL_AMIGA:
-	     XSetForeground(disp, gc, is->hihi.pixel);
-	     XDrawLine(disp, win, gc, 0, 0, w - 2, 0);
-	     XDrawLine(disp, win, gc, 0, 0, 0, h - 2);
-	     XSetForeground(disp, gc, is->lolo.pixel);
-	     XDrawLine(disp, win, gc, 1, h - 1, w - 1, h - 1);
-	     XDrawLine(disp, win, gc, w - 1, 1, w - 1, h - 1);
-	     break;
-	  case BEVEL_MOTIF:
-	     XSetForeground(disp, gc, is->hi.pixel);
-	     XDrawLine(disp, win, gc, 0, 0, w - 1, 0);
-	     XDrawLine(disp, win, gc, 0, 0, 0, h - 1);
-	     XDrawLine(disp, win, gc, 1, 1, w - 2, 1);
-	     XDrawLine(disp, win, gc, 1, 1, 1, h - 2);
-	     XSetForeground(disp, gc, is->lo.pixel);
-	     XDrawLine(disp, win, gc, 0, h - 1, w - 1, h - 1);
-	     XDrawLine(disp, win, gc, w - 1, 1, w - 1, h - 1);
-	     XDrawLine(disp, win, gc, 1, h - 2, w - 2, h - 2);
-	     XDrawLine(disp, win, gc, w - 2, 2, w - 2, h - 2);
-	     break;
-	  case BEVEL_NEXT:
-	     XSetForeground(disp, gc, is->hihi.pixel);
-	     XDrawLine(disp, win, gc, 0, 0, w - 1, 0);
-	     XDrawLine(disp, win, gc, 0, 0, 0, h - 1);
-	     XSetForeground(disp, gc, is->hi.pixel);
-	     XDrawLine(disp, win, gc, 1, 1, w - 2, 1);
-	     XDrawLine(disp, win, gc, 1, 1, 1, h - 2);
-	     XSetForeground(disp, gc, is->lolo.pixel);
-	     XDrawLine(disp, win, gc, 1, h - 1, w - 1, h - 1);
-	     XDrawLine(disp, win, gc, w - 1, 1, w - 1, h - 1);
-	     XSetForeground(disp, gc, is->lo.pixel);
-	     XDrawLine(disp, win, gc, 2, h - 2, w - 2, h - 2);
-	     XDrawLine(disp, win, gc, w - 2, 2, w - 2, h - 2);
-	     break;
-	  case BEVEL_DOUBLE:
-	     XSetForeground(disp, gc, is->hi.pixel);
-	     XDrawLine(disp, win, gc, 0, 0, w - 2, 0);
-	     XDrawLine(disp, win, gc, 0, 0, 0, h - 2);
-	     XSetForeground(disp, gc, is->lo.pixel);
-	     XDrawLine(disp, win, gc, 1, 1, w - 3, 1);
-	     XDrawLine(disp, win, gc, 1, 1, 1, h - 3);
-	     XSetForeground(disp, gc, is->lo.pixel);
-	     XDrawLine(disp, win, gc, 1, h - 1, w - 1, h - 1);
-	     XDrawLine(disp, win, gc, w - 1, 1, w - 1, h - 1);
-	     XSetForeground(disp, gc, is->hi.pixel);
-	     XDrawLine(disp, win, gc, 2, h - 2, w - 2, h - 2);
-	     XDrawLine(disp, win, gc, w - 2, 2, w - 2, h - 2);
-	     break;
-	  case BEVEL_WIDEDOUBLE:
-	     XSetForeground(disp, gc, is->hihi.pixel);
-	     XDrawLine(disp, win, gc, 0, 0, w - 1, 0);
-	     XDrawLine(disp, win, gc, 0, 0, 0, h - 1);
-	     XSetForeground(disp, gc, is->hi.pixel);
-	     XDrawLine(disp, win, gc, 1, 1, w - 2, 1);
-	     XDrawLine(disp, win, gc, 1, 1, 1, h - 2);
-	     XDrawLine(disp, win, gc, 3, h - 4, w - 4, h - 4);
-	     XDrawLine(disp, win, gc, w - 4, 3, w - 4, h - 4);
-	     XSetForeground(disp, gc, is->lolo.pixel);
-	     XDrawLine(disp, win, gc, 1, h - 1, w - 1, h - 1);
-	     XDrawLine(disp, win, gc, w - 1, 1, w - 1, h - 1);
-	     XSetForeground(disp, gc, is->lo.pixel);
-	     XDrawLine(disp, win, gc, 2, h - 2, w - 2, h - 2);
-	     XDrawLine(disp, win, gc, w - 2, 2, w - 2, h - 2);
-	     XDrawLine(disp, win, gc, 3, 3, w - 4, 3);
-	     XDrawLine(disp, win, gc, 3, 3, 3, h - 4);
-	     break;
-	  case BEVEL_THINPOINT:
-	     XSetForeground(disp, gc, is->hi.pixel);
-	     XDrawLine(disp, win, gc, 0, 0, w - 2, 0);
-	     XDrawLine(disp, win, gc, 0, 0, 0, h - 2);
-	     XSetForeground(disp, gc, is->lo.pixel);
-	     XDrawLine(disp, win, gc, 1, h - 1, w - 1, h - 1);
-	     XDrawLine(disp, win, gc, w - 1, 1, w - 1, h - 1);
-	     XSetForeground(disp, gc, is->hihi.pixel);
-	     XDrawLine(disp, win, gc, 0, 0, 1, 0);
-	     XDrawLine(disp, win, gc, 0, 0, 0, 1);
-	     XSetForeground(disp, gc, is->lolo.pixel);
-	     XDrawLine(disp, win, gc, w - 2, h - 1, w - 1, h - 1);
-	     XDrawLine(disp, win, gc, w - 1, h - 2, w - 1, h - 1);
-	     XSync(disp, False);
-	     break;
-	  case BEVEL_THICKPOINT:
-	     XSetForeground(disp, gc, is->hi.pixel);
-	     XDrawRectangle(disp, win, gc, 0, 0, w - 1, h - 1);
-	     break;
-	  default:
-	     break;
-	  }
+	ImageStateDrawBevel(is, win, gc, w, h);
 	XFreeGC(disp, gc);
      }
+
    EDBUG_RETURN_;
 }
 
@@ -797,108 +931,22 @@ IclassApplyCopy(ImageClass * iclass, Window win, int w, int h, int active,
    if (!is)
       EDBUG_RETURN_;
 
-   imlib_context_set_drawable(win);
+   if (is->im == NULL && is->im_file)
+      ImageStateRealize(is);
 
-   if (is->im_file)
+   if (is->im)
      {
-	/* has bg pixmap */
-	if (!is->im)
-	  {
-	     ImageStateRealize(is);
-	  }
-	if (is->im)
-	  {
-	     /* if image, render */
-	     if (is->pixmapfillstyle == FILL_STRETCH)
-	       {
-		  pmm->type = 1;
-		  imlib_context_set_image(is->im);
-		  imlib_render_pixmaps_for_whole_image_at_size(&pmm->pmap,
-							       &pmm->mask,
-							       w, h);
-		  /* if unloadable - then unload */
-		  if ((is->unloadable) || (mode.memory_paranoia))
-		    {
-		       imlib_free_image();
-		       is->im = NULL;
-		    }
-		  EDBUG_RETURN_;
-	       }
-	     else
-	       {
-		  int                 cw, ch, pw, ph;
-		  Pixmap              pmap, mask, tp = 0, tm = 0;
-		  GC                  gc;
-		  XGCValues           gcv;
+	ImageStateMakePmapMask(is, win, pmm, make_mask, w, h);
 
-		  imlib_context_set_image(is->im);
-		  pw = w;
-		  ph = h;
-		  if (is->pixmapfillstyle & FILL_TILE_H)
-		     pw = imlib_image_get_width();
-		  if (is->pixmapfillstyle & FILL_TILE_V)
-		     ph = imlib_image_get_height();
-		  if (is->pixmapfillstyle & FILL_INT_TILE_H)
-		    {
-		       cw = w / imlib_image_get_width();
-		       if (cw * imlib_image_get_width() < w)
-			  cw++;
-		       if (cw < 1)
-			  cw = 1;
-		       pw = w / cw;
-		    }
-		  if (is->pixmapfillstyle & FILL_INT_TILE_V)
-		    {
-		       ch = h / imlib_image_get_height();
-		       if (ch * imlib_image_get_height() < h)
-			  ch++;
-		       if (ch < 1)
-			  ch = 1;
-		       ph = h / ch;
-		    }
-		  imlib_render_pixmaps_for_whole_image_at_size(&pmap, &mask, pw,
-							       ph);
-		  tp = ECreatePixmap(disp, win, w, h, root.depth);
-		  if ((make_mask) && (mask))
-		     tm = ECreatePixmap(disp, win, w, h, 1);
-		  gcv.fill_style = FillTiled;
-		  gcv.tile = pmap;
-		  gcv.ts_x_origin = 0;
-		  gcv.ts_y_origin = 0;
-		  gc = XCreateGC(disp, tp,
-				 GCFillStyle | GCTile | GCTileStipXOrigin |
-				 GCTileStipYOrigin, &gcv);
-		  XFillRectangle(disp, tp, gc, 0, 0, w, h);
-		  XFreeGC(disp, gc);
-		  if (tm)
-		    {
-		       gcv.fill_style = FillTiled;
-		       gcv.tile = mask;
-		       gcv.ts_x_origin = 0;
-		       gcv.ts_y_origin = 0;
-		       gc = XCreateGC(disp, tm,
-				      GCFillStyle | GCTile |
-				      GCTileStipXOrigin |
-				      GCTileStipYOrigin, &gcv);
-		       XFillRectangle(disp, tm, gc, 0, 0, w, h);
-		       XFreeGC(disp, gc);
-		    }
-		  pmm->type = 0;
-		  pmm->pmap = tp;
-		  pmm->mask = tm;
-		  IMLIB_FREE_PIXMAP_AND_MASK(pmap, mask);
-		  /* if unloadable - then unload */
-		  if ((is->unloadable) || (mode.memory_paranoia))
-		    {
-		       imlib_free_image();
-		       is->im = NULL;
-		    }
-		  EDBUG_RETURN_;
-	       }
+	if ((is->unloadable) || (mode.memory_paranoia))
+	  {
+	     imlib_context_set_image(is->im);
+	     imlib_free_image();
+	     is->im = NULL;
 	  }
+
+	EDBUG_RETURN_;
      }
-
-   /* TBD should we return here ? */
 
    /* if there is a bevel to draw, draw it */
    if (is->bevelstyle != BEVEL_NONE)
@@ -917,96 +965,7 @@ IclassApplyCopy(ImageClass * iclass, Window win, int w, int h, int active,
 	/* bg color */
 	XSetForeground(disp, gc, is->bg.pixel);
 	XFillRectangle(disp, pmap, gc, 0, 0, w, h);
-	switch (is->bevelstyle)
-	  {
-	  case BEVEL_AMIGA:
-	     XSetForeground(disp, gc, is->hihi.pixel);
-	     XDrawLine(disp, pmap, gc, 0, 0, w - 2, 0);
-	     XDrawLine(disp, pmap, gc, 0, 0, 0, h - 2);
-	     XSetForeground(disp, gc, is->lolo.pixel);
-	     XDrawLine(disp, pmap, gc, 1, h - 1, w - 1, h - 1);
-	     XDrawLine(disp, pmap, gc, w - 1, 1, w - 1, h - 1);
-	     break;
-	  case BEVEL_MOTIF:
-	     XSetForeground(disp, gc, is->hi.pixel);
-	     XDrawLine(disp, pmap, gc, 0, 0, w - 1, 0);
-	     XDrawLine(disp, pmap, gc, 0, 0, 0, h - 1);
-	     XDrawLine(disp, pmap, gc, 1, 1, w - 2, 1);
-	     XDrawLine(disp, pmap, gc, 1, 1, 1, h - 2);
-	     XSetForeground(disp, gc, is->lo.pixel);
-	     XDrawLine(disp, pmap, gc, 0, h - 1, w - 1, h - 1);
-	     XDrawLine(disp, pmap, gc, w - 1, 1, w - 1, h - 1);
-	     XDrawLine(disp, pmap, gc, 1, h - 2, w - 2, h - 2);
-	     XDrawLine(disp, pmap, gc, w - 2, 2, w - 2, h - 2);
-	     break;
-	  case BEVEL_NEXT:
-	     XSetForeground(disp, gc, is->hihi.pixel);
-	     XDrawLine(disp, pmap, gc, 0, 0, w - 1, 0);
-	     XDrawLine(disp, pmap, gc, 0, 0, 0, h - 1);
-	     XSetForeground(disp, gc, is->hi.pixel);
-	     XDrawLine(disp, pmap, gc, 1, 1, w - 2, 1);
-	     XDrawLine(disp, pmap, gc, 1, 1, 1, h - 2);
-	     XSetForeground(disp, gc, is->lolo.pixel);
-	     XDrawLine(disp, pmap, gc, 1, h - 1, w - 1, h - 1);
-	     XDrawLine(disp, pmap, gc, w - 1, 1, w - 1, h - 1);
-	     XSetForeground(disp, gc, is->lo.pixel);
-	     XDrawLine(disp, pmap, gc, 2, h - 2, w - 2, h - 2);
-	     XDrawLine(disp, pmap, gc, w - 2, 2, w - 2, h - 2);
-	     break;
-	  case BEVEL_DOUBLE:
-	     XSetForeground(disp, gc, is->hi.pixel);
-	     XDrawLine(disp, pmap, gc, 0, 0, w - 2, 0);
-	     XDrawLine(disp, pmap, gc, 0, 0, 0, h - 2);
-	     XSetForeground(disp, gc, is->lo.pixel);
-	     XDrawLine(disp, pmap, gc, 1, 1, w - 3, 1);
-	     XDrawLine(disp, pmap, gc, 1, 1, 1, h - 3);
-	     XSetForeground(disp, gc, is->lo.pixel);
-	     XDrawLine(disp, pmap, gc, 1, h - 1, w - 1, h - 1);
-	     XDrawLine(disp, pmap, gc, w - 1, 1, w - 1, h - 1);
-	     XSetForeground(disp, gc, is->hi.pixel);
-	     XDrawLine(disp, pmap, gc, 2, h - 2, w - 2, h - 2);
-	     XDrawLine(disp, pmap, gc, w - 2, 2, w - 2, h - 2);
-	     break;
-	  case BEVEL_WIDEDOUBLE:
-	     XSetForeground(disp, gc, is->hihi.pixel);
-	     XDrawLine(disp, pmap, gc, 0, 0, w - 1, 0);
-	     XDrawLine(disp, pmap, gc, 0, 0, 0, h - 1);
-	     XSetForeground(disp, gc, is->hi.pixel);
-	     XDrawLine(disp, pmap, gc, 1, 1, w - 2, 1);
-	     XDrawLine(disp, pmap, gc, 1, 1, 1, h - 2);
-	     XDrawLine(disp, pmap, gc, 3, h - 4, w - 4, h - 4);
-	     XDrawLine(disp, pmap, gc, w - 4, 3, w - 4, h - 4);
-	     XSetForeground(disp, gc, is->lolo.pixel);
-	     XDrawLine(disp, pmap, gc, 1, h - 1, w - 1, h - 1);
-	     XDrawLine(disp, pmap, gc, w - 1, 1, w - 1, h - 1);
-	     XSetForeground(disp, gc, is->lo.pixel);
-	     XDrawLine(disp, pmap, gc, 2, h - 2, w - 2, h - 2);
-	     XDrawLine(disp, pmap, gc, w - 2, 2, w - 2, h - 2);
-	     XDrawLine(disp, pmap, gc, 3, 3, w - 4, 3);
-	     XDrawLine(disp, pmap, gc, 3, 3, 3, h - 4);
-	     break;
-	  case BEVEL_THINPOINT:
-	     XSetForeground(disp, gc, is->hi.pixel);
-	     XDrawLine(disp, pmap, gc, 0, 0, w - 2, 0);
-	     XDrawLine(disp, pmap, gc, 0, 0, 0, h - 2);
-	     XSetForeground(disp, gc, is->lo.pixel);
-	     XDrawLine(disp, pmap, gc, 1, h - 1, w - 1, h - 1);
-	     XDrawLine(disp, pmap, gc, w - 1, 1, w - 1, h - 1);
-	     XSetForeground(disp, gc, is->hihi.pixel);
-	     XDrawLine(disp, pmap, gc, 0, 0, 1, 0);
-	     XDrawLine(disp, pmap, gc, 0, 0, 0, 1);
-	     XSetForeground(disp, gc, is->lolo.pixel);
-	     XDrawLine(disp, pmap, gc, w - 2, h - 1, w - 1, h - 1);
-	     XDrawLine(disp, pmap, gc, w - 1, h - 2, w - 1, h - 1);
-	     XSync(disp, False);
-	     break;
-	  case BEVEL_THICKPOINT:
-	     XSetForeground(disp, gc, is->hi.pixel);
-	     XDrawRectangle(disp, pmap, gc, 0, 0, w - 1, h - 1);
-	     break;
-	  default:
-	     break;
-	  }
+	ImageStateDrawBevel(is, pmap, gc, w, h);
 	XFreeGC(disp, gc);
      }
 
@@ -1038,9 +997,6 @@ ImageStateRealize(ImageState * is)
       imlib_image_set_border(is->border);
 
 #if !USE_IMLIB2
-   if (is->transp)
-      Imlib_set_image_shape(pImlib_Context, is->im, is->transp);
-
    if (is->colmod)
      {
 	Imlib_set_image_red_curve(pImlib_Context, is->im, is->colmod->red.map);

@@ -182,6 +182,7 @@
 #define __HILITED_ACTIVE_STICKY 364
 #define __MODIFIER 370
 #define __FILLRULE 371
+#define __TRANSPARENT 372
 
 #define __KEEP_ON_TOP 453
 #define __FLAGS 454

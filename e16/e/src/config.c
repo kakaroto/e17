@@ -2399,6 +2399,9 @@ Config_ImageClass(FILE * ConfigFile)
 	  case ICLASS_FILLRULE:
 	     ICToRead->pixmapfillstyle = atoi(s2);
 	     break;
+	  case ICLASS_TRANSPARENT:
+	     ICToRead->transparent = atoi(s2);
+	     break;
 	  case CONFIG_INHERIT:
 	     {
 		ImageClass         *ICToInherit;

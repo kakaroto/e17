@@ -344,6 +344,27 @@ EShapeCombineMask(Display * d, Window win, int dest, int x, int y, Pixmap pmap,
 }
 
 void
+EShapeCombineMaskTiled(Display * d, Window win, int dest, int x, int y,
+		       Pixmap pmap, int op, int w, int h)
+{
+   XGCValues           gcv;
+   GC                  gc;
+   Window              tm;
+
+   gcv.fill_style = FillTiled;
+   gcv.tile = pmap;
+   gcv.ts_x_origin = 0;
+   gcv.ts_y_origin = 0;
+   tm = ECreatePixmap(disp, win, w, h, 1);
+   gc = XCreateGC(disp, tm, GCFillStyle | GCTile |
+		  GCTileStipXOrigin | GCTileStipYOrigin, &gcv);
+   XFillRectangle(disp, tm, gc, 0, 0, w, h);
+   XFreeGC(disp, gc);
+   EShapeCombineMask(disp, win, dest, x, y, tm, op);
+   EFreePixmap(disp, tm);
+}
+
+void
 EShapeCombineRectangles(Display * d, Window win, int dest, int x, int y,
 			XRectangle * rect, int n_rects, int op, int ordering)
 {

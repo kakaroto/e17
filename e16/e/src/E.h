@@ -753,8 +753,8 @@ typedef struct _imagestate
    char               *im_file;
    char               *real_file;
    char                unloadable;
+   char                transparent;
    Imlib_Image        *im;
-   Imlib_Color        *transp;
    Imlib_Border       *border;
    int                 pixmapfillstyle;
    XColor              bg, hi, lo, hihi, lolo;
@@ -1728,6 +1728,9 @@ void                EMapWindow(Display * d, Window win);
 void                EUnmapWindow(Display * d, Window win);
 void                EShapeCombineMask(Display * d, Window win, int dest, int x,
 				      int y, Pixmap pmap, int op);
+void                EShapeCombineMaskTiled(Display * d, Window win, int dest,
+					   int x, int y, Pixmap pmap, int op,
+					   int w, int h);
 void                EShapeCombineRectangles(Display * d, Window win, int dest,
 					    int x, int y, XRectangle * rect,
 					    int n_rects, int op, int ordering);
@@ -1853,6 +1856,7 @@ ImageState         *CreateImageState(void);
 void                ImageStatePopulate(ImageState * is);
 void                ImageStateRealize(ImageState * is);
 void                IclassPopulate(ImageClass * iclass);
+int                 IclassIsTransparent(ImageClass * iclass);
 void                IclassApply(ImageClass * iclass, Window win, int w, int h,
 				int active, int sticky, int state, char expose);
 void                IclassApplyCopy(ImageClass * iclass, Window win, int w,
@@ -2398,6 +2402,7 @@ void                MenuHide(Menu * m);
 void                MenuShow(Menu * m, char noshow);
 void                MenuRepack(Menu * m);
 void                MenuEmpty(Menu * m);
+void                MenuMove(Menu * m);
 MenuItem           *MenuItemCreate(char *text, ImageClass * iclass,
 				   int action_id, char *action_params,
 				   Menu * child);
@@ -2615,6 +2620,7 @@ char                SanitiseThemeDir(char *dir);
 void                Quicksort(void **a, int l, int r,
 			      int (*CompareFunc) (void *d1, void *d2));
 
+/* dialog.c */
 Dialog             *CreateDialog(char *name);
 void                DialogBindKey(Dialog * d, char *key,
 				  void (*func) (int val, void *data), int val,
@@ -2630,6 +2636,7 @@ void                DialogActivateButton(Window win, int inclick);
 void                DialogDraw(Dialog * d);
 void                DialogDrawArea(Dialog * d, int x, int y, int w, int h);
 void                DialogRedraw(Dialog * d);
+void                DialogMove(Dialog * d);
 void                ShowDialog(Dialog * d);
 void                DialogClose(Dialog * d);
 void                DialogSetParamText(Dialog * d, char *fmt, ...);

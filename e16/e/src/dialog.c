@@ -617,9 +617,20 @@ DialogRedraw(Dialog * d)
 
    if ((!d->tclass) || (!d->iclass))
       return;
+
+   IclassApply(d->iclass, d->win, d->w, d->h, 0, 0, STATE_NORMAL, 0);
+
    for (i = 0; i < d->num_buttons; i++)
       DialogDrawButton(d, i);
+
    DialogDraw(d);
+}
+
+void
+DialogMove(Dialog * d)
+{
+   if (IclassIsTransparent(d->iclass))
+      DialogRedraw(d);
 }
 
 void
@@ -696,16 +707,11 @@ ShowDialog(Dialog * d)
 			  d->button[i]->y, d->button[i]->w, d->button[i]->h);
      }
    d->w = w;
-   d->h = d->h - d->iclass->padding.bottom;
+   d->h = h;
    EResizeWindow(disp, d->win, w, h);
+
    pq = queue_up;
    queue_up = 0;
-   IclassApply(d->iclass, d->win, w, h, 0, 0, STATE_NORMAL, 0);
-
-   for (i = 0; i < d->num_buttons; i++)
-      IclassApply(d->button[i]->iclass, d->button[i]->win, d->button[i]->w,
-		  d->button[i]->h, 0, 0, STATE_NORMAL, 0);
-   queue_up = pq;
 
    ewin = AddInternalToFamily(d->win, 1, NULL, EWIN_TYPE_DIALOG, d);
    XSelectInput(disp, d->win,
@@ -738,6 +744,7 @@ ShowDialog(Dialog * d)
       AddItem(d, d->name, d->win, LIST_TYPE_DIALOG);
    XSync(disp, False);
    DialogRedraw(d);
+   queue_up = pq;
 }
 
 void
