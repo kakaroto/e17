@@ -118,7 +118,7 @@ cfg_parse_file(char *filename)
     nr = 0;
     while (NULL != fgets(line,255,fp)) {
 	nr++;
-	if (line[0] == '\n' || line[0] == '#' || line[0] == '%')
+    if (line[0] == '\n' || line[0] == '#' || line[0] == '%' || line[0] ==';')
 	    continue;
 	if (1 == sscanf(line,"[%99[^]]]",value)) {
 	    /* section */
