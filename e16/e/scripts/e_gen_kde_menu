@@ -176,7 +176,8 @@ get_exec() {
 
 E_TITLE="$DIR Menu"
 
-ORDER=""
+# order of the directory
+DIRORDER=""
 # if a .directory file exists - read it
 F=$DIR"/.directory"
 if [ -f $F ]; then
@@ -184,13 +185,32 @@ if [ -f $F ]; then
   if [ -n "$NAME" ]; then
     E_TITLE=$NAME
   fi
-  ORDER=`get_sortorder $F`
+  DIRORDER=`get_sortorder $F`
 fi
 
-# if there is no order - build one
-if [ -z "$ORDER" ]; then
-  ORDER=`/bin/ls -F $DIR | grep "/$" | sed "s:/::g"`
-fi
+# this is to build a complete orderered list
+# from DIRORDER and all the sub-directories
+# because DIRORDER is often not complete
+build_complete_order() {
+ DIRLIST=`/bin/ls -F $DIR | grep "/$" | sed "s:/::g"`
+ if [ -z "$DIRORDER" ]; then
+  echo $DIRLIST
+ else
+  echo $DIRORDER
+  for subdir in $DIRLIST; do
+   # if not in DIRLIST
+   pos1=`echo $DIRORDER | grep "^$subdir "`
+   pos2=`echo $DIRORDER | grep " $subdir "`
+   pos3=`echo $DIRORDER | grep " $subdir$"`
+   # case ^$subdir$ not possible because more than one sub-directory
+   if [ -z "$pos2" -a -z "$pos1" -a -z "$pos3" ]; then
+    echo $subdir
+   fi
+  done
+ fi
+}
+
+ORDER=`build_complete_order`
 
 # print the menu title
 echo \"$E_TITLE\" > $OUT

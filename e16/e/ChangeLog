@@ -1671,3 +1671,11 @@ Wed Jan  5 00:05:04 CET 2000
 (Saur)
 
 Added en_US (American English) to the list of localized languages.
+
+-------------------------------------------------------------------------------
+
+Wed Jan  5 11:16:26 PST 2000
+(Mandrake)
+
+added patch from Alexandre David <adavid@DoCS.UU.SE> for KDE menu generation
+fixes
