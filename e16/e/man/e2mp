@@ -1,6 +1,10 @@
 #!/usr/bin/perl
 
-print "=pod\n\n";
+print "=pod\n\n\n\n";
+
+print "=head1 NAME\n\n\nEnlightenment\n\n";
+
+print "=head1 DESCRIPTION\n\n\n";
 
 undef $/;
 $_ = <>;
@@ -36,8 +40,7 @@ sub maketitle {
     s/\n/ /g;
     s/^\s+//;
     s/\s+$//;
-    s/^/=head1 /;
-    s/$/\n\n/;
+    s/^/\n\n/;
     return $_;
 } 
 
