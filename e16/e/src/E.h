@@ -2775,6 +2775,8 @@ void                AddEwinToGroup(EWin * ewin, Group * g);
 void                RemoveEwinFromGroup(EWin * ewin);
 void                ChooseGroupForEwinDialog(EWin * ewin);
 void                FreeGroup(Group * g);
+void                SaveGroups(void);
+void                LoadGroups(void);
 
 EWin               *GetZoomEWin(void);
 void                ReZoom(EWin * ewin);

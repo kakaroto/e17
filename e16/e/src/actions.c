@@ -3375,6 +3375,7 @@ doShowHideGroup(void *params)
      }
    Efree(gwins);
 
+   SaveGroups();
    EDBUG_RETURN(0);
 }
 
@@ -3397,6 +3398,7 @@ doStartGroup(void *params)
 
    BuildWindowGroup(&ewin, 1);
 
+   SaveGroups();
    EDBUG_RETURN(0);
 }
 
@@ -3419,6 +3421,7 @@ doAddToGroup(void *params)
 
    AddEwinToGroup(ewin, current_group);
 
+   SaveGroups();
    EDBUG_RETURN(0);
 }
 
@@ -3441,6 +3444,7 @@ doRemoveFromGroup(void *params)
 
    RemoveEwinFromGroup(ewin);
 
+   SaveGroups();
    EDBUG_RETURN(0);
 }
 
@@ -3463,6 +3467,7 @@ doBreakGroup(void *params)
 
    BreakWindowGroup(ewin);
 
+   SaveGroups();
    EDBUG_RETURN(0);
 }
 

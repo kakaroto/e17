@@ -306,12 +306,22 @@ HandleEvent(XEvent * ev)
        (ev->type == ButtonPress) || (ev->type == ButtonRelease) ||
        (ev->type == EnterNotify) || (ev->type == LeaveNotify))
      {
-	lst = ListItemType(&num, LIST_TYPE_ACLASS_GLOBAL);
-	if (lst)
+	if (((ev->type == KeyPress) || (ev->type == KeyRelease)) &&
+	    (ev->xkey.root != root.win))
 	  {
-	     for (i = 0; i < num; i++)
-		EventAclass(ev, (ActionClass *) lst[i]);
-	     Efree(lst);
+	     XSetInputFocus(disp, ev->xkey.root, RevertToPointerRoot, CurrentTime);
+	     XSync(disp, False);
+	     XSendEvent(disp, ev->xkey.root, False, 0, ev);
+	  }
+	else
+	  {
+	     lst = ListItemType(&num, LIST_TYPE_ACLASS_GLOBAL);
+	     if (lst)
+	       {
+		  for (i = 0; i < num; i++)
+		     EventAclass(ev, (ActionClass *) lst[i]);
+		  Efree(lst);
+	       }
 	  }
      }
    if (ev->type <= 35)
@@ -643,7 +653,8 @@ void
 HFocusOut(XEvent * ev)
 {
    EDBUG(7, "HFocusOut");
-   ev = NULL;
+   if (ev->xfocus.detail == NotifyNonlinear)
+      HandleFocusWindowIn(0);
    EDBUG_RETURN_;
 }
 

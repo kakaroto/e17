@@ -179,7 +179,129 @@ ChooseGroupForEwin(int val, void *data)
 	     Efree(groups);
 	  }
      }
+   SaveGroups();
    data = NULL;
+}
+
+void
+SaveGroups(void)
+{
+   Group             **groups = NULL;
+   int                 i, num_groups;
+
+   groups = (Group **) ListItemType(&num_groups, LIST_TYPE_GROUP);
+   if (groups)
+     {
+	FILE               *f;
+	char                s[1024];
+
+	Esnprintf(s, sizeof(s), "%s/...e_session-XXXXXX.groups.%i",
+		  UserEDir(), root.scr);
+	f = fopen(s, "w");
+	if (f)
+	  {
+	     for (i = 0; i < num_groups; i++)
+	       {
+		  if (groups[i]->members)
+		    {
+		       fprintf(f, "NEW: %i\n", groups[i]->index);
+		       fprintf(f, "ICONIFY: %i\n", groups[i]->iconify);
+		       fprintf(f, "KILL: %i\n", groups[i]->kill);
+		       fprintf(f, "MOVE: %i\n", groups[i]->move);
+		       fprintf(f, "RAISE: %i\n", groups[i]->raise);
+		       fprintf(f, "SET_BORDER: %i\n", groups[i]->set_border);
+		       fprintf(f, "STICK: %i\n", groups[i]->stick);
+		       fprintf(f, "SHADE: %i\n", groups[i]->shade);
+		       fprintf(f, "MIRROR: %i\n", groups[i]->mirror);
+		    }
+	       }
+	     fclose(f);
+	  }
+	Efree(groups);
+     }
+}
+
+void
+LoadGroups(void)
+{
+   FILE               *f;
+   char                s[1024];
+
+   Esnprintf(s, sizeof(s), "%s/...e_session-XXXXXX.groups.%i",
+	     UserEDir(), root.scr);
+   f = fopen(s, "r");
+   if (f)
+     {
+	Group              *g = NULL;
+
+	while (fgets(s, sizeof(s), f))
+	  {
+	     char                ss[1024];
+
+	     if (strlen(s) > 0)
+		s[strlen(s) - 1] = 0;
+	     word(s, 1, ss);
+	     if (!strcmp(ss, "NEW:"))
+	       {
+		  g = CreateGroup();
+		  if (g)
+		    {
+		       word(s, 2, ss);
+		       g->index = atoi(ss);
+		       AddItem(g, NULL, g->index, LIST_TYPE_GROUP);
+		    }
+	       }
+	     else if (!strcmp(ss, "ICONIFY:"))
+	       {
+		  word(s, 2, ss);
+		  if (g)
+		     g->iconify = (char)atoi(ss);
+	       }
+	     else if (!strcmp(ss, "KILL:"))
+	       {
+		  word(s, 2, ss);
+		  if (g)
+		     g->kill = (char)atoi(ss);
+	       }
+	     else if (!strcmp(ss, "MOVE:"))
+	       {
+		  word(s, 2, ss);
+		  if (g)
+		     g->move = (char)atoi(ss);
+	       }
+	     else if (!strcmp(ss, "RAISE:"))
+	       {
+		  word(s, 2, ss);
+		  if (g)
+		     g->raise = (char)atoi(ss);
+	       }
+	     else if (!strcmp(ss, "SET_BORDER:"))
+	       {
+		  word(s, 2, ss);
+		  if (g)
+		     g->set_border = (char)atoi(ss);
+	       }
+	     else if (!strcmp(ss, "STICK:"))
+	       {
+		  word(s, 2, ss);
+		  if (g)
+		     g->stick = (char)atoi(ss);
+	       }
+	     else if (!strcmp(ss, "SHADE:"))
+	       {
+		  word(s, 2, ss);
+		  if (g)
+		     g->shade = (char)atoi(ss);
+	       }
+	     else if (!strcmp(ss, "MIRROR:"))
+	       {
+		  word(s, 2, ss);
+		  if (g)
+		     g->mirror = (char)atoi(ss);
+	       }
+	  }
+	fclose(f);
+     }
 }
 
 void

@@ -1304,3 +1304,17 @@ Sun Sep  5 20:03:56 PDT 1999
 (Raster)
 
 and dont asume an iconbox actually can be found and exists
+
+-------------------------------------------------------------------------------
+
+Mon Sep  6 20:33:51 PDT 1999
+(Raster)
+
+fixed keyebindings not working on both heads in multihead
+fixed focus changing in multihead
+group proerties are now all saved to disk and loaded again each session.
+
+gee - only bug left on list is to update all of dox,
+only feature left is dnd in iconbox.. :)
+
+now hurry up geoff and christian.. finish off :)

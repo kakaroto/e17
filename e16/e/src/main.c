@@ -170,6 +170,7 @@ main(int argc, char **argv)
    CommsSetup();
    CommsFindCommsWindow();
    GrabX();
+   LoadGroups();
    LoadSnapInfo();
    MapUnmap(0);
 

@@ -779,18 +779,7 @@ SaveSnapInfo(void)
    mv(s, buf);
    if (!isfile(buf))
       Alert("Error saving snaps file\n");
-/*  
- * if (strcmp(GetSMFile(), GetGenericSMFile()))
- * {
- * char                s22[4096];
- * 
- * Esnprintf(buf, sizeof(buf), "%s.snapshots.%i", GetGenericSMFile(), root.scr);
- * Esnprintf(s22, sizeof(s22), "%s.snapshots.%i", GetSMFile(), root.scr);
- * if (exists(buf))
- * rm(buf);
- * symlink(s22, buf);
- * }
- */
+   SaveGroups();
 }
 
 void
