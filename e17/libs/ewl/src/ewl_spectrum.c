@@ -33,7 +33,7 @@ void ewl_spectrum_init(Ewl_Spectrum * sp)
 
 	w = EWL_WIDGET(sp);
 
-	ewl_image_init(EWL_IMAGE(w), NULL);
+	ewl_image_init(EWL_IMAGE(w), NULL, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE,
 			    ewl_spectrum_configure_cb, NULL);
 

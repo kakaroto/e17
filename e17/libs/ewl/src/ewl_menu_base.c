@@ -123,7 +123,7 @@ int ewl_menu_item_init(Ewl_Menu_Item * item, char *image, char *text)
 	 * text to be displayed.
 	 */
 	if (image)
-		item->icon = ewl_image_new(image);
+		item->icon = ewl_image_new(image, NULL);
 	else if (text)
 		item->icon = ewl_spacer_new();
 

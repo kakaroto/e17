@@ -77,7 +77,7 @@ __image_load_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	if (img && __image_exists(img)) {
 		ecore_dlist_append(images, img);
 		ecore_dlist_goto_last(images);
-		ewl_image_set_file(EWL_IMAGE(image), img);
+		ewl_image_set_file(EWL_IMAGE(image), img, NULL);
 	} else
 		printf("ERROR: %s does not exist\n", img);
 

@@ -369,7 +369,8 @@ static Ewl_Image_Type ewl_image_get_type(const char *i)
 
 	l = strlen(i);
 
-	if (l >= 8 && !(strncasecmp((char *) i + l - 8, ".bits.db", 8)))
+	if ((l >= 8 && !(strncasecmp((char *) i + l - 8, ".bits.db", 8)))
+    || (l >= 4 && !(strncasecmp((char *) i + l - 4, ".eet", 8))))
 		return EWL_IMAGE_TYPE_EDJE;
 
 	DRETURN_INT(EWL_IMAGE_TYPE_NORMAL, DLEVEL_STABLE);
