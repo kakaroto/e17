@@ -2583,3 +2583,12 @@ Sun Mar 21 02:54:46 CET 2004
 (Kim)
 
 Enable compiling with -Wwrite-strings.
+
+-------------------------------------------------------------------------------
+
+Mon Mar 22 18:13:11 CET 2004
+(Kim)
+
+Add some more debug stuff.
+Fix raise/lower for windows with transients.
+Fix viewport change (window sliding) for windows with transients.
