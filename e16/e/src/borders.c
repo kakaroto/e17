@@ -131,10 +131,10 @@ GetEwinPointerInClient(void)
    EDBUG(5, "GetEwinPointerInClient");
 
    d = DesktopAt(Mode.x, Mode.y);
-   XQueryPointer(disp, desks.desk[d].win, &rt, &ch, &(Mode.x), &(Mode.y), &dum,
-		 &dum, (unsigned int *)&dum);
-   px = Mode.x - desks.desk[d].x;
-   py = Mode.y - desks.desk[d].y;
+   XQueryPointer(disp, desks.desk[d].win, &rt, &ch, &dum, &dum, &px, &py,
+		 (unsigned int *)&dum);
+   px -= desks.desk[d].x;
+   py -= desks.desk[d].y;
 
    lst = EwinListGetForDesktop(d, &num);
    for (i = 0; i < num; i++)

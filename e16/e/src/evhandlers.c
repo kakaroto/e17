@@ -42,6 +42,10 @@ ToolTipTimeout(int val, void *data)
        XQueryPointer(disp, VRoot.win, &rt, &ch, &dum, &dum, &x, &y, &mask))
       EDBUG_RETURN_;
 
+   /* In case this is a virtual root */
+   if (x < 0 || y < 0 || x >= VRoot.w || y >= VRoot.h)
+      EDBUG_RETURN_;
+
    /* dont pop up tooltip is mouse button down */
    if (mask &
        (Button1Mask | Button2Mask | Button3Mask | Button4Mask | Button5Mask))

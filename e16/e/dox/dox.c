@@ -28,6 +28,7 @@
 #include <X11/Xosdefs.h>
 #include <X11/Xproto.h>
 #include <X11/keysym.h>
+#include <X11/Xatom.h>
 
 #ifdef HAS_XINERAMA
 #include <X11/extensions/Xinerama.h>
@@ -40,39 +41,6 @@
 #if defined(__alpha__) && defined(__GNUC__) && ((__GNUC__ == 2) && (__GNUC_MINOR__ < 96))	/* gets rid of some misalignment in GCC */
 #pragma 2
 #endif
-
-/* Motif window hints */
-#define MWM_HINTS_FUNCTIONS           (1L << 0)
-#define MWM_HINTS_DECORATIONS         (1L << 1)
-
-/* bit definitions for MwmHints.functions */
-#define MWM_FUNC_ALL            (1L << 0)
-#define MWM_FUNC_RESIZE         (1L << 1)
-#define MWM_FUNC_MOVE           (1L << 2)
-#define MWM_FUNC_MINIMIZE       (1L << 3)
-#define MWM_FUNC_MAXIMIZE       (1L << 4)
-#define MWM_FUNC_CLOSE          (1L << 5)
-
-/* bit definitions for MwmHints.decorations */
-#define MWM_DECOR_ALL                 (1L << 0)
-#define MWM_DECOR_BORDER              (1L << 1)
-#define MWM_DECOR_RESIZEH             (1L << 2)
-#define MWM_DECOR_TITLE               (1L << 3)
-#define MWM_DECOR_MENU                (1L << 4)
-#define MWM_DECOR_MINIMIZE            (1L << 5)
-#define MWM_DECOR_MAXIMIZE            (1L << 6)
-
-#define PROP_MWM_HINTS_ELEMENTS       4
-
-#define STARTPOS 4		/* to bypass next/prev/exit buttons for key binding positions */
-
-typedef struct _mwmhints
-{
-   CARD32              flags;
-   CARD32              functions;
-   CARD32              decorations;
-   INT32               inputMode;
-} MWMHints;
 
 Display            *disp;
 Root                VRoot;
@@ -94,18 +62,88 @@ Imlib_Image        *im_next1, *im_next2;
 Imlib_Image        *im_exit1, *im_exit2;
 char               *docdir = NULL;
 
-Window              CreateWindow(Window parent, int x, int y, int ww, int hh);
-int                 ReadHeader(FILE * f);
-int                 ReadPages(FILE * f);
+static              Window
+FindRootWindow(Display * dpy)
+{
+   Window              win1, win2, win3, root_win;
+   char               *str;
+   Atom                a, at;
+   int                 format_ret;
+   unsigned long       bytes_after, num_ret;
+   unsigned char      *retval;
 
-Window
+   root_win = DefaultRootWindow(dpy);
+
+   str = getenv("ENL_WM_ROOT");
+   if (!str)
+      goto done;
+   win1 = strtoul(str, NULL, 0);
+
+   a = XInternAtom(dpy, "_NET_SUPPORTING_WM_CHECK", True);
+
+   XGetWindowProperty(dpy, win1, a, 0, 1, False, XA_WINDOW, &at,
+		      &format_ret, &num_ret, &bytes_after, &retval);
+   if (!retval)
+      goto done;
+   win2 = *((Window *) retval);
+   XFree(retval);
+
+   XGetWindowProperty(dpy, win2, a, 0, 1, False, XA_WINDOW, &at,
+		      &format_ret, &num_ret, &bytes_after, &retval);
+   if (!retval)
+      goto done;
+   win3 = *((Window *) retval);
+   XFree(retval);
+
+   if (win2 != win3)
+      goto done;
+
+   root_win = win1;
+
+ done:
+   return root_win;
+}
+
+static void
+VRootInit(void)
+{
+   Window              root_return;
+   int                 x_return, y_return;
+   unsigned int        border_width_return;
+
+   VRoot.scr = DefaultScreen(disp);
+   VRoot.win = FindRootWindow(disp);
+   XGetGeometry(disp, VRoot.win, &root_return, &x_return, &y_return,
+		&VRoot.w, &VRoot.h, &border_width_return, &VRoot.depth);
+#if USE_IMLIB2
+   VRoot.vis = DefaultVisual(disp, VRoot.scr);
+   VRoot.depth = DefaultDepth(disp, VRoot.scr);
+   VRoot.cmap = DefaultColormap(disp, VRoot.scr);
+
+   imlib_set_color_usage(128);
+
+   imlib_context_set_display(disp);
+   imlib_context_set_visual(VRoot.vis);
+   imlib_context_set_colormap(VRoot.cmap);
+   imlib_context_set_dither(1);
+   imlib_context_set_dither_mask(0);
+#else
+   params.flags = PARAMS_IMAGECACHESIZE | PARAMS_PIXMAPCACHESIZE;
+   params.imagecachesize = (w * h * 3 * 2);
+   params.pixmapcachesize = (w * h * 3 * 2 * 8);
+   pI1Ctx = Imlib_init_with_params(disp, &params);
+   Imlib_set_render_type(pI1Ctx, RT_DITHER_TRUECOL);
+   VRoot.vis = Imlib_get_visual(pI1Ctx);
+   VRoot.depth = pI1Ctx->x.depth;
+   VRoot.cmap = Imlib_get_colormap(pI1Ctx);
+#endif
+}
+
+static              Window
 CreateWindow(Window parent, int x, int y, int ww, int hh)
 {
    Window              win;
    XSetWindowAttributes attr;
-   MWMHints            mwm;
-
-/*   Atom                a; */
    XSizeHints          hnt;
 
    attr.backing_store = NotUseful;
@@ -114,18 +152,11 @@ CreateWindow(Window parent, int x, int y, int ww, int hh)
    attr.border_pixel = 0;
    attr.background_pixel = 0;
    attr.save_under = False;
-   mwm.flags = MWM_HINTS_DECORATIONS;
-   mwm.functions = 0;
-   mwm.decorations = 0;
-   mwm.inputMode = 0;
-/*   a = XInternAtom(disp, "_MOTIF_WM_HINTS", False); */
    win = XCreateWindow(disp, parent, x, y, ww, hh, 0, VRoot.depth,
 		       InputOutput, VRoot.vis,
 		       CWOverrideRedirect | CWSaveUnder | CWBackingStore |
 		       CWColormap | CWBackPixel | CWBorderPixel, &attr);
    XSetWindowBackground(disp, win, 0);
-/*   XChangeProperty(disp, win, a, a, 32, PropModeReplace,
- * (unsigned char *)&mwm, sizeof(MWMHints) / 4); */
    XStoreName(disp, win, "DOX: Enlightenment Document Viewer");
    hnt.flags = USPosition | USSize | PPosition | PSize | PMinSize | PMaxSize;
    hnt.x = x;
@@ -254,31 +285,7 @@ main(int argc, char **argv)
    /* I dont want any internationalisation of my numeric input & output */
    setlocale(LC_NUMERIC, "C");
 
-   VRoot.scr = DefaultScreen(disp);
-#if USE_IMLIB2
-   VRoot.win = DefaultRootWindow(disp);
-   VRoot.vis = DefaultVisual(disp, VRoot.scr);
-   VRoot.depth = DefaultDepth(disp, VRoot.scr);
-   VRoot.cmap = DefaultColormap(disp, VRoot.scr);
-
-   imlib_set_color_usage(128);
-
-   imlib_context_set_display(disp);
-   imlib_context_set_visual(VRoot.vis);
-   imlib_context_set_colormap(VRoot.cmap);
-   imlib_context_set_dither(1);
-   imlib_context_set_dither_mask(0);
-#else
-   params.flags = PARAMS_IMAGECACHESIZE | PARAMS_PIXMAPCACHESIZE;
-   params.imagecachesize = (w * h * 3 * 2);
-   params.pixmapcachesize = (w * h * 3 * 2 * 8);
-   pI1Ctx = Imlib_init_with_params(disp, &params);
-   Imlib_set_render_type(pI1Ctx, RT_DITHER_TRUECOL);
-   VRoot.win = pI1Ctx->x.root;
-   VRoot.vis = Imlib_get_visual(pI1Ctx);
-   VRoot.depth = pI1Ctx->x.depth;
-   VRoot.cmap = Imlib_get_colormap(pI1Ctx);
-#endif
+   VRootInit();
 #if USE_FNLIB
    pFnlibData = Fnlib_init(pI1Ctx);
 #endif
@@ -314,11 +321,13 @@ main(int argc, char **argv)
 
    im_title = LoadImage("title.xpm");
    imlib_context_set_image(im_title);
+
    ibd.left = 50;
    ibd.right = 2;
    ibd.top = 2;
    ibd.bottom = 2;
    imlib_image_set_border(&ibd);
+
    im_prev1 = LoadImage("prev1.xpm");
    im_prev2 = LoadImage("prev2.xpm");
    im_next1 = LoadImage("next1.xpm");
@@ -341,14 +350,16 @@ main(int argc, char **argv)
 	  }
      }
 
-   t = 16;
    GetObjects(f);
    fclose(f);
+
 #if USE_FNLIB
    Fnlib_add_dir(pFnlibData, docdir);
 #endif
-   wx = (DisplayWidth(disp, DefaultScreen(disp)) - w) / 2;
-   wy = (DisplayHeight(disp, DefaultScreen(disp)) - (h + t)) / 2;
+
+   t = 16;
+   wx = (VRoot.w - w) / 2;
+   wy = (VRoot.h - (h + t)) / 2;
 #ifdef HAS_XINERAMA
    {
       if (XineramaIsActive(disp))

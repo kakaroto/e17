@@ -983,6 +983,10 @@ struct _ewin
    int                 head;
    struct
    {
+      unsigned            vroot:1;	/* Virtual root window */
+   } props;
+   struct
+   {
       unsigned            maximized_horz:1;
       unsigned            maximized_vert:1;
       unsigned            fullscreen:1;

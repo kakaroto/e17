@@ -1802,7 +1802,7 @@ PagersEventMouseUp(XEvent * ev)
 {
    Window              win = ev->xbutton.window, child;
    int                 used = 0;
-   int                 i, num, px, py, in_pager;
+   int                 i, num, px, py, in_pager, in_vroot;
    Pager              *p;
    EWin               *ewin, **gwins;
    int                 x, y, pax, pay;
@@ -1822,6 +1822,9 @@ PagersEventMouseUp(XEvent * ev)
    if (win == p->hi_win)
       XTranslateCoordinates(disp, win, p->win, px, py, &px, &py, &child);
    in_pager = (px >= 0 && py >= 0 && px < p->w && py < p->h);
+
+   in_vroot = (Mode.x >= 0 && Mode.x < VRoot.w &&
+	       Mode.y >= 0 && Mode.y < VRoot.h);
 
    if (((int)ev->xbutton.button == Conf.pagers.sel_button))
      {
@@ -1877,6 +1880,16 @@ PagersEventMouseUp(XEvent * ev)
 		    }
 		  if (gwins)
 		     Efree(gwins);
+	       }
+	     else if (ewin && ewin->props.vroot)
+	       {
+		  /* Dropping onto virtual root */
+		  EwinReparent(p->hi_ewin, ewin->client.win);
+	       }
+	     else if (!in_vroot)
+	       {
+		  /* Move back to real root */
+		  EwinReparent(p->hi_ewin, RRoot.win);
 	       }
 	     else
 	       {

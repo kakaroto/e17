@@ -191,10 +191,10 @@ typedef struct _root
 {
    Window              win;
    Visual             *vis;
-   int                 depth;
+   unsigned int        depth;
    Colormap            cmap;
    int                 scr;
-   int                 w, h;
+   unsigned int        w, h;
 }
 Root;
 

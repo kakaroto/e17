@@ -556,6 +556,9 @@ EWMH_GetWindowDesktop(EWin * ewin)
 
    EDBUG(6, "EWMH_GetWindowDesktop");
 
+   if (ewin->props.vroot)
+      goto done;
+
    val = AtomGet(ewin->client.win, _NET_WM_DESKTOP, XA_CARDINAL, &size);
    if (!val)
       goto done;
@@ -694,10 +697,29 @@ EWMH_GetWindowType(EWin * ewin)
    EDBUG_RETURN_;
 }
 
+static void
+EWMH_GetWindowMisc(EWin * ewin)
+{
+   CARD32             *val;
+   int                 size;
+
+   EDBUG(6, "EWMH_GetWindowMisc");
+
+   val = AtomGet(ewin->client.win, _NET_SUPPORTING_WM_CHECK, XA_WINDOW, &size);
+   if (val)
+     {
+	ewin->props.vroot = 1;
+	Efree(val);
+     }
+
+   EDBUG_RETURN_;
+}
+
 void
 EWMH_GetWindowHints(EWin * ewin)
 {
    EDBUG(6, "EWMH_GetWindowHints");
+   EWMH_GetWindowMisc(ewin);
    EWMH_GetWindowName(ewin);
    EWMH_GetWindowIconName(ewin);
    EWMH_GetWindowDesktop(ewin);
