@@ -932,7 +932,7 @@ IPC_WinOps(const char *params, Client * c __UNUSED__)
 	if (SetEwinBoolean("fullscreen", &on, param1, 0))
 	   EwinSetFullscreen(ewin, !on);
      }
-   else if (!strcmp(operation, "skiplists"))
+   else if (!strncmp(operation, "skiplists", 4))
      {
 	if (SetEwinBoolean("skiplists", &ewin->skiptask, param1, 1))
 	   EwinOpSkipLists(ewin, ewin->skiptask);
