@@ -122,7 +122,7 @@ ShowToolTip(ToolTip * tt, const char *text, ActionClass * ac, int x, int y)
    Pixmap              pmap, mask;
 
    EDBUG(5, "ShowToolTip");
-   if (!tt)
+   if (!tt || Mode.mode != MODE_NONE)
       EDBUG_RETURN_;
 
    pq = Mode.queue_up;

@@ -1324,10 +1324,12 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
 	ewin->client.w = w1;
 	ewin->client.h = h1;
      }
+
    if ((md == 5)
        && ((Mode.mode == MODE_RESIZE) || (Mode.mode == MODE_RESIZE_H)
 	   || (Mode.mode == MODE_RESIZE_V) || (ewin->groups && check_move)))
       md = 0;
+
    if (md == 5)
      {
 	if (VRoot.depth <= 8)
@@ -1346,10 +1348,12 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
 	   md = 0;
 #endif
      }
+
    pw = w;
    ph = h;
    pq = Mode.queue_up;
    Mode.queue_up = 0;
+
    switch (md)
      {
      case 0:
@@ -1569,10 +1573,9 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
 	       {
 		  DO_DRAW_MODE_4(x1, y1, w1, h1);
 	       }
-	     if (firstlast < 2)
-		if ((Mode.mode != MODE_NONE)
-		    && (!ewin->groups || (ewin->groups && !check_move)))
-		   SetCoords(ewin);
+	     if ((Mode.mode != MODE_NONE)
+		 && (!ewin->groups || (ewin->groups && !check_move)))
+		SetCoords(ewin);
 	     if (firstlast < 2)
 	       {
 		  DO_DRAW_MODE_4(x, y, w, h);

@@ -1271,7 +1271,6 @@ typedef struct
    int                 mode;
    char                place;
    char                flipp;
-   int                 next_move_x_plus, next_move_y_plus;
    Button             *button;
    int                 resize_detail;
    int                 win_x, win_y, win_w, win_h;

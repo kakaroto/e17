@@ -79,6 +79,8 @@ EdgeTimeout(int val, void *data)
    if (ah == 1)
       dy = 0;
    XWarpPointer(disp, None, None, 0, 0, 0, 0, dx, dy);
+   Mode.px = Mode.x += dx;
+   Mode.py = Mode.y += dy;
    data = NULL;
 }
 

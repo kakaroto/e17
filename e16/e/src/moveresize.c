@@ -69,6 +69,9 @@ ActionMoveStart(EWin * ewin, const void *params, char constrained, int nogroup)
 				      || Mode.swapmovemode, &num);
    for (i = 0; i < num; i++)
      {
+#if 0
+	gwins[i]->floating = 1;	/* Reparent to root always */
+#endif
 	FloatEwinAt(gwins[i], gwins[i]->x, gwins[i]->y);
 #if 0				/* Will never get here */
 	if (Mode.mode == MODE_MOVE)
@@ -198,32 +201,35 @@ ActionMoveEnd(EWin * ewin)
    EDBUG_RETURN(0);
 }
 
+static int          area_x, area_y;
+
 int
 ActionMoveSuspend(void)
 {
-   EWin               *ewin;
-   int                 x, y;
+   EWin               *ewin, **lst;
+   int                 i, num;
 
    ewin = mode_moveresize_ewin;
    if (!ewin)
       return 0;
 
-   if ((Mode.mode == MODE_MOVE) && (Conf.movemode > 0))
+   GetCurrentArea(&area_x, &area_y);
+
+   if (Mode.mode == MODE_MOVE_PENDING)
+      return 0;
+
+   /* If non opaque undraw our boxes */
+   if (Conf.movemode > 0)
      {
-	x = ewin->x;
-	y = ewin->y;
-	ewin->x = -99999;
-	ewin->y = -99999;
-	ewin->reqx = -99999;
-	ewin->reqy = -99999;
-	DrawEwinShape(ewin, Conf.movemode, x, y,
-		      ewin->client.w, ewin->client.h, /*3? */ 2);
-     }
-   else
-     {
-	FloatEwinAt(ewin,
-		    ewin->x + desks.desk[ewin->desktop].x,
-		    ewin->y + desks.desk[ewin->desktop].y);
+	lst = ListWinGroupMembersForEwin(ewin, ACTION_MOVE, Mode.nogroup, &num);
+	for (i = 0; i < num; i++)
+	  {
+	     ewin = lst[i];
+	     DrawEwinShape(ewin, Conf.movemode, ewin->x, ewin->y,
+			   ewin->client.w, ewin->client.h, 3);
+	  }
+	if (lst)
+	   Efree(lst);
      }
 
    return 0;
@@ -232,24 +238,57 @@ ActionMoveSuspend(void)
 int
 ActionMoveResume(void)
 {
-   EWin               *ewin;
-   int                 x, y;
+   EWin               *ewin, **lst;
+   int                 i, num;
+   int                 x, y, ax, ay, dx, dy, fl;
 
    ewin = mode_moveresize_ewin;
    if (!ewin)
       return 0;
 
+   fl = (Conf.movemode == 5) ? 4 : 0;
    if (Mode.mode == MODE_MOVE_PENDING)
-      Mode.mode = MODE_MOVE;
+     {
+	Mode.mode = MODE_MOVE;
+	fl = 0;			/* This is the first time we draw it */
+     }
 
-   x = ewin->x;
-   y = ewin->y;
-   ewin->x = -99999;
-   ewin->y = -99999;
-   ewin->reqx = -99999;
-   ewin->reqy = -99999;
-   DrawEwinShape(ewin, Conf.movemode, x, y,
-		 ewin->client.w, ewin->client.h, (Conf.movemode == 5) ? 4 : 0);
+   GetCurrentArea(&ax, &ay);
+   dx = (ax - area_x) * VRoot.w;
+   dy = (ay - area_y) * VRoot.h;
+
+   /* Redraw any windows that were in "move mode" */
+   lst = ListWinGroupMembersForEwin(ewin, ACTION_MOVE, Mode.nogroup, &num);
+   for (i = 0; i < num; i++)
+     {
+	ewin = lst[i];
+
+	if (!ewin->floating)
+	   continue;
+
+	x = ewin->x;
+	y = ewin->y;
+	if (Mode.flipp)
+	  {
+	     if (Conf.movemode == 0)
+	       {
+		  x -= dx;
+		  y -= dy;
+	       }
+	  }
+	else
+	  {
+	     if (Conf.movemode != 0)
+	       {
+		  x += dx;
+		  y += dy;
+	       }
+	  }
+	DrawEwinShape(ewin, Conf.movemode, x, y,
+		      ewin->client.w, ewin->client.h, fl);
+     }
+   if (lst)
+      Efree(lst);
 
    return 0;
 }
@@ -400,16 +439,7 @@ ActionMoveHandleMotion(void)
 
    dx = Mode.x - Mode.px;
    dy = Mode.y - Mode.py;
-   if (Mode.next_move_x_plus != 0)
-     {
-	dx += Mode.next_move_x_plus;
-	Mode.next_move_x_plus = 0;
-     }
-   if (Mode.next_move_y_plus != 0)
-     {
-	dy += Mode.next_move_y_plus;
-	Mode.next_move_y_plus = 0;
-     }
+
    {
       char                jumpx, jumpy;
       int                 min_dx, max_dx, min_dy, max_dy;

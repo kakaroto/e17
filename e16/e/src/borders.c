@@ -1800,21 +1800,21 @@ doMoveResizeEwin(EWin * ewin, int x, int y, int w, int h, int flags)
 	int                 i, num;
 
 	lst = ListTransientsFor(ewin->client.win, &num);
-	if (lst)
+	for (i = 0; i < num; i++)
 	  {
-	     for (i = 0; i < num; i++)
-	       {
-		  if (!((Mode.flipp) && (lst[i]->floating))
-		      && (lst[i]->client.mwm_decor_border
-			  || lst[i]->client.mwm_decor_resizeh
-			  || lst[i]->client.mwm_decor_title
-			  || lst[i]->client.mwm_decor_menu
-			  || lst[i]->client.mwm_decor_minimize
-			  || lst[i]->client.mwm_decor_maximize))
-		     MoveEwin(lst[i], lst[i]->x + dx, lst[i]->y + dy);
-	       }
-	     Efree(lst);
+#if 0				/* Why? */
+	     if (!((Mode.flipp) && (lst[i]->floating))
+		 && (lst[i]->client.mwm_decor_border
+		     || lst[i]->client.mwm_decor_resizeh
+		     || lst[i]->client.mwm_decor_title
+		     || lst[i]->client.mwm_decor_menu
+		     || lst[i]->client.mwm_decor_minimize
+		     || lst[i]->client.mwm_decor_maximize))
+#endif
+		MoveEwin(lst[i], lst[i]->x + dx, lst[i]->y + dy);
 	  }
+	if (lst)
+	   Efree(lst);
      }
 
    if ((Mode.mode == MODE_NONE) /* && (move || resize) */ )
