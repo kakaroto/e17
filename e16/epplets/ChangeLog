@@ -1487,3 +1487,11 @@ Wed Dec  8 15:41:25 PST 1999
 
 Applied a patch from Michael Roberts <m.t.roberts@student.murdoch.edu.au> so
 that invisible gadgets won't try to redraw themselves.
+
+-------------------------------------------------------------------------------
+
+Thu Dec  9 14:29:50 EST 1999
+(Christian)
+
+The Mountbox reacts to left and right cursor keys now. Also added a Jazz drive
+image for piercer <piercer13@home.com>. Config dialog coming soon.

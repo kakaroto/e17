@@ -8,8 +8,9 @@
 #define TYPE_HD 1
 #define TYPE_FD 2
 #define TYPE_ZIP 3
-#define TYPE_BG 4
-#define MAXTYPE 5
+#define TYPE_JAZZ 4
+#define TYPE_BG 5
+#define MAXTYPE 6
 
 #define FSTAB      "/etc/fstab"
 #define PROCMOUNTS "/proc/mounts"
@@ -22,6 +23,7 @@ ConfigItem defaults[] = {
   {"HD_IMAGE", EROOT"/epplet_data/E-Mountbox/E-Mountbox-blockdev.png"},
   {"FD_IMAGE", EROOT"/epplet_data/E-Mountbox/E-Mountbox-floppy.png"},
   {"ZIP_IMAGE", EROOT"/epplet_data/E-Mountbox/E-Mountbox-zip.png"},
+  {"JAZZ_IMAGE", EROOT"/epplet_data/E-Mountbox/E-Mountbox-jazz.png"},
   {"BG_IMAGE", EROOT"/epplet_data/E-Mountbox/E-Mountbox-bg.png"},
   {"BG_BORDER", "5 5 5 5"}
 };
@@ -50,7 +52,7 @@ Tile           *current_tile = NULL;
 int             current_tile_index = 0;
 int             num_tiles = 0;
 ImlibData      *id = NULL;
-ImlibImage     *images[5];
+ImlibImage     *images[MAXTYPE];
 Epplet_gadget   action_area, button_left, button_right, button_more, button_close, button_config, button_help;
 RGB_buf         window_buf;
 RGB_buf         widescreen_buf;

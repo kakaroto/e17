@@ -71,6 +71,25 @@ CallbackLeave(void *data, Window w)
 */
 
 static void
+CallbackKeyPress(void *data, Window win, char *key)
+{
+  if (key)
+    {
+      if (!strcmp(key, "Left"))
+	{
+	  CallbackSlideLeft(NULL);
+	}
+      else if (!strcmp(key, "Right"))
+	{
+	  CallbackSlideRight(NULL);
+	}
+    }
+  return;
+  data = NULL;
+  win = 0;
+}
+
+static void
 CallbackHelp(void *data)
 {
   Epplet_show_about("E-Mountbox");
@@ -303,6 +322,10 @@ AddMountPoint(char *device, char *path)
 	      else if (strstr(tmp_path, "zip"))
 		{
 		  current_tile->mountpoint->type = TYPE_ZIP;
+		}
+	      else if (strstr(tmp_path, "jazz"))
+		{
+		  current_tile->mountpoint->type = TYPE_JAZZ;
 		}
 	      else
 		{
@@ -769,6 +792,12 @@ SetupGraphx(void)
       images[TYPE_ZIP] = Imlib_clone_scaled_image(id, tmp, 44, 32);
       Imlib_destroy_image(id, tmp);
     }
+  tmp = Imlib_load_image(id, Epplet_query_config("JAZZ_IMAGE"));  
+  if (tmp || (tmp = Imlib_load_image(id, defaults[TYPE_JAZZ].value)))
+    {
+      images[TYPE_JAZZ] = Imlib_clone_scaled_image(id, tmp, 44, 32);
+      Imlib_destroy_image(id, tmp);
+    }
   tmp = Imlib_load_image(id, Epplet_query_config("BG_IMAGE"));  
   if (tmp || (tmp = Imlib_load_image(id, defaults[TYPE_BG].value)))
     {
@@ -805,6 +834,9 @@ SetupGraphx(void)
 	  break;
 	case TYPE_ZIP:
 	  tile->image = images[TYPE_ZIP];
+	  break;
+	case TYPE_JAZZ:
+	  tile->image = images[TYPE_JAZZ];
 	  break;
 	default:
 	  tile->image = images[TYPE_HD];
@@ -874,6 +906,7 @@ SetupGraphx(void)
   */
   Epplet_register_expose_handler(CallbackExpose, NULL);
   Epplet_register_button_release_handler(CallbackButtonUp, NULL);
+  Epplet_register_key_press_handler(CallbackKeyPress, NULL);
 
   /* Setup the current view */
   Epplet_show();
