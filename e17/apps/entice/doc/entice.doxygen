@@ -15,8 +15,32 @@ A handy, quick, themeable image viewer.
 
 
 
-
-
+<UL>
+<LI><A HREF="./index.html#intro">What is Entice?</A></LI>
+<LI><A HREF="./index.html#running">How do I use it?</A><BR>
+<UL>
+    <LI><A HREF="./index.html#configops">Config File</A></LI> 
+    <LI><A HREF="./index.html#keyops">Binding Keys</A></LI> 
+    <LI><A HREF="./index.html#themes">Installing Themes</A></LI> 
+    </UL></LI>
+<LI><A HREF="./index.html#theme">Themers documentation</A><BR>
+<UL>
+    <LI><A HREF="./index.html#theme_groups">Entice's Appearance: Edje Groups</A><BR>
+    <UL>
+    <LI><A HREF="./index.html#theme_entice_image_parts">The EnticeImage Group</A></LI>
+    <LI><A HREF="./index.html#theme_entice_thumb_parts">The EnticeThumb Group</A></LI>
+    </UL></LI>
+    <LI><A HREF="./index.html#theme_signals">Communicating with Entice : Edje Signals</A><BR>
+    <UL>
+    <LI><A HREF="./index.html#theme_entice_progs">Signals your theme
+    can emit to Entice</A></LI>
+    <LI><A HREF="./index.html#theme_entice_thumb_progs">Signals your
+    thumbnails can emit to communicate with entice</A></LI>
+    <LI><A HREF="./index.html#theme_entice_entice_progs">Signals your theme should be aware of</A></LI>
+    </UL></LI>
+</UL></LI>
+<LI><A HREF="./index.html#requirements">Build Instructions</A></LI>
+</UL>
 
 
 
@@ -24,144 +48,18 @@ A handy, quick, themeable image viewer.
 
 @section intro What is Entice?
 
-Entice is yet another image viewer.  Why right another image viewer you
+Entice is yet another image viewer.  Why write another image viewer you
 ask?  In the past entice was an application with tons of hard coded
 effects.  These effects were very pleasing to the eye, but everyone's
-entice application looked the same.  Enter Edje.  With Edje in mind most
+entice application looked the same.  
+@image html entice.jpg 
+Enter Edje.  With Edje in mind most
 of entice was rewritten from the ground up.  The applications
-functionality was broken out, and Edje signals handle the actual
-functionality of entice.  It is the themers job to tell entice what to
-do, and it's entice's job to do it right.  
-
-
-
-@section requirements What does Entice require?
-
-Entice relies on a lot of libraries most notably
-  - Edb (library)
-  - Eet (library)
-  - Evas (library)
-  - Edje (library)
-  - Esmart (library)
-  - Imlib2 (library)
-  - Ecore (library)
-  - Ecore_Evas (library)
-
-The following instructions assume you've checked out the e17 directory
-from cvs.  You'll notice most of these directories have a script called
-conf-e-x11.sh which contain the long list of configure opts listed
-below.  If you're on a BSD substitute gmake for make.
-
-@verbatim
-1. You need Edb from cvs
-  cd e17/libs/edb
-  ./autogen.sh
-  make
-  sudo make install
-  cd ..
-
-2. You need Eet from cvs
-
-  cd eet
-  ./autogen.sh
-  make
-  sudo make install
-  cd ..
-
-3. You need Imlib2 > 1.1.0 - the more loaders, the more entice will be able to view. If you're using cvs
-
-  cd imlib2
-  ./autogen.sh
-  make
-  sudo make install
-  cd ..
-
-4. You need Evas from cvs
-
-  cd evas
-  ./autogen.sh
-  ./configure \
-  --enable-software-x11 \
-  --enable-gl-x11 \
-  --enable-image-loader-png \
-  --enable-image-loader-jpeg \
-  --enable-image-loader-eet \
-  --enable-image-loader-edb \
-  --enable-cpu-c \
-  --enable-cpu-mmx \
-  --enable-cpu-p2-only \
-  --enable-scale-smooth \
-  --enable-scale-sample \
-  --enable-convert-8-rgb-332 \
-  --enable-convert-8-rgb-666 \
-  --enable-convert-8-rgb-232 \
-  --enable-convert-8-rgb-222 \
-  --enable-convert-8-rgb-221 \
-  --enable-convert-8-rgb-121 \
-  --enable-convert-8-rgb-111 \
-  --enable-convert-16-rgb-565 \
-  --enable-convert-16-rgb-555 \
-  --enable-convert-16-rgb-rot-0 \
-  --enable-convert-16-rgb-rot-90 \
-  --enable-convert-16-rgb-rot-270 \
-  --enable-convert-32-rgb-8888 \
-  --enable-convert-32-rgbx-8888 \
-  --enable-convert-32-bgr-8888 \
-  --enable-convert-32-bgrx-8888 \
-  --enable-convert-32-rgb-rot-0 \
-  --enable-convert-32-rgb-rot-90 \
-  --enable-convert-32-rgb-rot-270
-  make
-  sudo make install
-  cd ..
-  
-5. You need Ecore from cvs
-
-  cd ecore
-  ./autogen.sh
-  ./configure \
-  --enable-ecore-x \
-  --enable-ecore-evas \
-  --enable-ecore-evas-gl \
-  --enable-ecore-job \
-  --enable-ecore-con \
-  --enable-ecore-ipc
-  make
-  sudo make install
-  cd ..
-
-6. You need Edje from cvs
-
-  cd edje
-  ./autogen.sh
-  make
-  sudo make install
-  cd ..
-
-7. You need Esmart from cvs
-
-  cd ../proto/esmart
-  ./autogen.sh
-  make
-  sudo make install
-  cd ..
-
-8. You need entice from cvs
-
-  cd ../apps/entice
-  ./autogen.sh
-  make
-  sudo make install
-  cd
-
-@endverbatim
-
-
-
-
-
-
-
+functionality was broken out, and Edje signals handle communication with the
+theme so the displayed items stay current.  For the themer, communication
+with entice is bidirectional, sometimes you'll have to emit signals to it,
+while other times you'll have to be aware of signals entice is emitting and
+act upon them in your theme.  
 
 
 @section running How do I use entice now that I've got it installed ?
@@ -191,111 +89,201 @@ Your entice configuration database holds various things that entice
 wants to keep track of between uses.  To look at the available values
 try.
 @verbatim
-$ edb_gtk_ed ~/.entice.db
+$ edb_gtk_ed ~/.e/apps/entice/config.db
 @endverbatim
 
 @subsection keyops How can I bind keys to signals in entice?
 @verbatim
-$ edb_gtk_ed ~/.entice.db
+$ edb_gtk_ed ~/.e/apps/entice/config.db
 @endverbatim
 
-@section signallisting Is there a comprehensive signal list entice knows about?
+@subsection themes How can I install a theme I downloaded?
+If you downloaded a theme called winter.eet copy it to your user theme
+directory.
+@verbatim
+$ cp winter.eet ~/.e/apps/entice/themes/
+@endverbatim
+If there were additional fonts that came with the theme, copy them to your
+user fonts directory.
+@verbatim
+$ cp *.ttf ~/.e/apps/entice/fonts/
+@endverbatim
+
+@section theme How do I theme for it ? (Edje Docs)
+
+@subsection theme_groups Edje groups that makeup Entice
+<UL>
+<LI><B>Entice</B>: the main entice edje, fills the entire window<BR>
+@subsection theme_entice_image_parts Entice Group : Edje Parts
+<UL>
+<LI><B>EnticeFileName</B>:(TEXT) the full path to the file currently displayed</LI>
+<LI><B>EnticeFileShortName</B>:(TEXT) the filename currently displayed</LI>
+<LI><B>EnticeFileShortName</B>:(TEXT) the filename currently displayed</LI>
+<LI><B>EnticeFileSize</B>:(TEXT) the size of the file currently displayed</LI>
+<LI><B>EnticeImageDimensions</B>:(TEXT) Entice sets this string to be a string "w x h" where w is the width of the image and h is the height of the image.</LI>
+<LI><B>EnticeImageHeight</B>:(TEXT) the height of the image currently displayed</LI>
+<LI><B>EnticeImageWidth</B>:(TEXT) the width of the image currently displayed</LI>
+<LI><B>EnticeImage</B>:(RECT) When the image is actually loaded by entice, it looks for this region in the theme.  If it exists, the image is swallowed here.  If you want dragability, do not confine this part.</LI>
+<LI><B>EnticeImageScroller</B>:(RECT) When the image displayed is larger than the area theme is giving it, a scroller window can appear.  Clicking in this window moves the viewport on displayed image so the clicked area is "centered"</LI>
+<LI><B>EnticeImagePreview</B>:(RECT) Thumbnails have the ability to request themselves to be "previewed".  This region swallows a copy of the thumbnail that requested previewing.</LI>  
+<LI><B>EnticeThumbnailArea</B>:(RECT) Entice contains a filelist, and the themer is allowed to create a region that that will contain a list of thumbnails.</LI>
+</UL></LI>
+
+<LI><B>EnticeThumb</B>:All the thumbnails take on this look<BR>
+@subsection theme_entice_thumb_parts  EnticeThumb Group Ejde Parts
+<UL><LI><B>EnticeThumb</B>:(RECT) the decorations for thumbnails</LI></UL>
+</LI></UL>
+@subsection theme_signals Communicating with Entice : Edje Signals
+<UL>
+<LI><B>Entice</B>: The themer can emit signals to ask for state changes in
+entice.  This includes things like telling Entice to "load the next image"
+or "delete this image from the filelist". <BR>
+@subsection theme_entice_progs Entice Group : Edje Signals
+<UL>
+<LI><B>EnticeImageDelete</B>:("") deletes the currently displayed image
+from the filelist, AND from disk</LI>
+<LI><B>EnticeImageRemove</B>:("") deletes the currently displayed image
+from the filelist</LI>
+<LI><B>EnticeImageSave</B>:("") save the currently modified image
+to disk</LI>
+<LI><B>EnticeImageNext</B>:("") load the next image in the filelist</LI>
+<LI><B>EnticeImagePrev</B>:("") load the previous image in the filelist</LI>
+<LI><B>EnticeImageZoomDefault</B>:("") sets the image's zoom scale back to
+1:1</LI>
+<LI><B>EnticeImageZoomFit</B>:("") fit the image in the specified area</LI> 
+<LI><B>EnticeImageZoomIn</B>:("") Zoom in on the image</LI> 
+<LI><B>EnticeImageZoomOut</B>:("") Zoom out on the image</LI> 
+<LI><B>EnticeImageZoomInFocused</B>:("") Zoom in on the image, focused on
+the current mouse x,y(NOT IMPLEMENTED)</LI> 
+<LI><B>EnticeImageZoomOutFocused</B>:("") Zoom out on the image, focused on
+the current mouse x,y(NOT IMPLEMENTED)</LI> 
+<LI><B>EnticeImageRotateRight</B>:("") Rotates the current image 90 degrees
+clockwise</LI>
+<LI><B>EnticeImageRotateLeft</B>:("") Rotates the current image 90 degrees
+counter-clockwise</LI>
+<LI><B>EnticeImageFlipH</B>:("") Flip the current image horizontally</LI>
+<LI><B>EnticeImageFlipV</B>:("") Flip the current image vertically</LI>
+<LI><B>EnticeImageScrollEastStart</B>:("") start a timer to pan the image
+viewport image "East"</LI>
+<LI><B>EnticeImageScrollWestStart</B>:("") start a timer to pan the image
+viewport image "West"</LI>
+<LI><B>EnticeImageScrollSouthStart</B>:("") start a timer to pan the image
+viewport image "South"</LI>
+<LI><B>EnticeImageScrollNorthStart</B>:("") start a timer to pan the image
+viewport image "North"</LI>
+<LI><B>EnticeImageScrollStop</B>:("") stops all image scrolling timers</LI>
+<LI><B>EnticeThumbScrollNextStart</B>:("") start scrolling to see additional
+elements in in the thumbnail containers</LI>
+<LI><B>EnticeThumbScrollPrevStart</B>:("") start scrolling to see images
+before those currently displayed in the container </LI>
+<LI><B>EnticeThumbScrollStop</B>:("") stops any thumbnail scrolling
+timers that are currently running.</LI>
+<LI><B>EnticeFullScreen</B>:("") Tell Entice to takeover the entire screen
+and resize itself borderless.</LI>
+<LI><B>EnticeQuit</B>:("") Tell Entice it's time to exit</LI>
+<LI><B>EnticeImageFitWindow</B>:("") Not Impelemented</LI>
+</UL></LI>
+
+<LI><B>EnticeThumb</B>:All the thumbnails take on this look<BR>
+@subsection theme_entice_thumb_progs EnticeThumb Group : Ejde Signals
+<UL>
+<LI><B>EnticeThumbPreview</B>:("") Send this thumbnail to the previewer.
+</LI>
+<LI><B>EnticeThumbLoad</B>:("") Load this thumbnail as the current image.
+</LI>
+<LI><B>EnticeThumbLoaded</B>:("") This thumbnail was selected in Entice.
+</LI>
+<LI><B>EnticeThumbUnLoaded</B>:("") This thumbnail was de-selected in Entice.
+</LI>
+<LI><B>EnticeThumbDelete</B>:("") Delete this thumbnail from entice's
+filelist and from disk.</LI>
+<LI><B>EnticeThumbRemove</B>:("") Remove this thumbnail from entice's
+filelist.</LI>
+
+</UL>
+</LI>
+<LI><B>Entice</B>:Signals your theme should trap that Entice will emit<BR>
+@subsection theme_entice_entice_progs Entice : Entice Signals
+<UL>
+<LI><B>EnticeImageDisplay</B>:("") When a new image is displayed.  </LI>
+<LI><B>EnticeImageDisplayPrep</B>:("") Right before the current image is
+freed, this is emitted.  This is useful for intercepting image display.
+</LI>
+<LI><B>EnticeImagePreviewShow</B>:("") When we have a new image in
+previewer.  </LI>
+<LI><B>EnticeImagePreviewPrep</B>:("") When we have a new image coming into
+the previewer, this is emitted right before the old preview is replaced with
+the new.
+</LI>
+<LI><B>EnticeImageModified</B>:("") When the image in memory is no longer
+consistent with the image on disk</LI>
+</UL>
+</LI>
+</UL>
+
+@section requirements What does Entice require?
+
+Entice relies on a lot of libraries most notably
+  - Edb (library)
+  - Eet (library)
+  - Imlib2 (library)
+  - Imlib2_loaders (library)
+  - Evas (library)
+  - Ecore (library)
+  - Edje (library)
+  - Epeg (library)
+  - Epsilon (library)
+  - Esmart (library)
+
+The following instructions assume you've checked out the e17 directory
+from cvs.  
+@verbatim
+$ cvs -d:pserver:anonymous@cvs.enlightenment.sf.net:/cvsroot/enligtenment login 
+$ cvs -d:pserver:anonymous@cvs.enlightenment.sf.net:/cvsroot/enligtenment \
+co e17/libs/edb e17/libs/eet e17/libs/imlib2 e17/libs/imlib2_loaders \
+e17/libs/evas e17/libs/ecore e17/libs/edje e17/libs/epeg e17/libs/epsilon \
+e17/proto/esmart e17/apps/entice
+@endverbatim
+
+That should fetch all the libraries you'll need to run entice.
 
 @verbatim
-Edje specification for entice 
-The theme is an edje
+1. You need Edb from cvs
+  cd e17/libs/edb; ./autogen.sh; make; sudo make install
 
-groups:
-Entice	- main entice app window
-EnticeThumb - decorations for thumbnails
+2. You need Eet from cvs
+  cd e17/libs/eet; ./autogen.sh; make; sudo make install
 
+3. You need Imlib2 > 1.1.0 
+  cd e17/libs/imlib2; ./autogen.sh; make; sudo make install
 
-EnticeThumb:
-parts:
-EnticeThumb			swallowed 	thumbnail is swallowed
-						into this part, you can
-						decorate it and emit
-						signals.
-signals:			source		description
-EnticeThumbPreview		""		Send thumb to the previewer
-EnticeThumbLoad			""		Load this thumbnail as the 
-						current image.
-EnticeThumbLoaded		""		Thumbnail was
-						selected in entice.
-EnticeThumbUnLoaded		""		Thumbnail was
-						de-selected in entice.
-EnticeThumbDelete		""		Delete the thumbnail
-						from entice and off disk
-EnticeThumbRemove		""		Remove the thumbnail
-						from entice
+4. You need imlib2_loaders
+  cd e17/libs/imlib2_loaders; ./autogen.sh; make; sudo make install
 
-Entice:
-parts				type
------				----
-EnticeFileName			TEXT		full path to image
-EnticeFileShortName		TEXT		only filename
-EnticeFileSize			TEXT		filesize in KB or MB
-EnticeImageDimensions		TEXT		widthxheight
-EnticeImageHeight		TEXT		just height in pixels
-EnticeImageWidth		TEXT		just width in pixels
-EnticeImage			swallowed	the main image display
-EnticeImageScroller		swallowed	area visible relative to
-						screen size, high level
-						magnifying glass
-						(NEEDS WORK)
-EnticeImagePreview		swallowed	Preview an image before
-						loading
-EnticeThumbnailArea		swallowed	Thumbnail container
+5. You need Evas from cvs
+  cd e17/libs/evas; ./autogen.sh; make; sudo make install
+  
+6. You need Ecore from cvs
+  cd e17/libs/ecore; ./autogen.sh; make; sudo make install
 
-signals emitted by entice:
-signal			source	description
-------			------	-----------
-EnticeImageDisplay	""	when a new image is displayed
-EnticeImageDisplayPrep	""	Right before a new image is displayed
-				(i.e. used for outgoing effects)
-EnticeImageModified	""	When the image in memory is no longer
-				is consistent with the disk image
-EnticeImagePreviewPrep	""	Emitted before, preview show
-				attempts loading
-EnticeImagePreviewShow	""	when we have previewed a new
-				image
+7. You need Edje from cvs
+  cd e17/libs/edje; ./autogen.sh; make; sudo make install
 
-signals understood by entice:
-signal			source	description
-------			------	-----------
-Things you can do to the image
-EnticeImageDelete	  ""	deletes the current image from the disk
-EnticeImageRemove	  ""	removes the current image from the image list
-EnticeImageSave		  ""	save the image to disk
-EnticeImageNext		  ""	shows the next image in the list
-EnticeImagePrev		  ""	shows the previous image in the list
-EnticeImageZoomDefault	  ""	zooms 1:1
-EnticeImageZoomFit	  ""	zooms so the image fits the screen
-EnticeImageZoomIn	  ""	zooms in
-EnticeImageZoomOut	  ""	zooms out
-EnticeImageZoomInFocused  ""	zooms in focused on the current mouse x,y
-EnticeImageZoomOutFocused ""	zooms out focused on the current mouse x,y
-EnticeImageFitWindow	  ""	resizes the window to fit the image
-EnticeImageRotateRight	  ""	rotates the image 90deg clockwise
-EnticeImageRotateLeft	  ""	I'm sure you can guess this one
-EnticeImageFlipH		  ""	flips left <-> right
-EnticeImageFlipV		  ""	flips top <-> bottom
+8. You need Epeg from cvs
+  cd e17/libs/epeg; ./autogen.sh; make; sudo make install
 
-For Panning across the image
-EnticeImageScrollEastStart   	""	start scrolling the image right 
-EnticeImageScrollSouthStart  	""	start scrolling the image down
-EnticeImageScrollWestStart   	""	start scrolling the image left
-EnticeImageScrollNorthStart  	""	start scrolling the image upwards 
-EnticeImageScrollStop  		""	stop image directional scrolling
+9. You need Epsilon from cvs
+  cd e17/libs/epsilon; ./autogen.sh; make; sudo make install
 
-For Scrolling the thumbnail area 
-EnticeThumbsScrollNextStart	""	start scrolling down the thumbnailer
-EnticeThumbsScrollPrevStart	""	start scrolling up the thumbnailer
-EnticeThumbsScrollStop		""  	stop scrolling in either direction
+10. You need Esmart from cvs
+  cd e17/proto/esmart; ./autogen.sh; make; sudo make install
 
-EnticeFullScreen	  ""	switches to/from fullscreen mode
-EnticeQuit		  ""	exits entice
+11. You need entice from cvs
+  cd e17/apps/entice; ./autogen.sh; make; sudo make install
+
 @endverbatim
+
+
 
 
 
