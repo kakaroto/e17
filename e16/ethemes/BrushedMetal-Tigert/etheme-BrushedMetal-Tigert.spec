@@ -1,7 +1,7 @@
 Summary:	Enlightenment theme: BrushedMetal-Tigert
 Name:		enlightenment-theme-BrushedMetal-Tigert
 Version:	0.16
-Release:	0.02
+Release:	1
 License:	BSD
 Group:		User Interface/Desktops
 Source0:	http://prdownloads.sourceforge.net/enlightenment/%{name}-%{version}.tar.gz
