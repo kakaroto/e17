@@ -96,15 +96,16 @@ MaxHeight(EWin * ewin, char *resize_type)
 #endif
 		  for (i = 0; i < num; i++)
 		    {
-		       if (((ewin->desktop == lst[i]->desktop) ||
-			    (lst[i]->sticky)) &&
-			   (!(lst[i]->floating)) &&
-			   (lst[i] != ewin) &&
-			   (!(lst[i]->ignorearrange)) &&
-			   SPANS_COMMON(ewin->x, ewin->w, lst[i]->x, lst[i]->w))
+		       if (
+			   (((ewin->desktop
+			      == lst[i]->desktop) && !(lst[i]->iconified))
+			    || (lst[i]->sticky)) && (!(lst[i]->floating))
+			   && (lst[i] != ewin) && (!(lst[i]->ignorearrange))
+			   && SPANS_COMMON(ewin->x, ewin->w, lst[i]->x,
+					   lst[i]->w))
 			 {
-			    if (((lst[i]->y + lst[i]->h) <= y) &&
-				((lst[i]->y + lst[i]->h) >= y1))
+			    if (((lst[i]->y + lst[i]->h) <= y)
+				&& ((lst[i]->y + lst[i]->h) >= y1))
 			       y1 = lst[i]->y + lst[i]->h;
 			    else if (((y + h) <= lst[i]->y)
 				     && (y2 >= lst[i]->y))
@@ -176,12 +177,14 @@ MaxHeight(EWin * ewin, char *resize_type)
 #endif
 		  for (i = 0; i < num; i++)
 		    {
-		       if (((ewin->desktop == lst[i]->desktop) ||
-			    (lst[i]->sticky)) &&
-			   (!(lst[i]->floating)) &&
-			   (lst[i] != ewin) &&
-			   (lst[i]->never_use_area) &&
-			   SPANS_COMMON(ewin->x, ewin->w, lst[i]->x, lst[i]->w))
+		       if (
+			   (((ewin->
+			      desktop == lst[i]->desktop)
+			     && !(lst[i]->iconified)) || (lst[i]->sticky))
+			   && (!(lst[i]->floating)) && (lst[i] != ewin)
+			   && (lst[i]->never_use_area)
+			   && SPANS_COMMON(ewin->x, ewin->w, lst[i]->x,
+					   lst[i]->w))
 			 {
 			    if (((lst[i]->y + lst[i]->h) <= y) &&
 				((lst[i]->y + lst[i]->h) >= y1))
@@ -291,12 +294,14 @@ MaxWidth(EWin * ewin, char *resize_type)
 #endif
 		  for (i = 0; i < num; i++)
 		    {
-		       if (((ewin->desktop == lst[i]->desktop) ||
-			    (lst[i]->sticky)) &&
-			   (!(lst[i]->floating)) &&
-			   (lst[i] != ewin) &&
-			   (!(lst[i]->ignorearrange)) &&
-			   SPANS_COMMON(ewin->y, ewin->h, lst[i]->y, lst[i]->h))
+		       if (
+			   (((ewin->
+			      desktop == lst[i]->desktop)
+			     && !(lst[i]->iconified)) || (lst[i]->sticky))
+			   && (!(lst[i]->floating)) && (lst[i] != ewin)
+			   && (!(lst[i]->ignorearrange))
+			   && SPANS_COMMON(ewin->y, ewin->h, lst[i]->y,
+					   lst[i]->h))
 			 {
 			    if (((lst[i]->x + lst[i]->w) <= x) &&
 				((lst[i]->x + lst[i]->w) >= x1))
@@ -372,7 +377,7 @@ MaxWidth(EWin * ewin, char *resize_type)
 		  for (i = 0; i < num; i++)
 		    {
 		       if ((lst[i] != ewin) && (!(lst[i]->ignorearrange)) &&
-			   (!(lst[i]->floating)) &&
+			   (!(lst[i]->floating)) && !(lst[i]->iconified) &&
 			   (((ewin->desktop == lst[i]->desktop) &&
 			     (lst[i]->fixedpos)) ||
 			    (lst[i]->sticky)) &&
@@ -502,12 +507,14 @@ MaxSize(EWin * ewin, char *resize_type)
 #endif
 		  for (i = 0; i < num; i++)
 		    {
-		       if (((ewin->desktop == lst[i]->desktop) ||
-			    (lst[i]->sticky)) &&
-			   (!(lst[i]->floating)) &&
-			   (lst[i] != ewin) &&
-			   (!(lst[i]->ignorearrange)) &&
-			   SPANS_COMMON(ewin->x, ewin->w, lst[i]->x, lst[i]->w))
+		       if (
+			   (((ewin->
+			      desktop == lst[i]->desktop)
+			     && !(lst[i]->iconified)) || (lst[i]->sticky))
+			   && (!(lst[i]->floating)) && (lst[i] != ewin)
+			   && (!(lst[i]->ignorearrange))
+			   && SPANS_COMMON(ewin->x, ewin->w, lst[i]->x,
+					   lst[i]->w))
 			 {
 			    if (((lst[i]->y + lst[i]->h) <= y) &&
 				((lst[i]->y + lst[i]->h) >= y1))
@@ -618,12 +625,15 @@ MaxSize(EWin * ewin, char *resize_type)
 #endif
 		  for (i = 0; i < num; i++)
 		    {
-		       if ((lst[i] != ewin) && (!(lst[i]->ignorearrange)) &&
-			   (!(lst[i]->floating)) &&
-			   (((ewin->desktop == lst[i]->desktop) &&
-			     (lst[i]->fixedpos)) ||
-			    (lst[i]->sticky)) &&
-			   SPANS_COMMON(ewin->x, ewin->w, lst[i]->x, lst[i]->w))
+		       if (
+			   ((lst[i] != ewin) && (!(lst[i]->ignorearrange))
+			    && !(lst[i]->iconified)) && (!(lst[i]->floating))
+			   &&
+			   (((ewin->
+			      desktop == lst[i]->desktop) && (lst[i]->fixedpos))
+			    || (lst[i]->sticky))
+			   && SPANS_COMMON(ewin->x, ewin->w, lst[i]->x,
+					   lst[i]->w))
 			 {
 			    if (((lst[i]->y + lst[i]->h) <= y) &&
 				((lst[i]->y + lst[i]->h) >= y1))

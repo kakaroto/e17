@@ -4499,3 +4499,10 @@ Sun Mar 26 15:40:38 PST 2000
 
 new "configpanel" ipc command.  This way I can use my config panels from efm
 by building a menu that runs eesh *grin*
+
+-------------------------------------------------------------------------------
+
+Tue Mar 28 10:31:25 PST 2000
+(Mandrake)
+
+fixed maximize bug where it would pay attention to iconified windows.

@@ -282,7 +282,8 @@ ShowMenu(Menu * m, char noshow)
 						 * * * * * * 
 						 * * * * * * * 
 						 * * * * * * * * 
-						 * * * * * * * * * from appearing offscreen */
+						 * * * * * * * * * 
+						 * * * * * * * * * * from appearing offscreen */
    unsigned int        w, h, mw, mh;
 
    EDBUG(5, "ShowMenu");
