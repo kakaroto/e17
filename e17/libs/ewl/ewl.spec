@@ -47,17 +47,20 @@ test "x$RPM_BUILD_ROOT" != "x/" && rm -rf $RPM_BUILD_ROOT
 %doc AUTHORS COPYING* NEWS README TODO
 %{_libdir}/libewl.so.*
 %{_libdir}/libewl.la
-%{_bindir}/ewl_embed_test
-%{_bindir}/ewl_test
+%{_bindir}/ewl_edb_ed
 %{_datadir}/ewl
 
 %files devel
 %defattr(-, root, root)
 %doc doc/html
 %{_datadir}/aclocal/ewl.m4
-%{_bindir}/ewl_config
 %{_libdir}/libewl.so
 %{_libdir}/libewl.a
+%{_libdir}/pkgconfig/ewl.pc
 %{_includedir}/ewl/Ewl.h
 %{_includedir}/ewl/ewl_*.h
 %{_bindir}/ewl-config
+%{_bindir}/ewl_test
+%{_bindir}/ewl_embed_test
+%{_bindir}/ewl_media_test
+%{_bindir}/ewl_simple_test
