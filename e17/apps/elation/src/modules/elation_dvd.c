@@ -264,13 +264,10 @@ action(Elation_Module *em, int action)
 	     
 	     printf("stop...\n");
 	     emotion_object_play_set(pr->video, 0);
-	     printf("rewind...\n");
-	     while (emotion_object_position_get(pr->video) != 0.0)
-	       emotion_object_position_set(pr->video, 0.0);
 	     printf("eject...\n");
 //	     emotion_object_eject(pr->video);
 	     printf("fset...\n");
-	     if (0)
+	     if (1)
 	       {
 		  evas_object_del(pr->video);
 		  pr->video = emotion_object_add(em->info->evas);
