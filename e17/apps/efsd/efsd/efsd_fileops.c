@@ -273,9 +273,15 @@ efsd_file_stat(EfsdCommand *cmd, int client)
   st = (struct stat*)malloc(sizeof(struct stat));
 
   if (lstat(cmd->efsd_file_cmd.file, st) >= 0)
-    result = send_reply(cmd, SUCCESS, 0, sizeof(struct stat), st, client);
+    {
+      D(("Stat suceeded, sending struct...\n"));
+      result = send_reply(cmd, SUCCESS, 0, sizeof(struct stat), st, client);
+    }
   else
-    result = send_reply(cmd, FAILURE, errno, 0, NULL, client);
+    {
+      D(("Stat failed, sending FAILURE.\n"));
+      result = send_reply(cmd, FAILURE, errno, 0, NULL, client);
+    }
 
   FREE(st);
 
@@ -323,9 +329,15 @@ efsd_file_getmime(EfsdCommand *cmd, int client)
     }
 
   if ( (mime = efsd_magic_get(cmd->efsd_file_cmd.file)) != NULL)
-    result = send_reply(cmd, SUCCESS, 0, strlen(mime)+1, mime, client);
+    {
+      D(("MIME lookup succeded: %s\n", mime));
+      result = send_reply(cmd, SUCCESS, 0, strlen(mime)+1, mime, client);
+    }
   else
-    result = send_reply(cmd, FAILURE, 0, 0, NULL, client);
+    {
+      D(("MIME lookup failed -- sending FAILURE.\n"));
+      result = send_reply(cmd, FAILURE, 0, 0, NULL, client);
+    }
 
   D_RETURN_(result);
 }

@@ -33,8 +33,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <efsd.h>
 #include <efsd_debug.h>
 #include <efsd_macros.h>
-#include <efsd_fam.h>
 #include <efsd_misc.h>
+#include <efsd_fam.h>
 
 
 
@@ -42,7 +42,9 @@ extern FAMConnection    famcon;
 
 EfsdList *monitors = NULL;
 
-static EfsdFamRequest * efsd_fam_new_request(int client, EfsdCmdId id);
+static EfsdFamRequest * efsd_fam_new_request(int client, EfsdCmdId id,
+					     int num_options, EfsdOption *options);
+
 static void             efsd_fam_free_request(EfsdFamRequest *efr);
 
 /* Increment use count for file monitor, or start
@@ -57,15 +59,18 @@ static int              efsd_fam_del_monitor(EfsdCommand *com, int client);
 
 
 static EfsdFamRequest *
-efsd_fam_new_request(int client, EfsdCmdId id)
+efsd_fam_new_request(int client, EfsdCmdId id,
+		     int num_options, EfsdOption *options)
 {
   EfsdFamRequest   *efr;
   
   D_ENTER;
 
   efr = NEW(EfsdFamRequest);
-  efr->client = client;
-  efr->id     = id;
+  efr->client      = client;
+  efr->id          = id;
+  efr->num_options = num_options;
+  efr->options     = options;
 
   D_RETURN_(efr);
 }
@@ -74,10 +79,20 @@ efsd_fam_new_request(int client, EfsdCmdId id)
 static void             
 efsd_fam_free_request(EfsdFamRequest *efr)
 {
+  int i;
+
   D_ENTER;
+
+  for (i = 0; i < efr->num_options; i++)
+    efsd_option_cleanup(&efr->options[i]);
+
+  if (efr->options)
+    FREE(efr->options);
   FREE(efr);
+
   D_RETURN;
 }
+
 
 void         
 efsd_fam_init(void)
@@ -181,6 +196,7 @@ efsd_fam_force_startstop_monitor(EfsdCommand *com, int client)
 EfsdFamMonitor *         
 efsd_fam_new_monitor(EfsdCommand *com, int client, EfsdFamMonType type)
 {
+  EfsdFamRequest   *efr;
   EfsdFamMonitor   *m;
 
   D_ENTER;
@@ -190,8 +206,23 @@ efsd_fam_new_monitor(EfsdCommand *com, int client, EfsdFamMonType type)
   m->filename  = strdup(com->efsd_file_cmd.file);
   m->fam_req   = NEW(FAMRequest);
   m->clients   = NULL;
-  m->clients   = efsd_list_prepend(m->clients,
-				   efsd_fam_new_request(client, com->efsd_file_cmd.id));
+  
+  efr = efsd_fam_new_request(client, com->efsd_file_cmd.id,
+			     com->efsd_file_cmd.num_options,
+			     com->efsd_file_cmd.options);
+
+  /* If we have options for a listdir events, unhook (not free)
+     them from the command, so that they don't get freed in the
+     normal command cleanup. They will get cleaned up when we
+     see the end-exists event and the EfsdFamRequest is freed. */
+     
+  if (com->efsd_file_cmd.num_options > 0)
+    {
+      com->efsd_file_cmd.num_options = 0;
+      com->efsd_file_cmd.options = NULL;
+    }
+  
+  m->clients   = efsd_list_prepend(m->clients, efr);				   
   m->use_count = 1;
   m->type      = type;
 
@@ -248,9 +279,13 @@ efsd_fam_add_monitor(EfsdCommand *com, int client)
 
 	  if (!l2)
 	    {	      
-	      m->clients =
-		efsd_list_prepend(m->clients,
-				  efsd_fam_new_request(client, com->efsd_file_cmd.id));
+	      EfsdFamRequest *efr;
+
+	      efr = efsd_fam_new_request(client, com->efsd_file_cmd.id,
+					 com->efsd_file_cmd.num_options,
+					 com->efsd_file_cmd.options);
+
+	      m->clients = efsd_list_prepend(m->clients, efr);
 	      efsd_fam_force_startstop_monitor(com, client);
 	    }
 

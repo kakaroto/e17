@@ -28,6 +28,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <fam.h>
 
 #include <efsd.h>
+#include <efsd_options.h>
 #include <efsd_list.h>
 
 typedef enum
@@ -41,6 +42,8 @@ typedef struct efsd_fam_request
 {
   int          client;
   EfsdCmdId    id;
+  int          num_options;
+  EfsdOption  *options;
 }
 EfsdFamRequest;
 

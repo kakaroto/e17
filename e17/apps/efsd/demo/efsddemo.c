@@ -325,6 +325,7 @@ main(int argc, char** argv)
     }
 
   /* MIME type tests */
+  /*
   for (i = (blocking ? 1 : 2); i < argc; i++)
     {
       if ((id = efsd_get_mimetype(ec, argv[i])) >= 0)
@@ -332,8 +333,10 @@ main(int argc, char** argv)
       else
 	printf("Couldn't issue getmime command.\n");      
     }
+  */
 
   /* Create a directory */
+  /*
   {
     char s[4096];
 
@@ -342,53 +345,66 @@ main(int argc, char** argv)
     strcat(s, "//yep//efsd/can/create/dir/trees/////");
     id = efsd_makedir(ec, s);
   }
-
   sleep(2);
+  */
+
 
   /* Remove a file */
+  /*
   if ((id = efsd_remove(ec, "some-crappy-file-that-wont-exist")) >= 0)
     printf("Removing file, command ID %i\n", id);
   else
     printf("Couldn't issue rm command.\n");
-
-
   sleep(2);
+  */
 
+
+  /*
   if ((id = efsd_move(ec, "raster-is-flim.demo", "cK-is-flim.demo")) >= 0)
     printf("Moving file, command ID %i\n", id);
   else
     printf("Couldn't issue mv command.\n");
+  sleep(2);
+  */
 
   /* List contents of a directory */
-  if ((id = efsd_listdir(ec, "/usr/local/enlightenment/bin", 0)) >= 0)
+  if ((id = efsd_listdir(ec, getenv("HOME"), 2,
+			 efsd_op_ls_get_stat(),
+			 efsd_op_ls_get_mimetype())) >= 0)
     printf("Listing directory, command ID %i\n", id);
   else
     printf("Couldn't issue ls command.\n");
-
+  
   sleep(2);
 
   /* Stat a file */
+  /*
   if ((id = efsd_stat(ec, "/bin/")) >= 0)
     printf("Stat()ing file, command ID %i\n", id);
   else
     printf("Couldn't issue stat command.\n");
 
   sleep(2);
-
+  */
   /* Readlink a file */
+  /*
   if ((id = efsd_readlink(ec, "horms-is-flim.demo")) >= 0)
     printf("Readlink file, command ID %i\n", id);
   else
     printf("Couldn't issue readlink command.\n");
 
   sleep(2);
+  */
+
+    /*id = efsd_start_monitor(ec, getenv("HOME")); */
 
   /* Start monitoring home directory */
+  /*
   if ((id = efsd_start_monitor(ec, "/dev")) >= 0)
-    //id = efsd_start_monitor(ec, getenv("HOME"));
     printf("Starting monitor, command ID %i\n", id);
   else
     printf("Couldn't issue startmon command.\n");
+  */
 
   /* Sleep a while -- you should see events if you
      for example touch files in you home during that
@@ -397,16 +413,17 @@ main(int argc, char** argv)
      Also try running multiple instances of this
      demo -- you should see the use counts for the
      monitor be in-/decremented.
-  */
   sleep(5);
+  */
 
   /* Stop monitoring home directory */
+  /*
   if ((id = efsd_stop_monitor(ec, "/dev")) >= 0)
     printf("Stopping monitor, command ID %i\n", id);
   else
     printf("Couldn't issue stopmon command.\n");
-
-  sleep(2);
+  */
+  sleep(10);
 
   /* Close connection to efsd. */
   if (efsd_close(ec) >= 0)

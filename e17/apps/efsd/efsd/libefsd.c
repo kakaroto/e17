@@ -56,14 +56,15 @@ struct efsd_connection
 
 static int       send_command(EfsdConnection *ec, EfsdCommand *com);
 static EfsdCmdId get_next_id(void);
-static EfsdCmdId file_cmd(EfsdConnection *ec, EfsdCommandType type, char *file);
+static EfsdCmdId file_cmd(EfsdConnection *ec, EfsdCommandType type, char *file,
+			  int num_options, EfsdOption *ops);
 static EfsdCmdId twofile_cmd(EfsdConnection *ec, EfsdCommandType type,
 			     char *file1, char *file2);
 
 static char*
 get_full_path(char *file)
 {
-  char *result;
+  char *result = NULL;
 
   D_ENTER;
 
@@ -115,9 +116,9 @@ get_next_id(void)
 
 
 static EfsdCmdId 
-file_cmd(EfsdConnection *ec, EfsdCommandType type, char *file)
+file_cmd(EfsdConnection *ec, EfsdCommandType type, char *file,
+	 int num_options, EfsdOption *ops)
 {
-  char        *f;
   EfsdCommand  cmd;
 
   D_ENTER;
@@ -125,16 +126,33 @@ file_cmd(EfsdConnection *ec, EfsdCommandType type, char *file)
   if (!ec || !file || file[0] == '\0')
     D_RETURN_(-1);
 
+  bzero(&cmd, sizeof(EfsdCommand));
+
   cmd.type = type;
   cmd.efsd_file_cmd.id = get_next_id();
-  f = get_full_path(file);
-  cmd.efsd_file_cmd.file = strdup(f);
-  free(f);
+  cmd.efsd_file_cmd.file = get_full_path(file);
+
+  if ((num_options > 0) && (ops))
+    {
+      cmd.efsd_file_cmd.num_options = num_options;
+      cmd.efsd_file_cmd.options = ops;
+    }
 
   if (send_command(ec, &cmd) < 0)
     {
       D_RETURN_(-1);
     }
+
+  if ((num_options > 0) && (ops))
+    {
+      int i;
+
+      for (i = 0; i < num_options; i++)
+	efsd_option_cleanup(&ops[i]);
+
+      FREE(ops);
+    }
+
   D_RETURN_(cmd.efsd_file_cmd.id);
 }
 
@@ -142,7 +160,6 @@ file_cmd(EfsdConnection *ec, EfsdCommandType type, char *file)
 static EfsdCmdId 
 twofile_cmd(EfsdConnection *ec, EfsdCommandType type, char *file1, char *file2)
 {
-  char        *f;
   EfsdCommand  cmd;
 
   D_ENTER;
@@ -152,12 +169,8 @@ twofile_cmd(EfsdConnection *ec, EfsdCommandType type, char *file1, char *file2)
 
   cmd.type = type;
   cmd.efsd_2file_cmd.id = get_next_id();
-  f = get_full_path(file1);
-  cmd.efsd_2file_cmd.file1 = strdup(f);
-  free(f);
-  f = get_full_path(file2);
-  cmd.efsd_2file_cmd.file2 = strdup(f);
-  free(f);
+  cmd.efsd_2file_cmd.file1 = get_full_path(file1);
+  cmd.efsd_2file_cmd.file2 = get_full_path(file2);
   
   D_RETURN_(cmd.efsd_2file_cmd.id);
 }
@@ -320,7 +333,7 @@ EfsdCmdId
 efsd_remove(EfsdConnection *ec, char *filename)
 {
   D_ENTER;
-  D_RETURN_(file_cmd(ec, EFSD_CMD_REMOVE, filename));
+  D_RETURN_(file_cmd(ec, EFSD_CMD_REMOVE, filename, 0, NULL));
 }
 
 
@@ -355,12 +368,12 @@ efsd_listdir(EfsdConnection *ec, char *dirname,
   va_list ap;
   int i, j, result;
   EfsdOption *op;
-  EfsdOption **ops = NULL;
+  EfsdOption *ops = NULL;
 
   D_ENTER;
 
   va_start (ap, num_options);
-  ops = (EfsdOption **) malloc(sizeof(EfsdOption*) * num_options);
+  ops = (EfsdOption *) malloc(sizeof(EfsdOption) * num_options);
 
   if (!ops)
     D_RETURN_(-1);
@@ -374,23 +387,24 @@ efsd_listdir(EfsdConnection *ec, char *dirname,
 	  (op->type == EFSD_OP_LS_GET_MIME) ||
 	  (op->type == EFSD_OP_LS_GET_META))
 	{
-	  ops = realloc(ops, sizeof(EfsdOption*) * ++j);
-	  ops[j-1] = op; 
+	  ops = realloc(ops, sizeof(EfsdOption) * ++j);
+	  ops[j-1] = *op; 
 	}
       else
 	{
 	  efsd_option_cleanup(op);
-	  FREE(op);
 	}
+
+      /* Yes. This does not clean up any strings etc pointed
+	 to -- but that gets cleaned up in file_cmd().
+      */
+      FREE(op);
     }
 
-  result = file_cmd(ec, EFSD_CMD_LISTDIR, dirname);
+  result = file_cmd(ec, EFSD_CMD_LISTDIR, dirname, num_options, ops);
   
   for (i = 0; i < j; i++)
-    {
-      efsd_option_cleanup(ops[i]);
-      FREE(ops[i]);
-    }
+    efsd_option_cleanup(&(ops[i]));
 
   FREE(ops);
   va_end (ap);
@@ -403,7 +417,7 @@ EfsdCmdId
 efsd_makedir(EfsdConnection *ec, char *dirname)
 {
   D_ENTER;
-  D_RETURN_(file_cmd(ec, EFSD_CMD_MAKEDIR, dirname));
+  D_RETURN_(file_cmd(ec, EFSD_CMD_MAKEDIR, dirname, 0, NULL));
 }
 
 
@@ -495,7 +509,7 @@ EfsdCmdId
 efsd_start_monitor(EfsdConnection *ec, char *filename)
 {
   D_ENTER;
-  D_RETURN_(file_cmd(ec, EFSD_CMD_STARTMON, filename));
+  D_RETURN_(file_cmd(ec, EFSD_CMD_STARTMON, filename, 0, NULL));
 }
 
 
@@ -503,7 +517,7 @@ EfsdCmdId
 efsd_stop_monitor(EfsdConnection *ec, char *filename)
 {
   D_ENTER;
-  D_RETURN_(file_cmd(ec, EFSD_CMD_STOPMON, filename));
+  D_RETURN_(file_cmd(ec, EFSD_CMD_STOPMON, filename, 0, NULL));
 }
 
 
@@ -511,7 +525,7 @@ EfsdCmdId
 efsd_stat(EfsdConnection *ec, char *filename)
 {
   D_ENTER;
-  D_RETURN_(file_cmd(ec, EFSD_CMD_STAT, filename));
+  D_RETURN_(file_cmd(ec, EFSD_CMD_STAT, filename, 0, NULL));
 }
 
 
@@ -519,7 +533,7 @@ EfsdCmdId
 efsd_readlink(EfsdConnection *ec, char *filename)
 {
   D_ENTER;
-  D_RETURN_(file_cmd(ec, EFSD_CMD_READLINK, filename));
+  D_RETURN_(file_cmd(ec, EFSD_CMD_READLINK, filename, 0, NULL));
 }
 
 
@@ -527,7 +541,7 @@ EfsdCmdId
 efsd_get_mimetype(EfsdConnection *ec, char *filename)
 {
   D_ENTER;
-  D_RETURN_(file_cmd(ec, EFSD_CMD_GETMIME, filename));
+  D_RETURN_(file_cmd(ec, EFSD_CMD_GETMIME, filename, 0, NULL));
 }
 
 

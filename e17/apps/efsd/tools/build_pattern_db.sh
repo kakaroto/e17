@@ -55,3 +55,5 @@ $DB "*.c"       $STR "text/c"
 $DB "*.h"       $STR "text/h"
 $DB "Makefile"  $STR "text/makefile"
 $DB "*.o"       $STR "binary/object"
+
+$DB "*.epplet"  $STR "enlightenment/epplet"

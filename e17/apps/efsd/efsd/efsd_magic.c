@@ -50,9 +50,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <efsd_common.h>
 #include <efsd_magic.h>
 
-#ifndef MAXPATHLEN
-#define MAXPATHLEN 4096
-#endif
 
 typedef enum efsd_magic_type
 {
@@ -1026,7 +1023,7 @@ magic_test_pattern(char *filename)
 
       if (!fnmatch(patterns_user[i], ptr, FNM_PATHNAME | FNM_PERIOD))
 	{
-	  D_RETURN(pattern_mimetypes_user[i]);
+	  D_RETURN_(pattern_mimetypes_user[i]);
 	}
     }
 
@@ -1042,7 +1039,7 @@ magic_test_pattern(char *filename)
 
       if (!fnmatch(patterns[i], ptr, FNM_PATHNAME | FNM_PERIOD))
 	{
-	  D_RETURN(pattern_mimetypes[i]);
+	  D_RETURN_(pattern_mimetypes[i]);
 	}
     }
 
@@ -1132,7 +1129,9 @@ efsd_magic_get(char *filename)
 
   D(("magic: file pattern check failed.\n"));
   
-  D_RETURN_(NULL);
+  result = "document/unknown";
+
+  D_RETURN_(result);
 }
 
 

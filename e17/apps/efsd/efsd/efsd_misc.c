@@ -33,6 +33,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <errno.h>
 
 #ifdef __EMX__
 #include <stdlib.h>
@@ -267,7 +268,14 @@ efsd_misc_remove_socket_file(void)
 
   if (unlink(efsd_common_get_socket_file()) < 0)
     {
-      D(("Could not remove socket file.\n"));
+      if (errno != ENOENT)
+	{
+	  D(("Could not remove socket file.\n"));
+	}
+    }
+  else
+    {
+      D(("Socket file removed.\n"));
     }
 
   D_RETURN;

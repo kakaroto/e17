@@ -50,6 +50,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <efsd_fam.h>
 #include <efsd_fileops.h>
 #include <efsd_list.h>
+#include <efsd_macros.h>
 #include <efsd_misc.h>
 #include <efsd_queue.h>
 #include <efsd_types.h>
@@ -70,6 +71,7 @@ static int           opt_careful    = 0;
 
 static void   efsd_connect_to_fam(void);
 static int    efsd_handle_client_command(EfsdCommand *command, int sockfd);
+static void   efsd_handle_listdir_options(char *filename, EfsdFamRequest *efr);
 static void   efsd_handle_fam_events(void);
 static void   efsd_handle_connections(void);
 static void   efsd_cleanup_signal_callback(int signal);
@@ -169,11 +171,63 @@ efsd_handle_client_command(EfsdCommand *command, int client)
 }
 
 
+static void
+efsd_handle_listdir_options(char *filename, EfsdFamRequest *efr)
+{
+  EfsdCommand ec;
+  int i;
+
+  D_ENTER;
+
+  ec.efsd_file_cmd.file = filename;
+  ec.efsd_file_cmd.id = efr->id;
+
+  for (i = 0; i < efr->num_options; i++)
+    {
+      switch (efr->options[i].type)
+	{
+	case EFSD_OP_LS_GET_STAT:
+	  D(("Trying stat option on file-exists event on '%s'...\n", filename));
+	  ec.type = EFSD_CMD_STAT;
+	  if (efsd_file_stat(&ec, efr->client) < 0)
+	    {
+	      D(("Stat option for file-exists event failed -- queued.\n"));
+	    }
+	  else
+	    {
+	      D(("Succeeded.\n"));
+	    }
+	  break;
+	case EFSD_OP_LS_GET_MIME:
+	  D(("Trying getmime option on file-exists event on '%s'...\n", filename));
+	  ec.type = EFSD_CMD_GETMIME;
+	  if (efsd_file_getmime(&ec, efr->client) < 0)
+	    {
+	      D(("Get-mime option for file-exists event failed -- queued.\n"));
+	    }
+	  else
+	    {
+	      D(("Succeeded.\n"));
+	    }
+	  break;
+	case EFSD_OP_LS_GET_META:
+	  D(("Trying get-meta option on file-exists event ...\n"));
+	  break;
+	default:
+	  D(("Nonsense listdir option (code %i)!\n", efr->options[i].type));
+	}
+    }
+
+  D_RETURN;
+}
+
+
 static void 
 efsd_handle_fam_events(void)
 {
   FAMEvent    famev;
   EfsdEvent   ee;
+  char        s[MAXPATHLEN];
 
   D_ENTER;
   
@@ -187,11 +241,16 @@ efsd_handle_fam_events(void)
 	  D_RETURN;
 	}
       
+      if (famev.code == FAMAcknowledge)
+	continue;
+
       if (famev.filename)
 	{
 	  EfsdFamMonitor *m;
 	  
 	  m = (EfsdFamMonitor*)famev.userdata;
+
+	  D(("Handling FAM event %i\n", famev.code));
 
 	  bzero(&ee, sizeof(EfsdEvent));
 	  ee.type = EFSD_EVENT_FILECHANGE;
@@ -206,6 +265,9 @@ efsd_handle_fam_events(void)
 
 		EfsdFamRequest  *efr;
 
+		if (famev.code != FAMEndExist && famev.code != FAMExists)
+		  break;
+
 		efr = (EfsdFamRequest*)(efsd_list_data(efsd_list_head(m->clients)));
 
 		if (clientfd[efr->client] >= 0)
@@ -215,6 +277,19 @@ efsd_handle_fam_events(void)
 		      {
 			efsd_queue_add_event(clientfd[efr->client], &ee);
 			D(("write() error when writing FAM event.\n"));
+		      }
+
+		    if (famev.code == FAMExists)
+		      {
+			if (famev.filename[0] != '/')
+			  {
+			    snprintf(s, MAXPATHLEN, "%s/%s", m->filename, famev.filename); 
+			    efsd_handle_listdir_options(s, efr);
+			  }
+			else
+			  {
+			    efsd_handle_listdir_options(famev.filename, efr);
+			  }
 		      }
 		  }		    
 		/* Since this is a directory listing and the
@@ -484,7 +559,7 @@ efsd_initialize(void)
   signal(SIGILL,    efsd_cleanup_signal_callback);
   signal(SIGINT,    efsd_cleanup_signal_callback);
   signal(SIGQUIT,   efsd_cleanup_signal_callback);
-  signal(SIGSEGV,   efsd_cleanup_signal_callback);
+  //signal(SIGSEGV,   efsd_cleanup_signal_callback);
   signal(SIGSYS,    efsd_cleanup_signal_callback);
   signal(SIGTERM,   efsd_cleanup_signal_callback);
   signal(SIGTRAP,   efsd_cleanup_signal_callback);

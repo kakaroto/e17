@@ -50,7 +50,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 /* The maximum number of data chunks (ints, char*s, void*s ...)
    a command/event consists of. Major laziness.
 */
-#define MAX_IOVEC  20
+#define MAX_IOVEC  256
 
 static int     read_data(int sockfd, void *dest, int size);
 static int     read_int(int sockfd, int *dest);
@@ -78,7 +78,8 @@ static int     fill_event(struct iovec *iov, EfsdEvent *ee);
 static int     fill_command(struct iovec *iov, EfsdCommand *ec);
 static int     fill_option(struct iovec *iov, EfsdOption *eo);
 
-static int     len1, len2, op_len1;
+static int     len[256];
+static int     len_index = 0;
 
 static int 
 read_data(int sockfd, void *dest, int size)
@@ -467,22 +468,35 @@ read_ls_getmeta_op(int sockfd, EfsdOption *eo)
 static int
 fill_file_cmd(struct iovec *iov, EfsdCommand *ec)
 {
-  int    n = 0;
+  int    i, n = 0;
 
   D_ENTER;
 
-  len1 = strlen(ec->efsd_file_cmd.file) + 1;
+  len[len_index] = strlen(ec->efsd_file_cmd.file) + 1;
 
   iov[n].iov_base   = &ec->type;
   iov[n].iov_len    = sizeof(EfsdCommandType);
   iov[++n].iov_base = &ec->efsd_file_cmd.id;
   iov[n].iov_len    = sizeof(EfsdCmdId);
-  iov[++n].iov_base = &len1;
+  iov[++n].iov_base = &len[len_index];
   iov[n].iov_len    = sizeof(int);
   iov[++n].iov_base = ec->efsd_file_cmd.file;
-  iov[n].iov_len    = len1;
+  iov[n].iov_len    = len[len_index];
   iov[++n].iov_base = &ec->efsd_file_cmd.num_options;
   iov[n].iov_len    = sizeof(int);
+
+  len_index++;
+  
+  /* Fill in options, if they exist */
+  if (ec->efsd_file_cmd.num_options > 0)
+    {
+      n++;
+
+      for (i = 0; i < ec->efsd_file_cmd.num_options; i++)
+	{
+	  n += fill_option(&iov[n], &(ec->efsd_file_cmd.options[i]));
+	}
+    }
 
   D_RETURN_(n+1);
 }
@@ -491,27 +505,40 @@ fill_file_cmd(struct iovec *iov, EfsdCommand *ec)
 static int
 fill_2file_cmd(struct iovec *iov, EfsdCommand *ec)
 {
-  int   n = 0;
-
+  int   i, n = 0;
+  
   D_ENTER;
-
-  len1 = strlen(ec->efsd_2file_cmd.file1) + 1;
-  len2 = strlen(ec->efsd_2file_cmd.file2) + 1;
+  
+  len[len_index]   = strlen(ec->efsd_2file_cmd.file1) + 1;
+  len[len_index+1] = strlen(ec->efsd_2file_cmd.file2) + 1;
 
   iov[n].iov_base   = &ec->type;
   iov[n].iov_len    = sizeof(EfsdCommandType);
   iov[++n].iov_base = &ec->efsd_2file_cmd.id;
   iov[n].iov_len    = sizeof(EfsdCmdId);
-  iov[++n].iov_base = &len1;
+  iov[++n].iov_base = &len[len_index];
   iov[n].iov_len    = sizeof(int);
   iov[++n].iov_base = ec->efsd_2file_cmd.file1;
-  iov[n].iov_len    = len1;
-  iov[++n].iov_base = &len2;
+  iov[n].iov_len    = len[len_index];
+  iov[++n].iov_base = &len[len_index+1];
   iov[n].iov_len    = sizeof(int);
   iov[++n].iov_base = ec->efsd_2file_cmd.file2;
-  iov[n].iov_len    = len2;
+  iov[n].iov_len    = len[len_index+1];
   iov[++n].iov_base = &ec->efsd_2file_cmd.num_options;
   iov[n].iov_len    = sizeof(int);
+
+  len_index += 2;
+
+  /* Fill in options, if they exist */
+  if (ec->efsd_2file_cmd.num_options > 0)
+    {
+      n++;
+
+      for (i = 0; i < ec->efsd_2file_cmd.num_options; i++)
+	{
+	  n += fill_option(&iov[n], &(ec->efsd_2file_cmd.options[i]));
+	}
+    }
 
   D_RETURN_(n+1);
 }
@@ -524,18 +551,20 @@ fill_chmod_cmd(struct iovec *iov, EfsdCommand *ec)
 
   D_ENTER;
 
-  len1 = strlen(ec->efsd_file_cmd.file) + 1;
+  len[len_index] = strlen(ec->efsd_file_cmd.file) + 1;
 
   iov[n].iov_base   = &ec->type;
   iov[n].iov_len    = sizeof(EfsdCommandType);
   iov[++n].iov_base = &ec->efsd_file_cmd.id;
   iov[n].iov_len    = sizeof(EfsdCmdId);
-  iov[++n].iov_base = &len1;
+  iov[++n].iov_base = &len[len_index];
   iov[n].iov_len    = sizeof(int);
   iov[++n].iov_base = ec->efsd_chmod_cmd.file;
-  iov[n].iov_len    = len1;
+  iov[n].iov_len    = len[len_index];
   iov[++n].iov_base = &ec->efsd_chmod_cmd.mode;
   iov[n].iov_len    = sizeof(mode_t);
+
+  len_index++;
 
   D_RETURN_(n+1);
 }
@@ -548,9 +577,9 @@ fill_set_metadata_cmd(struct iovec *iov, EfsdCommand *ec)
 
   D_ENTER;
 
-  len1 = strlen(ec->efsd_set_metadata_cmd.key) + 1;
-  len2 = strlen(ec->efsd_set_metadata_cmd.file) + 1;
-
+  len[len_index]   = strlen(ec->efsd_set_metadata_cmd.key) + 1;
+  len[len_index+1] = strlen(ec->efsd_set_metadata_cmd.file) + 1;
+  
   iov[n].iov_base   = &ec->type;
   iov[n].iov_len    = sizeof(EfsdCommandType);
   iov[++n].iov_base = &ec->efsd_set_metadata_cmd.id;
@@ -561,14 +590,16 @@ fill_set_metadata_cmd(struct iovec *iov, EfsdCommand *ec)
   iov[n].iov_len    = sizeof(int);
   iov[++n].iov_base = ec->efsd_set_metadata_cmd.data;
   iov[n].iov_len    = ec->efsd_set_metadata_cmd.data_len;
-  iov[++n].iov_base = &len1;
+  iov[++n].iov_base = &len[len_index];
   iov[n].iov_len    = sizeof(int);
   iov[++n].iov_base = ec->efsd_set_metadata_cmd.key;
-  iov[n].iov_len    = len1;
-  iov[++n].iov_base = &len2;
+  iov[n].iov_len    = len[len_index];
+  iov[++n].iov_base = &len[len_index+1];
   iov[n].iov_len    = sizeof(int);
   iov[++n].iov_base = ec->efsd_set_metadata_cmd.file;
-  iov[n].iov_len    = len2;
+  iov[n].iov_len    = len[len_index+1];
+
+  len_index += 2;
 
   D_RETURN_(n+1);
 }
@@ -581,21 +612,23 @@ fill_get_metadata_cmd(struct iovec *iov, EfsdCommand *ec)
 
   D_ENTER;
 
-  len1 = strlen(ec->efsd_get_metadata_cmd.key) + 1;
-  len2 = strlen(ec->efsd_get_metadata_cmd.file) + 1;
+  len[len_index]   = strlen(ec->efsd_get_metadata_cmd.key) + 1;
+  len[len_index+1] = strlen(ec->efsd_get_metadata_cmd.file) + 1;
 
   iov[n].iov_base   = &ec->type;
   iov[n].iov_len    = sizeof(EfsdCommandType);
   iov[++n].iov_base = &ec->efsd_set_metadata_cmd.id;
   iov[n].iov_len    = sizeof(EfsdCmdId);
-  iov[++n].iov_base = &len1;
+  iov[++n].iov_base = &len[len_index];
   iov[n].iov_len    = sizeof(int);
   iov[++n].iov_base = ec->efsd_get_metadata_cmd.key;
-  iov[n].iov_len    = len1;
-  iov[++n].iov_base = &len2;
+  iov[n].iov_len    = len[len_index];
+  iov[++n].iov_base = &len[len_index+1];
   iov[n].iov_len    = sizeof(int);
   iov[++n].iov_base = ec->efsd_get_metadata_cmd.file;
-  iov[n].iov_len    = len2;
+  iov[n].iov_len    = len[len_index+1];
+
+  len_index += 2;
 
   D_RETURN_(n);
 }
@@ -622,7 +655,7 @@ fill_filechange_event(struct iovec *iov, EfsdEvent *ee)
 
   D_ENTER;
 
-  len1 = strlen(ee->efsd_filechange_event.file) + 1;
+  len[len_index] = strlen(ee->efsd_filechange_event.file) + 1;
 
   iov[n].iov_base = &ee->type;
   iov[n].iov_len  = sizeof(EfsdEventType);
@@ -630,10 +663,12 @@ fill_filechange_event(struct iovec *iov, EfsdEvent *ee)
   iov[n].iov_len  = sizeof(EfsdCmdId);
   iov[++n].iov_base = &ee->efsd_filechange_event.changetype;
   iov[n].iov_len  = sizeof(EfsdFilechangeType);
-  iov[++n].iov_base = &len1;
+  iov[++n].iov_base = &len[len_index];
   iov[n].iov_len  = sizeof(int);
   iov[++n].iov_base = ee->efsd_filechange_event.file;
-  iov[n].iov_len  = len1;
+  iov[n].iov_len  = len[len_index];
+
+  len_index++;
 
   D_RETURN_(n+1);
 }
@@ -697,6 +732,9 @@ fill_command(struct iovec *iov, EfsdCommand *ec)
 
   D_ENTER;
 
+  /* Reset length array index */
+  len_index = 0;
+
   switch (ec->type)
     {
     case EFSD_CMD_REMOVE:
@@ -754,20 +792,22 @@ fill_option(struct iovec *iov, EfsdOption *eo)
     case EFSD_OP_LS_GET_MIME:
       break;
     case EFSD_OP_LS_GET_META:
-      op_len1 = strlen(eo->efsd_op_ls_getmeta.key) + 1;
+      len[len_index] = strlen(eo->efsd_op_ls_getmeta.key) + 1;
       
-      iov[++n].iov_base = &op_len1;
+      iov[++n].iov_base = &len[len_index];
       iov[n].iov_len    = sizeof(int);
       iov[++n].iov_base = eo->efsd_op_ls_getmeta.key;
-      iov[n].iov_len    = op_len1;
+      iov[n].iov_len    = len[len_index];
       iov[++n].iov_base = &(eo->efsd_op_ls_getmeta.datatype);
       iov[n].iov_len    = sizeof(int);
+
+      len_index++;
       break;
     default:
       D(("Unknown option.\n"));
     }
 
-  D_RETURN_(n);
+  D_RETURN_(n+1);
 }
 
 

@@ -36,4 +36,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define NEW(X)  ((X*) malloc(sizeof(X)))
 #define FREE(X) { if (X) { free(X); X = NULL; } }
 
+#ifndef MAXPATHLEN
+#define MAXPATHLEN 4096
+#endif
+
 #endif
