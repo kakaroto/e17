@@ -21,9 +21,98 @@
 #include "feh.h"
 
 static void check_options (void);
+static void feh_parse_option_array (int argc, char **argv);
+static void feh_parse_environment_options (void);
 
 void
 init_parse_options (int argc, char **argv)
+{
+  D (("In init_parse_options\n"));
+
+  /* For setting the command hint on X windows */
+  cmdargc = argc;
+  cmdargv = argv;
+
+  /* Set default options */
+  memset (&opt, 0, sizeof (fehoptions));
+  opt.display = 1;
+  opt.aspect = 1;
+  opt.progressive = 1;
+  opt.thumb_w = 60;
+  opt.thumb_h = 60;
+
+  D (("About to parse env options (if any)\n"));
+  /* Check for and parse any options in FEH_OPTIONS */
+  feh_parse_environment_options ();
+
+  D (("About to parse commandline options\n"));
+  /* Parse the cmdline args */
+  feh_parse_option_array (argc, argv);
+
+  D (("Options parsed\n"));
+
+  if (filelist_length (filelist) == 0)
+    show_mini_usage ();
+
+  check_options ();
+
+  feh_prepare_filelist ();
+}
+
+/* FIXME This function is a crufty bitch ;) */
+static void
+feh_parse_environment_options (void)
+{
+  char **list = NULL;
+  int num = 0;
+  char *opts;
+  char *s;
+  char *t;
+  int i = 0;
+  D (("In feh_parse_environment_options\n"));
+
+  if ((opts = getenv ("FEH_OPTIONS")) == NULL)
+    return;
+
+  /* We definitely have some options to parse */
+
+  /* So we don't reinvent the wheel (not again, anyway), we use the
+   * getopt_long function to do this parsing as well. This means it has to
+   * look like the real argv ;)
+   */
+  list = malloc (sizeof (char *));
+  list[num++] = estrdup (PACKAGE);
+
+  for (s = opts, t = opts;; t++)
+    {
+      if (*t == ' ')
+	{
+	  *t = '\0';
+	  num++;
+	  list = erealloc (list, sizeof (char *) * num);
+	  list[num - 1] = estrdup (s);
+	  s = t + 1;
+	}
+      else if (*t == '\0')
+	{
+	  num++;
+	  list = erealloc (list, sizeof (char *) * num);
+	  list[num - 1] = estrdup (s);
+	  break;
+	}
+    }
+
+  feh_parse_option_array (num, list);
+
+  for (i = 0; i < num; i++)
+    if (list[i])
+      free (list[i]);
+  if (list)
+    free (list);
+}
+
+static void
+feh_parse_option_array (int argc, char **argv)
 {
   static char stropts[] = "a:AbBcdD:f:FhH:iklLmo:O:pPqrR:sS:tTuUvVwW:xX:y:z:";
   static struct option lopts[] = {
@@ -71,23 +160,12 @@ init_parse_options (int argc, char **argv)
   };
   int optch = 0, cmdx = 0;
 
-  D (("In init_parse_options\n"));
-
-  /* For setting the command hint */
-  cmdargc = argc;
-  cmdargv = argv;
-
-  /* Set default options */
-  memset (&opt, 0, sizeof (fehoptions));
-  opt.display = 1;
-  opt.aspect = 1;
-  opt.progressive = 1;
-  opt.thumb_w = 60;
-  opt.thumb_h = 60;
+  D (("In feh_parse_option_array\n"));
 
   /* Now to pass some optionarinos */
   while ((optch = getopt_long (argc, argv, stropts, lopts, &cmdx)) != EOF)
     {
+      D (("Got option, getopt calls it %d, or %c\n", optch, optch));
       switch (optch)
 	{
 	case 0:
@@ -143,11 +221,11 @@ init_parse_options (int argc, char **argv)
 	case 'F':
 	  opt.full_screen = 1;
 	  break;
-	  case 'U':
-	  opt.loadables=1;
+	case 'U':
+	  opt.loadables = 1;
 	  break;
-	  case 'u':
-	  opt.unloadables=1;
+	case 'u':
+	  opt.unloadables = 1;
 	  break;
 	case 'p':
 	  opt.preload = 1;
@@ -189,25 +267,25 @@ init_parse_options (int argc, char **argv)
 	  break;
 	case 'o':
 	  opt.output = 1;
-	  opt.output_file = optarg;
+	  opt.output_file = estrdup (optarg);
 	  break;
 	case 'O':
 	  opt.output = 1;
-	  opt.output_file = optarg;
+	  opt.output_file = estrdup (optarg);
 	  opt.display = 0;
 	  break;
 	case 'f':
-	  opt.font = optarg;
+	  opt.font = estrdup (optarg);
 	  break;
 	case 'T':
-	  opt.title_font = optarg;
+	  opt.title_font = estrdup (optarg);
 	  break;
 	case 'b':
 	  opt.bg = 1;
-	  opt.bg_file = optarg;
+	  opt.bg_file = estrdup (optarg);
 	  break;
 	case 'X':
-	  opt.action = optarg;
+	  opt.action = estrdup (optarg);
 	  break;
 	case 'W':
 	  opt.limit_w = atoi (optarg);
@@ -232,7 +310,6 @@ init_parse_options (int argc, char **argv)
 	  opt.alpha_level = atoi (optarg);
 	  break;
 	default:
-	  printf ("FIXME! Default case reached\n");
 	  break;
 	}
     }
@@ -249,12 +326,8 @@ init_parse_options (int argc, char **argv)
 	}
     }
 
-  if(filelist_length(filelist) == 0)
-	show_mini_usage ();
-
-  check_options ();
-
-  feh_prepare_filelist ();
+  /* So that we can safely be called again */
+  optind = 1;
 }
 
 
@@ -303,8 +376,8 @@ check_options (void)
   if (opt.loadables && opt.unloadables)
     {
       weprintf ("You cant show loadables AND unloadables...\n"
-	      "you might as well use ls ;)\n"
-	      "loadables only will be shown\n");
+		"you might as well use ls ;)\n"
+		"loadables only will be shown\n");
       opt.unloadables = 0;
     }
 }
@@ -337,6 +410,7 @@ show_usage (void)
 	   "  Multiple files are supported.\n"
 	   "  Urls are supported. They must begin with http:// and you must have wget\n"
 	   "  installed to download the files.\n"
+	   "  Options can also be defined in the environment variable FEH_OPTIONS\n"
 	   "  -h, --help                display this help and exit\n"
 	   "  -v, --version             output version information and exit\n"
 	   "  -V, --verbose             output useful information, progress bars, etc\n"

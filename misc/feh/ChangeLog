@@ -1,3 +1,11 @@
+Thu Mar 23 22:45:15 2000  Tom Gilbert  <gilbertt@btinternet.com>
+
+	* Feh will now read options from the environment variable
+	FEH_OPTIONS if it is set. These options will be loaded before
+	commandline ones, and so can be overidden. The syntax is the same
+	as the commandline, so multiples are allowed (eg "-Vq -Sname")
+	I would recommend export FEH_OPTIONS="-Vq" as being quite handy.
+
 Wed Mar 22 22:52:53 2000  Tom Gilbert  <gilbertt@btinternet.com>
 
 	* Well, it might be an idea to tell wget to ignore server-cached
