@@ -1453,15 +1453,52 @@ huhuhuhuh he said butter
 Enlightenment and Themes
 <font face=aircut3/12 color=#ffffff>
 <p>
-huhuhuhuh he said butter
+One of the strong points of enlightenment, of course, is that you can change
+around the complete look and feel of your desktop whenever you want to.
+Included with the 0.16.0 release are a few themes, to show off a little bit of
+this configurability.  You can select them by using the middle mouse button
+_menu(rootmenu) , going to the "Themes" selector, and then choosing a new
+theme.  Of course, there are plenty more themes for enlightenment than come
+with it by default.  You can find more by going to:
+<p>
+http://e.themes.org
+<p>
+and searching around until you find something you like.  
+<p>
+To install a new theme
+is simple: all you need to do is take the bleh.etheme file and drop it into
+your<br>
+~/.enlightenment/themes<br>
+directory.  Once you've restarted enlightenment,
+it will automatically show up in your Themes menu, and you can choose it just
+like any other theme.
+
+
+
 
 <page columns=1 padding=16 name=eyecandy background=Edoc_bg.png linkcolor=#88dddd>
 <font face=rothwell/25 color=#ffffff>
 <p>
-Enlightenment's Eyecandy Feautres
+Enlightenment's Eyecandy Features
 <font face=aircut3/12 color=#ffffff>
 <p>
-huhuhuhuh he said butter
+<br>
+<br>
+Of course, Enlightenment wouldn't be complete without just a few bits of
+eyecandy to play with.  Access them from the "Desktop" portion of your middle
+mouse button _menu(rootmenu) .
+<p>There are three toys that you can choose from:
+<p>. The ripples effect - this causes little ripplets of water to reflect on the
+bottom of your screen.
+<p>. The waves effect - similar to ripples, but this one waves up and down as
+opposed to side-to-side
+<p>. The raindrops effect - this causes little raindrops to fall on the screen
+as if hitting the surface of a pool.
+<p>
+<br>
+<br>
+Each of these can be turned back off simply by using the same menu that you
+enabled it through.
 
 <page columns=1 padding=16 name=faq background=Edoc_bg.png linkcolor=#88dddd>
 <font face=rothwell/25 color=#ffffff>
@@ -1523,7 +1560,7 @@ Q:  These Docs Didn't Help, Where Can I Get More Help
 <p>
 A: Well, we obviously can't answer all of your questions just by predicting
 them, so I would try the _website(web) as well as looking at the
-_mailing_lists(mail) , especially the mail archives.  Chances are that someone
+_mailing_lists(email) , especially the mail archives.  Chances are that someone
 else has probably had the same problem that you have.  And if all that still
 fails, you might try someone on the _irc(irc) channel
 <p>
