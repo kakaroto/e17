@@ -1465,6 +1465,8 @@ MoveStickyWindowsToCurrentDesk(void)
 		  XLowerWindow(disp, ewin->win);
 		  EMoveWindow(disp, ewin->win, ewin->x, ewin->y);
 		  DesktopAddEwinToTop(ewin);
+		  GNOME_SetEwinArea(ewin);
+		  GNOME_SetEwinDesk(ewin);
 		  last_ewin = ewin;
 	       }
 	  }

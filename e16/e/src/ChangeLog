@@ -3828,3 +3828,10 @@ Thu Oct 28 13:07:01 PDT 1999
 
 dont allow snapshotting of command (retsrat on login) for remote apps 
 if we can detect they are remote.
+
+-------------------------------------------------------------------------------
+
+Thu Oct 28 16:16:36 PDT 1999
+(Raster)
+
+update desktop property even if its sticky.........
