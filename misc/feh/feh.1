@@ -1,0 +1,264 @@
+.TH feh 1 "March 22, 2000"
+.SH NAME
+feh - image viewer and cataloguer
+.SH SYNOPSIS
+feh [options] file(s)
+.SH DESCRIPTION
+.B feh
+is an image viewer using the
+.B imlib2
+library to open and manipulate images.
+.B feh
+has a large number of operational modes. The default mode is an image
+slideshow, showing one image at a time from those specified on the
+commandline. Keys and mouse control may be used to move through them. Other
+modes can be specified on the commandline, and are described below.
+.PP
+.B feh
+can also recurse through a directory structure to form a filelist for
+processing, and will convert directory names on the commandline into a list
+of their contents automatically.
+.PP
+.B Filelists
+can be sorted in a number of ways. The default is the order the files were
+specified on the commandline, or the order they were read from the disk. You
+can specify sorting modes such as
+.B
+randomize
+or you can sort by filename, image name, width, height, pixels, etc.
+.SH MODES
+.B Montage mode
+forms a montage from the filelist. The resultant image can be viewed or
+saved, and it's size can be limited by height, width or both.
+.PP
+.B Index mode
+forms an index print from the filelist. Image thumbnails are shown along
+with the filename, filesize and pixel size, printed using a truetype font of
+your choice. The resultant image can be viewed or saved, and it's size can
+be limited by height, width or both.
+.PP
+.B Multiwindow mode
+shows images in multiple windows, instead of as a slideshow in one window.
+Don't use with a large filelist ;)
+.PP
+.B Fullscreen mode
+shows image in fullscreen view, can be combined with a slide-change delay to
+show an automated presentation.
+.PP
+.B List mode
+doesn't display images. Outputs an 'ls'-style listing of the files in the
+filelist, including image info such as size, pixels, type, etc.
+.PP
+.B feh
+can also list either all the loadable files in a filelist or all the
+unloadable files. Useful for preening a directory.
+.PP
+.B feh
+also has the ability to load files over http or ftp, simply specify the url
+on the commandline.
+.SH OPTIONS
+.TP 5
+.B -h, --help
+display help output and exit
+.TP 5
+.B -v, --version
+output version information and exit
+.TP 5
+.B -V, --verbose
+output useful information, progress bars, etc
+.TP 5
+.B -q, --quiet
+Don't report non-fatal errors for failed loads. Verbose and quiet modes
+are not mutually exclusive, the first controls informational messages,
+the second only errors.
+.TP 5
+.B -r, --recursive
+Recursively expand any directories in FILE to the content of those
+directories, all the way down to the bottom level. (Take it easy)
+.TP 5
+.B -c, --randomize
+When viewing multiple files in a slideshow, randomise the file list before
+displaying.
+.TP 5
+.B -p, --preload
+Preload images. This doesn't mean hold them in RAM, it means run through
+them and eliminate unloadable images first. Otherwise they will be removed
+as you flick through. This also analyses the images to get data for use in
+sorting, such as pixel size, type etc. A preload run will be automatically
+performed if you specify one of these sort modes.
+.TP 5
+.B -F, --full-screen
+Make the window fullscreen
+.TP 5
+.B -w, --multiwindow
+Disable slideshow mode. With this setting, instead of opening multiple
+files in slideshow mode, multiple windows will be opened, one per file.
+.TP 5
+.B -x, --borderless
+Create borderless windows
+.TP 5
+.B -P, --noprogressive
+Disable progressive loading and display of images
+.TP 5
+.B -d, --draw-filename
+Draw the filename at the top-left of the image
+.TP 5
+.B -D, --slideshow-delay NUM
+For slideshow mode, specifies time delay (seconds) between automatically
+changing slides. Great for presentations.
+.TP 5
+.B -R, --reload NUM
+Use this option to tell 
+.B feh
+to reload an image after NUM seconds. Useful for viewing webcams via http,
+or even on your local machine.
+.TP 5
+.B -k, --keep-http
+When viewing files using http, feh normally deletes the local copies after
+viewing, or, if caching, on exit. This option prevents this so that you
+get to keep the local copies. They will be in /tmp with "feh" in the name.
+.TP 5
+.B -l, --list
+Don't display images. Analyse them and display an 'ls'-style listing.
+Useful in scripts hunt out images of a certain size/resolution/type etc.
+.TP 5
+.B -U, --loadable
+Don't display images. Just print out their names if imlib2 can successfully
+load them.
+.TP 5
+.B -u, --unloadable
+Don't display images. Just print out their name if imlib2 can NOT
+successfully load them.
+.TP 5
+.B -S, --sort SORT_TYPE
+The file list may be sorted according to image parameters. Allowed sort
+types are: name, filename, width, height, pixels, size, format. For sort
+modes other than name or filename, a preload run will be necessary,
+causing a delay proportional to the number of images in the list
+.TP 5
+.B -X, --action ACTION
+Specify a string as an action to perform when the enter key is pressed in
+slideshow or multiwindow modes. The action will be executed in a shell.
+Use these format specifiers to refer to image properties:
+%f image path/filename
+.br
+%n image name
+.br
+%s image size (bytes)
+.br
+%p image pixel size
+.br
+%w image width
+.br
+%h image height
+.br
+%t image format
+.br
+Eg. feh -X "mv %f ~/images/%n" *
+.br
+In slideshow mode, the next image will be shown after running the action,
+in multiwindow mode, the window will be closed.
+.TP 5
+.B -m, --montage
+Enable montage mode. Montage mode creates a new image consisting of a grid
+of thumbnails of the images in the filelist. When montage mode is selected,
+certain other options become available. See MONTAGE MODE OPTIONS
+.TP 5
+.B -i, --index
+Enable Index mode. Index mode is similar to montage mode, and accepts the
+same options. It creates an index print of thumbails, printing user-defined
+information beneath each thumbnail. Index mode enables certain other
+options, see INDEX MODE OPTIONS
+.TP 5
+.B -B, --booth
+Combines some options suitable for a nice booth display mode. A fullscreen
+slideshow with a slide change every 20 seconds...
+.SH MONTAGE MODE OPTIONS
+.TP 5
+.B -A, --ignoreaspect
+By default, the montage thumbnails will retain their aspect ratios, while
+fitting in --thumb-width and --thumb-height. This option will force them to
+be the size set by --thumb-width and --thumb-height This will prevent any
+whitespace in the final montage
+.TP 5
+.B -s, --stretch
+Normally, if an image is smaller than the specified thumbnail size, it will
+not be enlarged. If this option is set, the image will be scaled up to fit
+the thumnail size. (Aspect ratio will be maintained unless --ignoreaspect is
+specified)
+.TP 5
+.B -y, --thumb-width NUM
+Set thumbnail width in pixels
+.TP 5
+.B -z, --thumb-height NUM
+Set thumbnail height in pixels
+Thumbnails default to 20x20 pixels
+.TP 5
+.B -W, --limit-width NUM
+Limit the width of the montage in pixels
+.TP 5
+.B -H, --limit-height NUM
+Limit the height of the montage in pixels These options can be used together
+(to define the image size exactly), or separately. If only one is specified,
+theother is calculated from the number of files specified and the size of
+the thumbnails.  The default is to limit width to 800 pixels and calculate
+the height as necessary
+.TP 5
+.B -b, --bg FILE
+Use FILE as a background for your montage. With this option specified, the
+size of the montage will default to the size of FILE if no size restrictions
+are specified.
+.TP 5
+.B -o FILE
+Save the created montage to FILE
+.TP 5
+.B -O FILE
+Just save the created montage to FILE without displaying it (use in scripts)
+.SH INDEX MODE OPTIONS
+.TP 5
+.B -f FONT
+Use FONT to print the information under each thumbnail. FONT should be a
+truetype font, resident in the current directory, or in feh's font
+directory, and should be defined in the form fontname/size(points). (No
+extension). eg. -f myfont/12
+.TP 5
+.B -T,--title-font FONT
+Use FONT to print a title on the index, if no font is specified, a title
+will not be printed
+.SH SLIDESHOW KEYS
+The default mode for viewing mulitple images is Slideshow mode
+When viewing a slideshow, the following keys may be used:
+.TP 5
+.B p, P, <BACKSPACE>, <LEFT>
+Goto previous slide
+.TP 5
+.B n, N, <SPACE>, <RIGHT>
+Goto next slide
+.TP 5
+.B <HOME>
+Goto first slide
+.TP 5
+.B <END>
+Goto last slide
+.TP 5
+.B <CTRL+DELETE>
+Delete the file currently being viewed
+.TP 5
+.B q, Q
+Quit the slideshow
+.SH MOUSE ACTIONS
+When viewing an image, mouse button 1 moves to the next image (slideshow
+mode only), button 2 zooms (click and drag left->right to zoom in, right->
+left to zoom out, click once to restore 1x zoom), and mouse button 3 closes
+all open windows and ends the current session.
+.SH BUGS
+None known. However there are many, many options. It is possible that some
+do not work well in conjuncion with each other. Let me know :)
+.SH LICENSE
+This program is free software.
+.br
+Distributed under the GNU public license.
+.br
+Copyright Tom Gilbert, 1999
+.PP
+Email bugs to <gilbertt@btinternet.com>
