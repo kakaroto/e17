@@ -71,7 +71,7 @@ _entrance_ipc_server_data(void *data, int type, void *event)
          printf("_entrance_ipc_server_data: Invalid message received\n");
       }
    }
-         
+
    return TRUE;
 }
 
@@ -120,7 +120,7 @@ _entrance_ipc_client_data(void *data, int type, void *event)
 
    e = (Ecore_Ipc_Event_Client_Data *) event;
 
-   printf("_entrance_ipc_client_data: Received [%i] [%i] (%i) \"%s\"\n", 
+   printf("_entrance_ipc_client_data: Received [%i] [%i] (%i) \"%s\"\n",
           e->major, e->minor, e->size, (char *) e->data);
 
    return TRUE;
@@ -136,38 +136,38 @@ entrance_ipc_init(pid_t server_pid)
       return FALSE;
 
    memset(buf, 0, sizeof(buf));
-   snprintf(buf, 80, "%s_%d", PACKAGE_STATE_DIR"/"IPC_TITLE, server_pid);
+   snprintf(buf, 80, "%s_%d", PACKAGE_STATE_DIR "/" IPC_TITLE, server_pid);
    if (ipc_title)
       free(ipc_title);
    ipc_title = strdup(buf);
-   
+
    if ((server =
         ecore_ipc_server_connect(ECORE_IPC_LOCAL_SYSTEM, IPC_TITLE, 0, NULL)))
    {
-      ecore_event_handler_add(ECORE_IPC_EVENT_CLIENT_ADD, 
+      ecore_event_handler_add(ECORE_IPC_EVENT_CLIENT_ADD,
                               _entrance_ipc_client_add, NULL);
-      
+
       ecore_event_handler_add(ECORE_IPC_EVENT_CLIENT_DEL,
                               _entrance_ipc_client_del, NULL);
-      
+
       ecore_event_handler_add(ECORE_IPC_EVENT_CLIENT_DATA,
                               _entrance_ipc_client_data, NULL);
-      
+
       ecore_event_handler_add(ECORE_IPC_EVENT_SERVER_DATA,
                               _entrance_ipc_server_data, NULL);
-      
+
       ecore_event_handler_add(ECORE_IPC_EVENT_SERVER_ADD,
                               _entrance_ipc_server_add, NULL);
-      
+
       ecore_event_handler_add(ECORE_IPC_EVENT_SERVER_DEL,
                               _entrance_ipc_server_del, NULL);
-      
-      
+
+
       fprintf(stderr, "entrance_ipc_init: Success\n");
-   } 
+   }
    else
       fprintf(stderr, "entrance_ipc_init: connect to daemon failed.\n");
-   
+
    return TRUE;
 }
 
@@ -188,7 +188,7 @@ entrance_ipc_connected_get(void)
 }
 
 void
-entrance_ipc_session_set(Entrance_Session *session)
+entrance_ipc_session_set(Entrance_Session * session)
 {
    _session = session;
 }
@@ -201,4 +201,3 @@ entrance_ipc_request_xauth(char *homedir, uid_t uid, gid_t gid)
    ecore_ipc_server_send(server, E_XAUTH_REQ, E_HOMEDIR, 0, 0, 0, homedir,
                          strlen(homedir));
 }
-

@@ -55,9 +55,9 @@ struct _Entrance_Auth
 #endif
 
    struct passwd *pw;
-   char   user[PATH_MAX];
-   char   pass[PATH_MAX];
-   char   **env;
+   char user[PATH_MAX];
+   char pass[PATH_MAX];
+   char **env;
 };
 typedef struct _Entrance_Auth Entrance_Auth;
 
