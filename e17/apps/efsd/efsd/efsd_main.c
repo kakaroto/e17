@@ -384,7 +384,7 @@ main_handle_fam_events(void)
 	  
 	  m = (EfsdFamMonitor*)famev.userdata;
 
-	  D(("Handling FAM event %i for file %s\n", famev.code, famev.filename));
+	  /* D(("Handling FAM event %i for file %s\n", famev.code, famev.filename)); */
 
 	  memset(&ee, 0, sizeof(EfsdEvent));
 	  ee.type = EFSD_EVENT_FILECHANGE;
@@ -411,7 +411,6 @@ main_handle_fam_events(void)
 		{
 		case EFSD_FAM_MONITOR_NORMAL:
 
-		  D(("NORMAL\n"));
 		  if (clientfd[efr->client] >= 0)
 		    {
 		      ee.efsd_filechange_event.id = efr->id;
@@ -450,7 +449,6 @@ main_handle_fam_events(void)
 		    }
 		  break;
 		case EFSD_FAM_MONITOR_INTERNAL:
-		  D(("INTERNAL\n"));
 		  if (famev.code == FAMChanged)
 		    {
 		      D(("File change event for stat cached file %s\n", famev.filename));

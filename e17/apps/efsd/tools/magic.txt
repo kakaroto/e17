@@ -10,7 +10,7 @@
 #------------------------------------------------------------------------------
 # alpha architecture description
 #
-0	leshort		0603		
+0	leshort		0603		""
 >22	leshort&030000	!020000		executable/alpha-coff
 >22	leshort&030000	020000		binary/alpha-coff/shared library
 >24	leshort		0407		binary/alpha-coff
@@ -40,7 +40,7 @@
 0	belong		0x000001b3		video/mpeg
 0	belong		0x000001ba		video/mpeg
 0	beshort		&0xffe0		audio
->1	byte&0x08	=0x08		
+>1	byte&0x08	=0x08		""
 # Layer 3
 >>1	byte		&0x02		mp3
 >>>2	byte&0xf0	=0x10		32 kBit-s
@@ -78,13 +78,13 @@
 >>2	byte&0x0C	=0x04		48 kHz
 >>2	byte&0x0C	=0x08		32 kHz
 # MPEG 2.5
->1	byte&0x18	=0x00		
+>1	byte&0x18	=0x00		""
 # Layer 3
 >>1	byte		&0x02		mp3
 # Layer 2
 >>1	byte		&0x04		mp2
 # MPEG 2.0
->1	byte&0x18	=0x10		
+>1	byte&0x18	=0x10		""
 ## Layer 3
 >>1	byte		&0x02		mp3
 # Layer 2
@@ -550,10 +550,10 @@
 #------------------------------------------------------------------------------
 # diff:  file(1) magic for diff(1) output
 #
-0	string		Index: 	text/diff
-0	string		diff\ 	text/diff
-0	string		***\ 		text/diff
-0	string		Only\ in\ 	text/diff
+0	string		Index:				text/diff
+0	string		diff\				text/diff
+0	string		***\				text/diff
+0	string		Only\ in\			text/diff
 0	string		Common\ subdirectories:\ 	text/diff
 
 #------------------------------------------------------------------------------
@@ -566,8 +566,8 @@
 # What're the correct byte orders for the nCUBE and the Fujitsu VPP500?
 #
 # updated by Daniel Quinlan (quinlan@yggdrasil.com)
-0	string		\177ELF		
->5	byte		1
+0	string		\177ELF		""
+>5	byte		1               ""
 >>16	leshort		0		binary/elf/lsb
 >>16	leshort		1		binary/elf/lsb/relocatable
 >>16	leshort		2		executable/elf/lsb
@@ -612,11 +612,11 @@
 >>18	leshort		0x9026		Alpha (unofficial),
 >>20	lelong		0		invalid version
 >>36	lelong		1		MathCoPro/FPU/MAU Required
->5	byte		2
+>5	byte		2		""
 # only for MIPS R3000_BE
->>18    beshort		8
+>>18    beshort		8		""
 # only for 32-bit
->>>4	byte		1
+>>>4	byte		1		""
 >>>>36  belong&0xf0000000       0x00000000      mips-1
 >>>>36  belong&0xf0000000       0x10000000      mips-2
 >>>>36  belong&0xf0000000       0x20000000      mips-3
@@ -624,7 +624,7 @@
 >>>>36  belong&0xf0000000       0x40000000      mips-5
 >>>>36  belong&0xf0000000       0x50000000      mips-6
 # only for 64-bit
->>>4	byte		2
+>>>4	byte		2		""
 >>>>48  belong&0xf0000000       0x00000000      mips-1
 >>>>48  belong&0xf0000000       0x10000000      mips-2
 >>>>48  belong&0xf0000000       0x20000000      mips-3
@@ -823,39 +823,39 @@
 # NetBSD-style).  (The old "netbsd" file analyzed FreeBSD demand paged
 # executables using the NetBSD technique.)
 #
-0	lelong&0377777777	041400407	
->20	lelong			<4096
+0	lelong&0377777777	041400407	""
+>20	lelong			<4096		""
 >>3	byte&0xC0		&0x80		binary/FreeBSD/i386/shared library
 >>3	byte&0xC0		0x40		binary/FreeBSD/i386/PIC object
 >>3	byte&0xC0		0x00		binary/FreeBSD/i386/object
->20	lelong			>4095
+>20	lelong			>4095		""
 >>3	byte&0x80		0x80		executable/FreeBSD/i386/dynamically linked
 >>3	byte&0x80		0x00		executable/FreeBSD/i386
 
-0	lelong&0377777777	041400410	
->20	lelong			<4096
+0	lelong&0377777777	041400410	""
+>20	lelong			<4096		""
 >>3	byte&0xC0		&0x80		binary/FreeBSD/i386/shared library
 >>3	byte&0xC0		0x40		binary/FreeBSD/i386/PIC object
 >>3	byte&0xC0		0x00		binary/FreeBSD/i386/object
->20	lelong			>4095
+>20	lelong			>4095		""
 >>3	byte&0x80		0x80		executable/FreeBSD/i386/dynamically linked
 >>3	byte&0x80		0x00		executable/FreeBSD/i386
 
-0	lelong&0377777777	041400413	
->20	lelong			<4096
+0	lelong&0377777777	041400413	""
+>20	lelong			<4096		""
 >>3	byte&0xC0		&0x80		binary/FreeBSD/i386/shared library
 >>3	byte&0xC0		0x40		binary/FreeBSD/i386/PIC object
 >>3	byte&0xC0		0x00		binary/FreeBSD/i386/object
->20	lelong			>4095
+>20	lelong			>4095		""
 >>3	byte&0x80		0x80		executable/FreeBSD/i386/dynamically linked
 >>3	byte&0x80		0x00		executable/FreeBSD/i386/executable
 
-0	lelong&0377777777	041400314	
->20	lelong			<4096
+0	lelong&0377777777	041400314	""
+>20	lelong			<4096		""
 >>3	byte&0xC0		&0x80		binary/FreeBSD/i386/shared library
 >>3	byte&0xC0		0x40		binary/FreeBSD/i386/PIC object
 >>3	byte&0xC0		0x00		binary/FreeBSD/i386/object
->20	lelong			>4095
+>20	lelong			>4095		""
 >>3	byte&0x80		0x80		executable/FreeBSD/i386/dynamically linked
 >>3	byte&0x80		0x00		executable/FreeBSD/i386/executable
 
@@ -901,7 +901,7 @@
 # IFF files begin with an 8 byte FORM header, followed by a 4 character
 # FORM type, which is followed by the first chunk in the FORM.
 
-0	string		FORM		
+0	string		FORM		""
 # audio formats
 >8	string		AIFF		audio/aiff
 >8	string		AIFC		audio/aiff-c
@@ -946,7 +946,7 @@
 0	string		P6		image/PPM/raw
 
 # NITF is defined by United States MIL-STD-2500A
-0	string	NITF	image/nitf
+0	string	NITF	image/nitf	""
 
 # NIFF (Navy Interchange File Format, a modification of TIFF) images
 0	string		IIN1		image/NIFF
@@ -964,17 +964,15 @@
 # 137 P N G \r \n ^Z \n [4-byte length] H E A D [HEAD data] [HEAD crc] ...
 #
 0	string		\x89PNG		image/png
->4	belong		!0x0d0a1a0a	CORRUPTED,
->4	belong		0x0d0a1a0a
->>25	byte		0		grayscale,
->>25	byte		2		color RGB,
->>25	byte		3		colormap,
->>25	byte		4		gray+alpha,
->>25	byte		6		\b/color RGBA,
-#>>26	byte		0		deflate-32K,
+>4	belong		!0x0d0a1a0a	CORRUPTED
+>4	belong		0x0d0a1a0a	""
+>>25	byte		0		grayscale
+>>25	byte		2		color RGB
+>>25	byte		3		colormap
+>>25	byte		4		gray-alpha
+>>25	byte		6		color RGBA
 >>28	byte		0		non-interlaced
 >>28	byte		1		interlaced
-1	string		PNG		image/PNG-corrupted
 
 # GIF
 0	string		GIF8		image/gif
@@ -1001,7 +999,7 @@
 0	string		BEGMF		image/cgm
 
 # MGR bitmaps  (Michael Haardt, u31b3hs@pool.informatik.rwth-aachen.de)
-0	string	yz	image/mgr
+0	string		yz		image/mgr
 
 # Fuzzy Bitmap (FBM) images
 0	string		%bitmap\0	image/fbm
@@ -1101,7 +1099,7 @@
 # Linux kernel boot images (i386 arch) (Wolfram Kleff)
 514	string		HdrS		executable/Linux kernel
 >510	leshort		0xAA55		x86 boot executable
->>518	leshort		0x201
+>>518	leshort		0x201		""
 >>>529	byte		0		zImage,
 >>>529	byte		1		bzImage,
 >>>(526.s+0x200) string	>\0		version %s,
@@ -1305,7 +1303,7 @@
 #
 # OS9/6809 module descriptions:
 #
-0	beshort		0x87CD	
+0	beshort		0x87CD	""
 #
 >6	byte&0x0f	0x00	binary/OS9-6809/non-executable
 >6	byte&0x0f	0x01	binary/OS9-6809/machine language
@@ -1327,7 +1325,7 @@
 #
 # OS9/m68k stuff (to be continued)
 #
-0	beshort		0x4AFC	
+0	beshort		0x4AFC	""
 #
 # attr
 >14	byte&0x80	0x80	binary/OS9-68K/re-entrant
@@ -1420,7 +1418,7 @@
 >>18	leshort		x		 %d entries
 # RIFF Device Independent Bitmap format
 >8	string		RDIB		 device-independent bitmap
->>16	string		BM		
+>>16	string		BM		 ""
 >>>30	leshort		12		 OS2 1.x format
 >>>>34	leshort		x		 %d x
 >>>>36	leshort		x		%d
@@ -1461,7 +1459,7 @@
 >>18	beshort		x		 %d entries
 # RIFF Device Independent Bitmap format
 >8	string		RDIB		 device-independent bitmap
->>16	string		BM		
+>>16	string		BM		 ""
 >>>30	beshort		12		 OS2 1.x format
 >>>>34	beshort		x		 %d x
 >>>>36	beshort		x		%d
@@ -1495,7 +1493,7 @@
 #
 # RPM: file(1) magic for Red Hat Packages   Erik Troan (ewt@redhat.com)
 #
-0	beshort		0xedab    	
+0	beshort		0xedab    	""
 >2	beshort		0xeedb		archive/rpm
 >>6	beshort		0		bin
 >>6	beshort		1		src
@@ -1610,7 +1608,7 @@
 # the main program that uses that format, but there are other programs
 # that use "libpcap", or that use the same capture file format.)
 #
-0	ubelong		0xa1b2c3d4	binary/capture/tcpdump/big-endian
+0	belong		0xa1b2c3d4	binary/capture/tcpdump/big-endian
 >20	belong		0		(No link-layer encapsulation
 >20	belong		1		(Ethernet
 >20	belong		2		(3Mb Ethernet
@@ -1626,7 +1624,7 @@
 >20	belong		12		(raw IP
 >20	belong		13		(BSD/OS SLIP
 >20	belong		14		(BSD/OS PPP
-0	ulelong		0xa1b2c3d4	binary/capture/tcpdump/little-endian
+0	lelong		0xa1b2c3d4	binary/capture/tcpdump/little-endian
 >20	lelong		0		(No link-layer encapsulation
 >20	lelong		1		(Ethernet
 >20	lelong		2		(3Mb Ethernet
@@ -1649,38 +1647,38 @@
 # Values for big-endian Sun (MC680x0, SPARC) binaries on pre-5.x
 # releases.  (5.x uses ELF.)
 #
-0	belong&077777777	0600413	
->0	byte		&0x80
+0	belong&077777777	0600413	""
+>0	byte		&0x80		""
 >>20	belong		<4096		binary/sun-sparc shared library
 >>20	belong		=4096		binary/sun-sparc dynamically linked executable
 >>20	belong		>4096		binary/sun-sparc dynamically linked executable
 >0	byte		^0x80		executable/sun-sparc
-0	belong&077777777	0600410	
+0	belong&077777777	0600410	""
 >0	byte		&0x80		binary/sun-sparc dynamically linked executable
 >0	byte		^0x80		executable/sun-sparc
-0	belong&077777777	0600407	
+0	belong&077777777	0600407	""
 >0	byte		&0x80		binary/sun-sparc dynamically linked executable
 >0	byte		^0x80		executable/sun-sparc
 
-0	belong&077777777	0400413
->0	byte		&0x80
+0	belong&077777777	0400413	""
+>0	byte		&0x80		""
 >>20	belong		<4096		binary/sun-mc68020-shared library
 >>20	belong		>4095		executable/sun-mc68020
 
-0	belong&077777777	0400410	
+0	belong&077777777	0400410	""
 >0	byte		&0x80		executable/sun-mc68020
 
-0	belong&077777777	0200413	
->0	byte		&0x80
+0	belong&077777777	0200413	""
+>0	byte		&0x80		""
 >>20	belong		<4096		binary/sun-mc68010-shared library
 >>20	belong		=4096		executable/sun-mc68010
 >>20	belong		>4096		executable/sun-mc68010
 
-0	belong&077777777	0200410	
+0	belong&077777777	0200410	""
 >0	byte		&0x80		executable/sun-mc68010
 >0	byte		^0x80		executable/sun-mc68010
 
-0	belong&077777777	0200407
+0	belong&077777777	0200407	""
 >0	byte		&0x80		executable/sun-mc68010
 >0	byte		^0x80		executable/sun-mc68010
 

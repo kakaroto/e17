@@ -453,14 +453,12 @@ filetype_fix_byteorder(EfsdMagic *em)
 
   D_ENTER;
 
-  if ((em->type == EFSD_MAGIC_8) ||
-      (em->type == EFSD_MAGIC_16) ||
+  if ((em->type == EFSD_MAGIC_16) ||
       (em->type == EFSD_MAGIC_32))
     {
       if ((em->byteorder == host_byteorder)  || 
 	  (em->byteorder == EFSD_BYTEORDER_HOST))
 	{
-	  /* D(("Not changing byteorder.\n")); */
 	  D_RETURN;
 	}
 

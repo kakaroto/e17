@@ -237,8 +237,8 @@ sub do_it {
 	                (be|le)??(byte|short|long|string)    # endianness and type, no date
                         (&(?:0x)??[0-9a-fA-F]+)?? \s+        # possibly, a mask for the value
 	                ([!<>&\^=]?)((?:0x)??[0-9a-fA-F]+?|  # test for either a num. value
-                        (?:\\\s+|\S){2,}|[^x]{1}) \s+        # or a string
-	                (.*)$/x)                             # and finally, the comment.
+                        (?:\\\s+|\S)+\S|[^x]{1}) \s+         # or a string
+	                (\S+\s*)+$/x)                    # and finally, the comment.
 	   {
 	     $level = length($1);
 
@@ -376,7 +376,13 @@ sub do_it {
 	     $item = $7;
 	     if ($magic{"type"} eq $EFSD_MAGIC_STRING)
 	       {		 
-		 $magic{"value"} = $value_prefix . $item;
+		 if ($item eq "\"\"")
+		   {
+		     $item = "";
+		   }
+
+		 $item =~ s/\\$/\\ /;    # replace a backslash at the end with "\ ".
+		 $magic{"value"} = $value_prefix . $item;		 
 	       }
 	     else
 	       {
