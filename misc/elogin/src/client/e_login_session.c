@@ -63,7 +63,7 @@ e_login_session_init(E_Login_Session e)
    if (!e)
       exit(1);
 
-#if X_TESTING
+#ifdef X_TESTING
    win = ecore_window_new(0, 0, 0, 800, 600);
    ecore_window_set_events(win, XEV_CONFIGURE | XEV_PROPERTY);
    ecore_window_set_name_class(win, "Elogin Test", "Main");
@@ -112,9 +112,9 @@ e_login_session_init(E_Login_Session e)
                            XEV_EXPOSE | XEV_BUTTON | XEV_MOUSE_MOVE |
                            XEV_KEY);
 
-   evas_object_image_cache_set(evas, 0);
-   evas_object_font_cache_set(evas, 0);
-   evas_object_font_path_append(evas, PACKAGE_DATA_DIR "/data/fonts/");
+   evas_image_cache_set(evas, 0);
+   evas_font_cache_set(evas, 0);
+   evas_font_path_append(evas, PACKAGE_DATA_DIR "/data/fonts/");
 
    ecore_window_show(ewin);
    ecore_window_show(win);
