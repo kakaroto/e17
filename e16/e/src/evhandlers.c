@@ -822,7 +822,8 @@ HandleMotion(XEvent * ev)
 	p = mode.context_pager;
 	if (p)
 	  {
-	     int                 ax, ay, cx, cy;
+	     int                 ax, ay, cx, cy, i, num;
+	     EWin              **gwins;
 
 	     cx = desks.desk[p->desktop].current_area_x;
 	     cy = desks.desk[p->desktop].current_area_y;
@@ -848,6 +849,18 @@ HandleMotion(XEvent * ev)
 		  y -= py + (cy * (p->h / ay));
 		  MoveEwin(p->hi_ewin, (x * root.w * ax) / p->w,
 			   (y * root.h * ay) / p->h);
+	       }
+	     gwins = ListWinGroupMembersForEwin(p->hi_ewin, ACTION_MOVE, mode.nogroup, &num);
+	     for (i = 0; i < num; i++)
+	       {
+		  if ((gwins[i] != p->hi_ewin) && (!gwins[i]->pager) &&
+		      (!gwins[i]->fixedpos))
+		    {
+		       GetWinXY(gwins[i]->win, &x, &y);
+		       x += (dx * root.w * ax) / p->w;
+		       y += (dy * root.h * ay) / p->h;
+		       MoveEwin(gwins[i], x, y);
+		    }
 	       }
 	  }
      }

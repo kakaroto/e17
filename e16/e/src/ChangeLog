@@ -2555,3 +2555,10 @@ Thu Sep 30 17:26:38 PDT 1999
 (Raster)
 
 try nto to segv if filemnus go missing... :)
+
+-------------------------------------------------------------------------------
+
+Thu Sep 30 18:54:13 PDT 1999
+(Raster)
+
+added pager group move patch and windowmatces pact for dialogs...

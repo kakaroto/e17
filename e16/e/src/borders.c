@@ -788,9 +788,11 @@ AddInternalToFamily(Window win, char noshow, char *bname, int type, void *ptr)
    winid = win;
    b = NULL;
    if (bname)
-      b = FindItem(bname, 0, LIST_FINDBY_NAME, LIST_TYPE_BORDER);
-   if (!b)
-      b = FindItem("DEFAULT", 0, LIST_FINDBY_NAME, LIST_TYPE_BORDER);
+     {
+	b = FindItem(bname, 0, LIST_FINDBY_NAME, LIST_TYPE_BORDER);
+	if (!b)
+	   b = FindItem("DEFAULT", 0, LIST_FINDBY_NAME, LIST_TYPE_BORDER);
+     }
    ewin = AdoptInternal(win, b, type, ptr);
    ResizeEwin(ewin, ewin->client.w, ewin->client.h);
    if (ewin->desktop < 0)
@@ -1279,7 +1281,12 @@ AdoptInternal(Window win, Border * border, int type, void *ptr)
  * else  */
    MatchEwinToSnapInfo(ewin);
    if (!ewin->border)
-      ewin->border = border;
+     {
+	if (border)
+	   ewin->border = border;
+	else
+	   SetEwinBorder(ewin);
+     }
 
    b = ewin->border;
    ewin->border = NULL;
@@ -2383,6 +2390,8 @@ void
 MinShadeSize(EWin * ewin, int *mw, int *mh)
 {
    int                 i, p;
+   int                 leftborderwidth, rightborderwidth;
+   int                 topborderwidth, bottomborderwidth;
 
    *mw = 32;
    *mh = 32;
@@ -2393,8 +2402,22 @@ MinShadeSize(EWin * ewin, int *mw, int *mh)
      case 0:
      case 1:
 	p = ewin->w;
-	ewin->w = ewin->border->border.left +
-	   ewin->border->border.right;
+	// get the correct width, based on the borderparts that are remaining
+	// visible
+	leftborderwidth = rightborderwidth = 0;
+	for (i = 0; i < ewin->border->num_winparts; i++)
+	  {
+	     if (ewin->border->part[i].keep_for_shade)
+	       {
+		  if (ewin->border->border.left - ewin->bits[i].x > leftborderwidth)
+		     leftborderwidth = ewin->border->border.left - ewin->bits[i].x;
+		  if ((ewin->bits[i].x + ewin->bits[i].w) -
+		    (ewin->w - ewin->border->border.right) > rightborderwidth)
+		     rightborderwidth = (ewin->bits[i].x + ewin->bits[i].w) -
+			(ewin->w - ewin->border->border.right);
+	       }
+	  }
+	ewin->w = rightborderwidth + leftborderwidth;
 	DO_CALC;
 	FIND_MAX;
 	ewin->w = p;
@@ -2403,8 +2426,20 @@ MinShadeSize(EWin * ewin, int *mw, int *mh)
      case 2:
      case 3:
 	p = ewin->h;
-	ewin->h = ewin->border->border.top +
-	   ewin->border->border.bottom;
+	topborderwidth = bottomborderwidth = 0;
+	for (i = 0; i < ewin->border->num_winparts; i++)
+	  {
+	     if (ewin->border->part[i].keep_for_shade)
+	       {
+		  if (ewin->border->border.top - ewin->bits[i].y > topborderwidth)
+		     topborderwidth = ewin->border->border.top - ewin->bits[i].y;
+		  if ((ewin->bits[i].y + ewin->bits[i].h) -
+		  (ewin->h - ewin->border->border.bottom) > bottomborderwidth)
+		     bottomborderwidth = (ewin->bits[i].y + ewin->bits[i].h) -
+			(ewin->h - ewin->border->border.bottom);
+	       }
+	  }
+	ewin->h = bottomborderwidth + topborderwidth;
 	DO_CALC;
 	FIND_MAX;
 	ewin->h = p;
