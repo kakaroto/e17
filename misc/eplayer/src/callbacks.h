@@ -34,5 +34,7 @@ EDJE_CB(eplayer_quit);
 EDJE_CB(eplayer_raise);
 EDJE_CB(switch_group);
 
+EDJE_CB(update_seeker);
+
 #endif
 

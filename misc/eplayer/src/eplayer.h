@@ -26,6 +26,7 @@ typedef struct {
 	Evas_Object *edje;
 	Evas_Object *playlist; /* playlist container */
 	int playlist_font_size;
+	int seeking; /* 1 if seeking, 0 if not */
 } Gui;
 
 typedef struct {
