@@ -53,7 +53,7 @@ init(Elation_Module *em)
    em->action = action;
 
    pr->overlay = edje_object_add(em->info->evas);
-   edje_object_file_set(pr->overlay, PACKAGE_DATA_DIR"/data/theme.eet", "dvd");
+   edje_object_file_set(pr->overlay, PACKAGE_DATA_DIR"/data/theme.eet", "media");
    edje_object_signal_emit(pr->overlay, "media", "0");
    
    return pr;
@@ -207,6 +207,7 @@ media_play_timer_cb(void *data)
 	evas_object_raise(pr->overlay);
 	if (new_em)
 	  {
+	     new_em->resize(new_em);
 	     new_em->show(new_em);
 	     new_em->focus(new_em);
 	  }
@@ -219,6 +220,7 @@ media_play_timer_cb(void *data)
 	evas_object_raise(pr->overlay);
 	if (new_em)
 	  {
+	     new_em->resize(new_em);
 	     new_em->show(new_em);
 	     new_em->focus(new_em);
 	  }
@@ -231,6 +233,7 @@ media_play_timer_cb(void *data)
 	evas_object_raise(pr->overlay);
 	if (new_em)
 	  {
+	     new_em->resize(new_em);
 	     new_em->show(new_em);
 	     new_em->focus(new_em);
 	  }
@@ -243,6 +246,7 @@ media_play_timer_cb(void *data)
 	evas_object_raise(pr->overlay);
 	if (new_em)
 	  {
+	     new_em->resize(new_em);
 	     new_em->show(new_em);
 	     new_em->focus(new_em);
 	  }

@@ -20,6 +20,7 @@ struct _Elation_Module_Private
    int track;
    int track_num;
    Evas_Object *video;
+   Evas_Object *overlay;
 };
 
 static void shutdown(Elation_Module *em);
@@ -37,9 +38,8 @@ static void title_change_cb(void *data, Evas_Object *obj, void *event_info);
 static void progress_change_cb(void *data, Evas_Object *obj, void *event_info);
 static void channels_change_cb(void *data, Evas_Object *obj, void *event_info);
 static void key_down_cb(void *data, Evas *e, Evas_Object *obj, void *event_info);
-static int  media_play_timer_cb(void *data);
-static int  media_fade_in_timer_cb(void *data);
-
+static void new_track(Elation_Module *em, int track);
+    
 void *
 init(Elation_Module *em)
 {
@@ -56,6 +56,8 @@ init(Elation_Module *em)
    em->focus = focus;
    em->unfocus = unfocus;
    em->action = action;
+   
+   em->data = pr;
 
    pr->device = strdup("/dev/cdrom");
    
@@ -108,14 +110,12 @@ init(Elation_Module *em)
 	     close(fd);
 	  }
      }
-     {
-	char buf[256];
-	
-	snprintf(buf, sizeof(buf), "cdda:/%i", pr->track + 1);
-	emotion_object_file_set(pr->video, buf);
-	emotion_object_play_set(pr->video, 1);
-     }
    
+   pr->overlay = edje_object_add(em->info->evas);
+   edje_object_file_set(pr->overlay, PACKAGE_DATA_DIR"/data/theme.eet", "cd");
+   edje_object_signal_emit(pr->overlay, "media", "1");
+			   
+   new_track(em, 0);
    return pr;
 }
 
@@ -126,6 +126,7 @@ shutdown(Elation_Module *em)
    
    pr = em->data;
    evas_object_del(pr->video);
+   evas_object_del(pr->overlay);
    free(pr);
 }
 
@@ -140,6 +141,9 @@ resize(Elation_Module *em)
    
    evas_object_move(pr->video, 0, 0);
    evas_object_resize(pr->video, w, h);
+   
+   evas_object_move(pr->overlay, 0, 0);
+   evas_object_resize(pr->overlay, w, h);
 }
 
 static void
@@ -148,6 +152,7 @@ show(Elation_Module *em)
    Elation_Module_Private *pr;
    
    pr = em->data;
+   evas_object_show(pr->overlay);
 }
 
 static void
@@ -156,6 +161,7 @@ hide(Elation_Module *em)
    Elation_Module_Private *pr;
    
    pr = em->data;
+   evas_object_hide(pr->overlay);
 }
 
 static void
@@ -185,27 +191,10 @@ action(Elation_Module *em, int action)
    switch (action)
      {
       case ELATION_ACT_NEXT:
-	pr->track++;
-	if (pr->track >= pr->track_num) pr->track = 0;
-	printf("next to %i\n", pr->track);
-	  {
-	     char buf[256];
-	     
-	     snprintf(buf, sizeof(buf), "cdda:/%i", pr->track + 1);
-	     emotion_object_file_set(pr->video, buf);
-	     emotion_object_play_set(pr->video, 1);
-	  }
+	new_track(em, pr->track + 1);
 	break;
       case ELATION_ACT_PREV:
-	pr->track--;
-	if (pr->track < 0) pr->track = pr->track_num - 1;
-	  {
-	     char buf[256];
-	     
-	     snprintf(buf, sizeof(buf), "cdda:/%i", pr->track + 1);
-	     emotion_object_file_set(pr->video, buf);
-	     emotion_object_play_set(pr->video, 1);
-	  }
+	new_track(em, pr->track - 1);
 	break;
       case ELATION_ACT_SELECT:
 	if (emotion_object_play_get(pr->video))
@@ -298,15 +287,7 @@ decode_stop_cb(void *data, Evas_Object *obj, void *event_info)
    printf("EL video stop\n");
 //   emotion_object_position_set(pr->video, 0.0);
 //   emotion_object_play_set(pr->video, 1);
-   pr->track++;
-   if (pr->track >= pr->track_num) pr->track = 0;
-     {
-	char buf[256];
-	
-	snprintf(buf, sizeof(buf), "cdda:/%i", pr->track + 1);
-	emotion_object_file_set(pr->video, buf);
-	emotion_object_play_set(pr->video, 1);
-     }
+   new_track(em, pr->track + 1);
 }
 
 static void
@@ -378,4 +359,39 @@ key_down_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
    else if (!strcmp(ev->keyname, "s"))      action = ELATION_ACT_STOP;
    else if (!strcmp(ev->keyname, "k"))      action = ELATION_ACT_SKIP;
    em->action(em, action);
+}
+
+static void
+new_track(Elation_Module *em, int track)
+{
+   Elation_Module_Private *pr;
+   char buf[256];
+   
+   pr = em->data;
+   pr->track = track;
+   while (pr->track >= pr->track_num) pr->track -= pr->track_num;
+   while (pr->track < 0) pr->track += pr->track_num;
+   
+   snprintf(buf, sizeof(buf), "cdda:/%i", pr->track + 1);
+   emotion_object_file_set(pr->video, buf);
+   emotion_object_play_set(pr->video, 1);
+   snprintf(buf, sizeof(buf), "%i", pr->track + 1);
+   edje_object_part_text_set(pr->overlay,
+			     "track_number",
+			     buf);
+   edje_object_part_text_set(pr->overlay,
+			     "track_title",
+			     emotion_object_meta_info_get(pr->video, EMOTION_META_INFO_TRACK_TITLE));
+   edje_object_part_text_set(pr->overlay,
+			     "track_artist",
+			     emotion_object_meta_info_get(pr->video, EMOTION_META_INFO_TRACK_ARTIST));
+   edje_object_part_text_set(pr->overlay,
+			     "track_album",
+			     emotion_object_meta_info_get(pr->video, EMOTION_META_INFO_TRACK_ALBUM));
+   printf("track %i, %s - %s - %s\n", 
+	  pr->track,
+	  emotion_object_meta_info_get(pr->video, EMOTION_META_INFO_TRACK_ARTIST),
+	  emotion_object_meta_info_get(pr->video, EMOTION_META_INFO_TRACK_ALBUM),
+	  emotion_object_meta_info_get(pr->video, EMOTION_META_INFO_TRACK_TITLE)
+	  );
 }

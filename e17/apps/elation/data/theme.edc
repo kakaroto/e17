@@ -25,7 +25,7 @@ collections {
       }
    }
    group {
-      name: "dvd";
+      name: "media";
       parts {
 	 part {
 	    name: "disk";
@@ -188,6 +188,134 @@ collections {
 	    action:     STATE_SET "ok" 0.0;
 	    transition: SINUSOIDAL 1.0;
 	    target:     "status";
+	 }
+      }
+   }
+   group {
+      name: "cd";
+      parts {
+	 part {
+	    name: "disk";
+	    mouse_events: 0;
+	    description {
+	       state: "default" 0.0;
+	       min: 230 130;
+	       max: 230 130;
+	       align: 1.0 1.0;
+	       rel1 {
+		  relative: 0.0  0.0;
+		  offset:   50   50;
+	       }
+	       rel2 {
+		  relative: 0.0  0.0;
+		  offset:   50   50;
+	       }
+	       image {	
+		  normal: "disk.png";
+	       }
+	    }
+	 }
+	 part {
+	    name:   "track_number";
+	    type:   TEXT;
+	    description {
+	       state:    "default" 0.0;
+	       align:    0.0 1.0;
+	       rel1 {
+		  relative: 1.0  0.0;
+		  offset:   -50   50;
+	       }
+	       rel2 {
+		  relative: 1.0  0.0;
+		  offset:   -50  50;
+	       }
+	       color: 0 0 0 255;
+	       text {
+		  text:     "00";
+		  font:     "Vera Bold";
+		  size:     75;
+		  align:    0.0 0.0;
+		  min:      1 1;
+	       }
+	    }
+	 }
+	 part {
+	    name:   "track_title";
+	    type:   TEXT;
+	    description {
+	       state:    "default" 0.0;
+	       align:    0.0 1.0;
+	       rel1 {
+		  to_y:     "disk";
+		  relative: 0.0  1.0;
+		  offset:   50   0;
+	       }
+	       rel2 {
+		  to_y:     "disk";
+		  relative: 1.0  1.0;
+		  offset:   -50  0;
+	       }
+	       color: 0 0 0 255;
+	       text {
+		  text:     "Title";
+		  font:     "Vera Bold";
+		  size:     24;
+		  align:    0.0 0.0;
+		  min:      0 1;
+	       }
+	    }
+	 }
+	 part {
+	    name:   "track_artist";
+	    type:   TEXT;
+	    description {
+	       state:    "default" 0.0;
+	       align:    0.0 1.0;
+	       rel1 {
+		  to_y:     "track_title";
+		  relative: 0.0  1.0;
+		  offset:   50   0;
+	       }
+	       rel2 {
+		  to_y:     "track_title";
+		  relative: 1.0  1.0;
+		  offset:   -50  0;
+	       }
+	       color: 0 0 0 255;
+	       text {
+		  text:     "Artist";
+		  font:     "Vera Bold";
+		  size:     24;
+		  align:    0.0 0.0;
+		  min:      0 1;
+	       }
+	    }
+	 }
+	 part {
+	    name:   "track_album";
+	    type:   TEXT;
+	    description {
+	       state:    "default" 0.0;
+	       align:    0.0 1.0;
+	       rel1 {
+		  to_y:     "track_artist";
+		  relative: 0.0  1.0;
+		  offset:   50   0;
+	       }
+	       rel2 {
+		  to_y:     "track_artist";
+		  relative: 1.0  1.0;
+		  offset:   -50  0;
+	       }
+	       color: 0 0 0 255;
+	       text {
+		  text:     "Album";
+		  font:     "Vera Bold";
+		  size:     24;
+		  align:    0.0 0.0;
+		  min:      0 1;
+	       }
+	    }
 	 }
       }
    }

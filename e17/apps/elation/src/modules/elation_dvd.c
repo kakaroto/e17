@@ -87,7 +87,7 @@ init(Elation_Module *em)
    
    emotion_object_smooth_scale_set(pr->video, 1);
    
-   emotion_object_file_set(pr->video, "dvd:/");
+   emotion_object_file_set(pr->video, "dvd://");
    emotion_object_play_set(pr->video, 1);
    
    pr->media_fade_in_timer = ecore_timer_add(1.0 / 30.0, media_fade_in_timer_cb, em);
