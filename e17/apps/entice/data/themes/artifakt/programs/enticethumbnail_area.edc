@@ -12,7 +12,7 @@ script {
 }
 
 p { n, "Show.Thumbnail.area.Panel.ok"; s, "thumbnail,panel,show"; so, "";
-	a, ST"visible" 0.0; tr, DECELERATE 0.50; 
+	a, ST "visible" 0.0; tr, DECELERATE 0.50; 
 	t, "ToolPanel"; in, 0.5 x;
 }
 
