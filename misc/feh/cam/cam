@@ -6,7 +6,7 @@
 $DEBUG = 0;
 $bp =    $ENV{HOME}."/.cam_bookmarks";
 $feh =   "feh";
-$title_format = "%cCAM";
+$title_format = "%cCAM - %u";
 # additional feh cmdline options
 $PRE=    " -q -w -Cwebcam -1 0 -0 1 ";
 $POST=   ""; 
@@ -81,6 +81,8 @@ LOOP: {
 		{
 			$title = $title_format;
 			$title =~ s/\%c/$key/g;
+			$title =~ s/\%u/$url/g;
+			$title =~ s/\%r/$ref/g;
 			$title =~ s/\%\%/\%/g;
 			$title = " --title \"$title\" ";
 		}
