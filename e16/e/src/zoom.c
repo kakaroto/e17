@@ -25,14 +25,8 @@
 #ifdef WITH_ZOOM
 #include <X11/extensions/xf86vmode.h>
 
-/* Take out USE_OLD_ZOOM_CODE stuff if new is OK */
-#define USE_OLD_ZOOM_CODE 0
-
 static int          std_vid_modes_num = 0;
-
-#if USE_OLD_ZOOM_CODE
 static int          std_vid_mode_cur = 0;
-#endif
 static XF86VidModeModeInfo **std_vid_modes = NULL;
 
 static Window       zoom_mask_1 = 0;
@@ -50,7 +44,7 @@ FillStdVidModes(void)
 			      &std_vid_modes);
 }
 
-static const XF86VidModeModeInfo *
+static XF86VidModeModeInfo *
 FindMode(int w, int h)
 {
    XF86VidModeModeInfo *chosen = NULL;
@@ -74,71 +68,57 @@ FindMode(int w, int h)
    return chosen;
 }
 
-#if USE_OLD_ZOOM_CODE
 static int
-GetModeJumpCount(XF86VidModeModeInfo * new)
+GetModeIndex(int dotclock, XF86VidModeModeLine * line)
 {
-   int                 i, next;
+   int                 i;
+   const XF86VidModeModeInfo *info;
 
-   next = 0;
    for (i = 0; i < std_vid_modes_num; i++)
      {
-	if ((new->hdisplay == std_vid_modes[i]->hdisplay)
-	    && (new->vdisplay == std_vid_modes[i]->vdisplay))
-	   next = i;
+	info = std_vid_modes[i];
+	if (info->dotclock == dotclock &&
+	    info->hdisplay == line->hdisplay &&
+	    info->vdisplay == line->vdisplay)
+	   return i;
      }
-   return next;
+   return 0;
 }
-#endif
 
 static const XF86VidModeModeInfo *
 SwitchRes(char inout, int x, int y, int w, int h)
 {
+   static int          vp_x, vp_y;
    XF86VidModeModeInfo *mode = NULL;
-
-#if USE_OLD_ZOOM_CODE
-   int                 i;
-#endif
 
    if (inout)
      {
-#if USE_OLD_ZOOM_CODE
 	XF86VidModeModeLine curmode;
-	int                 dotclock, jump;
+	int                 dotclock;
 
 	if (!XF86VidModeGetModeLine(disp, root.scr, &dotclock, &curmode))
 	   return mode;
-#endif
+	XF86VidModeGetViewPort(disp, root.scr, &vp_x, &vp_y);
+
 	mode = FindMode(w, h);
 	if (mode)
 	  {
-	     XWarpPointer(disp, None, root.win, 0, 0, 0, 0, x, y);
-	     XF86VidModeSetViewPort(disp, root.scr, x, y);
 	     XF86VidModeLockModeSwitch(disp, root.scr, 0);
-#if USE_OLD_ZOOM_CODE
-	     jump = GetModeJumpCount(mode);
-	     for (i = 0; i < jump; i++)
-		XF86VidModeSwitchMode(disp, root.scr, 1);
-	     std_vid_mode_cur = jump;
-#else
+	     std_vid_mode_cur = GetModeIndex(dotclock, &curmode);
 	     XF86VidModeSwitchToMode(disp, root.scr, mode);
-#endif
+	     XF86VidModeSetViewPort(disp, root.scr, x, y);
 	     XF86VidModeLockModeSwitch(disp, root.scr, 1);
 	  }
      }
    else
      {
+	mode = std_vid_modes[std_vid_mode_cur];
 	XF86VidModeLockModeSwitch(disp, root.scr, 0);
-#if USE_OLD_ZOOM_CODE
-	for (i = 0; i < (std_vid_modes_num - std_vid_mode_cur); i++)
-	   XF86VidModeSwitchMode(disp, root.scr, 1);
-	XF86VidModeSetViewPort(disp, root.scr, x, y);
-	std_vid_mode_cur = 0;
-#else
-	XF86VidModeSwitchToMode(disp, root.scr, std_vid_modes[0]);
-#endif
+	XF86VidModeSwitchToMode(disp, root.scr, mode);
+	XF86VidModeSetViewPort(disp, root.scr, vp_x, vp_y);
+#if 0				/* No, don't lock or we can't switch resolution */
 	XF86VidModeLockModeSwitch(disp, root.scr, 1);
-	mode = std_vid_modes[0];
+#endif
      }
    return mode;
 }
@@ -215,7 +195,7 @@ ZoomMask(int x, int y, int w, int h)
 void
 Zoom(EWin * ewin)
 {
-   XF86VidModeModeInfo *mode;
+   const XF86VidModeModeInfo *mode;
 
    if (!CanZoom())
       return;
@@ -224,9 +204,10 @@ Zoom(EWin * ewin)
      {
 	if (zoom_last_ewin)
 	  {
+	     ewin = zoom_last_ewin;
 /*           XUngrabPointer(disp, CurrentTime); */
-	     MoveEwin(zoom_last_ewin, zoom_last_x, zoom_last_y);
-	     ICCCM_Configure(zoom_last_ewin);
+	     MoveEwin(ewin, zoom_last_x, zoom_last_y);
+	     ICCCM_Configure(ewin);
 	     if (zoom_mask_1)
 		XDestroyWindow(disp, zoom_mask_1);
 	     if (zoom_mask_2)
@@ -236,6 +217,8 @@ Zoom(EWin * ewin)
 	     if (zoom_mask_4)
 		XDestroyWindow(disp, zoom_mask_4);
 	     SwitchRes(0, 0, 0, 0, 0);
+	     XWarpPointer(disp, None, ewin->client.win, 0, 0, 0, 0,
+			  ewin->client.w / 2, ewin->client.h / 2);
 	     XSync(disp, False);
 	     zoom_last_ewin = NULL;
 	  }
@@ -267,13 +250,16 @@ Zoom(EWin * ewin)
 		 -ewin->border->border.top + y1);
 	ICCCM_Configure(ewin);
 	FocusToEWin(ewin);
-/*      XGrabPointer(disp, ewin->client.win, False, 0,
- * ButtonPressMask | ButtonReleaseMask |
- * PointerMotionMask | ButtonMotionMask |
- * EnterWindowMask | LeaveWindowMask,
- * GrabModeAsync, GrabModeAsync, None, 
- * ewin->client.win, None, 
- * CurrentTime); */
+	XWarpPointer(disp, None, ewin->client.win, 0, 0, 0, 0,
+		     ewin->client.w / 2, ewin->client.h / 2);
+#if 0
+	XGrabPointer(disp, ewin->client.win, True,
+		     ButtonPressMask | ButtonReleaseMask |
+		     PointerMotionMask | ButtonMotionMask |
+		     EnterWindowMask | LeaveWindowMask,
+		     GrabModeAsync, GrabModeAsync,
+		     ewin->client.win, None, CurrentTime);
+#endif
 	zoom_mask_1 = ZoomMask(0, 0, x1, mode->vdisplay);
 	zoom_mask_2 = ZoomMask(0, 0, mode->hdisplay, y1);
 	zoom_mask_3 = ZoomMask(x1 + ewin->client.w, 0, x2, mode->vdisplay);
