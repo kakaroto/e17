@@ -958,6 +958,8 @@ HandleMotion(XEvent * ev)
 		       MoveEwin(gwins[i], x, y);
 		    }
 	       }
+	     if (gwins)
+		Efree(gwins);
 	  }
      }
    /* dialogs? */
@@ -1940,6 +1942,9 @@ HandleMouseDown(XEvent * ev)
 		gwin_py[i] = gwins[i]->y;
 	     }
 
+	   if (gwins)
+	      Efree(gwins);
+
 	   if (ev->xbutton.window == p->hi_win)
 	     {
 		int                 hx, hy;
@@ -2463,9 +2468,6 @@ HandleMouseUp(XEvent * ev)
 		       int                 wx, wy, base_x = 0, base_y = 0;
 		       Window              dw;
 
-		       gwins =
-			  ListWinGroupMembersForEwin(p->hi_ewin, ACTION_MOVE,
-						     mode.nogroup, &num);
 		       pp = ewin->pager;
 		       cx = desks.desk[pp->desktop].current_area_x;
 		       cy = desks.desk[pp->desktop].current_area_y;
@@ -2523,6 +2525,8 @@ HandleMouseUp(XEvent * ev)
 					     ((root.h * ay) + wy +
 					      (gwin_py[i] - base_y)) % root.h);
 			      }
+			    if (gwins)
+			       Efree(gwins);
 			 }
 		    }
 		  else if ((ewin) && (ewin->ibox)
@@ -2571,6 +2575,8 @@ HandleMouseUp(XEvent * ev)
 				 ICCCM_Iconify(gwins[i]);
 			      }
 			 }
+		       if (gwins)
+			  Efree(gwins);
 		    }
 		  else
 		    {
@@ -2609,6 +2615,8 @@ HandleMouseUp(XEvent * ev)
 			    if (!gwins[i]->sticky)
 			       MoveEwinToDesktop(gwins[i], ndesk);
 			 }
+		       if (gwins)
+			  Efree(gwins);
 		    }
 	       }
 	     else if ((ev->xbutton.x >= 0) && (ev->xbutton.y >= 0)

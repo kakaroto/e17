@@ -71,6 +71,8 @@ AtomGet(Window win, Atom to_get, Atom type, int *size)
 	XFree(retval);
 	EDBUG_RETURN(data);
      }
+   if (retval)
+      XFree(retval);
    EDBUG_RETURN(NULL);
 
 }
@@ -107,6 +109,8 @@ getSimpleHint(Window win, Atom atom)
        (disp, win, atom, 0, 1, False, atom, &type_ret, &fmt_ret, &nitems_ret,
 	&bytes_after_ret, (unsigned char **)&data) != Success || !data)
      {
+	if (data)
+	   XFree(data);
 	EDBUG_RETURN(NULL);
      }
    if (atom != AnyPropertyType && atom != type_ret)

@@ -131,6 +131,10 @@ ListThemes(int *number)
       def = def2;
    else if ((!def) && (!def2))
       fprintf(stderr, "errrrrrrrr no default theme?\n");
+
+   if (def)
+      Efree(def);
+
    *number = count;
    return list;
 }

@@ -567,6 +567,8 @@ DestroyMenu(Menu * m)
    RemoveItem((char *)m, m->win, LIST_FINDBY_POINTER, LIST_TYPE_MENU);
    if (m->name)
       Efree(m->name);
+   if (m->title)
+      Efree(m->title);
 
    for (i = 0; i < m->num; i++)
      {
@@ -1551,10 +1553,6 @@ FillFlatFileMenu(Menu * m, MenuStyle * ms, char *name, char *file,
 			    mi = CreateMenuItem(txt, icc, ACTION_EXEC, params,
 						NULL);
 			    AddItemToMenu(m, mi);
-			    if (txt)
-			       Efree(txt);
-			    if (params)
-			       Efree(params);
 			 }
 		    }
 		  else if ((act) && (!strcmp(act, "menu")) && (params))
@@ -1569,20 +1567,18 @@ FillFlatFileMenu(Menu * m, MenuStyle * ms, char *name, char *file,
 			    mi = CreateMenuItem(txt, icc, 0, NULL, mm);
 			    AddItemToMenu(m, mi);
 			 }
-		       if (txt)
-			  Efree(txt);
 		    }
 		  else
 		    {
 		       mi = CreateMenuItem(txt, icc, 0, NULL, NULL);
 		       AddItemToMenu(m, mi);
-		       if (txt)
-			  Efree(txt);
-		       if (params)
-			  Efree(params);
 		    }
+		  if (txt)
+		     Efree(txt);
 		  if (act)
 		     Efree(act);
+		  if (params)
+		     Efree(params);
 	       }
 	  }
      }

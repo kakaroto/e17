@@ -446,7 +446,7 @@ SetupX()
       mask_mod_combos[7] = LockMask | numlock_mask | scrollock_mask;
 
       if (mod)
-	 XFree(mod);
+	 XFreeModifiermap(mod);
    }
    /* Now we're going to set a bunch of default settings in E - in case we
     * don't ever get to load a config file for some odd reason.

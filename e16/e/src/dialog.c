@@ -1748,9 +1748,9 @@ DialogItemRadioButtonSetEventFunc(DItem * di,
 void
 DialogItemRadioButtonSetText(DItem * di, char *text)
 {
-   if (di->item.check_button.text)
-      Efree(di->item.check_button.text);
-   di->item.check_button.text = duplicate(text);
+   if (di->item.radio_button.text)
+      Efree(di->item.radio_button.text);
+   di->item.radio_button.text = duplicate(text);
 }
 
 void
@@ -1920,12 +1920,12 @@ DialogFreeItem(DItem * di)
    switch (di->type)
      {
      case DITEM_BUTTON:
-	if (di->item.text.text)
-	   Efree(di->item.text.text);
+	if (di->item.button.text)
+	   Efree(di->item.button.text);
 	break;
      case DITEM_CHECKBUTTON:
-	if (di->item.text.text)
-	   Efree(di->item.text.text);
+	if (di->item.check_button.text)
+	   Efree(di->item.check_button.text);
 	break;
      case DITEM_TEXT:
 	if (di->item.text.text)
@@ -1934,6 +1934,10 @@ DialogFreeItem(DItem * di)
      case DITEM_IMAGE:
 	if (di->item.image.image)
 	   Efree(di->item.image.image);
+	break;
+     case DITEM_RADIOBUTTON:
+	if (di->item.radio_button.text)
+	   Efree(di->item.radio_button.text);
 	break;
      case DITEM_SLIDER:
 	if (di->item.slider.ic_base)

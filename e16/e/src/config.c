@@ -3364,6 +3364,8 @@ LoadConfigFile(char *f)
 
    if (!ppfile)
      {
+	if (file)
+	   Efree(file);
 	if (notheme)
 	   file = FindNoThemeFile(f);
 	else
