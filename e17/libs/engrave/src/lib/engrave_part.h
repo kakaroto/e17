@@ -53,6 +53,8 @@ struct _Engrave_Part
 };
 
 Engrave_Part * engrave_part_new(Engrave_Part_Type type);
+void engrave_part_free(Engrave_Part *ep);
+
 void engrave_part_name_set(Engrave_Part *ep, char *name);
 void engrave_part_mouse_events_set(Engrave_Part *ep, int val);
 void engrave_part_repeat_events_set(Engrave_Part *ep, int val);

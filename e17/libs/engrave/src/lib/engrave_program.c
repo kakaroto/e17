@@ -16,6 +16,42 @@ engrave_program_new(void)
 }
 
 /**
+ * engrave_program_free - free the program
+ * @param ep: The Engrave_Program to free
+ *
+ * @return Returns no value.
+ */
+void
+engrave_program_free(Engrave_Program *ep)
+{
+  Evas_List *l;
+  if (!ep) return;
+  
+  IF_FREE(ep->name);
+  IF_FREE(ep->signal);
+  IF_FREE(ep->source);
+
+  for (l = ep->targets; l; l = l->next) {
+    char *d = l->data;
+    ep->targets = evas_list_remove(ep->targets, d);
+    IF_FREE(d);
+  }
+  ep->targets = evas_list_free(ep->targets);
+
+  for (l = ep->afters; l; l = l->next) {
+    char *d = l->data;
+    ep->afters = evas_list_remove(ep->afters, d);
+    IF_FREE(d);
+  }
+  ep->afters = evas_list_free(ep->afters);
+
+  IF_FREE(ep->state);
+  IF_FREE(ep->state2);
+  IF_FREE(ep->script);
+  FREE(ep);
+}
+
+/**
  * engrave_program_script_set - attach a script to the program.
  * @param ep: The Engrave_Program to attach the script too.
  * @param script: The script to attach to the program.

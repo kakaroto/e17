@@ -32,14 +32,9 @@ engrave_font_free(Engrave_Font *ef)
 {
   if (!ef) return;
 
-  if (ef->name) free(ef->name);
-  ef->name = NULL;
-
-  if (ef->path) free(ef->path);
-  ef->path = NULL;
-
-  free(ef);
-  ef = NULL;
+  IF_FREE(ef->name);
+  IF_FREE(ef->path);
+  FREE(ef);
 }
 
 /**

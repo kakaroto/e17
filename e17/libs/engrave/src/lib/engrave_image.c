@@ -25,6 +25,22 @@ engrave_image_new(char *name, Engrave_Image_Type type, double value)
 }
 
 /**
+ * engrave_image_free - free the Engrave_Image
+ * @param ei: The Engrave_Image to free
+ *
+ * @return Returns no value.
+ */
+void
+engrave_image_free(Engrave_Image *ei)
+{
+  if (!ei) return;
+
+  IF_FREE(ei->name);
+  IF_FREE(ei->path);
+  FREE(ei);
+}
+
+/**
  * engrave_image_dup - duplicate an Engrave_Image
  * @param from: The Engrave_Image to duplicate
  *
@@ -37,27 +53,6 @@ engrave_image_dup(Engrave_Image *from)
   Engrave_Image *to;
   to = engrave_image_new(from->name, from->type, from->value);
   return to;
-}
-
-/**
- * engrave_image_free - free the image data
- * @param ef: The Engrave_Image to free
- *
- * @return Returns no value.
- */
-void
-engrave_image_free(Engrave_Image *ef)
-{
-  if (!ef) return;
-
-  if (ef->name) free(ef->name);
-  ef->name = NULL;
-
-  if (ef->path) free(ef->path);
-  ef->path = NULL;
-
-  free(ef);
-  ef = NULL;
 }
 
 /** 

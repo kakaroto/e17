@@ -20,6 +20,31 @@ engrave_part_new(Engrave_Part_Type type)
 }
 
 /**
+ * engrave_part_free - free the part
+ * @param ep: The Engrave_Part to free
+ * 
+ * @return Returns no value.
+ */
+void
+engrave_part_free(Engrave_Part *ep)
+{
+  Evas_List *l;
+  if (!ep) return;
+
+  IF_FREE(ep->name);
+  IF_FREE(ep->clip_to);
+  IF_FREE(ep->dragable.confine);
+
+  for (l = ep->states; l; l = l->next) {
+    Engrave_Part_State *eps = l->data;
+    ep->states = evas_list_remove(ep->states, eps);
+    engrave_part_state_free(eps);
+  }
+  ep->states = evas_list_free(ep->states);
+  FREE(ep);
+}
+
+/**
  * engrave_part_mouse_events_set - set the mouse events flag for the part.
  * @param ep: The Engrave_Part to set the mouse events flag on.
  * @param val: The value to set the mouse events flag too.

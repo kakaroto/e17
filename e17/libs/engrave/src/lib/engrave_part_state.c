@@ -60,6 +60,38 @@ engrave_part_state_new(void)
 }
 
 /**
+ * engrave_part_state_free - free the state
+ * @param eps: The Engrave_Part_State to free
+ * 
+ * @return Returns no value.
+ */
+void
+engrave_part_state_free(Engrave_Part_State *eps)
+{
+  Evas_List *l;
+  if (!eps) return;
+
+  IF_FREE(eps->name);
+  IF_FREE(eps->rel1.to_x);
+  IF_FREE(eps->rel1.to_y);
+  IF_FREE(eps->rel2.to_x);
+  IF_FREE(eps->rel2.to_y);
+
+  engrave_image_free(eps->image.normal);
+  for (l = eps->image.tween; l; l = l->next) {
+    Engrave_Image *ei = l->data;
+    eps->image.tween = evas_list_remove(eps->image.tween, ei);
+    engrave_image_free(ei);
+  }
+  eps->image.tween = evas_list_free(eps->image.tween);
+
+  IF_FREE(eps->color_class);
+  IF_FREE(eps->text.text);
+  IF_FREE(eps->text.text_class);
+  IF_FREE(eps->text.font);
+}
+
+/**
  * engrave_part_state_name_set - Set the name of the state
  * @param eps: The Engrave_Part_State to set the value too.
  * @param name: The name to set to the state.

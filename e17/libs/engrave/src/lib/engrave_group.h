@@ -40,6 +40,8 @@ struct _Engrave_Group
 };
 
 Engrave_Group *engrave_group_new(void);
+void engrave_group_free(Engrave_Group *eg);
+
 void engrave_group_data_add(Engrave_Group *eg, Engrave_Data *ed);
 void engrave_group_part_add(Engrave_Group *eg, Engrave_Part *ep);
 void engrave_group_program_add(Engrave_Group *eg, Engrave_Program *ep);

@@ -21,6 +21,44 @@ engrave_group_new(void)
 }
 
 /**
+ * engrave_group_free - free the group data
+ * @param eg: The Engrave_Group to free
+ *
+ * @return Returns no value
+ */
+void
+engrave_group_free(Engrave_Group *eg) 
+{
+  Evas_List *l;
+  if (!eg) return;
+
+  IF_FREE(eg->name);
+
+  for (l = eg->parts; l; l = l->next) {
+    Engrave_Part *ep = l->data;
+    eg->parts = evas_list_remove(eg->parts, ep);
+    engrave_part_free(ep);
+  }
+  eg->parts = evas_list_free(eg->parts);
+
+  for (l = eg->programs; l; l = l->next) {
+    Engrave_Program *ep = l->data;
+    eg->programs = evas_list_remove(eg->programs, ep);
+    engrave_program_free(ep);
+  }
+  eg->programs = evas_list_free(eg->programs);
+
+  for (l = eg->data; l; l = l->next) {
+    Engrave_Data *ed = l->data;
+    eg->data = evas_list_remove(eg->data, ed);
+    engrave_data_free(ed);
+  }
+  eg->data = evas_list_free(eg->data);
+
+  FREE(eg);
+}
+
+/**
  * engrave_group_data_add - add the Engrave_Data to the group
  * @param eg: The Engrave_Group to add the data too.
  * @param ed: The Engrave_Data to add to the group.

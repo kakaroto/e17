@@ -29,6 +29,8 @@ struct _Engrave_File
 };
 
 Engrave_File *engrave_file_new(void);
+void engrave_file_free(Engrave_File *ef);
+
 void engrave_file_font_add(Engrave_File *e, Engrave_Font *ef);
 void engrave_file_image_add(Engrave_File *ef, Engrave_Image *ei);
 void engrave_file_data_add(Engrave_File *ef, Engrave_Data *ed);

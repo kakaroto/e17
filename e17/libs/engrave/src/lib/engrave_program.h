@@ -49,6 +49,8 @@ struct _Engrave_Program
 };
 
 Engrave_Program *engrave_program_new(void);
+void engrave_program_free(Engrave_Program *ep);
+
 void engrave_program_script_set(Engrave_Program *ep, char *script);
 void engrave_program_name_set(Engrave_Program *ep, char *name);
 void engrave_program_signal_set(Engrave_Program *ep, char *signal);

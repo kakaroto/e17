@@ -32,14 +32,9 @@ engrave_data_free(Engrave_Data *ed)
 {
   if (!ed) return;
 
-  if (ed->key) free(ed->key);
-  ed->key = NULL;
-
-  if (ed->value) free(ed->value);
-  ed->value = NULL;
-
-  free(ed);
-  ed = NULL;
+  IF_FREE(ed->key);
+  IF_FREE(ed->value);
+  FREE(ed);
 }
 
 /**

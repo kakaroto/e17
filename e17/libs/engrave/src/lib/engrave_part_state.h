@@ -170,6 +170,8 @@ struct _Engrave_Part_State
 };
 
 Engrave_Part_State * engrave_part_state_new(void);
+void engrave_part_state_free(Engrave_Part_State *eps);
+
 void engrave_part_state_name_set(Engrave_Part_State *eps, char *name, 
                                                           double value);
 char *engrave_part_state_name_get(Engrave_Part_State *eps, double *value);

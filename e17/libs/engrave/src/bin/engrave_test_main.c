@@ -26,6 +26,7 @@ main(int argc, char ** argv)
     if (!engrave_edc_output(ef, "test.out"))
         printf("failed to write test.out\n");
 
+    engrave_file_free(ef);
     return 0;
 }
 
