@@ -281,7 +281,8 @@ void
 term_scroll_up(Term *term, int rows)
 {
    int i, j, x, y;
-   Term_TGlyph *gl;
+   Term_TGlyph *tgl;
+   Term_EGlyph *gl;
 
    if (term->scroll_in_region) {
       /* TODO: implement this */
@@ -297,11 +298,13 @@ term_scroll_up(Term *term, int rows)
 	    y = 0;
 	 for (j = 0; j < term->cols; j++) {
 	    term->tcanvas->grid[x][j] = term->tcanvas->grid[y][j];
-	    gl = &term->tcanvas->grid[x][j];
-	    gl->changed = 1;
+	    tgl = &term->tcanvas->grid[x][j];
+	    tgl->changed = 1;
 	 }
       }
    } else {
+      void *data;
+
       DPRINT((stderr, "Scrolling: window\n"));
       term->tcanvas->pos += rows;
       if (term->tcanvas->pos >= term->tcanvas->size) {
@@ -312,13 +315,38 @@ term_scroll_up(Term *term, int rows)
 	 for (i = 0; i < term->tcanvas->pos; i++) {
 	    term->tcanvas->changed_rows[i] = 1;
 	    for (j = 0; j < term->cols; j++) {
-	       gl = &term->tcanvas->grid[i][j];
-	       gl->c = ' ';
-	       gl->changed = 1;
+	       tgl = &term->tcanvas->grid[i][j];
+	       tgl->c = ' ';
+	       tgl->changed = 1;
 	    }
 	 }
       }
 
+      /* rotate screen */
+      data = malloc(rows * term->cols * sizeof(Term_EGlyph));
+      memcpy(data, term->grid[0], rows * term->cols * sizeof(Term_EGlyph));
+      memmove(term->grid[0], term->grid[rows],
+	      (term->rows - rows) * term->cols * sizeof(Term_EGlyph));
+      memcpy(term->grid[term->rows - rows], data, rows * term->cols * sizeof(Term_EGlyph));
+      free(data);
+      /* update positions */
+      for (i = 0; i < term->rows; i++) {
+	 for (j = 0; j < term->cols; j++) {
+	    gl = &term->grid[i][j];
+	    evas_object_move(gl->text, j * term->font.width, i * term->font.height);
+	 }
+      }
+      /* set changed flags on chars */
+      for (i = term->rows - rows, x = term->tcanvas->pos; i < term->rows; i++, x++) {
+	 if (x >= term->tcanvas->size)
+	    x = 0;
+	 term->tcanvas->changed_rows[x] = 1;
+	 for (j = 0; j < term->cols; j++) {
+	    tgl = &term->tcanvas->grid[x][j];
+	    tgl->changed = 1;
+	 }
+      }
+#if 0
       /* set changed flags on chars */
       for (i = 0, x = term->tcanvas->pos; i < term->rows; i++, x++) {
 	 if (x >= term->tcanvas->size)
@@ -329,6 +357,7 @@ term_scroll_up(Term *term, int rows)
 	    gl->changed = 1;
 	 }
       }
+#endif
    }
 }
 

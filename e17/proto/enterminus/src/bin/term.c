@@ -62,11 +62,6 @@ term_tcanvas_glyph_push(Term *term, char c)
       if (term->cur_row >= term->rows) {
 	 term_scroll_up(term, 1);
 	 term->cur_row = term->rows - 1;
-	 for (j = 0; j < term->cols; j++) {
-	    gl = &term->tcanvas->grid[pos][j];
-	    gl->c = ' ';
-	    gl->changed = 1;
-	 }
       }
    }
 
