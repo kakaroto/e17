@@ -249,10 +249,10 @@ entranced_auth_display_secure (Entranced_Display *d)
 
    if (d->authfile)
       free(d->authfile);
-   d->authfile = NULL;
 
    /* FIXME: Config-ize */
    snprintf(buf, PATH_MAX, "/var/lib/entrance/%s%s", d->name, ".Xauth");
+   d->authfile = strdup(buf);
    unlink(d->authfile);
 
    if(!(auth_file = fopen(d->authfile, "w")))
