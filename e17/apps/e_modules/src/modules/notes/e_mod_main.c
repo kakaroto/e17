@@ -4,33 +4,29 @@
 
 #include <time.h>
 #include <Esmart/Esmart_Textarea.h>
-/* TODO List:
- * 
- * 
- */
 
 /* module private routines */
-static Note  *_note_init                 (E_Module *m);
-static void    _note_shutdown             (Note *n);
-static E_Menu *_note_config_menu_new      (Note *n);
-static void    _note_config_menu_del      (Note *n, E_Menu *m);
-static void    _note_face_cb_gmc_change(void *data, E_Gadman_Client *gmc, E_Gadman_Change change);
+static Note    *_note_init            (E_Module *m);
+static void    _note_shutdown         (Note *n);
+static E_Menu *_note_config_menu_new  (Note *n);
+static void    _note_config_menu_del  (Note *n, E_Menu *m);
 
-static void _note_menu_bgcolor_set (void *data, E_Menu *m, E_Menu_Item *mi);
-static void _note_menu_face_add (void *data, E_Menu *m, E_Menu_Item *mi);    
-static void _note_face_trans_set(void *data, E_Menu *m, E_Menu_Item *mi);
-static void _note_face_font_change(void *data, E_Menu *m, E_Menu_Item *mi);
+static void _note_menu_bgcolor_set    (void *data, E_Menu *m, E_Menu_Item *mi);
+static void _note_menu_face_add       (void *data, E_Menu *m, E_Menu_Item *mi);    
 
 static int  _note_face_init           (Note_Face *nf);
 static void _note_face_free           (Note_Face *nf);
-static void _note_face_menu_del       (void *data, E_Menu *m, E_Menu_Item *mi);
 static int  _note_face_add            (Note *n, Note_Face *f);
 static void _note_face_focus          (void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void _note_face_unfocus        (void *data, Evas *e, Evas_Object *obj, void *event_info);
-static void _note_face_menu_new       (Note_Face *nf);  
-static void _note_face_cb_mouse_down  (void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void _note_face_bgcolor_set    (Note_Face *face, int color);
-    
+static void _note_face_trans_set      (void *data, E_Menu *m, E_Menu_Item *mi);
+static void _note_face_font_change    (void *data, E_Menu *m, E_Menu_Item *mi);
+static void _note_face_menu_new       (Note_Face *nf);  
+static void _note_face_menu_del       (void *data, E_Menu *m, E_Menu_Item *mi);
+static void _note_face_cb_mouse_down  (void *data, Evas *e, Evas_Object *obj, void *event_info);
+static void _note_face_cb_gmc_change  (void *data, E_Gadman_Client *gmc, E_Gadman_Change change);
+
 
 char          *_note_module_dir;
 static int     _note_count;
@@ -76,7 +72,6 @@ shutdown (E_Module *m)
 	  }
 	_note_shutdown (n);
      }
-
    return 1;
 }
 
@@ -147,7 +142,8 @@ _note_init (E_Module *m)
    E_CONFIG_VAL(D, T, width, INT);
    E_CONFIG_VAL(D, T, bgcolor, INT);
    E_CONFIG_VAL(D, T, trans, INT);
-   E_CONFIG_VAL(D, T, text, STR);   
+   E_CONFIG_VAL(D, T, text, STR);
+   E_CONFIG_VAL(D, T, fsize, INT);
    
 #undef T
 #undef D
@@ -161,7 +157,7 @@ _note_init (E_Module *m)
    n->conf = e_config_domain_load("module.note", n->conf_edd);
    if (!n->conf)
      {
-	printf("No note faces found!\n");
+	/* no saved faced */
 	n->conf = E_NEW (Note_Config, 1);
 	n->conf->height = 320;
 	n->conf->width = 200;
@@ -170,25 +166,22 @@ _note_init (E_Module *m)
      } 
    else 
      {
-	/* lets relaunch our older nodes */	
+	/* relaunch saved faces */	
 	Evas_List *l = n->conf->faces;
-	printf("Found note faces!\n");
 	while(l)
 	  {
 	     Note_Face_Config *c = l->data;
-	     Note_Face *face = calloc(1, sizeof(Note_Face));
+	     Note_Face *face = E_NEW(Note_Face, 1);
 	     face->conf = c;
 	     _note_face_add(n, face);
 	     l = l->next;
 	  }
      }
+   /* set some limits on config values */
    E_CONFIG_LIMIT(n->conf->height, 48, 800);
    E_CONFIG_LIMIT(n->conf->width, 48, 800);
    E_CONFIG_LIMIT(n->conf->bgcolor, 0, 10);
            
-//   if(!_note_face_add(n))
-//     return NULL;	   
-   
    return n;
 }
 
@@ -203,15 +196,13 @@ _note_face_add(Note *n, Note_Face *f)
 	
 	man = l->data;
 	for (l2 = man->containers; l2; l2 = l2->next)
-	  {
-	  
+	  {	  
 	     E_Container *con;
 	     Note_Face  *face;
 	     
-	     con = l2->data;
-	     
+	     con = l2->data;	     
 	     if(!f)
-	       face = calloc(1, sizeof(Note_Face));
+	       face = E_NEW(Note_Face, 1);
 	     else face = f;
 	     if (face)
 	       {
@@ -247,12 +238,12 @@ _note_config_menu_new (Note *n)
    E_Menu      *mn,*mnbg,*mnt;
    E_Menu_Item *mi;
    
-   /* FIXME: hook callbacks to each menu item */
-   mn = e_menu_new ();  // main configuration menu
+   /* main configuration menu */
+   mn = e_menu_new ();  
+   /* "Add Note" button */
    mi = e_menu_item_new(mn);
    e_menu_item_label_set(mi, "Add Note");
-   e_menu_item_callback_set (mi, _note_menu_face_add, n);   
-   
+   e_menu_item_callback_set (mi, _note_menu_face_add, n);      
    return mn;
 }
 
@@ -291,8 +282,7 @@ _note_face_bgcolor_set(Note_Face *face, int color)
 
 static void
 _note_face_font_change(void *data, E_Menu *m, E_Menu_Item *mi)
-{    
-   
+{       
    Note_Face *face = data;
    Evas_Object *bg;
    Esmart_Text_Area_Format *format;
@@ -308,10 +298,12 @@ _note_face_font_change(void *data, E_Menu *m, E_Menu_Item *mi)
       case 0:
 	sprintf(f, "font=%s size=%d",format->font, atoi(format->size)+1);
 	esmart_textarea_format_insert(face->note_object, f);
+	face->conf->fsize = atoi(format->size)+1;
 	break;
       case 1:
 	sprintf(f, "font=%s size=%d",format->font, atoi(format->size)-1);
-	esmart_textarea_format_insert(face->note_object, f);	
+	esmart_textarea_format_insert(face->note_object, f);
+	face->conf->fsize = atoi(format->size)-1;	
 	break;
      }   
    esmart_textarea_cursor_pos_set(face->note_object, pos);
@@ -561,17 +553,22 @@ _note_face_init (Note_Face *face)
       
    if (!face->conf)
      {	
+	/* new face, config with defaults */
 	c = E_NEW (Note_Face_Config, 1);
 	c->height = 320;
 	c->width = 200;
 	c->bgcolor = BGCOLOR_YELLOW;
 	c->trans = TRANS_50;
+	c->fsize = 0;
 	face->conf = c;
 	face->note->conf->faces = evas_list_append(face->note->conf->faces,c);
      }
    else 
      {
+	/* loaded face, add its values */
+	
 	esmart_textarea_text_insert(face->note_object, face->conf->text);
+	
      }
    
    _note_face_bgcolor_set(face, face->conf->bgcolor);

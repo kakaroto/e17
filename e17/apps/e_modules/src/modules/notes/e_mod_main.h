@@ -34,7 +34,7 @@ struct _Note_Face_Config
    int         bgcolor;   
    int         trans;
    char       *text;
-   int         id;
+   int         fsize;
 };
 
 struct _Note
