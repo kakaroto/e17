@@ -1486,6 +1486,21 @@ GotoDesktop(int num)
    if (mode.slideout)
       HideSlideout(mode.slideout, mode.context_win);
 
+   {
+      ToolTip           **lst;
+      int                 i, j;
+
+      lst = (ToolTip **) ListItemType(&j, LIST_TYPE_TOOLTIP);
+      if (lst)
+	{
+	   for (i = 0; i < j; i++)
+	     {
+		HideToolTip(lst[i]);
+	     }
+	   Efree(lst);
+	}
+   }
+
    if ((mode.mode == MODE_RESIZE) ||
        (mode.mode == MODE_RESIZE_H) ||
        (mode.mode == MODE_RESIZE_V))

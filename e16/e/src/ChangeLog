@@ -3087,3 +3087,10 @@ Tue Oct  5 16:21:56 PDT 1999
 
 and let deskbindings tooltips work & add the tooltips into the defautl 
 keybindings.cfg
+
+-------------------------------------------------------------------------------
+
+Tue Oct  5 20:58:06 PDT 1999
+(Mandrake)
+
+hide any tooltips whenever we change desktops.
