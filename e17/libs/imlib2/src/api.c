@@ -822,11 +822,20 @@ imlib_blend_image_onto_image(Imlib_Image source_image,
    CAST_IMAGE(im_dst, ctxt_image);
    __imlib_DirtyImage(im_dst);
    __imlib_DirtyPixmapsForImage(im_dst);
-   __imlib_BlendImageToImage(im_src, im_dst, ctxt_anti_alias, ctxt_blend, 
-			     merge_alpha, source_x, source_y, source_width, 
-			     source_height, destination_x, destination_y, 
-			     destination_width, destination_height,
-			     ctxt_color_modifier, ctxt_operation);
+   /* FIXME: hack to get around infinite loops for scaling down too far */
+   if ((destination_width < (source_width >> 7)) ||
+       (destination_height < (source_height >> 7)))
+      __imlib_BlendImageToImage(im_src, im_dst, 0, ctxt_blend, 
+				merge_alpha, source_x, source_y, source_width, 
+				source_height, destination_x, destination_y, 
+				destination_width, destination_height,
+				ctxt_color_modifier, ctxt_operation);
+   else
+      __imlib_BlendImageToImage(im_src, im_dst, ctxt_anti_alias, ctxt_blend, 
+				merge_alpha, source_x, source_y, source_width, 
+				source_height, destination_x, destination_y, 
+				destination_width, destination_height,
+				ctxt_color_modifier, ctxt_operation);
 }
 
 Imlib_Image 
