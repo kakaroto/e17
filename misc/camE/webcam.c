@@ -494,7 +494,7 @@ main(int argc, char *argv[])
       overlay_y = i;
 
    /* print config */
-   fprintf(stderr, "camE v0.5 - (c) 1999, 2000 Gerd Knorr, Tom Gilbert\n");
+   fprintf(stderr, "camE v0.6 - (c) 1999, 2000 Gerd Knorr, Tom Gilbert\n");
    fprintf(stderr,
            "grabber config: size %dx%d, input %d, norm %d, "
            "jpeg quality %d\n", grab_width, grab_height, grab_input,

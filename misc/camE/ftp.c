@@ -48,8 +48,6 @@ open_pty()
       {
          sprintf(pty_name, "/dev/pty%c%c", *p1, *p2);
          sprintf(tty_name, "/dev/tty%c%c", *p1, *p2);
-         if (-1 == access(tty_name, R_OK | W_OK))
-            continue;
          if (-1 != (pty = open(pty_name, O_RDWR)))
             return pty;
       }
