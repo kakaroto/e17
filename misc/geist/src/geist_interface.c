@@ -27,6 +27,7 @@ GtkWidget *vis_toggle;
 void refresh_name_cb(GtkWidget * widget, gpointer * obj);
 void refresh_sizemode_cb(GtkWidget * widget, gpointer * obj);
 void refresh_alignment_cb(GtkWidget * widget, gpointer * obj);
+void geist_update_statusbar(geist_document * doc);
 
 
 char *object_types[] = {
@@ -143,9 +144,10 @@ geist_clear_statusbar(void)
 }
 
 void
-geist_update_statusbar(geist_list * list)
+geist_update_statusbar(geist_document * doc)
 {
    geist_object *obj;
+   geist_list *list;
    char buff[35];
 
    gint contextid;
@@ -153,19 +155,28 @@ geist_update_statusbar(geist_list * list)
    contextid =
       gtk_statusbar_get_context_id(GTK_STATUSBAR(statusbar), "props");
 
-   if (geist_list_length(list) > 1)
+   list = geist_document_get_selected_list(doc);
+
+   if (list)
    {
-      gtk_statusbar_push(GTK_STATUSBAR(statusbar), contextid,
-                         "[Multiple selection]");
+      if (geist_list_has_more_than_one_item(list))
+      {
+         gtk_statusbar_push(GTK_STATUSBAR(statusbar), contextid,
+                            "[Multiple selection]");
+      }
+      else
+      {
+         obj = list->data;
+         g_snprintf(buff, 35, "X:%d | Y:%d | W:%d | H:%d", obj->x, obj->y,
+                    obj->w, obj->h);
+
+         gtk_statusbar_push(GTK_STATUSBAR(statusbar), contextid, buff);
+      }
    }
    else
-   {
-      obj = list->data;
-      g_snprintf(buff, 35, "X:%d | Y:%d | W:%d | H:%d", obj->x, obj->y,
-                 obj->w, obj->h);
+      gtk_statusbar_push(GTK_STATUSBAR(statusbar), contextid,
+                         "[No object selected]");
 
-      gtk_statusbar_push(GTK_STATUSBAR(statusbar), contextid, buff);
-   }
 }
 
 
@@ -455,7 +466,7 @@ evbox_buttonpress_cb(GtkWidget * widget, GdkEventButton * event,
                                             (gpointer) obj);
             if (row != -1)
                gtk_clist_select_row(GTK_CLIST(obj_list), row, 0);
-				geist_update_props_window();
+            geist_update_props_window();
          }
 
          list = geist_document_get_selected_list(doc);
@@ -471,7 +482,7 @@ evbox_buttonpress_cb(GtkWidget * widget, GdkEventButton * event,
                geist_object_set_state(obj, DRAG);
                geist_object_raise(obj);
             }
-            geist_update_statusbar(list);
+            geist_update_statusbar(doc);
          }
          gtk_object_set_data_full(GTK_OBJECT(mainwin), "draglist", list,
                                   NULL);
@@ -576,7 +587,7 @@ gint evbox_mousemove_cb(GtkWidget * widget, GdkEventMotion * event,
          D(5, ("moving object to %f, %f\n", event->x, event->y));
          geist_object_move(obj, event->x, event->y);
       }
-      geist_update_statusbar(list);
+      geist_update_statusbar(doc);
       geist_document_render_updates(doc);
    }
    else
@@ -591,7 +602,7 @@ gint evbox_mousemove_cb(GtkWidget * widget, GdkEventMotion * event,
             geist_object_resize(obj, event->x + obj->clicked_x,
                                 event->y + obj->clicked_y);
          }
-         geist_update_statusbar(list);
+         geist_update_statusbar(doc);
          geist_document_render_updates(doc);
       }
 
@@ -763,7 +774,7 @@ gboolean obj_unsel_cb(GtkWidget * widget, int row, int column,
    if (obj)
    {
       geist_object_unselect(obj);
-geist_update_props_window();
+      geist_update_props_window();
 
       selection = GTK_CLIST(widget)->selection;
       if (g_list_length(selection) > 1)
@@ -872,8 +883,8 @@ obj_vis_cb(GtkWidget * widget, gpointer * data)
    geist_object *obj = NULL;
    geist_list *l = NULL;
    geist_list *list = NULL;
-	
-	list = geist_document_get_selected_list(current_doc);
+
+   list = geist_document_get_selected_list(current_doc);
 
    D_ENTER(3);
    if (geist_list_length(list) > 1)
@@ -898,7 +909,7 @@ obj_vis_cb(GtkWidget * widget, gpointer * data)
    }
    geist_document_render_updates(GEIST_OBJECT_DOC(obj));
    efree(l);
-	efree(list);
+   efree(list);
    D_RETURN_(3);
 }
 
@@ -908,8 +919,8 @@ refresh_name_cb(GtkWidget * widget, gpointer * data)
    geist_object *obj = NULL;
    geist_list *list = NULL;
 
-	list = geist_document_get_selected_list(current_doc);
-	
+   list = geist_document_get_selected_list(current_doc);
+
    D_ENTER(3);
 
    if (geist_list_length(list) > 1)
@@ -922,7 +933,7 @@ refresh_name_cb(GtkWidget * widget, gpointer * data)
 
       obj->name = estrdup(gtk_entry_get_text(GTK_ENTRY(widget)));
    }
-	efree(list);
+   efree(list);
    D_RETURN_(3);
 }
 
@@ -933,8 +944,8 @@ refresh_sizemode_cb(GtkWidget * widget, gpointer * data)
    geist_list *l = NULL;
    geist_list *list = NULL;
 
-	list = geist_document_get_selected_list(current_doc);
-	
+   list = geist_document_get_selected_list(current_doc);
+
    D_ENTER(3);
 
    for (l = list; l; l = l->next)
@@ -949,7 +960,7 @@ refresh_sizemode_cb(GtkWidget * widget, gpointer * data)
    }
    geist_document_render_updates(GEIST_OBJECT_DOC(obj));
    efree(l);
-	efree(list);
+   efree(list);
    D_RETURN_(3);
 }
 
@@ -960,8 +971,8 @@ refresh_alignment_cb(GtkWidget * widget, gpointer * data)
    geist_object *obj = NULL;
    geist_list *l = NULL;
    geist_list *list = NULL;
-	
-	list = geist_document_get_selected_list(current_doc);
+
+   list = geist_document_get_selected_list(current_doc);
 
    D_ENTER(3);
 
@@ -977,55 +988,58 @@ refresh_alignment_cb(GtkWidget * widget, gpointer * data)
    }
    geist_document_render_updates(GEIST_OBJECT_DOC(obj));
    efree(l);
-	efree(list);
+   efree(list);
    D_RETURN_(3);
 }
 
 
-void buttons_cb (GtkWidget *widget, gpointer *data)
+void
+buttons_cb(GtkWidget * widget, gpointer * data)
 {
-	geist_object *obj = NULL;
+   geist_object *obj = NULL;
    geist_list *l = NULL;
    geist_list *list = NULL;
 
    D_ENTER(3);
 
-	list = geist_document_get_selected_list(current_doc);
-	
+   list = geist_document_get_selected_list(current_doc);
+
    for (l = list; l; l = l->next)
    {
       obj = l->data;
       geist_object_dirty(obj);
-		switch (GPOINTER_TO_INT(data)) {
-				case 1:
-	      		obj->y = obj->y - 1;
-					break;
-				case 2:
-					obj->y = obj->y + 1;
-					break;
-				case 3:
-					obj->x = obj->x -1;
-					break;
-				case 4:
-					obj->x = obj->x + 1;
-					break;
-				case 5:
-					obj->h = obj->h + 1;
-					break;
-				case 6:
-					obj->h = obj->h - 1;
-					break;
-				case 7:
-					obj->w = obj->w + 1;
-					break;
-				case 8:
-					obj->w = obj->w - 1;
-					break;	
-				default:
-					break;
-			}
-		   geist_object_dirty(obj);
+      switch (GPOINTER_TO_INT(data))
+      {
+        case 1:
+           obj->y--;
+           break;
+        case 2:
+           obj->y++;
+           break;
+        case 3:
+           obj->x--;
+           break;
+        case 4:
+           obj->x++;
+           break;
+        case 5:
+           obj->h++;
+           break;
+        case 6:
+           obj->h--;
+           break;
+        case 7:
+           obj->w++;
+           break;
+        case 8:
+           obj->w--;
+           break;
+        default:
+           break;
+      }
+      geist_object_dirty(obj);
    }
+   geist_update_statusbar(current_doc);
    geist_document_render_updates(GEIST_OBJECT_DOC(obj));
    efree(l);
    D_RETURN_(3);
@@ -1037,13 +1051,13 @@ geist_display_props_window(void)
    GtkWidget *gen_table, *name_l;
    GtkWidget *sizemode_l;
    GtkWidget *alignment_l;
-	GtkWidget *up, *down, *left, *right, *width_plus, *width_minus, *height_plus,
-			*height_minus;
-   
+   GtkWidget *up, *down, *left, *right, *width_plus, *width_minus,
+      *height_plus, *height_minus;
+
    GList *align_list = g_list_alloc();
    GList *sizemode_list = g_list_alloc();
    int i;
-   
+
    D_ENTER(3);
    props_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
    table = gtk_table_new(2, 4, FALSE);
@@ -1054,10 +1068,10 @@ geist_display_props_window(void)
    gtk_signal_connect(GTK_OBJECT(props_window), "delete_event",
                       GTK_SIGNAL_FUNC(props_delete_event_cb), NULL);
 
-	gen_props = gtk_hbox_new(FALSE, 0);
-	gtk_table_attach(GTK_TABLE(table), gen_props, 0,4,0,1,
-				GTK_FILL | GTK_EXPAND, 0, 2, 2);
-	
+   gen_props = gtk_hbox_new(FALSE, 0);
+   gtk_table_attach(GTK_TABLE(table), gen_props, 0, 4, 0, 1,
+                    GTK_FILL | GTK_EXPAND, 0, 2, 2);
+
    gen_table = gtk_table_new(8, 6, FALSE);
 
    gtk_container_set_border_width(GTK_CONTAINER(gen_props), 5);
@@ -1076,8 +1090,8 @@ geist_display_props_window(void)
    gtk_widget_show(name_l);
 
    name = gtk_entry_new();
-   gtk_table_attach(GTK_TABLE(gen_table), name, 1, 6, 1, 2, GTK_FILL | GTK_EXPAND,
-                    0, 2, 2);
+   gtk_table_attach(GTK_TABLE(gen_table), name, 1, 6, 1, 2,
+                    GTK_FILL | GTK_EXPAND, 0, 2, 2);
    gtk_widget_show(name);
 
    sizemode_l = gtk_label_new("sizemode");
@@ -1103,18 +1117,18 @@ geist_display_props_window(void)
    gtk_widget_show(alignment_combo);
 
    up = gtk_button_new_with_label("Up");
-   gtk_table_attach(GTK_TABLE(gen_table), up, 1, 2, 4, 5, GTK_FILL | GTK_EXPAND,
-                    0, 2, 2);
+   gtk_table_attach(GTK_TABLE(gen_table), up, 1, 2, 4, 5,
+                    GTK_FILL | GTK_EXPAND, 0, 2, 2);
    gtk_widget_show(up);
 
    down = gtk_button_new_with_label("Down");
-   gtk_table_attach(GTK_TABLE(gen_table), down, 1, 2, 6, 7, GTK_FILL | GTK_EXPAND,
-                    0, 2, 2);
+   gtk_table_attach(GTK_TABLE(gen_table), down, 1, 2, 6, 7,
+                    GTK_FILL | GTK_EXPAND, 0, 2, 2);
    gtk_widget_show(down);
 
    left = gtk_button_new_with_label("Left");
-   gtk_table_attach(GTK_TABLE(gen_table), left, 0, 1, 5, 6, GTK_FILL | GTK_EXPAND,
-                    0, 2, 2);
+   gtk_table_attach(GTK_TABLE(gen_table), left, 0, 1, 5, 6,
+                    GTK_FILL | GTK_EXPAND, 0, 2, 2);
    gtk_widget_show(left);
 
    right = gtk_button_new_with_label("Right");
@@ -1143,7 +1157,7 @@ geist_display_props_window(void)
                     GTK_FILL | GTK_EXPAND, 0, 2, 2);
    gtk_widget_show(height_minus);
 
-	for (i = 0; i < ALIGN_MAX; i++)
+   for (i = 0; i < ALIGN_MAX; i++)
    {
       align_list = g_list_append(align_list, object_alignments[i]);
    }
@@ -1155,42 +1169,41 @@ geist_display_props_window(void)
    {
       align_list = g_list_append(sizemode_list, object_sizemodes[i]);
    }
-	
+
    gtk_combo_set_popdown_strings(GTK_COMBO(sizemode_combo), sizemode_list);
-	
-	gtk_signal_connect(GTK_OBJECT(vis_toggle), "clicked",
+
+   gtk_signal_connect(GTK_OBJECT(vis_toggle), "clicked",
                       GTK_SIGNAL_FUNC(obj_vis_cb), NULL);
 
    gtk_signal_connect(GTK_OBJECT(up), "clicked", GTK_SIGNAL_FUNC(buttons_cb),
                       (gpointer) 1);
-  	gtk_signal_connect(GTK_OBJECT(down), "clicked",
+   gtk_signal_connect(GTK_OBJECT(down), "clicked",
                       GTK_SIGNAL_FUNC(buttons_cb), (gpointer) 2);
-  	gtk_signal_connect(GTK_OBJECT(right), "clicked",
+   gtk_signal_connect(GTK_OBJECT(right), "clicked",
                       GTK_SIGNAL_FUNC(buttons_cb), (gpointer) 4);
-  	gtk_signal_connect(GTK_OBJECT(left), "clicked",
+   gtk_signal_connect(GTK_OBJECT(left), "clicked",
                       GTK_SIGNAL_FUNC(buttons_cb), (gpointer) 3);
 
    gtk_signal_connect(GTK_OBJECT(height_plus), "clicked",
                       GTK_SIGNAL_FUNC(buttons_cb), (gpointer) 5);
-  	gtk_signal_connect(GTK_OBJECT(height_minus), "clicked",
+   gtk_signal_connect(GTK_OBJECT(height_minus), "clicked",
                       GTK_SIGNAL_FUNC(buttons_cb), (gpointer) 6);
-  	gtk_signal_connect(GTK_OBJECT(width_plus), "clicked",
+   gtk_signal_connect(GTK_OBJECT(width_plus), "clicked",
                       GTK_SIGNAL_FUNC(buttons_cb), (gpointer) 7);
-  	gtk_signal_connect(GTK_OBJECT(width_minus), "clicked",
+   gtk_signal_connect(GTK_OBJECT(width_minus), "clicked",
                       GTK_SIGNAL_FUNC(buttons_cb), (gpointer) 8);
 
-  	gtk_signal_connect(GTK_OBJECT(name), "changed",
+   gtk_signal_connect(GTK_OBJECT(name), "changed",
                       GTK_SIGNAL_FUNC(refresh_name_cb), NULL);
-		
-  	gtk_signal_connect(GTK_OBJECT(GTK_COMBO(alignment_combo)->entry),
-                      "changed", GTK_SIGNAL_FUNC(refresh_alignment_cb),
-                      NULL);
-  	gtk_signal_connect(GTK_OBJECT(GTK_COMBO(sizemode_combo)->entry), "changed",
+
+   gtk_signal_connect(GTK_OBJECT(GTK_COMBO(alignment_combo)->entry),
+                      "changed", GTK_SIGNAL_FUNC(refresh_alignment_cb), NULL);
+   gtk_signal_connect(GTK_OBJECT(GTK_COMBO(sizemode_combo)->entry), "changed",
                       GTK_SIGNAL_FUNC(refresh_sizemode_cb), NULL);
 
 
    gtk_widget_show(gen_table);
-	gtk_widget_show(gen_props);
+   gtk_widget_show(gen_props);
    gtk_widget_show(table);
    gtk_widget_show(props_window);
    D_RETURN_(3);
@@ -1213,8 +1226,8 @@ geist_clear_props_window(void)
       gtk_widget_destroy(obj_hbox);
       obj_hbox = NULL;
    }
-	if (gen_props)
-   gtk_widget_hide(gen_props);
+   if (gen_props)
+      gtk_widget_hide(gen_props);
 }
 
 void
@@ -1222,100 +1235,102 @@ geist_update_props_window(void)
 {
    geist_object *obj;
    GtkWidget *new_hbox;
-	geist_list *list;
-	geist_object *obj_first;
+   geist_list *list;
+   geist_object *obj_first;
    geist_list *l;
    char *align_string = NULL;
    char *sizemode_string = NULL;
-	
+
    D_ENTER(3);
-	
-	/*display props window if inactive*/
+
+   /*display props window if inactive */
    if (!props_active)
    {
       geist_display_props_window();
       props_active = 1;
    }
-	
-	if (obj_hbox)
-	{
-		gtk_widget_destroy(obj_hbox);
-		obj_hbox=NULL;
-	}
-	
-	/*show generic part*/
-	gtk_widget_show(gen_props);
-	
-	/*block signal handlers*/
-	gtk_signal_handler_block_by_func (GTK_OBJECT(vis_toggle),
-                      GTK_SIGNAL_FUNC(obj_vis_cb), NULL);	
-	gtk_signal_handler_block_by_func(GTK_OBJECT(name),
-				  refresh_name_cb, NULL);
-	gtk_signal_handler_block_by_func(GTK_OBJECT(GTK_COMBO(alignment_combo)
-					->entry), refresh_alignment_cb, NULL);
-	gtk_signal_handler_block_by_func(GTK_OBJECT(GTK_COMBO(sizemode_combo)
-					->entry), refresh_sizemode_cb, NULL);
-	
+
+   if (obj_hbox)
+   {
+      gtk_widget_destroy(obj_hbox);
+      obj_hbox = NULL;
+   }
+
+   /*show generic part */
+   gtk_widget_show(gen_props);
+
+   /*block signal handlers */
+   gtk_signal_handler_block_by_func(GTK_OBJECT(vis_toggle),
+                                    GTK_SIGNAL_FUNC(obj_vis_cb), NULL);
+   gtk_signal_handler_block_by_func(GTK_OBJECT(name), refresh_name_cb, NULL);
+   gtk_signal_handler_block_by_func(GTK_OBJECT
+                                    (GTK_COMBO(alignment_combo)->entry),
+                                    refresh_alignment_cb, NULL);
+   gtk_signal_handler_block_by_func(GTK_OBJECT
+                                    (GTK_COMBO(sizemode_combo)->entry),
+                                    refresh_sizemode_cb, NULL);
+
 
    list = geist_document_get_selected_list(current_doc);
-	
+
    if (list)
    {
       /*update the values in the generic part */
 
-		if (geist_list_has_more_than_one_item(list))
-   	{
-   	   /*grey out the name entry box */
-			gtk_entry_set_text(GTK_ENTRY(name), "");
-     	 	gtk_widget_set_sensitive(GTK_WIDGET(name), FALSE);
-	
-   	   obj_first = list->data;
-	
-   	   /*check wether all objects have the same alignment or sizemode, and if
-      	   so, set the combo boxes, if not leave them empty */
-      	for (l = list; l; l = l->next)
-      	{
-        		obj = l->data;
-	         if (obj->alignment == obj_first->alignment)
-   	         align_string = geist_object_get_alignment_string(obj);
-      	   else
-         	   align_string = "";
-	
-   	      if (obj->sizemode == obj_first->sizemode)
-      	      sizemode_string = geist_object_get_sizemode_string(obj);
-         	else
-   	         sizemode_string = "";
-     		 }
-      		
-			 efree(l);
-			 
-			 gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(alignment_combo)->entry),
-                         align_string);
-      	 gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(sizemode_combo)->entry),
-                         sizemode_string);
-			 
-			 
-      	gtk_window_set_title(GTK_WINDOW(obj_win), "[multiple selection]");
-      	gtk_window_set_title(GTK_WINDOW(props_window), "[multiple selection]");
+      if (geist_list_has_more_than_one_item(list))
+      {
+         /*grey out the name entry box */
+         gtk_entry_set_text(GTK_ENTRY(name), "");
+         gtk_widget_set_sensitive(GTK_WIDGET(name), FALSE);
 
-   	}
-   	else
-   	{
-			
-			gtk_widget_set_sensitive(GTK_WIDGET(name), TRUE);
-			
-      	obj = list->data;
-	      if (obj->name)
-   	      gtk_entry_set_text(GTK_ENTRY(name), obj->name);
+         obj_first = list->data;
 
-      	gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(alignment_combo)->entry),
-                         geist_object_get_alignment_string(obj));
-      	gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(sizemode_combo)->entry),
-                         geist_object_get_sizemode_string(obj));
+         /*check wether all objects have the same alignment or sizemode, and if
+            so, set the combo boxes, if not leave them empty */
+         for (l = list; l; l = l->next)
+         {
+            obj = l->data;
+            if (obj->alignment == obj_first->alignment)
+               align_string = geist_object_get_alignment_string(obj);
+            else
+               align_string = "";
 
-      	if (geist_object_get_state(obj, VISIBLE))
-         	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(vis_toggle), TRUE);
-						
+            if (obj->sizemode == obj_first->sizemode)
+               sizemode_string = geist_object_get_sizemode_string(obj);
+            else
+               sizemode_string = "";
+         }
+
+         efree(l);
+
+         gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(alignment_combo)->entry),
+                            align_string);
+         gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(sizemode_combo)->entry),
+                            sizemode_string);
+
+
+         gtk_window_set_title(GTK_WINDOW(obj_win), "[multiple selection]");
+         gtk_window_set_title(GTK_WINDOW(props_window),
+                              "[multiple selection]");
+
+      }
+      else
+      {
+
+         gtk_widget_set_sensitive(GTK_WIDGET(name), TRUE);
+
+         obj = list->data;
+         if (obj->name)
+            gtk_entry_set_text(GTK_ENTRY(name), obj->name);
+
+         gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(alignment_combo)->entry),
+                            geist_object_get_alignment_string(obj));
+         gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(sizemode_combo)->entry),
+                            geist_object_get_sizemode_string(obj));
+
+         if (geist_object_get_state(obj, VISIBLE))
+            gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(vis_toggle), TRUE);
+
          new_hbox = obj->display_props(obj);
 
          obj_hbox = new_hbox;
@@ -1329,14 +1344,17 @@ geist_update_props_window(void)
       }
 
    }
-	efree(list);
-	gtk_signal_handler_unblock_by_func (GTK_OBJECT(vis_toggle),
-                      GTK_SIGNAL_FUNC(obj_vis_cb),NULL);	
-	gtk_signal_handler_unblock_by_func(GTK_OBJECT(name),refresh_name_cb,NULL);
-	gtk_signal_handler_unblock_by_func(GTK_OBJECT(GTK_COMBO(alignment_combo)
-					->entry),refresh_alignment_cb, NULL);
-	gtk_signal_handler_unblock_by_func(GTK_OBJECT(GTK_COMBO(sizemode_combo)
-					->entry), refresh_sizemode_cb, NULL);
-	
+   efree(list);
+   gtk_signal_handler_unblock_by_func(GTK_OBJECT(vis_toggle),
+                                      GTK_SIGNAL_FUNC(obj_vis_cb), NULL);
+   gtk_signal_handler_unblock_by_func(GTK_OBJECT(name), refresh_name_cb,
+                                      NULL);
+   gtk_signal_handler_unblock_by_func(GTK_OBJECT
+                                      (GTK_COMBO(alignment_combo)->entry),
+                                      refresh_alignment_cb, NULL);
+   gtk_signal_handler_unblock_by_func(GTK_OBJECT
+                                      (GTK_COMBO(sizemode_combo)->entry),
+                                      refresh_sizemode_cb, NULL);
+
    D_RETURN_(3);
 }
