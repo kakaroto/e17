@@ -832,9 +832,65 @@ into the background selector.
 
 <page columns=1 padding=16 name=backgrounds2 background=Edoc_bg.png linkcolor=#88dddd>
 <font face=aircut3/12 color=#ffffff>
+<img src=E_backgrounds_menu.png x=163 y=107>
 <p>
-Once you have done this, you should be able to go to the root menu desktop
-selector.  To get to this menu, middle click on the desktop, select "Desktop",
+<br>
+<br>
+Once you have added your backgrounds and restarted enlightenment, you should be
+able to go to the root menu desktop selector.  To get to this menu, middle
+click on the desktop, select "Desktop",
 and go to Backgrounds.  You should get something that looks similar to the
-image at the right.
+image  on the right.  From here you will be able to navigate the backgrounds
+menus.  
+<br>
+<br>
+<br>
+<br>
+(Click next for more information)
 
+
+<page columns=1 padding=16 name=backgrounds3 background=Edoc_bg.png linkcolor=#88dddd>
+<font face=aircut3/12 color=#ffffff>
+<img src=E_backgrounds_menu_view.png x=3 y=84>
+<p>
+<br>
+<br>
+Once you have opened up the backgrounds menu, you should see something similar
+to the image below.  From here, you can put your mouse over any of the images
+there, and it will change the desktop background of the current desktop to the
+image that you have selected.  
+<p>
+<br>
+<br>
+Enlightenment will attempt to choose the best
+settings for a particular background, but if it gets it wrong you can always
+change the settings by hand.  By bringing up the settings menu with the right
+mouse button and selecting the "Desktop Background Settings" item, you can
+bring up a dialog that looks something like the one on the next page . . .
+
+<page columns=1 padding=16 name=backgrounds3 background=Edoc_bg.png linkcolor=#88dddd>
+<font face=aircut3/12 color=#ffffff>
+<img src=E_backgrounds_settings.png x=0 y=0>
+<p>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+You can use this dialog to change your background also, as well as fine-tune
+all the various settings for each individual background available
