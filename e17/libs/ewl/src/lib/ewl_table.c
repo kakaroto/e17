@@ -120,7 +120,7 @@ ewl_table_add(Ewl_Table * table, Ewl_Widget * w,
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("table", table);
 
-	cell = ewl_cell_new ();
+	cell = (Ewl_Cell *)ewl_cell_new ();
 	ewl_container_child_append (EWL_CONTAINER (cell), w);
 
 	/*

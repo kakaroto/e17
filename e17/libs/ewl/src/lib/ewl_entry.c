@@ -840,7 +840,6 @@ void ewl_entry_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 		evas_object_clip_set(e->textobj, w->fx_clip_box);
 
 	evas_object_pass_events_set(e->textobj, 1);
-	evas_object_textblock_text_insert(e->textobj, "a ");
 
 	/*
 	 * Apply previous operations and update the size of the entry
