@@ -305,7 +305,7 @@ winwidget winwidget_get_from_window (Window win);
 winwidget winwidget_create_from_file (feh_file * filename, char *name);
 winwidget winwidget_create_from_image (Imlib_Image * im, char *name);
 void winwidget_destroy (winwidget winwid);
-void progressive_load_cb (Imlib_Image im, char percent, int update_x,
+int  progressive_load_cb (Imlib_Image im, char percent, int update_x,
 			  int update_y, int update_w, int update_h);
 void winwidget_create_window (winwidget ret, int w, int h);
 void feh_draw_checks (winwidget win);

@@ -224,7 +224,7 @@ feh_load_image (Imlib_Image ** im, feh_file * file)
   D_RETURN(1);
 }
 
-void
+int
 progressive_load_cb (Imlib_Image im, char percent, int update_x, int update_y,
 	  int update_w, int update_h)
 {
@@ -233,7 +233,7 @@ progressive_load_cb (Imlib_Image im, char percent, int update_x, int update_y,
   if (!progwin)
     {
       weprintf ("progwin does not exist - this should not happen");
-      D_RETURN_;
+      D_RETURN(0);
     }
 
   imlib_context_set_drawable (progwin->bg_pmap);
@@ -291,7 +291,7 @@ progressive_load_cb (Imlib_Image im, char percent, int update_x, int update_y,
   XClearArea (disp, progwin->win, dest_x + update_x, dest_y + update_y,
 	      update_w, update_h, False);
   XFlush (disp);
-  D_RETURN_;
+  D_RETURN(1);
   percent = 0;
 }
 
