@@ -53,7 +53,9 @@
 #include <sys/resource.h>
 #include <sys/ipc.h>
 #include <sys/shm.h>
-#ifdef HAVE_FREETYPE_FREETYPE_H
+#ifdef HAVE_FREETYPE1_FREETYPE_FREETYPE_H
+#include <freetype1/freetype/freetype.h>
+#elif defined(HAVE_FREETYPE_FREETYPE_H)
 #include <freetype/freetype.h>
 #else
 #include <freetype.h>

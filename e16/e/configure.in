@@ -146,7 +146,7 @@ echo "Automatic Upgrades have been turned off by request at compiletime"
 fi
 AC_SUBST(GHTTP_LIBS)
 
-AC_CHECK_HEADERS(freetype.h freetype/freetype.h,[ break] , )
+AC_CHECK_HEADERS(freetype.h freetype/freetype.h freetype1/freetype/freetype.h,[ break] , )
 AC_CHECK_LIB(ttf, TT_Init_FreeType, TTF_LIBS=-lttf, [
 echo "ERROR: Enlightenment needs a system with libttf.so (TrueType Font Library)"
 echo "You can obtain it from:"
