@@ -11,6 +11,7 @@ FixUpBadFocus(int val, void *data)
    Window              win;
    int                 revert;
 
+   return;
    if (mode.focusmode == FOCUS_CLICK)
       return;
    XGetInputFocus(disp, &win, &revert);
@@ -19,11 +20,10 @@ FixUpBadFocus(int val, void *data)
      {
 	if (win != ewin->client.win)
 	  {
-	     ICCCM_Focus(ewin);
 	     FocusToEWin(ewin);
+	     if (mode.kde_support)
+		KDE_UpdateFocusedWindow();
 	  }
-	if (mode.kde_support)
-	   KDE_UpdateFocusedWindow();
      }
    return;
    val = 0;
@@ -230,10 +230,8 @@ void
 FocusToEWin(EWin * ewin)
 {
    int                 ax, ay;
-   EWin               *ewin2 = NULL;
 
    EDBUG(4, "FocusToEWin");
-
    if (mode.slideout)
       EDBUG_RETURN_;
    ICCCM_Cmap(ewin);
@@ -282,7 +280,6 @@ FocusToEWin(EWin * ewin)
    mode.windowdestroy = 0;
    if (mode.focuswin)
      {
-	ewin2 = mode.focuswin;
 	if (mode.autoraise)
 	   RemoveTimerEvent("AUTORAISE_TIMEOUT");
 	mode.focuswin->active = 0;
@@ -295,7 +292,7 @@ FocusToEWin(EWin * ewin)
 		       ButtonPressMask,
 		       GrabModeSync, GrabModeAsync, None, None);
      }
-   DoIn("FIXUP_FOCUS", 0.2, FixUpBadFocus, 0, NULL);
+/*   DoIn("FIXUP_FOCUS", 0.25, FixUpBadFocus, 0, NULL); */
    if (!ewin)
      {
 	XSetInputFocus(disp, root.win, RevertToPointerRoot, CurrentTime);

@@ -2704,3 +2704,10 @@ Fri Oct  1 17:11:42 PDT 1999
 
 trying to make that about box look a bit more clean.  also took out the
 "USE AT YOUR OWN RISK" since we're getting prepped for a release
+
+-------------------------------------------------------------------------------
+
+Fri Oct  1 17:12:04 PDT 1999
+(Raster)
+
+fixed really obscure focus bug.....

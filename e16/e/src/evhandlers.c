@@ -200,6 +200,8 @@ HandleFocusWindowIn(Window win)
 
    EDBUG(5, "HandleFocusWindowIn");
    ewin = FindItem(NULL, win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
+   if (!ewin)
+      ewin = FindEwinByBase(win);
    if (ewin != mode.focuswin)
      {
 	if (mode.focuswin)
