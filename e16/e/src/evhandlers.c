@@ -1381,7 +1381,7 @@ HandleMouseDown(XEvent * ev)
    if (double_click)
       ev->xbutton.time = 0;
 
-   if (!clickmenu && BordersEventMouseDown(ev))
+   if ( /*!clickmenu && */ BordersEventMouseDown(ev))
       goto exit;
 
    if (ButtonsEventMouseDown(ev))
@@ -1443,31 +1443,15 @@ HandleMouseUp(XEvent * ev)
 
    pslideout = mode.slideout;
 
-#if 0				/* Do we need this? */
+   doActionEnd();
+
    if ((last_bpress) && (last_bpress != win))
      {
-	ewin = FindEwinByChildren(last_bpress);
-	if (ewin)
-	  {
-	     for (j = 0; j < ewin->border->num_winparts; j++)
-	       {
-		  if (last_bpress == ewin->bits[j].win)
-		    {
-		       if ((ewin->bits[j].state == STATE_CLICKED)
-			   && (!ewin->bits[j].left))
-			  ewin->bits[j].state = STATE_HILITED;
-		       else
-			  ewin->bits[j].state = STATE_NORMAL;
-		       ewin->bits[j].left = 0;
-		       ChangeEwinWinpart(ewin, j);
-		       break;
-		    }
-	       }
-	  }
+	ev->xbutton.window = last_bpress;
+	BordersEventMouseOut2(ev);
+	ev->xbutton.window = win;
      }
-#endif
 
-   doActionEnd();
    if (mode.place)
      {
 	mode.place = 0;
@@ -1494,7 +1478,7 @@ HandleMouseUp(XEvent * ev)
 	mode.justclicked = 1;
      }
 
-   if (!clickmenu && BordersEventMouseUp(ev))
+   if ( /*!clickmenu && */ BordersEventMouseUp(ev))
       goto exit;
 
    if (mode.action_inhibit)
@@ -1566,7 +1550,7 @@ HandleMouseIn(XEvent * ev)
    if (MenusEventMouseIn(ev))
       goto exit;
 
-   if (!clickmenu && BordersEventMouseIn(ev))
+   if ( /*!clickmenu && */ BordersEventMouseIn(ev))
       goto exit;
 
    if (ButtonsEventMouseIn(ev))
@@ -1602,7 +1586,7 @@ HandleMouseOut(XEvent * ev)
 
    ICCCM_Cmap(NULL);
 
-   if (!clickmenu && BordersEventMouseOut(ev))
+   if ( /*!clickmenu && */ BordersEventMouseOut(ev))
       goto exit;
 
    if (ButtonsEventMouseOut(ev))

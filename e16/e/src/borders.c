@@ -3191,6 +3191,14 @@ BorderWinpartEventLeave(XEvent * ev, EWin * ewin, int j)
      }
 }
 
+static void
+BorderWinpartEventLeave2(XEvent * ev, EWin * ewin, int j)
+{
+   ewin->bits[j].left = 0;
+   ewin->bits[j].state = STATE_NORMAL;
+   ChangeEwinWinpart(ewin, j);
+}
+
 static int
 BordersEvent(XEvent * ev, border_event_func_t * func)
 {
@@ -3243,4 +3251,10 @@ int
 BordersEventMouseOut(XEvent * ev)
 {
    return BordersEvent(ev, BorderWinpartEventLeave);
+}
+
+int
+BordersEventMouseOut2(XEvent * ev)
+{
+   return BordersEvent(ev, BorderWinpartEventLeave2);
 }

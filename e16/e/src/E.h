@@ -1767,6 +1767,7 @@ int                 BordersEventMouseDown(XEvent * ev);
 int                 BordersEventMouseUp(XEvent * ev);
 int                 BordersEventMouseIn(XEvent * ev);
 int                 BordersEventMouseOut(XEvent * ev);
+int                 BordersEventMouseOut2(XEvent * ev);
 
 /* windowmatch.c functions */
 WindowMatch        *CreateWindowMatch(char *name);
