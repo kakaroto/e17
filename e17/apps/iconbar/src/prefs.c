@@ -73,7 +73,7 @@ iconbar_config_init(void)
 		ibprefs->sticky = 1;
 	    if(!e_db_int_get(db, "/iconbar/shaped", &ibprefs->shaped))
 		ibprefs->shaped = 1;
-	    if(!e_db_int_get(db, "/iconbar/borderless", &ibprefs->shaped))
+	    if(!e_db_int_get(db, "/iconbar/borderless", &ibprefs->borderless))
 		ibprefs->borderless = 1;
 	    if(!e_db_int_get(db, "/iconbar/x", &ibprefs->x))
 		ibprefs->x = 0;
