@@ -204,7 +204,7 @@ AC_CACHE_CHECK([for sigfillset], db_cv_have_sigfillset, [dnl
 AC_TRY_LINK([#include <signal.h>], [sigset_t set; sigfillset(&set);],
         [db_cv_have_sigfillset=yes], [db_cv_have_sigfillset=no])])
 if test "$db_cv_have_sigfillset" = yes; then
-	AC_DEFINE(HAVE_SIGFILLSET)
+	AC_DEFINE(HAVE_SIGFILLSET, 1, [sigfillset() available])
 fi
 
 dnl Some versions of sprintf return a pointer to the first argument instead
@@ -214,7 +214,7 @@ AC_CACHE_CHECK([for int type sprintf return value], db_cv_sprintf_count, [dnl
 AC_TRY_RUN([main(){char buf[20]; exit(sprintf(buf, "XXX") != 3);}],
       	[db_cv_sprintf_count=yes], [db_cv_sprintf_count=no])])
 if test "$db_cv_sprintf_count" = no; then
-	AC_DEFINE(SPRINTF_RET_CHARPNT)
+	AC_DEFINE(SPRINTF_RET_CHARPNT, 1, [sprintf() returns char pointer])
 fi
 
 dnl Vendors are doing 64-bit lseek in different ways.
@@ -226,7 +226,7 @@ AC_ARG_ENABLE(bigfile,
 	[db_cv_bigfile="$enable_bigfile"], [db_cv_bigfile="yes"])
 if test "$db_cv_bigfile" = yes; then
 	case "$host_os" in
-	bsdi*|aix*|hpux*|solaris*)      AC_DEFINE(HAVE_FILE_OFFSET_BITS);;
+	bsdi*|aix*|hpux*|solaris*)      AC_DEFINE(HAVE_FILE_OFFSET_BITS, 1, [_FILE_OFFSET_BITS available]);;
 	esac
 	AC_MSG_RESULT("no")
 else
@@ -372,7 +372,7 @@ fi
 if test "$db_cv_spinlocks" = no; then
 	AC_MSG_WARN([SPINLOCKS NOT IMPLEMENTED FOR THIS COMPILER/ARCHITECTURE.])
 else
-	AC_DEFINE(HAVE_SPINLOCKS)
+	AC_DEFINE(HAVE_SPINLOCKS, 1, [Spinlocks available])
 fi
 
 dnl Some architectures require DB to be compiled with special flags and/or
@@ -392,64 +392,64 @@ AC_SUBST(spin_line3)
 AC_SUBST(mutex_align)
 case "$db_cv_spinlocks" in
 aix/func)
-	AC_DEFINE(HAVE_FUNC_AIX)
+	AC_DEFINE(HAVE_FUNC_AIX, 1, [AIX/function spinlock support])
 	mutex_align="sizeof(int)"
 	spin_line1="#include <sys/atomic_op.h>"
 	spin_line2="typedef int tsl_t;";;
 mc68020/gcc)
-	AC_DEFINE(HAVE_ASSEM_MC68020_GCC)
+	AC_DEFINE(HAVE_ASSEM_MC68020_GCC, 1, [m68k/GCC spinlock support])
 	mutex_align="1"
 	spin_line1="typedef unsigned char tsl_t;";;
 msem-hppa/func)
-	AC_DEFINE(HAVE_FUNC_MSEM)
+	AC_DEFINE(HAVE_FUNC_MSEM, 1, [msem/function spinlock support])
 	mutex_align="16"
 	spin_line1="#include <sys/mman.h>"
 	spin_line2="typedef msemaphore tsl_t;";;
 msem/func)
-	AC_DEFINE(HAVE_FUNC_MSEM)
+	AC_DEFINE(HAVE_FUNC_MSEM, 1, [msem/function spinlock support])
 	mutex_align="sizeof(int)"
 	spin_line1="#include <sys/mman.h>"
 	spin_line2="typedef msemaphore tsl_t;";;
 parisc/gcc)
-	AC_DEFINE(HAVE_ASSEM_PARISC_GCC)
+	AC_DEFINE(HAVE_ASSEM_PARISC_GCC, 1, [PARISC/GCC spinlock support])
 	mutex_align="16"
 	spin_line1="typedef u_int32_t tsl_t;";;
 reliant/func)
-	AC_DEFINE(HAVE_FUNC_RELIANT)
+	AC_DEFINE(HAVE_FUNC_RELIANT, 1, [Reliant/function spinlock support])
 	mutex_align="1"
 	spin_line1="#include <ulocks.h>"
 	spin_line2="typedef spinlock_t tsl_t;";;
 sgi/func)
-	AC_DEFINE(HAVE_FUNC_SGI)
+	AC_DEFINE(HAVE_FUNC_SGI, 1, [SGI/function spinlock support])
 	mutex_align="sizeof(int)"
 	spin_line1="#include <abi_mutex.h>"
 	spin_line2="typedef abilock_t tsl_t;";;
 NOTYET_solaris/func)
-	AC_DEFINE(HAVE_FUNC_SOLARIS)
+	AC_DEFINE(HAVE_FUNC_SOLARIS, 1, [Solaris/function spinlock support])
 	mutex_align="sizeof(int)"
 	spin_line1="#include <synch.h>"
 	spin_line2="typedef sema_t tsl_t;";;
 sco/cc)
-	AC_DEFINE(HAVE_ASSEM_SCO_CC)
+	AC_DEFINE(HAVE_ASSEM_SCO_CC, 1, [SCO/cc Unix spinlock support])
 	mutex_align="1"
 	spin_line1="typedef unsigned char tsl_t;";;
 solaris/func)
-	AC_DEFINE(HAVE_FUNC_SOLARIS)
+	AC_DEFINE(HAVE_FUNC_SOLARIS, 1, [Solaris/function spinlock support])
 	mutex_align="sizeof(int)"
 	spin_line1="#include <sys/machlock.h>"
 	spin_line2="typedef lock_t tsl_t;";;
 sparc/gcc)
-	AC_DEFINE(HAVE_ASSEM_SPARC_GCC)
+	AC_DEFINE(HAVE_ASSEM_SPARC_GCC, 1, [Sparc/GCC spinlock support])
 	mutex_align="1"
 	spin_line1="typedef unsigned char tsl_t;";;
 uts4/cc)
-	AC_DEFINE(HAVE_ASSEM_UTS4_CC)
+	AC_DEFINE(HAVE_ASSEM_UTS4_CC, 1, [UTS4/cc spinlock support])
 	mutex_align="sizeof(int)"
 	spin_line1="typedef int tsl_t;"
 dnl	AC_LIBOBJ="$AC_LIBOBJ uts4.cc.o"
     ;;
 x86/gcc)
-	AC_DEFINE(HAVE_ASSEM_X86_GCC)
+	AC_DEFINE(HAVE_ASSEM_X86_GCC, 1, [x86/GCC spinlock support])
 	mutex_align="1"
 	spin_line1="typedef unsigned char tsl_t;";;
 *)
