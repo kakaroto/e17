@@ -146,6 +146,7 @@ ImlibData;
 extern ImlibData   *_gdk_imlib_data;
 
 gint                _gdk_imlib_index_best_color_match(gint * r, gint * g, gint * b);
+void                gdk_imlib_load_default_colors__private (void);
 
 void                _gdk_imlib_dirty_pixmaps(GdkImlibImage * im);
 void                _gdk_imlib_dirty_images(GdkImlibImage * im);
@@ -174,8 +175,6 @@ int                 _gdk_imlib_isbmp(FILE *f);
 GdkPixmap          *gdk_imlib_pixmap_foreign_new(gint width, gint height, gint depth, Pixmap pmap);
 
 void                _gdk_imlib_calc_map_tables(GdkImlibImage * im);
-
-void                _gdk_imlib_PaletteAlloc(int num, int *cols);
 
 FILE               *_gdk_imlib_open_helper(const char *, const char *, const char *);
 int                 _gdk_imlib_close_helper(FILE *);

@@ -4,9 +4,6 @@
 #define id _gdk_imlib_data
 #include "gdk_imlib_private.h"
 #include <gdk/gdkx.h>
-#ifdef __EMX__
-#include <process.h>
-#endif
 
 void
 _gdk_imlib_calc_map_tables(GdkImlibImage * im)
@@ -639,8 +636,12 @@ gdk_imlib_crop_and_clone_image(GdkImlibImage * im, int x, int y, int w, int h)
   im2->bmod.brightness = im->bmod.brightness;
   im2->bmod.contrast = im->bmod.contrast;
   _gdk_imlib_calc_map_tables(im2);
+
+#if 0
   if (id->cache.on_image)
     _gdk_imlib_add_image(im2, im2->filename);
+#endif
+
   return im2;
 }
 void
@@ -923,8 +924,12 @@ gdk_imlib_create_image_from_data(unsigned char *data, unsigned char *alpha, gint
   im->bmod.brightness = id->bmod.brightness;
   im->bmod.contrast = id->bmod.contrast;
   im->map = NULL;
+
+#if 0
   if (id->cache.on_image)
     _gdk_imlib_add_image(im, im->filename);
+#endif 
+
   _gdk_imlib_calc_map_tables(im);
   return im;
 }
@@ -998,8 +1003,12 @@ gdk_imlib_clone_image(GdkImlibImage * im)
   im2->bmod.brightness = im->bmod.brightness;
   im2->bmod.contrast = im->bmod.contrast;
   _gdk_imlib_calc_map_tables(im2);
+
+#if 0
   if (id->cache.on_image)
     _gdk_imlib_add_image(im2, im2->filename);
+#endif
+
   return im2;
 }
 
@@ -1179,8 +1188,12 @@ gdk_imlib_clone_scaled_image(GdkImlibImage * im, int w, int h)
   im2->bmod.brightness = im->bmod.brightness;
   im2->bmod.contrast = im->bmod.contrast;
   _gdk_imlib_calc_map_tables(im2);
+
+#if 0
   if (id->cache.on_image)
     _gdk_imlib_add_image(im2, im2->filename);
+#endif
+
   return im2;
 }
 
@@ -1212,6 +1225,7 @@ gdk_imlib_create_image_from_xpm_data(char **data)
   if (!im)
     return NULL;
   im->map = NULL;
+  im->filename = NULL;
   count = 0;
   transp = 0;
   done = 0;
@@ -1559,13 +1573,17 @@ gdk_imlib_create_image_from_xpm_data(char **data)
     }
 
   i = 100 + strlen (data[0]) + strlen (data[1]) + strlen (data[3]);
+  if (im->filename) free (im->filename);
   im->filename = (char *) malloc (i);
   if (im->filename)
     g_snprintf (im->filename, i, "%p.%i.%i.%s.%s.%s", data, im->rgb_width,
 		im->rgb_height, data[0], data[1], data [3]);
 
+#if 0
   if (id->cache.on_image)
     _gdk_imlib_add_image(im, im->filename);
+#endif 
+
   _gdk_imlib_calc_map_tables(im);
   free(cmap);
   return im;
@@ -1670,12 +1688,8 @@ _gdk_imlib_open_helper(const char *instring, const char *fn, const char *mode)
 	vec[vn] = strdup(fn);
       else if (strncmp(pp, "%P/", 3) == 0)
 	{
-#ifndef __EMX__
 	  strcpy(buf, NETPBM_PATH);
 	  strcat(buf, pp + 2);
-#else
-	  strcpy(buf, pp + 3);
-#endif
 	  if ((vec[vn] = strdup(buf)) == NULL)
 	    break;
 	}
@@ -1691,12 +1705,8 @@ _gdk_imlib_open_helper(const char *instring, const char *fn, const char *mode)
 	}
       else if (strncmp(pp, "%C/", 3) == 0)
 	{
-#ifndef __EMX__
 	  strcpy(buf, CONVERT_PATH);
 	  strcat(buf, pp + 2);
-#else
-	  strcpy(buf, pp + 3);
-#endif
 	  if ((vec[vn] = strdup(buf)) == NULL)
 	    break;
 	}
@@ -1721,10 +1731,6 @@ _gdk_imlib_open_helper(const char *instring, const char *fn, const char *mode)
   if (pipe(pfd) == -1)
     goto oops;
 
-#ifdef __EMX__
-  setmode(pfd[0], O_BINARY);
-  setmode(pfd[1], O_BINARY);
-#endif
   if (*mode == 'r')
     {
       fp = fdopen(pfd[0], "r");
@@ -1744,7 +1750,6 @@ _gdk_imlib_open_helper(const char *instring, const char *fn, const char *mode)
     if ((ofd = open(ofil, O_WRONLY | O_TRUNC | O_CREAT)) == -1)
       goto oops;
 
-#ifndef __EMX__
   switch (pid = fork())
     {
     case -1:
@@ -1782,33 +1787,6 @@ _gdk_imlib_open_helper(const char *instring, const char *fn, const char *mode)
       else
 	close(pfd[0]);
     }
-#else
-   {
-      int flag, tfd0, tfd1;
-      flag = fcntl(pfd[0], F_GETFD);
-      fcntl(pfd[0], F_SETFD, flag | FD_CLOEXEC);
-      flag = fcntl(pfd[1], F_GETFD);
-      fcntl(pfd[1], F_SETFD, flag | FD_CLOEXEC);
-      tfd0 = dup(0);
-      tfd1 = dup(1);
-      if (*mode == 'r')
-        dup2(pfd[1], 1);
-      if (*mode == 'w')
-        dup2(pfd[0], 0);
-      pid = spawnv(P_NOWAIT, vec[0], vec);
-      if (pid != -1) hpid = pid;
-      dup2(tfd0, 0);
-      dup2(tfd1, 1);
-      close(tfd0);
-      close(tfd1);
-      if (ofd != -1)
-        close(ofd);
-      if (*mode == 'r')
-        close(pfd[1]);
-      else
-        close(pfd[0]);
-   }
-#endif
   for (vn = 0; vn < 16; vn++)
     if (vec[vn])
       free(vec[vn]);

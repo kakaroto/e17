@@ -81,7 +81,7 @@ libgdk_imlib_la_SOURCES =	\
 	modules.c
 
 
-libgdk_imlib_la_LDFLAGS = -version-info 10:8:9
+libgdk_imlib_la_LDFLAGS = -version-info 10:9:9
 libgdk_imlib_la_LIBADD = $(GMODULE_LIBS)
 
 
@@ -91,8 +91,8 @@ include_HEADERS = gdk_imlib.h gdk_imlib_private.h gdk_imlib_types.h
 
 DEFS = -DDJPEG_PROG=\"@DJPEG_PROG@\"  -DCJPEG_PROG=\"@CJPEG_PROG@\" \
 	-DCONVERT_PATH=\"@CONVERT_PATH@\" \
-	-DNETPBM_PATH=\"@NETPBM_PATH@\" -DSYSTEM_IMRC=\"@sysconfdir@/imrc\" \
-	-DIMLIB_LIB=\""$(libdir)"\"
+	-DNETPBM_PATH=\"@NETPBM_PATH@\" -DSYSTEM_IMRC=\"$(sysconfdir)/imrc\" \
+	-DIMLIB_LIB=\""$(libdir)"\" -DSYSCONFDIR=\"$(sysconfdir)\"
 
 INCLUDES = -I. -I$(srcdir) -I.. -I$(srcdir)/.. \
 	$(GTK_CFLAGS) $(X_CFLAGS) $(GMODULE_FLAGS) 

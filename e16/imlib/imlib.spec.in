@@ -1,92 +1,87 @@
 # Note that this is NOT a relocatable package
 %define ver      @VERSION@
-%define rel      1
+%define  RELEASE 1
+%define  rel     %{?CUSTOM_RELEASE} %{!?CUSTOM_RELEASE:%RELEASE}
 %define prefix   /usr
 
-Summary: Image loading and rendering library for X11R6
+Summary: An image loading and rendering library for X11R6
 Name: imlib
 Version: %ver
 Release: %rel
 Copyright: LGPL
-Group: X11/Libraries
+Group: System Environment/Libraries
 Source: ftp://ftp.labs.redhat.com/pub/imlib/imlib-%{ver}.tar.gz
 Obsoletes: Imlib
 BuildRoot: /var/tmp/imlib-%{PACKAGE_VERSION}-root
-Packager: The Rasterman <raster@redhat.com>
-URL: http://www.labs.redhat.com/imlib
+URL: http://www.labs.redhat.com/imlib/
 Requires: libpng 
 Requires: libtiff 
 Requires: libjpeg
 Requires: zlib 
 Requires: libgr-progs 
-Requires: gtk+ >= 1.1
+Requires: gtk+ >= 1.2
 Requires: libungif
 
 Docdir: %{prefix}/doc
 
 %description
-Imlib is an advanced replacement library for libraries like libXpm that
-provides many more features with much greater flexability and
-speed.
+Imlib is a display depth-independent image loading and rendering library.
+Imlib is designed to simplify and speed up the process of loading images
+and obtaining X Window System drawables.  Imlib provides many simple
+manipulation routines which can be used for common operations.  
+
+Install imlib if you need an image loading and rendering library for X11R6.
+You may also want to install the imlib-cfgeditor package, which will help
+you configure Imlib.
 
 %package devel
-Summary: Imlib headers, static libraries and documentation
-Group: X11/Libraries
+Summary: Development tools for Imlib applications.
+Group: Development/Libraries
 Requires: imlib = %{PACKAGE_VERSION}
+Requires: libpng-devel
+Requires: libtiff-devel
+Requires: libjpeg-devel
+Requires: zlib-devel
+Requires: libgr-devel
+Requires: gtk+-devel
+Requires: libungif-devel
+Requires: XFree86-devel
 Obsoletes: Imlib
 
 %description devel
-Headers, static libraries and documentation for Imlib.
+The header files, static libraries and documentation needed for
+developing Imlib applications.  Imlib is an image loading and rendering
+library for X11R6.
+
+Install the imlib-devel package if you want to develop Imlib applications.
+You'll also need to install the imlib and imlib_cfgeditor packages.
 
 %package cfgeditor
-Summary: Imlib configuration editor
-Group: X11/Libraries
+Summary: A configuration editor for the Imlib library.
+Group: System Environment/Libraries
 Requires: imlib = %{PACKAGE_VERSION}
 
 %description cfgeditor
-The imlib_config program allows you to control the way imlib uses
-color and handles gamma correction/etc.
+The imlib-cfgeditor package contains the imlib_config program, which you
+can use to configure the Imlib image loading and rendering library.
+imlib_config can be used to control how Imlib uses color and handles
+gamma corrections, etc.
+
+If you're installing the imlib package, you should also install
+imlib_cfgeditor.
 
 %prep
-%setup
+%setup -q
 
 %build
-##### Boring normal rpm build method
-# old method of building - does not auto-detect for options in OPT_FLAGS
-###########################################################################
-#CFLAGS="${RPM_OPT_FLAGS}" ./configure --prefix=%prefix
-#make
-###########################################################################
-
-##### High-perfromance auto-detect
-# Needed for snapshot releases.
-# Optimize that damned code all the way
-###########################################################################
-#if [ ! -z "echo -n ${RPM_OPT_FLAGS} | grep pentium" ]; then
-#  if [ -z "${CC}" -a ! -z "`which egcs`" ]; then
-#    CC="egcs"
-#    export CC
-#  else
-#    if [ -z "${CC}" -a ! -z "`which pgcc`" ]; then
-#      CC="pgcc"
-#      export CC
-#    fi
-#  fi
-#  CFLAGS="${RPM_OPT_FLAGS}"
-#else
-#  CFLAGS="${RPM_OPT_FLAGS}"
-#fi
-#export CFLAGS
-#
 if [ ! -f configure ]; then
-  ./autogen.sh --prefix=%prefix
+  CFLAGS="$RPM_OPT_FLAGS" ./autogen.sh --prefix=%prefix --sysconfdir=/etc
 else
-  ./configure --prefix=%prefix
+  CFLAGS="$RPM_OPT_FLAGS" ./configure --prefix=%prefix --sysconfdir=/etc
 fi
 
 if [ "$SMP" != "" ]; then
-  (make "MAKE=make -k -j $SMP"; exit 0)
-  make
+  make -j$SMP "MAKE=make -j$SMP"
 else
   make
 fi
@@ -94,7 +89,9 @@ fi
 
 %install
 rm -rf $RPM_BUILD_ROOT
-make prefix=$RPM_BUILD_ROOT%{prefix} install
+make prefix=$RPM_BUILD_ROOT%{prefix} sysconfdir=$RPM_BUILD_ROOT/etc install
+
+strip $RPM_BUILD_ROOT%{prefix}/bin/imlib_config
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -107,7 +104,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root)
 %doc README AUTHORS ChangeLog NEWS
 %attr(755,root,root) %{prefix}/lib/lib*.so.*
-%{prefix}/etc/*
+%config /etc/*
 %{prefix}/lib/libimlib-*.so
 
 %files cfgeditor
@@ -126,6 +123,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Aug 31 1999 Elliot Lee <sopwith@redhat.com>
+- Updates from the RHL 6.0 package.
+
 * Mon Jan 11 1999 Carsten Haitzler <raster@redhat.com>
 - up to 1.9.0
 
@@ -156,4 +156,3 @@ rm -rf $RPM_BUILD_ROOT
 * Fri Mar 13 1998 Marc Ewing <marc@redhat.com>
 - Added -k, Obsoletes
 - Integrate into CVS source tree
-

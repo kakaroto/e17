@@ -4,10 +4,6 @@
 #define id _gdk_imlib_data
 #include "gdk_imlib_private.h"
 
-#ifdef __EMX__
-extern const char *__XOS2RedirRoot(const char *);
-#endif
-
 static int
 PaletteLUTGet(void)
 {
@@ -99,8 +95,8 @@ PaletteLUTSet(void)
   free(prop);
 }
 
-void
-_gdk_imlib_PaletteAlloc(int num, int *cols)
+static void
+PaletteAlloc(int num, const int *cols)
 {
   XColor              xcl;
   int                 colnum, i, j;
@@ -153,6 +149,38 @@ _gdk_imlib_PaletteAlloc(int num, int *cols)
   id->num_colors = colnum;
 }
 
+static void
+alloc_colors (const int *pal, int i)
+{
+  int r, g, b;
+  int rr, gg, bb;
+
+  XGrabServer(id->x.disp);
+  PaletteAlloc((i / 3), pal);
+  if (!PaletteLUTGet())
+    {
+      if (id->fast_rgb)
+	free(id->fast_rgb);
+      id->fast_rgb = malloc(sizeof(unsigned char) * 32 * 32 * 32);
+      
+      for (r = 0; r < 32; r++)
+	{
+	  for (g = 0; g < 32; g++)
+	    {
+	      for (b = 0; b < 32; b++)
+		{
+		  rr = (r << 3) | (r >> 2);
+		  gg = (g << 3) | (g >> 2);
+		  bb = (b << 3) | (b >> 2);
+		  INDEX_RGB(r, g, b) = _gdk_imlib_index_best_color_match(&rr, &gg, &bb);
+		}
+	    }
+	}
+      PaletteLUTSet();
+    }
+  XUngrabServer(id->x.disp);
+}
+
 gint
 gdk_imlib_load_colors(char *file)
 {
@@ -161,20 +189,18 @@ gdk_imlib_load_colors(char *file)
   int                 i;
   int                 pal[768];
   int                 r, g, b;
-  int                 rr, gg, bb;
-#ifndef __EMX__
+
   f = fopen(file, "r");
-#else
-  if (*file == '/')
-    f = fopen(__XOS2RedirRoot(file), "rt");
-  else
-    f = fopen(file, "rt");
-#endif
   if (!f)
-    {
-      fprintf(stderr, "GImLib ERROR: Cannot find palette file %s\n", file);
+   {
+     char *ctmp = basename (file);
+     if (ctmp) { sprintf (s, "%s/%s", SYSCONFDIR, ctmp);
+     f = open (s, "r"); }
+   }
+
+ if (!f)
       return 0;
-    }
+
   i = 0;
   while (fgets(s, 256, f))
     {
@@ -201,31 +227,82 @@ gdk_imlib_load_colors(char *file)
 	break;
     }
   fclose(f);
-  XGrabServer(id->x.disp);
-  _gdk_imlib_PaletteAlloc((i / 3), pal);
-  if (!PaletteLUTGet())
-    {
-      if (id->fast_rgb)
-	free(id->fast_rgb);
-      id->fast_rgb = malloc(sizeof(unsigned char) * 32 * 32 * 32);
-      
-      for (r = 0; r < 32; r++)
-	{
-	  for (g = 0; g < 32; g++)
-	    {
-	      for (b = 0; b < 32; b++)
-		{
-		  rr = (r << 3) | (r >> 2);
-		  gg = (g << 3) | (g >> 2);
-		  bb = (b << 3) | (b >> 2);
-		  INDEX_RGB(r, g, b) = _gdk_imlib_index_best_color_match(&rr, &gg, &bb);
-		}
-	    }
-	}
-      PaletteLUTSet();
-    }
-  XUngrabServer(id->x.disp);
+
+  alloc_colors (pal, i);
   return 1;
+}
+
+void
+gdk_imlib_load_default_colors__private (void)
+{
+  static const int default_pal[] = {
+    0x0, 0x0, 0x0,
+    0xff, 0xff, 0xff,
+    0xff, 0x0, 0x0,
+    0xff, 0xff, 0x0,
+    0x0, 0xff, 0x0,
+    0x0, 0x0, 0xff,
+    0x0, 0xff, 0xff,
+    0x99, 0x99, 0x99,
+    0xff, 0x88, 0x0,
+    0x88, 0x0, 0x0,
+    0x0, 0x88, 0x88,
+    0x88, 0x88, 0x0,
+    0xff, 0xcc, 0x97,
+    0xbb, 0xbb, 0xbb,
+    0x9f, 0x6b, 0x42,
+    0x55, 0x55, 0x55,
+    0xdd, 0xdd, 0xdd,
+    0x77, 0x77, 0x77,
+    0x33, 0x33, 0x33,
+    0xcc, 0x0, 0x0,
+    0xff, 0x44, 0x0,
+    0xff, 0xcc, 0x0,
+    0xcc, 0xcc, 0x0,
+    0x60, 0x60, 0x0,
+    0x0, 0x43, 0x0,
+    0x0, 0x7f, 0x0,
+    0x0, 0xcc, 0x0,
+    0x0, 0x44, 0x44,
+    0x0, 0x0, 0x44,
+    0x0, 0x0, 0x88,
+    0xef, 0xb1, 0x7b,
+    0xdf, 0x98, 0x5f,
+    0xbf, 0x87, 0x56,
+    0x7f, 0x57, 0x26,
+    0x5f, 0x39, 0xc,
+    0x3f, 0x1c, 0x0,
+    0x21, 0x0, 0x0,
+    0x0, 0x43, 0x87,
+    0x2d, 0x70, 0xaf,
+    0x5a, 0x9e, 0xd7,
+    0x87, 0xcc, 0xff,
+    0xff, 0xe0, 0xba,
+    0x21, 0x43, 0xf,
+    0x3d, 0x5d, 0x25,
+    0x59, 0x78, 0x3a,
+    0x75, 0x93, 0x4f,
+    0x91, 0xae, 0x64,
+    0xad, 0xc8, 0x7a,
+    0xf0, 0xa8, 0xef,
+    0xd0, 0x88, 0xd0,
+    0xaf, 0x66, 0xaf,
+    0x8e, 0x44, 0x8e,
+    0x6d, 0x22, 0x6d,
+    0x4b, 0x0, 0x4b,
+    0xff, 0xc0, 0xbc,
+    0xff, 0x93, 0x91,
+    0xff, 0x66, 0x67,
+    0xd8, 0xf2, 0xbf,
+    0xff, 0xc9, 0x68,
+    0xff, 0x96, 0x67,
+    0xa5, 0x60, 0xff,
+    0x51, 0xff, 0x99,
+    0x3f, 0xa5, 0x63,
+    0x98, 0x90, 0x67
+  };
+
+  alloc_colors (default_pal, sizeof (default_pal) / sizeof (default_pal[0]));
 }
 
 void

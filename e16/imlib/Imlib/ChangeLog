@@ -1,3 +1,12 @@
+1999-12-05  John Harper  <john@dcs.warwick.ac.uk>
+	* rend.c (Imlib_render): stop GC caching leaking memory
+
+1999-10-16  Kjartan Maraas  <kmaraas@online.no>
+
+	* cache.c: (clean_caches): Remove unused variable.
+	* colors.c: (PaletteLUTSet): Removed unused variables.
+	* utils.c: (Imlib_bevel_image): Removed unused variables.
+		
 Tue Jun 15 13:08:28 1999  Owen Taylor  <otaylor@redhat.com>
 
 	* misc.c (Imlib_copy_mask): create gc's without

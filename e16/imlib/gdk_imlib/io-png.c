@@ -17,6 +17,10 @@ loader_png (FILE * f, int *w, int *h, int *t)
 
   /* Init PNG Reader */
   transp = 0;
+#if 0
+   /* 
+    *Corrupting images on load is better than no image at all
+    */
   if (!strcmp("1.0.2", png_libpng_ver))
     {
       fprintf(stderr, "WARNING! You have libpng 1.0.2\n"
@@ -24,6 +28,7 @@ loader_png (FILE * f, int *w, int *h, int *t)
 	      "please use 1.0.1. PNG support is disabled.\n");
       return NULL;
     }
+#endif
   png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
   if (!png_ptr)
     return NULL;
@@ -207,6 +212,10 @@ inline_png(unsigned char *data, int data_size)
   struct _io_info     io_info;
   char                s [64];
   
+#if 0
+   /* 
+    *Corrupting images on load is better than no image at all
+    */
   if (!strcmp("1.0.2", png_libpng_ver))
     {
       fprintf(stderr, "WARNING! You have libpng 1.0.2\n"
@@ -214,6 +223,7 @@ inline_png(unsigned char *data, int data_size)
 	      "please use 1.0.1.\n");
       return NULL;
     }
+#endif
   im = malloc(sizeof(GdkImlibImage));
   if (!im)
     return NULL;
@@ -393,8 +403,13 @@ inline_png(unsigned char *data, int data_size)
       im->shape_color.g = 0;
       im->shape_color.b = 255;
     }
+
+#if 0
+  /* Generated data... We can't cache this! */
   if (id->cache.on_image)
     _gdk_imlib_add_image(im, im->filename);
+#endif 
+
   _gdk_imlib_calc_map_tables(im);
   return im;
 }

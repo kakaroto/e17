@@ -55,6 +55,12 @@ gdk_imlib_best_color_match(gint * r, gint * g, gint * b)
       db = *b;
       switch (id->x.depth)
 	{
+        case 12:
+          *r = dr - (dr & 0xf0);
+          *g = dg - (dg & 0xf0);
+          *b = db - (db & 0xf0);
+          return ((dr & 0xf0) << 8) | ((dg & 0xf0) << 3) | ((db & 0xf0) >> 3);
+          break;
 	case 15:
 	  *r = dr - (dr & 0xf8);
 	  *g = dg - (dg & 0xf8);
@@ -147,7 +153,13 @@ _gdk_imlib_index_best_color_match(gint * r, gint * g, gint * b)
       db = *b;
       switch (id->x.depth)
 	{
-	case 15:
+        case 12:
+          *r = dr - (dr & 0xf0);
+          *g = dg - (dg & 0xf0);
+          *b = db - (db & 0xf0);
+          return ((dr & 0xf0) << 8) | ((dg & 0xf0) << 3) | ((db & 0xf0) >> 3);
+          break;
+ 	case 15:
 	  *r = dr - (dr & 0xf8);
 	  *g = dg - (dg & 0xf8);
 	  *b = db - (db & 0xf8);
@@ -2133,6 +2145,58 @@ grender_16(GdkImlibImage * im, int w, int h, XImage * xim,
 }
 
 static void
+grender_shaped_12(GdkImlibImage * im, int w, int h, XImage * xim,
+                  XImage * sxim, int *er1, int *er2, int *xarray,
+                  unsigned char **yarray)
+{
+  int                 x, y, val, r, g, b;
+  unsigned char      *ptr2;
+
+  for (y = 0; y < h; y++)
+    {
+      for (x = 0; x < w; x++)
+        {
+          ptr2 = yarray[y] + xarray[x];
+          r = (int)*ptr2++;
+          g = (int)*ptr2++;
+          b = (int)*ptr2;
+          if ((r == im->shape_color.r) &&
+              (g == im->shape_color.g) &&
+              (b == im->shape_color.b))
+            XPutPixel(sxim, x, y, 0);
+          else
+            {
+              XPutPixel(sxim, x, y, 1);
+              val = ((r & 0xf0) << 8) | ((g & 0xf0) << 3) | ((b & 0xf0) >> 3);
+              XPutPixel(xim, x, y, val);
+            }
+        }
+    }
+}
+
+static void
+grender_12(GdkImlibImage * im, int w, int h, XImage * xim,
+           XImage * sxim, int *er1, int *er2, int *xarray,
+           unsigned char **yarray)
+{
+  int                 x, y, val, r, g, b;
+  unsigned char      *ptr2;
+
+  for (y = 0; y < h; y++)
+    {
+      for (x = 0; x < w; x++)
+        {
+          ptr2 = yarray[y] + xarray[x];
+          r = (int)*ptr2++;
+          g = (int)*ptr2++;
+          b = (int)*ptr2;
+          val = ((r & 0xf0) << 8) | ((g & 0xf0) << 3) | ((b & 0xf0) >> 3);
+          XPutPixel(xim, x, y, val);
+        }
+    }
+}
+
+static void
 grender_shaped_24(GdkImlibImage * im, int w, int h, XImage * xim,
 		  XImage * sxim, int *er1, int *er2, int *xarray,
 		  unsigned char **yarray)
@@ -2715,7 +2779,10 @@ grender_shaped(GdkImlibImage * im, int w, int h, XImage * xim,
 	    {
 	    case 8:
 	      break;
-	    case 15:
+            case 12:
+              printf("iPAQ1\n");
+              break;
+            case 15:
 	      if (id->render_type == RT_DITHER_TRUECOL)
 		{
 		  if (id->ordered_dither)
@@ -2754,7 +2821,10 @@ grender_shaped(GdkImlibImage * im, int w, int h, XImage * xim,
 	    {
 	    case 8:
 	      break;
-	    case 15:
+            case 12:
+              grender_shaped_12(im, w, h, xim, sxim, er1, er2, xarray, yarray);
+              break;       
+            case 15:
 	      if (id->render_type == RT_DITHER_TRUECOL)
 		{
 		  if (id->ordered_dither)
@@ -3036,6 +3106,9 @@ grender(GdkImlibImage * im, int w, int h, XImage * xim,
 	    {
 	    case 8:
 	      break;
+            case 12:
+              printf("iPAQ3\n");
+              break;
 	    case 15:
 	      if (id->render_type == RT_DITHER_TRUECOL)
 		{
@@ -3075,6 +3148,9 @@ grender(GdkImlibImage * im, int w, int h, XImage * xim,
 	    {
 	    case 8:
 	      break;
+            case 12:
+              grender_12(im, w, h, xim, sxim, er1, er2, xarray, yarray);
+              break;
 	    case 15:
 	      if (id->render_type == RT_DITHER_TRUECOL)
 		{
@@ -5232,6 +5308,32 @@ grender_16_mod(GdkImlibImage * im, int w, int h, XImage * xim,
 }
 
 static void
+grender_12_mod(GdkImlibImage * im, int w, int h, XImage * xim,
+               XImage * sxim, int *er1, int *er2, int *xarray,
+               unsigned char **yarray)
+{
+  int                 x, y, val, r, g, b;
+  unsigned char      *ptr2;
+  GdkImlibModifierMap *map = im->map;
+
+  for (y = 0; y < h; y++)
+    {
+      for (x = 0; x < w; x++)
+        {
+          ptr2 = yarray[y] + xarray[x];
+          r = (int)*ptr2++;
+          g = (int)*ptr2++;
+          b = (int)*ptr2;
+          r = map->rmap[r];
+          g = map->gmap[g];
+          b = map->bmap[b];
+          val = ((r & 0xf0) << 8) | ((g & 0xf0) << 3) | ((b & 0xf0) >> 3);
+          XPutPixel(xim, x, y, val);
+        }
+    }
+}
+
+static void
 grender_shaped_24_mod(GdkImlibImage * im, int w, int h, XImage * xim,
 		      XImage * sxim, int *er1, int *er2, int *xarray,
 		      unsigned char **yarray)
@@ -5877,6 +5979,9 @@ grender_shaped_mod(GdkImlibImage * im, int w, int h, XImage * xim,
 	    {
 	    case 8:
 	      break;
+            case 12:
+              printf("iPAQ5\n");
+              break;
 	    case 15:
 	      if (id->render_type == RT_DITHER_TRUECOL)
 		{
@@ -5916,6 +6021,9 @@ grender_shaped_mod(GdkImlibImage * im, int w, int h, XImage * xim,
 	    {
 	    case 8:
 	      break;
+            case 12:
+              printf("iPAQ6\n");
+              break;
 	    case 15:
 	      if (id->render_type == RT_DITHER_TRUECOL)
 		{
@@ -6222,6 +6330,9 @@ grender_mod(GdkImlibImage * im, int w, int h, XImage * xim,
 	    {
 	    case 8:
 	      break;
+            case 12:
+              printf("iPAQ7\n");
+              break;
 	    case 15:
 	      if (id->render_type == RT_DITHER_TRUECOL)
 		{
@@ -6261,6 +6372,9 @@ grender_mod(GdkImlibImage * im, int w, int h, XImage * xim,
 	    {
 	    case 8:
 	      break;
+            case 12:
+              grender_12_mod(im, w, h, xim, sxim, er1, er2, xarray, yarray);
+              break;
 	    case 15:
 	      if (id->render_type == RT_DITHER_TRUECOL)
 		{

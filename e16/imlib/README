@@ -1,6 +1,6 @@
 -------------------------------------------------------------------------------
                                 I   M   L   I   B
-				      1.9.8
+				      1.9.9
 -------------------------------------------------------------------------------
 
 This software is Copyright (C) 1998 By The Rasterman (Carsten Haitzler). I
@@ -21,9 +21,16 @@ lengthier.  the HACKING file has all the details for building from a
 CVS checkout.
 
 Imlib will run MARKEDLY better if you get certain libraries. Notably,
-libjpeg, libpng, libtiff and libgif. For more information please go look at:
+libjpeg, libpng, libtiff and libgif.
 
-http://www.labs.redhat.com/imlib/
+This is the last "major" release of Imlib1.  It is depreciated.  Please port
+applications to some other image library (Imlib2, gtk-pixbuf, whatever...).
 
-This will give links to everything you need or may want for Imlib's optimal
-functionality.
+Also note that gdk-imlib WILL NOT WORK with GTK2.  It won't even compile.
+This is not a bug.  This is a feature.  If you need an image loader for GTK2,
+use gtk-pixbuf.
+
+Only major bug fixes (crashes, security issues) will be accepted.
+
+Mark Crichton
+crichton@gimp.org

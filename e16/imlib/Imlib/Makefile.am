@@ -30,12 +30,13 @@ libImlib_la_SOURCES = \
 	save.c		\
 	snprintf.c
 
-libImlib_la_LDFLAGS    = -version-info 10:8:9
+libImlib_la_LDFLAGS    = -version-info 10:9:9
 #libImlib_la_LDDADD     = $(SUPPORT_LIBS)
 libImlib_la_LIBADD     = $(SUPPORT_LIBS)
 
 DEFS = -DDJPEG_PROG=\"@DJPEG_PROG@\"  -DCJPEG_PROG=\"@CJPEG_PROG@\" \
 	-DCONVERT_PATH=\"@CONVERT_PATH@\" \
-	-DNETPBM_PATH=\"@NETPBM_PATH@\" -DSYSTEM_IMRC=\"@sysconfdir@/imrc\"
+	-DNETPBM_PATH=\"@NETPBM_PATH@\" -DSYSTEM_IMRC=\"$(sysconfdir)/imrc\" \
+	-DSYSCONFDIR=\"$(sysconfdir)\"
 
 INCLUDES = -I. -I$(srcdir) -I.. -I$(srcdir)/.. $(X_CFLAGS)

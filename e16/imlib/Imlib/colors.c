@@ -4,7 +4,7 @@
 #include "Imlib_private.h"
 
 #ifdef __EMX__
-extern const char *__XOS2RedirRoot(const char *);
+extern const char *__XOS2RedirRoot(const char*);
 #endif
 
 static int PaletteLUTGet(ImlibData *id);
@@ -81,7 +81,7 @@ PaletteLUTSet(ImlibData *id)
 {
   Atom                to_set;
   unsigned char       *prop;
-  int                 i, j, r, g, b;
+  int                 i, j;
   
   to_set = XInternAtom(id->x.disp, "_IMLIB_COLORMAP", False);
   prop = malloc((id->num_colors * 4) + 1 + (32 * 32 * 32));
@@ -168,11 +168,21 @@ Imlib_load_colors(ImlibData * id, char *file)
 #ifndef __EMX__
   f = fopen(file, "r");
 #else
-  if (*file == '/')
-  f = fopen(__XOS2RedirRoot(file), "rt");
- else
-  f = fopen(file, "rt");
+  if (*file =='/')
+    f = fopen(__XOS2RedirRoot(file), "rt");
+  else
+    f = fopen(file, "rt");
 #endif
+
+#ifndef __EMX__
+  if (!f)
+    {
+      char *ctmp = basename(file);
+      if(ctmp) { sprintf(s, "%s/%s", SYSCONFDIR, ctmp);
+      f = fopen(s, "r"); }
+    }
+#endif
+
   if (!f)
     {
       fprintf(stderr, "ImLib ERROR: Cannot find palette file %s\n", file);

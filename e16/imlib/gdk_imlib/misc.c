@@ -3,11 +3,9 @@
 #include "gdk_imlib.h"
 #define id _gdk_imlib_data
 #include "gdk_imlib_private.h"
+#include <gdk/gdk.h>
+#include <gdk/gdkx.h>
 #include <locale.h>
-
-#ifdef __EMX__
-extern const char *__XOS2RedirRoot(const char *);
-#endif
 
 char                x_error;
 
@@ -120,6 +118,7 @@ gdk_imlib_init()
   Display            *disp;
   XWindowAttributes   xwa;
   XVisualInfo         xvi, *xvir;
+  GdkVisual          *visual;
   char               *homedir;
   char                s[4096];
   char               *s1;
@@ -158,8 +157,9 @@ gdk_imlib_init()
   id->x.disp = disp;
   id->x.screen = DefaultScreen(disp);	/* the screen number */
   id->x.root = DefaultRootWindow(disp);		/* the root window id */
-  id->x.visual = DefaultVisual(disp, id->x.screen);	/* the visual type */
-  id->x.depth = DefaultDepth(disp, id->x.screen);	/* the depth of the screen in bpp */
+  visual = gdk_rgb_get_visual();
+  id->x.visual = GDK_VISUAL_XVISUAL(visual);	/* the visual type */
+  id->x.depth = visual->depth;	/* the depth of the screen in bpp */
 
   id->x.shm = 0;
   id->x.shmp = 0;
@@ -233,17 +233,9 @@ gdk_imlib_init()
   g_snprintf(s, sizeof(s), "%s/.imrc", homedir);
   old_locale = g_strdup(setlocale(LC_NUMERIC, NULL));
   setlocale(LC_NUMERIC, "C");
-#ifndef __EMX__
   f = fopen(s, "r");
-#else
-  f = fopen(s, "rt");
-#endif
   if (!f)
-#ifndef __EMX__
     f = fopen(SYSTEM_IMRC, "r");
-#else
-    f = fopen(__XOS2RedirRoot(SYSTEM_IMRC), "rt");
-#endif
   if (f)
     {
       while (fgets(s, sizeof (s), f))
@@ -341,8 +333,8 @@ gdk_imlib_init()
 	    }
 	  else if (!strcasecmp("ForceVisualID", s1))
 	    {
-	      sscanf(s, "%1024s %x", s1, &num);
-	      vis = num;
+	      if (sscanf (s2, "%x", &num) == 1)
+		vis = num;
 	    }
 	  else if (!strcasecmp("Fallback", s1))
 	    {
@@ -516,8 +508,19 @@ gdk_imlib_init()
       xvir = XGetVisualInfo(disp, VisualIDMask, &xvi, &num);
       if (xvir)
 	{
-	  if (xvir->red_mask != 0xf800)
-	    id->x.render_depth = 15;
+	  if (xvir->red_mask == 0xf800)
+	    id->x.render_depth = 16;
+          /* This is a butt ugly hack to get the iPAQ to work! */
+          /* The proper way is to fix it, counting bits and storing
+           * mask values, but I dont think I can do this w/o breaking
+           * the API!  Damn...
+           */
+          else if (xvir->red_mask == 0xf000) {
+            printf("Detected an iPAQ...\n");
+	    id->x.render_depth = 12;
+          } else 
+            id->x.render_depth=15;
+
 	  XFree(xvir);
 	}
     }
@@ -527,6 +530,8 @@ gdk_imlib_init()
     loadpal = 1;
   if (loadpal)
     {
+      int have_pal;
+
       if (dither == 1)
 	{
 	  if (remap == 1)
@@ -541,17 +546,21 @@ gdk_imlib_init()
 	  else
 	    id->render_type = RT_PLAIN_PALETTE;
 	}
-      /* Should we error this case or default it nicely */
+
+      have_pal = 0;
+
       if (palfile != NULL)
-	gdk_imlib_load_colors(palfile);
+	have_pal = gdk_imlib_load_colors(palfile);
+
+      if (!have_pal)
+	gdk_imlib_load_default_colors__private ();
+
       if (id->num_colors == 0)
 	{
-	  fprintf(stderr, "gdk_imlib: Cannot Find Palette. A Palette is required for this mode\n");
-	  id->x.disp = NULL;
-	  initialized = 0;
+	  fprintf(stderr, "gdk_imlib: Unable to allocate a palette.\n");
 	  if (palfile)
 	    free(palfile);
-	  return;
+	  exit (EXIT_FAILURE);
 	}
     }
   else
@@ -625,6 +634,7 @@ gdk_imlib_init_params(GdkImlibInitParams * p)
   Display            *disp;
   XWindowAttributes   xwa;
   XVisualInfo         xvi, *xvir;
+  GdkVisual          *visual;
   char               *homedir;
   char                s[4096], *s1, *s2;
   FILE               *f;
@@ -661,8 +671,9 @@ gdk_imlib_init_params(GdkImlibInitParams * p)
   id->x.disp = disp;
   id->x.screen = DefaultScreen(disp);	/* the screen number */
   id->x.root = DefaultRootWindow(disp);		/* the root window id */
-  id->x.visual = DefaultVisual(disp, id->x.screen);	/* the visual type */
-  id->x.depth = DefaultDepth(disp, id->x.screen);	/* the depth of the screen in bpp */
+  visual = gdk_rgb_get_visual();
+  id->x.visual = GDK_VISUAL_XVISUAL(visual);	/* the visual type */
+  id->x.depth = visual->depth;	/* the depth of the screen in bpp */
 #ifdef HAVE_SHM
   if (XShmQueryExtension(id->x.disp))
     {
@@ -731,18 +742,10 @@ gdk_imlib_init_params(GdkImlibInitParams * p)
   
   old_locale = g_strdup(setlocale(LC_NUMERIC, NULL));
   setlocale(LC_NUMERIC, "C");
-
-#ifndef __EMX__  
+  
   f = fopen(s, "r");
-#else
-  f = fopen(s, "rt");
-#endif
   if (!f)
-#ifndef __EMX__
     f = fopen(SYSTEM_IMRC, "r");
-#else
-    f = fopen(__XOS2RedirRoot(SYSTEM_IMRC), "rt");
-#endif
   if (f)
     {
       while (fgets(s, sizeof (s), f))
@@ -840,8 +843,8 @@ gdk_imlib_init_params(GdkImlibInitParams * p)
 	    }
 	  else if (!strcasecmp("ForceVisualID", s1))
 	    {
-	      sscanf(s, "%1024s %x", s1, &num);
-	      vis = num;
+	      if (sscanf (s2, "%x", &num) == 1)
+	        vis = num;
 	    }
 	  else if (!strcasecmp("Fallback", s1))
 	    {
@@ -1053,8 +1056,19 @@ gdk_imlib_init_params(GdkImlibInitParams * p)
       xvir = XGetVisualInfo(disp, VisualIDMask, &xvi, &num);
       if (xvir)
 	{
-	  if (xvir->red_mask != 0xf800)
-	    id->x.render_depth = 15;
+	  if (xvir->red_mask == 0xf800)
+	    id->x.render_depth = 16;
+          /* This is a butt ugly hack to get the iPAQ to work! */
+          /* The proper way is to fix it, counting bits and storing
+           * mask values, but I dont think I can do this w/o breaking
+           * the API!  Damn...
+           */
+          else if (xvir->red_mask == 0xf000) {
+            printf("Detected an iPAQ...\n");
+            id->x.render_depth = 12;
+          } else
+            id->x.render_depth = 15;
+
 	  XFree(xvir);
 	}
     }
@@ -1336,9 +1350,5 @@ gdk_imlib_get_sysconfig()
 {
   if (!id->x.disp)
     return NULL;
-#ifndef __EMX__
   return strdup(SYSTEM_IMRC);
-#else
-  return strdup(__XOS2RedirRoot(SYSTEM_IMRC));
-#endif
 }

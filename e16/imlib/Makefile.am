@@ -3,7 +3,7 @@ bin_SCRIPTS = imlib-config
 
 EXTRA_DIST = imlib.spec.in imlib.m4 configure configure.in
 
-dist-hook:
+dist-hook: imlib.spec
 	cp imlib.spec $(distdir)
 
 m4datadir = $(datadir)/aclocal

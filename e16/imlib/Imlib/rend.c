@@ -6236,25 +6236,25 @@ Imlib_render(ImlibData * id, ImlibImage * im, int w, int h)
   Pixmap              pmap, mask;
   int                 shared_pixmap, shared_image, ok;
 
-   if (!pd)
-      pd = id->x.disp;
-   if (tgc)
-     {
-	if (id->x.disp != pd)
-	  {
-	     XFreeGC(pd, tgc);
-	     tgc = 0;
-	  }
-     }
-   if (stgc)
-     {
-	if (id->x.disp != pd)
-	  {
-	     XFreeGC(pd, stgc);
-	     stgc = 0;
-	  }
-     }
-   pd = id->x.disp;
+  if (!pd)
+    pd = id->x.disp;
+  if (tgc)
+    {
+      if (id->x.disp != pd)
+	{
+	  XFreeGC(pd, tgc);
+	  tgc = 0;
+	}
+    }
+  if (stgc)
+    {
+      if (id->x.disp != pd)
+	{
+	  XFreeGC(pd, stgc);
+	  stgc = 0;
+	}
+    }
+  pd = id->x.disp;
   
   sxim = NULL;
   xim = NULL;
@@ -6423,8 +6423,13 @@ Imlib_render(ImlibData * id, ImlibImage * im, int w, int h)
   shared_image = 0;
   if ((id->x.shmp) && (id->x.shm) && (!huge))
     {
+#if defined(__alpha__)
+      shared_pixmap = 0;
+      shared_image = 1;
+#else
       shared_pixmap = 1;
       shared_image = 0;
+#endif
     }
   else if ((id->x.shm) && (!huge))
     {
@@ -6693,7 +6698,7 @@ Imlib_render(ImlibData * id, ImlibImage * im, int w, int h)
 	}
       if (xim->bits_per_pixel != bpp)
 	xim->data = realloc(xim->data, xim->bytes_per_line * xim->height);
-       pmap = XCreatePixmap(id->x.disp, id->x.base_window, w, h, id->x.depth);
+      pmap = XCreatePixmap(id->x.disp, id->x.base_window, w, h, id->x.depth);
       if (!pmap)
 	{
 	  fprintf(stderr, "IMLIB ERROR: Cannot create pixmap\n");
@@ -6729,11 +6734,7 @@ Imlib_render(ImlibData * id, ImlibImage * im, int w, int h)
 	      XDestroyImage(xim);
 	      return 0;
 	    }
-	   mask = XCreatePixmap(id->x.disp, id->x.base_window, w, h, 1);
-#if 0
-	   fprintf(stderr, "created ph2 mask pixmap %x (%i x %i)\n",
-		   mask, w, h);
-#endif
+	  mask = XCreatePixmap(id->x.disp, id->x.base_window, w, h, 1);
 	  if (!mask)
 	    {
 	      fprintf(stderr, "IMLIB ERROR: Cannot create shape pixmap\n");
@@ -6752,7 +6753,7 @@ Imlib_render(ImlibData * id, ImlibImage * im, int w, int h)
 /* copy XImage to the pixmap, if not a shared pixmap */
   if ((im->shape_color.r >= 0) && (im->shape_color.g >= 0) && (im->shape_color.b >= 0))
     {
-     if ((im->mod.gamma == 256) && (im->mod.brightness == 256) && (im->mod.contrast == 256) &&
+      if ((im->mod.gamma == 256) && (im->mod.brightness == 256) && (im->mod.contrast == 256) &&
 	  (im->rmod.gamma == 256) && (im->rmod.brightness == 256) && (im->rmod.contrast == 256) &&
 	  (im->gmod.gamma == 256) && (im->gmod.brightness == 256) && (im->gmod.contrast == 256) &&
 	  (im->bmod.gamma == 256) && (im->bmod.brightness == 256) && (im->bmod.contrast == 256))

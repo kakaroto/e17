@@ -187,17 +187,22 @@ Imlib_init(Display * disp)
 
   old_locale = strdup(setlocale(LC_NUMERIC, NULL));
   setlocale(LC_NUMERIC, "C");
+
 #ifndef __EMX__
   f = fopen(s, "r");
 #else
   f = fopen(s, "rt");
 #endif
+
   if (!f)
+    {
 #ifndef __EMX__
-    f = fopen(SYSTEM_IMRC, "r");
+      f = fopen(SYSTEM_IMRC, "r");
 #else
-    f = fopen(__XOS2RedirRoot(SYSTEM_IMRC), "rt");
+      f = fopen(__XOS2RedirRoot(SYSTEM_IMRC), "rt");
 #endif
+    }
+
   if (f)
     {
       while (fgets(s, 4096, f))
@@ -427,7 +432,8 @@ Imlib_init(Display * disp)
 		{
 		  if (xvir[i].depth == id->x.depth)
 		    {
-		      if ((xvir[i].class > clas) && (xvir[i].class != DirectColor))
+		      if ((xvir[i].class > clas) && 
+			  (xvir[i].class != DirectColor))
 			{
 			  maxn = i;
 			  clas = xvir[i].class;
@@ -737,17 +743,22 @@ Imlib_init_with_params(Display * disp, ImlibInitParams * p)
   snprintf(s, sizeof(s), "%s/.imrc", homedir);
   old_locale = strdup(setlocale(LC_NUMERIC, NULL));
   setlocale(LC_NUMERIC, "C");
+
 #ifndef __EMX__
   f = fopen(s, "r");
 #else
   f = fopen(s, "rt");
 #endif
+
   if (!f)
+    {
 #ifndef __EMX__
-    f = fopen(SYSTEM_IMRC, "r");
+      f = fopen(SYSTEM_IMRC, "r");
 #else
-    f = fopen(__XOS2RedirRoot(SYSTEM_IMRC), "rt");
+      f = fopen(__XOS2RedirRoot(SYSTEM_IMRC), "rt");
 #endif
+    }
+  
   if (f)
     {
       while (fgets(s, 4096, f))

@@ -820,18 +820,14 @@ read_file(GtkWidget * widget, GtkWidget * w)
 void
 mod_int(GtkWidget * widget, struct _vint *v)
 {
-   *(v->value) = (int)GTK_ADJUSTMENT(v->adj)->value;
-   update_test();
+  *(v->value) = (int)GTK_ADJUSTMENT(v->adj)->value;
+  update_test();
 }
 
 void
 reset_int(GtkWidget * widget, struct _vint *v)
 {
-   *(v->value) = 256;
-   GTK_ADJUSTMENT(v->adj)->value = (gfloat) * (v->value);
-   gtk_range_set_adjustment(GTK_RANGE(v->range), GTK_ADJUSTMENT(v->adj));
-   gtk_range_slider_update(GTK_RANGE(v->range));
-   update_test();
+   gtk_adjustment_set_value(GTK_ADJUSTMENT(v->adj), 256.0);
 }
 
 void
@@ -945,9 +941,10 @@ add_sliders(GtkWidget * w)
    gtk_widget_show(i2);
    i3 = gtk_pixmap_new(contrast_pmap, contrast_mask);
    gtk_widget_show(i3);
+
    frame = gtk_aspect_frame_new(_("Base Levels"), 0.5, 0.5, 0.0, TRUE);
    gtk_box_pack_start(GTK_BOX(box1), frame, FALSE, FALSE, 4);
-   gtk_widget_show(frame);
+   /* gtk_widget_show(frame); */
    box = gtk_vbox_new(TRUE, 0);
    gtk_container_add(GTK_CONTAINER(frame), box);
    gtk_widget_show(box);
@@ -1338,7 +1335,7 @@ add_onoff_visual(GtkWidget * w, char *title)
    gtk_widget_show(box2);
 
    scrolled_win = gtk_scrolled_window_new (NULL, NULL);
-   clist = gtk_clist_new_with_titles(3, titles);
+   clist = gtk_clist_new_with_titles(3, (char **)titles);
    gtk_box_pack_start(GTK_BOX(w), scrolled_win, TRUE, TRUE, 0);
    gtk_container_add (GTK_CONTAINER (scrolled_win), clist);
    gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_win), GTK_POLICY_ALWAYS, GTK_POLICY_AUTOMATIC);
@@ -1505,9 +1502,6 @@ main(int argc, char **argv)
    gtk_init(&argc, &argv);
    gdk_imlib_init();
    list_vis();
-
-   bindtextdomain(PACKAGE, GNOMELOCALEDIR);
-   textdomain(PACKAGE);
 
    gtk_widget_push_visual(gdk_imlib_get_visual());
    gtk_widget_push_colormap(gdk_imlib_get_colormap());
