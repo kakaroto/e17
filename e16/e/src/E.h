@@ -2355,8 +2355,6 @@ Menu               *MenuCreateFromDesktops(const char *name, MenuStyle * ms);
 Menu               *MenuCreateFromThemes(const char *name, MenuStyle * ms);
 Menu               *MenuCreateFromBorders(const char *name, MenuStyle * ms);
 Window              MenuWindow(Menu * menu);
-void                MenuShowMasker(Menu * m);
-void                MenuHideMasker(void);
 void                MenusDestroyLoaded(void);
 void                MenusHideByWindow(Window win);
 int                 MenusEventKeyPress(XEvent * ev);

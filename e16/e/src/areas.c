@@ -276,6 +276,7 @@ SetCurrentArea(int ax, int ay)
       SoundPlay("SOUND_MOVE_AREA_DOWN");
 
    ActionsSuspend();
+   MenusHide();
 
    /* remove lots of event masks from windows.. we dont want to bother */
    /* handling events as a result of our playing wiht windows */

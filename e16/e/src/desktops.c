@@ -726,6 +726,7 @@ GotoDesktop(int desk)
       Eprintf("GotoDesktop %d\n", desk);
 
    SlideoutsHide();
+   MenusHide();
 
    {
       ToolTip           **lst;
@@ -970,6 +971,7 @@ LowerDesktop(int desk)
    if ((desk <= 0) || (desk >= Conf.desks.num))
       EDBUG_RETURN_;
 
+   MenusHide();
    FocusNewDeskBegin();
    MoveToDeskBottom(desk);
    UncoverDesktop(desks.order[0]);

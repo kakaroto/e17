@@ -1801,7 +1801,7 @@ MenuCreateFromGroups(const char *name, MenuStyle * ms)
    EDBUG_RETURN(m);
 }
 
-void
+static void
 MenuShowMasker(Menu * m)
 {
    EWin               *ewin;
@@ -1826,7 +1826,7 @@ MenuShowMasker(Menu * m)
      }
 }
 
-void
+static void
 MenuHideMasker(void)
 {
    if (Mode.menus.cover_win)
