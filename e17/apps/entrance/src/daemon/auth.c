@@ -40,7 +40,7 @@ char * entranced_cookie_new (void)
    }
 
    if((r = read(fd, buf, sizeof(buf))) <= 0) {
-      entranced_debug("Cookie generation failed: could not read /dev/urandom\n");
+      entranced_debug("Cookie generation failed: could not read /dev/random\n");
       return NULL;
    }
 
