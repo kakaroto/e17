@@ -53,6 +53,7 @@ IsWhitespace(const char *s)
    return 1;
 }
 
+#if 0				/* Remove if happy with the new code */
 static char        *
 GetLine(char *s, int size, FILE * f)
 {
@@ -206,6 +207,106 @@ GetLine(char *s, int size, FILE * f)
      }
    return ret;
 }
+#else
+#define LINE_BUFFER_SIZE 1024
+/*
+ * This function will get a single line from the file
+ * The string will be null terminated.
+ * Size must be >= 2.
+ */
+static char        *
+GetLine(char *s, int size, FILE * f)
+{
+   char               *si, *so, ch, quote, escape;
+   static char        *buffer = NULL;
+   static char        *bufptr = NULL;
+
+   si = bufptr;
+   so = s;
+   quote = '\0';
+   escape = '\0';
+   for (;;)
+     {
+	if (buffer == NULL)
+	  {
+	     buffer = Emalloc(LINE_BUFFER_SIZE);
+	     if (buffer == NULL)
+		return NULL;
+	  }
+
+	/* Get a line from the input file */
+	if (si == NULL)
+	  {
+	     si = fgets(buffer, LINE_BUFFER_SIZE - 1, f);
+	     buffer[LINE_BUFFER_SIZE - 1] = '\0';
+	     if (si == NULL)
+	       {
+		  /* EOF */
+		  Efree(buffer);
+		  buffer = bufptr = NULL;
+		  return NULL;
+	       }
+	  }
+
+	/* Split on ';' or '\n', handle quoting */
+	for (; si;)
+	  {
+	     ch = *si++;
+	     switch (ch)
+	       {
+	       case '\0':
+		  si = NULL;
+		  if (so == s)	/* Skip empty lines */
+		     break;
+		  goto case_eol;
+	       case ';':	/* Line separator */
+		  if (escape || quote)
+		     goto case_char;
+	       case '\n':
+		  if (so == s)	/* Skip empty lines */
+		     break;
+		case_eol:
+		  *so++ = '\0';	/* Terminate and return */
+		  goto exit;
+	       case '\r':	/* Ignore */
+		  break;
+	       case '\\':	/* Escape */
+		  if (escape)
+		     goto case_char;
+		  escape = ch;
+		  break;
+	       case '"':	/* Quoting */
+/*	       case '\'': */
+		  if (escape)
+		     goto case_char;
+		  if (quote == '\0')
+		     quote = ch;
+		  else if (quote == ch)
+		     quote = '\0';
+		  else
+		     goto case_char;
+		  break;
+	       case ' ':	/* Whitespace */
+	       case '\t':
+		  if (so == s)	/* Skip leading whitespace */
+		     break;
+		case_char:	/* Normal character */
+	       default:
+		  *so++ = ch;
+		  escape = '\0';
+		  if (--size > 1)
+		     break;
+		  *so = '\0';
+		  goto exit;
+	       }
+	  }
+     }
+
+ exit:
+   bufptr = si;
+   return s;
+}
+#endif
 
 static void
 SkipTillEnd(FILE * ConfigFile)
