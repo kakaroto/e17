@@ -330,6 +330,7 @@ on_about1_activate                     (GtkMenuItem     *menuitem,
      }
    o_logo = evas_add_image_from_file(view_evas, 
 				     PACKAGE_SOURCE_DIR"/pixmaps/etcher.png");
+   evas_set_layer(view_evas, o_logo, 900);
    evas_show(view_evas, o_logo);
    evas_get_image_size(view_evas, o_logo, &w, &h);
    evas_move(view_evas, o_logo, 
@@ -433,6 +434,7 @@ on_view_expose_event                   (GtkWidget       *widget,
 	
 	o_logo = evas_add_image_from_file(view_evas, 
 					  PACKAGE_SOURCE_DIR"/pixmaps/etcher.png");
+	evas_set_layer(view_evas, o_logo, 900);
 	evas_show(view_evas, o_logo);
 	evas_get_image_size(view_evas, o_logo, &w, &h);
 	evas_move(view_evas, o_logo, 
