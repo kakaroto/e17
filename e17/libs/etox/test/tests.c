@@ -9,7 +9,7 @@ test_basic (void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
      "basic formatting.\n"
      "\n"
      "In addition, prepending, appending and inserting text\n"
-     "in an existing etox will be tested\n"
+     "in an existing etox will be tested.\n"
      "\n"
      "Click Next to begin the tests.";
 
