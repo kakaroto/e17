@@ -1,7 +1,7 @@
 Summary:	Enlightenment theme: ShinyMetal
-Name:		enlightenment-theme-ShinyMetal
+Name:		e16-theme-ShinyMetal
 Version:	0.16
-Release:	1
+Release:	0.%(date '+%y%m%d')
 License:	BSD
 Group:		User Interface/Desktops
 Source0:	http://prdownloads.sourceforge.net/enlightenment/%{name}-%{version}.tar.gz
@@ -10,8 +10,8 @@ BuildArch:	noarch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root
 URL:		http://www.enlightenment.org/
 
-Requires: enlightenment >= 0.16.7
-Obsoletes: etheme-ShinyMetal
+Requires: e16 >= 0.16.8
+Obsoletes: etheme-ShinyMetal enlightenment-theme-ShinyMetal
 
 %description
 The ShinyMetal theme for Enlightenment.
@@ -40,7 +40,7 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(-, root, root)
 %doc AUTHORS COPYING INSTALL README
-%{_datadir}/enlightenment/*
+%{_datadir}/e16/*
 
 %changelog
 
