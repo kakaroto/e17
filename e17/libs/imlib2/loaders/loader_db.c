@@ -81,17 +81,15 @@ load (ImlibImage *im, ImlibProgressFunction progress,
    char                 file[4096], key[4096], *ptr;
    DATA32              *ret;
    DATA32              *body;
-      
    if (im->data)
       return 0;
    if (!im->file)
       return 0;
    strcpy(file, im->file);
 #ifdef  __EMX__   
-   if ( (isalpha((int)file[0])) && (file[1]==':') && 
-        ((file[2]=='\\') || (file[2]=='/')))         
-   ptr = strchr(file, ':');
-   if (ptr) ptr=strrchr(++ptr, ':');        
+   ptr = strrchr(file, ':');
+   /* if colon is chars 0, 1, or 2 it might be a drive letter for os/2 */
+   if ((ptr) && (ptr - file) < 3) ptr=strrchr(++ptr, ':');        
 #else
    ptr = strrchr(file, ':');
 #endif   
@@ -106,7 +104,6 @@ load (ImlibImage *im, ImlibProgressFunction progress,
    db = e_db_open_read(file);
    if (!db)
       return 0;
-
    ret = e_db_data_get(db, key, &size);
    if (!ret)
      {
@@ -284,10 +281,9 @@ save (ImlibImage *im, ImlibProgressFunction progress,
       return 0;
    strcpy(file, im->file);
 #ifdef  __EMX__   
-   if ( (isalpha((int)file[0])) && (file[1]==':') && 
-        ((file[2]=='\\') || (file[2]=='/')))         
-   cp = strchr(file, ':');
-   if (cp) cp=strrchr(++cp, ':');        
+   cp = strrchr(file, ':');
+   /* if colon is chars 0, 1, or 2 it might be a drive letter for os/2 */
+   if ((cp) && (cp - file) < 3) cp = strrchr(++cp, ':');        
 #else
    cp = strrchr(file, ':');
 #endif   

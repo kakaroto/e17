@@ -62,7 +62,11 @@ xpm_parse_color(char *color, int *r, int *g, int *b)
      }
    /* look in rgb txt database */
    if (!rgb_txt)
+#ifndef __EMX__   
       rgb_txt = fopen("/usr/X11R6/lib/X11/rgb.txt", "r");
+#else      
+      rgb_txt = fopen(__XOS2RedirRoot("/XFree86/lib/X11/rgb.txt"), "rt");
+#endif      
    if (!rgb_txt)
       return;
    fseek(rgb_txt, 0, SEEK_SET);
