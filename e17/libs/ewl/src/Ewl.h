@@ -76,6 +76,10 @@ extern          "C" {
 #include <ewl_selectionbar.h>
 #include <ewl_selectionbook.h>
 
+#include <ewl_cell.h>
+#include <ewl_row.h>
+#include <ewl_tree.h>
+
 #ifdef __cplusplus
 }
 #endif

@@ -171,8 +171,11 @@ void ewl_object_set_preferred_w(Ewl_Object * o, int w)
 
 	DCHECK_PARAM_PTR("o", o);
 
+	/*
+	 * We may need to simulate resizes for changes in fill policy
 	if (w == PREFERRED_W(o))
 		DRETURN(DLEVEL_STABLE);
+	*/
 
 	/*
 	 * Store the previous size.
@@ -210,8 +213,11 @@ void ewl_object_set_preferred_h(Ewl_Object * o, int h)
 
 	DCHECK_PARAM_PTR("o", o);
 
-	if (h == PREFERRED_H(o))
+	/*
+	 * We may need to simulate resizes for changes in fill policy
+	if (h == PREFERRED_W(o))
 		DRETURN(DLEVEL_STABLE);
+	*/
 
 	/*
 	 * Store the previous size

@@ -756,6 +756,14 @@ void __ewl_widget_theme_update(Ewl_Widget * w, void *ev_data, void *user_data)
 		if (w->state & EWL_STATE_DISABLED)
 			ebits_set_named_bit_state(w->ebits_object, "Base",
 					"disabled");
+
+		ebits_get_min_size(w->ebits_object, &i_l, &i_t);
+
+		if (MINIMUM_W(w) == EWL_OBJECT_MIN_SIZE)
+			ewl_object_set_minimum_w(EWL_OBJECT(w), i_l);
+
+		if (MINIMUM_H(w) == EWL_OBJECT_MIN_SIZE)
+			ewl_object_set_minimum_h(EWL_OBJECT(w), i_t);
 	}
 
 	DRETURN(DLEVEL_STABLE);

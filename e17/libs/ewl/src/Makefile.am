@@ -11,6 +11,7 @@ installed_headers_DATA = \
 	ewl_box.h \
 	ewl_button.h \
 	ewl_callback.h \
+	ewl_cell.h \
 	ewl_check.h \
 	ewl_checkbutton.h \
 	ewl_config.h \
@@ -35,6 +36,7 @@ installed_headers_DATA = \
 	ewl_notebook.h \
 	ewl_object.h \
 	ewl_radiobutton.h \
+	ewl_row.h \
 	ewl_scrollbar.h \
 	ewl_scrollpane.h \
 	ewl_seeker.h \
@@ -47,6 +49,7 @@ installed_headers_DATA = \
 	ewl_text.h \
 	ewl_textarea.h \
 	ewl_table.h \
+	ewl_tree.h \
 	ewl_theme.h \
 	ewl_widget.h \
 	ewl_window.h
@@ -55,6 +58,7 @@ libewl_la_SOURCES = \
 	ewl_box.c \
 	ewl_button.c \
 	ewl_callback.c \
+	ewl_cell.c \
 	ewl_check.c \
 	ewl_checkbutton.c \
 	ewl_config.c \
@@ -75,6 +79,7 @@ libewl_la_SOURCES = \
 	ewl_notebook.c \
 	ewl_object.c \
 	ewl_radiobutton.c \
+	ewl_row.c \
 	ewl_scrollbar.c \
 	ewl_scrollpane.c \
 	ewl_seeker.c \
@@ -88,6 +93,7 @@ libewl_la_SOURCES = \
 	ewl_text.c \
 	ewl_textarea.c \
 	ewl_theme.c \
+	ewl_tree.c \
 	ewl_widget.c \
 	ewl_window.c
 

@@ -270,7 +270,7 @@ void ewl_container_resize_child(Ewl_Widget * w, int size, Ewl_Orientation o)
 	 * size just exit. Also exit if it has no function to be notified for
 	 * child resizes.
 	 */
-	if (!w->parent || !size || !EWL_CONTAINER(w->parent)->child_resize)
+	if (!w->parent || !EWL_CONTAINER(w->parent)->child_resize)
 		DRETURN(DLEVEL_STABLE);
 
 	/*
