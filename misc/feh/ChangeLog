@@ -1,3 +1,14 @@
+Sun Aug 12 00:24:38 2001  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Uh that's not all I changed in the last commit.
+	* Panning is different now. It used to be ctrl+button 3, but this
+	was redefinable using cmdline/theme options. Now, instead, it's
+	combined with the next image button.
+	* ie. by default a single click of button 1 will change images, if
+	there is more than one image in the slideshow. Clicking and
+	dragging button 1 will pan, if the image is bigger than its
+	window. I find this more convenient, but let me know.
+
 Sun Aug 12 00:15:06 2001  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Oops. Fixed bug with zooming out larger images when -g is used.
