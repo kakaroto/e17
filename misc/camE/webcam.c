@@ -778,6 +778,7 @@ main(int argc, char *argv[])
    imlib_add_path_to_font_path(ttf_dir);
    imlib_add_path_to_font_path(".");
    imlib_context_set_operation(IMLIB_OP_COPY);
+   imlib_set_cache_size(0);
    if (title_style_file)
       title_style = gib_style_new_from_ascii(title_style_file);
    if (text_style_file)
