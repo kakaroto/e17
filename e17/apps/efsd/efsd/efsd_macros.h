@@ -30,6 +30,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #endif
 
 #include <stdlib.h>
+#include <errno.h>
 
 #define EFSD_META_DIR_NAME  ".e_meta"
 
@@ -60,5 +61,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         ((((y)&0xff)<<24) | (((y)&0xff00)<<8) | (((y)&0xff0000)>>8) | (((y)>>24)&0xff))
 #define	SWAP_SHORT(y) \
 	((((y)&0xff)<<8) | ((u_short)((y)&0xff00)>>8))
+
+#ifndef ENODATA
+#define ENODATA  EINVAL
+#endif
 
 #endif
