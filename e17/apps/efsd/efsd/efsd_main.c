@@ -133,7 +133,6 @@ main_thread_launch(EfsdCommand *ecmd, int client)
     threadcount++;
   
   pthread_mutex_unlock(&threadcount_mutex);
-  printf("Threads running: %i\n", threadcount);
   
   if (container->threaded)
     {
