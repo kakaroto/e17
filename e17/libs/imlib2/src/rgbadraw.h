@@ -93,4 +93,19 @@ __imlib_draw_polygon_clipped(ImlibImage * im, ImlibPoly poly, int clip_xmin,
    int clip_xmax, int clip_ymin, int clip_ymax, DATA8 r, DATA8 g,  DATA8 b,
    DATA8 a, ImlibOp op);
 void __imlib_polygon_get_bounds(ImlibPoly poly, int *px1, int *py1, int *px2, int *py2);
+void
+__imlib_draw_set_point(ImlibImage * im, int x, int y, DATA8 r, DATA8 g,
+                       DATA8 b, DATA8 a, ImlibOp op);
+void
+__imlib_draw_set_point_clipped(ImlibImage * im, int x, int y, int clip_xmin,
+                               int clip_xmax, int clip_ymin, int clip_ymax,
+                               DATA8 r, DATA8 g, DATA8 b, DATA8 a, ImlibOp op);
+void
+__imlib_draw_ellipse(ImlibImage * im, int xc, int yc, int aa, int bb, DATA8 r,
+                     DATA8 g, DATA8 b, DATA8 a, ImlibOp op);
+void
+__imlib_draw_ellipse_clipped(ImlibImage * im, int xc, int yc, int aa, int bb,
+                             int clip_xmin, int clip_xmax, int clip_ymin,
+                             int clip_ymax, DATA8 r, DATA8 g, DATA8 b,
+                             DATA8 a, ImlibOp op);
 #endif

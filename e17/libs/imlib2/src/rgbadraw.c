@@ -9,11 +9,14 @@
 #include "updates.h"
 #include "rgbadraw.h"
 
+#define XY_IN_RECT(x, y, rx, ry, rw, rh) \
+(((x) >= (rx)) && ((y) >= (ry)) && ((x) <= ((rx) + (rw))) && ((y) <= ((ry) + (rh))))
+
 void
 __imlib_FlipImageHoriz(ImlibImage * im)
 {
-   DATA32             *p1, *p2, tmp;
-   int                 x, y;
+   DATA32 *p1, *p2, tmp;
+   int x, y;
 
    for (y = 0; y < im->h; y++)
    {
@@ -36,8 +39,8 @@ __imlib_FlipImageHoriz(ImlibImage * im)
 void
 __imlib_FlipImageVert(ImlibImage * im)
 {
-   DATA32             *p1, *p2, tmp;
-   int                 x, y;
+   DATA32 *p1, *p2, tmp;
+   int x, y;
 
    for (y = 0; y < (im->h >> 1); y++)
    {
@@ -60,8 +63,8 @@ __imlib_FlipImageVert(ImlibImage * im)
 void
 __imlib_FlipImageBoth(ImlibImage * im)
 {
-   DATA32             *p1, *p2, tmp;
-   int                 x;
+   DATA32 *p1, *p2, tmp;
+   int x;
 
    p1 = im->data;
    p2 = im->data + (im->h * im->w) - 1;
@@ -90,8 +93,8 @@ __imlib_FlipImageBoth(ImlibImage * im)
 void
 __imlib_FlipImageDiagonal(ImlibImage * im, int direction)
 {
-   DATA32             *data, *to, *from;
-   int                 x, y, w, hw, tmp;
+   DATA32 *data, *to, *from;
+   int x, y, w, hw, tmp;
 
    data = malloc(im->w * im->h * sizeof(DATA32));
    from = im->data;
@@ -161,10 +164,10 @@ __imlib_FlipImageDiagonal(ImlibImage * im, int direction)
 void
 __imlib_BlurImage(ImlibImage * im, int rad)
 {
-   DATA32             *p1, *p2, *data;
-   int                 x, y, mx, my, mw, mh, mt, xx, yy;
-   int                 a, r, g, b;
-   int                *as, *rs, *gs, *bs;
+   DATA32 *p1, *p2, *data;
+   int x, y, mx, my, mw, mh, mt, xx, yy;
+   int a, r, g, b;
+   int *as, *rs, *gs, *bs;
 
    if (rad < 1)
       return;
@@ -252,8 +255,8 @@ __imlib_BlurImage(ImlibImage * im, int rad)
 void
 __imlib_SharpenImage(ImlibImage * im, int rad)
 {
-   DATA32             *data, *p1, *p2;
-   int                 a, r, g, b, x, y;
+   DATA32 *data, *p1, *p2;
+   int a, r, g, b, x, y;
 
    /* FIXME: impliment */
 
@@ -262,7 +265,7 @@ __imlib_SharpenImage(ImlibImage * im, int rad)
       return;
    else
    {
-      int                 mul, mul2, tot;
+      int mul, mul2, tot;
 
       mul = (rad * 4) + 1;
       mul2 = rad;
@@ -273,26 +276,26 @@ __imlib_SharpenImage(ImlibImage * im, int rad)
          p2 = data + 1 + (y * im->w);
          for (x = 1; x < (im->w - 1); x++)
          {
-            b = (int)((p1[0]) & 0xff) * 5;
-            g = (int)((p1[0] >> 8) & 0xff) * 5;
-            r = (int)((p1[0] >> 16) & 0xff) * 5;
-            a = (int)((p1[0] >> 24) & 0xff) * 5;
-            b -= (int)((p1[-1]) & 0xff);
-            g -= (int)((p1[-1] >> 8) & 0xff);
-            r -= (int)((p1[-1] >> 16) & 0xff);
-            a -= (int)((p1[-1] >> 24) & 0xff);
-            b -= (int)((p1[1]) & 0xff);
-            g -= (int)((p1[1] >> 8) & 0xff);
-            r -= (int)((p1[1] >> 16) & 0xff);
-            a -= (int)((p1[1] >> 24) & 0xff);
-            b -= (int)((p1[-im->w]) & 0xff);
-            g -= (int)((p1[-im->w] >> 8) & 0xff);
-            r -= (int)((p1[-im->w] >> 16) & 0xff);
-            a -= (int)((p1[-im->w] >> 24) & 0xff);
-            b -= (int)((p1[im->w]) & 0xff);
-            g -= (int)((p1[im->w] >> 8) & 0xff);
-            r -= (int)((p1[im->w] >> 16) & 0xff);
-            a -= (int)((p1[im->w] >> 24) & 0xff);
+            b = (int) ((p1[0]) & 0xff) * 5;
+            g = (int) ((p1[0] >> 8) & 0xff) * 5;
+            r = (int) ((p1[0] >> 16) & 0xff) * 5;
+            a = (int) ((p1[0] >> 24) & 0xff) * 5;
+            b -= (int) ((p1[-1]) & 0xff);
+            g -= (int) ((p1[-1] >> 8) & 0xff);
+            r -= (int) ((p1[-1] >> 16) & 0xff);
+            a -= (int) ((p1[-1] >> 24) & 0xff);
+            b -= (int) ((p1[1]) & 0xff);
+            g -= (int) ((p1[1] >> 8) & 0xff);
+            r -= (int) ((p1[1] >> 16) & 0xff);
+            a -= (int) ((p1[1] >> 24) & 0xff);
+            b -= (int) ((p1[-im->w]) & 0xff);
+            g -= (int) ((p1[-im->w] >> 8) & 0xff);
+            r -= (int) ((p1[-im->w] >> 16) & 0xff);
+            a -= (int) ((p1[-im->w] >> 24) & 0xff);
+            b -= (int) ((p1[im->w]) & 0xff);
+            g -= (int) ((p1[im->w] >> 8) & 0xff);
+            r -= (int) ((p1[im->w] >> 16) & 0xff);
+            a -= (int) ((p1[im->w] >> 24) & 0xff);
 
             a = (a & ((~a) >> 16));
             a = ((a | ((a & 256) - ((a & 256) >> 8))));
@@ -316,9 +319,8 @@ __imlib_SharpenImage(ImlibImage * im, int rad)
 void
 __imlib_TileImageHoriz(ImlibImage * im)
 {
-   DATA32             *p1, *p2, *p3, *p, *data;
-   int                 x, y, per, tmp, na, nr, ng, nb, mix, a, r, g, b, aa, rr,
-      gg, bb;
+   DATA32 *p1, *p2, *p3, *p, *data;
+   int x, y, per, tmp, na, nr, ng, nb, mix, a, r, g, b, aa, rr, gg, bb;
 
    data = malloc(im->w * im->h * sizeof(DATA32));
    p1 = im->data;
@@ -390,10 +392,8 @@ __imlib_TileImageHoriz(ImlibImage * im)
 void
 __imlib_TileImageVert(ImlibImage * im)
 {
-   DATA32             *p1, *p2, *p, *data;
-   int                 x, y, tmp, na, nr, ng, nb, mix, a, r, g, b, aa, rr, gg,
-
-      bb;
+   DATA32 *p1, *p2, *p, *data;
+   int x, y, tmp, na, nr, ng, nb, mix, a, r, g, b, aa, rr, gg, bb;
 
    data = malloc(im->w * im->h * sizeof(DATA32));
    p = data;
@@ -440,13 +440,13 @@ __imlib_TileImageVert(ImlibImage * im)
    im->data = data;
 }
 
-ImlibUpdate        *
+ImlibUpdate *
 __imlib_draw_line(ImlibImage * im, int x1, int y1, int x2, int y2, DATA8 r,
                   DATA8 g, DATA8 b, DATA8 a, ImlibOp op, char make_updates)
 {
-   int                 x, y, dx, dy, yy, xx, am, tmp;
-   DATA32             *p;
-   DATA8               aaa, nr, ng, nb, rr, gg, bb, aa, na;
+   int x, y, dx, dy, yy, xx, am, tmp;
+   DATA32 *p;
+   DATA8 aaa, nr, ng, nb, rr, gg, bb, aa, na;
 
    /* clip to top edge */
    if ((y1 < 0) && (y2 < 0))
@@ -504,7 +504,7 @@ __imlib_draw_line(ImlibImage * im, int x1, int y1, int x2, int y2, DATA8 r,
    dy = y2 - y1;
    if (x1 > x2)
    {
-      int                 tmp;
+      int tmp;
 
       tmp = x1;
       x1 = x2;
@@ -1228,13 +1228,15 @@ __imlib_draw_line(ImlibImage * im, int x1, int y1, int x2, int y2, DATA8 r,
 }
 
 void
-__imlib_draw_box(ImlibImage * im, int x, int y, int w, int h, DATA8 r, DATA8 g,
-                 DATA8 b, DATA8 a, ImlibOp op)
+__imlib_draw_box(ImlibImage * im, int x, int y, int w, int h, DATA8 r,
+                 DATA8 g, DATA8 b, DATA8 a, ImlibOp op)
 {
    __imlib_draw_line(im, x, y, x + w - 1, y, r, g, b, a, op, 0);
    __imlib_draw_line(im, x, y, x, y + h - 1, r, g, b, a, op, 0);
-   __imlib_draw_line(im, x, y + h - 1, x + w - 1, y + h - 1, r, g, b, a, op, 0);
-   __imlib_draw_line(im, x + w - 1, y, x + w - 1, y + h - 1, r, g, b, a, op, 0);
+   __imlib_draw_line(im, x, y + h - 1, x + w - 1, y + h - 1, r, g, b, a, op,
+                     0);
+   __imlib_draw_line(im, x + w - 1, y, x + w - 1, y + h - 1, r, g, b, a, op,
+                     0);
 }
 
 void
@@ -1247,21 +1249,21 @@ __imlib_draw_box_clipped(ImlibImage * im, int x, int y, int w, int h,
                              clip_ymin, clip_ymax, r, g, b, a, op, 0);
    __imlib_draw_line_clipped(im, x, y, x, y + h - 1, clip_xmin, clip_xmax,
                              clip_ymin, clip_ymax, r, g, b, a, op, 0);
-   __imlib_draw_line_clipped(im, x, y + h - 1, x + w - 1, y + h - 1, clip_xmin,
-                             clip_xmax, clip_ymin, clip_ymax, r, g, b, a, op,
-                             0);
-   __imlib_draw_line_clipped(im, x + w - 1, y, x + w - 1, y + h - 1, clip_xmin,
-                             clip_xmax, clip_ymin, clip_ymax, r, g, b, a, op,
-                             0);
+   __imlib_draw_line_clipped(im, x, y + h - 1, x + w - 1, y + h - 1,
+                             clip_xmin, clip_xmax, clip_ymin, clip_ymax, r, g,
+                             b, a, op, 0);
+   __imlib_draw_line_clipped(im, x + w - 1, y, x + w - 1, y + h - 1,
+                             clip_xmin, clip_xmax, clip_ymin, clip_ymax, r, g,
+                             b, a, op, 0);
 }
 
 void
 __imlib_draw_filled_box(ImlibImage * im, int x, int y, int w, int h, DATA8 r,
                         DATA8 g, DATA8 b, DATA8 a, ImlibOp op)
 {
-   int                 yy, xx, tmp;
-   DATA32             *p;
-   DATA8               nr, ng, nb, rr, gg, bb, aa, na;
+   int yy, xx, tmp;
+   DATA32 *p;
+   DATA8 nr, ng, nb, rr, gg, bb, aa, na;
 
    if (x < 0)
    {
@@ -1340,8 +1342,8 @@ void
 __imlib_copy_image_data(ImlibImage * im, int x, int y, int w, int h, int nx,
                         int ny)
 {
-   int                 xx, yy, jump;
-   DATA32             *p1, *p2;
+   int xx, yy, jump;
+   DATA32 *p1, *p2;
 
    /* clip horizontal co-ordinates so that both dest and src fit inside */
    /* the image */
@@ -1439,11 +1441,11 @@ __imlib_copy_image_data(ImlibImage * im, int x, int y, int w, int h, int nx,
 }
 
 void
-__imlib_copy_alpha_data(ImlibImage * src, ImlibImage * dst, int x, int y, int w,
-                        int h, int nx, int ny)
+__imlib_copy_alpha_data(ImlibImage * src, ImlibImage * dst, int x, int y,
+                        int w, int h, int nx, int ny)
 {
-   int                 xx, yy, jump, jump2;
-   DATA32             *p1, *p2;
+   int xx, yy, jump, jump2;
+   DATA32 *p1, *p2;
 
    /* clip horizontal co-ordinates so that both dest and src fit inside */
    /* the image */
@@ -1522,17 +1524,17 @@ __imlib_copy_alpha_data(ImlibImage * src, ImlibImage * dst, int x, int y, int w,
    }
 }
 
-ImlibUpdate        *
+ImlibUpdate *
 __imlib_draw_line_clipped(ImlibImage * im, int x1, int y1, int x2, int y2,
                           int clip_xmin, int clip_xmax, int clip_ymin,
                           int clip_ymax, DATA8 r, DATA8 g, DATA8 b, DATA8 a,
                           ImlibOp op, char make_updates)
 {
-   int                 cx0, cx1, cy0, cy1;
+   int cx0, cx1, cy0, cy1;
 
    if (imlib_clip_line
-       (x1, y1, x2, y2, clip_xmin, clip_xmax, clip_ymin, clip_ymax, &cx0, &cy0,
-        &cx1, &cy1))
+       (x1, y1, x2, y2, clip_xmin, clip_xmax, clip_ymin, clip_ymax, &cx0,
+        &cy0, &cx1, &cy1))
    {
       return __imlib_draw_line(im, cx0, cy0, cx1, cy1, r, g, b, a, op,
                                make_updates);
@@ -1543,11 +1545,11 @@ __imlib_draw_line_clipped(ImlibImage * im, int x1, int y1, int x2, int y2,
 
 int
 imlib_clip_line(int x0, int y0, int x1, int y1, int xmin, int xmax, int ymin,
-                  int ymax, int *clip_x0, int *clip_y0, int *clip_x1,
-                  int *clip_y1)
+                int ymax, int *clip_x0, int *clip_y0, int *clip_x1,
+                int *clip_y1)
 {
-   ImlibOutCode        outcode0, outcode1, outcode_out;
-   unsigned char       accept = FALSE, done = FALSE;
+   ImlibOutCode outcode0, outcode1, outcode_out;
+   unsigned char accept = FALSE, done = FALSE;
 
    outcode0 = __imlib_comp_outcode(x0, y0, xmin, xmax, ymin, ymax);
    outcode1 = __imlib_comp_outcode(x1, y1, xmin, xmax, ymin, ymax);
@@ -1563,7 +1565,7 @@ imlib_clip_line(int x0, int y0, int x1, int y1, int xmin, int xmax, int ymin,
          done = TRUE;
       else
       {
-         double              x, y;
+         double x, y;
 
          outcode_out = outcode0 ? outcode0 : outcode1;
          if (outcode_out & TOP)
@@ -1611,10 +1613,10 @@ imlib_clip_line(int x0, int y0, int x1, int y1, int xmin, int xmax, int ymin,
 }
 
 ImlibOutCode
-__imlib_comp_outcode(double x, double y, double xmin, double xmax, double ymin,
-                     double ymax)
+__imlib_comp_outcode(double x, double y, double xmin, double xmax,
+                     double ymin, double ymax)
 {
-   ImlibOutCode        code = 0;
+   ImlibOutCode code = 0;
 
    if (y > ymax)
       code |= TOP;
@@ -1630,11 +1632,12 @@ __imlib_comp_outcode(double x, double y, double xmin, double xmax, double ymin,
 ImlibPoly __imlib_polygon_new(int type)
 {
    ImlibPoly poly;
+
    poly = malloc(sizeof(_ImlibPoly));
-   if(!poly)
+   if (!poly)
       return NULL;
    memset(poly, 0, sizeof(_ImlibPoly));
-   switch(type)
+   switch (type)
    {
      case P_OPEN:
         break;
@@ -1650,18 +1653,21 @@ ImlibPoly __imlib_polygon_new(int type)
    return poly;
 }
 
-void __imlib_polygon_add_point(ImlibPoly poly, int x, int y)
+void
+__imlib_polygon_add_point(ImlibPoly poly, int x, int y)
 {
    poly->pointcount++;
-   if(!poly->points)
+   if (!poly->points)
       poly->points = malloc(sizeof(ImlibPoint));
    else
-      poly->points = realloc(poly->points, (poly->pointcount * sizeof(ImlibPoint)));
+      poly->points =
+         realloc(poly->points, (poly->pointcount * sizeof(ImlibPoint)));
    poly->points[poly->pointcount - 1].x = x;
    poly->points[poly->pointcount - 1].y = y;
 }
 
-void __imlib_polygon_free(ImlibPoly poly)
+void
+__imlib_polygon_free(ImlibPoly poly)
 {
    free(poly->points);
    free(poly);
@@ -1670,53 +1676,219 @@ void __imlib_polygon_free(ImlibPoly poly)
 
 void
 __imlib_draw_polygon(ImlibImage * im, ImlibPoly poly, DATA8 r, DATA8 g,
-                 DATA8 b, DATA8 a, ImlibOp op)
+                     DATA8 b, DATA8 a, ImlibOp op)
 {
    int i;
-   if(!poly || !poly->points || (poly->pointcount < 2))
+
+   if (!poly || !poly->points || (poly->pointcount < 2))
       return;
 
-   for(i = 0; i < poly->pointcount; i++)
+   for (i = 0; i < poly->pointcount; i++)
    {
-      if(i < poly->pointcount - 1)
-      __imlib_draw_line(im, poly->points[i].x, poly->points[i].y, poly->points[i+1].x, poly->points[i+1].y, r, g, b, a, op, 0);
-      else if(poly->closed)
-         __imlib_draw_line(im, poly->points[i].x, poly->points[i].y, poly->points[0].x, poly->points[0].y, r, g, b, a, op, 0);
-      else break;
+      if (i < poly->pointcount - 1)
+         __imlib_draw_line(im, poly->points[i].x, poly->points[i].y,
+                           poly->points[i + 1].x, poly->points[i + 1].y, r, g,
+                           b, a, op, 0);
+      else if (poly->closed)
+         __imlib_draw_line(im, poly->points[i].x, poly->points[i].y,
+                           poly->points[0].x, poly->points[0].y, r, g, b, a,
+                           op, 0);
+      else
+         break;
    }
 }
 
 void
 __imlib_draw_polygon_clipped(ImlibImage * im, ImlibPoly poly, int clip_xmin,
-   int clip_xmax, int clip_ymin, int clip_ymax, DATA8 r, DATA8 g,  DATA8 b,
-   DATA8 a, ImlibOp op)
+                             int clip_xmax, int clip_ymin, int clip_ymax,
+                             DATA8 r, DATA8 g, DATA8 b, DATA8 a, ImlibOp op)
 {
    int i;
-   if(!poly || !poly->points || (poly->pointcount < 2))
+
+   if (!poly || !poly->points || (poly->pointcount < 2))
       return;
 
-   for(i = 0; i < poly->pointcount; i++)
+   for (i = 0; i < poly->pointcount; i++)
    {
-      if(i < poly->pointcount - 1)
-      __imlib_draw_line_clipped(im, poly->points[i].x, poly->points[i].y, poly->points[i+1].x, poly->points[i+1].y, clip_xmin, clip_xmax, clip_ymin, clip_ymax, r, g, b, a, op, 0);
-      else if(poly->closed)
-         __imlib_draw_line_clipped(im, poly->points[i].x, poly->points[i].y, poly->points[0].x, poly->points[0].y, clip_xmin, clip_xmax, clip_ymin, clip_ymax, r, g, b, a, op, 0);
-      else break;
+      if (i < poly->pointcount - 1)
+         __imlib_draw_line_clipped(im, poly->points[i].x, poly->points[i].y,
+                                   poly->points[i + 1].x,
+                                   poly->points[i + 1].y, clip_xmin,
+                                   clip_xmax, clip_ymin, clip_ymax, r, g, b,
+                                   a, op, 0);
+      else if (poly->closed)
+         __imlib_draw_line_clipped(im, poly->points[i].x, poly->points[i].y,
+                                   poly->points[0].x, poly->points[0].y,
+                                   clip_xmin, clip_xmax, clip_ymin, clip_ymax,
+                                   r, g, b, a, op, 0);
+      else
+         break;
    }
 }
 
-void __imlib_polygon_get_bounds(ImlibPoly poly, int *px1, int *py1, int *px2, int *py2)
+void
+__imlib_polygon_get_bounds(ImlibPoly poly, int *px1, int *py1, int *px2,
+                           int *py2)
 {
-   int x1,y1,x2,y2;
+   int x1, y1, x2, y2;
    int i;
-  if(!poly || !poly->points || (poly->pointcount < 2))
-      return;
-  
-  for(i = 0; i < poly->pointcount; i++)
-     GROW_BOUNDS (x1, y1, x2, y2, poly->points[i].x, poly->points[i].y);
 
-    *px1 = x1;
-    *py1 = y1;
-    *px2 = x2;
-    *py2 = y2;
+   if (!poly || !poly->points || (poly->pointcount < 2))
+      return;
+
+   for (i = 0; i < poly->pointcount; i++)
+      GROW_BOUNDS(x1, y1, x2, y2, poly->points[i].x, poly->points[i].y);
+
+   *px1 = x1;
+   *py1 = y1;
+   *px2 = x2;
+   *py2 = y2;
+}
+
+void
+__imlib_draw_ellipse(ImlibImage * im, int xc, int yc, int aa, int bb, DATA8 r,
+                     DATA8 g, DATA8 b, DATA8 a, ImlibOp op)
+{
+   int a2 = aa * aa;
+   int b2 = bb * bb;
+
+   int x, y, dec;
+
+   for (x = 0, y = bb, dec = 2 * b2 + a2 * (1 - 2 * bb); b2 * x <= a2 * y;
+        x++)
+   {
+      __imlib_draw_set_point(im, xc + x, yc + y, r, g, b, a, op);
+      __imlib_draw_set_point(im, xc - x, yc + y, r, g, b, a, op);
+      __imlib_draw_set_point(im, xc + x, yc - y, r, g, b, a, op);
+      __imlib_draw_set_point(im, xc - x, yc - y, r, g, b, a, op);
+
+      if (dec >= 0)
+         dec += 4 * a2 * (1 - (y--));
+      dec += b2 * (4 * x + 6);
+   }
+
+   for (x = aa, y = 0, dec = 2 * a2 + b2 * (1 - 2 * aa); a2 * y <= b2 * x;
+        y++)
+   {
+      __imlib_draw_set_point(im, xc + x, yc + y, r, g, b, a, op);
+      __imlib_draw_set_point(im, xc - x, yc + y, r, g, b, a, op);
+      __imlib_draw_set_point(im, xc + x, yc - y, r, g, b, a, op);
+      __imlib_draw_set_point(im, xc - x, yc - y, r, g, b, a, op);
+
+      if (dec >= 0)
+         dec += 4 * b2 * (1 - (x--));
+      dec += a2 * (4 * y + 6);
+   }
+}
+
+void
+__imlib_draw_ellipse_clipped(ImlibImage * im, int xc, int yc, int aa, int bb,
+                             int clip_xmin, int clip_xmax, int clip_ymin,
+                             int clip_ymax, DATA8 r, DATA8 g, DATA8 b,
+                             DATA8 a, ImlibOp op)
+{
+   int a2 = aa * aa;
+   int b2 = bb * bb;
+
+   int x, y, dec;
+
+   for (x = 0, y = bb, dec = 2 * b2 + a2 * (1 - 2 * bb); b2 * x <= a2 * y;
+        x++)
+   {
+      __imlib_draw_set_point_clipped(im, xc + x, yc + y, clip_xmin, clip_xmax,
+                                     clip_ymin, clip_ymax, r, g, b, a, op);
+      __imlib_draw_set_point_clipped(im, xc - x, yc + y, clip_xmin, clip_xmax,
+                                     clip_ymin, clip_ymax, r, g, b, a, op);
+      __imlib_draw_set_point_clipped(im, xc + x, yc - y, clip_xmin, clip_xmax,
+                                     clip_ymin, clip_ymax, r, g, b, a, op);
+      __imlib_draw_set_point_clipped(im, xc - x, yc - y, clip_xmin, clip_xmax,
+                                     clip_ymin, clip_ymax, r, g, b, a, op);
+
+      if (dec >= 0)
+         dec += 4 * a2 * (1 - (y--));
+      dec += b2 * (4 * x + 6);
+   }
+
+   for (x = aa, y = 0, dec = 2 * a2 + b2 * (1 - 2 * aa); a2 * y <= b2 * x;
+        y++)
+   {
+      __imlib_draw_set_point_clipped(im, xc + x, yc + y, clip_xmin, clip_xmax,
+                                     clip_ymin, clip_ymax, r, g, b, a, op);
+      __imlib_draw_set_point_clipped(im, xc - x, yc + y, clip_xmin, clip_xmax,
+                                     clip_ymin, clip_ymax, r, g, b, a, op);
+      __imlib_draw_set_point_clipped(im, xc + x, yc - y, clip_xmin, clip_xmax,
+                                     clip_ymin, clip_ymax, r, g, b, a, op);
+      __imlib_draw_set_point_clipped(im, xc - x, yc - y, clip_xmin, clip_xmax,
+                                     clip_ymin, clip_ymax, r, g, b, a, op);
+
+      if (dec >= 0)
+         dec += 4 * b2 * (1 - (x--));
+      dec += a2 * (4 * y + 6);
+   }
+}
+
+
+void
+__imlib_draw_set_point(ImlibImage * im, int x, int y, DATA8 r, DATA8 g,
+                       DATA8 b, DATA8 a, ImlibOp op)
+{
+   DATA32 *p;
+   int tmp;
+
+   if ((x >= 0 && x < im->w) && (y >= 0 && y <= im->h))
+   {
+      p = &(im->data[(im->w * y) + x]);
+      switch (op)
+      {
+        case OP_RESHADE:
+           BLEND_RE(r, g, b, a, p);
+           break;
+        case OP_SUBTRACT:
+           BLEND_SUB(r, g, b, a, p);
+           break;
+        case OP_ADD:
+           BLEND_ADD(r, g, b, a, p);
+           break;
+        case OP_COPY:
+           BLEND(r, g, b, a, p);
+           break;
+        default:
+           break;
+      }
+   }
+}
+
+void
+__imlib_draw_set_point_clipped(ImlibImage * im, int x, int y, int clip_xmin,
+                               int clip_xmax, int clip_ymin, int clip_ymax,
+                               DATA8 r, DATA8 g, DATA8 b, DATA8 a, ImlibOp op)
+{
+   DATA32 *p;
+   int tmp;
+
+   if ((x >= 0 && x < im->w) && (y >= 0 && y <= im->h))
+   {
+      if (XY_IN_RECT
+          (x, y, clip_xmin, clip_ymin, clip_xmax - clip_xmin, clip_ymax - clip_ymin))
+      {
+         p = &(im->data[(im->w * y) + x]);
+         switch (op)
+         {
+           case OP_RESHADE:
+              BLEND_RE(r, g, b, a, p);
+              break;
+           case OP_SUBTRACT:
+              BLEND_SUB(r, g, b, a, p);
+              break;
+           case OP_ADD:
+              BLEND_ADD(r, g, b, a, p);
+              break;
+           case OP_COPY:
+              BLEND(r, g, b, a, p);
+              break;
+           default:
+              break;
+         }
+      }
+   }
 }

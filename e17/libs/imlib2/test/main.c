@@ -773,11 +773,24 @@ int main (int argc, char **argv)
 					   imlib_image_get_height());
 	     {
 		  Imlib_Updates uu;
-		  
+          
 		  imlib_context_set_color(255, 255, 255, 255);
 		  uu = imlib_image_draw_line(200, 200, x, y, 1);
-          up = imlib_updates_append_updates(up, uu);
-          
+          up = imlib_updates_append_updates(up, uu);          
+		  
+          /* test ellipses */
+          imlib_context_set_cliprect(0,0,0,0);
+          imlib_context_set_color(255, 255, 255, 255);
+          imlib_image_draw_ellipse(50,280,30,40);
+
+          imlib_image_draw_rectangle(120,245,70,70);
+          up = imlib_update_append_rect(up, 120,245,70,70);
+          imlib_image_draw_ellipse(160,280,50,20);
+
+          imlib_context_set_cliprect(120,245,70,70);
+          imlib_context_set_color(255, 55, 55, 255);
+          imlib_image_draw_ellipse(160,280,50,20);
+
           /* test line clipping */
           imlib_context_set_cliprect(0,0,0,0);
           imlib_image_draw_rectangle(50,50,100,100);
@@ -845,7 +858,6 @@ int main (int argc, char **argv)
           imlib_context_set_cliprect(380,260,50,50);
           imlib_image_draw_polygon(poly3);
           imlib_context_set_cliprect(0,0,0,0);
-
 
 	       }
 	       {
