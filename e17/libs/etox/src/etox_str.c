@@ -2,111 +2,111 @@
 #include "Etox.h"
 
 char *
-etox_str_remove_beginning_spaces (char *str)
+etox_str_remove_beginning_spaces(char *str)
 {
   char *p, *q;
 
-  if (!str || !strlen (str))
+  if (!str || !strlen(str))
     return NULL;
 
   for (p = str; *p == ' '; p++);
 
-  q = malloc ((sizeof (char) * strlen (p)) + 1);
-  strncpy (q, p, strlen (p));
-  q[strlen (p)] = '\0';
+  q = malloc((sizeof(char) * strlen(p)) + 1);
+  strncpy(q, p, strlen(p));
+  q[strlen(p)] = '\0';
 
   return q;
 }
 
 char *
-etox_str_remove_ending_spaces (char *str)
+etox_str_remove_ending_spaces(char *str)
 {
   char *p, *q;
   int i;
 
-  if (!str || !strlen (str))
+  if (!str || !strlen(str))
     return NULL;
 
-  p = malloc ((sizeof (char) * strlen (str)) + 1);
-  strcpy (p, str);
+  p = malloc((sizeof(char) * strlen(str)) + 1);
+  strcpy(p, str);
 
-  for (i = strlen (str); i && (!p[i] || (p[i] == ' ')); i--)
+  for (i = strlen(str); i && (!p[i] || (p[i] == ' ')); i--)
     p[i] = '\0';
 
-  q = malloc ((sizeof (char) * strlen (p)) + 1);
-  strncpy (q, p, strlen (p));
-  q[strlen (p)] = '\0';
+  q = malloc((sizeof(char) * strlen(p)) + 1);
+  strncpy(q, p, strlen(p));
+  q[strlen(p)] = '\0';
 
-  free (p);
+  free(p);
 
   return q;
 }
 
 char *
-etox_str_chop_off_beginning_string (char *str, char *chop)
+etox_str_chop_off_beginning_string(char *str, char *chop)
 {
   char *p, *q;
 
-  if (!str || !strlen (str) || !chop || !strlen (chop))
+  if (!str || !strlen(str) || !chop || !strlen(chop))
     return NULL;
 
-  if (!(p = strstr (str, chop)))
+  if (!(p = strstr(str, chop)))
     return str;
 
-  p += strlen (chop);
+  p += strlen(chop);
 
-  q = malloc ((sizeof (char) * strlen (p)) + 1);
-  strcpy (q, p);
+  q = malloc((sizeof(char) * strlen(p)) + 1);
+  strcpy(q, p);
 
   return q;
 }
 
 char *
-etox_str_chop_off_beginning_word (char *str)
+etox_str_chop_off_beginning_word(char *str)
 {
   char *p, *q;
 
-  if (!str || !strlen (str))
+  if (!str || !strlen(str))
     return NULL;
 
   for (p = str; *p != ' '; p++);
 
-  q = malloc ((sizeof (char) * strlen (p)) + 1);
-  strncpy (q, p, strlen (p));
-  q[strlen (p)] = '\0';
+  q = malloc((sizeof(char) * strlen(p)) + 1);
+  strncpy(q, p, strlen(p));
+  q[strlen(p)] = '\0';
 
   return q;
 }
 
 char *
-etox_str_chop_off_ending_string (char *str, char *chop)
+etox_str_chop_off_ending_string(char *str, char *chop)
 {
   char *p;
 
-  if (!str || !strlen (str) || !chop || !strlen (chop))
+  if (!str || !strlen(str) || !chop || !strlen(chop))
     return NULL;
 
-  p = malloc ((sizeof (char) * (strlen (str) - strlen (chop))) + 1);
-  strncpy (p, str, strlen (str) - strlen (chop));
-  p[strlen (str) - strlen (chop)] = '\0';
+  p = malloc((sizeof(char) * (strlen(str) - strlen(chop))) + 1);
+  strncpy(p, str, strlen(str) - strlen(chop));
+  p[strlen(str) - strlen(chop)] = '\0';
 
   return p;
 }
 
 char *
-etox_str_chop_off_ending_word (char *str)
+etox_str_chop_off_ending_word(char *str)
 {
   char *p, *q, *r;
 
-  if (!str || !strlen (str))
+  if (!str || !strlen(str))
     return NULL;
 
-  p = etox_str_remove_ending_spaces (str);
+  p = etox_str_remove_ending_spaces(str);
 
-  for (q = p; strstr (q, " "); q++);
+  for (q = p; strstr(q, " "); q++);
 
-  r = etox_str_chop_off_ending_string (p, q);
-  free (p);
+  r = etox_str_chop_off_ending_string(p, q);
+  free(p);
 
   return r;
 }

@@ -10,6 +10,7 @@ typedef void *	Etox_Style;
 typedef void *	Etox_Color;
 typedef void *	Etox_Obstacle;
 typedef void *	Etox_Callback;
+typedef void *	Etox_Part;
 #endif
 
 
@@ -25,7 +26,13 @@ enum _Etox_Align_Type
 
 enum _Etox_Callback_Type
 {
-   ETOX_CALLBACK_TYPE_NULL
+   ETOX_CALLBACK_TYPE_NULL,
+   ETOX_CALLBACK_TYPE_MOUSE_IN,
+   ETOX_CALLBACK_TYPE_MOUSE_OUT,
+   ETOX_CALLBACK_TYPE_MOUSE_DOWN,
+   ETOX_CALLBACK_TYPE_MOUSE_UP,
+   ETOX_CALLBACK_TYPE_MOUSE_MOVE,
+   ETOX_CALLBACK_TYPE_FREE,
 };
 
 enum _Etox_Style_Type
@@ -60,7 +67,7 @@ typedef enum _Etox_Bit_Type		Etox_Bit_Type;
 
 /**  callback stuff is unfinished.. */
 #define ET_ALIGN(v, h) ETOX_BIT_TYPE_ALIGN, v, h
-#define ET_CALLBACK(type, func, data) ETOX_BIT_TYPE_CALLBACK, type, func, data
+#define ET_CALLBACK(callback) ETOX_BIT_TYPE_CALLBACK, callback
 #define ET_COLOR(color) ETOX_BIT_TYPE_COLOR, color
 #define ET_FONT(font, size) ETOX_BIT_TYPE_FONT, font, size
 #define ET_STYLE(style) ETOX_BIT_TYPE_STYLE, style
@@ -256,6 +263,15 @@ void    etox_unset_clip(Etox e);
  */
 void    etox_set_align(Etox e, Etox_Align_Type h_align, Etox_Align_Type v_align);
 
+/**
+ * etox_set_callback - Set the callback for the Etox
+ * @e: The Etox
+ * @color: The new callback
+ *
+ * Sets the Etox's callback to the specified Etox_Callback
+ */
+void	etox_set_callback(Etox e, Etox_Callback callback);
+
 /** 
  * etox_set_color - Set the color for the Etox
  * @e: The Etox
@@ -449,6 +465,21 @@ int		etox_get_char_geometry_at_position(Etox e, double x, double y,
                                                    double *char_w,
                                                    double *char_h);
 
+/*
+ * Callbacks
+ */
+
+Etox_Callback	etox_callback_new(void);
+void		etox_callback_free(Etox_Callback callback);
+void		etox_callback_add(Etox_Callback callback,
+		                  Etox_Callback_Type type,
+		                  void (*func) (void *_data, 
+		                                Etox_Callback cb, Etox _e,
+		                                int _b, int _x, int _y),
+		                  void *data);
+void		etox_callback_del(Etox_Callback callback,
+		                  Etox_Callback_Type type);
+
 
 /*
  * Obstacles
@@ -620,6 +651,19 @@ char 	*etox_str_chop_off_ending_string(char *str, char *chop);
  * etox_str_chop_off_ending_word - 
  */
 char 	*etox_str_chop_off_ending_word(char *str);
+
+
+/*
+ * Part functions
+ */
+
+Etox_Part	etox_part_new(void);
+void		etox_part_free(Etox_Part part);
+void		etox_part_set_from_callback(Etox e, Etox_Part part, 
+                                            Etox_Callback callback);
+void		etox_part_prepend(Etox e, Etox_Part part, ...);
+void		etox_part_append(Etox e, Etox_Part part, ...);
+void		etox_part_remove_changes(Etox e, Etox_Part part);
 
 
 #ifdef __cplusplus

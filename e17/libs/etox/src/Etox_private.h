@@ -44,9 +44,12 @@ typedef struct _Etox_All_Bits *         Etox_All_Bits;
 
 typedef struct _Etox *			Etox;
 
+typedef struct _Etox_Part *		Etox_Part;
+
 typedef struct _Etox_Bit *		Etox_Bit;
 typedef struct _Etox_Align *    	Etox_Align;
 typedef struct _Etox_Callback *         Etox_Callback;
+typedef struct _Etox_Callback_Bit *	Etox_Callback_Bit;
 typedef struct _Etox_Color *            Etox_Color;
 typedef struct _Etox_Color_Bit *	Etox_Color_Bit;
 typedef struct _Etox_Font *             Etox_Font;
@@ -63,7 +66,7 @@ typedef struct _Etox_Object_Tab *	Etox_Object_Tab;
 
 typedef struct _Etox_Obstacle *         Etox_Obstacle;
 
-typedef struct _Etox_Sort *		Etox_Sort;
+typedef struct _Etox_Data *		Etox_Data;
 
 
 #include "Etox.h"
@@ -122,6 +125,17 @@ struct _Etox
     Ewd_List *list;
     int dirty;
   } evas_objects;
+
+  /* list that contains data that needs to be freed eventually */
+  Ewd_List *callback_data;
+};
+
+
+struct _Etox_Part
+{
+  Ewd_List *bits;
+  Ewd_List *appended;
+  Ewd_List *prepended;
 };
 
 
@@ -138,7 +152,14 @@ struct _Etox_Align
 
 struct _Etox_Callback
 {
-  /* TODO */
+  Ewd_List *bits;
+};
+
+struct _Etox_Callback_Bit
+{
+  Etox_Callback_Type type;
+  void *data;
+  void (*func) (void *_data, Etox_Callback _cb, Etox _e, int _b, int _x, int _y);
 };
 
 struct _Etox_Color
@@ -227,7 +248,7 @@ struct _Etox_Obstacle
 };
 
 
-struct _Etox_Sort
+struct _Etox_Data
 {
   void **value;
   int data_added;
@@ -295,6 +316,11 @@ Etox_Object_Tab		_etox_object_tab_clone(Etox_Object_Tab tab);
 
 void		_etox_align_etox_object(Etox e, Etox_Object obj);
 
+Etox_Callback_Bit	_etox_callback_bit_new(void);
+void			_etox_callback_bit_free(Etox_Callback_Bit cb_bit);
+void			_etox_callback_create(Etox e, Etox_Callback callback,
+                                              Evas_Object ev_obj);
+ 
 Etox_Color_Bit	_etox_color_get_bit(Etox_Color color, char *member);
 void		_etox_color_bit_free(Etox_Color_Bit bit);
 
@@ -314,23 +340,22 @@ void		_etox_get_style_offsets(Etox_Style style, double *offset_w,
 
 Etox_Align	_etox_bit_align_new(Etox_Align_Type v, Etox_Align_Type h);
 void		_etox_bit_align_free(Etox_Align align);
-Etox_Callback	_etox_bit_callback_new();
-void		_etox_bit_callback_free(Etox_Callback cb);
 Etox_Font	_etox_bit_font_new(char *name, int size, Etox e);
 void		_etox_bit_font_free(Etox_Font font);
 Etox_Text	_etox_bit_text_new(char *str);
 void		_etox_bit_text_free(Etox_Text text);
 void		_etox_bit_free(Etox_Bit bit);
 
-Etox_Sort	_etox_sort_new(int size);
-void		_etox_sort_free(Etox_Sort sort);
-int		_etox_sort_get_size(Etox_Sort sort);
-void		_etox_sort_set_data_from_list(Etox_Sort sort, Ewd_List *list);
-void *		_etox_sort_get_data(Etox_Sort sort, int index);
-void		_etox_sort_swap(Etox_Sort sort, int left, int right);
-void		_etox_sort_now(Etox_Sort sort, int left, int right,
+Etox_Data	_etox_data_new(int size);
+void		_etox_data_free(Etox_Data data);
+int		_etox_data_get_size(Etox_Data data);
+void		_etox_data_set(Etox_Data data, int index, void * value);
+void		_etox_data_set_from_list(Etox_Data data, Ewd_List *list);
+void *		_etox_data_get(Etox_Data Data, int index);
+void		_etox_data_swap(Etox_Data data, int left, int right);
+void		_etox_data_sort(Etox_Data data, int left, int right,
 		               int (*compare)(void *, void *));
 
-void		_etox_align_etox_object(Etox e, Etox_Object obj);
+void		_etox_part_add_bit(Etox_Part part, Etox_Bit bit);
 
 #endif

@@ -1,17 +1,17 @@
 #include "Etox_private.h"
 #include "Etox.h"
 
-static Etox_Align_Type __get_horizontal_align_type (Etox_Object obj);
-static void __align_horizontal (Etox_Object obj);
-static void __align_vertical (Etox e, Etox_Object obj);
+static Etox_Align_Type __get_horizontal_align_type(Etox_Object obj);
+static void __align_horizontal(Etox_Object obj);
+static void __align_vertical(Etox e, Etox_Object obj);
 
 static Etox_Align_Type
-__get_horizontal_align_type (Etox_Object obj)
+__get_horizontal_align_type(Etox_Object obj)
 {
   Etox_Align_Type align_type = ETOX_ALIGN_TYPE_NULL;
   Etox_Object_Bit obj_bit;
 
-  if (!(obj_bit = (Etox_Object_Bit) ewd_list_next (obj->bits)))
+  if (!(obj_bit = (Etox_Object_Bit) ewd_list_next(obj->bits)))
     return align_type;
 
   switch (obj_bit->type)
@@ -22,11 +22,11 @@ __get_horizontal_align_type (Etox_Object obj)
 
 	string = (Etox_Object_String) obj_bit->body;
 	align_type = string->align->h;
-	D_PRINT ("++ align for '%s' is %d\n", string->str, align_type);
+	D_PRINT("++ align for '%s' is %d\n", string->str, align_type);
 
 	/* empty strings don't count! :) -redalb */
-	if (!strlen (string->str))
-	  align_type = __get_horizontal_align_type (obj);
+	if (!strlen(string->str))
+	  align_type = __get_horizontal_align_type(obj);
 	break;
       }
     case ETOX_OBJECT_BIT_TYPE_TAB:
@@ -35,12 +35,12 @@ __get_horizontal_align_type (Etox_Object obj)
 
 	tab = (Etox_Object_Tab) obj_bit->body;
 	align_type = tab->align->h;
-	D_PRINT ("++ align for tab is %d\n", align_type);
+	D_PRINT("++ align for tab is %d\n", align_type);
 	break;
       }
     default:
-      D_PRINT ("++ align == NULL (WRONG!)\n");
-      align_type = __get_horizontal_align_type (obj);
+      D_PRINT("++ align == NULL (WRONG!)\n");
+      align_type = __get_horizontal_align_type(obj);
       break;
     }
 
@@ -48,14 +48,14 @@ __get_horizontal_align_type (Etox_Object obj)
 }
 
 static void
-__align_horizontal (Etox_Object obj)
+__align_horizontal(Etox_Object obj)
 {
   Etox_Object_Bit obj_bit;
   double x, prev_w = 0.0;
   Etox_Align_Type align_type;
 
-  ewd_list_goto_first (obj->bits);
-  align_type = __get_horizontal_align_type (obj);
+  ewd_list_goto_first(obj->bits);
+  align_type = __get_horizontal_align_type(obj);
   switch (align_type)
     {
     case ETOX_ALIGN_TYPE_LEFT:
@@ -66,8 +66,8 @@ __align_horizontal (Etox_Object obj)
       {
 	double total_w = 0.0;
 
-	ewd_list_goto_first (obj->bits);
-	while ((obj_bit = (Etox_Object_Bit) ewd_list_next (obj->bits)))
+	ewd_list_goto_first(obj->bits);
+	while ((obj_bit = (Etox_Object_Bit) ewd_list_next(obj->bits)))
 	  total_w += obj_bit->w;
 	x = obj->x + ((obj->w - total_w) / 2);
 	break;
@@ -76,16 +76,16 @@ __align_horizontal (Etox_Object obj)
       {
 	double total_w = 0.0;
 
-	ewd_list_goto_first (obj->bits);
-	while ((obj_bit = (Etox_Object_Bit) ewd_list_next (obj->bits)))
+	ewd_list_goto_first(obj->bits);
+	while ((obj_bit = (Etox_Object_Bit) ewd_list_next(obj->bits)))
 	  total_w += obj_bit->w;
 	x = obj->x + (obj->w - total_w);
 	break;
       }
     }
 
-  ewd_list_goto_first (obj->bits);
-  while ((obj_bit = (Etox_Object_Bit) ewd_list_next (obj->bits)))
+  ewd_list_goto_first(obj->bits);
+  while ((obj_bit = (Etox_Object_Bit) ewd_list_next(obj->bits)))
     {
       obj_bit->x = x + prev_w;
       prev_w += obj_bit->w;
@@ -93,15 +93,15 @@ __align_horizontal (Etox_Object obj)
 }
 
 static void
-__align_vertical (Etox e, Etox_Object obj)
+__align_vertical(Etox e, Etox_Object obj)
 {
   Etox_Object_Bit obj_bit;
 
   if (!e || !obj)
     return;
 
-  ewd_list_goto_first (obj->bits);
-  while ((obj_bit = (Etox_Object_Bit) ewd_list_next (obj->bits)))
+  ewd_list_goto_first(obj->bits);
+  while ((obj_bit = (Etox_Object_Bit) ewd_list_next(obj->bits)))
     {
       switch (obj_bit->type)
 	{
@@ -133,11 +133,11 @@ __align_vertical (Etox e, Etox_Object obj)
 }
 
 void
-_etox_align_etox_object (Etox e, Etox_Object obj)
+_etox_align_etox_object(Etox e, Etox_Object obj)
 {
   if (!e || !obj || !obj->bits)
     return;
 
-  __align_horizontal (obj);
-  __align_vertical (e, obj);
+  __align_horizontal(obj);
+  __align_vertical(e, obj);
 }

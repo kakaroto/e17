@@ -19,12 +19,14 @@ etox_create.c \
 etox_get.c \
 etox_loadfile.c \
 etox_object.c \
+etox_callback.c \
 etox_obstacle.c \
 etox_set.c \
 etox_str.c \
 etox_style.c \
 etox_align.c \
-etox_sort.c
+etox_data.c \
+etox_part.c
 
 
 libetox_la_LIBADD       = @evas_libs@ @ewd_libs@

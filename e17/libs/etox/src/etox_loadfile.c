@@ -9,7 +9,7 @@
 #include <unistd.h>
 
 char *
-_etox_loadfile_atword (char *s, int num)
+_etox_loadfile_atword(char *s, int num)
 {
   int cnt, i;
 
@@ -35,7 +35,7 @@ _etox_loadfile_atword (char *s, int num)
 }
 
 int
-_etox_loadfile_is_whitespace (const char *s)
+_etox_loadfile_is_whitespace(const char *s)
 {
   int i = 0;
 
@@ -49,7 +49,7 @@ _etox_loadfile_is_whitespace (const char *s)
 }
 
 char *
-_etox_loadfile_get_line (char *s, int size, FILE * f)
+_etox_loadfile_get_line(char *s, int size, FILE * f)
 {
   /* This function will get a single line from the file */
 
@@ -64,31 +64,31 @@ _etox_loadfile_get_line (char *s, int size, FILE * f)
   s[0] = 0;
   if (line_stack_size > 0)
     {
-      strncpy (s, line_stack[0], size);
-      free (line_stack[0]);
+      strncpy(s, line_stack[0], size);
+      free(line_stack[0]);
       for (i = 0; i < line_stack_size - 1; i++)
 	line_stack[i] = line_stack[i + 1];
       line_stack_size--;
       if (line_stack_size > 0)
-	line_stack = realloc (line_stack, line_stack_size * sizeof (char *));
+	line_stack = realloc(line_stack, line_stack_size * sizeof(char *));
       else
 	{
-	  free (line_stack);
+	  free(line_stack);
 	  line_stack = NULL;
 	}
       return s;
     }
-  ret = fgets (s, size, f);
-  if (strlen (s) > 0)
-    s[strlen (s) - 1] = 0;
-  while (_etox_loadfile_is_whitespace (s))
+  ret = fgets(s, size, f);
+  if (strlen(s) > 0)
+    s[strlen(s) - 1] = 0;
+  while (_etox_loadfile_is_whitespace(s))
     {
       s[0] = 0;
-      ret = fgets (s, size, f);
+      ret = fgets(s, size, f);
       if (!ret)
 	return NULL;
-      if (strlen (s) > 0)
-	s[strlen (s) - 1] = 0;
+      if (strlen(s) > 0)
+	s[strlen(s) - 1] = 0;
     }
   i = 0;
   inquote = 0;
@@ -119,7 +119,7 @@ _etox_loadfile_get_line (char *s, int size, FILE * f)
 		    break;
 		  if ((s[j] == '"') && (j == (i + 1)))
 		    break;
-		  if (!isspace (s[j]))
+		  if (!isspace(s[j]))
 		    {
 		      j--;
 		      break;
@@ -139,10 +139,10 @@ _etox_loadfile_get_line (char *s, int size, FILE * f)
 	}
       i++;
     }
-  j = strlen (s);
+  j = strlen(s);
   if (j > 0)
     {
-      if (strchr (s, ';'))
+      if (strchr(s, ';'))
 	{
 	  s[j] = ';';
 	  s[j + 1] = 0;
@@ -159,12 +159,12 @@ _etox_loadfile_get_line (char *s, int size, FILE * f)
 	    {
 	      line_stack_size++;
 	      if (!line_stack)
-		line_stack = malloc (line_stack_size * sizeof (char *));
+		line_stack = malloc(line_stack_size * sizeof(char *));
 	      else
-		line_stack = realloc (line_stack,
-				      line_stack_size * sizeof (char *));
-	      line_stack[line_stack_size - 1] = malloc (j + 1);
-	      strncpy (line_stack[line_stack_size - 1], ss, j);
+		line_stack = realloc(line_stack,
+				     line_stack_size * sizeof(char *));
+	      line_stack[line_stack_size - 1] = malloc(j + 1);
+	      strncpy(line_stack[line_stack_size - 1], ss, j);
 	      line_stack[line_stack_size - 1][j] = 0;
 	      ss = &(s[i + 1]);
 	    }
@@ -173,16 +173,16 @@ _etox_loadfile_get_line (char *s, int size, FILE * f)
     }
   if (line_stack_size > 0)
     {
-      strncpy (s, line_stack[0], size);
-      free (line_stack[0]);
+      strncpy(s, line_stack[0], size);
+      free(line_stack[0]);
       for (i = 0; i < line_stack_size - 1; i++)
 	line_stack[i] = line_stack[i + 1];
       line_stack_size--;
       if (line_stack_size > 0)
-	line_stack = realloc (line_stack, line_stack_size * sizeof (char *));
+	line_stack = realloc(line_stack, line_stack_size * sizeof(char *));
       else
 	{
-	  free (line_stack);
+	  free(line_stack);
 	  line_stack = NULL;
 	}
       return s;
@@ -191,12 +191,12 @@ _etox_loadfile_get_line (char *s, int size, FILE * f)
 }
 
 int
-_etox_loadfile_is_good (char *path)
+_etox_loadfile_is_good(char *path)
 {
   struct stat buf;
   int ret;
 
-  ret = stat (path, &buf);
+  ret = stat(path, &buf);
   if (ret < 0)
     return 0;
   if ((buf.st_mode & S_IFLNK) || (buf.st_mode & S_IFREG))
