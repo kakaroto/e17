@@ -1298,10 +1298,13 @@ KDE_UpdateClient(EWin * ewin)
    if (!ewin)
       EDBUG_RETURN_;
 
-   XChangeProperty(disp, ewin->client.win, KDE_WIN_TITLE,
-		   XA_STRING, 8, PropModeReplace,
-		   (unsigned char *)ewin->client.title,
-		   strlen(ewin->client.title) + 1);
+   if (!ewin->internal)
+     {
+	XChangeProperty(disp, ewin->client.win, KDE_WIN_TITLE,
+			XA_STRING, 8, PropModeReplace,
+			(unsigned char *)ewin->client.title,
+			strlen(ewin->client.title) + 1);
+     }
    if (getSimpleHint(ewin->client.win, KDE_WIN_STICKY))
      {
 	if (ewin->sticky)

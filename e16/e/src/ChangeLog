@@ -3788,3 +3788,10 @@ Wed Oct 27 12:36:22 PDT 1999
 (Raster)
 
 some text so you know audio wasnt compiled in...
+
+-------------------------------------------------------------------------------
+
+Wed Oct 27 13:43:23 PDT 1999
+(Mandrake)
+
+hmm.  lets see if this fixes the coredump when trying to iconify a menu
