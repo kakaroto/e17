@@ -47,7 +47,7 @@ init_index_mode (void)
   int vertical = 0;
   int max_column_w = 0;
   int thumbnailcount = 0;
-  feh_file *file = NULL;
+  feh_file *file = NULL, *last=NULL;
   int file_num = 0;
 
   file_num = filelist_length (filelist);
@@ -269,6 +269,11 @@ init_index_mode (void)
 
   for (file = filelist; file; file = file->next)
     {
+	if(last)
+	{
+	    filelist = filelist_remove_file(filelist, last);
+	    last = NULL;
+	}
       D (("   About to load image %s\n", file->filename));
       if (feh_load_image (&im_temp, file) != 0)
 	{
@@ -387,8 +392,12 @@ init_index_mode (void)
 	  else
 	    x += text_area_w;
 	}
-      else if (opt.verbose)
-	    feh_display_status('x');
+      else
+      {
+	  if (opt.verbose)
+		feh_display_status('x');
+	  last = file;
+      }
     }
   if (opt.verbose)
     fprintf (stdout, "\n");

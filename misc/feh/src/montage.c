@@ -32,7 +32,7 @@ init_montage_mode (void)
   int bg_w = 0, bg_h = 0;
   winwidget winwid;
   Imlib_Image *bg_im = NULL;
-  feh_file *file;
+  feh_file *file, *last = NULL;
   int file_num = 0;
 
   file_num = filelist_length (filelist);
@@ -172,6 +172,11 @@ init_montage_mode (void)
 
   for (file = filelist; file; file = file->next)
     {
+      if (last)
+	{
+	  filelist = filelist_remove_file (filelist, last);
+	  last = NULL;
+	}
       D (("   About to load image %s\n", file->filename));
       if (feh_load_image (&im_temp, file) != 0)
 	{
@@ -239,9 +244,12 @@ init_montage_mode (void)
 	  if (y > h - opt.thumb_h)
 	    break;
 	}
-      else if (opt.verbose)
-	feh_display_status ('x');
-
+      else
+	{
+	  last = file;
+	  if (opt.verbose)
+	    feh_display_status ('x');
+	}
     }
   if (opt.verbose)
     fprintf (stdout, "\n");
