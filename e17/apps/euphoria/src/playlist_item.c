@@ -13,13 +13,25 @@
 #include "utils.h"
 
 const char *playlist_item_artist_get(PlayListItem *pli) {
-	const char *tmp = x_hash_lookup(pli->properties, "artist");
+	const char *tmp;
+
+	assert(pli);
+
+	if (!pli->properties)
+		return "Unknown";
+
+	tmp = x_hash_lookup(pli->properties, "artist");
 
 	return tmp ? tmp : "Unknown";
 }
 
 const char *playlist_item_title_get(PlayListItem *pli) {
 	const char *title, *url;
+
+	assert(pli);
+
+	if (!pli->properties)
+		return "Unknown";
 
 	if ((title = x_hash_lookup(pli->properties, "title")))
 		return title;
@@ -35,15 +47,26 @@ const char *playlist_item_title_get(PlayListItem *pli) {
 }
 
 const char *playlist_item_album_get(PlayListItem *pli) {
-	const char *tmp = x_hash_lookup(pli->properties, "album");
+	const char *tmp;
+
+	assert(pli);
+
+	if (!pli->properties)
+		return "Unknown";
+
+	tmp = x_hash_lookup(pli->properties, "album");
 
 	return tmp ? tmp : "Unknown";
 }
 
 unsigned int playlist_item_duration_get(PlayListItem *pli) {
 	void *tmp;
-	
-	if (!pli->properties) return 0;
+
+	assert(pli);
+
+	if (!pli->properties)
+		return 0;
+
 	if ((tmp = x_hash_lookup(pli->properties, "duration")))
 		return atoi(tmp) / 1000;
 	else
@@ -53,6 +76,11 @@ unsigned int playlist_item_duration_get(PlayListItem *pli) {
 unsigned int playlist_item_samplerate_get(PlayListItem *pli) {
 	void *tmp;
 
+	assert(pli);
+
+	if (!pli->properties)
+		return 0;
+
 	if ((tmp = x_hash_lookup(pli->properties, "samplerate")))
 		return atoi(tmp);
 	else
@@ -61,6 +89,11 @@ unsigned int playlist_item_samplerate_get(PlayListItem *pli) {
 
 unsigned int playlist_item_bitrate_get(PlayListItem *pli) {
 	void *tmp;
+
+	assert(pli);
+
+	if (!pli->properties)
+		return 0;
 
 	if ((tmp = x_hash_lookup(pli->properties, "bitrate")))
 		return atoi(tmp);
