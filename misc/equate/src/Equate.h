@@ -8,7 +8,6 @@
  } while(0)
 
 #include "gui.h"
-#include "math.h"
 
 #include "config.h"
 
