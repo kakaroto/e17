@@ -630,15 +630,6 @@ AddToFamily(Window win)
         queue_up = pq;
         MoveEwinToDesktopAt(ewin, ewin->desktop, x, y);
         RaiseEwin(ewin);
-        if (init_win1)
-          {
-             XRaiseWindow(disp, init_win1);
-             XRaiseWindow(disp, init_win2);
-          }
-        if (init_win_ext)
-           XRaiseWindow(disp, init_win_ext);
-        ShowEdgeWindows();
-        RaiseProgressbars();
         ShowEwin(ewin);
         StackDesktops();
         UngrabX();
@@ -675,15 +666,6 @@ AddToFamily(Window win)
         RaiseEwin(ewin);
         MoveEwin(ewin, x, y);
         RaiseEwin(ewin);
-        if (init_win1)
-          {
-             XRaiseWindow(disp, init_win1);
-             XRaiseWindow(disp, init_win2);
-          }
-        if (init_win_ext)
-           XRaiseWindow(disp, init_win_ext);
-        ShowEdgeWindows();
-        RaiseProgressbars();
         ShowEwin(ewin);
         StackDesktops();
         FocusToEWin(ewin);
@@ -728,15 +710,6 @@ AddToFamily(Window win)
         MoveEwinToDesktop(ewin, ewin->desktop);
         RaiseEwin(ewin);
         MoveEwin(ewin, fx, fy);
-        if (init_win1)
-          {
-             XRaiseWindow(disp, init_win1);
-             XRaiseWindow(disp, init_win2);
-          }
-        if (init_win_ext)
-           XRaiseWindow(disp, init_win_ext);
-        ShowEdgeWindows();
-        RaiseProgressbars();
         ShowEwin(ewin);
         SlideEwinTo(ewin, fx, fy, x, y, speed);
         MoveEwinToDesktopAt(ewin, ewin->desktop, x, y);
@@ -751,15 +724,6 @@ AddToFamily(Window win)
         queue_up = pq;
         MoveEwinToDesktopAt(ewin, ewin->desktop, x, y);
         RaiseEwin(ewin);
-        if (init_win1)
-          {
-             XRaiseWindow(disp, init_win1);
-             XRaiseWindow(disp, init_win2);
-          }
-        if (init_win_ext)
-           XRaiseWindow(disp, init_win_ext);
-        ShowEdgeWindows();
-        RaiseProgressbars();
         ShowEwin(ewin);
         StackDesktops();
      }
@@ -842,15 +806,7 @@ AddInternalToFamily(Window win, char noshow, char *bname, int type, void *ptr)
    queue_up = pq;
    MoveEwinToDesktopAt(ewin, ewin->desktop, x, y);
    RaiseEwin(ewin);
-   if (init_win1)
-     {
-        XRaiseWindow(disp, init_win1);
-        XRaiseWindow(disp, init_win2);
-     }
-   if (init_win_ext)
-      XRaiseWindow(disp, init_win_ext);
-   ShowEdgeWindows();
-   RaiseProgressbars();
+   StackDesktops();
    if (!noshow)
       ShowEwin(ewin);
    ICCCM_Configure(ewin);
@@ -2034,6 +1990,7 @@ MoveResizeEwin(EWin * ewin, int x, int y, int w, int h)
    EDBUG_RETURN_;
 }
 
+#if 0                           /* Unused */
 void
 FloatEwin(EWin * ewin)
 {
@@ -2064,6 +2021,7 @@ FloatEwin(EWin * ewin)
    call_depth--;
    EDBUG_RETURN_;
 }
+#endif
 
 void
 FloatEwinAt(EWin * ewin, int x, int y)
@@ -2106,144 +2064,21 @@ FloatEwinAt(EWin * ewin, int x, int y)
 void
 RestackEwin(EWin * ewin)
 {
-   Window             *wl;
-   EWin              **lst;
-   int                 num, bnum, wnum;
-   int                 i, j, tot;
-
-   Button            **blst;
-   EWin               *ewin2;
-
    EDBUG(3, "RestackEwin");
-   blst = (Button **) ListItemType(&bnum, LIST_TYPE_BUTTON);
-   num = desks.desk[ewin->desktop].num;
-   tot = 0;
-   wl = NULL;
+
    if (ewin->floating)
      {
-        if (blst)
-           Efree(blst);
         XRaiseWindow(disp, ewin->win);
         EDBUG_RETURN_;
      }
-   j = -1;
-   for (i = ENLIGHTENMENT_CONF_NUM_DESKTOPS - 1; i >= 0; i--)
-     {
-        if (deskorder[i] == ewin->desktop)
-          {
-             j = i - 1;
-             i = -1;
-          }
-     }
-   if (ewin->desktop != 0)
-      j = -1;
-   if (blst)
-     {
-        for (i = 0; i < bnum; i++)
-          {
-             if (blst[i]->sticky)
-               {
-                  tot++;
-                  wl = Erealloc(wl, tot * sizeof(Window));
-                  wl[tot - 1] = blst[i]->win;
-               }
-          }
-     }
-   lst = (EWin **) ListItemType(&wnum, LIST_TYPE_EWIN);
-   if (lst)
-     {
-        for (i = 0; i < wnum; i++)
-          {
-             if ( /* (lst[i]->sticky) || */ (lst[i]->floating))
-               {
-                  tot++;
-                  wl = Erealloc(wl, tot * sizeof(Window));
-                  wl[tot - 1] = lst[i]->win;
-               }
-          }
-        Efree(lst);
-     }
-   if (j >= 0)
-     {
-        for (i = 0; i <= j; i++)
-          {
-             if (deskorder[i] == 0)
-                i = ENLIGHTENMENT_CONF_NUM_DESKTOPS;
-             else
-               {
-                  tot++;
-                  wl = Erealloc(wl, tot * sizeof(Window));
-                  wl[tot - 1] = desks.desk[deskorder[i]].win;
-               }
-          }
-     }
-   if (blst)
-     {
-        for (i = 0; i < bnum; i++)
-          {
-             if ((blst[i]->desktop == ewin->desktop) && (blst[i]->ontop == 1)
-                 && (!blst[i]->sticky))
-               {
-                  tot++;
-                  wl = Erealloc(wl, tot * sizeof(Window));
-                  wl[tot - 1] = blst[i]->win;
-               }
-          }
-     }
-   tot += num;
-   ewin2 = NULL;
-   if (mode.menu_cover_win)
-     {
-        ewin2 = FindEwinByMenu(mode.cur_menu[0]);
-        if (ewin2)
-           tot++;
-     }
-   wl = Erealloc(wl, tot * sizeof(Window));
-   if ((mode.menu_cover_win) && (ewin2))
-     {
-        j = tot - num - 1;
-        for (i = 0; i < num; i++)
-          {
-             wl[j++] = desks.desk[ewin->desktop].list[i]->win;
-             if (desks.desk[ewin->desktop].list[i]->win == ewin2->win)
-                wl[j++] = mode.menu_cover_win;
-          }
-     }
-   else
-     {
-        for (i = 0; i < num; i++)
-          {
-             wl[tot - num + i] = desks.desk[ewin->desktop].list[i]->win;
-          }
-     }
-   if (blst)
-     {
-        for (i = 0; i < bnum; i++)
-          {
-             if ((blst[i]->desktop == ewin->desktop) && (blst[i]->ontop == -1)
-                 && (!blst[i]->sticky))
-               {
-                  tot++;
-                  wl = Erealloc(wl, tot * sizeof(Window));
-                  wl[tot - 1] = blst[i]->win;
-               }
-          }
-     }
-   tot++;
-   wl = Erealloc(wl, tot * sizeof(Window));
-   wl[tot - 1] = desks.desk[ewin->desktop].win;
-   XRestackWindows(disp, wl, tot);
-   if (wl)
-      Efree(wl);
-   if (blst)
-      Efree(blst);
-   ShowEdgeWindows();
+
+   StackDesktop(ewin->desktop);
+
    if (mode.mode == MODE_NONE)
      {
         PagerEwinOutsideAreaUpdate(ewin);
         ForceUpdatePagersForDesktop(ewin->desktop);
      }
-   HintsSetClientList();
    EDBUG_RETURN_;
 }
 
@@ -2332,15 +2167,6 @@ ShowEwin(EWin * ewin)
      }
    if (ewin->win)
      {
-        if (init_win1)
-          {
-             XRaiseWindow(disp, init_win1);
-             XRaiseWindow(disp, init_win2);
-          }
-        if (init_win_ext)
-           XRaiseWindow(disp, init_win_ext);
-        ShowEdgeWindows();
-        RaiseProgressbars();
         EMapWindow(disp, ewin->win);
      }
    ewin->visible = 1;

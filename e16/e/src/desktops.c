@@ -1816,120 +1816,121 @@ ShowDesktop(int num)
 void
 StackDesktops()
 {
+   EDBUG(2, "StackDesktops");
+
+   StackDesktop(0);
+
+   EDBUG_RETURN_;
+}
+
+#define _APPEND_TO_WIN_LIST(win) \
+  { \
+     wl = Erealloc(wl, ++tot * sizeof(Window)); \
+     wl[tot - 1] = win; \
+  }
+void
+StackDesktop(int num)
+{
    Window             *wl, *wl2;
-   int                 i, num, tot, bnum, n;
-   EWin              **lst;
+   int                 i, wnum, tot, bnum;
+   EWin              **lst, *ewin;
    Button            **blst;
 
-   EDBUG(2, "StackDesktops");
+   EDBUG(2, "StackDesktop");
    tot = 0;
    wl = NULL;
 
-   wl2 = ListProgressWindows(&n);
+   wl2 = ListProgressWindows(&wnum);
    if (wl2)
      {
-        tot += n;
-        wl = Erealloc(wl, tot * sizeof(Window));
-        for (i = 0; i < n; i++)
-           wl[tot - n + i] = wl2[i];
+        for (i = 0; i < wnum; i++)
+           _APPEND_TO_WIN_LIST(wl2[i]);
         Efree(wl2);
      }
    if (init_win_ext)
      {
-        tot += 1;
-        wl = Erealloc(wl, tot * sizeof(Window));
-        wl[tot - 1] = init_win_ext;
+        _APPEND_TO_WIN_LIST(init_win_ext);
      }
    if (init_win1)
      {
-        tot += 2;
-        wl = Erealloc(wl, tot * sizeof(Window));
-        wl[tot - 2] = init_win1;
-        wl[tot - 1] = init_win2;
+        _APPEND_TO_WIN_LIST(init_win1);
+        _APPEND_TO_WIN_LIST(init_win2);
      }
-   lst = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
+
+   lst = (EWin **) ListItemType(&wnum, LIST_TYPE_EWIN);
    blst = (Button **) ListItemType(&bnum, LIST_TYPE_BUTTON);
 
    if (blst)
      {
         for (i = 0; i < bnum; i++)
           {
-             if (blst[i]->sticky)
-               {
-                  tot++;
-                  wl = Erealloc(wl, tot * sizeof(Window));
-                  wl[tot - 1] = blst[i]->win;
-               }
+             if (!blst[i]->sticky || blst[i]->internal)
+                continue;
+
+             _APPEND_TO_WIN_LIST(blst[i]->win);
           }
      }
    if (lst)
      {
-        for (i = 0; i < num; i++)
+        for (i = 0; i < wnum; i++)
           {
-             if ( /* (lst[i]->sticky) || */ (lst[i]->floating))
-               {
-                  tot++;
-                  wl = Erealloc(wl, tot * sizeof(Window));
-                  wl[tot - 1] = lst[i]->win;
-               }
+             if (!lst[i]->floating)
+                continue;
+
+             _APPEND_TO_WIN_LIST(lst[i]->win);
           }
      }
    for (i = 0; i < ENLIGHTENMENT_CONF_NUM_DESKTOPS; i++)
      {
         if (deskorder[i] == 0)
-           i = ENLIGHTENMENT_CONF_NUM_DESKTOPS;
-        else
-          {
-             tot++;
-             wl = Erealloc(wl, tot * sizeof(Window));
-             wl[tot - 1] = desks.desk[deskorder[i]].win;
-          }
+           break;
+
+        _APPEND_TO_WIN_LIST(desks.desk[deskorder[i]].win);
      }
    if (blst)
      {
         for (i = 0; i < bnum; i++)
           {
-             if ((blst[i]->desktop == 0) && (blst[i]->ontop == 1)
-                 && (!blst[i]->sticky))
-               {
-                  tot++;
-                  wl = Erealloc(wl, tot * sizeof(Window));
-                  wl[tot - 1] = blst[i]->win;
-               }
+             if (blst[i]->desktop != num || blst[i]->ontop != 1 ||
+                 blst[i]->sticky || blst[i]->internal)
+                continue;
+
+             _APPEND_TO_WIN_LIST(blst[i]->win);
           }
      }
-   for (i = 0; i < desks.desk[0].num; i++)
+   for (i = 0; i < desks.desk[num].num; i++)
      {
-        tot++;
-        wl = Erealloc(wl, tot * sizeof(Window));
-        wl[tot - 1] = desks.desk[0].list[i]->win;
+        ewin = desks.desk[num].list[i];
+
+        _APPEND_TO_WIN_LIST(ewin->win);
+        if (ewin->win == mode.menu_win_covered)
+           _APPEND_TO_WIN_LIST(mode.menu_cover_win);
      }
    if (blst)
      {
         for (i = 0; i < bnum; i++)
           {
-             if ((blst[i]->desktop == 0) && (blst[i]->ontop == -1)
-                 && (!blst[i]->sticky))
-               {
-                  tot++;
-                  wl = Erealloc(wl, tot * sizeof(Window));
-                  wl[tot - 1] = blst[i]->win;
-               }
+             if (blst[i]->desktop != num || blst[i]->ontop != -1 ||
+                 blst[i]->sticky || blst[i]->internal)
+                continue;
+
+             _APPEND_TO_WIN_LIST(blst[i]->win);
           }
      }
-   tot++;
-   wl = Erealloc(wl, tot * sizeof(Window));
-   wl[tot - 1] = desks.desk[0].win;
+   _APPEND_TO_WIN_LIST(desks.desk[num].win);
+
+   XRestackWindows(disp, wl, tot);
+   ShowEdgeWindows();
+   RaiseProgressbars();
+   HintsSetClientList();
+
    if (wl)
-     {
-        XRestackWindows(disp, wl, tot);
-        Efree(wl);
-     }
+      Efree(wl);
    if (lst)
       Efree(lst);
    if (blst)
       Efree(blst);
-   ShowEdgeWindows();
+
    EDBUG_RETURN_;
 }
 
@@ -2139,6 +2140,7 @@ MoveEwinToDesktopAt(EWin * ewin, int num, int x, int y)
    EDBUG_RETURN_;
 }
 
+#if 0                           /* Unused */
 void
 FloatEwinAboveDesktops(EWin * ewin)
 {
@@ -2165,6 +2167,7 @@ FloatEwinAboveDesktops(EWin * ewin)
      }
    EDBUG_RETURN_;
 }
+#endif
 
 void
 DesktopAccounting()

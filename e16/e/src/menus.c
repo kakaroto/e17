@@ -1967,7 +1967,8 @@ ShowMenuMasker(Menu * m)
 
         parent = desks.desk[ewin->desktop].win;
         mode.menu_cover_win = ECreateEventWindow(parent, 0, 0, root.w, root.h);
-        wl[0] = ewin->win;
+        mode.menu_win_covered = ewin->win;
+        wl[0] = mode.menu_win_covered;
         wl[1] = mode.menu_cover_win;
         XSelectInput(disp, mode.menu_cover_win,
                      ButtonPressMask | ButtonReleaseMask | EnterWindowMask |
@@ -1981,8 +1982,11 @@ void
 HideMenuMasker(void)
 {
    if (mode.menu_cover_win)
-      EDestroyWindow(disp, mode.menu_cover_win);
-   mode.menu_cover_win = 0;
+     {
+        EDestroyWindow(disp, mode.menu_cover_win);
+        mode.menu_cover_win = 0;
+        mode.menu_win_covered = 0;
+     }
 }
 
 Menu               *

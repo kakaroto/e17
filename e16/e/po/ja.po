@@ -10,7 +10,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.5\n"
-"POT-Creation-Date: 2003-05-16 18:52+0200\n"
+"POT-Creation-Date: 2003-05-18 13:30+0200\n"
 "PO-Revision-Date: 2001-01-07 14:00+0900\n"
 "Last-Translator: Enlightenment-jp Mailing List <enlightenment-jp@UaUa.ORG>\n"
 "Language-Team: Japanese <ja@li.org>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Type: text/plain; charset=EUC-JP\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/actions.c:273 src/borders.c:2389 src/buttons.c:127 src/cmclass.c:97
+#: src/actions.c:273 src/borders.c:2215 src/buttons.c:127 src/cmclass.c:97
 #: src/cursors.c:120 src/desktops.c:379 src/iclass.c:111 src/tclass.c:86
 #: src/tooltips.c:1026
 #, c-format
@@ -244,7 +244,7 @@ msgstr "再起動"
 msgid "Exit"
 msgstr "終了"
 
-#: src/borders.c:2391
+#: src/borders.c:2217
 msgid "Border Error!"
 msgstr "border エラー"
 
@@ -1497,15 +1497,15 @@ msgstr "このデスクトップに移動"
 msgid "Desktop %i"
 msgstr "デスクトップ %i"
 
-#: src/menus.c:2011
+#: src/menus.c:2015
 msgid "Show/Hide this group"
 msgstr "このグループを 表示/非表示 にする"
 
-#: src/menus.c:2014
+#: src/menus.c:2018
 msgid "Iconify this group"
 msgstr "このグループをアイコンに"
 
-#: src/menus.c:2026
+#: src/menus.c:2030
 #, c-format
 msgid "Group %i"
 msgstr "グループ %i"

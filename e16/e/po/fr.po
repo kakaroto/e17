@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.5\n"
-"POT-Creation-Date: 2003-05-16 18:52+0200\n"
+"POT-Creation-Date: 2003-05-18 13:30+0200\n"
 "PO-Revision-Date: 2000-01-05 00:25+0100\n"
 "Last-Translator: Sylvain GIL <tootella@tootella.com>\n"
 "Language-Team: French <fr@li.org>\n"
@@ -13,7 +13,7 @@ msgstr ""
 "Content-Type: text/plain; charset=iso-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/actions.c:273 src/borders.c:2389 src/buttons.c:127 src/cmclass.c:97
+#: src/actions.c:273 src/borders.c:2215 src/buttons.c:127 src/cmclass.c:97
 #: src/cursors.c:120 src/desktops.c:379 src/iclass.c:111 src/tclass.c:86
 #: src/tooltips.c:1026
 #, c-format
@@ -235,7 +235,7 @@ msgstr "Redémarrer"
 msgid "Exit"
 msgstr "Sortir"
 
-#: src/borders.c:2391
+#: src/borders.c:2217
 msgid "Border Error!"
 msgstr ""
 
@@ -1455,15 +1455,15 @@ msgstr "Aller à ce bureau"
 msgid "Desktop %i"
 msgstr "Bureau %i"
 
-#: src/menus.c:2011
+#: src/menus.c:2015
 msgid "Show/Hide this group"
 msgstr "Montrer/Cacher ce groupe"
 
-#: src/menus.c:2014
+#: src/menus.c:2018
 msgid "Iconify this group"
 msgstr "Iconifier ce groupe"
 
-#: src/menus.c:2026
+#: src/menus.c:2030
 #, c-format
 msgid "Group %i"
 msgstr "Groupe %i"

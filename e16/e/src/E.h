@@ -1163,6 +1163,7 @@ typedef struct _emode {
    int                 edge_snap_dist;
    int                 screen_snap_dist;
    Window              menu_cover_win;
+   Window              menu_win_covered;
    char                all_new_windows_get_focus;
    char                new_transients_get_focus;
    char                new_transients_get_focus_if_group_focused;
@@ -2125,6 +2126,7 @@ void                LowerDesktop(int num);
 void                HideDesktop(int num);
 void                ShowDesktop(int num);
 void                StackDesktops(void);
+void                StackDesktop(int num);
 void                UncoverDesktop(int num);
 void                MoveEwinToDesktop(EWin * ewin, int num);
 void                DesktopAddEwinToBottom(EWin * ewin);
