@@ -48,6 +48,18 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define D(fmt, args...)
 #endif
 
+#define SWAP32(x) \
+((((x) & 0x000000ff ) << 24) |\
+ (((x) & 0x0000ff00 ) << 8) |\
+ (((x) & 0x00ff0000 ) >> 8) |\
+ (((x) & 0xff000000 ) >> 24))
+
+#ifdef WORDS_BIGENDIAN
+#define ENDIAN_SWAP(x) (SWAP(x))
+#else
+#define ENDIAN_SWAP(x) (x)
+#endif
+
 
 typedef struct _MsChunk
 {
@@ -132,7 +144,8 @@ ani_init (char *filename)
   ani->cp += ani_read_int32(ani->fp, &ani->data_size, 1);
   ani->cp += ani_read_int32(ani->fp, &ani->chunk_id, 1);
 
-  if (ani->riff_id != 0x46464952 || ani->chunk_id != 0x4E4F4341)
+  if (ani->riff_id != ENDIAN_SWAP(0x46464952) ||
+      ani->chunk_id != ENDIAN_SWAP(0x4E4F4341))
     {
       ani_cleanup(ani);
       return NULL;
@@ -175,7 +188,7 @@ ani_load_chunk(MsAni *ani)
 
   ani->cp += ani_read_int32(ani->fp, &chunk_id, 1);
 
-  while (chunk_id == 0x5453494C)
+  while (chunk_id == ENDIAN_SWAP(0x5453494C))
     {
       D("Skipping LIST chunk header ...\n");
       ani->cp += ani_read_int32(ani->fp, &dummy, 1);
@@ -272,7 +285,7 @@ load(ImlibImage *im, ImlibProgressFunction progress, char progress_granularity, 
 
       for (chunk = ani->chunks; chunk; chunk = chunk->next)
 	{
-	  if (chunk->chunk_id == 0x6E6F6369)
+	  if (chunk->chunk_id == ENDIAN_SWAP(0x6E6F6369))
 	    {
 	      ImlibLoadError err;
 	      ImlibImage *temp_im;
