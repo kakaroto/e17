@@ -703,6 +703,8 @@ _entrance_session_user_list_fix(Entrance_Session * e)
       snprintf(buf, PATH_MAX, "default.eet");
       if ((eu = entrance_user_new(e->auth->user, buf, e->session)))
       {
+	  e->config->users.hash = evas_hash_add(e->config->users.hash,
+						eu->name, eu);
          e->config->users.keys =
             evas_list_prepend(e->config->users.keys, eu->name);
          entrance_config_user_list_write(e->config);

@@ -342,7 +342,7 @@ entrance_config_user_list_write(Entrance_Config * e)
       for (i = 0, l = e->users.keys; l && i < e->users.remember_n;
            l = l->next, i++)
       {
-         if ((eu = (Entrance_User *) l->data))
+         if ((eu = evas_hash_find(e->users.hash, (char*)l->data)))
          {
             if (eu->name)
             {
