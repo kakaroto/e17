@@ -4,12 +4,16 @@
 #include <png.h>
 #include "md5.h"
 #include <limits.h>
+#include <string.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include "../config.h"
+#ifndef PATH_MAX
+#define PATH_MAX 4096
+#endif
 #ifdef HAVE_EPEG_H
 #include <Epeg.h>
 #endif
@@ -293,12 +297,12 @@ epsilon_generate(Epsilon *e)
     int iw, ih;
     char outfile[PATH_MAX];
 
-    if(!e || !e->hash || !e->src) return(EPSILON_FAIL);
 #ifdef HAVE_EPEG_H
     Epeg_Image *im;
     Epeg_Thumbnail_Info info;
     int len = 0;
     len = strlen(e->src);
+    if(!e || !e->hash || !e->src) return(EPSILON_FAIL);
     if((len > 4) && 
 	(
 	!strcmp(&e->src[len-3], "jpg") ||
@@ -337,6 +341,8 @@ epsilon_generate(Epsilon *e)
 	Imlib_Image src = NULL;
 	int tw = THUMBNAIL_SIZE, th = THUMBNAIL_SIZE;
     
+	if(!e || !e->hash || !e->src) 
+	    return(EPSILON_FAIL);
 	if(stat(e->src, &filestatus) != 0)
 	    return(EPSILON_FAIL);
         
