@@ -2072,6 +2072,9 @@ int                 doRaiseDesktop(void *params);
 int                 doLowerDesktop(void *params);
 int                 doDragDesktop(void *params);
 int                 doStick(void *params);
+int                 doSkipTask(void *params);
+int                 doSkipWinList(void *params);
+int                 doSkipFocus(void *params);
 int                 doStickNoGroup(void *params);
 int                 doInplaceDesktop(void *params);
 int                 doDragButtonStart(void *params);
@@ -2389,8 +2392,8 @@ void                ModifyCMClass(char *name,
 				  int rnum, unsigned char *rpx,
 				  unsigned char *rpy, int gnum,
 				  unsigned char *gpx, unsigned char *gpy,
-
 				  int bnum, unsigned char *bpx,
+
 				  unsigned char *bpy);
 
 /* config.c functions */
@@ -2517,8 +2520,8 @@ Iconbox            *SelectIconboxForEwin(EWin * ewin);
 /* slideouts.c functions */
 void                SlideWindowSizeTo(Window win, int fx, int fy,
 				      int tx, int ty,
-
 				      int fw, int fh, int tw, int th,
+
 				      int speed);
 Slideout           *CreateSlideout(char *name, char dir);
 void                ShowSlideout(Slideout * s, Window win);
