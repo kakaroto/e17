@@ -193,12 +193,7 @@ GetContextEwin(void)
    if (mode.focuswin)
       EDBUG_RETURN(mode.focuswin);
 
-   /* FIXME: Is this semicolin supposed to be here in this if statement? */
-   /* until someone says one way or another its commented out --Mandrake */
-   /* if (mode.mouse_over_win); */
    EDBUG_RETURN(mode.mouse_over_win);
-
-   return NULL;
 }
 
 void

@@ -287,11 +287,12 @@ PagerMoveResize(EWin * ewin, int resize)
 static void
 PagerRefresh(EWin * ewin)
 {
-    /* This doesn't do anything anymore apparently
-     * --Mandrake
-     */
-    return;
-    ewin = NULL;
+   /* This doesn't do anything anymore apparently
+    * --Mandrake
+    * This is new code.
+    * It can be removed but I have kept it around, just in case /Kim */
+   return;
+   ewin = NULL;
 }
 
 static void
@@ -408,23 +409,6 @@ PagerDestroy(Pager * p)
       Efree(p->border_name);
    Efree(p);
 }
-
-#if 0
-/*
- e  Doesn't look like this is ever used, commented out for now
- * --Mandrake
- */
-static void
-PagerOnUnmap(Pager * p)
-{
-   PagerHideHi(p);
-   if (p == mode.context_pager)
-     {
-	mode.context_pager = NULL;
-	mode.mode = MODE_NONE;
-     }
-}
-#endif
 
 Pager             **
 PagersForDesktop(int d, int *num)

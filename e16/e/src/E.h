@@ -1676,7 +1676,7 @@ void                AddToFamily(Window win);
 EWin               *AddInternalToFamily(Window win, char *bname, int type,
 					void *ptr,
 					void (*init) (EWin * ewin, void *ptr));
-void                CalcEwinSizes(EWin *ewin);
+void                CalcEwinSizes(EWin * ewin);
 void                HonorIclass(char *s, int id);
 void                SyncBorderToEwin(EWin * ewin);
 void                UpdateBorderInfo(EWin * ewin);
@@ -2236,7 +2236,7 @@ void                FreePmapMask(PmapMask * pmm);
 void                IB_Animate(char iconify, EWin * from, EWin * to);
 void                IconifyEwin(EWin * ewin);
 void                DeIconifyEwin(EWin * ewin);
-void                MakeIcon(EWin *ewin);
+void                MakeIcon(EWin * ewin);
 void                RemoveMiniIcon(EWin * ewin);
 Iconbox            *IconboxCreate(char *name);
 void                IconboxDestroy(Iconbox * ib);

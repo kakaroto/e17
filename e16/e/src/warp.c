@@ -47,7 +47,7 @@ static Window       warpFocusTitleWindow = 0;
 static int          warptitles_num = 0;
 static Window      *warptitles = NULL;
 static EWin       **warptitles_ewin = NULL;
-static unsigned int          warpFocusKey = 0;
+static unsigned int warpFocusKey = 0;
 
 int
 WarpFocusHandleEvent(XEvent * ev)

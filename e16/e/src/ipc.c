@@ -4106,11 +4106,12 @@ IPC_FocusMode(char *params, Client * c)
 static void
 IPC_ShowIcons(char *params, Client * c)
 {
-    /* Doesn't look like this function is doing anything, but it used to 
-     * if I recall correctly --Mandrake */
-    return;
-    params = NULL;
-    c = NULL;
+   /* Doesn't look like this function is doing anything, but it used to 
+    * if I recall correctly --Mandrake
+    * If it did anything useful, it was before 0.16.5 /Kim */
+   return;
+   params = NULL;
+   c = NULL;
 }
 
 static void

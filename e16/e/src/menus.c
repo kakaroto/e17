@@ -1895,7 +1895,7 @@ MenuCreateMoveToDesktop(char *name, MenuStyle * ms)
 }
 #endif
 
-static Menu               *
+static Menu        *
 MenuCreateFromGroups(char *name, MenuStyle * ms)
 {
    Menu               *m, *mm;

@@ -82,7 +82,7 @@ static FXHandler    fx_handlers[] = {
 static FXHandler   *
 FX_Find(const char *name)
 {
-   unsigned int                 i;
+   unsigned int        i;
 
    for (i = 0; i < N_FX_HANDLERS; i++)
       if (!strcmp(fx_handlers[i].name, name))
@@ -138,7 +138,7 @@ FX_Op(const char *name, int fx_op)
 static void
 FX_Activate(char *effect)
 {
-   unsigned int                 i;
+   unsigned int        i;
 
    for (i = 0; i < N_FX_HANDLERS; i++)
      {
@@ -158,7 +158,7 @@ FX_Activate(char *effect)
 void
 FX_DeskChange(void)
 {
-   unsigned int                 i;
+   unsigned int        i;
 
    for (i = 0; i < N_FX_HANDLERS; i++)
      {
@@ -173,7 +173,7 @@ FX_DeskChange(void)
 void
 FX_Pause(void)
 {
-   unsigned int                 i;
+   unsigned int        i;
 
    for (i = 0; i < N_FX_HANDLERS; i++)
      {
@@ -198,7 +198,7 @@ FX_Pause(void)
 char              **
 FX_Active(int *num)
 {
-   unsigned int                 i;
+   unsigned int        i;
    char              **list = NULL;
 
    *num = 0;
@@ -218,7 +218,7 @@ FX_Active(int *num)
 int
 FX_IsOn(char *effect)
 {
-   unsigned int                 i;
+   unsigned int        i;
 
    for (i = 0; i < N_FX_HANDLERS; i++)
      {
