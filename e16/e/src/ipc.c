@@ -56,6 +56,7 @@ void                IPC_Modules(char *params, Client * c);
 void                IPC_DockPosition(char *params, Client * c);
 void                IPC_KDE(char *params, Client * c);
 void                IPC_MemDebug(char *params, Client * c);
+void                IPC_Remember(char *params, Client * c);
 
 /* Changes By Asmodean_ <naru@caltech.edu> / #E@Efnet
  * 
@@ -545,6 +546,26 @@ IPCStruct           IPCArray[] =
       "leaks, over-allocations of memory, and other memory-related problems\n"
       "very easily with all pointers allocated stamped with a time, call\n"
       "tree that led to that allocation, file and line, and the chunk size.\n"
+   },
+   {
+      IPC_Remember,
+      "remember",
+      "Remembers paramaters for cleint window ID x",
+      "usage:\n"
+      "  remember <windowid> <parameter>\n"
+      "  where parameter is one of: all, none, border, desktop, size,\n"
+      "  location, layer, sticky, icon, shade, group, dialog\n"
+   },
+   {
+      IPC_MemDebug,
+      "dump_mem_debug",
+      "Dumps memory debugging information out to e.mem.out",
+      "Use this command to have E dump its current memory debugging table\n"
+      "to the e.mem.out file. NOTE: please read comments at the top of\n"
+      "memory.c to see how to enable this. This will let you hunt memory\n"
+      "leaks, over-allocations of memory, and other memory-related problems\n"
+      "very easily with all pointers allocated stamped with a time, call\n"
+      "tree that led to that allocation, file and line, and the chunk size.\n"
    }
 };
 
@@ -556,6 +577,61 @@ IPCStruct           IPCArray[] =
  * IPC array just above.
  * - Mandrake
  */
+
+void
+IPC_Remember(char *params, Client * c)
+{
+
+   char                buf[FILEPATH_LEN_MAX];
+
+   buf[0] = 0;
+
+   if (params)
+     {
+	unsigned int        win;
+	EWin               *ewin;
+
+	sscanf(params, "%x", &win);
+	ewin = FindItem(NULL, (int)win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
+	if (ewin)
+	  {
+	     params = atword(params, 2);
+	     if (params)
+	       {
+		  if (!strcmp((char *)params, "all"))
+		     SnapshotEwinAll(ewin);
+		  else if (!strcmp((char *)params, "none"))
+		     UnsnapshotEwin(ewin);
+		  else if (!strcmp((char *)params, "border"))
+		     SnapshotEwinBorder(ewin);
+		  else if (!strcmp((char *)params, "desktop"))
+		     SnapshotEwinDesktop(ewin);
+		  else if (!strcmp((char *)params, "size"))
+		     SnapshotEwinSize(ewin);
+		  else if (!strcmp((char *)params, "location"))
+		     SnapshotEwinLocation(ewin);
+		  else if (!strcmp((char *)params, "layer"))
+		     SnapshotEwinLayer(ewin);
+		  else if (!strcmp((char *)params, "sticky"))
+		     SnapshotEwinSticky(ewin);
+		  else if (!strcmp((char *)params, "icon"))
+		     SnapshotEwinIcon(ewin);
+		  else if (!strcmp((char *)params, "shade"))
+		     SnapshotEwinShade(ewin);
+		  else if (!strcmp((char *)params, "group"))
+		     SnapshotEwinGroups(ewin, 1);
+		  else if (!strcmp((char *)params, "dialog"))
+		     SnapshotEwinDialog(ewin);
+	       }
+	  }
+     }
+   else
+      Esnprintf(buf, sizeof(buf), "Error: no parameters\n");
+
+   if (buf[0])
+      CommsSend(c, buf);
+   return;
+}
 
 void
 IPC_KDE(char *params, Client * c)
@@ -1470,6 +1546,59 @@ IPC_ImageClass(char *params, Client * c)
 	       }
 	     else if (!strcmp(param2, "modify"))
 	       {
+	       }
+	     else if (!strcmp(param2, "get_padding"))
+	       {
+		  ImageClass         *iclass;
+
+		  iclass = (ImageClass *) FindItem(param1, 0, LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
+		  if (iclass)
+		     Esnprintf(buf, sizeof(buf),
+			       "%i %i %i %i",
+			       iclass->padding.left,
+			       iclass->padding.right,
+			       iclass->padding.top,
+			       iclass->padding.bottom);
+		  else
+		     Esnprintf(buf, sizeof(buf),
+			       "Error: Imageclass does not exist");
+	       }
+	     else if (!strcmp(param2, "get_image_size"))
+	       {
+		  ImageClass         *iclass;
+
+		  iclass = (ImageClass *) FindItem(param1, 0, LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
+		  if (iclass)
+		    {
+		       ImlibImage         *im = NULL;
+
+		       if (iclass->norm.normal->im_file)
+			 {
+			    if (!iclass->norm.normal->real_file)
+			       iclass->norm.normal->real_file =
+				  FindFile(iclass->norm.normal->im_file);
+			    if (iclass->norm.normal->real_file)
+			       im =
+				  Imlib_load_image(id,
+					      iclass->norm.normal->real_file);
+			    if (im)
+			      {
+				 Esnprintf(buf, sizeof(buf),
+					   "%i %i", im->rgb_width,
+					   im->rgb_height);
+				 Imlib_destroy_image(id, im);
+			      }
+			    else
+			       Esnprintf(buf, sizeof(buf),
+					 "Error: Image does not exist");
+			 }
+		       else
+			  Esnprintf(buf, sizeof(buf),
+				    "Error: Image does not exist");
+		    }
+		  else
+		     Esnprintf(buf, sizeof(buf),
+			       "Error: Imageclass does not exist");
 	       }
 	     else if (!strcmp(param2, "apply"))
 	       {
