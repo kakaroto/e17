@@ -5,3 +5,5 @@ Makefile.in
 stamp-*
 *.gmo
 POTFILES
+cat-id-tbl.c
+enlightenment.pot
