@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
-"POT-Creation-Date: 2003-07-12 07:20+0200\n"
+"POT-Creation-Date: 2003-07-12 11:50+0200\n"
 "PO-Revision-Date: 2000-01-14 20:43-0300\n"
 "Last-Translator: Vladimir STEPANOV <stepanov@bird.iki.rssi.ru>\n"
 "Language-Team: Russian <ru@li.org>\n"
@@ -116,16 +116,16 @@ msgstr ""
 "Программа не может быть выполнена,\n"
 "так как файл не является обычным файлом.\n"
 
-#: src/actions.c:3270
+#: src/actions.c:3268
 #, c-format
 msgid "About Enlightenment %s"
 msgstr "Enlightenment %s"
 
-#: src/actions.c:3286
+#: src/actions.c:3284
 msgid "Welcome to the "
 msgstr "Добро пожаловать в "
 
-#: src/actions.c:3286
+#: src/actions.c:3284
 msgid ""
 " version\n"
 "of the Enlightenment window manager.\n"
@@ -139,7 +139,7 @@ msgid ""
 "This code last updated on:\n"
 msgstr ""
 
-#: src/actions.c:3296
+#: src/actions.c:3294
 msgid ""
 "\n"
 "\n"
@@ -149,7 +149,7 @@ msgid ""
 "Mandrake - mandrake@mandrake.net\n"
 msgstr ""
 
-#: src/actions.c:3301 src/dialog.c:304 src/groups.c:693 src/settings.c:329
+#: src/actions.c:3299 src/dialog.c:304 src/groups.c:693 src/settings.c:329
 #: src/settings.c:599 src/settings.c:971 src/settings.c:1179
 #: src/settings.c:1416 src/settings.c:1560 src/settings.c:1663
 #: src/settings.c:1771 src/settings.c:1855 src/settings.c:1936
@@ -159,11 +159,11 @@ msgstr ""
 msgid "OK"
 msgstr ""
 
-#: src/actions.c:3457
+#: src/actions.c:3455
 msgid "  Pick the group the window will belong to:  \n"
 msgstr "  Выберите группу, к которой будет принадлежать окно:  \n"
 
-#: src/actions.c:3812
+#: src/actions.c:3810
 msgid ""
 "\n"
 "  There's no current group at the moment.  \n"
@@ -183,23 +183,23 @@ msgstr ""
 "  Выберите другую группу, к которой будет принадлежать окно, здесь:  \n"
 "\n"
 
-#: src/actions.c:3845
+#: src/actions.c:3843
 msgid "   Select the group to remove the window from.  "
 msgstr "   Выберите группу, из которой нужно убрать это окно.  "
 
-#: src/actions.c:3869
+#: src/actions.c:3867
 msgid "  Select the group to break  "
 msgstr "  Выберите группу, которую хотите разорвать  "
 
-#: src/actions.c:3897
+#: src/actions.c:3895
 msgid "You have been warned about the dangers of Zoom mode\n"
 msgstr "Вас предупреждали об опасностях режима изменения разрешения\n"
 
-#: src/actions.c:3900
+#: src/actions.c:3898
 msgid "Warning !!!"
 msgstr "Предупреждение !!!"
 
-#: src/actions.c:3901
+#: src/actions.c:3899
 msgid ""
 "This feature is heavily reliant on a feature of your\n"
 "X Server called the Vid Mode Extension. This feature exists\n"
@@ -1278,11 +1278,11 @@ msgstr "Сделать новый Iconbox"
 msgid "Message"
 msgstr ""
 
-#: src/ipc.c:4862
+#: src/ipc.c:4859
 msgid "Enlightenment IPC Commands Help"
 msgstr "Справка по командам Enlightenment IPC"
 
-#: src/ipc.c:4866 src/ipc.c:4905
+#: src/ipc.c:4863 src/ipc.c:4902
 msgid ""
 "\n"
 "commands currently available:\n"
@@ -1290,7 +1290,7 @@ msgstr ""
 "\n"
 "доступные команды:\n"
 
-#: src/ipc.c:4868
+#: src/ipc.c:4865
 msgid ""
 "use \"help all\" for descriptions of each command\n"
 "use \"help <command>\" for an individual description\n"
@@ -1300,15 +1300,15 @@ msgstr ""
 "\"help <команда>\": описание команды\n"
 "\n"
 
-#: src/ipc.c:4907
+#: src/ipc.c:4904
 msgid "use \"help <command>\" for an individual description\n"
 msgstr "\"help <команда>\": описание команды\n"
 
-#: src/ipc.c:4909
+#: src/ipc.c:4906
 msgid "<command> : <description>\n"
 msgstr "<команда> : <описание>\n"
 
-#: src/ipc.c:5015
+#: src/ipc.c:5012
 #, c-format
 msgid ""
 "Enlightenment Version : %s\n"

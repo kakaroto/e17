@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
-"POT-Creation-Date: 2003-07-12 07:20+0200\n"
+"POT-Creation-Date: 2003-07-12 11:50+0200\n"
 "PO-Revision-Date: 2000-03-29 21:12+0200\n"
 "Last-Translator: Matthias Warkus <mawa@iname.com>\n"
 "Language-Team: Enlightenment l10n <e-develop@enlightenment.org>\n"
@@ -124,17 +124,17 @@ msgstr ""
 "Datei ist.\n"
 
 # src/actions.c:3282
-#: src/actions.c:3270
+#: src/actions.c:3268
 #, c-format
 msgid "About Enlightenment %s"
 msgstr "Über Enlightenment %s"
 
 # src/actions.c:3298
-#: src/actions.c:3286
+#: src/actions.c:3284
 msgid "Welcome to the "
 msgstr "Willkommen zum "
 
-#: src/actions.c:3286
+#: src/actions.c:3284
 msgid ""
 " version\n"
 "of the Enlightenment window manager.\n"
@@ -148,7 +148,7 @@ msgid ""
 "This code last updated on:\n"
 msgstr ""
 
-#: src/actions.c:3296
+#: src/actions.c:3294
 msgid ""
 "\n"
 "\n"
@@ -164,7 +164,7 @@ msgstr ""
 # src/settings.c:1460 src/settings.c:1522 src/settings.c:1610
 # src/settings.c:2012 src/settings.c:3405 src/settings.c:3750
 # src/settings.c:4048 src/settings.c:4186 src/snaps.c:547 src/sound.c:262
-#: src/actions.c:3301 src/dialog.c:304 src/groups.c:693 src/settings.c:329
+#: src/actions.c:3299 src/dialog.c:304 src/groups.c:693 src/settings.c:329
 #: src/settings.c:599 src/settings.c:971 src/settings.c:1179
 #: src/settings.c:1416 src/settings.c:1560 src/settings.c:1663
 #: src/settings.c:1771 src/settings.c:1855 src/settings.c:1936
@@ -175,12 +175,12 @@ msgid "OK"
 msgstr "OK"
 
 # src/actions.c:3474
-#: src/actions.c:3457
+#: src/actions.c:3455
 msgid "  Pick the group the window will belong to:  \n"
 msgstr "  Wählen Sie die Gruppe aus, zu der das Fenster gehören wird:  \n"
 
 # src/actions.c:3824
-#: src/actions.c:3812
+#: src/actions.c:3810
 msgid ""
 "\n"
 "  There's no current group at the moment.  \n"
@@ -201,27 +201,27 @@ msgstr ""
 "\n"
 
 # src/actions.c:3858
-#: src/actions.c:3845
+#: src/actions.c:3843
 msgid "   Select the group to remove the window from.  "
 msgstr "   Wählen Sie die Gruppe, aus der Sie das Fenster entfernen wollen.  "
 
 # src/actions.c:3883
-#: src/actions.c:3869
+#: src/actions.c:3867
 msgid "  Select the group to break  "
 msgstr "  Wählen Sie die aufzulösende Gruppe  "
 
 # src/actions.c:3911
-#: src/actions.c:3897
+#: src/actions.c:3895
 msgid "You have been warned about the dangers of Zoom mode\n"
 msgstr "Man hat Sie über die Gefahren des Zoommodus gewarnt\n"
 
 # src/actions.c:3914
-#: src/actions.c:3900
+#: src/actions.c:3898
 msgid "Warning !!!"
 msgstr "Warnung!"
 
 # src/actions.c:3916
-#: src/actions.c:3901
+#: src/actions.c:3899
 msgid ""
 "This feature is heavily reliant on a feature of your\n"
 "X Server called the Vid Mode Extension. This feature exists\n"
@@ -1428,12 +1428,12 @@ msgid "Message"
 msgstr "Mitteilung"
 
 # src/ipc.c:4737
-#: src/ipc.c:4862
+#: src/ipc.c:4859
 msgid "Enlightenment IPC Commands Help"
 msgstr "Hilfe zu Enlightenment-IPC-Befehlen"
 
 # src/ipc.c:4741 src/ipc.c:4780
-#: src/ipc.c:4866 src/ipc.c:4905
+#: src/ipc.c:4863 src/ipc.c:4902
 msgid ""
 "\n"
 "commands currently available:\n"
@@ -1442,7 +1442,7 @@ msgstr ""
 "Momentan verfügbare Befehle:\n"
 
 # src/ipc.c:4743
-#: src/ipc.c:4868
+#: src/ipc.c:4865
 msgid ""
 "use \"help all\" for descriptions of each command\n"
 "use \"help <command>\" for an individual description\n"
@@ -1453,17 +1453,17 @@ msgstr ""
 "\n"
 
 # src/ipc.c:4781
-#: src/ipc.c:4907
+#: src/ipc.c:4904
 msgid "use \"help <command>\" for an individual description\n"
 msgstr "\"help <befehl>\" gibt eine nähere Beschreibung\n"
 
 # src/ipc.c:4783
-#: src/ipc.c:4909
+#: src/ipc.c:4906
 msgid "<command> : <description>\n"
 msgstr "<befehl> : <beschreibung>\n"
 
 # src/ipc.c:4890
-#: src/ipc.c:5015
+#: src/ipc.c:5012
 #, c-format
 msgid ""
 "Enlightenment Version : %s\n"
