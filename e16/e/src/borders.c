@@ -1485,7 +1485,6 @@ CreateEwin()
    ewin->skipwinlist = 0;
    ewin->skipfocus = 0;
    ewin->neverfocus = 0;
-   ewin->neverraise = 0;
    ewin->focusclick = 0;
    ewin->ewmh_flags = 0;
    ewin->menu = NULL;
@@ -2079,9 +2078,6 @@ RaiseEwin(EWin * ewin)
    EDBUG(3, "RaiseEwin");
    call_depth++;
    if (call_depth > 256)
-      EDBUG_RETURN_;
-
-   if (ewin->neverraise)
       EDBUG_RETURN_;
 
    if (ewin->win)

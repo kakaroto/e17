@@ -1029,7 +1029,6 @@ typedef struct _ewin
    char                skipwinlist;
    char                focusclick;
    char                neverfocus;
-   char                neverraise;
    int                 ewmh_flags;
    Menu               *menu;
    Window              shownmenu;

@@ -603,7 +603,6 @@ EWMH_GetWindowType(EWin * ewin)
 #if 0				/* Should be configurable */
 	ewin->focusclick = 1;
 #endif
-	ewin->neverraise = 1;
 	ewin->skipfocus = 1;
 	ewin->fixedpos = 1;
 	b = (Border *) FindItem("BORDERLESS", 0, LIST_FINDBY_NAME,
