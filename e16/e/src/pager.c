@@ -650,7 +650,8 @@ PagerShow(Pager * p)
    pq = Mode.queue_up;
    Mode.queue_up = 0;
 
-   ewin = AddInternalToFamily(p->win, NULL, EWIN_TYPE_PAGER, p, PagerEwinInit);
+   ewin =
+      AddInternalToFamily(p->win, "PAGER", EWIN_TYPE_PAGER, p, PagerEwinInit);
    if (ewin)
      {
 	int                 ax, ay, w, h;

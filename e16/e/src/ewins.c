@@ -906,15 +906,11 @@ AddInternalToFamily(Window win, const char *bname, int type, void *ptr,
    EWin               *ewin;
    Border             *b;
 
+   ecore_x_grab();
+
    b = NULL;
    if (bname)
-     {
-	b = FindItem(bname, 0, LIST_FINDBY_NAME, LIST_TYPE_BORDER);
-	if (!b)
-	   b = FindItem("DEFAULT", 0, LIST_FINDBY_NAME, LIST_TYPE_BORDER);
-     }
-
-   ecore_x_grab();
+      b = FindItem(bname, 0, LIST_FINDBY_NAME, LIST_TYPE_BORDER);
 
    ewin = AdoptInternal(win, b, type, init, ptr);
 

@@ -577,7 +577,7 @@ IconboxShow(Iconbox * ib)
 	HintsSetWindowClass(ib->win, ib->name, "Enlightenment_IconBox");
      }
 
-   ewin = AddInternalToFamily(ib->win, NULL, EWIN_TYPE_ICONBOX, ib,
+   ewin = AddInternalToFamily(ib->win, "ICONBOX", EWIN_TYPE_ICONBOX, ib,
 			      IconboxEwinInit);
    if (ewin)
      {

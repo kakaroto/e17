@@ -621,7 +621,7 @@ ShowDialog(Dialog * d)
    pq = Mode.queue_up;
    Mode.queue_up = 0;
 
-   ewin = AddInternalToFamily(d->win, NULL, EWIN_TYPE_DIALOG, d,
+   ewin = AddInternalToFamily(d->win, "DIALOG", EWIN_TYPE_DIALOG, d,
 			      DialogEwinInit);
    if (ewin)
      {
