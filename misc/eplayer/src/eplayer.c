@@ -282,7 +282,7 @@ static int load_playlist(void *data) {
 	ui_refresh_time(player, 0);
 	ui_refresh_seeker(player, 0);
 
-	return 0; /* stop timer */
+	return 0; /* stop idler */
 }
 
 int main(int argc, const char **argv) {
@@ -303,8 +303,11 @@ int main(int argc, const char **argv) {
 		eplayer_free(player);
 		return 1;
 	}	
-	
-	ecore_timer_add(1, load_playlist, player);
+
+	/* the playlist is loaded in an Ecore_Idler, so the GUI
+	 * will be drawn first
+	 */
+	ecore_idler_add(load_playlist, player);
 
 	ui_refresh_volume(player);
 	ecore_timer_add(1.5, ui_refresh_volume, player);
