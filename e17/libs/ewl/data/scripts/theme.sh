@@ -14,7 +14,7 @@ edb_ed $DB add "/box/base/visible" str "no"
 echo -n "."
 edb_ed $DB add "/button/base" str "appearance/button.bits.db"
 edb_ed $DB add "/button/base/visible" str "yes"
-edb_ed $DB add "/button/label/font" str "borzoib"
+edb_ed $DB add "/button/label/font" str "nationff"
 edb_ed $DB add "/button/label/font_size" int 12
 edb_ed $DB add "/button/label/style" str "shadow"
 
@@ -24,7 +24,7 @@ edb_ed $DB add "/check/base/visible" str "yes"
 edb_ed $DB add "/button/check/base" str "appearance/checkbutton.bits.db"
 edb_ed $DB add "/button/check/base/visible" str "no"
 
-edb_ed $DB add "/button/check/label/font" str "borzoib"
+edb_ed $DB add "/button/check/label/font" str "nationff"
 edb_ed $DB add "/button/check/label/font_size" int 12
 edb_ed $DB add "/button/check/label/style" str "shadow"
 
@@ -34,7 +34,7 @@ edb_ed $DB add "/radio/base/visible" str "yes"
 edb_ed $DB add "/button/radio/base" str "appearance/radio.bits.db"
 edb_ed $DB add "/button/radio/base/visible" str "yes"
 
-edb_ed $DB add "/button/radio/label/font" str "borzoib"
+edb_ed $DB add "/button/radio/label/font" str "nationff"
 edb_ed $DB add "/button/radio/label/font_size" int 12
 edb_ed $DB add "/button/radio/label/style" str "shadow"
 
@@ -47,7 +47,7 @@ edb_ed $DB add "/selection/base/visible" str "yes"
 
 edb_ed $DB add "/entry/base" str "appearance/entry.bits.db"
 edb_ed $DB add "/entry/base/visible" str "yes"
-edb_ed $DB add "/entry/text/font" str "borzoib"
+edb_ed $DB add "/entry/text/font" str "nationff"
 edb_ed $DB add "/entry/text/font_size" int 12
 edb_ed $DB add "/entry/text/style" str "shadow"
 
@@ -71,7 +71,7 @@ edb_ed $DB add "/notebook/content_box/base/visible" str "no"
 edb_ed $DB add "/notebook/tab_box/base/visible" str "no"
 edb_ed $DB add "/notebook/tab_button/base" str "appearance/notebook/tab_button/base-top.bits.db"
 edb_ed $DB add "/notebook/tab_button/base/visible" str "yes"
-edb_ed $DB add "/notebook/tab_button/label/font" str "borzoib"
+edb_ed $DB add "/notebook/tab_button/label/font" str "nationff"
 edb_ed $DB add "/notebook/tab_button/label/font_size" int 12
 edb_ed $DB add "/notebook/tab_button/label/style" str "shadow"
 
@@ -122,7 +122,7 @@ edb_ed $DB add "/table/base/visible" str "no"
 
 # Add keys for text widget
 echo -n "."
-edb_ed $DB add "/text/font" str "borzoib"
+edb_ed $DB add "/text/font" str "nationff"
 edb_ed $DB add "/text/font_size" int 12
 edb_ed $DB add "/text/style" str "shadow"
 
