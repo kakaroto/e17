@@ -43,13 +43,13 @@ load(ImlibImage *im, progress_func *progress, char progress_granularity, char im
   /* if immediate_load is 1, then dont delay image laoding as below, or */
   /* already data in this image - dont load it again */
   if (im->data)
-    return 0;
+      return 0;
   fd = open(im->file, O_RDONLY);
   if (fd < 0)
-    return 0;
+      return 0;
   gif = DGifOpenFileHandle(fd);
   if (!gif)
-    return 0;
+      return 0;
   do {
     if (DGifGetRecordType(gif, &rec) == GIF_ERROR) {
       PrintGifError();
@@ -62,38 +62,36 @@ load(ImlibImage *im, progress_func *progress, char progress_granularity, char im
       }
       w = gif->Image.Width;
       h = gif->Image.Height;
-      if (im->loader || immediate_load || progress) {
-        rows = malloc(h * sizeof(GifRowType *));
-        if (!rows) {
+      rows = malloc(h * sizeof(GifRowType *));
+      if (!rows) {
+        DGifCloseFile(gif);
+        return 0;
+      }
+      for (i = 0; i < h; i++) {
+        rows[i] = NULL;
+      }
+      for (i = 0; i < h; i++) {
+        rows[i] = malloc(w * sizeof(GifPixelType));
+        if (!rows[i]) {
           DGifCloseFile(gif);
+          for (i = 0; i < h; i++) {
+            if (rows[i]) {
+              free(rows[i]);
+            }
+          }
+          free(rows);
           return 0;
         }
-        for (i = 0; i < h; i++) {
-          rows[i] = NULL;
-        }
-        for (i = 0; i < h; i++) {
-          rows[i] = malloc(w * sizeof(GifPixelType));
-          if (!rows[i]) {
-            DGifCloseFile(gif);
-            for (i = 0; i < h; i++) {
-              if (rows[i]) {
-                free(rows[i]);
-              }
-            }
-            free(rows);
-            return 0;
+      }
+      if (gif->Image.Interlace) {
+        for (i = 0; i < 4; i++) {
+          for (j = intoffset[i]; j < h; j += intjump[i]) {
+            DGifGetLine(gif, rows[j], w);
           }
         }
-        if (gif->Image.Interlace) {
-          for (i = 0; i < 4; i++) {
-            for (j = intoffset[i]; j < h; j += intjump[i]) {
-              DGifGetLine(gif, rows[j], w);
-            }
-          }
-        } else {
-          for (i = 0; i < h; i++) {
-            DGifGetLine(gif, rows[i], w);
-          }
+      } else {
+        for (i = 0; i < h; i++) {
+          DGifGetLine(gif, rows[i], w);
         }
       }
       done = 1;
@@ -120,10 +118,10 @@ load(ImlibImage *im, progress_func *progress, char progress_granularity, char im
   /* set the format string member to the lower-case full extension */
   /* name for the format - so example names would be: */
   /* "png", "jpeg", "tiff", "ppm", "pgm", "pbm", "gif", "xpm" ... */
-  im->w = w;
-  im->h = h;
-  if (!im->format)
-    im->format = strdup("gif");
+   im->w = w;
+   im->h = h;
+   if (!im->format)
+      im->format = strdup("gif");
   if (im->loader || immediate_load || progress) {
     bg = gif->SBackGroundColor;
     cmap = (gif->Image.ColorMap ? gif->Image.ColorMap : gif->SColorMap);
@@ -156,9 +154,9 @@ load(ImlibImage *im, progress_func *progress, char progress_granularity, char im
         }
       }
     }
-    if (progress) {
-      progress(im, 100, 0, last_y, w, h);
-    }
+  }
+  if (progress) {
+    progress(im, 100, 0, last_y, w, h);
   }
   DGifCloseFile(gif);
   for (i = 0; i < h; i++) {
@@ -172,9 +170,6 @@ char
 save(ImlibImage *im, progress_func *progress, char progress_granularity)
 {
    return 0;
-   im = NULL;
-   progress = NULL;
-   progress_granularity = 0;
 }
 
 /* fills the ImlibLoader struct with a strign array of format file */
