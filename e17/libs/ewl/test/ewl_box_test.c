@@ -113,7 +113,7 @@ __create_box_test_window(Ewl_Widget * w, void * ev_data, void * user_data)
 			EWL_ALIGNMENT_CENTER);
         ewl_widget_show(vbox_button[0][1]);
 
-        vbox_button[0][2] = ewl_button_new("Right");
+        vbox_button[0][2] = ewl_button_new("Bottom");
         ewl_container_append_child(EWL_CONTAINER(vbox[1]), vbox_button[0][2]);
         ewl_object_set_custom_size(vbox_button[0][2], 100, 17);
         ewl_object_set_alignment(EWL_OBJECT(vbox_button[0][2]),
