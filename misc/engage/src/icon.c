@@ -296,10 +296,10 @@ od_icon_del(OD_Icon * icon)
   assert(icon);
   switch (icon->type) {
   case application_link:
-    assert(icon->data.applnk.winclass);
     if (icon->data.applnk.command)
       free(icon->data.applnk.command);
-    free(icon->data.applnk.winclass);
+    if (icon->data.applnk.winclass)
+      free(icon->data.applnk.winclass);
     break;
   case minimised_window:
     break;

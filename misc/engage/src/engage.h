@@ -130,7 +130,7 @@ struct _OD_Icon {
   double          x, y;         // relative to evas
   double          scale;
   double          start_time;
-  Ecore_Timer    *appear_timer;
+  Ecore_Timer    *appear_timer, *disappear_timer;
   int             launcher;
   enum { application_link, minimised_window, system_icon } type;
   union {
