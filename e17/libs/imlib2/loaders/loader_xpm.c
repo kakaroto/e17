@@ -117,6 +117,7 @@ load(ImlibImage *im, ImlibProgressFunction progress, char progress_granularity, 
    short               lookup[128 - 32][128 - 32];
    float               per = 0.0, per_inc = 0.0;
    int                 last_per = 0, last_y = 0;
+   int                 count, pixels;
    
    done = 0;
    transp = -1;
@@ -156,7 +157,10 @@ load(ImlibImage *im, ImlibProgressFunction progress, char progress_granularity, 
    comment = 0;
    quote = 0;
    context = 0;
+   pixels = 0;
+   count = 0;
    line = malloc(lsz);
+   memset(lookup, 0, sizeof(lookup));
    while (!done)
      {
 	pc = c;
@@ -342,6 +346,7 @@ load(ImlibImage *im, ImlibProgressFunction progress, char progress_granularity, 
 			      }
 			    ptr = im->data;
 			    end = ptr + (sizeof(DATA32) * w * h);
+			    pixels = w * h;
 			 }
 		       else
 			 {
@@ -373,6 +378,7 @@ load(ImlibImage *im, ImlibProgressFunction progress, char progress_granularity, 
 					   g = (unsigned char)cmap[lookup[(int)col[0] - 32][0]].g;
 					   b = (unsigned char)cmap[lookup[(int)col[0] - 32][0]].b;
 					   *ptr++ = 0x00ffffff & ((r << 16) | (g << 8) | b);
+					   count++;
 					}
 				      else
 					{
@@ -380,6 +386,7 @@ load(ImlibImage *im, ImlibProgressFunction progress, char progress_granularity, 
 					   g = (unsigned char)cmap[lookup[(int)col[0] - 32][0]].g;
 					   b = (unsigned char)cmap[lookup[(int)col[0] - 32][0]].b;
 					   *ptr++ = (0xff << 24) | (r << 16) | (g << 8) | b;
+					   count++;
 					}
 				   }
 			      }
@@ -392,6 +399,7 @@ load(ImlibImage *im, ImlibProgressFunction progress, char progress_granularity, 
 				      g = (unsigned char)cmap[lookup[(int)col[0] - 32][0]].g;
 				      b = (unsigned char)cmap[lookup[(int)col[0] - 32][0]].b;
 				      *ptr++ = (0xff << 24) | (r << 16) | (g << 8) | b;
+				      count++;
 				   }
 			      }
 			 }
@@ -409,6 +417,7 @@ load(ImlibImage *im, ImlibProgressFunction progress, char progress_granularity, 
 					   g = (unsigned char)cmap[lookup[(int)col[0] - 32][(int)col[1] - 32]].g;
 					   b = (unsigned char)cmap[lookup[(int)col[0] - 32][(int)col[1] - 32]].b;
 					   *ptr++ = 0x00ffffff & ((r << 16) | (g << 8) | b);
+					   count++;
 					}
 				      else
 					{
@@ -416,6 +425,7 @@ load(ImlibImage *im, ImlibProgressFunction progress, char progress_granularity, 
 					   g = (unsigned char)cmap[lookup[(int)col[0] - 32][(int)col[1] - 32]].g;
 					   b = (unsigned char)cmap[lookup[(int)col[0] - 32][(int)col[1] - 32]].b;
 					   *ptr++ = (0xff << 24) | (r << 16) | (g << 8) | b;
+					   count++;
 					}
 				   }
 			      }
@@ -429,6 +439,7 @@ load(ImlibImage *im, ImlibProgressFunction progress, char progress_granularity, 
 				      g = (unsigned char)cmap[lookup[(int)col[0] - 32][(int)col[1] - 32]].g;
 				      b = (unsigned char)cmap[lookup[(int)col[0] - 32][(int)col[1] - 32]].b;
 				      *ptr++ = (0xff << 24) | (r << 16) | (g << 8) | b;
+				      count++;
 				   }
 			      }
 			 }
@@ -454,6 +465,7 @@ load(ImlibImage *im, ImlibProgressFunction progress, char progress_granularity, 
 						     g = (unsigned char)cmap[lookup[(int)col[0] - 32][0]].g;
 						     b = (unsigned char)cmap[lookup[(int)col[0] - 32][0]].b;
 						     *ptr++ = 0x00ffffff & ((r << 16) | (g << 8) | b);
+						     count++;
 						  }
 						else
 						  {
@@ -461,6 +473,7 @@ load(ImlibImage *im, ImlibProgressFunction progress, char progress_granularity, 
 						     g = (unsigned char)cmap[j].g;
 						     b = (unsigned char)cmap[j].b;
 						     *ptr++ = (0xff << 24) | (r << 16) | (g << 8) | b;
+						     count++;
 						  }
 						j = ncolors;
 					     }
@@ -485,6 +498,7 @@ load(ImlibImage *im, ImlibProgressFunction progress, char progress_granularity, 
 						g = (unsigned char)cmap[j].g;
 						b = (unsigned char)cmap[j].b;
 						*ptr++ = (0xff << 24) | (r << 16) | (g << 8) | b;
+						count++;
 						j = ncolors;
 					     }
 					}
@@ -522,7 +536,8 @@ load(ImlibImage *im, ImlibProgressFunction progress, char progress_granularity, 
 	     lsz += 256;
 	     line = realloc(line, lsz);
 	  }
-	if ((ptr) && ((ptr - im->data) >= w * h * sizeof(DATA32)))
+	if (((ptr) && ((ptr - im->data) >= (w * h * sizeof(DATA32)))) || 
+	    ((context > 1) && (count >= pixels)))
 	   done = 1;
      }
    
@@ -531,6 +546,7 @@ load(ImlibImage *im, ImlibProgressFunction progress, char progress_granularity, 
 	progress(im, 100, 0, last_y, w, h);
      }
    
+   fclose(f);   
    free(cmap);
    free(line);
    
