@@ -20,3 +20,7 @@ stamp-h.in
 config.status
 .icons
 .swp
+stamp-h1
+autom4te.cache
+etox-config
+etox-config.h

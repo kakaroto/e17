@@ -24,3 +24,5 @@ build-stamp
 configure-stamp
 estyle-config
 estyle-config.h
+stamp-h1
+autom4te.cache
