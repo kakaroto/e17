@@ -110,9 +110,16 @@ struct _Etcher_Part
   Etcher_Text_Effect effect;
   int mouse_events;
   int repeat_events;
-  int clip_to;
+  char *clip_to;
 
-  /* FIXME dragables */
+  struct
+  {
+    signed char x, y; /* can drag in x/y, and which dir to count in */
+    struct
+    {
+      int x, y;
+    } step, count; 
+  } dragable;
 
   Evas_List *states;
 };
@@ -182,28 +189,34 @@ struct _Etcher_Part_State
     unsigned char r, g, b, a;
   } color, color2, color3;
 
-  struct {
+  struct
+  {
     char           smooth; 
-    double         pos_rel_x, pos_rel_y;
-    int            pos_abs_x, pos_abs_y; 
-    double         rel_x, rel_y; 
-    int            abs_x, abs_y; 
+
+    struct
+    {
+      double x, y;
+    } pos_rel, rel;
+    struct
+    {
+      int x, y;
+    } pos_abs, abs;
   } fill;
 
   struct
   {
-    char          *text; /* if "" or NULL, then leave text unchanged */
-    char          *text_class; /* how to apply/modify the font */
-    char          *font; /* if a specific font is asked for */
+    char          *text; 
+    char          *text_class; 
+    char          *font; 
 
-    int            size; /* 0 = use user set size */
+    int            size; 
 
     struct {
       unsigned char x, y;
     } fit, min;
 
     struct {
-      double      x, y; /* text alignment within bounds */
+      double      x, y; 
     } align;
   } text;
 
