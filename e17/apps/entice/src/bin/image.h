@@ -36,8 +36,13 @@ struct _Entice_Image
    int fit;
    int quality;                 /* int value for saving quality */
    double zoom;                 /* the current zoom percentage */
-   int button;                  /* the drag button */
-   int dragging;                /* whether we're currently dragging */
+   struct
+   {
+      int button;               /* the drag button */
+      int dragging;             /* whether we're currently dragging */
+      Evas_Coord off_x, off_y;
+   } mouse;
+
    struct
    {
       double x, y;

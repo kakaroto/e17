@@ -447,6 +447,9 @@ entice_file_add(const char *file)
                      evas_list_append(entice->thumb.list, o);
                   evas_object_resize(o, 48, 48);
                   hookup_entice_thumb_signals(edje, o);
+                  evas_object_layer_set(o,
+                                        evas_object_layer_get(entice->
+                                                              container));
                   edje_object_part_swallow(edje, "entice.thumb", o);
                   evas_object_show(edje);
                   evas_object_show(o);

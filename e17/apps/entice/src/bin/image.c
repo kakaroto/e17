@@ -21,10 +21,18 @@ static void
 _im_down_cb(void *data, Evas * evas, Evas_Object * obj, void *ev)
 {
    Entice_Image *im = NULL;
+   Evas_Event_Mouse_Down *e = NULL;
+   Evas_Coord ox = 0.0, oy = 0.0;
 
    if ((im = evas_object_smart_data_get((Evas_Object *) data)))
    {
-      im->dragging = 1;
+      if ((e = (Evas_Event_Mouse_Down *) ev))
+      {
+         evas_object_geometry_get(im->obj, &ox, &oy, NULL, NULL);
+         im->mouse.dragging = 1;
+         im->mouse.off_x = e->canvas.x - ox;
+         im->mouse.off_y = e->canvas.y - oy;
+      }
    }
 }
 static void
@@ -34,7 +42,8 @@ _im_up_cb(void *data, Evas * evas, Evas_Object * obj, void *ev)
 
    if ((im = evas_object_smart_data_get((Evas_Object *) data)))
    {
-      im->dragging = 0;
+      im->mouse.dragging = 0;
+      im->mouse.off_x = im->mouse.off_y = 0.0;
    }
 }
 static void
@@ -42,28 +51,31 @@ _im_move_cb(void *data, Evas * evas, Evas_Object * obj, void *ev)
 {
    Entice_Image *im = NULL;
    Evas_Coord dx = 0.0, dy = 0.0;
+   Evas_Coord ox = 0.0, oy = 0.0;
    Evas_Coord ww = 0.0, hh = 0.0;
+   Evas_Coord idx = 0.0, idy = 0.0;
    Evas_Event_Mouse_Move *e = NULL;
 
    if ((im = evas_object_smart_data_get((Evas_Object *) data)))
    {
-      if (im->dragging)
+      if (im->mouse.dragging)
       {
          if ((e = (Evas_Event_Mouse_Move *) ev))
          {
-            dx = e->cur.canvas.x - e->prev.canvas.x;
-            dy = e->cur.canvas.y - e->prev.canvas.y;
             ww = im->iw / im->zoom;
             hh = im->ih / im->zoom;
-            /* get the offset alignment */
-            if (ww > im->w)
-               im->align.x -= (double) dx / (double) ww;
-            else
-               im->align.x += (double) dx / (double) ww;
-            if (hh > im->h)
-               im->align.y -= (double) dy / (double) hh;
-            else
-               im->align.y += (double) dy / (double) hh;
+            evas_object_geometry_get(im->obj, &ox, &oy, NULL, NULL);
+            evas_object_move(im->obj, e->cur.canvas.x - im->mouse.off_x,
+                             e->cur.canvas.y - im->mouse.off_y);
+            evas_object_geometry_get(im->obj, &ox, &oy, NULL, NULL);
+            idx = (ww - (double) im->w);
+            idy = (hh - (double) im->h);
+            if (idx == 0.0)
+               idx = 1.0;
+            if (idy == 0.0)
+               idy = 1.0;
+            im->align.x = ((double) im->x - ox) / idx;
+            im->align.y = ((double) im->y - oy) / idy;
 
             /* keep it bounded */
             if (im->align.x < 0.0)
