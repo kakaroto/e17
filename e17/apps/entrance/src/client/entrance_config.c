@@ -60,7 +60,7 @@ entrance_config_populate(Entrance_Config * e, E_DB_File * db)
    if ((str = e_db_str_get(db, "/entrance/greeting/after")))
       e->after.string = str;
    else
-      e->after.string = strdup(":");
+      e->after.string = strdup("");
    if ((str = e_db_str_get(db, "/entrance/date_format")))
       e->date.string = str;
    else
