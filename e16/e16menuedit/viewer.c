@@ -19,6 +19,7 @@ GtkWidget *txt_icon;
 GtkWidget *txt_exec;
 GtkWidget *ctree;
 GtkWidget *btn_browse;
+GtkWidget *btn_browse2;
 GtkWidget *lbl_params;
 GtkWidget *statusbar;
 
@@ -213,6 +214,7 @@ selection_made (GtkCTree * my_ctree, GList * node, gint column,
       gtk_widget_set_sensitive (GTK_WIDGET (txt_icon), TRUE);
       gtk_widget_set_sensitive (GTK_WIDGET (txt_description), TRUE);
       gtk_widget_set_sensitive (GTK_WIDGET (btn_browse), TRUE);
+      gtk_widget_set_sensitive (GTK_WIDGET (btn_browse2), TRUE);
       first = 0;
     }
   last_node = GTK_CTREE_NODE ((GTK_CLIST (ctree)->selection)->data);
@@ -399,11 +401,19 @@ create_main_window (void)
 
   txt_exec = entry = gtk_entry_new_with_max_length (200);
   gtk_widget_show (entry);
-  gtk_table_attach (GTK_TABLE (table), entry, 1, 3, 2, 3,
+  gtk_table_attach (GTK_TABLE (table), entry, 1, 2, 2, 3,
 		    GTK_EXPAND | GTK_FILL, (GtkAttachOptions) (0), 0, 0);
   gtk_signal_connect_after (GTK_OBJECT (txt_exec), "key_press_event",
 			    GTK_SIGNAL_FUNC (entries_to_ctree), NULL);
   gtk_widget_set_sensitive (GTK_WIDGET (txt_exec), FALSE);
+
+  btn_browse2 = gtk_button_new_with_label ("Browse");
+  gtk_widget_show (btn_browse2);
+  gtk_table_attach (GTK_TABLE (table), btn_browse2, 2, 3, 2, 3,
+		    (GtkAttachOptions) 0, (GtkAttachOptions) (0), 0, 0);
+  gtk_signal_connect (GTK_OBJECT (btn_browse2), "clicked",
+		      GTK_SIGNAL_FUNC (cb_exec_browse), NULL);
+  gtk_widget_set_sensitive (GTK_WIDGET (btn_browse2), FALSE);
 
   hbox = gtk_hbox_new (FALSE, 3);
   gtk_widget_show (hbox);
@@ -819,8 +829,63 @@ cb_icon_browse_ok (GtkWidget * widget, gpointer user_data)
 
   gtk_entry_set_text (GTK_ENTRY (txt_icon), file);
 
+  entries_to_ctree(GTK_WIDGET (txt_icon), NULL);
+
   gtk_widget_destroy (GTK_WIDGET (user_data));
 
+  return;
+  widget = NULL;
+  user_data = NULL;
+}
+
+void
+cb_exec_browse (GtkWidget * widget, gpointer user_data)
+{
+  GtkWidget *fs;
+  gchar *file;
+
+  fs = gtk_file_selection_new ("Select executable file");
+
+  file = gtk_entry_get_text (GTK_ENTRY (txt_exec));
+
+  gtk_file_selection_set_filename (GTK_FILE_SELECTION (fs), file);
+
+  gtk_signal_connect (GTK_OBJECT (GTK_FILE_SELECTION (fs)->cancel_button),
+		      "clicked", GTK_SIGNAL_FUNC (cb_exec_browse_cancel),
+		      (gpointer) fs);
+
+  gtk_signal_connect (GTK_OBJECT (GTK_FILE_SELECTION (fs)->ok_button),
+		      "clicked", GTK_SIGNAL_FUNC (cb_exec_browse_ok),
+		      (gpointer) fs);
+
+  gtk_widget_show (fs);
+  return;
+  widget = NULL;
+  user_data = NULL;
+
+}
+
+void
+cb_exec_browse_ok (GtkWidget * widget, gpointer user_data)
+{
+  gchar *file;
+  file = gtk_file_selection_get_filename (GTK_FILE_SELECTION (user_data));
+
+  gtk_entry_set_text (GTK_ENTRY (txt_exec), file);
+  entries_to_ctree (GTK_WIDGET (txt_exec), NULL);
+
+  gtk_widget_destroy (GTK_WIDGET (user_data));
+
+  return;
+  widget = NULL;
+  user_data = NULL;
+
+}
+
+void
+cb_exec_browse_cancel (GtkWidget * widget, gpointer user_data)
+{
+  gtk_widget_destroy (GTK_WIDGET (user_data));
   return;
   widget = NULL;
   user_data = NULL;
