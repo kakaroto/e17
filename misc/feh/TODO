@@ -14,8 +14,7 @@ o Progressive loading
   This will be very cool. Unfortunately, it will be tricky to implement for
   multiple windows, so I will have to rework my window creation functions,
   and it will be awkward to do without being able to attach data to the
-  Imlib progress function. Although... I could attach the data to the
-  image...
+  Imlib progress function.
 
 o Setting the X background
   May as well...
