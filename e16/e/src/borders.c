@@ -644,7 +644,8 @@ AddToFamily(Window win)
 	     newrect.w = ewin->w;
 	     newrect.h = ewin->h;
 	     newrect.p = ewin->layer;
-	     ArrangeRects(fixed, j, &newrect, 1, ret, root.w, root.h, ARRANGE_BY_SIZE);
+	     ArrangeRects(fixed, j, &newrect, 1, ret, 0, 0, root.w, root.h,
+			  ARRANGE_BY_SIZE);
 	     for (i = 0; i < j + 1; i++)
 	       {
 		  if (ret[i].data == ewin)

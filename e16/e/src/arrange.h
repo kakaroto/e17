@@ -36,6 +36,7 @@ typedef struct _rectbox
   }
 RectBox;
 
-void                ArrangeRects(RectBox * fixed, int fixed_count, RectBox * floating,
-		  int floating_count, RectBox * sorted, int width, int height,
-				 int policy);
+void                ArrangeRects(RectBox * fixed, int fixed_count,
+				 RectBox * floating, int floating_count,
+				 RectBox * sorted, int startx, int starty,
+				 int width, int height, int policy);

@@ -73,8 +73,8 @@ ArrangeSwapList(RectBox * list, int a, int b)
 
 void
 ArrangeRects(RectBox * fixed, int fixed_count, RectBox * floating,
-	     int floating_count, RectBox * sorted, int width, int height,
-	     int policy)
+	     int floating_count, RectBox * sorted, int startx, int starty,
+	     int width, int height, int policy)
 {
    int                 num_sorted = 0;
    int                 xsize = 0, ysize = 0;
@@ -89,6 +89,9 @@ ArrangeRects(RectBox * fixed, int fixed_count, RectBox * floating,
    int                 num_leftover = 0;
 
    EDBUG(7, "ArrangeRects");
+
+   startx = 0;
+   starty = 0;
    switch (policy)
      {
      case ARRANGE_VERBATIM:
@@ -901,7 +904,7 @@ ArrangeEwin(EWin * ewin)
 	newrect.w = ewin->w;
 	newrect.h = ewin->h;
 	newrect.p = ewin->layer;
-	ArrangeRects(fixed, j, &newrect, 1, ret, root.w, root.h,
+	ArrangeRects(fixed, j, &newrect, 1, ret, 0, 0, root.w, root.h,
 		     ARRANGE_BY_SIZE);
 	for (i = 0; i < j + 1; i++)
 	  {

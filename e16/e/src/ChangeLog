@@ -3887,3 +3887,11 @@ Sat Nov  6 11:58:59 PST 1999
 (Raster)
 
 use no backing pixel for windows by default... :)
+
+-------------------------------------------------------------------------------
+
+Sat Nov  6 11:31:11 PST 1999
+(Mandrake)
+
+minor ArrangeRects() param change.  updated all the source to use the new
+params.  I have to write ArrangeRects() to do it right now, too.

@@ -1467,7 +1467,7 @@ doCleanup(void *params)
 	     k++;
 
 	  }
-	ArrangeRects(fixed, k, floating, j, ret, root.w, root.h, method);
+	ArrangeRects(fixed, k, floating, j, ret, 0, 0, root.w, root.h, method);
 	for (i = 0; i < (j + k); i++)
 	  {
 	     if (ret[i].data)
