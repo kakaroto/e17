@@ -310,18 +310,13 @@ HideButton(Button * b)
 void
 DrawButton(Button * b)
 {
-
    EDBUG(3, "DrawButton");
 
    IclassApply(b->iclass, b->win, b->w, b->h, 0, 0, b->state, 0);
 
    if (b->label)
-     {
-	TclassApply(b->iclass, b->win, b->w, b->h, 0, 0, b->state, 0,
-		    b->tclass, b->label);
-     }
-   /* there was some other code here that didn't actually do anything useful */
-
+      TclassApply(b->iclass, b->win, b->w, b->h, 0, 0, b->state, 0,
+		  b->tclass, b->label);
    EDBUG_RETURN_;
 }
 
