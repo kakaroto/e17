@@ -663,7 +663,7 @@ HandleDestroy(XEvent * ev)
 
    EForgetWindow(disp, win);
 
-   ewin = RemoveItem(NULL, win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
+   ewin = FindItem(NULL, win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
    if (ewin)
      {
 	EwinEventDestroy(ewin);
@@ -698,7 +698,7 @@ HandleUnmap(XEvent * ev)
 void
 HandleMap(XEvent * ev)
 {
-   Window              win = ev->xunmap.window;
+   Window              win = ev->xmap.window;
    EWin               *ewin;
 
    EDBUG(5, "HandleMap");

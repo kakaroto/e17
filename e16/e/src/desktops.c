@@ -28,7 +28,7 @@
 #define EDESK_EVENT_MASK \
   (KeyPressMask | KeyReleaseMask | ButtonPressMask | ButtonReleaseMask | \
    EnterWindowMask | LeaveWindowMask | PointerMotionMask | ButtonMotionMask | \
-   SubstructureNotifyMask | SubstructureRedirectMask | PropertyChangeMask)
+   /* SubstructureNotifyMask | */ SubstructureRedirectMask | PropertyChangeMask)
 
 void
 ChangeNumberOfDesktops(int quantity)

@@ -33,7 +33,7 @@ FocusEwinValid(EWin * ewin)
    if (ewin->skipfocus || ewin->neverfocus || ewin->shaded || ewin->iconified)
       return 0;
 
-   if (!ewin->mapped)
+   if (ewin->state != EWIN_STATE_MAPPED)
       return 0;
 
    return EwinIsOnScreen(ewin);

@@ -881,6 +881,11 @@ typedef struct _winclient
 }
 WinClient;
 
+#define EWIN_STATE_UNKNOWN      0
+#define EWIN_STATE_WITHDRAWN    1
+#define EWIN_STATE_ICONIC       2
+#define EWIN_STATE_MAPPED       3
+
 #define EWIN_TYPE_NORMAL        0x00
 #define EWIN_TYPE_DIALOG        0x01
 #define EWIN_TYPE_MENU          0x02
@@ -893,6 +898,7 @@ struct _ewin
    int                 x, y, w, h, reqx, reqy;
    int                 lx, ly, lw, lh;
    char                type;
+   char                state;
    char                internal;
    char                toggle;
    Window              win_container;
@@ -904,7 +910,6 @@ struct _ewin
    int                 desktop;
    Group             **groups;
    int                 num_groups;
-   char                mapped;
    char                docked;
    char                sticky;
    char                visible;
@@ -1723,8 +1728,8 @@ void                AddToFamily(Window win);
 EWin               *AddInternalToFamily(Window win, const char *bname, int type,
 					void *ptr,
 					void (*init) (EWin * ewin, void *ptr));
-void                CalcEwinSizes(EWin * ewin);
 void                HonorIclass(char *s, int id);
+void                EwinWithdraw(EWin * ewin);
 void                SyncBorderToEwin(EWin * ewin);
 void                UpdateBorderInfo(EWin * ewin);
 void                RealiseEwinWinpart(EWin * ewin, int i);
@@ -2283,7 +2288,6 @@ void                IclassApplyCopy(ImageClass * iclass, Window win, int w,
 void                FreePmapMask(PmapMask * pmm);
 
 /* iconify.c */
-void                IB_Animate(char iconify, EWin * from, EWin * to);
 void                IconifyEwin(EWin * ewin);
 void                DeIconifyEwin(EWin * ewin);
 void                MakeIcon(EWin * ewin);

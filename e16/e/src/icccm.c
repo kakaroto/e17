@@ -225,12 +225,8 @@ ICCCM_Iconify(EWin * ewin)
 
    EDBUG(6, "ICCCM_Iconify");
 
-   if (!ewin)
-      EDBUG_RETURN_;
-
    XChangeProperty(disp, ewin->client.win, E_XA_WM_STATE, E_XA_WM_STATE,
 		   32, PropModeReplace, (unsigned char *)c, 2);
-   ewin->iconified = 3;
    AddItem(ewin, "ICON", ewin->client.win, LIST_TYPE_ICONIFIEDS);
    EUnmapWindow(disp, ewin->client.win);
 
@@ -244,10 +240,6 @@ ICCCM_DeIconify(EWin * ewin)
 
    EDBUG(6, "ICCCM_DeIconify");
 
-   if (!ewin)
-      EDBUG_RETURN_;
-
-   ewin->iconified = 0;
    XChangeProperty(disp, ewin->client.win, E_XA_WM_STATE, E_XA_WM_STATE,
 		   32, PropModeReplace, (unsigned char *)c, 2);
    RemoveItem("ICON", ewin->client.win, LIST_FINDBY_BOTH, LIST_TYPE_ICONIFIEDS);

@@ -31,7 +31,7 @@ static void         IconboxRedraw(Iconbox * ib);
 
 #define IB_ANIM_TIME 0.25
 
-void
+static void
 IB_Animate(char iconify, EWin * from, EWin * to)
 {
    double              t1, t2, t, i, spd, ii;
@@ -204,7 +204,7 @@ IconboxIconifyEwin(Iconbox * ib, EWin * ewin)
    static int          call_depth = 0;
    char                was_shaded;
 
-   EDBUG(6, "IconifyEwin");
+   EDBUG(6, "IconboxIconifyEwin");
    if (!ewin)
       EDBUG_RETURN_;
    if (GetZoomEWin() == ewin)
@@ -212,56 +212,58 @@ IconboxIconifyEwin(Iconbox * ib, EWin * ewin)
    if (ewin->ibox)
       EDBUG_RETURN_;
 
+   if (ewin->state == EWIN_STATE_ICONIC)
+      EDBUG_RETURN_;
+
    if (call_depth > 256)
       EDBUG_RETURN_;
    call_depth++;
 
-   if (!ewin->iconified)
+   was_shaded = ewin->shaded;
+   SoundPlay("SOUND_ICONIFY");
+
+   if (ib)
      {
-	was_shaded = ewin->shaded;
-	SoundPlay("SOUND_ICONIFY");
+	if (ib->animate)
+	   IB_Animate(1, ewin, ib->ewin);
+	UpdateAppIcon(ewin, ib->icon_mode);
+	IconboxAddEwin(ib, ewin);
+     }
 
-	if (ib)
+   HideEwin(ewin);
+
+   if (was_shaded != ewin->shaded)
+      InstantShadeEwin(ewin, 0);
+
+   ewin->iconified = 3;
+   ICCCM_Iconify(ewin);
+
+   if (ewin->has_transients)
+     {
+	EWin              **lst;
+	int                 i, num;
+
+	lst = ListTransientsFor(ewin->client.win, &num);
+	if (lst)
 	  {
-	     if (ib->animate)
-		IB_Animate(1, ewin, ib->ewin);
-	     UpdateAppIcon(ewin, ib->icon_mode);
-	     IconboxAddEwin(ib, ewin);
-	  }
-
-	HideEwin(ewin);
-
-	if (was_shaded != ewin->shaded)
-	   InstantShadeEwin(ewin, 0);
-
-	ICCCM_Iconify(ewin);
-
-	if (ewin->has_transients)
-	  {
-	     EWin              **lst;
-	     int                 i, num;
-
-	     lst = ListTransientsFor(ewin->client.win, &num);
-	     if (lst)
+	     for (i = 0; i < num; i++)
 	       {
-		  for (i = 0; i < num; i++)
+		  if (!lst[i]->iconified)
 		    {
-		       if (!lst[i]->iconified)
-			 {
-			    HideEwin(lst[i]);
-			    lst[i]->iconified = 4;
-			 }
+		       HideEwin(lst[i]);
+		       lst[i]->iconified = 4;
 		    }
-#if ENABLE_GNOME
-		  HintsSetClientList();
-#endif
-		  Efree(lst);
 	       }
+#if ENABLE_GNOME
+	     HintsSetClientList();
+#endif
+	     Efree(lst);
 	  }
      }
-   call_depth--;
 
    HintsSetWindowState(ewin);
+
+   call_depth--;
    EDBUG_RETURN_;
 }
 
@@ -279,80 +281,82 @@ DeIconifyEwin(EWin * ewin)
    int                 x, y, dx, dy;
 
    EDBUG(6, "DeIconifyEwin");
-   call_depth++;
+
    if (call_depth > 256)
+      EDBUG_RETURN_;
+   call_depth++;
+
+   if (ewin->state != EWIN_STATE_ICONIC && ewin->state != EWIN_STATE_UNKNOWN)
+      EDBUG_RETURN_;
+
+   RemoveMiniIcon(ewin);
+
+   dx = ewin->w / 2;
+   dy = ewin->h / 2;
+   x = (ewin->x + dx) % root.w;
+   if (x < 0)
+      x += root.w;
+   x -= dx;
+   y = (ewin->y + dy) % root.h;
+   if (y < 0)
+      y += root.h;
+   y -= dy;
+
+   dx = x - ewin->x;
+   dy = y - ewin->y;
+
+   if (!ewin->sticky)
+      MoveEwinToDesktopAt(ewin, desks.current, ewin->x + dx, ewin->y + dy);
+   else
+      MoveEwin(ewin, ewin->x + dx, ewin->y + dy);
+
+   SoundPlay("SOUND_DEICONIFY");
+   ewin->iconified = 0;
+   ib = SelectIconboxForEwin(ewin);
+   if (ib)
      {
-	call_depth--;
-	return;
+	if (ib->animate)
+	   IB_Animate(0, ewin, ib->ewin);
      }
-   if (ewin->iconified)
+   RaiseEwin(ewin);
+   ShowEwin(ewin);
+   ICCCM_DeIconify(ewin);
+   FocusToEWin(ewin, FOCUS_SET);
+
+   if (ewin->has_transients)
      {
-	ib = SelectIconboxForEwin(ewin);
-	RemoveMiniIcon(ewin);
+	EWin              **lst, *e;
+	int                 i, num;
 
-	dx = ewin->w / 2;
-	dy = ewin->h / 2;
-	x = (ewin->x + dx) % root.w;
-	if (x < 0)
-	   x += root.w;
-	x -= dx;
-	y = (ewin->y + dy) % root.h;
-	if (y < 0)
-	   y += root.h;
-	y -= dy;
-
-	dx = x - ewin->x;
-	dy = y - ewin->y;
-
-	if (!ewin->sticky)
-	   MoveEwinToDesktopAt(ewin, desks.current, ewin->x + dx, ewin->y + dy);
-	else
-	   MoveEwin(ewin, ewin->x + dx, ewin->y + dy);
-
-	SoundPlay("SOUND_DEICONIFY");
-	if (ib)
+	lst = ListTransientsFor(ewin->client.win, &num);
+	if (lst)
 	  {
-	     if (ib->animate)
-		IB_Animate(0, ewin, ib->ewin);
-	  }
-	RaiseEwin(ewin);
-	ShowEwin(ewin);
-	ICCCM_DeIconify(ewin);
-	FocusToEWin(ewin, FOCUS_SET);
-	if (ewin->has_transients)
-	  {
-	     EWin              **lst, *e;
-	     int                 i, num;
-
-	     lst = ListTransientsFor(ewin->client.win, &num);
-	     if (lst)
+	     for (i = 0; i < num; i++)
 	       {
-		  for (i = 0; i < num; i++)
-		    {
-		       e = lst[i];
+		  e = lst[i];
 
-		       if (e->iconified != 4)
-			  continue;
+		  if (e->iconified != 4)
+		     continue;
 
-		       if (!e->sticky)
-			  MoveEwinToDesktopAt(e, desks.current,
-					      e->x + dx, e->y + dy);
-		       else
-			  MoveEwin(e, e->x + dx, e->y + dy);
-		       RaiseEwin(e);
-		       ShowEwin(e);
-		       e->iconified = 0;
-		    }
-#if ENABLE_GNOME
-		  HintsSetClientList();
-#endif
-		  Efree(lst);
+		  if (!e->sticky)
+		     MoveEwinToDesktopAt(e, desks.current,
+					 e->x + dx, e->y + dy);
+		  else
+		     MoveEwin(e, e->x + dx, e->y + dy);
+		  RaiseEwin(e);
+		  ShowEwin(e);
+		  e->iconified = 0;
 	       }
+#if ENABLE_GNOME
+	     HintsSetClientList();
+#endif
+	     Efree(lst);
 	  }
      }
-   call_depth--;
 
    HintsSetWindowState(ewin);
+
+   call_depth--;
    EDBUG_RETURN_;
 }
 
@@ -1279,7 +1283,7 @@ UpdateAppIcon(EWin * ewin, int imode)
 	  }
 	break;
      case 2:
-	/* try E first, then snap */
+	/* try E first, then snap, then app */
 	if (!ewin->icon_pmm.pmap)
 	   IB_GetEIcon(ewin);
 	if (!ewin->icon_pmm.pmap)
@@ -1289,6 +1293,8 @@ UpdateAppIcon(EWin * ewin, int imode)
 	     RaiseEwin(ewin);
 	     IB_SnapEWin(ewin);
 	  }
+	if (!ewin->icon_pmm.pmap)
+	   IB_GetAppIcon(ewin);
 	break;
      default:
 	break;
@@ -2260,7 +2266,6 @@ IB_CompleteRedraw(Iconbox * ib)
 void
 IB_Setup(void)
 {
-   EWin               *const *lst;
    int                 i, num;
    Iconbox           **ibl;
 
@@ -2271,12 +2276,6 @@ IB_Setup(void)
 	for (i = 0; i < num; i++)
 	   IconboxShow(ibl[i]);
 	Efree(ibl);
-     }
-   lst = EwinListGetAll(&num);
-   for (i = 0; i < num; i++)
-     {
-	if (lst[i]->client.start_iconified)
-	   IconifyEwin(lst[i]);
      }
 }
 

@@ -25,11 +25,11 @@
 
 #define EWIN_TOP_EVENT_MASK \
   (ButtonPressMask | ButtonReleaseMask | \
-   EnterWindowMask | LeaveWindowMask | PointerMotionMask | \
-   StructureNotifyMask)
+   EnterWindowMask | LeaveWindowMask | PointerMotionMask /* | \
+   StructureNotifyMask */)
 #define EWIN_CONTAINER_EVENT_MASK \
-  (ButtonPressMask | ButtonReleaseMask | \
-   StructureNotifyMask | ResizeRedirectMask | \
+  (/* ButtonPressMask | ButtonReleaseMask | */ \
+   /* StructureNotifyMask | ResizeRedirectMask | */ \
    SubstructureNotifyMask | SubstructureRedirectMask)
 #define EWIN_BORDER_PART_EVENT_MASK \
   (KeyPressMask | KeyReleaseMask | ButtonPressMask | ButtonReleaseMask | \
@@ -39,7 +39,7 @@
 
 #define EWIN_CLIENT_EVENT_MASK \
   (EnterWindowMask | LeaveWindowMask | FocusChangeMask | \
-   StructureNotifyMask | ResizeRedirectMask | \
+   /* StructureNotifyMask | */ ResizeRedirectMask | \
    PropertyChangeMask | ColormapChangeMask)
 
 static void         EwinSetBorderInit(EWin * ewin);
@@ -142,7 +142,7 @@ GetEwinPointerInClient(void)
 {
    Window              rt, ch;
    int                 dum, px, py, d;
-   EWin               *const *lst;
+   EWin               *const *lst, *ewin;
    int                 i, num;
 
    EDBUG(5, "GetEwinPointerInClient");
@@ -158,13 +158,14 @@ GetEwinPointerInClient(void)
      {
 	int                 x, y, w, h;
 
-	x = lst[i]->x;
-	y = lst[i]->y;
-	w = lst[i]->w;
-	h = lst[i]->h;
-	if ((px >= x) && (py >= y) && (px < (x + w)) && (py < (y + h))
-	    && (lst[i]->visible))
-	   EDBUG_RETURN(lst[i]);
+	ewin = lst[i];
+	x = ewin->x;
+	y = ewin->y;
+	w = ewin->w;
+	h = ewin->h;
+	if ((px >= x) && (py >= y) && (px < (x + w)) && (py < (y + h)) &&
+	    (ewin->visible) && (ewin->state == EWIN_STATE_MAPPED))
+	   EDBUG_RETURN(ewin);
      }
 
    EDBUG_RETURN(NULL);
@@ -348,8 +349,10 @@ AddToFamily(Window win)
    char                cangrab = 0;
 
    EDBUG(3, "AddToFamily");
+
    /* find the client window if it's already managed */
    ewin = FindItem(NULL, win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
+
    /* it's already managed */
    if (ewin)
      {
@@ -364,6 +367,7 @@ AddToFamily(Window win)
 	     ConformEwinToDesktop(ewin);
 	     ShowEwin(ewin);
 	     ICCCM_DeIconify(ewin);
+	     ewin->iconified = 0;
 	  }
 	EDBUG_RETURN_;
      }
@@ -385,13 +389,7 @@ AddToFamily(Window win)
    /* if set for borderless then dont slide it in */
    if ((!ewin->client.mwm_decor_title) && (!ewin->client.mwm_decor_border))
       doslide = 0;
-   if (!Mode.startup)
-     {
-	if (ewin->client.start_iconified)
-	   ewin->iconified = 1;
-     }
-   x = 0;
-   y = 0;
+
    ResizeEwin(ewin, ewin->client.w, ewin->client.h);
 
    if (ewin->client.transient)
@@ -460,6 +458,8 @@ AddToFamily(Window win)
      }
 
    /* if it hasn't been placed yet.... find a spot for it */
+   x = 0;
+   y = 0;
    if ((!ewin->client.already_placed) && (!manplace))
      {
 
@@ -558,14 +558,11 @@ AddToFamily(Window win)
      }
 
    /* if the window asked to be iconified at the start */
-   if (ewin->iconified)
+   if (ewin->client.start_iconified)
      {
 	EwinBorderDraw(ewin, 1, 1);
 	MoveEwinToDesktopAt(ewin, ewin->desktop, x, y);
-	RaiseEwin(ewin);
-	ShowEwin(ewin);
 	UngrabX();
-	ewin->iconified = 0;
 	IconifyEwin(ewin);
 	EDBUG_RETURN_;
      }
@@ -1023,7 +1020,7 @@ CalcEwinWinpart(EWin * ewin, int i)
    EDBUG_RETURN_;
 }
 
-void
+static void
 CalcEwinSizes(EWin * ewin)
 {
    int                 i;
@@ -1314,6 +1311,7 @@ EwinDestroy(EWin * ewin)
    if (!ewin)
       EDBUG_RETURN_;
 
+   RemoveItem(NULL, ewin->client.win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
    EwinListDelete(&EwinListStack, ewin);
    EwinListDelete(&EwinListFocus, ewin);
 
@@ -1372,6 +1370,23 @@ EwinDestroy(EWin * ewin)
 }
 
 void
+EwinWithdraw(EWin * ewin)
+{
+   Window              win;
+
+   /* Park the client window on the root */
+   XTranslateCoordinates(disp, ewin->client.win, root.win,
+			 -ewin->border->border.left,
+			 -ewin->border->border.top, &ewin->client.x,
+			 &ewin->client.y, &win);
+   EReparentWindow(disp, ewin->client.win, root.win, ewin->client.x,
+		   ewin->client.y);
+
+   ICCCM_Withdraw(ewin);
+   EwinDestroy(ewin);
+}
+
+void
 EwinEventDestroy(EWin * ewin)
 {
    EwinDestroy(ewin);
@@ -1380,18 +1395,17 @@ EwinEventDestroy(EWin * ewin)
 void
 EwinEventMap(EWin * ewin)
 {
-   ewin->mapped = 1;
+   ewin->state = EWIN_STATE_MAPPED;
 }
 
 void
 EwinEventUnmap(EWin * ewin)
 {
-   Window              win;
-
-   ewin->mapped = 0;
-
    if (GetZoomEWin() == ewin)
       Zoom(NULL);
+
+   /* Set state to unknown until we can set the correct one */
+   ewin->state = (ewin->iconified) ? EWIN_STATE_ICONIC : EWIN_STATE_WITHDRAWN;
 
    ActionsEnd(ewin);
 
@@ -1430,16 +1444,7 @@ EwinEventUnmap(EWin * ewin)
    if (ewin->Close)
       ewin->Close(ewin);
 
-   /* Park the client window on the root */
-   XTranslateCoordinates(disp, ewin->client.win, root.win,
-			 -ewin->border->border.left,
-			 -ewin->border->border.top, &ewin->client.x,
-			 &ewin->client.y, &win);
-   EReparentWindow(disp, ewin->client.win, root.win, ewin->client.x,
-		   ewin->client.y);
-   ICCCM_Withdraw(ewin);
-   RemoveItem(NULL, ewin->client.win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
-   EwinDestroy(ewin);
+   EwinWithdraw(ewin);
 }
 
 static void
@@ -2065,7 +2070,7 @@ HideEwin(EWin * ewin)
 {
    EDBUG(3, "HideEwin");
 
-   if (!ewin->mapped || !ewin->visible)
+   if (ewin->state != EWIN_STATE_MAPPED || !ewin->visible)
       EDBUG_RETURN_;
    ewin->visible = 0;
 

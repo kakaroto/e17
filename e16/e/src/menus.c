@@ -131,6 +131,8 @@ MenuHide(Menu * m)
    m->stuck = 0;
    m->shown = 0;
 
+   EwinWithdraw(ewin);
+
    EDBUG_RETURN_;
 }
 

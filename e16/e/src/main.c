@@ -251,8 +251,10 @@ main(int argc, char **argv)
 	SoundPlay("SOUND_STARTUP");
 	SoundFree("SOUND_STARTUP");
      }
+
    /* toss down the dragbar and related */
    InitDesktopControls();
+
    /* then draw all the buttons that belong on the desktop */
    ShowDesktopButtons();
 
@@ -260,16 +262,18 @@ main(int argc, char **argv)
    SessionInit();
    ShowDesktopControls();
    CheckEvent();
+
    /* retreive stuff from last time we were loaded if we're restarting */
    ICCCM_GetMainEInfo();
    SetupEnv();
    if (Conf.mapslide)
       CreateStartupDisplay(0);
-   MapUnmap(1);
+
    /* set some more hints */
    HintsSetDesktopViewport();
    desks.current = 0;
-   /* Set up the internal pagers */
+
+   /* Set up the iconboxes and pagers */
    IB_Setup();
    if (Conf.pagers.enable)
      {
@@ -278,6 +282,8 @@ main(int argc, char **argv)
 	EnableAllPagers();
 	Mode.queue_up = DRAW_QUEUE_ENABLE;
      }
+
+   MapUnmap(1);
 
    /* Kill the E process owning the "init window" */
    if (Mode.wm.master && init_win_ext)
