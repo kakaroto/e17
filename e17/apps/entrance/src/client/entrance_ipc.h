@@ -2,10 +2,6 @@
 #define ENTRANCE_IPC_H
 
 #include <sys/types.h>
-#define E_MAJOR   0xEE
-#define E_UID     0x10
-#define E_GID     0x11
-#define E_HOMEDIR 0x12
 
 #include <Ecore.h>
 #include <Ecore_Ipc.h>
