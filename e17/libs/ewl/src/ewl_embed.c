@@ -542,6 +542,12 @@ ewl_embed_feed_mouse_wheel(Ewl_Embed *embed, int x, int y, int z, int dir, unsig
 	ev.z = z;
 	ev.dir = dir;
 
+	if (!last_focused) {
+		ewl_callback_call_with_event_data(EWL_WIDGET(embed),
+						  EWL_CALLBACK_MOUSE_WHEEL,
+						  &ev);
+	}
+
 	while (last_focused) {
 		ewl_callback_call_with_event_data(last_focused,
 						  EWL_CALLBACK_MOUSE_WHEEL,
