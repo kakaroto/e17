@@ -153,7 +153,7 @@ find_current(void)
 */
 /*****************************************************************************/
 
-static int  main_signal_exit(void *data, int ev_type, void *ev)
+static int main_signal_exit(void *data, int ev_type, void *ev)
 {
    ecore_main_loop_quit();
 }
@@ -161,6 +161,7 @@ static int  main_signal_exit(void *data, int ev_type, void *ev)
 int
 main(int argc, char **argv)
 {
+  enum active_state command;
    /* environment parsing */
    render_method = evas_render_method_lookup("software_x11");
    if (getenv("ENTICE_RENDERER"))
@@ -262,7 +263,8 @@ main(int argc, char **argv)
    icon_x = -100;
    e_fix_icons();
    /* call the animator once to start it up */
-   e_fade_logo_in(NULL);
+   command = active_in;
+   e_fade_logo(&command);
    e_fade_scroller_in((void *)1);
    /* and now loop forever handling events */
    ecore_main_loop_begin();

@@ -11,7 +11,7 @@ int                e_fade_scroller_out(void *data);
 int                e_fade_trash_in(void *data);
 int                e_fade_trash_out(void *data);
 
-int                e_fade_logo_in(void *data);
+int                e_fade_logo(void *data);
 
 int                e_fade_l_arrow_in(void *data);
 int                e_fade_l_arrow_out(void *data);

@@ -151,69 +151,6 @@ e_fade_scroller(void * data)
       return 0;
    }
 }
-/*
-int
-e_fade_scroller_in(void *data)
-{
-   * int i; *
-   static int	       v = 0;
-   static double       start = 0.0;
-   double              duration = 0.5;
-   double              val;
-
-   if (v == 0) {
-      start = get_time();
-      fade_timer = ecore_timer_add(0.05, e_fade_scroller_in, data);
-   }
-   val = (get_time() - start) / duration;
-   if (val > 1.0)
-      val = 1.0;
-
-   if (o_mini_image)
-         evas_object_color_set(o_mini_image, 255, 255, 255, (val * 255));
-   evas_object_color_set(o_mini_select, 255, 255, 255, (val * 255));
-
-   if (val < 1.0) {
-      v++;
-      return 1;
-   } else {
-      v = 0;
-      return 0;
-   }
-   if (data)
-      e_fade_scroller_out(NULL);
-}
-
-int
-e_fade_scroller_out(void *data)
-{
-   * int i; *
-   static int	       v = 0;
-   static double       start = 0.0;
-   double              duration = 2.0;
-   double              val;
-
-   if (v == 0) {
-      start = get_time();
-      fade_timer = ecore_timer_add(0.05, e_fade_scroller_out, data);
-   }
-   val = (get_time() - start) / duration;
-   if (val > 1.0)
-      val = 1.0;
-   val = 1.0 - val;
-   if (o_mini_image)
-         evas_object_color_set(o_mini_image, 255, 255, 255, (val * 255));
-   evas_object_color_set(o_mini_select, 255, 255, 255, (val * 255));
-
-   if (val > 0.0) {
-      v++;
-      return 1;
-   } else {
-      v = 0;
-      return 0;
-   }
-}
-*/
 
 int
 e_fade_scroller_in(void *data) {
@@ -287,27 +224,39 @@ e_fade_trash_out(void *data)
 }
 
 int
-e_fade_logo_in(void *data)
+e_fade_logo(void *data)
 {
-   /* int i; */
-   static int	       v = 0;
    static double       start = 0.0;
    double              duration = 1.0;
-   double              val;
+   double              val = 0.0;
+   double delay = 0.05;
+   static enum active_state action;
+   static Ecore_Timer *timer = NULL;
 
-   if (v == 0) {
-      start = get_time();
-      fade_timer = ecore_timer_add(0.05, e_fade_logo_in, data);
-   }
-   val = (get_time() - start) / duration;
-
-   evas_object_color_set(o_logo, 255, 255, 255, (val * 255));
-
-   if (val < 1.0) {
-      v++;
+   if (data) { // not called by timer
+      if (!timer) { // we are starting afresh
+         start = get_time();
+      } else { // there is a fade already going on
+	 start = 2*get_time() - duration - start;
+	 ecore_timer_del(timer);
+      }
+      timer = ecore_timer_add(delay, e_fade_logo, NULL);
+      action = *(enum active_state *)data;
       return 1;
+   } else
+      val = (get_time() - start) / duration;
+
+   if (val > 1.0) val = 1.0;
+   if (action == active_in) {
+      evas_object_color_set(o_logo, 255, 255, 255, (val * 255));
    } else {
-      v = 0;
+      evas_object_color_set(o_logo, 255, 255, 255, ((1.0 - val) * 255));
+   }
+
+   if (val < 0.99) // keep going
+      return 1;
+   else { // stick a fork in us, we're done
+      timer = NULL;
       return 0;
    }
 }

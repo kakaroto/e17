@@ -34,12 +34,13 @@ setup(void)
 
    /* handler for when the event queue goes idle */
    ecore_idle_enterer_add(e_idle, NULL);
+   ecore_event_handler_add(ECORE_EVENT_EXE_EXIT, e_child, NULL);
    /* create a 400x300 toplevel window */
    ecore_evas = ecore_evas_software_x11_new(NULL, 0, 0, 0, win_w, win_h);
    ecore_evas_callback_resize_set(ecore_evas, e_window_resize);
    // main_win = ecore_evas_software_x11_window_get(ecore_evas);
    ecore_evas_name_class_set(ecore_evas, "Entice", "Main");
-   ecore_evas_size_min_set(ecore_evas, 256, 128);
+   ecore_evas_size_min_set(ecore_evas, 288, 128);
    ecore_evas_size_max_set(ecore_evas, 8000, 8000);
    a_entice = ecore_x_atom_get("_ENTICE_APP_WINDOW");
    ecore_evas_title_set(ecore_evas, string);
@@ -313,8 +314,10 @@ e_child(void * data, int ev_type, Ecore_Event * ev)
      {
 	if (generating_image->generator == e->pid)
 	  {
-	     generating_image->generator = 0;
-	     generating_image = NULL;
+	    generating_image->generator = 0;
+	    if (e->exit_code)
+	      image_delete(generating_image);
+	    generating_image = NULL;
 	  }
      }
    return 1;

@@ -54,6 +54,7 @@ image_create_list(int argc, char **argv)
 {
    int                 i;
    if (argc==2 && e_file_is_dir(argv[1])) {
+     printf("taking argument to be directory name: %s\n", argv[1]);
       image_create_list_dir(argv[1]);
       return;
    }
@@ -61,27 +62,13 @@ image_create_list(int argc, char **argv)
    for (i = 1; i < argc; i++)
      {
 	Image              *im;
+	/*
+	char                buf[4096];
 
-	if (argv[i][0] == '/')
-	  {
-	     /* CS */
-	     /* printf("%s\n",argv[i]); */
-
-	     im = e_image_new(argv[i]);
-	  }
-	else
-	  {
-	     char                buf[4096];
-	     char                wd[4096];
-
-	     getcwd(wd, sizeof(wd));
-	     sprintf(buf, "%s/%s", wd, argv[i]);
-
-	     /* CS */
-	     /* printf("%s\n",buf); */
-
-	     im = e_image_new(buf);
-	  }
+	buf = e_file_full_name(argv[i]);
+	printf("%s\n",buf);
+	*/
+	im = e_image_new(e_file_full_name(argv[i]));
 	images = evas_list_append(images, im);
      }
    current_image = images;
@@ -94,24 +81,22 @@ image_create_list_dir(char *dir)
    struct dirent      *dent;
    Image              *im;
 
+   dir = e_file_full_name(dir);
+
    d = opendir(dir);
 
    while ((dent = readdir(d)) != NULL)
       // while( readdir_r(d,dent,&dent) )
      {
+       char buf[4096];
 	/* skip these */
 	if (!strcmp(dent->d_name, ".") || !strcmp(dent->d_name, "..")
 	    || dent->d_name[0] == '.')
 	   continue;
 
-	/* CS */
-	/* printf("%s\n",dent->d_name); */
-	if (e_file_is_dir(dent->d_name)) {
-	    // do nothing for now: FIXME
-	} else {
-	  im = e_image_new(dent->d_name);
-	  images = evas_list_append(images, im);
-	}
+	snprintf(buf, 4096, "%s/%s", dir, dent->d_name);
+	im = e_image_new(buf);
+	images = evas_list_append(images, im);
 	/* CS */
 	/* printf("%p\n",images); */
      }
@@ -149,6 +134,7 @@ image_create_thumbnails(void)
 	/* CS */
 	/* printf("%s\n",im->file); */
 
+	if (im->o_thumb) return;
 	im->o_thumb = evas_object_image_add(evas);
 	evas_object_image_file_set(im->o_thumb, IM "thumb.png", NULL);
 	evas_object_event_callback_add(im->o_thumb, EVAS_CALLBACK_MOUSE_MOVE,
@@ -225,6 +211,15 @@ image_delete(Image * im)
 {
    if (im)
      {
+	if (current_image && im == current_image->data) {
+	  if (current_image->next)
+	    current_image = current_image->next;
+	  else if (current_image->prev)
+	    current_image = current_image->prev;
+	  else
+	    current_image = NULL;
+	  e_display_current_image();
+	}
 	if (im->o_thumb)
 	   evas_object_del(im->o_thumb);
 
@@ -343,7 +338,7 @@ e_rotate_object(Evas_Object *obj, int rotation)
    w = imlib_image_get_width();
    h = imlib_image_get_height();
 
-   /* Get image data from Imblib */
+   /* Get image data from Imlib */
    image_data = imlib_image_get_data_for_reading_only();
 
    /* Set Evas Image Data */
@@ -689,11 +684,8 @@ e_display_current_image(void)
      {
 	char                title[4096];
 
-	if (o_image)
+	if (!o_image)
 	  {
-	     evas_object_del(o_image);
-	     o_image = NULL;
-	  }
 	o_image = evas_object_image_add(evas);
 	evas_object_image_file_set(o_image,
 				   ((Image *) (current_image->data))->file,
@@ -705,8 +697,11 @@ e_display_current_image(void)
 	evas_object_event_callback_add(o_image, EVAS_CALLBACK_MOUSE_MOVE,
 				       next_image_move, NULL);
 	evas_object_show(o_image);
+	  }
 	if (evas_object_image_load_error_get(o_image) != EVAS_LOAD_ERROR_NONE)
 	  {
+	     enum active_state command = active_in;
+	     e_fade_logo(&command);
 	     sprintf(txt_info[0], "Error LoadingFile: %s",
 		     ((Image *) (current_image->data))->file);
 	     *txt_info[1] = '\0';
@@ -735,8 +730,10 @@ e_display_current_image(void)
      {
 	ecore_evas_title_set(ecore_evas, "Entice (No Image)");
           {
+	     enum active_state command = active_in;
 	     evas_object_del(o_image);
 	     o_image = NULL;
+	     e_fade_logo(&command);
 	  }
      }
    if ((o_image) && (current_image))

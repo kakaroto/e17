@@ -196,9 +196,10 @@ e_handle_resize(void)
      }
    else
      {
+       enum active_state command = active_in;
 	evas_object_show(o_bg);
 	evas_object_show(o_logo);
-	e_fade_logo_in(NULL);
+	e_fade_logo(&command);
      }
    evas_object_image_size_get(o_arrow_l, &w, &h);
    evas_object_move(o_arrow_l, 0, (win_h - h) / 2);

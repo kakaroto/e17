@@ -1,16 +1,24 @@
 Entice 0.6.0
 
-Entice is in the process of being ported to Ecore2. It will currently compile,
-and run with the same functionality as the old entice, minus a few features:
+Entice is an image viewer using the new e17 libraries. To compile this
+you need ecore (from the SPLIT tree, until raster merges it back in -
+ecore SPLIT is the Way of the Future, and apps are being updated to use
+it), evas, and Imlib. Soon it will also require edje.
 
-* DND support is not in Ecore2 yet
-* window properties have not been sorted out
-* does not search for existing entice windows on startup
+Simple installation insturctions:
+./autogen.sh
+make
+su
+make install
 
-However, a few minor bugs have been fixed and new features are being added.
+Entice currently takes no commandline options. It takes as arguments a
+list of images to load. Run with no arguments it tries to load all files
+from the working directory (currently it even tries files that aren't
+images). You can instead give a directory name as a single argument, and
+it will load all images from this directory.
+
 On the TODO list at present, in order of randomness, are:
-* building a file list from a directory rather than having to be passed names on
-  the command line
+* logo fade behaviour is a bit arbitrary and will be neatened soon
 * ask for confirmation on file deletion
 * make dragged thumbnails fade gradually as they approach the trashcan
   rather than suddenly as the cursor passes its boundary

@@ -1,7 +1,7 @@
 #include "entice.h"
 #include <limits.h>
 
-void
+int
 e_do_thumb(char *file, char *thumb)
 {
    Imlib_Image         im;
@@ -49,13 +49,14 @@ e_do_thumb(char *file, char *thumb)
 	imlib_image_set_format("png");
 	e_mkdirs(thumb);
 	imlib_save_image(thumb);
+	return 1;
      }
+   return 0;
 }
 
 void
 e_generate_thumb(Image * im)
 {
-   static int          initted = 0;
 #ifdef PATH_MAX
    char		       buf[PATH_MAX];
 #else
@@ -67,11 +68,6 @@ e_generate_thumb(Image * im)
    if (im->generator > 0)
       return;
 
-   if (!initted)
-     {
-	ecore_event_handler_add(ECORE_EVENT_EXE_EXIT, e_child, NULL);
-	initted = 1;
-     }
    sprintf(buf, "%s/.entice/thumbs/%s._.png", e_file_home(), im->file);
    if (im->thumb)
       free(im->thumb);
@@ -79,27 +75,18 @@ e_generate_thumb(Image * im)
    im->thumb = strdup(buf);
    generating_image = im;
 
-   /* CS */
    /*
-    * if ((im->thumb) && (im->file))
-    * {
-    * if( e_file_modified_time(im->thumb) > e_file_modified_time(im->file) )
-    * return;
-    * e_do_thumb(im->file, im->thumb);
-    * }
-    */
-
-#if 0
-   /* CS */
    if ((im->thumb) && (im->file))
      {
 	if (e_file_modified_time(im->thumb) > e_file_modified_time(im->file))
 	   return;
-	e_do_thumb(im->file, im->thumb);
+	if (!e_do_thumb(im->file, im->thumb)) {
+	  printf("unable to load: %s\n", im->file);
+	  image_delete(im);
+	}
      }
-#endif
-
-   /* CS */
+   */
+   
    im->generator = fork();
    if (im->generator != 0)
      {
@@ -112,15 +99,19 @@ e_generate_thumb(Image * im)
 	  }
 	return;
      }
-   else				/* child */
+   else	// child
      {
 	if ((im->thumb) && (im->file))
 	  {
 	     if (e_file_modified_time(im->thumb) >
 		 e_file_modified_time(im->file))
 		exit(0);
-	     e_do_thumb(im->file, im->thumb);
+	if (!e_do_thumb(im->file, im->thumb)) {
+	  printf("unable to load: %s\n", im->file);
+	  exit(1);
+	}
 	  }
 	exit(0);
      }
+    
 }

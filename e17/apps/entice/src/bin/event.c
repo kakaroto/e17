@@ -23,34 +23,32 @@ e_idle(void *data)
 		  /* printf("%s()\n",__FUNCTION__);
 		   * printf("%s\n",im->file); */
 
+		  if (!im->o_thumb) {
+		     im->o_thumb = evas_object_image_add(evas);
+		     evas_object_event_callback_add(im->o_thumb,
+				      EVAS_CALLBACK_MOUSE_MOVE,
+				      e_list_item_drag, l);
+		     evas_object_event_callback_add(im->o_thumb,
+				      EVAS_CALLBACK_MOUSE_DOWN,
+				      e_list_item_click, l);
+		     evas_object_event_callback_add(im->o_thumb,
+				      EVAS_CALLBACK_MOUSE_UP,
+				      e_list_item_select, l);
+		     evas_object_event_callback_add(im->o_thumb,
+				      EVAS_CALLBACK_MOUSE_IN,
+				      e_list_item_in, l);
+		     evas_object_event_callback_add(im->o_thumb,
+				      EVAS_CALLBACK_MOUSE_OUT,
+				      e_list_item_out, l);
+		  }
 		  if ((im->subst) && (im->thumb))
 		    {
 		       int                 w, h;
-
-		       evas_object_del(im->o_thumb);
-		       im->o_thumb = evas_object_image_add(evas);
-		       if (e_file_is_dir(im->file))
-			  evas_object_image_file_set(im->o_thumb,
-						     IM "directory.png", NULL);
-		       else
-			  evas_object_image_file_set(im->o_thumb, im->thumb,
+		       // printf("%s %s\n", im->file, im->thumb);
+		       
+			evas_object_image_file_set(im->o_thumb, im->thumb,
 						     NULL);
 
-		       evas_object_event_callback_add(im->o_thumb,
-						      EVAS_CALLBACK_MOUSE_MOVE,
-						      e_list_item_drag, l);
-		       evas_object_event_callback_add(im->o_thumb,
-						      EVAS_CALLBACK_MOUSE_DOWN,
-						      e_list_item_click, l);
-		       evas_object_event_callback_add(im->o_thumb,
-						      EVAS_CALLBACK_MOUSE_UP,
-						      e_list_item_select, l);
-		       evas_object_event_callback_add(im->o_thumb,
-						      EVAS_CALLBACK_MOUSE_IN,
-						      e_list_item_in, l);
-		       evas_object_event_callback_add(im->o_thumb,
-						      EVAS_CALLBACK_MOUSE_OUT,
-						      e_list_item_out, l);
 		       evas_object_image_size_get(im->o_thumb, &w, &h);
 
 		       im->subst = 0;
@@ -62,19 +60,18 @@ e_idle(void *data)
 		       evas_object_show(im->o_thumb);
 		       im->subst = 0;
 		    }
-		  if (!im->thumb)
-		    {
-		       e_generate_thumb(im);
-		       doing = 1;
-		    }
+		if (!im->thumb) {
+		    e_generate_thumb(im);
+		    doing = 1;
+		}
 	       }
-	     if (!doing)
-		need_thumbs = 0;
-	  }
-	e_fix_icons();
-     }
-   evas_render(evas);
-   return 1;
+	       if (!doing)
+		 need_thumbs = 0;
+	       }
+	       e_fix_icons();
+	    }
+	    evas_render(evas);
+	    return 1;
 }
 
 void

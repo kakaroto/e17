@@ -57,3 +57,16 @@ e_file_is_dir(char *file)
       return 1;
    return 0;
 }
+
+char *
+e_file_full_name(char *file)
+{
+   char *buf = 0;
+   char *wd = 0;
+   
+   if (file[0] == '/') return file;
+   buf = (char *) malloc(4096);
+   wd = getcwd(NULL, 0);
+   snprintf(buf, 4096, "%s/%s", wd, file);
+   return buf;
+}
