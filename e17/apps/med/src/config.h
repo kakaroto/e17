@@ -169,7 +169,7 @@ enum _e_config_datatype
 struct _e_config_base_type
 {
    int size;
-   Evas_List nodes;
+   Evas_List * nodes;
 };
 
 struct _e_config_node

@@ -8,6 +8,13 @@ char      *e_util_get_user_home(void);
 void      *e_util_memdup(void *data, int size);
 int        e_util_glob_matches(char *str, char *glob);
 char      *e_util_de_url_and_verify(const char *fi);
+Evas      *e_evas_new_all(Display *disp, Window parent_window,
+	       int x, int y, int win_w, int win_h,
+	       int render,
+	       int max_colors, int fc, int ic,
+	       char *font_dir);
+Window     e_evas_get_window(Evas *evas);
+
 
 #define e_strdup(__dest, __var) \
 { \

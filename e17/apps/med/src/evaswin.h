@@ -20,7 +20,7 @@ evaswin_new( int w, int h, const char *title );
 void
 evaswin_free(void);
 
-Evas
+Evas *
 evaswin_get_e(void);
 
 Display *
@@ -30,11 +30,11 @@ Window
 evaswin_get_win(void);
 
 void
-med_tool_mouse_up(void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y);
+med_tool_mouse_up(void *_data, Evas * _e, Evas_Object * _o, void *_event);
 void
-med_tool_mouse_down(void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y);
+med_tool_mouse_down(void *_data, Evas * _e, Evas_Object * _o, void *_event);
 void
-med_tool_mouse_move(void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y);
+med_tool_mouse_move(void *_data, Evas * _e, Evas_Object * _o, void *_event);
 
 void
 med_show_commit_tool(void);

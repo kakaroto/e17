@@ -177,7 +177,7 @@ struct _e_config_file_entry
       char   *path;
       time_t  last_mod;
    } user, system;
-   Evas_List hash[256];
+   Evas_List * hash[256];
 };
 
 void
@@ -261,7 +261,7 @@ e_config_load(char *file, char *prefix, E_Config_Base_Type *type)
 {
    E_DB_File *db;
    char buf[PATH_MAX];
-   Evas_List l;
+   Evas_List * l;
    char *data;
    
    D_ENTER;
@@ -319,7 +319,7 @@ e_config_load(char *file, char *prefix, E_Config_Base_Type *type)
 	     break;
 	   case E_CFG_TYPE_LIST:
 	       {
-		  Evas_List l2;
+		  Evas_List * l2;
 		  int i, count;
 		  
 		  l2 = NULL;
@@ -334,7 +334,7 @@ e_config_load(char *file, char *prefix, E_Config_Base_Type *type)
 		       data2 = e_config_load(file, buf, node->sub_type);
 		       l2 = evas_list_append(l2, data2);
 		    }
-		  (*((Evas_List *)(&(data[node->offset])))) = l2;
+		  (*((Evas_List **)(&(data[node->offset])))) = l2;
 	       }
 	     break;
 	   case E_CFG_TYPE_KEY:
@@ -359,7 +359,7 @@ typedef struct _list_element List_Element;
 
 struct _list_base
 {
-   Evas_List elements;
+   Evas_List * elements;
 };
 
 struct _list_element
@@ -400,7 +400,7 @@ void ts(void)
 	/* got data */
 	else
 	  {
-	     Evas_List l;
+	     Evas_List * l;
 	     
 	     for (l = cfg_data->elements; l; l = l->next)
 	       {

@@ -7,7 +7,7 @@ typedef struct _E_Entry               E_Entry;
 
 struct _E_Entry
 {
-   Evas  evas;
+   Evas *  evas;
    char *buffer;
    int   cursor_pos;
    struct {
@@ -22,9 +22,9 @@ struct _E_Entry
    Ebits_Object obj_base;
    Ebits_Object obj_cursor;
    Ebits_Object obj_selection;
-   Evas_Object event_box;
-   Evas_Object clip_box;
-   Evas_Object text;
+   Evas_Object * event_box;
+   Evas_Object * clip_box;
+   Evas_Object * text;
    Window paste_win;
    Window selection_win;
    int end_width;
@@ -48,13 +48,13 @@ void        e_entry_init(void);
 void        e_entry_free(E_Entry *entry);
 E_Entry    *e_entry_new(void);
 void        e_entry_handle_keypress(E_Entry *entry, Ecore_Event_Key_Down *e);
-void        e_entry_set_evas(E_Entry *entry, Evas evas);
+void        e_entry_set_evas(E_Entry *entry, Evas * evas);
 void        e_entry_show(E_Entry *entry);
 void        e_entry_hide(E_Entry *entry);
 void        e_entry_raise(E_Entry *entry);
 void        e_entry_lower(E_Entry *entry);
 void        e_entry_set_layer(E_Entry *entry, int l);
-void        e_entry_set_clip(E_Entry *entry, Evas_Object clip);
+void        e_entry_set_clip(E_Entry *entry, Evas_Object * clip);
 void        e_entry_unset_clip(E_Entry *entry);
 void        e_entry_move(E_Entry *entry, int x, int y);
 void        e_entry_resize(E_Entry *entry, int w, int h);
@@ -81,7 +81,7 @@ char       *e_entry_get_selection(E_Entry *entry);
 void
 e_entry_clear_current_focus(void);
 void
-med_e_entry_down_internal(Evas _e, E_Entry *entry, int _b, int _x, int _y, int key);
+med_e_entry_down_internal(Evas * _e, E_Entry *entry, int _b, int _x, int _y, int key);
 int
 med_no_dirty_entries(void);
 void

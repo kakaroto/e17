@@ -4,6 +4,7 @@
 #include "evaswin.h"
 #include "config.h"
 #include "menu.h"
+#include "util.h"
 
 #define FONT "nationff"
 
@@ -23,7 +24,7 @@ med_tool_add_event_box( E_Menu_Item *mi );
 void
 med_add_tool( char *text, int x, int y, med_tool_type tt );
 void
-med_commit_tool_mouse_down(void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y);
+med_commit_tool_mouse_down(void *_data, Evas * _e, Evas_Object * _o, void *event);
 static void
 med_add_commit_tool( int x, int y);
 static void
@@ -36,19 +37,19 @@ med_commit_dirty_anim(void);
 E_Menu_Item *
 med_get_selected_mi(void);
 void
-med_set_menu_event_evas(Evas parent_evas);
+med_set_menu_event_evas(Evas * parent_evas);
 
 
-static Evas e;
+static Evas * e;
 static int win_w;
 static int win_h;
 static char *fntdir;
 static char *wintitle;
 static Display *disp;
-static Evas e;
+static Evas * e;
 static Window win, drag_win;
 
-static Evas_Object o, onew, o_commit, o_discard;
+static Evas_Object *o, *onew, *o_commit, *o_discard;
 static const int col = 0;
 static int scr_x, scr_y;
 static int drag_click = 0, dragging = 0;
@@ -71,16 +72,16 @@ evaswin_new( int w, int h, const char *title )
   ecore_display_init(NULL);
   disp = ecore_display_get();
 
-  e = evas_new_all(disp,
+  e = e_evas_new_all(disp,
 		   DefaultRootWindow(disp),
 		   0, 0, win_w, win_h,
-		   RENDER_METHOD_ALPHA_SOFTWARE,
+		   0 /*RENDER_METHOD_ALPHA_SOFTWARE*/,
 		   216,  /* colors - evas standard 216 */
 		   1024 * 1024,    /* font cache size */
 		   512 * 1024,  /* image cache size */
 		   fntdir);  /* font dir */
 
-  win = evas_get_window(e);
+  win = e_evas_get_window(e);
   ecore_window_set_title(win, wintitle);
 
   ecore_window_set_events(win, 
@@ -106,12 +107,12 @@ evaswin_new( int w, int h, const char *title )
 
 
 
-  o = evas_add_rectangle(e);
+  o = evas_object_rectangle_add(e);
   /*evas_move(e, o, 0, 0);*/
-  evas_resize(e, o, win_w, win_h);
-  evas_set_color(e, o, col, col, col, 255);
-  evas_set_layer(e, o, 98);
-  evas_show(e, o);
+  evas_object_resize(o, win_w, win_h);
+  evas_object_color_set(o, col, col, col, 255);
+  evas_object_layer_set(o, 98);
+  evas_object_show(o);
 
   ecore_window_get_geometry(win, &scr_x, &scr_y, NULL, NULL);
  
@@ -133,7 +134,7 @@ evaswin_free(void)
 void
 winobjects(void)
 {
-  Evas_Object ot;
+  Evas_Object * ot;
 
 #if 0
   ot = evas_add_text(e, FONT, 20, "New");
@@ -182,7 +183,7 @@ expose_cb(Ecore_Event* ev)
   Ecore_Event_Window_Expose *event = (Ecore_Event_Window_Expose *) ev->event;
 
   /* area exposes */
-  evas_update_rect(e,
+  evas_damage_rectangle_add(e,
 		   event->x, event->y,
 		   event->w, event->h
 		   );
@@ -194,8 +195,7 @@ evaswin_mouse_down_cb(Ecore_Event* ev)
 {
   Ecore_Event_Mouse_Down *event = (Ecore_Event_Mouse_Down *) ev->event;
 
-  /*printf( "Ew bd\n" );*/
-  evas_event_button_down(e, event->x, event->y, event->button);
+  evas_event_feed_mouse_down(e, event->button);
 }
 
 
@@ -204,7 +204,7 @@ evaswin_mouse_up_cb(Ecore_Event* ev)
 {
   Ecore_Event_Mouse_Up *event = (Ecore_Event_Mouse_Up *) ev->event;
 
-  evas_event_button_up(e, event->x, event->y, event->button);
+  evas_event_feed_mouse_up(e, event->button);
 }
 
 
@@ -213,11 +213,12 @@ evaswin_mouse_move_cb(Ecore_Event* ev)
 {
   Ecore_Event_Mouse_Move *event = (Ecore_Event_Mouse_Move *) ev->event;
 
-  evas_event_move(e, event->rx, event->ry);
+  /* Evas2, abs coords... */
+  evas_event_feed_mouse_move(e, event->x, event->y);
 }
 
 
-Evas
+Evas *
 evaswin_get_e(void)
 {
   return e;
@@ -239,10 +240,11 @@ evaswin_get_win(void)
 
 
 void
-med_tool_mouse_up(void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
+med_tool_mouse_up(void *_data, Evas * _e, Evas_Object * _o, void *_event)
 {
   E_Menu *m;
   E_Menu_Item *mi_in = _data;
+  Evas_Event_Mouse_Up *ev = _event;
 
   if(mi_in) m = mi_in->menu;
 
@@ -273,25 +275,25 @@ med_tool_mouse_up(void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
 	  if(mi_in) med_delete_mi_at(mi_in);
 	}
     }
+  return;
+  UN(ev);
 }
 
 
 void
-med_tool_mouse_down(void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
+med_tool_mouse_down(void *_data, Evas * _e, Evas_Object * _o, void *_event)
 {
   E_Menu *m;
   E_Menu_Item *mi;
   int df = 0;
+  Evas_Event_Mouse_Down *ev = _event;
 
   mi = _data;
   if(mi) m = mi->menu;
 
-  /*printf( "md: %d,%d\n", _x, _y );*/
-
-  /*  if( _o == onew )*/
   if( m /*&& m->edit_tool*/ )
     {
-      Evas_List l;
+      Evas_List * l;
       
       drag_click = 1;
 #if 0
@@ -307,22 +309,21 @@ med_tool_mouse_down(void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y
 	  }
 #endif
     }
+  return;
+  UN(ev);
 }
 
 
+
 void
-med_tool_mouse_move(void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
+med_tool_mouse_move(void *_data, Evas * _e, Evas_Object * _o, void *_event)
 {
   E_Menu *m = 0;
   E_Menu_Item *mi = _data;
+  Evas_Event_Mouse_Move *ev = _event;
 
   if(mi) m = mi->menu;
 
-  /*  printf( "Move..\n" );*/
-
-
-
-  /*  if( _o == onew )*/
   if( m /*&& m->edit_tool*/ )
     {
       if( drag_click == 1)
@@ -341,8 +342,8 @@ med_tool_mouse_move(void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y
 					      /*_x - 20, _y - 10, 
 					      100, 100
 					      */
-					      _x - 15 /*(m->current.w)/2*/,
-					      _y - (m->current.h)/2,
+					      ev->cur.canvas.x - 15 /*(m->current.w)/2*/,
+					      ev->cur.canvas.y - (m->current.h)/2,
 					      /*
 					      m->current.w,
 					      m->current.h
@@ -354,72 +355,35 @@ med_tool_mouse_move(void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y
 
 					      );
 
-	     /*drag.win = e_window_override_new(0, wx, wy, ww, wh);*/
-
-	     /* Only works for first mi this way... */
-	     /*med_drag_image( drag_win, m, m->entries->data);*/
 	     med_drag_image( drag_win, m, mi);
-#if 0
-	     pmap = e_pixmap_new(drag_win, 120, 110, 0);
-
-	     /* draw on the pmap */
-	     if( m->edit_tool == TOOL_NEW_ITEM)
-	       {
-		  imlib_context_set_image(mni->med_im);
-
-		  imlib_context_set_drawable(pmap);
-		  /*imlib_context_set_mask(mask);
-		  */
-		  imlib_context_set_blend(0);
-		  imlib_render_image_on_drawable(0, 0);
-
-	       }
-
-	     e_window_set_background_pixmap(drag_win, pmap);
-	     /*e_window_set_shape_mask(ic->view->drag.win, mask);*/
-	     e_window_ignore(drag_win);
-	     e_window_raise(drag_win);
-	     e_window_show(drag_win);
-	     e_pixmap_free(pmap);
-	     /*e_pixmap_free(mask);*/
-#endif
-
 
 	} 
       if( dragging )
 	{
+	  int win_ax, win_ay;
+	  
+	  ecore_window_get_root_relative_location(e_evas_get_window(_e), 
+						  &win_ax, &win_ay
+						  );
+	  
 	  /* move this to idle handler - update based on drag flag */
-	  ecore_window_move(drag_win, /*_x - 20, _y - 10);*/
-			_x - 15 /*(m->current.w)/2*/,
-			/*_y - (m->current.h)/2*/
-			
-			_y - 
-			(mi->size.h  + m->sel_border.t + m->sel_border.b
-			 + m->border.t + m->border.b) /2
-			);
-#if 0
-	  if( m->edit_tool )
-	    {
-
-	    }
-	  else
-	    {
-	      e_window_resize(drag_win,
-			      mi->size.w + m->sel_border.l + m->sel_border.r, 
-			      mi->size.h  + m->sel_border.t + m->sel_border.b
-			      + m->border.t + m->border.b);
-	    }
-#endif
+	  ecore_window_move(drag_win, 
+			    ev->cur.canvas.x - 15 + win_ax,
+			    ev->cur.canvas.y + win_ay - 
+			    (mi->size.h  + m->sel_border.t + m->sel_border.b
+			     + m->border.t + m->border.b) /2
+			    );
 	}
-      /*printf( "mm: %d,%d,%d\n", _x, _y, m->current.h );*/
     }
+  return;
+  UN(ev);
 }
 
 
 void
 med_tool_add_event_box( E_Menu_Item *mi )
 {
-  Evas_Object o;
+  Evas_Object * o;
 #if 0
   o = evas_add_rectangle(e);
   evas_move(e, o, mi->menu->current.x, mi->menu->current.y );
@@ -491,7 +455,7 @@ med_add_tool( char *text, int x, int y, med_tool_type tt )
 
 
 void
-med_commit_tool_mouse_down(void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
+med_commit_tool_mouse_down(void *_data, Evas * _e, Evas_Object * _o, void *event)
 {
   if(_o == o_commit)
     {
@@ -501,21 +465,23 @@ med_commit_tool_mouse_down(void *_data, Evas _e, Evas_Object _o, int _b, int _x,
     {
       med_discard_dirty_entries();
     }
+  return;
+  UN(event);
 }
 
 
 static void
 med_add_commit_tool( int x, int y)
 {
-  Evas_Object o;
+  Evas_Object * o;
 
-  o = evas_add_rectangle(e);
-  evas_move(e, o, x, y );
-  evas_resize(e, o, 20, 12);
-  evas_set_color(e, o, 50, 255, 0, 255);
-  evas_set_layer(e, o, 100);
+  o = evas_object_rectangle_add(e);
+  evas_object_move(o, x, y );
+  evas_object_resize(o, 20, 12);
+  evas_object_color_set(o, 50, 255, 0, 255);
+  evas_object_layer_set(o, 100);
   /*  evas_show(e, o);*/
-  evas_callback_add(e, o, CALLBACK_MOUSE_DOWN, med_commit_tool_mouse_down, NULL);
+  evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_DOWN, med_commit_tool_mouse_down, NULL);
 #if 0
   evas_callback_add(e, o, CALLBACK_MOUSE_UP, med_tool_mouse_up, mi);
   evas_callback_add(e, o, CALLBACK_MOUSE_MOVE, med_tool_mouse_move, mi);
@@ -524,13 +490,13 @@ med_add_commit_tool( int x, int y)
   o_commit = o;
 
 
-  o = evas_add_rectangle(e);
-  evas_move(e, o, x+30, y );
-  evas_resize(e, o, 20, 12);
-  evas_set_color(e, o, 255, 50, 0, 255);
-  evas_set_layer(e, o, 100);
+  o = evas_object_rectangle_add(e);
+  evas_object_move(o, x+30, y );
+  evas_object_resize(o, 20, 12);
+  evas_object_color_set(o, 255, 50, 0, 255);
+  evas_object_layer_set(o, 100);
   /*  evas_show(e, o);*/
-  evas_callback_add(e, o, CALLBACK_MOUSE_DOWN, med_commit_tool_mouse_down, NULL);
+  evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_DOWN, med_commit_tool_mouse_down, NULL);
 #if 0
   evas_callback_add(e, o, CALLBACK_MOUSE_UP, med_tool_mouse_up, mi);
   evas_callback_add(e, o, CALLBACK_MOUSE_MOVE, med_tool_mouse_move, mi);
@@ -545,16 +511,16 @@ med_add_commit_tool( int x, int y)
 void
 med_show_commit_tool(void)
 {
-  evas_show(e, o_commit);
-  evas_show(e, o_discard);
+  evas_object_show(o_commit);
+  evas_object_show(o_discard);
 }
 
 
 void
 med_hide_commit_tool(void)
 {
-  evas_hide(e, o_commit);
-  evas_hide(e, o_discard);
+  evas_object_hide(o_commit);
+  evas_object_hide(o_discard);
 }
 
 

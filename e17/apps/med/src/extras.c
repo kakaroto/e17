@@ -7,12 +7,12 @@
 
 #include "extras.h"
 
-static void new_med_entry(Evas e, E_Entry *entry, Evas_Object eet, int x, int y, int w, const char *);
+static void new_med_entry(Evas * e, E_Entry *entry, Evas_Object * eet, int x, int y, int w, const char *);
 static void med_entry_key_down(Ecore_Event * ev);
 static void
 med_entry_mouse_down(Ecore_Event * ev);
 static void 
-med_entry_mouse_down_cb( void *_data, Evas _e, Evas_Object _o,
+med_entry_mouse_down_cb( void *_data, Evas * _e, Evas_Object * _o,
 			 int _b, int _x, int _y);
 static void
 med_return_cb(E_Entry *_entry, void *_data);
@@ -44,17 +44,17 @@ free_mi( E_Menu_Item *mi );
 char *
 med_util_extract_filename(const char *fil);
 static void 
-med_entry_in_cb(void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y);
+med_entry_in_cb(void *_data, Evas * _e, Evas_Object * _o, void *_event);
 static void 
-med_entry_out_cb(void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y);
+med_entry_out_cb(void *_data, Evas * _e, Evas_Object * _o, void *_event);
 static void
 med_entry_check_dnd_status(E_Entry *entry, int enter);
 
 
-static Evas e;
+static Evas * e;
 static E_Entry *ee_text, *ee_exe, *ee_icon, *ee_script, *ee_subm, *ee_test;
 static E_Menu_Item current_mi;
-static Evas_Object ee_grad_mi, ee_grad_sm, e_icon;
+static Evas_Object *ee_grad_mi, *ee_grad_sm, *e_icon;
 E_Entry *med_drop_pending = NULL;
 
 
@@ -109,7 +109,7 @@ void pop_menu( int x, int y )
 }
 
 static void
-new_med_entry(Evas e, E_Entry *entry, Evas_Object eet, int x, int y, int w, const char *text)
+new_med_entry(Evas * e, E_Entry *entry, Evas_Object * eet, int x, int y, int w, const char *text)
 {
   char *buf;
 
@@ -123,16 +123,16 @@ new_med_entry(Evas e, E_Entry *entry, Evas_Object eet, int x, int y, int w, cons
   e_entry_set_enter_callback(entry, med_return_cb, NULL);
   /*  e_entry_show(entry);*/
 
-  evas_callback_add(e, entry->event_box, CALLBACK_MOUSE_IN, med_entry_in_cb, entry);
-  evas_callback_add(e, entry->event_box, CALLBACK_MOUSE_OUT, med_entry_out_cb, entry);
+  evas_object_event_callback_add(entry->event_box, EVAS_CALLBACK_MOUSE_IN, med_entry_in_cb, entry);
+  evas_object_event_callback_add(entry->event_box, EVAS_CALLBACK_MOUSE_OUT, med_entry_out_cb, entry);
 
 
   buf = strdup(text);
-  evas_set_text(e, eet, buf);
-  evas_set_color(e, eet, 255, 255, 255, 255);
-  evas_move(e, eet, x, y-15 );
-  evas_set_layer(e, eet, 110);
-  evas_show(e, eet);
+  evas_object_text_text_set(eet, buf);
+  evas_object_color_set(eet, 255, 255, 255, 255);
+  evas_object_move(eet, x, y-15 );
+  evas_object_layer_set(eet, 110);
+  evas_object_show(eet);
 
 }
 
@@ -146,42 +146,51 @@ med_entry_text( const char *text, const char *exe, const char *icon, const char 
 }
 
 void
-med_setup_entries(Evas e_in)
+med_setup_entries(Evas * e_in)
 {
   E_Entry *ee;
-  Evas_Object eet;
-  Evas_Gradient ee_grad;
+  Evas_Object * eet;
   int iw, ih;
 
   e = e_in;
 
   ee = e_entry_new();
-  eet = evas_add_text(e, "borzoib", 8, "");
+  eet = evas_object_text_add(e);
+  evas_object_text_font_set(eet, "borzoib", 8);
+  evas_object_text_text_set(eet, "");
   new_med_entry(e, ee, eet, 200, 30, 100, "Text" );
   ee->drop_style = STRIP_PATH;
   ee_text = ee;
   
 
   ee = e_entry_new();
-  eet = evas_add_text(e, "borzoib", 8, "");
+  eet = evas_object_text_add(e);
+  evas_object_text_font_set(eet, "borzoib", 8);
+  evas_object_text_text_set(eet, "");
   new_med_entry(e, ee, eet, 200, 70, 200, "Exe" );
   ee->drop_style = DE_URL;
   ee_exe = ee;
 
   ee = e_entry_new();
-  eet = evas_add_text(e, "borzoib", 8, "");
+  eet = evas_object_text_add(e);
+  evas_object_text_font_set(eet, "borzoib", 8);
+  evas_object_text_text_set(eet, "");
   new_med_entry(e, ee, eet, 200, 110, 240, "Icon" );
   ee->drop_style = DE_URL;
   ee_icon = ee;
 
   ee = e_entry_new();
-  eet = evas_add_text(e, "borzoib", 8, "");
+  eet = evas_object_text_add(e);
+  evas_object_text_font_set(eet, "borzoib", 8);
+  evas_object_text_text_set(eet, "");
   new_med_entry(e, ee, eet, 200, 150, 240, "Script" );
   ee->drop_style = NONE;
   ee_script = ee;
 
   ee = e_entry_new();
-  eet = evas_add_text(e, "borzoib", 8, "");
+  eet = evas_object_text_add(e);
+  evas_object_text_font_set(eet, "borzoib", 8);
+  evas_object_text_text_set(eet, "");
   new_med_entry(e, ee, eet, 200, 205 /*172*/, 100, "Submenu" );
   ee->drop_style = NONE;
   ee_subm = ee;
@@ -201,55 +210,46 @@ med_setup_entries(Evas e_in)
 		    med_entry_mouse_down_cb, ee_test);
   */
 
-  ee_grad = evas_gradient_new();
-  /*  evas_gradient_add_color(ee_grad, 0,0,0, 255, 10);*/
-  evas_gradient_add_color(ee_grad, 0,50,255, 255, 10);
-  evas_gradient_add_color(ee_grad, 0,0,0, 255, 10);
+  ee_grad_mi = evas_object_gradient_add(e);
+  evas_object_gradient_color_add(ee_grad_mi, 0,50,255, 255, 10);
+  evas_object_gradient_color_add(ee_grad_mi, 0,0,0, 255, 10);
 
-  ee_grad_mi = evas_add_gradient_box(e);
-  evas_move(e, ee_grad_mi, 195, 10);
-  evas_resize(e, ee_grad_mi, 250, 115-35+48+40);
-  evas_set_gradient(e, ee_grad_mi, ee_grad);
+  evas_object_move(ee_grad_mi, 195, 10);
+  evas_object_resize(ee_grad_mi, 250, 115-35+48+40);
   /*  evas_set_angle(e, ee_grad_mi, 0);*/
-  evas_set_layer(e, ee_grad_mi, 104);
-  evas_show(e, ee_grad_mi);
+  evas_object_layer_set(ee_grad_mi, 104);
+  evas_object_show(ee_grad_mi);
 
-  ee_grad_sm = evas_add_gradient_box(e);
-  evas_move(e, ee_grad_sm, 195, 145+40);
-  evas_resize(e, ee_grad_sm, 250, 50);
-  evas_set_gradient(e, ee_grad_sm, ee_grad);
+  ee_grad_sm = evas_object_gradient_add(e);
+  evas_object_gradient_color_add(ee_grad_sm, 0,50,255, 255, 10);
+  evas_object_gradient_color_add(ee_grad_sm, 0,0,0, 255, 10);
+
+  evas_object_move(ee_grad_sm, 195, 145+40);
+  evas_object_resize(ee_grad_sm, 250, 50);
   /*  evas_set_angle(e, ee_grad_sm, 0);*/
-  evas_set_layer(e, ee_grad_sm, 104);
-  evas_show(e, ee_grad_sm);
+  evas_object_layer_set(ee_grad_sm, 104);
+  evas_object_show(ee_grad_sm);
 
-  evas_gradient_free(ee_grad);
-
-  /*e_icon = evas_add_image_from_file(e, "/opt/gnome/share/pixmaps/gnome-image-jpeg.png" );*/
-  e_icon = evas_add_image_from_file(e, "" );
-  evas_get_image_size(e, e_icon, &iw, &ih);
-  evas_move(e, e_icon, 360, 280);
+  e_icon = evas_object_image_add(e);
+  evas_object_move(e_icon, 360, 280);
   iw = ih = 48;
-  evas_resize(e, e_icon, iw, ih);
-  evas_set_layer(e, e_icon, 102);
-  evas_set_image_fill(e, e_icon, 0, 0, iw, ih);
-  /*evas_set_image_fill(e, e_icon, 0, 0, 100, 100);*/
-  /*evas_set_color(e, e_icon, 255, 255, 255, 100);*/
-  evas_show(e, e_icon);
+  evas_object_resize(e_icon, iw, ih);
+  evas_object_layer_set(e_icon, 102);
+  evas_object_image_fill_set(e_icon, 0, 0, iw, ih);
+  evas_object_show(e_icon);
 
 
 }
 
 
 static void 
-med_entry_mouse_down_cb( void *_data, Evas _e, Evas_Object _o,
+med_entry_mouse_down_cb( void *_data, Evas * _e, Evas_Object * _o,
 			 int _b, int _x, int _y)
 {
 
   if(_b == 1 && _data)
     {
       e_entry_set_focus(_data, 1);
-
-      /*((E_Entry*)_data)->focused = 1;*/
     }
 }
 
@@ -317,6 +317,8 @@ med_entry_mouse_down(Ecore_Event * ev)
 
    e = ev->event;
 
+   return;
+   UN(e);
 }
 
 
@@ -930,11 +932,11 @@ med_display_icon( char *file )
 {
   if( file )
     {
-      evas_set_image_file(e, e_icon, file);
-      evas_show(e, e_icon);
+      evas_object_image_file_set(e_icon, file, "");
+      evas_object_show(e_icon);
     }
   else
-    evas_hide(e, e_icon);
+    evas_object_hide(e_icon);
 }
 
 
@@ -956,7 +958,7 @@ med_util_extract_filename(const char *fil)
 
 
 static void 
-med_entry_in_cb(void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
+med_entry_in_cb(void *_data, Evas * _e, Evas_Object * _o, void *_event)
 {
    E_Entry *entry;
 
@@ -964,18 +966,15 @@ med_entry_in_cb(void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
 
    med_entry_check_dnd_status(entry, 1);
 
-
    return;
    UN(_e);
    UN(_o);
-   UN(_b);
-   UN(_x);
-   UN(_y);
+   UN(_event);
 }
 
 
 static void 
-med_entry_out_cb(void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
+med_entry_out_cb(void *_data, Evas * _e, Evas_Object * _o, void *_event)
 {
    E_Entry *entry;
 
@@ -987,13 +986,11 @@ med_entry_out_cb(void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
    return;
    UN(_e);
    UN(_o);
-   UN(_b);
-   UN(_x);
-   UN(_y);
+   UN(_event);
 }
 
 
-Evas
+Evas *
 med_entry_get_evas(void)
 {
   return e;

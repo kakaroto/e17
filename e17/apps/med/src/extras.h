@@ -21,7 +21,7 @@ extern "C" {
 
   void med_entry_text( const char *text, const char *exe, const char *icon, const char *script );
 
-  void med_setup_entries(Evas e);
+  void med_setup_entries(Evas * e);
 
   void med_display( MED_ENUM type, E_Menu_Item *mi);
 
@@ -39,13 +39,13 @@ extern "C" {
 
   void med_insert_mi(E_Menu_Item *mi, E_Menu_Item *mnew, int move_index );
 
-  Evas med_entry_get_evas(void);
+  Evas * med_entry_get_evas(void);
 
   void med_entry_handle_drop(int dnd_num_files, char **dnd_files);
 
 #ifdef __cplusplus
 }
 #endif
-#endif __EXTRAS_H__
+#endif /*__EXTRAS_H__*/
 
 //eof

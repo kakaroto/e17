@@ -20,8 +20,8 @@ struct _E_Build_Menu
    
    E_Menu    *menu;
    
-   Evas_List  menus;
-   Evas_List  commands;
+   Evas_List *  menus;
+   Evas_List *  commands;
 };
 
 void          e_build_menu_cleanup(E_Build_Menu *bm);

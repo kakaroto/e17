@@ -21,9 +21,9 @@ struct _E_Menu
    struct {
       Window       main, evas;
    } win;
-   Evas         evas;
+   Evas *         evas;
    Ebits_Object bg;
-   Evas_List    entries;
+   Evas_List *    entries;
    char        *bg_file;
    
    int       first_expose;
@@ -37,7 +37,7 @@ struct _E_Menu
   int edit_target;
   int edit_tool;
   int pmap_render;
-  Evas event_evas;
+  Evas * event_evas;
   Imlib_Image med_im;
 
    struct {
@@ -66,13 +66,13 @@ struct _E_Menu_Item
    char         *bg_file;
    int           selected;
 
-   Evas_Object   obj_entry;
+   Evas_Object *   obj_entry;
    
    char         *str;
-   Evas_Object   obj_text;
+   Evas_Object *   obj_text;
    
    char         *icon;
-   Evas_Object   obj_icon;
+   Evas_Object *   obj_icon;
    int           scale_icon;
    
    Ebits_Object  state;
@@ -93,7 +93,7 @@ struct _E_Menu_Item
    char         *script;
    int           new_one;
    int           submenu_num;
-   Evas_Object   event_rect;
+   Evas_Object *   event_rect;
    
    E_Menu       *menu;
    E_Menu       *submenu;

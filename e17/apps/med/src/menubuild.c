@@ -9,7 +9,7 @@
 #include "e.h"
 #endif
 
-Evas_List build_menus = NULL;
+Evas_List * build_menus = NULL;
 
 static void e_build_menu_cb_exec(E_Menu *m, E_Menu_Item *mi, void *data);
 
@@ -40,7 +40,7 @@ e_build_menu_cb_exec(E_Menu *m, E_Menu_Item *mi, void *data)
 static void
 e_build_menu_unbuild(E_Build_Menu *bm)
 {
-   Evas_List l;
+   Evas_List * l;
    
    bm->menu = NULL;
    if (bm->menus)
@@ -222,7 +222,7 @@ static E_Menu *
 e_build_menu_gnome_apps_build_dir(E_Build_Menu *bm, char *dir)
 {
    E_Menu *menu = NULL;
-   Evas_List l, entries = NULL;
+   Evas_List *l, *entries = NULL;
    
    menu = e_menu_new();
    e_menu_set_padding_icon(menu, 2);
@@ -231,7 +231,7 @@ e_build_menu_gnome_apps_build_dir(E_Build_Menu *bm, char *dir)
      {
 	FILE *f;
 	char buf[4096];
-	Evas_List dirlist = NULL;
+	Evas_List * dirlist = NULL;
 	
 	/* read .order file */
 	sprintf(buf, "%s/.order", dir);
@@ -262,7 +262,7 @@ e_build_menu_gnome_apps_build_dir(E_Build_Menu *bm, char *dir)
 	     /* if it isnt a "dot" file or dir */
 	     if (s[0] != '.')
 	       {
-		  Evas_List ll;
+		  Evas_List * ll;
 		  int have_it;
 		  
 		  have_it = 0;

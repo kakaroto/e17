@@ -4,13 +4,14 @@
 #include "evaswin.h"
 
 #include "mi_pmap.h"
-
+#include "Evas.h"
+#include "Evas_Engine_Software_X11.h"
 
 void
 med_drag_image( Window drag_win, E_Menu* m_in, E_Menu_Item *mi_in )
 {
-  Pixmap pmap /*, mask*/;
-  Evas e;
+  Pixmap pmap, mask;
+  Evas * e;
   int max_colors = 216;
   int font_cache = 1024 * 1024;
   int image_cache = 8192 * 1024;
@@ -22,37 +23,47 @@ med_drag_image( Window drag_win, E_Menu* m_in, E_Menu_Item *mi_in )
   int tt;
 
   /* Get output size */
-#if 0
-  ww = m_in->current.w;
-  wh = m_in->current.h;
-#endif
   ww = mi_in->size.w + m_in->sel_border.l + m_in->sel_border.r 
     + m_in->border.l + m_in->border.r;
   wh = mi_in->size.h  + m_in->sel_border.t + m_in->sel_border.b
     + m_in->border.t + m_in->border.b;
 
-  /* Create image */
-  im = imlib_create_image(ww, wh);
-  imlib_context_set_image(im);
-  /*imlib_image_set_has_alpha(1);
-    imlib_context_set_blend(1);
-  */
-  imlib_image_clear();
-
-
-  /* Create evas for rendering to image */
   font_dir = e_config_get("fonts");
-
   e = evas_new();
-  evas_set_output_method(e, RENDER_METHOD_IMAGE);
-  evas_set_output_image(e, im);
-  evas_set_output_colors(e, max_colors);
-  if (font_dir) evas_font_add_path(e, font_dir);
-  /*evas_set_output(e, display, window, visual, colormap);*/
-  evas_set_output_size(e, ww, wh);
-  evas_set_output_viewport(e, 0, 0, ww, wh);
-  evas_set_font_cache(e, font_cache);
-  evas_set_image_cache(e, image_cache);
+  evas_output_method_set(e, 
+			 evas_render_method_lookup("software_x11"));
+  evas_object_font_path_append(e, font_dir);
+  evas_output_size_set(e, ww, wh);
+  evas_output_viewport_set(e, 0, 0, ww, wh);
+  evas_object_font_cache_set(e, font_cache);
+  evas_object_image_cache_set(e, image_cache);
+  {
+    Evas_Engine_Info_Software_X11 *einfo;
+    XSetWindowAttributes att;
+
+    pmap = ecore_pixmap_new(drag_win, ww, wh, 0);
+    mask = ecore_pixmap_new(drag_win, ww, wh, 1);
+
+    einfo = (Evas_Engine_Info_Software_X11 *) evas_engine_info_get(e);
+
+    /* the following is specific to the engine */
+    einfo->info.display = ecore_display_get();
+    einfo->info.visual = DefaultVisual(einfo->info.display, DefaultScreen(einfo->info.display));
+    einfo->info.colormap = DefaultColormap(einfo->info.display, DefaultScreen(einfo->info.display));
+    
+    att.background_pixmap = None;
+    att.colormap = DefaultColormap(einfo->info.display, DefaultScreen(einfo->info.display));
+    att.border_pixel = 0;
+    att.event_mask = 0;
+    
+    einfo->info.drawable = pmap;
+    einfo->info.mask = mask;
+
+    einfo->info.depth = DefaultDepth(einfo->info.display, DefaultScreen(einfo->info.display));
+    einfo->info.rotation = 0;
+    einfo->info.debug = 0;
+    evas_engine_info_set(e, (Evas_Engine_Info *) einfo);
+  }
 
   /* Create a menu/menuitem duplicate of input m/mi */
   {
@@ -84,7 +95,6 @@ med_drag_image( Window drag_win, E_Menu* m_in, E_Menu_Item *mi_in )
 	break;
 
       case TOOL_NEW_SUBMENU:
-	/*sub = e_menu_new();*/
 	sub = NEW(E_Menu, 1);
 	ZERO(sub, E_Menu, 1);
 	e_object_init(E_OBJECT(sub), (E_Cleanup_Func) e_build_menu_cleanup);
@@ -93,13 +103,12 @@ med_drag_image( Window drag_win, E_Menu* m_in, E_Menu_Item *mi_in )
 	subi = e_menu_item_new("Empty");
 	e_menu_add_item(sub, subi);
 
-	e_menu_item_set_submenu(mi, sub /*menu2*/);
+	e_menu_item_set_submenu(mi, sub);
 	break;
 
       case TOOL_NEW_SEP:
 	e_menu_item_set_separator(mi, 1);
 	mi->size.min.w = 70;
-	/*menuitem->size.min.h = 15;*/
 	break;
       }/*switch*/
 
@@ -119,19 +128,6 @@ med_drag_image( Window drag_win, E_Menu* m_in, E_Menu_Item *mi_in )
 
   }
 
-
-  /* create output pixmap */
-  pmap = ecore_pixmap_new(drag_win, ww, wh, 0);
-
-  /* render to image */
-  imlib_context_set_image(im);
-
-  imlib_context_set_drawable(pmap);
-  /*imlib_context_set_mask(mask);
-   */
-  imlib_context_set_blend(0);
-  imlib_render_image_on_drawable(0, 0);
-
   /* show it */
   ecore_window_resize(drag_win, 
 		  mi->size.w + m->sel_border.l + m->sel_border.r 
@@ -145,6 +141,9 @@ med_drag_image( Window drag_win, E_Menu* m_in, E_Menu_Item *mi_in )
   ecore_window_raise(drag_win);
   ecore_window_show(drag_win);
   ecore_pixmap_free(pmap);
+
+  ecore_pixmap_free(mask);
+  evas_free(e);
 
 }
 
