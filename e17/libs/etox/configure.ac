@@ -1,7 +1,6 @@
 dnl Process this file with autoconf to produce a configure script.
 
-AC_INIT
-AC_CONFIG_SRCDIR([configure.in])
+AC_INIT(configure.ac)
 AM_INIT_AUTOMAKE(etox, 0.0.2)
 AM_CONFIG_HEADER(etox-config.h)
 
@@ -45,6 +44,146 @@ if test "x$GCC" = "xyes"; then
 fi
 changequote([,])dnl
 
+EDB_CONFIG="edb-config"
+AC_ARG_WITH(edb,
+[  --with-edb-config=FILE   edb-config script to use (eg /usr/bin/edb-config)],
+[
+   EDB_CONFIG=$withval
+   AC_CHECK_PROG(EDB_CONFIG_IN_PATH, $EDB_CONFIG, yes, no)
+   if test $EDB_CONFIG_IN_PATH = no; then
+      echo "ERROR:"
+      echo "The edb-config development script you specified:"
+      echo "$EDB_CONFIG"
+      echo "was not found.  Please check the path and make sure "
+      echo "the script exists and is executable."
+      AC_MSG_ERROR([Fatal Error: no edb-config detected.])
+      exit;
+   fi
+],
+[
+  AC_CHECK_PROG(EDB_CONFIG_IN_PATH, $EDB_CONFIG, yes, no)
+  if test $EDB_CONFIG_IN_PATH = no; then
+    echo "ERROR:"
+    echo "The edb-config development script was not found in your execute"
+    echo "path. This may mean one of several things"
+    echo "1. You may not have installed the edb-devel (or edb-dev)"
+    echo "   packages."
+    echo "2. You may have edb installed somewhere not covered by your path."
+    echo ""
+    echo "If this is the case make sure you have the packages installed, AND"
+    echo "that the edb-config script is in your execute path (see your"
+    echo "shell's manual page on setting the \$PATH environment variable), OR"
+    echo "alternatively, specify the script to use with --with-edb-config."
+    AC_MSG_ERROR([Fatal Error: no edb-config detected.])
+    exit;
+  fi
+])  
+
+EVAS_CONFIG="evas-config"
+AC_ARG_WITH(evas,
+[  --with-evas-config=FILE   evas-config script to use (eg /usr/bin/evas-config)],
+[
+   EVAS_CONFIG=$withval
+   AC_CHECK_PROG(EVAS_CONFIG_IN_PATH, $EVAS_CONFIG, yes, no)
+   if test $EVAS_CONFIG_IN_PATH = no; then
+      echo "ERROR:"
+      echo "The evas-config development script you specified:"
+      echo "$EVAS_CONFIG"
+      echo "was not found.  Please check the path and make sure "
+      echo "the script exists and is executable."
+      AC_MSG_ERROR([Fatal Error: no evas-config detected.])
+      exit;
+   fi
+],
+[
+  AC_CHECK_PROG(EVAS_CONFIG_IN_PATH, $EVAS_CONFIG, yes, no)
+  if test $EVAS_CONFIG_IN_PATH = no; then
+    echo "ERROR:"
+    echo "The evas-config development script was not found in your execute"
+    echo "path. This may mean one of several things"
+    echo "1. You may not have installed the evas-devel (or evas-dev)"
+    echo "   packages."
+    echo "2. You may have evas installed somewhere not covered by your path."
+    echo ""
+    echo "If this is the case make sure you have the packages installed, AND"
+    echo "that the evas-config script is in your execute path (see your"
+    echo "shell's manual page on setting the \$PATH environment variable), OR"
+    echo "alternatively, specify the script to use with --with-evas-config."
+    AC_MSG_ERROR([Fatal Error: no evas-config detected.])
+    exit;
+  fi
+])  
+
+EWD_CONFIG="ewd-config"
+AC_ARG_WITH(ewd,
+[  --with-ewd-config=FILE   ewd-config script to use (eg /usr/bin/ewd-config)],
+[
+   EWD_CONFIG=$withval
+   AC_CHECK_PROG(EWD_CONFIG_IN_PATH, $EWD_CONFIG, yes, no)
+   if test $EWD_CONFIG_IN_PATH = no; then
+      echo "ERROR:"
+      echo "The ewd-config development script you specified:"
+      echo "$EWD_CONFIG"
+      echo "was not found.  Please check the path and make sure "
+      echo "the script exists and is executable."
+      AC_MSG_ERROR([Fatal Error: no ewd-config detected.])
+      exit;
+   fi
+],
+[
+  AC_CHECK_PROG(EWD_CONFIG_IN_PATH, $EWD_CONFIG, yes, no)
+  if test $EWD_CONFIG_IN_PATH = no; then
+    echo "ERROR:"
+    echo "The ewd-config development script was not found in your execute"
+    echo "path. This may mean one of several things"
+    echo "1. You may not have installed the ewd-devel (or ewd-dev)"
+    echo "   packages."
+    echo "2. You may have ewd installed somewhere not covered by your path."
+    echo ""
+    echo "If this is the case make sure you have the packages installed, AND"
+    echo "that the ewd-config script is in your execute path (see your"
+    echo "shell's manual page on setting the \$PATH environment variable), OR"
+    echo "alternatively, specify the script to use with --with-ewd-config."
+    AC_MSG_ERROR([Fatal Error: no ewd-config detected.])
+    exit;
+  fi
+])  
+
+ESTYLE_CONFIG="estyle-config"
+AC_ARG_WITH(estyle,
+[  --with-estyle-config=FILE   estyle-config script to use (eg /usr/bin/estyle-config)],
+[
+   ESTYLE_CONFIG=$withval
+   AC_CHECK_PROG(ESTYLE_CONFIG_IN_PATH, $ESTYLE_CONFIG, yes, no)
+   if test $ESTYLE_CONFIG_IN_PATH = no; then
+      echo "ERROR:"
+      echo "The estyle-config development script you specified:"
+      echo "$ESTYLE_CONFIG"
+      echo "was not found.  Please check the path and make sure "
+      echo "the script exists and is executable."
+      AC_MSG_ERROR([Fatal Error: no estyle-config detected.])
+      exit;
+   fi
+],
+[
+  AC_CHECK_PROG(ESTYLE_CONFIG_IN_PATH, $ESTYLE_CONFIG, yes, no)
+  if test $ESTYLE_CONFIG_IN_PATH = no; then
+    echo "ERROR:"
+    echo "The estyle-config development script was not found in your execute"
+    echo "path. This may mean one of several things"
+    echo "1. You may not have installed the estyle-devel (or estyle-dev)"
+    echo "   packages."
+    echo "2. You may have estyle installed somewhere not covered by your path."
+    echo ""
+    echo "If this is the case make sure you have the packages installed, AND"
+    echo "that the estyle-config script is in your execute path (see your"
+    echo "shell's manual page on setting the \$PATH environment variable), OR"
+    echo "alternatively, specify the script to use with --with-estyle-config."
+    AC_MSG_ERROR([Fatal Error: no estyle-config detected.])
+    exit;
+  fi
+])  
+
 AC_SUBST(edb_cflags)
 AC_SUBST(edb_libs)
 edb_cflags=`edb-config --cflags`
@@ -73,22 +212,18 @@ estyle_libs=`estyle-config --libs`
 dnl Look for jade for sgml translations.
 AC_ARG_WITH(dbsheets,
        [  --with-dbsheets=DIR     use DIR to specify your DocBook stylesheets installation path.],
-       DB_STYLESHEETS="$withval", DB_STYLESHEETS="/usr/lib/sgml/stylesheet/dsssl/docbook/nwalsh")
+       DB_STYLESHEETS="$withval", DB_STYLESHEETS="/usr/lib/sgml/stylesheets/dsssl/docbook/nwalsh")
 AC_SUBST(DB_STYLESHEETS)
 AC_PATH_PROG(JADE, jade)
 AM_CONDITIONAL(HAVE_JADE, test "x$JADE" != "x" && test -d "$DB_STYLESHEETS")
 
-AC_CONFIG_FILES([
+AC_OUTPUT([
 Makefile
 etox-config
 src/Makefile
-doc/kernel-doc
-doc/html-customizations.dsl
-doc/Makefile
 test/Makefile
-])
-AC_CONFIG_COMMANDS([default],[[
+doc/Makefile
+], [
 chmod +x etox-config
-
-]],[[]])
-AC_OUTPUT
+]
+)
