@@ -1684,7 +1684,10 @@ Config_Desktop(FILE * ConfigFile)
 		  if (bg->bg.file)
 		     Efree(bg->bg.file);
 		  if (bg->top.file)
-		     Efree(bg->top.file);
+		    {
+		       Efree(bg->top.file);
+		       bg->top.file = NULL;
+		    }
 		  bg->bg.file = duplicate(s2);
 		  bg->bg.tile = i1;
 		  bg->bg.keep_aspect = i2;

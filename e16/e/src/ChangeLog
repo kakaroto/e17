@@ -2397,3 +2397,24 @@ Sun Sep 26 19:45:58 PDT 1999
 (Mandrake)
 
 added a bug from the mailing list.
+
+-------------------------------------------------------------------------------
+
+Mon Sep 27 12:12:46 EST 1999
+(Christian)
+
+Fixed the segfault that ocurred when switching
+to Ganymede from BrushedMetal with a previously
+wiped out ~/.enlightenment. The problem was that
+a pointer was freed but not set to NULL.
+
+I have a question regarding this: Wouldn't it
+be good to set a freed pointer to NULL by default?
+For example by changing the Efree macro to
+
+#define Efree(x) \
+__Efree(x, __FILE__, __LINE__)\
+x = NULL;
+
+or something? Since Efree is called about 700 times 
+in E, I really didn't want to mess that up.
