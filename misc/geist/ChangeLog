@@ -1,3 +1,12 @@
+Sun Oct 15 23:34:30 2000 Till Adam  <till@adam-lilienthal.de>
+        
+	* polygon rotation. line rotation is in there too, I forgot to write
+	a changelog entry for that, as well as for text block
+	justification, which I added about two weeks ago. Sorry about that :)
+	Line rotation aint right yet, as I need to convert lines to use
+	double values for coordinates for it to work right
+
+
 Sat Oct 15 02:27:32 2000  Lyle Kempler  <term@kempler.net>
 
 	* Added a spec file.

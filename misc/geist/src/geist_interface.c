@@ -213,6 +213,9 @@ geist_create_object_list(void)
    menuitem =
       geist_gtk_create_menuitem(menu, "line...", "", "Add Line",
                                 (GtkFunction) obj_addline_cb, NULL);
+   menuitem =
+      geist_gtk_create_menuitem(menu, "poly...", "", "Add Polygon",
+                                (GtkFunction) obj_addpoly_cb, NULL);
 
    menu = geist_gtk_create_submenu(menubar, "Dialogs");
 
@@ -934,6 +937,7 @@ gboolean obj_addline_cb(GtkWidget * widget, gpointer * data)
    D_RETURN(3, TRUE);
 }
 
+
 gboolean obj_addpoly_cb(GtkWidget * widget, gpointer * data)
 {
    int row;
@@ -963,6 +967,8 @@ gboolean obj_addpoly_cb(GtkWidget * widget, gpointer * data)
    }
    D_RETURN(3, TRUE);
 }
+
+
 
 gboolean menu_cb(GtkWidget * widget, gpointer * data)
 {

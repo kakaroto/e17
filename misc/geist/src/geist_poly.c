@@ -61,6 +61,7 @@ geist_poly_init(geist_poly * poly)
    obj->part_is_transparent = geist_poly_part_is_transparent;
    obj->display_props = geist_poly_display_props;
    obj->resize_event = geist_poly_resize;
+   obj->rotate = geist_poly_rotate;
    obj->move = geist_poly_move;
    obj->sizemode = SIZEMODE_STRETCH;
    obj->alignment = ALIGN_NONE;
@@ -527,3 +528,45 @@ geist_poly_has_transparency(geist_object * obj)
       D_RETURN(3, FALSE);
    }
 }
+
+
+void
+geist_poly_rotate(geist_object * obj, double angle)
+{
+   geist_poly *poly;
+   geist_list *l;
+   geist_point *p;
+
+   /*the cartesian coordinates relative to the center point */
+   double cart_x, cart_y;
+
+   D_ENTER(3);
+
+   poly = GEIST_POLY(obj);
+
+   angle = angle * 2 * 3.141592654 / 360;
+
+   if (!poly || !poly->points)
+	D_RETURN_(3);   
+
+   l = poly->points;
+
+    while (l)
+   {
+      p = (geist_point *) l->data;
+      
+      cart_x = p->x - obj->w/2 - obj->x;
+      cart_y = p->y - obj->h/2 - obj->y;
+
+      p->x = obj->x + obj->w/2 + cart_x * cos(angle) - cart_y * sin(angle);
+      p->y = obj->y + obj->h/2 + cart_x * sin(angle) + cart_y * cos(angle);
+
+      l = l->next;
+   }
+   poly->need_update = TRUE;
+   geist_poly_update_bounds(poly);
+    
+   D_RETURN_(3);
+}
+
+

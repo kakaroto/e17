@@ -87,7 +87,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define MAX(a, b) (((a) > (b)) ? (a) : (b))
 
 struct __geist_point {
-   int x, y;
+   double x, y;
 };
 
 extern int call_level;

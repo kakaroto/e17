@@ -60,6 +60,7 @@ gboolean obj_addtext_ok_cb(GtkWidget * widget, gpointer * data);
 gboolean obj_addtext_cb(GtkWidget * widget, gpointer * data);
 gboolean obj_addrect_cb(GtkWidget * widget, gpointer * data);
 gboolean obj_addline_cb(GtkWidget * widget, gpointer * data);
+gboolean obj_addpoly_cb(GtkWidget * widget, gpointer * data);
 gboolean menu_cb(GtkWidget * widget, gpointer * data);
 GtkWidget *geist_create_object_list(void);
 GtkWidget *geist_gtk_new_document_window(geist_document *doc);

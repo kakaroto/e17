@@ -62,6 +62,7 @@ unsigned char geist_poly_has_transparency(geist_object * obj);
 void geist_poly_update_imlib_polygon(geist_poly *poly);
 geist_point *geist_point_new(int x, int y);
 void geist_poly_update_bounds(geist_poly * poly);
+void geist_poly_rotate(geist_object *obj, double angle);
 void geist_poly_add_point(geist_poly * poly, int x, int y);
 void geist_poly_move(geist_object *obj, int x, int y);
 void geist_poly_get_rendered_area(geist_object * obj, int *x, int *y, int *w,
@@ -70,5 +71,6 @@ unsigned char
 geist_poly_part_is_transparent(geist_object * obj, int x, int y);
 void
 geist_poly_move_points_relative(geist_poly * poly, int x, int y);
+
 
 #endif

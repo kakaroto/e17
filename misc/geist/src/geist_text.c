@@ -414,7 +414,6 @@ geist_text_create_image(geist_text * txt)
       l = l->next;
    }
    txt->im = im;
-
    D_RETURN_(3);
 }
 
@@ -987,3 +986,4 @@ geist_text_update_positioning(geist_object * obj)
 
    D_RETURN_(3);
 }
+
