@@ -18,9 +18,18 @@
 char              **
 eConfigGetKeys(char *stringtomatch, unsigned long *numberofmatches)
 {
-   stringtomatch = NULL;
-   numberofmatches = NULL;
+   char              **paths;
+   int                 num;
 
+   if (!stringtomatch)
+      return NULL;
+   if (!numberofmatches)
+      return NULL;
+
+   if ((paths = eConfigPaths(&num)))
+     {
+
+     }
    return NULL;
 
 }
@@ -111,7 +120,7 @@ eConfigRefreshData(char *loc, unsigned long *length)
 
 }
 
-int
+int 
 eConfigUnloadData(char *loc)
 {
 
@@ -151,7 +160,7 @@ eConfigUnloadData(char *loc)
 
 }
 
-int
+int 
 eConfigStoreData(char *loc, void *data, unsigned long length, char *path)
 {
 
@@ -196,7 +205,7 @@ eConfigStoreData(char *loc, void *data, unsigned long length, char *path)
 
 }
 
-int
+int 
 eConfigStoreDataToFirstAvailablePath(char *loc, void *data,
 				     unsigned long length)
 {

@@ -16,7 +16,7 @@
 #include "eConfig.internal.h"
 #include "eConfig.h"
 
-void
+void 
 eConfigInit(void)
 {
 

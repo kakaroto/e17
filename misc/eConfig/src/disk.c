@@ -15,7 +15,7 @@
 #include "eConfig.internal.h"
 #include "eConfig.h"
 
-unsigned long
+unsigned long 
 _econf_finddatapointerinpath(char *path, char *loc,
 			     unsigned long *position,
 			     unsigned long *timestamp)
@@ -61,6 +61,48 @@ _econf_finddatapointerinpath(char *path, char *loc,
    /* returning a length of zero implies no data to be found */
    return 0;
 
+}
+
+char              **
+_econf_snarf_keys_from_fat_table(char *path, unsigned long *length)
+{
+
+   FILE               *FAT_TABLE;
+   char                tablepath[FILEPATH_LEN_MAX];
+   eConfigFAT          tableentry;
+   char              **return_table = NULL;
+
+   *length = 0;
+   if (!path)
+      return NULL;
+
+   memset(&tableentry, 0, sizeof(eConfigFAT));
+
+   sprintf(tablepath, "%s/fat", path);
+   FAT_TABLE = fopen(tablepath, "r+");
+   if (FAT_TABLE)
+     {
+	while (!feof(FAT_TABLE))
+	  {
+	     char               *current_pointer;
+
+	     (*length)++;
+	     fread(&tableentry, sizeof(eConfigFAT), 1, FAT_TABLE);
+	     current_pointer = malloc(strlen(tableentry.loc));
+	     strcpy(current_pointer, tableentry.loc);
+	     if (return_table)
+	       {
+		  return_table = malloc((sizeof(char *) * *length) + 1);
+	       }
+	     else
+	       {
+		  return_table = malloc((sizeof(char *)) + 1);
+	       }
+	     return_table[*length - 1] = current_pointer;
+	  }
+	return return_table;
+     }
+   return NULL;
 }
 
 void               *
@@ -122,7 +164,7 @@ _econf_get_data_from_disk(char *loc, unsigned long *length)
 
 }
 
-unsigned long
+unsigned long 
 _econf_append_data_to_disk_at_path(char *path, unsigned long length, void *data)
 {
    /* This function is pretty simplistic.  it just saves out a bit of *data to
@@ -172,7 +214,7 @@ _econf_append_data_to_disk_at_path(char *path, unsigned long length, void *data)
    return 0;
 }
 
-int
+int 
 _econf_save_data_to_disk_at_position(unsigned long position, char *path,
 				     unsigned long length, void *data)
 {
@@ -220,7 +262,7 @@ _econf_save_data_to_disk_at_position(unsigned long position, char *path,
 
 }
 
-int
+int 
 _econf_new_fat_entry_to_disk(char *loc, unsigned long position,
 			     unsigned long length, char *path)
 {
@@ -271,7 +313,7 @@ _econf_new_fat_entry_to_disk(char *loc, unsigned long position,
 
 }
 
-int
+int 
 _econf_replace_fat_entry_to_disk(char *loc, unsigned long position,
 				 unsigned long length, char *path)
 {
@@ -334,7 +376,7 @@ _econf_replace_fat_entry_to_disk(char *loc, unsigned long position,
    return 0;
 }
 
-int
+int 
 _econf_save_data_to_disk(void *data, char *loc, unsigned long length,
 			 char *path)
 {
@@ -439,7 +481,7 @@ _econf_save_data_to_disk(void *data, char *loc, unsigned long length,
 
 }
 
-int
+int 
 _econf_purge_data_from_disk_at_path(char *loc, char *path)
 {
 
@@ -502,7 +544,7 @@ _econf_purge_data_from_disk_at_path(char *loc, char *path)
 
 }
 
-int
+int 
 _econf_purge_data_from_disk(char *loc)
 {
 
@@ -554,7 +596,7 @@ _econf_purge_data_from_disk(char *loc)
 
 }
 
-int
+int 
 _econf_create_new_data_repository(char *path)
 {
 

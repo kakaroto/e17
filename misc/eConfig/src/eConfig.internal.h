@@ -82,6 +82,7 @@ extern eConfigType  eConfig;
 unsigned long       _econf_finddatapointerinpath(char *path, char *loc,
 						 unsigned long *position,
 						 unsigned long *timestamp);
+char              **_econf_snarf_keys_from_fat_table(char *path, unsigned long *length);
 void               *_econf_get_data_from_disk(char *loc, unsigned long *length);
 int                 _econf_save_data_to_disk(void *data, char *loc, unsigned long length,
 					     char *path);

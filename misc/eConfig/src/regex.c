@@ -15,7 +15,7 @@
 #include "eConfig.h"
 #include "eConfig.internal.h"
 
-int
+int 
 _econf_isafter(int p, char *s1, char *s2)
 {
    int                 i, j;
@@ -45,7 +45,7 @@ _econf_isafter(int p, char *s1, char *s2)
    return (-1);
 }
 
-int
+int 
 _econf_matchregexp(char *rx, char *s)
 {
    int                 i, l, m;

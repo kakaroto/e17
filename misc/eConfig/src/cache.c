@@ -15,7 +15,7 @@
 #include "eConfig.internal.h"
 #include "eConfig.h"
 
-int
+int 
 eConfigUpdateCache(void)
 {
 
@@ -28,7 +28,7 @@ eConfigUpdateCache(void)
 
 }
 
-void
+void 
 eConfigSetCacheSize(unsigned long newsize)
 {
 
@@ -44,7 +44,7 @@ eConfigSetCacheSize(unsigned long newsize)
 
 }
 
-unsigned long
+unsigned long 
 eConfigGetCacheSize(void)
 {
 
@@ -57,7 +57,7 @@ eConfigGetCacheSize(void)
 
 }
 
-unsigned long
+unsigned long 
 eConfigGetCacheFilled(void)
 {
 

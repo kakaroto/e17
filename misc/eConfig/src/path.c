@@ -17,7 +17,7 @@
 
 eConfigType         eConfig;
 
-int
+int 
 eConfigAddPath(char *path)
 {
 
@@ -41,7 +41,6 @@ eConfigAddPath(char *path)
 	     cur_path = cur_path->next;
 	  }
      }
-
    cur_path = eConfig.paths;
    eConfig.paths = malloc(sizeof(eConfigType));
    eConfig.paths->next = cur_path;
@@ -52,7 +51,7 @@ eConfigAddPath(char *path)
 
 }
 
-int
+int 
 eConfigRemovePath(char *path)
 {
 
