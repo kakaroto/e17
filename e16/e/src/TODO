@@ -1,5 +1,4 @@
 FEATURES FOR DR 0.17:
-kainx: 		reduce need for tooltip text to have auto gened tooltips work
 user: 		spacers in menus
 user: 		"default button" indicator for the default "enter" activated button
 user: 		add submenu resistance / timeout for running across to a submenu
