@@ -11,15 +11,15 @@
 #include "Esmart_Thumb.h"
 #include "../../config.h"
 
-  struct _Esmart_Thumb
-  {
-    Epsilon *e;
-    Epsilon_Info *info;
-    Evas_Object *image;		/* thumb image that's displayed */
-    Evas_Coord x, y, w, h;	/* smart object location/geometry */
-    int tw, th;
-  };
-  typedef struct _Esmart_Thumb Esmart_Thumb;
+struct _Esmart_Thumb
+{
+  Epsilon *e;
+  Epsilon_Info *info;
+  Evas_Object *image;		/* thumb image that's displayed */
+  Evas_Coord x, y, w, h;	/* smart object location/geometry */
+  int tw, th;
+};
+typedef struct _Esmart_Thumb Esmart_Thumb;
 
 static void _e_thumb_add (Evas_Object * o);
 static void _e_thumb_del (Evas_Object * o);
@@ -137,7 +137,6 @@ esmart_thumb_new (Evas * evas, const char *file)
 		      result = NULL;
 		    }
 		}
-
 	    }
 	}
     }
@@ -198,7 +197,8 @@ esmart_thumb_evas_object_get (Evas_Object * o, int orient)
 	  if (orient && epsilon_info_exif_get (e->info))
 	    {
 	      switch (epsilon_info_exif_props_as_int_get (e->info,
-		  EPSILON_ED_IMG, 0x0112))
+							  EPSILON_ED_IMG,
+							  0x0112))
 		{
 		case 3:
 		  if ((im = imlib_load_image (e->e->src)))
@@ -320,8 +320,25 @@ esmart_thumb_freshen (Evas_Object * o)
     }
   return (result);
 }
+
+Evas_Object *
+esmart_thumb_evas_object_image_get (Evas_Object * o)
+{
+  Evas_Object *result = NULL;
+  if (o)
+    {
+      Esmart_Thumb *e = NULL;
+      if ((e = (Esmart_Thumb *) evas_object_smart_data_get (o)))
+	{
+	  result = e->image;
+	}
+    }
+  return (result);
+}
+
+/*========================================================================*/
 int
-esmart_thumb_exif_get(Evas_Object * o)
+esmart_thumb_exif_get (Evas_Object * o)
 {
   int result = 0;
   if (o)
@@ -329,18 +346,20 @@ esmart_thumb_exif_get(Evas_Object * o)
       Esmart_Thumb *e = NULL;
       if ((e = (Esmart_Thumb *) evas_object_smart_data_get (o)))
 	{
-	    Epsilon_Info *ei = NULL;
-	    if(e->e) {
-		if((ei = epsilon_info_get(e->e))) {
-		    result = epsilon_info_exif_get(ei);
+	  if (e->e)
+	    {
+	      Epsilon_Info *ei = NULL;
+	      if ((ei = epsilon_info_get (e->e)))
+		{
+		  result = epsilon_info_exif_get (ei);
 		}
 	    }
 	}
     }
   return (result);
 }
-const char*
-esmart_thumb_exif_data_as_string_get(Evas_Object * o, int lvl, int prop)
+const char *
+esmart_thumb_exif_data_as_string_get (Evas_Object * o, int lvl, int prop)
 {
   const char *result = NULL;
   if (o)
@@ -348,19 +367,24 @@ esmart_thumb_exif_data_as_string_get(Evas_Object * o, int lvl, int prop)
       Esmart_Thumb *e = NULL;
       if ((e = (Esmart_Thumb *) evas_object_smart_data_get (o)))
 	{
-	    Epsilon_Info *ei = NULL;
-	    if(e->e) {
-		if((ei = epsilon_info_get(e->e))) {
-		    result = epsilon_info_exif_props_as_string_get(ei,
-						(unsigned short)lvl, prop);
+	  if (e->e)
+	    {
+	      Epsilon_Info *ei = NULL;
+	      if ((ei = epsilon_info_get (e->e)))
+		{
+		  result = epsilon_info_exif_props_as_string_get (ei,
+								  (unsigned
+								   short) lvl,
+								  prop);
 		}
 	    }
 	}
     }
   return (result);
 }
+
 int
-esmart_thumb_exif_data_as_int_get(Evas_Object * o, int lvl, int prop)
+esmart_thumb_exif_data_as_int_get (Evas_Object * o, int lvl, int prop)
 {
   int result = -1;
   if (o)
@@ -368,11 +392,15 @@ esmart_thumb_exif_data_as_int_get(Evas_Object * o, int lvl, int prop)
       Esmart_Thumb *e = NULL;
       if ((e = (Esmart_Thumb *) evas_object_smart_data_get (o)))
 	{
-	    Epsilon_Info *ei = NULL;
-	    if(e->e) {
-		if((ei = epsilon_info_get(e->e))) {
-		    result = epsilon_info_exif_props_as_int_get(ei,
-						(unsigned short)lvl, prop);
+	  if (e->e)
+	    {
+	      Epsilon_Info *ei = NULL;
+	      if ((ei = epsilon_info_get (e->e)))
+		{
+		  result = epsilon_info_exif_props_as_int_get (ei,
+							       (unsigned
+								short) lvl,
+							       prop);
 		}
 	    }
 	}

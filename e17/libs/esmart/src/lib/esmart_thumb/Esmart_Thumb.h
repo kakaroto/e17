@@ -55,6 +55,13 @@ extern "C"
   Evas_Object *esmart_thumb_evas_object_get (Evas_Object * o, int orient);
 
 /**
+ * esmart_thumb_evas_object_image_get - the actual image object in the thumb
+ * @o - the object returned from esmart_thumb_new
+ * Returns a valid Evas_Object* on success, NULL on no image
+ */
+  Evas_Object *esmart_thumb_evas_object_image_get (Evas_Object * o);
+
+/**
  * esmart_thumb_format_get - get the format of the image this thumb is for
  * @o - The smart object we want the format for
  * NOTE: Don't free this string, dupe it if you wanna keep it around
@@ -81,14 +88,15 @@ extern "C"
  * @prop - The exif prop you want
  * Returns NULL if not found, string value for the tag if present
  */
-const char* esmart_thumb_exif_data_as_string_get(Evas_Object * o, int lvl, int prop);
+  const char *esmart_thumb_exif_data_as_string_get (Evas_Object * o, int lvl,
+						    int prop);
 /** 
  * esmart_thumb_exif_data_as_int_get - Get an exif tag as an int
  * @o - The smart object we're curious about
  * @prop - The exif prop you want
  * Returns -1 if not found, string value for the tag if present
  */
-int esmart_thumb_exif_data_as_int_get(Evas_Object * o, int lvl, int prop);
+  int esmart_thumb_exif_data_as_int_get (Evas_Object * o, int lvl, int prop);
 
 #ifdef __cplusplus
 }
