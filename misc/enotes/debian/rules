@@ -69,7 +69,8 @@ install: build
 
 	# Add here commands to install the package into debian/enotes.
 	$(MAKE) install DESTDIR=$(CURDIR)/debian/enotes/
-	find $(CURDIR)/debian/enotes -name CVS -a -type d|xargs rm -r
+	# We're not installing CVS dirs...
+	#find $(CURDIR)/debian/enotes -name CVS -a -type d|xargs rm -r
 
 
 # Build architecture-independent files here.
