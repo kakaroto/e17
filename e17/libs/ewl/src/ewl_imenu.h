@@ -7,6 +7,4 @@
 Ewl_Widget     *ewl_imenu_new(char *image, char *title);
 void            ewl_imenu_init(Ewl_IMenu * menu, char *image, char *title);
 
-void            ewl_imenu_set_title_expandable(Ewl_IMenu * m);
-
 #endif				/* __EWL_IMENU_H__ */

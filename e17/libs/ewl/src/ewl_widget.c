@@ -35,6 +35,10 @@ static void     __ewl_widget_mouse_down(Ewl_Widget * w, void *ev_data,
 				     void *user_data);
 static void     __ewl_widget_mouse_up(Ewl_Widget * w, void *ev_data,
 				     void *user_data);
+/* FIXME: Enable with Edje
+static void     __ewl_widget_mouse_move(Ewl_Widget * w, void *ev_data,
+				     void *user_data);
+ */
 
 static inline void __ewl_widget_ebits_destroy(Ewl_Widget *w);
 static inline void __ewl_widget_cleanup_fx_clip(Ewl_Widget *w);
@@ -100,6 +104,11 @@ void ewl_widget_init(Ewl_Widget * w, char *appearance)
 			    NULL);
 	ewl_callback_append(w, EWL_CALLBACK_MOUSE_UP, __ewl_widget_mouse_up,
 			    NULL);
+	/*
+	 * FIXME: Enable this when edje themes are used
+	ewl_callback_append(w, EWL_CALLBACK_MOUSE_MOVE, __ewl_widget_mouse_move,
+			    NULL);
+	 */
 
 	ewl_widget_set_appearance(w, appearance);
 
@@ -930,6 +939,17 @@ __ewl_widget_mouse_up(Ewl_Widget *w, void *ev_data, void *user_data)
 	} else
 		ewl_widget_update_appearance(w, "normal");
 }
+
+/*
+ * FIXME: When edje thems are phased in, we must pass events on
+static void
+__ewl_widget_mouse_move(Ewl_Widget *w, void *ev_data, void *user_data)
+{
+	if (w->state & EWL_STATE_DISABLED)
+		DRETURN(DLEVEL_STABLE);
+
+}
+ */
 
 static inline void __ewl_widget_ebits_destroy(Ewl_Widget *w)
 {

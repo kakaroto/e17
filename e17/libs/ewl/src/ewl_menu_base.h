@@ -56,15 +56,6 @@ struct _ewl_menu_base
 	 */
 	Ewl_Widget     *popup;
 	Ewl_Widget     *popbox;
-
-	/*
-	 * boolean: is title collapsed or expanded
-	 */
-	int             t_expand;
-
-	/* animation variables */
-	int             width;
-	int             height;
 };
 
 Ewl_Widget     *ewl_menu_item_new(char *image, char *title);

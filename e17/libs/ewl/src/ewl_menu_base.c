@@ -47,11 +47,6 @@ void ewl_menu_base_init(Ewl_Menu_Base * menu, char *image, char *title)
 	 */
 	ewl_container_add_notify(EWL_CONTAINER(menu), __ewl_menu_add);
 
-	/*
-	 * Initialize the remaining fields of the menu.
-	 */
-	menu->t_expand = 0;
-
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 

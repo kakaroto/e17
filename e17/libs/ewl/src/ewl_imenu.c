@@ -55,36 +55,6 @@ void ewl_imenu_init(Ewl_IMenu * menu, char *image, char *title)
 }
 
 
-/**
- * ewl_imenu_set_title_expandable - allow title to be expanded/contracted
- * @menu: the menu
- *
- * Returns nothing.
- */
-void ewl_imenu_set_title_expandable(Ewl_IMenu * menu)
-{
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-
-	menu->t_expand = 1;
-
-	/*
-	 * ewl_object_set_maximum_size (EWL_OBJECT(menu->corner), 30, 22);
-	 * ewl_object_set_minimum_size (EWL_OBJECT(menu->corner), 30, 22);
-	 */
-
-	/*
-	 * ewl_callback_append(menu->corner_button, EWL_CALLBACK_MOUSE_UP,
-	 * __ewl_imenu_expand, menu);
-	 * ewl_container_append_child(EWL_CONTAINER(menu->corner), 
-	 * menu->corner_button);
-	 * 
-	 * ewl_widget_configure(EWL_WIDGET(menu->corner));
-	 */
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
 void __ewl_imenu_expand(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_IMenu      *menu;
