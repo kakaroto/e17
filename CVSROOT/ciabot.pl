@@ -262,7 +262,7 @@ EM
 for (my $dirnum = 0; $dirnum < @dir; $dirnum++) {
   map {
     $_ = $dir[$dirnum] . '/' . $_;
-    for (my $ix = 0; $ix < $pcount; $ix ++) {
+    for (my $ix = 0; $ix < $pcount; $ix++) {
        s#^.*?/##; # weed out the module name
     }
     s/&/&amp;/g;
