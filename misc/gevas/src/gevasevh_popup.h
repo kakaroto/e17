@@ -57,10 +57,16 @@ extern "C" {
 		GtkgEvasEvH evh_obj;
 		GtkMenu *user_gtk_menu;	/* User can register a static menu for popping up */
 		/* or listen for popup_activate signals and make menu themself */
-	};
+
+
+    };
 
 	struct _GtkgEvasEvHPopupClass {
 		GtkgEvasEvHClass parent_class;
+
+        gboolean (*sig_popup_activate)(
+            GtkgEvasEvHPopup* ev,GtkObject* gevasobj, gint _b, gint _x, gint _y);
+        
 	};
 
 

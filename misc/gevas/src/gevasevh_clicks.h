@@ -67,7 +67,12 @@ extern "C" {
 
 	struct _GtkgEvasEvHClicksClass {
 		GtkgEvasEvHClass parent_class;
-	};
+
+        gboolean (*sig_dclick)(GtkgEvasEvHClicks* ev,
+                               GtkObject* gevasobj, gint _b, gint _x, gint _y);
+        
+
+    };
 
 
 	guint gevasevh_clicks_get_type(void);

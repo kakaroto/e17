@@ -42,6 +42,7 @@ extern "C" {
 #define GTK_GEVAS(obj)          GTK_CHECK_CAST (obj, gevas_get_type (), GtkgEvas)
 #define GTK_GEVAS_CLASS(klass)  GTK_CHECK_CLASS_CAST (klass, gevas_get_type (), GtkgEvasClass)
 #define GTK_IS_GEVAS(obj)       GTK_CHECK_TYPE (obj, gevas_get_type ())
+
 #define GTK_GEVAS_CHECKED_BG 		"GtkgEvas::checked_bg"
 #define GTK_GEVAS_RENDER_MODE 		"GtkgEvas::render_mode"
 #define GTK_GEVAS_EVAS		 		"GtkgEvas::evas"
@@ -56,6 +57,7 @@ extern "C" {
 #define GTK_GEVAS_VIEWPORT_Y		"GtkgEvas::viewport_y"
 #define GTK_GEVAS_VIEWPORT_W		"GtkgEvas::viewport_w"
 #define GTK_GEVAS_VIEWPORT_H		"GtkgEvas::viewport_h"
+
 #define gevas_set_checked_bg( gevas, val ) \
 	  gtk_object_set(GTK_OBJECT(gevas), \
                   GTK_GEVAS_CHECKED_BG, (gboolean) val, NULL);

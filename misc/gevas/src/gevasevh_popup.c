@@ -177,6 +177,13 @@ guint gevasevh_popup_get_type(void)
 	return ev_type;
 }
 
+static gboolean sig_popup_activate(GtkgEvasEvHPopup* ev,
+                               GtkObject* gevasobj, gint _b, gint _x, gint _y)
+{
+    printf("sig_popup_activate\n");
+    return 0;
+}
+
 static void gevasevh_popup_class_init(GtkgEvasEvHPopupClass * klass)
 {
 	GtkObjectClass *object_class;
@@ -196,11 +203,13 @@ static void gevasevh_popup_class_init(GtkgEvasEvHPopupClass * klass)
 	evh_klass->handler_mouse_up = gevasev_to_popup_mouse_up;
 	evh_klass->handler_mouse_move = gevasev_to_popup_mouse_move;
 
-	_gevasevh_popup_signals[M_DOWN] =
+    klass->sig_popup_activate = sig_popup_activate;
+
+    _gevasevh_popup_signals[M_DOWN] =
 		gtk_signal_new("popup_activate",
 					   GTK_RUN_LAST,
 					   GTK_CLASS_TYPE(object_class),
-					   0,
+                       GTK_SIGNAL_OFFSET (GtkgEvasEvHPopupClass, sig_popup_activate),
 					   gtk_marshal_BOOL__POINTER_INT_INT_INT,
 					   GTK_TYPE_BOOL, 4,
 					   GTK_TYPE_POINTER,

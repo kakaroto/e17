@@ -76,7 +76,7 @@ gevasevh_clicks_set_arg(GtkObject * object, GtkArg * arg, guint arg_id);
 
 
 enum {
-	SIG_DCLICK=1,
+	SIG_DCLICK,
 	LAST_SIGNAL
 };
 static guint _gevasevh_clicks_signals[LAST_SIGNAL] = { 0 };
@@ -170,6 +170,14 @@ guint gevasevh_clicks_get_type(void)
 	return ev_type;
 }
 
+static gboolean sig_dclick(GtkgEvasEvHClicks* ev,
+                               GtkObject* gevasobj, gint _b, gint _x, gint _y)
+{
+    printf("sig_dclick\n");
+    return 0;
+}
+
+
 
 static void gevasevh_clicks_class_init(GtkgEvasEvHClicksClass * klass)
 {
@@ -190,11 +198,13 @@ static void gevasevh_clicks_class_init(GtkgEvasEvHClicksClass * klass)
 	evh_klass->handler_mouse_up = gevasev_clicks_mouse_up;
 	evh_klass->handler_mouse_move = gevasev_clicks_mouse_move;
 
+    klass->sig_dclick = sig_dclick;
+
     _gevasevh_clicks_signals[SIG_DCLICK] =
 		gtk_signal_new("dclick",
 					   GTK_RUN_LAST,
 					   GTK_CLASS_TYPE(object_class),
-					   0,
+                       GTK_SIGNAL_OFFSET (GtkgEvasEvHClicksClass, sig_dclick),
 					   gtk_marshal_BOOL__POINTER_INT_INT_INT,
 					   GTK_TYPE_BOOL, 4,
 					   GTK_TYPE_POINTER,

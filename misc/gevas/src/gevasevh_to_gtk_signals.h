@@ -54,7 +54,21 @@ extern "C" {
 
 	struct _GtkgEvasEvHToGtkSignalsClass {
 		GtkgEvasEvHClass parent_class;
-	};
+
+
+        gboolean (*sig_mouse_down)(GtkgEvasEvHToGtkSignals* ev,
+                                   GtkObject* gevasobj, gint _b, gint _x, gint _y);
+        gboolean (*sig_mouse_up)(GtkgEvasEvHToGtkSignals* ev,
+                                 GtkObject* gevasobj, gint _b, gint _x, gint _y);
+        gboolean (*sig_mouse_move)(GtkgEvasEvHToGtkSignals* ev,
+                                   GtkObject* gevasobj, gint _b, gint _x, gint _y);
+        gboolean (*sig_mouse_in)(GtkgEvasEvHToGtkSignals* ev,
+                                 GtkObject* gevasobj, gint _b, gint _x, gint _y);
+        gboolean (*sig_mouse_out)(GtkgEvasEvHToGtkSignals* ev,
+                                  GtkObject* gevasobj, gint _b, gint _x, gint _y);
+        
+
+    };
 
 
 	guint gevasevh_to_gtk_signal_get_type(void);

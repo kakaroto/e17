@@ -480,6 +480,7 @@ static void gevas_init(GtkgEvas * ev)
     printf("gevas_init()\n");
     
 	GTK_WIDGET_SET_FLAGS(GTK_WIDGET(ev), GTK_CAN_FOCUS);
+    printf("gevas_init() 1\n");
 
 	ev->show_checked_bg = 0;
 	ev->evas = NULL;
@@ -923,7 +924,7 @@ static void gevas_realize(GtkWidget * widget)
 	/* only shows if the user has requested it */
 	_show_evas_checked_bg(widget, ev);
 
-    // FIXME:
+    // FIXME: Maybe we can do something better than single buffering?
     gtk_widget_set_double_buffered( widget, 0);
     
 

@@ -92,6 +92,11 @@ extern "C" {
 
     struct _GtkgEvasObjCollectionClass {
         GtkObjectClass parent_class;
+
+        gboolean (*sig_add)(GtkgEvasObjCollection* ev, GtkObject* gevasobj);
+        gboolean (*sig_remove)(GtkgEvasObjCollection* ev, GtkObject* gevasobj);
+        
+
     };
 
 

@@ -892,7 +892,10 @@ gevas_sprite_class_init(GtkgEvasSpriteClass * klass)
 
     /*
     signals[SIG_ADD] =
-        gtk_signal_new ("add", GTK_RUN_LAST, object_class->type, 0,
+        gtk_signal_new ("add",
+        GTK_RUN_LAST,
+        object_class->type,
+        0, // warning! must be an offset to callback!
                         gtk_marshal_NONE__POINTER,
                         GTK_TYPE_NONE, 1,
                         GTK_TYPE_OBJECT);

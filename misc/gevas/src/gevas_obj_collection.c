@@ -777,8 +777,19 @@ gevas_obj_collection_get_type(void)
 	return ev_type;
 }
 
+static gboolean sig_add(GtkgEvasObjCollection* ev, GtkObject* gevasobj)
+{
+    return 0;
+}
+static gboolean sig_remove(GtkgEvasObjCollection* ev, GtkObject* gevasobj)
+{
+    return 0;
+}
+
+
+
 static void
-gevas_obj_collection_class_init(GtkgEvasObjCollectionClass * klass)
+gevas_obj_collection_class_init(GtkgEvasObjCollectionClass* klass)
 {
     GObjectClass*   gobject_class = G_OBJECT_CLASS (klass);
     GtkObjectClass* object_class  = GTK_OBJECT_CLASS (klass);                      
@@ -789,14 +800,23 @@ gevas_obj_collection_class_init(GtkgEvasObjCollectionClass * klass)
     object_class->get_arg = gevas_obj_collection_get_arg;
 	object_class->set_arg = gevas_obj_collection_set_arg;
 
+    klass->sig_add = sig_add;
+    klass->sig_remove = sig_remove;
+
     signals[SIG_ADD] =
-        gtk_signal_new ("add", GTK_RUN_LAST, GTK_CLASS_TYPE(object_class), 0,
+        gtk_signal_new ("add",
+                        GTK_RUN_LAST,
+                        GTK_CLASS_TYPE(object_class),
+                        GTK_SIGNAL_OFFSET (GtkgEvasObjCollectionClass, sig_add),
                         gtk_marshal_NONE__POINTER,
                         GTK_TYPE_NONE, 1,
                         GTK_TYPE_OBJECT);
     
     signals[SIG_REMOVE] =
-        gtk_signal_new ("remove", GTK_RUN_LAST, GTK_CLASS_TYPE(object_class), 0,
+        gtk_signal_new ("remove",
+                        GTK_RUN_LAST,
+                        GTK_CLASS_TYPE(object_class),
+                        GTK_SIGNAL_OFFSET (GtkgEvasObjCollectionClass, sig_remove),
                         gtk_marshal_NONE__POINTER,
                         GTK_TYPE_NONE, 1,
                         GTK_TYPE_OBJECT);

@@ -168,6 +168,39 @@ guint gevasevh_to_gtk_signal_get_type(void)
 	return ev_type;
 }
 
+
+static gboolean sig_mouse_down(GtkgEvasEvHToGtkSignals* ev,
+                               GtkObject* gevasobj, gint _b, gint _x, gint _y)
+{
+    return 0;
+}
+
+static gboolean sig_mouse_up(GtkgEvasEvHToGtkSignals* ev,
+                               GtkObject* gevasobj, gint _b, gint _x, gint _y)
+{
+    return 0;
+}
+
+static gboolean sig_mouse_move(GtkgEvasEvHToGtkSignals* ev,
+                               GtkObject* gevasobj, gint _b, gint _x, gint _y)
+{
+    return 0;
+}
+
+static gboolean sig_mouse_in(GtkgEvasEvHToGtkSignals* ev,
+                               GtkObject* gevasobj, gint _b, gint _x, gint _y)
+{
+    return 0;
+}
+
+static gboolean sig_mouse_out(GtkgEvasEvHToGtkSignals* ev,
+                               GtkObject* gevasobj, gint _b, gint _x, gint _y)
+{
+    return 0;
+}
+
+
+
 static void
 gevasevh_to_gtk_signal_class_init(GtkgEvasEvHToGtkSignalsClass * klass)
 {
@@ -186,12 +219,19 @@ gevasevh_to_gtk_signal_class_init(GtkgEvasEvHToGtkSignalsClass * klass)
 	evh_klass->handler_mouse_up = gevasev_to_gtk_signal_mouse_up;
 	evh_klass->handler_mouse_move = gevasev_to_gtk_signal_mouse_move;
 
+    klass->sig_mouse_down = sig_mouse_down;
+    klass->sig_mouse_up   = sig_mouse_up;
+    klass->sig_mouse_move = sig_mouse_move;
+    klass->sig_mouse_in   = sig_mouse_in;
+    klass->sig_mouse_out  = sig_mouse_out;
+
+    
 	_gevasevh_to_gtk_signal_signals[M_DOWN] =
 		gtk_signal_new("mouse_down",
 					   GTK_RUN_LAST,
 					   GTK_CLASS_TYPE(object_class),
-					   0,
-					   gtk_marshal_BOOL__POINTER_INT_INT_INT,
+                       GTK_SIGNAL_OFFSET (GtkgEvasEvHToGtkSignalsClass, sig_mouse_down),
+                       gtk_marshal_BOOL__POINTER_INT_INT_INT,
 					   GTK_TYPE_BOOL, 4,
 					   GTK_TYPE_POINTER,
 					   GTK_TYPE_INT, GTK_TYPE_INT, GTK_TYPE_INT);
@@ -199,7 +239,7 @@ gevasevh_to_gtk_signal_class_init(GtkgEvasEvHToGtkSignalsClass * klass)
 		gtk_signal_new("mouse_up",
 					   GTK_RUN_LAST,
 					   GTK_CLASS_TYPE(object_class),
-					   0,
+                       GTK_SIGNAL_OFFSET (GtkgEvasEvHToGtkSignalsClass, sig_mouse_up),
 					   gtk_marshal_BOOL__POINTER_INT_INT_INT,
 					   GTK_TYPE_BOOL, 4,
 					   GTK_TYPE_POINTER,
@@ -208,7 +248,7 @@ gevasevh_to_gtk_signal_class_init(GtkgEvasEvHToGtkSignalsClass * klass)
 		gtk_signal_new("mouse_move",
 					   GTK_RUN_LAST,
 					   GTK_CLASS_TYPE(object_class),
-					   0,
+                       GTK_SIGNAL_OFFSET (GtkgEvasEvHToGtkSignalsClass, sig_mouse_move),
 					   gtk_marshal_BOOL__POINTER_INT_INT_INT,
 					   GTK_TYPE_BOOL, 4,
 					   GTK_TYPE_POINTER,
@@ -217,7 +257,7 @@ gevasevh_to_gtk_signal_class_init(GtkgEvasEvHToGtkSignalsClass * klass)
 		gtk_signal_new("mouse_in",
 					   GTK_RUN_LAST,
 					   GTK_CLASS_TYPE(object_class),
-					   0,
+                       GTK_SIGNAL_OFFSET (GtkgEvasEvHToGtkSignalsClass, sig_mouse_in),
 					   gtk_marshal_BOOL__POINTER_INT_INT_INT,
 					   GTK_TYPE_BOOL, 4,
 					   GTK_TYPE_POINTER,
@@ -226,7 +266,7 @@ gevasevh_to_gtk_signal_class_init(GtkgEvasEvHToGtkSignalsClass * klass)
 		gtk_signal_new("mouse_out",
 					   GTK_RUN_LAST,
 					   GTK_CLASS_TYPE(object_class),
-					   0,
+                       GTK_SIGNAL_OFFSET (GtkgEvasEvHToGtkSignalsClass, sig_mouse_out),
 					   gtk_marshal_BOOL__POINTER_INT_INT_INT,
 					   GTK_TYPE_BOOL, 4,
 					   GTK_TYPE_POINTER,

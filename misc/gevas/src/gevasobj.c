@@ -71,7 +71,7 @@ enum {
 };
 
 enum {
-    SIG_MOVE_ABSOLUTE=1,
+    SIG_MOVE_ABSOLUTE,
     SIG_MOVE_RELATIVE,
     SIG_RESIZE,
     SIG_VISIBLE,
