@@ -101,7 +101,7 @@ init()
 }
 
 
-unsigned char *
+void
 grab_image()
 {
    int i = 0;
@@ -116,15 +116,14 @@ grab_image()
 
    if (ioctl(grab_fd, VIDIOCMCAPTURE, &grab_buf) == -1) {
       perror("ioctl VIDIOCMCAPTURE");
-      return NULL;
+      return;
    }
 
    if (ioctl(grab_fd, VIDIOCSYNC, &i) == -1) {
       perror("ioctrl VIDIOCSYNC");
-      return NULL;
+      return;
    }
-
-   return grab_data;
+   return;
 }
 
 int
@@ -185,11 +184,11 @@ main(int argc, char **argv)
 
    if (Success !=
        XvQueryExtension(dpy, &ver, &rel, &req, &ev, &err))
-      fprintf(stderr, "Couldn't do Xv shit\n");
+      fprintf(stderr, "Couldn't do Xv stuff\n");
 
    if (Success !=
        XvQueryAdaptors(dpy, DefaultRootWindow(dpy), &adapt, &ai))
-      fprintf(stderr, "Couldn't do Xv shit\n");
+      fprintf(stderr, "Couldn't do Xv stuff\n");
 
    for (i = 0; i < (int) adapt; i++) {
       xv_port = ai[i].base_id;
