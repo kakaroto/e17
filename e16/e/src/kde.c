@@ -171,8 +171,8 @@ KDE_UpdateFocusedWindow(void)
      }
    else
      {
-	XChangeProperty(disp, root.win, KDE_ACTIVE_WINDOW, KDE_ACTIVE_WINDOW,
-			32, PropModeReplace, (unsigned char *)NULL, 1);
+	if (getSimpleHint(root.win, KDE_ACTIVE_WINDOW))
+	   deleteHint(root.win, KDE_ACTIVE_WINDOW);
      }
 
    if (ewin)
