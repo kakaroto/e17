@@ -65,7 +65,7 @@ void            ewl_checkbutton_label_position_set(Ewl_Widget * w,
 
 void            ewl_checkbutton_clicked_cb(Ewl_Widget * w, void *ev_data,
 					   void *user_data);
-void            ewl_check_clicked_cb(Ewl_Widget * w, void *ev_data,
+void            ewl_checkbutton_destroy_cb(Ewl_Widget * w, void *ev_data,
 				     void *user_data);
 
 /**

@@ -45,7 +45,9 @@ void ewl_checkbutton_init(Ewl_CheckButton * cb, char *label)
 
 	ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_NONE);
 	ewl_callback_append(w, EWL_CALLBACK_CLICKED,
-			    ewl_checkbutton_clicked_cb, NULL);
+				ewl_checkbutton_clicked_cb, NULL);
+	ewl_callback_append(w, EWL_CALLBACK_DESTROY,
+				ewl_checkbutton_destroy_cb, NULL);
 
 	cb->label_position = EWL_POSITION_RIGHT;
 
@@ -124,3 +126,15 @@ void ewl_checkbutton_clicked_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
+
+void
+ewl_checkbutton_destroy_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+{
+	Ewl_CheckButton *ck;
+
+	ck = EWL_CHECKBUTTON(w);
+	if (ck->check)
+		ewl_widget_destroy(ck->check);
+}
+
+
