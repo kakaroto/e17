@@ -376,7 +376,7 @@ engrave_canvas_part_state_recalc(Engrave_Canvas *ec, Engrave_Part_State *eps,
 
             if ((aspect_min > 0.0) && (aspect < aspect_min)) {
                 new_w = (eps->pos.h * aspect_min);
-                new_h = (eps->pos.w * aspect_min);
+                new_h = (eps->pos.w / aspect_min);
             }
         }
         
