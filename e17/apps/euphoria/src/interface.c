@@ -144,7 +144,13 @@ bool ui_init(Euphoria *e) {
 	if (!ui_init_dragger(e))
 		return false;
 
-	return ui_init_edje(e, PACKAGE);
+	if (!ui_init_edje(e, PACKAGE))
+		return false;
+
+	e->playlist = playlist_new(e->gui.evas, e->cfg.theme, e->xmms);
+	assert(e->playlist);
+
+	return true;
 }
 
 void ui_shutdown_edje(Euphoria *e) {

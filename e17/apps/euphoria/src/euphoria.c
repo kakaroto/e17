@@ -133,31 +133,6 @@ static Euphoria *euphoria_new() {
 	return e;
 }
 
-/**
- * Add files/directories/m3u's to the playlist
- *
- * @param e
- */
-static int load_playlist(void *data) {
-	Euphoria *e = data;
-#if 0
-	int i;
-#endif
-
-	e->playlist = playlist_new(e->gui.evas, e->cfg.theme, e->xmms);
-	assert(e->playlist);
-
-#if 0
-	for (i = e->opt_start; e->args[i]; i++)
-		playlist_load_any(e->playlist, e->args[i], i > 1);
-#endif
-
-	ui_refresh_time(e, 0);
-	ui_refresh_seeker(e, 0);
-
-	return 0; /* stop idler */
-}
-
 static void handle_args(Euphoria *e, int argc, const char **argv) {
 	int o;
 	struct option opts[] = {{"help", no_argument, 0, 'h'},
@@ -193,6 +168,17 @@ static void handle_args(Euphoria *e, int argc, const char **argv) {
 		}
 	}
 
+	for (o = optind; o < argc; o++) {
+		char buf[PATH_MAX];
+
+		if (*argv[o] == '/')
+			snprintf(buf, PATH_MAX, "file://%s", (char *)argv[o]);
+		else
+			snprintf(buf, PATH_MAX, "file://%s/%s", getenv("PWD"),
+					(char *)argv[o]);
+		xmmsc_playlist_add(e->xmms, buf);
+	}
+
 	e->args = argv;
 	e->opt_start = optind;
 }
@@ -213,11 +199,8 @@ int main(int argc, const char **argv) {
 		return 1;
 	}
 
-	/* the playlist is loaded in an Ecore_Idler, so the GUI
-	 * will be drawn first
-	 */
-	ecore_idler_add(load_playlist, e);
-
+	ui_refresh_time(e, 0);
+	ui_refresh_seeker(e, 0);
 	ui_refresh_volume(e);
 	ecore_timer_add(1.5, ui_refresh_volume, e);
 
