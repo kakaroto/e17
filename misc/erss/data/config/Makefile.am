@@ -9,6 +9,6 @@ radius.cfg \
 slashdot.cfg \
 vg.cfg \
 handyande.cfg \
-itavisen.cfg
-
+itavisen.cfg \
+kuro5hin.cfg
 
