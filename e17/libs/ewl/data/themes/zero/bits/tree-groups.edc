@@ -3,6 +3,7 @@ group {
     parts {
         part {
             name, "base";
+            type, RECT; /* FIXME is this correct? */
             mouse_events,  1;
             description {
                 state, "default" 0.0;

@@ -10,6 +10,7 @@
 	       border, 3 3 3 3; \
 	       min, 6 6 6 6; \
 	       color_class, "background"; \
+	       visible, 0; /* FIXME is this correct? */ \
 	       rel1 { \
 		  relative, 0.0  0.0; \
 		  offset,   1    1; \
@@ -17,6 +18,9 @@
 	       rel2 { \
 		  relative, 1.0  1.0; \
 		  offset,   -2   -2; \
+	       } \
+	       image { \
+		  normal, IMAGE1; \
 	       } \
 	    } \
 	    description { \
