@@ -16,7 +16,7 @@ Ewd_List *config_files;
 char *main_buffer;
 char *last_time;
 
-int bufsize = 0;
+int main_bufsize = 0;
 int waiting_for_reply = FALSE;
 int total_connects = 0;
 
@@ -25,7 +25,7 @@ int erss_connect (void *data)
 {
 
 	if (waiting_for_reply) {
-		fprintf (stderr, "%s warning: client has not recived all information ", 
+		fprintf (stderr, "%s warning: client has not received all information ", 
 				PACKAGE);
 		fprintf (stderr, "from the last connection attempt yet! \n");
 		return TRUE;
@@ -38,25 +38,25 @@ int erss_connect (void *data)
 	else
 		printf ("%s info: connecting to '%s' ...\n", PACKAGE, cfg->url);
 
-	if (cfg->proxy) {
-		if (!strcasecmp (cfg->proxy, "")) {
+	if (rc->proxy) {
+		if (!strcasecmp (rc->proxy, "")) {
 			server = ecore_con_server_connect (ECORE_CON_REMOTE_SYSTEM,
 												 cfg->hostname, 80, NULL);
 		} else {
-			if (!cfg->proxy_port)
+			if (!rc->proxy_port)
 			{
 				fprintf (stderr, 
 						"%s error: You need to define a proxy port!\n", PACKAGE);
 				exit (-1);
 			}
 			server = ecore_con_server_connect (ECORE_CON_REMOTE_SYSTEM,
-												 cfg->proxy, cfg->proxy_port, NULL);
+												 rc->proxy, rc->proxy_port, NULL);
 		}
 	} else {
 		server = ecore_con_server_connect (ECORE_CON_REMOTE_SYSTEM,
 				cfg->hostname, 80, NULL);
 	}
-	
+
 	if (!server) {
 		fprintf (stderr, "%s error: Could not connect to server ..\n", PACKAGE);
 		exit (-1);
@@ -207,15 +207,15 @@ int handler_server_data (void *data, int type, void *event)
 	Ecore_Con_Event_Server_Data *e = event;
 
 	if (total_connects == 1)
-		printf ("%s info: reciving data ...\n", PACKAGE);
+		printf ("%s info: receiving data ...\n", PACKAGE);
 
 	/* 
-	 * Read everything we recive into one big buffer, and handle
+	 * Read everything we receive into one big buffer, and handle
 	 * that buffer when the server disconnects.
 	 */
-	main_buffer = realloc (main_buffer, bufsize + e->size);
-	memcpy (main_buffer + bufsize, e->data, e->size);
-	bufsize += e->size;
+	main_buffer = realloc (main_buffer, main_bufsize + e->size);
+	memcpy (main_buffer + main_bufsize, e->data, e->size);
+	main_bufsize += e->size;
 
 	return 1;
 }
@@ -223,31 +223,31 @@ int handler_server_data (void *data, int type, void *event)
 int handler_server_del (void *data, int type, void *event)
 {
 	Ecore_Con_Event_Server_Del *e = event;
+	char *buf = main_buffer;
 	char *leader;
 
 	if (total_connects == 1)
 		printf ("%s info: disconnecting ...\n", PACKAGE);
 
 	/*
-	 * Now split our main buffer in each newline and then parse 
-	 * the line.
+	 * Now split our buffer in each newline and then parse the line.
 	 */
 
-	while (main_buffer != NULL)
+	while (buf != NULL)
 	{
 		char temp;
 
-		leader = strchr (main_buffer, '\n');
+		leader = strchr (buf, '\n');
 		if (leader)
 		{
 			temp = *leader;
 			*leader = '\0';
-			parse_data (main_buffer);
+			parse_data (buf);
 			*leader = temp;
-			main_buffer = leader + 1;
+			buf = leader + 1;
 		} else
 		{
-			main_buffer = leader;
+			buf = leader;
 		}
 	}
 
@@ -256,11 +256,10 @@ int handler_server_del (void *data, int type, void *event)
 	
 	if (ewd_list_is_empty (list)) {
 		printf ("\n%s error: parsing data\n", PACKAGE);
-		if (main_buffer) 
+		if (buf) 
 			printf ("%s\n", main_buffer);
 		else 
 			printf ("%s error: could not connect to '%s'\n", PACKAGE, cfg->url);
-		
 		exit (-1);
 	}
 
@@ -269,7 +268,7 @@ int handler_server_del (void *data, int type, void *event)
 		main_buffer = NULL;
 	}
 
-	bufsize = 0;
+	main_bufsize = 0;
 	waiting_for_reply = FALSE;
 
 	if (total_connects == 1)
@@ -319,12 +318,12 @@ void cb_mouse_out_item (void *data, Evas_Object *o, const char *sig,
 	Article *item = data;
 	char c[1024];
 
-	if (!cfg->browser) {
+	if (!rc->browser) {
 		fprintf (stderr, "%s error: you have not defined any browser in your config file setting /usr/bin/mozilla as default\n", PACKAGE);
-		cfg->browser = strdup ("/usr/bin/mozilla");
+		rc->browser = strdup ("mozilla");
 	}
 	
-	snprintf (c, sizeof (c), "%s %s", cfg->browser, item->url);
+	snprintf (c, sizeof (c), "%s %s", rc->browser, item->url);
 	ecore_exe_run (c, NULL);
 }
 
@@ -363,8 +362,7 @@ void list_config_files (int output)
 	config_files = ewd_list_new ();
 
 	str = malloc (PATH_MAX);
-	snprintf (str, PATH_MAX, "%s/.%s/config", 
-			getenv("HOME"), PACKAGE);
+	snprintf (str, PATH_MAX, "%s/.%s/config", getenv("HOME"), PACKAGE);
 	ewd_list_append (paths, str);
 
 	str = malloc (PATH_MAX);
@@ -372,13 +370,7 @@ void list_config_files (int output)
 	ewd_list_append (paths, str);
 
 	str = malloc (PATH_MAX);
-	snprintf (str, PATH_MAX, "/usr/local/share/%s/config", 
-			PACKAGE);
-	ewd_list_append (paths, str);
-	
-	str = malloc (PATH_MAX);
-	snprintf (str, PATH_MAX, "/usr/share/%s/config",
-			PACKAGE);
+	snprintf (str, PATH_MAX, "%s/config", PACKAGE_DATA_DIR);
 	ewd_list_append (paths, str);
 
 	if (output)
@@ -526,14 +518,15 @@ int main (int argc, char * const argv[])
 		parse_config_file (config_file);
 	}
 	
-	if (!got_theme_file)
+	if (!got_theme_file) {
 		if (!got_rc_file) 
 			cfg->theme = strdup (PACKAGE_DATA_DIR"/default.eet");
 		else
 			cfg->theme = strdup (rc->theme);
+	}
 	else
 		cfg->theme = strdup (theme_file);
-	
+
 	stat (cfg->theme, &statbuf);
 	if (!S_ISREG(statbuf.st_mode)) {
 		printf ("%s error: themefile '%s' does not exist!\n", PACKAGE, cfg->theme);

@@ -24,9 +24,6 @@ typedef struct _config {
 
 	int borderless;
 
-	char *proxy;
-	int proxy_port;
-	char *browser;
 	char *prefix;
 
 	char *theme;
@@ -36,6 +33,9 @@ typedef struct _config {
 typedef struct _rc_config {
 	char *config;
 	char *theme;
+	char *browser;
+	char *proxy;
+	int proxy_port;
 } Rc_Config;
 
 int parse_rc_file ();

@@ -43,7 +43,7 @@ char *get_element (char **buffer, char *type)
 	if (!ret_val)
 		goto err_clean_c;
 
-	*buffer = end_tmp + size - 1;
+	/* *buffer = end_tmp + size - 1; */
 
   err_clean_c:
 	free (c);
@@ -126,6 +126,9 @@ void parse_data (char *buf)
 		"]]>"
 	};
 
+	if (!buf || !*buf)
+		return;
+
 	/*
 	printf ("data: %s\n", buf);
 	*/
@@ -138,7 +141,7 @@ void parse_data (char *buf)
 		/* 
 		 * We have a new story, allocate an item for it
 		 */
-		item = malloc (sizeof (Article *));
+		item = malloc (sizeof (Article));
 		item->description = NULL;
 		item->url = NULL;
 
@@ -171,13 +174,11 @@ void parse_data (char *buf)
 
 		c = ecore_txt_convert ("iso-8859-1", "utf8", c);
 
-		text = malloc (1024);
+		i = strlen(c) + 3 + strlen(cfg->prefix);
 
-		if (cfg->prefix)
-			snprintf (text, strlen (c) + strlen (cfg->prefix), " %s %s", 
-					cfg->prefix, c);
-		else
-			snprintf (text, strlen (c) + 5, " . %s", c);
+		text = malloc (i);
+
+		snprintf (text, i, " %s %s", cfg->prefix, c);
 
 		item->obj = edje_object_add (evas);
 		edje_object_file_set (item->obj, 
@@ -239,20 +240,21 @@ char *get_next_line (FILE * fp)
 		if (feof (fp))
 			return NULL;
 
+		buf[index++] = temp;
+
+		/* Check size after incrimenting to eliminate extra check
+		 * outside of loop */
 		if (index == bufsize)
 		{
 			bufsize += 512;
 			buf = realloc (buf, bufsize);
 		}
-
-		buf[index++] = temp;
 	}
 
-	if (index == bufsize)
-		buf = realloc (buf, bufsize);
-
 	buf[index] = '\0';
-	buf = realloc (buf, strlen (buf) ? strlen (buf) : 1);
+	index = strlen(buf) + 1;
+	if (bufsize > index)
+		buf = realloc (buf, index);
 
 	return buf;
 }
@@ -265,14 +267,16 @@ int parse_rc_file ()
 	char file[PATH_MAX];
 
 	snprintf (file, PATH_MAX, "%s/.erssrc", getenv ("HOME"));
-	
-	fp = fopen (file, "r");
-	if (!fp) 
-		return FALSE;
 
 	rc = malloc (sizeof (Rc_Config));
+	if (!rc)
+		return FALSE;
 
-	while ((line = get_next_line (fp)) != NULL)
+	memset(rc, 0, sizeof(Rc_Config));
+	
+	fp = fopen (file, "r");
+
+	while (fp && (line = get_next_line (fp)) != NULL)
 	{
 		if ((c = get_element (&line, "config")) != NULL)
 		{
@@ -285,20 +289,44 @@ int parse_rc_file ()
 			rc->theme = strdup (c);
 			continue;
 		}
-		
-	}
-	
-	free (line);
-	fclose (fp);
 
-	if (rc->theme && rc->config) 
-		return TRUE;
-	else {
-		fprintf (stderr, 
-				"Erss error: you are missing something in your rc file!\n\n");
+		if ((c = get_element (&line, "browser")) != NULL)
+		{
+			rc->browser = strdup (c);
+			continue;
+		}
+
+		if ((c = get_element (&line, "proxy")) != NULL)
+		{
+			rc->proxy = strdup (c);
+			continue;
+		}
+
+		if ((c = get_element (&line, "proxy_port")) != NULL)
+		{
+			rc->proxy_port = atoi (c);
+		}
+
+		free(line);
 	}
-	
-	return FALSE;
+
+	if (fp)
+		fclose (fp);
+
+	/*
+	 * Set sane defaults for unspecified config options.
+	 */
+	if (!rc->theme)
+		rc->theme = strdup(PACKAGE_DATA_DIR "/default.eet");
+	if (!rc->config)
+		rc->config = strdup(PACKAGE_DATA_DIR "/config/slashdot.cfg");
+
+	if (!rc->browser && getenv("BROWSER"))
+		rc->browser = strdup(getenv("BROWSER"));
+	if (!rc->browser)
+		rc->browser = strdup("mozilla");
+
+	return TRUE;
 }
 
 void parse_config_file (char *file)
@@ -309,11 +337,12 @@ void parse_config_file (char *file)
 
 	if ((fp = fopen (file, "r")) == NULL)
 	{
-		fprintf (stderr, "Erss error: Can't open config file\n");
+		fprintf (stderr, "Erss error: Can't open config file %s\n", file);
 		exit (-1);
 	}
 
 	cfg = malloc (sizeof (Config));
+	memset(cfg, 0, sizeof(Config));
 
 	while ((line = get_next_line (fp)) != NULL)
 	{
@@ -398,12 +427,6 @@ void parse_config_file (char *file)
 			continue;
 		}
 
-		if ((c = get_element (&line, "browser")) != NULL)
-		{
-			cfg->browser = strdup (c);
-			continue;
-		}
-
 		if ((c = get_element (&line, "borderless")) != NULL)
 		{
 			cfg->borderless = atoi (c);
@@ -429,20 +452,12 @@ void parse_config_file (char *file)
 			continue;
 		}
 
-		if ((c = get_element (&line, "proxy")) != NULL)
-		{
-			cfg->proxy = strdup (c);
-			continue;
-		}
-
-		if ((c = get_element (&line, "proxy_port")) != NULL)
-		{
-			cfg->proxy_port = atoi (c);
-		}
+		free (line);
 	}
 
-	free (line);
-
 	fclose (fp);
+
+	if (!cfg->prefix)
+		cfg->prefix = strdup(" . ");
 
 }

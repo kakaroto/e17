@@ -4,3 +4,13 @@
 
 <!-- Path to default theme -->
 <theme>/usr/local/share/erss/default.eet</theme>
+
+<!-- Set your browser path/location for quick url access -->
+<browser>MozillaFirebird</browser>
+
+<!--  
+Set your proxy server. 
+Leave blank if none!
+-->
+<proxy></proxy>
+<proxy_port>80</proxy_port>

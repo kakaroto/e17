@@ -8,6 +8,7 @@ osnews.cfg \
 radius.cfg \
 slashdot.cfg \
 vg.cfg \
+groklaw.cfg \
 handyande.cfg \
 itavisen.cfg \
 kuro5hin.cfg
