@@ -9,6 +9,7 @@
 #include <X11/Xatom.h>
 #include <X11/Xlib.h>
 #include <Imlib2.h>
+#include <Ecore_X.h>
 
 #include "Esmart_Trans.h"
 
@@ -131,7 +132,6 @@ esmart_trans_x11_freshen(Evas_Object *o, int x, int y, int w, int h)
 Evas_Object *
 esmart_trans_x11_new(Evas *e)
 {
-  Esmart_Trans_X11 *data;
   Evas_Object *x11_trans_object;
   
   x11_trans_object = evas_object_smart_add(e,
