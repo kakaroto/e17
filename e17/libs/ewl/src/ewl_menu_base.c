@@ -102,7 +102,7 @@ void ewl_menu_item_init(Ewl_Menu_Item * item, char *image, char *text)
 	 */
 	ewl_box_init(EWL_BOX(item), EWL_ORIENTATION_HORIZONTAL);
 	ewl_widget_set_appearance(EWL_WIDGET(item), "menuitem");
-	ewl_object_set_fill_policy(EWL_OBJECT(item), EWL_FILL_POLICY_NONE);
+	ewl_object_set_fill_policy(EWL_OBJECT(item), EWL_FILL_POLICY_HFILL);
 
 	ewl_container_intercept_callback(EWL_CONTAINER(item),
 			EWL_CALLBACK_CLICKED);
