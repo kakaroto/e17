@@ -660,25 +660,23 @@ runApp(char *exe, char *params)
 #else
 		  if (_fnisabs((char *)exe))
 #endif
-		     DialogAlertOK(
-				 _("There was an error running the program:\n"
-				   "%s\n"
-				   "This program could not be executed.\n"
-				"This is because the file does not exist.\n"),
-				     (char *)exe);
+		     DialogAlertOK(_("There was an error running the program:\n"
+				     "%s\n"
+				     "This program could not be executed.\n"
+				     "This is because the file does not exist.\n"),
+				   (char *)exe);
 		  /* relative path */
 		  else
-		     DialogAlertOK(
-				 _("There was an error running the program:\n"
-				   "%s\n"
-				   "This program could not be executed.\n"
-				   "This is most probably because this "
-				   "program is not in the\n"
-				   "path for your shell which is %s. "
-				   "I suggest you read the manual\n"
-				   "page for that shell and read up how to "
-				   "change or add to your\n"
-				   "execution path.\n"), (char *)exe, sh);
+		     DialogAlertOK(_("There was an error running the program:\n"
+				     "%s\n"
+				     "This program could not be executed.\n"
+				     "This is most probably because this "
+				     "program is not in the\n"
+				     "path for your shell which is %s. "
+				     "I suggest you read the manual\n"
+				     "page for that shell and read up how to "
+				     "change or add to your\n"
+				     "execution path.\n"), (char *)exe, sh);
 	       }
 	     else
 		/* it is a node on the filing sys */
@@ -688,47 +686,47 @@ runApp(char *exe, char *params)
 		    {
 		       /* can execute it */
 		       if (canexec((char *)path))
-			  DialogAlertOK(
-				 _("There was an error running the program:\n"
-				   "%s\n"
-				   "This program could not be executed.\n"
-				   "I am unsure as to why you could not "
-				   "do this. The file exists,\n"
-				   "is a file, and you are allowed to "
-				   "execute it. I suggest you look\n"
-				   "into this.\n"), (char *)path);
+			  DialogAlertOK(_
+					("There was an error running the program:\n"
+					 "%s\n"
+					 "This program could not be executed.\n"
+					 "I am unsure as to why you could not "
+					 "do this. The file exists,\n"
+					 "is a file, and you are allowed to "
+					 "execute it. I suggest you look\n"
+					 "into this.\n"), (char *)path);
 		       /* not executable file */
 		       else
-			  DialogAlertOK(
-				 _("There was an error running the program:\n"
-				   "%s\n"
-				   "This program could not be executed.\n"
-				   "This is because the file exists, is a "
-				   "file, but you are unable\n"
-				   "to execute it because you do not "
-				   "have execute "
-				   "access to this file.\n"),
-					  (char *)path);
+			  DialogAlertOK(_
+					("There was an error running the program:\n"
+					 "%s\n"
+					 "This program could not be executed.\n"
+					 "This is because the file exists, is a "
+					 "file, but you are unable\n"
+					 "to execute it because you do not "
+					 "have execute "
+					 "access to this file.\n"),
+(char *)path);
 		    }
 		  /* it's not a file */
 		  else
 		    {
 		       /* its a dir */
 		       if (isdir((char *)path))
-			  DialogAlertOK(
-				 _("There was an error running the program:\n"
-				   "%s\n"
-				   "This program could not be executed.\n"
-				   "This is because the file is in fact "
-				   "a directory.\n"), (char *)path);
+			  DialogAlertOK(_
+					("There was an error running the program:\n"
+					 "%s\n"
+					 "This program could not be executed.\n"
+					 "This is because the file is in fact "
+					 "a directory.\n"), (char *)path);
 		       /* its not a file or a dir */
 		       else
-			  DialogAlertOK(
-				 _("There was an error running the program:\n"
-				   "%s\n"
-				   "This program could not be executed.\n"
-				   "This is because the file is not a "
-				   "regular file.\n"), (char *)path);
+			  DialogAlertOK(_
+					("There was an error running the program:\n"
+					 "%s\n"
+					 "This program could not be executed.\n"
+					 "This is because the file is not a "
+					 "regular file.\n"), (char *)path);
 		    }
 		  if (path)
 		     Efree(path);
@@ -1181,11 +1179,11 @@ doMoveEnd(void *params)
 	     if (gwins[i]->floating)
 		MoveEwinToDesktopAt(gwins[i], d,
 				    gwins[i]->x - (desks.desk[d].x -
-						   desks.desk[gwins[i]->
-							      desktop].x),
+						   desks.
+						   desk[gwins[i]->desktop].x),
 				    gwins[i]->y - (desks.desk[d].y -
-						   desks.desk[gwins[i]->
-							      desktop].y));
+						   desks.
+						   desk[gwins[i]->desktop].y));
 	     else
 		MoveEwinToDesktopAt(gwins[i], d, gwins[i]->x, gwins[i]->y);
 	     gwins[i]->floating = 0;
@@ -2952,7 +2950,7 @@ doFocusSet(void *params)
 	SetCurrentArea(ewin->area_x, ewin->area_y);
 	if (ewin->iconified)
 	   DeIconifyEwin(ewin);
-	if (mode.raise_on_next_focus)
+	if (mode.raise_on_next_focus || mode.raise_after_next_focus)
 	   RaiseEwin(ewin);
 	if (mode.warp_on_next_focus)
 	   XWarpPointer(disp, None, ewin->win, 0, 0, 0, 0,
@@ -3470,7 +3468,8 @@ doConfigure(void *params)
 	     if (ewin)
 	       {
 		  ChooseGroupDialog(ewin,
-			 _("  Pick the group the window will belong to:  \n"),
+				    _
+				    ("  Pick the group the window will belong to:  \n"),
 				    GROUP_SELECT_ALL_EXCEPT_EWIN,
 				    ACTION_ADD_TO_GROUP);
 	       }
@@ -3828,10 +3827,10 @@ doAddToGroup(void *params)
      {
 	ChooseGroupDialog(ewin,
 			  _("\n  There's no current group at the moment.  \n"
-			"  The current group is the last one you created,  \n"
-		     "  and it exists until you create a new one or break  \n"
+			    "  The current group is the last one you created,  \n"
+			    "  and it exists until you create a new one or break  \n"
 			    "  the latest one.  \n\n"
-	   "  Pick another group that the window will belong to here:  \n\n"),
+			    "  Pick another group that the window will belong to here:  \n\n"),
 			  GROUP_SELECT_ALL_EXCEPT_EWIN, ACTION_ADD_TO_GROUP);
 	EDBUG_RETURN(0);
      }
@@ -3912,19 +3911,20 @@ doZoom(void *params)
 	if (f)
 	  {
 	     fprintf(f,
-		  _("You have been warned about the dangers of Zoom mode\n"));
+		     _
+		     ("You have been warned about the dangers of Zoom mode\n"));
 	     fclose(f);
 	  }
 	DIALOG_OK(_("Warning !!!"),
 		  _("This feature is heavily reliant on a feature of your\n"
-	       "X Server called the Vid Mode Extension. This feature exists\n"
-		 "in XFree86 Servers, but is not a heavily used part of the\n"
+		    "X Server called the Vid Mode Extension. This feature exists\n"
+		    "in XFree86 Servers, but is not a heavily used part of the\n"
 		    "Server and thus isn't tested much.\n\n"
-		"It is possible your X Server does not deal well with being\n"
+		    "It is possible your X Server does not deal well with being\n"
 		    "asked to switch modes quickly and it may hang, glitch,\n"
 		    "display artefacts or perhaps simply refuse to work.\n\n"
-	       "This is a warning and will only be displayed this one time.\n"
-		"If your Server does not behave well then you will probably\n"
+		    "This is a warning and will only be displayed this one time.\n"
+		    "If your Server does not behave well then you will probably\n"
 		    "have to avoid using this feature.\n"));
 	EDBUG_RETURN(0);
      }
