@@ -97,6 +97,7 @@ efsd_stat(char *filename)
   if (lstat(filename, st) < 0)
     {
       D(("lstat() on %s failed.\n", filename));
+      FREE(st);
       D_RETURN_(NULL);
     }
 

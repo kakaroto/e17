@@ -812,6 +812,9 @@ magic_test_fs(char *filename, struct stat *st)
 
   D_ENTER;
 
+  if (!st)
+    D_RETURN_(NULL);
+
 #ifdef __EMX__
    sprintf(s, "%s", "hpfs");
 #else
@@ -1264,7 +1267,7 @@ efsd_filetype_get(char *filename)
   D(("Calculating filetype on %s\n", filename));
 
   /* Filetype is not in cache or file has been modified, re-test: */
-  
+
   result = magic_test_fs(filename, st);
   if (result)
     {
