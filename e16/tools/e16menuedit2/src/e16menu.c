@@ -247,7 +247,7 @@ gboolean table_save_func (GtkTreeModel *model, GtkTreePath *path,
   }
   else
   {
-    realfile = params;
+    realfile = g_strdup (params);
   }
 
   menu_file[depth] = g_strdup (realfile);
@@ -340,11 +340,11 @@ gboolean table_save_func (GtkTreeModel *model, GtkTreePath *path,
   /* end of filelist to free it later */
   menu_file[depth+1] = NULL;
 
-  g_free(tree_path_str);
-
-  g_free(description);
-  g_free(icon);
-  g_free(params);
+  g_free (tree_path_str);
+  g_free (realfile);
+  g_free (description);
+  g_free (icon);
+  g_free (params);
 
   return FALSE;
 }
