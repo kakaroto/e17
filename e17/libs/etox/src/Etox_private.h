@@ -1,6 +1,7 @@
 #ifndef _ETOX_PRIVATE_H
 #define _ETOX_PRIVATE_H
 
+#include <Ecore.h>
 #include "Etox.h"
 #include <Edb.h>
 
