@@ -249,7 +249,7 @@ Zoom(EWin * ewin)
 	MoveEwin(ewin, -ewin->border->border.left + x1,
 		 -ewin->border->border.top + y1);
 	ICCCM_Configure(ewin);
-	FocusToEWin(ewin);
+	FocusToEWin(ewin, FOCUS_SET);
 	XWarpPointer(disp, None, ewin->client.win, 0, 0, 0, 0,
 		     ewin->client.w / 2, ewin->client.h / 2);
 #if 0

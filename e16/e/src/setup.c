@@ -298,12 +298,14 @@ SetupX()
    root.w = DisplayWidth(disp, root.scr);
    root.h = DisplayHeight(disp, root.scr);
    root.focuswin = ECreateFocusWindow(root.win, -100, -100, 5, 5);
+
    /* just in case - set them up again */
    /* set up an error handler for then E would normally have fatal X errors */
    XSetErrorHandler((XErrorHandler) EHandleXError);
    /* set up a handler for when the X Connection goes down */
    XSetIOErrorHandler((XIOErrorHandler) HandleXIOError);
-   /* slect all the root window events to start managing */
+
+   /* select all the root window events to start managing */
    mode.xselect = 1;
    XSelectInput(disp, root.win,
 		ButtonPressMask | ButtonReleaseMask | EnterWindowMask |
@@ -397,7 +399,7 @@ SetupX()
    conf.dock.dirmode = DOCK_DOWN;
    conf.dock.startx = 0;
    conf.dock.starty = 0;
-   conf.focus.mode = FOCUS_SLOPPY;
+   conf.focus.mode = MODE_FOCUS_SLOPPY;
    conf.focus.clickraises = 0;
    conf.focus.transientsfollowleader = 1;
    conf.focus.switchfortransientmap = 1;

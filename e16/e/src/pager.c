@@ -1906,7 +1906,7 @@ PagersEventMouseUp(XEvent * ev)
 	     if (ewin)
 	       {
 		  RaiseEwin(ewin);
-		  FocusToEWin(ewin);
+		  FocusToEWin(ewin, FOCUS_SET);
 	       }
 	  }
 	if (p->hi_ewin)

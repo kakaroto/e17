@@ -723,7 +723,7 @@ EWMH_ProcessClientMessage(XClientMessageEvent * event)
 	RaiseEwin(ewin);
 	if (ewin->shaded)
 	   UnShadeEwin(ewin);
-	FocusToEWin(ewin);
+	FocusToEWin(ewin, FOCUS_SET);
      }
    else if (event->message_type == _NET_CLOSE_WINDOW)
      {

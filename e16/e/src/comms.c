@@ -1478,7 +1478,7 @@ HandleComms(XClientMessageEvent * ev)
 	     InitDesktopControls();
 	     ShowDesktopControls();
 	  }
-	FixFocus();
+	FocusFix();
 
 	GetAreaSize(&ax, &ay);
 	GetCurrentArea(&a, &b);

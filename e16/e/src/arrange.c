@@ -805,7 +805,7 @@ ArrangeEwinCentered(EWin * ewin, int focus)
    ArrangeEwinCenteredXY(ewin, &ewin->x, &ewin->y);
    MoveEwin(ewin, ewin->x, ewin->y);
    if (focus)
-      FocusToEWin(ewin);
+      FocusToEWin(ewin, FOCUS_SET);
 
    EDBUG_RETURN_;
 }

@@ -1253,8 +1253,8 @@ GotoDesktop(int num)
 
    ActionsSuspend();
 
-   FocusToEWin(NULL);
-   BeginNewDeskFocus();
+   FocusToEWin(NULL, FOCUS_DESK_LEAVE);
+   FocusNewDeskBegin();
 
    if (mode.mode == MODE_NONE)
       mode.mode = MODE_DESKSWITCH;
@@ -1321,7 +1321,7 @@ GotoDesktop(int num)
    if (mode.mode == MODE_DESKSWITCH)
       mode.mode = MODE_NONE;
 
-   NewDeskFocus();
+   FocusNewDesk();
    RedrawPagersForDesktop(pdesk, 0);
    RedrawPagersForDesktop(num, 3);
    ForceUpdatePagersForDesktop(num);
@@ -1448,7 +1448,7 @@ RaiseDesktop(int num)
    if ((num < 0) || (num >= conf.desks.numdesktops))
       EDBUG_RETURN_;
 
-   BeginNewDeskFocus();
+   FocusNewDeskBegin();
    CloneDesktop(deskorder[0]);
    desks.desk[num].viewable = 1;
    RefreshDesktop(num);
@@ -1464,7 +1464,7 @@ RaiseDesktop(int num)
    StackDesktops();
    desks.current = num;
    MoveStickyWindowsToCurrentDesk();
-   NewDeskFocus();
+   FocusNewDesk();
    FX_DeskChange();
    RemoveClones();
    RedrawPagersForDesktop(num, 3);
@@ -1487,7 +1487,7 @@ LowerDesktop(int num)
    if ((num <= 0) || (num >= conf.desks.numdesktops))
       EDBUG_RETURN_;
 
-   BeginNewDeskFocus();
+   FocusNewDeskBegin();
    CloneDesktop(num);
    MoveToDeskBottom(num);
    UncoverDesktop(deskorder[0]);
@@ -1495,7 +1495,7 @@ LowerDesktop(int num)
    StackDesktops();
    desks.current = deskorder[0];
    MoveStickyWindowsToCurrentDesk();
-   NewDeskFocus();
+   FocusNewDesk();
    FX_DeskChange();
    RemoveClones();
    RedrawPagersForDesktop(deskorder[0], 3);

@@ -1712,22 +1712,22 @@ doFocusModeSet(EWin * edummy, void *params)
    if (params)
      {
 	if (!strcmp("pointer", (char *)params))
-	   conf.focus.mode = FOCUS_POINTER;
+	   conf.focus.mode = MODE_FOCUS_POINTER;
 	else if (!strcmp("sloppy", (char *)params))
-	   conf.focus.mode = FOCUS_SLOPPY;
+	   conf.focus.mode = MODE_FOCUS_SLOPPY;
 	else if (!strcmp("click", (char *)params))
-	   conf.focus.mode = FOCUS_CLICK;
+	   conf.focus.mode = MODE_FOCUS_CLICK;
      }
    else
      {
-	if (conf.focus.mode == FOCUS_POINTER)
-	   conf.focus.mode = FOCUS_SLOPPY;
-	else if (conf.focus.mode == FOCUS_SLOPPY)
-	   conf.focus.mode = FOCUS_CLICK;
-	else if (conf.focus.mode == FOCUS_CLICK)
-	   conf.focus.mode = FOCUS_POINTER;
+	if (conf.focus.mode == MODE_FOCUS_POINTER)
+	   conf.focus.mode = MODE_FOCUS_SLOPPY;
+	else if (conf.focus.mode == MODE_FOCUS_SLOPPY)
+	   conf.focus.mode = MODE_FOCUS_CLICK;
+	else if (conf.focus.mode == MODE_FOCUS_CLICK)
+	   conf.focus.mode = MODE_FOCUS_POINTER;
      }
-   FixFocus();
+   FocusFix();
    autosave();
    EDBUG_RETURN(0);
 }
@@ -2514,7 +2514,7 @@ static int
 doFocusNext(EWin * edummy, void *params)
 {
    EDBUG(6, "doFocusNext");
-   GetNextFocusEwin();
+   FocusGetNextEwin();
    EDBUG_RETURN(0);
 }
 
@@ -2522,7 +2522,7 @@ static int
 doFocusPrev(EWin * edummy, void *params)
 {
    EDBUG(6, "doFocusPrev");
-   GetPrevFocusEwin();
+   FocusGetPrevEwin();
    EDBUG_RETURN(0);
 }
 
@@ -2544,7 +2544,7 @@ doFocusSet(EWin * ewin, void *params)
       RaiseEwin(ewin);
    if (conf.focus.warp_on_next_focus)
       XWarpPointer(disp, None, ewin->win, 0, 0, 0, 0, ewin->w / 2, ewin->h / 2);
-   FocusToEWin(ewin);
+   FocusToEWin(ewin, FOCUS_SET);
 
    EDBUG_RETURN(0);
 }

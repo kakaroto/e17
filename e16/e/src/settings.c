@@ -377,7 +377,7 @@ CB_ConfigureFocus(int val, void *data)
 	conf.warplist.warpfocused = tmp_warpfocused;
 #endif /* WITH_TARTY_WARP */
 	conf.focus.clickraises = tmp_clickalways;
-	FixFocus();
+	FocusFix();
      }
    autosave();
    data = NULL;

@@ -128,7 +128,7 @@ HandleFocusWindowIn(Window win)
 	  {
 	     mode.focuswin->active = 0;
 	     DrawEwin(mode.focuswin);
-	     if (conf.focus.mode == FOCUS_CLICK)
+	     if (conf.focus.mode == MODE_FOCUS_CLICK)
 		XGrabButton(disp, AnyButton, AnyModifier,
 			    mode.focuswin->win_container, False,
 			    ButtonPressMask, GrabModeSync, GrabModeAsync, None,
@@ -145,7 +145,7 @@ HandleFocusWindowIn(Window win)
 	  {
 	     mode.focuswin->active = 1;
 	     DrawEwin(mode.focuswin);
-	     if (conf.focus.mode == FOCUS_CLICK)
+	     if (conf.focus.mode == MODE_FOCUS_CLICK)
 	       {
 		  XUngrabButton(disp, AnyButton, AnyModifier,
 				mode.focuswin->win_container);
@@ -163,27 +163,27 @@ HandleFocusWindow(Window win)
 
    EDBUG(5, "HandleFocusWindow");
    if (root.focuswin == win)
-      FocusToEWin(NULL);
+      FocusToEWin(NULL, FOCUS_SET);
    else
      {
 	found_ewin = FindEwinByChildren(win);
 	if (!found_ewin)
 	   found_ewin = FindEwinByBase(win);
-	if (conf.focus.mode == FOCUS_CLICK)
+	if (conf.focus.mode == MODE_FOCUS_CLICK)
 	   mode.mouse_over_win = found_ewin;
-	else if (conf.focus.mode == FOCUS_SLOPPY)
+	else if (conf.focus.mode == MODE_FOCUS_SLOPPY)
 	  {
 	     if (!found_ewin)
 		ICCCM_Cmap(NULL);
 	     else if (!(found_ewin->focusclick))
-		FocusToEWin(found_ewin);
+		FocusToEWin(found_ewin, FOCUS_SET);
 	     mode.mouse_over_win = found_ewin;
 	  }
-	else if (conf.focus.mode == FOCUS_POINTER)
+	else if (conf.focus.mode == MODE_FOCUS_POINTER)
 	  {
 	     if (!found_ewin)
 		found_ewin = GetEwinPointerInClient();
-	     FocusToEWin(found_ewin);
+	     FocusToEWin(found_ewin, FOCUS_SET);
 	     mode.mouse_over_win = found_ewin;
 	  }
      }
@@ -670,7 +670,7 @@ HandleUnmap(XEvent * ev)
 	   SlideoutsHide();
 
 	if (ewin == mode.focuswin)
-	   FocusToEWin(NULL);
+	   FocusToEWin(NULL, FOCUS_SET);
 	if (ewin == mode.mouse_over_win)
 	   mode.mouse_over_win = NULL;
 
@@ -846,13 +846,13 @@ HandleMouseDown(XEvent * ev)
    if (MenusEventMouseDown(ev))
       goto exit;
 
-   if ((conf.focus.clickraises) || (conf.focus.mode == FOCUS_CLICK))
+   if ((conf.focus.clickraises) || (conf.focus.mode == MODE_FOCUS_CLICK))
      {
 	ewin = FindEwinByChildren(win);
 	if (!ewin)
 	   ewin = FindEwinByBase(win);
 	if (ewin)
-	   FocusToEWin(ewin);
+	   FocusToEWin(ewin, FOCUS_CLICK);
 	if (ewin)
 	   RaiseEwin(ewin);
 	/* allow click to pass thorugh */

@@ -275,7 +275,7 @@ SetCurrentArea(int ax, int ay)
 #if 0				/* Clean up if not causing trouble */
    FocusToEWin(NULL);
 #endif
-   BeginNewDeskFocus();
+   FocusNewDeskBegin();
 
    /* move all the windows around */
    lst = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
@@ -432,7 +432,7 @@ SetCurrentArea(int ax, int ay)
    ActionsResume();
 
    /* re-focus on a new ewin on that new desktop area */
-   NewDeskFocus();
+   FocusNewDesk();
 
    /* tell the FX api abotu the change */
    FX_DeskChange();

@@ -141,7 +141,7 @@ SetEInfoOnAll()
 }
 
 EWin               *
-GetEwinPointerInClient()
+GetEwinPointerInClient(void)
 {
    Window              rt, ch;
    int                 dum, px, py, d, i;
@@ -645,7 +645,7 @@ AddToFamily(Window win)
 	RaiseEwin(ewin);
 	ShowEwin(ewin);
 	StackDesktops();
-	FocusToEWin(ewin);
+	FocusToEWin(ewin, FOCUS_EWIN_NEW);
 	GrabThePointer(root.win);
 	mode.have_place_grab = 1;
 	mode.place = 1;
@@ -709,7 +709,7 @@ AddToFamily(Window win)
    DetermineEwinArea(ewin);
    if (conf.focus.all_new_windows_get_focus)
      {
-	FocusToEWin(ewin);
+	FocusToEWin(ewin, FOCUS_EWIN_NEW);
 	if ((ewin->desktop != desks.current) && (!ewin->iconified))
 	  {
 	     GotoDesktop(ewin->desktop);
@@ -720,7 +720,7 @@ AddToFamily(Window win)
      {
 	if (ewin->client.transient)
 	  {
-	     FocusToEWin(ewin);
+	     FocusToEWin(ewin, FOCUS_EWIN_NEW);
 	     if ((ewin->desktop != desks.current) && (!ewin->iconified))
 	       {
 		  GotoDesktop(ewin->desktop);
@@ -735,7 +735,7 @@ AddToFamily(Window win)
 		    LIST_TYPE_EWIN);
 	if ((ewin2) && (mode.focuswin == ewin2))
 	  {
-	     FocusToEWin(ewin);
+	     FocusToEWin(ewin, FOCUS_EWIN_NEW);
 	     if ((ewin->desktop != desks.current) && (!ewin->iconified))
 	       {
 		  GotoDesktop(ewin->desktop);
@@ -1381,7 +1381,7 @@ CreateEwin()
    XChangeWindowAttributes(disp, ewin->win_container,
 			   CWEventMask | CWDontPropagate, &att);
    EMapWindow(disp, ewin->win_container);
-   if ((conf.focus.clickraises) || (conf.focus.mode == FOCUS_CLICK))
+   if ((conf.focus.clickraises) || (conf.focus.mode == MODE_FOCUS_CLICK))
       XGrabButton(disp, AnyButton, 0, ewin->win_container, False,
 		  ButtonPressMask, GrabModeSync, GrabModeAsync, None, None);
    att.event_mask =
@@ -1441,7 +1441,7 @@ FreeEwin(EWin * ewin)
 #if 0				/* Clean up if OK -- Remove FocusToNone */
 	FocusToNone();
 #else
-	FocusToEWin(NULL);
+	FocusToEWin(NULL, FOCUS_EWIN_GONE);
 #endif
      }
 

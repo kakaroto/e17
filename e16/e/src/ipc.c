@@ -2233,21 +2233,20 @@ IPC_DialogOK(char *params, Client * c)
 static void
 IPC_SetFocus(char *params, Client * c)
 {
+   EWin               *ewin;
    char                buf[FILEPATH_LEN_MAX];
 
    buf[0] = 0;
 
    if (params)
      {
-	EWin               *my_focused_win;
-
 	if (!strcmp(params, "?"))
 	  {
-	     my_focused_win = GetFocusEwin();
-	     if (my_focused_win)
+	     ewin = GetFocusEwin();
+	     if (ewin)
 	       {
-		  Esnprintf(buf, sizeof(buf), "focused: %8x",
-			    (unsigned)my_focused_win->client.win);
+		  Esnprintf(buf, sizeof(buf), "focused: %#lx",
+			    ewin->client.win);
 	       }
 	     else
 	       {
@@ -2259,9 +2258,9 @@ IPC_SetFocus(char *params, Client * c)
 	     unsigned int        win;
 
 	     sscanf(params, "%x", &win);
-	     my_focused_win = FindEwinByChildren(win);
-	     if (my_focused_win)
-		FocusToEWin(my_focused_win);
+	     ewin = FindEwinByChildren(win);
+	     if (ewin)
+		FocusToEWin(ewin, FOCUS_SET);
 	  }
      }
    else
@@ -4050,7 +4049,7 @@ IPC_WinOps(char *params, Client * c)
 	  }
 	else
 	  {
-	     FocusToEWin(ewin);
+	     FocusToEWin(ewin, FOCUS_SET);
 	  }
      }
    else
@@ -4133,26 +4132,26 @@ IPC_FocusMode(char *params, Client * c)
      {
 	if (!strcmp(params, "click"))
 	  {
-	     conf.focus.mode = 2;
+	     conf.focus.mode = MODE_FOCUS_CLICK;
 	     mode.click_focus_grabbed = 1;
 	  }
 	else if (!strcmp(params, "pointer"))
 	  {
-	     conf.focus.mode = 0;
+	     conf.focus.mode = MODE_FOCUS_POINTER;
 	  }
 	else if (!strcmp(params, "sloppy"))
 	  {
-	     conf.focus.mode = 1;
+	     conf.focus.mode = MODE_FOCUS_SLOPPY;
 	  }
 	else if (!strcmp(params, "clicknograb"))
 	  {
-	     conf.focus.mode = 2;
+	     conf.focus.mode = MODE_FOCUS_CLICK;
 	     mode.click_focus_grabbed = 0;
 	  }
 	else if (!strcmp(params, "?"))
 	  {
 	     Esnprintf(buf, sizeof(buf), "Focus Mode: ");
-	     if (conf.focus.mode == 2)
+	     if (conf.focus.mode == MODE_FOCUS_CLICK)
 	       {
 		  if (mode.click_focus_grabbed)
 		    {
@@ -4163,11 +4162,11 @@ IPC_FocusMode(char *params, Client * c)
 		       strcat(buf, "clicknograb");
 		    }
 	       }
-	     else if (conf.focus.mode == 1)
+	     else if (conf.focus.mode == MODE_FOCUS_SLOPPY)
 	       {
 		  strcat(buf, "sloppy");
 	       }
-	     else if (conf.focus.mode == 0)
+	     else if (conf.focus.mode == MODE_FOCUS_POINTER)
 	       {
 		  strcat(buf, "pointer");
 	       }

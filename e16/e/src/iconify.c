@@ -218,6 +218,7 @@ IconboxIconifyEwin(Iconbox * ib, EWin * ewin)
      {
 	was_shaded = ewin->shaded;
 	SoundPlay("SOUND_ICONIFY");
+
 	if (ib)
 	  {
 	     if (ib->animate)
@@ -235,7 +236,7 @@ IconboxIconifyEwin(Iconbox * ib, EWin * ewin)
 
 	     prev_warp = conf.warplist.enable;
 	     conf.warplist.enable = 0;
-	     GetPrevFocusEwin();
+	     FocusGetPrevEwin();
 	     conf.warplist.enable = prev_warp;
 	  }
 	if (ewin->has_transients)
@@ -253,7 +254,7 @@ IconboxIconifyEwin(Iconbox * ib, EWin * ewin)
 			    HideEwin(lst[i]);
 			    lst[i]->iconified = 4;
 			    if (lst[i] == mode.focuswin)
-			       FocusToEWin(NULL);
+			       FocusToEWin(NULL, FOCUS_EWIN_GONE);
 			 }
 		    }
 		  HintsSetClientList();
@@ -320,7 +321,7 @@ DeIconifyEwin(EWin * ewin)
 	RaiseEwin(ewin);
 	ShowEwin(ewin);
 	ICCCM_DeIconify(ewin);
-	FocusToEWin(ewin);
+	FocusToEWin(ewin, FOCUS_EWIN_NEW);
 	if (ewin->has_transients)
 	  {
 	     EWin              **lst, *e;

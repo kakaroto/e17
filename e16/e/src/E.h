@@ -453,9 +453,9 @@ int                 Esnprintf(va_alist);
 #define FLAG_FIXED_HORIZ        8
 #define FLAG_FIXED_VERT         16
 
-#define FOCUS_POINTER           0
-#define FOCUS_SLOPPY            1
-#define FOCUS_CLICK             2
+#define MODE_FOCUS_POINTER      0
+#define MODE_FOCUS_SLOPPY       1
+#define MODE_FOCUS_CLICK        2
 
 #define DOCK_LEFT               0
 #define DOCK_RIGHT              1
@@ -1852,19 +1852,29 @@ void                DrawEwinShape(EWin * ewin, int md, int x, int y, int w,
 				  int h, char firstlast);
 void                PropagateShapes(Window win);
 
-void                FlipFocusList(void);
-void                RemoveEwinFromFocusList(EWin * ewin);
-void                AddEwinToFocusList(EWin * ewin);
-void                GetNextFocusEwin(void);
-void                GetPrevFocusEwin(void);
-void                FixFocus(void);
-void                FocusToEWin(EWin * ewin);
+/* focus.c functions */
+#define FOCUS_SET        0
+#define FOCUS_NONE       1
+#define FOCUS_ENTER      2
+#define FOCUS_LEAVE      3
+#define FOCUS_EWIN_NEW   4
+#define FOCUS_EWIN_GONE  5
+#define FOCUS_DESK_ENTER 6
+#define FOCUS_DESK_LEAVE 7
+#define FOCUS_WARP       8
+#define FOCUS_CLICK      9
 
-#if 0				/* Clean up if OK -- Remove FocusToNone */
-void                FocusToNone(void);
-#endif
-void                BeginNewDeskFocus(void);
-void                NewDeskFocus(void);
+void                FocusGetNextEwin(void);
+void                FocusGetPrevEwin(void);
+void                FocusEwinSetGrabs(EWin * ewin);
+void                FocusFix(void);
+void                FocusToEWin(EWin * ewin, int why);
+void                FocusHandleFocusIn(Window win);
+void                FocusHandleFocusOut(Window win);
+void                FocusHandleEnter(XEvent * ev);
+void                FocusHandleClick(Window win);
+void                FocusNewDeskBegin(void);
+void                FocusNewDesk(void);
 
 /* icccm.c functions */
 void                ICCCM_Init(void);
