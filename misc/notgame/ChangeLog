@@ -118,3 +118,9 @@ Mon Sep 27 18:03:41 PDT 1999	Michael Jennings <mej@eterm.org>
 	Code cleanups to make for a cleaner compile.
 	
 -------------------------------------------------------------------------------
+Thu Sep 30 18:54:47 PDT 1999	Michael Jennings <mej@eterm.org>
+
+	Interface changes on the pregame window, and a prototype for a player
+	group editing window.  Click on "Add/Delete Players" for a preview.
+	
+-------------------------------------------------------------------------------

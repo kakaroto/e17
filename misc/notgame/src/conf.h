@@ -25,6 +25,26 @@
 #define CONF_BEGIN_CHAR  1
 #define CONF_END_CHAR    2
 
+# ifndef min
+#  define min(a,b)	(((a) < (b)) ? (a) : (b))
+# endif
+# ifndef max
+#  define max(a,b)	(((a) > (b)) ? (a) : (b))
+# endif
+# ifndef MIN
+#  define MIN(a,b)	(((a) < (b)) ? (a) : (b))
+# endif
+# ifndef MAX
+#  define MAX(a,b)	(((a) > (b)) ? (a) : (b))
+# endif
+# define LOWER_BOUND(current, other)    (((current) < (other)) ? ((current) = (other)) : (current))
+# define AT_LEAST(current, other)       LOWER_BOUND(current, other)
+# define MAX_IT(current, other)         LOWER_BOUND(current, other)
+# define UPPER_BOUND(current, other)    (((current) > (other)) ? ((current) = (other)) : (current))
+# define AT_MOST(current, other)        UPPER_BOUND(current, other)
+# define MIN_IT(current, other)         UPPER_BOUND(current, other)
+# define SWAP_IT(one, two, tmp)         do {(tmp) = (one); (one) = (two); (two) = (tmp);} while (0)
+
 /* The context table */
 #define ctx_name_to_id(the_id, n, i) do { \
                                        for ((i)=0; (i) <= ctx_idx; (i)++) { \

@@ -196,31 +196,36 @@ shell_expand(char *s)
 {
 
   register char *tmp;
-  register char *new;
   register char *pbuff = s, *tmp1;
   register unsigned long j, k, l = 0;
+  char new[CONFIG_BUFF];
   unsigned char eval_escape = 1, eval_var = 1, eval_exec = 1, eval_func = 1, in_single = 0, in_double = 0;
-  unsigned long fsize;
+  unsigned long fsize, cnt1 = 0, cnt2 = 0;
+  const unsigned long max = CONFIG_BUFF - 1;
   char *Command, *Output, *EnvVar, *OutFile;
   FILE *fp;
 
-  ASSERT(s != NULL);
-  if (!s)
-    return ((char *) NULL);
+  ASSERT_RVAL(s != NULL, (char *) NULL);
 
+#if 0
   new = (char *) malloc(CONFIG_BUFF);
+#endif
 
-  for (j = 0; *pbuff && j < CONFIG_BUFF; pbuff++, j++) {
+  for (j = 0; *pbuff && j < max; pbuff++, j++) {
     switch (*pbuff) {
       case '~':
+	D(("Tilde detected.\n"));
 	if (eval_var) {
-	  strncpy(new + j, getenv("HOME"), CONFIG_BUFF - j);
-	  j += strlen(getenv("HOME")) - 1;
+	  strncpy(new + j, getenv("HOME"), max - j);
+	  cnt1 = strlen(getenv("HOME")) - 1;
+          cnt2 = max - j - 1;
+          j += MIN(cnt1, cnt2);
 	} else {
 	  new[j] = *pbuff;
 	}
 	break;
       case '\\':
+	D(("Escape sequence detected.\n"));
 	if (eval_escape || (in_single && *(pbuff + 1) == '\'')) {
 	  switch (tolower(*(++pbuff))) {
 	    case 'n':
@@ -257,7 +262,9 @@ shell_expand(char *s)
 	}
 	break;
       case '%':
+	D(("%% detected.\n"));
 	for (k = 0, pbuff++; builtins[k].name != NULL; k++) {
+	  D(("Checking for function %%%s, pbuff == \"%s\"\n", builtins[k].name, pbuff));
 	  l = strlen(builtins[k].name);
 	  if (!strncasecmp(builtins[k].name, pbuff, l) &&
 	      ((pbuff[l] == '(') || (pbuff[l] == ' ' && pbuff[l + 1] == ')'))) {
@@ -267,6 +274,7 @@ shell_expand(char *s)
 	if (builtins[k].name == NULL) {
 	  new[j] = *pbuff;
 	} else {
+	  D(("Call to built-in function %s detected.\n", builtins[k].name));
 	  Command = (char *) malloc(CONFIG_BUFF);
 	  pbuff += l;
 	  if (*pbuff != '(')
@@ -295,8 +303,9 @@ shell_expand(char *s)
 	  free(Command);
 	  if (Output && *Output) {
 	    l = strlen(Output) - 1;
-	    strncpy(new + j, Output, CONFIG_BUFF - j);
-	    j += l;
+	    strncpy(new + j, Output, max - j);
+            cnt2 = max - j - 1;
+	    j += MIN(l, cnt2);
 	    free(Output);
 	  } else {
 	    j--;
@@ -305,12 +314,14 @@ shell_expand(char *s)
 	}
 	break;
       case '`':
+	D(("Backquotes detected.  Evaluating expression.\n"));
 	if (eval_exec) {
 	  Command = (char *) malloc(CONFIG_BUFF);
 	  l = 0;
-	  for (pbuff++; *pbuff && *pbuff != '`' && l < CONFIG_BUFF; pbuff++, l++) {
+	  for (pbuff++; *pbuff && *pbuff != '`' && l < max; pbuff++, l++) {
 	    switch (*pbuff) {
 	      case '$':
+		D(("Environment variable detected.  Evaluating.\n"));
 		EnvVar = (char *) malloc(128);
 		switch (*(++pbuff)) {
 		  case '{':
@@ -328,8 +339,10 @@ shell_expand(char *s)
 		}
 		EnvVar[k] = 0;
 		if ((tmp = getenv(EnvVar))) {
-		  strncpy(Command + l, tmp, CONFIG_BUFF - l);
-		  l = strlen(Command) - 1;
+		  strncpy(Command + l, tmp, max - l);
+                  cnt1 = strlen(tmp) - 1;
+                  cnt2 = max - l - 1;
+                  l += MIN(cnt1, cnt2);
 		}
 		pbuff--;
 		break;
@@ -337,10 +350,11 @@ shell_expand(char *s)
 		Command[l] = *pbuff;
 	    }
 	  }
+          ASSERT(l < CONFIG_BUFF);
 	  Command[l] = 0;
 	  OutFile = tmpnam(NULL);
 	  if (l + strlen(OutFile) + 8 > CONFIG_BUFF) {
-	    print_error("parse error in file %s, line %lu:  Cannot execute command, line too long",
+	    print_error("Parse error in file %s, line %lu:  Cannot execute command, line too long",
 			file_peek_path(), file_peek_line());
 	    return ((char *) NULL);
 	  }
@@ -358,14 +372,16 @@ shell_expand(char *s)
 	      fclose(fp);
 	      remove(OutFile);
 	      Output = CondenseWhitespace(Output);
-	      strncpy(new + j, Output, CONFIG_BUFF - j);
-	      j += strlen(Output) - 1;
+	      strncpy(new + j, Output, max - j);
+              cnt1 = strlen(Output) - 1;
+              cnt2 = max - j - 1;
+	      j += MIN(cnt1, cnt2);
 	      free(Output);
 	    } else {
 	      print_warning("Command at line %lu of file %s returned no output.", file_peek_line(), file_peek_path());
 	    }
 	  } else {
-	    print_warning("Output file %s could not be created.  (line %lu of file %s)", (OutFile ? OutFile : "(null)"),
+	    print_warning("Output file %s could not be created.  (line %lu of file %s)", NONULL(OutFile),
 			  file_peek_line(), file_peek_path());
 	  }
 	  free(Command);
@@ -374,6 +390,7 @@ shell_expand(char *s)
 	}
 	break;
       case '$':
+	D(("Environment variable detected.  Evaluating.\n"));
 	if (eval_var) {
 	  EnvVar = (char *) malloc(128);
 	  switch (*(++pbuff)) {
@@ -392,8 +409,10 @@ shell_expand(char *s)
 	  }
 	  EnvVar[k] = 0;
 	  if ((tmp = getenv(EnvVar))) {
-	    strncpy(new, tmp, CONFIG_BUFF - j);
-	    j += strlen(tmp) - 1;
+	    strncpy(new, tmp, max - j);
+            cnt1 = strlen(tmp) - 1;
+            cnt2 = max - j - 1;
+	    j += MIN(cnt1, cnt2);
 	  }
 	  pbuff--;
 	} else {
@@ -401,6 +420,7 @@ shell_expand(char *s)
 	}
 	break;
       case '\"':
+	D(("Double quotes detected.\n"));
 	if (!in_single) {
 	  if (in_double) {
 	    in_double = 0;
@@ -412,6 +432,7 @@ shell_expand(char *s)
 	break;
 
       case '\'':
+	D(("Single quotes detected.\n"));
 	if (in_single) {
 	  eval_var = 1;
 	  eval_exec = 1;
@@ -432,10 +453,16 @@ shell_expand(char *s)
 	new[j] = *pbuff;
     }
   }
+  ASSERT(j < CONFIG_BUFF);
   new[j] = 0;
 
+  D(("shell_expand(%s) returning \"%s\"\n", s, new));
+  D((" strlen(s) == %lu, strlen(new) == %lu, j == %lu\n", strlen(s), strlen(new), j));
+
   strcpy(s, new);
+#if 0
   free(new);
+#endif
   return (s);
 }
 

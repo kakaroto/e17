@@ -31,9 +31,19 @@ static const char cvs_ident[] = "$Id$";
 #include "conf.h"
 #include "notgame.h"
 #include "players.h"
+#include "pregame.h"
 
 GList *player_groups = NULL, *player_group_names = NULL;
 GtkWidget *player_clist, *player_groups_box;
+static GtkWidget *edit_win, *edit_name_entry, *edit_type_entry, *add_name_entry, *add_type_entry;
+static player_group_t *edit_player_group;
+
+static gint close_cb(void);
+static void button_cb(GtkWidget *w, gpointer item);
+static void add_cb(GtkWidget *w, gpointer item);
+static void delete_cb(GtkWidget *w, gpointer item);
+static void update_name_cb(GtkWidget *w, gpointer item);
+static void update_type_cb(GtkWidget *w, gpointer item);
 
 char
 player_group_cmp(const player_group_t *g1, const player_group_t *g2) {
@@ -173,4 +183,214 @@ player_group_get_current(void) {
   D(("name == %s (0x%08x)\n", name, name));
 
   return (player_group_find_by_name(name));
+}
+
+void
+player_group_edit_dialog(void) {
+
+  GtkWidget *edit_vbox, *edit_frame, *edit_table, *edit_box, *edit_clist, *edit_entry;
+  GtkWidget *buttonbox, *button, *align, *scroller, *label;
+  char *name, *label_text, *clist_text;
+  const char *cols[] = { "Player Name", "Player Type" }, label_prefix[] = "Editing Player Group:  ";
+
+  edit_player_group = player_group_get_current();
+  REQUIRE(edit_player_group != NULL);
+  name = edit_player_group->name;
+
+  /* Add the frame around the player section.  This will contain everything we create in this function */
+  edit_win = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+  gtk_window_set_title(GTK_WINDOW(edit_win), "Edit Player Group");
+  gtk_window_set_transient_for(GTK_WINDOW(edit_win), GTK_WINDOW(pregame_win));
+  gtk_window_set_position(GTK_WINDOW(edit_win), GTK_WIN_POS_MOUSE);
+  gtk_signal_connect(GTK_OBJECT(edit_win), "destroy", GTK_SIGNAL_FUNC(close_cb), NULL);
+  gtk_signal_connect(GTK_OBJECT(edit_win), "delete_event", GTK_SIGNAL_FUNC(close_cb), NULL);
+  gtk_container_set_border_width(GTK_CONTAINER(edit_win), 1);
+
+  edit_vbox = gtk_vbox_new(FALSE, 0);
+  gtk_container_add(GTK_CONTAINER(edit_win), edit_vbox);
+
+  edit_frame = gtk_frame_new(NULL);
+  gtk_container_set_border_width(GTK_CONTAINER(edit_frame), 5);
+  gtk_frame_set_label(GTK_FRAME(edit_frame), "Modify Group Members");
+  gtk_frame_set_label_align(GTK_FRAME(edit_frame), 0.0, 0.0);
+  gtk_frame_set_shadow_type(GTK_FRAME(edit_frame), GTK_SHADOW_ETCHED_IN);
+  gtk_box_pack_start(GTK_BOX(edit_vbox), edit_frame, TRUE, TRUE, 0);
+
+  edit_table = gtk_table_new(5, 2, FALSE);
+  gtk_container_set_border_width(GTK_CONTAINER(edit_table), 5);
+  gtk_container_add(GTK_CONTAINER(edit_frame), edit_table);
+
+  /* The label for the groups combo box, right justified */
+  label_text = (char *) malloc(strlen(name) + sizeof(label_prefix) + 1);
+  strcpy(label_text, label_prefix);
+  strcat(label_text, name);
+  label = gtk_label_new(label_text);
+  free(label_text);
+  align = gtk_alignment_new(0.5, 0.5, 0.0, 0.0);
+  gtk_table_attach(GTK_TABLE(edit_table), GTK_WIDGET(align), 0, 2, 0, 1, (GTK_FILL | GTK_SHRINK), 0, 10, 5);
+  gtk_container_add(GTK_CONTAINER(align), label);
+  gtk_widget_show(align);
+  gtk_widget_show(label);
+
+  /* The clist for the players in the current group */
+  scroller = gtk_scrolled_window_new(NULL, NULL);
+  gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW(scroller), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+  gtk_table_attach_defaults(GTK_TABLE(edit_table), GTK_WIDGET(scroller), 0, 2, 1, 2);
+  edit_clist = gtk_clist_new_with_titles(2, (gchar **) cols);
+  gtk_widget_set_usize(edit_clist, 1, 80);
+  gtk_container_add(GTK_CONTAINER(scroller), edit_clist);
+  gtk_clist_column_titles_passive(GTK_CLIST(edit_clist));
+  gtk_clist_set_column_justification(GTK_CLIST(edit_clist), 1, GTK_JUSTIFY_LEFT);
+  gtk_clist_set_column_justification(GTK_CLIST(edit_clist), 2, GTK_JUSTIFY_LEFT);
+  if (edit_player_group) {
+    player_group_make_clist(edit_clist, edit_player_group);
+  }
+  gtk_clist_select_row(GTK_CLIST(edit_clist), 0, 0);
+  gtk_widget_show(edit_clist);
+  gtk_widget_show(scroller);
+
+  label = gtk_label_new("Edit Player Name:");
+  align = gtk_alignment_new(1.0, 0.5, 0.0, 0.0);
+  gtk_table_attach(GTK_TABLE(edit_table), GTK_WIDGET(align), 0, 1, 2, 3, (GTK_FILL | GTK_SHRINK), 0, 5, 10);
+  gtk_container_add(GTK_CONTAINER(align), label);
+  gtk_widget_show(align);
+  gtk_widget_show(label);
+
+  edit_name_entry = gtk_entry_new();
+  gtk_clist_get_text(GTK_CLIST(edit_clist), 0, 0, (gchar **) (&clist_text));
+  gtk_entry_set_text(GTK_ENTRY(edit_name_entry), clist_text);
+  gtk_signal_connect(GTK_OBJECT(edit_name_entry), "activate", GTK_SIGNAL_FUNC(update_name_cb), (gpointer) edit_name_entry);
+  gtk_table_attach(GTK_TABLE(edit_table), GTK_WIDGET(edit_name_entry), 1, 2, 2, 3, (GTK_FILL | GTK_SHRINK | GTK_EXPAND), 0, 0, 0);
+  gtk_widget_show(edit_name_entry);
+
+  label = gtk_label_new("Edit Player Type:");
+  align = gtk_alignment_new(1.0, 0.5, 0.0, 0.0);
+  gtk_table_attach(GTK_TABLE(edit_table), GTK_WIDGET(align), 0, 1, 3, 4, (GTK_FILL | GTK_SHRINK), 0, 5, 10);
+  gtk_container_add(GTK_CONTAINER(align), label);
+  gtk_widget_show(align);
+  gtk_widget_show(label);
+
+  edit_type_entry = gtk_entry_new();
+  gtk_clist_get_text(GTK_CLIST(edit_clist), 0, 1, (gchar **) (&clist_text));
+  gtk_entry_set_text(GTK_ENTRY(edit_type_entry), clist_text);
+  gtk_signal_connect(GTK_OBJECT(edit_type_entry), "activate", GTK_SIGNAL_FUNC(update_type_cb), (gpointer) edit_type_entry);
+  gtk_table_attach(GTK_TABLE(edit_table), GTK_WIDGET(edit_type_entry), 1, 2, 3, 4, (GTK_FILL | GTK_SHRINK | GTK_EXPAND), 0, 0, 0);
+  gtk_widget_show(edit_type_entry);
+
+  buttonbox = gtk_hbutton_box_new();
+  gtk_container_set_border_width(GTK_CONTAINER(buttonbox), 5);
+  gtk_button_box_set_layout(GTK_BUTTON_BOX(buttonbox), GTK_BUTTONBOX_END);
+  gtk_button_box_set_spacing(GTK_BUTTON_BOX(buttonbox), 3);
+  button = gtk_button_new_with_label("Update Name");
+  gtk_signal_connect(GTK_OBJECT(button), "clicked", GTK_SIGNAL_FUNC(update_name_cb), (gpointer) edit_name_entry);
+  gtk_container_add(GTK_CONTAINER(buttonbox), button);
+  gtk_widget_show(button);
+  button = gtk_button_new_with_label("Update Type");
+  gtk_signal_connect(GTK_OBJECT(button), "clicked", GTK_SIGNAL_FUNC(update_type_cb), (gpointer) edit_type_entry);
+  gtk_container_add(GTK_CONTAINER(buttonbox), button);
+  gtk_widget_show(button);
+  button = gtk_button_new_with_label("Delete Player");
+  gtk_signal_connect(GTK_OBJECT(button), "clicked", GTK_SIGNAL_FUNC(delete_cb), (gpointer) edit_clist);
+  gtk_container_add(GTK_CONTAINER(buttonbox), button);
+  gtk_widget_show(button);
+  gtk_table_attach(GTK_TABLE(edit_table), GTK_WIDGET(buttonbox), 0, 2, 4, 5, (GTK_FILL | GTK_SHRINK), 0, 0, 2);
+  gtk_widget_show(buttonbox);
+
+  gtk_widget_show(edit_table);
+  gtk_widget_show(edit_frame);
+
+  edit_frame = gtk_frame_new(NULL);
+  gtk_container_set_border_width(GTK_CONTAINER(edit_frame), 5);
+  gtk_frame_set_label(GTK_FRAME(edit_frame), "Add New Group Members");
+  gtk_frame_set_label_align(GTK_FRAME(edit_frame), 0.0, 0.0);
+  gtk_frame_set_shadow_type(GTK_FRAME(edit_frame), GTK_SHADOW_ETCHED_IN);
+  gtk_box_pack_start(GTK_BOX(edit_vbox), edit_frame, FALSE, FALSE, 0);
+
+  edit_table = gtk_table_new(3, 2, FALSE);
+  gtk_container_set_border_width(GTK_CONTAINER(edit_table), 5);
+  gtk_container_add(GTK_CONTAINER(edit_frame), edit_table);
+
+  label = gtk_label_new("New Player:");
+  align = gtk_alignment_new(1.0, 0.5, 0.0, 0.0);
+  gtk_table_attach(GTK_TABLE(edit_table), GTK_WIDGET(align), 0, 1, 0, 1, (GTK_FILL | GTK_SHRINK), 0, 5, 10);
+  gtk_container_add(GTK_CONTAINER(align), label);
+  gtk_widget_show(align);
+  gtk_widget_show(label);
+
+  add_name_entry = gtk_entry_new();
+  gtk_signal_connect(GTK_OBJECT(add_name_entry), "activate", GTK_SIGNAL_FUNC(add_cb), (gpointer) add_name_entry);
+  gtk_table_attach(GTK_TABLE(edit_table), GTK_WIDGET(add_name_entry), 1, 2, 0, 1, (GTK_FILL | GTK_SHRINK | GTK_EXPAND), 0, 0, 0);
+  gtk_widget_show(add_name_entry);
+
+  label = gtk_label_new("Type:");
+  align = gtk_alignment_new(1.0, 0.5, 0.0, 0.0);
+  gtk_table_attach(GTK_TABLE(edit_table), GTK_WIDGET(align), 0, 1, 1, 2, (GTK_FILL | GTK_SHRINK), 0, 5, 10);
+  gtk_container_add(GTK_CONTAINER(align), label);
+  gtk_widget_show(align);
+  gtk_widget_show(label);
+
+  add_type_entry = gtk_entry_new();
+  gtk_signal_connect(GTK_OBJECT(add_type_entry), "activate", GTK_SIGNAL_FUNC(add_cb), (gpointer) add_type_entry);
+  gtk_table_attach(GTK_TABLE(edit_table), GTK_WIDGET(add_type_entry), 1, 2, 1, 2, (GTK_FILL | GTK_SHRINK | GTK_EXPAND), 0, 0, 0);
+  gtk_widget_show(add_type_entry);
+
+  buttonbox = gtk_hbutton_box_new();
+  gtk_container_set_border_width(GTK_CONTAINER(buttonbox), 5);
+  gtk_button_box_set_layout(GTK_BUTTON_BOX(buttonbox), GTK_BUTTONBOX_END);
+  gtk_button_box_set_spacing(GTK_BUTTON_BOX(buttonbox), 3);
+  button = gtk_button_new_with_label("Add");
+  gtk_signal_connect(GTK_OBJECT(button), "clicked", GTK_SIGNAL_FUNC(add_cb), (gpointer) NULL);
+  gtk_container_add(GTK_CONTAINER(buttonbox), button);
+  gtk_widget_show(button);
+  gtk_table_attach(GTK_TABLE(edit_table), GTK_WIDGET(buttonbox), 0, 2, 2, 3, (GTK_FILL | GTK_SHRINK), 0, 0, 0);
+  gtk_widget_show(buttonbox);
+
+  gtk_widget_show(edit_table);
+  gtk_widget_show(edit_frame);
+
+  button = gtk_button_new_with_label("Done");
+  align = gtk_alignment_new(0.5, 0.5, 0.1, 0.0);
+  gtk_signal_connect(GTK_OBJECT(button), "clicked", GTK_SIGNAL_FUNC(close_cb), (gpointer) NULL);
+  gtk_container_add(GTK_CONTAINER(align), button);
+  gtk_box_pack_start(GTK_BOX(edit_vbox), align, FALSE, FALSE, 5);
+  gtk_widget_show(button);
+  gtk_widget_show(align);
+
+  gtk_widget_show(edit_vbox);
+  gtk_widget_show(edit_win);
+}
+
+static gint
+close_cb(void) {
+  gtk_widget_destroy(edit_win);
+  edit_win = NULL;
+  return ((gint) 1);
+}
+
+static void
+add_cb(GtkWidget *w, gpointer item) {
+
+  GtkWidget *entry;
+  char *text;
+  player_t *new;
+
+  entry = (GtkWidget *) item;
+  text = (char *) gtk_entry_get_text(GTK_ENTRY(entry));
+  new = (player_t *) malloc(sizeof(player_t));
+  
+}
+
+static void
+delete_cb(GtkWidget *w, gpointer item) {
+
+}
+
+static void
+update_name_cb(GtkWidget *w, gpointer item) {
+
+}
+
+static void
+update_type_cb(GtkWidget *w, gpointer item) {
+
 }

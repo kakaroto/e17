@@ -44,5 +44,6 @@ extern unsigned char player_group_add_player(player_group_t *group, player_t *pl
 extern void player_add_to_clist(player_t *player, GtkWidget *list);
 extern void player_group_make_clist(GtkWidget *list, player_group_t *group);
 extern player_group_t *player_group_get_current(void);
+extern void player_group_edit_dialog(void);
 
 #endif	/* _PLAYERS_H_ */

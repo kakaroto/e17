@@ -75,7 +75,7 @@ clean_exit(const char *msg, ...) {
 
   va_list args;
 
-  if (msg != NULL) {
+  if ((msg != NULL) && !(GTK_IS_OBJECT(msg))) {
     va_start(args, msg);
     fprintf(stderr, PACKAGE ":  ");
     vfprintf(stderr, msg, args);

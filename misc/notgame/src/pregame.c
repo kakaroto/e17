@@ -80,11 +80,11 @@ pregame_init(void) {
   gtk_signal_connect(GTK_OBJECT(button), "clicked", GTK_SIGNAL_FUNC(button_cb), (gpointer) 1);
   gtk_container_add(GTK_CONTAINER(buttonbox), button);
   gtk_widget_show(button);
-  button = gtk_button_new_with_label("Add Player");
+  button = gtk_button_new_with_label("Add/Delete Players");
   gtk_signal_connect(GTK_OBJECT(button), "clicked", GTK_SIGNAL_FUNC(button_cb), (gpointer) 2);
   gtk_container_add(GTK_CONTAINER(buttonbox), button);
   gtk_widget_show(button);
-  button = gtk_button_new_with_label("Add Destination");
+  button = gtk_button_new_with_label("Add/Delete Destinations");
   gtk_signal_connect(GTK_OBJECT(button), "clicked", GTK_SIGNAL_FUNC(button_cb), (gpointer) 3);
   gtk_container_add(GTK_CONTAINER(buttonbox), button);
   gtk_widget_show(button);
@@ -167,7 +167,7 @@ pregame_player_frame_init(GtkWidget *vbox) {
   gtk_frame_set_label(GTK_FRAME(player_frame), "Not Game Players");
   gtk_frame_set_label_align(GTK_FRAME(player_frame), 0.0, 0.0);
   gtk_frame_set_shadow_type(GTK_FRAME(player_frame), GTK_SHADOW_ETCHED_IN);
-  gtk_box_pack_start(GTK_BOX(vbox), player_frame, TRUE, FALSE, 0);
+  gtk_box_pack_start(GTK_BOX(vbox), player_frame, TRUE, TRUE, 0);
 
   /* A 2-by-2 table will contain the two labels, the combo box, and the CList */
   player_table = gtk_table_new(2, 2, FALSE);
@@ -175,9 +175,9 @@ pregame_player_frame_init(GtkWidget *vbox) {
   gtk_container_add(GTK_CONTAINER(player_frame), player_table);
 
   /* The label for the groups combo box, right justified */
-  label = gtk_label_new("Group:  ");
+  label = gtk_label_new("Group:");
   align = gtk_alignment_new(1.0, 0.5, 0.0, 0.0);
-  gtk_table_attach_defaults(GTK_TABLE(player_table), GTK_WIDGET(align), 0, 1, 0, 1);
+  gtk_table_attach(GTK_TABLE(player_table), GTK_WIDGET(align), 0, 1, 0, 1, (GTK_FILL | GTK_SHRINK), 0, 5, 0);
   gtk_container_add(GTK_CONTAINER(align), label);
   gtk_widget_show(align);
   gtk_widget_show(label);
@@ -192,7 +192,7 @@ pregame_player_frame_init(GtkWidget *vbox) {
   }
   gtk_signal_connect(GTK_OBJECT(GTK_COMBO(player_groups_box)->entry), "activate", GTK_SIGNAL_FUNC(player_group_add_from_gui), (gpointer) NULL);
   gtk_signal_connect(GTK_OBJECT(GTK_COMBO(player_groups_box)->list), "selection_changed", GTK_SIGNAL_FUNC(player_group_update_lists_from_gui), (gpointer) NULL);
-  gtk_table_attach_defaults(GTK_TABLE(player_table), GTK_WIDGET(player_groups_box), 1, 2, 0, 1);
+  gtk_table_attach(GTK_TABLE(player_table), GTK_WIDGET(player_groups_box), 1, 2, 0, 1, (GTK_FILL | GTK_SHRINK), 0, 0, 0);
   gtk_widget_show(player_groups_box);
 
   /* The clist for the players in the current group */
@@ -229,15 +229,15 @@ pregame_dest_frame_init(GtkWidget *vbox) {
   gtk_frame_set_label(GTK_FRAME(dest_frame), "Not Game Destinations");
   gtk_frame_set_label_align(GTK_FRAME(dest_frame), 0.0, 0.0);
   gtk_frame_set_shadow_type(GTK_FRAME(dest_frame), GTK_SHADOW_ETCHED_IN);
-  gtk_box_pack_start(GTK_BOX(vbox), dest_frame, TRUE, FALSE, 0);
+  gtk_box_pack_start(GTK_BOX(vbox), dest_frame, TRUE, TRUE, 0);
 
   dest_table = gtk_table_new(2, 2, FALSE);
   gtk_container_set_border_width(GTK_CONTAINER(dest_table), 5);
   gtk_container_add(GTK_CONTAINER(dest_frame), dest_table);
 
-  label = gtk_label_new("Group:  ");
+  label = gtk_label_new("Group:");
   align = gtk_alignment_new(1.0, 0.5, 0.0, 0.0);
-  gtk_table_attach_defaults(GTK_TABLE(dest_table), GTK_WIDGET(align), 0, 1, 0, 1);
+  gtk_table_attach(GTK_TABLE(dest_table), GTK_WIDGET(align), 0, 1, 0, 1, (GTK_FILL | GTK_SHRINK), 0, 5, 0);
   gtk_container_add(GTK_CONTAINER(align), label);
   gtk_widget_show(align);
   gtk_widget_show(label);
@@ -256,7 +256,7 @@ pregame_dest_frame_init(GtkWidget *vbox) {
   }
   gtk_signal_connect(GTK_OBJECT(GTK_COMBO(dest_groups_box)->entry), "activate", GTK_SIGNAL_FUNC(dest_group_add_from_gui), (gpointer) NULL);
   gtk_signal_connect(GTK_OBJECT(GTK_COMBO(dest_groups_box)->list), "selection_changed", GTK_SIGNAL_FUNC(dest_group_update_lists_from_gui), (gpointer) NULL);
-  gtk_table_attach_defaults(GTK_TABLE(dest_table), GTK_WIDGET(dest_groups_box), 1, 2, 0, 1);
+  gtk_table_attach(GTK_TABLE(dest_table), GTK_WIDGET(dest_groups_box), 1, 2, 0, 1, (GTK_FILL | GTK_SHRINK), 0, 0, 0);
   gtk_widget_show(dest_groups_box);
 
   /* The clist for the dests in the current group */
@@ -286,7 +286,8 @@ button_cb(GtkWidget *w, gpointer item) {
   if (((int) item) == 1) {
     play_game();
   } else if (((int) item) == 2) {
-    /* Add Player */
+    /* Edit Player Group */
+    player_group_edit_dialog();
   } else if (((int) item) == 3) {
     /* Add Destination */
   } else {
