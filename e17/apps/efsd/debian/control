@@ -8,6 +8,6 @@ Standards-Version: 3.2.1.0
 Package: efsd
 Architecture: any
 Section: libs
-Depends: ${shlibs:Depends}
-Description: libecore0 description
- libecore0 extended description
+Depends: fam, ${shlibs:Depends}
+Description: efsd description
+ efsd extended description
