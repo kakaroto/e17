@@ -1527,3 +1527,10 @@ Thu Sep  9 10:45:43 PDT 1999
 
 have E snapshot the size and location of the iconbox when its in 
 autoresize mode at its minimum size. :)
+
+-------------------------------------------------------------------------------
+
+Thu Sep  9 15:11:27 PDT 1999
+(Mandrake)
+
+added some function prototypes, fixed a merging conflict in kde.c

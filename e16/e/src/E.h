@@ -2034,6 +2034,7 @@ int                 doWarpPointer(void *params);
 int                 doMoveWinToArea(void *params);
 int                 doMoveWinByArea(void *params);
 int                 doSetWinBorder(void *params);
+int                 doSetWinBorderNoGroup(void *params);
 int                 doLinearAreaSet(void *params);
 int                 doLinearAreaMoveBy(void *params);
 int                 doAbout(void *params);
@@ -2860,6 +2861,8 @@ void                RemoveEwinFromGroup(EWin * ewin, Group * g);
 void                ChooseGroupDialog(EWin * ewin, char *message, char group_select, int action);
 void                SaveGroups(void);
 void                LoadGroups(void);
+void                GroupSelectCallback(int val, void *data);
+void                GroupFeatureChangeCallback(int val, void *data);
 
 /* zoom.c functions */
 EWin               *GetZoomEWin(void);
