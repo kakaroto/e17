@@ -391,14 +391,20 @@ _econf_create_new_data_repository(char *path)
 
 	/* This function will create all the stub files necessary for a new
 	 * repository, as well as create the directory they're housed in.
+	 * returns a negative number on failure.
+	 * returns a 0 or higher on success
+	 * (should return the number of un-necessary creations)
 	 * This function is internal to eConfig
 	 */
 
 	struct stat         st;
+	char testingfile[FILEPATH_LEN_MAX];
+	int retval;
 
 	if(!path)
 		return -1;
 
+	retval = 0;
 	if (stat(path, &st) < 0) {
 		/* the physical path doesn't exist so we'll have to create it */
 		if(mkdir(path,S_IRWXU) < 0) {
@@ -407,24 +413,66 @@ _econf_create_new_data_repository(char *path)
 
 		}
 		stat(path, &st);
-	}
-
-	if(!S_ISDIR(st.st_mode)) {
-		/* we're obviously not a directory, so what is the problem? */
-		if (S_ISREG(st.st_mode)) {
-			/* The directory is a regular file.  this is not a good thing.
-			 * return a -2 error
-			 */
-			return -2;
+	} else {
+		/* we have something there, let's take a look and see what it is */
+		if(!S_ISDIR(st.st_mode)) {
+			/* we're obviously not a directory, so what is the problem? */
+			if (S_ISREG(st.st_mode)) {
+				/* The directory is a regular file.  this is not a good thing.
+				 * return a -2 error
+				 */
+				return -2;
+			}
+			/* some other oddity here happened, return "unknown issue" error */
+			return -3;
 		}
-		/* some other oddity here happened, return "unknown issue" error */
-		return -3;
+		retval++;
 	}
 
 	/* now we have a directory, it's time to populate it with some files */
 
-	
+	sprintf(testingfile,"%s/fat",path);
+	if(stat(path,&st) < 0) {
+		/* the fat table doesn't exist so lets create it */
+		FILE *FATTABLE;
 
-	return 0;
+		FATTABLE = fopen(testingfile,"w");
+		if(!FATTABLE) {
+			/* we couldn't write to that file.  return an error */
+			return -6;
+		}
+		fclose(FATTABLE);
+
+	} else {
+		if(!S_ISREG(st.st_mode)) {
+			/* we're not a regular file, so there are probably some issues
+			 * here - returning an error */
+			return -5;
+		}
+		retval++;
+	}
+
+	sprintf(testingfile,"%s/data",path);
+	if(stat(path,&st) < 0) {
+		/* the data table doesn't exist so lets create it */
+		FILE *CONFTABLE;
+
+		CONFTABLE = fopen(testingfile,"w");
+		if(!CONFTABLE) {
+			/* we couldn't write to that file.  return an error */
+			return -7;
+		}
+		fclose(CONFTABLE);
+
+	} else {
+		if(!S_ISREG(st.st_mode)) {
+			/* we're not a regular file, so there are probably some issues
+			 * here - returning an error */
+			return -5;
+		}
+		retval++;
+	}
+
+	return retval;
 
 }
