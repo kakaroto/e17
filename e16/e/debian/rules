@@ -48,13 +48,14 @@ install-stamp: build-stamp
 	
 	$(MAKE) install DESTDIR=$(pwd)/debian/tmp
 	
+	mv debian/menus.cfg debian/tmp/usr/share/enlightenment/config/menus.cfg
+
 	(cd debian/tmp; tar  --remove-files --create --file -  ./usr/bin/dox ./usr/share/enlightenment/E-docs) \
 		| (cd debian/enlightenment-dox; tar xpf -); rm -rf debian/tmp/usr/share/enlightenment/E-docs
 	(cd debian/tmp; tar --create --file -  ./) \
 		| (cd debian/enlightenment; tar xpf -)
 	(cd debian/tmp; tar --remove-files --create --file -  ./) \
 		| (cd debian/enlightenment-nosound; tar xpf -)
-	-mv src/themes/configs/menus.cfg.old src/themes/configs/menus.cfg
 	gunzip -dc src/themes/BrushedMetal-Tigert.etheme \
 		| (cd debian/enlightenment-theme-brushedmetal/usr/share/enlightenment/themes/BrushedM; tar xpf -)
 	gunzip -dc  src/themes/ShinyMetal.etheme  \

@@ -12,14 +12,12 @@
 
 set -e
 
-mv src/themes/Makefile src/themes/Makefile
+mv src/themes/Makefile src/themes/Makefile.old
 sed '/^install-data-local:$/,/^$/ d' src/themes/Makefile.old > src/themes/Makefile
 
 mv src/Makefile src/Makefile.old
 sed '/^install-data-local:$/,$ d' src/Makefile.old > src/Makefile
 
-grep -q 'DEBIAN_MENU' 'src/themes/configs/menus.cfg' ||  \
-mv "src/themes/configs/menus.cfg" "src/themes/configs/menus.cfg.old" &&  \
 sed '/^__E_CFG_VERSION 0$/ { 
 a\
 \
@@ -30,7 +28,7 @@ END_MENU\
 /^ADD_MENU_SUBMENU_TEXT_ITEM("User Menus", *"APPS_SUBMENU")$/ {
 a\
 ADD_MENU_SUBMENU_TEXT_ITEM("Debian",  "DEBIAN_MENU")
-}' 'src/themes/configs/menus.cfg.old' > 'src/themes/configs/menus.cfg'
+}' 'src/themes/configs/menus.cfg' > 'debian/menus.cfg'
 
 #### end of debianize.sh, file restoration follows, creates debianize-stub.sh too ####
 
