@@ -93,6 +93,8 @@ int ewl_embed_init(Ewl_Embed * w)
 	ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FLAG_FILL_NONE);
 	ewl_object_set_toplevel(EWL_OBJECT(w), EWL_FLAG_PROPERTY_TOPLEVEL);
 
+	ewl_callback_append(EWL_WIDGET(w), EWL_CALLBACK_REALIZE,
+			     ewl_embed_realize_cb, NULL);
 	ewl_callback_append(EWL_WIDGET(w), EWL_CALLBACK_UNREALIZE,
 			     ewl_embed_unrealize_cb, NULL);
 	ewl_callback_prepend(EWL_WIDGET(w), EWL_CALLBACK_DESTROY,
@@ -159,43 +161,6 @@ ewl_embed_set_evas(Ewl_Embed *emb, Evas *evas, void *evas_window)
 
 	if (VISIBLE(w))
 		ewl_realize_request(w);
-
-	if (w->fx_clip_box) {
-		evas_object_clip_set(emb->smart, w->fx_clip_box);
-		evas_object_repeat_events_set(w->fx_clip_box, FALSE);
-
-		/*
-		 * Catch mouse events processed through the evas
-		 */
-		evas_object_event_callback_add(w->fx_clip_box,
-				EVAS_CALLBACK_MOUSE_IN,
-				ewl_embed_evas_mouse_in_cb, emb);
-		evas_object_event_callback_add(w->fx_clip_box,
-				EVAS_CALLBACK_MOUSE_OUT,
-				ewl_embed_evas_mouse_out_cb, emb);
-		evas_object_event_callback_add(w->fx_clip_box,
-				EVAS_CALLBACK_MOUSE_DOWN,
-				ewl_embed_evas_mouse_down_cb, emb);
-		evas_object_event_callback_add(w->fx_clip_box,
-				EVAS_CALLBACK_MOUSE_UP,
-				ewl_embed_evas_mouse_up_cb, emb);
-		evas_object_event_callback_add(w->fx_clip_box,
-				EVAS_CALLBACK_MOUSE_MOVE,
-				ewl_embed_evas_mouse_move_cb, emb);
-		evas_object_event_callback_add(w->fx_clip_box,
-				EVAS_CALLBACK_MOUSE_WHEEL,
-				ewl_embed_evas_mouse_wheel_cb, emb);
-
-		/*
-		 * Catch key events processed through the evas
-		 */
-		evas_object_event_callback_add(w->fx_clip_box,
-				EVAS_CALLBACK_KEY_DOWN,
-				ewl_embed_evas_key_down_cb, emb);
-		evas_object_event_callback_add(w->fx_clip_box,
-				EVAS_CALLBACK_KEY_UP, ewl_embed_evas_key_up_cb,
-				emb);
-	}
 
 	paths = ewl_theme_font_path_get();
 	ecore_list_goto_first(paths);
@@ -686,6 +651,51 @@ void ewl_embed_coord_to_screen(Ewl_Embed *e, int xx, int yy, int *x, int *y)
 		if (y)
 			*y = (int)(evas_coord_world_y_to_screen(e->evas,
 							(Evas_Coord)(yy)));
+	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void ewl_embed_realize_cb(Ewl_Widget *w, void *ev_data, void *user_data)
+{
+	Ewl_Embed *emb = EWL_EMBED(w);
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	if (w->fx_clip_box) {
+		evas_object_clip_set(emb->smart, w->fx_clip_box);
+		evas_object_repeat_events_set(w->fx_clip_box, FALSE);
+
+		/*
+		 * Catch mouse events processed through the evas
+		 */
+		evas_object_event_callback_add(w->fx_clip_box,
+				EVAS_CALLBACK_MOUSE_IN,
+				ewl_embed_evas_mouse_in_cb, emb);
+		evas_object_event_callback_add(w->fx_clip_box,
+				EVAS_CALLBACK_MOUSE_OUT,
+				ewl_embed_evas_mouse_out_cb, emb);
+		evas_object_event_callback_add(w->fx_clip_box,
+				EVAS_CALLBACK_MOUSE_DOWN,
+				ewl_embed_evas_mouse_down_cb, emb);
+		evas_object_event_callback_add(w->fx_clip_box,
+				EVAS_CALLBACK_MOUSE_UP,
+				ewl_embed_evas_mouse_up_cb, emb);
+		evas_object_event_callback_add(w->fx_clip_box,
+				EVAS_CALLBACK_MOUSE_MOVE,
+				ewl_embed_evas_mouse_move_cb, emb);
+		evas_object_event_callback_add(w->fx_clip_box,
+				EVAS_CALLBACK_MOUSE_WHEEL,
+				ewl_embed_evas_mouse_wheel_cb, emb);
+
+		/*
+		 * Catch key events processed through the evas
+		 */
+		evas_object_event_callback_add(w->fx_clip_box,
+				EVAS_CALLBACK_KEY_DOWN,
+				ewl_embed_evas_key_down_cb, emb);
+		evas_object_event_callback_add(w->fx_clip_box,
+				EVAS_CALLBACK_KEY_UP, ewl_embed_evas_key_up_cb,
+				emb);
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
