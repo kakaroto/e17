@@ -18,6 +18,7 @@
 #include "interface.h"
 #include "support.h"
 #include "bits.h"
+#include "preferences.h"
 
 #define QUEUE_DRAW \
 if (current_idle) gtk_idle_remove(current_idle);\
@@ -1380,31 +1381,7 @@ void
 on_preferences1_activate               (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-   GtkWidget *dialog, *w;
-   
-   dialog = create_preferences();
-   
-   if (render_method == 0)
-     {
-	w = gtk_object_get_data(GTK_OBJECT(dialog), "render1");
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(w), 1);
-     }
-   else
-     {
-	w = gtk_object_get_data(GTK_OBJECT(dialog), "render2");
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(w), 1);
-     }
-   if (zoom_method == 0)
-     {
-	w = gtk_object_get_data(GTK_OBJECT(dialog), "zoom1");
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(w), 1);
-     }
-   else
-     {
-	w = gtk_object_get_data(GTK_OBJECT(dialog), "zoom2");
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(w), 1);
-     }
-   gtk_widget_show(dialog);
+   pref_preferences1_activate(menuitem, user_data);
 }
 
 
@@ -2208,24 +2185,7 @@ void
 on_ok_clicked                          (GtkButton       *button,
                                         gpointer         user_data)
 {
-   GtkWidget *top, *w;
-   
-   top = gtk_widget_get_toplevel(GTK_WIDGET(button));
-   w = gtk_object_get_data(GTK_OBJECT(top), "render1");
-   if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(w)))
-      render_method = 0;
-   else
-      render_method = 1;
-   w = gtk_object_get_data(GTK_OBJECT(top), "zoom1");
-   if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(w)))
-      zoom_method = 0;
-   else
-      zoom_method = 1;
-   
-   E_DB_INT_SET(etcher_config, "/display/render_method", (int)render_method);
-   E_DB_INT_SET(etcher_config, "/display/zoom_method", (int)zoom_method);
-   e_db_flush();
-   gtk_widget_destroy(top);
+   pref_ok_clicked(button, user_data);
 }
 
 
@@ -2233,10 +2193,7 @@ void
 on_cancel_clicked                      (GtkButton       *button,
                                         gpointer         user_data)
 {
-   GtkWidget *top;
-
-   top = gtk_widget_get_toplevel(GTK_WIDGET(button));
-   gtk_widget_destroy(top);
+   pref_ok_clicked(button, user_data);
 }
 
 
@@ -2258,3 +2215,10 @@ on_zoomout_clicked                     (GtkButton       *button,
   zoom_redraw(zoom_x, zoom_y);
 }
 
+
+void
+on_tintcolor_button_clicked            (GtkButton       *button,
+                                        gpointer         user_data)
+{
+  pref_tintcolor_button_clicked(button, user_data);
+}

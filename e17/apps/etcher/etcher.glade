@@ -4345,7 +4345,7 @@ You have been warned.</label>
   <title>Etcher Preferences</title>
   <type>GTK_WINDOW_DIALOG</type>
   <position>GTK_WIN_POS_CENTER</position>
-  <modal>True</modal>
+  <modal>False</modal>
   <allow_shrink>False</allow_shrink>
   <allow_grow>True</allow_grow>
   <auto_shrink>True</auto_shrink>
@@ -4438,18 +4438,16 @@ You have been warned.</label>
 	<shadow_type>GTK_SHADOW_IN</shadow_type>
 
 	<widget>
-	  <class>GtkVBox</class>
-	  <name>vbox4</name>
+	  <class>GtkHBox</class>
+	  <name>hbox3</name>
 	  <homogeneous>False</homogeneous>
 	  <spacing>0</spacing>
 
 	  <widget>
-	    <class>GtkFrame</class>
-	    <name>frame3</name>
-	    <border_width>4</border_width>
-	    <label>Display Window</label>
-	    <label_xalign>0</label_xalign>
-	    <shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
+	    <class>GtkVBox</class>
+	    <name>vbox4</name>
+	    <homogeneous>False</homogeneous>
+	    <spacing>0</spacing>
 	    <child>
 	      <padding>0</padding>
 	      <expand>True</expand>
@@ -4457,69 +4455,156 @@ You have been warned.</label>
 	    </child>
 
 	    <widget>
-	      <class>GtkVBox</class>
-	      <name>vbox5</name>
+	      <class>GtkFrame</class>
+	      <name>frame3</name>
 	      <border_width>4</border_width>
-	      <homogeneous>False</homogeneous>
-	      <spacing>0</spacing>
+	      <label>Display Window</label>
+	      <label_xalign>0</label_xalign>
+	      <shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
+	      <child>
+		<padding>0</padding>
+		<expand>True</expand>
+		<fill>True</fill>
+	      </child>
 
 	      <widget>
-		<class>GtkRadioButton</class>
-		<name>render1</name>
-		<can_focus>True</can_focus>
-		<label>Use software rendered display method</label>
-		<active>False</active>
-		<draw_indicator>True</draw_indicator>
-		<group>render</group>
-		<child>
-		  <padding>0</padding>
-		  <expand>False</expand>
-		  <fill>False</fill>
-		</child>
-	      </widget>
+		<class>GtkVBox</class>
+		<name>vbox5</name>
+		<border_width>4</border_width>
+		<homogeneous>False</homogeneous>
+		<spacing>0</spacing>
 
-	      <widget>
-		<class>GtkRadioButton</class>
-		<name>render2</name>
-		<can_focus>True</can_focus>
-		<label>Use 3D accelerated display method</label>
-		<active>False</active>
-		<draw_indicator>True</draw_indicator>
-		<group>render</group>
-		<child>
-		  <padding>0</padding>
-		  <expand>False</expand>
-		  <fill>False</fill>
-		</child>
-	      </widget>
+		<widget>
+		  <class>GtkRadioButton</class>
+		  <name>render1</name>
+		  <can_focus>True</can_focus>
+		  <label>Use software rendered display method</label>
+		  <active>False</active>
+		  <draw_indicator>True</draw_indicator>
+		  <group>render</group>
+		  <child>
+		    <padding>0</padding>
+		    <expand>False</expand>
+		    <fill>False</fill>
+		  </child>
+		</widget>
 
-	      <widget>
-		<class>GtkLabel</class>
-		<name>label64</name>
-		<label>If you change your display preferences you will
+		<widget>
+		  <class>GtkRadioButton</class>
+		  <name>render2</name>
+		  <can_focus>True</can_focus>
+		  <label>Use 3D accelerated display method</label>
+		  <active>False</active>
+		  <draw_indicator>True</draw_indicator>
+		  <group>render</group>
+		  <child>
+		    <padding>0</padding>
+		    <expand>False</expand>
+		    <fill>False</fill>
+		  </child>
+		</widget>
+
+		<widget>
+		  <class>GtkLabel</class>
+		  <name>label64</name>
+		  <label>If you change your display preferences you will
 have to restart Etcher for them to take effect.</label>
-		<justify>GTK_JUSTIFY_CENTER</justify>
-		<wrap>False</wrap>
-		<xalign>0.5</xalign>
-		<yalign>0.5</yalign>
-		<xpad>8</xpad>
-		<ypad>8</ypad>
-		<child>
-		  <padding>0</padding>
-		  <expand>True</expand>
-		  <fill>True</fill>
-		</child>
+		  <justify>GTK_JUSTIFY_CENTER</justify>
+		  <wrap>False</wrap>
+		  <xalign>0.5</xalign>
+		  <yalign>0.5</yalign>
+		  <xpad>8</xpad>
+		  <ypad>8</ypad>
+		  <child>
+		    <padding>0</padding>
+		    <expand>True</expand>
+		    <fill>True</fill>
+		  </child>
+		</widget>
+	      </widget>
+	    </widget>
+
+	    <widget>
+	      <class>GtkFrame</class>
+	      <name>frame4</name>
+	      <border_width>4</border_width>
+	      <label>Zoom Window</label>
+	      <label_xalign>0</label_xalign>
+	      <shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
+	      <child>
+		<padding>0</padding>
+		<expand>True</expand>
+		<fill>True</fill>
+	      </child>
+
+	      <widget>
+		<class>GtkVBox</class>
+		<name>vbox6</name>
+		<border_width>4</border_width>
+		<homogeneous>False</homogeneous>
+		<spacing>0</spacing>
+
+		<widget>
+		  <class>GtkRadioButton</class>
+		  <name>zoom1</name>
+		  <can_focus>True</can_focus>
+		  <label>Use smooth zoom display
+(use pixmaps for zooming)</label>
+		  <active>False</active>
+		  <draw_indicator>True</draw_indicator>
+		  <group>zoom</group>
+		  <child>
+		    <padding>0</padding>
+		    <expand>False</expand>
+		    <fill>False</fill>
+		  </child>
+		</widget>
+
+		<widget>
+		  <class>GtkRadioButton</class>
+		  <name>zoom2</name>
+		  <can_focus>True</can_focus>
+		  <label>Zoom directly in the framebuffer
+(If you use Xinerama select this)</label>
+		  <active>False</active>
+		  <draw_indicator>True</draw_indicator>
+		  <group>zoom</group>
+		  <child>
+		    <padding>0</padding>
+		    <expand>False</expand>
+		    <fill>False</fill>
+		  </child>
+		</widget>
+
+		<widget>
+		  <class>GtkLabel</class>
+		  <name>label65</name>
+		  <label>Xinerama users note, Xinerama has severe
+performance issues and Etcher brings out one
+badly if you don't use direct zooming. It is
+HIGHLY recommended to run plain multihead
+instead of Xinerama for better X performance.</label>
+		  <justify>GTK_JUSTIFY_CENTER</justify>
+		  <wrap>False</wrap>
+		  <xalign>0.5</xalign>
+		  <yalign>0.5</yalign>
+		  <xpad>8</xpad>
+		  <ypad>8</ypad>
+		  <child>
+		    <padding>0</padding>
+		    <expand>False</expand>
+		    <fill>False</fill>
+		  </child>
+		</widget>
 	      </widget>
 	    </widget>
 	  </widget>
 
 	  <widget>
-	    <class>GtkFrame</class>
-	    <name>frame4</name>
-	    <border_width>4</border_width>
-	    <label>Zoom Window</label>
-	    <label_xalign>0</label_xalign>
-	    <shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
+	    <class>GtkVBox</class>
+	    <name>vbox8</name>
+	    <homogeneous>False</homogeneous>
+	    <spacing>0</spacing>
 	    <child>
 	      <padding>0</padding>
 	      <expand>True</expand>
@@ -4527,63 +4612,71 @@ have to restart Etcher for them to take effect.</label>
 	    </child>
 
 	    <widget>
-	      <class>GtkVBox</class>
-	      <name>vbox6</name>
+	      <class>GtkFrame</class>
+	      <name>frame7</name>
 	      <border_width>4</border_width>
-	      <homogeneous>False</homogeneous>
-	      <spacing>0</spacing>
+	      <label>Grid settings</label>
+	      <label_xalign>0</label_xalign>
+	      <shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
+	      <child>
+		<padding>0</padding>
+		<expand>False</expand>
+		<fill>False</fill>
+	      </child>
 
 	      <widget>
-		<class>GtkRadioButton</class>
-		<name>zoom1</name>
-		<can_focus>True</can_focus>
-		<label>Use smooth zoom display
-(use pixmaps for zooming)</label>
-		<active>False</active>
-		<draw_indicator>True</draw_indicator>
-		<group>zoom</group>
-		<child>
-		  <padding>0</padding>
-		  <expand>False</expand>
-		  <fill>False</fill>
-		</child>
-	      </widget>
+		<class>GtkVBox</class>
+		<name>vbox9</name>
+		<border_width>5</border_width>
+		<homogeneous>False</homogeneous>
+		<spacing>2</spacing>
 
-	      <widget>
-		<class>GtkRadioButton</class>
-		<name>zoom2</name>
-		<can_focus>True</can_focus>
-		<label>Zoom directly in the framebuffer
-(If you use Xinerama select this)</label>
-		<active>False</active>
-		<draw_indicator>True</draw_indicator>
-		<group>zoom</group>
-		<child>
-		  <padding>0</padding>
-		  <expand>False</expand>
-		  <fill>False</fill>
-		</child>
-	      </widget>
+		<widget>
+		  <class>GtkFrame</class>
+		  <name>frame10</name>
+		  <border_width>2</border_width>
+		  <label>Preview</label>
+		  <label_xalign>0</label_xalign>
+		  <shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
+		  <child>
+		    <padding>0</padding>
+		    <expand>True</expand>
+		    <fill>True</fill>
+		  </child>
 
-	      <widget>
-		<class>GtkLabel</class>
-		<name>label65</name>
-		<label>Xinerama users note, Xinerama has severe
-performance issues and Etcher brings out one
-badly if you don't use direct zooming. It is
-HIGHLY recommended to run plain multihead
-instead of Xinerama for better X performance.</label>
-		<justify>GTK_JUSTIFY_CENTER</justify>
-		<wrap>False</wrap>
-		<xalign>0.5</xalign>
-		<yalign>0.5</yalign>
-		<xpad>8</xpad>
-		<ypad>8</ypad>
-		<child>
-		  <padding>0</padding>
-		  <expand>False</expand>
-		  <fill>False</fill>
-		</child>
+		  <widget>
+		    <class>GtkFrame</class>
+		    <name>frame11</name>
+		    <border_width>2</border_width>
+		    <label_xalign>0</label_xalign>
+		    <shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
+
+		    <widget>
+		      <class>GtkDrawingArea</class>
+		      <name>pref_da</name>
+		      <width>80</width>
+		      <height>80</height>
+		    </widget>
+		  </widget>
+		</widget>
+
+		<widget>
+		  <class>GtkButton</class>
+		  <name>button1</name>
+		  <border_width>2</border_width>
+		  <can_focus>True</can_focus>
+		  <signal>
+		    <name>clicked</name>
+		    <handler>on_tintcolor_button_clicked</handler>
+		    <last_modification_time>Wed, 13 Sep 2000 20:08:31 GMT</last_modification_time>
+		  </signal>
+		  <label>Select tint color ...</label>
+		  <child>
+		    <padding>0</padding>
+		    <expand>False</expand>
+		    <fill>False</fill>
+		  </child>
+		</widget>
 	      </widget>
 	    </widget>
 	  </widget>

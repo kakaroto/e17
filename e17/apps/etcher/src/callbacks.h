@@ -198,3 +198,7 @@ on_ok_clicked                          (GtkButton       *button,
 void
 on_cancel_clicked                      (GtkButton       *button,
                                         gpointer         user_data);
+
+void
+on_tintcolor_button_clicked            (GtkButton       *button,
+                                        gpointer         user_data);

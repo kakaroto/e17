@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2000-09-13 17:58+0200\n"
+"POT-Creation-Date: 2000-09-13 23:16+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -465,45 +465,45 @@ msgstr ""
 msgid "3D Hardware"
 msgstr ""
 
-#: src/interface.c:2365
+#: src/interface.c:2373
 msgid "Etcher Preferences"
 msgstr ""
 
-#: src/interface.c:2399
+#: src/interface.c:2413
 msgid "Display Window"
 msgstr ""
 
-#: src/interface.c:2415
+#: src/interface.c:2429
 msgid "Use software rendered display method"
 msgstr ""
 
-#: src/interface.c:2423
+#: src/interface.c:2437
 msgid "Use 3D accelerated display method"
 msgstr ""
 
-#: src/interface.c:2431
+#: src/interface.c:2445
 msgid ""
 "If you change your display preferences you will\n"
 "have to restart Etcher for them to take effect."
 msgstr ""
 
-#: src/interface.c:2439
+#: src/interface.c:2453
 msgid "Zoom Window"
 msgstr ""
 
-#: src/interface.c:2455
+#: src/interface.c:2469
 msgid ""
 "Use smooth zoom display\n"
 "(use pixmaps for zooming)"
 msgstr ""
 
-#: src/interface.c:2463
+#: src/interface.c:2477
 msgid ""
 "Zoom directly in the framebuffer\n"
 "(If you use Xinerama select this)"
 msgstr ""
 
-#: src/interface.c:2471
+#: src/interface.c:2485
 msgid ""
 "Xinerama users note, Xinerama has severe\n"
 "performance issues and Etcher brings out one\n"
@@ -512,11 +512,23 @@ msgid ""
 "instead of Xinerama for better X performance."
 msgstr ""
 
-#: src/interface.c:2491
+#: src/interface.c:2500
+msgid "Grid settings"
+msgstr ""
+
+#: src/interface.c:2516
+msgid "Preview"
+msgstr ""
+
+#: src/interface.c:2540
+msgid "Select tint color ..."
+msgstr ""
+
+#: src/interface.c:2560
 msgid "OK"
 msgstr ""
 
-#: src/interface.c:2499
+#: src/interface.c:2568
 msgid "Cancel"
 msgstr ""
 

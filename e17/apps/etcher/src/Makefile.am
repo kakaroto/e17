@@ -11,7 +11,8 @@ etcher_SOURCES = \
 	support.c support.h \
 	interface.c interface.h \
 	callbacks.c callbacks.h \
-	bits.c bits.h
+	bits.c bits.h \
+	preferences.c preferences.h
 
 etcher_LDADD = @evas_libs@ @edb_libs@ -lm @GTK_LIBS@ $(INTLLIBS)
 

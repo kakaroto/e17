@@ -2342,6 +2342,7 @@ create_preferences (void)
   GtkWidget *dialog_vbox2;
   GtkWidget *alignment3;
   GtkWidget *frame5;
+  GtkWidget *hbox3;
   GtkWidget *vbox4;
   GtkWidget *frame3;
   GtkWidget *vbox5;
@@ -2355,6 +2356,13 @@ create_preferences (void)
   GtkWidget *zoom1;
   GtkWidget *zoom2;
   GtkWidget *label65;
+  GtkWidget *vbox8;
+  GtkWidget *frame7;
+  GtkWidget *vbox9;
+  GtkWidget *frame10;
+  GtkWidget *frame11;
+  GtkWidget *pref_da;
+  GtkWidget *button1;
   GtkWidget *dialog_action_area2;
   GtkWidget *hbuttonbox3;
   GtkWidget *ok;
@@ -2365,7 +2373,6 @@ create_preferences (void)
   gtk_window_set_title (GTK_WINDOW (preferences), _("Etcher Preferences"));
   GTK_WINDOW (preferences)->type = GTK_WINDOW_DIALOG;
   gtk_window_set_position (GTK_WINDOW (preferences), GTK_WIN_POS_CENTER);
-  gtk_window_set_modal (GTK_WINDOW (preferences), TRUE);
   gtk_window_set_policy (GTK_WINDOW (preferences), FALSE, TRUE, TRUE);
   gtk_window_set_wmclass (GTK_WINDOW (preferences), "Preferences", "Etcher");
 
@@ -2389,12 +2396,19 @@ create_preferences (void)
   gtk_container_set_border_width (GTK_CONTAINER (frame5), 4);
   gtk_frame_set_shadow_type (GTK_FRAME (frame5), GTK_SHADOW_IN);
 
+  hbox3 = gtk_hbox_new (FALSE, 0);
+  gtk_widget_ref (hbox3);
+  gtk_object_set_data_full (GTK_OBJECT (preferences), "hbox3", hbox3,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (hbox3);
+  gtk_container_add (GTK_CONTAINER (frame5), hbox3);
+
   vbox4 = gtk_vbox_new (FALSE, 0);
   gtk_widget_ref (vbox4);
   gtk_object_set_data_full (GTK_OBJECT (preferences), "vbox4", vbox4,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (vbox4);
-  gtk_container_add (GTK_CONTAINER (frame5), vbox4);
+  gtk_box_pack_start (GTK_BOX (hbox3), vbox4, TRUE, TRUE, 0);
 
   frame3 = gtk_frame_new (_("Display Window"));
   gtk_widget_ref (frame3);
@@ -2476,6 +2490,61 @@ create_preferences (void)
   gtk_box_pack_start (GTK_BOX (vbox6), label65, FALSE, FALSE, 0);
   gtk_misc_set_padding (GTK_MISC (label65), 8, 8);
 
+  vbox8 = gtk_vbox_new (FALSE, 0);
+  gtk_widget_ref (vbox8);
+  gtk_object_set_data_full (GTK_OBJECT (preferences), "vbox8", vbox8,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (vbox8);
+  gtk_box_pack_start (GTK_BOX (hbox3), vbox8, TRUE, TRUE, 0);
+
+  frame7 = gtk_frame_new (_("Grid settings"));
+  gtk_widget_ref (frame7);
+  gtk_object_set_data_full (GTK_OBJECT (preferences), "frame7", frame7,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (frame7);
+  gtk_box_pack_start (GTK_BOX (vbox8), frame7, FALSE, FALSE, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (frame7), 4);
+
+  vbox9 = gtk_vbox_new (FALSE, 2);
+  gtk_widget_ref (vbox9);
+  gtk_object_set_data_full (GTK_OBJECT (preferences), "vbox9", vbox9,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (vbox9);
+  gtk_container_add (GTK_CONTAINER (frame7), vbox9);
+  gtk_container_set_border_width (GTK_CONTAINER (vbox9), 5);
+
+  frame10 = gtk_frame_new (_("Preview"));
+  gtk_widget_ref (frame10);
+  gtk_object_set_data_full (GTK_OBJECT (preferences), "frame10", frame10,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (frame10);
+  gtk_box_pack_start (GTK_BOX (vbox9), frame10, TRUE, TRUE, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (frame10), 2);
+
+  frame11 = gtk_frame_new (NULL);
+  gtk_widget_ref (frame11);
+  gtk_object_set_data_full (GTK_OBJECT (preferences), "frame11", frame11,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (frame11);
+  gtk_container_add (GTK_CONTAINER (frame10), frame11);
+  gtk_container_set_border_width (GTK_CONTAINER (frame11), 2);
+
+  pref_da = gtk_drawing_area_new ();
+  gtk_widget_ref (pref_da);
+  gtk_object_set_data_full (GTK_OBJECT (preferences), "pref_da", pref_da,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (pref_da);
+  gtk_container_add (GTK_CONTAINER (frame11), pref_da);
+  gtk_widget_set_usize (pref_da, 80, 80);
+
+  button1 = gtk_button_new_with_label (_("Select tint color ..."));
+  gtk_widget_ref (button1);
+  gtk_object_set_data_full (GTK_OBJECT (preferences), "button1", button1,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (button1);
+  gtk_box_pack_start (GTK_BOX (vbox9), button1, FALSE, FALSE, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (button1), 2);
+
   dialog_action_area2 = GTK_DIALOG (preferences)->action_area;
   gtk_object_set_data (GTK_OBJECT (preferences), "dialog_action_area2", dialog_action_area2);
   gtk_widget_show (dialog_action_area2);
@@ -2506,6 +2575,9 @@ create_preferences (void)
 
   gtk_signal_connect (GTK_OBJECT (preferences), "delete_event",
                       GTK_SIGNAL_FUNC (on_preferences_delete_event),
+                      NULL);
+  gtk_signal_connect (GTK_OBJECT (button1), "clicked",
+                      GTK_SIGNAL_FUNC (on_tintcolor_button_clicked),
                       NULL);
   gtk_signal_connect (GTK_OBJECT (ok), "clicked",
                       GTK_SIGNAL_FUNC (on_ok_clicked),
