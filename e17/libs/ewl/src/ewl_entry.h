@@ -114,7 +114,7 @@ typedef enum
 	EWL_ENTRY_OP_TYPE_TEXT_PREPEND,
 	EWL_ENTRY_OP_TYPE_TEXT_APPEND,
 	EWL_ENTRY_OP_TYPE_TEXT_INSERT,
-	EWL_ENTRY_OP_TYPE_TEXT_DELETE,
+	EWL_ENTRY_OP_TYPE_TEXT_DELETE
 } Ewl_Entry_Op_Type;
 
 typedef struct Ewl_Entry_Op Ewl_Entry_Op;
@@ -170,6 +170,7 @@ struct Ewl_Entry_Op_Text
 	Ewl_Entry_Op op;
 	char *text;
 	int index;
+	int len;
 };
 
 /*
