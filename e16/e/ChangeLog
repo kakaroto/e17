@@ -2452,3 +2452,16 @@ Plugged very annoying grab leak, fixed click-to-focus.
 Redraw Dialogs and Menus after move if theme is transparent.
 Revert window placement when low on space to e16.5 behavior
  (patch from Smoke <conrad@ceibhion.dhs.org>).
+
+-------------------------------------------------------------------------------
+
+Fri Feb 20 19:31:15 CET 2004
+(Kim)
+
+Fix bug in EwinIsOnScreen() causing focus trouble.
+By default blend tooltips onto root image if transparency is enabled.
+Fix layout of background dialog. 
+Add some configuration request and focus setting debug stuff.
+Attempt to clean up move/resize code a bit. 
+Remove unused modules.c.
+Remove __EMX__.
