@@ -247,6 +247,7 @@ progressive_load_cb(Imlib_Image im, char percent, int update_x, int update_y,
    {
       progwin->w = progwin->im_w = imlib_image_get_width();
       progwin->h = progwin->im_h = imlib_image_get_height();
+      progwin->had_resize = 1;
       /* do we need to create a window for the image? */
       if (!progwin->win)
       {
@@ -254,7 +255,7 @@ progressive_load_cb(Imlib_Image im, char percent, int update_x, int update_y,
          new = 1;
       }
 
-      winwidget_setup_pixmaps(progwin, progwin->w, progwin->h);
+      winwidget_setup_pixmaps(progwin);
 
       if (!opt.full_screen)
       {
@@ -267,6 +268,8 @@ progressive_load_cb(Imlib_Image im, char percent, int update_x, int update_y,
          winwidget_show(progwin);
       if (opt.full_screen)
          XClearArea(disp, progwin->win, 0, 0, scr->width, scr->height, False);
+      else
+         XClearArea(disp, progwin->win, 0, 0, progwin->w, progwin->h, False);
    }
 
    imlib_context_set_image(im);

@@ -253,7 +253,7 @@ winwidget_update_title(winwidget ret)
 }
 
 void
-winwidget_setup_pixmaps(winwidget winwid, int w, int h)
+winwidget_setup_pixmaps(winwidget winwid)
 {
    D_ENTER;
 
@@ -283,7 +283,7 @@ winwidget_setup_pixmaps(winwidget winwid, int w, int h)
             XFreePixmap(disp, winwid->bg_pmap);
 
          winwid->bg_pmap =
-            XCreatePixmap(disp, winwid->win, w, h, depth);
+            XCreatePixmap(disp, winwid->win, winwid->w, winwid->h, depth);
          winwid->had_resize = 0;
       }
    }
@@ -296,27 +296,28 @@ winwidget_render_image(winwidget winwid, int resize)
    int x = 0, y = 0;
    int www, hhh;
    int need_resize = 0;
+   int diff_size = 0;
 
    D_ENTER;
 
-   if (!opt.full_screen && resize
-       && ((winwid->w != winwid->im_w) || (winwid->h != winwid->im_h)))
+   diff_size=((winwid->w != winwid->im_w) || (winwid->h != winwid->im_h));
+   
+   if (!opt.full_screen && resize && diff_size)
    {
       winwid->w = winwid->im_w;
       winwid->h = winwid->im_h;
       need_resize = 1;
    }
-   winwidget_setup_pixmaps(winwid, winwid->w, winwid->im_w);
+   winwidget_setup_pixmaps(winwid);
    imlib_context_set_image(winwid->im);
-
    imlib_context_set_blend(0);
-   if (!opt.full_screen
-       && (imlib_image_has_alpha()
-           || ((winwid->h != winwid->im_h) || (winwid->w != winwid->im_w))))
+
+   if (!opt.full_screen && (imlib_image_has_alpha() || diff_size))
    {
       feh_draw_checks(winwid);
       imlib_context_set_blend(1);
    }
+
    imlib_context_set_image(winwid->im);
    imlib_context_set_drawable(winwid->bg_pmap);
 

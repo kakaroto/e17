@@ -230,6 +230,9 @@ slideshow_change_image(winwidget winwid, int change)
          if (!opt.progressive)
          {
             imlib_context_set_image(winwid->im);
+            if ((winwid->im_w != imlib_image_get_width())
+                || (winwid->im_h != imlib_image_get_height()))
+               winwid->had_resize = 1;
             winwid->im_w = imlib_image_get_width();
             winwid->im_h = imlib_image_get_height();
             winwidget_render_image(winwid, 1);
@@ -269,7 +272,7 @@ slideshow_create_name(char *filename)
 }
 
 void
-feh_action_run(feh_file *file)
+feh_action_run(feh_file * file)
 {
    char *sys;
 

@@ -1,3 +1,7 @@
+Fri Jun  2 22:58:50 2000  Tom Gilbert  <gilbertt@btinternet.com>
+
+	* Fixed pixmap resizing bug properly this time ;-)
+
 Thu Jun  1 19:36:19 2000  Tom Gilbert  <gilbertt@btinternet.com>
 
 	* Correct oversite in sizing pixmaps.
