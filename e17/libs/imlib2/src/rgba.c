@@ -34,6 +34,8 @@ static DATA16 *_dither_b16;
 static DATA8 *_dither_r8;
 static DATA8 *_dither_g8;
 static DATA8 *_dither_b8;
+static int dither_a_init = 0;
+static DATA8 _dither_a1[8 * 8 * 256];
 
 /*****************************************************************************/
 /* Actual rendering routines                                                 */
@@ -1200,15 +1202,15 @@ src++
 /*****************************************************************************/
 /* MACROS for dithered RGBA -> A1 conversion */
 # define DITHER_RGBA_A1_LUT(num) \
-(_dither_r8[(((x + num) & 0x7) << 11) | ((y & 0x7) << 8) | ((src[num] >> 24))])
+(_dither_a1[(((x + num) & 0x7) << 11) | ((y & 0x7) << 8) | ((src[num] >> 24))])
 #ifdef WORDS_BIGENDIAN
 #define WRITE1_RGBA_A1_DITHER(src, dest)              \
-*dest |= (DITHER_RGBA_A1_LUT(0)) << (24 + (x & 0x7)); \
+*dest |= (DITHER_RGBA_A1_LUT(0)) << (7 - (x & 0x7)); \
 if ((x & 0x7) == 0x7) dest++;                         \
 src++;
 #else
 #define WRITE1_RGBA_A1_DITHER(src, dest)              \
-*dest |= (DITHER_RGBA_A1_LUT(0)) << (31 - (x & 0x7)); \
+*dest |= (DITHER_RGBA_A1_LUT(0)) << (0 + (x & 0x7)); \
 if ((x & 0x7) == 0x7) dest++;                         \
 src++;
 #endif
@@ -1307,6 +1309,33 @@ __imlib_RGBA_init(void *rd, void *gd, void *bd, int depth, DATA8 palette_type)
      };
    int i, x, y;
    
+   if (!dither_a_init)
+     {
+	for (y = 0; y < 8; y++)
+	  {
+	     for (x = 0; x < 8; x++)
+	       {
+		  for (i = 0; i < 256; i++)
+		    {
+		       int pi;
+
+/*		       
+		       pi = i >> 1;
+		       if ((_dither_88[x][y]) < (pi))
+			  _dither_a1[(x << 11) | (y << 8) | i] = 1;
+		       else
+			  _dither_a1[(x << 11) | (y << 8) | i] = 0;
+*/		       
+		       pi = (i * (256 - 128)) / 255;
+		       if ((_dither_88[x][y] < ((pi & 0x7f) >> 1)) && (pi < (256 - 128)))
+			  _dither_a1[(x << 11) | (y << 8) | i] = (((pi + 128) >> 7) & 0x01);
+		       else
+			  _dither_a1[(x << 11) | (y << 8) | i] = ((pi >> 7) & 0x01);
+		    }
+	       }
+	  }
+	dither_a_init = 1;
+     }
    switch (depth)
      {
      case 16:
@@ -3227,24 +3256,24 @@ __imlib_RGBA_to_A1_fast(DATA32 *src , int src_jump,
 		DATA8 *dest, int dest_jump,
 		int width, int height, int dx, int dy)
 {
-  int x, y, w, h;
-  
-  w = width;
-  h = height;
-
-   memset(dest, 0, ((w + 7) >> 3 + dest_jump) * height);
-  for (y = 0; y < h; y++)
-    {
-      for (x = 0; x < w; x++)
-	{
-	  WRITE1_RGBA_A1(src, dest);
-	}
-      src += src_jump;
-      dest += dest_jump;
-    }
-  return;
-  dx = 0;
-  dy = 0;
+   int x, y, w, h;
+   
+   w = width;
+   h = height;
+   
+   memset(dest, 0, (((w + 7) >> 3) + dest_jump) * height);
+   for (y = 0; y < h; y++)
+     {
+	for (x = 0; x < w; x++)
+	  {
+	     WRITE1_RGBA_A1(src, dest);
+	  }
+	src += src_jump;
+	dest += dest_jump;
+     }
+   return;
+   dx = 0;
+   dy = 0;
 }
 
 void
@@ -3252,24 +3281,24 @@ __imlib_RGBA_to_A1_dither(DATA32 *src , int src_jump,
 		  DATA8 *dest, int dest_jump,
 		  int width, int height, int dx, int dy)
 {
-  int x, y, w, h;
-  
-  w = width + dx;
-  h = height + dy;
+   int x, y, w, h;
+   
+   w = width + dx;
+   h = height + dy;
 
-   memset(dest, 0, ((w + 7) >> 3 + dest_jump) * height);
-  for (y = dy; y < h; y++)
-    {
-      for (x = dx; x < w; x++)
-	{
-	  WRITE1_RGBA_A1_DITHER(src, dest);
-	}
-      src += src_jump;
-      dest += dest_jump;
-    }
-  return;
-  dx = 0;
-  dy = 0;
+   memset(dest, 0, (((width + 7) >> 3) + dest_jump) * height);   
+   for (y = dy; y < h; y++)
+     {
+	for (x = dx; x < w; x++)
+	  {
+	     WRITE1_RGBA_A1_DITHER(src, dest);
+	  }
+	src += src_jump;
+	dest += dest_jump;
+     }
+   return;
+   dx = 0;
+   dy = 0;
 }
   
 void
