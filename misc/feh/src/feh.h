@@ -255,7 +255,7 @@ void add_file_to_rm_filelist (char *file);
 void delete_rm_files (void);
 int feh_load_image_char (Imlib_Image ** im, char *filename);
 void feh_draw_filename (winwidget w);
-void feh_display_status (void);
+void feh_display_status (char stat);
 void real_loadables_mode(int loadable);
 
 

@@ -173,11 +173,11 @@ init_montage_mode (void)
   for (file = filelist; file; file = file->next)
     {
       D (("   About to load image %s\n", file->filename));
-      if (opt.verbose)
-	    feh_display_status();
       if (feh_load_image (&im_temp, file) != 0)
 	{
 	  D (("   Successfully loaded %s\n", file->filename));
+	  if (opt.verbose)
+	    feh_display_status ('.');
 	  www = opt.thumb_w;
 	  hhh = opt.thumb_h;
 	  imlib_context_set_image (im_temp);
@@ -239,6 +239,9 @@ init_montage_mode (void)
 	  if (y > h - opt.thumb_h)
 	    break;
 	}
+      else if (opt.verbose)
+	feh_display_status ('x');
+
     }
   if (opt.verbose)
     fprintf (stdout, "\n");

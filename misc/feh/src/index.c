@@ -273,7 +273,7 @@ init_index_mode (void)
       if (feh_load_image (&im_temp, file) != 0)
 	{
 	  if (opt.verbose)
-		feh_display_status();
+		feh_display_status('.');
 	  D (("   Successfully loaded %s\n", file->filename));
 	  www = opt.thumb_w;
 	  hhh = opt.thumb_h;
@@ -387,6 +387,8 @@ init_index_mode (void)
 	  else
 	    x += text_area_w;
 	}
+      else if (opt.verbose)
+	    feh_display_status('x');
     }
   if (opt.verbose)
     fprintf (stdout, "\n");

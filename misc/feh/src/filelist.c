@@ -387,9 +387,14 @@ feh_file_info_preload (feh_file * list)
   for (file = list; file; file = file->next)
     {
       if (feh_file_info_load (file))
-	list = filelist_remove_file (list, file);
-      if (opt.verbose)
-	    feh_display_status();
+	{
+	  list = filelist_remove_file (list, file);
+	  if (opt.verbose)
+	    feh_display_status ('x');
+	}
+      else if (opt.verbose)
+            feh_display_status ('.');
+	    
     }
   if (opt.verbose)
     fprintf (stdout, "\n");

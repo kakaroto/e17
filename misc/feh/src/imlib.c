@@ -406,7 +406,7 @@ feh_draw_filename (winwidget w)
 unsigned char reset_output = 0;
 
 void
-feh_display_status (void)
+feh_display_status (char stat)
 {
   static int i = 0;
   static int init_len = 0;
@@ -441,7 +441,7 @@ feh_display_status (void)
   else
     fprintf (stdout, " [  0%%] ");
 
-  fprintf (stdout, ".");
+  fprintf (stdout, "%c", stat);
   fflush (stdout);
   i++;
 }
