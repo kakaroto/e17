@@ -1863,7 +1863,7 @@ workspace_lower_selection(void)
 								    selected_state->description);
 
       if (selected_state->object) 
-	evas_raise(selected_state->o->state.evas, selected_state->object);
+	evas_lower(selected_state->o->state.evas, selected_state->object);
 
       workspace_update_widget_from_selection();
       workspace_update_visible_selection();
