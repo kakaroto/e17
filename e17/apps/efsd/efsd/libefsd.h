@@ -140,8 +140,6 @@ EfsdCmdId      efsd_chmod(EfsdConnection *ec, char *filename,  mode_t mode);
 EfsdCmdId      efsd_set_metadata(EfsdConnection *ec, char *key,
 				 char *filename, EfsdDatatype datatype,
 				 int datalength, void *data);
-EfsdCmdId      efsd_del_metadata(EfsdConnection *ec, char *key,
-				 char *filename);
 EfsdCmdId      efsd_get_metadata(EfsdConnection *ec, char *key,
 				 char *filename, EfsdDatatype datatype);
 

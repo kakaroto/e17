@@ -303,6 +303,33 @@ sighandler(int signal)
 }
 
 
+void
+print_help(void)
+{
+  printf("efsdsh -- command line interface to efsd.\n\n"
+	 "USAGE:\n\n"
+	 "You can enter the following commands:\n"
+	 "ls <file>             Shows directory contents\n"
+	 "startmon <file>       Starts monitoring file or dir\n"
+	 "stopmon <file>        Stops monitoring file or dir\n"
+	 "exit                  Guess what.\n"
+	 "ln <source> <target>  Symlink source to target\n"
+	 "cp <source> <target>  Copy source to target\n"
+	 "mv <source> <target>  Move source to target\n\n"
+	 "Options:\n"
+	 "For ls and startmon:\n"
+	 "-a                    All files, also those starting\n"
+         "                      with a dot.\n"
+	 "-s                    Get stat as well.\n" 
+	 "-t                    Get filet type as well.\n\n"
+	 "For cp, mv, rm:\n"
+	 "-f                    Force. Ignore nonexistant files\n"
+	 "                      when removing, or existing ones\n"
+	 "                      when copying.\n"
+	 "-r                    Recursive mode.\n");
+}
+
+
 void 
 command_line(EfsdConnection *ec)
 {
@@ -319,6 +346,8 @@ command_line(EfsdConnection *ec)
 	{
 	  if (!strcmp(tok, "exit"))
 	    return;
+	  else if (!strcmp(tok, "help"))
+	    print_help();
 	  else if (!strcmp(tok, "ln"))
 	    {
 	      char *file1, *file2;
@@ -380,11 +409,15 @@ command_line(EfsdConnection *ec)
 		    }
 		}
 	    }
-	  else if (!strcmp(tok, "ls"))
+	  else if (!strcmp(tok, "ls") || !strcmp(tok, "startmon"))
 	    {
+	      char startmon = 0;
 	      char show_all = 0;
 	      char get_stat = 0;
 	      char get_type = 0;
+
+	      if (!strcmp(tok, "startmon"))
+		startmon = 1;
 
 	      while ((tok = strtok(NULL, " \t\n")))
 		{
@@ -416,9 +449,59 @@ command_line(EfsdConnection *ec)
 			  if (get_type) efsd_ops_add(ops, efsd_op_get_filetype());
 			}
 
-		      if ((id = efsd_listdir(ec, tok, ops)) < 0)
-			printf("Couldn't issue ls command.\n");
+		      if (startmon)
+			{
+			  if ((id = efsd_start_monitor(ec, tok, ops)) < 0)
+			    printf("Couldn't issue startmon command.\n");
+			}
+		      else
+			{
+			  if ((id = efsd_listdir(ec, tok, ops)) < 0)
+			    printf("Couldn't issue ls command.\n");
+			}
 		    }
+		}
+	    }
+	  else if (!strcmp(tok, "rm"))
+	    {
+	      char force = 0;
+	      char rec   = 0;
+
+	      while ((tok = strtok(NULL, " \t\n")))
+		{
+		  if (!strcmp(tok, "-f"))
+		    {
+		      num_options++;
+		      force = 1;
+		    }
+		  else if (!strcmp(tok, "-r"))
+		    {
+		      num_options++;
+		      rec = 1;
+		    }
+		  else
+		    {
+		      EfsdOptions *ops = NULL;
+
+		      if (num_options > 0)
+			{
+			  ops = efsd_ops_create(num_options);
+
+			  if (force) efsd_ops_add(ops, efsd_op_force());
+			  if (rec)   efsd_ops_add(ops, efsd_op_recursive());
+			}
+
+		      if ((id = efsd_remove(ec, tok, ops)) < 0)
+			printf("Couldn't issue rs command.\n");
+		    }
+		}
+	    }
+	  else if (!strcmp(tok, "stopmon"))
+	    {
+	      if ((tok = strtok(NULL, " \t\n")))
+		{
+		  if ((id = efsd_stop_monitor(ec, tok)) < 0)
+		    printf("Couldn't issue stopmon command.\n");
 		}
 	    }
 	}
