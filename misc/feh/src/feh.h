@@ -48,6 +48,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <sys/wait.h>
 #include <Imlib2.h>
 
+#include "config.h"
 #include "structs.h"
 #include "feh_imlib2.h"
 
