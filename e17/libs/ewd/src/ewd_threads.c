@@ -1,4 +1,3 @@
-#include <../config.h>
 #include <Ewd.h>
 
 Ewd_DList *thread_list = NULL;
