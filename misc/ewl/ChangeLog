@@ -848,3 +848,12 @@ entire window.  this is a noticable speed improvement.
 
 - added x5rings to AUTHORS file.
 
+-----
+20000821-1241-PDT, pabs
+
+- fix for the following bug:
+<RbdPngn> pabswork: ewlwindow.c lines 263 and 269. assigning constant strings
+          that may get freed later.
+...
+thanks dude. :)
+
