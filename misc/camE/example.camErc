@@ -79,6 +79,10 @@ pwc_wb_mode = auto
 # (0-100)
 pwc_wb_red = 50
 pwc_wb_blue = 50
+
+# Backlight compensation mode
+# switched off, when set to 0
+pwc_backlight_mode = 1
 ########################################################
 
 

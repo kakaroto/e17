@@ -121,6 +121,7 @@ int device_palette;
 char *pwc_wb_mode = "auto";
 int pwc_wb_red = 50;
 int pwc_wb_blue = 50;
+int pwc_backlight_mode = 1;
 
 int crop = 0;
 int crop_x = 0;
@@ -261,6 +262,8 @@ grab_init()
   struct video_capability grab_cap;
   struct video_channel grab_chan;
   struct video_mbuf vid_mbuf;
+  struct pwc_probe probe;
+  int IsPhilips = 0;
   int type;
 
   if ((grab_fd = open(grab_device, O_RDWR)) == -1) {
@@ -291,8 +294,20 @@ grab_init()
   ioctl(grab_fd, VIDIOCGMBUF, &vid_mbuf);
   camlog("%s detected\n", grab_cap.name);
 
+  if (sscanf(grab_cap.name, "Philips %d webcam", &type) == 1)
+    IsPhilips = 1;
+  else {
+    /* No match yet; try the PROBE */
+    if (ioctl(grab_fd, VIDIOCPWCPROBE, &probe) == 0) {
+      if (!strcmp(grab_cap.name, probe.name)) {
+        IsPhilips = 1;
+        type = probe.type;
+      }
+    }
+  }
+
   /* special philips features */
-  if (sscanf(grab_cap.name, "Philips %d webcam", &type) > 0) {
+  if (IsPhilips) {
     struct video_window vwin;
     int shutter = -1;
     int gain = -1;
@@ -340,6 +355,9 @@ grab_init()
 
     if (ioctl(grab_fd, VIDIOCPWCSAWB, &wb) < 0)
       perror("trying to set pwc white balance mode");
+
+    if (ioctl(grab_fd, VIDIOCPWCSBACKLIGHT, &pwc_backlight_mode) < 0)
+      perror("trying to set backlight compensation mode");
   }
 
   /* set image source and TV norm */
@@ -1460,6 +1478,8 @@ main(int argc,
     pwc_wb_red = i;
   if (-1 != (i = cfg_get_int("grab", "pwc_wb_blue")))
     pwc_wb_blue = i;
+  if (-1 != (i = cfg_get_int("grab", "pwc_backlight_mode")))
+    pwc_backlight_mode = i;
   if (-1 != (i = cfg_get_int("grab", "flip_horizontal")))
     flip_horizontal = 1;
   if (-1 != (i = cfg_get_int("grab", "flip_vertical")))
