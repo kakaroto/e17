@@ -338,7 +338,6 @@ void estyle_set_style(Evas_Object *obj, char *name)
 	Estyle *es;
 
 	CHECK_PARAM_POINTER("obj", obj);
-	CHECK_PARAM_POINTER("name", name);
 
 	es = evas_object_smart_data_get(obj);
 
@@ -348,7 +347,7 @@ void estyle_set_style(Evas_Object *obj, char *name)
 	if (es->style)
 		_estyle_style_release(es->style, es->evas);
 
-	if ((es->style = _estyle_style_instance(name)) == NULL)
+	if (!name || (es->style = _estyle_style_instance(name)) == NULL)
 		return;
 
 	text = evas_object_text_text_get(es->bit);
