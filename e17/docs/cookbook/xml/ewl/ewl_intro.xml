@@ -50,7 +50,6 @@ static void open_file_cb(Ewl_Widget *, void *, void *);
 static void home_cb(Ewl_Widget *win, void *ev, void *data);
 static void file_menu_open_cb(Ewl_Widget *, void *, void *);
 static void key_up_cb(Ewl_Widget *, void *, void *);
-static void wheel_cb(Ewl_Widget *win, void *ev, void *data);
 
 static char *read_file(char *);
 static void mk_gui(void);
@@ -406,15 +405,14 @@ only one menu is required.
 <title>Attach callbacks</title>
 <programlisting>
     ewl_callback_append(main_win, EWL_CALLBACK_KEY_UP, key_up_cb, scroll);
-    ewl_callback_append(main_win, EWL_CALLBACK_MOUSE_WHEEL, wheel_cb, scroll);  
 }
 </programlisting>
 </example>
 <para>
 Once everything is setup on the main window we attach the callbacks we wish to
-receive. In this case we are attaching ourselves to the EWL_CALLBACK_KEY_UP and
-the EWL_CALLBACK_MOUSE_WHEEL. This way we well be notified if a key on the
-keyboard is release, or the use rolls the mouse wheel.
+receive. In this case we are attaching ourselves to the EWL_CALLBACK_KEY_UP callback. 
+We don't need to do anything to have mouse wheel scrolling in the scrollpane as
+it is configured into the scrollpane itself.
 </para>
 
 <example>
@@ -693,45 +691,6 @@ The second piece of information is obtained through the call to
 ewl_scrollpane_get_[hv]scrollbar_step(). The step is the distance the scrollpane will
 travel with one iteration. So using these two values we can then move the scrollbar
 in the correct direction with the call to ewl_scrollpane_set_[hv]scrollbar_value().
-</para>
-
-<example>
-<title>Mouse wheel callback</title>
-<programlisting>
-/* the mouse wheel callback */
-static void wheel_cb(Ewl_Widget *win, void *ev, void *data) {
-    Ewl_Event_Mouse_Wheel *e = (Ewl_Event_Mouse_Wheel *)ev;
-    Ewl_ScrollPane *scroll = (Ewl_ScrollPane *)data;
-            
-    if (e-&gt;z &gt; 0) {
-        double val = ewl_scrollpane_get_vscrollbar_value(EWL_SCROLLPANE(scroll)); 
-        double step = ewl_scrollpane_get_vscrollbar_step(EWL_SCROLLPANE(scroll));
-        
-        if (val != 1)
-            ewl_scrollpane_set_vscrollbar_value(EWL_SCROLLPANE(scroll), 
-                                                            val + step);
-    } else {
-        double val = ewl_scrollpane_get_vscrollbar_value(EWL_SCROLLPANE(scroll));
-        double step = ewl_scrollpane_get_vscrollbar_step(EWL_SCROLLPANE(scroll));   
-
-        if (val != 0) 
-            ewl_scrollpane_set_vscrollbar_value(EWL_SCROLLPANE(scroll), 
-                                                            val - step);
-    }   
-}           
-</programlisting>
-</example>
-<para>
-The final callback we need to deal with is for the mouse wheel. The event data
-passed to the mouse wheel callback is a Ewl_Event_Mouse_Wheel structure. From
-this structure we can see which way the user rolled the wheel by examining the
-&quot;z&quot; entry. If this value is 1, the use ran the wheel forward, if it is -1 the user
-ran the wheel backwards.
-</para>
-
-<para>
-So we use the same logic from the key press callback to manipulate the scrollpane
-when the wheel is turned.
 </para>
 
 <example>
