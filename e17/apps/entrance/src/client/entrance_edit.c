@@ -969,7 +969,7 @@ _scrollbar_cb(void *data, Evas_Object * o, const char *emission,
                   return;
                }
 #if DEBUG
-	       fprintf(stderr, "Stepping %s:%0.2f:%0.2f\n", src, dx, dy);
+               fprintf(stderr, "Stepping %s:%0.2f:%0.2f\n", src, dx, dy);
 #endif
             }
          }
@@ -1910,7 +1910,7 @@ main(int argc, char *argv[])
       e = ecore_evas_software_x11_new(NULL, 0, 0, 0, 320, 240);
 #endif
 
-      ecore_evas_title_set(e, "Ecco - Configuring Entrance");
+      ecore_evas_title_set(e, "Entrance Edit - Configuring Entrance");
       ecore_evas_callback_delete_request_set(e, window_del_cb);
       ecore_evas_callback_resize_set(e, window_resize_cb);
       ecore_evas_callback_post_render_set(e, window_post_render_cb);
