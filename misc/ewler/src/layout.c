@@ -81,11 +81,11 @@ layout_widgets( Ewler_Form *form, Ewl_Orientation orientation )
 			widget_create_info( form->layout, "Ewl_Box", widget_name );
 			ewl_box_set_orientation( EWL_BOX(form->layout), orientation );
 
-			ewl_object_request_position( EWL_OBJECT(form->layout), 0, 0 );
-			ewl_object_set_fill_policy( EWL_OBJECT(form->layout),
+			ewl_object_position_request( EWL_OBJECT(form->layout), 0, 0 );
+			ewl_object_fill_policy_set( EWL_OBJECT(form->layout),
 																	EWL_FLAG_FILL_FILL );
-			ewl_object_set_minimum_size( EWL_OBJECT(form->layout), 1, 1 );
-			ewl_object_set_maximum_size( EWL_OBJECT(form->layout), 100000, 100000 );
+			ewl_object_minimum_size_set( EWL_OBJECT(form->layout), 1, 1 );
+			ewl_object_maximum_size_set( EWL_OBJECT(form->layout), 100000, 100000 );
 			ewl_callback_append( form->layout, EWL_CALLBACK_REALIZE,
 													 __layout_realize_cb, cl );
 
@@ -94,7 +94,7 @@ layout_widgets( Ewler_Form *form, Ewl_Orientation orientation )
 			ewl_widget_show( form->layout );
 
 			s = ewler_selected_new( form->layout );
-			ewl_object_set_fill_policy( EWL_OBJECT(s), EWL_FLAG_FILL_FILL );
+			ewl_object_fill_policy_set( EWL_OBJECT(s), EWL_FLAG_FILL_FILL );
 			ewl_widget_show( s );
 
 			widget_changed( form->layout );
@@ -128,10 +128,10 @@ layout_widgets( Ewler_Form *form, Ewl_Orientation orientation )
 
 		s = ecore_list_goto_first( form->selected );
 
-		ewl_object_request_position( EWL_OBJECT(box), CURRENT_X(s), CURRENT_Y(s) );
-		ewl_object_set_fill_policy( EWL_OBJECT(box), EWL_FLAG_FILL_NONE );
-		ewl_object_set_minimum_size( EWL_OBJECT(box), 1, 1 );
-		ewl_object_set_maximum_size( EWL_OBJECT(box), 100000, 100000 );
+		ewl_object_position_request( EWL_OBJECT(box), CURRENT_X(s), CURRENT_Y(s) );
+		ewl_object_fill_policy_set( EWL_OBJECT(box), EWL_FLAG_FILL_NONE );
+		ewl_object_minimum_size_set( EWL_OBJECT(box), 1, 1 );
+		ewl_object_maximum_size_set( EWL_OBJECT(box), 100000, 100000 );
 		ewl_callback_append( box, EWL_CALLBACK_REALIZE, __layout_realize_cb, cl );
 
 		ewl_container_append_child( EWL_CONTAINER(parent), box );
@@ -212,7 +212,7 @@ break_layout( Ewler_Form *form )
 		x = CURRENT_X(cw);
 		y = CURRENT_Y(cw);
 
-		ewl_object_request_position( EWL_OBJECT(cw), x, y );
+		ewl_object_position_request( EWL_OBJECT(cw), x, y );
 	}
 
 	ecore_list_destroy( cl );

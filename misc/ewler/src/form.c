@@ -134,7 +134,7 @@ __mouse_move_widget( Ewl_Widget *w, void *ev_data, void *user_data )
 
 		while( (c_s = ecore_list_next(form->selected)) ) {
 			if( c_s != form->overlay )
-				ewl_object_request_position(EWL_OBJECT(c_s),
+				ewl_object_position_request(EWL_OBJECT(c_s),
 																		CURRENT_X(c_s) + dx,
 																		CURRENT_Y(c_s) + dy);
 		}
@@ -162,13 +162,13 @@ __mouse_up_widget( Ewl_Widget *w, void *ev_data, void *user_data )
 			Ewl_Widget *c_w = ewler_selected_get( EWLER_SELECTED(c_s) );
 
 			if( c_w != form->overlay ) {
-				ewl_object_request_position(EWL_OBJECT(c_s),
+				ewl_object_position_request(EWL_OBJECT(c_s),
 																		CURRENT_X(c_s) - dx,
 																		CURRENT_Y(c_s) - dy);
-				ewl_object_set_fill_policy( EWL_OBJECT(c_s),
-																		ewl_object_get_fill_policy(EWL_OBJECT(c_w)) );
-				ewl_object_set_alignment( EWL_OBJECT(c_s),
-																	ewl_object_get_alignment(EWL_OBJECT(c_w)) );
+				ewl_object_fill_policy_set( EWL_OBJECT(c_s),
+																		ewl_object_fill_policy_get(EWL_OBJECT(c_w)) );
+				ewl_object_alignment_set( EWL_OBJECT(c_s),
+																	ewl_object_alignment_get(EWL_OBJECT(c_w)) );
 				widget_changed(c_w);
 			}
 		}
@@ -244,7 +244,7 @@ __mouse_down_form( Ewl_Widget *w, void *ev_data, void *user_data )
 
 					widget_create_info( nw, tool_get_name(), widget_name );
 					/* set the defaults */
-					ewl_object_set_fill_policy( EWL_OBJECT(nw), EWL_FLAG_FILL_NONE );
+					ewl_object_fill_policy_set( EWL_OBJECT(nw), EWL_FLAG_FILL_NONE );
 
 					ewl_callback_del_type( nw, EWL_CALLBACK_CLICKED );
 					ewl_callback_del_type( nw, EWL_CALLBACK_SELECT );
@@ -259,7 +259,7 @@ __mouse_down_form( Ewl_Widget *w, void *ev_data, void *user_data )
 															 __mouse_in_form, form );
 					ewl_callback_append( nw, EWL_CALLBACK_DESTROY,
 															 __destroy_widget, form );
-					ewl_object_request_position( EWL_OBJECT(nw), ev->x, ev->y );
+					ewl_object_position_request( EWL_OBJECT(nw), ev->x, ev->y );
 					ewl_container_append_child( EWL_CONTAINER(widget_container), nw );
 					ewl_widget_show( nw );
 
@@ -286,8 +286,8 @@ __mouse_down_form( Ewl_Widget *w, void *ev_data, void *user_data )
 		case 2: break;
 		case 3:
 			form->popup = ewl_imenu_new(NULL, "Configure");
-			ewl_object_request_position(EWL_OBJECT(form->popup), ev->x, ev->y);
-			ewl_object_set_fill_policy(EWL_OBJECT(form->popup), EWL_FLAG_FILL_NONE);
+			ewl_object_position_request(EWL_OBJECT(form->popup), ev->x, ev->y);
+			ewl_object_fill_policy_set(EWL_OBJECT(form->popup), EWL_FLAG_FILL_NONE);
 			ewl_container_append_child(EWL_CONTAINER(form->overlay), form->popup);
 			ewl_widget_show(form->popup);
 			ewl_callback_call(form->popup, EWL_CALLBACK_SELECT);
@@ -399,7 +399,7 @@ form_add_widget( Ewler_Form *form, char *name, Ewl_Widget *w )
 	ewl_callback_append( w, EWL_CALLBACK_FOCUS_IN,
 											 __mouse_in_form, form );
 
-	ewl_object_set_fill_policy( EWL_OBJECT(w), EWL_FLAG_FILL_NONE );
+	ewl_object_fill_policy_set( EWL_OBJECT(w), EWL_FLAG_FILL_NONE );
 
 	ecore_hash_set( form->elements, name, w );
 	ecore_hash_set( form->elements_rev, w, name );
@@ -423,21 +423,21 @@ form_new( void )
 	ewl_window_set_title( EWL_WINDOW(form->window), form->filename );
 	ewl_callback_append( form->window, EWL_CALLBACK_DELETE_WINDOW,
 											 __destroy_form, form );
-	ewl_object_set_preferred_size( EWL_OBJECT(form->window), 800, 600 );
-	ewl_object_set_minimum_size( EWL_OBJECT(form->window), 800, 600 );
-	ewl_object_set_fill_policy( EWL_OBJECT(form->window), EWL_FLAG_FILL_SHRINK );
+	ewl_object_preferred_inner_size_set( EWL_OBJECT(form->window), 800, 600 );
+	ewl_object_minimum_size_set( EWL_OBJECT(form->window), 800, 600 );
+	ewl_object_fill_policy_set( EWL_OBJECT(form->window), EWL_FLAG_FILL_SHRINK );
 	ewl_widget_show( form->window );
 
 	snprintf( buf, 255, "Ewl_Form%d", count ); 
 
 	form->overlay = ewl_overlay_new();
 
-	ewl_widget_set_appearance(form->overlay, "background");
+	ewl_widget_appearance_set(form->overlay, "background");
 	ewl_theme_data_set_str(form->overlay, "/background/file",
 												 PACKAGE_DATA_DIR"/themes/ewler.eet");
 	ewl_theme_data_set_str(form->overlay, "/background/group", "background");
 
-	ewl_object_set_fill_policy( EWL_OBJECT(form->overlay), EWL_FLAG_FILL_ALL );
+	ewl_object_fill_policy_set( EWL_OBJECT(form->overlay), EWL_FLAG_FILL_ALL );
 	widget_create_info( form->overlay, "Ewl_Overlay", strdup( buf ) );
 	ewl_callback_append( form->overlay, EWL_CALLBACK_MOUSE_DOWN,
 											 __mouse_down_form, form );
@@ -450,7 +450,7 @@ form_new( void )
 	ewl_callback_append( form->overlay, EWL_CALLBACK_KEY_DOWN,
 											 __key_down_form, form );
 	ewl_container_append_child( EWL_CONTAINER(form->window), form->overlay );
-	ewl_widget_set_data( form->overlay, "unsizable", (void *) 1 );
+	ewl_widget_data_set( form->overlay, "unsizable", (void *) 1 );
 	ewl_widget_show( form->overlay );
 
 	form->selected = ecore_list_new();
@@ -549,9 +549,9 @@ form_open_file( char *filename )
 	ewl_window_set_title( EWL_WINDOW(form->window), form->filename );
 	ewl_callback_append( form->window, EWL_CALLBACK_DELETE_WINDOW,
 											 __destroy_form, form );
-	ewl_object_set_preferred_size( EWL_OBJECT(form->window), 800, 600 );
-	ewl_object_set_minimum_size( EWL_OBJECT(form->window), 800, 600 );
-	ewl_object_set_fill_policy( EWL_OBJECT(form->window), EWL_FLAG_FILL_SHRINK );
+	ewl_object_preferred_inner_size_set( EWL_OBJECT(form->window), 800, 600 );
+	ewl_object_minimum_size_set( EWL_OBJECT(form->window), 800, 600 );
+	ewl_object_fill_policy_set( EWL_OBJECT(form->window), EWL_FLAG_FILL_SHRINK );
 	ewl_widget_show( form->window );
 
 	form->elements = ecore_hash_new( ecore_str_hash, ecore_str_compare );
@@ -568,10 +568,10 @@ form_open_file( char *filename )
 		return;
 	}
 
-	ewl_widget_set_data( form->overlay, "unsizable", (void *) 1 );
-	ewl_object_set_fill_policy( EWL_OBJECT(form->overlay), EWL_FLAG_FILL_FILL );
+	ewl_widget_data_set( form->overlay, "unsizable", (void *) 1 );
+	ewl_object_fill_policy_set( EWL_OBJECT(form->overlay), EWL_FLAG_FILL_FILL );
 
-	ewl_widget_set_appearance(form->overlay, "background");
+	ewl_widget_appearance_set(form->overlay, "background");
 	ewl_theme_data_set_str(form->overlay, "/background/file",
 												 PACKAGE_DATA_DIR"/themes/ewler.eet");
 	ewl_theme_data_set_str(form->overlay, "/background/group", "background");

@@ -7,11 +7,13 @@
 #include "inspector.h"
 #include "widgets.h"
 #include "selected.h"
+#include "callback_editor.h"
 
 static Ewl_Widget *inspector_win;
 static Ewler_Form *active_form = NULL;
 static Ewl_Widget *active_widget = NULL;
-static Ewl_Widget *inspector_tree;
+static Ewl_Widget *inspector_tree, *inspector_callback_editor;
+static Ewl_Widget *inspector_notebook;
 
 static int visible = 0;
 
@@ -29,20 +31,42 @@ void
 ewler_inspector_init( void )
 {
 	char *headers[] = { "Property", "Value" };
+	Ewl_Widget *tab;
 
 	inspector_win = ewl_window_new();
 
 	ewl_window_set_title( EWL_WINDOW(inspector_win), "Inspector" );
 	ewl_callback_append( inspector_win, EWL_CALLBACK_DELETE_WINDOW,
 											 __hide_inspector_cb, NULL );
-	ewl_object_set_preferred_size( EWL_OBJECT(inspector_win), 200, 400 );
-	ewl_object_set_minimum_size( EWL_OBJECT(inspector_win), 200, 400 );
-	ewl_object_set_fill_policy( EWL_OBJECT(inspector_win), EWL_FLAG_FILL_SHRINK );
+	ewl_object_preferred_inner_size_set( EWL_OBJECT(inspector_win), 200, 400 );
+	ewl_object_minimum_size_set( EWL_OBJECT(inspector_win), 200, 400 );
+	ewl_object_fill_policy_set( EWL_OBJECT(inspector_win), EWL_FLAG_FILL_ALL );
 
 	inspector_tree = ewl_tree_new( 2 );
-	ewl_container_append_child( EWL_CONTAINER(inspector_win), inspector_tree );
 	ewl_tree_set_headers( EWL_TREE(inspector_tree), headers );
+	ewl_object_fill_policy_set( EWL_OBJECT(inspector_tree), EWL_FLAG_FILL_ALL );
 	ewl_widget_show( inspector_tree );
+
+	inspector_callback_editor = ewler_callback_editor_new();
+	ewl_widget_show( inspector_callback_editor );
+
+	inspector_notebook = ewl_notebook_new();
+	ewl_container_append_child( EWL_CONTAINER(inspector_win),
+															inspector_notebook );
+	ewl_object_fill_policy_set( EWL_OBJECT(inspector_notebook),
+															EWL_FLAG_FILL_ALL );
+
+	tab = ewl_text_new( "Properties" );
+	ewl_widget_show( tab );
+	ewl_notebook_append_page( EWL_NOTEBOOK(inspector_notebook),
+														tab, inspector_tree );
+
+	tab = ewl_text_new( "Callbacks" );
+	ewl_widget_show( tab );
+	ewl_notebook_append_page( EWL_NOTEBOOK(inspector_notebook),
+														tab, inspector_callback_editor );
+
+	ewl_widget_show( inspector_notebook );
 }
 
 int
@@ -118,7 +142,7 @@ static void
 __inspector_entry_changed( Ewl_Widget *w, void *ev_data, void *user_data )
 {
 	Widget_Data_Elem *data = user_data;
-	Ewl_Widget *widget = ewl_widget_get_data( w, "widget" );
+	Ewl_Widget *widget = ewl_widget_data_get( w, "widget" );
 	char *text, *endptr;
 	int int_val;
 
@@ -161,7 +185,7 @@ static void
 __inspector_combo_changed( Ewl_Widget *w, void *ev_data, void *user_data )
 {
 	Widget_Data_Elem *data = user_data;
-	Ewl_Widget *widget = ewl_widget_get_data( w, "widget" );
+	Ewl_Widget *widget = ewl_widget_data_get( w, "widget" );
 	char *text;
 	int value;
 
@@ -175,10 +199,10 @@ __inspector_combo_changed( Ewl_Widget *w, void *ev_data, void *user_data )
 	if( data->type->w.set )
 		data->type->w.set( EWL_OBJECT(widget), value );
 
-	ewl_object_set_fill_policy( EWL_OBJECT(widget->parent),
-															ewl_object_get_fill_policy(EWL_OBJECT(widget)) );
-	ewl_object_set_alignment( EWL_OBJECT(widget->parent),
-														ewl_object_get_alignment(EWL_OBJECT(widget)) );
+	ewl_object_fill_policy_set( EWL_OBJECT(widget->parent),
+															ewl_object_fill_policy_get(EWL_OBJECT(widget)) );
+	ewl_object_alignment_set( EWL_OBJECT(widget->parent),
+														ewl_object_alignment_get(EWL_OBJECT(widget)) );
 	widget_changed( widget );
 }
 
@@ -203,6 +227,8 @@ __populate_tree( void *val )
 	static char buf[16];
 
 	row_elems[0] = ewl_text_new( data->type->w.name );
+	ewl_object_alignment_set(EWL_OBJECT(row_elems[0]),
+													 EWL_FLAG_ALIGN_RIGHT | EWL_FLAG_ALIGN_CENTER);
 	ewl_widget_show( row_elems[0] );
 
 	if( data->type->w.w_type == WIDGET_ENUM_TYPE ) {
@@ -220,10 +246,10 @@ __populate_tree( void *val )
 												 __inspector_combo_changed, data );
 
 		ewl_widget_show( row_elems[1] );
-		ewl_widget_set_data( row_elems[1], "get", data );
-		ewl_widget_set_data( row_elems[1], "widget", active_widget );
+		ewl_widget_data_set( row_elems[1], "get", data );
+		ewl_widget_data_set( row_elems[1], "widget", active_widget );
 	} else if( data->type->w.w_type != WIDGET_STRUCT_TYPE ) {
-		row_elems[1] = ewl_entry_new( NULL );
+		row_elems[1] = ewl_entry_new( "" );
 
 		ewl_callback_append( EWL_WIDGET(row_elems[1]), EWL_CALLBACK_DESELECT,
 												 __inspector_entry_changed, data );
@@ -231,8 +257,8 @@ __populate_tree( void *val )
 												 __inspector_entry_changed, data );
 
 		ewl_widget_show( row_elems[1] );
-		ewl_widget_set_data( row_elems[1], "get", data );
-		ewl_widget_set_data( row_elems[1], "widget", active_widget );
+		ewl_widget_data_set( row_elems[1], "get", data );
+		ewl_widget_data_set( row_elems[1], "widget", active_widget );
 	}
 
 	if( data->type->w.w_flags & ELEM_NO_MODIFY )
@@ -288,7 +314,7 @@ inspector_subupdate( Ewl_Container *c )
 		if( entry ) {
 			static char buf[16];
 
-			data = ewl_widget_get_data( entry, "get" );
+			data = ewl_widget_data_get( entry, "get" );
 
 			switch( data->type->w.w_type ) {
 				case WIDGET_STRING_TYPE:

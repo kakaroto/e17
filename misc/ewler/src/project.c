@@ -81,6 +81,7 @@ __project_new_cb( Ewl_Widget *w, void *ev_data, void *user_data )
 		project->filename_set = 0;
 
 		headers[0] = project->filename;
+		headers[1] = "";
 
 		ewl_container_reset( EWL_CONTAINER(project_tree) );
 		ewl_tree_set_headers( EWL_TREE(project_tree), headers );
@@ -102,7 +103,7 @@ __project_member_mouse_down( Ewl_Widget *w, void *ev_data, void *user_data )
 
 	gettimeofday( &now, NULL );
 
-	cell = ewl_row_get_column( EWL_ROW(w), 0 );
+	cell = ewl_row_get_column( EWL_ROW(w), 1 );
 
 	text = ecore_list_goto_first( EWL_CONTAINER(cell)->children );
 
@@ -144,15 +145,15 @@ ewler_projects_init( void )
 	project_win = ewl_window_new();
 
 	ewl_window_set_title( EWL_WINDOW(project_win), "Project Overview" );
-	ewl_object_set_minimum_size( EWL_OBJECT(project_win), 300, 200 );
-	ewl_object_set_insets( EWL_OBJECT(project_tree), 5, 5, 5, 5 );
+	ewl_object_minimum_size_set( EWL_OBJECT(project_win), 300, 200 );
+	ewl_object_insets_set( EWL_OBJECT(project_tree), 5, 5, 5, 5 );
 
 	ewl_callback_append( project_win, EWL_CALLBACK_DELETE_WINDOW,
 											 __projects_destroy_cb, NULL );
 
 	project = NEW(Ewler_Project, 1);
 
-	project_tree = ewl_tree_new( 1 );
+	project_tree = ewl_tree_new( 2 );
 	ewl_container_append_child( EWL_CONTAINER(project_win), project_tree );
 
 	__project_new_cb( NULL, NULL, NULL );
@@ -169,6 +170,7 @@ project_update( void )
 	int i;
 
 	headers[0] = project->filename;
+	headers[1] = "";
 
 	ewl_container_reset( EWL_CONTAINER(project_tree) );
 	ewl_tree_set_headers( EWL_TREE(project_tree), headers );
@@ -184,15 +186,36 @@ project_update( void )
 	ecore_sheap_sort( sorted_list );
 
 	for( i=0;i<sorted_list->size;i++ ) {
-		Ewl_Widget *text, *row;
+		Ewl_Widget *text, *image, *row;
 
 		filename = ecore_sheap_item( sorted_list, i );
 
 		if( filename ) {
+			Ewl_Widget *row_widgets[2] = { NULL, NULL };
+			char *ext;
+
+			ext = strrchr( filename, '.' ) + 1;
+
 			text = ewl_text_new( filename );
+			ewl_object_alignment_set( EWL_OBJECT(text), EWL_FLAG_ALIGN_LEFT );
 			ewl_widget_show( text );
 
-			row = ewl_tree_add_row( EWL_TREE(project_tree), NULL, &text );
+			if( !strcmp( ext, "ui" ) )
+				image = ewl_image_new( PACKAGE_DATA_DIR"/images/form-small.png",
+															 NULL );
+			else if( !strcmp( ext, "c" ) || !strcmp( ext, "h" ) )
+				image = ewl_image_new( PACKAGE_DATA_DIR"/images/source-small.png",
+															 NULL );
+			else
+				image = ewl_text_new( "" );
+			ewl_object_fill_policy_set( EWL_OBJECT(image), EWL_FLAG_FILL_NONE );
+			ewl_object_alignment_set( EWL_OBJECT(image), EWL_FLAG_ALIGN_RIGHT );
+			ewl_widget_show( image );
+
+			row_widgets[0] = image;
+			row_widgets[1] = text;
+
+			row = ewl_tree_add_row( EWL_TREE(project_tree), NULL, row_widgets );
 			ewl_callback_append( row, EWL_CALLBACK_MOUSE_DOWN,
 													 __project_member_mouse_down, NULL );
 			ewl_widget_show( row );
@@ -370,7 +393,7 @@ project_options_dialog( void )
 		return;
 
 	options_dialog = ewl_dialog_new(EWL_POSITION_BOTTOM);
-	ewl_object_set_minimum_w( EWL_OBJECT(options_dialog), 400 );
+	ewl_object_minimum_w_set( EWL_OBJECT(options_dialog), 400 );
 	ewl_window_set_title( EWL_WINDOW(options_dialog), "Project Options" );
 	ewl_callback_append( options_dialog, EWL_CALLBACK_DELETE_WINDOW,
 											 __destroy_dialog, options_dialog );
@@ -567,7 +590,7 @@ __project_setup_open_cb( Ewl_Widget *w, void *ev_data, void *user_data )
 	if( !project_close() ) {
 		window = ewl_window_new();
 		ewl_window_set_title( EWL_WINDOW(window), "Open New Project" );
-		ewl_object_set_minimum_size( EWL_OBJECT(window), 400, 600 );
+		ewl_object_minimum_size_set( EWL_OBJECT(window), 400, 600 );
 		ewl_widget_show( window );
 
 		dialog = ewl_filedialog_new( EWL_FILEDIALOG_TYPE_OPEN );

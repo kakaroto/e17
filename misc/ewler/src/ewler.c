@@ -119,7 +119,7 @@ ewler_menu_init( Ewl_Widget *main_layout )
 	Ewl_Widget *menu;
 
 	menu_layout = ewl_hbox_new();
-	ewl_object_set_fill_policy( EWL_OBJECT(menu_layout), EWL_FLAG_FILL_HFILL );
+	ewl_object_fill_policy_set( EWL_OBJECT(menu_layout), EWL_FLAG_FILL_HFILL );
 	ewl_container_append_child( EWL_CONTAINER(main_layout), menu_layout );
 	ewl_widget_show( menu_layout );
 
@@ -128,11 +128,12 @@ ewler_menu_init( Ewl_Widget *main_layout )
 	ewl_widget_show( separator );
 
 	menu = ewl_imenu_new( NULL, "File" );
-	ewl_object_set_fill_policy( EWL_OBJECT(menu), EWL_FLAG_FILL_NONE);
+	ewl_object_fill_policy_set( EWL_OBJECT(menu), EWL_FLAG_FILL_NONE);
 	ewl_container_append_child( EWL_CONTAINER(menu_layout), menu );
 	ewl_widget_show( menu );
 
-	menu_item = ewl_menu_item_new( NULL, "New Form" );
+	menu_item = ewl_menu_item_new( PACKAGE_DATA_DIR"/images/form.png",
+																 "New Form" );
 	ewl_container_append_child( EWL_CONTAINER(menu), menu_item );
 	ewl_callback_append( menu_item, EWL_CALLBACK_SELECT,
 											 __create_new_form, NULL );
@@ -163,7 +164,7 @@ ewler_menu_init( Ewl_Widget *main_layout )
 	ewl_widget_show( menu_item );
 
 	menu_item = EWL_WIDGET(ewl_menu_separator_new());
-	ewl_object_set_fill_policy( EWL_OBJECT(menu_item), EWL_FLAG_FILL_HFILL );
+	ewl_object_fill_policy_set( EWL_OBJECT(menu_item), EWL_FLAG_FILL_HFILL );
 	ewl_container_append_child( EWL_CONTAINER(menu), menu_item );
 	ewl_widget_show( menu_item );
 
@@ -180,7 +181,7 @@ ewler_menu_init( Ewl_Widget *main_layout )
 	ewl_widget_show( menu_item );
 
 	menu_item = EWL_WIDGET(ewl_menu_separator_new());
-	ewl_object_set_fill_policy( EWL_OBJECT(menu_item), EWL_FLAG_FILL_HFILL );
+	ewl_object_fill_policy_set( EWL_OBJECT(menu_item), EWL_FLAG_FILL_HFILL );
 	ewl_container_append_child( EWL_CONTAINER(menu), menu_item );
 	ewl_widget_show( menu_item );
 
@@ -191,7 +192,7 @@ ewler_menu_init( Ewl_Widget *main_layout )
 	ewl_widget_show( menu_item );
 
 	menu = ewl_imenu_new( NULL, "Window" );
-	ewl_object_set_fill_policy( EWL_OBJECT(menu), EWL_FLAG_FILL_NONE);
+	ewl_object_fill_policy_set( EWL_OBJECT(menu), EWL_FLAG_FILL_NONE);
 	ewl_container_append_child( EWL_CONTAINER(menu_layout), menu );
 	ewl_widget_show( menu );
 
@@ -230,7 +231,7 @@ void
 ewler_tools_init( Ewl_Widget *main_layout )
 {
 	tool_tree = ewl_tree_new( 1 );
-	ewl_object_set_fill_policy( EWL_OBJECT(tool_tree), EWL_FLAG_FILL_SHRINK );
+	ewl_object_fill_policy_set( EWL_OBJECT(tool_tree), EWL_FLAG_FILL_SHRINK );
 	ewl_container_append_child( EWL_CONTAINER(main_layout), tool_tree );
 
 	ewler_populate_tools();
@@ -256,11 +257,11 @@ add_tools_with_parent( const char *parent, Ewl_Widget *prow )
 														 tool_set_name, NULL );
 			} else
 				text[0] = ewl_text_new( class );
-			ewl_object_set_fill_policy( EWL_OBJECT(text[0]), EWL_FLAG_FILL_NONE );
+			ewl_object_fill_policy_set( EWL_OBJECT(text[0]), EWL_FLAG_FILL_NONE );
 			ewl_widget_show( text[0] );
 
 			row = ewl_tree_add_row( EWL_TREE(tool_tree), EWL_ROW(prow), text );
-			ewl_object_set_fill_policy( EWL_OBJECT(row->parent), EWL_FLAG_FILL_FILL );
+			ewl_object_fill_policy_set( EWL_OBJECT(row->parent), EWL_FLAG_FILL_FILL );
 			ewl_tree_set_row_expand( EWL_ROW(row), EWL_TREE_NODE_EXPANDED );
 
 			add_tools_with_parent( class, row );
@@ -299,7 +300,7 @@ ewler_error_dialog( const char *fmt, ... )
 	va_end( ap );
 
 	text = ewl_text_new( buf );
-	ewl_object_set_padding( EWL_OBJECT(text), 5, 5, 5, 5 );
+	ewl_object_padding_set( EWL_OBJECT(text), 5, 5, 5, 5 );
 	ewl_container_prepend_child( EWL_CONTAINER(EWL_DIALOG(dialog)->vbox), text );
 	ewl_widget_show( text );
 
@@ -331,7 +332,7 @@ ewler_yesno_dialog( Ewl_Callback_Function yes_cb, Ewl_Callback_Function no_cb,
 	va_end( ap );
 
 	text = ewl_text_new( buf );
-	ewl_object_set_padding( EWL_OBJECT(text), 5, 5, 5, 5 );
+	ewl_object_padding_set( EWL_OBJECT(text), 5, 5, 5, 5 );
 	ewl_container_prepend_child( EWL_CONTAINER(EWL_DIALOG(dialog)->vbox), text );
 	ewl_widget_show( text );
 

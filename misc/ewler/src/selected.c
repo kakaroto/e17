@@ -60,18 +60,18 @@ ewler_selected_init(Ewler_Selected *s, Ewl_Widget *w)
 
 	if (!ewl_box_init(EWL_BOX(s), EWL_ORIENTATION_VERTICAL))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
-	ewl_widget_set_appearance(sw, "selected");
+	ewl_widget_appearance_set(sw, "selected");
 	ewl_theme_data_set_str(sw, "/selected/file",
 												 PACKAGE_DATA_DIR"/themes/ewler.eet");
 	ewl_theme_data_set_str(sw, "/selected/group", "selected");
-	ewl_widget_set_layer( sw, 0 );
+	ewl_widget_layer_set( sw, 0 );
 
 	ewl_container_insert_child(parent, sw, index);
-	ewl_object_request_geometry(EWL_OBJECT(s),
+	ewl_object_geometry_request(EWL_OBJECT(s),
 															CURRENT_X(w), CURRENT_Y(w),
 															CURRENT_W(w), CURRENT_H(w));
-	ewl_object_set_fill_policy(EWL_OBJECT(s),
-														 ewl_object_get_fill_policy(EWL_OBJECT(w)));
+	ewl_object_fill_policy_set(EWL_OBJECT(s),
+														 ewl_object_fill_policy_get(EWL_OBJECT(w)));
 
 	ewl_callback_append(sw, EWL_CALLBACK_CONFIGURE,
 											ewler_selected_configure_cb, NULL);
@@ -90,9 +90,9 @@ ewler_selected_init(Ewler_Selected *s, Ewl_Widget *w)
 	ewl_callback_append(sw, EWL_CALLBACK_MOUSE_UP,
 											ewler_selected_mouse_up_cb, NULL);
 
-	if( ewl_object_preferred_w_sum_get(EWL_OBJECT(w)) < SELECTED_MIN_WIDTH &&
-			ewl_object_preferred_w_sum_get(EWL_OBJECT(w)) < SELECTED_MIN_HEIGHT )
-		ewl_object_set_preferred_size(EWL_OBJECT(w),
+	if( ewl_object_preferred_w_get(EWL_OBJECT(w)) < SELECTED_MIN_WIDTH &&
+			ewl_object_preferred_w_get(EWL_OBJECT(w)) < SELECTED_MIN_HEIGHT )
+		ewl_object_preferred_inner_size_set(EWL_OBJECT(w),
 																	SELECTED_MIN_WIDTH, SELECTED_MIN_HEIGHT);
 
 	s->selected = w;
@@ -121,21 +121,21 @@ ewler_selected_configure_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 	Ewler_Selected *s;
 	int x, y, width, height;
 
-	ewl_widget_set_state( w, w->bit_state );
+	ewl_widget_state_set( w, w->bit_state );
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	s = EWLER_SELECTED(w);
 	
 	/* the width comes in from the selected, the position is set by the parent */
-	ewl_object_preferred_size_sum_get(EWL_OBJECT(s->selected), &width, &height);
+	ewl_object_preferred_size_get(EWL_OBJECT(s->selected), &width, &height);
 	x = CURRENT_X(s);
 	y = CURRENT_Y(s);
 
 	if( x != CURRENT_X(s->selected) || y != CURRENT_Y(s->selected) )
-		ewl_object_request_position(EWL_OBJECT(s->selected), x, y);
+		ewl_object_position_request(EWL_OBJECT(s->selected), x, y);
 	if( width != CURRENT_W(s) || height != CURRENT_H(s) )
-		ewl_object_set_preferred_size(EWL_OBJECT(s), width, height);
+		ewl_object_preferred_inner_size_set(EWL_OBJECT(s), width, height);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -155,13 +155,13 @@ ewler_selected_selector_realize_cb(Ewl_Widget *w, void *ev_data,
 	if( !strcmp( w->bit_state, "default" ) )
 		evas_object_layer_set(w->theme_object, 1000);
 	else {
-		ewl_widget_set_state( w, "none" );
-		ewl_widget_set_state( w, "deselect" );
+		ewl_widget_state_set( w, "none" );
+		ewl_widget_state_set( w, "deselect" );
 	}
 
 	ewl_container_append_child(EWL_CONTAINER(s), s->selected);
 
-	if( ewl_widget_get_data( s->selected, "unsizable" ) )
+	if( ewl_widget_data_get( s->selected, "unsizable" ) )
 		return;
 
 	edje_object_signal_callback_add(w->theme_object,
@@ -226,10 +226,10 @@ ewler_selected_realize_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 
 	s = EWLER_SELECTED(user_data);
 
-	ewl_object_preferred_size_sum_get(EWL_OBJECT(s->selected), &width, &height);
+	ewl_object_preferred_size_get(EWL_OBJECT(s->selected), &width, &height);
 
-	ewl_object_request_size(EWL_OBJECT(s), width, height);
-	ewl_object_set_preferred_size(EWL_OBJECT(s), width, height);
+	ewl_object_size_request(EWL_OBJECT(s), width, height);
+	ewl_object_preferred_inner_size_set(EWL_OBJECT(s), width, height);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -245,11 +245,11 @@ ewler_selected_deselect_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 	s = EWLER_SELECTED(w);
 
 	ewl_container_nointercept_callback(EWL_CONTAINER(s), EWL_CALLBACK_MOUSE_DOWN);
-	ewl_object_get_current_geometry(EWL_OBJECT(s), &x, &y, &width, &height);
-	ewl_object_request_geometry(EWL_OBJECT(s->selected),
+	ewl_object_current_geometry_get(EWL_OBJECT(s), &x, &y, &width, &height);
+	ewl_object_geometry_request(EWL_OBJECT(s->selected),
 															x, y, width, height);
 
-	ewl_widget_set_state( w, "deselect" );
+	ewl_widget_state_set( w, "deselect" );
 	evas_object_layer_set(w->theme_object, -990);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -260,7 +260,7 @@ ewler_selected_select_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	ewl_widget_set_state( w, "default" );
+	ewl_widget_state_set( w, "default" );
 	evas_object_layer_set(w->theme_object, 1000);
 	ewl_callback_append(w, EWL_CALLBACK_MOUSE_DOWN,
 											ewler_selected_mouse_down_cb, NULL);
@@ -326,12 +326,12 @@ ewler_selected_mouse_move_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 		if( s->corners.v < s->corners.y )
 			s->corners.v = s->corners.y;
 
-		ewl_object_request_position(EWL_OBJECT(s), s->corners.x, s->corners.y);
-		ewl_object_set_preferred_size(EWL_OBJECT(s),
+		ewl_object_position_request(EWL_OBJECT(s), s->corners.x, s->corners.y);
+		ewl_object_preferred_inner_size_set(EWL_OBJECT(s),
 																	s->corners.u - s->corners.x,
 																	s->corners.v - s->corners.y);
-		ewl_object_set_maximum_size(EWL_OBJECT(s->selected), 100000, 100000);
-		ewl_object_set_preferred_size(EWL_OBJECT(s->selected),
+		ewl_object_maximum_size_set(EWL_OBJECT(s->selected), 100000, 100000);
+		ewl_object_preferred_inner_size_set(EWL_OBJECT(s->selected),
 																	s->corners.u - s->corners.x,
 																	s->corners.v - s->corners.y);
 

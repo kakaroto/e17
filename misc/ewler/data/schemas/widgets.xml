@@ -6,17 +6,17 @@
 			<elem type="int" set="ewl_object_request_w" get="ewl_object_get_current_w" index="2">w</elem>
 			<elem type="int" set="ewl_object_request_h" get="ewl_object_get_current_h" index="3">h</elem>
 		</elem>
-		<elem type="struct">preferred
-			<elem type="int" set="ewl_object_set_preferred_w" get="ewl_object_get_preferred_w" index="0">w</elem>
-			<elem type="int" set="ewl_object_set_preferred_h" get="ewl_object_get_preferred_h" index="1">h</elem>
+		<elem type="struct" set="ewl_object_set_preferred_size" get="ewl_object_get_preferred_size">preferred
+			<elem type="int" fooset="ewl_object_set_preferred_w" fooget="ewl_object_get_preferred_w" index="0">w</elem>
+			<elem type="int" fooset="ewl_object_set_preferred_h" fooget="ewl_object_get_preferred_h" index="1">h</elem>
 		</elem>
 		<elem type="struct">maximum
-			<elem type="int" set="ewl_object_set_maximum_w" get="ewl_object_get_maximum_w" index="0">w</elem>
-			<elem type="int" set="ewl_object_set_maximum_h" get="ewl_object_get_maximum_h" index="1">h</elem>
+			<elem type="int" set="ewl_object_set_maximum_w" get="ewl_object_get_actual_maximum_w" index="0">w</elem>
+			<elem type="int" set="ewl_object_set_maximum_h" get="ewl_object_get_actual_maximum_h" index="1">h</elem>
 		</elem>
 		<elem type="struct">minimum
-			<elem type="int" set="ewl_object_set_minimum_w" get="ewl_object_get_minimum_w" index="0">w</elem>
-			<elem type="int" set="ewl_object_set_minimum_h" get="ewl_object_get_minimum_h" index="1">h</elem>
+			<elem type="int" set="ewl_object_set_minimum_w" get="ewl_object_get_actual_minimum_w" index="0">w</elem>
+			<elem type="int" set="ewl_object_set_minimum_h" get="ewl_object_get_actual_minimum_h" index="1">h</elem>
 		</elem>
 		<elem type="struct" set="ewl_object_set_padding">pad
 			<elem type="int" get="ewl_object_left_padding" index="0">l</elem>
