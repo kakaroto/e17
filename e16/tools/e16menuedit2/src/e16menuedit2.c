@@ -47,7 +47,7 @@ int main (int argc, char *argv[])
   GtkWidget *main_statusbar;
   char app_dir[PATH_MAX];
   char package[] = "librsvg-2.0";
-  char good_version[] = "2.7.1";
+  char librsvg_version[] = "2.7.1";
   char *version;
   int i;
   char *pixmap_file;
@@ -97,7 +97,7 @@ int main (int argc, char *argv[])
 
   /* get librsvg version and check if good enough */
   version = pkg_config_version (package);
-  librsvg_cmp = version_cmp (version, good_version);
+  librsvg_cmp = version_cmp (version, librsvg_version);
   g_free (version);
 
   print_statusbar (_("Menu successfully loaded!"));
@@ -192,12 +192,15 @@ void parse_options (int argc, char **argv)
   poptContext context;
   int option;
   char *emenu = NULL;
+  char *e_version_current;
+  int e_version_cmp;
+  char e_version[] = "0.16.8";
 
   struct poptOption options[] =
     {
       {"emenu", 'e', POPT_ARG_STRING,
         &emenu, ARG_EMENU,
-        "Enlightenment menu dir...",
+        "Enlightenment menu dir (enlightenment or e16).",
         NULL},
       {"version", 'v', POPT_ARG_NONE, NULL, ARG_VERSION, "show version", NULL},
       POPT_AUTOHELP {NULL, '\0', 0, NULL, 0}
@@ -222,8 +225,20 @@ void parse_options (int argc, char **argv)
 
   if (emenu == NULL)
   {
-    emenu_path = malloc (strlen (".enlightenment") + 1);
-    strcpy (emenu_path, ".enlightenment");
+    e_version_current = e16_version ();
+    e_version_cmp = version_cmp (e_version_current, e_version);
+    printf ("ver: %d", e_version_cmp);
+
+    if (e_version_cmp >= 0)
+    {
+      emenu_path = malloc (strlen (E16_MENU) + 1);
+      strcpy (emenu_path, E16_MENU);
+    }
+    else
+    {
+      emenu_path = malloc (strlen (ENLIGHTENMENT_MENU) + 1);
+      strcpy (emenu_path, ENLIGHTENMENT_MENU);
+    }
   }
   else
   {
@@ -240,8 +255,8 @@ void parse_options (int argc, char **argv)
     else
     {
       g_print ("Sorry, the parameter 'emenu' has only state 'enlightenment'\n"
-               "for old directory before E-0.16.7.1 and 'e16' for new\n"
-               "direcory in '.e16/menus'\n");
+               "for old menu structure and 'e16' for new direcory structure\n"
+	       "in '.e16/menus' for E16 > 0.16.8.\n");
       exit (0);
     }
   }

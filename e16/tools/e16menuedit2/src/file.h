@@ -51,6 +51,7 @@ char *strtok_left (char *s, const char *delim, unsigned int number);
 char *strsplit (char *s, char **right, int count);
 int version_cmp (char *ver1, char *ver2);
 char *pkg_config_version (char *package);
+char *e16_version ();
 char *get_fallback_locale (char *locale);
 int run_help (char *help_app, char* help_dir, char *help_file);
 

@@ -300,6 +300,43 @@ char *pkg_config_version (char *package)
     return strdup (buf);
 }
 
+/* returns a version number of a pkg-config package
+ * the return char* could be freed after use
+ */
+char *e16_version ()
+{
+  gboolean spawn;
+  const int buf_len = 1024;
+  gchar buf[buf_len];
+  gchar *argv_child[4];
+  gint stdout_child;
+  gint stderr_child;
+  int ret_val;
+  gchar buf2[buf_len];
+
+  argv_child[0] = g_strdup ("eesh");
+  argv_child[1] = g_strdup ("-ewait");
+  argv_child[2] = g_strdup ("ver");;
+  argv_child[3] = NULL;
+
+  spawn = g_spawn_async_with_pipes (NULL, argv_child, NULL,
+                                    G_SPAWN_SEARCH_PATH, NULL,
+                                    NULL, NULL,  NULL,
+                                    &stdout_child, &stderr_child, NULL);
+
+  g_free (argv_child[0]);
+  g_free (argv_child[1]);
+
+  ret_val = read (stdout_child, buf, buf_len);
+  
+  sscanf (buf, "Enlightenment-Version: enlightenment-%s\n", buf2);
+
+  if (ret_val == 0)
+    return 0;
+  else
+    return strdup (buf2);
+}
+
 char *get_fallback_locale (char *locale)
 {
   char *locale_dup;
