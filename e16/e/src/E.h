@@ -1935,9 +1935,6 @@ void                PasteMask(Display * d, Drawable w, Pixmap p, int x, int y,
 int                 GetPointerScreenGeometry(int *px, int *py, int *pw,
 					     int *ph);
 
-char               *NukeBoringevents(XEvent * ev, int num);
-void                DebugEvent(XEvent * ev);
-void                HandleEvent(XEvent * ev);
 void                CheckEvent(void);
 void                WaitEvent(void);
 
@@ -2488,41 +2485,6 @@ void                RecoverUserConfig(void);
 void                BadThemeDialog(void);
 char               *FindTheme(char *theme);
 char               *ExtractTheme(char *theme);
-
-void                HKeyPress(XEvent * ev);
-void                HKeyRelease(XEvent * ev);
-void                HButtonPress(XEvent * ev);
-void                HButtonRelease(XEvent * ev);
-void                HMotionNotify(XEvent * ev);
-void                HEnterNotify(XEvent * ev);
-void                HLeaveNotify(XEvent * ev);
-void                HFocusIn(XEvent * ev);
-void                HFocusOut(XEvent * ev);
-void                HKeymapNotify(XEvent * ev);
-void                HExpose(XEvent * ev);
-void                HGraphicsExpose(XEvent * ev);
-void                HNoExpose(XEvent * ev);
-void                HVisibilityNotify(XEvent * ev);
-void                HCreateNotify(XEvent * ev);
-void                HDestroyNotify(XEvent * ev);
-void                HUnmapNotify(XEvent * ev);
-void                HMapNotify(XEvent * ev);
-void                HMapRequest(XEvent * ev);
-void                HReparentNotify(XEvent * ev);
-void                HConfigureNotify(XEvent * ev);
-void                HConfigureRequest(XEvent * ev);
-void                HGravityNotify(XEvent * ev);
-void                HResizeRequest(XEvent * ev);
-void                HCirculateNotify(XEvent * ev);
-void                HCirculateRequest(XEvent * ev);
-void                HPropertyNotify(XEvent * ev);
-void                HSelectionClear(XEvent * ev);
-void                HSelectionRequest(XEvent * ev);
-void                HSelectionNotify(XEvent * ev);
-void                HColormapNotify(XEvent * ev);
-void                HClientMessage(XEvent * ev);
-void                HMappingNotify(XEvent * ev);
-void                DefaultFunc(XEvent * ev);
 
 /* iconify.c functions */
 void                IB_Animate(char iconify, EWin * from, EWin * to);

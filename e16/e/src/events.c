@@ -27,50 +27,10 @@
 #endif
 
 char                throw_move_events_away = 0;
-void                DeskAccountTimeout(int val, void *data);
-
-HandleStruct        HArray[] = {
-   {DefaultFunc},
-   {DefaultFunc},
-   {HKeyPress},
-   {HKeyRelease},
-   {HButtonPress},
-   {HButtonRelease},
-   {HMotionNotify},
-   {HEnterNotify},
-   {HLeaveNotify},
-   {HFocusIn},
-   {HFocusOut},
-   {HKeymapNotify},
-   {HExpose},
-   {HGraphicsExpose},
-   {HNoExpose},
-   {HVisibilityNotify},
-   {HCreateNotify},
-   {HDestroyNotify},
-   {HUnmapNotify},
-   {HMapNotify},
-   {HMapRequest},
-   {HReparentNotify},
-   {HConfigureNotify},
-   {HConfigureRequest},
-   {HGravityNotify},
-   {HResizeRequest},
-   {HCirculateNotify},
-   {HCirculateRequest},
-   {HPropertyNotify},
-   {HSelectionClear},
-   {HSelectionRequest},
-   {HSelectionNotify},
-   {HColormapNotify},
-   {HClientMessage},
-   {HMappingNotify},
-   {DefaultFunc}
-};
 
 static char         diddeskaccount = 1;
 
-void
+static void
 DeskAccountTimeout(int val, void *data)
 {
    EDBUG(5, "DeskAccountTimeout");
@@ -142,7 +102,8 @@ NukeBoringevents(XEvent * ev, int num)
    return ok;
 }
 
-void
+#if 0
+static void
 DebugEvent(XEvent * ev)
 {
    EDBUG(8, "DebugEvent");
@@ -258,8 +219,452 @@ DebugEvent(XEvent * ev)
      }
    EDBUG_RETURN_;
 }
+#endif
 
-void
+static void
+HKeyPress(XEvent * ev)
+{
+   Dialog             *d;
+
+   EDBUG(7, "HKeyPress");
+   d = FindDialog(ev->xkey.window);
+   if (d)
+     {
+	int                 i;
+
+	for (i = 0; i < d->num_bindings; i++)
+	  {
+	     if (ev->xkey.keycode == d->keybindings[i].key)
+		(d->keybindings[i].func) (d->keybindings[i].val,
+					  d->keybindings[i].data);
+	  }
+     }
+   EDBUG_RETURN_;
+}
+
+static void
+HKeyRelease(XEvent * ev)
+{
+   EDBUG(7, "HKeyRelease");
+   ev = NULL;
+   EDBUG_RETURN_;
+}
+
+#if 0
+struct _pbuf
+{
+   int                 w, h, depth;
+   Pixmap              id;
+   void               *stack[32];
+   struct _pbuf       *next;
+};
+extern struct _pbuf *pbuf = NULL;
+
+#endif
+
+static void
+HButtonPress(XEvent * ev)
+{
+   EDBUG(7, "HButtonPress");
+   ApplySclass(FindItem
+	       ("SOUND_BUTTON_CLICK", 0, LIST_FINDBY_NAME, LIST_TYPE_SCLASS));
+   HandleMouseDown(ev);
+#if 0
+   {
+      int                 x, y, maxh = 0, count = 0, mcount = 0, ww, hh;
+      struct _pbuf       *pb;
+      GC                  gc;
+      XGCValues           gcv;
+
+      gc = XCreateGC(disp, root.win, 0, &gcv);
+      XSetForeground(disp, gc, WhitePixel(disp, root.scr));
+      fprintf(stderr, "Pixmaps allocated:\n");
+      x = 0;
+      y = 0;
+      XClearWindow(disp, root.win);
+      for (pb = pbuf; pb; pb = pb->next)
+	{
+	   ww = pb->w;
+	   hh = pb->h;
+	   if (ww > 64)
+	      ww = 64;
+	   if (hh > 64)
+	      hh = 64;
+	   if (x + ww > root.w)
+	     {
+		x = 0;
+		y += maxh;
+		maxh = 0;
+	     }
+	   XCopyArea(disp, pb->id, root.win, gc, 0, 0, ww, hh, x, y);
+	   XDrawRectangle(disp, root.win, gc, x, y, ww, hh);
+	   x += ww;
+	   if (hh > maxh)
+	      maxh = hh;
+	   count++;
+	   if (pb->depth == 1)
+	      mcount++;
+	   fprintf(stderr,
+		   "%08x (%5ix%5i %i) : " "%x %x %x %x %x %x %x %x "
+		   "%x %x %x %x %x %x %x %x " "%x %x %x %x %x %x %x %x "
+		   "%x %x %x %x %x %x %x %x\n", pb->id, pb->w, pb->h,
+		   pb->depth, pb->stack[0], pb->stack[1], pb->stack[2],
+		   pb->stack[3], pb->stack[4], pb->stack[5], pb->stack[6],
+		   pb->stack[7], pb->stack[8], pb->stack[9], pb->stack[10],
+		   pb->stack[11], pb->stack[12], pb->stack[13], pb->stack[14],
+		   pb->stack[15], pb->stack[16], pb->stack[17], pb->stack[18],
+		   pb->stack[19], pb->stack[20], pb->stack[21], pb->stack[22],
+		   pb->stack[23], pb->stack[24], pb->stack[25], pb->stack[26],
+		   pb->stack[27], pb->stack[28], pb->stack[29], pb->stack[30],
+		   pb->stack[31]);
+	}
+      fprintf(stderr, "Total %i, %i of them bitmaps\n", count, mcount);
+      XFreeGC(disp, gc);
+   }
+#endif
+   EDBUG_RETURN_;
+}
+
+static void
+HButtonRelease(XEvent * ev)
+{
+   EDBUG(7, "HButtonRelease");
+   ApplySclass(FindItem
+	       ("SOUND_BUTTON_RAISE", 0, LIST_FINDBY_NAME, LIST_TYPE_SCLASS));
+   HandleMouseUp(ev);
+   EDBUG_RETURN_;
+}
+
+static void
+HMotionNotify(XEvent * ev)
+{
+   EDBUG(7, "HMotionNotify");
+   HandleMotion(ev);
+   EDBUG_RETURN_;
+}
+
+static void
+HEnterNotify(XEvent * ev)
+{
+   EDBUG(7, "HEnterNotify");
+   if (mode.mode == MODE_NONE)
+     {
+	/*
+	 * multi screen handling -- root windows receive
+	 * enter / leave notify
+	 */
+	if (ev->xany.window == root.win)
+	  {
+	     PagerHideAllHi();
+	     if (!mode.focuswin || FOCUS_POINTER == mode.focusmode)
+		HandleFocusWindow(root.focuswin);
+	  }
+	else
+	  {
+	     HandleMouseIn(ev);
+	     HandleFocusWindow(ev->xcrossing.window);
+	  }
+     }
+   EDBUG_RETURN_;
+}
+
+static void
+HLeaveNotify(XEvent * ev)
+{
+   EDBUG(7, "HLeaveNotify");
+   if (mode.mode == MODE_NONE)
+     {
+	HandleMouseOut(ev);
+
+	/*
+	 * If we are leaving the root window, we are switching
+	 * screens on a multi screen system - need to unfocus
+	 * to allow other desk to grab focus...
+	 */
+	if (ev->xcrossing.window == root.win)
+	  {
+	     if (ev->xcrossing.mode == NotifyNormal
+		 && ev->xcrossing.detail != NotifyInferior && mode.focuswin)
+		HandleFocusWindow(root.focuswin);
+	     else
+		HandleFocusWindow(ev->xcrossing.window);
+	  }
+/* THIS caused the "emacs focus bug" ? */
+/*      else */
+/*      HandleFocusWindow(ev->xcrossing.window); */
+     }
+   EDBUG_RETURN_;
+}
+
+static void
+HFocusIn(XEvent * ev)
+{
+   EDBUG(7, "HFocusIn");
+   if (ev->xfocus.detail != NotifyPointer)
+      HandleFocusWindowIn(ev->xfocus.window);
+   EDBUG_RETURN_;
+}
+
+static void
+HFocusOut(XEvent * ev)
+{
+   EDBUG(7, "HFocusOut");
+   if (ev->xfocus.detail == NotifyNonlinear)
+     {
+	Window              rt, ch;
+	int                 d;
+	unsigned int        ud;
+
+	XQueryPointer(disp, root.win, &rt, &ch, &d, &d, &d, &d, &ud);
+	if (rt != root.win)
+	  {
+/*           fprintf(stderr, "HandleFocusWindowIn\n"); */
+	     HandleFocusWindowIn(0);
+	  }
+     }
+   EDBUG_RETURN_;
+}
+
+static void
+HKeymapNotify(XEvent * ev)
+{
+   EDBUG(7, "HKeymapNotify");
+   ev = NULL;
+   EDBUG_RETURN_;
+}
+
+static void
+HExpose(XEvent * ev)
+{
+   EDBUG(7, "HExpose");
+   HandleExpose(ev);
+   EDBUG_RETURN_;
+}
+
+static void
+HGraphicsExpose(XEvent * ev)
+{
+   EDBUG(7, "HGraphicsExpose");
+   ev = NULL;
+   EDBUG_RETURN_;
+}
+
+static void
+HNoExpose(XEvent * ev)
+{
+   EDBUG(7, "HNoExpose");
+   ev = NULL;
+   EDBUG_RETURN_;
+}
+
+static void
+HVisibilityNotify(XEvent * ev)
+{
+   EDBUG(7, "HVisibilityNotify");
+   ev = NULL;
+   EDBUG_RETURN_;
+}
+
+static void
+HCreateNotify(XEvent * ev)
+{
+   EDBUG(7, "HCreateNotify");
+   ev = NULL;
+   EDBUG_RETURN_;
+}
+
+static void
+HDestroyNotify(XEvent * ev)
+{
+   EDBUG(7, "HDestroyNotify");
+   HandleDestroy(ev);
+   EDBUG_RETURN_;
+}
+
+static void
+HUnmapNotify(XEvent * ev)
+{
+   EDBUG(7, "HUnmapNotify");
+   HandleUnmap(ev);
+   EDBUG_RETURN_;
+}
+
+static void
+HMapNotify(XEvent * ev)
+{
+   EDBUG(7, "HMapNotify");
+   ev = NULL;
+   EDBUG_RETURN_;
+}
+
+static void
+HMapRequest(XEvent * ev)
+{
+   EDBUG(7, "HMapRequest");
+   HandleMapRequest(ev);
+   EDBUG_RETURN_;
+}
+
+static void
+HReparentNotify(XEvent * ev)
+{
+   EDBUG(7, "HReparentNotify");
+   HandleReparent(ev);
+   EDBUG_RETURN_;
+}
+
+static void
+HConfigureNotify(XEvent * ev)
+{
+   EDBUG(7, "HConfigureNotify");
+   ev = NULL;
+   EDBUG_RETURN_;
+}
+
+static void
+HConfigureRequest(XEvent * ev)
+{
+   EDBUG(7, "HConfigureRequest");
+   HandleConfigureRequest(ev);
+   EDBUG_RETURN_;
+}
+
+static void
+HGravityNotify(XEvent * ev)
+{
+   EDBUG(7, "HGravityNotify");
+   ev = NULL;
+   EDBUG_RETURN_;
+}
+
+static void
+HResizeRequest(XEvent * ev)
+{
+   EDBUG(7, "HResizeRequest");
+   HandleResizeRequest(ev);
+   EDBUG_RETURN_;
+}
+
+static void
+HCirculateNotify(XEvent * ev)
+{
+   EDBUG(7, "HCirculateNotify");
+   ev = NULL;
+   EDBUG_RETURN_;
+}
+
+static void
+HCirculateRequest(XEvent * ev)
+{
+   EDBUG(7, "HCirculateRequest");
+   HandleCirculate(ev);
+   EDBUG_RETURN_;
+}
+
+static void
+HPropertyNotify(XEvent * ev)
+{
+   EDBUG(7, "HPropertyNotify");
+   HandleProperty(ev);
+   EDBUG_RETURN_;
+}
+
+static void
+HSelectionClear(XEvent * ev)
+{
+   EDBUG(7, "HSelectionClear");
+   ev = NULL;
+   EDBUG_RETURN_;
+}
+
+static void
+HSelectionRequest(XEvent * ev)
+{
+   EDBUG(7, "HSelectionRequest");
+   ev = NULL;
+   EDBUG_RETURN_;
+}
+
+static void
+HSelectionNotify(XEvent * ev)
+{
+   EDBUG(7, "HSelectionNotify");
+   ev = NULL;
+   EDBUG_RETURN_;
+}
+
+static void
+HColormapNotify(XEvent * ev)
+{
+   EDBUG(7, "HColormapNotify");
+   ev = NULL;
+   EDBUG_RETURN_;
+}
+
+static void
+HClientMessage(XEvent * ev)
+{
+   EDBUG(7, "HClientMessage");
+   HandleClientMessage(ev);
+   EDBUG_RETURN_;
+}
+
+static void
+HMappingNotify(XEvent * ev)
+{
+   EDBUG(7, "HMappingNotify");
+   ev = NULL;
+   EDBUG_RETURN_;
+}
+
+static void
+DefaultFunc(XEvent * ev)
+{
+   EDBUG(7, "DefaultFunc");
+   ev = NULL;
+   EDBUG_RETURN_;
+}
+
+static HandleStruct HArray[] = {
+   {DefaultFunc},
+   {DefaultFunc},
+   {HKeyPress},
+   {HKeyRelease},
+   {HButtonPress},
+   {HButtonRelease},
+   {HMotionNotify},
+   {HEnterNotify},
+   {HLeaveNotify},
+   {HFocusIn},
+   {HFocusOut},
+   {HKeymapNotify},
+   {HExpose},
+   {HGraphicsExpose},
+   {HNoExpose},
+   {HVisibilityNotify},
+   {HCreateNotify},
+   {HDestroyNotify},
+   {HUnmapNotify},
+   {HMapNotify},
+   {HMapRequest},
+   {HReparentNotify},
+   {HConfigureNotify},
+   {HConfigureRequest},
+   {HGravityNotify},
+   {HResizeRequest},
+   {HCirculateNotify},
+   {HCirculateRequest},
+   {HPropertyNotify},
+   {HSelectionClear},
+   {HSelectionRequest},
+   {HSelectionNotify},
+   {HColormapNotify},
+   {HClientMessage},
+   {HMappingNotify},
+   {DefaultFunc}
+};
+
+static void
 HandleEvent(XEvent * ev)
 {
    void              **lst;
@@ -493,409 +898,5 @@ WaitEvent()
 
    DBUG_STACKCHECK;
 
-   EDBUG_RETURN_;
-}
-
-void
-HKeyPress(XEvent * ev)
-{
-   Dialog             *d;
-
-   EDBUG(7, "HKeyPress");
-   d = FindDialog(ev->xkey.window);
-   if (d)
-     {
-	int                 i;
-
-	for (i = 0; i < d->num_bindings; i++)
-	  {
-	     if (ev->xkey.keycode == d->keybindings[i].key)
-		(d->keybindings[i].func) (d->keybindings[i].val,
-					  d->keybindings[i].data);
-	  }
-     }
-   EDBUG_RETURN_;
-}
-
-void
-HKeyRelease(XEvent * ev)
-{
-   EDBUG(7, "HKeyRelease");
-   ev = NULL;
-   EDBUG_RETURN_;
-}
-
-#if 0
-struct _pbuf
-{
-   int                 w, h, depth;
-   Pixmap              id;
-   void               *stack[32];
-   struct _pbuf       *next;
-};
-extern struct _pbuf *pbuf = NULL;
-
-#endif
-
-void
-HButtonPress(XEvent * ev)
-{
-   EDBUG(7, "HButtonPress");
-   ApplySclass(FindItem
-	       ("SOUND_BUTTON_CLICK", 0, LIST_FINDBY_NAME, LIST_TYPE_SCLASS));
-   HandleMouseDown(ev);
-#if 0
-   {
-      int                 x, y, maxh = 0, count = 0, mcount = 0, ww, hh;
-      struct _pbuf       *pb;
-      GC                  gc;
-      XGCValues           gcv;
-
-      gc = XCreateGC(disp, root.win, 0, &gcv);
-      XSetForeground(disp, gc, WhitePixel(disp, root.scr));
-      fprintf(stderr, "Pixmaps allocated:\n");
-      x = 0;
-      y = 0;
-      XClearWindow(disp, root.win);
-      for (pb = pbuf; pb; pb = pb->next)
-	{
-	   ww = pb->w;
-	   hh = pb->h;
-	   if (ww > 64)
-	      ww = 64;
-	   if (hh > 64)
-	      hh = 64;
-	   if (x + ww > root.w)
-	     {
-		x = 0;
-		y += maxh;
-		maxh = 0;
-	     }
-	   XCopyArea(disp, pb->id, root.win, gc, 0, 0, ww, hh, x, y);
-	   XDrawRectangle(disp, root.win, gc, x, y, ww, hh);
-	   x += ww;
-	   if (hh > maxh)
-	      maxh = hh;
-	   count++;
-	   if (pb->depth == 1)
-	      mcount++;
-	   fprintf(stderr,
-		   "%08x (%5ix%5i %i) : " "%x %x %x %x %x %x %x %x "
-		   "%x %x %x %x %x %x %x %x " "%x %x %x %x %x %x %x %x "
-		   "%x %x %x %x %x %x %x %x\n", pb->id, pb->w, pb->h,
-		   pb->depth, pb->stack[0], pb->stack[1], pb->stack[2],
-		   pb->stack[3], pb->stack[4], pb->stack[5], pb->stack[6],
-		   pb->stack[7], pb->stack[8], pb->stack[9], pb->stack[10],
-		   pb->stack[11], pb->stack[12], pb->stack[13], pb->stack[14],
-		   pb->stack[15], pb->stack[16], pb->stack[17], pb->stack[18],
-		   pb->stack[19], pb->stack[20], pb->stack[21], pb->stack[22],
-		   pb->stack[23], pb->stack[24], pb->stack[25], pb->stack[26],
-		   pb->stack[27], pb->stack[28], pb->stack[29], pb->stack[30],
-		   pb->stack[31]);
-	}
-      fprintf(stderr, "Total %i, %i of them bitmaps\n", count, mcount);
-      XFreeGC(disp, gc);
-   }
-#endif
-   EDBUG_RETURN_;
-}
-
-void
-HButtonRelease(XEvent * ev)
-{
-   EDBUG(7, "HButtonRelease");
-   ApplySclass(FindItem
-	       ("SOUND_BUTTON_RAISE", 0, LIST_FINDBY_NAME, LIST_TYPE_SCLASS));
-   HandleMouseUp(ev);
-   EDBUG_RETURN_;
-}
-
-void
-HMotionNotify(XEvent * ev)
-{
-   EDBUG(7, "HMotionNotify");
-   HandleMotion(ev);
-   EDBUG_RETURN_;
-}
-
-void
-HEnterNotify(XEvent * ev)
-{
-   EDBUG(7, "HEnterNotify");
-   if (mode.mode == MODE_NONE)
-     {
-	/*
-	 * multi screen handling -- root windows receive
-	 * enter / leave notify
-	 */
-	if (ev->xany.window == root.win)
-	  {
-	     PagerHideAllHi();
-	     if (!mode.focuswin || FOCUS_POINTER == mode.focusmode)
-		HandleFocusWindow(root.focuswin);
-	  }
-	else
-	  {
-	     HandleMouseIn(ev);
-	     HandleFocusWindow(ev->xcrossing.window);
-	  }
-     }
-   EDBUG_RETURN_;
-}
-
-void
-HLeaveNotify(XEvent * ev)
-{
-   EDBUG(7, "HLeaveNotify");
-   if (mode.mode == MODE_NONE)
-     {
-	HandleMouseOut(ev);
-
-	/*
-	 * If we are leaving the root window, we are switching
-	 * screens on a multi screen system - need to unfocus
-	 * to allow other desk to grab focus...
-	 */
-	if (ev->xcrossing.window == root.win)
-	  {
-	     if (ev->xcrossing.mode == NotifyNormal
-		 && ev->xcrossing.detail != NotifyInferior && mode.focuswin)
-		HandleFocusWindow(root.focuswin);
-	     else
-		HandleFocusWindow(ev->xcrossing.window);
-	  }
-/* THIS caused the "emacs focus bug" ? */
-/*      else */
-/*      HandleFocusWindow(ev->xcrossing.window); */
-     }
-   EDBUG_RETURN_;
-}
-
-void
-HFocusIn(XEvent * ev)
-{
-   EDBUG(7, "HFocusIn");
-   if (ev->xfocus.detail != NotifyPointer)
-      HandleFocusWindowIn(ev->xfocus.window);
-   EDBUG_RETURN_;
-}
-
-void
-HFocusOut(XEvent * ev)
-{
-   EDBUG(7, "HFocusOut");
-   if (ev->xfocus.detail == NotifyNonlinear)
-     {
-	Window              rt, ch;
-	int                 d;
-	unsigned int        ud;
-
-	XQueryPointer(disp, root.win, &rt, &ch, &d, &d, &d, &d, &ud);
-	if (rt != root.win)
-	  {
-/*           fprintf(stderr, "HandleFocusWindowIn\n"); */
-	     HandleFocusWindowIn(0);
-	  }
-     }
-   EDBUG_RETURN_;
-}
-
-void
-HKeymapNotify(XEvent * ev)
-{
-   EDBUG(7, "HKeymapNotify");
-   ev = NULL;
-   EDBUG_RETURN_;
-}
-
-void
-HExpose(XEvent * ev)
-{
-   EDBUG(7, "HExpose");
-   HandleExpose(ev);
-   EDBUG_RETURN_;
-}
-
-void
-HGraphicsExpose(XEvent * ev)
-{
-   EDBUG(7, "HGraphicsExpose");
-   ev = NULL;
-   EDBUG_RETURN_;
-}
-
-void
-HNoExpose(XEvent * ev)
-{
-   EDBUG(7, "HNoExpose");
-   ev = NULL;
-   EDBUG_RETURN_;
-}
-
-void
-HVisibilityNotify(XEvent * ev)
-{
-   EDBUG(7, "HVisibilityNotify");
-   ev = NULL;
-   EDBUG_RETURN_;
-}
-
-void
-HCreateNotify(XEvent * ev)
-{
-   EDBUG(7, "HCreateNotify");
-   ev = NULL;
-   EDBUG_RETURN_;
-}
-
-void
-HDestroyNotify(XEvent * ev)
-{
-   EDBUG(7, "HDestroyNotify");
-   HandleDestroy(ev);
-   EDBUG_RETURN_;
-}
-
-void
-HUnmapNotify(XEvent * ev)
-{
-   EDBUG(7, "HUnmapNotify");
-   HandleUnmap(ev);
-   EDBUG_RETURN_;
-}
-
-void
-HMapNotify(XEvent * ev)
-{
-   EDBUG(7, "HMapNotify");
-   ev = NULL;
-   EDBUG_RETURN_;
-}
-
-void
-HMapRequest(XEvent * ev)
-{
-   EDBUG(7, "HMapRequest");
-   HandleMapRequest(ev);
-   EDBUG_RETURN_;
-}
-
-void
-HReparentNotify(XEvent * ev)
-{
-   EDBUG(7, "HReparentNotify");
-   HandleReparent(ev);
-   EDBUG_RETURN_;
-}
-
-void
-HConfigureNotify(XEvent * ev)
-{
-   EDBUG(7, "HConfigureNotify");
-   ev = NULL;
-   EDBUG_RETURN_;
-}
-
-void
-HConfigureRequest(XEvent * ev)
-{
-   EDBUG(7, "HConfigureRequest");
-   HandleConfigureRequest(ev);
-   EDBUG_RETURN_;
-}
-
-void
-HGravityNotify(XEvent * ev)
-{
-   EDBUG(7, "HGravityNotify");
-   ev = NULL;
-   EDBUG_RETURN_;
-}
-
-void
-HResizeRequest(XEvent * ev)
-{
-   EDBUG(7, "HResizeRequest");
-   HandleResizeRequest(ev);
-   EDBUG_RETURN_;
-}
-
-void
-HCirculateNotify(XEvent * ev)
-{
-   EDBUG(7, "HCirculateNotify");
-   ev = NULL;
-   EDBUG_RETURN_;
-}
-
-void
-HCirculateRequest(XEvent * ev)
-{
-   EDBUG(7, "HCirculateRequest");
-   HandleCirculate(ev);
-   EDBUG_RETURN_;
-}
-
-void
-HPropertyNotify(XEvent * ev)
-{
-   EDBUG(7, "HPropertyNotify");
-   HandleProperty(ev);
-   EDBUG_RETURN_;
-}
-
-void
-HSelectionClear(XEvent * ev)
-{
-   EDBUG(7, "HSelectionClear");
-   ev = NULL;
-   EDBUG_RETURN_;
-}
-
-void
-HSelectionRequest(XEvent * ev)
-{
-   EDBUG(7, "HSelectionRequest");
-   ev = NULL;
-   EDBUG_RETURN_;
-}
-
-void
-HSelectionNotify(XEvent * ev)
-{
-   EDBUG(7, "HSelectionNotify");
-   ev = NULL;
-   EDBUG_RETURN_;
-}
-
-void
-HColormapNotify(XEvent * ev)
-{
-   EDBUG(7, "HColormapNotify");
-   ev = NULL;
-   EDBUG_RETURN_;
-}
-
-void
-HClientMessage(XEvent * ev)
-{
-   EDBUG(7, "HClientMessage");
-   HandleClientMessage(ev);
-   EDBUG_RETURN_;
-}
-
-void
-HMappingNotify(XEvent * ev)
-{
-   EDBUG(7, "HMappingNotify");
-   ev = NULL;
-   EDBUG_RETURN_;
-}
-
-void
-DefaultFunc(XEvent * ev)
-{
-   EDBUG(7, "DefaultFunc");
-   ev = NULL;
    EDBUG_RETURN_;
 }
