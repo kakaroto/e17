@@ -19,6 +19,7 @@ main(int argc, char **argv)
   ecore_app_args_set(argc, (const char **) argv);
 //      ecore_event_handler_add(ECORE_EVENT_SIGNAL_EXIT, callback_exit, NULL);
   ecore_evas_init();
+  edje_init();
 
   od_window_init();
   od_dock_init();
@@ -34,6 +35,7 @@ main(int argc, char **argv)
   ecore_main_loop_begin();
 
   fprintf(stderr, "cleanly shutting down\n");
+  edje_shutdown();
   ecore_evas_shutdown();
   ecore_config_save();
   ecore_config_exit();
