@@ -9,7 +9,7 @@ typedef struct _imlibborder             ImlibBorder;
 typedef struct _imlibloader             ImlibLoader;
 typedef struct _imlibimagetag           ImlibImageTag;
 
-typedef void (*ImlibProgressFunction)(ImlibImage *im, char percent,
+typedef int (*ImlibProgressFunction)(ImlibImage *im, char percent,
 				      int update_x, int update_y,
 				      int update_w, int update_h);
 typedef void (*ImlibDataDestructorFunction)(ImlibImage *im, void *data);

@@ -2851,3 +2851,29 @@ themselves. This is so I can change them all at once tomorrow.
 
 _______________________________________________
 
+Thu Apr 27 03:16:59 GMT 2000
+(gilbertt)
+
+Okay, an ImlibProgressFunction now return int, not void. The idea of this is
+so that a progressive load may be aborted midway, simply by returning 0 from
+the progress callback. There are a number of reasons for wanting this.
+
+This is a slight breakage to people currently using progressive loading -
+you'll have to change your definition to int, and return 1 to get normal
+behaviour again. As far as I know, only feh and imlib2_view uses progressive
+loading, and I'll sort those two out. To anyone else, sorry, but it's not
+released yet, what did you expect? ;-)
+
+Notice. I haven't changed the loaders yet, so returning 0 won't do squat
+until tomorrow, when I change them all. What they will do is clean up and
+return what they've got so far. If anyone who wrote a loader wants to do
+their own, cool, it'll save me learning the api of every damn image lib ;-)
+It's just a case of swapping 
+progress(params, ...);
+with
+if(!progress(params, ...)
+  cleanup_some_stuff_and_return_what_there_is();
+Otherwise, I'll do it myself tomorrow.
+
+_______________________________________________
+

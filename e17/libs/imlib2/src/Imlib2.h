@@ -73,7 +73,7 @@ struct _imlib_rectangle
    int x, y, width, height;
 };
 
-typedef void (*Imlib_Progress_Function)(Imlib_Image im, char percent,
+typedef int (*Imlib_Progress_Function)(Imlib_Image im, char percent,
 					int update_x, int update_y,
 					int update_w, int update_h);
 typedef void (*Imlib_Data_Destructor_Function)(Imlib_Image im, void *data);

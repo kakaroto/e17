@@ -22,11 +22,11 @@ int      depth;
 int      image_width = 0, image_height = 0;
 Imlib_Image bg_im = NULL;
 
-static void 
+static int
 progress(Imlib_Image im, char percent, int update_x, int update_y,
 	 int update_w, int update_h);
 
-static void
+static int
 progress(Imlib_Image im, char percent, int update_x, int update_y,
 	 int update_w, int update_h)
 {
@@ -91,6 +91,7 @@ progress(Imlib_Image im, char percent, int update_x, int update_y,
    XSetWindowBackgroundPixmap(disp, win, pm);
    XClearArea(disp, win, update_x, update_y, update_w, update_h, False);
    XFlush(disp);
+   return 1;
 }
 
 int 
