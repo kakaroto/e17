@@ -142,7 +142,7 @@ entrance_ipc_init(pid_t server_pid)
    ipc_title = strdup(buf);
    
    if ((server =
-        ecore_ipc_server_connect(ECORE_IPC_LOCAL_USER, IPC_TITLE, 0, NULL)))
+        ecore_ipc_server_connect(ECORE_IPC_LOCAL_SYSTEM, IPC_TITLE, 0, NULL)))
    {
       ecore_event_handler_add(ECORE_IPC_EVENT_CLIENT_ADD, 
                               _entrance_ipc_client_add, NULL);
