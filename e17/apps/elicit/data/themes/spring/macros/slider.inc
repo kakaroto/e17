@@ -176,7 +176,7 @@ part { \
 BUTTON_CLIPPED(NAME"-left", "slider-left1.png", "slider-left2.png", 5, 8, \
                NAME"-label", 1 0, 4 0, TO2, REL2, OFF2, 0 0, CLIP) \
 BUTTON_CLIPPED(NAME"-right", "slider-right1.png", "slider-right2.png", 5, 8, \
-               TO1, REL1, OFF1, NAME"-val2", 0 1, -5 -1, 1 0, CLIP) \
+               TO1, REL1, OFF1, NAME"-val2", 0 1, -5 -3, 1 0, CLIP) \
 part { \
   name, NAME"-bar"; \
   clip_to, CLIP; \
