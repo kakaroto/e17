@@ -31,6 +31,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <efsd.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+
 /* Efsd connection: */
 typedef struct efsd_connection EfsdConnection;
 
@@ -120,5 +125,10 @@ EfsdCmdId      efsd_stop_monitor(EfsdConnection *ec, char *filename);
    as returned by the lstats() command.
  */
 EfsdCmdId      efsd_stat(EfsdConnection *ec, char *filename);
+
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

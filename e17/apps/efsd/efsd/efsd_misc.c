@@ -41,10 +41,28 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <efsd_misc.h>
 
 
+int    
+efsd_misc_file_exists(char *filename)
+{
+  struct stat st;
+
+  if (!filename)
+    return (0);
+
+  if (stat(filename, &st) < 0)
+    return (0);
+
+  return (1);
+}
+
+
 int 
 efsd_misc_file_is_dir(char *filename)
 {
   struct stat st;
+
+  if (!filename)
+    return (0);
 
   if (stat(filename, &st) < 0)
     return (0);

@@ -22,14 +22,45 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 */
-#ifndef __efsd_misc_h
-#define __efsd_misc_h
-
-int    efsd_misc_file_exists(char *filename);
-int    efsd_misc_file_is_dir(char *filename);
-void   efsd_misc_remove_trailing_slashes(char *path);
-int    efsd_misc_is_absolute_path(char *path);
-char **efsd_misc_get_path_dirs(char *path, int *num_dirs);
-void   efsd_slashify(char *path);
-
+#if HAVE_CONFIG_H
+# include <config.h>
 #endif
+
+#include <stdlib.h>
+#include <stdio.h>
+#include <fcntl.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <sys/un.h>
+#include <string.h>
+#include <unistd.h>
+
+#ifdef __EMX__
+#include <strings.h>
+#endif
+
+
+char *
+efsd_get_socket_file(void)
+{
+  char         *dir = NULL;
+  static char  s[4096] = "\0";
+
+  if (s[0] != '\0')
+    return (s);
+
+  dir = getenv("HOME");
+
+  /* I'm not using getenv("TMPDIR") --
+   * I don't see TMPDIR on Linux, FreeBSD
+   * or Solaris here...
+   */
+
+  if (!dir)
+    dir = "/tmp";
+
+  snprintf(s, sizeof(s), "%s/.efsd", dir);
+  s[sizeof(s)-1] = '\0';
+
+  return (s);
+}

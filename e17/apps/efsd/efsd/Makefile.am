@@ -5,7 +5,7 @@ bin_PROGRAMS = efsd
 # A list of all the files in the current directory which can be regenerated
 MAINTAINERCLEANFILES = Makefile.in Makefile
 
-INCLUDES = $(GLIB_CFLAGS)
+INCLUDES = -DDEBUG $(GLIB_CFLAGS)
 
 include_HEADERS = \
 	efsd.h \
@@ -21,15 +21,19 @@ efsd_SOURCES = \
 	efsd_fileops.h \
 	efsd_fileops.c \
 	efsd_misc.h \
-	efsd_misc.c
+	efsd_misc.c \
+	efsd_common.h \
+	efsd_common.c
 
 efsd_LDADD = $(GLIB_LIBS)
 
 lib_LTLIBRARIES = libefsd.la
 
 libefsd_la_SOURCES   = \
+	efsd.h \
 	efsd_io.h \
 	efsd_io.c \
-	efsd.h \
+	efsd_common.h \
+	efsd_common.c \
 	libefsd.c
 

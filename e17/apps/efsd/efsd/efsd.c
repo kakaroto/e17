@@ -47,6 +47,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <efsd_io.h>
 #include <efsd_fam.h>
 #include <efsd_fileops.h>
+#include <efsd_misc.h>
+#include <efsd_common.h>
 
 /* The connection to FAM */
 FAMConnection        famcon;
@@ -64,7 +66,7 @@ static int           listen_fd;
 
 /* For options: */
 static int           opt_foreground = 0;
-
+static int           opt_forcestart = 0;
 
 void   efsd_connect_to_fam(void);
 int    efsd_handle_client_command(EfsdCommand *command, int sockfd);
@@ -247,6 +249,23 @@ efsd_handle_connections(void)
   EfsdCommand ecmd;
   fd_set      fdset;
 
+  if (efsd_misc_file_exists(efsd_get_socket_file()))
+    {
+      if (opt_forcestart)
+	{
+	  if (unlink(efsd_get_socket_file()) < 0)
+	    {
+	      fprintf(stderr, "Socket file exists and cannot be removed, with -F given -- exiting.\n");
+	      exit(-1);
+	    }	  
+	}
+      else
+	{
+	  fprintf(stderr, "Efsd appears to be already running -- exiting.\n");
+	  exit(-1);
+	}
+    }
+
   for (i = 0; i < EFSD_CLIENTS; i++)
     clientfd[i] = -1;
     
@@ -256,10 +275,9 @@ efsd_handle_connections(void)
       exit(-1);
     }
 
-  unlink(EFSD_PATH);
   bzero(&serv_sun, sizeof(serv_sun));
   serv_sun.sun_family = AF_UNIX;
-  strncpy(serv_sun.sun_path, EFSD_PATH, sizeof(serv_sun.sun_path));
+  strncpy(serv_sun.sun_path, efsd_get_socket_file(), sizeof(serv_sun.sun_path));
 
   if (bind(listen_fd, (struct sockaddr *)&serv_sun, sizeof(serv_sun)) < 0)
     {
@@ -380,7 +398,7 @@ efsd_cleanup(int signal)
     }
 
   close(listen_fd);
-  unlink(EFSD_PATH);
+  unlink(efsd_get_socket_file());
   FAMClose(&famcon);
   efsd_fam_cleanup();
 
@@ -393,6 +411,12 @@ void
 efsd_initialize(void)
 {
   int i;
+
+  if (geteuid() == 0)
+    {
+      fprintf(stderr, "Efsd is not meant to be run by root -- at least not yet :)\n");
+      exit(-1);
+    }
 
   for (i = 0; i < EFSD_CLIENTS; i++)
     clientnums[i] = i;
@@ -426,7 +450,7 @@ efsd_daemonize(void)
   setsid();
 #endif
   chdir("/");
-  umask(0);
+  umask(077);
 }
 
 
@@ -444,6 +468,7 @@ efsd_check_options(int argc, char**argv)
 		 "USAGE: %s [OPTIONS]\n"
 		 "\n"
 		 "  -f, --foreground      do not fork into background on startup.\n"
+		 "  -F, --forcestart      start even if socket file exists already.\n"
 		 "\n",
 		 argv[0]);
 	  exit(0);
@@ -451,6 +476,10 @@ efsd_check_options(int argc, char**argv)
       else if (!strcmp(argv[i], "-f") || !strcmp(argv[i], "--foreground"))
 	{
 	  opt_foreground = 1;
+	}
+      else if (!strcmp(argv[i], "-F") || !strcmp(argv[i], "--forcestart"))
+	{
+	  opt_forcestart = 1;
 	}
     }
 }

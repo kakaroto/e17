@@ -29,11 +29,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <sys/stat.h>
 #include <fam.h>
 
-#ifndef __EMX__
-#define EFSD_PATH         "/tmp/.efsd.serv"
-#else
-#define EFSD_PATH         "\\socket\\tmp\\.efsd.serv"
-#endif
 #define EFSD_CLIENTS      100
 
 /* Miscellaneous, needed below. */

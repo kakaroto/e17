@@ -95,7 +95,7 @@ void read_answers_selecting(EfsdConnection *ec)
 	  if (efsd_next_event(ec, &ee) != -1)
 	    handle_efsd_event(&ee);
 	  else
-	    /* We're whimp's here and just exit. */
+	    /* We're whimps here and just exit. */
 	    break;
 	}
     }

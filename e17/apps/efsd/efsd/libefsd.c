@@ -39,6 +39,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <efsd.h>
 #include <efsd_io.h>
+#include <efsd_common.h>
 #include <libefsd.h>
 
 struct efsd_connection
@@ -117,11 +118,17 @@ efsd_open(void)
 
   bzero(&cli_sun, sizeof(cli_sun));
   cli_sun.sun_family = AF_UNIX;
-  strncpy(cli_sun.sun_path, EFSD_PATH, sizeof(cli_sun.sun_path));
+  strncpy(cli_sun.sun_path, efsd_get_socket_file(), sizeof(cli_sun.sun_path));
 
   if (connect(ec->fd, (struct sockaddr*)&cli_sun, sizeof(cli_sun)) < 0)
     {
       fprintf(stderr, "libefsd: connect() error.\n"); return NULL;      
+    }
+
+  if (fcntl(ec->fd, F_SETFL, O_NONBLOCK) < 0)
+    {
+      fprintf(stderr, "Can not fcntl client's socket -- exiting.\n");
+      exit(-1);
     }
 
   return (ec);
@@ -157,18 +164,20 @@ efsd_close(EfsdConnection *ec)
 int           
 efsd_next_event(EfsdConnection *ec, EfsdEvent *ev)
 {
+  fd_set    fdset;
+
   if (!ec || !ev || ec->fd < 0)
     return (-1);
+
+  FD_ZERO(&fdset);
+  FD_SET(ec->fd, &fdset);
+
+  /* Wait for next event to happen ... */
+  select(ec->fd+1, &fdset, NULL, NULL, NULL);
 
   return (efsd_read_event(ec->fd, ev));
 }
 
-
-/*
-{
-  efsd_cleanup_event(ev);
-}
-*/
 
 EfsdCmdId      
 efsd_remove(EfsdConnection *ec, char *filename)
