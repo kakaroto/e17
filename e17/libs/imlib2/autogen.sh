@@ -1,7 +1,5 @@
 #! /bin/sh
 
-(automake --version | grep 1.4) && (autoconf --version | grep 2.5)
-
 if [ "$USER" = "root" ]; then
   echo "You cannot do this as "$USER" please use a normal user account"
   exit
