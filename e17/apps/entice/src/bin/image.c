@@ -281,6 +281,7 @@ e_flip_current_image(int direction)
    e_flip_object(im->o_thumb, direction);
 
    /* Update Display */
+   e_turntable_reset();
    e_handle_resize();
    e_fix_icons();
    e_scroll_list(0, NULL);
@@ -358,6 +359,7 @@ e_rotate_current_image(int rotation)
    e_rotate_object(im->o_thumb, rotation);
 
    /* Update Display */
+   e_turntable_reset();
    e_handle_resize();
    e_fix_icons();
    e_scroll_list(0, NULL);
@@ -375,6 +377,142 @@ void
 e_rotate_l_current_image(void)
 {
 	e_rotate_current_image(3);
+}
+
+#define TURNTABLE_COUNT 20
+Imlib_Image turntable_image[TURNTABLE_COUNT];
+int turntable_image_no = -1;
+
+void
+e_turntable_object_init(Evas_Object *obj)
+{
+   int i;
+   int w;
+   int h;
+   double angle;
+   DATA32 *image_data;
+   Imlib_Image image;
+
+   if (!obj || turntable_image_no >= 0)
+       return;
+
+   	/* Get image data from Evas */
+   evas_object_image_size_get(obj, &w, &h);
+   image_data = evas_object_image_data_get(obj, 0);
+   if (!image_data)
+     {
+         evas_object_image_data_set(obj, image_data);
+         return;
+     }
+
+   /* Set up imlib image */
+   image = imlib_create_image_using_copied_data(w, h, image_data);
+   evas_object_image_data_set(obj, image_data);
+
+   angle = 0;
+   for(i = 0 ; i < TURNTABLE_COUNT ; i ++) {
+	angle = i * 360 * acos(0) / 90 / TURNTABLE_COUNT;
+   	imlib_context_set_image(image);
+   	turntable_image[i] = imlib_create_rotated_image(angle);
+   	imlib_context_set_image(turntable_image[i]);
+   }
+	
+  /* Free Imlib image */
+  imlib_context_set_image(image);
+  imlib_free_image();
+
+  turntable_image_no = 0;
+}
+
+static void
+e_turntable_reset()
+{
+   int i;
+
+   if (turntable_image_no < 0)
+       return;
+
+   turntable_image_no = -1;
+
+   for(i = 0 ; i < TURNTABLE_COUNT ; i ++) {
+   	imlib_context_set_image(turntable_image[i]);
+	imlib_free_image();
+   }
+}
+
+static void
+e_turntable_object_next(Evas_Object *obj, int rotation)
+{
+   int w;
+   int h;
+   DATA32 *image_data;
+
+   if (!obj)
+       return;
+
+   e_turntable_object_init(obj);
+
+   if (rotation == 1) {
+      if(++turntable_image_no >= TURNTABLE_COUNT) {
+	   turntable_image_no = 0;
+      }
+   }
+   else {
+      if(--turntable_image_no < 0) {
+	   turntable_image_no = TURNTABLE_COUNT - 1;
+      }
+   }
+
+   /* Get image data from Imblib */
+   imlib_context_set_image(turntable_image[turntable_image_no]);
+   image_data = imlib_image_get_data_for_reading_only();
+   w = imlib_image_get_width();
+   h = imlib_image_get_height();
+
+   /* Set Evas Image Data */
+   evas_object_image_size_set(obj, w, h);
+   evas_object_image_data_set(obj, image_data);
+
+  imlib_image_put_back_data(image_data);
+
+}
+
+static void
+e_turntable_object(int rotation, Evas_Object *obj)
+{
+   if (turntable_image_no < 0)
+	 return;
+
+   e_turntable_object_next(obj, rotation);
+   ecore_add_event_timer("e_turntable_object()", 
+		   (double)60/(double)45/(double)TURNTABLE_COUNT, 
+		   e_turntable_object, rotation, o_image);
+
+   /* Update Display */
+   e_handle_resize();
+}
+
+static void
+e_turntable_current_image(int rotation)
+{
+   if (!current_image || !current_image->data)
+       return;
+
+   e_turntable_object_init(o_image);
+   e_turntable_object(rotation, o_image);
+
+}
+
+void
+e_turntable_r_current_image(void)
+{
+	e_turntable_current_image(1);
+}
+
+void
+e_turntable_l_current_image(void)
+{
+	e_turntable_current_image(2);
 }
 
 void
@@ -462,6 +600,7 @@ e_display_current_image(void)
    scroll_sx = 0;
    scroll_sy = 0;
 
+   e_turntable_reset();
    if (o_mini_image)
      {
 	evas_object_del(o_mini_image);

@@ -22,6 +22,7 @@ void                e_window_configure(Ecore_Event * ev);
 
 /* when a key gets pressed */
 void                e_key_down(Ecore_Event * ev);
+void                e_key_up(Ecore_Event * ev);
 void                e_property(Ecore_Event * ev);
 
 #endif /* __EVENT_H__ */

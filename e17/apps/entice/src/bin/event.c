@@ -244,12 +244,17 @@ e_key_down(Ecore_Event * ev)
      {
 	e_save_current_image();
      }
+   else if (!strcmp(e->key, "t"))
+     {
+        e_turntable_l_current_image();
+     }
    else if (!strcmp(e->key, "Escape"))
      {
 	exit(0);
      }
    else if (!strcmp(e->key, "Return"))
      {
+	e_display_current_image();
      }
    else if (!strcmp(e->key, "space"))
      {
@@ -276,6 +281,20 @@ e_key_down(Ecore_Event * ev)
      {
 	icon_y -= 8;
 	e_fix_icons();
+     }
+}
+
+void
+e_key_up(Ecore_Event * ev)
+{
+   Ecore_Event_Key_Down *e;
+
+   e = ev->event;
+   if (e->win != ewin)
+      return;
+   if (!strcmp(e->key, "t"))
+     {
+        e_turntable_r_current_image();
      }
 }
 

@@ -40,6 +40,7 @@ setup(void)
    ecore_event_filter_handler_add(ECORE_EVENT_WINDOW_CONFIGURE,
 				  e_window_configure);
    ecore_event_filter_handler_add(ECORE_EVENT_KEY_DOWN, e_key_down);
+   ecore_event_filter_handler_add(ECORE_EVENT_KEY_UP, e_key_up);
    ecore_event_filter_handler_add(ECORE_EVENT_WINDOW_PROPERTY, e_property);
 
    ecore_event_filter_handler_add(ECORE_EVENT_DND_DROP, e_dnd_drop);

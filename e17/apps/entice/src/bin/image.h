@@ -16,6 +16,10 @@ void                image_delete(Image * im);
 void                e_rotate_r_current_image(void);
 void                e_rotate_l_current_image(void);
 
+void                e_turntable_l_current_image(void);
+void                e_turntable_r_current_image(void);
+void		    e_turntable_reset(void);
+
 void                e_flip_h_current_image(void);
 void                e_flip_v_current_image(void);
 
