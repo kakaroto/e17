@@ -2827,3 +2827,17 @@ fix spec file - dont buidl demos package
 
 _______________________________________________
 
+Changes by:     raster 00/04/13 09:48:48
+
+..........
+summary:
+added mmx rotuines for blending - optimized them further
+thanks to some poitners form willem. added willems filter code. willem did
+mmx asm for the other blend rotuines too - added - needs fixing because
+math in C routines chnaged tobe fixed (there was a bug in RGBa destination
+alpha routines). fixed minor scaling calculation bug for clipping when
+blending. thansk everyone - please make sure your names are in the AUTHORS
+file at some point... :)
+
+_______________________________________________
+
