@@ -2361,3 +2361,12 @@ Trivial sound cleanups.
 Trivial session cleanups.
 Removed the unfinished upgrade feature code.
 Added some event debugging code.
+
+-------------------------------------------------------------------------------
+
+Sun Jan 11 21:33:22 CET 2004
+(Kim)
+
+Slideout code and namespace shuffle.
+Border event handling code shuffle.
+Removed unused Container code.
