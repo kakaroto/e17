@@ -10,7 +10,7 @@ Packager: %{?_packager:%{_packager}}%{!?_packager:Michael Jennings <mej@eterm.or
 Vendor: %{?_vendorinfo:%{_vendorinfo}}%{!?_vendorinfo:The Enlightenment Project (http://www.enlightenment.org/)}
 Distribution: %{?_distribution:%{_distribution}}%{!?_distribution:%{_vendor}}
 #BuildSuggests: xorg-x11-devel freetype-devel freetype2-devel
-BuildRequires: /usr/bin/freetype-config XFree86-devel
+BuildRequires: /usr/bin/freetype-config XFree86-devel libungif-devel
 Requires: %{name}-loader_jpeg = %{version}
 Requires: %{name}-loader_png = %{version}
 Requires: %{name}-loader_argb = %{version}
@@ -118,8 +118,12 @@ gz compressed image loader/saver for Imlib2
 %setup -q
 
 %build
-%{configure} --prefix=%{_prefix} $RPM_CONFIGURE_OPTS
-%{__make} %{?_smp_mflags} %{?mflags}
+%{configure} --prefix=%{_prefix} \
+%ifarch x86_64
+       --disable-mmx \
+%endif
+       $RPM_CONFIGURE_OPTS
+%{__make} LDFLAGS="$LDFLAGS -L/usr/X11R6/%{_lib}" %{?_smp_mflags} %{?mflags}
 
 %install
 %{__make} %{?mflags_install} DESTDIR=$RPM_BUILD_ROOT install
