@@ -144,7 +144,7 @@ grab_init()
    grab_size = vid_mbuf.size;
    grab_data =
       mmap(0, grab_size, PROT_READ | PROT_WRITE, MAP_SHARED, grab_fd, 0);
-   if (grab_data == NULL)
+   if ((grab_data == NULL) || (-1 == (int)grab_data))
    {
       fprintf(stderr,
               "couldn't mmap vidcam. your card doesn't support that?\n");
@@ -158,6 +158,7 @@ grab_one(int *width, int *height)
    Imlib_Image im;
    int i = 0;
    int j = lag_reduce;
+   if (j == 0) j++;
 
    while (j--)
    {
