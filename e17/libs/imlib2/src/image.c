@@ -153,6 +153,8 @@ __imlib_ProduceImage(void)
 void
 __imlib_ConsumeImage(ImlibImage * im)
 {
+ImlibImagePixmap *ip;
+  
    __imlib_FreeAllTags(im);
    if (im->file)
       free(im->file);
@@ -161,6 +163,16 @@ __imlib_ConsumeImage(ImlibImage * im)
    if (im->format)
       free(im->format);
    free(im);
+   ip = pixmaps;
+   while (ip)
+     {
+	if (ip->image == im)
+	  {
+	     ip->image = NULL;
+	     ip->dirty = 1;
+	  }
+	ip = ip->next;
+     }
 }
 
 ImlibImage *
