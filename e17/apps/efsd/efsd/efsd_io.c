@@ -65,16 +65,13 @@ static int     write_get_metadata_cmd(int sockfd, EfsdCommand *cmd);
 static int     write_filechange_event(int sockfd, EfsdEvent *ee);
 static int     write_reply_event(int sockfd, EfsdEvent *ee);
 
-/* Read data from the client -- adapted from
-   the improved read() functions in the Stevens books.
-*/
 int 
 read_data(int sockfd, void *dest, int size)
 {
-  struct timeval  t0;
-  struct timeval  t1;
   int             num_left, num_read;
+  fd_set          fdset;
   char           *ptr;
+  struct timeval  tv;
 
   D_ENTER;
 
@@ -84,31 +81,34 @@ read_data(int sockfd, void *dest, int size)
   ptr = (char*)dest;
   num_left = size;
   num_read = 0;
-
-  gettimeofday(&t0, NULL);
+  tv.tv_sec  = 1;
+  tv.tv_usec = 0;
+  FD_ZERO(&fdset);
 
   while (num_left)
     {
-    again:
-      num_read = read(sockfd, ptr, num_left);
+      FD_SET(sockfd, &fdset);
 
-      if (num_read < 0)
+      while (select(sockfd + 1, &fdset, NULL, NULL, &tv) < 0)
 	{
-	  if (errno == EAGAIN)
+	  if (errno == EINTR)
 	    {
-	      gettimeofday(&t1, NULL);
-	      if (t0.tv_sec < t1.tv_sec &&
-		  t0.tv_usec < t1.tv_usec)
-		{
-		  D_RETURN_(-1);
-		}
-	      else
-		goto again;
+	      D(("read_data select() interrupted\n"));
+	      tv.tv_sec  = 1;
+	      tv.tv_usec = 0;
+	      FD_ZERO(&fdset);
 	    }
 	  else
 	    {
-	      D_RETURN_(-1);        /* Error occurred -- return error. */
+	      fprintf(stderr, "Select error -- exiting.\n");
+	      exit(-1);
 	    }
+	}
+
+      if ((num_read = read(sockfd, ptr, num_left)) < 0)
+	{
+	  perror("Read error:");
+	  D_RETURN_(-1);        /* Error occurred -- return error. */
 	}
       else if (num_read == 0)
 	break;                  /* End of file */
@@ -116,7 +116,7 @@ read_data(int sockfd, void *dest, int size)
       num_left -= num_read;
       ptr += num_read;
     }
-
+  
   D_RETURN_(size - num_left);
 }
 
@@ -162,11 +162,10 @@ read_string(int sockfd, char **s)
 static int     
 write_data(int sockfd, void *data, int size)
 {
-  int             result;
-  struct timeval  t0;
-  struct timeval  t1;
   int             num_left, num_written;
+  fd_set          fdset;
   char           *ptr;
+  struct timeval  tv;
 
   D_ENTER;
 
@@ -176,28 +175,33 @@ write_data(int sockfd, void *data, int size)
   ptr = (char*)data;
   num_left = size;
   num_written = 0;
-
-  gettimeofday(&t0, NULL);
+  tv.tv_sec  = 1;
+  tv.tv_usec = 0;
+  FD_ZERO(&fdset);
 
   while (num_left)
     {
-    again:
-      num_written = write(sockfd, ptr, num_left);
+      FD_SET(sockfd, &fdset);
 
-      if (num_written < 0)
+      while (select(sockfd + 1, NULL, &fdset, NULL, &tv) < 0)
 	{
-	  if (errno == EAGAIN)
+	  if (errno == EINTR)
 	    {
-	      gettimeofday(&t1, NULL);
-	      if (t0.tv_sec < t1.tv_sec &&
-		  t0.tv_usec < t1.tv_usec)
-		{
-		  D_RETURN_(-1);
-		}
-	      else
-		goto again;
+	      D(("read_data select() interrupted\n"));
+	      tv.tv_sec  = 1;
+	      tv.tv_usec = 0;
+	      FD_ZERO(&fdset);
 	    }
-	  else if (errno == EPIPE)
+	  else
+	    {
+	      fprintf(stderr, "Select error -- exiting.\n");
+	      exit(-1);
+	    }
+	}
+
+      if ((num_written = write(sockfd, ptr, num_left)) < 0)
+	{
+	  if (errno == EPIPE)
 	    {
 	      D(("Broken pipe in write_data()\n"));
 	      D_RETURN_(-1);
@@ -208,11 +212,11 @@ write_data(int sockfd, void *data, int size)
 	      D_RETURN_(-1);
 	    }
 	}
-
+      
       num_left -= num_written;
       ptr += num_written;
     }
-
+  
   D_RETURN_(size - num_left);  
 }
 
