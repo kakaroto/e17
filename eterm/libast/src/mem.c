@@ -58,7 +58,7 @@ static void memrec_dump_resources(memrec_t *);
  * management functions.  Call counting is controlled by the
  * #MALLOC_CALL_DEBUG symbol, and is off by default.
  *
- * @see DOXGRP_MEM
+ * @see @link DOXGRP_MEM Memory Management Subsystem @endlink
  * @ingroup DOXGRP_MEM
  */
 
@@ -79,7 +79,7 @@ static int free_count = 0;
  * This structure keeps track of the pointer array which represents
  * pointers allocated via the memory management interface.
  *
- * @see DOXGRP_MEM, memrec_t_struct
+ * @see @link DOXGRP_MEM Memory Management Subsystem @endlink, memrec_t_struct
  * @ingroup DOXGRP_MEM
  */
 static memrec_t malloc_rec;
@@ -89,7 +89,7 @@ static memrec_t malloc_rec;
  * This structure keeps track of the pixmap array which represents
  * pixmaps allocated via the memory management interface.
  *
- * @see DOXGRP_MEM, memrec_t_struct
+ * @see @link DOXGRP_MEM Memory Management Subsystem @endlink, memrec_t_struct
  * @ingroup DOXGRP_MEM
  */
 static memrec_t pixmap_rec;
@@ -100,7 +100,7 @@ static memrec_t pixmap_rec;
  * X11 Graphics Context objects, or GC's, allocated via the memory
  * management interface.
  *
- * @see DOXGRP_MEM, memrec_t_struct
+ * @see @link DOXGRP_MEM Memory Management Subsystem @endlink, memrec_t_struct
  * @ingroup DOXGRP_MEM
  */
 static memrec_t gc_rec;
@@ -112,7 +112,7 @@ static memrec_t gc_rec;
  * memory management system is used.  This function initializes the
  * pointer lists.
  *
- * @see DOXGRP_MEM
+ * @see @link DOXGRP_MEM Memory Management Subsystem @endlink
  * @ingroup DOXGRP_MEM
  */
 void
@@ -139,7 +139,7 @@ memrec_init(void)
  * @param ptr      The allocated variable.
  * @param size     The number of bytes requested.
  *
- * @see DOXGRP_MEM, MALLOC(), libast_malloc()
+ * @see @link DOXGRP_MEM Memory Management Subsystem @endlink, MALLOC(), libast_malloc()
  * @ingroup DOXGRP_MEM
  */
 static void
@@ -173,7 +173,7 @@ memrec_add_var(memrec_t *memrec, const char *filename, unsigned long line, void 
  * @return       A pointer to the #ptr_t object within @a memrec
  *               that matches @a ptr, or NULL if not found.
  *
- * @see DOXGRP_MEM, MALLOC(), libast_malloc()
+ * @see @link DOXGRP_MEM Memory Management Subsystem @endlink, MALLOC(), libast_malloc()
  * @ingroup DOXGRP_MEM
  */
 static ptr_t *
@@ -208,7 +208,7 @@ memrec_find_var(memrec_t *memrec, const void *ptr)
  *                 was freed.
  * @param ptr      The freed variable.
  *
- * @see DOXGRP_MEM, FREE(), libast_free()
+ * @see @link DOXGRP_MEM Memory Management Subsystem @endlink, FREE(), libast_free()
  * @ingroup DOXGRP_MEM
  */
 static void
@@ -246,7 +246,7 @@ memrec_rem_var(memrec_t *memrec, const char *var, const char *filename, unsigned
  * @param newp     The new value of the pointer.
  * @param size     The new size in bytes.
  *
- * @see DOXGRP_MEM, REALLOC(), libast_realloc()
+ * @see @link DOXGRP_MEM Memory Management Subsystem @endlink, REALLOC(), libast_realloc()
  * @ingroup DOXGRP_MEM
  */
 static void
@@ -278,7 +278,7 @@ memrec_chg_var(memrec_t *memrec, const char *var, const char *filename, unsigned
  *
  * @param memrec Address of the #memrec_t we're dumping.
  *
- * @see DOXGRP_MEM, MALLOC_DUMP(), libast_dump_mem_tables()
+ * @see @link DOXGRP_MEM Memory Management Subsystem @endlink, MALLOC_DUMP(), libast_dump_mem_tables()
  * @ingroup DOXGRP_MEM
  */
 static void
@@ -358,7 +358,7 @@ memrec_dump_pointers(memrec_t *memrec)
  *
  * @param memrec Address of the #memrec_t we're dumping.
  *
- * @see DOXGRP_MEM, MALLOC_DUMP(), libast_dump_mem_tables(),
+ * @see @link DOXGRP_MEM Memory Management Subsystem @endlink, MALLOC_DUMP(), libast_dump_mem_tables(),
  *      memrec_dump_pointers()
  * @ingroup DOXGRP_MEM
  */
@@ -404,7 +404,7 @@ memrec_dump_resources(memrec_t *memrec)
  * @param size     The requested size in bytes (as passed to MALLOC()).
  * @return         A pointer to the newly-allocated memory.
  *
- * @see DOXGRP_MEM, MALLOC()
+ * @see @link DOXGRP_MEM Memory Management Subsystem @endlink, MALLOC()
  * @ingroup DOXGRP_MEM
  */
 void *
@@ -446,7 +446,7 @@ libast_malloc(const char *filename, unsigned long line, size_t size)
  *                 REALLOC()). 
  * @return         The new value (possibly moved) of the pointer.
  *
- * @see DOXGRP_MEM, REALLOC()
+ * @see @link DOXGRP_MEM Memory Management Subsystem @endlink, REALLOC()
  * @ingroup DOXGRP_MEM
  */
 void *
@@ -491,7 +491,7 @@ libast_realloc(const char *var, const char *filename, unsigned long line, void *
  *                 CALLOC()).
  * @return         A pointer to the newly-allocated, zeroed memory.
  *
- * @see DOXGRP_MEM, CALLOC()
+ * @see @link DOXGRP_MEM Memory Management Subsystem @endlink, CALLOC()
  * @ingroup DOXGRP_MEM
  */
 void *
@@ -528,7 +528,7 @@ libast_calloc(const char *filename, unsigned long line, size_t count, size_t siz
  *                 is being freed.
  * @param ptr      The pointer being freed (as passed to FREE()).
  *
- * @see DOXGRP_MEM, FREE()
+ * @see @link DOXGRP_MEM Memory Management Subsystem @endlink, FREE()
  * @ingroup DOXGRP_MEM
  */
 void
@@ -566,7 +566,7 @@ libast_free(const char *var, const char *filename, unsigned long line, void *ptr
  * @param str      The string being duplicated (as passed to STRDUP()).
  * @return         A pointer to a newly-allocated copy of @a str.
  *
- * @see DOXGRP_MEM, STRDUP()
+ * @see @link DOXGRP_MEM Memory Management Subsystem @endlink, STRDUP()
  * @ingroup DOXGRP_MEM
  */
 char *
@@ -589,7 +589,7 @@ libast_strdup(const char *var, const char *filename, unsigned long line, const c
  * This function simply calls memrec_dump_pointers() and passes in the
  * address of the #malloc_rec variable.
  *
- * @see DOXGRP_MEM, MALLOC_DUMP(), memrec_dump_pointers()
+ * @see @link DOXGRP_MEM Memory Management Subsystem @endlink, MALLOC_DUMP(), memrec_dump_pointers()
  * @ingroup DOXGRP_MEM
  */
 void
@@ -621,7 +621,7 @@ libast_dump_mem_tables(void)
  * @param depth    The color depth for the new pixmap.
  * @return         A newly-created Pixmap.
  *
- * @see DOXGRP_MEM, X_CREATE_PIXMAP()
+ * @see @link DOXGRP_MEM Memory Management Subsystem @endlink, X_CREATE_PIXMAP()
  * @ingroup DOXGRP_MEM
  */
 Pixmap
@@ -654,7 +654,7 @@ libast_x_create_pixmap(const char *filename, unsigned long line, Display * d, Dr
  * @param d        The Display for the pixmap.
  * @param p        The Pixmap to be freed.
  *
- * @see DOXGRP_MEM, X_FREE_PIXMAP()
+ * @see @link DOXGRP_MEM Memory Management Subsystem @endlink, X_FREE_PIXMAP()
  * @ingroup DOXGRP_MEM
  */
 void
@@ -685,7 +685,7 @@ libast_x_free_pixmap(const char *var, const char *filename, unsigned long line, 
  *                 being registered.
  * @param p        The Pixmap being registered.
  *
- * @see DOXGRP_MEM, IMLIB_REGISTER_PIXMAP()
+ * @see @link DOXGRP_MEM Memory Management Subsystem @endlink, IMLIB_REGISTER_PIXMAP()
  * @ingroup DOXGRP_MEM
  */
 void
@@ -719,7 +719,7 @@ libast_imlib_register_pixmap(const char *var, const char *filename, unsigned lon
  *                 being freed.
  * @param p        The Pixmap being freed.
  *
- * @see DOXGRP_MEM, IMLIB_FREE_PIXMAP()
+ * @see @link DOXGRP_MEM Memory Management Subsystem @endlink, IMLIB_FREE_PIXMAP()
  * @ingroup DOXGRP_MEM
  */
 void
@@ -743,7 +743,7 @@ libast_imlib_free_pixmap(const char *var, const char *filename, unsigned long li
  * This function simply calls memrec_dump_resources() and passes in
  * the address of the #pixmap_rec variable.
  *
- * @see DOXGRP_MEM, PIXMAP_DUMP(), memrec_dump_resources()
+ * @see @link DOXGRP_MEM Memory Management Subsystem @endlink, PIXMAP_DUMP(), memrec_dump_resources()
  * @ingroup DOXGRP_MEM
  */
 void
@@ -774,7 +774,7 @@ libast_dump_pixmap_tables(void)
  * @param gcv      Pointer to XGCValues structure.
  * @return         A newly-created GC.
  *
- * @see DOXGRP_MEM, X_CREATE_GC()
+ * @see @link DOXGRP_MEM Memory Management Subsystem @endlink, X_CREATE_GC()
  * @ingroup DOXGRP_MEM
  */
 GC
@@ -806,7 +806,7 @@ libast_x_create_gc(const char *filename, unsigned long line, Display * d, Drawab
  * @param d        The Display for the GC.
  * @param gc       The GC to be freed.
  *
- * @see DOXGRP_MEM, X_FREE_GC()
+ * @see @link DOXGRP_MEM Memory Management Subsystem @endlink, X_FREE_GC()
  * @ingroup DOXGRP_MEM
  */
 void
@@ -829,7 +829,7 @@ libast_x_free_gc(const char *var, const char *filename, unsigned long line, Disp
  * This function simply calls memrec_dump_resources() and passes in
  * the address of the #gc_rec variable.
  *
- * @see DOXGRP_MEM, GC_DUMP(), memrec_dump_resources()
+ * @see @link DOXGRP_MEM Memory Management Subsystem @endlink, GC_DUMP(), memrec_dump_resources()
  * @ingroup DOXGRP_MEM
  */
 void

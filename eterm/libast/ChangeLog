@@ -513,3 +513,7 @@ who'd like to get a sneak peak at them.  Please report any obvious
 errors, typos, etc.  Those with developer access, feel free to
 contribute or correct any errors or inconsistencies you find.
 ----------------------------------------------------------------------
+Sun Nov 23 15:57:55 2003                        Michael Jennings (mej)
+
+Cleanups required by doxygen 1.3.x.
+----------------------------------------------------------------------

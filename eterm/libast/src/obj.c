@@ -55,7 +55,7 @@ static const char cvs_ident[] = "$Id$";
  * comp, dup, and type.  Other classes may define other standard
  * functions.  (This is used for doing interface classes.)
  *
- * @see DOXGRP_OBJ
+ * @see @link DOXGRP_OBJ LibAST Object Infrastructure @endlink
  * @ingroup DOXGRP_OBJ
  */
 static SPIF_CONST_TYPE(class) o_class = {
@@ -77,7 +77,7 @@ static SPIF_CONST_TYPE(class) o_class = {
  * to the spif_const_class_t structure above.  This pointer value is
  * the very first thing stored in each * instance of an "obj."
  *
- * @see DOXGRP_OBJ
+ * @see @link DOXGRP_OBJ LibAST Object Infrastructure @endlink
  * @ingroup DOXGRP_OBJ
  */
 SPIF_TYPE(class) SPIF_CLASS_VAR(obj) = &o_class;
@@ -111,7 +111,7 @@ SPIF_TYPE(class) SPIF_CLASS_VAR(obj) = &o_class;
  *
  * @return A new @c obj instance.
  *
- * @see DOXGRP_OBJ
+ * @see @link DOXGRP_OBJ LibAST Object Infrastructure @endlink
  */
 spif_obj_t
 spif_obj_new(void)
@@ -133,7 +133,7 @@ spif_obj_new(void)
  * @param self The @c obj instance to be deleted.
  * @return     #TRUE if successful, #FALSE otherwise.
  *
- * @see DOXGRP_OBJ
+ * @see @link DOXGRP_OBJ LibAST Object Infrastructure @endlink
  * @ingroup DOXGRP_OBJ
  */
 spif_bool_t
@@ -164,7 +164,7 @@ spif_obj_del(spif_obj_t self)
  * @param self The @c obj instance to be initialized.
  * @return     #TRUE if successful, #FALSE otherwise.
  *
- * @see DOXGRP_OBJ
+ * @see @link DOXGRP_OBJ LibAST Object Infrastructure @endlink
  * @ingroup DOXGRP_OBJ
  */
 spif_bool_t
@@ -183,7 +183,7 @@ spif_obj_init(spif_obj_t self)
  * @param self The @c obj instance to be zeroed and reinitialized.
  * @return     #TRUE if successful, #FALSE otherwise.
  *
- * @see DOXGRP_OBJ
+ * @see @link DOXGRP_OBJ LibAST Object Infrastructure @endlink
  * @ingroup DOXGRP_OBJ
  */
 spif_bool_t
@@ -228,7 +228,7 @@ spif_obj_done(spif_obj_t self)
  * @return       The @c str object, or a new one if @a buff was NULL,
  *               describing @a self.
  *
- * @see DOXGRP_OBJ, SPIF_SHOW()
+ * @see @link DOXGRP_OBJ LibAST Object Infrastructure @endlink, SPIF_SHOW()
  * @ingroup DOXGRP_OBJ
  */
 spif_str_t
@@ -267,7 +267,7 @@ spif_obj_show(spif_obj_t self, spif_charptr_t name, spif_str_t buff, size_t inde
  * @return      A spif_cmp_t value representing the comparison of @a
  *              self and @a other.
  *
- * @see DOXGRP_OBJ, spif_str_comp(), spif_cmp_t, SPIF_CMP_FROM_INT()
+ * @see @link DOXGRP_OBJ LibAST Object Infrastructure @endlink, spif_str_comp(), spif_cmp_t, SPIF_CMP_FROM_INT()
  * @ingroup DOXGRP_OBJ
  */
 spif_cmp_t
@@ -293,7 +293,7 @@ spif_obj_comp(spif_obj_t self, spif_obj_t other)
  * @return     An exact duplicate of @a self which is identical to,
  *             but programmatically independent of, the original.
  *
- * @see DOXGRP_OBJ, spif_str_dup()
+ * @see @link DOXGRP_OBJ LibAST Object Infrastructure @endlink, spif_str_dup()
  * @ingroup DOXGRP_OBJ
  */
 spif_obj_t
@@ -317,7 +317,7 @@ spif_obj_dup(spif_obj_t self)
  * @param self The @c obj instance.
  * @return     The class name of @a self.
  *
- * @see DOXGRP_OBJ
+ * @see @link DOXGRP_OBJ LibAST Object Infrastructure @endlink
  * @ingroup DOXGRP_OBJ
  */
 spif_classname_t
@@ -343,7 +343,7 @@ spif_obj_type(spif_obj_t self)
  * @param self The @c obj instance.
  * @return     The object's class, or NULL if @a self is NULL.
  *
- * @see DOXGRP_OBJ
+ * @see @link DOXGRP_OBJ LibAST Object Infrastructure @endlink
  * @ingroup DOXGRP_OBJ
  */
 spif_class_t
@@ -370,7 +370,7 @@ spif_obj_get_class(spif_obj_t self)
  * @param cls  The @c class for the given instance.
  * @return     #TRUE if successful, #FALSE otherwise.
  *
- * @see DOXGRP_OBJ
+ * @see @link DOXGRP_OBJ LibAST Object Infrastructure @endlink
  * @ingroup DOXGRP_OBJ
  */
 spif_bool_t

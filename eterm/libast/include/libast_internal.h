@@ -130,7 +130,7 @@ typedef struct memrec_t_struct {
  * @param n      The name of the context.
  * @param i      An arbitrary counter variable.
  *
- * @see DOXGRP_CONF_CTX
+ * @see @link DOXGRP_CONF_CTX Context Handling @endlink
  * @ingroup DOXGRP_CONF_CTX
  */
 #define ctx_name_to_id(the_id, n, i) do { \
@@ -154,7 +154,7 @@ typedef struct memrec_t_struct {
  * @param id The context ID number.
  * @return   The name of the context.
  *
- * @see DOXGRP_CONF_CTX
+ * @see @link DOXGRP_CONF_CTX Context Handling @endlink
  * @ingroup DOXGRP_CONF_CTX
  */
 #define ctx_id_to_name(id)         (context[(id)].name)
@@ -168,7 +168,7 @@ typedef struct memrec_t_struct {
  * @param id The context ID number.
  * @return   The name of the context.
  *
- * @see DOXGRP_CONF_CTX
+ * @see @link DOXGRP_CONF_CTX Context Handling @endlink
  * @ingroup DOXGRP_CONF_CTX
  */
 #define ctx_id_to_func(id)         (context[(id)].handler)
@@ -294,7 +294,7 @@ typedef struct memrec_t_struct {
  * handlers (#ctx_handler_t).
  *
  * @bug This needs to be turned into a spif object class.
- * @see DOXGRP_CONF_CTX
+ * @see @link DOXGRP_CONF_CTX Context Handling @endlink
  * @ingroup DOXGRP_CONF_CTX
  */
 typedef struct ctx_t_struct {
@@ -327,7 +327,7 @@ typedef struct ctx_t_struct {
  * current context and its state information.
  *
  * @bug This needs to be turned into a spif object class.
- * @see DOXGRP_CONF_CTX
+ * @see @link DOXGRP_CONF_CTX Context Handling @endlink
  * @ingroup DOXGRP_CONF_CTX
  */
 typedef struct ctx_state_t_struct {
@@ -353,7 +353,7 @@ typedef struct ctx_state_t_struct {
  * built-in config file functions (%get(), %random(), etc.).
  *
  * @bug This needs to be turned into a spif object class.
- * @see DOXGRP_CONF_CTX
+ * @see @link DOXGRP_CONF_CTX Context Handling @endlink
  * @ingroup DOXGRP_CONF_CTX
  */
 typedef struct conf_func_t_struct {
@@ -380,7 +380,7 @@ typedef struct conf_func_t_struct {
  * functions.
  *
  * @bug This needs to be turned into a spif object class.
- * @see DOXGRP_CONF_CTX, builtin_get(), builtin_put()
+ * @see @link DOXGRP_CONF_CTX Context Handling @endlink, builtin_get(), builtin_put()
  * @ingroup DOXGRP_CONF_CTX
  */
 typedef struct conf_var_t_struct {
@@ -422,7 +422,7 @@ typedef struct conf_var_t_struct {
  * noting that behavior may be abnormal but that parsing will
  * continue.
  *
- * @see DOXGRP_OPT
+ * @see @link DOXGRP_OPT Command Line Option Parser @endlink
  * @ingroup DOXGRP_OPT
  */
 #define CHECK_BAD()  do { \

@@ -562,7 +562,7 @@ extern int re_exec();
  *
  * @param x A parenthesized argument list suitable for a printf-style
  *          function.
- * @see DOXGRP_DEBUG
+ * @see @link DOXGRP_DEBUG Debugging Subsystem @endlink
  * @ingroup DOXGRP_DEBUG
  */
 /**
@@ -574,7 +574,7 @@ extern int re_exec();
  *
  * @param x A parenthesized argument list suitable for a printf-style
  *          function.
- * @see DOXGRP_DEBUG
+ * @see @link DOXGRP_DEBUG Debugging Subsystem @endlink
  * @ingroup DOXGRP_DEBUG
  */
 /**
@@ -586,7 +586,7 @@ extern int re_exec();
  *
  * @param x A parenthesized argument list suitable for a printf-style
  *          function.
- * @see DOXGRP_DEBUG
+ * @see @link DOXGRP_DEBUG Debugging Subsystem @endlink
  * @ingroup DOXGRP_DEBUG
  */
 /**
@@ -598,7 +598,7 @@ extern int re_exec();
  *
  * @param x A parenthesized argument list suitable for a printf-style
  *          function.
- * @see DOXGRP_DEBUG
+ * @see @link DOXGRP_DEBUG Debugging Subsystem @endlink
  * @ingroup DOXGRP_DEBUG
  */
 /**
@@ -610,7 +610,7 @@ extern int re_exec();
  *
  * @param x A parenthesized argument list suitable for a printf-style
  *          function.
- * @see DOXGRP_DEBUG
+ * @see @link DOXGRP_DEBUG Debugging Subsystem @endlink
  * @ingroup DOXGRP_DEBUG
  */
 /**
@@ -622,7 +622,7 @@ extern int re_exec();
  *
  * @param x A parenthesized argument list suitable for a printf-style
  *          function.
- * @see DOXGRP_DEBUG
+ * @see @link DOXGRP_DEBUG Debugging Subsystem @endlink
  * @ingroup DOXGRP_DEBUG
  */
 /**
@@ -634,7 +634,7 @@ extern int re_exec();
  *
  * @param x A parenthesized argument list suitable for a printf-style
  *          function.
- * @see DOXGRP_DEBUG
+ * @see @link DOXGRP_DEBUG Debugging Subsystem @endlink
  * @ingroup DOXGRP_DEBUG
  */
 /**
@@ -646,7 +646,7 @@ extern int re_exec();
  *
  * @param x A parenthesized argument list suitable for a printf-style
  *          function.
- * @see DOXGRP_DEBUG
+ * @see @link DOXGRP_DEBUG Debugging Subsystem @endlink
  * @ingroup DOXGRP_DEBUG
  */
 /**
@@ -658,7 +658,7 @@ extern int re_exec();
  *
  * @param x A parenthesized argument list suitable for a printf-style
  *          function.
- * @see DOXGRP_DEBUG
+ * @see @link DOXGRP_DEBUG Debugging Subsystem @endlink
  * @ingroup DOXGRP_DEBUG
  */
 /**
@@ -670,7 +670,7 @@ extern int re_exec();
  *
  * @param x A parenthesized argument list suitable for a printf-style
  *          function.
- * @see DOXGRP_DEBUG
+ * @see @link DOXGRP_DEBUG Debugging Subsystem @endlink
  * @ingroup DOXGRP_DEBUG
  */
 #if DEBUG >= 1
@@ -711,12 +711,12 @@ extern int re_exec();
  *
  * @param x A parenthesized argument list suitable for a printf-style
  *          function.
- * @see DOXGRP_DEBUG
+ * @see @link DOXGRP_DEBUG Debugging Subsystem @endlink
  * @ingroup DOXGRP_DEBUG
  */
 #define D_NEVER(x)             NOP
 
-/** Set options debugging to level 1.  @see DOXGRP_DEBUG */
+/** Set options debugging to level 1.  @see @link DOXGRP_DEBUG Debugging Subsystem @endlink */
 #define DEBUG_OPTIONS          1
 /**
  * Option debugging macro.
@@ -725,7 +725,7 @@ extern int re_exec();
  * subsystem.  It maps to DPRINTF1() so that options-related debugging
  * output will occur at debug level 1 and higher.
  *
- * @see DOXGRP_DEBUG
+ * @see @link DOXGRP_DEBUG Debugging Subsystem @endlink
  * @ingroup DOXGRP_DEBUG
  */
 #if DEBUG >= DEBUG_OPTIONS
@@ -736,7 +736,7 @@ extern int re_exec();
 #  define D_OPTIONS(x)           NOP
 #endif
 
-/** Set object system debugging to level 2.  @see DOXGRP_DEBUG */
+/** Set object system debugging to level 2.  @see @link DOXGRP_DEBUG Debugging Subsystem @endlink */
 #define DEBUG_OBJ                2
 /**
  * Object debugging macro.
@@ -745,7 +745,7 @@ extern int re_exec();
  * subsystem.  It maps to DPRINTF2() so that object-related debugging
  * output will occur at debug level 2 and higher.
  *
- * @see DOXGRP_DEBUG
+ * @see @link DOXGRP_DEBUG Debugging Subsystem @endlink
  * @ingroup DOXGRP_DEBUG
  */
 #if DEBUG >= DEBUG_OBJ
@@ -756,7 +756,7 @@ extern int re_exec();
 #  define D_OBJ(x)               NOP
 #endif
 
-/** Set config file parser debugging to level 3.  @see DOXGRP_DEBUG */
+/** Set config file parser debugging to level 3.  @see @link DOXGRP_DEBUG Debugging Subsystem @endlink */
 #define DEBUG_CONF               3
 /**
  * Config file parser debugging macro.
@@ -765,7 +765,7 @@ extern int re_exec();
  * parser.  It maps to DPRINTF3() so that config-related debugging
  * output will occur at debug level 3 and higher.
  *
- * @see DOXGRP_DEBUG
+ * @see @link DOXGRP_DEBUG Debugging Subsystem @endlink
  * @ingroup DOXGRP_DEBUG
  */
 #if DEBUG >= DEBUG_CONF
@@ -776,7 +776,7 @@ extern int re_exec();
 #  define D_CONF(x)              NOP
 #endif
 
-/** Set memory allocation debugging to level 5.  @see DOXGRP_DEBUG */
+/** Set memory allocation debugging to level 5.  @see @link DOXGRP_DEBUG Debugging Subsystem @endlink */
 #define DEBUG_MEM                5
 /**
  * Memory allocation debugging macro.
@@ -785,7 +785,7 @@ extern int re_exec();
  * allocation subsystem.  It maps to DPRINTF1() so that mem-related
  * debugging output will occur at debug level 5 and higher.
  *
- * @see DOXGRP_DEBUG
+ * @see @link DOXGRP_DEBUG Debugging Subsystem @endlink
  * @ingroup DOXGRP_DEBUG
  */
 #if DEBUG >= DEBUG_MEM
@@ -796,7 +796,7 @@ extern int re_exec();
 #  define D_MEM(x)               NOP
 #endif
 
-/** Set strings module debugging to level 9999.  @see DOXGRP_DEBUG */
+/** Set strings module debugging to level 9999.  @see @link DOXGRP_DEBUG Debugging Subsystem @endlink */
 #define DEBUG_STRINGS            9999
 /**
  * String routine debugging macro.
@@ -805,7 +805,7 @@ extern int re_exec();
  * manipulation subsystem.  It maps to D_NEVER() so that
  * string-related debugging output can only be activated manually.
  *
- * @see DOXGRP_DEBUG
+ * @see @link DOXGRP_DEBUG Debugging Subsystem @endlink
  * @ingroup DOXGRP_DEBUG
  */
 #if DEBUG >= DEBUG_STRINGS
@@ -815,7 +815,7 @@ extern int re_exec();
 #  define D_STRINGS_IF           if (0)
 #  define D_STRINGS(x)           NOP
 #endif
-/** Set lexer/parser debugging to level 9999.  @see DOXGRP_DEBUG */
+/** Set lexer/parser debugging to level 9999.  @see @link DOXGRP_DEBUG Debugging Subsystem @endlink */
 #define DEBUG_PARSE              9999
 /**
  * Lexer/parser debugging macro.
@@ -824,7 +824,7 @@ extern int re_exec();
  * portion of the config parser.  It maps to D_NEVER() so that
  * parser-related debugging output can only be activated manually.
  *
- * @see DOXGRP_DEBUG
+ * @see @link DOXGRP_DEBUG Debugging Subsystem @endlink
  * @ingroup DOXGRP_DEBUG
  */
 #if DEBUG >= DEBUG_PARSE
@@ -850,7 +850,7 @@ extern int re_exec();
  *
  * @param sz The size in bytes of the block of memory to allocate.
  * @return A pointer to the allocated memory.
- * @see DOXGRP_MEM
+ * @see @link DOXGRP_MEM Memory Management Subsystem @endlink
  * @ingroup DOXGRP_MEM
  */
 /**
@@ -867,7 +867,7 @@ extern int re_exec();
  * @param type The type of object to be allocated (e.g., int).
  * @param n    The number of objects to be allocated.
  * @return A pointer to the allocated memory.
- * @see DOXGRP_MEM
+ * @see @link DOXGRP_MEM Memory Management Subsystem @endlink
  * @ingroup DOXGRP_MEM
  */
 /**
@@ -885,7 +885,7 @@ extern int re_exec();
  * @param sz  The new size, in bytes, to be allocated.
  * @return The new pointer value, which may or may not differ from the
  *         old value.
- * @see DOXGRP_MEM
+ * @see @link DOXGRP_MEM Memory Management Subsystem @endlink
  * @ingroup DOXGRP_MEM
  */
 /**
@@ -899,7 +899,7 @@ extern int re_exec();
  * the value of NULL after it has been freed.
  *
  * @param ptr The pointer to be freed.
- * @see DOXGRP_MEM
+ * @see @link DOXGRP_MEM Memory Management Subsystem @endlink
  * @ingroup DOXGRP_MEM
  */
 /**
@@ -915,7 +915,7 @@ extern int re_exec();
  *
  * @param s The string to duplicate.
  * @return A pointer to the newly-created copy.
- * @see DOXGRP_MEM
+ * @see @link DOXGRP_MEM Memory Management Subsystem @endlink
  * @ingroup DOXGRP_MEM
  */
 /**
@@ -932,7 +932,7 @@ extern int re_exec();
  * a sample of the output in the
  * @link mem_example.c memory management system example @endlink.
  *
- * @see DOXGRP_MEM
+ * @see @link DOXGRP_MEM Memory Management Subsystem @endlink
  * @ingroup DOXGRP_MEM
  */
 /**
@@ -951,7 +951,7 @@ extern int re_exec();
  * @param h     The height in pixels of the pixmap.
  * @param depth The color depth for the pixmap.
  * @return The Pixmap ID for the new pixmap.
- * @see DOXGRP_MEM
+ * @see @link DOXGRP_MEM Memory Management Subsystem @endlink
  * @ingroup DOXGRP_MEM
  */
 /**
@@ -965,7 +965,7 @@ extern int re_exec();
  *
  * @param d The X display connection.
  * @param p The Pixmap to be freed.
- * @see DOXGRP_MEM
+ * @see @link DOXGRP_MEM Memory Management Subsystem @endlink
  * @ingroup DOXGRP_MEM
  */
 /**
@@ -980,7 +980,7 @@ extern int re_exec();
  * Imlib2 support has been enabled.  Otherwise, it's a NOP().
  *
  * @param p The Pixmap Imlib2 created.
- * @see DOXGRP_MEM
+ * @see @link DOXGRP_MEM Memory Management Subsystem @endlink
  * @ingroup DOXGRP_MEM
  */
 /**
@@ -992,7 +992,7 @@ extern int re_exec();
  * Imlib2 support has been enabled.  Otherwise, it's a NOP().
  *
  * @param p The Imlib2-generated Pixmap to be freed.
- * @see DOXGRP_MEM
+ * @see @link DOXGRP_MEM Memory Management Subsystem @endlink
  * @ingroup DOXGRP_MEM
  */
 /**
@@ -1004,7 +1004,7 @@ extern int re_exec();
  * pixmaps.  Like MALLOC_DUMP(), this macro is a NOP() if memory
  * debugging support has not been compiled into LibAST.
  *
- * @see DOXGRP_MEM
+ * @see @link DOXGRP_MEM Memory Management Subsystem @endlink
  * @ingroup DOXGRP_MEM
  */
 /**
@@ -1022,7 +1022,7 @@ extern int re_exec();
  *            values.
  * @param gcv The GCValues structure defining properties of the GC.
  * @return The ID of the new GC.
- * @see DOXGRP_MEM
+ * @see @link DOXGRP_MEM Memory Management Subsystem @endlink
  * @ingroup DOXGRP_MEM
  */
 /**
@@ -1036,7 +1036,7 @@ extern int re_exec();
  *
  * @param d  The X display connection.
  * @param gc The graphics context object to free.
- * @see DOXGRP_MEM
+ * @see @link DOXGRP_MEM Memory Management Subsystem @endlink
  * @ingroup DOXGRP_MEM
  */
 /**
@@ -1048,7 +1048,7 @@ extern int re_exec();
  * GC's.  Like MALLOC_DUMP(), this macro is a NOP() if memory
  * debugging support has not been compiled into LibAST.
  *
- * @see DOXGRP_MEM
+ * @see @link DOXGRP_MEM Memory Management Subsystem @endlink
  * @ingroup DOXGRP_MEM
  */
 /**
@@ -1061,7 +1061,7 @@ extern int re_exec();
  * MALLOC_CALL_DEBUG must be defined when compiling LibAST, in
  * addition to memory debugging, for this feature to work.
  *
- * @see DOXGRP_MEM
+ * @see @link DOXGRP_MEM Memory Management Subsystem @endlink
  * @ingroup DOXGRP_MEM
  */
 /**
@@ -1074,7 +1074,7 @@ extern int re_exec();
  * Note that MALLOC_CALL_DEBUG must be defined when compiling LibAST,
  * in addition to memory debugging, for this feature to work.
  *
- * @see DOXGRP_MEM
+ * @see @link DOXGRP_MEM Memory Management Subsystem @endlink
  * @ingroup DOXGRP_MEM
  */
 /**
@@ -1087,7 +1087,7 @@ extern int re_exec();
  * MALLOC_CALL_DEBUG must be defined when compiling LibAST, in
  * addition to memory debugging, for this feature to work.
  *
- * @see DOXGRP_MEM
+ * @see @link DOXGRP_MEM Memory Management Subsystem @endlink
  * @ingroup DOXGRP_MEM
  */
 /**
@@ -1100,7 +1100,7 @@ extern int re_exec();
  * MALLOC_CALL_DEBUG must be defined when compiling LibAST, in
  * addition to memory debugging, for this feature to work.
  *
- * @see DOXGRP_MEM
+ * @see @link DOXGRP_MEM Memory Management Subsystem @endlink
  * @ingroup DOXGRP_MEM
  */
 #if (DEBUG >= DEBUG_MEM)
@@ -1175,7 +1175,7 @@ extern int re_exec();
  * @param c     The value to which all bytes in the block will be
  *              set.
  * @param count The size, in bytes, of the memory region.
- * @see DOXGRP_MEM
+ * @see @link DOXGRP_MEM Memory Management Subsystem @endlink
  * @ingroup DOXGRP_MEM
  */
 #define MEMSET(s, c, count) do { \
@@ -1230,7 +1230,7 @@ extern int re_exec();
  * @param x The literal string (i.e., a fixed string in quotes, like
  *          "this.").
  * @return The length of the string.
- * @see DOXGRP_STRINGS
+ * @see @link DOXGRP_STRINGS String Utility Routines @endlink
  * @ingroup DOXGRP_STRINGS
  */
 #define CONST_STRLEN(x)            (sizeof(x) - 1)
@@ -1249,7 +1249,7 @@ extern int re_exec();
  * @param constr A literal string representing what should be the
  *               beginning of @a s.
  * @return See above.
- * @see DOXGRP_STRINGS
+ * @see @link DOXGRP_STRINGS String Utility Routines @endlink
  * @ingroup DOXGRP_STRINGS
  */
 #define BEG_STRCASECMP(s, constr)  (strncasecmp(s, constr, CONST_STRLEN(constr)))
@@ -1267,7 +1267,7 @@ extern int re_exec();
  * 255.  So if PATH_MAX is defined to be less than 255 (like HP-UX and
  * its absolutely ludicrous value of 14), LibAST forceably redefines
  * it to be 255.
- * @see DOXGRP_CONF
+ * @see @link DOXGRP_CONF Configuration File Parser @endlink
  * @ingroup DOXGRP_CONF
  */
 #if defined(PATH_MAX) && (PATH_MAX < 255)
@@ -1282,7 +1282,7 @@ extern int re_exec();
  *
  * At no time during parsing can any line in a config file exceed this
  * length (20 kB by default).
- * @see DOXGRP_CONF
+ * @see @link DOXGRP_CONF Configuration File Parser @endlink
  * @ingroup DOXGRP_CONF
  */
 #define CONFIG_BUFF                     20480
@@ -1294,7 +1294,7 @@ extern int re_exec();
  * parser when the @c begin statement for that context is
  * encountered.
  *
- * @see DOXGRP_CONF
+ * @see @link DOXGRP_CONF Configuration File Parser @endlink
  * @ingroup DOXGRP_CONF
  */
 #define CONF_BEGIN_CHAR                 '\001'
@@ -1303,7 +1303,7 @@ extern int re_exec();
  *
  * This is the string representation of CONF_BEGIN_CHAR.
  *
- * @see DOXGRP_CONF
+ * @see @link DOXGRP_CONF Configuration File Parser @endlink
  * @ingroup DOXGRP_CONF
  */
 #define CONF_BEGIN_STRING               "\001"
@@ -1313,7 +1313,7 @@ extern int re_exec();
  * This is the special character value passed to a config context
  * parser when the @c end statement for that context is encountered.
  *
- * @see DOXGRP_CONF
+ * @see @link DOXGRP_CONF Configuration File Parser @endlink
  * @ingroup DOXGRP_CONF
  */
 #define CONF_END_CHAR                   '\002'
@@ -1322,7 +1322,7 @@ extern int re_exec();
  *
  * This is the string representation of CONF_END_CHAR.
  *
- * @see DOXGRP_CONF
+ * @see @link DOXGRP_CONF Configuration File Parser @endlink
  * @ingroup DOXGRP_CONF
  */
 #define CONF_END_STRING                 "\002"
@@ -1335,7 +1335,7 @@ extern int re_exec();
  *
  * @param s String value of a boolean option.
  * @return Non-zero if a match is found, zero if not.
- * @see DOXGRP_CONF
+ * @see @link DOXGRP_CONF Configuration File Parser @endlink
  * @ingroup DOXGRP_CONF
  */
 #define BOOL_OPT_ISTRUE(s)  (!strcasecmp((s), true_vals[0]) || !strcasecmp((s), true_vals[1]) \
@@ -1348,7 +1348,7 @@ extern int re_exec();
  *
  * @param s String value of a boolean option.
  * @return Non-zero if a match is found, zero if not.
- * @see DOXGRP_CONF
+ * @see @link DOXGRP_CONF Configuration File Parser @endlink
  * @ingroup DOXGRP_CONF
  */
 #define BOOL_OPT_ISFALSE(s) (!strcasecmp((s), false_vals[0]) || !strcasecmp((s), false_vals[1]) \
@@ -1360,7 +1360,7 @@ extern int re_exec();
  * This symbol represents the bit in the FSS flags which specifies
  * that the parser should skip the rest of the file.
  *
- * @see DOXGRP_CONF_FSS
+ * @see @link DOXGRP_CONF_FSS File State Stack @endlink
  * @ingroup DOXGRP_CONF_FSS
  */
 #define FILE_SKIP_TO_END           (0x01)
@@ -1370,7 +1370,7 @@ extern int re_exec();
  * This symbol represents the bit in the FSS flags which specifies
  * that this file should be preprocessed.
  *
- * @see DOXGRP_CONF_FSS
+ * @see @link DOXGRP_CONF_FSS File State Stack @endlink
  * @ingroup DOXGRP_CONF_FSS
  */
 #define FILE_PREPROC               (0x02)
@@ -1388,7 +1388,7 @@ extern int re_exec();
  * @param o  The output file name (for preprocessing).
  * @param l  The current line number for the file.
  * @param fl The flag set for the file.
- * @see DOXGRP_CONF_FSS
+ * @see @link DOXGRP_CONF_FSS File State Stack @endlink
  * @ingroup DOXGRP_CONF_FSS
  */
 #define file_push(f, p, o, l, fl)  conf_register_fstate(f, p, o, l, fl)
@@ -1399,7 +1399,7 @@ extern int re_exec();
  * call to this macro occurs once the parsing of the current file is
  * completed.
  *
- * @see DOXGRP_CONF_FSS
+ * @see @link DOXGRP_CONF_FSS File State Stack @endlink
  * @ingroup DOXGRP_CONF_FSS
  */
 #define file_pop()                 (fstate_idx--)
@@ -1410,7 +1410,7 @@ extern int re_exec();
  * top of the stack.
  *
  * @return The file state structure atop the stack.
- * @see DOXGRP_CONF_FSS
+ * @see @link DOXGRP_CONF_FSS File State Stack @endlink
  * @ingroup DOXGRP_CONF_FSS
  */
 #define file_peek()                (fstate[fstate_idx])
@@ -1421,7 +1421,7 @@ extern int re_exec();
  * file currently being parsed.
  *
  * @return The current file pointer.
- * @see DOXGRP_CONF_FSS
+ * @see @link DOXGRP_CONF_FSS File State Stack @endlink
  * @ingroup DOXGRP_CONF_FSS
  */
 #define file_peek_fp()             (fstate[fstate_idx].fp)
@@ -1431,7 +1431,7 @@ extern int re_exec();
  * This macro returns the path for the file currently being parsed.
  *
  * @return The path of the current file.
- * @see DOXGRP_CONF_FSS
+ * @see @link DOXGRP_CONF_FSS File State Stack @endlink
  * @ingroup DOXGRP_CONF_FSS
  */
 #define file_peek_path()           (fstate[fstate_idx].path)
@@ -1442,7 +1442,7 @@ extern int re_exec();
  * currently being parsed.
  *
  * @return The path of the current preproc output file.
- * @see DOXGRP_CONF_FSS
+ * @see @link DOXGRP_CONF_FSS File State Stack @endlink
  * @ingroup DOXGRP_CONF_FSS
  */
 #define file_peek_outfile()        (fstate[fstate_idx].outfile)
@@ -1453,7 +1453,7 @@ extern int re_exec();
  * config file.
  *
  * @return The line number of the current file.
- * @see DOXGRP_CONF_FSS
+ * @see @link DOXGRP_CONF_FSS File State Stack @endlink
  * @ingroup DOXGRP_CONF_FSS
  */
 #define file_peek_line()           (fstate[fstate_idx].line)
@@ -1465,7 +1465,7 @@ extern int re_exec();
  * non-zero if the parser is skipping to its end.
  *
  * @return The skip-to-end flag for the current file.
- * @see DOXGRP_CONF_FSS
+ * @see @link DOXGRP_CONF_FSS File State Stack @endlink
  * @ingroup DOXGRP_CONF_FSS
  */
 #define file_peek_skip()           (fstate[fstate_idx].flags & FILE_SKIP_TO_END)
@@ -1476,7 +1476,7 @@ extern int re_exec();
  * and non-zero if it was.
  *
  * @return The preprocessing flag for the current file.
- * @see DOXGRP_CONF_FSS
+ * @see @link DOXGRP_CONF_FSS File State Stack @endlink
  * @ingroup DOXGRP_CONF_FSS
  */
 #define file_peek_preproc()        (fstate[fstate_idx].flags & FILE_PREPROC)
@@ -1486,7 +1486,7 @@ extern int re_exec();
  *
  * @internal
  * @param f The file pointer (FILE *).
- * @see DOXGRP_CONF_FSS
+ * @see @link DOXGRP_CONF_FSS File State Stack @endlink
  * @ingroup DOXGRP_CONF_FSS
  */
 #define file_poke_fp(f)            ((fstate[fstate_idx].fp) = (f))
@@ -1495,7 +1495,7 @@ extern int re_exec();
  *
  * @internal
  * @param p The path.
- * @see DOXGRP_CONF_FSS
+ * @see @link DOXGRP_CONF_FSS File State Stack @endlink
  * @ingroup DOXGRP_CONF_FSS
  */
 #define file_poke_path(p)          ((fstate[fstate_idx].path) = (p))
@@ -1504,7 +1504,7 @@ extern int re_exec();
  *
  * @internal
  * @param o The outfile.
- * @see DOXGRP_CONF_FSS
+ * @see @link DOXGRP_CONF_FSS File State Stack @endlink
  * @ingroup DOXGRP_CONF_FSS
  */
 #define file_poke_outfile(o)       ((fstate[fstate_idx].outfile) = (o))
@@ -1513,7 +1513,7 @@ extern int re_exec();
  *
  * @internal
  * @param l The line number.
- * @see DOXGRP_CONF_FSS
+ * @see @link DOXGRP_CONF_FSS File State Stack @endlink
  * @ingroup DOXGRP_CONF_FSS
  */
 #define file_poke_line(l)          ((fstate[fstate_idx].line) = (l))
@@ -1521,7 +1521,7 @@ extern int re_exec();
  * Set the skip-to-end flag for the current file.
  *
  * @internal
- * @see DOXGRP_CONF_FSS
+ * @see @link DOXGRP_CONF_FSS File State Stack @endlink
  * @ingroup DOXGRP_CONF_FSS
  */
 #define file_skip_to_end()         ((fstate[fstate_idx].flags) |= (FILE_SKIP_TO_END))
@@ -1530,7 +1530,7 @@ extern int re_exec();
  *
  * @internal
  * @param s 0 to clear, non-zero to set.
- * @see DOXGRP_CONF_FSS
+ * @see @link DOXGRP_CONF_FSS File State Stack @endlink
  * @ingroup DOXGRP_CONF_FSS
  */
 #define file_poke_skip(s)          do {if (s) {fstate[fstate_idx].flags |= FILE_SKIP_TO_END;} else {fstate[fstate_idx].flags &= ~(FILE_SKIP_TO_END);} } while (0)
@@ -1539,7 +1539,7 @@ extern int re_exec();
  *
  * @internal
  * @param s 0 to clear, non-zero to set.
- * @see DOXGRP_CONF_FSS
+ * @see @link DOXGRP_CONF_FSS File State Stack @endlink
  * @ingroup DOXGRP_CONF_FSS
  */
 #define file_poke_preproc(s)       do {if (s) {fstate[fstate_idx].flags |= FILE_PREPROC;} else {fstate[fstate_idx].flags &= ~(FILE_PREPROC);} } while (0)
@@ -1552,7 +1552,7 @@ extern int re_exec();
  * @param o  The outfile.
  * @param l  The line number.
  * @param fl The flags.
- * @see DOXGRP_CONF_FSS
+ * @see @link DOXGRP_CONF_FSS File State Stack @endlink
  * @ingroup DOXGRP_CONF_FSS
  */
 #define file_poke(f, p, o, l, fl)  do {file_poke_fp(f); file_poke_path(p); file_poke_outfile(o); file_poke_line(l); fstate[fstate_idx].flags = (fl);} while (0)
@@ -1561,7 +1561,7 @@ extern int re_exec();
  * Increment the line number for the current file.
  *
  * @internal
- * @see DOXGRP_CONF_FSS
+ * @see @link DOXGRP_CONF_FSS File State Stack @endlink
  * @ingroup DOXGRP_CONF_FSS
  */
 #define file_inc_line()            (fstate[fstate_idx].line++)
@@ -1573,7 +1573,7 @@ extern int re_exec();
  * state stack.  One of these structures is present on the stack for
  * each file being parsed.
  *
- * @see DOXGRP_CONF_FSS
+ * @see @link DOXGRP_CONF_FSS File State Stack @endlink
  * @ingroup DOXGRP_CONF_FSS
  */
 typedef struct file_state_struct {
@@ -1623,7 +1623,7 @@ typedef struct file_state_struct {
  * next invocation of the handler as the aforementioned state
  * information parameter.
  *
- * @see DOXGRP_CONF_CTX
+ * @see @link DOXGRP_CONF_CTX Context Handling @endlink
  * @ingroup DOXGRP_CONF_CTX
  */
 typedef void * (*ctx_handler_t)(char *, void *);
@@ -1638,7 +1638,7 @@ typedef void * (*ctx_handler_t)(char *, void *);
  * built-in function in the config file.  They return a char *, the
  * result string to substitute for the function call.
  *
- * @see DOXGRP_CONF
+ * @see @link DOXGRP_CONF Configuration File Parser @endlink
  * @ingroup DOXGRP_CONF
  */
 typedef char * (*conf_func_ptr_t) (char *);
@@ -2437,7 +2437,7 @@ extern const char *true_vals[], *false_vals[];
  * declared as returning void (and in reality does not return at all)
  * and should take either no parameters, or a single char * parameter.
  *
- * @see DOXGRP_OPT, SPIFOPT_HELPHANDLER_SET()
+ * @see @link DOXGRP_OPT Command Line Option Parser @endlink, SPIFOPT_HELPHANDLER_SET()
  * @ingroup DOXGRP_OPT
  */
 typedef void (*spifopt_helphandler_t)();
@@ -2452,7 +2452,7 @@ typedef void (*spifopt_helphandler_t)();
  * declared as returning void and should take a single char *
  * parameter (the value of the option, or NULL if it had no value).
  *
- * @see DOXGRP_OPT
+ * @see @link DOXGRP_OPT Command Line Option Parser @endlink
  * @ingroup DOXGRP_OPT
  */
 typedef void (*spifopt_abstract_handler_t)(char *);
@@ -2474,7 +2474,7 @@ typedef void (*spifopt_abstract_handler_t)(char *);
  * macros!  Consult the macro documentation and the example code for
  * further assistance.
  *
- * @see DOXGRP_OPT, @link opt_example.c example code @endlink
+ * @see @link DOXGRP_OPT Command Line Option Parser @endlink, @link opt_example.c example code @endlink
  * @ingroup DOXGRP_OPT
  */
 typedef struct spifopt_t_struct {
@@ -2533,7 +2533,7 @@ typedef struct spifopt_t_struct {
  * macros!  Consult the macro documentation and the example code for
  * further assistance.
  *
- * @see DOXGRP_OPT, @link opt_example.c example code @endlink
+ * @see @link DOXGRP_OPT Command Line Option Parser @endlink, @link opt_example.c example code @endlink
  * @ingroup DOXGRP_OPT
  */
 typedef struct spifopt_settings_t_struct {

@@ -64,7 +64,7 @@
  * @return  The @c struct keyword followed by the structure name for
  *          the specified object type.
  *
- * @see DOXGRP_OBJ, SPIF_DECL_OBJ(), SPIF_DECL_TYPE()
+ * @see @link DOXGRP_OBJ LibAST Object Infrastructure @endlink, SPIF_DECL_OBJ(), SPIF_DECL_TYPE()
  */
 #define SPIF_DECL_OBJ_STRUCT(t)  struct spif_ ## t ## _t_struct
 
@@ -83,7 +83,7 @@
  * @param t The object type as a non-quoted string (e.g., obj).
  * @return  An appropriate @c typedef and @c struct introducer.
  *
- * @see DOXGRP_OBJ, SPIF_DECL_TYPE(), SPIF_DECL_OBJ_STRUCT()
+ * @see @link DOXGRP_OBJ LibAST Object Infrastructure @endlink, SPIF_DECL_TYPE(), SPIF_DECL_OBJ_STRUCT()
  */
 #define SPIF_DECL_OBJ(t)  SPIF_DECL_TYPE(t, SPIF_DECL_OBJ_STRUCT(t)); SPIF_DECL_OBJ_STRUCT(t)
 /**
@@ -101,7 +101,7 @@
  *
  * @param t The object type as a non-quoted string (e.g., obj).
  *
- * @see DOXGRP_OBJ, SPIF_CONST_TYPE()
+ * @see @link DOXGRP_OBJ LibAST Object Infrastructure @endlink, SPIF_CONST_TYPE()
  */
 #define SPIF_DECL_PARENT_TYPE(t)  SPIF_CONST_TYPE(t) parent
 
@@ -116,7 +116,7 @@
  * @param type The object type as a non-quoted string (e.g., obj).
  * @return     The class variable for the given type.
  *
- * @see DOXGRP_OBJ
+ * @see @link DOXGRP_OBJ LibAST Object Infrastructure @endlink
  */
 #define SPIF_CLASS_VAR(type)  spif_ ## type ## _class
 
@@ -130,7 +130,7 @@
  * @param type The type of the property variable.
  * @param name The name of the property.
  *
- * @see DOXGRP_OBJ
+ * @see @link DOXGRP_OBJ LibAST Object Infrastructure @endlink
  */
 #define SPIF_DECL_PROPERTY(type, name)  SPIF_TYPE(type) name
 
@@ -143,7 +143,7 @@
  * @param type The C type of the property variable.
  * @param name The name of the property.
  *
- * @see DOXGRP_OBJ, SPIF_DECL_PROPERTY()
+ * @see @link DOXGRP_OBJ LibAST Object Infrastructure @endlink, SPIF_DECL_PROPERTY()
  */
 #define SPIF_DECL_PROPERTY_C(type, name)  type name
 
@@ -157,7 +157,7 @@
  * @param vtype The type of the property variable.
  * @param name  The name of the property.
  *
- * @see DOXGRP_OBJ
+ * @see @link DOXGRP_OBJ LibAST Object Infrastructure @endlink
  */
 #define SPIF_DECL_PROPERTY_FUNC(otype, vtype, name)  \
   extern SPIF_TYPE(vtype) spif_ ## otype ## _get_ ## name (SPIF_TYPE(otype)); \
@@ -173,7 +173,7 @@
  * @param vtype The C type of the property variable.
  * @param name  The name of the property.
  *
- * @see DOXGRP_OBJ, SPIF_DECL_PROPERTY_FUNC()
+ * @see @link DOXGRP_OBJ LibAST Object Infrastructure @endlink, SPIF_DECL_PROPERTY_FUNC()
  */
 #define SPIF_DECL_PROPERTY_FUNC_C(otype, vtype, name)  \
   extern vtype spif_ ## otype ## _get_ ## name (SPIF_TYPE(otype)); \
@@ -189,7 +189,7 @@
  * @param vtype The type of the property variable.
  * @param name  The name of the property.
  *
- * @see DOXGRP_OBJ
+ * @see @link DOXGRP_OBJ LibAST Object Infrastructure @endlink
  */
 #define SPIF_DEFINE_PROPERTY_FUNC(otype, vtype, name)  \
   SPIF_TYPE(vtype) spif_ ## otype ## _get_ ## name (SPIF_TYPE(otype) self) \
@@ -216,7 +216,7 @@
  * @param vtype The type of the property variable.
  * @param name  The name of the property.
  *
- * @see DOXGRP_OBJ, SPIF_DEFINE_PROPERTY_FUNC()
+ * @see @link DOXGRP_OBJ LibAST Object Infrastructure @endlink, SPIF_DEFINE_PROPERTY_FUNC()
  */
 #define SPIF_DEFINE_PROPERTY_FUNC_NONOBJ(otype, vtype, name)  \
   SPIF_TYPE(vtype) spif_ ## otype ## _get_ ## name (SPIF_TYPE(otype) self) \
@@ -237,7 +237,7 @@
  * @param vtype The C type of the property variable.
  * @param name  The name of the property.
  *
- * @see DOXGRP_OBJ, SPIF_DEFINE_PROPERTY_FUNC()
+ * @see @link DOXGRP_OBJ LibAST Object Infrastructure @endlink, SPIF_DEFINE_PROPERTY_FUNC()
  */
 #define SPIF_DEFINE_PROPERTY_FUNC_C(otype, vtype, name)  \
   vtype spif_ ## otype ## _get_ ## name (SPIF_TYPE(otype) self) \
@@ -281,7 +281,7 @@
  * @param cls An arbitrary class object.
  * @return    The class object cast to the generic type.
  *
- * @see DOXGRP_OBJ, SPIF_OBJ_CLASS(), SPIF_CAST()
+ * @see @link DOXGRP_OBJ LibAST Object Infrastructure @endlink, SPIF_OBJ_CLASS(), SPIF_CAST()
  */
 #define SPIF_CLASS(cls)                  (SPIF_CAST(class) (cls))
 
@@ -294,7 +294,7 @@
  * @param cls An arbitrary class object.
  * @return    The class object cast to the generic type.
  *
- * @see DOXGRP_OBJ, SPIF_CLASS(), SPIF_CONST_CAST()
+ * @see @link DOXGRP_OBJ LibAST Object Infrastructure @endlink, SPIF_CLASS(), SPIF_CONST_CAST()
  */
 #define SPIF_CONST_CLASS(cls)            (SPIF_CONST_CAST(class) (cls))
 
@@ -311,7 +311,7 @@
  * @param o An object of any valid type.
  * @return  A generic object reference to that object.
  *
- * @see DOXGRP_OBJ, SPIF_CAST()
+ * @see @link DOXGRP_OBJ LibAST Object Infrastructure @endlink, SPIF_CAST()
  */
 #define SPIF_OBJ(o)                    (SPIF_CAST(obj) (o))
 /*@}*/
@@ -345,7 +345,7 @@
  * @param o The object to test.
  * @return  Whether or not the object is of type "obj."
  *
- * @see DOXGRP_OBJ, SPIF_OBJ_IS_TYPE()
+ * @see @link DOXGRP_OBJ LibAST Object Infrastructure @endlink, SPIF_OBJ_IS_TYPE()
  */
 #define SPIF_OBJ_IS_OBJ(o)               (SPIF_OBJ_IS_TYPE(o, obj))
 
@@ -363,7 +363,7 @@
  * @param o The object to test.
  * @return  Whether or not the object is NULL.
  *
- * @see DOXGRP_OBJ, SPIF_OBJ(), SPIF_NULL_TYPE()
+ * @see @link DOXGRP_OBJ LibAST Object Infrastructure @endlink, SPIF_OBJ(), SPIF_NULL_TYPE()
  */
 #define SPIF_OBJ_ISNULL(o)               (SPIF_OBJ(o) == SPIF_NULL_TYPE(obj))
 
@@ -382,7 +382,7 @@
  * @param type The type to check for.
  * @return     Whether or not @a o is of type @a type.
  *
- * @see DOXGRP_OBJ, SPIF_OBJ_ISNULL(), SPIF_OBJ_CLASS(),
+ * @see @link DOXGRP_OBJ LibAST Object Infrastructure @endlink, SPIF_OBJ_ISNULL(), SPIF_OBJ_CLASS(),
  *      SPIF_CLASS_VAR(), SPIF_OBJ_CHECK_TYPE()
  */
 #define SPIF_OBJ_IS_TYPE(o, type)        ((!SPIF_OBJ_ISNULL(o)) && (SPIF_OBJ_CLASS(o) == SPIF_CLASS_VAR(type)))
@@ -401,7 +401,7 @@
  * @param type The type to check for.
  * @return     Whether or not @a o is of type @a type.
  *
- * @see DOXGRP_OBJ, SPIF_OBJ_ISNULL(), SPIF_OBJ_IS_TYPE()
+ * @see @link DOXGRP_OBJ LibAST Object Infrastructure @endlink, SPIF_OBJ_ISNULL(), SPIF_OBJ_IS_TYPE()
  */
 #if DEBUG == 0
 #  define SPIF_OBJ_CHECK_TYPE(o, type)   (1)
@@ -442,7 +442,7 @@
  * @param obj An object of arbitrary/unknown type.
  * @return    The class object for the given object.
  *
- * @see DOXGRP_OBJ, SPIF_CLASS(), SPIF_OBJ()
+ * @see @link DOXGRP_OBJ LibAST Object Infrastructure @endlink, SPIF_CLASS(), SPIF_OBJ()
  */
 #define SPIF_OBJ_CLASS(obj)              (SPIF_CLASS(SPIF_OBJ(obj)->cls))
 
@@ -458,7 +458,7 @@
  * @return    The class name (as a spif_classname_t) for the given
  *            object.
  *
- * @see DOXGRP_OBJ, SPIF_OBJ_CLASS()
+ * @see @link DOXGRP_OBJ LibAST Object Infrastructure @endlink, SPIF_OBJ_CLASS()
  */
 #define SPIF_OBJ_CLASSNAME(obj)          (SPIF_CAST(classname) SPIF_OBJ_CLASS(obj))
 
@@ -480,7 +480,7 @@
  * @param meth The name of the method to call.
  * @return     A pointer to the specified method for that object.
  *
- * @see DOXGRP_OBJ, SPIF_OBJ_CLASS()
+ * @see @link DOXGRP_OBJ LibAST Object Infrastructure @endlink, SPIF_OBJ_CLASS()
  */
 #define SPIF_OBJ_CALL_METHOD(obj, meth)  SPIF_OBJ_CLASS(obj)->meth
 
@@ -492,7 +492,7 @@
  *
  * @return An allocated object of type "obj."
  *
- * @see DOXGRP_OBJ, spif_obj_new()
+ * @see @link DOXGRP_OBJ LibAST Object Infrastructure @endlink, spif_obj_new()
  */
 #define SPIF_OBJ_NEW()                   SPIF_CAST(obj) (SPIF_CLASS(SPIF_CLASS_VAR(obj)))->(noo)()
 
@@ -505,7 +505,7 @@
  * @param o An already-allocated object.
  * @return  #TRUE if successful, #FALSE otherwise.
  *
- * @see DOXGRP_OBJ, spif_obj_init()
+ * @see @link DOXGRP_OBJ LibAST Object Infrastructure @endlink, spif_obj_init()
  */
 #define SPIF_OBJ_INIT(o)                 SPIF_CAST(bool) (SPIF_OBJ_CALL_METHOD((o), init)(o))
 
@@ -518,7 +518,7 @@
  * @param o An object.
  * @return  #TRUE if successful, #FALSE otherwise.
  *
- * @see DOXGRP_OBJ, spif_obj_done()
+ * @see @link DOXGRP_OBJ LibAST Object Infrastructure @endlink, spif_obj_done()
  */
 #define SPIF_OBJ_DONE(o)                 SPIF_CAST(bool) (SPIF_OBJ_CALL_METHOD((o), done)(o))
 
@@ -531,7 +531,7 @@
  * @param o An object.  It will cease to exist after this call.
  * @return  #TRUE if successful, #FALSE otherwise.
  *
- * @see DOXGRP_OBJ, spif_obj_del()
+ * @see @link DOXGRP_OBJ LibAST Object Infrastructure @endlink, spif_obj_del()
  */
 #define SPIF_OBJ_DEL(o)                  SPIF_CAST(bool) (SPIF_OBJ_CALL_METHOD((o), del)(o))
 
@@ -547,7 +547,7 @@
  * @param i Number of leading spaces to indent.
  * @return  A str object containing the string representation of @a o.
  *
- * @see DOXGRP_OBJ, spif_obj_show(), SPIF_SHOW()
+ * @see @link DOXGRP_OBJ LibAST Object Infrastructure @endlink, spif_obj_show(), SPIF_SHOW()
  */
 #define SPIF_OBJ_SHOW(o, b, i)           SPIF_CAST(str) (SPIF_OBJ_CALL_METHOD((o), show)(o, #o, b, i))
 
@@ -561,7 +561,7 @@
  * @param o2 Object #2.
  * @return   A spif_cmp_t value containing the comparison result.
  *
- * @see DOXGRP_OBJ, spif_obj_comp(), spif_comp_t
+ * @see @link DOXGRP_OBJ LibAST Object Infrastructure @endlink, spif_obj_comp(), spif_comp_t
  */
 #define SPIF_OBJ_COMP(o1, o2)            SPIF_CAST(cmp) (SPIF_OBJ_CALL_METHOD((o1),  comp)(o1, o2))
 
@@ -574,7 +574,7 @@
  * @param o An object.
  * @return  A duplicate of that object.
  *
- * @see DOXGRP_OBJ, spif_obj_dup()
+ * @see @link DOXGRP_OBJ LibAST Object Infrastructure @endlink, spif_obj_dup()
  */
 #define SPIF_OBJ_DUP(o)                  SPIF_CAST(obj) (SPIF_OBJ_CALL_METHOD((o), dup)(o))
 
@@ -587,7 +587,7 @@
  * @param o An object.
  * @return  The classname of that object.
  *
- * @see DOXGRP_OBJ, spif_obj_type(), SPIF_OBJ_CLASSNAME()
+ * @see @link DOXGRP_OBJ LibAST Object Infrastructure @endlink, spif_obj_type(), SPIF_OBJ_CLASSNAME()
  */
 #define SPIF_OBJ_TYPE(o)                 SPIF_CAST(classname) (SPIF_OBJ_CALL_METHOD((o), type)(o))
 /*@}*/
@@ -615,7 +615,7 @@
  * @param o  The object to display.
  * @param fd The file descriptor to display it on.
  *
- * @see DOXGRP_OBJ, spif_obj_show()
+ * @see @link DOXGRP_OBJ LibAST Object Infrastructure @endlink, spif_obj_show()
  */
 #define SPIF_SHOW(o, fd)                 do { \
                                            spif_str_t tmp__; \
@@ -638,7 +638,7 @@
  * @param tmp A char[] buffer of fixed size used for temporary
  *            storage.
  *
- * @see DOXGRP_OBJ, spif_obj_show()
+ * @see @link DOXGRP_OBJ LibAST Object Infrastructure @endlink, spif_obj_show()
  */
 #define SPIF_OBJ_SHOW_NULL(t, n, b, i, tmp)  do { \
                                                memset(tmp, ' ', (i)); \
@@ -679,7 +679,7 @@
  * pointer definition (spif_class_t) as provided by the
  * SPIF_DEFINE_OBJ() macro.
  *
- * @see DOXGRP_OBJ, SPIF_OBJ_CALL_METHOD()
+ * @see @link DOXGRP_OBJ LibAST Object Infrastructure @endlink, SPIF_OBJ_CALL_METHOD()
  */
 SPIF_DECL_OBJ(class) {
     /** Text representation of class name. */
@@ -711,7 +711,7 @@ SPIF_DECL_OBJ(class) {
  * definition (spif_obj_t) as provided by the SPIF_DEFINE_OBJ()
  * macro.
  *
- * @see DOXGRP_OBJ
+ * @see @link DOXGRP_OBJ LibAST Object Infrastructure @endlink
  */
 SPIF_DECL_OBJ(obj) {
     spif_class_t cls;

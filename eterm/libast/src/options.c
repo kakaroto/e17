@@ -50,7 +50,7 @@ static const char cvs_ident[] = "$Id$";
  * parser.  They are not available for use by client programs and are
  * documented here solely for completeness and clarity.
  *
- * @see DOXGRP_OPT
+ * @see @link DOXGRP_OPT Command Line Option Parser @endlink
  * @ingroup DOXGRP_OPT
  */
 
@@ -72,7 +72,7 @@ static const char cvs_ident[] = "$Id$";
  * for the option parser.  It should never be accessed directly, but
  * rather through use of the Option Parser Settings Macros.
  *
- * @see DOXGRP_OPT
+ * @see @link DOXGRP_OPT Command Line Option Parser @endlink
  * @ingroup DOXGRP_OPT
  */
 spifopt_settings_t spifopt_settings;
@@ -87,7 +87,7 @@ spifopt_settings_t spifopt_settings;
  * @param type The numeric option type (SPIFOPT_OPT_FLAGS()).
  * @return     A 6-char-max string describing the option type.
  *
- * @see DOXGRP_OPT
+ * @see @link DOXGRP_OPT Command Line Option Parser @endlink
  * @ingroup DOXGRP_OPT
  */
 static const char *
@@ -110,7 +110,7 @@ get_option_type_string(spif_uint16_t type)
  * prints out a brief type identifier as produced by
  * get_option_type_string().
  *
- * @see DOXGRP_MEM, SPIFOPT_HELPHANDLER_SET(), spifopt_helphandler_t
+ * @see @link DOXGRP_MEM Memory Management Subsystem @endlink, SPIFOPT_HELPHANDLER_SET(), spifopt_helphandler_t
  * @ingroup DOXGRP_MEM
  */
 void
@@ -177,7 +177,7 @@ spifopt_usage(void)
  * @param opt The long option string to match against.
  * @return    The index of the matching option, or -1 if not found.
  *
- * @see DOXGRP_OPT, is_valid_option()
+ * @see @link DOXGRP_OPT Command Line Option Parser @endlink, is_valid_option()
  * @ingroup DOXGRP_OPT
  */
 static spif_int32_t
@@ -214,7 +214,7 @@ find_long_option(char *opt)
  * @param opt The short option character to match against.
  * @return    The index of the matching option, or -1 if not found.
  *
- * @see DOXGRP_OPT, is_valid_option()
+ * @see @link DOXGRP_OPT Command Line Option Parser @endlink, is_valid_option()
  * @ingroup DOXGRP_OPT
  */
 static spif_int32_t
@@ -248,7 +248,7 @@ find_short_option(char opt)
  * @return         The option's value string, or NULL if no value is
  *                 found.
  *
- * @see DOXGRP_OPT, spifopt_parse()
+ * @see @link DOXGRP_OPT Command Line Option Parser @endlink, spifopt_parse()
  * @ingroup DOXGRP_OPT
  */
 static char *
@@ -280,7 +280,7 @@ find_value_long(char *arg, char *next_arg, unsigned char *hasequal)
  * @return         The option's value string, or NULL if no value is
  *                 found.
  *
- * @see DOXGRP_OPT, spifopt_parse()
+ * @see @link DOXGRP_OPT Command Line Option Parser @endlink, spifopt_parse()
  * @ingroup DOXGRP_OPT
  */
 static char *
@@ -306,7 +306,7 @@ find_value_short(char *arg, char *next_arg)
  * @param val_ptr The value to be tested.
  * @return        TRUE if boolean, FALSE if not.
  *
- * @see DOXGRP_OPT, spifopt_parse()
+ * @see @link DOXGRP_OPT Command Line Option Parser @endlink, spifopt_parse()
  * @ingroup DOXGRP_OPT
  */
 static spif_bool_t
@@ -327,7 +327,7 @@ is_boolean_value(char *val_ptr)
  * @param opt The argument string.
  * @return    TRUE if a match is found, FALSE otherwise.
  *
- * @see DOXGRP_OPT, spifopt_parse(), find_long_option(),
+ * @see @link DOXGRP_OPT Command Line Option Parser @endlink, spifopt_parse(), find_long_option(),
  *      find_short_option()
  * @ingroup DOXGRP_OPT
  */
@@ -366,7 +366,7 @@ is_valid_option(char *opt)
  * @param islong  0 if the option was short, non-zero otherwise.
  * @return    TRUE if a match is found, FALSE otherwise.
  *
- * @see DOXGRP_OPT, spifopt_parse(), find_long_option(),
+ * @see @link DOXGRP_OPT Command Line Option Parser @endlink, spifopt_parse(), find_long_option(),
  *      find_short_option()
  * @ingroup DOXGRP_OPT
  */
@@ -418,7 +418,7 @@ handle_boolean(spif_int32_t n, char *val_ptr, unsigned char islong)
  * @param n       The index of the option.
  * @param val_ptr The value passed to the option.
  *
- * @see DOXGRP_OPT, spifopt_parse(), find_long_option(),
+ * @see @link DOXGRP_OPT Command Line Option Parser @endlink, spifopt_parse(), find_long_option(),
  *      find_short_option()
  * @ingroup DOXGRP_OPT
  */
@@ -439,7 +439,7 @@ handle_integer(spif_int32_t n, char *val_ptr)
  * @param n       The index of the option.
  * @param val_ptr The value passed to the option.
  *
- * @see DOXGRP_OPT, spifopt_parse(), find_long_option(),
+ * @see @link DOXGRP_OPT Command Line Option Parser @endlink, spifopt_parse(), find_long_option(),
  *      find_short_option()
  * @ingroup DOXGRP_OPT
  */
@@ -465,7 +465,7 @@ handle_string(spif_int32_t n, char *val_ptr)
  * @param argc     The argument count.
  * @param argv     The argument list.
  *
- * @see DOXGRP_OPT, spifopt_parse(), find_long_option(),
+ * @see @link DOXGRP_OPT Command Line Option Parser @endlink, spifopt_parse(), find_long_option(),
  *      find_short_option()
  * @ingroup DOXGRP_OPT
  */
@@ -513,7 +513,7 @@ handle_arglist(spif_int32_t n, char *val_ptr, unsigned char hasequal,
  * @param argc The number of arguments.
  * @param argv The array of argument strings.
  *
- * @see DOXGRP_OPT
+ * @see @link DOXGRP_OPT Command Line Option Parser @endlink
  * @ingroup DOXGRP_OPT
  */
 void

@@ -151,7 +151,7 @@
  *
  * These macros are intended for use specifically with objects.
  *
- * @see DOXGRP_OBJ
+ * @see @link DOXGRP_OBJ LibAST Object Infrastructure @endlink
  * @ingroup DOXGRP_TYPES
  */
 
