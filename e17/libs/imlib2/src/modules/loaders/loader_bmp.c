@@ -139,7 +139,7 @@ load(ImlibImage * im, ImlibProgressFunction progress,
            return 0;
         }
       
-      if ((w > 8192) || (h > 8192))
+      if ((w < 1) || (h < 1) || (w > 8192) || (h > 8192))
 	{
 	   fclose(f);
 	   return 0;
