@@ -38,6 +38,9 @@ create_toplevel (void)
   GtkWidget *edit1_menu;
   GtkAccelGroup *edit1_menu_accels;
   GtkWidget *delete1;
+  GtkWidget *separator3;
+  GtkWidget *undo1;
+  GtkWidget *redo1;
   GtkWidget *help1;
   GtkWidget *help1_menu;
   GtkAccelGroup *help1_menu_accels;
@@ -260,9 +263,12 @@ create_toplevel (void)
   GtkWidget *hbox2;
   GtkWidget *zoomin;
   GtkWidget *zoomout;
+  GtkAccelGroup *accel_group;
   GtkTooltips *tooltips;
 
   tooltips = gtk_tooltips_new ();
+
+  accel_group = gtk_accel_group_new ();
 
   toplevel = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   gtk_object_set_data (GTK_OBJECT (toplevel), "toplevel", toplevel);
@@ -369,6 +375,34 @@ create_toplevel (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (delete1);
   gtk_container_add (GTK_CONTAINER (edit1_menu), delete1);
+
+  separator3 = gtk_menu_item_new ();
+  gtk_widget_ref (separator3);
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "separator3", separator3,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (separator3);
+  gtk_container_add (GTK_CONTAINER (edit1_menu), separator3);
+  gtk_widget_set_sensitive (separator3, FALSE);
+
+  undo1 = gtk_menu_item_new_with_label (_("Undo"));
+  gtk_widget_ref (undo1);
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "undo1", undo1,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (undo1);
+  gtk_container_add (GTK_CONTAINER (edit1_menu), undo1);
+  gtk_widget_add_accelerator (undo1, "activate", accel_group,
+                              GDK_z, GDK_CONTROL_MASK,
+                              GTK_ACCEL_VISIBLE);
+
+  redo1 = gtk_menu_item_new_with_label (_("Redo"));
+  gtk_widget_ref (redo1);
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "redo1", redo1,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (redo1);
+  gtk_container_add (GTK_CONTAINER (edit1_menu), redo1);
+  gtk_widget_add_accelerator (redo1, "activate", accel_group,
+                              GDK_r, GDK_CONTROL_MASK,
+                              GTK_ACCEL_VISIBLE);
 
   help1 = gtk_menu_item_new_with_label (_("Help"));
   gtk_widget_ref (help1);
@@ -2085,6 +2119,12 @@ create_toplevel (void)
   gtk_signal_connect (GTK_OBJECT (delete1), "activate",
                       GTK_SIGNAL_FUNC (on_delete1_activate),
                       NULL);
+  gtk_signal_connect (GTK_OBJECT (undo1), "activate",
+                      GTK_SIGNAL_FUNC (on_undo1_activate),
+                      NULL);
+  gtk_signal_connect (GTK_OBJECT (redo1), "activate",
+                      GTK_SIGNAL_FUNC (on_redo1_activate),
+                      NULL);
   gtk_signal_connect (GTK_OBJECT (about1), "activate",
                       GTK_SIGNAL_FUNC (on_about1_activate),
                       NULL);
@@ -2171,6 +2211,8 @@ create_toplevel (void)
                       NULL);
 
   gtk_object_set_data (GTK_OBJECT (toplevel), "tooltips", tooltips);
+
+  gtk_window_add_accel_group (GTK_WINDOW (toplevel), accel_group);
 
   return toplevel;
 }

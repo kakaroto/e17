@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2000-09-12 17:59-0700\n"
+"POT-Creation-Date: 2000-09-13 17:58+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -14,419 +14,427 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: ENCODING\n"
 
-#: src/interface.c:269
+#: src/interface.c:275
 msgid "Etcher"
 msgstr ""
 
-#: src/interface.c:287
+#: src/interface.c:293
 msgid "File"
 msgstr ""
 
-#: src/interface.c:301
+#: src/interface.c:307
 msgid "Open..."
 msgstr ""
 
-#: src/interface.c:308
+#: src/interface.c:314
 msgid "Save"
 msgstr ""
 
-#: src/interface.c:315
+#: src/interface.c:321
 msgid "Save As..."
 msgstr ""
 
-#: src/interface.c:330
+#: src/interface.c:336
 msgid "Preferences..."
 msgstr ""
 
-#: src/interface.c:345
+#: src/interface.c:351
 msgid "Exit"
 msgstr ""
 
-#: src/interface.c:352
+#: src/interface.c:358
 msgid "Edit"
 msgstr ""
 
-#: src/interface.c:366 src/interface.c:521
+#: src/interface.c:372 src/interface.c:555
 msgid "Delete"
 msgstr ""
 
-#: src/interface.c:373
+#: src/interface.c:387
+msgid "Undo"
+msgstr ""
+
+#: src/interface.c:397
+msgid "Redo"
+msgstr ""
+
+#: src/interface.c:407
 msgid "Help"
 msgstr ""
 
-#: src/interface.c:388
+#: src/interface.c:422
 msgid "About"
 msgstr ""
 
-#: src/interface.c:457 src/interface.c:1484 src/interface.c:1762
+#: src/interface.c:491 src/interface.c:1518 src/interface.c:1796
 msgid "Image"
 msgstr ""
 
-#: src/interface.c:458
+#: src/interface.c:492
 msgid "Add a new image"
 msgstr ""
 
-#: src/interface.c:469 src/interface.c:1426 src/interface.c:1490
+#: src/interface.c:503 src/interface.c:1460 src/interface.c:1524
 msgid "Icon"
 msgstr ""
 
-#: src/interface.c:470 src/interface.c:483
+#: src/interface.c:504 src/interface.c:517
 msgid "Not implimented yet"
 msgstr ""
 
-#: src/interface.c:482 src/interface.c:1487
+#: src/interface.c:516 src/interface.c:1521
 msgid "Text"
 msgstr ""
 
-#: src/interface.c:497 src/interface.c:1416
+#: src/interface.c:531 src/interface.c:1450
 msgid "Raise"
 msgstr ""
 
-#: src/interface.c:498
+#: src/interface.c:532
 msgid "Raise bit above others"
 msgstr ""
 
-#: src/interface.c:509 src/interface.c:1417
+#: src/interface.c:543 src/interface.c:1451
 msgid "Lower"
 msgstr ""
 
-#: src/interface.c:510
+#: src/interface.c:544
 msgid "Lower bit below others"
 msgstr ""
 
-#: src/interface.c:522
+#: src/interface.c:556
 msgid "Delete bit"
 msgstr ""
 
-#: src/interface.c:533 src/interface.c:561
+#: src/interface.c:567 src/interface.c:595
 msgid "Reset"
 msgstr ""
 
-#: src/interface.c:534
+#: src/interface.c:568
 msgid "Reset packing area to default size and location"
 msgstr ""
 
-#: src/interface.c:552
+#: src/interface.c:586
 msgid "Apply"
 msgstr ""
 
-#: src/interface.c:559
+#: src/interface.c:593
 msgid "Apply current bit settings to the bit"
 msgstr ""
 
-#: src/interface.c:568
+#: src/interface.c:602
 msgid "Reset bit settings to current value"
 msgstr ""
 
-#: src/interface.c:570
+#: src/interface.c:604
 msgid "Draft"
 msgstr ""
 
-#: src/interface.c:579
+#: src/interface.c:613
 msgid "Toggle draft display mode"
 msgstr ""
 
-#: src/interface.c:613
+#: src/interface.c:647
 msgid "Images"
 msgstr ""
 
-#: src/interface.c:639
+#: src/interface.c:673
 msgid "States"
 msgstr ""
 
-#: src/interface.c:662
+#: src/interface.c:696
 msgid "Current filename"
 msgstr ""
 
-#: src/interface.c:663
+#: src/interface.c:697
 msgid "new_bits.db"
 msgstr ""
 
-#: src/interface.c:665
+#: src/interface.c:699
 msgid "X"
 msgstr ""
 
-#: src/interface.c:681
+#: src/interface.c:715
 msgid "Y"
 msgstr ""
 
-#: src/interface.c:697
+#: src/interface.c:731
 msgid "Width"
 msgstr ""
 
-#: src/interface.c:713
+#: src/interface.c:747
 msgid "Height"
 msgstr ""
 
-#: src/interface.c:761 src/interface.c:929 src/interface.c:1097
-#: src/interface.c:1210 src/interface.c:1600 src/interface.c:1829
+#: src/interface.c:795 src/interface.c:963 src/interface.c:1131
+#: src/interface.c:1244 src/interface.c:1634 src/interface.c:1863
 msgid "Horizontal"
 msgstr ""
 
-#: src/interface.c:770 src/interface.c:938 src/interface.c:1106
-#: src/interface.c:1219 src/interface.c:1609 src/interface.c:1838
+#: src/interface.c:804 src/interface.c:972 src/interface.c:1140
+#: src/interface.c:1253 src/interface.c:1643 src/interface.c:1872
 msgid "Vertical"
 msgstr ""
 
-#: src/interface.c:872 src/interface.c:1070
+#: src/interface.c:906 src/interface.c:1104
 msgid "Relative Pre-Adjust"
 msgstr ""
 
-#: src/interface.c:882 src/interface.c:1060
+#: src/interface.c:916 src/interface.c:1094
 msgid "Relative Location"
 msgstr ""
 
-#: src/interface.c:892 src/interface.c:1050
+#: src/interface.c:926 src/interface.c:1084
 msgid "Relative to Bit Name"
 msgstr ""
 
-#: src/interface.c:902 src/interface.c:1040
+#: src/interface.c:936 src/interface.c:1074
 msgid "Pixel Location"
 msgstr ""
 
-#: src/interface.c:912
+#: src/interface.c:946
 msgid "Top Left"
 msgstr ""
 
-#: src/interface.c:1080
+#: src/interface.c:1114
 msgid "Bottom Right"
 msgstr ""
 
-#: src/interface.c:1164
+#: src/interface.c:1198
 msgid "Retain Aspect Ratio"
 msgstr ""
 
-#: src/interface.c:1173
+#: src/interface.c:1207
 msgid "Aspect Ratio"
 msgstr ""
 
-#: src/interface.c:1183
+#: src/interface.c:1217
 msgid "Content Alignment"
 msgstr ""
 
-#: src/interface.c:1193
+#: src/interface.c:1227
 msgid "Misc"
 msgstr ""
 
-#: src/interface.c:1288
+#: src/interface.c:1322
 msgid "Use Horizontal Size of Contents"
 msgstr ""
 
-#: src/interface.c:1297
+#: src/interface.c:1331
 msgid "Use Vertical Size of Contents"
 msgstr ""
 
-#: src/interface.c:1315
+#: src/interface.c:1349
 msgid "Min"
 msgstr ""
 
-#: src/interface.c:1325
+#: src/interface.c:1359
 msgid "Max"
 msgstr ""
 
-#: src/interface.c:1335 src/interface.c:1957
+#: src/interface.c:1369 src/interface.c:1991
 msgid "Stepping"
 msgstr ""
 
-#: src/interface.c:1345
+#: src/interface.c:1379
 msgid "Size"
 msgstr ""
 
-#: src/interface.c:1371
+#: src/interface.c:1405
 msgid "Propagate state to selected bits"
 msgstr ""
 
-#: src/interface.c:1378
+#: src/interface.c:1412
 msgid "State Sync"
 msgstr ""
 
-#: src/interface.c:1412 src/interface.c:1443
+#: src/interface.c:1446 src/interface.c:1477
 msgid "Decoration"
 msgstr ""
 
-#: src/interface.c:1413
+#: src/interface.c:1447
 msgid "Title_Bar"
 msgstr ""
 
-#: src/interface.c:1414
+#: src/interface.c:1448
 msgid "Close"
 msgstr ""
 
-#: src/interface.c:1415
+#: src/interface.c:1449
 msgid "Iconify"
 msgstr ""
 
-#: src/interface.c:1418
+#: src/interface.c:1452
 msgid "Raise_Lower"
 msgstr ""
 
-#: src/interface.c:1419
+#: src/interface.c:1453
 msgid "Max_Size"
 msgstr ""
 
-#: src/interface.c:1420
+#: src/interface.c:1454
 msgid "Full_Screen"
 msgstr ""
 
-#: src/interface.c:1421
+#: src/interface.c:1455
 msgid "Shade"
 msgstr ""
 
-#: src/interface.c:1422
+#: src/interface.c:1456
 msgid "Menu"
 msgstr ""
 
-#: src/interface.c:1423
+#: src/interface.c:1457
 msgid "Resize"
 msgstr ""
 
-#: src/interface.c:1424
+#: src/interface.c:1458
 msgid "Resize_Horizontal"
 msgstr ""
 
-#: src/interface.c:1425
+#: src/interface.c:1459
 msgid "Resize_Vertical"
 msgstr ""
 
-#: src/interface.c:1427
+#: src/interface.c:1461
 msgid "State"
 msgstr ""
 
-#: src/interface.c:1428
+#: src/interface.c:1462
 msgid "Load"
 msgstr ""
 
-#: src/interface.c:1429
+#: src/interface.c:1463
 msgid "Geometry"
 msgstr ""
 
-#: src/interface.c:1430
+#: src/interface.c:1464
 msgid "Scrollbar_Trough"
 msgstr ""
 
-#: src/interface.c:1431
+#: src/interface.c:1465
 msgid "Scrollbar_Bar"
 msgstr ""
 
-#: src/interface.c:1432
+#: src/interface.c:1466
 msgid "Scrollbar_Arrow1"
 msgstr ""
 
-#: src/interface.c:1433
+#: src/interface.c:1467
 msgid "Scrollbar_Arrow2"
 msgstr ""
 
-#: src/interface.c:1445
+#: src/interface.c:1479
 msgid "Name"
 msgstr ""
 
-#: src/interface.c:1455
+#: src/interface.c:1489
 msgid "Class"
 msgstr ""
 
-#: src/interface.c:1465
+#: src/interface.c:1499
 msgid "Type"
 msgstr ""
 
-#: src/interface.c:1493
+#: src/interface.c:1527
 msgid "Hidden"
 msgstr ""
 
-#: src/interface.c:1498
+#: src/interface.c:1532
 msgid "Properties"
 msgstr ""
 
-#: src/interface.c:1618
+#: src/interface.c:1652
 msgid "Normal"
 msgstr ""
 
-#: src/interface.c:1628
+#: src/interface.c:1662
 msgid "Hilited"
 msgstr ""
 
-#: src/interface.c:1638
+#: src/interface.c:1672
 msgid "Clicked"
 msgstr ""
 
-#: src/interface.c:1648
+#: src/interface.c:1682
 msgid "Disabled"
 msgstr ""
 
-#: src/interface.c:1658
+#: src/interface.c:1692
 msgid "Border Scaling"
 msgstr ""
 
-#: src/interface.c:1668
+#: src/interface.c:1702
 msgid "Image Fill"
 msgstr ""
 
-#: src/interface.c:1688 src/interface.c:1700 src/interface.c:1712
-#: src/interface.c:1724
+#: src/interface.c:1722 src/interface.c:1734 src/interface.c:1746
+#: src/interface.c:1758
 msgid "Fill"
 msgstr ""
 
-#: src/interface.c:1689 src/interface.c:1713
+#: src/interface.c:1723 src/interface.c:1747
 msgid "Tile"
 msgstr ""
 
-#: src/interface.c:1690 src/interface.c:1714
+#: src/interface.c:1724 src/interface.c:1748
 msgid "Tile Integer"
 msgstr ""
 
-#: src/interface.c:1726 src/interface.c:1735 src/interface.c:1744
-#: src/interface.c:1753
+#: src/interface.c:1760 src/interface.c:1769 src/interface.c:1778
+#: src/interface.c:1787
 msgid "Browse..."
 msgstr ""
 
-#: src/interface.c:1917
+#: src/interface.c:1951
 msgid "Min Size"
 msgstr ""
 
-#: src/interface.c:1927
+#: src/interface.c:1961
 msgid "Max Size"
 msgstr ""
 
-#: src/interface.c:1937
+#: src/interface.c:1971
 msgid "Padding"
 msgstr ""
 
-#: src/interface.c:1947
+#: src/interface.c:1981
 msgid "Insets"
 msgstr ""
 
-#: src/interface.c:1987
+#: src/interface.c:2021
 msgid "All"
 msgstr ""
 
-#: src/interface.c:2036
+#: src/interface.c:2070
 msgid "Zoomed view "
 msgstr ""
 
-#: src/interface.c:2047
+#: src/interface.c:2081
 msgid "+"
 msgstr ""
 
-#: src/interface.c:2054
+#: src/interface.c:2088
 msgid "Click to zoom in further"
 msgstr ""
 
-#: src/interface.c:2057
+#: src/interface.c:2091
 msgid "-"
 msgstr ""
 
-#: src/interface.c:2064
+#: src/interface.c:2098
 msgid "Click to zoom out further"
 msgstr ""
 
-#: src/interface.c:2185
+#: src/interface.c:2227
 msgid "Select File"
 msgstr ""
 
-#: src/interface.c:2230
+#: src/interface.c:2272
 msgid "Select your display method"
 msgstr ""
 
-#: src/interface.c:2250
+#: src/interface.c:2292
 msgid ""
 "Please select your preferred display method.\n"
 "\n"
@@ -449,53 +457,53 @@ msgid ""
 "You have been warned."
 msgstr ""
 
-#: src/interface.c:2270
+#: src/interface.c:2312
 msgid "Software"
 msgstr ""
 
-#: src/interface.c:2278
+#: src/interface.c:2320
 msgid "3D Hardware"
 msgstr ""
 
-#: src/interface.c:2323
+#: src/interface.c:2365
 msgid "Etcher Preferences"
 msgstr ""
 
-#: src/interface.c:2357
+#: src/interface.c:2399
 msgid "Display Window"
 msgstr ""
 
-#: src/interface.c:2373
+#: src/interface.c:2415
 msgid "Use software rendered display method"
 msgstr ""
 
-#: src/interface.c:2381
+#: src/interface.c:2423
 msgid "Use 3D accelerated display method"
 msgstr ""
 
-#: src/interface.c:2389
+#: src/interface.c:2431
 msgid ""
 "If you change your display preferences you will\n"
 "have to restart Etcher for them to take effect."
 msgstr ""
 
-#: src/interface.c:2397
+#: src/interface.c:2439
 msgid "Zoom Window"
 msgstr ""
 
-#: src/interface.c:2413
+#: src/interface.c:2455
 msgid ""
 "Use smooth zoom display\n"
 "(use pixmaps for zooming)"
 msgstr ""
 
-#: src/interface.c:2421
+#: src/interface.c:2463
 msgid ""
 "Zoom directly in the framebuffer\n"
 "(If you use Xinerama select this)"
 msgstr ""
 
-#: src/interface.c:2429
+#: src/interface.c:2471
 msgid ""
 "Xinerama users note, Xinerama has severe\n"
 "performance issues and Etcher brings out one\n"
@@ -504,11 +512,11 @@ msgid ""
 "instead of Xinerama for better X performance."
 msgstr ""
 
-#: src/interface.c:2449
+#: src/interface.c:2491
 msgid "OK"
 msgstr ""
 
-#: src/interface.c:2457
+#: src/interface.c:2499
 msgid "Cancel"
 msgstr ""
 
