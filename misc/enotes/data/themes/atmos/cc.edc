@@ -38,8 +38,8 @@
      description { state, "default" 0.0; visible, 1; \
 	rel1 { relative, 0.0 1.0; offset, 0 0; to, rel; } \
 	rel2 { relative, 1.0 1.0; offset, 0 48; to, rel; } \
-	image { normal, "button_default.png"; } \
-	border, 14 14 14 14; \
+	image { normal, "button_default.png"; \
+	   border, 14 14 14 14; } \
 	} } \
      TEXT_ON(pname, clipname, ptxtname, txt)
 
@@ -137,8 +137,8 @@
 	 image
 	 {
 	     normal, "button_default.png";
+	     border, 14 14 14 14;
 	 }
-	 border, 14 14 14 14;
        }
      }
      part {

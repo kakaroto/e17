@@ -81,8 +81,8 @@ collections
 		    }
 		    image {
 			normal, "shading.png";
+		        border, 2 2 2 2;
 		    }
-		    border, 2 2 2 2;
 		}
 	    }
 	    part {
@@ -129,8 +129,8 @@ collections
 		    }
 		    image {
 			normal, "bt_close_1.png";
+		        border, 4 4 4 4;
 		    }
-		    border, 4 4 4 4;
 		}
 		description {
 		    state, "clicked" 0.0;
@@ -146,8 +146,8 @@ collections
 		    }
 		    image {
 			normal, "bt_close_2.png";
+		        border, 4 4 4 4;
 		    }
-		    border, 4 4 4 4;
 		}
 	    }
 	    part {
@@ -168,8 +168,8 @@ collections
 		    }
 		    image {
 			normal, "bt_minimize_1.png";
+		        border, 4 4 4 4;
 		    }
-		    border, 4 4 4 4;
 		}
 		description {
 		    state, "clicked" 0.0;
@@ -185,8 +185,8 @@ collections
 		    }
 		    image {
 			normal, "bt_minimize_2.png";
+		        border, 4 4 4 4;
 		    }
-		    border, 4 4 4 4;
 		}
 	    }
 	    part {
@@ -420,8 +420,8 @@ collections
 		    }
 		    image {
 			normal, "shading.png";
+		        border, 2 2 2 2;
 		    }
-		    border, 2 2 2 2;
 		}
 	    }
 #include "cc.edc"
