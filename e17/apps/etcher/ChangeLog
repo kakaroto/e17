@@ -1,4 +1,7 @@
-Sat Mar 9 16:10:04 2002 Christopher Rosendahl <crosendahl@northernwatch.com>
+Sun Mar 17 12:17:52 2002 Christopher Rosendahl <crosendahl@northernwatch.com>
+	* Made etcher handle the prefered size field.
+
+Sat Mar 09 16:10:04 2002 Christopher Rosendahl <crosendahl@northernwatch.com>
 	* Added a rectangle to the preference preview evas that layers beneath
 	  everything else, this fixes the problem with the evas getting
 	  artifacts when no grid image or a grid image with alpha is selected.

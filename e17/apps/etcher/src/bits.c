@@ -892,6 +892,8 @@ _ebits_find_description(char *file)
    d->min.h = 0;
    d->max.w = 999999;
    d->max.h = 999999;
+   d->prefered.w = 0;
+   d->prefered.h = 0;
    d->step.x = 1;
    d->step.y = 1;
 
@@ -901,6 +903,9 @@ _ebits_find_description(char *file)
 
    e_db_int_get(db, "/base/max/w", &(d->max.w));
    e_db_int_get(db, "/base/max/h", &(d->max.h));
+
+   e_db_int_get(db, "/base/prefered/w", &(d->prefered.w));
+   e_db_int_get(db, "/base/prefered/h", &(d->prefered.h));
 
    e_db_int_get(db, "/base/step/x", &(d->step.x));
    e_db_int_get(db, "/base/step/y", &(d->step.y));
@@ -1133,6 +1138,8 @@ ebits_new_description(void)
    d->min.h = 0;
    d->max.w = 99999;
    d->max.h = 99999;
+   d->prefered.w = 0;
+   d->prefered.h = 0;
    d->references = 1;
    return d;
 }
@@ -1959,6 +1966,15 @@ ebits_get_max_size(Ebits_Object o, int *w, int *h)
 }
 
 void
+ebits_get_prefered_size(Ebits_Object o, int *w, int *h)
+{
+   if (w)
+      *w = o->description->prefered.w;
+   if (h)
+      *h = o->description->prefered.h;
+}
+
+void
 ebits_get_real_min_size(Ebits_Object o, int *w, int *h)
 {
    _ebits_calculate_min_size(o);
@@ -2108,6 +2124,9 @@ ebits_save(Ebits_Object o, char *file)
 
    e_db_int_set(db, "/base/max/w", d->max.w);
    e_db_int_set(db, "/base/max/h", d->max.h);
+
+   e_db_int_set(db, "/base/prefered/w", d->prefered.w);
+   e_db_int_set(db, "/base/prefered/h", d->prefered.h);
 
    e_db_int_set(db, "/base/step/x", d->step.x);
    e_db_int_set(db, "/base/step/y", d->step.y);

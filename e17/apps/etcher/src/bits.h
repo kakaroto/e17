@@ -70,7 +70,7 @@ struct _Ebits_Object_Description
    {
       int                 w, h;
    }
-   min                , max;
+   min                , max, prefered;
    struct
    {
       int                 x, y;
