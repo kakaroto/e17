@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
-"POT-Creation-Date: 2003-06-21 10:46+0200\n"
+"POT-Creation-Date: 2003-07-08 12:38+1000\n"
 "PO-Revision-Date: 2000-03-29 21:12+0200\n"
 "Last-Translator: Matthias Warkus <mawa@iname.com>\n"
 "Language-Team: Enlightenment l10n <e-develop@enlightenment.org>\n"
@@ -316,7 +316,7 @@ msgstr "E-IPC-Fehler"
 #: src/config.c:984 src/config.c:1225 src/config.c:1353 src/config.c:1458
 #: src/config.c:1674 src/config.c:1922 src/config.c:1994 src/config.c:2089
 #: src/config.c:2347 src/config.c:2564 src/config.c:2828 src/config.c:2922
-#: src/config.c:3002 src/config.c:3105 src/config.c:3415
+#: src/config.c:3002 src/config.c:3105 src/config.c:3417
 #, c-format
 msgid "CONFIG: ignoring extra data in \"%s\"\n"
 msgstr "KONFIG: ignoriere überflüssige Daten in \"%s\"\n"
@@ -330,7 +330,7 @@ msgstr "KONFIG: ignoriere überflüssige Daten in \"%s\"\n"
 #: src/config.c:990 src/config.c:1231 src/config.c:1359 src/config.c:1466
 #: src/config.c:1682 src/config.c:1928 src/config.c:2000 src/config.c:2097
 #: src/config.c:2353 src/config.c:2572 src/config.c:2834 src/config.c:3111
-#: src/config.c:3423
+#: src/config.c:3425
 #, c-format
 msgid "CONFIG: missing required data in \"%s\"\n"
 msgstr "KONFIG: vermisse benötigte Daten in \"%s\"\n"
@@ -671,22 +671,22 @@ msgid "error"
 msgstr "Fehler"
 
 # src/config.c:3404
-#: src/config.c:3432
+#: src/config.c:3434
 msgid "Theme versioning ERROR"
 msgstr "FEHLER in der Themen-Versionsnummerierung"
 
 # src/config.c:3405 src/config.c:3439
-#: src/config.c:3433 src/config.c:3463
+#: src/config.c:3435 src/config.c:3465
 msgid "Restart with Defaults"
 msgstr "Mit Voreinstellung neu starten"
 
 # src/config.c:3406 src/config.c:3440
-#: src/config.c:3434 src/config.c:3464
+#: src/config.c:3436 src/config.c:3466
 msgid "Abort and Exit"
 msgstr "Abbrechen und verlassen"
 
 # src/config.c:3407
-#: src/config.c:3436
+#: src/config.c:3438
 #, c-format
 msgid ""
 "ERROR:\n"
@@ -725,12 +725,12 @@ msgstr ""
 "in neueren Versionen finden.\n"
 
 # src/config.c:3438
-#: src/config.c:3462
+#: src/config.c:3464
 msgid "User Config Version ERROR"
 msgstr "Benutzerkonfigurations-Versionsfehler"
 
 # src/config.c:3441
-#: src/config.c:3466
+#: src/config.c:3468
 #, c-format
 msgid ""
 "ERROR:\n"
@@ -761,7 +761,7 @@ msgstr ""
 "Ihren Vorlieben konfigurieren.\n"
 
 # src/config.c:3667
-#: src/config.c:3689
+#: src/config.c:3691
 #, c-format
 msgid ""
 "WARNING!\n"
@@ -777,7 +777,7 @@ msgstr ""
 "Quote oder an den Dateisystemberechtigungen liegen.\n"
 
 # src/config.c:3678
-#: src/config.c:3698
+#: src/config.c:3700
 #, c-format
 msgid ""
 "Enlightenment has just experienced some major problems in\n"
@@ -831,32 +831,32 @@ msgstr ""
 "hinzu.\n"
 
 # src/config.c:3743
-#: src/config.c:3763
+#: src/config.c:3765
 msgid "Enlightenment Starting..."
 msgstr "Enlightenment startet..."
 
 # src/config.c:4176
-#: src/config.c:4203
+#: src/config.c:4205
 msgid "Recover system config?"
 msgstr "Systemkonfiguration wiederherstellen?"
 
 # src/config.c:4177
-#: src/config.c:4203
+#: src/config.c:4205
 msgid "Yes, Attempt recovery"
 msgstr "Ja, Wiederherstellung versuchen"
 
 # src/config.c:4178
-#: src/config.c:4204
+#: src/config.c:4206
 msgid "Restart and try again"
 msgstr "Neustarten und noch einmal probieren"
 
 # src/config.c:4178
-#: src/config.c:4204
+#: src/config.c:4206
 msgid "Quit and give up"
 msgstr "Verlassen und aufgeben"
 
 # src/config.c:4180
-#: src/config.c:4206
+#: src/config.c:4208
 msgid ""
 "Enlightenment has encountered parsing errors in your autosaved\n"
 "configuration.\n"
@@ -1685,28 +1685,28 @@ msgstr ""
 "Der Fehler trat auf in %s, Zeile %d.\n"
 
 # src/menus.c:1947
-#: src/menus.c:1931
+#: src/menus.c:1927
 msgid "Go to this Desktop"
 msgstr "Zu diesem Desktop gehen"
 
 # src/menus.c:1964
-#: src/menus.c:1947
+#: src/menus.c:1943
 #, c-format
 msgid "Desktop %i"
 msgstr "Desktop %i"
 
 # src/menus.c:2027
-#: src/menus.c:2014
+#: src/menus.c:2010
 msgid "Show/Hide this group"
 msgstr "Diese Gruppe zeigen/verbergen"
 
 # src/menus.c:2031
-#: src/menus.c:2017
+#: src/menus.c:2013
 msgid "Iconify this group"
 msgstr "Diese Gruppe minimieren"
 
 # src/menus.c:2044
-#: src/menus.c:2029
+#: src/menus.c:2025
 #, c-format
 msgid "Group %i"
 msgstr "Gruppe %i"
@@ -3452,17 +3452,17 @@ msgid "TextClass Error!"
 msgstr "TextClass-Fehler!"
 
 # src/theme.c:293
-#: src/theme.c:294
+#: src/theme.c:298
 msgid "Unknown\n"
 msgstr "Unbekannt\n"
 
 # src/theme.c:316 src/theme.c:328
-#: src/theme.c:317 src/theme.c:329
+#: src/theme.c:321 src/theme.c:333
 msgid "Theme file/directory does not exist\n"
 msgstr "Themendatei/-Verzeichnis existiert nicht\n"
 
 # src/theme.c:348
-#: src/theme.c:349
+#: src/theme.c:353
 #, c-format
 msgid ""
 "The theme:\n"
@@ -3483,7 +3483,7 @@ msgstr ""
 "%s"
 
 # src/theme.c:354
-#: src/theme.c:354
+#: src/theme.c:358
 msgid "Bad Theme"
 msgstr "Unbrauchbares Thema"
 

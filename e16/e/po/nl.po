@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
-"POT-Creation-Date: 2003-06-21 10:46+0200\n"
+"POT-Creation-Date: 2003-07-08 12:38+1000\n"
 "PO-Revision-Date: 2000-01-04 23:15+0100\n"
 "Last-Translator: Dènis Riedijk <ried@si.tn.tudelft.nl>\n"
 "Language-Team: Dutch <nl@li.org>\n"
@@ -268,7 +268,7 @@ msgstr "Enlightenment Inter Process Communication fout"
 #: src/config.c:984 src/config.c:1225 src/config.c:1353 src/config.c:1458
 #: src/config.c:1674 src/config.c:1922 src/config.c:1994 src/config.c:2089
 #: src/config.c:2347 src/config.c:2564 src/config.c:2828 src/config.c:2922
-#: src/config.c:3002 src/config.c:3105 src/config.c:3415
+#: src/config.c:3002 src/config.c:3105 src/config.c:3417
 #, c-format
 msgid "CONFIG: ignoring extra data in \"%s\"\n"
 msgstr "CONFIGURATIE: negeer extra gegevens in \"%s\"\n"
@@ -277,7 +277,7 @@ msgstr "CONFIGURATIE: negeer extra gegevens in \"%s\"\n"
 #: src/config.c:990 src/config.c:1231 src/config.c:1359 src/config.c:1466
 #: src/config.c:1682 src/config.c:1928 src/config.c:2000 src/config.c:2097
 #: src/config.c:2353 src/config.c:2572 src/config.c:2834 src/config.c:3111
-#: src/config.c:3423
+#: src/config.c:3425
 #, c-format
 msgid "CONFIG: missing required data in \"%s\"\n"
 msgstr "CONFIGURATIE: benodigde gegevens ontbreken in \"%s\"\n"
@@ -587,19 +587,19 @@ msgstr ""
 msgid "error"
 msgstr "fout"
 
-#: src/config.c:3432
+#: src/config.c:3434
 msgid "Theme versioning ERROR"
 msgstr "Thema versie fout"
 
-#: src/config.c:3433 src/config.c:3463
+#: src/config.c:3435 src/config.c:3465
 msgid "Restart with Defaults"
 msgstr "Herstarten met standaard instellingen"
 
-#: src/config.c:3434 src/config.c:3464
+#: src/config.c:3436 src/config.c:3466
 msgid "Abort and Exit"
 msgstr "Afbreken en afsluiten"
 
-#: src/config.c:3436
+#: src/config.c:3438
 #, c-format
 msgid ""
 "ERROR:\n"
@@ -620,11 +620,11 @@ msgid ""
 "features in Enlightenment in new versions.\n"
 msgstr ""
 
-#: src/config.c:3462
+#: src/config.c:3464
 msgid "User Config Version ERROR"
 msgstr "Gebruikers Configuratie Versie FOUT"
 
-#: src/config.c:3466
+#: src/config.c:3468
 #, c-format
 msgid ""
 "ERROR:\n"
@@ -641,7 +641,7 @@ msgid ""
 "your liking again safely.\n"
 msgstr ""
 
-#: src/config.c:3689
+#: src/config.c:3691
 #, c-format
 msgid ""
 "WARNING!\n"
@@ -656,7 +656,7 @@ msgstr ""
 "Dit kan zijn vanwege een gebrek aan schijfruimte, quota\n"
 "of bestandspermissies.\n"
 
-#: src/config.c:3698
+#: src/config.c:3700
 #, c-format
 msgid ""
 "Enlightenment has just experienced some major problems in\n"
@@ -684,27 +684,27 @@ msgid ""
 "additional information.\n"
 msgstr ""
 
-#: src/config.c:3763
+#: src/config.c:3765
 msgid "Enlightenment Starting..."
 msgstr "Enlightenment start op"
 
-#: src/config.c:4203
+#: src/config.c:4205
 msgid "Recover system config?"
 msgstr "Systeem configuratie redden ?"
 
-#: src/config.c:4203
+#: src/config.c:4205
 msgid "Yes, Attempt recovery"
 msgstr "Ja, probeer te redden"
 
-#: src/config.c:4204
+#: src/config.c:4206
 msgid "Restart and try again"
 msgstr "Herstart en probeer opnieuw"
 
-#: src/config.c:4204
+#: src/config.c:4206
 msgid "Quit and give up"
 msgstr "Stop en geef op"
 
-#: src/config.c:4206
+#: src/config.c:4208
 msgid ""
 "Enlightenment has encountered parsing errors in your autosaved\n"
 "configuration.\n"
@@ -1254,24 +1254,24 @@ msgid ""
 "The error occurred at %s, line %d.\n"
 msgstr ""
 
-#: src/menus.c:1931
+#: src/menus.c:1927
 msgid "Go to this Desktop"
 msgstr "Ga naar deze desktop"
 
-#: src/menus.c:1947
+#: src/menus.c:1943
 #, c-format
 msgid "Desktop %i"
 msgstr "Desktop %i"
 
-#: src/menus.c:2014
+#: src/menus.c:2010
 msgid "Show/Hide this group"
 msgstr "Toon/Verberg deze groep"
 
-#: src/menus.c:2017
+#: src/menus.c:2013
 msgid "Iconify this group"
 msgstr "Minimaliseer deze groep"
 
-#: src/menus.c:2029
+#: src/menus.c:2025
 #, c-format
 msgid "Group %i"
 msgstr "Groep %i"
@@ -2582,15 +2582,15 @@ msgstr ""
 msgid "TextClass Error!"
 msgstr ""
 
-#: src/theme.c:294
+#: src/theme.c:298
 msgid "Unknown\n"
 msgstr ""
 
-#: src/theme.c:317 src/theme.c:329
+#: src/theme.c:321 src/theme.c:333
 msgid "Theme file/directory does not exist\n"
 msgstr ""
 
-#: src/theme.c:349
+#: src/theme.c:353
 #, c-format
 msgid ""
 "The theme:\n"
@@ -2602,7 +2602,7 @@ msgid ""
 "%s"
 msgstr ""
 
-#: src/theme.c:354
+#: src/theme.c:358
 msgid "Bad Theme"
 msgstr ""
 

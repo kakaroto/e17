@@ -10,7 +10,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
-"POT-Creation-Date: 2003-06-21 10:46+0200\n"
+"POT-Creation-Date: 2003-07-08 12:38+1000\n"
 "PO-Revision-Date: 2001-01-07 14:00+0900\n"
 "Last-Translator: Enlightenment-jp Mailing List <enlightenment-jp@UaUa.ORG>\n"
 "Language-Team: Japanese <ja@li.org>\n"
@@ -281,7 +281,7 @@ msgstr "E IPC エラー"
 #: src/config.c:984 src/config.c:1225 src/config.c:1353 src/config.c:1458
 #: src/config.c:1674 src/config.c:1922 src/config.c:1994 src/config.c:2089
 #: src/config.c:2347 src/config.c:2564 src/config.c:2828 src/config.c:2922
-#: src/config.c:3002 src/config.c:3105 src/config.c:3415
+#: src/config.c:3002 src/config.c:3105 src/config.c:3417
 #, c-format
 msgid "CONFIG: ignoring extra data in \"%s\"\n"
 msgstr "CONFIG: \"%s\" にある余分なデータを無視\n"
@@ -290,7 +290,7 @@ msgstr "CONFIG: \"%s\" にある余分なデータを無視\n"
 #: src/config.c:990 src/config.c:1231 src/config.c:1359 src/config.c:1466
 #: src/config.c:1682 src/config.c:1928 src/config.c:2000 src/config.c:2097
 #: src/config.c:2353 src/config.c:2572 src/config.c:2834 src/config.c:3111
-#: src/config.c:3423
+#: src/config.c:3425
 #, c-format
 msgid "CONFIG: missing required data in \"%s\"\n"
 msgstr "CONFIG: \"%s\" に必要なデータが含まれていません。\n"
@@ -583,19 +583,19 @@ msgstr ""
 msgid "error"
 msgstr "エラー"
 
-#: src/config.c:3432
+#: src/config.c:3434
 msgid "Theme versioning ERROR"
 msgstr "テーマのバージョンエラー"
 
-#: src/config.c:3433 src/config.c:3463
+#: src/config.c:3435 src/config.c:3465
 msgid "Restart with Defaults"
 msgstr "デフォルトの設定で再起動"
 
-#: src/config.c:3434 src/config.c:3464
+#: src/config.c:3436 src/config.c:3466
 msgid "Abort and Exit"
 msgstr "無視して終了"
 
-#: src/config.c:3436
+#: src/config.c:3438
 #, c-format
 msgid ""
 "ERROR:\n"
@@ -632,11 +632,11 @@ msgstr ""
 "しなかったのでしょう。そのテーマは Enlightenment の新しいバージョン\n"
 "で追加された新機能を採用しているのです。\n"
 
-#: src/config.c:3462
+#: src/config.c:3464
 msgid "User Config Version ERROR"
 msgstr "ユーザ設定ファイルのバージョンエラー"
 
-#: src/config.c:3466
+#: src/config.c:3468
 #, c-format
 msgid ""
 "ERROR:\n"
@@ -665,7 +665,7 @@ msgstr ""
 "こうすれば、再び設定ファイルを好きなように変更できます。\n"
 "\n"
 
-#: src/config.c:3689
+#: src/config.c:3691
 #, c-format
 msgid ""
 "WARNING!\n"
@@ -680,7 +680,7 @@ msgstr ""
 "ディスクの空き容量がなかったり、quota の制限だったり、\n"
 "書き込み禁止だったりするのが原因かもしれません。\n"
 
-#: src/config.c:3698
+#: src/config.c:3700
 #, c-format
 msgid ""
 "Enlightenment has just experienced some major problems in\n"
@@ -731,27 +731,27 @@ msgstr ""
 "ドキュメントを読んでさらなる情報を得てください。\n"
 "\n"
 
-#: src/config.c:3763
+#: src/config.c:3765
 msgid "Enlightenment Starting..."
 msgstr "Enlightenment 起動中..."
 
-#: src/config.c:4203
+#: src/config.c:4205
 msgid "Recover system config?"
 msgstr "システムの設定の復旧をしますか？"
 
-#: src/config.c:4203
+#: src/config.c:4205
 msgid "Yes, Attempt recovery"
 msgstr "はい、復旧を試みます"
 
-#: src/config.c:4204
+#: src/config.c:4206
 msgid "Restart and try again"
 msgstr "再起動してもう一度試してみる"
 
-#: src/config.c:4204
+#: src/config.c:4206
 msgid "Quit and give up"
 msgstr "あきらめて終了する"
 
-#: src/config.c:4206
+#: src/config.c:4208
 msgid ""
 "Enlightenment has encountered parsing errors in your autosaved\n"
 "configuration.\n"
@@ -1488,24 +1488,24 @@ msgstr ""
 "ポインタの値は %x です。\n"
 "このエラーは %s の %d 行で生じました。\n"
 
-#: src/menus.c:1931
+#: src/menus.c:1927
 msgid "Go to this Desktop"
 msgstr "このデスクトップに移動"
 
-#: src/menus.c:1947
+#: src/menus.c:1943
 #, c-format
 msgid "Desktop %i"
 msgstr "デスクトップ %i"
 
-#: src/menus.c:2014
+#: src/menus.c:2010
 msgid "Show/Hide this group"
 msgstr "このグループを 表示/非表示 にする"
 
-#: src/menus.c:2017
+#: src/menus.c:2013
 msgid "Iconify this group"
 msgstr "このグループをアイコンに"
 
-#: src/menus.c:2029
+#: src/menus.c:2025
 #, c-format
 msgid "Group %i"
 msgstr "グループ %i"
@@ -3000,15 +3000,15 @@ msgstr ""
 msgid "TextClass Error!"
 msgstr "textclass エラー"
 
-#: src/theme.c:294
+#: src/theme.c:298
 msgid "Unknown\n"
 msgstr "不明\n"
 
-#: src/theme.c:317 src/theme.c:329
+#: src/theme.c:321 src/theme.c:333
 msgid "Theme file/directory does not exist\n"
 msgstr "テーマのファイル/ディレクトリ が存在しません\n"
 
-#: src/theme.c:349
+#: src/theme.c:353
 #, c-format
 msgid ""
 "The theme:\n"
@@ -3027,7 +3027,7 @@ msgstr ""
 "テーマの悪い点は :\n"
 "%s"
 
-#: src/theme.c:354
+#: src/theme.c:358
 msgid "Bad Theme"
 msgstr "だめなテーマです"
 

@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
-"POT-Creation-Date: 2003-06-21 10:46+0200\n"
+"POT-Creation-Date: 2003-07-08 12:38+1000\n"
 "PO-Revision-Date: 2000-04-10 16:10:30+0900\n"
 "Last-Translator: Sung-Hyun Nam <namsh@kldp.org>\n"
 "Language-Team: Korean <ko@li.org>\n"
@@ -278,7 +278,7 @@ msgstr "E IPC 에러"
 #: src/config.c:984 src/config.c:1225 src/config.c:1353 src/config.c:1458
 #: src/config.c:1674 src/config.c:1922 src/config.c:1994 src/config.c:2089
 #: src/config.c:2347 src/config.c:2564 src/config.c:2828 src/config.c:2922
-#: src/config.c:3002 src/config.c:3105 src/config.c:3415
+#: src/config.c:3002 src/config.c:3105 src/config.c:3417
 #, c-format
 msgid "CONFIG: ignoring extra data in \"%s\"\n"
 msgstr "CONFIG: \"%s\"에 있는 더 많은 데이타는 무시합니다\n"
@@ -287,7 +287,7 @@ msgstr "CONFIG: \"%s\"에 있는 더 많은 데이타는 무시합니다\n"
 #: src/config.c:990 src/config.c:1231 src/config.c:1359 src/config.c:1466
 #: src/config.c:1682 src/config.c:1928 src/config.c:2000 src/config.c:2097
 #: src/config.c:2353 src/config.c:2572 src/config.c:2834 src/config.c:3111
-#: src/config.c:3423
+#: src/config.c:3425
 #, c-format
 msgid "CONFIG: missing required data in \"%s\"\n"
 msgstr "CONFIG: \"%s\"에 요구되는 데이타가 없습니다\n"
@@ -579,19 +579,19 @@ msgstr ""
 msgid "error"
 msgstr "에러"
 
-#: src/config.c:3432
+#: src/config.c:3434
 msgid "Theme versioning ERROR"
 msgstr "테마 버전 에러"
 
-#: src/config.c:3433 src/config.c:3463
+#: src/config.c:3435 src/config.c:3465
 msgid "Restart with Defaults"
 msgstr "기본 테마로 재시작"
 
-#: src/config.c:3434 src/config.c:3464
+#: src/config.c:3436 src/config.c:3466
 msgid "Abort and Exit"
 msgstr "중단하고 종료"
 
-#: src/config.c:3436
+#: src/config.c:3438
 #, c-format
 msgid ""
 "ERROR:\n"
@@ -627,11 +627,11 @@ msgstr ""
 "새로운 인라이튼먼트의 기능을 사용하므로 새 인라이튼먼트를\n"
 "사용하십시오\n"
 
-#: src/config.c:3462
+#: src/config.c:3464
 msgid "User Config Version ERROR"
 msgstr "사용자 설정 버전 에러"
 
-#: src/config.c:3466
+#: src/config.c:3468
 #, c-format
 msgid ""
 "ERROR:\n"
@@ -658,7 +658,7 @@ msgstr ""
 "기본 값으로 바뀌게 될 것입니다. 당신은 설정값들을\n"
 "당신이 원하는 값으로 안전하게 바꿀 수 있을 것입니다.\n"
 
-#: src/config.c:3689
+#: src/config.c:3691
 #, c-format
 msgid ""
 "WARNING!\n"
@@ -673,7 +673,7 @@ msgstr ""
 "디스크 공간이 부족하거나 쿼터 혹은 파일 시스템에\n"
 "쓰기가 허용되지 않을 수도 있습니다.\n"
 
-#: src/config.c:3698
+#: src/config.c:3700
 #, c-format
 msgid ""
 "Enlightenment has just experienced some major problems in\n"
@@ -718,27 +718,27 @@ msgstr ""
 "만일 당신이 시스템 관리자라면 인라이튼먼트에 포함되어\n"
 "있는 문서를 읽어보시면 더 많은 정보를 얻으실 수 있습니다.\n"
 
-#: src/config.c:3763
+#: src/config.c:3765
 msgid "Enlightenment Starting..."
 msgstr "인라이튼먼트 시작중..."
 
-#: src/config.c:4203
+#: src/config.c:4205
 msgid "Recover system config?"
 msgstr "시스템 설정을 복구할까요?"
 
-#: src/config.c:4203
+#: src/config.c:4205
 msgid "Yes, Attempt recovery"
 msgstr "예, 복구를 시도"
 
-#: src/config.c:4204
+#: src/config.c:4206
 msgid "Restart and try again"
 msgstr "재시작해서 다시 시도"
 
-#: src/config.c:4204
+#: src/config.c:4206
 msgid "Quit and give up"
 msgstr "종료하고 버림"
 
-#: src/config.c:4206
+#: src/config.c:4208
 msgid ""
 "Enlightenment has encountered parsing errors in your autosaved\n"
 "configuration.\n"
@@ -1462,24 +1462,24 @@ msgstr ""
 "포인터 값은 %x 이었습니다.\n"
 "이 에러는 %s, %d 라인에서 발생했습니다.\n"
 
-#: src/menus.c:1931
+#: src/menus.c:1927
 msgid "Go to this Desktop"
 msgstr "이 데스크탑으로 가기"
 
-#: src/menus.c:1947
+#: src/menus.c:1943
 #, c-format
 msgid "Desktop %i"
 msgstr "데스크탑 %i"
 
-#: src/menus.c:2014
+#: src/menus.c:2010
 msgid "Show/Hide this group"
 msgstr "이 그룹 보여주기/숨기기"
 
-#: src/menus.c:2017
+#: src/menus.c:2013
 msgid "Iconify this group"
 msgstr "이 그룹 아이콘화"
 
-#: src/menus.c:2029
+#: src/menus.c:2025
 #, c-format
 msgid "Group %i"
 msgstr "그룹 %i"
@@ -2973,15 +2973,15 @@ msgstr ""
 msgid "TextClass Error!"
 msgstr "TextClass 에러!"
 
-#: src/theme.c:294
+#: src/theme.c:298
 msgid "Unknown\n"
 msgstr "모름\n"
 
-#: src/theme.c:317 src/theme.c:329
+#: src/theme.c:321 src/theme.c:333
 msgid "Theme file/directory does not exist\n"
 msgstr "테마 파일/디렉토리가 없습니다\n"
 
-#: src/theme.c:349
+#: src/theme.c:353
 #, c-format
 msgid ""
 "The theme:\n"
@@ -3000,7 +3000,7 @@ msgstr ""
 "이 테마가 잘못된 이유는:\n"
 "%s"
 
-#: src/theme.c:354
+#: src/theme.c:358
 msgid "Bad Theme"
 msgstr "잘못된 테마"
 
