@@ -400,7 +400,6 @@ GtkWidget *
 	GSList *alignment1_group = NULL;
 	GtkWidget *radiobutton1;
 	GtkWidget *alignment2;
-	GSList *alignment2_group = NULL;
 	GtkWidget *radiobutton2;
 	GtkWidget *hbox8;
 	GtkWidget *button8;
@@ -627,9 +626,9 @@ GtkWidget *
 					 (GtkAttachOptions) (0),
 					 (GtkAttachOptions) (0), 0, 0);
 
-	radiobutton2 = gtk_radio_button_new_with_label(alignment2_group,
+	radiobutton2 = gtk_radio_button_new_with_label(alignment1_group,
 		   	"## Megabytes of system memory");
-	alignment2_group = gtk_radio_button_group(GTK_RADIO_BUTTON(radiobutton2));
+	alignment1_group = gtk_radio_button_group(GTK_RADIO_BUTTON(radiobutton2));
 	gtk_widget_ref(radiobutton2);
 	gtk_object_set_data_full(GTK_OBJECT(Preferences_Window), "radiobutton2",
 		   	radiobutton2, (GtkDestroyNotify) gtk_widget_unref);
