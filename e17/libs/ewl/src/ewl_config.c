@@ -8,6 +8,7 @@
 enum Ewl_Config_Types {
 	EWL_CONFIG_DEBUG_ENABLE,
 	EWL_CONFIG_DEBUG_LEVEL,
+	EWL_CONFIG_DEBUG_HIER,
 	EWL_CONFIG_EVAS_RENDER_METHOD,
 	EWL_CONFIG_EVAS_FONT_CACHE,
 	EWL_CONFIG_EVAS_IMAGE_CACHE,
@@ -188,6 +189,7 @@ static void ewl_config_config_read(void)
 
 	nc.debug.enable = ewl_config_int_get("/ewl/debug/enable");
 	nc.debug.level = ewl_config_int_get("/ewl/debug/level");
+	nc.debug.hierarchy = ewl_config_int_get("/ewl/debug/hierarchy");
 	nc.evas.font_cache = ewl_config_int_get("/ewl/evas/font_cache");
 	nc.evas.image_cache = ewl_config_int_get("/ewl/evas/image_cache");
 	nc.evas.render_method = ewl_config_str_get("/ewl/evas/render_method");
@@ -336,6 +338,7 @@ static void ewl_config_config_read(void)
 
 	ewl_config.debug.enable = nc.debug.enable;
 	ewl_config.debug.level = nc.debug.level;
+	ewl_config.debug.hierarchy = nc.debug.hierarchy;
 	ewl_config.evas.font_cache = nc.evas.font_cache;
 	ewl_config.evas.image_cache = nc.evas.image_cache;
 	ewl_config.evas.render_method = nc.evas.render_method;
@@ -352,6 +355,7 @@ static void ewl_config_defaults_set(void)
 
 	ecore_config_int_default("/ewl/debug/enable", 0);
 	ecore_config_int_default("/ewl/debug/level", 0);
+	ecore_config_int_default("/ewl/debug/hierarchy", 0);
 	ecore_config_string_default("/ewl/evas/render_method", "software_x11");
 	ecore_config_int_default("/ewl/evas/font_cache", 2097152);
 	ecore_config_int_default("/ewl/evas/image_cache", 8388608);
@@ -366,6 +370,7 @@ static void ewl_config_defaults_set(void)
 		char *keys [] = {
 		    "/ewl/debug/enable",
 		    "/ewl/debug/level",
+		    "/ewl/debug/hierarchy",
 		    "/ewl/evas/render_method",
 		    "/ewl/evas/font_cache",
 		    "/ewl/evas/image_cache",
@@ -385,6 +390,8 @@ static void ewl_config_defaults_set(void)
 		    ewl_config_listener, EWL_CONFIG_DEBUG_ENABLE, NULL);
 		ecore_config_listen("ewl_debug_level", "/ewl/debug/level",
 		    ewl_config_listener, EWL_CONFIG_DEBUG_LEVEL, NULL);
+		ecore_config_listen("ewl_debug_hierarchy", "/ewl/debug/hierarchy",
+		    ewl_config_listener, EWL_CONFIG_DEBUG_HIER, NULL);
 		ecore_config_listen("ewl_render_method", "/ewl/evas/render_method",
 		    ewl_config_listener, EWL_CONFIG_EVAS_RENDER_METHOD, NULL);
 		ecore_config_listen("ewl_font_cache", "/ewl/evas/font_cache",
@@ -412,6 +419,10 @@ static int ewl_config_listener(const char *key, const Ecore_Config_Type type,
 
 		case EWL_CONFIG_DEBUG_LEVEL:
 			ewl_config.debug.level = ewl_config_int_get(key);
+			break;
+
+		case EWL_CONFIG_DEBUG_HIER:
+			ewl_config.debug.hierarchy = ewl_config_int_get(key);
 			break;
 
 		case EWL_CONFIG_EVAS_RENDER_METHOD:

@@ -25,6 +25,7 @@ extern Ecore_List *ewl_window_list;
 static unsigned int    debug_segv = 0;
 static unsigned int    use_engine = EWL_ENGINE_ALL;
 static unsigned int    phase_status = 0;
+static unsigned int    debug_hier = 0;
 
 static int _ewl_init_count = 0;
 
@@ -145,6 +146,8 @@ int ewl_init(int *argc, char **argv)
 		ewl_shutdown();
 		DRETURN_INT(_ewl_init_count, DLEVEL_STABLE);
 	}
+	if (debug_hier)
+		ewl_config.debug.hierarchy = debug_hier;
 
 	if (!ewl_ev_init()) {
 		DERROR("Could not init event data....");
@@ -333,6 +336,10 @@ static void ewl_init_parse_options(int *argc, char **argv)
 				ewl_theme_name_set(argv[i + 1]);
 				matched++;
 			}
+			matched++;
+		}
+		else if (!strcmp(argv[i], "--ewl-debug-hier")) {
+			debug_hier = 1;
 			matched++;
 		}
 		else if (!strcmp(argv[i], "--ewl-software-x11")) {

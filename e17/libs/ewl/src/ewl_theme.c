@@ -344,6 +344,10 @@ char *ewl_theme_data_str_get(Ewl_Widget * w, char *k)
 	else
 		snprintf(key, PATH_MAX, "%s", k);
 
+	if (ewl_config.debug.hierarchy) 
+		printf("%s\n", key);
+
+
 	for (temp = key; temp && !ret; temp = strchr(temp, '/')) {
 		if (w && w->theme)
 			ret = ecore_hash_get(w->theme, temp);

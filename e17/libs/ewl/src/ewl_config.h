@@ -15,6 +15,7 @@ struct _ewl_config
 	struct {
 		int             enable;
 		int             level;
+		int             hierarchy;
 	} debug;
 	struct {
 		int             font_cache;
