@@ -1664,3 +1664,10 @@ Tue Dec 21 15:15:53 PST 1999
 (Mandrake)
 
 added gettext check to autogen.sh
+
+-------------------------------------------------------------------------------
+
+Wed Jan  5 00:05:04 CET 2000
+(Saur)
+
+Added en_US (American English) to the list of localized languages.
