@@ -233,6 +233,8 @@ void etox_append_text(Evas_Object * obj, char *text)
 		et->h -= end->h;
 		etox_line_merge_append(end, start);
 		etox_line_free(start);
+		if (lines)
+			end->length++;
 		et->length += end->length;
 		et->h += end->h;
 		if (end->w > et->tw)
@@ -321,7 +323,9 @@ void etox_prepend_text(Evas_Object * obj, char *text)
 		et->h -= end->h;
 		etox_line_merge_prepend(start, end);
 		etox_line_free(start);
-		et->length += end->length + 1;
+		if (et->lines->next)
+			start->length++;
+		et->length += end->length;
 		et->h += end->h;
 		if (end->w > et->tw)
 			et->tw = end->w;
@@ -937,12 +941,12 @@ etox_index_to_geometry(Evas_Object * obj, int index, Evas_Coord *x,
 
 	et = evas_object_smart_data_get(obj);
 
-	if (index > et->length) {
+	if (index >= et->length) {
 		sum = et->length;
                 line = evas_list_data(evas_list_last(et->lines));
 
 		if (h) *h = line->h;
-		if (w) *w = line->w / line->length;
+		if (w) *w = line->w / (line->length ? line->length : 1);
 		if (y) *y = line->y;
 		if (x) *x = line->x + line->w;
 	}
@@ -1318,11 +1322,14 @@ static Evas_List *_etox_break_text(Etox * et, char *text)
 				text++;
 			}
 
+			if (line->w > et->tw)
+				et->tw = line->w;
+			if (*text)
+				line->length++;
+
 			/*
 			 * Create a new line for the next text
 			 */
-			if (line->w > et->tw)
-				et->tw = line->w;
 			line = etox_line_new(line->flags);
 			ret = evas_list_append(ret, line);
 			line->et = et;
