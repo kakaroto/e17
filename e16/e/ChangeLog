@@ -1857,3 +1857,11 @@ Wed May 14 21:37:17 CEST 2003
 
 EWMH: String atoms should be UTF-8.
 Avoid compiler warnings due to include path (/usr/include) that shouldn't be given explicitly.
+
+-------------------------------------------------------------------------------
+
+Fri May 16 20:09:45 CEST 2003
+(Kim)
+
+Ignore internal buttons when placing windows (+I don't like duplicated code).
+Include .mo files in RPM's.
