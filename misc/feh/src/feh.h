@@ -43,7 +43,7 @@
 #include "utils.h"
 #include "getopt.h"
 
-#if 0
+#if 1
 #ifdef __GNUC__
 #define D(a) \
   { \

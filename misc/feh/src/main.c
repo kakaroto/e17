@@ -91,7 +91,6 @@ feh_main_iteration(int block)
       pt = feh_get_time();
       first = 0;
    }
-   XFlush(disp);
 
    /* Timers */
    t1 = feh_get_time();
@@ -104,6 +103,7 @@ feh_main_iteration(int block)
       if (window_num == 0)
          D_RETURN(0);
    }
+   XFlush(disp); 
 
    FD_ZERO(&fdset);
    FD_SET(xfd, &fdset);
