@@ -211,11 +211,13 @@ _container_move(Evas_Object *obj, double x, double y)
   Container *data;
   
   data = evas_object_smart_data_get(obj);
-
+  if((data->x == x) && (data->y == y))
+      return;
   
 //  evas_object_move(data->clipper, x+ data->padding.l,
 //                          y + data->padding.t);
-
+  if(data->x == x && data->y == y) 
+      return;
   evas_object_move(data->clipper, x, y);
   evas_object_move(data->grabber, x, y);
 
