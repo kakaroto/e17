@@ -78,3 +78,7 @@ blockfile = /home/gilbertt/BLOCKCAM
 overlay_image = /home/gilbertt/.lb.png
 overlay_x = 5
 overlay_y = 5
+# do things. like play sounds or whatever. Each is a shell command.
+#action_pre_shot
+#action_post_shot
+#action_post_upload
