@@ -7,7 +7,7 @@ bindir=$(ROOT)${exec_prefix}/bin
 mandir=$(ROOT)${prefix}/man
 
 CC=gcc
-CFLAGS=-O3 -Wall -I$(srcdir)/.. -I.. -D_GNU_SOURCE `giblib-config --cflags`
+CFLAGS=-O3 -g -Wall -I$(srcdir)/.. -I.. -D_GNU_SOURCE `giblib-config --cflags`
 
 INSTALL=/usr/bin/install -c
 INSTALL_PROGRAM=${INSTALL}

@@ -248,8 +248,8 @@ ftp_connect(char *host, char *user, char *pass, char *dir)
       /* initialisation */
       ftp_send(1, "bin");
       ftp_recv();
-      ftp_send(1, "umask 022");
-      ftp_recv();
+/*      ftp_send(1, "umask 022");
+      ftp_recv(); */
 
       /* ok */
       break;

@@ -15,6 +15,7 @@
 #include <sys/time.h>
 #include <sys/mman.h>
 #include <sys/ioctl.h>
+#include <sys/stat.h>
 #include <X11/Xlib.h>
 #include <Imlib2.h>
 #include <giblib.h>
@@ -235,7 +236,7 @@ add_time_text(Imlib_Image image, char *message, int width, int height)
    if (line[len - 1] == '\n')
       line[--len] = '\0';
 
-   if (title_text)
+   if (title_text && title_fn)
    {
       gib_imlib_get_text_size(title_fn, title_line, title_style, &w, &h,
                               IMLIB_TEXT_TO_RIGHT);
@@ -248,7 +249,7 @@ add_time_text(Imlib_Image image, char *message, int width, int height)
                           title_a);
    }
 
-   if (line)
+   if (line && text_fn)
    {
       gib_imlib_get_text_size(text_fn, line, text_style, &w, &h,
                               IMLIB_TEXT_TO_RIGHT);

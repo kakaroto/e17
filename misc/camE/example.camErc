@@ -25,7 +25,7 @@ temp_file = /tmp/webcam.jpg
 lag_reduce = 5
 # This goes at the bottom left, with the message from "infofile" appended.
 # It is run through strftime, so date vars are expanded.
-text   = %d/%m/%Y %H:%M GMT - 
+text   = %d/%m/%Y %H:%M %Z - 
 width  = 352
 height = 288
 # delay between uploading one shot and starting the next
