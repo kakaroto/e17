@@ -370,13 +370,8 @@ ActionsCall(unsigned int id, EWin * ewin, void *params)
    if (af->need_ewin)
      {
 	if (ewin == NULL)
-	  {
-	     if (params)
-		ewin = FindItem(NULL, atoi((char *)params), LIST_FINDBY_ID,
-				LIST_TYPE_EWIN);
-	     else
-		ewin = GetContextEwin();
-	  }
+	   ewin = GetContextEwin();
+
 	if (ewin == NULL)
 	   return -1;
 

@@ -194,6 +194,15 @@ GetContextEwin(void)
 }
 
 void
+SetContextEwin(EWin * ewin)
+{
+   EDBUG(4, "SetContextEwin");
+   if (!ewin || (!ewin->menu && !mode.cur_menu_mode))
+      mode.context_ewin = ewin;
+   EDBUG_RETURN_;
+}
+
+void
 SlideEwinTo(EWin * ewin, int fx, int fy, int tx, int ty, int speed)
 {
    int                 k, spd, x, y, min, tmpx, tmpy, tmpw, tmph;
@@ -3086,6 +3095,7 @@ BorderWinpartEventMouseUp(XEvent * ev, EWin * ewin, int j)
 static void
 BorderWinpartEventEnter(XEvent * ev, EWin * ewin, int j)
 {
+   SetContextEwin(ewin);
    if (ewin->bits[j].state == STATE_CLICKED)
       ewin->bits[j].left = 0;
    else

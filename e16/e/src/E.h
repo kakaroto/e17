@@ -1738,6 +1738,7 @@ void                SetEInfoOnAll(void);
 EWin               *GetEwinPointerInClient(void);
 EWin               *GetFocusEwin(void);
 EWin               *GetContextEwin(void);
+void                SetContextEwin(EWin * ewin);
 void                SlideEwinTo(EWin * ewin, int fx, int fy, int tx, int ty,
 				int speed);
 void                SlideEwinsTo(EWin ** ewin, int *fx, int *fy, int *tx,

@@ -2325,7 +2325,6 @@ MenusEventMouseUp(XEvent * ev)
 	     if (clickmenu)
 	       {
 		  MenusHide();
-		  mode.context_ewin = NULL;
 		  return 1;
 	       }
 	  }
@@ -2351,7 +2350,6 @@ MenusEventMouseUp(XEvent * ev)
 				&& (ewin->menu))
 			      {
 				 ewin->menu->stuck = 1;
-				 mode.context_ewin = ewin;
 				 i = ewin->border->num_winparts;
 			      }
 			 }
