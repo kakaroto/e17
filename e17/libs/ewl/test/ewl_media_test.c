@@ -249,7 +249,7 @@ int main(int argc, char ** argv) {
     /* the time text spot */
     ewl_container_append_child(EWL_CONTAINER(b), time);
     ewl_object_set_insets(EWL_OBJECT(time), 0, 3, 0, 0);
-//    ewl_object_set_fill_policy(EWL_OBJECT(time), EWL_FLAG_FILL_SHRINK);
+    ewl_object_set_fill_policy(EWL_OBJECT(time), EWL_FLAG_FILL_SHRINK);
     ewl_widget_show(time);
 
     ewl_main();
