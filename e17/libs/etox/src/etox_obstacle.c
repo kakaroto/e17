@@ -85,7 +85,7 @@ etox_obstacle_del(Etox e, Etox_Obstacle obst)
   if (e->rect_list) 
     free(e->rect_list);
   e->rect_list = mylist;  
- 
+
   obst = NULL;
 
   _etox_refresh(e); 

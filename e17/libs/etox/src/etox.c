@@ -167,8 +167,6 @@ _etox_clean(Etox e)
 
   if (e->text)
     free(e->text);
-   
-  return;
 }
 
 void 
@@ -239,6 +237,7 @@ etox_new(Evas evas, char *name)
   etox_color_set_member(e->color, "fg", 255, 255, 255, 255);
   etox_color_set_member(e->color, "ol", 0, 0, 0, 255);
   etox_color_set_member(e->color, "sh", 0, 0, 0, 255);
+  e->default_color = 1;
   e->clip = NULL;
   
   return e;
@@ -298,13 +297,17 @@ etox_new_all(Evas evas, char *name,
   e->align = h_align;
 
   if (color)
-    e->color = color;
+    {
+      e->color = color;
+      e->default_color = 0;
+    }
   else
     {
       e->color = etox_color_new();
       etox_color_set_member(e->color, "fg", 255, 255, 255, 255);
       etox_color_set_member(e->color, "ol", 0, 0, 0, 255);
       etox_color_set_member(e->color, "sh", 0, 0, 0, 255);
+      e->default_color = 1;
     }
   e->vertical_align = v_align;
   e->alpha_mod = 255;
@@ -333,13 +336,13 @@ etox_free(Etox e)
     }
   if (e->font)
     free(e->font);
-  if (e->color)
+  if (e->color && e->default_color)
     etox_color_free(e->color);
   if (e->font_style)
     etox_style_free(e->font_style);
   free(e);
 
-  return;
+  e = NULL;
 }
 
 void 

@@ -43,9 +43,10 @@ struct _Etox
     int font_size;
     Etox_Bit *bit_list;
     int num_bits;
-    Evas *evas;
+    Evas evas;
     int align;
     Etox_Color color;
+    int default_color;
     double padding;
     char vertical_align;
     int alpha_mod;

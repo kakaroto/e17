@@ -523,6 +523,9 @@ etox_set_color(Etox e, Etox_Color color)
 {
   if (!e) return;
 
+  if (e->color)
+    etox_color_free(color);
+
   e->color = color;
 
   _etox_refresh(e);

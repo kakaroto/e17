@@ -35,11 +35,20 @@ etox_color_new(void)
 void
 etox_color_free(Etox_Color color)
 {
+  Evas_List l;
+
   if (!color)
     return;
+
+  for (l = color->bit_list; l; l = l->next)
+    if (l->data)
+      free(l->data);
+
   if (color->bit_list)
     evas_list_free(color->bit_list);
   free(color);
+
+  color = NULL;
 }
 
 void

@@ -160,5 +160,7 @@ etox_style_free(Etox_Style style)
       if(style->bits)
 	free(style->bits);
       free(style);
+
+      style = NULL;
     }
 }
