@@ -16,37 +16,46 @@ entrance_config_new(void)
    return (e);
 }
 
-static char *
-get_hostname(void)
-{
-   char buf[255];               /* some standard somewhere limits hostname
-                                   lengths to this */
-   char *result = NULL;
-
-   if (!(gethostname(buf, 255)))
-      result = strdup(buf);
-   else
-      result = strdup("Localhost");
-   return (result);
-}
-
-
 static void
 entrance_config_populate(Entrance_Config e, E_DB_File * db)
 {
    char *str;
-   Evas_List *l = NULL;
-   int i = 0, num_session = 0, def = 0;
+   int i = 0, num_session = 0;
    char buf[PATH_MAX];
-   Entrance_Session_Type *st = NULL;
-
-   Evas_List *U = NULL;
-   Entrance_User *eu = NULL;
-   int num_user;
+   int num_fonts;
 
    if ((!e) || (!db))
       return;
 
+   /* strings 'n things */
+   if ((str = e_db_str_get(db, "/entrance/theme")))
+      e->theme = str;
+   else
+      e->theme = strdup("default.eet");
+
+   if ((str = e_db_str_get(db, "/entrance/pointer")))
+       e->pointer = str;
+   else
+       e->pointer = strdup(PACKAGE_DATA_DIR"/images/pointer.png");
+
+   if ((str = e_db_str_get(db, "/entrance/greeting/before")))
+      e->before.string = str;
+   else
+      e->before.string = strdup("Welcome to ");
+   if ((str = e_db_str_get(db, "/entrance/greeting/after")))
+      e->after.string = str;
+   else
+      e->after.string = strdup(":");
+   if ((str = e_db_str_get(db, "/entrance/date_format")))
+	   e->date.string = str;
+   else
+	   e->date.string = strdup("%A %B %e, %Y");
+
+   if ((str = e_db_str_get(db, "/entrance/time_format")))
+	   e->time.string = str;
+   else
+	   e->time.string = strdup("%l:%M:%S %p");
+#if 0
    if (e_db_int_get(db, "/entrance/user/count", &num_user))
    {
       for (i = 0; i < num_user; i++)
@@ -71,74 +80,40 @@ entrance_config_populate(Entrance_Config e, E_DB_File * db)
       e->users = NULL;
       syslog(LOG_WARNING, "Warning: No users found.");
    }
+#endif
 
-
-   st = (Entrance_Session_Type *) malloc(sizeof(Entrance_Session_Type));
-   memset(st, 0, sizeof(Entrance_Session_Type));
-   st->name = "Default";
-   st->path = "default";
-   st->icon = PACKAGE_DATA_DIR "/images/sessions/default.png";
-   l = evas_list_append(l, st);
-
-   if (!e_db_int_get(db, "/entrance/session/default", &def))
-      def = 0;
-
+   /* session hash and font list */
    if (e_db_int_get(db, "/entrance/session/count", &num_session))
    {
+       char *key = NULL;
+       char *value = NULL;
+
       for (i = 0; i < num_session; i++)
       {
-         st = (Entrance_Session_Type *) malloc(sizeof(Entrance_Session_Type));
-         memset(st, 0, sizeof(Entrance_Session_Type));
-
-         snprintf(buf, PATH_MAX, "/entrance/session/%d/name", i);
-         st->name = e_db_str_get(db, buf);
-         snprintf(buf, PATH_MAX, "/entrance/session/%d/path", i);
-         st->path = e_db_str_get(db, buf);
-         snprintf(buf, PATH_MAX, "/entrance/session/%d/icon", i);
-         str = e_db_str_get(db, buf);
-         snprintf(buf, PATH_MAX, "%s/images/sessions/%s",
-                  PACKAGE_DATA_DIR, str);
-         st->icon = strdup(buf);
-         l = evas_list_append(l, st);
-
-         if (i == def)
-         {
-            e->default_session = st;
-            e->default_index = i;
-         }
+         snprintf(buf, PATH_MAX, "/entrance/session/%d/value", i);
+         value = e_db_str_get(db, buf);
+         snprintf(buf, PATH_MAX, "/entrance/session/%d/key", i);
+         key = e_db_str_get(db, buf);
+	
+	 e->sessions = evas_hash_add(e->sessions, key, value);
+	 free(key);
       }
-      e->sessions = l;
    }
-   else
+   if (e_db_int_get(db, "/entrance/fonts/count", &num_fonts))
    {
-      evas_list_append(e->sessions, NULL);
-      e->sessions = NULL;
-      syslog(LOG_WARNING, "Warning: No sessions found, using default.");
+      char *value = NULL;
+      for (i = 0; i < num_fonts; i++)
+      {
+         snprintf(buf, PATH_MAX, "/entrance/fonts/%d/str", i);
+         if((value = e_db_str_get(db, buf)))
+	 {
+	     e->fonts = evas_list_append(e->fonts, value);
+	 }
+	
+      }
    }
 
-   if ((str = e_db_str_get(db, "/entrance/theme")))
-      e->theme = str;
-   else
-      e->theme = strdup("BlueCrystal");
-
-   if ((str = e_db_str_get(db, "/entrance/welcome")))
-      e->welcome = str;
-   else
-      e->welcome = strdup("Enter your username");
-
-   if ((str = e_db_str_get(db, "/entrance/passwd")))
-      e->passwd = str;
-   else
-      e->passwd = strdup("Enter your password...");
-
-   if ((str = e_db_str_get(db, "/entrance/greeting")))
-      e->greeting = str;
-   else
-      e->greeting = strdup("Welcome to");
-
-   if (!e_db_int_get(db, "/entrance/passwd_echo", &(e->passwd_echo)))
-      e->passwd_echo = 1;
-
+#if 0
    if (!e_db_int_get(db, "/entrance/xinerama/screens/w", &(e->screens.w)))
       e->screens.w = 1;
    if (!e_db_int_get(db, "/entrance/xinerama/screens/h", &(e->screens.h)))
@@ -147,37 +122,23 @@ entrance_config_populate(Entrance_Config e, E_DB_File * db)
       e->display.w = 1;
    if (!e_db_int_get(db, "/entrance/xinerama/on/h", &(e->display.h)))
       e->display.h = 1;
+#endif
 
-   str = get_hostname();
-   snprintf(buf, PATH_MAX, "%s %s", e->greeting, str);
-   free(e->greeting);
-   free(str);
-   e->greeting = strdup(buf);
 
-   /* get the format strings used to display the current date and time */ 
-   if ((str = e_db_str_get(db, "/entrance/date_format")))
-	   e->date_format = str;
-   else
-	   e->date_format = strdup("%A %B %e, %Y");
+   /* auth info */
+   if (!e_db_int_get(db, "/entrance/auth", &(e->auth)))
+      e->auth = 0;
 
-   if ((str = e_db_str_get(db, "/entrance/time_format")))
-	   e->time_format = str;
-   else
-	   e->time_format = strdup("%l:%M:%S %p");
-
-   if (!e_db_int_get(db, "/entrance/use_pam_auth", &(e->use_pam_auth)))
-      e->use_pam_auth = 0;
-
-   if (!e->use_pam_auth)
+   if (e->auth != ENTRANCE_USE_PAM)
    {
-      /* check whether /etc/shadow can be used for authentication */
-	  if (!access("/etc/shadow", R_OK))
-		  e->use_shadow_auth = 1;
-	  else if (!access("/etc/shadow", F_OK))
-      {
+       /* check whether /etc/shadow can be used for authentication */
+       if (!access("/etc/shadow", R_OK))
+	   e->auth = ENTRANCE_USE_SHADOW;
+       else if (!access("/etc/shadow", F_OK))
+       {
          syslog(LOG_CRIT, "/etc/shadow was found but couldn't be read. Run entrance as root.");
          exit(-1);
-      }
+       }
    }
 #ifndef HAVE_PAM
    else
@@ -225,17 +186,18 @@ entrance_config_free(Entrance_Config e)
 {
    if (e)
    {
-      if (e->passwd)
-         free(e->passwd);
-      if (e->welcome)
-         free(e->welcome);
       if (e->theme)
          free(e->theme);
-	  if (e->date_format)
-		  free(e->date_format);
-	  if (e->time_format)
-		  free(e->time_format);
-
+      if (e->pointer)
+         free(e->pointer);
+      if (e->date.string)
+	  free(e->date.string);
+      if (e->time.string)
+	  free(e->time.string);
+      if(e->before.string) 
+	  free(e->before.string);
+      if(e->after.string) 
+	  free(e->after.string);
       free(e);
    }
 }

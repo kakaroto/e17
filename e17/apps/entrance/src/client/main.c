@@ -1,47 +1,537 @@
+/**
+ * Corey Donohoe <atmos@atmos.org>
+ * filename: main.c
+ * Project: Entrance
+ * July 11, 2003
+ * 
+ * Themes are edjes(eet files) and work like this:
+ * 1. A Parts Collection Must be Present, Titled "main"
+ * 2. Entrance makes use of the Parts of main.  If the required column is
+ *    set to No it is an optional feature for the themer.
+ * -------------------------------------------------------------------------
+ * | Key(state1, state2, ... , staten)		| Type         |  Required |
+ * -------------------------------------------------------------------------
+ * | EntrancePassMessage 			| TEXT	       | Yes       |
+ * -------------------------------------------------------------------------
+ * | EntranceUserMessage 			| TEXT	       | Yes       |
+ * -------------------------------------------------------------------------
+ * | EntrancePassEntry 			        | TEXT	       | Yes       |
+ * -------------------------------------------------------------------------
+ * | EntranceUserEntry 				| TEXT	       | Yes       |
+ * -------------------------------------------------------------------------
+ * | EntranceDate(default)		        | TEXT	       | No        |
+ * -------------------------------------------------------------------------
+ * | EntranceTime(default)		        | TEXT	       | No        |
+ * -------------------------------------------------------------------------
+ * | EntranceHostname(default)		        | TEXT	       | No        |
+ * -------------------------------------------------------------------------
+ * | EntranceSession (default, foo, bar)        | TEXT	       | No        |
+ * -------------------------------------------------------------------------
+ *
+ * 3. The following signals need to be defined in programs.
+ * -------------------------------------------------------------------------
+ * | Signal		     | Type      		               | Req
+ * -------------------------------------------------------------------------
+ * | EntranceUserAuthSuccess | SIGNAL_EMIT 			       | Yes
+ * |			     |	"EntranceUserAuthSuccessDone" ""       |	
+ * -------------------------------------------------------------------------
+ * | EntranceUserFail	       | 				       | No
+ * -------------------------------------------------------------------------
+ * | EntranceUserAuthFail      | 				       | No 
+ * -------------------------------------------------------------------------
+ * | EntranceUserAuth          | Theme Specific        		       | No
+ * -------------------------------------------------------------------------
+ * | EntranceInputUserFocusIn  | SIGNAL_EMIT "In" "EntranceUserEntry"  | Yes 
+ * -------------------------------------------------------------------------
+ * | EntranceInputUserFocusOut | SIGNAL_EMIT "Out" "EntranceUserEntry" | Yes 
+ * -------------------------------------------------------------------------
+ * | EntranceInputPassFocusIn  | SIGNAL_EMIT "In" "EntrancePassEntry"  | Yes 
+ * -------------------------------------------------------------------------
+ * | EntranceInputPassFocusOut | SIGNAL_EMIT "Out" "EntrancePassEntry" | Yes 
+ * -------------------------------------------------------------------------
+ * | EntranceSystemReboot      | 					| No 
+ * -------------------------------------------------------------------------
+ * | EntranceSystemHalt	       | 					| No 
+ * -------------------------------------------------------------------------
+ * 
+ */
+#include<time.h>
 #include "entrance.h"
-#include "events.h"
+#include "entrance_session.h"
+#include "EvasTextEntry.h"
 
-void
-setup(void)
+#define WINW 800
+#define WINH 600
+
+static Entrance_Session session = NULL;
+
+/* Callbacks for shit */
+static char *
+get_my_hostname(void)
 {
-   Entrance_Session e;
+   char buf[255];               /* some standard somewhere limits hostname
+                                   lengths to this */
+   char message[PATH_MAX];
 
-   e = entrance_session_new();
-   entrance_session_init(e);
+   char *result = NULL;
 
-   setup_events(e);
+   if (!(gethostname(buf, 255)))
+   {
+       snprintf(message, PATH_MAX, "%s%s%s", session->config->before.string,
+	       buf, session->config->after.string);
+   }
+   else
+       snprintf(message, PATH_MAX, "%s Localhost %s", 
+	       session->config->before.string, 
+	       session->config->after.string);
+   result = strdup(message);
+   return (result);
 }
 
+/**
+ * exit_cb - waht to do if we kill it or something?
+ * @data - no clue
+ * @ev_type - kill event ?
+ * @ev - event data
+ * Obviously I want to exit here.
+ */
+static int
+exit_cb(void *data, int ev_type, void *ev)
+{
+    ecore_main_loop_quit();
+    exit(0);
+}
+
+/**
+ * window_del_cb - what to do when we receive a window delete event
+ * @ee - the Ecore_Evas that received the event
+ */
+static void 
+window_del_cb(Ecore_Evas *ee)
+{
+    ecore_main_loop_quit();
+    exit(0);
+}
+
+/**
+ * window_resize_cb - handle when the ecore_evas needs to be resized
+ * @ee - The Ecore_Evas we're resizing 
+ */
+static void
+window_resize_cb(Ecore_Evas *ee)
+{
+    Evas_Object *o = NULL;
+    
+    if((o = evas_object_name_find(ecore_evas_get(ee), "ui")))
+    {
+	int w, h;
+	ecore_evas_geometry_get(ee, NULL, NULL, &w, &h);
+	evas_object_resize(o, w, h);
+    }
+}
+
+/**
+ * focus_swap - swap key input focus between the password and user
+ * entries
+ * @o - the object we want to swap focus with
+ * @selecto - whether to focus on o, or the other entry
+ */ 
+static void
+focus_swap(Evas_Object *o, int selecto)
+{
+    Evas_Object *oo = NULL;
+    Evas_Text_Entry *e = NULL;
+	    
+    if((e = evas_object_smart_data_get(o)))
+    {
+	if(!strcmp(e->edje.part, "EntrancePassEntry"))
+	{
+	    if((oo = evas_object_name_find(evas_object_evas_get(o), 
+					    "EntranceUserEntry")))
+	    {
+		evas_text_entry_text_set(oo, "");
+	    }
+	    evas_text_entry_text_set(o, "");
+	}
+	else if(!strcmp(e->edje.part, "EntranceUserEntry"))
+	{
+	    oo = evas_object_name_find(evas_object_evas_get(o), 
+					    "EntrancePassEntry");
+	}
+    }
+    if(oo)
+    {
+	selecto ? 
+	    evas_text_entry_focus_set(oo, 0) : evas_text_entry_focus_set(o, 0);
+	
+	selecto ? 
+	    evas_text_entry_focus_set(o, 1): evas_text_entry_focus_set(oo, 1);
+    }
+}
+/**
+ * interp_return_key - when Enter is hit on the keyboard we end up here
+ * @data - The smart object that is this Entry
+ * @str - The string that was in the buffer when Enter was pressed
+ */
+static void
+interp_return_key(void *data, const char *str)
+{
+    Evas_Object *o = NULL;
+    Evas_Text_Entry *e = NULL;
+   
+    o = (Evas_Object*)data;
+	
+    if((e = evas_object_smart_data_get(o)))
+    {
+	if(!strcmp(e->edje.part, "EntranceUserEntry"))
+	{
+	    if(!entrance_auth_set_user(session->auth, str))
+	    {
+		edje_object_signal_emit(e->edje.o,
+				    "EntranceUserAuth", "");
+		focus_swap(o, 0);
+	    }
+	    else
+	    {
+		evas_text_entry_text_set(o, "");
+		entrance_session_reset_user(session);
+		edje_object_signal_emit(e->edje.o,
+				    "EntranceUserFail", "");
+		focus_swap(o, 1);
+	    }
+	}
+	if(!strcmp(e->edje.part, "EntrancePassEntry"))
+	{
+	    if(session->auth->user && strlen(session->auth->user) > 0)
+	    {
+		const char *sessionname = NULL;
+		entrance_auth_set_pass(session->auth, str);
+		if(edje_object_part_exists(e->edje.o, "EntranceSession"))
+		{
+		    sessionname = edje_object_part_text_get(e->edje.o, 
+							 "EntranceSession");
+		    if(session->session) free(session->session);
+		    session->session = strdup(sessionname);
+		}
+		if(!entrance_session_auth_user(session))
+		{
+		    edje_object_signal_emit(e->edje.o,
+					    "EntranceUserAuthSuccess", "");
+		    session->authed = 1;
+		}
+		else
+		{
+		    entrance_session_reset_user(session);
+		    edje_object_signal_emit(e->edje.o,
+				"EntranceUserAuthFail", "");
+		    focus_swap(o, 0);
+		}
+	    }
+	}
+    }
+}
+/**
+ * focus - an edje signal emission 
+ * @data - the data passed when the callback was added
+ * @o - the evas object(Edje) that created the signal
+ * @emission - the signal "type" that was emitted
+ * @source - the signal originated from this "part"
+ */
+static void
+focus(void *data, Evas_Object *o, const char *emission, const char *source)
+{
+    Evas_Object *oo = NULL;		/* in nexus this looks in infinity !*/
+    if((oo = (Evas_Object*)data))
+    {
+	if(!strcmp(emission, "In"))
+	{
+	    if(!evas_text_entry_is_focused(oo))
+	    {
+		evas_text_entry_focus_set(oo, 1);
+	    }
+	}
+	else if(!strcmp(emission, "Out"))
+	{
+	    if(evas_text_entry_is_focused(oo))
+	    {
+		evas_text_entry_focus_set(oo, 1);
+		evas_text_entry_focus_set(oo, 0);
+	    }
+	}
+	else
+	    fprintf(stderr, "Unknown signal Emission(%s)", emission);
+    }
+}
+/**
+ * set_date - an edje signal emission 
+ * @data - the data passed when the callback was added
+ * @o - the evas object(Edje) that created the signal
+ * @emission - the signal "type" that was emitted
+ * @source - the signal originated from this "part"
+ * Attempt to set the Part named "EntranceDate" to the results of
+ * localtime.  This way the interval is configurable via a program in
+ * the theme and not statically bound to a value.  
+ */
+static void
+set_date(void *data, Evas_Object *o, const char *emission, const char *source)
+{
+    if(edje_object_part_exists(o, "EntranceDate")) 
+    {
+	struct tm *now;
+	char buf[PATH_MAX];
+	time_t _t = time(NULL);
+
+	now = localtime(&_t);
+	strftime(buf, PATH_MAX, session->config->date.string, now);
+	edje_object_part_text_set(o, "EntranceDate", buf);
+    }
+}
+/**
+ * set_time - an edje signal emission 
+ * @data - the data passed when the callback was added
+ * @o - the evas object(Edje) that created the signal
+ * @emission - the signal "type" that was emitted
+ * @source - the signal originated from this "part"
+ * Attempt to set the Part named "EntranceTime" to the results of
+ * localtime.  This way the interval is configurable via a program in
+ * the theme and not statically bound to a value.  
+ */
+static void
+set_time(void *data, Evas_Object *o, const char *emission, const char *source)
+{
+    if(edje_object_part_exists(o, "EntranceTime")) 
+    {
+	struct tm *now;
+	char buf[PATH_MAX];
+	time_t _t = time(NULL);
+
+	now = localtime(&_t);
+	strftime(buf, PATH_MAX, session->config->time.string, now);
+	edje_object_part_text_set(o, "EntranceTime", buf);
+    }
+}
+
+/**
+ * done_cb - Executed when an EntranceAuthSuccessDone signal is emitted
+ * @data - the data passed when the callback was added
+ * @o - the evas object(Edje) that created the signal
+ * @emission - the signal "type" that was emitted
+ * @source - the signal originated from this "part"
+ * Attempt to set the Part named "EntranceTime" to the results of
+ * localtime.  This way the interval is configurable via a program in
+ * the theme and not statically bound to a value.  
+ */
+static void
+done_cb(void *data, Evas_Object *o, const char *emission, const char *source)
+{
+    if(session->authed)
+    {
+	entrance_session_start_user_session(session);
+    }
+    else
+    {
+	exit(0);
+    }
+}
+
+/**
+ * reboot_cb - Executed when an EntranceSystemReboot signal is emitted
+ * @data - the data passed when the callback was added
+ * @o - the evas object(Edje) that created the signal
+ * @emission - the signal "type" that was emitted
+ * @source - the signal originated from this "part"
+ * Attempt to set the Part named "EntranceTime" to the results of
+ * localtime.  This way the interval is configurable via a program in
+ * the theme and not statically bound to a value.  
+ */
+static void
+reboot_cb(void *data, Evas_Object *o, const char *emission, const char *source)
+{
+    if(session->config->reboot.allow)
+    {
+	execl("/bin/sh", "/bin/sh", "-c", "init" "6", NULL);
+    }
+}
+
+/**
+ * shutdown_cb - Executed when an EntranceSystemHalt signal is emitted
+ * @data - the data passed when the callback was added
+ * @o - the evas object(Edje) that created the signal
+ * @emission - the signal "type" that was emitted
+ * @source - the signal originated from this "part"
+ * Attempt to set the Part named "EntranceTime" to the results of
+ * localtime.  This way the interval is configurable via a program in
+ * the theme and not statically bound to a value.  
+ */
+static void
+shutdown_cb(void *data, Evas_Object *o, const char *emission, const char *source)
+{
+    if(session->config->halt.allow)
+    {
+	execl("/bin/sh", "/bin/sh", "-c", "init" "0", NULL);
+    }
+}
+
+/**
+ * timer_cb - we handle this iteration outside of the theme
+ */
+int
+timer_cb(void *data)
+{
+    Evas_Object *o = NULL;
+    if((o = (Evas_Object*)data))
+    {
+	set_date(NULL, o, NULL, NULL);
+	set_time(NULL, o, NULL, NULL);
+    }
+    return(1);
+}
+
+/**
+ * main - where it all starts !
+ */
 int
 main(int argc, char *argv[])
 {
-   char *disp;
-   
+    int i = 0;
+    char buf[PATH_MAX];
+    char *str = NULL;
+    Evas *evas = NULL; 
+    Ecore_Evas *e = NULL;
+    Ecore_Timer *timer = NULL;
+    Evas_Object *o = NULL, *edje = NULL;
+    double x, y, w, h;
+    char *entries[] = { "EntranceUserEntry", "EntrancePassEntry" };
+    int entries_count = 2;
+
    openlog("entrance", LOG_NOWAIT, LOG_DAEMON);
-
-   if (!ecore_display_init(argv[1]))
-   {
-      disp = getenv("DISPLAY");
-	  
-      if (disp)
-         syslog(LOG_CRIT, "Cannot initialize default display \"%s\". Exiting.", disp);
-      else
+    if(argv[1]) snprintf(buf, PATH_MAX, "%s", argv[1]);
+    /* Basic ecore initialization */
+    if(!ecore_init()) return(-1);
+    ecore_app_args_set(argc, (const char **)argv); 
+#if 0
+    if(!ecore_x_init(buf))
+    {
+	if((str = getenv("DISPLAY")))
+         syslog(LOG_CRIT, "Cannot initialize default display \"%s\". Exiting.", str);
+	else
          syslog(LOG_CRIT, "No DISPLAY variable set! Exiting.");
-      
-      exit(-1);
-   }
+	return(-1);
+    }
+#endif
+    ecore_event_handler_add(ECORE_EVENT_SIGNAL_EXIT, exit_cb, NULL);
 
-   /* setup handlers for system signals */
-   ecore_event_signal_init();
-   /* setup the event filter */
-   ecore_event_filter_init();
-   /* setup the X event internals */
-   ecore_event_x_init();
+    session = entrance_session_new();
+    if(ecore_evas_init())
+    {
+	/* init edje and set frametime to 60 fps ? */
+	edje_init();
+	edje_frametime_set(1.0/60.0);
 
-   setup();
+	/* setup our ecore_evas */ 
+	e = ecore_evas_software_x11_new(NULL, 0, 0, 0, WINW, WINH);
+	ecore_evas_title_set(e, "Entrance --(Edje)--");
+	ecore_evas_callback_delete_request_set(e, window_del_cb);
+	ecore_evas_callback_resize_set(e, window_resize_cb);
+	ecore_evas_cursor_set(e, session->config->pointer, 12, 0, 0); 
+	ecore_evas_move(e, 0, 0);
 
-   ecore_event_loop();
-   closelog();
+	/* Evas specific callbacks */
+	evas = ecore_evas_get(e);
+	evas_image_cache_set(evas, 8 * 1024 * 1024);
+	evas_font_cache_set(evas, 1 * 1024 * 1024);
+	evas_font_path_append(evas, PACKAGE_DATA_DIR"/fonts");
+	evas_key_modifier_add(evas, "Control_L");
+	evas_key_modifier_add(evas, "Control_R");
+	evas_key_modifier_add(evas, "Shift_L");
+	evas_key_modifier_add(evas, "Shift_R");
 
-   return (0);
+	/* Load our theme as an edje */
+	edje = edje_object_add(evas);
+	snprintf(buf, PATH_MAX, "%s/themes/%s", PACKAGE_DATA_DIR, 
+						  session->theme);
+	edje_object_file_set(edje, buf, "main");
+	evas_object_move(edje, 0, 0);
+	evas_object_resize(edje, WINW, WINH); 
+	evas_object_name_set(edje, "ui");
+	evas_object_layer_set(edje, 0);
+    
+	for(i = 0; i < entries_count; i++)
+	{
+	    if(edje_object_part_exists(edje, entries[i]))
+	    {
+		edje_object_part_geometry_get(edje, entries[i] , 
+						&x, &y, &w, &h);
+		o = evas_text_entry_new(evas);
+		evas_object_move(o, x, y);
+		evas_object_resize(o, w, h);
+		evas_object_layer_set(o, 1);
+		evas_text_entry_max_chars_set(o, 32);
+		evas_text_entry_is_password_set(o, i);
+		evas_object_name_set(o, entries[i]);
+		evas_text_entry_edje_part_set(o, edje, entries[i]);
+	    
+		evas_text_entry_return_key_callback_set(o, interp_return_key, o);
+
+		edje_object_signal_callback_add(edje, "In", entries[i],
+						focus, o);
+	
+		edje_object_signal_callback_add(edje, "Out", entries[i],
+						focus, o);
+		edje_object_part_swallow(edje, entries[i], o);
+		evas_object_show(o);
+	    }
+	    o = NULL;
+	}
+
+	/* See if we have a EntranceHostname part, set it */ 
+	if(edje_object_part_exists(edje, "EntranceHostname")) 
+	{
+	    if ((str = get_my_hostname()))
+	    {
+		edje_object_part_text_set(edje, "EntranceHostname", str);
+		free(str);
+	    }
+	}
+	if(edje_object_part_exists(edje, "EntranceTime")) 
+	{
+	    edje_object_signal_callback_add(edje, "Go", "EntranceTime",
+					    set_time, o);
+	    edje_object_signal_emit(edje, "Go", "EntranceTime");
+	    timer = ecore_timer_add(0.5, timer_cb, edje);
+	}
+	if(edje_object_part_exists(edje, "EntranceDate")) 
+	{
+	    edje_object_signal_callback_add(edje, "Go", "EntranceDate",
+					    set_date, o);
+	    edje_object_signal_emit(edje, "Go", "EntranceDate");
+	    if(!timer) timer = ecore_timer_add(0.5, timer_cb, edje);
+	}
+	edje_object_signal_callback_add(edje, "EntranceUserAuthSuccessDone", "",
+					done_cb, e);
+	edje_object_signal_callback_add(edje, "EntranceSystemReboot", "", 
+					reboot_cb, e);
+	edje_object_signal_callback_add(edje, "EntranceSystemHalt", "", 
+					shutdown_cb, e);
+	/*
+	 * It's useful to delay showing of your edje till all your
+	 * callbacks have been added, otherwise show might trigger all
+	 * the desired events 
+	 */
+	evas_object_show(edje);
+
+	/*
+	*/
+#if X_TESTING
+	    ecore_evas_resize(e, WINW, WINH);
+#else
+	    ecore_evas_fullscreen_set(e, 1);
+#endif
+	
+	entrance_session_ecore_evas_set(session, e);
+	entrance_session_run(session);
+	entrance_session_free(session);
+	closelog();
+    }
+    return(0);
 }

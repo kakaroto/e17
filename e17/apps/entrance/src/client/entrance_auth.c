@@ -173,7 +173,7 @@ entrance_auth_cmp_pam(Entrance_Auth e)
       else
       {
          pamerr = pam_setcred(e->pam.handle, 0);
-
+    
          if (pamerr == PAM_SUCCESS)
             result = AUTH_SUCCESS;
          else
@@ -207,7 +207,7 @@ entrance_auth_cmp_crypt(Entrance_Auth e, Entrance_Config cfg)
    char *correct = e->pw->pw_passwd;
    struct spwd *sp;
    
-   if (cfg->use_shadow_auth)
+   if (cfg->auth == ENTRANCE_USE_SHADOW)
    {
       sp = getspnam(e->pw->pw_name);
       endspent();
@@ -229,7 +229,7 @@ entrance_auth_cmp_crypt(Entrance_Auth e, Entrance_Config cfg)
  * Pass it a char* and it'll set it if it should
  */
 void
-entrance_auth_set_pass(Entrance_Auth e, char *str)
+entrance_auth_set_pass(Entrance_Auth e, const char *str)
 {
    if (str)
       snprintf(e->pass, PATH_MAX, "%s", str);
@@ -244,7 +244,7 @@ entrance_auth_set_pass(Entrance_Auth e, char *str)
  * to the passed in string, if they don't, e->user is unmodified.
  */
 int
-entrance_auth_set_user(Entrance_Auth e, char *str)
+entrance_auth_set_user(Entrance_Auth e, const char *str)
 {
    int result = 0;
 

@@ -59,10 +59,10 @@ void entrance_auth_free(Entrance_Auth e);
 /* 0 on success, 1 on failure */
 int entrance_auth_cmp_pam(Entrance_Auth e);
 int entrance_auth_cmp_crypt(Entrance_Auth e, Entrance_Config cfg);
-void entrance_auth_set_pass(Entrance_Auth e, char *str);
+void entrance_auth_set_pass(Entrance_Auth e, const char *str);
 
 /* 0 on success, 1 on no user by that name */
-int entrance_auth_set_user(Entrance_Auth e, char *str);
+int entrance_auth_set_user(Entrance_Auth e, const char *str);
 void entrance_auth_setup_environment(Entrance_Auth e);
 
 #endif
