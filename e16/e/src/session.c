@@ -427,7 +427,7 @@ autosave(void)
      {
 	char                s[4096];
 
-	SaveSnapInfo();
+	Real_SaveSnapInfo(0, NULL);
 	Etmp(s);
 	SaveUserControlConfig(fopen(s, "w"));
 	rm(GetGenericSMFile());

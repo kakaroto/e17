@@ -843,14 +843,25 @@ UnsnapshotEwin(EWin * ewin)
      }
 }
 
-/* save out all snapped info to disk */
+/* ... combine writes, only save after a timeout */
+
 void
 SaveSnapInfo(void)
+{
+   DoIn("SAVESNAP_TIMEOUT", 5.0, Real_SaveSnapInfo, 0, NULL);
+}
+
+/* save out all snapped info to disk */
+void
+Real_SaveSnapInfo(int dumval, void *dumdat)
 {
    Snapshot          **lst, *sn;
    int                 i, j, num;
    char                buf[4096], s[4096];
    FILE               *f;
+
+   if (dumdat)
+      dumval = 0;
 
    Etmp(s);
    f = fopen(s, "w");

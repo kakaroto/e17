@@ -185,12 +185,13 @@ TextStateLoadFont(TextState * ts)
 	     if (missing_cnt)
 	       {
 		  XFreeStringList(missing_list);
-		  EDBUG_RETURN_;
+		  /* EDBUG_RETURN_; */
 	       }
 	     if (!ts->xfontset)
 		EDBUG_RETURN_;
-	     font_cnt = XFontsOfFontSet(ts->xfontset, &fs, &fn);
+
 	     ts->xfontset_ascent = 0;
+	     font_cnt = XFontsOfFontSet(ts->xfontset, &fs, &fn);
 	     for (i = 0; i < font_cnt; i++)
 		ts->xfontset_ascent = MAX(fs[i]->ascent, ts->xfontset_ascent);
 	  }

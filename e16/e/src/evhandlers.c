@@ -2240,8 +2240,14 @@ HandleMouseUp(XEvent * ev)
 		 || (click_was_in == buttons[i]->event_win))
 	       {
 		  if ((buttons[i]->inside_win) && (!wasmovres))
-		     XSendEvent(disp, buttons[i]->inside_win, False,
-				ButtonReleaseMask, ev);
+		    {
+		       Window              id = ev->xany.window;
+
+		       ev->xany.window = buttons[i]->inside_win;
+		       XSendEvent(disp, buttons[i]->inside_win, False,
+				  ButtonReleaseMask, ev);
+		       ev->xany.window = id;
+		    }
 		  mode.button = buttons[i];
 		  if ((buttons[i]->state == STATE_CLICKED)
 		      && (!buttons[i]->left))

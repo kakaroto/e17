@@ -2780,6 +2780,7 @@ void                SnapshotEwinNeverFocus(EWin * ewin);
 void                SnapshotEwinGroups(EWin * ewin, char onoff);
 void                SnapshotEwinAll(EWin * ewin);
 void                UnsnapshotEwin(EWin * ewin);
+void                Real_SaveSnapInfo(int dumval, void *dumdat);
 void                SaveSnapInfo(void);
 void                SpawnSnappedCmds(void);
 void                LoadSnapInfo(void);

@@ -4513,3 +4513,15 @@ Thu Mar 30 15:43:39 PST 2000
 (Mandrake)
 
 fixed logout dialog box to work properly under xinerama
+
+-------------------------------------------------------------------------------
+
+Thu Mar 30 18:21:59 PST 2000
+(Mandrake)
+
+fix for maximize to ignore iconified windows
+fixed dock app support
+fix to speed up epplets by merging snap saves in timer event
+fixed ascents in I18N fonts
+minor initialization fix in eesh
+
