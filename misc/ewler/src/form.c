@@ -320,11 +320,11 @@ __mouse_down_form( Ewl_Widget *w, void *ev_data, void *user_data )
 			ewl_container_child_append(EWL_CONTAINER(form->popup), menu_item);
 			ewl_widget_show(menu_item);
 
+#if 0
 			menu_item = ewl_menu_item_new(NULL, "Edit Callbacks");
 			ewl_container_child_append(EWL_CONTAINER(form->popup), menu_item);
 			ewl_callback_append( menu_item, EWL_CALLBACK_SELECT,
 													 __destroy_popup, form );
-#if 0
 			ewl_callback_append( menu_item, EWL_CALLBACK_SELECT,
 													 callbacks_show, NULL );
 #endif
@@ -472,9 +472,13 @@ static void
 __save_form_cb( Ewl_Widget *w, void *ev_data, void *user_data )
 {
 	FILE *fptr;
-	char *filename = ev_data;
+	char *filename;
 	Ewler_Form *form = user_data;
 	char *title;
+
+	filename = ewl_filedialog_file_get( EWL_FILEDIALOG(w) );
+
+	printf( "%s\n", filename );
 
 	if( filename ) {
 		if( (fptr = fopen( filename, "w" )) ) {
@@ -510,14 +514,18 @@ form_save_file( Ewler_Form *form, int save_as )
 			Ewl_Widget *window, *dialog;
 
 			window = ewl_window_new();
+			ewl_window_title_set( EWL_WINDOW(window), "Save Form" );
+			ewl_window_name_set( EWL_WINDOW(window), "Save Form" );
+			ewl_window_class_set( EWL_WINDOW(window), "Save Form" );
+			ewl_object_size_request( EWL_OBJECT(window), 500, 450 );
 			ewl_widget_show( window );
 
 			dialog = ewl_filedialog_new( EWL_FILEDIALOG_TYPE_SAVE );
-
+			ewl_container_child_append( EWL_CONTAINER(window), dialog );
 			if( (path = project_get_path()) )
 				ewl_filedialog_path_set( EWL_FILEDIALOG(dialog), path );
 
-			ewl_container_child_append( EWL_CONTAINER(window), dialog );
+			ewl_object_size_request (EWL_OBJECT (dialog), 500, 450);
 			ewl_callback_append( dialog, EWL_CALLBACK_VALUE_CHANGED,
 													 __save_form_cb, form );
 			ewl_callback_append( window, EWL_CALLBACK_DELETE_WINDOW,

@@ -4,6 +4,7 @@
 #include "form.h"
 #include "widgets.h"
 #include "inspector.h"
+#include "callback.h"
 #include "project.h"
 
 static Ewl_Widget *main_win;
@@ -43,6 +44,7 @@ main( int argc, char *argv[] )
 	ewler_tools_init( main_layout );
 	ewler_forms_init();
 	ewler_inspector_init();
+	ewler_callbacks_init();
 
 	ewler_projects_init();
 

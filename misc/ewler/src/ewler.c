@@ -64,6 +64,10 @@ __open_form( Ewl_Widget *w, void *ev_data, void *user_data )
 	Ewl_Widget *window, *dialog;
 
 	window = ewl_window_new();
+	ewl_window_title_set( EWL_WINDOW(window), "Open Form" );
+	ewl_window_name_set( EWL_WINDOW(window), "Open Form" );
+	ewl_window_class_set( EWL_WINDOW(window), "Open Form" );
+	ewl_object_size_request( EWL_OBJECT(window), 500, 450 );
 	ewl_widget_show( window );
 
 	dialog = ewl_filedialog_new( EWL_FILEDIALOG_TYPE_OPEN );

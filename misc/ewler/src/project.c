@@ -572,7 +572,7 @@ __project_open_cb( Ewl_Widget *w, void *ev_data, void *user_data )
 		return;
 	}
 
-	__destroy_dialog( w, NULL, w->parent );
+	__destroy_dialog( w, NULL, user_data );
 
 	project_setup( filename );
 	project_parse( fptr );
@@ -585,20 +585,22 @@ __project_open_cb( Ewl_Widget *w, void *ev_data, void *user_data )
 static void
 __project_setup_open_cb( Ewl_Widget *w, void *ev_data, void *user_data )
 {
-	Ewl_Widget *dialog, *window;
+	Ewl_Widget *window, *dialog;
 
 	if( !project_close() ) {
 		window = ewl_window_new();
-		ewl_window_title_set( EWL_WINDOW(window), "Open New Project" );
-		ewl_object_minimum_size_set( EWL_OBJECT(window), 400, 600 );
+		ewl_window_title_set( EWL_WINDOW(window), "Open Project" );
+		ewl_window_name_set( EWL_WINDOW(window), "Open Project" );
+		ewl_window_class_set( EWL_WINDOW(window), "Open Project" );
+		ewl_object_size_request( EWL_OBJECT(window), 500, 450 );
 		ewl_widget_show( window );
 
 		dialog = ewl_filedialog_new( EWL_FILEDIALOG_TYPE_OPEN );
-
 		ewl_container_child_append( EWL_CONTAINER(window), dialog );
+
 		ewl_callback_append( dialog, EWL_CALLBACK_VALUE_CHANGED,
-												 __project_open_cb, NULL );
-		ewl_callback_append( dialog, EWL_CALLBACK_DELETE_WINDOW,
+												 __project_open_cb, window );
+		ewl_callback_append( window, EWL_CALLBACK_DELETE_WINDOW,
 												 __destroy_dialog, window );
 		ewl_widget_show( dialog );
 	} else {

@@ -291,10 +291,10 @@ ewler_callback_editor_target_set( Ewler_Callback_Editor *ce, Ewl_Widget *w )
 	if( w )
 		ewl_widget_enable( EWL_WIDGET(ce) );
 
-	if( ce->target != w )
+	if( ce->target != w ) {
+		ce->target = w;
 		ewler_callback_editor_update( ce );
-
-	ce->target = w;
+	}
 }
 
 static void
