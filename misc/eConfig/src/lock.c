@@ -15,7 +15,7 @@
 #include "eConfig.internal.h"
 #include "eConfig.h"
 
-int 
+int
 _econf_lock_path(char *path)
 {
 
