@@ -296,23 +296,27 @@ cb_help(void *data)
 static void
 cb_in(void *data, Window w)
 {
-   Epplet_gadget_show(b_close);
-   Epplet_gadget_show(b_config);
-   Epplet_gadget_show(b_help);
+   if (w == Epplet_get_main_window())
+     {
+       Epplet_gadget_show(b_close);
+       Epplet_gadget_show(b_config);
+       Epplet_gadget_show(b_help);
+     }
    return;
    data = NULL;
-   w = (Window) 0;
 }
 
 static void
 cb_out(void *data, Window w)
 {
-   Epplet_gadget_hide(b_close);
-   Epplet_gadget_hide(b_config);
-   Epplet_gadget_hide(b_help);
+   if (w == Epplet_get_main_window())
+     {
+       Epplet_gadget_hide(b_close);
+       Epplet_gadget_hide(b_config);
+       Epplet_gadget_hide(b_help);
+     }
    return;
    data = NULL;
-   w = (Window) 0;
 }
 
 static int

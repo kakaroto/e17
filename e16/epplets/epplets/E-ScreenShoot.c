@@ -333,33 +333,37 @@ cb_quality (void *data)
 static void
 cb_in (void *data, Window w)
 {
-  if (cloaked)
+  if (w == Epplet_get_main_window())
     {
-      Epplet_gadget_hide (da);
-      cloaked = 0;
-      Epplet_gadget_show (btn_close);
-      Epplet_gadget_show (btn_conf);
-      Epplet_gadget_show (btn_help);
-      Epplet_gadget_show (btn_shoot);
-      Epplet_gadget_show (sldr_qual);
-      Epplet_gadget_show (tog_win);
+      if (cloaked)
+        {
+          Epplet_gadget_hide (da);
+          cloaked = 0;
+          Epplet_gadget_show (btn_close);
+          Epplet_gadget_show (btn_conf);
+          Epplet_gadget_show (btn_help);
+          Epplet_gadget_show (btn_shoot);
+          Epplet_gadget_show (sldr_qual);
+          Epplet_gadget_show (tog_win);
+        }
+      Epplet_remove_timer ("CLOAK_TIMER");
+      Epplet_remove_timer ("DRAW_TIMER");
     }
-  Epplet_remove_timer ("CLOAK_TIMER");
-  Epplet_remove_timer ("DRAW_TIMER");
   return;
   data = NULL;
-  w = (Window) 0;
 }
 
 static void
 cb_out (void *data, Window w)
 {
-  Epplet_remove_timer ("CLOAK_TIMER");
-  if ((!cloaked) && (opt.do_cloak))
-    Epplet_timer (cloak_epplet, NULL, opt.cloak_delay, "CLOAK_TIMER");
+  if (w == Epplet_get_main_window())
+    {
+      Epplet_remove_timer ("CLOAK_TIMER");
+      if ((!cloaked) && (opt.do_cloak))
+        Epplet_timer (cloak_epplet, NULL, opt.cloak_delay, "CLOAK_TIMER");
+    }
   return;
   data = NULL;
-  w = (Window) 0;
 }
 
 /* Amongst all the fluff, this is the bit that does the actual work. */

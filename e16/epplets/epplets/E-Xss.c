@@ -146,27 +146,29 @@ play_cb(void *data) {
 static void
 in_cb(void *data, Window w) {
 
-  /*Epplet_gadget_hide(draw_area);*/
-  Epplet_gadget_show(close_button);
-  Epplet_gadget_show(zoom_button);
-  Epplet_gadget_show(prev_button);
-  Epplet_gadget_show(next_button);
+  if (w == Epplet_get_main_window()) {
+    /*Epplet_gadget_hide(draw_area);*/
+    Epplet_gadget_show(close_button);
+    Epplet_gadget_show(zoom_button);
+    Epplet_gadget_show(prev_button);
+    Epplet_gadget_show(next_button);
+  }
   return;
   data = NULL;
-  w = (Window) 0;
 }
 
 static void
 out_cb(void *data, Window w) {
 
-  /*Epplet_gadget_show(draw_area);*/
-  Epplet_gadget_hide(close_button);
-  Epplet_gadget_hide(zoom_button);
-  Epplet_gadget_hide(prev_button);
-  Epplet_gadget_hide(next_button);
+  if (w == Epplet_get_main_window()) {
+    /*Epplet_gadget_show(draw_area);*/
+    Epplet_gadget_hide(close_button);
+    Epplet_gadget_hide(zoom_button);
+    Epplet_gadget_hide(prev_button);
+    Epplet_gadget_hide(next_button);
+  }
   return;
   data = NULL;
-  w = (Window) 0;
 }
 
 static void

@@ -291,34 +291,36 @@ play_cb(void *data) {
 static void
 in_cb(void *data, Window w) {
 
-  Epplet_gadget_show(close_button);
-  Epplet_gadget_show(zoom_button);
-  Epplet_gadget_show(prev_button);
-  Epplet_gadget_show(next_button);
-  Epplet_gadget_show(bg_button);
-  if (paused) {
-    Epplet_gadget_show(play_button);
-  } else {
-    Epplet_gadget_show(pause_button);
+  if (w == Epplet_get_main_window()) {
+    Epplet_gadget_show(close_button);
+    Epplet_gadget_show(zoom_button);
+    Epplet_gadget_show(prev_button);
+    Epplet_gadget_show(next_button);
+    Epplet_gadget_show(bg_button);
+    if (paused) {
+      Epplet_gadget_show(play_button);
+    } else {
+      Epplet_gadget_show(pause_button);
+    }
   }
   return;
   data = NULL;
-  w = (Window) 0;
 }
 
 static void
 out_cb(void *data, Window w) {
 
-  Epplet_gadget_hide(close_button);
-  Epplet_gadget_hide(zoom_button);
-  Epplet_gadget_hide(prev_button);
-  Epplet_gadget_hide(next_button);
-  Epplet_gadget_hide(play_button);
-  Epplet_gadget_hide(pause_button);
-  Epplet_gadget_hide(bg_button);
+  if (w == Epplet_get_main_window()) {
+    Epplet_gadget_hide(close_button);
+    Epplet_gadget_hide(zoom_button);
+    Epplet_gadget_hide(prev_button);
+    Epplet_gadget_hide(next_button);
+    Epplet_gadget_hide(play_button);
+    Epplet_gadget_hide(pause_button);
+    Epplet_gadget_hide(bg_button);
+  }
   return;
   data = NULL;
-  w = (Window) 0;
 }
 
 static void

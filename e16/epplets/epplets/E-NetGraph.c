@@ -188,19 +188,23 @@ cb_close(void *data)
 static void
 cb_in(void *data, Window w)
 {
-   Epplet_gadget_show(close_button);
+   if (w == Epplet_get_main_window())
+     {
+       Epplet_gadget_show(close_button);
+     }
    return;
    data = NULL;
-   w = (Window) 0;
 }
 
 static void
 cb_out(void *data, Window w)
 {
-   Epplet_gadget_hide(close_button);
+   if (w == Epplet_get_main_window())
+     {
+       Epplet_gadget_hide(close_button);
+     }
    return;
    data = NULL;
-   w = (Window) 0;
 }
 
 static void

@@ -59,19 +59,21 @@ static void arrow_cb(void* data)
 static void
 in_cb(void *data, Window w)
 {
-   Epplet_gadget_show(b_close);
+   if (w == Epplet_get_main_window()) {
+     Epplet_gadget_show(b_close);
+   }
    return;
    data = NULL;
-   w = (Window) 0;
 }
 
 static void
 out_cb(void *data, Window w)
 {
-   Epplet_gadget_hide(b_close);
+   if (w == Epplet_get_main_window()) {
+     Epplet_gadget_hide(b_close);
+   }
    return;
    data = NULL;
-   w = (Window) 0;
 }
 
 Epplet_gadget epp_create_std_button(int x, int y, char* std, 

@@ -336,24 +336,26 @@ epplet_help(void *data)
 static void
 epplet_in(void *data, Window w)
 {
-  Epplet_gadget_show(b_close);
-  Epplet_gadget_show(b_config);
-  Epplet_gadget_show(b_help);
+  if (w == Epplet_get_main_window()) {
+    Epplet_gadget_show(b_close);
+    Epplet_gadget_show(b_config);
+    Epplet_gadget_show(b_help);
+  }
   return;
   data = NULL;
-  w = (Window) 0;
 }
 
 /* called when the epplet loses the focus */
 static void
 epplet_out(void *data, Window w)
 {
-  Epplet_gadget_hide(b_close);
-  Epplet_gadget_hide(b_config);
-  Epplet_gadget_hide(b_help);
+  if (w == Epplet_get_main_window()) {
+    Epplet_gadget_hide(b_close);
+    Epplet_gadget_hide(b_config);
+    Epplet_gadget_hide(b_help);
+  }
   return;
   data = NULL;
-  w = (Window) 0;
 }
 
 /* save off the color of the flame in a config file */
