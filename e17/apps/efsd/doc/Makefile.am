@@ -2,32 +2,45 @@
 
 MAINTAINERCLEANFILES = Makefile.in 
 
-EXTRA_DIST = efsd-manual.sgml
+EXTRA_DIST = \
+manual.raw		\
+kernel-doc.in 		\
+stylesheet.css		\
+figures/*.gif           # Add any images you create here
 
-MANUAL = $(top_srcdir)/efsd/libefsd.h
 
-if HAVE_DOCGEN
-efsd-manual.sgml: efsd-manual.raw $(MANUAL)
-	TOPDIR=@LINUX_SRC@ @DOCGEN@ $(MANUAL) <efsd-manual.raw >efsd-manual.sgml
-endif
+## Fill in all source files that you documented
+## with extractable comments here:
+##
+SOURCEDOC = $(top_srcdir)/efsd/libefsd.h
+
+## For details on what can be specified in the
+## comments, see the beginning of kernel-doc
+## in this directory!               -- cK.
+
+
+SGMLFILE  = $(PACKAGE)-manual.sgml
+
+docs: manual.raw $(SOURCEDOC)
+	./kernel-doc -docbook <manual.raw >$(SGMLFILE)
 
 if HAVE_JADE
 
-html = efsd-manual-$(VERSION)
+FULLNAME = $(PACKAGE)-manual-$(VERSION)
 
-html-manual: efsd-manual.sgml html-customizations.dsl
-	$(mkinstalldirs) ./$(html)/figures
-	cd $(html) && @JADE@ -t sgml -d ../html-customizations.dsl ../efsd-manual.sgml
-	cd figures && for file in *.gif; do \
-	  cp -f $$file ../$(html)/figures/$$file; \
-	done
-	cp -f stylesheet.css $(html)/stylesheet.css
-	tar cfvz efsd-manual-$(VERSION).tar.gz $(html)
+html-docs: docs html-customizations.dsl
+	$(mkinstalldirs) ./$(FULLNAME)/figures
+	cd $(FULLNAME) && @JADE@ -t sgml -d ../html-customizations.dsl ../$(SGMLFILE)
+	- cd figures && cp -f *.gif ../$(FULLNAME)/figures
+	- cd figures && cp -f *.png ../$(FULLNAME)/figures
+	- cd figures && cp -f *.jpg ../$(FULLNAME)/figures
+	cp -f stylesheet.css $(FULLNAME)/stylesheet.css
+	tar cfvz $(FULLNAME).tar.gz $(FULLNAME)
 
 html-filetypes: filetypes.xsl
-	$(mkinstalldirs) ./$(html)/filetypes
-	cp -fr filetypes-templates/* ./$(html)/filetypes
-	./generate-trees.sh ./$(html)/filetypes
+	$(mkinstalldirs) ./$(FULLNAME)/filetypes
+	cp -fr filetypes-templates/* ./$(FULLNAME)/filetypes
+	./generate-trees.sh ./$(FULLNAME)/filetypes
 
 endif
 

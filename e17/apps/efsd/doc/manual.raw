@@ -1049,7 +1049,7 @@ if ( (id = efsd_start_monitor_dir(ec, "/some/dir", ops)) < 0)
 
     <section>
       <title>&lefsd; API Documentation</title>
-!I@toplevel_abs@/efsd/libefsd.h
+!Iefsd/libefsd.h
     </section>
   </chapter>
 
