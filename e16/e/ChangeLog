@@ -2426,3 +2426,17 @@ Include esd.h only where needed.
 RememberWinList is used only in settings.c.
 Remove unused MatchEwinToSnapInfoAfter().
 Fix problem with windows going off in all directions after restart.
+
+-------------------------------------------------------------------------------
+
+Thu Feb 12 02:23:08 CET 2004
+(Kim)
+
+Added COMPLIANCE.
+Moved some event initialisation to events.c.
+Tidied up E.h a bit, removed some unused functions.
+Theme code and namespace shuffle.
+Moved around some desktop and background configuration items.
+Don't break window groups when iconifying.
+Changed default border maximise action from conservative to available.
+Added global theme transparency feature (not finished).
