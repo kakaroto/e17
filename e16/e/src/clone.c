@@ -79,7 +79,7 @@ CloneDesktop(int d)
 	Clone              *c;
 
 	ewin = desks.desk[d].list[i];
-	if ((ewin) && (ewin->sticky))
+	if ((ewin) && (ewin->sticky) && (!ewin->iconified))
 	  {
 	     if (!FindItem("CLONE", ewin->client.win, LIST_FINDBY_ID,
 			   LIST_TYPE_CLONE))
