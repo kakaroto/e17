@@ -3,7 +3,7 @@ dnl Process this file with autoconf to create configure.
 AC_INIT
 AC_CONFIG_SRCDIR([src/Imlib2.h])
 AC_CANONICAL_TARGET([])
-AM_INIT_AUTOMAKE(imlib2, 1.0.4)
+AM_INIT_AUTOMAKE(imlib2, 1.0.5)
 
 AM_CONFIG_HEADER(config.h)
 
@@ -66,10 +66,12 @@ fi
 AC_PROG_INSTALL
 AC_PROG_MAKE_SET
 
-ASFLAGS="$ASFLAGS -I../"
-AS=$CC
-AC_SUBST(ASFLAGS)
-AC_SUBST(AS)
+AM_PROG_AS
+dnl ASFLAGS="$ASFLAGS -I../"
+dnl AS=$CC
+dnl AC_SUBST(ASFLAGS)
+dnl AC_SUBST(AS)
+
 
 AC_MSG_CHECKING(whether fopen accepts "b" mode)
 AC_CACHE_VAL([ag_cv_func_fopen_binary],
@@ -118,8 +120,13 @@ AC_CHECK_LIB(Xext, XShapeCombineMask, x_libs="-lXext $x_libs",
 fi
 
 AC_SUBST(X_OBJS)
-																	
-LTLIBOBJS=`echo "$LIBOBJS" | sed 's,.o ,.lo ,g;s,.o$,.lo,'`
+
+# This is necessary so that .o files in LIBOBJS are also built via
+# the ANSI2KNR-filtering rules.
+LIB@&t@OBJS=`echo "$LIB@&t@OBJS" |
+             sed 's,\.[[^.]]* ,$U&,g;s,\.[[^.]]*$,$U&,'`
+LTLIBOBJS=`echo "$LIB@&t@OBJS" |
+           sed 's,\.[[^.]]* ,.lo ,g;s,\.[[^.]]*$,.lo,'`
 AC_SUBST(LTLIBOBJS)
 
 AC_CHECK_LIB(ttf, TT_Init_FreeType, TTF_LIBS=-lttf, [
