@@ -1,0 +1,16 @@
+# List of source files containing translatable strings.
+
+## Created by Anjuta - will be overwritten
+## If you don't want it to overwrite it,
+## 	Please disable it in the Anjuta project configuration
+
+# Source files
+src/callbacks.c
+src/callbacks.h
+src/e16menuedit2.c
+src/e16menuedit2.h
+src/file.c
+src/file.h
+src/nls.h
+
+

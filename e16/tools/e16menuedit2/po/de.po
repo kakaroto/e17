@@ -1,0 +1,45 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-07-25 17:28+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=iso-8859-15\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/callbacks.c:43 src/e16menuedit2.c:56
+msgid "New Entry"
+msgstr "Neuer Eintrag"
+
+#: src/callbacks.c:96
+msgid "Select Icon..."
+msgstr "Wähle Icon..."
+
+#: src/callbacks.c:132
+msgid "Icon size:"
+msgstr "Icon Größe:"
+
+#: src/e16menuedit2.c:76
+msgid "Change Icon"
+msgstr "Ändere Icon"
+
+#: src/e16menuedit2.c:86
+msgid "Save Menu"
+msgstr "Speicher Menü"
+
+#: src/e16menuedit2.c:95
+msgid "Delete Entry or Submenu"
+msgstr "Lösche Eintrag oder Untermenü"
+
+#: src/e16menuedit2.c:104
+msgid "Quit Menu Editor"
+msgstr "Menü Editor Beenden"
