@@ -78,7 +78,6 @@ fi
 # ../../pixmaps from $ADIR.
 find_app_base_dir
 GICONDIR=$ADIR/../../pixmaps
-# /NEW
 
 # if the apps dir doesn't exist in the end then exit
 if [ ! -d "$DIR" ]; then
@@ -89,7 +88,7 @@ if [ ! -d "$ODIR" ]; then
   mkdir $ODIR
 fi
 
-# function to check its a GNOME desktop file 
+# function to check its a KDE kdelnk file 
 is_desktop() {
   VAL=`grep "\[Desktop Entry\]" $1`
   if [ -n "$VAL" ]; then
@@ -132,20 +131,30 @@ get_icon() {
   if [ -n "$VAL" ]; then
     VAL2=`echo $VAL | awk -F= '{printf("%s", $2);}'`
 
-# NEW
-# If we have "convert" and the icon havsn't already been scaled down, scale
-# it down now!
-	CONVERT=`which convert`
+	# If we have "convert" and the icon havsn't already been scaled down, scale
+	# it down now!
+
 	EICONDIR="$ODIR/gnome_icons"
 	if [ ! -d $EICONDIR ];then
-		mkdir $EICONDIR
+        mkdir $EICONDIR
 	fi
-	if [ -x $CONVERT ] && [ ! -f $ICONDIR/$VAL2 ];then
-		$CONVERT -geometry 16x16 $GICONDIR/$VAL2 \
-		$EICONDIR/$VAL2
+
+	# The "Icon" entery can contain an absolute path, if it does forget the
+	# $GICONDIR
+	VAL3=`echo $VAL2|grep /`
+	if [ "$VAL3" != "$VAL2" ];then
+		GICON=$GICONDIR/$VAL2
+		EICON=$EICONDIR/$VAL2
+	else
+		GICON=$VAL3
+		EICON=$EICONDIR/"`basename $VAL3`"
 	fi
-	echo -n "$EICONDIR/$VAL2"
-# /NEW
+
+	CONVERT=`which convert`
+	if [ -x $CONVERT ] && [ ! -f $EICON ];then
+		$CONVERT -geometry 16x16 $GICON $EICON
+	fi
+	echo -n "$EICON"
    return 0
   fi
   return 1
@@ -193,18 +202,14 @@ for F in $ORDER; do
     fi
     MFILE=$FFF"/"$F.menu
     $0 $BASE"/"$F $ODIR $MFILE $DIR"/"$F
-# NEW
 	ICO=`get_icon $FF"/.directory"`
     echo \"$NAME\" \"$ICO\" menu \"$MFILE\" >> $OUT
-# /NEW
   else
     NAME=`is_desktop $FF`
     if [ -n "$NAME" ]; then
       EXE=`get_exec $FF`
-# NEW
 	  ICO=`get_icon $FF`
       echo \"$NAME\" \"$ICO\" exec \"$EXE\" >> $OUT
-# /NEW
    fi
   fi
 done
