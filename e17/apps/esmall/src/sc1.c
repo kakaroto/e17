@@ -504,7 +504,7 @@ about (void)
 {
   if (strlen (errfname) == 0)
     {
-      puts ("Usage:   sc <filename> [options]\n");
+      puts ("Usage:   esmall <filename> [options]\n");
       puts ("Options:");
       puts ("         -a       output assembler code");
       puts
