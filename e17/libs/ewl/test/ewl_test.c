@@ -1,5 +1,6 @@
 #include <Ewl.h>
 
+Ewl_Widget *main_win;
 
 void __close_main_widow(Ewl_Widget * w, void *ev_data, void *user_data);
 
@@ -10,6 +11,12 @@ void __create_button_test_window(Ewl_Widget * w, void *ev_data,
 
 void __create_entry_test_window(Ewl_Widget * w, void *ev_data,
 				void *user_data);
+
+void __create_seeker_test_window(Ewl_Widget * w, void *ev_data,
+				 void *user_data);
+
+void __create_spinner_test_window(Ewl_Widget * w, void *ev_data,
+				  void *user_data);
 
 void __create_text_test_window(Ewl_Widget * w, void *ev_data,
 			       void *user_data);
@@ -30,7 +37,6 @@ __close_main_widow(Ewl_Widget * w, void *ev_data, void *user_data)
 int
 main(int argc, char **argv)
 {
-	Ewl_Widget *main_win;
 	Ewl_Widget *main_hbox;
 	Ewl_Widget *vbox[3];
 	Ewl_Widget *button[9];
@@ -101,6 +107,10 @@ main(int argc, char **argv)
 	button[5] = ewl_button_new("Ewl_Seeker");
 	ewl_object_set_custom_size(EWL_OBJECT(button[5]), 100, 17);
 	ewl_container_append_child(EWL_CONTAINER(vbox[1]), button[5]);
+
+/* Nothing to see here yet
+	ewl_callback_append(button[5], EWL_CALLBACK_CLICKED,
+			    __create_seeker_test_window, NULL);*/
 	ewl_widget_show(button[5]);
 
 
@@ -114,6 +124,8 @@ main(int argc, char **argv)
 	button[6] = ewl_button_new("Ewl_Spinner");
 	ewl_object_set_custom_size(EWL_OBJECT(button[6]), 100, 17);
 	ewl_container_append_child(EWL_CONTAINER(vbox[2]), button[6]);
+	ewl_callback_append(button[6], EWL_CALLBACK_CLICKED,
+			    __create_spinner_test_window, NULL);
 	ewl_widget_show(button[6]);
 
 	button[7] = ewl_button_new("Ewl_Table");

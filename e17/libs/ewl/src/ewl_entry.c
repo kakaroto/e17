@@ -92,8 +92,8 @@ ewl_entry_init(Ewl_Entry * e)
 
 	ewl_container_init(EWL_CONTAINER(w), "/appearance/entry/default");
 	ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FILL_POLICY_FILL);
-	ewl_object_set_minimum_size(EWL_OBJECT(w), 17, 17);
-	ewl_object_set_maximum_size(EWL_OBJECT(w), 1 << 30, 17);
+	ewl_object_set_minimum_size(EWL_OBJECT(w), 20, 20);
+	ewl_object_set_maximum_size(EWL_OBJECT(w), 1 << 30, 20);
 
 	w->recursive = FALSE;
 
@@ -152,8 +152,7 @@ __ewl_entry_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	int ll = 0, rr = 0, tt = 0, bb = 0;
 	int xx, yy, ww, hh;
 	double xx2, yy2, ww2, hh2;
-	double sx, sy, sw, sh, ex, ey, ew, eh;
-	int c_pos, ss, ee;
+	int c_pos;
 
 	DENTER_FUNCTION;
 	DCHECK_PARAM_PTR("w", w);
@@ -290,8 +289,20 @@ __ewl_entry_mouse_down(Ewl_Widget * w, void *ev_data, void *user_data)
 	ev = ev_data;
 	e = EWL_ENTRY(w);
 
-	ewl_text_get_index_at(e->text, (double) (ev->x), (double) (ev->y),
-			      &index);
+	if (ev->x < CURRENT_X(e->text))
+		ewl_cursor_set_position(e->cursor, 1);
+	else if (ev->x > CURRENT_X(e->text) + CURRENT_W(e->text))
+	  {
+		  char *str;
+
+		  str = ewl_entry_get_text(w);
+
+		  if (str)
+			  index = strlen(str) + 1;
+	  }
+	else
+		ewl_text_get_index_at(e->text, (double) (ev->x),
+				      (double) (ev->y), &index);
 
 	ewl_cursor_set_position(e->cursor, ++index);
 

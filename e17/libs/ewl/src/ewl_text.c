@@ -50,8 +50,8 @@ ewl_text_init(Ewl_Text * t)
 	 */
 	ewl_callback_append(w, EWL_CALLBACK_REALIZE,
 			    __ewl_text_realize, NULL);
-	ewl_callback_append(w, EWL_CALLBACK_DESTROY, __ewl_text_destroy,
-			    NULL);
+	ewl_callback_prepend(w, EWL_CALLBACK_DESTROY, __ewl_text_destroy,
+			     NULL);
 	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE, __ewl_text_configure,
 			    NULL);
 	ewl_callback_del(w, EWL_CALLBACK_THEME_UPDATE,

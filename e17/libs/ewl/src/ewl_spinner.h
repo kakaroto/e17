@@ -4,10 +4,11 @@
 
 struct _ewl_spinner
 {
-	Ewl_Widget widget;
+	Ewl_Container container;
 	double min_val;
 	double max_val;
 	double value;
+	double step;
 	int digits;
 	Ewl_Widget *entry;
 	Ewl_Widget *button_increase;
