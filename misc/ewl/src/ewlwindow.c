@@ -1,6 +1,6 @@
 #include "ewlwindow.h"
 
-EwlWidget   *ewl_window_new()
+EwlWidget   *ewl_window_new(EwlWinType	type)
 {
 	EwlWindow *win = NULL;
 	FUNC_BGN("ewl_window_new");
