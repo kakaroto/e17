@@ -76,12 +76,31 @@ void
 r_evas_config_event(GtkWidget *area, GdkEventConfigure *event)
 {
    /* The Configure event */
+	 int w, h, x, y;
+	 int imgw, imgh;
    
-   /* If we have an e_img, scale it to the new window size */
+   /* If we have an e_img, center it in the window */
    if(e_img){
-      evas_resize(e_area, e_img, event->width, event->height);
-      evas_set_image_fill(e_area, e_img, 0, 0, event->width, event->height);
+		 evas_get_image_size(e_area, e_img, &imgw, &imgh);
+		 w = window->allocation.width;
+		 h = window->allocation.height;
+
+		 if(w > imgw){
+			 x = (w - imgw) / 2;
+			 w = imgw;
+		 } else {
+			 x = 0;
+		 }
+
+		 if(h > imgh){
+			 y = (h - imgh) / 2;
+			 h = imgh;
+		 } else {
+			 y = 0;
+		 }
    }
+
+	 evas_move(e_area, e_img, x, y);
    
    evas_set_output_size(e_area,
 			event->width,
@@ -158,6 +177,12 @@ r_evas_load(char *img)
    gtk_widget_set_usize(GTK_WIDGET(window), w, h);
    
    QUEUE_DRAW;
+
+	 {
+		 gchar wintitle[255];
+		 sprintf(wintitle, "Retina - %s", img);
+		 gtk_window_set_title(GTK_WINDOW(window), wintitle);
+	 }
    
    return 0;
 }

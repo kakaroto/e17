@@ -39,6 +39,7 @@ int r_evas_save(char *img);
 void r_cb_init(void);
 
 void r_browser_init(void);
+void r_browser_add(char *img);
 
 void r_error(char *msg);
 
