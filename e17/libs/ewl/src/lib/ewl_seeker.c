@@ -556,7 +556,7 @@ void ewl_seeker_mouse_down_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 			step = -s->step;
 		}
 		else if (ev->x > xx + ww) {
-			value = s->step;
+			step = s->step;
 		}
 	}
 	else {
