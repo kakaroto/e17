@@ -1118,7 +1118,8 @@
 # lisp:  file(1) magic for lisp programs
 #
 # various lisp types, from Daniel Quinlan (quinlan@yggdrasil.com)
-0	string	;;			text/Lisp-Scheme
+0	string	;;			text/lisp-scheme
+0	string	;\ 			text/lisp-scheme
 # Emacs 18 - this is always correct, but not very magical.
 0	string	\012(			binary/emacs/lisp-bytecode
 # Emacs 19

@@ -31,6 +31,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 int        efsd_filetype_init(void);
 
+/* These re-read the databases. */
+void       efsd_filetype_update_magic(void);
+void       efsd_filetype_update_patterns(void);
+void       efsd_filetype_update_patterns_user(void);
+
 /* Clears the current magic test hierarchy.
  */
 void       efsd_filetype_cleanup(void);
@@ -39,5 +44,13 @@ void       efsd_filetype_cleanup(void);
    in TYPE, which is of size LEN.
 */
 int        efsd_filetype_get(char *filename, char *type, int len);
+
+/* These are not threadsafe on first call -- but they
+   get properly initialized before any multithreading
+   happens ... */
+char      *efsd_filetype_get_magic_db(void);
+char      *efsd_filetype_get_sys_patterns_db(void);
+char      *efsd_filetype_get_user_patterns_db(void);
+
 
 #endif

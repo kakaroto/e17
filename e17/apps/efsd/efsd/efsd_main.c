@@ -451,9 +451,17 @@ main_handle_fam_events(void)
 		    }
 		  break;
 		case EFSD_FAM_MONITOR_INTERNAL:
-		  if (famev.code == FAMChanged)
+		  if ((famev.code == FAMChanged) || (famev.code == FAMCreated))
 		    {
 		      D(("File change event for stat cached file %s\n", famev.filename));
+		      
+		      if (!strcmp(famev.filename, efsd_filetype_get_magic_db()))
+			efsd_filetype_update_magic();
+		      else if (!strcmp(famev.filename, efsd_filetype_get_sys_patterns_db()))
+			efsd_filetype_update_patterns();
+		      else if (!strcmp(famev.filename, efsd_filetype_get_user_patterns_db()))
+			efsd_filetype_update_patterns_user();
+		      
 		      efsd_stat_update(famev.filename);
 		    }
 		  else if (famev.code == FAMDeleted)

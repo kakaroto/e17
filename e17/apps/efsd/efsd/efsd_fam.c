@@ -38,6 +38,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <efsd_hash.h>
 #include <efsd_fam_r.h>
 #include <efsd_fam.h>
+#include <efsd_filetype.h>
 
 
 EfsdHash *monitors = NULL;
@@ -242,14 +243,28 @@ static int
 fam_del_monitor(EfsdCommand *com, int client)
 {
   EfsdFamMonitor  *m = NULL;
+  char            *f;
 
   D_ENTER;
 
   if (!com)
     D_RETURN_(-1);
 
-  efsd_misc_remove_trailing_slashes(com->efsd_file_cmd.file);
-  m = efsd_hash_find(monitors, com->efsd_file_cmd.file);
+  f = com->efsd_file_cmd.file;
+  efsd_misc_remove_trailing_slashes(f);
+
+  if ((client == EFSD_FAM_MONITOR_INTERNAL)              &&
+      ((!strcmp(f, efsd_filetype_get_magic_db()))        ||
+       (!strcmp(f, efsd_filetype_get_sys_patterns_db())) ||
+       (!strcmp(f, efsd_filetype_get_user_patterns_db()))))
+    {
+      /* It's an internal monitor, and it's monitoring
+	 one of our filetype databases -- never stop
+	 monitoring those ... */
+      D_RETURN_(0);
+    }
+
+  m = efsd_hash_find(monitors, f);
 
   if (m)
     {
