@@ -92,6 +92,7 @@ cb_close (void *data)
   Epplet_unremember ();
   close (mixerfd);
   exit (0);
+  data=NULL;
 }
 
 static void
@@ -101,6 +102,8 @@ mute_cb (void *data)
     setMixer (0);
   else
     setMixer (vol);
+  return;
+  data=NULL;
 }
 
 static void
@@ -108,12 +111,16 @@ adj_cb (void *data)
 {
   if (!mute)
     setMixer (vol);
+  return;
+  data=NULL;
 }
 
 static void
 cb_help (void *data)
 {
   Epplet_show_about ("E-Mixer");
+  return;
+  data=NULL;
 }
 
 static void
@@ -121,6 +128,8 @@ mixer_timeout_callback (void *data)
 {
   vol = readMixer ();
   Epplet_gadget_data_changed (slider);
+  return;
+  data=NULL;
 }
 
 static void
