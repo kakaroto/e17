@@ -31,7 +31,7 @@ epp_SOURCES = \
 	cpplib.c \
 	cppmain.c 
 
-INCLUDES=-I$(top_srcdir) -I$(top_builddir) -I$(includedir)
+INCLUDES=
 
 DEFS= \
 -DHAVE_STRERROR \
