@@ -50,11 +50,11 @@ void ewl_fileselector_directory_clicked(Ewl_Widget * w, void *ev_data,
 /*
  * Internally used callbacks, override at your own risk.
  */
-void ewl_filedialog_file_clicked_cb(Ewl_Widget * w, void *ev_data, 
+void ewl_fileselector_file_clicked_cb(Ewl_Widget * w, void *ev_data, 
 				    void *user_data);
-void ewl_filedialog_directory_clicked_single_cb(Ewl_Widget * w, void *ev_data,
-		                void *user_data);
-void ewl_filedialog_directory_clicked_cb(Ewl_Widget * w, void *ev_data, 
+void ewl_fileselector_directory_clicked_single_cb(Ewl_Widget * w, 
+		void *ev_data, void *user_data);
+void ewl_fileselector_directory_clicked_cb(Ewl_Widget * w, void *ev_data, 
 					 void *user_data);
 
 
