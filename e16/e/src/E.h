@@ -1576,58 +1576,6 @@ int                 ActionsEnd(EWin * ewin);
 int                 execApplication(void *params);
 int                 doDragButtonEnd(void *params);
 
-void                GrabActionKey(Action * a);
-void                UnGrabActionKey(Action * a);
-void                GrabTheButtons(Window win);
-int                 GrabConfineThePointer(Window win);
-int                 GrabThePointer(Window win);
-void                UnGrabTheButtons(void);
-
-char               *GetUniqueBGString(Background * bg);
-void                ChangeNumberOfDesktops(int quantity);
-void                ShowDesktopControls(void);
-void                ShowDesktopTabs(void);
-void                HideDesktopTabs(void);
-void                ShowDesktopButtons(void);
-void                MoveToDeskTop(int num);
-void                MoveToDeskBottom(int num);
-void                SlideWindowTo(Window win, int fx, int fy, int tx, int ty,
-				  int speed);
-void                KeepBGimages(Background * bg, char onoff);
-void                RemoveImagesFromBG(Background * bg);
-void                FreeDesktopBG(Background * bg);
-Background         *CreateDesktopBG(char *name, XColor * solid, char *bg,
-				    char tile, char keep_aspect, int xjust,
-				    int yjust, int xperc, int yperc, char *top,
-				    char tkeep_aspect, int txjust, int tyjust,
-				    int txperc, int typerc);
-void                RefreshCurrentDesktop(void);
-void                RefreshDesktop(int num);
-void                SetBackgroundTo(Window win, Background * dsk, char setbg);
-void                InitDesktopBgs(void);
-void                InitDesktopControls(void);
-void                SetDesktopBg(int desk, Background * bg);
-void                ConformEwinToDesktop(EWin * ewin);
-int                 DesktopAt(int x, int y);
-void                MoveStickyWindowsToCurrentDesk(void);
-void                GotoDesktop(int num);
-void                MoveDesktop(int num, int x, int y);
-void                RaiseDesktop(int num);
-void                LowerDesktop(int num);
-void                HideDesktop(int num);
-void                ShowDesktop(int num);
-void                StackDesktops(void);
-void                StackDesktop(int num);
-void                UncoverDesktop(int num);
-void                MoveEwinToDesktop(EWin * ewin, int num);
-void                DesktopAddEwinToBottom(EWin * ewin);
-void                DesktopAddEwinToTop(EWin * ewin);
-void                DesktopRemoveEwin(EWin * ewin);
-void                MoveEwinToDesktopAt(EWin * ewin, int num, int x, int y);
-void                GotoDesktopByEwin(EWin * ewin);
-void                FloatEwinAboveDesktops(EWin * ewin);
-void                DesktopAccounting(void);
-
 /* alert.c */
 void                Alert(char *fmt, ...);
 void                InitStringList(void);
@@ -1840,6 +1788,52 @@ ECursor            *CreateECursor(char *name, char *image, int native_id,
 				  XColor * fg, XColor * bg);
 void                ApplyECursor(Window win, ECursor * ec);
 void                FreeECursor(ECursor * ec);
+
+/* desktops.c */
+char               *GetUniqueBGString(Background * bg);
+void                ChangeNumberOfDesktops(int quantity);
+void                ShowDesktopControls(void);
+void                ShowDesktopTabs(void);
+void                HideDesktopTabs(void);
+void                ShowDesktopButtons(void);
+void                MoveToDeskTop(int num);
+void                MoveToDeskBottom(int num);
+void                SlideWindowTo(Window win, int fx, int fy, int tx, int ty,
+				  int speed);
+void                KeepBGimages(Background * bg, char onoff);
+void                RemoveImagesFromBG(Background * bg);
+void                FreeDesktopBG(Background * bg);
+Background         *CreateDesktopBG(char *name, XColor * solid, char *bg,
+				    char tile, char keep_aspect, int xjust,
+				    int yjust, int xperc, int yperc, char *top,
+				    char tkeep_aspect, int txjust, int tyjust,
+				    int txperc, int typerc);
+void                RefreshCurrentDesktop(void);
+void                RefreshDesktop(int num);
+void                SetBackgroundTo(Window win, Background * dsk, char setbg);
+void                InitDesktopBgs(void);
+void                InitDesktopControls(void);
+void                SetDesktopBg(int desk, Background * bg);
+void                ConformEwinToDesktop(EWin * ewin);
+int                 DesktopAt(int x, int y);
+void                MoveStickyWindowsToCurrentDesk(void);
+void                GotoDesktop(int num);
+void                MoveDesktop(int num, int x, int y);
+void                RaiseDesktop(int num);
+void                LowerDesktop(int num);
+void                HideDesktop(int num);
+void                ShowDesktop(int num);
+void                StackDesktops(void);
+void                StackDesktop(int num);
+void                UncoverDesktop(int num);
+void                MoveEwinToDesktop(EWin * ewin, int num);
+void                DesktopAddEwinToBottom(EWin * ewin);
+void                DesktopAddEwinToTop(EWin * ewin);
+void                DesktopRemoveEwin(EWin * ewin);
+void                MoveEwinToDesktopAt(EWin * ewin, int num, int x, int y);
+void                GotoDesktopByEwin(EWin * ewin);
+void                FloatEwinAboveDesktops(EWin * ewin);
+void                DesktopAccounting(void);
 
 /* dialog.c */
 Dialog             *DialogCreate(char *name);
@@ -2135,6 +2129,14 @@ void                GNOME_SetAreaCount(void);
 void                GNOME_DelHints(EWin * ewin);
 void                GNOME_ProcessClientMessage(XClientMessageEvent * event);
 #endif
+
+/* grabs.c */
+void                GrabActionKey(Action * a);
+void                UnGrabActionKey(Action * a);
+void                GrabTheButtons(Window win);
+int                 GrabConfineThePointer(Window win);
+int                 GrabThePointer(Window win);
+void                UnGrabTheButtons(void);
 
 /* groups.c */
 Group              *CreateGroup(void);
