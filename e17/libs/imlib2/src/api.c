@@ -1330,7 +1330,7 @@ imlib_list_font_path(int *number_return)
 }
 
 int
-imlib_text_get_index_and_location(Imlib_Font *font,
+imlib_text_get_index_and_location(Imlib_Font font,
 				  Imlib_Text_Direction direction,
 				  char *text, int x, int y,
 				  int *char_x_return, int *char_y_return,
@@ -1435,6 +1435,35 @@ imlib_flush_font_cache(void)
 {
    __imlib_purge_font_cache();
 }
+
+int
+imlib_get_font_ascent(Imlib_Font font)
+{
+   CHECK_PARAM_POINTER_RETURN("imlib_get_font_ascent", "font", font , 0);
+   return ((ImlibFont *)font)->ascent;
+}
+
+int
+imlib_get_font_descent(Imlib_Font font)
+{
+   CHECK_PARAM_POINTER_RETURN("imlib_get_font_descent", "font", font , 0);
+   return ((ImlibFont *)font)->descent;
+}
+
+int
+imlib_get_maximum_font_ascent(Imlib_Font font)
+{
+   CHECK_PARAM_POINTER_RETURN("imlib_get_maximum_font_ascent", "font", font , 0);
+   return ((ImlibFont *)font)->max_ascent;
+}
+
+int
+imlib_get_maximum_font_descent(Imlib_Font font)
+{
+   CHECK_PARAM_POINTER_RETURN("imlib_get_maximum_font_descent", "font", font , 0);
+   return ((ImlibFont *)font)->max_ascent;
+}
+
 
 Imlib_Color_Modifier 
 imlib_create_color_modifier(void)
