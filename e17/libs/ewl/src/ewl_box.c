@@ -205,6 +205,7 @@ __ewl_vbox_configure_normal(Ewl_Widget * w, int *rh)
 
 			    continue;
 		    }
+
 /*
 		  if (MAXIMUM_W(c) && MAXIMUM_W(c) < CURRENT_W(c))
 			  REQUEST_W(c) = MAXIMUM_W(c);
@@ -213,6 +214,7 @@ __ewl_vbox_configure_normal(Ewl_Widget * w, int *rh)
 		  else
 			  REQUEST_W(c) = CURRENT_W(c);
 */
+
 /*
 		  if (MAXIMUM_H(c) && MAXIMUM_H(c) < CURRENT_H(c))
 			  REQUEST_H(c) = MAXIMUM_H(c);

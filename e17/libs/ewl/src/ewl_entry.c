@@ -140,7 +140,8 @@ __ewl_entry_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_widget_realize(e->cursor);
 	ewl_widget_hide(e->cursor);
 
-/*	ewl_widget_realize(e->selection);*/
+	ewl_widget_realize(e->selection);
+	ewl_widget_hide(e->selection);
 
 	if (w->ebits_object)
 	  {
@@ -162,6 +163,8 @@ __ewl_entry_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	int xx, yy, ww, hh;
 	double xx2, yy2, ww2, hh2;
 	int c_pos, l;
+	int ss, ee;
+	double sx, sy, sw, sh, ex, ey, ew, eh;
 	char *str;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -211,33 +214,40 @@ __ewl_entry_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	/******************************************************************/
 
-/*	I need to rethink this whole selection algorithm not to do anything to
- *	hasted.
 	ewl_selection_get_covered(e->selection, &ss, &ee);
 
-	xx = CURRENT_X(e->text);
-	yy = CURRENT_Y(e->text);
-	ww = 0;
-
-	ewl_text_get_letter_geometry(e->text, --ss, &sx, &sy, &sw, &sh);
-
-	ewl_text_get_letter_geometry(e->text, ee, &ex, &ey, &ew, &eh);
-
-	if (ss < ee)
+	if (ss >= 0)
 	  {
-		xx += sx;
-		ww -= sx;
-		ww += ex;
-	  }
-	else if (ss > ee)
-	  {
-		xx += ex;
-		ww -= ex;
-		ww += sx;
-	  }
+		  xx = CURRENT_X(e->text);
+		  yy = CURRENT_Y(e->text);
+		  ww = 0;
 
-	ewl_object_request_geometry(EWL_OBJECT(e->selection), xx, yy, ww, hh);
-	ewl_widget_configure(e->selection);*/
+		  ewl_text_get_letter_geometry(e->text, ss, &sx, &sy, &sw,
+					       &sh);
+		  ewl_text_get_letter_geometry(e->text, ss + ee, &ex, &ey,
+					       &ew, &eh);
+
+		  xx += sx;
+		  ww += sw;
+
+		  if (ee > 0)
+		    {
+			    ww -= sw;
+			    ww += ex - sx;
+			    ww += ew;
+		    }
+		  else if (ee < 0)
+		    {
+			    xx -= sx;
+			    xx += ex;
+			    ww += (int) (sx - ex);
+
+		    }
+
+		  ewl_object_request_geometry(EWL_OBJECT(e->selection), xx,
+					      yy, ww, hh);
+		  ewl_widget_configure(e->selection);
+	  }
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -302,7 +312,7 @@ __ewl_entry_mouse_down(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ev_Mouse_Down *ev;
 	Ewl_Entry *e;
-	int index;
+	int index = 0, len = 0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -311,7 +321,7 @@ __ewl_entry_mouse_down(Ewl_Widget * w, void *ev_data, void *user_data)
 	e = EWL_ENTRY(w);
 
 	if (ev->x < CURRENT_X(e->text))
-		ewl_cursor_set_position(e->cursor, 1);
+		index = 0;
 	else if (ev->x > CURRENT_X(e->text) + CURRENT_W(e->text))
 	  {
 		  char *str;
@@ -319,15 +329,24 @@ __ewl_entry_mouse_down(Ewl_Widget * w, void *ev_data, void *user_data)
 		  str = ewl_entry_get_text(w);
 
 		  if (str)
-			  index = strlen(str);
+			  len = index = strlen(str);
 	  }
 	else
 		ewl_text_get_index_at(e->text, (double) (ev->x),
-				      (double) (ev->y), &index);
+				      (double) (CURRENT_Y(e->text) +
+						(CURRENT_H(e->text) / 2)),
+				      &index);
 
-	ewl_cursor_set_position(e->cursor, ++index);
+	ewl_cursor_set_position(e->cursor, index + 1);
 
-/*	ewl_selection_set_covered(e->selection, index, index);*/
+	ewl_widget_hide(e->selection);
+
+	if (index == 0)
+		ewl_selection_set_covered(e->selection, index, 0);
+	else if (len > 0)
+		ewl_selection_set_covered(e->selection, len - 1, 0);
+	else
+		ewl_selection_set_covered(e->selection, index, 0);
 
 	ewl_widget_configure(w);
 
@@ -344,8 +363,6 @@ __ewl_entry_mouse_up(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	e = EWL_ENTRY(w);
 
-/*	ewl_widget_hide(e->selection);*/
-
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
@@ -361,26 +378,51 @@ __ewl_entry_mouse_move(Ewl_Widget * w, void *ev_data, void *user_data)
 	ev = ev_data;
 	e = EWL_ENTRY(w);
 
-/*	if (w->state & EWL_STATE_PRESSED)
+	if (w->state & EWL_STATE_PRESSED)
 	  {
-		int ss, ee;
-		int index;
+		  int ss, ee;
+		  int index;
 
-		ewl_text_get_index_at(e->text, (double) (ev->x), (double) (ev->y), &index);
+		  ewl_widget_show(e->selection);
 
-		ewl_selection_get_covered(e->selection, &ss, &ee);
+		  ewl_selection_get_covered(e->selection, &ss, &ee);
+		  if (ev->x > CURRENT_X(e->text) &&
+		      ev->x < CURRENT_X(e->text) + CURRENT_W(e->text))
+		    {
+			    ewl_text_get_index_at(e->text, (double) (ev->x),
+						  (double) (CURRENT_Y(e->text)
+							    +
+							    (CURRENT_H
+							     (e->text) / 2)),
+						  &index);
 
-		ee = ++index;
-	
-		ewl_selection_set_covered(e->selection, ss, ee);
+			    ee = index - ss;
 
-		ewl_cursor_set_position(e->cursor, index);
+			    ewl_selection_set_covered(e->selection, ss, ee);
 
-		ewl_widget_configure(w);
+			    ewl_cursor_set_position(e->cursor, index + 1);
 
-		ewl_widget_show(e->selection);
+		    }
+		  else if (ev->x < CURRENT_X(e->text))
+		    {
+		    }
+		  else if (ev->x > CURRENT_X(e->text) + CURRENT_W(e->text))
+		    {
+			    char *str;
+
+			    str = ewl_entry_get_text(w);
+
+			    if (str)
+				    index = strlen(str);
+
+			    ewl_cursor_set_position(e->cursor, index + 1);
+			    ewl_selection_set_covered(e->selection, ss,
+						      index - ss - 1);
+		    }
+
+		  ewl_widget_configure(w);
 	  }
-*/
+
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
