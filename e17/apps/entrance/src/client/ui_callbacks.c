@@ -56,9 +56,8 @@ update_login_face(Entrance_Session e, char *name)
    char buf[PATH_MAX];
    int iw, ih;
 
-   char *userimage;
-   int go = 1;
    Entrance_User *eu = NULL;
+   Evas_List *el;
 
    /* Find luser in config */
    for (el = e->EntUsers; el; el = el->next)
@@ -78,18 +77,18 @@ update_login_face(Entrance_Session e, char *name)
    else if (!eu->sys)
    {
       struct passwd *pfoo;
-      if(pfoo = getpwnam(eu->name))
+      if((pfoo = getpwnam(eu->name)))
          snprintf(buf, PATH_MAX, "/home/%s/.e/entrance/%s", 
-               pfoo->pw_dir, userimage);
+               pfoo->pw_dir, eu->img);
       else
          snprintf(buf, PATH_MAX, "%s/%s", 
                PACKAGE_DATA_DIR "/data/images/users",
-               userimage);
+               eu->img);
    }
    /* Luser image specified in system config */
    else
       snprintf(buf, PATH_MAX, "%s/%s", PACKAGE_DATA_DIR "/data/images/users",
-               userimage);
+               eu->img);
    
    evas_object_image_file_set(e->face, buf, NULL);
    evas_object_image_reload(e->face);
