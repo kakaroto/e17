@@ -464,6 +464,16 @@ AddToFamily(Window win)
 	ewin->desktop = DESKTOPS_WRAP_NUM(ewin->desktop);
      }
 
+   if (ewin->st.fullscreen)
+     {
+	ewin->st.fullscreen = 0;
+	EwinSetFullscreen(ewin, 1);
+	ewin->client.already_placed = 1;
+	ShowEwin(ewin);
+	UngrabX();
+	EDBUG_RETURN_;
+     }
+
    ResizeEwin(ewin, ewin->client.w, ewin->client.h);
 
    if ((!ewin->client.transient) && (Conf.place.manual)
