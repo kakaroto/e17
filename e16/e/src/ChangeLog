@@ -2878,3 +2878,13 @@ Sun Oct  3 12:03:22 PDT 1999
 (Raster)
 
 bad theme dialog added so people knwo they chose a bad theme...
+
+-------------------------------------------------------------------------------
+
+Sun Oct  3 12:37:15 PDT 1999
+(Mandrake)
+
+okay, here's the way the menu focus fix SHOUDL have gone
+
+incidentally, we now have a proper README, INSTALL, and FAQ file in the e/
+directory
