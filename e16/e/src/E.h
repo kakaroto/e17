@@ -764,7 +764,7 @@ typedef struct _winpart
      ActionClass        *aclass;
      TextClass          *tclass;
      ECursor            *ec;
-     char                ontop;
+     signed char         ontop;
      int                 flags;
      char                keep_for_shade;
   }
@@ -949,7 +949,7 @@ typedef struct _button
      ActionClass        *aclass;
      TextClass          *tclass;
      char               *label;
-     char                ontop;
+     signed char         ontop;
      int                 flags;
      char                sticky;
      int                 desktop;
@@ -991,7 +991,7 @@ struct _strip
      char               *name;
      int                 xabs, yabs;
      int                 xrel, yrel;
-     char                ontop;
+     signed char         ontop;
      char                sticky;
      int                 desktop;
      char                orientation;
@@ -1201,7 +1201,7 @@ typedef struct _emode
      char                manual_placement;
      char                raise_on_next_focus;
      char                raise_after_next_focus;
-     char                display_warp;
+     signed char         display_warp;
      char                warp_on_next_focus;
      char                warp_after_next_focus;
      int                 edge_flip_resistance;

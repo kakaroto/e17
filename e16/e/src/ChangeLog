@@ -4184,3 +4184,10 @@ Fri Jan 28 10:30:51 PST 2000
 (Raster)
 
 now that was silly - setting mode.xselect afterwards to 1 again,..
+
+-------------------------------------------------------------------------------
+
+Fri Jan 28 14:24:27 PST 2000
+(KainX)
+
+Fixed issues on platforms with unsigned chars.
