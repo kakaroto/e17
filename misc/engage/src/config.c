@@ -55,7 +55,7 @@ od_config_init(void)
                           "Size of icons in default state");
   ecore_config_int_create("engage.options.spacing", 4, 'S', "spacing",
                           "Space in pixels between each icon");
-  ecore_config_int_create("engage.options.zoom", 1, 'z', "zoom",
+  ecore_config_int_create_bound("engage.options.zoom", 1, 0, 1, 1, 'z', "zoom",
                           "Should we zoom icons?");
   ecore_config_float_create("engage.options.zoom_factor", 2.0, 'Z',
                             "zoom-factor",
