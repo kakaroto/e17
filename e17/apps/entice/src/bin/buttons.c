@@ -183,8 +183,17 @@ e_slide_buttons_in(int v, void *data)
    double              duration = 0.5;
    double              val;
    double              px;
+   int                *force;
 
-   buttons_active = 1;
+   force = (int *)data;
+
+   if(buttons_active == active_force_out && !(force && *force))
+      return;
+
+   if(force && *force)
+      buttons_active = active_force_in;
+   else
+      buttons_active = active_in;
 
    if (v == 0)
       start = get_time();
@@ -204,7 +213,7 @@ e_slide_buttons_in(int v, void *data)
 
    if (val < 1.0)
       ecore_add_event_timer("e_slide_buttons()", 0.05, e_slide_buttons_in,
-			    v + 1, NULL);
+			    v + 1, force);
 }
 
 void
@@ -215,6 +224,12 @@ e_slide_buttons_out(int v, void *data)
    double              duration = 0.5;
    double              val;
    double              px;
+   int                 *force;
+
+   force = (int *)data;
+
+   if(buttons_active == active_force_in && !(force && *force))
+      return;
 
    if (v == 0)
       start = get_time();
@@ -234,14 +249,17 @@ e_slide_buttons_out(int v, void *data)
 
    if (val < 1.0)
       ecore_add_event_timer("e_slide_buttons()", 0.05, e_slide_buttons_out,
-			    v + 1, NULL);
+			    v + 1, force);
    else
-      buttons_active = 0;
+      if(force && *force)
+         buttons_active = active_force_out;
+      else
+         buttons_active = active_out;
 }
 
 void
 show_buttons(void *data, Evas * e, Evas_Object * obj, void *event_info)
 {
-   if (!buttons_active)
+   if (buttons_active == active_out || buttons_active == active_force_out)
       e_slide_buttons_in(0, NULL);
 }

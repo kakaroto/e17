@@ -362,10 +362,12 @@ e_toggle_fullscreen(void)
 	evas_output_viewport_set(evas, 0, 0, win_w, win_h);
 	evas_output_size_set(evas, win_w, win_h);
 	e_handle_resize();
-	if (panel_active)
-	   e_slide_panel_out(0, NULL);
-	if (buttons_active)
-	   e_slide_buttons_out(0, NULL);
+	if (panel_active == active_in || panel_active == active_force_in) {
+		e_slide_panel_out(0, NULL);
+	}
+	else {
+		e_slide_panel_in(0, NULL);
+	}
      }
    else
      {
@@ -381,10 +383,12 @@ e_toggle_fullscreen(void)
 	evas_output_viewport_set(evas, 0, 0, win_w, win_h);
 	evas_output_size_set(evas, win_w, win_h);
 	e_handle_resize();
-	if (panel_active)
-	   e_slide_panel_out(0, NULL);
-	if (buttons_active)
-	   e_slide_buttons_out(0, NULL);
+	if (panel_active == active_in || panel_active == active_force_in) {
+		e_slide_panel_out(0, NULL);
+	}
+	else {
+		e_slide_panel_in(0, NULL);
+	}
 	if (win)
 	   ecore_window_destroy(win);
 	win = 0;

@@ -54,8 +54,8 @@ extern int          icon_x;
 extern int          icon_y;
 
 extern int          dragging;
-extern int          panel_active;
-extern int          buttons_active;
+extern enum active_state panel_active;
+extern enum active_state buttons_active;
 extern int          scroll_x;
 extern int          scroll_y;
 extern int          scroll_sx;

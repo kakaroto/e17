@@ -141,9 +141,9 @@ e_window_configure(Ecore_Event * ev)
 	evas_output_viewport_set(evas, 0, 0, win_w, win_h);
 	evas_output_size_set(evas, win_w, win_h);
 	e_handle_resize();
-	if (panel_active)
+	if (panel_active == active_in)
 	   e_slide_panel_out(0, NULL);
-	if (buttons_active)
+	if (buttons_active == active_in)
 	   e_slide_buttons_out(0, NULL);
      }
 }
@@ -224,17 +224,25 @@ e_key_down(Ecore_Event * ev)
      }
    else if (!strcmp(e->key, "p"))
      {
-	if (panel_active)
+	int force = 1;
+	if (panel_active == active_in || panel_active == active_force_in) {
+           panel_active = active_in;
 	   e_slide_panel_out(0, NULL);
-	else
-	   e_slide_panel_in(0, NULL);
+	}
+	else {
+	   e_slide_panel_in(0, &force);
+	}
      }
    else if (!strcmp(e->key, "b"))
      {
-	if (buttons_active)
+	int force = 1;
+	if (buttons_active == active_in || buttons_active == active_force_in) {
+	   buttons_active = active_in;
 	   e_slide_buttons_out(0, NULL);
-	else
-	   e_slide_buttons_in(0, NULL);
+	}
+	else {
+	   e_slide_buttons_in(0, &force);
+	}
      }
    else if (!strcmp(e->key, "d"))
      {

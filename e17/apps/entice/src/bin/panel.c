@@ -9,8 +9,17 @@ e_slide_panel_in(int v, void *data)
    double              val;
    double              px;
    int                 w;
+   int		       *force;
 
-   panel_active = 1;
+   force = (int *)data;
+
+   if(panel_active == active_force_out && !(force && *force)) 
+      return;
+
+   if(force && *force)
+      panel_active = active_force_in;
+   else
+      panel_active = active_in;
 
    if (v == 0)
       evas_object_layer_set(o_showpanel, 180);
@@ -29,7 +38,7 @@ e_slide_panel_in(int v, void *data)
 
    if (val < 1.0)
       ecore_add_event_timer("e_slide_panel()", 0.05, e_slide_panel_in, v + 1,
-			    NULL);
+			    force);
 }
 
 void
@@ -41,6 +50,12 @@ e_slide_panel_out(int v, void *data)
    double              val;
    double              px;
    int                 w;
+   int                 *force;
+
+   force = (int *)data;
+
+   if(panel_active == active_force_in && !(force && *force)) 
+      return;
 
    if (v == 0)
       evas_object_layer_set(o_showpanel, 1000);
@@ -59,9 +74,12 @@ e_slide_panel_out(int v, void *data)
 
    if (val < 1.0)
       ecore_add_event_timer("e_slide_panel()", 0.05, e_slide_panel_out, v + 1,
-			    NULL);
+			    force);
    else
-      panel_active = 0;
+      if(force && *force) 
+         panel_active = active_force_out;
+      else
+         panel_active = active_out;
 }
 
 void
