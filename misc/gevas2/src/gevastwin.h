@@ -72,7 +72,8 @@ extern "C" {
 		void (*main_obj_move) (GtkgEvasObj * object, double x, double y);
 		void (*aux_obj_move) (GtkgEvasObj * object, double x, double y);
 
-	};
+        GtkgEvasObjCollection* extra_objects;
+    };
 
 	struct _GtkgEvasTwinClass {
 		GtkObjectClass parent_class;
@@ -83,6 +84,8 @@ extern "C" {
 	GtkgEvasTwin *gevastwin_new();
     void gevastwin_sync_obj( GtkgEvasTwin* ev, GtkgEvasObj* object );
 
+    void gevastwin_add_extra_objects( GtkgEvasTwin* ev, GtkgEvasObjCollection* v );
+    
 
 #define GEVASTWIN_BACKWARD_LOOKUP_KEY "___gevastwin_backward_key"
 

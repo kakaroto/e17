@@ -295,7 +295,7 @@ void gevas_selectable_select( GtkgEvasEvHSelectable * ev, gboolean s )
 		gint32 by = ev->border_y;
 		int lay=0;
         
-/*		printf("showing for selectable\n");*/
+/* 		printf("showing for selectable\n"); */
 		gevasobj_get_geometry( ev->normal, &x, &y, &w, &h );
 		gevasobj_move( ev->selected, x - bx, y - by);
 		gevasobj_resize( ev->selected, w + 2*bx, h + 2*by);
