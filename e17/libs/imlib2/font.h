@@ -15,7 +15,10 @@ struct _imlib_font
    TT_Face_Properties  properties;
    int                 num_glyph;
    TT_Glyph           *glyphs;
-   TT_Raster_Map     **glyphs_cached;
+   TT_Raster_Map     **glyphs_cached_right;
+   TT_Raster_Map     **glyphs_cached_left;
+   TT_Raster_Map     **glyphs_cached_down;
+   TT_Raster_Map     **glyphs_cached_up;
    int                 max_descent;
    int                 max_ascent;   
 };

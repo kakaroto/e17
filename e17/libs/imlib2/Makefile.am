@@ -32,7 +32,8 @@ imlib2_SOURCES	= rend.c ximage.c scale.c main.c rgba.c image.c \
 		  color.h draw.h rend.h ximage.h colormod.h file.h rgba.h \
 		  common.h grab.h rgbadraw.h font.h format.h
 				 
-imlib2_LDADD	= @DLLDFLAGS@ $(top_builddir)/libltdl/libltdlc.la -lX11 -lXext
+imlib2_LDADD	= @DLLDFLAGS@ $(top_builddir)/libltdl/libltdlc.la \
+                  -lX11 -lXext -lttf
 
 SYS_LOADERS_PATH = @pkglibdir@
 
