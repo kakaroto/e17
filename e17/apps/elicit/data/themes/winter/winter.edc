@@ -3,8 +3,18 @@
 // reCreated: Feb '04
 //
 
+#define WINTER_BLUE 229 239 255 255
+#define WINTER_GREEN 229 255 239 255
+#define WINTER_RED 255 229 229 255
+
+/* Pick a color! */
+#define WINTER_COLOR WINTER_BLUE
+
+
 #include "macros/button.inc"
 #include "macros/color.inc"
+#include "macros/tabs.inc"
+#include "macros/scrollbar.inc"
 
 fonts
 {
@@ -14,9 +24,16 @@ fonts
 images
 {
   image, "base.png" LOSSY 98;
+  image, "grad-top.png" LOSSY 98;
+  image, "grad-bot.png" LOSSY 98;
+  image, "grad-left.png" LOSSY 98;
+
   image, "left-border.png" LOSSY 98;
   image, "left-panel.png" LOSSY 98;
   image, "left-shadow.png" LOSSY 98;
+  image, "left-deco-left.png" LOSSY 98;
+  image, "left-deco-right.png" LOSSY 98;
+
   image, "roundedbox.png" LOSSY 98;
   image, "dropper.png" LOSSY 98;
   image, "dropper2.png" LOSSY 98;
@@ -26,16 +43,37 @@ images
   image, "x2.png" LOSSY 98;
   image, "arrow-up.png" LOSSY 98;
   image, "arrow-dn.png" LOSSY 98;
+
+  image, "tab-base.png" LOSSY 98;
+  image, "tab-sel.png" LOSSY 98;
+  image, "tab-unsel.png" LOSSY 98;
+  image, "tab-theme.png" LOSSY 98;
+  image, "tab-swatch.png" LOSSY 98;
+  image, "tab-shot.png" LOSSY 98;
+  image, "tab-data.png" LOSSY 98;
+
+  image, "panel-textbox.png" LOSSY 98;
+
+  image, "scroll-trough.png" LOSSY 98;
+  image, "scroll-box.png" LOSSY 98;
+
+  image, "swatch-shadow.png" LOSSY 98;
+
 }
 
 collections {
   group {
     name, "elicit";
-    min, 180 125;
+    min, 200 125;
     parts {
 #include "parts/main.edc"
 #include "parts/buttons.edc"
+#include "parts/tabs.edc"
 #include "parts/colors.edc"
+#include "parts/swatches.edc"
+#include "parts/shots.edc"
+#include "parts/themes.edc"
+#include "parts/shadow.edc"
     }
 
 
@@ -43,11 +81,26 @@ collections {
 // ------------------------ programs ----------------------------- //
 
     programs {
+#include "programs/main.edc"
 #include "programs/buttons.edc"
 #include "programs/panel.edc"
 #include "programs/colors.edc"
+#include "programs/tabs.edc"
+#include "programs/swatches.edc"
+#include "programs/shots.edc"
     }
 
   }
+
+  group {
+#include "groups/swatch.edc"
+  }
+  group {
+#include "groups/shot.edc"
+  }
+  group {
+#include "groups/theme.edc"
+  }
+    
 }
 

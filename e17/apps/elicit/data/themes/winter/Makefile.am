@@ -1,5 +1,3 @@
-SUBDIRS = img macros parts programs fonts
-
 THEME = winter
 EDC = $(THEME).edc
 EET = $(EDC:%.edc=%.eet)

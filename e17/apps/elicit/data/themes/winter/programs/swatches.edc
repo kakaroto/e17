@@ -1,0 +1,25 @@
+  program {
+    name, "scroll.down.start";
+    signal, "mouse,down,1";
+    source, "swatch.scroll.dn";
+    action, SIGNAL_EMIT "elicit,swatch,scroll,down,start" "";
+  }
+  program {
+    name, "scroll.down.stop";
+    signal, "mouse,up,1";
+    source, "swatch.scroll.dn";
+    action, SIGNAL_EMIT "elicit,swatch,scroll,down,stop" "";
+  }
+  program {
+    name, "scroll.up.start";
+    signal, "mouse,down,1";
+    source, "swatch.scroll.up";
+    action, SIGNAL_EMIT "elicit,swatch,scroll,up,start" "";
+  }
+  program {
+    name, "scroll.up.stop";
+    signal, "mouse,up,1";
+    source, "swatch.scroll.up";
+    action, SIGNAL_EMIT "elicit,swatch,scroll,up,stop" "";
+  }
+  

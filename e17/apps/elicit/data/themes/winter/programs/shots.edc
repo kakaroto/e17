@@ -1,0 +1,24 @@
+  program {
+    name, "scroll.down.start";
+    signal, "mouse,down,1";
+    source, "shot.scroll.dn";
+    action, SIGNAL_EMIT "elicit,shot,scroll,down,start" "";
+  }
+  program {
+    name, "scroll.down.stop";
+    signal, "mouse,up,1";
+    source, "shot.scroll.dn";
+    action, SIGNAL_EMIT "elicit,shot,scroll,down,stop" "";
+  }
+  program {
+    name, "scroll.up.start";
+    signal, "mouse,down,1";
+    source, "shot.scroll.up";
+    action, SIGNAL_EMIT "elicit,shot,scroll,up,start" "";
+  }
+  program {
+    name, "scroll.up.stop";
+    signal, "mouse,up,1";
+    source, "shot.scroll.up";
+    action, SIGNAL_EMIT "elicit,shot,scroll,up,stop" "";
+  }
