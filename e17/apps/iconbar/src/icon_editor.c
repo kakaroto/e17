@@ -243,7 +243,7 @@ icon_editor_image_file_set(char *file)
   int w, h;
 
   printf("file: %s\n", file);
-  ewl_image_set_file(EWL_IMAGE(editor->icon_image), file, NULL);
+  ewl_image_file_set(EWL_IMAGE(editor->icon_image), file, NULL);
   icon_editor_image_data_get(&data, &w, &h);
   icon_editor_image_data_set(data, w, h);
 }
