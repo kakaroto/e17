@@ -22,7 +22,7 @@
 #include <Ecore.h>
 #include <Ecore_Evas.h>
 #include <Edje.h>
-#include <Esmart/container.h>
+#include <Esmart/Esmart_Container.h>
 #include <Esmart/Esmart_Draggies.h>
 
 #include "debug.h"

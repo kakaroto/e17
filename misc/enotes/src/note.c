@@ -138,6 +138,7 @@ setup_note(Evas_List ** note, int width, int height, char *title, char *content)
 	/* Setup the Window */
 	p->win = ecore_evas_software_x11_new(NULL, 0, 0, 0, width, height);
 	ecore_evas_title_set(p->win, "An E-Note");
+	ecore_evas_name_class_set (p->win, "Enotes", "Enotes");
 	ecore_evas_borderless_set(p->win, 1);
 	ecore_evas_shaped_set(p->win, 1);
 	ecore_evas_show(p->win);

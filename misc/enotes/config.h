@@ -6,8 +6,8 @@
 /* #undef HAVE_LC_MESSAGES */
 /* #undef HAVE_STPCPY */
 /* #undef HAVE_LIBSM */
-#define PACKAGE_LOCALE_DIR "/usr/local//locale"
-#define PACKAGE_DATA_DIR "/usr/local/share/enotes"
+#define PACKAGE_LOCALE_DIR "/usr/locale"
+#define PACKAGE_DATA_DIR "/usr/share/enotes"
 #define PACKAGE_SOURCE_DIR "/home/tom/coding/tmp"
 #define PACKAGE_BIN_DIR "${exec_prefix}/bin"
 #define PACKAGE_LIB_DIR "${exec_prefix}/lib"
