@@ -22,6 +22,7 @@ static int exp_eb_cb_server_data(void *data, int type, void *ev);
 static void exp_eb_cb_event_dialog_free(void *data, void *ev);
 static void exp_eb_cb_event_buddy_login_free(void *data, void *ev);
 static void exp_eb_cb_event_buddy_logout_free(void *data, void *ev);
+static void exp_eb_cb_event_message_free(void *data, void *ev);
 
 int
 exp_eb_init(const char *eb_dir)
@@ -45,9 +46,9 @@ exp_eb_init(const char *eb_dir)
       return 0;
     }
 
-    Exp_EB_EVENT_DIALOG = ecore_event_type_new();
-    Exp_EB_EVENT_BUDDY_LOGIN = ecore_event_type_new();
-    Exp_EB_EVENT_BUDDY_LOGOUT = ecore_event_type_new();
+    EXP_EB_EVENT_DIALOG = ecore_event_type_new();
+    EXP_EB_EVENT_BUDDY_LOGIN = ecore_event_type_new();
+    EXP_EB_EVENT_BUDDY_LOGOUT = ecore_event_type_new();
 
     if (*eb_dir == '~')
     {
@@ -298,6 +299,7 @@ exp_eb_command_handle(Exp *exp, char **cmds)
   {
 
   }
+
   /* contact functions */
   else if (!strcmp(cmds[0], "list_group"))
   {
@@ -315,8 +317,9 @@ exp_eb_command_handle(Exp *exp, char **cmds)
   {
 
 
-    /* adding and deleting groups/contacts/accounts */
   }
+
+  /* adding and deleting groups/contacts/accounts */
   else if (!strcmp(cmds[0], "add_group"))
   {
 
@@ -390,9 +393,9 @@ exp_eb_command_handle(Exp *exp, char **cmds)
   else if (!strcmp(cmds[0], "unset_away")) 
   {
 
-
-    /* dialogs */
   }
+
+  /* dialogs */
   else if (!strcmp(cmds[0], "dialog_resolved")) 
   {
     printf("dialog resolved (%s)\n", cmds[1]);
@@ -403,12 +406,12 @@ exp_eb_command_handle(Exp *exp, char **cmds)
     Exp_Eb_Event_Dialog *ev;
 
     ev = calloc(1, sizeof(Exp_Eb_Event_Dialog));
-    ev->type = Exp_EB_EVENT_DIALOG_ERROR;
+    ev->type = EXP_EB_EVENT_DIALOG_ERROR;
     ev->tag = strdup(cmds[1]);
     ev->title = strdup(cmds[2]);
     ev->msg = strdup(cmds[3]);
 
-    ecore_event_add(Exp_EB_EVENT_DIALOG, ev,
+    ecore_event_add(EXP_EB_EVENT_DIALOG, ev,
         exp_eb_cb_event_dialog_free, NULL);
 
   }
@@ -417,12 +420,12 @@ exp_eb_command_handle(Exp *exp, char **cmds)
     Exp_Eb_Event_Dialog *ev;
 
     ev = calloc(1, sizeof(Exp_Eb_Event_Dialog));
-    ev->type = Exp_EB_EVENT_DIALOG_YES_NO;
+    ev->type = EXP_EB_EVENT_DIALOG_YES_NO;
     ev->tag = strdup(cmds[1]);
     ev->title = strdup(cmds[2]);
     ev->msg = strdup(cmds[3]);
 
-    ecore_event_add(Exp_EB_EVENT_DIALOG, ev,
+    ecore_event_add(EXP_EB_EVENT_DIALOG, ev,
         exp_eb_cb_event_dialog_free, NULL);
               
     /* FIXME FAKE IT FOR NOW */
@@ -435,7 +438,7 @@ exp_eb_command_handle(Exp *exp, char **cmds)
     int i;
 
     ev = calloc(1, sizeof(Exp_Eb_Event_Dialog));
-    ev->type = Exp_EB_EVENT_DIALOG_LIST;
+    ev->type = EXP_EB_EVENT_DIALOG_LIST;
     ev->tag = strdup(cmds[1]);
     ev->title = strdup(cmds[2]);
     ev->msg = strdup(cmds[3]);
@@ -445,7 +448,7 @@ exp_eb_command_handle(Exp *exp, char **cmds)
     for(i = 0; i < ev->num_opts; i++)
       ev->opts[i] = strdup(cmds[i + 5]);
 
-    ecore_event_add(Exp_EB_EVENT_DIALOG, ev,
+    ecore_event_add(EXP_EB_EVENT_DIALOG, ev,
         exp_eb_cb_event_dialog_free, NULL);
 
   } 
@@ -454,11 +457,11 @@ exp_eb_command_handle(Exp *exp, char **cmds)
     Exp_Eb_Event_Dialog *ev;
 
     ev = calloc(1, sizeof(Exp_Eb_Event_Dialog));
-    ev->type = Exp_EB_EVENT_DIALOG_TEXT;
+    ev->type = EXP_EB_EVENT_DIALOG_TEXT;
     ev->tag = strdup(cmds[1]);
     ev->msg = strdup(cmds[2]);
 
-    ecore_event_add(Exp_EB_EVENT_DIALOG, ev,
+    ecore_event_add(EXP_EB_EVENT_DIALOG, ev,
         exp_eb_cb_event_dialog_free, NULL);
 
   }
@@ -467,10 +470,10 @@ exp_eb_command_handle(Exp *exp, char **cmds)
     Exp_Eb_Event_Dialog *ev;
 
     ev = calloc(1, sizeof(Exp_Eb_Event_Dialog));
-    ev->type = Exp_EB_EVENT_DIALOG_CLIENT_ERROR;
+    ev->type = EXP_EB_EVENT_DIALOG_CLIENT_ERROR;
     ev->msg = strdup(cmds[1]);
 
-    ecore_event_add(Exp_EB_EVENT_DIALOG, ev,
+    ecore_event_add(EXP_EB_EVENT_DIALOG, ev,
         exp_eb_cb_event_dialog_free, NULL);
   }
 
@@ -484,7 +487,7 @@ exp_eb_command_handle(Exp *exp, char **cmds)
     ev->service = strdup(cmds[2]);
     ev->buddy = strdup(cmds[3]);
 
-    ecore_event_add(Exp_EB_EVENT_BUDDY_LOGOUT, ev,
+    ecore_event_add(EXP_EB_EVENT_BUDDY_LOGOUT, ev,
         exp_eb_cb_event_buddy_logout_free, NULL);
 
   }
@@ -497,7 +500,7 @@ exp_eb_command_handle(Exp *exp, char **cmds)
     ev->service = strdup(cmds[2]);
     ev->buddy = strdup(cmds[3]);
 
-    ecore_event_add(Exp_EB_EVENT_BUDDY_LOGIN, ev,
+    ecore_event_add(EXP_EB_EVENT_BUDDY_LOGIN, ev,
         exp_eb_cb_event_buddy_login_free, NULL);
 
   }
@@ -513,10 +516,31 @@ exp_eb_command_handle(Exp *exp, char **cmds)
   /* sending/receiving messages */
   else if (!strcmp(cmds[0], "message_receive")) 
   {
+    Exp_Eb_Event_Message *ev;
+
+    ev = calloc(1, sizeof(Exp_Eb_Event_Message));
+    ev->group = strdup(cmds[1]);
+    ev->contact = strdup(cmds[2]);
+    ev->local_handle = strdup(cmds[3]);
+    ev->service = strdup(cmds[4]);
+    ev->buddy = strdup(cmds[5]);
+    ev->msg = strdup(cmds[6]);
+
+    ecore_event_add(EXP_EB_EVENT_MESSAGE, ev,
+        exp_eb_cb_event_message_free, NULL);
 
   }
   else if (!strcmp(cmds[0], "notify_3rdperson")) 
   {
+    Exp_Eb_Event_Message *ev;
+
+    ev = calloc(1, sizeof(Exp_Eb_Event_Message));
+    ev->group = strdup(cmds[1]);
+    ev->contact = strdup(cmds[2]);
+    ev->msg = strdup(cmds[3]);
+
+    ecore_event_add(EXP_EB_EVENT_MESSAGE, ev,
+        exp_eb_cb_event_message_free, NULL);
 
   }
   else if (!strcmp(cmds[0], "message_send")) 
@@ -1196,5 +1220,37 @@ exp_eb_cb_event_buddy_logout_free(void *data, void *ev)
   data = NULL;
 }
 
+static void
+exp_eb_cb_event_message_free(void *data, void *ev)
+{
+  Exp_Eb_Event_Message *e;
+
+  e = ev;
+  if (!e) return;
+
+  if (e->group) free(e->group);
+  e->group = NULL;
+
+  if (e->contact) free(e->contact);
+  e->contact = NULL;
+
+  if (e->local_handle) free(e->local_handle);
+  e->local_handle = NULL;
+
+  if (e->service) free(e->service);
+  e->service = NULL;
+
+  if (e->buddy) free(e->buddy);
+  e->buddy = NULL;
+
+  if (e->msg) free(e->msg);
+  e->msg = NULL;
+
+  free(e);
+  e = NULL;
+
+  return;
+  data = NULL;
+}
 
 

@@ -3,44 +3,44 @@
 
 #include "Express.h"
 
-#define Exp_EB_PREFERENCE_ROOT "mainprefs"
-#define Exp_EB_ACCOUNTS_ROOT "accounts"
+#define EXP_EB_PREFERENCE_ROOT "mainprefs"
+#define EXP_EB_ACCOUNTS_ROOT "accounts"
 
 typedef enum Exp_Eb_Capabilities Exp_Eb_Capabilities;
 enum Exp_Eb_Capabilities 
 {
-    Exp_EB_CAN_OFFLINE = 0x1,
-    Exp_EB_CAN_GROUPCHAT = 0x2,
-    Exp_EB_CAN_NAME_CHAT = 0x4
+    EXP_EB_CAN_OFFLINE = 0x1,
+    EXP_EB_CAN_GROUPCHAT = 0x2,
+    EXP_EB_CAN_NAME_CHAT = 0x4
 };
 
 typedef enum Exp_Eb_Actions Exp_Eb_Actions;
 enum Exp_Eb_Actions 
 {
-    Exp_EB_ACTION_BUDDY,
-    Exp_EB_ACTION_GROUPCHAT,
-    Exp_EB_ACTION_GROUP_USERS
+    EXP_EB_ACTION_BUDDY,
+    EXP_EB_ACTION_GROUPCHAT,
+    EXP_EB_ACTION_GROUP_USERS
 };
 
 typedef enum Exp_Eb_Components Exp_Eb_Components;
 enum Exp_Eb_Component 
 {
-    Exp_EB_COMPONENT_LABEL,
-    Exp_EB_COMPONENT_STRING,
-    Exp_EB_COMPONENT_PASSWD,
-    Exp_EB_COMPONENT_TOGGLE,
-    Exp_EB_COMPONENT_OPTION,
-    Exp_EB_COMPONENT_BUTTON
+    EXP_EB_COMPONENT_LABEL,
+    EXP_EB_COMPONENT_STRING,
+    EXP_EB_COMPONENT_PASSWD,
+    EXP_EB_COMPONENT_TOGGLE,
+    EXP_EB_COMPONENT_OPTION,
+    EXP_EB_COMPONENT_BUTTON
 };
 
 typedef enum Exp_Eb_Event_Dialog_Type Exp_Eb_Event_Dialog_Type;
 enum Exp_Eb_Event_Dialog_Type 
 {
-    Exp_EB_EVENT_DIALOG_ERROR,
-    Exp_EB_EVENT_DIALOG_YES_NO,
-    Exp_EB_EVENT_DIALOG_LIST,
-    Exp_EB_EVENT_DIALOG_TEXT,
-    Exp_EB_EVENT_DIALOG_CLIENT_ERROR
+    EXP_EB_EVENT_DIALOG_ERROR,
+    EXP_EB_EVENT_DIALOG_YES_NO,
+    EXP_EB_EVENT_DIALOG_LIST,
+    EXP_EB_EVENT_DIALOG_TEXT,
+    EXP_EB_EVENT_DIALOG_CLIENT_ERROR
 };
 
 typedef struct Exp_Eb_Event_Dialog Exp_Eb_Event_Dialog;
@@ -71,9 +71,21 @@ struct Exp_Eb_Event_Buddy_Logout
     char *buddy;
 };
 
-int Exp_EB_EVENT_DIALOG;
-int Exp_EB_EVENT_BUDDY_LOGIN;
-int Exp_EB_EVENT_BUDDY_LOGOUT;
+typedef struct Exp_Eb_Event_Message Exp_Eb_Event_Message;
+struct Exp_Eb_Event_Message
+{
+    char *group;
+    char *contact;
+    char *local_handle;
+    char *service;
+    char *buddy;
+    char *msg;
+};
+
+int EXP_EB_EVENT_DIALOG;
+int EXP_EB_EVENT_BUDDY_LOGIN;
+int EXP_EB_EVENT_BUDDY_LOGOUT;
+int EXP_EB_EVENT_MESSAGE;
 
 int exp_eb_init(const char *eb_dir);
 int exp_eb_connect(Exp *exp, const char *srv);
