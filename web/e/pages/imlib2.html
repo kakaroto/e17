@@ -403,7 +403,7 @@ when we have a filename like:</font>
 <p><font color="#000000">You may ask what is this thing with keys and filenames?
 Well Imlib2 has loaders that are able to load data that is WITHIN a file
 (the loader capable of this right now is the database loader that is able
-to load image data stored with a key in a berkley-db database file). The
+to load image data stored with a key in a Berkeley-db database file). The
 colon is used to delimit where the filename ends and the key begins. Fro
 the majority of files you load you won't have to worry, but there is a
 limit in this case that filenames cannot contain a color character.</font>
@@ -422,7 +422,7 @@ image data itself later if and ONLY if the actual image data itself is
 needed. This means you can scan vast directories of files figuring their
 format and size and other such information just by loading and freeing
 - and it will be fast because no image data is decoded. You can take advantage
-of this by loading the image anc checking its size to calculate the size
+of this by loading the image and checking its size to calculate the size
 of an output area before you ever load the data. This means&nbsp; geometry
 calculations can be done fast ahead of time.</font>
 <p><font color="#000000">If you desire more detailed information about
@@ -491,8 +491,8 @@ more advanced Example</font></font></b></td>
 
 <td VALIGN=TOP HEIGHT="100%" BGCOLOR="#6a7a8a" NOSAVE>This is a more comprehensive
 example that should show off a fair number of features of imlib2. The code
-this was based off can be found in Imlib2's test directory. This coveres
-a lot of the core of Imlib2's api so you should have a pretty good idea
+this was based off can be found in Imlib2's test directory. This covers
+a lot of the core of Imlib2's API so you should have a pretty good idea
 on how it works if you understand this code snippet.
 <blockquote>
 <pre><tt><font color="#660000">/* include X11 stuff */
@@ -540,7 +540,7 @@ int main(int argc, char **argv)
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; PointerMotionMask | ExposureMask);
 &nbsp;&nbsp; /* show the window */
 &nbsp;&nbsp; XMapWindow(disp, win);
-&nbsp;&nbsp; /* set our cache to 2 Mb so it doesnt have to go hit the disk as long as */
+&nbsp;&nbsp; /* set our cache to 2 Mb so it doesn't have to go hit the disk as long as */
 &nbsp;&nbsp; /* the images we use use less than 2Mb of RAM (that is uncompressed) */
 &nbsp;&nbsp; imlib_set_cache_size(2048 * 1024);
 &nbsp;&nbsp; /* set the font cache to 512Kb - again to avoid re-loading */
@@ -652,7 +652,7 @@ int main(int argc, char **argv)
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; imlib_updates_get_coordinates(current_update,&nbsp;
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &amp;up_x, &amp;up_y, &amp;up_w, &amp;up_h);
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* create our buffer image for renderign this update */
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* create our buffer image for rendering this update */
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; buffer = imlib_create_image(up_w, up_h);
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* we can blend stuff now */
@@ -738,13 +738,13 @@ int main(int argc, char **argv)
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; imlib_free_font();
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* dont blend the image onto the drawable - slower */
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* don't blend the image onto the drawable - slower */
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; imlib_context_set_blend(0);
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* set the buffer image as our current image */
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; imlib_context_set_image(buffer);
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* render the image at 0, 0 */
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; imlib_render_image_on_drawable(up_x, up_y);
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* don't need that temproary buffer image anymore */
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* don't need that temporary buffer image anymore */
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; imlib_free_image();
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* if we had updates - free them */
@@ -881,12 +881,12 @@ color_modifier to disable the color modifier for rendering.</blockquote>
 <pre><b><tt><font color="#660000"><font size=+2>void imlib_context_set_operation(Imlib_Operation operation);</font></font></tt></b></pre>
 
 <blockquote>When Imlib2 draws an image onto another or an image onto a
-drawable it is able to do more than juts blend the result on using the
+drawable it is able to do more than just blend the result on using the
 given alpha channel of the image. It is also able to do saturating additive,
 subtractive and a combination of the both (called reshade) rendering. The
 default mode is IMLIB_OP_COPY. you can also set it to IMLIB_OP_ADD, IMLIB_OP_SUBTRACT
 or IMLIB_OP_RESHADE. Use this function to set the rendering operation.
-IMLIB_OP_COPY perfroms basic alpha blending: DST = (SRC * A) + (DST * (1
+IMLIB_OP_COPY performs basic alpha blending: DST = (SRC * A) + (DST * (1
 - A)). IMLIB_OP_ADD does DST = DST + (SRC * A). IMLIB_OP_SUBTRACT does
 DST = DST - (SRC * A) and IMLIB_OP_RESHADE does DST = DST + (((SRC - 0.5)
 / 2) * A).</blockquote>
@@ -1590,7 +1590,7 @@ the font cannot be found NULL is returned.</blockquote>
 
 <pre><b><tt><font color="#660000"><font size=+2>void imlib_text_draw(int x, int y, const char *text);</font></font></tt></b></pre>
 
-<blockquote>Call this function to draw the nul-byte terminated string text
+<blockquote>Call this function to draw the null-byte terminated string text
 using the current font on the current image at the x, y location (x, y
 denoting the top left corner of the font string)</blockquote>
 
@@ -2268,8 +2268,8 @@ bump_map( map=tint(red=50,tint=200), blue=10 );
 This example would bump map using a a map generated from the tint filter.
 <p>
 It is also possible to pass application information to the filters via the
-usage of the [] operator. When the script is being compiled the sciprt
-engine looks on the paramters passed to it and picks up a pointer for
+usage of the [] operator. When the script is being compiled the script
+engine looks on the parameters passed to it and picks up a pointer for
 every [] found.
 <p>
 eg2.
@@ -2282,11 +2282,11 @@ imlib_apply_filter( "tint( x=[], y=[], red=255, alpha=55 );", &myxint, &myyint )
 <p>
 This will cause a tint to the current image at (myxint,myyint) to be
 done. This is very useful for when you want the filters to dynamically
-change acording to program variables.
-The system is very quick as the code is psuedo-compiled and then run. The
-advantage of having the scripting system allows customisation of the image
-manipulations, this is particularily useful in applications that allow
-modifcations to be done (eg. image viewers).
+change according to program variables.
+The system is very quick as the code is pseudo-compiled and then run. The
+advantage of having the scripting system allows customization of the image
+manipulations, this is particularly useful in applications that allow
+modifications to be done (eg. image viewers).
 <p>
 <b>Filter Library</b>
 <p>
@@ -2323,7 +2323,7 @@ params - A linked list of parameters.
 <p>		      
 The best way to get all the values is such:
 <blockquote>
-Declare all parameters and initialise them to there default values.
+Declare all parameters and initialize them to there default values.
 <blockquote>
 <pre>
   for( ptr = params; ptr != NULL; ptr = ptr-&gt;next )
