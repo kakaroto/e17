@@ -183,16 +183,25 @@ void __ewl_textarea_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 		etox_context_free(ta->etox_context);
 		ta->etox_context = NULL;
 	} else {
+		char key[PATH_MAX];
 
 		/*
 		 * Get the default style and color based on the theme.
 		 */
-		style = ewl_theme_data_get_str(w,
-				"/textarea/base/style");
-		r = ewl_theme_data_get_int(w, "/textarea/base/r");
-		g = ewl_theme_data_get_int(w, "/textarea/base/g");
-		b = ewl_theme_data_get_int(w, "/textarea/base/b");
-		a = ewl_theme_data_get_int(w, "/textarea/base/a");
+		snprintf(key, PATH_MAX, "%s/style");
+		style = ewl_theme_data_get_str(w, key);
+
+		snprintf(key, PATH_MAX, "%s/r");
+		r = ewl_theme_data_get_int(w, key);
+
+		snprintf(key, PATH_MAX, "%s/g");
+		g = ewl_theme_data_get_int(w, key);
+
+		snprintf(key, PATH_MAX, "%s/b");
+		b = ewl_theme_data_get_int(w, key);
+
+		snprintf(key, PATH_MAX, "%s/a");
+		a = ewl_theme_data_get_int(w, key);
 
 		/*
 		 * Set the default style

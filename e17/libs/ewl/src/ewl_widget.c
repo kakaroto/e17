@@ -150,6 +150,10 @@ void ewl_widget_show(Ewl_Widget * w)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
+	if (HIDDEN(w) && w->parent && EWL_CONTAINER(w->parent)->child_add)
+		EWL_CONTAINER(w->parent)->child_add(EWL_CONTAINER(w->parent),
+				w);
+
 	w->visible |= EWL_VISIBILITY_SHOWN;
 
 	if (w->parent && (REALIZED(w->parent) && !REALIZED(w)))
@@ -173,8 +177,9 @@ void ewl_widget_hide(Ewl_Widget * w)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
-	if (!VISIBLE(w))
-		DRETURN(DLEVEL_STABLE);
+	if (VISIBLE(w) && w->parent && EWL_CONTAINER(w->parent)->child_remove)
+		EWL_CONTAINER(w->parent)->child_remove(EWL_CONTAINER(w->parent),
+				w);
 
 	w->visible = EWL_VISIBILITY_HIDDEN;
 

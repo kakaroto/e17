@@ -51,8 +51,8 @@ edb_ed $DB add "/selection/base/visible" str "yes"
 edb_ed $DB add "/entry/base" str "appearance/entry.bits.db"
 edb_ed $DB add "/entry/base/visible" str "yes"
 edb_ed $DB add "/entry/text/font" str "nationff"
-edb_ed $DB add "/entry/text/font_size" int 16
-edb_ed $DB add "/entry/text/style" str "shadow_red"
+edb_ed $DB add "/entry/text/font_size" int 12
+edb_ed $DB add "/entry/text/style" str "shadow"
 
 # Add keys for image widget
 echo -n "."

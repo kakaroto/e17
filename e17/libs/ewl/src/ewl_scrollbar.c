@@ -53,6 +53,7 @@ Ewl_Widget     *ewl_scrollbar_new(Ewl_Orientation orientation)
 void ewl_scrollbar_init(Ewl_Scrollbar * s, Ewl_Orientation orientation)
 {
 	Ewl_Widget     *w;
+	char            key[PATH_MAX];
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("s", s);
@@ -60,6 +61,10 @@ void ewl_scrollbar_init(Ewl_Scrollbar * s, Ewl_Orientation orientation)
 	w = EWL_WIDGET(s);
 
 	ewl_box_init(EWL_BOX(w), orientation);
+	if (orientation == EWL_ORIENTATION_HORIZONTAL)
+		ewl_widget_set_appearance(w, "hscrollbar");
+	else
+		ewl_widget_set_appearance(w, "vscrollbar");
 
 	/*
 	 * Create the basic widgets that are contained in the scrollbar.
@@ -128,16 +133,16 @@ void ewl_scrollbar_init(Ewl_Scrollbar * s, Ewl_Orientation orientation)
 	ewl_widget_set_appearance(s->button_increment, "button_decrement");
 
 	/*
+	 * Set the alignment of the buttons to the seeker.
+	 */
+	snprintf(key, PATH_MAX, "%s/button_order", w->appearance);
+	s->buttons_alignment = ewl_theme_data_get_int(EWL_WIDGET(s), key);
+
+	/*
 	 * Setup a few orientation specific variables, such as appearance and
 	 * packing order.
 	 */
 	if (orientation == EWL_ORIENTATION_HORIZONTAL) {
-
-		/*
-		 * Set the alignment of the buttons to the seeker.
-		 */
-		s->buttons_alignment = ewl_theme_data_get_int(EWL_WIDGET(s),
-							      "/hscrollbar/button_order");
 
 		if (s->buttons_alignment & EWL_ALIGNMENT_LEFT) {
 
@@ -176,12 +181,6 @@ void ewl_scrollbar_init(Ewl_Scrollbar * s, Ewl_Orientation orientation)
 		 */
 		ewl_seeker_set_value(EWL_SEEKER(s->seeker), 0);
 	} else {
-
-		/*
-		 * Set the alignment of the buttons to the seeker.
-		 */
-		s->buttons_alignment = ewl_theme_data_get_int(EWL_WIDGET(s),
-							      "/vscrollbar/button_order");
 
 		if (s->buttons_alignment & EWL_ALIGNMENT_TOP) {
 

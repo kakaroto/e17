@@ -278,6 +278,7 @@ void ewl_object_get_preferred_size(Ewl_Object * o,
 unsigned int ewl_object_get_preferred_w(Ewl_Object * o)
 {
 	unsigned int add, temp;
+
 	DCHECK_PARAM_PTR_RET("o", o, 0);
 
 	add = INSET_HORIZONTAL(o) + PADDING_HORIZONTAL(o);

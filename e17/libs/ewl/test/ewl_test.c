@@ -1,7 +1,7 @@
 #include <Ewl.h>
 #include <ewl-config.h>
 
-#define BUTTONS 17
+#define BUTTONS 18
 
 void            __close_main_widow(Ewl_Widget * w, void *ev_data,
 				   void *user_data);
@@ -48,6 +48,8 @@ void            __create_table_test_window(Ewl_Widget * w, void *ev_data,
 void            __create_text_test_window(Ewl_Widget * w, void *ev_data,
 					  void *user_data);
 void            __create_textarea_test_window(Ewl_Widget * w, void *ev_data,
+					      void *user_data);
+void            __create_tree_test_window(Ewl_Widget * w, void *ev_data,
 					      void *user_data);
 void            __create_selectionbook_test_window(Ewl_Widget * w,
 						   void *ev_data,
@@ -246,6 +248,14 @@ main(int argc, char **argv)
 	button[i] = ewl_button_new("Ewl_TextArea");
 	ewl_callback_append(button[i], EWL_CALLBACK_CLICKED,
 			    __create_textarea_test_window, NULL);
+	i++;
+
+	/*
+	 * Create the button for the text area test and add it to the box.
+	 */
+	button[i] = ewl_button_new("Ewl_Tree");
+	ewl_callback_append(button[i], EWL_CALLBACK_CLICKED,
+			    __create_tree_test_window, NULL);
 	i++;
 
 	for (i = 0; i < BUTTONS; i++) {

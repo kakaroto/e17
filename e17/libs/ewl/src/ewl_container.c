@@ -152,7 +152,7 @@ void ewl_container_append_child(Ewl_Container * pc, Ewl_Widget * child)
 	/*
 	 * Now call the add function for the container.
 	 */
-	if (pc->child_add)
+	if (pc->child_add && VISIBLE(child))
 		pc->child_add(pc, child);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -262,6 +262,8 @@ void ewl_container_remove_child(Ewl_Container * pc, Ewl_Widget * child)
 	 * Remove the child from the parent and set the childs parent to NULL
 	 */
 	ewd_list_remove(pc->children);
+	if (pc->child_remove && VISIBLE(child))
+		pc->child_remove(pc, child);
 	child->parent = NULL;
 
 	/*
@@ -292,7 +294,7 @@ void ewl_container_resize_child(Ewl_Widget * w, int size, Ewl_Orientation o)
 	 * size just exit. Also exit if it has no function to be notified for
 	 * child resizes.
 	 */
-	if (!w->parent || !EWL_CONTAINER(w->parent)->child_resize)
+	if (HIDDEN(w) || !w->parent || !EWL_CONTAINER(w->parent)->child_resize)
 		DRETURN(DLEVEL_STABLE);
 
 	/*
@@ -466,7 +468,7 @@ ewl_container_prefer_largest(Ewl_Container *c, Ewl_Orientation o)
 	ewd_list_goto_first(c->children);
 	while ((child = ewd_list_next(c->children))) {
 		curr_size = get_size(child);
-		if (curr_size > max_size)
+		if (VISIBLE(child) && curr_size > max_size)
 			max_size = curr_size;
 	}
 

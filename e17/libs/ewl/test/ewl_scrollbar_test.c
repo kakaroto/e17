@@ -10,7 +10,7 @@ void
 __destroy_scrollbar_test_window(Ewl_Widget * w, void *ev_data,
 				void *user_data)
 {
-	ewl_widget_destroy_recursive(w);
+	ewl_widget_destroy(w);
 
 	ewl_callback_append(scrollbar_button, EWL_CALLBACK_CLICKED,
 			    __create_scrollbar_test_window, NULL);

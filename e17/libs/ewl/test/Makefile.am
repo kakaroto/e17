@@ -23,7 +23,8 @@ ewl_test_SOURCES		=	ewl_test.c \
 					ewl_spinner_test.c \
 					ewl_table_test.c \
 					ewl_text_test.c \
-					ewl_textarea_test.c
+					ewl_textarea_test.c \
+					ewl_tree_test.c
 
 #ewl_test_LDFLAGS		=	-static
 ewl_test_LDADD			=	$(top_builddir)/src/libewl.la @ebits_libs@ @ecore_libs@ @evas_libs@ @ewd_libs@

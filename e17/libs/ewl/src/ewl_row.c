@@ -45,6 +45,8 @@ int ewl_row_init(Ewl_Row *row)
 
 	ewl_container_init(EWL_CONTAINER(row), "row", __ewl_row_add,
 			__ewl_row_resize, NULL);
+	ewl_object_set_fill_policy(EWL_OBJECT(row), EWL_FILL_POLICY_HFILL |
+			EWL_FILL_POLICY_HSHRINK);
 
 	ewl_callback_append(EWL_WIDGET(row), EWL_CALLBACK_CONFIGURE,
 			__ewl_row_configure, NULL);
@@ -94,7 +96,6 @@ __ewl_row_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	Ewl_Container *c;
 	Ewl_Object *child;
 	int x;
-	int i = 0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -102,22 +103,56 @@ __ewl_row_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	c = EWL_CONTAINER(w);
 
 	x = CURRENT_X(w);
+
 	ewd_list_goto_first(c->children);
 
-	while ((child = ewd_list_next(c->children))) {
-		ewl_object_request_position(child, x, CURRENT_Y(w));
-
-		if (row->bounds && row->bounds[i]) {
+	/*
+	 * This should be the common case, a row bounded by a set of fields,
+	 * for forming a table.
+	 */
+	if (row->bounds) {
+		int i = 0;
+		while ((child = ewd_list_next(c->children))) {
 			ewl_object_request_w(child,
 					*row->base + *row->bounds[i] - x);
+			x = ewl_object_get_current_x(child) +
+				ewl_object_get_current_w(child);
+			i++;
 		}
-		else {
+	}
+	/*
+	 * In the uncommon case, we simply try to give out a fair amount of
+	 * space.
+	 */
+	else {
+		int remains, nodes;
+
+		remains = CURRENT_W(w);
+		nodes = ewd_list_nodes(c->children);
+		while ((child = ewd_list_next(c->children))) {
+			int portion;
+
+			/*
+			 * Attempt to divvy up remaining space equally among
+			 * remaining children.
+			 */
+			portion =  remains / nodes;
+			ewl_object_request_position(child, x, CURRENT_Y(w));
+			ewl_object_request_w(child, portion);
+
+			ewl_object_request_h(child,
+					ewl_object_get_preferred_h(EWL_OBJECT(w)));
+			x = ewl_object_get_current_x(child) +
+				ewl_object_get_current_w(child);
+
+			remains = CURRENT_X(w) + CURRENT_W(w) - x;
+			nodes--;
+		}
+
+		if ((child = ewd_list_goto_last(c->children)))
 			ewl_object_request_w(child,
-					ewl_object_get_preferred_w(child));
-		}
-		ewl_object_request_h(child,
-				ewl_object_get_preferred_h(EWL_OBJECT(w)));
-		i++;
+					ewl_object_get_current_w(child) +
+					remains);
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -152,7 +187,8 @@ __ewl_row_resize(Ewl_Container *c, Ewl_Widget *w, int size, Ewl_Orientation o)
 	row = EWL_ROW(c);
 	if (o == EWL_ORIENTATION_VERTICAL) {
 		if (EWL_OBJECT(w) == row->max && size > 0)
-			PREFERRED_H(c) += size;
+			ewl_object_set_preferred_h(EWL_OBJECT(c),
+					PREFERRED_H(c) + size);
 		else {
 			int h;
 			int max_h = 0;
@@ -174,6 +210,7 @@ __ewl_row_resize(Ewl_Container *c, Ewl_Widget *w, int size, Ewl_Orientation o)
 		}
 	}
 	else {
-		PREFERRED_W(c) += size;
+		ewl_object_set_preferred_w(EWL_OBJECT(c),
+				PREFERRED_W(c) + size);
 	}
 }

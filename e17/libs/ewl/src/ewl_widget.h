@@ -154,7 +154,7 @@ void            ewl_widget_rebuild_appearance(Ewl_Widget *w);
 
 #define REALIZED(w) (EWL_WIDGET(w)->visible & EWL_VISIBILITY_REALIZED)
 #define VISIBLE(w) (EWL_WIDGET(w)->visible & EWL_VISIBILITY_SHOWN)
-#define HIDDEN(w) (EWL_WIDGET(w)->visible & EWL_VISIBILITY_HIDDEN)
+#define HIDDEN(w) (!(EWL_WIDGET(w)->visible & EWL_VISIBILITY_SHOWN))
 #define LAYER(w) EWL_WIDGET(w)->layer
 
 #endif				/* __EWL_WIDGET_H__ */
