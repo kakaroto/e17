@@ -174,6 +174,8 @@ ewl_widget_del_data(Ewl_Widget * w, char * k)
 	if (!w->data)
 		DRETURN;
 
+	ewd_hash_remove(w->data, k);
+
 	DLEAVE_FUNCTION;
 }
 
