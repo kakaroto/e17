@@ -527,9 +527,9 @@ static void ewl_fileselector_path_setup(Ewl_Fileselector * fs, char *path)
 
 	/*
 	 * FIXME: These next two lines shouldn't be necessary.
-	*/
 	ewl_tree_selected_clear(EWL_TREE(fs->list_dirs));
 	ewl_tree_selected_clear(EWL_TREE(fs->list_files));
+	*/
 
 	ewl_container_reset(EWL_CONTAINER(fs->list_dirs));
 	ewl_container_reset(EWL_CONTAINER(fs->list_files));

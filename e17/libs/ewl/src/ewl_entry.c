@@ -717,6 +717,7 @@ void ewl_entry_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	 */
 	if (e->etox) {
 		evas_object_move(e->etox, xx, yy);
+        evas_object_resize(e->etox, ww, hh);
 		evas_object_layer_set(e->etox, ewl_widget_layer_sum_get(w));
 	}
 
@@ -799,6 +800,7 @@ void ewl_entry_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	if (w->fx_clip_box)
 		evas_object_clip_set(e->etox, w->fx_clip_box);
+
 	ewl_entry_ops_apply(e);
 
 	/*
@@ -1993,16 +1995,19 @@ ewl_entry_op_prune_list(Ewl_Entry *e, int rstart, int rend, int bstart, int bend
  */
 static void ewl_entry_update_size(Ewl_Entry * e)
 {
-	Evas_Coord x, y, width, height;
+	Evas_Coord width, height;
 
 	/*
 	 * Adjust the properties of the widget to indicate the size of the text.
 	 */
-	evas_object_geometry_get(e->etox, &x, &y, &width, &height);
+	etox_text_geometry_get(e->etox, &width, &height);
+
 	if (!width)
 		width = 1;
 	if (!height)
 		height = 1;
+
+	evas_object_resize(e->etox, (width), (height));
 
 	/*
 	 * Set the preferred size to the size of the etox and request that
@@ -2011,3 +2016,4 @@ static void ewl_entry_update_size(Ewl_Entry * e)
 	ewl_object_preferred_inner_size_set(EWL_OBJECT(e), (int)(width),
 					    (int)(height));
 }
+
