@@ -269,7 +269,7 @@ void imlib_filter_set_blue(int xoff, int yoff, int a, int r, int g, int b);
 void imlib_filter_constants(int a, int r, int g, int b);
 void imlib_filter_divisors(int a, int r, int g, int b);
 
-Imlib_Image imlib_apply_filter( char *script, ... );
+void imlib_apply_filter( char *script, ... );
    
 /* need to add polygon fill code */
 

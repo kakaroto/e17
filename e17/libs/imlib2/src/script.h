@@ -2,6 +2,7 @@
 #define _DYN_FUNCTION_H_
 
 #include "ltdl.h"
+#include "Imlib2.h"
 #include <stdarg.h>
 
 #define VAR_CHAR 1
@@ -26,6 +27,6 @@ struct _imlib_function
    pIFunction        next;
 };
 
-pIFunction   __imlib_script_parse( char *script, va_list );
+pIFunction   __imlib_script_parse( Imlib_Image im, char *script, va_list );
 void         __imlib_script_tidyup( IFunction *func );
 #endif /* _FUNCTION_H_ */

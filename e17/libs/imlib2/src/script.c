@@ -11,14 +11,16 @@
 #include <ctype.h>
 #include <errno.h>
 #include <X11/Xlib.h>
+#include "Imlib2.h"
 #include "image.h"
 #include "file.h"
+#include "dynamic_filters.h"
 #include "script.h"
 #include "loaderpath.h"
+
 /*
 #define FDEBUG 1
 */
-
 int __imlib_find_string( char *haystack, char *needle )
 {
    if(  strstr( haystack, needle ) != NULL )
@@ -26,7 +28,7 @@ int __imlib_find_string( char *haystack, char *needle )
    return 0;
 }
 
-char *stripwhitespace( char *str )
+char *__imlib_stripwhitespace( char *str )
 {
    int i, strt = 0, in_quote = 0;
    char *tmpstr = calloc( strlen(str)+1, sizeof(char) );
@@ -82,7 +84,9 @@ pIFunctionParam __imlib_parse_param( char *param )
 	 ptr->key = strdup(param);
 	 ptr->data = strdup( "" );
 	 ptr->type = VAR_CHAR;
+#ifdef FDEBUG
 	 printf( "DEBUG:   -> s_param [%s]=\"%s\"\n", ptr->key, (char *)ptr->data );
+#endif
 	 ptr->next = NULL;
       }
       return ptr;
@@ -99,7 +103,7 @@ pIFunction __imlib_parse_function( char *func )
    
    if( func != NULL )
    {
-      func = stripwhitespace( func );
+      func = __imlib_stripwhitespace( func );
       ptrfunc->name = __imlib_copystr( func, 0, __imlib_find_string( func, "(" ) - 1 );
 #ifdef FDEBUG
       printf( "DEBUG:  Function name: \"%s\"\n", ptrfunc->name );
@@ -138,12 +142,13 @@ pIFunction __imlib_parse_function( char *func )
    return ptrfunc;
 }
 
-pIFunction __imlib_script_parse( char *script, va_list param_list )
+pIFunction __imlib_script_parse( Imlib_Image im, char *script, va_list param_list )
 {
    int i = 0, in_quote = 0, start = 0, hit_null = 0;
    IFunction *ptr = __imlib_parse_function( NULL ), *tmp_fptr = NULL;
    IFunction *rptr = ptr;
    IFunctionParam *tmp_pptr;
+   pImlibExternalFilter filter;
    void *tmpptr;
 
 #ifdef FDEBUG   
@@ -161,39 +166,51 @@ pIFunction __imlib_script_parse( char *script, va_list param_list )
 	 {
 	    ptr->next = __imlib_parse_function( __imlib_copystr( script, start, i-1 ) );
 	    ptr = ptr->next;
-	    start = i+1;
-	 }
-      }
-      /* righty now we need to traverse the whole of the function tree and see if we have hit
-       * any [], if we have replace it with the next var off the list update the pointer, luverly
-       * jubly */
-      for( tmp_fptr = rptr->next; tmp_fptr != NULL; tmp_fptr = tmp_fptr->next )
-      {
-	 for( tmp_pptr = tmp_fptr->params; tmp_pptr != NULL; tmp_pptr = tmp_pptr->next )
-	 {
-	    if( strcmp( (char *)(tmp_pptr->data), "[]" ) == 0 )
+	    /* righty now we need to traverse the whole of the function tree and see if we have hit
+	     * any [], if we have replace it with the next var off the list update the pointer, luverly
+	     * jubly */
+	    for( tmp_pptr = ptr->params; tmp_pptr != NULL; tmp_pptr = tmp_pptr->next )
 	    {
-	       if( !hit_null )
-		 tmpptr = va_arg( param_list, void *);
-	       else
-		 tmpptr = NULL;
-	       
-	       if( tmpptr == NULL )
+	       if( strcmp( (char *)(tmp_pptr->data), "[]" ) == 0 )
 	       {
+		  if( !hit_null )
+		    tmpptr = va_arg( param_list, void *);
+		  else
+		    tmpptr = NULL;
+		  
+		  if( tmpptr == NULL )
+		  {
 #ifdef FDEBUG
-		  printf( "DEBUG: WARNING: We have hit a null. (dyn_filter.c)\n" );
+		     printf( "DEBUG: WARNING: We have hit a null. (dyn_filter.c)\n" );
 #endif
-		  hit_null = 1;
+		     hit_null = 1;
+		  }
+#ifdef FDEBUG
+		  printf( "Setting %s::%s to a pointer.\n", ptr->name, tmp_pptr->key );
+#endif
+		  tmp_pptr->type = VAR_PTR;
+		  tmp_pptr->data = ( tmpptr != NULL ? tmpptr : NULL );
+#ifdef FDEBUG
+		  printf( "%p\n", tmp_pptr->data );
+#endif
 	       }
-#ifdef FDEBUG
-	       printf( "Setting %s::%s to a pointer.\n", tmp_fptr->name, tmp_pptr->key );
-#endif
-	       tmp_pptr->type = VAR_PTR;
-	       tmp_pptr->data = ( tmpptr != NULL ? tmpptr : NULL );
-#ifdef FDEBUG
-	       printf( "%p\n", tmp_pptr->data );
-#endif
+	       /* for more funcky stuff in the furutre
+		* if( strlen( (char *)(tmp_pptr->data) ) == 0 )
+		* {
+		*   free( tmp_pptr->data );
+		*   tmp_pptr->data = __imlib_script_get_variable( tmp_pptr->key );
+		* }
+		*/
 	    }
+	    /* excutre the filter */
+	    filter = __imlib_get_dynamic_filter( ptr->name );
+	    if( filter != NULL )
+	    {
+	       printf( "Executing Filter %s\n", ptr->name );
+	       im = filter->exec_filter( ptr->name, im, ptr->params );
+	       imlib_context_set_image( im );
+	    }
+	    start = i+1;
 	 }
       }
 #ifdef FDEBUG      
