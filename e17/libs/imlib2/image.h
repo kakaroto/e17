@@ -144,6 +144,7 @@ void              __imlib_RescanLoaders(void);
 void              __imlib_RemoveAllLoaders(void);
 void              __imlib_LoadAllLoaders(void);
 ImlibLoader      *__imlib_FindBestLoaderForFile(char *file);
+ImlibLoader      *__imlib_FindBestLoaderForFileFormat(char *file, char *format);
 void              __imlib_SetImageAlphaFlag(ImlibImage *im, char alpha);
 ImlibImage       *__imlib_CreateImage(int w, int h, DATA32 *data);
 ImlibImage       *__imlib_LoadImage(char *file,

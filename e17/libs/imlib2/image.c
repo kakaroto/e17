@@ -16,24 +16,31 @@ static ImlibImagePixmap  *pixmaps = NULL;
 static ImlibLoader       *loaders = NULL;
 static int                cache_size = 4096 * 1024;
 
+/* attach a string key'd data and/or int value to an image that cna be */
+/* looked up later by its string key */
 void
 __imlib_AttachTag(ImlibImage *im, char *key, int val, void *data, 
 		  void (*destructor)(ImlibImage *im, void *data))
 {
    ImlibImageTag *t;
    
+   /* no string key? abort */
    if (!key)
       return;   
-   
+
+   /* allocate the struct */
    t = malloc(sizeof(ImlibImageTag));
+   /* fill it int */
    t->key = strdup(key);
    t->val = val;
    t->data = data;
    t->destructor = destructor;
    t->next = im->tags;
+   /* prepend it to the list of tags */
    im->tags = t;
 }
 
+/* look up a tage by its key on the image it was attached to */
 ImlibImageTag *
 __imlib_GetTag(ImlibImage *im, char *key)
 {
@@ -46,8 +53,12 @@ __imlib_GetTag(ImlibImage *im, char *key)
 	   return t;
 	t = t->next;
      }
+   /* no tag found - return NULL */
+   return NULL;
 }
 
+/* remove a tag by looking it up by its key and removing it from */
+/* the list of keys */
 ImlibImageTag *
 __imlib_RemoveTag(ImlibImage *im, char *key)
 {
@@ -68,8 +79,12 @@ __imlib_RemoveTag(ImlibImage *im, char *key)
 	tt = t;
 	t = t->next;
      }
+   /* no tag found - NULL */
+   return NULL;
 }
 
+/* free the data struct for the tag and if a destructor function was */
+/* provided call it on the data member */
 void
 __imlib_FreeTag(ImlibImage *im, ImlibImageTag *t)
 {
@@ -79,6 +94,7 @@ __imlib_FreeTag(ImlibImage *im, ImlibImageTag *t)
    free(t);
 }
 
+/* free all the tags attached to an image */
 void
 __imlib_FreeAllTags(ImlibImage *im)
 {
@@ -93,6 +109,7 @@ __imlib_FreeAllTags(ImlibImage *im)
      }
 }
 
+/* set the cache size */
 void
 __imlib_SetCacheSize(int size)
 {
@@ -101,12 +118,14 @@ __imlib_SetCacheSize(int size)
    __imlib_CleanupImagePixmapCache();
 }
 
+/* return the cache size */
 int 
 __imlib_GetCacheSize(void)
 {
    return cache_size;
 }
 
+/* create an image data struct and fill it in */
 ImlibImage *
 __imlib_ProduceImage(void)
 {
@@ -123,6 +142,7 @@ __imlib_ProduceImage(void)
    return im;
 }
 
+/* free an image struct */
 void
 __imlib_ConsumeImage(ImlibImage *im)
 {
@@ -165,6 +185,7 @@ __imlib_FindCachedImage(char *file)
    return NULL;
 }
 
+/* add an image to the cache of images (at the start) */
 void
 __imlib_AddImageToCache(ImlibImage *im)
 {
@@ -172,6 +193,7 @@ __imlib_AddImageToCache(ImlibImage *im)
    images = im;
 }
 
+/* remove (unlink) an image from the cache of images */
 void
 __imlib_RemoveImageFromCache(ImlibImage *im)
 {
@@ -193,6 +215,8 @@ __imlib_RemoveImageFromCache(ImlibImage *im)
      }	
 }
 
+/* work out how much we have floaitng aroudn in our speculative cache */
+/* (images and pixmaps that have 0 reference counts) */
 int 
 __imlib_CurrentCacheSize(void)
 {
@@ -200,9 +224,11 @@ __imlib_CurrentCacheSize(void)
    ImlibImagePixmap *ip;   
    int current_cache = 0;
 
+   /* go through the image cache */
    im = images;
    while(im)
      {
+	/* mayaswell clean out stuff thats invalid that we dont need anymore */
 	if (im->references == 0)
 	  {
 	     if (!(IMAGE_IS_VALID(im)))
@@ -210,16 +236,20 @@ __imlib_CurrentCacheSize(void)
 		  __imlib_RemoveImageFromCache(im);
 		  __imlib_ConsumeImage(im);
 	       }
+	     /* it's valid but has 0 ref's - append to cache size count */
 	     else
 		current_cache += im->w * im->h * sizeof(DATA32);
 	  }
 	im = im->next;
      }
+   /* go through the pixmaps */
    ip = pixmaps;
    while(ip)
      {
+	/* if the pixmap has 0 references */
 	if (ip->references == 0)
 	  {
+	     /* if the image is invalid */
 	     if (!(IMAGE_IS_VALID(ip->image)))
 	       {
 		  __imlib_RemoveImagePixmapFromCache(ip);
@@ -227,6 +257,7 @@ __imlib_CurrentCacheSize(void)
 	       }
 	     else
 	       {
+		  /* add the pixmap data size to the cache size */
 		  if (ip->pixmap)
 		    {
 		       if (ip->depth < 8)
@@ -238,6 +269,7 @@ __imlib_CurrentCacheSize(void)
 		       else if (ip->depth <= 32)
 			  current_cache += ip->w * ip->h * 4;		  
 		    }
+		  /* if theres a mask add it too */
 		  if (ip->mask)
 		     current_cache += ip->w * ip->h / 8;
 	       }
@@ -247,6 +279,7 @@ __imlib_CurrentCacheSize(void)
    return current_cache;
 }
 
+/* clean out images fromthe cache if the cache is overgrown */
 void
 __imlib_CleanupImageCache(void)
 {
@@ -257,6 +290,7 @@ __imlib_CleanupImageCache(void)
    current_cache = __imlib_CurrentCacheSize();
    im_last = NULL;
    im = images;
+   /* remove 0 ref coutn invalid (dirty) images */
    while(im)
      {
 	im_last = im;
@@ -268,6 +302,8 @@ __imlib_CleanupImageCache(void)
 	     __imlib_ConsumeImage(im_last);
 	  }	
      }
+   /* while the cache size of 0 ref coutn data is bigger than the set value */
+   /* clean out the oldest members of the imaeg cache */
    while ((current_cache > cache_size) || (operation))
      {
 	im_last = NULL;
@@ -289,6 +325,7 @@ __imlib_CleanupImageCache(void)
      }
 }
 
+/* create a pixmap cache data struct */
 ImlibImagePixmap *
 __imlib_ProduceImagePixmap(void)
 {
@@ -303,6 +340,7 @@ __imlib_ProduceImagePixmap(void)
    return ip;
 }
 
+/* free a pixmap cache data struct and the pixmaps in it */
 void
 __imlib_ConsumeImagePixmap(ImlibImagePixmap *ip)
 {
@@ -374,6 +412,7 @@ __imlib_FindCachedImagePixmapByID(Display *d, Pixmap p)
    return NULL;
 }
 
+/* add a pixmap cahce struct to the pixmap cache (at the start of course */
 void
 __imlib_AddImagePixmapToCache(ImlibImagePixmap *ip)
 {
@@ -381,6 +420,7 @@ __imlib_AddImagePixmapToCache(ImlibImagePixmap *ip)
    pixmaps = ip;
 }
 
+/* remove a pixmap cache struct fromt he pixmap cache */
 void
 __imlib_RemoveImagePixmapFromCache(ImlibImagePixmap *ip)
 {
@@ -402,6 +442,7 @@ __imlib_RemoveImagePixmapFromCache(ImlibImagePixmap *ip)
      }	
 }
 
+/* clean out 0 reference count & dirty pixmaps from the cache */
 void
 __imlib_CleanupImagePixmapCache(void)
 {
@@ -470,11 +511,13 @@ LTDL_Init(void)
     }
 }
 
+/* try dlopen()ing the file if we succeed finish filling out the malloced */
+/* loader struct and return it */
 ImlibLoader *
 __imlib_ProduceLoader(char *file)
 {
    ImlibLoader *l;
-   void (*l_formats)(ImlibLoader *l) ;
+   void (*l_formats)(ImlibLoader *l);
    
    LTDL_Init();
    
@@ -502,6 +545,8 @@ __imlib_ProduceLoader(char *file)
    return l;
 }
 
+/* list all the filenames of loaders  int he system laoders dir and the user */
+/* laoder dir */
 char **
 __imlib_ListLoaders(int *num_ret)
 {
@@ -509,11 +554,15 @@ __imlib_ListLoaders(int *num_ret)
    int num, i, pi = 0;
    
    *num_ret = 0;
+   /* get the user's home dir */
    home = __imlib_FileHomeDir(getuid());
    sprintf(s, "%s/" USER_LOADERS_PATH "/image", home);
+   /* list the dir contents of their loader dir */
    l = __imlib_FileDir(s, &num);
+   /* if theres files */
    if (num > 0)
      {
+	/* make a list of them */
 	*num_ret += num;
 	list = malloc(sizeof(char *) * *num_ret);
 	for (i = 0; i < num; i++)
@@ -524,6 +573,7 @@ __imlib_ListLoaders(int *num_ret)
 	pi = i;	
 	__imlib_FileFreeDirList(l, num);
      }
+   /* same for system laoder path */
    sprintf(s, SYS_LOADERS_PATH "/image");
    l = __imlib_FileDir(s, &num);
    if (num > 0)
@@ -541,6 +591,7 @@ __imlib_ListLoaders(int *num_ret)
    return list;
 }
 
+/* fre the struct for a loader and close its dlopen'd handle */
 void
 __imlib_ConsumeLoader(ImlibLoader *l)
 {
@@ -606,6 +657,7 @@ __imlib_RescanLoaders(void)
    __imlib_LoadAllLoaders();
 }
 
+/* remove all loaders int eh list we have cached so we can re-load them */
 void
 __imlib_RemoveAllLoaders(void)
 {
@@ -621,16 +673,22 @@ __imlib_RemoveAllLoaders(void)
    loaders = NULL;
 }
 
+/* find all the laoders we can find and load the m up to see what they can */
+/* laod / save */
 void
 __imlib_LoadAllLoaders(void)
 {
    int    i, num;
    char **list;
-   
+
+   /* list all the laoders imlib can find */
    list = __imlib_ListLoaders(&num);
+   /* no loaders? well don't laod anything */
    if (!list)
       return;
    
+   /* go through the list of filenames for loader .so's and load them */
+   /* (or try) and if it succeeds, append to our loader list */
    for (i = num - 1; i >= 0; i--)
      {
 	ImlibLoader *l;
@@ -702,6 +760,55 @@ __imlib_FindBestLoaderForFile(char *file)
    return l;   
 }
 
+ImlibLoader *
+__imlib_FindBestLoaderForFileFormat(char *file, char *format)
+{
+   char *extension, *lower;
+   ImlibLoader *l = NULL;
+
+   /* if the format is provided ("png" "jpg" etc.) use that */
+   if (format)
+      extension = strdup(format);
+   /* otherwise us the extension */
+   else
+     {
+	extension = strdup(__imlib_FileExtension(file));
+	/* change the extension to all lower case as all "types" are listed as */
+	/* lower case strings fromt he loader that represent all the possible */
+	/* extensions that file format could have */
+	lower = extension;
+	while (*lower)
+	  {
+	     *lower = tolower(*lower); 
+	     lower++;
+	  }
+     }
+   /* look thought the loaders one by one to see if one matches that format */
+   l = loaders;
+   while (l)
+     {
+	int i;
+	
+	/* go through all the formats that loader supports */
+	for (i = 0; i < l->num_formats; i++)
+	  {
+	     /* does it match ? */
+	     if (!strcmp(l->formats[i], extension))
+	       {
+		  /* free the memory allocated for the extension */
+		  free(extension);
+		  /* return the loader */
+		  return l;
+	       }
+	  }
+	l = l->next;
+     }
+   /* free the memory allocated for the extension */
+   free(extension);
+   /* return the loader */
+   return l;   
+}
+
 /* set or unset the alpha flag on the umage (alpha = 1 / 0 ) */
 void
 __imlib_SetImageAlphaFlag(ImlibImage *im, char alpha)
@@ -712,6 +819,8 @@ __imlib_SetImageAlphaFlag(ImlibImage *im, char alpha)
       UNSET_FLAG(im->flags, F_HAS_ALPHA);
 }
 
+/* create a new image struct from data passed that is wize w x h then return */
+/* a pointer to that image sturct */
 ImlibImage *
 __imlib_CreateImage(int w, int h, DATA32 *data)
 {
@@ -781,12 +890,16 @@ __imlib_LoadImage(char *file,
    errno = 0;
    if (best_loader)
       best_loader->load(im, progress, progress_granularity, immediate_load);
+   /* if the caller wants error returns */
    if (er)
      {
+	/* default to no error */
 	*er = LOAD_ERROR_NONE;
 	if (errno != 0)
 	  {
+	     /* if theres an error default to an unknown one */
 	     *er = LOAD_ERROR_UNKNOWN;
+	     /* translate common fopen() etc. errno's */
 	     if (errno == EEXIST)
 		*er = LOAD_ERROR_FILE_DOES_NOT_EXIST;
 	     else if (errno == EISDIR)
@@ -809,6 +922,7 @@ __imlib_LoadImage(char *file,
 		*er = LOAD_ERROR_OUT_OF_MEMORY;
 	     else if (errno == EMFILE)
 		*er = LOAD_ERROR_OUT_OF_FILE_DESCRIPTORS;
+	     /* free our struct */
 	     __imlib_ConsumeImage(im);
 	     return NULL;
 	  }
@@ -828,18 +942,23 @@ __imlib_LoadImage(char *file,
 	     /* if it failed - advance */
 	     if (im->w == 0)
 	       {
+		  /* if the caller wants an error return */
 		  if (er)
 		    {
+		       /* set to a default fo no error */
 		       *er = LOAD_ERROR_NONE;
+		       /* if the errno is set */
 		       if (errno != 0)
 			 {
+			    /* default to unknown error */
 			    *er = LOAD_ERROR_UNKNOWN;
+			    /* standrad fopen() type errors translated */
 			    if (errno == EEXIST)
 			       *er = LOAD_ERROR_FILE_DOES_NOT_EXIST;
 			    else if (errno == EISDIR)
-			       *er = LOAD_ERROR_FILE_IS_DIRECTORY;		
+			       *er = LOAD_ERROR_FILE_IS_DIRECTORY;
 			    else if (errno == EISDIR)
-			       *er = LOAD_ERROR_FILE_IS_DIRECTORY;		
+			       *er = LOAD_ERROR_FILE_IS_DIRECTORY;
 			    else if (errno == EACCES)
 			       *er = LOAD_ERROR_PERMISSION_DENIED_TO_READ;
 			    else if (errno == ENAMETOOLONG)
@@ -856,6 +975,7 @@ __imlib_LoadImage(char *file,
 			       *er = LOAD_ERROR_OUT_OF_MEMORY;
 			    else if (errno == EMFILE)
 			       *er = LOAD_ERROR_OUT_OF_FILE_DESCRIPTORS;
+			    /* free the stuct we created */
 			    __imlib_ConsumeImage(im);
 			    return NULL;
 			 }
@@ -896,6 +1016,7 @@ __imlib_LoadImage(char *file,
    return im;
 }
 
+/* find an imagepixmap cache enctyr by the display and pixmap id */
 ImlibImagePixmap *
 __imlib_FindImlibImagePixmapByID(Display *d, Pixmap p)
 {
@@ -913,36 +1034,49 @@ __imlib_FindImlibImagePixmapByID(Display *d, Pixmap p)
    return NULL;
 }
 
+/* free and image - if its uncachable and refcoutn is 0 - free it in reality */
 void
 __imlib_FreeImage(ImlibImage *im)
 {
+   /* if the refcount is positive */
    if (im->references >= 0)
      {
+	/* reduce a reference from the count */
 	im->references--;
+	/* if its uncachchable ... */
 	if (IMAGE_IS_UNCACHEABLE(im))
 	  {
-	     printf("unchangeable\n");
+	     /* and we're down to no references for the image then free it */
 	     if (im->references == 0)
 		__imlib_ConsumeImage(im);
 	  }
-	else
+	/* otherwise clean up our cache if the image becoem 0 ref count */
+	else if (im->references == 0)
 	   __imlib_CleanupImageCache();
      }   
 }
 
+
+/* free a cached pixmap */
 void
 __imlib_FreePixmap(Display *d, Pixmap p)
 {
    ImlibImagePixmap *ip;
    
+   /* find the pixmap in the cache by display and id */
    ip = __imlib_FindImlibImagePixmapByID(d, p);
+   /* if tis positive reference count */
    if (ip->references > 0)
      {
+	/* dereference it by one */
 	ip->references--;
-	__imlib_CleanupImagePixmapCache();
+	/* if it becaume 0 reference count - clean the cache up */
+	 if (ip->references == 0)
+	 __imlib_CleanupImagePixmapCache();
      }
 }
 
+/* flush the cache of all speculatively cached images and pixmaps */
 void
 __imlib_FlushCache(void)
 {
@@ -953,6 +1087,9 @@ __imlib_FlushCache(void)
    __imlib_SetCacheSize(previous_size);
 }
 
+/* mark all pixmaps generated from this image as diryt so the cache code */
+/* wont pick up on them again sicne they are now invalid sicn ehte original */
+/* data they were generated form has changed */
 void
 __imlib_DirtyPixmapsForImage(ImlibImage *im)
 {
@@ -970,10 +1107,12 @@ __imlib_DirtyPixmapsForImage(ImlibImage *im)
    __imlib_CleanupImagePixmapCache();
 }
 
+/* dirty and image by settings its invalid flag */
 void
 __imlib_DirtyImage(ImlibImage *im)
 {
    SET_FLAG(im->flags, F_INVALID);
+   /* and dirty all pixmaps generated from it */
    __imlib_DirtyPixmapsForImage(im);
 }
 
