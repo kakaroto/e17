@@ -79,6 +79,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %{prefix}/share/enlightenment/*
 %{prefix}/bin/*
+%{prefix}/man/man1/*
 
 %doc AUTHORS
 %doc COPYING
