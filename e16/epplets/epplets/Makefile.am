@@ -13,7 +13,7 @@ E-Toolbox.epplet E-NetFlame.epplet E-Sys.epplet E-ScreenShoot.epplet \
 E-Slides.epplet E-Xss.epplet E-Mountbox.epplet E-Exec.epplet @ESD_PROGS@ \
 @PLAYCD_PROGS@ E-ScreenSave.epplet E-NetGraph.epplet E-MoonClock.epplet \
 E-UrlWatch.epplet E-LoadMeter.epplet E-GtkRc.epplet E-Pinger.epplet \
-E-Pants.epplet
+E-Pants.epplet E-Bandwidth.epplet
 
 
 EXTRA_PROGRAMS = EppletTest.epplet EppletConfigTest.epplet E-Mixer.epplet \
@@ -89,6 +89,10 @@ E_Toolbox_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
 E_Areas_epplet_SOURCES = E-Areas.c 
 E_Areas_epplet_DEPENDENCIES = $(top_builddir)/api/libepplet.la
 E_Areas_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
+
+E_Bandwidth_epplet_SOURCES = E-Bandwidth.c net.c net.h
+E_Bandwidth_epplet_DEPENDENCIES = $(top_builddir)/api/libepplet.la
+E_Bandwidth_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
 
 E_Net_epplet_SOURCES = E-Net.c net.c net.h
 E_Net_epplet_DEPENDENCIES = $(top_builddir)/api/libepplet.la

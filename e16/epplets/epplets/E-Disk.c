@@ -49,6 +49,20 @@ static void out_cb(void *data, Window w);
 static void parse_conf(void);
 
 static void
+show_size(unsigned long n, char *buff)
+{
+  if (n < 1024) {
+    sprintf(buff, "%lu b", n);
+  } else if (n < 1024 * 1024) {
+    sprintf(buff, "%lu k", n / 1024);
+  } else if (n < 1024 * 1024 * 1024) {
+    sprintf(buff, "%lu M", n / (1024 * 1024));
+  } else {
+    sprintf(buff, "%lu G", n / (1024 * 1024 * 1024));
+  }
+}
+
+static void
 timer_cb(void *data) {
 
   FILE *fp;
@@ -93,7 +107,9 @@ timer_cb(void *data) {
     if (in_blks != in_delta) {
       in_val = (int) ((((float) in_blks) / max_in) * 100.0);
       Epplet_gadget_data_changed(in_bar);
-      Esnprintf(buff, sizeof(buff), "I: %lu K/s", in_blks / 4);
+      sprintf(buff, "I: ");
+      show_size(in_blks * 512, buff + 3);
+      strcat(buff, "/s");
       Epplet_change_label(in_label, buff);
     }
     in_delta = in_blks;
@@ -110,7 +126,9 @@ timer_cb(void *data) {
     if (out_blks != out_delta) {
       out_val = (int) ((((float) out_blks) / max_out) * 100.0);
       Epplet_gadget_data_changed(out_bar);
-      Esnprintf(buff, sizeof(buff), "O: %lu K/s", out_blks / 4);
+      sprintf(buff, "O: ");
+      show_size(out_blks * 512, buff + 3);
+      strcat(buff, "/s");
       Epplet_change_label(out_label, buff);
     }
     out_delta = out_blks;
@@ -118,7 +136,7 @@ timer_cb(void *data) {
   last_out += out_blks;
 
   Esync();
-  Epplet_timer(timer_cb, NULL, 0.5, "TIMER");
+  Epplet_timer(timer_cb, NULL, 1.0, "TIMER");
   return;
   data = NULL;
 }
@@ -201,22 +219,22 @@ main(int argc, char **argv) {
   prio = getpriority(PRIO_PROCESS, getpid());
   setpriority(PRIO_PROCESS, getpid(), prio + 10);
   atexit(Epplet_cleanup);
-  Epplet_Init("E-Disk", "0.1", "Enlightenment Disk I/O Monitor Epplet", 3, 3, argc, argv, 0);
+  Epplet_Init("E-Disk", "0.2", "Enlightenment Disk I/O Monitor Epplet", 3, 3, argc, argv, 0);
   Epplet_load_config();
   parse_conf();
 
   title = Epplet_create_label(3, 3, "Disk I/O", 1);
   if (show_title) {
     /* New arrangement */
-    in_label = Epplet_create_label(3, 13, "I: 0 K/s", 1);
-    out_label = Epplet_create_label(3, 30, "O: 0 K/s", 1);
+    in_label = Epplet_create_label(3, 13, "I: 0 b/s", 1);
+    out_label = Epplet_create_label(3, 30, "O: 0 b/s", 1);
     in_bar = Epplet_create_hbar(3, 22, 42, 7, 0, &in_val);
     out_bar = Epplet_create_hbar(3, 39, 42, 7, 0, &out_val);
     Epplet_gadget_show(title);
   } else {
     /* Old arrangement */
-    in_label = Epplet_create_label(4, 4, "I: 0 K/s", 1);
-    out_label = Epplet_create_label(4, 24, "O: 0 K/s", 1);
+    in_label = Epplet_create_label(4, 4, "I: 0 b/s", 1);
+    out_label = Epplet_create_label(4, 24, "O: 0 b/s", 1);
     in_bar = Epplet_create_hbar(4, 14, 40, 8, 0, &in_val);
     out_bar = Epplet_create_hbar(4, 36, 40, 8, 0, &out_val);
   }

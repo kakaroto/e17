@@ -2254,3 +2254,15 @@ Sun Oct 14 11:13:21 PDT 2001
 Added the ability to specify a timezone for E-Time.
 
 -------------------------------------------------------------------------------
+
+Tue Jun  4 15:48:53 EDT 2002
+(KainX)
+
+Updated E-Disk to display throughput in bytes, kB, MB, or GB instead of just
+kB.
+
+Added a new epplet, E-Bandwidth, which does network usage in a manner similar
+to E-Disk.
+
+-------------------------------------------------------------------------------
+
