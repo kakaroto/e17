@@ -54,6 +54,30 @@
 #define imlib_context_set_colour(_r, _g, _b, _a) \
 	imlib_context_set_color(_r, _g, _b, _a)
 
+#define imlib_create_colour_modifier() \
+	imlib_create_color_modifier()
+
+#define imlib_get_colour_modifier_tables(_r, _g, _b, _a) \
+	imlib_get_color_modifier_tables(_r, _g, _b, _a)
+
+#define imlib_set_colour_modifier_tables(_r, _g, _b, _a) \
+	imlib_set_color_modifier_tables(_r, _g, _b, _a)
+
+#define imlib_context_set_colour_modifier(_m) \
+	imlib_context_set_color_modifier(_m)
+
+#define imlib_reset_colour_modifier() \
+	imlib_reset_color_modifier();
+
+#define imlib_modify_colour_modifier_gamma(_g) \
+	imlib_modify_color_modifier_gamma(_g)
+
+#define imlib_apply_colour_modifier() \
+	imlib_apply_color_modifier()
+
+#define imlib_free_colour_modifier() \
+	imlib_apply_color_modifier()
+
 #define __SAFE_FREE(_ptr) \
 	if(_ptr!=NULL) { \
 		free(_ptr); \
@@ -72,9 +96,11 @@ typedef struct {
 	const char *blur;
 	const char *border;
 	const char *bordercolour;
+	const char *colourise;
 	const char *crop;
 	const char *channel;
 	const char *cache;
+	const char *fill;
 	const char *scale;
 	const char *gamma;
 	const char *rotate;
@@ -103,6 +129,7 @@ static void usage(int exit_status)
 		"    -channel       Red|Green|Blue|Alpha\n"
 		"                   Matte has the same meaning as Alpha\n"
 		"    -coalesce      (The same as average)\n"
+		"    -colourise     <percentage>|<red>/<greem>/><blue>\n"
 		"    -[no]dither    Use Floyd Steinberg Dithering instead\n"
 		"                   of ordered dithering (default)\n"
 		"    -flip\n"
@@ -152,6 +179,10 @@ static options_t *options(int argc, char **argv)
 		 NULL, 129},
 		{"cache", '\0', POPT_ARG_STRING | POPT_ARGFLAG_ONEDASH,
 		 NULL, 130},
+		{"colourise", '\0', POPT_ARG_STRING | POPT_ARGFLAG_ONEDASH,
+		 NULL, 131},
+		{"colorize", '\0', POPT_ARG_STRING | POPT_ARGFLAG_ONEDASH,
+		 NULL, 131},
 		{"crop", 'c', POPT_ARG_STRING | POPT_ARGFLAG_ONEDASH,
 		 NULL, 'c'},
 		{"channel", 'C', POPT_ARG_STRING | POPT_ARGFLAG_ONEDASH,
@@ -182,8 +213,10 @@ static options_t *options(int argc, char **argv)
 	opt->blur = NULL;
 	opt->border = NULL;
 	opt->bordercolour = NULL;
+	opt->colourise = NULL;
 	opt->crop = NULL;
 	opt->bin_ops = 0;
+	opt->fill = NULL;
 	opt->gamma = NULL;
 	opt->scale = NULL;
 	opt->rotate = NULL;
@@ -219,6 +252,9 @@ static options_t *options(int argc, char **argv)
 			break;
 		case 130:
 			opt->cache = optarg;
+			break;
+		case 131:
+			opt->colourise = optarg;
 			break;
 		case 'c':
 			opt->crop = optarg;
@@ -1110,54 +1146,54 @@ static Imlib_Image image_gamma_numeric(Imlib_Image image, double r,
 		return (image);
 	}
 
-	if ((modifier = imlib_create_color_modifier()) == NULL) {
+	if ((modifier = imlib_create_colour_modifier()) == NULL) {
 		fprintf(stderr, "Could not create colour modifier\n");
 		return (NULL);
 	}
 
-	imlib_context_set_color_modifier(modifier);
-	imlib_reset_color_modifier();
+	imlib_context_set_colour_modifier(modifier);
+	imlib_reset_colour_modifier();
 	if (r == g && r == b && r == a) {
-		imlib_modify_color_modifier_gamma(r);
+		imlib_modify_colour_modifier_gamma(r);
 	} else {
-		imlib_get_color_modifier_tables(r_table, g_table, b_table,
+		imlib_get_colour_modifier_tables(r_table, g_table, b_table,
 						a_table);
 
 		if(r != 1.0) {
-			imlib_modify_color_modifier_gamma(r);
-			imlib_get_color_modifier_tables(r_table, dummy_table, 
+			imlib_modify_colour_modifier_gamma(r);
+			imlib_get_colour_modifier_tables(r_table, dummy_table, 
 					dummy_table, dummy_table);
-			imlib_reset_color_modifier();
+			imlib_reset_colour_modifier();
 		}
 
 		if(g != 1.0) {
-			imlib_modify_color_modifier_gamma(g);
-			imlib_get_color_modifier_tables(dummy_table, g_table,
+			imlib_modify_colour_modifier_gamma(g);
+			imlib_get_colour_modifier_tables(dummy_table, g_table,
 							dummy_table, 
 							dummy_table);
-			imlib_reset_color_modifier();
+			imlib_reset_colour_modifier();
 		}
 
 		if(b != 1.0) {
-			imlib_modify_color_modifier_gamma(b);
-			imlib_get_color_modifier_tables(dummy_table, 
+			imlib_modify_colour_modifier_gamma(b);
+			imlib_get_colour_modifier_tables(dummy_table, 
 					dummy_table, b_table, dummy_table);
-			imlib_reset_color_modifier();
+			imlib_reset_colour_modifier();
 		}
 
 		if(a != 1.0) {
-			imlib_modify_color_modifier_gamma(a);
-			imlib_get_color_modifier_tables(dummy_table, 
+			imlib_modify_colour_modifier_gamma(a);
+			imlib_get_colour_modifier_tables(dummy_table, 
 					dummy_table, dummy_table, a_table);
-			imlib_reset_color_modifier();
+			imlib_reset_colour_modifier();
 		}
 
-		imlib_set_color_modifier_tables(r_table, g_table, b_table,
+		imlib_set_colour_modifier_tables(r_table, g_table, b_table,
 						a_table);
 	}
 
-	imlib_apply_color_modifier();
-	imlib_free_color_modifier();
+	imlib_apply_colour_modifier();
+	imlib_free_colour_modifier();
 
 	return (image);
 }
@@ -1496,6 +1532,42 @@ static Imlib_Image image_monochrome(Imlib_Image image,
 }
 
 
+#define __IMAGE_COLOURISE_8BIT(i) \
+	((i<0)?0:((i>255)?255:i))
+
+static Imlib_Image image_colourise(Imlib_Image image,
+		const char *colourise, const char *fill)
+{
+	int r = 255;
+	int g = 0;
+	int b = 0;
+	int rr;
+	int gg;
+	int bb;
+	DATA32 *data;
+	DATA32 *pixel;
+
+	imlib_context_set_image(image);
+
+	if((data = imlib_image_get_data()) == NULL) {
+		fprintf(stderr, "could not get image data for colourise\n");
+	}
+
+	pixel = data + imlib_image_get_height() * imlib_image_get_width() - 1;
+	do {
+		rr = __IMAGE_COLOURISE_8BIT( ( ( *pixel >> 16 ) & 0xff ) + r);
+		gg = __IMAGE_COLOURISE_8BIT( ( ( *pixel >> 8 ) & 0xff ) + b);
+		bb = __IMAGE_COLOURISE_8BIT( ( *pixel & 0xff ) + g );
+		*pixel = ( *pixel & 0xff000000 ) + ( rr << 16 ) + 
+			( bb << 8 ) + gg;
+	} while (pixel-- > data);
+
+	imlib_image_put_back_data(data);
+
+	return(image);
+}
+
+
 int calculate_cache(const char *cache) 
 {
 	char *end;
@@ -1648,6 +1720,8 @@ int main(int argc, char **argv)
 		fprintf(stderr, "Could not convert image to monochrome\n");
 		return(-1);
 	}
+
+	image = image_colourise(image, NULL, NULL);
 
 	/* save the image */
 	imlib_save_image(opt->dest);
