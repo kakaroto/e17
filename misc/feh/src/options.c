@@ -193,7 +193,7 @@ static void
 feh_parse_option_array (int argc, char **argv)
 {
   static char stropts[] =
-    "a:Ab:BcC:dD:f:FhH:iIklLmo:O:pPqrR:sS:tTuUvVwW:xX:y:z:";
+    "a:Ab:BcC:dD:f:FghH:iIklLmo:O:pPqrR:sS:tTuUvVwW:xX:y:z:";
   static struct option lopts[] = {
     /* actions and macros */
     {"help", 0, 0, 'h'},
@@ -201,6 +201,7 @@ feh_parse_option_array (int argc, char **argv)
     {"booth", 0, 0, 'B'},
     /* toggles */
     {"montage", 0, 0, 'm'},
+    {"collage", 0, 0, 'g'},
     {"index", 0, 0, 'i'},
     {"fullindex", 0, 0, 'I'},
     {"thumbs", 0, 0, 't'},
@@ -259,7 +260,10 @@ feh_parse_option_array (int argc, char **argv)
 	  break;
 	case 'm':
 	  opt.montage = 1;
-	  break;
+          break;
+        case 'g':
+          opt.collage = 1;
+          break;
 	case 'i':
 	  opt.index = 1;
 	  opt.index_show_name = 1;
@@ -427,11 +431,12 @@ feh_parse_option_array (int argc, char **argv)
 static void
 check_options (void)
 {
-  if (opt.montage && opt.index)
+  if ((opt.montage + opt.index + opt.collage) > 1)
     {
-      weprintf ("you can't use montage mode and index mode together.\n"
-		"   Montage mode has been disabled");
+      weprintf ("you can't use montage mode, collage mode or index mode together.\n"
+		"   I'm going with index");
       opt.montage = 0;
+      opt.collage = 0;
     }
 
   if (!(opt.montage || opt.index))
@@ -452,7 +457,7 @@ check_options (void)
       opt.multiwindow = 0;
     }
 
-  if (opt.list && (opt.multiwindow || opt.montage || opt.index))
+  if (opt.list && (opt.multiwindow || opt.montage || opt.index || opt.collage))
     {
       weprintf ("list mode can't be combined with other processing modes,\n"
 		"   list mode disabled.");
@@ -563,6 +568,9 @@ show_usage (void)
 	   "                            images specified using FILE... When montage mode\n"
 	   "                            is selected, certain other options become\n"
 	   "                            available. See MONTAGE MODE OPTIONS\n"
+           "  -g, --collage             Same as montage mode, but the thumbnails are\n"
+           "                            distributed randomly. You must specify width and\n"
+           "                            height or supply a background image or both\n"
 	   "  -i, --index               Enable Index mode. Index mode is similar to\n"
 	   "                            montage mode, and accepts the same options. It\n"
 	   "                            creates an index print of thumbails, printing the\n"

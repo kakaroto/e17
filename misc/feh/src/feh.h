@@ -165,6 +165,7 @@ typedef struct cmdlineoptions
 {
   unsigned char multiwindow:1;
   unsigned char montage:1;
+  unsigned char collage:1;
   unsigned char index:1;
   unsigned char index_show_name:1;
   unsigned char index_show_dim:1;
@@ -221,6 +222,7 @@ void init_x_and_imlib (void);
 void init_multiwindow_mode (void);
 void init_parse_options (int argc, char **argv);
 void init_montage_mode (void);
+void init_collage_mode (void);
 void init_index_mode (void);
 void init_slideshow_mode (void);
 void init_list_mode (void);

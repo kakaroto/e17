@@ -31,6 +31,10 @@ or you can sort by filename, image name, width, height, pixels, etc.
 forms a montage from the filelist. The resultant image can be viewed or
 saved, and it's size can be limited by height, width or both.
 .PP
+.B Collage mode
+is very similar to montage mode, except the images are distributed randomly
+and may overlap eachother
+.PP
 .B Index mode
 forms an index print from the filelist. Image thumbnails are shown along
 with the filename, filesize and pixel size, printed using a truetype font of
@@ -174,6 +178,10 @@ in multiwindow mode, the window will be closed.
 Enable montage mode. Montage mode creates a new image consisting of a grid
 of thumbnails of the images in the filelist. When montage mode is selected,
 certain other options become available. See MONTAGE MODE OPTIONS
+.TP 5
+.B -g, --collage
+Enable collage mode. Collage mode is very similar to montage mode, except
+the images are distributed randomly.
 .TP 5
 .B -i, --index
 Enable Index mode. Index mode is similar to montage mode, and accepts the

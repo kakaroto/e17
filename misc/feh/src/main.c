@@ -38,6 +38,8 @@ main (int argc, char **argv)
     init_montage_mode ();
   else if (opt.index)
     init_index_mode ();
+  else if (opt.collage)
+    init_collage_mode ();
   else if (opt.multiwindow)
     init_multiwindow_mode ();
   else if (opt.list || opt.longlist)
@@ -48,7 +50,7 @@ main (int argc, char **argv)
     init_unloadables_mode ();
   else
     {
-      /* Slideshow mode is now the default. 'Cos its spiffy */
+      /* Slideshow mode is now the default. Because it's spiffy */
       opt.slideshow = 1;
       init_slideshow_mode ();
     }
