@@ -1,4 +1,7 @@
+/* PACKAGE_DATA_DIR "/examples" to get path of the files */
 #include "ewl_test.h"
+
+static Ewl_Widget     *main_text;
 
 void
 __close_main_window(Ewl_Widget * w, void *ev_data, void *user_data)
@@ -24,34 +27,90 @@ __realize_main_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	user_data = NULL;
 }
 
+void
+__fill_main_text(Ewl_Widget * w, void *ev_data, void *user_data)
+{
+#define MAXLINELENGTH 1024
+        FILE *file;
+	struct stat buf;
+	char *str;
+	char *filename;
+	
+	filename = (char *)malloc (sizeof (char)*(strlen (PACKAGE_DATA_DIR) +
+						  strlen ("/examples/") + 
+						  strlen ((char *)user_data) + 1));
+	sprintf (filename, "%s/examples/%s", PACKAGE_DATA_DIR, (char *)user_data);
+
+	file = fopen (filename, "r");
+	if (file)
+	  {
+	    stat (filename, &buf);
+	    str = (char*)malloc (sizeof (char)*buf.st_size);
+	    
+	    fread(str, buf.st_size, 1, file);
+	    ewl_text_text_set (EWL_TEXT (main_text), str);
+	  }
+	free (filename);
+	return;
+	w = NULL;
+	ev_data = NULL;
+	user_data = NULL;
+}
+
 int
 main(int argc, char **argv)
 {
 	int             i;
 	Ewl_Widget     *main_win;
 	Ewl_Widget     *main_box;
-	Ewl_Widget     *button[BUTTONS];
+	Ewl_Widget     *main_tree;
+	Ewl_Widget     *main_area;
+        Ewl_Widget *tooltip;
+	Ewl_Widget     *prow[BUTTONS];
 	static test_set       tests[] = {
-		{ "Box", __create_box_test_window },
-		{ "Button", __create_button_test_window },
-		{ "Combo", __create_combo_test_window },
-		{ "Entry", __create_entry_test_window },
-		{ "Filedialog", __create_filedialog_test_window },
-		{ "Floater", __create_floater_test_window },
-		{ "Image", __create_image_test_window },
-		{ "IMenu", __create_imenu_test_window },
-		{ "Menu", __create_menu_test_window },
-		{ "Notebook", __create_notebook_test_window },
-		{ "Password", __create_password_test_window },
-		{ "Progressbar", __create_progressbar_test_window },
-		{ "Spinner", __create_spinner_test_window },
-		{ "Textarea", __create_textarea_test_window },
-		{ "Tooltip", __create_tooltip_test_window },
-		{ "Tree", __create_tree_test_window },
+		{ "Box",         __create_box_test_window,         "ewl_box_test.c" },
+		{ "Button",      __create_button_test_window,      "ewl_button_test.c" },
+		{ "Combo",       __create_combo_test_window,       "ewl_combo_test.c" },
+		{ "Entry",       __create_entry_test_window,       "ewl_entry_test.c" },
+		{ "Filedialog",  __create_filedialog_test_window,  "ewl_filedialog_test.c" },
+		{ "Floater",     __create_floater_test_window,     "ewl_floater_test.c" },
+		{ "Image",       __create_image_test_window,       "ewl_image_test.c" },
+		{ "IMenu",       __create_imenu_test_window,       "ewl_imenu_test.c" },
+		{ "Menu",        __create_menu_test_window,        "ewl_menu_test.c" },
+		{ "Notebook",    __create_notebook_test_window,    "ewl_notebook_test.c" },
+		{ "Password",    __create_password_test_window,    "ewl_password_test.c" },
+		{ "Progressbar", __create_progressbar_test_window, "ewl_progressbar_test.c" },
+		{ "Spinner",     __create_spinner_test_window,     "ewl_spinner_test.c" },
+		{ "Textarea",    __create_textarea_test_window,    "ewl_textarea_test.c" },
+		{ "Tooltip",     __create_tooltip_test_window,     "ewl_tooltip_test.c" },
+		{ "Tree",        __create_tree_test_window,        "ewl_tree_test.c" },
+
 		
-		{ 0, 0 }
+		{ 0, 0, 0 }
+	};
+	static char* tooltips[] = {
+	        "Defines the Ewl_Box class used for\nlaying out Ewl_Widget's in a horizontal\nor vertical line.",
+		"The button class is a basic button\nwith a label. This class inherits from\nthe Ewl_Box to allow for placing any\nother widget inside the button.",
+		"Defines a combo box used internally.\nThe contents on the box are not drawn\noutside of the Evas.",
+		"Defines the Ewl_Entry class to allow\nfor single line editable text.",
+		"The filedialog is intended to be used\nfor a simple file chooser.",
+		"Defines a widget for layering above other\n widgets in EWL's drawing area, with\nthe ability to follow the movement of\nanother widget.",
+		"Provides a widget for displaying evas\nloadable images, and edjes.",
+		"Defines a menu used internally. The\ncontents on the menu are not drawn\noutside of the Evas.",
+		"Defines the basic menu classes that\nare extended to an actual menu\nimplementation by inheriting classes\nsuch as Ewl_Menu and Ewl_IMenu.",
+		"Provides a container whose children\nare pages that can be switched\nbetween using tab labels along one\nedge",
+		"Defines the Ewl_Password class to allow\nfor single line obscured text.",
+		"Provides a statusbar from a given value.",
+		"Provides a field for entering numerical\nvalues, along with buttons to increment\nand decrement the value.",
+		"Defines a class for multi-line text layout\nand formatting.",
+		"Defines a widget for displaying short\nmessages after a delay.",
+		"Defines a widget for laying out other\nwidgets in a tree or list like manner.",
+		0
 	};
 	void *heap_start, *heap_end;
+	char *header[1] = {
+		"Widgets"
+	};
 
 	heap_start = sbrk(0);
 
@@ -74,36 +133,60 @@ main(int argc, char **argv)
 	/*
 	 * Create the main box for holding the button widgets
 	 */
-	main_box = ewl_vbox_new();
+	main_box = ewl_hbox_new();
 	ewl_container_append_child(EWL_CONTAINER(main_win), main_box);
 	ewl_box_set_spacing(EWL_BOX(main_box), 6);
+	ewl_box_set_homogeneous (EWL_BOX (main_box), FALSE);
 	ewl_widget_show(main_box);
+
+	main_tree = ewl_tree_new(1);
+	ewl_tree_set_headers (EWL_TREE (main_tree), header);
+	ewl_container_append_child(EWL_CONTAINER(main_box), main_tree);
+	ewl_object_set_fill_policy (EWL_OBJECT (main_tree),
+				     EWL_FLAG_FILL_HSHRINK);
+	ewl_widget_show(main_tree);
+
+	main_area = ewl_scrollpane_new();
+/* 	ewl_object_set_fill_policy (EWL_OBJECT (main_area), */
+/* 				     EWL_FLAG_FILL_SHRINK || EWL_FLAG_FILL_FILL); */
+	ewl_widget_show(main_area);
+	ewl_container_append_child(EWL_CONTAINER(main_box), main_area);
+
+	main_text = ewl_text_new ("  Click on the objects on the left to\nshow a working example and the source\nof the corresponding widget.\n  Keep the mouse on the button to see\na brief description of the widget.");
+	ewl_container_append_child(EWL_CONTAINER(main_area),
+				   main_text);
+/* 	ewl_text_font_set (EWL_TEXT (main_text), "Vera", 8); */
+	ewl_widget_show(main_text);
 
 	i = 0;
 	while (tests[i].func) {
-		int j;
+		int         j;
 
 		/*
-		 * Create the widget and it's test start from the array
-		 */
-		button[i] = ewl_button_new(tests[i].name);
-		ewl_callback_append(button[i], EWL_CALLBACK_CLICKED,
-				    tests[i].func, NULL);
-
-		/*
-		 * Add the button to the box, and setup it's alignment and
+		 * Add the row to the tree, and setup it's alignment and
 		 * fill.
 		 */
-		ewl_container_append_child(EWL_CONTAINER(main_box), button[i]);
-		ewl_object_set_fill_policy(EWL_OBJECT(button[i]),
-					   EWL_FLAG_FILL_NONE);
-		ewl_object_set_alignment(EWL_OBJECT(button[i]),
-					 EWL_FLAG_ALIGN_CENTER);
-		ewl_widget_show(button[i]);
+		prow[i] = ewl_tree_add_text_row( EWL_TREE (main_tree), NULL,
+						 &(tests[i].name));
+		ewl_callback_append (EWL_WIDGET (prow[i]), 
+				     EWL_CALLBACK_CLICKED,
+				     EWL_CALLBACK_FUNCTION (tests[i].func), 
+				     NULL);
+		ewl_callback_append (EWL_WIDGET (prow[i]), 
+				     EWL_CALLBACK_CLICKED,
+				     EWL_CALLBACK_FUNCTION (__fill_main_text),
+				     tests[i].filename);
+		
+		/* Add the tooltips */
+		tooltip = ewl_tooltip_new (prow[i]);
+		ewl_tooltip_set_delay (EWL_TOOLTIP (tooltip), 1.5);
+		ewl_container_append_child (EWL_CONTAINER (main_win),
+					    tooltip);
+		ewl_tooltip_set_text (EWL_TOOLTIP (tooltip), tooltips[i]);
 
 		for (j = 1; j < argc; j++) {
 			if (!strcasecmp(argv[j], tests[i].name))
-				tests[i].func(button[i], NULL, NULL);
+				tests[i].func(prow[i], NULL, NULL);
 		}
 
 		i++;
