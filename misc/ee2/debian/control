@@ -1,0 +1,11 @@
+Source: ee2
+Section: x11
+Priority: optional
+Maintainer: Laurence J. Lane <ljlane@debian.org>
+Standards-Version: 3.0.1.1
+
+Package: ee2
+Architecture: any
+Depends: ${shlibs:Depends}
+Description: electric eyes 2
+ the imlib2 based recreation of the original electric eyes
