@@ -15,19 +15,20 @@ export DH_COMPAT=2
 # This has to be exported to make some magic below work.
 export DH_OPTIONS
 
-INSTALL=/usr/bin/install
+INSTALL=/usr/bin/install -p
+CONFIGUREOPTS = --prefix=/usr --enable-mmx=no
 package=libimlib2
 
 configure: configure-stamp
 configure-stamp:
-	./autogen.sh --prefix=/usr || ./configure --prefix=/usr
-	touch configure-stamp
+	./autogen.sh $(CONFIGUREOPTS) || ./configure $(CONFIGUREOPTS)
+	touch $@
 
 build: configure build-stamp
 build-stamp:
 	dh_testdir
 	$(MAKE) 
-	touch build-stamp
+	touch $@
 
 clean:
 	dh_testdir
