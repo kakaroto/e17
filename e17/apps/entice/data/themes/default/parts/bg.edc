@@ -23,7 +23,7 @@ HSLIDER("entice.image.scroll.horizontal",
 			offset, -35 -5;
 			to, "bg";
 		    }
-		    color, 255 255 255 0;
+		    color, 255 255 255 100;
 		}
 		description
 		{
@@ -70,7 +70,7 @@ VSLIDER("entice.image.scroll.vertical",
 			offset, -5 -5;
 			to, "bg";
 		    }
-		    color, 255 255 255 0;
+		    color, 255 255 255 100;
 		}
 		description
 		{

@@ -13,13 +13,13 @@
 		    rel1
 		    {
 			relative, 0.0 0.0;
-			offset, 0 0;
+			offset, 0 2;
 			to, "Buttons";
 		    }
 		    rel2
 		    {
 			relative, 1.0 1.0;
-			offset, 0 0;
+			offset, -10 -2;
 			to, "Buttons";
 		    }
 		    image {

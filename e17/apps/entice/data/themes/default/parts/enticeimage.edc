@@ -76,14 +76,6 @@
 		type, IMAGE;
 		mouse_events, 1;
 		clip_to, "EnticeImageClip";
-#if 0
-		dragable
-		{
-		    x, 1 1 0;
-		    y, 1 1 0;
-		    confine, "bg";
-		}
-#endif
 		description
 		{
 		    state, "default" 0.0;
