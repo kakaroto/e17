@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.4\n"
 "POT-Creation-Date: 2000-01-04 23:14+0100\n"
-"PO-Revision-Date: 2000-01-04 23:15+0100\n"
+"PO-Revision-Date: 2000-01-05 00:25+0100\n"
 "Last-Translator: Sylvain GIL <tootella@tootella.com>\n"
 "Language-Team: French <fr@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -329,7 +329,7 @@ msgstr ""
 
 #: src/config.c:1947
 msgid "Easter Egg!  Iconboxes aren't implemented yet.\n"
-msgstr "Easter Egg!  Les Iconboxes ne sont pas encore implémentées.\n"
+msgstr "Easter Egg!  Les boîtes à icônes ne sont pas encore implémentées.\n"
 
 #: src/config.c:1979
 msgid ""
@@ -470,7 +470,7 @@ msgid ""
 "Will ignore and continue...\n"
 msgstr ""
 "Avertissement : impossible de déterminer ce qu'il faut faire avec\n"
-"le texte suivant au milieu de la définition d'Iconbox courante :\n"
+"le texte suivant au milieu de la définition de boîte à icônes courante :\n"
 "%s\n"
 "Ignoré, on continue...\n"
 
@@ -480,7 +480,7 @@ msgid ""
 "Done loading an Iconbox block.  Outcome is likely not good.\n"
 msgstr ""
 "Avertissement : La configuration s'est achevée avant que nous ayons\n"
-"terminé de charger un \"Extras block\". Ce n'est pas bon signe.\n"
+"terminé de charger un \"Iconbox block\". Ce n'est pas bon signe.\n"
 
 #: src/config.c:3142
 #, c-format
@@ -501,7 +501,7 @@ msgid ""
 "Done loading an WindowMatch block.  Outcome is likely not good.\n"
 msgstr ""
 "Avertissement : La configuration s'est achevée avant que nous ayons\n"
-"terminé de charger un \"Extras block\". Ce n'est pas bon signe.\n"
+"terminé de charger un \"WindowMatch block\". Ce n'est pas bon signe.\n"
 
 #: src/config.c:3198
 #, c-format
@@ -751,7 +751,7 @@ msgstr "Attention !"
 
 #: src/fx.c:254
 msgid "Starting up Ripples FX..."
-msgstr "Démarrage de l'effet Ripples..."
+msgstr "Démarrage de l'effet Ondes..."
 
 #: src/fx.c:255
 msgid ""
@@ -767,7 +767,7 @@ msgid ""
 "it off.\n"
 msgstr ""
 "\n"
-"Vous venez de démarrer l'effet Ripples.\n"
+"Vous venez de démarrer l'effet Ondes.\n"
 "\n"
 "Si vous regardez votre fond d'écran et s'il n'est pas\n"
 "fait d'une couleur unie, vous verrez des vaguellettes en\n"
@@ -920,7 +920,7 @@ msgid ""
 "members of a group. You cannot add these windows\n"
 "to a group.\n"
 msgstr ""
-"Les Iconboxes et les Pagers ne peuvent pas être\n"
+"Les boîtes à icônes et les Pagers ne peuvent pas être\n"
 "membres d'un groupe. Vous ne pouvez pas ajouter ces fenêtres\n"
 "à un groupe.\n"
 
@@ -1134,19 +1134,19 @@ msgstr ""
 
 #: src/iconify.c:2425
 msgid "Iconbox Options"
-msgstr "Options d'Iconboxes"
+msgstr "Options de la boîte à icônes"
 
 #: src/iconify.c:2431
 msgid "This Iconbox Settings..."
-msgstr "Paramètres de cette Iconbox..."
+msgstr "Paramètres de cette boîte à icônes..."
 
 #: src/iconify.c:2434
 msgid "Close Iconbox"
-msgstr "Fermer l'Iconbox"
+msgstr "Fermer la boîte à icônes"
 
 #: src/iconify.c:2437
 msgid "Create New Iconbox"
-msgstr "Créer une nouvelle Iconbox"
+msgstr "Créer une nouvelle boîte à icônes"
 
 #: src/ipc.c:4717
 msgid "Enlightenment IPC Commands Help"
@@ -1910,7 +1910,7 @@ msgstr "Ombrée"
 
 #: src/settings.c:678 src/settings.c:685 src/settings.c:1780
 msgid "Semi-Solid"
-msgstr "Demi-solide"
+msgstr "Semi-solide"
 
 #: src/settings.c:693
 msgid "Translucent"
@@ -1934,7 +1934,6 @@ msgstr "Paramètres des bureaux multiples"
 msgid "Number of virtual desktops:\n"
 msgstr "Nombre de bureaux virtuels :\n"
 
-# FIXME
 #: src/settings.c:971 src/settings.c:1035
 #, c-format
 msgid ""
@@ -1944,7 +1943,6 @@ msgstr ""
 "%i x %i\n"
 "Ecrans"
 
-# FIXME
 #: src/settings.c:974 src/settings.c:1038
 msgid ""
 "1\n"
@@ -2066,10 +2064,9 @@ msgstr "Animer les menus"
 msgid "Always pop up menus on screen"
 msgstr "Toujours afficher les menus sur l'écran"
 
-# FIXME
 #: src/settings.c:1791
 msgid "Use saveunders to reduce window exposures"
-msgstr ""
+msgstr "Utiliser le SaveUnder pour réduire le nombre de rafraichissements"
 
 #: src/settings.c:1801
 msgid "Animate shading and unshading of windows"
@@ -2229,7 +2226,7 @@ msgstr "Trier par image"
 
 #: src/settings.c:3463
 msgid "Iconbox Settings"
-msgstr "Paramètres de l'Iconbox"
+msgstr "Paramètres de la boîte à icônes"
 
 #: src/settings.c:3489
 msgid "Transparent background"
@@ -2257,11 +2254,11 @@ msgstr "Redimensionner automatiquement"
 
 #: src/settings.c:3535
 msgid "Animate when iconifying to this Iconbox"
-msgstr "Animer les iconifications vers cette Iconbox"
+msgstr "Animer les iconifications vers cette boîte à icônes"
 
 #: src/settings.c:3545
 msgid "Alignment of anchoring when automatically resizing:"
-msgstr "Alignement les icônes au redimensionnement"
+msgstr "Alignement des icônes au redimensionnement"
 
 #: src/settings.c:3567
 msgid "Icon image display policy (if one operation fails, try the next):"
@@ -2285,7 +2282,7 @@ msgstr "Taille des icônes"
 
 #: src/settings.c:3629
 msgid "Orientation:"
-msgstr "Orientation"
+msgstr "Orientation :"
 
 #: src/settings.c:3635
 msgid "Scrollbar side:"
@@ -2372,23 +2369,23 @@ msgstr "Déplacement"
 # FIXME
 #: src/settings.c:3972 src/settings.c:4116
 msgid "Raising/Lowering"
-msgstr "Elevation / Abaissement"
+msgstr "Elévation / Abaissement"
 
 #: src/settings.c:3982 src/settings.c:4124
 msgid "Sticking"
-msgstr "Clouage"
+msgstr "Collage"
 
 #: src/settings.c:3992 src/settings.c:4132
 msgid "Shading"
-msgstr "Pliage"
+msgstr "Masquage"
 
 #: src/settings.c:4002 src/settings.c:4140
 msgid "Mirror Shade/Iconify/Stick"
-msgstr ""
+msgstr "Répercuter Masquage/Iconification/Collage"
 
 #: src/settings.c:4058
 msgid "Default Group Control Settings"
-msgstr ""
+msgstr "Paramètres par défaut des groupes"
 
 #: src/setup.c:222
 msgid ""
@@ -2569,7 +2566,7 @@ msgstr "Etat de pliure"
 
 #: src/snaps.c:445
 msgid "Sticky state"
-msgstr "Etat de clouage"
+msgstr "Etat de collage"
 
 #: src/snaps.c:453
 msgid "Stacking layer"
