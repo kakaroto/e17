@@ -34,8 +34,8 @@
 #define EDJE_EWL_CONTAINER "EnotesContainer"
 
 #define COMPARE_INTERVAL 0.01
+#define TITLE_LENGTH 20
 
-#define DEF_TITLE "New Note"
 #define DEF_CONTENT "Edit me. :-)\nYou know you want to!"
 
 typedef struct _note Note;
@@ -48,8 +48,6 @@ typedef struct _note {
 
 	Evas_Object    *eo;
 	Ewl_Widget     *emb;
-	Ewl_Widget     *vbox;
-	Ewl_Widget     *title;
 	Ewl_Widget     *content;
 
 	Ewl_Row        *saveload_row;
@@ -63,16 +61,15 @@ Evas_List      *gbl_notes;
 
 /* High Level */
 void            new_note(void);
-void            new_note_with_values(int width, int height, char *title,
-				     char *content);
+void            new_note_with_values(int x, int y, int width, int height, char *content);
 
 /* Lists and Allocation */
 Evas_List      *append_note(void);
 void            remove_note(Evas_List * note);
 
 /* GUI Setup */
-void            setup_note(Evas_List ** note, int width, int height,
-			   char *title, char *content);
+void            setup_note(Evas_List ** note, int x,int y,int width, int height,
+			   char *content);
 
 /* Ecore Callbacks */
 void            note_ecore_close(Ecore_Evas * ee);
@@ -96,7 +93,10 @@ Evas_List      *get_note_by_title(char *title);
 Evas_List      *get_note_by_content(char *content);
 
 char           *get_title_by_note(Evas_List * note);
+char           *get_title_by_note_struct (Note *note);
 char           *get_content_by_note(Evas_List * note);
+char           *get_content_by_note_struct (Note *note);
+char           *get_title_by_content(char *content);
 
 Evas_List      *get_cycle_begin(void);
 Evas_List      *get_cycle_next_note(Evas_List * note);

@@ -31,8 +31,9 @@
 #define MAX_VALUE 2000
 
 typedef struct {
-	char           *title;
 	char           *content;
+	int             x;
+	int             y;
 	int             width;
 	int             height;
 } NoteStor;

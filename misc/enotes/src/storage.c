@@ -23,8 +23,6 @@ void
 free_note_stor(NoteStor * p)
 {
 	if (p != NULL) {
-		if (p->title != NULL)
-			free(p->title);
 		if (p->content != NULL)
 			free(p->content);
 		free(p);
@@ -42,7 +40,6 @@ alloc_note_stor()
 {
 	NoteStor       *p = malloc(sizeof(NoteStor));
 
-	p->title = NULL;
 	p->content = NULL;
 	return (p);
 }
@@ -203,7 +200,7 @@ remove_note_stor(NoteStor * p)
 			tmpstr = strdup(e->value);
 			tmp = get_notestor_from_value(tmpstr);
 			free(tmpstr);
-			if (strcmp(p->title, tmp->title)) {
+			if (strcmp(p->content, tmp->content)) {
 				list = evas_list_append(list, strdup(e->value));
 			}
 			free_note_stor(tmp);
@@ -343,8 +340,7 @@ autoload(void)
 	if (r != NULL) {
 		while (r->cur != NULL) {
 			p = stor_cycle_get_notestor(r);
-			new_note_with_values(p->width, p->height, p->title,
-					     p->content);
+			new_note_with_values(p->x,p->y,p->width, p->height, p->content);
 			free_note_stor(p);
 			stor_cycle_next(r);
 		}
@@ -379,7 +375,8 @@ autosave(void)
 		n = alloc_note_stor();
 		n->width = w;
 		n->height = h;
-		n->title = strdup(get_title_by_note(tmp));
+		n->x=x;
+		n->y=y;
 		n->content = strdup(get_content_by_note(tmp));
 		append_autosave_note_stor(n);
 		free_note_stor(n);
@@ -434,11 +431,6 @@ get_notestor_from_value(char *e)
 		return (NULL);
 	}
 
-	p->title = strdup(strsep(&e, DEF_VALUE_SEPERATION));
-	if (&e == NULL) {
-		free_note_stor(p);
-		return (NULL);
-	}
 	p->content = strdup(strsep(&e, DEF_VALUE_SEPERATION));
 	if (&e == NULL) {
 		free_note_stor(p);
@@ -451,6 +443,18 @@ get_notestor_from_value(char *e)
 	}
 
 	p->height = atoi(strsep(&e, DEF_VALUE_SEPERATION));
+	if (&e == NULL) {
+		free_note_stor(p);
+		return (NULL);
+	}
+
+	p->x = atoi(strsep(&e, DEF_VALUE_SEPERATION));
+	if (&e == NULL) {
+		free_note_stor(p);
+		return (NULL);
+	}
+
+	p->y = atoi(strsep(&e, DEF_VALUE_SEPERATION));
 	if (&e == NULL) {
 		free_note_stor(p);
 		return (NULL);
@@ -470,9 +474,8 @@ get_value_from_notestor(NoteStor * p)
 {
 	char           *retval = malloc(MAX_VALUE);
 
-	snprintf(retval, MAX_VALUE, "%s%s%s%s%d%s%d", p->title,
-		 DEF_VALUE_SEPERATION, p->content, DEF_VALUE_SEPERATION,
-		 p->width, DEF_VALUE_SEPERATION, p->height);
+	snprintf(retval, MAX_VALUE, "%s%s%d%s%d%s%d%s%d", p->content, DEF_VALUE_SEPERATION,
+		 p->width, DEF_VALUE_SEPERATION, p->height,DEF_VALUE_SEPERATION,p->x,DEF_VALUE_SEPERATION,p->y);
 
 	return (retval);
 }

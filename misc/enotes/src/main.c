@@ -96,14 +96,13 @@ main(int argc, char *argv[])
 				fgets(tmpstr, MAX_TEMPLATE_SIZE, file);
 				if ((tmpn =
 				     get_notestor_from_value(tmpstr)) != NULL)
-					new_note_with_values(tmpn->width,
+					new_note_with_values(tmpn->x,
+							     tmpn->y,tmpn->width,
 							     tmpn->height,
-							     tmpn->title,
 							     tmpn->content);
 			} else {
 				dml("Using default note template", 2);
-				new_note_with_values(0, 0, INTRO_TITLE,
-						     INTRO_CONTENT);
+				new_note_with_values(0,0,0, 0, INTRO_CONTENT);
 			}
 
 			dml("Introduction Note Created", 1);

@@ -30,7 +30,7 @@ new_note(void)
 	dml("Creating a Note", 2);
 
 	new = append_note();
-	setup_note(&new, 0, 0, DEF_TITLE, DEF_CONTENT);
+	setup_note(&new, 0,0,0, 0, DEF_CONTENT);
 	return;
 }
 
@@ -42,14 +42,14 @@ new_note(void)
  * @brief: Opens a new note.
  */
 void
-new_note_with_values(int width, int height, char *title, char *content)
+new_note_with_values(int x,int y,int width, int height, char *content)
 {
 	Evas_List      *new;
 
 	dml("Creating a Note", 2);
 
 	new = append_note();
-	setup_note(&new, width, height, title, content);
+	setup_note(&new, x,y,width, height, content);
 	return;
 }
 
@@ -122,7 +122,7 @@ remove_note(Evas_List * note)
  * @brief: Sets up the note objects, window, callbacks, etc...
  */
 void
-setup_note(Evas_List ** note, int width, int height, char *title, char *content)
+setup_note(Evas_List ** note, int x,int y,int width, int height, char *content)
 {
 	Evas_List      *pl;
 	Note           *p;
@@ -141,13 +141,17 @@ setup_note(Evas_List ** note, int width, int height, char *title, char *content)
 	pl = *note;
 	p = evas_list_data(pl);
 
+
 	/* Setup the Window */
-	p->win = ecore_evas_software_x11_new(NULL, 0, 0, 0, width, height);
+	p->win = ecore_evas_software_x11_new(NULL, 0, x, y, width, height);
 	ecore_evas_title_set(p->win, "An E-Note");
 	ecore_evas_name_class_set(p->win, "Enotes", "Enotes");
 	ecore_evas_borderless_set(p->win, 1);
 	ecore_evas_shaped_set(p->win, 1);
 	ecore_evas_show(p->win);
+
+	/* Move the damn window  */
+	ecore_x_window_prop_xy_set(ecore_evas_software_x11_window_get(p->win), x, y);
 
 	/* Setup the Canvas, fonts, etc... */
 	p->evas = ecore_evas_get(p->win);
@@ -205,28 +209,13 @@ setup_note(Evas_List ** note, int width, int height, char *title, char *content)
 				   ecore_evas_software_x11_window_get(p->win));
 	evas_object_layer_set(p->eo, 2);
 	edje_object_part_swallow(p->edje, EDJE_EWL_CONTAINER, p->eo);
-
 	evas_object_show(p->eo);
-
 
 	evas_object_focus_set(p->eo, TRUE);
 	ewl_embed_focus_set((Ewl_Embed *) p->emb, TRUE);
 
-
-	p->vbox = ewl_vbox_new();
-	ewl_object_fill_policy_set((Ewl_Object *) p->vbox, EWL_FLAG_FILL_FILL);
-	ewl_container_child_append((Ewl_Container *) p->emb, p->vbox);
-	ewl_widget_show(p->vbox);
-
-	ewl_callback_append(p->emb, EWL_CALLBACK_CONFIGURE, note_move_embed,
-			    p->vbox);
-
-	p->title = ewl_entry_new(title);
-	ewl_container_child_append((Ewl_Container *) p->vbox, p->title);
-	ewl_widget_show(p->title);
-
 	p->content = ewl_text_new(fcontent);
-	ewl_container_child_append((Ewl_Container *) p->vbox, p->content);
+	ewl_container_child_append((Ewl_Container *) p->emb, p->content);
 	ewl_widget_show(p->content);
 
 	/* Ecore Callbacks */
@@ -397,23 +386,27 @@ int
 timer_val_compare(void *data)
 {
 	Note           *p = (Note *) data;
+	char *tmp;
 
 	if (p->timcomp == NULL)
 		return (0);
 
 	if (p->txt_title != NULL) {
+		tmp=get_title_by_note_struct(p);
 		if (strcmp
-		    (p->txt_title,
-		     ewl_entry_text_get((Ewl_Entry *) p->title))) {
+		    (p->txt_title,tmp)) {
 			if (saveload != NULL)
 				ewl_saveload_revert(NULL, NULL, saveload->tree);
 
-			free(p->txt_title);
+			if (p->txt_title!=NULL)
+				free(p->txt_title);
 			p->txt_title =
-				ewl_entry_text_get((Ewl_Entry *) p->title);
+				get_title_by_note_struct(p);
 		}
+		if(tmp!=NULL)
+			free(tmp);
 	} else {
-		p->txt_title = ewl_entry_text_get((Ewl_Entry *) p->title);
+		p->txt_title = get_title_by_note_struct(p);
 	}
 	return (1);
 }
@@ -473,9 +466,18 @@ get_note_by_content(char *content)
 char           *
 get_title_by_note(Evas_List * note)
 {
-	Note           *p = evas_list_data(note);
+	return (get_title_by_content(get_content_by_note(note)));
+}
 
-	return (ewl_entry_text_get((Ewl_Entry *) p->title));
+/**
+ * @param note: The note to grab the title from (actual).
+ * @return: Returns the title of the supplied note.
+ * @brief: Returns the title text of the supplied note.
+ */
+char           *
+get_title_by_note_struct(Note * note)
+{
+	return (get_title_by_content(get_content_by_note_struct(note)));
 }
 
 /**
@@ -491,6 +493,45 @@ get_content_by_note(Evas_List * note)
 	return ((char *) ewl_text_text_get((Ewl_Text *) p->content));
 }
 
+/**
+ * @param note: The note to grab the content from (actual).
+ * @return: Returns the content of the supplied note.
+ * @brief: Returns the content text of the supplied note.
+ */
+char           *
+get_content_by_note_struct(Note * note)
+{
+	return ((char *) ewl_text_text_get((Ewl_Text *) note->content));
+}
+
+/**
+ * @param content: The content of the note.
+ * @return: The title from the content.
+ * @brief: Takes TITLE_LENGTH worth of characters
+ *         from the front (or newline).
+ */
+char*                   
+get_title_by_content(char *content)
+{
+        char *cont=content;
+        int a=0;        
+        int newlength=0;        
+
+        if (strlen(content)>TITLE_LENGTH)
+                while (a<TITLE_LENGTH&&cont!=NULL){
+                        if (!strncmp(cont,"\n",1)){
+                                newlength=a;
+                                break;
+                        }
+                        a++;
+                        cont++;
+                } a=0;
+
+        if (newlength==0)
+                newlength=TITLE_LENGTH;
+        
+        return((char*)strndup(content,newlength));
+}
 
 /**
  * @return: Returns the beginning node of the note list cycle.
