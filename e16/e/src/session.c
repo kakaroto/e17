@@ -981,9 +981,11 @@ doSMExit(const void *params)
 
    SaveWindowStates();
    if (!params)
-      SaveSession(1);
-   if ((disp) && ((!params) || ((params) && strcmp((char *)params, "logout"))))
-      SetEInfoOnAll();
+     {
+	SaveSession(1);
+	if (disp)
+	   SetEInfoOnAll();
+     }
 
    if (disp)
       XSelectInput(disp, VRoot.win, 0);
@@ -991,35 +993,6 @@ doSMExit(const void *params)
    if ((!params) || (!strcmp((char *)s, "exit")))
      {
 	callback_die(sm_conn, NULL);
-     }
-   else if (!strcmp(s, "logout"))
-     {
-	Dialog             *d;
-	EWin               *ewin;
-
-	if (!
-	    (d =
-	     FindItem("LOGOUT_DIALOG", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG)))
-	  {
-	     SoundPlay("SOUND_LOGOUT");
-	     d = DialogCreate("LOGOUT_DIALOG");
-	     DialogSetTitle(d, _("Are you sure?"));
-	     DialogSetText(d,
-			   _("\n" "\n"
-			     "    Are you sure you wish to log out ?    \n" "\n"
-			     "\n"));
-	     DialogAddButton(d, _("  Yes, Log Out  "), LogoutCB, 1);
-	     DialogAddButton(d, _("  No  "), NULL, 1);
-	     DialogBindKey(d, "Escape", CB_SettingsEscape, 1, d);
-	     DialogBindKey(d, "Return", LogoutCB, 0, d);
-	  }
-	ShowDialog(d);
-	ewin = FindEwinByDialog(d);
-	if (ewin)
-	  {
-	     ArrangeEwinCentered(ewin, 1);
-	  }
-	return;
      }
    else if (!strcmp(s, "restart_wm"))
      {
@@ -1128,9 +1101,11 @@ doSMExit(const void *params)
    Window              w;
 
    if (!params)
-      SaveSession(1);
-   if ((disp) && ((!params) || ((params) && strcmp((char *)params, "logout"))))
-      SetEInfoOnAll();
+     {
+	SaveSession(1);
+	if (disp)
+	   SetEInfoOnAll();
+     }
 
    if (params)
      {
@@ -1190,36 +1165,6 @@ doSMExit(const void *params)
 	     execl(DEFAULT_SH_PATH, DEFAULT_SH_PATH, "-c", "exec", real_exec,
 		   NULL);
 	  }
-	else if (!strcmp(s, "logout"))
-	  {
-	     Dialog             *d;
-	     EWin               *ewin;
-
-	     if (!
-		 (d =
-		  FindItem("LOGOUT_DIALOG", 0, LIST_FINDBY_NAME,
-			   LIST_TYPE_DIALOG)))
-	       {
-		  SoundPlay("SOUND_LOGOUT");
-		  d = DialogCreate("LOGOUT_DIALOG");
-		  DialogSetTitle(d, "Are you sure?");
-		  DialogSetText(d,
-				"\n" "\n"
-				"    Are you sure you wish to log out ?    \n"
-				"\n" "\n");
-		  DialogAddButton(d, "  Yes, Log Out  ", LogoutCB, 1);
-		  DialogAddButton(d, "  No  ", NULL, 1);
-		  DialogBindKey(d, "Escape", CB_SettingsEscape, 0, d);
-		  DialogBindKey(d, "Return", LogoutCB, 0, d);
-	       }
-	     ShowDialog(d);
-	     ewin = FindEwinByDialog(d);
-	     if (ewin)
-	       {
-		  ArrangeEwinCentered(ewin, 1);
-	       }
-	     return;
-	  }
      }
 
    SoundPlay("SOUND_EXIT");
@@ -1228,9 +1173,44 @@ doSMExit(const void *params)
 
 #endif /* HAVE_X11_SM_SMLIB_H */
 
+static void
+SessionLogoutConfirm(void)
+{
+   Dialog             *d;
+   EWin               *ewin;
+
+   d = FindItem("LOGOUT_DIALOG", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG);
+   if (!d)
+     {
+	SoundPlay("SOUND_LOGOUT");
+	d = DialogCreate("LOGOUT_DIALOG");
+	DialogSetTitle(d, _("Are you sure?"));
+	DialogSetText(d, _("\n\n"
+			   "    Are you sure you wish to log out ?    \n"
+			   "\n\n"));
+	DialogAddButton(d, _("  Yes, Log Out  "), LogoutCB, 1);
+	DialogAddButton(d, _("  No  "), NULL, 1);
+	DialogBindKey(d, "Escape", CB_SettingsEscape, 1, d);
+	DialogBindKey(d, "Return", LogoutCB, 0, d);
+     }
+
+   ShowDialog(d);
+
+   ewin = FindEwinByDialog(d);
+   if (ewin)
+      ArrangeEwinCentered(ewin, 1);
+   return;
+}
+
 int
 SessionExit(const void *param)
 {
+   if (param && !strcmp(param, "logout"))
+     {
+	SessionLogoutConfirm();
+	return 0;
+     }
+
    if (Mode.wm.exiting++)
      {
 	/* This may be possible during nested signal handling */
