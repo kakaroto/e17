@@ -245,8 +245,9 @@ init_parse_options (int argc, char **argv)
 	  add_file_to_filelist_recursively (argv[optind++], FILELIST_FIRST);
 	}
     }
-  else
-    show_mini_usage ();
+
+  if(filelist_length(filelist) == 0)
+	show_mini_usage ();
 
   check_options ();
 
@@ -317,7 +318,7 @@ show_mini_usage (void)
 {
   fprintf (stdout,
 	   PACKAGE
-	   " - No loadable images specified. Use " PACKAGE
+	   " - No loadable images specified.\nUse " PACKAGE
 	   " --help for detailed usage information\n");
   exit (0);
 }

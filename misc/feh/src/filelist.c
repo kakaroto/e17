@@ -243,6 +243,12 @@ filelist_remove_file (feh_file * list, feh_file * file)
   D (("In filelist_remove_file\n"));
   if (!file)
     return list;
+  if (!list)
+    return NULL;
+
+  if(file == list)
+	return NULL;
+  
   if (file->prev)
     file->prev->next = file->next;
   else
@@ -379,22 +385,27 @@ delete_rm_files (void)
 feh_file *
 feh_file_info_preload (feh_file * list)
 {
-  feh_file *file;
+  feh_file *file, *last = NULL;
 
   if (opt.verbose)
     fprintf (stdout, "feh - preloading...\n");
 
   for (file = list; file; file = file->next)
     {
+      if (last)
+	{
+	  list = filelist_remove_file (list, last);
+	  last = NULL;
+	}
       if (feh_file_info_load (file))
 	{
-	  list = filelist_remove_file (list, file);
+	  last = file;
 	  if (opt.verbose)
 	    feh_display_status ('x');
 	}
       else if (opt.verbose)
-            feh_display_status ('.');
-	    
+	feh_display_status ('.');
+
     }
   if (opt.verbose)
     fprintf (stdout, "\n");
@@ -583,6 +594,8 @@ feh_prepare_filelist (void)
     {
       /* For these sort options, we have to preload images */
       filelist = feh_file_info_preload (filelist);
+      if(!filelist_length(filelist))
+	    show_mini_usage();
     }
 
   D (("sort mode requested is: %d\n", opt.sort));

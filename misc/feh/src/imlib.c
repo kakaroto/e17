@@ -420,7 +420,7 @@ feh_display_status (char stat)
       if (reset_output)
 	{
 	  /* There's just been an error message. Unfortunate ;) */
-	  for (j = 0; j < (((i % 50) + ((i % 50) / 10)) + 8); j++)
+	  for (j = 0; j < (((i % 50) + ((i % 50) / 10)) + 7); j++)
 	    fprintf (stdout, " ");
 	}
 
@@ -429,7 +429,7 @@ feh_display_status (char stat)
 	  int len;
 	  char buf[50];
 	  len = filelist_length (filelist);
-	  snprintf (buf, sizeof (buf), " %5d / %d (%d)\n [%3d%%] ", i,
+	  snprintf (buf, sizeof (buf), " %5d/%d (%d)\n[%3d%%] ", i,
 		    init_len, len, ((int) ((float) i / init_len * 100)));
 	  fprintf (stdout, buf);
 	}
@@ -439,7 +439,7 @@ feh_display_status (char stat)
       reset_output = 0;
     }
   else
-    fprintf (stdout, " [  0%%] ");
+    fprintf (stdout, "[  0%%] ");
 
   fprintf (stdout, "%c", stat);
   fflush (stdout);
