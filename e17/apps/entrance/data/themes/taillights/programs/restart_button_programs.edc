@@ -39,9 +39,11 @@
 		target, "restart_button";
 		transition, ACCELERATE 0.3;
 	    }
+	    /*
 	    program {
 		name, "restart_button_invoke";
 		signal, "mouse,clicked,1";
 		source, "restart_button";
-      action, SIGNAL_EMIT "EntranceSystemReboot" "";
+		action, SIGNAL_EMIT "EntranceSystemReboot" "";
 	    }
+	    */

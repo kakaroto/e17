@@ -84,6 +84,19 @@ collections {
 #if DEBUG
 #include "parts/debug.edc"
 #endif
+
+/**
+ * provides:
+ * confirmation_reboot_clip
+ * confirmation_reboot_yes
+ * confirmation_reboot_no
+ * 
+ * confirmation_halt_clip
+ * confirmation_halt_yes
+ * confirmation_halt_no
+ *
+ */
+#include "parts/confirmation_dialog.edc"
 	}
 	programs {
 	    program {
@@ -95,6 +108,17 @@ collections {
 #if DEBUG
 #include "programs/debug_programs.edc"
 #endif
+
+/**
+ * emit signals to entrance related to the system, AFTER the user
+ * clicks "Yes" on the confirmation dialog
+ * Also handle showing/hiding of the confirmation dialogs
+ * 
+ * EntranceSystemHalt
+ * EntranceSystemReboot
+ *
+ */
+#include "programs/confirmation_dialog_programs.edc"
 
 /**
  * handle EntranceSessionList callbacks:
@@ -121,16 +145,12 @@ collections {
 #include "programs/login_area_programs.edc"
 
 /** 
- * emit signals to entrance, related to the system halting 
- *
- * EntranceSystemHalt
+ * provide mouse effects to the power button
  */
 #include "programs/power_button_programs.edc"
 
 /** 
- * emit signals to entrance, related to the system rebooting
- *
- * EntranceSystemReboot
+ * provide mouse effects to the restart button
  */
 #include "programs/restart_button_programs.edc"
 
@@ -148,6 +168,7 @@ collections {
   * maintain
   */
 #include "programs/effects_programs.edc"
+
 	}
     }
 /**

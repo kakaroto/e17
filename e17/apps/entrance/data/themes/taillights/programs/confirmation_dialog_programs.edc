@@ -1,0 +1,49 @@
+	    program {
+		name, "reboot_request";
+		signal, "mouse,clicked,1";
+		source, "restart_button";
+		action, STATE_SET "visible" 0.0;
+		target, "confirmation_reboot_clip";
+		target, "confirmation_reboot_border";
+		transition, SINUSOIDAL 0.3;
+	    }
+	    program {
+		name, "reboot_request_yes";
+		signal, "mouse,clicked,1";
+		source, "confirmation_reboot_yes";
+		action, SIGNAL_EMIT "EntranceSystemReboot" "";
+	    }
+	    program {
+		name, "reboot_request_no";
+		signal, "mouse,clicked,1";
+		source, "confirmation_reboot_no";
+		action, STATE_SET "default" 0.0;
+		target, "confirmation_reboot_clip";
+		target, "confirmation_reboot_border";
+		transition, SINUSOIDAL 0.3;
+	    }
+	    
+	    program {
+		name, "shutdown_request";
+		signal, "mouse,clicked,1";
+		source, "power_button";
+		action, STATE_SET "visible" 0.0;
+		target, "confirmation_halt_clip";
+		target, "confirmation_halt_border";
+		transition, SINUSOIDAL 0.3;
+	    }
+	    program {
+		name, "shutdown_request_yes";
+		signal, "mouse,clicked,1";
+		source, "confirmation_halt_yes";
+		action, SIGNAL_EMIT "EntranceSystemHalt" "";
+	    }
+	    program {
+		name, "shutdown_request_no";
+		signal, "mouse,clicked,1";
+		source, "confirmation_halt_no";
+		action, STATE_SET "default" 0.0;
+		transition, SINUSOIDAL 0.3;
+		target, "confirmation_halt_clip";
+		target, "confirmation_halt_border";
+	    }
