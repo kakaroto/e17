@@ -1,6 +1,6 @@
 Cam 0.4 README
 ==============
-This document was last updated on 20001111-1000-PST.
+This document was last updated on 20010223-1620-PST.
 Please see the file COPYING for licensing information.
 
 Description
@@ -29,6 +29,9 @@ Installation
 - Optionally, modify the options inside the cam script.  You can pass
   feh any options before the image by adjusting the $PRE variable, 
   and any options after the image by adjustin the $POST variable.
+  For example, I like to keep all cam images by default; you can enable
+  this behavior with the -k command line option, or enable it permanently
+  by adding it to the $PRE flags in cam.
 
 About the Authors
 =================
