@@ -24,19 +24,17 @@
 #include <Edje.h>
 
 #include "config.h"
+#include "note.h"
 #include "usage.h"
 #include "debug.h"
 
 
+#define MAX_TEMPLATE_SIZE 999
+#define TEMPLATE_LOC "%s/.e/notes/defnote"
+
 #define INTRO_TITLE "Welcome to E-Notes"
-#define INTRO_CONTENT "\
-Welcome to E-Notes, by\n\
-Thomas Fletcher.\n\n\
-Please E-Mail any bugs you\n\
-encounter to:\n\
-shadyfletch@yahoo.co.uk\n\n\
-ENJOY! :-)\n\
-"
+#define INTRO_CONTENT "Welcome to E-Notes\nBy Thomas Fletcher.\n\nEnjoy!!"
+
 
 /* The Main Function */
 int             main(int argc, char *argv[]);

@@ -102,8 +102,8 @@ setup_note(Evas_List ** note, int width, int height, char *title, char *content)
 	p->dragger = (Evas_Object *) esmart_draggies_new(p->win);
 	evas_object_name_set(p->dragger, "dragger");
 	evas_object_move(p->dragger, 0, 0);
-	evas_object_resize(p->dragger, main_config->cc->width,
-			   main_config->cc->height);
+	evas_object_resize(p->dragger, width,
+			   height);
 	evas_object_layer_set(p->dragger, 999);
 	evas_object_color_set(p->dragger, 255, 255, 255, 0);
 	esmart_draggies_button_set(p->dragger, 1);

@@ -213,9 +213,26 @@ get_notestor_from_value(char *e)
 	}
 
 	p->title = strdup(strsep(&e, DEF_VALUE_SEPERATION));
+	if (&e==NULL) {
+		free_note_stor (p);
+		return (NULL);
+	}
 	p->content = strdup(strsep(&e, DEF_VALUE_SEPERATION));
+	if (&e==NULL) {
+                free_note_stor (p);
+                return (NULL);
+        }
 	p->width = atoi(strsep(&e, DEF_VALUE_SEPERATION));
+	if (&e==NULL) {
+                free_note_stor (p);
+                return (NULL);
+        }
+	
 	p->height = atoi(strsep(&e, DEF_VALUE_SEPERATION));
+	if (&e==NULL) {
+                free_note_stor (p);
+                return (NULL);
+        }
 
 	return (p);
 }
