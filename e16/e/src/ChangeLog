@@ -4703,3 +4703,12 @@ Thu Jul 20 16:14:29 PDT 2000
 If GNOME-friendly E happens to be running in a non-GNOME environment, you
 won't be able to exit E without eesh.  So now there are separate "Exit E" and
 "Logout" options in the menu.
+
+-------------------------------------------------------------------------------
+
+Wed Jul 26 11:18:29 PDT 2000
+(Mandrake)
+
+apparently when you first open up the background settings dialog box it
+clobbers the atom that says what the base background should have in it.
+This is a hack, but fixes the symptom of the problem :)

@@ -232,7 +232,7 @@ extern char        *call_stack[1024];
 
 int                 Evsnprintf(char *str, size_t count, const char *fmt,
 
-                               va_list args);
+			       va_list args);
 
 #ifdef HAVE_STDARGS
 int                 Esnprintf(char *str, size_t count, const char *fmt, ...);
@@ -1766,17 +1766,17 @@ RememberWinList;
 /* function prototypes */
 
 void                Efont_extents(Efont * f, char *text,
-                                  int *font_ascent_return,
-                                  int *font_descent_return, int *width_return,
+				  int *font_ascent_return,
+				  int *font_descent_return, int *width_return,
 
-                                  int *max_ascent_return,
-                                  int *max_descent_return, int *lbearing_return,
-                                  int *rbearing_return);
+				  int *max_ascent_return,
+				  int *max_descent_return, int *lbearing_return,
+				  int *rbearing_return);
 Efont              *Efont_load(char *file, int size);
 void                Efont_free(Efont * f);
 void                EFont_draw_string(Display * disp, Drawable win, GC gc,
-                                      int x, int y, char *text, Efont * font,
-                                      Visual * vis, Colormap cm);
+				      int x, int y, char *text, Efont * font,
+				      Visual * vis, Colormap cm);
 
 void                ErrAlert(int erno);
 
@@ -1854,53 +1854,53 @@ void                HideClientInfo(void);
 void                EMoveWindow(Display * d, Window win, int x, int y);
 void                EResizeWindow(Display * d, Window win, int w, int h);
 void                EMoveResizeWindow(Display * d, Window win, int x, int y,
-                                      int w, int h);
+				      int w, int h);
 void                EDestroyWindow(Display * d, Window win);
 void                EMapWindow(Display * d, Window win);
 void                EUnmapWindow(Display * d, Window win);
 void                EShapeCombineMask(Display * d, Window win, int dest, int x,
-                                      int y, Pixmap pmap, int op);
+				      int y, Pixmap pmap, int op);
 void                EShapeCombineRectangles(Display * d, Window win, int dest,
-                                            int x, int y, XRectangle * rect,
-                                            int n_rects, int op, int ordering);
+					    int x, int y, XRectangle * rect,
+					    int n_rects, int op, int ordering);
 void                EShapeCombineShape(Display * d, Window win, int dest, int x,
-                                       int y, Window src_win, int src_kind,
+				       int y, Window src_win, int src_kind,
 
-                                       int op);
+				       int op);
 XRectangle         *EShapeGetRectangles(Display * d, Window win, int dest,
-                                        int *rn, int *ord);
+					int *rn, int *ord);
 void                EReparentWindow(Display * d, Window win, Window parent,
-                                    int x, int y);
+				    int x, int y);
 void                EMapRaised(Display * d, Window win);
 int                 EGetGeometry(Display * d, Window win, Window * root_return,
-                                 int *x, int *y, unsigned int *w,
-                                 unsigned int *h, unsigned int *bw,
+				 int *x, int *y, unsigned int *w,
+				 unsigned int *h, unsigned int *bw,
 
-                                 unsigned int *depth);
+				 unsigned int *depth);
 void                EConfigureWindow(Display * d, Window win, unsigned int mask,
-                                     XWindowChanges * wc);
+				     XWindowChanges * wc);
 void                ESetWindowBackgroundPixmap(Display * d, Window win,
 
-                                               Pixmap pmap);
+					       Pixmap pmap);
 void                ESetWindowBackground(Display * d, Window win, int col);
 EXID               *NewXID(void);
 void                AddXID(EXID * xid);
 EXID               *FindXID(Window win);
 void                DelXID(Window win);
 Pixmap              ECreatePixmap(Display * display, Drawable d,
-                                  unsigned int width, unsigned int height,
+				  unsigned int width, unsigned int height,
 
-                                  unsigned depth);
+				  unsigned depth);
 void                EFreePixmap(Display * display, Pixmap pixmap);
 Window              ECreateWindow(Window parent, int x, int y, int w, int h,
 
-                                  int saveunder);
+				  int saveunder);
 Window              ECreateEventWindow(Window parent, int x, int y, int w,
 
-                                       int h);
+				       int h);
 Window              ECreateFocusWindow(Window parent, int x, int y, int w,
 
-                                       int h);
+				       int h);
 void                GrabX(void);
 void                UngrabX(void);
 void                SetBG(Window win, Pixmap pmap, int color);
@@ -1912,9 +1912,9 @@ Window              WindowAtXY_0(Window base, int bx, int by, int x, int y);
 Window              WindowAtXY(int x, int y);
 void                PointerAt(int *x, int *y);
 void                PastePixmap(Display * d, Drawable w, Pixmap p, Mask m,
-                                int x, int y);
+				int x, int y);
 void                PasteMask(Display * d, Drawable w, Pixmap p, int x, int y,
-                              int wd, int ht);
+			      int wd, int ht);
 
 char               *NukeBoringevents(XEvent * ev, int num);
 void                DebugEvent(XEvent * ev);
@@ -1929,12 +1929,12 @@ EWin               *GetEwin(void);
 EWin               *GetFocusEwin(void);
 void                SlideEwinTo(EWin * ewin, int fx, int fy, int tx, int ty,
 
-                                int speed);
+				int speed);
 void                SlideEwinsTo(EWin ** ewin, int *fx, int *fy, int *tx,
-                                 int *ty, int num_wins, int speed);
+				 int *ty, int num_wins, int speed);
 void                AddToFamily(Window win);
 EWin               *AddInternalToFamily(Window win, char noshow, char *bname,
-                                        int type, void *ptr);
+					int type, void *ptr);
 void                SetEwinBorder(EWin * ewin);
 void                SetEwinToBorder(EWin * ewin, Border * b);
 void                HonorIclass(char *s, int id);
@@ -1950,7 +1950,7 @@ void                CalcEwinSizes(EWin * ewin);
 EWin               *Adopt(Window win);
 EWin               *AdoptInternal(Window win, Border * border, int type,
 
-                                  void *ptr);
+				  void *ptr);
 EWin               *CreateEwin(void);
 void                FreeEwin(EWin * ewin);
 
@@ -1961,10 +1961,10 @@ Border             *MatchEwinBorder(EWin * ewin, WindowMatch * b);
 ImageClass         *MatchEwinIcon(EWin * ewin, WindowMatch * b);
 int                 MatchEwinDesktop(EWin * ewin, WindowMatch * b);
 void               *MatchEwinByFunction(EWin * ewin,
-                                        void *(*FunctionToTest) (EWin *,
-                                                                 WindowMatch
+					void *(*FunctionToTest) (EWin *,
+								 WindowMatch
 
-                                                                 *));
+								 *));
 void                RemoveWindowMatch(WindowMatch * wm);
 
 /* borders.c functions */
@@ -1984,14 +1984,14 @@ void                HideEwin(EWin * ewin);
 void                FreeBorder(Border * b);
 Border             *CreateBorder(char *name);
 void                AddBorderPart(Border * b, ImageClass * iclass,
-                                  ActionClass * aclass, TextClass * tclass,
-                                  ECursor * ec, char ontop, int flags,
-                                  char isregion, int wmin, int wmax, int hmin,
-                                  int hmax, int torigin, int txp, int txa,
-                                  int typ, int tya, int borigin, int bxp,
-                                  int bxa, int byp, int bya,
+				  ActionClass * aclass, TextClass * tclass,
+				  ECursor * ec, char ontop, int flags,
+				  char isregion, int wmin, int wmax, int hmin,
+				  int hmax, int torigin, int txp, int txa,
+				  int typ, int tya, int borigin, int bxp,
+				  int bxa, int byp, int bya,
 
-                                  char keep_for_shade);
+				  char keep_for_shade);
 void                MinShadeSize(EWin * ewin, int *mw, int *mh);
 void                InstantShadeEwin(EWin * ewin);
 void                InstantUnShadeEwin(EWin * ewin);
@@ -2008,30 +2008,30 @@ void                ImageStatePopulate(ImageState * is);
 void                ImageStateRealize(ImageState * is);
 void                IclassPopulate(ImageClass * iclass);
 void                IclassApply(ImageClass * iclass, Window win, int w, int h,
-                                int active, int sticky, int state, char expose);
+				int active, int sticky, int state, char expose);
 void                IclassApplyCopy(ImageClass * iclass, Window win, int w,
-                                    int h, int active, int sticky, int state,
-                                    Pixmap * pret, Pixmap * mret);
+				    int h, int active, int sticky, int state,
+				    Pixmap * pret, Pixmap * mret);
 
 /* draw.c functions */
 void                HandleDrawQueue(void);
 char                IsPropagateEwinOnQueue(EWin * ewin);
 void                EFillPixmap(Window win, Pixmap pmap, int x, int y, int w,
 
-                                int h);
+				int h);
 void                EPastePixmap(Window win, Pixmap pmap, int x, int y, int w,
 
-                                 int h);
+				 int h);
 void                EBlendRemoveShape(EWin * ewin, Pixmap pmap, int x, int y);
 PixImg             *ECreatePixImg(Window win, int w, int h);
 void                EDestroyPixImg(PixImg * pi);
 void                EBlendPixImg(EWin * ewin, PixImg * s1, PixImg * s2,
-                                 PixImg * dst, int x, int y, int w, int h);
+				 PixImg * dst, int x, int y, int w, int h);
 
 ImlibImage         *ELoadImage(char *file);
 ImlibImage         *ELoadImageImlibData(ImlibData * imd, char *file);
 void                DrawEwinShape(EWin * ewin, int md, int x, int y, int w,
-                                  int h, char firstlast);
+				  int h, char firstlast);
 void                PropagateShapes(Window win);
 
 void                FlipFocusList(void);
@@ -2076,9 +2076,9 @@ void                GrabButtonGrabs(EWin * ewin);
 void                UnGrabButtonGrabs(EWin * ewin);
 ActionClass        *CreateAclass(char *name);
 Action             *CreateAction(char event, char anymod, int mod, int anybut,
-                                 int but, char anykey, char *key,
+				 int but, char anykey, char *key,
 
-                                 char *tooltipstring);
+				 char *tooltipstring);
 void                RemoveActionType(ActionType * ActionTypeToRemove);
 void                RemoveAction(Action * ActionToRemove);
 void                RemoveActionClass(ActionClass * ActionToRemove);
@@ -2212,19 +2212,19 @@ void                MoveToDeskTop(int num);
 void                MoveToDeskBottom(int num);
 void                SlideWindowTo(Window win, int fx, int fy, int tx, int ty,
 
-                                  int speed);
+				  int speed);
 void                KeepBGimages(Background * bg, char onoff);
 void                RemoveImagesFromBG(Background * bg);
 void                FreeDesktopBG(Background * bg);
 Background         *CreateDesktopBG(char *name, ImlibColor * solid, char *bg,
-                                    char tile, char keep_aspect, int xjust,
-                                    int yjust, int xperc, int yperc, char *top,
-                                    char tkeep_aspect, int txjust, int tyjust,
-                                    int txperc, int typerc);
+				    char tile, char keep_aspect, int xjust,
+				    int yjust, int xperc, int yperc, char *top,
+				    char tkeep_aspect, int txjust, int tyjust,
+				    int txperc, int typerc);
 void                RefreshCurrentDesktop(void);
 void                RefreshDesktop(int num);
 void                SetBackgroundTo(ImlibData * imd, Window win,
-                                    Background * dsk, char setbg);
+				    Background * dsk, char setbg);
 void                InitDesktopBgs(void);
 void                InitDesktopControls(void);
 void                SetDesktopBg(int desk, Background * bg);
@@ -2260,8 +2260,8 @@ void                DeleteTclass(TextClass * t);
 TextState          *CreateTextState(void);
 void                TclassPopulate(TextClass * tclass);
 void                TclassApply(ImageClass * iclass, Window win, int w, int h,
-                                int active, int sticky, int state, char expose,
-                                TextClass * tclass, char *text);
+				int active, int sticky, int state, char expose,
+				TextClass * tclass, char *text);
 
 void                HandleClientMessage(XEvent * ev);
 void                HandleFocusWindowIn(Window win);
@@ -2293,7 +2293,7 @@ Menu               *FindMenu(Window win);
 EWin               *FindEwinByMenu(Menu * m);
 Group             **ListWinGroups(EWin * ewin, char group_select, int *num);
 EWin              **ListWinGroupMembersForEwin(EWin * ewin, int action,
-                                               char nogroup, int *num);
+					       char nogroup, int *num);
 EWin              **ListTransientsFor(Window win, int *num);
 EWin              **ListGroupMembers(Window win, int *num);
 EWin               *FindEwinByDialog(Dialog * d);
@@ -2310,9 +2310,9 @@ void                MWM_SetInfo(void);
 
 /* containers.c functions */
 Container          *InitializeContainer(char *name, ImageClass * iclass,
-                                        int width, int height,
+					int width, int height,
 
-                                        char orientation);
+					char orientation);
 void                AddButtonToContainer(Container * bc, Button * b);
 void                RemoveButtonFromContainer(Container * bc, Button * b);
 void                DestroyContainer(Container * bc);
@@ -2320,13 +2320,13 @@ void                RemoveContainer(Container * bc);
 
 /* buttons.c functions */
 Button             *CreateButton(char *name, ImageClass * iclass,
-                                 ActionClass * aclass, TextClass * tclass,
-                                 char *label, char ontop, int flags, int minw,
-                                 int maxw, int minh, int maxh, int xo, int yo,
-                                 int xa, int xr, int ya, int yr, int xsr,
-                                 int xsa, int ysr, int ysa, char simg, int desk,
+				 ActionClass * aclass, TextClass * tclass,
+				 char *label, char ontop, int flags, int minw,
+				 int maxw, int minh, int maxh, int xo, int yo,
+				 int xa, int xr, int ya, int yr, int xsr,
+				 int xsa, int ysr, int ysa, char simg, int desk,
 
-                                 char sticky);
+				 char sticky);
 void                DestroyButton(Button * b);
 void                CalcButton(Button * b);
 void                ShowButton(Button * b);
@@ -2337,10 +2337,10 @@ void                DrawButton(Button * b);
 void                MovebuttonToCoord(Button * b, int x, int y);
 int                 EmbedWindowIntoButton(Button * ButtonToUse,
 
-                                          Window WindowToEmbed);
+					  Window WindowToEmbed);
 void                FindEmptySpotForButton(Button * bt, char *listname,
 
-                                           char dirtomove);
+					   char dirtomove);
 
 /* atoms.c functions */
 void               *AtomGet(Window win, Atom to_get, Atom type, int *size);
@@ -2375,7 +2375,7 @@ void                GNOME_DelHints(EWin * ewin);
 /* kde.c functions */
 void                KDE_ClientMessage(Window win, Atom atom, long data,
 
-                                      Time timestamp);
+				      Time timestamp);
 void                KDE_ClientTextMessage(Window win, Atom atom, char *data);
 void                KDE_SendMessagesToModules(Atom atom, long data);
 void                KDE_AddModule(Window win);
@@ -2415,9 +2415,9 @@ int                 matchregexp(char *rx, char *s);
 
 double              GetTime(void);
 void                DoIn(char *name, double in_time,
-                         void (*func) (int val, void *data), int runtime_val,
+			 void (*func) (int val, void *data), int runtime_val,
 
-                         void *runtime_data);
+			 void *runtime_data);
 Qentry             *GetHeadTimerQueue(void);
 void                HandleTimerEvent(void);
 void                RemoveTimerEvent(char *name);
@@ -2427,17 +2427,17 @@ void                CreateCurve(ModCurve * c);
 void                FreeModCurve(ModCurve * c);
 void                FreeCMClass(ColorModifierClass * cm);
 ColorModifierClass *CreateCMClass(char *name, int rnum, unsigned char *rpx,
-                                  unsigned char *rpy, int gnum,
-                                  unsigned char *gpx, unsigned char *gpy,
-                                  int bnum, unsigned char *bpx,
+				  unsigned char *rpy, int gnum,
+				  unsigned char *gpx, unsigned char *gpy,
+				  int bnum, unsigned char *bpx,
 
-                                  unsigned char *bpy);
+				  unsigned char *bpy);
 void                ModifyCMClass(char *name, int rnum, unsigned char *rpx,
-                                  unsigned char *rpy, int gnum,
-                                  unsigned char *gpx, unsigned char *gpy,
-                                  int bnum, unsigned char *bpx,
+				  unsigned char *rpy, int gnum,
+				  unsigned char *gpx, unsigned char *gpy,
+				  int bnum, unsigned char *bpx,
 
-                                  unsigned char *bpy);
+				  unsigned char *bpy);
 
 /* config.c functions */
 char               *GetLine(char *s, int size, FILE * f);
@@ -2545,11 +2545,11 @@ void                IB_GetAppIcon(EWin * ewin);
 void                IB_PasteDefaultBase(Drawable d, int x, int y, int w, int h);
 void                IB_PasteDefaultBaseMask(Drawable d, int x, int y, int w,
 
-                                            int h);
+					    int h);
 void                IB_GetEIcon(EWin * ewin);
 void                IB_AddIcondef(char *title, char *name, char *class,
 
-                                  char *file);
+				  char *file);
 void                IB_RemoveIcondef(Icondef * idef);
 Icondef            *IB_MatchIcondef(char *title, char *name, char *class);
 Icondef           **IB_ListIcondef(int *num);
@@ -2562,9 +2562,9 @@ Iconbox            *SelectIconboxForEwin(EWin * ewin);
 
 /* slideouts.c functions */
 void                SlideWindowSizeTo(Window win, int fx, int fy, int tx,
-                                      int ty, int fw, int fh, int tw, int th,
+				      int ty, int fw, int fh, int tw, int th,
 
-                                      int speed);
+				      int speed);
 Slideout           *CreateSlideout(char *name, char dir);
 void                ShowSlideout(Slideout * s, Window win);
 void                HideSlideout(Slideout * s, Window w);
@@ -2585,28 +2585,28 @@ Strip              *IsInStrip(int x, int y);
 
 TextState          *TextGetState(TextClass * tclass, int active, int sticky,
 
-                                 int state);
+				 int state);
 char              **TextGetLines(char *text, int *count);
 void                TextStateLoadFont(TextState * ts);
 void                TextSize(TextClass * tclass, int active, int sticky,
-                             int state, char *text, int *width, int *height,
+			     int state, char *text, int *width, int *height,
 
-                             int fsize);
+			     int fsize);
 void                TextDraw(TextClass * tclass, Window win, int active,
-                             int sticky, int state, char *text, int x, int y,
-                             int w, int h, int fsize, int justification);
+			     int sticky, int state, char *text, int x, int y,
+			     int w, int h, int fsize, int justification);
 
 void                SetupInit(void);
 
 /* tooltips.c functions */
 ToolTip            *CreateToolTip(char *name, ImageClass * ic0,
-                                  ImageClass * ic1, ImageClass * ic2,
-                                  ImageClass * ic3, ImageClass * ic4,
-                                  TextClass * tclass, int dist,
+				  ImageClass * ic1, ImageClass * ic2,
+				  ImageClass * ic3, ImageClass * ic4,
+				  TextClass * tclass, int dist,
 
-                                  ImageClass * tooltippic);
+				  ImageClass * tooltippic);
 void                ShowToolTip(ToolTip * tt, char *text, ActionClass * ac,
-                                int x, int y);
+				int x, int y);
 void                HideToolTip(ToolTip * tt);
 void                FreeToolTip(ToolTip * tt);
 
@@ -2620,9 +2620,9 @@ void                HideMenu(Menu * m);
 void                ShowMenu(Menu * m, char noshow);
 MenuStyle          *CreateMenuStyle(void);
 MenuItem           *CreateMenuItem(char *text, ImageClass * iclass,
-                                   int action_id, char *action_params,
+				   int action_id, char *action_params,
 
-                                   Menu * child);
+				   Menu * child);
 Menu               *CreateMenu(void);
 void                DestroyMenu(Menu * m);
 void                AddItemToMenu(Menu * menu, MenuItem * item);
@@ -2631,14 +2631,14 @@ void                RealizeMenu(Menu * m);
 void                DrawMenuItem(Menu * m, MenuItem * mi, char shape);
 Menu               *CreateMenuFromDirectory(char *name, MenuStyle * ms,
 
-                                            char *dir);
+					    char *dir);
 Menu               *CreateMenuFromFlatFile(char *name, MenuStyle * ms,
-                                           char *file, Menu * parent);
+					   char *file, Menu * parent);
 Menu               *CreateMenuFromGnome(char *name, MenuStyle * ms, char *dir);
 Menu               *CreateMenuFromAllEWins(char *name, MenuStyle * ms);
 Menu               *CreateMenuFromDesktopEWins(char *name, MenuStyle * ms,
 
-                                               int desk);
+					       int desk);
 Menu               *CreateMenuFromDesktops(char *name, MenuStyle * ms);
 Menu               *CreateMenuFromThemes(char *name, MenuStyle * ms);
 Menu               *CreateMenuFromBorders(char *name, MenuStyle * ms);
@@ -2665,14 +2665,14 @@ int                 GetCurrentLinearArea(void);
 void                MoveCurrentLinearAreaBy(int a);
 void                SlideWindowsBy(Window * win, int num, int dx, int dy,
 
-                                   int speed);
+				   int speed);
 void                MoveEwinToLinearArea(EWin * ewin, int a);
 void                MoveEwinLinearAreaBy(EWin * ewin, int a);
 
 int                 Emkstemp(char *template);
 void                SnapEwin(EWin * ewin, int dx, int dy, int *new_dx,
 
-                             int *new_dy);
+			     int *new_dy);
 void                ArrangeEwin(EWin * ewin);
 
 void                SessionInit(void);
@@ -2727,13 +2727,13 @@ void                Alert(char *fmt, ...);
 void                InitStringList(void);
 void                AssignIgnoreFunction(int (*FunctionToAssign) (void *),
 
-                                         void *params);
+					 void *params);
 void                AssignRestartFunction(int (*FunctionToAssign) (void *),
 
-                                          void *params);
+					  void *params);
 void                AssignExitFunction(int (*FunctionToAssign) (void *),
 
-                                       void *params);
+				       void *params);
 void                AssignTitleText(char *text);
 void                AssignIgnoreText(char *text);
 void                AssignRestartText(char *text);
@@ -2781,7 +2781,7 @@ int                 findLocalizedFile(char *fname);
 
 /* cursors.c functions */
 ECursor            *CreateECursor(char *name, char *image, ImlibColor * fg,
-                                  ImlibColor * bg);
+				  ImlibColor * bg);
 void                ApplyECursor(Window win, ECursor * ec);
 void                FreeECursor(ECursor * ec);
 
@@ -2826,21 +2826,21 @@ void                SetDefaultTheme(char *theme);
 
 char                SanitiseThemeDir(char *dir);
 void                Quicksort(void **a, int l, int r,
-                              int (*CompareFunc) (void *d1, void *d2));
+			      int (*CompareFunc) (void *d1, void *d2));
 
 Dialog             *CreateDialog(char *name);
 void                DialogBindKey(Dialog * d, char *key,
-                                  void (*func) (int val, void *data), int val,
+				  void (*func) (int val, void *data), int val,
 
-                                  void *data);
+				  void *data);
 void                FreeDButton(DButton * db);
 void                FreeDialog(Dialog * d);
 void                DialogSetText(Dialog * d, char *text);
 void                DialogSetTitle(Dialog * d, char *title);
 void                DialogAddButton(Dialog * d, char *text,
-                                    void (*func) (int val, void *data),
+				    void (*func) (int val, void *data),
 
-                                    char close);
+				    char close);
 void                DialogDrawButton(Dialog * d, int bnum);
 void                DialogActivateButton(Window win, int inclick);
 void                DialogDraw(Dialog * d);
@@ -2856,49 +2856,49 @@ void                DialogQuit(int val, void *data);
 DItem              *DialogInitItem(Dialog * d);
 DItem              *DialogAddItem(DItem * dii, int type);
 void                DialogItemSetCallback(DItem * di,
-                                          void (*func) (int val, void *data),
-                                          int val, char *data);
+					  void (*func) (int val, void *data),
+					  int val, char *data);
 void                DialogItemSetClass(DItem * di, ImageClass * iclass,
-                                       TextClass * tclass);
+				       TextClass * tclass);
 void                DialogItemSetPadding(DItem * di, int left, int right,
-                                         int top, int bottom);
+					 int top, int bottom);
 void                DialogItemSetFill(DItem * di, char fill_h, char fill_v);
 void                DialogItemSetAlign(DItem * di, int align_h, int align_v);
 void                DialogRealizeItem(Dialog * d, DItem * di);
 void                DialogDrawItems(Dialog * d, DItem * di, int x, int y, int w,
 
-                                    int h);
+				    int h);
 void                DialogItemsRealize(Dialog * d);
 void                DialogItemButtonSetText(DItem * di, char *text);
 void                DialogItemCheckButtonSetText(DItem * di, char *text);
 void                DialogItemTextSetText(DItem * di, char *text);
 void                DialogItemRadioButtonSetEventFunc(DItem * di,
-                                                      void (*func) (int val,
-                                                                    void
+						      void (*func) (int val,
+								    void
 
-                                                                    *data));
+								    *data));
 void                DialogItemCheckButtonSetState(DItem * di, char onoff);
 void                DialogItemCheckButtonSetPtr(DItem * di, char *onoff_ptr);
 void                DialogItemTableSetOptions(DItem * di, int num_columns,
-                                              char border, char homogenous_h,
+					      char border, char homogenous_h,
 
-                                              char homogenous_v);
+					      char homogenous_v);
 void                DialogItemSeparatorSetOrientation(DItem * di,
 
-                                                      char horizontal);
+						      char horizontal);
 void                DialogItemImageSetFile(DItem * di, char *image);
 void                DialogFreeItem(DItem * di);
 DItem              *DialogItemFindWindow(DItem * di, Window win);
 void                DialogItemSetRowSpan(DItem * di, int row_span);
 void                DialogItemSetColSpan(DItem * di, int col_span);
 void                DialogSetExitFunction(Dialog * d,
-                                          void (*func) (int val, void *data),
-                                          int val, void *data);
+					  void (*func) (int val, void *data),
+					  int val, void *data);
 void                DialogItemRadioButtonSetText(DItem * di, char *text);
 void                DialogItemRadioButtonSetFirst(DItem * di, DItem * first);
 void                DialogItemRadioButtonGroupSetValPtr(DItem * di,
 
-                                                        int *val_ptr);
+							int *val_ptr);
 void                DialogItemRadioButtonGroupSetVal(DItem * di, int val);
 void                MoveTableBy(Dialog * d, DItem * di, int dx, int dy);
 void                DialogItemSliderSetVal(DItem * di, int val);
@@ -2912,9 +2912,9 @@ void                DialogItemAreaSetSize(DItem * di, int w, int h);
 void                DialogItemAreaGetSize(DItem * di, int *w, int *h);
 Window              DialogItemAreaGetWindow(DItem * di);
 void                DialogItemAreaSetEventFunc(DItem * di,
-                                               void (*func) (int val,
+					       void (*func) (int val,
 
-                                                             void *data));
+							     void *data));
 
 Window              SC_GetDestWin(void);
 void                SC_PassEvent(XEvent * ev);
@@ -2962,11 +2962,11 @@ void                RemoveClones(void);
 void                CloneDesktop(int d);
 
 void                PagerScaleLine(Pixmap dest, Window src, int dx, int dy,
-                                   int sw, int pw, int sy, int sh);
+				   int sw, int pw, int sy, int sh);
 void                PagerScaleRect(Pixmap dest, Window src, int sx, int sy,
-                                   int dx, int dy, int sw, int sh, int dw,
+				   int dx, int dy, int sw, int sh, int dw,
 
-                                   int dh);
+				   int dh);
 Pager              *CreatePager(void);
 EWin               *EwinInPagerAt(Pager * p, int x, int y);
 void                PagerResize(Pager * p, int w, int h);
@@ -2992,7 +2992,7 @@ void                DisableAllPagers(void);
 void                PagerHideHi(Pager * p);
 void                PagerShowHi(Pager * p, EWin * ewin, int x, int y, int w,
 
-                                int h);
+				int h);
 void                PagerSetHiQ(char onoff);
 void                PagerSetSnap(char onoff);
 void                PagerHideAllHi(void);
@@ -3003,10 +3003,10 @@ void                DisablePagersForDesktop(int desk);
 
 int                 CompareNetVersion(int major, int minor, int patchlevel,
 
-                                      char *date);
+				      char *date);
 int                 RetrieveUpdate(int major, int minor, int patchlevel,
 
-                                   char *date);
+				   char *date);
 int                 InstallUpdate(void);
 void                SpawnNetworkTester(void);
 void                TestForUpdate(void);
@@ -3058,7 +3058,7 @@ void                AddEwinToGroup(EWin * ewin, Group * g);
 void                RemoveEwinFromGroup(EWin * ewin, Group * g);
 void                ShowHideWinGroups(EWin * ewin, Group * g, char onoff);
 void                ChooseGroupDialog(EWin * ewin, char *message,
-                                      char group_select, int action);
+				      char group_select, int action);
 void                SaveGroups(void);
 void                LoadGroups(void);
 void                GroupSelectCallback(int val, void *data);

@@ -41,7 +41,7 @@ MakeWindowUnSticky(EWin * ewin)
       KDE_UpdateClient(ewin);
 
    ApplySclass(FindItem
-               ("SOUND_WINDOW_UNSTICK", 0, LIST_FINDBY_NAME, LIST_TYPE_SCLASS));
+	       ("SOUND_WINDOW_UNSTICK", 0, LIST_FINDBY_NAME, LIST_TYPE_SCLASS));
 
    EDBUG_RETURN_;
 
@@ -62,7 +62,7 @@ MakeWindowSticky(EWin * ewin)
       KDE_UpdateClient(ewin);
 
    ApplySclass(FindItem
-               ("SOUND_WINDOW_STICK", 0, LIST_FINDBY_NAME, LIST_TYPE_SCLASS));
+	       ("SOUND_WINDOW_STICK", 0, LIST_FINDBY_NAME, LIST_TYPE_SCLASS));
 
    EDBUG_RETURN_;
 }

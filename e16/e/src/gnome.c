@@ -110,16 +110,16 @@
 
 /* removed Minimized - no explanation of what it really means - ambiguity */
 /* should not be here if not clear */
-#define WIN_STATE_STICKY          (1<<0)    /* everyone knows sticky */
-#define WIN_STATE_RESERVED_BIT1   (1<<1)    /* removed minimize here */
-#define WIN_STATE_MAXIMIZED_VERT  (1<<2)    /* window in maximized V state */
-#define WIN_STATE_MAXIMIZED_HORIZ (1<<3)    /* window in maximized H state */
-#define WIN_STATE_HIDDEN          (1<<4)    /* not on taskbar but window visible */
-#define WIN_STATE_SHADED          (1<<5)    /* shaded (NeXT style) */
-#define WIN_STATE_HID_WORKSPACE   (1<<6)    /* not on current desktop */
-#define WIN_STATE_HID_TRANSIENT   (1<<7)    /* owner of transient is hidden */
-#define WIN_STATE_FIXED_POSITION  (1<<8)    /* window is fixed in position even */
-#define WIN_STATE_ARRANGE_IGNORE  (1<<9)    /* ignore for auto arranging */
+#define WIN_STATE_STICKY          (1<<0)	/* everyone knows sticky */
+#define WIN_STATE_RESERVED_BIT1   (1<<1)	/* removed minimize here */
+#define WIN_STATE_MAXIMIZED_VERT  (1<<2)	/* window in maximized V state */
+#define WIN_STATE_MAXIMIZED_HORIZ (1<<3)	/* window in maximized H state */
+#define WIN_STATE_HIDDEN          (1<<4)	/* not on taskbar but window visible */
+#define WIN_STATE_SHADED          (1<<5)	/* shaded (NeXT style) */
+#define WIN_STATE_HID_WORKSPACE   (1<<6)	/* not on current desktop */
+#define WIN_STATE_HID_TRANSIENT   (1<<7)	/* owner of transient is hidden */
+#define WIN_STATE_FIXED_POSITION  (1<<8)	/* window is fixed in position even */
+#define WIN_STATE_ARRANGE_IGNORE  (1<<9)	/* ignore for auto arranging */
 					 /* when scrolling about large */
 					 /* virtual desktops ala fvwm */
 #define XA_WIN_STATE              "_WIN_STATE"
@@ -298,14 +298,14 @@ GNOME_GetHintIcons(EWin * ewin, Atom atom_change)
       EDBUG_RETURN_;
    retval = AtomGet(ewin->client.win, atom_get, XA_PIXMAP, &size);
    if (retval)
-   {
-      for (i = 0; i < (size / (sizeof(CARD32))); i += 2)
-      {
-         pmap = retval[i];
-         mask = retval[i + 1];
-      }
-      Efree(retval);
-   }
+     {
+	for (i = 0; i < (size / (sizeof(CARD32))); i += 2)
+	  {
+	     pmap = retval[i];
+	     mask = retval[i + 1];
+	  }
+	Efree(retval);
+     }
    EDBUG_RETURN_;
 }
 
@@ -325,10 +325,10 @@ GNOME_GetHintLayer(EWin * ewin, Atom atom_change)
       EDBUG_RETURN_;
    retval = AtomGet(ewin->client.win, atom_get, XA_CARDINAL, &size);
    if (retval)
-   {
-      ewin->layer = *retval;
-      Efree(retval);
-   }
+     {
+	ewin->layer = *retval;
+	Efree(retval);
+     }
    EDBUG_RETURN_;
 }
 
@@ -348,17 +348,17 @@ GNOME_GetHintState(EWin * ewin, Atom atom_change)
       EDBUG_RETURN_;
    retval = AtomGet(ewin->client.win, atom_get, XA_CARDINAL, &size);
    if (retval)
-   {
-      if (*retval & WIN_STATE_SHADED)
-         ewin->shaded = 1;
-      if (*retval & WIN_STATE_STICKY)
-         ewin->sticky = 1;
-      if (*retval & WIN_STATE_FIXED_POSITION)
-         ewin->fixedpos = 1;
-      if (*retval & WIN_STATE_ARRANGE_IGNORE)
-         ewin->ignorearrange = 1;
-      Efree(retval);
-   }
+     {
+	if (*retval & WIN_STATE_SHADED)
+	   ewin->shaded = 1;
+	if (*retval & WIN_STATE_STICKY)
+	   ewin->sticky = 1;
+	if (*retval & WIN_STATE_FIXED_POSITION)
+	   ewin->fixedpos = 1;
+	if (*retval & WIN_STATE_ARRANGE_IGNORE)
+	   ewin->ignorearrange = 1;
+	Efree(retval);
+     }
    EDBUG_RETURN_;
 }
 
@@ -379,9 +379,9 @@ GNOME_GetHintAppState(EWin * ewin, Atom atom_change)
       EDBUG_RETURN_;
    retval = AtomGet(ewin->client.win, atom_get, XA_CARDINAL, &size);
    if (retval)
-   {
-      Efree(retval);
-   }
+     {
+	Efree(retval);
+     }
    EDBUG_RETURN_;
 }
 
@@ -402,11 +402,11 @@ GNOME_GetHintDesktop(EWin * ewin, Atom atom_change)
       EDBUG_RETURN_;
    retval = AtomGet(ewin->client.win, atom_get, XA_CARDINAL, &size);
    if (retval)
-   {
-      desk = (int *)retval;
-      ewin->desktop = *desk;
-      Efree(retval);
-   }
+     {
+	desk = (int *)retval;
+	ewin->desktop = *desk;
+	Efree(retval);
+     }
    EDBUG_RETURN_;
 }
 
@@ -427,19 +427,19 @@ GNOME_GetHint(EWin * ewin, Atom atom_change)
       EDBUG_RETURN_;
    retval = AtomGet(ewin->client.win, atom_get, XA_CARDINAL, &size);
    if (retval)
-   {
-      if (*retval & WIN_HINTS_SKIP_TASKBAR)
-         ewin->skiptask = 1;
-      if (*retval & WIN_HINTS_SKIP_FOCUS)
-         ewin->skipfocus = 1;
-      if (*retval & WIN_HINTS_SKIP_WINLIST)
-         ewin->skipwinlist = 1;
-      if (*retval & WIN_HINTS_FOCUS_ON_CLICK)
-         ewin->focusclick = 1;
-      if (*retval & WIN_HINTS_DO_NOT_COVER)
-         ewin->never_use_area = 1;
-      Efree(retval);
-   }
+     {
+	if (*retval & WIN_HINTS_SKIP_TASKBAR)
+	   ewin->skiptask = 1;
+	if (*retval & WIN_HINTS_SKIP_FOCUS)
+	   ewin->skipfocus = 1;
+	if (*retval & WIN_HINTS_SKIP_WINLIST)
+	   ewin->skipwinlist = 1;
+	if (*retval & WIN_HINTS_FOCUS_ON_CLICK)
+	   ewin->focusclick = 1;
+	if (*retval & WIN_HINTS_DO_NOT_COVER)
+	   ewin->never_use_area = 1;
+	Efree(retval);
+     }
    EDBUG_RETURN_;
 }
 
@@ -462,7 +462,7 @@ GNOME_SetHint(EWin * ewin)
    if (ewin->fixedpos)
       val |= WIN_STATE_FIXED_POSITION;
    XChangeProperty(disp, ewin->client.win, atom_set, XA_CARDINAL, 32,
-                   PropModeReplace, (unsigned char *)&val, 1);
+		   PropModeReplace, (unsigned char *)&val, 1);
    EDBUG_RETURN_;
 }
 
@@ -480,7 +480,7 @@ GNOME_SetEwinArea(EWin * ewin)
    val[0] = (CARD32) ewin->area_x;
    val[1] = (CARD32) ewin->area_y;
    XChangeProperty(disp, ewin->client.win, atom_set, XA_CARDINAL, 32,
-                   PropModeReplace, (unsigned char *)val, 2);
+		   PropModeReplace, (unsigned char *)val, 2);
    EDBUG_RETURN_;
 }
 
@@ -497,7 +497,7 @@ GNOME_SetEwinDesk(EWin * ewin)
       atom_set = XInternAtom(disp, XA_WIN_WORKSPACE, False);
    val = ewin->desktop;
    XChangeProperty(disp, ewin->client.win, atom_set, XA_CARDINAL, 32,
-                   PropModeReplace, (unsigned char *)&val, 1);
+		   PropModeReplace, (unsigned char *)&val, 1);
    EDBUG_RETURN_;
 }
 
@@ -517,13 +517,13 @@ GNOME_GetExpandedSize(EWin * ewin, Atom atom_change)
       EDBUG_RETURN_;
    retval = AtomGet(ewin->client.win, atom_get, XA_CARDINAL, &size);
    if (retval)
-   {
-      ewin->expanded_x = retval[0];
-      ewin->expanded_y = retval[1];
-      ewin->expanded_width = retval[2];
-      ewin->expanded_height = retval[3];
-      Efree(retval);
-   }
+     {
+	ewin->expanded_x = retval[0];
+	ewin->expanded_y = retval[1];
+	ewin->expanded_width = retval[2];
+	ewin->expanded_height = retval[3];
+	Efree(retval);
+     }
    EDBUG_RETURN_;
 }
 
@@ -547,7 +547,7 @@ GNOME_SetUsedHints(void)
    list[8] = XInternAtom(disp, XA_WIN_WORKSPACE_NAMES, False);
    list[9] = XInternAtom(disp, XA_WIN_CLIENT_LIST, False);
    XChangeProperty(disp, root.win, atom_set, XA_ATOM, 32, PropModeReplace,
-                   (unsigned char *)list, 10);
+		   (unsigned char *)list, 10);
    EDBUG_RETURN_;
 }
 
@@ -565,7 +565,7 @@ GNOME_SetCurrentArea(void)
    val[0] = ax;
    val[1] = ay;
    XChangeProperty(disp, root.win, atom_set, XA_CARDINAL, 32, PropModeReplace,
-                   (unsigned char *)val, 2);
+		   (unsigned char *)val, 2);
    EDBUG_RETURN_;
 }
 
@@ -580,7 +580,7 @@ GNOME_SetCurrentDesk(void)
       atom_set = XInternAtom(disp, XA_WIN_WORKSPACE, False);
    val = (CARD32) desks.current;
    XChangeProperty(disp, root.win, atom_set, XA_CARDINAL, 32, PropModeReplace,
-                   (unsigned char *)&val, 1);
+		   (unsigned char *)&val, 1);
    GNOME_SetCurrentArea();
    EDBUG_RETURN_;
 }
@@ -599,9 +599,9 @@ GNOME_SetWMCheck(void)
    win = ECreateWindow(root.win, -200, -200, 5, 5, 0);
    val = win;
    XChangeProperty(disp, root.win, atom_set, XA_CARDINAL, 32, PropModeReplace,
-                   (unsigned char *)&val, 1);
+		   (unsigned char *)&val, 1);
    XChangeProperty(disp, win, atom_set, XA_CARDINAL, 32, PropModeReplace,
-                   (unsigned char *)&val, 1);
+		   (unsigned char *)&val, 1);
    EDBUG_RETURN_;
 }
 
@@ -616,7 +616,7 @@ GNOME_SetDeskCount(void)
       atom_set = XInternAtom(disp, XA_WIN_WORKSPACE_COUNT, False);
    val = mode.numdesktops;
    XChangeProperty(disp, root.win, atom_set, XA_CARDINAL, 32, PropModeReplace,
-                   (unsigned char *)&val, 1);
+		   (unsigned char *)&val, 1);
    EDBUG_RETURN_;
 }
 
@@ -634,7 +634,7 @@ GNOME_SetAreaCount(void)
    val[0] = ax;
    val[1] = ay;
    XChangeProperty(disp, root.win, atom_set, XA_CARDINAL, 32, PropModeReplace,
-                   (unsigned char *)val, 2);
+		   (unsigned char *)val, 2);
    EDBUG_RETURN_;
 }
 
@@ -650,18 +650,18 @@ GNOME_SetDeskNames(void)
    if (!atom_set)
       atom_set = XInternAtom(disp, XA_WIN_WORKSPACE_NAMES, False);
    for (i = 0; i < mode.numdesktops; i++)
-   {
-      Esnprintf(s, sizeof(s), "%i", i);
-      names[i] = duplicate(s);
-   }
+     {
+	Esnprintf(s, sizeof(s), "%i", i);
+	names[i] = duplicate(s);
+     }
    if (XStringListToTextProperty(names, mode.numdesktops, &text))
-   {
-      XSetTextProperty(disp, root.win, &text, atom_set);
-      XFree(text.value);
-   }
+     {
+	XSetTextProperty(disp, root.win, &text, atom_set);
+	XFree(text.value);
+     }
    for (i = 0; i < mode.numdesktops; i++)
       if (names[i])
-         Efree(names[i]);
+	 Efree(names[i]);
    EDBUG_RETURN_;
 }
 
@@ -680,17 +680,17 @@ GNOME_SetClientList(void)
    wl = NULL;
    j = 0;
    if (lst)
-   {
-      wl = Emalloc(sizeof(Window) * num);
-      for (i = 0; i < num; i++)
-      {
-         if ((!lst[i]->menu) && (!lst[i]->pager) && (!lst[i]->skiptask)
-             && lst[i]->iconified != 4)
-            wl[j++] = lst[i]->client.win;
-      }
-   }
+     {
+	wl = Emalloc(sizeof(Window) * num);
+	for (i = 0; i < num; i++)
+	  {
+	     if ((!lst[i]->menu) && (!lst[i]->pager) && (!lst[i]->skiptask)
+		 && lst[i]->iconified != 4)
+		wl[j++] = lst[i]->client.win;
+	  }
+     }
    XChangeProperty(disp, root.win, atom_set, XA_CARDINAL, 32, PropModeReplace,
-                   (unsigned char *)wl, j);
+		   (unsigned char *)wl, j);
    if (wl)
       Efree(wl);
    if (lst)
@@ -709,11 +709,11 @@ GNOME_SetWMNameVer(void)
    if (!atom_set)
       atom_set = XInternAtom(disp, XA_WIN_WM_NAME, False);
    XChangeProperty(disp, root.win, atom_set, XA_STRING, 8, PropModeReplace,
-                   (unsigned char *)wm_name, strlen(wm_name));
+		   (unsigned char *)wm_name, strlen(wm_name));
    if (!atom_set2)
       atom_set2 = XInternAtom(disp, XA_WIN_WM_VERSION, False);
    XChangeProperty(disp, root.win, atom_set2, XA_STRING, 8, PropModeReplace,
-                   (unsigned char *)wm_version, strlen(wm_version));
+		   (unsigned char *)wm_version, strlen(wm_version));
    EDBUG_RETURN_;
 }
 
@@ -724,15 +724,15 @@ GNOME_DelHints(EWin * ewin)
 
    EDBUG(6, "GNOME_DelHints");
    if (!atom_get[0])
-   {
-      atom_get[0] = XInternAtom(disp, XA_WIN_WORKSPACE, False);
-      atom_get[1] = XInternAtom(disp, XA_WIN_LAYER, False);
-      atom_get[2] = XInternAtom(disp, XA_WIN_STATE, False);
-      atom_get[3] = XInternAtom(disp, XA_WIN_HINTS, False);
-      atom_get[4] = XInternAtom(disp, XA_WIN_APP_STATE, False);
-      atom_get[5] = XInternAtom(disp, XA_WIN_WORKSPACE, False);
-      atom_get[6] = XInternAtom(disp, XA_WIN_AREA, False);
-   }
+     {
+	atom_get[0] = XInternAtom(disp, XA_WIN_WORKSPACE, False);
+	atom_get[1] = XInternAtom(disp, XA_WIN_LAYER, False);
+	atom_get[2] = XInternAtom(disp, XA_WIN_STATE, False);
+	atom_get[3] = XInternAtom(disp, XA_WIN_HINTS, False);
+	atom_get[4] = XInternAtom(disp, XA_WIN_APP_STATE, False);
+	atom_get[5] = XInternAtom(disp, XA_WIN_WORKSPACE, False);
+	atom_get[6] = XInternAtom(disp, XA_WIN_AREA, False);
+     }
    XDeleteProperty(disp, ewin->client.win, atom_get[0]);
    XDeleteProperty(disp, ewin->client.win, atom_get[1]);
    XDeleteProperty(disp, ewin->client.win, atom_get[2]);

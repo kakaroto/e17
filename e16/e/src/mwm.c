@@ -76,14 +76,14 @@ MWM_GetHints(EWin * ewin, Atom atom_change)
    if (ewin->internal)
       EDBUG_RETURN_;
    if (atom_change)
-   {
-      static Atom         atom = 0;
+     {
+	static Atom         atom = 0;
 
-      if (!atom)
-         atom = XInternAtom(disp, "_MOTIF_WM_HINTS", False);
-      if (atom_change != atom)
-         EDBUG_RETURN_;
-   }
+	if (!atom)
+	   atom = XInternAtom(disp, "_MOTIF_WM_HINTS", False);
+	if (atom_change != atom)
+	   EDBUG_RETURN_;
+     }
    ewin->client.mwm_decor_border = 1;
    ewin->client.mwm_decor_resizeh = 1;
    ewin->client.mwm_decor_title = 1;
@@ -98,72 +98,72 @@ MWM_GetHints(EWin * ewin, Atom atom_change)
    a1 = XInternAtom(disp, "_MOTIF_WM_HINTS", False);
    mwmhints = NULL;
    XGetWindowProperty(disp, ewin->client.win, a1, 0, 20, False, a1, &a2, &fmt,
-                      &num, &end, (unsigned char **)&mwmhints);
+		      &num, &end, (unsigned char **)&mwmhints);
    if (mwmhints)
-   {
-      if (num < PROP_MWM_HINTS_ELEMENTS)
-      {
-         XFree(mwmhints);
-         EDBUG_RETURN_;
-      }
-      if (mwmhints->flags & MWM_HINTS_DECORATIONS)
-      {
-         ewin->client.mwm_decor_border = 0;
-         ewin->client.mwm_decor_resizeh = 0;
-         ewin->client.mwm_decor_title = 0;
-         ewin->client.mwm_decor_menu = 0;
-         ewin->client.mwm_decor_minimize = 0;
-         ewin->client.mwm_decor_maximize = 0;
-         if (mwmhints->decorations & MWM_DECOR_ALL)
-         {
-            ewin->client.mwm_decor_border = 1;
-            ewin->client.mwm_decor_resizeh = 1;
-            ewin->client.mwm_decor_title = 1;
-            ewin->client.mwm_decor_menu = 1;
-            ewin->client.mwm_decor_minimize = 1;
-            ewin->client.mwm_decor_maximize = 1;
-         }
-         if (mwmhints->decorations & MWM_DECOR_BORDER)
-            ewin->client.mwm_decor_border = 1;
-         if (mwmhints->decorations & MWM_DECOR_RESIZEH)
-            ewin->client.mwm_decor_resizeh = 1;
-         if (mwmhints->decorations & MWM_DECOR_TITLE)
-            ewin->client.mwm_decor_title = 1;
-         if (mwmhints->decorations & MWM_DECOR_MENU)
-            ewin->client.mwm_decor_menu = 1;
-         if (mwmhints->decorations & MWM_DECOR_MINIMIZE)
-            ewin->client.mwm_decor_minimize = 1;
-         if (mwmhints->decorations & MWM_DECOR_MAXIMIZE)
-            ewin->client.mwm_decor_maximize = 1;
-      }
-      if (mwmhints->flags & MWM_HINTS_FUNCTIONS)
-      {
-         ewin->client.mwm_func_resize = 0;
-         ewin->client.mwm_func_move = 0;
-         ewin->client.mwm_func_minimize = 0;
-         ewin->client.mwm_func_maximize = 0;
-         ewin->client.mwm_func_close = 0;
-         if (mwmhints->functions & MWM_FUNC_ALL)
-         {
-            ewin->client.mwm_func_resize = 1;
-            ewin->client.mwm_func_move = 1;
-            ewin->client.mwm_func_minimize = 1;
-            ewin->client.mwm_func_maximize = 1;
-            ewin->client.mwm_func_close = 1;
-         }
-         if (mwmhints->functions & MWM_FUNC_RESIZE)
-            ewin->client.mwm_func_resize = 1;
-         if (mwmhints->functions & MWM_FUNC_MOVE)
-            ewin->client.mwm_func_move = 1;
-         if (mwmhints->functions & MWM_FUNC_MINIMIZE)
-            ewin->client.mwm_func_minimize = 1;
-         if (mwmhints->functions & MWM_FUNC_MAXIMIZE)
-            ewin->client.mwm_func_maximize = 1;
-         if (mwmhints->functions & MWM_FUNC_CLOSE)
-            ewin->client.mwm_func_close = 1;
-      }
-      XFree(mwmhints);
-   }
+     {
+	if (num < PROP_MWM_HINTS_ELEMENTS)
+	  {
+	     XFree(mwmhints);
+	     EDBUG_RETURN_;
+	  }
+	if (mwmhints->flags & MWM_HINTS_DECORATIONS)
+	  {
+	     ewin->client.mwm_decor_border = 0;
+	     ewin->client.mwm_decor_resizeh = 0;
+	     ewin->client.mwm_decor_title = 0;
+	     ewin->client.mwm_decor_menu = 0;
+	     ewin->client.mwm_decor_minimize = 0;
+	     ewin->client.mwm_decor_maximize = 0;
+	     if (mwmhints->decorations & MWM_DECOR_ALL)
+	       {
+		  ewin->client.mwm_decor_border = 1;
+		  ewin->client.mwm_decor_resizeh = 1;
+		  ewin->client.mwm_decor_title = 1;
+		  ewin->client.mwm_decor_menu = 1;
+		  ewin->client.mwm_decor_minimize = 1;
+		  ewin->client.mwm_decor_maximize = 1;
+	       }
+	     if (mwmhints->decorations & MWM_DECOR_BORDER)
+		ewin->client.mwm_decor_border = 1;
+	     if (mwmhints->decorations & MWM_DECOR_RESIZEH)
+		ewin->client.mwm_decor_resizeh = 1;
+	     if (mwmhints->decorations & MWM_DECOR_TITLE)
+		ewin->client.mwm_decor_title = 1;
+	     if (mwmhints->decorations & MWM_DECOR_MENU)
+		ewin->client.mwm_decor_menu = 1;
+	     if (mwmhints->decorations & MWM_DECOR_MINIMIZE)
+		ewin->client.mwm_decor_minimize = 1;
+	     if (mwmhints->decorations & MWM_DECOR_MAXIMIZE)
+		ewin->client.mwm_decor_maximize = 1;
+	  }
+	if (mwmhints->flags & MWM_HINTS_FUNCTIONS)
+	  {
+	     ewin->client.mwm_func_resize = 0;
+	     ewin->client.mwm_func_move = 0;
+	     ewin->client.mwm_func_minimize = 0;
+	     ewin->client.mwm_func_maximize = 0;
+	     ewin->client.mwm_func_close = 0;
+	     if (mwmhints->functions & MWM_FUNC_ALL)
+	       {
+		  ewin->client.mwm_func_resize = 1;
+		  ewin->client.mwm_func_move = 1;
+		  ewin->client.mwm_func_minimize = 1;
+		  ewin->client.mwm_func_maximize = 1;
+		  ewin->client.mwm_func_close = 1;
+	       }
+	     if (mwmhints->functions & MWM_FUNC_RESIZE)
+		ewin->client.mwm_func_resize = 1;
+	     if (mwmhints->functions & MWM_FUNC_MOVE)
+		ewin->client.mwm_func_move = 1;
+	     if (mwmhints->functions & MWM_FUNC_MINIMIZE)
+		ewin->client.mwm_func_minimize = 1;
+	     if (mwmhints->functions & MWM_FUNC_MAXIMIZE)
+		ewin->client.mwm_func_maximize = 1;
+	     if (mwmhints->functions & MWM_FUNC_CLOSE)
+		ewin->client.mwm_func_close = 1;
+	  }
+	XFree(mwmhints);
+     }
    EDBUG_RETURN_;
 }
 
@@ -183,6 +183,6 @@ MWM_SetInfo()
    mwminfo.flags = 2;
    mwminfo.win = root.win;
    XChangeProperty(disp, root.win, a1, a1, 32, PropModeReplace,
-                   (unsigned char *)&mwminfo, 2);
+		   (unsigned char *)&mwminfo, 2);
    EDBUG_RETURN_;
 }
