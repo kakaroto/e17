@@ -16,6 +16,10 @@ images
    image, "bt_full_1.png" LOSSY 95;
    image, "bt_delete_1.png" LOSSY 95;
    image, "bt_close_1.png" LOSSY 95;
+   image, "bt_rotate_r_1.png" LOSSY 95;
+   image, "bt_rotate_l_1.png" LOSSY 95;
+   image, "bt_save_1.png" LOSSY 95;
+   image, "bt_slideshow_1.png" LOSSY 95;
    image, "bt_prev_2.png" LOSSY 95;
    image, "bt_next_2.png" LOSSY 95;
    image, "bt_zoom_normal_2.png" LOSSY 95;
@@ -25,6 +29,10 @@ images
    image, "bt_full_2.png" LOSSY 95;
    image, "bt_delete_2.png" LOSSY 95;
    image, "bt_close_2.png" LOSSY 95;
+   image, "bt_rotate_r_2.png" LOSSY 95;
+   image, "bt_rotate_l_2.png" LOSSY 95;
+   image, "bt_save_2.png" LOSSY 95;
+   image, "bt_slideshow_2.png" LOSSY 95;
    image, "arrow_l.png" LOSSY 95;
    image, "arrow_r.png" LOSSY 95;
    image, "arrow_t.png" LOSSY 95;
@@ -427,13 +435,13 @@ collections
 		    rel1
 		    {
 			relative, 1.0 0.0;
-			offset, -320 0;
+			offset, -225 0;
 			to, "bg";
 		    }
 		    rel2
 		    {
 			relative, 1.0 0.0;
-			offset, 0 54;
+			offset, 0 68;
 			to, "bg";
 		    }
 		    color, 255 255 255 0;
@@ -640,14 +648,14 @@ collections
 		    visible, 1;
 		    rel1
 		    {
-			relative, 0.0 0.5;
-			offset,  3 -16;
+			relative, 0.0 0.0;
+			offset,  3 3;
 			to, "ButtonMouseArea";
 		    }
 		    rel2
 		    {
-			relative, 0.0 0.5;
-			offset,  35 16;
+			relative, 0.0 0.0;
+			offset,  35 35;
 			to, "ButtonMouseArea";
 		    }
 		    image
@@ -661,14 +669,14 @@ collections
 		    visible, 1;
 		    rel1
 		    {
-			relative, 0.0 0.5;
-			offset,  3 -16;
+			relative, 0.0 0.0;
+			offset,  3 3;
 			to, "ButtonMouseArea";
 		    }
 		    rel2
 		    {
-			relative, 0.0 0.5;
-			offset,  35 16;
+			relative, 0.0 0.0;
+			offset,  35 35;
 			to, "ButtonMouseArea";
 		    }
 		    image
@@ -728,7 +736,56 @@ collections
 	    }
 	    part
 	    {
-		name, "ButtonZoomNormal";
+		name, "ButtonRotateRight";
+		type, IMAGE;
+		mouse_events, 1;
+		clip_to, "Buttons";
+		description
+		{
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 1.0 0.0;
+			offset, 3 0;
+			to, "ButtonRotateLeft";
+		    }
+		    rel2
+		    {
+			relative, 1.0 1.0;
+			offset,  35 0;
+			to, "ButtonRotateLeft";
+		    }
+		    image
+		    {
+			normal, "bt_rotate_r_1.png";
+		    }
+		}
+		description
+		{
+		    state, "clicked" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 1.0 0.0;
+			offset, 3 0;
+			to, "ButtonRotateLeft";
+		    }
+		    rel2
+		    {
+			relative, 1.0 1.0;
+			offset,  35 0;
+			to, "ButtonRotateLeft";
+		    }
+		    image
+		    {
+			normal, "bt_rotate_r_2.png";
+		    }
+		}
+	    }
+	    part
+	    {
+		name, "ButtonRotateLeft";
 		type, IMAGE;
 		mouse_events, 1;
 		clip_to, "Buttons";
@@ -750,7 +807,7 @@ collections
 		    }
 		    image
 		    {
-			normal, "bt_zoom_normal_1.png";
+			normal, "bt_rotate_l_1.png";
 		    }
 		}
 		description
@@ -768,6 +825,153 @@ collections
 			relative, 1.0 1.0;
 			offset,  35 0;
 			to, "ButtonNextImage";
+		    }
+		    image
+		    {
+			normal, "bt_rotate_l_2.png";
+		    }
+		}
+	    }
+	    part
+	    {
+		name, "ButtonSlideShowStart";
+		type, IMAGE;
+		mouse_events, 1;
+		clip_to, "Buttons";
+		description
+		{
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.0 1.0;
+			offset, 0 3;
+			to, "ButtonPrevImage";
+		    }
+		    rel2
+		    {
+			relative, 1.0 1.0;
+			offset,  0 35;
+			to, "ButtonPrevImage";
+		    }
+		    image
+		    {
+			normal, "bt_slideshow_1.png";
+		    }
+		}
+		description
+		{
+		    state, "clicked" 0.0;
+		    visible, 0;
+		    rel1
+		    {
+			relative, 0.0 1.0;
+			offset, 0 3;
+			to, "ButtonPrevImage";
+		    }
+		    rel2
+		    {
+			relative, 1.0 1.0;
+			offset,  0 35;
+			to, "ButtonPrevImage";
+		    }
+		    image
+		    {
+			normal, "bt_slideshow_2.png";
+		    }
+		}
+	    }
+	    part
+	    {
+		name, "ButtonSlideShowStop";
+		type, IMAGE;
+		mouse_events, 1;
+		clip_to, "Buttons";
+		description
+		{
+		    state, "default" 0.0;
+		    visible, 0;
+		    rel1
+		    {
+			relative, 0.0 1.0;
+			offset, 0 3;
+			to, "ButtonPrevImage";
+		    }
+		    rel2
+		    {
+			relative, 1.0 1.0;
+			offset,  0 35;
+			to, "ButtonPrevImage";
+		    }
+		    image
+		    {
+			normal, "bt_slideshow_1.png";
+		    }
+		}
+		description
+		{
+		    state, "clicked" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.0 1.0;
+			offset, 0 3;
+			to, "ButtonPrevImage";
+		    }
+		    rel2
+		    {
+			relative, 1.0 1.0;
+			offset,  0 35;
+			to, "ButtonPrevImage";
+		    }
+		    image
+		    {
+			normal, "bt_slideshow_2.png";
+		    }
+		}
+	    }
+	    part
+	    {
+		name, "ButtonZoomNormal";
+		type, IMAGE;
+		mouse_events, 1;
+		clip_to, "Buttons";
+		description
+		{
+		    state, "default" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 1.0 0.0;
+			offset, 3 0;
+			to, "ButtonSlideShowStart";
+		    }
+		    rel2
+		    {
+			relative, 1.0 1.0;
+			offset,  35 0;
+			to, "ButtonSlideShowStart";
+		    }
+		    image
+		    {
+			normal, "bt_zoom_normal_1.png";
+		    }
+		}
+		description
+		{
+		    state, "clicked" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 1.0 0.0;
+			offset, 3 0;
+			to, "ButtonSlideShowStart";
+		    }
+		    rel2
+		    {
+			relative, 1.0 1.0;
+			offset,  35 0;
+			to, "ButtonSlideShowStart";
 		    }
 		    image
 		    {
@@ -985,13 +1189,13 @@ collections
 		    {
 			relative, 1.0 0.0;
 			offset, 3 0;
-			to, "ButtonFullScreen";
+			to, "ButtonRotateRight";
 		    }
 		    rel2
 		    {
 			relative, 1.0 1.0;
 			offset,  35 0;
-			to, "ButtonFullScreen";
+			to, "ButtonRotateRight";
 		    }
 		    image
 		    {
@@ -1006,13 +1210,13 @@ collections
 		    {
 			relative, 1.0 0.0;
 			offset, 3 0;
-			to, "ButtonFullScreen";
+			to, "ButtonRotateRight";
 		    }
 		    rel2
 		    {
 			relative, 1.0 1.0;
 			offset,  35 0;
-			to, "ButtonFullScreen";
+			to, "ButtonRotateRight";
 		    }
 		    image
 		    {
@@ -1385,10 +1589,61 @@ collections
 	    }
 	    program
 	    {
+		name, "RotateRightImageRequest";
+		signal, "mouse,clicked,1";
+		source, "ButtonRotateRight";
+		action, SIGNAL_EMIT "EnticeRotateRight" "";
+	    }
+	    program
+	    {
+		name, "RotateLeftImageRequest";
+		signal, "mouse,clicked,1";
+		source, "ButtonRotateLeft";
+		action, SIGNAL_EMIT "EnticeRotateLeft" "";
+	    }
+	    program
+	    {
 		name,   "ExitRequest";
 		signal, "mouse,clicked,1";
 		source, "ButtonExit";
 		action, SIGNAL_EMIT "EnticeQuit" "";
+	    }
+	    program
+	    {
+		name,   "SlideShowRequest";
+		signal, "mouse,clicked,1";
+		source, "ButtonSlideShowStart";
+		action, STATE_SET "clicked" 0.0;
+		target, "ButtonSlideShowStart";
+		target, "ButtonSlideShowStop";
+		after,  "SlideShowAnimate";
+	    }
+	    program
+	    {
+		name,   "SlideShowRequestStop";
+		signal, "mouse,clicked,1";
+		source, "ButtonSlideShowStop";
+		action, STATE_SET "default" 0.0;
+		target, "ButtonSlideShowStart";
+		target, "ButtonSlideShowStop";
+		after,  "SlideShowAnimateStop";
+	    }
+	    program
+	    {
+		name,   "SlideShowAnimate";
+		signal, "";
+		source, "";
+		action, SIGNAL_EMIT "EnticeImageNext" "";
+		in, 	1.5 1.6;
+		after,  "SlideShowAnimate";
+	    }
+	    program
+	    {
+		name,   "SlideShowAnimateStop";
+		signal, "";
+		source, "";
+		action, ACTION_STOP;
+		target, "SlideShowAnimate";
 	    }
 	    /* just for looks */
 	    program
@@ -1522,6 +1777,44 @@ collections
 		action, STATE_SET "default" 0.0;
 		transition, DECELERATE 0.25;
 		target, "ButtonExpandImage";
+	    }
+	    program
+	    {
+		name, "RotateImageRightButtonClicked";
+		signal, "mouse,clicked,1";
+		source, "ButtonRotateRight";
+		action, STATE_SET "clicked" 0.0;
+		transition, LINEAR 0.0;
+		target, "ButtonRotateRight";
+		after, "RotateImageRightButtonUnClicked";
+	    }
+	    program
+	    {
+		name, "RotateImageRightButtonUnClicked";
+		signal, "";
+		source, "ButtonRotateRight";
+		action, STATE_SET "default" 0.0;
+		transition, DECELERATE 0.25;
+		target, "ButtonRotateRight";
+	    }
+	    program
+	    {
+		name, "RotateImageLeftButtonClicked";
+		signal, "mouse,clicked,1";
+		source, "ButtonRotateLeft";
+		action, STATE_SET "clicked" 0.0;
+		transition, LINEAR 0.0;
+		target, "ButtonRotateLeft";
+		after, "RotateImageLeftButtonUnClicked";
+	    }
+	    program
+	    {
+		name, "RotateImageLeftButtonUnClicked";
+		signal, "";
+		source, "ButtonRotateLeft";
+		action, STATE_SET "default" 0.0;
+		transition, DECELERATE 0.25;
+		target, "ButtonRotateLeft";
 	    }
 	    program
 	    {
