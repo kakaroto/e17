@@ -111,6 +111,8 @@ struct __geist_object
                                   int *y);
    unsigned char (*click_is_selection) (geist_object * obj, int x, int y);
      Imlib_Updates(*get_updates) (geist_object * obj);
+	void (*update_dimensions_relative) (geist_object *obj, int w, int h);
+	void (*update_position_relative) (geist_object *obj, int x, int y);
 };
 
 /* allocation functions */
@@ -195,6 +197,12 @@ unsigned char geist_object_int_click_is_selection(geist_object * obj, int x,
 
                                                   int y);
 Imlib_Updates geist_object_int_get_updates(geist_object * obj);
+
+void geist_object_update_position_relative(geist_object *obj, int x, int y);
+void geist_object_update_dimensions_relative(geist_object *obj, int w, int h);
+void geist_object_int_update_position_relative(geist_object *obj, int x, int y);
+void geist_object_int_update_dimensions_relative(geist_object *obj, int w, int h);
+
 
 #define geist_object_set_state(o, s) (o->state |=  s)
 #define geist_object_unset_state(o, s) (o->state &= ~(s))

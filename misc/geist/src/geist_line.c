@@ -41,6 +41,7 @@ geist_line_init(geist_line * line)
    obj->get_resize_box_coords = geist_line_get_resize_box_coords;
    obj->check_resize_click = geist_line_check_resize_click;
    obj->click_is_selection = geist_line_click_is_selection;
+	obj->update_dimensions_relative = geist_line_update_dimensions_relative;
    obj->get_updates = geist_line_get_updates;
    obj->sizemode = SIZEMODE_STRETCH;
    obj->alignment = ALIGN_NONE;
@@ -807,4 +808,31 @@ Imlib_Updates geist_line_get_updates(geist_object * obj)
    }
 
    D_RETURN(3, up);
+}
+
+void 
+geist_line_update_dimensions_relative (geist_object *obj, int w_offset,
+												   int h_offset)
+{
+	geist_line *line;
+	int x,y;
+	
+	D_ENTER(3);
+	obj->resize = RESIZE_RIGHT;
+	line = GEIST_LINE(obj);
+	
+	if (line->end.x > line->start.x)
+		x = obj->x + line->end.x + w_offset;
+	else
+		x = obj->x + line->end.x - w_offset;
+	
+	if (line->end.y > line->start.y)
+		y = obj->y + line->end.y + h_offset;
+	else
+		y = obj->y + line->end.y - h_offset;
+	
+	
+	geist_line_resize(obj, x, y);
+	
+	D_RETURN_(3);
 }

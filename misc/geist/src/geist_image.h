@@ -30,5 +30,4 @@ void geist_image_resize(geist_object * obj, int x, int y);
 GtkWidget * geist_image_display_props(geist_object *obj);
 void geist_image_change_opacity(geist_object * obj, int p);
 
-
 #endif

@@ -963,28 +963,28 @@ buttons_cb(GtkWidget * widget, gpointer * data)
       switch (GPOINTER_TO_INT(data))
       {
         case 1:
-           obj->y--;
+           geist_object_update_position_relative(obj, 0, -1);
            break;
         case 2:
-           obj->y++;
+           geist_object_update_position_relative(obj, 0, +1);
            break;
         case 3:
-           obj->x--;
+           geist_object_update_position_relative(obj, -1, 0);
            break;
         case 4:
-           obj->x++;
+           geist_object_update_position_relative(obj, +1, 0);
            break;
         case 5:
-           obj->h++;
+           geist_object_update_dimensions_relative(obj, 0, +1);
            break;
         case 6:
-           obj->h--;
+           geist_object_update_dimensions_relative(obj, 0, -1);
            break;
         case 7:
-           obj->w++;
+           geist_object_update_dimensions_relative(obj, +1, 0);
            break;
         case 8:
-           obj->w--;
+           geist_object_update_dimensions_relative(obj, -1, 0);
            break;
         default:
            break;

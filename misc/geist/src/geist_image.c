@@ -45,7 +45,8 @@ geist_image_init(geist_image * img)
    obj->sizemode = SIZEMODE_ZOOM;
    obj->alignment = ALIGN_CENTER;
    obj->display_props = geist_image_display_props;
-   img->opacity = FULL_OPACITY;
+	img->opacity = FULL_OPACITY;
+	
 
    D_RETURN_(5);
 }
