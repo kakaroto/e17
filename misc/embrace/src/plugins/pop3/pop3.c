@@ -28,6 +28,15 @@
 
 #include <embrace_plugin.h>
 
+typedef enum {
+	STATE_DISCONNECTED,
+	STATE_CONNECTED,
+	STATE_SERVER_READY,
+	STATE_USER_OK,
+	STATE_PASS_OK,
+	STATE_STAT_OK
+} State;
+
 #define IDENT "EMBRACE_POP3_PLUGIN"
 #define MAX_INTERVAL 300
 
@@ -35,20 +44,12 @@ static int on_server_add (void *udata, int type, void *event)
 {
 	Ecore_Con_Event_Server_Add *ev = event;
 	MailBox *mb;
-	char buf[256];
-	int len;
 
 	if (strcmp ((char *) udata, IDENT))
 		return 1;
 
 	mb = ecore_con_server_data_get (ev->server);
-
-	/* now login to the server */
-	len = snprintf (buf, sizeof (buf), "USER %s\r\nPASS %s\r\n",
-	                (char *) mailbox_property_get (mb, "user"),
-	                (char *) mailbox_property_get (mb, "pass"));
-
-	ecore_con_server_send (ev->server, buf, len);
+	mailbox_property_set (mb, "state", (void *) STATE_CONNECTED);
 
 	return 0;
 }
@@ -57,36 +58,88 @@ static int on_server_data (void *udata, int type, void *event)
 {
 	Ecore_Con_Event_Server_Data *ev = event;
 	MailBox *mb;
-	char buf[2048];
+	State state;
+	char inbuf[2048], outbuf[256];
 	int num = 0, size = 0, len;
 
 	if (strcmp ((char *) udata, IDENT))
 		return 1;
 
 	mb = ecore_con_server_data_get (ev->server);
+	state = (State) mailbox_property_get (mb, "state");
 
 	/* take the data and make a NUL-terminated string out of it */
-	len = sizeof (buf) - 1;
+	len = sizeof (inbuf) - 1;
 	len = MIN(len, ev->size);
 
-	memcpy (buf, ev->data, len);
-	buf[len] = 0;
+	memcpy (inbuf, ev->data, len);
+	inbuf[len] = 0;
+	embrace_strstrip (inbuf);
 
-	/* check for the STAT response */
-	if (sscanf (buf, "+OK %i %i", &num, &size) == 2) {
-		mailbox_unseen_set (mb, num);
-		mailbox_total_set (mb, num);
-
-		ecore_con_server_send (ev->server, "QUIT", 4);
-		ecore_con_server_del (ev->server);
-
+	if (!strncmp (inbuf, "-ERR", 4)) {
+		fprintf (stderr, "[pop3] error: %s\n", &inbuf[5]);
+		return 0;
+	} else if (strncmp (inbuf, "+OK", 3)) {
+		assert (false);
 		return 0;
 	}
 
-	if (!strncmp (buf, "+OK", 3)) {
-		len = snprintf (buf, sizeof (buf), "STAT\r\n");
-		ecore_con_server_send (ev->server, buf, len);
+	mailbox_property_set (mb, "state", (void *) ++state);
+
+	switch (state) {
+		case STATE_DISCONNECTED:
+		case STATE_CONNECTED:
+			assert (false);
+			break;
+		case STATE_SERVER_READY:
+			len = snprintf (outbuf, sizeof (outbuf), "USER %s\r\n",
+		                (char *) mailbox_property_get (mb, "user"));
+			ecore_con_server_send (ev->server, outbuf, len);
+			break;
+		case STATE_USER_OK:
+			len = snprintf (outbuf, sizeof (outbuf), "PASS %s\r\n",
+		                (char *) mailbox_property_get (mb, "pass"));
+			ecore_con_server_send (ev->server, outbuf, len);
+			break;
+		case STATE_PASS_OK:
+			len = snprintf (outbuf, sizeof (outbuf), "STAT\r\n");
+			ecore_con_server_send (ev->server, outbuf, len);
+			break;
+		case STATE_STAT_OK:
+			if (sscanf (inbuf, "+OK %i %i", &num, &size) == 2) {
+				mailbox_unseen_set (mb, num);
+				mailbox_total_set (mb, num);
+
+				ecore_con_server_send (ev->server, "QUIT", 4);
+				ecore_con_server_del (ev->server);
+			}
+
+			break;
 	}
+
+	return 0;
+}
+
+static int on_server_del (void *udata, int type, void *event)
+{
+	Ecore_Con_Event_Server_Del *ev = event;
+	MailBox *mb;
+	char *host;
+
+	if (strcmp ((char *) udata, IDENT))
+		return 1;
+
+	mb = ecore_con_server_data_get (ev->server);
+	host = (char *) mailbox_property_get (mb, "host");
+
+	if (mailbox_property_get (mb, "state") == STATE_DISCONNECTED)
+		fprintf (stderr, "[pop3] cannot connect to '%s'\n", host);
+	else {
+		mailbox_property_set (mb, "state", STATE_DISCONNECTED);
+		fprintf (stderr, "[pop3] lost connection to '%s'\n", host);
+	}
+
+	ecore_con_server_del (ev->server);
 
 	return 0;
 }
@@ -104,10 +157,11 @@ static bool pop3_check (MailBox *mb)
 	assert (port);
 
 #ifdef HAVE_OPENSSL
-	if ((int) mailbox_property_get (mb, "ssl"))
+	if (mailbox_property_get (mb, "ssl"))
 		type |= ECORE_CON_USE_SSL;
 #endif
 
+	mailbox_property_set (mb, "state", STATE_DISCONNECTED);
 	ecore_con_server_connect (type, host, port, mb);
 
 	return true;
@@ -226,6 +280,8 @@ bool embrace_plugin_init (EmbracePlugin *ep)
 	                         on_server_add, IDENT);
 	ecore_event_handler_add (ECORE_CON_EVENT_SERVER_DATA,
 	                         on_server_data, IDENT);
+	ecore_event_handler_add (ECORE_CON_EVENT_SERVER_DEL,
+	                         on_server_del, IDENT);
 
 	return true;
 }
