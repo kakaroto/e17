@@ -21,8 +21,8 @@ struct _ewl_row
 Ewl_Widget *ewl_row_new(void);
 int ewl_row_init(Ewl_Row *row);
 
-void ewl_row_set_header(Ewl_Row *row, Ewl_Row *header);
-Ewl_Widget *ewl_row_get_column(Ewl_Row *row, short n);
+void ewl_row_header_set(Ewl_Row *row, Ewl_Row *header);
+Ewl_Widget *ewl_row_column_get(Ewl_Row *row, short n);
 
 /*
  * Internally used callbacks, override at your own risk.

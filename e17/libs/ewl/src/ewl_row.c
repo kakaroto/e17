@@ -62,7 +62,7 @@ int ewl_row_init(Ewl_Row *row)
  * header.
  */
 void
-ewl_row_set_header(Ewl_Row *row, Ewl_Row *header)
+ewl_row_header_set(Ewl_Row *row, Ewl_Row *header)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -105,7 +105,7 @@ ewl_row_set_header(Ewl_Row *row, Ewl_Row *header)
  * @brief Retrieve the widget at a specified column
  */
 Ewl_Widget *
-ewl_row_get_column(Ewl_Row *row, short n)
+ewl_row_column_get(Ewl_Row *row, short n)
 {
 	Ewl_Widget *found;
 
@@ -208,7 +208,7 @@ ewl_row_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 void
 ewl_row_destroy_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
-	ewl_row_set_header(EWL_ROW(w), NULL);
+	ewl_row_header_set(EWL_ROW(w), NULL);
 }
 
 void
@@ -228,7 +228,7 @@ ewl_row_header_destroy_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	row = EWL_ROW(user_data);
 	row->header = NULL;
-	ewl_row_set_header(row, NULL);
+	ewl_row_header_set(row, NULL);
 }
 
 void

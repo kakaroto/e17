@@ -173,7 +173,7 @@ ewl_tree_row_add(Ewl_Tree *tree, Ewl_Row *prow, Ewl_Widget **children)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 	}
 
-	ewl_row_set_header(EWL_ROW(row), EWL_ROW(tree->header));
+	ewl_row_header_set(EWL_ROW(row), EWL_ROW(tree->header));
 	ewl_widget_show(row);
 
 	EWL_TREE_NODE(node)->tree = tree;
