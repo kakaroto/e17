@@ -75,8 +75,10 @@
 
 #include <libast/types.h>
 #include <libast/obj.h>
+#include <libast/socket.h>
 #include <libast/str.h>
 #include <libast/tok.h>
+#include <libast/url.h>
 
 #include <libast/list_if.h>
 #include <libast/array.h>
@@ -232,6 +234,8 @@
 /* Use this for stuff that you only want turned on in dire situations */
 #define D_NEVER(x)             NOP
 
+#define DEBUG_OPTIONS          1
+#define D_OPTIONS(x)           DPRINTF1(x)
 #define DEBUG_CONF             3
 #define D_CONF(x)              DPRINTF3(x)
 #define DEBUG_MEM              5
@@ -344,6 +348,7 @@
 #else
 # define SWAP(a, b)  do {void *tmp = ((void *)(a)); (a) = (b); (b) = tmp;} while (0)
 #endif
+#define BINSWAP(a, b)  ((a) ^= (b) ^= (a) ^= (b))
 
 #define CONST_STRLEN(x)            (sizeof(x) - 1)
 #define BEG_STRCASECMP(s, constr)  (strncasecmp(s, constr, CONST_STRLEN(constr)))
@@ -473,6 +478,96 @@ typedef struct conf_var_struct {
 
 extern fstate_t *fstate;
 extern unsigned char fstate_idx;
+extern const char *true_vals[], *false_vals[];
+
+
+/******************************* OPTIONS GOOP **********************************/
+
+/* Flags for individual options */
+#define SPIFOPT_FLAG_NONE                 (0)
+#define SPIFOPT_FLAG_BOOLEAN              (1UL << 0)
+#define SPIFOPT_FLAG_ABSTRACT             (1UL << 1)
+#define SPIFOPT_FLAG_TYPEMASK_NOVALUE     (SPIFOPT_FLAG_BOOLEAN | SPIFOPT_FLAG_ABSTRACT)
+#define SPIFOPT_FLAG_INTEGER              (1UL << 2)
+#define SPIFOPT_FLAG_STRING               (1UL << 3)
+#define SPIFOPT_FLAG_ARGLIST              (1UL << 4)
+#define SPIFOPT_FLAG_ABSTRACT_VALUE       (1UL << 5)
+#define SPIFOPT_FLAG_TYPEMASK_VALUE       (SPIFOPT_FLAG_INTEGER | SPIFOPT_FLAG_STRING | SPIFOPT_FLAG_ARGLIST | SPIFOPT_FLAG_ABSTRACT_VALUE)
+#define SPIFOPT_FLAG_TYPEMASK             (SPIFOPT_FLAG_TYPEMASK_NOVALUE | SPIFOPT_FLAG_TYPEMASK_VALUE)
+
+#define SPIFOPT_FLAG_PREPARSE             (1UL << 8)
+#define SPIFOPT_FLAG_DEPRECATED           (1UL << 9)
+
+/* Flags that control the parser's behavior */
+#define SPIFOPT_SETTING_POSTPARSE          (1UL << 0)
+
+#define SPIFOPT_OPTION(s, l, d, f, p, m)  { s, l, d,                 (f),   (void *)         &(p), m }
+#define SPIFOPT_STR(s, l, d, p)           { s, l, d, SPIFOPT_FLAG_STRING,   (const char **)  &(p), 0 }
+#define SPIFOPT_INT(s, l, d, p)           { s, l, d, SPIFOPT_FLAG_INTEGER,  (const int *)    &(p), 0 }
+#define SPIFOPT_BOOL(s, l, d, v, m)       { s, l, d, SPIFOPT_FLAG_BOOLEAN,  (void *)         &(v), m }
+#define SPIFOPT_SLONG(l, d, p)            { 0, l, d, SPIFOPT_FLAG_STRING,   (const char **)  &(p), 0 }
+#define SPIFOPT_ARGS(s, l, d, p)          { s, l, d, SPIFOPT_FLAG_ARGLIST,  (const char ***) &(p), 0 }
+#define SPIFOPT_BLONG(l, d, v, m)         { 0, l, d, SPIFOPT_FLAG_BOOLEAN,  (void *)         &(v), m }
+#define SPIFOPT_ILONG(l, d, p)            { 0, l, d, SPIFOPT_FLAG_INTEGER,  (const int *)    &(p), 0 }
+
+#define SPIFOPT_TYPE(opt)                 (((spifopt_t) (opt)).flags & SPIFOPT_FLAG_TYPEMASK)
+#define SPIFOPT_OPT_IS_BOOLEAN(n)         (SPIFOPT_OPT_FLAGS(n) & SPIFOPT_FLAG_BOOLEAN)
+#define SPIFOPT_OPT_IS_ABSTRACT(n)        (SPIFOPT_OPT_FLAGS(n) & SPIFOPT_FLAG_ABSTRACT)
+#define SPIFOPT_OPT_IS_STRING(n)          (SPIFOPT_OPT_FLAGS(n) & SPIFOPT_FLAG_STRING)
+#define SPIFOPT_OPT_IS_INTEGER(n)         (SPIFOPT_OPT_FLAGS(n) & SPIFOPT_FLAG_INTEGER)
+#define SPIFOPT_OPT_IS_ARGLIST(n)         (SPIFOPT_OPT_FLAGS(n) & SPIFOPT_FLAG_ARGLIST)
+#define SPIFOPT_OPT_IS_ABSTRACT_VALUE(n)  (SPIFOPT_OPT_FLAGS(n) & SPIFOPT_FLAG_ABSTRACT_VALUE)
+#define SPIFOPT_OPT_IS_PREPARSE(n)        (SPIFOPT_OPT_FLAGS(n) & SPIFOPT_FLAG_PREPARSE)
+#define SPIFOPT_OPT_IS_DEPRECATED(n)      (SPIFOPT_OPT_FLAGS(n) & SPIFOPT_FLAG_DEPRECATED)
+#define SPIFOPT_OPT_NEEDS_VALUE(n)        (SPIFOPT_OPT_FLAGS(n) & (SPIFOPT_FLAG_STRING | SPIFOPT_FLAG_INTEGER | SPIFOPT_FLAG_ARGLIST))
+
+#define SPIFOPT_OPT_SHORT(n)              (SPIFOPT_OPTLIST(n).short_opt)
+#define SPIFOPT_OPT_LONG(n)               (SPIFOPT_OPTLIST(n).long_opt)
+#define SPIFOPT_OPT_DESC(n)               (SPIFOPT_OPTLIST(n).desc)
+#define SPIFOPT_OPT_FLAGS(n)              (SPIFOPT_OPTLIST(n).flags)
+#define SPIFOPT_OPT_VALUE(n)              (SPIFOPT_OPTLIST(n).value)
+#define SPIFOPT_OPT_MASK(n)               (SPIFOPT_OPTLIST(n).mask)
+
+#define SPIFOPT_OPTLIST(n)                (spifopt_settings.opt_list[((n) < (spifopt_settings.num_opts) ? (n) : (0))])
+#define SPIFOPT_NUMOPTS_GET()             (spifopt_settings.num_opts)
+#define SPIFOPT_NUMOPTS_SET(n)            (spifopt_settings.num_opts = (n))
+#define SPIFOPT_FLAGS_GET()               (spifopt_settings.flags)
+#define SPIFOPT_FLAGS_SET(m)              (spifopt_settings.flags |= (m))
+#define SPIFOPT_FLAGS_IS_SET(m)           (spifopt_settings.flags & (m))
+#define SPIFOPT_FLAGS_CLEAR(m)            (spifopt_settings.flags &= ~(m))
+#define SPIFOPT_BADOPTS_GET()             (spifopt_settings.bad_opts)
+#define SPIFOPT_BADOPTS_SET(n)            (spifopt_settings.bad_opts = (n))
+#define SPIFOPT_ALLOWBAD_GET()            (spifopt_settings.allow_bad)
+#define SPIFOPT_ALLOWBAD_SET(n)           (spifopt_settings.allow_bad = (n))
+#define SPIFOPT_INDENT_GET()              (spifopt_settings.indent)
+#define SPIFOPT_INDENT_SET(n)             (spifopt_settings.indent = (n))
+#define SPIFOPT_HELPHANDLER               ((spifopt_settings.help_handler) ? (spifopt_settings.help_handler) : (usage))
+#define SPIFOPT_HELPHANDLER_SET(f)        (spifopt_settings.help_handler = (f))
+
+typedef void (*spifopt_helphandler_t)();
+typedef void (*spifopt_abstract_handler_t)(void);
+typedef void (*spifopt_abstract_value_handler_t)(char *);
+
+typedef struct spifopt_t_struct {
+    spif_char_t short_opt;
+    spif_charptr_t long_opt;
+    spif_charptr_t desc;
+    spif_uint32_t flags;
+    void *value;
+    spif_uint32_t mask;
+} spifopt_t;
+
+typedef struct spifopt_settings_t_struct {
+    spifopt_t *opt_list;
+    spif_uint16_t num_opts;
+    spif_uint32_t flags;
+    spif_uint8_t bad_opts, allow_bad;
+    spif_uint8_t indent;
+    spifopt_helphandler_t help_handler;
+} spifopt_settings_t;
+
+extern spifopt_settings_t spifopt_settings;
+
 
 
 
@@ -578,5 +673,8 @@ extern char *conf_find_file(const char *file, const char *dir, const char *pathl
 extern FILE *open_config_file(char *name);
 extern void conf_parse_line(FILE *fp, char *buff);
 extern char *conf_parse(char *conf_name, const char *dir, const char *path);
+
+/* options.c */
+extern void spifopt_parse(int, char **);
 
 #endif /* _LIBAST_H_ */

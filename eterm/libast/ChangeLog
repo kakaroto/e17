@@ -186,3 +186,9 @@ Working tokenizer.  The question is, how much do I need to add in the
 way of flexibility....  Shell-style parsing?  Null-field support?
 *ponders*
 ----------------------------------------------------------------------
+Fri Apr 26 15:13:27 2002                        Michael Jennings (mej)
+
+Working on some new stuff here, and just wanted to get this stuff in
+in case my laptop croaks or something.  The new code doesn't work,
+but at least it doesn't break the compile. :)
+----------------------------------------------------------------------

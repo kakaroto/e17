@@ -63,6 +63,7 @@
 #define SPIF_LIST_PREPEND(o, item)                      SPIF_CAST(bool) ((SPIF_LIST_CALL_METHOD((o), prepend))(o, item))
 #define SPIF_LIST_REMOVE(o, item)                       SPIF_CAST(obj) ((SPIF_LIST_CALL_METHOD((o), remove))(o, item))
 #define SPIF_LIST_REMOVE_AT(o, index)                   SPIF_CAST(obj) ((SPIF_LIST_CALL_METHOD((o), remove_at))(o, index))
+#define SPIF_LIST_REVERSE(o)                            SPIF_CAST(bool) ((SPIF_LIST_CALL_METHOD((o), reverse))(o))
 
 typedef spif_obj_t spif_list_t;
 typedef struct spif_listclass_t_struct *spif_listclass_t;
@@ -83,6 +84,7 @@ struct spif_listclass_t_struct {
   spif_memberfunc_t prepend;
   spif_memberfunc_t remove;
   spif_memberfunc_t remove_at;
+  spif_memberfunc_t reverse;
 };
 
 #endif /* _LIBAST_LIST_IF_H_ */
