@@ -37,7 +37,7 @@
 #include "parseconfig.h"
 #include "pwc-ioctl.h"
 
-#define VERSION "1.6"
+#define VERSION "1.7"
 
 void log(char *fmt,
          ...);
@@ -1107,6 +1107,7 @@ usage(void)
   printf("usage: camE [OPTION]\n");
   printf("       -c FILE    Use config file FILE\n");
   printf("       -f         Don't fork to background\n");
+  printf("       -d         Detach after forking\n");
   printf("       -s         Single shot\n");
   printf("       -h -v      This message\n");
   exit(0);
@@ -1190,14 +1191,27 @@ main(int argc,
   int single_shot = 0;
   int offline_done = 1;
   char *config_file = NULL;
+  int detach = 0;
+  int ret;
 
-  while ((ch = getopt(argc, argv, "c:fshv")) != EOF) {
+  while ((ch = getopt(argc, argv, "c:fsdhv")) != EOF) {
     switch (ch) {
       case 'c':
         config_file = strdup(optarg);
         break;
       case 'f':
+        if (detach) {
+          fprintf(stderr, "-f does not make sense with -d specified.\n");
+          exit(1);
+        }
         dont_fork = 1;
+        break;
+      case 'd':
+        if (dont_fork) {
+          fprintf(stderr, "-d does not make sense with -f specified.\n");
+          exit(1);
+        }
+        detach = 1;
         break;
       case 's':
         single_shot = 1;
@@ -1217,7 +1231,11 @@ main(int argc,
 
   if (!dont_fork && !single_shot) {
     /* fork and die */
-    if ((childpid = fork()) < 0) {
+    if (detach) {
+      ret = daemon(1,0);
+      if (ret != 0)
+	fprintf(stderr, "daemon (%s)\n", strerror(errno));
+    } else if ((childpid = fork()) < 0) {
       fprintf(stderr, "fork (%s)\n", strerror(errno));
       return (2);
     } else if (childpid > 0)
