@@ -84,7 +84,17 @@ feh_load_image (Imlib_Image ** im, char *filename)
       if (tmpname == NULL)
 	return 0;
       *im = imlib_load_image_with_error_return (tmpname, &err);
-      unlink (tmpname);
+      if((opt.slideshow) && (opt.reload == 0))
+      {
+	  /* Http, no reload, slideshow. Let's keep this image on hand... */
+	  replace_file_in_filelist(filename,tmpname);
+      }
+      else
+      {
+	  /* Don't cache the image if we're doing reload + http (webcams
+	   * etc) */
+	  unlink (tmpname);
+      }
       free (tmpname);
     }
   else
@@ -245,7 +255,7 @@ http_load_image (char *url)
 
       if (!WIFEXITED (status) || WEXITSTATUS (status) != 0)
 	{
-	  weprintf ("url: wget exited abnormally on URL %s\n", url);
+	  weprintf ("url: wget failed to load URL %s\n", url);
 	  free (tmpname);
 	  return NULL;
 	}

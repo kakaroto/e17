@@ -1,3 +1,16 @@
+Tue Jan 11 19:51:40 2000  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
+
+	* Caching of images loaded via http. When in slideshow mode, and
+	  the --reload option is not specified, a file loaded by http will
+	  be stored in /tmp to avoid reloading from the web it every time
+	  you loop through the slideshow or whatever.
+	* The --reload option disables caching
+	* Right now, the cached images are left in temp with crap
+	  filenames. I'm gonna fix it up so that they are normally deleted
+	  on program exit, but there will be an option to save them to the
+	  current directory. (So you still have the images after viewing
+	  them).
+
 Tue Jan 11 19:07:07 2000  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
 
 	* New option, -R, --reload. Lets you specify a time in seconds,

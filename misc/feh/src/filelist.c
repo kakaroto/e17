@@ -19,9 +19,8 @@
  */
 
 #include "feh.h"
-#include "filelist.h"
 
-static void
+void
 add_file_to_filelist (char *file)
 {
   D (("In add_file_to_filelist\n"));
@@ -31,6 +30,40 @@ add_file_to_filelist (char *file)
   else
     files = emalloc (file_num * sizeof (char *));
   files[file_num - 1] = file;
+}
+
+void
+remove_file_from_filelist (char *file)
+{
+  int i;
+  D (("In remove_file_from_filelist, removing %s\n", file));
+  for (i = 0; i < file_num; i++)
+    {
+      if (!strcmp (file, files[i]))
+	{
+	  D (("   Found it. Nulling out\n"));
+	  files[i] = NULL;
+	  actual_file_num--;
+	  /* Maybe remove the next line to get all instances? */
+	  break;
+	}
+    }
+}
+
+void
+replace_file_in_filelist (char *olds, char *news)
+{
+  int i;
+  D (("In replace_file_in_filelist, replacing %s with %s\n", olds, news));
+  for (i = 0; i < file_num; i++)
+    {
+      if (!strcmp (olds, files[i]))
+	{
+	  free (files[i]);
+	  files[i] = estrdup (news);
+	  break;
+	}
+    }
 }
 
 /* Recursive */
@@ -50,18 +83,19 @@ add_file_to_filelist_recursively (char *path, unsigned char enough)
 	path[len - 1] = '\0';
     }
 
-  if(!strncmp(path,"http://",7))
-  {
+  if (!strncmp (path, "http://", 7))
+    {
       /* Its a url */
-      D(("A url was requested\n"));
+      D (("A url was requested\n"));
       D (("Adding url %s to filelist\n", path));
       add_file_to_filelist (path);
       return;
-  }
+    }
 
   if (stat (path, &st))
     {
-      weprintf ("%s does not exist, or you do not have permission to open it", path);
+      weprintf ("%s does not exist, or you do not have permission to open it",
+		path);
       return;
     }
   if (S_ISDIR (st.st_mode))
@@ -72,7 +106,7 @@ add_file_to_filelist_recursively (char *path, unsigned char enough)
 	  struct dirent *de;
 	  DIR *dir;
 	  if ((dir = opendir (path)) == NULL)
-	      eprintf ("Error opening dir %s", path);
+	    eprintf ("Error opening dir %s", path);
 	  de = readdir (dir);
 	  while (de != NULL)
 	    {

@@ -18,4 +18,4 @@
  * USA
  */
 
-static void add_file_to_filelist (char *file);
+void add_file_to_filelist (char *file);
