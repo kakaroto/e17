@@ -47,13 +47,13 @@ E-Power.ABOUT/MAIN E-Power.ABOUT/bg.png E-Power.ABOUT/aircut3.ttf
 ICONS = \
 E-Load.icon E-Clock.icon E-Net.icon E-Cpu.icon E-Power.icon E-Biff.icon
 
-DATA =\
+IMAGES =\
 E-Clock-Image.png E-Power-Bat-0.png E-Power-Bat-10.png E-Power-Bat-20.png \
 E-Power-Bat-30.png E-Power-Bat-40.png E-Power-Bat-50.png E-Power-Bat-60.png \
 E-Power-Bat-70.png E-Power-Bat-80.png E-Power-Bat-90.png E-Power-Bat-100.png \
 nomail.png newmail.png
 
-EXTRA_DIST = ${ICONS} ${ABOUT_DOCS} ${DATA}
+EXTRA_DIST = ${ICONS} ${ABOUT_DOCS} ${IMAGES}
 
 install-data-hook:
 	$(mkinstalldirs) $(EROOT)/epplet_icons
@@ -64,7 +64,7 @@ install-data-hook:
 	  echo $(INSTALL_DATA) $(srcdir)/$$i $(EROOT)/epplet_icons/ ; \
 	  $(INSTALL_DATA) $(srcdir)/$$i $(EROOT)/epplet_icons/ ; \
 	done
-	@for i in ${DATA}; do \
+	@for i in ${IMAGES}; do \
 	  echo $(INSTALL_DATA) $(srcdir)/$$i $(EROOT)/epplet_icons/ ; \
 	  $(INSTALL_DATA) $(srcdir)/$$i $(EROOT)/epplet_icons/ ; \
 	done
