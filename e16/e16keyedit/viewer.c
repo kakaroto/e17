@@ -69,7 +69,7 @@ static ActionOpt actions[] = {
 	{"Run command", 1, 1, NULL},
 
 	{"Restart Enlightenment", 7, 0, "restart"},
-	{"Exit Enlightenment", 7, 0, NULL},
+	{"Exit Enlightenment", 7, 0, "logout"},
 
 	{"Goto Next Desktop", 15, 0, NULL},
 	{"Goto Previous Deskop", 16, 0, NULL},
@@ -108,13 +108,13 @@ static ActionOpt actions[] = {
 	{"Shade / Unshade Window", 49, 0, NULL},
 	{"Maximise Height of Window", 50, 0, "conservative"},
 	{"Maximise Height of Window to whole screen", 50, 0, NULL},
-	{"Maximise Height of Window toavailable space", 50, 0, "available"},
+	{"Maximise Height of Window to available space", 50, 0, "available"},
 	{"Maximise Width of Window", 51, 0, "conservative"},
 	{"Maximise Width of Window to whole screen", 51, 0, NULL},
-	{"Maximise Width of Window toavailable space", 51, 0, "available"},
+	{"Maximise Width of Window to available space", 51, 0, "available"},
 	{"Maximise Size of Window", 52, 0, "conservative"},
 	{"Maximise Size of Window to whole screen", 52, 0, NULL},
-	{"Maximise Size of Window toavailable space", 52, 0, "available"},
+	{"Maximise Size of Window to available space", 52, 0, "available"},
 	{"Send window to next desktop", 53, 0, NULL},
 	{"Send window to previous desktop", 54, 0, NULL},
 	{"Switch focus to next window", 58, 0, NULL},
@@ -222,8 +222,14 @@ selection_made(GtkWidget *clist, gint row, gint column, GdkEventButton *event,
 	gtk_clist_get_text(GTK_CLIST(clist), row, 1, &keyused);
 	gtk_entry_set_text(GTK_ENTRY(act_key),keyused);
 	gtk_clist_get_text(GTK_CLIST(clist), row, 2, &actperform);
+	gtk_entry_set_editable(GTK_ENTRY(act_params),FALSE);
+	gtk_widget_set_sensitive(act_params,FALSE);
 	for (i = 0; (actions[i].text); i++) {
 		if(!strcmp(actperform,actions[i].text)) {
+			if(actions[i].param_tpe != 0) {
+				gtk_entry_set_editable(GTK_ENTRY(act_params),TRUE);
+				gtk_widget_set_sensitive(act_params,TRUE);
+			}
 			gtk_clist_select_row(GTK_CLIST(act_clist),i,0);
 			gtk_clist_moveto(GTK_CLIST(act_clist),i,0,0.5,0.5);
 		}
