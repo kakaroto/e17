@@ -24,6 +24,7 @@ Erss_Tooltip *erss_tooltip_new (char *description)
 	memset (tt, 0, sizeof (Erss_Tooltip));
 
 	tt->ee = ecore_evas_software_x11_new (NULL, 0, 0, 0, 250, 80);
+	ecore_evas_override_set(tt->ee, 1);
 	ecore_evas_borderless_set (tt->ee, TRUE);
 	tt->win = ecore_evas_software_x11_window_get(ee);
 	ecore_x_window_prop_window_type_set (tt->win, ECORE_X_WINDOW_TYPE_UTILITY);
@@ -89,8 +90,8 @@ void erss_tooltip_show (Erss_Tooltip *tt)
 {
 	tt->timer = NULL;
 
+	ecore_evas_move (tt->ee, world_x + tt->x - 10, world_y + tt->y - 10);
 	ecore_evas_show (tt->ee);
-	ecore_evas_move (tt->ee, world_x + tt->x + 3, world_y + tt->y + 3);
 }
 
 

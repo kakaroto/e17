@@ -554,10 +554,10 @@ int main (int argc, char * const argv[])
 	ecore_evas_borderless_set (ee, cfg->borderless);
 	snprintf(theme_file, PATH_MAX, "erss - %s", config_file);
 	ecore_evas_title_set (ee, theme_file);
-   ecore_x_window_prop_layer_set(win, -1);
+	ecore_x_window_prop_layer_set(win, -1);
 	ecore_evas_show (ee);
 	
-   /* ecore_x_window_lower(win); */
+	/* ecore_x_window_lower(win); */
 
 	if (cfg->x != 0 && cfg->y != 0)
 		ecore_evas_move (ee, cfg->x, cfg->y);
