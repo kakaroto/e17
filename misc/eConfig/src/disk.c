@@ -221,28 +221,30 @@ int _econf_purge_data_from_disk_at_path(char *loc, char *path) {
 	index=0;
 	sprintf(tablepath,"%s/fat",path);
 	FAT_TABLE = fopen(tablepath,"r+");
-	while(!feof(FAT_TABLE)) {
-		fread(&tableentry,sizeof(eConfigFAT),1,FAT_TABLE);
-		if(!strcmp(tableentry.loc,loc)) {
-			fseek(FAT_TABLE,(sizeof(eConfigFAT))*index,SEEK_SET);
-			sprintf(tableentry.loc,"dirty");
-			tableentry.length = 0;
-			tableentry.position = 0;
-			if(fwrite(&tableentry,sizeof(eConfigFAT),1,FAT_TABLE) <
-					sizeof(eConfigFAT)) {
-				/* this is probably not a good error here either, it means our
-				 * write failed.  need to have a handler here, too.
-				 */
+	if(FAT_TABLE) {
+		while(!feof(FAT_TABLE)) {
+			fread(&tableentry,sizeof(eConfigFAT),1,FAT_TABLE);
+			if(!strcmp(tableentry.loc,loc)) {
+				fseek(FAT_TABLE,(sizeof(eConfigFAT))*index,SEEK_SET);
+				sprintf(tableentry.loc,"dirty");
+				tableentry.length = 0;
+				tableentry.position = 0;
+				if(fwrite(&tableentry,sizeof(eConfigFAT),1,FAT_TABLE) <
+						sizeof(eConfigFAT)) {
+					/* this is probably not a good error here either, it means
+					 * our write failed.  need to have a handler here, too.
+					 */
+					fclose(FAT_TABLE);
+					return 0;
+				}
 				fclose(FAT_TABLE);
-				return 0;
+				return 1;
 			}
-			fclose(FAT_TABLE);
-			return 1;
-	    }
-		index++;
+			index++;
+		}
+	} else {
+		/* We couldn't open the file for writing.  oops.  sucks to be us. */
 	}
-
-
 
 	return 0;
 
@@ -254,11 +256,33 @@ int _econf_purge_data_from_disk(char *loc) {
 	 * It searches the path and dirties the contents using
 	 * _econf_purge_data_from_disk_at_path() on every place in the path it can
 	 * find it
+	 * returns the number of unsuccessful deletions it had.
+	 * 0 is success (completely)
 	 */
+
+	char **paths;
+	int num;
+	int num_undeleted;
 
 	if(!loc)
 		return 0;
 
-	return 0;
+	num_undeleted=0;
+
+	if((paths = eConfigPaths(&num))) {
+		int i;
+		unsigned long length;
+		unsigned long position;
+		for(i=0;i<num;i++) {
+			if((length =
+				_econf_finddatapointerinpath(paths[i],loc,&position))) {
+				if(_econf_purge_data_from_disk_at_path(loc, paths[i]))
+					num_undeleted++;
+			}
+		}
+		free(paths);
+	}
+
+	return num_undeleted;
 
 }
