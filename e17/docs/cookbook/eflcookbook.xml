@@ -34,6 +34,9 @@
  <!-- ewl -->
  <!ENTITY ewl_intro SYSTEM "xml/ewl/ewl_intro.xml">
 
+ <!-- edje -->
+ <!ENTITY edje_simple SYSTEM "xml/edje/edje_simple.xml">
+
  <!-- etox -->
  <!ENTITY etox_overview SYSTEM "xml/etox/etox_overview.xml">
 
