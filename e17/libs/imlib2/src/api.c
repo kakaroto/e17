@@ -56,7 +56,7 @@ typedef void (*Imlib_Internal_Data_Destructor_Function)(void *, void *);
 /* context - all operations use this context for their state */
 static Display                *ctxt_display              = NULL;
 static Visual                 *ctxt_visual               = NULL;
-static Colormap               *ctxt_colormap             = 0;
+static Colormap                ctxt_colormap             = 0;
 static int                     ctxt_depth                = 0;
 static Drawable                ctxt_drawable             = 0;
 static char                    ctxt_anti_alias           = 1;
