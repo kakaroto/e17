@@ -553,7 +553,9 @@ SetBackgroundTo(Window win, Background * dsk, char setbg)
    if (desks.hiqualitybg)
      {
 	imlib_context_set_dither(1);
-//    imlib_context_set_anti_alias(1);
+#if 0
+	imlib_context_set_anti_alias(1);
+#endif
      }
 
    dpmap = dsk->pmap;
