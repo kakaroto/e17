@@ -298,7 +298,22 @@ reference in evas as "myfont", Evas will look in the directories (in the
 order given) for a "myfont.ttf" file. It is case sensitive, but this system
 proves to be nice and simple. Here is a simple example.
 <font face=arial,helvetica,lucida size=2><p>
-object = ..
+<pre>
+object = evas_add_text(evas, "notepad", 18, "Here is a line of text!");
+evas_move(evas, object, 120.0, 50.0);
+evas_set_color(evas, object, 0, 0, 0, 255);
+evas_show(evas, object);
+</pre>
+<font face=arial,helvetica,lucida size=2><p>
+This should create a text object with its top-left starting at 120.0, 50.0
+in the Evas, with the notepad font at size 18, with the text "Here is a line
+of text!" and in solid black (Red = 0, Green = 0, Blue = 0, Alpha = 255).
+This is what it would look like:
+<font face=arial,helvetica,lucida size=2><p>
+<a href=evas_text_eg_0.html><img src=img/evas_text_eg_0_thumb.png width=80 height=80 border=1></a>
+<font face=arial,helvetica,lucida size=2><p>
+<font face=arial,helvetica,lucida size=2><p>
+<font face=arial,helvetica,lucida size=2><p>
 <font face=arial,helvetica,lucida size=2><p>
 <font face=arial,helvetica,lucida size=2><p>
 <font face=arial,helvetica,lucida size=2><p>
