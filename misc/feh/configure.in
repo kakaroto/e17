@@ -24,6 +24,7 @@ if test -z "$HUMOR"; then
 fi
 
 AC_OUTPUT(Makefile \
+feh.spec \
 src/Makefile \
 src/ttfonts/Makefile \
 )

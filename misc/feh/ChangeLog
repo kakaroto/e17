@@ -1,3 +1,10 @@
+Sun Dec 19 20:29:33 1999  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
+
+	* Added a .spec file for feh. Contributed by Alistair Sutton
+	<metallica@freenet.co.uk>, (who is obviously a metallica fan ;), 
+	and has written specs for me before ::) Thanks dude :)
+	* Urm. I haven't actually tested this yet :)
+
 Sun Dec 19 18:55:39 1999  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
 
 	* Slideshow mode now has keyboard control ::)

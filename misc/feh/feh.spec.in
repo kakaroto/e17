@@ -1,0 +1,43 @@
+%define name	@PACKAGE@
+%define ver	@VERSION@
+%define RELEASE 1
+#%define rel     %{?CUSTOM_RELEASE} %{!?CUSTOM_RELEASE:%RELEASE}
+%define prefix	/usr
+
+Name: %name
+Summary:        Image viewer using Imlib 2
+Version: 	%ver
+Release: 	%rel
+Copyright: 	GPL
+Group:		Applications/Graphics
+Source: 	%{name}-%{ver}.tar.gz
+Url: 		http://www.tomgilbert.freeserve.co.uk
+BuildRoot:	/var/tmp/%{name}-%{ver}-root
+Docdir: 	%{prefix}/doc
+
+%description
+feh is a versatile and fast image viewer using imlib2, the
+premier image file handling library. feh has many features,
+from simple single file viewing, to multiple file modes using
+a slideshow or multiple windows. feh supports the creation of
+montages as index prints with many user-configurable options.
+
+%prep
+%setup
+
+%build
+CFLAGS="$RPM_OPT_FLAGS" ./configure --prefix=%{prefix}
+
+make prefix=$RPM_BUILD_ROOT%{prefix}
+
+%install
+rm -fr $RPM_BUILD_ROOT
+
+make prefix=$RPM_BUILD_ROOT%{prefix} install
+
+%files
+%defattr(-, root, root)
+%{prefix}/bin/*
+%{prefix}/share/feh/fonts/*
+
+%doc AUTHORS ChangeLog README TODO

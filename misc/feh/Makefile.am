@@ -3,7 +3,7 @@
 AUTOMAKE_OPTIONS = 1.4 foreign
 
 # A list of all the files in the current directory which can be regenerated
-MAINTAINERCLEANFILES = Makefile.in				
+MAINTAINERCLEANFILES = Makefile.in feh.spec
 
 LDFLAGS           = -L/usr/X11R6/lib
 INCLUDES          = -I/usr/X11R6/include \
