@@ -4,106 +4,170 @@
 #include "../../container.h"
 
 static int _entice_current = 0;
-static int _entice_scroll_timer(void *data);
+static int _entice_scroll_timer (void *data);
 
 void
-_entice_layout(Container *cont)
+_entice_layout (Container * cont)
 {
+  Container_Element *el;
+  Evas_List *center_el = NULL;
   Evas_List *l;
-  int i, im_no;
-  double pos;
-  double ey = cont->y + cont->padding.t + cont->scroll_offset;
+  int i, im_no, list_length;
+  Evas_Coord center = cont->y + (cont->h / 2.0) + cont->padding.t;
+  double w, h;
+  double ey = 0.0;
 
-  im_no = _entice_current;
-  i = 1;
-  pos = 0.0;
-  evas_object_color_set(cont->clipper, 255, 255, 255, 255);
-  for (l=cont->elements; l; l = l->next, i++)
-  {
-    Container_Element *el;
-    double w, h;
-    double sc;
-    double space;
-    int d;
+  evas_object_color_set (cont->clipper, 255, 255, 255, 255);
+  if (!(center_el = evas_list_nth_list (cont->elements, _entice_current)))
+    return;
 
-    el = l->data;
-    if (!el->obj)
-      continue;
+  el = (Container_Element *) center_el->data;
+  w = cont->w - (cont->padding.l + cont->padding.r);
+  h = w * el->orig_h / el->orig_w;
+  evas_object_resize (el->obj, w, h);
+  evas_object_move (el->obj, cont->x + ((cont->w - w) / 2), center - 24);
 
-    w = cont->w - (cont->padding.l + cont->padding.r);
-    h = w * el->orig_h / el->orig_w;
 
-    d = im_no - i;
-    if (d < 0)
-      d = -d;
-    sc = 1.0 / (1.0 + (((double)d) * 0.2));
-    if (sc < 0.333333)
-      sc = 0.333333;
-    w *= sc;
-    h *= sc;
-    space = 48 * sc;
+  i = im_no = _entice_current - 1;
+  ey = center - 24;
+  for (l = center_el->prev; l && (i >= 0); l = l->prev, i--)
+    {
+      double sc;
+      double space;
+      int d;
 
-    evas_object_resize(el->obj, w, h);
-    if (!strcmp(evas_object_type_get(el->obj), "image"))
-      evas_object_image_fill_set(el->obj, 0, 0, w, h);
-      
-    evas_object_move(el->obj,
-                     cont->x + ((cont->w - w) / 2),
-		     ey);
+      el = l->data;
+      if (!el->obj)
+	continue;
 
-    ey += h + cont->spacing;
-  }
-  
+      w = cont->w - (cont->padding.l + cont->padding.r);
+      h = w * el->orig_h / el->orig_w;
+
+      d = im_no - i;
+      if (d < 0)
+	d = -d;
+      sc = 1.0 / (1.0 + (((double) d) * 0.2));
+      if (sc < 0.333333)
+	sc = 0.333333;
+      w *= sc;
+      h *= sc;
+      space = 48 * sc;
+
+      evas_object_resize (el->obj, w, h);
+      if (!strcmp (evas_object_type_get (el->obj), "image"))
+	evas_object_image_fill_set (el->obj, 0, 0, w, h);
+
+      ey -= h + cont->spacing;
+      evas_object_move (el->obj, cont->x + ((cont->w - w) / 2), ey);
+
+      if (ey < cont->y)
+	{
+	  for (l = l->prev; l; l = l->prev)
+	    {
+	      el = (Container_Element *) l->data;
+	      evas_object_move (el->obj, -400, -400);
+	    }
+	  break;
+	}
+    }
+  i = im_no = _entice_current + 1;
+  ey = center + 24;
+  list_length = evas_list_count (cont->elements);
+  for (l = center_el->next; l && (i <= list_length); l = l->next, i++)
+    {
+      Container_Element *el;
+      double w, h;
+      double sc;
+      double space;
+      int d;
+
+      el = l->data;
+      if (!el->obj)
+	continue;
+
+      w = cont->w - (cont->padding.l + cont->padding.r);
+      h = w * el->orig_h / el->orig_w;
+
+      d = i - im_no;
+      sc = 1.0 / (1.0 + (((double) d) * 0.2));
+      if (sc < 0.333333)
+	sc = 0.333333;
+      w *= sc;
+      h *= sc;
+      space = 48 * sc;
+
+      evas_object_resize (el->obj, w, h);
+      if (!strcmp (evas_object_type_get (el->obj), "image"))
+	evas_object_image_fill_set (el->obj, 0, 0, w, h);
+
+      evas_object_move (el->obj, cont->x + ((cont->w - w) / 2), ey);
+      ey += h + cont->spacing;
+
+      if (ey > cont->y + cont->h)
+	{
+	  for (l = l->next; l; l = l->next)
+	    {
+	      el = (Container_Element *) l->data;
+	      evas_object_move (el->obj, -400, -400);
+	    }
+	  break;
+	}
+    }
+
 }
 
 void
-_entice_scroll_start(Container *cont, double velocity)
+_entice_scroll_start (Container * cont, double velocity)
 {
   Scroll_Data *data;
   double length, size;
 
-  length = e_container_elements_length_get(cont->obj);
-  data = calloc(1, sizeof(Scroll_Data));
+  length = e_container_elements_length_get (cont->obj);
+  data = calloc (1, sizeof (Scroll_Data));
   data->velocity = velocity;
-  data->start_time = ecore_time_get();
+  data->start_time = ecore_time_get ();
   data->cont = cont;
   data->length = length;
- 
-  cont->scroll_timer = ecore_timer_add(.02, _entice_scroll_timer, data);
+
+  cont->scroll_timer = ecore_timer_add (.02, _entice_scroll_timer, data);
 }
 
 void
-_entice_scroll_stop(Container *cont)
+_entice_scroll_stop (Container * cont)
 {
   /* FIXME: decelerate on stop? */
   if (cont->scroll_timer)
-  {
-    ecore_timer_del(cont->scroll_timer);  
-    cont->scroll_timer = NULL;
-  }
+    {
+      ecore_timer_del (cont->scroll_timer);
+      cont->scroll_timer = NULL;
+    }
 }
 
 void
-_entice_scroll_to(Container *cont, Container_Element *el)
+_entice_scroll_to (Container * cont, Container_Element * el)
 {
-    if(cont && el)
+  if (cont && el)
     {
-	Evas_List *l;
-	_entice_current = 1;
-	for(l = cont->elements; l; l = l->next, _entice_current++)
+      Evas_List *l;
+      _entice_current = 1;
+      for (l = cont->elements; l; l = l->next, _entice_current++)
 	{
-	    if(el == l->data) return;
+	  if (el == l->data)
+	    {
+	      _entice_layout (cont);
+	      return;
+	    }
 	}
     }
 }
 
 void
-_entice_shutdown()
+_entice_shutdown ()
 {
 }
 
 int
-plugin_init(Container_Layout_Plugin *p)
+plugin_init (Container_Layout_Plugin * p)
 {
   p->layout = _entice_layout;
   p->scroll_start = _entice_scroll_start;
@@ -115,27 +179,34 @@ plugin_init(Container_Layout_Plugin *p)
 }
 
 int
-_entice_scroll_timer(void *data)
+_entice_scroll_timer (void *data)
 {
   Scroll_Data *sd = data;
   double dt, dx, size, pad, max_scroll;
- 
-  dt = ecore_time_get() - sd->start_time;
-  dx = 10 * (1 - exp(-dt)); 
+
+  dt = ecore_time_get () - sd->start_time;
+  dx = 10 * (1 - exp (-dt));
 
   sd->cont->scroll_offset += dx * sd->velocity;
-  
+
   size = sd->cont->direction ? sd->cont->h : sd->cont->w;
   pad = sd->cont->direction ? sd->cont->padding.t + sd->cont->padding.b :
-                              sd->cont->padding.l + sd->cont->padding.r;
-  max_scroll = size - sd->length - pad;
+    sd->cont->padding.l + sd->cont->padding.r;
+  max_scroll = 48;
+  // size - sd->length - pad;
 
-  if (sd->cont->scroll_offset < max_scroll)
-    sd->cont->scroll_offset = max_scroll;
-  
-  else if (sd->cont->scroll_offset > 0)
-    sd->cont->scroll_offset = 0;
+  if (sd->cont->scroll_offset > max_scroll)
+    {
+      sd->cont->scroll_offset = 0;
+      _entice_current--;
+    }
 
-  _entice_layout(sd->cont);
+  else if (sd->cont->scroll_offset < -max_scroll)
+    {
+      sd->cont->scroll_offset = 0;
+      _entice_current++;
+    }
+
+  _entice_layout (sd->cont);
   return 1;
 }
