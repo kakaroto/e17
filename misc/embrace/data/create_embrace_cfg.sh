@@ -1,7 +1,8 @@
 #!/bin/sh
 
 NAME=embrace
-DB=~/.e/apps/embrace/$NAME.db
+CONFIGPATH=~/.e/apps/embrace
+DB=$CONFIGPATH/$NAME.db
 
 # generic mandatory attributes:
 # * title
@@ -14,7 +15,7 @@ DB=~/.e/apps/embrace/$NAME.db
 #
 # pop3 and imap: str host, int port, str user, str pass, int ssl (boolean)
 # mbox, maildir and imap: str path
-
+mkdir -p $CONFIGPATH
 edb_ed $DB add /$NAME/theme str "default"
 edb_ed $DB add /$NAME/num_mailboxes int 4
 
