@@ -500,6 +500,39 @@ gib_list_nth(gib_list * root, unsigned int num)
 }
 
 gib_list *
+gib_list_foreach(gib_list *root, void (*fe_func)(gib_list *node, void *data), void *data)
+{
+	gib_list *i, *next = NULL;
+	for (i=root; i; i=next) {
+		next=i->next;
+		fe_func(i, data);
+	}
+	return root;
+}
+
+gib_list *
+gib_list_find(gib_list *root, unsigned char (*find_func)(gib_list *node, void *data), void *data)
+{
+	gib_list *i = NULL;
+	for (i=root; i; i=i->next)
+		if (find_func(i,data))
+			return i;
+	
+	return NULL;
+}
+
+static unsigned char gib_list_find_by_data_callback(gib_list *list, void *data)
+{
+	return (list->data==data);
+}
+
+gib_list *
+gib_list_find_by_data(gib_list *root, void *data)
+{
+	return gib_list_find(root, gib_list_find_by_data_callback, data);
+}
+
+gib_list *
 gib_string_split(const char *string, const char *delimiter)
 {
    gib_list *string_list = NULL;

@@ -73,6 +73,11 @@ gib_list *gib_list_dup_special(gib_list * list,
                                void (*cpy_func) (void **dest, void *data));
 gib_list *gib_list_move_down_by_one(gib_list * root, gib_list * l);
 gib_list *gib_list_move_up_by_one(gib_list * root, gib_list * l);
+
+gib_list *gib_list_foreach(gib_list *root, void (*fe_func)(gib_list *node, void *data), void *data);
+gib_list *gib_list_find(gib_list *root, unsigned char (*find_func)(gib_list *node, void *data), void *data);
+gib_list *gib_list_find_by_data(gib_list *root, void *data);
+
 gib_list *gib_string_split(const char *string, const char *delimiter);
 
 #endif
