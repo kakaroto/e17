@@ -8,7 +8,8 @@ Package: enlightenment-docs
 Architecture: all
 Recommends: enlightenment | enlightenment-nosound
 Description: Documentation common to all Enlightenment packages.
- All Enlightenment packages symlink their /usr/share/doc/<package> directories here.
+ All Enlightenment packages symlink their /usr/share/doc/<package> 
+ directories here.
 
 Package: enlightenment-dox
 Architecture: any
@@ -32,7 +33,7 @@ Description: The Enlightenment Window Manager
  is "Time to rethink everything". It allows complete user control of almost
  every possible setting.  This is  accomplished through its use of themes.
  It now includes support for root menus, iconification, docking, GNOME 
- integration, and much more. This version is compiled without sound support.                                                     
+ integration, and much more. This version is compiled without sound support.
 
 Package: enlightenment
 Architecture: any
@@ -45,7 +46,7 @@ Description: The Enlightenment Window Manager
  is "Time to rethink everything". It allows complete user control of almost
  every possible setting.  This is  accomplished through its use of themes.
  It now includes support for root menus, iconification, docking, GNOME 
- integration, and much more. This version is compiled with sound support.                                                     
+ integration, and much more. This version is compiled with sound support.
 
 Package: enlightenment-theme-shinymetal
 Architecture: all
