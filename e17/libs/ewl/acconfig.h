@@ -14,3 +14,4 @@
 #undef PACKAGE_BIN_DIR
 #undef PACKAGE_LIB_DIR
 #undef USE_FERITE
+#undef HAVE_SUN

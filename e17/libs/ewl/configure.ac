@@ -1,6 +1,7 @@
 dnl Process this file with autoconf to produce a configure script.
 
 AC_INIT
+AC_CANONICAL_SYSTEM
 AC_CONFIG_SRCDIR([configure.in])
 AM_INIT_AUTOMAKE(ewl, 0.0.2)
 AM_CONFIG_HEADER(ewl-config.h)
@@ -12,6 +13,14 @@ AC_HEADER_STDC
 AC_C_CONST
 AM_ENABLE_SHARED
 AM_PROG_LIBTOOL
+
+dnl Check for Solaris or other OS
+case "$target" in
+     *-sun-*)
+        AC_DEFINE(HAVE_SUN, 1)
+        ;;
+     *) ;;
+esac
 
 dnl Set PACKAGE_LOCALE_DIR in config.h.
 if test "x${prefix}" = "xNONE"; then
