@@ -2,13 +2,16 @@
 #include "epeg_private.h"
 
 static Epeg_Image   *_epeg_open_header         (Epeg_Image *im);
-static void          _epeg_decode              (Epeg_Image *im);
-static void          _epeg_scale               (Epeg_Image *im);
-static void          _epeg_encode              (Epeg_Image *im);
+static int           _epeg_decode              (Epeg_Image *im);
+static int           _epeg_scale               (Epeg_Image *im);
+static int           _epeg_decode_for_trim     (Epeg_Image *im);
+static int           _epeg_trim				   (Epeg_Image *im);
+static int           _epeg_encode              (Epeg_Image *im);
 
 static void          _epeg_fatal_error_handler (j_common_ptr cinfo);
-static void          _epeg_error_handler       (j_common_ptr cinfo);
-static void          _epeg_error_handler2      (j_common_ptr cinfo, int msg_level);
+
+#define MIN(__x,__y) ((__x) < (__y) ? (__x) : (__y))
+#define MAX(__x,__y) ((__x) > (__y) ? (__x) : (__y))
 
 /**
  * Open a JPEG image by filename.
@@ -89,6 +92,20 @@ epeg_size_get(Epeg_Image *im, int *w, int *h)
 }
 
 /**
+ * Return the original JPEG pixel color space.
+ * @param im A handle to an opened Epeg image.
+ * @param space A pointer to the color space value to be filled in.
+ * 
+ * Returns the image color space.
+ * 
+ */
+void
+epeg_colorspace_get(Epeg_Image *im, int *space)
+{
+   if (space) *space = im->color_space;
+}
+
+/**
  * Set the size of the image to decode in pixels.
  * @param im A handle to an opened Epeg image.
  * @param w The width of the image to decode at, in pixels.
@@ -108,6 +125,24 @@ epeg_decode_size_set(Epeg_Image *im, int w, int h)
    else if (h > im->in.h) h = im->in.h;
    im->out.w = w;
    im->out.h = h;
+   im->out.x = 0;
+   im->out.y = 0;
+}
+
+void
+epeg_decode_bounds_set(Epeg_Image *im, int x, int y, int w, int h)
+{
+   if      (im->pixels) return;
+   if      (w < 1)        w = 1;
+   else if (w > im->in.w) w = im->in.w;
+   if      (h < 1)        h = 1;
+   else if (h > im->in.h) h = im->in.h;
+   im->out.w = w;
+   im->out.h = h;
+   if      (x < 0)        x = 0;
+   if      (y < 0)        y = 0;
+   im->out.x = x;
+   im->out.y = y;
 }
 
 /**
@@ -152,8 +187,13 @@ epeg_pixels_get(Epeg_Image *im, int x, int y,  int w, int h)
 {
    int xx, yy, ww, hh, bpp, ox, oy, ow, oh, iw, ih;
    
-   if (!im->pixels) _epeg_decode(im);
+   if (!im->pixels)
+     {
+	if (_epeg_decode(im) != 0) return NULL;
+     }
+   
    if (!im->pixels) return NULL;
+   
    bpp = im->in.jinfo.output_components;
    iw = im->out.w;
    ih = im->out.h;
@@ -340,6 +380,161 @@ epeg_pixels_get(Epeg_Image *im, int x, int y,  int w, int h)
 	  }
 	return pix;
      }
+   else if (im->color_space == EPEG_CMYK)
+     {
+	unsigned char *pix, *p;
+	
+	pix = malloc(w * h * 4);
+	if (!pix) return NULL;
+	for (yy = y + oy; yy < hh; yy++)
+	  {
+	     unsigned char *s;
+	     
+	     s = im->lines[yy] + ((x + ox) * bpp);
+	     p = pix + ((((yy - y) * w) + ox) * 4);
+	     for (xx = x + ox; xx < ww; xx++)
+	       {
+		  p[0] = s[0];
+		  p[1] = s[1];
+		  p[2] = s[2];
+		  p[3] = 0xff;
+		  p += 4;
+		  s += bpp;
+	       }
+	  }
+	return pix;
+     }
+   return NULL;
+}
+
+/**
+ * Get a segment of decoded pixels from an image.
+ * @param im A handle to an opened Epeg image.
+ * @param x Rectangle X.
+ * @param y Rectangle Y.
+ * @param w Rectangle width.
+ * @param h Rectangle height.
+ * @return Pointer to the top left of the requested pixel block.
+ * 
+ * Return image pixels in the decoded format from the specified location
+ * rectangle bounded with the box @p x, @p y @p w X @p y. The pixel block is
+ * packed with no row padding, and it organsied from top-left to bottom right,
+ * row by row. You must free the pixel block using epeg_pixels_free() before
+ * you close the image handle, and assume the pixels to be read-only memory.
+ * 
+ * On success the pointer is returned, on failure, NULL is returned. Failure
+ * may be because the rectangle is out of the bounds of the image, memory
+ * allocations failed or the image data cannot be decoded.
+ * 
+ */
+const void *
+epeg_pixels_get_as_RGB8(Epeg_Image *im, int x, int y,  int w, int h)
+{
+   int xx, yy, ww, hh, bpp, ox, oy, ow, oh, iw, ih;
+   
+   if (!im->pixels)
+     {
+	if (_epeg_decode(im) != 0) return NULL;
+     }
+	
+   if (!im->pixels) return NULL;
+		
+   bpp = im->in.jinfo.output_components;
+   iw = im->out.w;
+   ih = im->out.h;
+   ow = w;
+   oh = h;
+   ox = 0;
+   oy = 0;
+   if ((x + ow) > iw) ow = iw - x;
+   if ((y + oh) > ih) oh = ih - y;
+   if (ow < 1) return NULL;
+   if (oh < 1) return NULL;
+   if (x < 0)
+     {
+	ow += x;
+	ox = -x;
+     }
+   if (y < 0)
+     {
+	oh += y;
+	oy = -y;
+     }
+   if (ow < 1) return NULL;
+   if (oh < 1) return NULL;
+   
+   ww = x + ox + ow;
+   hh = y + oy + oh;
+   
+   if (im->color_space == EPEG_GRAY8)
+     {
+	unsigned char *pix, *p;
+	
+	pix = malloc(w * h * 3);
+	if (!pix) return NULL;
+	for (yy = y + oy; yy < hh; yy++)
+	  {
+	     unsigned char *s;
+	     
+	     s = im->lines[yy] + ((x + ox) * bpp);
+	     p = pix + ((((yy - y) * w) + ox) * 3);
+	     for (xx = x + ox; xx < ww; xx++)
+	       {
+		  p[0] = s[0];
+		  p[1] = s[0];
+		  p[2] = s[0];
+		  p += 3;
+		  s += bpp;
+	       }
+	  }
+	return pix;
+     }
+   if (im->color_space == EPEG_RGB8)
+     {
+	unsigned char *pix, *p;
+	
+	pix = malloc(w * h * 3);
+	if (!pix) return NULL;
+	for (yy = y + oy; yy < hh; yy++)
+	  {
+	     unsigned char *s;
+	     
+	     s = im->lines[yy] + ((x + ox) * bpp);
+	     p = pix + ((((yy - y) * w) + ox) * 3);
+	     for (xx = x + ox; xx < ww; xx++)
+	       {
+		  p[0] = s[0];
+		  p[1] = s[1];
+		  p[2] = s[2];
+		  p += 3;
+		  s += bpp;
+	       }
+	  }
+	return pix;
+     }
+   if (im->color_space == EPEG_CMYK)
+     {
+	unsigned char *pix, *p;
+	
+	pix = malloc(w * h * 3);
+	if (!pix) return NULL;
+	for (yy = y + oy; yy < hh; yy++)
+	  {
+	     unsigned char *s;
+	     
+	     s = im->lines[yy] + ((x + ox) * bpp);
+	     p = pix + ((((yy - y) * w) + ox) * 3);
+	     for (xx = x + ox; xx < ww; xx++)
+	       {
+		  p[0] = (unsigned char)(MIN(255, (s[0] * s[3]) / 255));
+		  p[1] = (unsigned char)(MIN(255, (s[1] * s[3]) / 255));
+		  p[2] = (unsigned char)(MIN(255, (s[2] * s[3]) / 255));
+		  p += 3;
+		  s += bpp;
+	       }
+	  }
+	return pix;
+     }
    return NULL;
 }
 
@@ -492,7 +687,7 @@ epeg_memory_output_set(Epeg_Image *im, unsigned char **data, int *size)
 }
 
 /**
- * This saved the image to its specified destination.
+ * This saves the image to its specified destination.
  * @param im A handle to an opened Epeg image.
  * 
  * This saves the image @p im to its destination specified by
@@ -500,12 +695,34 @@ epeg_memory_output_set(Epeg_Image *im, unsigned char **data, int *size)
  * encoded at the deoded pixel size, using the quality, comment and thumbnail
  * comment settings set on the image.
  */
-void
+int
 epeg_encode(Epeg_Image *im)
 {
-   _epeg_decode(im);
-   _epeg_scale(im);
-   _epeg_encode(im);
+   if (_epeg_decode(im) != 0)
+     return 1;
+   if (_epeg_scale(im) != 0)
+     return 1;
+   if (_epeg_encode(im) != 0)
+     return 1;
+   return 0;
+}
+
+/**
+ * FIXME: Document this
+ * @param im A handle to an opened Epeg image.
+ * 
+ * FIXME: Document this.
+ */
+int
+epeg_trim(Epeg_Image *im)
+{
+   if (_epeg_decode_for_trim(im) != 0)
+     return 1;
+   if (_epeg_trim(im) != 0)
+     return 1;
+   if (_epeg_encode(im) != 0)
+     return 1;
+   return 0;
 }
 
 /**
@@ -535,35 +752,19 @@ epeg_close(Epeg_Image *im)
    free(im);
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 static Epeg_Image *
 _epeg_open_header(Epeg_Image *im)
 {
    struct jpeg_marker_struct *m;
 
-   im->in.jinfo.err  = jpeg_std_error(&(im->jerr.pub));
-
-   im->jerr.pub.error_exit     = _epeg_fatal_error_handler;
-   im->jerr.pub.emit_message   = _epeg_error_handler2;
-   im->jerr.pub.output_message = _epeg_error_handler;
+   im->in.jinfo.err = jpeg_std_error(&(im->jerr.pub));
+   im->jerr.pub.error_exit = _epeg_fatal_error_handler;
    
    if (setjmp(im->jerr.setjmp_buffer))
      {
 	error:
 	epeg_close(im);
+	im = NULL;
 	return NULL;
      }
    
@@ -580,8 +781,9 @@ _epeg_open_header(Epeg_Image *im)
    im->out.w = im->in.w;
    im->out.h = im->in.h;
    
-   im->color_space = ((im->in.color_space = im->in.jinfo.out_color_space) == JCS_GRAYSCALE)?EPEG_GRAY8:EPEG_YUV8;
-
+   im->color_space = ((im->in.color_space = im->in.jinfo.out_color_space) == JCS_GRAYSCALE) ? EPEG_GRAY8 : EPEG_RGB8;
+   if (im->in.color_space == JCS_CMYK) im->color_space = EPEG_CMYK;
+   
    for (m = im->in.jinfo.marker_list; m; m = m->next)
      {
 	if (m->marker == JPEG_COM)
@@ -630,12 +832,12 @@ _epeg_open_header(Epeg_Image *im)
    return im;
 }
 
-static void
+static int
 _epeg_decode(Epeg_Image *im)
 {
    int scale, scalew, scaleh, y;
    
-   if (im->pixels) return;
+   if (im->pixels) return 1;
    
    scalew = im->in.w / im->out.w;
    scaleh = im->in.h / im->out.h;
@@ -658,9 +860,11 @@ _epeg_decode(Epeg_Image *im)
 	im->in.jinfo.out_color_space = JCS_GRAYSCALE;
 	im->in.jinfo.output_components = 1;
 	break;
+		
       case EPEG_YUV8:
 	im->in.jinfo.out_color_space = JCS_YCbCr;
 	break;
+		
       case EPEG_RGB8:
       case EPEG_BGR8:
       case EPEG_RGBA8:
@@ -668,22 +872,42 @@ _epeg_decode(Epeg_Image *im)
       case EPEG_ARGB32:
 	im->in.jinfo.out_color_space = JCS_RGB;
 	break;
+		
+      case EPEG_CMYK:
+	im->in.jinfo.out_color_space = JCS_CMYK;
+	im->in.jinfo.output_components = 4;
+	break;
+	
       default:
 	break;
      }
    
+   im->out.jinfo.err			= jpeg_std_error(&(im->jerr.pub));
+   im->jerr.pub.error_exit		= _epeg_fatal_error_handler;
+
+   if (setjmp(im->jerr.setjmp_buffer))
+     {
+	epeg_close(im);
+	return 1;
+     }
+
    jpeg_calc_output_dimensions(&(im->in.jinfo));
    
-   im->pixels = malloc(im->in.jinfo.output_width * im->in.jinfo.output_height *
-		       im->in.jinfo.output_components);
-   if (!im->pixels) return;
+   im->pixels = malloc(im->in.jinfo.output_width * im->in.jinfo.output_height * im->in.jinfo.output_components);
+   if (!im->pixels) return 1;
+	
    im->lines = malloc(im->in.jinfo.output_height * sizeof(char *));
-   if (!im->lines) return;
+   if (!im->lines)
+     {
+	free(im->pixels);
+	im->pixels = NULL;
+	return 1;
+     }
+	
    jpeg_start_decompress(&(im->in.jinfo));
    
    for (y = 0; y < im->in.jinfo.output_height; y++)
-     im->lines[y] = im->pixels + 
-     (y * im->in.jinfo.output_components * im->in.jinfo.output_width);
+     im->lines[y] = im->pixels + (y * im->in.jinfo.output_components * im->in.jinfo.output_width);
    
    while (im->in.jinfo.output_scanline < im->in.jinfo.output_height)
      jpeg_read_scanlines(&(im->in.jinfo), 
@@ -691,46 +915,142 @@ _epeg_decode(Epeg_Image *im)
 			 im->in.jinfo.rec_outbuf_height);
    
    jpeg_finish_decompress(&(im->in.jinfo));
+   
+   return 0;
 }
 
-static void
+static int
 _epeg_scale(Epeg_Image *im)
 {
    unsigned char *dst, *row, *src;
    int            x, y, w, h, i;
    
-   if ((im->in.w == im->out.w) && (im->in.h == im->out.h)) return;
-   if (im->scaled) return;
+   if ((im->in.w == im->out.w) && (im->in.h == im->out.h)) return 1;
+   if (im->scaled) return 1;
    
    im->scaled = 1;
    w = im->out.w;
    h = im->out.h;
    for (y = 0; y < h; y++)
      {
-	row = im->pixels + 
-	  (((y * im->in.jinfo.output_height) / h) *
-	   im->in.jinfo.output_components * im->in.jinfo.output_width);
-	dst = im->pixels + 
-	  (y * im->in.jinfo.output_components * im->in.jinfo.output_width);
+	row = im->pixels + (((y * im->in.jinfo.output_height) / h) * im->in.jinfo.output_components * im->in.jinfo.output_width);
+	dst = im->pixels + (y * im->in.jinfo.output_components * im->in.jinfo.output_width);
+	
 	for (x = 0; x < im->out.w; x++)
 	  {
-	     src = row + 
-	       (((x * im->in.jinfo.output_width) / w) *
-		im->in.jinfo.output_components);
+	     src = row + (((x * im->in.jinfo.output_width) / w) * im->in.jinfo.output_components);
+	     
 	     for (i = 0; i < im->in.jinfo.output_components; i++)
 	       dst[i] = src[i];
+	     
 	     dst += im->in.jinfo.output_components;
 	  }
      }
+   return 0;
 }
 
-static void
+static int
+_epeg_decode_for_trim(Epeg_Image *im)
+{
+   int		y;
+   
+   if (im->pixels) return 1;
+
+   im->in.jinfo.scale_num           = 1;
+   im->in.jinfo.scale_denom         = 1;
+   im->in.jinfo.do_fancy_upsampling = FALSE;
+   im->in.jinfo.do_block_smoothing  = FALSE;
+   im->in.jinfo.dct_method          = JDCT_ISLOW;
+   
+   switch (im->color_space)
+     {
+      case EPEG_GRAY8:
+	im->in.jinfo.out_color_space = JCS_GRAYSCALE;
+	im->in.jinfo.output_components = 1;
+	break;
+	
+      case EPEG_YUV8:
+	im->in.jinfo.out_color_space = JCS_YCbCr;
+	break;
+	
+      case EPEG_RGB8:
+      case EPEG_BGR8:
+      case EPEG_RGBA8:
+      case EPEG_BGRA8:
+      case EPEG_ARGB32:
+	im->in.jinfo.out_color_space = JCS_RGB;
+	break;
+	
+      case EPEG_CMYK:
+	im->in.jinfo.out_color_space = JCS_CMYK;
+	im->in.jinfo.output_components = 4;
+	break;
+	
+      default:
+	break;
+     }
+   
+   im->out.jinfo.err = jpeg_std_error(&(im->jerr.pub));
+   im->jerr.pub.error_exit = _epeg_fatal_error_handler;
+   
+   if (setjmp(im->jerr.setjmp_buffer))
+     return 1;
+
+   jpeg_calc_output_dimensions(&(im->in.jinfo));
+
+   im->pixels = malloc(im->in.jinfo.output_width * im->in.jinfo.output_height * im->in.jinfo.output_components);
+   if (!im->pixels) return 1;
+   
+   im->lines = malloc(im->in.jinfo.output_height * sizeof(char *));
+   if (!im->lines)
+     {
+	free(im->pixels);
+	im->pixels = NULL;
+	return 1;
+     }
+   
+   jpeg_start_decompress(&(im->in.jinfo));
+   
+   for (y = 0; y < im->in.jinfo.output_height; y++)
+     im->lines[y] = im->pixels + (y * im->in.jinfo.output_components * im->in.jinfo.output_width);
+   
+   while (im->in.jinfo.output_scanline < im->in.jinfo.output_height)
+     jpeg_read_scanlines(&(im->in.jinfo), 
+			 &(im->lines[im->in.jinfo.output_scanline]), 
+			 im->in.jinfo.rec_outbuf_height);
+   
+   jpeg_finish_decompress(&(im->in.jinfo));
+   
+   return 0;
+}
+
+static int
+_epeg_trim(Epeg_Image *im)
+{
+   int            y, a, b, w, h;
+   
+   if ((im->in.w == im->out.w) && (im->in.h == im->out.h)) return 1;
+   if (im->scaled) return 1;
+   
+   im->scaled = 1;
+   w = im->out.w;
+   h = im->out.h;
+   a = im->out.x;
+   b = im->out.y;
+   
+   for (y = 0; y < h; y++)
+     im->lines[y] = im->pixels + ((y+b) * im->in.jinfo.output_components * im->in.jinfo.output_width) + (a * im->in.jinfo.output_components);
+   
+   return 0;
+}
+
+static int
 _epeg_encode(Epeg_Image *im)
 {
    void  *data = NULL;
    size_t size = 0;
    
-   if (im->out.f) return;
+   if (im->out.f) return 1;
    
    if (im->out.file)
      im->out.f = fopen(im->out.file, "wb");
@@ -739,20 +1059,13 @@ _epeg_encode(Epeg_Image *im)
    if (!im->out.f)
      {
 	im->error = 1;
-	return;
+	return 1;
      }
    
    im->out.jinfo.err = jpeg_std_error(&(im->jerr.pub));
+   im->jerr.pub.error_exit = _epeg_fatal_error_handler;
    
-   im->jerr.pub.error_exit     = _epeg_fatal_error_handler;
-   im->jerr.pub.emit_message   = _epeg_error_handler2;
-   im->jerr.pub.output_message = _epeg_error_handler;
-   
-   if (setjmp(im->jerr.setjmp_buffer))
-     {
-	error:
-	return;
-     }
+   if (setjmp(im->jerr.setjmp_buffer)) return 1;
    
    jpeg_create_compress(&(im->out.jinfo));
    jpeg_stdio_dest(&(im->out.jinfo), im->out.f);
@@ -761,6 +1074,7 @@ _epeg_encode(Epeg_Image *im)
    im->out.jinfo.input_components = im->in.jinfo.output_components;
    im->out.jinfo.in_color_space   = im->in.jinfo.out_color_space;
    im->out.jinfo.dct_method       = JDCT_IFAST;
+   im->out.jinfo.dct_method	  = im->in.jinfo.dct_method;
    jpeg_set_defaults(&(im->out.jinfo));
    jpeg_set_quality(&(im->out.jinfo), im->out.quality, TRUE);   
    
@@ -776,9 +1090,8 @@ _epeg_encode(Epeg_Image *im)
    jpeg_start_compress(&(im->out.jinfo), TRUE);
 
    if (im->out.comment)
-     jpeg_write_marker(&(im->out.jinfo), JPEG_COM, 
-		       im->out.comment, strlen(im->out.comment));
-
+     jpeg_write_marker(&(im->out.jinfo), JPEG_COM, im->out.comment, strlen(im->out.comment));
+   
    if (im->out.thumbnail_info)
      {
 	char buf[8192];
@@ -787,8 +1100,7 @@ _epeg_encode(Epeg_Image *im)
 	  {
 	     snprintf(buf, sizeof(buf), "Thumb::URI\nfile://%s", im->in.file);
 	     jpeg_write_marker(&(im->out.jinfo), JPEG_APP0 + 7, buf, strlen(buf));
-	     snprintf(buf, sizeof(buf), "Thumb::MTime\n%llu", 
-		      (unsigned long long int)im->stat_info.st_mtime);
+	     snprintf(buf, sizeof(buf), "Thumb::MTime\n%llu", (unsigned long long int)im->stat_info.st_mtime);
 	  }
 	jpeg_write_marker(&(im->out.jinfo), JPEG_APP0 + 7, buf, strlen(buf));
 	snprintf(buf, sizeof(buf), "Thumb::Image::Width\n%i", im->in.w);
@@ -800,8 +1112,7 @@ _epeg_encode(Epeg_Image *im)
      }
    
    while (im->out.jinfo.next_scanline < im->out.h)
-     jpeg_write_scanlines(&(im->out.jinfo), 
-			  &(im->lines[im->out.jinfo.next_scanline]), 1);
+     jpeg_write_scanlines(&(im->out.jinfo), &(im->lines[im->out.jinfo.next_scanline]), 1);
    
    jpeg_finish_compress(&(im->out.jinfo));
    
@@ -816,6 +1127,8 @@ _epeg_encode(Epeg_Image *im)
    
    if (im->out.mem.data) *(im->out.mem.data) = data;
    if (im->out.mem.size) *(im->out.mem.size) = size;
+	
+   return 0;
 }
 
 static void 
@@ -826,23 +1139,4 @@ _epeg_fatal_error_handler(j_common_ptr cinfo)
    errmgr = (emptr)cinfo->err;
    longjmp(errmgr->setjmp_buffer, 1);
    return;
-}
-
-static void 
-_epeg_error_handler(j_common_ptr cinfo)
-{
-   emptr errmgr;
-   
-   errmgr = (emptr) cinfo->err;
-   return;
-}
-
-static void
-_epeg_error_handler2(j_common_ptr cinfo, int msg_level)
-{
-   emptr errmgr;
-   
-   errmgr = (emptr) cinfo->err;
-   return;
-   msg_level = 0;
 }

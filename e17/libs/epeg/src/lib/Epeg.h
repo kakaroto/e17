@@ -13,7 +13,8 @@ extern "C" {
 	  EPEG_BGR8,
 	  EPEG_RGBA8,
 	  EPEG_BGRA8,
-	  EPEG_ARGB32
+	  EPEG_ARGB32,
+	  EPEG_CMYK
      }
    Epeg_Colorspace;
    
@@ -42,7 +43,8 @@ extern "C" {
    void          epeg_thumbnail_comments_enable (Epeg_Image *im, int onoff);
    void          epeg_file_output_set           (Epeg_Image *im, const char *file);
    void          epeg_memory_output_set         (Epeg_Image *im, unsigned char **data, int *size);
-   void          epeg_encode                    (Epeg_Image *im);
+   int           epeg_encode                    (Epeg_Image *im);
+   int           epeg_trim                      (Epeg_Image *im);
    void          epeg_close                     (Epeg_Image *im);
    
 #ifdef __cplusplus

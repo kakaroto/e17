@@ -57,6 +57,7 @@ struct _Epeg_Image
 	 unsigned char           **data;
 	 int                      *size;
       } mem;
+      int                          x, y;
       int                          w, h;
       char                        *comment;
       FILE                        *f;

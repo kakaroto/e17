@@ -39,7 +39,8 @@ main(int argc, char **argv)
      }
    
    epeg_decode_size_set           (im, 128, 96);
-   
+
+#if 0   
      {
 	unsigned int *pixels;
 
@@ -64,8 +65,9 @@ main(int argc, char **argv)
 	     epeg_pixels_free(im, pixels);
 	  }
      }
+#endif
    
-   epeg_quality_set               (im, 75);
+   epeg_quality_set               (im, 80);
    epeg_thumbnail_comments_enable (im, 1);
    epeg_comment_set               (im, "Smelly pants!");
    epeg_file_output_set           (im, argv[2]);
