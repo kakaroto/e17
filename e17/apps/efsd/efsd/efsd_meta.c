@@ -82,7 +82,10 @@ meta_db_get_file(char *filename, char *dbfile, int len, int create)
   D_ENTER;
 
   if (!filename || filename[0] == '\0' || filename[0] != '/')
-    D_RETURN_(FALSE);
+    {
+      errno = ENOENT;
+      D_RETURN_(FALSE);
+    }
   
   path = filename;
 
@@ -93,6 +96,7 @@ meta_db_get_file(char *filename, char *dbfile, int len, int create)
 	 a chanonical path ...
       */
       D("Couldn't find '/' in filename '%s'\n", filename);
+      errno = EINVAL;
       D_RETURN_(FALSE);
     }
 
@@ -245,6 +249,7 @@ meta_db_get_data(EfsdGetMetadataCmd *egmc,
 
   if ( (db = e_db_open_read(dbfile)) == NULL)
     {
+      errno = ENODATA;
       efsd_lock_release_read_access(meta_lock);
       D_RETURN_(NULL);
     }
@@ -294,6 +299,9 @@ meta_db_get_data(EfsdGetMetadataCmd *egmc,
       D("Unknown data type!\n");
       success = FALSE;
     }
+
+  if (!success)
+    errno = ENODATA;
 
   e_db_close(db);
   e_db_flush();
