@@ -15,6 +15,8 @@ static void _ebits_evaluate_fill(Ebits_Object_Bit_State state);
 static void _ebits_calculate(Ebits_Object_Bit_State state);
 static void _ebits_object_calculate(Ebits_Object o);
 
+#define EBITS_FILE_REDIRECT "%s:/images/%s"
+
 static Ebits_Object_Bit_State _ebits_get_bit_name(Ebits_Object o, char *name)
 {
    Evas_List l;
@@ -372,7 +374,8 @@ _ebits_find_description(char *file)
 		  __bit_descriptions = evas_list_remove(__bit_descriptions, d);
 		  __bit_descriptions = evas_list_prepend(__bit_descriptions, d);
 	       }
-	      return d;
+	     d->references++;
+	     return d;
 	   }
      }
    /* open db */
@@ -391,9 +394,17 @@ _ebits_find_description(char *file)
      }
    /* new description */
    d = malloc(sizeof(struct _Ebits_Object_Description));
-   memset(d, 0, sizeof(struct _Ebits_Object_Description));
+   d = memset(d, 0, sizeof(struct _Ebits_Object_Description));
+   __bit_descriptions = evas_list_prepend(__bit_descriptions, d);
    d->file = strdup(file);
    d->references = 1;
+
+   d->min.w = 0;
+   d->min.h = 0;
+   d->max.w = 999999;
+   d->max.h = 999999;
+   d->step.x = 1;
+   d->step.y = 1;
    
    /* basic bit info */
    e_db_int_get(db, "/base/min/w", &(d->min.w));
@@ -414,8 +425,11 @@ _ebits_find_description(char *file)
    e_db_int_get(db, "/base/inset/r", &(d->inset.r));
    e_db_int_get(db, "/base/inset/t", &(d->inset.t));
    e_db_int_get(db, "/base/inset/b", &(d->inset.b));
+   
+   if (d->step.x <= 0) d->step.x = 1;
+   if (d->step.y <= 0) d->step.y = 1;
 
-   /* all he bits */
+   /* all the bits */
      {
 	int num_bits = 0, i;
 	
@@ -428,7 +442,7 @@ _ebits_find_description(char *file)
 	     int num_sync, j;
 	     
 	     bit = malloc(sizeof(struct _Ebits_Object_Bit_Description));
-	     memset(bit, 0, sizeof(struct _Ebits_Object_Bit_Description));
+	     bit = memset(bit, 0, sizeof(struct _Ebits_Object_Bit_Description));
 	     
 	     snprintf(key, sizeof(key), "/bits/bit/%i/name", i);
 	     bit->name = e_db_str_get(db, key);
@@ -513,7 +527,10 @@ _ebits_find_description(char *file)
 	     num_sync = 0;
 	     snprintf(key, sizeof(key), "/bits/bit/%i/sync/count", i);
 	     e_db_int_get(db, key, &(num_sync));
-	     
+
+	     if (bit->step.x <= 0) bit->step.x = 1;
+	     if (bit->step.y <= 0) bit->step.y = 1;
+	     	     
 	     for (j = 0; j < num_sync; j++)
 	       {
 		  char *s;
@@ -528,7 +545,6 @@ _ebits_find_description(char *file)
      }
 
    e_db_close(db);
-   __bit_descriptions = evas_list_prepend(__bit_descriptions, d);
    return d;
 }
 
@@ -555,7 +571,7 @@ ebits_new_description(void)
 
    /* new description */
    d = malloc(sizeof(struct _Ebits_Object_Description));
-   memset(d, 0, sizeof(struct _Ebits_Object_Description));
+   d = memset(d, 0, sizeof(struct _Ebits_Object_Description));
    d->step.x = 1;
    d->step.y = 1;
    d->min.w = 0;
@@ -629,9 +645,9 @@ ebits_new_bit(Ebits_Object o, char *file)
    Ebits_Object_Bit_State state;
    
    bit = malloc(sizeof(struct _Ebits_Object_Bit_Description));
-   memset(bit, 0, sizeof(struct _Ebits_Object_Bit_Description));
-   state= malloc(sizeof(struct _Ebits_Object_Bit_State));
-   memset(state, 0, sizeof(struct _Ebits_Object_Bit_State));
+   bit = memset(bit, 0, sizeof(struct _Ebits_Object_Bit_Description));
+   state = malloc(sizeof(struct _Ebits_Object_Bit_State));
+   state = memset(state, 0, sizeof(struct _Ebits_Object_Bit_State));
    
    o->bits = evas_list_append(o->bits, state);
    o->description->bits = evas_list_append(o->description->bits, bit);
@@ -705,32 +721,32 @@ Ebits_Object ebits_load(char *file)
 	
 	bit = l->data;
 	state = malloc(sizeof(struct _Ebits_Object_Bit_State));
-	memset(state, 0, sizeof(struct _Ebits_Object_Bit_State));
+	state = memset(state, 0, sizeof(struct _Ebits_Object_Bit_State));
 	o->bits = evas_list_append(o->bits, state);
 	state->o = o;
 	state->description = bit;
 #ifdef EDITOR
 	if (bit->normal.image)
 	  {
-	     snprintf(image, sizeof(image), "%s:/images/%s", file, bit->normal.image);
+	     snprintf(image, sizeof(image), EBITS_FILE_REDIRECT, file, bit->normal.image);
 	     state->normal.image = imlib_load_image(image);
 	  }
 	if (bit->hilited.image)
 	  {
-	     snprintf(image, sizeof(image), "%s:/images/%s", file, bit->hilited.image);
+	     snprintf(image, sizeof(image), EBITS_FILE_REDIRECT, file, bit->hilited.image);
 	     state->hilited.image = imlib_load_image(image);
 	  }
 	if (bit->clicked.image)
 	  {
-	     snprintf(image, sizeof(image), "%s:/images/%s", file, bit->clicked.image);
+	     snprintf(image, sizeof(image), EBITS_FILE_REDIRECT, file, bit->clicked.image);
 	     state->clicked.image = imlib_load_image(image);
 	  }
 	if (bit->disabled.image)
 	  {
-	     snprintf(image, sizeof(image), "%s:/images/%s", file, bit->disabled.image);
+	     snprintf(image, sizeof(image), EBITS_FILE_REDIRECT, file, bit->disabled.image);
 	     state->disabled.image = imlib_load_image(image);
 	  }
-#endif	
+#endif
      }
    return o;
 }
@@ -743,12 +759,13 @@ void ebits_free(Ebits_Object o)
    if (o->description->references <= 0)
      {
 	if (o->description->file) free(o->description->file);
-	__bit_descriptions = evas_list_remove(__bit_descriptions, o->description);	
+	__bit_descriptions = evas_list_remove(__bit_descriptions, o->description);
 	if (o->description->bits)
 	  {
 	     for (l = o->description->bits; l; l = l->next)
 	       {
 		  Ebits_Object_Bit_Description bit;
+		  Evas_List ll;
 		  
 		  bit = l->data;
 		  if (bit->name) free(bit->name);
@@ -759,6 +776,8 @@ void ebits_free(Ebits_Object o)
 		  if (bit->disabled.image) free(bit->disabled.image);
 		  if (bit->rel1.name) free(bit->rel1.name);
 		  if (bit->rel2.name) free(bit->rel2.name);
+		  for (ll = bit->sync; ll; ll = ll->next) free(ll->data);
+		  evas_list_free(bit->sync);
 	       }
 	     evas_list_free(o->description->bits);
 	  }
@@ -813,7 +832,7 @@ void ebits_add_to_evas(Ebits_Object o, Evas e)
 	char buf[4096];
 	
 	state = l->data;
-	snprintf(buf, sizeof(buf), "%s:/images/%s", o->description->file, 
+	snprintf(buf, sizeof(buf), EBITS_FILE_REDIRECT, o->description->file, 
 		 _ebits_get_file(state->description, state->state));
 	state->object = evas_add_image_from_file(o->state.evas, buf);
 	evas_callback_add(o->state.evas, state->object, CALLBACK_MOUSE_DOWN, _ebits_handle_mouse_down, state);
@@ -938,7 +957,7 @@ Ebits_Object ebits_new(void)
    Ebits_Object o;
    
    o = malloc(sizeof(struct _Ebits_Object));
-   memset(o, 0, sizeof(struct _Ebits_Object));
+   o = memset(o, 0, sizeof(struct _Ebits_Object));
    o->description = NULL;
    o->state.x = 0;
    o->state.y = 0;
@@ -999,28 +1018,28 @@ void ebits_save(Ebits_Object o, char *file)
 
 	if ((state->normal.image) && (bit->normal.image))
 	  {
-	     snprintf(image, sizeof(image), "%s:/images/%s", file, bit->normal.image);
+	     snprintf(image, sizeof(image), EBITS_FILE_REDIRECT, file, bit->normal.image);
 	     imlib_context_set_image(state->normal.image);
 	     imlib_image_set_format("db");
 	     imlib_save_image(image);
 	  }
 	if ((state->hilited.image) && (bit->hilited.image))
 	  {
-	     snprintf(image, sizeof(image), "%s:/images/%s", file, bit->hilited.image);
+	     snprintf(image, sizeof(image), EBITS_FILE_REDIRECT, file, bit->hilited.image);
 	     imlib_context_set_image(state->hilited.image);
 	     imlib_image_set_format("db");
 	     imlib_save_image(image);
 	  }
 	if ((state->clicked.image) && (bit->clicked.image))
 	  {
-	     snprintf(image, sizeof(image), "%s:/images/%s", file, bit->clicked.image);
+	     snprintf(image, sizeof(image), EBITS_FILE_REDIRECT, file, bit->clicked.image);
 	     imlib_context_set_image(state->clicked.image);
 	     imlib_image_set_format("db");
 	     imlib_save_image(image);
 	  }
 	if ((state->disabled.image) && (bit->disabled.image))
 	  {
-	     snprintf(image, sizeof(image), "%s:/images/%s", file, bit->disabled.image);
+	     snprintf(image, sizeof(image), EBITS_FILE_REDIRECT, file, bit->disabled.image);
 	     imlib_context_set_image(state->disabled.image);
 	     imlib_image_set_format("db");
 	     imlib_save_image(image);
