@@ -57,6 +57,7 @@ od_config_init(void)
   /* not technically correct - iconsets should do this, but it looks better for
    * everything bar 'gentoo' - and we all have the others installed ;) */
   ecore_config_theme_preview_group_set("engage.options.theme", "Terminal");
+  ecore_config_theme_search_path_append(PACKAGE_DATA_DIR "/themes/");
   ecore_config_string_create("engage.options.engine", "software", 'e', "engine",
                              "The X11 engine to use - either software or gl");
   options.icon_path = PACKAGE_DATA_DIR "/icons/";

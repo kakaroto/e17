@@ -79,6 +79,7 @@ main(int argc, char *argv[], char *env[])
 Version 0.0.4 (Dec 8 2003)\n\
 (c)2003 by HandyAndE.\n\
 Usage: equate [options]");
+   ecore_config_theme_search_path_append(PACKAGE_DATA_DIR "/themes/");
 
    /* this controls our defaults */
    ecore_config_int_create_bound("/settings/mode", BASIC, 0, 3, 1, 'm', "mode",
