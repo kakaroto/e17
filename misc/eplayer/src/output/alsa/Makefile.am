@@ -9,6 +9,7 @@ plugindir = @PLUGIN_DIR@/output
 
 libALSA_la_SOURCES = alsa.c
 libALSA_la_LIBADD = @ALSA_LIBS@
-libALSA_la_LDFLAGS = -module -avoid-version
 
 endif
+
+libALSA_la_LDFLAGS = -module -avoid-version

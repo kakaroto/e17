@@ -7,6 +7,7 @@ plugindir = @PLUGIN_DIR@/input
 
 libVorbis_la_SOURCES = vorbis.c
 libVorbis_la_LIBADD = @VORBIS_LIBS@
-libVorbis_la_LDFLAGS = -module -avoid-version
 
 endif
+
+libVorbis_la_LDFLAGS = -module -avoid-version

@@ -122,7 +122,7 @@ void playlist_remove_all(PlayList *pl) {
 }
 
 PlayListItem *playlist_current_item_get(PlayList *pl) {
-	return pl ? pl->cur_item->data : NULL;
+	return pl ? (pl->cur_item ? pl->cur_item->data : NULL) : NULL;
 }
 
 void playlist_current_item_set(PlayList *pl, PlayListItem *pli) {
