@@ -76,7 +76,14 @@ __imlib_build_pow_lut(void)
    for (i = 0; i < 256; i++)
      {
 	for (j = 0; j < 256; j++)
-	   pow_lut[i][j] = 255 * pow((double)i / 255, (double)j / 255);
+/*	   pow_lut[i][j] = 255 * pow((double)i / 255, (double)j / 255);*/
+	  {
+	     int divisor;
+	     
+	     divisor = (i + (j * (255 - i)) / 255);
+	     if (divisor > 0) pow_lut[i][j] = (i * 255) / divisor;
+	     else             pow_lut[i][j] = 0;
+	  }
      }
 }
 
