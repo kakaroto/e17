@@ -409,8 +409,8 @@ render_ewl(void)
   ewl_widget_show(main_box);
 
   notebook = ewl_notebook_new();
-  ewl_notebook_set_tabs_position(EWL_NOTEBOOK(notebook), EWL_POSITION_TOP);
-  ewl_notebook_set_tabs_alignment(EWL_NOTEBOOK(notebook), EWL_FLAG_ALIGN_LEFT);
+  ewl_notebook_tabs_position_set(EWL_NOTEBOOK(notebook), EWL_POSITION_TOP);
+  ewl_notebook_tabs_alignment_set(EWL_NOTEBOOK(notebook), EWL_FLAG_ALIGN_LEFT);
   ewl_container_child_append(EWL_CONTAINER(main_box), notebook);
   ewl_widget_show(notebook);
 
@@ -460,7 +460,7 @@ add_tab(char *name)
   ewl_object_alignment_set(EWL_OBJECT(pane), EWL_FLAG_ALIGN_TOP);
   ewl_widget_show(pane);
 
-  ewl_notebook_prepend_page(EWL_NOTEBOOK(notebook), button, pane);
+  ewl_notebook_page_prepend(EWL_NOTEBOOK(notebook), button, pane);
 
   new_panel = malloc(sizeof(examine_panel));
   new_panel->name = strdup(name);
