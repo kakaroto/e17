@@ -25,7 +25,7 @@
 #include <time.h>
 
 #define EDESK_EVENT_MASK \
-  (KeyPressMask | KeyReleaseMask | ButtonPressMask | ButtonReleaseMask | \
+  (ButtonPressMask | ButtonReleaseMask | \
    EnterWindowMask | LeaveWindowMask | PointerMotionMask | ButtonMotionMask | \
    SubstructureNotifyMask | SubstructureRedirectMask | PropertyChangeMask)
 

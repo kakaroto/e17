@@ -1389,7 +1389,7 @@ GrabActionKey(Action * aa)
      {
 	mod = AnyModifier;
 	XGrabKey(disp, aa->key, mod, VRoot.win, False, GrabModeAsync,
-		 GrabModeAsync);
+		 GrabModeSync);
      }
    else
      {
@@ -1398,7 +1398,7 @@ GrabActionKey(Action * aa)
 	/* grab the key even if locks are on or not */
 	for (i = 0; i < 8; i++)
 	   XGrabKey(disp, aa->key, mod | Mode.masks.mod_combos[i], VRoot.win,
-		    False, GrabModeAsync, GrabModeAsync);
+		    False, GrabModeAsync, GrabModeSync);
      }
 }
 
