@@ -51,11 +51,12 @@ int             current_tile_index = 0;
 int             num_tiles = 0;
 ImlibData      *id = NULL;
 ImlibImage     *images[5];
-Epplet_gadget   action_area, button_left, button_right, button_close, button_config, button_help;
+Epplet_gadget   action_area, button_left, button_right, button_more, button_close, button_config, button_help;
 RGB_buf         window_buf;
 RGB_buf         widescreen_buf;
 RGB_buf         widescreen_canvas_buf;
 char            anim_mount = 0;
+int             is_shown = 0;
 
 /* graphx handling */
 int             IsTransparent(ImlibImage * im, int x, int y);
@@ -77,8 +78,10 @@ void            VisitMountPoints(void);
 MountPoint     *FindMountPointByClick(int x, int y);
 
 /* callbacks/ handlers */
-static void     in_cb(void *data, Window w);
-static void     out_cb(void *data, Window w);
+/*
+static void     CallbackEnter(void *data, Window w);
+static void     CallbackLeave(void *data, Window w);
+*/
 static void     CallbackExpose(void *data, Window win, int x, int y, int w, int h);
 static void     CallbackButtonUp(void *data, Window win, int x, int y, int b);
 static void     CallbackExit(void *data);
@@ -86,6 +89,7 @@ static void     CallbackSlideLeft(void *data);
 static void     CallbackSlideRight(void *data);
 static void     CallbackAnimate(void *data);
 static void     CallbackHelp(void *data);
+static void     CallbackShowMore(void *data);
 
 /* config stuff */
 void            SetupDefaults(void);

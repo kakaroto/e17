@@ -9,9 +9,52 @@ error_exit(void)
 }
 
 static void
+CallbackShowMore(void *data)
+{
+  if (!is_shown)
+    {
+      Epplet_gadget_show(button_help);
+      Epplet_gadget_show(button_config);
+      Epplet_gadget_show(button_close);
+    }
+  else
+    {
+      Epplet_gadget_hide(button_help);
+      Epplet_gadget_hide(button_config);
+      Epplet_gadget_hide(button_close);
+    }
+  is_shown = !(is_shown);
+  return;
+  data = NULL;
+}
+
+/* don't need that right now.
+
+static void
+CallbackEnter(void *data, Window w)
+{
+  Epplet_gadget_show(button_more);
+  return;
+  data = NULL;
+  w = (Window) 0;
+}
+
+static void
+CallbackLeave(void *data, Window w)
+{
+  Epplet_gadget_hide(button_more);
+  return;
+  data = NULL;
+  w = (Window) 0;
+}
+
+*/
+
+static void
 CallbackHelp(void *data)
 {
   Epplet_show_about("E-Mountbox");
+  CallbackShowMore(NULL);
   return;
   data = NULL;
 }
@@ -23,6 +66,7 @@ CallbackConfigure(void *data)
   Epplet_dialog_ok("You are using a development version of this epplet.\n"
 		   "This button doesn't do anything yet --\n"
 		   "We apologize for the inconvenience :)");
+  CallbackShowMore(NULL);
   return;
   data = NULL;
 }
@@ -655,29 +699,6 @@ CallbackExpose(void *data, Window win, int x, int y, int w, int h)
   win = x = y = w = h = 0;
 }
 
-static void
-in_cb(void *data, Window w) {
-
-  Epplet_gadget_show(button_help);
-  Epplet_gadget_show(button_config);
-  Epplet_gadget_show(button_close);
-  return;
-  data = NULL;
-  w = (Window) 0;
-}
-
-static void
-out_cb(void *data, Window w) {
-
-  Epplet_gadget_hide(button_help);
-  Epplet_gadget_hide(button_config);
-  Epplet_gadget_hide(button_close);
-  return;
-  data = NULL;
-  w = (Window) 0;
-}
-
-
 void
 SetupDefaults(void)
 {
@@ -822,12 +843,16 @@ SetupGraphx(void)
 							  33, 34, 0, 0, "ARROW_RIGHT", 0, NULL, 
 							  CallbackSlideRight, NULL)));
   Epplet_gadget_show((action_area = Epplet_create_drawingarea(2, 2, 44, 32)));
+
+  Epplet_gadget_show((button_more = Epplet_create_button("...", NULL, 14, 34, 20, 12, NULL, 0, NULL, CallbackShowMore, NULL)));
   button_help = Epplet_create_button(NULL, NULL, 3, 3, 0, 0, "HELP", 0, NULL, CallbackHelp, NULL);
   button_close = Epplet_create_button(NULL, NULL, 33, 3, 0, 0, "CLOSE", 0, NULL, CallbackExit, NULL);
   button_config = Epplet_create_button(NULL, NULL, 18, 3, 0, 0, "CONFIGURE", 0, NULL, CallbackConfigure, NULL);
 
-  Epplet_register_focus_in_handler(in_cb, NULL);
-  Epplet_register_focus_out_handler(out_cb, NULL);
+  /*
+  Epplet_register_focus_in_handler(CallbackEnter, NULL);
+  Epplet_register_focus_out_handler(CallbackLeave, NULL);
+  */
   Epplet_register_expose_handler(CallbackExpose, NULL);
   Epplet_register_button_release_handler(CallbackButtonUp, NULL);
 
@@ -851,4 +876,5 @@ main(int argc, char** argv)
 
    Epplet_Loop();
    error_exit();
+   return 0;
 }
