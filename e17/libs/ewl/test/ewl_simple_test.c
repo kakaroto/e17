@@ -82,6 +82,11 @@ void test_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 			CURRENT_Y(w), CURRENT_W(w), CURRENT_H(w));
 }
 
+void close_cb(Ewl_Widget *w, void *ev_data, void *user_data)
+{
+	ewl_main_quit();
+}
+
 void button_down(Ewl_Widget *w, void *ev_data, void *user_data)
 {
 	Ewl_Widget *logo = user_data;
@@ -108,8 +113,7 @@ int main(int argc, char **argv)
 	snprintf(tmp, PATH_MAX, "%s/images/bg.eet", PACKAGE_DATA_DIR);
 
 	win = ewl_window_new();
-	ewl_callback_append(win, EWL_CALLBACK_CONFIGURE, test_cb,
-			"configure window");
+	ewl_callback_append(win, EWL_CALLBACK_DELETE_WINDOW, close_cb, NULL);
 	ewl_object_request_size(EWL_OBJECT(win), 240, 320);
 	ewl_theme_data_set_str(win, "/window/file", tmp);
 	ewl_theme_data_set_str(win, "/window/group", "bg");
