@@ -838,6 +838,7 @@ imlib_create_image(int width, int height)
    
    if ((width <= 0) || (height <= 0))
       return NULL;
+   printf("%ix%i\n", width, height);
    data = malloc(width * height * sizeof(DATA32));
    if (data)
       return (Imlib_Image)__imlib_CreateImage(width, height, data);

@@ -511,6 +511,7 @@ __imlib_draw_line(ImlibImage *im, int x1, int y1, int x2, int y2,
 		       BLEND(r, g, b, a, p);
 		       p += im->w;
 		    }
+		  if (!make_updates) return NULL;
 		  return __imlib_AddUpdate(NULL, x1, y1, 1, (y2 - y1 + 1));
 	       }
 	     else
@@ -521,6 +522,7 @@ __imlib_draw_line(ImlibImage *im, int x1, int y1, int x2, int y2,
 		       BLEND(r, g, b, a, p);
 		       p += im->w;
 		    }
+		  if (!make_updates) return NULL;
 		  return __imlib_AddUpdate(NULL, x1, y2, 1, (y1 - y2 + 1));
 	       }
 	  }
@@ -535,6 +537,7 @@ __imlib_draw_line(ImlibImage *im, int x1, int y1, int x2, int y2,
 		       BLEND(r, g, b, a, p);
 		       p++;
 		    }
+		  if (!make_updates) return NULL;
 		  return __imlib_AddUpdate(NULL, x1, y1, (x2 - x1 + 1), 1);
 	       }
 	     else
@@ -545,6 +548,7 @@ __imlib_draw_line(ImlibImage *im, int x1, int y1, int x2, int y2,
 		       BLEND(r, g, b, a, p);
 		       p++;
 		    }
+		  if (!make_updates) return NULL;
 		  return __imlib_AddUpdate(NULL, x2, y1, (x1 - x2 + 1), 1);
 	       }
 	  }
@@ -575,6 +579,7 @@ __imlib_draw_line(ImlibImage *im, int x1, int y1, int x2, int y2,
 			 }
 		       x += dx;
 		    }
+		  if (!make_updates) return NULL;
 		  return __imlib_AddUpdate(NULL, x1, y1, 
 					   (x2 - x1 + 1), (y2 - y1 + 1));
 	       }
@@ -599,6 +604,7 @@ __imlib_draw_line(ImlibImage *im, int x1, int y1, int x2, int y2,
 			 }
 		       y += dy;
 		    }
+		  if (!make_updates) return NULL;
 		  return __imlib_AddUpdate(NULL, x1, y1, 
 					   (x2 - x1 + 1), (y2 - y1 + 1));
 	       }
@@ -630,6 +636,7 @@ __imlib_draw_line(ImlibImage *im, int x1, int y1, int x2, int y2,
 			 }
 		       x += dx;
 		    }
+		  if (!make_updates) return NULL;
 		  return __imlib_AddUpdate(NULL, x1, y2, 
 					   (x2 - x1 + 1), (y1 - y2 + 1));
 	       }
@@ -654,6 +661,7 @@ __imlib_draw_line(ImlibImage *im, int x1, int y1, int x2, int y2,
 			 }
 		       y += dy;
 		    }
+		  if (!make_updates) return NULL;
 		  return __imlib_AddUpdate(NULL, x1, y2, 
 					   (x2 - x1 + 1), (y1 - y2 + 1));
 	       }
@@ -671,6 +679,7 @@ __imlib_draw_line(ImlibImage *im, int x1, int y1, int x2, int y2,
 		       BLEND_ADD(r, g, b, a, p);
 		       p += im->w;
 		    }
+		  if (!make_updates) return NULL;
 		  return __imlib_AddUpdate(NULL, x1, y1, 1, (y2 - y1 + 1));
 	       }
 	     else
@@ -681,6 +690,7 @@ __imlib_draw_line(ImlibImage *im, int x1, int y1, int x2, int y2,
 		       BLEND_ADD(r, g, b, a, p);
 		       p += im->w;
 		    }
+		  if (!make_updates) return NULL;
 		  return __imlib_AddUpdate(NULL, x1, y2, 1, (y1 - y2 + 1));
 	       }
 	  }
@@ -695,6 +705,7 @@ __imlib_draw_line(ImlibImage *im, int x1, int y1, int x2, int y2,
 		       BLEND_ADD(r, g, b, a, p);
 		       p++;
 		    }
+		  if (!make_updates) return NULL;
 		  return __imlib_AddUpdate(NULL, x1, y1, (x2 - x1 + 1), 1);
 	       }
 	     else
@@ -705,6 +716,7 @@ __imlib_draw_line(ImlibImage *im, int x1, int y1, int x2, int y2,
 		       BLEND_ADD(r, g, b, a, p);
 		       p++;
 		    }
+		  if (!make_updates) return NULL;
 		  return __imlib_AddUpdate(NULL, x2, y1, (x1 - x2 + 1), 1);
 	       }
 	  }
@@ -735,6 +747,7 @@ __imlib_draw_line(ImlibImage *im, int x1, int y1, int x2, int y2,
 			 }
 		       x += dx;
 		    }
+		  if (!make_updates) return NULL;
 		  return __imlib_AddUpdate(NULL, x1, y1, 
 					   (x2 - x1 + 1), (y2 - y1 + 1));
 	       }
@@ -759,6 +772,7 @@ __imlib_draw_line(ImlibImage *im, int x1, int y1, int x2, int y2,
 			 }
 		       y += dy;
 		    }
+		  if (!make_updates) return NULL;
 		  return __imlib_AddUpdate(NULL, x1, y1, 
 					   (x2 - x1 + 1), (y2 - y1 + 1));
 	       }
@@ -790,6 +804,7 @@ __imlib_draw_line(ImlibImage *im, int x1, int y1, int x2, int y2,
 			 }
 		       x += dx;
 		    }
+		  if (!make_updates) return NULL;
 		  return __imlib_AddUpdate(NULL, x1, y2, 
 					   (x2 - x1 + 1), (y1 - y2 + 1));
 	       }
@@ -814,6 +829,7 @@ __imlib_draw_line(ImlibImage *im, int x1, int y1, int x2, int y2,
 			 }
 		       y += dy;
 		    }
+		  if (!make_updates) return NULL;
 		  return __imlib_AddUpdate(NULL, x1, y2, 
 					   (x2 - x1 + 1), (y1 - y2 + 1));
 	       }
@@ -831,6 +847,7 @@ __imlib_draw_line(ImlibImage *im, int x1, int y1, int x2, int y2,
 		       BLEND_SUB(r, g, b, a, p);
 		       p += im->w;
 		    }
+		  if (!make_updates) return NULL;
 		  return __imlib_AddUpdate(NULL, x1, y1, 1, (y2 - y1 + 1));
 	       }
 	     else
@@ -841,6 +858,7 @@ __imlib_draw_line(ImlibImage *im, int x1, int y1, int x2, int y2,
 		       BLEND_SUB(r, g, b, a, p);
 		       p += im->w;
 		    }
+		  if (!make_updates) return NULL;
 		  return __imlib_AddUpdate(NULL, x1, y2, 1, (y1 - y2 + 1));
 	       }
 	  }
@@ -855,6 +873,7 @@ __imlib_draw_line(ImlibImage *im, int x1, int y1, int x2, int y2,
 		       BLEND_SUB(r, g, b, a, p);
 		       p++;
 		    }
+		  if (!make_updates) return NULL;
 		  return __imlib_AddUpdate(NULL, x1, y1, (x2 - x1 + 1), 1);
 	       }
 	     else
@@ -865,6 +884,7 @@ __imlib_draw_line(ImlibImage *im, int x1, int y1, int x2, int y2,
 		       BLEND_SUB(r, g, b, a, p);
 		       p++;
 		    }
+		  if (!make_updates) return NULL;
 		  return __imlib_AddUpdate(NULL, x2, y1, (x1 - x2 + 1), 1);
 	       }
 	  }
@@ -895,6 +915,7 @@ __imlib_draw_line(ImlibImage *im, int x1, int y1, int x2, int y2,
 			 }
 		       x += dx;
 		    }
+		  if (!make_updates) return NULL;
 		  return __imlib_AddUpdate(NULL, x1, y1, 
 					   (x2 - x1 + 1), (y2 - y1 + 1));
 	       }
@@ -919,6 +940,7 @@ __imlib_draw_line(ImlibImage *im, int x1, int y1, int x2, int y2,
 			 }
 		       y += dy;
 		    }
+		  if (!make_updates) return NULL;
 		  return __imlib_AddUpdate(NULL, x1, y1, 
 					   (x2 - x1 + 1), (y2 - y1 + 1));
 	       }
@@ -950,6 +972,7 @@ __imlib_draw_line(ImlibImage *im, int x1, int y1, int x2, int y2,
 			 }
 		       x += dx;
 		    }
+		  if (!make_updates) return NULL;
 		  return __imlib_AddUpdate(NULL, x1, y2, 
 					   (x2 - x1 + 1), (y1 - y2 + 1));
 	       }
@@ -974,6 +997,7 @@ __imlib_draw_line(ImlibImage *im, int x1, int y1, int x2, int y2,
 			 }
 		       y += dy;
 		    }
+		  if (!make_updates) return NULL;
 		  return __imlib_AddUpdate(NULL, x1, y2, 
 					   (x2 - x1 + 1), (y1 - y2 + 1));
 	       }
@@ -991,6 +1015,7 @@ __imlib_draw_line(ImlibImage *im, int x1, int y1, int x2, int y2,
 		       BLEND_RE(r, g, b, a, p);
 		       p += im->w;
 		    }
+		  if (!make_updates) return NULL;
 		  return __imlib_AddUpdate(NULL, x1, y1, 1, (y2 - y1 + 1));
 	       }
 	     else
@@ -1001,6 +1026,7 @@ __imlib_draw_line(ImlibImage *im, int x1, int y1, int x2, int y2,
 		       BLEND_RE(r, g, b, a, p);
 		       p += im->w;
 		    }
+		  if (!make_updates) return NULL;
 		  return __imlib_AddUpdate(NULL, x1, y2, 1, (y1 - y2 + 1));
 	       }
 	  }
@@ -1015,6 +1041,7 @@ __imlib_draw_line(ImlibImage *im, int x1, int y1, int x2, int y2,
 		       BLEND_RE(r, g, b, a, p);
 		       p++;
 		    }
+		  if (!make_updates) return NULL;
 		  return __imlib_AddUpdate(NULL, x1, y1, (x2 - x1 + 1), 1);
 	       }
 	     else
@@ -1025,6 +1052,7 @@ __imlib_draw_line(ImlibImage *im, int x1, int y1, int x2, int y2,
 		       BLEND_RE(r, g, b, a, p);
 		       p++;
 		    }
+		  if (!make_updates) return NULL;
 		  return __imlib_AddUpdate(NULL, x2, y1, (x1 - x2 + 1), 1);
 	       }
 	  }
@@ -1055,6 +1083,7 @@ __imlib_draw_line(ImlibImage *im, int x1, int y1, int x2, int y2,
 			 }
 		       x += dx;
 		    }
+		  if (!make_updates) return NULL;
 		  return __imlib_AddUpdate(NULL, x1, y1, 
 					   (x2 - x1 + 1), (y2 - y1 + 1));
 	       }
@@ -1079,6 +1108,7 @@ __imlib_draw_line(ImlibImage *im, int x1, int y1, int x2, int y2,
 			 }
 		       y += dy;
 		    }
+		  if (!make_updates) return NULL;
 		  return __imlib_AddUpdate(NULL, x1, y1, 
 					   (x2 - x1 + 1), (y2 - y1 + 1));
 	       }
@@ -1110,6 +1140,7 @@ __imlib_draw_line(ImlibImage *im, int x1, int y1, int x2, int y2,
 			 }
 		       x += dx;
 		    }
+		  if (!make_updates) return NULL;
 		  return __imlib_AddUpdate(NULL, x1, y2, 
 					   (x2 - x1 + 1), (y1 - y2 + 1));
 	       }
@@ -1134,6 +1165,7 @@ __imlib_draw_line(ImlibImage *im, int x1, int y1, int x2, int y2,
 			 }
 		       y += dy;
 		    }
+		  if (!make_updates) return NULL;
 		  return __imlib_AddUpdate(NULL, x1, y2, 
 					   (x2 - x1 + 1), (y1 - y2 + 1));
 	       }
