@@ -41,7 +41,7 @@ geist_line_init(geist_line * line)
    obj->get_resize_box_coords = geist_line_get_resize_box_coords;
    obj->check_resize_click = geist_line_check_resize_click;
    obj->click_is_selection = geist_line_click_is_selection;
-	obj->update_dimensions_relative = geist_line_update_dimensions_relative;
+   obj->update_dimensions_relative = geist_line_update_dimensions_relative;
    obj->get_updates = geist_line_get_updates;
    obj->sizemode = SIZEMODE_STRETCH;
    obj->alignment = ALIGN_NONE;
@@ -203,7 +203,7 @@ geist_line_resize(geist_object * obj, int x, int y)
    line = GEIST_LINE(obj);
 
    D(5, ("resize to %d,%d\n", x, y));
-   
+
    x += obj->clicked_x;
    y += obj->clicked_y;
 
@@ -451,13 +451,12 @@ geist_line_get_clipped_line(geist_line * line, int *clip_x0, int *clip_y0,
    obj = GEIST_OBJECT(line);
 
    D_RETURN(3,
-            geist_imlib_line_clip(line->start.x + obj->rendered_x + obj->x,
-                                  line->start.y + obj->rendered_y + obj->y,
-                                  line->end.x + obj->rendered_x + obj->x,
-                                  line->end.y + obj->rendered_y + obj->y,
-                                  obj->x, obj->x + obj->w, obj->y,
-                                  obj->y + obj->h, clip_x0, clip_y0, clip_x1,
-                                  clip_y1));
+            imlib_clip_line(line->start.x + obj->rendered_x + obj->x,
+                            line->start.y + obj->rendered_y + obj->y,
+                            line->end.x + obj->rendered_x + obj->x,
+                            line->end.y + obj->rendered_y + obj->y, obj->x,
+                            obj->x + obj->w, obj->y, obj->y + obj->h, clip_x0,
+                            clip_y0, clip_x1, clip_y1));
 }
 
 void
@@ -499,8 +498,7 @@ geist_line_render_selected(geist_object * obj, Imlib_Image dest,
    }
 }
 
-Imlib_Updates
-geist_line_get_selection_updates(geist_object * obj)
+Imlib_Updates geist_line_get_selection_updates(geist_object * obj)
 {
    Imlib_Updates up = NULL;
    int clip_x0, clip_y0, clip_x1, clip_y1;
@@ -629,151 +627,152 @@ geist_line_click_is_selection(geist_object * obj, int x, int y)
          D_RETURN(3, 1);
    }
 
-      gradient = ((double) clip_y1 - clip_y0) / ((double) clip_x1 - clip_x0);
-      D(5, ("gradient %f\n", gradient));
-      if (clip_x0 < clip_x1)
+   gradient = ((double) clip_y1 - clip_y0) / ((double) clip_x1 - clip_x0);
+   D(5, ("gradient %f\n", gradient));
+   if (clip_x0 < clip_x1)
+   {
+      if (clip_y0 < clip_y1)
       {
-         if (clip_y0 < clip_y1)
+         /*  a 
+          *   \
+          *    \
+          *     \
+          *      b
+          */
+         dy = clip_y1 - clip_y0;
+         dx = clip_x1 - clip_x0;
+         if (dx > dy)
          {
-            /*  a 
-             *   \
-             *    \
-             *     \
-             *      b
-             */
-            dy = clip_y1 - clip_y0;
-            dx = clip_x1 - clip_x0;
-            if (dx > dy)
+            /* shallow */
+            D(5, ("shallow downwards line left to right\n"));
+            for (i = x - 5; i < x + 6; i++)
             {
-               /* shallow */
-               D(5, ("shallow downwards line left to right\n"));
-               for (i = x - 5; i < x + 6; i++)
-               {
-                  line_y = (gradient * (i - clip_x0)) + clip_y0;
-                  if ((y >= line_y - 5) && (y <= line_y + 5))
-                     D_RETURN(3, 1);
-               }
-            }
-            else
-            {
-               /* steep */
-               D(5, ("steep downwards line left to right\n"));
-               for (i = y - 5; i < y + 6; i++)
-               {
-                  line_x = ((1 / gradient) * (i - clip_y0)) + clip_x0;
-                  if ((x >= line_x - 5) && (x <= line_x + 5))
-                     D_RETURN(3, 1);
-               }
+               line_y = (gradient * (i - clip_x0)) + clip_y0;
+               if ((y >= line_y - 5) && (y <= line_y + 5))
+                  D_RETURN(3, 1);
             }
          }
          else
          {
-            /*      b
-             *     /
-             *    /
-             *   /
-             *  a
-             */
-            dy = clip_y0 - clip_y1;
-            dx = clip_x1 - clip_x0;
-            if (dx > dy)
+            /* steep */
+            D(5, ("steep downwards line left to right\n"));
+            for (i = y - 5; i < y + 6; i++)
             {
-               /* shallow */
-               D(5, ("shallow upwards line left to right\n"));
-               for (i = x - 5; i < x + 6; i++)
-               {
-                  line_y = (gradient * (i - clip_x0)) + clip_y0;
-                  if ((y >= line_y - 5) && (y <= line_y + 5))
-                     D_RETURN(3, 1);
-               }
-            }
-            else
-            {
-               /* steep */
-               D(5, ("steep upwards line left to right\n"));
-               for (i = y - 5; i < y + 6; i++)
-               {
-                  line_x = ((1 / gradient) * (i - clip_y0)) + clip_x0;
-                  if ((x >= line_x - 5) && (x <= line_x + 5))
-                     D_RETURN(3, 1);
-               }
+               line_x = ((1 / gradient) * (i - clip_y0)) + clip_x0;
+               if ((x >= line_x - 5) && (x <= line_x + 5))
+                  D_RETURN(3, 1);
             }
          }
       }
       else
       {
-         if (clip_y0 < clip_y1)
+         /*      b
+          *     /
+          *    /
+          *   /
+          *  a
+          */
+         dy = clip_y0 - clip_y1;
+         dx = clip_x1 - clip_x0;
+         if (dx > dy)
          {
-            /*      a
-             *     /
-             *    /
-             *   /
-             *  b
-             */
-            dy = clip_y1 - clip_y0;
-            dx = clip_x0 - clip_x1;
-            if (dx > dy)
+            /* shallow */
+            D(5, ("shallow upwards line left to right\n"));
+            for (i = x - 5; i < x + 6; i++)
             {
-               /* shallow */
-               D(5, ("shallow downwards line right to left\n"));
-               for (i = x - 5; i < x + 6; i++)
-               {
-                  line_y = (gradient * (i - clip_x0)) + clip_y0;
-                  if ((y >= line_y - 5) && (y <= line_y + 5))
-                     D_RETURN(3, 1);
-               }
-            }
-            else
-            {
-               /* steep */
-               D(5, ("steep downwards line right to left\n"));
-               for (i = y - 5; i < y + 6; i++)
-               {
-                  line_x = ((1 / gradient) * (i - clip_y0)) + clip_x0;
-                  if ((x >= line_x - 5) && (x <= line_x + 5))
-                     D_RETURN(3, 1);
-               }
+               line_y = (gradient * (i - clip_x0)) + clip_y0;
+               if ((y >= line_y - 5) && (y <= line_y + 5))
+                  D_RETURN(3, 1);
             }
          }
          else
          {
-            /*  b
-             *   \
-             *    \
-             *     \
-             *      a
-             */
-            dy = clip_y0 - clip_y1;
-            dx = clip_x0 - clip_x1;
-            if (dx > dy)
+            /* steep */
+            D(5, ("steep upwards line left to right\n"));
+            for (i = y - 5; i < y + 6; i++)
             {
-               /* shallow */
-               D(5, ("shallow upwards line right to left\n"));
-               for (i = x - 5; i < x + 6; i++)
-               {
-                  line_y = (gradient * (i - clip_x0)) + clip_y0;
-                  if ((y >= line_y - 5) && (y <= line_y + 5))
-                     D_RETURN(3, 1);
-               }
-            }
-            else
-            {
-               /* steep */
-               D(5, ("steep upwards line right to left\n"));
-               for (i = y - 5; i < y + 6; i++)
-               {
-                  line_x = ((1 / gradient) * (i - clip_y0)) + clip_x0;
-                  if ((x >= line_x - 5) && (x <= line_x + 5))
-                     D_RETURN(3, 1);
-               }
+               line_x = ((1 / gradient) * (i - clip_y0)) + clip_x0;
+               if ((x >= line_x - 5) && (x <= line_x + 5))
+                  D_RETURN(3, 1);
             }
          }
       }
+   }
+   else
+   {
+      if (clip_y0 < clip_y1)
+      {
+         /*      a
+          *     /
+          *    /
+          *   /
+          *  b
+          */
+         dy = clip_y1 - clip_y0;
+         dx = clip_x0 - clip_x1;
+         if (dx > dy)
+         {
+            /* shallow */
+            D(5, ("shallow downwards line right to left\n"));
+            for (i = x - 5; i < x + 6; i++)
+            {
+               line_y = (gradient * (i - clip_x0)) + clip_y0;
+               if ((y >= line_y - 5) && (y <= line_y + 5))
+                  D_RETURN(3, 1);
+            }
+         }
+         else
+         {
+            /* steep */
+            D(5, ("steep downwards line right to left\n"));
+            for (i = y - 5; i < y + 6; i++)
+            {
+               line_x = ((1 / gradient) * (i - clip_y0)) + clip_x0;
+               if ((x >= line_x - 5) && (x <= line_x + 5))
+                  D_RETURN(3, 1);
+            }
+         }
+      }
+      else
+      {
+         /*  b
+          *   \
+          *    \
+          *     \
+          *      a
+          */
+         dy = clip_y0 - clip_y1;
+         dx = clip_x0 - clip_x1;
+         if (dx > dy)
+         {
+            /* shallow */
+            D(5, ("shallow upwards line right to left\n"));
+            for (i = x - 5; i < x + 6; i++)
+            {
+               line_y = (gradient * (i - clip_x0)) + clip_y0;
+               if ((y >= line_y - 5) && (y <= line_y + 5))
+                  D_RETURN(3, 1);
+            }
+         }
+         else
+         {
+            /* steep */
+            D(5, ("steep upwards line right to left\n"));
+            for (i = y - 5; i < y + 6; i++)
+            {
+               line_x = ((1 / gradient) * (i - clip_y0)) + clip_x0;
+               if ((x >= line_x - 5) && (x <= line_x + 5))
+                  D_RETURN(3, 1);
+            }
+         }
+      }
+   }
 
    D_RETURN(3, 0);
 }
 
-Imlib_Updates geist_line_get_updates(geist_object * obj)
+Imlib_Updates
+geist_line_get_updates(geist_object * obj)
 {
    Imlib_Updates up = NULL;
    int clip_x0, clip_y0, clip_x1, clip_y1;
@@ -800,8 +799,9 @@ Imlib_Updates geist_line_get_updates(geist_object * obj)
    if (clip_x1 == clip_x0)
    {
       up =
-         imlib_update_append_rect(up, clip_x0, clip_y0, clip_x1 - clip_x0 + 1,
-                                  clip_y1 - clip_y0 + 1);
+         imlib_update_append_rect(up, clip_x0 - 1, clip_y0 - 1,
+                                  clip_x1 - clip_x0 + 2,
+                                  clip_y1 - clip_y0 + 2);
    }
    else
    {
@@ -943,28 +943,28 @@ Imlib_Updates geist_line_get_updates(geist_object * obj)
    D_RETURN(3, up);
 }
 
-void 
-geist_line_update_dimensions_relative (geist_object *obj, int w_offset,
-												   int h_offset)
+void
+geist_line_update_dimensions_relative(geist_object * obj, int w_offset,
+                                      int h_offset)
 {
-	geist_line *line;
-	int x,y;
-	
-	D_ENTER(3);
-	obj->resize = RESIZE_RIGHT;
-	line = GEIST_LINE(obj);
-	
-	if (line->end.x > line->start.x)
-		x = obj->x + line->end.x + w_offset;
-	else
-		x = obj->x + line->end.x - w_offset;
-	
-	if (line->end.y > line->start.y)
-		y = obj->y + line->end.y + h_offset;
-	else
-		y = obj->y + line->end.y - h_offset;
-	
-	geist_line_resize(obj, x, y);
-	
-	D_RETURN_(3);
+   geist_line *line;
+   int x, y;
+
+   D_ENTER(3);
+   obj->resize = RESIZE_RIGHT;
+   line = GEIST_LINE(obj);
+
+   if (line->end.x > line->start.x)
+      x = obj->x + line->end.x + w_offset;
+   else
+      x = obj->x + line->end.x - w_offset;
+
+   if (line->end.y > line->start.y)
+      y = obj->y + line->end.y + h_offset;
+   else
+      y = obj->y + line->end.y - h_offset;
+
+   geist_line_resize(obj, x, y);
+
+   D_RETURN_(3);
 }

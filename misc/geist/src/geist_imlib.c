@@ -24,12 +24,6 @@
 
 #include "geist_imlib.h"
 
-typedef unsigned int outcode;
-enum
-{ TOP = 0x1, BOTTOM = 0x2, RIGHT = 0x4, LEFT = 0x8 };
-outcode comp_outcode(double x, double y, double xmin, double xmax,
-                     double ymin, double ymax);
-
 int
 geist_imlib_load_image(Imlib_Image * im, char *filename)
 {
@@ -308,7 +302,8 @@ geist_imlib_get_text_size(Imlib_Font fn, char *text, int *w, int *h,
    imlib_get_text_size(text, w, h);
 }
 
-Imlib_Image geist_imlib_clone_image(Imlib_Image im)
+Imlib_Image
+geist_imlib_clone_image(Imlib_Image im)
 {
    imlib_context_set_image(im);
    return imlib_clone_image();
@@ -360,10 +355,10 @@ geist_imlib_blend_image_onto_image_with_rotation(Imlib_Image dest_image,
    dh = 0;
 }
 
-Imlib_Image geist_imlib_create_cropped_scaled_image(Imlib_Image im, int sx,
-                                                    int sy, int sw, int sh,
-                                                    int dw, int dh,
-                                                    char alias)
+Imlib_Image
+geist_imlib_create_cropped_scaled_image(Imlib_Image im, int sx, int sy,
+                                        int sw, int sh, int dw, int dh,
+                                        char alias)
 {
    imlib_context_set_image(im);
    imlib_context_set_anti_alias(alias);
@@ -416,7 +411,8 @@ geist_imlib_image_draw_line(Imlib_Image im, int x1, int y1, int x2, int y2,
    imlib_image_draw_line(x1, y1, x2, y2, make_updates);
 }
 
-Imlib_Image geist_imlib_create_rotated_image(Imlib_Image im, double angle)
+Imlib_Image
+geist_imlib_create_rotated_image(Imlib_Image im, double angle)
 {
    imlib_context_set_image(im);
    return (imlib_create_rotated_image(angle));
@@ -443,8 +439,7 @@ geist_imlib_image_sharpen(Imlib_Image im, int radius)
    imlib_image_sharpen(radius);
 }
 
-DATA8
-geist_imlib_image_part_is_transparent(Imlib_Image im, int x, int y)
+DATA8 geist_imlib_image_part_is_transparent(Imlib_Image im, int x, int y)
 {
    Imlib_Color c;
    int num = 0;
@@ -489,103 +484,12 @@ geist_imlib_image_part_is_transparent(Imlib_Image im, int x, int y)
    return 1;
 }
 
-int
-geist_imlib_line_clip(int x0, int y0, int x1, int y1, int xmin, int xmax,
-                      int ymin, int ymax, int *clip_x0, int *clip_y0,
-                      int *clip_x1, int *clip_y1)
-{
-   outcode outcode0, outcode1, outcode_out;
-   unsigned char accept = FALSE, done = FALSE;
-
-   outcode0 = comp_outcode(x0, y0, xmin, xmax, ymin, ymax);
-   outcode1 = comp_outcode(x1, y1, xmin, xmax, ymin, ymax);
-
-   do
-   {
-      if (!(outcode0 | outcode1))
-      {
-         accept = TRUE;
-         done = TRUE;
-      }
-      else if (outcode0 & outcode1)
-         done = TRUE;
-      else
-      {
-         double x, y;
-
-         outcode_out = outcode0 ? outcode0 : outcode1;
-         if (outcode_out & TOP)
-         {
-            x = x0 + (x1 - x0) * (ymax - y0) / (y1 - y0);
-            y = ymax;
-         }
-         else if (outcode_out & BOTTOM)
-         {
-            x = x0 + (x1 - x0) * (ymin - y0) / (y1 - y0);
-            y = ymin;
-         }
-         else if (outcode_out & RIGHT)
-         {
-            y = y0 + (y1 - y0) * (xmax - x0) / (x1 - x0);
-            x = xmax;
-         }
-         else
-         {
-            y = y0 + (y1 - y0) * (xmin - x0) / (x1 - x0);
-            x = xmin;
-         }
-         if (outcode_out == outcode0)
-         {
-            x0 = x;
-            y0 = y;
-            outcode0 = comp_outcode(x0, y0, xmin, xmax, ymin, ymax);
-         }
-         else
-         {
-            x1 = x;
-            y1 = y;
-            outcode1 = comp_outcode(x1, y1, xmin, xmax, ymin, ymax);
-         }
-      }
-   }
-   while (done == FALSE);
-
-   *clip_x0 = x0;
-   *clip_y0 = y0;
-   *clip_x1 = x1;
-   *clip_y1 = y1;
-
-   return accept;
-}
-
-
 void
 geist_imlib_line_clip_and_draw(Imlib_Image dest, int x0, int y0, int x1,
                                int y1, int xmin, int xmax, int ymin, int ymax,
                                int r, int g, int b, int a)
 {
-   int clip_x0, clip_x1, clip_y0, clip_y1;
-
-   if (geist_imlib_line_clip
-       (x0, y0, x1, y1, xmin, xmax, ymin, ymax, &clip_x0, &clip_x1, &clip_y0,
-        &clip_y1))
-      geist_imlib_image_draw_line(dest, clip_x0, clip_x1, clip_y0, clip_y1, 0,
-                                  r, g, b, a);
-}
-
-outcode
-comp_outcode(double x, double y, double xmin, double xmax, double ymin,
-             double ymax)
-{
-   outcode code = 0;
-
-   if (y > ymax)
-      code |= TOP;
-   else if (y < ymin)
-      code |= BOTTOM;
-   if (x > xmax)
-      code |= RIGHT;
-   else if (x < xmin)
-      code |= LEFT;
-   return code;
+   imlib_context_set_cliprect(xmin, ymin, xmax - xmin, ymax - ymin);
+   geist_imlib_image_draw_line(dest, x0, y0, x1, y1, 0, r, g, b, a);
+   imlib_context_set_cliprect(0, 0, 0, 0);
 }

@@ -1408,6 +1408,10 @@ refresh_w_cb(GtkWidget * widget, gpointer * data)
    h = current_doc->h;
 
    geist_document_resize(current_doc, w, h);
+   /*
+   while(gtk_events_pending())
+      gtk_main_iteration();
+   */
 
    D_RETURN_(3);
 }

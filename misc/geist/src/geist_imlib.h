@@ -153,9 +153,5 @@ void
 geist_imlib_line_clip_and_draw(Imlib_Image dest, int x0, int y0, int x1,
                                int y1, int xmin, int xmax, int ymin, int ymax,
                                int r, int g, int b, int a);
-int
-geist_imlib_line_clip(int x0, int y0, int x1, int y1, int xmin, int xmax,
-                      int ymin, int ymax, int *clip_x0, int *clip_y0,
-                      int *clip_x1, int *clip_y1);
 
 #endif
