@@ -135,6 +135,15 @@ void ewl_widget_realize(Ewl_Widget * w)
 		ewl_widget_show(w);
 	}
 
+	/*
+	 * If somehow the child doesn't cause the parent to get a configure
+	 * request, this will catch it.
+	 */
+	if (w->parent)
+		ewl_widget_configure(w->parent);
+	else
+		ewl_widget_configure(w);
+
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
@@ -196,6 +205,9 @@ void ewl_widget_show(Ewl_Widget * w)
 	if (flags)
 		ewl_realize_request(w);
 
+	if (w->parent)
+		ewl_widget_configure(w->parent);
+
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
@@ -224,6 +236,9 @@ void ewl_widget_hide(Ewl_Widget * w)
 
 	ewl_object_remove_visible(EWL_OBJECT(w), EWL_FLAG_VISIBLE_SHOWN);
 	ewl_callback_call(w, EWL_CALLBACK_HIDE);
+
+	if (w->parent)
+		ewl_widget_configure(w->parent);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -533,6 +548,9 @@ void ewl_widget_set_parent(Ewl_Widget * w, Ewl_Widget * p)
 			ewl_container_call_child_add(EWL_CONTAINER(p), w);
 		}
 	}
+
+	if (p)
+		ewl_widget_configure(p);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
