@@ -423,7 +423,7 @@ MenuItemCreate(const char *text, ImageClass * iclass, int action_id,
    if (iclass)
       iclass->ref_count++;
 
-   mi->text = (text) ? Estrdup(_(text)) : NULL;
+   mi->text = (text) ? Estrdup((text[0]) ? _(text) : "?!?") : NULL;
    mi->act_id = action_id;
    mi->params = Estrdup(action_params);
    mi->child = child;
@@ -1708,20 +1708,17 @@ MenuCreateFromThemes(const char *name, MenuStyle * ms)
    m = MenuCreate(name);
    m->style = ms;
    lst = ListThemes(&num);
-   if (lst)
+   for (i = 0; i < num; i++)
      {
-	for (i = 0; i < num; i++)
-	  {
-	     s = fullfileof(lst[i]);
-	     Esnprintf(ss, sizeof(ss), "restart_theme %s", s);
-	     Efree(s);
-	     s = fileof(lst[i]);
-	     mi = MenuItemCreate(s, NULL, ACTION_EXIT, ss, NULL);
-	     MenuAddItem(m, mi);
-	     Efree(s);
-	  }
-	freestrlist(lst, i);
+	s = fullfileof(lst[i]);
+	Esnprintf(ss, sizeof(ss), "restart_theme %s", s);
+	mi = MenuItemCreate(s, NULL, ACTION_EXIT, ss, NULL);
+	Efree(s);
+	MenuAddItem(m, mi);
      }
+   if (lst)
+      freestrlist(lst, i);
+
    EDBUG_RETURN(m);
 }
 

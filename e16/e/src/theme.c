@@ -28,178 +28,130 @@ static char        *badtheme = NULL;
 static char        *badreason = NULL;
 static char         mustdel = 0;
 
+static const char  *const theme_files[] = {
 #if ENABLE_THEME_SANITY_CHECKING
+   "borders.cfg",
+   "buttons.cfg",
+   "colormodifiers.cfg",
+   "control.cfg",
+   "cursors.cfg",
+   "desktops.cfg",
+   "imageclasses.cfg",
+#endif
+   "init.cfg",
+#if ENABLE_THEME_SANITY_CHECKING
+   "keybindings.cfg",
+   "menus.cfg",
+   "menustyles.cfg",
+   "slideouts.cfg",
+   "sound.cfg",
+   "tooltips.cfg",
+   "windowmatches.cfg",
+#endif
+   NULL
+};
 
-/* be paranoid and check for files being in theme */
-static char
-SanitiseThemeDir(char *dir)
+/* Check for files being in theme */
+static int
+SanitiseThemeDir(const char *dir)
 {
+   const char         *tf;
+   int                 i;
    char                s[4096];
 
-   return 1;
-   Esnprintf(s, sizeof(s), "%s/%s", dir, "borders.cfg");
-   if (!isfile(s))
+   for (i = 0; (tf = theme_files[i]); i++)
      {
-	badreason = _("Theme does not contain a borders.cfg file\n");
-	return 0;
+	Esnprintf(s, sizeof(s), "%s/%s", dir, tf);
+	if (isfile(s))
+	   continue;
+#if 0
+	Esnprintf(s, sizeof(s), _("Theme %s does not contain a %s file\n"), dir,
+		  tf);
+	badreason = Estrdup(s);
+#endif
+	return -1;
      }
-   Esnprintf(s, sizeof(s), "%s/%s", dir, "buttons.cfg");
-   if (!isfile(s))
-     {
-	badreason = _("Theme does not contain a buttons.cfg file\n");
-	return 0;
-     }
-   Esnprintf(s, sizeof(s), "%s/%s", dir, "colormodifiers.cfg");
-   if (!isfile(s))
-     {
-	badreason = _("Theme does not contain a colormodifiers.cfg file\n");
-	return 0;
-     }
-   Esnprintf(s, sizeof(s), "%s/%s", dir, "cursors.cfg");
-   if (!isfile(s))
-     {
-	badreason = _("Theme does not contain a cursors.cfg file\n");
-	return 0;
-     }
-   Esnprintf(s, sizeof(s), "%s/%s", dir, "desktops.cfg");
-   if (!isfile(s))
-     {
-	badreason = _("Theme does not contain a desktops.cfg file\n");
-	return 0;
-     }
-   Esnprintf(s, sizeof(s), "%s/%s", dir, "imageclasses.cfg");
-   if (!isfile(s))
-     {
-	badreason = _("Theme does not contain a imageclasses.cfg file\n");
-	return 0;
-     }
-   Esnprintf(s, sizeof(s), "%s/%s", dir, "init.cfg");
-   if (!isfile(s))
-     {
-	badreason = _("Theme does not contain a init.cfg file\n");
-	return 0;
-     }
-   Esnprintf(s, sizeof(s), "%s/%s", dir, "menustyles.cfg");
-   if (!isfile(s))
-     {
-	badreason = _("Theme does not contain a menustyles.cfg file\n");
-	return 0;
-     }
-   Esnprintf(s, sizeof(s), "%s/%s", dir, "slideouts.cfg");
-   if (!isfile(s))
-     {
-	badreason = _("Theme does not contain a slideouts.cfg file\n");
-	return 0;
-     }
-   Esnprintf(s, sizeof(s), "%s/%s", dir, "sound.cfg");
-   if (!isfile(s))
-     {
-	badreason = _("Theme does not contain a sound.cfg file\n");
-	return 0;
-     }
-   Esnprintf(s, sizeof(s), "%s/%s", dir, "tooltips.cfg");
-   if (!isfile(s))
-     {
-	badreason = _("Theme does not contain a tooltips.cfg file\n");
-	return 0;
-     }
-   Esnprintf(s, sizeof(s), "%s/%s", dir, "windowmatches.cfg");
-   if (!isfile(s))
-     {
-	badreason = _("Theme does not contain a windowmatches.cfg file\n");
-	return 0;
-     }
-   Esnprintf(s, sizeof(s), "%s/%s", dir, "menus.cfg");
-   if (isfile(s))
-     {
-	badreason = _("Theme contains a menus.cfg file\n");
-	return 0;
-     }
-   Esnprintf(s, sizeof(s), "%s/%s", dir, "control.cfg");
-   if (isfile(s))
-     {
-	badreason = _("Theme contains a control.cfg file\n");
-	return 0;
-     }
-   Esnprintf(s, sizeof(s), "%s/%s", dir, "keybindings.cfg");
-   if (isfile(s))
-     {
-	badreason = _("Theme contains a keybindings.cfg file\n");
-	return 0;
-     }
-   return 1;
+   return 0;
 }
 
-#else
+static const char  *
+ThemeCheckPath(const char *path)
+{
+   char                s1[FILEPATH_LEN_MAX];
 
-#define SanitiseThemeDir(dir) 1
+   Esnprintf(s1, sizeof(s1), "%s/epplets/epplets.cfg", path);
+   if (exists(s1))
+      return path;		/* OK */
 
-#endif /* ENABLE_THEME_SANITY_CHECKING */
+   return NULL;			/* Not OK */
+}
 
 static char        *
 append_merge_dir(char *dir, char ***list, int *count)
 {
    char                s[FILEPATH_LEN_MAX], ss[FILEPATH_LEN_MAX];
    char              **str = NULL, *def = NULL;
-   char                already, *tmp, *tmp2, ok;
+   char                already, *tmp, *tmp2;
    int                 i, j, num;
 
    str = E_ls(dir, &num);
-   if (str)
+   if (!str)
+      return NULL;
+
+   for (i = 0; i < num; i++)
      {
-	for (i = 0; i < num; i++)
+	already = 0;
+	for (j = 0; (j < (*count)) && (!already); j++)
 	  {
-	     already = 0;
-	     for (j = 0; (j < (*count)) && (!already); j++)
+	     tmp = fileof((*list)[j]);
+	     tmp2 = fileof(str[i]);
+	     if ((tmp != NULL) && (tmp2 != NULL) && (!strcmp(tmp, tmp2)))
+		already = 1;
+	     if (tmp)
+		Efree(tmp);
+	     if (tmp2)
+		Efree(tmp2);
+	  }
+
+	if (already)
+	   continue;
+
+	Esnprintf(ss, sizeof(ss), "%s/%s", dir, str[i]);
+
+	if (!strcmp(str[i], "DEFAULT"))
+	  {
+	     if (readlink(ss, s, sizeof(s)) > 0)
 	       {
-		  tmp = fileof((*list)[j]);
-		  tmp2 = fileof(str[i]);
-		  if ((tmp != NULL) && (tmp2 != NULL) && (!strcmp(tmp, tmp2)))
-		     already = 1;
-		  if (tmp)
-		     Efree(tmp);
-		  if (tmp2)
-		     Efree(tmp2);
-	       }
-	     if (!already)
-	       {
-		  if (!strcmp(str[i], "DEFAULT"))
-		    {
-		       Esnprintf(ss, sizeof(ss), "%s/%s", dir, str[i]);
-		       if (readlink(ss, s, sizeof(s)) > 0)
-			 {
-			    if (s[0] == '/')
-			       def = Estrdup(s);
-			    else
-			      {
-				 Esnprintf(s, sizeof(s), "%s/%s", dir, s);
-				 def = Estrdup(s);
-			      }
-			 }
-		    }
+		  if (s[0] == '/')
+		     def = Estrdup(s);
 		  else
 		    {
-		       ok = 0;
-
-		       Esnprintf(s, sizeof(s), "%s/%s", dir, str[i]);
-		       if ((isdir(s)) && (SanitiseThemeDir(s)))
-			  ok = 1;
-		       else if ((isfile(s)) && (FileExtension(s))
-				&& (!strcmp(FileExtension(s), "etheme")))
-			  ok = 1;
-		       if (ok)
-			 {
-			    (*count)++;
-			    (*list) =
-			       Erealloc(*list, (*count) * sizeof(char *));
-
-			    (*list)[(*count) - 1] = Estrdup(s);
-			 }
+		       Esnprintf(s, sizeof(s), "%s/%s", dir, s);
+		       def = Estrdup(s);
 		    }
 	       }
 	  }
-	freestrlist(str, num);
+	else
+	  {
+	     if (isdir(ss))
+	       {
+		  if (SanitiseThemeDir(ss))
+		     continue;
+	       }
+	     else if (isfile(ss))
+	       {
+		  if (!FileExtension(ss) || strcmp(FileExtension(ss), "etheme"))
+		     continue;
+	       }
+
+	     (*count)++;
+	     (*list) = Erealloc(*list, (*count) * sizeof(char *));
+
+	     (*list)[(*count) - 1] = Estrdup(ss);
+	  }
      }
+   freestrlist(str, num);
+
    return def;
 }
 
@@ -222,18 +174,6 @@ ListThemes(int *number)
 
    *number = count;
    return list;
-}
-
-static const char  *
-ThemeCheckPath(const char *path)
-{
-   char                s1[FILEPATH_LEN_MAX];
-
-   Esnprintf(s1, sizeof(s1), "%s/epplets/epplets.cfg", path);
-   if (exists(s1))
-      return path;		/* OK */
-
-   return NULL;			/* Not OK */
 }
 
 static char        *
@@ -385,7 +325,7 @@ ThemeExtract(const char *theme)
      }
 
  done:
-   if (oktheme && SanitiseThemeDir(oktheme))
+   if (oktheme && !SanitiseThemeDir(oktheme))
       EDBUG_RETURN(Estrdup(oktheme));
 
    /* failed */

@@ -808,55 +808,26 @@ canexec(const char *s)
 }
 
 char               *
-fileof(const char *s)
+fileof(const char *path)
 {
-   char                ss[1024];
-   int                 i, p1, p2;
+   const char         *s1, *s2;
 
-   EDBUG(9, "fileof");
-   i = 0;
-   p1 = -1;
-   p2 = -1;
-   for (i = strlen(s) - 1; i >= 0; i--)
-     {
-	if ((s[i] == '.') && (p2 < 0) && (p1 < 0))
-	   p2 = i - 1;
-	if ((s[i] == '/') && (p1 < 0))
-	   p1 = i + 1;
-     }
-   if (p2 < 0)
-      p2 = strlen(s) - 1;
-   if (p1 < 0)
-      p1 = 0;
-   if (p2 <= 0)
-      EDBUG_RETURN(Estrdup(""));
-   for (i = 0; i <= (p2 - p1); i++)
-      ss[i] = s[p1 + i];
-   ss[i] = 0;
-   EDBUG_RETURN(Estrdup(ss));
+   s1 = strrchr(path, '/');
+   s1 = (s1) ? s1 + 1 : path;
+   s2 = strrchr(s1, '.');
+   if (!s2)
+      return Estrdup(s1);
+
+   return Estrndup(s1, s2 - s1);
 }
 
 char               *
-fullfileof(const char *s)
+fullfileof(const char *path)
 {
-   char                ss[1024];
-   int                 i, p1, p2;
+   const char         *s;
 
-   EDBUG(9, "fullfileof");
-   i = 0;
-   p1 = -1;
-   for (i = strlen(s) - 1; i >= 0; i--)
-     {
-	if ((s[i] == '/') && (p1 < 0))
-	   p1 = i + 1;
-     }
-   if (p1 < 0)
-      p1 = 0;
-   p2 = strlen(s);
-   for (i = 0; i < (p2 - p1); i++)
-      ss[i] = s[p1 + i];
-   ss[i] = 0;
-   EDBUG_RETURN(Estrdup(ss));
+   s = strrchr(path, '/');
+   return Estrdup((s) ? s + 1 : path);
 }
 
 char               *
