@@ -299,6 +299,8 @@ __create_notebook_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_widget_show(notebook_box);
 
 	notebook = ewl_notebook_new();
+	ewl_notebook_set_tabs_position(EWL_NOTEBOOK(notebook),
+				       EWL_POSITION_LEFT);
 	ewl_container_append_child(EWL_CONTAINER(notebook_box), notebook);
 	ewl_widget_show(notebook);
 

@@ -480,6 +480,7 @@ void ewl_widget_set_state(Ewl_Widget * w, char *state)
  */
 void ewl_widget_set_parent(Ewl_Widget * w, Ewl_Widget * p)
 {
+	Ewl_Widget *tmp;
 	Ewl_Container *op;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -488,6 +489,18 @@ void ewl_widget_set_parent(Ewl_Widget * w, Ewl_Widget * p)
 	op = EWL_CONTAINER(w->parent);
 	if (op == EWL_CONTAINER(p))
 		DRETURN(DLEVEL_STABLE);
+
+	/*
+	 * Verify this will not result in recursively nested widgets.
+	 */
+	tmp = p;
+	while (tmp) {
+		if (tmp == w) {
+			ewl_print_warning();
+			DRETURN(DLEVEL_STABLE);
+		}
+		tmp = tmp->parent;
+	}
 
 	w->parent = p;
 
