@@ -73,7 +73,7 @@ stat_hash_item_free(EfsdHashItem *it)
      the hashtable lookup will fail anyway.
   */
   D("Item %s falling out of statcache.\n", (char*)it->key);
-  efsd_monitor_stop_internal(it->key);
+  efsd_monitor_stop_internal(it->key, FALSE);
 
   /* Key is a string -- simple to free: */
   FREE(it->key);

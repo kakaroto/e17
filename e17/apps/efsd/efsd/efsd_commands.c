@@ -222,8 +222,8 @@ efsd_command_listdir(EfsdCommand *cmd, int client)
 	}
     }
 
-  if (efsd_monitor_start(cmd, client, TRUE, do_sort) >= 0 &&
-      efsd_monitor_stop(cmd, client) >= 0)
+  if (efsd_monitor_start(cmd, client, TRUE, do_sort) != NULL &&
+      efsd_monitor_stop(cmd, client, TRUE) >= 0)
     {      
       D_RETURN_(send_reply(cmd, SUCCESS, 0, 0, NULL, client));
     }
@@ -318,19 +318,7 @@ efsd_command_get_metadata(EfsdCommand *cmd, int client)
 
 
 int 
-efsd_command_start_monitor_file(EfsdCommand *cmd, int client)
-{
-  D_ENTER;
-
-  if (efsd_monitor_start(cmd, client, FALSE, FALSE) >= 0)
-    D_RETURN_(send_reply(cmd, SUCCESS, 0, 0, NULL, client));
-  
-  D_RETURN_(send_reply(cmd, FAILURE, 0, 0, NULL, client));
-}
-
-
-int 
-efsd_command_start_monitor_dir(EfsdCommand *cmd, int client)
+efsd_command_start_monitor(EfsdCommand *cmd, int client, int dir_mode)
 {
   int i, do_sort = FALSE;
   
@@ -345,7 +333,7 @@ efsd_command_start_monitor_dir(EfsdCommand *cmd, int client)
 	}
     }
 
-  if (efsd_monitor_start(cmd, client, TRUE, do_sort) >= 0)
+  if (efsd_monitor_start(cmd, client, dir_mode, do_sort) >= 0)
     D_RETURN_(send_reply(cmd, SUCCESS, 0, 0, NULL, client));
   
   D_RETURN_(send_reply(cmd, FAILURE, 0, 0, NULL, client));
@@ -353,11 +341,11 @@ efsd_command_start_monitor_dir(EfsdCommand *cmd, int client)
 
 
 int 
-efsd_command_stop_monitor(EfsdCommand *cmd, int client)
+efsd_command_stop_monitor(EfsdCommand *cmd, int client, int dir_mode)
 {
   D_ENTER;
 
-  if (efsd_monitor_stop(cmd, client) >= 0)
+  if (efsd_monitor_stop(cmd, client, dir_mode) >= 0)
     D_RETURN_(send_reply(cmd, SUCCESS, 0, 0, NULL, client));
 
   D_RETURN_(send_reply(cmd, FAILURE, 0, 0, NULL, client));

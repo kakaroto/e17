@@ -771,11 +771,12 @@ efsd_metadata_get_file(EfsdEvent *ee)
 
 
 EfsdCmdId      
-efsd_start_monitor_dir(EfsdConnection *ec, char *filename, EfsdOptions *ops)
+efsd_start_monitor(EfsdConnection *ec, char *filename, EfsdOptions *ops, int dir_mode)
 
 {
   struct stat st;
   int result = 0;
+  EfsdCommandType type;
 
   D_ENTER;
 
@@ -785,29 +786,15 @@ efsd_start_monitor_dir(EfsdConnection *ec, char *filename, EfsdOptions *ops)
   if (!S_ISDIR(st.st_mode))
     D_RETURN_(-1);
 
-  if (ops)
-    result = file_cmd(ec, EFSD_CMD_STARTMON_DIR, 1, &filename, ops->num_used, ops->ops);
+  if (dir_mode)
+    type = EFSD_CMD_STARTMON_DIR;
   else
-    result = file_cmd(ec, EFSD_CMD_STARTMON_DIR, 1, &filename, 0, NULL);
-  
-  FREE(ops);
-  D_RETURN_(result);
-}
-
-
-
-EfsdCmdId      
-efsd_start_monitor_file(EfsdConnection *ec, char *filename, EfsdOptions *ops)
-
-{
-  int result = 0;
-
-  D_ENTER;
+    type = EFSD_CMD_STARTMON_FILE;
 
   if (ops)
-    result = file_cmd(ec, EFSD_CMD_STARTMON_FILE, 1, &filename, ops->num_used, ops->ops);
+    result = file_cmd(ec, type, 1, &filename, ops->num_used, ops->ops);
   else
-    result = file_cmd(ec, EFSD_CMD_STARTMON_FILE, 1, &filename, 0, NULL);
+    result = file_cmd(ec, type, 1, &filename, 0, NULL);
   
   FREE(ops);
   D_RETURN_(result);
@@ -815,10 +802,18 @@ efsd_start_monitor_file(EfsdConnection *ec, char *filename, EfsdOptions *ops)
 
 
 EfsdCmdId      
-efsd_stop_monitor(EfsdConnection *ec, char *filename)
+efsd_stop_monitor(EfsdConnection *ec, char *filename, int dir_mode)
 {
+  EfsdCommandType type;
+
   D_ENTER;
-  D_RETURN_(file_cmd(ec, EFSD_CMD_STOPMON, 1, &filename, 0, NULL));
+
+  if (dir_mode)
+    type = EFSD_CMD_STOPMON_DIR;
+  else
+    type = EFSD_CMD_STOPMON_FILE;
+
+  D_RETURN_(file_cmd(ec, type, 1, &filename, 0, NULL));
 }
 
 
@@ -1026,7 +1021,8 @@ efsd_reply_filename(EfsdEvent *ee)
     case EFSD_CMD_MAKEDIR:
     case EFSD_CMD_STARTMON_FILE:
     case EFSD_CMD_STARTMON_DIR:
-    case EFSD_CMD_STOPMON:
+    case EFSD_CMD_STOPMON_FILE:
+    case EFSD_CMD_STOPMON_DIR:
     case EFSD_CMD_STAT:
     case EFSD_CMD_LSTAT:
     case EFSD_CMD_READLINK:
@@ -1071,7 +1067,8 @@ efsd_reply_id(EfsdEvent *ee)
     case EFSD_CMD_MAKEDIR:
     case EFSD_CMD_STARTMON_FILE:
     case EFSD_CMD_STARTMON_DIR:
-    case EFSD_CMD_STOPMON:
+    case EFSD_CMD_STOPMON_FILE:
+    case EFSD_CMD_STOPMON_DIR:
     case EFSD_CMD_STAT:
     case EFSD_CMD_LSTAT:
     case EFSD_CMD_READLINK:

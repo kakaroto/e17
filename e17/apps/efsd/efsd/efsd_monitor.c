@@ -67,7 +67,7 @@ static int              monitor_add_client(EfsdMonitor *m, EfsdCommand *com, int
 /* Decreases use count on file. If count drops to
    zero, monitoring is stopped.
 */
-static int              monitor_remove_client(EfsdCommand *com, int client);
+static int              monitor_remove_client(EfsdCommand *com, int client, int dir_mode);
 
 static void             monitor_hash_item_free(EfsdHashItem *it);
 
@@ -335,7 +335,7 @@ monitor_add_client(EfsdMonitor *m, EfsdCommand *com, int client)
 
 
 static int
-monitor_remove_client(EfsdCommand *com, int client)
+monitor_remove_client(EfsdCommand *com, int client, int dir_mode)
 {
   EfsdMonitor  *m = NULL;
   char         *filename;
@@ -359,14 +359,14 @@ monitor_remove_client(EfsdCommand *com, int client)
       D_RETURN_(0);
     }
 
-  if (com->efsd_file_cmd.type == EFSD_CMD_STARTMON_DIR)
-    m = efsd_monitored(filename, TRUE);
-  else
-    m = efsd_monitored(filename, FALSE);
+  m = efsd_monitored(filename, dir_mode);
 
   if (!m)
-    D_RETURN_(-1);
-
+    {
+      D("%s not monitored?\n", filename);
+      D_RETURN_(-1);
+    }
+  
   if (client == EFSD_CLIENT_INTERNAL)
     m->internal_use_count--;
   else
@@ -402,7 +402,7 @@ monitor_remove_client(EfsdCommand *com, int client)
 	    {
 	      if (m->internal_use_count == 0)
 		{
-		  D("Use count on %s is (%i/%i) -- removing internal.\n",
+ 		  D("Use count on %s is (%i/%i) -- removing internal.\n",
 		    m->filename, m->internal_use_count, m->client_use_count);
 		  
 		  if (!m->is_receiving_exist_events)
@@ -412,6 +412,7 @@ monitor_remove_client(EfsdCommand *com, int client)
 		    }
 		  else
 		    {
+		      D("Client %i is currently receiving exist events. Marking as finished.\n", client);
 		      emr->is_finished = TRUE;
 		    }
 		}
@@ -428,6 +429,7 @@ monitor_remove_client(EfsdCommand *com, int client)
 		}
 	      else
 		{
+ 		  D("Client %i is currently receiving exist events. Marking as finished.\n", client);
 		  emr->is_finished = TRUE;
 		}
 	    }
@@ -540,10 +542,10 @@ efsd_monitor_start(EfsdCommand *com, int client, int dir_mode, int do_sort)
 
 
 int         
-efsd_monitor_stop(EfsdCommand *com, int client)
+efsd_monitor_stop(EfsdCommand *com, int client, int dir_mode)
 {
   D_ENTER;
-  D_RETURN_(monitor_remove_client(com, client));
+  D_RETURN_(monitor_remove_client(com, client, dir_mode));
 }
 
 
@@ -565,7 +567,7 @@ efsd_monitor_start_internal(char *filename, int dir_mode)
 
 
 int              
-efsd_monitor_stop_internal(char *filename)
+efsd_monitor_stop_internal(char *filename, int dir_mode)
 {
   EfsdCommand       com;
 
@@ -577,7 +579,7 @@ efsd_monitor_stop_internal(char *filename)
   memset(&com, 0, sizeof(EfsdCommand));
   com.efsd_file_cmd.files = &filename;
 
-  D_RETURN_(efsd_monitor_stop(&com, EFSD_CLIENT_INTERNAL));
+  D_RETURN_(efsd_monitor_stop(&com, EFSD_CLIENT_INTERNAL, dir_mode));
 }
 
 
@@ -592,6 +594,12 @@ efsd_monitored(char *filename, int dir_mode)
   efsd_misc_remove_trailing_slashes(filename);
   m = efsd_hash_find(monitors, filename);
 
+  if (m)
+    {
+      D("Monitor found for %s with dir mode %i\n",
+	filename, m->is_dir);
+    }
+
   if (m && (dir_mode == m->is_dir))
     {
       D("%s is monitored, dir requested: %i, monitored as dir: %i\n",
@@ -604,7 +612,10 @@ efsd_monitored(char *filename, int dir_mode)
      is in: */
 
   if (!efsd_misc_get_path_only(filename, path, MAXPATHLEN))
-    D_RETURN_(NULL);
+    {
+      D("Couldn't get path only for %s\n", filename);
+      D_RETURN_(NULL);
+    }
 
   m = efsd_hash_find(monitors, path);
 

@@ -36,6 +36,14 @@ extern "C" {
 #endif
 
 
+#ifndef	FALSE
+#define	FALSE	(0)
+#endif
+
+#ifndef	TRUE
+#define	TRUE	(!FALSE)
+#endif
+
 /* Efsd connection: */
 typedef struct efsd_connection EfsdConnection;
 typedef struct efsd_options EfsdOptions;
@@ -455,24 +463,12 @@ EfsdCmdId      efsd_reply_id(EfsdEvent *ee);
 
 
 /**
- * efsd_start_monitor_file - start monitoring a file for file events.
- * @ec: The Efsd connection
- * @filename: The name of the file that is to be monitored.
- * @ops: Pointer to EfsdOptions.
- *
- * Use this command when you want to be informed when things happen to
- * a specific file. Do not use it on directories (unless you're only
- * interested in a directory file itself), use efsd_start_monitor_dir()
- * for the purpose. See its description for meaningful options.
- */
-EfsdCmdId      efsd_start_monitor_file(EfsdConnection *ec, char *filename,
-				       EfsdOptions *ops);
-
-/**
- * efsd_start_monitor_dir - start monitoring a directory for file events.
+ * efsd_start_monitor - start monitoring a directory for file events.
  * @ec: The Efsd connection
  * @filename: The name of the directory that is to be monitored.
  * @ops: Pointer to EfsdOptions.
+ * @dir_mode: Whether this is a directory monitor or not, either TRUE
+ * or FALSE.
  *
  * Use this command when you want to be informed when things happen to
  * a directory and all of the files contained in it. You will receive
@@ -490,13 +486,15 @@ EfsdCmdId      efsd_start_monitor_file(EfsdConnection *ec, char *filename,
  * results generated through the options, before receiving the
  * %EFSD_FILE_EXISTS event for the next file. 
  */
-EfsdCmdId      efsd_start_monitor_dir(EfsdConnection *ec, char *filename,
-				       EfsdOptions *ops);
+EfsdCmdId      efsd_start_monitor(EfsdConnection *ec, char *filename,
+				  EfsdOptions *ops, int dir_mode);
 
 /**
  * efsd_stop_monitor - stops monitoring a file or directory.
  * @ec: The Efsd connection.
  * @filename: The file that is to be no longer monitored.
+ * @dir_mode: Whether this is a directory monitor or not, either TRUE
+ * or FALSE.
  *
  * This command stops reporting of filechange events to @filename (and,
  * if @filename is a directory, any files in the directory).
@@ -504,7 +502,7 @@ EfsdCmdId      efsd_start_monitor_dir(EfsdConnection *ec, char *filename,
  * guarantees that no further file change events for this file will
  * be sent to the client that requested the monitoring to be stopped.
  */
-EfsdCmdId      efsd_stop_monitor(EfsdConnection *ec, char *filename);
+EfsdCmdId      efsd_stop_monitor(EfsdConnection *ec, char *filename, int dir_mode);
 
 /**
  * efsd_stat - returns the result of stat() on a file.

@@ -10,7 +10,7 @@
 
 (define %admon-graphics-path%
   ;; Path to admonition graphics
-  "@DB_STYLESHEETS@/images/")
+  "figures/")
 
 (define %admon-graphics%
   ;; Use graphics in admonitions?

@@ -122,12 +122,12 @@ void             efsd_monitor_remove(EfsdMonitor *m);
    & co are handled inside. Return >= 0 on success.
 */
 EfsdMonitor     *efsd_monitor_start(EfsdCommand *cmd, int client, int dir_mode, int sort);
-int              efsd_monitor_stop(EfsdCommand *cmd, int client);
+int              efsd_monitor_stop(EfsdCommand *cmd, int client, int dir_mode);
 
 /* For internal monitoring of files -- specify file name directly.
  */
 EfsdMonitor     *efsd_monitor_start_internal(char *filename, int dir_mode);
-int              efsd_monitor_stop_internal(char *filename);
+int              efsd_monitor_stop_internal(char *filename, int dir_mode);
 
 /* Returns value >0 when file is already monitored.
  */

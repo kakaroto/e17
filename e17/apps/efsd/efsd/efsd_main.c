@@ -244,15 +244,19 @@ main_handle_client_command(void *data)
       break;
     case EFSD_CMD_STARTMON_FILE:
       D("Handling STARTMON_FILE\n");
-      efsd_command_start_monitor_file(command, client);
+      efsd_command_start_monitor(command, client, FALSE);
       break;
     case EFSD_CMD_STARTMON_DIR:
       D("Handling STARTMON_DIR\n");
-      efsd_command_start_monitor_dir(command, client);
+      efsd_command_start_monitor(command, client, TRUE);
       break;
-    case EFSD_CMD_STOPMON:
-      D("Handling STOPMON\n");
-      efsd_command_stop_monitor(command, client);
+    case EFSD_CMD_STOPMON_FILE:
+      D("Handling STOPMON_FILE\n");
+      efsd_command_stop_monitor(command, client, FALSE);
+      break;
+    case EFSD_CMD_STOPMON_DIR:
+      D("Handling STOPMON_DIR\n");
+      efsd_command_stop_monitor(command, client, TRUE);
       break;
     case EFSD_CMD_STAT:
       D("Handling STAT on %s\n", command->efsd_file_cmd.files[0]);

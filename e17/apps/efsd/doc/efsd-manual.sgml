@@ -79,6 +79,10 @@
       thing for you.
     </para>
     <para>
+      This manual can always be downloaded at
+      <ulink url="http://www.whoop.org/downloads/efsd-manual.tgz">whoop.org</ulink>.
+    </para>
+    <para>
       I'd like to thank Raster <email>raster@rasterman.com</email> for talking
       me into writing &efsd; during one of our dinner sessions somewhere in San
       Francisco in late 2000. I've had and am still having a blast working on it.
@@ -161,6 +165,15 @@
 	</itemizedlist>
       </para>
     </section>
+    <section id="getting-efsd">
+      <title id="getting-efsd.title">Getting &efsd;</title>
+      <para>
+	At the time of this writing, there has not been a release yet, although the current
+	codebase is definitely ready for one. You can always get up-to-date sources from
+	Enlightenment's CVS tree, see
+	<ulink url="http://www.sourceforge.net/projects/enlightenment">Enlightenment's SourceForge site</ulink>.
+      </para>
+    </section>
     <section id="efsd-arch">
       <title id="efsd-arch.title">&efsd; Architecture Overview</title>
       <para>
@@ -210,8 +223,8 @@
 	&lefsd;. &lefsd; handles
 	all the dirty low-level work (such as the I/O details of sending commands
 	and receiving replies) and provides a convenient API to the clients.
-	The following sections will briefly introduce general concepts
-	before the API is explained in detail.
+	The following sections introduce general concepts before the API is
+	explained in detail.
       </para>
       <section>
 	<title>Opening a Connection to &efsd;</title>
@@ -588,9 +601,28 @@ while (efsd_wait_event(ec, &amp;ee) >= 0)
       <section id="fileops">
         <title id="fileops.title">Copying/Moving/Renaming Files</title>
 	<para>
-               efsd_copy - copies a number of files to a target file. 
-               efsd_move - moves a number of files to a target file. 
-               efsd_remove - removes a number of files. 
+	Besides file monitoring, basic file copying, moving and renaming are probably
+	among the most commonly needed file system operations. &efsd; provides
+	<link linkend="API-efsd-copy"><function>efsd_copy()</function></link> for
+	file copying,
+	<link linkend="API-efsd-move"><function>efsd_move()</function></link> for
+	moving files and
+	<link linkend="API-efsd-remove"><function>efsd_remove()</function></link> for
+	deleting files.
+	</para>
+	<para>
+	You can pass multiple file names to all of those commands.
+	When using <link linkend="API-efsd-copy"><function>efsd_copy()</function></link> or
+	<link linkend="API-efsd-move"><function>efsd_move()</function></link>, the
+	last file has to be a directory, and the commands cause all previous files
+	to be copied/moved into the target directory. Meaningful options are the
+	ones commonly used on the command line, namely
+	<link linkend="API-efsd-op-force"><function>efsd_op_force()</function></link> and
+	<link linkend="API-efsd-op-recursive"><function>efsd_op_recursive()</function></link>
+	for <link linkend="API-efsd-copy"><function>efsd_copy()</function></link> and
+	<link linkend="API-efsd-remove"><function>efsd_remove()</function></link>, and
+	<link linkend="API-efsd-op-force"><function>efsd_op_force()</function></link> for
+	<link linkend="API-efsd-move"><function>efsd_move()</function></link>.
 	</para>
       </section>
 
@@ -614,13 +646,11 @@ while (efsd_wait_event(ec, &amp;ee) >= 0)
 	  </caution>
 	</para>
 	<para>
-	  To request monitoring a file, use <link linkend="API-efsd-start-monitor-file">
-	  <function>efsd_start_monitor_file()</function></link>. For directories, use
-	  <link linkend="API-efsd-start-monitor-dir"><function>efsd_start_monitor_dir()</function></link>,
-	  and for stopping a monitor, <link linkend="API-efsd-stop-monitor"><function>
-	  efsd_stop_monitor()</function></link>. Make sure you understand the meaning
-	  of the various file monitoring events that can occur, recall the Section on
-	  <link linkend="eventtypes" endterm="eventtypes.title"></link>.
+	  To request monitoring of a file or directory, use <link linkend="API-efsd-start-monitor">
+	  <function>efsd_start_monitor()</function></link>, for stopping a monitor, use
+	  <link linkend="API-efsd-stop-monitor"><function>efsd_stop_monitor()</function></link>.
+	  Make sure you understand the meaning of the various file monitoring events that can occur,
+	  recall the section on <link linkend="eventtypes" endterm="eventtypes.title"></link>.
 	</para>
 	<para>
 	  The same event-based technique for getting the directory contents can also be
@@ -962,8 +992,8 @@ if ( (id = efsd_start_monitor_dir(ec, "/some/dir", ops)) < 0)
 	
 	</para>
 	<para>
-        When using options on a file monitoring request (like <link linkend="API-efsd-start-monitor-dir">
-        <function>efsd_start_monitor_dir()</function></link>), you are guaranteed to receive
+        When using options on a file/dir monitoring request (through <link linkend="API-efsd-start-monitor">
+        <function>efsd_start_monitor()</function></link>), you are guaranteed to receive
         the <constant>EFSD_FILE_EXISTS</constant> events before any results of options applied
 	to the files that are covered by the monitor. You can <emphasis>not</emphasis>, however,
         rely on receiving the <constant>EFSD_FILE_EXISTS</constant> events and all the results
@@ -2472,69 +2502,10 @@ if ( (id = efsd_start_monitor_dir(ec, "/some/dir", ops)) < 0)
 
 <refentry>
 <refmeta>
-<refentrytitle><phrase id="API-efsd-start-monitor-file">efsd_start_monitor_file</phrase></refentrytitle>
+<refentrytitle><phrase id="API-efsd-start-monitor">efsd_start_monitor</phrase></refentrytitle>
 </refmeta>
 <refnamediv>
- <refname>efsd_start_monitor_file</refname>
- <refpurpose>
-      start monitoring a file for file events.
- </refpurpose>
-</refnamediv>
-<refsynopsisdiv>
- <title>Synopsis</title>
-  <funcsynopsis>
-   <funcdef>EfsdCmdId <function>efsd_start_monitor_file </function></funcdef>
-   <paramdef>EfsdConnection * <parameter>ec</parameter></paramdef>
-   <paramdef>char * <parameter>filename</parameter></paramdef>
-   <paramdef>EfsdOptions * <parameter>ops</parameter></paramdef>
-  </funcsynopsis>
-</refsynopsisdiv>
-<refsect1>
- <title>Arguments</title>
- <variablelist>
-  <varlistentry>
-   <term><parameter>ec</parameter></term>
-   <listitem>
-    <para>
-      The Efsd connection
-    </para>
-   </listitem>
-  </varlistentry>
-  <varlistentry>
-   <term><parameter>filename</parameter></term>
-   <listitem>
-    <para>
-      The name of the file that is to be monitored.
-    </para>
-   </listitem>
-  </varlistentry>
-  <varlistentry>
-   <term><parameter>ops</parameter></term>
-   <listitem>
-    <para>
-      Pointer to EfsdOptions.
-    </para>
-   </listitem>
-  </varlistentry>
- </variablelist>
-</refsect1>
-<refsect1>
- <title>Description</title>
- <para>
-   Use this command when you want to be informed when things happen to
-   a specific file. Do not use it on directories (unless you're only
-   interested in a directory file itself), use <function>efsd_start_monitor_dir</function>
-   for the purpose. See its description for meaningful options.
- </para>
-</refsect1>
-</refentry>
-
-<refentry>
-<refmeta>
-<refentrytitle><phrase id="API-efsd-start-monitor-dir">efsd_start_monitor_dir</phrase></refentrytitle>
-</refmeta>
-<refnamediv>
- <refname>efsd_start_monitor_dir</refname>
+ <refname>efsd_start_monitor</refname>
  <refpurpose>
       start monitoring a directory for file events.
  </refpurpose>
@@ -2542,10 +2513,11 @@ if ( (id = efsd_start_monitor_dir(ec, "/some/dir", ops)) < 0)
 <refsynopsisdiv>
  <title>Synopsis</title>
   <funcsynopsis>
-   <funcdef>EfsdCmdId <function>efsd_start_monitor_dir </function></funcdef>
+   <funcdef>EfsdCmdId <function>efsd_start_monitor </function></funcdef>
    <paramdef>EfsdConnection * <parameter>ec</parameter></paramdef>
    <paramdef>char * <parameter>filename</parameter></paramdef>
    <paramdef>EfsdOptions * <parameter>ops</parameter></paramdef>
+   <paramdef>int <parameter>dir_mode</parameter></paramdef>
   </funcsynopsis>
 </refsynopsisdiv>
 <refsect1>
@@ -2572,6 +2544,15 @@ if ( (id = efsd_start_monitor_dir(ec, "/some/dir", ops)) < 0)
    <listitem>
     <para>
       Pointer to EfsdOptions.
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>dir_mode</parameter></term>
+   <listitem>
+    <para>
+      Whether this is a directory monitor or not, either TRUE
+     or FALSE.
     </para>
    </listitem>
   </varlistentry>
@@ -2616,6 +2597,7 @@ if ( (id = efsd_start_monitor_dir(ec, "/some/dir", ops)) < 0)
    <funcdef>EfsdCmdId <function>efsd_stop_monitor </function></funcdef>
    <paramdef>EfsdConnection * <parameter>ec</parameter></paramdef>
    <paramdef>char * <parameter>filename</parameter></paramdef>
+   <paramdef>int <parameter>dir_mode</parameter></paramdef>
   </funcsynopsis>
 </refsynopsisdiv>
 <refsect1>
@@ -2634,6 +2616,15 @@ if ( (id = efsd_start_monitor_dir(ec, "/some/dir", ops)) < 0)
    <listitem>
     <para>
       The file that is to be no longer monitored.
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term><parameter>dir_mode</parameter></term>
+   <listitem>
+    <para>
+      Whether this is a directory monitor or not, either TRUE
+     or FALSE.
     </para>
    </listitem>
   </varlistentry>

@@ -74,7 +74,8 @@ efsd_cmd_duplicate(EfsdCommand *ec_src, EfsdCommand *ec_dst)
     case EFSD_CMD_CHMOD:
     case EFSD_CMD_STARTMON_FILE:
     case EFSD_CMD_STARTMON_DIR:
-    case EFSD_CMD_STOPMON:
+    case EFSD_CMD_STOPMON_FILE:
+    case EFSD_CMD_STOPMON_DIR:
     case EFSD_CMD_LISTDIR:
     case EFSD_CMD_STAT:
     case EFSD_CMD_LSTAT:
@@ -192,7 +193,8 @@ efsd_cmd_cleanup(EfsdCommand *ec)
     case EFSD_CMD_REMOVE:
     case EFSD_CMD_MAKEDIR:
     case EFSD_CMD_CHMOD:
-    case EFSD_CMD_STOPMON:
+    case EFSD_CMD_STOPMON_FILE:
+    case EFSD_CMD_STOPMON_DIR:
     case EFSD_CMD_STAT:
     case EFSD_CMD_LSTAT:
     case EFSD_CMD_GETFILETYPE:

@@ -234,8 +234,12 @@ void handle_efsd_event(EfsdEvent *ee)
 	  printf("Startmon event for dir %i\n", 
 		 ee->efsd_reply_event.command.efsd_file_cmd.id);
 	  break;
-	case EFSD_CMD_STOPMON:
-	  printf("Stopmon event %i\n", 
+	case EFSD_CMD_STOPMON_FILE:
+	  printf("Stopmon event for file %i\n", 
+		 ee->efsd_reply_event.command.efsd_file_cmd.id);
+	  break;
+	case EFSD_CMD_STOPMON_DIR:
+	  printf("Stopmon event for dir %i\n", 
 		 ee->efsd_reply_event.command.efsd_file_cmd.id);
 	  break;
 	case EFSD_CMD_STAT:
@@ -336,7 +340,8 @@ print_help(void)
 	 "ls <file>                           Shows directory contents\n"
 	 "mon_file <file>                     Starts monitoring file\n"
 	 "mon_dir <file>                      Starts monitoring dir\n"
-	 "stopmon <file>                      Stops monitoring file or dir\n"
+	 "stopmon_file <file>                 Stops monitoring file\n"
+	 "stopmon_dir <file>                  Stops monitoring dir\n"
 	 "gettype <file>                      Returns file type of file\n"
 	 "getstat <file>                      Returns result of stat on file.\n"
 	 "getlstat <file>                     Returns result of lstat on file.\n"
@@ -623,12 +628,12 @@ command_line(EfsdConnection *ec)
 
 		      if (mon_dir)
 			{
-			  if ((id = efsd_start_monitor_dir(ec, tok, ops)) < 0)
+			  if ((id = efsd_start_monitor(ec, tok, ops, TRUE)) < 0)
 			    printf("Couldn't issue mon_dir command.\n");
 			}
 		      else if (mon_file)
 			{
-			  if ((id = efsd_start_monitor_file(ec, tok, ops)) < 0)
+			  if ((id = efsd_start_monitor(ec, tok, ops, FALSE)) < 0)
 			    printf("Couldn't issue mon_file command.\n");
 			}
 		      else
@@ -678,12 +683,20 @@ command_line(EfsdConnection *ec)
 	      if ((id = efsd_remove(ec, num_files, files, ops)) < 0)
 		printf("Couldn't issue rs command.\n");
 	    }
-	  else if (!strcmp(tok, "stopmon"))
+	  else if (!strcmp(tok, "stopmon_dir"))
 	    {
 	      if ((tok = strtok(NULL, " \t\n")))
 		{
-		  if ((id = efsd_stop_monitor(ec, tok)) < 0)
-		    printf("Couldn't issue stopmon command.\n");
+		  if ((id = efsd_stop_monitor(ec, tok, TRUE)) < 0)
+		    printf("Couldn't issue stopmon_dir command.\n");
+		}
+	    }
+	  else if (!strcmp(tok, "stopmon_file"))
+	    {
+	      if ((tok = strtok(NULL, " \t\n")))
+		{
+		  if ((id = efsd_stop_monitor(ec, tok, FALSE)) < 0)
+		    printf("Couldn't issue stopmon_file command.\n");
 		}
 	    }
 	  else

@@ -698,7 +698,8 @@ fill_command(EfsdIOV *iov, EfsdCommand *ec)
     case EFSD_CMD_LISTDIR:
     case EFSD_CMD_STARTMON_FILE:
     case EFSD_CMD_STARTMON_DIR:
-    case EFSD_CMD_STOPMON:
+    case EFSD_CMD_STOPMON_FILE:
+    case EFSD_CMD_STOPMON_DIR:
     case EFSD_CMD_STAT:
     case EFSD_CMD_LSTAT:
     case EFSD_CMD_READLINK:
@@ -823,7 +824,8 @@ efsd_io_read_command(int sockfd, EfsdCommand *ec)
 	case EFSD_CMD_LISTDIR:
 	case EFSD_CMD_STARTMON_FILE:
 	case EFSD_CMD_STARTMON_DIR:
-	case EFSD_CMD_STOPMON:
+	case EFSD_CMD_STOPMON_FILE:
+	case EFSD_CMD_STOPMON_DIR:
 	case EFSD_CMD_STAT:
 	case EFSD_CMD_LSTAT:
 	case EFSD_CMD_READLINK:
