@@ -250,8 +250,11 @@ esmart_trans_x11_new(Evas *e)
 static Evas_Smart *
 _esmart_trans_x11_smart_get(void)
 {
-  Evas_Smart *smart = NULL;
+  static Evas_Smart *smart = NULL;
 
+  if (smart)
+     return smart;
+  
   smart = evas_smart_new ("x11_trans_object",
                           _esmart_trans_x11_add,
                           _esmart_trans_x11_del,
