@@ -1,0 +1,89 @@
+dnl Process this file with autoconf to produce a configure script.
+
+AC_INIT(configure.in)
+AM_INIT_AUTOMAKE(epsilon, 0.0.2)
+AM_CONFIG_HEADER(src/config.h)
+
+AC_ISC_POSIX
+AC_PROG_CC
+AM_PROG_CC_STDC
+AC_HEADER_STDC
+AC_C_BIGENDIAN
+AC_C_CONST
+AM_ENABLE_SHARED
+AM_PROG_LIBTOOL
+
+dnl Use -Wall if we have gcc.
+changequote(,)dnl
+if test "x$GCC" = "xyes"; then
+  case " $CFLAGS " in
+  *[\ \	]-Wall[\ \	]*) ;;
+  *) CFLAGS="$CFLAGS -Wall " ;;
+  esac
+fi
+changequote([,])dnl
+
+AC_ARG_WITH(imlib2,
+        [  --with-imlib2=DIR       use imlib2 in <DIR>],
+        [CFLAGS="$CFLAGS -I$withval/include"
+        LIBS="-L$withval/lib $LIBS"])
+AC_ARG_WITH(epeg,
+        [  --with-epeg=DIR       use epeg in <DIR>],
+        [CFLAGS="$CFLAGS -I$withval/include"
+        LIBS="-L$withval/lib $LIBS"])
+AC_ARG_WITH(png,
+        [  --with-png=DIR       use png in <DIR>],
+        [CFLAGS="$CFLAGS -I$withval/include"
+        LIBS="-L$withval/lib $LIBS"])
+
+AC_PATH_GENERIC(imlib2, 1.0.0, [
+  AC_SUBST(imlib_libs)
+  AC_SUBST(imlib_cflags) ],
+  AC_MSG_ERROR(Cannot find imlib2: Is imlib2-config in the path?) )
+imlib_libs=`imlib2-config --libs`
+imlib_cflags=`imlib2-config --cflags`
+AC_SUBST(imlib_libs)
+AC_SUBST(imlib_cflags)
+
+have_png="no"
+have_epeg="no"
+epeg_libs=""
+epeg_cflags=""
+dnl Make sure the epeg header/lib is available
+AC_CHECK_HEADER( Epeg.h, 
+  [ AC_DEFINE(HAVE_EPEG_H) have_epeg="yes" epeg_libs=`epeg-config --libs`
+    epeg_cflags=`epeg-config --cflags` ],
+  [ AC_MSG_WARN(Cannot find Epeg.h on your system: jpeg thumbnail suckage!) ])
+AC_CHECK_LIB(epeg, epeg_file_open, [ AC_DEFINE(HAVE_EPEG_LIB) ])
+AC_SUBST(epeg_libs)
+AC_SUBST(epeg_cflags)
+
+dnl Make sure the png header/lib is available
+AC_CHECK_HEADER( png.h, 
+  [ AC_DEFINE(HAVE_PNG_H) have_png="yes" LIBS="$LIBS -lpng" ], 
+  [ AC_MSG_ERROR(Cannot find png.h on your system, try --with-png=) ])
+AC_CHECK_LIB(png, png_create_read_struct, [ AC_DEFINE(HAVE_PNG_LIB) ])
+  
+AC_PATH_PROG(PERL, perl, 0)
+AC_SUBST(PERL)
+
+AC_OUTPUT([
+Makefile
+epsilon-config
+src/Makefile
+src/lib/Makefile
+src/bin/Makefile
+], [
+chmod +x epsilon-config
+]
+)
+
+echo
+echo "Finished configuring $PACKAGE $VERSION"
+echo
+echo "Support for freedesktop png thumbnailing .... $have_png"
+echo "Support for epeg thumbnail extension     .... $have_epeg"
+echo
+echo "Now type 'make' (gmake on some systems) to compile $PACKAGE"
+echo
+
