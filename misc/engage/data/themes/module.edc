@@ -428,5 +428,23 @@ group {
 	 }
       }
    }
+   programs {
+      program {
+	 name:    "go_active";
+	 signal:  "active";
+	 source:  "";
+	 action:  STATE_SET "hidden" 0.0;
+	 transition: LINEAR 0.5;
+	 target:  "EngageIconText";
+      }
+      program {
+	 name:    "go_passive";
+	 signal:  "passive";
+	 source:  "";
+	 action:  STATE_SET "visible" 0.0;
+	 transition: LINEAR 0.5;
+	 target:  "EngageIconText";
+      }								  
+   }
 }
 }
