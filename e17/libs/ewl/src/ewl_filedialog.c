@@ -176,17 +176,17 @@ void ewl_filedialog_set_directory(Ewl_Filedialog *fd, char *path)
 void ewl_filedialog_change_labels_cb (Ewl_Widget * w, void *ev_data, 
 		void *user_data) 
 {
-	char *ptr;
+	char *path;
 	char str[PATH_MAX + 50];
 	Ewl_Filedialog *fd = user_data; 
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	if (!ev_data) {
-		ptr = ewl_fileselector_get_path (EWL_FILESELECTOR (fd->selector));
+		path = ewl_fileselector_get_path (EWL_FILESELECTOR (fd->selector));
 
-		snprintf (str, sizeof (str), "Current dir: %s", ptr);
-
+		snprintf (str, sizeof (str), "Current dir: %s", path);
+                free(path);
 		ewl_text_set_text (EWL_TEXT (fd->path_label), str);
 	}
 	else {
@@ -222,7 +222,6 @@ ewl_filedialog_ok_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	path1 = ewl_fileselector_get_path(EWL_FILESELECTOR(fd->selector));
 	path2 = ewl_entry_get_text(EWL_ENTRY(fd->entry));
 	snprintf(tmp, PATH_MAX, "%s/%s", path1, path2);
-
 	free(path1);
 	free(path2);
 	path1 = strdup(tmp);

@@ -128,7 +128,6 @@ void ewl_fileselector_init(Ewl_Fileselector * fs)
 char *ewl_fileselector_get_filename (Ewl_Fileselector *fs) 
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-        printf("item: %s\n", fs->item);	
 	DRETURN_PTR(fs->item ? strdup(fs->item) : NULL, DLEVEL_STABLE);
 }
 
@@ -140,7 +139,6 @@ char *ewl_fileselector_get_filename (Ewl_Fileselector *fs)
 char *ewl_fileselector_get_path (Ewl_Fileselector *fs)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-        printf("fs path: %s\n", fs->path);
 	DRETURN_PTR(fs->path ? strdup(fs->path) : NULL, DLEVEL_STABLE);
 }
 
@@ -208,7 +206,6 @@ void ewl_fileselector_set_directory(Ewl_Fileselector * fs, char *path)
 	ewl_container_reset (EWL_CONTAINER (fs->dirs));
 	ewl_container_reset (EWL_CONTAINER (fs->files));
 
-        printf("set dir: %s\n", path);
 	fs->path = strdup (path);
 	
 	while (num--) {
