@@ -7,10 +7,20 @@ DEPENDS = ""
 PR = "r0"
 
 SRC_URI = "file://e17-snap/enlightenment-0.17.0_pre5.tar.gz"
-S = "${WORKDIR}"
+S = "${WORKDIR}/enlightenment-0.17.0_pre5"
 
-inherit autotools
+inherit autotools pkgconfig binconfig
+
+export EET_CONFIG = "${STAGING_BINDIR}/eet-config"
+export EVAS_CONFIG = "${STAGING_BINDIR}/evas-config"
+export ECORE_CONFIG = "${STAGING_BINDIR}/ecore-config"
+export EMBRYO_CONFIG = "${STAGING_BINDIR}/embryo-config"
+export EDJE_CONFIG = "${STAGING_BINDIR}/edje-config"
 
 EXTRA_OECONF = "--with-profile=HIRES_PDA"
 
+#do_configure() {
+#	oe_runconf
+#}
 
+FILES_${PN} = "${bindir}/* ${libdir}/* ${datadir}"

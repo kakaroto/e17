@@ -10,7 +10,8 @@ DEPENDS = "libpng jpeg eet freetype"
 PV = "${CVSDATE}"
 PR = "r0"
 
-SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/enlightenment;module=e17/libs/evas" 
+SRC_URI = "cvs://${E_CVS_USER}@cvs.sourceforge.net/cvsroot/enlightenment;module=e17/libs/evas${CVS_METHOD}"
+
 S = "${WORKDIR}/evas"
 
 inherit autotools pkgconfig binconfig

@@ -5,7 +5,7 @@ SECTION = "e/libs"
 PRIORITY = "optional"
 include ecore_${PV}.oe
 inherit native
-DEPENDS = "eet-native evas-native libiconv-native"
+DEPENDS = "eet-native evas-native"
 
 export EDB_CONFIG = "${STAGING_BINDIR}/edb-config-native"
 export EET_CONFIG = "${STAGING_BINDIR}/eet-config-native"

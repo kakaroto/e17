@@ -5,7 +5,7 @@ DEPENDS = "edje evas ecore etox"
 PV = "${CVSDATE}"
 PR = "r0"
 
-SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/enlightenment;module=e17/libs/ewl"
+SRC_URI = "cvs://${E_CVS_USER}@cvs.sourceforge.net/cvsroot/enlightenment;module=e17/libs/ewl${CVS_METHOD}"
 S = "${WORKDIR}/ewl"
 
 inherit autotools binconfig

@@ -8,8 +8,8 @@ DEPENDS = ""
 PV = "${CVSDATE}"
 PR = "r0"
 
-SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/enlightenment;module=e17/libs/embryo" 
-#file://embryo/flags.patch;patch=1
+SRC_URI = "cvs://${E_CVS_USER}@cvs.sourceforge.net/cvsroot/enlightenment;module=e17/libs/embryo${CVS_METHOD}"
+
 S = "${WORKDIR}/embryo"
 
 inherit autotools pkgconfig binconfig

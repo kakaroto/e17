@@ -5,7 +5,7 @@ MAINTAINER = "That Crazy fool emte <emte@labotomy.net>"
 PV = "${CVSDATE}"
 PR = "r0"
 
-SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/enlightenment;module=e17/libs/edje"
+SRC_URI = "cvs://${E_CVS_USER}@cvs.sourceforge.net/cvsroot/enlightenment;module=e17/libs/edje${CVS_METHOD}"
 
 S = "${WORKDIR}/edje"
 

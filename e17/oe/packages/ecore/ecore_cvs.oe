@@ -7,10 +7,10 @@ SECTION = "e/libs"
 PRIORITY = "optional"
 LEAD_SONAME = "libecore.so"
 PV = "${CVSDATE}"
-DEPENDS = "eet evas libiconv"
+DEPENDS = "eet evas"
 PR = "r0"
 
-SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/enlightenment;module=e17/libs/ecore"
+SRC_URI = "cvs://${E_CVS_USER}@cvs.sourceforge.net/cvsroot/enlightenment;module=e17/libs/ecore${CVS_METHOD}"
 S = "${WORKDIR}/ecore"
 
 inherit autotools binconfig
@@ -30,8 +30,7 @@ EXTRA_OECONF = "--enable-ecore-fb \
 		--enable-ecore-txt \
 		--enable-ecore-x \
 		--enable-ecore-config \
-		--disable-openssl \
-		--with-iconv-link=-liconv"
+		--disable-openssl"
 
 parts = "Ecore Ecore_Job \
 	 Ecore_Txt Ecore_Fb Ecore_Con \
