@@ -921,6 +921,7 @@ feh_create_default_config(char *rcfile)
            "aluminium --menu-bg " PREFIX "/share/feh/images/menubg_aluminium.png\n"
            "wood --menu-bg " PREFIX "/share/feh/images/menubg_wood.png\n"
            "aqua --menu-bg " PREFIX "/share/feh/images/menubg_aqua.png\n"
+           "britney --menu-bg " PREFIX "/share/feh/images/menubg_britney.png\n"
            );
    fclose(fp);
 
