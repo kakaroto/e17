@@ -474,7 +474,7 @@ _engage_bar_new(Engage *e, E_Container *con)
 
    eb->gmc = e_gadman_client_new(eb->con->gadman);
    e_gadman_client_domain_set(eb->gmc, "module.engage", bar_count++);
-   policy = E_GADMAN_POLICY_EDGES | E_GADMAN_POLICY_HMOVE | E_GADMAN_POLICY_VMOVE | E_GADMAN_POLICY_VSIZE;
+   policy = E_GADMAN_POLICY_EDGES | E_GADMAN_POLICY_HMOVE | E_GADMAN_POLICY_VMOVE;
    e_gadman_client_policy_set(eb->gmc, policy);
    e_gadman_client_min_size_set(eb->gmc, 16, 16);
    e_gadman_client_max_size_set(eb->gmc, 800, 136);
@@ -483,6 +483,8 @@ _engage_bar_new(Engage *e, E_Container *con)
    e_gadman_client_resize(eb->gmc, 400, 40);
    e_gadman_client_change_func_set(eb->gmc, _engage_bar_cb_gmc_change, eb);
    e_gadman_client_load(eb->gmc);
+   /* update for appropriate bar we loaded on */
+   _engage_bar_update_policy(eb);
 
    evas_event_thaw(eb->evas);
 
@@ -1104,6 +1106,7 @@ _engage_bar_cb_intercept_resize(void *data, Evas_Object *o, Evas_Coord w, Evas_C
 {
    Engage_Bar *eb;
    E_Gadman_Edge edge;
+   Evas_Coord border;
 
    eb = data;
 
@@ -1115,12 +1118,13 @@ _engage_bar_cb_intercept_resize(void *data, Evas_Object *o, Evas_Coord w, Evas_C
    else
      edge = E_GADMAN_EDGE_BOTTOM;
 
-   /* FIXME "8" should not be hardcoded, difference between engage->conf->icon
+   /* FIXME "4" should not be hardcoded, difference between engage->conf->icon
     * and engage->iconbordersize */
+   border = 4;
    if (edge == E_GADMAN_EDGE_TOP || edge == E_GADMAN_EDGE_BOTTOM)
-     eb->engage->conf->iconsize = h - 8;
+     eb->engage->conf->iconsize = h - border;
    else
-     eb->engage->conf->iconsize = w - 8;
+     eb->engage->conf->iconsize = w - border;
 
    _engage_bar_iconsize_change(eb);
 }
