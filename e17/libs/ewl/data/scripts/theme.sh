@@ -180,6 +180,7 @@ echo -n "."
 edb_ed $DB add "/theme/author" str "Nathan 'RbdPngn' Ingersoll"
 edb_ed $DB add "/theme/license" str "BSD w/ Advertising Clause"
 edb_ed $DB add "/theme/name" str "Default"
+edb_ed $DB add "/theme/font_path" str "appearance/fonts"
 
 echo "Done"
 echo "Theme database generation complete."

@@ -91,17 +91,28 @@ int ewl_theme_init(void)
  */
 void ewl_theme_init_font_path()
 {
-	char            font_path[PATH_LEN];
+	char           *font_path;
+	char            key[PATH_LEN];
 
 	/*
 	 * Setup the default font paths
 	 */
 	font_paths = ewd_list_new();
 	if (font_paths) {
-		snprintf(font_path, PATH_LEN, "%s/appearance/fonts",
-			 theme_path);
+		snprintf(key, PATH_LEN, "/theme/font_path");
+		font_path = ewl_theme_data_get_str(NULL, key);
 
-		ewd_list_append(font_paths, font_path);
+		if (font_path) {
+			if (*font_path == '/')
+				ewd_list_append(font_paths, font_path);
+			else {
+				snprintf(key, PATH_LEN, "%s/%s", theme_path,
+						font_path);
+				ewd_list_append(font_paths, key);
+			}
+
+			FREE(font_path);
+		}
 	}
 }
 
@@ -244,7 +255,7 @@ char           *ewl_theme_data_get_str(Ewl_Widget * w, char *k)
 	printf("%s\n", k);
 
 	for (temp = k; temp && !ret; temp = strchr(temp, '/')) {
-		if (w->theme)
+		if (w && w->theme)
 			ret = ewd_hash_get(w->theme, temp);
 
 		if (!ret && def_theme_data)
