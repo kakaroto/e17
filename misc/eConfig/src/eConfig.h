@@ -51,7 +51,7 @@
 
 #define econf_save_string(code, path,loc,string) \
 { \
-	code = eConfigStoreData(loc,string,length(string),path); \
+	code = eConfigStoreData(loc,string,strlen(string),path); \
 }
 
 
