@@ -6,6 +6,7 @@ Build-Depends: freetype2-dev, libesd0-dev | libesd-alsa0-dev, libfnlib-dev, imli
 Standards-Version: 3.1.1.0
 
 Package: epplets
+Section: x11
 Architecture: any
 Depends: libepplet0 (= ${Source-Version}), ${shlibs:Depends}, enlightenment (>= 0.16.5-1)
 Suggests: eeyes
@@ -18,12 +19,14 @@ Description: The Epplets for the Enlightenment Window Manager
  E-Mixer, E-Screenshoot, E-Xscreensaver, and others.
 
 Package: libepplet0
+Section: libs
 Architecture: any
 Depends: ${shlibs:Depends}
 Description: The Epplet Shared Libraries
  Shared libraries used by Epplets.
 
 Package: libepplet-dev
+Section: devel
 Architecture: any
 Depends: libepplet0 (= ${Source-Version}), libc6-dev
 Description: Development files for Epplets

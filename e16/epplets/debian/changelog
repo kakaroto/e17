@@ -1,3 +1,18 @@
+epplets (0.6.cvs.2001031501-2) unstable; urgency=low
+
+  * Added 'Section:' to each package so they are installed to the
+    correct area.
+
+ -- Stephen Frost <sfrost@debian.org>  Thu, 15 Mar 2001 15:13:39 -0500
+
+epplets (0.6.cvs.20010315-1) unstable; urgency=low
+
+  * New CVS build.
+  * Modified versioning to better support CVS
+  * Added Build-Depends line, closes: #84227
+
+ -- Stephen Frost <sfrost@debian.org>  Thu, 15 Mar 2001 10:01:39 -0500
+
 epplets (0.6.0-0.2001030401) unstable; urgency=low
 
   * New CVS build.
