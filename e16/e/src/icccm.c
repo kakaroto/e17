@@ -54,14 +54,20 @@ ICCCM_GetTitle(EWin * ewin, Atom atom_change)
 		  XFreeStringList(list);
 	       }
 	     else
-		ewin->client.title = duplicate((char *)xtp.value);
+	       {
+		  ewin->client.title = duplicate((char *)xtp.value);
+	       }
 	  }
 	else
-	   ewin->client.title = duplicate((char *)xtp.value);
+	  {
+	     ewin->client.title = duplicate((char *)xtp.value);
+	  }
 	XFree(xtp.value);
      }
    else if (!ewin->internal)
-      ewin->client.title = duplicate("No Title");
+     {
+	ewin->client.title = duplicate("No Title");
+     }
    EDBUG_RETURN_;
 }
 
@@ -88,12 +94,18 @@ ICCCM_GetColormap(EWin * ewin)
    if (XGetWindowAttributes(disp, ewin->client.win, &xwa))
      {
 	if (xwa.colormap)
-	   ewin->client.cmap = xwa.colormap;
+	  {
+	     ewin->client.cmap = xwa.colormap;
+	  }
 	else
-	   ewin->client.cmap = 0;
+	  {
+	     ewin->client.cmap = 0;
+	  }
      }
    else
-      ewin->client.cmap = 0;
+     {
+	ewin->client.cmap = 0;
+     }
    EDBUG_RETURN_;
 }
 
@@ -161,7 +173,9 @@ ICCCM_Delete(EWin * ewin)
 	XSendEvent(disp, ewin->client.win, False, 0, (XEvent *) & ev);
      }
    else
-      XKillClient(disp, (XID) ewin->client.win);
+     {
+	XKillClient(disp, (XID) ewin->client.win);
+     }
    EDBUG_RETURN_;
 }
 
@@ -375,9 +389,13 @@ ICCCM_Adopt(EWin * ewin, Window win)
    if (!a)
       a = XInternAtom(disp, "WM_STATE", False);
    if (ewin->client.start_iconified)
-      c[0] = IconicState;
+     {
+	c[0] = IconicState;
+     }
    else
-      c[0] = NormalState;
+     {
+	c[0] = NormalState;
+     }
    c[1] = 0;
    XChangeProperty(disp, win, a, a, 32, PropModeReplace, (unsigned char *)c, 2);
    ewin->x = ewin->client.x;
@@ -558,9 +576,13 @@ ICCCM_GetGeoms(EWin * ewin, Atom atom_change)
 	     if ((hint.flags & USPosition) || ((hint.flags & PPosition)))
 	       {
 		  if (hint.flags & PWinGravity)
-		     ewin->client.grav = hint.win_gravity;
+		    {
+		       ewin->client.grav = hint.win_gravity;
+		    }
 		  else
-		     ewin->client.grav = NorthWestGravity;
+		    {
+		       ewin->client.grav = NorthWestGravity;
+		    }
 		  ewin->client.x = x;
 		  ewin->client.y = y;
 		  if ((hint.flags & PPosition) && (!ewin->sticky))
@@ -573,13 +595,21 @@ ICCCM_GetGeoms(EWin * ewin, Atom atom_change)
 		       ewin->client.x -= desks.desk[dsk].x;
 		       ewin->client.y -= desks.desk[dsk].y;
 		       if (ewin->client.x + ewin->client.w >= root.w)
-			  ewin->client.x += desks.desk[dsk].x;
+			 {
+			    ewin->client.x += desks.desk[dsk].x;
+			 }
 		       else if (ewin->client.x < 0)
-			  ewin->client.x += desks.desk[dsk].x;
+			 {
+			    ewin->client.x += desks.desk[dsk].x;
+			 }
 		       if (ewin->client.y + ewin->client.h >= root.h)
-			  ewin->client.y += desks.desk[dsk].y;
+			 {
+			    ewin->client.y += desks.desk[dsk].y;
+			 }
 		       else if (ewin->client.y < 0)
-			  ewin->client.y += desks.desk[dsk].y;
+			 {
+			    ewin->client.y += desks.desk[dsk].y;
+			 }
 		    }
 		  ewin->client.already_placed = 1;
 	       }
@@ -636,14 +666,18 @@ ICCCM_GetGeoms(EWin * ewin, Atom atom_change)
 		     ((double)hint.min_aspect.y);
 	       }
 	     else
-		ewin->client.aspect_min = 0.0;
+	       {
+		  ewin->client.aspect_min = 0.0;
+	       }
 	     if ((hint.max_aspect.y > 0.0) && (hint.max_aspect.x > 0.0))
 	       {
 		  ewin->client.aspect_max = ((double)hint.max_aspect.x) /
 		     ((double)hint.max_aspect.y);
 	       }
 	     else
-		ewin->client.aspect_max = 65535.0;
+	       {
+		  ewin->client.aspect_max = 65535.0;
+	       }
 	  }
 	else
 	  {
@@ -773,7 +807,9 @@ ICCCM_GetInfo(EWin * ewin, Atom atom_change)
 		  ewin->client.command = s;
 	       }
 	     else
-		ewin->client.command = NULL;
+	       {
+		  ewin->client.command = NULL;
+	       }
 	  }
 	else if (XGetCommand(disp, ewin->client.group, &cargv, &cargc))
 	  {
@@ -813,14 +849,20 @@ ICCCM_GetInfo(EWin * ewin, Atom atom_change)
 		       ewin->client.command = s;
 		    }
 		  else
-		     ewin->client.command = NULL;
+		    {
+		       ewin->client.command = NULL;
+		    }
 		  XFreeStringList(cargv);
 	       }
 	     else
-		ewin->client.command = NULL;
+	       {
+		  ewin->client.command = NULL;
+	       }
 	  }
 	else
-	   ewin->client.command = NULL;
+	  {
+	     ewin->client.command = NULL;
+	  }
      }
    ok = 1;
    if (atom_change)
@@ -849,7 +891,9 @@ ICCCM_GetInfo(EWin * ewin, Atom atom_change)
 	     XFree(xtp.value);
 	  }
 	else
-	   ewin->client.machine = NULL;
+	  {
+	     ewin->client.machine = NULL;
+	  }
      }
    ok = 1;
    if (atom_change)
@@ -868,7 +912,9 @@ ICCCM_GetInfo(EWin * ewin, Atom atom_change)
 	     if (ewin->client.icon_name)
 		Efree(ewin->client.icon_name);
 	     if (xtp.encoding == XA_STRING)
-		ewin->client.icon_name = duplicate((char *)xtp.value);
+	       {
+		  ewin->client.icon_name = duplicate((char *)xtp.value);
+	       }
 	     else
 	       {
 		  char              **cl;
@@ -891,7 +937,9 @@ ICCCM_GetInfo(EWin * ewin, Atom atom_change)
 	     if (ewin->client.icon_name)
 		Efree(ewin->client.icon_name);
 	     if (xtp.encoding == XA_STRING)
-		ewin->client.icon_name = duplicate((char *)xtp.value);
+	       {
+		  ewin->client.icon_name = duplicate((char *)xtp.value);
+	       }
 	     else
 	       {
 		  char              **cl;
@@ -910,7 +958,9 @@ ICCCM_GetInfo(EWin * ewin, Atom atom_change)
 	     XFree(xtp.value);
 	  }
 	else
-	   ewin->client.icon_name = NULL;
+	  {
+	     ewin->client.icon_name = NULL;
+	  }
      }
    ok = 1;
    if (atom_change)
@@ -990,37 +1040,65 @@ ICCCM_GetHints(EWin * ewin, Atom atom_change)
 	if (hint->flags & InputHint)
 	  {
 	     if (hint->input)
-		ewin->client.need_input = 1;
+	       {
+		  ewin->client.need_input = 1;
+	       }
 	     else
-		ewin->client.need_input = 0;
+	       {
+		  ewin->client.need_input = 0;
+	       }
 	  }
 	else
-	   ewin->client.need_input = 1;
+	  {
+	     ewin->client.need_input = 1;
+	  }
 	if (hint->flags & StateHint)
 	  {
 	     if (hint->initial_state == IconicState)
-		ewin->client.start_iconified = 1;
+	       {
+		  ewin->client.start_iconified = 1;
+	       }
 	     else
-		ewin->client.start_iconified = 0;
+	       {
+		  ewin->client.start_iconified = 0;
+	       }
 	  }
 	else
-	   ewin->client.start_iconified = 0;
+	  {
+	     ewin->client.start_iconified = 0;
+	  }
 	if (hint->flags & IconPixmapHint)
-	   ewin->client.icon_pmap = hint->icon_pixmap;
+	  {
+	     ewin->client.icon_pmap = hint->icon_pixmap;
+	  }
 	else
-	   ewin->client.icon_pmap = 0;
+	  {
+	     ewin->client.icon_pmap = 0;
+	  }
 	if (hint->flags & IconMaskHint)
-	   ewin->client.icon_mask = hint->icon_mask;
+	  {
+	     ewin->client.icon_mask = hint->icon_mask;
+	  }
 	else
-	   ewin->client.icon_mask = 0;
+	  {
+	     ewin->client.icon_mask = 0;
+	  }
 	if (hint->flags & IconWindowHint)
-	   ewin->client.icon_win = hint->icon_window;
+	  {
+	     ewin->client.icon_win = hint->icon_window;
+	  }
 	else
-	   ewin->client.icon_win = 0;
+	  {
+	     ewin->client.icon_win = 0;
+	  }
 	if (hint->flags & WindowGroupHint)
-	   ewin->client.group = hint->window_group;
+	  {
+	     ewin->client.group = hint->window_group;
+	  }
 	else
-	   ewin->client.group = 0;
+	  {
+	     ewin->client.group = 0;
+	  }
 	XFree(hint);
      }
    ok = 1;
@@ -1058,11 +1136,17 @@ ICCCM_GetHints(EWin * ewin, Atom atom_change)
 	ewin->client.transient_for = w;
      }
    else
-      ewin->client.transient = 0;
+     {
+	ewin->client.transient = 0;
+     }
    if (ewin->client.group == ewin->client.win)
-      ewin->client.is_group_leader = 1;
+     {
+	ewin->client.is_group_leader = 1;
+     }
    else
-      ewin->client.is_group_leader = 0;
+     {
+	ewin->client.is_group_leader = 0;
+     }
    ok = 1;
    if (atom_change)
      {

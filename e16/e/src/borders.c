@@ -269,7 +269,7 @@ SlideEwinsTo(EWin ** ewin, int *fx, int *fy, int *tx, int *ty,
 	     int num_wins, int speed)
 {
    int                 k, spd, *x = NULL, *y =
-   NULL,               min, tmpx, tmpy, tmpw, tmph, i;
+      NULL, min, tmpx, tmpy, tmpw, tmph, i;
    struct timeval      timev1, timev2;
    int                 dsec, dusec;
    double              tm;
@@ -476,10 +476,14 @@ AddToFamily(Window win)
      }
    /* if it hasnt been planed on a desktop - assing it the current desktop */
    if (ewin->desktop < 0)
-      ewin->desktop = desks.current;
-   /* assign it the desktop it asked for (modulo the number of desks) */
+     {
+	ewin->desktop = desks.current;
+     }
    else
-      ewin->desktop = DESKTOPS_WRAP_NUM(ewin->desktop);
+     {
+	/* assign it the desktop it asked for (modulo the number of desks) */
+	ewin->desktop = DESKTOPS_WRAP_NUM(ewin->desktop);
+     }
 
    if ((!ewin->client.transient) && (mode.manual_placement) &&
        (!ewin->client.already_placed) && (!mode.startup) && (!mode.place))
@@ -1063,9 +1067,9 @@ ChangeEwinWinpart(EWin * ewin, int i)
 	       state, ewin->bits[i].expose);
    if (ewin->border->part[i].flags == FLAG_TITLE)
       TclassApply(ewin->border->part[i].iclass, ewin->bits[i].win,
-		  ewin->bits[i].w, ewin->bits[i].h, ewin->active, ewin->sticky,
-		  state, ewin->bits[i].expose, ewin->border->part[i].tclass,
-		  ewin->client.title);
+		  ewin->bits[i].w, ewin->bits[i].h, ewin->active,
+		  ewin->sticky, state, ewin->bits[i].expose,
+		  ewin->border->part[i].tclass, ewin->client.title);
    if (ewin->bits[i].win)
       ChangeEwinWinpartContents(ewin, i);
    if (!ewin->shapedone)
@@ -2585,7 +2589,7 @@ MinShadeSize(EWin * ewin, int *mw, int *mh)
 		     leftborderwidth =
 			ewin->border->border.left - ewin->bits[i].x;
 		  if ((ewin->bits[i].x + ewin->bits[i].w) -
-		    (ewin->w - ewin->border->border.right) > rightborderwidth)
+		      (ewin->w - ewin->border->border.right) > rightborderwidth)
 		     rightborderwidth =
 			(ewin->bits[i].x + ewin->bits[i].w) - (ewin->w -
 							       ewin->

@@ -43,11 +43,11 @@
 
 static ToolTip     *ttip = NULL;
 struct _mdata
-  {
-     Menu               *m;
-     MenuItem           *mi;
-     EWin               *ewin;
-  };
+{
+   Menu               *m;
+   MenuItem           *mi;
+   EWin               *ewin;
+};
 
 static void         ToolTipTimeout(int val, void *data);
 static void         SubmenuShowTimeout(int val, void *dat);
@@ -480,7 +480,7 @@ HandleMotion(XEvent * ev)
 		     if ((ndx != dx) &&
 			 (((gwins[i]->x == 0) &&
 			   (!(IN_RANGE
-			    (gwins[i]->reqx, gwins[i]->x, screen_snap_dist))))
+			      (gwins[i]->reqx, gwins[i]->x, screen_snap_dist))))
 			  || ((gwins[i]->x == (root.w - gwins[i]->w))
 			      &&
 			      (!(IN_RANGE
@@ -494,7 +494,8 @@ HandleMotion(XEvent * ev)
 								  (gwins
 								   [i]->reqx,
 								   gwins[i]->x,
-						    mode.edge_snap_dist)))))))
+								   mode.
+								   edge_snap_dist)))))))
 		       {
 			  jumpx = 1;
 			  ndx = gwins[i]->reqx - gwins[i]->x + dx;
@@ -503,7 +504,7 @@ HandleMotion(XEvent * ev)
 		     if ((ndy != dy) &&
 			 (((gwins[i]->y == 0) &&
 			   (!(IN_RANGE
-			    (gwins[i]->reqy, gwins[i]->y, screen_snap_dist))))
+			      (gwins[i]->reqy, gwins[i]->y, screen_snap_dist))))
 			  || ((gwins[i]->y == (root.h - gwins[i]->h))
 			      &&
 			      (!(IN_RANGE
@@ -517,7 +518,8 @@ HandleMotion(XEvent * ev)
 								  (gwins
 								   [i]->reqy,
 								   gwins[i]->y,
-						    mode.edge_snap_dist)))))))
+								   mode.
+								   edge_snap_dist)))))))
 		       {
 			  jumpy = 1;
 			  ndy = gwins[i]->reqy - gwins[i]->y + dy;
@@ -980,8 +982,8 @@ HandleMotion(XEvent * ev)
 		       {
 			  di->item.slider.wanted_val += dy;
 			  di->item.slider.val = di->item.slider.lower +
-			     ((((di->item.
-				 slider.base_h - di->item.slider.knob_h -
+			     ((((di->
+				 item.slider.base_h - di->item.slider.knob_h -
 				 di->item.slider.wanted_val) *
 				(di->item.slider.upper -
 				 di->item.slider.lower)) /
@@ -1641,9 +1643,9 @@ HandleMouseDown(XEvent * ev)
       DoIn("TOOLTIP_TIMEOUT", mode.tiptime, ToolTipTimeout, 0, NULL);
 
    if (
-	 (((float)(ev->xbutton.time - last_time) / 1000) <
-	  mode_double_click_time)
-	 && ((int)(ev->xbutton.button) == (int)(last_button)))
+       (((float)(ev->xbutton.time - last_time) / 1000) <
+	mode_double_click_time)
+       && ((int)(ev->xbutton.button) == (int)(last_button)))
       double_click = 1;
    last_time = ev->xbutton.time;
    last_button = ev->xbutton.button;
@@ -1920,8 +1922,7 @@ HandleMouseDown(XEvent * ev)
 		if ((ewin) && (!ewin->pager))
 		  {
 		     Window              dw;
-		     int                 wx, wy, ww, wh, ax, ay, cx, cy,
-		                         px, py;
+		     int                 wx, wy, ww, wh, ax, ay, cx, cy, px, py;
 
 		     PagerHideHi(p);
 		     pwin_px = ewin->x;
@@ -2394,15 +2395,15 @@ HandleMouseUp(XEvent * ev)
 			   ((ew->desktop == desks.current) || (ew->sticky)))
 			 {
 			    if (
-				  (ev->xbutton.x_root >=
-				   (ew->x + ew->border->border.left))
-				  && (ev->xbutton.x_root <
-				   (ew->x + ew->w - ew->border->border.right))
-				  && (ev->xbutton.y_root >=
-				      (ew->y + ew->border->border.top))
-				  && (ev->xbutton.y_root <
-				      (ew->y + ew->h -
-				       ew->border->border.bottom)))
+				(ev->xbutton.x_root >=
+				 (ew->x + ew->border->border.left))
+				&& (ev->xbutton.x_root <
+				    (ew->x + ew->w - ew->border->border.right))
+				&& (ev->xbutton.y_root >=
+				    (ew->y + ew->border->border.top))
+				&& (ev->xbutton.y_root <
+				    (ew->y + ew->h -
+				     ew->border->border.bottom)))
 			      {
 				 ewin = ew;
 				 i = desks.desk[desks.current].num;
@@ -2413,8 +2414,7 @@ HandleMouseUp(XEvent * ev)
 		  if ((ewin) && (ewin->pager))
 		    {
 		       Pager              *pp;
-		       int                 w, h, x, y, ax, ay, cx, cy, px,
-		                           py;
+		       int                 w, h, x, y, ax, ay, cx, cy, px, py;
 		       int                 wx, wy, base_x = 0, base_y = 0;
 		       Window              dw;
 
@@ -2509,13 +2509,13 @@ HandleMouseUp(XEvent * ev)
 				 HideEwin(gwins[i]);
 				 MoveEwin(gwins[i], gwin_px[i] +
 					  ((desks.desk
-					    [gwins[i]->
-					     desktop].current_area_x) -
+					    [gwins[i]->desktop].
+					    current_area_x) -
 					   p->hi_ewin->area_x) * root.w,
 					  gwin_py[i] +
-					  ((desks.desk
-					    [gwins[i]->
-					     desktop].current_area_y) -
+					  ((desks.
+					    desk[gwins[i]->desktop].
+					    current_area_y) -
 					   p->hi_ewin->area_y) * root.h);
 				 if (was_shaded != gwins[i]->shaded)
 				    InstantShadeEwin(gwins[i]);
@@ -2527,7 +2527,7 @@ HandleMouseUp(XEvent * ev)
 		  else
 		    {
 		       int                 ndesk, nx, ny, base_x = 0, base_y =
-		       0,                  ax, ay;
+			  0, ax, ay;
 
 		       ndesk = desks.current;
 		       nx = (int)ev->xbutton.x_root -
