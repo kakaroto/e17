@@ -3,6 +3,8 @@
 
 void            __ewl_checkbutton_clicked(Ewl_Widget * w, void *ev_data,
 					  void *user_data);
+void            __ewl_check_clicked(Ewl_Widget * w, void *ev_data,
+				    void *user_data);
 
 /**
  * @param label: the label to display with the checkbutton, NULL for no label
@@ -57,6 +59,7 @@ void ewl_checkbutton_init(Ewl_CheckButton * cb, char *label)
 	 * Add the check box first.
 	 */
 	cb->check = ewl_check_new();
+	ewl_callback_del(cb->check, EWL_CALLBACK_CLICKED, __ewl_check_clicked);
 	ewl_container_prepend_child(EWL_CONTAINER(cb), cb->check);
 	ewl_widget_show(cb->check);
 
