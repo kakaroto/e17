@@ -30,7 +30,6 @@ geist_object_init(geist_object * obj)
    obj->get_selection_updates = geist_object_int_get_selection_updates;
    obj->part_is_transparent = geist_object_int_part_is_transparent;
    obj->resize_event = geist_object_int_resize;
-   obj->sizemode = SIZEMODE_ZOOM;
    obj->name = estrdup("Untitled Object");
 
    D_RETURN_(5);
@@ -479,3 +478,86 @@ void geist_object_int_resize (geist_object *obj, int x, int y)
 
    D_RETURN_(5);
 }
+
+void geist_object_resize_object(geist_object * obj, int x, int y)
+{
+      D_ENTER(5);
+
+   switch (obj->resize)
+   {
+     case RESIZE_RIGHT:
+        obj->w = x - obj->x;
+        break;
+     case RESIZE_LEFT:
+        if (x < obj->x + obj->w)
+        {
+           obj->w = obj->x + obj->w - x;
+           obj->x = x;
+        }
+        else
+           obj->w = 1;
+        break;
+     case RESIZE_BOTTOM:
+        obj->h = y - obj->y;
+        break;
+     case RESIZE_TOP:
+        if (y < obj->y + obj->h)
+        {
+           obj->h = obj->y + obj->h - y;
+           obj->y = y;
+        }
+        else
+           obj->h = 1;
+        break;
+     case RESIZE_TOPRIGHT:
+        obj->w = x - obj->x;
+        if (y < obj->y + obj->h)
+        {
+           obj->h = obj->y + obj->h - y;
+           obj->y = y;
+        }
+        else
+           obj->h = 1;
+        break;
+     case RESIZE_BOTTOMRIGHT:
+        obj->w = x - obj->x;
+        obj->h = y - obj->y;
+        break;
+     case RESIZE_BOTTOMLEFT:
+        obj->h = y - obj->y;
+        if (x < obj->x + obj->w)
+        {
+           obj->w = obj->x + obj->w - x;
+           obj->x = x;
+        }
+        else
+           obj->w = 1;
+        break;
+     case RESIZE_TOPLEFT:
+        if (y < obj->y + obj->h)
+        {
+           obj->h = obj->y + obj->h - y;
+           obj->y = y;
+        }
+        else
+           obj->h = 1;
+        if (x < obj->x + obj->w)
+        {
+           obj->w = obj->x + obj->w - x;
+           obj->x = x;
+        }
+        else
+           obj->w = 1;
+        break;
+     default:
+        break;
+   }
+
+   if (obj->h < 1)
+      obj->h = 1;
+   if (obj->w < 1)
+      obj->w = 1;
+
+   D_RETURN_(5);
+}
+

@@ -31,6 +31,7 @@ geist_text_init(geist_text * txt)
    obj->get_rendered_image = geist_text_get_rendered_image;
    obj->duplicate = geist_text_duplicate;
    obj->resize_event = geist_text_resize;
+   txt->sizemode = SIZEMODE_CENTER;
    geist_object_set_type(obj, GEIST_TYPE_TEXT);
 
    D_RETURN_(5);
@@ -125,8 +126,10 @@ geist_text_render(geist_object * obj, Imlib_Image dest)
    sh = geist_imlib_image_get_height(im->im);
 
    D(3, ("Rendering text %p with text %s\n", obj, im->text));
-   geist_imlib_blend_image_onto_image(dest, im->im, 0, 0, 0, sw, sh, obj->x,
-                                      obj->y, sw, sh, 1, 1, im->alias);
+   geist_imlib_blend_image_onto_image(dest, im->im, 0, 0, 0, sw, sh,
+                                      obj->x + obj->rendered_x,
+                                      obj->y + obj->rendered_y, sw, sh, 1, 1,
+                                      im->alias);
 
    D_RETURN_(5);
 }
@@ -147,32 +150,51 @@ geist_text_render_partial(geist_object * obj, Imlib_Image dest, int x, int y,
    if (!im->im)
       D_RETURN_(5);
 
-   sx = x - obj->x;
-   sy = y - obj->y;
+   if (obj->rendered_x < 0)
+      sx = x - obj->x;
+   else
+      sx = x - (obj->x + obj->rendered_x);
+   if (obj->rendered_y < 0)
+      sy = y - obj->y;
+   else
+      sy = y - (obj->y + obj->rendered_y);
 
    if (sx < 0)
       sx = 0;
    if (sy < 0)
       sy = 0;
 
-   sw = obj->w - sx;
-   sh = obj->h - sy;
+   if (obj->rendered_w > obj->w)
+      sw = obj->w - sx;
+   else
+      sw = obj->rendered_w - sx;
+
+   if (obj->rendered_h > obj->h)
+      sh = obj->h - sy;
+   else
+      sh = obj->rendered_h - sy;
 
    if (sw > w)
       sw = w;
    if (sh > h)
       sh = h;
 
-   dx = obj->x + sx;
-   dy = obj->y + sy;
+   if (obj->rendered_x < 0)
+      dx = obj->x + sx;
+   else
+      dx = (obj->x + obj->rendered_x) + sx;
+   if (obj->rendered_y < 0)
+      dy = obj->y + sy;
+   else
+      dy = (obj->y + obj->rendered_y) + sy;
    dw = sw;
    dh = sh;
 
-   D(3,
+   D(5, ("Rendering partial text %s\n", im->text));
+   D(5,
      ("Rendering text area:\nsx: %d\tsy: %d\nsw: %d\tsh: %d\ndx: %d\tdy: %d\ndw: %d\tdh: %d\n",
       sx, sy, sw, sh, dx, dy, dw, dh));
 
-   D(3, ("Rendering partial text %s\n", im->text));
    geist_imlib_blend_image_onto_image(dest, im->im, 0, sx, sy, sw, sh, dx, dy,
                                       dw, dh, 1, 1, im->alias);
 
@@ -262,9 +284,8 @@ geist_text_duplicate(geist_object * obj)
    txt = GEIST_TEXT(obj);
 
    ret =
-      geist_text_new_with_text(obj->x, obj->y,
-                               txt->fontname, txt->text, txt->a, txt->r,
-                               txt->g, txt->b);
+      geist_text_new_with_text(obj->x, obj->y, txt->fontname, txt->text,
+                               txt->a, txt->r, txt->g, txt->b);
    ret->rendered_x = obj->rendered_x;
    ret->rendered_y = obj->rendered_y;
    ret->w = obj->w;
@@ -284,9 +305,25 @@ geist_text_duplicate(geist_object * obj)
 void
 geist_text_resize(geist_object * obj, int x, int y)
 {
+   geist_text *txt;
+
    D_ENTER(5);
 
-   printf("resize to %d,%d\n", x, y);
+   txt = GEIST_TEXT(obj);
+
+   D(5, ("resize to %d,%d\n", x, y));
+   geist_object_resize_object(obj, x, y);
+
+      switch (txt->sizemode)
+   {
+     case SIZEMODE_CENTER:
+        obj->rendered_x = (obj->w - obj->rendered_w) / 2;
+        obj->rendered_y = (obj->h - obj->rendered_h) / 2;
+        break;
+     default:
+        printf("implement me!\n");
+        break;
+   }
 
    D_RETURN_(5);
 }

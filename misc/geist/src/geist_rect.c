@@ -187,80 +187,10 @@ geist_rect_resize(geist_object * obj, int x, int y)
    D_ENTER(5);
 
    D(5, ("resize to %d,%d\n", x, y));
-   switch (obj->resize)
-   {
-     case RESIZE_RIGHT:
-        obj->w = x - obj->x;
-        break;
-     case RESIZE_LEFT:
-        if (x < obj->x + obj->w)
-        {
-           obj->w = obj->x + obj->w - x;
-           obj->x = x;
-        }
-        else
-           obj->w = 1;
-        break;
-     case RESIZE_BOTTOM:
-        obj->h = y - obj->y;
-        break;
-     case RESIZE_TOP:
-        if (y < obj->y + obj->h)
-        {
-           obj->h = obj->y + obj->h - y;
-           obj->y = y;
-        }
-        else
-           obj->h = 1;
-        break;
-     case RESIZE_TOPRIGHT:
-        obj->w = x - obj->x;
-        if (y < obj->y + obj->h)
-        {
-           obj->h = obj->y + obj->h - y;
-           obj->y = y;
-        }
-        else
-           obj->h = 1;
-        break;
-     case RESIZE_BOTTOMRIGHT:
-        obj->w = x - obj->x;
-        obj->h = y - obj->y;
-        break;
-     case RESIZE_BOTTOMLEFT:
-        obj->h = y - obj->y;
-        if (x < obj->x + obj->w)
-        {
-           obj->w = obj->x + obj->w - x;
-           obj->x = x;
-        }
-        else
-           obj->w = 1;
-        break;
-     case RESIZE_TOPLEFT:
-        if (y < obj->y + obj->h)
-        {
-           obj->h = obj->y + obj->h - y;
-           obj->y = y;
-        }
-        else
-           obj->h = 1;
-        if (x < obj->x + obj->w)
-        {
-           obj->w = obj->x + obj->w - x;
-           obj->x = x;
-        }
-        else
-           obj->w = 1;
-        break;
-     default:
-        break;
-   }
 
-   if (obj->h < 1)
-      obj->h = 1;
-   if (obj->w < 1)
-      obj->w = 1;
+   geist_object_resize_object(obj,x,y);
+   obj->rendered_w = obj->w;
+   obj->rendered_h = obj->h;
 
    D_RETURN_(5);
 }

@@ -65,7 +65,9 @@ geist_layer_render_partial(geist_layer * layer, Imlib_Image dest, int x,
       for (l = layer->objects; l; l = l->next)
       {
          obj = ((geist_object *) l->data);
-         if (RECTS_INTERSECT(x, y, w, h, obj->x, obj->y, obj->w, obj->h))
+         if (RECTS_INTERSECT
+             (x, y, w, h, obj->x + obj->rendered_x, obj->y + obj->rendered_y,
+              obj->rendered_w, obj->rendered_h))
          {
             D(4,
               ("rects intersect: %d,%d %dx%d   and   %d,%d %dx%d\n", x, y, w,
@@ -104,9 +106,14 @@ geist_layer_find_clicked_object(geist_layer * layer, int x, int y)
    {
       obj = ((geist_object *) l->data);
       if (geist_object_get_state(obj, VISIBLE)
-          && (XY_IN_RECT(x, y, obj->x, obj->y, obj->w, obj->h)))
+          &&
+          (XY_IN_RECT
+           (x, y, obj->x + obj->rendered_x, obj->y + obj->rendered_y,
+            obj->rendered_w, obj->rendered_h)))
       {
-         if (!geist_object_part_is_transparent(obj, x - obj->x, y - obj->y))
+         if (!geist_object_part_is_transparent
+             (obj, x - (obj->x + obj->rendered_x),
+              y - (obj->y + obj->rendered_y)))
             ret = obj;
       }
    }

@@ -248,7 +248,7 @@ geist_document_find_clicked_object(geist_document * doc, int x, int y)
 
    for (l = doc->layers; l; l = l->next)
    {
-      if(GEIST_LAYER(l->data)->visible)
+      if (GEIST_LAYER(l->data)->visible)
          ret = geist_layer_find_clicked_object(GEIST_LAYER(l->data), x, y);
    }
 
@@ -287,15 +287,14 @@ geist_document_dirty_object(geist_document * doc, geist_object * obj)
    D_ENTER(5);
 
    D(5,
-     ("adding dirty rect %d,%d %dx%d\n", obj->x - HALF_SEL_WIDTH,
-      obj->y - HALF_SEL_HEIGHT, obj->w + HALF_SEL_WIDTH,
-      obj->h + HALF_SEL_HEIGHT));
+     ("adding dirty rect %d,%d %dx%d\n", obj->x + obj->rendered_x,
+      obj->y + obj->rendered_y, obj->rendered_w, obj->rendered_h));
 
    doc->up =
-      imlib_update_append_rect(doc->up, obj->x - HALF_SEL_WIDTH,
-                               obj->y - HALF_SEL_HEIGHT,
-                               obj->w + (2 * HALF_SEL_WIDTH),
-                               obj->h + (2 * HALF_SEL_HEIGHT));
+      imlib_update_append_rect(doc->up, obj->x + obj->rendered_x,
+                               obj->y + obj->rendered_y, obj->rendered_w,
+                               obj->rendered_h);
+   geist_document_dirty_object_selection(doc, obj);
    D_RETURN_(5);
 }
 

@@ -1,3 +1,10 @@
+Mon Aug  7 21:34:38 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Rectangle resizing
+	* Centred text resizing
+	* Centred image resizing, need to implement zoom and scale resize
+	modes for this next.
+
 Sun Aug  6 23:04:59 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Moved obj->visible into state mask.

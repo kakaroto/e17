@@ -8,6 +8,11 @@ extern GtkWidget *obj_list;
 
 #define GEIST_OBJECT(O) ((geist_object *) O)
 
+enum __sizemode
+{ SIZEMODE_ZOOM, SIZEMODE_STRETCH, SIZEMODE_CENTER, SIZEMODE_LEFT,
+   SIZEMODE_RIGHT
+};
+
 enum __resize_type
 { RESIZE_NONE,
    RESIZE_LEFT,
@@ -48,11 +53,6 @@ struct __geist_object
    int resize;
    /* object state */
    unsigned long int state;
-   enum
-   { SIZEMODE_ZOOM, SIZEMODE_STRETCH, SIZEMODE_CENTER, SIZEMODE_LEFT,
-      SIZEMODE_RIGHT
-   }
-   sizemode;
    void (*free) (geist_object * obj);
    void (*render) (geist_object * obj, Imlib_Image im);
    void (*render_selected) (geist_object * obj, Imlib_Image im,
@@ -63,7 +63,7 @@ struct __geist_object
      Imlib_Updates(*get_selection_updates) (geist_object * obj);
    geist_object *(*duplicate) (geist_object * obj);
    unsigned char (*part_is_transparent) (geist_object * obj, int x, int y);
-   void (*resize_event) (geist_object *obj, int x, int y);
+   void (*resize_event) (geist_object * obj, int x, int y);
 };
 
 /* allocation functions */
@@ -105,8 +105,9 @@ unsigned char geist_object_int_part_is_transparent(geist_object * obj, int x,
 
                                                    int y);
 int geist_object_check_resize_click(geist_object * obj, int x, int y);
-void geist_object_resize (geist_object *obj, int x, int y);
-void geist_object_int_resize (geist_object *obj, int x, int y);
+void geist_object_resize(geist_object * obj, int x, int y);
+void geist_object_int_resize(geist_object * obj, int x, int y);
+void geist_object_resize_object(geist_object * obj, int x, int y);
 
 
 #define geist_object_set_state(o, s) (o->state |=  s)

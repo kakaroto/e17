@@ -19,6 +19,7 @@ struct __geist_text {
    int h;
    Imlib_Image im;
    int alias;
+   int sizemode;
    int r,g,b,a;
 };
 

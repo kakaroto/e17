@@ -34,6 +34,7 @@ geist_image_init(geist_image * img)
    obj->duplicate = geist_image_duplicate;
    obj->resize_event = geist_image_resize;
    geist_object_set_type(obj, GEIST_TYPE_IMAGE);
+   img->sizemode = SIZEMODE_CENTER;
 
    D_RETURN_(5);
 }
@@ -136,28 +137,47 @@ geist_image_render_partial(geist_object * obj, Imlib_Image dest, int x, int y,
    if (!geist_object_get_state(obj, VISIBLE))
       D_RETURN_(5);
 
-   im = (geist_image *) obj;
+   im = GEIST_IMAGE(obj);
    if (!im->im)
       D_RETURN_(5);
 
-   sx = x - obj->x;
-   sy = y - obj->y;
+   if (obj->rendered_x < 0)
+      sx = x - obj->x;
+   else
+      sx = x - (obj->x + obj->rendered_x);
+   if (obj->rendered_y < 0)
+      sy = y - obj->y;
+   else
+      sy = y - (obj->y + obj->rendered_y);
 
    if (sx < 0)
       sx = 0;
    if (sy < 0)
       sy = 0;
 
-   sw = obj->w - sx;
-   sh = obj->h - sy;
+   if (obj->rendered_w > obj->w)
+      sw = obj->w - sx;
+   else
+      sw = obj->rendered_w - sx;
+
+   if (obj->rendered_h > obj->h)
+      sh = obj->h - sy;
+   else
+      sh = obj->rendered_h - sy;
 
    if (sw > w)
       sw = w;
    if (sh > h)
       sh = h;
 
-   dx = obj->x + sx;
-   dy = obj->y + sy;
+   if (obj->rendered_x < 0)
+      dx = obj->x + sx;
+   else
+      dx = (obj->x + obj->rendered_x) + sx;
+   if (obj->rendered_y < 0)
+      dy = obj->y + sy;
+   else
+      dy = (obj->y + obj->rendered_y) + sy;
    dw = sw;
    dh = sh;
 
@@ -199,8 +219,7 @@ geist_image_load_file(geist_image * img, char *filename)
    D_RETURN(5, ret);
 }
 
-Imlib_Image
-geist_image_get_rendered_image(geist_object * obj)
+Imlib_Image geist_image_get_rendered_image(geist_object * obj)
 {
    D_ENTER(3);
 
@@ -237,9 +256,25 @@ geist_image_duplicate(geist_object * obj)
 void
 geist_image_resize(geist_object * obj, int x, int y)
 {
+   geist_image *img;
+
    D_ENTER(5);
 
-   printf("resize to %d,%d\n", x, y);
+   img = GEIST_IMAGE(obj);
+
+   D(5, ("resize to %d,%d\n", x, y));
+   geist_object_resize_object(obj, x, y);
+
+   switch (img->sizemode)
+   {
+     case SIZEMODE_CENTER:
+        obj->rendered_x = (obj->w - obj->rendered_w) / 2;
+        obj->rendered_y = (obj->h - obj->rendered_h) / 2;
+        break;
+     default:
+        printf("implement me!\n");
+        break;
+   }
 
    D_RETURN_(5);
 }
