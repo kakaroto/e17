@@ -500,6 +500,7 @@ the resolutions defined as above.
 
 <page columns=1 padding=16 name=desktops background=Edoc_bg.png linkcolor=#88dddd>
 <font face=rothwell/25 color=#ffffff>
+<img src=E_deskstack.png x=360 y=70>
 <p>
 Multiple & Virtual Desktops
 <font face=aircut3/12 color=#ffffff>
@@ -516,7 +517,19 @@ The best way to imagine this is that each desktop is a sheet of paper with the
 first (desktop 0) desktop being glued in-place. You can re-shuffle the stack
 of papers and slide one down to reveal a piece of paper underneath - the only
 paper you can't slide is the first one. Each desktop (or sheet) contains your
-application windows. Windows normally live on one desktop, but can be made
+application windows.
+
+
+
+
+
+
+
+<page columns=1 padding=16 name=desktops2 background=Edoc_bg.png linkcolor=#88dddd>
+<font face=aircut3/12 color=#ffffff>
+<img src=E_deskarray.png x=350 y=140>
+<p>
+Windows normally live on one desktop, but can be made
 to exit on all desktops - whenever you change to a new desktop the window
 will follow you and be on that desktop too. This is known as being sticky.
 if a window is sticky it will "stick to the glass of your screen" and stay
@@ -530,13 +543,59 @@ time. It's just like getting more sheets of paper and taping them to the sides
 of your current sheet of paper. An easy way of changing your view is by just
 sliding your mouse in the direction of a currently unviewable part of your
 desktop and as long as you have Edge Flip enabled Enlightenment will 
-automatically scroll over to that part of the desktop
+automatically scroll over to that part of the desktop.
+
+
+
+
+
+
+
+<page columns=1 padding=16 name=desktops3 background=Edoc_bg.png linkcolor=#88dddd>
+<font face=aircut3/12 color=#ffffff>
+<img src=E_deskimg.png x=275 y=81>
+<p>
+Enlightenment also allows you to set a different desktop backdrop per desktop
+to help you customise your environemnt and differentiate which desktop is 
+which.
+<p>
+An easy way of having Enlightenment auotmaitcally pick up any pictures you have
+is to make a directory in your ~/.enlightenment directory called
+backgrounds and then fill that with your favorite backgrops. Enlightenment
+will automatically discover this and index them for you allowing you to
+select them and chnage their settings. More on this topic is explained in the
+_Settings(settings) section.
+
+
+
+
+
+
 
 <page columns=1 padding=16 name=dragbar background=Edoc_bg.png linkcolor=#88dddd>
 <font face=rothwell/25 color=#ffffff>
 <p>
 The Dragbar
 <font face=aircut3/12 color=#ffffff>
+<p>
+At the top of your screen, by default, you will notice a long bar you can 
+click. If you click and drag this bar on any desktop except the first, you
+will notice you can drag your desktop around to expose desktops below it.
+<p>
+This can be used to open up a gap between the current desktop and a desktop
+below and then drag a window to the desktop below simply by moveing the window 
+there.
+<p>
+In addition pressing the middle mouse button on this bar will bring up a menu 
+with a list of all windows - select a window to set the current focus to this 
+window. Pressing right mouse buttonm will bring up a list of tasks sorted by
+desktop - select one and you'll set the focus on that too.
+
+
+
+
+
+
 
 <page columns=1 padding=16 name=pager background=Edoc_bg.png linkcolor=#88dddd>
 <font face=rothwell/25 color=#ffffff>
