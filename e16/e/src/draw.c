@@ -359,6 +359,8 @@ ECreatePixImg(Window win, int w, int h)
 void
 EDestroyPixImg(PixImg * pi)
 {
+	if(!pi)
+		return;
    XSync(disp, False);
    XShmDetach(disp, pi->shminfo);
    shmdt(pi->shminfo->shmaddr);
