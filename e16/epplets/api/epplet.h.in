@@ -33,18 +33,20 @@
 #endif
 
 #if defined(sun) && !defined(__sun__)
-# define __sun__
+#define __sun__
 #endif
 
 #if defined(HAVE_VARARGS_H) && !defined(HAVE_STDARG_H)
-# include <varargs.h>
-int     Evsnprintf(char *str, size_t count, const char *fmt, va_list args);
-int     Esnprintf(va_alist);
+#include <varargs.h>
+int                 Evsnprintf(char *str, size_t count, const char *fmt, va_list args);
+int                 Esnprintf(va_alist);
+
 #else
 /* If they don't have stdarg.h, they have bigger problems.... */
-# include <stdarg.h>
-int     Evsnprintf(char *str, size_t count, const char *fmt, va_list args);
-int     Esnprintf(char *str, size_t count, const char *fmt, ...);
+#include <stdarg.h>
+int                 Evsnprintf(char *str, size_t count, const char *fmt, va_list args);
+int                 Esnprintf(char *str, size_t count, const char *fmt,...);
+
 #endif
 
 #define EROOT "@EROOT@"
@@ -54,17 +56,18 @@ int     Esnprintf(char *str, size_t count, const char *fmt, ...);
 /* Data structures & primitives                                             */
 /****************************************************************************/
 typedef struct _etimer ETimer;
-typedef void * Epplet_gadget;
+typedef void       *Epplet_gadget;
 typedef struct _rgb_buf
-{
-   ImlibImage *im;
-} * RGB_buf;
+  {
+     ImlibImage         *im;
+  }
+                   *RGB_buf;
 
 typedef struct _configitem
-{
-    char *key;
-    char *value;
-}
+  {
+     char               *key;
+     char               *value;
+  }
 ConfigItem;
 
 /****************************************************************************/
@@ -76,129 +79,152 @@ ConfigItem;
 /* sized window. You also need to pass your argc and argv parameters your   */
 /* main() function gets. vertical is a flag as to if the app is vertical.   */
 /* Apps that are more horizontal than vertical should set this to 0.        */
-void Epplet_Init(char *name, char *version, char *info, int w, int h,
-                 int argc, char **argv, char vertical);
+void                Epplet_Init(char *name, char *version, char *info, int w, int h,
+				int argc, char **argv, char vertical);
 
 /****************************************************************************/
 /* Cleanup call                                                             */
 /****************************************************************************/
 /* You HAVE to call this before exiting your epplet!                        */
 
-void   Epplet_cleanup(void);
-
+void                Epplet_cleanup(void);
 
 /* actualy display the app */
-void   Epplet_show(void);
+void                Epplet_show(void);
+
 /* ask E to remember stuff about it - you don't need to do this at startup */
 /* or whenver the Epplet moves etc.- this is done for you, but if you need */
 /* to for some special reason - call it */
-void   Epplet_remember(void);
+void                Epplet_remember(void);
+
 /* if you dont want E to rememebr anything abotu you or start you up anymore */
 /* call this - this is a good call to make if you want to exit and never */
 /* have yourself started up again by E */
-void   Epplet_unremember(void);
+void                Epplet_unremember(void);
+
 /* return the window id of the main epplet window */
-Window Epplet_get_main_window(void);
+Window              Epplet_get_main_window(void);
+
 /* return the X display connection used */
-Display *Epplet_get_display(void);
+Display            *Epplet_get_display(void);
+
 /* return the ImlibData pointer being used */
-ImlibData *Epplet_get_imlib_data(void);
+ImlibData          *Epplet_get_imlib_data(void);
 
 /****************************************************************************/
 /* IPC calls                                                                */
 /****************************************************************************/
 /* send the string "s" to Enlightenment */
-void   Epplet_send_ipc(char *s);
+void                Epplet_send_ipc(char *s);
+
 /* sit and wait for an IPc message - nothing happens whilst waiting no */
 /* timers run, no events or anything else is handled. */
-char  *Epplet_wait_for_ipc(void);
+char               *Epplet_wait_for_ipc(void);
 
 /* take the imageclass called iclass in state state ("normal", "hilited", */
 /* "clicked") and set it as the backgorund pixmap to window ww and have */
 /* its shape mask be the shape of the window ww */
-void   Epplet_imageclass_apply(char *iclass, char *state, Window ww);
+void                Epplet_imageclass_apply(char *iclass, char *state, Window ww);
+
 /* paste the imageclass iclass in state state in window ww at (x,y) at a */
 /* size of (w x h) */
-void   Epplet_imageclass_paste(char *iclass, char *state, Window ww, 
-			       int x, int y, int w, int h);
+void                Epplet_imageclass_paste(char *iclass, char *state, Window ww,
+					    int x, int y, int w, int h);
+
 /* return pixmaps of imageclass iclass in the state state and place the */
 /* pixmap and mask ID's in the Pixmaps Id's poitned to by p and m, and have */
 /* the pximaps be of size (w x h) */
-void   Epplet_imageclass_get_pixmaps(char *iclass, char *state, Pixmap *p, 
-				     Pixmap *m, int w, int h);
+void                Epplet_imageclass_get_pixmaps(char *iclass, char *state, Pixmap * p,
+						  Pixmap * m, int w, int h);
+
 /* draw the text class tclass in state state on window ww at x, y with the */
 /* text "txt" */
-void   Epplet_textclass_draw(char *tclass, char *state, Window ww, int x, 
-			     int y, char *txt);
+void                Epplet_textclass_draw(char *tclass, char *state, Window ww, int x,
+					  int y, char *txt);
+
 /* get the size text for textclass tclass will be using the text "txt" and */
 /* return widht and height to the int's pointed to by e and h */
-void   Epplet_textclass_get_size(char *tclass, int *w, int *h, char *txt);
+void                Epplet_textclass_get_size(char *tclass, int *w, int *h, char *txt);
+
 /* the epplet main loop - once you've set up and showed your epplet window */
 /* call this */
-void   Epplet_Loop(void);
+void                Epplet_Loop(void);
+
 /* call the function func with data as its data param whenever an expose */
 /* happens and needs to be handled */
-void   Epplet_register_expose_handler(void (*func)
-				      (void *data, Window win, int x, int y, int w, int h),
-				      void *data);
+void                Epplet_register_expose_handler(void (*func)
+                         (void *data, Window win, int x, int y, int w, int h),
+						   void *data);
+
 /* call func whenever the epplet is moved */
-void   Epplet_register_move_resize_handler(void (*func)
-					   (void *data, Window win, int x, int y, int w, int h),
-					   void *data);
+void                Epplet_register_move_resize_handler(void (*func)
+                         (void *data, Window win, int x, int y, int w, int h),
+							void *data);
+
 /* call func whenever a button is pressed */
-void   Epplet_register_button_press_handler(void (*func)
-					    (void *data, Window win, int x, int y, int b),
-					    void *data);
+void                Epplet_register_button_press_handler(void (*func)
+	                        (void *data, Window win, int x, int y, int b),
+							 void *data);
+
 /* call func whenever a button is released */
-void   Epplet_register_button_release_handler(void (*func)
-					      (void *data, Window win, int x, int y, int b),
-					      void *data);
+void                Epplet_register_button_release_handler(void (*func)
+	                        (void *data, Window win, int x, int y, int b),
+							   void *data);
+
 /* call func whenever a key is pressed (pass a string version of the key */
 /* pressed to the regsitsered function) */
-void   Epplet_register_key_press_handler(void (*func)
-					 (void *data, Window win, char *key),
-					 void *data);
+void                Epplet_register_key_press_handler(void (*func)
+		                          (void *data, Window win, char *key),
+						      void *data);
+
 /* call func whenever a key is released (pass a string version of the key */
 /* pressed to the regsitsered function) */
-void   Epplet_register_key_release_handler(void (*func)
-					   (void *data, Window win, char *key),
-					   void *data);
+void                Epplet_register_key_release_handler(void (*func)
+		                          (void *data, Window win, char *key),
+							void *data);
+
 /* call func whenever a the mouse is moved in a window */
-void   Epplet_register_mouse_motion_handler(void (*func)
-					    (void *data, Window win, int x, int y),
-					    void *data);
+void                Epplet_register_mouse_motion_handler(void (*func)
+		                       (void *data, Window win, int x, int y),
+							 void *data);
+
 /* call func whenever a the mouse enters a window */
-void   Epplet_register_mouse_enter_handler(void (*func)
-					   (void *data, Window win),
-					   void *data);
+void                Epplet_register_mouse_enter_handler(void (*func)
+				                     (void *data, Window win),
+							void *data);
+
 /* call func whenever a the mouse leaves a window */
-void   Epplet_register_mouse_leave_handler(void (*func)
-					   (void *data, Window win),
-					   void *data);
+void                Epplet_register_mouse_leave_handler(void (*func)
+				                     (void *data, Window win),
+							void *data);
+
 /* call func whenever focus is active on your epplet window */
-void   Epplet_register_focus_in_handler(void (*func)
-					(void *data, Window win),
-					void *data);
+void                Epplet_register_focus_in_handler(void (*func)
+				                     (void *data, Window win),
+						     void *data);
+
 /* call func whenever leaves your epplet window */
-void   Epplet_register_focus_out_handler(void (*func)
-					 (void *data, Window win),
-					 void *data);
+void                Epplet_register_focus_out_handler(void (*func)
+				                     (void *data, Window win),
+						      void *data);
+
 /* call func and pass a pointer to n XEvent on every event that happens */
-void   Epplet_register_event_handler(void (*func)
-				     (void *data, XEvent *ev),
-				     void *data);
+void                Epplet_register_event_handler(void (*func)
+				                    (void *data, XEvent * ev),
+						  void *data);
+
 /* call func and pass a string (that you dont have to free) with the IPC */
 /* message whenever e sends you an IPC message */
-void   Epplet_register_comms_handler(void (*func)
-				     (void *data, char *s),
-				     void *data);
+void                Epplet_register_comms_handler(void (*func)
+				                        (void *data, char *s),
+						  void *data);
+
 /* call func when a window is closed by the wm. This func must return a
  * value. Return 1 and the window will be destroyed for you, return 0 and it
  * will not */
-void   Epplet_register_delete_event_handler(int (*func)
-                                         (void *data, Window win),
-                                         void *data);
-
+void                Epplet_register_delete_event_handler(int (*func)
+				                     (void *data, Window win),
+							 void *data);
 
 /****************************************************************************/
 /* Timer timeout functions - this lets you appear to have threads when you  */
@@ -207,15 +233,18 @@ void   Epplet_register_delete_event_handler(int (*func)
 /* run function func and pass data data to it in in seconds (in is double */
 /* so you can for exmaple use 0.5 to have that function called in 0.5 */
 /* seconds from now ). You also attach the name to the timeout of name */
-void   Epplet_timer(void (*func) (void *data), void *data, double in, 
-		    char *name);
+void                Epplet_timer(void (*func) (void *data), void *data, double in,
+				 char *name);
+
 /* delete any timeout of name name in the queue. you should use unique */
 /* names for different timeouts in the queue */
-void   Epplet_remove_timer(char *name);
+void                Epplet_remove_timer(char *name);
+
 /* get the data passed to a timer */
-void   *Epplet_timer_get_data(char *name);	
+void               *Epplet_timer_get_data(char *name);
+
 /* get the current time as a double (time is in seconds since Jan 1, 1970 */
-double Epplet_get_time(void);
+double              Epplet_get_time(void);
 
 /****************************************************************************/
 /* widgets available from the epplet api that use images from E to define   */
@@ -231,139 +260,171 @@ double Epplet_get_time(void);
 /* unless you want a special parent (only buttons can be speically parented */
 /* and the function func si called whne the button is clicked and data is */
 /* passed to that function */
-Epplet_gadget   Epplet_create_button(char *label, char *image, int x, int y,
-				     int w, int h, char *std, Window parent,
-				     Epplet_gadget pop_parent,
-				     void (*func) (void *data), void *data);
+Epplet_gadget       Epplet_create_button(char *label, char *image, int x, int y,
+				       int w, int h, char *std, Window parent,
+					 Epplet_gadget pop_parent,
+			void                (*func) (void *data), void *data);
+
 /* A cut down version for text-only buttons */
-Epplet_gadget   Epplet_create_text_button(char *label, int x, int y,
-                                     int w, int h, 
-				     void (*func) (void *data), void *data);
+Epplet_gadget       Epplet_create_text_button(char *label, int x, int y,
+					      int w, int h,
+			void                (*func) (void *data), void *data);
+
 /* A cut down version for std-image-only buttons */
-Epplet_gadget   Epplet_create_std_button(char *std, int x, int y,
-                                     void (*func) (void *data), void *data);
+Epplet_gadget       Epplet_create_std_button(char *std, int x, int y,
+			void                (*func) (void *data), void *data);
+
 /* A cut down version for image-only buttons */
-Epplet_gadget   Epplet_create_image_button(char *image, int x, int y,
-                                     int w, int h,
-                                     void (*func) (void *data), void *data);
+Epplet_gadget       Epplet_create_image_button(char *image, int x, int y,
+					       int w, int h,
+			void                (*func) (void *data), void *data);
 
 /* create a textbox at coordinates (x, y), with 'image' as bg, 'contents' as
  * the default contents, w, h, and 'size' as the font size. When ENTER is
  * pressed in the textbox, 'func' is executed.
  * */
 Epplet_gadget       Epplet_create_textbox(char *image, char *contents, int x,
-                                          int y, int w, int h, char size,
-                                          void (*func) (void *data),
-                                          void *data);
+					  int y, int w, int h, char size,
+				     void                (*func) (void *data),
+					  void *data);
 
 /* Retrieve the current contents of the textbox */
 char               *Epplet_textbox_contents(Epplet_gadget g);
 
 /* Reset the textbox */
-void Epplet_reset_textbox(Epplet_gadget eg);
+void                Epplet_reset_textbox(Epplet_gadget eg);
 
 /* Change the contents of a textbox */
-void Epplet_change_textbox(Epplet_gadget eg, char *new_contents);
-void Epplet_textbox_insert(Epplet_gadget eg, char *new_contents);
+void                Epplet_change_textbox(Epplet_gadget eg, char *new_contents);
+void                Epplet_textbox_insert(Epplet_gadget eg, char *new_contents);
 
 /* create drawing area at (x,y) of size (w x h) */
-Epplet_gadget   Epplet_create_drawingarea(int x, int y, int w, int h);
+Epplet_gadget       Epplet_create_drawingarea(int x, int y, int w, int h);
+
 /* create horizontal slider at x, y of length len. the minimum length is 9 */
 /* pixels, and the width is always 8 pixels. min is the minimum value and */
 /* max is the maximum value. max should always > min. the slider can move */
 /* by step units as a minimum step, and moves by jump whenever you click */
 /* either side of the slider. whenever the slider changed func is called */
-Epplet_gadget   Epplet_create_hslider(int x, int y, int len, int min, int max,
-				      int step, int jump, int *val,
-				      void (*func) (void *data), void *data);
+Epplet_gadget       Epplet_create_hslider(int x, int y, int len, int min, int max,
+					  int step, int jump, int *val,
+			void                (*func) (void *data), void *data);
+
 /* same as horizontal slider except vertical */
-Epplet_gadget   Epplet_create_vslider(int x, int y, int len, int min, int max,
-				      int step, int jump, int *val,
-				      void (*func) (void *data), void *data);
+Epplet_gadget       Epplet_create_vslider(int x, int y, int len, int min, int max,
+					  int step, int jump, int *val,
+			void                (*func) (void *data), void *data);
+
 /* create a button (like normal buttons) except it toggles the value */
 /* pointed to by val between 1 and 0. func is called whenever it changes */
-Epplet_gadget   Epplet_create_togglebutton(char *label, char *pixmap, int x, 
-					   int y, int w, int h, int *val, 
-					   void (*func) (void *data),
-					   void *data);
+Epplet_gadget       Epplet_create_togglebutton(char *label, char *pixmap, int x,
+					       int y, int w, int h, int *val,
+				     void                (*func) (void *data),
+					       void *data);
+
 /* creates a button just like normal button except it pops up the popup */
 /* when clicked */
-Epplet_gadget   Epplet_create_popupbutton(char *label, char *image, int x, 
-					  int y, int w, int h, char *std,
-					  Epplet_gadget popup);
+Epplet_gadget       Epplet_create_popupbutton(char *label, char *image, int x,
+					      int y, int w, int h, char *std,
+					      Epplet_gadget popup);
+
 /* creates an empty popup */
-Epplet_gadget   Epplet_create_popup(void);
+Epplet_gadget       Epplet_create_popup(void);
+
 /* adds an image file pixmaps or label to the popup gadget and calls */
 /* func when it is selected */
-void            Epplet_add_popup_entry(Epplet_gadget gadget, char *label, 
-				       char *pixmap,
-				       void (*func) (void *data), void *data);
+void                Epplet_add_popup_entry(Epplet_gadget gadget, char *label,
+					   char *pixmap,
+			void                (*func) (void *data), void *data);
+
 /* remove an entry from a popup gadget */
 /* If entry num is positive or zero then it is relateive to elements */
 /* least recently added to the popup gadget, zero is the element first */
 /* added to the list. If entry_num is negative then is is relateive to */
 /* elements most recently added, -1 is the elemet most recently */
-/* added to the popup*/
-void            Epplet_remove_popup_entry(Epplet_gadget gadget, int entry_num);
+/* added to the popup */
+void                Epplet_remove_popup_entry(Epplet_gadget gadget, int entry_num);
+
 /* get the number of entries in a popup */
-int             Epplet_popup_entry_num(Epplet_gadget gadget);
+int                 Epplet_popup_entry_num(Epplet_gadget gadget);
+
 /* get the data of a callback of a popup entry */
-void           *Epplet_popup_entry_get_data(Epplet_gadget gadget,
-                                            int entry_num);
+void               *Epplet_popup_entry_get_data(Epplet_gadget gadget,
+						int entry_num);
+
 /* creates an image widget of the file image at (x,y) of size (w x h) */
-Epplet_gadget   Epplet_create_image(int x, int y, int w, int h, char *image);
+Epplet_gadget       Epplet_create_image(int x, int y, int w, int h, char *image);
+
 /* puts a label widget of text label at (x,y) of size size. sizes are 0, 1 */
 /* 2 and 3. 0 is normal , 1 is tiny, 2 is medium and 3 is big. experiment */
-Epplet_gadget   Epplet_create_label(int x, int y, char *label, char size);
+Epplet_gadget       Epplet_create_label(int x, int y, char *label, char size);
+
 /* creates a horizontal progress bar at (x,y) of size (w x h) displaying the */
 /* value val points to that is a value of 0-100. dir is the direction 0 */
 /* indicates left to right and 1 indicates right to left */
-Epplet_gadget   Epplet_create_hbar(int x, int y, int w, int h, char dir,
-				   int *val);
+Epplet_gadget       Epplet_create_hbar(int x, int y, int w, int h, char dir,
+				       int *val);
+
 /* creates a vertical progress bar - dir of 0 is top to bottom, 1 is bottom */
 /* to top */
-Epplet_gadget   Epplet_create_vbar(int x, int y, int w, int h, char dir,
-				   int *val);
+Epplet_gadget       Epplet_create_vbar(int x, int y, int w, int h, char dir,
+				       int *val);
+
 /* get the window id of the windopw to draw in in the drawing area */
-Window          Epplet_get_drawingarea_window(Epplet_gadget gadget);
+Window              Epplet_get_drawingarea_window(Epplet_gadget gadget);
+
 /* change the background to either verticla or horizontal for the epplet */
-void            Epplet_background_properties(char vertical,Window win);
+void                Epplet_background_properties(char vertical, Window win);
+
 /* destroy a gadget */
-void            Epplet_gadget_destroy(Epplet_gadget gadget);
+void                Epplet_gadget_destroy(Epplet_gadget gadget);
+
 /* hide a gadget */
-void            Epplet_gadget_hide(Epplet_gadget gadget);
+void                Epplet_gadget_hide(Epplet_gadget gadget);
+
 /* show a gadget */
-void            Epplet_gadget_show(Epplet_gadget gadget);
+void                Epplet_gadget_show(Epplet_gadget gadget);
+
 /* move a gadget */
-void		Epplet_gadget_move(Epplet_gadget gadget, int x, int y);
+void                Epplet_gadget_move(Epplet_gadget gadget, int x, int y);
+
 /* get the callback data from a gadget */
-void			*Epplet_gadget_get_data(Epplet_gadget gadget);
+void               *Epplet_gadget_get_data(Epplet_gadget gadget);
+
 /* if you chaged the value a gadget is pointing to call this on the gadget */
 /* so it can update and redraw */
-void            Epplet_gadget_data_changed(Epplet_gadget gadget);
+void                Epplet_gadget_data_changed(Epplet_gadget gadget);
+
 /* Redraw a gadget.  un_only should be set to 1 if you only want to "undraw"
-   the existing gadget.  force should be 1 if you want to draw it even if it
-   is invisible.  Beware that this could be a Bad Thing (tm). */
-void		Epplet_gadget_draw(Epplet_gadget gadget, int un_only, int force);
+ * the existing gadget.  force should be 1 if you want to draw it even if it
+ * is invisible.  Beware that this could be a Bad Thing (tm). */
+void                Epplet_gadget_draw(Epplet_gadget gadget, int un_only, int force);
+
 /* Redraw all gadgets. */
-void		Epplet_redraw(void);
+void                Epplet_redraw(void);
+
 /* change the popup a popbutton brings up and destroy the popup it currently */
 /* brings up */
-void            Epplet_change_popbutton_popup(Epplet_gadget gadget, 
-					      Epplet_gadget popup);
+void                Epplet_change_popbutton_popup(Epplet_gadget gadget,
+						  Epplet_gadget popup);
+
 /* display the popup gadget above or below (dpeending where the window ww */
 /* is) the window ww, or if it's 0, deisplay where the pointer is */
-void            Epplet_pop_popup(Epplet_gadget gadget, Window ww);
+void                Epplet_pop_popup(Epplet_gadget gadget, Window ww);
+
 /* change the image file and widht & height of the image gadget */
-void            Epplet_change_image(Epplet_gadget gadget, int w, int h, 
-				    char *image);
+void                Epplet_change_image(Epplet_gadget gadget, int w, int h,
+					char *image);
+
 /* change the x and y coordinates of the image gadget and change the image */
-void            Epplet_move_change_image(Epplet_gadget gadget, int x, int y, 
-                                         int w, int h, char *image);
+void                Epplet_move_change_image(Epplet_gadget gadget, int x, int y,
+					     int w, int h, char *image);
+
 /* change the label string contents of the gadget label */
-void            Epplet_change_label(Epplet_gadget gadget, char *label);
+void                Epplet_change_label(Epplet_gadget gadget, char *label);
+
 /* move the label to a new x/y and change the text too */
-void            Epplet_move_change_label(Epplet_gadget gadget, int x, int y, char *label);
+void                Epplet_move_change_label(Epplet_gadget gadget, int x, int y, char *label);
 
 /****************************************************************************/
 /* Some window creation functions for configs, questions, external displays */
@@ -372,17 +433,17 @@ void            Epplet_move_change_label(Epplet_gadget gadget, int x, int y, cha
 
 /* Create a window of width w, height h, with title title, using the themes
  * vertical (1), or horizontal (0) background */
-Window Epplet_create_window(int w,int h,char *title, char vertical);
-Window Epplet_create_window_borderless(int w,int h,char *title, char vertical);
+Window              Epplet_create_window(int w, int h, char *title, char vertical);
+Window              Epplet_create_window_borderless(int w, int h, char *title, char vertical);
 
 /* Create a config window, of width w, height h, with title title, using the
  * functions listed for ok, apply and cancel. If you specify any of the
  * functions as null, the button won't be displayed. This means you can get
  * just Ok and Cancel by supplying NULL for apply_cb. */
-Window Epplet_create_window_config(int w,int h,char *title,
-         void (*ok_func) (void *data),void *ok_data,
-	 void (*apply_func) (void *data),void *apply_data,
-	 void (*cancel_func) (void *data),void *cancel_data);
+Window              Epplet_create_window_config(int w, int h, char *title,
+		   void                (*ok_func) (void *data), void *ok_data,
+	     void                (*apply_func) (void *data), void *apply_data,
+	  void                (*cancel_func) (void *data), void *cancel_data);
 
 /* This is how you add gadgets to specific windows. When you create a
  * window, its context is automatically pushed for you. This means any
@@ -390,52 +451,61 @@ Window Epplet_create_window_config(int w,int h,char *title,
  * fact, until you either push another window onto the context, or pop this
  * one back off, all created gadgets will go on here. A create_window should
  * always be followed by a pop_context (after gadgets have been added). */
-void Epplet_window_push_context(Window newwin);
-Window Epplet_window_pop_context(void);
+void                Epplet_window_push_context(Window newwin);
+Window              Epplet_window_pop_context(void);
 
 /* Show and hide an already created Window win. */
-void Epplet_window_show(Window win);
-void Epplet_window_hide(Window win);
+void                Epplet_window_show(Window win);
+void                Epplet_window_hide(Window win);
 
 /* Destroy Window win. Any gadgets you have added to the window are
  * destroyed also */
-void Epplet_window_destroy(Window win);
+void                Epplet_window_destroy(Window win);
 
 /****************************************************************************/
 /* basic line, filled rectangle and box outline drawing functions to make   */
 /* life easy                                                                */
 /****************************************************************************/
 /* draw a line from (x1, y1) to (x2, y2) in window win, in color (r, g, b) */
-void            Epplet_draw_line(Window win, int x1, int y1, int x2, int y2,
-				 int r, int g, int b);
+void                Epplet_draw_line(Window win, int x1, int y1, int x2, int y2,
+				     int r, int g, int b);
+
 /* draw a box at (x, y) of size (w x h) in window win, in color (r, g, b) */
-void            Epplet_draw_box(Window win, int x, int y, int w, int h,
-				int r, int g, int b);
-/* draw a box outline at (x, y) of size (w, h) in window win, in color (r, g, b) */
-void            Epplet_draw_outline(Window win, int x, int y, int w, int h,
+void                Epplet_draw_box(Window win, int x, int y, int w, int h,
 				    int r, int g, int b);
+
+/* draw a box outline at (x, y) of size (w, h) in window win, in color (r, g, b) */
+void                Epplet_draw_outline(Window win, int x, int y, int w, int h,
+					int r, int g, int b);
+
 /* get the pixel value for the RGB value (r, g, b) and return it */
-int             Epplet_get_color(int r, int g, int b);
+int                 Epplet_get_color(int r, int g, int b);
+
 /* pasye the image file image onto window ww, at its original size at (x,y) */
-void            Epplet_paste_image(char *image, Window ww, int x, int y);
+void                Epplet_paste_image(char *image, Window ww, int x, int y);
+
 /* paste the image file image onto window ww at (x,y), at size (w x h) */
-void            Epplet_paste_image_size(char *image, Window ww, int x, int y, 
-					int w, int h);
+void                Epplet_paste_image_size(char *image, Window ww, int x, int y,
+					    int w, int h);
+
 /* syncronize all draws (guarantees they are done) */
-void            Esync(void);
+void                Esync(void);
 
 /****************************************************************************/
-/* RGB buffer - for people who want to write raw RGB image data to a drawing*/
+/* RGB buffer - for people who want to write raw RGB image data to a drawing */
 /* area and want it rendered/dithered etc. for them                         */
 /****************************************************************************/
 /* create an RGB buffer of size (w x h) */
-RGB_buf         Epplet_make_rgb_buf(int w, int h);
+RGB_buf             Epplet_make_rgb_buf(int w, int h);
+
 /* get a pointer to the RGB data int he RGB buffer */
-unsigned char  *Epplet_get_rgb_pointer(RGB_buf buf);
+unsigned char      *Epplet_get_rgb_pointer(RGB_buf buf);
+
 /* render & paste the RGB buffer to a window at x, y */
-void            Epplet_paste_buf(RGB_buf buf, Window win, int x, int y);
+void                Epplet_paste_buf(RGB_buf buf, Window win, int x, int y);
+
 /* free an RGB buffer */
-void            Epplet_free_rgb_buf(RGB_buf buf);
+void                Epplet_free_rgb_buf(RGB_buf buf);
 
 #ifdef HAVE_LIBGL
 /****************************************************************************/
@@ -447,80 +517,81 @@ void            Epplet_free_rgb_buf(RGB_buf buf);
 /* this as the code matures.                                                */
 /****************************************************************************/
 /* Create an Epplet glx context, pick the default visual, and bind it to a
-   window (obtained from Epplet_get_drawingarea_window) 
-	 with a double buffer */
-GLXContext      Epplet_bind_double_GL(Window win, Display *dpy);
-/* Create an Epplet glx context, pick the default visual, and bind it to a
-   window (obtained from Epplet_get_drawingarea_window) 
-	 with a single font buffer */
-GLXContext      Epplet_bind_single_GL(Window win, Display *dpy);
-/* Destroy (unbind) a glx context. */
-void            Epplet_unbind_GL(Display *dpy, GLXContext cx);
-#endif
+ * window (obtained from Epplet_get_drawingarea_window) 
+ * with a double buffer */
+GLXContext          Epplet_bind_double_GL(Window win, Display * dpy);
 
+/* Create an Epplet glx context, pick the default visual, and bind it to a
+ * window (obtained from Epplet_get_drawingarea_window) 
+ * with a single font buffer */
+GLXContext          Epplet_bind_single_GL(Window win, Display * dpy);
+
+/* Destroy (unbind) a glx context. */
+void                Epplet_unbind_GL(Display * dpy, GLXContext cx);
+
+#endif
 
 /* command execution/spawing wrappers to make life easy */
 
 /* This runs the command passed to it and returns its exit code: */
-int             Epplet_run_command(char *cmd);
-char           *Epplet_read_run_command(char *cmd);
-int             Epplet_spawn_command(char *cmd);
-void            Epplet_pause_spawned_command(int pid);
-void            Epplet_unpause_spawned_command(int pid);
-void            Epplet_kill_spawned_command(int pid);
-void            Epplet_destroy_spawned_command(int pid);
-void            Epplet_register_child_handler(void (*func)
-					      (void *data, int pid, int exit_code),
-					      void *data);
-void            Epplet_change_button_label(Epplet_gadget gadget, char *label);
-void            Epplet_change_button_image(Epplet_gadget gadget, char *image);
-void            Epplet_clear_window(Window ww);
-void            Epplet_show_about(char *name);
-void            Epplet_dialog_ok(char *text);
-int             Epplet_get_hslider_clicked(Epplet_gadget gadget);
-int             Epplet_get_vslider_clicked(Epplet_gadget gadget);
+int                 Epplet_run_command(char *cmd);
+char               *Epplet_read_run_command(char *cmd);
+int                 Epplet_spawn_command(char *cmd);
+void                Epplet_pause_spawned_command(int pid);
+void                Epplet_unpause_spawned_command(int pid);
+void                Epplet_kill_spawned_command(int pid);
+void                Epplet_destroy_spawned_command(int pid);
+void                Epplet_register_child_handler(void (*func)
+		                         (void *data, int pid, int exit_code),
+						  void *data);
+void                Epplet_change_button_label(Epplet_gadget gadget, char *label);
+void                Epplet_change_button_image(Epplet_gadget gadget, char *image);
+void                Epplet_clear_window(Window ww);
+void                Epplet_show_about(char *name);
+void                Epplet_dialog_ok(char *text);
+int                 Epplet_get_hslider_clicked(Epplet_gadget gadget);
+int                 Epplet_get_vslider_clicked(Epplet_gadget gadget);
 
 /****************************************************************************/
 /* Config file handling stuff                                               */
 /****************************************************************************/
 /* Load the config file (initializes the config data).                      */
-void            Epplet_load_config(void);
+void                Epplet_load_config(void);
 
-/* This returns the instance of this epplet.				    */
-int             Epplet_get_instance(void);
+/* This returns the instance of this epplet.                                */
+int                 Epplet_get_instance(void);
 
 /* Here you can query a config setting.                                     */
-char           *Epplet_query_config(char *key);
+char               *Epplet_query_config(char *key);
 
 /* Same as above, but returns the value of default instead of NULL if no    */
 /* match is found.                                                          */
-char           *Epplet_query_config_def(char *key, char *def);
+char               *Epplet_query_config_def(char *key, char *def);
 
 /* Use this to change or add a config setting.                              */
-void            Epplet_modify_config(char *key, char *value);
+void                Epplet_modify_config(char *key, char *value);
 
 /* If you *know* a key doesn't exist, use this to add it.  It takes less    */
 /* time than the above function.                                            */
-void            Epplet_add_config(char *key, char *value);
+void                Epplet_add_config(char *key, char *value);
 
 /* If you have a set of configurations that belong together and whose       */
 /* number may change at runtime, use these:                                 */
 
 /* Here you can define multiple settings. 'num' is the number of strings    */
 /* in the 'values' array.                                                   */
-void            Epplet_modify_multi_config(char *key, char **values, int num);
+void                Epplet_modify_multi_config(char *key, char **values, int num);
 
 /* This lets you query for multiple settings.                               */
 /* Note that you have to free the result that is returned here, in contrast */
 /* to Epplet_query_config(). The pointer to 'num' returns the number of     */
 /* strings that are returned.                                               */
-char          **Epplet_query_multi_config(char *key, int *num);
+char              **Epplet_query_multi_config(char *key, int *num);
 
 /* This lets you save your current config settings. This is done automati-  */
 /* cally when you call Epplet_cleanup(), so you only need to call this when */
 /* you want to force the configs to disk for some reason.                   */
-void            Epplet_save_config(void);
-
+void                Epplet_save_config(void);
 
 /****************************************************************************/
 /* Convenience macros to make using the above calls easier                  */
@@ -535,4 +606,3 @@ void            Epplet_save_config(void);
    ptr[1] = (unsigned char)(g);\
    ptr[2] = (unsigned char)(b);\
 }
-
