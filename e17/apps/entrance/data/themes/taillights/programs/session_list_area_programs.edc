@@ -47,7 +47,7 @@
 #if 0
 	    program {
 		name, "session_selected";
-		signal, "SessionSelected";
+		signal, "entrance,xsession,selected";
 		source, "";
 		action, STATE_SET "default" 0.0;
 		target, "session_list_border";

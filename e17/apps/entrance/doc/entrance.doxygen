@@ -243,7 +243,7 @@ collections {
 		}
 	    }
 	    part {
-		name, "EntranceUserEntry";
+		name, "entrance.entry.user";
 		type, TEXT;
 		mouse_events, 0;
 		description {
@@ -268,7 +268,7 @@ collections {
 		}
 	    }
 	    part {
-		name, "EntrancePassEntry";
+		name, "entrance.entry.pass";
 		type, TEXT;
 		mouse_events, 0;
 		description {
@@ -297,9 +297,9 @@ collections {
 	programs {
 	    program {
 		name, "authed";
-		signal, "EntranceUserAuthSuccess";
+		signal, "entrance,user,auth,success";
 		source, "";
-		action, SIGNAL_EMIT "EntranceUserAuthSuccessDone" "";
+		action, SIGNAL_EMIT "entrance,user,auth,success,done" "";
 	    }
 	}
     }
@@ -394,7 +394,7 @@ collections {
 		}
 	    }
 	    part {
-		name, "EntranceUserEntry";
+		name, "entrance.entry.user";
 		type, TEXT;
 		mouse_events, 0;
 		description {
@@ -419,7 +419,7 @@ collections {
 		}
 	    }
 	    part {
-		name, "EntrancePassEntry";
+		name, "entrance.entry.pass";
 		type, TEXT;
 		mouse_events, 0;
 		description {
@@ -445,7 +445,7 @@ collections {
 		}
 	    }
 	    part {
-		name, "EntranceHostname";
+		name, "entrance.hostname";
 		type, TEXT;
 		mouse_events, 0;
 		description {
@@ -454,11 +454,11 @@ collections {
 		    rel1 { 
 			relative, 0.5 0.0;
 			offset, -200 -35;
-			to, "EntranceUserEntry";
+			to, "entrance.entry.user";
 		    } rel2 {
 			relative, 0.5 0.0;
 			offset, 200 -5;
-			to, "EntranceUserEntry";
+			to, "entrance.entry.user";
 		    }
 		    color, 255 255 255 255;
 		    text {
@@ -471,7 +471,7 @@ collections {
 		}
 	    }
 	    part {
-		name, "EntranceDate";
+		name, "entrance.date";
 		type, TEXT;
 		mouse_events, 0;
 		description {
@@ -497,7 +497,7 @@ collections {
 		}
 	    }
 	    part {
-		name, "EntranceTime";
+		name, "entrance.time";
 		type, TEXT;
 		mouse_events, 0;
 		description {
@@ -538,7 +538,7 @@ font, "Vera"; size, 20; fit, 0 0; align, 1.0 0.5; } }
 		ERROR("passfail", "Authentication Failed");
 	    }
 	    part {
-		name, "EntranceSessionList";
+		name, "entrance.xsessions.list";
 		type, RECT;
 		mouse_events, 1;
 		dragable {
@@ -569,11 +569,11 @@ font, "Vera"; size, 20; fit, 0 0; align, 1.0 0.5; } }
 		    rel1 { 
 			relative, 0.0 0.0;
 			offset, 0 -30;
-			to, "EntranceSessionList";
+			to, "entrance.xsessions.list";
 		    } rel2 {
 			relative, 1.0 0.0;
 			offset, 0 -5;
-			to, "EntranceSessionList";
+			to, "entrance.xsessions.list";
 		    }
 		    color, 255 255 255 255;
 		    color3, 0 0 0 192;
@@ -587,7 +587,7 @@ font, "Vera"; size, 20; fit, 0 0; align, 1.0 0.5; } }
 		}
 	    }
 	    part {
-		name, "EntranceUserList";
+		name, "entrance.users.list";
 		type, RECT;
 		mouse_events, 1;
 		dragable {
@@ -618,11 +618,11 @@ font, "Vera"; size, 20; fit, 0 0; align, 1.0 0.5; } }
 		    rel1 { 
 			relative, 0.0 0.0;
 			offset, 0 -30;
-			to, "EntranceUserList";
+			to, "entrance.users.list";
 		    } rel2 {
 			relative, 1.0 0.0;
 			offset, 0 -5;
-			to, "EntranceUserList";
+			to, "entrance.users.list";
 		    }
 		    color, 255 255 255 255;
 		    color3, 0 0 0 192;
@@ -636,7 +636,7 @@ font, "Vera"; size, 20; fit, 0 0; align, 1.0 0.5; } }
 		}
 	    }
 	    part {
-		name, "EntranceFace";
+		name, "entrance.users.avatar";
 		type, RECT;
 		mouse_events, 1;
 		description {
@@ -653,7 +653,7 @@ font, "Vera"; size, 20; fit, 0 0; align, 1.0 0.5; } }
 		}
 	    }
 	    part {
-		name, "EntranceSession";
+		name, "entrance.xsessions.selected";
 		type, RECT;
 		mouse_events, 1;
 		description {
@@ -673,9 +673,9 @@ font, "Vera"; size, 20; fit, 0 0; align, 1.0 0.5; } }
 	programs {
 	    program {
 		name, "authed";
-		signal, "EntranceUserAuthSuccess";
+		signal, "entrance,user,auth,success";
 		source, "";
-		action, SIGNAL_EMIT "EntranceUserAuthSuccessDone" "";
+		action, SIGNAL_EMIT "entrance,user,auth,success,done" "";
 	    }
 	    program {
 		name, "errorreset";
@@ -689,8 +689,8 @@ font, "Vera"; size, 20; fit, 0 0; align, 1.0 0.5; } }
 program { name, pstate; signal, psignal; source, ""; \
 action, STATE_SET pstate 0.0; target, "EntranceError"; \
 after, "errorreset"; }
-	    ERROR_PROGRAM("userfail", "EntranceUserFail");
-	    ERROR_PROGRAM("passfail", "EntranceUserAuthFail");
+	    ERROR_PROGRAM("userfail", "entrance,user,fail");
+	    ERROR_PROGRAM("passfail", "entrance,user,auth,fail");
 	}
     }
     group
@@ -762,14 +762,14 @@ after, "errorreset"; }
 		name, "SessionIconClicked";
 		signal, "mouse,clicked,1";
 		source, "EntranceSessionIcon";
-		action, SIGNAL_EMIT "SessionSelected" "";
+		action, SIGNAL_EMIT "entrance,xsession,selected" "";
 	    }
 	    program
 	    {
 		name, "SessionTitleClicked";
 		signal, "mouse,clicked,1";
 		source, "EntranceSessionTitle";
-		action, SIGNAL_EMIT "SessionSelected" "";
+		action, SIGNAL_EMIT "entrance,xsession,selected" "";
 	    }
 	}
     }
@@ -983,9 +983,9 @@ collections {
 	programs {
 	    program {
 		name, "authed";
-		signal, "EntranceUserAuthSuccess";
+		signal, "entrance,user,auth,success";
 		source, "";
-		action, SIGNAL_EMIT "EntranceUserAuthSuccessDone" "";
+		action, SIGNAL_EMIT "entrance,user,auth,success,done" "";
 	    }
 #if DEBUG
 #include "programs/debug_programs.edc"

@@ -122,20 +122,20 @@ focus_swap(Evas_Object * o, int selecto)
 {
    Evas_Object *oo = NULL;
 
-   if (!strcmp(esmart_text_entry_edje_part_get(o), "EntrancePassEntry"))
+   if (!strcmp(esmart_text_entry_edje_part_get(o), "entrance.entry.pass"))
    {
       if ((oo =
            evas_object_name_find(evas_object_evas_get(o),
-                                 "EntranceUserEntry")))
+                                 "entrance.entry.user")))
       {
          esmart_text_entry_text_set(oo, "");
       }
       esmart_text_entry_text_set(o, "");
    }
-   else if (!strcmp(esmart_text_entry_edje_part_get(o), "EntranceUserEntry"))
+   else if (!strcmp(esmart_text_entry_edje_part_get(o), "entrance.entry.user"))
    {
       oo =
-         evas_object_name_find(evas_object_evas_get(o), "EntrancePassEntry");
+         evas_object_name_find(evas_object_evas_get(o), "entrance.entry.pass");
    }
    if (oo)
    {
@@ -157,12 +157,12 @@ interp_return_key(void *data, const char *str)
 
    o = (Evas_Object *) data;
 
-   if (!strcmp(esmart_text_entry_edje_part_get(o), "EntranceUserEntry"))
+   if (!strcmp(esmart_text_entry_edje_part_get(o), "entrance.entry.user"))
    {
       if (!entrance_auth_set_user(session->auth, str))
       {
          edje_object_signal_emit(esmart_text_entry_edje_object_get(o),
-                                 "EntranceUserAuth", "");
+                                 "entrance,user,success", "");
          if ((eu = evas_hash_find(session->config->users.hash, str)))
             entrance_session_user_set(session, eu);
          focus_swap(o, 0);
@@ -172,11 +172,11 @@ interp_return_key(void *data, const char *str)
          esmart_text_entry_text_set(o, "");
          entrance_session_user_reset(session);
          edje_object_signal_emit(esmart_text_entry_edje_object_get(o),
-                                 "EntranceUserFail", "");
+                                 "entrance,user,fail", "");
          focus_swap(o, 1);
       }
    }
-   if (!strcmp(esmart_text_entry_edje_part_get(o), "EntrancePassEntry"))
+   if (!strcmp(esmart_text_entry_edje_part_get(o), "entrance.entry.pass"))
    {
       if (session->auth->user && strlen(session->auth->user) > 0)
       {
@@ -185,13 +185,13 @@ interp_return_key(void *data, const char *str)
          {
             session->authed = 1;
             edje_object_signal_emit(esmart_text_entry_edje_object_get(o),
-                                    "EntranceUserAuthSuccess", "");
+                                    "entrance,user,auth,success", "");
          }
          else
          {
             entrance_session_user_reset(session);
             edje_object_signal_emit(esmart_text_entry_edje_object_get(o),
-                                    "EntranceUserAuthFail", "");
+                                    "entrance,user,auth,fail", "");
             focus_swap(o, 0);
          }
       }
@@ -233,12 +233,12 @@ focus(void *data, Evas_Object * o, const char *emission, const char *source)
 }
 
 /**
- * Set the "EntranceDate" part's text
+ * Set the "entrance.date" part's text
  * @param data - the data passed when the callback was added
  * @param o - the evas object(Edje) that created the signal
  * @param emission - the signal "type" that was emitted
  * @param source - the signal originated from this "part"
- * Attempt to set the Part named "EntranceDate" to the results of
+ * Attempt to set the Part named "entrance.date" to the results of
  * localtime.  This way the interval is configurable via a program in
  * the theme and not statically bound to a value.  
  */
@@ -246,7 +246,7 @@ static void
 set_date(void *data, Evas_Object * o, const char *emission,
          const char *source)
 {
-   if (edje_object_part_exists(o, "EntranceDate"))
+   if (edje_object_part_exists(o, "entrance.date"))
    {
       struct tm *now;
       char buf[PATH_MAX];
@@ -254,17 +254,17 @@ set_date(void *data, Evas_Object * o, const char *emission,
 
       now = localtime(&_t);
       strftime(buf, PATH_MAX, session->config->date.string, now);
-      edje_object_part_text_set(o, "EntranceDate", buf);
+      edje_object_part_text_set(o, "entrance.date", buf);
    }
 }
 
 /**
- * Set the "EntranceTime" part's text
+ * Set the "entrance.time" part's text
  * @param data - the data passed when the callback was added
  * @param o - the evas object(Edje) that created the signal
  * @param emission - the signal "type" that was emitted
  * @param source - the signal originated from this "part"
- * Attempt to set the Part named "EntranceTime" to the results of
+ * Attempt to set the Part named "entrance.time" to the results of
  * localtime.  This way the interval is configurable via a program in
  * the theme and not statically bound to a value.  
  */
@@ -272,7 +272,7 @@ static void
 set_time(void *data, Evas_Object * o, const char *emission,
          const char *source)
 {
-   if (edje_object_part_exists(o, "EntranceTime"))
+   if (edje_object_part_exists(o, "entrance.time"))
    {
       struct tm *now;
       char buf[PATH_MAX];
@@ -280,7 +280,7 @@ set_time(void *data, Evas_Object * o, const char *emission,
 
       now = localtime(&_t);
       strftime(buf, PATH_MAX, session->config->time.string, now);
-      edje_object_part_text_set(o, "EntranceTime", buf);
+      edje_object_part_text_set(o, "entrance.time", buf);
    }
 }
 
@@ -314,7 +314,7 @@ done_cb(void *data, Evas_Object * o, const char *emission, const char *source)
  * @param o - the evas object(Edje) that created the signal
  * @param emission - the signal "type" that was emitted
  * @param source - the signal originated from this "part"
- * Attempt to set the Part named "EntranceTime" to the results of
+ * Attempt to set the Part named "entrance.time" to the results of
  * localtime.  This way the interval is configurable via a program in
  * the theme and not statically bound to a value.  
  */
@@ -336,7 +336,7 @@ session_item_selected_cb(void *data, Evas_Object * o, const char *emission,
  * @param o - the evas object(Edje) that created the signal
  * @param emission - the signal "type" that was emitted
  * @param source - the signal originated from this "part"
- * Attempt to set the Part named "EntranceTime" to the results of
+ * Attempt to set the Part named "entrance.time" to the results of
  * localtime.  This way the interval is configurable via a program in
  * the theme and not statically bound to a value.  
  */
@@ -365,7 +365,7 @@ user_unselected_cb(void *data, Evas_Object * o, const char *emission,
    if (session && data)
    {
       entrance_session_user_reset(session);
-/*      edje_object_signal_emit(o, "EntranceUserFail", "");*/
+/*      edje_object_signal_emit(o, "entrance,user,fail", "");*/
    }
 }
 
@@ -607,7 +607,7 @@ main(int argc, char *argv[])
    Ecore_Timer *timer = NULL;
    Evas_Object *o = NULL, *edje = NULL;
    Evas_Coord x, y, w, h;
-   char *entries[] = { "EntranceUserEntry", "EntrancePassEntry" };
+   char *entries[] = { "entrance.entry.user", "entrance.entry.pass" };
    int entries_count = 2;
    const char *container_orientation = NULL;
    int c;
@@ -833,36 +833,36 @@ main(int argc, char *argv[])
       }
 
       /* See if we have a EntranceHostname part, set it */
-      if (edje_object_part_exists(edje, "EntranceHostname"))
+      if (edje_object_part_exists(edje, "entrance.hostname"))
       {
          if ((str = get_my_hostname()))
          {
-            edje_object_part_text_set(edje, "EntranceHostname", str);
+            edje_object_part_text_set(edje, "entrance.hostname", str);
             free(str);
          }
       }
       /* See if we have an EntranceTime part, setup a timer to automatically
          update the Time */
-      if (edje_object_part_exists(edje, "EntranceTime"))
+      if (edje_object_part_exists(edje, "entrance.time"))
       {
-         edje_object_signal_callback_add(edje, "Go", "EntranceTime", set_time,
+         edje_object_signal_callback_add(edje, "Go", "entrance.time", set_time,
                                          o);
-         edje_object_signal_emit(edje, "Go", "EntranceTime");
+         edje_object_signal_emit(edje, "Go", "entrance.time");
          timer = ecore_timer_add(0.5, timer_cb, edje);
       }
       /* See if we have an EntranceDate part, setup a timer if one isn't
          already running to automatically update the Date */
-      if (edje_object_part_exists(edje, "EntranceDate"))
+      if (edje_object_part_exists(edje, "entrance.date"))
       {
-         edje_object_signal_callback_add(edje, "Go", "EntranceDate", set_date,
+         edje_object_signal_callback_add(edje, "Go", "entrance.date", set_date,
                                          o);
-         edje_object_signal_emit(edje, "Go", "EntranceDate");
+         edje_object_signal_emit(edje, "Go", "entrance.date");
          if (!timer)
             timer = ecore_timer_add(0.5, timer_cb, edje);
       }
       /* See if we have an EntranceSession part, set it to the first element
          in the config's session list */
-      if (edje_object_part_exists(edje, "EntranceSession"))
+      if (edje_object_part_exists(edje, "entrance.xsessions.selected"))
       {
          entrance_session_x_session_set(session,
                                         entrance_session_x_session_default_get
@@ -870,7 +870,7 @@ main(int argc, char *argv[])
       }
       /* See if we have an EntranceSessionList part, tell the session to load 
          the session list if it exists. */
-      if (edje_object_part_exists(edje, "EntranceSessionList"))
+      if (edje_object_part_exists(edje, "entrance.xsessions.list"))
       {
          entrance_session_xsession_list_add(session);
          if ((container_orientation =
@@ -888,7 +888,7 @@ main(int argc, char *argv[])
       }
       /* See if we have an EntranceUserList part, tell the session to load
          the user list if it exists. */
-      if (edje_object_part_exists(edje, "EntranceUserList"))
+      if (edje_object_part_exists(edje, "entrance.users.list"))
       {
          entrance_session_user_list_add(session);
          if ((container_orientation =
@@ -910,17 +910,17 @@ main(int argc, char *argv[])
        * callbacks have been added, otherwise show might not trigger all
        * the desired events 
        */
-      edje_object_signal_callback_add(edje, "EntranceUserAuthSuccessDone", "",
+      edje_object_signal_callback_add(edje, "entrance,user,auth,success,done", "",
                                       done_cb, e);
-      edje_object_signal_callback_add(edje, "EntranceSystemReboot", "",
+      edje_object_signal_callback_add(edje, "entrance,system,reboot", "",
                                       reboot_cb, e);
-      edje_object_signal_callback_add(edje, "EntranceSystemHalt", "",
+      edje_object_signal_callback_add(edje, "entrance,system,halt", "",
                                       shutdown_cb, e);
       edje_object_signal_callback_add(edje, "SessionDefaultSet", "",
                                       _session_set, session);
       evas_object_show(edje);
       /* set focus to user input by default */
-      edje_object_signal_emit(edje, "In", "EntranceUserEntry");
+      edje_object_signal_emit(edje, "In", "entrance.entry.user");
 
       if (fullscreen)
          ecore_evas_fullscreen_set(e, 1);

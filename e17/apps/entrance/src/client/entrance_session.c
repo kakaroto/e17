@@ -159,7 +159,7 @@ entrance_session_run(Entrance_Session * e)
         {
            e->authed = 1;
            entrance_session_user_set(e, eu);
-           edje_object_signal_emit(e->edje, "EntranceUserAuthSuccess", "");
+           edje_object_signal_emit(e->edje, "entrance,user,auth,success", "");
         }
         break;
    }
@@ -196,14 +196,14 @@ entrance_session_user_reset(Entrance_Session * e)
    {
       entrance_auth_free(e->auth);
       e->auth = entrance_auth_new();
-      edje_object_signal_emit(e->edje, "In", "EntranceUserEntry");
+      edje_object_signal_emit(e->edje, "In", "entrance.entry.user");
    }
 }
 
 /**
  * entrance_session_user_set: forget what we know about the current user,
  * load what info we can from the entrance user parameter, so we have a new
- * user in our "EntranceFace" edje
+ * user in our "entrance.users.avatar" edje
  * @param e - the entrance sesssion currently running
  * @param eu - the new entrance user we're setting as "current"
  */
@@ -216,7 +216,7 @@ entrance_session_user_set(Entrance_Session * e, Entrance_User * eu)
 
    if (e && eu)
    {
-      if ((obj = edje_object_part_swallow_get(e->edje, "EntranceFace")))
+      if ((obj = edje_object_part_swallow_get(e->edje, "entrance.users.avatar")))
       {
          edje_object_part_unswallow(e->edje, obj);
          evas_object_del(obj);
@@ -244,17 +244,17 @@ entrance_session_user_set(Entrance_Session * e, Entrance_User * eu)
                result = entrance_session_auth_user(e);
                if (result == 0)
                {
-                  if (edje_object_part_exists(e->edje, "EntranceFace"))
+                  if (edje_object_part_exists(e->edje, "entrance.users.avatar"))
                   {
-                     edje_object_part_swallow(e->edje, "EntranceFace", obj);
+                     edje_object_part_swallow(e->edje, "entrance.users.avatar", obj);
                   }
-                  edje_object_signal_emit(e->edje, "EntranceUserAuthSuccess",
+                  edje_object_signal_emit(e->edje, "entrance,user,auth,success",
                                           "");
                   e->authed = 1;
                }
                else
                {
-                  edje_object_signal_emit(e->edje, "EntranceUserAuthFail",
+                  edje_object_signal_emit(e->edje, "entrance,user,auth,fail",
                                           "");
                   evas_object_del(obj);
                }
@@ -263,13 +263,13 @@ entrance_session_user_set(Entrance_Session * e, Entrance_User * eu)
             {
 #endif
                evas_object_layer_set(obj, evas_object_layer_get(e->edje));
-               if (edje_object_part_exists(e->edje, "EntranceFace"))
+               if (edje_object_part_exists(e->edje, "entrance.users.avatar"))
                {
-                  edje_object_part_swallow(e->edje, "EntranceFace", obj);
+                  edje_object_part_swallow(e->edje, "entrance.users.avatar", obj);
                }
-               edje_object_signal_emit(e->edje, "In", "EntrancePassEntry");
-               edje_object_signal_emit(e->edje, "EntranceUserAuth", "");
-               edje_object_signal_emit(e->edje, "UserSelected", "");
+               edje_object_signal_emit(e->edje, "In", "entrance.entry.pass");
+               edje_object_signal_emit(e->edje, "entrance,user,success", "");
+               edje_object_signal_emit(e->edje, "entrance,users,selected", "");
 #if 0
             }
 #endif
@@ -277,8 +277,8 @@ entrance_session_user_set(Entrance_Session * e, Entrance_User * eu)
          else
          {
             evas_object_del(obj);
-            /* edje_object_signal_emit(e->edje, "In", "EntrancePassEntry"); */
-            edje_object_signal_emit(e->edje, "EntranceUserFail", "");
+            /* edje_object_signal_emit(e->edje, "In", "entrance.entry.pass"); */
+            edje_object_signal_emit(e->edje, "entrance,user,fail", "");
          }
       }
    }
@@ -449,16 +449,16 @@ entrance_session_x_session_set(Entrance_Session * e, Entrance_X_Session * exs)
             free(e->session);
          e->session = strdup(exs->session);
 
-         old_o = edje_object_part_swallow_get(e->edje, "EntranceSession");
+         old_o = edje_object_part_swallow_get(e->edje, "entrance.xsessions.selected");
          if (old_o)
          {
             edje_object_part_unswallow(e->edje, old_o);
             evas_object_del(old_o);
          }
-         edje_object_part_swallow(e->edje, "EntranceSession", o);
+         edje_object_part_swallow(e->edje, "entrance.xsessions.selected", o);
          evas_object_layer_set(o, evas_object_layer_get(e->edje));
          edje_object_signal_emit(e->edje, "SessionDefaultChanged", "");
-         edje_object_signal_emit(e->edje, "SessionSelected", "");
+         edje_object_signal_emit(e->edje, "entrance,xsession,selected", "");
       }
    }
 }
@@ -480,7 +480,7 @@ entrance_session_edje_object_set(Entrance_Session * e, Evas_Object * obj)
 }
 
 /**
- * entrance_session_xsession_list_add : fine the "EntranceSessionList" part in the
+ * entrance_session_xsession_list_add : fine the "entrance.xsessions.list" part in the
  * main edje, setup the container to hold the elements, and create session
  * edjes for the container based on our session list in the config
  * @param e - the entrance session you want to add the xsession list to
@@ -498,7 +498,7 @@ entrance_session_xsession_list_add(Entrance_Session * e)
 
    if (!e || !e->edje || !e->config)
       return;
-   edje_object_part_geometry_get(e->edje, "EntranceSessionList", NULL, NULL,
+   edje_object_part_geometry_get(e->edje, "entrance.xsessions.list", NULL, NULL,
                                  &w, &h);
    if ((container = esmart_container_new(evas_object_evas_get(e->edje))))
    {
@@ -529,7 +529,7 @@ entrance_session_xsession_list_add(Entrance_Session * e)
             }
          }
       }
-      edje_object_part_swallow(e->edje, "EntranceSessionList", container);
+      edje_object_part_swallow(e->edje, "entrance.xsessions.list", container);
       e->session_container = container;
    }
 }
@@ -551,7 +551,7 @@ entrance_session_list_direction_set(Entrance_Session * e,
 }
 
 /**
- * entrance_session_user_list_add : find the "EntranceUserList" object in
+ * entrance_session_user_list_add : find the "entrance.users.list" object in
  * the main edje, setup the container to hold the elements, and create user
  * edjes for the container with our user list in the config
  * @param e - the entrance session you want to add the user list to
@@ -568,7 +568,7 @@ entrance_session_user_list_add(Entrance_Session * e)
 
    if (!e || !e->edje)
       return;
-   edje_object_part_geometry_get(e->edje, "EntranceUserList", NULL, NULL, &w,
+   edje_object_part_geometry_get(e->edje, "entrance.users.list", NULL, NULL, &w,
                                  &h);
    if ((container = esmart_container_new(evas_object_evas_get(e->edje))))
    {
@@ -597,7 +597,7 @@ entrance_session_user_list_add(Entrance_Session * e)
                esmart_container_element_append(container, edje);
          }
       }
-      edje_object_part_swallow(e->edje, "EntranceUserList", container);
+      edje_object_part_swallow(e->edje, "entrance.users.list", container);
       e->user_container = container;
    }
 

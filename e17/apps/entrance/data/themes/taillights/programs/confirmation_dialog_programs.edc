@@ -49,7 +49,7 @@ BUTTON_ANIM("confirmation_halt_no", "halt_no_txt")
 		name, "reboot_request_yes";
 		signal, "mouse,clicked,1";
 		source, "confirmation_reboot_yes";
-		action, SIGNAL_EMIT "EntranceSystemReboot" "";
+		action, SIGNAL_EMIT "entrance,system,reboot" "";
 	    }
 	    program {
 		name, "reboot_request_no";
@@ -74,7 +74,7 @@ BUTTON_ANIM("confirmation_halt_no", "halt_no_txt")
 		name, "shutdown_request_yes";
 		signal, "mouse,clicked,1";
 		source, "confirmation_halt_yes";
-		action, SIGNAL_EMIT "EntranceSystemHalt" "";
+		action, SIGNAL_EMIT "entrance,system,halt" "";
 	    }
 	    program {
 		name, "shutdown_request_no";

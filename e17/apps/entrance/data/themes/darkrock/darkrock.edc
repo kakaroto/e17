@@ -306,7 +306,7 @@ collections {
             }
          }
          part {
-            name,   "EntranceDate";
+            name,   "entrance.date";
             type,   TEXT;
             effect, SHADOW;
             clip_to, "info_entry_clip";
@@ -337,7 +337,7 @@ collections {
             }
          }
          part {
-            name,   "EntranceTime";
+            name,   "entrance.time";
             type,   TEXT;
             effect, SHADOW;
             clip_to, "info_entry_clip";
@@ -628,7 +628,7 @@ collections {
             }
          }
          part {
-            name,   "EntranceHostname";
+            name,   "entrance.hostname";
             type,   TEXT;
             effect, SOFT_SHADOW;
             clip_to, "all_clip";
@@ -667,12 +667,12 @@ collections {
                rel1 {
                   relative, 0.0  1.0;
                   offset,   0    8;
-                  to,       "EntranceHostname";
+                  to,       "entrance.hostname";
                }
                rel2 {
                   relative, 1.0 1.0;
                   offset,   -1 8;
-                  to,       "EntranceHostname";
+                  to,       "entrance.hostname";
                }
                color, 0 0 0 160;
                color3, 255 255 255 40;
@@ -690,12 +690,12 @@ collections {
                rel1 {
                   relative, 0.0  1.0;
                   offset,   0    8;
-                  to,       "EntranceHostname";
+                  to,       "entrance.hostname";
                }
                rel2 {
                   relative, 1.0 1.0;
                   offset,   -1 8;
-                  to,       "EntranceHostname";
+                  to,       "entrance.hostname";
                }
                color, 0 0 0 160;
                color3, 255 255 255 40;
@@ -923,7 +923,7 @@ collections {
             }
          }
          part {
-            name,   "EntranceUserEntry";
+            name,   "entrance.entry.user";
             type,   TEXT;
             effect, NONE;
             clip_to, "user_entry_clip";
@@ -965,12 +965,12 @@ collections {
                rel1 {
                   relative, 1.0  0.5;
                   offset,   1    0;
-                  to,       "EntranceUserEntry";
+                  to,       "entrance.entry.user";
                }
                rel2 {
                   relative, 1.0  0.5;
                   offset,   18    0;
-                  to,       "EntranceUserEntry";
+                  to,       "entrance.entry.user";
                }
                image {
                   normal, "entry_cursor.png";
@@ -985,12 +985,12 @@ collections {
                rel1 {
                   relative, 1.0  0.5;
                   offset,   1    0;
-                  to,       "EntranceUserEntry";
+                  to,       "entrance.entry.user";
                }
                rel2 {
                   relative, 1.0  0.5;
                   offset,   18   0;
-                  to,       "EntranceUserEntry";
+                  to,       "entrance.entry.user";
                }
                image {
                   normal, "entry_cursor.png";
@@ -1128,7 +1128,7 @@ collections {
             }
          }
          part {
-            name,   "EntrancePassEntry";
+            name,   "entrance.entry.pass";
             type,   TEXT;
             effect, NONE;
             clip_to, "pass_entry_clip";
@@ -1170,12 +1170,12 @@ collections {
                rel1 {
                   relative, 1.0  0.5;
                   offset,   1    0;
-                  to,       "EntrancePassEntry";
+                  to,       "entrance.entry.pass";
                }
                rel2 {
                   relative, 1.0  0.5;
                   offset,   18    0;
-                  to,       "EntrancePassEntry";
+                  to,       "entrance.entry.pass";
                }
                image {
                   normal, "entry_cursor.png";
@@ -1190,12 +1190,12 @@ collections {
                rel1 {
                   relative, 1.0  0.5;
                   offset,   1    0;
-                  to,       "EntrancePassEntry";
+                  to,       "entrance.entry.pass";
                }
                rel2 {
                   relative, 1.0  0.5;
                   offset,   18   0;
-                  to,       "EntrancePassEntry";
+                  to,       "entrance.entry.pass";
                }
                image {
                   normal, "entry_cursor.png";
@@ -1627,7 +1627,7 @@ collections {
             }
             part
             {
-                name, "EntranceSessionList";
+                name, "entrance.xsessions.list";
                 type,        RECT;
                 mouse_events, 1;
                 clip_to, "EntranceSessionListClip";
@@ -1677,7 +1677,7 @@ collections {
             }
             part
             {
-                name, "EntranceSession";
+                name, "entrance.xsessions.selected";
                 type,        RECT;
                 mouse_events, 0;
                 clip_to, "EntranceSessionClip";
@@ -1815,7 +1815,7 @@ collections {
             name,       "power_button_clicked_emission";
             signal,     "mouse,clicked,1";
             source,     "power_button";
-            action,     SIGNAL_EMIT "EntranceSystemHalt" "";
+            action,     SIGNAL_EMIT "entrance,system,halt" "";
          }         
          program {
             name,       "logo_animate";
@@ -1889,19 +1889,19 @@ collections {
          }
          program {
             name,       "user_ok_1";
-            signal,     "EntranceUserAuth";
+            signal,     "entrance,user,success";
             source,     "";
             action,     SIGNAL_EMIT "user" "off";
          }
          program {
             name,       "user_ok_2";
-            signal,     "EntranceUserAuth";
+            signal,     "entrance,user,success";
             source,     "";
             action,     SIGNAL_EMIT "pass" "on";
          }
          program {
             name,       "user_fail_1";
-            signal,     "EntranceUserFail";
+            signal,     "entrance,user,fail";
             source,     "";
             action,     STATE_SET "user_fail" 0.0;
             transition, SINUSOIDAL 0.5;
@@ -1918,19 +1918,19 @@ collections {
          }
          program {
             name,       "pass_fail_1";
-            signal,     "EntranceUserAuthFail";
+            signal,     "entrance,user,auth,fail";
             source,     "";
             action,     SIGNAL_EMIT "pass" "off";
          }
          program {
             name,       "pass_fail_2";
-            signal,     "EntranceUserAuthFail";
+            signal,     "entrance,user,auth,fail";
             source,     "";
             action,     SIGNAL_EMIT "user" "on";
          }
          program {
             name,       "pass_fail_3";
-            signal,     "EntranceUserAuthFail";
+            signal,     "entrance,user,auth,fail";
             source,     "";
             action,     STATE_SET "pass_fail" 0.0;
             transition, SINUSOIDAL 0.5;
@@ -1948,7 +1948,7 @@ collections {
          /* when auth is successful */
          program {
             name,       "on_successful_authentication";
-            signal,     "EntranceUserAuthSuccess";
+            signal,     "entrance,user,auth,success";
             source,     "";
             action,     STATE_SET "hidden" 0.0;
             transition, SINUSOIDAL 1.0;
@@ -1959,12 +1959,12 @@ collections {
             name,       "on_successful_authentication_2";
             signal,     "";
             source,     "";
-            action,     SIGNAL_EMIT "EntranceUserAuthSuccessDone" "";
+            action,     SIGNAL_EMIT "entrance,user,auth,success,done" "";
          }
             program
           {
                 name, "SelectSession";
-                signal, "SessionSelected";
+                signal, "entrance,xsession,selected";
                 source, "";
                 action, STATE_SET "default" 0.0;
                 target, "EntranceSessionListClip";
@@ -1974,7 +1974,7 @@ collections {
           program
            {
                 name, "SelectSessionToo";
-                signal, "SessionSelected";
+                signal, "entrance,xsession,selected";
                 source, "";
                 action, STATE_SET "default" 0.0;
                 target, "EntranceSessionListClip";
@@ -2004,7 +2004,7 @@ collections {
             program
             {
                 name, "session_default_save_on_change";
-                signal, "SessionSelected";
+                signal, "entrance,xsession,selected";
                 source, "";
                 action, SIGNAL_EMIT "SessionDefaultSet" "";
             }
@@ -2079,14 +2079,14 @@ collections {
                 name, "SessionTitleClicked";
                 signal, "mouse,clicked,1";
                 source, "EntranceSessionTitle";
-                action, SIGNAL_EMIT "SessionSelected" "";
+                action, SIGNAL_EMIT "entrance,xsession,selected" "";
             }
             program
             {
                 name, "SessionIconClicked";
                 signal, "mouse,clicked,1";
                 source, "EntranceSessionIcon";
-                action, SIGNAL_EMIT "SessionSelected" "";
+                action, SIGNAL_EMIT "entrance,xsession,selected" "";
             }
         }
     }

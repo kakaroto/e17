@@ -1379,12 +1379,12 @@ session_item_unselected_cb(void *data, Evas_Object * o, const char *emission,
 
 #if 0
 /**
- * Set the "EntranceDate" part's text
+ * Set the "entrance.date" part's text
  * @param data - the data passed when the callback was added
  * @param o - the evas object(Edje) that created the signal
  * @param emission - the signal "type" that was emitted
  * @param source - the signal originated from this "part"
- * Attempt to set the Part named "EntranceDate" to the results of
+ * Attempt to set the Part named "entrance.date" to the results of
  * localtime.  This way the interval is configurable via a program in
  * the theme and not statically bound to a value.  
  */
@@ -1392,7 +1392,7 @@ static void
 set_date(void *data, Evas_Object * o, const char *emission,
          const char *source)
 {
-   if (edje_object_part_exists(o, "EntranceDate"))
+   if (edje_object_part_exists(o, "entrance.date"))
    {
       struct tm *now;
       char buf[PATH_MAX];
@@ -1400,17 +1400,17 @@ set_date(void *data, Evas_Object * o, const char *emission,
 
       now = localtime(&_t);
       strftime(buf, PATH_MAX, session->config->date.string, now);
-      edje_object_part_text_set(o, "EntranceDate", buf);
+      edje_object_part_text_set(o, "entrance.date", buf);
    }
 }
 
 /**
- * Set the "EntranceTime" part's text
+ * Set the "entrance.time" part's text
  * @param data - the data passed when the callback was added
  * @param o - the evas object(Edje) that created the signal
  * @param emission - the signal "type" that was emitted
  * @param source - the signal originated from this "part"
- * Attempt to set the Part named "EntranceTime" to the results of
+ * Attempt to set the Part named "entrance.time" to the results of
  * localtime.  This way the interval is configurable via a program in
  * the theme and not statically bound to a value.  
  */
@@ -1418,7 +1418,7 @@ static void
 set_time(void *data, Evas_Object * o, const char *emission,
          const char *source)
 {
-   if (edje_object_part_exists(o, "EntranceTime"))
+   if (edje_object_part_exists(o, "entrance.time"))
    {
       struct tm *now;
       char buf[PATH_MAX];
@@ -1426,7 +1426,7 @@ set_time(void *data, Evas_Object * o, const char *emission,
 
       now = localtime(&_t);
       strftime(buf, PATH_MAX, session->config->time.string, now);
-      edje_object_part_text_set(o, "EntranceTime", buf);
+      edje_object_part_text_set(o, "entrance.time", buf);
    }
 }
 
@@ -2014,18 +2014,18 @@ main(int argc, char *argv[])
       }
 
 #if 0
-      if (edje_object_part_exists(edje, "EntranceTime"))
+      if (edje_object_part_exists(edje, "entrance.time"))
       {
-         edje_object_signal_callback_add(edje, "Go", "EntranceTime", set_time,
+         edje_object_signal_callback_add(edje, "Go", "entrance.time", set_time,
                                          o);
-         edje_object_signal_emit(edje, "Go", "EntranceTime");
+         edje_object_signal_emit(edje, "Go", "entrance.time");
          timer = ecore_timer_add(0.5, timer_cb, edje);
       }
-      if (edje_object_part_exists(edje, "EntranceDate"))
+      if (edje_object_part_exists(edje, "entrance.date"))
       {
-         edje_object_signal_callback_add(edje, "Go", "EntranceDate", set_date,
+         edje_object_signal_callback_add(edje, "Go", "entrance.date", set_date,
                                          o);
-         edje_object_signal_emit(edje, "Go", "EntranceDate");
+         edje_object_signal_emit(edje, "Go", "entrance.date");
          if (!timer)
             timer = ecore_timer_add(0.5, timer_cb, edje);
       }

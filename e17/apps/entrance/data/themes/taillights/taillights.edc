@@ -109,9 +109,9 @@ collections {
 	programs {
 	    program {
 		name, "authed";
-		signal, "EntranceUserAuthSuccess";
+		signal, "entrance,user,auth,success";
 		source, "";
-		action, SIGNAL_EMIT "EntranceUserAuthSuccessDone" "";
+		action, SIGNAL_EMIT "entrance,user,auth,success,done" "";
 	    }
 #include "programs/show.edc"
 

@@ -152,7 +152,7 @@
 		}
 	    }
 	    part {
-		name, "EntranceHostname";
+		name, "entrance.hostname";
 		type, TEXT;
 		mouse_events, 0;
 		clip_to, "login_area_clip";
@@ -249,7 +249,7 @@
 		}
 	    }
 	    part {
-		name, "EntranceFace";
+		name, "entrance.users.avatar";
 		type, RECT;
 		mouse_events, 1;
 		clip_to, "entrance_face_clip";
@@ -467,7 +467,7 @@
 		}
 	    }
 	    part {
-		name, "EntranceUserEntry";
+		name, "entrance.entry.user";
 		type, TEXT;
 		mouse_events, 0;
 		effect, SHADOW;
@@ -496,7 +496,7 @@
 		}
 	    }
 	    part {
-		name, "EntrancePassEntry";
+		name, "entrance.entry.pass";
 		type, TEXT;
 		mouse_events, 0;
 		effect, SHADOW;

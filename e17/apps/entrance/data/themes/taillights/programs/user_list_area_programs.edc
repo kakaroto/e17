@@ -18,7 +18,7 @@
 	    }
 	    program {
 		name, "user_selected_hide_list";
-		signal, "UserSelected";
+		signal, "entrance,users,selected";
 		source, "";
 		action, SIGNAL_EMIT "user,list,out" "";
 	    }

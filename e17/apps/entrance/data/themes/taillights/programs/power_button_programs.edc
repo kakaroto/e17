@@ -44,7 +44,7 @@
 		name, "power_button_invoke";
 		signal, "mouse,clicked,1";
 		source, "power_button";
-		action, SIGNAL_EMIT "EntranceSystemHalt" "";
+		action, SIGNAL_EMIT "entrance,system,halt" "";
 	    }
 	    */
 	    

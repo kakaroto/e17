@@ -1,7 +1,7 @@
 	program {
 	    name, "ToPass";
 	    source, "";
-	    signal, "EntranceUserAuth";
+	    signal, "entrance,user,success";
 	    action, STATE_SET "hidden" 0.0;
 	    target, "login_entry_pass_clip";
 	    target, "login_entry_user_clip";
@@ -10,7 +10,7 @@
 	program {
 	    name, "ToUser";
 	    source, "";
-	    signal, "EntranceUserAuthFail";
+	    signal, "entrance,user,auth,fail";
 	    action, STATE_SET "default" 0.0;
 	    target, "login_entry_pass_clip";
 	    target, "login_entry_user_clip";
@@ -19,13 +19,13 @@
 	program {
 	    name, "BadUser";
 	    source, "";
-	    signal, "EntranceUserFail";
+	    signal, "entrance,user,fail";
 	    action, SIGNAL_EMIT "shake,start" "";
 	}
 	program {
 	    name, "BadPass";
 	    source, "";
-	    signal, "EntranceUserAuthFail";
+	    signal, "entrance,user,auth,fail";
 	    action, SIGNAL_EMIT "shake,start" "";
 	}
 	program {
@@ -56,16 +56,16 @@
 	program {
 	    name, "UserSelectedFromList";
 	    source, "";
-	    signal, "UserSelected";
+	    signal, "entrance,users,selected";
 	    action, STATE_SET "visible" 0.0;
 	    target, "entrance_face_clip";
 	    target,"entrance_e_logo_clip";
 	    transition, SINUSOIDAL 2.0;
 	}
 	program {
-	    name, "UserUnSelected";
+	    name, "entrance,users,unselected";
 	    source, "";
-	    signal, "UserUnSelected";
+	    signal, "entrance,users,unselected";
 	    action, STATE_SET "default" 0.0;
 	    target, "entrance_face_clip";
 	    target, "entrance_e_logo_clip";

@@ -8,11 +8,11 @@
 		    rel1 {
 			relative, 0.0 0.0;
 			offset, -2 -2;
-			to, "EntranceSession";
+			to, "entrance.xsessions.selected";
 		    } rel2 {
 			relative, 1.0 1.0;
 			offset, 2 2;
-			to, "EntranceSession";
+			to, "entrance.xsessions.selected";
 		    }
 		    color, 255 255 255 255;
 		}
@@ -22,11 +22,11 @@
 		    rel1 {
 			relative, 0.0 0.0;
 			offset, -2 -2;
-			to, "EntranceSession";
+			to, "entrance.xsessions.selected";
 		    } rel2 {
 			relative, 1.0 1.0;
 			offset, 2 2;
-			to, "EntranceSession";
+			to, "entrance.xsessions.selected";
 		    }
 		    color, 255 255 255 225;
 		}
@@ -130,7 +130,7 @@
 		}
 	    }
 	    part {
-		name, "EntranceSession";
+		name, "entrance.xsessions.selected";
 		type, RECT;
 		mouse_events, 0;
 		clip_to, "entrance_session_clipper";
@@ -160,11 +160,11 @@
 		    rel1 {
 			relative, 0.0 0.0;
 			offset, 0 0;
-			to_y, "EntranceSession";
+			to_y, "entrance.xsessions.selected";
 		    } rel2 {
 			relative, 1.0 1.0;
 			offset, 0 0;
-			to, "EntranceSession";
+			to, "entrance.xsessions.selected";
 		    }
 		    color, 255 255 255 0;
 		}

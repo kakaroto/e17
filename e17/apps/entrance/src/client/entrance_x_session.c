@@ -118,7 +118,7 @@ entrance_x_session_edje_get(Entrance_X_Session * e, Evas_Object * o,
       {
          edje_object_part_text_set(edje, "EntranceSessionTitle", e->name);
       }
-      edje_object_signal_callback_add(edje, "SessionSelected", "",
+      edje_object_signal_callback_add(edje, "entrance,xsession,selected", "",
                                       session_item_selected_cb,
                                       (Entrance_X_Session *) e);
       edje_object_signal_callback_add(edje, "SessionUnSelected", "",

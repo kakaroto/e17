@@ -11,5 +11,5 @@ after, "errorreset"; }
 		target, "EntranceError";
 		in, 2.0 0.0;
 	    }
-	    ERROR_PROGRAM("userfail", "EntranceUserFail");
-	    ERROR_PROGRAM("passfail", "EntranceUserAuthFail");
+	    ERROR_PROGRAM("userfail", "entrance,user,fail");
+	    ERROR_PROGRAM("passfail", "entrance,user,auth,fail");

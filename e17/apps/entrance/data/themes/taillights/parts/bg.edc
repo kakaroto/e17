@@ -101,7 +101,7 @@
 		}
 	    }
 	    part {
-		name, "EntranceDate";
+		name, "entrance.date";
 		type, TEXT;
 		mouse_events, 0;
 		description {
@@ -127,7 +127,7 @@
 		}
 	    }
 	    part {
-		name, "EntranceTime";
+		name, "entrance.time";
 		type, TEXT;
 		mouse_events, 0;
 		description {

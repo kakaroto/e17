@@ -47,10 +47,10 @@ programs.
 | EntranceUserAuthSuccess      | After successful authentication this  |
 |			       | signal is emitted, you can do your own|
 |			       | animation here if you want.  You must |
-| 			       | emit "EntranceUserAuthSuccessDone" "" | 
+| 			       | emit "entrance,user,auth,success,done" "" | 
 |			       | after it though in order for	       |	
 |			       | entrance to start your x session      | 
-|			       |"EntranceUserAuthSuccessDone" ""       | Yes
+|			       |"entrance,user,auth,success,done" ""       | Yes
 ---------------------------------------------------------------------------
 | EntranceUserFail	       | When the user is unknown the system   | No
 ---------------------------------------------------------------------------
@@ -108,14 +108,14 @@ group
     parts
     {
 	part {
-	name "EntrancePassEntry";
+	name "entrance.entry.pass";
 	type, TEXT;
 	visible, 1;
 	// Doesn't need to be visible, must be present, it gets filled
 	// up with *'s as you type, make it invisible to turn echo off
 	}
 	part {
-	name "EntranceUserEntry";
+	name "entrance.entry.user";
 	type, TEXT;
 	visible, 1;
 	text 
@@ -132,45 +132,45 @@ group
     programs
     {
 	program {
-	    signal, "EntranceUserAuthSuccess";
+	    signal, "entrance,user,auth,success";
 	    // After successful login by the user, you can do post auth
 	    // animation like thingies here, Emit
-	    // "EntranceUserAuthSuccessDone" when finished
+	    // "entrance,user,auth,success,done" when finished
 	    after, "SuccessDone";
 	}
 	program {
 	    name, "SuccessDone";
-	    action, SIGNAL_EMIT "EntranceUserAuthSuccessDone" "";
+	    action, SIGNAL_EMIT "entrance,user,auth,success,done" "";
 	    // Let entrance know that post auth anim is over
 	    // This MUST be in every theme.
 	}
 	program {
-	    signal, "EntranceUserAuthFail";
+	    signal, "entrance,user,auth,fail";
 	    // Emitted if the password is not accepted, but password failed
 	}
 	program {
-	    signal, "EntranceUserFail";
+	    signal, "entrance,user,fail";
 	    // Emitted if the username is not accepted by the system
 	}
 	program {
-	    signal, "EntranceUserAuth";
+	    signal, "entrance,user,success";
 	    // Emitted if the username is accepted by the system
 	}
 	program {
-	    action, SIGNAL_EMIT "EntranceSystemReboot" "";
+	    action, SIGNAL_EMIT "entrance,system,reboot" "";
 	    // Emitted to tell the system to reboot if config allows
 	}
 	program {
-	    action, SIGNAL_EMIT "EntranceSystemHalt" "";
+	    action, SIGNAL_EMIT "entrance,system,halt" "";
 	    // Emitted to tell the system to halt if config allows
 	}
 	program {
-	    action, SIGNAL_EMIT "In" "EntranceUserEntry";
+	    action, SIGNAL_EMIT "In" "entrance.entry.user";
 	    // Emitted to tell the system to move key focus to user
 	    // input buffer
 	}
 	program {
-	    action, SIGNAL_EMIT "In" "EntrancePassEntry";
+	    action, SIGNAL_EMIT "In" "entrance.entry.pass";
 	    // Emitted to tell the system to move key focus to
 	    // password input buffer
 	}
@@ -208,7 +208,7 @@ group
     programs
     {
 	program {
-	    action, SIGNAL_EMIT "SessionSelected" "";
+	    action, SIGNAL_EMIT "entrance,xsession,selected" "";
 	    // Let entrance know that this edje was selected.  See below
 	    // for evaluation of the edje on this signal emission
 	}
@@ -240,7 +240,7 @@ A basic edc mockup follows.
 ----------------------------------------------------------------------------
 group
 {
-    name, "EntranceSession";
+    name, "entrance.xsessions.selected";
     parts
     {
 	part {
@@ -269,24 +269,24 @@ group
     programs
     {
 	program {
-	    action, SIGNAL_EMIT "SessionSelected" "";
+	    action, SIGNAL_EMIT "entrance,xsession,selected" "";
 	    // Let entrance know that this edje was selected.  See below
 	    // for evaluation of the edje on this signal emission
 	}
     }
 }
 ----------------------------------------------------------------------------
-On "SessionSelected" emissions from sessions we do the following:
+On "entrance,xsession,selected" emissions from sessions we do the following:
 1. Query EntranceSessionName for the Session we're selecting
 2. Lookup the session's edje in in the config system.
 3. Load that edje, register a pointer to the object in EntranceSession
 4. Swallow it into Entrance's main edje in a part called "EnticeSession" if
 the part exists.
-5. Emit a signal to Entrance's main edje called "SessionSelected"
+5. Emit a signal to Entrance's main edje called "entrance,xsession,selected"
 
 ----------------------------------------------------------------------------
 
-On "SessionSelected" emissions from entrance's main edje we do the following:
+On "entrance,xsession,selected" emissions from entrance's main edje we do the following:
 1. Query the EnticeSession edje for EntranceSessionName
 2. Set the session string to EntranceSesssionName 
 (implement entrance_session_xsession_set() )
@@ -294,7 +294,7 @@ On "SessionSelected" emissions from entrance's main edje we do the following:
 ----------------------------------------------------------------------------
 Loading Sessions:
 1. Check for part existence in the Main theme edje for
-"EntranceSessionList". If !exist returns.
+"entrance.xsessions.list". If !exist returns.
 2. Create a container object, set direction based on h or w being larger
 3. Iterate over the sessions hashes(evas_hash_foreach)
  3.a. Load EntranceSession Group from default theme.
@@ -351,12 +351,12 @@ collections { group
     programs
     {
 	program {
-	    action, SIGNAL_EMIT "UserSelected" "";
+	    action, SIGNAL_EMIT "entrance,users,selected" "";
 	    // Let entrance know that this edje was selected.  See below
 	    // for evaluation of the edje on this signal emission
 	}
 	program {
-	    action, SIGNAL_EMIT "UserUnSelected" "";
+	    action, SIGNAL_EMIT "entrance,users,unselected" "";
 	    // Let entrance know "i messed up! i clicked the wrong edje,
 	    // revert back to as if we had never UserSelected in the
 	    // first place.
@@ -364,27 +364,27 @@ collections { group
     }
 }}
 ----------------------------------------------------------------------------
-On "UserSelected" emissions from faces we do the following:
+On "entrance,users,selected" emissions from faces we do the following:
 1. Query EntranceUser for the user's name.
 2. Lookup their edje in in the config system.
 3. Load that edje, register a pointer to the object in EntranceSession
 4. Swallow it into Entrance's main edje in a part called "EnticeFace" if
 the part exists.
-5. Emit a signal to Entrance's main edje called "UserSelected"
+5. Emit a signal to Entrance's main edje called "entrance,users,selected"
 
 ----------------------------------------------------------------------------
 
-On "UserUnSelected" emissions from faces we do the following:
+On "entrance,users,unselected" emissions from faces we do the following:
 1. entrance_session_user_reset()
-2. Query entrance's main edje for "EntranceFace" part
+2. Query entrance's main edje for "entrance.users.avatar" part
 3. If part exists, delete it from the evas.
 
 ----------------------------------------------------------------------------
 
-On "UserSelected" emissions from entice's main edje we do the following:
-1. Query the current "EntranceFace" part and get the username.
+On "entrance,users,selected" emissions from entice's main edje we do the following:
+1. Query the current "entrance.users.avatar" part and get the username.
 2. Set the entrance user to this value, attempt user recognition.
-3. If user recognition fails, emit "EntranceUserFail" 
+3. If user recognition fails, emit "entrance,user,fail" 
 4. If user recognition succeeds, query the current "EdjeFace" for the
 session string.
 5. If the current session as not yet been set, set if session string
@@ -392,8 +392,8 @@ returned was non-null.
 6. Query the current "EdjeFace" for the password string
 7. If the password string is non-null, attempt system auth with password
 supplied.
- 7.a. If authentication is successful, emit "EntranceUserAuthSuccess"
+ 7.a. If authentication is successful, emit "entrance,user,auth,success"
  7.b. If authentication fails, goto 8 :)
-8. If the password string is null, emit "EntranceUserAuth" so the theme
+8. If the password string is null, emit "entrance,user,success" so the theme
 goes to its next state.
 /*========================================================================*/

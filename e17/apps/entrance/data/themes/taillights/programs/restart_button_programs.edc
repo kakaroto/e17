@@ -44,6 +44,6 @@
 		name, "restart_button_invoke";
 		signal, "mouse,clicked,1";
 		source, "restart_button";
-		action, SIGNAL_EMIT "EntranceSystemReboot" "";
+		action, SIGNAL_EMIT "entrance,system,reboot" "";
 	    }
 	    */

@@ -360,7 +360,7 @@ collections
 	    }
 	    part
 	    {
-		name, "EntranceUserEntry";
+		name, "entrance.entry.user";
 		type,	TEXT;
 		mouse_events, 0;
 		effect, SOFT_SHADOW;
@@ -432,13 +432,13 @@ collections
 		    {
 			relative, 0.5 1.0;
 			offset, -80 -80;
-			to_y, "EntrancePassEntry";
+			to_y, "entrance.entry.pass";
 		    }
 		    rel2
 		    {
 			relative, 0.5 1.0;
 			offset, 80 5;
-			to_y, "EntrancePassEntry";
+			to_y, "entrance.entry.pass";
 		    }
 		    color, 255 255 255 0;
 		}
@@ -450,13 +450,13 @@ collections
 		    {
 			relative, 0.5 1.00;
 			offset, -120 -140;
-			to_y, "EntrancePassEntry";
+			to_y, "entrance.entry.pass";
 		    }
 		    rel2
 		    {
 			relative, 0.5 1.0;
 			offset, 120 5;
-			to_y, "EntrancePassEntry";
+			to_y, "entrance.entry.pass";
 		    }
 		    color, 255 255 255 255;
 		}
@@ -492,7 +492,7 @@ collections
 	    }
 	    part
 	    {
-		name, "EntranceFace";
+		name, "entrance.users.avatar";
 		type,	RECT;
 		mouse_events, 1;
 		clip_to, "EntranceFaceClip";
@@ -517,7 +517,7 @@ collections
 	    }
 	    part
 	    {
-		name, "EntrancePassEntry";
+		name, "entrance.entry.pass";
 		type,	TEXT;
 		mouse_events, 0;
 		effect, SOFT_SHADOW;
@@ -662,7 +662,7 @@ collections
 	    }
 	    part
 	    {
-		name, "EntranceHostname";
+		name, "entrance.hostname";
 		type,	TEXT;
 		mouse_events, 0;
 		effect, SOFT_SHADOW;
@@ -723,7 +723,7 @@ collections
 	    }
 	    part
 	    {
-		name, "EntranceDate";
+		name, "entrance.date";
 		type,	TEXT;
 		mouse_events, 0;
 		effect, SOFT_SHADOW;
@@ -735,13 +735,13 @@ collections
 		    {
 			relative, 0.0 1.0;
 			offset, 0 5;
-			to, "EntranceTime";
+			to, "entrance.time";
 		    }
 		    rel2
 		    {
 			relative, 1.0 1.0;
 			offset, 0 35;
-			to, "EntranceTime";
+			to, "entrance.time";
 		    }
 		    color, 100 100 100 192;
 		    color3, 227 227 227 192;
@@ -762,13 +762,13 @@ collections
 		    {
 			relative, 0.0 1.0;
 			offset, 0 5;
-			to, "EntranceTime";
+			to, "entrance.time";
 		    }
 		    rel2
 		    {
 			relative, 1.0 1.0;
 			offset, 0 35;
-			to, "EntranceTime";
+			to, "entrance.time";
 		    }
 		    color, 100 100 100 0;
 		    color3, 227 227 227 0;
@@ -784,7 +784,7 @@ collections
 	    }
 	    part
 	    {
-		name, "EntranceTime";
+		name, "entrance.time";
 		type,	TEXT;
 		mouse_events, 0;
 		effect, SOFT_SHADOW;
@@ -1135,7 +1135,7 @@ collections
 	    }
 	    part
 	    {
-		name, "EntranceSessionList";
+		name, "entrance.xsessions.list";
 		type,	RECT;
 		mouse_events, 1;
 		clip_to, "EntranceSessionListClip";
@@ -1184,7 +1184,7 @@ collections
 	    }
 	    part
 	    {
-		name, "EntranceSession";
+		name, "entrance.xsessions.selected";
 		type,	RECT;
 		mouse_events, 0;
 		clip_to, "EntranceSessionClip";
@@ -1366,7 +1366,7 @@ collections
 	    }
 	    part
 	    {
-		name, "EntranceUserList";
+		name, "entrance.users.list";
 		type,	RECT;
 		mouse_events, 1;
 		description
@@ -1397,7 +1397,7 @@ collections
 	    program
 	    {
 		name,	"EntranceAuth";
-		signal,	"EntranceUserAuthSuccess";
+		signal,	"entrance,user,auth,success";
 		source,	"";
 		action, STATE_SET "postauth" 0.0;
 		target, "bg";
@@ -1407,17 +1407,17 @@ collections
 	    program
 	    {
 		name,	"EntranceAuthToo";
-		signal,	"EntranceUserAuthSuccess";
+		signal,	"entrance,user,auth,success";
 		source,	"";
 		action, STATE_SET "hidden" 0.0;
-		target, "EntranceHostname";
-		target, "EntranceDate";
-		target, "EntranceTime";
+		target, "entrance.hostname";
+		target, "entrance.date";
+		target, "entrance.time";
 		target, "EntrancePassMessage";
-		target, "EntrancePassEntry";
+		target, "entrance.entry.pass";
 		target, "EntrancePassEntryArea";
 		target, "EntranceUserMessage";
-		target, "EntranceUserEntry";
+		target, "entrance.entry.user";
 		target, "EntranceUserEntryArea";
 		transition, SINUSOIDAL 0.5;
 	    }
@@ -1426,13 +1426,13 @@ collections
 		name,   "EntranceEnd";
 		signal, "";
 		source, "";
-		action,	SIGNAL_EMIT "EntranceUserAuthSuccessDone" "";
+		action,	SIGNAL_EMIT "entrance,user,auth,success,done" "";
 	    }
 	    program
 	    {
 		// when the user is unknown to the system
 		name,	"DisplayErrorUser";
-		signal,	"EntranceUserFail";
+		signal,	"entrance,user,fail";
 		source, "";
 		action, STATE_SET "visible" 0.0;
 		target, "EntranceErrorUser";
@@ -1443,7 +1443,7 @@ collections
 	    {
 		// when the user's password failed
 		name,	"DisplayErrorPass";
-		signal,	"EntranceUserAuthFail";
+		signal,	"entrance,user,auth,fail";
 		source, "";
 		action, STATE_SET "visible" 0.0;
 		target, "EntranceErrorPass";
@@ -1468,17 +1468,17 @@ collections
 		source, "";
 		action, STATE_SET "hidden" 0.0;
 		target, "EntrancePassMessage";
-		target, "EntrancePassEntry";
+		target, "entrance.entry.pass";
 		target, "EntrancePassEntryArea";
 	    }
 	    program
 	    {
 		name, "ToPass";
-		signal, "EntranceUserAuth";
+		signal, "entrance,user,success";
 		source, "";
 		action, STATE_SET "hidden" 0.0;
 		target, "EntranceUserMessage";
-		target, "EntranceUserEntry";
+		target, "entrance.entry.user";
 		target, "EntranceUserEntryArea";
 		transition, SINUSOIDAL 1.0;
 		after, "ToPassAfter";
@@ -1491,18 +1491,18 @@ collections
 		action, STATE_SET "default" 0.0;
 		transition, SINUSOIDAL 1.0;
 		target, "EntrancePassMessage";
-		target, "EntrancePassEntry";
+		target, "entrance.entry.pass";
 		target, "EntrancePassEntryArea";
 	    }
 	    program
 	    {
 		// when the user is unknown to the system
 		name,	"ToUser";
-		signal,	"EntranceUserAuthFail";
+		signal,	"entrance,user,auth,fail";
 		source, "";
 		action, STATE_SET "hidden" 0.0;
 		target, "EntrancePassMessage";
-		target, "EntrancePassEntry";
+		target, "entrance.entry.pass";
 		target, "EntrancePassEntryArea";
 		transition, SINUSOIDAL 1.0;
 		after, "ToUserAfter";
@@ -1515,7 +1515,7 @@ collections
 		source, "";
 		action, STATE_SET "default" 0.0;
 		target, "EntranceUserMessage";
-		target, "EntranceUserEntry";
+		target, "entrance.entry.user";
 		target, "EntranceUserEntryArea";
 		transition, SINUSOIDAL 1.0;
 	    }
@@ -1542,7 +1542,7 @@ collections
 	    program
 	    {
 		name, "SelectSession";
-		signal, "SessionSelected";
+		signal, "entrance,xsession,selected";
 		source, "";
 		action, STATE_SET "default" 0.0;
 		target, "EntranceSessionListClip";
@@ -1552,7 +1552,7 @@ collections
 	    program
 	    {
 		name, "SessionFaceLoaded";
-		signal, "UserSelected";
+		signal, "entrance,users,selected";
 		source, "";
 		action, STATE_SET "visible" 0.0;
 		target, "EntranceFaceClip";
@@ -1561,7 +1561,7 @@ collections
 	    program
 	    {
 		name, "SessionFaceUnLoaded";
-		signal, "UserUnSelected";
+		signal, "entrance,users,unselected";
 		source, "";
 		action, STATE_SET "default" 0.0;
 		target, "EntranceFaceClip";
@@ -1570,7 +1570,7 @@ collections
 	    program
 	    {
 		name, "SessionFaceLoginFail";
-		signal, "EntranceUserAuthFail";
+		signal, "entrance,user,auth,fail";
 		source, "";
 		action, STATE_SET "default" 0.0;
 		target, "EntranceFaceClip";
@@ -1667,14 +1667,14 @@ collections
 		name, "SessionIconClicked";
 		signal, "mouse,clicked,1";
 		source, "EntranceSessionIcon";
-		action, SIGNAL_EMIT "SessionSelected" "";
+		action, SIGNAL_EMIT "entrance,xsession,selected" "";
 	    }
 	    program
 	    {
 		name, "SessionTitleClicked";
 		signal, "mouse,clicked,1";
 		source, "EntranceSessionTitle";
-		action, SIGNAL_EMIT "SessionSelected" "";
+		action, SIGNAL_EMIT "entrance,xsession,selected" "";
 	    }
 	}
     }

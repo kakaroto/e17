@@ -3,7 +3,7 @@
 		name, "session_icon_clicked";
 		signal, "mouse,clicked,1";
 		source, "base_grabber";
-		action, SIGNAL_EMIT "SessionSelected" "";
+		action, SIGNAL_EMIT "entrance,xsession,selected" "";
 	    }
 	    program
 	    {

@@ -145,7 +145,7 @@
 		}
 	    }
 	    part {
-		name, "EntranceUserList";
+		name, "entrance.users.list";
 		type, RECT;
 		mouse_events, 1;
 		clip_to, "user_list_clip";

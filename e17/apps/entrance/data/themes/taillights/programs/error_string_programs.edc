@@ -1,7 +1,7 @@
     program {
 	name, "error_string_user_fail";
 	source, "";
-	signal, "EntranceUserFail";
+	signal, "entrance,user,fail";
 	action, STATE_SET "default" 0.0;
 	target, "error_string";
 	after, "error_show";
@@ -9,7 +9,7 @@
     program {
 	name, "error_string_user_auth_fail";
 	source, "";
-	signal, "EntranceUserAuthFail";
+	signal, "entrance,user,auth,fail";
 	action, STATE_SET "passfail" 0.0;
 	target, "error_string";
 	after, "error_show";
