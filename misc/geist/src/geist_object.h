@@ -4,6 +4,8 @@
 #include "geist.h"
 #include "geist_document.h"
 
+#define GEIST_OBJECT(O) ((geist_object *) O)
+
 typedef enum __geist_object_state
 { SELECTED = 0x00000001, HILITED = 0x00000002, DRAG = 0x00000004 }
 geist_object_state;

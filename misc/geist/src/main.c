@@ -10,6 +10,7 @@
 #include "geist_object.h"
 #include "geist_image.h"
 #include "geist_gtk.h"
+#include "geist_text.h"
 #include "layers.h"
 
 int call_level = 0;
@@ -100,7 +101,7 @@ main(int argc, char *argv[])
                              geist_image_new_from_file(275, 145,
                                                        "testimages/bulb.png"));
    geist_document_add_object(doc,
-                             geist_image_new_from_file(375, 70,
+                             geist_image_new_from_file(355, 70,
                                                        "testimages/mail.png"));
 
    geist_document_add_object(doc,
@@ -110,6 +111,8 @@ main(int argc, char *argv[])
    geist_document_add_object(doc,
                              geist_image_new_from_file(175, 5,
                                                        "testimages/paper.png"));
+   geist_document_add_object(doc,
+                             geist_text_new_with_text(175, 105, "20thcent/16", "So this is geist..."));
 
 
    geist_document_render(doc);

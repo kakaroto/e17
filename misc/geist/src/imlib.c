@@ -50,6 +50,10 @@ imlib_init(GtkWidget *area)
    imlib_context_set_color_modifier(NULL);
    imlib_context_set_operation(IMLIB_OP_COPY);
 
+   imlib_add_path_to_font_path(".");
+   imlib_add_path_to_font_path("./ttfonts");
+   imlib_add_path_to_font_path(PREFIX"share/"PACKAGE"/ttfonts");
+   
    /* Initialise random numbers */
    srand(getpid() * time(NULL) % ((unsigned int) -1));
 

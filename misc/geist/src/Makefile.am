@@ -1,8 +1,10 @@
 ## Process this file with automake to produce Makefile.in
 
+SUBDIRS = testimages ttfonts
+
 INCLUDES = \
 	-I. $(top_srcdir) \
-    @GTK_CFLAGS@
+    @GTK_CFLAGS@ -DPREFIX=\""$(prefix)"\"
 
 bin_PROGRAMS = geist
 
@@ -16,6 +18,7 @@ geist_SOURCES = \
     geist_object.h geist_object.c \
     structs.h \
     geist_image.c geist_image.h \
+    geist_text.c geist_text.h \
     geist_imlib.c geist_imlib.h \
     geist_document.c geist_document.h \
     geist_gtk.c geist_gtk.h \

@@ -1,6 +1,8 @@
 #include "geist.h"
 #include "geist_object.h"
 
+#define GEIST_IMAGE(O) ((geist_image *) O)
+
 struct __geist_image {
    geist_object object;
    char *name;

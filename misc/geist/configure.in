@@ -51,5 +51,7 @@ AC_OUTPUT([
 Makefile
 src/Makefile
 pixmaps/Makefile
+src/ttfonts/Makefile
+src/testimages/Makefile
 ])
 
