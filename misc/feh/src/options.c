@@ -895,7 +895,7 @@ show_usage(void)
            " Ctrl+button 1 blurs or sharpens the image (drag left to blur and right to\n"
            " sharpen).  Ctrl+button 2 rotates the image around the center point.  Ctrl+\n"
            " button 3 activates the context-sensitive menu.  Buttons can be redefined\n"
-           " with the -1 through -9 (or --*-button) cmdline flags.  All you bastards\n"
+           " with the -1 through -9 (or --*-button) cmdline flags.  All you people\n"
            " with million button mice can remove the ctrl mask with the --no-*-ctrl-mask\n"
            " options.\n" "\n"
            "See 'man feh' for more detailed information\n" "\n"

@@ -42,6 +42,10 @@ with the filename, filesize and pixel size, printed using a truetype font of
 your choice. The resultant image can be viewed or saved, and it's size can
 be limited by height, width or both.
 .PP
+.B Thumbnail mode
+is like index mode, but the mini-images are clickable, and launch the
+clicked image in a browser window.
+.PP
 .B Multiwindow mode
 shows images in multiple windows, instead of as a slideshow in one window.
 Don't use with a large filelist ;)
@@ -68,10 +72,7 @@ can read options from the commandline, or from a config file. The syntax
 is the same in each case. See
 .B CONFIG FILE SYNTAX
 for details about using themes defined in a config file.
-These methods may be used in conjunction. Options in
-.B FEH_OPTIONS
-can be overridden using options on the commandline, and themes take
-precedence over both.
+These methods may be used in conjunction.
 .SH OPTIONS
 .TP 5
 .B -h, --help
@@ -355,8 +356,9 @@ If
 .B $HOME/.fehrc
 exists, or if not, but 
 .B /etc/fehrc
-exists, feh will look in it for theme name/options pairs. An example entry
-would be:
+exists, feh will look in it for theme name/options pairs. If neither
+$HOME/.fehrc or /etc/fehrc exist, feh will create a default one in ~/.fehrc.
+An example entry would be:
 .br
 .B imagemap -rVq --thumb-width 40 --thumb-height 30
 .br
@@ -422,9 +424,13 @@ Quit the slideshow
 .SH MOUSE ACTIONS
 When viewing an image, mouse button 1 moves to the next image (slideshow
 mode only), button 2 zooms (click and drag left->right to zoom in, right->
-left to zoom out, click once to restore 1x zoom), and mouse button 3 shows
-menus. If --no-menus is specified, button 3 closes all open windows and
-closes the application.
+left to zoom out, click once to restore 1x zoom), and mouse button 3 pans.
+Ctrl+button 1 blurs or sharpens the image (drag left to blur and right to
+sharpen).  Ctrl+button 2 rotates the image around the center point.  Ctrl+
+button 3 activates the context-sensitive menu.  Buttons can be redefined
+with the -1 through -9 (or --*-button) cmdline flags.  All you people
+with million button mice can remove the ctrl mask with the --no-*-ctrl-mask
+options.
 .SH SUGGESTED USAGE EXAMPLES
 Here are some examples of nice option combinations to achieve cool results:
 .TP 5
@@ -472,7 +478,7 @@ first) and move the image to ~/images/image_name when enter is pressed.
 None known. However there are many, many options. It is possible that some
 do not work well in conjuncion with each other. Let me know :)
 .SH LICENSE
-Copyright Tom Gilbert, 1999, 2000
+Copyright Tom Gilbert (and various contributors), 1999, 2000
 .PP
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to

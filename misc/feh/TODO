@@ -5,7 +5,7 @@ people add =P
 
 o General
 
-Rework zoom code to be more flexible/sane :-)
+Toggle-able menu items for some options.
 Scrollbars? Dunno.
 Switch over to popt for option handling. This'll let me process
 strings and do multiple parse runs etc without the current hacks I use. I'll

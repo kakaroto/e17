@@ -35,6 +35,7 @@ src/Makefile \
 src/ttfonts/Makefile \
 )
 
+echo ""
 echo "If you have used an earlier version of feh,"
 echo "please remove your ~/.fehrc config file."
 echo "feh will create a new one when it is first run."
