@@ -86,7 +86,7 @@ od_dock_reposition()
     if (dock.sysicons)
       width += options.spacing + 1.0;   // another spacer
   }
-  width += options.spacing + 3; /* expand under tray */
+  width += options.spacing; // another space before system tray
 
 #define POSITION(__icons) \
 		{ \
@@ -180,13 +180,13 @@ od_dock_redraw(Ecore_Evas * ee)
                                dock.right_end - dock.left_end - 1.0,
                                options.size + ARROW_SPACE_DOUBLE);
     evas_object_resize(dock.background[OD_BG_FILL],
-                       dock.right_end - dock.left_end - 1.0,
+                       dock.right_end - dock.left_end,
                        options.size + ARROW_SPACE_DOUBLE);
     evas_object_move(dock.background[OD_BG_FILL], dock.left_end + 1.0,
                      options.height - options.size - ARROW_SPACE_DOUBLE);
   }
 
-  od_tray_move(dock.right_end - 1);
+  od_tray_move(dock.right_end + 1);
 
   need_redraw = false;
 }
