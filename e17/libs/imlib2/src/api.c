@@ -246,7 +246,7 @@ imlib_get_best_visual(Display *display, int screen, int *depth_return)
 }
 
 Imlib_Image 
-imlib_load_image(char *file)
+imlib_load_image(const char *file)
 {
    Imlib_Image im = NULL;
    Imlib_Image prev_ctxt_image;
@@ -260,7 +260,7 @@ imlib_load_image(char *file)
 }
 
 Imlib_Image 
-imlib_load_image_immediately(char *file)
+imlib_load_image_immediately(const char *file)
 {
    Imlib_Image im = NULL;
    Imlib_Image prev_ctxt_image;
@@ -274,7 +274,7 @@ imlib_load_image_immediately(char *file)
 }
 
 Imlib_Image 
-imlib_load_image_without_cache(char *file)
+imlib_load_image_without_cache(const char *file)
 {
    Imlib_Image im = NULL;
    Imlib_Image prev_ctxt_image;
@@ -288,7 +288,7 @@ imlib_load_image_without_cache(char *file)
 }
 
 Imlib_Image 
-imlib_load_image_immediately_without_cache(char *file)
+imlib_load_image_immediately_without_cache(const char *file)
 {
    Imlib_Image im = NULL;
    Imlib_Image prev_ctxt_image;
@@ -302,7 +302,7 @@ imlib_load_image_immediately_without_cache(char *file)
 }
 
 Imlib_Image 
-imlib_load_image_with_error_return(char *file, Imlib_Load_Error *error_return)
+imlib_load_image_with_error_return(const char *file, Imlib_Load_Error *error_return)
 {
    Imlib_Image im = NULL;
    ImlibLoadError er;
@@ -480,7 +480,7 @@ imlib_image_set_border(Imlib_Border *border)
 }
 
 void 
-imlib_image_set_format(char *format)
+imlib_image_set_format(const char *format)
 {
    ImlibImage *im;
 
@@ -1269,7 +1269,7 @@ imlib_image_tile(void)
 }
 
 Imlib_Font
-imlib_load_font(char *font_name)
+imlib_load_font(const char *font_name)
 {
    return (Imlib_Font)__imlib_load_font(font_name);   
 }
@@ -1283,7 +1283,7 @@ imlib_free_font(void)
 }
 
 void 
-imlib_text_draw(int x, int y, char *text)
+imlib_text_draw(int x, int y, const char *text)
 {
    ImlibImage *im;
    
@@ -1300,7 +1300,7 @@ imlib_text_draw(int x, int y, char *text)
 }
 
 void 
-imlib_text_draw_with_return_metrics(int x, int y, char *text,
+imlib_text_draw_with_return_metrics(int x, int y, const char *text,
 				    int *width_return, int *height_return,
 				    int *horizontal_advance_return,
 				    int *vertical_advance_return)
@@ -1328,7 +1328,7 @@ imlib_text_draw_with_return_metrics(int x, int y, char *text,
 }
 
 void 
-imlib_get_text_size(char *text, int *width_return, int *height_return)
+imlib_get_text_size(const char *text, int *width_return, int *height_return)
 {
    ImlibFont *fn;
    int w, h;
@@ -1359,14 +1359,14 @@ imlib_get_text_size(char *text, int *width_return, int *height_return)
 }
 
 void 
-imlib_add_path_to_font_path(char *path)
+imlib_add_path_to_font_path(const char *path)
 {
    CHECK_PARAM_POINTER("imlib_add_path_to_font_path", "path", path);
    __imlib_add_font_path(path);
 }
 
 void 
-imlib_remove_path_from_font_path(char *path)
+imlib_remove_path_from_font_path(const char *path)
 {
    CHECK_PARAM_POINTER("imlib_remove_path_from_font_path", "path", path);
    __imlib_del_font_path(path);
@@ -1380,7 +1380,7 @@ imlib_list_font_path(int *number_return)
 }
 
 int
-imlib_text_get_index_and_location(char *text, int x, int y,
+imlib_text_get_index_and_location(const char *text, int x, int y,
 				  int *char_x_return, int *char_y_return,
 				  int *char_width_return,
 				  int *char_height_return)
@@ -1459,7 +1459,7 @@ imlib_list_fonts(int *number_return)
 }
 
 void 
-imlib_free_font_list(char **font_list, int number)
+imlib_free_font_list(const char **font_list, int number)
 {
    CHECK_PARAM_POINTER("imlib_free_font_list", "font_list", font_list);
    CHECK_PARAM_POINTER("imlib_free_font_list", "number", number);
@@ -1874,7 +1874,7 @@ imlib_image_query_pixel(int x, int y, Imlib_Color *color_return)
 }
 
 void 
-imlib_image_attach_data_value(char *key, void *data, int value,
+imlib_image_attach_data_value(const char *key, void *data, int value,
 			      Imlib_Internal_Data_Destructor_Function destructor_function)
 {
    ImlibImage *im;
@@ -1886,7 +1886,7 @@ imlib_image_attach_data_value(char *key, void *data, int value,
 }
 
 void *
-imlib_image_get_attached_data(char *key)
+imlib_image_get_attached_data(const char *key)
 {
    ImlibImageTag *t;
    ImlibImage *im;
@@ -1901,7 +1901,7 @@ imlib_image_get_attached_data(char *key)
 }
 
 int
-imlib_image_get_attached_value(char *key)
+imlib_image_get_attached_value(const char *key)
 {
    ImlibImageTag *t;
    ImlibImage *im;
@@ -1916,7 +1916,7 @@ imlib_image_get_attached_value(char *key)
 }
 
 void 
-imlib_image_remove_attached_data_value(char *key)
+imlib_image_remove_attached_data_value(const char *key)
 {
    ImlibImage *im;
       
@@ -1927,7 +1927,7 @@ imlib_image_remove_attached_data_value(char *key)
 }
 
 void 
-imlib_image_remove_and_free_attached_data_value(char *key)
+imlib_image_remove_and_free_attached_data_value(const char *key)
 {
    ImlibImageTag *t;
    ImlibImage *im;
@@ -1940,7 +1940,7 @@ imlib_image_remove_and_free_attached_data_value(char *key)
 }
 
 void
-imlib_save_image(char *filename)
+imlib_save_image(const char *filename)
 {
    ImlibImage *im;
    Imlib_Image prev_ctxt_image;
@@ -1959,7 +1959,7 @@ imlib_save_image(char *filename)
 }
 
 void
-imlib_save_image_with_error_return(char *filename,
+imlib_save_image_with_error_return(const char *filename,
 				   Imlib_Load_Error *error_return)
 {
    ImlibImage *im;

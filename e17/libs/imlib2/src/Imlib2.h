@@ -108,11 +108,11 @@ void    imlib_flush_loaders(void);
 int     imlib_get_visual_depth(Display *display, Visual *visual);
 Visual *imlib_get_best_visual(Display *display, int screen, int *depth_return);
 
-Imlib_Image imlib_load_image(char *file);
-Imlib_Image imlib_load_image_immediately(char *file);
-Imlib_Image imlib_load_image_without_cache(char *file);
-Imlib_Image imlib_load_image_immediately_without_cache(char *file);
-Imlib_Image imlib_load_image_with_error_return(char *file, Imlib_Load_Error *error_return);
+Imlib_Image imlib_load_image(const char *file);
+Imlib_Image imlib_load_image_immediately(const char *file);
+Imlib_Image imlib_load_image_without_cache(const char *file);
+Imlib_Image imlib_load_image_immediately_without_cache(const char *file);
+Imlib_Image imlib_load_image_with_error_return(const char *file, Imlib_Load_Error *error_return);
 void        imlib_free_image(void);
 void        imlib_free_image_and_decache(void);
 
@@ -125,7 +125,7 @@ char    imlib_image_has_alpha(void);
 void    imlib_image_set_never_changes_on_disk(Imlib_Image image);
 void    imlib_image_get_border(Imlib_Border *border);
 void    imlib_image_set_border(Imlib_Border *border);
-void    imlib_image_set_format(char *format);
+void    imlib_image_set_format(const char *format);
 void    imlib_image_set_irrelevant_format(char irrelevant);
 void    imlib_image_set_irrelevant_border(char irrelevant);
 void    imlib_image_set_irrelevant_alpha(char irrelevant);
@@ -169,17 +169,17 @@ void imlib_image_tile_horizontal(void);
 void imlib_image_tile_vertical(void);
 void imlib_image_tile(void);
 
-Imlib_Font imlib_load_font(char *font_name);
+Imlib_Font imlib_load_font(const char *font_name);
 void       imlib_free_font(void);
-void       imlib_text_draw(int x, int y, char *text);
-void       imlib_text_draw_with_return_metrics(int x, int y, char *text, int *width_return, int *height_return, int *horizontal_advance_return, int *vertical_advance_return);
-void       imlib_get_text_size(char *text, int *width_return, int *height_return);
-void       imlib_add_path_to_font_path(char *path);
-void       imlib_remove_path_from_font_path(char *path);
+void       imlib_text_draw(int x, int y, const char *text);
+void       imlib_text_draw_with_return_metrics(int x, int y, const char *text, int *width_return, int *height_return, int *horizontal_advance_return, int *vertical_advance_return);
+void       imlib_get_text_size(const char *text, int *width_return, int *height_return);
+void       imlib_add_path_to_font_path(const char *path);
+void       imlib_remove_path_from_font_path(const char *path);
 char     **imlib_list_font_path(int *number_return);
-int        imlib_text_get_index_and_location(char *text, int x, int y, int *char_x_return, int *char_y_return, int *char_width_return, int *char_height_return);
+int        imlib_text_get_index_and_location(const char *text, int x, int y, int *char_x_return, int *char_y_return, int *char_width_return, int *char_height_return);
 char     **imlib_list_fonts(int *number_return);
-void       imlib_free_font_list(char **font_list, int number);
+void       imlib_free_font_list(const char **font_list, int number);
 int        imlib_get_font_cache_size(void);
 void       imlib_set_font_cache_size(int bytes);
 void       imlib_flush_font_cache(void);
@@ -214,13 +214,13 @@ void imlib_image_fill_color_range_rectangle(int x, int y, int width, int height,
 
 void imlib_image_query_pixel(int x, int y, Imlib_Color *color_return);
 
-void imlib_image_attach_data_value(char *key, void *data, int value, Imlib_Data_Destructor_Function destructor_function);
-void *imlib_image_get_attached_data(char *key);
-int imlib_image_get_attached_value(char *key);
-void imlib_image_remove_attached_data_value(char *key);
-void imlib_image_remove_and_free_attached_data_value(char *key);
-void imlib_save_image(char *filename);
-void imlib_save_image_with_error_return(char *filename, Imlib_Load_Error *error_return);
+void imlib_image_attach_data_value(const char *key, void *data, int value, Imlib_Data_Destructor_Function destructor_function);
+void *imlib_image_get_attached_data(const char *key);
+int imlib_image_get_attached_value(const char *key);
+void imlib_image_remove_attached_data_value(const char *key);
+void imlib_image_remove_and_free_attached_data_value(const char *key);
+void imlib_save_image(const char *filename);
+void imlib_save_image_with_error_return(const char *filename, Imlib_Load_Error *error_return);
 
 /* FIXME: */
 /* need to add arbitary rotation routines */
