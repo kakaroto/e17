@@ -281,12 +281,6 @@ od_icon_reload(OD_Icon * in)
                             (options.tt_shd_color >> 0) & 0xff, 127);
       evas_object_layer_set(tt_shd, 199);
     }
-    edje_object_signal_callback_add(icon, "engage,app,*", "*",
-                                    od_icon_edje_app_cb, in);
-    edje_object_signal_callback_add(icon, "engage,window,minimize*", "*",
-                                    od_icon_edje_win_minimize_cb, in);
-    edje_object_signal_callback_add(icon, "engage,window,raise*", "*",
-                                    od_icon_edje_win_raise_cb, in);
     evas_object_layer_set(icon, 100);
     evas_object_show(icon);
   } else {
@@ -319,6 +313,14 @@ od_icon_new(const char *winclass, const char *name, const char *icon_file)
   ret->icon = edje_object_add(evas);
 
   od_icon_reload(ret);
+  if (ret->icon) {
+    edje_object_signal_callback_add(ret->icon, "engage,app,*", "*",
+                                    od_icon_edje_app_cb, ret);
+    edje_object_signal_callback_add(ret->icon, "engage,window,minimize*", "*",
+                                    od_icon_edje_win_minimize_cb, ret);
+    edje_object_signal_callback_add(ret->icon, "engage,window,raise*", "*",
+                                    od_icon_edje_win_raise_cb, ret);
+  }
 
   return ret;
 }

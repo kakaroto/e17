@@ -88,8 +88,8 @@ od_config_init(void)
 
   options.tt_txt_color = 0x00000000;
   options.tt_shd_color = 0x7f000000;
-  options.bg_fore = 0x7f000000;
-  options.bg_back = 0x7fffffff;
+  options.bg_fore = 0x00000000;
+  options.bg_back = 0x00ffffff;
   ecore_config_string_create("engage.options.tt_fa", "Vera", 'f', "font",
                              "The font to use for application titles etc.");
   ecore_config_int_create("engage.options.tt_fs", 8, 'F', "font-size",
