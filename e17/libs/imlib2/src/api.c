@@ -36,6 +36,7 @@
 #include "dynamic_filters.h"
 #include "script.h"
 #include <math.h>
+#include "color_helpers.h"
 
 /* convenience macros */
 #define   CAST_IMAGE(im, image) (im) = (ImlibImage *)(image)
@@ -496,6 +497,63 @@ imlib_context_get_imlib_color(void)
 {
    if (!ctx) ctx = imlib_context_new();
    return &ctx->color;
+}
+
+void
+imlib_context_set_color_hsva(float hue, float saturation, float value, int alpha)
+{
+   int r,g,b;
+
+	__imlib_hsv_to_rgb(hue, saturation, value, &r, &g, &b);
+	imlib_context_set_color(r, g, b, alpha);
+}
+
+void
+imlib_context_get_color_hsva(float *hue, float *saturation, float *value, int *alpha)
+{
+   int r,g,b,f;
+   float i,j,k,max,min,d;
+
+   imlib_context_get_color(&r, &g, &b, alpha);
+	 __imlib_rgb_to_hsv(r, g, b, hue, saturation, value);   
+}
+
+void
+imlib_context_set_color_hlsa(float hue, float lightness, float saturation, int alpha)
+{
+   int r,g,b;
+
+   __imlib_hls_to_rgb(hue, lightness, saturation, &r, &g, &b);
+   imlib_context_set_color(r, g, b, alpha);
+}
+
+void
+imlib_context_get_color_hlsa(float *hue, float *lightness, float *saturation, int *alpha)
+{
+   int r,g,b;
+
+   imlib_context_get_color(&r, &g, &b, alpha);
+   __imlib_rgb_to_hls(r, g, b, hue, lightness, saturation);
+}
+
+void
+imlib_context_set_color_cmya(int cyan, int magenta, int yellow, int alpha)
+{
+   if (!ctx) ctx = imlib_context_new();
+   ctx->color.red = 255 - cyan;
+   ctx->color.green = 255 - magenta;
+   ctx->color.blue = 255 - yellow;
+   ctx->color.alpha = alpha;
+}
+
+void
+imlib_context_get_color_cmya(int *cyan, int *magenta, int *yellow, int *alpha)
+{
+   if (!ctx) ctx = imlib_context_new();
+   *cyan = 255 - ctx->color.red;
+   *magenta = 255 - ctx->color.green;
+   *yellow = 255 - ctx->color.blue;
+   *alpha = ctx->color.alpha;
 }
 
 void
@@ -3441,6 +3499,31 @@ imlib_image_fill_color_range_rectangle(int x, int y, int width, int height,
 }
 
 void
+imlib_image_fill_hsva_color_range_rectangle(int x, int y, int width, int height,
+                                           double angle)
+{
+   ImlibImage *im;
+
+   if (!ctx) ctx = imlib_context_new();
+   CHECK_PARAM_POINTER("imlib_image_fill_color_range_rectangle", "image",
+                       ctx->image);
+   CHECK_PARAM_POINTER("imlib_image_fill_color_range_rectangle",
+                       "color_range", ctx->color_range);
+   CAST_IMAGE(im, ctx->image);
+   if ((!(im->data)) && (im->loader) && (im->loader->load))
+      im->loader->load(im, NULL, 0, 1);
+   if (!(im->data))
+      return;
+   __imlib_DirtyImage(im);
+   __imlib_DirtyPixmapsForImage(im);
+   __imlib_DrawHsvaGradient(im, x, y, width, height,
+                            (ImlibRange *) ctx->color_range, angle,
+                            ctx->operation,
+			ctx->cliprect.x, ctx->cliprect.y,
+			ctx->cliprect.w, ctx->cliprect.h);   
+}
+
+void
 imlib_image_query_pixel(int x, int y, Imlib_Color * color_return)
 {
    ImlibImage *im;
@@ -3468,6 +3551,98 @@ imlib_image_query_pixel(int x, int y, Imlib_Color * color_return)
    color_return->green = ((*p) >> 8) & 0xff;
    color_return->blue = (*p) & 0xff;
    color_return->alpha = ((*p) >> 24) & 0xff;
+}
+
+void
+imlib_image_query_pixel_hsva(int x, int y, float *hue, float *saturation, float *value, int *alpha)
+{
+   ImlibImage *im;
+   DATA32 *p;
+   int r,g,b,f;
+   float i,j,k,max,min,d;
+
+   if (!ctx) ctx = imlib_context_new();
+   CHECK_PARAM_POINTER("imlib_image_query_pixel", "image", ctx->image);
+   CAST_IMAGE(im, ctx->image);
+   if ((!(im->data)) && (im->loader) && (im->loader->load))
+      im->loader->load(im, NULL, 0, 1);
+   if (!(im->data))
+      return;
+   if ((x < 0) || (x >= im->w) || (y < 0) || (y >= im->h))
+   {
+			*hue = 0;
+      *saturation = 0;
+			*value = 0;
+      *alpha = 0;
+      return;
+   }
+   p = im->data + (im->w * y) + x;
+   r = ((*p) >> 16) & 0xff;
+   g = ((*p) >> 8) & 0xff;
+   b = (*p) & 0xff;
+   *alpha = ((*p) >> 24) & 0xff;
+
+   __imlib_rgb_to_hsv(r, g, b, hue, saturation, value);
+}
+
+void
+imlib_image_query_pixel_hlsa(int x, int y, float *hue, float *lightness, float *saturation, int *alpha)
+{
+	ImlibImage *im;
+	DATA32 *p;
+	int r,g,b,f;
+	float i,j,k,max,min,d;
+
+	if (!ctx) ctx = imlib_context_new();
+	CHECK_PARAM_POINTER("imlib_image_query_pixel", "image", ctx->image);
+	CAST_IMAGE(im, ctx->image);
+	if ((!(im->data)) && (im->loader) && (im->loader->load))
+		im->loader->load(im, NULL, 0, 1);
+	if (!(im->data))
+		return;
+	if ((x < 0) || (x >= im->w) || (y < 0) || (y >= im->h))
+	{
+		*hue = 0;
+		*lightness = 0;
+		*saturation = 0;
+		*alpha = 0;
+		return;
+	}
+	p = im->data + (im->w * y) + x;
+	r = ((*p) >> 16) & 0xff;
+	g = ((*p) >> 8) & 0xff;
+	b = (*p) & 0xff;
+	*alpha = ((*p) >> 24) & 0xff;
+
+	__imlib_rgb_to_hls(r, g, b, hue, lightness, saturation);
+}
+
+void
+imlib_image_query_pixel_cmya(int x, int y, int *cyan, int *magenta, int *yellow, int *alpha)
+{
+	ImlibImage *im;
+	DATA32 *p;
+
+	if (!ctx) ctx = imlib_context_new();
+	CHECK_PARAM_POINTER("imlib_image_query_pixel", "image", ctx->image);
+	CAST_IMAGE(im, ctx->image);
+	if ((!(im->data)) && (im->loader) && (im->loader->load))
+		im->loader->load(im, NULL, 0, 1);
+	if (!(im->data))
+		return;
+	if ((x < 0) || (x >= im->w) || (y < 0) || (y >= im->h))
+	{
+		*cyan = 0;
+		*magenta = 0;
+		*yellow = 0;
+		*alpha = 0;
+		return;
+	}
+	p = im->data + (im->w * y) + x;
+	*cyan = 255 - (((*p) >> 16) & 0xff);
+	*magenta = 255 - (((*p) >> 8) & 0xff);
+	*yellow = 255 - ((*p) & 0xff);
+	*alpha = ((*p) >> 24) & 0xff;
 }
 
 void

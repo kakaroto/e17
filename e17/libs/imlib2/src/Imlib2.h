@@ -120,6 +120,9 @@ extern "C"
    void imlib_context_set_direction(Imlib_Text_Direction direction);
    void imlib_context_set_angle(double angle);
    void imlib_context_set_color(int red, int green, int blue, int alpha);
+   void imlib_context_set_color_hsva(float hue, float saturation, float value, int alpha);
+   void imlib_context_set_color_hlsa(float hue, float lightness, float saturation, int alpha);
+   void imlib_context_set_color_cmya(int cyan, int magenta, int yellow, int alpha);
    void imlib_context_set_color_range(Imlib_Color_Range color_range);
    void imlib_context_set_progress_function(Imlib_Progress_Function
                                             progress_function);
@@ -146,6 +149,9 @@ extern "C"
    double imlib_context_get_angle(void);
    Imlib_Text_Direction imlib_context_get_direction(void);
    void imlib_context_get_color(int *red, int *green, int *blue, int *alpha);
+   void imlib_context_get_color_hsva(float *hue, float *saturation, float *value, int *alpha);
+   void imlib_context_get_color_hlsa(float *hue, float *lightness, float *saturation, int *alpha);
+   void imlib_context_get_color_cmya(int *cyan, int *magenta, int *yellow, int *alpha);
    Imlib_Color *imlib_context_get_imlib_color(void);
    Imlib_Color_Range imlib_context_get_color_range(void);
    Imlib_Progress_Function imlib_context_get_progress_function(void);
@@ -193,7 +199,9 @@ extern "C"
    char *imlib_image_format(void);
    void imlib_image_set_has_alpha(char has_alpha);
    void imlib_image_query_pixel(int x, int y, Imlib_Color * color_return);
-
+   void imlib_image_query_pixel_hsva(int x, int y, float *hue, float *saturation, float *value, int *alpha);
+   void imlib_image_query_pixel_hlsa(int x, int y, float *hue, float *lightness, float *saturation, int *alpha);
+   void imlib_image_query_pixel_cmya(int x, int y, int *cyan, int *magenta, int *yellow, int *alpha);
 
 /* rendering functions */
 #ifndef X_DISPLAY_MISSING
@@ -386,6 +394,8 @@ extern "C"
    void imlib_add_color_to_color_range(int distance_away);
    void imlib_image_fill_color_range_rectangle(int x, int y, int width,
                                                int height, double angle);
+   void imlib_image_fill_hsva_color_range_rectangle(int x, int y, int width,
+                                                    int height, double angle);
 
 /* image data */
    void imlib_image_attach_data_value(const char *key, void *data, int value,

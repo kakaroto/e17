@@ -18,10 +18,11 @@ lib_LTLIBRARIES      = libImlib2.la
 include_HEADERS      = Imlib2.h
 libImlib2_la_SOURCES = scale.c image.c blend.c file.c rgbadraw.c api.c \
 		       updates.c colormod.c font.c format.c grad.c rotate.c \
-		       filter.c script.c dynamic_filters.c \
+		       filter.c script.c dynamic_filters.c color_helpers.c \
                        Imlib2.h image.h scale.h blend.h updates.h colormod.h \
 		       file.h common.h rgbadraw.h font.h format.h \
-		       rotate.h grad.h filter.h script.h dynamic_filters.h
+		       rotate.h grad.h filter.h script.h dynamic_filters.h \
+		       color_helpers.h
 
 EXTRA_libImlib2_la_SOURCES = rend.c ximage.c rgba.c color.c grab.c draw.c \
 			     context.c color.h context.h draw.h grab.h rend.h \

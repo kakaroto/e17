@@ -6,6 +6,7 @@
 #include "image.h"
 #include "blend.h"
 #include "grad.h"
+#include "color_helpers.h"
 
 ImlibRange *
 __imlib_CreateRange(void)
@@ -139,6 +140,87 @@ __imlib_MapRange(ImlibRange *rg, int len)
      }
    free(pmap);
    return map;
+}
+
+DATA32 *
+__imlib_MapHsvaRange(ImlibRange *rg, int len)
+{
+	ImlibRangeColor *p;
+	DATA32 *map, *pmap, k, kk;
+	int r, g, b, a, rr, gg, bb, aa, i, l, ll, inc, j;
+	float h1, s1, v1, h2, s2, v2, h, s, v, k1, k2;
+	   
+	if (!rg->color)
+		return NULL;
+	if (!rg->color->next)
+		return NULL;
+	ll = 1;
+	for (p = rg->color; p; p = p->next)
+		ll += p->distance;
+	map = malloc(len * sizeof(DATA32));   
+	pmap = malloc(ll * sizeof(DATA32));   
+	i = 0;
+	for (p = rg->color; p; p = p->next)
+	{
+		if (p->next)
+		{
+			for (j = 0; j < p->distance; j++)
+			{
+				k1 = (j << 16) / (float)p->distance;
+				k2 = 65536 - k1;
+				r = p->red;		rr = p->next->red;
+				g = p->green;	gg = p->next->green;
+				b = p->blue;	bb = p->next->blue;
+				__imlib_rgb_to_hsv(r, g, b, &h1, &s1, &v1);
+				__imlib_rgb_to_hsv(rr, gg, bb, &h2, &s2, &v2);
+				h = ((h1 * k2) + (h2 * k1)) / 65536.0;
+				s = ((s1 * k2) + (s2 * k1)) / 65536.0;
+				v = ((v1 * k2) + (v2 * k1)) / 65536.0;
+				__imlib_hsv_to_rgb(h, s, v, &r, &g, &b);
+				a = (unsigned long int)((p->alpha * k2) + (p->next->alpha * k1)) >> 16;
+				pmap[i++] = (a << 24) | (r << 16) | (g << 8) | b;
+			}
+		}
+		else
+		{
+			r = p->red;
+			g = p->green;
+			b = p->blue;
+			a = p->alpha;
+			pmap[i++] = (a << 24) | (r << 16) | (g << 8) | b;
+		}
+	}
+	inc = ((ll - 1) << 16) / (len);
+	l = 0;
+	for (i = 0; i < len; i++)
+	{
+		k = pmap[l >> 16];
+		if ((l >> 16) < ll)
+			kk = pmap[(l >> 16) + 1];
+		else
+			kk = pmap[(l >> 16)];
+		k1 = l - (float)((l >> 16) << 16);
+		k2 = 65536 - k1;
+		b = ((k)      ) & 0xff;
+		g = ((k) >> 8 ) & 0xff;
+		r = ((k) >> 16) & 0xff;
+		a = ((k) >> 24) & 0xff;
+		bb = ((kk)      ) & 0xff;
+		gg = ((kk) >> 8 ) & 0xff;
+		rr = ((kk) >> 16) & 0xff;
+		aa = ((kk) >> 24) & 0xff;
+		__imlib_rgb_to_hsv(r, g, b, &h1, &s1, &v1);
+		__imlib_rgb_to_hsv(rr, gg, bb, &h2, &s2, &v2);
+		h = ((h1 * k2) + (h2 * k1)) / 65536.0;
+		s = ((s1 * k2) + (s2 * k1)) / 65536.0;
+		v = ((v1 * k2) + (v2 * k1)) / 65536.0;
+		__imlib_hsv_to_rgb(h, s, v, &r, &g, &b);
+		a = (unsigned long int)((a * k2) + (aa * k1)) >> 16;
+		map[i] = (a << 24) | (r << 16) | (g << 8) | b;
+		l += inc;
+	}
+	free(pmap);
+	return map;
 }
 
 void
@@ -328,3 +410,192 @@ __imlib_DrawGradient(ImlibImage *im, int x, int y, int w, int h,
    free(hlut);
    free(map);
 }
+
+void
+__imlib_DrawHsvaGradient(ImlibImage *im, int x, int y, int w, int h,
+		     ImlibRange *rg, double angle, ImlibOp op,
+		     int clx, int cly, int clw, int clh)
+{
+   DATA32 *map, *p, v;
+   int    *hlut, *vlut, len = 0, xx, yy, xoff = 0, yoff  = 0, ww, hh, jump;
+   int     tmp, i, divw, divh;
+   DATA8   rr, gg, bb, aa, r, g, b, a, nr, ng, nb, na;
+   
+   ww = w;
+   hh = h;
+   if (x < 0)
+     {
+	w += x;
+	xoff = -x;
+	x = 0;
+     }
+   if (w <= 0)
+      return;
+   if ((x + w) > im->w)
+      w = (im->w - x);
+   if (w <= 0)
+      return;
+   if (y < 0)
+     {
+	h += y;
+	yoff = -y;
+	y = 0;
+     }
+   if (h <= 0)
+      return;
+   if ((y + h) > im->h)
+      h = (im->h - y);
+   if (h <= 0)
+      return;
+   if (clw)
+     {
+	int px, py;
+	
+	CLIP_TO(clx, cly, clw, clh, 0, 0, im->w, im->h);
+	px = x;
+	py = y;
+	CLIP_TO(x, y, w, h, clx, cly, clw, clh);
+	if ((w < 1) || (h < 1)) return;
+	xoff += (x - px);
+	yoff += (y - py);
+     }
+   
+   hlut = malloc(sizeof(int) * ww);
+   vlut = malloc(sizeof(int) * hh);
+   if (ww > hh)
+      len = ww * 16;
+   else
+      len = hh * 16;
+   map = __imlib_MapHsvaRange(rg, len);
+   if (!map) return;
+   
+   xx = (int)(32 * sin(((angle + 180) * 2 * 3.141592654) / 360));
+   yy = -(int)(32 * cos(((angle + 180) * 2 * 3.141592654) / 360));
+   divw = ((ww - 1) << 5);
+   divh = ((hh - 1) << 5);
+   if (divw < 1) divw = 1;
+   if (divh < 1) divh = 1;
+   if (xx < 0)
+     {
+	for (i = 0; i < ww; i++)
+	  hlut[i] = (-xx * (ww - 1 - i) * len) / divw;
+     }
+   else
+     {
+	for (i = 0; i < ww; i++)
+	   hlut[i] = (xx * i * len) / divw;
+     }
+   if (yy < 0)
+     {
+	for (i = 0; i < hh; i++)
+	   vlut[i] = (-yy * (hh - 1 - i) * len) / divh;
+     }
+   else
+     {
+	for (i = 0; i < hh; i++)
+	   vlut[i] = (yy * i * len) / divh;
+     }
+   jump = im->w - w;
+   
+   p = im->data + (y * im->w) + x;
+   switch (op)
+     {
+      case OP_COPY:
+	if (IMAGE_HAS_ALPHA(im))
+	  {
+	     __imlib_build_pow_lut();
+	     for (yy = 0; yy < h; yy++)
+	       {
+		  for (xx = 0; xx < w; xx++)
+		    {
+		       i = vlut[yoff + yy] + hlut[xoff + xx];
+		       if (i < 0)
+			 i = 0;
+		       else if (i >= len)
+			 i = len - 1;
+		       READ_RGBA(&(map[i]), r, g, b, a);
+		       BLEND_DST_ALPHA(r, g, b, a, p);
+		       p++;
+		    }
+		  p += jump;
+	       }
+	  }
+	else
+	  {
+	     for (yy = 0; yy < h; yy++)
+	       {
+		  for (xx = 0; xx < w; xx++)
+		    {
+		       i = vlut[yoff + yy] + hlut[xoff + xx];
+		       if (i < 0)
+			 i = 0;
+		       else if (i >= len)
+			 i = len - 1;
+		       READ_RGBA(&(map[i]), r, g, b, a);
+		       BLEND(r, g, b, a, p);
+		       p++;
+		    }
+		  p += jump;
+	       }
+	  }
+	break;
+      case OP_ADD:
+	for (yy = 0; yy < h; yy++)
+	  {
+	     for (xx = 0; xx < w; xx++)
+	       {
+		  i = vlut[yoff + yy] + hlut[xoff + xx];
+		  if (i < 0)
+		    i = 0;
+		  else if (i >= len)
+		    i = len - 1;
+		  READ_RGBA(&(map[i]), r, g, b, a);
+		  BLEND_SUB(r, g, b, a, p);
+		  p++;
+	       }
+	     p += jump;
+	  }
+	break;
+      case OP_SUBTRACT:
+	for (yy = 0; yy < h; yy++)
+	  {
+	     for (xx = 0; xx < w; xx++)
+	       {
+		  i = vlut[yoff + yy] + hlut[xoff + xx];
+		  if (i < 0)
+		    i = 0;
+		  else if (i >= len)
+		    i = len - 1;
+		  READ_RGBA(&(map[i]), r, g, b, a);
+		  BLEND_SUB(r, g, b, a, p);
+		  p++;
+	       }
+	     p += jump;
+	  }
+	break;
+      case OP_RESHADE:
+	for (yy = 0; yy < h; yy++)
+	  {
+	     for (xx = 0; xx < w; xx++)
+	       {
+		  i = vlut[yoff + yy] + hlut[xoff + xx];
+		  if (i < 0)
+		    i = 0;
+		  else if (i >= len)
+		    i = len - 1;
+		  READ_RGBA(&(map[i]), r, g, b, a);
+		  BLEND_RE(r, g, b, a, p);
+		  p++;
+	       }
+	     p += jump;
+	  }
+	break;
+      default:
+	break;
+     }
+   
+   free(vlut);
+   free(hlut);
+   free(map);
+}
+
