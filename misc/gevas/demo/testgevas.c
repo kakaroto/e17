@@ -109,7 +109,7 @@ gtk_mouse_out_cb(GtkObject * object,
 
 
 
-//////////////////////////////
+/*/*//////////////////////////*/*/
 
 
 static gboolean
@@ -130,7 +130,7 @@ gtk_bg_mouse_out_cb(GtkObject * object,
 
 
 
-//////////////////////////////
+/*/*//////////////////////////*/*/
 
 
 /** Here we create / modify the menu structure before showing it */
@@ -382,7 +382,7 @@ static void __drag_data_get(GtkWidget          *widget,
         ddn_buf = ddn_bufstat;
 
         
-//        sprintf(ddn_buf, PACKAGE_DATA_DIR "/drawer_closed.png");
+/*        sprintf(ddn_buf, PACKAGE_DATA_DIR "/drawer_closed.png");*/
         break;
         
     case TARGET_URI_LIST:
@@ -408,7 +408,7 @@ static void __drag_data_get(GtkWidget          *widget,
         
 
         /* quick hack */    
-        /*        sprintf(ddn_buf,"http://www.freshmeat.net"); */
+        /*        sprintf(ddn_buf,"www.freshmeat.net"); */
     }
 
     
@@ -482,7 +482,7 @@ static void __drag_data_received(
         
         str = selection_data->data;
 
-//        str = PACKAGE_DATA_DIR "/drawer_closed.png";
+/*        str = PACKAGE_DATA_DIR "/drawer_closed.png";*/
 
         for(i=0; str[i]; i++ )
         {

@@ -202,7 +202,7 @@ void gevas_selectable_move( GtkgEvasEvHSelectable * ev, gint32 dx, gint32 dy )
 
     _gevas_selectable_confine( ev, ev->normal->gevas, &x, &y );
     
-//    printf("gevas_selectable_move() x:%f y:%f dx:%d dy:%d\n",x,y,dx,dy);
+/*    printf("gevas_selectable_move() x:%f y:%f dx:%d dy:%d\n",x,y,dx,dy);*/
 	gevasobj_move( ev->normal, x, y );
 	gevasobj_move( ev->selected, x-bx, y-by);
 }

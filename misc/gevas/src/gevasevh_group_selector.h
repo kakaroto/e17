@@ -69,14 +69,14 @@ struct _GtkgEvasEvHGroupSelector
 	GtkgEvasEvHSelectable* selected_objs_lastadded;	/* Last object added to selected_objs;*/
 
     
-    GtkTargetList *drag_targets; // what types of data the app is willing to create
-    GdkDragContext *drag_context; // context of the D&D operation started for this selection
+    GtkTargetList *drag_targets; /* what types of data the app is willing to create*/
+    GdkDragContext *drag_context; /* context of the D&D operation started for this selection*/
 
-    // Are we dragging part of the selection
-    // (this is set by selectable.c whenever it has a mouse down and cleared again by
-    // selectable.c when the mouse is up. Thus we can tell right away if the selection
-    // is being dragged off the edge of the canvas)
-    //
+    /* Are we dragging part of the selection*/
+    /* (this is set by selectable.c whenever it has a mouse down and cleared again by*/
+    /* selectable.c when the mouse is up. Thus we can tell right away if the selection*/
+    /* is being dragged off the edge of the canvas)*/
+    /**/
     gboolean drag_is_dragging;
 
     

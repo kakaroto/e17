@@ -165,7 +165,7 @@ GtkObject *gevas_object_get_named(GtkgEvas * ev, char *name)
 
 void gevas_add_fontpath(GtkgEvas * ev, const gchar * path)
 {
-//	printf(" GEVAS add font path: %s\n", path);
+/*	printf(" GEVAS add font path: %s\n", path);*/
 	evas_font_add_path(EVAS(ev), (char*)path);
 }
 
@@ -255,8 +255,8 @@ gevas_drag_data_get (GtkWidget *widget,
 					 guint info,
 					 guint32 time)
 {
-//	char  *image_file_name, *image_file_uri;
-//	gboolean is_reset;
+/*	char  *image_file_name, *image_file_uri;*/
+/*	gboolean is_reset;*/
     GtkgEvas* gevas = GTK_GEVAS(widget);
 
 	
@@ -264,15 +264,15 @@ gevas_drag_data_get (GtkWidget *widget,
 	g_return_if_fail (context != NULL);
 
 
-//    printf("gevas_drag_data_get() \n");
+/*    printf("gevas_drag_data_get() \n");*/
     
     
 /*    
 	switch (info) {
 	case PROPERTY_TYPE:
-		// formulate the drag data based on the drag type.  Eventually, we will
-		//   probably select the behavior from properties in the category xml definition,
-		//   but for now we hardwire it to the drag_type 
+		/* formulate the drag data based on the drag type.  Eventually, we will*/
+		/*   probably select the behavior from properties in the category xml definition,*/
+		/*   but for now we hardwire it to the drag_type */
 		
 		is_reset = FALSE;
 		if (!strcmp(property_browser->details->drag_type, "property/keyword")) {
@@ -285,7 +285,7 @@ gevas_drag_data_get (GtkWidget *widget,
 		        GdkColor color;
 			guint16 colorArray[4];
 			
-			// handle the "reset" case as an image 
+			/* handle the "reset" case as an image */
 			if (nautilus_strcmp (property_browser->details->dragged_file, RESET_IMAGE_NAME) != 0) {
 				gdk_color_parse(property_browser->details->dragged_file, &color);
 				colorArray[0] = color.red;
@@ -391,7 +391,7 @@ static void gevas_class_init(GtkgEvasClass * klass)
 
 	widget_class->focus_in_event = gevas_focus_in;
 	widget_class->focus_out_event = gevas_focus_out;
-//    widget_class->drag_data_get  = gevas_drag_data_get;
+/*    widget_class->drag_data_get  = gevas_drag_data_get;*/
     
 	object_class->get_arg = gevas_get_arg;
 	object_class->set_arg = gevas_set_arg;
@@ -536,7 +536,7 @@ static void gevas_finalize(GtkObject * object)
 	}
 
 	if (ev->evas) {
-//		printf("FREE() destroy evas\n");
+/*		printf("FREE() destroy evas\n");*/
 		evas_free(ev->evas);
 		ev->evas = NULL;
 	}
@@ -590,7 +590,7 @@ static gint gevas_event(GtkWidget * widget, GdkEvent * event)
     {
         GdkEventCrossing* e = (GdkEventCrossing*)event;
 
-//        printf("GDK_LEAVE_NOTIFY\n");
+/*        printf("GDK_LEAVE_NOTIFY\n");*/
         
         break;
     }
@@ -646,7 +646,7 @@ static gint gevas_event(GtkWidget * widget, GdkEvent * event)
 					evas_event_move(ev->evas, x, y);
 
 
-//                    printf("evas_event_move() x:%d y:%d \n",x,y);
+/*                    printf("evas_event_move() x:%d y:%d \n",x,y);*/
                     
                     /*
                     {
@@ -725,7 +725,7 @@ static gint gevas_event(GtkWidget * widget, GdkEvent * event)
 				y = (int) event->button.y;
 				b = (int) event->button.button;
 
-//                printf("GDK_BUTTON_RELEASE: x:%d y:%d\n",x,y);
+/*                printf("GDK_BUTTON_RELEASE: x:%d y:%d\n",x,y);*/
                 
                 
 /*				gdk_pointer_ungrab( GDK_CURRENT_TIME );
@@ -756,7 +756,7 @@ static gint gevas_event(GtkWidget * widget, GdkEvent * event)
         && (!event->button.y)
         )
     {
-//        printf("drag synthetic event being ignored...\n");
+/*        printf("drag synthetic event being ignored...\n");*/
         return FALSE;
     }
     
