@@ -1552,7 +1552,11 @@ _I_Can't_Find_My_Iconbox_Or_Change_Its_Settings(faq2)
 <p>
 _I_Can't_Seem_To_Find_My_Left_Mouse_Menu(faq2)
 <p>
-_These_Docs_Didn't_Help,_Where_Can_I_Get_More_Help(faq3)
+_All_My_Settings_Are_Mangled_And_I_Can't_Fix_It(faq3)
+<p>
+_I_Upgraded_A_Theme_But_The_New_One_Isn't_Being_Used(faq3)
+<p>
+_These_Docs_Didn't_Help,_Where_Can_I_Get_More_Help(faq4)
 
 
 
@@ -1585,12 +1589,36 @@ Then you can rerun the e_gen_menu script.
 
 
 
-
-
 <page columns=1 padding=16 name=faq3 background=Edoc_bg.png linkcolor=#88dddd>
 <font face=rothwell/25 color=#ffffff>
 <p>
 Frequently Asked Questions: Page 2
+<font face=aircut3/12 color=#ffffff>
+<p>
+<br>
+Q:  All My Settings Are Mangled And I Can't Fix It
+<p>
+A:  Well, if things get really messed up, you can always remove all of
+enlightenment's automatically saved files.  go into ~/.enlightenment, and
+remove the ...e_session* files, and then blow away the cached directory.  If
+your theme is broken, remove the user_theme.cfg file, also.  The
+next time you start enlightenment it should reset everything to the default.
+<p>
+<br>
+<br>
+Q: I Upgraded My Theme, But The New One Isn't Being Used
+<p>
+A: When you upgrade a theme that does not come with enlightenment, when you go
+into your ~/.enlightenment/themes directory, be sure to delete the unpacked
+directory version of your theme that should be sitting next to the theme, if it
+is there.  Otherwise when Enlightenment attempts to start the new version it
+will use the old files, which causes this problem.
+
+
+<page columns=1 padding=16 name=faq4 background=Edoc_bg.png linkcolor=#88dddd>
+<font face=rothwell/25 color=#ffffff>
+<p>
+Frequently Asked Questions: Page 3
 <font face=aircut3/12 color=#ffffff>
 <p>
 <br>
