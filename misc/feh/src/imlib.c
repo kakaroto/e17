@@ -300,24 +300,10 @@ progressive_load_cb(Imlib_Image im, char percent, int update_x, int update_y,
    }
 
    if (progwin->has_rotated)
-      feh_imlib_render_image_part_on_drawable_at_size_with_rotation(progwin->
-                                                                    bg_pmap,
-                                                                    im,
-                                                                    update_x,
-                                                                    update_y,
-                                                                    update_w,
-                                                                    update_h,
-                                                                    dest_x +
-                                                                    update_x,
-                                                                    dest_y +
-                                                                    update_y,
-                                                                    update_w,
-                                                                    update_h,
-                                                                    progwin->
-                                                                    im_angle,
-                                                                    1,
-                                                                    feh_imlib_image_has_alpha
-                                                                    (im), 0);
+      feh_imlib_render_image_part_on_drawable_at_size_with_rotation
+         (progwin->bg_pmap, im, update_x, update_y, update_w, update_h,
+          dest_x + update_x, dest_y + update_y, update_w, update_h,
+          progwin->im_angle, 1, feh_imlib_image_has_alpha(im), 0);
    else
       feh_imlib_render_image_part_on_drawable_at_size(progwin->bg_pmap, im,
                                                       update_x, update_y,
@@ -367,7 +353,7 @@ feh_http_load_image(char *url)
    newurl = estrjoin("?", url, randnum, NULL);
    D(3, ("newurl: %s\n", newurl));
 
-if(opt.builtin_http)
+   if (opt.builtin_http)
    {
       /* state for HTTP header parser */
 #define SAW_NONE    1
@@ -394,7 +380,7 @@ if(opt.builtin_http)
       char accept_string[] = "Accept: image/*";
       FILE *fp;
 
-      printf("using builtin http collection\n");
+      D(4, ("using builtin http collection\n"));
       fp = fopen(tmpname, "w");
       if (!fp)
       {
@@ -411,7 +397,7 @@ if(opt.builtin_http)
          D_RETURN(4, NULL);
       }
 
-      printf("trying hostname %s\n", hostname);
+      D(4, ("trying hostname %s\n", hostname));
 
       if (!(hptr = feh_gethostbyname(hostname)))
       {
@@ -512,7 +498,7 @@ if(opt.builtin_http)
                {
 
                  case IN_BODY:
-            fwrite(buf + i, 1, size - i, fp);
+                    fwrite(buf + i, 1, size - i, fp);
                     i = size;
                     break;
 
