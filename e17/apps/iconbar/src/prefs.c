@@ -20,6 +20,7 @@ struct _Iconbar_Prefs {
     int raise;
     int borderless;
     int withdrawn;
+    int sticky;
 };
 typedef struct _Iconbar_Prefs Iconbar_Prefs;
 
@@ -67,6 +68,8 @@ iconbar_config_init(void)
 		ibprefs->raise = 0;
 	    if(!e_db_int_get(db, "/iconbar/withdrawn", &ibprefs->withdrawn))
 		ibprefs->withdrawn = 0;
+	    if(!e_db_int_get(db, "/iconbar/sticky", &ibprefs->sticky))
+		ibprefs->sticky = 1;
 	    if(!e_db_int_get(db, "/iconbar/shaped", &ibprefs->shaped))
 		ibprefs->shaped = 1;
 	    if(!e_db_int_get(db, "/iconbar/borderless", &ibprefs->shaped))
@@ -117,6 +120,7 @@ iconbar_config_free(void)
 	    e_db_str_set(db, "/iconbar/theme", ibprefs->theme);
 	    e_db_str_set(db, "/iconbar/time_format", ibprefs->time_format);
 	    e_db_int_set(db, "/iconbar/raise", ibprefs->raise);
+	    e_db_int_set(db, "/iconbar/sticky", ibprefs->sticky);
 	    e_db_int_set(db, "/iconbar/withdrawn", ibprefs->withdrawn);
 	    e_db_int_set(db, "/iconbar/shaped", ibprefs->shaped);
 	    e_db_int_set(db, "/iconbar/borderless", ibprefs->borderless);
@@ -234,6 +238,12 @@ iconbar_config_withdrawn_set(int on)
     if(ibprefs)
 	ibprefs->withdrawn = on;
 }
+void
+iconbar_config_sticky_set(int on)
+{
+    if(ibprefs)
+	ibprefs->sticky = on;
+}
 /* query */
 const char*
 iconbar_config_theme_get(void)
@@ -310,6 +320,13 @@ iconbar_config_withdrawn_get(void)
 {
     if(ibprefs)
 	return(ibprefs->withdrawn);
+    return(0);
+}
+int
+iconbar_config_sticky_get(void)
+{
+    if(ibprefs)
+	return(ibprefs->sticky);
     return(0);
 }
 /*==========================================================================

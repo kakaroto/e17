@@ -53,6 +53,7 @@ main(int argc, char **argv)
   ecore_evas_borderless_set(ee, iconbar_config_borderless_get());
   ecore_evas_shaped_set(ee, iconbar_config_shaped_get());
   ecore_evas_withdrawn_set(ee, iconbar_config_withdrawn_get());
+  ecore_evas_sticky_set(ee, iconbar_config_sticky_get());
 
 #ifdef HAVE_TRANS_BG
   {
