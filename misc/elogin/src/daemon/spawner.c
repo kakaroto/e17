@@ -11,7 +11,6 @@ double get_time(void);
 
 /* globals */
 Spawner_Display *d;
-char *xdisplay = X_DISP;
 
 /**
  * write_elogind_pidfile - write the elogind pid to the specified pidfile
@@ -81,14 +80,15 @@ main(int argc, char **argv)
       switch (c)
       {
         case 'd':              /* display */
-           free(xdisplay);
-           xdisplay = strdup(optarg);
+	   setenv("DISPLAY", optarg, 1);
            break;
         default:
            exit(1);
       }
    }
-
+    
+   if(!getenv("DISPLAY"))
+       setenv("DISPLAY", X_DISP, 1);
    fork_and_exit();
    /* register child signal handler */
    signal(SIGCHLD, elogin_exit);
@@ -239,7 +239,7 @@ start_server_once(Spawner_Display * d)
         break;
    }
 
-   d->name = strdup(xdisplay);
+   d->name = strdup(getenv("DISPLAY"));
    while (!(d->display = XOpenDisplay(d->name)))
    {
       double current_time;
