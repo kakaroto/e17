@@ -1,0 +1,35 @@
+TODO
+----
+
+0.0.1 goals
+-----------
+ + Object class
+ + Widget class
+ + Container class
+ + Event loop
+
+0.0.2 goals
+-----------
+ + Flexible theme support
+ + Box widget
+ + Button widget
+ + Text widget
+ + Spinner widget
+ + Seeker/scrollbar widgets
+ + Scrollarea widget
+
+0.0.3 goals
+-----------
+ + Entry widget
+ + Notebook widget
+ + Tree widget
+ + Menu widgets
+
+0.0.4 goals:
+-----------
+ + Fully functional textarea
+ + Table widget
+
+0.0.5 goals:
+------------
+ + Embed widgets in pre-existing evas's.

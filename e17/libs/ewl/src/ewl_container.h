@@ -79,5 +79,7 @@ Ewl_Widget     *ewl_container_get_child_at(Ewl_Container * widget, int x,
 					   int y);
 Ewl_Widget     *ewl_container_get_child_at_recursive(Ewl_Container * widget,
 						     int x, int y);
+void            ewl_container_prefer_largest(Ewl_Container *c,
+					     Ewl_Orientation o);
 
 #endif				/* __EWL_CONTAINER_H__ */

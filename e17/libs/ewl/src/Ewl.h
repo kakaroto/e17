@@ -72,7 +72,6 @@ extern          "C" {
 #include <ewl_checkbutton.h>
 #include <ewl_radiobutton.h>
 #include <ewl_cursor.h>
-#include <ewl_selection.h>
 #include <ewl_separator.h>
 #include <ewl_notebook.h>
 #include <ewl_scrollpane.h>

@@ -40,7 +40,6 @@ installed_headers_DATA = \
 	ewl_scrollbar.h \
 	ewl_scrollpane.h \
 	ewl_seeker.h \
-	ewl_selection.h \
 	ewl_selectionbar.h \
 	ewl_selectionbook.h \
 	ewl_separator.h \
@@ -83,7 +82,6 @@ libewl_la_SOURCES = \
 	ewl_scrollbar.c \
 	ewl_scrollpane.c \
 	ewl_seeker.c \
-	ewl_selection.c \
 	ewl_selectionbar.c \
 	ewl_selectionbook.c \
 	ewl_separator.c \

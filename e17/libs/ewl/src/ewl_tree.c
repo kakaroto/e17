@@ -5,12 +5,15 @@
  */
 #define DEFAULT_INDENT 30
 
+static void __ewl_tree_add(Ewl_Container *c, Ewl_Widget *w);
+static void __ewl_tree_child_resize(Ewl_Container *c, Ewl_Widget *w, int size,
+		Ewl_Orientation o);
 static void __ewl_tree_configure(Ewl_Widget *w, void *ev_data, void *user_data);
 static void __ewl_tree_node_configure(Ewl_Widget * w, void *ev_data,
 		void *user_data);
 
-void __ewl_tree_node_add(Ewl_Container *c, Ewl_Widget *w);
-void __ewl_tree_node_resize(Ewl_Container *c, Ewl_Widget *w, int size,
+static void __ewl_tree_node_add(Ewl_Container *c, Ewl_Widget *w);
+static void __ewl_tree_node_resize(Ewl_Container *c, Ewl_Widget *w, int size,
 		Ewl_Orientation o);
 
 /**
@@ -58,7 +61,8 @@ int ewl_tree_init(Ewl_Tree *tree, unsigned short columns)
 	DCHECK_PARAM_PTR_RET("tree", tree, FALSE);
 	DCHECK_PARAM_PTR_RET("columns", columns, FALSE);
 
-	ewl_container_init(EWL_CONTAINER(tree), "tree", NULL, NULL, NULL);
+	ewl_container_init(EWL_CONTAINER(tree), "tree", __ewl_tree_add,
+			__ewl_tree_child_resize, NULL);
 
 	ewl_callback_append(EWL_WIDGET(tree), EWL_CALLBACK_CONFIGURE,
 			__ewl_tree_configure, NULL);
@@ -86,6 +90,7 @@ int ewl_tree_init(Ewl_Tree *tree, unsigned short columns)
 Ewl_Widget *ewl_tree_add(Ewl_Tree *tree, Ewl_Row *prow, Ewl_Widget **children)
 {
 	int i;
+	Ewl_Widget *w;
 	Ewl_Widget *row;
 	Ewl_Widget *node;
 
@@ -94,8 +99,10 @@ Ewl_Widget *ewl_tree_add(Ewl_Tree *tree, Ewl_Row *prow, Ewl_Widget **children)
 	DCHECK_PARAM_PTR_RET("tree", tree, NULL);
 	DCHECK_PARAM_PTR_RET("children", children, NULL);
 
-	if (prow && EWL_WIDGET(prow)->parent &&
-			(EWL_TREE_NODE(EWL_WIDGET(prow)->parent)->tree != tree))
+	w = EWL_WIDGET(prow);
+
+	if (prow && w->parent &&
+			(EWL_TREE_NODE(w->parent)->tree != tree))
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
 	/*
@@ -136,9 +143,8 @@ Ewl_Widget *ewl_tree_add(Ewl_Tree *tree, Ewl_Row *prow, Ewl_Widget **children)
 	 * Place the new row in the tree.
 	 */
 	if (row) {
-		if (prow && EWL_WIDGET(prow)->parent)
-			ewl_container_append_child(EWL_CONTAINER(
-						EWL_WIDGET(prow)->parent),
+		if (prow && w->parent)
+			ewl_container_append_child(EWL_CONTAINER(w->parent),
 					node);
 		else
 			ewl_container_append_child(EWL_CONTAINER(tree), node);
@@ -236,9 +242,39 @@ int ewl_tree_node_init(Ewl_Tree_Node *node)
 }
 
 static void
+__ewl_tree_add(Ewl_Container *c, Ewl_Widget *w)
+{
+	int cw;
+
+	cw = ewl_object_get_preferred_w(EWL_OBJECT(w));
+	if (cw > PREFERRED_W(c))
+		ewl_object_set_preferred_w(EWL_OBJECT(c), cw);
+
+	ewl_object_set_preferred_h(EWL_OBJECT(c), PREFERRED_H(c) +
+			ewl_object_get_preferred_h(EWL_OBJECT(w)));
+}
+
+static void
+__ewl_tree_child_resize(Ewl_Container *c, Ewl_Widget *w, int size,
+		Ewl_Orientation o)
+{
+	if (o == EWL_ORIENTATION_HORIZONTAL) {
+		if (ewl_object_get_preferred_w(EWL_OBJECT(w)) > PREFERRED_W(c))
+			ewl_object_set_preferred_w(EWL_OBJECT(c),
+					PREFERRED_W(c) + size);
+		else
+			ewl_container_prefer_largest(c, o);
+	}
+	else {
+		ewl_object_set_preferred_h(EWL_OBJECT(c),
+				PREFERRED_H(c) + size);
+	}
+}
+
+static void
 __ewl_tree_configure(Ewl_Widget *w, void *ev_data, void *user_data)
 {
-	int i, y, h;
+	int y, h;
 	Ewl_Object *child;
 	Ewl_Container *c;
 	Ewl_Tree *tree;
@@ -252,15 +288,13 @@ __ewl_tree_configure(Ewl_Widget *w, void *ev_data, void *user_data)
 	 * Align each top level node at the current x coordinate, and simply
 	 * lay them out in a vertical fashion.
 	 */
-	i = 0;
 	y = CURRENT_Y(w);
 	ewd_list_goto_first(c->children);
-	while (i < tree->nrows && (child = ewd_list_next(c->children))) {
+	while ((child = ewd_list_next(c->children))) {
 		h = ewl_object_get_preferred_h(child);
 		ewl_object_request_geometry(child, CURRENT_X(w), y,
 				CURRENT_W(w), h);
 		y += h;
-		i++;
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -305,7 +339,7 @@ __ewl_tree_node_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void
+static void
 __ewl_tree_node_add(Ewl_Container *c, Ewl_Widget *w)
 {
 	int width;
@@ -328,11 +362,24 @@ __ewl_tree_node_add(Ewl_Container *c, Ewl_Widget *w)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void
+static void
 __ewl_tree_node_resize(Ewl_Container *c, Ewl_Widget *w, int size,
 		Ewl_Orientation o)
 {
+	Ewl_Tree_Node *node;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	node = EWL_TREE_NODE(c);
+
+	if (node->expanded || (w == ewd_list_goto_first(c->children))) {
+		if (o == EWL_ORIENTATION_HORIZONTAL)
+			ewl_object_set_preferred_w(EWL_OBJECT(c),
+					PREFERRED_W(c) + size);
+		else
+			ewl_object_set_preferred_h(EWL_OBJECT(c),
+					PREFERRED_H(c) + size);
+	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

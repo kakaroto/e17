@@ -46,7 +46,7 @@ void ewl_checkbutton_init(Ewl_CheckButton * cb, char *label)
 	w = EWL_WIDGET(cb);
 
 	ewl_button_init(b, label);
-	ewl_widget_set_appearance(w, "/button/check");
+	ewl_widget_set_appearance(w, "checkbutton");
 	RECURSIVE(b) = FALSE;
 
 	ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FILL_POLICY_NONE);

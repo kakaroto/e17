@@ -545,7 +545,7 @@ inline void ewl_object_set_minimum_w(Ewl_Object * o, unsigned int w)
 		MAXIMUM_W(o) = w;
 
 	if (PREFERRED_W(o) < MINIMUM_W(o))
-		ewl_object_set_preferred_w(EWL_WIDGET(o), PREFERRED_W(o));
+		ewl_object_set_preferred_w(o, PREFERRED_W(o));
 
 	if (CURRENT_W(o) < w)
 		ewl_object_request_w(o, w);
@@ -574,7 +574,7 @@ inline void ewl_object_set_minimum_h(Ewl_Object * o, unsigned int h)
 		MAXIMUM_H(o) = h;
 
 	if (PREFERRED_H(o) < MINIMUM_H(o))
-		ewl_object_set_preferred_h(EWL_WIDGET(o), PREFERRED_H(o));
+		ewl_object_set_preferred_h(o, PREFERRED_H(o));
 
 	if (CURRENT_H(o) < h)
 		ewl_object_request_h(o, h);
@@ -680,7 +680,7 @@ inline void ewl_object_set_maximum_w(Ewl_Object * o, unsigned int w)
 		MINIMUM_W(o) = w;
 
 	if (PREFERRED_W(o) > MAXIMUM_W(o))
-		ewl_object_set_preferred_w(EWL_WIDGET(o), PREFERRED_W(o));
+		ewl_object_set_preferred_w(o, PREFERRED_W(o));
 
 	if (CURRENT_W(o) > w)
 		ewl_object_request_h(o, w);
@@ -709,7 +709,7 @@ inline void ewl_object_set_maximum_h(Ewl_Object * o, unsigned int h)
 		o->minimum.h = h;
 
 	if (PREFERRED_H(o) > MAXIMUM_H(o))
-		ewl_object_set_preferred_h(EWL_WIDGET(o), PREFERRED_H(o));
+		ewl_object_set_preferred_h(o, PREFERRED_H(o));
 
 	if (CURRENT_H(o) > h)
 		ewl_object_request_h(o, h);

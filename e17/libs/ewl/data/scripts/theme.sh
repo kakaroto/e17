@@ -24,8 +24,8 @@ edb_ed $DB add "/button/label/style" str "shadow"
 edb_ed $DB add "/check/base" str "appearance/check.bits.db"
 edb_ed $DB add "/check/base/visible" str "yes"
 
-edb_ed $DB add "/button/check/base" str "appearance/checkbutton.bits.db"
-edb_ed $DB add "/button/check/base/visible" str "no"
+edb_ed $DB add "/checkbutton/base" str "appearance/checkbutton.bits.db"
+edb_ed $DB add "/checkbutton/base/visible" str "no"
 
 edb_ed $DB add "/button/check/label/font" str "nationff"
 edb_ed $DB add "/button/check/label/font_size" int 12
@@ -51,8 +51,8 @@ edb_ed $DB add "/selection/base/visible" str "yes"
 edb_ed $DB add "/entry/base" str "appearance/entry.bits.db"
 edb_ed $DB add "/entry/base/visible" str "yes"
 edb_ed $DB add "/entry/text/font" str "nationff"
-edb_ed $DB add "/entry/text/font_size" int 12
-edb_ed $DB add "/entry/text/style" str "shadow"
+edb_ed $DB add "/entry/text/font_size" int 16
+edb_ed $DB add "/entry/text/style" str "shadow_red"
 
 # Add keys for image widget
 echo -n "."
