@@ -579,7 +579,7 @@ IPCStruct           IPCArray[] =
    {
       IPC_Remember,
       "remember",
-      "Remembers paramaters for cleint window ID x",
+      "Remembers paramaters for client window ID x",
       "usage:\n"
       "  remember <windowid> <parameter>\n"
       "  where parameter is one of: all, none, border, desktop, size,\n"
