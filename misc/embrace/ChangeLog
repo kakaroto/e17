@@ -1,6 +1,9 @@
 $Id$
 
 2005-03-25 Tilman Sauerbeck (tilman at code-monkey de)
+        * Released version 0.0.2
+
+2005-03-25 Tilman Sauerbeck (tilman at code-monkey de)
         * configure.ac, src/Makefile.am: Check for EDB and include EDB CFLAGS
           and LIBS
 
