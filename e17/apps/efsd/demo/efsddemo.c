@@ -95,7 +95,11 @@ void read_answers_selecting(EfsdConnection *ec)
 	  if (efsd_next_event(ec, &ee) != -1)
 	    handle_efsd_event(&ee);
 	  else
-	    /* We're whimps here and just exit. */
+	    /* The following comment is grammatically 100 % correct
+	       thanks to Andrew Shugg <andrew@neep.com.au> :P
+	    */
+
+	    /* We're wimps here and just exit. */
 	    break;
 	}
     }
