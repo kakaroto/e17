@@ -255,7 +255,7 @@ etox_get_actual_geometry(Etox e, double *x, double *y, double *w, double *h)
               break;                              
             case ETOX_ALIGN_TYPE_RIGHT:
               *x = obj->x + obj->w - real_w;
-              break;                       
+              break; 
             }
         }
     }
@@ -304,17 +304,46 @@ etox_get_actual_geometry(Etox e, double *x, double *y, double *w, double *h)
 }
 
 void            
-etox_get_at(Etox e, int index, int *x, int *y, int *w, int *h)
+etox_get_at(Etox e, int index, double *x, double *y, double *w, double *h)
 {
   /* TODO */
 }
 
 int             
 etox_get_at_position(Etox e, double x, double y,
-                     int *char_x, int *char_y,
-                     int *char_w, int *char_h)
+                     double *char_x, double *char_y,
+                     double *char_w, double *char_h)
 {
-  /* TODO */
-  return 0;
-}
+  Evas_Object * to;
+  int ret = 0;
 
+  *char_x = 0.0;
+  *char_y = 0.0;
+  *char_w = 0.0;
+  *char_h = 0.0;
+
+  if (!e)
+  	return ret;
+
+  if (!e->etox_objects || ewd_dlist_is_empty(e->etox_objects))
+    return;
+
+  ewd_dlist_goto_first(e->evas_objects);
+  while ((to = ewd_dlist_next(e->evas_objects)) != NULL)
+    {
+      double xx, yy, ww, hh;
+
+      evas_get_geometry(e->evas, to, &xx, &yy, &ww, &hh);
+
+      if (x < xx || y < yy ||
+          x > xx + ww || y > yy + hh)
+        continue;
+
+        ret = evas_text_at_position(e->evas, to, x, y,
+			char_x, char_y, char_w, char_h);
+
+	break;
+    }
+
+  return ret;
+}

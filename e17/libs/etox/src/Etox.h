@@ -137,10 +137,12 @@ void            etox_get_actual_geometry(Etox e, double *x, double *y,
                                   	 double *w, double *h);
 
 /**  *_at_* is unfinished..  **/
-void		etox_get_at(Etox e, int index, int *x, int *y, int *w, int *h);
+void		etox_get_at(Etox e, int index,
+				double *x, double *y,
+				double *w, double *h);
 int		etox_get_at_position(Etox e, double x, double y,
-                                     int *char_x, int *char_y, 
-                                     int *char_w, int *char_h);
+                                     double *char_x, double *char_y, 
+                                     double *char_w, double *char_h);
 
 
 Etox_Obstacle	etox_obstacle_add(Etox e, 
