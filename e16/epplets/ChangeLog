@@ -1516,3 +1516,11 @@ Thu Dec  9 19:11:46 PST 1999
 E-Magic.  The 8-ball kind.  Customizeable answers and a cool GIMP-rendered
 original graphic.
 
+-------------------------------------------------------------------------------
+
+Fri Dec 10 18:28:12 GMT 1999
+(gilbertt)
+
+Changed the epplet window classname to epplet-window (was epplet-config
+(oops))
+

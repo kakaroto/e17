@@ -425,7 +425,7 @@ Epplet_internal_create_window(int w, int h, char *title, char vertical,
    XStoreName(disp, ret->win, title);
    xch = XAllocClassHint();
    xch->res_name = epplet_name;
-   xch->res_class = "Epplet_config";
+   xch->res_class = "Epplet_window";
    XSetClassHint(disp, ret->win, xch);
    XFree(xch);
    /* set the size hints */
