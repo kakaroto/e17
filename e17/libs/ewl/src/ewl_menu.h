@@ -32,19 +32,32 @@ typedef struct Ewl_Menu Ewl_Menu;
  */
 struct Ewl_Menu
 {
-	Ewl_Menu_Base base;
+	Ewl_Menu_Base  base;
+        int            popup_x;
+        int            popup_y;
 };
 
-Ewl_Widget     *ewl_menu_new(char *image, char *title);
-void            ewl_menu_init(Ewl_Menu * menu, char *image, char *title);
+Ewl_Widget     *ewl_menu_new  (char     *image,
+			       char     *title);
+
+void            ewl_menu_init (Ewl_Menu *menu,
+			       char     *image,
+			       char     *title);
 
 /*
  * Internally used callbacks, override at your own risk.
  */
-void            ewl_menu_configure_cb(Ewl_Widget *w, void *ev_data,
-				       void *user_data);
-void            ewl_menu_expand_cb(Ewl_Widget * w, void *ev_data,
-				    void *user_data);
+void            ewl_menu_configure_cb  (Ewl_Widget *w,
+					void       *ev_data,
+					void       *user_data);
+
+void            ewl_menu_expand_cb     (Ewl_Widget *w,
+					void       *ev_data,
+					void       *user_data);
+
+void            ewl_menu_popup_move_cb (Ewl_Widget *w,
+					void       *ev_data,
+					void       *user_data);
 
 /**
  * @}
