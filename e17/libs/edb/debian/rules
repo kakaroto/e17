@@ -71,6 +71,7 @@ binary-arch: build install
 
 	dh_installdocs AUTHORS README
 	dh_undocumented edb_ed.1
+	dh_undocumented -plibedb1-dev edb-config.1
 	dh_undocumented -pedb-tools edb_gtk_ed.1 edb_vt_ed.1
 	dh_installchangelogs 
 	dh_link
