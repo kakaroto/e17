@@ -826,8 +826,8 @@ static gint gevas_expose(GtkWidget * widget, GdkEventExpose * event)
 
 	if (event->window == widget->window) {
 
-		evas_update_rect(ev->evas, event->area.x, event->area.y,
-						 event->area.width, event->area.height);
+//		evas_update_rect(ev->evas, event->area.x, event->area.y,
+//						 event->area.width, event->area.height);
 		gevas_paint(GTK_GEVAS(widget), &event->area);
 	} else
 		g_assert_not_reached();
@@ -871,6 +871,14 @@ static void gevas_paint(GtkgEvas * ev, GdkRectangle * area)
 	if (!GTK_WIDGET_DRAWABLE(widget))
 		return;
 
+// XXX:
+	evas_update_rect(ev->evas, area->x, area->y, area->width, area->height);
+
+/*	printf("evas_update_rect() x:%d y:%d w:%d h:%d\n",
+		area->x, area->y, area->width, area->height);
+*/
+	ev->evas_r = *area;
+//	evas_render_updates(ev->evas);
 	evas_render(ev->evas);
 
 /*  gdk_window_clear_area (widget->window,
@@ -893,8 +901,18 @@ static void gevas_paint(GtkgEvas * ev, GdkRectangle * area)
 
 gint gevas_view_redraw_cb(gpointer data)
 {
-	GtkgEvas *gevas = (GtkgEvas *) data;
-	evas_render(gevas->evas);
+	GtkgEvas* 	gevas = (GtkgEvas *) data;
+	GtkgEvas* 	ev = gevas;
+	GdkRectangle* 	area = &ev->evas_r;
+
+// XXX:
+
+//	evas_update_rect(ev->evas, area->x, area->y, area->width, area->height);
+/*	printf("gevas_view_redraw_cb() x:%d y:%d w:%d h:%d\n",
+		area->x, area->y, area->width, area->height);
+*/
+//	evas_render_updates(ev->evas);
+	evas_render(ev->evas);
 	gevas->current_idle = 0;
 	return FALSE;
 }

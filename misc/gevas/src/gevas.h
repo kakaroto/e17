@@ -97,9 +97,10 @@ extern "C" {
 struct _GtkgEvas {
 	GtkWidget widget;
 
-	Evas evas;				// the evas we are using to render stuff with.
+	Evas evas;		// the evas we are using to render stuff with.
+	GdkRectangle evas_r; 	// we keep a cache of the expose event's size.
 
-	gboolean show_checked_bg;	// Are we showing a checked bg? (mainly for testing)
+	gboolean show_checked_bg;// Are we showing a checked bg? (mainly for testing)
 	Evas_Object checked_bg;	// Object for the bg.
 
 
@@ -150,8 +151,6 @@ struct _GtkgEvasClass {
 };
 
 /** protected **/
-
-//	void gevas_
 
 	guint gevas_get_type(void);
 	GtkWidget *gevas_new(void);
