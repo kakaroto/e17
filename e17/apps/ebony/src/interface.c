@@ -15,17 +15,42 @@ app_exit(GtkWidget *w, gpointer data)
     UN(w);
     UN(data);
 }
-
+static GtkWidget *
+add_recent_bgs_to_filemenu(GtkWidget *win)
+{
+    GList *l;
+    GtkWidget *menu, *mi;
+    
+    menu = gtk_menu_new();
+    gtk_widget_ref(menu);
+    gtk_object_set_data_full(GTK_OBJECT(win), "recent_menu", menu,
+			(GtkDestroyNotify)gtk_widget_unref);
+    
+    recent_bgs = parse_ebony_bg_list_db();
+    for(l = recent_bgs; l; l = l->next)
+    {
+	char *txt = (char*)l->data;
+	char *short_txt = get_shortname_for(txt);
+	mi = gtk_menu_item_new_with_label(short_txt);
+	gtk_menu_append(GTK_MENU(menu), mi);
+	gtk_signal_connect(GTK_OBJECT(mi), "activate",
+		GTK_SIGNAL_FUNC(open_bg), (gpointer)txt);
+	gtk_widget_show(mi);
+    }
+    
+    gtk_widget_show(menu);
+    
+    return(menu);
+}
 /**
  * create_ebony_filemenu - Create the Filemenu widget and return it
  * return Completely built menu, AND widget needs to be shown elsewhere
  */
 static GtkWidget *
-create_ebony_filemenu(void)
+create_ebony_filemenu(GtkWidget *win)
 {
     GtkWidget *result;
-    GtkWidget *menu, *m, *mi;
-    GList *l;
+    GtkWidget *menu, *m, *mi, *recent_menu;
 
     result = gtk_menu_bar_new();
 
@@ -44,26 +69,20 @@ create_ebony_filemenu(void)
     mi = gtk_menu_item_new_with_label("Open");
     gtk_menu_append(GTK_MENU(menu), mi);
     gtk_signal_connect(GTK_OBJECT(mi), "activate",
-		GTK_SIGNAL_FUNC(open_bg), NULL);
+		GTK_SIGNAL_FUNC(open_bg_cb), NULL);
     gtk_widget_show(mi);
     
     mi = gtk_menu_item_new();
     gtk_menu_append(GTK_MENU(menu), mi);
     gtk_widget_show(mi);
+    
+    mi = gtk_menu_item_new_with_label("Recent");
+    gtk_menu_append(GTK_MENU(menu), mi);
+    gtk_widget_show(mi);
      
-    /* FIXME Parse recent bgs list */
-    recent_bgs = parse_ebony_bg_list_db();
-    for(l = recent_bgs; l; l = l->next)
-    {
-	char *txt = (char*)l->data;
-	char *short_txt = get_shortname_for(txt);
-	mi = gtk_menu_item_new_with_label(short_txt);
-	gtk_menu_append(GTK_MENU(menu), mi);
-	gtk_signal_connect(GTK_OBJECT(mi), "activate",
-		GTK_SIGNAL_FUNC(open_bg_cb), (gpointer)txt);
-	gtk_widget_show(mi);
-    }
-
+    recent_menu  = add_recent_bgs_to_filemenu(win);
+    gtk_menu_item_set_submenu(GTK_MENU_ITEM(mi), recent_menu);
+    gtk_widget_show(mi);
     /*					*/
     mi = gtk_menu_item_new();
     gtk_menu_append(GTK_MENU(menu), mi);
@@ -657,7 +676,7 @@ create_layer_fill_frame(GtkWidget *win)
 			GTK_SHRINK, 2, 2);
     gtk_widget_show(label);
     
-    o = gtk_adjustment_new(0.0, 0.0, 1.0, 0.01, 0.1, 2.5);
+    o = gtk_adjustment_new(0.0, 0.0, 100.0, 0.01, 0.1, 2.5);
     spin_button = gtk_spin_button_new(GTK_ADJUSTMENT(o), 0.01, 2);
     
     gtk_widget_ref(spin_button);
@@ -685,7 +704,7 @@ create_layer_fill_frame(GtkWidget *win)
 		    GTK_SHRINK, 2, 2);
     gtk_widget_show(label);
     
-    o = gtk_adjustment_new(0.0, 0.0, 1.0, 0.01, 0.1, 2.5);
+    o = gtk_adjustment_new(0.0, 0.0, 100.0, 0.01, 0.1, 2.5);
     spin_button = gtk_spin_button_new(GTK_ADJUSTMENT(o), 0.01, 2);
     
     gtk_widget_ref(spin_button);
@@ -1033,7 +1052,7 @@ create_ebony_window(void)
     gtk_signal_connect(GTK_OBJECT(result), "delete_event",
 		    GTK_SIGNAL_FUNC(app_exit), NULL);
 
-    menu = create_ebony_filemenu();
+    menu = create_ebony_filemenu(result);
     hpaned = create_ebony_main_section(result);
     
     vbox = gtk_vbox_new(FALSE, 1);
