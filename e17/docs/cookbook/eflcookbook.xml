@@ -39,6 +39,7 @@
  <!-- edje -->
  <!ENTITY edje_simple SYSTEM "xml/edje/edje_simple.xml">
  <!ENTITY edje_callback SYSTEM "xml/edje/edje_callback.xml">
+ <!ENTITY edje_file_manipulation SYSTEM "xml/edje/edje_file_manipulation.xml">
 
  <!-- etox -->
  <!ENTITY etox_overview SYSTEM "xml/etox/etox_overview.xml">

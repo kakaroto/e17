@@ -21,6 +21,7 @@ data, it doesn't matter to you application.
 
 &edje_simple;
 &edje_callback;
+&edje_file_manipulation;
 
 </chapter>
 
