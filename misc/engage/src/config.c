@@ -159,6 +159,14 @@ od_config_menu_zoom_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 }
 
 void
+od_config_menu_config_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+{
+  if (!ecore_exe_run("examine engage", NULL))
+    fprintf(stderr, "'examine' could not be launched - is it in your path?\n");
+  od_config_menu_hide();
+}
+
+void
 od_config_menu_quit_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
   od_config_menu_hide();
@@ -174,7 +182,7 @@ od_config_menu_init(void)
     return;
   init = 1;
   /* FIXME: nasty nasty, we need to request the size, not code it in */
-  menu_height = 60;
+  menu_height = 87;
   menu_width = 100;
 
   menu_win = ewl_embed_new();
@@ -206,6 +214,11 @@ od_config_menu_init(void)
   item = ewl_menu_item_new(NULL, "Icon Zooming");
   ewl_container_append_child(EWL_CONTAINER(menu), item);
   ewl_callback_append(item, EWL_CALLBACK_SELECT, od_config_menu_zoom_cb, NULL);
+  ewl_widget_show(item);
+
+  item = ewl_menu_item_new(NULL, "Configuration");
+  ewl_container_append_child(EWL_CONTAINER(menu), item);
+  ewl_callback_append(item, EWL_CALLBACK_SELECT, od_config_menu_config_cb, NULL);
   ewl_widget_show(item);
 
   item = ewl_menu_separator_new();
