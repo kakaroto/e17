@@ -128,6 +128,10 @@ entrance_config_populate(Entrance_Config e, E_DB_File * db)
    /* auth info */
    if (!e_db_int_get(db, "/entrance/auth", &(e->auth)))
       e->auth = 0;
+   if (!e_db_int_get(db, "/entrance/system/reboot", &(e->reboot.allow)))
+       e->reboot.allow = 0;
+   if (!e_db_int_get(db, "/entrance/system/halt", &(e->halt.allow)))
+       e->halt.allow = 0;
 
    if (e->auth != ENTRANCE_USE_PAM)
    {
