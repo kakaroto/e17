@@ -348,7 +348,7 @@ show_usage (void)
 	   "  -p, --preload             Preload images. This doesn't mean hold them in\n"
 	   "                            RAM, it means run through and eliminate unloadable\n"
 	   "                            images first. Otherwise they will be removed as you\n"
-	   "                            flick through."
+	   "                            flick through.\n"
 	   "  -F, --full-screen         Make the window fullscreen\n"
 	   "  -w, --multiwindow         Disable slideshow mode. With this setting,\n"
 	   "                            instead of opening multiple files in slideshow\n"
@@ -448,6 +448,6 @@ show_usage (void)
 	   "This program is free software.\n"
 	   "Distributed under the GNU public license.\n"
 	   "Copyright Tom Gilbert, 1999\n"
-	   "Email bugs to <feh@tomgilbert.freeserve.co.uk>\n");
+	   "Email bugs to <gilbertt@btinternet.com>\n");
   exit (0);
 }
