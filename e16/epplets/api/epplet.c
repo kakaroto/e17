@@ -3559,6 +3559,35 @@ Epplet_change_image(Epplet_gadget gadget, int w, int h, char *image)
 }
 
 void
+Epplet_move_image(Epplet_gadget gadget, int x, int y)
+{
+   GadImage           *g;
+
+   g = (GadImage *) gadget;
+   Epplet_draw_image(gadget, 1);
+   g->x = x;
+   g->y = y;
+   Epplet_draw_image(gadget, 0);
+}
+
+void
+Epplet_move_change_image(Epplet_gadget gadget, int x, int y, int w, int h, char *image)
+{
+   GadImage           *g;
+
+   g = (GadImage *) gadget;
+   Epplet_draw_image(gadget, 1);
+   if (g->image)
+      free(g->image);
+   g->image = Estrdup(image);
+   g->w = w;
+   g->h = h;
+   g->x = x;
+   g->y = y;
+   Epplet_draw_image(gadget, 0);
+}
+
+void
 Epplet_change_label(Epplet_gadget gadget, char *label)
 {
    GadLabel           *g;
@@ -4932,21 +4961,20 @@ Epplet_get_instance(void)
 void
 Epplet_add_config(char *key, char *value)
 {
+   if (!key) return;
    if (!config_dict)
      {
 	config_dict = (ConfigDict *) malloc(sizeof(ConfigDict));
 	memset(config_dict, 0, sizeof(ConfigDict));
+        config_dict->entries = malloc(sizeof(ConfigItem));
      }
-   if (config_dict && key)
+   else
      {
-	config_dict->entries =
-	   realloc(config_dict->entries,
-		   sizeof(ConfigItem) * (config_dict->num_entries + 1));
-	config_dict->entries[config_dict->num_entries].key = strdup(key);
-	config_dict->entries[config_dict->num_entries].value =
-	   (value ? strdup(value) : strdup(""));
-	config_dict->num_entries++;
+        config_dict->entries = realloc(config_dict->entries, sizeof(ConfigItem) * (config_dict->num_entries + 1));
      }
+   config_dict->entries[config_dict->num_entries].key = strdup(key);
+   config_dict->entries[config_dict->num_entries].value = (value ? strdup(value) : strdup(""));
+   config_dict->num_entries++;
 }
 
 void
@@ -5020,6 +5048,7 @@ Epplet_query_config(char *key)
    int                 i;
    ConfigItem         *ci;
 
+   if (!key) return ((char *)NULL);
    for (i = 0; i < config_dict->num_entries; i++)
      {
 	ci = &(config_dict->entries[i]);
@@ -5036,6 +5065,7 @@ Epplet_query_config_def(char *key, char *def)
    int                 i;
    ConfigItem         *ci;
 
+   if (!key) return (def);
    for (i = 0; i < config_dict->num_entries; i++)
      {
 	ci = &(config_dict->entries[i]);
@@ -5053,6 +5083,7 @@ Epplet_modify_config(char *key, char *value)
    int                 i;
    ConfigItem         *ci;
 
+   if (!key) return;
    for (i = 0; i < config_dict->num_entries; i++)
      {
 	ci = &(config_dict->entries[i]);

@@ -341,6 +341,11 @@ void            Epplet_pop_popup(Epplet_gadget gadget, Window ww);
 /* change the image file and widht & height of the image gadget */
 void            Epplet_change_image(Epplet_gadget gadget, int w, int h, 
 				    char *image);
+/* change the x and y coordinates of the image gadget */
+void            Epplet_move_image(Epplet_gadget gadget, int x, int y);
+/* do both at once */
+void            Epplet_move_change_image(Epplet_gadget gadget, int x, int y, 
+                                         int w, int h, char *image);
 /* change the label string contents of the gadget label */
 void            Epplet_change_label(Epplet_gadget gadget, char *label);
 

@@ -21,6 +21,8 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+static const char cvs_ident[] = "$Id$";
+
 #include <stdio.h>
 #include <sys/time.h>
 #include <sys/resource.h>
@@ -50,23 +52,32 @@
 #define AUTOBG_SCALED   2
 #define AUTOBG_PSCALED  3
 
-Epplet_gadget close_button, play_button, pause_button, prev_button, next_button, zoom_button, bg_popup, bg_button, picture;
+Epplet_gadget close_button, play_button, pause_button, prev_button, next_button, cfg_button, cfg_popup, picture;
+Epplet_gadget cfg_tb_path, cfg_tb_delay, cfg_tb_zoom;
 unsigned long idx = 0, image_cnt = 0;
 double delay = 5.0;
 char **filenames = NULL, *path, *zoom_cmd;
-unsigned char paused = 0, auto_setbg = AUTOBG_OFF, maintain_aspect=0;
-Window zoom_win = None;
+unsigned char paused = 0, auto_setbg = AUTOBG_OFF, maintain_aspect = 0;
+int cfg_auto_setbg = AUTOBG_OFF, cfg_maintain_aspect = 0;
+Window zoom_win = None, config_win = None;
 int w = 3, h = 3;
 
 static char **dirscan(char *dir, unsigned long *num);
 static void set_background(int tiled, int keep_aspect);
 static void change_image(void *data);
 static void close_cb(void *data);
-static void set_bg_cb(void *data);
 static void zoom_cb(void *data);
 static void play_cb(void *data);
+static void cfg_popup_cb(void *data);
 static void in_cb(void *data, Window w);
 static void out_cb(void *data, Window w);
+static int delete_cb(void *data, Window win);
+static void apply_config(void);
+static void ok_cb(void *data);
+static void apply_cb(void *data);
+static void cancel_cb(void *data);
+static void config_cb(void *data);
+static unsigned char get_images(char *image_path);
 
 static char **
 dirscan(char *dir, unsigned long *num)
@@ -104,22 +115,21 @@ dirscan(char *dir, unsigned long *num)
     *num = 0;
     return ((char **) NULL);
   }
-
   rewinddir(dirp);
   for (i = 0; (dp = readdir(dirp)) != NULL;) {
     if ((strcmp(dp->d_name, ".")) && (strcmp(dp->d_name, ".."))) {
       Esnprintf(fullname, sizeof(fullname), "%s/%s", dir, dp->d_name);
       D((" -> About to stat() %s\n", fullname));
       if (stat(fullname, &filestat)) {
-        D((" -> Couldn't stat() file %s -- %s\n", dp->d_name, strerror(errno)));
+	D((" -> Couldn't stat() file %s -- %s\n", dp->d_name, strerror(errno)));
       } else {
-        if (S_ISREG(filestat.st_mode)) {
-          D((" -> Adding name \"%s\" at index %d (%8p)\n", dp->d_name, i, names + i));
-          names[i] = strdup(dp->d_name);
-          i++;
-        } else if (S_ISDIR(filestat.st_mode)) {
-          /* Recurse directories here at some point, maybe? */
-        }
+	if (S_ISREG(filestat.st_mode)) {
+	  D((" -> Adding name \"%s\" at index %d (%8p)\n", dp->d_name, i, names + i));
+	  names[i] = strdup(dp->d_name);
+	  i++;
+	} else if (S_ISDIR(filestat.st_mode)) {
+	  /* Recurse directories here at some point, maybe? */
+	}
       }
     }
   }
@@ -127,13 +137,11 @@ dirscan(char *dir, unsigned long *num)
   if (i < dirlen) {
     dirlen = i;
   }
-
   if (!dirlen) {
     closedir(dirp);
     *num = 0;
     return ((char **) NULL);
   }
-  
   closedir(dirp);
   *num = dirlen;
   names = (char **) realloc(names, dirlen * sizeof(char *));
@@ -143,12 +151,12 @@ dirscan(char *dir, unsigned long *num)
     done = 1;
     for (i = 0; i < dirlen - 1; i++) {
       if (strcmp(names[i], names[i + 1]) > 0) {
-        char *tmp;
+	char *tmp;
 
-        tmp = names[i];
-        names[i] = names[i + 1];
-        names[i + 1] = tmp;
-        done = 0;
+	tmp = names[i];
+	names[i] = names[i + 1];
+	names[i + 1] = tmp;
+	done = 0;
       }
     }
   }
@@ -156,7 +164,8 @@ dirscan(char *dir, unsigned long *num)
 }
 
 static void
-set_background(int tiled, int keep_aspect) {
+set_background(int tiled, int keep_aspect)
+{
 
   unsigned char current_desk = 0;
   char *reply, *ptr, bg_name[64], buff[255];
@@ -190,11 +199,12 @@ set_background(int tiled, int keep_aspect) {
 }
 
 static void
-change_image(void *data) {
+change_image(void *data)
+{
 
   ImlibImage *im = NULL;
   double ratio = 0.0;
-  int new_w = 0, new_h = 0;
+  int new_w = 0, new_h = 0, new_x = 3, new_y = 3;
 
   /* Test-load each image to make sure it's a valid image file. */
   for (; ((filenames[idx] == NULL) || ((im = Imlib_load_image(Epplet_get_imlib_data(), filenames[idx])) == NULL));) {
@@ -202,26 +212,34 @@ change_image(void *data) {
     filenames[idx] = NULL;
     INC_PIC();
   }
-  Imlib_destroy_image(Epplet_get_imlib_data(), im);  /* Destroy the image, but keep it in cache. */
+  Imlib_destroy_image(Epplet_get_imlib_data(), im);	/* Destroy the image, but keep it in cache. */
 
   new_w = (w * 16 - 6);
   new_h = (h * 16 - 6);
   if (maintain_aspect) {
     ratio = ((double) im->rgb_width / im->rgb_height) / ((double) new_w / new_h);
     if (ratio > 1.0) {
-	new_h /= ratio;
+      new_h /= ratio;
     } else if (ratio != 1.0) {
-	new_w *= ratio;
+      new_w *= ratio;
     }
   }
-
-  Epplet_change_image(picture, new_w, new_h, filenames[idx]);
+  new_x = ((w * 16) / 2) - (new_w / 2);
+  new_y = ((h * 16) / 2) - (new_h / 2);
+  Epplet_move_change_image(picture, new_x, new_y, new_w, new_h, filenames[idx]);
   INC_PIC();
   switch (auto_setbg) {
-    case AUTOBG_TILED:    set_background(1, 1); break;
-    case AUTOBG_SCALED:   set_background(0, 0); break;
-    case AUTOBG_PSCALED:  set_background(0, 1); break;
-    default:            break;
+    case AUTOBG_TILED:
+      set_background(1, 1);
+      break;
+    case AUTOBG_SCALED:
+      set_background(0, 0);
+      break;
+    case AUTOBG_PSCALED:
+      set_background(0, 1);
+      break;
+    default:
+      break;
   }
 
   Epplet_remove_timer("CHANGE_IMAGE");
@@ -233,7 +251,8 @@ change_image(void *data) {
 }
 
 static void
-close_cb(void *data) {
+close_cb(void *data)
+{
 
   Epplet_unremember();
   Esync();
@@ -242,20 +261,8 @@ close_cb(void *data) {
 }
 
 static void
-set_bg_cb(void *data) {
-
-  int n = (int) data;
-
-  switch (n) {
-    case 0:  set_background(1, 1); break;
-    case 1:  set_background(0, 0); break;
-    case 2:  set_background(0, 1); break;
-    default: break;
-  }
-}
-
-static void
-zoom_cb(void *data) {
+zoom_cb(void *data)
+{
 
   char buff[1024];
 
@@ -266,7 +273,35 @@ zoom_cb(void *data) {
 }
 
 static void
-play_cb(void *data) {
+cfg_popup_cb(void *data)
+{
+
+  int n = (int) data;
+
+  switch (n) {
+    case 0:
+      set_background(0, 0);
+      break;
+    case 1:
+      set_background(1, 1);
+      break;
+    case 2:
+      set_background(0, 1);
+      break;
+    case 3:
+      zoom_cb(NULL);
+      break;
+    case 4:
+      config_cb(NULL);
+      break;
+    default:
+      break;
+  }
+}
+
+static void
+play_cb(void *data)
+{
 
   int op = (int) data;
 
@@ -302,14 +337,14 @@ play_cb(void *data) {
 }
 
 static void
-in_cb(void *data, Window w) {
+in_cb(void *data, Window w)
+{
 
   if (w == Epplet_get_main_window()) {
     Epplet_gadget_show(close_button);
-    Epplet_gadget_show(zoom_button);
+    Epplet_gadget_show(cfg_button);
     Epplet_gadget_show(prev_button);
     Epplet_gadget_show(next_button);
-    Epplet_gadget_show(bg_button);
     if (paused) {
       Epplet_gadget_show(play_button);
     } else {
@@ -321,23 +356,151 @@ in_cb(void *data, Window w) {
 }
 
 static void
-out_cb(void *data, Window w) {
+out_cb(void *data, Window w)
+{
 
   if (w == Epplet_get_main_window()) {
     Epplet_gadget_hide(close_button);
-    Epplet_gadget_hide(zoom_button);
+    Epplet_gadget_hide(cfg_button);
     Epplet_gadget_hide(prev_button);
     Epplet_gadget_hide(next_button);
     Epplet_gadget_hide(play_button);
     Epplet_gadget_hide(pause_button);
-    Epplet_gadget_hide(bg_button);
   }
   return;
   data = NULL;
 }
 
+static int
+delete_cb(void *data, Window win)
+{
+  config_win = None;
+  return 1;
+  win = (Window) 0;
+  data = NULL;
+}
+
 static void
-parse_config(void) {
+apply_config(void)
+{
+  char buff[1024];
+
+  auto_setbg = cfg_auto_setbg;
+  if (auto_setbg == AUTOBG_TILED) {
+    Epplet_modify_config("auto_setbg", "tiled");
+  } else if (auto_setbg == AUTOBG_SCALED) {
+    Epplet_modify_config("auto_setbg", "scaled");
+  } else if (auto_setbg == AUTOBG_PSCALED) {
+    Epplet_modify_config("auto_setbg", "scaled_with_aspect");
+  } else {
+    Epplet_modify_config("auto_setbg", "off");
+  }
+
+  strcpy(buff, Epplet_textbox_contents(cfg_tb_path));
+  if (strcasecmp(path, buff)) {
+    if (get_images(buff)) {
+      free(path);
+      path = strdup(buff);
+      Epplet_modify_config("image_dir", path);
+      idx = 0;
+      change_image(NULL);
+    }
+  }
+
+  strcpy(buff, Epplet_textbox_contents(cfg_tb_delay));
+  if ((delay = atof(buff)) != 0.0) {
+    Epplet_modify_config("delay", buff);
+  }
+
+  zoom_cmd = strdup(Epplet_textbox_contents(cfg_tb_zoom));
+  Epplet_modify_config("zoom_prog", zoom_cmd);
+
+  maintain_aspect = cfg_maintain_aspect;
+  sprintf(buff, "%d", maintain_aspect);
+  Epplet_modify_config("maintain_aspect", buff);
+}
+
+static void
+ok_cb(void *data)
+{
+  apply_config();
+  Epplet_save_config();
+  Epplet_window_destroy(config_win);
+  config_win = None;
+  return;
+  data = NULL;
+}
+
+static void
+apply_cb(void *data)
+{
+  apply_config();
+  return;
+  data = NULL;
+}
+
+static void
+cancel_cb(void *data)
+{
+  Epplet_window_destroy(config_win);
+  config_win = None;
+  return;
+  data = NULL;
+}
+
+static void
+auto_popup_cb(void *data)
+{
+  cfg_auto_setbg = (int) data;
+}
+
+static void
+config_cb(void *data)
+{
+  char buff[128];
+  Epplet_gadget auto_popup;
+
+  if (config_win) {
+    return;
+  }
+
+  config_win = Epplet_create_window_config(200, 230, "E-Slides Configuration", ok_cb, NULL, apply_cb, NULL, cancel_cb, NULL);
+
+  Epplet_gadget_show(Epplet_create_label(4, 4, "Directory to scan for images:", 2));
+  Epplet_gadget_show(cfg_tb_path = Epplet_create_textbox(NULL, path, 4, 18, 192, 20, 2, NULL, NULL));
+
+  sprintf(buff, "%3.2f", delay);
+  Epplet_gadget_show(Epplet_create_label(4, 50, "Delay between images (seconds):", 2));
+  Epplet_gadget_show(cfg_tb_delay = Epplet_create_textbox(NULL, buff, 4, 64, 192, 20, 2, NULL, NULL));
+
+  Epplet_gadget_show(Epplet_create_label(4, 96, "Zoom program command line:", 2));
+  Epplet_gadget_show(cfg_tb_zoom = Epplet_create_textbox(NULL, zoom_cmd, 4, 110, 192, 20, 2, NULL, NULL));
+
+  auto_popup = Epplet_create_popup();
+  Epplet_add_popup_entry(auto_popup, "Tiled", NULL, auto_popup_cb, (void *) AUTOBG_TILED);
+  Epplet_add_popup_entry(auto_popup, "Scaled", NULL, auto_popup_cb, (void *) AUTOBG_SCALED);
+  Epplet_add_popup_entry(auto_popup, "Scaled, Keep Aspect", NULL, auto_popup_cb, (void *) AUTOBG_PSCALED);
+  Epplet_add_popup_entry(auto_popup, "Off", NULL, auto_popup_cb, (void *) AUTOBG_OFF);
+
+  Epplet_gadget_show(Epplet_create_popupbutton(NULL, NULL, 4, 142, 12, 12, "ARROW_UP", auto_popup));
+  Epplet_gadget_show(Epplet_create_label(20, 142, "Automatically set desktop", 2));
+  Epplet_gadget_show(Epplet_create_label(20, 156, "background when image changes?", 2));
+
+  cfg_maintain_aspect = maintain_aspect;
+  Epplet_gadget_show(Epplet_create_togglebutton(NULL, NULL, 4, 175, 12, 12, &cfg_maintain_aspect, NULL, NULL));
+  Epplet_gadget_show(Epplet_create_label(20, 175, "Maintain aspect ratio when", 2));
+  Epplet_gadget_show(Epplet_create_label(20, 189, "displaying images in epplet?", 2));
+
+  Epplet_window_show(config_win);
+  Epplet_window_pop_context();
+
+  return;
+  data = NULL;
+}
+
+static void
+parse_config(void)
+{
 
   char buff[1024], *s;
 
@@ -346,6 +509,8 @@ parse_config(void) {
     Esnprintf(buff, sizeof(buff), "%s/.enlightenment/backgrounds", getenv("HOME"));
     path = strdup(buff);
     Epplet_add_config("image_dir", buff);
+  } else {
+    path = strdup(path);
   }
   s = Epplet_query_config("delay");
   if (s != NULL) {
@@ -365,8 +530,46 @@ parse_config(void) {
   maintain_aspect = atoi(Epplet_query_config_def("maintain_aspect", "0"));
 }
 
+static unsigned char
+get_images(char *image_path)
+{
+  char **temp;
+  unsigned long cnt;
+
+  temp = dirscan(image_path, &cnt);
+  if (cnt == 0) {
+    char err[255];
+
+    Esnprintf(err, sizeof(err), "Unable to find any files in %s!", image_path);
+    Epplet_dialog_ok(err);
+    Esync();
+    if (!filenames) {
+      exit(-1);
+    }
+    return 0;
+  } else if (idx >= cnt) {
+    idx = 0;
+  }
+  chdir(image_path);
+
+  if (filenames) {
+    unsigned int i;
+
+    for (i = 0; i < image_cnt; i++) {
+      if (filenames[i]) {
+        free(filenames[i]);
+      }
+    }
+    free(filenames);
+  }
+  image_cnt = cnt;
+  filenames = temp;
+  return 1;
+}
+
 int
-main(int argc, char **argv) {
+main(int argc, char **argv)
+{
 
   int prio, j = 0;
 
@@ -378,12 +581,12 @@ main(int argc, char **argv) {
     if ((!strcmp("-w", argv[j])) && (argc - j > 1)) {
       w = atoi(argv[++j]);
       if (w < 3) {
-        w = 3;
+	w = 3;
       }
     } else if ((!strcmp("-h", argv[j])) && (argc - j > 1)) {
       h = atoi(argv[++j]);
       if (h < 3) {
-        h = 3;
+	h = 3;
       }
     }
   }
@@ -391,36 +594,27 @@ main(int argc, char **argv) {
   Epplet_Init("E-Slides", "0.3", "Enlightenment Slideshow Epplet", w, h, argc, argv, 0);
   Epplet_load_config();
   parse_config();
-  filenames = dirscan(path, &image_cnt);
-  if (image_cnt == 0) {
-    char err[255];
+  get_images(path);
 
-    Esnprintf(err, sizeof(err), "Unable to find any files in %s, nothing to do!", path);
-    Epplet_dialog_ok(err);
-    Esync();
-    exit(-1);
-  }
-  chdir(path);
-
-  bg_popup = Epplet_create_popup();
-  Epplet_add_popup_entry(bg_popup, "Set Background...", NULL, NULL, NULL);
-  Epplet_add_popup_entry(bg_popup, "Tiled", NULL, set_bg_cb, (void *) 0);
-  Epplet_add_popup_entry(bg_popup, "Scaled", NULL, set_bg_cb, (void *) 1);
-  Epplet_add_popup_entry(bg_popup, "Scaled w/ Aspect", NULL, set_bg_cb, (void *) 2);
+  cfg_popup = Epplet_create_popup();
+  Epplet_add_popup_entry(cfg_popup, "Set Background", NULL, cfg_popup_cb, (void *) 0);
+  Epplet_add_popup_entry(cfg_popup, "Tile as Background", NULL, cfg_popup_cb, (void *) 1);
+  Epplet_add_popup_entry(cfg_popup, "Set Background, Keep Aspect", NULL, cfg_popup_cb, (void *) 2);
+  Epplet_add_popup_entry(cfg_popup, "Open Image Viewer", NULL, cfg_popup_cb, (void *) 3);
+  Epplet_add_popup_entry(cfg_popup, "Configure E-Slides", NULL, cfg_popup_cb, (void *) 4);
 
   close_button = Epplet_create_button(NULL, NULL, 3, 3, 0, 0, "CLOSE", 0, NULL, close_cb, NULL);
-  zoom_button = Epplet_create_button(NULL, NULL, ((16 * w) - 15), 3, 0, 0, "EJECT", 0, NULL, zoom_cb, NULL);
   prev_button = Epplet_create_button(NULL, NULL, 3, ((16 * h) - 15), 0, 0, "PREVIOUS", 0, NULL, play_cb, (void *) (-1));
   play_button = Epplet_create_button(NULL, NULL, ((16 * w / 2) - 6), ((16 * h) - 15), 0, 0, "PLAY", 0, NULL, play_cb, (void *) (1));
   pause_button = Epplet_create_button(NULL, NULL, ((16 * w / 2) - 6), ((16 * h) - 15), 0, 0, "PAUSE", 0, NULL, play_cb, (void *) (0));
-  bg_button = Epplet_create_popupbutton(NULL, NULL, ((16 * w / 2) - 6), 3, 0, 0, "ARROW_UP", bg_popup);
+  cfg_button = Epplet_create_popupbutton(NULL, NULL, ((16 * w) - 15), 3, 0, 0, "CONFIGURE", cfg_popup);
   next_button = Epplet_create_button(NULL, NULL, ((16 * w) - 15), ((16 * h) - 15), 0, 0, "NEXT", 0, NULL, play_cb, (void *) (2));
   picture = Epplet_create_image(3, 3, ((w * 16) - 6), ((h * 16) - 6), "/dev/null");
   Epplet_show();
   Epplet_register_focus_in_handler(in_cb, NULL);
   Epplet_register_focus_out_handler(out_cb, NULL);
-  
-  change_image(NULL);  /* Set everything up */
+
+  change_image(NULL);		/* Set everything up */
   Epplet_Loop();
 
   return 0;
