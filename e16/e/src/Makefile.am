@@ -119,7 +119,7 @@ DEFS=-DENLIGHTENMENT_ROOT=\"@ENLIGHTENMENT_ROOT@\" -DENLIGHTENMENT_BIN=\"@ENLIGH
 install-data-local:
 	$(top_srcdir)/mkinstalldirs $(DESTDIR)$(ENLIGHTENMENT_ROOT)/themes; \
 	rm -f $(DESTDIR)$(ENLIGHTENMENT_ROOT)/themes/DEFAULT; \
-        $(LN_S) -f \
+        $(LN_S) \
 	BrushedMetal-Tigert \
 	$(DESTDIR)$(ENLIGHTENMENT_ROOT)/themes/DEFAULT;
 
