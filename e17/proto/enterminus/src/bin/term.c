@@ -194,9 +194,9 @@ Term *term_init(Evas_Object *o) {
        i < term->tcanvas->cols * term->tcanvas->rows; i++) {
       gl = &term->grid[i];
       gl->text = evas_object_text_add(term->evas);
-      gl->bg = evas_object_text_add(term->evas);
+      gl->bg = evas_object_rectangle_add(term->evas);
       evas_object_layer_set(gl->text,2);
-      evas_object_layer_set(gl->text,1);      
+      evas_object_layer_set(gl->bg,1);      
    }   
    
    term->bg = NULL;

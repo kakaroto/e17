@@ -127,7 +127,14 @@ void term_smart_move(Evas_Object *o, Evas_Coord x, Evas_Coord y) {
 }
 
 /* TODO:
- * We need to show evas objects and set their layers after a resize 
+ * We need to show evas objects and set their layers after a resize
+ * 
+ * When we resize, if we dont clear the text (which is what we should
+ * do, not clear the text) and we just call a normal redraw, then all
+ * of out text will get shifted and we get a distorted looking term.
+ * We need to copy the old are, resize, and render it onto the canvas
+ * as it were without any distortions. We dont get that now because we
+ * set all the area to '\0' in our current method, hence, clearing it.
  */
 void term_smart_resize(Evas_Object *o, Evas_Coord w, Evas_Coord h) {
    int x, y, old_size;
@@ -168,6 +175,7 @@ void term_smart_resize(Evas_Object *o, Evas_Coord w, Evas_Coord h) {
    }
    
    /* review this, do we need to subtract:
+    * We know that we need to subtract, but its segging when we do, fix.
     * (term->tcanvas->cols * term->tcanvas->rows * term->tcanvas->scroll_size)
     */
    y = (term->tcanvas->cols * term->tcanvas->rows * term->tcanvas->scroll_size)
@@ -204,6 +212,12 @@ void term_smart_resize(Evas_Object *o, Evas_Coord w, Evas_Coord h) {
    for(x = y ; x <= term->tcanvas->cols * term->tcanvas->rows; x++) {
       gl = &term->grid[x];
       gl->text = evas_object_text_add(term->evas);
+      evas_object_layer_set(gl->text, 2);
+      evas_object_show(gl->text);
+      gl->bg = evas_object_rectangle_add(term->evas);
+      evas_object_resize(gl->bg, term->font.width, term->font.height);
+      evas_object_color_set(gl->bg, 100, 50, 50, 150);
+      evas_object_layer_set(gl->bg, 1);
    }
    
    if(ioctl(term->cmd_fd.sys, TIOCSWINSZ, get_font_dim(term)) < 0) {
@@ -223,7 +237,8 @@ void term_smart_show(Evas_Object *o) {
    for(i = 0; i < t->tcanvas->cols * t->tcanvas->rows; i++) {
       gl = &t->grid[i];
       evas_object_show(gl->text);
-      evas_object_show(gl->bg);      
+      /* Enabling this isnt really wise at this point, uber slowness */
+      //evas_object_show(gl->bg);
    }
 }
 

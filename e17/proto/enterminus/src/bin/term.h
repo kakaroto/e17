@@ -19,6 +19,8 @@
 #include <Ecore_X.h>
 #include "config.h"
 
+#define DEBUG 1
+
 #define NPAR 16
 #define DATADIR PACKAGE_DATA_DIR"/"
 

@@ -85,7 +85,7 @@ void term_redraw(void *data) {
 	 c[0] = tgl->c;
 	 c[1] = '\0';
 	 evas_object_text_text_set(gl->text, c);
-	 	
+	 
 	 /* this is just temp, move it into its own function later */
 	 switch(tgl->fg) {
 	  case 0:
@@ -118,9 +118,12 @@ void term_redraw(void *data) {
 
 	 }
 	 /* The Layer setting and showing functions need to go away */
-	 evas_object_layer_set(gl->text,1);
+	 //evas_object_layer_set(gl->text,2);
 	 evas_object_move(gl->text, j*term->font.width, i*term->font.height);
-	 evas_object_show(gl->text);
+	 //evas_object_show(gl->text);
+	 //evas_object_layer_set(gl->bg,1);
+	 evas_object_move(gl->bg, j*term->font.width, i*term->font.height);
+	 //evas_object_show(gl->bg);
 	 tgl->changed = 0;
       }
       if(i + term->tcanvas->scroll_region_start > (term->tcanvas->rows - 1)*term->tcanvas->scroll_size) {	 
@@ -230,7 +233,7 @@ void term_clear_area(Term *term, int x1, int y1, int x2, int y2) {
    if(y1 < 0) y1 = 0; if(y1 > term->tcanvas->rows) y1 = term->tcanvas->rows;
    if(x2 < 0) x2 = 0; if(x2 > term->tcanvas->cols) x2 = term->tcanvas->cols;
    if(y2 < 0) y2 = 0; if(y2 > term->tcanvas->rows) y2 = term->tcanvas->rows;  
-   printf("Clearing: %d %d, %d %d\n",x1,y1+term->tcanvas->scroll_region_start,x2,y2+term->tcanvas->scroll_region_start);
+   DPRINT(("Clearing: %d %d, %d %d\n",x1,y1+term->tcanvas->scroll_region_start,x2,y2+term->tcanvas->scroll_region_start));
    for(i = y1; i <= y2; i++) {      
       for(j = x1; j <= x2; j++) {
 	 tgl = &term->tcanvas->grid[j + (term->tcanvas->cols * (i + term->tcanvas->scroll_region_start))];
