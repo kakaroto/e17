@@ -1,6 +1,6 @@
 # this is NOT relocatable
 %define	name	giblib
-%define	ver	1.0.1
+%define	ver	1.2.0
 %define	rel	1
 %define prefix  /usr
 
