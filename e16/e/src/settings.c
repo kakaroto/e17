@@ -4361,6 +4361,21 @@ SettingsDefaultGroupControl(void)
  * callback funcs besides the dialog itself -- this is much easier */
 static RememberWinList **rd_ewin_list;
 
+void                RemoveRememberedWindow(EWin *ewin)
+{
+	RememberWinList *rd;
+
+	for (rd=rd_ewin_list[0]; rd; rd++)
+		if (rd->ewin==ewin)
+		{
+			rd->ewin=0;
+			rd->remember=0;
+			break;
+		}
+
+	return;
+}
+
 void                CB_ApplyRemember(int val, void *data);
 void
 CB_ApplyRemember(int val, void *data)
@@ -4419,14 +4434,16 @@ void                CB_RememberWindowSettings(int val, void *data);
 void
 CB_RememberWindowSettings(int val, void *data)
 {
+   RememberWinList    *rd;
    EWin               *ewin;
 
    val = 0;
    if (!data)
       return;
+   rd = (RememberWinList*) rd;
+   ewin = (EWin *) rd->ewin;
    if (!ewin)
       return;
-   ewin = (EWin *) data;
    SnapshotEwinDialog(ewin);
 }
 
@@ -4521,7 +4538,7 @@ SettingsRemember()
 		  DialogItemSetAlign(di, 1024, 512);
 		  DialogItemButtonSetText(di, _("Remembered Settings..."));
 		  DialogItemSetCallback(di, CB_RememberWindowSettings,
-					0, (char *)ewin);
+					0, (char *)rd_ewin_list[ri]);
 
 		  ri++;
 	       }
