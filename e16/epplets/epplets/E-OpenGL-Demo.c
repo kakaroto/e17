@@ -137,7 +137,7 @@ enable_lighting(void)
 {
 	GLfloat mat_specular[] = {1.0, 1.0, 1.0, 1.0};
 	GLfloat mat_shininess[] = {50.0};
-	GLfloat light_position[] = {0.0, 0.0, 1200.0, 0.0};
+	GLfloat light_position[] = {0.0, 0.0, 11200.0, 0.0};
 	GLfloat white_light[] = {1.0, 1.0, 1.0, 1.0};
 
 	glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
