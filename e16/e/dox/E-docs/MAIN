@@ -252,7 +252,7 @@ _Using_The_Window_Border(tut7)
 <br>
 _Default_Keybindings(tut10)
 <br>
-_Virtual_Desktops(desktops)
+_Multiple_Desktops(desktops)
 <br>
 _The_Dragbar(dragbar)
 <br>
@@ -611,11 +611,30 @@ automatically scroll over to that part of the desktop.
 
 
 
-
-
-
-
 <page columns=1 padding=16 name=desktops3 background=Edoc_bg.png linkcolor=#88dddd>
+<font face=aircut3/12 color=#ffffff>
+<img src=E_virtual_desk_settings.png x=335 y=51>
+<img src=E_area_settings.png x=30 y=190>
+<p>
+To change the number of virtual desktops that you have, use the "Multiple
+Desktop Settings" dialog from the right mouse _settings_menu(settings) .  You
+should see a menu that looks something like the menu to the right.  You can use
+the slider bar to quickly select the appropriate number of virtual desktops you
+would like to use.
+<p>
+<br>
+<br>
+<br>
+To change the number of virtual areas, use the "Virtual Desktop Settings"
+menu.  This will bring up a menu that looks something like the one on the left.
+Use the slider bars to extend the size of the virtual areas to the size that
+you best prefer.  You can also use this dialog to enable/disable edge
+resistance (when your _mouse(tut5) hits the edge of an area) moving between
+virtual areas.
+
+
+
+<page columns=1 padding=16 name=desktops4 background=Edoc_bg.png linkcolor=#88dddd>
 <font face=aircut3/12 color=#ffffff>
 <img src=E_deskimg.png x=275 y=81>
 <p>
@@ -628,8 +647,7 @@ is to make a directory in your ~/.enlightenment directory called
 backgrounds and then fill that with your favorite backdrops. Enlightenment
 will automatically discover this and index them for you allowing you to
 select them and change their settings. More on this topic is explained in the
-_Settings(settings) section, under the _Desktop_Backgrounds(backgrounds)
-section.
+_Desktop_Backgrounds(backgrounds) section.
 
 
 
