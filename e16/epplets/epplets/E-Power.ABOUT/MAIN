@@ -1,0 +1,17 @@
+<page columns=1 padding=16 name=front background=bg.png linkcolor=#88dddd>
+<font face=aircut3/32 color=#ffffff>
+<p align=50%>
+E-Power
+<font face=aircut3/18 color=#88eeff>
+<p align=50%>
+A Laptop Battery Status Display Epplet 
+<font face=aircut3/12 color=#ffffff>
+<p align=50%>
+By The Rasterman - 1999
+<p>
+This epplet shows your batery's current status for your laptop, including
+a numeric percentage of the batery left and a time estimae as to how many
+hours & minutes of battery tme are left.
+<p>
+If you are recharging you will get an estimated recharge time too in brackets
+after the battery percentage value.
