@@ -396,7 +396,7 @@ efsd_file_getfiletype(EfsdCommand *cmd, int client)
   else
     {
       D(("FILE lookup failed -- sending FAILURE.\n"));
-      result = send_reply(cmd, FAILURE, 0, 0, NULL, client);
+      result = send_reply(cmd, FAILURE, errno, 0, NULL, client);
     }
 
   D_RETURN_(result);

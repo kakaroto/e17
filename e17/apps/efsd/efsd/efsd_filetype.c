@@ -1244,7 +1244,7 @@ efsd_filetype_get(char *filename)
     {
       /* Ouch -- couldn't stat the file. Testing doesn't
 	 make much sense now. */
-      D_RETURN_((char*)unknown_string);
+      D_RETURN_(NULL);
     }
 
   /* If it's a link, get stat of link target instead */

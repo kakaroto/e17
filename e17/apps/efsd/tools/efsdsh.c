@@ -142,6 +142,12 @@ void handle_efsd_event(EfsdEvent *ee)
 	}
       break;
     case EFSD_EVENT_REPLY:
+      if (ee->efsd_reply_event.status != SUCCESS)
+	{
+	  printf("failed: %s\n", strerror(ee->efsd_reply_event.errorcode));
+	  break;
+	}
+
       switch (ee->efsd_reply_event.command.type)
 	{
 	case EFSD_CMD_REMOVE:
@@ -238,22 +244,19 @@ void handle_efsd_event(EfsdEvent *ee)
 		   ee->efsd_reply_event.command.efsd_file_cmd.id,
 		   ee->efsd_reply_event.command.efsd_file_cmd.file);
 		   
-	    if (ee->efsd_reply_event.status == SUCCESS)
-	      {
-		st = (struct stat*) ee->efsd_reply_event.data;
-		
-		if (S_ISREG(st->st_mode))
-		  printf("%s is a regular file.\n",
-			 ee->efsd_reply_event.command.efsd_file_cmd.file);
-		
-		if (S_ISLNK(st->st_mode))
-		  printf("%s is a symlink.\n",
-			 ee->efsd_reply_event.command.efsd_file_cmd.file);
-		
-		if (S_ISDIR(st->st_mode))
-		  printf("%s is a directory.\n",
-			 ee->efsd_reply_event.command.efsd_file_cmd.file);
-	      }
+	    st = (struct stat*) ee->efsd_reply_event.data;
+	    
+	    if (S_ISREG(st->st_mode))
+	      printf("%s is a regular file.\n",
+		     ee->efsd_reply_event.command.efsd_file_cmd.file);
+	    
+	    if (S_ISLNK(st->st_mode))
+	      printf("%s is a symlink.\n",
+		     ee->efsd_reply_event.command.efsd_file_cmd.file);
+	    
+	    if (S_ISDIR(st->st_mode))
+	      printf("%s is a directory.\n",
+		     ee->efsd_reply_event.command.efsd_file_cmd.file);
 	  }
 	  break;
 	case EFSD_CMD_READLINK:
@@ -280,11 +283,6 @@ void handle_efsd_event(EfsdEvent *ee)
 	default:
 	  printf("UNKNOWN event\n");
 	}
-
-      if (ee->efsd_reply_event.status == SUCCESS)
-	printf(" -- SUCCESS\n");
-      else
-	printf(" -- ERROR: %s\n", strerror(ee->efsd_reply_event.errorcode));
       
       break;
     default:
@@ -312,6 +310,7 @@ print_help(void)
 	 "ls <file>             Shows directory contents\n"
 	 "startmon <file>       Starts monitoring file or dir\n"
 	 "stopmon <file>        Stops monitoring file or dir\n"
+	 "gettype <file>        Returns file type of file\n"
 	 "exit                  Guess what.\n"
 	 "ln <source> <target>  Symlink source to target\n"
 	 "cp <source> <target>  Copy source to target\n"
@@ -348,6 +347,14 @@ command_line(EfsdConnection *ec)
 	    return;
 	  else if (!strcmp(tok, "help"))
 	    print_help();
+	  else if (!strcmp(tok, "gettype"))
+	    {
+	      if ((tok = strtok(NULL, " \t\n")))
+		{
+		  if ((id = efsd_get_filetype(ec, tok)) < 0)
+		    printf("Couldn't issue gettype command.\n");
+		}
+	    }
 	  else if (!strcmp(tok, "ln"))
 	    {
 	      char *file1, *file2;
