@@ -4,7 +4,6 @@ cK		keeping the groups file in sync with the existing groups that need to be rem
 
 FEATURES:
 raster: 	add dnd to iconbox
-cK:             BrushedMetal needs a border for the groups, the one that is used when you select "Show/Hide this window's groups" ... like the ones Ganymede has.
 
 FEATURES FOR DR 0.17:
 kainx: 		reduce need for tooltip text to have auto gened tooltips work

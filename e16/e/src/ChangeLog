@@ -1710,3 +1710,12 @@ Mon Sep 13 09:10:06 PDT 1999
 (Raster)
 
 turn off focus list when changing desktop
+
+-------------------------------------------------------------------------------
+
+Tue Sep 14 19:33:15 EDT 1999
+(Christian)
+
+Added group borders to BrushedMetal, also made the groups be visualized when they are switched in one of the groups dialogs. Apparently there's a bug with imageclasses that use transparency, probably an Imlib issue.
+
+

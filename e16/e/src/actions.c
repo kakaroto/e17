@@ -3422,10 +3422,6 @@ int
 doShowHideGroup(void *params)
 {
    EWin               *ewin;
-   EWin              **gwins;
-   int                 i, num;
-   Border             *b = NULL;
-   Border             *previous_border;
 
    EDBUG(6, "doShowGroup");
    if (InZoom())
@@ -3439,40 +3435,7 @@ doShowHideGroup(void *params)
    if (!ewin)
       EDBUG_RETURN(0);
 
-   gwins = ListWinGroupMembersForEwin(ewin, ACTION_NONE, 0, &num);
-   previous_border = ewin->previous_border;
-
-   for (i = 0; i < num; i++)
-     {
-	if ((!previous_border) && (!gwins[i]->previous_border))
-	  {
-	     if (!gwins[i]->border->group_border_name)
-		continue;
-
-	     b = (Border *) FindItem(gwins[i]->border->group_border_name, 0, LIST_FINDBY_NAME,
-				     LIST_TYPE_BORDER);
-	     if (!b)
-		b = (Border *) FindItem("__FALLBACK_BORDER", 0, LIST_FINDBY_NAME,
-					LIST_TYPE_BORDER);
-	     gwins[i]->previous_border = gwins[i]->border;
-	     b->ref_count++;
-	  }
-	else if ((previous_border) && (gwins[i]->previous_border))
-	  {
-	     b = gwins[i]->previous_border;
-	     b->ref_count--;
-	     gwins[i]->previous_border = NULL;
-	  }
-
-	gwins[i]->border_new = 1;
-	SetEwinToBorder(gwins[i], b);
-	ICCCM_MatchSize(gwins[i]);
-	MoveResizeEwin(gwins[i], gwins[i]->x, gwins[i]->y, gwins[i]->client.w,
-		       gwins[i]->client.h);
-	RememberImportantInfoForEwin(gwins[i]);
-     }
-   Efree(gwins);
-   SaveGroups();
+   ShowHideWinGroups(ewin, NULL, SET_TOGGLE);
    EDBUG_RETURN(0);
 }
 

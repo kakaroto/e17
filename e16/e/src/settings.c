@@ -3454,8 +3454,10 @@ SettingsIconbox(char *name)
 
 static GroupConfig *tmp_cfgs = NULL;
 static int          tmp_current_group;
+static int          tmp_index;
 static GroupConfig  tmp_cfg;
 static EWin        *tmp_ewin;
+static Group      **tmp_groups;
 
 static DItem       *di_border;
 static DItem       *di_iconify;
@@ -3471,7 +3473,10 @@ static void
 CB_ConfigureGroupEscape(int val, void *data)
 {
    if (tmp_cfgs)
-      Efree(tmp_cfgs);
+     {
+	ShowHideWinGroups(tmp_ewin, tmp_groups[tmp_current_group], SET_OFF);
+	Efree(tmp_cfgs);
+     }
    DialogClose((Dialog *) data);
    val = 0;
 }
@@ -3489,6 +3494,7 @@ CB_ConfigureGroup(int val, void *data)
      }
    if (((val == 0) || (val == 2)) && tmp_cfgs)
      {
+	ShowHideWinGroups(tmp_ewin, tmp_groups[tmp_current_group], SET_OFF);
 	Efree(tmp_cfgs);
 	tmp_cfgs = NULL;
      }
@@ -3508,6 +3514,8 @@ GroupSelectCallback(int val, void *data)
    DialogItemCheckButtonSetState(di_shade, tmp_cfgs[val].shade);
    DialogItemCheckButtonSetState(di_mirror, tmp_cfgs[val].mirror);
    DialogRedraw((Dialog *) data);
+   ShowHideWinGroups(tmp_ewin, tmp_groups[tmp_current_group], SET_OFF);
+   ShowHideWinGroups(tmp_ewin, tmp_groups[val], SET_ON);
    tmp_current_group = val;
 }
 
@@ -3571,9 +3579,11 @@ SettingsGroups(EWin * ewin)
    AUDIO_PLAY("SOUND_SETTINGS_GROUP");
 
    tmp_ewin = ewin;
+   tmp_groups = ewin->groups;
    tmp_cfgs = (GroupConfig *) Emalloc(ewin->num_groups * sizeof(GroupConfig));
    tmp_current_group = 0;
    group_member_strings = GetWinGroupMemberNames(ewin->groups, ewin->num_groups);
+   ShowHideWinGroups(ewin, ewin->groups[0], SET_ON);
 
    for (i = 0; i < ewin->num_groups; i++)
       CopyGroupConfig(&(ewin->groups[i]->cfg), &(tmp_cfgs[i]));
@@ -3628,7 +3638,7 @@ SettingsGroups(EWin * ewin)
 	DialogItemRadioButtonSetFirst(di, radio);
 	DialogItemRadioButtonGroupSetVal(di, i);
      }
-   DialogItemRadioButtonGroupSetValPtr(radio, &tmp_current_group);
+   DialogItemRadioButtonGroupSetValPtr(radio, &tmp_index);
 
    di = DialogAddItem(table, DITEM_SEPARATOR);
    DialogItemSetColSpan(di, 2);

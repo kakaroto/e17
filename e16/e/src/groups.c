@@ -213,6 +213,94 @@ GetWinGroupMemberNames(Group ** groups, int num)
 }
 
 void
+ShowHideWinGroups(EWin * ewin, Group * g, char onoff)
+{
+   EWin              **gwins;
+   int                 i, num;
+   Border             *b = NULL;
+   Border             *previous_border;
+
+   if (g)
+     {
+	gwins = g->members;
+	num = g->num_members;
+     }
+   else
+     {
+	gwins = ListWinGroupMembersForEwin(ewin, ACTION_NONE, 0, &num);
+     }
+
+   previous_border = ewin->previous_border;
+
+   for (i = 0; i < num; i++)
+     {
+	b = NULL;
+	switch (onoff)
+	  {
+	  case SET_TOGGLE:
+	     if ((!previous_border) && (!gwins[i]->previous_border))
+	       {
+		  if (!gwins[i]->border->group_border_name)
+		     continue;
+
+		  b = (Border *) FindItem(gwins[i]->border->group_border_name, 0, LIST_FINDBY_NAME,
+					  LIST_TYPE_BORDER);
+		  if (!b)
+		     b = (Border *) FindItem("__FALLBACK_BORDER", 0, LIST_FINDBY_NAME,
+					     LIST_TYPE_BORDER);
+		  gwins[i]->previous_border = gwins[i]->border;
+		  b->ref_count++;
+	       }
+	     else if ((previous_border) && (gwins[i]->previous_border))
+	       {
+		  b = gwins[i]->previous_border;
+		  gwins[i]->border->ref_count--;
+		  gwins[i]->previous_border = NULL;
+	       }
+	     break;
+	  case SET_ON:
+	     if (!gwins[i]->previous_border)
+	       {
+		  if (!gwins[i]->border->group_border_name)
+		     continue;
+
+		  b = (Border *) FindItem(gwins[i]->border->group_border_name, 0, LIST_FINDBY_NAME,
+					  LIST_TYPE_BORDER);
+		  if (!b)
+		     b = (Border *) FindItem("__FALLBACK_BORDER", 0, LIST_FINDBY_NAME,
+					     LIST_TYPE_BORDER);
+		  gwins[i]->previous_border = gwins[i]->border;
+		  b->ref_count++;
+	       }
+	     break;
+	  case SET_OFF:
+	     if (gwins[i]->previous_border)
+	       {
+		  b = gwins[i]->previous_border;
+		  gwins[i]->border->ref_count--;
+		  gwins[i]->previous_border = NULL;
+	       }
+	     break;
+	  default:
+	     break;
+	  }
+
+	if (b)
+	  {
+	     gwins[i]->border_new = 1;
+	     SetEwinToBorder(gwins[i], b);
+	     ICCCM_MatchSize(gwins[i]);
+	     MoveResizeEwin(gwins[i], gwins[i]->x, gwins[i]->y, gwins[i]->client.w,
+			    gwins[i]->client.h);
+	     RememberImportantInfoForEwin(gwins[i]);
+	  }
+     }
+   if (!g)
+      Efree(gwins);
+   SaveGroups();
+}
+
+void
 SaveGroups(void)
 {
    Group             **groups = NULL;
@@ -341,6 +429,7 @@ LoadGroups(void)
 }
 
 static int          tmp_group_index;
+static int          tmp_index;
 static EWin        *tmp_ewin;
 static Group      **tmp_groups;
 static int          tmp_action;
@@ -350,7 +439,10 @@ static void
 ChooseGroupEscape(int val, void *data)
 {
    if (tmp_groups)
-      Efree(tmp_groups);
+     {
+	ShowHideWinGroups(tmp_ewin, tmp_groups[tmp_index], SET_OFF);
+	Efree(tmp_groups);
+     }
    DialogClose((Dialog *) data);
    val = 0;
 }
@@ -379,6 +471,21 @@ ChooseGroup(int val, void *data)
 	       }
 	  }
      }
+   if (((val == 0) || (val == 2)) && tmp_groups)
+     {
+	ShowHideWinGroups(tmp_ewin, tmp_groups[tmp_index], SET_OFF);
+	Efree(tmp_groups);
+	tmp_groups = NULL;
+     }
+   data = NULL;
+}
+
+void
+GroupCallback(int val, void *data)
+{
+   ShowHideWinGroups(tmp_ewin, tmp_groups[tmp_index], SET_OFF);
+   ShowHideWinGroups(tmp_ewin, tmp_groups[val], SET_ON);
+   tmp_index = val;
    data = NULL;
 }
 
@@ -395,7 +502,7 @@ ChooseGroupDialog(EWin * ewin, char *message, char group_select, int action)
       return;
 
    tmp_ewin = ewin;
-   tmp_group_index = 0;
+   tmp_group_index = tmp_index = 0;
    tmp_action = action;
    tmp_groups = ListWinGroups(ewin, group_select, &num_groups);
 
@@ -422,6 +529,7 @@ ChooseGroupDialog(EWin * ewin, char *message, char group_select, int action)
      }
 
    group_member_strings = GetWinGroupMemberNames(tmp_groups, num_groups);
+   ShowHideWinGroups(ewin, tmp_groups[0], SET_ON);
 
    if ((d = FindItem("GROUP_SELECTION", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG)))
      {
@@ -464,6 +572,7 @@ ChooseGroupDialog(EWin * ewin, char *message, char group_select, int action)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 2);
+   DialogItemSetCallback(di, &GroupCallback, 0, (void *)d);
    DialogItemRadioButtonSetText(di, group_member_strings[0]);
    DialogItemRadioButtonSetFirst(di, radio);
    DialogItemRadioButtonGroupSetVal(di, 0);
@@ -474,6 +583,7 @@ ChooseGroupDialog(EWin * ewin, char *message, char group_select, int action)
 	DialogItemSetColSpan(di, 2);
 	DialogItemSetPadding(di, 2, 2, 2, 2);
 	DialogItemSetFill(di, 1, 0);
+	DialogItemSetCallback(di, &GroupCallback, i, (void *)d);
 	DialogItemRadioButtonSetText(di, group_member_strings[i]);
 	DialogItemRadioButtonSetFirst(di, radio);
 	DialogItemRadioButtonGroupSetVal(di, i);

@@ -477,6 +477,10 @@ int                 Esnprintf(va_alist);
 #define GROUP_FEATURE_SHADE   64
 #define GROUP_FEATURE_MIRROR  128
 
+#define SET_OFF    0
+#define SET_ON     1
+#define SET_TOGGLE 2
+
 typedef struct _menu Menu;
 typedef struct _dialog Dialog;
 typedef struct _pager Pager;
@@ -2862,6 +2866,7 @@ Group              *EwinsInGroup(EWin * ewin1, EWin * ewin2);
 char              **GetWinGroupMemberNames(Group ** groups, int num);
 void                AddEwinToGroup(EWin * ewin, Group * g);
 void                RemoveEwinFromGroup(EWin * ewin, Group * g);
+void                ShowHideWinGroups(EWin * ewin, Group * g, char onoff);
 void                ChooseGroupDialog(EWin * ewin, char *message, char group_select, int action);
 void                SaveGroups(void);
 void                LoadGroups(void);
