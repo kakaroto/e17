@@ -48,6 +48,7 @@ winwidget progwin = NULL;
 void
 init_x_and_imlib(void)
 {
+   Imlib_Context ctxt;
    D_ENTER(4);
 
    disp = XOpenDisplay(NULL);
@@ -60,6 +61,8 @@ init_x_and_imlib(void)
    scr = ScreenOfDisplay(disp, DefaultScreen(disp));
    xid_context = XUniqueContext();
 
+   ctxt = imlib_context_new();
+   imlib_context_push(ctxt);
    imlib_context_set_display(disp);
    imlib_context_set_visual(vis);
    imlib_context_set_colormap(cm);

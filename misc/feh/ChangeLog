@@ -1,3 +1,11 @@
+Wed Aug 22 22:44:13 2001  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Okay, setting the pixmap and atoms works now, bar an imlib2 bug
+	we need to fix. So right now, rather than dump core, I leak X
+	connections whenever you set a BG. No big hit unless you do
+	thousands, and it's only temporary until we fix imlib2.
+	* This is mainly for raster to check out right now.
+
 Wed Aug 22 17:01:08 2001  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Okay, setting bg from cmdline when not running E was broken,

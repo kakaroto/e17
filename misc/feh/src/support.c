@@ -36,26 +36,27 @@ feh_wm_set_bg_file(char *file, unsigned char bgmode)
 {
    Imlib_Image im;
    feh_file *fil;
+
    fil = feh_file_new(file);
    if (fil)
    {
       if (feh_load_image(&im, fil) == 0)
          eprintf("Couldn't load image in order to set bg");
-      switch(bgmode)
+      switch (bgmode)
       {
-      case BG_MODE_SEAMLESS:
-         feh_imlib_image_tile(im);
-         feh_wm_set_bg(NULL, im, 0, 0, 0, 1);
-         break;
-      case BG_MODE_TILE:
-         feh_wm_set_bg(NULL, im, 0, 0, 0, 1);
-         break;
-      case BG_MODE_SCALE:
-         feh_wm_set_bg(NULL, im, 0, 1, 0, 1);
-         break;
-      default:
-         feh_wm_set_bg(NULL, im, 1, 0, 0, 1);
-         break;
+        case BG_MODE_SEAMLESS:
+           feh_imlib_image_tile(im);
+           feh_wm_set_bg(NULL, im, 0, 0, 0, 1);
+           break;
+        case BG_MODE_TILE:
+           feh_wm_set_bg(NULL, im, 0, 0, 0, 1);
+           break;
+        case BG_MODE_SCALE:
+           feh_wm_set_bg(NULL, im, 0, 1, 0, 1);
+           break;
+        default:
+           feh_wm_set_bg(NULL, im, 1, 0, 0, 1);
+           break;
       }
       feh_imlib_free_image_and_decache(im);
       feh_file_free(fil);
@@ -86,10 +87,13 @@ feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
    }
    D(3, ("Setting bg %s\n", fil));
 
-   if (feh_wm_get_wm_is_e() && (enl_ipc_get_win() != None))
+   /* FIXME The if(0) here is deliberate to make sure we trigger the non-e
+    * code - the stuff that makes imlib2 core - for testing. Don't let this go
+    * in a release or I kill U. */
+   if (0 && feh_wm_get_wm_is_e() && (enl_ipc_get_win() != None))
    {
-      snprintf(sendbuf, sizeof(sendbuf), "background %s bg.file %s",
-               bgname, fil);
+      snprintf(sendbuf, sizeof(sendbuf), "background %s bg.file %s", bgname,
+               fil);
       enl_ipc_send(sendbuf);
 
       if (scaled)
@@ -144,7 +148,38 @@ feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
    }
    else
    {
+      Atom prop_root, prop_esetroot, type;
+      int format;
+      unsigned long length, after;
+      unsigned char *data_root, *data_esetroot;
       Pixmap tmppmap;
+      Imlib_Context ctxt;
+
+      /* local display to set closedownmode on */
+      Display *disp;
+      Window root;
+      Screen *scr;
+      Visual *vis;
+      Colormap cm;
+      int depth;
+
+      disp = XOpenDisplay(NULL);
+      if (!disp)
+         eprintf("Can't open X display. It *is* running, yeah?");
+      root = RootWindow(disp, DefaultScreen(disp));
+      scr = ScreenOfDisplay(disp, DefaultScreen(disp));
+      vis = DefaultVisual(disp, DefaultScreen(disp));
+      depth = DefaultDepth(disp, DefaultScreen(disp));
+      cm = DefaultColormap(disp, DefaultScreen(disp));
+
+      ctxt = imlib_context_new();
+      imlib_context_push(ctxt);
+      imlib_context_set_display(disp);
+      imlib_context_set_visual(vis);
+      imlib_context_set_colormap(cm);
+      imlib_context_set_color_modifier(NULL);
+      imlib_context_set_progress_function(NULL);
+      imlib_context_set_operation(IMLIB_OP_COPY);
 
       D(3, ("Falling back to XSetRootWindowPixmap\n"));
       if (scaled)
@@ -153,7 +188,6 @@ feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
          feh_imlib_render_image_on_drawable_at_size(tmppmap, im, 0, 0,
                                                     scr->width, scr->height,
                                                     1, 0, 1);
-         XSetWindowBackgroundPixmap(disp, root, tmppmap);
       }
       else if (centered)
       {
@@ -170,7 +204,6 @@ feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
          y = (scr->height - feh_imlib_image_get_width(im)) >> 1;
          feh_imlib_render_image_on_drawable(tmppmap, im, x, y, 1, 0, 0);
          XFreeGC(disp, gc);
-         XSetWindowBackgroundPixmap(disp, root, tmppmap);
       }
       else
       {
@@ -178,11 +211,52 @@ feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
             XCreatePixmap(disp, root, feh_imlib_image_get_width(im),
                           feh_imlib_image_get_height(im), depth);
          feh_imlib_render_image_on_drawable(tmppmap, im, 0, 0, 1, 0, 0);
-         XSetWindowBackgroundPixmap(disp, root, tmppmap);
       }
-      XFreePixmap(disp, tmppmap);
+
+      prop_root = XInternAtom(disp, "_XROOTPMAP_ID", True);
+      prop_esetroot = XInternAtom(disp, "ESETROOT_PMAP_ID", True);
+
+      if (prop_root != None && prop_esetroot != None)
+      {
+         XGetWindowProperty(disp, root, prop_root, 0L, 1L, False,
+                            AnyPropertyType, &type, &format, &length, &after,
+                            &data_root);
+         if (type == XA_PIXMAP)
+         {
+            XGetWindowProperty(disp, root, prop_esetroot, 0L, 1L, False,
+                               AnyPropertyType, &type, &format, &length,
+                               &after, &data_esetroot);
+            if (data_root && data_esetroot)
+            {
+               if (type == XA_PIXMAP
+                   && *((Pixmap *) data_root) == *((Pixmap *) data_esetroot))
+               {
+                  XKillClient(disp, *((Pixmap *) data_root));
+               }
+            }
+         }
+      }
+      /* This will locate the property, creating it if it doesn't exist */
+      prop_root = XInternAtom(disp, "_XROOTPMAP_ID", False);
+      prop_esetroot = XInternAtom(disp, "ESETROOT_PMAP_ID", False);
+
+      if (prop_root == None || prop_esetroot == None)
+         weprintf("creation of pixmap property failed.");
+
+      XChangeProperty(disp, root, prop_root, XA_PIXMAP, 32, PropModeReplace,
+                      (unsigned char *) &tmppmap, 1);
+      XChangeProperty(disp, root, prop_esetroot, XA_PIXMAP, 32,
+                      PropModeReplace, (unsigned char *) &tmppmap, 1);
+
+      XSetWindowBackgroundPixmap(disp, root, tmppmap);
       XClearWindow(disp, root);
+      XSetCloseDownMode(disp, RetainPermanent);
       XFlush(disp);
+
+      /* FIXME temporarily leak displays because of an imlib2 bug */
+      /* XCloseDisplay(disp); */
+      imlib_context_pop();
+      imlib_context_free(ctxt);
    }
    D_RETURN_(4);
 }
