@@ -2803,3 +2803,10 @@ Sat Oct  2 18:04:57 PDT 1999
 (Raster)
 
 fix "saying no to logout dialog stops windows form being de-iconified"
+
+-------------------------------------------------------------------------------
+
+Sat Oct  2 18:08:37 PDT 1999
+(Raster)
+
+get rid of warning

@@ -494,7 +494,7 @@ doSMExit(void *params)
 
    if (!params)
       SaveSession(1);
-   if ((disp) && ((!params) || ((params) && strcmp(params, "logout"))))
+   if ((disp) && ((!params) || ((params) && strcmp((char *)params, "logout"))))
       SetEInfoOnAll();
 
    /* kill off kde */
@@ -1101,7 +1101,7 @@ doSMExit(void *params)
 
    if (!params)
       SaveSession(1);
-   if ((disp) && ((!params) || ((params) && strcmp(params, "logout"))))
+   if ((disp) && ((!params) || ((params) && strcmp((char *)params, "logout"))))
       SetEInfoOnAll();
    if ((!params) || (!strcmp((char *)s, "exit")))
      {
