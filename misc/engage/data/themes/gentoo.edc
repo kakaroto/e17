@@ -109,6 +109,21 @@ collections {
             normal, "engage-bottomlayer.png";
           }
         }
+	description {
+          state, "pressed" 0.0;
+
+          rel1 {
+            relative, 0.05 0.05;
+            offset, 0 0;
+          }
+          rel2 {
+            relative, 0.95 0.95;
+            offset, 0 0;
+          }
+          image {
+            normal, "engage-bottomlayer.png";
+          }
+        }
       }
       part {
         name,   "EngageIcon";
@@ -333,6 +348,23 @@ collections {
         action, STATE_SET "default" 0.0;
         transition, SINUSOIDAL 0.75;
         target, "arrow.image.clip";
+      }
+      program {
+        name, "engage_icon_launched_up";
+        signal, "mouse,clicked,1";
+	source, "background";
+        action, STATE_SET "pressed" 0.0;
+        target, "background";
+        transition, DECELERATE 0.1;
+        after, "engage_icon_launched_down";
+      }
+      program {
+        name, "engage_icon_launched_down";
+        signal, "";
+	source, "";
+        action, STATE_SET "default" 0.0;
+        target, "background";
+        transition, ACCELERATE 0.1;
       }
     }/* Close Programs */
   } /* Close Group */
