@@ -140,8 +140,7 @@ imlib_context_set_colormap(Colormap colormap)
    ctxt_colormap = colormap;
 }
 
-Colormap
-imlib_context_get_colormap(void)
+Colormap imlib_context_get_colormap(void)
 {
    return ctxt_colormap;
 }
@@ -152,8 +151,7 @@ imlib_context_set_drawable(Drawable drawable)
    ctxt_drawable = drawable;
 }
 
-Drawable
-imlib_context_get_drawable(void)
+Drawable imlib_context_get_drawable(void)
 {
    return ctxt_drawable;
 }
@@ -164,8 +162,7 @@ imlib_context_set_mask(Pixmap mask)
    ctxt_mask = mask;
 }
 
-Pixmap
-imlib_context_get_mask(void)
+Pixmap imlib_context_get_mask(void)
 {
    return ctxt_mask;
 }
@@ -224,8 +221,7 @@ imlib_context_set_color_modifier(Imlib_Color_Modifier color_modifier)
    ctxt_color_modifier = color_modifier;
 }
 
-Imlib_Color_Modifier
-imlib_context_get_color_modifier(void)
+Imlib_Color_Modifier imlib_context_get_color_modifier(void)
 {
    return ctxt_color_modifier;
 }
@@ -236,8 +232,7 @@ imlib_context_set_operation(Imlib_Operation operation)
    ctxt_operation = operation;
 }
 
-Imlib_Operation
-imlib_context_get_operation(void)
+Imlib_Operation imlib_context_get_operation(void)
 {
    return ctxt_operation;
 }
@@ -248,8 +243,7 @@ imlib_context_set_font(Imlib_Font font)
    ctxt_font = font;
 }
 
-Imlib_Font
-imlib_context_get_font(void)
+Imlib_Font imlib_context_get_font(void)
 {
    return ctxt_font;
 }
@@ -272,8 +266,7 @@ imlib_context_get_angle(void)
    return ctxt_angle;
 }
 
-Imlib_Text_Direction
-imlib_context_get_direction(void)
+Imlib_Text_Direction imlib_context_get_direction(void)
 {
    return ctxt_direction;
 }
@@ -308,8 +301,7 @@ imlib_context_set_color_range(Imlib_Color_Range color_range)
    ctxt_color_range = color_range;
 }
 
-Imlib_Color_Range
-imlib_context_get_color_range(void)
+Imlib_Color_Range imlib_context_get_color_range(void)
 {
    return ctxt_color_range;
 }
@@ -320,8 +312,7 @@ imlib_context_set_progress_function(Imlib_Progress_Function progress_function)
    ctxt_progress_func = progress_function;
 }
 
-Imlib_Progress_Function
-imlib_context_get_progress_function(void)
+Imlib_Progress_Function imlib_context_get_progress_function(void)
 {
    return ctxt_progress_func;
 }
@@ -344,8 +335,7 @@ imlib_context_set_image(Imlib_Image image)
    ctxt_image = image;
 }
 
-Imlib_Image
-imlib_context_get_image(void)
+Imlib_Image imlib_context_get_image(void)
 {
    return ctxt_image;
 }
@@ -405,8 +395,7 @@ imlib_get_best_visual(Display * display, int screen, int *depth_return)
    return __imlib_BestVisual(display, screen, depth_return);
 }
 
-Imlib_Image
-imlib_load_image(const char *file)
+Imlib_Image imlib_load_image(const char *file)
 {
    Imlib_Image im = NULL;
    Imlib_Image prev_ctxt_image;
@@ -420,8 +409,7 @@ imlib_load_image(const char *file)
    return (Imlib_Image) im;
 }
 
-Imlib_Image
-imlib_load_image_immediately(const char *file)
+Imlib_Image imlib_load_image_immediately(const char *file)
 {
    Imlib_Image im = NULL;
    Imlib_Image prev_ctxt_image;
@@ -436,8 +424,7 @@ imlib_load_image_immediately(const char *file)
    return (Imlib_Image) im;
 }
 
-Imlib_Image
-imlib_load_image_without_cache(const char *file)
+Imlib_Image imlib_load_image_without_cache(const char *file)
 {
    Imlib_Image im = NULL;
    Imlib_Image prev_ctxt_image;
@@ -452,8 +439,7 @@ imlib_load_image_without_cache(const char *file)
    return (Imlib_Image) im;
 }
 
-Imlib_Image
-imlib_load_image_immediately_without_cache(const char *file)
+Imlib_Image imlib_load_image_immediately_without_cache(const char *file)
 {
    Imlib_Image im = NULL;
    Imlib_Image prev_ctxt_image;
@@ -468,9 +454,9 @@ imlib_load_image_immediately_without_cache(const char *file)
    return (Imlib_Image) im;
 }
 
-Imlib_Image
-imlib_load_image_with_error_return(const char *file,
-                                   Imlib_Load_Error * error_return)
+Imlib_Image imlib_load_image_with_error_return(const char *file,
+                                               Imlib_Load_Error *
+                                               error_return)
 {
    Imlib_Image im = NULL;
    ImlibLoadError er;
@@ -910,8 +896,7 @@ imlib_blend_image_onto_image(Imlib_Image source_image, char merge_alpha,
                                 ctxt_color_modifier, ctxt_operation);
 }
 
-Imlib_Image
-imlib_create_image(int width, int height)
+Imlib_Image imlib_create_image(int width, int height)
 {
    DATA32 *data;
 
@@ -923,8 +908,8 @@ imlib_create_image(int width, int height)
    return NULL;
 }
 
-Imlib_Image
-imlib_create_image_using_data(int width, int height, DATA32 * data)
+Imlib_Image imlib_create_image_using_data(int width, int height,
+                                          DATA32 * data)
 {
    ImlibImage *im;
 
@@ -938,8 +923,8 @@ imlib_create_image_using_data(int width, int height, DATA32 * data)
    return (Imlib_Image) im;
 }
 
-Imlib_Image
-imlib_create_image_using_copied_data(int width, int height, DATA32 * data)
+Imlib_Image imlib_create_image_using_copied_data(int width, int height,
+                                                 DATA32 * data)
 {
    ImlibImage *im;
 
@@ -961,9 +946,9 @@ imlib_create_image_using_copied_data(int width, int height, DATA32 * data)
    return NULL;
 }
 
-Imlib_Image
-imlib_create_image_from_drawable(Pixmap mask, int x, int y, int width,
-                                 int height, char need_to_grab_x)
+Imlib_Image imlib_create_image_from_drawable(Pixmap mask, int x, int y,
+                                             int width, int height,
+                                             char need_to_grab_x)
 {
    ImlibImage *im;
    char domask = 0;
@@ -979,14 +964,14 @@ imlib_create_image_from_drawable(Pixmap mask, int x, int y, int width,
    return (Imlib_Image) im;
 }
 
-Imlib_Image
-imlib_create_scaled_image_from_drawable(Pixmap mask, int source_x,
-                                        int source_y, int source_width,
-                                        int source_height,
-                                        int destination_width,
-                                        int destination_height,
-                                        char need_to_grab_x,
-                                        char get_mask_from_shape)
+Imlib_Image imlib_create_scaled_image_from_drawable(Pixmap mask, int source_x,
+                                                    int source_y,
+                                                    int source_width,
+                                                    int source_height,
+                                                    int destination_width,
+                                                    int destination_height,
+                                                    char need_to_grab_x,
+                                                    char get_mask_from_shape)
 {
    ImlibImage *im;
    char domask = 0, tmpmask = 0;
@@ -1135,8 +1120,7 @@ imlib_copy_drawable_to_image(Pixmap mask, int x, int y, int width, int height,
                                      height, domask, need_to_grab_x);
 }
 
-Imlib_Image
-imlib_clone_image(void)
+Imlib_Image imlib_clone_image(void)
 {
    ImlibImage *im, *im_old;
 
@@ -1175,8 +1159,7 @@ imlib_clone_image(void)
    return (Imlib_Image) im;
 }
 
-Imlib_Image
-imlib_create_cropped_image(int x, int y, int width, int height)
+Imlib_Image imlib_create_cropped_image(int x, int y, int width, int height)
 {
    ImlibImage *im, *im_old;
 
@@ -1200,11 +1183,11 @@ imlib_create_cropped_image(int x, int y, int width, int height)
    return (Imlib_Image) im;
 }
 
-Imlib_Image
-imlib_create_cropped_scaled_image(int source_x, int source_y,
-                                  int source_width, int source_height,
-                                  int destination_width,
-                                  int destination_height)
+Imlib_Image imlib_create_cropped_scaled_image(int source_x, int source_y,
+                                              int source_width,
+                                              int source_height,
+                                              int destination_width,
+                                              int destination_height)
 {
    ImlibImage *im, *im_old;
 
@@ -1243,8 +1226,7 @@ imlib_create_cropped_scaled_image(int source_x, int source_y,
    return (Imlib_Image) im;
 }
 
-Imlib_Updates
-imlib_updates_clone(Imlib_Updates updates)
+Imlib_Updates imlib_updates_clone(Imlib_Updates updates)
 {
    ImlibUpdate *u;
 
@@ -1252,8 +1234,8 @@ imlib_updates_clone(Imlib_Updates updates)
    return (Imlib_Updates) __imlib_DupUpdates(u);
 }
 
-Imlib_Updates
-imlib_update_append_rect(Imlib_Updates updates, int x, int y, int w, int h)
+Imlib_Updates imlib_update_append_rect(Imlib_Updates updates, int x, int y,
+                                       int w, int h)
 {
    ImlibUpdate *u;
 
@@ -1261,8 +1243,7 @@ imlib_update_append_rect(Imlib_Updates updates, int x, int y, int w, int h)
    return (Imlib_Updates) __imlib_AddUpdate(u, x, y, w, h);
 }
 
-Imlib_Updates
-imlib_updates_merge(Imlib_Updates updates, int w, int h)
+Imlib_Updates imlib_updates_merge(Imlib_Updates updates, int w, int h)
 {
    ImlibUpdate *u;
 
@@ -1270,8 +1251,8 @@ imlib_updates_merge(Imlib_Updates updates, int w, int h)
    return (Imlib_Updates) __imlib_MergeUpdate(u, w, h, 0);
 }
 
-Imlib_Updates
-imlib_updates_merge_for_rendering(Imlib_Updates updates, int w, int h)
+Imlib_Updates imlib_updates_merge_for_rendering(Imlib_Updates updates, int w,
+                                                int h)
 {
    ImlibUpdate *u;
 
@@ -1288,8 +1269,7 @@ imlib_updates_free(Imlib_Updates updates)
    __imlib_FreeUpdates(u);
 }
 
-Imlib_Updates
-imlib_updates_get_next(Imlib_Updates updates)
+Imlib_Updates imlib_updates_get_next(Imlib_Updates updates)
 {
    ImlibUpdate *u;
 
@@ -1357,15 +1337,13 @@ imlib_render_image_updates_on_drawable(Imlib_Updates updates, int x, int y)
    __imlib_SetMaxXImageCount(ctxt_display, 0);
 }
 
-Imlib_Updates
-imlib_updates_init(void)
+Imlib_Updates imlib_updates_init(void)
 {
    return (Imlib_Updates) NULL;
 }
 
-Imlib_Updates
-imlib_updates_append_updates(Imlib_Updates updates,
-                             Imlib_Updates appended_updates)
+Imlib_Updates imlib_updates_append_updates(Imlib_Updates updates,
+                                           Imlib_Updates appended_updates)
 {
    ImlibUpdate *u, *uu;
 
@@ -1558,8 +1536,7 @@ imlib_image_tile(void)
    __imlib_TileImageVert(im);
 }
 
-Imlib_Font
-imlib_load_font(const char *font_name)
+Imlib_Font imlib_load_font(const char *font_name)
 {
    return (Imlib_Font) __imlib_load_font(font_name);
 }
@@ -1945,8 +1922,7 @@ imlib_get_maximum_font_descent(void)
    return ((ImlibFont *) ctxt_font)->max_ascent;
 }
 
-Imlib_Color_Modifier
-imlib_create_color_modifier(void)
+Imlib_Color_Modifier imlib_create_color_modifier(void)
 {
    return (Imlib_Color_Modifier) __imlib_CreateCmod();
 }
@@ -2077,8 +2053,8 @@ imlib_apply_color_modifier_to_rectangle(int x, int y, int width, int height)
                          (ImlibColorModifier *) ctxt_color_modifier);
 }
 
-Imlib_Updates
-imlib_image_draw_line(int x1, int y1, int x2, int y2, char make_updates)
+Imlib_Updates imlib_image_draw_line(int x1, int y1, int x2, int y2,
+                                    char make_updates)
 {
    ImlibImage *im;
 
@@ -2101,12 +2077,13 @@ imlib_image_draw_line(int x1, int y1, int x2, int y2, char make_updates)
                                                        ctxt_cliprect.y +
                                                        ctxt_cliprect.h,
                                                        (DATA8) ctxt_color.red,
-                                                       (DATA8) ctxt_color.
-                                                       green,
-                                                       (DATA8) ctxt_color.
-                                                       blue,
-                                                       (DATA8) ctxt_color.
-                                                       alpha, ctxt_operation,
+                                                       (DATA8)
+                                                       ctxt_color.green,
+                                                       (DATA8)
+                                                       ctxt_color.blue,
+                                                       (DATA8)
+                                                       ctxt_color.alpha,
+                                                       ctxt_operation,
                                                        (char) make_updates);
    }
    else
@@ -2281,8 +2258,7 @@ imlib_image_copy_rect(int x, int y, int width, int height, int new_x,
    __imlib_copy_image_data(im, x, y, width, height, new_x, new_y);
 }
 
-Imlib_Color_Range
-imlib_create_color_range(void)
+Imlib_Color_Range imlib_create_color_range(void)
 {
    return (Imlib_Color_Range) __imlib_CreateRange();
 }
@@ -2475,8 +2451,7 @@ imlib_save_image_with_error_return(const char *filename,
    ctxt_image = prev_ctxt_image;
 }
 
-Imlib_Image
-imlib_create_rotated_image(double angle)
+Imlib_Image imlib_create_rotated_image(double angle)
 {
    ImlibImage *im, *im_old;
    DATA32 *data;
@@ -2653,8 +2628,7 @@ imlib_image_filter(void)
    __imlib_FilterImage(im, (ImlibFilter *) ctxt_filter);
 }
 
-Imlib_Filter
-imlib_create_filter(int initsize)
+Imlib_Filter imlib_create_filter(int initsize)
 {
    return (Imlib_Filter) __imlib_CreateFilter(initsize);
 }
@@ -2673,8 +2647,7 @@ imlib_context_set_filter(Imlib_Filter filter)
    ctxt_filter = filter;
 }
 
-Imlib_Filter
-imlib_context_get_filter(void)
+Imlib_Filter imlib_context_get_filter(void)
 {
    return ctxt_filter;
 }
@@ -2761,8 +2734,7 @@ imlib_apply_filter(char *script, ...)
    va_end(param_list);
 }
 
-ImlibPolygon
-imlib_polygon_new(void)
+ImlibPolygon imlib_polygon_new(void)
 {
    return (ImlibPolygon) __imlib_polygon_new();
 }
@@ -2824,21 +2796,13 @@ imlib_image_fill_polygon(ImlibPolygon poly)
       return;
    __imlib_DirtyImage(im);
    __imlib_DirtyPixmapsForImage(im);
-   if (ctxt_cliprect.w)
-   {
-      __imlib_draw_polygon_filled_clipped(im, poly, ctxt_cliprect.x,
-                                   ctxt_cliprect.x + ctxt_cliprect.w,
-                                   ctxt_cliprect.y,
-                                   ctxt_cliprect.y + ctxt_cliprect.h,
-                                   ctxt_color.red, ctxt_color.green,
-                                   ctxt_color.blue, ctxt_color.alpha,
-                                   ctxt_operation);
-   }
-   else
-   {
-      __imlib_draw_polygon_filled(im, poly, ctxt_color.red, ctxt_color.green,
-                           ctxt_color.blue, ctxt_color.alpha, ctxt_operation);
-   }
+   __imlib_draw_polygon_filled(im, poly, ctxt_cliprect.x,
+                               ctxt_cliprect.x + ctxt_cliprect.w,
+                               ctxt_cliprect.y,
+                               ctxt_cliprect.y + ctxt_cliprect.h,
+                               ctxt_color.red, ctxt_color.green,
+                               ctxt_color.blue, ctxt_color.alpha,
+                               ctxt_operation);
 }
 
 
@@ -2912,3 +2876,10 @@ imlib_image_fill_ellipse(int xc, int yc, int a, int b)
    }
 }
 
+
+unsigned char
+imlib_polygon_contains_point(ImlibPolygon poly, int x, int y)
+{
+   CHECK_PARAM_POINTER("imlib_polygon_contains_point", "polygon", poly);
+   return __imlib_polygon_contains_point(poly, x, y);
+}

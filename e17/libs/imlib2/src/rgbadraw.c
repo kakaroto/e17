@@ -14,6 +14,7 @@
 (((x) >= (rx)) && ((y) >= (ry)) && ((x) <= ((rx) + (rw))) && ((y) <= ((ry) + (rh))))
 
 #define MAX(a,b) (((a) > (b)) ? (a) : (b))
+#define MIN(a,b) (((a) < (b)) ? (a) : (b))
 
 #define round(a) floor(a+0.5)
 
@@ -110,7 +111,7 @@ __imlib_FlipImageDiagonal(ImlibImage * im, int direction)
    switch (direction)
    {
      default:
-     case 0:                               /*\ DOWN_RIGHT \ */
+     case 0:           /*\ DOWN_RIGHT \ */
         tmp = im->border.top;
         im->border.top = im->border.left;
         im->border.left = tmp;
@@ -120,7 +121,7 @@ __imlib_FlipImageDiagonal(ImlibImage * im, int direction)
         to = data;
         hw = -hw + 1;
         break;
-     case 1:                               /*\ DOWN_LEFT \ */
+     case 1:           /*\ DOWN_LEFT \ */
         tmp = im->border.top;
         im->border.top = im->border.left;
         im->border.left = im->border.bottom;
@@ -129,7 +130,7 @@ __imlib_FlipImageDiagonal(ImlibImage * im, int direction)
         to = data + w - 1;
         hw = -hw - 1;
         break;
-     case 2:                               /*\ UP_RIGHT \ */
+     case 2:           /*\ UP_RIGHT \ */
         tmp = im->border.top;
         im->border.top = im->border.right;
         im->border.right = im->border.bottom;
@@ -139,7 +140,7 @@ __imlib_FlipImageDiagonal(ImlibImage * im, int direction)
         w = -w;
         hw = hw + 1;
         break;
-     case 3:                               /*\ UP_LEFT \ */
+     case 3:           /*\ UP_LEFT \ */
         tmp = im->border.top;
         im->border.top = im->border.right;
         im->border.right = tmp;
@@ -1873,7 +1874,7 @@ __imlib_fill_ellipse_clipped(ImlibImage * im, int xc, int yc, int aa, int bb,
                                            g, b, a, op);
          }
       }
-      
+
       if (dec >= 0)
          dec += 4 * b2 * (1 - (x--));
       dec += a2 * (4 * y + 6);
@@ -2076,13 +2077,17 @@ span_clipped(ImlibImage * im, int y, edgeRec * pt1, edgeRec * pt2,
    ix2 = pt2->x;
    idx = ix2 - ix1;
    if (idx == 0)
-   {
       return;
-   }
+
+   /* clip x, y is clipped for us by the caller */
+   if (ix1 < clip_xmin)
+      ix1 = clip_xmin;
+   if (ix2 > clip_xmax)
+      ix2 = clip_xmax;
+
    do
    {
-      __imlib_draw_set_point_clipped(im, ix1, y, clip_xmin, clip_xmax,
-                                     clip_ymin, clip_ymax, r, g, b, a, op);
+      __imlib_draw_set_point(im, ix1, y, r, g, b, a, op);
       ix1++;
    }
    while (ix1 < ix2);
@@ -2090,8 +2095,9 @@ span_clipped(ImlibImage * im, int y, edgeRec * pt1, edgeRec * pt2,
 
 
 void
-__imlib_draw_polygon_filled(ImlibImage * im, ImlibPoly poly, DATA8 r, DATA8 g,
-                            DATA8 b, DATA8 a, ImlibOp op)
+__imlib_draw_polygon_filled(ImlibImage * im, ImlibPoly poly, int clip_xmin,
+                            int clip_xmax, int clip_ymin, int clip_ymax,
+                            DATA8 r, DATA8 g, DATA8 b, DATA8 a, ImlibOp op)
 {
    long maxy, miny;
    int iy1, iy2;
@@ -2163,99 +2169,171 @@ __imlib_draw_polygon_filled(ImlibImage * im, ImlibPoly poly, DATA8 r, DATA8 g,
       }
    }
    while (pnt1 != iminy);
-   do
+
+   if (clip_xmin != clip_xmax)
    {
-      span(im, iy1, &table1[iy1], &table2[iy1], r, g, b, a, op);
-      iy1++;
+      /* there is a cliprect, don't bother with y outside of it */
+      if (iy1 < clip_ymin)
+         iy1 = clip_ymin;
+      if (iy2 > clip_ymax)
+         iy2 = clip_ymax;
+      do
+      {
+         span_clipped(im, iy1, &table1[iy1], &table2[iy1], clip_xmin,
+                      clip_xmax, clip_ymin, clip_ymax, r, g, b, a, op);
+         iy1++;
+      }
+      while (iy1 < iy2);
    }
-   while (iy1 < iy2);
+   else
+   {
+      do
+      {
+         span(im, iy1, &table1[iy1], &table2[iy1], r, g, b, a, op);
+         iy1++;
+      }
+      while (iy1 < iy2);
+   }
+
    free(table1);
    free(table2);
 }
 
-void
-__imlib_draw_polygon_filled_clipped(ImlibImage * im, ImlibPoly poly,
-                                    int clip_xmin, int clip_xmax,
-                                    int clip_ymin, int clip_ymax, DATA8 r,
-                                    DATA8 g, DATA8 b, DATA8 a, ImlibOp op)
+
+unsigned char
+__imlib_polygon_contains_point(ImlibPoly poly, int x, int y)
 {
-   long maxy, miny;
-   int iy1, iy2;
-   int imaxy, iminy;
-   int pnt1, pnt2;
-   int i;
-   edgeRec *table1, *table2;
+   int count = 0;
+   int start = 0;
+   int ysave = 0;               /* initial value arbitrary */
+   int cx, nx, out_x, out_y, i, n;
+   int curr_x, curr_y, next_x, next_y;
 
-   if (poly->pointcount < 3)
-   {
-      return;
-   }
+   /* find a vertex of poly that does not lie on the test line */
+   while (start < poly->pointcount && poly->points[start].y == y)
+      start++;
+   /* if one doesn't exist we will use point on segment test
+      and can start with vertex 0 anyway */
+   cx = start % poly->pointcount;
 
-   table1 = malloc(sizeof(edgeRec) * im->h);
-   table2 = malloc(sizeof(edgeRec) * im->h);
+   out_x = poly->points[0].x;
+   out_y = y;
 
-   maxy = miny = poly->points[0].y;
-   imaxy = iminy = 0;
    for (i = 1; i < poly->pointcount; i++)
    {
-      if (poly->points[i].y > maxy)
+      out_x = MAX(out_x, poly->points[i].x);
+   }
+   out_x++;             /* out now guaranteed to be outside poly */
+
+   for (n = 0; n < poly->pointcount; n++)
+   {
+      nx = (cx + 1) % poly->pointcount;
+
+      curr_x = poly->points[cx].x;
+      curr_y = poly->points[cx].y;
+      next_x = poly->points[nx].x;
+      next_y = poly->points[nx].y;
+
+      if (__imlib_point_on_segment(x, y, curr_x, curr_y, next_x, next_y))
+         return TRUE;
+
+      /* ignore horizontal segments from this point on */
+      if (poly->points[cx].y != poly->points[nx].y)
       {
-         maxy = poly->points[i].y;
-         imaxy = i;
+         if (__imlib_segments_intersect
+             (curr_x, curr_y, next_x, next_y, x, y, out_x, out_y))
+         {
+            count++;
+
+            if (__imlib_point_on_segment(next_x, next_y, x, y, out_x, out_y))
+            {
+               /* current seg intersects test seg @ 2nd vtx
+                  reset ysave */
+               ysave = curr_y;
+            }
+            if (__imlib_point_on_segment(curr_x, curr_y, x, y, out_x, out_y)
+                && (ysave < y != next_y < y))
+            {
+               /* current seg xsects test seg @ 1st vtx and
+                  ysave on opposite side of test line from
+                  curr seg 2nd vtx;
+                  decrement hits (2-1) for odd parity */
+               count--;
+            }
+         }
       }
-      if (poly->points[i].y < miny)
-      {
-         miny = poly->points[i].y;
-         iminy = i;
-      }
+      cx = nx;
    }
-   iy1 = miny;
-   iy2 = maxy;
-   if (iy1 == iy2)
+   return (count % 2 == 1);
+}
+
+unsigned char
+__imlib_point_on_segment(int p_x, int p_y, int s1_x, int s1_y, int s2_x,
+                         int s2_y)
+{
+   return __imlib_segments_intersect(p_x, p_y, p_x, p_y, s1_x, s1_y, s2_x,
+                                     s2_y);
+}
+
+unsigned char
+__imlib_segments_intersect(int r1_x, int r1_y, int r2_x, int r2_y, int s1_x,
+                           int s1_y, int s2_x, int s2_y)
+{
+   double testS1R =
+      __imlib_point_delta_from_line(s1_x, s1_y, r1_x, r1_y, r2_x, r2_y);
+   double testS2R =
+      __imlib_point_delta_from_line(s2_x, s2_y, r1_x, r1_y, r2_x, r2_y);
+   double testR1S =
+      __imlib_point_delta_from_line(r1_x, r1_y, s1_x, s1_y, s2_x, s2_y);
+   double testR2S =
+      __imlib_point_delta_from_line(r2_x, r2_y, s1_x, s1_y, s2_x, s2_y);
+
+   /* check if segments are collinear */
+   if (testS1R == 0.0 && testS2R == 0.0)
    {
-      return;
+      if (__imlib_point_inside_segment(s1_x, s1_y, r1_x, r1_y, r2_x, r2_y)
+          || __imlib_point_inside_segment(s2_x, s2_y, r1_x, r1_y, r2_x, r2_y)
+          || __imlib_point_inside_segment(r1_x, r1_y, s1_x, s1_y, s2_x, s2_y)
+          || __imlib_point_inside_segment(r2_x, r2_y, s1_x, s1_y, s2_x, s2_y))
+         return TRUE;
+      else
+         return FALSE;
    }
-   pnt1 = iminy;
-   pnt2 = iminy + 1;
-   if (pnt2 >= poly->pointcount)
+
+   if (testS1R * testS2R <= 0.0 && testR1S * testR2S <= 0.0)
+      return TRUE;
+   else
+      return FALSE;
+}
+
+/* TODO this could prolly be a macro */
+unsigned char
+__imlib_point_inside_segment(int p_x, int p_y, int s1_x, int s1_y, int s2_x,
+                             int s2_y)
+{
+   /* Check if p lies on segment [ s1, s2 ] given that 
+      it lies on the line defined by s1 and s2. */
+   if (s1_y != s2_y)
    {
-      pnt2 = 0;
+      if (p_y <= MAX(s1_y, s2_y) && p_y >= MIN(s1_y, s2_y))
+         return TRUE;
    }
-   do
+   else if (p_x <= MAX(s1_x, s2_x) && p_x >= MIN(s1_x, s2_x))
+      return TRUE;
+
+   return FALSE;
+}
+
+double
+__imlib_point_delta_from_line(int p_x, int p_y, int s1_x, int s1_y, int s2_x,
+                              int s2_y)
+{
+   if (s2_x - s1_x == 0.0)
+      return p_x - s1_x;
+   else
    {
-      edge(table1, &poly->points[pnt1], &poly->points[pnt2]);
-      pnt1 = pnt2;
-      pnt2 = pnt2 + 1;
-      if (pnt2 >= poly->pointcount)
-      {
-         pnt2 = 0;
-      }
+      double m = (double) (s2_y - s1_y) / (double) (s2_x - s1_x);
+
+      return (p_y - s1_y - (double) (p_x - s1_x) * m);
    }
-   while (pnt1 != imaxy);
-   pnt1 = imaxy;
-   pnt2 = imaxy + 1;
-   if (pnt2 >= poly->pointcount)
-   {
-      pnt2 = 0;
-   }
-   do
-   {
-      edge(table2, &poly->points[pnt1], &poly->points[pnt2]);
-      pnt1 = pnt2;
-      pnt2 = pnt2 + 1;
-      if (pnt2 >= poly->pointcount)
-      {
-         pnt2 = 0;
-      }
-   }
-   while (pnt1 != iminy);
-   do
-   {
-      span_clipped(im, iy1, &table1[iy1], &table2[iy1], clip_xmin, clip_xmax,
-                   clip_ymin, clip_ymax, r, g, b, a, op);
-      iy1++;
-   }
-   while (iy1 < iy2);
-   free(table1);
-   free(table2);
 }

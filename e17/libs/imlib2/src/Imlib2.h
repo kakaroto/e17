@@ -334,6 +334,8 @@ extern "C"
    void imlib_image_fill_polygon(ImlibPolygon poly);
    void imlib_polygon_get_bounds(ImlibPolygon poly, int *px1, int *py1,
                                  int *px2, int *py2);
+   unsigned char imlib_polygon_contains_point(ImlibPolygon poly, int x,
+                                              int y);
 
 /* ellipses */
    void imlib_image_draw_ellipse(int xc, int yc, int a, int b);

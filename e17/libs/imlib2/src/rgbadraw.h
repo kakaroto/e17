@@ -101,10 +101,7 @@ __imlib_draw_ellipse_clipped(ImlibImage * im, int xc, int yc, int aa, int bb,
                              int clip_ymax, DATA8 r, DATA8 g, DATA8 b,
                              DATA8 a, ImlibOp op);
 void
-__imlib_draw_polygon_filled(ImlibImage * im, ImlibPoly poly, DATA8 r, DATA8 g,
-                     DATA8 b, DATA8 a, ImlibOp op);
-void
-__imlib_draw_polygon_filled_clipped(ImlibImage * im, ImlibPoly poly,
+__imlib_draw_polygon_filled(ImlibImage * im, ImlibPoly poly,
                                     int clip_xmin, int clip_xmax,
                                     int clip_ymin, int clip_ymax, DATA8 r,
                                     DATA8 g, DATA8 b, DATA8 a, ImlibOp op);
@@ -116,4 +113,18 @@ __imlib_fill_ellipse_clipped(ImlibImage * im, int xc, int yc, int aa, int bb,
                              int clip_xmin, int clip_xmax, int clip_ymin,
                              int clip_ymax, DATA8 r, DATA8 g, DATA8 b,
                              DATA8 a, ImlibOp op);
+unsigned char
+__imlib_polygon_contains_point(ImlibPoly poly, int x, int y);
+unsigned char
+__imlib_point_on_segment(int p_x, int p_y, int s1_x, int s1_y, int s2_x,
+                         int s2_y);
+unsigned char
+__imlib_segments_intersect(int r1_x, int r1_y, int r2_x, int r2_y, int s1_x,
+                           int s1_y, int s2_x, int s2_y);
+unsigned char
+__imlib_point_inside_segment(int p_x, int p_y, int s1_x, int s1_y, int s2_x,
+                             int s2_y);
+double
+__imlib_point_delta_from_line(int p_x, int p_y, int s1_x, int s1_y, int s2_x,
+                              int s2_y);
 #endif
