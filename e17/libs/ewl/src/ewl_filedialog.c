@@ -6,6 +6,8 @@ static void ewl_filedialog_save_init(Ewl_Filedialog * fd,
 				     Ewl_Callback_Function cb);
 static void ewl_filedialog_open_init(Ewl_Filedialog * fd,
 				     Ewl_Callback_Function cb);
+static void ewl_filedialog_change_path(Ewl_Widget * w, void *ev_data, 
+						 void *user_data);
 
 
 
@@ -172,14 +174,20 @@ ewl_filedialog_open_init(Ewl_Filedialog * fd, Ewl_Callback_Function cb)
 	ewl_container_append_child(EWL_CONTAINER(od->box), od->cancel);
 	ewl_widget_show(od->cancel);
 
-	fd->dialog = (void *) vbox;
+	fd->dialog = (void *) od;
 
 	fd->entry = ewl_entry_new ("");
 	ewl_container_append_child(EWL_CONTAINER(vbox), fd->entry);
+	ewl_callback_append (fd->entry, EWL_CALLBACK_VALUE_CHANGED,
+			ewl_filedialog_change_path, fd);
 	ewl_widget_show (fd->entry);
 	
-	
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void ewl_filedialog_change_path(Ewl_Widget * w, void *ev_data, void *user_data)
+{
+	printf ("Changing path to: %s\n", ewl_entry_get_text (EWL_ENTRY (w)));
 }
 
 

@@ -81,9 +81,12 @@ void __start_fd (Ewl_Widget *w, void *ev_data, void *user_data)
 
 void __open_file (Ewl_Widget *row, void *ev_data, void *user_data)
 {
-	printf("file double click from test program: %s\n",
-	    ewl_fileselector_get_filename (EWL_WIDGET (row)));
+	Ewl_Fileselector *fs = user_data;
+	
+	printf("file open from test program: %s\n",
+	    ewl_fileselector_get_filename (EWL_FILESELECTOR (fs)));
 
+	row = NULL;
 	ev_data = NULL;
 	user_data = NULL;
 }
