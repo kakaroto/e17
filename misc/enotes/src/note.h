@@ -46,6 +46,8 @@
 #define EDJE_HSCROLLBAR_BTN_DECR "hscroll-right"
 #define EDJE_HSCROLLBAR_SEEKER "htrough"
 
+#define EDJE_SCROLLBAR_BUTTON "scroll-button"
+
 #define EDJE_INFO_SCROLLBARS "EnoteInfoScrollbars"
 #define EDJE_INFO_FONTNAME "EnoteInfoFontName"
 #define EDJE_INFO_FONTSIZE "EnoteInfoFontSize"
