@@ -389,6 +389,8 @@ imlib_image_get_data(void)
    CAST_IMAGE(im, ctxt_image);
    if ((!(im->data)) && (im->loader) && (im->loader->load))
       im->loader->load(im, NULL, 0, 1);
+   if (!im->data)
+      return NULL;
    __imlib_DirtyImage(im);
    __imlib_DirtyPixmapsForImage(im);
    return im->data;
@@ -403,6 +405,8 @@ imlib_image_get_data_for_reading_only(void)
    CAST_IMAGE(im, ctxt_image);
    if ((!(im->data)) && (im->loader) && (im->loader->load))
       im->loader->load(im, NULL, 0, 1);
+   if (!im->data)
+      return NULL;
    return im->data;
 }
 
@@ -1946,6 +1950,8 @@ imlib_save_image(char *filename)
    CAST_IMAGE(im, ctxt_image);
    if ((!(im->data)) && (im->loader) && (im->loader->load))
       im->loader->load(im, NULL, 0, 1);
+   if (!im->data)
+      return;
    prev_ctxt_image = ctxt_image;
    __imlib_SaveImage(im, filename, ctxt_progress_func, 
 		     ctxt_progress_granularity, NULL);
@@ -1965,6 +1971,8 @@ imlib_save_image_with_error_return(char *filename,
    CAST_IMAGE(im, ctxt_image);
    if ((!(im->data)) && (im->loader) && (im->loader->load))
       im->loader->load(im, NULL, 0, 1);
+   if (!im->data)
+      return;
    prev_ctxt_image = ctxt_image;
    __imlib_SaveImage(im, filename, ctxt_progress_func, 
 		     ctxt_progress_granularity, error_return);
