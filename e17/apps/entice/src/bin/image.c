@@ -669,8 +669,8 @@ e_load_prev_image(void)
 void
 e_display_current_image(void)
 {
-   scroll_x = 0;
-   scroll_y = 0;
+   int scroll_x = 0;
+   int scroll_y = 0;
    Imlib_Image im;
    DATA32 *data;
    int mustUseImlib = 0;
