@@ -320,9 +320,9 @@ Ewl_Widget *ewl_notebook_remove_page(Ewl_Notebook * n, int i)
  * ewl_notebook_remove_visible - remove the visible page from the notebook
  * @n: the notebook to remove the visible page
  *
- * Returns a pointer to the removed page on success, NULL on failure.
+ * Returns no value.
  */
-Ewl_Widget *ewl_notebook_remove_visible(Ewl_Notebook * n)
+void ewl_notebook_remove_visible(Ewl_Notebook * n)
 {
 	Ewl_Widget     *w;
 	Ewl_Widget     *tab = NULL;
@@ -331,28 +331,58 @@ Ewl_Widget *ewl_notebook_remove_visible(Ewl_Notebook * n)
 	Ewl_Container  *tc;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("n", n, NULL);
+	DCHECK_PARAM_PTR("n", n);
 
 	w = EWL_WIDGET(n);
 	c = EWL_CONTAINER(n);
 	tc = EWL_CONTAINER(n->tab_box);
 
+	/*
+	 * No visible page? What the hell are we doing here then?!?
+	 */
+	if (!n->visible_page)
+		DRETURN(DLEVEL_STABLE);
+
+	/*
+	 * Search out the page in the notebook, and the tab that goes with it.
+	 */
 	ewd_list_goto_first(c->children);
 	ewd_list_goto_first(tc->children);
-	while ((page = ewd_list_next(c->children)) && page != n->visible_page) {
+	while ((page = ewd_list_next(c->children))) {
 		if (page != n->tab_box)
 			tab = ewd_list_next(tc->children);
+		if (page == n->visible_page)
+			break;
 	}
 
+	/*
+	 * We found a page, sweet, kick it to the curb!
+	 */
 	if (page) {
+
+		/*
+		 * Remove from the list of pages in this notebook, and set it
+		 * to be freed.
+		 */
 		ewl_container_remove_child(c, page);
+		ewl_widget_destroy(page);
+
+		/*
+		 * If a tab is found remove it and free it.
+		 */
 		if (tab) {
 			ewl_container_remove_child(tc, tab);
 			ewl_widget_destroy(tab);
 		}
+
+		/*
+		 * Set a usable visible page.
+		 */
+		n->visible_page = NULL;
+		ewl_notebook_set_visible_page(n, 0);
 	}
 
-	DRETURN_PTR(page, DLEVEL_STABLE);
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -564,7 +594,8 @@ void ewl_notebook_set_visible_page(Ewl_Notebook *n, int t)
 	if (!child || child == n->visible_page)
 		DRETURN(DLEVEL_STABLE);
 
-	ewl_widget_hide(n->visible_page);
+	if (n->visible_page)
+		ewl_widget_hide(n->visible_page);
 	n->visible_page = child;
 	ewl_widget_show(child);
 

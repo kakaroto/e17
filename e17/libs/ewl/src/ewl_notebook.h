@@ -27,7 +27,7 @@ void            ewl_notebook_insert_page(Ewl_Notebook * n, Ewl_Widget * c,
 Ewl_Widget *ewl_notebook_remove_first_page(Ewl_Notebook * n);
 Ewl_Widget *ewl_notebook_remove_last_page(Ewl_Notebook * n);
 Ewl_Widget *ewl_notebook_remove_page(Ewl_Notebook * n, int i);
-Ewl_Widget *ewl_notebook_remove_visible(Ewl_Notebook * n);
+void ewl_notebook_remove_visible(Ewl_Notebook * n);
 
 void            ewl_notebook_set_tabs_alignment(Ewl_Notebook * n,
 						unsigned int a);
