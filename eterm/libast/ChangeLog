@@ -523,3 +523,7 @@ Added sysdefs.h so that client programs who don't employ some/all of
 the AST_* m4 macros can still get all the #define's they need for the
 auto* stuff.
 ----------------------------------------------------------------------
+Wed Nov 26 18:49:32 2003                        Michael Jennings (mej)
+
+Oops.  Forgot the most important part! :-P
+----------------------------------------------------------------------
