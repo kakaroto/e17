@@ -294,7 +294,6 @@ Makefile
 etox-config
 src/Makefile
 test/Makefile
-test/img/Makefile
 ], [
 chmod +x etox-config
 ]
