@@ -236,7 +236,7 @@ SaveWindowStates(void)
 		  y = desks.desk[ewin->desktop].current_area_y * VRoot.h;
 	       }
 	     fprintf(f, "[CLIENT] %i %i %i %i %i %i %i %i %i\n",
-		     ewin->client.x + x, ewin->client.y + y, ewin->client.w,
+		     ewin->x + x, ewin->y + y, ewin->client.w,
 		     ewin->client.h, ewin->desktop, ewin->iconified,
 		     ewin->shaded, ewin->sticky, ewin->layer);
 	     if (ewin->session_id)
@@ -412,6 +412,7 @@ MatchEwinToSM(EWin * ewin)
 		     (desks.desk[ewin->desktop].current_area_x * VRoot.w);
 		  ewin->client.y = matches[i].y -
 		     (desks.desk[ewin->desktop].current_area_y * VRoot.h);
+		  ewin->client.grav = NorthWestGravity;
 		  ewin->client.w = matches[i].w;
 		  ewin->client.h = matches[i].h;
 		  EMoveResizeWindow(disp, ewin->client.win, ewin->client.x,

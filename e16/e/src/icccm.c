@@ -390,7 +390,10 @@ ICCCM_Adopt(EWin * ewin)
    EDBUG(6, "ICCCM_Adopt");
 
    if (!ewin->internal)
-      XSetWindowBorderWidth(disp, win, 0);
+     {
+	XSetWindowBorderWidth(disp, win, 0);
+	ewin->client.bw = 0;
+     }
    EReparentWindow(disp, win, ewin->win_container, 0, 0);
    c[0] = (ewin->client.start_iconified) ? IconicState : NormalState;
    XChangeProperty(disp, win, E_XA_WM_STATE, E_XA_WM_STATE, 32, PropModeReplace,
@@ -1067,8 +1070,8 @@ ICCCM_SetEInfo(EWin * ewin)
       aa = XInternAtom(disp, "ENL_INTERNAL_DATA_BORDER", False);
    c[0] = ewin->desktop;
    c[1] = ewin->sticky;
-   c[2] = ewin->client.x;
-   c[3] = ewin->client.y;
+   c[2] = ewin->x;
+   c[3] = ewin->y;
    c[4] = ewin->iconified;
    if (ewin->iconified)
       ICCCM_DeIconify(ewin);
@@ -1179,6 +1182,7 @@ ICCCM_GetEInfo(EWin * ewin)
 	ewin->sticky = c[1];
 	ewin->client.x = c[2];
 	ewin->client.y = c[3];
+	ewin->client.grav = NorthWestGravity;
 	ewin->iconified = c[4];
 	ewin->shaded = c[5];
 	if (ewin->sticky)

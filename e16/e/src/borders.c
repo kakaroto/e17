@@ -485,8 +485,8 @@ AddToFamily(Window win)
      }
 
    /* if it hasn't been placed yet.... find a spot for it */
-   x = 0;
-   y = 0;
+   x = ewin->x;
+   y = ewin->y;
    if ((!ewin->client.already_placed) && (!manplace))
      {
 
@@ -536,53 +536,6 @@ AddToFamily(Window win)
 	     ArrangeEwinXY(ewin, &x, &y);
 	  }			/* (Conf.manual_placement_mouse_pointer) */
      }				/* ((!ewin->client.already_placed) && (!manplace)) */
-   else
-     {
-	x = ewin->x;
-	y = ewin->y;
-	switch (ewin->client.grav)
-	  {
-	  case NorthWestGravity:
-	     x += (ewin->client.bw * 2);
-	     y += (ewin->client.bw * 2);
-	     break;
-	  case NorthGravity:
-	     y += (ewin->client.bw * 2);
-	     break;
-	  case NorthEastGravity:
-	     y += (ewin->client.bw * 2);
-	     if (ewin->border)
-		x -= ewin->border->border.left + (ewin->client.bw * 2);
-	     break;
-	  case EastGravity:
-	     if (ewin->border)
-		x -= ewin->border->border.left + (ewin->client.bw * 2);
-	     break;
-	  case SouthEastGravity:
-	     if (ewin->border)
-	       {
-		  x -= ewin->border->border.left + (ewin->client.bw * 2);
-		  y -= ewin->border->border.top + (ewin->client.bw * 2);
-	       }
-	     break;
-	  case SouthGravity:
-	     if (ewin->border)
-		y -= ewin->border->border.top + (ewin->client.bw * 2);
-	     break;
-	  case SouthWestGravity:
-	     x += (ewin->client.bw * 2);
-	     if (ewin->border)
-		y -= ewin->border->border.top + (ewin->client.bw * 2);
-	     break;
-	  case WestGravity:
-	     x += (ewin->client.bw * 2);
-	     break;
-	  case CenterGravity:
-	     break;
-	  default:
-	     break;
-	  }
-     }
 
    /* if the window asked to be iconified at the start */
    if (ewin->client.start_iconified)
@@ -1149,11 +1102,82 @@ HonorIclass(char *s, int id)
    EDBUG_RETURN_;
 }
 
+/*
+ * Derive frame window position from client window and border properties
+ */
+void
+EwinGetPosition(EWin * ewin, int *px, int *py)
+{
+   int                 x, y, bw, frame_lr, frame_tb;
+
+   x = ewin->client.x;
+   y = ewin->client.y;
+   bw = ewin->client.bw;
+   frame_lr = ewin->border->border.left + ewin->border->border.right;
+   frame_tb = ewin->border->border.top + ewin->border->border.bottom;
+
+   switch (ewin->client.grav)
+     {
+     case NorthWestGravity:
+     case SouthWestGravity:
+     case WestGravity:
+	x -= bw;
+	break;
+     case NorthEastGravity:
+     case EastGravity:
+     case SouthEastGravity:
+	x -= frame_lr / 2;
+	break;
+     case NorthGravity:
+     case CenterGravity:
+     case SouthGravity:
+	x -= frame_lr - bw;
+	break;
+     default:
+	break;
+     }
+
+   switch (ewin->client.grav)
+     {
+     case NorthWestGravity:
+     case NorthGravity:
+     case NorthEastGravity:
+	y -= bw;
+	break;
+     case WestGravity:
+     case CenterGravity:
+     case EastGravity:
+	y -= frame_tb / 2;
+	break;
+     case SouthWestGravity:
+     case SouthGravity:
+     case SouthEastGravity:
+	y -= frame_tb - bw;
+	break;
+     default:
+	break;
+     }
+
+   *px = x;
+   *py = y;
+}
+
+/*
+ * Derive frame window geometry from client window properties
+ */
 static void
 EwinGetGeometry(EWin * ewin)
 {
-   ewin->shape_x = ewin->x = ewin->client.x - ewin->border->border.left;
-   ewin->shape_y = ewin->y = ewin->client.y - ewin->border->border.top;
+   int                 x, y;
+
+   EwinGetPosition(ewin, &x, &y);
+
+   ewin->client.x = x + ewin->border->border.left;
+   ewin->client.y = y + ewin->border->border.top;
+
+   ewin->shape_x = ewin->x = x;
+   ewin->shape_y = ewin->y = y;
+
    ewin->w = ewin->client.w +
       ewin->border->border.left + ewin->border->border.right;
    ewin->h = ewin->client.h +
@@ -3432,8 +3456,7 @@ EwinsSetFree(void)
 
 	/* This makes E determine the client window stacking at exit */
 	EReparentWindow(disp, ewin->client.win, VRoot.win,
-			ewin->x + ewin->border->border.left,
-			ewin->y + ewin->border->border.top);
+			ewin->client.x, ewin->client.y);
      }
 }
 

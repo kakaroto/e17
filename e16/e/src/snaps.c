@@ -629,8 +629,8 @@ SnapshotEwinLocation(EWin * ewin)
    if (!sn)
       return;
    sn->use_xy = 1;
-   sn->x = ewin->client.x;
-   sn->y = ewin->client.y;
+   sn->x = ewin->x;
+   sn->y = ewin->y;
    sn->area_x = ewin->area_x;
    sn->area_y = ewin->area_y;
    if (!ewin->sticky)
@@ -1173,6 +1173,7 @@ MatchEwinToSnapInfo(EWin * ewin)
 	ewin->client.already_placed = 1;
 	ewin->client.x = sn->x;
 	ewin->client.y = sn->y;
+	ewin->client.grav = NorthWestGravity;
 	ewin->area_x = sn->area_x;
 	ewin->area_y = sn->area_y;
 	if (!ewin->sticky)

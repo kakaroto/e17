@@ -1737,6 +1737,7 @@ void                BackgroundsInit(void);
 #define EWIN_CHANGE_DESKTOP     (1<<3)
 #define EWIN_CHANGE_LAYER       (1<<4)
 
+void                EwinGetPosition(EWin * ewin, int *px, int *py);
 void                EwinRefresh(EWin * ewin);
 void                EwinUpdateAfterMoveResize(EWin * ewin, int resize);
 void                EwinFixPosition(EWin * ewin);

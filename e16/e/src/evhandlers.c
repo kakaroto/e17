@@ -779,8 +779,8 @@ HandleConfigureRequest(XEvent * ev)
    ewin = FindItem(NULL, win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
    if (ewin)
      {
-	x = ewin->x + ewin->border->border.left;
-	y = ewin->y + ewin->border->border.top;
+	x = ewin->x;
+	y = ewin->y;
 	w = ewin->client.w;
 	h = ewin->client.h;
 	winrel = 0;
@@ -831,9 +831,16 @@ HandleConfigureRequest(XEvent * ev)
 	if (h > ewin->client.height.max)
 	   ewin->client.height.max = h;
 
+	if (ev->xconfigurerequest.value_mask & (CWX | CWY))
+	  {
+	     /* Correct position taking gravity into account */
+	     ewin->client.x = x;
+	     ewin->client.y = y;
+	     EwinGetPosition(ewin, &x, &y);
+	  }
+
 	Mode.move.check = 0;	/* Don't restrict client requests */
-	MoveResizeEwin(ewin, x - ewin->border->border.left,
-		       y - ewin->border->border.top, w, h);
+	MoveResizeEwin(ewin, x, y, w, h);
 	Mode.move.check = 1;
 	if (Mode.mode == MODE_MOVE_PENDING || Mode.mode == MODE_MOVE)
 	   ICCCM_Configure(ewin);
