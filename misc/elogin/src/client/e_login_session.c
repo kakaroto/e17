@@ -58,6 +58,7 @@ e_login_session_init(E_Login_Session e)
    Evas *evas;
    Evas_List *l;
    Evas_Object *li;
+   E_Login_Session_Type *st = NULL;
    int iw, ih, ix, iy;
 
    if (!e)
@@ -171,9 +172,10 @@ e_login_session_init(E_Login_Session e)
    e->listitems = NULL;
    for (l = e->config->sessions; l && iy <= 330; l = l->next)
    {
+      st = (E_Login_Session_Type *) evas_list_data(l);
       li = evas_object_text_add(evas);
       evas_object_text_font_set(li, "notepad.ttf", 16.0);
-      evas_object_text_text_set(li, (char *) evas_list_data(l));
+      evas_object_text_text_set(li, st->name);
       evas_object_layer_set(li, 5);
       evas_object_color_set(li, 0, 0, 0, 255);
       evas_object_move(li, (double) ix, (double) iy);
@@ -197,7 +199,10 @@ e_login_session_init(E_Login_Session e)
    /* Set default session to first in list (for now) */ ;
    l = e->config->sessions;
    if (l)
-      e->session = evas_list_data(l);
+   {
+      st = evas_list_data(l);
+      e->session = st->path;
+   }
    else
       e->session = NULL;
 

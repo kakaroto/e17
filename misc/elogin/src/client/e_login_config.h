@@ -37,11 +37,17 @@ struct _E_Login_Config
       float h, v;
    }
    place;
-   Evas_List users;
+   Evas_List *users;
    Evas_List *sessions;
 };
-
 typedef struct _E_Login_Config *E_Login_Config;
+
+struct _E_Login_Session_Type
+{
+   char *name;
+   char *path;
+};
+typedef struct _E_Login_Session_Type E_Login_Session_Type;
 
 E_Login_Config e_login_config_parse(char *file);
 void e_login_config_print(E_Login_Config e);

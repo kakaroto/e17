@@ -28,16 +28,21 @@ e_login_config_populate(E_Login_Config e, E_DB_File * db)
 
    if (e_db_int_get(db, "/elogin/session/count", &num_session))
    {
-	for(i = 0; i < num_session; i++)
-	{
-	    char buf[PATH_MAX];
-	    snprintf(buf, PATH_MAX, "/elogin/session/%d", i);
-	    if((str = e_db_str_get(db, buf)))
-	    {
-		l = evas_list_append(l, str);
-	    }
-	}
-	e->sessions = l;
+      for (i = 0; i < num_session; i++)
+      {
+         char buf[PATH_MAX];
+         E_Login_Session_Type *st = NULL;
+
+         st = (E_Login_Session_Type *) malloc(sizeof(E_Login_Session_Type));
+         memset(st, 0, sizeof(E_Login_Session_Type));
+
+         snprintf(buf, PATH_MAX, "/elogin/session/%d/name", i);
+         st->name = e_db_str_get(db, buf);
+         snprintf(buf, PATH_MAX, "/elogin/session/%d/path", i);
+         st->path = e_db_str_get(db, buf);
+         l = evas_list_append(l, st);
+      }
+      e->sessions = l;
    }
    else
    {

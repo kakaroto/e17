@@ -24,6 +24,7 @@ void
 elogin_select_session(E_Login_Session e, int index)
 {
    int ix, iy;
+   E_Login_Session_Type *st = NULL;
 
    /* Force within list bounds/wraparound */
    if (index >= evas_list_count(e->listitems))
@@ -38,7 +39,8 @@ elogin_select_session(E_Login_Session e, int index)
 
    /* Update current session */
    e->session_index = index;
-   e->session = evas_list_nth(e->config->sessions, index);
+   st = evas_list_nth(e->config->sessions, index);
+   e->session = st->path;
 }
 
 int
@@ -97,11 +99,10 @@ elogin_start_x(E_Login_Session e)
 #if X_TESTING
    snprintf(buf, PATH_MAX, "/usr/X11R6/bin/xterm");
 #else
-/*   snprintf(buf, PATH_MAX, "%s/.xinitrc", e->auth->pam.pw->pw_dir); */
-   if (e->session)
-      snprintf(buf, PATH_MAX, "/etc/X11/Xsession %s", e->session);
-   else
+   if ((!e->session))
       snprintf(buf, PATH_MAX, "/etc/X11/Xsession");
+   else
+      snprintf(buf, PATH_MAX, "/etc/X11/Xsession %s", e->session);
 #endif
 
    ecore_sync();
