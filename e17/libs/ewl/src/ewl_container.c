@@ -305,9 +305,8 @@ void ewl_container_resize_child(Ewl_Widget * w, int size, Ewl_Orientation o)
 	 * Run the parents child resize function to allow it to update it's
 	 * preferred size.
 	 */
-	if (EWL_CONTAINER(w->parent)->child_resize)
-		EWL_CONTAINER(w->parent)->
-		    child_resize(EWL_CONTAINER(w->parent), w, size, o);
+	EWL_CONTAINER(w->parent)->child_resize(EWL_CONTAINER(w->parent),
+			w, size, o);
 
 	/*
 	 * Get the new preferred size of the parent to see if it changed.
@@ -321,6 +320,8 @@ void ewl_container_resize_child(Ewl_Widget * w, int size, Ewl_Orientation o)
 	 */
 	if (w->parent->parent)
 		ewl_widget_configure(w->parent->parent);
+	else
+		ewl_widget_configure(w->parent);
 }
 
 /**

@@ -762,22 +762,16 @@ void __ewl_widget_theme_update(Ewl_Widget * w, void *ev_data, void *user_data)
 		 */
 		ebits_get_min_size(w->ebits_object, &i_l, &i_t);
 
-		if (MINIMUM_W(w) == EWL_OBJECT_MIN_SIZE)
-			ewl_object_set_minimum_w(EWL_OBJECT(w), i_l);
-
-		if (MINIMUM_H(w) == EWL_OBJECT_MIN_SIZE)
-			ewl_object_set_minimum_h(EWL_OBJECT(w), i_t);
+		ewl_object_set_minimum_w(EWL_OBJECT(w), i_l);
+		ewl_object_set_minimum_h(EWL_OBJECT(w), i_t);
 
 		/*
 		 * Propagate maximum sizes from the bit theme to the widget.
 		 */
 		ebits_get_max_size(w->ebits_object, &i_l, &i_t);
 
-		if (MAXIMUM_W(w) == EWL_OBJECT_MAX_SIZE)
-			ewl_object_set_maximum_w(EWL_OBJECT(w), i_l);
-
-		if (MAXIMUM_H(w) == EWL_OBJECT_MAX_SIZE)
-			ewl_object_set_maximum_h(EWL_OBJECT(w), i_t);
+		ewl_object_set_maximum_w(EWL_OBJECT(w), i_l);
+		ewl_object_set_maximum_h(EWL_OBJECT(w), i_t);
 	}
 
 	DRETURN(DLEVEL_STABLE);

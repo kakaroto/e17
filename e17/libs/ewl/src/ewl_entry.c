@@ -179,8 +179,9 @@ void __ewl_entry_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 			ewl_object_get_preferred_w(EWL_OBJECT(e->text)),
 			ewl_object_get_preferred_h(EWL_OBJECT(e->text)));
 
-	str = EWL_TEXT(e->text)->text;
+	str = ewl_text_get_text(EWL_TEXT(e->text));
 	c_spos = ewl_cursor_get_start_position(EWL_CURSOR(e->cursor));
+	c_epos = ewl_cursor_get_end_position(EWL_CURSOR(e->cursor));
 
 	l = ewl_text_get_length(EWL_TEXT(e->text));
 	if (str && l && c_spos > l) {
@@ -195,7 +196,6 @@ void __ewl_entry_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 		ewl_text_get_letter_geometry(EWL_TEXT(e->text), --c_spos, &sx,
 					     &sy, NULL, NULL);
 
-		c_epos = ewl_cursor_get_end_position(EWL_CURSOR(e->cursor));
 		ewl_text_get_letter_geometry(EWL_TEXT(e->text), --c_epos, &ex,
 					     &ey, &ew, &eh);
 
@@ -204,6 +204,8 @@ void __ewl_entry_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	}
 
 	ewl_object_request_geometry(EWL_OBJECT(e->cursor), xx, yy, ww, hh);
+
+	FREE(str);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -507,7 +509,7 @@ void __ewl_entry_delete_to_left(Ewl_Widget * w)
 	ep = ewl_cursor_get_end_position(EWL_CURSOR(e->cursor));
 
 	s = ewl_entry_get_text(EWL_ENTRY(w));
-	if (!strlen(s) || sp < 2) {
+	if (!strlen(s) || (sp == ep && sp < 2)) {
 		FREE(s);
 		DRETURN(DLEVEL_STABLE);
 	}

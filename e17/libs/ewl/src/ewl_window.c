@@ -59,7 +59,7 @@ Ewl_Window     *ewl_window_find_window(Window window)
 
 	ewd_list_goto_first(ewl_window_list);
 
-	while ((retwin = ewd_list_next(ewl_window_list)) != NULL)
+	while ((retwin = ewd_list_next(ewl_window_list)))
 		if (retwin->window == window)
 			DRETURN_PTR(retwin, DLEVEL_STABLE);
 
@@ -565,6 +565,7 @@ void __ewl_window_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Window     *win;
 	Ewl_Object     *child;
+	int             width, height;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -586,24 +587,22 @@ void __ewl_window_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 		 * they've already been accounted for.
 		 */
 		ewl_object_request_size(child,
-					CURRENT_W(w) - (CURRENT_X(child)),
-					CURRENT_H(w) - (CURRENT_Y(child)));
+					CURRENT_W(w) -
+					ewl_object_get_current_x(child),
+					CURRENT_H(w) -
+					ewl_object_get_current_y(child));
 	}
 
-	ecore_window_resize(win->window,
-			ewl_object_get_current_w(EWL_OBJECT(w)),
-			ewl_object_get_current_h(EWL_OBJECT(w)));
-	ecore_window_resize(win->evas_window,
-			ewl_object_get_current_w(EWL_OBJECT(w)),
-			ewl_object_get_current_h(EWL_OBJECT(w)));
-	evas_output_size_set(win->evas,
-			ewl_object_get_current_w(EWL_OBJECT(w)),
-			ewl_object_get_current_h(EWL_OBJECT(w)));
+	width = ewl_object_get_current_w(EWL_OBJECT(w));
+	height = ewl_object_get_current_h(EWL_OBJECT(w));
+
+	ecore_window_resize(win->window, width, height);
+	ecore_window_resize(win->evas_window, width, height);
+	evas_output_size_set(win->evas, width, height);
 	evas_output_viewport_set(win->evas,
 			ewl_object_get_current_x(EWL_OBJECT(w)),
 			ewl_object_get_current_y(EWL_OBJECT(w)),
-			ewl_object_get_current_w(EWL_OBJECT(w)),
-			ewl_object_get_current_h(EWL_OBJECT(w)));
+			width, height);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

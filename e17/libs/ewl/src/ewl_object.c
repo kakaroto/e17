@@ -170,7 +170,7 @@ void ewl_object_set_preferred_size(Ewl_Object * o, unsigned int w,
  */
 void ewl_object_set_preferred_w(Ewl_Object * o, unsigned int w)
 {
-	int             old_size;
+	int             old_size, new_size;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -187,16 +187,18 @@ void ewl_object_set_preferred_w(Ewl_Object * o, unsigned int w)
 	 */
 	old_size = PREFERRED_W(o);
 
-	/*
-	 * Set the current size to the new preferred size.
-	 */
 	PREFERRED_W(o) = w;
+	if (w < MINIMUM_W(o))
+		new_size = MINIMUM_W(o);
+	else if (w > MAXIMUM_W(o))
+		new_size = MAXIMUM_W(o);
+	else
+		new_size = w;
 
 	/*
 	 * Now update the widgets parent of the change in size.
 	 */
-	ewl_container_resize_child(EWL_WIDGET(o),
-				   PREFERRED_W(o) - old_size,
+	ewl_container_resize_child(EWL_WIDGET(o), new_size - old_size,
 				   EWL_ORIENTATION_HORIZONTAL);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -212,7 +214,7 @@ void ewl_object_set_preferred_w(Ewl_Object * o, unsigned int w)
  */
 void ewl_object_set_preferred_h(Ewl_Object * o, unsigned int h)
 {
-	int             old_size;
+	int             old_size, new_size;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -229,16 +231,19 @@ void ewl_object_set_preferred_h(Ewl_Object * o, unsigned int h)
 	 */
 	old_size = PREFERRED_H(o);
 
-	/*
-	 * Set the current size to the new preferred size
-	 */
 	PREFERRED_H(o) = h;
+	if (h < MINIMUM_H(o))
+		new_size = MINIMUM_H(o);
+	else if (h > MAXIMUM_H(o))
+		new_size = MAXIMUM_H(o);
+	else
+		new_size = h;
 
 	/*
 	 * Notify the parent widgets of the change in size.
 	 */
 	ewl_container_resize_child(EWL_WIDGET(o),
-				   PREFERRED_H(o) - old_size,
+				   new_size - old_size,
 				   EWL_ORIENTATION_VERTICAL);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -539,11 +544,8 @@ inline void ewl_object_set_minimum_w(Ewl_Object * o, unsigned int w)
 	if (MAXIMUM_W(o) < w)
 		MAXIMUM_W(o) = w;
 
-	/*
-	 * Notify the parent widgets of the change in size.
-	 */
-	ewl_container_resize_child(EWL_WIDGET(o), 0,
-				   EWL_ORIENTATION_HORIZONTAL);
+	if (PREFERRED_W(o) < MINIMUM_W(o))
+		ewl_object_set_preferred_w(EWL_WIDGET(o), PREFERRED_W(o));
 
 	if (CURRENT_W(o) < w)
 		ewl_object_request_w(o, w);
@@ -571,11 +573,8 @@ inline void ewl_object_set_minimum_h(Ewl_Object * o, unsigned int h)
 	if (MAXIMUM_H(o) < h)
 		MAXIMUM_H(o) = h;
 
-	/*
-	 * Notify the parent widgets of the change in size.
-	 */
-	ewl_container_resize_child(EWL_WIDGET(o), 0,
-				   EWL_ORIENTATION_VERTICAL);
+	if (PREFERRED_H(o) < MINIMUM_H(o))
+		ewl_object_set_preferred_h(EWL_WIDGET(o), PREFERRED_H(o));
 
 	if (CURRENT_H(o) < h)
 		ewl_object_request_h(o, h);
@@ -680,6 +679,9 @@ inline void ewl_object_set_maximum_w(Ewl_Object * o, unsigned int w)
 	if (MINIMUM_W(o) > w)
 		MINIMUM_W(o) = w;
 
+	if (PREFERRED_W(o) > MAXIMUM_W(o))
+		ewl_object_set_preferred_w(EWL_WIDGET(o), PREFERRED_W(o));
+
 	if (CURRENT_W(o) > w)
 		ewl_object_request_h(o, w);
 
@@ -705,6 +707,9 @@ inline void ewl_object_set_maximum_h(Ewl_Object * o, unsigned int h)
 
 	if (MINIMUM_H(o) > h)
 		o->minimum.h = h;
+
+	if (PREFERRED_H(o) > MAXIMUM_H(o))
+		ewl_object_set_preferred_h(EWL_WIDGET(o), PREFERRED_H(o));
 
 	if (CURRENT_H(o) > h)
 		ewl_object_request_h(o, h);
