@@ -395,9 +395,11 @@ equate_edje_theme_set(char *theme)
 {
 //  char         tmp[PATH_MAX];
    Evas_Coord      mw, mh;
+   char           *text;
 
    if (!equate_edje_inited)
       return;
+   text = edje_object_part_text_get(equate_edje_root, "EquateAnswer");
 #if 0
    if ((strstr(theme, "/")))
       snprintf(tmp, PATH_MAX, theme);
@@ -415,6 +417,8 @@ equate_edje_theme_set(char *theme)
       edje_object_size_max_get(equate_edje_root, &mw, &mh);
       ecore_evas_size_max_set(equate_edje_window, (int) mw, (int) mh);
       evas_object_show(equate_edje_root);
+
+      edje_object_part_text_set(equate_edje_root, "EquateAnswer", text);
    } else {
       fprintf(stderr, "Unable to open %s for edje theme\n", theme);
       equate_quit();
