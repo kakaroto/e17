@@ -717,7 +717,12 @@ main(int argc, char *argv[])
          snprintf(buf, PATH_MAX, "%s/themes/%s", PACKAGE_DATA_DIR,
                   session->config->theme);
       else
+      {
          snprintf(buf, PATH_MAX, "%s", theme);
+         if (session->config->theme)
+            free(session->config->theme);
+         session->config->theme = strdup(buf);
+      }
       if (!edje_object_file_set(edje, buf, "Main"))
       {
          syslog(LOG_CRIT, "Failed to load theme %s\n", theme);
