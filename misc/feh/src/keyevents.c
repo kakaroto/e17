@@ -120,6 +120,21 @@ handle_keypress_event(XEvent * ev, Window win)
      case 'Q':
         winwidget_destroy_all();
         break;
+     case '=':
+     case '+':
+        if (opt.reload<SLIDESHOW_RELOAD_MAX)
+           opt.reload++;
+        else if (opt.verbose)
+           fprintf(stderr,"Cannot set RELOAD higher than %d seconds.\n",
+              opt.reload);
+        break;
+     case '-':
+     case '_':
+        if (opt.reload>1)
+           opt.reload--;
+        else if (opt.verbose)
+           fprintf(stderr,"Cannot set RELOAD lower than 1 second.\n");
+        break;
      default:
         break;
    }

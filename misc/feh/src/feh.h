@@ -52,6 +52,7 @@
 
 #define CHECK_SIZE 160
 #define PROGRESS_GRANULARITY 10
+#define SLIDESHOW_RELOAD_MAX 1024
 
 #ifndef __GNUC__
 # define __attribute__(x)
@@ -192,6 +193,7 @@ typedef struct cmdlineoptions
    int slideshow_delay;
    int reload;
    int sort;
+   unsigned char adjust_reload;
 }
 fehoptions;
 
