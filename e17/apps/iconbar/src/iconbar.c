@@ -89,6 +89,8 @@ iconbar_path_set(Evas_Object *obj, char *path)
   evas_object_move(ib->cont, 10, 10);
   evas_object_resize(ib->cont, 20, 200);
   evas_object_show(ib->cont);
+  e_container_layout_plugin_set(ib->cont, 
+		    edje_file_data_get(buf, "container_layout"));
   edje_object_part_swallow(ib->gui, "icons", ib->cont); //was clip
   e_container_callback_order_change_set(ib->cont, write_out_order, ib);
 
@@ -102,7 +104,7 @@ iconbar_path_set(Evas_Object *obj, char *path)
   iconbar_icons_load(ib);
   evas_object_layer_set(ib->cont, 100);
   evas_object_show(ib->cont);
-
+	
   ib->clock_timer = ecore_timer_add(0.25, clock_timer, ib);
 }
 
