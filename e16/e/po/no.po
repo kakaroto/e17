@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.4\n"
-"POT-Creation-Date: 2000-04-06 05:12+0200\n"
+"POT-Creation-Date: 2000-04-06 09:19+0200\n"
 "PO-Revision-Date: 2000-03-07 12:08+0100\n"
 "Last-Translator: Terje Røsten <terjeros@phys.ntnu.no>\n"
 "Language-Team: Norwegian <no@li.org>\n"
@@ -18,11 +18,11 @@ msgstr ""
 #: src/tooltips.c:1035
 #, c-format
 msgid "%u references remain\n"
-msgstr ""
+msgstr "%u referanser er igjen\n"
 
 #: src/actions.c:275
 msgid "ActionClass Error!"
-msgstr ""
+msgstr "Feil ved kommandoklasse!"
 
 #: src/actions.c:664
 #, c-format
@@ -216,15 +216,15 @@ msgstr "Avslutt"
 
 #: src/borders.c:2475
 msgid "Border Error!"
-msgstr ""
+msgstr "Feil med ramme!"
 
 #: src/buttons.c:128
 msgid "Button Error!"
-msgstr ""
+msgstr "Feil med knapp!"
 
 #: src/cmclass.c:99
 msgid "ColorModClass Error!"
-msgstr ""
+msgstr "Feil ved fargemodifiseringsklasse!"
 
 #: src/comms.c:2211
 #, c-format
@@ -750,11 +750,11 @@ msgstr ""
 
 #: src/cursors.c:112
 msgid "ECursor Error!"
-msgstr ""
+msgstr "Epeker feil!"
 
 #: src/desktops.c:425
 msgid "Background Error!"
-msgstr ""
+msgstr "Bakgrunnsfeil!"
 
 #: src/desktops.c:1110
 msgid ""
@@ -1036,6 +1036,8 @@ msgid ""
 "Enlightenment Window Group\n"
 "Selection Dialog\n"
 msgstr ""
+"Vindusgrupper for Enlightenment\n"
+"Dialog for utvelgelse\n"
 
 #: src/groups.c:694 src/pager.c:1277 src/settings.c:328 src/settings.c:597
 #: src/settings.c:765 src/settings.c:945 src/settings.c:1183
@@ -1206,7 +1208,7 @@ msgstr ""
 
 #: src/iclass.c:113
 msgid "ImageClass Error!"
-msgstr ""
+msgstr "Feil ved bildeklasse!"
 
 #: src/iconify.c:2420
 msgid "Iconbox Options"
@@ -1226,7 +1228,7 @@ msgstr "Lag en ny ikonboks"
 
 #: src/ipc.c:2220
 msgid "Message"
-msgstr ""
+msgstr "Beskjed"
 
 #: src/ipc.c:4746
 msgid "Enlightenment IPC Commands Help"
@@ -1851,6 +1853,8 @@ msgid ""
 "Enlightenment Desktop & Area\n"
 "Pager Settings Dialog\n"
 msgstr ""
+"Dialog for innstilling av \n"
+"skrivebordsoversikt i Enlightenment \n"
 
 #: src/settings.c:155
 msgid "Enable pager display"
@@ -1920,6 +1924,8 @@ msgid ""
 "Enlightenment Focus\n"
 "Settings Dialog\n"
 msgstr ""
+"Dialog for innstilling \n"
+"av fokus i Enlightenment\n"
 
 #: src/settings.c:439
 msgid "Focus follows pointer"
@@ -1994,6 +2000,8 @@ msgid ""
 "Enlightenment Move & Resize\n"
 "Method Settings Dialog\n"
 msgstr ""
+"Dialog for innstilling av\n"
+"flytting & størrelse i Enlightenment\n"
 
 #: src/settings.c:668
 msgid "Move Methods:"
@@ -2046,6 +2054,8 @@ msgid ""
 "Enlightenment Multiple Desktop\n"
 "Settings Dialog\n"
 msgstr ""
+"Dialog for innstilling av\n"
+"virtuelle skrivebord i Enlightenment\n"
 
 #: src/settings.c:908
 msgid "Number of virtual desktops:\n"
@@ -2077,6 +2087,8 @@ msgid ""
 "Enlightenment Virtual Desktop\n"
 "Settings Dialog\n"
 msgstr ""
+"Dialog for innstilling\n"
+"av virtuelle skrivebord i Enlightenment\n"
 
 #: src/settings.c:1096
 msgid "Virtual Desktop size:\n"
@@ -2103,6 +2115,8 @@ msgid ""
 "Enlightenment Window Placement\n"
 "Settings Dialog\n"
 msgstr ""
+"Dialog for innstilling\n"
+"av vindusplassering i Enlightenment\n"
 
 #: src/settings.c:1259
 msgid "Dialog windows appear together with their owner"
@@ -2125,6 +2139,8 @@ msgid ""
 "Enlightenment Automatic Raising\n"
 "of Windows Settings Dialog\n"
 msgstr ""
+"Innstillinger for automatisk\n"
+"heving av vinduer i Enlightenment\n"
 
 #: src/settings.c:1364
 msgid "Raise Windows Automatically"
@@ -2143,6 +2159,8 @@ msgid ""
 "Enlightenment Tooltip\n"
 "Settings Dialog\n"
 msgstr ""
+"Dialog for innstilling av\n"
+"Enlightenments verktøytips\n"
 
 #: src/settings.c:1465
 msgid "Display Tooltips"
@@ -2165,6 +2183,8 @@ msgid ""
 "Enlightenment KDE\n"
 "Settings Dialog\n"
 msgstr ""
+"Dialog for innstilling\n"
+"av Enlightenments KDE støtte\n"
 
 #: src/settings.c:1573
 msgid "Enable KDE Support"
@@ -2172,17 +2192,19 @@ msgstr "Bruk KDE støtte"
 
 #: src/settings.c:1623
 msgid "Miscellaneous Settings"
-msgstr ""
+msgstr "Forskjellige innstillinger"
 
 #: src/settings.c:1638
 msgid ""
 "Enlightenment Miscellaneous\n"
 "Settings Dialog\n"
 msgstr ""
+"Dialog for ulike innstillinger\n"
+"i Enlightenment\n"
 
 #: src/settings.c:1652
 msgid "Enable Dialog Headers"
-msgstr ""
+msgstr "Bruk dialogoverskrifter"
 
 #: src/settings.c:1706
 msgid "Audio Settings"
@@ -2193,6 +2215,8 @@ msgid ""
 "Enlightenment Audio\n"
 "Settings Dialog\n"
 msgstr ""
+"Dialog for innstilling av\n"
+"Enlightenments bruk av lyd\n"
 
 #: src/settings.c:1736
 msgid "Enable sounds"
@@ -2215,6 +2239,8 @@ msgid ""
 "Enlightenment Special Effects\n"
 "Settings Dialog\n"
 msgstr ""
+"Dialog for innstilling av\n"
+"spesielle effekter i Enlightenment\n"
 
 #: src/settings.c:1893
 msgid "Slide Method:"
@@ -2328,6 +2354,8 @@ msgid ""
 "Enlightenment Desktop\n"
 "Background Settings Dialog\n"
 msgstr ""
+"Dialog for innstilling av\n"
+"bakgrunn i Enlightenment\n"
 
 #: src/settings.c:3218
 msgid "BG Colour\n"
@@ -2420,6 +2448,8 @@ msgid ""
 "Enlightenment Iconbox\n"
 "Settings Dialog\n"
 msgstr ""
+"Dialog for innstilling av egenskapene\n"
+"til ikonboksen i Enlightenment\n"
 
 #: src/settings.c:3685
 msgid "Transparent background"
@@ -2536,6 +2566,8 @@ msgid ""
 "Enlightenment Window Group\n"
 "Settings Dialog\n"
 msgstr ""
+"Dialog for innstilling av\n"
+"vindusgrupper i Enlightenment\n"
 
 #: src/settings.c:4078
 msgid "   Pick the group to configure:   "
@@ -2589,16 +2621,21 @@ msgid ""
 "Enlightenment Default\n"
 "Group Control Settings Dialog\n"
 msgstr ""
+"Dialog for innstillinger av forhåndsvalgte\n"
+"verdier for vindusgrupper i Enlightenment\n"
+"\n"
 
 #: src/settings.c:4443
 msgid "Remembered Windows Settings"
-msgstr ""
+msgstr "Innstillinger for hukommelse"
 
 #: src/settings.c:4459
 msgid ""
 "Enlightenment Remembered\n"
 "Windows Settings Dialog\n"
 msgstr ""
+"Dialog for innstilling av\n"
+"hukommelse i Enlightenment\n"
 
 #: src/settings.c:4514
 msgid "Remembered Settings..."
@@ -2606,7 +2643,7 @@ msgstr "Innstillinger for hukommelse"
 
 #: src/settings.c:4534
 msgid "There are no active windows with remembered attributes."
-msgstr ""
+msgstr "Det er ingen aktive vinduer som trenger hukommelse."
 
 #: src/setup.c:221
 msgid ""
@@ -2768,7 +2805,7 @@ msgstr ""
 
 #: src/snaps.c:263
 msgid "Remembered Application Attributes"
-msgstr ""
+msgstr "Lagrede egenskaper for dette programmet"
 
 #: src/snaps.c:280
 msgid ""
@@ -2776,22 +2813,25 @@ msgid ""
 "window you wish to Remember\n"
 "from now on\n"
 msgstr ""
+"Velg de egenskapene som dette\n"
+"vinduet skal huske\n"
+"fra nå av\n"
 
 #: src/snaps.c:338
 msgid "Title:"
-msgstr ""
+msgstr "Tittel"
 
 #: src/snaps.c:353
 msgid "Name:"
-msgstr ""
+msgstr "Navn"
 
 #: src/snaps.c:369
 msgid "Class:"
-msgstr ""
+msgstr "Klasse"
 
 #: src/snaps.c:385
 msgid "Command:"
-msgstr ""
+msgstr "Kommando"
 
 #: src/snaps.c:432
 msgid "Location"
@@ -2876,7 +2916,7 @@ msgstr ""
 
 #: src/tclass.c:87
 msgid "TextClass Error!"
-msgstr ""
+msgstr "Tekstklasse feil!"
 
 #: src/theme.c:293
 msgid "Unknown\n"
@@ -2911,14 +2951,8 @@ msgstr "Det er en feil ved temaet"
 
 #: src/tooltips.c:1037
 msgid "ToolTip Error!"
-msgstr ""
+msgstr "Feil ved verktøytips!"
 
 #: src/update.c:166
 msgid "Enlightenment's message of the day"
 msgstr "Enlightenments daglige beskjed"
-
-#~ msgid "Remember this window"
-#~ msgstr "Husk dette vinduet"
-
-#~ msgid "Cancel"
-#~ msgstr "Avbryt"
