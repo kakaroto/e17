@@ -105,6 +105,7 @@ static void         IPC_ReloadMenus(char *params, Client * c);
 static void         IPC_GroupInfo(char *params, Client * c);
 static void         IPC_GroupOps(char *params, Client * c);
 static void         IPC_Group(char *params, Client * c);
+static void         IPC_Hints(char *params, Client * c);
 
 /* the IPC Array */
 
@@ -287,21 +288,22 @@ IPCStruct           IPCArray[] = {
     "command to retrieve a list of available windows\n"
     "You can use ? after most of these commands to receive the current\n"
     "status of that flag\n"
-    "available win_op commands are:\n  win_op <windowid> close\n  "
-    "win_op <windowid> annihilate\n  win_op <windowid> iconify\n  "
-    "win_op <windowid> shade\n  win_op <windowid> stick\n  "
-    "win_op <windowid> toggle_<width/height/size> "
-    "<conservative/available/xinerama>\n          (or none for absolute)\n  "
-    "win_op <windowid> border <BORDERNAME>\n  win_op <windowid> "
-    "desk <desktochangeto/next/prev>\n  win_op <windowid> "
-    "area <x> <y>\n  win_op <windowid> <raise/lower>\n  "
-    "win_op <windowid> <move/resize> <x> <y>\n  "
-    "(you can use ? and ?? to retreive client and frame locations)\n  "
-    "win_op <windowid> focus\n  " "win_op <windowid> title <title>\n  "
-    "win_op <windowid> raise\n  " "win_op <windowid> lower\n  "
-    "win_op <windowid> layer <0-100,4=normal>\n  "
-    "<windowid> may be substituted with \"current\" to use the "
-    "current window"},
+    "available win_op commands are:\n"
+    "  win_op <windowid> <close/annihilate>\n"
+    "  win_op <windowid> <iconify/shade/stick>\n"
+    "  win_op <windowid> toggle_<width/height/size> <conservative/available/xinerama>\n"
+    "          (or none for absolute)\n"
+    "  win_op <windowid> border <BORDERNAME>\n"
+    "  win_op <windowid> desk <desktochangeto/next/prev>\n"
+    "  win_op <windowid> area <x> <y>\n"
+    "  win_op <windowid> <raise/lower>\n"
+    "  win_op <windowid> <move/resize> <x> <y>\n"
+    "          (you can use ? and ?? to retreive client and frame locations)\n"
+    "  win_op <windowid> focus\n"
+    "  win_op <windowid> title <title>\n"
+    "  win_op <windowid> layer <0-100,4=normal>\n"
+    "  win_op <windowid> <fixedpos/never_use_area/focusclick/neverfocus>\n"
+    "<windowid> may be substituted with \"current\" to use the current window"},
    {
     IPC_WinList,
     "window_list", "wl",
@@ -564,8 +566,42 @@ IPCStruct           IPCArray[] = {
     "Retrieve a list of remembered windows and their attributes.",
     "usage:\n" "  list_remember [full]\n"
     "  Retrieve a list of remembered windows.  with full, the list\n"
-    "  includes the window's remembered attributes."}
+    "  includes the window's remembered attributes."},
+   {
+    IPC_Hints,
+    "hints", NULL,
+    "Set hint options.",
+    "usage:\n" "  hints xroot <normal/root>"}
 };
+
+static int
+SetEwinBoolean(char *buf, int len, const char *txt, char *item,
+	       const char *value, int set)
+{
+   int                 old, new;
+
+   new = old = *item;		/* Remember old value */
+
+   if (value == NULL || value[0] == '\0')
+      new = !old;
+   else if (!strcmp(value, "on"))
+      new = 1;
+   else if (!strcmp(value, "off"))
+      new = 0;
+   else if (!strcmp(value, "?"))
+      Esnprintf(buf, len, "%s: %s", txt, (old) ? "on" : "off");
+   else
+      Esnprintf(buf, len, "Error: %s", value);
+
+   if (new != old)
+     {
+	if (set)
+	   *item = new;
+	return 1;
+     }
+
+   return 0;
+}
 
 /* the functions */
 
@@ -3786,6 +3822,8 @@ IPC_WinOps(char *params, Client * c)
      }
 
    word(params, 2, operation);
+   word(params, 3, param1);
+
    if (!operation[0])
      {
 	Esnprintf(buf, sizeof(buf), "Error: no operation specified");
@@ -3806,32 +3844,8 @@ IPC_WinOps(char *params, Client * c)
      }
    else if (!strncmp(operation, "iconify", 2))
      {
-	word(params, 3, param1);
-	if (param1[0])
-	  {
-	     if (!strcmp(param1, "on"))
-	       {
-		  if (!ewin->iconified)
-		     IconifyEwin(ewin);
-	       }
-	     else if (!strcmp(param1, "off"))
-	       {
-		  if (ewin->iconified)
-		     DeIconifyEwin(ewin);
-	       }
-	     else if (!strcmp(param1, "?"))
-	       {
-		  if (ewin->iconified)
-		     Esnprintf(buf, sizeof(buf), "window iconified: yes");
-		  else
-		     Esnprintf(buf, sizeof(buf), "window iconified: no");
-	       }
-	     else
-	       {
-		  Esnprintf(buf, sizeof(buf), "Error: unknown mode specified");
-	       }
-	  }
-	else
+	if (SetEwinBoolean(buf, sizeof(buf), "window iconified",
+			   &ewin->iconified, param1, 0))
 	  {
 	     if (ewin->iconified)
 		DeIconifyEwin(ewin);
@@ -3841,32 +3855,8 @@ IPC_WinOps(char *params, Client * c)
      }
    else if (!strncmp(operation, "shade", 2))
      {
-	word(params, 3, param1);
-	if (param1[0])
-	  {
-	     if (!strcmp(param1, "on"))
-	       {
-		  if (!ewin->shaded)
-		     ShadeEwin(ewin);
-	       }
-	     else if (!strcmp(param1, "off"))
-	       {
-		  if (ewin->shaded)
-		     UnShadeEwin(ewin);
-	       }
-	     else if (!strcmp(param1, "?"))
-	       {
-		  if (ewin->shaded)
-		     Esnprintf(buf, sizeof(buf), "window shaded: yes");
-		  else
-		     Esnprintf(buf, sizeof(buf), "window shaded: no");
-	       }
-	     else
-	       {
-		  Esnprintf(buf, sizeof(buf), "Error: unknown mode specified");
-	       }
-	  }
-	else
+	if (SetEwinBoolean(buf, sizeof(buf), "window shaded",
+			   &ewin->shaded, param1, 0))
 	  {
 	     if (ewin->shaded)
 		UnShadeEwin(ewin);
@@ -3876,32 +3866,8 @@ IPC_WinOps(char *params, Client * c)
      }
    else if (!strncmp(operation, "stick", 2))
      {
-	word(params, 3, param1);
-	if (param1[0])
-	  {
-	     if (!strcmp(param1, "on"))
-	       {
-		  if (!ewin->sticky)
-		     MakeWindowSticky(ewin);
-	       }
-	     else if (!strcmp(param1, "off"))
-	       {
-		  if (ewin->sticky)
-		     MakeWindowUnSticky(ewin);
-	       }
-	     else if (!strcmp(param1, "?"))
-	       {
-		  if (ewin->sticky)
-		     Esnprintf(buf, sizeof(buf), "window sticky: yes");
-		  else
-		     Esnprintf(buf, sizeof(buf), "window sticky: no");
-	       }
-	     else
-	       {
-		  Esnprintf(buf, sizeof(buf), "Error: unknown mode specified");
-	       }
-	  }
-	else
+	if (SetEwinBoolean(buf, sizeof(buf), "window sticky",
+			   &ewin->sticky, param1, 0))
 	  {
 	     if (ewin->sticky)
 		MakeWindowUnSticky(ewin);
@@ -3909,14 +3875,33 @@ IPC_WinOps(char *params, Client * c)
 		MakeWindowSticky(ewin);
 	  }
      }
+   else if (!strcmp(operation, "fixedpos"))
+     {
+	SetEwinBoolean(buf, sizeof(buf), "window fixedpos",
+		       &ewin->fixedpos, param1, 1);
+     }
+   else if (!strcmp(operation, "never_use_area"))
+     {
+	SetEwinBoolean(buf, sizeof(buf), "window never_use_area",
+		       &ewin->never_use_area, param1, 1);
+     }
+   else if (!strcmp(operation, "focusclick"))
+     {
+	SetEwinBoolean(buf, sizeof(buf), "window focusclick",
+		       &ewin->focusclick, param1, 1);
+     }
+   else if (!strcmp(operation, "neverfocus"))
+     {
+	SetEwinBoolean(buf, sizeof(buf), "window neverfocus",
+		       &ewin->neverfocus, param1, 1);
+     }
    else if (!strncmp(operation, "title", 2))
      {
 	char               *ptr = strstr(params, "title");
 
 	if (ptr)
-	   ptr += strlen("title");
-	if (ptr)
 	  {
+	     ptr += strlen("title");
 	     while (*ptr == ' ')
 		ptr++;
 	     if (strlen(ptr))
@@ -3949,17 +3934,14 @@ IPC_WinOps(char *params, Client * c)
      }
    else if (!strcmp(operation, "toggle_width") || !strcmp(operation, "tw"))
      {
-	word(params, 3, param1);
 	MaxWidth(ewin, param1);
      }
    else if (!strcmp(operation, "toggle_height") || !strcmp(operation, "th"))
      {
-	word(params, 3, param1);
 	MaxHeight(ewin, param1);
      }
    else if (!strcmp(operation, "toggle_size") || !strcmp(operation, "ts"))
      {
-	word(params, 3, param1);
 	MaxSize(ewin, param1);
      }
    else if (!strncmp(operation, "raise", 2))
@@ -3972,7 +3954,6 @@ IPC_WinOps(char *params, Client * c)
      }
    else if (!strncmp(operation, "layer", 2))
      {
-	word(params, 3, param1);
 	if (!strcmp(param1, "?"))
 	  {
 	     Esnprintf(buf, sizeof(buf), "window layer: %d", ewin->layer);
@@ -3988,7 +3969,6 @@ IPC_WinOps(char *params, Client * c)
      {
 	Border             *b;
 
-	word(params, 3, param1);
 	if (param1[0])
 	  {
 	     if (!strcmp(param1, "?"))
@@ -4023,7 +4003,6 @@ IPC_WinOps(char *params, Client * c)
      }
    else if (!strncmp(operation, "desk", 2))
      {
-	word(params, 3, param1);
 	if (param1[0])
 	  {
 	     if (!strncmp(param1, "next", 1))
@@ -4061,7 +4040,6 @@ IPC_WinOps(char *params, Client * c)
      {
 	int                 a, b;
 
-	word(params, 3, param1);
 	if (param1[0])
 	  {
 	     if (!strcmp(param1, "?"))
@@ -4084,7 +4062,6 @@ IPC_WinOps(char *params, Client * c)
      {
 	int                 a, b;
 
-	word(params, 3, param1);
 	if (param1[0])
 	  {
 	     if (!strcmp(param1, "?"))
@@ -4114,7 +4091,6 @@ IPC_WinOps(char *params, Client * c)
      {
 	int                 a, b;
 
-	word(params, 3, param1);
 	if (param1[0])
 	  {
 	     if (!strcmp(param1, "?"))
@@ -4139,7 +4115,6 @@ IPC_WinOps(char *params, Client * c)
      {
 	int                 a, b;
 
-	word(params, 3, param1);
 	if (param1[0])
 	  {
 	     sscanf(params, "%*s %*s %i %i", &a, &b);
@@ -4152,7 +4127,6 @@ IPC_WinOps(char *params, Client * c)
      {
 	int                 a, b;
 
-	word(params, 3, param1);
 	if (param1[0])
 	  {
 	     sscanf(params, "%*s %*s %i %i", &a, &b);
@@ -4163,7 +4137,6 @@ IPC_WinOps(char *params, Client * c)
      }
    else if (!strncmp(operation, "focus", 2))
      {
-	word(params, 3, param1);
 	if (!strcmp(param1, "?"))
 	  {
 	     if (ewin == GetFocusEwin())
@@ -5270,4 +5243,32 @@ IPC_RememberList(char *params, Client * c)
 
    if (buf)
       CommsSend(c, buf);
+}
+
+static void
+IPC_Hints(char *params, Client * c)
+{
+   char                buf[FILEPATH_LEN_MAX];
+   char                param1[FILEPATH_LEN_MAX];
+   char                param2[FILEPATH_LEN_MAX];
+
+   buf[0] = 0;
+   param1[0] = 0;
+   param2[0] = 0;
+
+   word(params, 1, param1);
+   word(params, 2, param2);
+
+   if (!strcmp(param1, "xroot"))
+     {
+	if (!strncmp(param2, "norm", 4))
+	   mode.hints_set_xroot_info_on_root_window = 0;
+	else if (!strncmp(param2, "root", 4))
+	   mode.hints_set_xroot_info_on_root_window = 1;
+     }
+
+   Esnprintf(buf, sizeof(buf), "Set _XROOT* hints: %s",
+	     (mode.hints_set_xroot_info_on_root_window) ? "root" : "normal");
+
+   CommsSend(c, buf);
 }

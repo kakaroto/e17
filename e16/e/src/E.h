@@ -1365,6 +1365,7 @@ typedef struct _emode
    char                area_wraparound;
    char                dialog_headers;
    char                desktop_wraparound;
+   char                hints_set_xroot_info_on_root_window;
 }
 EMode;
 
