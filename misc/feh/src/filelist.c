@@ -20,31 +20,33 @@
 
 #include "feh.h"
 
-feh_file filelist = NULL;
-feh_file current_file = NULL;
+feh_file *filelist = NULL;
+feh_file *current_file = NULL;
 extern int errno;
 
-static feh_file rm_filelist = NULL;
+static feh_file *rm_filelist = NULL;
 
-feh_file filelist_newitem (char *filename)
+feh_file *filelist_newitem (char *filename)
 {
-  feh_file newfile;
+  feh_file *newfile;
   char *s;
 
   D (("In filelist_newitem\n"));
 
-  newfile = (feh_file) emalloc (sizeof (_feh_file));
+  newfile = (feh_file *) emalloc (sizeof (feh_file));
   newfile->filename = estrdup (filename);
   s = strrchr (filename, '/');
   if (s)
     newfile->name = estrdup (s + 1);
+  else
+    newfile->name = estrdup (filename);
   newfile->next = NULL;
   newfile->prev = NULL;
   return newfile;
 }
 
 void
-feh_file_free (feh_file file)
+feh_file_free (feh_file *file)
 {
   D (("In feh_file_free\n"));
   if (!file)
@@ -56,7 +58,7 @@ feh_file_free (feh_file file)
   free (file);
 }
 
-feh_file feh_file_rm_and_free (feh_file list, feh_file file)
+feh_file *feh_file_rm_and_free (feh_file *list, feh_file *file)
 {
   D (("In feh_file_rm_and_free\n"));
   unlink (file->filename);
@@ -64,9 +66,11 @@ feh_file feh_file_rm_and_free (feh_file list, feh_file file)
 }
 
 
-feh_file filelist_addtofront (feh_file root, feh_file newfile)
+feh_file *filelist_addtofront (feh_file *root, feh_file *newfile)
 {
   D (("In filelist_addtofront\n"));
+  if(!newfile)
+	return root;
   newfile->next = root;
   newfile->prev = NULL;
   if (root)
@@ -75,7 +79,7 @@ feh_file filelist_addtofront (feh_file root, feh_file newfile)
 }
 
 int
-filelist_length (feh_file file)
+filelist_length (feh_file *file)
 {
   int length;
   D (("In filelist_length\n"));
@@ -89,8 +93,8 @@ filelist_length (feh_file file)
   return length;
 }
 
-feh_file
-filelist_last (feh_file file)
+feh_file *
+filelist_last (feh_file *file)
 {
   D (("In filelist_last\n"));
   if (file)
@@ -101,8 +105,8 @@ filelist_last (feh_file file)
   return file;
 }
 
-feh_file
-filelist_first (feh_file file)
+feh_file *
+filelist_first (feh_file *file)
 {
   D (("In filelist_first\n"));
   if (file)
@@ -113,9 +117,9 @@ filelist_first (feh_file file)
   return file;
 }
 
-feh_file filelist_reverse (feh_file list)
+feh_file *filelist_reverse (feh_file *list)
 {
-  feh_file last;
+  feh_file *last;
 
   last = NULL;
   while (list)
@@ -129,14 +133,14 @@ feh_file filelist_reverse (feh_file list)
   return last;
 }
 
-feh_file filelist_randomize (feh_file list)
+feh_file *filelist_randomize (feh_file *list)
 {
   int len, r, i;
-  feh_file *farray, f;
+  feh_file **farray, *f;
 
   len = filelist_length (list);
   D (("filelist_randomize(%8p):  List has %d items.\n", list, len));
-  farray = (feh_file *) malloc (sizeof (feh_file) * len);
+  farray = (feh_file **) malloc (sizeof (feh_file *) * len);
   for (f = list, i = 0; f; f = f->next, i++)
     {
       D (
@@ -176,7 +180,7 @@ feh_file filelist_randomize (feh_file list)
 }
 
 int
-filelist_num (feh_file list, feh_file file)
+filelist_num (feh_file *list, feh_file *file)
 {
   int i = 0;
 
@@ -192,7 +196,7 @@ filelist_num (feh_file list, feh_file file)
   return -1;
 }
 
-feh_file filelist_remove_file (feh_file list, feh_file file)
+feh_file *filelist_remove_file (feh_file *list, feh_file *file)
 {
   D (("In filelist_remove_file\n"));
   if (!file)
@@ -319,7 +323,7 @@ add_file_to_rm_filelist (char *file)
 void
 delete_rm_files (void)
 {
-  feh_file file;
+  feh_file *file;
 
   D (("In delete_rm_files\n"));
 
@@ -328,4 +332,262 @@ delete_rm_files (void)
 
   for (file = rm_filelist; file; file = file->next)
     unlink (file->filename);
+}
+
+feh_file *
+feh_file_info_preload(feh_file *list)
+{
+    feh_file *file;
+    int i=0;
+
+    if(opt.verbose)
+	  fprintf(stdout, "feh - preloading...\n");
+    
+  for (file = list; file; file = file->next)
+    {
+	if(feh_file_info_load(file))
+	      list = filelist_remove_file(list, file);
+      if (opt.verbose)
+        {
+          if (i)
+            {
+              if (!(i % 50))
+                fprintf (stdout, "\n ");
+              else if (!(i % 10))
+                fprintf (stdout, " ");
+            }
+          else
+            fprintf (stdout, " ");
+
+          fprintf (stdout, ".");
+          fflush (stdout);
+          i++;
+        }
+    }
+  if (opt.verbose)
+    fprintf (stdout, "\n");
+
+return list;
+}
+
+int
+feh_file_info_load (feh_file *file)
+{
+  Imlib_Image *im = NULL;
+  struct stat st;
+
+  D (("In feh_file_info_load\n"));
+
+  errno = 0;
+  if (stat (file->filename, &st))
+    {
+      /* Display useful error message */
+      switch (errno)
+        {
+        case ENOENT:
+        case ENOTDIR:
+          if (!opt.quiet)
+            weprintf ("%s does not exist - skipping", file->filename);
+          break;
+        case ELOOP:
+          if (!opt.quiet)
+            weprintf ("%s - too many levels of symbolic links - skipping",
+                      file->filename);
+          break;
+        case EACCES:
+          if (!opt.quiet)
+            weprintf ("you don't have permission to open %s - skipping",
+                      file->filename);
+          break;
+        default:
+          if (!opt.quiet)
+            weprintf ("couldn't open %s ", file->filename);
+          break;
+        }
+      return 1;
+    }
+
+  if (feh_load_image (&im, file))
+    {
+      imlib_context_set_image (im);
+
+      file->width = imlib_image_get_width (),
+      file->height = imlib_image_get_height ();
+
+      file->has_alpha = imlib_image_has_alpha ();
+
+      file->pixels = file->width * file->height;
+
+      file->format = estrdup (imlib_image_format ());
+
+      imlib_free_image_and_decache ();
+
+      file->size = st.st_size;
+
+      return 0;
+    }
+  return 1;
+}
+
+feh_file *
+feh_list_sort (feh_file * list, feh_compare_fn cmp)
+{
+  feh_file *l1, *l2;
+
+  D (("In feh_list_sort\n"));
+
+  if (!list)
+    return NULL;
+  if (!list->next)
+    return list;
+
+  l1 = list;
+  l2 = list->next;
+
+  while ((l2 = l2->next) != NULL)
+    {
+      if ((l2 = l2->next) == NULL)
+        break;
+      l1 = l1->next;
+    }
+  l2 = l1->next;
+  l1->next = NULL;
+
+  return feh_list_sort_merge (feh_list_sort (list, cmp),
+                              feh_list_sort (l2, cmp), cmp);
+}
+
+feh_file *
+feh_list_sort_merge (feh_file * l1,
+                     feh_file * l2, feh_compare_fn cmp)
+{
+  feh_file list, *l, *lprev;
+
+  D (("In feh_list_sort_merge\n"));
+
+  l = &list;
+  lprev = NULL;
+
+  while (l1 && l2)
+    {
+      if (cmp (l1, l2) < 0)
+        {
+          l->next = l1;
+          l = l->next;
+          l->prev = lprev;
+          lprev = l;
+          l1 = l1->next;
+        }
+      else
+        {
+          l->next = l2;
+          l = l->next;
+          l->prev = lprev;
+          lprev = l;
+          l2 = l2->next;
+        }
+    }
+  l->next = l1 ? l1 : l2;
+  l->next->prev = l;
+
+  return list.next;
+}
+
+
+int
+feh_cmp_filename (feh_file * file1, feh_file * file2)
+{
+  D (("In feh_cmp_filename\n"));
+  return strcmp (file1->filename, file2->filename);
+}
+
+int
+feh_cmp_name (feh_file * file1, feh_file * file2)
+{
+  D (("In feh_cmp_name\n"));
+  return strcmp (file1->name, file2->name);
+}
+
+int
+feh_cmp_width (feh_file * file1, feh_file * file2)
+{
+  D (("In feh_cmp_width\n"));
+  return (file1->width - file2->width);
+}
+
+int
+feh_cmp_height (feh_file * file1, feh_file * file2)
+{
+  D (("In feh_cmp_height\n"));
+  return (file1->height - file2->height);
+}
+
+int
+feh_cmp_pixels (feh_file * file1, feh_file * file2)
+{
+  D (("In feh_cmp_pixels\n"));
+  return (file1->pixels - file2->pixels);
+}
+int
+feh_cmp_size (feh_file * file1, feh_file * file2)
+{
+  D (("In feh_cmp_size\n"));
+  return (file1->size - file2->size);
+}
+
+int
+feh_cmp_format (feh_file * file1, feh_file * file2)
+{
+  D (("In feh_cmp_format\n"));
+  return strcmp (file1->format, file2->format);
+}
+
+void
+feh_prepare_filelist (void)
+{
+  if (opt.list || opt.longlist || (opt.sort > SORT_FILENAME) || opt.preload)
+    {
+      /* For these sort options, we have to preload images */
+      filelist = feh_file_info_preload (filelist);
+    }
+
+  D (("sort mode requested is: %d\n", opt.sort));
+  switch (opt.sort)
+    {
+    case SORT_NONE:
+      if (opt.randomize)
+        {
+          /* Randomize the filename order */
+          filelist = filelist_randomize (filelist);
+        }
+      else
+        {
+          /* Let's reverse the list. Its back-to-front right now ;) */
+          filelist = filelist_reverse (filelist);
+        }
+      break;
+    case SORT_NAME:
+      filelist = feh_list_sort (filelist, feh_cmp_name);
+      break;
+    case SORT_FILENAME:
+      filelist = feh_list_sort (filelist, feh_cmp_filename);
+      break;
+    case SORT_WIDTH:
+      filelist = feh_list_sort (filelist, feh_cmp_width);
+      break;
+    case SORT_HEIGHT:
+      filelist = feh_list_sort (filelist, feh_cmp_height);
+      break;
+    case SORT_PIXELS:
+      filelist = feh_list_sort (filelist, feh_cmp_pixels);
+      break;
+    case SORT_SIZE:
+      filelist = feh_list_sort (filelist, feh_cmp_size);
+      break;
+    case SORT_FORMAT:
+      filelist = feh_list_sort (filelist, feh_cmp_format);
+      break;
+    default:
+      break;
+    }
 }

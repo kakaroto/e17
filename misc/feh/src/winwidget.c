@@ -80,7 +80,7 @@ winwidget_create_from_image (Imlib_Image * im, char *name)
 }
 
 winwidget
-winwidget_create_from_file (feh_file file, char *name)
+winwidget_create_from_file (feh_file *file, char *name)
 {
   winwidget ret = NULL;
 
@@ -380,7 +380,7 @@ winwidget_destroy_all (void)
 }
 
 int
-winwidget_loadimage (winwidget winwid, feh_file file)
+winwidget_loadimage (winwidget winwid, feh_file *file)
 {
   D (("In winwidget_loadimage: filename %s\n", file->filename));
   return feh_load_image (&(winwid->im), file);

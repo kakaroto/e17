@@ -88,15 +88,24 @@ struct __fehtimer
   fehtimer next;
 };
 
-typedef struct __feh_file _feh_file;
-typedef _feh_file *feh_file;
+typedef struct __feh_file feh_file;
 
 struct __feh_file
 {
   char *filename;
   char *name;
-  feh_file next;
-  feh_file prev;
+
+  /* info stuff */
+  int width;
+  int height;
+  int size;
+  int pixels;
+  int has_alpha;
+  char *format;
+  char *extension;
+  
+  feh_file *next;
+  feh_file *prev;
 };
 
 
@@ -128,7 +137,7 @@ struct __winwidget
   GC gc;
   Pixmap bg_pmap;
   char *name;
-  feh_file file;
+  feh_file *file;
 
   /* Stuff for zooming */
   int zoom_mode;
@@ -172,6 +181,7 @@ typedef struct cmdlineoptions
   unsigned char list:1;
   unsigned char longlist:1;
   unsigned char quiet:1;
+  unsigned char preload:1;
 
   char *output_file;
   char *bg_file;
@@ -199,22 +209,23 @@ void init_montage_mode (void);
 void init_index_mode (void);
 void init_slideshow_mode (void);
 void init_list_mode (void);
-int feh_load_image (Imlib_Image ** im, feh_file file);
+int feh_load_image (Imlib_Image ** im, feh_file *file);
 void add_file_to_filelist_recursively (char *path, unsigned char level);
+void feh_prepare_filelist (void);
 void show_mini_usage (void);
 void slideshow_change_image (winwidget winwid, int change);
 char *slideshow_create_name (char *filename);
 char *chop_file_from_full_path (char *str);
 void handle_keypress_event (XEvent * ev, Window win);
 
-int winwidget_loadimage (winwidget winwid, feh_file filename);
+int winwidget_loadimage (winwidget winwid, feh_file *filename);
 void winwidget_show (winwidget winwid);
 void winwidget_hide (winwidget winwid);
 void winwidget_destroy_all (void);
 void winwidget_render_image (winwidget winwid);
 void winwidget_update_title (winwidget ret);
 winwidget winwidget_get_from_window (Window win);
-winwidget winwidget_create_from_file (feh_file filename, char *name);
+winwidget winwidget_create_from_file (feh_file *filename, char *name);
 winwidget winwidget_create_from_image (Imlib_Image * im, char *name);
 void winwidget_destroy (winwidget winwid);
 void progress (Imlib_Image im, char percent, int update_x, int update_y,
@@ -237,17 +248,30 @@ int feh_load_image_char (Imlib_Image ** im, char *filename);
 void feh_draw_filename (winwidget w);
 
 
-feh_file filelist_addtofront (feh_file root, feh_file newfile);
-feh_file filelist_newitem (char *filename);
-feh_file filelist_remove_file (feh_file list, feh_file file);
-void feh_file_free (feh_file file);
-int filelist_length (feh_file file);
-feh_file filelist_last (feh_file file);
-feh_file filelist_first (feh_file file);
-feh_file feh_file_rm_and_free (feh_file list, feh_file file);
-int filelist_num (feh_file list, feh_file file);
-feh_file filelist_reverse (feh_file list);
-feh_file filelist_randomize (feh_file list);
+feh_file *filelist_addtofront (feh_file *root, feh_file *newfile);
+feh_file *filelist_newitem (char *filename);
+feh_file *filelist_remove_file (feh_file *list, feh_file *file);
+void feh_file_free (feh_file *file);
+int filelist_length (feh_file *file);
+feh_file *filelist_last (feh_file *file);
+feh_file *filelist_first (feh_file *file);
+feh_file *feh_file_rm_and_free (feh_file *list, feh_file *file);
+int filelist_num (feh_file *list, feh_file *file);
+feh_file *filelist_reverse (feh_file *list);
+feh_file *filelist_randomize (feh_file *list);
+typedef int (feh_compare_fn)(feh_file *file1, feh_file *file2);
+int feh_file_info_load (feh_file *file);
+feh_file *feh_list_sort (feh_file *list, feh_compare_fn cmp);
+feh_file *feh_list_sort_merge (feh_file *l1,
+                                    feh_file *l2, feh_compare_fn cmp);
+int feh_cmp_name (feh_file *file1, feh_file *file2); 
+int feh_cmp_filename (feh_file *file1, feh_file *file2); 
+int feh_cmp_width (feh_file *file1, feh_file *file2); 
+int feh_cmp_height (feh_file *file1, feh_file *file2); 
+int feh_cmp_pixels (feh_file *file1, feh_file *file2); 
+int feh_cmp_size (feh_file *file1, feh_file *file2); 
+int feh_cmp_format (feh_file *file1, feh_file *file2); 
+feh_file *feh_file_info_preload(feh_file *list);
 
 
 /* Imlib stuff */
@@ -269,6 +293,6 @@ extern int rectangles_on;
 extern Window root;
 extern XContext xid_context;
 extern fehtimer first_timer;
-extern feh_file filelist;
-extern feh_file current_file;
+extern feh_file *filelist;
+extern feh_file *current_file;
 extern Screen *scr;

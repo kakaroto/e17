@@ -26,7 +26,7 @@ init_slideshow_mode (void)
   winwidget w = NULL;
   int success = 0;
   char *s = NULL;
-  feh_file file = NULL, last = NULL;
+  feh_file *file = NULL, *last = NULL;
 
   D (("In init_slideshow_mode\n"));
 
@@ -120,7 +120,7 @@ void
 slideshow_change_image (winwidget winwid, int change)
 {
   int success = 0;
-  feh_file last = NULL;
+  feh_file *last = NULL;
   int i = 0, file_num = 0;
 
   D (("In slideshow_change_image\n"));

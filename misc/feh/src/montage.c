@@ -32,7 +32,7 @@ init_montage_mode (void)
   int bg_w = 0, bg_h = 0;
   winwidget winwid;
   Imlib_Image *bg_im = NULL;
-  feh_file file;
+  feh_file *file;
   int file_num = 0;
 
   file_num = filelist_length (filelist);

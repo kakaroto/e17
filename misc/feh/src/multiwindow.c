@@ -24,7 +24,7 @@ void
 init_multiwindow_mode (void)
 {
   winwidget w = NULL;
-  feh_file file;
+  feh_file *file;
 
   D (("In init_multiwindow_mode\n"));
 

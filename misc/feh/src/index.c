@@ -47,7 +47,7 @@ init_index_mode (void)
   int vertical = 0;
   int max_column_w = 0;
   int thumbnailcount = 0;
-  feh_file file = NULL;
+  feh_file *file = NULL;
   int file_num = 0;
 
   file_num = filelist_length (filelist);

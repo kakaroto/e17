@@ -25,7 +25,7 @@ static void check_options (void);
 void
 init_parse_options (int argc, char **argv)
 {
-  static char stropts[] = "a:AbBcdD:f:FhH:iklLmo:O:PqrR:sS:tTvVwW:xy:z:";
+  static char stropts[] = "a:AbBcdD:f:FhH:iklLmo:O:pPqrR:sS:tTvVwW:xy:z:";
   static struct option lopts[] = {
     /* actions and macros */
     {"help", 0, 0, 'h'},
@@ -49,6 +49,7 @@ init_parse_options (int argc, char **argv)
     {"list", 0, 0, 'l'},
     {"longlist", 0, 0, 'L'},
     {"quiet", 0, 0, 'q'},
+    {"preload", 0, 0, 'p'},
     /* options with values */
     {"output", 1, 0, 'o'},
     {"output-only", 1, 0, 'O'},
@@ -140,6 +141,9 @@ init_parse_options (int argc, char **argv)
 	case 'F':
 	  opt.full_screen = 1;
 	  break;
+	case 'p':
+	  opt.preload = 1;
+	  break;
 	case 'P':
 	  opt.progressive = 0;
 	  break;
@@ -150,7 +154,7 @@ init_parse_options (int argc, char **argv)
 	  if (!strcasecmp (optarg, "name"))
 	    opt.sort = SORT_NAME;
 	  else if (!strcasecmp (optarg, "filename"))
-	      opt.sort = SORT_FILENAME;
+	    opt.sort = SORT_FILENAME;
 	  else if (!strcasecmp (optarg, "width"))
 	    opt.sort = SORT_WIDTH;
 	  else if (!strcasecmp (optarg, "height"))
@@ -236,19 +240,11 @@ init_parse_options (int argc, char **argv)
   else
     show_mini_usage ();
 
-  if (opt.randomize)
-    {
-      /* Randomize the filename order */
-      filelist = filelist_randomize (filelist);
-    }
-  else
-    {
-      /* Let's reverse the list. Its back-to-front right now ;) */
-      filelist = filelist_reverse (filelist);
-    }
-
   check_options ();
+
+  feh_prepare_filelist ();
 }
+
 
 static void
 check_options (void)
@@ -285,10 +281,11 @@ check_options (void)
       opt.list = 0;
     }
 
-  if ((opt.sort != SORT_NONE) && (!(opt.list || opt.longlist)))
+  if (opt.sort && opt.randomize)
     {
-      weprintf ("You can only sort in list mode. Ignoring sort parameter");
-      opt.sort = SORT_NONE;
+      weprintf ("You cant sort AND randomize the filelist...\n"
+		"randomize mode has been unset\n");
+      opt.randomize = 0;
     }
 }
 
@@ -331,6 +328,10 @@ show_usage (void)
 	   "                            the content of those directories. (Take it easy)\n"
 	   "  -c, --randomize           When viewing multiple files in a slideshow,\n"
 	   "                            randomise the file list before displaying\n"
+	   "  -p, --preload             Preload images. This doesn't mean hold them in\n"
+	   "                            RAM, it means run through and eliminate unloadable\n"
+	   "                            images first. Otherwise they will be removed as you\n"
+	   "                            flick through."
 	   "  -F, --full-screen         Make the window fullscreen\n"
 	   "  -w, --multiwindow         Disable slideshow mode. With this setting,\n"
 	   "                            instead of opening multiple files in slideshow\n"
@@ -351,9 +352,12 @@ show_usage (void)
 	   "  -l, --list                Don't display info. Analyse them and display an\n"
 	   "                            'ls' style listing. Useful in scripts hunt out\n"
 	   "                            images of a certain size/resolution/type etc\n"
-	   "  -S, --sort SORT_TYPE      In list mode, the output may be sorted according\n"
-	   "                            to image parameters. Allowed sort types are:\n"
-	   "                            name, filename, width, height, pixels, size, format\n"
+	   "  -S, --sort SORT_TYPE      The file list may be sorted according to image\n"
+	   "                            parameters. Allowed sort types are: name,\n"
+	   "                            filename, width, height, pixels, size, format.\n"
+	   "                            For sort modes other than name or filename, a\n"
+	   "                            preload run will be necessary, causing a delay\n"
+	   "                            proportional to the number of images in the list\n"
 	   "  -m, --montage             Enable montage mode. Montage mode creates a new\n"
 	   "                            image consisting of a grid of thumbnails of the\n"
 	   "                            images specified using FILE... When montage mode\n"

@@ -1,3 +1,19 @@
+Fri Mar 17 22:18:50 2000  Tom Gilbert  <gilbertt@btinternet.com>
+
+	* Big changes. I am tired ;)
+	* You can now sort the filelist in any mode.
+	* Sorting by name/filename is *fast*
+	* Sorting by image properties such as width, height, type etc
+	incurs a delay at startup while the images are preloaded. This
+	could get big for large lists of files.
+	* Added a -p, --preload option to force preloading before running
+	a slideshow. This weeds out images that imlib2 can't load so that
+	the initial number of slides is accurate. Normally, the bad/non
+	images are weeded out as you go, causing the number of slides to
+	update as things go. Preload is great for montage and index modes,
+	as it ensures the correctly sized space is allocated for the
+	images/thumbnails/whatever.
+
 Fri Mar 17 19:22:18 2000  Tom Gilbert  <gilbertt@btinternet.com>
 
 	* List modes can now sort by image info using -S, --sort. Allowed

@@ -77,7 +77,7 @@ init_x_and_imlib (void)
 int
 feh_load_image_char (Imlib_Image ** im, char *filename)
 {
-  feh_file file;
+  feh_file *file;
   int i;
 
   file = filelist_newitem (filename);
@@ -87,7 +87,7 @@ feh_load_image_char (Imlib_Image ** im, char *filename)
 }
 
 int
-feh_load_image (Imlib_Image ** im, feh_file file)
+feh_load_image (Imlib_Image ** im, feh_file *file)
 {
   Imlib_Load_Error err;
 
