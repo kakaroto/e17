@@ -73,7 +73,12 @@
 #include <sys/resource.h>
 #include <sys/ipc.h>
 #include <sys/shm.h>
+#ifdef HAVE_FREETYPE_H
 #include <freetype.h>
+#endif
+#ifdef HAVE_FREETYPE_FREETYPE_H
+#include <freetype/freetype.h>
+#endif
 #include "econfig.h"
 
 /* workaround for 64bit architectures - xlib expects 32bit CARDINALS to be */

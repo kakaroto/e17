@@ -1649,3 +1649,11 @@ Fri Dec 10 11:09:41 PST 1999
 
 i18n patch and other fixes from Peter Kjellerstedt
 <peter.kjellerstedt@axis.com>.
+
+-------------------------------------------------------------------------------
+
+Tue Dec 21 11:07:46 PST 1999
+(Mandrake)
+
+added support for freetype in regular location OR in freetype/ subdirectory
+(like the new versions)
