@@ -1,3 +1,4 @@
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -67,48 +68,17 @@ static void ecore_mouse_out(Ecore_Event * ev)
 
 static void ecore_mouse_down(Ecore_Event * ev)
 {
-	int index, x, y, w, h;
+	Ecore_Event_Mouse_Down *e;
 
-	Ecore_Event_Mouse_Down *eemd =
-	    (Ecore_Event_Mouse_Down *) ev->event;
+	e = (Ecore_Event_Mouse_Down *) ev->event;
+	if ((e->win != evas_get_window(evas)))
+		return;
+	evas_event_button_down(evas, e->x, e->y, e->button);
+}
 
-	if (eemd->button == 1) {
-		if (last == string1) {
-			estyle_set_style(e, "raised");
-			estyle_set_font(e, "morpheus", 14);
-			estyle_set_text(e, string2);
-			last = string2;
-		} else {
-			estyle_set_font(e, "nationff", 14);
-			estyle_set_style(e, "shadow");
-			estyle_set_text(e, string1);
-			last = string1;
-		}
-		index =
-		    estyle_text_at_position(e, eemd->x, eemd->y, &x, &y,
-					    &w, &h);
-		if (index < 0)
-			printf("Click occurred outside of estyle\n");
-		else {
-			printf
-			    ("Clicked letter %c at %d, %d size %d x %d\n",
-			     last[index], x, y, w, h);
-			evas_move(evas, cursor, x, y);
-			evas_resize(evas, cursor, w, h);
-		}
-
-	} else if (eemd->button == 2) {
-		layer = -layer;
-		estyle_set_layer(e, layer);
-	} else {
-		if (visible) {
-			estyle_hide(e);
-			visible = 0;
-		} else {
-			estyle_show(e);
-			visible = 1;
-		}
-	}
+void mouse_down(void *_data, Estyle * _es, int _b, int _x, int _y)
+{
+	printf("Clicked\n%d,%d,%d\n", _b, _x, _y);
 }
 
 /*
@@ -121,8 +91,6 @@ static void ecore_mouse_move(Ecore_Event * ev)
 	if (focused)
 		estyle_move(e, eemm->x, eemm->y);
 }
-
-
 
 void setup(void)
 {
@@ -159,6 +127,7 @@ int main(int argc, char *argv[])
 	int curs_x, curs_y, curs_w, curs_h;
 	Evas_Object clip_rect;
 	Evas_Object bg, et_bg, obst;
+	Evas_Object bit;
 
 	obstacle_x = OBST_X;
 	obstacle_y = OBST_Y;
@@ -233,7 +202,8 @@ int main(int argc, char *argv[])
 	e = estyle_new(evas, string1, "raised");
 	estyle_move(e, 100, 100);
 	estyle_set_color(e, 128, 255, 255, 255);
-	estyle_set_clip(e, clip_rect);
+	estyle_set_font(e, "nationff", 14);
+	estyle_set_style(e, "shadow");
 	estyle_show(e);
 	estyle_text_at(e, 0, &curs_x, &curs_y, &curs_w, &curs_h);
 
@@ -245,6 +215,8 @@ int main(int argc, char *argv[])
 	evas_set_color(evas, cursor, 255, 255, 255, 128);
 	evas_show(evas, cursor);
 
+	/* Callbacks */
+	estyle_callback_add(e, CALLBACK_MOUSE_DOWN, mouse_down, NULL);
 	ecore_event_loop();
 
 	estyle_free(e);

@@ -1,4 +1,3 @@
-#include "estyle-config.h"
 #include "Estyle_private.h"
 
 static Ewd_Hash *color_table = NULL;

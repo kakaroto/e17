@@ -2,6 +2,7 @@
 #define _ESTYLE_PRIVATE_H
 
 #include "Estyle.h"
+#include "../estyle-config.h"
 #include "estyle_heap.h"
 #include "estyle_color.h"
 #include "estyle_style.h"
@@ -11,6 +12,16 @@ typedef enum _estyle_bit_flags Estyle_Bit_Flags;
 enum _estyle_bit_flags {
 	ESTYLE_BIT_FIXED = 1,
 	ESTYLE_BIT_VISIBLE = 2,
+};
+
+typedef void (*Estyle_Callback_Function) (void *_data, Estyle * _es,
+					  int _b, int _x, int _y);
+
+typedef struct _estyle_callback Estyle_Callback;
+struct _estyle_callback {
+	Estyle *estyle;
+	void *data;
+	Estyle_Callback_Function callback;
 };
 
 struct _estyle {
@@ -53,6 +64,11 @@ struct _estyle {
 	 * needing to recalculate this often.
 	 */
 	int length;
+
+	/*
+	 * Callbacks.
+	 */
+	Evas_List callbacks;
 };
 
 /*

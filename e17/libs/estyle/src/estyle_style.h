@@ -54,22 +54,22 @@ void _estyle_style_draw(Estyle * et, char *text);
 void _estyle_style_move(Estyle * bit);
 void _estyle_style_set_clip(Estyle * bit, Evas_Object ob);
 void _estyle_style_set_color(Estyle * bit);
-void _estyle_style_set_font(Estyle *es, char *font, int size);
-void _estyle_style_set_text(Estyle *es);
+void _estyle_style_set_font(Estyle * es, char *font, int size);
+void _estyle_style_set_text(Estyle * es);
 int _estyle_style_set_layer_lower(Estyle * bit, int layer);
 int _estyle_style_set_layer_upper(Estyle * bit, int layer, int start);
 
 /*
  * Style info access functions
  */
-void _estyle_style_info_dereference(Estyle_Style_Info *info);
+void _estyle_style_info_dereference(Estyle_Style_Info * info);
 Estyle_Style_Info *_estyle_style_info_reference(char *name);
 
 /*
  * Style show and hide functions
  */
-void _estyle_style_show(Estyle *es);
-void _estyle_style_hide(Estyle *es);
+void _estyle_style_show(Estyle * es);
+void _estyle_style_hide(Estyle * es);
 
 /*
  * Style search path manipulators

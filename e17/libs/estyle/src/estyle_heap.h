@@ -24,15 +24,16 @@ struct _estyle_heap {
 };
 
 Estyle_Heap *_estyle_heap_new(Ewd_Compare_Cb compare, int size);
-void _estyle_heap_destroy(Estyle_Heap *heap);
-int _estyle_heap_init(Estyle_Heap *heap, Ewd_Compare_Cb compare, int size);
-int _estyle_heap_insert(Estyle_Heap *heap, void *data);
-void *_estyle_heap_extract(Estyle_Heap *heap);
-void *_estyle_heap_extreme(Estyle_Heap *heap);
-int _estyle_heap_change(Estyle_Heap *heap, void *item, void *newval);
-void _estyle_heap_destroy(Estyle_Heap *heap);
-void _estyle_heap_sort(Estyle_Heap *heap);
+void _estyle_heap_destroy(Estyle_Heap * heap);
+int _estyle_heap_init(Estyle_Heap * heap, Ewd_Compare_Cb compare,
+		      int size);
+int _estyle_heap_insert(Estyle_Heap * heap, void *data);
+void *_estyle_heap_extract(Estyle_Heap * heap);
+void *_estyle_heap_extreme(Estyle_Heap * heap);
+int _estyle_heap_change(Estyle_Heap * heap, void *item, void *newval);
+void _estyle_heap_destroy(Estyle_Heap * heap);
+void _estyle_heap_sort(Estyle_Heap * heap);
 
-inline void *_estyle_heap_item(Estyle_Heap *heap, int i);
+inline void *_estyle_heap_item(Estyle_Heap * heap, int i);
 
 #endif

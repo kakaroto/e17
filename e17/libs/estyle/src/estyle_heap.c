@@ -1,7 +1,7 @@
 #include "Estyle_private.h"
 
-static void __estyle_heap_heapify(Estyle_Heap *heap, int i);
-static void __estyle_heap_update_data(Estyle_Heap *heap);
+static void __estyle_heap_heapify(Estyle_Heap * heap, int i);
+static void __estyle_heap_update_data(Estyle_Heap * heap);
 
 /**
  * _estyle_heap_new - allocate and initialize a new binary heap
@@ -15,7 +15,7 @@ Estyle_Heap *_estyle_heap_new(Ewd_Compare_Cb compare, int size)
 {
 	Estyle_Heap *heap = NULL;
 
-	heap = (Estyle_Heap *)malloc(sizeof(Estyle_Heap));
+	heap = (Estyle_Heap *) malloc(sizeof(Estyle_Heap));
 	if (!heap)
 		return NULL;
 	memset(heap, 0, sizeof(Estyle_Heap));
@@ -36,7 +36,7 @@ Estyle_Heap *_estyle_heap_new(Ewd_Compare_Cb compare, int size)
  *
  * Returns TRUE on success, FALSE on failure
  */
-int _estyle_heap_init(Estyle_Heap *heap, Ewd_Compare_Cb compare, int size)
+int _estyle_heap_init(Estyle_Heap * heap, Ewd_Compare_Cb compare, int size)
 {
 	heap->space = size;
 	if (!compare)
@@ -45,7 +45,7 @@ int _estyle_heap_init(Estyle_Heap *heap, Ewd_Compare_Cb compare, int size)
 		heap->compare = compare;
 	heap->order = EWD_SHEAP_MIN;
 
-	heap->data = (void **)malloc(heap->space * sizeof(void *));
+	heap->data = (void **) malloc(heap->space * sizeof(void *));
 	if (!heap->data)
 		return FALSE;
 	memset(heap->data, 0, heap->space * sizeof(void *));
@@ -60,7 +60,7 @@ int _estyle_heap_init(Estyle_Heap *heap, Ewd_Compare_Cb compare, int size)
  * Returns no value. Free's the memory used by @heap, calls the destroy
  * function on each data item if necessary.
  */
-void _estyle_heap_destroy(Estyle_Heap *heap)
+void _estyle_heap_destroy(Estyle_Heap * heap)
 {
 	/*
 	 * FIXME: Need to setup destructor callbacks for this class.
@@ -78,7 +78,7 @@ void _estyle_heap_destroy(Estyle_Heap *heap)
  * Returns TRUE on success, NULL on failure. Increases the size of the heap if
  * it becomes larger than available space.
  */
-int _estyle_heap_insert(Estyle_Heap *heap, void *data)
+int _estyle_heap_insert(Estyle_Heap * heap, void *data)
 {
 	int i;
 	void *temp;
@@ -111,7 +111,9 @@ int _estyle_heap_insert(Estyle_Heap *heap, void *data)
 	 */
 	if (heap->order == EWD_SHEAP_MIN) {
 		while ((position > 0) && heap->compare(heap->data[parent],
-						heap->data[position]) > 0) {
+						       heap->
+						       data[position]) >
+		       0) {
 
 			/*
 			 * Swap the data with it's parents to move it up in
@@ -130,10 +132,11 @@ int _estyle_heap_insert(Estyle_Heap *heap, void *data)
 			position = i - 1;
 			parent = PARENT(i) - 1;
 		}
-	}
-	else {
+	} else {
 		while ((position > 0) && heap->compare(heap->data[parent],
-						heap->data[position]) < 0) {
+						       heap->
+						       data[position]) <
+		       0) {
 
 			/*
 			 * Swap the data with it's parents to move it up in
@@ -164,7 +167,7 @@ int _estyle_heap_insert(Estyle_Heap *heap, void *data)
  * Returns the top item of the heap on success, NULL on failure. The extract
  * function maintains the heap properties after the extract.
  */
-void *_estyle_heap_extract(Estyle_Heap *heap)
+void *_estyle_heap_extract(Estyle_Heap * heap)
 {
 	void *extreme;
 
@@ -189,7 +192,7 @@ void *_estyle_heap_extract(Estyle_Heap *heap)
  * Returns the top item of the heap on success, NULL on failure. The function
  * does not alter the heap.
  */
-void *_estyle_heap_extreme(Estyle_Heap *heap)
+void *_estyle_heap_extreme(Estyle_Heap * heap)
 {
 	if (heap->size < 1)
 		return NULL;
@@ -207,7 +210,7 @@ void *_estyle_heap_extreme(Estyle_Heap *heap)
  * data since it must be passed in, so the caller can perform the free if
  * desired.
  */
-int _estyle_heap_change(Estyle_Heap *heap, void *item, void *newval)
+int _estyle_heap_change(Estyle_Heap * heap, void *item, void *newval)
 {
 	int i;
 
@@ -234,7 +237,7 @@ int _estyle_heap_change(Estyle_Heap *heap, void *item, void *newval)
  * Returns TRUE on success, FALSE on failure. The comparison function is
  * changed to @compare and the heap is heapified by the new comparison.
  */
-int _estyle_heap_set_compare(Estyle_Heap *heap, Ewd_Compare_Cb compare)
+int _estyle_heap_set_compare(Estyle_Heap * heap, Ewd_Compare_Cb compare)
 {
 	if (!compare)
 		heap->compare = ewd_direct_compare;
@@ -254,7 +257,7 @@ int _estyle_heap_set_compare(Estyle_Heap *heap, Ewd_Compare_Cb compare)
  * Returns no value. Changes the heap order of @heap and re-heapifies the data
  * to this new order. The default order is a min heap.
  */
-void _estyle_heap_set_order(Estyle_Heap *heap, char order)
+void _estyle_heap_set_order(Estyle_Heap * heap, char order)
 {
 	heap->order = order;
 
@@ -268,12 +271,12 @@ void _estyle_heap_set_order(Estyle_Heap *heap, char order)
  * Returns no value. Sorts the data in the heap into the order that is used
  * for the heap's data.
  */
-void _estyle_heap_sort(Estyle_Heap *heap)
+void _estyle_heap_sort(Estyle_Heap * heap)
 {
 	int i = 0;
 	void **new_data;
 
-	new_data = (void **)malloc(heap->size * sizeof(void *));
+	new_data = (void **) malloc(heap->size * sizeof(void *));
 
 	/*
 	 * Extract the heap and insert into the new data array in order.
@@ -299,7 +302,7 @@ void _estyle_heap_sort(Estyle_Heap *heap)
  * Returns the data located at the ith position within @heap on success, NULL
  * on failure. The data is guaranteed to be in sorted order.
  */
-inline void *_estyle_heap_item(Estyle_Heap *heap, int i)
+inline void *_estyle_heap_item(Estyle_Heap * heap, int i)
 {
 	if (i >= heap->size)
 		return NULL;
@@ -320,32 +323,35 @@ inline void *_estyle_heap_item(Estyle_Heap *heap, int i)
  *
  * Returns no value.
  */
-static void __estyle_heap_heapify(Estyle_Heap *heap, int i)
+static void __estyle_heap_heapify(Estyle_Heap * heap, int i)
 {
 	int extreme;
 	int left = LEFT(i);
 	int right = RIGHT(i);
 
 	if (heap->order == EWD_SHEAP_MIN) {
-		if (left <= heap->size && heap->compare(heap->data[left - 1],
-					heap->data[i - 1]) < 0)
+		if (left <= heap->size
+		    && heap->compare(heap->data[left - 1],
+				     heap->data[i - 1]) < 0)
 			extreme = left;
 		else
 			extreme = i;
 
-		if (right <= heap->size && heap->compare(heap->data[right - 1],
-					heap->data[extreme - 1]) < 0)
+		if (right <= heap->size
+		    && heap->compare(heap->data[right - 1],
+				     heap->data[extreme - 1]) < 0)
 			extreme = right;
-	}
-	else {
-		if (left <= heap->size && heap->compare(heap->data[left - 1],
-					heap->data[i - 1]) > 0)
+	} else {
+		if (left <= heap->size
+		    && heap->compare(heap->data[left - 1],
+				     heap->data[i - 1]) > 0)
 			extreme = left;
 		else
 			extreme = i;
 
-		if (right <= heap->size && heap->compare(heap->data[right - 1],
-					heap->data[extreme - 1]) > 0)
+		if (right <= heap->size
+		    && heap->compare(heap->data[right - 1],
+				     heap->data[extreme - 1]) > 0)
 			extreme = right;
 	}
 
@@ -364,7 +370,7 @@ static void __estyle_heap_heapify(Estyle_Heap *heap, int i)
 	}
 }
 
-static void __estyle_heap_update_data(Estyle_Heap *heap)
+static void __estyle_heap_update_data(Estyle_Heap * heap)
 {
 	int i, old_size;
 	void **data;
