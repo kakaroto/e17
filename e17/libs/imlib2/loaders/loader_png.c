@@ -22,6 +22,13 @@ char save(ImlibImage * im, ImlibProgressFunction progress,
           char progress_granularity);
 void formats(ImlibLoader * l);
 
+static void comment_free(ImlibImage *im, void *data);
+static void
+comment_free(ImlibImage * im, void *data)
+{
+   free(data);
+}
+
 char
 load(ImlibImage * im, ImlibProgressFunction progress,
      char progress_granularity, char immediate_load)
@@ -161,30 +168,30 @@ load(ImlibImage * im, ImlibProgressFunction progress,
          }
       for (i = 0; i < h; i++)
          lines[i] =
-            ((unsigned char *) (im->data)) + (i * w * sizeof(DATA32));
+	((unsigned char *) (im->data)) + (i * w * sizeof(DATA32));
       if (progress)
-      {
-         int y, count, prevy, pass, number_passes, per, nrows = 1;
-
-         count = 0;
-         number_passes = png_set_interlace_handling(png_ptr);
-         for (pass = 0; pass < number_passes; pass++)
-         {
-            prevy = 0;
-            per = 0;
-            for (y = 0; y < h; y += nrows)
-            {
-               png_read_rows(png_ptr, &lines[y], NULL, nrows);
-
-               per = (((pass * h) + y) * 100) / (h * number_passes);
-               if ((per - count) >= progress_granularity)
-               {
-                  count = per;
-                  if (!progress(im, per, 0, prevy, w, y - prevy + 1))
-                  {
-                     free(lines);
-                     png_read_end(png_ptr, info_ptr);
-                     png_destroy_read_struct(&png_ptr, &info_ptr,
+	{
+	   int y, count, prevy, pass, number_passes, per, nrows = 1;
+	   
+	   count = 0;
+	   number_passes = png_set_interlace_handling(png_ptr);
+	   for (pass = 0; pass < number_passes; pass++)
+	     {
+		prevy = 0;
+		per = 0;
+		for (y = 0; y < h; y += nrows)
+		  {
+		     png_read_rows(png_ptr, &lines[y], NULL, nrows);
+		     
+		     per = (((pass * h) + y) * 100) / (h * number_passes);
+		     if ((per - count) >= progress_granularity)
+		       {
+			  count = per;
+			  if (!progress(im, per, 0, prevy, w, y - prevy + 1))
+			    {
+			       free(lines);
+			       png_read_end(png_ptr, info_ptr);
+			       png_destroy_read_struct(&png_ptr, &info_ptr,
                                              (png_infopp) NULL);
                      fclose(f);
                      return 2;
@@ -204,10 +211,25 @@ load(ImlibImage * im, ImlibProgressFunction progress,
          }
       }
       else
-         png_read_image(png_ptr, lines);
+	png_read_image(png_ptr, lines);
       free(lines);
       png_read_end(png_ptr, info_ptr);
    }
+#ifdef PNG_TEXT_SUPPORTED
+     {
+	png_textp text;
+	int num;
+	int i;
+	
+	num = 0;
+	png_get_text(png_ptr, info_ptr, &text, &num);
+	for(i = 0; i < num; i++)
+	  {
+	     if (!strcmp(text[i].key, "Imlib2-Comment"))
+	       __imlib_AttachTag(im, "comment", 0, strdup(text[i].text), comment_free);
+	  }
+     }
+#endif   
    png_destroy_read_struct(&png_ptr, &info_ptr, (png_infopp) NULL);
    fclose(f);
    return 1;
@@ -297,6 +319,18 @@ save(ImlibImage * im, ImlibProgressFunction progress,
       compression = 0;
    if (compression > 9)
       compression = 9;
+   tag = __imlib_GetTag(im, "comment");
+   if (tag)
+     {
+#ifdef PNG_TEXT_SUPPORTED
+	png_text text;
+	
+	text.key = "Imlib2-Comment";
+	text.text = tag->data;
+	text.compression = PNG_TEXT_COMPRESSION_zTXt;
+	png_set_text(png_ptr, info_ptr, &(text), 1);
+#endif	
+     }
    png_set_compression_level(png_ptr, compression);
    png_write_info(png_ptr, info_ptr);
    png_set_shift(png_ptr, &sig_bit);
