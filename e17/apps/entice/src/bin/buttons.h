@@ -11,6 +11,11 @@ void                bt_close_down(void *data, Evas * e, Evas_Object * obj,
 void                bt_close_up(void *data, Evas * e, Evas_Object * obj,
 				void *event_info);
 
+void                bt_delete_down(void *data, Evas * e, Evas_Object * obj,
+				  void *event_info);
+void                bt_delete_up(void *data, Evas * e, Evas_Object * obj,
+				void *event_info);
+
 void                bt_expand_down(void *data, Evas * e, Evas_Object * obj,
 				   void *event_info);
 void                bt_expand_up(void *data, Evas * e, Evas_Object * obj,

@@ -17,6 +17,7 @@ Evas_Object        *o_mini_select;
 Evas_Object        *o_list_select;
 Evas_Object        *o_panel_arrow_u;
 Evas_Object        *o_panel_arrow_d;
+Evas_Object        *o_bt_delete;
 Evas_Object        *o_bt_close;
 Evas_Object        *o_bt_expand;
 Evas_Object        *o_bt_full;
@@ -129,7 +130,7 @@ find_current(void)
 	Image              *im;
 
 	im = l->data;
-	size += strlen(im->file) + 1;
+	size += strlen(im->file) + 2;
      }
    files = malloc(size);
    files[0] = 0;
@@ -239,4 +240,6 @@ main(int argc, char **argv)
    e_fade_scroller_in(0, (void *)1);
    /* and now loop forever handling events */
    ecore_event_loop();
+
+   return(0);
 }

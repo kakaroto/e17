@@ -26,7 +26,6 @@ e_idle(void *data)
 		  if ((im->subst) && (im->thumb))
 		    {
 		       int                 w, h;
-		       int                 err;
 
 		       evas_object_del(im->o_thumb);
 		       im->o_thumb = evas_object_image_add(evas);
@@ -207,6 +206,14 @@ e_key_down(Ecore_Event * ev)
      {
 	exit(0);
      }
+   else if (!strcmp(e->key, "r"))
+     {
+	e_rotate_r_current_image();
+     }
+   else if (!strcmp(e->key, "l"))
+     {
+	e_rotate_l_current_image();
+     }
    else if (!strcmp(e->key, "p"))
      {
 	if (panel_active)
@@ -236,18 +243,15 @@ e_key_down(Ecore_Event * ev)
      {
 	if (!current_image)
 	   current_image = images;
-	else
-	  {
-	     if (current_image->next)
-		current_image = current_image->next;
-	  }
+	else if (current_image->next)
+	   current_image = current_image->next;
 	e_display_current_image();
      }
    else if (!strcmp(e->key, "BackSpace"))
      {
 	if (!current_image)
 	   current_image = images;
-	else
+	else if (current_image->prev)
 	   current_image = current_image->prev;
 	e_display_current_image();
      }

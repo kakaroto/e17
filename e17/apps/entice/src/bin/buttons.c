@@ -55,6 +55,19 @@ bt_close_up(void *data, Evas * e, Evas_Object * obj, void *event_info)
 }
 
 void
+bt_delete_down(void *data, Evas * e, Evas_Object * obj, void *event_info)
+{
+   evas_object_image_file_set(obj, IM "bt_delete_2.png", NULL);
+}
+
+void
+bt_delete_up(void *data, Evas * e, Evas_Object * obj, void *event_info)
+{
+   evas_object_image_file_set(obj, IM "bt_delete_1.png", NULL);
+   e_delete_current_image();
+}
+
+void
 bt_expand_down(void *data, Evas * e, Evas_Object * obj, void *event_info)
 {
    evas_object_image_file_set(obj, IM "bt_expand_2.png", NULL);
@@ -104,11 +117,8 @@ bt_next_up(void *data, Evas * e, Evas_Object * obj, void *event_info)
    evas_object_image_file_set(obj, IM "bt_next_1.png", NULL);
    if (!current_image)
       current_image = images;
-   else
-     {
-	if (current_image->next)
-	   current_image = current_image->next;
-     }
+   else if (current_image->next)
+      current_image = current_image->next;
    e_display_current_image();
 }
 
@@ -124,7 +134,7 @@ bt_prev_up(void *data, Evas * e, Evas_Object * obj, void *event_info)
    evas_object_image_file_set(obj, IM "bt_prev_1.png", NULL);
    if (!current_image)
       current_image = images;
-   else
+   else if (current_image->prev)
       current_image = current_image->prev;
    e_display_current_image();
 }
@@ -188,7 +198,7 @@ e_slide_buttons_in(int v, void *data)
       start = get_time();
    val = (get_time() - start) / duration;
 
-   px = win_w - 256 - ((256 * sin(val * 0.5 * 3.141592654)) - 256);
+   px = win_w - 288 - ((288 * sin(val * 0.5 * 3.141592654)) - 288);
 
    evas_object_move(o_bt_prev, px + 0, 0);
    evas_object_move(o_bt_next, px + 32, 0);
@@ -197,7 +207,8 @@ e_slide_buttons_in(int v, void *data)
    evas_object_move(o_bt_zoom_out, px + 128, 0);
    evas_object_move(o_bt_expand, px + 160, 0);
    evas_object_move(o_bt_full, px + 192, 0);
-   evas_object_move(o_bt_close, px + 224, 0);
+   evas_object_move(o_bt_delete, px + 224, 0);
+   evas_object_move(o_bt_close, px + 256, 0);
 
    if (val < 1.0)
       ecore_add_event_timer("e_slide_buttons()", 0.05, e_slide_buttons_in,
@@ -217,7 +228,7 @@ e_slide_buttons_out(int v, void *data)
       start = get_time();
    val = (get_time() - start) / duration;
 
-   px = win_w - 256 - ((256 * sin((1.0 - val) * 0.5 * 3.141592654)) - 256);
+   px = win_w - 288 - ((288 * sin((1.0 - val) * 0.5 * 3.141592654)) - 288);
 
    evas_object_move(o_bt_prev, px + 0, 0);
    evas_object_move(o_bt_next, px + 32, 0);
@@ -226,7 +237,8 @@ e_slide_buttons_out(int v, void *data)
    evas_object_move(o_bt_zoom_out, px + 128, 0);
    evas_object_move(o_bt_expand, px + 160, 0);
    evas_object_move(o_bt_full, px + 192, 0);
-   evas_object_move(o_bt_close, px + 224, 0);
+   evas_object_move(o_bt_delete, px + 224, 0);
+   evas_object_move(o_bt_close, px + 256, 0);
 
    if (val < 1.0)
       ecore_add_event_timer("e_slide_buttons()", 0.05, e_slide_buttons_out,

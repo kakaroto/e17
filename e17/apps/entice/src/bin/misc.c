@@ -112,6 +112,7 @@ setup(void)
    o_panel_arrow_u = e_newim(evas, IM "list_arrow_u_1.png");
    o_panel_arrow_d = e_newim(evas, IM "list_arrow_d_1.png");
    o_bt_close = e_newim(evas, IM "bt_close_1.png");
+   o_bt_delete = e_newim(evas, IM "bt_delete_1.png");
    o_bt_expand = e_newim(evas, IM "bt_expand_1.png");
    o_bt_full = e_newim(evas, IM "bt_full_1.png");
    o_bt_next = e_newim(evas, IM "bt_next_1.png");
@@ -159,6 +160,7 @@ setup(void)
    evas_object_show(o_panel_arrow_d);
 
    evas_object_show(o_bt_close);
+   evas_object_show(o_bt_delete);
    evas_object_show(o_bt_expand);
    evas_object_show(o_bt_full);
    evas_object_show(o_bt_next);
@@ -213,6 +215,14 @@ setup(void)
    evas_object_event_callback_add(o_bt_close, EVAS_CALLBACK_MOUSE_IN,
 				  bt_tip_start, "Exit [ Key: Q ]");
    evas_object_event_callback_add(o_bt_close, EVAS_CALLBACK_MOUSE_OUT,
+				  bt_tip_stop, NULL);
+   evas_object_event_callback_add(o_bt_delete, EVAS_CALLBACK_MOUSE_DOWN,
+				  bt_delete_down, NULL);
+   evas_object_event_callback_add(o_bt_delete, EVAS_CALLBACK_MOUSE_UP,
+				  bt_delete_up, NULL);
+   evas_object_event_callback_add(o_bt_delete, EVAS_CALLBACK_MOUSE_IN,
+				  bt_tip_start, "Delete [ Key: D ]");
+   evas_object_event_callback_add(o_bt_delete, EVAS_CALLBACK_MOUSE_OUT,
 				  bt_tip_stop, NULL);
    evas_object_event_callback_add(o_bt_expand, EVAS_CALLBACK_MOUSE_DOWN,
 				  bt_expand_down, NULL);
@@ -448,7 +458,6 @@ void
 e_dnd_drop_request(Ecore_Event * ev)
 {
    Ecore_Event_Dnd_Drop_Request *dnd;
-   DIR                *d;
    Window              dnd_win;
    int                 i;
 

@@ -110,7 +110,8 @@ e_fade_scroller_in(int v, void *data)
    if (val > 1.0)
       val = 1.0;
 
-   evas_object_color_set(o_mini_image, 255, 255, 255, (val * 255));
+   if (o_mini_image)
+         evas_object_color_set(o_mini_image, 255, 255, 255, (val * 255));
    evas_object_color_set(o_mini_select, 255, 255, 255, (val * 255));
 
    if (val < 1.0)
@@ -177,7 +178,8 @@ e_fade_scroller_out(int v, void *data)
    if (val > 1.0)
       val = 1.0;
    val = 1.0 - val;
-   evas_object_color_set(o_mini_image, 255, 255, 255, (val * 255));
+   if (o_mini_image)
+         evas_object_color_set(o_mini_image, 255, 255, 255, (val * 255));
    evas_object_color_set(o_mini_select, 255, 255, 255, (val * 255));
 
    if (val < 1.0)

@@ -13,6 +13,9 @@ Image              *e_image_new(char *file);
 void                e_image_free(Image * im);
 void                image_delete(Image * im);
 
+void                e_rotate_r_current_image(void);
+void                e_rotate_l_current_image(void);
+
 void                e_delete_current_image(void);
 void                e_display_current_image(void);
 

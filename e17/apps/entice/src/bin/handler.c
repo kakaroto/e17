@@ -66,7 +66,7 @@ e_handle_resize(void)
       double              px = 0;
 
       if (buttons_active)
-	 px = win_w - 256;
+	 px = win_w - 288;
       else
 	 px = win_w;
       evas_object_move(o_bt_prev, px + 0, 0);
@@ -76,12 +76,14 @@ e_handle_resize(void)
       evas_object_move(o_bt_zoom_out, px + 128, 0);
       evas_object_move(o_bt_expand, px + 160, 0);
       evas_object_move(o_bt_full, px + 192, 0);
-      evas_object_move(o_bt_close, px + 224, 0);
+      evas_object_move(o_bt_delete, px + 224, 0);
+      evas_object_move(o_bt_close, px + 256, 0);
    }
    evas_object_move(o_showbuttons, win_w - 256, 0);
    evas_object_resize(o_showbuttons, 256, 32);
    evas_object_layer_set(o_showbuttons, 1100);
    evas_object_layer_set(o_bt_close, 1300);
+   evas_object_layer_set(o_bt_delete, 1300);
    evas_object_layer_set(o_bt_expand, 1300);
    evas_object_layer_set(o_bt_full, 1300);
    evas_object_layer_set(o_bt_next, 1300);

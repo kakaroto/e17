@@ -19,6 +19,7 @@ extern Evas_Object *o_list_select;
 extern Evas_Object *o_panel_arrow_u;
 extern Evas_Object *o_panel_arrow_d;
 extern Evas_Object *o_bt_close;
+extern Evas_Object *o_bt_delete;
 extern Evas_Object *o_bt_expand;
 extern Evas_Object *o_bt_full;
 extern Evas_Object *o_bt_next;

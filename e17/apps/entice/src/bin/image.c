@@ -6,7 +6,6 @@ image_add_from_dnd(char *item)
    DIR                *d;
    struct dirent      *dent;
    Image              *im;
-   Evas_List          *l;
    char                buf[4096];
 
    if (e_file_is_dir(item))
@@ -85,7 +84,6 @@ image_create_list_dir(char *dir)
    DIR                *d;
    struct dirent      *dent;
    Image              *im;
-   Evas_List          *l;
 
    d = opendir(dir);
 
@@ -224,6 +222,78 @@ image_delete(Image * im)
      }
 }
 
+static void
+e_rotate_object(Evas_Object *obj, int rotation)
+{
+   int w;
+   int h;
+   DATA32 *image_data;
+   Imlib_Image image;
+
+   if (!obj)
+       return;
+
+   /* Get image data from Evas */
+   evas_object_image_size_get(obj, &w, &h);
+   image_data = evas_object_image_data_get(obj, 0);
+
+   /* Set up imlib image */
+   image = imlib_create_image_using_copied_data(w, h, image_data);
+   evas_object_image_data_set(obj, image_data);
+   imlib_context_set_image(image);
+
+   /* Rotate image */
+   imlib_image_orientate(rotation);
+   w = imlib_image_get_width();
+   h = imlib_image_get_height();
+
+   /* Get image data from Imblib */
+   image_data = imlib_image_get_data_for_reading_only();
+
+   /* Set Evas Image Data */
+   evas_object_image_size_set(obj, w, h);
+   evas_object_image_data_copy_set(obj, image_data);
+
+   /* Free Imlib image */
+   imlib_image_put_back_data(image_data);
+   imlib_free_image();
+}
+
+static void
+e_rotate_current_image(int rotation)
+{
+   Image *im;
+
+   if (!current_image || !current_image->data)
+       return;
+
+   im = (Image *) (current_image->data);
+
+   /* Rotate image */
+   e_rotate_object(o_image, rotation);
+   e_rotate_object(o_mini_image, rotation);
+   e_rotate_object(im->o_thumb, rotation);
+
+   /* Update Display */
+   e_handle_resize();
+   e_fix_icons();
+   e_scroll_list(0, NULL);
+   e_fade_scroller_in(0, (void *)1);
+
+}
+
+void
+e_rotate_r_current_image(void)
+{
+	e_rotate_current_image(1);
+}
+
+void
+e_rotate_l_current_image(void)
+{
+	e_rotate_current_image(3);
+}
+
 void
 e_delete_current_image(void)
 {
@@ -231,34 +301,30 @@ e_delete_current_image(void)
 
    Image              *im;
 
-   if (current_image && current_image->data)
-     {
-	im = (Image *) (current_image->data);
+   if (!current_image || !current_image->data)
+	return;
 
-	if (im->file)
-	   unlink(im->file);
-	if (im->thumb)
-	   unlink(im->thumb);
-	if (current_image->next)
-	   l = current_image->next;
-	else if (current_image->prev)
-	   l = current_image->prev;
-	else
-	   l = NULL;
+   im = (Image *) (current_image->data);
 
-	if (l != NULL)
-	  {
-	     if (im->o_thumb)
-		evas_object_del(im->o_thumb);
-	     e_image_free((Image *) current_image->data);
-	     images = evas_list_remove(images, current_image->data);
-	  }
+   if (im->file)
+      unlink(im->file);
+   if (im->thumb)
+      unlink(im->thumb);
+   if (current_image->next)
+      l = current_image->next;
+   else if (current_image->prev)
+      l = current_image->prev;
+   else
+      l = NULL;
 
-	if (l != NULL)
-	   current_image = l;
+   if (im->o_thumb)
+      evas_object_del(im->o_thumb);
+   e_image_free((Image *) current_image->data);
+   images = evas_list_remove(images, current_image->data);
 
-	e_display_current_image();
-     }
+   current_image = l;
+
+   e_display_current_image();
 }
 
 void
@@ -298,7 +364,7 @@ e_display_current_image(void)
 	  {
 	     sprintf(txt_info[0], "Error LoadingFile: %s",
 		     ((Image *) (current_image->data))->file);
-	     sprintf(txt_info[1], "");
+	     *txt_info[1] = '\0';
 	     sprintf(title, "Entice (Error Loading): %s",
 		     ((Image *) (current_image->data))->file);
 	     ecore_window_set_title(main_win, title);
@@ -323,8 +389,10 @@ e_display_current_image(void)
    else
      {
 	ecore_window_set_title(main_win, "Entice (No Image)");
-	evas_object_del(o_image);
-	o_image = NULL;
+          {
+	     evas_object_del(o_image);
+	     o_image = NULL;
+	  }
      }
    if ((o_image) && (current_image))
      {
