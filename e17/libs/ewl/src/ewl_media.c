@@ -149,7 +149,7 @@ int ewl_media_seekable_get(Ewl_Media *m)
 	DENTER_FUNCTION(DLEVEL_STABLE)
 	DCHECK_PARAM_PTR_RET("m", m, 0);
 
-	if (m->video)
+	if (m->video && !m->block_seek)
 	    seekable = emotion_object_seekable_get(m->video);
 
 	DRETURN_INT(seekable, DLEVEL_STABLE);
@@ -184,8 +184,11 @@ void ewl_media_position_set(Ewl_Media *m, double p)
 	DENTER_FUNCTION(DLEVEL_STABLE)
 	DCHECK_PARAM_PTR("m", m);
 
-	if (m->video)
-	    emotion_object_position_set(m->video, p);
+	if (m->video && ewl_media_seekable_get(m)) {
+		m->block_seek = 1;
+		emotion_object_position_set(m->video, p);
+		m->block_seek = 0;
+	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -344,7 +347,9 @@ static void ewl_media_size_update(Ewl_Media *m)
 static void ewl_media_update_timer_cb(void *data, Evas_Object *obj, void *event_info)
 {
 	Ewl_Widget *m = (Ewl_Widget *)data;
+	EWL_MEDIA(m)->block_seek = 1;
 	ewl_callback_call(m,  EWL_CALLBACK_VALUE_CHANGED);
+	EWL_MEDIA(m)->block_seek = 0;
 }
 
 
