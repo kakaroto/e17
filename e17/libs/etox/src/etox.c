@@ -90,7 +90,7 @@ etox_new_all(Evas *evas, Evas_Coord x, Evas_Coord y, Evas_Coord w,
  * Returns no value. Removes the etox @et from the evas it is drawn on, and
  * then deallocates the memory that it was using.
  */
-void etox_free(Evas_Object * obj)
+static void etox_free(Evas_Object * obj)
 {
 	Etox *et;
 	Etox_Obstacle *obst;
@@ -120,7 +120,7 @@ void etox_free(Evas_Object * obj)
  *
  * Returns no value. Adds the text from @et to it's evas.
  */
-void etox_show(Evas_Object * obj)
+static void etox_show(Evas_Object * obj)
 {
 	Etox *et;
 	Etox_Line *line;
@@ -152,7 +152,7 @@ void etox_show(Evas_Object * obj)
  *
  * Returns no value. Hides the text from @et from it's evas
  */
-void etox_hide(Evas_Object * obj)
+static void etox_hide(Evas_Object * obj)
 {
 	Etox *et;
 
@@ -588,7 +588,7 @@ void etox_set_soft_wrap(Evas_Object *obj, int boolean)
  * Returns no value. Moves all bits of the etox onto the @layer layer of the
  * evas. All further text added will be drawn on this layer.
  */
-void etox_set_layer(Evas_Object * obj, int layer)
+static void etox_set_layer(Evas_Object * obj, int layer)
 {
 	Etox *et;
 	Etox_Line *line;
@@ -685,7 +685,7 @@ etox_get_length(Evas_Object *obj)
  * Returns no value. Changes the position of the etox @et to the specified
  * position.
  */
-void etox_move(Evas_Object * obj, Evas_Coord x, Evas_Coord y)
+static void etox_move(Evas_Object * obj, Evas_Coord x, Evas_Coord y)
 {
 	Etox *et;
 
@@ -725,7 +725,7 @@ void etox_move(Evas_Object * obj, Evas_Coord x, Evas_Coord y)
  * Returns no value. Changes the dimensions of the etox to match the specified
  * dimensions.
  */
-void etox_resize(Evas_Object * obj, Evas_Coord w, Evas_Coord h)
+static void etox_resize(Evas_Object * obj, Evas_Coord w, Evas_Coord h)
 {
 	Etox *et;
 
@@ -959,7 +959,7 @@ etox_coord_to_geometry(Evas_Object * obj, Evas_Coord xc, Evas_Coord yc,
  * Returns no value. Changes the clip rectangle for the etox @et to the clip
  * rectangle @clip and updates the display.
  */
-void etox_set_clip(Evas_Object * obj, Evas_Object *clip)
+static void etox_set_clip(Evas_Object * obj, Evas_Object *clip)
 {
 	Etox *et;
 
@@ -976,7 +976,7 @@ void etox_set_clip(Evas_Object * obj, Evas_Object *clip)
  *
  * Returns no value. Removes the clip rectangle for the etox @et.
  */
-void etox_unset_clip(Evas_Object * obj)
+static void etox_unset_clip(Evas_Object * obj)
 {
 	Etox *et;
 
