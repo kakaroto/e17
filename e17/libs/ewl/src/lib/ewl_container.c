@@ -800,7 +800,7 @@ void ewl_container_child_hide_call(Ewl_Container *c, Ewl_Widget *w)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	if (c->child_hide && VISIBLE(w) && REALIZED(w))
+	if (c->child_hide && !VISIBLE(w) && REALIZED(w))
 		c->child_hide(c, w);
 
 	ecore_list_goto_first(c->children);
