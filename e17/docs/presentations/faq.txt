@@ -1,17 +1,74 @@
 Frequently asked questions
 
-This is a list of questions you can expect based on past presentations
-related to enlightenment. Yes most of these questions are in the faq on
-the website, but we all know how many end users read that before asking
-questions.
+	This is a list of questions you can expect based on past presentations
+	related to enlightenment. Yes most of these questions are in the faq on
+	the website, but we all know how many end users read that before asking
+	questions.
 
 Is enlightenment development dead?
-How many active developers are there
-How active is CVS (average time between cvs commits)
-How long until DR17
-Why is there so much bloat in E
-Why are you making ANOTHER wm like gnome or kde
-How fast will the new e apps work
-How much memory or cpu will the libs use
-Where do the libs run (portability)
-Why are you redoing a lot of work being done in fd.o
+
+	No, enlightenment has been in constant development since it's inception.
+	We did not release a window manager for 3 years, because it was not a
+	priority that the current developers wanted to spend their limited time
+	on. Kim Woelders stepped up and made extensive improvements that
+	called for new releases.
+
+How many active developers are there?
+
+	There are 10 developers making regular commits, and 42 developers with
+	CVS access.
+
+How active is CVS (average time between cvs commits)?
+
+	Approximately 1.58 hours between commits. This number is slightly on
+	the high side because of an issue with the commit bot.
+
+How long until DR17?
+
+	No time estimates are given because the code is developed in spare
+	time only. Without a schedule of regular working hours, development
+	time is impossible to estimate.
+
+Why is there so much bloat in E?
+
+	Bloat? What bloat? Most claims of bloat in E are from '97 or '98, at
+	which time Enlightenment really pushed the boundaries of the hardware.
+	These days, E could be considered one of the lighter environments out
+	there, and will happily run on old pentium class hardware.
+
+Why are you making ANOTHER wm like gnome or kde?
+
+	Enlightenment pre-dates gnome and kde. It was originally used by gnome
+	as the default window manager. Until recently, Enlightenment focused
+	solely on window management. While there will be some overlap between
+	the EFL and the other environments, we aim to work with their
+	applications and environments as much as possible.
+
+How fast will the new e apps work?
+
+	This will depend on the application to a large degree. The overall
+	goal is to make the libraries as fast and flexile as possible, so that
+	apps can target their specific platform.
+
+How much memory or cpu will the libs use?
+
+	As little as possible to accomplish the necessary functionality. At
+	this point, all of the core libraries can run fit into about 1.1 MB of
+	storage. At runtime, the memory use varies depending on architecture
+	and application, but demonstrations have shown the libraries being
+	used on devices with minimal memory.
+
+Where do the libs run (portability)?
+
+	Currently tested platforms include: Linux (x86, powerpc, ARM, Sparc),
+	Solaris, and Mac OS X. Some libraries have been tested on Windows 2000
+	and CE.
+
+Why are you redoing a lot of work being done in fd.o?
+
+	We're not. The freedesktop group was formed to specify ways that
+	applications and libraries can communicate through X. We are making
+	use of these standards where ever it is technically reasonable. In
+	fact, our abstractions may help the fd.o group, as standards groups
+	often require at least 2 separate implementations of a proposal
+	before it is accepted as a standard.
