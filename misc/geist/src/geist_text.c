@@ -188,10 +188,17 @@ geist_text_render_partial(geist_object * obj, Imlib_Image dest, int x, int y,
    im = GEIST_TEXT(obj);
    if (!im->im)
       D_RETURN_(5);
-
+   
+   geist_object_get_rendered_area(obj, &dx, &dy, &dw, &dh);
+   CLIP(dx, dy, dw, dh, x, y, w, h);
+   sx = dx - obj->x - obj->rendered_x;
+   sy = dy - obj->y - obj->rendered_y;
+   sw = dw;
+   sh = dh;
+#if 0
    geist_object_get_clipped_render_areas(obj, x, y, w, h, &sx, &sy, &sw, &sh,
                                          &dx, &dy, &dw, &dh);
-
+#endif
    D(5, ("Rendering partial text %s\n", im->text));
    D(5,
      ("Rendering text area:\nsx: %d\tsy: %d\nsw: %d\tsh: %d\ndx: %d\tdy: %d\ndw: %d\tdh: %d\n",
