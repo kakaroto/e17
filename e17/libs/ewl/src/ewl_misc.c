@@ -123,10 +123,12 @@ int ewl_idle_render(void *data)
 	 */
 	ewd_list_goto_first(realize_list);
 	while ((w = ewd_list_remove_first(realize_list))) {
+		edje_freeze();
 		if (VISIBLE(w) && !REALIZED(w)) {
 			w->flags &= ~EWL_FLAGS_RSCHEDULED;
 			ewl_widget_realize(EWL_WIDGET(w));
 		}
+		edje_thaw();
 	}
 
 	/*
