@@ -69,6 +69,8 @@ MapUnmap(int start)
 		    }
 	       }
 	  }
+	/* Flush (get rid of unmap events) */
+	XSync(disp, True);
 	ecore_x_ungrab();
 	break;
      case 1:

@@ -384,6 +384,10 @@ DeskCreate(int desk, int add_controls)
      {
 	EoSetFloating(d, 1);
 	EobjListStackAdd(&d->o, 0);
+#if 0				/* TBD */
+	d->event_mask = EDESK_EVENT_MASK;
+	DeskEventsConfigure(d, 1);
+#endif
      }
    EventCallbackRegister(win, 0, DesktopHandleEvents, d);
 
@@ -392,8 +396,6 @@ DeskCreate(int desk, int add_controls)
 	DeskControlsCreate(d);
 	DeskControlsShow(d);
      }
-
-   DeskEventsConfigure(d, 1);
 
    {
       Background        **lst;

@@ -234,9 +234,6 @@ main(int argc, char **argv)
    /* Unmap the clients */
    MapUnmap(0);
 
-   /* Flush (get rid of unmap events) */
-   XSync(disp, True);
-
    ModulesSignal(ESIGNAL_INIT, NULL);
 
    /* Move elsewhere... */
