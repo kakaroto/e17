@@ -131,8 +131,40 @@ entrance_session_free(Entrance_Session * e)
 void
 entrance_session_run(Entrance_Session * e)
 {
-   ecore_evas_show(e->ee);
-   ecore_main_loop_begin();
+   int ok = 0;
+   Entrance_User *eu = NULL;
+
+   switch (e->config->autologin.mode)
+   {
+     case ENTRANCE_AUTOLOGIN_NONE:
+        ecore_evas_show(e->ee);
+        break;
+     case ENTRANCE_AUTOLOGIN_DEFAULT:
+        if ((eu =
+             evas_hash_find(e->config->users.hash,
+                            e->config->autologin.username)))
+        {
+           ok = 1;
+           e->authed = 1;
+           entrance_session_user_set(e, eu);
+        }
+        break;
+     case ENTRANCE_AUTOLOGIN_THEME:
+        ecore_evas_show(e->ee);
+        if ((eu =
+             evas_hash_find(e->config->users.hash,
+                            e->config->autologin.username)))
+        {
+           e->authed = 1;
+           entrance_session_user_set(e, eu);
+           edje_object_signal_emit(e->edje, "EntranceUserAuthSuccess", "");
+        }
+        break;
+   }
+   if (!ok)
+   {
+      ecore_main_loop_begin();
+   }
 }
 
 /**
@@ -350,8 +382,11 @@ entrance_session_start_user_session(Entrance_Session * e)
       /* Tell PAM that session has begun */
       if (pam_open_session(e->auth->pam.handle, 0) != PAM_SUCCESS)
       {
-         syslog(LOG_CRIT, "Unable to open PAM session. Aborting.");
-         return;
+         if (!e->config->autologin.mode)
+         {
+            syslog(LOG_CRIT, "Unable to open PAM session. Aborting.");
+            return;
+         }
       }
    }
 #endif

@@ -76,6 +76,11 @@ entrance_config_populate(Entrance_Config * e, E_DB_File * db)
       e->time.string = str;
    else
       e->time.string = strdup("%l:%M:%S %p");
+   if (e_db_int_get(db, "/entrance/autologin/mode", &e->autologin.mode))
+   {
+      if (e->autologin.mode > 0)
+         e->autologin.username = e_db_str_get(db, "/entrance/autologin/user");
+   }
    /* ints */
    if (!e_db_int_get(db, "/entrance/user/remember", &e->users.remember))
       e->users.remember = 1;
@@ -404,6 +409,8 @@ entrance_config_free(Entrance_Config * e)
          free(e->before.string);
       if (e->after.string)
          free(e->after.string);
+      if (e->autologin.username)
+         free(e->autologin.username);
       free(e);
    }
 }

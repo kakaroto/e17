@@ -313,6 +313,8 @@ entrance_auth_setup_environment(Entrance_Auth * e)
    int size;
    char *mail;
 
+   if (!e || !e->pw)
+      return;
    e->env = environ;
    setenv("TERM", "vt100", 0);  // TERM=linux?
    setenv("HOME", e->pw->pw_dir, 1);

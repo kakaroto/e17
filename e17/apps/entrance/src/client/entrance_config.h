@@ -18,6 +18,10 @@
 #define ENTRANCE_USE_PAM 1
 #define ENTRANCE_USE_SHADOW 2
 
+#define ENTRANCE_AUTOLOGIN_NONE 0
+#define ENTRANCE_AUTOLOGIN_DEFAULT 1
+#define ENTRANCE_AUTOLOGIN_THEME 2
+
 /**
  * This contains all of the configuration options that the system can set
  */
@@ -101,6 +105,19 @@ struct _Entrance_Config
       Evas_Hash *hash;
       Evas_List *keys;
    } sessions;
+
+   struct
+   {
+	/**
+	 * uid we can find in the users hash
+	 */
+      char *username;
+	/**
+	 * 0 = off, 1 = immediate exec, 2 = show theme & post auth
+	 */
+      int mode;
+   } autologin;
+
 };
 
 typedef struct _Entrance_Config Entrance_Config;
