@@ -442,7 +442,6 @@ char *etox_get_text(Etox * et)
 void etox_clear(Etox * et)
 {
 	Etox_Line *line;
-	Evas_List l;
 
 	CHECK_PARAM_POINTER("et", et);
 
@@ -453,9 +452,10 @@ void etox_clear(Etox * et)
 	if (!et->lines)
 		return;
 
-	for (l = et->lines; l; l = l->next) {
-		line = l->data;
+	while (et->lines) {
+		line = et->lines->data;
 		etox_line_free(line);
+		et->lines = evas_list_remove(et->lines, line);
 	}
 }
 
@@ -847,7 +847,7 @@ void etox_obstacle_remove(Etox * et, Etox_Obstacle * obstacle)
 	CHECK_PARAM_POINTER("et", et);
 	CHECK_PARAM_POINTER("obstacle", obstacle);
 
-	evas_list_remove(et->obstacles, obstacle);
+	et->obstacles = evas_list_remove(et->obstacles, obstacle);
 
 	etox_obstacle_free(et, obstacle);
 }
@@ -1009,7 +1009,7 @@ static Evas_List _etox_break_text(Etox * et, char *text)
 		etox_line_append(line, bit);
 		estyle_show(bit);
 	} else if (line->bits == NULL) {
-		evas_list_remove(ret, line);
+		ret = evas_list_remove(ret, line);
 		etox_line_free(line);
 	}
 
@@ -1042,7 +1042,7 @@ void _etox_wrap_lines(Etox *et)
     /* if the line is wider than the etox */
     if (line->w > et->w)
     {
-      Estyle *bit, *split, *marker;
+      Estyle *bit = NULL, *split = NULL, *marker;
       int index = -1;
       
       /* iterate through the bits to find the one on the border */
