@@ -30,7 +30,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifdef DEBUG
 #define D(msg) \
 { \
-  printf("DBG: "); \
+  printf("efsd-debug: "); \
   printf msg; \
   fflush(stdout); \
 }
