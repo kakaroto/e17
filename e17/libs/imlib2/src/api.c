@@ -19,10 +19,10 @@
 #include "ximage.h"
 #include "rgbadraw.h"
 #include "Imlib2.h"
-#ifdef HAVE_FREETYPE_H
-#include <freetype.h>
-#elif defined(HAVE_FREETYPE_FREETYPE_H)
+#ifdef HAVE_FREETYPE_FREETYPE_H
 #include <freetype/freetype.h>
+#else
+#include <freetype.h>
 #endif
 #include "font.h"
 #include "grad.h"
