@@ -870,7 +870,7 @@ _evoak_object_unref(Evoak_Object *o)
 	     
 	     o2 = o->clipees->data;
 	     o2->clip = NULL;
-	     o->clipees->data = evas_list_remove(o->clipees, o2);
+	     o->clipees = evas_list_remove(o->clipees, o2);
 	  }
 	if (o->name)
 	  {
