@@ -894,3 +894,16 @@ use).  Yes, this means i'm gonna have to impliment a realize/unrealize
 system for widgets.  Fuck you Tom. ;)
 - fixed configure.in so it actually finds evas...hmm, imagine that.
 
+-----
+20000902-0610-PDT, pabs
+
+- added ewl_get/set_render_method() -- note that the set function
+  should _never_ be called from programs unless you know exactly
+  what you're doing, and setting the render method will not 
+  affect realized windows (ie you can have different render
+  methods for different windows!  Hooray for Evas!).
+- ewl apps will now load the specified render method from the user's 
+  preferences db. allowed values are as follows (case-insensitive):
+	"alpha_software" "basic_hardware" "3d_hardware" "alpha_hardware"
+(yes, they correspond to their Evas equivalents... how odd)
+

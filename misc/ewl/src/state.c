@@ -21,7 +21,8 @@ void       ewl_state_init(EwlState *s)
 	      *prefs_path = NULL,
 	      *prefs_name = ".ewl/preferences",
 	      *prefs_list = NULL;
-	int    len = 0;
+	int    i = 0,
+	       len = 0;
 	FUNC_BGN("ewl_state_init");
 	if (!s)	{
 		ewl_debug("ewl_state_init",EWL_NULL_ERROR,"s");
@@ -51,6 +52,7 @@ void       ewl_state_init(EwlState *s)
 	s->render_dithered = 0;
 	s->render_antialiased = 0;
 
+	s->render_method = -1; /* for sanity checks on preferences db later */
 	ewl_state_translators_init(s);
 
 
@@ -88,6 +90,35 @@ void       ewl_state_init(EwlState *s)
 				if (ewl_debug_is_active())
 					fprintf(stderr,"ewl_state_init(): dithered = %s\n", 
 					        s->render_dithered?"true":"false");
+
+				temp = ewl_db_get(db,"render/method", &len);
+				if (temp) {
+					for (i=0; i<RENDER_METHOD_COUNT; i++)	{
+						if (!strncasecmp(
+						          temp,
+						          EwlRenderMethodStringEnum[i], 
+						          strlen(EwlRenderMethodStringEnum[i]))) {
+							s->render_method = i;
+							break;
+						} 
+					}
+				} else {
+					fprintf(stderr,
+				            "WARNING: Undefined Render Method in %s\n"
+					        "         This could mean you have an obsolete or corrupt preferences database.\n"
+					        "         Falling back to Software Rendering.\n",
+					        prefs_path);
+					s->render_method = RENDER_METHOD_ALPHA_SOFTWARE;
+				}
+
+				if (s->render_method==-1)	{
+					fprintf(stderr,
+				            "WARNING: Unknown Render Method in %s\n"
+					        "         This could mean you have an obsolete or corrupt preferences database.\n"
+					        "         Falling back to Software Rendering.\n",
+					        prefs_path);
+					s->render_method = RENDER_METHOD_ALPHA_SOFTWARE;
+				}
 
 				prefs_list = ewl_db_get(db,"path", &len);
 				if (ewl_debug_is_active())
@@ -304,6 +335,37 @@ Display   *ewl_get_display()
 	disp = ewl_state_get_display();
 	FUNC_END("ewl_get_display");
 	return disp;
+}
+
+
+EwlRenderMethod  ewl_get_render_method()
+{
+	EwlState        *s = ewl_state_get();
+	EwlRenderMethod  method = 0;
+	FUNC_BGN("ewl_get_render_method");
+	if (!s)	{
+		ewl_debug("ewl_get_render_method", EWL_NULL_ERROR, "s");
+	} else {
+		method = s->render_method;
+	}
+	FUNC_END("ewl_get_render_method");
+	return method;
+}
+
+void             ewl_set_render_method(EwlRenderMethod method)
+{
+	EwlState        *s = ewl_state_get();
+	FUNC_BGN("ewl_set_render_method");
+	if (!s)	{
+		ewl_debug("ewl_set_render_method", EWL_NULL_ERROR, "s");
+	} else if (method<0||method>RENDER_METHOD_COUNT) {
+		ewl_debug("ewl_set_render_method", EWL_OUT_OF_BOUNDS_ERROR,
+		          "method");
+	} else {
+		s->render_method = method;
+	}
+	FUNC_END("ewl_set_render_method");
+	return;
 }
 
 

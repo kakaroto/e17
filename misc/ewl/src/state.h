@@ -22,6 +22,17 @@ extern void ewl_container_event_propagate(EwlWidget  *container,
 typedef void                                EwlTimer;
 
 
+/* EWl Evas wrapper -- if this gets too big i'll move it elsewhere */
+typedef Evas_Render_Method                  EwlRenderMethod;
+
+static char *EwlRenderMethodStringEnum[] = {
+	"alpha_software",
+	"basic_hardware",
+	"3d_hardware",
+	"alpha_hardware"
+};
+
+
 typedef struct _EwlState                    EwlState;
 static EwlState                            *_Ewl_Internal_State;
 
@@ -53,6 +64,8 @@ struct _EwlState
 	Display                    *disp;
 	EwlBool                     render_dithered;
 	EwlBool                     render_antialiased;
+
+	EwlRenderMethod             render_method;
 };
 
 EwlState  *ewl_state_new();
@@ -122,6 +135,8 @@ EwlBool    ewl_render_dithered_get();
 void       ewl_set_display(Display *disp);
 Display   *ewl_get_display();
 
+EwlRenderMethod  ewl_get_render_method();
+void             ewl_set_render_method(EwlRenderMethod method);
 
 /*********************/
 /* PRIVATE FUNCTIONS */
@@ -171,6 +186,7 @@ static void __depricated_die_pedantic_die_Ewl_Internal_State()
 {
 	if (_Ewl_Internal_State) fprintf(stderr,"DON'T CALL THIS FUNCTION!!\n");
 	if (0) __depricated_die_pedantic_die_Ewl_Internal_State();
+	if (EwlRenderMethodStringEnum) fprintf(stderr,"i really wish -pedantic would ignore non-referenced static globals in header files...\n");
 	return;
 }
 
