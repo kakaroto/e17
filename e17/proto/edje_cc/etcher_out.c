@@ -1,3 +1,4 @@
+#include <errno.h>
 #include <stdio.h>
 #include <stdarg.h>
 #include "Etcher.h"
@@ -105,6 +106,39 @@ etcher_out_data(FILE *out, char *name, char *fmt, ...)
     va_end(ap);
 
     free(buf);
+}
+
+int
+etcher_eet_output(Etcher_File *etcher_file, char *path)
+{
+  static char tmpn[1024];
+  int len = 0, fd = 0, ret = 0;
+  char *cmd = NULL;
+
+  strcpy(tmpn, "/tmp/etcher_cc.edc-tmp-XXXXXX");
+  fd = mkstemp(tmpn);
+  if (fd < 0) {
+    fprintf(stderr, "Unable to create tmp file: %s\n", strerror(errno));
+    return 0;
+  }
+  close(fd);
+
+  etcher_file_output(etcher_file, tmpn);
+  /* FIXME images and fonts ??? */
+
+  len = strlen(tmpn) + strlen(path) + 13;
+  cmd = (char *)calloc(len, sizeof(char));
+  snprintf(cmd, len, "edje_cc -v %s %s", tmpn, path);
+  ret = system(cmd);
+
+  if (ret < 0) {
+    fprintf(stderr, "Unable to execute edje_cc on tmp file: %s\n", 
+                                                    strerror(errno));
+    return 0;                                                    
+  }
+
+  unlink(tmpn);
+  return 1;
 }
 
 void

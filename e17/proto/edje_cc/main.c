@@ -13,6 +13,7 @@ static void clean_tmp_file(void);
 
 int main(int argc, char ** argv)
 {
+	int output_type = 0;
 	int c = 0, fd = 0;
 	char *file = NULL;
 	extern FILE *yyin;
@@ -25,14 +26,19 @@ int main(int argc, char ** argv)
 
 	static struct option long_opts[] = {
 		{"yydebug", no_argument, NULL, 'y'},
+		{"eet", no_argument, NULL, 'e'},
 		{0, 0, 0, 0}
 	};
 
 	yydebug = 0;
-	while((c = getopt_long(argc, argv, "y", long_opts, NULL)) != -1) {
+	while((c = getopt_long(argc, argv, "ey", long_opts, NULL)) != -1) {
 		switch(c) {
 			case 'y':
 				yydebug = 1;
+				break;
+
+			case 'e':
+				output_type = 1;
 				break;
 
 			default:
@@ -167,14 +173,15 @@ int main(int argc, char ** argv)
 		return 0;
 	}
 
-	free(file);
-
 	etcher_parse_init();
 
 	yyparse();
 	fclose(yyin);
 
-	etcher_file_output(etcher_file, "test.out");
+	if (output_type)
+		etcher_eet_output(etcher_file, "test.eet");
+	else
+		etcher_file_output(etcher_file, "test.out");
 
         /* FIXME: make this a complete test suite */
 #if 0        
