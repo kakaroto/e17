@@ -650,14 +650,15 @@ create_list_window(void)
 			sscanf(buf, "%*s %*s %i", &j);
 			strcpy(stuff[2],"");
 			/*sprintf(stuff[2],"%s",actions[j].text); */
-			if (atword(buf, 4))
+			if (atword(buf, 4)) {
 				sprintf(stuff[3],"%s",atword(buf, 4));
-			else
+			} else {
 				strcpy(stuff[3],"");
+			}
 			for (k = 0; (actions[k].text); k++) {
 				if (j == actions[k].id) {
 					if (strcmp(stuff[3],"")) {
-						if ((j==9) && (!strncmp(stuff[3],"named",5)));
+						if ((j==9) && (!strncmp(stuff[3],"named",5)))
 							sscanf(stuff[3],"%*s %s",stuff[3]);
 						if ((actions[k].param_tpe == 0)&&(actions[k].params)) {
 							if (!strcmp(stuff[3], actions[k].params)) {
