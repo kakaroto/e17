@@ -1,29 +1,23 @@
     script {
-	public mouse_x;
-	public mouse_y;
-	public preview_state;
 	public is_fullscreen;
 	public is_first_image;
-
-	public preview_animate(val, Float: pos) {
-	    new Float:x = 0.0;
-	    new Float:y = 0.0;
-	    if(val == 0) {
-		x = sin(3.14 * pos);
-		y = cos(1.57 * pos);
-	    }
-	    else if(val == 1){
-		x = sin(3.14 * pos);
-		y = 1 - cos(1.57 * pos);
-	    }
-	    else if(val == 2){
-		x = 1 - sin(3.14 * pos);
-		y = cos(1.57 * pos);
-	    }
-	    else if(val == 3){
-		x = 1 - sin(3.14 * pos);
-		y = 1 - cos(1.57 * pos);
-	    }
-	    set_drag(PART:"entice.preview", x, y);
+	
+	public preview_place()
+	{
+	    new buf[100];
+	    new mx = 0, my = 0;
+	    new x = 0, y = 0, w = 0, h = 0;
+	    new Float:py = 0.0, Float:px = 0.0;
+	    
+	    get_geometry(PART:"bg", x, y, w, h);
+	    snprintf(buf, 100, "bg is %i,%i,%i,%i", x, y, w, h);
+	    //emit("entice,debug", buf);
+		    
+	    get_mouse(mx, my);
+	    py = (my - 1.0) / h;
+	    px = 20.0 / w;
+	    snprintf(buf, 100, "%i,%i(%f,%f)", mx, my, px, py);
+	    //emit("entice,debug", buf);
+	    set_drag(PART:"entice.preview", px, py); 
 	}
     }

@@ -89,9 +89,9 @@ collections
 #include "parts/buttons.edc"
 #include "parts/tooltip.edc"
 #include "parts/bg.edc"
-#include "parts/panel.edc"
 #include "parts/delete_dialog.edc"
 #include "parts/enticeimagepreview.edc"
+#include "parts/panel.edc"
 #include "parts/status.edc"
 	}
 	programs

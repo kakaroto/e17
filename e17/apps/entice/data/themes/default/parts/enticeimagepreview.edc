@@ -26,14 +26,16 @@
 		    rel1
 		    {
 			relative, 0.0 0.0;
-			offset, 80 20;
+			offset, 64 0;
+			to_y, "bg";
 		    }
 		    rel2
 		    {
 			relative, 1.0 1.0;
-			offset, -20 -20;
+			offset, -20 0;
+			to_y, "bg";
 		    }
-		    color, 255 255 255 0;
+		    color, 255 0 0 0;
 		}
 	    }
 	    part

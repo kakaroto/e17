@@ -16,15 +16,6 @@
 	    }
 	    program
 	    {
-		name, "preview_shown_and_stuff";
-		signal, "show";
-		source, "";
-		script {
-		    set_int(preview_state, 0);
-		}
-	    }
-	    program
-	    {
 		name, 	"JustImage";
 		signal, "mouse,in";
 		source, "entice.image";
@@ -56,20 +47,7 @@
 		signal, "entice,preview,show";
 		source, "";
 		script {
-		    new i = get_int(preview_state);
-		    anim(0.5, "preview_animate", i);
-		    if(i == 0) {
-			set_int(preview_state, 1);
-		    }
-		    else if(i == 1) {
-			set_int(preview_state, 2);
-		    }
-		    else if(i == 2) {
-			set_int(preview_state, 3);
-		    }
-		    else {
-			set_int(preview_state, 0);
-		    }
+		    preview_place();
 		}
 		in, 0.1 0.0;
 	    }
