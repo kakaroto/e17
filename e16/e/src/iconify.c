@@ -115,10 +115,12 @@ IconifyEwin(EWin * ewin)
 	Iconbox            *ib;
 
 	ib = SelectIconboxForEwin(ewin);
-	IB_Animate(1, ewin, ib->ewin);
 	was_shaded = ewin->shaded;
 	if (ib)
-	   UpdateAppIcon(ewin, ib->icon_mode);
+	  {
+	     IB_Animate(1, ewin, ib->ewin);
+	     UpdateAppIcon(ewin, ib->icon_mode);
+	  }
 	HideEwin(ewin);
 	if (was_shaded != ewin->shaded)
 	   InstantShadeEwin(ewin);
@@ -169,7 +171,8 @@ DeIconifyEwin(EWin * ewin)
    if (ewin->iconified)
      {
 	ib = SelectIconboxForEwin(ewin);
-	IB_Animate(0, ewin, ib->ewin);
+	if (ib)
+	   IB_Animate(0, ewin, ib->ewin);
 	RemoveMiniIcon(ewin);
 	if (!ewin->sticky)
 	  {

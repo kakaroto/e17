@@ -1297,3 +1297,10 @@ Sun Sep  5 12:12:15 PDT 1999
 added an iconification animation, added some more bg's to brushed metal,
 changed pager scaning speed to be %03i instead of %i to ensure the label 
 remains the same size :)
+
+-------------------------------------------------------------------------------
+
+Sun Sep  5 20:03:56 PDT 1999
+(Raster)
+
+and dont asume an iconbox actually can be found and exists
