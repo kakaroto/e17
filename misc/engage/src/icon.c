@@ -293,7 +293,8 @@ od_icon_reload(OD_Icon * in)
   if (options.grab_min_icons != 0)
     od_icon_grab(in, in->data.minwin.window);
 #endif
-
+  if (in->data.applnk.count > 0)
+    od_icon_arrow_show(in);
 }
 
 OD_Icon        *
