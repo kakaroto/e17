@@ -10,6 +10,8 @@ AC_C_CONST
 AC_PROG_INSTALL
 AC_PROG_MAKE_SET
 
+AM_MAINTAINER_MODE
+
 dnl I'm only checking for imlib2. If you have this installed, you prolly
 dnl have the libs it needs.
 AC_CHECK_LIB(Imlib2, imlib_load_image, , [

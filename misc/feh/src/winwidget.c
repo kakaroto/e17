@@ -203,6 +203,19 @@ winwidget_create_window (winwidget ret, int w, int h)
       xsz.y = 0;
       XSetWMNormalHints (disp, ret->win, &xsz);
     }
+  else
+  {
+      XSizeHints xsz;
+      
+      xsz.flags = PSize | PMinSize | PMaxSize;
+      xsz.width = w;
+      xsz.height = h;
+      xsz.min_width = w;
+      xsz.max_width = w;
+      xsz.min_height = h;
+      xsz.max_height = h;
+      XSetWMNormalHints (disp, ret->win, &xsz);
+  }
   /* set the icons name property */
   XSetIconName (disp, ret->win, "feh");
   /* set the command hint */

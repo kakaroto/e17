@@ -1,3 +1,9 @@
+Sat Mar 25 02:09:08 2000  Tom Gilbert  <gilbertt@btinternet.com>
+
+	* Okay, well, seeing as feh isn't resize-friendly (it's just not
+	designed for it - use gimp for that stuff ;), I'm disabling
+	resizing of the window. Bite me :)
+
 Fri Mar 24 19:22:51 2000  Tom Gilbert  <gilbertt@btinternet.com>
 
 	* Muhahaha. Config file. It had to be done, there are so many
