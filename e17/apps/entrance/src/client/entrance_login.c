@@ -8,10 +8,12 @@ int
 main(int argc, char **argv)
 {
    pid_t pid;
-   
-   if (argc != 2) return 0;
-   
+
+   if (argc != 2)
+      return 0;
+
    pid = atoi(argv[1]);
-   if (waitpid(pid, NULL, 0) == pid) exit(0);
+   if (waitpid(pid, NULL, 0) == pid)
+      exit(0);
    return -1;
 }

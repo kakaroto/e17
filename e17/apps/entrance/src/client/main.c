@@ -726,7 +726,9 @@ main(int argc, char *argv[])
       }
       if (edje_object_part_exists(edje, "EntranceSession"))
       {
-         entrance_session_xsession_set(session, "Default");
+         entrance_session_xsession_set(session,
+                                       entrance_session_default_xsession_get
+                                       (session));
       }
       if (edje_object_part_exists(edje, "EntranceSessionList"))
       {

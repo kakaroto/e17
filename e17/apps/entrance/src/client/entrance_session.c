@@ -19,11 +19,12 @@ extern void user_selected_cb(void *data, Evas_Object * o,
                              const char *emission, const char *source);
 extern void user_unselected_cb(void *data, Evas_Object * o,
                                const char *emission, const char *source);
-static Evas_Object *_entrance_session_icon_load(Evas_Object * o, char *file);
+static Evas_Object *_entrance_session_icon_load(Evas_Object * o,
+                                                const char *file);
 static Evas_Object *_entrance_session_load_session(Entrance_Session * e,
-                                                   char *key);
+                                                   const char *key);
 static Evas_Object *_entrance_session_user_load(Entrance_Session * e,
-                                                char *key);
+                                                const char *key);
 
 extern int _entrance_test_en;
 
@@ -307,12 +308,13 @@ entrance_session_start_user_session(Entrance_Session * e)
    sleep(10);
    /* replace this rpcoess with a clean small one that just waits for its */
    /* child to exit.. passed on the cmd-line */
-   snprintf(buf, sizeof(buf), "%s/entrance_login %i", PACKAGE_BIN_DIR, (int)pid);
+   snprintf(buf, sizeof(buf), "%s/entrance_login %i", PACKAGE_BIN_DIR,
+            (int) pid);
    execl("/bin/sh", "/bin/sh", "-c", buf, NULL);
 }
 
 static void
-entrance_session_xsession_load(Entrance_Session * e, char *key)
+entrance_session_xsession_load(Entrance_Session * e, const char *key)
 {
    if (e && e->edje)
    {
@@ -335,7 +337,7 @@ entrance_session_xsession_load(Entrance_Session * e, char *key)
 }
 
 void
-entrance_session_xsession_set(Entrance_Session * e, char *key)
+entrance_session_xsession_set(Entrance_Session * e, const char *key)
 {
    char *str = NULL;
    char buf[PATH_MAX];
@@ -373,7 +375,7 @@ void
 entrance_session_list_add(Entrance_Session * e)
 {
    Evas_List *l = NULL;
-   char *key = NULL;
+   const char *key = NULL;
    Evas_Coord w, h;
    Evas_Object *edje = NULL;
    Evas_Object *container = NULL;
@@ -400,7 +402,7 @@ entrance_session_list_add(Entrance_Session * e)
 
       for (l = e->config->sessions.keys; l; l = l->next)
       {
-         key = (char *) l->data;
+         key = (const char *) l->data;
          if ((edje = _entrance_session_load_session(e, key)))
          {
             e_container_element_append(container, edje);
@@ -449,8 +451,23 @@ entrance_session_user_list_add(Entrance_Session * e)
 
 }
 
+const char *
+entrance_session_default_xsession_get(Entrance_Session * e)
+{
+   Evas_List *l = NULL;
+   const char *result = NULL;
+
+   if (e && e->config)
+   {
+      if ((l = e->config->sessions.keys))
+      {
+         result = (const char *) l->data;
+      }
+   }
+   return (result);
+}
 static Evas_Object *
-_entrance_session_user_load(Entrance_Session * e, char *key)
+_entrance_session_user_load(Entrance_Session * e, const char *key)
 {
    int result = 0;
    char *icon = NULL;
@@ -482,9 +499,9 @@ _entrance_session_user_load(Entrance_Session * e, char *key)
             edje_object_part_text_set(edje, "EntranceUser", key);
             evas_object_show(edje);
             edje_object_signal_callback_add(edje, "UserSelected", "",
-                                            user_selected_cb, key);
+                                            user_selected_cb, (char *) key);
             edje_object_signal_callback_add(edje, "UserUnSelected", "",
-                                            user_unselected_cb, key);
+                                            user_unselected_cb, (char *) key);
          }
          else
          {
@@ -507,7 +524,7 @@ _entrance_session_user_load(Entrance_Session * e, char *key)
 
 }
 static Evas_Object *
-_entrance_session_icon_load(Evas_Object * o, char *file)
+_entrance_session_icon_load(Evas_Object * o, const char *file)
 {
    Evas_Object *result = NULL;
    char buf[PATH_MAX];
@@ -538,7 +555,7 @@ _entrance_session_icon_load(Evas_Object * o, char *file)
 }
 
 static Evas_Object *
-_entrance_session_load_session(Entrance_Session * e, char *key)
+_entrance_session_load_session(Entrance_Session * e, const char *key)
 {
    int result = 0;
    char *icon = NULL;
@@ -590,7 +607,7 @@ _entrance_session_load_session(Entrance_Session * e, char *key)
          edje_object_part_text_set(edje, "EntranceSessionTitle", key);
       }
       edje_object_signal_callback_add(edje, "SessionSelected", "",
-                                      session_item_selected_cb, key);
+                                      session_item_selected_cb, (char *) key);
       evas_object_show(edje);
    }
    else
