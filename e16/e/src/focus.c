@@ -33,11 +33,14 @@ FocusEwinValid(EWin * ewin)
    if (ewin->skipfocus || ewin->neverfocus || ewin->shaded || ewin->iconified)
       return 0;
 
+   if (!ewin->mapped)
+      return 0;
+
    return EwinIsOnScreen(ewin);
 }
 
 /*
- * Return the ewin to focus after area/desk switch.
+ * Return the ewin to focus after entering area or losing focused window.
  */
 static EWin        *
 FocusEwinSelect(void)
@@ -45,17 +48,26 @@ FocusEwinSelect(void)
    EWin              **lst, *ewin = NULL;
    int                 num, i;
 
-   lst = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
-   for (i = 0; i < num; i++)
+   switch (conf.focus.mode)
      {
-	if (!FocusEwinValid(lst[i]))
-	   continue;
-
-	ewin = lst[i];
+     default:
+     case MODE_FOCUS_POINTER:
+     case MODE_FOCUS_SLOPPY:
+	ewin = GetEwinPointerInClient();
+	break;
+     case MODE_FOCUS_CLICK:
+	lst = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
+	for (i = 0; i < num; i++)
+	  {
+	     if (!FocusEwinValid(lst[i]))
+		continue;
+	     ewin = lst[i];
+	     break;
+	  }
+	if (lst)
+	   Efree(lst);
 	break;
      }
-   if (lst)
-      Efree(lst);
 
    return ewin;
 }
@@ -212,8 +224,8 @@ FocusToEWin(EWin * ewin, int why)
      case FOCUS_EWIN_GONE:
 	if (ewin != mode.focuswin)
 	   EDBUG_RETURN_;
-	ewin = NULL;
-	goto exit;
+	ewin = FocusEwinSelect();
+	break;
 
      case FOCUS_EWIN_NEW:
 	if (conf.focus.all_new_windows_get_focus)
@@ -441,23 +453,9 @@ FocusNewDesk(void)
 		   SubstructureRedirectMask | KeyPressMask | KeyReleaseMask |
 		   PointerMotionMask);
 
-   switch (conf.focus.mode)
-     {
-     default:
-     case MODE_FOCUS_POINTER:
-     case MODE_FOCUS_SLOPPY:
-	ewin = GetEwinPointerInClient();
-	if (!ewin)
-	   break;
-	FocusToEWin(ewin, FOCUS_DESK_ENTER);
-	break;
-     case MODE_FOCUS_CLICK:
-	ewin = FocusEwinSelect();
-	if (!ewin)
-	   break;
-	FocusToEWin(ewin, FOCUS_DESK_ENTER);
-	break;
-     }
+   ewin = FocusEwinSelect();
+   if (ewin)
+      FocusToEWin(ewin, FOCUS_DESK_ENTER);
 
    EDBUG_RETURN_;
 }

@@ -609,7 +609,15 @@ HandleResizeRequest(XEvent * ev)
 void
 HandleMap(XEvent * ev)
 {
+   Window              win = ev->xunmap.window;
+   EWin               *ewin;
+
    EDBUG(5, "HandleMap");
+   ewin = FindItem(NULL, win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
+   if (ewin)
+     {
+	ewin->mapped = 1;
+     }
    EDBUG_RETURN_;
 }
 
@@ -623,6 +631,8 @@ HandleUnmap(XEvent * ev)
    ewin = FindItem(NULL, win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
    if (ewin)
      {
+	ewin->mapped = 0;
+
 	if (ewin->pager)
 	   PagerEventUnmap(ewin->pager);
 

@@ -924,7 +924,8 @@ typedef struct _ewin
    int                 desktop;
    Group             **groups;
    int                 num_groups;
-   int                 docked;
+   char                mapped;
+   char                docked;
    char                sticky;
    char                visible;
    char                iconified;
