@@ -335,6 +335,7 @@ e_db_data_get(E_DB_File * edb, char *key, int *size_ret)
      {
 	void *data;
 	
+	if (ret.dsize == 0) return NULL;
 	*size_ret = ret.dsize;
 	data = malloc(ret.dsize);
 	if (data)
