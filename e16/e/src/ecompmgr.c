@@ -153,6 +153,7 @@ static struct
 {
    char                enable;
    char                resize_fix_enable;
+   char                use_name_pixmap;
    int                 mode;
    int                 shadow;
    int                 shadow_radius;
@@ -168,7 +169,7 @@ static struct
    char               *args;
    char                active;
 #if HAS_NAME_WINDOW_PIXMAP
-   char                have_name_pixmap;
+   char                use_pixmap;
 #endif
    EObj               *eo_first;
    EObj               *eo_last;
@@ -1146,7 +1147,7 @@ ECompMgrWinSetPicts(EObj * eo)
    if (w->a.class == InputOnly)
       return;
 
-#if xHAS_NAME_WINDOW_PIXMAP	/* Hmmm.. */
+#if HAS_NAME_WINDOW_PIXMAP
    if (w->pixmap != None)
      {
 	XFreePixmap(disp, w->pixmap);
@@ -1157,7 +1158,7 @@ ECompMgrWinSetPicts(EObj * eo)
 	     w->picture = None;
 	  }
      }
-   if (Mode_compmgr.have_name_pixmap)
+   if (Mode_compmgr.use_pixmap)
       w->pixmap = XCompositeNameWindowPixmap(disp, eo->win);
 #endif
 
@@ -2066,7 +2067,8 @@ ECompMgrInit(void)
 	goto done;
      }
 #if HAS_NAME_WINDOW_PIXMAP
-   Mode_compmgr.have_name_pixmap = (major > 0 || minor >= 2);
+   Mode_compmgr.use_pixmap =
+      (major > 0 || minor >= 2) && Conf_compmgr.use_name_pixmap;
 #endif
 
    if (Conf_compmgr.mode == ECM_MODE_OFF)
@@ -2183,6 +2185,7 @@ static const CfgItem CompMgrCfgItems[] = {
    CFG_ITEM_INT(Conf_compmgr, shadow, 0),
    CFG_ITEM_INT(Conf_compmgr, shadow_radius, 12),
    CFG_ITEM_BOOL(Conf_compmgr, resize_fix_enable, 0),
+   CFG_ITEM_BOOL(Conf_compmgr, use_name_pixmap, 0),
 };
 #define N_CFG_ITEMS (sizeof(CompMgrCfgItems)/sizeof(CfgItem))
 
