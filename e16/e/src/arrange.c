@@ -25,7 +25,7 @@
 int                 ArrangeAddToList(int **array, int current_size, int value);
 void                ArrangeSwapList(RectBox * list, int a, int b);
 
-int
+int 
 ArrangeAddToList(int **array, int current_size, int value)
 {
    int                 i, j;
@@ -47,7 +47,7 @@ ArrangeAddToList(int **array, int current_size, int value)
    EDBUG_RETURN(current_size + 1);
 }
 
-void
+void 
 ArrangeSwapList(RectBox * list, int a, int b)
 {
    RectBox             bb;
@@ -71,7 +71,7 @@ ArrangeSwapList(RectBox * list, int a, int b)
    EDBUG_RETURN_;
 }
 
-void
+void 
 ArrangeRects(RectBox * fixed, int fixed_count, RectBox * floating,
 	     int floating_count, RectBox * sorted, int width, int height,
 	     int policy)
@@ -571,7 +571,7 @@ ArrangeRects(RectBox * fixed, int fixed_count, RectBox * floating,
    EDBUG_RETURN_;
 }
 
-void
+void 
 SnapEwin(EWin * ewin, int dx, int dy, int *new_dx, int *new_dy)
 {
    EWin              **lst, **gwins;
@@ -751,7 +751,7 @@ SnapEwin(EWin * ewin, int dx, int dy, int *new_dx, int *new_dy)
    EDBUG_RETURN_;
 }
 
-void
+void 
 ArrangeEwin(EWin * ewin)
 {
 

@@ -3235,3 +3235,10 @@ Thu Oct  7 21:16:32 PDT 1999
 
 more work on arranger code paying attention to kpanel.  next to make window
 snaps work with it (seriously dreading this one)
+
+-------------------------------------------------------------------------------
+
+Thu Oct  7 22:33:36 PDT 1999
+(Mandrake)
+
+extra dump_mem_debug command in IPC

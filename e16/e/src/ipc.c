@@ -584,17 +584,6 @@ IPCStruct           IPCArray[] =
       "  remember <windowid> <parameter>\n"
       "  where parameter is one of: all, none, border, desktop, size,\n"
       "  location, layer, sticky, icon, shade, group, dialog, command\n"
-   },
-   {
-      IPC_MemDebug,
-      "dump_mem_debug",
-      "Dumps memory debugging information out to e.mem.out",
-      "Use this command to have E dump its current memory debugging table\n"
-      "to the e.mem.out file. NOTE: please read comments at the top of\n"
-      "memory.c to see how to enable this. This will let you hunt memory\n"
-      "leaks, over-allocations of memory, and other memory-related problems\n"
-      "very easily with all pointers allocated stamped with a time, call\n"
-      "tree that led to that allocation, file and line, and the chunk size.\n"
    }
 };
 
