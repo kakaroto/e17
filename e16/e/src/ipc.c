@@ -4613,7 +4613,7 @@ IPC_Version(char *params, Client * c)
 
    Esnprintf(buf, sizeof(buf),
 	     _("Enlightenment Version : %s\n" "code is current to    : %s\n"),
-	     ENLIGHTENMENT_VERSION, E_CHECKOUT_DATE);
+	     e_wm_version, E_CHECKOUT_DATE);
 
    if (buf)
       CommsSend(c, buf);
