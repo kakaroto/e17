@@ -90,7 +90,7 @@
         name, NAME"-down2";		\
 	signal, "mouse,down,1";		\
 	source, NAME;			\
-	action, STATE_SET "down" 0.0	\
+	action, STATE_SET "down" 0.0;	\
         transition, LINEAR, 0.0;	\
 	target, NAME;			\
       }					\
@@ -98,7 +98,7 @@
         name, NAME"-up";		\
 	signal, "mouse,up,1";		\
 	source, NAME;			\
-	action, STATE_SET "over" 0.0	\
+	action, STATE_SET "over" 0.0;	\
         transition, LINEAR, 0.0;	\
 	target, NAME;			\
       }					\
@@ -225,7 +225,7 @@
         name, P4;			\
 	signal, "mouse,down,1";		\
 	source, NAME;			\
-	action, STATE_SET "down" 0.0	\
+	action, STATE_SET "down" 0.0;	\
         transition, LINEAR, 0.0;	\
 	target, NAME;			\
       }					\
@@ -233,7 +233,7 @@
         name, P5;			\
 	signal, "mouse,up,1";		\
 	source, NAME;			\
-	action, STATE_SET "over" 0.0	\
+	action, STATE_SET "over" 0.0;	\
         transition, LINEAR, 0.0;	\
 	target, NAME;			\
       }					\
@@ -332,7 +332,7 @@
         name, NAME"-down2";		\
 	signal, "mouse,down,1";		\
 	source, NAME;			\
-	action, STATE_SET "down" 0.0	\
+	action, STATE_SET "down" 0.0;	\
         transition, LINEAR, 0.0;	\
 	target, NAME;			\
       }					\
@@ -346,7 +346,7 @@
         name, NAME"-up2";		\
 	signal, "mouse,up,1";		\
 	source, NAME;			\
-	action, STATE_SET "over" 0.0	\
+	action, STATE_SET "over" 0.0;	\
         transition, LINEAR, 0.0;	\
 	target, NAME;			\
       }					\
