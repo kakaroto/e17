@@ -30,6 +30,7 @@ void         ewl_container_init(EwlContainer *c)
 	c->propagate_events = 1;
 	c->propagate = NULL;
 	c->resize_children = NULL;
+	for (t=0;  t<4; c->child_padding[t++]=0);
 
 	/* LOAD DB SHIT HERRE */
 	ewl_widget_get_theme(widget,"/EwlContainer");
