@@ -5,6 +5,7 @@ INCLUDES			= -I$(top_srcdir)/src \
 				  -I$(top_srcdir)/src/thumb \
 				  -I$(top_srcdir)/src/container \
 				  -I$(top_srcdir)/src/trans \
+				  -I$(top_srcdir)/src/draggies \
 				    @evas_cflags@ \
 				    @imlib_cflags@ \
 				    @ecore_cflags@
