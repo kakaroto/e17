@@ -1,0 +1,12 @@
+#!/bin/sh
+cp ./examine.c.in ./examine.c
+for I in `find ./src/lib -name "Examine.h" -print`; do
+  cat $I >> ./examine.c
+done
+#for I in `find ./src/lib -name "*.c" -print`; do
+#  cat $I >> ./examine.c
+#done
+rm -rf ./doc/html ./doc/latex ./doc/man
+doxygen
+cp doc/img/*.png doc/html/
+exit 0

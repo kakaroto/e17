@@ -1,0 +1,22 @@
+/** 
+@file
+@brief Examine Configuration Library
+ 
+These routines are used for Examine.
+*/
+
+/**
+
+@mainpage Examine Library Documentation
+@image html  examine.png
+@version 0.0.1
+@author Andrew Elcock <andy@elcock.org>
+@date 2000-2002
+
+@section intro What is Examine?
+
+A Configuration Library.
+
+@todo Complete documentation of API
+
+*/

@@ -1,0 +1,4 @@
+remove readline from exsh so it can happily sit under bsd.
+add autosave?
+write more in examine
+
