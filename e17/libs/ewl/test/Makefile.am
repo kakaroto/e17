@@ -1,10 +1,15 @@
-AUTOMAKE_OPTIONS = 1.4 foreign
-MAINTAINERCLEANFILES = Makefile.in
+AUTOMAKE_OPTIONS 		= 	1.4 foreign
+MAINTAINERCLEANFILES 		= 	Makefile.in
 
-CFLAGS			=	-g -W -Wall -Wno-implicit
-INCLUDES		=	-I$(top_srcdir)/src @edje_cflags@ @ecore_cflags@ @evas_cflags@ @emotion_cflags@
+CFLAGS				=	-g -W -Wall -Wno-implicit
+INCLUDES			=	-I$(top_srcdir)/src @edje_cflags@ @ecore_cflags@ @evas_cflags@ @emotion_cflags@
 
-bin_PROGRAMS			=	ewl_test ewl_embed_test ewl_simple_test ewl_media_test
+EWLTESTPROGRAMS                 =	ewl_test ewl_embed_test ewl_simple_test
+if BUILD_EMOTION_SUPPORT
+EWLMEDIATESTPROGRAMS            =	ewl_media_test
+endif
+
+bin_PROGRAMS			=	$(EWLTESTPROGRAMS) $(EWLMEDIATESTPROGRAMS)
 
 ewl_test_DEPENDENCIES		=	$(top_builddir)/src/libewl.la
 ewl_test_SOURCES		=	ewl_test.h \
@@ -31,30 +36,33 @@ ewl_test_SOURCES		=	ewl_test.h \
 					ewl_tooltip_test.c \
 					ewl_tree_test.c
 
-# ewl_test_LDFLAGS			=	
-ewl_test_LDADD				= $(top_builddir)/src/libewl.la @edje_libs@ @ecore_libs@ @evas_libs@ @emotion_libs@
+# ewl_test_LDFLAGS		=	
+ewl_test_LDADD			=	$(top_builddir)/src/libewl.la @edje_libs@ @ecore_libs@ @evas_libs@ @emotion_libs@
 
-ewl_embed_test_DEPENDENCIES		=	$(top_builddir)/src/libewl.la
-ewl_embed_test_SOURCES			=	ewl_embed_test.c
+ewl_embed_test_DEPENDENCIES	=	$(top_builddir)/src/libewl.la
+ewl_embed_test_SOURCES		=	ewl_embed_test.c
 
-# ewl_embed_test_LDFLAGS		=	
-ewl_embed_test_LDADD			= $(top_builddir)/src/libewl.la @edje_libs@ @ecore_libs@ @evas_libs@ @emotion_libs@
+# ewl_embed_test_LDFLAGS	=	
+ewl_embed_test_LDADD		=	$(top_builddir)/src/libewl.la @edje_libs@ @ecore_libs@ @evas_libs@ @emotion_libs@
 
-ewl_simple_test_DEPENDENCIES		=	$(top_builddir)/src/libewl.la
-ewl_simple_test_SOURCES			=	ewl_simple_test.c
+ewl_simple_test_DEPENDENCIES	=	$(top_builddir)/src/libewl.la
+ewl_simple_test_SOURCES		=	ewl_simple_test.c
 
-# ewl_simple_test_LDFLAGS		=	
-ewl_simple_test_LDADD			= $(top_builddir)/src/libewl.la @edje_libs@ @ecore_libs@ @evas_libs@ @emotion_libs@
+# ewl_simple_test_LDFLAGS	=	
+ewl_simple_test_LDADD		=	$(top_builddir)/src/libewl.la @edje_libs@ @ecore_libs@ @evas_libs@ @emotion_libs@
 
+if BUILD_EMOTION_SUPPORT
 ewl_media_test_DEPENDENCIES		=	$(top_builddir)/src/libewl.la
 ewl_media_test_SOURCES			=	ewl_media_test.c
 
 # ewl_media_test_LDFLAGS		=	
 ewl_media_test_LDADD			= $(top_builddir)/src/libewl.la @edje_libs@ @ecore_libs@ @evas_libs@ @emotion_libs@
+endif
 
-EXTRA_DIST = $(ewl_test_SOURCES) $(ewl_embed_test_SOURCES) \
-	     $(ewl_simple_test_SOURCES) $(ewl_media_test_SOURCES)
+EXTRA_DIST 			= 	$(ewl_test_SOURCES) \
+					$(ewl_embed_test_SOURCES) \
+					$(ewl_simple_test_SOURCES) \
+					$(ewl_media_test_SOURCES)
 
-exampledir = $(pkgdatadir)/examples/
-example_DATA = $(ewl_test_SOURCES)
-
+exampledir 			=	$(pkgdatadir)/examples/
+example_DATA 			=	$(ewl_test_SOURCES)

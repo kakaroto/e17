@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-INCLUDES = @edje_cflags@ @ecore_cflags@ @edb_cflags@ @evas_cflags@ @etox_cflags@
+INCLUDES = @edje_cflags@ @ecore_cflags@ @edb_cflags@ @evas_cflags@ @etox_cflags@ @emotion_cflags@
 
 lib_LTLIBRARIES = libewl.la
 
@@ -59,7 +59,12 @@ EWLHEADERS = \
 	ewl_widget.h \
 	ewl_window.h
 
-libewl_la_SOURCES = \
+if BUILD_EMOTION_SUPPORT
+EWLEMOTIONHEADERS= \
+	ewl_media.h
+endif
+
+EWLSOURCES= \
 	ewl_border.c \
 	ewl_box.c \
 	ewl_button.c \
@@ -111,8 +116,18 @@ libewl_la_SOURCES = \
 	ewl_window.c \
 	$(EWLHEADERS)
 
+if BUILD_EMOTION_SUPPORT
+EWLEMOTIONSOURCES= \
+	ewl_media.c \
+	$(EWLEMOTIONHEADERS)
+endif
+
+libewl_la_SOURCES = \
+	$(EWLSOURCES) \
+	$(EWLEMOTIONHEADERS)
+
 installed_headersdir = $(prefix)/include/ewl
 installed_headers_DATA = $(EWLHEADERS)
 
-libewl_la_LIBADD = @edje_libs@ @ecore_libs@ @edb_libs@ @evas_libs@ @etox_libs@ -lm
+libewl_la_LIBADD = @edje_libs@ @ecore_libs@ @edb_libs@ @evas_libs@ @etox_libs@ @emotion_libs@ -lm
 libewl_la_LDFLAGS = -version-info 0:0:0
