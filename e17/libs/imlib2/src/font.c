@@ -44,7 +44,7 @@ __imlib_create_font_raster(int width, int height)
    rmap->flow = TT_Flow_Up;
    rmap->cols = rmap->width;
    rmap->size = rmap->rows * rmap->width;
-   if (!rmap->size <= 0)
+   if (rmap->size <= 0)
      {
 	free(rmap);
 	return NULL;
