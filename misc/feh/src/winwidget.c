@@ -51,6 +51,7 @@ winwidget_allocate(void)
   ret->im_h = 0;
   ret->im_angle = 0;
   ret->bg_pmap = 0;
+  ret->bg_pmap_cache = 0;
   ret->im = NULL;
   ret->name = NULL;
   ret->file = NULL;
@@ -492,16 +493,49 @@ winwidget_render_image(winwidget winwid,
                                                     sh, dx, dy, dw, dh, 1,
                                                     gib_imlib_image_has_alpha
                                                     (winwid->im), alias);
+  if (opt.caption_path) {
+    /* cache bg pixmap. during caption entry, multiple redraws are done
+     * because the caption overlay changes - the image doesn't though, so re-
+     * rendering that is a waste of time */
+    if (winwid->caption_entry) {
+      GC gc;
+      if (winwid->bg_pmap_cache)
+        XFreePixmap(disp, winwid->bg_pmap_cache);
+      winwid->bg_pmap_cache = XCreatePixmap(disp,
+                                            winwid->win,
+                                            winwid->w,
+                                            winwid->h,
+                                            depth);
+      gc = XCreateGC(disp, winwid->win, 0, NULL);
+      XCopyArea(disp, winwid->bg_pmap, winwid->bg_pmap_cache, gc, 0, 0, winwid->w, winwid->h, 0, 0);
+      XFreeGC(disp, gc);
+    }
+    feh_draw_caption(winwid);
+  }
 
   if (opt.draw_filename)
     feh_draw_filename(winwid);
-  if (opt.caption_path)
-    feh_draw_caption(winwid);
   if ((opt.mode == MODE_ZOOM) && !alias)
     feh_draw_zoom(winwid);
   XSetWindowBackgroundPixmap(disp, winwid->win, winwid->bg_pmap);
   XClearWindow(disp, winwid->win);
   D_RETURN_(4);
+}
+
+void winwidget_render_image_cached(winwidget winwid) {
+  static GC gc = None;
+
+  if (gc == None) {
+    gc = XCreateGC(disp, winwid->win, 0, NULL);
+  }
+  XCopyArea(disp, winwid->bg_pmap_cache, winwid->bg_pmap, gc, 0, 0, winwid->w, winwid->h, 0, 0);
+
+  if (opt.caption_path)
+    feh_draw_caption(winwid);
+  if (opt.draw_filename)
+    feh_draw_filename(winwid);
+  XSetWindowBackgroundPixmap(disp, winwid->win, winwid->bg_pmap);
+  XClearWindow(disp, winwid->win);
 }
 
 double
@@ -613,6 +647,8 @@ winwidget_destroy(winwidget winwid)
     feh_file_free(FEH_FILE(winwid->file->data));
     free(winwid->file);
   }
+  if (winwid->gc)
+    XFreeGC(disp, winwid->gc);
   if (winwid->im)
     gib_imlib_free_image_and_decache(winwid->im);
   free(winwid);

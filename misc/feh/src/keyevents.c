@@ -30,7 +30,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "options.h"
 
 void
-handle_keypress_event(XEvent * ev, Window win)
+feh_event_handle_keypress(XEvent * ev)
 {
    int len;
    char kbuf[20];
@@ -42,6 +42,13 @@ handle_keypress_event(XEvent * ev, Window win)
    feh_menu *selected_menu;
 
    D_ENTER(4);
+
+   winwid = winwidget_get_from_window(ev->xkey.window);
+   
+   /* nuke dupe events, unless we're typing text */
+   if (!winwid->caption_entry) {
+     while (XCheckTypedWindowEvent(disp, ev->xkey.window, KeyPress, ev));
+   }
 
    kev = (XKeyEvent *) ev;
    len = XLookupString(&ev->xkey, (char *) kbuf, sizeof(kbuf), &keysym, NULL);
@@ -99,7 +106,6 @@ handle_keypress_event(XEvent * ev, Window win)
      D_RETURN_(4);
    }
 
-   winwid = winwidget_get_from_window(win);
    if (winwid == NULL)
       D_RETURN_(4);
 
@@ -109,14 +115,16 @@ handle_keypress_event(XEvent * ev, Window win)
          if (kev->state & ControlMask) {
            /* insert actual newline */
            ESTRAPPEND(FEH_FILE(winwid->file->data)->caption, "\n");
-           winwidget_render_image(winwid, 0, 0);
+           winwidget_render_image_cached(winwid);
          } else {
            /* finish caption entry, write to captions file */
            FILE *fp;
            char *caption_filename;
            caption_filename = build_caption_filename(FEH_FILE(winwid->file->data));
            winwid->caption_entry = 0;
-           winwidget_render_image(winwid, 0, 0);
+           winwidget_render_image_cached(winwid);
+           XFreePixmap(disp, winwid->bg_pmap_cache);
+           winwid->bg_pmap_cache = 0;
            fp = fopen(caption_filename, "w");
            if (!fp) {
              weprintf("couldn't write to captions file %s:", caption_filename);
@@ -127,23 +135,25 @@ handle_keypress_event(XEvent * ev, Window win)
            fclose(fp);
          }
          break;
-       case XK_BackSpace:
-         /* backspace */
-         ESTRTRUNC(FEH_FILE(winwid->file->data)->caption, 1);
-         winwidget_render_image(winwid, 0, 0);
-         break;
        case XK_Escape:
          /* cancel, revert caption */
          winwid->caption_entry = 0;
          free(FEH_FILE(winwid->file->data)->caption);
          FEH_FILE(winwid->file->data)->caption = NULL;
-         winwidget_render_image(winwid, 0, 0);
+         winwidget_render_image_cached(winwid);
+         XFreePixmap(disp, winwid->bg_pmap_cache);
+         winwid->bg_pmap_cache = 0;
+         break;
+       case XK_BackSpace:
+         /* backspace */
+         ESTRTRUNC(FEH_FILE(winwid->file->data)->caption, 1);
+         winwidget_render_image_cached(winwid);
          break;
        default:
          if(isascii(keysym)) {
            /* append to caption */
            ESTRAPPEND_CHAR(FEH_FILE(winwid->file->data)->caption, keysym);
-           winwidget_render_image(winwid, 0, 0);
+           winwidget_render_image_cached(winwid);
          }
          break;
      }

@@ -33,7 +33,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 feh_event_handler *ev_handler[LASTEvent];
 
-static void feh_event_handle_KeyPress(XEvent * ev);
 static void feh_event_handle_ButtonPress(XEvent * ev);
 static void feh_event_handle_ButtonRelease(XEvent * ev);
 static void feh_event_handle_ConfigureNotify(XEvent * ev);
@@ -51,7 +50,7 @@ feh_event_init(void)
    for (i = 0; i < LASTEvent; i++)
       ev_handler[i] = NULL;
 
-   ev_handler[KeyPress] = feh_event_handle_KeyPress;
+   ev_handler[KeyPress] = feh_event_handle_keypress;
    ev_handler[ButtonPress] = feh_event_handle_ButtonPress;
    ev_handler[ButtonRelease] = feh_event_handle_ButtonRelease;
    ev_handler[ConfigureNotify] = feh_event_handle_ConfigureNotify;
@@ -60,15 +59,6 @@ feh_event_init(void)
    ev_handler[MotionNotify] = feh_event_handle_MotionNotify;
    ev_handler[ClientMessage] = feh_event_handle_ClientMessage;
 
-   D_RETURN_(4);
-}
-
-static void
-feh_event_handle_KeyPress(XEvent * ev)
-{
-   D_ENTER(4);
-   while (XCheckTypedWindowEvent(disp, ev->xkey.window, KeyPress, ev));
-   handle_keypress_event(ev, ev->xkey.window);
    D_RETURN_(4);
 }
 

@@ -90,6 +90,7 @@ struct __winwidget
    Imlib_Image im;
    GC gc;
    Pixmap bg_pmap;
+   Pixmap bg_pmap_cache;
    char *name;
    gib_list *file;
    unsigned char visible;
@@ -148,6 +149,7 @@ winwidget winwidget_get_first_window_of_type(unsigned int type);
 void winwidget_reset_image(winwidget winwid);
 void winwidget_sanitise_offsets(winwidget winwid);
 void winwidget_size_to_image(winwidget winwid);
+void winwidget_render_image_cached(winwidget winwid);
 
 extern int window_num;          /* For window list */
 extern winwidget *windows;      /* List of windows to loop though */

@@ -121,7 +121,7 @@ void slideshow_change_image(winwidget winwid, int change);
 void slideshow_pause_toggle(winwidget w);
 char *slideshow_create_name(feh_file * file);
 char *chop_file_from_full_path(char *str);
-void handle_keypress_event(XEvent * ev, Window win);
+void feh_event_handle_keypress(XEvent * ev);
 void feh_action_run(feh_file * file);
 char *feh_printf(char *str, feh_file * file);
 void feh_draw_zoom(winwidget w);
