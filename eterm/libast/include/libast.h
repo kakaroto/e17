@@ -30,6 +30,8 @@
  * including all required system headers and LibAST Object headers.
  *
  * @author Michael Jennings <mej@eterm.org>
+ * @version $Revision$
+ * @date $Date$
  */
 
 #ifndef _LIBAST_H_
@@ -1589,6 +1591,7 @@ extern const char *true_vals[], *false_vals[];
 
 /******************************* OPTIONS GOOP **********************************/
 
+/*@{*/
 /**
  * @name Option Flags
  * Flags for individual options.
@@ -1602,10 +1605,9 @@ extern const char *true_vals[], *false_vals[];
  * non-type-related information, such as flagging preparsed or
  * deprecated options.
  *
- * @see DOXGRP_OPT
  * @ingroup DOXGRP_OPT
  */
-/*@{*/
+
 /** No flags.  No flags. */
 #define SPIFOPT_FLAG_NONE                 (0)
 /** Boolean option.  This flag marks a boolean option. */
@@ -1664,6 +1666,7 @@ extern const char *true_vals[], *false_vals[];
 #define SPIFOPT_FLAG_MODMASK              (0xf800)
 /*}@*/
 
+/*@{*/
 /**
  * @name Parser Settings
  * Flags which alter the behavior of the parser itself.
@@ -1675,10 +1678,9 @@ extern const char *true_vals[], *false_vals[];
  * that you do wish to manipulate these flags, use the
  * SPIFOPT_FLAGS_*() macros.
  *
- * @see DOXGRP_OPT
  * @ingroup DOXGRP_OPT
  */
-/*@{*/
+
 /** Postparse flag.  This flag denotes whether or not the initial
  *  option parsing pass has been done.  The first call to the
  *  spifopt_parse() function will parse only those options which have
@@ -1688,6 +1690,7 @@ extern const char *true_vals[], *false_vals[];
 #define SPIFOPT_SETTING_POSTPARSE         (1UL << 0)
 /*}@*/
 
+/*@{*/
 /**
  * @name Option Declaration Convenience Macros
  * Macros which simplify the building of the options list.
@@ -1703,10 +1706,9 @@ extern const char *true_vals[], *false_vals[];
  * recommended in order to enhance readability and reduce the
  * probability of human error.
  *
- * @see DOXGRP_OPT
  * @ingroup DOXGRP_OPT
  */
-/*@{*/
+
 /**
  * Primary option declaration macro.
  *
@@ -2046,71 +2048,320 @@ extern const char *true_vals[], *false_vals[];
     SPIFOPT_OPTION(0, l, d, (SPIFOPT_FLAG_ABSTRACT | SPIFOPT_FLAG_PREPARSE), f, 0)
 /*}@*/
 
+/*@{*/
 /**
  * @name Option Flag Macros
- * Macros which provide access to option type information.
+ * Macros which provide access to option flag information.
  *
- * 
+ * These macros provide access to option type and flag information
+ * while abstracting the actual method of storage and retrieval.  Each
+ * macro takes exactly one parameter, the offset within the options
+ * list.
  *
- * @see DOXGRP_OPT
  * @ingroup DOXGRP_OPT
  */
-/*@{*/
-#define SPIFOPT_TYPE(opt)                 (((spifopt_t) (opt)).flags & SPIFOPT_FLAG_TYPEMASK)
+
+/**
+ * Type macro.
+ *
+ * Retrieves the type flag.  Use of this macro is discouraged; use one
+ * of the other macros instead.
+ *
+ * @param n The index of the desired option in the options list.
+ * @return  The type flag (SPIFOPT_FLAG_*)
+ */
 #define SPIFOPT_OPT_TYPE(n)               (SPIFOPT_OPT_FLAGS(n) & SPIFOPT_FLAG_TYPEMASK)
+/**
+ * Boolean option test.  Tests whether or not the given option is boolean.
+ *
+ * @param n The index of the desired option in the options list.
+ * @return  0 if option is not boolean, non-zero if it is.
+ */
 #define SPIFOPT_OPT_IS_BOOLEAN(n)         (SPIFOPT_OPT_FLAGS(n) & SPIFOPT_FLAG_BOOLEAN)
-#define SPIFOPT_OPT_IS_STRING(n)          (SPIFOPT_OPT_FLAGS(n) & SPIFOPT_FLAG_STRING)
+/**
+ * Counter option test.  Tests whether or not the given option is a counter.
+ *
+ * @param n The index of the desired option in the options list.
+ * @return  0 if option is not a counter, non-zero if it is.
+ */
+#define SPIFOPT_OPT_IS_COUNTER(n)         (SPIFOPT_OPT_FLAGS(n) & SPIFOPT_FLAG_COUNTER)
+/**
+ * Integer option test.  Tests whether or not the given option is an integer.
+ *
+ * @param n The index of the desired option in the options list.
+ * @return  0 if option is not an integer, non-zero if it is.
+ */
 #define SPIFOPT_OPT_IS_INTEGER(n)         (SPIFOPT_OPT_FLAGS(n) & SPIFOPT_FLAG_INTEGER)
+/**
+ * String option test.  Tests whether or not the given option is a string.
+ *
+ * @param n The index of the desired option in the options list.
+ * @return  0 if option is not a string, non-zero if it is.
+ */
+#define SPIFOPT_OPT_IS_STRING(n)          (SPIFOPT_OPT_FLAGS(n) & SPIFOPT_FLAG_STRING)
+/**
+ * Argument list option test.  Tests whether or not the given option
+ * is an argument list.
+ *
+ * @param n The index of the desired option in the options list.
+ * @return  0 if option is not an argument list, non-zero if it is.
+ */
 #define SPIFOPT_OPT_IS_ARGLIST(n)         (SPIFOPT_OPT_FLAGS(n) & SPIFOPT_FLAG_ARGLIST)
+/**
+ * Abstract option test.  Tests whether or not the given option is abstract.
+ *
+ * @param n The index of the desired option in the options list.
+ * @return  0 if option is not abstract, non-zero if it is.
+ */
 #define SPIFOPT_OPT_IS_ABSTRACT(n)        (SPIFOPT_OPT_FLAGS(n) & SPIFOPT_FLAG_ABSTRACT)
+/**
+ * Preparse option test.  Tests whether or not the given option is to
+ * be preparsed.
+ *
+ * @param n The index of the desired option in the options list.
+ * @return  0 if option is not to be pre-parsed, non-zero if it is.
+ */
 #define SPIFOPT_OPT_IS_PREPARSE(n)        (SPIFOPT_OPT_FLAGS(n) & SPIFOPT_FLAG_PREPARSE)
+/**
+ * Deprecated option test.  Tests whether or not the given option is deprecated.
+ *
+ * @param n The index of the desired option in the options list.
+ * @return  0 if option is not deprecated, non-zero if it is.
+ */
 #define SPIFOPT_OPT_IS_DEPRECATED(n)      (SPIFOPT_OPT_FLAGS(n) & SPIFOPT_FLAG_DEPRECATED)
-#define SPIFOPT_OPT_NEEDS_VALUE(n)        (SPIFOPT_OPT_FLAGS(n) & (SPIFOPT_FLAG_STRING | SPIFOPT_FLAG_INTEGER | SPIFOPT_FLAG_ARGLIST))
+/**
+ * Array option test.  Tests whether or not the given option is an array.
+ *
+ * @param n The index of the desired option in the options list.
+ * @return  0 if option is not an array, non-zero if it is.
+ */
+#define SPIFOPT_OPT_IS_ARRAY(n)           (SPIFOPT_OPT_FLAGS(n) & SPIFOPT_FLAG_ARRAY)
+/**
+ * Value required option test.  Tests whether or not the given option
+ * requires a value.
+ *
+ * @param n The index of the desired option in the options list.
+ * @return  0 if option does not require a value, non-zero if it does.
+ */
+#define SPIFOPT_OPT_NEEDS_VALUE(n)        (SPIFOPT_OPT_FLAGS(n) & SPIFOPT_FLAG_TYPEMASK_VALUE)
 /*}@*/
 
+/*@{*/
 /**
  * @name Option Structure Access Macros
  * Macros which provide access to individual structure components.
  *
- * 
+ * These macros provide an easy method for accessing the various
+ * members of a single option structure (spifopt_t_struct) within the
+ * options list without needing to know how the options list, or the
+ * options within it, are stored.
  *
- * @see DOXGRP_OPT
  * @ingroup DOXGRP_OPT
  */
-/*@{*/
-#define SPIFOPT_OPT_SHORT(n)              (SPIFOPT_OPTLIST(n).short_opt)
-#define SPIFOPT_OPT_LONG(n)               (SPIFOPT_OPTLIST(n).long_opt)
-#define SPIFOPT_OPT_DESC(n)               (SPIFOPT_OPTLIST(n).desc)
-#define SPIFOPT_OPT_FLAGS(n)              (SPIFOPT_OPTLIST(n).flags)
-#define SPIFOPT_OPT_VALUE(n)              (SPIFOPT_OPTLIST(n).value)
-#define SPIFOPT_OPT_MASK(n)               (SPIFOPT_OPTLIST(n).mask)
+
+/**
+ * Short form.  Returns the short form of the option.
+ *
+ * @param n The index of the desired option in the options list.
+ * @return  The short (char) form of the option.
+ */
+#define SPIFOPT_OPT_SHORT(n)              (SPIFOPT_OPTLIST_GET_OPT(n).short_opt)
+/**
+ * Long form.  Returns the long form of the option.
+ *
+ * @param n The index of the desired option in the options list.
+ * @return  The long (const char *) form of the option.
+ */
+#define SPIFOPT_OPT_LONG(n)               (SPIFOPT_OPTLIST_GET_OPT(n).long_opt)
+/**
+ * Description.  Returns the description of the option.
+ *
+ * @param n The index of the desired option in the options list.
+ * @return  The description (const char *) of the option.
+ */
+#define SPIFOPT_OPT_DESC(n)               (SPIFOPT_OPTLIST_GET_OPT(n).desc)
+/**
+ * Flags.  Returns the flags for the option.
+ *
+ * @param n The index of the desired option in the options list.
+ * @return  The flags (spif_uint16_t) for the option.
+ */
+#define SPIFOPT_OPT_FLAGS(n)              (SPIFOPT_OPTLIST_GET_OPT(n).flags)
+/**
+ * Value pointer.  Returns the value pointer for the option.
+ *
+ * @param n The index of the desired option in the options list.
+ * @return  The value pointer (void *) for the option.
+ */
+#define SPIFOPT_OPT_VALUE(n)              (SPIFOPT_OPTLIST_GET_OPT(n).value)
+/**
+ * Bitmask.  Returns the bitmask for the option.
+ *
+ * @param n The index of the desired option in the options list.
+ * @return  The bitmask (spif_uint32_t) for the option.
+ */
+#define SPIFOPT_OPT_MASK(n)               (SPIFOPT_OPTLIST_GET_OPT(n).mask)
 /*}@*/
 
+/*@{*/
 /**
  * @name Option Parser Settings Macros
  * Macros which provide access to the option parser settings.
  *
- * 
+ * These macros provide abstracted access to various settings used by
+ * the option parser.
  *
- * @see DOXGRP_OPT
  * @ingroup DOXGRP_OPT
  */
-/*@{*/
-#define SPIFOPT_OPTLIST(n)                (spifopt_settings.opt_list[((n) < (spifopt_settings.num_opts) ? (n) : (0))])
+
+/**
+ * Retrieves a single option structure.
+ *
+ * This macro returns a single option structure (spifopt_t_struct)
+ * from the options list.  This is mostly for internal use.
+ *
+ * @param n The index of the desired option in the options list.
+ * @return  The option structure (spifopt_t_struct).
+ */
+#define SPIFOPT_OPTLIST_GET_OPT(n)        (spifopt_settings.opt_list[((n) < (spifopt_settings.num_opts) ? (n) : (0))])
+/**
+ * Sets the option list.
+ *
+ * This macro should be called by client programs to set the option
+ * list.  It must be a spifopt_t * of some type (probably a
+ * spifopt_t []).  Once set, it must not be manipulated directly; only
+ * via the LibAST-supplied macros.
+ *
+ * @param l The options list variable (a spifopt_t pointer or array).
+ */
 #define SPIFOPT_OPTLIST_SET(l)            (spifopt_settings.opt_list = ((spifopt_t *) (l)))
+/**
+ * Obtains the number of options.
+ *
+ * This macro returns the total number of options in the options list.
+ *
+ * @return  The number of options in the list.
+ */
 #define SPIFOPT_NUMOPTS_GET()             (spifopt_settings.num_opts)
+/**
+ * Sets the number of options.
+ *
+ * This macro sets the number of options in the options list.  It
+ * should be called immediately after SPIFOPT_OPTLIST_SET() and
+ * @em before any functions or macros which use the options list.  The
+ * most common way to handle this is to use a fixed array for the
+ * options list and call
+ *
+ * @code
+ * SPIFOPT_NUMOPTS_SET(sizeof(option_list) / sizeof(spifopt_t))
+ * @endcode
+ *
+ * to set the option count.
+ *
+ * @param n The number of elements in the options list.
+ */
 #define SPIFOPT_NUMOPTS_SET(n)            (spifopt_settings.num_opts = (n))
+/**
+ * Obtains the option parser flag settings.
+ *
+ * This macro returns the value of the parser settings flags.  In most
+ * cases, you should use SPIFOPT_FLAGS_IS_SET() instead.
+ *
+ * @return  The value of the parser settings flags.
+ */
 #define SPIFOPT_FLAGS_GET()               (spifopt_settings.flags)
+/**
+ * Sets an option parser settings flag.
+ *
+ * This macro sets one or more parser settings flags.  There are
+ * currently no client-managed parser flags, so you should avoid this
+ * macro.
+ *
+ * @param m The flag (or set of bitwise-or'd flags) to turn on.
+ */
 #define SPIFOPT_FLAGS_SET(m)              (spifopt_settings.flags |= (m))
+/**
+ * Checks whether or not an option parser settings flag is set.
+ *
+ * This macro tests one or more parser settings flags.  There are
+ * currently no client-managed parser flags, so you should avoid this
+ * macro.
+ *
+ * @param m The flag (or set of bitwise-or'd flags) to check.
+ * @return  0 if none of the selected flags are set, non-zero if at
+ *          least one is.
+ */
 #define SPIFOPT_FLAGS_IS_SET(m)           (spifopt_settings.flags & (m))
+/**
+ * Clears an option parser settings flag.
+ *
+ * This macro clears one or more parser settings flags.  There are
+ * currently no client-managed parser flags, so you should avoid this
+ * macro.
+ *
+ * @param m The flag (or set of bitwise-or'd flags) to turn off.
+ */
 #define SPIFOPT_FLAGS_CLEAR(m)            (spifopt_settings.flags &= ~(m))
+/**
+ * Gets the bad option count.
+ *
+ * This macro retrieves the count of bad options encountered during
+ * option parsing.
+ *
+ * @return The number of bad options encountered.
+ */
 #define SPIFOPT_BADOPTS_GET()             (spifopt_settings.bad_opts)
+/**
+ * Sets the bad option count.
+ *
+ * This macro sets the count of bad options encountered during option
+ * parsing.  This macro should not be used by client programs.
+ *
+ * @param n The number of bad options encountered.
+ */
 #define SPIFOPT_BADOPTS_SET(n)            (spifopt_settings.bad_opts = (n))
+/**
+ * Gets the bad option setting.
+ *
+ * This macro retrieves the setting for the number of bad options
+ * allowed before parsing is aborted and the help screen is displayed.
+ *
+ * @return The number of bad options allowed.
+ */
 #define SPIFOPT_ALLOWBAD_GET()            (spifopt_settings.allow_bad)
+/**
+ * Sets the bad option setting.
+ *
+ * This macro sets the number of bad options allowed before parsing is
+ * aborted and the help screen is displayed.  This macro should be
+ * called prior to option parsing.
+ *
+ * @param n The number of bad options allowed.
+ */
 #define SPIFOPT_ALLOWBAD_SET(n)           (spifopt_settings.allow_bad = (n))
-#define SPIFOPT_INDENT_GET()              (spifopt_settings.indent)
-#define SPIFOPT_INDENT_SET(n)             (spifopt_settings.indent = (n))
+/**
+ * Gets the help handler function pointer.
+ *
+ * This macro retrieves the pointer to the function which will be
+ * called to display program help, due either to a help option or
+ * an excess number of option parsing errors.  If this value is not
+ * set by the client (via the SPIFOPT_HELPHANDLER_SET() macro), the
+ * default handler is the built-in spifopt_usage() function.
+ *
+ * @return The function pointer for the help/usage screen function.
+ */
 #define SPIFOPT_HELPHANDLER               ((spifopt_settings.help_handler) ? (spifopt_settings.help_handler) : (spifopt_usage))
+/**
+ * Sets the help handler function pointer.
+ *
+ * This macro sets the pointer to the function which will be called to
+ * display program help, due either to a help option or an excess
+ * number of option parsing errors.  If the client fails to call this
+ * macro prior to option parsing, the built-in spifopt_usage()
+ * function is used instead.
+ *
+ * @param f A function pointer of type spifopt_helphandler_t.
+ */
 #define SPIFOPT_HELPHANDLER_SET(f)        (spifopt_settings.help_handler = (f))
 /*}@*/
 

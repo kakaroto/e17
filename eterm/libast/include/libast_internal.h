@@ -21,6 +21,18 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+/**
+ * @file libast_internal.h
+ * LibAST header file for internal-use-only stuff.
+ *
+ * This file contains all macros, structure definitions, etc. which
+ * are restricted to internal LibAST use only.
+ *
+ * @author Michael Jennings <mej@eterm.org>
+ * @version $Revision$
+ * @date $Date$
+ */
+
 #ifndef _LIBAST_INTERNAL_H_
 #define _LIBAST_INTERNAL_H_
 
