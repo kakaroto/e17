@@ -14,6 +14,8 @@ AC_C_BIGENDIAN
 AM_DISABLE_STATIC
 AC_PROG_LIBTOOL
 
+ACX_PTHREAD(, AC_MSG_ERROR(Cannot find pthread library!))
+
 AC_EXPAND_DIR(DATA_DIR, "$datadir/eplayer")
 AC_DEFINE_UNQUOTED(DATA_DIR, "$DATA_DIR", [Directory to install data files in])
 

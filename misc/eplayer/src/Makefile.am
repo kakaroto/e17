@@ -2,7 +2,8 @@
 
 SUBDIRS = input output
 
-AM_CFLAGS = @ECORE_CFLAGS@ @EVAS_CFLAGS@ @EDJE_CFLAGS@ @ESMART_CFLAGS@
+AM_CFLAGS = @PTHREAD_CFLAGS@ \
+	@ECORE_CFLAGS@ @EVAS_CFLAGS@ @EDJE_CFLAGS@ @ESMART_CFLAGS@
 
 bin_PROGRAMS = eplayer
 
@@ -14,5 +15,5 @@ eplayer_SOURCES = eplayer.c eplayer.h \
 	plugin.c plugin.h \
 	utils.c utils.h
 
-eplayer_LDADD = @DL_LIBS@ \
+eplayer_LDADD = @PTHREAD_LIBS@ @DL_LIBS@ \
 	@ECORE_LIBS@ @EVAS_LIBS@ @EDJE_LIBS@ @ESMART_LIBS@
