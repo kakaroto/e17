@@ -2,7 +2,7 @@ EXTRA_DIST = \
 changelog \
 control \
 copyright \
-edb-tools.files \
-libedb1-dev.files \
-libedb1.files \
+edb-tools.install \
+libedb1-dev.install \
+libedb1.install \
 rules
