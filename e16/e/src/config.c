@@ -466,7 +466,7 @@ ConfigFileFind(const char *name, const char *themepath, int pp)
 
 int
 ConfigFileLoad(const char *name, const char *themepath,
-	       int (*parse) (FILE * fs))
+	       int (*parse) (FILE * fs), int preparse)
 {
    int                 err = -1;
    char               *file;
@@ -475,7 +475,7 @@ ConfigFileLoad(const char *name, const char *themepath,
    if (EventDebug(EDBUG_TYPE_CONFIG))
       Eprintf("ConfigFileLoad %s\n", name);
 
-   file = ConfigFileFind(name, themepath, 1);
+   file = ConfigFileFind(name, themepath, preparse);
    if (!file)
       goto done;
    fs = fopen(file, "r");
@@ -538,7 +538,7 @@ ThemeConfigLoad(void)
 	       }
 	  }
 
-	ConfigFileLoad(config_files[i], Mode.theme.path, ConfigFileRead);
+	ConfigFileLoad(config_files[i], Mode.theme.path, ConfigFileRead, 1);
 
 	if (p)
 	   ProgressbarSet(p, (i * 100) /
@@ -553,7 +553,7 @@ ThemeConfigLoad(void)
 
    /* Loose ends... */
    Esnprintf(s, sizeof(s), "%s.misc", EGetSavePrefix());
-   ConfigFileLoad(s, NULL, ConfigFileRead);
+   ConfigFileLoad(s, NULL, ConfigFileRead, 0);
 
    BordersSetupFallback();
 

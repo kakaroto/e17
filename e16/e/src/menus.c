@@ -2146,7 +2146,7 @@ MenusSighan(int sig, void *prm __UNUSED__)
    switch (sig)
      {
      case ESIGNAL_CONFIGURE:
-	ConfigFileLoad("menus.cfg", NULL, MenuConfigLoad);
+	ConfigFileLoad("menus.cfg", NULL, MenuConfigLoad, 1);
 	break;
 
      case ESIGNAL_AREA_SWITCH_START:
@@ -2198,7 +2198,7 @@ MenusIpc(const char *params, Client * c __UNUSED__)
    else if (!strncmp(cmd, "reload", 2))
      {
 	MenusDestroyLoaded();
-	ConfigFileLoad("menus.cfg", NULL, MenuConfigLoad);
+	ConfigFileLoad("menus.cfg", NULL, MenuConfigLoad, 1);
      }
    else if (!strncmp(cmd, "show", 2))
      {

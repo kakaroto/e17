@@ -1321,7 +1321,7 @@ char               *ThemeFileFind(const char *file);
 char               *ConfigFileFind(const char *name, const char *themepath,
 				   int pp);
 int                 ConfigFileLoad(const char *name, const char *themepath,
-				   int (*parse) (FILE * fs));
+				   int (*parse) (FILE * fs), int preparse);
 int                 ThemeConfigLoad(void);
 void                SaveUserControlConfig(void);
 void                RecoverUserConfig(void);

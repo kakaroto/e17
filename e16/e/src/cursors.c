@@ -310,7 +310,7 @@ CursorSighan(int sig, void *prm __UNUSED__)
    switch (sig)
      {
      case ESIGNAL_INIT:
-	ConfigFileLoad("cursors.cfg", Mode.theme.path, ECursorConfigLoad);
+	ConfigFileLoad("cursors.cfg", Mode.theme.path, ECursorConfigLoad, 1);
 	CursorsInit();
 	break;
      }
