@@ -212,7 +212,8 @@ void
 refresh_r_cb(GtkWidget * widget, gpointer * obj)
 {
 
-   GEIST_RECT(obj)->r = atoi(gtk_entry_get_text(GTK_ENTRY(widget)));
+   GEIST_RECT(obj)->r =
+		   gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(widget));
    geist_object_dirty(GEIST_OBJECT(obj));
    geist_document_render_updates(GEIST_OBJECT_DOC(obj));
 }
@@ -221,7 +222,8 @@ void
 refresh_g_cb(GtkWidget * widget, gpointer * obj)
 {
 
-   GEIST_RECT(obj)->g = atoi(gtk_entry_get_text(GTK_ENTRY(widget)));
+   GEIST_RECT(obj)->g =
+		   gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(widget));
    geist_object_dirty(GEIST_OBJECT(obj));
    geist_document_render_updates(GEIST_OBJECT_DOC(obj));
 }
@@ -230,7 +232,8 @@ void
 refresh_b_cb(GtkWidget * widget, gpointer * obj)
 {
 
-   GEIST_RECT(obj)->b = atoi(gtk_entry_get_text(GTK_ENTRY(widget)));
+   GEIST_RECT(obj)->b =
+		   gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(widget));
    geist_object_dirty(GEIST_OBJECT(obj));
    geist_document_render_updates(GEIST_OBJECT_DOC(obj));
 }
@@ -239,9 +242,16 @@ void
 refresh_a_cb(GtkWidget * widget, gpointer * obj)
 {
 
-   GEIST_RECT(obj)->a = atoi(gtk_entry_get_text(GTK_ENTRY(widget)));
+   GEIST_RECT(obj)->a =
+		   gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(widget));
    geist_object_dirty(GEIST_OBJECT(obj));
    geist_document_render_updates(GEIST_OBJECT_DOC(obj));
+}
+
+void
+refresh_name_cb(GtkWidget *widget, gpointer *obj)
+{
+   GEIST_RECT(obj)->name = estrdup(gtk_entry_get_text(GTK_ENTRY(widget)));
 }
 
 void
@@ -251,7 +261,6 @@ geist_rect_display_props(geist_object * obj)
    GtkWidget *win, *table, *title_l, *title_entry, *hbox, *cr_l, *cr, *cg_l,
       *cg, *cb_l, *cb, *ca_l, *ca, *ok;
    GtkAdjustment *a1, *a2, *a3, *a4;
-   char a[4096], r[4096], g[4006], b[4096];
 
 
    a1 = (GtkAdjustment *) gtk_adjustment_new(0, 0, 255, 1, 2, 3);
@@ -273,6 +282,8 @@ geist_rect_display_props(geist_object * obj)
    title_entry = gtk_entry_new();
    gtk_table_attach(GTK_TABLE(table), title_entry, 1, 2, 0, 1,
                     GTK_FILL | GTK_EXPAND, 0, 2, 2);
+   gtk_signal_connect(GTK_OBJECT(title_entry), "changed",
+			GTK_SIGNAL_FUNC(refresh_name_cb), (gpointer) obj);
    gtk_widget_show(title_entry);
 
    hbox = gtk_hbox_new(FALSE, 0);
@@ -330,16 +341,11 @@ geist_rect_display_props(geist_object * obj)
    gtk_widget_show(ok);
 
 
-   sprintf(r, "%d", GEIST_RECT(obj)->r);
-   sprintf(g, "%d", GEIST_RECT(obj)->g);
-   sprintf(b, "%d", GEIST_RECT(obj)->b);
-   sprintf(a, "%d", GEIST_RECT(obj)->a);
-
-   gtk_entry_set_text(GTK_ENTRY(cr), r);
-   gtk_entry_set_text(GTK_ENTRY(cg), g);
-   gtk_entry_set_text(GTK_ENTRY(cb), b);
-   gtk_entry_set_text(GTK_ENTRY(ca), a);
-
+   gtk_spin_button_set_value (cr, GEIST_RECT(obj)->r);
+   gtk_spin_button_set_value (cg, GEIST_RECT(obj)->g);
+   gtk_spin_button_set_value (cb, GEIST_RECT(obj)->b);
+   gtk_spin_button_set_value (ca, GEIST_RECT(obj)->a);
+   
    if (GEIST_RECT(obj)->name)
       gtk_entry_set_text(GTK_ENTRY(title_entry), GEIST_RECT(obj)->name);
 

@@ -1,5 +1,29 @@
 #include "geist_text.h"
 
+typedef struct _addtext_ok_data addtext_ok_data;
+struct _addtext_ok_data
+{
+   GtkWidget *win;
+   GtkWidget *name;
+   GtkWidget *text;
+   GtkWidget *font;
+   GtkWidget *size;
+   GtkWidget *cr;
+   GtkWidget *cg;
+   GtkWidget *cb;
+   GtkWidget *ca;
+};
+
+static void refresh_r_cb(GtkWidget * widget, gpointer * obj);
+static void refresh_g_cb(GtkWidget * widget, gpointer * obj);
+static void refresh_b_cb(GtkWidget * widget, gpointer * obj);
+static void refresh_a_cb(GtkWidget * widget, gpointer * obj);
+static void refresh_size_cb(GtkWidget * widget, gpointer * obj);
+static void refresh_text_cb(GtkWidget * widget, gpointer * obj);
+static void refresh_font_cb(GtkWidget * widget, gpointer * obj);
+static void refresh_name_cb(GtkWidget * widget, gpointer * obj);
+
+gboolean obj_addtext_ok_cb(GtkWidget * widget, gpointer * data);
 
 geist_object *
 geist_text_new(void)
@@ -31,6 +55,7 @@ geist_text_init(geist_text * txt)
    obj->get_rendered_image = geist_text_get_rendered_image;
    obj->duplicate = geist_text_duplicate;
    obj->resize_event = geist_text_resize;
+   obj->display_props = geist_text_display_props;
    obj->sizemode = SIZEMODE_NONE;
    obj->alignment = ALIGN_CENTER;
    geist_object_set_type(obj, GEIST_TYPE_TEXT);
@@ -318,3 +343,270 @@ geist_text_resize(geist_object * obj, int x, int y)
 
    D_RETURN_(5);
 }
+
+
+gboolean
+obj_addtext_ok_cb(GtkWidget * widget, gpointer * data)
+{
+   addtext_ok_data *ok_data = (addtext_ok_data *) data;
+   gtk_widget_destroy(ok_data->win);
+   free(ok_data);
+   return TRUE;
+}
+
+void
+refresh_size_cb(GtkWidget * widget, gpointer * obj)
+{
+	char *fontname;
+	int fontsize;
+	
+	fontname = strtok (GEIST_TEXT(obj)->fontname,"/");
+	fontsize = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(widget));
+	
+	sprintf (GEIST_TEXT(obj)->fontname,"%s/%d",fontname, fontsize);
+	geist_object_dirty(GEIST_OBJECT(obj));
+	geist_document_render_updates(GEIST_OBJECT_DOC(obj));
+}
+
+void
+refresh_font_cb(GtkWidget * widget, gpointer * obj)
+{
+	char *fontname;
+	int fontsize;
+	
+	fontname = estrdup(gtk_entry_get_text(GTK_ENTRY(widget)));	
+	fontsize = atoi(strtok (GEIST_TEXT(obj)->fontname,"/"));
+	fontsize = atoi(strtok (NULL, "/"));
+	
+	sprintf (GEIST_TEXT(obj)->fontname,"%s/%d",fontname, fontsize);
+	geist_object_dirty(GEIST_OBJECT(obj));
+	geist_document_render_updates(GEIST_OBJECT_DOC(obj));
+}
+
+void
+refresh_r_cb(GtkWidget * widget, gpointer * obj)
+{
+
+   GEIST_TEXT(obj)->r =
+		   gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(widget));
+   geist_object_dirty(GEIST_OBJECT(obj));
+   geist_document_render_updates(GEIST_OBJECT_DOC(obj));
+}
+
+void
+refresh_g_cb(GtkWidget * widget, gpointer * obj)
+{
+
+   GEIST_TEXT(obj)->g =
+		   gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(widget));
+   geist_object_dirty(GEIST_OBJECT(obj));
+   geist_document_render_updates(GEIST_OBJECT_DOC(obj));
+}
+
+void
+refresh_b_cb(GtkWidget * widget, gpointer * obj)
+{
+
+   GEIST_TEXT(obj)->b =
+		   gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(widget));
+   geist_object_dirty(GEIST_OBJECT(obj));
+   geist_document_render_updates(GEIST_OBJECT_DOC(obj));
+}
+
+void
+refresh_a_cb(GtkWidget * widget, gpointer * obj)
+{
+
+   GEIST_TEXT(obj)->a =
+		   gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(widget));
+   geist_object_dirty(GEIST_OBJECT(obj));
+   geist_document_render_updates(GEIST_OBJECT_DOC(obj));
+}
+
+void
+refresh_name_cb(GtkWidget *widget, gpointer *obj)
+{
+   GEIST_TEXT(obj)->name = estrdup(gtk_entry_get_text(GTK_ENTRY(widget)));
+   geist_object_dirty(GEIST_OBJECT(obj));
+   geist_document_render_updates(GEIST_OBJECT_DOC(obj));
+}
+
+void
+refresh_text_cb(GtkWidget *widget, gpointer *obj)
+{
+   geist_text_change_text(GEIST_TEXT(obj),
+                             estrdup(gtk_entry_get_text(GTK_ENTRY(widget))));
+   geist_object_dirty(GEIST_OBJECT(obj));
+   geist_document_render_updates(GEIST_OBJECT_DOC(obj));
+}
+
+void
+geist_text_display_props (geist_object *obj)
+{
+   addtext_ok_data *ok_data = NULL;
+   GtkWidget *table, *name_l, *text_l, *font_l, *size_l, *hbox, *cr_l, *cg_l, *cb_l,
+      *ca_l, *ok;
+   int i, num, size;
+   char **fonts;
+   char *font, *font_name;
+   GList *list = g_list_alloc();
+   GtkAdjustment *a1, *a2, *a3, *a4, *a5;
+
+   a1 = (GtkAdjustment *) gtk_adjustment_new(0, 0, 255, 1, 2, 3);
+   a2 = (GtkAdjustment *) gtk_adjustment_new(0, 0, 255, 1, 2, 3);
+   a3 = (GtkAdjustment *) gtk_adjustment_new(0, 0, 255, 1, 2, 3);
+   a4 = (GtkAdjustment *) gtk_adjustment_new(0, 0, 255, 1, 2, 3);
+   a5 = (GtkAdjustment *) gtk_adjustment_new(12, 2, 36, 1, 2, 3);
+
+   ok_data = emalloc(sizeof(addtext_ok_data));
+   if (!ok_data)
+      return;
+   fonts = geist_imlib_list_fonts(&num);
+   
+   if (!fonts)
+      printf("ARGH!\n");
+   
+   ok_data->win = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+   table = gtk_table_new(2, 6, FALSE);
+   gtk_container_set_border_width(GTK_CONTAINER(ok_data->win), 5);
+   gtk_container_add(GTK_CONTAINER(ok_data->win), table);
+
+   text_l = gtk_label_new("Text:");
+   gtk_misc_set_alignment(GTK_MISC(text_l), 1.0, 0.5);
+   gtk_table_attach(GTK_TABLE(table), text_l, 0, 1, 0, 1,
+                    GTK_FILL | GTK_EXPAND, 0, 2, 2);
+   gtk_widget_show(text_l);
+
+   ok_data->text = gtk_entry_new();
+   gtk_table_attach(GTK_TABLE(table), ok_data->text, 1, 2, 0, 1,
+                    GTK_FILL | GTK_EXPAND, 0, 2, 2);
+   gtk_signal_connect(GTK_OBJECT(ok_data->text), "changed",
+		   				GTK_SIGNAL_FUNC(refresh_text_cb), (gpointer) obj);
+   gtk_widget_show(ok_data->text);
+
+   name_l = gtk_label_new("Name:");
+   gtk_misc_set_alignment(GTK_MISC(name_l), 1.0, 0.5);
+   gtk_table_attach(GTK_TABLE(table), name_l, 0, 1, 1, 2,
+                    GTK_FILL | GTK_EXPAND, 0, 2, 2);
+   gtk_widget_show(name_l);
+
+   ok_data->name = gtk_entry_new();
+   gtk_table_attach(GTK_TABLE(table), ok_data->name, 1, 2, 1, 2,
+                    GTK_FILL | GTK_EXPAND, 0, 2, 2);
+   gtk_signal_connect(GTK_OBJECT(ok_data->name), "changed",
+		   				GTK_SIGNAL_FUNC(refresh_name_cb), (gpointer) obj);
+   gtk_widget_show(ok_data->name);
+
+   
+   font_l = gtk_label_new("Font:");
+   gtk_misc_set_alignment(GTK_MISC(font_l), 1.0, 0.5);
+   gtk_table_attach(GTK_TABLE(table), font_l, 0, 1, 2, 3,
+                    GTK_FILL | GTK_EXPAND, 0, 2, 2);
+   gtk_widget_show(font_l);
+
+   ok_data->font = gtk_combo_new();
+   gtk_table_attach(GTK_TABLE(table), ok_data->font, 1, 2, 2, 3,
+                    GTK_FILL | GTK_EXPAND, 0, 2, 2);
+   for (i = 0; i < num; i++)
+      list = g_list_append(list, (gpointer) fonts[i]);
+   gtk_combo_set_popdown_strings(GTK_COMBO(ok_data->font), list);
+   gtk_signal_connect(GTK_OBJECT(GTK_COMBO(ok_data->font)->entry), "changed",
+                      GTK_SIGNAL_FUNC(refresh_font_cb), (gpointer) obj);
+   gtk_widget_show(ok_data->font);
+
+   
+   size_l = gtk_label_new("Size:");
+   gtk_misc_set_alignment(GTK_MISC(size_l), 1.0, 0.5);
+   gtk_table_attach(GTK_TABLE(table), size_l, 0, 1, 3, 4,
+                    GTK_FILL | GTK_EXPAND, 0, 2, 2);
+   gtk_widget_show(size_l);
+
+   ok_data->size = gtk_spin_button_new(GTK_ADJUSTMENT(a5), 1, 0);
+   gtk_table_attach(GTK_TABLE(table), ok_data->size, 1, 2, 3, 4,
+                    GTK_FILL | GTK_EXPAND, 0, 2, 2);
+   gtk_signal_connect (GTK_OBJECT(ok_data->size), "changed",
+                      GTK_SIGNAL_FUNC(refresh_size_cb), (gpointer) obj);
+   gtk_widget_show(ok_data->size);
+
+   hbox = gtk_hbox_new(FALSE, 0);
+
+   cr_l = gtk_label_new("R:");
+   gtk_misc_set_alignment(GTK_MISC(cr_l), 1.0, 0.5);
+   gtk_box_pack_start(GTK_BOX(hbox), cr_l, TRUE, FALSE, 2);
+   gtk_widget_show(cr_l);
+   ok_data->cr = gtk_spin_button_new(GTK_ADJUSTMENT(a1), 1, 0);
+   gtk_signal_connect (GTK_OBJECT(ok_data->cr), "changed",
+                      GTK_SIGNAL_FUNC(refresh_r_cb), (gpointer) obj);
+   
+   gtk_box_pack_start(GTK_BOX(hbox), ok_data->cr, TRUE, FALSE, 2);
+   gtk_widget_show(ok_data->cr);
+
+   cg_l = gtk_label_new("G:");
+   gtk_misc_set_alignment(GTK_MISC(cg_l), 1.0, 0.5);
+   gtk_box_pack_start(GTK_BOX(hbox), cg_l, TRUE, FALSE, 2);
+   gtk_widget_show(cg_l);
+   ok_data->cg = gtk_spin_button_new(GTK_ADJUSTMENT(a2), 1, 0);
+   gtk_signal_connect (GTK_OBJECT(ok_data->cg), "changed",
+                      GTK_SIGNAL_FUNC(refresh_g_cb), (gpointer) obj);
+   gtk_box_pack_start(GTK_BOX(hbox), ok_data->cg, TRUE, FALSE, 2);
+   gtk_widget_show(ok_data->cg);
+
+   cb_l = gtk_label_new("B:");
+   gtk_misc_set_alignment(GTK_MISC(cb_l), 1.0, 0.5);
+   gtk_box_pack_start(GTK_BOX(hbox), cb_l, TRUE, FALSE, 2);
+   gtk_widget_show(cb_l);
+   ok_data->cb = gtk_spin_button_new(GTK_ADJUSTMENT(a3), 1, 0);
+   gtk_signal_connect (GTK_OBJECT(ok_data->cb), "changed",
+                      GTK_SIGNAL_FUNC(refresh_b_cb), (gpointer) obj);
+   gtk_box_pack_start(GTK_BOX(hbox), ok_data->cb, TRUE, FALSE, 2);
+   gtk_widget_show(ok_data->cb);
+
+   ca_l = gtk_label_new("A:");
+   gtk_misc_set_alignment(GTK_MISC(ca_l), 1.0, 0.5);
+   gtk_box_pack_start(GTK_BOX(hbox), ca_l, TRUE, FALSE, 2);
+   gtk_widget_show(ca_l);
+   ok_data->ca = gtk_spin_button_new(GTK_ADJUSTMENT(a4), 1, 0);
+   gtk_signal_connect (GTK_OBJECT(ok_data->ca), "changed",
+                      GTK_SIGNAL_FUNC(refresh_a_cb), (gpointer) obj);
+   gtk_box_pack_start(GTK_BOX(hbox), ok_data->ca, TRUE, FALSE, 2);
+   gtk_widget_show(ok_data->ca);
+
+   gtk_table_attach(GTK_TABLE(table), hbox, 0, 2, 4, 5, GTK_FILL | GTK_EXPAND,
+                    0, 2, 2);
+   gtk_widget_show(hbox);
+
+   ok = gtk_button_new_with_label("Ok");
+   gtk_table_attach(GTK_TABLE(table), ok, 0, 2, 5, 6, GTK_FILL | GTK_EXPAND,
+                    0, 2, 2);
+   gtk_signal_connect(GTK_OBJECT(ok), "clicked",
+                      GTK_SIGNAL_FUNC(obj_addtext_ok_cb), (gpointer) ok_data);
+   gtk_widget_show(ok);
+
+   gtk_widget_show(table);
+
+   gtk_spin_button_set_value (GTK_SPIN_BUTTON(ok_data->cr), GEIST_TEXT(obj)->r);
+   gtk_spin_button_set_value (GTK_SPIN_BUTTON(ok_data->cg), GEIST_TEXT(obj)->g);
+   gtk_spin_button_set_value (GTK_SPIN_BUTTON(ok_data->cb), GEIST_TEXT(obj)->b);
+   gtk_spin_button_set_value (GTK_SPIN_BUTTON(ok_data->ca), GEIST_TEXT(obj)->a);
+   
+   if (GEIST_TEXT(obj)->fontname)
+   {
+	  font = estrdup(GEIST_TEXT(obj)->fontname);
+  	  font_name = strtok(font, "/");
+	  size = atoi(strtok(NULL, "/"));
+	  gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(ok_data->font)->entry), font);
+      gtk_spin_button_set_value (GTK_SPIN_BUTTON(ok_data->size), size);
+   } else {
+	   font ="";
+	   size = 0;
+   }
+   gtk_entry_set_text(GTK_ENTRY(ok_data->text), GEIST_TEXT(obj)->text);
+   
+   if (GEIST_TEXT(obj)->name)
+	   gtk_entry_set_text(GTK_ENTRY(ok_data->name), GEIST_TEXT(obj)->name);
+   
+   gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(ok_data->font)->entry), font);
+   gtk_spin_button_set_value (GTK_SPIN_BUTTON(ok_data->size), size);
+   gtk_widget_show(ok_data->win);
+	
+}		
