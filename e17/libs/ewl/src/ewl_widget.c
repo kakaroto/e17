@@ -265,7 +265,8 @@ ewl_widget_set_parent(Ewl_Widget * w, Ewl_Widget * p)
 
 /*
  * Perform the series of operations common to every widget when
- * they are destroyed
+ * they are destroyed. This should ALWAYS be the the last callback
+ * in the chain.
  */
 static void
 __ewl_widget_destroy(Ewl_Widget *w, void *ev_data, void *data)
@@ -305,8 +306,10 @@ __ewl_widget_destroy(Ewl_Widget *w, void *ev_data, void *data)
 	 * the remaining callbacks. This preserves the list of the destroy
 	 * type so we don't get a segfault.
 	 */
-	ewd_list_clear(w->callbacks[EWL_CALLBACK_DESTROY]);
-	w->callbacks[EWL_CALLBACK_DESTROY] = NULL;
+	if (w->callbacks[EWL_CALLBACK_DESTROY]) {
+		ewd_list_clear(w->callbacks[EWL_CALLBACK_DESTROY]);
+		w->callbacks[EWL_CALLBACK_DESTROY] = NULL;
+	}
 
 	ewl_callback_clear(w);
 

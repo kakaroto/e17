@@ -339,10 +339,11 @@ __ewl_container_destroy(Ewl_Widget *w, void *event_data, void *user_data)
 		EWL_CONTAINER(w)->clip_box = NULL;
 	}
 
-	ewd_list_clear(EWL_CONTAINER(w)->children);
-	ewd_list_destroy(EWL_CONTAINER(w)->children);
-
-	EWL_CONTAINER(w)->children = NULL;
+	if (EWL_CONTAINER(w)->children) {
+		ewd_list_clear(EWL_CONTAINER(w)->children);
+		ewd_list_destroy(EWL_CONTAINER(w)->children);
+		EWL_CONTAINER(w)->children = NULL;
+	}
 
 	DLEAVE_FUNCTION;
 }
