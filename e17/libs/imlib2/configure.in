@@ -247,7 +247,7 @@ fi
 AC_CHECK_LIB(ungif, DGifOpenFileName,
   gif_libs="-lungif"
   gif_ok=yes,
-  gif_ok=no
+  gif_ok=no,
   $EXTRA_LIBS)
 if test "$gif_ok" = yes; then
   AC_MSG_CHECKING([for gif_lib.h])
@@ -270,7 +270,8 @@ if test "$gif_ok" = no; then
     gif_libs="-lgif"
     gif_ok=yes,
     gif_ok=no
-    AC_MSG_WARN(*** Native GIF support will not be built (GIF library not found) ***), $EXTRA_LIBS)
+    AC_MSG_WARN(*** Native GIF support will not be built (GIF library not found) ***),
+    $EXTRA_LIBS)
   if test "$gif_ok" = yes; then
     AC_MSG_CHECKING([for gif_lib.h])
     AC_TRY_CPP(
