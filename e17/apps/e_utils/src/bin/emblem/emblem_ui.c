@@ -1,16 +1,12 @@
 #include "Emblem.h"
 
 /* TODO
- *  * make current not change, just change the edje file and do a double
- *    buffer thing like the menu is doing
  *  * make the thumbs cache to disk, check the eet mtime againts a the time
  *    of the cached version. Each bg has one or more .eet thumb files. these
  *    files will need the screen size in there name and either the timestamp
  *    or an md5 in them (look at epsilon). Then for the menu only load these
  *    cached, so there is only one fs image around
  *  * need to calcluate SCREEN_W and SCREEN_H dynamically
- *  * seem to get a lot of space around the thumbs in the menu bar would be
- *    nice to get these more compact
  *  * need to put a border around the current menubar item that the mouse is
  *    over, like a beveled edge or something
  *  * make startup faster? ... (not sure what to do about it)
@@ -39,21 +35,6 @@ static void emblem_current_bg_set(Emblem *em, char *file);
 static void emblem_ui_init_job_cb(void *data);
 static void emblem_ui_resize_cb(Ecore_Evas *ee);
 
-static void emblem_intercept_show_cb(void *data, Evas_Object *obj);
-static void emblem_intercept_hide_cb(void *data, Evas_Object *obj);
-static void emblem_intercept_move_cb(void *data, Evas_Object *obj,
-                                        Evas_Coord x, Evas_Coord y);
-static void emblem_intercept_resize_cb(void *data, Evas_Object *obj,
-                                        Evas_Coord w, Evas_Coord h);
-static void emblem_intercept_raise_cb(void *data, Evas_Object *obj);
-static void emblem_intercept_lower_cb(void *data, Evas_Object *obj);
-static void emblem_intercept_stack_above_cb(void *data, Evas_Object *obj,
-                                        Evas_Object *above);
-static void emblem_intercept_stack_below_cb(void *data, Evas_Object *obj,
-                                        Evas_Object *below);
-static void emblem_intercept_layer_set_cb(void *data, Evas_Object *obj, 
-                                        int l);
-
 static void emblem_current_sel_cb(void *data, Evas *evas, Evas_Object *obj,
                                                                 void *ev);
 static void emblem_menu_sel_cb(void *data, Evas *evas, Evas_Object *obj, 
@@ -73,9 +54,7 @@ emblem_ui_init(Emblem *em)
 {
     Ecore_Evas *ee;
     Evas_Object *o;
-    Evas_Coord w, h;
     Evas *evas;
-    double l;
 
     ee = ecore_evas_software_x11_new(em->display, 0, 0, 0, WIDTH, HEIGHT);
     ecore_evas_name_class_set(ee, "Emblem", "Emblem");
@@ -133,7 +112,6 @@ emblem_ui_resize_cb(Ecore_Evas *ee)
     Evas_Object *o;
     double l;
     const char *state;
-    char *file;
 
     em = ecore_evas_data_get(ee, "emblem");
 
@@ -221,8 +199,6 @@ emblem_load_bgs(Emblem *em)
     DIR *dir;
     struct dirent *entry;
     char path[PATH_MAX];
-    Evas_Coord w, h;
-    Evas_Object *ev;
 
     snprintf(path, PATH_MAX, "%s/.e/e/backgrounds", getenv("HOME"));
     dir = opendir(path);
@@ -240,7 +216,6 @@ emblem_load_bgs(Emblem *em)
                                 getenv("HOME"), entry->d_name);
 
         o = emblem_evas_object_get(em, path, THUMB_W, THUMB_H);
-        edje_object_part_geometry_get(em->gui.edje, "menu_bar", NULL, NULL, NULL, &h);
         evas_object_resize(o, 64, 48);
         
         evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_DOWN,
@@ -255,7 +230,7 @@ static Evas_Object *
 emblem_evas_object_get(Emblem *em, const char *fname,
                             Evas_Coord w, Evas_Coord h)
 {
-    Evas_Object *o, *o2, *ob, *ev;
+    Evas_Object *o, *o2, *ob;
     Ecore_Evas *ee2;
     Evas *evas2;
 
@@ -341,7 +316,8 @@ emblem_current_sel_cb(void *data, Evas *evas, Evas_Object *obj, void *ev)
     e_background_set(name);
 
     return;
-    obj = NULL;
+    evas = NULL;
+    data = NULL;
     ev = NULL;
 }
 
@@ -356,6 +332,7 @@ emblem_menu_sel_cb(void *data, Evas *evas, Evas_Object *obj, void *ev)
     emblem_current_bg_set(em, name);
 
     return;
+    evas = NULL;
     data = NULL;
     ev = NULL;
 }
@@ -372,7 +349,7 @@ emblem_left_scroll_down_cb(void *data, Evas_Object *obj,
     return;
     data = NULL;
     obj = NULL;
-    em = NULL;
+    emission = NULL;
     src = NULL;
 }
 
@@ -388,7 +365,7 @@ emblem_right_scroll_down_cb(void *data, Evas_Object *obj,
     return;
     data = NULL;
     obj = NULL;
-    em = NULL;
+    emission = NULL;
     src = NULL;
 }
 
@@ -404,7 +381,7 @@ emblem_left_scroll_up_cb(void *data, Evas_Object *obj,
     return;
     data = NULL;
     obj = NULL;
-    em = NULL;
+    emission = NULL;
     src = NULL;
 }
 
@@ -420,7 +397,7 @@ emblem_right_scroll_up_cb(void *data, Evas_Object *obj,
     return;
     data = NULL;
     obj = NULL;
-    em = NULL;
+    emission = NULL;
     src = NULL;
 }
 
