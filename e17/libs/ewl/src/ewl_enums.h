@@ -208,7 +208,7 @@ typedef enum Ewl_Filedialog_Type Ewl_Filedialog_Type;
 enum Ewl_Filedialog_Type
 {
 	EWL_FILEDIALOG_TYPE_OPEN,
-	EWL_FILEDIALOG_TYPE_CLOSE
+	EWL_FILEDIALOG_TYPE_SAVE
 };
 
 /**
