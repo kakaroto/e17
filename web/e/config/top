@@ -1,13 +1,10 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html><head><title>W W W . E N L I G H T E N M E N T . O R G</title></head>
-<body bgcolor="@:col_bg@"
-background="@:background@"
-text="@:col_fg@"
-link="@:col_link@"
-vlink="@:col_vlink@"
-alink="@:col_alink@">
-<!--
-topmargin=20
-leftmargin=20
-marginwidth=20
-marginheight=20 -->
+<html>
+<head>
+  <meta name="keywords" content="Enlightenment, Window, Manager, X Windows,
+	 	                 X11, Themes, Efsd, Evas, Imlib">
+  <title>W W W . E N L I G H T E N M E N T . O R G</title>
+  <link rel=stylesheet type="text/css" href="stylesheet.css">
+</head>
+
+<body>

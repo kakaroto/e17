@@ -1,19 +1,111 @@
 @top@
 @start@
-@:cent@@:title@Information@:_title@@:_cent@
-@:para@
+<p class="contenttitle">Information</p>
 
-Enlightenment is a window manager for <a href="http://www.xfree86.org">X</a>. Its design goal is to be as configurable as possible - in look AND in feel.
-@:para@
-Enlightenments current design aim is to become a desktop shell. That
+<p>
+Enlightenment is a window manager for <a href="http://www.xfree86.org">X</a>.
+Its design goal is to be as configurable as possible - in look AND in feel.
+</p>
+<p>
+Enlightenment's current design aim is to become a desktop shell. That
 means it will manage your application windows, being able to launch
-applications, and also manage your files. @:para@
-
+applications, and also manage your files.
+</p>
+<p>
 We're currently hard at work building the next revision (0.17) of
-Enlightenment.@:para@
+Enlightenment.
+</p>
 
-Please go
-<a href=http://sourceforge.net/projects/enlightenment/>here</a> for more information.
-@:para@
+<p class="contenttitle">Frequently Asked Questions</p>
+
+<p>This collection is currently being worked on. Bear with us if what
+you're looking for isn't here yet. In that case, please ask on the
+<a href="mail.html">mailing lists</a> instead or check the archives.
+</p>
+<p align="center">General</p>
+
+@:news_title@
+What exactly do you mean by "E 17 will become a desktop shell?"
+@:news_body@
+It means that E 17 combines features of a window manager and a file manager.
+It will provide nicely integrated GUI elements for managing your desktop
+elements, both files and windows. It does *not* mean that E 17 is another
+application framework like Gnome and KDE.
+@:news_end@
+
+@:news_title@
+Will E 16's themes work with E 17?
+@:news_body@
+No. The theme formats are totally different. There is a chance though
+that converters will exist at some point.
+@:news_end@
+
+@:news_title@
+What's E's relation to Gnome and KDE? Is Gnome supported? Is KDE supported?
+@:news_body@
+E 16 supports both Gnome and KDE. In E 17, you will be able to use both Gnome
+and KDE *applications*. However, given that E 17 will be a desktop shell, this
+doesn't mean that all parts of the frameworks (such as desktop-oriented filemanagers)
+will work.
+@:news_end@
+
+@:news_title@
+What platforms does E run on?
+@:news_body@
+The primary development platform is Linux. *BSD and Solaris are
+also supported. HP, Irix, AIX should more or less work, but are
+probably adventurous.
+@:news_end@
+
+@:news_title@
+I'd like to contribute! How can I commit code?
+@:news_body@
+Send patches! If they're good you'll get a CVS account.
+@:news_end@
+
+@:news_title@
+When will E 17 be released?
+@:news_body@
+HAHAHAHAHAHA :)
+@:news_end@
+
+
+<p align="center">E 16</p>
+
+@:news_title@
+My epplets keep multiplying whenever I launch E. Help!
+@:news_body@
+That's a bug in the Epplet library. For the adventurous, you need to
+remove all bogus epplet entries from
+~/.enlightenment/...e_session-XXXXXX.snapshots.0 while E isn't
+running. A more radical approach is to simply delete this file --
+this may cause other settings to be lost, such as those for the
+icon box and the pagers. Sorry for the inconvenience.
+@:news_end@
+
+<p align="center">Efsd</p>
+
+@:news_title@
+Can I run Efsd without FAM? Do I need Imon?
+@:news_body@
+At the moment, FAM is necessary to run Efsd. Imon is a kernel patch
+to improve performance, using it is highly recommended. You can get
+both FAM and Imon at <a href="http://oss.sgi.com">SGI</a>.
+@:news_end@
+
+@:news_title@
+I can't compile FAM. It dies with a "`NULL' undeclared (first use this function)" message.
+@:news_body@
+Add the line "#include &lt;stdlib.h&gt;" to BTree.h.
+@:news_end@
+
+@:news_title@
+Why don't you add support for browsing FTP, Tarballs etc to Efsd?
+@:news_body@
+Because that's not Efsd's job. Efsd's job is to provide a facility
+for launching fs commands and asynchronously receiving replies *on
+top* of the fs, not to extend the fs.
+@:news_end@
+
 @end@
 @bottom@
