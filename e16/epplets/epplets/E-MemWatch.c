@@ -174,10 +174,18 @@ main(int argc, char **argv) {
   Epplet_Init("E-MemWatch", "0.1", "Enlightenment RAM/Swap Monitor Epplet", 3, 3, argc, argv, 0);
 
   close_button = Epplet_create_button(NULL, NULL, 2, 2, 0, 0, "CLOSE", 0, NULL, close_cb, NULL);
+#if 0
   mem_label = Epplet_create_label(4, 4, "M:", 1);
   swap_label = Epplet_create_label(4, 24, "S:", 1);
   mem_bar = Epplet_create_hbar(4, 14, 40, 8, 0, &mem_val);
   swap_bar = Epplet_create_hbar(4, 36, 40, 8, 0, &swap_val);
+#else
+  Epplet_gadget_show(Epplet_create_label(3, 3, "Mem Used", 1));
+  mem_label = Epplet_create_label(3, 13, "M:", 1);
+  swap_label = Epplet_create_label(3, 30, "S:", 1);
+  mem_bar = Epplet_create_hbar(3, 22, 42, 7, 0, &mem_val);
+  swap_bar = Epplet_create_hbar(3, 39, 42, 7, 0, &swap_val);
+#endif
   Epplet_gadget_show(mem_label);
   Epplet_gadget_show(mem_bar);
   Epplet_gadget_show(swap_label);

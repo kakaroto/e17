@@ -1649,3 +1649,10 @@ Also extended E-Mountbox so that the users can now define the patterns
 in the device or mountpoint and corresponding icons themselves. Currently
 still via the config file, but the dialog is there. Not functional yet,
 though.
+
+-------------------------------------------------------------------------------
+
+Mon Dec 13 16:51:48 PST 1999
+(KainX)
+
+Added labels for E-MemWatch and E-Disk.

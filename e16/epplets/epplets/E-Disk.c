@@ -166,11 +166,21 @@ main(int argc, char **argv) {
   Epplet_load_config();
   parse_conf();
 
-  close_button = Epplet_create_button(NULL, NULL, 34, 2, 0, 0, "CLOSE", 0, NULL, close_cb, NULL);
+  close_button = Epplet_create_button(NULL, NULL, 2, 2, 0, 0, "CLOSE", 0, NULL, close_cb, NULL);
+#if 0
+  /* Old arrangement */
   in_label = Epplet_create_label(4, 4, "I: 0 K/s", 1);
   out_label = Epplet_create_label(4, 24, "O: 0 K/s", 1);
   in_bar = Epplet_create_hbar(4, 14, 40, 8, 0, &in_val);
   out_bar = Epplet_create_hbar(4, 36, 40, 8, 0, &out_val);
+#else
+  /* New arrangement */
+  Epplet_gadget_show(Epplet_create_label(3, 3, "Disk I/O", 1));
+  in_label = Epplet_create_label(3, 13, "I: 0 K/s", 1);
+  out_label = Epplet_create_label(3, 30, "O: 0 K/s", 1);
+  in_bar = Epplet_create_hbar(3, 22, 42, 7, 0, &in_val);
+  out_bar = Epplet_create_hbar(3, 39, 42, 7, 0, &out_val);
+#endif
   Epplet_gadget_show(in_label);
   Epplet_gadget_show(in_bar);
   Epplet_gadget_show(out_label);
