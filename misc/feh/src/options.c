@@ -957,6 +957,7 @@ show_usage(void)
            " <DELETE>                   Remove the currently viewed file from the filelist\n"
            " <CTRL+DELETE>              Delete the currently viewed file and remove it\n"
            "                            from the filelist\n"
+           " x, X                       Close current window\n"
            " q, Q                       Quit the slideshow\n" "\n"
            " MOUSE ACTIONS\n"
            " When viewing an image, a click of mouse button 1 moves to the next image\n"
