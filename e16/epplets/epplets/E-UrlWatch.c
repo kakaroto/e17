@@ -45,6 +45,8 @@ static void check_url_file (void *data);
 static void
 save_config (void)
 {
+  /* This saves our options. Numbers are printed into a buffer to make
+   * strings. */
   char buf[10];
   Esnprintf (buf, sizeof (buf), "%d", opt.always_show_file_urls);
   Epplet_modify_config ("ALWAYS_SHOW_FILE_URLS", buf);
@@ -65,6 +67,7 @@ save_config (void)
 static void
 load_config (void)
 {
+  /* This reloads our config. */
   char *home = getenv ("HOME");
   char buf[256];
   opt.save_urls = atoi (Epplet_query_config_def ("SAVE_URLS", "1"));
@@ -73,6 +76,7 @@ load_config (void)
     atoi (Epplet_query_config_def ("ALWAYS_SHOW_FILE_URLS", "0"));
   opt.do_new_url_command =
     atoi (Epplet_query_config_def ("RUN_COMMAND_ON_NEW_URL", "1"));
+  /* If reloading, free the old string before assigning a new one */
   if (opt.www_command)
     free (opt.www_command);
   opt.www_command =
@@ -108,9 +112,12 @@ load_config (void)
 static void
 cb_close (void *data)
 {
+  /* save options */
   save_config ();
-  Esync ();
+  /* User closed, so forget session restart */
   Epplet_unremember ();
+  /* Sync drawing and ipc to eesh */
+  Esync ();
   exit (0);
   data = NULL;
 }
@@ -127,6 +134,7 @@ cb_help (void *data)
 static void
 apply_config (void)
 {
+  /* Apply options from settings dialog */
   if (opt.new_url_command)
     free (opt.new_url_command);
   opt.new_url_command =
@@ -175,6 +183,7 @@ apply_cb (void *data)
 static void
 cancel_cb (void *data)
 {
+  /* close config window */
   Epplet_window_destroy (confwin);
   confwin = 0;
   load_config ();
@@ -182,6 +191,7 @@ cancel_cb (void *data)
   return;
   data = NULL;
 }
+
 static void
 cb_config (void *data)
 {
@@ -195,11 +205,13 @@ cb_config (void *data)
    * the cancel button */
   save_config ();
 
+  /* Create the window using my lovely config window api ;) */
   confwin =
     Epplet_create_window_config (440, 360, "E-UrlWatch Config", ok_cb,
 				 &confwin, apply_cb, &confwin, cancel_cb,
 				 &confwin);
 
+  /* Put stuff in the window */
   Epplet_gadget_show (lbl = Epplet_create_label (10, 10, "WWW Command:", 2));
   Epplet_gadget_show (txt_www_command =
 		      Epplet_create_textbox (NULL, opt.www_command, 10, 25,
@@ -280,7 +292,7 @@ cb_config (void *data)
 }
 
 
-
+/* A click on a url in the url list. Launch the url */
 static void
 cb_url_listp (void *data)
 {
@@ -289,6 +301,7 @@ cb_url_listp (void *data)
   handle_url (url, "www");
 }
 
+/* Create the url list popup */
 static void
 build_url_list (void)
 {
@@ -317,6 +330,7 @@ build_url_list (void)
   Epplet_change_popbutton_popup (btn_urllist, url_p);
 }
 
+/* Stick a new url in the list. Don't rebuild the popup yet though. */
 static void
 add_url_to_url_list (char *url)
 {
@@ -336,6 +350,7 @@ add_url_to_url_list (char *url)
   num_urls++;
 }
 
+/* Add a url then rebuild the popup */
 static void
 add_url_to_popup (char *url)
 {
@@ -348,6 +363,8 @@ add_url_to_popup (char *url)
   return;
 }
 
+/* Extract a url from the X cut buffer. This is currently technically
+ * broken, as it only examines buffer 0 */
 static char *
 get_url_from_paste_buffer (void)
 {
@@ -360,11 +377,14 @@ get_url_from_paste_buffer (void)
   if (url)
     XFree (url);
 
+  /* This needs to be XFreed at some point */
   url = XFetchBuffer (thedisplay, &len, 0);
 
   return url;
 }
 
+/* Pull a url from a file. I have not used the position parameter yet, so
+ * that part may not work. (I think it will though ;) */
 static char *
 get_url_from_file_list (char *file, int position)
 {
@@ -408,6 +428,7 @@ get_url_from_file_list (char *file, int position)
   return buf;
 }
 
+/* New file in url file. Show the "New!" button */
 static void
 display_url_from_file (char *url)
 {
@@ -463,6 +484,7 @@ check_url_file (void *data)
   data = NULL;
 }
 
+/* Search string for url. Fix up url if needed. */
 static char *
 validate_url (char *url)
 {
@@ -526,6 +548,7 @@ validate_url (char *url)
   return ret;
 }
 
+/* Save url in file */
 static void
 save_url (char *url)
 {
@@ -538,6 +561,7 @@ save_url (char *url)
     }
 }
 
+/* Set scrolly string to default */
 static void
 reset_string (void *data)
 {
@@ -547,6 +571,7 @@ reset_string (void *data)
   data = NULL;
 }
 
+/* Scroll the string around */
 static void
 scroll_string (void *data)
 {
@@ -594,6 +619,7 @@ scroll_string (void *data)
   data = NULL;
 }
 
+/* Check to see if the url is already in the list. */
 static int
 url_in_popup (char *url)
 {
@@ -618,6 +644,7 @@ url_in_popup (char *url)
   return 0;
 }
 
+/* Stick a string in the scrolly display */
 static void
 display_string (char *string)
 {
@@ -632,6 +659,7 @@ display_string (char *string)
   Epplet_timer (reset_string, NULL, 20, "RESET_TIMER");
 }
 
+/* Do something with the url. Launch it, prolly. */
 static void
 handle_url (char *url, char *type)
 {
@@ -642,7 +670,6 @@ handle_url (char *url, char *type)
     return;
 
   D (("In handle_url: url -->%s<--\n", url));
-
 
   if (!strcmp (type, "www"))
     {
@@ -709,6 +736,7 @@ cb_shoot (void *data)
   return;
 }
 
+/* Someone clicked on the "New!" button */
 static void
 cb_btn_file_url (void *data)
 {
@@ -771,6 +799,7 @@ int
 main (int argc, char **argv)
 {
   int prio;
+  /* Lower priority to save cpu cycles */
   prio = getpriority (PRIO_PROCESS, getpid ());
   setpriority (PRIO_PROCESS, getpid (), prio + 10);
   atexit (clean_exit);
