@@ -5,8 +5,6 @@ static Ewd_Hash *color_table = NULL;
 static E_DB_File *sys_colors = NULL;
 static E_DB_File *user_colors = NULL;
 
-static int __estyle_color_cmp(void *c1, void *c2);
-
 /**
  * _estyle_color_instance - get a pointer to a color structure
  * @r: the red value of the color
@@ -122,64 +120,5 @@ void _estyle_color_init()
 		sys_colors = e_db_open_read(user_path);
 	}
 
-	color_table = ewd_hash_new(NULL, __estyle_color_cmp);
-}
-
-/**
- * Comparison function for hashing colors.
- */
-static int __estyle_color_cmp(void *c1, void *c2)
-{
-	Estyle_Color *col1 = (Estyle_Color *) c1;
-	Estyle_Color *col2 = (Estyle_Color *) c2;
-
-	/*
-	 * Check for cases of NULL being passed in.
-	 */
-	if (c1 == c2)
-		return 0;
-
-	if (!c1 && c2)
-		return -1;
-
-	if (!c2 && c1)
-		return 1;
-
-	/*
-	 * Check red colors first
-	 */
-	if (col1->r > col2->r)
-		return -1;
-
-	if (col1->r < col2->r)
-		return 1;
-
-	/*
-	 * Check green colors next
-	 */
-	if (col1->g > col2->g)
-		return -1;
-
-	if (col1->g < col2->g)
-		return 1;
-
-	/*
-	 * Check blue colors now
-	 */
-	if (col1->b > col2->b)
-		return -1;
-
-	if (col1->b < col2->b)
-		return 1;
-
-	/*
-	 * Finally check alpha colors
-	 */
-	if (col1->a > col2->a)
-		return -1;
-
-	if (col1->a < col2->a)
-		return 1;
-
-	return 0;
+	color_table = ewd_hash_new(NULL, NULL);
 }
