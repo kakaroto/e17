@@ -50,7 +50,10 @@ void * _econf_get_data_from_disk(char *loc,unsigned long *length) {
 				CONF_TABLE = fopen(confpath,"r");
 
 				fseek(CONF_TABLE,position,SEEK_SET);
+				fread(allocedspace,*length,1,CONF_TABLE);
 				fclose(CONF_TABLE);
+
+				return allocedspace;
 			}
 		}
 	}
