@@ -2272,3 +2272,10 @@ Thu Jun 27 14:30:48 EDT 2002
 Applied patch from Peter Werner <peterw@ifost.org.au> for OpenBSD support.
 
 -------------------------------------------------------------------------------
+
+Sun Apr  6 22:37:50 EDT 2003
+(KainX)
+
+Applied patch from Kim Woelders <kim@woelders.dk> to support new WM hints.
+
+-------------------------------------------------------------------------------

@@ -6,6 +6,9 @@
 #include <sys/wait.h>
 #include <X11/keysym.h>
 
+#define SET_HINTS_OLD  1
+#define SET_HINTS_EWM  1
+
 #define CRSR_WDTH 2
 
 typedef struct epplet_window
@@ -418,8 +421,14 @@ Epplet_Init(char *name,
    XSizeHints          sh;
    struct utsname      ubuf;
    MWMHints            mwm;
-   unsigned long       val;
    char               *msg;
+#if SET_HINTS_OLD
+   unsigned long       val;
+#endif
+#if SET_HINTS_EWM
+   Atom                atom_list[8];
+   int                 atom_count;
+#endif
 
    mainwin = malloc(sizeof(EppWindow));
    mainwin->win_vert = vertical;
@@ -498,6 +507,7 @@ Epplet_Init(char *name,
    /* set the icons name property */
    XSetIconName(disp, mainwin->win, epplet_name);
 
+#if SET_HINTS_OLD
    /* set sticky & arrange ignore */
    val = (1 << 0) /* | (1 << 9) */ ;
    a = XInternAtom(disp, "_WIN_STATE", False);
@@ -513,6 +523,23 @@ Epplet_Init(char *name,
    a = XInternAtom(disp, "_WIN_HINTS", False);
    XChangeProperty(disp, mainwin->win, a, XA_CARDINAL, 32, PropModeReplace,
 		   (unsigned char *)&val, 1);
+#endif
+#if SET_HINTS_EWM
+   a = XInternAtom(disp, "_NET_WM_WINDOW_TYPE", False);
+   atom_count = 0;
+   atom_list[atom_count++] = XInternAtom(disp, "_NET_WM_WINDOW_TYPE_UTILITY", False);
+   XChangeProperty(disp, mainwin->win, a, XA_ATOM, 32, PropModeReplace,
+		   (unsigned char *)atom_list, atom_count);
+   a = XInternAtom(disp, "_NET_WM_STATE", False);
+   atom_count = 0;
+   atom_list[atom_count++] = XInternAtom(disp, "_NET_WM_STATE_STICKY", False);
+   atom_list[atom_count++] = XInternAtom(disp, "_NET_WM_STATE_SKIP_TASKBAR", False);
+   atom_list[atom_count++] = XInternAtom(disp, "_NET_WM_STATE_SKIP_PAGER", False);
+   atom_list[atom_count++] = XInternAtom(disp, "_NET_WM_STATE_BELOW", False);
+   XChangeProperty(disp, mainwin->win, a, XA_ATOM, 32, PropModeReplace,
+		   (unsigned char *)atom_list, atom_count);
+#endif
+
    win_name = epplet_name;
    win_version = version;
    win_info = info;
