@@ -43,12 +43,13 @@ init_index_mode (void)
   Imlib_Font title_fn = NULL;
   int text_area_w = 0;
   int tw = 0, th = 0;
-  int fw, fh;
+  int fw_name, fw_size, fw_dim, fw, fh;
   int vertical = 0;
   int max_column_w = 0;
   int thumbnailcount = 0;
   feh_file *file = NULL, *last = NULL;
   int file_num = 0, lines;
+  int x_offset_name = 0, x_offset_dim = 0, x_offset_size = 0;
 
   file_num = filelist_length (filelist);
 
@@ -87,7 +88,7 @@ init_index_mode (void)
   text_area_h =
     ((th + 2) *
      (opt.index_show_name + opt.index_show_size + opt.index_show_dim)) + 5;
-  
+
   /* This includes the text area for index data */
   tot_thumb_h = opt.thumb_h + text_area_h;
 
@@ -349,26 +350,31 @@ init_index_mode (void)
 	  /* Now draw on the info text */
 	  if (opt.index_show_name)
 	    {
-	      imlib_get_text_size (file->name, &fw, &fh);
-	      if (fw > text_area_w)
-		text_area_w = fw;
+	      imlib_get_text_size (file->name, &fw_name, &fh);
+	      if (fw_name > text_area_w)
+		text_area_w = fw_name;
 	    }
 	  if (opt.index_show_dim)
 	    {
 	      imlib_get_text_size (create_index_dimension_string
-				   (ww, hh), &fw, &fh);
-	      if (fw > text_area_w)
-		text_area_w = fw;
+				   (ww, hh), &fw_dim, &fh);
+	      if (fw_dim > text_area_w)
+		text_area_w = fw_dim;
 	    }
 	  if (opt.index_show_size)
 	    {
 	      imlib_get_text_size (create_index_size_string (file->filename),
-				   &fw, &fh);
-	      if (fw > text_area_w)
-		text_area_w = fw;
+				   &fw_size, &fh);
+	      if (fw_size > text_area_w)
+		text_area_w = fw_size;
 	    }
 	  if (text_area_w > opt.thumb_w)
 	    text_area_w += 5;
+
+	  /* offsets for centering text */
+	  x_offset_name = (text_area_w - fw_name) / 2;
+	  x_offset_dim = (text_area_w - fw_dim) / 2;
+	  x_offset_size = (text_area_w - fw_size) / 2;
 
 	  if (vertical)
 	    {
@@ -416,14 +422,15 @@ init_index_mode (void)
 
 	  lines = 0;
 	  if (opt.index_show_name)
-	    imlib_text_draw (x, y + opt.thumb_h + (lines++ * (th + 2)) + 2,
+	    imlib_text_draw (x + x_offset_name,
+			     y + opt.thumb_h + (lines++ * (th + 2)) + 2,
 			     file->name);
 	  if (opt.index_show_dim)
-	    imlib_text_draw (x,
+	    imlib_text_draw (x + x_offset_dim,
 			     y + opt.thumb_h + (lines++ * (th + 2)) + 2,
 			     create_index_dimension_string (ww, hh));
 	  if (opt.index_show_size)
-	    imlib_text_draw (x,
+	    imlib_text_draw (x + x_offset_size,
 			     y + opt.thumb_h + (lines++ * (th + 2)) + 2,
 			     create_index_size_string (file->filename));
 
