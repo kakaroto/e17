@@ -6,7 +6,7 @@ _etox_get_string_width(Etox e, Etox_Font font, char *str, double *w)
 {
   static Evas_Object text = NULL;
 
-  if (!e || !font || !str)
+  if (!e || !font || !str || !w)
     return;
 
   if (!text)
@@ -133,6 +133,7 @@ etox_get_align_h(Etox e)
 {
   if (!e)
     return ETOX_ALIGN_TYPE_NULL;
+
   if (!e->def.align)
     return ETOX_ALIGN_TYPE_NULL;
 
@@ -213,10 +214,14 @@ etox_get_geometry(Etox e, double *x, double *y, double *w, double *h)
   if (!e)
     return;
 
-  *x = e->x;
-  *y = e->y;
-  *w = e->w;
-  *h = e->h;
+  if (x)
+    *x = e->x;
+  if (y)
+    *y = e->y;
+  if (w)
+    *w = e->w;
+  if (h)
+    *h = e->h;
 }
 
 void            
@@ -228,10 +233,14 @@ etox_get_actual_geometry(Etox e, double *x, double *y, double *w, double *h)
   if (!e)
     return;
 
-  *x = 0.0;
-  *y = 0.0;
-  *w = 0.0;
-  *h = 0.0;
+  if (x)
+    *x = 0.0;
+  if (y)
+    *y = 0.0;
+  if (w)
+    *w = 0.0;
+  if (h)
+    *h = 0.0;
 
   if (!e->etox_objects || ewd_dlist_is_empty(e->etox_objects))
     return;
@@ -243,18 +252,22 @@ etox_get_actual_geometry(Etox e, double *x, double *y, double *w, double *h)
       real_w += obj->bit.style->offset_w;
       if (real_w > *w)
         {
-          *w = real_w;
+	  if (w)
+            *w = real_w;
           switch (obj->bit.align->h)
             {
             case ETOX_ALIGN_TYPE_LEFT:
-              *x = obj->x;             
+	      if (x)
+                *x = obj->x;             
               break;     
             case ETOX_ALIGN_TYPE_CENTER:
             default:
-              *x = obj->x + ((obj->w - real_w) / 2);             
+              if (x)
+	        *x = obj->x + ((obj->w - real_w) / 2);             
               break;                              
             case ETOX_ALIGN_TYPE_RIGHT:
-              *x = obj->x + obj->w - real_w;
+              if (x)
+	        *x = obj->x + obj->w - real_w;
               break; 
             }
         }
@@ -267,14 +280,17 @@ etox_get_actual_geometry(Etox e, double *x, double *y, double *w, double *h)
   switch (obj->bit.align->v)
     {
     case ETOX_ALIGN_TYPE_TOP:
-      *y = obj->y;
+      if (y)
+        *y = obj->y;
       break;
     case ETOX_ALIGN_TYPE_CENTER:
     default:
-      *y = obj->y + ((obj->h - real_h) / 2);
+      if (y)
+        *y = obj->y + ((obj->h - real_h) / 2);
       break;                             
     case ETOX_ALIGN_TYPE_BOTTOM:   
-      *y = obj->y + obj->h - real_h;
+      if (y)
+        *y = obj->y + obj->h - real_h;
       break;
    }
 
@@ -297,16 +313,19 @@ etox_get_actual_geometry(Etox e, double *x, double *y, double *w, double *h)
     }
   my_y += real_h;
 
-  *h = my_y - *y;
+  if (h)
+    *h = my_y - *y;
 
-  *x = ET_X_TO_EV(*x);
-  *y = ET_Y_TO_EV(*y);
+  if(x)
+    *x = ET_X_TO_EV(*x);
+  if (y)
+    *y = ET_Y_TO_EV(*y);
 }
 
 void            
 etox_get_at(Etox e, int index, double *x, double *y, double *w, double *h)
 {
-  /* TODO */
+  /* TODO */ 
 }
 
 int             
@@ -317,16 +336,20 @@ etox_get_at_position(Etox e, double x, double y,
   Evas_Object * to;
   int ret = 0;
 
+  if (char_x)
   *char_x = 0.0;
-  *char_y = 0.0;
-  *char_w = 0.0;
-  *char_h = 0.0;
+  if (char_y)
+    *char_y = 0.0;
+  if (char_w)
+    *char_w = 0.0;
+  if (char_h)
+    *char_h = 0.0;
 
   if (!e)
   	return ret;
 
   if (!e->etox_objects || ewd_dlist_is_empty(e->etox_objects))
-    return;
+    return ret;
 
   ewd_dlist_goto_first(e->evas_objects);
   while ((to = ewd_dlist_next(e->evas_objects)) != NULL)
