@@ -155,6 +155,26 @@ echo -n "."
 edb_ed $DB add "/floater/base" str "appearance/separator.bits.db"
 edb_ed $DB add "/floater/base/visible" str "yes"
 
+# Add cell keys
+echo -n "."
+edb_ed $DB add "/cell/base" str "appearance/cell.bits.db"
+edb_ed $DB add "/cell/base/visible" str "no"
+
+# Add node keys
+echo -n "."
+edb_ed $DB add "/node/base" str "appearance/node.bits.db"
+edb_ed $DB add "/node/base/visible" str "no"
+
+# Add row keys
+echo -n "."
+edb_ed $DB add "/row/base" str "appearance/row.bits.db"
+edb_ed $DB add "/row/base/visible" str "no"
+
+# Add row keys
+echo -n "."
+edb_ed $DB add "/tree/base" str "appearance/tree.bits.db"
+edb_ed $DB add "/tree/base/visible" str "no"
+
 # Setup author, licence and theme name.
 echo -n "."
 edb_ed $DB add "/theme/author" str "Nathan 'RbdPngn' Ingersoll"
