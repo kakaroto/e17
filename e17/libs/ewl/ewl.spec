@@ -58,7 +58,7 @@ rm -rf $RPM_BUILD_ROOT
 %{prefix}/lib/libewl.la
 %{prefix}/bin/ewl_embed_test
 %{prefix}/bin/ewl_test
-%{prefix}/share/ewl/themes
+%{prefix}/share/ewl/*
 
 %files devel
 %defattr(-,root,root)
