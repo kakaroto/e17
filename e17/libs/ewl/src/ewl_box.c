@@ -166,12 +166,13 @@ void ewl_box_orientation_set(Ewl_Box * b, Ewl_Orientation o)
 		DRETURN(DLEVEL_STABLE);
 
 	b->orientation = o;
-	/*
-	if (o == EWL_ORIENTATION_HORIZONTAL)
-		ewl_widget_appearance_set(w, "hbox");
+	if (b->homogeneous)
+		ewl_box_child_homogeneous_show_cb(EWL_CONTAINER(b),
+						  ecore_list_goto_first(EWL_CONTAINER(b)->children));
 	else
-		ewl_widget_appearance_set(w, "vbox");
-		*/
+		ewl_box_child_show_cb(EWL_CONTAINER(b),
+				      ecore_list_goto_first(EWL_CONTAINER(b)->children));
+
 
 	ewl_widget_configure(w);
 

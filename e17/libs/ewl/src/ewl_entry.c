@@ -107,8 +107,10 @@ int ewl_entry_init(Ewl_Entry * e, char *text)
 					ewl_entry_mouse_down_cb, NULL);
 	ewl_callback_del(w, EWL_CALLBACK_MOUSE_UP,
 					ewl_entry_mouse_up_cb);
+	/*
 	ewl_callback_append(w, EWL_CALLBACK_DOUBLE_CLICKED,
 					ewl_entry_mouse_double_click_cb, NULL);
+					*/
 	ewl_callback_append(w, EWL_CALLBACK_MOUSE_MOVE,
 					ewl_entry_mouse_move_cb, NULL);
 
@@ -283,7 +285,7 @@ void ewl_entry_configure_text_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	l = ewl_text_length_get(EWL_TEXT(w));
 	c_pos = ewl_entry_cursor_position_get(EWL_ENTRY_CURSOR(e->cursor));
 
-	if (c_pos >= l)
+	if (c_pos > l)
 		pos = l - 1;
 	else
 		pos = c_pos;
@@ -315,6 +317,7 @@ void ewl_entry_configure_text_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	if (!ch)
 		ch = CURRENT_H(e->cursor);
 
+	printf("Map %d of %d to %d, %d: %d x %d\n", c_pos, l, cx, cy, cw, ch);
 	ewl_object_geometry_request(EWL_OBJECT(e->cursor), cx, cy, 
 				    cw, ch);
 }
@@ -384,7 +387,7 @@ void ewl_entry_mouse_down_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Event_Mouse_Down *ev;
 	Ewl_Entry      *e;
-	int             index = 0, len = 0;
+	int             index = 0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -394,19 +397,11 @@ void ewl_entry_mouse_down_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	e->in_select_mode = TRUE;
 
-	len = ewl_text_length_get(EWL_TEXT(e->text));
-	if (ev->x < CURRENT_X(e->text))
-		index = 0;
-
-	else if (ev->x > CURRENT_X(e->text) + CURRENT_W(e->text)) 
-		index = len;
-	
-	else
-		index = ewl_text_coord_index_map(EWL_TEXT(e->text), ev->x, ev->y);
+	index = ewl_text_coord_index_map(EWL_TEXT(e->text), ev->x, ev->y);
 
 	if (!e->selection)
 		e->selection = ewl_entry_selection_new();
-	
+
 	ewl_entry_selection_start_position_set(EWL_ENTRY_SELECTION(e->selection), index);
 	ewl_entry_selection_end_position_set(EWL_ENTRY_SELECTION(e->selection), index);
 
