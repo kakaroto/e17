@@ -14,7 +14,10 @@ Ewl_Widget     *ewl_scrollpane_new(void)
 	if (!s)
 		DRETURN_PTR(NULL, DLEVEL_UNSTABLE);
 
-	ewl_scrollpane_init(s);
+	if (!ewl_scrollpane_init(s)) {
+		FREE(s);
+		s = NULL;
+	}
 
 	DRETURN_PTR(EWL_WIDGET(s), DLEVEL_UNSTABLE);
 }
@@ -96,7 +99,10 @@ int ewl_scrollpane_init(Ewl_ScrollPane * s)
 	ewl_callback_append(s->vscrollbar, EWL_CALLBACK_VALUE_CHANGED,
 			    ewl_scrollpane_vscroll_cb, s);
 
-	DRETURN_INT(FALSE, DLEVEL_STABLE);
+	ewl_callback_append(w, EWL_CALLBACK_MOUSE_WHEEL,
+			    ewl_scrollpane_wheel_scroll_cb, NULL);
+
+	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
 /**
@@ -364,10 +370,8 @@ void ewl_scrollpane_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 void ewl_scrollpane_hscroll_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_PARAM_PTR("user_data", user_data);
 
-	ewl_callback_call(user_data, EWL_CALLBACK_VALUE_CHANGED);
+	ewl_callback_call(w, EWL_CALLBACK_VALUE_CHANGED);
 	ewl_widget_configure(user_data);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -389,6 +393,20 @@ void ewl_scrollpane_vscroll_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+void
+ewl_scrollpane_wheel_scroll_cb(Ewl_Widget *cb, void *ev_data, void *user_data)
+{
+	Ewl_ScrollPane *s = EWL_SCROLLPANE(cb);
+	Ewl_Event_Mouse_Wheel *ev = ev_data;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	ewl_scrollpane_set_vscrollbar_value(s,
+			ewl_scrollpane_get_vscrollbar_value(s) +
+			ev->z * ewl_scrollpane_get_vscrollbar_step(s));
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
 /*
  * This handles all of the various size affecting callbacks.
  */
