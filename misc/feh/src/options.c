@@ -140,11 +140,7 @@ init_parse_options (int argc, char **argv)
       else if (!strcmp (argv[i], "--randomize"))
 	opt.randomize = 1;
       else if ((!strcmp (argv[i], "--full-screen")) || (!strcmp (argv[i], "-F")))
-        {
           opt.full_screen = 1;
-          opt.borderless = 1;
-          opt.multiwindow = 0;
-        }
       else
 	{
 	  /* If recursive is NOT set, but the only argument is a

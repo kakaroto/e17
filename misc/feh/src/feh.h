@@ -258,3 +258,4 @@ extern XContext xid_context;
 extern fehtimer first_timer;
 extern feh_file filelist;
 extern feh_file current_file;
+extern Screen *scr;

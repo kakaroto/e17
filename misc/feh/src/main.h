@@ -21,6 +21,7 @@
 /* Imlib stuff */
 Display *disp = NULL;
 Visual *vis = NULL;
+Screen *scr = NULL;
 Colormap cm;
 int depth;
 Atom wmDeleteWindow;

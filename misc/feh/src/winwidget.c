@@ -21,8 +21,6 @@
 #include "feh.h"
 #include "winwidget.h"
 
-static Screen *scr = NULL;
-
 static winwidget
 winwidget_allocate (void)
 {
@@ -130,13 +128,15 @@ winwidget_create_window (winwidget ret, int w, int h)
 
   D (("In winwidget_create_window\n"));
 
-  if (opt.full_screen) {
-    if (scr == NULL) {
-      scr = ScreenOfDisplay (disp, DefaultScreen (disp));
+  if (opt.full_screen)
+    {
+      if (scr == NULL)
+	{
+	  scr = ScreenOfDisplay (disp, DefaultScreen (disp));
+	}
+      w = scr->width;
+      h = scr->height;
     }
-    w = scr->width;
-    h = scr->height;
-  }
 
   attr.backing_store = NotUseful;
   attr.override_redirect = False;
@@ -192,14 +192,15 @@ winwidget_create_window (winwidget ret, int w, int h)
   XFree (xch);
 
   /* Size hints */
-  if (opt.full_screen) {
-    XSizeHints xsz;
+  if (opt.full_screen)
+    {
+      XSizeHints xsz;
 
-    xsz.flags = USPosition;
-    xsz.x = 0;
-    xsz.y = 0;
-    XSetWMNormalHints(disp, ret->win, &xsz);
-  }
+      xsz.flags = USPosition;
+      xsz.x = 0;
+      xsz.y = 0;
+      XSetWMNormalHints (disp, ret->win, &xsz);
+    }
   /* set the icons name property */
   XSetIconName (disp, ret->win, "feh");
   /* set the command hint */
@@ -220,24 +221,32 @@ winwidget_update_title (winwidget ret)
 void
 winwidget_render_image (winwidget winwid)
 {
-  if (opt.full_screen) {
-    if (!(winwid->bg_pmap)) {
-      if (winwid->gc == None) {
-        XGCValues gcval;
+  if (opt.full_screen)
+    {
+      if (!(winwid->bg_pmap))
+	{
+	  if (winwid->gc == None)
+	    {
+	      XGCValues gcval;
 
-        gcval.foreground = BlackPixel(disp, DefaultScreen(disp));
-        winwid->gc = XCreateGC(disp, winwid->win, GCForeground, &gcval);
-      }
-      winwid->bg_pmap = XCreatePixmap(disp, winwid->win, scr->width, scr->height, depth);
-      XFillRectangle(disp, winwid->bg_pmap, winwid->gc, 0, 0, scr->width, scr->height);
+	      gcval.foreground = BlackPixel (disp, DefaultScreen (disp));
+	      winwid->gc =
+		XCreateGC (disp, winwid->win, GCForeground, &gcval);
+	    }
+	  winwid->bg_pmap =
+	    XCreatePixmap (disp, winwid->win, scr->width, scr->height, depth);
+	  XFillRectangle (disp, winwid->bg_pmap, winwid->gc, 0, 0, scr->width,
+			  scr->height);
+	}
     }
-  } else {
-    if (winwid->bg_pmap)
-      XFreePixmap (disp, winwid->bg_pmap);
+  else
+    {
+      if (winwid->bg_pmap)
+	XFreePixmap (disp, winwid->bg_pmap);
 
-    winwid->bg_pmap =
-      XCreatePixmap (disp, winwid->win, winwid->im_w, winwid->im_h, depth);
-  }
+      winwid->bg_pmap =
+	XCreatePixmap (disp, winwid->win, winwid->im_w, winwid->im_h, depth);
+    }
 
   imlib_context_set_drawable (winwid->bg_pmap);
   imlib_context_set_image (winwid->im);
@@ -245,21 +254,24 @@ winwidget_render_image (winwidget winwid)
     feh_draw_checks (winwid);
 
   imlib_context_set_image (winwid->im);
-  if (opt.full_screen) {
-    int x, y;
+  if (opt.full_screen)
+    {
+      int x, y;
 
-    x = (scr->width - winwid->im_w) >> 1;
-    y = (scr->height - winwid->im_h) >> 1;
-    imlib_render_image_on_drawable(x, y);
-  } else {
-    imlib_render_image_on_drawable (0, 0);
-    if ((winwid->w != winwid->im_w) || (winwid->h != winwid->im_h))
-      {
-        winwid->h = winwid->im_h;
-        winwid->w = winwid->im_w;
-        XResizeWindow (disp, winwid->win, winwid->im_w, winwid->im_h);
-      }
-  }
+      x = (scr->width - winwid->im_w) >> 1;
+      y = (scr->height - winwid->im_h) >> 1;
+      imlib_render_image_on_drawable (x, y);
+    }
+  else
+    {
+      imlib_render_image_on_drawable (0, 0);
+      if ((winwid->w != winwid->im_w) || (winwid->h != winwid->im_h))
+	{
+	  winwid->h = winwid->im_h;
+	  winwid->w = winwid->im_w;
+	  XResizeWindow (disp, winwid->win, winwid->im_w, winwid->im_h);
+	}
+    }
 
   XSetWindowBackgroundPixmap (disp, winwid->win, winwid->bg_pmap);
   XClearWindow (disp, winwid->win);
@@ -275,32 +287,41 @@ winwidget_rerender_image (winwidget winwid)
     {
       winwid->h = winwid->im_h;
       winwid->w = winwid->im_w;
-      if (opt.full_screen) {
-        XFillRectangle(disp, winwid->bg_pmap, winwid->gc, 0, 0, scr->width, scr->height);
-      } else {
-        if (winwid->bg_pmap)
-          XFreePixmap (disp, winwid->bg_pmap);
-        winwid->bg_pmap =
-          XCreatePixmap (disp, winwid->win, winwid->im_w, winwid->im_h, depth);
-        XResizeWindow (disp, winwid->win, winwid->im_w, winwid->im_h);
-      }
+      if (opt.full_screen)
+	{
+	  XFillRectangle (disp, winwid->bg_pmap, winwid->gc, 0, 0, scr->width,
+			  scr->height);
+	}
+      else
+	{
+	  if (winwid->bg_pmap)
+	    XFreePixmap (disp, winwid->bg_pmap);
+	  winwid->bg_pmap =
+	    XCreatePixmap (disp, winwid->win, winwid->im_w, winwid->im_h,
+			   depth);
+	  XResizeWindow (disp, winwid->win, winwid->im_w, winwid->im_h);
+	}
     }
   imlib_context_set_blend (0);
   imlib_context_set_drawable (winwid->bg_pmap);
-  if (!opt.full_screen && imlib_image_has_alpha ()) {
-    feh_draw_checks (winwid);
-    imlib_context_set_blend (1);
-  }
+  if (!opt.full_screen && imlib_image_has_alpha ())
+    {
+      feh_draw_checks (winwid);
+      imlib_context_set_blend (1);
+    }
   imlib_context_set_image (winwid->im);
-  if (opt.full_screen) {
-    int x, y;
+  if (opt.full_screen)
+    {
+      int x, y;
 
-    x = (scr->width - winwid->im_w) >> 1;
-    y = (scr->height - winwid->im_h) >> 1;
-    imlib_render_image_on_drawable(x, y);
-  } else {
-    imlib_render_image_on_drawable (0, 0);
-  }
+      x = (scr->width - winwid->im_w) >> 1;
+      y = (scr->height - winwid->im_h) >> 1;
+      imlib_render_image_on_drawable (x, y);
+    }
+  else
+    {
+      imlib_render_image_on_drawable (0, 0);
+    }
   XSetWindowBackgroundPixmap (disp, winwid->win, winwid->bg_pmap);
   XClearWindow (disp, winwid->win);
   XFlush (disp);
@@ -311,6 +332,9 @@ feh_draw_checks (winwidget win)
 {
   int x, y;
 
+  if(opt.full_screen)
+	return;
+  
   imlib_context_set_image (checks);
   imlib_context_set_drawable (win->bg_pmap);
 

@@ -26,8 +26,7 @@ extern int errno;
 
 static feh_file rm_filelist = NULL;
 
-feh_file
-filelist_newitem (char *filename)
+feh_file filelist_newitem (char *filename)
 {
   feh_file newfile;
   char *s;
@@ -57,8 +56,7 @@ feh_file_free (feh_file file)
   free (file);
 }
 
-feh_file
-feh_file_rm_and_free (feh_file list, feh_file file)
+feh_file feh_file_rm_and_free (feh_file list, feh_file file)
 {
   D (("In feh_file_rm_and_free\n"));
   unlink (file->filename);
@@ -66,8 +64,7 @@ feh_file_rm_and_free (feh_file list, feh_file file)
 }
 
 
-feh_file
-filelist_addtofront (feh_file root, feh_file newfile)
+feh_file filelist_addtofront (feh_file root, feh_file newfile)
 {
   D (("In filelist_addtofront\n"));
   newfile->next = root;
@@ -92,7 +89,8 @@ filelist_length (feh_file file)
   return length;
 }
 
-feh_file filelist_last (feh_file file)
+feh_file
+filelist_last (feh_file file)
 {
   D (("In filelist_last\n"));
   if (file)
@@ -103,7 +101,8 @@ feh_file filelist_last (feh_file file)
   return file;
 }
 
-feh_file filelist_first (feh_file file)
+feh_file
+filelist_first (feh_file file)
 {
   D (("In filelist_first\n"));
   if (file)
@@ -114,8 +113,7 @@ feh_file filelist_first (feh_file file)
   return file;
 }
 
-feh_file
-filelist_reverse (feh_file list)
+feh_file filelist_reverse (feh_file list)
 {
   feh_file last;
 
@@ -131,37 +129,47 @@ filelist_reverse (feh_file list)
   return last;
 }
 
-feh_file
-filelist_randomize (feh_file list)
+feh_file filelist_randomize (feh_file list)
 {
   int len, r, i;
   feh_file *farray, f;
 
-  len = filelist_length(list);
-  D(("filelist_randomize(%8p):  List has %d items.\n", list, len));
-  farray = (feh_file *) malloc(sizeof(feh_file) * len);
-  for (f = list, i = 0; f; f = f->next, i++) {
-    D(("filelist_randomize():  farray[%d] <- %8p (%s)\n", i, f, f->filename));
-    farray[i] = f;
-  }
-  srand(getpid() * time(NULL) % ((unsigned int) -1));
-  for (i = 0; i < len - 1; i++) {
-    r = (int) ((len - i - 1) * ((float) rand()) / (RAND_MAX + 1.0)) + i + 1;
-    D(("i == %d, r == %d\n", i, r));
-    if (i == r) abort();
-    D(("Swapping farray[%d] (%8p, %s) with farray[%d] (%8p, %s)\n", i, farray[i], farray[i]->filename, r, farray[r], farray[r]->filename));
-    SWAP(farray[i], farray[r]);
-    D(("New values are %8p and %8p\n", farray[i], farray[r]));
-  }
+  len = filelist_length (list);
+  D (("filelist_randomize(%8p):  List has %d items.\n", list, len));
+  farray = (feh_file *) malloc (sizeof (feh_file) * len);
+  for (f = list, i = 0; f; f = f->next, i++)
+    {
+      D (
+	 ("filelist_randomize():  farray[%d] <- %8p (%s)\n", i, f,
+	  f->filename));
+      farray[i] = f;
+    }
+  srand (getpid () * time (NULL) % ((unsigned int) -1));
+  for (i = 0; i < len - 1; i++)
+    {
+      r =
+	(int) ((len - i - 1) * ((float) rand ()) / (RAND_MAX + 1.0)) + i + 1;
+      D (("i == %d, r == %d\n", i, r));
+      if (i == r)
+	abort ();
+      D (
+	 ("Swapping farray[%d] (%8p, %s) with farray[%d] (%8p, %s)\n", i,
+	  farray[i], farray[i]->filename, r, farray[r], farray[r]->filename));
+      SWAP (farray[i], farray[r]);
+      D (("New values are %8p and %8p\n", farray[i], farray[r]));
+    }
   list = farray[0];
   list->prev = NULL;
   list->next = farray[1];
-  for (i = 1, f = farray[1]; i < len - 1; i++, f = f->next) {
-    f->prev = farray[i - 1];
-    f->next = farray[i + 1];
-    D(("Rebuilding list.  At farray[%d], f == %8p %s, f->prev == %8p %s, f->next == %8p %s\n",
-       i, f, f->filename, f->prev, f->prev->filename, f->next, f->next->filename));
-  }
+  for (i = 1, f = farray[1]; i < len - 1; i++, f = f->next)
+    {
+      f->prev = farray[i - 1];
+      f->next = farray[i + 1];
+      D (
+	 ("Rebuilding list.  At farray[%d], f == %8p %s, f->prev == %8p %s, f->next == %8p %s\n",
+	  i, f, f->filename, f->prev, f->prev->filename, f->next,
+	  f->next->filename));
+    }
   f->prev = farray[len - 2];
   f->next = NULL;
   return list;
@@ -184,8 +192,7 @@ filelist_num (feh_file list, feh_file file)
   return -1;
 }
 
-feh_file
-filelist_remove_file (feh_file list, feh_file file)
+feh_file filelist_remove_file (feh_file list, feh_file file)
 {
   D (("In filelist_remove_file\n"));
   if (!file)

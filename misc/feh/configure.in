@@ -1,7 +1,7 @@
 dnl Process this file with autoconf to create configure.
 
 AC_INIT(src/main.c)
-AM_INIT_AUTOMAKE(feh, 0.6.2)
+AM_INIT_AUTOMAKE(feh, 0.6.3)
 
 AC_PROG_CC
 AM_PROG_CC_STDC
@@ -17,16 +17,7 @@ echo "ERROR:  You need libImlib2 to build feh.";
              AC_MSG_ERROR([Fatal:  libImlib2 not found.])], -lm)
 LIBS="$LIBS -lm"
 
-echo ""
-if test -z "$HUMOR"; then
-  echo "Checking for pr0n in $HOME"
-  echo "."
-  echo ".."
-  echo "..."
-  echo ".... OMG, there's *tons*"
-  echo "It looks like you need feh :)"
-  echo ""
-fi
+echo "checking for pr0n.... found"
 
 AC_OUTPUT(Makefile \
 feh.spec \
