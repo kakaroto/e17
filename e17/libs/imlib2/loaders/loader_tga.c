@@ -236,6 +236,11 @@ load(ImlibImage * im, ImlibProgressFunction progress,
         return 0;
      }
 
+   if (ss.st_size < sizeof(tga_header) + sizeof(tga_footer))
+     {
+        close(fd);
+        return 0;
+     }
    seg = mmap(0, ss.st_size, PROT_READ, MAP_SHARED, fd, 0);
    if (seg == MAP_FAILED)
      {
