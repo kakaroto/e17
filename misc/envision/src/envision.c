@@ -3,8 +3,14 @@
 #include <Emotion.h>
 #include <Edje.h>
 
-#define WIDTH 800
-#define HEIGHT 500
+void quit_edjecallback(void *data, Evas_Object *obj, const char *emission, const char *source);
+void raisevol_edjecallback(void *data, Evas_Object *obj, const char *emission, const char *source);
+void lowervol_edjecallback(void *data, Evas_Object *obj, const char *emission, const char *source);
+void keydown_evascallback(void *data, Evas *e, Evas_Object *obj, void *event_info);
+
+
+#define WIDTH 400
+#define HEIGHT 400
 
 	Ecore_Evas  *   ee;
 	Evas        *   evas;
@@ -12,8 +18,10 @@
         Evas_Object *   emotion;
 	int 		w, h;
 	Evas_Coord	minw, minh;
+	double		volume;
+	char 		vol_str[3];
 
-void key_down(void *data, Evas *e, Evas_Object *obj, void *event_info) {
+void keydown_evascallback(void *data, Evas *e, Evas_Object *obj, void *event_info) {
         Evas_Event_Key_Down *ev;
 
         ev = (Evas_Event_Key_Down *)event_info;
@@ -117,13 +125,52 @@ int main(int argc, char *argv[]){
 			argv[1], (double)emotion_object_play_length_get(emotion));
 
 	emotion_object_play_set(emotion, 1);
+	
+	/* Get and Display the volume */
+	volume = emotion_object_audio_volume_get(emotion);
+	printf("DEBUG: Volume is: %d\n", volume);
+	sprintf(vol_str, "%d", (int)volume);
+	edje_object_part_text_set(edje, "vol_display_text", vol_str);
 
+	/* Callbacks */
         evas_object_event_callback_add(emotion, 
-			EVAS_CALLBACK_KEY_DOWN, key_down, NULL); 
-
+			EVAS_CALLBACK_KEY_DOWN, keydown_evascallback, NULL); 
+	edje_object_signal_callback_add(edje, "VOL_INCR", "vol_incr_button", raisevol_edjecallback, NULL);
+	edje_object_signal_callback_add(edje, "VOL_DECR", "vol_decr_button", lowervol_edjecallback, NULL);
+	edje_object_signal_callback_add(edje, "QUIT", "quit", quit_edjecallback, NULL);
+	
 
         ecore_main_loop_begin();
 
         return 0;
+}
+
+void quit_edjecallback(void *data, Evas_Object *obj, const char *emission, const char *source){
+
+		ecore_main_loop_quit();
+}
+
+void raisevol_edjecallback(void *data, Evas_Object *obj, const char *emission, const char *source){
+	double v;
+
+	v = emotion_object_audio_volume_get(emotion);
+	v = v + 1;
+	emotion_object_audio_volume_set(emotion, v);
+	sprintf(vol_str, "%d", (int)volume);
+        edje_object_part_text_set(edje, "vol_display_text", vol_str);
+	
+	free(v);
+}
+
+void lowervol_edjecallback(void *data, Evas_Object *obj, const char *emission, const char *source){
+        double v;
+
+        v = emotion_object_audio_volume_get(emotion);
+        v = v - 1;
+        emotion_object_audio_volume_set(emotion, v);
+        sprintf(vol_str, "%d", (int)volume);
+        edje_object_part_text_set(edje, "vol_display_text", vol_str);
+
+	free(v);
 }
 

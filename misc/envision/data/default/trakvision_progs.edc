@@ -1,4 +1,3 @@
-
                         /* Quit Handlers */
                         program {
                                 name, "quit_button_in";
@@ -23,7 +22,7 @@
                                 action, SIGNAL_EMIT "QUIT" "quit";
                         }
 
-                        /* switch to "small" mode */
+                        /* Minimize */
                         program {
                                 name, "titlebar_dbl_click";
                                 signal, "mouse,down,1,double";
@@ -31,7 +30,7 @@
                                 action, SIGNAL_EMIT "SWITCH_GROUP", "eplayer_small";
                         }
 
-                        /* Previous File */
+                        /* Next Track/Chapter */
                         program {
                                 name,       "previous_click";
                                 signal,     "mouse,down,1";
@@ -59,6 +58,7 @@
                                 action,     SIGNAL_EMIT "PLAY_PREVIOUS" "previous_button";
                         }
 
+			/* Invert the timer */
                         program {
                                 name, "time_text_click";
                                 signal, "mouse,up,1";
@@ -67,7 +67,6 @@
                         }
 
                         /* Seek Backwards */
-
                         program {
                                 name,       "seekback_click";
                                 signal,     "mouse,down,1";
@@ -226,7 +225,7 @@
                         }
 
 
-                        /* Next File */
+                        /* Next Track/Chapter */
                         program {
                                 name,       "next_click";
                                 signal,     "mouse,down,1";
@@ -284,12 +283,9 @@
                         }
 
 
-                        /** NOTES: All programs MUST have AT LEAST, a NAME, SOURCE (even if "*";), and an ACTION **/
 
                         program {
                                 name,       "vol_incr_sig";
-                                //signal,           "*";
-                                //source,     "volplus_click";
                                 signal,     "mouse,up,1";
                                 source,     "vol_incr_button";
                                 action,     SIGNAL_EMIT "VOL_INCR" "vol_incr_button";
