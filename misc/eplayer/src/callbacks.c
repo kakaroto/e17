@@ -14,12 +14,6 @@
 #include "utils.h"
 #include "callbacks.h"
 
-static Ewl_Widget *_fd_win = NULL;
-static void file_dialog_cancel(Ewl_Widget *row, void *ev_data, void *user_data);
-static void file_dialog_ok(Ewl_Widget *row, void *ev_data, void *user_data);
-static void hilight_current_track(ePlayer *player);
-static int _eplayer_seek_timer(void *data);
-
 typedef enum {
 	PLAYBACK_STATE_STOPPED,
 	PLAYBACK_STATE_PAUSED,
@@ -27,7 +21,11 @@ typedef enum {
 	PLAYBACK_STATE_NUM
 } PlaybackState;
 
+static void hilight_current_track(ePlayer *player);
+static int _eplayer_seek_timer(void *data);
+
 static PlaybackState playback_state = PLAYBACK_STATE_STOPPED;
+static Ewl_Widget *_fd_win = NULL;
 
 static void signal_playback_state(ePlayer *player) {
 	char *sig[PLAYBACK_STATE_NUM] = {"PLAYBACK_STATE_STOPPED",
@@ -112,7 +110,7 @@ EDJE_CB(pause) {
 			assert(false);
 			break;
 	}
-	
+
 	playback_state_set(player, state);
 }
 
@@ -123,7 +121,7 @@ EDJE_CB(pause) {
  */
 static void hilight_current_track(ePlayer *player) {
 	PlayListItem *pli;
-	
+
 	if (!(pli = playlist_current_item_get(player->playlist)))
 		return;
 
@@ -173,37 +171,37 @@ EDJE_CB(track_prev) {
 		return;
 
 	eplayer_playback_stop(player);
-	
+
 	/* Get the previous list item */
 	playlist_current_item_prev(player->playlist);
 
 	if (eplayer_playback_start(player, true))
 		state = PLAYBACK_STATE_PLAYING;
-	
+
 	hilight_current_track(player);
 	playback_state_set(player, state);
 }
 
 EDJE_CB(volume_raise) {
 	int left = 0, right = 0;
-	
+
 	debug(DEBUG_LEVEL_INFO, "Raising volume\n");
 
 	if (!player->output->volume_get(&left, &right))
 		return;
-	
+
 	player->output->volume_set(left + 5, right + 5);
 	ui_refresh_volume(player);
 }
 
 EDJE_CB(volume_lower) {
 	int left = 0, right = 0;
-	
+
 	debug(DEBUG_LEVEL_INFO, "Lowering volume\n");
-	
+
 	if (!player->output->volume_get(&left, &right))
 		return;
-	
+
 	player->output->volume_set(left - 5, right - 5);
 	ui_refresh_volume(player);
 }
@@ -299,7 +297,7 @@ EDJE_CB(seek_forward) {
 	 */
 	eplayer_playback_stop(player);
 	pli->plugin->set_current_pos(pli->plugin->get_current_pos() + 5);
-	
+
 	if (eplayer_playback_start(player, false))
 		state = PLAYBACK_STATE_PLAYING;
 
@@ -310,7 +308,7 @@ EDJE_CB(seek_backward) {
 	PlaybackState state = playback_state;
 	PlayListItem *pli = playlist_current_item_get(player->playlist);
 	int cur_time = pli->plugin->get_current_pos();
-	
+
 	debug(DEBUG_LEVEL_INFO, "Seeking backward - Current Pos: %i\n",
 	      cur_time);
 
@@ -328,25 +326,25 @@ EDJE_CB(seek_backward) {
 EDJE_CB(seek_forward_start) {
 	debug(DEBUG_LEVEL_INFO, "Start Seeking Forward");
 	player->flags.seeking = true;
-	player->flags.seek_dir = 1; 
+	player->flags.seek_dir = 1;
 	ecore_timer_add(.02, _eplayer_seek_timer, player);
 }
 
 EDJE_CB(seek_forward_stop) {
 	debug(DEBUG_LEVEL_INFO, "Stop Seeking Forward");
-	player->flags.seeking = false; 
+	player->flags.seeking = false;
 }
 
 EDJE_CB(seek_backward_start) {
 	debug(DEBUG_LEVEL_INFO, "Start Seeking Backward");
-	player->flags.seeking = true; 
-	player->flags.seek_dir = -1; 
+	player->flags.seeking = true;
+	player->flags.seek_dir = -1;
 	ecore_timer_add(.02, _eplayer_seek_timer, player);
 }
 
 EDJE_CB(seek_backward_stop) {
 	debug(DEBUG_LEVEL_INFO, "Stop Seeking Backward");
-	player->flags.seeking = false; 
+	player->flags.seeking = false;
 }
 
 EDJE_CB(eplayer_quit) {
@@ -383,18 +381,18 @@ EDJE_CB(update_seeker) {
 
 	if (!player->flags.seeker_seeking)
 		return;
-	
+
 	type = ecore_event_current_type_get();
 
 	if (type == ECORE_X_EVENT_MOUSE_MOVE) {
 		Ecore_X_Event_Mouse_Move *event;
-     
+
 		event = ecore_event_current_event_get();
 		ex = event->x;
 		ey = event->y;
 	} else if (type == ECORE_X_EVENT_MOUSE_BUTTON_DOWN) {
 		Ecore_X_Event_Mouse_Button_Down *event;
-     
+
 		event = ecore_event_current_event_get();
 		ex = event->x;
 		ey = event->y;
@@ -403,9 +401,9 @@ EDJE_CB(update_seeker) {
 
 	edje_object_part_geometry_get(player->gui.edje, "seeker_grabber",
 	                              &x, &y, &w, &h);
-      
+
 	pos = ((double)(ex - x)) / ((double)w);
-	
+
 	if (pos < 0) pos = 0;
 	if (pos > 1) pos = 1;
 
@@ -435,7 +433,7 @@ static int _eplayer_seek_timer(void *data)
 }
 
 /* Handle Key Bindings via EVAS Event Callback */
-void 
+void
 cb_key_press(void *data, Evas *e, Evas_Object *obj, void *event_info) {
 	ePlayer *player = data;
 
@@ -449,7 +447,7 @@ cb_key_press(void *data, Evas *e, Evas_Object *obj, void *event_info) {
         if      (!strcmp(ev->keyname, "space"))
            edje_object_signal_emit(player->gui.edje, "PAUSE", "*");
 	else if (!strcmp(ev->keyname, "Escape"))
-	   edje_object_signal_emit(player->gui.edje, "QUIT", "*");	
+	   edje_object_signal_emit(player->gui.edje, "QUIT", "*");
         else if (!strcmp(ev->keyname, "q"))
            edje_object_signal_emit(player->gui.edje, "QUIT", "*");
         else if (!strcmp(ev->keyname, "Down"))
@@ -499,52 +497,61 @@ cb_key_release(void *data, Evas *e, Evas_Object *obj, void *event_info) {
 
 }
 
-
 /* Callback to to close the filedialog window */
-void destroy_ewl_filedialog(Ewl_Widget * w, void *ev_data, 
-		void *user_data)
+void destroy_ewl_filedialog(Ewl_Widget * w, void *ev_data,
+                            void *user_data)
 {
-
 	ewl_widget_destroy(w);
 	_fd_win = NULL;
+}
 
-	return;
-	ev_data = NULL;
-	user_data = NULL;
+static void cb_file_dialog_value_changed(Ewl_Widget *w, void *ev_data,
+                                         void *udata) {
+	ePlayer *player = udata;
+
+	if (ev_data)
+		playlist_load_any(player->playlist, ev_data, true);
+
+	ewl_widget_hide(w);
 }
 
 /* File Dialog to add files, thanx to EWL */
 EDJE_CB(playlist_add) {
-
     Ewl_Widget *fd_win = NULL;
     Ewl_Widget *fd = NULL;
     Ewl_Widget *vbox = NULL;
-    if(!_fd_win)
-    {
+
+    if (_fd_win) {
+		ewl_widget_show(_fd_win);
+		return;
+	}
+
 	fd_win = ewl_window_new();
 	ewl_window_set_title(EWL_WINDOW(fd_win), "Eplayer Add File...");
 	ewl_window_set_name(EWL_WINDOW(fd_win), "Eplayer Add File...");
 	ewl_object_request_size(EWL_OBJECT(fd_win), 500, 400);
 	ewl_object_set_fill_policy(EWL_OBJECT(fd_win), EWL_FLAG_FILL_FILL |
-			EWL_FLAG_FILL_SHRINK);
-	
-	ewl_callback_append(fd_win, EWL_CALLBACK_DELETE_WINDOW,
-			destroy_ewl_filedialog, NULL);
-	
-	vbox = ewl_vbox_new ();
-	ewl_object_set_fill_policy(EWL_OBJECT(vbox), EWL_FLAG_FILL_FILL |
-			EWL_FLAG_FILL_SHRINK);
-	ewl_container_append_child(EWL_CONTAINER(fd_win), vbox);
-	ewl_widget_show (vbox);
+	                           EWL_FLAG_FILL_SHRINK);
 
-	fd = ewl_filedialog_new(EWL_FILEDIALOG_TYPE_OPEN,
-			file_dialog_ok, file_dialog_cancel);
+	ewl_callback_append(fd_win, EWL_CALLBACK_DELETE_WINDOW,
+	                    destroy_ewl_filedialog, NULL);
+
+	vbox = ewl_vbox_new();
+	ewl_object_set_fill_policy(EWL_OBJECT(vbox), EWL_FLAG_FILL_FILL |
+	                           EWL_FLAG_FILL_SHRINK);
+	ewl_container_append_child(EWL_CONTAINER(fd_win), vbox);
+	ewl_widget_show(vbox);
+
+	fd = ewl_filedialog_new(EWL_FILEDIALOG_TYPE_OPEN);
+
+	ewl_callback_append(fd, EWL_CALLBACK_VALUE_CHANGED,
+	                    cb_file_dialog_value_changed, player);
 
 	ewl_container_append_child(EWL_CONTAINER(vbox), fd);
 	ewl_widget_show(fd);
+
 	_fd_win = fd_win;
 	ewl_widget_set_data(_fd_win, "player", player);
-    }
     ewl_widget_show(_fd_win);
 }
 
@@ -552,35 +559,4 @@ EDJE_CB(playlist_del) {
 	/* FIXME find the currently selected track and call
 	 * remove_playlist_item()
 	 */
-}
-
-static void 
-file_dialog_ok(Ewl_Widget *w, void *ev_data, void *user_data) {
-    Ewl_Fileselector *fs = user_data;
-    char *file = NULL;
-	
-    if((file = ewl_fileselector_get_filename (EWL_FILESELECTOR (fs))))
-    {
-	if(strlen(file) > 0)
-	{
-	    ePlayer *player = NULL;
-	    printf("eplayer file open : %s(%p)\n", file, fs);
-	    if((player = (ePlayer*)ewl_widget_get_data(_fd_win, "player")))
-	    {
-		printf("fs is (%p)\n", player);
-		printf("BING : %s\n", file);
-#if 0
-		if(playlist_load_file(player->playlist, file, 1))
-		    interface_playlist_item_append(player, evas_list_nth(player->playlist->items, player->playlist->num - 1));
-#endif
-	    }
-	}
-    }
-    if(_fd_win)
-	ewl_widget_hide(_fd_win);
-}
-static void 
-file_dialog_cancel(Ewl_Widget *row, void *ev_data, void *user_data) {
-    if(_fd_win)
-	ewl_widget_hide(_fd_win);
 }
