@@ -57,7 +57,7 @@ equate_quit(void)
  ********************************/
 int
 gui_listener(const char *key, const Ecore_Config_Type type, const int tag,
-             void *data, void *bundle)
+             void *data)
 {
    switch (tag) {
    case 0:
