@@ -29,7 +29,7 @@ dox_SOURCES = \
 	exit2.xpm \
 	dox.h
 
-LDADD = $(TTF_LIBS) $(FNLIB_LIBS) $(IMLIB_LIBS) -lm
+LDADD = $(TTF_LIBS) $(FNLIB_LIBS) $(IMLIB_LIBS) $(XINERAMA_LIBS) -lm
 
 INCLUDES=-I$(top_srcdir) $(IMLIB_CFLAGS) -I$(includedir) -I..
 
