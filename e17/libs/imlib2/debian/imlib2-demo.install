@@ -1,2 +1,3 @@
-usr/bin/imconvert
+usr/bin/imlib2_conv
+usr/bin/imlib2_show
 usr/bin/imlib2_view
