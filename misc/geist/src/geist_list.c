@@ -112,7 +112,7 @@ geist_list_dup(geist_list * list)
 
 geist_list *
 geist_list_dup_special(geist_list * list,
-                       void (*cpy_func)(void **dest, void *data))
+                       void (*cpy_func) (void **dest, void *data))
 {
    geist_list *ret = NULL;
 
@@ -175,6 +175,64 @@ geist_list_add_end(geist_list * root, void *data)
       D_RETURN(4, l);
    }
 }
+
+geist_list *
+geist_list_move_up_by_one(geist_list * root, geist_list * l)
+{
+   geist_list *temp;
+
+   D_ENTER(3);
+
+   if (!l || !l->prev)
+      D_RETURN(3, root);
+
+   /* store item we link next to */
+   temp = l->prev;
+   /* remove from list */
+   root = geist_list_unlink(root, l);
+   /* add back one before */
+   l->prev = temp->prev;
+   l->next = temp;
+   if (temp->prev)
+   {
+      temp->prev->next = l;
+      temp->prev = l;
+   }
+   if(l->prev)
+   {
+      D_RETURN(3, root);
+   }
+   else
+   {
+      D_RETURN(3, l);
+   }
+}
+
+geist_list *
+geist_list_move_down_by_one(geist_list * root, geist_list * l)
+{
+   geist_list *temp;
+   D_ENTER(3);
+
+   if (!l || !l->next)
+      D_RETURN(3, root);
+
+   /* store item we link next to */
+   temp = l->next;
+   /* remove from list */
+   root = geist_list_unlink(root, l);
+   /* add back one before */
+   l->next = temp->next;
+   l->prev = temp;
+   if(temp->next)
+   {
+      temp->next->prev = l;
+      temp->next = l;
+   }
+
+   D_RETURN(3, root);
+}
+
 
 unsigned char
 geist_list_has_more_than_one_item(geist_list * root)

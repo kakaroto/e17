@@ -66,5 +66,9 @@ void geist_list_free_and_data(geist_list * l);
 geist_list *geist_list_dup(geist_list * list);
 geist_list *geist_list_dup_special(geist_list * list,
                                    void (*cpy_func)(void **dest, void *data));
+geist_list *
+geist_list_move_down_by_one(geist_list * root, geist_list * l);
+geist_list *
+geist_list_move_up_by_one(geist_list * root, geist_list * l);
 
 #endif
