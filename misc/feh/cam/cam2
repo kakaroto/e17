@@ -5,40 +5,40 @@ use Getopt::Long;
 use vars qw[%bookmarks];
 
 my %prog = ( app => "feh", pre => " -q -G -w -Twebcam -1 0 -0 1",
-			post => '');
+    		post => '');
 my %opt = ( deftitle => '%cCAM - %u', bookmarks => "$ENV{HOME}/.cam_bookmarks");
 
 
 sub usage {
-	print while(<DATA>);
-	exit -1;
+    print while(<DATA>);
+    exit -1;
 }
 
 sub add {
-	my ($key, $url, $refresh, $title) = @_;
-	die "Bad key syntax\n" unless ($key and $url and $refresh);
+    my ($key, $url, $refresh, $title) = @_;
+    die "Bad key syntax\n" unless ($key and $url and $refresh);
 
-	$title ||= "";
+    $title ||= "";
 
-	open BOOK, ">>$opt{bookmarks}" or die "Couldn't open $opt{bookmarks}: $!\n";
-	print BOOK "$key=$refresh,$url \"$title\"";
-	close BOOK;
-	print "Added URL Key: $key = $url\n\trefreshing every $refresh seconds\n";
-	exit 0;
+    open BOOK, ">>$opt{bookmarks}" or die "Couldn't open $opt{bookmarks}: $!\n";
+    print BOOK "$key=$refresh,$url \"$title\"";
+    close BOOK;
+    print "Added URL Key: $key = $url\n\trefreshing every $refresh seconds\n";
+    exit 0;
 }
-	
+    
 
 usage unless @ARGV;
 GetOptions('help|?|h'                   => \$opt{help},
            'full-screen|f|giblets-mom|g' => \$opt{fullscreen},
-		   'list|l'                     => \$opt{list},
-		   'verbose|v'                  => \$opt{verbose},
-		   'add|a'                      => \$opt{add},
-		   'keep-images|k|save-pr0n'    => \$opt{keep},
-		   'title|t=s'                  => \$opt{title},
-		   'debug|d'                    => \$opt{debug},
-		   'bookmarks|b=s'              => \$opt{bookmarks}
-		  );
+    	   'list|l'                     => \$opt{list},
+    	   'verbose|v'                  => \$opt{verbose},
+    	   'add|a'                      => \$opt{add},
+    	   'keep-images|k|save-pr0n'    => \$opt{keep},
+    	   'title|t=s'                  => \$opt{title},
+    	   'debug|d'                    => \$opt{debug},
+    	   'bookmarks|b=s'              => \$opt{bookmarks}
+    	  );
 
 
 usage if $opt{help};
@@ -51,49 +51,50 @@ add @ARGV if $opt{add};
 
 open BOOK, "$opt{bookmarks}" or die "Couldn't open $opt{bookmarks}: $!\n";
 while (<BOOK>) {
-	my ($key, $ref, $url, $title) = /^(.*?)=(\d+),(.*?)(?: "([^"]+)")?$/;
-	$title ||= $opt{deftitle};
-	print "$key, $ref, $url, $title\n" if $opt{debug};
+    next if /^$/;
+    my ($key, $ref, $url, $title) = /^(.*?)=(\d+),(.*?)(?: "([^"]+)")?$/;
+    $title ||= $opt{deftitle};
+    print "$key, $ref, $url, $title\n" if $opt{debug};
 
-	$bookmarks{$key} = [($url, $ref, $title)];
+    $bookmarks{$key} = [($url, $ref, $title)];
 }
 close BOOK;
 
 if($opt{list}) {
-	for(sort keys %bookmarks) {
-		print "$_: url = $bookmarks{$_}->[0] refresh = $bookmarks{$_}->[1]\n";
-	}
+    for(sort keys %bookmarks) {
+    	print "$_: url = $bookmarks{$_}->[0] refresh = $bookmarks{$_}->[1]\n";
+    }
 }
 
 
 while (my $key = shift @ARGV) {
-	print "key == ", $key, "\n" if $opt{debug};
-	die "Couldn't find URL key '$key'\n" unless $bookmarks{$key}->[0];
-	my $url = $bookmarks{$key}->[0];
-	my $ref = $bookmarks{$key}->[1];
-	my $title = $opt{title} || $bookmarks{$key}->[2];
-	
-	# Could do better.
-	$title =~ s/\%c/$key/g;
-	$title =~ s/\%u/$url/g;
-	$title =~ s/\%r/$ref/g;
+    print "key == ", $key, "\n" if $opt{debug};
+    die "Couldn't find URL key '$key'\n" unless $bookmarks{$key}->[0];
+    my $url = $bookmarks{$key}->[0];
+    my $ref = $bookmarks{$key}->[1];
+    my $title = $opt{title} || $bookmarks{$key}->[2];
+    
+    # Could do better.
+    $title =~ s/\%c/$key/g;
+    $title =~ s/\%u/$url/g;
+    $title =~ s/\%r/$ref/g;
 
-	my $cmd = "$prog{app} $prog{pre} --title \"$title\" -T".$key."cam -R $ref $url $prog{post}";
+    my $cmd = "$prog{app} $prog{pre} --title \"$title\" -T".$key."cam -R $ref $url $prog{post}";
 
-	print "cmd == ", $cmd, "\n" if $opt{debug};
+    print "cmd == ", $cmd, "\n" if $opt{debug};
 
-	FORK: {
-		if(my $pid = fork) {
-			# nop;
-		} elsif(defined($pid) and !$pid) {
-			exec $cmd or die "Couldn't exec $prog{app}: $!\n";
-		} elsif ($! =~ /No More Process/) {
-			sleep 3;
-			redo FORK;
-		} else {
-			die "fork() error\n";
-		}
-	}
+    FORK: {
+    	if(my $pid = fork) {
+    		# nop;
+    	} elsif(defined($pid) and !$pid) {
+    		exec $cmd or die "Couldn't exec $prog{app}: $!\n";
+    	} elsif ($! =~ /No More Process/) {
+    		sleep 3;
+    		redo FORK;
+    	} else {
+    		die "fork() error\n";
+    	}
+    }
 }
 
 # Here because all the quotey stuff messes up syntax highlighting.
