@@ -19,6 +19,8 @@ int                e_mouse_up(void* data, int ev_type, Ecore_Event *ev);
 
 void		   e_window_resize(Ecore_Evas *ee);
 /* when the window gets moved or resized */
+void		   e_window_delete(Ecore_Evas *ee);
+/* when they click the little X in the corner */
 //int                e_window_configure(void* data, int ev_type, Ecore_Event *ev);
 
 /* when a key gets pressed */

@@ -81,6 +81,12 @@ e_window_resize(Ecore_Evas *ee)
 }
 
 void
+e_window_delete(Ecore_Evas *ee)
+{
+    ecore_main_loop_quit();
+}
+
+void
 e_key_down(void* data, Evas * unused, Evas_Object *obj, void *event_info)
 {
    Evas_Event_Key_Down *e;
@@ -180,7 +186,10 @@ e_key_down(void* data, Evas * unused, Evas_Object *obj, void *event_info)
      }
    else if (!strcmp(e->keyname, "Escape"))
      {
+	 ecore_main_loop_quit();
+	 /*
 	exit(0);
+	  */
      }
    else if (!strcmp(e->keyname, "Return"))
      {

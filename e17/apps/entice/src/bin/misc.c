@@ -37,6 +37,7 @@ setup(void)
    /* create a 400x300 toplevel window */
    ecore_evas = ecore_evas_software_x11_new(NULL, 0, 0, 0, win_w, win_h);
    ecore_evas_callback_resize_set(ecore_evas, e_window_resize);
+   ecore_evas_callback_delete_request_set(ecore_evas, e_window_delete);
    // main_win = ecore_evas_software_x11_window_get(ecore_evas);
    ecore_evas_name_class_set(ecore_evas, "Entice", "Main");
    ecore_evas_size_min_set(ecore_evas, 288, 128);

@@ -2,8 +2,7 @@
 #include <Ecore_Ipc.h>
 #include <limits.h>
 
-#define IPC_TITLE "entice000"
-static Ecore_Ipc_Server *server = NULL;
+#define IPC_TITLE "entice"
 
 /**
  * ipc_server_add - when we connect to the ipc daemon
@@ -110,10 +109,12 @@ int
 entice_ipc_init (int argc, const char **argv)
 {
   int i;
+  Ecore_Ipc_Server *server = NULL;
 
   /* we definitely fail if we can't connect to ecore_ipc */
   if(ecore_ipc_init () <  1) return(1);
 
+  /* If we can connect to a currently running entice process */
   if((server=ecore_ipc_server_connect(ECORE_IPC_LOCAL_USER,IPC_TITLE, 0,NULL)))
   {
       char buf[PATH_MAX];
@@ -135,6 +136,7 @@ entice_ipc_init (int argc, const char **argv)
       ecore_ipc_server_del(server);
       return(1);
     }
+  /* Otherwise we create it */
   else
     {
       // printf("creating new server\n");
@@ -155,7 +157,5 @@ void
 entice_ipc_shutdown(void)
 {
   // printf("shutting down IPC\n");
-    if(server) ecore_ipc_server_del(server);
-    server = NULL;
     ecore_ipc_shutdown();
 }
