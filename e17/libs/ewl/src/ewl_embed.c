@@ -1099,12 +1099,12 @@ ewl_embed_evas_mouse_move_cb(void *data, Evas *e, Evas_Object *obj,
 			     void *event_info)
 {
 	Ewl_Embed *embed;
-	Evas_Event_Mouse_Up *ev = event_info;
+	Evas_Event_Mouse_Move *ev = event_info;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	embed = data;
-	ewl_embed_mouse_move_feed(embed, ev->canvas.x, ev->canvas.y,
+	ewl_embed_mouse_move_feed(embed, ev->cur.canvas.x, ev->cur.canvas.y,
 				  ewl_ev_get_modifiers());
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
