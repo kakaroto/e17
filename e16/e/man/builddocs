@@ -15,7 +15,7 @@
 # ------ ---------- ------------------------------------------
 #    885 -rw-r--r-- e2mp
 #  49547 -rw-r--r-- enlightnment.pod
-#  56198 -rw-r--r-- enlightenment.man
+#  56198 -rw-r--r-- enlightenment.1
 #
 echo=echo
 if mkdir _sh32021; then
@@ -1256,16 +1256,21 @@ X
 SHAR_EOF
   : || $echo 'restore of' 'enlightenment.pod' 'failed'
 fi
-# ============= enlightenment.man ==============
-if test -f 'enlightenment.man' && test "$first_param" != -c; then
-  $echo 'x -' SKIPPING 'enlightenment.man' '(file already exists)'
+# ============= enlightenment.1 ==============
+if test -f 'enlightenment.1' && test "$first_param" != -c; then
+  $echo 'x -' SKIPPING 'enlightenment.1' '(file already exists)'
 else
-  $echo 'x -' extracting 'enlightenment.man' '(text)'
-  sed 's/^X//' << 'SHAR_EOF' > 'enlightenment.man' &&
+  $echo 'x -' extracting 'enlightenment.1' '(text)'
+  sed 's/^X//' << 'SHAR_EOF' > 'enlightenment.1' &&
 X.rn '' }`
 X''' $RCSfile$$Revision$$Date$
 X'''
 X''' $Log$
+X''' Revision 1.2  1999/10/18 17:41:25  mandrake
+X''' changed things to enlightenment.1 and enlightenment.pod
+X''' also, I need to figure out how make these install properly.  I'll figure that
+X''' out in a bit
+X'''
 X''' Revision 1.1  1999/10/18 17:36:33  mandrake
 X''' added stuff to build man pages via autogen.sh
 X'''
@@ -2624,7 +2629,7 @@ X
 X.IX Header "Frequently Asked Questions: Page 4"
 X
 SHAR_EOF
-  : || $echo 'restore of' 'enlightenment.man' 'failed'
+  : || $echo 'restore of' 'enlightenment.1' 'failed'
 fi
 rm -fr _sh32021
 exit 0

@@ -235,6 +235,7 @@ dox/Makefile
 dox/E-docs/Makefile
 eesh/Makefile
 epp/Makefile
+man/Makefile
 scripts/Makefile
 ])
 #, [chmod +x configedit/ConfigEdit])

@@ -3,6 +3,7 @@ SUBDIRS = \
 	dox \
 	eesh \
 	epp \
+    man \
 	src
 
 EXTRA_DIST = \
@@ -19,6 +20,4 @@ debian/changelog \
 debian/control \
 debian/copyright \
 debian/ehrc \
-debian/rules \
-man/enlightenment.man \
-man/enlightenment.pod
+debian/rules
