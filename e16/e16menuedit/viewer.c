@@ -47,7 +47,14 @@ void load_new_menu_from_disk(char *file_to_load, GtkCTreeNode *my_parent) {
 	char first=1;
 	char s[4096];
 
-	sprintf(buf,"%s/.enlightenment/%s",homedir(getuid()),file_to_load);
+	if(!file_to_load)
+		return;
+	if(file_to_load[0] != '/') {
+		sprintf(buf,"%s/.enlightenment/%s",homedir(getuid()),file_to_load);
+	} else {
+		sprintf(buf,"%s",file_to_load);
+	}
+	/* printf("trying to open: %s\n",buf); */
 	menufile=fopen(buf,"r");
 	if(!menufile) {
 		return;
@@ -62,6 +69,8 @@ void load_new_menu_from_disk(char *file_to_load, GtkCTreeNode *my_parent) {
 				char *txt = NULL, *icon = NULL, *act = NULL, *params = NULL;
 				gchar *text[3];
 
+				GtkCTreeNode *current;
+
 
 				txt = field(s, 0);
 				icon = field(s, 1);
@@ -73,8 +82,11 @@ void load_new_menu_from_disk(char *file_to_load, GtkCTreeNode *my_parent) {
 				text[2] = params;
 
 				/* printf("subitem: %s, %s, %s, %s\n",txt,icon,act,params); */
-				gtk_ctree_insert_node (GTK_CTREE(ctree), my_parent, NULL,
-					   	text, 5, NULL,NULL,NULL,NULL, FALSE, FALSE);
+				current = gtk_ctree_insert_node (GTK_CTREE(ctree), my_parent,
+					   	NULL, text, 5, NULL,NULL,NULL,NULL, FALSE, FALSE);
+				if(!strcmp(act,"menu")) {
+					load_new_menu_from_disk(params,current);
+				}
 
 				if(txt)
 					free(txt);
