@@ -1969,7 +1969,6 @@ void                MenuSetTitle(Menu * m, const char *title);
 void                MenuSetData(Menu * m, char *data);
 void                MenuSetTimestamp(Menu * m, time_t t);
 const char         *MenuGetName(const Menu * m);
-Window              MenuGetWindow(const Menu * m);
 const char         *MenuGetData(const Menu * m);
 time_t              MenuGetTimestamp(const Menu * m);
 int                 MenuIsNotEmpty(const Menu * m);

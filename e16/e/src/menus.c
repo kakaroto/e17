@@ -474,12 +474,6 @@ MenuGetName(const Menu * m)
    return m->name;
 }
 
-Window
-MenuGetWindow(const Menu * m)
-{
-   return m->win;
-}
-
 const char         *
 MenuGetData(const Menu * m)
 {
@@ -545,7 +539,7 @@ MenuDestroy(Menu * m)
 
    Esnprintf(s, sizeof(s), "__.%s", m->name);
    RemoveTimerEvent(s);
-   RemoveItem((char *)m, m->win, LIST_FINDBY_POINTER, LIST_TYPE_MENU);
+   RemoveItem((char *)m, 0, LIST_FINDBY_POINTER, LIST_TYPE_MENU);
    if (m->name)
       Efree(m->name);
    if (m->title)
