@@ -39,63 +39,75 @@
 
 #ifdef __cplusplus
 extern "C" {
-#endif /* __cplusplus */
-
+#endif							/* __cplusplus */
 #define GTK_GEVASEVH(obj)          GTK_CHECK_CAST (obj, gevasevh_get_type (), GtkgEvasEvH)
 #define GTK_GEVASEVH_CLASS(klass)  GTK_CHECK_CLASS_CAST (klass, gevasevh_get_type (), GtkgEvasEvHClass)
 #define GTK_IS_GEVASEVH(obj)       GTK_CHECK_TYPE (obj, gevasevh_get_type ())
-
 #define GTK_GEVASEVH_GEVASOBJ		"GtkgEvasEvH::gevas_object"
-
-
 #define gevasimage_set_gevasobj( gevaso, val ) \
 	  gtk_object_set(GTK_OBJECT(gevaso), \
-                  GTK_GEVASEVH_GEVASOBJ, (gpointer) val, NULL); 	
-	
-enum _GEVASEV_HANDLER_RET {
-	GEVASEV_HANDLER_RET_NEXT,
-	GEVASEV_HANDLER_RET_CHOMP // event is eaten.
-};
-typedef enum _GEVASEV_HANDLER_RET GEVASEV_HANDLER_RET;
-
-	
-typedef struct _GtkgEvasEvH			GtkgEvasEvH;
-typedef struct _GtkgEvasEvHClass  	GtkgEvasEvHClass;
-	
-
-struct _GtkgEvasEvH
-{
-	GtkObject 	 	gobj;
-	GtkgEvasObj*	eobj;
-
-};
-
-struct _GtkgEvasEvHClass
-{
-  GtkObjectClass parent_class;
-
-  GEVASEV_HANDLER_RET (*handler_mouse_in)( GtkObject* object, GtkObject* gevasobj, int _b, int _x, int _y );
-  GEVASEV_HANDLER_RET (*handler_mouse_out)( GtkObject* object, GtkObject* gevasobj, int _b, int _x, int _y );
-  GEVASEV_HANDLER_RET (*handler_mouse_down)( GtkObject* object,  GtkObject* gevasobj, int _b, int _x, int _y );
-  GEVASEV_HANDLER_RET (*handler_mouse_up)( GtkObject* object,  GtkObject* gevasobj, int _b, int _x, int _y );
-  GEVASEV_HANDLER_RET (*handler_mouse_move)( GtkObject* object,  GtkObject* gevasobj, int _b, int _x, int _y );
-};
+                  GTK_GEVASEVH_GEVASOBJ, (gpointer) val, NULL);
+	 enum _GEVASEV_HANDLER_RET {
+		GEVASEV_HANDLER_RET_NEXT,
+		GEVASEV_HANDLER_RET_CHOMP	// event is eaten.
+	};
+	typedef enum _GEVASEV_HANDLER_RET GEVASEV_HANDLER_RET;
 
 
-guint           gevasevh_get_type           (void);
-GtkObject*      gevasevh_new                (void);
+	typedef struct _GtkgEvasEvH GtkgEvasEvH;
+	typedef struct _GtkgEvasEvHClass GtkgEvasEvHClass;
+
+
+	struct _GtkgEvasEvH {
+		GtkObject gobj;
+		GtkgEvasObj *eobj;
+
+	};
+
+	struct _GtkgEvasEvHClass {
+		GtkObjectClass parent_class;
+
+		
+			GEVASEV_HANDLER_RET(*handler_mouse_in) (GtkObject * object,
+													GtkObject * gevasobj,
+													int _b, int _x, int _y);
+		 GEVASEV_HANDLER_RET(*handler_mouse_out) (GtkObject * object,
+												  GtkObject * gevasobj, int _b,
+												  int _x, int _y);
+		 GEVASEV_HANDLER_RET(*handler_mouse_down) (GtkObject * object,
+												   GtkObject * gevasobj, int _b,
+												   int _x, int _y);
+		 GEVASEV_HANDLER_RET(*handler_mouse_up) (GtkObject * object,
+												 GtkObject * gevasobj, int _b,
+												 int _x, int _y);
+		 GEVASEV_HANDLER_RET(*handler_mouse_move) (GtkObject * object,
+												   GtkObject * gevasobj, int _b,
+												   int _x, int _y);
+	};
+
+
+	guint gevasevh_get_type(void);
+	GtkObject *gevasevh_new(void);
 
 /** Protected access only **/
-GEVASEV_HANDLER_RET gevasev_handler_mouse_in( GtkObject* object, GtkObject* gevasobj, int _b, int _x, int _y );
-GEVASEV_HANDLER_RET gevasev_handler_mouse_out( GtkObject* object, GtkObject* gevasobj, int _b, int _x, int _y );
-GEVASEV_HANDLER_RET gevasev_handler_mouse_down( GtkObject* object,  GtkObject* gevasobj, int _b, int _x, int _y );
-GEVASEV_HANDLER_RET gevasev_handler_mouse_up( GtkObject* object,  GtkObject* gevasobj, int _b, int _x, int _y );
-GEVASEV_HANDLER_RET gevasev_handler_mouse_move( GtkObject* object,  GtkObject* gevasobj, int _b, int _x, int _y );
+	GEVASEV_HANDLER_RET gevasev_handler_mouse_in(GtkObject * object,
+												 GtkObject * gevasobj, int _b,
+												 int _x, int _y);
+	GEVASEV_HANDLER_RET gevasev_handler_mouse_out(GtkObject * object,
+												  GtkObject * gevasobj, int _b,
+												  int _x, int _y);
+	GEVASEV_HANDLER_RET gevasev_handler_mouse_down(GtkObject * object,
+												   GtkObject * gevasobj, int _b,
+												   int _x, int _y);
+	GEVASEV_HANDLER_RET gevasev_handler_mouse_up(GtkObject * object,
+												 GtkObject * gevasobj, int _b,
+												 int _x, int _y);
+	GEVASEV_HANDLER_RET gevasev_handler_mouse_move(GtkObject * object,
+												   GtkObject * gevasobj, int _b,
+												   int _x, int _y);
 
 
 #ifdef __cplusplus
 }
-#endif /* __cplusplus */
-
-#endif /* __GTK_GEVASOBJ_H__ */
-
+#endif							/* __cplusplus */
+#endif							/* __GTK_GEVASOBJ_H__ */

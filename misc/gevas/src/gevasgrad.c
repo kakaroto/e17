@@ -47,149 +47,135 @@
 #else
 #define N_(String) (String)
 #endif
-#else /* NLS is disabled */
+#else							/* NLS is disabled */
 #define _(String) (String)
 #define N_(String) (String)
 #define textdomain(String) (String)
 #define gettext(String) (String)
 #define dgettext(Domain,String) (String)
 #define dcgettext(Domain,String,Type) (String)
-#define bindtextdomain(Domain,Directory) (Domain) 
-#endif /* ENABLE_NLS */
+#define bindtextdomain(Domain,Directory) (Domain)
+#endif							/* ENABLE_NLS */
 
 #include <Evas.h>
 #include "gevasgrad.h"
 
 enum {
-  ARG_0,              /* Skip 0, an invalid argument ID */
-  ARG_XXX
+	ARG_0,						/* Skip 0, an invalid argument ID */
+	ARG_XXX
 };
 
-static void   gevasgrad_class_init    (GtkgEvasGradClass  *klass);
-static void   gevasgrad_init          (GtkgEvasGrad       *ev);
+static void gevasgrad_class_init(GtkgEvasGradClass * klass);
+static void gevasgrad_init(GtkgEvasGrad * ev);
 
 
 /* GtkObject functions */
-static void gevasgrad_destroy       (GtkObject   *object);
-static void gevasgrad_get_arg(GtkObject* object,
-                                  GtkArg* arg,
-                                  guint arg_id);
-static void gevasgrad_set_arg(GtkObject* object,
-                                  GtkArg* arg,
-                                  guint arg_id);
+static void gevasgrad_destroy(GtkObject * object);
+static void gevasgrad_get_arg(GtkObject * object, GtkArg * arg, guint arg_id);
+static void gevasgrad_set_arg(GtkObject * object, GtkArg * arg, guint arg_id);
 
 #define EVAS(ev) _gevas_evas( GTK_OBJECT(ev))
 #define EVASO(ev) _gevas_get_obj( GTK_OBJECT(ev))
 
 
-GtkgEvasGrad*
-gevasgrad_new (GtkgEvas* gevas )
+GtkgEvasGrad *gevasgrad_new(GtkgEvas * gevas)
 {
 	GtkgEvasGrad *ev;
 	Evas_Object eobj;
 
-  	ev = gtk_type_new (gevasgrad_get_type ());
-	
-  	gevasobj_set_gevas( ev, gevas );
-	ev->gradient = 0;	
-	
+	ev = gtk_type_new(gevasgrad_get_type());
+
+	gevasobj_set_gevas(ev, gevas);
+	ev->gradient = 0;
+
 	eobj = evas_add_gradient_box(gevas_get_evas(gevas));
-	_gevas_set_obj( GTK_OBJECT(ev), eobj );
-	gevasgrad_clear_gradient( GTK_GEVASOBJ(ev) );
-	
-	return GTK_GEVASGRAD (ev);
+	_gevas_set_obj(GTK_OBJECT(ev), eobj);
+	gevasgrad_clear_gradient(GTK_GEVASOBJ(ev));
+
+	return GTK_GEVASGRAD(ev);
 }
 
-void
-gevasgrad_seal( GtkgEvasObj* object )
+void gevasgrad_seal(GtkgEvasObj * object)
 {
-	GtkgEvasGrad* ev;
-  	g_return_if_fail(object != NULL);
-  	g_return_if_fail(GTK_IS_GEVASGRAD(object));
-  	ev = GTK_GEVASGRAD(object);
-	
-	evas_set_gradient( EVAS(ev), EVASO(ev), ev->gradient);
+	GtkgEvasGrad *ev;
+	g_return_if_fail(object != NULL);
+	g_return_if_fail(GTK_IS_GEVASGRAD(object));
+	ev = GTK_GEVASGRAD(object);
+
+	evas_set_gradient(EVAS(ev), EVASO(ev), ev->gradient);
 }
 
-void
-gevasgrad_clear_gradient( GtkgEvasObj* object )
+void gevasgrad_clear_gradient(GtkgEvasObj * object)
 {
-	GtkgEvasGrad* ev;
-  	g_return_if_fail(object != NULL);
-  	g_return_if_fail(GTK_IS_GEVASGRAD(object));
-  	ev = GTK_GEVASGRAD(object);
-	
-	if( ev->gradient ) {
-		evas_gradient_free( ev->gradient );
+	GtkgEvasGrad *ev;
+	g_return_if_fail(object != NULL);
+	g_return_if_fail(GTK_IS_GEVASGRAD(object));
+	ev = GTK_GEVASGRAD(object);
+
+	if (ev->gradient) {
+		evas_gradient_free(ev->gradient);
 		ev->gradient = NULL;
 	}
-	
+
 	ev->gradient = evas_gradient_new();
 }
 
 
-void 
-gevasgrad_add_color( GtkgEvasObj* object, int r, int g, int b, int a, int dist)
+void
+gevasgrad_add_color(GtkgEvasObj * object, int r, int g, int b, int a, int dist)
 {
-	GtkgEvasGrad* ev;
-  	g_return_if_fail(object != NULL);
-  	g_return_if_fail(GTK_IS_GEVASGRAD(object));
-  	ev = GTK_GEVASGRAD(object);
+	GtkgEvasGrad *ev;
+	g_return_if_fail(object != NULL);
+	g_return_if_fail(GTK_IS_GEVASGRAD(object));
+	ev = GTK_GEVASGRAD(object);
 
-	evas_gradient_add_color(ev->gradient, r,g,b, a, dist );
+	evas_gradient_add_color(ev->gradient, r, g, b, a, dist);
 }
 
 
 
 static GtkObjectClass *parent_class = NULL;
 
-guint
-gevasgrad_get_type (void)
+guint gevasgrad_get_type(void)
 {
-  static guint ev_type = 0;
+	static guint ev_type = 0;
 
-  if (!ev_type)
-    {
-      static const GtkTypeInfo ev_info =
-      {
-        "GtkgEvasGrad",
-        sizeof (GtkgEvasGrad),
-        sizeof (GtkgEvasGradClass),
-        (GtkClassInitFunc) gevasgrad_class_init,
-        (GtkObjectInitFunc) gevasgrad_init,
-        /* reserved_1 */ NULL,
-        /* reserved_2 */ NULL,
-        (GtkClassInitFunc) NULL,
-      };
+	if (!ev_type) {
+		static const GtkTypeInfo ev_info = {
+			"GtkgEvasGrad",
+			sizeof(GtkgEvasGrad),
+			sizeof(GtkgEvasGradClass),
+			(GtkClassInitFunc) gevasgrad_class_init,
+			(GtkObjectInitFunc) gevasgrad_init,
+			/* reserved_1 */ NULL,
+			/* reserved_2 */ NULL,
+			(GtkClassInitFunc) NULL,
+		};
 
-      ev_type = gtk_type_unique (gevasobj_get_type(), &ev_info);
-    }
+		ev_type = gtk_type_unique(gevasobj_get_type(), &ev_info);
+	}
 
-  return ev_type;
+	return ev_type;
 }
 
-static void
-gevasgrad_class_init (GtkgEvasGradClass *klass)
+static void gevasgrad_class_init(GtkgEvasGradClass * klass)
 {
-  GtkObjectClass *object_class;
+	GtkObjectClass *object_class;
 
-  object_class = (GtkObjectClass*) klass;
-  parent_class = gtk_type_class (gevasobj_get_type ());
+	object_class = (GtkObjectClass *) klass;
+	parent_class = gtk_type_class(gevasobj_get_type());
 
-  object_class->destroy = gevasgrad_destroy;
+	object_class->destroy = gevasgrad_destroy;
 
-  object_class->get_arg = gevasgrad_get_arg;
-  object_class->set_arg = gevasgrad_set_arg;	
+	object_class->get_arg = gevasgrad_get_arg;
+	object_class->set_arg = gevasgrad_set_arg;
 
-	gtk_object_add_arg_type( GTK_GEVASGRAD_IMAGENAME,
-                          GTK_TYPE_STRING, 
-                          GTK_ARG_WRITABLE, 
-                          ARG_XXX);
-	
+	gtk_object_add_arg_type(GTK_GEVASGRAD_IMAGENAME,
+							GTK_TYPE_STRING, GTK_ARG_WRITABLE, ARG_XXX);
+
 }
 
-static void
-gevasgrad_init (GtkgEvasGrad *ev)
+static void gevasgrad_init(GtkgEvasGrad * ev)
 {
 	ev->gradient = 0;
 }
@@ -209,37 +195,32 @@ gevasgrad_new (void)
 /* GtkObject functions */
 
 
-static void   
-gevasgrad_destroy       (GtkObject   *object)
+static void gevasgrad_destroy(GtkObject * object)
 {
-  GtkgEvasGrad* ev;
+	GtkgEvasGrad *ev;
 
-  g_return_if_fail(object != NULL);
-  g_return_if_fail(GTK_IS_GEVASGRAD(object));
+	g_return_if_fail(object != NULL);
+	g_return_if_fail(GTK_IS_GEVASGRAD(object));
 
-  ev = GTK_GEVASGRAD(object);
-	
-	
+	ev = GTK_GEVASGRAD(object);
 
-  /* Chain up */
-  if (GTK_OBJECT_CLASS(parent_class)->destroy)
-    (* GTK_OBJECT_CLASS(parent_class)->destroy) (object);
+
+
+	/* Chain up */
+	if (GTK_OBJECT_CLASS(parent_class)->destroy)
+		(*GTK_OBJECT_CLASS(parent_class)->destroy) (object);
 }
 
-static void
-gevasgrad_set_arg (GtkObject    *object,
-                       GtkArg       *arg,
-                       guint         arg_id)
+static void gevasgrad_set_arg(GtkObject * object, GtkArg * arg, guint arg_id)
 {
-  GtkgEvasGrad* ev;
+	GtkgEvasGrad *ev;
 
-  g_return_if_fail(object != NULL);
-  g_return_if_fail(GTK_IS_GEVASGRAD(object));
+	g_return_if_fail(object != NULL);
+	g_return_if_fail(GTK_IS_GEVASGRAD(object));
 
-  ev = GTK_GEVASGRAD(object);
+	ev = GTK_GEVASGRAD(object);
 
-  switch (arg_id)
-    {
+	switch (arg_id) {
 /*
 	case ARG_XXX:
 		{
@@ -254,37 +235,30 @@ gevasgrad_set_arg (GtkObject    *object,
 		_gevas_set_obj(object, o);
 		}
 		break;
-*/	
-	
-    default:
-		break;
-    }
+*/
+
+		default:
+			break;
+	}
 }
 
-static void
-gevasgrad_get_arg (GtkObject    *object,
-                       GtkArg       *arg,
-                       guint         arg_id)
+static void gevasgrad_get_arg(GtkObject * object, GtkArg * arg, guint arg_id)
 {
-  GtkgEvasGrad* ev;
+	GtkgEvasGrad *ev;
 
-  g_return_if_fail(object != NULL);
-  g_return_if_fail(GTK_IS_GEVASGRAD(object));
+	g_return_if_fail(object != NULL);
+	g_return_if_fail(GTK_IS_GEVASGRAD(object));
 
-  ev = GTK_GEVASGRAD(object);
-  
-  switch (arg_id)
-    {
+	ev = GTK_GEVASGRAD(object);
+
+	switch (arg_id) {
 /*    case ARG_XXX:
 		GTK_VALUE_POINTER (*arg) = ev->gevas;
 		break;
-*/	
-	
-    default:
-      arg->type = GTK_TYPE_INVALID;
-      break;
-    }
-}    
+*/
 
-
-
+		default:
+			arg->type = GTK_TYPE_INVALID;
+			break;
+	}
+}

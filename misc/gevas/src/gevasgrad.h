@@ -39,43 +39,36 @@
 
 #ifdef __cplusplus
 extern "C" {
-#endif /* __cplusplus */
-
+#endif							/* __cplusplus */
 #define GTK_GEVASGRAD(obj)          GTK_CHECK_CAST (obj, gevasgrad_get_type (), GtkgEvasGrad)
 #define GTK_GEVASGRAD_CLASS(klass)  GTK_CHECK_CLASS_CAST (klass, gevasgrad_get_type (), GtkgEvasGradClass)
 #define GTK_IS_GEVASGRAD(obj)       GTK_CHECK_TYPE (obj, gevasgrad_get_type ())
-	
 #define GTK_GEVASGRAD_IMAGENAME		"GtkgEvasGrad::image_name"
-
-
 #define gevasgrad_set_image_name( gevaso, val ) \
 	  gtk_object_set(GTK_OBJECT(gevaso), \
-                  GTK_GEVASGRAD_IMAGENAME, (gchar*) val, NULL); 	
-	
-	
-typedef struct GtkgEvasGrad		GtkgEvasGrad;
-typedef struct GtkgEvasGradClass  	GtkgEvasGradClass;
+                  GTK_GEVASGRAD_IMAGENAME, (gchar*) val, NULL);
+	 typedef struct GtkgEvasGrad GtkgEvasGrad;
+	typedef struct GtkgEvasGradClass GtkgEvasGradClass;
 
-struct GtkgEvasGrad
-{
-	GtkgEvasObj	 	gobj;
-	Evas_Gradient	gradient;
-	
-};
+	struct GtkgEvasGrad {
+		GtkgEvasObj gobj;
+		Evas_Gradient gradient;
 
-struct GtkgEvasGradClass
-{
-  GtkgEvasObjClass parent_class;
-};
+	};
+
+	struct GtkgEvasGradClass {
+		GtkgEvasObjClass parent_class;
+	};
 
 
-guint          gevasgrad_get_type           (void);
-GtkgEvasGrad*  gevasgrad_new                (GtkgEvas* gevas);
+	guint gevasgrad_get_type(void);
+	GtkgEvasGrad *gevasgrad_new(GtkgEvas * gevas);
 
 /** public members **/
-void gevasgrad_clear_gradient( GtkgEvasObj* object );
-void gevasgrad_add_color( GtkgEvasObj* object, int r, int g, int b, int a, int dist);
-void gevasgrad_seal( GtkgEvasObj* object );
+	void gevasgrad_clear_gradient(GtkgEvasObj * object);
+	void gevasgrad_add_color(GtkgEvasObj * object, int r, int g, int b, int a,
+							 int dist);
+	void gevasgrad_seal(GtkgEvasObj * object);
 
 
 
@@ -83,7 +76,5 @@ void gevasgrad_seal( GtkgEvasObj* object );
 
 #ifdef __cplusplus
 }
-#endif /* __cplusplus */
-
-#endif /* __GTK_GEVASOBJ_H__ */
-
+#endif							/* __cplusplus */
+#endif							/* __GTK_GEVASOBJ_H__ */

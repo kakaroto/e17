@@ -41,50 +41,41 @@
 
 #ifdef __cplusplus
 extern "C" {
-#endif /* __cplusplus */
-
+#endif							/* __cplusplus */
 #define GTK_GEVASEVH_CLICKS_SIGNAL(obj)          GTK_CHECK_CAST (obj, gevasevh_clicks_get_type (), GtkgEvasEvHClicks)
 #define GTK_GEVASEVH_CLICKS_SIGNAL_CLASS(klass)  GTK_CHECK_CLASS_CAST (klass, gevasevh_clicks_get_type (), GtkgEvasEvHClicksClass)
 #define GTK_IS_GEVASEVH_CLICKS_SIGNAL(obj)       GTK_CHECK_TYPE (obj, gevasevh_clicks_get_type ())
-
 #define GTK_GEVASEVH_CLICKS_DCLICK_MILLIS		"GtkgEvasEvHClicks::dclick_millis"
-
 #define gevasevh_clicks_set_dclick_millis( gevaso, val ) \
 	  gtk_object_set(GTK_OBJECT(gevaso), \
-                  GTK_GEVASEVH_CLICKS_DCLICK_MILLIS, (gpointer) val, NULL); 	
-	
-typedef struct _GtkgEvasEvHClicks			GtkgEvasEvHClicks;
-typedef struct _GtkgEvasEvHClicksClass  	GtkgEvasEvHClicksClass;
+                  GTK_GEVASEVH_CLICKS_DCLICK_MILLIS, (gpointer) val, NULL);
+	 typedef struct _GtkgEvasEvHClicks GtkgEvasEvHClicks;
+	typedef struct _GtkgEvasEvHClicksClass GtkgEvasEvHClicksClass;
 
 
-		
-struct _GtkgEvasEvHClicks
-{
-	GtkgEvasEvH evh_obj;
-	gint dclick_millis;
-	
-	// state maintain between clicks //
-	gint32 last_time;
-	GtkObject* last_obj;
-	gint last_button;
-	
-};
 
-struct _GtkgEvasEvHClicksClass
-{
-  GtkgEvasEvHClass parent_class;
-};
+	struct _GtkgEvasEvHClicks {
+		GtkgEvasEvH evh_obj;
+		gint dclick_millis;
+
+		// state maintain between clicks //
+		gint32 last_time;
+		GtkObject *last_obj;
+		gint last_button;
+
+	};
+
+	struct _GtkgEvasEvHClicksClass {
+		GtkgEvasEvHClass parent_class;
+	};
 
 
-guint           gevasevh_clicks_get_type           (void);
-GtkObject*      gevasevh_clicks_new                (void);
+	guint gevasevh_clicks_get_type(void);
+	GtkObject *gevasevh_clicks_new(void);
 
 #define DCLICK_MILLIS_DEFAULT 	250
 
 #ifdef __cplusplus
 }
-#endif /* __cplusplus */
-
-#endif /*  */
-
-
+#endif							/* __cplusplus */
+#endif							/*  */

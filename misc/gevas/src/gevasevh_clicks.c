@@ -47,15 +47,15 @@
 #else
 #define N_(String) (String)
 #endif
-#else /* NLS is disabled */
+#else							/* NLS is disabled */
 #define _(String) (String)
 #define N_(String) (String)
 #define textdomain(String) (String)
 #define gettext(String) (String)
 #define dgettext(Domain,String) (String)
 #define dcgettext(Domain,String,Type) (String)
-#define bindtextdomain(Domain,Directory) (Domain) 
-#endif /* ENABLE_NLS */
+#define bindtextdomain(Domain,Directory) (Domain)
+#endif							/* ENABLE_NLS */
 
 
 #include "gevasevh_clicks.h"
@@ -63,76 +63,70 @@
 #include <gtk/gtksignal.h>
 #include <gdk/gdktypes.h>
 
-static void   gevasevh_clicks_class_init    (GtkgEvasEvHClicksClass  *klass);
-static void   gevasevh_clicks_init          (GtkgEvasEvHClicks       *ev);
+static void gevasevh_clicks_class_init(GtkgEvasEvHClicksClass * klass);
+static void gevasevh_clicks_init(GtkgEvasEvHClicks * ev);
 /* GtkObject functions */
-static void   gevasevh_clicks_destroy       (GtkObject   *object);
+static void gevasevh_clicks_destroy(GtkObject * object);
 static void
-gevasevh_clicks_get_arg (GtkObject    *object,
-                       GtkArg       *arg,
-                       guint         arg_id);
+gevasevh_clicks_get_arg(GtkObject * object, GtkArg * arg, guint arg_id);
 static void
-gevasevh_clicks_set_arg (GtkObject    *object,
-                       GtkArg       *arg,
-                       guint         arg_id);
+gevasevh_clicks_set_arg(GtkObject * object, GtkArg * arg, guint arg_id);
 
 
 enum {
-  SIG_DCLICK,
-  LAST_SIGNAL
+	SIG_DCLICK,
+	LAST_SIGNAL
 };
 static guint _gevasevh_clicks_signals[LAST_SIGNAL] = { 0 };
 
 enum {
-  ARG_0,              /* Skip 0, an invalid argument ID */
-  ARG_DCLICK_MILLIS
-	
+	ARG_0,						/* Skip 0, an invalid argument ID */
+	ARG_DCLICK_MILLIS
 };
 
 
-GEVASEV_HANDLER_RET 
-gevasev_clicks_mouse_in( GtkObject* object,  GtkObject* gevasobj, int _b, int _x, int _y )
+GEVASEV_HANDLER_RET
+gevasev_clicks_mouse_in(GtkObject * object, GtkObject * gevasobj, int _b,
+						int _x, int _y)
 {
 	return GEVASEV_HANDLER_RET_NEXT;
 }
 
-GEVASEV_HANDLER_RET 
-gevasev_clicks_mouse_out( GtkObject* object,  GtkObject* gevasobj, int _b, int _x, int _y )
+GEVASEV_HANDLER_RET
+gevasev_clicks_mouse_out(GtkObject * object, GtkObject * gevasobj, int _b,
+						 int _x, int _y)
 {
 	return GEVASEV_HANDLER_RET_NEXT;
 }
 
-GEVASEV_HANDLER_RET 
-gevasev_clicks_mouse_down( GtkObject* object,  GtkObject* gevasobj, int _b, int _x, int _y )
+GEVASEV_HANDLER_RET
+gevasev_clicks_mouse_down(GtkObject * object, GtkObject * gevasobj, int _b,
+						  int _x, int _y)
 {
 	return GEVASEV_HANDLER_RET_NEXT;
 }
 
-GEVASEV_HANDLER_RET 
-gevasev_clicks_mouse_up( GtkObject* object,  GtkObject* gevasobj, int _b, int _x, int _y )
+GEVASEV_HANDLER_RET
+gevasev_clicks_mouse_up(GtkObject * object, GtkObject * gevasobj, int _b,
+						int _x, int _y)
 {
-	GdkEvent* gev;
+	GdkEvent *gev;
 	gboolean return_val = FALSE;
-	GtkgEvasEvHClicks* ev;
-	g_return_val_if_fail(object != NULL,GEVASEV_HANDLER_RET_NEXT);
-	g_return_val_if_fail(GTK_IS_GEVASEVH_CLICKS_SIGNAL(object),GEVASEV_HANDLER_RET_NEXT);
+	GtkgEvasEvHClicks *ev;
+	g_return_val_if_fail(object != NULL, GEVASEV_HANDLER_RET_NEXT);
+	g_return_val_if_fail(GTK_IS_GEVASEVH_CLICKS_SIGNAL(object),
+						 GEVASEV_HANDLER_RET_NEXT);
 	ev = GTK_GEVASEVH_CLICKS_SIGNAL(object);
 
-	gev = gevas_get_current_event( gevasobj_get_gevas(gevasobj));	
-	if( gev && gev->type == GDK_BUTTON_RELEASE ) 
-	{
-		if( gevasobj == ev->last_obj 
-			&& ( _b == ev->last_button )
-			&& ( gev->button.time-ev->last_time < ev->dclick_millis ) 
-			)
-		{
-			gtk_signal_emit (
-				GTK_OBJECT (object), 
-				_gevasevh_clicks_signals[SIG_DCLICK],
-				(gpointer)gevasobj,
-				(gint)_b, (gint)_x, (gint)_y, 		
-				&return_val
-			);
+	gev = gevas_get_current_event(gevasobj_get_gevas(gevasobj));
+	if (gev && gev->type == GDK_BUTTON_RELEASE) {
+		if (gevasobj == ev->last_obj && (_b == ev->last_button)
+			&& (gev->button.time - ev->last_time < ev->dclick_millis)
+			) {
+			gtk_signal_emit(GTK_OBJECT(object),
+							_gevasevh_clicks_signals[SIG_DCLICK],
+							(gpointer) gevasobj,
+							(gint) _b, (gint) _x, (gint) _y, &return_val);
 		}
 		ev->last_time = gev->button.time;
 		ev->last_obj = gevasobj;
@@ -142,8 +136,9 @@ gevasev_clicks_mouse_up( GtkObject* object,  GtkObject* gevasobj, int _b, int _x
 	return GEVASEV_HANDLER_RET_NEXT;
 }
 
-GEVASEV_HANDLER_RET 
-gevasev_clicks_mouse_move( GtkObject* object,  GtkObject* gevasobj, int _b, int _x, int _y )
+GEVASEV_HANDLER_RET
+gevasev_clicks_mouse_move(GtkObject * object, GtkObject * gevasobj, int _b,
+						  int _x, int _y)
 {
 	return GEVASEV_HANDLER_RET_NEXT;
 }
@@ -151,149 +146,132 @@ gevasev_clicks_mouse_move( GtkObject* object,  GtkObject* gevasobj, int _b, int 
 
 static GtkObjectClass *parent_class = NULL;
 
-guint
-gevasevh_clicks_get_type (void)
+guint gevasevh_clicks_get_type(void)
 {
-  static guint ev_type = 0;
+	static guint ev_type = 0;
 
-  if (!ev_type)
-    {
-      static const GtkTypeInfo ev_info =
-      {
-        "GtkgEvasEvHClicks",
-        sizeof (GtkgEvasEvHClicks),
-        sizeof (GtkgEvasEvHClicksClass),
-        (GtkClassInitFunc) gevasevh_clicks_class_init,
-        (GtkObjectInitFunc) gevasevh_clicks_init,
-        /* reserved_1 */ NULL,
-        /* reserved_2 */ NULL,
-        (GtkClassInitFunc) NULL,
-      };
+	if (!ev_type) {
+		static const GtkTypeInfo ev_info = {
+			"GtkgEvasEvHClicks",
+			sizeof(GtkgEvasEvHClicks),
+			sizeof(GtkgEvasEvHClicksClass),
+			(GtkClassInitFunc) gevasevh_clicks_class_init,
+			(GtkObjectInitFunc) gevasevh_clicks_init,
+			/* reserved_1 */ NULL,
+			/* reserved_2 */ NULL,
+			(GtkClassInitFunc) NULL,
+		};
 
-      ev_type = gtk_type_unique (gevasevh_get_type (), &ev_info);
-    }
+		ev_type = gtk_type_unique(gevasevh_get_type(), &ev_info);
+	}
 
-  return ev_type;
+	return ev_type;
 }
 
-static void
-gevasevh_clicks_class_init (GtkgEvasEvHClicksClass *klass)
+static void gevasevh_clicks_class_init(GtkgEvasEvHClicksClass * klass)
 {
 	GtkObjectClass *object_class;
-	GtkgEvasEvHClass* evh_klass;
-		
-	object_class = (GtkObjectClass*) klass;
-	evh_klass = (GtkgEvasEvHClass*)klass;
-	parent_class = gtk_type_class (gevasevh_get_type ());
-		
+	GtkgEvasEvHClass *evh_klass;
+
+	object_class = (GtkObjectClass *) klass;
+	evh_klass = (GtkgEvasEvHClass *) klass;
+	parent_class = gtk_type_class(gevasevh_get_type());
+
 	object_class->destroy = gevasevh_clicks_destroy;
 	object_class->get_arg = gevasevh_clicks_get_arg;
-	object_class->set_arg = gevasevh_clicks_set_arg;	
-	
+	object_class->set_arg = gevasevh_clicks_set_arg;
+
 	evh_klass->handler_mouse_in = gevasev_clicks_mouse_in;
 	evh_klass->handler_mouse_out = gevasev_clicks_mouse_out;
 	evh_klass->handler_mouse_down = gevasev_clicks_mouse_down;
 	evh_klass->handler_mouse_up = gevasev_clicks_mouse_up;
 	evh_klass->handler_mouse_move = gevasev_clicks_mouse_move;
-	
-    _gevasevh_clicks_signals[SIG_DCLICK] =
-    	gtk_signal_new ("dclick",
-				GTK_RUN_LAST,
-				object_class->type,
-				0, 
-				gtk_marshal_BOOL__POINTER_INT_INT_INT,
-				GTK_TYPE_BOOL, 4,
-				GTK_TYPE_POINTER,
-				GTK_TYPE_INT,
-				GTK_TYPE_INT,
-				GTK_TYPE_INT
-				);
 
-	gtk_object_class_add_signals (object_class, _gevasevh_clicks_signals, LAST_SIGNAL);
+	_gevasevh_clicks_signals[SIG_DCLICK] =
+		gtk_signal_new("dclick",
+					   GTK_RUN_LAST,
+					   object_class->type,
+					   0,
+					   gtk_marshal_BOOL__POINTER_INT_INT_INT,
+					   GTK_TYPE_BOOL, 4,
+					   GTK_TYPE_POINTER,
+					   GTK_TYPE_INT, GTK_TYPE_INT, GTK_TYPE_INT);
 
-	gtk_object_add_arg_type( GTK_GEVASEVH_CLICKS_DCLICK_MILLIS,
-                          GTK_TYPE_INT, 
-                          GTK_ARG_READWRITE, 
-                          ARG_DCLICK_MILLIS);		
+	gtk_object_class_add_signals(object_class, _gevasevh_clicks_signals,
+								 LAST_SIGNAL);
+
+	gtk_object_add_arg_type(GTK_GEVASEVH_CLICKS_DCLICK_MILLIS,
+							GTK_TYPE_INT, GTK_ARG_READWRITE, ARG_DCLICK_MILLIS);
 
 
 }
 
-static void
-gevasevh_clicks_init (GtkgEvasEvHClicks *ev)
+static void gevasevh_clicks_init(GtkgEvasEvHClicks * ev)
 {
 	ev->dclick_millis = DCLICK_MILLIS_DEFAULT;
 }
 
-GtkObject*
-gevasevh_clicks_new (void)
+GtkObject *gevasevh_clicks_new(void)
 {
 	GtkgEvasEvHClicks *ev;
-	GtkgEvasEvH* hev;
-		
-	ev = gtk_type_new (gevasevh_clicks_get_type ());
-	hev = (GtkgEvasEvH*)ev;
+	GtkgEvasEvH *hev;
+
+	ev = gtk_type_new(gevasevh_clicks_get_type());
+	hev = (GtkgEvasEvH *) ev;
 	ev->dclick_millis = DCLICK_MILLIS_DEFAULT;
-	
-	return GTK_OBJECT (ev);
+
+	return GTK_OBJECT(ev);
 }
 
 /* GtkObject functions */
 
 
-static void   
-gevasevh_clicks_destroy       (GtkObject   *object)
+static void gevasevh_clicks_destroy(GtkObject * object)
 {
-	GtkgEvasEvHClicks* ev;
+	GtkgEvasEvHClicks *ev;
 	g_return_if_fail(object != NULL);
 	g_return_if_fail(GTK_IS_GEVASEVH_CLICKS_SIGNAL(object));
 	ev = GTK_GEVASEVH_CLICKS_SIGNAL(object);
-		
+
 	/* Chain up */
 	if (GTK_OBJECT_CLASS(parent_class)->destroy)
-		(* GTK_OBJECT_CLASS(parent_class)->destroy) (object);
+		(*GTK_OBJECT_CLASS(parent_class)->destroy) (object);
 }
 
 static void
-gevasevh_clicks_set_arg (GtkObject    *object,
-                       GtkArg       *arg,
-                       guint         arg_id)
+gevasevh_clicks_set_arg(GtkObject * object, GtkArg * arg, guint arg_id)
 {
-	GtkgEvasEvHClicks* ev;
+	GtkgEvasEvHClicks *ev;
 	g_return_if_fail(object != NULL);
 	g_return_if_fail(GTK_IS_GEVASEVH_CLICKS_SIGNAL(object));
 	ev = GTK_GEVASEVH_CLICKS_SIGNAL(object);
 
 
-  switch (arg_id)
-    {
-    case ARG_DCLICK_MILLIS:
-		ev->dclick_millis = GTK_VALUE_INT (*arg);
-		break;
-		
-    default:
-		break;
-    }
+	switch (arg_id) {
+		case ARG_DCLICK_MILLIS:
+			ev->dclick_millis = GTK_VALUE_INT(*arg);
+			break;
+
+		default:
+			break;
+	}
 }
 
 static void
-gevasevh_clicks_get_arg (GtkObject    *object,
-                       GtkArg       *arg,
-                       guint         arg_id)
+gevasevh_clicks_get_arg(GtkObject * object, GtkArg * arg, guint arg_id)
 {
-	GtkgEvasEvHClicks* ev;
+	GtkgEvasEvHClicks *ev;
 	g_return_if_fail(object != NULL);
 	g_return_if_fail(GTK_IS_GEVASEVH_CLICKS_SIGNAL(object));
 	ev = GTK_GEVASEVH_CLICKS_SIGNAL(object);
-  
-  switch (arg_id)
-    {
-    case ARG_DCLICK_MILLIS:
-		GTK_VALUE_INT (*arg) = ev->dclick_millis;
-		break;
 
-    default:
-      arg->type = GTK_TYPE_INVALID;
-      break;
-    }
-}    
+	switch (arg_id) {
+		case ARG_DCLICK_MILLIS:
+			GTK_VALUE_INT(*arg) = ev->dclick_millis;
+			break;
+
+		default:
+			arg->type = GTK_TYPE_INVALID;
+			break;
+	}
+}

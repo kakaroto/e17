@@ -39,60 +39,58 @@
 
 #ifdef __cplusplus
 extern "C" {
-#endif /* __cplusplus */
-
+#endif							/* __cplusplus */
 #define GTK_GEVASTEXT(obj)          GTK_CHECK_CAST (obj, gevastext_get_type (), GtkgEvasText)
 #define GTK_GEVASTEXT_CLASS(klass)  GTK_CHECK_CLASS_CAST (klass, gevastext_get_type (), GtkgEvasTextClass)
 #define GTK_IS_GEVASTEXT(obj)       GTK_CHECK_TYPE (obj, gevastext_get_type ())
-	
 #define GTK_GEVASTEXT_IMAGENAME		"GtkgEvasText::image_name"
-
-
 #define gevastext_set_image_name( gevaso, val ) \
 	  gtk_object_set(GTK_OBJECT(gevaso), \
-                  GTK_GEVASTEXT_IMAGENAME, (gchar*) val, NULL); 	
-	
-	
-typedef struct _GtkgEvasText			GtkgEvasText;
-typedef struct _GtkgEvasTextClass  	GtkgEvasTextClass;
+                  GTK_GEVASTEXT_IMAGENAME, (gchar*) val, NULL);
+	 typedef struct _GtkgEvasText GtkgEvasText;
+	typedef struct _GtkgEvasTextClass GtkgEvasTextClass;
 
-struct _GtkgEvasText
-{
-	GtkgEvasObj	 	gobj;
-};
+	struct _GtkgEvasText {
+		GtkgEvasObj gobj;
+	};
 
-struct _GtkgEvasTextClass
-{
-  GtkgEvasObjClass parent_class;
-};
+	struct _GtkgEvasTextClass {
+		GtkgEvasObjClass parent_class;
+	};
 
 
-guint          gevastext_get_type           (void);
-GtkgEvasText*  gevastext_new                (GtkgEvas* gevas);
-GtkgEvasText*  gevastext_new_full (GtkgEvas* gevas, char *font, int size, char *text);
+	guint gevastext_get_type(void);
+	GtkgEvasText *gevastext_new(GtkgEvas * gevas);
+	GtkgEvasText *gevastext_new_full(GtkgEvas * gevas, char *font, int size,
+									 char *text);
 /** public members **/
 
-gchar* gevastext_get_string( GtkgEvasObj* object );
-gchar* gevastext_get_font( GtkgEvasObj* object );
-int    gevastext_get_text_size( GtkgEvasObj* object );
-int    gevastext_at_position( GtkgEvasObj* object, double x, double y, int *char_x, int *char_y, int *char_w, int *char_h);
-void   gevastext_at( GtkgEvasObj* object, int index, int *char_x, int *char_y, int *char_w, int *char_h);
-void   gevastext_get_ascent_descent( GtkgEvasObj* object, double *ascent, double *descent);
-double gevastext_get_ascent( GtkgEvasObj* object );
-double gevastext_get_descent( GtkgEvasObj* object );
-void   gevastext_get_max_ascent_descent( GtkgEvasObj* object, double *ascent, double *descent);
-double gevastext_get_max_ascent( GtkgEvasObj* object );
-double gevastext_get_max_descent( GtkgEvasObj* object );
-void   gevastext_get_advance(GtkgEvasObj* object, double *h_advance, double *v_advance);
-double gevastext_get_inset( GtkgEvasObj* object );
-void   gevastext_set_string(GtkgEvasObj* object, const gchar *text);
-void   gevastext_set_font(GtkgEvasObj* object, const gchar *font, const int size);
+	gchar *gevastext_get_string(GtkgEvasObj * object);
+	gchar *gevastext_get_font(GtkgEvasObj * object);
+	int gevastext_get_text_size(GtkgEvasObj * object);
+	int gevastext_at_position(GtkgEvasObj * object, double x, double y,
+							  int *char_x, int *char_y, int *char_w,
+							  int *char_h);
+	void gevastext_at(GtkgEvasObj * object, int index, int *char_x, int *char_y,
+					  int *char_w, int *char_h);
+	void gevastext_get_ascent_descent(GtkgEvasObj * object, double *ascent,
+									  double *descent);
+	double gevastext_get_ascent(GtkgEvasObj * object);
+	double gevastext_get_descent(GtkgEvasObj * object);
+	void gevastext_get_max_ascent_descent(GtkgEvasObj * object, double *ascent,
+										  double *descent);
+	double gevastext_get_max_ascent(GtkgEvasObj * object);
+	double gevastext_get_max_descent(GtkgEvasObj * object);
+	void gevastext_get_advance(GtkgEvasObj * object, double *h_advance,
+							   double *v_advance);
+	double gevastext_get_inset(GtkgEvasObj * object);
+	void gevastext_set_string(GtkgEvasObj * object, const gchar * text);
+	void gevastext_set_font(GtkgEvasObj * object, const gchar * font,
+							const int size);
 
 #define GEVASTEXT_DEFAULT_FONT "helvetica"
 
 #ifdef __cplusplus
 }
-#endif /* __cplusplus */
-
-#endif /* __GTK_GEVASOBJ_H__ */
-
+#endif							/* __cplusplus */
+#endif							/* __GTK_GEVASOBJ_H__ */

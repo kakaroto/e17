@@ -47,38 +47,33 @@
 #else
 #define N_(String) (String)
 #endif
-#else /* NLS is disabled */
+#else							/* NLS is disabled */
 #define _(String) (String)
 #define N_(String) (String)
 #define textdomain(String) (String)
 #define gettext(String) (String)
 #define dgettext(Domain,String) (String)
 #define dcgettext(Domain,String,Type) (String)
-#define bindtextdomain(Domain,Directory) (Domain) 
-#endif /* ENABLE_NLS */
+#define bindtextdomain(Domain,Directory) (Domain)
+#endif							/* ENABLE_NLS */
 
 
 #include "gevastwin.h"
 
 enum {
-  ARG_0=100,              /* Skip 0, an invalid argument ID */
-  ARG_MAINOBJ,
-  ARG_AUXOBJ
-	
+	ARG_0 = 100,				/* Skip 0, an invalid argument ID */
+	ARG_MAINOBJ,
+	ARG_AUXOBJ
 };
 
-static void   gevastwin_class_init    (GtkgEvasTwinClass  *klass);
-static void   gevastwin_init          (GtkgEvasTwin       *ev);
+static void gevastwin_class_init(GtkgEvasTwinClass * klass);
+static void gevastwin_init(GtkgEvasTwin * ev);
 
 
 /* GtkObject functions */
-static void   gevastwin_destroy       (GtkObject   *object);
-static void gevastwin_get_arg(GtkObject* object,
-                                  GtkArg* arg,
-                                  guint arg_id);
-static void gevastwin_set_arg(GtkObject* object,
-                                  GtkArg* arg,
-                                  guint arg_id);
+static void gevastwin_destroy(GtkObject * object);
+static void gevastwin_get_arg(GtkObject * object, GtkArg * arg, guint arg_id);
+static void gevastwin_set_arg(GtkObject * object, GtkArg * arg, guint arg_id);
 
 #define EVAS(ev) _gevas_evas( GTK_OBJECT(ev))
 #define EVASO(ev) _gevas_get_obj( GTK_OBJECT(ev))
@@ -87,203 +82,187 @@ static void gevastwin_set_arg(GtkObject* object,
 
 static GtkObjectClass *parent_class = NULL;
 
-guint
-gevastwin_get_type (void)
+guint gevastwin_get_type(void)
 {
-  static guint ev_type = 0;
+	static guint ev_type = 0;
 
-  if (!ev_type)
-    {
-      static const GtkTypeInfo ev_info =
-      {
-        "GtkgEvasTwin",
-        sizeof (GtkgEvasTwin),
-        sizeof (GtkgEvasTwinClass),
-        (GtkClassInitFunc) gevastwin_class_init,
-        (GtkObjectInitFunc) gevastwin_init,
-        /* reserved_1 */ NULL,
-        /* reserved_2 */ NULL,
-        (GtkClassInitFunc) NULL,
-      };
+	if (!ev_type) {
+		static const GtkTypeInfo ev_info = {
+			"GtkgEvasTwin",
+			sizeof(GtkgEvasTwin),
+			sizeof(GtkgEvasTwinClass),
+			(GtkClassInitFunc) gevastwin_class_init,
+			(GtkObjectInitFunc) gevastwin_init,
+			/* reserved_1 */ NULL,
+			/* reserved_2 */ NULL,
+			(GtkClassInitFunc) NULL,
+		};
 
-      ev_type = gtk_type_unique (gtk_object_get_type(), &ev_info);
-    }
+		ev_type = gtk_type_unique(gtk_object_get_type(), &ev_info);
+	}
 
-  return ev_type;
+	return ev_type;
 }
 
 
-static void
-gevastwin_class_init (GtkgEvasTwinClass *klass)
+static void gevastwin_class_init(GtkgEvasTwinClass * klass)
 {
-  GtkObjectClass *object_class;
-  GtkgEvasObjClass* gobj = (GtkgEvasObjClass*)klass;
-	
-  object_class = (GtkObjectClass*) klass;
-  parent_class = gtk_type_class (gtk_object_get_type ());
+	GtkObjectClass *object_class;
+	GtkgEvasObjClass *gobj = (GtkgEvasObjClass *) klass;
 
-  object_class->destroy = gevastwin_destroy;
+	object_class = (GtkObjectClass *) klass;
+	parent_class = gtk_type_class(gtk_object_get_type());
 
-  object_class->get_arg = gevastwin_get_arg;
-  object_class->set_arg = gevastwin_set_arg;	
-	
-	gtk_object_add_arg_type( GTK_GEVASTWIN_MAINOBJ, 
-		GTK_TYPE_POINTER, GTK_ARG_READWRITE, ARG_MAINOBJ);
-	gtk_object_add_arg_type( GTK_GEVASTWIN_AUXOBJ, 
-		GTK_TYPE_POINTER, GTK_ARG_READWRITE, ARG_AUXOBJ);
-	
+	object_class->destroy = gevastwin_destroy;
+
+	object_class->get_arg = gevastwin_get_arg;
+	object_class->set_arg = gevastwin_set_arg;
+
+	gtk_object_add_arg_type(GTK_GEVASTWIN_MAINOBJ,
+							GTK_TYPE_POINTER, GTK_ARG_READWRITE, ARG_MAINOBJ);
+	gtk_object_add_arg_type(GTK_GEVASTWIN_AUXOBJ,
+							GTK_TYPE_POINTER, GTK_ARG_READWRITE, ARG_AUXOBJ);
+
 }
 
-static void
-gevastwin_init (GtkgEvasTwin *ev)
+static void gevastwin_init(GtkgEvasTwin * ev)
 {
 	ev->mainobj = 0;
 	ev->auxobj = 0;
 }
 
-GtkgEvasTwin*  
-gevastwin_new ()
+GtkgEvasTwin *gevastwin_new()
 {
-  GtkgEvasTwin *ev;
+	GtkgEvasTwin *ev;
 
-  	ev = gtk_type_new (gevastwin_get_type ());
+	ev = gtk_type_new(gevastwin_get_type());
 	ev->mainobj = 0;
-	ev->auxobj = 0;	
+	ev->auxobj = 0;
 
-  return GTK_GEVASTWIN (ev);
+	return GTK_GEVASTWIN(ev);
 }
 
 /* GtkObject functions */
 
 
-static void   
-gevastwin_destroy       (GtkObject   *object)
+static void gevastwin_destroy(GtkObject * object)
 {
-  GtkgEvasTwin* ev;
+	GtkgEvasTwin *ev;
 
-  g_return_if_fail(object != NULL);
-  g_return_if_fail(GTK_IS_GEVASTWIN(object));
+	g_return_if_fail(object != NULL);
+	g_return_if_fail(GTK_IS_GEVASTWIN(object));
 
-  ev = GTK_GEVASTWIN(object);
+	ev = GTK_GEVASTWIN(object);
 
-  /* Chain up */
-  if (GTK_OBJECT_CLASS(parent_class)->destroy)
-    (* GTK_OBJECT_CLASS(parent_class)->destroy) (object);
+	/* Chain up */
+	if (GTK_OBJECT_CLASS(parent_class)->destroy)
+		(*GTK_OBJECT_CLASS(parent_class)->destroy) (object);
 }
 
-///////////////
+/*********************************************************************/
 
-void
-_gevastwin_sync_obj( GtkgEvasTwin* ev, GtkgEvasObj* obj )
+void _gevastwin_sync_obj(GtkgEvasTwin * ev, GtkgEvasObj * obj)
 {
-	double main_x=0,main_y=0,main_w=0,main_h=0;
-	
-	if( ev->mainobj && ev->auxobj ) {
-		
-		gevasobj_get_geometry( ev->mainobj, &main_x,&main_y,&main_w,&main_h);
-		if( obj == ev->auxobj ) {
-		
-			ev->aux_obj_move( ev->auxobj, main_x, main_y + main_h + 5);
-			gevasobj_queue_redraw( ev->auxobj );
+	double main_x = 0, main_y = 0, main_w = 0, main_h = 0;
+
+	if (ev->mainobj && ev->auxobj) {
+
+		gevasobj_get_geometry(ev->mainobj, &main_x, &main_y, &main_w, &main_h);
+		if (obj == ev->auxobj) {
+
+			ev->aux_obj_move(ev->auxobj, main_x, main_y + main_h + 5);
+			gevasobj_queue_redraw(ev->auxobj);
 		}
-		
-		if( obj == ev->mainobj ) {
-			double ax=0,ay=0,ah=0,aw=0;
-			
-			gevasobj_get_geometry( ev->auxobj, &ax,&ay,&aw,&ah);
-			ev->main_obj_move( ev->mainobj, ax, ay - main_h - 5);
-			gevasobj_queue_redraw( ev->mainobj );
+
+		if (obj == ev->mainobj) {
+			double ax = 0, ay = 0, ah = 0, aw = 0;
+
+			gevasobj_get_geometry(ev->auxobj, &ax, &ay, &aw, &ah);
+			ev->main_obj_move(ev->mainobj, ax, ay - main_h - 5);
+			gevasobj_queue_redraw(ev->mainobj);
 		}
-	
+
 	}
 }
 
-void _gevastwin_move_xxx(GtkgEvasObj *object, double x, double y) {
-	
-	GtkgEvasTwin* ev;
+void _gevastwin_move_xxx(GtkgEvasObj * object, double x, double y)
+{
+
+	GtkgEvasTwin *ev;
 	gpointer d;
 
-	d = gtk_object_get_data( GTK_OBJECT(object), GEVASTWIN_BACKWARD_LOOKUP_KEY );
-	if(d) {
+	d = gtk_object_get_data(GTK_OBJECT(object), GEVASTWIN_BACKWARD_LOOKUP_KEY);
+	if (d) {
 		ev = GTK_GEVASTWIN(d);
-		if( ev->mainobj == object ) {
-			
-			ev->main_obj_move(object,x,y);
-			_gevastwin_sync_obj( ev, ev->auxobj );
+		if (ev->mainobj == object) {
+
+			ev->main_obj_move(object, x, y);
+			_gevastwin_sync_obj(ev, ev->auxobj);
 		}
-		
-		if( ev->auxobj == object ) {
-			
-			ev->aux_obj_move(object,x,y);
-			_gevastwin_sync_obj( ev, ev->mainobj );
+
+		if (ev->auxobj == object) {
+
+			ev->aux_obj_move(object, x, y);
+			_gevastwin_sync_obj(ev, ev->mainobj);
 		}
-		
+
 	}
 }
 
 
 
-static void
-gevastwin_set_arg (GtkObject    *object,
-                       GtkArg       *arg,
-                       guint         arg_id)
+static void gevastwin_set_arg(GtkObject * object, GtkArg * arg, guint arg_id)
 {
-  GtkgEvasTwin* ev;
-  gchar* gstr;
+	GtkgEvasTwin *ev;
+	gchar *gstr;
 
-  g_return_if_fail(object != NULL);
-  g_return_if_fail(GTK_IS_GEVASTWIN(object));
+	g_return_if_fail(object != NULL);
+	g_return_if_fail(GTK_IS_GEVASTWIN(object));
 
-  ev = GTK_GEVASTWIN(object);
+	ev = GTK_GEVASTWIN(object);
 
-  switch (arg_id)
-    {
-	case ARG_MAINOBJ:
-		ev->mainobj = GTK_VALUE_POINTER (*arg);
+	switch (arg_id) {
+		case ARG_MAINOBJ:
+			ev->mainobj = GTK_VALUE_POINTER(*arg);
 
-		ev->main_obj_move = ev->mainobj->move;
-		ev->mainobj->move = _gevastwin_move_xxx;
-		gtk_object_set_data( GTK_OBJECT(ev->mainobj), GEVASTWIN_BACKWARD_LOOKUP_KEY, ev );
-		break;
+			ev->main_obj_move = ev->mainobj->move;
+			ev->mainobj->move = _gevastwin_move_xxx;
+			gtk_object_set_data(GTK_OBJECT(ev->mainobj),
+								GEVASTWIN_BACKWARD_LOOKUP_KEY, ev);
+			break;
 
-	case ARG_AUXOBJ:
-		ev->auxobj = GTK_VALUE_POINTER (*arg);
+		case ARG_AUXOBJ:
+			ev->auxobj = GTK_VALUE_POINTER(*arg);
 
-		ev->aux_obj_move = ev->auxobj->move;
-		ev->auxobj->move = _gevastwin_move_xxx;
-		_gevastwin_sync_obj( ev, ev->auxobj );
-		gtk_object_set_data( GTK_OBJECT(ev->auxobj), GEVASTWIN_BACKWARD_LOOKUP_KEY, ev );
-		break;
-    default:
-		break;
-    }
+			ev->aux_obj_move = ev->auxobj->move;
+			ev->auxobj->move = _gevastwin_move_xxx;
+			_gevastwin_sync_obj(ev, ev->auxobj);
+			gtk_object_set_data(GTK_OBJECT(ev->auxobj),
+								GEVASTWIN_BACKWARD_LOOKUP_KEY, ev);
+			break;
+		default:
+			break;
+	}
 }
 
-static void
-gevastwin_get_arg (GtkObject    *object,
-                       GtkArg       *arg,
-                       guint         arg_id)
+static void gevastwin_get_arg(GtkObject * object, GtkArg * arg, guint arg_id)
 {
-  GtkgEvasTwin* ev;
+	GtkgEvasTwin *ev;
 
-  g_return_if_fail(object != NULL);
-  g_return_if_fail(GTK_IS_GEVASTWIN(object));
+	g_return_if_fail(object != NULL);
+	g_return_if_fail(GTK_IS_GEVASTWIN(object));
 
-  ev = GTK_GEVASTWIN(object);
-  
-  switch (arg_id)
-    {
-    case ARG_MAINOBJ:
-		GTK_VALUE_POINTER (*arg) = ev->mainobj;
-		break;
-    case ARG_AUXOBJ:
-		GTK_VALUE_POINTER (*arg) = ev->auxobj;
-		break;
-    default:
-      arg->type = GTK_TYPE_INVALID;
-      break;
-    }
-}    
+	ev = GTK_GEVASTWIN(object);
 
-
-
+	switch (arg_id) {
+		case ARG_MAINOBJ:
+			GTK_VALUE_POINTER(*arg) = ev->mainobj;
+			break;
+		case ARG_AUXOBJ:
+			GTK_VALUE_POINTER(*arg) = ev->auxobj;
+			break;
+		default:
+			arg->type = GTK_TYPE_INVALID;
+			break;
+	}
+}

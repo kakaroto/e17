@@ -46,48 +46,52 @@
 #else
 #define N_(String) (String)
 #endif
-#else /* NLS is disabled */
+#else							/* NLS is disabled */
 #define _(String) (String)
 #define N_(String) (String)
 #define textdomain(String) (String)
 #define gettext(String) (String)
 #define dgettext(Domain,String) (String)
 #define dcgettext(Domain,String,Type) (String)
-#define bindtextdomain(Domain,Directory) (Domain) 
-#endif /* ENABLE_NLS */
+#define bindtextdomain(Domain,Directory) (Domain)
+#endif							/* ENABLE_NLS */
 
 
 #include "gevasevh_drag.h"
 
 
-static void   gevasevh_drag_class_init    (GtkgEvasEvHDragClass  *klass);
-static void   gevasevh_drag_init          (GtkgEvasEvHDrag       *ev);
+static void gevasevh_drag_class_init(GtkgEvasEvHDragClass * klass);
+static void gevasevh_drag_init(GtkgEvasEvHDrag * ev);
 /* GtkObject functions */
-static void   gevasevh_drag_destroy       (GtkObject   *object);
+static void gevasevh_drag_destroy(GtkObject * object);
 
 
-GEVASEV_HANDLER_RET 
-gevasev_drag_mouse_in( GtkObject* object,  GtkObject* gevasobj, int _b, int _x, int _y )
+GEVASEV_HANDLER_RET
+gevasev_drag_mouse_in(GtkObject * object, GtkObject * gevasobj, int _b, int _x,
+					  int _y)
 {
 	return GEVASEV_HANDLER_RET_NEXT;
 }
 
-GEVASEV_HANDLER_RET 
-gevasev_drag_mouse_out( GtkObject* object,  GtkObject* gevasobj, int _b, int _x, int _y )
+GEVASEV_HANDLER_RET
+gevasev_drag_mouse_out(GtkObject * object, GtkObject * gevasobj, int _b, int _x,
+					   int _y)
 {
 	return GEVASEV_HANDLER_RET_NEXT;
 }
 
-GEVASEV_HANDLER_RET 
-gevasev_drag_mouse_down( GtkObject* object,  GtkObject* gevasobj, int _b, int _x, int _y )
+GEVASEV_HANDLER_RET
+gevasev_drag_mouse_down(GtkObject * object, GtkObject * gevasobj, int _b,
+						int _x, int _y)
 {
-	GtkgEvasEvHDrag* ev;
-	g_return_val_if_fail(object != NULL,GEVASEV_HANDLER_RET_NEXT);
-	g_return_val_if_fail(GTK_IS_GEVASEVH_DRAG(object),GEVASEV_HANDLER_RET_NEXT);
+	GtkgEvasEvHDrag *ev;
+	g_return_val_if_fail(object != NULL, GEVASEV_HANDLER_RET_NEXT);
+	g_return_val_if_fail(GTK_IS_GEVASEVH_DRAG(object),
+						 GEVASEV_HANDLER_RET_NEXT);
 	ev = GTK_GEVASEVH_DRAG(object);
-	if( _b == 1 ) {
-		double x=0,y=0,w=0,h=0;
-		gevasobj_get_geometry( GTK_GEVASOBJ(gevasobj), &x, &y, &w, &h );
+	if (_b == 1) {
+		double x = 0, y = 0, w = 0, h = 0;
+		gevasobj_get_geometry(GTK_GEVASOBJ(gevasobj), &x, &y, &w, &h);
 		ev->dragging = 1;
 		ev->click_x_offset = _x - x;
 		ev->click_y_offset = _y - y;
@@ -95,75 +99,74 @@ gevasev_drag_mouse_down( GtkObject* object,  GtkObject* gevasobj, int _b, int _x
 	return GEVASEV_HANDLER_RET_NEXT;
 }
 
-GEVASEV_HANDLER_RET 
-gevasev_drag_mouse_up( GtkObject* object,  GtkObject* gevasobj, int _b, int _x, int _y )
+GEVASEV_HANDLER_RET
+gevasev_drag_mouse_up(GtkObject * object, GtkObject * gevasobj, int _b, int _x,
+					  int _y)
 {
-	GtkgEvasEvHDrag* ev;
-	g_return_val_if_fail(object != NULL,GEVASEV_HANDLER_RET_NEXT);
-	g_return_val_if_fail(GTK_IS_GEVASEVH_DRAG(object),GEVASEV_HANDLER_RET_NEXT);
+	GtkgEvasEvHDrag *ev;
+	g_return_val_if_fail(object != NULL, GEVASEV_HANDLER_RET_NEXT);
+	g_return_val_if_fail(GTK_IS_GEVASEVH_DRAG(object),
+						 GEVASEV_HANDLER_RET_NEXT);
 	ev = GTK_GEVASEVH_DRAG(object);
-	if( _b == 1 ) {
+	if (_b == 1) {
 		ev->dragging = 0;
-	}	
+	}
 	return GEVASEV_HANDLER_RET_NEXT;
 }
 
-GEVASEV_HANDLER_RET 
-gevasev_drag_mouse_move( GtkObject* object,  GtkObject* gevasobj, int _b, int _x, int _y )
+GEVASEV_HANDLER_RET
+gevasev_drag_mouse_move(GtkObject * object, GtkObject * gevasobj, int _b,
+						int _x, int _y)
 {
-	GtkgEvasEvHDrag* ev;
-	g_return_val_if_fail(object != NULL,GEVASEV_HANDLER_RET_NEXT);
-	g_return_val_if_fail(GTK_IS_GEVASEVH_DRAG(object),GEVASEV_HANDLER_RET_NEXT);
+	GtkgEvasEvHDrag *ev;
+	g_return_val_if_fail(object != NULL, GEVASEV_HANDLER_RET_NEXT);
+	g_return_val_if_fail(GTK_IS_GEVASEVH_DRAG(object),
+						 GEVASEV_HANDLER_RET_NEXT);
 	ev = GTK_GEVASEVH_DRAG(object);
-	if( ev->dragging && _b == 1 ) {
-		gevasobj_move( GTK_GEVASOBJ(gevasobj), 
-			_x - ev->click_x_offset,
-			_y - ev->click_y_offset);
-		gevasobj_queue_redraw( GTK_GEVASOBJ(gevasobj));
-	}	
+	if (ev->dragging && _b == 1) {
+		gevasobj_move(GTK_GEVASOBJ(gevasobj),
+					  _x - ev->click_x_offset, _y - ev->click_y_offset);
+		gevasobj_queue_redraw(GTK_GEVASOBJ(gevasobj));
+	}
 	return GEVASEV_HANDLER_RET_NEXT;
 }
 
 
 static GtkObjectClass *parent_class = NULL;
 
-guint
-gevasevh_drag_get_type (void)
+guint gevasevh_drag_get_type(void)
 {
-  static guint ev_type = 0;
+	static guint ev_type = 0;
 
-  if (!ev_type)
-    {
-      static const GtkTypeInfo ev_info =
-      {
-        "GtkgEvasEvHDrag",
-        sizeof (GtkgEvasEvHDrag),
-        sizeof (GtkgEvasEvHDragClass),
-        (GtkClassInitFunc) gevasevh_drag_class_init,
-        (GtkObjectInitFunc) gevasevh_drag_init,
-        /* reserved_1 */ NULL,
-        /* reserved_2 */ NULL,
-        (GtkClassInitFunc) NULL,
-      };
+	if (!ev_type) {
+		static const GtkTypeInfo ev_info = {
+			"GtkgEvasEvHDrag",
+			sizeof(GtkgEvasEvHDrag),
+			sizeof(GtkgEvasEvHDragClass),
+			(GtkClassInitFunc) gevasevh_drag_class_init,
+			(GtkObjectInitFunc) gevasevh_drag_init,
+			/* reserved_1 */ NULL,
+			/* reserved_2 */ NULL,
+			(GtkClassInitFunc) NULL,
+		};
 
-      ev_type = gtk_type_unique (gevasevh_get_type (), &ev_info);
-    }
+		ev_type = gtk_type_unique(gevasevh_get_type(), &ev_info);
+	}
 
-  return ev_type;
+	return ev_type;
 }
 
-static void
-gevasevh_drag_class_init (GtkgEvasEvHDragClass *klass)
+static void gevasevh_drag_class_init(GtkgEvasEvHDragClass * klass)
 {
 	GtkObjectClass *object_class;
-	GtkgEvasEvHClass* evh_klass;
-		
-	object_class = (GtkObjectClass*) klass;
-	evh_klass = (GtkgEvasEvHClass*)klass;
-	parent_class = gtk_type_class (gevasevh_get_type ());
-		
+	GtkgEvasEvHClass *evh_klass;
+
+	object_class = (GtkObjectClass *) klass;
+	evh_klass = (GtkgEvasEvHClass *) klass;
+	parent_class = gtk_type_class(gevasevh_get_type());
+
 	object_class->destroy = gevasevh_drag_destroy;
-	
+
 	evh_klass->handler_mouse_in = gevasev_drag_mouse_in;
 	evh_klass->handler_mouse_out = gevasev_drag_mouse_out;
 	evh_klass->handler_mouse_down = gevasev_drag_mouse_down;
@@ -171,38 +174,34 @@ gevasevh_drag_class_init (GtkgEvasEvHDragClass *klass)
 	evh_klass->handler_mouse_move = gevasev_drag_mouse_move;
 }
 
-static void
-gevasevh_drag_init (GtkgEvasEvHDrag *ev)
+static void gevasevh_drag_init(GtkgEvasEvHDrag * ev)
 {
 	ev->dragging = 0;
 }
 
-GtkObject*
-gevasevh_drag_new (void)
+GtkObject *gevasevh_drag_new(void)
 {
 	GtkgEvasEvHDrag *ev;
-	GtkgEvasEvH* hev;
-		
-	ev = gtk_type_new (gevasevh_drag_get_type ());
-	hev = (GtkgEvasEvH*)ev;
+	GtkgEvasEvH *hev;
+
+	ev = gtk_type_new(gevasevh_drag_get_type());
+	hev = (GtkgEvasEvH *) ev;
 	ev->dragging = 0;
-		
-	return GTK_OBJECT (ev);
+
+	return GTK_OBJECT(ev);
 }
 
 /* GtkObject functions */
 
 
-static void   
-gevasevh_drag_destroy       (GtkObject   *object)
+static void gevasevh_drag_destroy(GtkObject * object)
 {
-	GtkgEvasEvHDrag* ev;
+	GtkgEvasEvHDrag *ev;
 	g_return_if_fail(object != NULL);
 	g_return_if_fail(GTK_IS_GEVASEVH_DRAG(object));
 	ev = GTK_GEVASEVH_DRAG(object);
-		
+
 	/* Chain up */
 	if (GTK_OBJECT_CLASS(parent_class)->destroy)
-		(* GTK_OBJECT_CLASS(parent_class)->destroy) (object);
+		(*GTK_OBJECT_CLASS(parent_class)->destroy) (object);
 }
-

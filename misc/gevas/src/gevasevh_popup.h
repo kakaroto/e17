@@ -40,43 +40,34 @@
 
 #ifdef __cplusplus
 extern "C" {
-#endif /* __cplusplus */
-
+#endif							/* __cplusplus */
 #define GTK_GEVASEVH_POPUP_SIGNAL(obj)          GTK_CHECK_CAST (obj, gevasevh_popup_get_type (), GtkgEvasEvHPopup)
 #define GTK_GEVASEVH_POPUP_SIGNAL_CLASS(klass)  GTK_CHECK_CLASS_CAST (klass, gevasevh_popup_get_type (), GtkgEvasEvHPopupClass)
 #define GTK_IS_GEVASEVH_POPUP_SIGNAL(obj)       GTK_CHECK_TYPE (obj, gevasevh_popup_get_type ())
-
 #define GTK_GEVASEVH_POPUP_GTK_MENU		"GtkgEvasEvHPopup::gtk_menu"
-
 #define gevasevh_popup_set_gtk_menu( gevaso, val ) \
 	  gtk_object_set(GTK_OBJECT(gevaso), \
-                  GTK_GEVASEVH_POPUP_GTK_MENU, (gpointer) val, NULL); 	
-	
-typedef struct _GtkgEvasEvHPopup			GtkgEvasEvHPopup;
-typedef struct _GtkgEvasEvHPopupClass  	GtkgEvasEvHPopupClass;
+                  GTK_GEVASEVH_POPUP_GTK_MENU, (gpointer) val, NULL);
+	 typedef struct _GtkgEvasEvHPopup GtkgEvasEvHPopup;
+	typedef struct _GtkgEvasEvHPopupClass GtkgEvasEvHPopupClass;
 
 
-		
-struct _GtkgEvasEvHPopup
-{
-	GtkgEvasEvH evh_obj;
-	GtkMenu* user_gtk_menu;	/* User can register a static menu for popping up */
-							/* or listen for popup_activate signals and make menu themself */
-};
 
-struct _GtkgEvasEvHPopupClass
-{
-  GtkgEvasEvHClass parent_class;
-};
+	struct _GtkgEvasEvHPopup {
+		GtkgEvasEvH evh_obj;
+		GtkMenu *user_gtk_menu;	/* User can register a static menu for popping up */
+		/* or listen for popup_activate signals and make menu themself */
+	};
+
+	struct _GtkgEvasEvHPopupClass {
+		GtkgEvasEvHClass parent_class;
+	};
 
 
-guint           gevasevh_popup_get_type           (void);
-GtkObject*      gevasevh_popup_new                (void);
+	guint gevasevh_popup_get_type(void);
+	GtkObject *gevasevh_popup_new(void);
 
 #ifdef __cplusplus
 }
-#endif /* __cplusplus */
-
-#endif /*  */
-
-
+#endif							/* __cplusplus */
+#endif							/*  */

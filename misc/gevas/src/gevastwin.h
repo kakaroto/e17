@@ -39,47 +39,39 @@
 
 #ifdef __cplusplus
 extern "C" {
-#endif /* __cplusplus */
-
+#endif							/* __cplusplus */
 #define GTK_GEVASTWIN(obj)          GTK_CHECK_CAST (obj, gevastwin_get_type (), GtkgEvasTwin)
 #define GTK_GEVASTWIN_CLASS(klass)  GTK_CHECK_CLASS_CAST (klass, gevastwin_get_type (), GtkgEvasTwinClass)
 #define GTK_IS_GEVASTWIN(obj)       GTK_CHECK_TYPE (obj, gevastwin_get_type ())
-	
 #define GTK_GEVASTWIN_MAINOBJ		"GtkgEvasTwin::main_obj"
 #define GTK_GEVASTWIN_AUXOBJ		"GtkgEvasTwin::aux_obj"
-
-
 #define gevastwin_set_main_obj( gevaso, val ) \
 	  gtk_object_set(GTK_OBJECT(gevaso), \
-                  GTK_GEVASTWIN_MAINOBJ, (gpointer) val, NULL); 	
+                  GTK_GEVASTWIN_MAINOBJ, (gpointer) val, NULL);
 #define gevastwin_set_aux_obj( gevaso, val ) \
 	  gtk_object_set(GTK_OBJECT(gevaso), \
-                  GTK_GEVASTWIN_AUXOBJ, (gpointer) val, NULL); 	
-	
-	
-typedef struct _GtkgEvasTwin		GtkgEvasTwin;
-typedef struct _GtkgEvasTwinClass  	GtkgEvasTwinClass;
+                  GTK_GEVASTWIN_AUXOBJ, (gpointer) val, NULL);
+	 typedef struct _GtkgEvasTwin GtkgEvasTwin;
+	typedef struct _GtkgEvasTwinClass GtkgEvasTwinClass;
 
-struct _GtkgEvasTwin
-{
-	GtkObject	 	gobj;
-	
-	GtkgEvasObj*	mainobj;
-	GtkgEvasObj*	auxobj;
-	
-	void (*main_obj_move)(GtkgEvasObj *object, double x, double y);
-	void (*aux_obj_move)(GtkgEvasObj *object, double x, double y);
+	struct _GtkgEvasTwin {
+		GtkObject gobj;
 
-};
+		GtkgEvasObj *mainobj;
+		GtkgEvasObj *auxobj;
 
-struct _GtkgEvasTwinClass
-{
-  GtkObjectClass parent_class;
-};
+		void (*main_obj_move) (GtkgEvasObj * object, double x, double y);
+		void (*aux_obj_move) (GtkgEvasObj * object, double x, double y);
+
+	};
+
+	struct _GtkgEvasTwinClass {
+		GtkObjectClass parent_class;
+	};
 
 
-guint          gevastwin_get_type           (void);
-GtkgEvasTwin*  gevastwin_new                ();
+	guint gevastwin_get_type(void);
+	GtkgEvasTwin *gevastwin_new();
 
 
 #define GEVASTWIN_BACKWARD_LOOKUP_KEY "___gevastwin_backward_key"
@@ -87,7 +79,5 @@ GtkgEvasTwin*  gevastwin_new                ();
 
 #ifdef __cplusplus
 }
-#endif /* __cplusplus */
-
-#endif /* __GTK_GEVASOBJ_H__ */
-
+#endif							/* __cplusplus */
+#endif							/* __GTK_GEVASOBJ_H__ */

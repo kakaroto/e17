@@ -39,58 +39,58 @@
 
 #ifdef __cplusplus
 extern "C" {
-#endif /* __cplusplus */
-
+#endif							/* __cplusplus */
 #define GTK_GEVASEVH_EMOUSE_OVER(obj)          GTK_CHECK_CAST (obj, gevasevh_emouse_over_get_type (), GtkgEvasEvHEMouseOver)
 #define GTK_GEVASEVH_EMOUSE_OVER_CLASS(klass)  GTK_CHECK_CLASS_CAST (klass, gevasevh_emouse_over_get_type (), GtkgEvasEvHEMouseOverClass)
 #define GTK_IS_GEVASEVH_EMOUSE_OVER(obj)       GTK_CHECK_TYPE (obj, gevasevh_emouse_over_get_type ())
-
 #define GTK_GEVASEVH_EMOUSE_OVER_SCALE_X	"GtkgEvasEvHEMouseOver::scale_x"
 #define GTK_GEVASEVH_EMOUSE_OVER_SCALE_Y	"GtkgEvasEvHEMouseOver::scale_y"
-
-
 #define gevasevh_emouse_over_scale_x( gevaso, val ) \
 	  gtk_object_set(GTK_OBJECT(gevaso), \
-                  GTK_GEVASEVH_EMOUSE_OVER_SCALE_X, (gdouble) val, NULL); 
+                  GTK_GEVASEVH_EMOUSE_OVER_SCALE_X, (gdouble) val, NULL);
 #define gevasevh_emouse_over_scale_y( gevaso, val ) \
 	  gtk_object_set(GTK_OBJECT(gevaso), \
-                  GTK_GEVASEVH_EMOUSE_OVER_SCALE_Y, (gdouble) val, NULL); 
+                  GTK_GEVASEVH_EMOUSE_OVER_SCALE_Y, (gdouble) val, NULL);
+	 typedef struct _GtkgEvasEvHEMouseOver GtkgEvasEvHEMouseOver;
+	typedef struct _GtkgEvasEvHEMouseOverClass GtkgEvasEvHEMouseOverClass;
 
-typedef struct _GtkgEvasEvHEMouseOver			GtkgEvasEvHEMouseOver;
-typedef struct _GtkgEvasEvHEMouseOverClass  	GtkgEvasEvHEMouseOverClass;
+	struct _GtkgEvasEvHEMouseOver {
+		GtkgEvasEvH evh_obj;
+		gdouble scale_factor_x;
+		gdouble scale_factor_y;
+		gdouble old_w;			/* can not inverse scale factor due to rounding errors */
+		gdouble old_h;			/* thus we save the exact original size and restore it, quicker too */
+		gdouble old_x_offset;	/* how much we moved the item in the x plane */
+		gdouble old_y_offset;
+	};
 
-struct _GtkgEvasEvHEMouseOver
-{
-	GtkgEvasEvH evh_obj;
-	gdouble scale_factor_x;
-	gdouble scale_factor_y;
-	gdouble old_w;			/* can not inverse scale factor due to rounding errors */
-	gdouble old_h;			/* thus we save the exact original size and restore it, quicker too */
-	gdouble old_x_offset;	/* how much we moved the item in the x plane */
-	gdouble old_y_offset;
-};
-
-struct _GtkgEvasEvHEMouseOverClass
-{
-  GtkgEvasEvHClass parent_class;
-};
+	struct _GtkgEvasEvHEMouseOverClass {
+		GtkgEvasEvHClass parent_class;
+	};
 
 
-guint           gevasevh_emouse_over_get_type           (void);
-GtkObject*      gevasevh_emouse_over_new                (void);
+	guint gevasevh_emouse_over_get_type(void);
+	GtkObject *gevasevh_emouse_over_new(void);
 
 /** Protected access only **/
-GEVASEV_HANDLER_RET gevasev_emouse_over_mouse_in( GtkObject* object, GtkObject* gevasobj, int _b, int _x, int _y );
-GEVASEV_HANDLER_RET gevasev_emouse_over_mouse_out( GtkObject* object, GtkObject* gevasobj, int _b, int _x, int _y );
-GEVASEV_HANDLER_RET gevasev_emouse_over_mouse_down( GtkObject* object,  GtkObject* gevasobj, int _b, int _x, int _y );
-GEVASEV_HANDLER_RET gevasev_emouse_over_mouse_up( GtkObject* object,  GtkObject* gevasobj, int _b, int _x, int _y );
-GEVASEV_HANDLER_RET gevasev_emouse_over_mouse_move( GtkObject* object,  GtkObject* gevasobj, int _b, int _x, int _y );
+	GEVASEV_HANDLER_RET gevasev_emouse_over_mouse_in(GtkObject * object,
+													 GtkObject * gevasobj,
+													 int _b, int _x, int _y);
+	GEVASEV_HANDLER_RET gevasev_emouse_over_mouse_out(GtkObject * object,
+													  GtkObject * gevasobj,
+													  int _b, int _x, int _y);
+	GEVASEV_HANDLER_RET gevasev_emouse_over_mouse_down(GtkObject * object,
+													   GtkObject * gevasobj,
+													   int _b, int _x, int _y);
+	GEVASEV_HANDLER_RET gevasev_emouse_over_mouse_up(GtkObject * object,
+													 GtkObject * gevasobj,
+													 int _b, int _x, int _y);
+	GEVASEV_HANDLER_RET gevasev_emouse_over_mouse_move(GtkObject * object,
+													   GtkObject * gevasobj,
+													   int _b, int _x, int _y);
 
 
 #ifdef __cplusplus
 }
-#endif /* __cplusplus */
-
-#endif /*  */
-
-
+#endif							/* __cplusplus */
+#endif							/*  */

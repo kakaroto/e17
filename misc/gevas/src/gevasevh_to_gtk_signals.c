@@ -47,254 +47,221 @@
 #else
 #define N_(String) (String)
 #endif
-#else /* NLS is disabled */
+#else							/* NLS is disabled */
 #define _(String) (String)
 #define N_(String) (String)
 #define textdomain(String) (String)
 #define gettext(String) (String)
 #define dgettext(Domain,String) (String)
 #define dcgettext(Domain,String,Type) (String)
-#define bindtextdomain(Domain,Directory) (Domain) 
-#endif /* ENABLE_NLS */
+#define bindtextdomain(Domain,Directory) (Domain)
+#endif							/* ENABLE_NLS */
 
 
 #include "gevasevh_to_gtk_signals.h"
 #include <gtk/gtkmarshal.h>
 #include <gtk/gtksignal.h>
 
-static void   gevasevh_to_gtk_signal_class_init    (GtkgEvasEvHToGtkSignalsClass  *klass);
-static void   gevasevh_to_gtk_signal_init          (GtkgEvasEvHToGtkSignals       *ev);
+static void gevasevh_to_gtk_signal_class_init(GtkgEvasEvHToGtkSignalsClass *
+											  klass);
+static void gevasevh_to_gtk_signal_init(GtkgEvasEvHToGtkSignals * ev);
 /* GtkObject functions */
-static void   gevasevh_to_gtk_signal_destroy       (GtkObject   *object);
+static void gevasevh_to_gtk_signal_destroy(GtkObject * object);
 
 enum {
-  M_IN,
-  M_OUT,
-  M_MOVE,
-  M_DOWN,
-  M_UP,
-  LAST_SIGNAL
+	M_IN,
+	M_OUT,
+	M_MOVE,
+	M_DOWN,
+	M_UP,
+	LAST_SIGNAL
 };
 static guint _gevasevh_to_gtk_signal_signals[LAST_SIGNAL] = { 0 };
 
 
-GEVASEV_HANDLER_RET 
-gevasev_to_gtk_signal_mouse_in( GtkObject* object,  GtkObject* gevasobj, int _b, int _x, int _y )
+GEVASEV_HANDLER_RET
+gevasev_to_gtk_signal_mouse_in(GtkObject * object, GtkObject * gevasobj, int _b,
+							   int _x, int _y)
 {
 	gboolean return_val;
-    return_val = FALSE;
-	gtk_signal_emit (
-		GTK_OBJECT (object), 
-		_gevasevh_to_gtk_signal_signals[M_IN],
-		gevasobj,
-		_b, _x, _y, 		
-		&return_val
-	);
+	return_val = FALSE;
+	gtk_signal_emit(GTK_OBJECT(object),
+					_gevasevh_to_gtk_signal_signals[M_IN],
+					gevasobj, _b, _x, _y, &return_val);
 	return GEVASEV_HANDLER_RET_NEXT;
 }
 
-GEVASEV_HANDLER_RET 
-gevasev_to_gtk_signal_mouse_out( GtkObject* object,  GtkObject* gevasobj, int _b, int _x, int _y )
+GEVASEV_HANDLER_RET
+gevasev_to_gtk_signal_mouse_out(GtkObject * object, GtkObject * gevasobj,
+								int _b, int _x, int _y)
 {
 	gboolean return_val;
-    return_val = FALSE;
-	gtk_signal_emit (
-		GTK_OBJECT (object), 
-		_gevasevh_to_gtk_signal_signals[M_OUT],
-		gevasobj,
-		_b, _x, _y, 		
-		&return_val
-	);
+	return_val = FALSE;
+	gtk_signal_emit(GTK_OBJECT(object),
+					_gevasevh_to_gtk_signal_signals[M_OUT],
+					gevasobj, _b, _x, _y, &return_val);
 	return GEVASEV_HANDLER_RET_NEXT;
 }
 
-GEVASEV_HANDLER_RET 
-gevasev_to_gtk_signal_mouse_down( GtkObject* object,  GtkObject* gevasobj, int _b, int _x, int _y )
+GEVASEV_HANDLER_RET
+gevasev_to_gtk_signal_mouse_down(GtkObject * object, GtkObject * gevasobj,
+								 int _b, int _x, int _y)
 {
 	gboolean return_val;
-    return_val = FALSE;
-	gtk_signal_emit (
-		GTK_OBJECT (object), 
-		_gevasevh_to_gtk_signal_signals[M_DOWN],
-		(gpointer)gevasobj,
-		(gint)_b, (gint)_x, (gint)_y, 		
-		&return_val
-	);
-	
+	return_val = FALSE;
+	gtk_signal_emit(GTK_OBJECT(object),
+					_gevasevh_to_gtk_signal_signals[M_DOWN],
+					(gpointer) gevasobj,
+					(gint) _b, (gint) _x, (gint) _y, &return_val);
+
 	return GEVASEV_HANDLER_RET_NEXT;
 }
 
-GEVASEV_HANDLER_RET 
-gevasev_to_gtk_signal_mouse_up( GtkObject* object,  GtkObject* gevasobj, int _b, int _x, int _y )
+GEVASEV_HANDLER_RET
+gevasev_to_gtk_signal_mouse_up(GtkObject * object, GtkObject * gevasobj, int _b,
+							   int _x, int _y)
 {
 	gboolean return_val;
-    return_val = FALSE;
-	gtk_signal_emit (
-		GTK_OBJECT (object), 
-		_gevasevh_to_gtk_signal_signals[M_UP],
-		gevasobj,
-		_b, _x, _y, 		
-		&return_val
-	);
+	return_val = FALSE;
+	gtk_signal_emit(GTK_OBJECT(object),
+					_gevasevh_to_gtk_signal_signals[M_UP],
+					gevasobj, _b, _x, _y, &return_val);
 	return GEVASEV_HANDLER_RET_NEXT;
 }
 
-GEVASEV_HANDLER_RET 
-gevasev_to_gtk_signal_mouse_move( GtkObject* object,  GtkObject* gevasobj, int _b, int _x, int _y )
+GEVASEV_HANDLER_RET
+gevasev_to_gtk_signal_mouse_move(GtkObject * object, GtkObject * gevasobj,
+								 int _b, int _x, int _y)
 {
 	gboolean return_val;
-    return_val = FALSE;
-	gtk_signal_emit (
-		GTK_OBJECT (object), 
-		_gevasevh_to_gtk_signal_signals[M_MOVE],
-		gevasobj,
-		_b, _x, _y, 		
-		&return_val
-	);
+	return_val = FALSE;
+	gtk_signal_emit(GTK_OBJECT(object),
+					_gevasevh_to_gtk_signal_signals[M_MOVE],
+					gevasobj, _b, _x, _y, &return_val);
 	return GEVASEV_HANDLER_RET_NEXT;
 }
 
 
 static GtkObjectClass *parent_class = NULL;
 
-guint
-gevasevh_to_gtk_signal_get_type (void)
+guint gevasevh_to_gtk_signal_get_type(void)
 {
-  static guint ev_type = 0;
+	static guint ev_type = 0;
 
-  if (!ev_type)
-    {
-      static const GtkTypeInfo ev_info =
-      {
-        "GtkgEvasEvHToGtkSignals",
-        sizeof (GtkgEvasEvHToGtkSignals),
-        sizeof (GtkgEvasEvHToGtkSignalsClass),
-        (GtkClassInitFunc) gevasevh_to_gtk_signal_class_init,
-        (GtkObjectInitFunc) gevasevh_to_gtk_signal_init,
-        /* reserved_1 */ NULL,
-        /* reserved_2 */ NULL,
-        (GtkClassInitFunc) NULL,
-      };
+	if (!ev_type) {
+		static const GtkTypeInfo ev_info = {
+			"GtkgEvasEvHToGtkSignals",
+			sizeof(GtkgEvasEvHToGtkSignals),
+			sizeof(GtkgEvasEvHToGtkSignalsClass),
+			(GtkClassInitFunc) gevasevh_to_gtk_signal_class_init,
+			(GtkObjectInitFunc) gevasevh_to_gtk_signal_init,
+			/* reserved_1 */ NULL,
+			/* reserved_2 */ NULL,
+			(GtkClassInitFunc) NULL,
+		};
 
-      ev_type = gtk_type_unique (gevasevh_get_type (), &ev_info);
-    }
+		ev_type = gtk_type_unique(gevasevh_get_type(), &ev_info);
+	}
 
-  return ev_type;
+	return ev_type;
 }
 
 static void
-gevasevh_to_gtk_signal_class_init (GtkgEvasEvHToGtkSignalsClass *klass)
+gevasevh_to_gtk_signal_class_init(GtkgEvasEvHToGtkSignalsClass * klass)
 {
 	GtkObjectClass *object_class;
-	GtkgEvasEvHClass* evh_klass;
-		
-	object_class = (GtkObjectClass*) klass;
-	evh_klass = (GtkgEvasEvHClass*)klass;
-	parent_class = gtk_type_class (gevasevh_get_type ());
-		
+	GtkgEvasEvHClass *evh_klass;
+
+	object_class = (GtkObjectClass *) klass;
+	evh_klass = (GtkgEvasEvHClass *) klass;
+	parent_class = gtk_type_class(gevasevh_get_type());
+
 	object_class->destroy = gevasevh_to_gtk_signal_destroy;
-	
+
 	evh_klass->handler_mouse_in = gevasev_to_gtk_signal_mouse_in;
 	evh_klass->handler_mouse_out = gevasev_to_gtk_signal_mouse_out;
 	evh_klass->handler_mouse_down = gevasev_to_gtk_signal_mouse_down;
 	evh_klass->handler_mouse_up = gevasev_to_gtk_signal_mouse_up;
 	evh_klass->handler_mouse_move = gevasev_to_gtk_signal_mouse_move;
-	
-    _gevasevh_to_gtk_signal_signals[M_DOWN] =
-    	gtk_signal_new ("mouse_down",
-				GTK_RUN_LAST,
-				object_class->type,
-				0, 
-				gtk_marshal_BOOL__POINTER_INT_INT_INT,
-				GTK_TYPE_BOOL, 4,
-				GTK_TYPE_POINTER,
-				GTK_TYPE_INT,
-				GTK_TYPE_INT,
-				GTK_TYPE_INT
-				);
-    _gevasevh_to_gtk_signal_signals[M_UP] =
-    	gtk_signal_new ("mouse_up",
-				GTK_RUN_LAST,
-				object_class->type,
-				0, 
-				gtk_marshal_BOOL__POINTER_INT_INT_INT,
-				GTK_TYPE_BOOL, 4,
-				GTK_TYPE_POINTER,
-				GTK_TYPE_INT,
-				GTK_TYPE_INT,
-				GTK_TYPE_INT
-				);
-    _gevasevh_to_gtk_signal_signals[M_MOVE] =
-    	gtk_signal_new ("mouse_move",
-				GTK_RUN_LAST,
-				object_class->type,
-				0, 
-				gtk_marshal_BOOL__POINTER_INT_INT_INT,
-				GTK_TYPE_BOOL, 4,
-				GTK_TYPE_POINTER,
-				GTK_TYPE_INT,
-				GTK_TYPE_INT,
-				GTK_TYPE_INT
-				);
-    _gevasevh_to_gtk_signal_signals[M_IN] =
-    	gtk_signal_new ("mouse_in",
-				GTK_RUN_LAST,
-				object_class->type,
-				0, 
-				gtk_marshal_BOOL__POINTER_INT_INT_INT,
-				GTK_TYPE_BOOL, 4,
-				GTK_TYPE_POINTER,
-				GTK_TYPE_INT,
-				GTK_TYPE_INT,
-				GTK_TYPE_INT
-				);
-    _gevasevh_to_gtk_signal_signals[M_OUT] =
-    	gtk_signal_new ("mouse_out",
-				GTK_RUN_LAST,
-				object_class->type,
-				0, 
-				gtk_marshal_BOOL__POINTER_INT_INT_INT,
-				GTK_TYPE_BOOL, 4,
-				GTK_TYPE_POINTER,
-				GTK_TYPE_INT,
-				GTK_TYPE_INT,
-				GTK_TYPE_INT
-				);
-					
 
-	gtk_object_class_add_signals (object_class, _gevasevh_to_gtk_signal_signals, LAST_SIGNAL);
-	
+	_gevasevh_to_gtk_signal_signals[M_DOWN] =
+		gtk_signal_new("mouse_down",
+					   GTK_RUN_LAST,
+					   object_class->type,
+					   0,
+					   gtk_marshal_BOOL__POINTER_INT_INT_INT,
+					   GTK_TYPE_BOOL, 4,
+					   GTK_TYPE_POINTER,
+					   GTK_TYPE_INT, GTK_TYPE_INT, GTK_TYPE_INT);
+	_gevasevh_to_gtk_signal_signals[M_UP] =
+		gtk_signal_new("mouse_up",
+					   GTK_RUN_LAST,
+					   object_class->type,
+					   0,
+					   gtk_marshal_BOOL__POINTER_INT_INT_INT,
+					   GTK_TYPE_BOOL, 4,
+					   GTK_TYPE_POINTER,
+					   GTK_TYPE_INT, GTK_TYPE_INT, GTK_TYPE_INT);
+	_gevasevh_to_gtk_signal_signals[M_MOVE] =
+		gtk_signal_new("mouse_move",
+					   GTK_RUN_LAST,
+					   object_class->type,
+					   0,
+					   gtk_marshal_BOOL__POINTER_INT_INT_INT,
+					   GTK_TYPE_BOOL, 4,
+					   GTK_TYPE_POINTER,
+					   GTK_TYPE_INT, GTK_TYPE_INT, GTK_TYPE_INT);
+	_gevasevh_to_gtk_signal_signals[M_IN] =
+		gtk_signal_new("mouse_in",
+					   GTK_RUN_LAST,
+					   object_class->type,
+					   0,
+					   gtk_marshal_BOOL__POINTER_INT_INT_INT,
+					   GTK_TYPE_BOOL, 4,
+					   GTK_TYPE_POINTER,
+					   GTK_TYPE_INT, GTK_TYPE_INT, GTK_TYPE_INT);
+	_gevasevh_to_gtk_signal_signals[M_OUT] =
+		gtk_signal_new("mouse_out",
+					   GTK_RUN_LAST,
+					   object_class->type,
+					   0,
+					   gtk_marshal_BOOL__POINTER_INT_INT_INT,
+					   GTK_TYPE_BOOL, 4,
+					   GTK_TYPE_POINTER,
+					   GTK_TYPE_INT, GTK_TYPE_INT, GTK_TYPE_INT);
+
+
+	gtk_object_class_add_signals(object_class, _gevasevh_to_gtk_signal_signals,
+								 LAST_SIGNAL);
+
 }
 
-static void
-gevasevh_to_gtk_signal_init (GtkgEvasEvHToGtkSignals *ev)
+static void gevasevh_to_gtk_signal_init(GtkgEvasEvHToGtkSignals * ev)
 {
 }
 
-GtkObject*
-gevasevh_to_gtk_signal_new (void)
+GtkObject *gevasevh_to_gtk_signal_new(void)
 {
 	GtkgEvasEvHToGtkSignals *ev;
-	GtkgEvasEvH* hev;
-		
-	ev = gtk_type_new (gevasevh_to_gtk_signal_get_type ());
-	hev = (GtkgEvasEvH*)ev;
-		
-	return GTK_OBJECT (ev);
+	GtkgEvasEvH *hev;
+
+	ev = gtk_type_new(gevasevh_to_gtk_signal_get_type());
+	hev = (GtkgEvasEvH *) ev;
+
+	return GTK_OBJECT(ev);
 }
 
 /* GtkObject functions */
 
 
-static void   
-gevasevh_to_gtk_signal_destroy       (GtkObject   *object)
+static void gevasevh_to_gtk_signal_destroy(GtkObject * object)
 {
-	GtkgEvasEvHToGtkSignals* ev;
+	GtkgEvasEvHToGtkSignals *ev;
 	g_return_if_fail(object != NULL);
 	g_return_if_fail(GTK_IS_GEVASEVH_TO_GTK_SIGNAL(object));
 	ev = GTK_GEVASEVH_TO_GTK_SIGNAL(object);
-		
+
 	/* Chain up */
 	if (GTK_OBJECT_CLASS(parent_class)->destroy)
-		(* GTK_OBJECT_CLASS(parent_class)->destroy) (object);
+		(*GTK_OBJECT_CLASS(parent_class)->destroy) (object);
 }

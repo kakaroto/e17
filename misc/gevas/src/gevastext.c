@@ -47,211 +47,198 @@
 #else
 #define N_(String) (String)
 #endif
-#else /* NLS is disabled */
+#else							/* NLS is disabled */
 #define _(String) (String)
 #define N_(String) (String)
 #define textdomain(String) (String)
 #define gettext(String) (String)
 #define dgettext(Domain,String) (String)
 #define dcgettext(Domain,String,Type) (String)
-#define bindtextdomain(Domain,Directory) (Domain) 
-#endif /* ENABLE_NLS */
+#define bindtextdomain(Domain,Directory) (Domain)
+#endif							/* ENABLE_NLS */
 
 #include <Evas.h>
 #include "gevastext.h"
 
 enum {
-  ARG_0,              /* Skip 0, an invalid argument ID */
-  ARG_XXX
+	ARG_0,						/* Skip 0, an invalid argument ID */
+	ARG_XXX
 };
 
-static void   gevastext_class_init    (GtkgEvasTextClass  *klass);
-static void   gevastext_init          (GtkgEvasText       *ev);
+static void gevastext_class_init(GtkgEvasTextClass * klass);
+static void gevastext_init(GtkgEvasText * ev);
 
 
 /* GtkObject functions */
-static void   gevastext_destroy       (GtkObject   *object);
-static void gevastext_get_arg(GtkObject* object,
-                                  GtkArg* arg,
-                                  guint arg_id);
-static void gevastext_set_arg(GtkObject* object,
-                                  GtkArg* arg,
-                                  guint arg_id);
+static void gevastext_destroy(GtkObject * object);
+static void gevastext_get_arg(GtkObject * object, GtkArg * arg, guint arg_id);
+static void gevastext_set_arg(GtkObject * object, GtkArg * arg, guint arg_id);
 
 #define EVAS(ev) _gevas_evas( GTK_OBJECT(ev))
 #define EVASO(ev) _gevas_get_obj( GTK_OBJECT(ev))
 
-GtkgEvasText*
-gevastext_new_full (GtkgEvas* gevas, char *font, int size, char *text)
+GtkgEvasText *gevastext_new_full(GtkgEvas * gevas, char *font, int size,
+								 char *text)
 {
 	GtkgEvasText *ev;
 	Evas_Object eobj;
 
-	ev = gtk_type_new (gevastext_get_type ());
-	
-	gevasobj_set_gevas( ev, gevas );
-	
-	eobj = evas_add_text( EVAS(ev), font, size, text);
-	_gevas_set_obj( GTK_OBJECT(ev), eobj );
+	ev = gtk_type_new(gevastext_get_type());
 
-	return GTK_GEVASTEXT (ev);
+	gevasobj_set_gevas(ev, gevas);
+
+	eobj = evas_add_text(EVAS(ev), font, size, text);
+	_gevas_set_obj(GTK_OBJECT(ev), eobj);
+
+	return GTK_GEVASTEXT(ev);
 }
 
-GtkgEvasText*
-gevastext_new (GtkgEvas* gevas )
+GtkgEvasText *gevastext_new(GtkgEvas * gevas)
 {
-	return gevastext_new_full (gevas, GEVASTEXT_DEFAULT_FONT, 12, "");
+	return gevastext_new_full(gevas, GEVASTEXT_DEFAULT_FONT, 12, "");
 }
 
 
-gchar*
-gevastext_get_string( GtkgEvasObj* object )
+gchar *gevastext_get_string(GtkgEvasObj * object)
 {
-	return (gchar*)evas_get_text_string(EVAS(object), EVASO(object));
+	return (gchar *) evas_get_text_string(EVAS(object), EVASO(object));
 }
 
-gchar*
-gevastext_get_font( GtkgEvasObj* object )
+gchar *gevastext_get_font(GtkgEvasObj * object)
 {
-	return (gchar*)evas_get_text_font(EVAS(object), EVASO(object));
+	return (gchar *) evas_get_text_font(EVAS(object), EVASO(object));
 }
 
-int    
-gevastext_get_text_size( GtkgEvasObj* object )
+int gevastext_get_text_size(GtkgEvasObj * object)
 {
 	return evas_get_text_size(EVAS(object), EVASO(object));
 }
 
 int
-gevastext_at_position( GtkgEvasObj* object, double x, double y, int *char_x, int *char_y, int *char_w, int *char_h)
+gevastext_at_position(GtkgEvasObj * object, double x, double y, int *char_x,
+					  int *char_y, int *char_w, int *char_h)
 {
-	return evas_text_at_position(EVAS(object), EVASO(object), x, y, char_x, char_y, char_w, char_h);
+	return evas_text_at_position(EVAS(object), EVASO(object), x, y, char_x,
+								 char_y, char_w, char_h);
 }
 
 void
-gevastext_at( GtkgEvasObj* object, int index, int *char_x, int *char_y, int *char_w, int *char_h)
+gevastext_at(GtkgEvasObj * object, int index, int *char_x, int *char_y,
+			 int *char_w, int *char_h)
 {
-	evas_text_at(EVAS(object), EVASO(object), index, char_x, char_y, char_w, char_h);
+	evas_text_at(EVAS(object), EVASO(object), index, char_x, char_y, char_w,
+				 char_h);
 }
 
-void   
-gevastext_get_ascent_descent( GtkgEvasObj* object, double *ascent, double *descent)
+void
+gevastext_get_ascent_descent(GtkgEvasObj * object, double *ascent,
+							 double *descent)
 {
 	evas_text_get_ascent_descent(EVAS(object), EVASO(object), ascent, descent);
 }
 
-double   
-gevastext_get_ascent( GtkgEvasObj* object )
+double gevastext_get_ascent(GtkgEvasObj * object)
 {
-	double a=0,d=0;
-	evas_text_get_ascent_descent(EVAS(object), EVASO(object), &a,&d);
+	double a = 0, d = 0;
+	evas_text_get_ascent_descent(EVAS(object), EVASO(object), &a, &d);
 	return a;
 }
 
-double   
-gevastext_get_descent( GtkgEvasObj* object )
+double gevastext_get_descent(GtkgEvasObj * object)
 {
-	double a=0,d=0;
-	evas_text_get_ascent_descent(EVAS(object), EVASO(object), &a,&d);
+	double a = 0, d = 0;
+	evas_text_get_ascent_descent(EVAS(object), EVASO(object), &a, &d);
 	return d;
 }
 
-void   
-gevastext_get_max_ascent_descent( GtkgEvasObj* object, double *ascent, double *descent)
+void
+gevastext_get_max_ascent_descent(GtkgEvasObj * object, double *ascent,
+								 double *descent)
 {
-	evas_text_get_max_ascent_descent(EVAS(object), EVASO(object), ascent, descent);
+	evas_text_get_max_ascent_descent(EVAS(object), EVASO(object), ascent,
+									 descent);
 }
 
-double
-gevastext_get_max_ascent( GtkgEvasObj* object )
+double gevastext_get_max_ascent(GtkgEvasObj * object)
 {
-	double a=0,d=0;
-	evas_text_get_max_ascent_descent(EVAS(object), EVASO(object), &a,&d);
+	double a = 0, d = 0;
+	evas_text_get_max_ascent_descent(EVAS(object), EVASO(object), &a, &d);
 	return a;
 }
 
-double 
-gevastext_get_max_descent( GtkgEvasObj* object )
+double gevastext_get_max_descent(GtkgEvasObj * object)
 {
-	double a=0,d=0;
-	evas_text_get_max_ascent_descent(EVAS(object), EVASO(object), &a,&d);
+	double a = 0, d = 0;
+	evas_text_get_max_ascent_descent(EVAS(object), EVASO(object), &a, &d);
 	return d;
 }
 
-void   
-gevastext_get_advance(GtkgEvasObj* object, double *h_advance, double *v_advance)
+void
+gevastext_get_advance(GtkgEvasObj * object, double *h_advance,
+					  double *v_advance)
 {
 	evas_text_get_advance(EVAS(object), EVASO(object), h_advance, v_advance);
 }
 
-double 
-gevastext_get_inset( GtkgEvasObj* object )
+double gevastext_get_inset(GtkgEvasObj * object)
 {
 	return evas_text_get_inset(EVAS(object), EVASO(object));
 }
 
-void 
-gevastext_set_string(GtkgEvasObj* object, const gchar *text)
+void gevastext_set_string(GtkgEvasObj * object, const gchar * text)
 {
-	evas_set_text(EVAS(object), EVASO(object), (char*)text);
+	evas_set_text(EVAS(object), EVASO(object), (char *) text);
 }
 
-void 
-gevastext_set_font(GtkgEvasObj* object, const gchar *font, const int size)
+void
+gevastext_set_font(GtkgEvasObj * object, const gchar * font, const int size)
 {
-	evas_set_font(EVAS(object), EVASO(object), (char*)font, (int)size);
+	evas_set_font(EVAS(object), EVASO(object), (char *) font, (int) size);
 }
 
 
 static GtkObjectClass *parent_class = NULL;
 
-guint
-gevastext_get_type (void)
+guint gevastext_get_type(void)
 {
-  static guint ev_type = 0;
+	static guint ev_type = 0;
 
-  if (!ev_type)
-    {
-      static const GtkTypeInfo ev_info =
-      {
-        "GtkgEvasText",
-        sizeof (GtkgEvasText),
-        sizeof (GtkgEvasTextClass),
-        (GtkClassInitFunc) gevastext_class_init,
-        (GtkObjectInitFunc) gevastext_init,
-        /* reserved_1 */ NULL,
-        /* reserved_2 */ NULL,
-        (GtkClassInitFunc) NULL,
-      };
+	if (!ev_type) {
+		static const GtkTypeInfo ev_info = {
+			"GtkgEvasText",
+			sizeof(GtkgEvasText),
+			sizeof(GtkgEvasTextClass),
+			(GtkClassInitFunc) gevastext_class_init,
+			(GtkObjectInitFunc) gevastext_init,
+			/* reserved_1 */ NULL,
+			/* reserved_2 */ NULL,
+			(GtkClassInitFunc) NULL,
+		};
 
-      ev_type = gtk_type_unique (gevasobj_get_type(), &ev_info);
-    }
+		ev_type = gtk_type_unique(gevasobj_get_type(), &ev_info);
+	}
 
-  return ev_type;
+	return ev_type;
 }
 
-static void
-gevastext_class_init (GtkgEvasTextClass *klass)
+static void gevastext_class_init(GtkgEvasTextClass * klass)
 {
-  GtkObjectClass *object_class;
+	GtkObjectClass *object_class;
 
-  object_class = (GtkObjectClass*) klass;
-  parent_class = gtk_type_class (gevasobj_get_type ());
+	object_class = (GtkObjectClass *) klass;
+	parent_class = gtk_type_class(gevasobj_get_type());
 
-  object_class->destroy = gevastext_destroy;
+	object_class->destroy = gevastext_destroy;
 
-  object_class->get_arg = gevastext_get_arg;
-  object_class->set_arg = gevastext_set_arg;	
+	object_class->get_arg = gevastext_get_arg;
+	object_class->set_arg = gevastext_set_arg;
 
-	gtk_object_add_arg_type( GTK_GEVASTEXT_IMAGENAME,
-                          GTK_TYPE_STRING, 
-                          GTK_ARG_WRITABLE, 
-                          ARG_XXX);
-	
+	gtk_object_add_arg_type(GTK_GEVASTEXT_IMAGENAME,
+							GTK_TYPE_STRING, GTK_ARG_WRITABLE, ARG_XXX);
+
 }
 
-static void
-gevastext_init (GtkgEvasText *ev)
+static void gevastext_init(GtkgEvasText * ev)
 {
 
 }
@@ -271,37 +258,32 @@ gevastext_new (void)
 /* GtkObject functions */
 
 
-static void   
-gevastext_destroy       (GtkObject   *object)
+static void gevastext_destroy(GtkObject * object)
 {
-  GtkgEvasText* ev;
+	GtkgEvasText *ev;
 
-  g_return_if_fail(object != NULL);
-  g_return_if_fail(GTK_IS_GEVASTEXT(object));
+	g_return_if_fail(object != NULL);
+	g_return_if_fail(GTK_IS_GEVASTEXT(object));
 
-  ev = GTK_GEVASTEXT(object);
-	
-	
+	ev = GTK_GEVASTEXT(object);
 
-  /* Chain up */
-  if (GTK_OBJECT_CLASS(parent_class)->destroy)
-    (* GTK_OBJECT_CLASS(parent_class)->destroy) (object);
+
+
+	/* Chain up */
+	if (GTK_OBJECT_CLASS(parent_class)->destroy)
+		(*GTK_OBJECT_CLASS(parent_class)->destroy) (object);
 }
 
-static void
-gevastext_set_arg (GtkObject    *object,
-                       GtkArg       *arg,
-                       guint         arg_id)
+static void gevastext_set_arg(GtkObject * object, GtkArg * arg, guint arg_id)
 {
-  GtkgEvasText* ev;
+	GtkgEvasText *ev;
 
-  g_return_if_fail(object != NULL);
-  g_return_if_fail(GTK_IS_GEVASTEXT(object));
+	g_return_if_fail(object != NULL);
+	g_return_if_fail(GTK_IS_GEVASTEXT(object));
 
-  ev = GTK_GEVASTEXT(object);
+	ev = GTK_GEVASTEXT(object);
 
-  switch (arg_id)
-    {
+	switch (arg_id) {
 /*
 	case ARG_XXX:
 		{
@@ -316,37 +298,30 @@ gevastext_set_arg (GtkObject    *object,
 		_gevas_set_obj(object, o);
 		}
 		break;
-*/	
-	
-    default:
-		break;
-    }
+*/
+
+		default:
+			break;
+	}
 }
 
-static void
-gevastext_get_arg (GtkObject    *object,
-                       GtkArg       *arg,
-                       guint         arg_id)
+static void gevastext_get_arg(GtkObject * object, GtkArg * arg, guint arg_id)
 {
-  GtkgEvasText* ev;
+	GtkgEvasText *ev;
 
-  g_return_if_fail(object != NULL);
-  g_return_if_fail(GTK_IS_GEVASTEXT(object));
+	g_return_if_fail(object != NULL);
+	g_return_if_fail(GTK_IS_GEVASTEXT(object));
 
-  ev = GTK_GEVASTEXT(object);
-  
-  switch (arg_id)
-    {
+	ev = GTK_GEVASTEXT(object);
+
+	switch (arg_id) {
 /*    case ARG_XXX:
 		GTK_VALUE_POINTER (*arg) = ev->gevas;
 		break;
-*/	
-	
-    default:
-      arg->type = GTK_TYPE_INVALID;
-      break;
-    }
-}    
+*/
 
-
-
+		default:
+			arg->type = GTK_TYPE_INVALID;
+			break;
+	}
+}

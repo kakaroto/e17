@@ -36,137 +36,128 @@
 
 #ifdef __cplusplus
 extern "C" {
-#endif /* __cplusplus */
-
+#endif							/* __cplusplus */
 #define GTK_GEVASOBJ(obj)          GTK_CHECK_CAST (obj, gevasobj_get_type (), GtkgEvasObj)
 #define GTK_GEVASOBJ_CLASS(klass)  GTK_CHECK_CLASS_CAST (klass, gevasobj_get_type (), GtkgEvasObjClass)
 #define GTK_IS_GEVASOBJ(obj)       GTK_CHECK_TYPE (obj, gevasobj_get_type ())
-
-	
 #define GTK_GEVASOBJ_GEVAS			"GtkgEvasObj::gevas"
 #define GTK_GEVASOBJ_IMAGENAME		"GtkgEvasObj::image_name"
-
-	
 #define gevasobj_set_gevas( gevaso, val ) \
 	  gtk_object_set(GTK_OBJECT(gevaso), \
-                  GTK_GEVASOBJ_GEVAS, (gpointer) val, NULL); 	
-
+                  GTK_GEVASOBJ_GEVAS, (gpointer) val, NULL);
 #define gevasobj_set_image_name( gevaso, val ) \
 	  gtk_object_set(GTK_OBJECT(gevaso), \
-                  GTK_GEVASOBJ_IMAGENAME, (gchar*) val, NULL); 	
-	
-	
-typedef struct _GtkgEvasObj			GtkgEvasObj;
-typedef struct _GtkgEvasObjClass  	GtkgEvasObjClass;
+                  GTK_GEVASOBJ_IMAGENAME, (gchar*) val, NULL);
+	 typedef struct _GtkgEvasObj GtkgEvasObj;
+	typedef struct _GtkgEvasObjClass GtkgEvasObjClass;
 
-struct _GtkgEvasObj
-{
-	GtkObject 	 	gobj;
-	GtkgEvas*		gevas;
-	Evas_Object		eobj;
+	struct _GtkgEvasObj {
+		GtkObject gobj;
+		GtkgEvas *gevas;
+		Evas_Object eobj;
 
-	GSList *ev_handlers;
-	
+		GSList *ev_handlers;
+
 	/**  These are here so that gevastwin can override them
 	  *  on an object basis, otherwise gevastwin would have
 	  *  to check EVERY gevasobj added to the canvas, not 
 	  *  just the ones that it is interested in. A slight RAM loss.
 	 **/
-    void (*move)(GtkgEvasObj *object, double x, double y);
+		void (*move) (GtkgEvasObj * object, double x, double y);
 
-};
+	};
 
-struct _GtkgEvasObjClass
-{
-  GtkObjectClass parent_class;
+	struct _GtkgEvasObjClass {
+		GtkObjectClass parent_class;
 
-  Evas (*_gevas_evas)( GtkObject *object );
-  void (*_gevas_set_obj)( GtkObject *object, Evas_Object eobj );
-  void (*_gevasobj_ensure_obj_free)( GtkObject *object );
+		 Evas(*_gevas_evas) (GtkObject * object);
+		void (*_gevas_set_obj) (GtkObject * object, Evas_Object eobj);
+		void (*_gevasobj_ensure_obj_free) (GtkObject * object);
 
-  void (*set_color)(GtkgEvasObj *object, int r, int g, int b, int a);
-  void (*set_angle)(GtkgEvasObj *object, double angle);
-  void (*set_zoom_scale)(GtkgEvasObj *object, int scale);
-  void (*set_layer)(GtkgEvasObj *object, int l);
-  void (*set_layer_store)(GtkgEvasObj *object, int l, int store);
-  void (*raise)(GtkgEvasObj *object);
-  void (*lower)(GtkgEvasObj *object);
-  void (*stack_above)(GtkgEvasObj *object, GtkgEvasObj *above);
-  void (*stack_below)(GtkgEvasObj *object, GtkgEvasObj *below);
-  void (*resize)(GtkgEvasObj *object, double w, double h);
-  void (*get_geometry)(GtkgEvasObj *object, double *x, double *y, double *w, double *h);
-  void (*show)(GtkgEvasObj *object);
-  void (*hide)(GtkgEvasObj *object);
-  void (*get_color)(GtkgEvasObj *object, int *r, int *g, int *b, int *a);
-  void (*set_name)(GtkgEvasObj *object, gchar* name);
-  gchar* (*get_name)(GtkgEvasObj *object);
-  int (*get_alpha)(GtkgEvasObj *object);
-  void (*set_alpha)(GtkgEvasObj *object, int a);
-  void (*get_location)(GtkgEvasObj *object, double *x, double *y);
-   
-  void (*add_evhandler)( GtkgEvasObj *object, GtkObject* h );
-  void (*remove_evhandler)( GtkgEvasObj *object, GtkObject* h );
+		void (*set_color) (GtkgEvasObj * object, int r, int g, int b, int a);
+		void (*set_angle) (GtkgEvasObj * object, double angle);
+		void (*set_zoom_scale) (GtkgEvasObj * object, int scale);
+		void (*set_layer) (GtkgEvasObj * object, int l);
+		void (*set_layer_store) (GtkgEvasObj * object, int l, int store);
+		void (*raise) (GtkgEvasObj * object);
+		void (*lower) (GtkgEvasObj * object);
+		void (*stack_above) (GtkgEvasObj * object, GtkgEvasObj * above);
+		void (*stack_below) (GtkgEvasObj * object, GtkgEvasObj * below);
+		void (*resize) (GtkgEvasObj * object, double w, double h);
+		void (*get_geometry) (GtkgEvasObj * object, double *x, double *y,
+							  double *w, double *h);
+		void (*show) (GtkgEvasObj * object);
+		void (*hide) (GtkgEvasObj * object);
+		void (*get_color) (GtkgEvasObj * object, int *r, int *g, int *b,
+						   int *a);
+		void (*set_name) (GtkgEvasObj * object, gchar * name);
+		gchar *(*get_name) (GtkgEvasObj * object);
+		int (*get_alpha) (GtkgEvasObj * object);
+		void (*set_alpha) (GtkgEvasObj * object, int a);
+		void (*get_location) (GtkgEvasObj * object, double *x, double *y);
 
-};
+		void (*add_evhandler) (GtkgEvasObj * object, GtkObject * h);
+		void (*remove_evhandler) (GtkgEvasObj * object, GtkObject * h);
+
+	};
 
 
-guint           gevasobj_get_type           (void);
-GtkObject*      gevasobj_new                (void);
-void			gevasobj_add_evhandler( GtkgEvasObj *object, GtkObject* h );
-void 			gevasobj_remove_evhandler( GtkgEvasObj *object, GtkObject* h );
+	guint gevasobj_get_type(void);
+	GtkObject *gevasobj_new(void);
+	void gevasobj_add_evhandler(GtkgEvasObj * object, GtkObject * h);
+	void gevasobj_remove_evhandler(GtkgEvasObj * object, GtkObject * h);
 
-void gevasobj_queue_redraw( GtkgEvasObj* obj );
+	void gevasobj_queue_redraw(GtkgEvasObj * obj);
 
-void gevasobj_move(GtkgEvasObj *object, double x, double y);
+	void gevasobj_move(GtkgEvasObj * object, double x, double y);
 
-Evas_Object gevasobj_get_evasobj( GtkObject *object );
+	Evas_Object gevasobj_get_evasobj(GtkObject * object);
 
-GtkgEvas* gevasobj_get_gevas( GtkObject *object );
+	GtkgEvas *gevasobj_get_gevas(GtkObject * object);
 
-Evas gevasobj_get_evas( GtkObject *object );
+	Evas gevasobj_get_evas(GtkObject * object);
 
-void gevasobj_add_evhandler( GtkgEvasObj *object, GtkObject* h );
-void gevasobj_remove_evhandler( GtkgEvasObj *object, GtkObject* h );
+	void gevasobj_add_evhandler(GtkgEvasObj * object, GtkObject * h);
+	void gevasobj_remove_evhandler(GtkgEvasObj * object, GtkObject * h);
 
 /** evas wrappers (public access) **/
-void gevasobj_set_color(GtkgEvasObj *object, int r, int g, int b, int a);
-void gevasobj_set_alpha(GtkgEvasObj *object, int a);
-void gevasobj_set_angle(GtkgEvasObj *object, double angle);
-void gevasobj_set_zoom_scale(GtkgEvasObj *object, int scale);
-void gevasobj_set_layer(GtkgEvasObj *object, int l);
-void gevasobj_set_layer_store(GtkgEvasObj *object, int l, int store);
-void gevasobj_raise(GtkgEvasObj *object);
-void gevasobj_lower(GtkgEvasObj *object);
-void gevasobj_stack_above(GtkgEvasObj *object, GtkgEvasObj *above);
-void gevasobj_stack_below(GtkgEvasObj *object, GtkgEvasObj *below);
-void gevasobj_move(GtkgEvasObj *object, double x, double y);
-void gevasobj_resize(GtkgEvasObj *object, double w, double h);
-void gevasobj_get_geometry(GtkgEvasObj *object, double *x, double *y, double *w, double *h);
-void gevasobj_get_location(GtkgEvasObj *object, double *x, double *y);
-void gevasobj_show(GtkgEvasObj *object);
-void gevasobj_hide(GtkgEvasObj *object);
-void gevasobj_get_color(GtkgEvasObj *object, int *r, int *g, int *b, int *a);
-int gevasobj_get_alpha(GtkgEvasObj *object);
-void gevasobj_set_name(GtkgEvasObj *object, gchar* name);
-gchar* gevasobj_get_name(GtkgEvasObj *object);
+	void gevasobj_set_color(GtkgEvasObj * object, int r, int g, int b, int a);
+	void gevasobj_set_alpha(GtkgEvasObj * object, int a);
+	void gevasobj_set_angle(GtkgEvasObj * object, double angle);
+	void gevasobj_set_zoom_scale(GtkgEvasObj * object, int scale);
+	void gevasobj_set_layer(GtkgEvasObj * object, int l);
+	void gevasobj_set_layer_store(GtkgEvasObj * object, int l, int store);
+	void gevasobj_raise(GtkgEvasObj * object);
+	void gevasobj_lower(GtkgEvasObj * object);
+	void gevasobj_stack_above(GtkgEvasObj * object, GtkgEvasObj * above);
+	void gevasobj_stack_below(GtkgEvasObj * object, GtkgEvasObj * below);
+	void gevasobj_move(GtkgEvasObj * object, double x, double y);
+	void gevasobj_resize(GtkgEvasObj * object, double w, double h);
+	void gevasobj_get_geometry(GtkgEvasObj * object, double *x, double *y,
+							   double *w, double *h);
+	void gevasobj_get_location(GtkgEvasObj * object, double *x, double *y);
+	void gevasobj_show(GtkgEvasObj * object);
+	void gevasobj_hide(GtkgEvasObj * object);
+	void gevasobj_get_color(GtkgEvasObj * object, int *r, int *g, int *b,
+							int *a);
+	int gevasobj_get_alpha(GtkgEvasObj * object);
+	void gevasobj_set_name(GtkgEvasObj * object, gchar * name);
+	gchar *gevasobj_get_name(GtkgEvasObj * object);
 
 
 /** protected access only **/
-Evas _gevas_evas( GtkObject *object );
-void _gevas_set_obj( GtkObject *object, Evas_Object eobj );
-Evas_Object _gevas_get_obj( GtkObject *object );
-void _gevasobj_ensure_obj_free( GtkObject *object );
-GSList* gevasobj_get_evhandlers( GtkgEvasObj *object );
+	Evas _gevas_evas(GtkObject * object);
+	void _gevas_set_obj(GtkObject * object, Evas_Object eobj);
+	Evas_Object _gevas_get_obj(GtkObject * object);
+	void _gevasobj_ensure_obj_free(GtkObject * object);
+	GSList *gevasobj_get_evhandlers(GtkgEvasObj * object);
 
 
 
 /* the GtkgEvasObj is stored at this key in the Evas_Object */
-#define PRIVATE_GTK_GEVASOBJ "___gtk_gevasobj_key" 
+#define PRIVATE_GTK_GEVASOBJ "___gtk_gevasobj_key"
 
 #ifdef __cplusplus
 }
-#endif /* __cplusplus */
-
-#endif /* __GTK_GEVASOBJ_H__ */
-
-
+#endif							/* __cplusplus */
+#endif							/* __GTK_GEVASOBJ_H__ */

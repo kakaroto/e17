@@ -39,42 +39,47 @@
 
 #ifdef __cplusplus
 extern "C" {
-#endif /* __cplusplus */
-
+#endif							/* __cplusplus */
 #define GTK_GEVASEVH_TO_GTK_SIGNAL(obj)          GTK_CHECK_CAST (obj, gevasevh_to_gtk_signal_get_type (), GtkgEvasEvHToGtkSignals)
 #define GTK_GEVASEVH_TO_GTK_SIGNAL_CLASS(klass)  GTK_CHECK_CLASS_CAST (klass, gevasevh_to_gtk_signal_get_type (), GtkgEvasEvHToGtkSignalsClass)
 #define GTK_IS_GEVASEVH_TO_GTK_SIGNAL(obj)       GTK_CHECK_TYPE (obj, gevasevh_to_gtk_signal_get_type ())
-
-typedef struct _GtkgEvasEvHToGtkSignals			GtkgEvasEvHToGtkSignals;
-typedef struct _GtkgEvasEvHToGtkSignalsClass  	GtkgEvasEvHToGtkSignalsClass;
-
-
-		
-struct _GtkgEvasEvHToGtkSignals
-{
-	GtkgEvasEvH evh_obj;
-};
-
-struct _GtkgEvasEvHToGtkSignalsClass
-{
-  GtkgEvasEvHClass parent_class;
-};
+	 typedef struct _GtkgEvasEvHToGtkSignals GtkgEvasEvHToGtkSignals;
+	typedef struct _GtkgEvasEvHToGtkSignalsClass GtkgEvasEvHToGtkSignalsClass;
 
 
-guint           gevasevh_to_gtk_signal_get_type           (void);
-GtkObject*      gevasevh_to_gtk_signal_new                (void);
+
+	struct _GtkgEvasEvHToGtkSignals {
+		GtkgEvasEvH evh_obj;
+	};
+
+	struct _GtkgEvasEvHToGtkSignalsClass {
+		GtkgEvasEvHClass parent_class;
+	};
+
+
+	guint gevasevh_to_gtk_signal_get_type(void);
+	GtkObject *gevasevh_to_gtk_signal_new(void);
 
 /** Protected access only **/
-GEVASEV_HANDLER_RET gevasev_to_gtk_signal_mouse_in( GtkObject* object, GtkObject* gevasobj, int _b, int _x, int _y );
-GEVASEV_HANDLER_RET gevasev_to_gtk_signal_mouse_out( GtkObject* object, GtkObject* gevasobj, int _b, int _x, int _y );
-GEVASEV_HANDLER_RET gevasev_to_gtk_signal_mouse_down( GtkObject* object,  GtkObject* gevasobj, int _b, int _x, int _y );
-GEVASEV_HANDLER_RET gevasev_to_gtk_signal_mouse_up( GtkObject* object,  GtkObject* gevasobj, int _b, int _x, int _y );
-GEVASEV_HANDLER_RET gevasev_to_gtk_signal_mouse_move( GtkObject* object,  GtkObject* gevasobj, int _b, int _x, int _y );
+	GEVASEV_HANDLER_RET gevasev_to_gtk_signal_mouse_in(GtkObject * object,
+													   GtkObject * gevasobj,
+													   int _b, int _x, int _y);
+	GEVASEV_HANDLER_RET gevasev_to_gtk_signal_mouse_out(GtkObject * object,
+														GtkObject * gevasobj,
+														int _b, int _x, int _y);
+	GEVASEV_HANDLER_RET gevasev_to_gtk_signal_mouse_down(GtkObject * object,
+														 GtkObject * gevasobj,
+														 int _b, int _x,
+														 int _y);
+	GEVASEV_HANDLER_RET gevasev_to_gtk_signal_mouse_up(GtkObject * object,
+													   GtkObject * gevasobj,
+													   int _b, int _x, int _y);
+	GEVASEV_HANDLER_RET gevasev_to_gtk_signal_mouse_move(GtkObject * object,
+														 GtkObject * gevasobj,
+														 int _b, int _x,
+														 int _y);
 
 #ifdef __cplusplus
 }
-#endif /* __cplusplus */
-
-#endif /*  */
-
-
+#endif							/* __cplusplus */
+#endif							/*  */

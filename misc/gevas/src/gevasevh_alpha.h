@@ -40,44 +40,35 @@
 
 #ifdef __cplusplus
 extern "C" {
-#endif /* __cplusplus */
-
+#endif							/* __cplusplus */
 #define GTK_GEVASEVH_ALPHA(obj)          GTK_CHECK_CAST (obj, gevasevh_alpha_get_type (), GtkgEvasEvHAlpha)
 #define GTK_GEVASEVH_ALPHA_CLASS(klass)  GTK_CHECK_CLASS_CAST (klass, gevasevh_alpha_get_type (), GtkgEvasEvHAlphaClass)
 #define GTK_IS_GEVASEVH_ALPHA(obj)       GTK_CHECK_TYPE (obj, gevasevh_alpha_get_type ())
-
 #define GTK_GEVASEVH_ALPHA_HOT_VALUE		"GtkgEvasEvHAlpha::hot_value"
-
 #define gevasevh_alpha_set_how_value( gevaso, val ) \
 	  gtk_object_set(GTK_OBJECT(gevaso), \
-                  GTK_GEVASEVH_ALPHA_HOT_VALUE, (gint) val, NULL); 	
-	
-typedef struct _GtkgEvasEvHAlpha			GtkgEvasEvHAlpha;
-typedef struct _GtkgEvasEvHAlphaClass  	GtkgEvasEvHAlphaClass;
+                  GTK_GEVASEVH_ALPHA_HOT_VALUE, (gint) val, NULL);
+	 typedef struct _GtkgEvasEvHAlpha GtkgEvasEvHAlpha;
+	typedef struct _GtkgEvasEvHAlphaClass GtkgEvasEvHAlphaClass;
 
 
-		
-struct _GtkgEvasEvHAlpha
-{
-	GtkgEvasEvH evh_obj;
-	
-	gint hot_value;		// what alpha value to give the object on mouse over.
-	gint cold_value;	// cache for the old value for mouse_out
-};
 
-struct _GtkgEvasEvHAlphaClass
-{
-  GtkgEvasEvHClass parent_class;
-};
+	struct _GtkgEvasEvHAlpha {
+		GtkgEvasEvH evh_obj;
+
+		gint hot_value;			// what alpha value to give the object on mouse over.
+		gint cold_value;		// cache for the old value for mouse_out
+	};
+
+	struct _GtkgEvasEvHAlphaClass {
+		GtkgEvasEvHClass parent_class;
+	};
 
 
-guint           gevasevh_alpha_get_type           (void);
-GtkObject*      gevasevh_alpha_new                (void);
+	guint gevasevh_alpha_get_type(void);
+	GtkObject *gevasevh_alpha_new(void);
 
 #ifdef __cplusplus
 }
-#endif /* __cplusplus */
-
-#endif /*  */
-
-
+#endif							/* __cplusplus */
+#endif							/*  */
