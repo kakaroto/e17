@@ -455,6 +455,8 @@ winwidget_resize(winwidget winwid, int w, int h)
    if (!winwid)
       D_RETURN_;
    XResizeWindow(disp, winwid->win, w, h);
+   winwid->w = w;
+   winwid->h = h;
    /* wait for the window to resize D(("Waiting for window to resize\n"));
       XMaskEvent(disp, StructureNotifyMask, &ev); D(("Window resized\n")); */
    D_RETURN_;

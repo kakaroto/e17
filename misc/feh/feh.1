@@ -52,7 +52,8 @@ show an automated presentation.
 .PP
 .B List mode
 doesn't display images. Outputs an 'ls'-style listing of the files in the
-filelist, including image info such as size, pixels, type, etc.
+filelist, including image info such as size, pixels, type, etc. Customlist
+mode will display whatever image info you want, in the format you choose.
 .PP
 .B feh
 can also list either all the loadable files in a filelist or all the
@@ -154,6 +155,11 @@ get to keep the local copies. They will be in /tmp with "feh" in the name.
 Don't display images. Analyse them and display an 'ls'-style listing.
 Useful in scripts hunt out images of a certain size/resolution/type etc.
 .TP 5
+.B -L, --customlist FORMAT
+Use FORMAT as the format specifier for list
+output. FORMAT is a printf-like string containing
+image info specifiers. See FORMAT SPECIFIERS.
+.TP 5
 .B -U, --loadable
 Don't display images. Just print out their names if imlib2 can successfully
 load them.
@@ -176,20 +182,8 @@ to sort in reverse width order, use
 .B -A, --action ACTION
 Specify a string as an action to perform when the enter key is pressed in
 slideshow or multiwindow modes. The action will be executed in a shell.
-Use these format specifiers to refer to image properties:
-%f image path/filename
-.br
-%n image name
-.br
-%s image size (bytes)
-.br
-%p image pixel size
-.br
-%w image width
-.br
-%h image height
-.br
-%t image format
+Use format specifiers to refer to image properties. See FORMAT SPECIFIERS
+for details on these.
 .br
 Eg. feh -A "mv %f ~/images/%n" *
 .br
@@ -220,6 +214,29 @@ Use FONT for the font in menus.
 .TP 5
 .B -N, --no-menus
 Don't load or show any menus.
+.SH FORMAT SPECIFIERS
+.B %f
+image path/filename
+.br
+.B %n
+image name
+.br
+.B %s
+image size (bytes)
+.br
+.B %p
+image pixel size
+.br
+.B %w
+image width
+.br
+.B %h
+image height
+.br
+.B %t
+image format
+.br
+Eg. feh -A "mv %f ~/images/%n" *
 .SH MONTAGE MODE OPTIONS
 .TP 5
 .B -X, --ignore-aspect

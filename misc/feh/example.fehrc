@@ -46,3 +46,7 @@ booth --fullscreen --slideshow-delay 20
 
 # Screw xscreensaver, use feh =)
 screensave --fullscreen --randomize --slideshow-delay 5
+
+# Add <img> tags to your html with ease :-)
+newimg -q -L "<img src=\"%f\" alt=\"feh\" border=\"0\" width=\"%w\" height=\"%h\">"
+

@@ -50,7 +50,7 @@ main(int argc, char **argv)
       init_collage_mode();
    else if (opt.multiwindow)
       init_multiwindow_mode();
-   else if (opt.list || opt.longlist)
+   else if (opt.list || opt.customlist)
       init_list_mode();
    else if (opt.loadables)
       init_loadables_mode();
@@ -340,6 +340,8 @@ feh_handle_event(XEvent * ev)
         break;
      case ConfigureNotify:
         D(("Got ConfigureNotify\n"));
+        while (XCheckTypedWindowEvent
+               (disp, ev->xconfigure.window, ConfigureNotify, ev));
         if (!menu_root)
         {
            winwidget w = winwidget_get_from_window(ev->xconfigure.window);
@@ -386,6 +388,7 @@ feh_handle_event(XEvent * ev)
         }
         break;
      case MotionNotify:
+        while (XCheckTypedWindowEvent(disp, ev->xmotion.window, MotionNotify, ev));
         if (menu_root)
         {
            feh_menu *m;
@@ -422,9 +425,6 @@ feh_handle_event(XEvent * ev)
               if (winwid->zoom_mode)
               {
                  int sx, sy, sw, sh, dx, dy, dw, dh;
-
-                 while (XCheckTypedWindowEvent
-                        (disp, winwid->win, MotionNotify, ev));
 
                  imlib_context_set_anti_alias(0);
                  imlib_context_set_dither(0);

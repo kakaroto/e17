@@ -53,7 +53,6 @@ struct __fehoptions
    unsigned char auto_zoom;
    unsigned char draw_filename;
    unsigned char list;
-   unsigned char longlist;
    unsigned char quiet;
    unsigned char preload;
    unsigned char loadables;
@@ -70,6 +69,7 @@ struct __fehoptions
    char *fontpath;
    char *filelistfile;
    char *menu_font;
+   char *customlist;
 
    int thumb_w;
    int thumb_h;

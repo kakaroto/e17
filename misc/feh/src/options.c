@@ -177,6 +177,8 @@ feh_parse_options_from_string(char *opts)
    int num = 0;
    char *s;
    char *t;
+   char last = 0;
+   int inquote = 0;
    int i = 0;
 
    D_ENTER;
@@ -189,7 +191,7 @@ feh_parse_options_from_string(char *opts)
 
    for (s = opts, t = opts;; t++)
    {
-      if (*t == ' ')
+      if ((*t == ' ') && !(inquote) && (last != '\\'))
       {
          *t = '\0';
          num++;
@@ -206,6 +208,9 @@ feh_parse_options_from_string(char *opts)
          list[num - 1] = estrdup(s);
          break;
       }
+      else if(*t == '\"' && last !='\\')
+         inquote = !(inquote);
+      last = *t;
    }
 
    feh_parse_option_array(num, list);
@@ -223,7 +228,7 @@ feh_parse_option_array(int argc, char **argv)
 {
    static char stropts[] =
 
-      "a:A:b:BcC:dD:e:f:Fg:hH:iIklLmM:nNo:O:pPqrR:sS:t:T:uUvVwW:xXy:zZ";
+      "a:A:b:BcC:dD:e:f:Fg:hH:iIklL:mM:nNo:O:pPqrR:sS:t:T:uUvVwW:xXy:zZ";
    static struct option lopts[] = {
       /* actions */
       {"help", 0, 0, 'h'},                  /* okay */
@@ -241,7 +246,6 @@ feh_parse_option_array(int argc, char **argv)
       {"recursive", 0, 0, 'r'},             /* okay */
       {"randomize", 0, 0, 'z'},             /* okay */
       {"list", 0, 0, 'l'},                  /* okay */
-      {"longlist", 0, 0, 'L'},              /* okay */
       {"quiet", 0, 0, 'q'},                 /* okay */
       {"loadables", 0, 0, 'U'},             /* okay */
       {"unloadables", 0, 0, 'u'},           /* okay */
@@ -264,6 +268,7 @@ feh_parse_option_array(int argc, char **argv)
       {"sort", 1, 0, 'S'},                  /* okay */
       {"theme", 1, 0, 't'},                 /* okay */
       {"filelist", 1, 0, 'f'},              /* okay */
+      {"customlist", 1, 0, 'L'},            /* okay */
       {"menu-font", 1, 0, 'M'},
       {"thumb-width", 1, 0, 'y'},
       {"thumb-height", 1, 0, 'g'},
@@ -314,7 +319,7 @@ feh_parse_option_array(int argc, char **argv)
            opt.list = 1;
            break;
         case 'L':
-           opt.longlist = 1;
+           opt.customlist = estrdup(optarg);
            break;
         case 'M':
            free(opt.menu_font);
@@ -612,6 +617,9 @@ show_usage(void)
            "  -l, --list                Don't display images. Analyse them and display an\n"
            "                            'ls' style listing. Useful in scripts hunt out\n"
            "                            images of a certain size/resolution/type etc.\n"
+           "  -L, --customlist FORMAT   Use FORMAT as the format specifier for list\n"
+           "                            output. FORMAT is a printf-like string containing\n"
+           "                            image info specifiers. See FORMAT SPECIFIERS.\n"
            "  -U, --loadable            Don't display images. Just print out their name\n"
            "                            if imlib2 can successfully load them.\n"
            "  -u, --unloadable          Don't display images. Just print out their name\n"
@@ -628,8 +636,9 @@ show_usage(void)
            "  -A, --action ACTION       Specify a string as an action to perform when the\n"
            "                            enter key is pressed in slideshow or multiwindow\n"
            "                            modes. The action will be executed in a shell. Use\n"
-           "                            %%f to refer to the image filename, and %%n to refer\n"
-           "                            to it's name. Eg. -X \"mv %%f ~/images/%%n\"\n"
+           "                            format specifiers to refer to image info. See\n"
+           "                            FORMAT SPECIFIERS for examples\n"
+           "                            Eg. -X \"mv %%f ~/images/%%n\"\n"
            "                            In slideshow mode, the next image will be shown\n"
            "                            after running the command, in multiwindow mode,\n"
            "                            the window will be closed.\n"
@@ -652,6 +661,15 @@ show_usage(void)
            "      --fontpath PATH       Specify an extra directory to look in for fonts\n"
            "  -M, --menu-font FONT      Use FONT for the font in menus.\n"
            "  -N, --no-menus            Don't load or show any menus.\n"
+           " FORMAT SPECIFIERS\n"
+           "                            %%f image path/filename\n"
+           "                            %%n image name\n"
+           "                            %%s image size (bytes)\n"
+           "                            %%p image pixel size\n"
+           "                            %%w image width\n"
+           "                            %%h image height\n"
+           "                            %%t image format\n"
+           "                            Eg. feh -A \"mv %%f ~/images/%%n\" *\n"
            " MONTAGE MODE OPTIONS\n"
            "  -X, --ignore-aspect       By default, the montage thumbnails will retain\n"
            "                            their aspect ratios, while fitting in --thumb-width\n"

@@ -1,3 +1,21 @@
+Thu May 18 20:26:54 2000  Tom Gilbert  <gilbertt@btinternet.com>
+
+	* Changed how -l and -L work. -L is now --customlist, which takes
+	a string argument. The string is a feh-printf format specifier,
+	just like those used for action definitions. (Eg %f for filename,
+	%w for width etc). The format specifier is used to form the list
+	output for each file. Example usage:
+	feh -L "<img src=\"%f\" alt=\"feh\" width=\"%w\" height=\"%h\">" pr0n.png
+	Stuck a new theme in the example.fehrc config, and found how lame
+	my config parsing code is :-) Quotes and escaped quotes currently
+	*do not* work right. I'm fixing it now :-)
+
+Tue May 16 17:51:40 2000  Tom Gilbert  <gilbertt@btinternet.com>
+
+	* Ignore duplicate MotionNotify events
+	* Same for ConfigureNotify
+	* Saved some wasted cycles
+
 Mon May 15 22:49:07 2000  Tom Gilbert  <gilbertt@btinternet.com>
 
 	* Hehe. Now I made a release I can break stuff again =P You can

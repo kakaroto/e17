@@ -706,7 +706,7 @@ void
 feh_prepare_filelist(void)
 {
    D_ENTER;
-   if (opt.list || opt.longlist || (opt.sort > SORT_FILENAME) || opt.preload)
+   if (opt.list || opt.customlist || (opt.sort > SORT_FILENAME) || opt.preload)
    {
       /* For these sort options, we have to preload images */
       filelist = feh_file_info_preload(filelist);

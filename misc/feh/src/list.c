@@ -34,23 +34,19 @@ init_list_mode(void)
 
    D_ENTER;
 
-   if (opt.longlist)
+   if (!opt.customlist)
       printf
          ("NUM\tFORMAT\tWIDTH\tHEIGHT\tPIXELS\tSIZE(bytes)\tALPHA\tFILENAME\n");
-   else
-      printf("NUM\tFORMAT\tWIDTH\tHEIGHT\tSIZE(bytes)\tALPHA\tNAME\n");
 
    for (file = filelist; file; file = file->next)
    {
-      if (opt.longlist)
+      if (opt.customlist)
+         printf("%s\n", feh_printf(opt.customlist, file));
+      else
          printf("%d\t%s\t%d\t%d\t%d\t%d\t\t%c\t%s\n", ++j, file->info->format,
                 file->info->width, file->info->height, file->info->pixels,
                 file->info->size, file->info->has_alpha ? 'X' : '-',
                 file->filename);
-      else
-         printf("%d\t%s\t%d\t%d\t%d\t\t%c\t%s\n", ++j, file->info->format,
-                file->info->width, file->info->height, file->info->size,
-                file->info->has_alpha ? 'X' : '-', file->name);
    }
    exit(0);
 }

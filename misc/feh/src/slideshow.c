@@ -276,7 +276,7 @@ feh_action_run(winwidget w)
    D_ENTER;
    D(("Running action %s\n", opt.action));
 
-   sys = feh_printf(opt.action, w);
+   sys = feh_printf(opt.action, w->file);
 
    if (opt.verbose)
       fprintf(stderr, "Running action -->%s<--\n", sys);
@@ -285,7 +285,7 @@ feh_action_run(winwidget w)
 }
 
 char *
-feh_printf(char *str, winwidget w)
+feh_printf(char *str, feh_file *file)
 {
    char *c;
    char buf[20];
@@ -303,39 +303,39 @@ feh_printf(char *str, winwidget w)
          switch (*c)
          {
            case 'f':
-              strcat(ret, w->file->filename);
+              strcat(ret, file->filename);
               break;
            case 'n':
-              strcat(ret, w->file->name);
+              strcat(ret, file->name);
               break;
            case 'w':
-              if (!w->file->info)
-                 feh_file_info_load(w->file, NULL);
-              snprintf(buf, sizeof(buf), "%d", w->file->info->width);
+              if (!file->info)
+                 feh_file_info_load(file, NULL);
+              snprintf(buf, sizeof(buf), "%d", file->info->width);
               strcat(ret, buf);
               break;
            case 'h':
-              if (!w->file->info)
-                 feh_file_info_load(w->file, NULL);
-              snprintf(buf, sizeof(buf), "%d", w->file->info->height);
+              if (!file->info)
+                 feh_file_info_load(file, NULL);
+              snprintf(buf, sizeof(buf), "%d", file->info->height);
               strcat(ret, buf);
               break;
            case 's':
-              if (!w->file->info)
-                 feh_file_info_load(w->file, NULL);
-              snprintf(buf, sizeof(buf), "%d", w->file->info->size);
+              if (!file->info)
+                 feh_file_info_load(file, NULL);
+              snprintf(buf, sizeof(buf), "%d", file->info->size);
               strcat(ret, buf);
               break;
            case 'p':
-              if (!w->file->info)
-                 feh_file_info_load(w->file, NULL);
-              snprintf(buf, sizeof(buf), "%d", w->file->info->pixels);
+              if (!file->info)
+                 feh_file_info_load(file, NULL);
+              snprintf(buf, sizeof(buf), "%d", file->info->pixels);
               strcat(ret, buf);
               break;
            case 't':
-              if (!w->file->info)
-                 feh_file_info_load(w->file, NULL);
-              strcat(ret, w->file->info->format);
+              if (!file->info)
+                 feh_file_info_load(file, NULL);
+              strcat(ret, file->info->format);
               break;
            default:
               strncat(ret, c, 1);
