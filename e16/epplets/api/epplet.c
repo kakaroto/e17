@@ -1256,7 +1256,7 @@ Epplet_handle_event(XEvent * ev)
    Epplet_gadget       g = NULL;
 
    if (event_func)
-      (*event_func) (ev, event_data);
+      (*event_func) (event_data, ev);
    switch (ev->type)
      {
      case ClientMessage:

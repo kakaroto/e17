@@ -1983,3 +1983,13 @@ people have e > 0.16.4, the old behaviour is the default. Please ./configure
 seconds ago) It should be much streamlined. Especially for you guys on
 interesting hardware =)
 
+-------------------------------------------------------------------------------
+
+Mon Feb 28 12:14:11 GMT 2000
+(gilbertt)
+
+Fixed Epplet_register_event_handler, prompted by email from Alexandre David
+<adavid@DoCS.UU.SE>. His patch was incorrect though, and the proper fix is
+to change the line where the event handler is called. (His patch changed
+only one definition of it, in the wrong place, and broke epplets ;)
+
