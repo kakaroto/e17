@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.4\n"
 "POT-Creation-Date: 2000-01-14 15:06+0100\n"
-"PO-Revision-Date: 2000-01-10 08:30+MET\n"
+"PO-Revision-Date: 2000-02-14 12:22+0100\n"
 "Last-Translator: Bernt Holmberg <bernt@grub01.physto.se>\n"
 "Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -24,6 +24,7 @@ msgid ""
 msgstr ""
 "Det uppstod ett problem när följande program skulle köras:\n"
 "%s\n"
+"Programmet kunde inte exekveras.\n"
 "Orsaken är att filen inte existerar\n"
 
 #: src/actions.c:672
@@ -39,10 +40,11 @@ msgid ""
 msgstr ""
 "Det uppstod ett problem när följande program skulle köras:\n"
 "%s\n"
+"Programmet kunde inte exekveras.\n"
 "Det beror antagligen på att programmet inte finns i sökvägen\n"
-"för ditt skal, som är %s. Jag föreslår att du läser man sidan\n"
-"för detta shell, och kollar upp hur man lägger till eller ändrar\n"
-"sökvägen för skalet.\n"
+"för ditt skal, som är %s. Jag föreslår att du läser manualsidan\n"
+"för skalet, och kollar upp hur man lägger till eller ändrar\n"
+"sin sökväg.\n"
 
 #: src/actions.c:692
 #, c-format
@@ -56,9 +58,10 @@ msgid ""
 msgstr ""
 "Det uppstod ett problem när följande program skulle köras:\n"
 "%s\n"
-"Jag är osäker på varför det nite kunde köras. Filen existerar,\n"
+"Programmet kunde inte exekveras.\n"
+"Jag är osäker på varför det inte kunde köras. Filen existerar,\n"
 "det är en fil, och du har rättigheter att\n"
-"köra den. Jag föreslår att du undersöker saken\n"
+"köra den. Jag föreslår att du undersöker saken.\n"
 
 #: src/actions.c:703
 #, c-format
@@ -71,8 +74,8 @@ msgid ""
 msgstr ""
 "Det uppstod ett problem när följande program skulle köras:\n"
 "%s\n"
-"Programmet kan inte exekveras.\n"
-"Filen existerar dock, och det är en fil, men du har inte.\n"
+"Programmet kunde inte exekveras.\n"
+"Filen existerar och det är en fil, men du har inte\n"
 "rättigheter som räcker för att köra den.\n"
 
 #: src/actions.c:719
@@ -85,8 +88,8 @@ msgid ""
 msgstr ""
 "Det uppstod ett problem när följande program skulle köras:\n"
 "%s\n"
-"Programmet kan inte exekveras.\n"
-"Detta beror på att filen i verkligheten är en katalog\n"
+"Programmet kunde inte exekveras.\n"
+"Detta beror på att filen i verkligheten är en katalog.\n"
 
 #: src/actions.c:727
 #, c-format
@@ -98,7 +101,7 @@ msgid ""
 msgstr ""
 "Det uppstod ett problem när följande program skulle köras:\n"
 "%s\n"
-"Programmet kan inte exekveras.\n"
+"Programmet kunde inte exekveras.\n"
 "Orsaken är att filen inte är en vanlig fil.\n"
 
 #: src/actions.c:3139
@@ -121,7 +124,7 @@ msgstr "Ok"
 
 #: src/actions.c:3331
 msgid "  Pick the group the window will belong to:  \n"
-msgstr "  Välj gruppen som fönstret skall tillhöra:  \n"
+msgstr "  Välj den grupp som fönstret skall tillhöra:  \n"
 
 #: src/actions.c:3681
 msgid ""
@@ -140,16 +143,16 @@ msgstr ""
 "  och den fortsätter att existera tills dess att du skapar en ny  \n"
 "  eller bryter upp den senast skapade.  \n"
 "\n"
-"  Välj här en annan grupp som fönstret skall tillhöra:  \n"
+"  Välj en annan grupp som fönstret skall tillhöra här:  \n"
 "\n"
 
 #: src/actions.c:3715
 msgid "   Select the group to remove the window from.  "
-msgstr "  Välj gruppen som fönstret skall tas bort ifrån.  "
+msgstr "  Välj den grupp som fönstret skall tas bort ifrån.  "
 
 #: src/actions.c:3740
 msgid "  Select the group to break  "
-msgstr "  Välj gruppen som skall brytas upp  "
+msgstr "  Välj den grupp som skall brytas upp  "
 
 #: src/actions.c:3768
 msgid "You have been warned about the dangers of Zoom mode\n"
@@ -213,10 +216,10 @@ msgid ""
 "\n"
 "%s\n"
 msgstr ""
-"Tog emot okänt klient meddelande.\n"
-"Klient namn:    %s\n"
-"Klient version: %s\n"
-"Meddelande innehåll:\n"
+"Tog emot okänt klientmeddelande.\n"
+"Klientnamn:    %s\n"
+"Klientversion: %s\n"
+"Meddelandeinnehåll:\n"
 "\n"
 "%s\n"
 
@@ -251,7 +254,7 @@ msgid ""
 "Will ignore and continue...\n"
 msgstr ""
 "Varning: Vet inte vad som skall göras med följande text\n"
-"i mitten på den aktiva text definitionen:\n"
+"i mitten på den aktiva textdefinitionen:\n"
 "%s\n"
 "Ignorerar och fortsätter...\n"
 
@@ -261,7 +264,7 @@ msgid ""
 "Done loading a text block.  Outcome is likely not good.\n"
 msgstr ""
 "Varning: Konfigureringen verkar ha avbrutits innan textstycket\n"
-"hade laddats färdigt. Resultatet blir felaktigt.\n"
+"hade laddats färdigt. Resultatet blir troligen felaktigt.\n"
 
 #: src/config.c:522
 msgid ""
@@ -269,7 +272,7 @@ msgid ""
 "Done loading a Slideout block.  Outcome is likely not good.\n"
 msgstr ""
 "Varning: Konfigureringen verkar ha avbrutits innan glidut-delen\n"
-"hade laddats färdigt. Resultatet blir felaktigt.\n"
+"hade laddats färdigt. Resultatet blir troligen felaktigt.\n"
 
 #: src/config.c:792
 #, c-format
@@ -280,7 +283,7 @@ msgid ""
 "Will ignore and continue...\n"
 msgstr ""
 "Varning: Vet inte vad som skall göras med följande text\n"
-"i mitten på den aktiva kontroll definitionen:\n"
+"i mitten på den aktiva kontrolldefinitionen:\n"
 "%s\n"
 "Ignorerar och fortsätter...\n"
 
@@ -289,16 +292,16 @@ msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading a Control block.  Outcome is likely not good.\n"
 msgstr ""
-"Varning:  Konfigureringen verkar ha avbrutits innan kontroll delen\n"
-"hade laddats färdigt.  Resultatet blir felaktigt.\n"
+"Varning:  Konfigureringen verkar ha avbrutits innan kontrolldelen\n"
+"hade laddats färdigt.  Resultatet blir troligen felaktigt.\n"
 
 #: src/config.c:909 src/config.c:1142
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading a Menu block.  Outcome is likely not good.\n"
 msgstr ""
-"Varning:  Konfigureringen verkar ha avbrutits innan meny delen\n"
-"hade laddats färdigt.  Resultatet blir felaktigt.\n"
+"Varning:  Konfigureringen verkar ha avbrutits innan menydelen\n"
+"hade laddats färdigt.  Resultatet blir troligen felaktigt.\n"
 
 #: src/config.c:1279
 msgid ""
@@ -306,51 +309,51 @@ msgid ""
 "Done loading a BorderPart block.  Outcome is likely not good.\n"
 msgstr ""
 "Varning:  Konfigureringen verkar ha avbrutits innan ramdelen\n"
-"hade laddats färdigt.  Resultatet blir felaktigt.\n"
+"hade laddats färdigt.  Resultatet blir troligen felaktigt.\n"
 
 #: src/config.c:1369
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading a Main Border block.  Outcome is likely not good.\n"
 msgstr ""
-"Varning:  Konfigureringen verkar ha avbrutits innan basram delen\n"
-"hade laddats färdigt.  Resultatet blir felaktigt.\n"
+"Varning:  Konfigureringen verkar ha avbrutits innan basramdelen\n"
+"hade laddats färdigt.  Resultatet blir troligen felaktigt.\n"
 
 #: src/config.c:1588
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading a Button block.  Outcome is likely not good.\n"
 msgstr ""
-"Varning:  Konfigureringen verkar ha avbrutits innan knapp delen\n"
-"hade laddats färdigt.  Resultatet blir felaktigt.\n"
+"Varning:  Konfigureringen verkar ha avbrutits innan knappdelen\n"
+"hade laddats färdigt.  Resultatet blir troligen felaktigt.\n"
 
 #: src/config.c:1844 src/config.c:1923
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading a Desktop block.  Outcome is likely not good.\n"
 msgstr ""
-"Varning:  Konfigureringen verkar ha avbrutits innan skrivbords delen\n"
-"hade laddats färdigt.  Resultatet blir felaktigt.\n"
+"Varning:  Konfigureringen verkar ha avbrutits innan skrivbordsdelen\n"
+"hade laddats färdigt.  Resultatet blir troligen felaktigt.\n"
 
 #: src/config.c:1935
 msgid "Easter Egg!  Iconboxes aren't implemented yet.\n"
-msgstr "Påsk ägg!  Iconlådor är inte inlagt ännu.\n"
+msgstr "Påskägg!  Iconlådor är inte implementerade ännu.\n"
 
 #: src/config.c:1966
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading an Iconbox block.  Outcome is likely not good.\n"
 msgstr ""
-"Varning:  Konfigureringen verkar ha avbrutits innan ikonlåde delen\n"
-"hade laddats färdigt.  Resultatet blir felaktigt.\n"
+"Varning:  Konfigureringen verkar ha avbrutits innan ikonlådedelen\n"
+"hade laddats färdigt.  Resultatet blir troligen felaktigt.\n"
 
 #: src/config.c:2002
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading an Sound block.  Outcome is likely not good.\n"
 msgstr ""
-"Varning:  Konfigureringen verkar ha avbrutits innan ljud delen\n"
-"hade laddats färdigt.  Resultatet blir felaktigt.\n"
+"Varning:  Konfigureringen verkar ha avbrutits innan ljuddelen\n"
+"hade laddats färdigt.  Resultatet blir troligen felaktigt.\n"
 
 #: src/config.c:2254
 #, c-format
@@ -361,7 +364,7 @@ msgid ""
 "Will ignore and continue...\n"
 msgstr ""
 "Varning: kan inte bestämma vad som skall göras med\n"
-"följande text i mitten av aktiv ActionClass definition:\n"
+"följande text i mitten av aktiv aktionsklassdefinition:\n"
 "%s\n"
 "Ignorerar och fortsätter...\n"
 
@@ -370,8 +373,8 @@ msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading an Action Class block.  Outcome is likely not good.\n"
 msgstr ""
-"Varning:  Konfigureringen verkar ha avbrutits innan Action Classdelen hade "
-"laddats färdigt.  Resultatet blir felaktigt.\n"
+"Varning:  Konfigureringen verkar ha avbrutits innan aktionsklassdelen hade "
+"laddats färdigt.  Resultatet blir troligen felaktigt.\n"
 
 #: src/config.c:2467
 #, c-format
@@ -392,7 +395,7 @@ msgid ""
 "Done loading an ImageClass block.  Outcome is likely not good.\n"
 msgstr ""
 "Varning:  Konfigureringen verkar ha avbrutits innan ImageClass delen\n"
-"hade laddats färdigt.  Resultatet blir felaktigt.\n"
+"hade laddats färdigt.  Resultatet blir troligen felaktigt.\n"
 
 #: src/config.c:2714
 #, c-format
@@ -414,7 +417,7 @@ msgid ""
 "Outcome is likely not good.\n"
 msgstr ""
 "Varning:  Konfigureringen verkar ha avbrutits innan ColorModifier\n"
-"delen hade laddats färdigt.  Resultatet blir felaktigt.\n"
+"delen hade laddats färdigt.  Resultatet blir troligen felaktigt.\n"
 
 #: src/config.c:2831
 #, c-format
@@ -435,7 +438,7 @@ msgid ""
 "Done loading an ToolTip block.  Outcome is likely not good.\n"
 msgstr ""
 "Varning:  Konfigureringen verkar ha avbrutits innan ToolTip delen\n"
-"hade laddats färdigt.  Resultatet blir felaktigt.\n"
+"hade laddats färdigt.  Resultatet blir troligen felaktigt.\n"
 
 #: src/config.c:2876
 msgid ""
@@ -443,7 +446,7 @@ msgid ""
 "Done loading an FX block.  Outcome is likely not good.\n"
 msgstr ""
 "Varning:  Konfigureringen verkar ha avbrutits innan FX delen\n"
-"hade laddats färdigt.  Resultatet blir felaktigt.\n"
+"hade laddats färdigt.  Resultatet blir troligen felaktigt.\n"
 
 #: src/config.c:2912
 #, c-format
@@ -464,7 +467,7 @@ msgid ""
 "Done loading an Extras block.  Outcome is likely not good.\n"
 msgstr ""
 "Varning: Konfigureringen verkar ha avbrutits innan Extras blocket\n"
-"hade laddats färdigt.  Resultatet blir felaktigt.\n"
+"hade laddats färdigt.  Resultatet blir troligen felaktigt.\n"
 
 #: src/config.c:3010
 #, c-format
@@ -475,7 +478,7 @@ msgid ""
 "Will ignore and continue...\n"
 msgstr ""
 "Varning: Det går ej att bestämma vad som skall göras med följande \n"
-"text i den aktiva iconlåde definitionen:\n"
+"text i den aktiva iconlådedefinitionen:\n"
 "%s\n"
 "Ignorerar och fortsätter...\n"
 
@@ -484,8 +487,8 @@ msgid ""
 "Warning: Configuration appears to have ended before we were\n"
 "Done loading an Iconbox block.  Outcome is likely not good.\n"
 msgstr ""
-"Varning: Konfigureringen verkar ha avbrutits innan iconlåde delen\n"
-"hade laddats färdigt.  Resultatet blir felaktigt.\n"
+"Varning: Konfigureringen verkar ha avbrutits innan iconlådedelen\n"
+"hade laddats färdigt.  Resultatet blir troligen felaktigt.\n"
 
 #: src/config.c:3124
 #, c-format
@@ -506,7 +509,7 @@ msgid ""
 "Done loading an WindowMatch block.  Outcome is likely not good.\n"
 msgstr ""
 "Varning: Konfigureringen verkar ha avbrutits innan WindowMatch\n"
-"blocket hade laddats färdigt.  Resultatet blir felaktigt.\n"
+"blocket hade laddats färdigt.  Resultatet blir troligen felaktigt.\n"
 
 #: src/config.c:3180
 #, c-format
@@ -521,9 +524,9 @@ msgstr ""
 "Hjälp! Hittar inte epp!\n"
 "Enlightenment letar efter epp här:\n"
 "%s\n"
-"Detta är avgörande fel.\n"
+"Detta är ett avgörande fel.\n"
 "Beror troligen på att programmet ej finns\n"
-"eller får ej köras av dig.\n"
+"eller inte får köras av dig.\n"
 
 #: src/config.c:3186
 msgid "error"
@@ -535,11 +538,11 @@ msgstr "Fel version av temat"
 
 #: src/config.c:3387 src/config.c:3421
 msgid "Restart with Defaults"
-msgstr "Startar om med det förvalda"
+msgstr "Starta om med grundinställningar"
 
 #: src/config.c:3388 src/config.c:3422
 msgid "Abort and Exit"
-msgstr "Avbryter och avslutar"
+msgstr "Avbryt och avsluta"
 
 #: src/config.c:3389
 #, c-format
@@ -563,23 +566,23 @@ msgid ""
 msgstr ""
 "FEL:\n"
 "\n"
-"Konfigureringen för det förvalda temat är ej kompatibelt.\n"
-"konfigurations versionen är %i.  Det måste vara\n"
-"märkt som revision %i\n"
+"Konfigureringen för det valda temat är ej kompatibelt.\n"
+"Konfigurationsrevisionen är %i.  Den måste vara\n"
+"märkt som revision %i.\n"
 "\n"
 "Vänligen kontakta författaren och informera om att\n"
 "för att temat skall fungera med denna version\n"
-"av Enlightenment, måste de uppdatera till \n"
-"nuvarande std. Och sedan matcha versionsnummret.\n"
+"av Enlightenment, måste de uppdatera till\n"
+"nuvarande standard, och sedan matcha versionsnummret.\n"
 "\n"
 "Om temats versionsnummer är högre än Enlightenments\n"
-"har inte Enlightenment uppgraderats på ett tag. Och\n"
-"detta tema utnyttjar finesser  som bara finns i senare\n"
+"har inte Enlightenment uppgraderats på ett tag och\n"
+"detta tema utnyttjar finesser som bara finns i senare\n"
 "versioner av Enlightenment.\n"
 
 #: src/config.c:3420
 msgid "User Config Version ERROR"
-msgstr "Användarkonfigurations version FEL"
+msgstr "Användarkonfigurationsversion FEL"
 
 #: src/config.c:3423
 #, c-format
@@ -601,13 +604,13 @@ msgstr ""
 "\n"
 "Inställningarna som används är ej kompatibla\n"
 "med denna version av Enlightenment.\n"
-"Versionsnummret är %i måste vara minst version %i för\n"
+"Revisionsnummret är %i men måste vara minst revision %i för\n"
 "att vara kompatibelt.\n"
 "\n"
-"Om du just uppgraderat till en ny version E.\n"
-"Starta om med grundinställningar, avlägsnar dina nuvarande\n"
-"användarinställningar, och startar om med det förvalda.\n"
-"Sedan kan du välja dina egna inställningar på säkert sätt.\n"
+"Om du just uppgraderat till en ny version av E så kommer\n"
+"Starta om med grundinställningar att avlägsna dina nuvarande\n"
+"användarinställningar, och starta om med de förvalda.\n"
+"Sedan kan du välja dina egna inställningar på ett säkert sätt.\n"
 
 #: src/config.c:3696
 #, c-format
@@ -621,8 +624,8 @@ msgstr ""
 "VARNING!\n"
 "Fel uppstod vid skrivning till fil:\n"
 "%s\n"
-"Kan bero på otillräckligt diskutrymme, quota eller\n"
-"filsystem rättigheter.\n"
+"Det kan bero på otillräckligt diskutrymme, quota eller\n"
+"filsystemsrättigheter.\n"
 
 #: src/config.c:3707
 #, c-format
@@ -651,12 +654,11 @@ msgid ""
 "consult the documentation that came with Enlightenment for\n"
 "additional information.\n"
 msgstr ""
-"Enlightenment har just upptäckt några allvarliga fel  vid\n"
-"försök att ladda temat du valt, eller i konfigurations\n"
-"katalogen:\n"
+"Enlightenment har just upptäckt några allvarliga fel vid försök\n"
+"att ladda temat du valt, eller i grundkonfigurationskatalogen:\n"
 "%s/config/\n"
 "Detta kommer att hindra Enlightenment från att ladda\n"
-"några konfigurations filer alls.\n"
+"några konfigurationsfiler över huvud taget.\n"
 "Eftersom dessa inte kan hittas kommer Enlightenment troligtvis\n"
 "inte att hitta några konfigurationsfiler alls i hela ditt\n"
 "system, nästan ingen konfigurering kan laddas vid uppstart.\n"
@@ -665,12 +667,12 @@ msgstr ""
 "rör sig om ett binärpaket, eller så har 'make imstall' inte\n"
 "körts, eller så kunde katalogen ovan inte kopieras ut vid\n"
 "installationen pga otillräckliga rättigheter eller för lite\n"
-"ledigt diskutrymme. Kan också bero på att konfig katalogen\n"
-"har blivit bortagen av misstag sedan installationen.\n"
+"ledigt diskutrymme. Det kan också bero på att konfigurations-\n"
+"katalogen har blivit bortagen av misstag sedan installationen.\n"
 "Detta är ett ett allvarligt fel som nåste rättas till på\n"
-"en gång. Vänligen kontakta din system administratör\n"
+"en gång. Vänligen kontakta din systemadministratör\n"
 "eller paketansvarig.\n"
-"Om du administrerar ditt eget system vänligen läs\n"
+"Om du administrerar ditt eget system var vänlig läs\n"
 "dokumentationen som följer med Enlightenment för\n"
 "vidare information.\n"
 
@@ -709,9 +711,9 @@ msgstr ""
 "konfigurationen.\n"
 "\n"
 "Detta kan bero på fel i filsystemet, mindre buggar\n"
-"och oväntade systemstopp.\n"
+"eller oväntade systemstopp.\n"
 "\n"
-"Will du att Enlightenment återskapar sin startkonfiguration\n"
+"Vill du att Enlightenment återskapar sin startkonfiguration\n"
 "och försöker igen?\n"
 
 #: src/desktops.c:1110
@@ -728,7 +730,7 @@ msgstr ""
 "skrivbordet fram och tillbaka.\n"
 "Klicka högra musknappen för en lista på alla\n"
 "skrivbord och deras applikationer.\n"
-"Klicka mittersta musknappen för en lista på alla\n"
+"Klicka mellersta musknappen för en lista på alla\n"
 "applikationer som körs nu.\n"
 
 #: src/desktops.c:1122
@@ -740,11 +742,11 @@ msgid ""
 "Click middle mouse button for a list of all\n"
 "applications currently running.\n"
 msgstr ""
-"Detta är root skrivbordet.\n"
-"Understa skrivbordet kan ej flyttas omkring.\n"
+"Detta är rotskrivbordet.\n"
+"Det kan ej flyttas omkring.\n"
 "Klicka högra musknappen för en lista på alla\n"
 "skrivbord och deras applikationer.\n"
-"Klicka mittersta musknappen för en lista på alla\n"
+"Klicka mellersta musknappen för en lista på alla\n"
 "applikationer som körs nu.\n"
 
 #: src/desktops.c:1144
@@ -769,7 +771,7 @@ msgstr "Uppmärksamhet!!!"
 
 #: src/fx.c:253
 msgid "Starting up Ripples FX..."
-msgstr "Startar upp Ripples FX..."
+msgstr "Startar krusningseffekten..."
 
 #: src/fx.c:254
 msgid ""
@@ -785,19 +787,19 @@ msgid ""
 "it off.\n"
 msgstr ""
 "\n"
-"Du har just startat Ripples effekten.\n"
+"Du har precis startat krusningseffekten.\n"
 "\n"
 "Om du tittar nogrannt på din skrivbordsbakgrund, och om den inte\n"
-"har en en dominerande bakgrund (bakgrundsmönster eller bild),\n"
-"kommer du att se en vattenpöl i bildskärmens nederdel, som\n"
-"reflekterar allt ovanför och \"ripples\".\n"
+"har en en enfärgad bakgrund (dvs den har ett bakgrundsmönster eller\n"
+"en bild), så kommer du att se en vattenpöl i bildskärmens nederdel,\n"
+"som reflekterar allt ovanför och \"krusar\" sig.\n"
 "\n"
-"För att avbryta denna effekt, välj bara denna effekt igen\n"
+"För att avbryta denna effekt så välj den bara igen\n"
 "för att växla mellan på och av.\n"
 
 #: src/fx.c:386 src/fx.c:404
 msgid "Unable to display raindrops"
-msgstr "Kan inte visa raindrops"
+msgstr "Kan inte visa regndroppar"
 
 #: src/fx.c:387
 msgid ""
@@ -817,18 +819,18 @@ msgid ""
 "\n"
 msgstr ""
 "\n"
-"Enlightenment kan inte visa raindrops på denna \n"
-"bilskärm för Shared memory stöds inte av denna\n"
-"X-Server.\n"
+"Enlightenment kan inte visa regndroppar på den här\n"
+"bilskärmen eftersom delat minne inte stöds av\n"
+"X-Servern.\n"
 "\n"
-"Detta kan vara fallet om Enlightenment körs av\n"
-"en nätverksklient, en ej MIT-SHM kompatibel X-Server\n"
-"som har kört slut på SHM ID's på systemet, eller\n"
-"så har Shared Memory stödet slagits av i Imlib\n"
+"Detta kan vara fallet om Enlightenment körs som en\n"
+"nätverksklient, en icke MIT-SHM kompatibel X-Server\n"
+"används, SHM IDs på systemet är slut, eller stödet\n"
+"för delat minne har slagits av i Imlib.\n"
 "\n"
-"Du kan korrigera detta antingen genom att köra `imlib_config`\n"
-"eller kopiera systemets imrc (/usr/etc/imrc) to ~/.imrc\n"
-"och redigera den, för att stödja shared memory.\n"
+"Du kan korrigera detta antingen genom att köra 'imlib_config'\n"
+"eller kopiera systemets imrc (/usr/etc/imrc) till ~/.imrc\n"
+"och redigera den för att stödja delat minne.\n"
 "\n"
 
 #: src/fx.c:405
@@ -848,22 +850,22 @@ msgid ""
 "\n"
 msgstr ""
 "\n"
-"Enlightenment kan inte visa raindrops på denna\n"
-"bildskärm eftersom shared pixmaps inte stöds av denna\n"
-"X-Server.\n"
+"Enlightenment kan inte visa regndroppar på den här\n"
+"bildskärmen eftersom shared pixmaps inte stöds av\n"
+"X-Servern.\n"
 "\n"
 "Detta beror antingen på att X-Servern inte har implementerat\n"
 "shared pixmaps, eller så har shared pixmaps slagits av i\n"
 "Imlib's konfigurering.\n"
 "\n"
 "Du kan korrigera detta antingen genom att köra 'imlib_config'\n"
-"eller kopiera systemets imrc (/usr/etc/imrc) to ~/.imrc\n"
-"och redigera den, för att stödja shared pixmaps.\n"
+"eller kopiera systemets imrc (/usr/etc/imrc) till ~/.imrc\n"
+"och redigera den för att stödja shared pixmaps.\n"
 "\n"
 
 #: src/fx.c:420
 msgid "Starting up Raindrops FX..."
-msgstr "Startar upp Raindrops FX..."
+msgstr "Startar regndroppseffekten..."
 
 #: src/fx.c:421
 msgid ""
@@ -879,19 +881,19 @@ msgid ""
 "it off.\n"
 msgstr ""
 "\n"
-"Du har just startat Raindrops effekten.\n"
+"Du har precis startat regndropseffekten.\n"
 "\n"
 "Om du tittar nogrannt på din skrivbordsbakgrund, och om den inte\n"
-"har en en dominerande bakgrund (bakgrundsmönster eller bild),\n"
-"kommer du att se \"raindrops\" som träffar bakgrunden och ger\n"
-"små stänk. Denna effekt är mycket CPU krävande.\n"
+"har en en enfärgad bakgrund (dvs den har ett bakgrundsmönster eller\n"
+"en bild), så kommer du att se \"regndroppar\" som träffar bakgrunden\n"
+"och ger små stänk. Denna effekt är mycket processorkrävande.\n"
 "\n"
-"För att avbryta denna effekt, välj bara denna effekt igen\n"
+"För att avbryta denna effekt så välj den bara igen\n"
 "för att växla mellan på och av.\n"
 
 #: src/fx.c:715
 msgid "Starting up Waves FX..."
-msgstr "Startar upp Waves FX..."
+msgstr "Startar böljeffekten..."
 
 #: src/fx.c:716
 msgid ""
@@ -907,19 +909,19 @@ msgid ""
 "it off.\n"
 msgstr ""
 "\n"
-"Du har just startat Waves effekten.\n"
+"Du har precis startat böljeffekten.\n"
 "\n"
 "Om du tittar nogrannt på din skrivbordsbakgrund, och om den inte\n"
-"har en en dominerande bakgrund (bakgrundsmönster eller bild),\n"
-"kommer du att se en vattenpöl i bildskärmens nederdel, som\n"
-"reflekterar allt ovanför och \"wawes\".\n"
+"har en en enfärgad bakgrund (dvs den har ett bakgrundsmönster eller\n"
+"en bild), så kommer du att se en vattenpöl i bildskärmens nederdel,\n"
+"som reflekterar allt ovanför och \"böljar\".\n"
 "\n"
-"För att avbryta denna effekt, välj bara denna effekt igen\n"
+"För att avbryta denna effekt så välj den bara igen\n"
 "för att växla mellan på och av.\n"
 
 #: src/fx.c:881
 msgid "Starting up imagespinners FX..."
-msgstr "Startar upp imagespinners FX..."
+msgstr "Startar imagespinners effekten..."
 
 #: src/fx.c:882
 msgid ""
@@ -930,9 +932,9 @@ msgid ""
 "it off.\n"
 msgstr ""
 "\n"
-"Du har just startat  imagespinners effekten.\n"
+"Du har precis startat imagespinners effekten.\n"
 "\n"
-"För att avbryta denna effekt, välj bara denna effekt igen\n"
+"För att avbryta denna effekt så välj den bara igen\n"
 "för att växla mellan på och av.\n"
 
 #: src/groups.c:117 src/groups.c:150
@@ -945,13 +947,13 @@ msgid ""
 "members of a group. You cannot add these windows\n"
 "to a group.\n"
 msgstr ""
-"Ikonlådor och sidväxlare tillåts inte vara \n"
-"gruppmedlemmar. Du kan inte lägga dessa \n"
+"Ikonlådor och sidväxlare tillåts inte vara\n"
+"gruppmedlemmar. Du kan inte lägga dessa\n"
 "till en grupp.\n"
 
 #: src/groups.c:603 src/groups.c:612 src/groups.c:620 src/settings.c:3806
 msgid "Window Group Error"
-msgstr "Fönster grupperings fel"
+msgstr "Fönstergruppsfel"
 
 #: src/groups.c:605
 msgid ""
@@ -964,7 +966,7 @@ msgstr ""
 "\n"
 "  Detta fönster hör just nu inte till någon grupp.\n"
 "  Du kan bara avlägsna grupper, eller ta bort fönster från\n"
-"  grupper endast om fönstret hör till minst en grupp .\n"
+"  grupper med ett fönster som tillhör minst en grupp .\n"
 "\n"
 
 #: src/groups.c:613
@@ -976,8 +978,8 @@ msgid ""
 "\n"
 msgstr ""
 "\n"
-"  Just nu finns ingen grupp, eller så hör detta\n"
-"  fönster redan till alla grupper som finns.\n"
+"  Just nu finns ingen grupp, eller så tillhör\n"
+"  detta fönster redan alla grupper som finns.\n"
 "  Du måste skapa andra grupper först..  \n"
 "\n"
 
@@ -993,7 +995,7 @@ msgstr ""
 
 #: src/groups.c:637
 msgid "Window Group Selection"
-msgstr "Fönsters grupp val"
+msgstr "Fönstergruppsval"
 
 #: src/groups.c:695 src/pager.c:1276 src/settings.c:311 src/settings.c:532
 #: src/settings.c:697 src/settings.c:874 src/settings.c:1098
@@ -1017,12 +1019,11 @@ msgid ""
 msgstr ""
 "Enlightenment utförde en otillåten instruktion.\n"
 "\n"
-"Det beror troligen på att den installerade binärfilen av\n"
-"Enlightenment är kompilerad med en ej 100%% kompatibel\n"
-"make eller för en annan CPU än din. Införskaffa rätt pakettyp\n"
+"Detta beror troligen på att den installerade binärfilen av\n"
+"Enlightenment är kompilerad för en processor som inte är\n"
+"100%% identisk eller kompatibel med din. Införskaffa rätt paket\n"
 "för ditt system, eller kompilera om Enlightenment och\n"
-"eventuella bibliotek som Enlightenment är beroende av\n"
-"som du installerade i binärformat.\n"
+"eventuella bibliotek som Enlightenment är beroende av.\n"
 
 #: src/handlers.c:87
 msgid ""
@@ -1200,13 +1201,13 @@ msgid ""
 "use \"help <command>\" for an individual description\n"
 "\n"
 msgstr ""
-"anv \"help all\" för beskrivningar av varje kommando\n"
-"anv \"help <kommando>\" för en individuell beskrivning\n"
+"använd \"help all\" för beskrivningar av varje kommando\n"
+"använd \"help <kommando>\" för en individuell beskrivning\n"
 "\n"
 
 #: src/ipc.c:4705
 msgid "use \"help <command>\" for an individual description\n"
-msgstr "anv \"help <kommando>\" för en individuell beskrivning\n"
+msgstr "använd \"help <kommando>\" för en individuell beskrivning\n"
 
 #: src/ipc.c:4707
 msgid "<command> : <description>\n"
@@ -1218,13 +1219,13 @@ msgid ""
 "Enlightenment Version : %s\n"
 "code is current to    : %s\n"
 msgstr ""
-"Enlightenment version : %s\n"
-"Koden är aktuell till : %s\n"
+"Version av Enlightenment : %s\n"
+"Koden är aktuell till    : %s\n"
 
 #. Set up all the text bits that belong on the GSOD
 #: src/main.c:89
 msgid "Enlightenment Message Dialog"
-msgstr "Enlightenment meddelande dialog"
+msgstr "Enlightenment meddelandedialog"
 
 #: src/main.c:90 src/memory.c:196 src/memory.c:277 src/memory.c:297
 #: src/memory.c:378
@@ -1248,12 +1249,12 @@ msgid ""
 "Enlightenment Version: %s\n"
 "Last updated on: %s\n"
 msgstr ""
-"Enlightenment version: %s\n"
+"Version av Enlightenment: %s\n"
 "Senast uppdaterad den: %s\n"
 
 #: src/memory.c:195 src/memory.c:296
 msgid "Cannot allocate enough memory"
-msgstr "Kan inte allokera tillräckligt minne"
+msgstr "Kan inte allokera tillräckligt med minne"
 
 #: src/memory.c:198
 #, c-format
@@ -1699,7 +1700,7 @@ msgstr ""
 
 #: src/pager.c:1267
 msgid "Window Options"
-msgstr "Fönster tillval"
+msgstr "Fönsterval"
 
 #: src/pager.c:1273
 msgid "Iconify"
@@ -1715,7 +1716,7 @@ msgstr "Klibbigt / Ej klibbigt"
 
 #: src/pager.c:1294
 msgid "Desktop Options"
-msgstr "Skrivbords tillval"
+msgstr "Skrivbordsval"
 
 #: src/pager.c:1300
 msgid "Pager Settings..."
@@ -1815,7 +1816,7 @@ msgstr "linjer per sekund"
 
 #: src/settings.c:126
 msgid "Pager Settings"
-msgstr "Sidväxlare tillval"
+msgstr "Sidväxlarinställningar"
 
 #: src/settings.c:135
 msgid "Enable pager display"
@@ -1877,7 +1878,7 @@ msgstr "Använd"
 
 #: src/settings.c:381
 msgid "Focus Settings"
-msgstr "Fokus tillval"
+msgstr "Fokusinställningar"
 
 #: src/settings.c:405
 msgid "Focus follows pointer"
@@ -1901,7 +1902,7 @@ msgstr "Alla nya fönster får fokus först"
 
 #: src/settings.c:458
 msgid "Only new dialog windows get the focus"
-msgstr "Bara nya dialog fönster får fokus"
+msgstr "Bara nya dialogfönster får fokus"
 
 #: src/settings.c:468
 msgid "Only new dialogs whose owner is focused get the focus"
@@ -1913,7 +1914,7 @@ msgstr "Lägg fönster överst vid fokusväxling"
 
 #: src/settings.c:486
 msgid "Send mouse pointer to window on focus switch"
-msgstr "Muspekare till fönster vid fokusväxlin"
+msgstr "Muspekare till fönster vid fokusväxling"
 
 #: src/settings.c:501
 msgid "Display and use focus list"
@@ -1933,11 +1934,11 @@ msgstr "Flytt & storleksändrings val"
 
 #: src/settings.c:600
 msgid "Move Methods:"
-msgstr "Flyttnings sätt:"
+msgstr "Flyttningssätt:"
 
 #: src/settings.c:606
 msgid "Resize Methods:"
-msgstr "Storleksändrings sätt:"
+msgstr "Storleksändringssätt:"
 
 #: src/settings.c:611 src/settings.c:618 src/settings.c:1699
 msgid "Opaque"
@@ -1975,7 +1976,7 @@ msgstr "%i Skrivbord"
 
 #: src/settings.c:811
 msgid "Multiple Desktop Settings"
-msgstr "Multipla Skrivbords tillval"
+msgstr "Multipla skrivbordsinställningar"
 
 #: src/settings.c:837
 msgid "Number of virtual desktops:\n"
@@ -1998,7 +1999,7 @@ msgstr "Skärmens storlek"
 
 #: src/settings.c:992
 msgid "Virtual Desktop Settings"
-msgstr "Virtuellt skrivbords tillval"
+msgstr "Virtuella skrivbordsinställningar"
 
 #: src/settings.c:1018
 msgid "Virtual Desktop size:\n"
@@ -2014,7 +2015,7 @@ msgstr "Motstånd vid bildskärmkanten:\n"
 
 #: src/settings.c:1144
 msgid "Window Placement Settings"
-msgstr "Fönsterplacerings tillval"
+msgstr "Fönsterplaceringsinställningar"
 
 #: src/settings.c:1172
 msgid "Dialog windows appear together with their owner"
@@ -2030,7 +2031,7 @@ msgstr "Manuell fönsterplacering"
 
 #: src/settings.c:1249
 msgid "Autoraise Settings"
-msgstr "Autmatiskt lägga över tillval"
+msgstr "Autohöjningsinställningar"
 
 #: src/settings.c:1275
 msgid "Raise Windows Automatically"
@@ -2042,7 +2043,7 @@ msgstr "Lägga fönster överst fördröjning:"
 
 #: src/settings.c:1348
 msgid "Tooltip Settings"
-msgstr "Verktygstips tillval"
+msgstr "Verktygstipsinställningar"
 
 #: src/settings.c:1372
 msgid "Display Tooltips"
@@ -2058,7 +2059,7 @@ msgstr "Verktygstips fördröjning:\n"
 
 #: src/settings.c:1448
 msgid "KDE Settings"
-msgstr "KDE tillval"
+msgstr "KDE inställningar"
 
 #: src/settings.c:1457
 msgid "Enable KDE Support"
@@ -2066,7 +2067,7 @@ msgstr "Möjliggör KDE support"
 
 #: src/settings.c:1511
 msgid "Audio Settings"
-msgstr "Audio tillval"
+msgstr "Ljudinställningar"
 
 #: src/settings.c:1536
 msgid "Enable sounds"
@@ -2082,7 +2083,7 @@ msgstr ""
 
 #: src/settings.c:1652
 msgid "Special FX Settings"
-msgstr "Special FX tillval"
+msgstr "Specialeffektsinställningar"
 
 #: src/settings.c:1686
 msgid "Slide Method:"
@@ -2271,7 +2272,7 @@ msgstr "Sortera efter bild"
 
 #: src/settings.c:3440
 msgid "Iconbox Settings"
-msgstr "Ikonlådans tillval"
+msgstr "Ikonlådsinställningar"
 
 #: src/settings.c:3464
 msgid "Transparent background"
@@ -2381,7 +2382,7 @@ msgstr ""
 
 #: src/settings.c:3831
 msgid "Window Group Settings"
-msgstr "Fönster grupp tillval"
+msgstr "Fönstergruppsinställningar"
 
 #: src/settings.c:3857
 msgid "   Pick the group to configure:   "
@@ -2429,7 +2430,7 @@ msgstr "Spegla Skymd/Ikonifiera/Klibba"
 
 #: src/settings.c:4028
 msgid "Default Group Control Settings"
-msgstr "Gruppkontroll, förvalda tillval"
+msgstr "Gruppkontroll, förvalda inställningar"
 
 #: src/setup.c:222
 msgid ""
@@ -2457,7 +2458,7 @@ msgstr ""
 
 #: src/setup.c:294 src/setup.c:341
 msgid "X server setup error"
-msgstr "Xserver installations fel"
+msgstr "X server installationsfel"
 
 #: src/setup.c:296
 msgid ""
@@ -2596,7 +2597,7 @@ msgstr "Placering"
 
 #: src/snaps.c:413
 msgid "Border style"
-msgstr "Ram stil"
+msgstr "Ramstil"
 
 #: src/snaps.c:421
 msgid "Size"
@@ -2616,7 +2617,7 @@ msgstr "Klibbigt läge"
 
 #: src/snaps.c:453
 msgid "Stacking layer"
-msgstr "Stapel lager"
+msgstr "Stapellager"
 
 #: src/snaps.c:473
 msgid "Restart application on login"
@@ -2636,7 +2637,7 @@ msgstr "Fel vid sparande av snaps fil\n"
 
 #: src/sound.c:53
 msgid "Error finding sound file"
-msgstr "Fel vid sökning efter ljud fil"
+msgstr "Fel vid sökning efter ljudfil"
 
 #: src/sound.c:55
 #, c-format
@@ -2651,7 +2652,7 @@ msgstr ""
 "följande ljudfil:\n"
 "%s\n"
 "Enlightenment kommer att fortsätta fungera, men du kanske\n"
-"vill kontrollera din konfigurerings inställningar.\n"
+"vill kontrollera dina konfigureringsinställningar.\n"
 
 #: src/sound.c:262
 msgid "Error initialising sound"
@@ -2664,8 +2665,8 @@ msgid ""
 "now be disabled.\n"
 msgstr ""
 "Ljud är aktiverat för Enlightenment, men ett fel uppstod\n"
-"vid kommunikation med ljud servern (Esound). Ljud kommer\n"
-"nu att avaktiveras.\n"
+"vid kommunikation med ljudservern (Esound). Ljud kommer\n"
+"nu att deaktiveras.\n"
 
 #: src/theme.c:293
 msgid "Unknown\n"
