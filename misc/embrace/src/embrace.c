@@ -240,6 +240,9 @@ static E_DB_File *open_edb (Embrace *e)
 	embrace_expand_path ("~/.e/apps/" PACKAGE "/" PACKAGE ".db",
 	                     file, sizeof (file));
 
+	/* sync changes */
+	e_db_flush ();
+
 	return e_db_open_read (file);
 }
 
