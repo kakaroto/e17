@@ -114,10 +114,10 @@ button_mouse_out(void *_data, Evas _e, Evas_Object _o, int _b, int _x,
 
 void
 button_mouse_down(void *_data, Evas _e, Evas_Object _o, int _b, int _x,
-		 int _y)
+		  int _y)
 {
 	Evas_List l = _data;
-	void (*run)();
+	void (*run) ();
 
 	etox_clear(e_msg);
 	etox_clear(e_test);
@@ -129,8 +129,7 @@ button_mouse_down(void *_data, Evas _e, Evas_Object _o, int _b, int _x,
 		if (l->next) {
 			evas_show(evas, o_next_box);
 			evas_show(evas, o_txt_next_box);
-		}
-		else {
+		} else {
 			evas_hide(evas, o_next_box);
 			evas_hide(evas, o_txt_next_box);
 		}
@@ -170,6 +169,11 @@ next_test(void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
 	evas_show(evas, o_prev_box);
 	evas_show(evas, o_txt_prev_box);
 
+	evas_callback_add(evas, o_txt_next_box, CALLBACK_MOUSE_IN,
+			  button_mouse_in, NULL);
+	evas_callback_add(evas, o_txt_next_box, CALLBACK_MOUSE_OUT,
+			  button_mouse_out, NULL);
+
 	run = current_test->data;
 	run();
 
@@ -202,6 +206,11 @@ prev_test(void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
 
 	evas_show(evas, o_next_box);
 	evas_show(evas, o_txt_next_box);
+
+	evas_callback_add(evas, o_txt_prev_box, CALLBACK_MOUSE_IN,
+			  button_mouse_in, NULL);
+	evas_callback_add(evas, o_txt_prev_box, CALLBACK_MOUSE_OUT,
+			  button_mouse_out, NULL);
 
 	run = current_test->data;
 	run();
@@ -332,7 +341,8 @@ void setup(void)
 	/*
 	 * Create the next test button
 	 */
-	o_next_box = evas_add_image_from_file(evas, IM "panel_button1.png");
+	o_next_box =
+	    evas_add_image_from_file(evas, IM "panel_button1.png");
 	evas_set_image_border(evas, o_next_box, 3, 3, 3, 3);
 	evas_set_layer(evas, o_next_box, 1000);
 	evas_hide(evas, o_next_box);
@@ -358,7 +368,8 @@ void setup(void)
 	/*
 	 * Create the previous test button
 	 */
-	o_prev_box = evas_add_image_from_file(evas, IM "panel_button1.png");
+	o_prev_box =
+	    evas_add_image_from_file(evas, IM "panel_button1.png");
 	evas_set_image_border(evas, o_prev_box, 3, 3, 3, 3);
 	evas_set_layer(evas, o_prev_box, 1000);
 	evas_hide(evas, o_prev_box);
@@ -366,8 +377,8 @@ void setup(void)
 	o_txt_prev_box = evas_add_text(evas, "andover", 24, "Previous");
 	evas_set_color(evas, o_txt_prev_box, 0, 0, 0, 160);
 	evas_set_layer(evas, o_txt_prev_box, 1000);
-	evas_move(evas, o_prev_box, 16, 150);
-	evas_move(evas, o_txt_prev_box, 19, 152);
+	evas_move(evas, o_prev_box, 416, 150);
+	evas_move(evas, o_txt_prev_box, 419, 152);
 
 	width = evas_get_text_width(evas, o_txt_prev_box);
 	height = evas_get_text_height(evas, o_txt_prev_box);

@@ -132,7 +132,7 @@ hide_panel(void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
 void setup_panel(Evas _e)
 {
 	int w;
-	Panel_Button *pbutton1, *pbutton2;
+	Panel_Button *pbutton1, *pbutton2, *pbutton3;
 
 	o_panel = evas_add_image_from_file(_e, IM "panel.png");
 	o_showpanel = evas_add_rectangle(_e);
@@ -170,6 +170,9 @@ void setup_panel(Evas _e)
 	pbutton2 = panel_button(evas, "Style", style_tests());
 	pbuttons = evas_list_append(pbuttons, pbutton2);
 
+	pbutton3 = panel_button(evas, "Callbacks", callback_tests());
+	pbuttons = evas_list_append(pbuttons, pbutton3);
+
 	e_slide_panel_out(0, NULL);
 
 	/* Callbacks */
@@ -180,7 +183,7 @@ void setup_panel(Evas _e)
 
 }
 
-Panel_Button * panel_button(Evas _e, char *_label, Evas_List tests)
+Panel_Button *panel_button(Evas _e, char *_label, Evas_List tests)
 {
 	Evas_Object o;
 
@@ -212,12 +215,12 @@ Panel_Button * panel_button(Evas _e, char *_label, Evas_List tests)
 	 * Attach the buttons callbacks
 	 */
 	evas_callback_add(evas, pbutton->label, CALLBACK_MOUSE_IN,
-			button_mouse_in, NULL);
+			  button_mouse_in, NULL);
 	evas_callback_add(evas, pbutton->label, CALLBACK_MOUSE_OUT,
-			button_mouse_out, NULL);
+			  button_mouse_out, NULL);
 
 	evas_callback_add(evas, pbutton->label, CALLBACK_MOUSE_DOWN,
-			button_mouse_down, tests);
+			  button_mouse_down, tests);
 
 	return pbutton;
 }

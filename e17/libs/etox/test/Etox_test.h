@@ -73,8 +73,8 @@ void button_mouse_in(void *_data, Evas _e, Evas_Object _o, int _b, int _x,
 		     int _y);
 void button_mouse_out(void *_data, Evas _e, Evas_Object _o, int _b, int _x,
 		      int _y);
-void button_mouse_down(void *_data, Evas _e, Evas_Object _o, int _b, int _x,
-		     int _y);
+void button_mouse_down(void *_data, Evas _e, Evas_Object _o, int _b,
+		       int _x, int _y);
 
 /* button functions */
 void button_next_new_all(Evas _e);
