@@ -165,6 +165,11 @@ types are: name, filename, width, height, pixels, size, format. For sort
 modes other than name or filename, a preload run will be necessary,
 causing a delay proportional to the number of images in the list
 .TP 5
+.B -n, --reverse
+Reverse the sort order. Use this to invert the order of the filelist. Eg
+to sort in reverse width order, use 
+.B -nSwidth
+.TP 5
 .B -X, --action ACTION
 Specify a string as an action to perform when the enter key is pressed in
 slideshow or multiwindow modes. The action will be executed in a shell.

@@ -252,6 +252,7 @@ typedef struct cmdlineoptions
    unsigned char loadables;
    unsigned char unloadables;
    unsigned char zoom_mode;
+   unsigned char reverse;
 
    char *output_file;
    char *bg_file;

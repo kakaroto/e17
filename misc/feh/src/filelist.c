@@ -697,7 +697,7 @@ feh_prepare_filelist(void)
            /* Randomize the filename order */
            filelist = filelist_randomize(filelist);
         }
-        else
+        else if (!opt.reverse)
         {
            /* Let's reverse the list. Its back-to-front right now ;) */
            filelist = filelist_reverse(filelist);
@@ -727,6 +727,14 @@ feh_prepare_filelist(void)
      default:
         break;
    }
+
+   /* no point reversing a random list */
+   if (opt.reverse && (opt.sort != SORT_NONE))
+   {
+      D(("Reversing filelist as requested\n"));
+      filelist = filelist_reverse(filelist);
+   }
+
    D_RETURN_;
 }
 

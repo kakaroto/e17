@@ -217,8 +217,7 @@ static void
 feh_parse_option_array(int argc, char **argv)
 {
    static char stropts[] =
-
-      "a:Ab:BcC:dD:e:f:FghH:iIklLmo:O:pPqrR:sS:tTuUvVwW:xX:y:z:";
+      "a:Ab:BcC:dD:e:f:FghH:iIklLmno:O:pPqrR:sS:tTuUvVwW:xX:y:z:";
    static struct option lopts[] = {
       /* actions */
       {"help", 0, 0, 'h'},
@@ -247,6 +246,7 @@ feh_parse_option_array(int argc, char **argv)
       {"preload", 0, 0, 'p'},
       {"loadables", 0, 0, 'U'},
       {"unloadables", 0, 0, 'u'},
+      {"reverse", 0, 0, 'n'},
       /* options with values */
       {"output", 1, 0, 'o'},
       {"action", 1, 0, 'X'},
@@ -311,6 +311,9 @@ feh_parse_option_array(int argc, char **argv)
            break;
         case 't':
            opt.thumbs = 1;
+           break;
+        case 'n':
+           opt.reverse = 1;
            break;
         case 'V':
            opt.verbose = 1;
@@ -606,6 +609,9 @@ show_usage(void)
            "                            For sort modes other than name or filename, a\n"
            "                            preload run will be necessary, causing a delay\n"
            "                            proportional to the number of images in the list\n"
+           "  -n, --reverse             Reverse the sort order. Use this to invert the order\n"
+           "                            of the filelist. Eg to sort in reverse width order,\n"
+           "                            use -nSwidth\n"
            "  -X, --action ACTION       Specify a string as an action to perform when the\n"
            "                            enter key is pressed in slideshow or multiwindow\n"
            "                            modes. The action will be executed in a shell. Use\n"
