@@ -52,7 +52,7 @@ tga_la_LIBADD	     =
 
 db_la_SOURCES        = loader_db.c
 db_la_LDFLAGS	     = -no-undefined -module -avoid-version
-db_la_LIBADD	     = -ldb -lz
+db_la_LIBADD	     = -ledb -ldb -lz
 
 #xcf_la_SOURCES       = loader_xcf.c loader_xcf_pixelfuncs.c
 #xcf_la_LDFLAGS	     = -no-undefined -module -avoid-version

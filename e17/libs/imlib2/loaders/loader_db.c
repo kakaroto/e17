@@ -20,11 +20,10 @@ void formats (ImlibLoader *l);
  (((x) & 0x0000ff00 ) << 8) |\
  (((x) & 0x00ff0000 ) >> 8) |\
  (((x) & 0xff000000 ) >> 24))
-# define DB_DBM_HSEARCH    1
+#include <Edb.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
-#include <db.h>
 #include <unistd.h>
 #include <sys/stat.h>
 #include <zlib.h>
@@ -69,10 +68,10 @@ char
 load (ImlibImage *im, ImlibProgressFunction progress,
       char progress_granularity, char immediate_load)
 {
-   int                  w, h, alpha, compression;
-   DBM                 *db;
+   int                  w, h, alpha, compression, size;
+   E_DB_File           *db;
    char                 file[4096], key[4096], *ptr;
-   datum                dkey, ret;
+   DATA32              *ret;
    DATA32              *body;
       
    if (im->data)
@@ -88,50 +87,31 @@ load (ImlibImage *im, ImlibProgressFunction progress,
 	 *ptr = 0;
 	 if (!can_read(file))
 	    return 0;
-	 flen = strlen(file);
 	 strcpy(key, &(ptr[1]));
-	 if ((flen > 3) &&
-	     (file[flen - 3] == '.') &&
-	     (file[flen - 2] == 'd') &&
-	     (file[flen - 1] == 'b'))
-	    file[flen - 3] = 0;
       }
    else
       return 0;
-   db = dbm_open(file, O_RDONLY, 0664);
+   db = e_db_open_read(file);
    if (!db)
+      return 0;
+
+   ret = e_db_data_get(db, key, &size);
+   if (!ret)
      {
-	int i;
-	
-	for (i = 0; i < 32; i++)
-	  {
-	     usleep((rand() % 0xff) * 1000);
-	     db = dbm_open(file, O_RDONLY, 0664);
-	     if (db)
-		break;
-	  }
-	if (!db)
-	   return 0;
-     }
-   
-   dkey.dptr = key;
-   dkey.dsize = strlen(key);
-   ret = dbm_fetch(db, dkey);
-   if (!ret.dptr)
-     {
-	dbm_close(db);
+	e_db_close(db);
 	return 0;
      }
    /* header */
      {
 	DATA32 header[8];
 	
-	if (ret.dsize < 32)
+	if (size < 32)
 	  {
-	     dbm_close(db);
+	     free(ret);
+	     e_db_close(db);
 	     return 0;
 	  }
-	memcpy(header, ret.dptr, 32);
+	memcpy(header, ret, 32);
 #ifdef WORDS_BIGENDIAN
 	  {
 	     int i;
@@ -141,7 +121,8 @@ load (ImlibImage *im, ImlibProgressFunction progress,
 #endif
 	if (header[0] != 0xac1dfeed)
 	  {
-	     dbm_close(db);
+	     free(ret);
+	     e_db_close(db);
 	     return 0;
 	  }
 	w = header[1];
@@ -150,12 +131,14 @@ load (ImlibImage *im, ImlibProgressFunction progress,
 	compression = header[4];
 	if ((w > 8192) || (h > 8192))
 	  {
-	     dbm_close(db);
+	     free(ret);
+	     e_db_close(db);
 	     return 0;
 	  }
-	if ((compression == 0) && (ret.dsize < ((w * h * 4) + 32)))
+	if ((compression == 0) && (size < ((w * h * 4) + 32)))
 	  {
-	     dbm_close(db);
+	     free(ret);
+	     e_db_close(db);
 	     return 0;
 	  }
 	im->w = w;
@@ -175,12 +158,12 @@ load (ImlibImage *im, ImlibProgressFunction progress,
 	int     y, pl = 0;
 	char    pper = 0;
 
-	body = &(((DATA32 *)ret.dptr)[8]);
+	body = &(ret[8]);
 	/* must set the im->data member before callign progress function */
 	ptr = im->data = malloc(w * h * sizeof(DATA32));
 	if (!im->data)
 	  {
-	     dbm_close(db);
+	     e_db_close(db);
 	     return 0;
 	  }
 	if (!compression)
@@ -211,7 +194,8 @@ load (ImlibImage *im, ImlibProgressFunction progress,
 			    l = y - pl;
 			    if(!progress(im, per, 0, (y - l), im->w, l))
 			      {
-				 dbm_close(db);
+				 free(ret);
+				 e_db_close(db);
 				 return 2;
 			      }
 			    pper = per;
@@ -226,7 +210,7 @@ load (ImlibImage *im, ImlibProgressFunction progress,
              int x;
 	     
 	     dlen = w * h * sizeof(DATA32);
-	     uncompress(im->data, &dlen, body, ret.dsize - 32);
+	     uncompress(im->data, &dlen, body, size - 32);
 #ifdef WORDS_BIGENDIAN
 	     for (x = 0; x < (im->w * im->h); x++)
 		SWAP32(im->data[x]);
@@ -235,7 +219,8 @@ load (ImlibImage *im, ImlibProgressFunction progress,
 		progress(im, 100, 0, 0, im->w, im->h);	     
 	  }
      }
-   dbm_close(db);
+   free(ret);
+   e_db_close(db);
    return 1;
 }
 
@@ -246,11 +231,10 @@ save (ImlibImage *im, ImlibProgressFunction progress,
    int                 alpha = 0;
    char                 file[4096], key[4096], *cp;
    DATA32              *header;
-   datum                dkey, ret;
-   DATA32             *buf, *buf2;
-   DBM                 *db;
-   int                  compression = 0;
-   
+   DATA32              *buf, *buf2;
+   E_DB_File           *db;
+   int                  compression = 0, size;
+   DATA32              *ret;
    
    
    /* no image data? abort */
@@ -274,36 +258,15 @@ save (ImlibImage *im, ImlibProgressFunction progress,
 	     if (!can_read(file))
 		return 0;
 	  }
-	flen = strlen(file);
 	strcpy(key, &(cp[1]));
-	if ((flen > 3) &&
-	    (file[flen - 3] == '.') &&
-	    (file[flen - 2] == 'd') &&
-	    (file[flen - 1] == 'b'))
-	   file[flen - 3] = 0;
      }
    else
       return 0;
-   db = dbm_open(file, O_RDWR | O_CREAT, 0664);
+   db = e_db_open(file);
    if (!db)
-     {
-	int i;
-	
-	for (i = 0; i < 32; i++)
-	  {
-	     usleep((rand() % 0xff) * 1000);
-	     db = dbm_open(file, O_RDWR | O_CREAT, 0664);
-	     if (db)
-		break;
-	  }
-	if (!db)
-	   return 0;
-     }
+      return 0;
    
-   dkey.dptr = key;
-   dkey.dsize = strlen(key);
-   
-   /* account for space for xompression */
+   /* account for space for compression */
    buf = (DATA32 *) malloc((((im->w * im->h * 101) / 100) + 3 + 8) * sizeof(DATA32));   
    header = buf;
    header[0] = 0xac1dfeed;
@@ -362,7 +325,7 @@ save (ImlibImage *im, ImlibProgressFunction progress,
 	     if (buflen >= (im->w * im->h * sizeof(DATA32)))
 		compressed = 0;
 	     else
-		ret.dsize = (8 * sizeof(DATA32)) + buflen;
+		size = (8 * sizeof(DATA32)) + buflen;
 	  }
      }
    if (compression == 0)
@@ -374,7 +337,7 @@ save (ImlibImage *im, ImlibProgressFunction progress,
 	for (y = 0; y < (im->w * im->h) + 8; y++)
 	   SWAP32(buf[y]);
 #endif
-	ret.dsize = ((im->w * im->h) + 8) * sizeof(DATA32);
+	size = ((im->w * im->h) + 8) * sizeof(DATA32);
      }
 #ifdef WORDS_BIGENDIAN
    else
@@ -384,13 +347,14 @@ save (ImlibImage *im, ImlibProgressFunction progress,
 	   SWAP32(buf2[y]);
      }
 #endif
-   ret.dptr = buf;
-   dbm_store(db, dkey, ret, DBM_REPLACE);
+   ret = buf;
+   printf("set data of size %i key %s in db %s\n", size, key, file);
+   e_db_data_set(db, key, ret, size);
    free(buf);
    if (progress)
       progress(im, 100, 0, 0, im->w, im->h);
    /* finish off */
-   dbm_close(db);
+   e_db_close(db);
    return 1;
 }
 
