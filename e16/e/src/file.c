@@ -288,6 +288,29 @@ fileinode(const char *s)
 }
 
 int
+filedev_map(int dev)
+{
+#ifdef __linux__
+   /* device numbers in the anonymous range can't be relied
+    * upon, so map them all on a single one */
+   switch (dev >> 8)
+     {
+     default:
+	return dev;
+	break;
+     case 0:
+     case 144:
+     case 145:
+     case 146:
+	return 1;
+	break;
+     }
+#else
+   return dev;
+#endif
+}
+
+int
 filedev(const char *s)
 {
    struct stat         st;
@@ -296,7 +319,7 @@ filedev(const char *s)
       return 0;
    if (stat(s, &st) < 0)
       return 0;
-   return (int)st.st_dev;
+   return filedev_map((int)st.st_dev);
 }
 
 void

@@ -1701,6 +1701,7 @@ void                E_cp(const char *s, const char *ss);
 time_t              moddate(const char *s);
 int                 filesize(const char *s);
 int                 fileinode(const char *s);
+int                 filedev_map(int dev);
 int                 filedev(const char *s);
 void                E_cd(const char *s);
 char               *cwd(void);

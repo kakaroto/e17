@@ -68,7 +68,7 @@ MenuCreateFromDirectory(const char *name, Menu * parent, MenuStyle * ms,
 	int                 aa, bb, cc;
 
 	aa = (int)st.st_ino;
-	bb = (int)st.st_dev;
+	bb = filedev_map((int)st.st_dev);
 	cc = 0;
 	if (st.st_mtime > st.st_ctime)
 	   cc = st.st_mtime;
@@ -189,7 +189,7 @@ MenuCreateFromDirectory(const char *name, Menu * parent, MenuStyle * ms,
 	     int                 aa, bb, cc;
 
 	     aa = (int)st.st_ino;
-	     bb = (int)st.st_dev;
+	     bb = filedev_map((int)st.st_dev);
 	     cc = 0;
 	     if (st.st_mtime > st.st_ctime)
 		cc = st.st_mtime;
