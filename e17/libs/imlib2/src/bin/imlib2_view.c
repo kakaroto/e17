@@ -125,7 +125,10 @@ main(int argc, char **argv)
      {
         no++;
         if (no == argc)
-           exit(0);
+	  {
+	     fprintf(stderr, "Image format not available\n");
+	     exit(0);
+	  }
         file = argv[no];
         image_width = 0;
         im = imlib_load_image(file);
