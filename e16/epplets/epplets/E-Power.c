@@ -164,7 +164,7 @@ cb_sleep(void *data)
 {
   system("/usr/bin/apm -S");
   return;
-  data-NULL;
+  data=NULL;
 }
 
 int
