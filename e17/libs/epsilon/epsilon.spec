@@ -1,47 +1,46 @@
-# this is NOT relocatable, unless you alter the patch!
-%define	name	epsilon
-%define	ver	0.0.2
-%define	rel	1
-%define prefix  /usr
-
-Summary: Enlightened Thumbnailer
-Name: %{name}
-Version: %{ver}
-Release: %{rel}
+Summary: Enlightened Thumbnail Generator
+Name: epsilon
+Version: 0.0.2
+Release: 1
 Copyright: BSD
 Group: User Interface/X
-Packager: Azundris <edevel@azundris.com>
+Source: ftp://ftp.enlightenment.org/enlightenment/%{name}-%{version}.tar.gz
+Packager: Michael Jennings <mej@eterm.org>
 Vendor: The Enlightenment Development Team <e-develop@enlightenment.org>
-Source: ftp://ftp.enlightenment.org/enlightenment/%{name}-%{ver}.tar.gz
-BuildRoot: /var/tmp/%{name}-root
 Requires: epeg >= 0.9.0
+BuildRoot: %{_tmppath}/%{name}-%{version}-root
 
 %description
-Suri tolar sadam bel Fanganka. Yasdima Araob lom Yasdira sha Jerana. Sorcha
-rafiere Sorcha faan rana. Suri Sorcha sade ki suri Nylara zune ki larom resvis
-Yasdira sha Felta. Duilor wa Llantor sha Gísdí Eyad rafieris tugom Araob. Suri
-tolar daknam Nylara lom Araob sha Felta. Nylara yare lan Alhan. Bilam tolar
-daknam rana wa Yasdira sha Felta lom Araob. Tolar munen lan Fanganka. Bilam
-pacha lan Rhan Loft. »¿Nylara sade tugom Yaori? Yasdima tugom Nylara sha Rhan
-Loft.« Tolar yasdimen Sorcha.
+
+Epsilon is a small, display independent, and quick thumbnailing
+library.  The lib itself conforms to the standard put forth by
+freedesktop.org You can find out more information about it at
+http://triq.net/~jens/thumbnail-spec/index.html
+
+Epeg offers very noticeable speed increases to this standard, but it
+is only available if the input image is a jpeg file.  If the file is
+anything other than jpg, the traditional freedesktop.org thumbnailing
+will occur.  To show the speed increase epeg offers, Epsilon can be
+built with and without epeg.
 
 %package devel
-Summary: Enlightened Thumbnailer headers and development libraries.
+Summary: Epsilon headers and development libraries.
 Group: Development/Libraries
-Requires: %{name} = %{ver}
+Requires: %{name} = %{version}
 
 %description devel
-Epsilon Thumbnailer development headers and libraries.
+Epsilon thumbnailer development headers and libraries.
 
 %prep
 %setup -q
 
 %build
-./configure --prefix=%{prefix}
-make
+%{configure} --prefix=%{_prefix}
+%{__make} %{?_smp_mflags} %{?mflags}
 
 %install
-make prefix=$RPM_BUILD_ROOT%{prefix} install
+%{__make} %{?mflags_install} DESTDIR=$RPM_BUILD_ROOT install
+test -x `which doxygen` && sh gendoc || :
 
 %post
 /sbin/ldconfig
@@ -50,17 +49,21 @@ make prefix=$RPM_BUILD_ROOT%{prefix} install
 /sbin/ldconfig
 
 %clean
-rm -rf $RPM_BUILD_ROOT
+test "x$RPM_BUILD_ROOT" != "x/" && rm -rf $RPM_BUILD_ROOT
 
 %files
-%defattr(-,root,root)
-%{prefix}/lib/libepsilon.so.*
-%{prefix}/lib/libepsilon.la
-%{prefix}/bin/epsilon
+%defattr(-, root, root)
+%doc AUTHORS COPYING* README*
+%{_libdir}/libepsilon.so.*
+%{_libdir}/libepsilon.la
+%{_bindir}/epsilon
 
 %files devel
-%defattr(-,root,root)
-%{prefix}/lib/libepsilon.so
-%{prefix}/lib/libepsilon.a
-%{prefix}/include/Epsilon.h
-%{prefix}/bin/epsilon-config
+%defattr(-, root, root)
+%doc doc/html
+%{_libdir}/libepsilon.so
+%{_libdir}/libepsilon.a
+%{_includedir}/Epsilon.h
+%{_bindir}/epsilon-config
+
+%changelog

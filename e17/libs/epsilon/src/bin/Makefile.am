@@ -3,7 +3,7 @@
 INCLUDES = \
 -I../lib \
 -I/usr/local/include \
--I$(top_srcdir)/lib \
+-I$(top_srcdir)/src/lib \
 @imlib_cflags@
 
 bin_PROGRAMS = epsilon

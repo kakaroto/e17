@@ -18,4 +18,4 @@ install-data-local:
 
 bin_SCRIPTS = epsilon-config
 
-EXTRA_DIST = README AUTHORS COPYING epsilon.spec
+EXTRA_DIST = README AUTHORS COPYING epsilon.spec gendoc Doxyfile
