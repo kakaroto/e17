@@ -58,6 +58,8 @@ int ewl_tooltip_init (Ewl_Tooltip *t, Ewl_Widget *parent)
 				ewl_tooltip_parent_mouse_move_cb, t);
 		ewl_callback_append (parent, EWL_CALLBACK_FOCUS_OUT,
 				ewl_tooltip_parent_focus_out_cb, t);
+		ewl_callback_append (w, EWL_CALLBACK_DESTROY,
+				ewl_tooltip_destroy_cb, t);
 
 		/* 
 		 * If the parent is clicked we don't want to display 
@@ -180,6 +182,22 @@ ewl_tooltip_parent_focus_out_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	}
 
 	ewl_widget_hide (EWL_WIDGET (t));
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void
+ewl_tooltip_destroy_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+{
+	Ewl_Tooltip *t = w;
+	
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("w", w);
+
+	if (t->timer) {
+		ecore_timer_del (t->timer);
+		t->timer = NULL;
+	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
