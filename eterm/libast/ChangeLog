@@ -327,3 +327,7 @@ Fri Oct 25 15:07:21 2002                        Michael Jennings (mej)
 Patch from Darren Stuart Embry <dse@webonastick.com> to fix building
 on Debian systems with ash installed.
 ----------------------------------------------------------------------
+Tue Nov  5 14:57:46 2002                        Michael Jennings (mej)
+
+Solaris fixes (I hope) thanks to Kevin Doherty <kdoherty@uu.net>.
+----------------------------------------------------------------------

@@ -319,6 +319,7 @@ AC_DEFUN(AST_FUNC_CHECKS, [
     AC_TYPE_SIGNAL
     AC_CHECK_FUNCS(memmove putenv strsep memmem usleep snprintf vsnprintf \
                    strcasestr strcasechr strcasepbrk strrev strnlen)
+    AC_SEARCH_LIBS(hstrerror, resolv)
     dps_snprintf_oflow()
     dps_vsnprintf_oflow()
     dps_symlink_open_bug()

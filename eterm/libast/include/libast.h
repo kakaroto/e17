@@ -36,7 +36,8 @@
 #  define _BSD_SOURCE
 # endif
 # ifndef _XOPEN_SOURCE
-#  define _XOPEN_SOURCE
+/* FIXME -- Do some systems still need this? */
+/* #  define _XOPEN_SOURCE */
 # endif
 #endif
 
