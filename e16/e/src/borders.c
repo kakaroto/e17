@@ -471,7 +471,8 @@ AddToFamily(Window win)
 	if (ewin2)
 	  {
 	     ewin->desktop = ewin2->desktop;
-	     if ((Conf.focus.switchfortransientmap) && (!ewin->iconified))
+	     if (!Mode.wm.startup && Conf.focus.switchfortransientmap &&
+		 !ewin->iconified)
 		GotoDesktopByEwin(ewin2);
 	  }
      }
