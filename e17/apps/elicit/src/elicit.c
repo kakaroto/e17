@@ -27,6 +27,8 @@ main (int argc, char **argv)
     return 1;
   }
 
+  ecore_app_args_set(argc, argv);
+
   el = calloc(1, sizeof(Elicit));
   if (!el)
   {

@@ -16,7 +16,7 @@ elicit_swatches_init(Elicit *el)
 
   elicit_swatches_load(el);
 
-  ecore_idler_add(elicit_swatches_scroll_idler, el);
+  ecore_idle_enterer_add(elicit_swatches_scroll_idler, el);
 }
 
 void

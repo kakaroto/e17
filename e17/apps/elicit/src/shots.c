@@ -15,7 +15,7 @@ elicit_shots_init(Elicit *el)
 
   elicit_shots_load(el);
 
-  ecore_idler_add(elicit_shots_scroll_idler, el);
+  ecore_idle_enterer_add(elicit_shots_scroll_idler, el);
 }
 
 void
