@@ -216,7 +216,7 @@ FX_Active(int *num)
 }
 
 int
-FX_IsOn(char *effect)
+FX_IsOn(const char *effect)
 {
    unsigned int        i;
 
@@ -228,7 +228,6 @@ FX_IsOn(char *effect)
 	  }
      }
    return 0;
-
 }
 
 /****************************** RIPPLES *************************************/

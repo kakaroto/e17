@@ -32,7 +32,7 @@
 #define MAX_XINERAMA     3	/* Fill Xinerama screen */
 
 static void
-MaxSizeHV(EWin * ewin, char *resize_type, int direction)
+MaxSizeHV(EWin * ewin, const char *resize_type, int direction)
 {
    int                 x, y, w, h, x1, x2, y1, y2, type;
    EWin              **lst, *pe;
@@ -171,19 +171,19 @@ MaxSizeHV(EWin * ewin, char *resize_type, int direction)
 }
 
 void
-MaxWidth(EWin * ewin, char *resize_type)
+MaxWidth(EWin * ewin, const char *resize_type)
 {
    MaxSizeHV(ewin, resize_type, MAX_HOR);
 }
 
 void
-MaxHeight(EWin * ewin, char *resize_type)
+MaxHeight(EWin * ewin, const char *resize_type)
 {
    MaxSizeHV(ewin, resize_type, MAX_VER);
 }
 
 void
-MaxSize(EWin * ewin, char *resize_type)
+MaxSize(EWin * ewin, const char *resize_type)
 {
    MaxSizeHV(ewin, resize_type, MAX_HOR | MAX_VER);
 }

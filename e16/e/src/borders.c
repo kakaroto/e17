@@ -679,7 +679,7 @@ AddToFamily(Window win)
 }
 
 EWin               *
-AddInternalToFamily(Window win, char *bname, int type, void *ptr,
+AddInternalToFamily(Window win, const char *bname, int type, void *ptr,
 		    void (*init) (EWin * ewin, void *ptr))
 {
    EWin               *ewin;
@@ -2072,7 +2072,7 @@ FreeBorder(Border * b)
 }
 
 Border             *
-CreateBorder(char *name)
+CreateBorder(const char *name)
 {
    Border             *b;
 

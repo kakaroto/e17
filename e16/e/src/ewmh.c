@@ -808,7 +808,7 @@ EWMH_ProcessClientMessage(XClientMessageEvent * event)
 	else if (atom == _NET_WM_STATE_MAXIMIZED_VERT ||
 		 atom == _NET_WM_STATE_MAXIMIZED_HORZ)
 	  {
-	     void                (*func) (EWin *, char *);
+	     void                (*func) (EWin *, const char *);
 	     int                 maskbits;
 
 	     if (atom2 == _NET_WM_STATE_MAXIMIZED_VERT || atom2 == _NET_WM_STATE_MAXIMIZED_HORZ)	/* (ok - ok) */

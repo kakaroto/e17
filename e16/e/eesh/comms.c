@@ -84,7 +84,7 @@ CommsFindCommsWindow()
 }
 
 void
-CommsSend(Client * c, char *s)
+CommsSend(Client * c, const char *s)
 {
    char                ss[21];
    int                 i, j, k, len;

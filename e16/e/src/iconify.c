@@ -588,7 +588,7 @@ IconboxShow(Iconbox * ib)
    XSetWMName(disp, ib->win, &xtp);
    xch = XAllocClassHint();
    xch->res_name = ib->name;
-   xch->res_class = "Enlightenment_IconBox";
+   xch->res_class = (char *)"Enlightenment_IconBox";
    XSetClassHint(disp, ib->win, xch);
    XFree(xch);
    MatchToSnapInfoIconbox(ib);

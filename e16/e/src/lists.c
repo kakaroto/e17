@@ -470,7 +470,7 @@ ListItemTypeID(int *num, int type, int id)
 }
 
 void              **
-ListItemTypeName(int *num, int type, char *name)
+ListItemTypeName(int *num, int type, const char *name)
 {
    List               *ptr;
    int                 i, len;

@@ -24,7 +24,7 @@
 #include "dox.h"
 
 char              **
-TextGetLines(char *text, int *count)
+TextGetLines(const char *text, int *count)
 {
    int                 i, j, k;
    char              **list = NULL;
@@ -146,7 +146,7 @@ TextStateLoadFont(TextState * ts)
 }
 
 void
-TextSize(TextState * ts, char *text, int *width, int *height, int fsize)
+TextSize(TextState * ts, const char *text, int *width, int *height, int fsize)
 {
    char              **lines;
    int                 i, num_lines;

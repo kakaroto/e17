@@ -182,7 +182,7 @@ main(int argc, char **argv)
 }
 
 void
-Alert(char *fmt, ...)
+Alert(const char *fmt, ...)
 {
    va_list             ap;
 

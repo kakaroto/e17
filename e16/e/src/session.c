@@ -181,7 +181,7 @@ SetSMUserThemePath(const char *path)
 static int          stale_sm_file = 0;
 
 void
-SetSMFile(char *path)
+SetSMFile(const char *path)
 {
    if (sm_file)
       Efree(sm_file);
@@ -481,15 +481,15 @@ set_save_props(SmcConn smc_conn, int master_flag)
 {
    char               *user = NULL;
    char               *program = NULL;
-   char               *pristr = "_GSM_Priority";
-   char               *smid = "-smid";
-   char               *single = "-single";
-   char               *smfile = "-smfile";
-   char               *econfdir = "-econfdir";
+   const char         *pristr = "_GSM_Priority";
+   const char         *smid = "-smid";
+   const char         *single = "-single";
+   const char         *smfile = "-smfile";
+   const char         *econfdir = "-econfdir";
    char               *e_conf_dir;
-   char               *ecachedir = "-ecachedir";
+   const char         *ecachedir = "-ecachedir";
    char               *e_cache_dir;
-   char               *extinitwin = "-ext_init_win";
+   const char         *extinitwin = "-ext_init_win";
    char                buf[512];
    char                priority = 10;
    char                style;
@@ -604,31 +604,31 @@ set_save_props(SmcConn smc_conn, int master_flag)
    if (single_screen_mode)
      {
 	restartVal[n].length = strlen(single);
-	restartVal[n++].value = single;
+	restartVal[n++].value = (char *)single;
      }
    if (restarting)
      {
 	Esnprintf(buf, sizeof(buf), "%li", init_win_ext);
 
 	restartVal[n].length = strlen(extinitwin);
-	restartVal[n++].value = extinitwin;
+	restartVal[n++].value = (char *)extinitwin;
 	restartVal[n].length = strlen(buf);
 	restartVal[n++].value = buf;
      }
    restartVal[n].length = strlen(smfile);
-   restartVal[n++].value = smfile;
+   restartVal[n++].value = (char *)smfile;
    restartVal[n].length = strlen(sm_file);
    restartVal[n++].value = sm_file;
    restartVal[n].length = strlen(smid);
-   restartVal[n++].value = smid;
+   restartVal[n++].value = (char *)smid;
    restartVal[n].length = strlen(sm_client_id);
    restartVal[n++].value = sm_client_id;
    restartVal[n].length = strlen(econfdir);
-   restartVal[n++].value = econfdir;
+   restartVal[n++].value = (char *)econfdir;
    restartVal[n].length = strlen(e_conf_dir);
    restartVal[n++].value = e_conf_dir;
    restartVal[n].length = strlen(ecachedir);
-   restartVal[n++].value = ecachedir;
+   restartVal[n++].value = (char *)ecachedir;
    restartVal[n].length = strlen(e_cache_dir);
    restartVal[n++].value = e_cache_dir;
 
@@ -822,8 +822,8 @@ SessionInit(void)
 	styleVal.length = 1;
 	styleVal.value = style;
 
-	styleProp.name = SmRestartStyleHint;
-	styleProp.type = SmCARD8;
+	styleProp.name = (char *)SmRestartStyleHint;
+	styleProp.type = (char *)SmCARD8;
 	styleProp.num_vals = 1;
 	styleProp.vals = &styleVal;
 
@@ -910,14 +910,14 @@ SessionGetInfo(EWin * ewin, Atom atom_change)
 }
 
 void
-SetSMID(char *smid)
+SetSMID(const char *smid)
 {
 #ifdef HAVE_X11_SM_SMLIB_H
    sm_client_id = smid;
 #endif /* HAVE_X11_SM_SMLIB_H */
 }
 
-static void         doSMExit(void *params);
+static void         doSMExit(const void *params);
 static void
 LogoutCB(int val, void *data)
 {
@@ -971,7 +971,7 @@ CB_SettingsEscape(int val, void *data)
  * so the our clients remain frozen while we are down.
  */
 static void
-doSMExit(void *params)
+doSMExit(const void *params)
 {
    char                s[1024];
    char                master_flag, do_master_kill;
@@ -1122,7 +1122,7 @@ doSMExit(void *params)
 
 /* This is the original code from actions.c(doExit). */
 static void
-doSMExit(void *params)
+doSMExit(const void *params)
 {
    char                s[1024];
    char               *real_exec;
@@ -1236,7 +1236,7 @@ doSMExit(void *params)
 #endif /* HAVE_X11_SM_SMLIB_H */
 
 int
-SessionExit(void *param)
+SessionExit(const void *param)
 {
    doSMExit(param);
    return 0;

@@ -35,7 +35,7 @@ GetTime(void)
 static Qentry      *q_first = NULL;
 
 void
-DoIn(char *name, double in_time, void (*func) (int val, void *data),
+DoIn(const char *name, double in_time, void (*func) (int val, void *data),
      int runtime_val, void *runtime_data)
 {
    Qentry             *qe, *ptr, *pptr;
@@ -141,7 +141,7 @@ HandleTimerEvent(void)
 }
 
 void
-RemoveTimerEvent(char *name)
+RemoveTimerEvent(const char *name)
 {
    Qentry             *qe, *ptr, *pptr;
 

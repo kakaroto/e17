@@ -24,7 +24,7 @@
 #include "E.h"
 
 Button             *
-ButtonCreate(char *name, ImageClass * iclass, ActionClass * aclass,
+ButtonCreate(const char *name, ImageClass * iclass, ActionClass * aclass,
 	     TextClass * tclass, char *label, char ontop, int flags,
 	     int minw, int maxw, int minh, int maxh, int xo, int yo,
 	     int xa, int xr, int ya, int yr, int xsr, int xsa, int ysr,
@@ -484,7 +484,7 @@ ButtonEmbedWindow(Button * ButtonToUse, Window WindowToEmbed)
 }
 
 void
-ButtonFindEmptySpotFor(Button * bt, char *listname, char dirtomove)
+ButtonFindEmptySpotFor(Button * bt, const char *listname, char dirtomove)
 {
 
    Button            **blst;

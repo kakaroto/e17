@@ -26,11 +26,11 @@
 
 typedef struct _IPCstruct
 {
-   void                (*func) (char *params, Client * c);
-   char               *commandname;
-   char               *nick;
-   char               *help_text;
-   char               *extended_help_text;
+   void                (*func) (const char *params, Client * c);
+   const char         *commandname;
+   const char         *nick;
+   const char         *help_text;
+   const char         *extended_help_text;
 }
 IPCStruct;
 
@@ -43,68 +43,68 @@ IPCStruct;
  * --Mandrake
  */
 
-static void         IPC_Help(char *params, Client * c);
-static void         IPC_Version(char *params, Client * c);
-static void         IPC_Copyright(char *params, Client * c);
-static void         IPC_AutoSave(char *params, Client * c);
-static void         IPC_DefaultTheme(char *params, Client * c);
-static void         IPC_Restart(char *params, Client * c);
-static void         IPC_RestartWM(char *params, Client * c);
-static void         IPC_RestartTheme(char *params, Client * c);
-static void         IPC_Exit(char *params, Client * c);
-static void         IPC_ForceSave(char *params, Client * c);
-static void         IPC_SMFile(char *params, Client * c);
-static void         IPC_ListThemes(char *params, Client * c);
-static void         IPC_GotoDesktop(char *params, Client * c);
-static void         IPC_ShowIcons(char *params, Client * c);
-static void         IPC_FocusMode(char *params, Client * c);
-static void         IPC_AdvancedFocus(char *params, Client * c);
-static void         IPC_NumDesks(char *params, Client * c);
-static void         IPC_NumAreas(char *params, Client * c);
-static void         IPC_WinOps(char *params, Client * c);
-static void         IPC_WinList(char *params, Client * c);
-static void         IPC_GotoArea(char *params, Client * c);
-static void         IPC_ButtonShow(char *params, Client * c);
-static void         IPC_FX(char *params, Client * c);
-static void         IPC_MoveMode(char *params, Client * c);
-static void         IPC_ResizeMode(char *params, Client * c);
-static void         IPC_GeomInfoMode(char *params, Client * c);
-static void         IPC_Pager(char *params, Client * c);
-static void         IPC_InternalList(char *params, Client * c);
-static void         IPC_SetFocus(char *params, Client * c);
-static void         IPC_DialogOK(char *params, Client * c);
-static void         IPC_SoundClass(char *params, Client * c);
-static void         IPC_ImageClass(char *params, Client * c);
-static void         IPC_TextClass(char *params, Client * c);
-static void         IPC_ActionClass(char *params, Client * c);
-static void         IPC_ColorModifierClass(char *params, Client * c);
-static void         IPC_Border(char *params, Client * c);
-static void         IPC_Button(char *params, Client * c);
-static void         IPC_Background(char *params, Client * c);
-static void         IPC_Cursor(char *params, Client * c);
-static void         IPC_PlaySoundClass(char *params, Client * c);
-static void         IPC_ListClassMembers(char *params, Client * c);
-static void         IPC_GeneralInfo(char *params, Client * c);
-static void         IPC_DockConfig(char *params, Client * c);
-static void         IPC_MemDebug(char *params, Client * c);
-static void         IPC_Remember(char *params, Client * c);
-static void         IPC_CurrentTheme(char *params, Client * c);
-static void         IPC_Nop(char *params, Client * c);
-static void         IPC_Xinerama(char *params, Client * c);
-static void         IPC_ConfigPanel(char *params, Client * c);
-static void         IPC_RememberList(char *params, Client * c);
+static void         IPC_Help(const char *params, Client * c);
+static void         IPC_Version(const char *params, Client * c);
+static void         IPC_Copyright(const char *params, Client * c);
+static void         IPC_AutoSave(const char *params, Client * c);
+static void         IPC_DefaultTheme(const char *params, Client * c);
+static void         IPC_Restart(const char *params, Client * c);
+static void         IPC_RestartWM(const char *params, Client * c);
+static void         IPC_RestartTheme(const char *params, Client * c);
+static void         IPC_Exit(const char *params, Client * c);
+static void         IPC_ForceSave(const char *params, Client * c);
+static void         IPC_SMFile(const char *params, Client * c);
+static void         IPC_ListThemes(const char *params, Client * c);
+static void         IPC_GotoDesktop(const char *params, Client * c);
+static void         IPC_ShowIcons(const char *params, Client * c);
+static void         IPC_FocusMode(const char *params, Client * c);
+static void         IPC_AdvancedFocus(const char *params, Client * c);
+static void         IPC_NumDesks(const char *params, Client * c);
+static void         IPC_NumAreas(const char *params, Client * c);
+static void         IPC_WinOps(const char *params, Client * c);
+static void         IPC_WinList(const char *params, Client * c);
+static void         IPC_GotoArea(const char *params, Client * c);
+static void         IPC_ButtonShow(const char *params, Client * c);
+static void         IPC_FX(const char *params, Client * c);
+static void         IPC_MoveMode(const char *params, Client * c);
+static void         IPC_ResizeMode(const char *params, Client * c);
+static void         IPC_GeomInfoMode(const char *params, Client * c);
+static void         IPC_Pager(const char *params, Client * c);
+static void         IPC_InternalList(const char *params, Client * c);
+static void         IPC_SetFocus(const char *params, Client * c);
+static void         IPC_DialogOK(const char *params, Client * c);
+static void         IPC_SoundClass(const char *params, Client * c);
+static void         IPC_ImageClass(const char *params, Client * c);
+static void         IPC_TextClass(const char *params, Client * c);
+static void         IPC_ActionClass(const char *params, Client * c);
+static void         IPC_ColorModifierClass(const char *params, Client * c);
+static void         IPC_Border(const char *params, Client * c);
+static void         IPC_Button(const char *params, Client * c);
+static void         IPC_Background(const char *params, Client * c);
+static void         IPC_Cursor(const char *params, Client * c);
+static void         IPC_PlaySoundClass(const char *params, Client * c);
+static void         IPC_ListClassMembers(const char *params, Client * c);
+static void         IPC_GeneralInfo(const char *params, Client * c);
+static void         IPC_DockConfig(const char *params, Client * c);
+static void         IPC_MemDebug(const char *params, Client * c);
+static void         IPC_Remember(const char *params, Client * c);
+static void         IPC_CurrentTheme(const char *params, Client * c);
+static void         IPC_Nop(const char *params, Client * c);
+static void         IPC_Xinerama(const char *params, Client * c);
+static void         IPC_ConfigPanel(const char *params, Client * c);
+static void         IPC_RememberList(const char *params, Client * c);
 
 /* Changes By Asmodean_ <naru@caltech.edu> / #E@Efnet
  * 
  * IPC_ReloadMenus(...) / reload_menus - Reloads menus from menus.cfg */
 
-static void         IPC_ReloadMenus(char *params, Client * c);
+static void         IPC_ReloadMenus(const char *params, Client * c);
 
-static void         IPC_GroupInfo(char *params, Client * c);
-static void         IPC_GroupOps(char *params, Client * c);
-static void         IPC_Group(char *params, Client * c);
-static void         IPC_Hints(char *params, Client * c);
-static void         IPC_Debug(char *params, Client * c);
+static void         IPC_GroupInfo(const char *params, Client * c);
+static void         IPC_GroupOps(const char *params, Client * c);
+static void         IPC_Group(const char *params, Client * c);
+static void         IPC_Hints(const char *params, Client * c);
+static void         IPC_Debug(const char *params, Client * c);
 
 /* the IPC Array */
 
@@ -606,12 +606,12 @@ SetEwinBoolean(char *buf, int len, const char *txt, char *item,
  */
 
 static void
-IPC_ConfigPanel(char *params, Client * c)
+IPC_ConfigPanel(const char *params, Client * c)
 {
    int                 i = 0;
    char                param[256], buf[FILEPATH_LEN_MAX],
       buf2[FILEPATH_LEN_MAX];
-   static char        *cfg_panels[] = {
+   static const char  *cfg_panels[] = {
 /* I just hardcoded this list form actions.c:doConfigure() -- perhaps
  * this should be tad more dynamic?? - pabs */
       "pager", "pager settings dialog",
@@ -663,7 +663,7 @@ IPC_ConfigPanel(char *params, Client * c)
 }
 
 static void
-IPC_Xinerama(char *params, Client * c)
+IPC_Xinerama(const char *params, Client * c)
 {
    params = NULL;
 #ifdef HAS_XINERAMA
@@ -700,14 +700,14 @@ IPC_Xinerama(char *params, Client * c)
 }
 
 static void
-IPC_Nop(char *params, Client * c)
+IPC_Nop(const char *params, Client * c)
 {
    CommsSend(c, "nop");
    params = NULL;
 }
 
 static void
-IPC_Remember(char *params, Client * c)
+IPC_Remember(const char *params, Client * c)
 {
    char                buf[FILEPATH_LEN_MAX];
    char                param[FILEPATH_LEN_MAX];
@@ -773,7 +773,7 @@ IPC_Remember(char *params, Client * c)
 }
 
 static void
-IPC_DockConfig(char *params, Client * c)
+IPC_DockConfig(const char *params, Client * c)
 {
    char                buf[FILEPATH_LEN_MAX];
 
@@ -921,7 +921,7 @@ IPC_DockConfig(char *params, Client * c)
 }
 
 static void
-IPC_GeneralInfo(char *params, Client * c)
+IPC_GeneralInfo(const char *params, Client * c)
 {
    char                buf[FILEPATH_LEN_MAX];
 
@@ -948,7 +948,7 @@ IPC_GeneralInfo(char *params, Client * c)
 }
 
 static void
-IPC_Button(char *params, Client * c)
+IPC_Button(const char *params, Client * c)
 {
 
    char                buf[FILEPATH_LEN_MAX];
@@ -1014,7 +1014,7 @@ IPC_Button(char *params, Client * c)
 }
 
 static void
-IPC_Background(char *params, Client * c)
+IPC_Background(const char *params, Client * c)
 {
    char                buf[FILEPATH_LEN_MAX];
    char                name[FILEPATH_LEN_MAX];
@@ -1229,7 +1229,7 @@ IPC_Background(char *params, Client * c)
 }
 
 static void
-IPC_Border(char *params, Client * c)
+IPC_Border(const char *params, Client * c)
 {
    char                buf[FILEPATH_LEN_MAX];
 
@@ -1294,7 +1294,7 @@ IPC_Border(char *params, Client * c)
 }
 
 static void
-IPC_Cursor(char *params, Client * c)
+IPC_Cursor(const char *params, Client * c)
 {
    char                buf[FILEPATH_LEN_MAX];
 
@@ -1359,7 +1359,7 @@ IPC_Cursor(char *params, Client * c)
 }
 
 static void
-IPC_TextClass(char *params, Client * c)
+IPC_TextClass(const char *params, Client * c)
 {
    char                pq;
    char                buf[FILEPATH_LEN_MAX];
@@ -1405,7 +1405,7 @@ IPC_TextClass(char *params, Client * c)
 		    {
 		       int                 state;
 		       int                 x, y;
-		       char               *txt;
+		       const char         *txt;
 		       Window              win;
 
 		       word(params, 3, param3);
@@ -1442,7 +1442,7 @@ IPC_TextClass(char *params, Client * c)
 		  if (t)
 		    {
 		       int                 w, h;
-		       char               *txt;
+		       const char         *txt;
 
 		       txt = atword(params, 3);
 		       if (txt)
@@ -1500,7 +1500,7 @@ IPC_TextClass(char *params, Client * c)
 }
 
 static void
-IPC_ColorModifierClass(char *params, Client * c)
+IPC_ColorModifierClass(const char *params, Client * c)
 {
    char                buf[FILEPATH_LEN_MAX];
 
@@ -1568,7 +1568,7 @@ IPC_ColorModifierClass(char *params, Client * c)
 }
 
 static void
-IPC_ActionClass(char *params, Client * c)
+IPC_ActionClass(const char *params, Client * c)
 {
    char                buf[FILEPATH_LEN_MAX];
 
@@ -1634,7 +1634,7 @@ IPC_ActionClass(char *params, Client * c)
 }
 
 static void
-IPC_ImageClass(char *params, Client * c)
+IPC_ImageClass(const char *params, Client * c)
 {
    char                pq;
    char                buf[FILEPATH_LEN_MAX];
@@ -1743,7 +1743,8 @@ IPC_ImageClass(char *params, Client * c)
 		  if (iclass)
 		    {
 		       Window              win;
-		       char               *winptr, *hptr, state[20];
+		       char                state[20];
+		       const char         *winptr, *hptr;
 		       int                 st, w = -1, h = -1;
 
 		       winptr = atword(params, 3);
@@ -1779,7 +1780,8 @@ IPC_ImageClass(char *params, Client * c)
 		  if (iclass)
 		    {
 		       Window              win;
-		       char               *winptr, *hptr, state[20];
+		       char                state[20];
+		       const char         *winptr, *hptr;
 		       int                 st, w = -1, h = -1;
 
 		       winptr = atword(params, 3);
@@ -1858,7 +1860,7 @@ IPC_ImageClass(char *params, Client * c)
 }
 
 static void
-IPC_SoundClass(char *params, Client * c)
+IPC_SoundClass(const char *params, Client * c)
 {
    char                buf[FILEPATH_LEN_MAX];
 
@@ -1916,7 +1918,7 @@ IPC_SoundClass(char *params, Client * c)
 }
 
 static void
-IPC_PlaySoundClass(char *params, Client * c)
+IPC_PlaySoundClass(const char *params, Client * c)
 {
    char                buf[FILEPATH_LEN_MAX];
 
@@ -1937,7 +1939,7 @@ IPC_PlaySoundClass(char *params, Client * c)
 }
 
 static void
-IPC_ListClassMembers(char *params, Client * c)
+IPC_ListClassMembers(const char *params, Client * c)
 {
    char               *buf = NULL;
    char                buf2[FILEPATH_LEN_MAX];
@@ -2128,7 +2130,7 @@ IPC_ListClassMembers(char *params, Client * c)
 }
 
 static void
-IPC_DialogOK(char *params, Client * c)
+IPC_DialogOK(const char *params, Client * c)
 {
    char                buf[FILEPATH_LEN_MAX];
 
@@ -2144,7 +2146,7 @@ IPC_DialogOK(char *params, Client * c)
 }
 
 static void
-IPC_SetFocus(char *params, Client * c)
+IPC_SetFocus(const char *params, Client * c)
 {
    EWin               *ewin;
    char                buf[FILEPATH_LEN_MAX];
@@ -2186,7 +2188,7 @@ IPC_SetFocus(char *params, Client * c)
 }
 
 static void
-IPC_AdvancedFocus(char *params, Client * c)
+IPC_AdvancedFocus(const char *params, Client * c)
 {
    char                buf[FILEPATH_LEN_MAX];
 
@@ -2572,7 +2574,7 @@ IPC_AdvancedFocus(char *params, Client * c)
 }
 
 static void
-IPC_InternalList(char *params, Client * c)
+IPC_InternalList(const char *params, Client * c)
 {
    char                buf[FILEPATH_LEN_MAX];
    char                buf2[FILEPATH_LEN_MAX];
@@ -2650,7 +2652,7 @@ IPC_InternalList(char *params, Client * c)
 }
 
 static void
-IPC_Pager(char *params, Client * c)
+IPC_Pager(const char *params, Client * c)
 {
    char                buf[FILEPATH_LEN_MAX];
    char                param1[FILEPATH_LEN_MAX];
@@ -2878,7 +2880,7 @@ IPC_Pager(char *params, Client * c)
 }
 
 static void
-IPC_MoveMode(char *params, Client * c)
+IPC_MoveMode(const char *params, Client * c)
 {
    char                buf[FILEPATH_LEN_MAX];
 
@@ -2945,7 +2947,7 @@ IPC_MoveMode(char *params, Client * c)
 }
 
 static void
-IPC_ResizeMode(char *params, Client * c)
+IPC_ResizeMode(const char *params, Client * c)
 {
    char                buf[FILEPATH_LEN_MAX];
 
@@ -3006,7 +3008,7 @@ IPC_ResizeMode(char *params, Client * c)
 }
 
 static void
-IPC_GeomInfoMode(char *params, Client * c)
+IPC_GeomInfoMode(const char *params, Client * c)
 {
    char                buf[FILEPATH_LEN_MAX];
 
@@ -3055,7 +3057,7 @@ IPC_GeomInfoMode(char *params, Client * c)
 }
 
 static void
-IPC_FX(char *params, Client * c)
+IPC_FX(const char *params, Client * c)
 {
    char                buf[FILEPATH_LEN_MAX];
 
@@ -3455,7 +3457,7 @@ IPC_FX(char *params, Client * c)
 }
 
 static void
-IPC_ButtonShow(char *params, Client * c)
+IPC_ButtonShow(const char *params, Client * c)
 {
    ActionsCall(ACTION_HIDESHOW_BUTTON, NULL, params);
    return;
@@ -3463,7 +3465,7 @@ IPC_ButtonShow(char *params, Client * c)
 }
 
 static void
-IPC_WinList(char *params, Client * c)
+IPC_WinList(const char *params, Client * c)
 {
    char               *ret = NULL;
    char                buf[FILEPATH_LEN_MAX];
@@ -3519,7 +3521,7 @@ IPC_WinList(char *params, Client * c)
 }
 
 static void
-IPC_GotoArea(char *params, Client * c)
+IPC_GotoArea(const char *params, Client * c)
 {
    char                buf[FILEPATH_LEN_MAX];
    char                param1[FILEPATH_LEN_MAX];
@@ -3593,7 +3595,7 @@ IPC_GotoArea(char *params, Client * c)
 }
 
 static void
-IPC_WinOps(char *params, Client * c)
+IPC_WinOps(const char *params, Client * c)
 {
    char                buf[FILEPATH_LEN_MAX];
    EWin               *ewin;
@@ -3978,7 +3980,7 @@ IPC_WinOps(char *params, Client * c)
 }
 
 static void
-IPC_NumAreas(char *params, Client * c)
+IPC_NumAreas(const char *params, Client * c)
 {
    char                buf[FILEPATH_LEN_MAX];
 
@@ -4011,7 +4013,7 @@ IPC_NumAreas(char *params, Client * c)
 }
 
 static void
-IPC_NumDesks(char *params, Client * c)
+IPC_NumDesks(const char *params, Client * c)
 {
    char                buf[FILEPATH_LEN_MAX];
 
@@ -4037,7 +4039,7 @@ IPC_NumDesks(char *params, Client * c)
 }
 
 static void
-IPC_FocusMode(char *params, Client * c)
+IPC_FocusMode(const char *params, Client * c)
 {
    char                buf[FILEPATH_LEN_MAX];
 
@@ -4104,7 +4106,7 @@ IPC_FocusMode(char *params, Client * c)
 }
 
 static void
-IPC_ShowIcons(char *params, Client * c)
+IPC_ShowIcons(const char *params, Client * c)
 {
    /* Doesn't look like this function is doing anything, but it used to 
     * if I recall correctly --Mandrake
@@ -4115,7 +4117,7 @@ IPC_ShowIcons(char *params, Client * c)
 }
 
 static void
-IPC_GotoDesktop(char *params, Client * c)
+IPC_GotoDesktop(const char *params, Client * c)
 {
    char                buf[FILEPATH_LEN_MAX];
 
@@ -4149,7 +4151,7 @@ IPC_GotoDesktop(char *params, Client * c)
 }
 
 static void
-IPC_ListThemes(char *params, Client * c)
+IPC_ListThemes(const char *params, Client * c)
 {
    char              **list, *buf = NULL;
    int                 i, num;
@@ -4186,7 +4188,7 @@ IPC_ListThemes(char *params, Client * c)
 }
 
 static void
-IPC_SMFile(char *params, Client * c)
+IPC_SMFile(const char *params, Client * c)
 {
    char                buf[FILEPATH_LEN_MAX];
 
@@ -4213,7 +4215,7 @@ IPC_SMFile(char *params, Client * c)
 }
 
 static void
-IPC_ForceSave(char *params, Client * c)
+IPC_ForceSave(const char *params, Client * c)
 {
    c = NULL;
    params = NULL;
@@ -4228,7 +4230,7 @@ IPC_ForceSave(char *params, Client * c)
 }
 
 static void
-IPC_Restart(char *params, Client * c)
+IPC_Restart(const char *params, Client * c)
 {
    c = NULL;
    params = NULL;
@@ -4238,7 +4240,7 @@ IPC_Restart(char *params, Client * c)
 }
 
 static void
-IPC_RestartWM(char *params, Client * c)
+IPC_RestartWM(const char *params, Client * c)
 {
    char                buf[FILEPATH_LEN_MAX];
 
@@ -4256,7 +4258,7 @@ IPC_RestartWM(char *params, Client * c)
 }
 
 static void
-IPC_RestartTheme(char *params, Client * c)
+IPC_RestartTheme(const char *params, Client * c)
 {
    char                buf[FILEPATH_LEN_MAX];
 
@@ -4274,7 +4276,7 @@ IPC_RestartTheme(char *params, Client * c)
 }
 
 static void
-IPC_Exit(char *params, Client * c)
+IPC_Exit(const char *params, Client * c)
 {
    c = NULL;
 
@@ -4285,7 +4287,7 @@ IPC_Exit(char *params, Client * c)
 }
 
 static void
-IPC_DefaultTheme(char *params, Client * c)
+IPC_DefaultTheme(const char *params, Client * c)
 {
    char                buf[FILEPATH_LEN_MAX];
 
@@ -4321,7 +4323,7 @@ IPC_DefaultTheme(char *params, Client * c)
 }
 
 static void
-IPC_CurrentTheme(char *params, Client * c)
+IPC_CurrentTheme(const char *params, Client * c)
 {
    char                buf[FILEPATH_LEN_MAX];
 
@@ -4336,7 +4338,7 @@ IPC_CurrentTheme(char *params, Client * c)
 }
 
 static void
-IPC_AutoSave(char *params, Client * c)
+IPC_AutoSave(const char *params, Client * c)
 {
    char                buf[FILEPATH_LEN_MAX];
 
@@ -4377,7 +4379,7 @@ ipccmp(void *p1, void *p2)
 }
 
 static void
-IPC_Help(char *params, Client * c)
+IPC_Help(const char *params, Client * c)
 {
    char                buf[FILEPATH_LEN_MAX];
    char                buf2[FILEPATH_LEN_MAX];
@@ -4471,7 +4473,7 @@ IPC_Help(char *params, Client * c)
 }
 
 static void
-IPC_Copyright(char *params, Client * c)
+IPC_Copyright(const char *params, Client * c)
 {
    char                buf[FILEPATH_LEN_MAX];
 
@@ -4523,7 +4525,7 @@ IPC_Copyright(char *params, Client * c)
 }
 
 static void
-IPC_Version(char *params, Client * c)
+IPC_Version(const char *params, Client * c)
 {
    char                buf[FILEPATH_LEN_MAX];
 
@@ -4547,7 +4549,7 @@ IPC_Version(char *params, Client * c)
  */
 
 int
-HandleIPC(char *params, Client * c)
+HandleIPC(const char *params, Client * c)
 {
    int                 i;
    int                 numIPC;
@@ -4595,7 +4597,7 @@ ButtonIPC(int val, void *data)
  */
 
 static void
-IPC_ReloadMenus(char *params, Client * c)
+IPC_ReloadMenus(const char *params, Client * c)
 {
    /*
     * Do nothing here but call doExit, following the pattern
@@ -4616,7 +4618,7 @@ IPC_ReloadMenus(char *params, Client * c)
 }
 
 static void
-IPC_GroupInfo(char *params, Client * c)
+IPC_GroupInfo(const char *params, Client * c)
 {
    char                buf[FILEPATH_LEN_MAX];
    char                buf2[FILEPATH_LEN_MAX];
@@ -4694,7 +4696,7 @@ IPC_GroupInfo(char *params, Client * c)
 }
 
 static void
-IPC_GroupOps(char *params, Client * c)
+IPC_GroupOps(const char *params, Client * c)
 {
    char                buf[FILEPATH_LEN_MAX];
    Group              *group = current_group;
@@ -4803,7 +4805,7 @@ IPC_GroupOps(char *params, Client * c)
 }
 
 static void
-IPC_Group(char *params, Client * c)
+IPC_Group(const char *params, Client * c)
 {
    char                buf[FILEPATH_LEN_MAX];
 
@@ -4945,7 +4947,7 @@ IPC_Group(char *params, Client * c)
 }
 
 static void
-IPC_MemDebug(char *params, Client * c)
+IPC_MemDebug(const char *params, Client * c)
 {
    EDisplayMemUse();
 
@@ -4954,7 +4956,7 @@ IPC_MemDebug(char *params, Client * c)
 }
 
 static void
-IPC_RememberList(char *params, Client * c)
+IPC_RememberList(const char *params, Client * c)
 {
    Snapshot          **lst;
    int                 i, j, num, f;
@@ -5064,7 +5066,7 @@ IPC_RememberList(char *params, Client * c)
 }
 
 static void
-IPC_Hints(char *params, Client * c)
+IPC_Hints(const char *params, Client * c)
 {
    char                buf[FILEPATH_LEN_MAX];
    char                param1[FILEPATH_LEN_MAX];
@@ -5092,7 +5094,7 @@ IPC_Hints(char *params, Client * c)
 }
 
 static void
-IPC_Debug(char *params, Client * c)
+IPC_Debug(const char *params, Client * c)
 {
    char                buf[FILEPATH_LEN_MAX];
    char                param1[FILEPATH_LEN_MAX];

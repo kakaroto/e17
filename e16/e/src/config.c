@@ -1073,7 +1073,8 @@ Config_Menu(FILE * ConfigFile)
    char                s3[FILEPATH_LEN_MAX];
    char                s4[FILEPATH_LEN_MAX];
    char                s5[FILEPATH_LEN_MAX];
-   char               *txt = NULL, *params = NULL;
+   char               *txt = NULL;
+   const char         *params = NULL;
    int                 i1;
    Menu               *m = NULL, *mm = NULL;
    MenuItem           *mi = NULL;
@@ -2634,15 +2635,15 @@ Config_ColorModifier(FILE * ConfigFile)
    char                s[FILEPATH_LEN_MAX];
    char                s2[FILEPATH_LEN_MAX];
    int                 i1;
-   char               *name = 0;
-   char               *params = 0;
-   char               *current_param = 0;
-   unsigned char      *rx = 0;
-   unsigned char      *ry = 0;
-   unsigned char      *gx = 0;
-   unsigned char      *gy = 0;
-   unsigned char      *bx = 0;
-   unsigned char      *by = 0;
+   char               *name = NULL;
+   const char         *params = NULL;
+   const char         *current_param = NULL;
+   unsigned char      *rx = NULL;
+   unsigned char      *ry = NULL;
+   unsigned char      *gx = NULL;
+   unsigned char      *gy = NULL;
+   unsigned char      *bx = NULL;
+   unsigned char      *by = NULL;
    int                 i = 0, tx, ty;
    int                 rnum = 0, gnum = 0, bnum = 0;
    ColorModifierClass *cm;
@@ -3285,14 +3286,14 @@ Config_WindowMatch(FILE * ConfigFile)
 static char        *cfg_tmpfile = NULL;
 
 static FILE        *
-OpenConfigFileForReading(char *path, char preprocess)
+OpenConfigFileForReading(const char *path, char preprocess)
 {
    /* This function will open a file at location path for */
    /* reading. */
    /* All output is passed through epp for preprocessing however. */
    FILE               *fpin /*, *fpout */ ;
    char                execline[FILEPATH_LEN_MAX];
-   char               *epp_path = ENLIGHTENMENT_BIN "/epp";
+   const char         *epp_path = ENLIGHTENMENT_BIN "/epp";
 
    EDBUG(5, "OpenConfigFileForReading");
 

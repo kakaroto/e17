@@ -23,7 +23,7 @@
 #include "E.h"
 
 ToolTip            *
-CreateToolTip(char *name, ImageClass * ic0, ImageClass * ic1,
+CreateToolTip(const char *name, ImageClass * ic0, ImageClass * ic1,
 	      ImageClass * ic2, ImageClass * ic3, ImageClass * ic4,
 	      TextClass * tclass, int dist, ImageClass * tooltippic)
 {

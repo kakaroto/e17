@@ -32,7 +32,7 @@ AddEToFile(char *file)
    char               *s1, *s2;
    char                hase = 0;
    char                foundwm = 0;
-   char               *wms[] = {
+   const char         *wms[] = {
       "wmaker", "afterstep", "fvwm", "fvwm2", "twm", "mwm", "vtwm", "ctwm",
       "gwm",
       "mlvwm", "kwm", "olwm", "wm2", "wmx", "olvwm", "9wm", "blackbox", "awm",

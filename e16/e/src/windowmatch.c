@@ -23,7 +23,7 @@
 #include "E.h"
 
 WindowMatch        *
-CreateWindowMatch(char *name)
+CreateWindowMatch(const char *name)
 {
    WindowMatch        *b;
 

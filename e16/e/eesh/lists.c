@@ -25,7 +25,7 @@
 #include "E.h"
 
 void               *
-FindItem(char *name, int id, int find_by, int type)
+FindItem(const char *name, int id, int find_by, int type)
 {
    List               *ptr;
 
@@ -72,7 +72,7 @@ FindItem(char *name, int id, int find_by, int type)
 }
 
 void
-AddItem(void *item, char *name, int id, int type)
+AddItem(void *item, const char *name, int id, int type)
 {
    List               *ptr;
 

@@ -95,7 +95,7 @@ Efont_load(char *file, int size)
 }
 
 void
-Efont_extents(Efont * f, char *text, int *font_ascent_return,
+Efont_extents(Efont * f, const char *text, int *font_ascent_return,
 	      int *font_descent_return, int *width_return,
 	      int *max_ascent_return, int *max_descent_return,
 	      int *lbearing_return __UNUSED__, int *rbearing_return __UNUSED__)

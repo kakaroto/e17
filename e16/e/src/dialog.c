@@ -282,7 +282,7 @@ DialogRealizeIClassDefault(void)
 }
 
 void
-DialogBindKey(Dialog * d, char *key, void (*func) (int val, void *data),
+DialogBindKey(Dialog * d, const char *key, void (*func) (int val, void *data),
 	      int val, void *data)
 {
    d->num_bindings++;
@@ -299,7 +299,7 @@ DialogBindKey(Dialog * d, char *key, void (*func) (int val, void *data),
 }
 
 Dialog             *
-DialogCreate(char *name)
+DialogCreate(const char *name)
 {
    Dialog             *d;
 
@@ -412,8 +412,8 @@ DialogSetExitFunction(Dialog * d, void (*func) (int val, void *data), int val,
 }
 
 void
-DialogAddButton(Dialog * d, char *text, void (*func) (int val, void *data),
-		char doclose)
+DialogAddButton(Dialog * d, const char *text,
+		void (*func) (int val, void *data), char doclose)
 {
    DButton            *db;
    int                 w, h;
@@ -612,7 +612,7 @@ ShowDialog(Dialog * d)
 	XSetWMName(disp, d->win, &xtp);
 	xch = XAllocClassHint();
 	xch->res_name = d->name;
-	xch->res_class = "Enlightenment_Dialog";
+	xch->res_class = (char *)"Enlightenment_Dialog";
 	XSetClassHint(disp, d->win, xch);
 	XFree(xch);
      }
@@ -980,7 +980,7 @@ DialogItemCallCallback(DItem * di)
 static void
 DialogRealizeItem(Dialog * d, DItem * di)
 {
-   char               *def = NULL;
+   const char         *def = NULL;
    int                 iw = 0, ih = 0;
 
    if (di->type == DITEM_BUTTON)
@@ -1822,7 +1822,7 @@ DialogItemsRealize(Dialog * d)
 }
 
 void
-DialogItemButtonSetText(DItem * di, char *text)
+DialogItemButtonSetText(DItem * di, const char *text)
 {
    if (di->item.button.text)
       Efree(di->item.button.text);
@@ -1830,7 +1830,7 @@ DialogItemButtonSetText(DItem * di, char *text)
 }
 
 void
-DialogItemCheckButtonSetText(DItem * di, char *text)
+DialogItemCheckButtonSetText(DItem * di, const char *text)
 {
    if (di->item.check_button.text)
       Efree(di->item.check_button.text);
@@ -1838,7 +1838,7 @@ DialogItemCheckButtonSetText(DItem * di, char *text)
 }
 
 void
-DialogItemTextSetText(DItem * di, char *text)
+DialogItemTextSetText(DItem * di, const char *text)
 {
    if (di->item.text.text)
       Efree(di->item.text.text);
@@ -1853,7 +1853,7 @@ DialogItemRadioButtonSetEventFunc(DItem * di,
 }
 
 void
-DialogItemRadioButtonSetText(DItem * di, char *text)
+DialogItemRadioButtonSetText(DItem * di, const char *text)
 {
    if (di->item.radio_button.text)
       Efree(di->item.radio_button.text);
@@ -1918,7 +1918,7 @@ DialogItemSeparatorSetOrientation(DItem * di, char horizontal)
 }
 
 void
-DialogItemImageSetFile(DItem * di, char *image)
+DialogItemImageSetFile(DItem * di, const char *image)
 {
    if (di->item.image.image)
       Efree(di->item.image.image);

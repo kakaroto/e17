@@ -29,14 +29,14 @@ typedef struct
    char                ok_zoom;
    char                ok_movres;
    char                hide_slideouts;
-   int                 (*func) (EWin * ewin, void *params);
+   int                 (*func) (EWin * ewin, const void *params);
 } ActionFunction;
 
 static ActionFunction ActionFunctions[ACTION_NUMBEROF];
 static char         mode_action_destroy = 0;
 
 ActionClass        *
-CreateAclass(char *name)
+CreateAclass(const char *name)
 {
    ActionClass        *a;
 
@@ -348,7 +348,7 @@ AddAction(ActionClass * a, Action * act)
 }
 
 int
-ActionsCall(unsigned int id, EWin * ewin, void *params)
+ActionsCall(unsigned int id, EWin * ewin, const void *params)
 {
    ActionFunction     *af;
 
@@ -560,7 +560,7 @@ EventAclass(XEvent * ev, EWin * ewin, ActionClass * a)
  */
 
 static int
-doNothing(EWin * ewin, void *params)
+doNothing(EWin * ewin, const void *params)
 {
    EDBUG(6, "doNothing");
    EDBUG_RETURN(0);
@@ -569,7 +569,7 @@ doNothing(EWin * ewin, void *params)
 }
 
 static int
-spawnMenu(EWin * ewin, void *params)
+spawnMenu(EWin * ewin, const void *params)
 {
    char                s[1024];
    char                s2[1024];
@@ -651,7 +651,7 @@ spawnMenu(EWin * ewin, void *params)
 }
 
 static int
-hideMenu(EWin * ewin, void *params)
+hideMenu(EWin * ewin, const void *params)
 {
    EDBUG(6, "hideMenu");
    EDBUG_RETURN(0);
@@ -660,7 +660,7 @@ hideMenu(EWin * ewin, void *params)
 }
 
 static int
-runApp(char *exe, char *params)
+runApp(const char *exe, const char *params)
 {
    char               *sh;
    char               *path;
@@ -780,7 +780,7 @@ runApp(char *exe, char *params)
 }
 
 int
-execApplication(void *params)
+execApplication(const void *params)
 {
 #if 0				/* Is there any reason to do this? */
    char                exe[FILEPATH_LEN_MAX];
@@ -831,7 +831,7 @@ execApplication(void *params)
    EDBUG_RETURN(0);
 #else
    char                exe[FILEPATH_LEN_MAX];
-   char               *s = params;
+   const char         *s = params;
 
    sscanf(s, "%4000s", exe);
    runApp(exe, s);
@@ -841,14 +841,14 @@ execApplication(void *params)
 }
 
 static int
-doExec(EWin * edummy, void *params)
+doExec(EWin * edummy, const void *params)
 {
    return execApplication(params);
    edummy = NULL;
 }
 
 static int
-doAlert(EWin * edummy, void *params)
+doAlert(EWin * edummy, const void *params)
 {
    char               *pp;
    int                 i;
@@ -879,7 +879,7 @@ doAlert(EWin * edummy, void *params)
 }
 
 static int
-doExit(EWin * ewin, void *params)
+doExit(EWin * ewin, const void *params)
 {
    EDBUG(6, "doExit");
 
@@ -890,43 +890,43 @@ doExit(EWin * ewin, void *params)
 }
 
 static int
-doResize(EWin * ewin, void *params)
+doResize(EWin * ewin, const void *params)
 {
    return ActionResizeStart(ewin, params, MODE_RESIZE);
 }
 
 static int
-doResizeH(EWin * ewin, void *params)
+doResizeH(EWin * ewin, const void *params)
 {
    return ActionResizeStart(ewin, params, MODE_RESIZE_H);
 }
 
 static int
-doResizeV(EWin * ewin, void *params)
+doResizeV(EWin * ewin, const void *params)
 {
    return ActionResizeStart(ewin, params, MODE_RESIZE_V);
 }
 
 static int
-doMove(EWin * ewin, void *params)
+doMove(EWin * ewin, const void *params)
 {
    return ActionMoveStart(ewin, params, 0, 0);
 }
 
 static int
-doMoveConstrained(EWin * ewin, void *params)
+doMoveConstrained(EWin * ewin, const void *params)
 {
    return ActionMoveStart(ewin, params, 1, 0);
 }
 
 static int
-doMoveNoGroup(EWin * ewin, void *params)
+doMoveNoGroup(EWin * ewin, const void *params)
 {
    return ActionMoveStart(ewin, params, 0, 1);
 }
 
 static int
-doSwapMove(EWin * ewin, void *params)
+doSwapMove(EWin * ewin, const void *params)
 {
    Mode.swapmovemode = 1;
    return ActionMoveStart(ewin, params, 0, 0);
@@ -934,7 +934,7 @@ doSwapMove(EWin * ewin, void *params)
 
 #if 0				/* Not used */
 static int
-doMoveConstrainedNoGroup(EWin * ewin, void *params)
+doMoveConstrainedNoGroup(EWin * ewin, const void *params)
 {
    return ActionMoveStart(ewin, params, 1, 1);
 }
@@ -1097,7 +1097,7 @@ ActionsEnd(EWin * ewin)
 }
 
 static int
-DoRaise(EWin * ewin, void *params, int nogroup)
+DoRaise(EWin * ewin, const void *params, int nogroup)
 {
    EWin              **gwins = NULL;
    int                 i, num;
@@ -1113,7 +1113,7 @@ DoRaise(EWin * ewin, void *params, int nogroup)
 }
 
 static int
-DoLower(EWin * ewin, void *params, int nogroup)
+DoLower(EWin * ewin, const void *params, int nogroup)
 {
    EWin              **gwins = NULL;
    int                 i, num;
@@ -1129,25 +1129,25 @@ DoLower(EWin * ewin, void *params, int nogroup)
 }
 
 static int
-doRaise(EWin * ewin, void *params)
+doRaise(EWin * ewin, const void *params)
 {
    return DoRaise(ewin, params, 0);
 }
 
 static int
-doRaiseNoGroup(EWin * ewin, void *params)
+doRaiseNoGroup(EWin * ewin, const void *params)
 {
    return DoRaise(ewin, params, 1);
 }
 
 static int
-doLower(EWin * ewin, void *params)
+doLower(EWin * ewin, const void *params)
 {
    return DoLower(ewin, params, 0);
 }
 
 static int
-doLowerNoGroup(EWin * ewin, void *params)
+doLowerNoGroup(EWin * ewin, const void *params)
 {
    return DoLower(ewin, params, 1);
 }
@@ -1169,7 +1169,7 @@ FindEwinInList(EWin * ewin, EWin ** gwins, int num)
 }
 
 static int
-DoRaiseLower(EWin * ewin, void *params, int nogroup)
+DoRaiseLower(EWin * ewin, const void *params, int nogroup)
 {
    EWin              **gwins, **lst;
    int                 gnum, j, raise = 0;
@@ -1217,19 +1217,19 @@ DoRaiseLower(EWin * ewin, void *params, int nogroup)
 }
 
 static int
-doRaiseLower(EWin * ewin, void *params)
+doRaiseLower(EWin * ewin, const void *params)
 {
    return DoRaiseLower(ewin, params, 0);
 }
 
 static int
-doRaiseLowerNoGroup(EWin * ewin, void *params)
+doRaiseLowerNoGroup(EWin * ewin, const void *params)
 {
    return DoRaiseLower(ewin, params, 1);
 }
 
 static int
-doCleanup(EWin * edummy, void *params)
+doCleanup(EWin * edummy, const void *params)
 {
    char               *type;
    int                 method;
@@ -1406,7 +1406,7 @@ doCleanup(EWin * edummy, void *params)
 }
 
 static int
-doKill(EWin * ewin, void *params)
+doKill(EWin * ewin, const void *params)
 {
    EDBUG(6, "doKill");
    KillEwin(ewin, 0);
@@ -1415,7 +1415,7 @@ doKill(EWin * ewin, void *params)
 }
 
 static int
-doKillNoGroup(EWin * ewin, void *params)
+doKillNoGroup(EWin * ewin, const void *params)
 {
    EDBUG(6, "doKillNoGroup");
    KillEwin(ewin, 1);
@@ -1424,7 +1424,7 @@ doKillNoGroup(EWin * ewin, void *params)
 }
 
 static int
-doKillNasty(EWin * ewin, void *params)
+doKillNasty(EWin * ewin, const void *params)
 {
    EDBUG(6, "doKillNasty");
 
@@ -1437,7 +1437,7 @@ doKillNasty(EWin * ewin, void *params)
 /* Desktop actions */
 
 static int
-DoGotoDesktop(EWin * edummy, void *params, int num)
+DoGotoDesktop(EWin * edummy, const void *params, int num)
 {
    int                 pd;
 
@@ -1457,33 +1457,33 @@ DoGotoDesktop(EWin * edummy, void *params, int num)
 }
 
 static int
-doNextDesktop(EWin * edummy, void *params)
+doNextDesktop(EWin * edummy, const void *params)
 {
    return DoGotoDesktop(edummy, NULL, desks.current + 1);
    params = NULL;
 }
 
 static int
-doPrevDesktop(EWin * edummy, void *params)
+doPrevDesktop(EWin * edummy, const void *params)
 {
    return DoGotoDesktop(edummy, NULL, desks.current - 1);
    params = NULL;
 }
 
 static int
-doGotoDesktop(EWin * edummy, void *params)
+doGotoDesktop(EWin * edummy, const void *params)
 {
    return DoGotoDesktop(edummy, params, desks.current);
 }
 
 static int
-doInplaceDesktop(EWin * edummy, void *params)
+doInplaceDesktop(EWin * edummy, const void *params)
 {
    return DoGotoDesktop(edummy, params, desks.current);
 }
 
 static int
-doRaiseDesktop(EWin * edummy, void *params)
+doRaiseDesktop(EWin * edummy, const void *params)
 {
    int                 d = 0;
 
@@ -1501,7 +1501,7 @@ doRaiseDesktop(EWin * edummy, void *params)
 }
 
 static int
-doLowerDesktop(EWin * edummy, void *params)
+doLowerDesktop(EWin * edummy, const void *params)
 {
    int                 d = 0;
 
@@ -1519,7 +1519,7 @@ doLowerDesktop(EWin * edummy, void *params)
 }
 
 static int
-doDragDesktop(EWin * edummy, void *params)
+doDragDesktop(EWin * edummy, const void *params)
 {
    int                 d = 0;
 
@@ -1543,7 +1543,7 @@ doDragDesktop(EWin * edummy, void *params)
 /* Window ops */
 
 static int
-DoStick(EWin * ewin, void *params, int nogroup)
+DoStick(EWin * ewin, const void *params, int nogroup)
 {
    EWin              **gwins = NULL;
    Group              *curr_group = NULL;
@@ -1574,19 +1574,19 @@ DoStick(EWin * ewin, void *params, int nogroup)
 }
 
 static int
-doStick(EWin * ewin, void *params)
+doStick(EWin * ewin, const void *params)
 {
    return DoStick(ewin, params, 0);
 }
 
 static int
-doStickNoGroup(EWin * ewin, void *params)
+doStickNoGroup(EWin * ewin, const void *params)
 {
    return DoStick(ewin, params, 1);
 }
 
 static int
-doSkipLists(EWin * ewin, void *params)
+doSkipLists(EWin * ewin, const void *params)
 {
    char                skip;
 
@@ -1605,7 +1605,7 @@ doSkipLists(EWin * ewin, void *params)
 }
 
 static int
-doSkipTask(EWin * ewin, void *params)
+doSkipTask(EWin * ewin, const void *params)
 {
    EDBUG(6, "doSkipTask");
 
@@ -1619,7 +1619,7 @@ doSkipTask(EWin * ewin, void *params)
 }
 
 static int
-doSkipFocus(EWin * ewin, void *params)
+doSkipFocus(EWin * ewin, const void *params)
 {
    EDBUG(6, "doSkipFocus");
 
@@ -1632,7 +1632,7 @@ doSkipFocus(EWin * ewin, void *params)
 }
 
 static int
-doSkipWinList(EWin * ewin, void *params)
+doSkipWinList(EWin * ewin, const void *params)
 {
    EDBUG(6, "doSkipWinList");
 
@@ -1645,7 +1645,7 @@ doSkipWinList(EWin * ewin, void *params)
 }
 
 static int
-doNeverFocus(EWin * ewin, void *params)
+doNeverFocus(EWin * ewin, const void *params)
 {
    EDBUG(6, "doSkipWinList");
 
@@ -1660,7 +1660,7 @@ doNeverFocus(EWin * ewin, void *params)
 /* Button actions */
 
 static int
-doDragButtonStart(EWin * edummy, void *params)
+doDragButtonStart(EWin * edummy, const void *params)
 {
    Button             *b;
 
@@ -1690,7 +1690,7 @@ doDragButtonStart(EWin * edummy, void *params)
 }
 
 int
-doDragButtonEnd(void *params)
+doDragButtonEnd(const void *params)
 {
    Button             *b;
    int                 d;
@@ -1722,7 +1722,7 @@ doDragButtonEnd(void *params)
 /* Settings */
 
 static int
-doFocusModeSet(EWin * edummy, void *params)
+doFocusModeSet(EWin * edummy, const void *params)
 {
    EDBUG(6, "doFocusModeSet");
    if (params)
@@ -1750,7 +1750,7 @@ doFocusModeSet(EWin * edummy, void *params)
 }
 
 static int
-doMoveModeSet(EWin * edummy, void *params)
+doMoveModeSet(EWin * edummy, const void *params)
 {
    EDBUG(6, "doMoveModeSet");
    if (params)
@@ -1773,7 +1773,7 @@ doMoveModeSet(EWin * edummy, void *params)
 }
 
 static int
-doResizeModeSet(EWin * edummy, void *params)
+doResizeModeSet(EWin * edummy, const void *params)
 {
    EDBUG(6, "doResizeModeSet");
    if (params)
@@ -1794,7 +1794,7 @@ doResizeModeSet(EWin * edummy, void *params)
 }
 
 static int
-doSlideModeSet(EWin * edummy, void *params)
+doSlideModeSet(EWin * edummy, const void *params)
 {
    EDBUG(6, "doSlideModeSet");
    if (params)
@@ -1813,7 +1813,7 @@ doSlideModeSet(EWin * edummy, void *params)
 }
 
 static int
-doCleanupSlideSet(EWin * edummy, void *params)
+doCleanupSlideSet(EWin * edummy, const void *params)
 {
    EDBUG(6, "doCleanupSlideSet");
    if (params)
@@ -1833,7 +1833,7 @@ doCleanupSlideSet(EWin * edummy, void *params)
 }
 
 static int
-doMapSlideSet(EWin * edummy, void *params)
+doMapSlideSet(EWin * edummy, const void *params)
 {
    EDBUG(6, "doMapSlideSet");
    if (params)
@@ -1851,7 +1851,7 @@ doMapSlideSet(EWin * edummy, void *params)
 }
 
 static int
-doSoundSet(EWin * edummy, void *params)
+doSoundSet(EWin * edummy, const void *params)
 {
    char                snd;
 
@@ -1879,7 +1879,7 @@ doSoundSet(EWin * edummy, void *params)
 }
 
 static int
-doButtonMoveResistSet(EWin * edummy, void *params)
+doButtonMoveResistSet(EWin * edummy, const void *params)
 {
    EDBUG(6, "doButtonMoveResistSet");
    if (params)
@@ -1890,7 +1890,7 @@ doButtonMoveResistSet(EWin * edummy, void *params)
 }
 
 static int
-doDesktopBgTimeoutSet(EWin * edummy, void *params)
+doDesktopBgTimeoutSet(EWin * edummy, const void *params)
 {
    EDBUG(6, "doDesktopBgTimeoutSet");
    if (params)
@@ -1901,7 +1901,7 @@ doDesktopBgTimeoutSet(EWin * edummy, void *params)
 }
 
 static int
-doMapSlideSpeedSet(EWin * edummy, void *params)
+doMapSlideSpeedSet(EWin * edummy, const void *params)
 {
    EDBUG(6, "doMapSlideSpeedSet");
    if (params)
@@ -1912,7 +1912,7 @@ doMapSlideSpeedSet(EWin * edummy, void *params)
 }
 
 static int
-doCleanupSlideSpeedSet(EWin * edummy, void *params)
+doCleanupSlideSpeedSet(EWin * edummy, const void *params)
 {
    EDBUG(6, "doCleanupSlideSpeedSet");
    if (params)
@@ -1923,7 +1923,7 @@ doCleanupSlideSpeedSet(EWin * edummy, void *params)
 }
 
 static int
-doDragdirSet(EWin * edummy, void *params)
+doDragdirSet(EWin * edummy, const void *params)
 {
    char                pd;
    Button             *b;
@@ -1959,7 +1959,7 @@ doDragdirSet(EWin * edummy, void *params)
 }
 
 static int
-doDragbarOrderSet(EWin * edummy, void *params)
+doDragbarOrderSet(EWin * edummy, const void *params)
 {
    char                pd;
    Button             *b;
@@ -1988,7 +1988,7 @@ doDragbarOrderSet(EWin * edummy, void *params)
 }
 
 static int
-doDragbarWidthSet(EWin * edummy, void *params)
+doDragbarWidthSet(EWin * edummy, const void *params)
 {
    int                 pd;
    Button             *b;
@@ -2011,7 +2011,7 @@ doDragbarWidthSet(EWin * edummy, void *params)
 }
 
 static int
-doDragbarLengthSet(EWin * edummy, void *params)
+doDragbarLengthSet(EWin * edummy, const void *params)
 {
    int                 pd;
    Button             *b;
@@ -2034,7 +2034,7 @@ doDragbarLengthSet(EWin * edummy, void *params)
 }
 
 static int
-doDeskSlideSet(EWin * edummy, void *params)
+doDeskSlideSet(EWin * edummy, const void *params)
 {
    EDBUG(6, "doDeskSlideSet");
    if (params)
@@ -2052,7 +2052,7 @@ doDeskSlideSet(EWin * edummy, void *params)
 }
 
 static int
-doDeskSlideSpeedSet(EWin * edummy, void *params)
+doDeskSlideSpeedSet(EWin * edummy, const void *params)
 {
    EDBUG(6, "doDeskSlideSpeedSet");
    if (params)
@@ -2063,7 +2063,7 @@ doDeskSlideSpeedSet(EWin * edummy, void *params)
 }
 
 static int
-doHiQualityBgSet(EWin * edummy, void *params)
+doHiQualityBgSet(EWin * edummy, const void *params)
 {
    EDBUG(6, "doHiQualityBgSet");
    if (params)
@@ -2081,7 +2081,7 @@ doHiQualityBgSet(EWin * edummy, void *params)
 }
 
 static int
-doAutosaveSet(EWin * edummy, void *params)
+doAutosaveSet(EWin * edummy, const void *params)
 {
    EDBUG(6, "doAutosaveSet");
    if (params)
@@ -2098,7 +2098,7 @@ doAutosaveSet(EWin * edummy, void *params)
 }
 
 static int
-doToolTipSet(EWin * edummy, void *params)
+doToolTipSet(EWin * edummy, const void *params)
 {
    EDBUG(6, "doToolTipSet");
    if (params)
@@ -2113,7 +2113,7 @@ doToolTipSet(EWin * edummy, void *params)
 /* Misc actions */
 
 static int
-doPlaySoundClass(EWin * edummy, void *params)
+doPlaySoundClass(EWin * edummy, const void *params)
 {
    EDBUG(6, "doPlaySoundClass");
 
@@ -2127,7 +2127,7 @@ doPlaySoundClass(EWin * edummy, void *params)
 }
 
 static int
-doDeskray(EWin * edummy, void *params)
+doDeskray(EWin * edummy, const void *params)
 {
    EDBUG(6, "doDeskray");
    if (params)
@@ -2161,10 +2161,11 @@ doDeskray(EWin * edummy, void *params)
 }
 
 static int
-doHideShowButton(EWin * edummy, void *params)
+doHideShowButton(EWin * edummy, const void *params)
 {
    Button            **lst, *b;
-   char                s[1024], *ss;
+   char                s[1024];
+   const char         *ss;
    int                 num, i;
 
    EDBUG(6, "doHideShowButton");
@@ -2253,7 +2254,7 @@ doHideShowButton(EWin * edummy, void *params)
 }
 
 static int
-doScrollContainer(EWin * edummy, void *params)
+doScrollContainer(EWin * edummy, const void *params)
 {
    EDBUG(6, "doScrollContainer");
    EDBUG_RETURN(0);
@@ -2264,7 +2265,7 @@ doScrollContainer(EWin * edummy, void *params)
 /* More winops */
 
 static int
-DoIconifyWindow(EWin * ewin, void *params, int nogroup)
+DoIconifyWindow(EWin * ewin, const void *params, int nogroup)
 {
    Group              *curr_group = NULL;
    char                iconified;
@@ -2315,13 +2316,13 @@ DoIconifyWindow(EWin * ewin, void *params, int nogroup)
 }
 
 static int
-doIconifyWindow(EWin * ewin, void *params)
+doIconifyWindow(EWin * ewin, const void *params)
 {
    return DoIconifyWindow(ewin, params, 0);
 }
 
 static int
-doIconifyWindowNoGroup(EWin * ewin, void *params)
+doIconifyWindowNoGroup(EWin * ewin, const void *params)
 {
    return DoIconifyWindow(ewin, params, 1);
 }
@@ -2329,7 +2330,7 @@ doIconifyWindowNoGroup(EWin * ewin, void *params)
 /* More misc */
 
 static int
-doSlideout(EWin * ewin, void *params)
+doSlideout(EWin * ewin, const void *params)
 {
    Slideout           *s;
 
@@ -2347,7 +2348,7 @@ doSlideout(EWin * ewin, void *params)
 }
 
 static int
-doScrollWindows(EWin * edummy, void *params)
+doScrollWindows(EWin * edummy, const void *params)
 {
    int                 x, y, num, i;
    EWin              **lst;
@@ -2379,7 +2380,7 @@ doScrollWindows(EWin * edummy, void *params)
 /* More winops */
 
 static int
-DoShade(EWin * ewin, void *params, int nogroup)
+DoShade(EWin * ewin, const void *params, int nogroup)
 {
    EWin              **gwins = NULL;
    Group              *curr_group = NULL;
@@ -2413,19 +2414,19 @@ DoShade(EWin * ewin, void *params, int nogroup)
 }
 
 static int
-doShade(EWin * ewin, void *params)
+doShade(EWin * ewin, const void *params)
 {
    return DoShade(ewin, params, 0);
 }
 
 static int
-doShadeNoGroup(EWin * ewin, void *params)
+doShadeNoGroup(EWin * ewin, const void *params)
 {
    return DoShade(ewin, params, 1);
 }
 
 static int
-doMaxH(EWin * ewin, void *params)
+doMaxH(EWin * ewin, const void *params)
 {
    EDBUG(6, "doMaxH");
    if (ewin->shaded)
@@ -2436,7 +2437,7 @@ doMaxH(EWin * ewin, void *params)
 }
 
 static int
-doMaxW(EWin * ewin, void *params)
+doMaxW(EWin * ewin, const void *params)
 {
    EDBUG(6, "doMaxW");
    if (ewin->shaded)
@@ -2447,7 +2448,7 @@ doMaxW(EWin * ewin, void *params)
 }
 
 static int
-doMax(EWin * ewin, void *params)
+doMax(EWin * ewin, const void *params)
 {
    EDBUG(6, "doMax");
    if (ewin->shaded)
@@ -2458,7 +2459,7 @@ doMax(EWin * ewin, void *params)
 }
 
 static int
-doSendToNextDesk(EWin * ewin, void *params)
+doSendToNextDesk(EWin * ewin, const void *params)
 {
    EDBUG(6, "doSendToNextDesk");
    MoveEwinToDesktop(ewin, ewin->desktop + 1);
@@ -2471,7 +2472,7 @@ doSendToNextDesk(EWin * ewin, void *params)
 }
 
 static int
-doSendToPrevDesk(EWin * ewin, void *params)
+doSendToPrevDesk(EWin * ewin, const void *params)
 {
    EDBUG(6, "doSendToPrevDesk");
    MoveEwinToDesktop(ewin, ewin->desktop - 1);
@@ -2484,7 +2485,7 @@ doSendToPrevDesk(EWin * ewin, void *params)
 }
 
 static int
-doSnapshot(EWin * ewin, void *params)
+doSnapshot(EWin * ewin, const void *params)
 {
    EDBUG(6, "doSnapshot");
 
@@ -2516,7 +2517,7 @@ doSnapshot(EWin * ewin, void *params)
 }
 
 static int
-doToggleFixedPos(EWin * ewin, void *params)
+doToggleFixedPos(EWin * ewin, const void *params)
 {
    EDBUG(6, "doToggleFixedPos");
 
@@ -2530,7 +2531,7 @@ doToggleFixedPos(EWin * ewin, void *params)
 }
 
 static int
-doSetLayer(EWin * ewin, void *params)
+doSetLayer(EWin * ewin, const void *params)
 {
    int                 l;
 
@@ -2558,7 +2559,7 @@ doSetLayer(EWin * ewin, void *params)
 /* Focus actions */
 
 static int
-doFocusNext(EWin * edummy, void *params)
+doFocusNext(EWin * edummy, const void *params)
 {
    EDBUG(6, "doFocusNext");
    if (Conf.warplist.enable && Mode.current_event->type == KeyPress)
@@ -2571,7 +2572,7 @@ doFocusNext(EWin * edummy, void *params)
 }
 
 static int
-doFocusPrev(EWin * edummy, void *params)
+doFocusPrev(EWin * edummy, const void *params)
 {
    EDBUG(6, "doFocusPrev");
    FocusGetPrevEwin();
@@ -2581,7 +2582,7 @@ doFocusPrev(EWin * edummy, void *params)
 }
 
 static int
-doFocusSet(EWin * ewin, void *params)
+doFocusSet(EWin * ewin, const void *params)
 {
    EDBUG(6, "doFocusSet");
 
@@ -2598,7 +2599,7 @@ doFocusSet(EWin * ewin, void *params)
 }
 
 static int
-doBackgroundSet(EWin * edummy, void *params)
+doBackgroundSet(EWin * edummy, const void *params)
 {
    int                 desk;
    Background         *bg;
@@ -2644,7 +2645,7 @@ doBackgroundSet(EWin * edummy, void *params)
 /* Area actions */
 
 static int
-doAreaSet(EWin * edummy, void *params)
+doAreaSet(EWin * edummy, const void *params)
 {
    int                 a, b;
 
@@ -2659,7 +2660,7 @@ doAreaSet(EWin * edummy, void *params)
 }
 
 static int
-doAreaMoveBy(EWin * edummy, void *params)
+doAreaMoveBy(EWin * edummy, const void *params)
 {
    int                 a, b;
 
@@ -2675,7 +2676,7 @@ doAreaMoveBy(EWin * edummy, void *params)
 }
 
 static int
-doLinearAreaSet(EWin * edummy, void *params)
+doLinearAreaSet(EWin * edummy, const void *params)
 {
    int                 da;
 
@@ -2690,7 +2691,7 @@ doLinearAreaSet(EWin * edummy, void *params)
 }
 
 static int
-doLinearAreaMoveBy(EWin * edummy, void *params)
+doLinearAreaMoveBy(EWin * edummy, const void *params)
 {
    int                 da;
 
@@ -2705,7 +2706,7 @@ doLinearAreaMoveBy(EWin * edummy, void *params)
 }
 
 static int
-doWarpPointer(EWin * edummy, void *params)
+doWarpPointer(EWin * edummy, const void *params)
 {
    int                 dx, dy;
 
@@ -2722,7 +2723,7 @@ doWarpPointer(EWin * edummy, void *params)
 }
 
 static int
-doMoveWinToArea(EWin * ewin, void *params)
+doMoveWinToArea(EWin * ewin, const void *params)
 {
    int                 dx, dy;
 
@@ -2737,7 +2738,7 @@ doMoveWinToArea(EWin * ewin, void *params)
 }
 
 static int
-doMoveWinByArea(EWin * ewin, void *params)
+doMoveWinByArea(EWin * ewin, const void *params)
 {
    int                 dx, dy;
 
@@ -2754,7 +2755,7 @@ doMoveWinByArea(EWin * ewin, void *params)
 }
 
 static int
-doMoveWinToLinearArea(EWin * ewin, void *params)
+doMoveWinToLinearArea(EWin * ewin, const void *params)
 {
    int                 da;
 
@@ -2770,7 +2771,7 @@ doMoveWinToLinearArea(EWin * ewin, void *params)
 
 #if 0				/* Not used */
 static int
-doMoveWinByLinearArea(EWin * ewin, void *params)
+doMoveWinByLinearArea(EWin * ewin, const void *params)
 {
    EWin               *ewin;
    int                 da;
@@ -2787,7 +2788,7 @@ doMoveWinByLinearArea(EWin * ewin, void *params)
 #endif
 
 static int
-DoSetWinBorder(EWin * ewin, void *params, int nogroup)
+DoSetWinBorder(EWin * ewin, const void *params, int nogroup)
 {
    EWin              **gwins = NULL;
    int                 i, num;
@@ -2845,19 +2846,19 @@ DoSetWinBorder(EWin * ewin, void *params, int nogroup)
 }
 
 static int
-doSetWinBorder(EWin * ewin, void *params)
+doSetWinBorder(EWin * ewin, const void *params)
 {
    return DoSetWinBorder(ewin, params, 0);
 }
 
 static int
-doSetWinBorderNoGroup(EWin * ewin, void *params)
+doSetWinBorderNoGroup(EWin * ewin, const void *params)
 {
    return DoSetWinBorder(ewin, params, 1);
 }
 
 static int
-doAbout(EWin * edummy, void *params)
+doAbout(EWin * edummy, const void *params)
 {
    Dialog             *d;
    DItem              *table, *di;
@@ -2913,7 +2914,7 @@ doAbout(EWin * edummy, void *params)
 }
 
 static int
-doFX(EWin * edummy, void *params)
+doFX(EWin * edummy, const void *params)
 {
    EDBUG(6, "doFX");
    if (params)
@@ -2924,7 +2925,7 @@ doFX(EWin * edummy, void *params)
 }
 
 static int
-doSetPagerHiq(EWin * edummy, void *params)
+doSetPagerHiq(EWin * edummy, const void *params)
 {
    EDBUG(6, "doSetPagerHiq");
    if (params)
@@ -2940,7 +2941,7 @@ doSetPagerHiq(EWin * edummy, void *params)
 }
 
 static int
-doSetPagerSnap(EWin * edummy, void *params)
+doSetPagerSnap(EWin * edummy, const void *params)
 {
    EDBUG(6, "doSetPagerSnap");
    if (params)
@@ -2956,7 +2957,7 @@ doSetPagerSnap(EWin * edummy, void *params)
 }
 
 static int
-doConfigure(EWin * edummy, void *params)
+doConfigure(EWin * edummy, const void *params)
 {
    char                s[1024];
 
@@ -3036,15 +3037,15 @@ doConfigure(EWin * edummy, void *params)
 
 struct _keyset
 {
-   char               *sym;
+   const char         *sym;
    int                 state;
-   char               *ch;
+   const char         *ch;
 };
 
 static int
-doInsertKeys(EWin * edummy, void *params)
+doInsertKeys(EWin * edummy, const void *params)
 {
-   const struct _keyset ks[] = {
+   static const struct _keyset ks[] = {
       {"a", 0, "a"},
       {"b", 0, "b"},
       {"c", 0, "c"},
@@ -3191,7 +3192,7 @@ doInsertKeys(EWin * edummy, void *params)
 }
 
 static int
-doCreateIconbox(EWin * edummy, void *params)
+doCreateIconbox(EWin * edummy, const void *params)
 {
    Iconbox            *ib, **ibl;
    int                 num = 0;
@@ -3215,7 +3216,7 @@ doCreateIconbox(EWin * edummy, void *params)
 }
 
 static int
-doShowHideGroup(EWin * ewin, void *params)
+doShowHideGroup(EWin * ewin, const void *params)
 {
    EDBUG(6, "doShowGroup");
    ShowHideWinGroups(ewin, NULL, SET_TOGGLE);
@@ -3224,7 +3225,7 @@ doShowHideGroup(EWin * ewin, void *params)
 }
 
 static int
-doStartGroup(EWin * ewin, void *params)
+doStartGroup(EWin * ewin, const void *params)
 {
    EDBUG(6, "doStartGroup");
    BuildWindowGroup(&ewin, 1);
@@ -3234,7 +3235,7 @@ doStartGroup(EWin * ewin, void *params)
 }
 
 static int
-doAddToGroup(EWin * ewin, void *params)
+doAddToGroup(EWin * ewin, const void *params)
 {
    EDBUG(6, "doAddToGroup");
    if (!current_group)
@@ -3256,7 +3257,7 @@ doAddToGroup(EWin * ewin, void *params)
 }
 
 static int
-doRemoveFromGroup(EWin * ewin, void *params)
+doRemoveFromGroup(EWin * ewin, const void *params)
 {
    EDBUG(6, "doRemoveFromGroup");
    ChooseGroupDialog(ewin,
@@ -3269,7 +3270,7 @@ doRemoveFromGroup(EWin * ewin, void *params)
 }
 
 static int
-doBreakGroup(EWin * ewin, void *params)
+doBreakGroup(EWin * ewin, const void *params)
 {
    EDBUG(6, "doBreakGroup");
    ChooseGroupDialog(ewin, _("  Select the group to break  "),
@@ -3280,7 +3281,7 @@ doBreakGroup(EWin * ewin, void *params)
 }
 
 static int
-doZoom(EWin * ewin, void *params)
+doZoom(EWin * ewin, const void *params)
 {
    char                s[1024];
 

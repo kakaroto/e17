@@ -26,14 +26,14 @@
 static void         ShowAlert(char *text);
 static void         AlertHandleClick(int button);
 
-static int          (*IgnoreFunction) (void *) = NULL;
-static void        *IgnoreParams = NULL;
+static int          (*IgnoreFunction) (const void *) = NULL;
+static const void  *IgnoreParams = NULL;
 static char        *IgnoreText = NULL;
-static int          (*RestartFunction) (void *) = NULL;
-static void        *RestartParams = NULL;
+static int          (*RestartFunction) (const void *) = NULL;
+static const void  *RestartParams = NULL;
 static char        *RestartText = NULL;
-static int          (*ExitFunction) (void *) = NULL;
-static void        *ExitParams = NULL;
+static int          (*ExitFunction) (const void *) = NULL;
+static const void  *ExitParams = NULL;
 static char        *ExitText = NULL;
 
 static char        *TitleText = NULL;
@@ -149,7 +149,7 @@ AssignExitText(const char *text)
 }
 
 void
-AssignIgnoreFunction(int (*FunctionToAssign) (void *), void *params)
+AssignIgnoreFunction(int (*FunctionToAssign) (const void *), const void *params)
 {
    EDBUG(7, "AssignIgnoreFunction");
    IgnoreFunction = FunctionToAssign;
@@ -158,7 +158,8 @@ AssignIgnoreFunction(int (*FunctionToAssign) (void *), void *params)
 }
 
 void
-AssignRestartFunction(int (*FunctionToAssign) (void *), void *params)
+AssignRestartFunction(int (*FunctionToAssign) (const void *),
+		      const void *params)
 {
    EDBUG(7, "AssignRestartFunction");
    RestartFunction = FunctionToAssign;
@@ -167,7 +168,7 @@ AssignRestartFunction(int (*FunctionToAssign) (void *), void *params)
 }
 
 void
-AssignExitFunction(int (*FunctionToAssign) (void *), void *params)
+AssignExitFunction(int (*FunctionToAssign) (const void *), const void *params)
 {
    EDBUG(7, "AssignExitFunction");
    ExitFunction = FunctionToAssign;

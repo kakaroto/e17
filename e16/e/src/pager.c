@@ -323,7 +323,7 @@ PagerShow(Pager * p)
    Esnprintf(s, sizeof(s), "%i", p->desktop);
    xch = XAllocClassHint();
    xch->res_name = s;
-   xch->res_class = "Enlightenment_Pager";
+   xch->res_class = (char *)"Enlightenment_Pager";
    XSetClassHint(disp, p->win, xch);
    XFree(xch);
    pq = queue_up;

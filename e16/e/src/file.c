@@ -27,8 +27,8 @@
 #include <pwd.h>
 #include <time.h>
 
-char               *
-FileExtension(char *file)
+const char         *
+FileExtension(const char *file)
 {
    char               *p;
 
@@ -465,8 +465,8 @@ usershell(int uid)
    EDBUG_RETURN(Estrdup("/bin/sh"));
 }
 
-char               *
-atword(char *s, int num)
+const char         *
+atword(const char *s, int num)
 {
    int                 cnt, i;
 
@@ -492,8 +492,8 @@ atword(char *s, int num)
    EDBUG_RETURN(NULL);
 }
 
-char               *
-atchar(char *s, char c)
+const char         *
+atchar(const char *s, char c)
 {
    int                 i;
 
@@ -581,10 +581,11 @@ getword(char *s, int num)
 }
 
 void
-word(char *s, int num, char *wd)
+word(const char *s, int num, char *wd)
 {
    int                 cnt, i;
-   char               *start, *finish, *ss, *w;
+   char               *w;
+   const char         *start, *finish, *ss;
 
    EDBUG(9, "word");
    if (!s)

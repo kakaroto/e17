@@ -30,7 +30,7 @@ static int          start_move_y = 0;
 static int          real_move_mode = 0;
 
 int
-ActionMoveStart(EWin * ewin, void *params, char constrained, int nogroup)
+ActionMoveStart(EWin * ewin, const void *params, char constrained, int nogroup)
 {
    EWin              **gwins;
    int                 i, num;
@@ -254,7 +254,7 @@ ActionMoveResume(void)
 }
 
 int
-ActionResizeStart(EWin * ewin, void *params, int hv)
+ActionResizeStart(EWin * ewin, const void *params, int hv)
 {
    int                 x, y, w, h;
 

@@ -22,7 +22,7 @@
  */
 #include "E.h"
 
-static Snapshot    *NewSnapshot(char *name);
+static Snapshot    *NewSnapshot(const char *name);
 
 /* Format the window identifier string */
 static int
@@ -104,7 +104,7 @@ GetSnapshot(EWin * ewin)
 
 /* create a new snapshot */
 static Snapshot    *
-NewSnapshot(char *name)
+NewSnapshot(const char *name)
 {
    Snapshot           *sn;
 

@@ -95,7 +95,7 @@ Imlib_Image        *im_title;
 Imlib_Image        *im_prev1, *im_prev2;
 Imlib_Image        *im_next1, *im_next2;
 Imlib_Image        *im_exit1, *im_exit2;
-char               *docdir;
+char               *docdir = NULL;
 
 Window              CreateWindow(Window parent, int x, int y, int ww, int hh);
 int                 ReadHeader(FILE * f);
@@ -222,7 +222,8 @@ main(int argc, char **argv)
    int                 i, w, h, t, x, y;
    int                 wx, wy;
    FILE               *f;
-   char               *s, *docfile = NULL;
+   char               *s;
+   const char         *docfile;
    Pixmap              draw = 0;
    Link               *l = NULL, *ll = NULL;
    Imlib_Border        ibd;
@@ -293,7 +294,6 @@ main(int argc, char **argv)
 	exit(1);
      }
 
-   docdir = ".";
    docfile = "MAIN";
    for (i = 1; i < argc; i++)
      {
@@ -309,6 +309,8 @@ main(int argc, char **argv)
 	else
 	   docdir = strdup(argv[i]);
      }
+   if (docdir == NULL)
+      docdir = strdup(".");
    s = malloc(strlen(docdir) + strlen(docfile) + 2 + 20);
    sprintf(s, "%s/%s", docdir, docfile);
    findLocalizedFile(s);

@@ -123,7 +123,7 @@ word_mb(char *s, int num, char *wd, int *spaceflag)
    int                 wcflg, mbflg;
    struct char_class
    {
-      char               *name;
+      const char         *name;
       wctype_t            wt;
    }                  *cc, char_class_tbl[] =
    {

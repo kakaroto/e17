@@ -44,8 +44,8 @@ ImlibSetFgColorFromGC(Display * dpy, GC gc, Colormap cm)
 }
 
 void
-EFont_draw_string(Display * dpy, Drawable win, GC gc, int x, int y, char *text,
-		  Efont * f, Visual * vis, Colormap cm)
+EFont_draw_string(Display * dpy, Drawable win, GC gc, int x, int y,
+		  const char *text, Efont * f, Visual * vis, Colormap cm)
 {
    Imlib_Image         im;
    int                 w, h, ascent, descent;
@@ -79,7 +79,7 @@ Efont_free(Efont * f)
 }
 
 Efont              *
-Efont_load(char *file, int size)
+Efont_load(const char *file, int size)
 {
    char                s[4096];
    Efont              *f;
@@ -97,7 +97,7 @@ Efont_load(char *file, int size)
 }
 
 void
-Efont_extents(Efont * f, char *text, int *font_ascent_return,
+Efont_extents(Efont * f, const char *text, int *font_ascent_return,
 	      int *font_descent_return, int *width_return,
 	      int *max_ascent_return, int *max_descent_return,
 	      int *lbearing_return, int *rbearing_return)
@@ -745,8 +745,8 @@ handle_x_error(Display * d, XErrorEvent * ev)
 }
 
 void
-EFont_draw_string(Display * disp, Drawable win, GC gc, int x, int y, char *text,
-		  Efont * f, Visual * vis, Colormap cm)
+EFont_draw_string(Display * disp, Drawable win, GC gc, int x, int y,
+		  const char *text, Efont * f, Visual * vis, Colormap cm)
 {
    XImage             *xim;
    XShmSegmentInfo     shminfo;
@@ -1029,7 +1029,7 @@ Efont_free(Efont * f)
 }
 
 Efont              *
-Efont_load(char *file, int size)
+Efont_load(const char *file, int size)
 {
    TT_Error            error;
    TT_Glyph_Metrics    metrics;
@@ -1143,7 +1143,7 @@ Efont_load(char *file, int size)
 }
 
 void
-Efont_extents(Efont * f, char *text, int *font_ascent_return,
+Efont_extents(Efont * f, const char *text, int *font_ascent_return,
 	      int *font_descent_return, int *width_return,
 	      int *max_ascent_return, int *max_descent_return,
 	      int *lbearing_return, int *rbearing_return)

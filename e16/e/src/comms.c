@@ -99,7 +99,7 @@ CommsFindCommsWindow(void)
 }
 
 static void
-CommsDoSend(Window win, char *s)
+CommsDoSend(Window win, const char *s)
 {
    char                ss[21];
    int                 i, j, k, len;
@@ -135,7 +135,7 @@ CommsDoSend(Window win, char *s)
 }
 
 void
-CommsSend(Client * c, char *s)
+CommsSend(Client * c, const char *s)
 {
    EDBUG(5, "CommsSend");
 
@@ -152,7 +152,7 @@ CommsSend(Client * c, char *s)
  * and send the message
  */
 void
-CommsSendToMasterWM(char *s)
+CommsSendToMasterWM(const char *s)
 {
    EDBUG(5, "CommsSendToMasterWM");
 
@@ -169,7 +169,7 @@ CommsSendToMasterWM(char *s)
  * and broadcast the message
  */
 void
-CommsBroadcastToSlaveWMs(char *s)
+CommsBroadcastToSlaveWMs(const char *s)
 {
    int                 screen;
 
@@ -247,7 +247,7 @@ CommsGet(Client ** c, XClientMessageEvent * ev)
 }
 
 void
-CommsBroadcast(char *s)
+CommsBroadcast(const char *s)
 {
    char              **l;
    int                 num, i;
@@ -720,7 +720,8 @@ HandleComms(XClientMessageEvent * ev)
 	ActionClass        *ac;
 	Action             *a;
 	int                 i, l;
-	char                buf[FILEPATH_LEN_MAX], *sp, *ss;
+	char                buf[FILEPATH_LEN_MAX];
+	const char         *sp, *ss;
 
 	Mode.keybinds_changed = 1;
 	ac = (ActionClass *) RemoveItem("KEYBINDINGS", 0, LIST_FINDBY_NAME,
@@ -1546,7 +1547,7 @@ HandleComms(XClientMessageEvent * ev)
      }
    else if (!strcmp(w, "call_raw"))
      {
-	char               *par;
+	const char         *par;
 	int                 aid;
 
 	word(s, 2, w);

@@ -394,7 +394,7 @@ MenuStyleCreate(void)
 
 MenuItem           *
 MenuItemCreate(const char *text, ImageClass * iclass, int action_id,
-	       char *action_params, Menu * child)
+	       const char *action_params, Menu * child)
 {
    MenuItem           *mi;
 
@@ -968,12 +968,13 @@ MenuDrawItem(Menu * m, MenuItem * mi, char shape)
 }
 
 Menu               *
-MenuCreateFromDirectory(char *name, MenuStyle * ms, char *dir)
+MenuCreateFromDirectory(const char *name, MenuStyle * ms, const char *dir)
 {
    Progressbar        *p = NULL;
    Menu               *m, *mm;
    int                 i, num;
-   char              **list, s[4096], ss[4096], *ext, cs[4096];
+   char              **list, s[4096], ss[4096], cs[4096];
+   const char         *ext;
    MenuItem           *mi;
    struct stat         st;
    const char         *chmap =
@@ -1372,7 +1373,8 @@ MenuCreateFromDirectory(char *name, MenuStyle * ms, char *dir)
 }
 
 Menu               *
-MenuCreateFromFlatFile(char *name, MenuStyle * ms, char *file, Menu * parent)
+MenuCreateFromFlatFile(const char *name, MenuStyle * ms, const char *file,
+		       Menu * parent)
 {
    Menu               *m;
    char                s[4096], *ff = NULL;
@@ -1567,7 +1569,7 @@ FileMenuUpdate(int val, void *data)
 }
 
 Menu               *
-MenuCreateFromGnome(char *name, MenuStyle * ms, char *dir)
+MenuCreateFromGnome(const char *name, MenuStyle * ms, const char *dir)
 {
    Menu               *m, *mm;
    int                 i, num;
@@ -1685,7 +1687,7 @@ MenuCreateFromGnome(char *name, MenuStyle * ms, char *dir)
 }
 
 Menu               *
-MenuCreateFromThemes(char *name, MenuStyle * ms)
+MenuCreateFromThemes(const char *name, MenuStyle * ms)
 {
    Menu               *m;
    char              **lst;
@@ -1726,7 +1728,7 @@ BorderNameCompare(void *b1, void *b2)
 }
 
 Menu               *
-MenuCreateFromBorders(char *name, MenuStyle * ms)
+MenuCreateFromBorders(const char *name, MenuStyle * ms)
 {
    Menu               *m;
    Border            **lst;
@@ -1757,7 +1759,7 @@ MenuCreateFromBorders(char *name, MenuStyle * ms)
 }
 
 Menu               *
-MenuCreateFromAllEWins(char *name, MenuStyle * ms)
+MenuCreateFromAllEWins(const char *name, MenuStyle * ms)
 {
    Menu               *m;
    EWin              **lst;
@@ -1828,7 +1830,7 @@ MenuCreateFromDesktopEWins(char *name, MenuStyle * ms, int desk)
 #endif
 
 Menu               *
-MenuCreateFromDesktops(char *name, MenuStyle * ms)
+MenuCreateFromDesktops(const char *name, MenuStyle * ms)
 {
    Menu               *m, *mm;
    EWin              **lst;
@@ -1896,7 +1898,7 @@ MenuCreateMoveToDesktop(char *name, MenuStyle * ms)
 #endif
 
 static Menu        *
-MenuCreateFromGroups(char *name, MenuStyle * ms)
+MenuCreateFromGroups(const char *name, MenuStyle * ms)
 {
    Menu               *m, *mm;
    Group             **lst;
@@ -2080,7 +2082,7 @@ MenusInit(void)
 
 static Menu        *
 RefreshInternalMenu(Menu * m, MenuStyle * ms,
-		    Menu * (mcf) (char *xxx, MenuStyle * ms))
+		    Menu * (mcf) (const char *xxx, MenuStyle * ms))
 {
    char                was = 0;
    int                 lx = 0, ly = 0;
@@ -2124,8 +2126,8 @@ RefreshInternalMenu(Menu * m, MenuStyle * ms,
 }
 
 static void
-ShowInternalMenu(Menu ** pm, MenuStyle ** pms, char *style,
-		 Menu * (mcf) (char *name, MenuStyle * ms))
+ShowInternalMenu(Menu ** pm, MenuStyle ** pms, const char *style,
+		 Menu * (mcf) (const char *name, MenuStyle * ms))
 {
    Menu               *m = *pm;
    MenuStyle          *ms = *pms;

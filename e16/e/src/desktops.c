@@ -386,9 +386,9 @@ FreeDesktopBG(Background * bg)
 }
 
 Background         *
-CreateDesktopBG(char *name, XColor * solid, char *bg, char tile,
+CreateDesktopBG(const char *name, XColor * solid, const char *bg, char tile,
 		char keep_aspect, int xjust, int yjust, int xperc,
-		int yperc, char *top, char tkeep_aspect, int txjust,
+		int yperc, const char *top, char tkeep_aspect, int txjust,
 		int tyjust, int txperc, int typerc)
 {
    Background         *d;

@@ -279,7 +279,7 @@ typedef struct _link
 }
 Link;
 
-void                Efont_extents(Efont * f, char *text,
+void                Efont_extents(Efont * f, const char *text,
 				  int *font_ascent_return,
 				  int *font_descent_return, int *width_return,
 				  int *max_ascent_return,
@@ -291,9 +291,9 @@ void                EFont_draw_string(Display * disp, Drawable win, GC gc,
 				      int x, int y, char *text,
 				      Efont * font, Visual * vis, Colormap cm);
 
-char              **TextGetLines(char *text, int *count);
+char              **TextGetLines(const char *text, int *count);
 void                TextStateLoadFont(TextState * ts);
-void                TextSize(TextState * ts, char *text,
+void                TextSize(TextState * ts, const char *text,
 			     int *width, int *height, int fsize);
 void                TextDraw(TextState * ts, Window win, char *text,
 			     int x, int y, int w, int h, int fsize,

@@ -105,8 +105,8 @@ void               *Emalloc(int size);
 void               *Erealloc(void *ptr, int size);
 void                Efree(void *ptr);
 
-void               *FindItem(char *name, int id, int find_by, int type);
-void                AddItem(void *item, char *name, int id, int type);
+void               *FindItem(const char *name, int id, int find_by, int type);
+void                AddItem(void *item, const char *name, int id, int type);
 void               *RemoveItem(char *name, int id, int find_by, int type);
 void              **ListItemType(int *num, int type);
 char              **ListItems(int *num, int type);
@@ -116,7 +116,7 @@ void                SetupX(void);
 
 void                CommsSetup(void);
 void                CommsFindCommsWindow(void);
-void                CommsSend(Client * c, char *s);
+void                CommsSend(Client * c, const char *s);
 char               *CommsGet(Client ** c, XEvent * ev);
 Client             *MakeClient(Window win);
 void                ListFreeClient(void *ptr);
@@ -219,7 +219,7 @@ extern int          debug_level;
 }
 #endif
 
-void                Alert(char *fmt, ...);
+void                Alert(const char *fmt, ...);
 
 void                EDisplayMemUse(void);
 
