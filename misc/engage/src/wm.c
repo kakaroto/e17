@@ -424,7 +424,7 @@ bool
 od_wm_ignored(Ecore_X_Window win)
 {
   bool            result = false;
-  static char    *ignore[] = { "engage", "kicker", "panel", "", NULL };
+  static char    *ignore[] = { "engage", "kicker", "trayer", "", NULL };
   char          **cur = ignore;
   char           *winclass = od_wm_get_winclass(win);
 
