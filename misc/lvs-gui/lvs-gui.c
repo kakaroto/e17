@@ -778,7 +778,7 @@ gui_tcp(GtkWidget *win)
 void
 gui(void)
 {
-   GtkWidget *win, *align, *label, *vbox, *hbox, *button, *entry, *hbox2;
+   GtkWidget *win, *align, *label, *vbox, *hbox, *button, *hbox2;
    GtkWidget *pix;
    GdkPixmap *pm, *mm;
    

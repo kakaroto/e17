@@ -55,6 +55,7 @@ INSTALL  = install
 MKDIR    = mkdir
 RM       = rm
 RPM      = rpm
+SED      = sed
 STRIP    = strip
 TAR      = tar
 
@@ -91,13 +92,15 @@ rpm
 all: readme.h lvs-gui  $(SPEC_FILE)
 
 readme.h: README
-	sed -e 's/^.*$$/"&\\n"/g' < $< > $@
+	$(SED) -e 's/"/\\"/g' -e 's/\n/\\\\n/g' -e 's/^.*$$/"&\\n"/' < $< > $@
 	
 lvs-gui: $(DEPEND_FILE) $(OBJS)
 	$(CC) -o $@ $(OBJS) $(LIBS) $(CFLAGS) $(HEADERS)
 
 clean:
-	$(RM) -f $(BIN) *.CKP *.ln *.BAK *.bak *.o core errs ,* *~ *.a .emacs_* tags TAGS make.log MakeOut  "#"* $(SPEC_FILE) $(DEPEND_FILE) readme.h
+	$(RM) -f $(BIN) *.CKP *.ln *.BAK *.bak *.o core errs ,* *~ *.a \
+        .emacs_* tags TAGS make.log MakeOut  "#"* \
+        $(SPEC_FILE) $(DEPEND_FILE) readme.h
 
 install: install-client install-server
 	if [ ! -e $(BINDIR) ]; then $(MKDIR) -p $(BINDIR); fi

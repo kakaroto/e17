@@ -2,7 +2,8 @@ lvs-gui
 Copyright (C) 1999 Carsten Haitzler and Simon Horman
 
 The lvs-gui enables the configuration of servers running the Linux Virtual
-Server (http://linuxvirtualserver.org/) kernel patches.
+Server (http://linuxvirtualserver.org/) kernel patches. This code
+is released under the terms of the BSD Licence.
 
 The lvs-gui is run on a client with an X display with shell access to both
 the Linux Directors and the back end-servers that they load balance. The

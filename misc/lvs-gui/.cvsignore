@@ -5,3 +5,4 @@ transparent_proxy
 .*.swp
 lvs-gui-*.tar.gz
 .dep
+readme.h
