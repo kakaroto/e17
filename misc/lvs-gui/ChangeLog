@@ -11,6 +11,15 @@ Change Log
 
 ----------------------------------------------------------------------
 
+7th January 2000
+(Raster & Horms)
+
+    * Version 0.0.2
+    ipchains command line had an error and was not transparently proxying
+    correctly.
+
+----------------------------------------------------------------------
+
 3rd January 2000
 (Raster & Horms)
 
