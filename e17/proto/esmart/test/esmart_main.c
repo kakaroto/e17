@@ -155,7 +155,6 @@ main (int argc, char *argv[])
       evas_object_move (o, 0, 0);
       evas_object_resize (o, 300, 120);
       evas_object_layer_set (o, 255);
-      evas_object_repeat_events_set(o, 1);
       evas_object_color_set (o, 255, 255, 255, 0);
       evas_object_name_set (o, "dragger");
       esmart_draggies_button_set (o, 1);
