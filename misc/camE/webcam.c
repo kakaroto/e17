@@ -873,7 +873,8 @@ main(int argc, char *argv[])
          {
             char target_buf[2048];
             char cmd_buf[4096];
-            char *args[20];
+            char *scp_args[5] = { "scp", "-BCq", NULL, NULL, NULL };
+            char *ssh_args[20] = { "ssh", "-n", "-q", NULL, NULL, NULL };
 
             if ((upload_blockfile && (stat(upload_blockfile, &st) == -1))
                 || !upload_blockfile)
@@ -882,20 +883,13 @@ main(int argc, char *argv[])
                snprintf(target_buf, sizeof(target_buf), "%s:%s/%s",
                                     scp_target, ftp_dir, ftp_tmp);
                snprintf(cmd_buf, sizeof(cmd_buf), "mv %s/%s %s/%s", ftp_dir, ftp_tmp, ftp_dir, ftp_file);
-               args[0] = "scp";
-               args[1] = "-BCq";
-               args[2] = temp_file;
-               args[3] = target_buf;
-               args[4] = NULL;
-               if((upload_successful = execvp_with_timeout(scp_timeout, "scp", args)))
+               scp_args[2] = temp_file;
+               scp_args[3] = target_buf;
+               if((upload_successful = execvp_with_timeout(scp_timeout, "scp", scp_args)))
                {
-                 args[0] = "ssh";
-                 args[1] = "-n";
-                 args[2] = "-q";
-                 args[3] = scp_target;
-                 args[4] = cmd_buf;
-                 args[5] = NULL;
-                 if((upload_successful = execvp_with_timeout(scp_timeout, "ssh", args)))
+                 ssh_args[3] = scp_target;
+                 ssh_args[4] = cmd_buf;
+                 if((upload_successful = execvp_with_timeout(scp_timeout, "ssh", ssh_args)))
                  {
                     log("shot uploaded\n");
                
