@@ -60,10 +60,11 @@ static sigjmp_buf	error_jmp;
 static void
 error_handler(const char *module, const char *fmt, va_list ap)
 {
+#if 0
 	fprintf(stderr, "%s: ", module);
 	vfprintf(stderr, fmt, ap);
 	fprintf(stderr, "\n");
-	
+#endif 	
 	siglongjmp(error_jmp, 1);
 }
 
