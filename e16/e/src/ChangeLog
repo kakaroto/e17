@@ -1108,3 +1108,11 @@ Wed Sep  1 16:34:48 PDT 1999
 (Raster)
 
 fixed movign of groups and transients with parents if movemode != opaque
+
+-------------------------------------------------------------------------------
+
+Wed Sep  1 17:04:23 PDT 1999
+(Mandrake)
+
+wrote a lot more code into ecvs.  92 lines long just to do some simple
+commit checks.
