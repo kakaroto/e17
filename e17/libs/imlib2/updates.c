@@ -27,11 +27,12 @@ if ((y + h) > hh) {h = hh - y;}
 #define MAX(a, b) (((a) > (b)) ? (a) : (b))
 
 ImlibUpdate *
-__imlib_MergeUpdate(ImlibUpdate *u, int w, int h)
+__imlib_MergeUpdate(ImlibUpdate *u, int w, int h, int hgapmax)
 {
    ImlibUpdate *nu = NULL, *uu;
    struct _tile *t;
    int tw, th, x, y, i;
+   int *gaps = NULL;
 
    /* if theres no rects to process.. return NULL */
    if (!u)
@@ -62,6 +63,58 @@ __imlib_MergeUpdate(ImlibUpdate *u, int w, int h)
 		T(x, y).used = T_USED;
 	  }
      }
+   /* scan each line - if > hgapmax gaps between tiles, then fill smallest */
+   gaps = malloc(tw *sizeof(int));
+   for (y = 0; y < th; y++)
+     {
+	int hgaps = 0, start = -1, min;
+	char have = 1, gap = 0;
+
+	for (x = 0; x < tw;  x++)
+	  gaps[x] = 0;
+	for (x = 0; x < tw;  x++)
+	  {
+	     if ((have) && (T(x, y).used == T_UNUSED))
+	       {
+		  start = x;
+		  gap = 1;
+		  have = 0;
+	       }
+	     else if ((!have) && (gap) && (T(x, y).used & T_USED))
+	       {
+		  gap = 0;
+		  hgaps++;
+		  have = 1;
+		  gaps[start] = x - start;
+	       }
+	     else if (T(x, y).used & T_USED)
+		have = 1;
+	  }
+	while (hgaps > hgapmax)
+	  {
+	     start = -1;
+	     min = tw;
+	     
+	     for (x = 0; x < tw; x++)
+	       {
+		  if ((gaps[x] > 0) && (gaps[x] < min))
+		    {
+		       start = x;
+		       min = gaps[x];
+		    }
+	       }
+	     if (start >= 0)
+	       {
+		  gaps[start] = 0;
+		  for (x = start; 
+		       T(x, y).used == T_UNUSED; 
+		       T(x++, y).used = T_USED);
+		  hgaps--;
+	       }
+	  }
+     }
+   free(gaps);
+   /* coalesce tiles into larger blocks and make new rect list */
    for (y = 0; y < th; y++)
      {
 	for (x = 0; x < tw; x++)
@@ -132,3 +185,26 @@ __imlib_FreeUpdates(ImlibUpdate *u)
      }
 }
 
+ImlibUpdate *
+__imlib_DupUpdates(ImlibUpdate *u)
+{
+   ImlibUpdate *uu, *cu, *pu, *ru;
+   
+   if (!u)
+      return NULL;
+ 
+   uu = malloc(sizeof(ImlibUpdate));
+   memcpy(uu, u, sizeof(ImlibUpdate));
+   cu = u->next;
+   pu = u;
+   ru = uu;
+   while (cu)
+     {
+	uu = malloc(sizeof(ImlibUpdate));
+	memcpy(uu, u, sizeof(ImlibUpdate));
+	pu->next = uu;
+	pu = cu;
+	cu = cu->next;
+     }
+   return ru;
+}

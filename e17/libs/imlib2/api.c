@@ -716,6 +716,15 @@ imlib_create_cropped_scaled_image(Imlib_Image image, char antialias,
    return (Imlib_Image)im;
 }
 
+Imlib_Updates
+imlib_updates_clone(Imlib_Updates updates)
+{
+   ImlibUpdate *u;
+   
+   u = (ImlibUpdate *)updates;
+   return (Imlib_Updates)__imlib_DupUpdates(u);   
+}
+
 Imlib_Updates 
 imlib_update_append_rect(Imlib_Updates updates, int x, int y, int w, int h)
 {
@@ -731,7 +740,16 @@ imlib_updates_merge(Imlib_Updates updates, int w, int h)
    ImlibUpdate *u;
    
    u = (ImlibUpdate *)updates;
-   return (Imlib_Updates)__imlib_MergeUpdate(u, w, h);
+   return (Imlib_Updates)__imlib_MergeUpdate(u, w, h, 0);
+}
+
+Imlib_Updates 
+imlib_updates_merge_for_rendering(Imlib_Updates updates, int w, int h)
+{
+   ImlibUpdate *u;
+   
+   u = (ImlibUpdate *)updates;
+   return (Imlib_Updates)__imlib_MergeUpdate(u, w, h, 3);
 }
 
 void 

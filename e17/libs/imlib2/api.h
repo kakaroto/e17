@@ -220,12 +220,15 @@ Imlib_Image imlib_create_cropped_scaled_image(Imlib_Image image,
 					      int source_height,
 					      int destination_width,
 					      int destination_height);
+Imlib_Updates imlib_updates_clone(Imlib_Updates updates);
 Imlib_Updates imlib_updates_init(void);
 Imlib_Updates imlib_updates_append_updates(Imlib_Updates updates, 
 					   Imlib_Updates appended_updates);
 Imlib_Updates imlib_update_append_rect(Imlib_Updates updates, 
 				       int x, int y, int w, int h);
 Imlib_Updates imlib_updates_merge(Imlib_Updates updates, int w, int h);
+Imlib_Updates imlib_updates_merge_for_rendering(Imlib_Updates updates, int w, 
+						int h);
 void imlib_updates_free(Imlib_Updates updates);
 Imlib_Updates imlib_updates_get_next(Imlib_Updates updates);
 void imlib_updates_get_coordinates(Imlib_Updates updates, 

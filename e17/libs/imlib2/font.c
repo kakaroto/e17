@@ -446,19 +446,6 @@ __imlib_render_str(ImlibImage *im, ImlibFont *fn, int drx, int dry, char *text,
    switch(dir)
      {
      case 0:
-	if (retw)
-	   *retw = w;
-	if (reth)
-	   *reth = h;
-	if (*nexty)
-	   *nexty = fn->ascent + fn->descent;
-	if (*nextx)
-	  {
-	     j = text[strlen(text) - 1];
-	     TT_Get_Glyph_Metrics(fn->glyphs[j], &metrics);
-	     *nextx = w - (x_offset / 64) + metrics.advance - metrics.bbox.xMax;
-	  }
-	break;
      case 1:
 	if (retw)
 	   *retw = w;
@@ -474,19 +461,6 @@ __imlib_render_str(ImlibImage *im, ImlibFont *fn, int drx, int dry, char *text,
 	  }
 	break;
      case 2:
-	if (retw)
-	   *retw = h;
-	if (reth)
-	   *reth = w;
-	if (*nextx)
-	   *nextx = fn->ascent + fn->descent;
-	if (*nexty)
-	  {
-	     j = text[strlen(text) - 1];
-	     TT_Get_Glyph_Metrics(fn->glyphs[j], &metrics);
-	     *nexty = w - (x_offset / 64) + metrics.advance - metrics.bbox.xMax;
-	  }
-	break;
      case 3:
 	if (retw)
 	   *retw = h;
