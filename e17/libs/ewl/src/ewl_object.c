@@ -277,9 +277,11 @@ unsigned int ewl_object_get_preferred_w(Ewl_Object * o)
 
 	add = INSET_HORIZONTAL(o) + PADDING_HORIZONTAL(o);
 
+	/*
 	if (PREFERRED_W(o) < MINIMUM_W(o))
 		temp = MINIMUM_W(o);
 	else
+	*/
 		temp = PREFERRED_W(o);
 
 	temp += add;
@@ -301,14 +303,16 @@ unsigned int ewl_object_get_preferred_h(Ewl_Object * o)
 
 	add = INSET_VERTICAL(o) + PADDING_VERTICAL(o);
 
+	/*
 	if (PREFERRED_H(o) < MINIMUM_H(o))
-		add += MINIMUM_H(o);
+		temp = MINIMUM_H(o);
 	else
-		add += PREFERRED_H(o);
+	*/
+		temp = PREFERRED_H(o);
 
 	temp += add;
 
-	DRETURN_INT(add, DLEVEL_STABLE);
+	DRETURN_INT(temp, DLEVEL_STABLE);
 }
 
 /**

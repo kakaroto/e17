@@ -56,8 +56,8 @@ struct _ewl_container
 };
 
 void            ewl_container_init(Ewl_Container * widget, char *appearance,
-				   Ewl_Child_Add add, Ewl_Child_Remove remove,
-				   Ewl_Child_Resize rs);
+				   Ewl_Child_Add add, Ewl_Child_Resize rs,
+				   Ewl_Child_Remove remove);
 void            ewl_container_add_notify(Ewl_Container * container,
 					 Ewl_Child_Add add);
 void            ewl_container_remove_notify(Ewl_Container * container,

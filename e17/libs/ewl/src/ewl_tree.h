@@ -19,7 +19,9 @@ struct _ewl_tree
 	unsigned int *colw;
 	unsigned int *rowh;
 
-	unsigned int def_rowh;
+	unsigned int **colbases;
+	unsigned int **colbounds;
+
 	int indent;
 };
 

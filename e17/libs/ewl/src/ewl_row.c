@@ -53,20 +53,35 @@ int ewl_row_init(Ewl_Row *row)
 }
 
 /**
- * ewl_row_set_column_table - set the table of constraints on cell widths
+ * ewl_row_set_column_bounds - set the table of constraints on cell widths
  * @row: the row to change the column table
- * @colw: the array of column widths, NULL causes no constraints
+ * @base: base position for finding column widths, NULL causes no constraints
+ * @bounds: the array of column width bounds, NULL causes no constraints
  *
- * Returns no value. The table of widths for @row is changed to @colw, if
- * @colw is NULL, then each cell is given it's preferred size.
+ * Returns no value. The table of widths for @row is changed to @bounds, rows
+ * calculate their actual width based on the position of @base. You must set
+ * both of these variables to set one. It is strongly recommended that you add
+ * a configure callback to the widget that contains this table and base to be
+ * notified when the values change. If @base or @bounds is NULL, then each cell
+ * is given it's preferred size.
  */
-void ewl_row_set_column_table(Ewl_Row *row, int n, unsigned int **colw)
+void
+ewl_row_set_column_bounds(Ewl_Row *row, int n, unsigned int *base,
+		unsigned int **bounds)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	DCHECK_PARAM_PTR("row", row);
 
-	row->colw = colw;
+	if (!base || !bounds) {
+		row->base = NULL;
+		row->bounds = NULL;
+	}
+	else {
+		row->base = base;
+		row->bounds = bounds;
+	}
+
 	ewl_widget_configure(EWL_WIDGET(row));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -88,19 +103,20 @@ __ewl_row_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	x = CURRENT_X(w);
 	ewd_list_goto_first(c->children);
 
-	/*
-	 * Look up the widths and heights from it's column width table.
-	 */
 	int i = 0;
 	while ((child = ewd_list_next(c->children))) {
-		if (row->colw && row->colw[i]) {
-			ewl_object_request_geometry(child, x, CURRENT_Y(w),
-					*row->colw[i], PREFERRED_H(child));
+		ewl_object_request_position(child, x, CURRENT_Y(w));
+
+		if (row->bounds && row->bounds[i]) {
+			ewl_object_request_w(child,
+					*row->base + *row->bounds[i] - x);
 		}
 		else {
-			ewl_object_request_geometry(child, x, CURRENT_Y(w),
-					PREFERRED_W(child), PREFERRED_H(child));
+			ewl_object_request_w(child,
+					ewl_object_get_preferred_w(child));
 		}
+		ewl_object_request_h(child,
+				ewl_object_get_preferred_h(EWL_OBJECT(w)));
 		i++;
 	}
 
@@ -124,7 +140,7 @@ __ewl_row_add(Ewl_Container *c, Ewl_Widget *w)
 		ewl_object_set_preferred_h(EWL_OBJECT(c), size);
 	}
 
-	ewl_object_set_preferred_w(EWL_OBJECT(c), PREFERRED_W(w) +
+	ewl_object_set_preferred_w(EWL_OBJECT(c), PREFERRED_W(c) +
 			ewl_object_get_preferred_w(EWL_OBJECT(w)));
 }
 

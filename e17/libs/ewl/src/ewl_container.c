@@ -26,7 +26,7 @@ void            __ewl_container_child_destroy(Ewl_Widget * w, void *ev_data,
  */
 void
 ewl_container_init(Ewl_Container * c, char *appearance, Ewl_Child_Add add,
-		   Ewl_Child_Remove remove, Ewl_Child_Resize rs)
+		   Ewl_Child_Resize rs, Ewl_Child_Remove remove)
 {
 	Ewl_Widget     *w;
 
@@ -430,6 +430,46 @@ void ewl_container_reset(Ewl_Container * c)
 	 */
 	while ((w = ewd_list_goto_last(c->children)))
 		ewl_container_remove_child(c, w);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * ewl_container_prefer_largest - set preferred size to widest child
+ * @c: the container to change preferred size
+ *
+ * Returns no value. This function can be used by any container which wishes
+ * to set it's preferred width to that of it's widest child.
+ */
+void
+ewl_container_prefer_largest(Ewl_Container *c, Ewl_Orientation o)
+{
+	Ewl_Object *child;
+	int curr_size, max_size = 0;
+	unsigned int (*get_size)(Ewl_Object *object);
+	void (*set_size)(Ewl_Object *object, unsigned int size);
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	DCHECK_PARAM_PTR("c", c);
+
+	if (o == EWL_ORIENTATION_HORIZONTAL) {
+		get_size = ewl_object_get_preferred_w;
+		set_size = ewl_object_set_preferred_w;
+	}
+	else {
+		get_size = ewl_object_get_preferred_h;
+		set_size = ewl_object_set_preferred_h;
+	}
+
+	ewd_list_goto_first(c->children);
+	while ((child = ewd_list_next(c->children))) {
+		curr_size = get_size(child);
+		if (curr_size > max_size)
+			max_size = curr_size;
+	}
+
+	set_size(EWL_OBJECT(c), max_size);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

@@ -12,7 +12,8 @@ struct _ewl_row
 	Ewl_Container container;
 	Ewl_Object *max;
 
-	unsigned int **colw;
+	unsigned int *base;
+	unsigned int **bounds;
 };
 
 Ewl_Widget *ewl_row_new();
