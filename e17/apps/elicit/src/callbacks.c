@@ -131,16 +131,14 @@ elicit_cb_resize_sig(void *data, Evas_Object *o, const char *sig, const char *sr
   Elicit *el = data;
   int ow = 0, oh = 0;
   int w = 0, h = 0;
-  int dw = 0, dh = 0;
   char arg[PATH_MAX];
   char *wstr, *hstr, *sub;
-  int ret;
   int woff = 0, hoff = 0;
 
   ecore_evas_geometry_get(el->ee, NULL, NULL, &ow, &oh);
 
   /* if we have an arg */
-  if (sscanf(sig, "elicit,resize,%s,%s", arg))
+  if (sscanf(sig, "elicit,resize,%s", arg))
   {
     wstr = arg;
     sub = strstr(arg, ",");
