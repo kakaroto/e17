@@ -1,18 +1,18 @@
 /*
  * Copyright (C) 2000 Carsten Haitzler, Geoff Harrison and various contributors
- * *
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
  * deal in the Software without restriction, including without limitation the
  * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
  * sell copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * *
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies of the Software, its documentation and marketing & publicity
  * materials, and acknowledgment shall be given in the documentation, materials
  * and software packages that this Software was used.
- * *
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
@@ -32,7 +32,7 @@ IB_Animate(char iconify, EWin * from, EWin * to)
 {
    double              t1, t2, t, i, spd, ii;
    int                 x, y, x1, y1, x2, y2, x3, y3, x4, y4, w, h, fx, fy,
-      fw, fh, dx, dy, dw, dh;
+                       fw, fh, dx, dy, dw, dh;
    GC                  gc;
    XGCValues           gcv;
 
@@ -2113,9 +2113,9 @@ RedrawIconbox(Iconbox * ib)
 	     EMoveResizeWindow(disp, ib->icon_win,
 			       0, 0, ib->w - ib->scroll_thickness, ib->h);
 	     if (
-		 (ic =
-		  FindItem("ICONBOX_COVER_VERTICAL", 0, LIST_FINDBY_NAME,
-			   LIST_TYPE_ICLASS)) && (!(ib->cover_hide)))
+		   (ic =
+		    FindItem("ICONBOX_COVER_VERTICAL", 0, LIST_FINDBY_NAME,
+			     LIST_TYPE_ICLASS)) && (!(ib->cover_hide)))
 	       {
 		  EMoveResizeWindow(disp, ib->cover_win,
 				    0, 0, ib->w - ib->scroll_thickness, ib->h);
@@ -2135,9 +2135,9 @@ RedrawIconbox(Iconbox * ib)
 			       ib->scroll_thickness, 0,
 			       ib->w - ib->scroll_thickness, ib->h);
 	     if (
-		 (ic =
-		  FindItem("ICONBOX_COVER_VERTICAL", 0, LIST_FINDBY_NAME,
-			   LIST_TYPE_ICLASS)) && (!(ib->cover_hide)))
+		   (ic =
+		    FindItem("ICONBOX_COVER_VERTICAL", 0, LIST_FINDBY_NAME,
+			     LIST_TYPE_ICLASS)) && (!(ib->cover_hide)))
 	       {
 		  EMoveResizeWindow(disp, ib->cover_win,
 				    ib->scroll_thickness, 0,
@@ -2245,9 +2245,9 @@ RedrawIconbox(Iconbox * ib)
 	     EMoveResizeWindow(disp, ib->icon_win,
 			       0, 0, ib->w, ib->h - ib->scroll_thickness);
 	     if (
-		 (ic =
-		  FindItem("ICONBOX_COVER_HORIZONTAL", 0, LIST_FINDBY_NAME,
-			   LIST_TYPE_ICLASS)) && (!(ib->cover_hide)))
+		   (ic =
+		    FindItem("ICONBOX_COVER_HORIZONTAL", 0, LIST_FINDBY_NAME,
+			     LIST_TYPE_ICLASS)) && (!(ib->cover_hide)))
 	       {
 		  EMoveResizeWindow(disp, ib->cover_win,
 				    0, 0, ib->w, ib->h - ib->scroll_thickness);
@@ -2267,9 +2267,9 @@ RedrawIconbox(Iconbox * ib)
 			       0, ib->scroll_thickness,
 			       ib->w, ib->h - ib->scroll_thickness);
 	     if (
-		 (ic =
-		  FindItem("ICONBOX_COVER_HORIZONTAL", 0, LIST_FINDBY_NAME,
-			   LIST_TYPE_ICLASS)) && (!(ib->cover_hide)))
+		   (ic =
+		    FindItem("ICONBOX_COVER_HORIZONTAL", 0, LIST_FINDBY_NAME,
+			     LIST_TYPE_ICLASS)) && (!(ib->cover_hide)))
 	       {
 		  EMoveResizeWindow(disp, ib->cover_win,
 				    0, ib->scroll_thickness,

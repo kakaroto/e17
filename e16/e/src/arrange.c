@@ -670,6 +670,7 @@ SnapEwin(EWin * ewin, int dx, int dy, int *new_dx, int *new_dy)
 
 #ifdef HAS_XINERAMA
    static XineramaScreenInfo *screens = NULL;
+
 #endif
    static int          num_screens = 0;
    int                 top_bound, bottom_bound, left_bound, right_bound;
@@ -761,7 +762,7 @@ SnapEwin(EWin * ewin, int dx, int dy, int *new_dx, int *new_dy)
 		       if (((ewin->desktop == lst[i]->desktop) ||
 			    (lst[i]->sticky)) &&
 			   (!(lst[i]->floating)) &&
-			   (!(lst[i]->iconified)) && (!(lst[i]->ignorearrange)))
+			 (!(lst[i]->iconified)) && (!(lst[i]->ignorearrange)))
 			 {
 			    if (IN_BELOW
 				(ewin->x + dx, lst[i]->x + lst[i]->w - 1,
@@ -796,7 +797,7 @@ SnapEwin(EWin * ewin, int dx, int dy, int *new_dx, int *new_dy)
 		       if (((ewin->desktop == lst[i]->desktop) ||
 			    (lst[i]->sticky)) &&
 			   (!(lst[i]->floating)) &&
-			   (!(lst[i]->iconified)) && (!(lst[i]->ignorearrange)))
+			 (!(lst[i]->iconified)) && (!(lst[i]->ignorearrange)))
 			 {
 			    if (IN_ABOVE(ewin->x + ewin->w + dx - 1, lst[i]->x,
 					 mode.edge_snap_dist) &&
@@ -830,7 +831,7 @@ SnapEwin(EWin * ewin, int dx, int dy, int *new_dx, int *new_dy)
 		       if (((ewin->desktop == lst[i]->desktop) ||
 			    (lst[i]->sticky)) &&
 			   (!(lst[i]->floating)) &&
-			   (!(lst[i]->iconified)) && (!(lst[i]->ignorearrange)))
+			 (!(lst[i]->iconified)) && (!(lst[i]->ignorearrange)))
 			 {
 			    if (IN_BELOW
 				(ewin->y + dy, lst[i]->y + lst[i]->h - 1,
@@ -865,7 +866,7 @@ SnapEwin(EWin * ewin, int dx, int dy, int *new_dx, int *new_dy)
 		       if (((ewin->desktop == lst[i]->desktop) ||
 			    (lst[i]->sticky)) &&
 			   (!(lst[i]->floating)) &&
-			   (!(lst[i]->iconified)) && (!(lst[i]->ignorearrange)))
+			 (!(lst[i]->iconified)) && (!(lst[i]->ignorearrange)))
 			 {
 			    if (IN_ABOVE(ewin->y + ewin->h + dy - 1, lst[i]->y,
 					 mode.edge_snap_dist) &&

@@ -1,18 +1,18 @@
 /*
  * Copyright (C) 2000 Carsten Haitzler, Geoff Harrison and various contributors
- * *
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
  * deal in the Software without restriction, including without limitation the
  * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
  * sell copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * *
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies of the Software, its documentation and marketing & publicity
  * materials, and acknowledgment shall be given in the documentation, materials
  * and software packages that this Software was used.
- * *
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
@@ -28,10 +28,10 @@ GetUniqueBGString(Background * bg)
    char                s[256];
    const char         *chmap =
 #ifndef __EMX__
-      "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_";
+   "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_";
 
 #else
-      "0123456789abcdefghijklmnopqrstuvwxyz€‚ƒ„…†‡ˆŠ‹ŒŽ‘’“”•–—˜™-_";
+   "0123456789abcdefghijklmnopqrstuvwxyz€‚ƒ„…†‡ˆŠ‹ŒŽ‘’“”•–—˜™-_";
 
    /* cyrillic symbols from 866 page correctly handled instead of eng. capitals */
 #endif
@@ -1310,17 +1310,17 @@ InitDesktopControls()
 	     else if (desks.dragdir == 2)
 	       {
 		  b = CreateButton("_DESKTOP_DESKRAY_DRAG_CONTROL", ic4, ac,
-				   NULL, NULL, 1, FLAG_FIXED_HORIZ, 1, 99999, 1,
+				 NULL, NULL, 1, FLAG_FIXED_HORIZ, 1, 99999, 1,
 				   99999, 0, 0, desks.desk[i].x, 0,
 				   desks.desk[i].y, 0, 0, 0, 0, 0, 1, 0, 1);
 	       }
 	     else
 	       {
 		  b = CreateButton("_DESKTOP_DESKRAY_DRAG_CONTROL", ic4, ac,
-				   NULL, NULL, 1, FLAG_FIXED_HORIZ, 1, 99999, 1,
+				 NULL, NULL, 1, FLAG_FIXED_HORIZ, 1, 99999, 1,
 				   99999, 0, 0, desks.desk[i].x, 0,
 				   desks.desk[i].y + root.h -
-				   desks.dragbar_width, 0, 0, 0, 0, 0, 1, 0, 1);
+				 desks.dragbar_width, 0, 0, 0, 0, 0, 1, 0, 1);
 	       }
 	     AddItem(b, b->name, 2, LIST_TYPE_BUTTON);
 	     desks.desk[i].tag = b;
@@ -1925,7 +1925,7 @@ StackDesktops()
      {
 	for (i = 0; i < num; i++)
 	  {
-	     if ( /* ** (lst[i]->sticky) || */ (lst[i]->floating))
+	     if ( /* (lst[i]->sticky) || */ (lst[i]->floating))
 	       {
 		  tot++;
 		  wl = Erealloc(wl, tot * sizeof(Window));
@@ -2013,7 +2013,7 @@ MoveEwinToDesktop(EWin * ewin, int num)
    int                 pdesk;
 
    EDBUG(3, "MoveEwinToDesktop");
-/* **  ewin->sticky = 0; */
+/*   ewin->sticky = 0; */
    ewin->floating = 0;
    DesktopRemoveEwin(ewin);
    pdesk = ewin->desktop;
@@ -2166,7 +2166,7 @@ MoveEwinToDesktopAt(EWin * ewin, int num, int x, int y)
    int                 dx, dy, pdesk;
 
    EDBUG(3, "MoveEwinToDesktopAt");
-/* **  ewin->sticky = 0; */
+/*   ewin->sticky = 0; */
    pdesk = ewin->desktop;
    ewin->floating = 0;
    DesktopRemoveEwin(ewin);

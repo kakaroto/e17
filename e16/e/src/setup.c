@@ -1,18 +1,18 @@
 /*
  * Copyright (C) 2000 Carsten Haitzler, Geoff Harrison and various contributors
- * *
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
  * deal in the Software without restriction, including without limitation the
  * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
  * sell copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * *
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies of the Software, its documentation and marketing & publicity
  * materials, and acknowledgment shall be given in the documentation, materials
  * and software packages that this Software was used.
- * *
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
@@ -222,10 +222,10 @@ SetupX()
 	      ("Enlightenment cannot connect to the display nominated by\n"
 	       "your shell's DISPLAY environment variable. You may set this\n"
 	       "variable to indicate which display name Enlightenment is to\n"
-	       "connect to. It may be that you do not have an Xserver already\n"
+	     "connect to. It may be that you do not have an Xserver already\n"
 	       "running to serve that Display connection, or that you do not\n"
 	       "have permission to connect to that display. Please make sure\n"
-	       "all is correct before trying again. Run an Xserver by running\n"
+	     "all is correct before trying again. Run an Xserver by running\n"
 	       "xdm or startx first, or contact your local system\n"
 	       "administrator, or Xserver vendor, or read the X, xdm and\n"
 	       "startx manual pages before proceeding.\n"));
@@ -402,7 +402,7 @@ SetupX()
 	ASSIGN_ALERT(_("X server version error"),
 		     _("Ignore this error"), "", _("Quit Enlightenment"));
 	Alert(_("WARNING:\n"
-		"This is not an X11 Xserver. It in fact talks the X%i protocol.\n"
+	    "This is not an X11 Xserver. It in fact talks the X%i protocol.\n"
 		"This may mean Enlightenment will either not function, or\n"
 		"function incorrectly. If it is later than X11, then your\n"
 		"server is one the author of Enlightenment neither have\n"
@@ -433,7 +433,8 @@ SetupX()
       XModifierKeymap    *mod;
       KeyCode             nl, sl;
       int                 i;
-      int                 masks[8] = {
+      int                 masks[8] =
+      {
 	 ShiftMask, LockMask, ControlMask, Mod1Mask, Mod2Mask, Mod3Mask,
 	 Mod4Mask, Mod5Mask
       };
@@ -464,9 +465,9 @@ SetupX()
 	 XFree(mod);
    }
    /* Now we're going to set a bunch of default settings in E - in case we
-    * * don't ever get to load a config file for some odd reason.
-    * * Also, we'll take this opportunity to initialize all of our
-    * * important state variables.
+    * don't ever get to load a config file for some odd reason.
+    * Also, we'll take this opportunity to initialize all of our
+    * important state variables.
     */
 
    mode.next_move_x_plus = 0;
@@ -631,7 +632,7 @@ ChkDir(char *d)
    if (!isdir(d))
      {
 	Alert(_("The directory %s is apparently not a directory\n"
-		"This is a fatal condition.\n" "Please remove this file\n"), d);
+	      "This is a fatal condition.\n" "Please remove this file\n"), d);
 	EExit((void *)1);
      }
    if (!canexec(d))
@@ -751,7 +752,8 @@ SetupEnv()
    return;
 }
 
-Window MakeExtInitWin(void)
+Window
+MakeExtInitWin(void)
 {
    Display            *d2;
    Window              win;

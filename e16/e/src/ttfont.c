@@ -1,18 +1,18 @@
 /*
  * Copyright (C) 2000 Carsten Haitzler, Geoff Harrison and various contributors
- * *
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
  * deal in the Software without restriction, including without limitation the
  * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
  * sell copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * *
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies of the Software, its documentation and marketing & publicity
  * materials, and acknowledgment shall be given in the documentation, materials
  * and software packages that this Software was used.
- * *
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
@@ -25,16 +25,18 @@
 typedef struct _efont_color_tab EfontColorTable;
 
 struct _efont_color_tab
-{
-   Colormap            cmap;
+  {
+     Colormap            cmap;
 
-   XColor              list[256];
-   unsigned char       match[8][8][8];
-};
+     XColor              list[256];
+     unsigned char       match[8][8][8];
+  };
 
 /*static EfontColorTable *color_tab = NULL; */
-static unsigned char alpha_lut[5] = { 0, 64, 128, 192, 255 };
-static unsigned char bounded_palette[9] = { 0, 1, 2, 3, 4, 4, 4, 4, 4 };
+static unsigned char alpha_lut[5] =
+{0, 64, 128, 192, 255};
+static unsigned char bounded_palette[9] =
+{0, 1, 2, 3, 4, 4, 4, 4, 4};
 
 static TT_Raster_Map *
 create_font_raster(int width, int height)

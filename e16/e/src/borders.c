@@ -1,18 +1,18 @@
 /*
  * Copyright (C) 2000 Carsten Haitzler, Geoff Harrison and various contributors
- * *
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
  * deal in the Software without restriction, including without limitation the
  * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
  * sell copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * *
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies of the Software, its documentation and marketing & publicity
  * materials, and acknowledgment shall be given in the documentation, materials
  * and software packages that this Software was used.
- * *
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
@@ -269,7 +269,7 @@ SlideEwinsTo(EWin ** ewin, int *fx, int *fy, int *tx, int *ty,
 	     int num_wins, int speed)
 {
    int                 k, spd, *x = NULL, *y =
-      NULL, min, tmpx, tmpy, tmpw, tmph, i;
+   NULL,               min, tmpx, tmpy, tmpw, tmph, i;
    struct timeval      timev1, timev2;
    int                 dsec, dusec;
    double              tm;
@@ -1247,9 +1247,9 @@ CalcEwinWinpart(EWin * ewin, int i)
 	   ewin->bits[bottomright].y;
      }
    /*
-    * * calculate height before width, because we may need it in order to
-    * * determine the font size. But we might do it the other way around for
-    * * side borders :-)
+    * calculate height before width, because we may need it in order to
+    * determine the font size. But we might do it the other way around for
+    * side borders :-)
     */
 
    h = (oy - y) + 1;
@@ -1257,8 +1257,8 @@ CalcEwinWinpart(EWin * ewin, int i)
    min = ewin->border->part[i].geom.height.min;
 
    /*
-    * * If the title bar max size is set to zero, then set the title bar size to
-    * * just a little bit more than the size of the title text.
+    * If the title bar max size is set to zero, then set the title bar size to
+    * just a little bit more than the size of the title text.
     */
 
    if (max == 0 && ewin->border->part[i].flags == FLAG_TITLE)
@@ -1268,8 +1268,8 @@ CalcEwinWinpart(EWin * ewin, int i)
 	TextClass          *tclass;
 
 	/*
-	 * * calculate width before height, because we need it in order to
-	 * * determine the font size.
+	 * calculate width before height, because we need it in order to
+	 * determine the font size.
 	 */
 
 	w = (ox - x) + 1;
@@ -1312,7 +1312,7 @@ CalcEwinWinpart(EWin * ewin, int i)
 	     h = min;
 	  }
 	/*
-	 * * and now the width.
+	 * and now the width.
 	 */
 
 	w = (ox - x) + 1;
@@ -1320,8 +1320,8 @@ CalcEwinWinpart(EWin * ewin, int i)
 	min = ewin->border->part[i].geom.width.min;
 
 	/*
-	 * * If the title bar max size is set to zero, then set the title bar size to
-	 * * just a little bit more than the size of the title text.
+	 * If the title bar max size is set to zero, then set the title bar
+	 * size to just a little bit more than the size of the title text.
 	 */
 
 	if (max == 0 && ewin->border->part[i].flags == FLAG_TITLE)
@@ -1473,11 +1473,11 @@ AdoptInternal(Window win, Border * border, int type, void *ptr)
    ICCCM_GetShapeInfo(ewin);
    ICCCM_GetGeoms(ewin, 0);
 
-   /*   if (type == 1)
-    * * MatchEwinToSnapInfoPager(ewin, (Pager *)ptr);
-    * * else if (type == 2)
-    * * MatchEwinToSnapInfoIconbox(ewin, (Iconbox *)ptr);
-    * * else  */
+   /* if (type == 1)
+    *   MatchEwinToSnapInfoPager(ewin, (Pager *)ptr);
+    * else if (type == 2)
+    *   MatchEwinToSnapInfoIconbox(ewin, (Iconbox *)ptr);
+    * else  */
    if (!border)
      {
 	b =
@@ -2243,7 +2243,7 @@ RestackEwin(EWin * ewin)
      {
 	for (i = 0; i < wnum; i++)
 	  {
-	     if ( /* ** (lst[i]->sticky) || */ (lst[i]->floating))
+	     if ( /* (lst[i]->sticky) || */ (lst[i]->floating))
 	       {
 		  tot++;
 		  wl = Erealloc(wl, tot * sizeof(Window));
@@ -2640,7 +2640,7 @@ MinShadeSize(EWin * ewin, int *mw, int *mh)
 		     leftborderwidth =
 			ewin->border->border.left - ewin->bits[i].x;
 		  if ((ewin->bits[i].x + ewin->bits[i].w) -
-		      (ewin->w - ewin->border->border.right) > rightborderwidth)
+		    (ewin->w - ewin->border->border.right) > rightborderwidth)
 		     rightborderwidth =
 			(ewin->bits[i].x + ewin->bits[i].w) - (ewin->w -
 							       ewin->

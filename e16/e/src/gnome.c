@@ -1,19 +1,18 @@
-
 /*
  * Copyright (C) 2000 Carsten Haitzler, Geoff Harrison and various contributors
- * *
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
  * deal in the Software without restriction, including without limitation the
  * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
  * sell copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * *
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies of the Software, its documentation and marketing & publicity
  * materials, and acknowledgment shall be given in the documentation, materials
  * and software packages that this Software was used.
- * *
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
@@ -128,12 +127,12 @@
 
 /* Preferences for behavior for app */
 /* ONLY the client sets this */
-#define WIN_HINTS_SKIP_FOCUS             (1<<0)	/* "alt-tab" skips this win */
-#define WIN_HINTS_SKIP_WINLIST           (1<<1)	/* not in win list */
-#define WIN_HINTS_SKIP_TASKBAR           (1<<2)	/* not on taskbar */
-#define WIN_HINTS_GROUP_TRANSIENT        (1<<3)	/* ??????? */
-#define WIN_HINTS_FOCUS_ON_CLICK         (1<<4)	/* app only accepts focus when clicked */
-#define WIN_HINTS_DO_NOT_COVER           (1<<5)	/* attempt to not cover this window */
+#define WIN_HINTS_SKIP_FOCUS             (1<<0)		/* "alt-tab" skips this win */
+#define WIN_HINTS_SKIP_WINLIST           (1<<1)		/* not in win list */
+#define WIN_HINTS_SKIP_TASKBAR           (1<<2)		/* not on taskbar */
+#define WIN_HINTS_GROUP_TRANSIENT        (1<<3)		/* ??????? */
+#define WIN_HINTS_FOCUS_ON_CLICK         (1<<4)		/* app only accepts focus when clicked */
+#define WIN_HINTS_DO_NOT_COVER           (1<<5)		/* attempt to not cover this window */
 #define XA_WIN_HINTS                     "_WIN_HINTS"
 /* WIN_HINTS = CARD32 */
 
@@ -721,7 +720,8 @@ GNOME_SetWMNameVer(void)
 void
 GNOME_DelHints(EWin * ewin)
 {
-   static Atom         atom_get[7] = { 0, 0, 0, 0, 0, 0, 0 };
+   static Atom         atom_get[7] =
+   {0, 0, 0, 0, 0, 0, 0};
 
    EDBUG(6, "GNOME_DelHints");
    if (!atom_get[0])

@@ -1,18 +1,18 @@
 /*
  * Copyright (C) 2000 Carsten Haitzler, Geoff Harrison and various contributors
- * *
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
  * deal in the Software without restriction, including without limitation the
  * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
  * sell copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * *
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies of the Software, its documentation and marketing & publicity
  * materials, and acknowledgment shall be given in the documentation, materials
  * and software packages that this Software was used.
- * *
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
@@ -31,7 +31,7 @@ char               *
 append_merge_dir(char *dir, char ***list, int *count)
 {
    char                s[FILEPATH_LEN_MAX], ss[FILEPATH_LEN_MAX], **str =
-      NULL, *def = NULL;
+   NULL,              *def = NULL;
    char                already, *tmp, *tmp2, ok;
    int                 i, j, num;
 
@@ -109,7 +109,7 @@ ListThemes(int *number)
 {
    char                s[FILEPATH_LEN_MAX], **list = NULL, *def = NULL, *def2 =
 
-      NULL;
+   NULL;
    int                 count = 0;
 
    Esnprintf(s, sizeof(s), "%s/themes", UserEDir());
@@ -249,7 +249,7 @@ ExtractTheme(char *theme)
 	       {
 		  /*gzipped tarball */
 		  Esnprintf(s, sizeof(s),
-			    "gzip -d -c < %s | (cd %s ; tar -xf -)", theme, th);
+			  "gzip -d -c < %s | (cd %s ; tar -xf -)", theme, th);
 	       }
 	     else if ((buf[257] == 'u') && (buf[258] == 's')
 		      && (buf[259] == 't') && (buf[260] == 'a')
@@ -350,6 +350,6 @@ BadThemeDialog(void)
 	       "Is a badly formed theme package and is thus not being used.\n"
 	       "Enlightenment has fallen back to using the DEFAULT theme.\n"
 	       "\n"
-	       "The reason this theme is bad is:\n" "%s"), badtheme, badreason);
+	     "The reason this theme is bad is:\n" "%s"), badtheme, badreason);
    DIALOG_OK(_("Bad Theme"), s);
 }

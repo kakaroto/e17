@@ -1,18 +1,18 @@
 /*
  * Copyright (C) 2000 Carsten Haitzler, Geoff Harrison and various contributors
- * *
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
  * deal in the Software without restriction, including without limitation the
  * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
  * sell copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * *
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies of the Software, its documentation and marketing & publicity
  * materials, and acknowledgment shall be given in the documentation, materials
  * and software packages that this Software was used.
- * *
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
@@ -383,7 +383,8 @@ void
 HandleComms(XEvent * ev)
 {
    Client             *c;
-   char               *s, w[FILEPATH_LEN_MAX], w2[FILEPATH_LEN_MAX], *s1, *s2;
+   char               *s, *s1, *s2;
+   char                w[FILEPATH_LEN_MAX], w2[FILEPATH_LEN_MAX];
    char                sunknown[] = "UNKNOWN";
    int                 unknown;
 
@@ -1097,9 +1098,8 @@ HandleComms(XEvent * ev)
 	char                tmp[1024];
 	char               *name = NULL, *bgf = NULL, *topf = NULL;
 	int                 updated = 0, tile, keep_aspect, tkeep_aspect;
-	int                 xjust, yjust, xperc, yperc, txjust, tyjust, txperc,
-
-	   typerc;
+	int                 xjust, yjust, xperc, yperc;
+	int                 txjust, tyjust, txperc, typerc;
 
 	sscanf(s, "%1000s %1000s", tmp, w);
 	bg =
@@ -1523,9 +1523,9 @@ HandleComms(XEvent * ev)
 	     Button             *b;
 
 	     while (
-		    (b =
-		     RemoveItem("_DESKTOP_DRAG_CONTROL", 0, LIST_FINDBY_NAME,
-				LIST_TYPE_BUTTON)))
+		      (b =
+		       RemoveItem("_DESKTOP_DRAG_CONTROL", 0, LIST_FINDBY_NAME,
+				  LIST_TYPE_BUTTON)))
 		DestroyButton(b);
 	     InitDesktopControls();
 	     ShowDesktopControls();
@@ -1835,7 +1835,7 @@ HandleComms(XEvent * ev)
 			    "MWM_MINIMIZE:           %5i\n"
 			    "MWM_MAXIMIZE:           %5i\n"
 			    "APP_STATE:              %5i\n", ewin->client.win,
-			    ewin->win, ewin->x, ewin->y, ewin->w, ewin->h, none,
+			  ewin->win, ewin->x, ewin->y, ewin->w, ewin->h, none,
 			    0, 0, 0, 0, ewin->desktop, ewin->num_groups,
 			    ewin->docked, ewin->sticky, ewin->visible,
 			    ewin->iconified, ewin->shaded, ewin->active,
@@ -1929,7 +1929,7 @@ HandleComms(XEvent * ev)
      {
 	char                buf[FILEPATH_LEN_MAX], *ret = NULL, none[] =
 
-	   "-NONE-";
+	"-NONE-";
 	EWin              **lst;
 	int                 i, num;
 

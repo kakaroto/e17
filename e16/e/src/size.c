@@ -1,18 +1,18 @@
 /*
  * Copyright (C) 2000 Carsten Haitzler, Geoff Harrison and various contributors
- * *
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
  * deal in the Software without restriction, including without limitation the
  * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
  * sell copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * *
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies of the Software, its documentation and marketing & publicity
  * materials, and acknowledgment shall be given in the documentation, materials
  * and software packages that this Software was used.
- * *
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
@@ -97,12 +97,12 @@ MaxHeight(EWin * ewin, char *resize_type)
 		  for (i = 0; i < num; i++)
 		    {
 		       if (
-			   (((ewin->desktop
-			      == lst[i]->desktop) && !(lst[i]->iconified))
-			    || (lst[i]->sticky)) && (!(lst[i]->floating))
-			   && (lst[i] != ewin) && (!(lst[i]->ignorearrange))
-			   && SPANS_COMMON(ewin->x, ewin->w, lst[i]->x,
-					   lst[i]->w))
+			     (((ewin->desktop
+				== lst[i]->desktop) && !(lst[i]->iconified))
+			      || (lst[i]->sticky)) && (!(lst[i]->floating))
+			     && (lst[i] != ewin) && (!(lst[i]->ignorearrange))
+			     && SPANS_COMMON(ewin->x, ewin->w, lst[i]->x,
+					     lst[i]->w))
 			 {
 			    if (((lst[i]->y + lst[i]->h) <= y)
 				&& ((lst[i]->y + lst[i]->h) >= y1))
@@ -178,12 +178,12 @@ MaxHeight(EWin * ewin, char *resize_type)
 		  for (i = 0; i < num; i++)
 		    {
 		       if (
-			   (((ewin->desktop == lst[i]->desktop)
-			     && !(lst[i]->iconified)) || (lst[i]->sticky))
-			   && (!(lst[i]->floating)) && (lst[i] != ewin)
-			   && (lst[i]->never_use_area)
-			   && SPANS_COMMON(ewin->x, ewin->w, lst[i]->x,
-					   lst[i]->w))
+			     (((ewin->desktop == lst[i]->desktop)
+			       && !(lst[i]->iconified)) || (lst[i]->sticky))
+			     && (!(lst[i]->floating)) && (lst[i] != ewin)
+			     && (lst[i]->never_use_area)
+			     && SPANS_COMMON(ewin->x, ewin->w, lst[i]->x,
+					     lst[i]->w))
 			 {
 			    if (((lst[i]->y + lst[i]->h) <= y) &&
 				((lst[i]->y + lst[i]->h) >= y1))
@@ -294,12 +294,12 @@ MaxWidth(EWin * ewin, char *resize_type)
 		  for (i = 0; i < num; i++)
 		    {
 		       if (
-			   (((ewin->desktop == lst[i]->desktop)
-			     && !(lst[i]->iconified)) || (lst[i]->sticky))
-			   && (!(lst[i]->floating)) && (lst[i] != ewin)
-			   && (!(lst[i]->ignorearrange))
-			   && SPANS_COMMON(ewin->y, ewin->h, lst[i]->y,
-					   lst[i]->h))
+			     (((ewin->desktop == lst[i]->desktop)
+			       && !(lst[i]->iconified)) || (lst[i]->sticky))
+			     && (!(lst[i]->floating)) && (lst[i] != ewin)
+			     && (!(lst[i]->ignorearrange))
+			     && SPANS_COMMON(ewin->y, ewin->h, lst[i]->y,
+					     lst[i]->h))
 			 {
 			    if (((lst[i]->x + lst[i]->w) <= x) &&
 				((lst[i]->x + lst[i]->w) >= x1))
@@ -379,7 +379,7 @@ MaxWidth(EWin * ewin, char *resize_type)
 			   (((ewin->desktop == lst[i]->desktop) &&
 			     (lst[i]->fixedpos)) ||
 			    (lst[i]->sticky)) &&
-			   SPANS_COMMON(ewin->y, ewin->h, lst[i]->y, lst[i]->h))
+			 SPANS_COMMON(ewin->y, ewin->h, lst[i]->y, lst[i]->h))
 			 {
 			    if (((lst[i]->x + lst[i]->w) <= x) &&
 				((lst[i]->x + lst[i]->w) >= x1))
@@ -506,12 +506,12 @@ MaxSize(EWin * ewin, char *resize_type)
 		  for (i = 0; i < num; i++)
 		    {
 		       if (
-			   (((ewin->desktop == lst[i]->desktop)
-			     && !(lst[i]->iconified)) || (lst[i]->sticky))
-			   && (!(lst[i]->floating)) && (lst[i] != ewin)
-			   && (!(lst[i]->ignorearrange))
-			   && SPANS_COMMON(ewin->x, ewin->w, lst[i]->x,
-					   lst[i]->w))
+			     (((ewin->desktop == lst[i]->desktop)
+			       && !(lst[i]->iconified)) || (lst[i]->sticky))
+			     && (!(lst[i]->floating)) && (lst[i] != ewin)
+			     && (!(lst[i]->ignorearrange))
+			     && SPANS_COMMON(ewin->x, ewin->w, lst[i]->x,
+					     lst[i]->w))
 			 {
 			    if (((lst[i]->y + lst[i]->h) <= y) &&
 				((lst[i]->y + lst[i]->h) >= y1))
@@ -623,14 +623,14 @@ MaxSize(EWin * ewin, char *resize_type)
 		  for (i = 0; i < num; i++)
 		    {
 		       if (
-			   ((lst[i] != ewin) && (!(lst[i]->ignorearrange))
-			    && !(lst[i]->iconified)) && (!(lst[i]->floating))
-			   &&
-			   (((ewin->desktop
-			      == lst[i]->desktop) && (lst[i]->fixedpos))
-			    || (lst[i]->sticky))
-			   && SPANS_COMMON(ewin->x, ewin->w, lst[i]->x,
-					   lst[i]->w))
+			     ((lst[i] != ewin) && (!(lst[i]->ignorearrange))
+			      && !(lst[i]->iconified)) && (!(lst[i]->floating))
+			     &&
+			     (((ewin->desktop
+				== lst[i]->desktop) && (lst[i]->fixedpos))
+			      || (lst[i]->sticky))
+			     && SPANS_COMMON(ewin->x, ewin->w, lst[i]->x,
+					     lst[i]->w))
 			 {
 			    if (((lst[i]->y + lst[i]->h) <= y) &&
 				((lst[i]->y + lst[i]->h) >= y1))

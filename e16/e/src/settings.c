@@ -1,18 +1,18 @@
 /*
  * Copyright (C) 2000 Carsten Haitzler, Geoff Harrison and various contributors
- * *
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
  * deal in the Software without restriction, including without limitation the
  * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
  * sell copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * *
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies of the Software, its documentation and marketing & publicity
  * materials, and acknowledgment shall be given in the documentation, materials
  * and software packages that this Software was used.
- * *
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
@@ -151,7 +151,7 @@ SettingsPager(void)
    DialogItemSetColSpan(di, 2);
    DialogItemCheckButtonSetText(di,
 				_
-				("Smooth high quality snapshots in snapshot mode"));
+			  ("Smooth high quality snapshots in snapshot mode"));
    DialogItemCheckButtonSetState(di, tmp_pager_hiq);
    DialogItemCheckButtonSetPtr(di, &tmp_pager_hiq);
 
@@ -161,7 +161,7 @@ SettingsPager(void)
    DialogItemSetColSpan(di, 2);
    DialogItemCheckButtonSetText(di,
 				_
-				("Zoom in on pager windows when mouse is over them"));
+			("Zoom in on pager windows when mouse is over them"));
    DialogItemCheckButtonSetState(di, tmp_pager_zoom);
    DialogItemCheckButtonSetPtr(di, &tmp_pager_zoom);
 
@@ -171,7 +171,7 @@ SettingsPager(void)
    DialogItemSetColSpan(di, 2);
    DialogItemCheckButtonSetText(di,
 				_
-				("Pop up window title when mouse is over the window"));
+		       ("Pop up window title when mouse is over the window"));
    DialogItemCheckButtonSetState(di, tmp_pager_title);
    DialogItemCheckButtonSetPtr(di, &tmp_pager_title);
 
@@ -477,7 +477,7 @@ SettingsFocus(void)
    DialogItemSetColSpan(di, 2);
    DialogItemCheckButtonSetText(di,
 				_
-				("Only new dialogs whose owner is focused get the focus"));
+		   ("Only new dialogs whose owner is focused get the focus"));
    DialogItemCheckButtonSetState(di, tmp_owner_popup_focus);
    DialogItemCheckButtonSetPtr(di, &tmp_owner_popup_focus);
 
@@ -495,7 +495,7 @@ SettingsFocus(void)
    DialogItemSetColSpan(di, 2);
    DialogItemCheckButtonSetText(di,
 				_
-				("Send mouse pointer to window on focus switch"));
+			    ("Send mouse pointer to window on focus switch"));
    DialogItemCheckButtonSetState(di, tmp_warp_focus);
    DialogItemCheckButtonSetPtr(di, &tmp_warp_focus);
 
@@ -561,7 +561,7 @@ SettingsFocus(void)
    DialogItemSetColSpan(di, 2);
    DialogItemCheckButtonSetText(di,
 				_
-				("Send mouse pointer to window after focus switch"));
+			 ("Send mouse pointer to window after focus switch"));
    DialogItemCheckButtonSetState(di, tmp_warp_after_focus);
    DialogItemCheckButtonSetPtr(di, &tmp_warp_after_focus);
 #endif /* WITH_TARTY_WARP */
@@ -1224,7 +1224,7 @@ SettingsPlacement(void)
    DialogItemSetColSpan(di, 2);
    DialogItemCheckButtonSetText(di,
 				_
-				("Dialog windows appear together with their owner"));
+			 ("Dialog windows appear together with their owner"));
    DialogItemCheckButtonSetState(di, tmp_with_leader);
    DialogItemCheckButtonSetPtr(di, &tmp_with_leader);
 
@@ -1288,8 +1288,8 @@ SettingsAutoRaise(void)
    DItem              *table, *di;
 
    if (
-       (d =
-	FindItem("CONFIGURE_AUTORAISE", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG)))
+	 (d =
+      FindItem("CONFIGURE_AUTORAISE", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG)))
      {
 	AUDIO_PLAY("SOUND_SETTINGS_ACTIVE");
 	ShowDialog(d);
@@ -1386,8 +1386,8 @@ SettingsTooltips(void)
    DItem              *table, *di;
 
    if (
-       (d =
-	FindItem("CONFIGURE_TOOLTIPS", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG)))
+	 (d =
+       FindItem("CONFIGURE_TOOLTIPS", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG)))
      {
 	AUDIO_PLAY("SOUND_SETTINGS_ACTIVE");
 	ShowDialog(d);
@@ -1720,7 +1720,7 @@ SettingsSpecialFX(void)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemTextSetText(di,
-			 "Enlightenment Special Effects\n" "Settings Dialog\n");
+		       "Enlightenment Special Effects\n" "Settings Dialog\n");
 
    di = DialogAddItem(table, DITEM_NONE);
 
@@ -1832,7 +1832,7 @@ SettingsSpecialFX(void)
    DialogItemSetFill(di, 1, 0);
    DialogItemSetColSpan(di, 4);
    DialogItemCheckButtonSetText(di,
-				_("Use saveunders to reduce window exposures"));
+			      _("Use saveunders to reduce window exposures"));
    DialogItemCheckButtonSetState(di, tmp_saveunders);
    DialogItemCheckButtonSetPtr(di, &tmp_saveunders);
 
@@ -2648,7 +2648,7 @@ CB_BGAreaEvent(int val, void *data)
 		   stmp = duplicate(_("-NONE-"));
 		Esnprintf(s, sizeof(s),
 			  _
-			  ("Background definition information:\nName: %s\nFile: %s\n"),
+		 ("Background definition information:\nName: %s\nFile: %s\n"),
 			  tmp_bg->name, stmp);
 		Efree(stmp);
 		DialogItemTextSetText(bg_filename, s);
@@ -3471,7 +3471,7 @@ SettingsIconbox(char *name)
    Iconbox            *ib;
 
    if (
-       (d =
+	 (d =
 	FindItem("CONFIGURE_ICONBOX", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG)))
      {
 	AUDIO_PLAY("SOUND_SETTINGS_ACTIVE");
@@ -3580,7 +3580,7 @@ SettingsIconbox(char *name)
    DialogItemSetAlign(di, 0, 0);
    DialogItemTextSetText(di,
 			 _
-			 ("Alignment of anchoring when automatically resizing:"));
+		     ("Alignment of anchoring when automatically resizing:"));
 
    di = DialogAddItem(table, DITEM_SLIDER);
    DialogItemSetPadding(di, 2, 2, 2, 2);
@@ -3602,14 +3602,14 @@ SettingsIconbox(char *name)
    DialogItemSetAlign(di, 0, 0);
    DialogItemTextSetText(di,
 			 _
-			 ("Icon image display policy (if one operation fails, try the next):"));
+       ("Icon image display policy (if one operation fails, try the next):"));
 
    radio4 = di = DialogAddItem(table, DITEM_RADIOBUTTON);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemRadioButtonSetText(di,
 				_
-				("Snapshot Windows, Use application icon, Use Enlightenment Icon"));
+	  ("Snapshot Windows, Use application icon, Use Enlightenment Icon"));
    DialogItemRadioButtonSetFirst(di, radio4);
    DialogItemRadioButtonGroupSetVal(di, 0);
 
@@ -3618,7 +3618,7 @@ SettingsIconbox(char *name)
    DialogItemSetFill(di, 1, 0);
    DialogItemRadioButtonSetText(di,
 				_
-				("Use application icon, Use Enlightenment Icon, Snapshot Window"));
+	   ("Use application icon, Use Enlightenment Icon, Snapshot Window"));
    DialogItemRadioButtonSetFirst(di, radio4);
    DialogItemRadioButtonGroupSetVal(di, 1);
 
@@ -3871,7 +3871,7 @@ SettingsGroups(EWin * ewin)
      {
 	DIALOG_OK(_("Window Group Error"),
 		  _
-		  ("\n  This window currently does not belong to any groups.  \n\n"));
+	  ("\n  This window currently does not belong to any groups.  \n\n"));
 	return;
      }
    if ((d = FindItem("CONFIGURE_GROUP", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG)))
@@ -4192,9 +4192,9 @@ SettingsDefaultGroupControl(void)
    ShowDialog(d);
 }
 
-/* lsit of remembered items for the remember dialog -- it's either
-   _anotyer_ glboal var, or i wrapper struct to pass data to the 
-   callback funcs besides the dialog itself -- this is much easier */
+/* list of remembered items for the remember dialog -- it's either
+ * _another_ global var, or a wrapper struct to pass data to the 
+ * callback funcs besides the dialog itself -- this is much easier */
 static RememberWinList **rd_ewin_list;
 
 void                CB_ApplyRemember(int val, void *data);
@@ -4275,7 +4275,7 @@ SettingsRemember()
    table = DialogInitItem(d);
    DialogItemTableSetOptions(table, 4, 0, 0, 0);
 
-   /* theres a much more efficient way of doing this, but this'll work
+   /* there's a much more efficient way of doing this, but this will work
     * for now */
    lst = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
    if (rd_ewin_list)

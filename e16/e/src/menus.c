@@ -275,7 +275,12 @@ ShowMenu(Menu * m, char noshow)
    int                 x, y, wx = 0, wy = 0;	/* wx, wy added to stop menus
 
 						 * 
-						 * * * from appearing offscreen */
+						 * * 
+						 * * * 
+						 * * * * 
+						 * * * * * 
+						 * * * * * * 
+						 * * * * * * * from appearing offscreen */
    unsigned int        w, h, mw, mh;
 
    EDBUG(5, "ShowMenu");
@@ -737,7 +742,7 @@ RealizeMenu(Menu * m)
 {
    int                 i, maxh = 0, maxw =
 
-      0, maxx1, maxx2, w, h, x, y, r, mmw, mmh;
+   0,                  maxx1, maxx2, w, h, x, y, r, mmw, mmh;
    unsigned int        iw, ih;
    ImlibImage         *im;
    XSetWindowAttributes att;
@@ -1069,10 +1074,10 @@ CreateMenuFromDirectory(char *name, MenuStyle * ms, char *dir)
    struct stat         st;
    const char         *chmap =
 #ifndef __EMX__
-      "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_";
+   "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_";
 
 #else
-      "0123456789abcdefghijklmnopqrstuvwxyz€‚ƒ„…†‡ˆŠ‹ŒŽ‘’“”•–—˜™-_";
+   "0123456789abcdefghijklmnopqrstuvwxyz€‚ƒ„…†‡ˆŠ‹ŒŽ‘’“”•–—˜™-_";
 
 #endif
    FILE               *f;
@@ -1152,9 +1157,10 @@ CreateMenuFromDirectory(char *name, MenuStyle * ms, char *dir)
 				 ImlibImage         *im2;
 				 ImlibColor          icl;
 				 char                tile = 1, keep_asp = 0;
-				 int                 width, height, scalex =
-				    0, scaley = 0;
-				 int                 scr_asp, im_asp, w2, h2;
+				 int                 width, height;
+				 int                 scalex = 0, scaley = 0;
+				 int                 scr_asp, im_asp;
+				 int                 w2, h2;
 				 int                 maxw = 48, maxh = 48;
 				 int                 justx = 512, justy = 512;
 
@@ -1372,7 +1378,7 @@ CreateMenuFromDirectory(char *name, MenuStyle * ms, char *dir)
 			    chmap[(cc >> 6) & 0x3f],
 			    chmap[(cc >> 12) & 0x3f],
 			    chmap[(cc >> 18) & 0x3f],
-			    chmap[(cc >> 24) & 0x3f], chmap[(cc >> 28) & 0x3f]);
+			  chmap[(cc >> 24) & 0x3f], chmap[(cc >> 28) & 0x3f]);
 		  bg =
 		     (Background *) FindItem(s3, 0, LIST_FINDBY_NAME,
 					     LIST_TYPE_BACKGROUND);
@@ -1387,7 +1393,7 @@ CreateMenuFromDirectory(char *name, MenuStyle * ms, char *dir)
 			    ImlibColor          icl;
 			    char                tile = 1, keep_asp = 0;
 			    int                 width, height, scalex =
-			       0, scaley = 0;
+			    0,                  scaley = 0;
 			    int                 scr_asp, im_asp, w2, h2;
 			    int                 maxw = 48, maxh = 48;
 
@@ -1756,7 +1762,7 @@ CreateMenuFromGnome(char *name, MenuStyle * ms, char *dir)
 		  if (f)
 		    {
 		       char               *iname = NULL, *exec = NULL, *texec =
-			  NULL, *tmp;
+		       NULL,              *tmp;
 		       char               *en_name = NULL;
 
 		       while (fgets(s, sizeof(s), f))
@@ -1768,8 +1774,7 @@ CreateMenuFromGnome(char *name, MenuStyle * ms, char *dir)
 			    else if (name_buf[0] &&
 				     !strncmp(s, name_buf, strlen(name_buf)))
 			       iname = duplicate(&(s[strlen(name_buf)]));
-			    else
-			       if (!strncmp(s, "TryExec=", strlen("TryExec=")))
+			    else if (!strncmp(s, "TryExec=", strlen("TryExec=")))
 			       texec = duplicate(&(s[strlen("TryExec=")]));
 			    else if (!strncmp(s, "Exec=", strlen("Exec=")))
 			       exec = duplicate(&(s[strlen("Exec=")]));

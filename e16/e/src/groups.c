@@ -1,18 +1,18 @@
 /*
  * Copyright (C) 2000 Carsten Haitzler, Geoff Harrison and various contributors
- * *
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
  * deal in the Software without restriction, including without limitation the
  * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
  * sell copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * *
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies of the Software, its documentation and marketing & publicity
  * materials, and acknowledgment shall be given in the documentation, materials
  * and software packages that this Software was used.
- * *
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
@@ -253,7 +253,7 @@ RemoveEwinFromGroup(EWin * ewin, Group * g)
 				     root.h)
 				    y = root.h - ewin->border->border.top - 1;
 				 else if ((ewin->y + ewin->h -
-					   ewin->border->border.bottom - 1) < 0)
+					 ewin->border->border.bottom - 1) < 0)
 				    y =
 				       0 - ewin->h +
 				       ewin->border->border.bottom + 1;
@@ -602,9 +602,9 @@ ChooseGroupDialog(EWin * ewin, char *message, char group_select, int action)
      {
 	DIALOG_OK(_("Window Group Error"),
 		  _
-		  ("\n  This window currently does not belong to any groups.  \n"
-		   "  You can only destroy groups or remove windows from groups  \n"
-		   "  through a window that actually belongs to at least one group.\n\n"));
+	       ("\n  This window currently does not belong to any groups.  \n"
+	     "  You can only destroy groups or remove windows from groups  \n"
+		"  through a window that actually belongs to at least one group.\n\n"));
 	return;
      }
    if ((num_groups == 0) && (group_select == GROUP_SELECT_ALL_EXCEPT_EWIN))
