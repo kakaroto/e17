@@ -1690,7 +1690,10 @@ EwinUpdateAfterMoveResize(EWin * ewin, int resize)
    DetermineEwinArea(ewin);
 
    if (Conf.theme.transparency)
-      DrawEwin(ewin);		/* Update the border */
+     {
+	DrawEwin(ewin);		/* Update the border */
+	PropagateShapes(ewin->win);
+     }
 
    if (ewin->MoveResize)
       ewin->MoveResize(ewin, resize);
@@ -1709,7 +1712,7 @@ doMoveResizeEwin(EWin * ewin, int x, int y, int w, int h, int flags)
    int                 dx = 0, dy = 0, sw, sh, x0, y0;
    char                move = 0, resize = 0;
 
-   EDBUG(3, "MoveResizeEwin");
+   EDBUG(3, "doMoveResizeEwin");
    if (call_depth > 256)
       EDBUG_RETURN_;
    call_depth++;
