@@ -264,7 +264,15 @@ main(int argc, char **argv)
     */
    if (!blendtest)
      {
-        disp = XOpenDisplay(NULL);
+        const char         *display_name = getenv("DISPLAY");
+        if (display_name == NULL)
+            display_name = ":0";
+        disp = XOpenDisplay(display_name);
+        if (disp == NULL)
+          {
+            fprintf(stderr, "Can't open display %s\n", display_name);
+            return 1;
+          }
         vis = DefaultVisual(disp, DefaultScreen(disp));
         depth = DefaultDepth(disp, DefaultScreen(disp));
         cm = DefaultColormap(disp, DefaultScreen(disp));

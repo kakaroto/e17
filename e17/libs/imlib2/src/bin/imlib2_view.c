@@ -101,12 +101,20 @@ main(int argc, char **argv)
    Imlib_Image        *im = NULL;
    char               *file = NULL;
    int                 no = 1;
+   const char         *display_name = getenv("DISPLAY");
 
    if (argc < 2)
       return 1;
 
    file = argv[no];
-   disp = XOpenDisplay(NULL);
+   if (display_name == NULL)
+       display_name = ":0";
+   disp = XOpenDisplay(display_name);
+   if (disp == NULL)
+     {
+       fprintf(stderr, "Can't open display %s\n", display_name);
+       return 1;
+     }
    vis = DefaultVisual(disp, DefaultScreen(disp));
    depth = DefaultDepth(disp, DefaultScreen(disp));
    cm = DefaultColormap(disp, DefaultScreen(disp));

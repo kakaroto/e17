@@ -3,8 +3,10 @@
 #include <X11/Xlib.h>
 /* include Imlib2 stuff */
 #include <Imlib2.h>
-/* sprintf include */
+/* needed for sprintf and fprintf */
 #include <stdio.h>
+/* needed for getenv */
+#include <stdlib.h>
 
 /* some globals for our window & X display */
 Display            *disp;
@@ -35,8 +37,17 @@ main(int argc, char **argv)
    /* our mouse x, y coordinates */
    int                 mouse_x = 0, mouse_y = 0;
 
+   const char         *display_name = getenv("DISPLAY");
+
    /* connect to X */
-   disp = XOpenDisplay(NULL);
+   if (display_name == NULL)
+       display_name = ":0";
+   disp = XOpenDisplay(display_name);
+   if (disp == NULL)
+     {
+       fprintf(stderr, "Can't open display %s\n", display_name);
+       return 1;
+     }
    /* get default visual , colormap etc. you could ask imlib2 for what it */
    /* thinks is the best, but this example is intended to be simple */
    vis = DefaultVisual(disp, DefaultScreen(disp));

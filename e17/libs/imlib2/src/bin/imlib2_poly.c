@@ -28,11 +28,19 @@ main(int argc, char **argv)
    KeySym              keysym;
    static char         kbuf[20];
    ImlibPolygon        poly, poly1, poly2;
+   const char         *display_name = getenv("DISPLAY");
 
    /**
     * First tests to determine which rendering task to perform
     */
-   disp = XOpenDisplay(NULL);
+   if (display_name == NULL)
+       display_name = ":0";
+   disp = XOpenDisplay(display_name);
+   if (disp == NULL)
+     {
+       fprintf(stderr, "Can't open display %s\n", display_name);
+       return 1;
+     }
    vis = DefaultVisual(disp, DefaultScreen(disp));
    depth = DefaultDepth(disp, DefaultScreen(disp));
    cm = DefaultColormap(disp, DefaultScreen(disp));
