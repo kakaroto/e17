@@ -262,17 +262,14 @@ void *mailbox_property_get (MailBox *mb, char *key)
 
 void mailbox_property_set (MailBox *mb, char *key, void *data)
 {
-	void *old;
-
 	assert (mb);
 	assert (key);
-	assert (data);
 
 	/* if there's already data stored with the same key,
 	 * remove that entry first.
 	 */
-	if (mb->properties && (old = evas_hash_find (mb->properties, key)))
-		mb->properties = evas_hash_del (mb->properties, key, old);
+	if (mb->properties && (evas_hash_find (mb->properties, key)))
+		mb->properties = evas_hash_del (mb->properties, key, NULL);
 
 	mb->properties = evas_hash_add (mb->properties, key, data);
 }
