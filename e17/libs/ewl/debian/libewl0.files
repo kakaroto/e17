@@ -1,5 +1,6 @@
 usr/bin/ewl_config
 usr/lib/lib*.so.*
+usr/share/ewl/themes/*.eet
 usr/share/ewl/scripts/*.sh
 usr/share/ewl/themes/default/appearance/*.bits.db
 usr/share/ewl/themes/default/appearance/button/check/*.bits.db
