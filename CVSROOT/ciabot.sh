@@ -14,7 +14,7 @@ To: cia@users.sf.net
 Content-Type: text/plain;
 Subject: Announce $projectname
 
-commit by $uname: $message
+commit by $uname in $@: $message
 EOF
 
 if [ -e /tmp/lastlog-$projectname ]; then
