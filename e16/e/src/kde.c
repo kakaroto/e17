@@ -198,12 +198,18 @@ KDE_NewWindow(EWin * ewin)
 
    if (!getSimpleHint(ewin->win, KDE_WIN_TITLE))
      {
-	XChangeProperty(disp, ewin->win, KDE_WIN_TITLE,
-			XA_STRING, 8, PropModeReplace,
-			(unsigned char *)ewin->client.title,
-			strlen(ewin->client.title) + 1);
 	if (!(ewin->internal))
-	   KDE_SendMessagesToModules(KDE_MODULE_WIN_ADD, ewin->win);
+	  {
+	     XChangeProperty(disp, ewin->win, KDE_WIN_TITLE,
+			     XA_STRING, 8, PropModeReplace,
+			     (unsigned char *)ewin->client.title,
+			     strlen(ewin->client.title) + 1);
+	     if (!ewin->kde_hint)
+	       {
+		  ewin->kde_hint = 1;
+		  KDE_SendMessagesToModules(KDE_MODULE_WIN_ADD, ewin->win);
+	       }
+	  }
      }
    EDBUG_RETURN_;
 
@@ -223,6 +229,8 @@ KDE_RemoveWindow(EWin * ewin)
 
    if (!(ewin->internal))
       KDE_SendMessagesToModules(KDE_MODULE_WIN_REMOVE, ewin->win);
+
+   ewin->kde_hint = 0;
 
    EDBUG_RETURN_;
 
@@ -294,6 +302,7 @@ KDE_AddModule(Window win)
 
 			KDE_ClientMessage(win, KDE_MODULE_WIN_ADD, lst[i]->win,
 					  CurrentTime);
+			lst[i]->kde_hint = 1;
 		     }
 		}
 	      Efree(lst);

@@ -852,6 +852,7 @@ typedef struct _ewin
      Snapshot           *snap;
      int                 icon_pmap_w, icon_pmap_h;
      Pixmap              icon_pmap, icon_mask;
+     char                kde_hint;
   }
 EWin;
 

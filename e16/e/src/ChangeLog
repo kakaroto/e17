@@ -2034,3 +2034,13 @@ Mon Sep 20 12:43:48 PDT 1999
 
 well, we had some issues with removing the kde dock windows.  that should be
 taken care of now (hooked in destroy handler)
+
+-------------------------------------------------------------------------------
+
+Mon Sep 20 13:28:56 PDT 1999
+(Mandrake)
+
+Crushed the kpanel tasklist duplication bug via mallet method.
+CRUSH CRUSH CRUSH.
+Well, you should be able to run netscape again.  if a window duplicates itself
+in the taskbar again after this commit, PLEASE let me know.

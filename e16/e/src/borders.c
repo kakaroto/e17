@@ -1408,6 +1408,7 @@ CreateEwin()
    ewin->snap = NULL;
    ewin->icon_pmap = 0;
    ewin->icon_mask = 0;
+   ewin->kde_hint = 0;
 
    att.event_mask =
       StructureNotifyMask | ResizeRedirectMask |
