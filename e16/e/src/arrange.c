@@ -130,10 +130,6 @@ ArrangeRects(RectBox * fixed, int fixed_count, RectBox * floating,
 					 height =
 					    screens[i].y_org +
 					    screens[i].height;
-				      printf("head %d\nstartx = %d\nstarty = %d"
-					     "\nwidth = %d\nheight = %d\n", i,
-					     startx, starty, width, height);
-				      fflush(stdout);
 				   }
 			      }
 			 }

@@ -4452,3 +4452,10 @@ Sat Mar 25 18:16:11 PST 2000
 
 slightly better arranger code for XINERAMA - this should ALSO fix a couple of
 KDE arranger problems that people reported, too.
+
+-------------------------------------------------------------------------------
+
+Sat Mar 25 18:17:32 PST 2000
+(Mandrake)
+
+oops, left a debugging printf in arrange.c
