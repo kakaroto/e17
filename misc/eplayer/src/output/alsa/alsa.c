@@ -110,6 +110,11 @@ int alsa_play(unsigned char *data, int len) {
 int alsa_volume_get(int *left, int *right) {
 	assert(master_ctrl);
 
+	/* make sure changes made to the mixer levels w/ other applications
+	 * (like alsamixer) are reflected here
+	 */
+	snd_mixer_handle_events(mixer);
+
 	snd_mixer_selem_get_playback_volume(master_ctrl,
 	                                    SND_MIXER_SCHN_FRONT_LEFT,
 	                                    (long *) left);
