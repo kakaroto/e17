@@ -560,10 +560,6 @@ XMMS_CB(playlist_mediainfo) {
 XMMS_CB(playlist_list) {
 	int i, *id = arg;
 	
-	/*
-	playlist_remove_all(e->playlist);
-	 */
-
 	if (!id)
 		return;
 
@@ -581,16 +577,20 @@ XMMS_CB(playlist_add) {
 XMMS_CB(playlist_remove) {
 	PlayListItem *pli = NULL;
 	unsigned int id = (unsigned int) arg;
-	
-	if (id > 0) {
-	    if (xmmscs_playback_current_id(e->xmms) == id) {
+
+	/* make sure we got a valid id. if this assertion fails,
+	 * blame XMMS2!
+	 */
+	assert (id > 0);
+
+	if (xmmscs_playback_current_id(e->xmms) == id) {
 		xmmsc_playback_stop(e->xmms);
 		e->playlist->current_item = NULL;
-	    }
-	    pli = playlist_item_find_by_id(e->playlist, id);
-	    assert(pli);
-	    playlist_item_remove(e->playlist, pli);
 	}
+
+	pli = playlist_item_find_by_id(e->playlist, id);
+	assert(pli);
+	playlist_item_remove(e->playlist, pli);
 }
 
 XMMS_CB(playlist_clear) {
