@@ -4278,7 +4278,7 @@ imlib_image_clear(void)
    ImlibImage *im;
 
    if (!ctx) ctx = imlib_context_new();
-   CHECK_PARAM_POINTER("imlib_fill_ellipse", "image", ctx->image);
+   CHECK_PARAM_POINTER("imlib_image_clear", "image", ctx->image);
    CAST_IMAGE(im, ctx->image);
    if ((!(im->data)) && (im->loader) && (im->loader->load))
       im->loader->load(im, NULL, 0, 1);
@@ -4297,7 +4297,7 @@ imlib_image_clear_color(int r, int g, int b, int a)
    DATA32 col;
 
    if (!ctx) ctx = imlib_context_new();
-   CHECK_PARAM_POINTER("imlib_fill_ellipse", "image", ctx->image);
+   CHECK_PARAM_POINTER("imlib_image_clear_color", "image", ctx->image);
    CAST_IMAGE(im, ctx->image);
    if ((!(im->data)) && (im->loader) && (im->loader->load))
       im->loader->load(im, NULL, 0, 1);
