@@ -148,7 +148,7 @@ eke_gui_edje_feed_change(Eke *eke, Eke_Feed *feed)
     ecore_list_goto_first(feed->items);
     edje_object_file_get(eke->gui.edje.edje, &file, NULL);
     while ((item = ecore_list_next(feed->items)) != NULL) {
-        if((obj = eke_gui_edje_item_new(evas, "../data/themes/default.eet", "feed.body.item"))) {
+        if((obj = eke_gui_edje_item_new(evas, eke->gui.edje.theme, "feed.body.item"))) {
             eke_gui_edje_item_init(obj, item->title, item->link, item->desc);
             evas_object_resize(obj, w, 150);
             evas_object_show(obj);
