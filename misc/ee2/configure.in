@@ -19,6 +19,11 @@ DATA_DIR=`eval eval eval eval eval echo "${datadir}/${PACKAGE}"`
 
 AC_DEFINE_UNQUOTED(DATA_DIR, "$DATA_DIR")
 
+CFLAGS="`gtk-config --cflags` $CFLAGS"
+LIBS="`gtk-config --libs` $LIBS"
+AC_SUBST(CFLAGS)
+AC_SUBST(LIBS)
+
 AM_CONFIG_HEADER(config.h)
 AC_OUTPUT(Makefile)
 
