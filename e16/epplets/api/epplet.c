@@ -121,7 +121,6 @@ static void         Epplet_add_gad(Epplet_gadget gadget);
 static void         Epplet_del_gad(Epplet_gadget gadget);
 static void         Epplet_draw_button(Epplet_gadget eg);
 static void         Epplet_draw_textbox(Epplet_gadget eg);
-static char        *Epplet_textbox_contents(Epplet_gadget eg)
 static void         Epplet_draw_togglebutton(Epplet_gadget eg);
 static void         Epplet_draw_drawingarea(Epplet_gadget eg);
 static void         Epplet_draw_hslider(Epplet_gadget eg);
@@ -136,6 +135,12 @@ static void         Epplet_popup_arrange_contents(Epplet_gadget gadget);
 static void         Epplet_prune_events(XEvent * ev, int num);
 static void         Epplet_handle_child(int num);
 static void         Epplet_find_instance(char *name);
+
+ImlibData *
+Epplet_get_imlib_data(void)
+{
+	return(id);
+}
 
 void
 Epplet_send_ipc(char *s)
@@ -1424,7 +1429,7 @@ Epplet_create_textbox(char *image, char *contents, int x, int y,
    return (Epplet_gadget) g;
 }
 
-static char               *
+char               *
 Epplet_textbox_contents(Epplet_gadget eg)
 {
    GadTextBox         *g;
@@ -2741,7 +2746,7 @@ Epplet_pop_popup(Epplet_gadget gadget, Window ww)
 
 Epplet_gadget
 Epplet_create_popupbutton(char *label, char *image, int x,
-			  int y, int w, int h, Epplet_gadget popup)
+			  int y, int w, int h, char *std, Epplet_gadget popup)
 {
    GadPopupButton     *g;
    XSetWindowAttributes attr;
