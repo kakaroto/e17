@@ -41,6 +41,7 @@ done
 
 e_gen_kde_menu menus_kde $OUT_DIR $OUT_DIR"/kde.menu"
 e_gen_gnome_menu menus_gnome $OUT_DIR $OUT_DIR"/gnome.menu"
+e_gen_gnome_menu menus_gnome $OUT_DIR $OUT_DIR"/gnome_user.menu" $HOME/".gnome/apps"
 
 # if the out dir doesnt exist - make it 
 if [ ! -d "$OUT_DIR" ]; then
@@ -55,6 +56,7 @@ if [ ! -f "$OUT" ]; then
   echo \"User Application list\" NULL menu \"user_apps.menu\" >> $OUT
   echo \"KDE\" NULL menu \"kde.menu\" >> $OUT
   echo \"GNOME\" NULL menu \"gnome.menu\" >> $OUT
+  echo \"GNOME User Menu\" NULL menu \"gnome_user.menu\" >> $OUT
   echo \"Enlightenment Epplets\" NULL menu \"epplets.menu\" >> $OUT
   # if we have eesh available
   if [ -n "$EESH" ]; then
