@@ -26,6 +26,8 @@
 #include <Esmart/dragable.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
 #include <assert.h>
 #include <sys/stat.h>
 #include <sys/types.h>
@@ -66,6 +68,45 @@ void embrace_expand_path (char *str, char *dest, int destlen)
 	}
 
 	*dest++ = 0;
+}
+
+/**
+ * Remove leading and trailing whitespace
+ *
+ * @param str
+ * @return Trimmed string.
+ */
+char *embrace_strstrip (char *str)
+{
+	char *start, *ptr = str;
+
+	assert (str);
+
+	if (!strlen (str))
+		return str;
+
+	/* step over leading whitespace */
+	for (start = str; isspace (*start); start++);
+
+	if (str != start) {
+		while ((*ptr++ = *start++));
+		*ptr = 0;
+	}
+
+	if (!strlen (str))
+		return str;
+
+	ptr = &str[strlen (str) - 1];
+
+	if (!isspace (*ptr))
+		return str;
+
+	while (isspace (*ptr) && ptr > str)
+		ptr--;
+
+	ptr[1] = 0;
+
+	return str;
 }
 
 static EmbracePlugin *find_plugin (Embrace *e, const char *name)

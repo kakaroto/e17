@@ -58,5 +58,6 @@ void embrace_stop (Embrace *e);
 
 int embrace_signal_get ();
 void embrace_expand_path (char *str, char *dest, int destlen);
+char *embrace_strstrip (char *str);
 
 #endif
