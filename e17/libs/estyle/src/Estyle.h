@@ -1,7 +1,6 @@
 #ifndef _ESTYLE_H
 #define _ESTYLE_H
 
-#include <Ewd.h>
 #include <Edb.h>
 #include <Evas.h>
 

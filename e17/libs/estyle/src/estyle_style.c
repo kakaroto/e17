@@ -3,7 +3,7 @@
 
 #define SET_REL_COLOR(a, b) ((a + b) > 255 ? 255 : ((a + b) < 0 ? 0 : a + b))
 
-static Ewd_Hash *styles = NULL;
+static Ecore_Hash *styles = NULL;
 static int style_path = 0;
 
 static void __estyle_style_read(Estyle_Style_Info * info);
@@ -145,9 +145,9 @@ void _estyle_style_show(Estyle *es)
 void _estyle_style_add_path(char *path)
 {
 	if (!style_path)
-		style_path = ewd_path_group_new("/estyle/styles");
+		style_path = ecore_path_group_new("/estyle/styles");
 
-	ewd_path_group_add(style_path, path);
+	ecore_path_group_add(style_path, path);
 }
 
 /**
@@ -162,7 +162,7 @@ void _estyle_style_remove_path(char *path)
 	if (!style_path)
 		return;
 
-	ewd_path_group_remove(style_path, path);
+	ecore_path_group_remove(style_path, path);
 }
 
 /*
@@ -544,12 +544,12 @@ Estyle_Style_Info *_estyle_style_info_reference(char *name)
 	Estyle_Style_Info *found;
 
 	if (!styles)
-		styles = ewd_hash_new(ewd_str_hash, ewd_str_compare);
+		styles = ecore_hash_new(ecore_str_hash, ecore_str_compare);
 
 	/*
 	 * Look for a previous instance of the info in the hash table.
 	 */
-	found = ewd_hash_get(styles, name);
+	found = ecore_hash_get(styles, name);
 	if (!found) {
 
 		/*
@@ -564,9 +564,9 @@ Estyle_Style_Info *_estyle_style_info_reference(char *name)
 		/*
 		 * Load the information for this style info
 		 */
-		found->name = ewd_string_instance(name);
+		found->name = ecore_string_instance(name);
 		__estyle_style_info_load(found);
-		ewd_hash_set(styles, name, found);
+		ecore_hash_set(styles, name, found);
 	}
 
 	found->references++;
@@ -588,10 +588,10 @@ void _estyle_style_info_dereference(Estyle_Style_Info *info)
 	 */
 	if (info->references < 1) {
 
-		ewd_hash_remove(styles, info->name);
+		ecore_hash_remove(styles, info->name);
 		if (info->layers)
 			_estyle_heap_destroy(info->layers);
-		ewd_string_release(info->name);
+		ecore_string_release(info->name);
 
 		FREE(info);
 	}
@@ -667,7 +667,7 @@ static void __estyle_style_info_load(Estyle_Style_Info * info)
 	 * paths.
 	 */
 	if (style_path && *info->name != '/')
-		real_path = ewd_path_group_find(style_path, file_name);
+		real_path = ecore_path_group_find(style_path, file_name);
 	else
 		real_path = strdup(file_name);
 

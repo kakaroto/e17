@@ -1,7 +1,7 @@
 #include "estyle-config.h"
 #include "Estyle_private.h"
 
-static Ewd_Hash *color_table = NULL;
+static Ecore_Hash *color_table = NULL;
 static E_DB_File *sys_colors = NULL;
 static E_DB_File *user_colors = NULL;
 
@@ -24,14 +24,14 @@ Estyle_Color *_estyle_color_instance(int r, int g, int b, int a)
 	 * Check the hash table for a previous malloc of the color
 	 */
 	value = ESTYLE_HASH_COLOR(r, g, b, a);
-	ret = (Estyle_Color *) ewd_hash_get(color_table, (void *) value);
+	ret = (Estyle_Color *) ecore_hash_get(color_table, (void *) value);
 	if (!ret) {
 		ret = (Estyle_Color *) malloc(sizeof(Estyle_Color));
 		ret->r = r;
 		ret->g = g;
 		ret->b = b;
 		ret->a = a;
-		ewd_hash_set(color_table, (void *) value, ret);
+		ecore_hash_set(color_table, (void *) value, ret);
 	}
 
 	return ret;
@@ -88,14 +88,14 @@ Estyle_Color *_estyle_color_instance_db(char *color)
 	/*
 	 * Check for a previous allocation for this color.
 	 */
-	found = (Estyle_Color *) ewd_hash_get(color_table, (void *) value);
+	found = (Estyle_Color *) ecore_hash_get(color_table, (void *) value);
 	if (!found) {
 		found = (Estyle_Color *) malloc(sizeof(Estyle_Color));
 		found->r = r;
 		found->g = g;
 		found->b = b;
 		found->a = a;
-		ewd_hash_set(color_table, (void *) value, found);
+		ecore_hash_set(color_table, (void *) value, found);
 	}
 
 	return found;
@@ -120,5 +120,5 @@ void _estyle_color_init()
 		sys_colors = e_db_open_read(user_path);
 	}
 
-	color_table = ewd_hash_new(NULL, NULL);
+	color_table = ecore_hash_new(NULL, NULL);
 }

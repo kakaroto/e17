@@ -11,7 +11,7 @@ static void __estyle_heap_update_data(Estyle_Heap * heap);
  * Returns a pointer to the newly allocated binary heap on success, NULL on
  * failure.
  */
-Estyle_Heap *_estyle_heap_new(Ewd_Compare_Cb compare, int size)
+Estyle_Heap *_estyle_heap_new(Ecore_Compare_Cb compare, int size)
 {
 	Estyle_Heap *heap = NULL;
 
@@ -36,14 +36,14 @@ Estyle_Heap *_estyle_heap_new(Ewd_Compare_Cb compare, int size)
  *
  * Returns TRUE on success, FALSE on failure
  */
-int _estyle_heap_init(Estyle_Heap * heap, Ewd_Compare_Cb compare, int size)
+int _estyle_heap_init(Estyle_Heap * heap, Ecore_Compare_Cb compare, int size)
 {
 	heap->space = size;
 	if (!compare)
-		heap->compare = ewd_direct_compare;
+		heap->compare = ecore_direct_compare;
 	else
 		heap->compare = compare;
-	heap->order = EWD_SHEAP_MIN;
+	heap->order = ECORE_SHEAP_MIN;
 
 	heap->data = (void **) malloc(heap->space * sizeof(void *));
 	if (!heap->data)
@@ -109,7 +109,7 @@ int _estyle_heap_insert(Estyle_Heap * heap, void *data)
 	 * data. The loop is placed inside the if statement to reduce the
 	 * number of branching decisions that must be predicted.
 	 */
-	if (heap->order == EWD_SHEAP_MIN) {
+	if (heap->order == ECORE_SHEAP_MIN) {
 		while ((position > 0) && heap->compare(heap->data[parent],
 						       heap->
 						       data[position]) >
@@ -237,10 +237,10 @@ int _estyle_heap_change(Estyle_Heap * heap, void *item, void *newval)
  * Returns TRUE on success, FALSE on failure. The comparison function is
  * changed to @compare and the heap is heapified by the new comparison.
  */
-int _estyle_heap_set_compare(Estyle_Heap * heap, Ewd_Compare_Cb compare)
+int _estyle_heap_set_compare(Estyle_Heap * heap, Ecore_Compare_Cb compare)
 {
 	if (!compare)
-		heap->compare = ewd_direct_compare;
+		heap->compare = ecore_direct_compare;
 	else
 		heap->compare = compare;
 
@@ -329,7 +329,7 @@ static void __estyle_heap_heapify(Estyle_Heap * heap, int i)
 	int left = LEFT(i);
 	int right = RIGHT(i);
 
-	if (heap->order == EWD_SHEAP_MIN) {
+	if (heap->order == ECORE_SHEAP_MIN) {
 		if (left <= heap->size
 		    && heap->compare(heap->data[left - 1],
 				     heap->data[i - 1]) < 0)

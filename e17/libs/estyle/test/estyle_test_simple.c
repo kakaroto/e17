@@ -92,6 +92,9 @@ static int ecore_mouse_down(void *data, int type, void * ev)
 	Ecore_X_Event_Mouse_Button_Down *eemd =
 	    (Ecore_X_Event_Mouse_Button_Down *) ev;
 
+	evas_object_geometry_get(e, &x, &y, &w, &h);
+	printf("Estyle geometry: %g, %g, %g x %g\n", x, y, w, h);
+
 	if (eemd->button == 1) {
 		if (last == string1) {
 			estyle_set_style(e, "raised");

@@ -1,6 +1,7 @@
 #ifndef _ESTYLE_PRIVATE_H
 #define _ESTYLE_PRIVATE_H
 
+#include <Ecore.h>
 #include "Estyle.h"
 
 /*
