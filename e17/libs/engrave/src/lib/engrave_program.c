@@ -242,6 +242,8 @@ engrave_program_source_get(Engrave_Program *ep)
  * @param action: Where to store the action setting
  * @param state: Buffer to put state into
  * @param state2: Buffer to put state2 into
+ * @param state_len: The length of the state buffer
+ * @param state2_len: The length of the state2 buffer
  * @param value: Where to put the value setting
  * @param value2: Where to put the value2 setting
  *

@@ -801,7 +801,7 @@ engrave_part_state_align_get(Engrave_Part_State *eps, double *x, double *y)
  * engrave_part_state_step_get - get the stepping info for the state
  * @param eps: The Engrave_Part_State to get the info from
  * @param x: Where to store the x value
- * @parma y: Where to store the y value
+ * @param y: Where to store the y value
  *
  * @return Returns no value.
  */
