@@ -4425,14 +4425,14 @@ Epplet_modify_config(char *key, char *value)
           if (ci->value != value)
             {
               free(ci->value);
-            }
-          else if (value)
-            {
-              ci->value = strdup(value);
-            }
-          else
-            {
-              ci->value = strdup("");
+              if (value)
+                {
+                  ci->value = strdup(value);
+                }
+              else
+                {
+                  ci->value = strdup("");
+                }
             }
           return;
         }
