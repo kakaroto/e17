@@ -156,6 +156,8 @@ gib_style_new_from_ascii(char *file)
       fgets(current, sizeof(current), stylefile);
       while (fgets(current, sizeof(current), stylefile))
       {
+         if (current[0] == '\n')
+            continue;
          if (!strncmp(current, "#NAME", 5))
          {
             int l;
@@ -171,32 +173,40 @@ gib_style_new_from_ascii(char *file)
          {
             /* support EFM style bits */
             s = strtok(current, " ");
+            if(!s) continue;
             if (strlen(s) == 2)
             {
                if (!strcmp(s, "ol"))
                {
                   r = g = b = 0;
                   s = strtok(NULL, " ");
+                  if(!s) continue;
                   x_off = atoi(s);
                   s = strtok(NULL, " ");
+                  if(!s) continue;
                   y_off = atoi(s);
                }
                else if (!strcmp(s, "sh"))
                {
                   r = g = b = 0;
                   s = strtok(NULL, " ");
+                  if(!s) continue;
                   x_off = atoi(s);
                   s = strtok(NULL, " ");
+                  if(!s) continue;
                   y_off = atoi(s);
                   s = strtok(NULL, " ");
+                  if(!s) continue;
                   a = atoi(s);
                }
                else if (!strcmp(s, "fg"))
                {
                   r = g = b = a = 0;
                   s = strtok(NULL, " ");
+                  if(!s) continue;
                   x_off = atoi(s);
                   s = strtok(NULL, " ");
+                  if(!s) continue;
                   y_off = atoi(s);
                }
             }
@@ -205,14 +215,19 @@ gib_style_new_from_ascii(char *file)
                /* our own format */
                r = atoi(s);
                s = strtok(NULL, " ");
+               if(!s) continue;
                g = atoi(s);
                s = strtok(NULL, " ");
+               if(!s) continue;
                b = atoi(s);
                s = strtok(NULL, " ");
+               if(!s) continue;
                a = atoi(s);
                s = strtok(NULL, " ");
+               if(!s) continue;
                x_off = atoi(s);
                s = strtok(NULL, " ");
+               if(!s) continue;
                y_off = atoi(s);
             }
          }
