@@ -1571,8 +1571,6 @@ xcf_file_init(char* filename)
   char id[14];
   char* suffix = NULL;
 
-  D(("Filename: %s\n", filename));
-   
   image->single_layer_index = -1;
   /*
   if ((suffix = strchr(filename, ':')))
@@ -1597,7 +1595,10 @@ xcf_file_init(char* filename)
 
   image->cp += xcf_read_int8 (image->fp, (DATA8*) id, 14);
   if (strncmp (id, "gimp xcf ", 9) != 0)
-    success = 0;
+    {
+      success = 0;
+      fclose(image->fp);
+    }
   else if (strcmp (id+9, "file") == 0) 
     {
       image->file_version = 0;
@@ -1606,8 +1607,11 @@ xcf_file_init(char* filename)
     {
       image->file_version = atoi(id + 10);
     }
-  else 
-    success = 0;
+  else
+    {
+      success = 0;
+      fclose(image->fp);
+    }
   
   return success;
 }
