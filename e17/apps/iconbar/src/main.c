@@ -68,7 +68,8 @@ main(int argc, char **argv)
     evas_object_name_set(o, "trans");
     
     esmart_trans_x11_freshen(o, x, y, w, h);
-    evas_object_show(o);
+    if (!iconbar_config_shaped_get())
+      evas_object_show(o);
   }
 #endif
 
