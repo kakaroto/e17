@@ -1,12 +1,8 @@
-
 #include <Ewl.h>
 
 /**
  * @param c: the container to initialize
  * @param appearance: the appearance key for this container
- * @param add: the function to call when children added to container
- * @param remove: the function to call when children removed from container
- * @param rs: the function to call when children of container are resized
  * @return Returns TRUE on success, otherwise FALSE.
  * @brief Initialize a containers default fields and callbacks
  *
@@ -533,9 +529,37 @@ void ewl_container_child_iterate_begin(Ewl_Container *c)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("c", c);
 
+	while (c->redirect)
+		c = c->redirect;
+
 	ecore_list_goto_first(c->children);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param c: the container to retrieve the next usable child
+ * @brief Retrieve the next elligible child in a container.
+ * @return Returns the next valid child on success, NULL on failure.
+ */
+Ewl_Widget *ewl_container_next_child(Ewl_Container *c)
+{
+	Ewl_Widget *w;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("c", c, NULL);
+
+	while (c->redirect)
+		c = c->redirect;
+
+	if (c->iterator) {
+		w = c->iterator(c);
+	}
+	else {
+		w = ecore_list_next(c->children);
+	}
+
+	DRETURN_PTR(w, DLEVEL_STABLE);
 }
 
 /**

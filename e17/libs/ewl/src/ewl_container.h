@@ -63,7 +63,7 @@ typedef void    (*Ewl_Child_Hide) (Ewl_Container * c, Ewl_Widget * w);
  * function. This is used to pick the next child in the list of children for
  * the container.
  */
-typedef Ewl_Widget *(*Ewl_Container_Iterator) (Ewl_Widget * w);
+typedef Ewl_Widget *(*Ewl_Container_Iterator) (Ewl_Container *c);
 
 /**
  * @struct Ewl_Container
@@ -112,6 +112,10 @@ void            ewl_container_remove_child(Ewl_Container * parent,
 					   Ewl_Widget * child);
 void            ewl_container_resize_child(Ewl_Widget * w, int size,
 					   Ewl_Orientation o);
+void            ewl_container_child_iterate_begin(Ewl_Container *c);
+Ewl_Widget     *ewl_container_next_child(Ewl_Container *c);
+void            ewl_container_set_child_iterator(Ewl_Container *c,
+						 Ewl_Container_Iterator i);
 
 void            ewl_container_destroy(Ewl_Container * c);
 void            ewl_container_reset(Ewl_Container * c);
