@@ -141,7 +141,7 @@ ADOW, OUTLINE_SOFT_SHADOW. Default type is NONE.  ex: effect, SOFT_OUTLINE;
         </entry>
   <entry>0;
         </entry>
-  <entry>Boolian value specifying whether the part accepts mouse events or not. No signals are generated from parts that do not accept events.
+  <entry>Boolean value specifying whether the part accepts mouse events or not. No signals are generated from parts that do not accept events.
         </entry>
 </row>
 
@@ -152,7 +152,7 @@ ADOW, OUTLINE_SOFT_SHADOW. Default type is NONE.  ex: effect, SOFT_OUTLINE;
         </entry>
   <entry>0;
         </entry>
-  <entry>Boolian value specifying whether a part repeats an event to the part below it.  When repeat is set to 0 (off, the default) and two parts that acc
+  <entry>Boolean value specifying whether a part repeats an event to the part below it.  When repeat is set to 0 (off, the default) and two parts that acc
 ept events
         are on top of each other the top most object will recieve the event and not any parts below it, turning repeat to 1 (on) will continue to send the
  event down to
@@ -216,7 +216,7 @@ ex: state, "default" 0.0;
         </entry>
   <entry>0;
         </entry>
-  <entry>Boolian value specifying whether part is visable or not. Non-visable parts do not generate events.
+  <entry>Boolean value specifying whether part is visable or not. Non-visable parts do not generate events.
         </entry>
 </row>
 
@@ -425,7 +425,7 @@ t can be specified.
         </entry>
   <entry>0;
         </entry>
-  <entry>Boolian value determinaning whether scaled images will be smoothed, 0 for no, 1 for yes.
+  <entry>Boolean value determining whether scaled images will be smoothed, 0 for no, 1 for yes.
         </entry>
 </row>
 
@@ -525,7 +525,7 @@ milar in use to offset
         </entry>
   <entry>HOR_VAL VERT_VAL;
         </entry>
-  <entry>Boolian values specifying whether to scale text to fill its container horizontally (arg1) and/or vertically (arg2).  Default is 0 0;
+  <entry>Boolean values specifying whether to scale text to fill its container horizontally (arg1) and/or vertically (arg2).  Default is 0 0;
         </entry>
 </row>
 
@@ -536,7 +536,7 @@ milar in use to offset
         </entry>
   <entry>HOR_VAL VERT_VAL;
         </entry>
-  <entry>Boolian values specifying whether the current text string should define the minimum size of the part, such that all future changes to the text st
+  <entry>Boolean values specifying whether the current text string should define the minimum size of the part, such that all future changes to the text st
 ring can
         be no smaller both horizontally (arg1) and vertically (arg2).
         </entry>

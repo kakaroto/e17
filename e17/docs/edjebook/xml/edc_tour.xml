@@ -220,7 +220,7 @@ min and max are horizontal size then the verital size.  So our interface case a 
 Groups contain parts and programs.  Each part is a particular piece of your interface, such as a text label, or a rectangle,
 or an image.  Each part has an individual name for reference by other parts of your EDC, again choose this name as descriptively
 as you can.  Following the name we can define our part as one of the following types, IMAGE, RECT or TEXT.  Looking at our EDC
-example you can see that our first part is an image named "background".  The keyword "mouse_events" is a boolian value
+example you can see that our first part is an image named "background".  The keyword "mouse_events" is a boolean value
 defining whether or not this part accepts mouse events (such as clicks, mouse overs, etc), 0 for no and 1 for yes.   More options
 than just these 3 can be used, please refer to the reference for other avalible options.
 </para>
