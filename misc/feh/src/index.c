@@ -65,7 +65,11 @@ init_index_mode(void)
 
    D_ENTER(3);
 
-   mode = "index";
+   if (opt.montage) {
+     mode = "montage";
+   } else {
+     mode = "index";
+   }
 
    fn = gib_imlib_load_font(opt.font);
 
