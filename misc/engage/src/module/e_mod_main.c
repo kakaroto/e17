@@ -9,13 +9,12 @@
 /* TODO List:
  *
  * immediate fixes needed:
- * * resize underlying box properly when zooming (box images are invisible atm)
  * * work on other edges than the bottom
  * * pick up iconified apps on startup
- * * zoom and unzoom on timer
+ * * get running app info similar to iconified apps
+ * * zoom and unzoom (eb->zoom from 1.0 to conf->zoom_factor) on timer
  * * bounce icons on click ( following e_app exec hints? )
  *
- * * add "app rnning" support
  * * maybe add system tray
  * 
  * * Fix menu
