@@ -37,6 +37,9 @@ EXTRA_DIST = $(configdata_DATA) config.ja
 
 install-data-local:
 	$(mkinstalldirs) $(DESTDIR)$(configdatadir)
-
 # Japanese
 	gzip -d -c < $(srcdir)/config.ja | (cd $(DESTDIR)$(configdatadir); tar -xmf -)
+
+uninstall-local:
+# Japanese
+	-gzip -d -c < $(srcdir)/config.ja | (cd $(DESTDIR)$(configdatadir); rm -f `tar -tf -` 2>/dev/null)
