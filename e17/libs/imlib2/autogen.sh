@@ -42,10 +42,5 @@ echo
 echo "make"
 echo "make install"
 echo
-echo "to compile and install the loaders for imlib2 demo."
-echo "also make sure you run imlib2 from THIS directory - ie:"
-echo 
-echo "./imlib2"
-echo
 echo "have fun."
 

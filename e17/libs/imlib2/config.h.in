@@ -7,12 +7,6 @@
    byte first (like Motorola and SPARC, unlike Intel and VAX).  */
 #undef WORDS_BIGENDIAN
 
-/* Define if you have the <freetype.h> header file.  */
-#undef HAVE_FREETYPE_H
-
-/* Define if you have the <freetype/freetype.h> header file.  */
-#undef HAVE_FREETYPE_FREETYPE_H
-
 /* enabling MMX Assembly */
 #undef DO_MMX_ASM
 
