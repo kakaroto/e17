@@ -1,6 +1,6 @@
 #include <Ewl.h>
 
-#define BUTTONS 12
+#define BUTTONS 13
 
 Ewl_Widget *main_win;
 Ewl_Widget *button[BUTTONS];
@@ -40,6 +40,8 @@ void __create_table_test_window(Ewl_Widget * w, void *ev_data,
 
 void __create_text_test_window(Ewl_Widget * w, void *ev_data,
 			       void *user_data);
+void __create_textarea_test_window(Ewl_Widget * w, void *ev_data,
+				   void *user_data);
 
 void
 __close_main_window(Ewl_Widget * w, void *ev_data, void *user_data)
@@ -136,16 +138,20 @@ main(int argc, char **argv)
 	button[10] = ewl_button_new("Ewl_Table");
 	ewl_object_set_custom_size(EWL_OBJECT(button[10]), 100, 17);
 	ewl_container_append_child(EWL_CONTAINER(main_win), button[10]);
-
 	ewl_callback_append(button[10], EWL_CALLBACK_CLICKED,
 			    __create_table_test_window, NULL);
 
 	button[11] = ewl_button_new("Ewl_Text");
 	ewl_object_set_custom_size(EWL_OBJECT(button[11]), 100, 17);
 	ewl_container_append_child(EWL_CONTAINER(main_win), button[11]);
-
 	ewl_callback_append(button[11], EWL_CALLBACK_CLICKED,
 			    __create_text_test_window, NULL);
+
+	button[12] = ewl_button_new("Ewl_TextArea");
+	ewl_object_set_custom_size(EWL_OBJECT(button[12]), 100, 17);
+	ewl_container_append_child(EWL_CONTAINER(main_win), button[12]);
+	ewl_callback_append(button[12], EWL_CALLBACK_CLICKED,
+			    __create_textarea_test_window, NULL);
 
 	for (i = 0; i < BUTTONS; i++)
 	  {

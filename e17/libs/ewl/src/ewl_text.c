@@ -422,50 +422,79 @@ ewl_text_set_style(Ewl_Widget * w, char *s)
 }
 
 void
-ewl_text_get_text_geometry(Ewl_Widget * w, double *xx, double *yy,
-			   double *ww, double *hh)
+ewl_text_get_text_geometry(Ewl_Widget * w, int *xx, int *yy, int *ww, int *hh)
 {
 	Ewl_Text *t;
+	double nxx, nyy, nww, nhh;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
 	t = EWL_TEXT(w);
 
-	etox_get_geometry(t->tox, xx, yy, ww, hh);
+	etox_get_geometry(t->tox, &nxx, &nyy, &nww, &nhh);
+
+	if (xx)
+		*xx = (int) (nxx);
+	if (yy)
+		*yy = (int) (nyy);
+	if (ww)
+		*ww = (int) (nww);
+	if (hh)
+		*hh = (int) (nhh);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 void
 ewl_text_get_letter_geometry(Ewl_Widget * w, int i,
-			     double *xx, double *yy, double *ww, double *hh)
+			     int *xx, int *yy, int *ww, int *hh)
 {
 	Ewl_Text *t;
+	double nxx, nyy, nww, nhh;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
 	t = EWL_TEXT(w);
 
-	etox_get_char_geometry_at(t->tox, i, xx, yy, ww, hh);
+	etox_get_at(t->tox, i, &nxx, &nyy, &nww, &nhh);
+
+	if (xx)
+		*xx = (int) (nxx);
+	if (yy)
+		*yy = (int) (nyy);
+	if (ww)
+		*ww = (int) (nww);
+	if (hh)
+		*hh = (int) (nhh);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 void
-ewl_text_get_letter_geometry_at(Ewl_Widget * w, double x, double y,
-				double *tx, double *ty, double *tw,
-				double *th)
+ewl_text_get_letter_geometry_at(Ewl_Widget * w, int x, int y,
+				int *tx, int *ty, int *tw, int *th)
 {
 	Ewl_Text *t;
+	double xx, yy, ww, hh;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
 	t = EWL_TEXT(w);
 
-	etox_get_char_geometry_at_position(t->tox, x, y, tx, ty, tw, th);
+	etox_get_at_position(t->tox, (double) x, (double) y, &xx, &yy, &ww,
+			     &hh);
+
+	if (tx)
+		*tx = (int) (xx);
+	if (ty)
+		*ty = (int) (yy);
+	if (tw)
+		*tw = (int) (ww);
+	if (th)
+		*th = (int) (hh);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -510,7 +539,7 @@ ewl_text_set_alignment(Ewl_Widget * w, Ewl_Alignment a)
 }
 
 int
-ewl_text_get_index_at(Ewl_Widget * w, double x, double y, int *index)
+ewl_text_get_index_at(Ewl_Widget * w, int x, int y, int *index)
 {
 	Ewl_Text *t;
 	int ret;
@@ -520,9 +549,7 @@ ewl_text_get_index_at(Ewl_Widget * w, double x, double y, int *index)
 
 	t = EWL_TEXT(w);
 
-	if (index)
-		*index = etox_get_char_geometry_at_position(t->tox, x, y,
-			NULL, NULL, NULL, NULL);
+	ret = etox_get_index_at(t->tox, (double) x, (double) y, index);
 
 	DRETURN_INT(ret, DLEVEL_STABLE);
 }

@@ -28,20 +28,59 @@ ewl_scrollpane_new(void)
 
 	ZERO(s, Ewl_ScrollPane, 1);
 
-	s->box = ewl_vbox_new();
-	s->hscrollbar = ewl_hscrollbar_new();
-	s->vscrollbar = ewl_vscrollbar_new();
-
 	ewl_scrollpane_init(s);
-
-	ewl_container_append_child(EWL_CONTAINER(s), s->hscrollbar);
-	ewl_container_append_child(EWL_CONTAINER(s), s->vscrollbar);
-	ewl_container_append_child(EWL_CONTAINER(s), s->box);
-
-	ewl_container_set_forward(EWL_CONTAINER(s), EWL_CONTAINER(s->box));
 
 	DRETURN_PTR(EWL_WIDGET(s), DLEVEL_UNSTABLE);
 }
+
+void
+ewl_scrollpane_set_hscrollbar_flag(Ewl_ScrollPane * s, Ewl_ScrollBar_Flags f)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("s", s);
+
+	ewl_scrollbar_set_flag(EWL_SCROLLBAR(s->hscrollbar), f);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void
+ewl_scrollpane_set_vscrollbar_flag(Ewl_ScrollPane * s, Ewl_ScrollBar_Flags f)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("s", s);
+
+	ewl_scrollbar_set_flag(EWL_SCROLLBAR(s->vscrollbar), f);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+Ewl_ScrollBar_Flags
+ewl_scrollpane_get_hscrollbar_flag(Ewl_ScrollPane * s)
+{
+	Ewl_ScrollBar_Flags f;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("s", s, 0);
+
+	f = ewl_scrollbar_get_flag(EWL_SCROLLBAR(s->hscrollbar));
+
+	DRETURN_INT(f, DLEVEL_STABLE);
+}
+
+Ewl_ScrollBar_Flags
+ewl_scrollpane_get_vscrollbar_flag(Ewl_ScrollPane * s)
+{
+	Ewl_ScrollBar_Flags f;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("s", s, 0);
+
+	f = ewl_scrollbar_get_flag(EWL_SCROLLBAR(s->vscrollbar));
+
+	DRETURN_INT(f, DLEVEL_STABLE);
+}
+
 
 void
 ewl_scrollpane_init(Ewl_ScrollPane * s)
@@ -55,6 +94,17 @@ ewl_scrollpane_init(Ewl_ScrollPane * s)
 
 	ewl_container_init(EWL_CONTAINER(s),
 			   "/appearance/scrollpane/default");
+
+	s->box = ewl_vbox_new();
+	s->hscrollbar = ewl_hscrollbar_new();
+	s->vscrollbar = ewl_vscrollbar_new();
+
+	ewl_container_append_child(EWL_CONTAINER(s), s->hscrollbar);
+	ewl_container_append_child(EWL_CONTAINER(s), s->vscrollbar);
+	ewl_container_append_child(EWL_CONTAINER(s), s->box);
+
+	ewl_container_set_forward(EWL_CONTAINER(s), EWL_CONTAINER(s->box));
+
 	ewl_object_set_fill_policy(EWL_OBJECT(s), EWL_FILL_POLICY_FILL);
 
 	ewl_callback_append(w, EWL_CALLBACK_REALIZE,
@@ -100,8 +150,12 @@ __ewl_scrollpane_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 void
 __ewl_scrollpane_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 {
+	Ewl_ScrollBar_Flags hf, vf;
 	Ewl_ScrollPane *s;
-	int hx, hy, hw, hh, vx, vy, vw, vh, bx, by, bw, bh;
+	int hx = 0, hy = 0, hw = 0, hh = 0;
+	int vx = 0, vy = 0, vw = 0, vh = 0;
+	int bx = 0, by = 0, bw = 0, bh = 0;
+	int ll = 0, rr = 0, tt = 0, bb = 0;
 	double hfp, vfp, hv, vv;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -109,25 +163,31 @@ __ewl_scrollpane_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	s = EWL_SCROLLPANE(w);
 
-	hx = CURRENT_X(w);
+	if (w->ebits_object)
+		ebits_get_insets(w->ebits_object, &ll, &rr, &tt, &bb);
+
+	hf = ewl_scrollpane_get_hscrollbar_flag(s);
+	vf = ewl_scrollpane_get_vscrollbar_flag(s);
+
+	hx = CURRENT_X(w) + ll;
 	hy = CURRENT_Y(w) + CURRENT_H(w);
-	hw = CURRENT_W(w);
+	hw = CURRENT_W(w) - ll - rr;
 	hh = CURRENT_H(s->hscrollbar);
-	hy -= hh;
+	hy -= hh + bb;
 
 	vx = CURRENT_X(w) + CURRENT_W(w);
-	vy = CURRENT_Y(w);
+	vy = CURRENT_Y(w) + tt;
 	vw = CURRENT_W(s->vscrollbar);
-	vh = CURRENT_H(w);
-	vx -= vw;
+	vh = CURRENT_H(w) - tt - bb;
+	vx -= vw + rr;
 
 	hw -= vw;
 	vh -= hh;
 
-	bx = CURRENT_X(w);
-	by = CURRENT_Y(w);
-	bw = CURRENT_W(w) - vw;
-	bh = CURRENT_H(w) - hh;
+	bx = CURRENT_X(w) + ll;
+	by = CURRENT_Y(w) + rr;
+	bw = CURRENT_W(w) - ll - rr;
+	bh = CURRENT_H(w) - tt - bb;
 
 	ewl_object_request_size(EWL_OBJECT(s->box), bw, bh);
 	ewl_object_request_geometry(EWL_OBJECT(s->hscrollbar), hx, hy, hw,
@@ -157,6 +217,32 @@ __ewl_scrollpane_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	bx -= (s->box_size.w - bw) * hv;
 	by -= (s->box_size.h - bh) * vv;
+
+	if (hfp >= 1.0 && hf == EWL_SCROLLBAR_FLAG_AUTO_VISIBLE)
+		ewl_widget_hide(s->hscrollbar);
+	else
+		ewl_widget_show(s->hscrollbar);
+
+	if (vfp >= 1.0 && vf == EWL_SCROLLBAR_FLAG_AUTO_VISIBLE)
+		ewl_widget_hide(s->vscrollbar);
+	else
+		ewl_widget_show(s->vscrollbar);
+
+	if ((hfp >= 1.0 && hf == EWL_SCROLLBAR_FLAG_AUTO_VISIBLE) ||
+	    (hf == EWL_SCROLLBAR_FLAG_ALLWAYS_HIDDEN &&
+	     vf == EWL_SCROLLBAR_FLAG_NONE))
+		vh += hh;
+
+	if ((vfp >= 1.0 && vf == EWL_SCROLLBAR_FLAG_AUTO_VISIBLE) ||
+	    (vf == EWL_SCROLLBAR_FLAG_ALLWAYS_HIDDEN &&
+	     hf == EWL_SCROLLBAR_FLAG_NONE))
+		hw += vw;
+
+	ewl_object_request_w(EWL_OBJECT(s->hscrollbar), hw);
+	ewl_object_request_h(EWL_OBJECT(s->vscrollbar), vh);
+
+	ewl_widget_configure(s->hscrollbar);
+	ewl_widget_configure(s->vscrollbar);
 
 	ewl_object_request_geometry(EWL_OBJECT(s->box), bx, by,
 				    s->box_size.w, s->box_size.h);
@@ -241,6 +327,8 @@ void
 __ewl_scrollpane_box_configure_clip_box(Ewl_Widget * w, void *ev_data,
 					void *user_data)
 {
+	double hfp, vfp;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_PARAM_PTR("user_data", user_data);
@@ -249,13 +337,35 @@ __ewl_scrollpane_box_configure_clip_box(Ewl_Widget * w, void *ev_data,
 	  {
 		  Ewl_ScrollPane *s;
 		  int bx, by, bw, bh;
+		  Ewl_ScrollBar_Flags hf, vf;
+		  int ll = 0, rr = 0, tt = 0, bb = 0;
 
 		  s = user_data;
 
-		  bx = CURRENT_X(s);
-		  by = CURRENT_Y(s);
-		  bw = CURRENT_W(s) - CURRENT_W(s->vscrollbar);
-		  bh = CURRENT_H(s) - CURRENT_H(s->hscrollbar);
+		  if (EWL_WIDGET(s)->ebits_object)
+			  ebits_get_insets(EWL_WIDGET(s)->ebits_object, &ll,
+					   &rr, &tt, &bb);
+
+		  hfp = ewl_scrollbar_get_fill_percentage(EWL_SCROLLBAR
+							  (s->hscrollbar));
+		  vfp = ewl_scrollbar_get_fill_percentage(EWL_SCROLLBAR
+							  (s->vscrollbar));
+
+		  hf = ewl_scrollpane_get_hscrollbar_flag(s);
+		  vf = ewl_scrollpane_get_vscrollbar_flag(s);
+
+		  bx = CURRENT_X(s) + ll;
+		  by = CURRENT_Y(s) + tt;
+		  bw = CURRENT_W(s) - ll - rr;
+		  bh = CURRENT_H(s) - tt - bb;
+
+		  if (hf == EWL_SCROLLBAR_FLAG_NONE ||
+		      (hfp < 1.0 && hf == EWL_SCROLLBAR_FLAG_AUTO_VISIBLE))
+			  bh -= CURRENT_H(s->hscrollbar) + 2;
+
+		  if (vf == EWL_SCROLLBAR_FLAG_NONE ||
+		      (vfp < 1.0 && vf == EWL_SCROLLBAR_FLAG_AUTO_VISIBLE))
+			  bw -= CURRENT_W(s->vscrollbar) + 2;
 
 		  evas_move(w->evas, EWL_CONTAINER(w)->clip_box, bx, by);
 		  evas_resize(w->evas, EWL_CONTAINER(w)->clip_box, bw, bh);

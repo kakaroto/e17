@@ -145,5 +145,13 @@ enum _ewl_fx_modifies
 	EWL_FX_MODIFIES_GEOMETRY = (0x1 << 6) | (0x1 << 7)
 };
 
+typedef enum _ewl_scrollbar_flags Ewl_ScrollBar_Flags;
+
+enum _ewl_scrollbar_flags
+{
+	EWL_SCROLLBAR_FLAG_NONE,
+	EWL_SCROLLBAR_FLAG_AUTO_VISIBLE,
+	EWL_SCROLLBAR_FLAG_ALLWAYS_HIDDEN
+};
 
 #endif /* __EWL_ENUMS_H__ */

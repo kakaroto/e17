@@ -163,10 +163,10 @@ __ewl_entry_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	Ewl_Entry *e;
 	int ll = 0, rr = 0, tt = 0, bb = 0;
 	int xx, yy, ww, hh;
-	double xx2, yy2, ww2, hh2;
+	int xx2, yy2, ww2, hh2;
 	int c_pos, l;
 	int ss, ee;
-	double sx, sy, sw, sh, ex, ey, ew, eh;
+	int sx, sy, sw, sh, ex, ey, ew, eh;
 	char *str;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -334,10 +334,9 @@ __ewl_entry_mouse_down(Ewl_Widget * w, void *ev_data, void *user_data)
 			  len = index = strlen(str);
 	  }
 	else
-		ewl_text_get_index_at(e->text, (double) (ev->x),
-				      (double) (CURRENT_Y(e->text) +
-						(CURRENT_H(e->text) / 2)),
-				      &index);
+		ewl_text_get_index_at(e->text, ev->x,
+				      CURRENT_Y(e->text) +
+				      (CURRENT_H(e->text) / 2), &index);
 
 	ewl_cursor_set_position(e->cursor, index + 1);
 
@@ -391,12 +390,11 @@ __ewl_entry_mouse_move(Ewl_Widget * w, void *ev_data, void *user_data)
 		  if (ev->x > CURRENT_X(e->text) &&
 		      ev->x < CURRENT_X(e->text) + CURRENT_W(e->text))
 		    {
-			    ewl_text_get_index_at(e->text, (double) (ev->x),
-						  (double) (CURRENT_Y(e->text)
-							    +
-							    (CURRENT_H
-							     (e->text) / 2)),
-						  &index);
+			    ewl_text_get_index_at(e->text, (ev->x),
+						  (CURRENT_Y(e->text)
+						   +
+						   (CURRENT_H
+						    (e->text) / 2)), &index);
 
 			    ee = index - ss;
 

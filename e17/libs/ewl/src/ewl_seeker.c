@@ -175,6 +175,8 @@ ewl_seeker_increase(Ewl_Seeker * s)
 
 	ewl_widget_configure(EWL_WIDGET(s));
 
+	ewl_callback_call(EWL_WIDGET(s), EWL_CALLBACK_VALUE_CHANGED);
+
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
@@ -192,6 +194,8 @@ ewl_seeker_decrease(Ewl_Seeker * s)
 		s->value = 0.0;
 
 	ewl_widget_configure(EWL_WIDGET(s));
+
+	ewl_callback_call(EWL_WIDGET(s), EWL_CALLBACK_VALUE_CHANGED);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

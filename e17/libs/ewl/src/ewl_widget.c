@@ -421,7 +421,10 @@ ewl_widget_set_parent(Ewl_Widget * w, Ewl_Widget * p)
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_PARAM_PTR("p", p);
 
-	w->parent = p;
+	if (p->recursive && EWL_CONTAINER(p)->forward)
+		w->parent = EWL_WIDGET(EWL_CONTAINER(p)->forward);
+	else
+		w->parent = p;
 
 	ewl_callback_call(w, EWL_CALLBACK_REPARENT);
 
@@ -735,10 +738,13 @@ __ewl_widget_reparent(Ewl_Widget * w, void *ev_data, void *user_data)
 	w->evas = EWL_WIDGET(w->parent)->evas;
 	w->evas_window = EWL_WIDGET(w->parent)->evas_window;
 	if (EWL_CONTAINER(w->parent)->clip_box && w->fx_clip_box)
-		evas_set_clip(w->evas, w->fx_clip_box,
-			      EWL_CONTAINER(w->parent)->clip_box);
+	  {
+		  evas_unset_clip(w->evas, w->fx_clip_box);
+		  evas_set_clip(w->evas, w->fx_clip_box,
+				EWL_CONTAINER(w->parent)->clip_box);
+	  }
 
-	LAYER(w) = LAYER(w->parent) + 1;
+	LAYER(w) = LAYER(w->parent) + 5;
 
 	if (REALIZED(w))
 		ewl_widget_theme_update(w);

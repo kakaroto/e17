@@ -122,6 +122,12 @@ edb_ed $DB add "/appearance/text/default/font" str "borzoib"
 edb_ed $DB add "/appearance/text/default/font_size" int 10
 edb_ed $DB add "/appearance/text/default/style" str "Default"
 
+# Add keys for the textarea widget
+echo -n "."
+edb_ed $DB add "/appearance/textarea/default/base" str "/appearance/textarea/default/base.bits.db"
+edb_ed $DB add "/appearance/textarea/default/base/visible" str "yes"
+
+
 # Add keys for window widget
 echo -n "."
 edb_ed $DB add "/appearance/window/default/base" str "/appearance/window/default/base.bits.db"

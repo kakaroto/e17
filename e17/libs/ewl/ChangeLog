@@ -1,3 +1,7 @@
+Mon Nov 12 20:28:57 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
+	* Added a Ewl_ScrollBar_Flags enum.
+	* Wrote a Ewl_TextArea widget.
+
 Sun Nov 11 23:29:50 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
 	* Ewl_Scrollbar fixes.
 	* Ewl_Seeker cleanups and, i also added two new calls

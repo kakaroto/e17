@@ -58,5 +58,6 @@
 #include <ewl_separator.h>
 #include <ewl_notebook.h>
 #include <ewl_scrollpane.h>
+#include <ewl_textarea.h>
 
 #endif

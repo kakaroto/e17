@@ -34,6 +34,7 @@ installed_headers_DATA = \
 	ewl_separator.h \
 	ewl_spinner.h \
 	ewl_text.h \
+	ewl_textarea.h \
 	ewl_table.h \
 	ewl_theme.h \
 	ewl_widget.h \
@@ -64,6 +65,7 @@ libewl_la_SOURCES = \
 	ewl_spinner.c \
 	ewl_table.c \
 	ewl_text.c \
+	ewl_textarea.c \
 	ewl_theme.c \
 	ewl_widget.c \
 	ewl_window.c \

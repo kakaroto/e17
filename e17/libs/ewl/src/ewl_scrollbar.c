@@ -129,6 +129,15 @@ ewl_scrollbar_set_fill_percentage(Ewl_Scrollbar * s, double fp)
 }
 
 double
+ewl_scrollbar_get_fill_percentage(Ewl_Scrollbar * s)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("s", s, -1);
+
+	DRETURN_FLOAT(s->fill_percentage, DLEVEL_STABLE);
+}
+
+double
 ewl_scrollbar_get_value(Ewl_Scrollbar * s)
 {
 	double v;
@@ -141,8 +150,32 @@ ewl_scrollbar_get_value(Ewl_Scrollbar * s)
 	if (EWL_BOX(s)->orientation == EWL_ORIENTATION_VERTICAL)
 		v = 1.0 - v;
 
+	if (s->fill_percentage == 1.0)
+		v = 0.0;
+
 	DRETURN_FLOAT(v, DLEVEL_STABLE);
 }
+
+void
+ewl_scrollbar_set_flag(Ewl_Scrollbar * s, Ewl_ScrollBar_Flags f)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("s", s);
+
+	s->flag = f;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+Ewl_ScrollBar_Flags
+ewl_scrollbar_get_flag(Ewl_Scrollbar * s)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("s", s, 0);
+
+	DRETURN_INT(s->flag, DLEVEL_STABLE);
+}
+
 
 /**
  * ewl_scrollbar_init - initialize a scrollbar to default values

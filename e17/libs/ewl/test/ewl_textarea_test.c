@@ -1,0 +1,48 @@
+#include <Ewl.h>
+
+static Ewl_Widget *textarea_button;
+
+void __create_textarea_test_window(Ewl_Widget * w, void *ev_data,
+				   void *user_data);
+
+
+void
+__destroy_textarea_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
+{
+	ewl_widget_destroy_recursive(w);
+
+	ewl_callback_append(textarea_button, EWL_CALLBACK_CLICKED,
+			    __create_textarea_test_window, NULL);
+
+	return;
+	ev_data = NULL;
+	user_data = NULL;
+}
+
+void
+__create_textarea_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
+{
+	Ewl_Widget *textarea_win;
+	Ewl_Widget *textarea;
+
+	ewl_callback_del(w, EWL_CALLBACK_CLICKED,
+			 __create_textarea_test_window);
+
+	textarea_button = w;
+
+	textarea_win = ewl_window_new();
+	ewl_box_set_spacing(EWL_BOX(textarea_win), 10);
+	ewl_callback_append(textarea_win, EWL_CALLBACK_DELETE_WINDOW,
+			    __destroy_textarea_test_window, NULL);
+	ewl_widget_show(textarea_win);
+
+	textarea = ewl_textarea_new();
+	ewl_textarea_set_text(EWL_TEXTAREA(textarea), "Test! =)");
+	ewl_object_set_padding(EWL_OBJECT(textarea), 10, 10, 10, 10);
+	ewl_container_append_child(EWL_CONTAINER(textarea_win), textarea);
+	ewl_widget_show(textarea);
+
+	return;
+	ev_data = NULL;
+	user_data = NULL;
+}
