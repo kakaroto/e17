@@ -21,6 +21,7 @@ New features:
 - Built-in composite manager.
 - An iconbox can be configured to act as System Tray
   (middle mouse->Desktop->Create Systray).
+- Possibility to run programs on initial startup and on restart.
 
 Notes:
 
@@ -51,6 +52,14 @@ It should also be fairly straightforward to modify the key- and buttonbindings
 by editing /usr/share/e16/config/bindings.cfg.
 
 e16menuedit will no longer work. e16menuedit2 will.
+
+It is now possible to execute scripts on startup and/or restart. Use
+$ eesh set misc.session.cmd_init <script>
+to set the "init" script, and
+$ eesh set misc.session.cmd_start <script>
+to set the "start" script.
+The "init" script is executed only the first time e16 is started on the
+display, and the "start" script is run every time e16 (re)starts.
 
 
 Configuration files

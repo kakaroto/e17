@@ -494,6 +494,11 @@ EHintsGetMainInfo(void)
 	DesksSetCurrent(*c);
 	XFree(c);
      }
+   else
+     {
+	/* Used to test if we should run cmd_init */
+	Mode.wm.session_start = 1;
+     }
 }
 
 void

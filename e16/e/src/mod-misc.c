@@ -83,66 +83,19 @@ const EModule      *p_modules[] = {
 };
 int                 n_modules = sizeof(p_modules) / sizeof(EModule *);
 
-static void
-runDocBrowser(void)
-{
-   char                file[FILEPATH_LEN_MAX];
-
-   Esnprintf(file, sizeof(file), "%s/edox", EDirBin());
-   if (!canexec(file))
-      return;
-   Esnprintf(file, sizeof(file), "%s/E-docs", EDirRoot());
-   if (!canread(file))
-      return;
-
-   if (fork())
-      return;
-
-   Esnprintf(file, sizeof(file), "exec %s/edox %s/E-docs",
-	     EDirBin(), EDirRoot());
-
-   execl(usershell(getuid()), usershell(getuid()), "-c", (char *)file, NULL);
-
-   exit(0);
-}
-
-static void
-SetupUserInitialization(void)
-{
-
-   char                file[FILEPATH_LEN_MAX];
-
-   if (!Conf.startup.firsttime)
-      return;
-   if (!Mode.wm.master)
-      return;
-
-   if (fork() == 0)
-     {
-	Esnprintf(file, sizeof(file), "exec %s/scripts/e_gen_menu", EDirRoot());
-	execl(usershell(getuid()), usershell(getuid()), "-c", (char *)file,
-	      NULL);
-	exit(0);
-     }
-
-   /* Run edox */
-   runDocBrowser();
-
-   autosave();
-}
-
+#if 0
 static void
 MiscSighan(int sig, void *prm __UNUSED__)
 {
    switch (sig)
      {
      case ESIGNAL_START:
-	SetupUserInitialization();
 	break;
      }
 }
+#endif
 
-static const CfgItem cfg_items[] = {
+static const CfgItem MiscCfgItems[] = {
    CFG_ITEM_INT(Conf, backgrounds.hiquality, 1),
    CFG_ITEM_INT(Conf, backgrounds.timeout, 240),
    CFG_ITEM_BOOL(Conf, backgrounds.user, 1),
@@ -179,6 +132,8 @@ static const CfgItem cfg_items[] = {
 
    CFG_ITEM_BOOL(Conf, session.enable_logout_dialog, 1),
    CFG_ITEM_BOOL(Conf, session.enable_reboot_halt, 0),
+   CFG_ITEM_STR(Conf, session.cmd_init),
+   CFG_ITEM_STR(Conf, session.cmd_start),
    CFG_ITEM_STR(Conf, session.cmd_reboot),
    CFG_ITEM_STR(Conf, session.cmd_halt),
 
@@ -203,7 +158,7 @@ static const CfgItem cfg_items[] = {
    CFG_ITEM_BOOL(Conf, save_under, 0),
    CFG_ITEM_INT(Conf, edge_flip_resistance, 25),
 };
-#define N_CFG_ITEMS ((int)(sizeof(cfg_items)/sizeof(CfgItem)))
+#define N_CFG_ITEMS ((int)(sizeof(MiscCfgItems)/sizeof(CfgItem)))
 
 static void
 MiscIpcExec(const char *params, Client * c __UNUSED__)
@@ -270,8 +225,8 @@ IpcItem             MiscIpcArray[] = {
 /* Stuff not elsewhere */
 EModule             ModMisc = {
    "misc", NULL,
-   MiscSighan,
+   NULL,
    {N_IPC_FUNCS, MiscIpcArray}
    ,
-   {N_CFG_ITEMS, cfg_items}
+   {N_CFG_ITEMS, MiscCfgItems}
 };

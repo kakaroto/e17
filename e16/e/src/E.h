@@ -891,6 +891,8 @@ typedef struct
    {
       char                enable_logout_dialog;
       char                enable_reboot_halt;
+      char               *cmd_init;
+      char               *cmd_start;
       char               *cmd_reboot;
       char               *cmd_halt;
    } session;
@@ -1012,6 +1014,7 @@ typedef struct
       char                window;	/* Running in virtual root window */
       pid_t               master_pid;
       int                 master_screen;
+      char                session_start;
       char                startup;
       char                restart;
       char                xselect;

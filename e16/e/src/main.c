@@ -56,6 +56,7 @@ static void         ECheckEprog(const char *name);
 static void         EDirUserSet(const char *dir);
 static void         EDirUserCacheSet(const char *dir);
 static void         EDirsSetup(void);
+static void         RunInitPrograms(void);
 
 int
 main(int argc, char **argv)
@@ -280,6 +281,7 @@ main(int argc, char **argv)
 
    ModulesSignal(ESIGNAL_START, NULL);
 
+   RunInitPrograms();
    SpawnSnappedCmds();
 
    Conf.startup.firsttime = 0;
@@ -294,6 +296,62 @@ main(int argc, char **argv)
    /* Of course, we should NEVER get to this point */
 
    return 1;
+}
+
+static void
+RunDocBrowser(void)
+{
+   char                file[FILEPATH_LEN_MAX];
+
+   Esnprintf(file, sizeof(file), "%s/edox", EDirBin());
+   if (!canexec(file))
+      return;
+   Esnprintf(file, sizeof(file), "%s/E-docs", EDirRoot());
+   if (!canread(file))
+      return;
+
+   if (fork())
+      return;
+
+   Esnprintf(file, sizeof(file), "exec %s/edox %s/E-docs",
+	     EDirBin(), EDirRoot());
+
+   execl(usershell(getuid()), usershell(getuid()), "-c", (char *)file, NULL);
+
+   exit(0);
+}
+
+static void
+RunMenuGen(void)
+{
+
+   char                file[FILEPATH_LEN_MAX];
+
+   if (fork())
+      return;
+
+   Esnprintf(file, sizeof(file), "exec %s/scripts/e_gen_menu", EDirRoot());
+   execl(usershell(getuid()), usershell(getuid()), "-c", (char *)file, NULL);
+   exit(0);
+}
+
+static void
+RunInitPrograms(void)
+{
+   if (Mode.wm.session_start)
+     {
+	if (Conf.session.cmd_init && canexec(Conf.session.cmd_init))
+	   system(Conf.session.cmd_init);
+     }
+
+   if (Conf.session.cmd_start && canexec(Conf.session.cmd_start))
+      system(Conf.session.cmd_start);
+
+   if (Conf.startup.firsttime && Mode.wm.master)
+     {
+	RunMenuGen();
+	RunDocBrowser();
+     }
 }
 
 void
