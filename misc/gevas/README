@@ -1,0 +1,13 @@
+* NOTE THAT THE DEMO WILL NOT WORK INLESS IT IS INSTALLED !! *
+
+
+
+The following are some interesting things...
+
+
+To use gevas inside a gtk_scrolled_window one must add it 
+using gtk_scrolled_window_add_with_viewport()
+
+
+I have tried to model some of the API after GnomeCanvas.
+

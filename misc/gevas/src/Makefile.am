@@ -1,0 +1,61 @@
+## Process this file with automake to produce Makefile.in
+
+AUTOMAKE_OPTIONS     = 1.4 foreign
+
+# A list of all the files in the current directory which can be regenerated
+MAINTAINERCLEANFILES = Makefile.in
+
+LIBS_EVAS     = @evas_ldflags@
+LIBS_EXTRA    = -L/usr/local/lib
+
+CFLAGS_EVAS   = @evas_cflags@
+CFLAGS_EXTRA  = -I$(includedir) -I$(top_srcdir) -I/usr/local/include
+
+LIBS_ALL      = $(LIBS_EVAS) $(LIBS_EXTRA)
+CFLGAS_ALL    = $(CFLAGS_EVAS) $(CFLAGS_EXTRA)
+
+INCLUDES	     = $(CFLGAS_ALL) \
+					@GTK_CFLAGS@ \
+		       -DLIBDIR=\"$(libdir)\" \
+		       -DBINDIR=\"$(bindir)\" \
+		       -DDATADIR=\"$(datadir)\"
+
+pkgdata_DATA = checks.png
+EXTRA_DIST = checks.png
+
+lib_LTLIBRARIES      = libgevas.la
+include_HEADERS      = \
+gevas.h \
+gevasev_handler.h \
+gevasevh_alpha.h \
+gevasevh_clicks.h \
+gevasevh_drag.h \
+gevasevh_emouse_over.h \
+gevasevh_obj_changer.h \
+gevasevh_popup.h  \
+gevasevh_to_gtk_signals.h \
+gevasgrad.h \
+gevasimage.h \
+gevasobj.h \
+gevastext.h \
+gevastwin.h
+
+libgevas_la_SOURCES   = \
+gevas.c \
+gevasev_handler.c \
+gevasevh_alpha.c \
+gevasevh_clicks.c \
+gevasevh_drag.c \
+gevasevh_emouse_over.c \
+gevasevh_obj_changer.c \
+gevasevh_popup.c \
+gevasevh_to_gtk_signals.c \
+gevasgrad.c \
+gevasimage.c \
+gevasobj.c \
+gevastext.c \
+gevastwin.c 
+
+libgevas_la_LIBADD       = $(LIBS_ALL)  @GTK_LIBS@
+libgevas_la_DEPENDENCIES = $(top_builddir)/config.h
+libgevas_la_LDFLAGS      = -version-info 0:1:0

@@ -1,0 +1,24 @@
+* NOTE THAT THE DEMO WILL NOT WORK INLESS IT IS INSTALLED !! *
+
+* The library must be installed for anything to happen */
+
+
+
+it currently needs evas, gtk+ to work 
+(and very possibly edb... I think the make needs it now, and
+in the future gevas will prolly need it so that gevas can
+load edb files, though this may be optional)
+
+
+it will prolly use edb and ebits libs in future to allow
+widgets to be loaded from a ebit file.
+
+
+
+cd src; ./autogen and make; make install
+
+the demo can be made seperately in the demo dir.
+
+
+I made the demo seperate so that newbies can swipe the automake/conf
+config for their own project.
