@@ -27,7 +27,7 @@ __imlib_GrabXImageToRGBA(DATA32 * data, int ox, int oy, int ow, int oh,
 {
    int                 inx, iny;
    DATA32             *src, *ptr;
-   int                 pixel, mpixel;
+   int                 pixel;
    int                 origx, origy;
    int                 bgr = 0;
 
@@ -72,12 +72,12 @@ __imlib_GrabXImageToRGBA(DATA32 * data, int ox, int oy, int ow, int oh,
                     for (x = 0; x < w; x++)
                       {
                          pixel = XGetPixel(xim, x, y);
-                         mpixel = XGetPixel(mxim, x, y);
-                         *ptr++ = (0xff000000 >> (mpixel << 31)) |
-                             (btab[pixel & 0xff]) |
-                             (gtab[pixel & 0xff] << 8) |
-                             (rtab[pixel & 0xff] << 16);
-
+                         pixel = (btab[pixel & 0xff]) |
+                                 (gtab[pixel & 0xff] << 8) |
+                                 (rtab[pixel & 0xff] << 16);
+                         if (XGetPixel(mxim, x, y))
+                            pixel |= 0xff000000;
+                         *ptr++ = pixel;
                       }
                  }
             }
@@ -110,7 +110,7 @@ __imlib_GrabXImageToRGBA(DATA32 * data, int ox, int oy, int ow, int oh,
 #undef B2SH
 #undef P1
 #undef P2
-#define MP(x, y) (0xff000000 >> (XGetPixel(mxim, (x), (y)) << 31))
+#define MP(x, y) ((XGetPixel(mxim, (x), (y))) ? 0xff000000 : 0)
 #define RMSK  0xf80000
 #define GMSK  0x00fc00
 #define BMSK  0x0000f8
@@ -186,7 +186,7 @@ __imlib_GrabXImageToRGBA(DATA32 * data, int ox, int oy, int ow, int oh,
 #undef B2SH
 #undef P1
 #undef P2
-#define MP(x, y) (0xff000000 >> (XGetPixel(mxim, (x), (y)) << 31))
+#define MP(x, y) ((XGetPixel(mxim, (x), (y))) ? 0xff000000 : 0)
 #define RMSK  0xf80000
 #define GMSK  0x00f800
 #define BMSK  0x0000f8
@@ -260,13 +260,12 @@ __imlib_GrabXImageToRGBA(DATA32 * data, int ox, int oy, int ow, int oh,
                          for (x = 0; x < w; x++)
                            {
                               pixel = XGetPixel(xim, x, y);
-                              pixel =
-                                  ((pixel << 16) & 0xff0000) |
-                                  ((pixel) & 0x00ff00) |
-                                  ((pixel >> 16) & 0x0000ff);
-                              mpixel = XGetPixel(mxim, x, y);
-                              *ptr++ = (0xff000000 >> (mpixel << 31)) |
-                                  (pixel & 0x00ffffff);
+                              pixel = ((pixel << 16) & 0xff0000) |
+                                      ((pixel) & 0x00ff00) |
+                                      ((pixel >> 16) & 0x0000ff);
+                              if (XGetPixel(mxim, x, y))
+                                 pixel |= 0xff000000;
+                              *ptr++ = pixel;
                            }
                       }
                  }
@@ -295,10 +294,10 @@ __imlib_GrabXImageToRGBA(DATA32 * data, int ox, int oy, int ow, int oh,
                          ptr = data + ((y + iny) * ow) + inx;
                          for (x = 0; x < w; x++)
                            {
-                              pixel = XGetPixel(xim, x, y);
-                              mpixel = XGetPixel(mxim, x, y);
-                              *ptr++ = (0xff000000 >> (mpixel << 31)) |
-                                  (pixel & 0x00ffffff);
+                              pixel = XGetPixel(xim, x, y) & 0x00ffffff;
+                              if (XGetPixel(mxim, x, y))
+                                 pixel |= 0xff000000;
+                              *ptr++ = pixel;
                            }
                       }
                  }
@@ -328,13 +327,12 @@ __imlib_GrabXImageToRGBA(DATA32 * data, int ox, int oy, int ow, int oh,
                          ptr = data + ((y + iny) * ow) + inx;
                          for (x = 0; x < w; x++)
                            {
-                              mpixel = XGetPixel(mxim, x, y);
-                              pixel =
-                                  ((*src << 16) & 0xff0000) |
-                                  ((*src) & 0x00ff00) |
-                                  ((*src >> 16) & 0x0000ff);
-                              *ptr++ = (0xff000000 >> (mpixel << 31)) |
-                                  ((pixel) & 0x00ffffff);
+                              pixel = ((*src << 16) & 0xff0000) |
+                                      ((*src) & 0x00ff00) |
+                                      ((*src >> 16) & 0x0000ff);
+                              if (XGetPixel(mxim, x, y))
+                                 pixel |= 0xff000000;
+                              *ptr++ = pixel;
                               src++;
                            }
                       }
@@ -368,9 +366,10 @@ __imlib_GrabXImageToRGBA(DATA32 * data, int ox, int oy, int ow, int oh,
                          ptr = data + ((y + iny) * ow) + inx;
                          for (x = 0; x < w; x++)
                            {
-                              mpixel = XGetPixel(mxim, x, y);
-                              *ptr++ = (0xff000000 >> (mpixel << 31)) |
-                                  ((*src) & 0x00ffffff);
+                              pixel = (*src) & 0x00ffffff;
+                              if (XGetPixel(mxim, x, y))
+                                 pixel |= 0xff000000;
+                              *ptr++ = pixel;
                               src++;
                            }
                       }
@@ -394,7 +393,9 @@ __imlib_GrabXImageToRGBA(DATA32 * data, int ox, int oy, int ow, int oh,
        default:
           break;
      }
-   XUngrabServer(d);
+
+   if (grab)
+      XUngrabServer(d);
 }
 
 char
@@ -538,6 +539,7 @@ __imlib_GrabDrawableToRGBA(DATA32 * data, int ox, int oy, int ow, int oh,
              XFree(r);
           }
      }
+
    /* Create an Ximage (shared or not) */
    if (x_does_shm < 0)
      {
@@ -546,21 +548,19 @@ __imlib_GrabDrawableToRGBA(DATA32 * data, int ox, int oy, int ow, int oh,
         else
            x_does_shm = 0;
      }
+
    prev_erh = XSetErrorHandler((XErrorHandler) Tmp_HandleXError);
-   _x_err = 0;
+
    if (x_does_shm)
      {
+        _x_err = 0;
         xim = XShmCreateImage(d, v, xatt.depth, ZPixmap, NULL, &shminfo, w, h);
-        if (!xim)
-           xim = XGetImage(d, p, x, y, w, h, 0xffffffff, ZPixmap);
-        else
+        if (xim)
           {
              XSync(d, False);
              if (_x_err)
                {
                   XDestroyImage(xim);
-                  xim = XGetImage(d, p, x, y, w, h, 0xffffffff, ZPixmap);
-                  _x_err = 0;
                }
              else
                {
@@ -569,7 +569,6 @@ __imlib_GrabDrawableToRGBA(DATA32 * data, int ox, int oy, int ow, int oh,
                   if (shminfo.shmid < 0)
                     {
                        XDestroyImage(xim);
-                       xim = XGetImage(d, p, x, y, w, h, 0xffffffff, ZPixmap);
                     }
                   else
                     {
@@ -579,52 +578,40 @@ __imlib_GrabDrawableToRGBA(DATA32 * data, int ox, int oy, int ow, int oh,
                             shminfo.readOnly = False;
                             XShmAttach(d, &shminfo);
                             is_shm = 1;
+                            XShmGetImage(d, p, xim, x, y, 0xffffffff);
+                            XSync(d, False);
+                            if (_x_err)
+                              {
+                                 shmdt(shminfo.shmaddr);
+                                 shmctl(shminfo.shmid, IPC_RMID, 0);
+                                 XDestroyImage(xim);
+                                 is_shm = 0;
+                              }
                          }
                        else
                          {
                             shmctl(shminfo.shmid, IPC_RMID, 0);
                             XDestroyImage(xim);
-                            xim = XGetImage(d, p, x, y, w, h,
-                                            0xffffffff, ZPixmap);
                          }
                     }
                }
           }
      }
-   else
+   if (!is_shm)
       xim = XGetImage(d, p, x, y, w, h, 0xffffffff, ZPixmap);
-   if (is_shm)
-     {
-        XShmGetImage(d, p, xim, x, y, 0xffffffff);
-        XSync(d, False);
-        if (_x_err)
-          {
-             shmdt(shminfo.shmaddr);
-             shmctl(shminfo.shmid, IPC_RMID, 0);
-             XDestroyImage(xim);
-             xim = XGetImage(d, p, x, y, w, h, 0xffffffff, ZPixmap);
-             is_shm = 0;
-          }
-     }
 
-   XSetErrorHandler((XErrorHandler) prev_erh);
    if ((m) && (domask))
      {
-        prev_erh = XSetErrorHandler((XErrorHandler) Tmp_HandleXError);
         _x_err = 0;
         if (x_does_shm)
           {
              mxim = XShmCreateImage(d, v, 1, ZPixmap, NULL, &mshminfo, w, h);
-             if (!mxim)
-                mxim = XGetImage(d, p, 0, 0, w, h, 0xffffffff, ZPixmap);
-             else
+             if (mxim)
                {
                   XSync(d, False);
                   if (_x_err)
                     {
                        XDestroyImage(mxim);
-                       xim = XGetImage(d, p, 0, 0, w, h, 0xffffffff, ZPixmap);
-                       _x_err = 0;
                     }
                   else
                     {
@@ -634,47 +621,41 @@ __imlib_GrabDrawableToRGBA(DATA32 * data, int ox, int oy, int ow, int oh,
                        if (mshminfo.shmid < 0)
                          {
                             XDestroyImage(mxim);
-                            mxim = XGetImage(d, p, 0, 0, w, h,
-                                             0xffffffff, ZPixmap);
                          }
                        else
                          {
-                            mshminfo.shmaddr = xim->data =
+                            mshminfo.shmaddr = mxim->data =
                                 shmat(mshminfo.shmid, 0, 0);
                             if (mxim->data != (char *)-1)
                               {
                                  mshminfo.readOnly = False;
                                  XShmAttach(d, &mshminfo);
                                  is_mshm = 1;
+                                 XShmGetImage(d, m, mxim, 0, 0, 0xffffffff);
+                                 XSync(d, False);
+                                 if (_x_err)
+                                   {
+                                      shmdt(mshminfo.shmaddr);
+                                      shmctl(mshminfo.shmid, IPC_RMID, 0);
+                                      XDestroyImage(mxim);
+                                      is_mshm = 0;
+                                   }
                               }
                             else
                               {
                                  shmctl(mshminfo.shmid, IPC_RMID, 0);
                                  XDestroyImage(mxim);
-                                 mxim = XGetImage(d, p, x, y, w, h,
-                                                  0xffffffff, ZPixmap);
                               }
                          }
                     }
                }
           }
-        else
+        if (!is_mshm)
            mxim = XGetImage(d, m, 0, 0, w, h, 0xffffffff, ZPixmap);
-        if (is_mshm)
-          {
-             XShmGetImage(d, p, mxim, 0, 0, 0xffffffff);
-             XSync(d, False);
-             if (_x_err)
-               {
-                  shmdt(mshminfo.shmaddr);
-                  shmctl(mshminfo.shmid, IPC_RMID, 0);
-                  XDestroyImage(mxim);
-                  mxim = XGetImage(d, p, 0, 0, w, h, 0xffffffff, ZPixmap);
-                  is_mshm = 0;
-               }
-             XSetErrorHandler((XErrorHandler) prev_erh);
-          }
      }
+
+   XSetErrorHandler((XErrorHandler) prev_erh);
+
    if ((is_shm) || (is_mshm))
      {
         XSync(d, False);
