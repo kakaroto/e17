@@ -1,22 +1,26 @@
+HSLIDER("entice.image.scroll.horizontal", 
+	"HPanningClip", 0.0 0.0, 0 0,
+	"HPanningClip", 1.0 1.0, 0 0, 
+	"HPanningClip");
 	    part
 	    {
-		name, "PanningClip";
+		name, "HPanningClip";
 		type, RECT;
-		mouse_events, 1;
+		mouse_events, 0;
 		description
 		{
 		    state, "default" 0.0;
 		    visible, 1;
 		    rel1
 		    {
-			relative, 0.5 1.0;
-			offset, -72 -40;
+			relative, 0.0 1.0;
+			offset, 80 -35;
 			to, "bg";
 		    }
 		    rel2
 		    {
-			relative, 0.5 1.0;
-			offset, 72 0;
+			relative, 1.0 1.0;
+			offset, -35 -5;
 			to, "bg";
 		    }
 		    color, 255 255 255 0;
@@ -27,246 +31,65 @@
 		    visible, 1;
 		    rel1
 		    {
-			relative, 0.5 1.0;
-			offset, -72 -40;
+			relative, 0.0 1.0;
+			offset, 80 -35;
 			to, "bg";
 		    }
 		    rel2
 		    {
-			relative, 0.5 1.0;
-			offset, 72 0;
+			relative, 1.0 1.0;
+			offset, -35 -5;
 			to, "bg";
 		    }
 		    color, 255 255 255 255;
 		}
 	    }
+VSLIDER("entice.image.scroll.vertical", 
+	"VPanningClip", 0.0 0.0, 0 0,
+	"VPanningClip", 1.0 1.0, 0 0, 
+	"VPanningClip");
 	    part
 	    {
-		name, "ButtonScrollWest";
-		type, IMAGE;
-		mouse_events, 1;
-		clip_to, "PanningClip";
-		description
-		{
-		    state, "default" 0.0;
-		    visible, 1;
-		    rel1
-		    {
-			relative, 0.5 1.0;
-			offset, -72 -34;
-			to, "bg";
-		    }
-		    rel2
-		    {
-			relative, 0.5 1.0;
-			offset, -40 -2;
-			to, "bg";
-		    }
-		    image
-		    {
-			normal, "bt_prev_1.png";
-		    }
-		    color, 255 255 255 255;
-		}
-		description
-		{
-		    state, "visible" 0.0;
-		    visible, 1;
-		    rel1
-		    {
-			relative, 0.5 1.0;
-			offset, -72 -34;
-			to, "bg";
-		    }
-		    rel2
-		    {
-			relative, 0.5 1.0;
-			offset, -40 -2;
-			to, "bg";
-		    }
-		    image
-		    {
-			normal, "bt_prev_1.png";
-		    }
-		    color, 255 255 255 0;
-		}
-	    }
-	    part
-	    {
-		name, "ButtonScrollEast";
-		type, IMAGE;
-		mouse_events, 1;
-		clip_to, "PanningClip";
-		description
-		{
-		    state, "default" 0.0;
-		    visible, 1;
-		    rel1
-		    {
-			relative, 0.5 1.0;
-			offset, -36 -34;
-			to, "bg";
-		    }
-		    rel2
-		    {
-			relative, 0.5 1.0;
-			offset, -4 -2;
-			to, "bg";
-		    }
-		    image
-		    {
-			normal, "bt_next_1.png";
-		    }
-		    color, 255 255 255 255;
-		}
-		description
-		{
-		    state, "visible" 0.0;
-		    visible, 1;
-		    rel1
-		    {
-			relative, 0.5 1.0;
-			offset, -36 -34;
-			to, "bg";
-		    }
-		    rel2
-		    {
-			relative, 0.5 1.0;
-			offset, -4 -2;
-			to, "bg";
-		    }
-		    image
-		    {
-			normal, "bt_next_1.png";
-		    }
-		    color, 255 255 255 0;
-		}
-	    }
-	    part
-	    {
-		name, "ButtonScrollNorth";
-		type, IMAGE;
-		mouse_events, 1;
-		clip_to, "PanningClip";
-		description
-		{
-		    state, "default" 0.0;
-		    visible, 1;
-		    rel1
-		    {
-			relative, 0.5 1.0;
-			offset, 0 -34;
-			to, "bg";
-		    }
-		    rel2
-		    {
-			relative, 0.5 1.0;
-			offset, 32 -2;
-			to, "bg";
-		    }
-		    image
-		    {
-			normal, "bt_north_1.png";
-		    }
-		    color, 255 255 255 255;
-		}
-		description
-		{
-		    state, "visible" 0.0;
-		    visible, 1;
-		    rel1
-		    {
-			relative, 0.5 1.0;
-			offset, 0 -34;
-			to, "bg";
-		    }
-		    rel2
-		    {
-			relative, 0.5 1.0;
-			offset, 32 -2;
-			to, "bg";
-		    }
-		    image
-		    {
-			normal, "bt_north_1.png";
-		    }
-		    color, 255 255 255 0;
-		}
-	    }
-	    part
-	    {
-		name, "ButtonScrollSouth";
-		type, IMAGE;
-		mouse_events, 1;
-		clip_to, "PanningClip";
-		description
-		{
-		    state, "default" 0.0;
-		    visible, 1;
-		    rel1
-		    {
-			relative, 0.5 1.0;
-			offset, 36 -34;
-			to, "bg";
-		    }
-		    rel2
-		    {
-			relative, 0.5 1.0;
-			offset, 68 -2;
-			to, "bg";
-		    }
-		    image
-		    {
-			normal, "bt_south_1.png";
-		    }
-		    color, 255 255 255 255;
-		}
-		description
-		{
-		    state, "visible" 0.0;
-		    visible, 1;
-		    rel1
-		    {
-			relative, 0.5 1.0;
-			offset, 36 -34;
-			to, "bg";
-		    }
-		    rel2
-		    {
-			relative, 0.5 1.0;
-			offset, 68 -2;
-			to, "bg";
-		    }
-		    image
-		    {
-			normal, "bt_south_1.png";
-		    }
-		    color, 255 255 255 0;
-		}
-	    }
-	    part
-	    {
-		name, "PanningClipMouseArea";
+		name, "VPanningClip";
 		type, RECT;
-		mouse_events, 1;
-		repeat_events, 1;
+		mouse_events, 0;
 		description
 		{
 		    state, "default" 0.0;
 		    visible, 1;
 		    rel1
 		    {
-			relative, 0.5 1.0;
-			offset, -90 -50;
-			to, "bg";
+			relative, 1.0 1.0;
+			offset, -35 0;
+			to_x, "bg";
+			to_y, "Buttons";
 		    }
 		    rel2
 		    {
-			relative, 0.5 1.0;
-			offset, 90 0;
+			relative, 1.0 1.0;
+			offset, -5 -5;
 			to, "bg";
 		    }
 		    color, 255 255 255 0;
+		}
+		description
+		{
+		    state, "visible" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 1.0 1.0;
+			offset, -35 0;
+			to_x, "bg";
+			to_y, "Buttons";
+		    }
+		    rel2
+		    {
+			relative, 1.0 1.0;
+			offset, -5 -5;
+			to, "bg";
+		    }
+		    color, 255 255 255 255;
 		}
 	    }
 	    part

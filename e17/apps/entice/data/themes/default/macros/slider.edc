@@ -1,0 +1,295 @@
+#define SLIDER(NAME, REL1_TO, REL1_REL, REL1_OFF, \
+	REL2_TO, REL2_REL, REL2_OFF, BORDER, CLIPTO) \
+      part {				\
+        name, NAME"_rect";		\
+	clip_to, CLIPTO;		\
+	type, RECT;			\
+	mouse_events, 0;		\
+	description {			\
+	  state, "default" 0.0;		\
+	  color, 255 0 0 0;		\
+	  rel1 {			\
+	    to, REL1_TO;		\
+	    relative, REL1_REL;		\
+	    offset, REL1_OFF;		\
+	  }				\
+	  rel2 {			\
+	    to, REL2_TO;		\
+	    relative, REL2_REL;		\
+	    offset, REL2_OFF;		\
+	  }				\
+	}				\
+      }					\
+      part {				\
+        name, NAME"_scrollbar_trough_img";	\
+	clip_to, CLIPTO;		\
+	type, IMAGE;			\
+	mouse_events, 0;		\
+	description {			\
+	  state, "default" 0.0;		\
+	  color, 255 255 255 255;	\
+	  min, 20 20;			\
+	  max, 9999 9999;		\
+	  align, 0.5 0.0;		\
+	  rel1 {			\
+	    to, NAME"_rect";		\
+	    relative, 0.0 0.0;		\
+	    offset, 5 5;		\
+	  }				\
+	  rel2 {			\
+	    to, NAME"_rect";		\
+	    relative, 1.0 1.0;		\
+	    offset, -5 -5;		\
+	  }				\
+	  image {			\
+	      normal, "border-bevel.png"; \
+	  }				\
+	  border, BORDER; 		\
+	}				\
+      }					\
+      part {				\
+        name, NAME"_scrollbar_trough";	\
+	clip_to, CLIPTO;		\
+	type, RECT;			\
+	mouse_events, 1;		\
+	description {			\
+	  state, "default" 0.0;		\
+	  color, 192 192 192 0;		\
+	  rel1 {			\
+	    to, NAME"_scrollbar_trough_img"; \
+	    relative, 0.0 0.0;		\
+	    offset, 2 2;		\
+	  }				\
+	  rel2 {			\
+	    to, NAME"_scrollbar_trough_img";		\
+	    relative, 1.0 1.0;		\
+	    offset, -2 -2;		\
+	  }				\
+	}				\
+      }					\
+      part {				\
+        name, NAME"_scrollbar_deco";	\
+	clip_to, CLIPTO;		\
+	type, IMAGE;			\
+	mouse_events, 0;		\
+	description {			\
+	  state, "default" 0.0;		\
+	  color, 192 192 192 128;	\
+	  rel1 {			\
+	    to, NAME".scrollbar";	\
+	    relative, 0.5 0.5;		\
+	    offset, -12 -12;		\
+	  }				\
+	  rel2 {			\
+	    to, NAME".scrollbar";	\
+	    relative, 0.5 0.5;		\
+	    offset, 12 12;		\
+	  }				\
+	  image {			\
+	      normal, "bt_dragable.png"; \
+	  } 				\
+	  border, 3 3 3 3;		\
+	}				\
+      }					
+#define HSLIDER(NAME, REL1_TO, REL1_REL, REL1_OFF, \
+      REL2_TO, REL2_REL, REL2_OFF, CLIPTO) \
+    SLIDER(NAME, REL1_TO, REL1_REL, REL1_OFF, \
+	    REL2_TO, REL2_REL, REL2_OFF, 12 12 3 3, CLIPTO) \
+      part {				\
+        name, NAME".scrollbar";		\
+	clip_to, CLIPTO;		\
+	type, IMAGE;			\
+	mouse_events, 1;		\
+	dragable {			\
+	    x, 1 1 0;			\
+	    y, 0 0 0;			\
+	    confine, NAME"_scrollbar_trough"; \
+	}				\
+	description {			\
+	  state, "default" 0.0;		\
+	  min, 16 16;			\
+	  align, 0.0 0.5;		\
+	  color, 255 255 255 96;	\
+	  rel1 {			\
+	    to, NAME"_scrollbar_trough";\
+	    relative, 0.5 0.5;		\
+	    offset, 0 0;		\
+	  }				\
+	  rel2 {			\
+	    to, NAME"_scrollbar_trough";\
+	    relative, 0.5 0.5;		\
+	    offset, 0 0;		\
+	  }				\
+	  image {			\
+	      normal, "bt_dragable.png"; \
+	  }				\
+	}				\
+	description {			\
+	  state, "down" 0.0;		\
+	  min, 16 16;			\
+	  align, 0.0 0.5;		\
+	  color, 255 255 255 255;	\
+	  rel1 {			\
+	    to, NAME"_scrollbar_trough";\
+	    relative, 0.5 0.5;		\
+	    offset, 0 0;		\
+	  }				\
+	  rel2 {			\
+	    to, NAME"_scrollbar_trough";\
+	    relative, 0.5 0.5;		\
+	    offset, 0 0;		\
+	  }				\
+	  image {			\
+	      normal, "bt_dragable.png"; \
+	  }				\
+	}				\
+      }					\
+      part {				\
+        name, NAME"_mouse_area";	\
+	type, RECT;			\
+	mouse_events, 1;		\
+	repeat_events, 1;		\
+	description {			\
+	  state, "default" 0.0;		\
+	  color, 255 0 0 0;		\
+	  rel1 {			\
+	    to, NAME"_rect";		\
+	    relative, 0.0 0.0;		\
+	    offset, -20 -10;		\
+	  }				\
+	  rel2 {			\
+	    to, NAME"_rect";		\
+	    relative, 1.0 1.0;		\
+	    offset, 20 10;		\
+	  }				\
+	}				\
+      }					
+
+#define VSLIDER(NAME, REL1_TO, REL1_REL, REL1_OFF, \
+		      REL2_TO, REL2_REL, REL2_OFF, CLIPTO) \
+    SLIDER(NAME, REL1_TO, REL1_REL, REL1_OFF, \
+	    REL2_TO, REL2_REL, REL2_OFF, 12 12 12 12, CLIPTO) \
+      part {				\
+        name, NAME".scrollbar";		\
+	clip_to, CLIPTO;		\
+	type, IMAGE;			\
+	mouse_events, 1;		\
+	dragable {			\
+	    x, 0 0 0;			\
+	    y, 1 1 0;			\
+	    confine, NAME"_scrollbar_trough"; \
+	}				\
+	description {			\
+	  state, "default" 0.0;		\
+	  min, 16 16;			\
+	  align, 0.0 0.5;		\
+	  color, 255 255 255 96;	\
+	  rel1 {			\
+	    to, NAME"_scrollbar_trough";\
+	    relative, 0.5 0.5;		\
+	    offset, 0 0;		\
+	  }				\
+	  rel2 {			\
+	    to, NAME"_scrollbar_trough";\
+	    relative, 0.5 0.5;		\
+	    offset, 0 0;		\
+	  }				\
+	  image {			\
+	      normal, "bt_dragable.png"; \
+	  }				\
+	}				\
+	description {			\
+	  state, "down" 0.0;		\
+	  min, 16 16;			\
+	  align, 0.0 0.5;		\
+	  color, 255 255 255 255;	\
+	  rel1 {			\
+	    to, NAME"_scrollbar_trough";\
+	    relative, 0.5 0.5;		\
+	    offset, 0 0;		\
+	  }				\
+	  rel2 {			\
+	    to, NAME"_scrollbar_trough";\
+	    relative, 0.5 0.5;		\
+	    offset, 0 0;		\
+	  }				\
+	  image {			\
+	      normal, "bt_dragable.png"; \
+	  }				\
+	}				\
+      }					\
+      part {				\
+        name, NAME"_mouse_area";	\
+	type, RECT;			\
+	mouse_events, 1;		\
+	repeat_events, 1;		\
+	description {			\
+	  state, "default" 0.0;		\
+	  color, 255 0 0 0;		\
+	  rel1 {			\
+	    to, NAME"_rect";		\
+	    relative, 0.0 0.0;		\
+	    offset, -20 -10;		\
+	  }				\
+	  rel2 {			\
+	    to, NAME"_rect";		\
+	    relative, 1.0 1.0;		\
+	    offset, 20 10;		\
+	  }				\
+	}				\
+      }					
+
+#define SLIDER_PROG(NAME, SIGDRAG, CLIP) \
+      program {				\
+	name, NAME"_scrollbar_move";	\
+	signal, "drag";			\
+	source, NAME".scrollbar";	\
+	action, SIGNAL_EMIT SIGDRAG NAME".scrollbar";	\
+      }					\
+      program {				\
+	name, NAME"_scrollbar_mouse_up";\
+	signal, "mouse,up,1";		\
+	source, NAME".scrollbar";	\
+	action, STATE_SET "default" 0.0;\
+	transition, DECELERATE 0.25;	\
+	target, NAME".scrollbar";	\
+      }					\
+      program {				\
+	name, NAME"_scrollbar_mouse_down";	\
+	signal, "mouse,down,1";		\
+	source, NAME".scrollbar";	\
+	action, STATE_SET "down" 0.0;	\
+	transition, ACCELERATE 0.25;	\
+	target, NAME".scrollbar";	\
+      }					\
+      program {				\
+	name, NAME"_scrollbar_show";	\
+	signal, "show";			\
+	source, "";			\
+	action, DRAG_VAL_SET 0.5 0.5;   \
+	target, NAME".scrollbar";	\
+      }					\
+      program {				\
+	name, NAME"_scrollbar_mouse_in";\
+	signal, "mouse,in";		\
+	source, NAME"_mouse_area";	\
+	action, STATE_SET "visible" 0.0;\
+	transition, ACCELERATE 0.25;	\
+	target, CLIP;			\
+      }					\
+      program {				\
+	name, NAME"_scrollbar_mouse_out_stop";\
+	signal, "mouse,in";		\
+	source, NAME"_mouse_area";	\
+	action, ACTION_STOP;		\
+	target, NAME"_scrollbar_mouse_out"; \
+      }					\
+      program {				\
+	name, NAME"_scrollbar_mouse_out";\
+	signal, "mouse,out";		\
+	source, NAME"_mouse_area";	\
+	action, STATE_SET "default" 0.0;\
+	transition, SINUSOIDAL 0.5;	\
+	target, CLIP;			\
+	in, 0.5 0.0;			\
+      }					

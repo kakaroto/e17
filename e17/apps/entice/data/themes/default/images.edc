@@ -8,6 +8,7 @@ images
    image, "list_arrow_d_1.png" LOSSY 95;
    image, "list_arrow_d_2.png" LOSSY 95;
    image, "bt_prev_1.png" LOSSY 95;
+   image, "bt_dragable.png" LOSSY 95;
    image, "bt_next_1.png" LOSSY 95;
    image, "bt_zoom_normal_1.png" LOSSY 95;
    image, "bt_zoom_out_1.png" LOSSY 95;
@@ -41,4 +42,5 @@ images
    image, "arrow_b.png" LOSSY 95;
    image, "winter_menu.png" LOSSY 95;
    image, "list_sel.png" LOSSY 90;
+   image, "border-bevel.png" LOSSY 90;
 }

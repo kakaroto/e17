@@ -7,12 +7,15 @@ fonts {
 data {
     item, "container_layout" "entice";
 }
+#include "macros/slider.edc"
 
 collections
 {
     group
     {
 	name, "entice";
+	min, 320 240;
+	max, 99999 9999;
 	data {
 	    item, "entice.window.dragable" "true";
 	}
@@ -54,10 +57,10 @@ collections
 	    }
 #include "parts/enticeimage.edc"
 #include "parts/enticeimagescroller.edc"
-#include "parts/bg.edc"
 #include "parts/panel.edc"
 #include "parts/buttons.edc"
 #include "parts/tooltip.edc"
+#include "parts/bg.edc"
 #include "parts/delete_dialog.edc"
 #include "parts/enticeimagepreview.edc"
 	}
@@ -98,7 +101,7 @@ collections
     }
     group
     {
-	name, "EnticeScroller";
+	name, "entice.scroller";
 	parts
 	{
 	    part

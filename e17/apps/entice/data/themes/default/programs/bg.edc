@@ -1,18 +1,4 @@
-	    program
-	    {
-		name, 	"ShowPanning";
-		signal, "mouse,in";
-		source, "PanningClipMouseArea";
-		action, STATE_SET "visible" 0.0;
-		transition, ACCELERATE 0.3;
-		target, "PanningClip";
-	    }
-	    program
-	    {
-		name, 	"HidePanning";
-		signal, "mouse,out";
-		source, "PanningClipMouseArea";
-		action, STATE_SET "default" 0.0;
-		transition, DECELERATE 0.5;
-		target, "PanningClip";
-	    }
+    SLIDER_PROG("entice.image.scroll.horizontal",
+	    "entice,image,current,drag,horizontal", "HPanningClip");
+    SLIDER_PROG("entice.image.scroll.vertical",
+	    "entice,image,current,drag,vertical", "VPanningClip");
