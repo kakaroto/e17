@@ -38,6 +38,7 @@ void estyle_hide(Estyle * es);
  * Content and appearance manipulators
  */
 void estyle_move(Estyle *es, int x, int y);
+void estyle_set_clip(Estyle *es, Evas_Object clip);
 char *estyle_get_text(Estyle * es);
 void estyle_set_text(Estyle * es, char *text);
 int estyle_get_layer(Estyle * es);
