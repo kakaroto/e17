@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <config.h>
+#include <string.h>
 #ifdef WITH_DMALLOC
 # include <dmalloc.h>
 #endif
