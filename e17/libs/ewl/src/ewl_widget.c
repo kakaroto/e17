@@ -2,10 +2,11 @@
 #include <Ewl.h>
 
 
-extern Ewl_Widget *last_selected;
-extern Ewl_Widget *last_key;
-extern Ewl_Widget *last_focused;
-extern Ewl_Widget *dnd_widget;
+Ewl_Widget *last_selected = NULL;
+Ewl_Widget *last_clicked = NULL;
+Ewl_Widget *last_key = NULL;
+Ewl_Widget *last_focused = NULL;
+Ewl_Widget *dnd_widget = NULL;
 
 static void ewl_widget_get_theme_padding(Ewl_Widget *w, int *l, int *r,
 					 int *t, int *b);
@@ -804,6 +805,22 @@ unsigned int ewl_widget_is_clipped(Ewl_Widget *w)
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
+}
+
+void ewl_widget_send_focus(Ewl_Widget *w)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	last_key = w;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+Ewl_Widget *ewl_widget_get_focused()
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	DRETURN_PTR(last_key, DLEVEL_STABLE);
 }
 
 /*

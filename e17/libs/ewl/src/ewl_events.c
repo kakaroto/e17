@@ -2,11 +2,11 @@
 #include <Ewl.h>
 
 
-Ewl_Widget     *last_selected = NULL;
-Ewl_Widget     *last_clicked = NULL;
-Ewl_Widget     *last_key = NULL;
-Ewl_Widget     *last_focused = NULL;
-Ewl_Widget     *dnd_widget = NULL;
+extern Ewl_Widget     *last_selected;
+extern Ewl_Widget     *last_clicked;
+extern Ewl_Widget     *last_key;
+extern Ewl_Widget     *last_focused;
+extern Ewl_Widget     *dnd_widget;
 
 
 /**
@@ -171,10 +171,13 @@ int ewl_ev_key_down(void *data, int type, void *_ev)
 	 * If a widget has been selected then we send the keystroke to the
 	 * appropriate widget.
 	 */
-	if (last_selected)
-		last_key = last_selected;
-	else
-		last_key = EWL_WIDGET(embed);
+	if (!last_key || !ewl_container_parent_of(EWL_WIDGET(embed),
+				last_key)) {
+		if (last_selected)
+			last_key = last_selected;
+		else
+			last_key = EWL_WIDGET(embed);
+	}
 
 	/*
 	 * Dispatcher of key down events, these get sent to the last widget

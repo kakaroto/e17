@@ -150,6 +150,9 @@ unsigned int    ewl_widget_is_internal(Ewl_Widget *w);
 void            ewl_widget_set_clipped(Ewl_Widget *w, unsigned int val);
 unsigned int    ewl_widget_is_clipped(Ewl_Widget *w);
 
+void            ewl_widget_send_focus(Ewl_Widget *w);
+Ewl_Widget     *ewl_widget_get_focused(void);
+
 /**
  * @def LAYER(w)
  * Used to retrieve the layer of a widget.
