@@ -4,7 +4,6 @@ typedef struct _addtext_ok_data addtext_ok_data;
 struct _addtext_ok_data
 {
    GtkWidget *win;
-   GtkWidget *name;
    GtkWidget *text;
    GtkWidget *font;
    GtkWidget *size;
@@ -21,7 +20,7 @@ static void refresh_a_cb(GtkWidget * widget, gpointer * obj);
 static void refresh_size_cb(GtkWidget * widget, gpointer * obj);
 static void refresh_text_cb(GtkWidget * widget, gpointer * obj);
 static void refresh_font_cb(GtkWidget * widget, gpointer * obj);
-static void refresh_name_cb(GtkWidget * widget, gpointer * obj);
+
 
 gboolean obj_addtext_ok_cb(GtkWidget * widget, gpointer * data);
 
@@ -466,13 +465,6 @@ refresh_a_cb(GtkWidget * widget, gpointer * obj)
    geist_document_render_updates(GEIST_OBJECT_DOC(obj));
 }
 
-void
-refresh_name_cb(GtkWidget * widget, gpointer * obj)
-{
-   if (GEIST_OBJECT(obj)->name)
-      efree(GEIST_OBJECT(obj)->name);
-   GEIST_OBJECT(obj)->name = estrdup(gtk_entry_get_text(GTK_ENTRY(widget)));
-}
 
 void
 refresh_text_cb(GtkWidget * widget, gpointer * obj)
@@ -485,8 +477,9 @@ refresh_text_cb(GtkWidget * widget, gpointer * obj)
 void
 geist_text_display_props(geist_object * obj)
 {
+   GtkWidget *generic;
    addtext_ok_data *ok_data = NULL;
-   GtkWidget *table, *name_l, *text_l, *font_l, *size_l, *hbox, *cr_l, *cg_l,
+   GtkWidget *table, *text_l, *font_l, *size_l, *hbox, *cr_l, *cg_l,
       *cb_l, *ca_l, *ok;
    int i, num;
    char **fonts;
@@ -508,31 +501,26 @@ geist_text_display_props(geist_object * obj)
       printf("ARGH!\n");
 
    ok_data->win = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-   table = gtk_table_new(2, 6, FALSE);
+   table = gtk_table_new(4, 2, FALSE);
    gtk_container_set_border_width(GTK_CONTAINER(ok_data->win), 5);
    gtk_container_add(GTK_CONTAINER(ok_data->win), table);
 
+   generic = geist_object_generic_properties(obj);
+   gtk_table_attach(GTK_TABLE(table), generic, 0, 2, 0, 1, GTK_FILL | GTK_EXPAND,
+                    0, 2, 2);
+   gtk_widget_show(generic);	
+	
+   
    text_l = gtk_label_new("Text:");
    gtk_misc_set_alignment(GTK_MISC(text_l), 1.0, 0.5);
-   gtk_table_attach(GTK_TABLE(table), text_l, 0, 1, 0, 1,
+   gtk_table_attach(GTK_TABLE(table), text_l, 0, 1, 1, 2,
                     GTK_FILL | GTK_EXPAND, 0, 2, 2);
    gtk_widget_show(text_l);
 
    ok_data->text = gtk_entry_new();
-   gtk_table_attach(GTK_TABLE(table), ok_data->text, 1, 2, 0, 1,
+   gtk_table_attach(GTK_TABLE(table), ok_data->text, 1, 2, 1, 2,
                     GTK_FILL | GTK_EXPAND, 0, 2, 2);
    gtk_widget_show(ok_data->text);
-
-   name_l = gtk_label_new("Name:");
-   gtk_misc_set_alignment(GTK_MISC(name_l), 1.0, 0.5);
-   gtk_table_attach(GTK_TABLE(table), name_l, 0, 1, 1, 2,
-                    GTK_FILL | GTK_EXPAND, 0, 2, 2);
-   gtk_widget_show(name_l);
-
-   ok_data->name = gtk_entry_new();
-   gtk_table_attach(GTK_TABLE(table), ok_data->name, 1, 2, 1, 2,
-                    GTK_FILL | GTK_EXPAND, 0, 2, 2);
-   gtk_widget_show(ok_data->name);
 
 
    font_l = gtk_label_new("Font:");
@@ -604,7 +592,8 @@ geist_text_display_props(geist_object * obj)
    gtk_table_attach(GTK_TABLE(table), ok, 0, 2, 5, 6, GTK_FILL | GTK_EXPAND,
                     0, 2, 2);
    gtk_widget_show(ok);
-
+		
+   	
    gtk_widget_show(table);
 
    gtk_spin_button_set_value(GTK_SPIN_BUTTON(ok_data->cr),
@@ -622,8 +611,6 @@ geist_text_display_props(geist_object * obj)
                              GEIST_TEXT(obj)->fontsize);
    gtk_entry_set_text(GTK_ENTRY(ok_data->text), GEIST_TEXT(obj)->text);
 
-   if (obj->name)
-      gtk_entry_set_text(GTK_ENTRY(ok_data->name), obj->name);
 
    gtk_signal_connect(GTK_OBJECT(ok_data->ca), "changed",
                       GTK_SIGNAL_FUNC(refresh_a_cb), (gpointer) obj);
@@ -635,14 +622,15 @@ geist_text_display_props(geist_object * obj)
                       GTK_SIGNAL_FUNC(refresh_r_cb), (gpointer) obj);
    gtk_signal_connect(GTK_OBJECT(ok_data->size), "changed",
                       GTK_SIGNAL_FUNC(refresh_size_cb), (gpointer) obj);
-   gtk_signal_connect(GTK_OBJECT(ok_data->name), "changed",
-                      GTK_SIGNAL_FUNC(refresh_name_cb), (gpointer) obj);
+
    gtk_signal_connect(GTK_OBJECT(GTK_COMBO(ok_data->font)->entry), "changed",
                       GTK_SIGNAL_FUNC(refresh_font_cb), (gpointer) obj);
    gtk_signal_connect(GTK_OBJECT(ok_data->text), "changed",
                       GTK_SIGNAL_FUNC(refresh_text_cb), (gpointer) obj);
    gtk_signal_connect(GTK_OBJECT(ok), "clicked",
                       GTK_SIGNAL_FUNC(obj_addtext_ok_cb), (gpointer) ok_data);
+   
+   
    
    gtk_widget_show(ok_data->win);
 

@@ -27,5 +27,7 @@ int geist_image_load_file(geist_image * img, char *filename);
 Imlib_Image geist_image_get_rendered_image(geist_object * obj);
 geist_object *geist_image_duplicate(geist_object * obj);
 void geist_image_resize(geist_object * obj, int x, int y);
+void geist_image_display_props(geist_object *obj);
+
 
 #endif

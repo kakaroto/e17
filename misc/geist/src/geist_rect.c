@@ -248,17 +248,12 @@ refresh_a_cb(GtkWidget * widget, gpointer * obj)
    geist_document_render_updates(GEIST_OBJECT_DOC(obj));
 }
 
-void
-refresh_name_cb(GtkWidget *widget, gpointer *obj)
-{
-   GEIST_RECT(obj)->name = estrdup(gtk_entry_get_text(GTK_ENTRY(widget)));
-}
 
 void
 geist_rect_display_props(geist_object * obj)
 {
 
-   GtkWidget *win, *table, *title_l, *title_entry, *hbox, *cr_l, *cr, *cg_l,
+   GtkWidget *generic, *win, *table, *title_l, *title_entry, *hbox, *cr_l, *cr, *cg_l,
       *cg, *cb_l, *cb, *ca_l, *ca, *ok;
    GtkAdjustment *a1, *a2, *a3, *a4;
 
@@ -269,22 +264,14 @@ geist_rect_display_props(geist_object * obj)
    a4 = (GtkAdjustment *) gtk_adjustment_new(0, 0, 255, 1, 2, 3);
 
    win = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-   table = gtk_table_new(2, 4, FALSE);
+   table = gtk_table_new(3, 2, FALSE);
    gtk_container_set_border_width(GTK_CONTAINER(win), 5);
    gtk_container_add(GTK_CONTAINER(win), table);
 
-   title_l = gtk_label_new("name:");
-   gtk_misc_set_alignment(GTK_MISC(title_l), 1.0, 0.5);
-   gtk_table_attach(GTK_TABLE(table), title_l, 0, 1, 0, 1,
-                    GTK_FILL | GTK_EXPAND, 0, 2, 2);
-   gtk_widget_show(title_l);
-
-   title_entry = gtk_entry_new();
-   gtk_table_attach(GTK_TABLE(table), title_entry, 1, 2, 0, 1,
-                    GTK_FILL | GTK_EXPAND, 0, 2, 2);
-   gtk_signal_connect(GTK_OBJECT(title_entry), "changed",
-			GTK_SIGNAL_FUNC(refresh_name_cb), (gpointer) obj);
-   gtk_widget_show(title_entry);
+   generic = geist_object_generic_properties(obj);
+   gtk_table_attach(GTK_TABLE(table), generic, 0, 2, 0, 1, GTK_FILL | GTK_EXPAND,
+                    0, 2, 2);
+   gtk_widget_show(generic);
 
    hbox = gtk_hbox_new(FALSE, 0);
 
@@ -329,27 +316,23 @@ geist_rect_display_props(geist_object * obj)
    gtk_box_pack_start(GTK_BOX(hbox), ca, TRUE, FALSE, 2);
    gtk_widget_show(ca);
 
-   gtk_table_attach(GTK_TABLE(table), hbox, 0, 2, 3, 4, GTK_FILL | GTK_EXPAND,
+   gtk_table_attach(GTK_TABLE(table), hbox, 0, 2, 1, 2, GTK_FILL | GTK_EXPAND,
                     0, 2, 2);
    gtk_widget_show(hbox);
 
    ok = gtk_button_new_with_label("Ok");
-   gtk_table_attach(GTK_TABLE(table), ok, 0, 2, 4, 5, GTK_FILL | GTK_EXPAND,
+   gtk_table_attach(GTK_TABLE(table), ok, 0, 2, 2, 3, GTK_FILL | GTK_EXPAND,
                     0, 2, 2);
    gtk_signal_connect(GTK_OBJECT(ok), "clicked",
                       GTK_SIGNAL_FUNC(obj_addrect_ok_cb), (gpointer) win);
    gtk_widget_show(ok);
-
 
    gtk_spin_button_set_value (GTK_SPIN_BUTTON(cr), GEIST_RECT(obj)->r);
    gtk_spin_button_set_value (GTK_SPIN_BUTTON(cg), GEIST_RECT(obj)->g);
    gtk_spin_button_set_value (GTK_SPIN_BUTTON(cb), GEIST_RECT(obj)->b);
    gtk_spin_button_set_value (GTK_SPIN_BUTTON(ca), GEIST_RECT(obj)->a);
 
-   
-   if (GEIST_RECT(obj)->name)
-      gtk_entry_set_text(GTK_ENTRY(title_entry), GEIST_RECT(obj)->name);
-
+  
 
    gtk_widget_show(table);
    gtk_widget_show(win);

@@ -36,7 +36,9 @@ geist_image_init(geist_image * img)
    geist_object_set_type(obj, GEIST_TYPE_IMAGE);
    obj->sizemode = SIZEMODE_ZOOM;
    obj->alignment = ALIGN_CENTER;
+   obj->display_props = geist_image_display_props;
 
+   
    D_RETURN_(5);
 }
 
@@ -268,4 +270,75 @@ geist_image_resize(geist_object * obj, int x, int y)
    geist_object_resize_object(obj, x, y);
 
    D_RETURN_(5);
+}
+
+
+void
+geist_image_props_ok_cb(GtkWidget * widget, gpointer * data)
+{
+   gtk_widget_destroy((GtkWidget *) data);
+}
+
+
+void
+geist_image_display_props(geist_object *obj)
+{
+  char *buf[3] = { 0, 0, 0 };
+  GtkWidget *generic;
+  GtkWidget *image_props;
+  GtkWidget *table;
+  GtkWidget *sel_file_btn;
+  GtkWidget *file_entry;
+  GtkWidget *antialias_checkb;
+  GtkWidget *ok_btn;
+
+  image_props = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+  gtk_window_set_title (GTK_WINDOW (image_props), ("image properties"));
+
+  table = gtk_table_new ( 4, 2, FALSE);
+  gtk_widget_show (table);
+  gtk_container_add (GTK_CONTAINER (image_props), table);
+  gtk_container_set_border_width (GTK_CONTAINER (image_props), 5);
+  
+  
+  generic = geist_object_generic_properties(obj);
+  gtk_table_attach(GTK_TABLE(table), generic, 0, 2, 0, 1,GTK_FILL | GTK_EXPAND, 0 ,
+		  2, 2);
+  gtk_widget_show(generic);
+  
+  sel_file_btn = gtk_button_new_with_label ("Change file");
+  gtk_table_attach(GTK_TABLE(table), sel_file_btn, 0, 1, 1 , 2, GTK_FILL | GTK_EXPAND, 0, 2, 2); 
+  gtk_widget_show (sel_file_btn);
+  gtk_container_set_border_width (GTK_CONTAINER (sel_file_btn), 10);
+
+  file_entry = gtk_entry_new ();
+  gtk_table_attach(GTK_TABLE(table), file_entry, 1, 2, 1, 2, GTK_FILL | GTK_EXPAND, 0, 2, 2);  
+  gtk_widget_show (file_entry);
+
+  
+  
+
+  antialias_checkb = gtk_check_button_new_with_label ("antialias");
+  gtk_table_attach(GTK_TABLE(table), antialias_checkb, 0, 1, 4, 5, GTK_FILL | GTK_EXPAND, 0, 2, 2);
+  gtk_widget_show (antialias_checkb);
+  gtk_container_set_border_width (GTK_CONTAINER (antialias_checkb), 10);
+
+  ok_btn = gtk_button_new_with_label("Ok");
+  
+  gtk_widget_show (ok_btn);
+  gtk_table_attach (GTK_TABLE (table), ok_btn, 1, 2, 4, 5, GTK_FILL | GTK_EXPAND, 0, 0, 0);
+
+  gtk_widget_show(image_props);
+
+  buf[0] = (obj->name) ? (obj->name) : "Untitled Object";
+  buf[1] = (char *) geist_imlib_image_get_filename (geist_object_get_rendered_image(obj));
+
+  gtk_entry_set_text (GTK_ENTRY(file_entry), buf[1]);
+  
+  
+  gtk_signal_connect(GTK_OBJECT(ok_btn), "clicked",
+		  			 GTK_SIGNAL_FUNC(geist_image_props_ok_cb), (gpointer)
+		  			image_props);
+  
+
 }

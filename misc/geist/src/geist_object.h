@@ -136,6 +136,8 @@ void geist_object_int_display_props(geist_object * obj);
 void geist_object_display_props(geist_object * obj);
 void geist_object_dirty_selection(geist_object * obj);
 void geist_object_dirty(geist_object * obj);
+GtkWidget *geist_object_generic_properties(geist_object *obj);
+
 
 #define geist_object_set_state(o, s) (o->state |=  s)
 #define geist_object_unset_state(o, s) (o->state &= ~(s))

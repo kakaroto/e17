@@ -1,5 +1,8 @@
 #include "geist_object.h"
 
+void refresh_name_cb(GtkWidget * widget, gpointer * obj);
+
+
 geist_object *
 geist_object_new(void)
 {
@@ -669,4 +672,146 @@ geist_object_dirty_selection(geist_object * obj)
                                    obj->get_selection_updates(obj));
 
    D_RETURN_(5);
+}
+
+
+
+void
+refresh_name_cb(GtkWidget * widget, gpointer * obj)
+{
+   if (GEIST_OBJECT(obj)->name)
+      efree(GEIST_OBJECT(obj)->name);
+   GEIST_OBJECT(obj)->name = estrdup(gtk_entry_get_text(GTK_ENTRY(widget)));
+}
+
+
+GtkWidget *
+geist_object_generic_properties(geist_object *obj)
+{
+	GtkWidget *generic_props;
+	GtkWidget *table, *name_l, *hbox, *x_l, *y_l, *w_l, *h_l;
+   GtkWidget *name;
+   GtkWidget *x;
+   GtkWidget *y;
+   GtkWidget *w;
+   GtkWidget *h;
+   GtkAdjustment *a1, *a2, *a3, *a4;
+   GtkWidget *sizemode_l;
+   GtkWidget *alignment_l;
+   GtkWidget *sizemode_combo;
+   GtkWidget *alignment_combo;
+   
+   a1 = (GtkAdjustment *) gtk_adjustment_new(0, 0, 255, 1, 2, 3);
+   a2 = (GtkAdjustment *) gtk_adjustment_new(0, 0, 255, 1, 2, 3);
+   a3 = (GtkAdjustment *) gtk_adjustment_new(0, 0, 255, 1, 2, 3);
+   a4 = (GtkAdjustment *) gtk_adjustment_new(0, 0, 255, 1, 2, 3);
+
+   generic_props = gtk_hbox_new (FALSE, 0);
+   
+   table = gtk_table_new(4, 4, FALSE);
+   gtk_container_set_border_width(GTK_CONTAINER(generic_props), 5);
+   gtk_container_add(GTK_CONTAINER(generic_props), table);
+
+   name_l = gtk_label_new("Name:");
+   gtk_table_attach(GTK_TABLE(table), name_l, 0, 1, 0, 1,
+                    GTK_FILL | GTK_EXPAND, 0, 2, 2);
+   gtk_widget_show(name_l);
+
+   name = gtk_entry_new();
+   gtk_table_attach(GTK_TABLE(table), name, 1, 4, 0, 1,
+                    GTK_FILL | GTK_EXPAND, 0, 2, 2);
+   gtk_widget_show(name);
+   
+   sizemode_l = gtk_label_new ("sizemode");
+   gtk_table_attach(GTK_TABLE(table), sizemode_l, 0, 1, 1, 2, GTK_FILL | GTK_EXPAND, 0, 2, 2);
+   gtk_widget_show(sizemode_l);
+
+   sizemode_combo = gtk_combo_new ();
+   gtk_table_attach(GTK_TABLE(table), sizemode_combo, 1, 4, 1, 2, GTK_FILL | GTK_EXPAND, 0, 2, 2);
+   gtk_widget_show (sizemode_combo);
+   gtk_container_set_border_width (GTK_CONTAINER (sizemode_combo), 5);
+   
+   alignment_l = gtk_label_new ("alignment");
+   gtk_table_attach(GTK_TABLE(table), alignment_l, 0, 1, 2, 3, GTK_FILL | GTK_EXPAND, 0, 2, 2);
+   gtk_widget_show(alignment_l);
+
+   alignment_combo = gtk_combo_new ();
+   gtk_table_attach(GTK_TABLE(table), alignment_combo, 1, 4, 2 ,3, GTK_FILL | GTK_EXPAND, 0, 2, 2);
+   gtk_widget_show (alignment_combo);
+   gtk_container_set_border_width (GTK_CONTAINER (alignment_combo), 5);
+
+   
+   hbox = gtk_hbox_new(FALSE, 0);
+   gtk_table_attach(GTK_TABLE(table), hbox, 0, 4, 3, 4, GTK_FILL | GTK_EXPAND,
+                    0, 2, 2);
+
+   x_l = gtk_label_new("x:");
+   gtk_misc_set_alignment(GTK_MISC(x_l), 1.0, 0.5);
+   gtk_box_pack_start(GTK_BOX(hbox), x_l, TRUE, FALSE, 2);
+   gtk_widget_show(x_l);
+   x = gtk_spin_button_new(GTK_ADJUSTMENT(a1), 1, 0);
+
+   gtk_box_pack_start(GTK_BOX(hbox), x, TRUE, FALSE, 2);
+   gtk_widget_show(x);
+
+   w_l = gtk_label_new("y:");
+   gtk_misc_set_alignment(GTK_MISC(w_l), 1.0, 0.5);
+   gtk_box_pack_start(GTK_BOX(hbox), w_l, TRUE, FALSE, 2);
+   gtk_widget_show(w_l);
+   w = gtk_spin_button_new(GTK_ADJUSTMENT(a2), 1, 0);
+   gtk_box_pack_start(GTK_BOX(hbox), w, TRUE, FALSE, 2);
+   gtk_widget_show(w);
+
+   y_l = gtk_label_new("w:");
+   gtk_misc_set_alignment(GTK_MISC(y_l), 1.0, 0.5);
+   gtk_box_pack_start(GTK_BOX(hbox), y_l, TRUE, FALSE, 2);
+   gtk_widget_show(y_l);
+   y = gtk_spin_button_new(GTK_ADJUSTMENT(a3), 1, 0);
+   gtk_box_pack_start(GTK_BOX(hbox), y, TRUE, FALSE, 2);
+   gtk_widget_show(y);
+
+   h_l = gtk_label_new("h:");
+   gtk_misc_set_alignment(GTK_MISC(h_l), 1.0, 0.5);
+   gtk_box_pack_start(GTK_BOX(hbox), h_l, TRUE, FALSE, 2);
+   gtk_widget_show(h_l);
+   h = gtk_spin_button_new(GTK_ADJUSTMENT(a4), 1, 0);
+   gtk_box_pack_start(GTK_BOX(hbox), h, TRUE, FALSE, 2);
+   gtk_widget_show(h);
+
+   gtk_container_set_border_width (GTK_CONTAINER (hbox), 5);
+   
+   gtk_widget_show(hbox);
+
+   gtk_widget_show(table);
+
+   
+   gtk_spin_button_set_value(GTK_SPIN_BUTTON(x),
+                             obj->x);
+   gtk_spin_button_set_value(GTK_SPIN_BUTTON(w),
+                             obj->y);
+   gtk_spin_button_set_value(GTK_SPIN_BUTTON(y),
+                             obj->w);
+   gtk_spin_button_set_value(GTK_SPIN_BUTTON(h),
+                             obj->h);
+
+   
+   if (obj->name)
+      gtk_entry_set_text(GTK_ENTRY(name), obj->name);
+/*
+   gtk_signal_connect(GTK_OBJECT(x), "changed",
+                      GTK_SIGNAL_FUNC(refresh_x_cb), (gpointer) obj);
+   gtk_signal_connect(GTK_OBJECT(y), "changed",
+                      GTK_SIGNAL_FUNC(refresh_y_cb), (gpointer) obj);
+   gtk_signal_connect(GTK_OBJECT(w), "changed",
+                      GTK_SIGNAL_FUNC(refresh_w_cb), (gpointer) obj);
+   gtk_signal_connect(GTK_OBJECT(h), "changed",
+                      GTK_SIGNAL_FUNC(refresh_h_cb), (gpointer) obj);
+   
+   */
+   gtk_signal_connect(GTK_OBJECT(name), "changed",
+                      GTK_SIGNAL_FUNC(refresh_name_cb), (gpointer) obj);
+   
+   
+   return generic_props;
+
 }
