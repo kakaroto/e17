@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-07-17 23:16+0200\n"
+"POT-Creation-Date: 2004-08-20 23:03+0200\n"
 "PO-Revision-Date: 2000-04-10 16:10:30+0900\n"
 "Last-Translator: Sung-Hyun Nam <namsh@kldp.org>\n"
 "Language-Team: Korean <ko@li.org>\n"
@@ -14,18 +14,18 @@ msgstr ""
 "Content-Type: text/plain; charset=euc-kr\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/actions.c:289
+#: src/actions.c:266
 msgid "ActionClass Error!"
 msgstr "ActionClass 에러!"
 
-#: src/actions.c:289 src/backgrounds.c:192 src/borders.c:2271
+#: src/actions.c:266 src/backgrounds.c:192 src/borders.c:2275
 #: src/buttons.c:124 src/cmclass.c:91 src/cursors.c:142 src/iclass.c:169
-#: src/tclass.c:63 src/tooltips.c:662
+#: src/tclass.c:59 src/tooltips.c:662
 #, c-format
 msgid "%u references remain\n"
 msgstr "%u개의 참조가 남아있습니다\n"
 
-#: src/actions.c:694
+#: src/actions.c:676
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -38,7 +38,7 @@ msgstr ""
 "이 프로그램은 실행될 수 없습니다.\n"
 "이 프로그램이 존재하지 않기 때문입니다.\n"
 
-#: src/actions.c:702
+#: src/actions.c:684
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -57,7 +57,7 @@ msgstr ""
 "를 설정하는 방법을 배우신 후 경로를 제대로 설정하시기\n"
 "바랍니다.\n"
 
-#: src/actions.c:722
+#: src/actions.c:704
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -74,7 +74,7 @@ msgstr ""
 "당신이 실행할 수 있도록 되어 있습니다. 이 파일의 내용을\n"
 "한 번 확인해 보시기 바랍니다.\n"
 
-#: src/actions.c:733
+#: src/actions.c:715
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -89,7 +89,7 @@ msgstr ""
 "이 파일이 존재하지만 당신은 이 파일을 실행할 수 있는 권한을\n"
 "가지고 있지 않습니다.\n"
 
-#: src/actions.c:749
+#: src/actions.c:731
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -102,7 +102,7 @@ msgstr ""
 "이 프로그램은 실행될 수 없습니다.\n"
 "이것은 파일이 아니고 디렉토리입니다.\n"
 
-#: src/actions.c:757
+#: src/actions.c:739
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -115,12 +115,12 @@ msgstr ""
 "이 프로그램은 실행될 수 없습니다.\n"
 "이것은 일반적인 파일이 아니기 때문입니다.\n"
 
-#: src/actions.c:2880
+#: src/actions.c:2858
 #, c-format
 msgid "About Enlightenment %s"
 msgstr "인라이튼먼트 %s에 대하여"
 
-#: src/actions.c:2894
+#: src/actions.c:2872
 #, c-format
 msgid ""
 "Welcome to the %s version\n"
@@ -142,7 +142,7 @@ msgid ""
 "Kim Woelders - kim@woelders.dk\n"
 msgstr ""
 
-#: src/actions.c:2910 src/dialog.c:2130 src/dialog.c:2171 src/groups.c:677
+#: src/actions.c:2888 src/dialog.c:2130 src/dialog.c:2171 src/groups.c:677
 #: src/settings.c:336 src/settings.c:609 src/settings.c:980
 #: src/settings.c:1203 src/settings.c:1439 src/settings.c:1592
 #: src/settings.c:1694 src/settings.c:1801 src/settings.c:1880
@@ -152,11 +152,11 @@ msgstr ""
 msgid "OK"
 msgstr "확인"
 
-#: src/actions.c:3021
+#: src/actions.c:2999
 msgid "  Pick the group the window will belong to:  \n"
 msgstr "  창이 속할 그룹 선택:  \n"
 
-#: src/actions.c:3245
+#: src/actions.c:3223
 msgid ""
 "\n"
 "  There's no current group at the moment.  \n"
@@ -176,24 +176,24 @@ msgstr ""
 "  창이 속할 다른 그룹을 여기에서 선택하십시오:  \n"
 "\n"
 
-#: src/actions.c:3265
+#: src/actions.c:3243
 msgid "   Select the group to remove the window from.  "
 msgstr "   창을 삭제할 그룹을 선택하십시오.   "
 
-#: src/actions.c:3277
+#: src/actions.c:3255
 msgid "  Select the group to break  "
 msgstr "  없앨 그룹을 선택하십시오  "
 
-#: src/actions.c:3304
+#: src/actions.c:3282
 #, c-format
 msgid "You have been warned about the dangers of Zoom mode\n"
 msgstr "확대 모드가 얼마나 위험한 건지 경고했습니다\n"
 
-#: src/actions.c:3307
+#: src/actions.c:3285
 msgid "Warning !!!"
 msgstr "경고 !!!"
 
-#: src/actions.c:3308
+#: src/actions.c:3286
 msgid ""
 "This feature is heavily reliant on a feature of your\n"
 "X Server called the Vid Mode Extension. This feature exists\n"
@@ -237,7 +237,7 @@ msgstr "인라이튼먼트 재시작"
 
 #: src/alert.c:48 src/alert.c:78 src/events.c:61 src/memory.c:211
 #: src/memory.c:287 src/memory.c:305 src/memory.c:381 src/memory.c:396
-#: src/setup.c:286 src/setup.c:297 src/setup.c:347
+#: src/setup.c:301
 msgid "Quit Enlightenment"
 msgstr "인라이튼먼트 종료"
 
@@ -261,7 +261,7 @@ msgstr "종료"
 msgid "Background Error!"
 msgstr "배경 에러!"
 
-#: src/borders.c:2271
+#: src/borders.c:2275
 msgid "Border Error!"
 msgstr "보더 에러!"
 
@@ -296,18 +296,18 @@ msgstr ""
 
 #: src/config.c:355 src/config.c:593 src/config.c:668 src/config.c:1021
 #: src/config.c:1138 src/config.c:1374 src/config.c:1501 src/config.c:1605
-#: src/config.c:1818 src/config.c:2065 src/config.c:2138 src/config.c:2230
-#: src/config.c:2486 src/config.c:2708 src/config.c:2970 src/config.c:3061
-#: src/config.c:3094 src/config.c:3239 src/config.c:3441
+#: src/config.c:1818 src/config.c:2053 src/config.c:2126 src/config.c:2218
+#: src/config.c:2474 src/config.c:2686 src/config.c:2948 src/config.c:3039
+#: src/config.c:3072 src/config.c:3217 src/config.c:3419
 #, c-format
 msgid "CONFIG: ignoring extra data in \"%s\"\n"
 msgstr "CONFIG: \"%s\"에 있는 더 많은 데이타는 무시합니다\n"
 
 #: src/config.c:361 src/config.c:599 src/config.c:676 src/config.c:1027
 #: src/config.c:1144 src/config.c:1380 src/config.c:1507 src/config.c:1613
-#: src/config.c:1826 src/config.c:2071 src/config.c:2144 src/config.c:2238
-#: src/config.c:2492 src/config.c:2716 src/config.c:2976 src/config.c:3245
-#: src/config.c:3449
+#: src/config.c:1826 src/config.c:2059 src/config.c:2132 src/config.c:2226
+#: src/config.c:2479 src/config.c:2694 src/config.c:2954 src/config.c:3223
+#: src/config.c:3427
 #, c-format
 msgid "CONFIG: missing required data in \"%s\"\n"
 msgstr "CONFIG: \"%s\"에 요구되는 데이타가 없습니다\n"
@@ -394,7 +394,7 @@ msgstr ""
 "경고: 설정이 버튼 블럭을 읽기도 전에 끝난 것 같습니다\n"
 "표시가 나쁘게 될 지도 모르겠습니다.\n"
 
-#: src/config.c:2033 src/config.c:2113
+#: src/config.c:2021 src/config.c:2101
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading a Desktop block.  Outcome is likely not good.\n"
@@ -402,11 +402,11 @@ msgstr ""
 "경고: 설정이 데스크탑 블럭을 읽기도 전에 끝난 것 같습니다\n"
 "표시가 나쁘게 될 지도 모르겠습니다.\n"
 
-#: src/config.c:2125
+#: src/config.c:2113
 msgid "Easter Egg!  Iconboxes aren't implemented yet.\n"
 msgstr "아이콘상자는 아직 구현되지 않았습니다.\n"
 
-#: src/config.c:2155
+#: src/config.c:2143
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading an Iconbox block.  Outcome is likely not good.\n"
@@ -414,7 +414,7 @@ msgstr ""
 "경고: 설정이 아이콘상자 블럭을 읽기도 전에 끝난 것 같습니다\n"
 "표시가 나쁘게 될 지도 모르겠습니다.\n"
 
-#: src/config.c:2189
+#: src/config.c:2177
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading an Sound block.  Outcome is likely not good.\n"
@@ -422,7 +422,7 @@ msgstr ""
 "경고: 설정이 사운드 블럭을 읽기도 전에 끝난 것 같습니다\n"
 "표시가 나쁘게 될 지도 모르겠습니다.\n"
 
-#: src/config.c:2442
+#: src/config.c:2430
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -435,7 +435,7 @@ msgstr ""
 "%s\n"
 "무시하고 계속 진행할 겁니다...\n"
 
-#: src/config.c:2456
+#: src/config.c:2444
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading an Action Class block.  Outcome is likely not good.\n"
@@ -443,7 +443,7 @@ msgstr ""
 "경고: 설정이 액션 클래스 블럭을 읽기도 전에 끝난 것 같습니다\n"
 "표시가 나쁘게 될 지도 모르겠습니다.\n"
 
-#: src/config.c:2661
+#: src/config.c:2639
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -456,7 +456,7 @@ msgstr ""
 "%s\n"
 "무시하고 계속 진행할 겁니다...\n"
 
-#: src/config.c:2668
+#: src/config.c:2646
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading an ImageClass block.  Outcome is likely not good.\n"
@@ -464,7 +464,7 @@ msgstr ""
 "경고: 설정이 이미지클래스 블럭을 읽기도 전에 끝난 것 같습니다\n"
 "표시가 나쁘게 될 지도 모르겠습니다.\n"
 
-#: src/config.c:2907
+#: src/config.c:2885
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -477,7 +477,7 @@ msgstr ""
 "%s\n"
 "무시하고 계속 진행할 겁니다...\n"
 
-#: src/config.c:2931
+#: src/config.c:2909
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading an ColorModifier block.\n"
@@ -486,7 +486,7 @@ msgstr ""
 "경고: 설정이 색 수정자 블럭을 읽기도 전에 끝난 것 같습니다\n"
 "표시가 나쁘게 될 지도 모르겠습니다.\n"
 
-#: src/config.c:3022
+#: src/config.c:3000
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -499,7 +499,7 @@ msgstr ""
 "%s\n"
 "무시하고 계속 진행할 겁니다...\n"
 
-#: src/config.c:3029
+#: src/config.c:3007
 msgid ""
 "Warning: Configuration appears to have ended before we were\n"
 "Done loading an ToolTip block.  Outcome is likely not good.\n"
@@ -507,7 +507,7 @@ msgstr ""
 "경고: 설정이 툴팁 블럭을 읽기도 전에 끝난 것 같습니다\n"
 "표시가 나쁘게 될 지도 모르겠습니다.\n"
 
-#: src/config.c:3067
+#: src/config.c:3045
 msgid ""
 "Warning: Configuration appears to have ended before we were\n"
 "Done loading an FX block.  Outcome is likely not good.\n"
@@ -515,7 +515,7 @@ msgstr ""
 "경고: 설정이 FX 블럭을 읽기도 전에 끝난 것 같습니다\n"
 "표시가 나쁘게 될 지도 모르겠습니다.\n"
 
-#: src/config.c:3157
+#: src/config.c:3135
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -528,7 +528,7 @@ msgstr ""
 "%s\n"
 "무시하고 계속 진행할 겁니다...\n"
 
-#: src/config.c:3165
+#: src/config.c:3143
 msgid ""
 "Warning: Configuration appears to have ended before we were\n"
 "Done loading an Iconbox block.  Outcome is likely not good.\n"
@@ -536,7 +536,7 @@ msgstr ""
 "경고: 설정이 아이콘상자 블럭을 읽기도 전에 끝난 것 같습니다\n"
 "표시가 나쁘게 될 지도 모르겠습니다.\n"
 
-#: src/config.c:3201
+#: src/config.c:3179
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -549,7 +549,7 @@ msgstr ""
 "%s\n"
 "무시하고 계속 진행할 겁니다...\n"
 
-#: src/config.c:3209
+#: src/config.c:3187
 msgid ""
 "Warning: Configuration appears to have ended before we were\n"
 "Done loading an Extras block.  Outcome is likely not good.\n"
@@ -557,7 +557,7 @@ msgstr ""
 "경고: 설정이 엑스트라 블럭을 읽기도 전에 끝난 것 같습니다\n"
 "표시가 나쁘게 될 지도 모르겠습니다.\n"
 
-#: src/config.c:3315
+#: src/config.c:3293
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -570,7 +570,7 @@ msgstr ""
 "%s\n"
 "무시하고 계속 진행할 겁니다...\n"
 
-#: src/config.c:3322
+#: src/config.c:3300
 msgid ""
 "Warning: Configuration appears to have ended before we were\n"
 "Done loading an WindowMatch block.  Outcome is likely not good.\n"
@@ -578,7 +578,7 @@ msgstr ""
 "경고: 설정이 윈도우매치 블럭을 읽기도 전에 끝난 것 같습니다\n"
 "표시가 나쁘게 될 지도 모르겠습니다.\n"
 
-#: src/config.c:3351
+#: src/config.c:3329
 #, c-format
 msgid ""
 "Help! Cannot find epp!\n"
@@ -595,19 +595,19 @@ msgstr ""
 "프로그램이 없을 수도 있고, 당신이 실행권한을 가지고\n"
 "있지 못할 수도 있습니다.\n"
 
-#: src/config.c:3458
+#: src/config.c:3436
 msgid "Theme versioning ERROR"
 msgstr "테마 버전 에러"
 
-#: src/config.c:3459 src/config.c:3488
+#: src/config.c:3437 src/config.c:3466
 msgid "Restart with Defaults"
 msgstr "기본 테마로 재시작"
 
-#: src/config.c:3460 src/config.c:3489
+#: src/config.c:3438 src/config.c:3467
 msgid "Abort and Exit"
 msgstr "중단하고 종료"
 
-#: src/config.c:3461
+#: src/config.c:3439
 #, c-format
 msgid ""
 "ERROR:\n"
@@ -643,11 +643,11 @@ msgstr ""
 "새로운 인라이튼먼트의 기능을 사용하므로 새 인라이튼먼트를\n"
 "사용하십시오\n"
 
-#: src/config.c:3487
+#: src/config.c:3465
 msgid "User Config Version ERROR"
 msgstr "사용자 설정 버전 에러"
 
-#: src/config.c:3490
+#: src/config.c:3468
 #, c-format
 msgid ""
 "ERROR:\n"
@@ -674,7 +674,7 @@ msgstr ""
 "기본 값으로 바뀌게 될 것입니다. 당신은 설정값들을\n"
 "당신이 원하는 값으로 안전하게 바꿀 수 있을 것입니다.\n"
 
-#: src/config.c:3737
+#: src/config.c:3710
 #, c-format
 msgid ""
 "WARNING!\n"
@@ -689,7 +689,7 @@ msgstr ""
 "디스크 공간이 부족하거나 쿼터 혹은 파일 시스템에\n"
 "쓰기가 허용되지 않을 수도 있습니다.\n"
 
-#: src/config.c:3745
+#: src/config.c:3718
 #, c-format
 msgid ""
 "No themes were found in the default theme directory:\n"
@@ -699,27 +699,27 @@ msgid ""
 "Proceeding from here is mostly pointless.\n"
 msgstr ""
 
-#: src/config.c:3797
+#: src/config.c:3768
 msgid "Enlightenment Starting..."
 msgstr "인라이튼먼트 시작중..."
 
-#: src/config.c:4259
+#: src/config.c:4230
 msgid "Recover system config?"
 msgstr "시스템 설정을 복구할까요?"
 
-#: src/config.c:4259
+#: src/config.c:4230
 msgid "Yes, Attempt recovery"
 msgstr "예, 복구를 시도"
 
-#: src/config.c:4260
+#: src/config.c:4231
 msgid "Restart and try again"
 msgstr "재시작해서 다시 시도"
 
-#: src/config.c:4260
+#: src/config.c:4231
 msgid "Quit and give up"
 msgstr "종료하고 버림"
 
-#: src/config.c:4262
+#: src/config.c:4233
 msgid ""
 "Enlightenment has encountered parsing errors in your autosaved\n"
 "configuration.\n"
@@ -797,7 +797,7 @@ msgstr ""
 msgid "Attention !!!"
 msgstr "주목 !!!"
 
-#: src/events.c:60 src/setup.c:296
+#: src/events.c:60
 msgid "X server setup error"
 msgstr "X 서버 설정 에러"
 
@@ -874,77 +874,11 @@ msgstr ""
 "이 효과를 사용하지 않으려면 이 옵션을 다시 선택하시면\n"
 "됩니다.\n"
 
-#: src/fx.c:426 src/fx.c:442
-msgid "Unable to display raindrops"
-msgstr "레인드롭을 표시할 수 없습니다"
-
-#: src/fx.c:427
-msgid ""
-"\n"
-"Enlightenment is unable to display raindrops on this\n"
-"display because Shared memory is not available on this\n"
-"X-Server.\n"
-"\n"
-"This may be due to Enlightenment being a remote client\n"
-"running over the network, a MIT-SHM incapable X-server,\n"
-"having run out of SHM ID's on the system or Shared\n"
-"Memory support being turned off in Imlib\n"
-"\n"
-"You may correct this by either running `imlib_config'\n"
-"or copying the system imrc (/usr/etc/imrc) to ~/.imrc\n"
-"and editing it, enabling shared memory.\n"
-"\n"
-msgstr ""
-"\n"
-"인라이튼먼트가 레인드롭을 표시할 수 없습니다.\n"
-"왜냐하면 이 X 서버에서는 공요 메모리를 사용할 수\n"
-"없기 때문입니다.\n"
-"\n"
-"이것은 아마도 네트워크 상에서 리모트 클라이언트로\n"
-"인라이튼먼트가 실행중이거나, MIT-SHM을 지원하는\n"
-"X 서버가 시스템에서 SHM ID가 바닥났거나 Imlib의\n"
-"공유 메모리 지원기능이 꺼져있기 때문일 것입니다.\n"
-"\n"
-"당신은 `imlib_config'를 실행해서 이것을 고치거나\n"
-"시스템 imrc (/usr/etc/imrc)를 ~/.imrc로 복사해서\n"
-"공유 메모리를 지원하도록 편집하실 수 있습니다.\n"
-"\n"
-
-#: src/fx.c:443
-msgid ""
-"\n"
-"Enlightenment is unable to display raindrops on this\n"
-"display because shared pixmaps are not available on this\n"
-"X-Server.\n"
-"\n"
-"This may be due to either the X-Server not implementing\n"
-"shared pixmaps, or shared pixmaps being disabled in\n"
-"Imlib's configuration.\n"
-"\n"
-"You may correct this by either running `imlib_config'\n"
-"or copying the system imrc (/usr/etc/imrc) to ~/.imrc\n"
-"and editing it, enabling shared pixmaps.\n"
-"\n"
-msgstr ""
-"\n"
-"인라이튼먼트가 레인드롭을 표시할 수 없습니다.\n"
-"왜냐하면 이 X 서버에서는 공요 픽스맵를 사용할 수\n"
-"없기 때문입니다.\n"
-"\n"
-"이것은 아마도 X 서버가 공유 픽스맵을 지원하지\n"
-"않거나 Imlib 환경 설정에서 공유 픽스맵 지원\n"
-"기능이 꺼져있기 때문입니다.\n"
-"\n"
-"당신은 `imlib_config'를 실행해서 이것을 고치거나\n"
-"시스템 imrc (/usr/etc/imrc)를 ~/.imrc로 복사해서\n"
-"공유 픽스맵를 지원하도록 편집하실 수 있습니다.\n"
-"\n"
-
-#: src/fx.c:720
+#: src/fx.c:686
 msgid "Starting up Waves FX..."
 msgstr "파도 특수효과를 시작중..."
 
-#: src/fx.c:721
+#: src/fx.c:687
 msgid ""
 "\n"
 "You have just started the Waves Effect.\n"
@@ -968,11 +902,11 @@ msgstr ""
 "이 효과를 사용하지 않으려면 이 옵션을 다시 선택하시면\n"
 "됩니다.\n"
 
-#: src/fx.c:908
+#: src/fx.c:874
 msgid "Starting up imagespinners FX..."
 msgstr "이미지스피너 특수효과 시작..."
 
-#: src/fx.c:909
+#: src/fx.c:875
 msgid ""
 "\n"
 "You have just started the imagespinners Effect.\n"
@@ -1054,7 +988,7 @@ msgstr ""
 "인라이튼먼트 창 그룹\n"
 "선택 대화상자\n"
 
-#: src/groups.c:678 src/pager.c:976 src/settings.c:338 src/settings.c:611
+#: src/groups.c:678 src/pager.c:926 src/settings.c:338 src/settings.c:611
 #: src/settings.c:982 src/settings.c:1205 src/settings.c:1441
 #: src/settings.c:1594 src/settings.c:1696 src/settings.c:1803
 #: src/settings.c:1882 src/settings.c:1972 src/settings.c:2426
@@ -1222,23 +1156,23 @@ msgstr "ImageClass 에러!"
 msgid "Iconbox Options"
 msgstr "아이콘상자 옵션"
 
-#: src/iconify.c:2259
+#: src/iconify.c:2260
 msgid "This Iconbox Settings..."
 msgstr "이 아이콘상자 설정..."
 
-#: src/iconify.c:2262
+#: src/iconify.c:2265
 msgid "Close Iconbox"
 msgstr "아이콘상자 닫기"
 
-#: src/iconify.c:2264
+#: src/iconify.c:2268
 msgid "Create New Iconbox"
 msgstr "새 아이콘상자 생성"
 
-#: src/ipc.c:1669
+#: src/ipc.c:1664
 msgid "Message"
 msgstr "메시지"
 
-#: src/ipc.c:3909
+#: src/ipc.c:3919
 #, c-format
 msgid ""
 "Enlightenment Version : %s\n"
@@ -1247,11 +1181,11 @@ msgstr ""
 "인라이튼먼트 버전 : %s\n"
 "현재의 코드       : %s\n"
 
-#: src/ipc.c:6458
+#: src/ipc.c:6481
 msgid "Enlightenment IPC Commands Help"
 msgstr "인라이튼먼트 IPC 명령 도움말"
 
-#: src/ipc.c:6462 src/ipc.c:6490
+#: src/ipc.c:6485 src/ipc.c:6513
 msgid ""
 "\n"
 "commands currently available:\n"
@@ -1259,7 +1193,7 @@ msgstr ""
 "\n"
 "현재 사용가능한 명령:\n"
 
-#: src/ipc.c:6463
+#: src/ipc.c:6486
 msgid ""
 "use \"help all\" for descriptions of each command\n"
 "use \"help <command>\" for an individual description\n"
@@ -1269,11 +1203,11 @@ msgstr ""
 "각각의 설명을 보시려면 \"help <명령>\"을 사용하십시오\n"
 "\n"
 
-#: src/ipc.c:6491
+#: src/ipc.c:6514
 msgid "use \"help <command>\" for an individual description\n"
 msgstr "각각의 설명을 보시려면 \"help <명령>\"을 사용하십시오\n"
 
-#: src/ipc.c:6493
+#: src/ipc.c:6516
 #, fuzzy
 msgid "      <command>   : <description>\n"
 msgstr "<명령> : <설명>\n"
@@ -1443,24 +1377,24 @@ msgstr ""
 "포인터 값은 %x 이었습니다.\n"
 "이 에러는 %s, %d 라인에서 발생했습니다.\n"
 
-#: src/menus.c:1846
+#: src/menus.c:1710
 msgid "Go to this Desktop"
 msgstr "이 데스크탑으로 가기"
 
-#: src/menus.c:1861 src/menus.c:1884
+#: src/menus.c:1725 src/menus.c:1748
 #, c-format
 msgid "Desktop %i"
 msgstr "데스크탑 %i"
 
-#: src/menus.c:1914
+#: src/menus.c:1778
 msgid "Show/Hide this group"
 msgstr "이 그룹 보여주기/숨기기"
 
-#: src/menus.c:1917
+#: src/menus.c:1781
 msgid "Iconify this group"
 msgstr "이 그룹 아이콘화"
 
-#: src/menus.c:1931
+#: src/menus.c:1795
 #, c-format
 msgid "Group %i"
 msgstr "그룹 %i"
@@ -1515,123 +1449,43 @@ msgstr ""
 "이 문제를 고치시기를 바라며 dox가 인스톨이 제대로 되었는\n"
 "지를 확인하시기 바랍니다.\n"
 
-#: src/pager.c:145 src/pager.c:159 src/pager.c:173
-msgid "Warning!"
-msgstr "경고!"
-
-#: src/pager.c:146
-msgid ""
-"\n"
-"You seem to have an X Server capable of Shared Memory\n"
-"but it is incapable of doing ZPixmap Shared pixmaps\n"
-"(The server does not claim to be able to do them).\n"
-"\n"
-"The pager in Enlightenment will run slowly in snapshot\n"
-"mode if you continue to use that mode of the pager\n"
-"under these conditions.\n"
-"\n"
-"It is suggested you change the settings on your pager to\n"
-"disable snapshots to improve performance.\n"
-"\n"
-msgstr ""
-"\n"
-"당신은 공유 메모리를 지원하는 X 서버를 가지고 계신 것으로\n"
-"생각됩니다만 ZPixmap 공유 픽스맵은 지원하지 않습니다\n"
-"(이 서버는 그 일을 할 수 있다고 알려주지 않습니다).\n"
-"\n"
-"인라이튼먼트의 페이저는 이 조건하에서 당신이 계속해서\n"
-"스냅샷 모드를 사용하려고 하는 경우 느리게 실행될 수\n"
-"밖에 없습니다.\n"
-"\n"
-"성능을 높이기 위해서는 페이저의 설정에서 스냅샷 기능을\n"
-"끄십시오.\n"
-"\n"
-
-#: src/pager.c:160
-msgid ""
-"\n"
-"Your X Server is capable of doing Shared Memory but you do\n"
-"not have Shared Pixmaps enabled in your Imlib configuration.\n"
-"\n"
-"Please enable Shared Pixmaps in your Imlib configuration\n"
-"then restart Enlightenment to gain better performance for\n"
-"the pagers when snapshot mode is enabled.\n"
-"\n"
-msgstr ""
-"\n"
-"당신의 X 서버는 공유 메모리를 지원하지만 당신이 Imlib\n"
-"설정에서 공유 픽스맵 기능을 껐습니다.\n"
-"\n"
-"Imlib 설정에서 공유 픽스맵 기능을 켠 후에 인라이튼먼트를\n"
-"재시작하시면 페이저에서 스냅샷 기능을 사용할 때 더 나은\n"
-"성능을 얻으실 수 있을 것입니다.\n"
-"\n"
-
-#: src/pager.c:174
-msgid ""
-"\n"
-"You seem to be running Enlightenment over a network Connection\n"
-"or on an X Server that does not support Shared Memory, or you\n"
-"have disabled MIT-SHM Shared memory in your Imlib configuration.\n"
-"This means the Enlightenment Pager will perform slowly and use\n"
-"more system resources than it would when Shared Memory is\n"
-"available.\n"
-"\n"
-"To improve performance please either enable MIT-SHM Shared Memory\n"
-"in your Imlib config, if you disabled it, or disable Pager\n"
-"snapshots.\n"
-"\n"
-msgstr ""
-"\n"
-"당신은 인라이튼먼트를 네트워크를 통해 실행한 것으로 보입니다.\n"
-"혹은 X 서버가 공유 메모리를 지원하지 않거나 당신의 Imlib\n"
-"설정에서 MIT-SHM 공유 메모리 지원기능을 끄신 것 같습니다.\n"
-"이것은 인라이튼먼트 파서가 느리게 수행될 거라는 것과\n"
-"공유 메모리가 사용가능할 때보다 더 많은 시스템 자원을 사용할\n"
-"것임을 의미합니다.\n"
-"\n"
-"성능을 높이기 위해서는 Imlib 설정에서 MIT-SHM 공유 메모리를\n"
-"지원하도록 수정하시든지 아니면 페이저 스냅샷을 사용하지\n"
-"마십시오.\n"
-"\n"
-
-#: src/pager.c:969
+#: src/pager.c:919
 msgid "Window Options"
 msgstr "창 옵션"
 
-#: src/pager.c:973
+#: src/pager.c:923
 msgid "Iconify"
 msgstr "아이콘화"
 
-#: src/pager.c:979
+#: src/pager.c:929
 msgid "Annihilate"
 msgstr "전멸시킴"
 
-#: src/pager.c:982
+#: src/pager.c:932
 msgid "Stick / Unstick"
 msgstr "고착 / 잡아뗌"
 
-#: src/pager.c:993
+#: src/pager.c:943
 msgid "Desktop Options"
 msgstr "데스크탑 옵션"
 
-#: src/pager.c:996
+#: src/pager.c:946
 msgid "Pager Settings..."
 msgstr "페이저 설정..."
 
-#: src/pager.c:1000
+#: src/pager.c:950
 msgid "Snapshotting On"
 msgstr "스냅샷 사용"
 
-#: src/pager.c:1004
+#: src/pager.c:954
 msgid "Snapshotting Off"
 msgstr "스냅샷 사용않함"
 
-#: src/pager.c:1010
+#: src/pager.c:960
 msgid "High Quality On"
 msgstr "고해상도 사용"
 
-#: src/pager.c:1014
+#: src/pager.c:964
 msgid "High Quality Off"
 msgstr "고해상도 사용않함"
 
@@ -2625,7 +2479,7 @@ msgstr "기억할 설정..."
 msgid "There are no active windows with remembered attributes."
 msgstr "속성을 기억할 활성화된 창이 없습니다"
 
-#: src/setup.c:137
+#: src/setup.c:134
 msgid ""
 "Enlightenment cannot connect to the display nominated by\n"
 "your shell's DISPLAY environment variable. You may set this\n"
@@ -2649,51 +2503,15 @@ msgstr ""
 "시스템 관리자 혹은 X 서버 제작사에 연락하거나 X, xdm과\n"
 "startx 등의 도움말을 미리 읽어보시기 바랍니다.\n"
 
-#: src/setup.c:285
-msgid "Imlib initialisation error"
-msgstr "Imlib 초기화 에러"
-
-#: src/setup.c:287
-msgid ""
-"FATAL ERROR:\n"
-"\n"
-"Enlightenment is unable to initialise Imlib.\n"
-"\n"
-"This is unusual. Unable to continue.\n"
-"Exiting.\n"
-msgstr ""
-"심각한 에러:\n"
-"\n"
-"인라이튼먼트가 Imlib을 초기화할 수 없습니다.\n"
-"\n"
-"이상한 일이로군요. 계속 진행할 수 없습니다.\n"
-"종료.\n"
-
-#: src/setup.c:298
-msgid ""
-"FATAL ERROR:\n"
-"\n"
-"Enlightenment is unable to initialise Fnlib.\n"
-"\n"
-"This is unusual. Unable to continue.\n"
-"Exiting.\n"
-msgstr ""
-"심각한 에러:\n"
-"\n"
-"인라이튼먼트가 Fnlib을 초기화할 수 없습니다.\n"
-"\n"
-"이상한 일이로군요. 계속 진행할 수 없습니다.\n"
-"종료.\n"
-
-#: src/setup.c:346
+#: src/setup.c:300
 msgid "X server version error"
 msgstr "X 서버 버전 에러"
 
-#: src/setup.c:346
+#: src/setup.c:300
 msgid "Ignore this error"
 msgstr "이 에러 무시"
 
-#: src/setup.c:348
+#: src/setup.c:302
 #, c-format
 msgid ""
 "WARNING:\n"
@@ -2710,7 +2528,7 @@ msgstr ""
 "인라이튼먼트의 저자가 들어보지도 못했거나 사용해 보지\n"
 "못한 것임에 분명합니다.\n"
 
-#: src/setup.c:519
+#: src/setup.c:473
 #, c-format
 msgid ""
 "The directory %s is apparently not a directory\n"
@@ -2721,7 +2539,7 @@ msgstr ""
 "이것은 심각한 상황입니다.\n"
 "이 파일을 삭제하십시오\n"
 
-#: src/setup.c:525
+#: src/setup.c:479
 #, c-format
 msgid ""
 "Do not have execute access to %s\n"
@@ -2734,7 +2552,7 @@ msgstr ""
 "이 디렉토리에 대한 소유자 및 허용권한을 확인하시고\n"
 "이 상황을 고치도록 하십시오.\n"
 
-#: src/setup.c:533
+#: src/setup.c:487
 #, c-format
 msgid ""
 "Do not have read access to %s\n"
@@ -2747,7 +2565,7 @@ msgstr ""
 "이 디렉토리에 대한 소유자 및 허용권한을 확인하시고\n"
 "이 상황을 고치도록 하십시오.\n"
 
-#: src/setup.c:540
+#: src/setup.c:494
 #, c-format
 msgid ""
 "Do not have write access to %s\n"
@@ -2871,7 +2689,7 @@ msgstr ""
 "통신 에러가 발생했습니다. 오디오는 지금부터 사용되지\n"
 "않을 것입니다.\n"
 
-#: src/tclass.c:63
+#: src/tclass.c:59
 msgid "TextClass Error!"
 msgstr "TextClass 에러!"
 
@@ -2880,19 +2698,19 @@ msgstr "TextClass 에러!"
 msgid "Theme %s does not contain a %s file\n"
 msgstr "테마가 sound.cfg 파일을 가지고 있지 않습니다\n"
 
-#: src/theme.c:360
+#: src/theme.c:363
 msgid "Unknown\n"
 msgstr "모름\n"
 
-#: src/theme.c:373 src/theme.c:380
+#: src/theme.c:376 src/theme.c:383
 msgid "Theme file/directory does not exist\n"
 msgstr "테마 파일/디렉토리가 없습니다\n"
 
-#: src/theme.c:397
+#: src/theme.c:400
 msgid "Bad Theme"
 msgstr "잘못된 테마"
 
-#: src/theme.c:398
+#: src/theme.c:401
 #, c-format
 msgid ""
 "The theme:\n"
@@ -2988,6 +2806,178 @@ msgstr "기타 설정"
 #: config/strings.c:18
 msgid "Legacy E-conf tool ..."
 msgstr ""
+
+#~ msgid "Unable to display raindrops"
+#~ msgstr "레인드롭을 표시할 수 없습니다"
+
+#~ msgid ""
+#~ "\n"
+#~ "Enlightenment is unable to display raindrops on this\n"
+#~ "display because Shared memory is not available on this\n"
+#~ "X-Server.\n"
+#~ "\n"
+#~ "This may be due to Enlightenment being a remote client\n"
+#~ "running over the network, a MIT-SHM incapable X-server,\n"
+#~ "having run out of SHM ID's on the system or Shared\n"
+#~ "Memory support being turned off in Imlib\n"
+#~ "\n"
+#~ "You may correct this by either running `imlib_config'\n"
+#~ "or copying the system imrc (/usr/etc/imrc) to ~/.imrc\n"
+#~ "and editing it, enabling shared memory.\n"
+#~ "\n"
+#~ msgstr ""
+#~ "\n"
+#~ "인라이튼먼트가 레인드롭을 표시할 수 없습니다.\n"
+#~ "왜냐하면 이 X 서버에서는 공요 메모리를 사용할 수\n"
+#~ "없기 때문입니다.\n"
+#~ "\n"
+#~ "이것은 아마도 네트워크 상에서 리모트 클라이언트로\n"
+#~ "인라이튼먼트가 실행중이거나, MIT-SHM을 지원하는\n"
+#~ "X 서버가 시스템에서 SHM ID가 바닥났거나 Imlib의\n"
+#~ "공유 메모리 지원기능이 꺼져있기 때문일 것입니다.\n"
+#~ "\n"
+#~ "당신은 `imlib_config'를 실행해서 이것을 고치거나\n"
+#~ "시스템 imrc (/usr/etc/imrc)를 ~/.imrc로 복사해서\n"
+#~ "공유 메모리를 지원하도록 편집하실 수 있습니다.\n"
+#~ "\n"
+
+#~ msgid ""
+#~ "\n"
+#~ "Enlightenment is unable to display raindrops on this\n"
+#~ "display because shared pixmaps are not available on this\n"
+#~ "X-Server.\n"
+#~ "\n"
+#~ "This may be due to either the X-Server not implementing\n"
+#~ "shared pixmaps, or shared pixmaps being disabled in\n"
+#~ "Imlib's configuration.\n"
+#~ "\n"
+#~ "You may correct this by either running `imlib_config'\n"
+#~ "or copying the system imrc (/usr/etc/imrc) to ~/.imrc\n"
+#~ "and editing it, enabling shared pixmaps.\n"
+#~ "\n"
+#~ msgstr ""
+#~ "\n"
+#~ "인라이튼먼트가 레인드롭을 표시할 수 없습니다.\n"
+#~ "왜냐하면 이 X 서버에서는 공요 픽스맵를 사용할 수\n"
+#~ "없기 때문입니다.\n"
+#~ "\n"
+#~ "이것은 아마도 X 서버가 공유 픽스맵을 지원하지\n"
+#~ "않거나 Imlib 환경 설정에서 공유 픽스맵 지원\n"
+#~ "기능이 꺼져있기 때문입니다.\n"
+#~ "\n"
+#~ "당신은 `imlib_config'를 실행해서 이것을 고치거나\n"
+#~ "시스템 imrc (/usr/etc/imrc)를 ~/.imrc로 복사해서\n"
+#~ "공유 픽스맵를 지원하도록 편집하실 수 있습니다.\n"
+#~ "\n"
+
+#~ msgid "Warning!"
+#~ msgstr "경고!"
+
+#~ msgid ""
+#~ "\n"
+#~ "You seem to have an X Server capable of Shared Memory\n"
+#~ "but it is incapable of doing ZPixmap Shared pixmaps\n"
+#~ "(The server does not claim to be able to do them).\n"
+#~ "\n"
+#~ "The pager in Enlightenment will run slowly in snapshot\n"
+#~ "mode if you continue to use that mode of the pager\n"
+#~ "under these conditions.\n"
+#~ "\n"
+#~ "It is suggested you change the settings on your pager to\n"
+#~ "disable snapshots to improve performance.\n"
+#~ "\n"
+#~ msgstr ""
+#~ "\n"
+#~ "당신은 공유 메모리를 지원하는 X 서버를 가지고 계신 것으로\n"
+#~ "생각됩니다만 ZPixmap 공유 픽스맵은 지원하지 않습니다\n"
+#~ "(이 서버는 그 일을 할 수 있다고 알려주지 않습니다).\n"
+#~ "\n"
+#~ "인라이튼먼트의 페이저는 이 조건하에서 당신이 계속해서\n"
+#~ "스냅샷 모드를 사용하려고 하는 경우 느리게 실행될 수\n"
+#~ "밖에 없습니다.\n"
+#~ "\n"
+#~ "성능을 높이기 위해서는 페이저의 설정에서 스냅샷 기능을\n"
+#~ "끄십시오.\n"
+#~ "\n"
+
+#~ msgid ""
+#~ "\n"
+#~ "Your X Server is capable of doing Shared Memory but you do\n"
+#~ "not have Shared Pixmaps enabled in your Imlib configuration.\n"
+#~ "\n"
+#~ "Please enable Shared Pixmaps in your Imlib configuration\n"
+#~ "then restart Enlightenment to gain better performance for\n"
+#~ "the pagers when snapshot mode is enabled.\n"
+#~ "\n"
+#~ msgstr ""
+#~ "\n"
+#~ "당신의 X 서버는 공유 메모리를 지원하지만 당신이 Imlib\n"
+#~ "설정에서 공유 픽스맵 기능을 껐습니다.\n"
+#~ "\n"
+#~ "Imlib 설정에서 공유 픽스맵 기능을 켠 후에 인라이튼먼트를\n"
+#~ "재시작하시면 페이저에서 스냅샷 기능을 사용할 때 더 나은\n"
+#~ "성능을 얻으실 수 있을 것입니다.\n"
+#~ "\n"
+
+#~ msgid ""
+#~ "\n"
+#~ "You seem to be running Enlightenment over a network Connection\n"
+#~ "or on an X Server that does not support Shared Memory, or you\n"
+#~ "have disabled MIT-SHM Shared memory in your Imlib configuration.\n"
+#~ "This means the Enlightenment Pager will perform slowly and use\n"
+#~ "more system resources than it would when Shared Memory is\n"
+#~ "available.\n"
+#~ "\n"
+#~ "To improve performance please either enable MIT-SHM Shared Memory\n"
+#~ "in your Imlib config, if you disabled it, or disable Pager\n"
+#~ "snapshots.\n"
+#~ "\n"
+#~ msgstr ""
+#~ "\n"
+#~ "당신은 인라이튼먼트를 네트워크를 통해 실행한 것으로 보입니다.\n"
+#~ "혹은 X 서버가 공유 메모리를 지원하지 않거나 당신의 Imlib\n"
+#~ "설정에서 MIT-SHM 공유 메모리 지원기능을 끄신 것 같습니다.\n"
+#~ "이것은 인라이튼먼트 파서가 느리게 수행될 거라는 것과\n"
+#~ "공유 메모리가 사용가능할 때보다 더 많은 시스템 자원을 사용할\n"
+#~ "것임을 의미합니다.\n"
+#~ "\n"
+#~ "성능을 높이기 위해서는 Imlib 설정에서 MIT-SHM 공유 메모리를\n"
+#~ "지원하도록 수정하시든지 아니면 페이저 스냅샷을 사용하지\n"
+#~ "마십시오.\n"
+#~ "\n"
+
+#~ msgid "Imlib initialisation error"
+#~ msgstr "Imlib 초기화 에러"
+
+#~ msgid ""
+#~ "FATAL ERROR:\n"
+#~ "\n"
+#~ "Enlightenment is unable to initialise Imlib.\n"
+#~ "\n"
+#~ "This is unusual. Unable to continue.\n"
+#~ "Exiting.\n"
+#~ msgstr ""
+#~ "심각한 에러:\n"
+#~ "\n"
+#~ "인라이튼먼트가 Imlib을 초기화할 수 없습니다.\n"
+#~ "\n"
+#~ "이상한 일이로군요. 계속 진행할 수 없습니다.\n"
+#~ "종료.\n"
+
+#~ msgid ""
+#~ "FATAL ERROR:\n"
+#~ "\n"
+#~ "Enlightenment is unable to initialise Fnlib.\n"
+#~ "\n"
+#~ "This is unusual. Unable to continue.\n"
+#~ "Exiting.\n"
+#~ msgstr ""
+#~ "심각한 에러:\n"
+#~ "\n"
+#~ "인라이튼먼트가 Fnlib을 초기화할 수 없습니다.\n"
+#~ "\n"
+#~ "이상한 일이로군요. 계속 진행할 수 없습니다.\n"
+#~ "종료.\n"
 
 #~ msgid "Welcome to the "
 #~ msgstr "Welcome to the "

@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-07-17 23:16+0200\n"
+"POT-Creation-Date: 2004-08-20 23:03+0200\n"
 "PO-Revision-Date: 2001-01-07 14:00+0900\n"
 "Last-Translator: Enlightenment-jp Mailing List <enlightenment-jp@UaUa.ORG>\n"
 "Language-Team: Japanese <ja@li.org>\n"
@@ -19,18 +19,18 @@ msgstr ""
 "Content-Type: text/plain; charset=EUC-JP\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/actions.c:289
+#: src/actions.c:266
 msgid "ActionClass Error!"
 msgstr "actionclass エラー"
 
-#: src/actions.c:289 src/backgrounds.c:192 src/borders.c:2271
+#: src/actions.c:266 src/backgrounds.c:192 src/borders.c:2275
 #: src/buttons.c:124 src/cmclass.c:91 src/cursors.c:142 src/iclass.c:169
-#: src/tclass.c:63 src/tooltips.c:662
+#: src/tclass.c:59 src/tooltips.c:662
 #, c-format
 msgid "%u references remain\n"
 msgstr "%u 参照残っています\n"
 
-#: src/actions.c:694
+#: src/actions.c:676
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -43,7 +43,7 @@ msgstr ""
 "プログラムの実行ができませんでした。\n"
 "ファイルが存在しないようです。\n"
 
-#: src/actions.c:702
+#: src/actions.c:684
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -61,7 +61,7 @@ msgstr ""
 "シェルのマニュアルを読んで、シェルの実行パスの変更方法や追加方法\n"
 "を理解する事をおすすめします。\n"
 
-#: src/actions.c:722
+#: src/actions.c:704
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -77,7 +77,7 @@ msgstr ""
 "ファイルは存在しており、このファイルを実行する権限もありますが\n"
 "実行できませんでした。このファイルを調べてみる事をおすすめします。\n"
 
-#: src/actions.c:733
+#: src/actions.c:715
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -92,7 +92,7 @@ msgstr ""
 "ファイルは存在していますが、あなたにはこのファイルを\n"
 "実行する権限がありません。\n"
 
-#: src/actions.c:749
+#: src/actions.c:731
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -105,7 +105,7 @@ msgstr ""
 "これは実行できません。\n"
 "ディレクトリを指定しているからです。\n"
 
-#: src/actions.c:757
+#: src/actions.c:739
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -118,12 +118,12 @@ msgstr ""
 "このプログラムは実行できません。\n"
 "このファイルは通常のファイルではありません。\n"
 
-#: src/actions.c:2880
+#: src/actions.c:2858
 #, c-format
 msgid "About Enlightenment %s"
 msgstr "Enlightenment %s について"
 
-#: src/actions.c:2894
+#: src/actions.c:2872
 #, c-format
 msgid ""
 "Welcome to the %s version\n"
@@ -145,7 +145,7 @@ msgid ""
 "Kim Woelders - kim@woelders.dk\n"
 msgstr ""
 
-#: src/actions.c:2910 src/dialog.c:2130 src/dialog.c:2171 src/groups.c:677
+#: src/actions.c:2888 src/dialog.c:2130 src/dialog.c:2171 src/groups.c:677
 #: src/settings.c:336 src/settings.c:609 src/settings.c:980
 #: src/settings.c:1203 src/settings.c:1439 src/settings.c:1592
 #: src/settings.c:1694 src/settings.c:1801 src/settings.c:1880
@@ -155,11 +155,11 @@ msgstr ""
 msgid "OK"
 msgstr "了解"
 
-#: src/actions.c:3021
+#: src/actions.c:2999
 msgid "  Pick the group the window will belong to:  \n"
 msgstr " このウィンドウが属するグループを選択してください:  \n"
 
-#: src/actions.c:3245
+#: src/actions.c:3223
 msgid ""
 "\n"
 "  There's no current group at the moment.  \n"
@@ -179,24 +179,24 @@ msgstr ""
 "  このウィンドウが属する別のグループを選択してください :\n"
 "\n"
 
-#: src/actions.c:3265
+#: src/actions.c:3243
 msgid "   Select the group to remove the window from.  "
 msgstr " このグループからとりのぞくウィンドウを選択してください。"
 
-#: src/actions.c:3277
+#: src/actions.c:3255
 msgid "  Select the group to break  "
 msgstr " 破棄するグループを選択してください。 "
 
-#: src/actions.c:3304
+#: src/actions.c:3282
 #, c-format
 msgid "You have been warned about the dangers of Zoom mode\n"
 msgstr "Zoom モードの危険性は以前に警告してあります。\n"
 
-#: src/actions.c:3307
+#: src/actions.c:3285
 msgid "Warning !!!"
 msgstr ""
 
-#: src/actions.c:3308
+#: src/actions.c:3286
 msgid ""
 "This feature is heavily reliant on a feature of your\n"
 "X Server called the Vid Mode Extension. This feature exists\n"
@@ -240,7 +240,7 @@ msgstr "Enlightenment の再起動"
 
 #: src/alert.c:48 src/alert.c:78 src/events.c:61 src/memory.c:211
 #: src/memory.c:287 src/memory.c:305 src/memory.c:381 src/memory.c:396
-#: src/setup.c:286 src/setup.c:297 src/setup.c:347
+#: src/setup.c:301
 msgid "Quit Enlightenment"
 msgstr "Enlightenment を終了"
 
@@ -264,7 +264,7 @@ msgstr "終了"
 msgid "Background Error!"
 msgstr "background エラー"
 
-#: src/borders.c:2271
+#: src/borders.c:2275
 msgid "Border Error!"
 msgstr "border エラー"
 
@@ -299,18 +299,18 @@ msgstr ""
 
 #: src/config.c:355 src/config.c:593 src/config.c:668 src/config.c:1021
 #: src/config.c:1138 src/config.c:1374 src/config.c:1501 src/config.c:1605
-#: src/config.c:1818 src/config.c:2065 src/config.c:2138 src/config.c:2230
-#: src/config.c:2486 src/config.c:2708 src/config.c:2970 src/config.c:3061
-#: src/config.c:3094 src/config.c:3239 src/config.c:3441
+#: src/config.c:1818 src/config.c:2053 src/config.c:2126 src/config.c:2218
+#: src/config.c:2474 src/config.c:2686 src/config.c:2948 src/config.c:3039
+#: src/config.c:3072 src/config.c:3217 src/config.c:3419
 #, c-format
 msgid "CONFIG: ignoring extra data in \"%s\"\n"
 msgstr "CONFIG: \"%s\" にある余分なデータを無視\n"
 
 #: src/config.c:361 src/config.c:599 src/config.c:676 src/config.c:1027
 #: src/config.c:1144 src/config.c:1380 src/config.c:1507 src/config.c:1613
-#: src/config.c:1826 src/config.c:2071 src/config.c:2144 src/config.c:2238
-#: src/config.c:2492 src/config.c:2716 src/config.c:2976 src/config.c:3245
-#: src/config.c:3449
+#: src/config.c:1826 src/config.c:2059 src/config.c:2132 src/config.c:2226
+#: src/config.c:2479 src/config.c:2694 src/config.c:2954 src/config.c:3223
+#: src/config.c:3427
 #, c-format
 msgid "CONFIG: missing required data in \"%s\"\n"
 msgstr "CONFIG: \"%s\" に必要なデータが含まれていません。\n"
@@ -397,7 +397,7 @@ msgstr ""
 "Warning:  buttons.cfg ファイル内のウィンドウのボタン設定部分が\n"
 "きちんと最後まで書かれていないようです。出力は良くないでしょう。\n"
 
-#: src/config.c:2033 src/config.c:2113
+#: src/config.c:2021 src/config.c:2101
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading a Desktop block.  Outcome is likely not good.\n"
@@ -405,11 +405,11 @@ msgstr ""
 "Warning:  desktops.cfg ファイル内のデスクトップ背景設定部分がきちんと\n"
 "最後まで書かれていないようです。出力は良くないでしょう。\n"
 
-#: src/config.c:2125
+#: src/config.c:2113
 msgid "Easter Egg!  Iconboxes aren't implemented yet.\n"
 msgstr "イースターエッグです! アイコンボックスはまだ実装されていません\n"
 
-#: src/config.c:2155
+#: src/config.c:2143
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading an Iconbox block.  Outcome is likely not good.\n"
@@ -417,7 +417,7 @@ msgstr ""
 "Warning:  iconbox.cfg ファイル内のアイコンボックス設定部分がきちんと\n"
 "最後まで書かれていないようです。出力は良くないでしょう。\n"
 
-#: src/config.c:2189
+#: src/config.c:2177
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading an Sound block.  Outcome is likely not good.\n"
@@ -425,7 +425,7 @@ msgstr ""
 "Warning:  sound.cfg 内のサウンド設定部分がきちんと最後まで\n"
 "書かれていないようです。出力は良くないでしょう。\n"
 
-#: src/config.c:2442
+#: src/config.c:2430
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -438,7 +438,7 @@ msgstr ""
 "%s\n"
 "無視して次に行きます...\n"
 
-#: src/config.c:2456
+#: src/config.c:2444
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading an Action Class block.  Outcome is likely not good.\n"
@@ -446,7 +446,7 @@ msgstr ""
 "Warning:  actionclasses.cfg ファイル内の ACLASS 設定部分が\n"
 "きちんと最後まで書かれていないようです。出力は良くないでしょう。\n"
 
-#: src/config.c:2661
+#: src/config.c:2639
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -459,7 +459,7 @@ msgstr ""
 "%s\n"
 "無視して次に行きます...\n"
 
-#: src/config.c:2668
+#: src/config.c:2646
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading an ImageClass block.  Outcome is likely not good.\n"
@@ -467,7 +467,7 @@ msgstr ""
 "Warning:  imageclasses.cfg ファイル内の設定部分が\n"
 "きちんと最後まで書かれていないようです。出力は良くないでしょう。\n"
 
-#: src/config.c:2907
+#: src/config.c:2885
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -480,7 +480,7 @@ msgstr ""
 "%s\n"
 "無視して次に行きます...\n"
 
-#: src/config.c:2931
+#: src/config.c:2909
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading an ColorModifier block.\n"
@@ -490,7 +490,7 @@ msgstr ""
 "きちんと最後まで書かれていないようです。\n"
 "出力は良くないでしょう。\n"
 
-#: src/config.c:3022
+#: src/config.c:3000
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -503,7 +503,7 @@ msgstr ""
 "%s\n"
 "無視して次に行きます...\n"
 
-#: src/config.c:3029
+#: src/config.c:3007
 msgid ""
 "Warning: Configuration appears to have ended before we were\n"
 "Done loading an ToolTip block.  Outcome is likely not good.\n"
@@ -511,7 +511,7 @@ msgstr ""
 "Warning: tooltips.cfg ファイル内の設定部分が\n"
 "きちんと最後まで書かれていないようです。出力は良くないでしょう。\n"
 
-#: src/config.c:3067
+#: src/config.c:3045
 msgid ""
 "Warning: Configuration appears to have ended before we were\n"
 "Done loading an FX block.  Outcome is likely not good.\n"
@@ -519,7 +519,7 @@ msgstr ""
 "Warning: 設定ファイル内の特殊効果設定部分が\n"
 "きちんと最後まで書かれていないようです。出力は良くないでしょう。\n"
 
-#: src/config.c:3157
+#: src/config.c:3135
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -532,7 +532,7 @@ msgstr ""
 "%s\n"
 "無視して次に行きます...\n"
 
-#: src/config.c:3165
+#: src/config.c:3143
 msgid ""
 "Warning: Configuration appears to have ended before we were\n"
 "Done loading an Iconbox block.  Outcome is likely not good.\n"
@@ -540,7 +540,7 @@ msgstr ""
 "Warning: iconbox.cfg ファイル内の設定部分が\n"
 "きちんと最後まで書かれていないようです。出力は良くないでしょう。\n"
 
-#: src/config.c:3201
+#: src/config.c:3179
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -553,7 +553,7 @@ msgstr ""
 "%s\n"
 "無視して次に行きます...\n"
 
-#: src/config.c:3209
+#: src/config.c:3187
 msgid ""
 "Warning: Configuration appears to have ended before we were\n"
 "Done loading an Extras block.  Outcome is likely not good.\n"
@@ -561,7 +561,7 @@ msgstr ""
 "Warning: 設定ファイル内の Extras 設定部分が\n"
 "きちんと最後まで書かれていないようです。出力は良くないでしょう。\n"
 
-#: src/config.c:3315
+#: src/config.c:3293
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -574,7 +574,7 @@ msgstr ""
 "%s\n"
 "無視して次に行きます...\n"
 
-#: src/config.c:3322
+#: src/config.c:3300
 msgid ""
 "Warning: Configuration appears to have ended before we were\n"
 "Done loading an WindowMatch block.  Outcome is likely not good.\n"
@@ -582,7 +582,7 @@ msgstr ""
 "Warning: windowmatches.cfg ファイル内の設定部分が\n"
 "きちんと最後まで書かれていないようです。出力は良くないでしょう。\n"
 
-#: src/config.c:3351
+#: src/config.c:3329
 #, c-format
 msgid ""
 "Help! Cannot find epp!\n"
@@ -599,19 +599,19 @@ msgstr ""
 "原因は次のどちらかが考えられます : そのプログラムが存在しないため、\n"
 "存在してもあなたに実行許可がないため。\n"
 
-#: src/config.c:3458
+#: src/config.c:3436
 msgid "Theme versioning ERROR"
 msgstr "テーマのバージョンエラー"
 
-#: src/config.c:3459 src/config.c:3488
+#: src/config.c:3437 src/config.c:3466
 msgid "Restart with Defaults"
 msgstr "デフォルトの設定で再起動"
 
-#: src/config.c:3460 src/config.c:3489
+#: src/config.c:3438 src/config.c:3467
 msgid "Abort and Exit"
 msgstr "無視して終了"
 
-#: src/config.c:3461
+#: src/config.c:3439
 #, c-format
 msgid ""
 "ERROR:\n"
@@ -648,11 +648,11 @@ msgstr ""
 "しなかったのでしょう。そのテーマは Enlightenment の新しいバージョン\n"
 "で追加された新機能を採用しているのです。\n"
 
-#: src/config.c:3487
+#: src/config.c:3465
 msgid "User Config Version ERROR"
 msgstr "ユーザ設定ファイルのバージョンエラー"
 
-#: src/config.c:3490
+#: src/config.c:3468
 #, c-format
 msgid ""
 "ERROR:\n"
@@ -681,7 +681,7 @@ msgstr ""
 "こうすれば、再び設定ファイルを好きなように変更できます。\n"
 "\n"
 
-#: src/config.c:3737
+#: src/config.c:3710
 #, c-format
 msgid ""
 "WARNING!\n"
@@ -696,7 +696,7 @@ msgstr ""
 "ディスクの空き容量がなかったり、quota の制限だったり、\n"
 "書き込み禁止だったりするのが原因かもしれません。\n"
 
-#: src/config.c:3745
+#: src/config.c:3718
 #, c-format
 msgid ""
 "No themes were found in the default theme directory:\n"
@@ -706,27 +706,27 @@ msgid ""
 "Proceeding from here is mostly pointless.\n"
 msgstr ""
 
-#: src/config.c:3797
+#: src/config.c:3768
 msgid "Enlightenment Starting..."
 msgstr "Enlightenment 起動中..."
 
-#: src/config.c:4259
+#: src/config.c:4230
 msgid "Recover system config?"
 msgstr "システムの設定の復旧をしますか？"
 
-#: src/config.c:4259
+#: src/config.c:4230
 msgid "Yes, Attempt recovery"
 msgstr "はい、復旧を試みます"
 
-#: src/config.c:4260
+#: src/config.c:4231
 msgid "Restart and try again"
 msgstr "再起動してもう一度試してみる"
 
-#: src/config.c:4260
+#: src/config.c:4231
 msgid "Quit and give up"
 msgstr "あきらめて終了する"
 
-#: src/config.c:4262
+#: src/config.c:4233
 msgid ""
 "Enlightenment has encountered parsing errors in your autosaved\n"
 "configuration.\n"
@@ -804,7 +804,7 @@ msgstr ""
 msgid "Attention !!!"
 msgstr "注意 !!!"
 
-#: src/events.c:60 src/setup.c:296
+#: src/events.c:60
 msgid "X server setup error"
 msgstr "X サーバセットアップエラー"
 
@@ -884,77 +884,11 @@ msgstr ""
 "この効果を止めるには、起動したのとおなじ操作をすれば\n"
 "止まります。\n"
 
-#: src/fx.c:426 src/fx.c:442
-msgid "Unable to display raindrops"
-msgstr "Raindrop Effect を表示できません。"
-
-#: src/fx.c:427
-msgid ""
-"\n"
-"Enlightenment is unable to display raindrops on this\n"
-"display because Shared memory is not available on this\n"
-"X-Server.\n"
-"\n"
-"This may be due to Enlightenment being a remote client\n"
-"running over the network, a MIT-SHM incapable X-server,\n"
-"having run out of SHM ID's on the system or Shared\n"
-"Memory support being turned off in Imlib\n"
-"\n"
-"You may correct this by either running `imlib_config'\n"
-"or copying the system imrc (/usr/etc/imrc) to ~/.imrc\n"
-"and editing it, enabling shared memory.\n"
-"\n"
-msgstr ""
-"\n"
-"この X サーバでは共有メモリが使えないため、 Enlightenment が\n"
-"Raindrop Effect を実行できません。\n"
-"\n"
-"これは以下の 4 点のいずれかが原因かもしれません (Enlightenment\n"
-"がネットワーク越しにリモートクライアントとして動いている /\n"
-"X サーバが MIT 共有メモリ拡張機能を扱えない / システムの共有\n"
-"メモリ ID が足りなくなっている / Imlib で共有メモリサポートを\n"
-" off にしてしまっている)。\n"
-"\n"
-"共有メモリを使えるようにするには `imlib_config' を実行するか、\n"
-"/usr/etc/imrc にあるシステムの imrc を ~/.imrc にコピーして\n"
-"それを共有メモリが使えるような設定に編集してください。\n"
-"\n"
-
-#: src/fx.c:443
-msgid ""
-"\n"
-"Enlightenment is unable to display raindrops on this\n"
-"display because shared pixmaps are not available on this\n"
-"X-Server.\n"
-"\n"
-"This may be due to either the X-Server not implementing\n"
-"shared pixmaps, or shared pixmaps being disabled in\n"
-"Imlib's configuration.\n"
-"\n"
-"You may correct this by either running `imlib_config'\n"
-"or copying the system imrc (/usr/etc/imrc) to ~/.imrc\n"
-"and editing it, enabling shared pixmaps.\n"
-"\n"
-msgstr ""
-"\n"
-"Enlightenment がモニタに Raindrops Effect を表示できません\n"
-"(この X サーバが shared pixmap を表示できないからです)。\n"
-"\n"
-"\n"
-"これは以下のいずれかが原因かもしれません (X サーバに shared pixmap\n"
-"表示できるように実装されていない / Imlib の設定で shared pixmap \n"
-"のサポートを off にしてしまっている )。\n"
-"\n"
-"shared pixmap を表示できるようにするには `imlib_config' を実行するか、\n"
-"/usr/etc/imrc にあるシステムの imrc を ~/.imrc にコピーして\n"
-"それを shared pixmap が使えるような設定に編集してください。\n"
-"\n"
-
-#: src/fx.c:720
+#: src/fx.c:686
 msgid "Starting up Waves FX..."
 msgstr "Waves Effect の開始..."
 
-#: src/fx.c:721
+#: src/fx.c:687
 msgid ""
 "\n"
 "You have just started the Waves Effect.\n"
@@ -978,11 +912,11 @@ msgstr ""
 "この効果を止めるには、起動したのとおなじ操作をすれば\n"
 "止まります。\n"
 
-#: src/fx.c:908
+#: src/fx.c:874
 msgid "Starting up imagespinners FX..."
 msgstr "Imagespinners Effect の開始..."
 
-#: src/fx.c:909
+#: src/fx.c:875
 msgid ""
 "\n"
 "You have just started the imagespinners Effect.\n"
@@ -1064,7 +998,7 @@ msgstr ""
 "Enlightenment ウィンドウグループ\n"
 "選択ダイアログ\n"
 
-#: src/groups.c:678 src/pager.c:976 src/settings.c:338 src/settings.c:611
+#: src/groups.c:678 src/pager.c:926 src/settings.c:338 src/settings.c:611
 #: src/settings.c:982 src/settings.c:1205 src/settings.c:1441
 #: src/settings.c:1594 src/settings.c:1696 src/settings.c:1803
 #: src/settings.c:1882 src/settings.c:1972 src/settings.c:2426
@@ -1241,23 +1175,23 @@ msgstr "imageclass エラー"
 msgid "Iconbox Options"
 msgstr "アイコンボックス オプション"
 
-#: src/iconify.c:2259
+#: src/iconify.c:2260
 msgid "This Iconbox Settings..."
 msgstr "このアイコンボックスの設定..."
 
-#: src/iconify.c:2262
+#: src/iconify.c:2265
 msgid "Close Iconbox"
 msgstr "アイコンボックスを閉じる"
 
-#: src/iconify.c:2264
+#: src/iconify.c:2268
 msgid "Create New Iconbox"
 msgstr "アイコンボックスの新規作成"
 
-#: src/ipc.c:1669
+#: src/ipc.c:1664
 msgid "Message"
 msgstr "メッセージ"
 
-#: src/ipc.c:3909
+#: src/ipc.c:3919
 #, c-format
 msgid ""
 "Enlightenment Version : %s\n"
@@ -1266,11 +1200,11 @@ msgstr ""
 "Enlightenment バージョン: %s\n"
 "コードバージョン        : %s\n"
 
-#: src/ipc.c:6458
+#: src/ipc.c:6481
 msgid "Enlightenment IPC Commands Help"
 msgstr "Enlightenment IPC コマンド ヘルプ"
 
-#: src/ipc.c:6462 src/ipc.c:6490
+#: src/ipc.c:6485 src/ipc.c:6513
 msgid ""
 "\n"
 "commands currently available:\n"
@@ -1278,7 +1212,7 @@ msgstr ""
 "\n"
 "現在利用可能なコマンド:\n"
 
-#: src/ipc.c:6463
+#: src/ipc.c:6486
 msgid ""
 "use \"help all\" for descriptions of each command\n"
 "use \"help <command>\" for an individual description\n"
@@ -1288,11 +1222,11 @@ msgstr ""
 "\"help <コマンド>\" で個々のコマンドの説明を表示します。\n"
 "\n"
 
-#: src/ipc.c:6491
+#: src/ipc.c:6514
 msgid "use \"help <command>\" for an individual description\n"
 msgstr "\"help <コマンド>\" で個々のコマンドの説明を表示します。\n"
 
-#: src/ipc.c:6493
+#: src/ipc.c:6516
 #, fuzzy
 msgid "      <command>   : <description>\n"
 msgstr "<コマンド> : <説明>\n"
@@ -1463,24 +1397,24 @@ msgstr ""
 "ポインタの値は %x です。\n"
 "このエラーは %s の %d 行で生じました。\n"
 
-#: src/menus.c:1846
+#: src/menus.c:1710
 msgid "Go to this Desktop"
 msgstr "このデスクトップに移動"
 
-#: src/menus.c:1861 src/menus.c:1884
+#: src/menus.c:1725 src/menus.c:1748
 #, c-format
 msgid "Desktop %i"
 msgstr "デスクトップ %i"
 
-#: src/menus.c:1914
+#: src/menus.c:1778
 msgid "Show/Hide this group"
 msgstr "このグループを 表示/非表示 にする"
 
-#: src/menus.c:1917
+#: src/menus.c:1781
 msgid "Iconify this group"
 msgstr "このグループをアイコンに"
 
-#: src/menus.c:1931
+#: src/menus.c:1795
 #, c-format
 msgid "Group %i"
 msgstr "グループ %i"
@@ -1535,123 +1469,43 @@ msgstr ""
 "そのファイルを正しい場所に置き、\n"
 "ドキュメントビューアがきちんとインストールされているか確認してください。\n"
 
-#: src/pager.c:145 src/pager.c:159 src/pager.c:173
-msgid "Warning!"
-msgstr "Warning!"
-
-#: src/pager.c:146
-msgid ""
-"\n"
-"You seem to have an X Server capable of Shared Memory\n"
-"but it is incapable of doing ZPixmap Shared pixmaps\n"
-"(The server does not claim to be able to do them).\n"
-"\n"
-"The pager in Enlightenment will run slowly in snapshot\n"
-"mode if you continue to use that mode of the pager\n"
-"under these conditions.\n"
-"\n"
-"It is suggested you change the settings on your pager to\n"
-"disable snapshots to improve performance.\n"
-"\n"
-msgstr ""
-"\n"
-"X サーバに共有メモリを扱わせようとしたようですが、\n"
-"動かしている X サーバは ZPixmap 形式の共有 pixmap を扱えません。\n"
-"(このサーバはそれらを扱えると言っていません)\n"
-"\n"
-"現在の状況のままページャを動かし続けると、スナップショットモードが\n"
-"有効の場合は動作が遅くなるでしょう。\n"
-"\n"
-"\n"
-"性能を上げるには、ページャの設定でスナップショットモードを\n"
-"無効にすることをお勧めします。\n"
-"\n"
-
-#: src/pager.c:160
-msgid ""
-"\n"
-"Your X Server is capable of doing Shared Memory but you do\n"
-"not have Shared Pixmaps enabled in your Imlib configuration.\n"
-"\n"
-"Please enable Shared Pixmaps in your Imlib configuration\n"
-"then restart Enlightenment to gain better performance for\n"
-"the pagers when snapshot mode is enabled.\n"
-"\n"
-msgstr ""
-"\n"
-"X サーバは共有メモリを扱えますが、 Imlib の設定が共有 pixmap を\n"
-"扱えない設定になっています。\n"
-"\n"
-"Imlib の設定で共有 pixmap を扱えるようにしてから Enlightenment を\n"
-"再起動すると、スナップショットモードが有効になっているページャならば\n"
-"もっとよい性能で動きます。\n"
-"\n"
-
-#: src/pager.c:174
-msgid ""
-"\n"
-"You seem to be running Enlightenment over a network Connection\n"
-"or on an X Server that does not support Shared Memory, or you\n"
-"have disabled MIT-SHM Shared memory in your Imlib configuration.\n"
-"This means the Enlightenment Pager will perform slowly and use\n"
-"more system resources than it would when Shared Memory is\n"
-"available.\n"
-"\n"
-"To improve performance please either enable MIT-SHM Shared Memory\n"
-"in your Imlib config, if you disabled it, or disable Pager\n"
-"snapshots.\n"
-"\n"
-msgstr ""
-"\n"
-"Enlightenment をネットワーク越しに使っているか、X サーバが共有\n"
-"メモリを扱えないか、Imlib の設定で MIT 共有メモリ拡張機能を無効に\n"
-"しているのか、どれかでしょう。\n"
-"共有メモリを扱えない時よりも、 Enlightenment のページャが遅くなったり\n"
-"システムリソースをたくさん使ってしまうでしょう。\n"
-"\n"
-"\n"
-"性能を上げるためには Imlib の設定で MIT 共有メモリ拡張機能を (無効に\n"
-"なっていたら) 有効にして、かつページャの設定でスナップショットを\n"
-"無効にしてください。\n"
-"\n"
-
-#: src/pager.c:969
+#: src/pager.c:919
 msgid "Window Options"
 msgstr "ウィンドウオプション"
 
-#: src/pager.c:973
+#: src/pager.c:923
 msgid "Iconify"
 msgstr "アイコン化"
 
-#: src/pager.c:979
+#: src/pager.c:929
 msgid "Annihilate"
 msgstr "強制終了"
 
-#: src/pager.c:982
+#: src/pager.c:932
 msgid "Stick / Unstick"
 msgstr "Stick する/しない"
 
-#: src/pager.c:993
+#: src/pager.c:943
 msgid "Desktop Options"
 msgstr "デスクトップオプション"
 
-#: src/pager.c:996
+#: src/pager.c:946
 msgid "Pager Settings..."
 msgstr "ページャの設定..."
 
-#: src/pager.c:1000
+#: src/pager.c:950
 msgid "Snapshotting On"
 msgstr "スナップショット On"
 
-#: src/pager.c:1004
+#: src/pager.c:954
 msgid "Snapshotting Off"
 msgstr "スナップショット Off"
 
-#: src/pager.c:1010
+#: src/pager.c:960
 msgid "High Quality On"
 msgstr "高解像度 On"
 
-#: src/pager.c:1014
+#: src/pager.c:964
 msgid "High Quality Off"
 msgstr "高解像度 Off"
 
@@ -2646,7 +2500,7 @@ msgstr "設定を記憶する..."
 msgid "There are no active windows with remembered attributes."
 msgstr "現在のウィンドウで設定を記憶してあるものはありません。"
 
-#: src/setup.c:137
+#: src/setup.c:134
 msgid ""
 "Enlightenment cannot connect to the display nominated by\n"
 "your shell's DISPLAY environment variable. You may set this\n"
@@ -2670,51 +2524,15 @@ msgstr ""
 "X, xdm, startx の man ページを読んでください。\n"
 "\n"
 
-#: src/setup.c:285
-msgid "Imlib initialisation error"
-msgstr "Imlib 初期化エラー"
-
-#: src/setup.c:287
-msgid ""
-"FATAL ERROR:\n"
-"\n"
-"Enlightenment is unable to initialise Imlib.\n"
-"\n"
-"This is unusual. Unable to continue.\n"
-"Exiting.\n"
-msgstr ""
-"致命的なエラーです :\n"
-"\n"
-"Imlib を初期化できません。\n"
-"\n"
-"通常の状況ではありません。続けるのは不可能です。\n"
-"終了します。\n"
-
-#: src/setup.c:298
-msgid ""
-"FATAL ERROR:\n"
-"\n"
-"Enlightenment is unable to initialise Fnlib.\n"
-"\n"
-"This is unusual. Unable to continue.\n"
-"Exiting.\n"
-msgstr ""
-"致命的なエラーです :\n"
-"\n"
-"Fnlib を初期化できません。\n"
-"\n"
-"普通の状況ではありません。続けるのは不可能です。\n"
-"終了します。\n"
-
-#: src/setup.c:346
+#: src/setup.c:300
 msgid "X server version error"
 msgstr "X サーババージョンエラー"
 
-#: src/setup.c:346
+#: src/setup.c:300
 msgid "Ignore this error"
 msgstr "このエラーを無視"
 
-#: src/setup.c:348
+#: src/setup.c:302
 #, c-format
 msgid ""
 "WARNING:\n"
@@ -2731,7 +2549,7 @@ msgstr ""
 "リリースされたものでしたら、Enlightenment の開発者はそのサーバを\n"
 "使ったこともなければ、それについて聞いたこともありません。\n"
 
-#: src/setup.c:519
+#: src/setup.c:473
 #, c-format
 msgid ""
 "The directory %s is apparently not a directory\n"
@@ -2742,7 +2560,7 @@ msgstr ""
 "致命的な状況です。\n"
 "このファイルを消してください。\n"
 
-#: src/setup.c:525
+#: src/setup.c:479
 #, c-format
 msgid ""
 "Do not have execute access to %s\n"
@@ -2755,7 +2573,7 @@ msgstr ""
 "ディレクトリのオーナーとパーミッションを確認して、\n"
 "正しいものに修正してください。\n"
 
-#: src/setup.c:533
+#: src/setup.c:487
 #, c-format
 msgid ""
 "Do not have read access to %s\n"
@@ -2768,7 +2586,7 @@ msgstr ""
 "ディレクトリのオーナーとパーミッションを確認して、\n"
 "正しいものに修正してください。\n"
 
-#: src/setup.c:540
+#: src/setup.c:494
 #, c-format
 msgid ""
 "Do not have write access to %s\n"
@@ -2892,7 +2710,7 @@ msgstr ""
 "(Esound) と接続できません。音は鳴らなくなります。\n"
 "\n"
 
-#: src/tclass.c:63
+#: src/tclass.c:59
 msgid "TextClass Error!"
 msgstr "textclass エラー"
 
@@ -2901,19 +2719,19 @@ msgstr "textclass エラー"
 msgid "Theme %s does not contain a %s file\n"
 msgstr "このテーマには sound.cfg ファイルが入っていません\n"
 
-#: src/theme.c:360
+#: src/theme.c:363
 msgid "Unknown\n"
 msgstr "不明\n"
 
-#: src/theme.c:373 src/theme.c:380
+#: src/theme.c:376 src/theme.c:383
 msgid "Theme file/directory does not exist\n"
 msgstr "テーマのファイル/ディレクトリ が存在しません\n"
 
-#: src/theme.c:397
+#: src/theme.c:400
 msgid "Bad Theme"
 msgstr "だめなテーマです"
 
-#: src/theme.c:398
+#: src/theme.c:401
 #, c-format
 msgid ""
 "The theme:\n"
@@ -3009,6 +2827,178 @@ msgstr "その他の設定"
 #: config/strings.c:18
 msgid "Legacy E-conf tool ..."
 msgstr ""
+
+#~ msgid "Unable to display raindrops"
+#~ msgstr "Raindrop Effect を表示できません。"
+
+#~ msgid ""
+#~ "\n"
+#~ "Enlightenment is unable to display raindrops on this\n"
+#~ "display because Shared memory is not available on this\n"
+#~ "X-Server.\n"
+#~ "\n"
+#~ "This may be due to Enlightenment being a remote client\n"
+#~ "running over the network, a MIT-SHM incapable X-server,\n"
+#~ "having run out of SHM ID's on the system or Shared\n"
+#~ "Memory support being turned off in Imlib\n"
+#~ "\n"
+#~ "You may correct this by either running `imlib_config'\n"
+#~ "or copying the system imrc (/usr/etc/imrc) to ~/.imrc\n"
+#~ "and editing it, enabling shared memory.\n"
+#~ "\n"
+#~ msgstr ""
+#~ "\n"
+#~ "この X サーバでは共有メモリが使えないため、 Enlightenment が\n"
+#~ "Raindrop Effect を実行できません。\n"
+#~ "\n"
+#~ "これは以下の 4 点のいずれかが原因かもしれません (Enlightenment\n"
+#~ "がネットワーク越しにリモートクライアントとして動いている /\n"
+#~ "X サーバが MIT 共有メモリ拡張機能を扱えない / システムの共有\n"
+#~ "メモリ ID が足りなくなっている / Imlib で共有メモリサポートを\n"
+#~ " off にしてしまっている)。\n"
+#~ "\n"
+#~ "共有メモリを使えるようにするには `imlib_config' を実行するか、\n"
+#~ "/usr/etc/imrc にあるシステムの imrc を ~/.imrc にコピーして\n"
+#~ "それを共有メモリが使えるような設定に編集してください。\n"
+#~ "\n"
+
+#~ msgid ""
+#~ "\n"
+#~ "Enlightenment is unable to display raindrops on this\n"
+#~ "display because shared pixmaps are not available on this\n"
+#~ "X-Server.\n"
+#~ "\n"
+#~ "This may be due to either the X-Server not implementing\n"
+#~ "shared pixmaps, or shared pixmaps being disabled in\n"
+#~ "Imlib's configuration.\n"
+#~ "\n"
+#~ "You may correct this by either running `imlib_config'\n"
+#~ "or copying the system imrc (/usr/etc/imrc) to ~/.imrc\n"
+#~ "and editing it, enabling shared pixmaps.\n"
+#~ "\n"
+#~ msgstr ""
+#~ "\n"
+#~ "Enlightenment がモニタに Raindrops Effect を表示できません\n"
+#~ "(この X サーバが shared pixmap を表示できないからです)。\n"
+#~ "\n"
+#~ "\n"
+#~ "これは以下のいずれかが原因かもしれません (X サーバに shared pixmap\n"
+#~ "表示できるように実装されていない / Imlib の設定で shared pixmap \n"
+#~ "のサポートを off にしてしまっている )。\n"
+#~ "\n"
+#~ "shared pixmap を表示できるようにするには `imlib_config' を実行するか、\n"
+#~ "/usr/etc/imrc にあるシステムの imrc を ~/.imrc にコピーして\n"
+#~ "それを shared pixmap が使えるような設定に編集してください。\n"
+#~ "\n"
+
+#~ msgid "Warning!"
+#~ msgstr "Warning!"
+
+#~ msgid ""
+#~ "\n"
+#~ "You seem to have an X Server capable of Shared Memory\n"
+#~ "but it is incapable of doing ZPixmap Shared pixmaps\n"
+#~ "(The server does not claim to be able to do them).\n"
+#~ "\n"
+#~ "The pager in Enlightenment will run slowly in snapshot\n"
+#~ "mode if you continue to use that mode of the pager\n"
+#~ "under these conditions.\n"
+#~ "\n"
+#~ "It is suggested you change the settings on your pager to\n"
+#~ "disable snapshots to improve performance.\n"
+#~ "\n"
+#~ msgstr ""
+#~ "\n"
+#~ "X サーバに共有メモリを扱わせようとしたようですが、\n"
+#~ "動かしている X サーバは ZPixmap 形式の共有 pixmap を扱えません。\n"
+#~ "(このサーバはそれらを扱えると言っていません)\n"
+#~ "\n"
+#~ "現在の状況のままページャを動かし続けると、スナップショットモードが\n"
+#~ "有効の場合は動作が遅くなるでしょう。\n"
+#~ "\n"
+#~ "\n"
+#~ "性能を上げるには、ページャの設定でスナップショットモードを\n"
+#~ "無効にすることをお勧めします。\n"
+#~ "\n"
+
+#~ msgid ""
+#~ "\n"
+#~ "Your X Server is capable of doing Shared Memory but you do\n"
+#~ "not have Shared Pixmaps enabled in your Imlib configuration.\n"
+#~ "\n"
+#~ "Please enable Shared Pixmaps in your Imlib configuration\n"
+#~ "then restart Enlightenment to gain better performance for\n"
+#~ "the pagers when snapshot mode is enabled.\n"
+#~ "\n"
+#~ msgstr ""
+#~ "\n"
+#~ "X サーバは共有メモリを扱えますが、 Imlib の設定が共有 pixmap を\n"
+#~ "扱えない設定になっています。\n"
+#~ "\n"
+#~ "Imlib の設定で共有 pixmap を扱えるようにしてから Enlightenment を\n"
+#~ "再起動すると、スナップショットモードが有効になっているページャならば\n"
+#~ "もっとよい性能で動きます。\n"
+#~ "\n"
+
+#~ msgid ""
+#~ "\n"
+#~ "You seem to be running Enlightenment over a network Connection\n"
+#~ "or on an X Server that does not support Shared Memory, or you\n"
+#~ "have disabled MIT-SHM Shared memory in your Imlib configuration.\n"
+#~ "This means the Enlightenment Pager will perform slowly and use\n"
+#~ "more system resources than it would when Shared Memory is\n"
+#~ "available.\n"
+#~ "\n"
+#~ "To improve performance please either enable MIT-SHM Shared Memory\n"
+#~ "in your Imlib config, if you disabled it, or disable Pager\n"
+#~ "snapshots.\n"
+#~ "\n"
+#~ msgstr ""
+#~ "\n"
+#~ "Enlightenment をネットワーク越しに使っているか、X サーバが共有\n"
+#~ "メモリを扱えないか、Imlib の設定で MIT 共有メモリ拡張機能を無効に\n"
+#~ "しているのか、どれかでしょう。\n"
+#~ "共有メモリを扱えない時よりも、 Enlightenment のページャが遅くなったり\n"
+#~ "システムリソースをたくさん使ってしまうでしょう。\n"
+#~ "\n"
+#~ "\n"
+#~ "性能を上げるためには Imlib の設定で MIT 共有メモリ拡張機能を (無効に\n"
+#~ "なっていたら) 有効にして、かつページャの設定でスナップショットを\n"
+#~ "無効にしてください。\n"
+#~ "\n"
+
+#~ msgid "Imlib initialisation error"
+#~ msgstr "Imlib 初期化エラー"
+
+#~ msgid ""
+#~ "FATAL ERROR:\n"
+#~ "\n"
+#~ "Enlightenment is unable to initialise Imlib.\n"
+#~ "\n"
+#~ "This is unusual. Unable to continue.\n"
+#~ "Exiting.\n"
+#~ msgstr ""
+#~ "致命的なエラーです :\n"
+#~ "\n"
+#~ "Imlib を初期化できません。\n"
+#~ "\n"
+#~ "通常の状況ではありません。続けるのは不可能です。\n"
+#~ "終了します。\n"
+
+#~ msgid ""
+#~ "FATAL ERROR:\n"
+#~ "\n"
+#~ "Enlightenment is unable to initialise Fnlib.\n"
+#~ "\n"
+#~ "This is unusual. Unable to continue.\n"
+#~ "Exiting.\n"
+#~ msgstr ""
+#~ "致命的なエラーです :\n"
+#~ "\n"
+#~ "Fnlib を初期化できません。\n"
+#~ "\n"
+#~ "普通の状況ではありません。続けるのは不可能です。\n"
+#~ "終了します。\n"
 
 #~ msgid ""
 #~ "Enlightenment has just experienced some major problems in\n"

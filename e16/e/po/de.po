@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-07-17 23:16+0200\n"
+"POT-Creation-Date: 2004-08-20 23:03+0200\n"
 "PO-Revision-Date: 2000-03-29 21:12+0200\n"
 "Last-Translator: Matthias Warkus <mawa@iname.com>\n"
 "Language-Team: Enlightenment l10n <e-develop@enlightenment.org>\n"
@@ -15,19 +15,19 @@ msgstr ""
 "Content-Type: text/plain; charset=iso-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/actions.c:289
+#: src/actions.c:266
 msgid "ActionClass Error!"
 msgstr "ActionClass-Fehler!"
 
-#: src/actions.c:289 src/backgrounds.c:192 src/borders.c:2271
+#: src/actions.c:266 src/backgrounds.c:192 src/borders.c:2275
 #: src/buttons.c:124 src/cmclass.c:91 src/cursors.c:142 src/iclass.c:169
-#: src/tclass.c:63 src/tooltips.c:662
+#: src/tclass.c:59 src/tooltips.c:662
 #, c-format
 msgid "%u references remain\n"
 msgstr "%u Referenzen verbleiben\n"
 
 # src/actions.c:664
-#: src/actions.c:694
+#: src/actions.c:676
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -41,7 +41,7 @@ msgstr ""
 "Dies liegt daran, dass die Datei nicht existiert.\n"
 
 # src/actions.c:672
-#: src/actions.c:702
+#: src/actions.c:684
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -62,7 +62,7 @@ msgstr ""
 "müssen.\n"
 
 # src/actions.c:692
-#: src/actions.c:722
+#: src/actions.c:704
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -80,7 +80,7 @@ msgstr ""
 "Sie ausführen. Sie sollten sich die Angelegenheit näher ansehen.\n"
 
 # src/actions.c:703
-#: src/actions.c:733
+#: src/actions.c:715
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -97,7 +97,7 @@ msgstr ""
 "für diese Datei haben.\n"
 
 # src/actions.c:719
-#: src/actions.c:749
+#: src/actions.c:731
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -111,7 +111,7 @@ msgstr ""
 "Dies liegt daran, dass die Datei in Wirklichkeit ein Verzeichnis ist.\n"
 
 # src/actions.c:727
-#: src/actions.c:757
+#: src/actions.c:739
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -125,12 +125,12 @@ msgstr ""
 "Datei ist.\n"
 
 # src/actions.c:3282
-#: src/actions.c:2880
+#: src/actions.c:2858
 #, c-format
 msgid "About Enlightenment %s"
 msgstr "Über Enlightenment %s"
 
-#: src/actions.c:2894
+#: src/actions.c:2872
 #, c-format
 msgid ""
 "Welcome to the %s version\n"
@@ -158,7 +158,7 @@ msgstr ""
 # src/settings.c:1460 src/settings.c:1522 src/settings.c:1610
 # src/settings.c:2012 src/settings.c:3405 src/settings.c:3750
 # src/settings.c:4048 src/settings.c:4186 src/snaps.c:547 src/sound.c:262
-#: src/actions.c:2910 src/dialog.c:2130 src/dialog.c:2171 src/groups.c:677
+#: src/actions.c:2888 src/dialog.c:2130 src/dialog.c:2171 src/groups.c:677
 #: src/settings.c:336 src/settings.c:609 src/settings.c:980
 #: src/settings.c:1203 src/settings.c:1439 src/settings.c:1592
 #: src/settings.c:1694 src/settings.c:1801 src/settings.c:1880
@@ -169,12 +169,12 @@ msgid "OK"
 msgstr "OK"
 
 # src/actions.c:3474
-#: src/actions.c:3021
+#: src/actions.c:2999
 msgid "  Pick the group the window will belong to:  \n"
 msgstr "  Wählen Sie die Gruppe aus, zu der das Fenster gehören wird:  \n"
 
 # src/actions.c:3824
-#: src/actions.c:3245
+#: src/actions.c:3223
 msgid ""
 "\n"
 "  There's no current group at the moment.  \n"
@@ -195,28 +195,28 @@ msgstr ""
 "\n"
 
 # src/actions.c:3858
-#: src/actions.c:3265
+#: src/actions.c:3243
 msgid "   Select the group to remove the window from.  "
 msgstr "   Wählen Sie die Gruppe, aus der Sie das Fenster entfernen wollen.  "
 
 # src/actions.c:3883
-#: src/actions.c:3277
+#: src/actions.c:3255
 msgid "  Select the group to break  "
 msgstr "  Wählen Sie die aufzulösende Gruppe  "
 
 # src/actions.c:3911
-#: src/actions.c:3304
+#: src/actions.c:3282
 #, c-format
 msgid "You have been warned about the dangers of Zoom mode\n"
 msgstr "Man hat Sie über die Gefahren des Zoommodus gewarnt\n"
 
 # src/actions.c:3914
-#: src/actions.c:3307
+#: src/actions.c:3285
 msgid "Warning !!!"
 msgstr "Warnung!"
 
 # src/actions.c:3916
-#: src/actions.c:3308
+#: src/actions.c:3286
 msgid ""
 "This feature is heavily reliant on a feature of your\n"
 "X Server called the Vid Mode Extension. This feature exists\n"
@@ -269,7 +269,7 @@ msgstr "Enlightenment neu starten"
 # src/setup.c:341 src/setup.c:403
 #: src/alert.c:48 src/alert.c:78 src/events.c:61 src/memory.c:211
 #: src/memory.c:287 src/memory.c:305 src/memory.c:381 src/memory.c:396
-#: src/setup.c:286 src/setup.c:297 src/setup.c:347
+#: src/setup.c:301
 msgid "Quit Enlightenment"
 msgstr "Enlightenment verlassen"
 
@@ -299,7 +299,7 @@ msgid "Background Error!"
 msgstr "Hintergrund-Fehler!"
 
 # src/settings.c:2526 src/settings.c:2528
-#: src/borders.c:2271
+#: src/borders.c:2275
 msgid "Border Error!"
 msgstr "Rahmen-Fehler!"
 
@@ -342,9 +342,9 @@ msgstr ""
 # src/config.c:2964 src/config.c:3065 src/config.c:3387
 #: src/config.c:355 src/config.c:593 src/config.c:668 src/config.c:1021
 #: src/config.c:1138 src/config.c:1374 src/config.c:1501 src/config.c:1605
-#: src/config.c:1818 src/config.c:2065 src/config.c:2138 src/config.c:2230
-#: src/config.c:2486 src/config.c:2708 src/config.c:2970 src/config.c:3061
-#: src/config.c:3094 src/config.c:3239 src/config.c:3441
+#: src/config.c:1818 src/config.c:2053 src/config.c:2126 src/config.c:2218
+#: src/config.c:2474 src/config.c:2686 src/config.c:2948 src/config.c:3039
+#: src/config.c:3072 src/config.c:3217 src/config.c:3419
 #, c-format
 msgid "CONFIG: ignoring extra data in \"%s\"\n"
 msgstr "KONFIG: ignoriere überflüssige Daten in \"%s\"\n"
@@ -356,9 +356,9 @@ msgstr "KONFIG: ignoriere überflüssige Daten in \"%s\"\n"
 # src/config.c:3395
 #: src/config.c:361 src/config.c:599 src/config.c:676 src/config.c:1027
 #: src/config.c:1144 src/config.c:1380 src/config.c:1507 src/config.c:1613
-#: src/config.c:1826 src/config.c:2071 src/config.c:2144 src/config.c:2238
-#: src/config.c:2492 src/config.c:2716 src/config.c:2976 src/config.c:3245
-#: src/config.c:3449
+#: src/config.c:1826 src/config.c:2059 src/config.c:2132 src/config.c:2226
+#: src/config.c:2479 src/config.c:2694 src/config.c:2954 src/config.c:3223
+#: src/config.c:3427
 #, c-format
 msgid "CONFIG: missing required data in \"%s\"\n"
 msgstr "KONFIG: vermisse benötigte Daten in \"%s\"\n"
@@ -462,7 +462,7 @@ msgstr ""
 "nicht gut ausgehen.\n"
 
 # src/config.c:1861 src/config.c:1940
-#: src/config.c:2033 src/config.c:2113
+#: src/config.c:2021 src/config.c:2101
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading a Desktop block.  Outcome is likely not good.\n"
@@ -472,12 +472,12 @@ msgstr ""
 "nicht gut ausgehen.\n"
 
 # src/config.c:1952
-#: src/config.c:2125
+#: src/config.c:2113
 msgid "Easter Egg!  Iconboxes aren't implemented yet.\n"
 msgstr "Osterei!  Iconboxes sind noch nicht implementiert.\n"
 
 # src/config.c:1983
-#: src/config.c:2155
+#: src/config.c:2143
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading an Iconbox block.  Outcome is likely not good.\n"
@@ -487,7 +487,7 @@ msgstr ""
 "nicht gut ausgehen.\n"
 
 # src/config.c:2019
-#: src/config.c:2189
+#: src/config.c:2177
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading an Sound block.  Outcome is likely not good.\n"
@@ -497,7 +497,7 @@ msgstr ""
 "nicht gut ausgehen.\n"
 
 # src/config.c:2271
-#: src/config.c:2442
+#: src/config.c:2430
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -511,7 +511,7 @@ msgstr ""
 "Werde dies ignorieren und fortfahren...\n"
 
 # src/config.c:2286
-#: src/config.c:2456
+#: src/config.c:2444
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading an Action Class block.  Outcome is likely not good.\n"
@@ -521,7 +521,7 @@ msgstr ""
 "wahrscheinlich nicht gut ausgehen.\n"
 
 # src/config.c:2484
-#: src/config.c:2661
+#: src/config.c:2639
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -535,7 +535,7 @@ msgstr ""
 "Werde dies ignorieren und fortfahren...\n"
 
 # src/config.c:2492
-#: src/config.c:2668
+#: src/config.c:2646
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading an ImageClass block.  Outcome is likely not good.\n"
@@ -545,7 +545,7 @@ msgstr ""
 "nicht gut ausgehen.\n"
 
 # src/config.c:2731
-#: src/config.c:2907
+#: src/config.c:2885
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -559,7 +559,7 @@ msgstr ""
 "Werde dies ignorieren und fortfahren...\n"
 
 # src/config.c:2756
-#: src/config.c:2931
+#: src/config.c:2909
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading an ColorModifier block.\n"
@@ -570,7 +570,7 @@ msgstr ""
 "wahrscheinlich nicht gut ausgehen.\n"
 
 # src/config.c:2848
-#: src/config.c:3022
+#: src/config.c:3000
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -584,7 +584,7 @@ msgstr ""
 "Werde dies ignorieren und fortfahren...\n"
 
 # src/config.c:2855
-#: src/config.c:3029
+#: src/config.c:3007
 msgid ""
 "Warning: Configuration appears to have ended before we were\n"
 "Done loading an ToolTip block.  Outcome is likely not good.\n"
@@ -594,7 +594,7 @@ msgstr ""
 "nicht gut ausgehen.\n"
 
 # src/config.c:2893
-#: src/config.c:3067
+#: src/config.c:3045
 msgid ""
 "Warning: Configuration appears to have ended before we were\n"
 "Done loading an FX block.  Outcome is likely not good.\n"
@@ -604,7 +604,7 @@ msgstr ""
 "nicht gut ausgehen.\n"
 
 # src/config.c:3027
-#: src/config.c:3157
+#: src/config.c:3135
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -618,7 +618,7 @@ msgstr ""
 "Werde dies ignorieren und fortfahren...\n"
 
 # src/config.c:3035
-#: src/config.c:3165
+#: src/config.c:3143
 msgid ""
 "Warning: Configuration appears to have ended before we were\n"
 "Done loading an Iconbox block.  Outcome is likely not good.\n"
@@ -628,7 +628,7 @@ msgstr ""
 "nicht gut ausgehen.\n"
 
 # src/config.c:2929
-#: src/config.c:3201
+#: src/config.c:3179
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -642,7 +642,7 @@ msgstr ""
 "Werde dies ignorieren und fortfahren...\n"
 
 # src/config.c:2937
-#: src/config.c:3209
+#: src/config.c:3187
 msgid ""
 "Warning: Configuration appears to have ended before we were\n"
 "Done loading an Extras block.  Outcome is likely not good.\n"
@@ -652,7 +652,7 @@ msgstr ""
 "nicht gut ausgehen.\n"
 
 # src/config.c:3141
-#: src/config.c:3315
+#: src/config.c:3293
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -666,7 +666,7 @@ msgstr ""
 "Werde dies ignorieren und fortfahren...\n"
 
 # src/config.c:3148
-#: src/config.c:3322
+#: src/config.c:3300
 msgid ""
 "Warning: Configuration appears to have ended before we were\n"
 "Done loading an WindowMatch block.  Outcome is likely not good.\n"
@@ -676,7 +676,7 @@ msgstr ""
 "nicht gut ausgehen.\n"
 
 # src/config.c:3197
-#: src/config.c:3351
+#: src/config.c:3329
 #, c-format
 msgid ""
 "Help! Cannot find epp!\n"
@@ -694,22 +694,22 @@ msgstr ""
 "existiert oder von Ihnen nicht ausgeführt werden kann.\n"
 
 # src/config.c:3404
-#: src/config.c:3458
+#: src/config.c:3436
 msgid "Theme versioning ERROR"
 msgstr "FEHLER in der Themen-Versionsnummerierung"
 
 # src/config.c:3405 src/config.c:3439
-#: src/config.c:3459 src/config.c:3488
+#: src/config.c:3437 src/config.c:3466
 msgid "Restart with Defaults"
 msgstr "Mit Voreinstellung neu starten"
 
 # src/config.c:3406 src/config.c:3440
-#: src/config.c:3460 src/config.c:3489
+#: src/config.c:3438 src/config.c:3467
 msgid "Abort and Exit"
 msgstr "Abbrechen und verlassen"
 
 # src/config.c:3407
-#: src/config.c:3461
+#: src/config.c:3439
 #, c-format
 msgid ""
 "ERROR:\n"
@@ -748,12 +748,12 @@ msgstr ""
 "in neueren Versionen finden.\n"
 
 # src/config.c:3438
-#: src/config.c:3487
+#: src/config.c:3465
 msgid "User Config Version ERROR"
 msgstr "Benutzerkonfigurations-Versionsfehler"
 
 # src/config.c:3441
-#: src/config.c:3490
+#: src/config.c:3468
 #, c-format
 msgid ""
 "ERROR:\n"
@@ -784,7 +784,7 @@ msgstr ""
 "Ihren Vorlieben konfigurieren.\n"
 
 # src/config.c:3667
-#: src/config.c:3737
+#: src/config.c:3710
 #, c-format
 msgid ""
 "WARNING!\n"
@@ -799,7 +799,7 @@ msgstr ""
 "Dies kann an mangelnden Plattenplatz, an Ihrer\n"
 "Quote oder an den Dateisystemberechtigungen liegen.\n"
 
-#: src/config.c:3745
+#: src/config.c:3718
 #, c-format
 msgid ""
 "No themes were found in the default theme directory:\n"
@@ -810,32 +810,32 @@ msgid ""
 msgstr ""
 
 # src/config.c:3743
-#: src/config.c:3797
+#: src/config.c:3768
 msgid "Enlightenment Starting..."
 msgstr "Enlightenment startet..."
 
 # src/config.c:4176
-#: src/config.c:4259
+#: src/config.c:4230
 msgid "Recover system config?"
 msgstr "Systemkonfiguration wiederherstellen?"
 
 # src/config.c:4177
-#: src/config.c:4259
+#: src/config.c:4230
 msgid "Yes, Attempt recovery"
 msgstr "Ja, Wiederherstellung versuchen"
 
 # src/config.c:4178
-#: src/config.c:4260
+#: src/config.c:4231
 msgid "Restart and try again"
 msgstr "Neustarten und noch einmal probieren"
 
 # src/config.c:4178
-#: src/config.c:4260
+#: src/config.c:4231
 msgid "Quit and give up"
 msgstr "Verlassen und aufgeben"
 
 # src/config.c:4180
-#: src/config.c:4262
+#: src/config.c:4233
 msgid ""
 "Enlightenment has encountered parsing errors in your autosaved\n"
 "configuration.\n"
@@ -919,7 +919,7 @@ msgid "Attention !!!"
 msgstr "Achtung!"
 
 # src/setup.c:294 src/setup.c:340
-#: src/events.c:60 src/setup.c:296
+#: src/events.c:60
 msgid "X server setup error"
 msgstr "Einstellungsfehler im X-Server"
 
@@ -1005,85 +1005,13 @@ msgstr ""
 "Um diesen Effekt wieder abzuschalten, wählen Sie einfach nochmals\n"
 "diese Option.\n"
 
-# src/fx.c:387 src/fx.c:405
-#: src/fx.c:426 src/fx.c:442
-msgid "Unable to display raindrops"
-msgstr "Kann Regentropfen nicht darstellen"
-
-# src/fx.c:388
-#: src/fx.c:427
-msgid ""
-"\n"
-"Enlightenment is unable to display raindrops on this\n"
-"display because Shared memory is not available on this\n"
-"X-Server.\n"
-"\n"
-"This may be due to Enlightenment being a remote client\n"
-"running over the network, a MIT-SHM incapable X-server,\n"
-"having run out of SHM ID's on the system or Shared\n"
-"Memory support being turned off in Imlib\n"
-"\n"
-"You may correct this by either running `imlib_config'\n"
-"or copying the system imrc (/usr/etc/imrc) to ~/.imrc\n"
-"and editing it, enabling shared memory.\n"
-"\n"
-msgstr ""
-"\n"
-"Enlightenment kann keine Regentropfen auf dieser Anzeige\n"
-"darstellen, da dieser X-Server keinen gemeinsamen Speicher-\n"
-"zugriff erlaubt.\n"
-"\n"
-"Dies kann daran liegen, dass Enlightenment ein entfernter\n"
-"Client ist, der über das Netzwerk läuft, dass der X-Server\n"
-"die MIT-SHM-Erweiterung nicht hat, dass auf dem System keine\n"
-"SHM-IDs mehr verfügbar sind oder dass die Unterstützung für\n"
-"gemeinsamen Speicherzugriff in Imlib abgeschaltet wurde.\n"
-"\n"
-"Dies kann eventuell korrigiert werden, indem Sie\n"
-"`imlib_config' ausführen oder die systemweite imrc\n"
-"(/usr/etc/imrc) nach ~/.imrc kopieren und sie von Hand\n"
-"bearbeiten, um den gemeinsamen Speicherzugriff zu aktivieren.\n"
-"\n"
-
-# src/fx.c:406
-#: src/fx.c:443
-msgid ""
-"\n"
-"Enlightenment is unable to display raindrops on this\n"
-"display because shared pixmaps are not available on this\n"
-"X-Server.\n"
-"\n"
-"This may be due to either the X-Server not implementing\n"
-"shared pixmaps, or shared pixmaps being disabled in\n"
-"Imlib's configuration.\n"
-"\n"
-"You may correct this by either running `imlib_config'\n"
-"or copying the system imrc (/usr/etc/imrc) to ~/.imrc\n"
-"and editing it, enabling shared pixmaps.\n"
-"\n"
-msgstr ""
-"\n"
-"Enlightenment kann keine Regentropfen auf dieser Anzeige\n"
-"darstellen, da gemeinsam genutzte Pixmaps auf diesem\n"
-"X-Server nicht zur Verfügung stehen.\n"
-"\n"
-"Dies kann daran liegen, dass der X-Server keine gemeinsam\n"
-"genutzten Pixmaps anbietet, oder dass diese in der Imlib-\n"
-"Konfiguration abgeschaltet wurden.\n"
-"\n"
-"Sie können dies mit Hilfe von `imlib_config' beheben,\n"
-"oder indem Sie die systemweite imrc (/usr/etc/imrc) nach\n"
-"~/.imrc kopieren und sie ändern, damit gemeinsam genutzte\n"
-"Pixmaps dort aktiviert werden.\n"
-"\n"
-
 # src/fx.c:716
-#: src/fx.c:720
+#: src/fx.c:686
 msgid "Starting up Waves FX..."
 msgstr "Starte Wellen-FX..."
 
 # src/fx.c:717
-#: src/fx.c:721
+#: src/fx.c:687
 msgid ""
 "\n"
 "You have just started the Waves Effect.\n"
@@ -1108,12 +1036,12 @@ msgstr ""
 "diese Option.\n"
 
 # src/fx.c:882
-#: src/fx.c:908
+#: src/fx.c:874
 msgid "Starting up imagespinners FX..."
 msgstr "Starte Imagespinners-FX..."
 
 # src/fx.c:883
-#: src/fx.c:909
+#: src/fx.c:875
 msgid ""
 "\n"
 "You have just started the imagespinners Effect.\n"
@@ -1211,7 +1139,7 @@ msgstr ""
 # src/settings.c:1524 src/settings.c:1612 src/settings.c:2014
 # src/settings.c:3407 src/settings.c:3752 src/settings.c:4050
 # src/settings.c:4188
-#: src/groups.c:678 src/pager.c:976 src/settings.c:338 src/settings.c:611
+#: src/groups.c:678 src/pager.c:926 src/settings.c:338 src/settings.c:611
 #: src/settings.c:982 src/settings.c:1205 src/settings.c:1441
 #: src/settings.c:1594 src/settings.c:1696 src/settings.c:1803
 #: src/settings.c:1882 src/settings.c:1972 src/settings.c:2426
@@ -1409,26 +1337,26 @@ msgid "Iconbox Options"
 msgstr "Iconbox-Optionen"
 
 # src/iconify.c:2426
-#: src/iconify.c:2259
+#: src/iconify.c:2260
 msgid "This Iconbox Settings..."
 msgstr "Einstellungen dieser Iconbox..."
 
 # src/iconify.c:2429
-#: src/iconify.c:2262
+#: src/iconify.c:2265
 msgid "Close Iconbox"
 msgstr "Iconbox schließen"
 
 # src/iconify.c:2432
-#: src/iconify.c:2264
+#: src/iconify.c:2268
 msgid "Create New Iconbox"
 msgstr "Neue Iconbox erzeugen"
 
-#: src/ipc.c:1669
+#: src/ipc.c:1664
 msgid "Message"
 msgstr "Mitteilung"
 
 # src/ipc.c:4890
-#: src/ipc.c:3909
+#: src/ipc.c:3919
 #, c-format
 msgid ""
 "Enlightenment Version : %s\n"
@@ -1438,12 +1366,12 @@ msgstr ""
 "Code aktuell bis     : %s\n"
 
 # src/ipc.c:4737
-#: src/ipc.c:6458
+#: src/ipc.c:6481
 msgid "Enlightenment IPC Commands Help"
 msgstr "Hilfe zu Enlightenment-IPC-Befehlen"
 
 # src/ipc.c:4741 src/ipc.c:4780
-#: src/ipc.c:6462 src/ipc.c:6490
+#: src/ipc.c:6485 src/ipc.c:6513
 msgid ""
 "\n"
 "commands currently available:\n"
@@ -1452,7 +1380,7 @@ msgstr ""
 "Momentan verfügbare Befehle:\n"
 
 # src/ipc.c:4743
-#: src/ipc.c:6463
+#: src/ipc.c:6486
 msgid ""
 "use \"help all\" for descriptions of each command\n"
 "use \"help <command>\" for an individual description\n"
@@ -1463,12 +1391,12 @@ msgstr ""
 "\n"
 
 # src/ipc.c:4781
-#: src/ipc.c:6491
+#: src/ipc.c:6514
 msgid "use \"help <command>\" for an individual description\n"
 msgstr "\"help <befehl>\" gibt eine nähere Beschreibung\n"
 
 # src/ipc.c:4783
-#: src/ipc.c:6493
+#: src/ipc.c:6516
 #, fuzzy
 msgid "      <command>   : <description>\n"
 msgstr "<befehl> : <beschreibung>\n"
@@ -1657,28 +1585,28 @@ msgstr ""
 "Der Fehler trat auf in %s, Zeile %d.\n"
 
 # src/menus.c:1947
-#: src/menus.c:1846
+#: src/menus.c:1710
 msgid "Go to this Desktop"
 msgstr "Zu diesem Desktop gehen"
 
 # src/menus.c:1964
-#: src/menus.c:1861 src/menus.c:1884
+#: src/menus.c:1725 src/menus.c:1748
 #, c-format
 msgid "Desktop %i"
 msgstr "Desktop %i"
 
 # src/menus.c:2027
-#: src/menus.c:1914
+#: src/menus.c:1778
 msgid "Show/Hide this group"
 msgstr "Diese Gruppe zeigen/verbergen"
 
 # src/menus.c:2031
-#: src/menus.c:1917
+#: src/menus.c:1781
 msgid "Iconify this group"
 msgstr "Diese Gruppe minimieren"
 
 # src/menus.c:2044
-#: src/menus.c:1931
+#: src/menus.c:1795
 #, c-format
 msgid "Group %i"
 msgstr "Gruppe %i"
@@ -1735,139 +1663,53 @@ msgstr ""
 "Bitte beheben Sie dieses Problem und sorgen Sie dafür, dass dox\n"
 "korrekt installiert ist.\n"
 
-# src/pager.c:527 src/pager.c:543 src/pager.c:557
-#: src/pager.c:145 src/pager.c:159 src/pager.c:173
-msgid "Warning!"
-msgstr "Warnung!"
-
-# src/pager.c:528
-#: src/pager.c:146
-msgid ""
-"\n"
-"You seem to have an X Server capable of Shared Memory\n"
-"but it is incapable of doing ZPixmap Shared pixmaps\n"
-"(The server does not claim to be able to do them).\n"
-"\n"
-"The pager in Enlightenment will run slowly in snapshot\n"
-"mode if you continue to use that mode of the pager\n"
-"under these conditions.\n"
-"\n"
-"It is suggested you change the settings on your pager to\n"
-"disable snapshots to improve performance.\n"
-"\n"
-msgstr ""
-"\n"
-"Sie scheinen einen X-Server zu haben, der gemeinsam genutzten Speicher\n"
-"unterstützt, aber keine gemeinsam genutzten Pixmaps über ZPixmap. (Der\n"
-"Server gibt nicht an, dass er sie unterstützt.)\n"
-"\n"
-"Der Pager in Enlightenment wird im Schnappschuss-Modus nur langsam\n"
-"laufen, wenn Sie diesen Modus unter diesen Bedingungen\n"
-"weiterbenutzen.\n"
-"\n"
-"Es wird empfohlen, dass Sie diesen Modus in den Pager-Einstellungen\n"
-"abschalten, um die Leistung zu verbessern.\n"
-"\n"
-
-# src/pager.c:544
-#: src/pager.c:160
-msgid ""
-"\n"
-"Your X Server is capable of doing Shared Memory but you do\n"
-"not have Shared Pixmaps enabled in your Imlib configuration.\n"
-"\n"
-"Please enable Shared Pixmaps in your Imlib configuration\n"
-"then restart Enlightenment to gain better performance for\n"
-"the pagers when snapshot mode is enabled.\n"
-"\n"
-msgstr ""
-"\n"
-"Ihr X-Server unterstützt gemeinsam genutzten Speicher, aber Sie haben\n"
-"gemeinsam genutzte Pixmaps in Ihrer Imlib-Konfiguration nicht\n"
-"aktiviert.\n"
-"\n"
-"Bitte aktivieren Sie diese dort und starten Sie Enlightenment neu, um\n"
-"bessere Leistung für die Pager zu erreichen, wenn der\n"
-"Schnappschuss-Modus aktiv ist.\n"
-"\n"
-
-# src/pager.c:558
-#: src/pager.c:174
-msgid ""
-"\n"
-"You seem to be running Enlightenment over a network Connection\n"
-"or on an X Server that does not support Shared Memory, or you\n"
-"have disabled MIT-SHM Shared memory in your Imlib configuration.\n"
-"This means the Enlightenment Pager will perform slowly and use\n"
-"more system resources than it would when Shared Memory is\n"
-"available.\n"
-"\n"
-"To improve performance please either enable MIT-SHM Shared Memory\n"
-"in your Imlib config, if you disabled it, or disable Pager\n"
-"snapshots.\n"
-"\n"
-msgstr ""
-"\n"
-"Sie scheinen Enlightenment über eine Netzwerkverbing auszuführen, oder\n"
-"aber Sie benutzen einen X-Server, der gemeinsam genutzten Speicher\n"
-"nicht unterstützt, oder aber Sie haben die Unterstützung für gemeinsam\n"
-"genutzten Speicher (MIT-SHM) in Ihrer Imlib-Konfiguration\n"
-"deaktiviert. Dies bedeutet, dass der Enlightenment-Pager langsam\n"
-"laufen und mehr Systemressourcen verbrauchen wird, als er würde, wenn\n"
-"gemeinsam genutzter Speicher aktiv wäre.\n"
-"\n"
-"Um die Leistung zu verbessern, schalten Sie entweder den gemeinsam\n"
-"genutzten MIT-SHM-Speicher in Ihrer Imlib-Konfiguration ein, falls Sie\n"
-"ihn abgeschaltet habe, oder deaktivieren Sie die Pager-Schnappschüsse.\n"
-"\n"
-
 # src/pager.c:1268
-#: src/pager.c:969
+#: src/pager.c:919
 msgid "Window Options"
 msgstr "Fensteroptionen"
 
 # src/pager.c:1274
-#: src/pager.c:973
+#: src/pager.c:923
 msgid "Iconify"
 msgstr "Minimieren"
 
 # src/pager.c:1280
-#: src/pager.c:979
+#: src/pager.c:929
 msgid "Annihilate"
 msgstr "Zerstören"
 
 # src/pager.c:1283
-#: src/pager.c:982
+#: src/pager.c:932
 msgid "Stick / Unstick"
 msgstr "Ankleben / Ablösen"
 
 # src/pager.c:1295
-#: src/pager.c:993
+#: src/pager.c:943
 msgid "Desktop Options"
 msgstr "Desktopoptionen"
 
 # src/pager.c:1301
-#: src/pager.c:996
+#: src/pager.c:946
 msgid "Pager Settings..."
 msgstr "Pager-Einstellungen..."
 
 # src/pager.c:1306
-#: src/pager.c:1000
+#: src/pager.c:950
 msgid "Snapshotting On"
 msgstr "Schnappschüsse ein"
 
 # src/pager.c:1311
-#: src/pager.c:1004
+#: src/pager.c:954
 msgid "Snapshotting Off"
 msgstr "Schnappschüsse aus"
 
 # src/pager.c:1318
-#: src/pager.c:1010
+#: src/pager.c:960
 msgid "High Quality On"
 msgstr "Hohe Qualität ein"
 
 # src/pager.c:1323
-#: src/pager.c:1014
+#: src/pager.c:964
 msgid "High Quality Off"
 msgstr "Hohe Qualität aus"
 
@@ -3049,7 +2891,7 @@ msgid "There are no active windows with remembered attributes."
 msgstr "Es existieren keine Fenster mit gespeicherten Attributen."
 
 # src/setup.c:222
-#: src/setup.c:137
+#: src/setup.c:134
 msgid ""
 "Enlightenment cannot connect to the display nominated by\n"
 "your shell's DISPLAY environment variable. You may set this\n"
@@ -3074,57 +2916,18 @@ msgstr ""
 "X-Server-Lieferanten, oder lesen Sie die Handbuchseiten für X, xdm\n"
 "oder startx, bevor Sie weitermachen.\n"
 
-# src/setup.c:328
-#: src/setup.c:285
-msgid "Imlib initialisation error"
-msgstr "Imlib-Initialisierungsfehler"
-
-# src/setup.c:330
-#: src/setup.c:287
-msgid ""
-"FATAL ERROR:\n"
-"\n"
-"Enlightenment is unable to initialise Imlib.\n"
-"\n"
-"This is unusual. Unable to continue.\n"
-"Exiting.\n"
-msgstr ""
-"FATALER FEHLER:\n"
-"\n"
-"Enlightenment kann Imlib nicht initialisieren.\n"
-"\n"
-"Dies ist ungewöhnlich. Kann nicht fortfahren.\n"
-"Breche ab.\n"
-
-# src/setup.c:342
-#: src/setup.c:298
-msgid ""
-"FATAL ERROR:\n"
-"\n"
-"Enlightenment is unable to initialise Fnlib.\n"
-"\n"
-"This is unusual. Unable to continue.\n"
-"Exiting.\n"
-msgstr ""
-"FATALER FEHLER:\n"
-"\n"
-"Enlightenment kann Fnlib nicht initialisieren.\n"
-"\n"
-"Dies ist ungewöhnlich. Kann nicht fortfahren.\n"
-"Breche ab.\n"
-
 # src/setup.c:402
-#: src/setup.c:346
+#: src/setup.c:300
 msgid "X server version error"
 msgstr "X-Server-Versionsfehler"
 
 # src/setup.c:403
-#: src/setup.c:346
+#: src/setup.c:300
 msgid "Ignore this error"
 msgstr "Ignorieren Sie diesen Fehler"
 
 # src/setup.c:404
-#: src/setup.c:348
+#: src/setup.c:302
 #, c-format
 msgid ""
 "WARNING:\n"
@@ -3142,7 +2945,7 @@ msgstr ""
 "dem er auch nie Zugriff hatte.\n"
 
 # src/setup.c:633
-#: src/setup.c:519
+#: src/setup.c:473
 #, c-format
 msgid ""
 "The directory %s is apparently not a directory\n"
@@ -3154,7 +2957,7 @@ msgstr ""
 "Bitte entfernen Sie diese Datei.\n"
 
 # src/setup.c:639
-#: src/setup.c:525
+#: src/setup.c:479
 #, c-format
 msgid ""
 "Do not have execute access to %s\n"
@@ -3168,7 +2971,7 @@ msgstr ""
 "Verzeichnisses und berichtigen Sie das Problem.\n"
 
 # src/setup.c:647
-#: src/setup.c:533
+#: src/setup.c:487
 #, c-format
 msgid ""
 "Do not have read access to %s\n"
@@ -3182,7 +2985,7 @@ msgstr ""
 "Verzeichnisses und berichtigen Sie das Problem.\n"
 
 # src/setup.c:655
-#: src/setup.c:540
+#: src/setup.c:494
 #, c-format
 msgid ""
 "Do not have write access to %s\n"
@@ -3322,7 +3125,7 @@ msgstr ""
 "Fehler beim Kontakt mit dem Audioserver (Esound). Der Ton wird\n"
 "darum wieder ausgeschaltet.\n"
 
-#: src/tclass.c:63
+#: src/tclass.c:59
 msgid "TextClass Error!"
 msgstr "TextClass-Fehler!"
 
@@ -3333,22 +3136,22 @@ msgid "Theme %s does not contain a %s file\n"
 msgstr "Thema enthält keine Datei sound.cfg\n"
 
 # src/theme.c:293
-#: src/theme.c:360
+#: src/theme.c:363
 msgid "Unknown\n"
 msgstr "Unbekannt\n"
 
 # src/theme.c:316 src/theme.c:328
-#: src/theme.c:373 src/theme.c:380
+#: src/theme.c:376 src/theme.c:383
 msgid "Theme file/directory does not exist\n"
 msgstr "Themendatei/-Verzeichnis existiert nicht\n"
 
 # src/theme.c:354
-#: src/theme.c:397
+#: src/theme.c:400
 msgid "Bad Theme"
 msgstr "Unbrauchbares Thema"
 
 # src/theme.c:348
-#: src/theme.c:398
+#: src/theme.c:401
 #, c-format
 msgid ""
 "The theme:\n"
@@ -3459,6 +3262,193 @@ msgstr "Verschiedene Einstellungen"
 #: config/strings.c:18
 msgid "Legacy E-conf tool ..."
 msgstr ""
+
+# src/fx.c:387 src/fx.c:405
+#~ msgid "Unable to display raindrops"
+#~ msgstr "Kann Regentropfen nicht darstellen"
+
+# src/fx.c:388
+#~ msgid ""
+#~ "\n"
+#~ "Enlightenment is unable to display raindrops on this\n"
+#~ "display because Shared memory is not available on this\n"
+#~ "X-Server.\n"
+#~ "\n"
+#~ "This may be due to Enlightenment being a remote client\n"
+#~ "running over the network, a MIT-SHM incapable X-server,\n"
+#~ "having run out of SHM ID's on the system or Shared\n"
+#~ "Memory support being turned off in Imlib\n"
+#~ "\n"
+#~ "You may correct this by either running `imlib_config'\n"
+#~ "or copying the system imrc (/usr/etc/imrc) to ~/.imrc\n"
+#~ "and editing it, enabling shared memory.\n"
+#~ "\n"
+#~ msgstr ""
+#~ "\n"
+#~ "Enlightenment kann keine Regentropfen auf dieser Anzeige\n"
+#~ "darstellen, da dieser X-Server keinen gemeinsamen Speicher-\n"
+#~ "zugriff erlaubt.\n"
+#~ "\n"
+#~ "Dies kann daran liegen, dass Enlightenment ein entfernter\n"
+#~ "Client ist, der über das Netzwerk läuft, dass der X-Server\n"
+#~ "die MIT-SHM-Erweiterung nicht hat, dass auf dem System keine\n"
+#~ "SHM-IDs mehr verfügbar sind oder dass die Unterstützung für\n"
+#~ "gemeinsamen Speicherzugriff in Imlib abgeschaltet wurde.\n"
+#~ "\n"
+#~ "Dies kann eventuell korrigiert werden, indem Sie\n"
+#~ "`imlib_config' ausführen oder die systemweite imrc\n"
+#~ "(/usr/etc/imrc) nach ~/.imrc kopieren und sie von Hand\n"
+#~ "bearbeiten, um den gemeinsamen Speicherzugriff zu aktivieren.\n"
+#~ "\n"
+
+# src/fx.c:406
+#~ msgid ""
+#~ "\n"
+#~ "Enlightenment is unable to display raindrops on this\n"
+#~ "display because shared pixmaps are not available on this\n"
+#~ "X-Server.\n"
+#~ "\n"
+#~ "This may be due to either the X-Server not implementing\n"
+#~ "shared pixmaps, or shared pixmaps being disabled in\n"
+#~ "Imlib's configuration.\n"
+#~ "\n"
+#~ "You may correct this by either running `imlib_config'\n"
+#~ "or copying the system imrc (/usr/etc/imrc) to ~/.imrc\n"
+#~ "and editing it, enabling shared pixmaps.\n"
+#~ "\n"
+#~ msgstr ""
+#~ "\n"
+#~ "Enlightenment kann keine Regentropfen auf dieser Anzeige\n"
+#~ "darstellen, da gemeinsam genutzte Pixmaps auf diesem\n"
+#~ "X-Server nicht zur Verfügung stehen.\n"
+#~ "\n"
+#~ "Dies kann daran liegen, dass der X-Server keine gemeinsam\n"
+#~ "genutzten Pixmaps anbietet, oder dass diese in der Imlib-\n"
+#~ "Konfiguration abgeschaltet wurden.\n"
+#~ "\n"
+#~ "Sie können dies mit Hilfe von `imlib_config' beheben,\n"
+#~ "oder indem Sie die systemweite imrc (/usr/etc/imrc) nach\n"
+#~ "~/.imrc kopieren und sie ändern, damit gemeinsam genutzte\n"
+#~ "Pixmaps dort aktiviert werden.\n"
+#~ "\n"
+
+# src/pager.c:527 src/pager.c:543 src/pager.c:557
+#~ msgid "Warning!"
+#~ msgstr "Warnung!"
+
+# src/pager.c:528
+#~ msgid ""
+#~ "\n"
+#~ "You seem to have an X Server capable of Shared Memory\n"
+#~ "but it is incapable of doing ZPixmap Shared pixmaps\n"
+#~ "(The server does not claim to be able to do them).\n"
+#~ "\n"
+#~ "The pager in Enlightenment will run slowly in snapshot\n"
+#~ "mode if you continue to use that mode of the pager\n"
+#~ "under these conditions.\n"
+#~ "\n"
+#~ "It is suggested you change the settings on your pager to\n"
+#~ "disable snapshots to improve performance.\n"
+#~ "\n"
+#~ msgstr ""
+#~ "\n"
+#~ "Sie scheinen einen X-Server zu haben, der gemeinsam genutzten Speicher\n"
+#~ "unterstützt, aber keine gemeinsam genutzten Pixmaps über ZPixmap. (Der\n"
+#~ "Server gibt nicht an, dass er sie unterstützt.)\n"
+#~ "\n"
+#~ "Der Pager in Enlightenment wird im Schnappschuss-Modus nur langsam\n"
+#~ "laufen, wenn Sie diesen Modus unter diesen Bedingungen\n"
+#~ "weiterbenutzen.\n"
+#~ "\n"
+#~ "Es wird empfohlen, dass Sie diesen Modus in den Pager-Einstellungen\n"
+#~ "abschalten, um die Leistung zu verbessern.\n"
+#~ "\n"
+
+# src/pager.c:544
+#~ msgid ""
+#~ "\n"
+#~ "Your X Server is capable of doing Shared Memory but you do\n"
+#~ "not have Shared Pixmaps enabled in your Imlib configuration.\n"
+#~ "\n"
+#~ "Please enable Shared Pixmaps in your Imlib configuration\n"
+#~ "then restart Enlightenment to gain better performance for\n"
+#~ "the pagers when snapshot mode is enabled.\n"
+#~ "\n"
+#~ msgstr ""
+#~ "\n"
+#~ "Ihr X-Server unterstützt gemeinsam genutzten Speicher, aber Sie haben\n"
+#~ "gemeinsam genutzte Pixmaps in Ihrer Imlib-Konfiguration nicht\n"
+#~ "aktiviert.\n"
+#~ "\n"
+#~ "Bitte aktivieren Sie diese dort und starten Sie Enlightenment neu, um\n"
+#~ "bessere Leistung für die Pager zu erreichen, wenn der\n"
+#~ "Schnappschuss-Modus aktiv ist.\n"
+#~ "\n"
+
+# src/pager.c:558
+#~ msgid ""
+#~ "\n"
+#~ "You seem to be running Enlightenment over a network Connection\n"
+#~ "or on an X Server that does not support Shared Memory, or you\n"
+#~ "have disabled MIT-SHM Shared memory in your Imlib configuration.\n"
+#~ "This means the Enlightenment Pager will perform slowly and use\n"
+#~ "more system resources than it would when Shared Memory is\n"
+#~ "available.\n"
+#~ "\n"
+#~ "To improve performance please either enable MIT-SHM Shared Memory\n"
+#~ "in your Imlib config, if you disabled it, or disable Pager\n"
+#~ "snapshots.\n"
+#~ "\n"
+#~ msgstr ""
+#~ "\n"
+#~ "Sie scheinen Enlightenment über eine Netzwerkverbing auszuführen, oder\n"
+#~ "aber Sie benutzen einen X-Server, der gemeinsam genutzten Speicher\n"
+#~ "nicht unterstützt, oder aber Sie haben die Unterstützung für gemeinsam\n"
+#~ "genutzten Speicher (MIT-SHM) in Ihrer Imlib-Konfiguration\n"
+#~ "deaktiviert. Dies bedeutet, dass der Enlightenment-Pager langsam\n"
+#~ "laufen und mehr Systemressourcen verbrauchen wird, als er würde, wenn\n"
+#~ "gemeinsam genutzter Speicher aktiv wäre.\n"
+#~ "\n"
+#~ "Um die Leistung zu verbessern, schalten Sie entweder den gemeinsam\n"
+#~ "genutzten MIT-SHM-Speicher in Ihrer Imlib-Konfiguration ein, falls Sie\n"
+#~ "ihn abgeschaltet habe, oder deaktivieren Sie die Pager-Schnappschüsse.\n"
+#~ "\n"
+
+# src/setup.c:328
+#~ msgid "Imlib initialisation error"
+#~ msgstr "Imlib-Initialisierungsfehler"
+
+# src/setup.c:330
+#~ msgid ""
+#~ "FATAL ERROR:\n"
+#~ "\n"
+#~ "Enlightenment is unable to initialise Imlib.\n"
+#~ "\n"
+#~ "This is unusual. Unable to continue.\n"
+#~ "Exiting.\n"
+#~ msgstr ""
+#~ "FATALER FEHLER:\n"
+#~ "\n"
+#~ "Enlightenment kann Imlib nicht initialisieren.\n"
+#~ "\n"
+#~ "Dies ist ungewöhnlich. Kann nicht fortfahren.\n"
+#~ "Breche ab.\n"
+
+# src/setup.c:342
+#~ msgid ""
+#~ "FATAL ERROR:\n"
+#~ "\n"
+#~ "Enlightenment is unable to initialise Fnlib.\n"
+#~ "\n"
+#~ "This is unusual. Unable to continue.\n"
+#~ "Exiting.\n"
+#~ msgstr ""
+#~ "FATALER FEHLER:\n"
+#~ "\n"
+#~ "Enlightenment kann Fnlib nicht initialisieren.\n"
+#~ "\n"
+#~ "Dies ist ungewöhnlich. Kann nicht fortfahren.\n"
+#~ "Breche ab.\n"
 
 # src/actions.c:3298
 #~ msgid "Welcome to the "

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-07-17 23:16+0200\n"
+"POT-Creation-Date: 2004-08-20 23:03+0200\n"
 "PO-Revision-Date: 2000-01-04 23:15+0100\n"
 "Last-Translator: Gergely Egerváry <mauzi@poli.hu>\n"
 "Language-Team: Hungarian <hu@li.org>\n"
@@ -14,18 +14,18 @@ msgstr ""
 "Content-Type: text/plain; charset=iso-8859-2\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/actions.c:289
+#: src/actions.c:266
 msgid "ActionClass Error!"
 msgstr ""
 
-#: src/actions.c:289 src/backgrounds.c:192 src/borders.c:2271
+#: src/actions.c:266 src/backgrounds.c:192 src/borders.c:2275
 #: src/buttons.c:124 src/cmclass.c:91 src/cursors.c:142 src/iclass.c:169
-#: src/tclass.c:63 src/tooltips.c:662
+#: src/tclass.c:59 src/tooltips.c:662
 #, c-format
 msgid "%u references remain\n"
 msgstr ""
 
-#: src/actions.c:694
+#: src/actions.c:676
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -38,7 +38,7 @@ msgstr ""
 "A programot nem lehet futtatni.\n"
 "A megadott file nem létezik.\n"
 
-#: src/actions.c:702
+#: src/actions.c:684
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -54,7 +54,7 @@ msgstr ""
 "A programot nem lehet futtatni.\n"
 "A program valószínûleg nincs a %s shell elérési útvonalában.\n"
 
-#: src/actions.c:722
+#: src/actions.c:704
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -71,7 +71,7 @@ msgstr ""
 "és van futtatási joga rá. Javasolt, hogy nézzen\n"
 "utána a problémának.\n"
 
-#: src/actions.c:733
+#: src/actions.c:715
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -85,7 +85,7 @@ msgstr ""
 "A programot nem lehet futtatni.\n"
 "A file létezik, de nem futtatható, mert nincs rá futtatási joga.\n"
 
-#: src/actions.c:749
+#: src/actions.c:731
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -98,7 +98,7 @@ msgstr ""
 "A programot nem lehet futtatni.\n"
 "A megadott file valójában egy könyvtár.\n"
 
-#: src/actions.c:757
+#: src/actions.c:739
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -111,12 +111,12 @@ msgstr ""
 "A programot nem lehet futtatni.\n"
 "A megadott file nem hagyományos file.\n"
 
-#: src/actions.c:2880
+#: src/actions.c:2858
 #, c-format
 msgid "About Enlightenment %s"
 msgstr "Az Enlightenment %s névjegye"
 
-#: src/actions.c:2894
+#: src/actions.c:2872
 #, c-format
 msgid ""
 "Welcome to the %s version\n"
@@ -138,7 +138,7 @@ msgid ""
 "Kim Woelders - kim@woelders.dk\n"
 msgstr ""
 
-#: src/actions.c:2910 src/dialog.c:2130 src/dialog.c:2171 src/groups.c:677
+#: src/actions.c:2888 src/dialog.c:2130 src/dialog.c:2171 src/groups.c:677
 #: src/settings.c:336 src/settings.c:609 src/settings.c:980
 #: src/settings.c:1203 src/settings.c:1439 src/settings.c:1592
 #: src/settings.c:1694 src/settings.c:1801 src/settings.c:1880
@@ -148,11 +148,11 @@ msgstr ""
 msgid "OK"
 msgstr "OK"
 
-#: src/actions.c:3021
+#: src/actions.c:2999
 msgid "  Pick the group the window will belong to:  \n"
 msgstr "  Válassza ki a csoportot ahova az ablak tartozni fog:  \n"
 
-#: src/actions.c:3245
+#: src/actions.c:3223
 msgid ""
 "\n"
 "  There's no current group at the moment.  \n"
@@ -172,24 +172,24 @@ msgstr ""
 "  Válassza ki a csoportot ahova az ablak tartozni fog:  \n"
 "\n"
 
-#: src/actions.c:3265
+#: src/actions.c:3243
 msgid "   Select the group to remove the window from.  "
 msgstr "   Válassza ki a csoportot ahonnan az ablak el lesz távolítva.  "
 
-#: src/actions.c:3277
+#: src/actions.c:3255
 msgid "  Select the group to break  "
 msgstr "  Válassza ki a csoportot a megszakításhoz  "
 
-#: src/actions.c:3304
+#: src/actions.c:3282
 #, c-format
 msgid "You have been warned about the dangers of Zoom mode\n"
 msgstr ""
 
-#: src/actions.c:3307
+#: src/actions.c:3285
 msgid "Warning !!!"
 msgstr "Vigyázat !!!"
 
-#: src/actions.c:3308
+#: src/actions.c:3286
 msgid ""
 "This feature is heavily reliant on a feature of your\n"
 "X Server called the Vid Mode Extension. This feature exists\n"
@@ -221,7 +221,7 @@ msgstr "Enlightenment újraindítása"
 
 #: src/alert.c:48 src/alert.c:78 src/events.c:61 src/memory.c:211
 #: src/memory.c:287 src/memory.c:305 src/memory.c:381 src/memory.c:396
-#: src/setup.c:286 src/setup.c:297 src/setup.c:347
+#: src/setup.c:301
 msgid "Quit Enlightenment"
 msgstr "Kilépés"
 
@@ -245,7 +245,7 @@ msgstr "Kilépés"
 msgid "Background Error!"
 msgstr ""
 
-#: src/borders.c:2271
+#: src/borders.c:2275
 msgid "Border Error!"
 msgstr ""
 
@@ -280,18 +280,18 @@ msgstr ""
 
 #: src/config.c:355 src/config.c:593 src/config.c:668 src/config.c:1021
 #: src/config.c:1138 src/config.c:1374 src/config.c:1501 src/config.c:1605
-#: src/config.c:1818 src/config.c:2065 src/config.c:2138 src/config.c:2230
-#: src/config.c:2486 src/config.c:2708 src/config.c:2970 src/config.c:3061
-#: src/config.c:3094 src/config.c:3239 src/config.c:3441
+#: src/config.c:1818 src/config.c:2053 src/config.c:2126 src/config.c:2218
+#: src/config.c:2474 src/config.c:2686 src/config.c:2948 src/config.c:3039
+#: src/config.c:3072 src/config.c:3217 src/config.c:3419
 #, c-format
 msgid "CONFIG: ignoring extra data in \"%s\"\n"
 msgstr "CONFIG: felesleges adatok átlépése: \"%s\"\n"
 
 #: src/config.c:361 src/config.c:599 src/config.c:676 src/config.c:1027
 #: src/config.c:1144 src/config.c:1380 src/config.c:1507 src/config.c:1613
-#: src/config.c:1826 src/config.c:2071 src/config.c:2144 src/config.c:2238
-#: src/config.c:2492 src/config.c:2716 src/config.c:2976 src/config.c:3245
-#: src/config.c:3449
+#: src/config.c:1826 src/config.c:2059 src/config.c:2132 src/config.c:2226
+#: src/config.c:2479 src/config.c:2694 src/config.c:2954 src/config.c:3223
+#: src/config.c:3427
 #, c-format
 msgid "CONFIG: missing required data in \"%s\"\n"
 msgstr "CONFIG: hiányzó adatok: \"%s\"\n"
@@ -356,29 +356,29 @@ msgid ""
 "Done loading a Button block.  Outcome is likely not good.\n"
 msgstr ""
 
-#: src/config.c:2033 src/config.c:2113
+#: src/config.c:2021 src/config.c:2101
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading a Desktop block.  Outcome is likely not good.\n"
 msgstr ""
 
-#: src/config.c:2125
+#: src/config.c:2113
 msgid "Easter Egg!  Iconboxes aren't implemented yet.\n"
 msgstr ""
 
-#: src/config.c:2155
+#: src/config.c:2143
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading an Iconbox block.  Outcome is likely not good.\n"
 msgstr ""
 
-#: src/config.c:2189
+#: src/config.c:2177
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading an Sound block.  Outcome is likely not good.\n"
 msgstr ""
 
-#: src/config.c:2442
+#: src/config.c:2430
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -387,13 +387,13 @@ msgid ""
 "Will ignore and continue...\n"
 msgstr ""
 
-#: src/config.c:2456
+#: src/config.c:2444
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading an Action Class block.  Outcome is likely not good.\n"
 msgstr ""
 
-#: src/config.c:2661
+#: src/config.c:2639
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -402,13 +402,13 @@ msgid ""
 "Will ignore and continue...\n"
 msgstr ""
 
-#: src/config.c:2668
+#: src/config.c:2646
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading an ImageClass block.  Outcome is likely not good.\n"
 msgstr ""
 
-#: src/config.c:2907
+#: src/config.c:2885
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -417,14 +417,14 @@ msgid ""
 "Will ignore and continue...\n"
 msgstr ""
 
-#: src/config.c:2931
+#: src/config.c:2909
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading an ColorModifier block.\n"
 "Outcome is likely not good.\n"
 msgstr ""
 
-#: src/config.c:3022
+#: src/config.c:3000
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -433,19 +433,19 @@ msgid ""
 "Will ignore and continue...\n"
 msgstr ""
 
-#: src/config.c:3029
+#: src/config.c:3007
 msgid ""
 "Warning: Configuration appears to have ended before we were\n"
 "Done loading an ToolTip block.  Outcome is likely not good.\n"
 msgstr ""
 
-#: src/config.c:3067
+#: src/config.c:3045
 msgid ""
 "Warning: Configuration appears to have ended before we were\n"
 "Done loading an FX block.  Outcome is likely not good.\n"
 msgstr ""
 
-#: src/config.c:3157
+#: src/config.c:3135
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -454,13 +454,13 @@ msgid ""
 "Will ignore and continue...\n"
 msgstr ""
 
-#: src/config.c:3165
+#: src/config.c:3143
 msgid ""
 "Warning: Configuration appears to have ended before we were\n"
 "Done loading an Iconbox block.  Outcome is likely not good.\n"
 msgstr ""
 
-#: src/config.c:3201
+#: src/config.c:3179
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -469,13 +469,13 @@ msgid ""
 "Will ignore and continue...\n"
 msgstr ""
 
-#: src/config.c:3209
+#: src/config.c:3187
 msgid ""
 "Warning: Configuration appears to have ended before we were\n"
 "Done loading an Extras block.  Outcome is likely not good.\n"
 msgstr ""
 
-#: src/config.c:3315
+#: src/config.c:3293
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -484,13 +484,13 @@ msgid ""
 "Will ignore and continue...\n"
 msgstr ""
 
-#: src/config.c:3322
+#: src/config.c:3300
 msgid ""
 "Warning: Configuration appears to have ended before we were\n"
 "Done loading an WindowMatch block.  Outcome is likely not good.\n"
 msgstr ""
 
-#: src/config.c:3351
+#: src/config.c:3329
 #, c-format
 msgid ""
 "Help! Cannot find epp!\n"
@@ -501,19 +501,19 @@ msgid ""
 "it not being able to be executed by you.\n"
 msgstr ""
 
-#: src/config.c:3458
+#: src/config.c:3436
 msgid "Theme versioning ERROR"
 msgstr ""
 
-#: src/config.c:3459 src/config.c:3488
+#: src/config.c:3437 src/config.c:3466
 msgid "Restart with Defaults"
 msgstr ""
 
-#: src/config.c:3460 src/config.c:3489
+#: src/config.c:3438 src/config.c:3467
 msgid "Abort and Exit"
 msgstr ""
 
-#: src/config.c:3461
+#: src/config.c:3439
 #, c-format
 msgid ""
 "ERROR:\n"
@@ -534,11 +534,11 @@ msgid ""
 "features in Enlightenment in new versions.\n"
 msgstr ""
 
-#: src/config.c:3487
+#: src/config.c:3465
 msgid "User Config Version ERROR"
 msgstr ""
 
-#: src/config.c:3490
+#: src/config.c:3468
 #, c-format
 msgid ""
 "ERROR:\n"
@@ -555,7 +555,7 @@ msgid ""
 "your liking again safely.\n"
 msgstr ""
 
-#: src/config.c:3737
+#: src/config.c:3710
 #, c-format
 msgid ""
 "WARNING!\n"
@@ -565,7 +565,7 @@ msgid ""
 "filesystem permissions.\n"
 msgstr ""
 
-#: src/config.c:3745
+#: src/config.c:3718
 #, c-format
 msgid ""
 "No themes were found in the default theme directory:\n"
@@ -575,27 +575,27 @@ msgid ""
 "Proceeding from here is mostly pointless.\n"
 msgstr ""
 
-#: src/config.c:3797
+#: src/config.c:3768
 msgid "Enlightenment Starting..."
 msgstr "Az Enlightenment indítása..."
 
-#: src/config.c:4259
+#: src/config.c:4230
 msgid "Recover system config?"
 msgstr ""
 
-#: src/config.c:4259
+#: src/config.c:4230
 msgid "Yes, Attempt recovery"
 msgstr ""
 
-#: src/config.c:4260
+#: src/config.c:4231
 msgid "Restart and try again"
 msgstr ""
 
-#: src/config.c:4260
+#: src/config.c:4231
 msgid "Quit and give up"
 msgstr ""
 
-#: src/config.c:4262
+#: src/config.c:4233
 msgid ""
 "Enlightenment has encountered parsing errors in your autosaved\n"
 "configuration.\n"
@@ -648,7 +648,7 @@ msgstr ""
 msgid "Attention !!!"
 msgstr "Figyelem !!!"
 
-#: src/events.c:60 src/setup.c:296
+#: src/events.c:60
 msgid "X server setup error"
 msgstr ""
 
@@ -700,50 +700,11 @@ msgid ""
 "it off.\n"
 msgstr ""
 
-#: src/fx.c:426 src/fx.c:442
-msgid "Unable to display raindrops"
-msgstr ""
-
-#: src/fx.c:427
-msgid ""
-"\n"
-"Enlightenment is unable to display raindrops on this\n"
-"display because Shared memory is not available on this\n"
-"X-Server.\n"
-"\n"
-"This may be due to Enlightenment being a remote client\n"
-"running over the network, a MIT-SHM incapable X-server,\n"
-"having run out of SHM ID's on the system or Shared\n"
-"Memory support being turned off in Imlib\n"
-"\n"
-"You may correct this by either running `imlib_config'\n"
-"or copying the system imrc (/usr/etc/imrc) to ~/.imrc\n"
-"and editing it, enabling shared memory.\n"
-"\n"
-msgstr ""
-
-#: src/fx.c:443
-msgid ""
-"\n"
-"Enlightenment is unable to display raindrops on this\n"
-"display because shared pixmaps are not available on this\n"
-"X-Server.\n"
-"\n"
-"This may be due to either the X-Server not implementing\n"
-"shared pixmaps, or shared pixmaps being disabled in\n"
-"Imlib's configuration.\n"
-"\n"
-"You may correct this by either running `imlib_config'\n"
-"or copying the system imrc (/usr/etc/imrc) to ~/.imrc\n"
-"and editing it, enabling shared pixmaps.\n"
-"\n"
-msgstr ""
-
-#: src/fx.c:720
+#: src/fx.c:686
 msgid "Starting up Waves FX..."
 msgstr ""
 
-#: src/fx.c:721
+#: src/fx.c:687
 msgid ""
 "\n"
 "You have just started the Waves Effect.\n"
@@ -757,11 +718,11 @@ msgid ""
 "it off.\n"
 msgstr ""
 
-#: src/fx.c:908
+#: src/fx.c:874
 msgid "Starting up imagespinners FX..."
 msgstr ""
 
-#: src/fx.c:909
+#: src/fx.c:875
 msgid ""
 "\n"
 "You have just started the imagespinners Effect.\n"
@@ -823,7 +784,7 @@ msgid ""
 "Selection Dialog\n"
 msgstr ""
 
-#: src/groups.c:678 src/pager.c:976 src/settings.c:338 src/settings.c:611
+#: src/groups.c:678 src/pager.c:926 src/settings.c:338 src/settings.c:611
 #: src/settings.c:982 src/settings.c:1205 src/settings.c:1441
 #: src/settings.c:1594 src/settings.c:1696 src/settings.c:1803
 #: src/settings.c:1882 src/settings.c:1972 src/settings.c:2426
@@ -945,23 +906,23 @@ msgstr ""
 msgid "Iconbox Options"
 msgstr "Iconbox beállításai"
 
-#: src/iconify.c:2259
+#: src/iconify.c:2260
 msgid "This Iconbox Settings..."
 msgstr "Iconbox beállításai..."
 
-#: src/iconify.c:2262
+#: src/iconify.c:2265
 msgid "Close Iconbox"
 msgstr "Iconbox bezárása"
 
-#: src/iconify.c:2264
+#: src/iconify.c:2268
 msgid "Create New Iconbox"
 msgstr "Új iconbox létrehozása"
 
-#: src/ipc.c:1669
+#: src/ipc.c:1664
 msgid "Message"
 msgstr ""
 
-#: src/ipc.c:3909
+#: src/ipc.c:3919
 #, c-format
 msgid ""
 "Enlightenment Version : %s\n"
@@ -970,11 +931,11 @@ msgstr ""
 "Enlightenment verzió     : %s\n"
 "a kód utoljára frissítve : %s\n"
 
-#: src/ipc.c:6458
+#: src/ipc.c:6481
 msgid "Enlightenment IPC Commands Help"
 msgstr "Enlightenment IPC parancsok súgója"
 
-#: src/ipc.c:6462 src/ipc.c:6490
+#: src/ipc.c:6485 src/ipc.c:6513
 msgid ""
 "\n"
 "commands currently available:\n"
@@ -982,7 +943,7 @@ msgstr ""
 "\n"
 "elérhetõ parancsok:\n"
 
-#: src/ipc.c:6463
+#: src/ipc.c:6486
 msgid ""
 "use \"help all\" for descriptions of each command\n"
 "use \"help <command>\" for an individual description\n"
@@ -991,12 +952,12 @@ msgstr ""
 "írja be: \"help all\" az összes parancs leírásának megjelenítéséhez\n"
 "írja be: \"help <parancs>\" az egyes parancsok leírásának megjelenítéséhez\n"
 
-#: src/ipc.c:6491
+#: src/ipc.c:6514
 msgid "use \"help <command>\" for an individual description\n"
 msgstr ""
 "írja be: \"help <parancs>\" az egyes parancsok leírásának megjelenítéséhez\n"
 
-#: src/ipc.c:6493
+#: src/ipc.c:6516
 #, fuzzy
 msgid "      <command>   : <description>\n"
 msgstr "<parancs> : <leírás>\n"
@@ -1111,24 +1072,24 @@ msgid ""
 "The error occurred at %s, line %d.\n"
 msgstr ""
 
-#: src/menus.c:1846
+#: src/menus.c:1710
 msgid "Go to this Desktop"
 msgstr "Ugrás erre az asztalra"
 
-#: src/menus.c:1861 src/menus.c:1884
+#: src/menus.c:1725 src/menus.c:1748
 #, c-format
 msgid "Desktop %i"
 msgstr "%i. asztal"
 
-#: src/menus.c:1914
+#: src/menus.c:1778
 msgid "Show/Hide this group"
 msgstr "Csoport mutatása/elrejtése"
 
-#: src/menus.c:1917
+#: src/menus.c:1781
 msgid "Iconify this group"
 msgstr "Csoport kicsinyítése"
 
-#: src/menus.c:1931
+#: src/menus.c:1795
 #, c-format
 msgid "Group %i"
 msgstr "%i. csoport"
@@ -1163,91 +1124,43 @@ msgid ""
 "correctly.\n"
 msgstr ""
 
-#: src/pager.c:145 src/pager.c:159 src/pager.c:173
-msgid "Warning!"
-msgstr "Vigyázat!"
-
-#: src/pager.c:146
-msgid ""
-"\n"
-"You seem to have an X Server capable of Shared Memory\n"
-"but it is incapable of doing ZPixmap Shared pixmaps\n"
-"(The server does not claim to be able to do them).\n"
-"\n"
-"The pager in Enlightenment will run slowly in snapshot\n"
-"mode if you continue to use that mode of the pager\n"
-"under these conditions.\n"
-"\n"
-"It is suggested you change the settings on your pager to\n"
-"disable snapshots to improve performance.\n"
-"\n"
-msgstr ""
-
-#: src/pager.c:160
-msgid ""
-"\n"
-"Your X Server is capable of doing Shared Memory but you do\n"
-"not have Shared Pixmaps enabled in your Imlib configuration.\n"
-"\n"
-"Please enable Shared Pixmaps in your Imlib configuration\n"
-"then restart Enlightenment to gain better performance for\n"
-"the pagers when snapshot mode is enabled.\n"
-"\n"
-msgstr ""
-
-#: src/pager.c:174
-msgid ""
-"\n"
-"You seem to be running Enlightenment over a network Connection\n"
-"or on an X Server that does not support Shared Memory, or you\n"
-"have disabled MIT-SHM Shared memory in your Imlib configuration.\n"
-"This means the Enlightenment Pager will perform slowly and use\n"
-"more system resources than it would when Shared Memory is\n"
-"available.\n"
-"\n"
-"To improve performance please either enable MIT-SHM Shared Memory\n"
-"in your Imlib config, if you disabled it, or disable Pager\n"
-"snapshots.\n"
-"\n"
-msgstr ""
-
-#: src/pager.c:969
+#: src/pager.c:919
 msgid "Window Options"
 msgstr "Ablak beállításai"
 
-#: src/pager.c:973
+#: src/pager.c:923
 msgid "Iconify"
 msgstr "Kicsinyít"
 
-#: src/pager.c:979
+#: src/pager.c:929
 msgid "Annihilate"
 msgstr "Megsemmisít"
 
-#: src/pager.c:982
+#: src/pager.c:932
 msgid "Stick / Unstick"
 msgstr "Rögzít"
 
-#: src/pager.c:993
+#: src/pager.c:943
 msgid "Desktop Options"
 msgstr "Asztal beállításai"
 
-#: src/pager.c:996
+#: src/pager.c:946
 msgid "Pager Settings..."
 msgstr "Pager beállításai..."
 
-#: src/pager.c:1000
+#: src/pager.c:950
 msgid "Snapshotting On"
 msgstr "Miniatúra be"
 
-#: src/pager.c:1004
+#: src/pager.c:954
 msgid "Snapshotting Off"
 msgstr "Miniatúra ki"
 
-#: src/pager.c:1010
+#: src/pager.c:960
 msgid "High Quality On"
 msgstr "Jó minõség be"
 
-#: src/pager.c:1014
+#: src/pager.c:964
 msgid "High Quality Off"
 msgstr "Jó minõség ki"
 
@@ -2186,7 +2099,7 @@ msgstr ""
 msgid "There are no active windows with remembered attributes."
 msgstr ""
 
-#: src/setup.c:137
+#: src/setup.c:134
 msgid ""
 "Enlightenment cannot connect to the display nominated by\n"
 "your shell's DISPLAY environment variable. You may set this\n"
@@ -2202,51 +2115,15 @@ msgstr ""
 "Az Enlightenment nem tud csatlakozni a DISPLAY változóban\n"
 "megadott szerverhez.\n"
 
-#: src/setup.c:285
-msgid "Imlib initialisation error"
-msgstr "Imlib inicializálási hiba"
-
-#: src/setup.c:287
-msgid ""
-"FATAL ERROR:\n"
-"\n"
-"Enlightenment is unable to initialise Imlib.\n"
-"\n"
-"This is unusual. Unable to continue.\n"
-"Exiting.\n"
-msgstr ""
-"SÚLYOS HIBA:\n"
-"\n"
-"Az Enlightenment nem tudja inicializálni az Imlib-et.\n"
-"\n"
-"Nem lehet folytatni.\n"
-"Kilépés.\n"
-
-#: src/setup.c:298
-msgid ""
-"FATAL ERROR:\n"
-"\n"
-"Enlightenment is unable to initialise Fnlib.\n"
-"\n"
-"This is unusual. Unable to continue.\n"
-"Exiting.\n"
-msgstr ""
-"SÚLYOS HIBA:\n"
-"\n"
-"Az Enlightenment nem tudja inicializálni az Fnlib-et.\n"
-"\n"
-"Nem lehet folytatni.\n"
-"Kilépés.\n"
-
-#: src/setup.c:346
+#: src/setup.c:300
 msgid "X server version error"
 msgstr "X szerver verzió hiba"
 
-#: src/setup.c:346
+#: src/setup.c:300
 msgid "Ignore this error"
 msgstr "Hiba átlépése"
 
-#: src/setup.c:348
+#: src/setup.c:302
 #, c-format
 msgid ""
 "WARNING:\n"
@@ -2257,7 +2134,7 @@ msgid ""
 "access to, nor have heard of.\n"
 msgstr ""
 
-#: src/setup.c:519
+#: src/setup.c:473
 #, c-format
 msgid ""
 "The directory %s is apparently not a directory\n"
@@ -2265,7 +2142,7 @@ msgid ""
 "Please remove this file\n"
 msgstr ""
 
-#: src/setup.c:525
+#: src/setup.c:479
 #, c-format
 msgid ""
 "Do not have execute access to %s\n"
@@ -2274,7 +2151,7 @@ msgid ""
 "directory and take steps to rectify this.\n"
 msgstr ""
 
-#: src/setup.c:533
+#: src/setup.c:487
 #, c-format
 msgid ""
 "Do not have read access to %s\n"
@@ -2283,7 +2160,7 @@ msgid ""
 "directory and take steps to rectify this.\n"
 msgstr ""
 
-#: src/setup.c:540
+#: src/setup.c:494
 #, c-format
 msgid ""
 "Do not have write access to %s\n"
@@ -2397,7 +2274,7 @@ msgid ""
 "now be disabled.\n"
 msgstr ""
 
-#: src/tclass.c:63
+#: src/tclass.c:59
 msgid "TextClass Error!"
 msgstr ""
 
@@ -2406,19 +2283,19 @@ msgstr ""
 msgid "Theme %s does not contain a %s file\n"
 msgstr "A theme nem tartalmaz sound.cfg filet\n"
 
-#: src/theme.c:360
+#: src/theme.c:363
 msgid "Unknown\n"
 msgstr "Ismeretlen\n"
 
-#: src/theme.c:373 src/theme.c:380
+#: src/theme.c:376 src/theme.c:383
 msgid "Theme file/directory does not exist\n"
 msgstr "A theme file/könyvtás nem létezik\n"
 
-#: src/theme.c:397
+#: src/theme.c:400
 msgid "Bad Theme"
 msgstr "Rossz theme"
 
-#: src/theme.c:398
+#: src/theme.c:401
 #, c-format
 msgid ""
 "The theme:\n"
@@ -2507,6 +2384,42 @@ msgstr "Iconbox beállításai..."
 #: config/strings.c:18
 msgid "Legacy E-conf tool ..."
 msgstr ""
+
+#~ msgid "Warning!"
+#~ msgstr "Vigyázat!"
+
+#~ msgid "Imlib initialisation error"
+#~ msgstr "Imlib inicializálási hiba"
+
+#~ msgid ""
+#~ "FATAL ERROR:\n"
+#~ "\n"
+#~ "Enlightenment is unable to initialise Imlib.\n"
+#~ "\n"
+#~ "This is unusual. Unable to continue.\n"
+#~ "Exiting.\n"
+#~ msgstr ""
+#~ "SÚLYOS HIBA:\n"
+#~ "\n"
+#~ "Az Enlightenment nem tudja inicializálni az Imlib-et.\n"
+#~ "\n"
+#~ "Nem lehet folytatni.\n"
+#~ "Kilépés.\n"
+
+#~ msgid ""
+#~ "FATAL ERROR:\n"
+#~ "\n"
+#~ "Enlightenment is unable to initialise Fnlib.\n"
+#~ "\n"
+#~ "This is unusual. Unable to continue.\n"
+#~ "Exiting.\n"
+#~ msgstr ""
+#~ "SÚLYOS HIBA:\n"
+#~ "\n"
+#~ "Az Enlightenment nem tudja inicializálni az Fnlib-et.\n"
+#~ "\n"
+#~ "Nem lehet folytatni.\n"
+#~ "Kilépés.\n"
 
 #~ msgid "Welcome to the "
 #~ msgstr "Üdvözli az "
