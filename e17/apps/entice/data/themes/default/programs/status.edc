@@ -3,7 +3,7 @@
 	signal, "entice,image,save,ok";
 	source, "";
 	script {
-	    text_set(PART:"statusmessage", "File Saved Ok!");
+	    set_text(PART:"statusmessage", "File Saved Ok!");
 	}
     }
     program {
@@ -11,7 +11,7 @@
 	signal, "entice,image,save,fail";
 	source, "";
 	script {
-	    text_set(PART:"statusmessage", "Unable to save the file...");
+	    set_text(PART:"statusmessage", "Unable to save the file...");
 	}
     }
     program {
