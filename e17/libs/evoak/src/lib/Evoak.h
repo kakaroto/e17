@@ -301,15 +301,6 @@ extern "C" {
    void               evoak_object_edje_part_text_set              (Evoak_Object *o, const char *part, const char *text);
    const char        *evoak_object_edje_part_text_get              (Evoak_Object *o, const char *part);
    
-   /* FIXME: need to implement embryo copde loading client-side and variable list shadowing */
-/* int                evoak_object_edje_variable_id_get            (Evoak_Object *o, char *name);*/
-/* int                evoak_object_edje_variable_int_get           (Evoak_Object *o, int id);*/
-/* void               evoak_object_edje_variable_int_set           (Evoak_Object *o, int id, int val);*/
-/* double             evoak_object_edje_variable_float_get         (Evoak_Object *o, int id);*/
-/* void               evoak_object_edje_variable_float_set         (Evoak_Object *o, int id, double val);*/
-/* char              *evoak_object_edje_variable_str_get           (Evoak_Object *o, int id);*/
-/* void               evoak_object_edje_variable_str_set           (Evoak_Object *o, int id, char *str);*/
-
    /* FIXME: oh god this is going to be FUN! */
 /*   
    void               evoak_object_edje_color_class_set            (Evoak_Object *o, const char *color_class, int r, int g, int b, int a, int r2, int g2, int b2, int a2, int r3, int g3, int b3, int a3);

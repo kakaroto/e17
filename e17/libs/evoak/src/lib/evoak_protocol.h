@@ -59,7 +59,7 @@ struct _Evoak_Protocol
  * OBJ_EDJE_FILE_SET
  * OBJ_EDJE_SIGNAL_EMIT
  * OBJ_EDJE_SWALLOW
- * OBJ_EDJE_VAR_SET
+ * OBJ_EDJE_MESSAGE_SEND
  * 
  * NB: do font paths client-side and specify file path fully
  * 
@@ -77,7 +77,6 @@ struct _Evoak_Protocol
  * OBJ_CLIPPED         <- new clipper or 0 if none (only if in event MASK)
  * OBJ_COLORED         <- r, g, b, a new (only if in event MASK)
  * OBJ_EDJE_SIGNAL     <- signal emitted by edje object (only if in event MASK)
- * OBJ_EDJE_VAR_CHANGE <- variable changed to X (only if in event MASK)
  * 
  * user input device events...
  * 
@@ -201,12 +200,10 @@ typedef struct {
 #define EVOAK_EVENT_MASK1_OBJ_RESIZED         (1 << 10)
 #define EVOAK_EVENT_MASK1_OBJ_COLORED         (1 << 11)
 #define EVOAK_EVENT_MASK1_OBJ_EDJE_SIGNAL     (1 << 12)
-#define EVOAK_EVENT_MASK1_OBJ_EDJE_VAR_INFO   (1 << 13)
-#define EVOAK_EVENT_MASK1_OBJ_EDJE_VAR_CHANGE (1 << 14)
-#define EVOAK_EVENT_MASK1_OBJ_FREED           (1 << 15)
-#define EVOAK_EVENT_MASK1_OBJ_FOCUS_IN        (1 << 16)
-#define EVOAK_EVENT_MASK1_OBJ_FOCUS_OUT       (1 << 17)
-#define EVOAK_EVENT_MASK1_OBJ_RESTACKED       (1 << 18)
+#define EVOAK_EVENT_MASK1_OBJ_FREED           (1 << 13)
+#define EVOAK_EVENT_MASK1_OBJ_FOCUS_IN        (1 << 14)
+#define EVOAK_EVENT_MASK1_OBJ_FOCUS_OUT       (1 << 15)
+#define EVOAK_EVENT_MASK1_OBJ_RESTACKED       (1 << 16)
 #define                      EVOAK_PR_OBJECT_FOCUS_SET 17
 typedef struct {
    unsigned char             onoff;
@@ -410,54 +407,24 @@ typedef struct {
    char                     *part;
    char                     *text;
 }                            Evoak_PR_Object_Edje_Text_Changed;
-#define                      EVOAK_PR_OBJECT_EDJE_VARIABLE_INT_SET 64
-typedef struct {
-   int                       variable_id;
-   int                       var;
-}                            Evoak_PR_Object_Edje_Variable_Int_Set;
-#define                      EVOAK_PR_OBJECT_EDJE_VARIABLE_FLOAT_SET 65
-typedef struct {
-   int                       variable_id;
-   char                     *var;
-}                            Evoak_PR_Object_Edje_Variable_Float_Set;
-#define                      EVOAK_PR_OBJECT_EDJE_VARIABLE_STR_SET 66
-typedef struct {
-   int                       variable_id;
-   char                     *var;
-}                            Evoak_PR_Object_Edje_Variable_Str_Set;
-#define                      EVOAK_PR_OBJECT_EDJE_VARIABLE_INT_CHANGED 67
-typedef struct {
-   int                       variable_id;
-   int                       var;
-}                            Evoak_PR_Object_Edje_Variable_Int_Changed;
-#define                      EVOAK_PR_OBJECT_EDJE_VARIABLE_FLOAT_CHANGED 68
-typedef struct {
-   int                       variable_id;
-   char                     *var;
-}                            Evoak_PR_Object_Edje_Variable_Float_Changed;
-#define                      EVOAK_PR_OBJECT_EDJE_VARIABLE_STR_CHANGED 69
-typedef struct {
-   int                       variable_id;
-   char                     *var;
-}                            Evoak_PR_Object_Edje_Variable_Str_Changed;
-#define                      EVOAK_PR_OBJECT_EDJE_SIGNAL_LISTEN 70
+#define                      EVOAK_PR_OBJECT_EDJE_SIGNAL_LISTEN 64
 typedef struct {
    int                       callback_id;
    char                     *emission;
    char                     *source;
 }                            Evoak_PR_Object_Edje_Signal_Listen;
-#define                      EVOAK_PR_OBJECT_EDJE_SIGNAL_UNLISTEN 71
+#define                      EVOAK_PR_OBJECT_EDJE_SIGNAL_UNLISTEN 65
 typedef struct {
    int                       callback_id;
    char                     *emission;
    char                     *source;
 }                            Evoak_PR_Object_Edje_Signal_Unlisten;
-#define                      EVOAK_PR_OBJECT_EDJE_SIGNAL_EMIT 72
+#define                      EVOAK_PR_OBJECT_EDJE_SIGNAL_EMIT 66
 typedef struct {
    char                     *emission;
    char                     *source;
 }                            Evoak_PR_Object_Edje_Signal_Emit;
-#define                      EVOAK_PR_OBJECT_EDJE_SIGNAL 73
+#define                      EVOAK_PR_OBJECT_EDJE_SIGNAL 67
 typedef struct {
    int                       callback_id;
    char                     *emission;
@@ -465,7 +432,7 @@ typedef struct {
 }                            Evoak_PR_Object_Edje_Signal;
 /***/
 
-#define                      EVOAK_PR_LAST 74
+#define                      EVOAK_PR_LAST 68
 
 extern Evoak_Protocol _evoak_proto[];
 

@@ -581,48 +581,6 @@ _evoak_ipc_cb_server_data(void *data, int type, void *event)
 	       }
 	  }
 	break;
-      case EVOAK_PR_OBJECT_EDJE_VARIABLE_INT_SET:
-	break;
-      case EVOAK_PR_OBJECT_EDJE_VARIABLE_FLOAT_SET:
-	break;
-      case EVOAK_PR_OBJECT_EDJE_VARIABLE_STR_SET:
-	break;
-      case EVOAK_PR_OBJECT_EDJE_VARIABLE_INT_CHANGED:
-	  {	
-	     Evoak_Object *o;
-	     Evoak_PR_Object_Edje_Variable_Int_Changed p;
-	     
-	     if (!_evoak_proto[e->major].dec(e->data, e->size, &p)) return 1;
-	     o = _evoak_hash_find(&(ev->object_hash), e->ref_to);
-	     if (o)
-	       {
-	       }
-	  }
-	break;
-      case EVOAK_PR_OBJECT_EDJE_VARIABLE_FLOAT_CHANGED:
-	  {	
-	     Evoak_Object *o;
-	     Evoak_PR_Object_Edje_Variable_Float_Changed p;
-	     
-	     if (!_evoak_proto[e->major].dec(e->data, e->size, &p)) return 1;
-	     o = _evoak_hash_find(&(ev->object_hash), e->ref_to);
-	     if (o)
-	       {
-	       }
-	  }
-	break;
-      case EVOAK_PR_OBJECT_EDJE_VARIABLE_STR_CHANGED:
-	  {	
-	     Evoak_Object *o;
-	     Evoak_PR_Object_Edje_Variable_Str_Changed p;
-	     
-	     if (!_evoak_proto[e->major].dec(e->data, e->size, &p)) return 1;
-	     o = _evoak_hash_find(&(ev->object_hash), e->ref_to);
-	     if (o)
-	       {
-	       }
-	  }
-	break;
       case EVOAK_PR_OBJECT_EDJE_SIGNAL_LISTEN:
 	break;
       case EVOAK_PR_OBJECT_EDJE_SIGNAL_UNLISTEN:
@@ -4927,46 +4885,4 @@ evoak_object_edje_part_text_get(Evoak_Object *o, const char *part)
 	  }
      }
    return NULL;
-}
-
-int
-evoak_object_edje_variable_id_get(Evoak_Object *o, char *name)
-{
-   /* aaah bugger - need to load embryo variably list */
-}
-
-int
-evoak_object_edje_variable_int_get(Evoak_Object *o, int id)
-{
-   /* look up shadowed value */
-}
-
-void
-evoak_object_edje_variable_int_set(Evoak_Object *o, int id, int val)
-{
-   /* send protocol to change it */
-}
-
-double
-evoak_object_edje_variable_float_get(Evoak_Object *o, int id)
-{
-   /* look up shadowed value */
-}
-
-void
-evoak_object_edje_variable_float_set(Evoak_Object *o, int id, double val)
-{
-   /* send protocol to change it */
-}
-
-char *
-evoak_object_edje_variable_str_get(Evoak_Object *o, int id)
-{
-   /* look up shadowed value */
-}
-
-void
-evoak_object_edje_variable_str_set(Evoak_Object *o, int id, char *str)
-{
-   /* send protocol to change it */
 }

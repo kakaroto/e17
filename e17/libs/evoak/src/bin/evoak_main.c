@@ -2119,60 +2119,6 @@ ipc_cb_client_data(void *data, int type, void *event)
 	     break;
 	   case EVOAK_PR_OBJECT_EDJE_TEXT_CHANGED:
 	     break;
-	   case EVOAK_PR_OBJECT_EDJE_VARIABLE_INT_SET:
-	       {
-		  Evoak_PR_Object_Edje_Variable_Int_Set p;
-		  
-		  if (_evoak_proto[e->major].dec(e->data, e->size, &p))
-		    {
-		       Evoak_Object *eo;
-		       
-		       eo = hash_find(&ec->hash, e->ref_to);
-		       if (eo)
-			 {
-			    edje_object_variable_int_set(eo->object, p.variable_id, p.var);
-			 }
-		    }
-	       }
-	     break;
-	   case EVOAK_PR_OBJECT_EDJE_VARIABLE_FLOAT_SET:
-	       {
-		  Evoak_PR_Object_Edje_Variable_Float_Set p;
-		  
-		  if (_evoak_proto[e->major].dec(e->data, e->size, &p))
-		    {
-		       Evoak_Object *eo;
-		       
-		       eo = hash_find(&ec->hash, e->ref_to);
-		       if (eo)
-			 {
-			    edje_object_variable_float_set(eo->object, p.variable_id, atof(p.var));
-			 }
-		    }
-	       }
-	     break;
-	   case EVOAK_PR_OBJECT_EDJE_VARIABLE_STR_SET:
-	       {
-		  Evoak_PR_Object_Edje_Variable_Str_Set p;
-		  
-		  if (_evoak_proto[e->major].dec(e->data, e->size, &p))
-		    {
-		       Evoak_Object *eo;
-		       
-		       eo = hash_find(&ec->hash, e->ref_to);
-		       if (eo)
-			 {
-			    edje_object_variable_str_set(eo->object, p.variable_id, p.var);
-			 }
-		    }
-	       }
-	     break;
-	   case EVOAK_PR_OBJECT_EDJE_VARIABLE_INT_CHANGED:
-	     break;
-	   case EVOAK_PR_OBJECT_EDJE_VARIABLE_FLOAT_CHANGED:
-	     break;
-	   case EVOAK_PR_OBJECT_EDJE_VARIABLE_STR_CHANGED:
-	     break;
 	   case EVOAK_PR_OBJECT_EDJE_SIGNAL_LISTEN:
 	       {
 		  Evoak_PR_Object_Edje_Signal_Listen p;

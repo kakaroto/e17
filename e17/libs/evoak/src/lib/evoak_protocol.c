@@ -1013,108 +1013,6 @@ ENCPROTO(_pr_object_edje_text_changed_enc) {
 }
 
 /****************************************************************************/
-DECPROTO(_pr_object_edje_variable_int_set_dec) {
-   DECHEAD_EXACT(Evoak_PR_Object_Edje_Variable_Int_Set, 4 + 4);
-   GET32(variable_id);
-   GET32(var);
-   DECFOOT();
-}
-
-ENCPROTO(_pr_object_edje_variable_int_set_enc) {
-   ENCHEAD(Evoak_PR_Object_Edje_Variable_Int_Set, 4 + 4);
-   PUT32(variable_id);
-   PUT32(var);
-   ENCFOOT();
-}
-
-/****************************************************************************/
-DECPROTO(_pr_object_edje_variable_float_set_dec) {
-   DECHEAD_MIN(Evoak_PR_Object_Edje_Variable_Float_Set, 4 + 1);
-   GET32(variable_id);
-   GETS(var);
-   DECFOOT();
-}
-
-ENCPROTO(_pr_object_edje_variable_float_set_enc) {
-   int l1;
-   ENCHEAD(Evoak_PR_Object_Edje_Variable_Float_Set,
-	   4 +
-	   SLEN(l1, var));
-   PUT32(variable_id);
-   PUTS(var, l1);
-   ENCFOOT();
-}
-
-/****************************************************************************/
-DECPROTO(_pr_object_edje_variable_str_set_dec) {
-   DECHEAD_MIN(Evoak_PR_Object_Edje_Variable_Str_Set, 4 + 1);
-   GET32(variable_id);
-   GETS(var);
-   DECFOOT();
-}
-
-ENCPROTO(_pr_object_edje_variable_str_set_enc) {
-   int l1;
-   ENCHEAD(Evoak_PR_Object_Edje_Variable_Str_Set,
-	   4 +
-	   SLEN(l1, var));
-   PUT32(variable_id);
-   PUTS(var, l1);
-   ENCFOOT();
-}
-
-/****************************************************************************/
-DECPROTO(_pr_object_edje_variable_int_changed_dec) {
-   DECHEAD_EXACT(Evoak_PR_Object_Edje_Variable_Int_Changed, 4 + 4);
-   GET32(variable_id);
-   GET32(var);
-   DECFOOT();
-}
-
-ENCPROTO(_pr_object_edje_variable_int_changed_enc) {
-   ENCHEAD(Evoak_PR_Object_Edje_Variable_Int_Changed, 4 + 4);
-   PUT32(variable_id);
-   PUT32(var);
-   ENCFOOT();
-}
-
-/****************************************************************************/
-DECPROTO(_pr_object_edje_variable_float_changed_dec) {
-   DECHEAD_MIN(Evoak_PR_Object_Edje_Variable_Float_Changed, 4 + 1);
-   GET32(variable_id);
-   GETS(var);
-   DECFOOT();
-}
-
-ENCPROTO(_pr_object_edje_variable_float_changed_enc) {
-   int l1;
-   ENCHEAD(Evoak_PR_Object_Edje_Variable_Float_Changed,
-	   4 +
-	   SLEN(l1, var));
-   PUT32(variable_id);
-   PUTS(var, l1);
-   ENCFOOT();
-}
-
-/****************************************************************************/
-DECPROTO(_pr_object_edje_variable_str_changed_dec) {
-   DECHEAD_MIN(Evoak_PR_Object_Edje_Variable_Str_Changed, 4 + 1);
-   GET32(variable_id);
-   GETS(var);
-   DECFOOT();
-}
-
-ENCPROTO(_pr_object_edje_variable_str_changed_enc) {
-   int l1;
-   ENCHEAD(Evoak_PR_Object_Edje_Variable_Str_Changed,
-	   4 +
-	   SLEN(l1, var));
-   PUT32(variable_id);
-   PUTS(var, l1);
-   ENCFOOT();
-}
-
-/****************************************************************************/
 DECPROTO(_pr_object_edje_signal_listen_dec) {
    DECHEAD_MIN(Evoak_PR_Object_Edje_Signal_Listen, 4 + 1 + 1);
    GET32(callback_id);
@@ -1262,15 +1160,9 @@ Evoak_Protocol _evoak_proto[] =
      {_pr_object_edje_unswallow_dec, _pr_object_edje_unswallow_enc}, /* 61 */
      {_pr_object_edje_text_set_dec, _pr_object_edje_text_set_enc}, /* 62 */
      {_pr_object_edje_text_changed_dec, _pr_object_edje_text_changed_enc}, /* 63 */
-     {_pr_object_edje_variable_int_set_dec, _pr_object_edje_variable_int_set_enc}, /* 64 */
-     {_pr_object_edje_variable_float_set_dec, _pr_object_edje_variable_float_set_enc}, /* 65 */
-     {_pr_object_edje_variable_str_set_dec, _pr_object_edje_variable_str_set_enc}, /* 66 */
-     {_pr_object_edje_variable_int_changed_dec, _pr_object_edje_variable_int_changed_enc}, /* 67 */
-     {_pr_object_edje_variable_float_changed_dec, _pr_object_edje_variable_float_changed_enc}, /* 68 */
-     {_pr_object_edje_variable_str_changed_dec, _pr_object_edje_variable_str_changed_enc}, /* 69 */
-     {_pr_object_edje_signal_listen_dec, _pr_object_edje_signal_listen_enc}, /* 70 */
-     {_pr_object_edje_signal_unlisten_dec, _pr_object_edje_signal_unlisten_enc}, /* 71 */
-     {_pr_object_edje_signal_emit_dec, _pr_object_edje_signal_emit_enc}, /* 72 */
-     {_pr_object_edje_signal_dec, _pr_object_edje_signal_enc}, /* 73 */
+     {_pr_object_edje_signal_listen_dec, _pr_object_edje_signal_listen_enc}, /* 64 */
+     {_pr_object_edje_signal_unlisten_dec, _pr_object_edje_signal_unlisten_enc}, /* 65 */
+     {_pr_object_edje_signal_emit_dec, _pr_object_edje_signal_emit_enc}, /* 66 */
+     {_pr_object_edje_signal_dec, _pr_object_edje_signal_enc}, /* 67 */
 };
 	       
