@@ -2,7 +2,7 @@
 <erss>
 
 	<!-- Path to default config file -->
-	<config>/usr/local/share/erss/config/vg.cfg</config>
+	<config>/usr/local/share/erss/config/slashdot.cfg</config>
 
 	<!-- Path to default theme -->
 	<theme>/usr/local/share/erss/default.eet</theme>
