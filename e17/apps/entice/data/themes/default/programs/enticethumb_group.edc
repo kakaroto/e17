@@ -2,15 +2,15 @@
 	    {
 		name, "ShowThumb";
 		signal, "mouse,in";
-		source, "EnticeThumb";
+		source, "entice.thumb";
 		in, 	0.35 0.0;
-		action, SIGNAL_EMIT "EnticeThumbPreview" "";
+		action, SIGNAL_EMIT "entice,thumb,preview" "";
 	    }
 	    program
 	    {
 		name, "StopShrinkThumb";
 		signal, "mouse,in";
-		source, "EnticeThumb";
+		source, "entice.thumb";
 		action, ACTION_STOP;
 		target, "ShrinkThumb";
 	    }
@@ -18,16 +18,16 @@
 	    {
 		name, "GrowThumb";
 		signal, "mouse,in";
-		source, "EnticeThumb";
+		source, "entice.thumb";
 		action, STATE_SET "selected" 0.0;
-		target, "EnticeThumb";
+		target, "entice.thumb";
 		transition, LINEAR 0.2;
 	    }
 	    program
 	    {
 		name, "StopShowThumb";
 		signal, "mouse,out";
-		source, "EnticeThumb";
+		source, "entice.thumb";
 		action, ACTION_STOP;
 		target, "ShowThumb";
 	    }
@@ -35,7 +35,7 @@
 	    {
 		name, "StopGrowThumb";
 		signal, "mouse,out";
-		source, "EnticeThumb";
+		source, "entice.thumb";
 		action, ACTION_STOP;
 		target, "GrowThumb";
 	    }
@@ -43,9 +43,9 @@
 	    {
 		name, "ShrinkThumb";
 		signal, "mouse,out";
-		source, "EnticeThumb";
+		source, "entice.thumb";
 		action, STATE_SET "default" 0.0;
-		target, "EnticeThumb";
+		target, "entice.thumb";
 		transition, LINEAR 0.4;
 		in, 0.15 0.0;
 	    }
@@ -53,26 +53,26 @@
 	    {
 		name, "SelectThumb";
 		signal, "mouse,clicked,1";
-		source, "EnticeThumb";
-		action, SIGNAL_EMIT "EnticeThumbLoad" "";
+		source, "entice.thumb";
+		action, SIGNAL_EMIT "entice,thumb,load" "";
 	    }
 	    program
 	    {
 		name, "ThumbSelected";
-		signal, "EnticeThumbLoaded";
+		signal, "entice,thumb,load";
 		source, "";
 		action, STATE_SET "selected" 0.0;
 		transition, SINUSOIDAL 0.3;
 		target, "ThumbClip";
-		target, "EnticeThumb";
+		target, "entice.thumb";
 	    }
 	    program
 	    {
 		name, "ThumbUnSelected";
-		signal, "EnticeThumbUnLoaded";
+		signal, "entice,thumb,unload";
 		source, "";
 		action, STATE_SET "default" 0.0;
 		transition, SINUSOIDAL 0.3;
 		target, "ThumbClip";
-		target, "EnticeThumb";
+		target, "entice.thumb";
 	    }

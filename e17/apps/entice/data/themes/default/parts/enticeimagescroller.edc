@@ -1,6 +1,6 @@
 	    part
 	    {
-		name, "EnticeImageScroller";
+		name, "entice.scroller";
 		type, IMAGE;
 		mouse_events, 1;
 		description

@@ -76,13 +76,13 @@ collections
 		source, "";
 		action, STATE_SET "logo" 0.0;
 		transition, LINEAR 0.0;
-		target, "EnticeImage";
+		target, "entice.image";
 	    }
 	}
     }
     group
     {
-	name, "EnticeThumb";
+	name, "entice.thumb";
 	parts
 	{
 #include "parts/enticethumb_group.edc"

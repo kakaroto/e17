@@ -23,7 +23,7 @@
 		name,   "SlideShowAnimate";
 		signal, "";
 		source, "";
-		action, SIGNAL_EMIT "EnticeImageNext" "";
+		action, SIGNAL_EMIT "entice,image,next" "";
 		in, 	1.5 1.6;
 		after,  "SlideShowAnimate";
 	    }

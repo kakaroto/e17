@@ -12,14 +12,14 @@
 		name, 	"MouseWheelUp";
 		signal, "mouse,wheel,0,-1";
 		source, "PanelMouseArea";
-		action, SIGNAL_EMIT "EnticeImagePrev" "";
+		action, SIGNAL_EMIT "entice,image,prev" "";
 	    }
 	    program
 	    {
 		name, 	"MouseWheelDown";
 		signal, "mouse,wheel,0,1";
 		source, "PanelMouseArea";
-		action, SIGNAL_EMIT "EnticeImageNext" "";
+		action, SIGNAL_EMIT "entice,image,next" "";
 	    }
 	    program
 	    {
@@ -82,26 +82,26 @@
 		name, "ThumbScrollDownStop";
 		signal, "mouse,up,1";
 		source, "ScrollDown";
-		action, SIGNAL_EMIT "EnticeThumbsScrollStop" "";
+		action, SIGNAL_EMIT "entice,thumbnail,scroll,stop" "";
 	    }
 	    program
 	    {
 		name, "ThumbScrollDownStart";
 		signal, "mouse,down,1";
 		source, "ScrollDown";
-		action, SIGNAL_EMIT "EnticeThumbsScrollPrevStart" "";
+		action, SIGNAL_EMIT "entice,thumbnail,scroll,start,prev" "";
 	    }
 	    program
 	    {
 		name, "ThumbScrollUpStop";
 		signal, "mouse,up,1";
 		source, "ScrollUp";
-		action, SIGNAL_EMIT "EnticeThumbsScrollStop" "";
+		action, SIGNAL_EMIT "entice,thumbnail,scroll,stop" "";
 	    }
 	    program
 	    {
 		name, "ThumbScrollUpStart";
 		signal, "mouse,down,1";
 		source, "ScrollUp";
-		action, SIGNAL_EMIT "EnticeThumbsScrollNextStart" "";
+		action, SIGNAL_EMIT "entice,thumbnail,scroll,start,next" "";
 	    }

@@ -42,7 +42,7 @@
 	    }
 	    part
 	    {
-		name, "EnticeImage";
+		name, "entice.image";
 		type, IMAGE;
 		mouse_events, 1;
 		clip_to, "EnticeImageClip";

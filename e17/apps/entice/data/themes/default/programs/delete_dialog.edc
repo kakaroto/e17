@@ -12,7 +12,7 @@
 		name, "DeleteFileFromFSRequest";
 		signal, "mouse,clicked,1";
 		source, "DeleteFromFS";
-		action, SIGNAL_EMIT "EnticeImageDelete" "";
+		action, SIGNAL_EMIT "entice,image,delete" "";
 		after, "DeleteDialogHide";
 	    }
 	    program
@@ -20,7 +20,7 @@
 		name, "DeleteFileFromEnticeRequest";
 		signal, "mouse,clicked,1";
 		source, "DeleteFromEntice";
-		action, SIGNAL_EMIT "EnticeImageRemove" "";
+		action, SIGNAL_EMIT "entice,image,remove" "";
 		after, "DeleteDialogHide";
 	    }
 	    program

@@ -27,28 +27,17 @@
 		    transition, DECELERATE 0.25; target, pname; } \
 	    program { name, pcname; signal, "mouse,clicked,1"; source, \
 		    pname; action, SIGNAL_EMIT psig ""; } 
-	    BUTTON_PROG("ButtonNextImage", "EnticeImageNext", "nidown",
-	    "niup", "niclicked");
-	    BUTTON_PROG("ButtonPrevImage", "EnticeImagePrev", "ipdown",
-	    "ipup", "ipclicked");
-	    BUTTON_PROG("ButtonZoomNormal", "EnticeImageZoomDefault", "zndown",
-	    "znup", "znclicked");
-	    BUTTON_PROG("ButtonZoomIn", "EnticeImageZoomIn", "zindown",
-	    "zinup", "zinclicked");
-	    BUTTON_PROG("ButtonZoomOut", "EnticeImageZoomOut", "zoutdown",
-	    "zoutup", "zoutclicked");
-	    BUTTON_PROG("ButtonExpandImage", "EnticeImageZoomFit", "zfitdown",
-	    "zfitup", "zfitclicked");
-	    BUTTON_PROG("ButtonFullScreen", "EnticeFullScreen", "zfsdown",
-	    "zfsup", "zfsclicked");
-	    BUTTON_PROG("ButtonSaveImage", "EnticeImageSave", "sidown",
-	    "siup", "siclicked");
-	    BUTTON_PROG("ButtonRotateRight", "EnticeImageRotateRight", "rrdown",
-	    "rrup", "rrclicked");
-	    BUTTON_PROG("ButtonRotateLeft", "EnticeImageRotateLeft", "rldown",
-	    "rlup", "rlclicked");
-	    BUTTON_PROG("ButtonExit", "EnticeQuit", "qbdown",
-	    "qbcup", "qbclicked");
+	    BUTTON_PROG("ButtonNextImage", "entice,image,next", "nidown", "niup", "niclicked");
+	    BUTTON_PROG("ButtonPrevImage", "entice,image,prev", "ipdown", "ipup", "ipclicked");
+	    BUTTON_PROG("ButtonZoomNormal", "entice,image,current,zoom,reset", "zndown", "znup", "znclicked");
+	    BUTTON_PROG("ButtonZoomIn", "entice,image,current,zoom,in", "zindown", "zinup", "zinclicked");
+	    BUTTON_PROG("ButtonZoomOut", "entice,image,current,zoom,out", "zoutdown", "zoutup", "zoutclicked");
+	    BUTTON_PROG("ButtonExpandImage", "entice,image,current,zoom,fit", "zfitdown", "zfitup", "zfitclicked");
+	    BUTTON_PROG("ButtonFullScreen", "entice,window,fullscreen", "zfsdown", "zfsup", "zfsclicked");
+	    BUTTON_PROG("ButtonSaveImage", "entice,image,current,save", "sidown", "siup", "siclicked");
+	    BUTTON_PROG("ButtonRotateRight", "entice,image,current,rotate,right", "rrdown", "rrup", "rrclicked");
+	    BUTTON_PROG("ButtonRotateLeft", "entice,image,current,rotate,left", "rldown", "rlup", "rlclicked");
+	    BUTTON_PROG("ButtonExit", "entice,quit", "qbdown", "qbcup", "qbclicked");
 	    program
 	    {
 		name, "DeleteImageRequest";
@@ -62,7 +51,7 @@
 	    program
 	    {
 		name, "DisplaySaveImageButton";
-		signal, "EnticeImageModified";
+		signal, "entice,image,modified";
 		source, "";
 		action, STATE_SET "visible" 0.0;
 		transition, LINEAR 0.25;

@@ -2,53 +2,53 @@
 	    {
 		name, "MouseWheelZoomerInner";
 		signal, "mouse,wheel,0,-1";
-		source, "EnticeImage";
-		action, SIGNAL_EMIT "EnticeImageZoomIn" "";
+		source, "entice.image";
+		action, SIGNAL_EMIT "entice,image,current,zoom,in" "";
 	    }
 	    program
 	    {
 		name, "MouseWheelZoomerOuter";
 		signal, "mouse,wheel,0,1";
-		source, "EnticeImage";
-		action, SIGNAL_EMIT "EnticeImageZoomOut" "";
+		source, "entice.image";
+		action, SIGNAL_EMIT "entice,image,current,zoom,out" "";
 	    }
 	    program
 	    {
 		name, 	"JustImage";
 		signal, "mouse,in";
-		source, "EnticeImage";
+		source, "entice.image";
 		action, STATE_SET "default" 0.0;
 		transition, LINEAR 0.15;
-		target, "EnticeImagePreview";
+		target, "entice.preview";
 	    }
 	    program
 	    {
 		name, "IncomingImageShow";
-		signal, "EnticeImageDisplay";
+		signal, "entice,image,display";
 		source, "";
 		action, STATE_SET "default" 0.0;
 		transition, DECELERATE 0.1;
-		target, "EnticeImage";
 		target, "EnticeImageClip";
-		target, "EnticeImagePreview";
+		target, "entice.image";
+		target, "entice.preview";
 		target, "ButtonSaveImage";
 		after, "KillSaveImagePulsing";
 	    }
 	    program
 	    {
 		name, "ShowPreview";
-		signal, "EnticeImagePreviewPrep";
+		signal, "entice,preview,before";
 		source, "";
 		action, STATE_SET "default" 0.0;
 		transition, ACCELERATE 0.1;
-		target, "EnticeImagePreview";
+		target, "entice.preview";
 	    }
 	    program
 	    {
 		name, "ShowPreviewAfter";
-		signal, "EnticeImagePreviewShow";
+		signal, "entice,preview,show";
 		source, "";
 		action, STATE_SET "visible" 0.0;
 		transition, ACCELERATE 0.25;
-		target, "EnticeImagePreview";
+		target, "entice.preview";
 	    }

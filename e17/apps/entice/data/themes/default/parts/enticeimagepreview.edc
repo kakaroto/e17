@@ -1,6 +1,6 @@
 	    part
 	    {
-		name, "EnticeImagePreview";
+		name, "entice.preview";
 		type, IMAGE;
 		mouse_events, 0;
 		description
