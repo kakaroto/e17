@@ -20,6 +20,7 @@ GtkWidget *txt_exec;
 GtkWidget *ctree;
 GtkWidget *btn_browse;
 GtkWidget *lbl_params;
+GtkWidget *statusbar;
 
 void
 load_new_menu_from_disk (char *file_to_load, GtkCTreeNode * my_parent)
@@ -300,6 +301,10 @@ create_main_window (void)
   gtk_paned_set_gutter_size (GTK_PANED (panes), 10);
   gtk_box_pack_start (GTK_BOX (bigvbox), panes, TRUE, TRUE, 0);
 
+  statusbar = gtk_statusbar_new ();
+  gtk_widget_show (statusbar);
+  gtk_box_pack_start (GTK_BOX (bigvbox), statusbar, FALSE, FALSE, 0);
+
   scrollybit = gtk_scrolled_window_new (NULL, NULL);
   gtk_widget_show (scrollybit);
   gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrollybit),
@@ -468,8 +473,7 @@ insert_entry (GtkWidget * widget, gpointer user_data)
 
   if (GTK_CLIST (ctree)->selection)
     {
-      newparent =
-	gtk_ctree_node_nth (GTK_CTREE (ctree), GTK_CLIST (ctree)->focus_row);
+      newparent = GTK_CLIST (ctree)->selection->data;
 
       /* Move the entry to the position just below the selected node. */
       newp = GTK_CTREE_ROW (newparent)->parent;
@@ -477,6 +481,9 @@ insert_entry (GtkWidget * widget, gpointer user_data)
       if (news == newnode)
 	news = NULL;
     }
+
+  if (newp == NULL)
+    newp = gtk_ctree_node_nth (GTK_CTREE (ctree), 0);
 
   newnode =
     gtk_ctree_insert_node (GTK_CTREE (ctree),
@@ -487,6 +494,8 @@ insert_entry (GtkWidget * widget, gpointer user_data)
   g_free (text[1]);
   g_free (text[2]);
 
+  gtk_ctree_select (GTK_CTREE (ctree), newnode);
+
   return;
   widget = NULL;
   user_data = NULL;
@@ -496,9 +505,24 @@ void
 delete_entry (GtkWidget * widget, gpointer user_data)
 {
   if (GTK_CLIST (ctree)->selection)
-    gtk_ctree_remove_node (GTK_CTREE (ctree),
-			   GTK_CTREE_NODE (GTK_CLIST (ctree)->selection->
-					   data));
+    {
+      GtkCTreeNode *node;
+      GtkCTreeNode *next;
+      GtkCTreeNode *parent;
+      node = GTK_CTREE_NODE (GTK_CLIST (ctree)->selection->data);
+      next = GTK_CTREE_ROW (node)->sibling;
+      parent = GTK_CTREE_ROW (node)->parent;
+      gtk_ctree_remove_node (GTK_CTREE (ctree), node);
+      if (!next && parent)
+	{
+	  /* Why does this have to be so painful? */
+	  next = GTK_CTREE_ROW (parent)->children;
+	  while (GTK_CTREE_ROW (next)->sibling)
+	    next = GTK_CTREE_ROW (next)->sibling;
+	}
+      if (next)
+	gtk_ctree_select (GTK_CTREE (ctree), next);
+    }
   return;
   widget = NULL;
   user_data = NULL;
@@ -557,13 +581,12 @@ real_save_menus (gint exit)
     }
 
   if (retval)
-    ok_dialog ("Couldn't save all entries.\n");
+    status_message ("Couldn't save all menu entries.", 3000);
   else
     {
+      status_message ("Menus saved successfully", 3000);
       if (exit)
 	gtk_exit (0);
-      else
-	ok_dialog ("Successful save\n");
     }
 }
 
@@ -735,11 +758,8 @@ main (int argc, char *argv[])
   GtkWidget *main_win;
   gtk_set_locale ();
   gtk_init (&argc, &argv);
-/*  gdk_imlib_init (); */
   tooltips = gtk_tooltips_new ();
   accel_group = gtk_accel_group_new ();
-/*  gtk_widget_push_visual (gdk_imlib_get_visual ()); */
-/*  gtk_widget_push_colormap (gdk_imlib_get_colormap ()); */
   main_win = create_main_window ();
   gtk_signal_connect (GTK_OBJECT (main_win), "destroy",
 		      GTK_SIGNAL_FUNC (on_exit_application), NULL);
@@ -806,44 +826,15 @@ cb_icon_browse_ok (GtkWidget * widget, gpointer user_data)
 }
 
 void
-ok_dialog (gchar * message)
+status_message (gchar * message, gint delay)
 {
-  GtkWidget *label;
-  GtkWidget *button;
-  GtkWidget *dialog_window;
-
-  dialog_window = gtk_dialog_new ();
-  gtk_window_set_transient_for (GTK_WINDOW (dialog_window), GTK_WINDOW (win));
-  gtk_window_set_position (GTK_WINDOW (dialog_window),
-			   GTK_WIN_POS_CENTER_ALWAYS);
-
-  gtk_signal_connect (GTK_OBJECT (dialog_window), "destroy",
-		      GTK_SIGNAL_FUNC (gtk_widget_destroyed), &dialog_window);
-
-  gtk_window_set_title (GTK_WINDOW (dialog_window), "e16menuedit");
-  gtk_container_set_border_width (GTK_CONTAINER (dialog_window), 0);
-
-  button = gtk_button_new_with_label ("OK");
-  GTK_WIDGET_SET_FLAGS (button, GTK_CAN_DEFAULT);
-  gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog_window)->action_area),
-		      button, TRUE, TRUE, 0);
-  gtk_signal_connect (GTK_OBJECT (button), "clicked",
-		      GTK_SIGNAL_FUNC (destroy_dlg_cb), dialog_window);
-  gtk_widget_grab_default (button);
-  gtk_widget_show (button);
-
-  label = gtk_label_new (message);
-  gtk_misc_set_padding (GTK_MISC (label), 10, 10);
-  gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog_window)->vbox),
-		      label, TRUE, TRUE, 0);
-  gtk_widget_show (label);
-  gtk_widget_show (dialog_window);
+  gtk_statusbar_push (GTK_STATUSBAR (statusbar), 1, message);
+  gtk_timeout_add (delay, (GtkFunction) status_clear, statusbar);
 }
 
-void
-destroy_dlg_cb (GtkWidget * widget, gpointer user_data)
+gint status_clear (gpointer user_data)
 {
-  gtk_widget_destroy (GTK_WIDGET (user_data));
-  return;
-  widget = NULL;
+  gtk_statusbar_pop (GTK_STATUSBAR (statusbar), 1);
+  return FALSE;
+  user_data = NULL;
 }
