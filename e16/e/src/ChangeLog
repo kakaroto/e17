@@ -2109,3 +2109,15 @@ Tue Sep 21 10:13:48 PDT 1999
 fixed some problems with kde notifications on events.  all of these things
 should be accounted for now.  It looks like all of panel pretty much works
 out-of-box.
+
+-------------------------------------------------------------------------------
+
+Tue Sep 21 16:12:59 EDT 1999
+(Christian)
+
+YASGB. Yet another stupid group bug, that is. Group borders
+weren't reset after closing some dialogs.
+
+Tweaked the user name mapping in ecvs so that it works on my
+lappy :)
+ 

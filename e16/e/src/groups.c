@@ -453,6 +453,10 @@ static void         ChooseGroup(int val, void *data);
 static void
 ChooseGroup(int val, void *data)
 {
+   if (((val == 0) || (val == 2)) && tmp_groups)
+     {
+	ShowHideWinGroups(tmp_ewin, tmp_groups[tmp_index], SET_OFF);
+     }
    if (val < 2)
      {
 	if (tmp_groups)
@@ -475,7 +479,6 @@ ChooseGroup(int val, void *data)
      }
    if (((val == 0) || (val == 2)) && tmp_groups)
      {
-	ShowHideWinGroups(tmp_ewin, tmp_groups[tmp_index], SET_OFF);
 	Efree(tmp_groups);
 	tmp_groups = NULL;
      }
