@@ -6,6 +6,8 @@ $Id$
         * src/eplayer.c, src/playlist.c: added playlist_load_any(),
           eplayer will now load files and directories as well
         * code cleanup
+        * configure.ac, Makefile.am etc: implemented install and
+          dist targets
 
 2003-10-15 Tilman Sauerbeck <tilman@code-monkey.de>
         * data/eplayer.edc: Added basic playlist support,

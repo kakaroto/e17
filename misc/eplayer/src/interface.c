@@ -45,8 +45,7 @@ void setup_ecore(ePlayer *player) {
 	ecore_evas_callback_move_set(ee, window_move);
 
 	player->gui.evas = ecore_evas_get(ee);
-	evas_font_path_append(player->gui.evas, "../data/");
-	evas_font_path_append(player->gui.evas, "../data/fonts/");
+	evas_font_path_append(player->gui.evas, DATA_DIR"/themes/fonts");
 
 	/* EDJE */
 #ifdef DEBUG
@@ -54,8 +53,8 @@ void setup_ecore(ePlayer *player) {
 #endif
 
 	player->gui.edje = edje_object_add(player->gui.evas);
-	edje_object_file_set(player->gui.edje, "../data/eplayer.eet",
-	                     "eplayer");
+	edje_object_file_set(player->gui.edje,
+	                     DATA_DIR"/themes/eplayer.eet", "eplayer");
 	evas_object_move(player->gui.edje, 0, 0);
 	edje_object_size_min_get(player->gui.edje, &edje_w, &edje_h);
 	evas_object_resize(player->gui.edje, edje_w, edje_h);
@@ -140,7 +139,7 @@ void show_playlist(ePlayer *player) {
 		/* add the title/length items to the container */
 		for (i = 0; i < 2; i++) {
 			o = edje_object_add(player->gui.evas);
-			edje_object_file_set(o, "../data/eplayer.eet", name[i]);
+			edje_object_file_set(o, DATA_DIR"/themes/eplayer.eet", name[i]);
 			edje_object_part_text_set(o, "text", i ? len : title);
 			edje_object_size_min_get(o, &w, &h);
 			evas_object_resize(o, w, h);
