@@ -123,9 +123,15 @@ make DESTDIR=$RPM_BUILD_ROOT install
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%post -p /sbin/ldconfig
+%post
+%ifos linux
+/sbin/ldconfig
+%endif
 
-%postun -p /sbin/ldconfig
+%postun
+%ifos linux
+/sbin/ldconfig
+%endif
 
 %files
 %defattr(-,root,root,0755)
