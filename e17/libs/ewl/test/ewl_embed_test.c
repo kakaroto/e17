@@ -2,6 +2,12 @@
 #include <Ecore_Evas.h>
 #include <Ewl.h>
 
+void move_embed_contents_cb(Ewl_Widget *w, void *ev_data, void *user_data)
+{
+	ewl_object_request_geometry(EWL_OBJECT(user_data), CURRENT_X(w),
+				    CURRENT_Y(w), CURRENT_W(w), CURRENT_H(w));
+}
+
 int main(int argc, char **argv)
 {
 	Ecore_Evas *ee;
@@ -27,6 +33,9 @@ int main(int argc, char **argv)
 	button = ewl_button_new("This button does jack shit");
 	ewl_container_append_child(EWL_CONTAINER(embed), button);
 	ewl_widget_show(button);
+
+	ewl_callback_append(embed, EWL_CALLBACK_CONFIGURE,
+			    move_embed_contents_cb, button);
 
 	ecore_main_loop_begin();
 
