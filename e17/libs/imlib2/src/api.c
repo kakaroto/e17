@@ -5,8 +5,8 @@
 #include <string.h>
 #include "common.h"
 #include "colormod.h"
-#include "scale.h"
 #include "image.h"
+#include "scale.h"
 #include "context.h"
 #include "rgba.h"
 #include "color.h"
@@ -2201,8 +2201,14 @@ imlib_create_rotated_image(double angle)
    
    if (ctxt_anti_alias) 
      {
-	__imlib_RotateAA(im_old->data, im->data, im_old->w,
-			 im_old->w, im_old->h, im->w, sz, sz, x, y, dx, dy);
+#ifdef DO_MMX_ASM
+        if (__imlib_get_cpuid() & CPUID_MMX)
+	   __imlib_mmx_RotateAA(im_old->data, im->data, im_old->w,
+			    im_old->w, im_old->h, im->w, sz, sz, x, y, dx, dy);
+	else
+#endif
+	   __imlib_RotateAA(im_old->data, im->data, im_old->w,
+			    im_old->w, im_old->h, im->w, sz, sz, x, y, dx, dy);
      } else 
      {
 	__imlib_RotateSample(im_old->data, im->data, im_old->w,

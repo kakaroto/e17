@@ -1,21 +1,22 @@
 #ifndef __SCALE
 #define __SCALE 1
 
-DATA32 **
-__imlib_CalcYPoints(DATA32 *src, int sw, int sh, int dh, int b1, int b2);
-int *
-__imlib_CalcXPoints(int sw, int dw, int b1, int b2);
-int *
-__imlib_CalcApoints(int s, int d, int b1, int b2);
+typedef struct _imlib_scale_info ImlibScaleInfo;
+
+ImlibScaleInfo *
+__imlib_CalcScaleInfo(ImlibImage *im, int sw, int sh, int dw, int dh, char aa);
+ImlibScaleInfo *
+__imlib_FreeScaleInfo(ImlibScaleInfo *isi);
 void
-__imlib_ScaleSampleRGBA(DATA32 **ypoints, int *xpoints, DATA32 *dest,
-		int dxx, int dyy, int dx, int dy, int dw, int dh, int dow);
+__imlib_ScaleSampleRGBA(ImlibScaleInfo *isi, DATA32 *dest, int dxx, int dyy,
+			int dx, int dy, int dw, int dh, int dow);
 void
-__imlib_ScaleAARGBA(DATA32 **ypoints, int *xpoints, DATA32 *dest,
-	    int *xapoints, int *yapoints, char xup, char yup,
-	    int dxx, int dyy, int dx, int dy, int dw, int dh, int dow, int sow);
+__imlib_ScaleAARGBA(ImlibScaleInfo *isi, DATA32 *dest, int dxx, int dyy,
+		    int dx, int dy, int dw, int dh, int dow, int sow);
 void
-__imlib_ScaleAARGB(DATA32 **ypoints, int *xpoints, DATA32 *dest,
-	   int *xapoints, int *yapoints, char xup, char yup,
-	   int dxx, int dyy, int dx, int dy, int dw, int dh, int dow, int sow);
+__imlib_ScaleAARGB(ImlibScaleInfo *isi, DATA32 *dest, int dxx, int dyy,
+		   int dx, int dy, int dw, int dh, int dow, int sow);
+void
+__imlib_Scale_mmx_AARGBA(ImlibScaleInfo *isi, DATA32 *dest, int dxx, int dyy,
+			 int dx, int dy, int dw, int dh, int dow, int sow);
 #endif

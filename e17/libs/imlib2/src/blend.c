@@ -693,165 +693,170 @@ __imlib_GetBlendFunction(ImlibOp op, char blend, char merge_alpha, char rgb_src,
    else
      {
 #ifdef DO_MMX_ASM
-	switch(op)
+	if (__imlib_get_cpuid() & CPUID_MMX)
 	  {
-	  case OP_COPY:
-	     if (merge_alpha)
+	     switch(op)
 	       {
-		  if (rgb_src)
+	       case OP_COPY:
+		  if (merge_alpha)
 		    {
-		       blender = __imlib_mmx_copy_rgb_to_rgba;
-		    }
-		  else
-		    {
-		       if (blend)
-			  blender = __imlib_mmx_blend_rgba_to_rgba;
-		       else
-			  blender = __imlib_mmx_copy_rgba_to_rgba;
-		    }
-	       }
-	     else
-	       {
-		  if (blend)
-		     blender = __imlib_mmx_blend_rgba_to_rgb;
-		  else
-		     blender = __imlib_mmx_copy_rgba_to_rgb;
-	       }
-	     break;
-	  case OP_ADD:
-	     if (merge_alpha)
-	       {
-		  if (blend)
-		     blender = __imlib_mmx_add_blend_rgba_to_rgba;
-		  else
-		     blender = __imlib_mmx_add_copy_rgba_to_rgba;
-	       }
-	     else
-	       {
-		  if (blend)
-		     blender = __imlib_mmx_add_blend_rgba_to_rgb;
-		  else
-		     blender = __imlib_mmx_add_copy_rgba_to_rgb;
-	       }
-	     break;
-	  case OP_SUBTRACT:
-	     if (merge_alpha)
-	       {
-		  if (blend)
-		     blender = __imlib_mmx_subtract_blend_rgba_to_rgba;
-		  else
-		     blender = __imlib_mmx_subtract_copy_rgba_to_rgba;
-	       }
-	     else
-	       {
-		  if (blend)
-		     blender = __imlib_mmx_subtract_blend_rgba_to_rgb;
-		  else
-		     blender = __imlib_mmx_subtract_copy_rgba_to_rgb;
-	       }
-	     break;
-	  case OP_RESHADE:
-	     if (merge_alpha)
-	       {
-		  if (blend)
-		     blender = __imlib_mmx_reshade_blend_rgba_to_rgba;
-		  else
-		     blender = __imlib_mmx_reshade_copy_rgba_to_rgba;
-	       }
-	     else
-	       {
-		  if (blend)
-		     blender = __imlib_mmx_reshade_blend_rgba_to_rgb;
-		  else
-		     blender = __imlib_mmx_reshade_copy_rgba_to_rgb;
-	       }
-	     break;
-	  default:
-	     break;
-	  }
-#else
-	switch(op)
-	  {
-	  case OP_COPY:
-	     if (merge_alpha)
-	       {
-		  if (rgb_src)
-		    {
-		       if (blend)
+		       if (rgb_src)
 			 {
-			    blender = __imlib_BlendRGBToRGBA;
+			    blender = __imlib_mmx_copy_rgb_to_rgba;
 			 }
 		       else
-			  blender = __imlib_CopyRGBAToRGBA;
+			 {
+			    if (blend)
+			       blender = __imlib_mmx_blend_rgba_to_rgba;
+			    else
+			       blender = __imlib_mmx_copy_rgba_to_rgba;
+			 }
 		    }
 		  else
 		    {
 		       if (blend)
-			  blender = __imlib_BlendRGBAToRGBA;
+			  blender = __imlib_mmx_blend_rgba_to_rgb;
 		       else
-			  blender = __imlib_CopyRGBAToRGBA;
+			  blender = __imlib_mmx_copy_rgba_to_rgb;
 		    }
-	       }
-             else
-	       {
-		  if (blend)
-		     blender = __imlib_BlendRGBAToRGB;
+		  break;
+	       case OP_ADD:
+		  if (merge_alpha)
+		    {
+		       if (blend)
+			  blender = __imlib_mmx_add_blend_rgba_to_rgba;
+		       else
+			  blender = __imlib_mmx_add_copy_rgba_to_rgba;
+		    }
 		  else
-		     blender = __imlib_CopyRGBAToRGB;
-	       }
-	     break;
-	  case OP_ADD:
-	     if (merge_alpha)
-	       {
-		  if (blend)
-		     blender = __imlib_AddBlendRGBAToRGBA;
+		    {
+		       if (blend)
+			  blender = __imlib_mmx_add_blend_rgba_to_rgb;
+		       else
+			  blender = __imlib_mmx_add_copy_rgba_to_rgb;
+		    }
+		  break;
+	       case OP_SUBTRACT:
+		  if (merge_alpha)
+		    {
+		       if (blend)
+			  blender = __imlib_mmx_subtract_blend_rgba_to_rgba;
+		       else
+			  blender = __imlib_mmx_subtract_copy_rgba_to_rgba;
+		    }
 		  else
-		     blender = __imlib_AddCopyRGBAToRGBA;
-	       }
-             else
-	       {
-		  if (blend)
-		     blender = __imlib_AddBlendRGBAToRGB;
+		    {
+		       if (blend)
+			  blender = __imlib_mmx_subtract_blend_rgba_to_rgb;
+		       else
+			  blender = __imlib_mmx_subtract_copy_rgba_to_rgb;
+		    }
+		  break;
+	       case OP_RESHADE:
+		  if (merge_alpha)
+		    {
+		       if (blend)
+			  blender = __imlib_mmx_reshade_blend_rgba_to_rgba;
+		       else
+			  blender = __imlib_mmx_reshade_copy_rgba_to_rgba;
+		    }
 		  else
-		     blender = __imlib_AddCopyRGBAToRGB;
+		    {
+		       if (blend)
+			  blender = __imlib_mmx_reshade_blend_rgba_to_rgb;
+		       else
+			  blender = __imlib_mmx_reshade_copy_rgba_to_rgb;
+		    }
+		  break;
+	       default:
+		  break;
 	       }
-	     break;
-	  case OP_SUBTRACT:
-	     if (merge_alpha)
-	       {
-		  if (blend)
-		     blender = __imlib_SubBlendRGBAToRGBA;
-		  else
-		     blender = __imlib_SubCopyRGBAToRGBA;
-	       }
-             else
-	       {
-		  if (blend)
-		     blender = __imlib_SubBlendRGBAToRGB;
-		  else
-		     blender = __imlib_SubCopyRGBAToRGB;
-	       }
-	     break;
-	  case OP_RESHADE:
-	     if (merge_alpha)
-	       {
-		  if (blend)
-		     blender = __imlib_ReBlendRGBAToRGBA;
-		  else
-		     blender = __imlib_ReCopyRGBAToRGBA;
-	       }
-             else
-	       {
-		  if (blend)
-		     blender = __imlib_ReBlendRGBAToRGB;
-		  else
-		     blender = __imlib_ReCopyRGBAToRGB;
-	       }
-	     break;
-	  default:
-	     break;
 	  }
+	else
 #endif
+	  {
+	     switch(op)
+	       {
+	       case OP_COPY:
+		  if (merge_alpha)
+		    {
+		       if (rgb_src)
+			 {
+			    if (blend)
+			      {
+				 blender = __imlib_BlendRGBToRGBA;
+			      }
+			    else
+			       blender = __imlib_CopyRGBAToRGBA;
+			 }
+		       else
+			 {
+			    if (blend)
+			       blender = __imlib_BlendRGBAToRGBA;
+			    else
+			       blender = __imlib_CopyRGBAToRGBA;
+			 }
+		    }
+		  else
+		    {
+		       if (blend)
+			  blender = __imlib_BlendRGBAToRGB;
+		       else
+			  blender = __imlib_CopyRGBAToRGB;
+		    }
+		  break;
+	       case OP_ADD:
+		  if (merge_alpha)
+		    {
+		       if (blend)
+			  blender = __imlib_AddBlendRGBAToRGBA;
+		       else
+			  blender = __imlib_AddCopyRGBAToRGBA;
+		    }
+		  else
+		    {
+		       if (blend)
+			  blender = __imlib_AddBlendRGBAToRGB;
+		       else
+			  blender = __imlib_AddCopyRGBAToRGB;
+		    }
+		  break;
+	       case OP_SUBTRACT:
+		  if (merge_alpha)
+		    {
+		       if (blend)
+			  blender = __imlib_SubBlendRGBAToRGBA;
+		       else
+			  blender = __imlib_SubCopyRGBAToRGBA;
+		    }
+		  else
+		    {
+		       if (blend)
+			  blender = __imlib_SubBlendRGBAToRGB;
+		       else
+			  blender = __imlib_SubCopyRGBAToRGB;
+		    }
+		  break;
+	       case OP_RESHADE:
+		  if (merge_alpha)
+		    {
+		       if (blend)
+			  blender = __imlib_ReBlendRGBAToRGBA;
+		       else
+			  blender = __imlib_ReCopyRGBAToRGBA;
+		    }
+		  else
+		    {
+		       if (blend)
+			  blender = __imlib_ReBlendRGBAToRGB;
+		       else
+			  blender = __imlib_ReCopyRGBAToRGB;
+		    }
+		  break;
+	       default:
+		  break;
+	       }
+	  }
      }
 
    return blender;
@@ -955,15 +960,12 @@ __imlib_BlendImageToImage(ImlibImage *im_src, ImlibImage *im_dst,
      }
    else
      {
-	DATA32  **ypoints = NULL;
-	int      *xpoints = NULL;
-	int      *yapoints = NULL;
-	int      *xapoints = NULL;
+	ImlibScaleInfo *scaleinfo = NULL;
 	DATA32   *buf = NULL;
-	int       sx, sy, sw, sh, dx, dy, dw, dh, dxx, dyy, scw, sch, y2, x2;
+	int       sx, sy, sw, sh, dx, dy, dw, dh, dxx, dyy, y2, x2;
 	int       psx, psy, psw, psh;
-	char      xup = 0, yup = 0;
 	int       y, h, hh;
+	int       do_mmx;
 	sx = ssx;
 	sy = ssy;
 	sw = ssw;
@@ -1030,49 +1032,11 @@ __imlib_BlendImageToImage(ImlibImage *im_src, ImlibImage *im_dst,
 	  {
 	     return;
 	  }
-	/* calculate the scaling factors of width and height for a whole image */
-	scw = (ddw * im_src->w) / ssw;
-	sch = (ddh * im_src->h) / ssh;
 	/* if we are scaling the image at all make a scaling buffer */
 	if (!((sw == dw) && (sh == dh)))
 	  {
-	     /* need to calculate ypoitns and xpoints array */
-	     ypoints = __imlib_CalcYPoints(im_src->data, im_src->w, im_src->h,
-					   sch, im_src->border.top,
-					   im_src->border.bottom);
-	     if (!ypoints)
-		return;
-	     xpoints = __imlib_CalcXPoints(im_src->w, scw,
-					   im_src->border.left,
-					   im_src->border.right);
-	     if (!xpoints)
-	       {
-		  free(ypoints);
-		  return;
-	       }
-	     /* calculate aliasing counts */
-	     if (aa)
-	       {
-		  yapoints = __imlib_CalcApoints(im_src->h, sch,
-						 im_src->border.top,
-						 im_src->border.bottom);
-		  if (!yapoints)
-		    {
-		       free(ypoints);
-		       free(xpoints);
-		       return;
-		    }
-		  xapoints = __imlib_CalcApoints(im_src->w, scw,
-						 im_src->border.left,
-						 im_src->border.right);
-		  if (!xapoints)
-		    {
-		       free(yapoints);
-		       free(ypoints);
-		       free(xpoints);
-		       return;
-		    }
-	       }
+	     scaleinfo = __imlib_CalcScaleInfo(im_src, ssw, ssh, ddw, ddh, aa);
+	     if (!scaleinfo) return;
 	  }
 	else
 	  {
@@ -1098,21 +1062,11 @@ __imlib_BlendImageToImage(ImlibImage *im_src, ImlibImage *im_dst,
 	buf = malloc(dw * LINESIZE * sizeof(DATA32));
 	if (!buf)
 	  {
-	     if (aa)
-	       {
-		  free(xapoints);
-		  free(yapoints);
-	       }
-	     free(ypoints);
-	     free(xpoints);
+	     __imlib_FreeScaleInfo(scaleinfo);
+	     return;
 	  }
 	/* setup h */
 	h = dh;
-	/* set our scaling up in x / y dir flags */
-	if (dw > sw)
-	   xup = 1;
-	if (dh > sh)
-	   yup = 1;
 	if (!IMAGE_HAS_ALPHA(im_dst))
 	   merge_alpha = 0;
 	if (!IMAGE_HAS_ALPHA(im_src))
@@ -1124,6 +1078,9 @@ __imlib_BlendImageToImage(ImlibImage *im_src, ImlibImage *im_dst,
 		blend = 0;
 	  }
 	/* scale in LINESIZE Y chunks and convert to depth*/
+#ifdef DO_MMX_ASM
+	do_mmx = __imlib_get_cpuid() & CPUID_MMX;
+#endif
 	for (y = 0; y < dh; y += LINESIZE)
 	  {
 	     hh = LINESIZE;
@@ -1132,17 +1089,21 @@ __imlib_BlendImageToImage(ImlibImage *im_src, ImlibImage *im_dst,
 	     /* scale the imagedata for this LINESIZE lines chunk of image */
 	     if (aa)
 	       {
+#ifdef DO_MMX_ASM
+		  if (do_mmx)
+		     __imlib_Scale_mmx_AARGBA(scaleinfo, buf, dxx, dyy + y,
+					      0, 0, dw, hh, dw, im_src->w);
+		  else
+#endif
 		  if (IMAGE_HAS_ALPHA(im_src))
-		     __imlib_ScaleAARGBA(ypoints, xpoints, buf, xapoints,
-					 yapoints, xup, yup, dxx, dyy + y,
+		     __imlib_ScaleAARGBA(scaleinfo, buf, dxx, dyy + y,
 					 0, 0, dw, hh, dw, im_src->w);
 		  else
-		     __imlib_ScaleAARGB(ypoints, xpoints, buf, xapoints,
-					yapoints, xup, yup, dxx, dyy + y,
+		     __imlib_ScaleAARGB(scaleinfo, buf, dxx, dyy + y,
 					0, 0, dw, hh, dw, im_src->w);
 	       }
 	     else
-		__imlib_ScaleSampleRGBA(ypoints, xpoints, buf, dxx, dyy + y,
+		__imlib_ScaleSampleRGBA(scaleinfo, buf, dxx, dyy + y,
 					0, 0, dw, hh, dw);
 
 	     __imlib_BlendRGBAToData(buf, dw, hh,
@@ -1153,16 +1114,7 @@ __imlib_BlendImageToImage(ImlibImage *im_src, ImlibImage *im_dst,
 	     h -= LINESIZE;
 	  }
 	/* free up our buffers and point tables */
-	if (buf)
-	  {
-	     free(buf);
-	     free(ypoints);
-	     free(xpoints);
-	  }
-	if (aa)
-	  {
-	     free(yapoints);
-	     free(xapoints);
-	  }
+	free(buf);
+	__imlib_FreeScaleInfo(scaleinfo);
      }
 }

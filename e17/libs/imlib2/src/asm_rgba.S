@@ -32,6 +32,9 @@
 .global __imlib_mmx_bgr555_fast
 	.type __imlib_mmx_bgr555_fast,@function
 
+.global __imlib_get_cpuid
+	.type __imlib_get_cpuid,@function
+
 .bss
 .text
 .align 8
@@ -239,5 +242,35 @@ __imlib_mmx_rgb555_fast:
 	jnz 2b
 	LOOP_END
 	LEAVE
+
+
+__imlib_get_cpuid:
+	pushl %ebx
+	pushl %edx
+
+	pushf
+	popl %eax
+	movl %eax, %ebx
+	xorl $0x200000, %eax
+	pushl %eax
+	popf
+	pushf
+	popl %eax
+	xorl %ebx, %eax
+	andl $0x200000, %eax
+	jz 1f
+	xorl %eax, %eax
+	cpuid
+	testl %eax, %eax
+	jz 1f
+	movl $1, %eax
+	cpuid
+	and $0x00000f00, %eax
+	and $0xfffff0ff, %edx
+	orl %edx, %eax
+1:
+	popl %edx
+	popl %ebx
+	ret
 
 #endif

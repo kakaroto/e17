@@ -21,4 +21,8 @@ void __imlib_BlendImageToImageAtAngle(ImlibImage *im_src, ImlibImage *im_dst,
 				      int ddx, int ddy, int ddw, int ddh,
 				      ImlibColorModifier *cm, ImlibOp op);
 
+#ifdef DO_MMX_ASM
+void __imlib_mmx_RotateAA(DATA32 *src, DATA32 *dest, int sow, int sw, int sh,
+		      int dow, int dw, int dh, int x, int y, int dx, int dy);
+#endif
 #endif

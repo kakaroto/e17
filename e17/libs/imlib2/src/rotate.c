@@ -5,7 +5,7 @@
 /*\ Linear interpolation functions \*/
 /*\ Between two values \*/
 #define INTERP(v1, v2, f) \
-	((v1) * (_ROTATE_PREC_MAX - (f)) + (v2) * (f))
+	(((v1) << _ROTATE_PREC) + (((v2) - (v1)) * (f)))
 
 /*\ Between two colour bytes \*/
 #define INTERP_VAL1(x_VAL, dest, l, r, x) \
@@ -22,106 +22,31 @@
 			      INTERP(x_VAL(ll), x_VAL(lr), (x)),	\
 			     (y)) >> (2 * _ROTATE_PREC))
 
-#if defined(DO_MMX_ASM) && defined(__GNUC__)
-/*\ MMX asm version, TODO: insn order for PMMX pairing \*/
-#define INTERP_ARGB(dest, src, sow, x, y) __asm__ (\
-	"pxor %%mm6, %%mm6\n\t"			\
-	"movd %3, %%mm0\n\t"			\
-	"movd %4, %%mm1\n\t"			\
-	"punpcklwd %%mm0, %%mm0\n\t"		\
-	"punpcklwd %%mm1, %%mm1\n\t"		\
-	"punpckldq %%mm0, %%mm0\n\t"		\
-	"punpckldq %%mm1, %%mm1\n\t"		\
-	"movq (%1), %%mm2\n\t"			\
-	"movq (%1, %2, 4), %%mm4\n\t"		\
-	"movq %%mm2, %%mm3\n\t"			\
-	"movq %%mm4, %%mm5\n\t"			\
-	"punpcklbw %%mm6, %%mm2\n\t"		\
-	"punpcklbw %%mm6, %%mm4\n\t"		\
-	"punpckhbw %%mm6, %%mm3\n\t"		\
-	"punpckhbw %%mm6, %%mm5\n\t"		\
-	"psubw %%mm2, %%mm3\n\t"		\
-	"psubw %%mm4, %%mm5\n\t"		\
-	"psllw %5, %%mm3\n\t"			\
-	"psllw %5, %%mm5\n\t"			\
-	"pmulhw %%mm0, %%mm3\n\t"		\
-	"pmulhw %%mm0, %%mm5\n\t"		\
-	"paddw %%mm2, %%mm3\n\t"		\
-	"paddw %%mm4, %%mm5\n\t"		\
-	"psubw %%mm3, %%mm5\n\t"		\
-	"psllw %5, %%mm5\n\t"			\
-	"pmulhw %%mm1, %%mm5\n\t"		\
-	"paddw %%mm3, %%mm5\n\t"		\
-	"packuswb %%mm5, %%mm5\n\t"		\
-	"movd %%mm5, (%0)"			\
-	: /*\ No outputs \*/			\
-	: "r" (dest), "r" (src), "r" (sow),	\
-	  "g" ((x) & _ROTATE_PREC_BITS),	\
-	  "g" ((y) & _ROTATE_PREC_BITS),	\
-	  "I" (16 - _ROTATE_PREC))
-
-#define INTERP_RGB_A0(dest, v1, v2, f, f2) __asm__(\
-	"pxor %%mm6, %%mm6\n\t"			\
-	"movd %3, %%mm0\n\t"			\
-	"movd %4, %%mm1\n\t"			\
-	"punpcklwd %%mm0, %%mm0\n\t"		\
-	"punpcklwd %%mm1, %%mm1\n\t"		\
-	"punpckldq %%mm0, %%mm0\n\t"		\
-	"punpckldq %%mm1, %%mm1\n\t"		\
-	"movd (%1), %%mm2\n\t"			\
-	"movd (%2), %%mm4\n\t"			\
-	"punpcklbw %%mm6, %%mm2\n\t"		\
-	"punpcklbw %%mm6, %%mm4\n\t"		\
-	"psubw %%mm2, %%mm4\n\t"		\
-	"psllw %5, %%mm4\n\t"			\
-	"pmulhw %%mm0, %%mm4\n\t"		\
-	"paddw %%mm2, %%mm4\n\t"		\
-	"movq %%mm4, %%mm2\n\t"			\
-	"psllq $48, %%mm1\n\t"			\
-	"psllw %5, %%mm4\n\t"			\
-	"pmulhw %%mm1, %%mm4\n\t"		\
-	"psubw %%mm4, %%mm2\n\t"		\
-	"packuswb %%mm2, %%mm2\n\t"		\
-	"movd %%mm2, (%0)"			\
-	: /*\ No outputs \*/			\
-	: "r" (dest), "r" (v1), "r" (v2),	\
-	  "g" ((f) & _ROTATE_PREC_BITS),	\
-	  "g" (_ROTATE_PREC_MAX - ((f2) & _ROTATE_PREC_BITS)),	\
-	  "I" (16 - _ROTATE_PREC))
-
-#define EMMS() __asm__ ("emms" : : )
-#endif
 /*\ Functions used in rotation routines.
 |*| The do { } while(0) construction is to make it one statement.
 \*/
 /*\ Between four colours \*/
-#ifndef INTERP_ARGB
 #define INTERP_ARGB(dest, src, sow, x, y) do { \
 	INTERP_VAL2(R_VAL, (dest), (src), (src) + 1, (src) + (sow), (src) + (sow) + 1, (x) & _ROTATE_PREC_BITS, (y) & _ROTATE_PREC_BITS);	\
 	INTERP_VAL2(G_VAL, (dest), (src), (src) + 1, (src) + (sow), (src) + (sow) + 1, (x) & _ROTATE_PREC_BITS, (y) & _ROTATE_PREC_BITS);	\
 	INTERP_VAL2(B_VAL, (dest), (src), (src) + 1, (src) + (sow), (src) + (sow) + 1, (x) & _ROTATE_PREC_BITS, (y) & _ROTATE_PREC_BITS);	\
 	INTERP_VAL2(A_VAL, (dest), (src), (src) + 1, (src) + (sow), (src) + (sow) + 1, (x) & _ROTATE_PREC_BITS, (y) & _ROTATE_PREC_BITS);	\
 	} while (0)
-#endif
 
 /*\ Between two colours, alpha between two values and zeroes \*/
-#ifndef INTERP_RGB_A0
 #define INTERP_RGB_A0(dest, v1, v2, f, f2) do { \
 	INTERP_VAL1(R_VAL, (dest), (v1), (v2), (f) & _ROTATE_PREC_BITS); \
 	INTERP_VAL1(G_VAL, (dest), (v1), (v2), (f) & _ROTATE_PREC_BITS); \
 	INTERP_VAL1(B_VAL, (dest), (v1), (v2), (f) & _ROTATE_PREC_BITS); \
 	INTERP_VAL1_A0(dest, (v1), (v2), (f) & _ROTATE_PREC_BITS, (f2) & _ROTATE_PREC_BITS);	\
 	} while (0)
-#endif
 
 /*\ One colour, alpha between one value and three zeroes \*/
-#ifndef INTERP_A000
 #define INTERP_A000(dest, v, f1, f2) do {	\
 	*(dest) = *(v);				\
 	A_VAL(dest) = (A_VAL(dest) *		\
 		((f1) & _ROTATE_PREC_BITS) * ((f2) & _ROTATE_PREC_BITS)) >> (2 * _ROTATE_PREC);	\
 	} while (0)
-#endif
 
 /*\ Rotate by pixel sampling only, target inside source \*/
 static void
@@ -175,9 +100,6 @@ __imlib_RotateAAInside(DATA32 *src, DATA32 *dest, int sow, int dow,
       y += dx - dw * dy;
       dest += (dow - dw);
    }
-#ifdef EMMS
-   EMMS();
-#endif
 }
 
 /*\ NOTE: To check if v is in [b .. t) ((v >= b) && (v < t))
@@ -185,26 +107,25 @@ __imlib_RotateAAInside(DATA32 *src, DATA32 *dest, int sow, int dow,
 |*|  as negative values, cast to unsigned, become large positive
 |*|  values, and fall through the compare.
 |*|  v in [0 .. t) is a special case: ((unsigned)v < t)
-|*|  v in [-t .. 0) is also special, as its the same as -v-1 in [0 .. t),
-|*|  and (-v-1) translates to one asm instruction, namely 'not'
+|*|  v in [-t .. 0) is also special, as its the same as ~v in [0 .. t)
 \*/
 static int
 __check_inside_coords(int x, int y, int dx, int dy,
-		      int dw, int dh, int sow, int soh)
+		      int dw, int dh, int sw, int sh)
 {
-   sow <<= _ROTATE_PREC;
-   soh <<= _ROTATE_PREC;
+   sw <<= _ROTATE_PREC;
+   sh <<= _ROTATE_PREC;
    
-   if (((unsigned)x >= sow) || ((unsigned)y >= sow))
+   if (((unsigned)x >= sw) || ((unsigned)y >= sh))
       return 0;
    x += dx * dw; y += dy * dw;
-   if (((unsigned)x >= sow) || ((unsigned)y >= sow))
+   if (((unsigned)x >= sw) || ((unsigned)y >= sh))
       return 0;
    x -= dy * dh; y += dx * dh;
-   if (((unsigned)x >= sow) || ((unsigned)y >= sow))
+   if (((unsigned)x >= sw) || ((unsigned)y >= sh))
       return 0;
    x -= dx * dw; y -= dy * dw;
-   if (((unsigned)x >= sow) || ((unsigned)y >= sow))
+   if (((unsigned)x >= sw) || ((unsigned)y >= sh))
       return 0;
    
    return 1;
@@ -232,6 +153,7 @@ __imlib_RotateSample(DATA32 *src, DATA32 *dest, int sow, int sw, int sh,
       do {
 	 if (((unsigned)x < sw) && ((unsigned)y < sh))
 	    *dest = src[(x >> _ROTATE_PREC) + ((y >> _ROTATE_PREC) * sow)];
+	 else *dest = 0;
 	 /*\ RIGHT; \*/
 	 x += dx;
 	 y += dy;
@@ -285,34 +207,31 @@ __imlib_RotateAA(DATA32 *src, DATA32 *dest, int sow, int sw, int sh,
 	       /*\  12
 	       |*|  ..
 	       \*/
-	       INTERP_RGB_A0(dest, src_x_y, src_x_y + 1, x,
-			     (_ROTATE_PREC_MAX - y));
-	    } else if ((unsigned)(-y-1) < _ROTATE_PREC_MAX) {
+	       INTERP_RGB_A0(dest, src_x_y, src_x_y + 1, x, ~y);
+	    } else if ((unsigned)(~y) < _ROTATE_PREC_MAX) {
 	       /*\  ..
 	       |*|  34
 	       \*/
 	       INTERP_RGB_A0(dest, src_x_y + sow, src_x_y + sow + 1, x, y);
-	    }
+	    } else *dest = 0;
 	 } else if ((unsigned)(x - sw) < (_ROTATE_PREC_MAX)) {
 	    if ((unsigned)y < sh) {
 	       /*\  1.
 	       |*|  3.
 	       \*/
-	       INTERP_RGB_A0(dest, src_x_y, src_x_y + sow, y,
-			     (_ROTATE_PREC_MAX - x));
+	       INTERP_RGB_A0(dest, src_x_y, src_x_y + sow, y, ~x);
 	    } else if ((unsigned)(y - sh) < _ROTATE_PREC_MAX) {
 	       /*\  1.
 	       |*|  ..
 	       \*/
-	       INTERP_A000(dest, src_x_y, (_ROTATE_PREC_MAX - x),
-			   (_ROTATE_PREC_MAX - y));
-	    } else if ((unsigned)(-y-1) < _ROTATE_PREC_MAX) {
+	       INTERP_A000(dest, src_x_y, ~x, ~y);
+	    } else if ((unsigned)(~y) < _ROTATE_PREC_MAX) {
 	       /*\  ..
 	       |*|  3.
 	       \*/
-	       INTERP_A000(dest, src_x_y + sow, (_ROTATE_PREC_MAX - x), y);
-	    }
-	 } else if ((unsigned)(-x-1) < _ROTATE_PREC_MAX) {
+	       INTERP_A000(dest, src_x_y + sow, ~x, y);
+	    } else *dest = 0;
+	 } else if ((unsigned)(~x) < _ROTATE_PREC_MAX) {
 	    if ((unsigned)y < sh) {
 	       /*\  .2
 	       |*|  .4
@@ -322,14 +241,14 @@ __imlib_RotateAA(DATA32 *src, DATA32 *dest, int sow, int sw, int sh,
 	       /*\  .2
 	       |*|  ..
 	       \*/
-	       INTERP_A000(dest, src_x_y + 1, x, (_ROTATE_PREC_MAX - y));
-	    } else if ((unsigned)(-y-1) < _ROTATE_PREC_MAX) {
+	       INTERP_A000(dest, src_x_y + 1, x, ~y);
+	    } else if ((unsigned)(~y) < _ROTATE_PREC_MAX) {
 	       /*\  ..
 	       |*|  .4
 	       \*/
 	       INTERP_A000(dest, src_x_y + sow + 1, x, y);
-	    }
-	 }
+	    } else *dest = 0;
+	 } else *dest = 0;
 	 /*\ RIGHT; \*/
 	 x += dx;
 	 y += dy;
@@ -343,9 +262,6 @@ __imlib_RotateAA(DATA32 *src, DATA32 *dest, int sow, int sw, int sh,
       dest += (dow - dw);
 
    }
-#ifdef EMMS
-   EMMS();
-#endif
 }
 
 /*\ Should this be in blend.c ?? \*/
@@ -362,6 +278,7 @@ __imlib_BlendImageToImageAtAngle(ImlibImage *im_src, ImlibImage *im_dst,
    int ddw, ddh, x, y, dx, dy, i;
    double xy2;
    DATA32 *data, *src;
+   int do_mmx;
    
    if ((ssw < 0) || (ssh < 0))
       return;
@@ -424,6 +341,9 @@ __imlib_BlendImageToImageAtAngle(ImlibImage *im_src, ImlibImage *im_dst,
       x += _ROTATE_PREC_MAX;
       y += _ROTATE_PREC_MAX;
    }
+#ifdef DO_MMX_ASM
+   do_mmx = __imlib_get_cpuid() & CPUID_MMX;
+#endif
    for (i = 0; i < im_dst->h; i += LINESIZE) {
       int x2, y2, w, h, l, r;
       
@@ -496,16 +416,22 @@ __imlib_BlendImageToImageAtAngle(ImlibImage *im_src, ImlibImage *im_dst,
       
       w = r - l;
       h = MIN(LINESIZE, im_dst->h - i);
-      memset(data, 0, h * w * sizeof(DATA32));
       x += l * dx;
       y += l * dy;
       if (aa) {
-	 __imlib_RotateAA(src, data, im_src->w, ssw, ssh, w, w, h,
-			  x - _ROTATE_PREC_MAX, y - _ROTATE_PREC_MAX, dx, dy);
+	 x -= _ROTATE_PREC_MAX; y -= _ROTATE_PREC_MAX;
+#ifdef DO_MMX_ASM
+	 if (do_mmx)
+	    __imlib_mmx_RotateAA(src, data, im_src->w, ssw, ssh, w, w, h,
+				 x, y, dx, dy);
+	 else
+#endif
+	    __imlib_RotateAA(src, data, im_src->w, ssw, ssh, w, w, h,
+			     x, y, dx, dy);
 	 
       } else {
-	 __imlib_RotateSample(src, data, im_src->w,
-			      ssw, ssh, w, w, h, x, y, dx, dy);
+	 __imlib_RotateSample(src, data, im_src->w, ssw, ssh, w, w, h,
+			      x, y, dx, dy);
 	 
       }
       __imlib_BlendRGBAToData(data, w, h, im_dst->data,

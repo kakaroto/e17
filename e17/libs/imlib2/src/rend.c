@@ -2,8 +2,8 @@
 #include <X11/extensions/XShm.h>
 #include "common.h"
 #include "colormod.h"
-#include "scale.h"
 #include "image.h"
+#include "scale.h"
 #include "ximage.h"
 #include "context.h"
 #include "rgba.h"
@@ -39,16 +39,16 @@ __imlib_RenderImage(Display *d, ImlibImage *im,
    static GC gc = 0;
    static GC gcm = 0;
    XGCValues gcv;
-   DATA32  **ypoints = NULL;
-   int      *xpoints = NULL;
-   int      *yapoints = NULL;
-   int      *xapoints = NULL;
-   int       scw, sch;
+   ImlibScaleInfo *scaleinfo = NULL;
    int       psx, psy, psw, psh;
    int       actual_depth = 0;
-   char      xup = 0, yup = 0;
    char      shm = 0, bgr = 0;
    ImlibRGBAFunction rgbaer, masker;
+   ImlibBlendFunction blender = NULL;
+   int       do_mmx;
+
+   blender = __imlib_GetBlendFunction(op, 1, 0,
+				      (!(im->flags & F_HAS_ALPHA)), NULL);
    
    /* dont do anything if we have a 0 widht or height image to render */
    if ((dw <= 0) || (dh <= 0))
@@ -84,41 +84,11 @@ __imlib_RenderImage(Display *d, ImlibImage *im,
    /* if the output is too big (8k arbitary limit here) dont bother */
    if ((dw > 8192) || (dh > 8192))
       return;
-   /* calculate the scaling factors of width and height for a whole image */
-   scw = dw * im->w / sw;
-   sch = dh * im->h / sh;
    /* if we are scaling the image at all make a scaling buffer */
    if (!((sw == dw) && (sh == dh)))
      {
-	/* need to calculate ypoitns and xpoints array */
-	ypoints = __imlib_CalcYPoints(im->data, im->w, im->h, sch, im->border.top, im->border.bottom);
-	if (!ypoints)
-	   return;
-	xpoints = __imlib_CalcXPoints(im->w, scw, im->border.left, im->border.right);
-	if (!xpoints)
-	  {
-	     free(ypoints);
-	     return;
-	  }
-	/* calculate aliasing counts */
-	if (antialias)
-	  {
-	     yapoints = __imlib_CalcApoints(im->h, sch, im->border.top, im->border.bottom);
-	     if (!yapoints)
-	       {
-		  free(ypoints);
-		  free(xpoints);
-		  return;
-	       }
-	     xapoints = __imlib_CalcApoints(im->w, scw, im->border.left, im->border.right);
-	     if (!xapoints)
-	       {
-		  free(yapoints);
-		  free(ypoints);
-		  free(xpoints);
-		  return;
-	       }
-	  }
+	scaleinfo = __imlib_CalcScaleInfo(im, sw, sh, dw, dh, antialias);
+	if (!scaleinfo) return;
      }
    ct = __imlib_GetContext(d, v, cm, depth);
    actual_depth = depth;
@@ -140,15 +110,8 @@ __imlib_RenderImage(Display *d, ImlibImage *im,
    xim = __imlib_ProduceXImage(d, v, depth, dw, dh, &shm);
    if (!xim)
      {
-	if (antialias)
-	  {
-	     free(xapoints);
-	     free(yapoints);
-	  }
-	free(ypoints);
-	free(xpoints);
-	if (back)
-	   free(back);
+	__imlib_FreeScaleInfo(scaleinfo);
+	free(back);
 	return;
      }
    /* do a double check in 24/32bpp */
@@ -160,20 +123,13 @@ __imlib_RenderImage(Display *d, ImlibImage *im,
 	if (!mxim)
 	  {
 	     __imlib_ConsumeXImage(d, xim);
-	     if (antialias)
-	       {
-		  free(xapoints);
-		  free(yapoints);
-	       }
-	     free(ypoints);
-	     free(xpoints);
-	     if (back)
-		free(back);
+	     __imlib_FreeScaleInfo(scaleinfo);
+	     free(back);
 	     return;
 	  }
      }
    /* if we are scaling the image at all make a scaling buffer */
-   if (!((sw == dw) && (sh == dh)))
+   if (scaleinfo)
      {
 	/* allocate a buffer to render scaled RGBA data into */
 	buf = malloc(dw * LINESIZE * sizeof(DATA32));
@@ -182,54 +138,51 @@ __imlib_RenderImage(Display *d, ImlibImage *im,
 	     __imlib_ConsumeXImage(d, xim);
 	     if (m)
 		__imlib_ConsumeXImage(d, mxim);
-	     if (antialias)
-	       {
-		  free(xapoints);
-		  free(yapoints);
-	       }
-	     free(ypoints);
-	     free(xpoints);
-	     if (back)
-		free(back);
+	     __imlib_FreeScaleInfo(scaleinfo);
+	     free(back);
 	     return;
 	  }
      }
    /* setup h */
    h = dh;
-   /* set our scaling up in x / y dir flags */
-   if (dw > sw)
-      xup = 1;
-   if (dh > sh)
-      yup = 1;
    /* scale in LINESIZE Y chunks and convert to depth*/
    /*\ Get rgba and mask functions for XImage rendering \*/
    rgbaer = __imlib_GetRGBAFunction(actual_depth, bgr, hiq, ct->palette_type);
    if (m) masker = __imlib_GetMaskFunction(dither_mask);
+#ifdef DO_MMX_ASM
+   do_mmx = __imlib_get_cpuid() & CPUID_MMX;
+#endif
    for (y = 0; y < dh; y += LINESIZE)
      {
 	hh = LINESIZE;
 	if (h < LINESIZE)
 	   hh = h;
 	/* if we're scaling it */
-	if (ypoints)
+	if (scaleinfo)
 	  {
 	     /* scale the imagedata for this LINESIZE lines chunk of image data */
 	     if (antialias)
 	       {
+#ifdef DO_MMX_ASM
+		  if (do_mmx)
+		     __imlib_Scale_mmx_AARGBA(scaleinfo, buf,
+					      ((sx * dw) / sw),
+					      ((sy * dh) / sh) + y, 
+					      0, 0, dw, hh, dw, im->w);
+		  else
+#endif
 		  if (IMAGE_HAS_ALPHA(im))
-		     __imlib_ScaleAARGBA(ypoints, xpoints, buf, xapoints, 
-					 yapoints, xup, yup, 
-					 ((sx * dw) / sw), ((sy * dh) / sh) + y, 
+		     __imlib_ScaleAARGBA(scaleinfo, buf, ((sx * dw) / sw),
+					 ((sy * dh) / sh) + y, 
 					 0, 0, dw, hh, dw, im->w);
 		  else
-		     __imlib_ScaleAARGB(ypoints, xpoints, buf, xapoints, 
-					yapoints, xup, yup, 
-					((sx * dw) / sw), ((sy * dh) / sh) + y, 
+		     __imlib_ScaleAARGB(scaleinfo, buf, ((sx * dw) / sw),
+					((sy * dh) / sh) + y, 
 					0, 0, dw, hh, dw, im->w);
 	       }
 	     else
-		__imlib_ScaleSampleRGBA(ypoints, xpoints, buf, 
-					 ((sx * dw) / sw), ((sy * dh) / sh) + y, 
+		__imlib_ScaleSampleRGBA(scaleinfo, buf, ((sx * dw) / sw),
+					((sy * dh) / sh) + y, 
 					0, 0, dw, hh, dw);
 	     jump = 0;
 	     pointer = buf;
@@ -257,12 +210,6 @@ __imlib_RenderImage(Display *d, ImlibImage *im,
 	/* if we have a back buffer - we're blending to the bg */
 	if (back)
 	  {
-	     char rgb_src = 0;
-	     ImlibBlendFunction blender = NULL;
-	     
-	     if (!(im->flags & F_HAS_ALPHA))
-		rgb_src = 1;
-	     blender = __imlib_GetBlendFunction(op, 1, 0, rgb_src, NULL);
 	     blender(pointer, jump + dw, back + (y * dw), dw, dw, hh, NULL);
 	     pointer = back + (y * dw);
 	     jump = 0;
@@ -278,19 +225,9 @@ __imlib_RenderImage(Display *d, ImlibImage *im,
 	h -= LINESIZE;
      }
    /* free up our buffers and poit tables */
-   if (buf)
-     {
-	free(buf);
-	free(ypoints);
-	free(xpoints);
-     }
-   if (antialias)
-     {
-	if (yapoints) free(yapoints);
-	if (xapoints) free(xapoints);
-     }
-   if (back)
-      free(back);
+   free(buf);
+   __imlib_FreeScaleInfo(scaleinfo);
+   free(back);
    /* if we didnt have a gc... create it */
    if (!gc)
      {

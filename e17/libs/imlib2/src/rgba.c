@@ -3502,7 +3502,8 @@ __imlib_GetRGBAFunction(int depth, char bgr, char hiq, DATA8 palette_type)
    /*\ Boolean sanity \*/
    bgr = bgr ? 1 : 0; hiq = hiq ? 1 : 0;
 #ifdef DO_MMX_ASM
-   return mmx_functions[did][bgr][hiq];
+   if (__imlib_get_cpuid() && CPUID_MMX)
+      return mmx_functions[did][bgr][hiq];
 #endif
    return functions[did][bgr][hiq];
 }
