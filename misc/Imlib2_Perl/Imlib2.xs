@@ -15,6 +15,27 @@ load_image(file)
 	OUTPUT:
 	RETVAL
 
+Imlib2::Imlib_Image
+create_image_using_data(w,h,data)
+    	int w
+  	int h
+  	DATA32 *data
+  	CODE:
+	{
+		if (!data) croak("Data must be a reference!\n");
+		RETVAL = imlib_create_image_using_data(w,h,data);
+	}	
+	OUTPUT:
+	RETVAL
+	
+DATA32 *  
+image_get_data()
+    	CODE:
+	RETVAL = imlib_image_get_data();
+	OUTPUT:
+	RETVAL
+
+  
 void
 save_image(file)	
 	char *file
