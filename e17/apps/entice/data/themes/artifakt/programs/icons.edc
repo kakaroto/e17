@@ -11,11 +11,11 @@ p { n, SCALE"Execute"; s, "mouse,down,*"; so, SCALE;
 	a, SIGNAL_EMIT "entice,image,current,zoom,reset" ""; }
 
 p { n, SCALE"Clicked"; s, "mouse,down,*"; so, SCALE;
-	a, ST "clicked" x; tr, SINUSOIDAL x1; 
+	a, ST "clicked" x; tr, SINUSOIDAL 0.01; 
 	t, SCALE; }
 
 p { n, SCALE"UnClicked"; s, "mouse,up,*"; so, SCALE;
-	a, ST "default" x; tr, SINUSOIDAL x1; 
+	a, ST "default" x; tr, SINUSOIDAL 0.01; 
 	t, SCALE; }
 //
 p { n, FIT"Hilited"; s, "mouse,in"; so, FIT;
@@ -23,18 +23,18 @@ p { n, FIT"Hilited"; s, "mouse,in"; so, FIT;
 	t, FIT; after, FIT"Hilited"; }
 
 p { n, FIT"Unhilited"; signal, "mouse,out"; so, FIT;
-	a, ST "default" x; tr, SINUSOIDAL x5;
+	a, ST "default" x; tr, SINUSOIDAL 0.05;
 	t, FIT; }
 
 p { n, FIT"Execute"; s, "mouse,down,*"; so, FIT;
 	a, SIGNAL_EMIT "entice,image,current,zoom,fit" ""; }
 
 p { n, FIT"Clicked"; s, "mouse,down,*"; so, FIT;
-	a, ST "clicked" x; tr, SINUSOIDAL x1; 
+	a, ST "clicked" x; tr, SINUSOIDAL 0.01; 
 	t, FIT; }
 
 p { n, FIT"UnClicked"; s, "mouse,up,*"; so, FIT;
-	a, ST "default" x; tr, SINUSOIDAL x1; 
+	a, ST "default" x; tr, SINUSOIDAL 0.01; 
 	t, FIT; }
 //
 p { n, ZoomIn"Hilited"; s, "mouse,in"; so, ZoomIn;
@@ -42,18 +42,18 @@ p { n, ZoomIn"Hilited"; s, "mouse,in"; so, ZoomIn;
 	t, ZoomIn; af, ZoomIn"Hilited"; }
 
 p { n, ZoomIn"Unhilited"; s, "mouse,out"; so, ZoomIn;
-	a, ST "default" x; tr, SINUSOIDAL x5;
+	a, ST "default" x; tr, SINUSOIDAL 0.05;
 	t, ZoomIn; }
 
 p { n, ZoomIn"Execute"; s, "mouse,down,*"; so, ZoomIn;
 	a, SIGNAL_EMIT "entice,image,current,zoom,in" ""; }
 
 p { n, ZoomIn"Clicked"; signal, "mouse,down,*"; so, ZoomIn;
-	a, ST "clicked" x; tr, SINUSOIDAL x1; 
+	a, ST "clicked" x; tr, SINUSOIDAL 0.01; 
 	t, ZoomIn; }
 
 p { n, ZoomIn"UnClicked"; s, "mouse,up,*"; so, ZoomIn;
-	a, ST "default" x; tr, SINUSOIDAL x1; 
+	a, ST "default" x; tr, SINUSOIDAL 0.01; 
 	t, ZoomIn; }
 //
 
@@ -62,18 +62,18 @@ p { n, ZoomOut"Hilited"; s, "mouse,in"; so, ZoomOut;
 	t, ZoomOut; af, ZoomOut"Hilited"; }
 
 p { n, ZoomOut"UnHilited"; s, "mouse,out"; so, ZoomOut;
-	a, ST "default" x; tr, SINUSOIDAL x5;
+	a, ST "default" x; tr, SINUSOIDAL 0.05;
 	t, ZoomOut; }
 
 p { n, ZoomOut"Execute"; s, "mouse,down,*"; so, ZoomOut;
 	a, SIGNAL_EMIT "entice,image,current,zoom,out" ""; }
 
 p { n, ZoomOut"Clicked"; s, "mouse,down,*"; so, ZoomOut;
-	a, ST "clicked" x; tr, SINUSOIDAL x1; 
+	a, ST "clicked" x; tr, SINUSOIDAL 0.01; 
 	t, ZoomOut; }
 
 p{ n, ZoomOut"UnClicked"; s, "mouse,up,*"; so, ZoomOut;
-	a, ST "default" x; tr, SINUSOIDAL x1; 
+	a, ST "default" x; tr, SINUSOIDAL 0.01; 
 	t, ZoomOut; }
 
 //
@@ -90,9 +90,9 @@ p { n, "FullScreenExecute"; s, "mouse,clicked,*"; so, "IconFullScreen";
 	a, SIGNAL_EMIT "entice,fullscreen" ""; }
 
 p { n, "FullScreenClicked"; s, "mouse,down,*"; so, "IconFullScreen";
-	a, ST "clicked" x; tr, SINUSOIDAL x1; 
+	a, ST "clicked" x; tr, SINUSOIDAL 0.01; 
 	t, "IconFullScreen"; }
 
 p { n, "FullScreenUnClicked"; s, "mouse,up,*"; so, "IconFullScreen";
-	a, ST "default" x; tr, SINUSOIDAL x1; 
+	a, ST "default" x; tr, SINUSOIDAL 0.01; 
 	t, "IconFullScreen"; }

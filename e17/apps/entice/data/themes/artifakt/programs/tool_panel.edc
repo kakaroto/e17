@@ -47,7 +47,7 @@ p { n, "Show.Thumbnail.area.Panel"; s, "mouse,in"; so, "PanningClipMouseArea";
 }
 
 p { n, "Hide.Thumbnail.area.Panel"; s, "mouse,in"; so, "entice.image";
-	a, ST "default" x; tr, DECELERATE x1;
+	a, ST "default" x; tr, DECELERATE 0.01;
 	t, "ToolPanel";
 }
 
@@ -57,7 +57,7 @@ p { n, "ShowT"; s, "mouse,in"; so, "ToolPanel";
 }
 
 p { n, "UnShowT"; s, "mouse,in"; so, "entice.image";
-	a, STATE_SET "default" x; tr, LINEAR x1; 
+	a, STATE_SET "default" x; tr, LINEAR 0.01; 
 	t, "entice.thumbnail.area";
 }
 
