@@ -1,0 +1,315 @@
+Notes on Entrance's Edje Format
+----------------------------------------------------------------------------
+
+Each Entrance theme will consist of Two main groups "Main" and "Session"
+A basic edc mockup follows.
+
+----------------------------------------------------------------------------
+collections { 
+group
+{
+    name, "Main";
+    parts
+    {
+	part {
+	name "EntrancePassEntry";
+	type, TEXT;
+	visible, 1;
+	// Doesn't need to be visible, must be present, it gets filled
+	// up with *'s as you type, make it invisible to turn echo off
+	}
+	part {
+	name "EntranceUserEntry";
+	type, TEXT;
+	visible, 1;
+	text 
+	{              
+	    text, "";
+	    font, "Vera";
+	    size, 8;
+	    align, 0.5 0.5;
+	}               
+	// Doesn't need to be visible, must be present, text will be set
+	// to the key value for this session
+	}
+    }
+    programs
+    {
+	program {
+	    signal, "EntranceUserAuthSuccess";
+	    // After successful login by the user, you can do post auth
+	    // animation like thingies here, Emit
+	    // "EntranceUserAuthSuccessDone" when finished
+	    after, "SuccessDone";
+	}
+	program {
+	    name, "SuccessDone";
+	    action, SIGNAL_EMIT "EntranceUserAuthSuccessDone" "";
+	    // Let entrance know that post auth anim is over
+	    // This MUST be in every theme.
+	}
+	program {
+	    signal, "EntranceUserAuthFail";
+	    // Emitted if the password is not accepted, but password failed
+	}
+	program {
+	    signal, "EntranceUserFail";
+	    // Emitted if the username is not accepted by the system
+	}
+	program {
+	    signal, "EntranceUserAuth";
+	    // Emitted if the username is accepted by the system
+	}
+	program {
+	    action, SIGNAL_EMIT "EntranceSystemReboot" "";
+	    // Emitted to tell the system to reboot if config allows
+	}
+	program {
+	    action, SIGNAL_EMIT "EntranceSystemHalt" "";
+	    // Emitted to tell the system to halt if config allows
+	}
+	program {
+	    action, SIGNAL_EMIT "In" "EntranceUserEntry";
+	    // Emitted to tell the system to move key focus to user
+	    // input buffer
+	}
+	program {
+	    action, SIGNAL_EMIT "In" "EntrancePassEntry";
+	    // Emitted to tell the system to move key focus to
+	    // password input buffer
+	}
+
+    }
+}
+group
+{
+    name, "Session";
+    parts
+    {
+	part {
+	name "EntranceSessionIcon";
+	type, IMAGE;
+	visible, 1;
+	// Doesn't need to be visible, or present, the value of
+	// /entrance/session/%i/edje gets swallowed here.  It can be an
+	// image or another edje
+	}
+	part {
+	name "EntranceSessionTitle";
+	type, TEXT;
+	visible, 1;
+	text 
+	{              
+	    text, "";
+	    font, "Vera";
+	    size, 8;
+	    align, 0.5 0.5;
+	}               
+	// Doesn't need to be visible, or present, text will be set to
+	// the key value for this session
+	}
+    }
+    programs
+    {
+	program {
+	    action, SIGNAL_EMIT "SessionSelected" "";
+	    // Let entrance know that this edje was selected.  See below
+	    // for evaluation of the edje on this signal emission
+	}
+    }
+}}
+----------------------------------------------------------------------------
+FIXME: Document the stuff that's already been implemented :(
+
+/*========================================================================*/
+Howto implement sessions in entrance
+----------------------------------------------------------------------------
+/entrance/session/count - int - the number of users we have
+/entrance/session/%i/title - char* - Default text displayed for the session
+/entrance/session/%i/icon - char* - path to edje icon file for this session
+/entrance/session/%i/session - char* - XSession type to launch 
+
+----------------------------------------------------------------------------
+Hash values in two evas hashes
+title -> icon mapping
+title -> session mapping
+----------------------------------------------------------------------------
+
+Each Entrance theme will have their own own defined rect we can swallow
+into if they want.  This part should be named EntranceSessionList.
+
+Sesssion edjes will look like the following:
+A basic edc mockup follows.
+
+----------------------------------------------------------------------------
+group
+{
+    name, "EntranceSession";
+    parts
+    {
+	part {
+	name "EntranceSessionIcon";
+	type, IMAGE;
+	visible, 1;
+	// Doesn't need to be visible, or present, the value of
+	// /entrance/session/%i/edje gets swallowed here.  It can be an
+	// image or another edje
+	}
+	part {
+	name "EntranceSessionTitle";
+	type, TEXT;
+	visible, 1;
+	text 
+	{              
+	    text, "";
+	    font, "Vera";
+	    size, 8;
+	    align, 0.5 0.5;
+	}               
+	// Doesn't need to be visible, or present, text will be set to
+	// the key value for this session
+	}
+    }
+    programs
+    {
+	program {
+	    action, SIGNAL_EMIT "SessionSelected" "";
+	    // Let entrance know that this edje was selected.  See below
+	    // for evaluation of the edje on this signal emission
+	}
+    }
+}
+----------------------------------------------------------------------------
+On "SessionSelected" emissions from sessions we do the following:
+1. Query EntranceSessionName for the Session we're selecting
+2. Lookup the session's edje in in the config system.
+3. Load that edje, register a pointer to the object in EntranceSession
+4. Swallow it into Entrance's main edje in a part called "EnticeSession" if
+the part exists.
+5. Emit a signal to Entrance's main edje called "SessionSelected"
+
+----------------------------------------------------------------------------
+
+On "SessionSelected" emissions from entrance's main edje we do the following:
+1. Query the EnticeSession edje for EntranceSessionName
+2. Set the session string to EntranceSesssionName 
+(implement entrance_session_xsession_set() )
+
+----------------------------------------------------------------------------
+Loading Sessions:
+1. Check for part existence in the Main theme edje for
+"EntranceSessionList". If !exist returns.
+2. Create a container object, set direction based on h or w being larger
+3. Iterate over the sessions hashes(evas_hash_foreach)
+ 3.a. Load EntranceSession Group from default theme.
+ 3.b. Set EntranceSessionTitle for current item
+ 3.c. Load icon from current icon's file
+ 3.c.i. Success, swallow it into EntranceSession group
+ 3.c.ii. Failure, swallow default icon
+ 3.d  Append current item to container
+4. Swallow container into EntranceSessionList
+/*========================================================================*/
+Howto implement login faces in entrance
+----------------------------------------------------------------------------
+/entrance/user/count - int - the number of users we have
+/entrance/%i/edje - char* - path to user edje on disk
+/entrance/%i/user - char* - username for this user
+
+we supply a small app, entrance_useradd, to add a new user to the db w/
+sane defaults.
+
+entrance_useradd [options] username
+-e : specify the edje for the user, refine if previously defined
+-d : delete the user from entrance's user db
+
+Each Entrance theme will have their own own defined rect we can swallow
+into if they want.  This part should be named EntranceUserList.
+
+User edjes will look like the following:
+They will have a group called "User", and there will be three part
+definition possibilities.  The "EntranceUser" part is necessary for all
+user edjes.  The "EntrancePass" and "EntranceSession" parameters are
+optional.  Furthermore user selected sessions in entrance will override
+defined sessions in the user file.  A basic edc mockup follows.
+
+collections { group
+{
+    name, "User";
+    parts
+    {
+	part {
+	name "EntranceUser";
+	type, TEXT;
+	visible, 1;
+	// Doesn't need to be visible, as long as there is other content
+	// in here, Entrance will query this part for a valid text
+	// string when it needs the User's name.
+	}
+	part {
+	name, "EntrancePass";
+	type, TEXT;
+	visible, 0;	
+	// This option isn't suggested, but it'd be useful on things
+	// like pdas where we just wanna login each time. :)
+	// Also would make it easy to setup a guest user on shared
+	// desktop machines.
+	}
+	part {
+	name, "EntranceSession";
+	type, TEXT;
+	visible, 0;
+	// This option is suggested if you are a braindead user(like
+	// atmos) who just wants to login and get the same environment
+	// without selecting a session each time and without running
+	// Default.
+	}
+    }
+    programs
+    {
+	program {
+	    action, SIGNAL_EMIT "UserSelected" "";
+	    // Let entrance know that this edje was selected.  See below
+	    // for evaluation of the edje on this signal emission
+	}
+	program {
+	    action, SIGNAL_EMIT "UserUnSelected" "";
+	    // Let entrance know "i messed up! i clicked the wrong edje,
+	    // revert back to as if we had never UserSelected in the
+	    // first place.
+	}
+    }
+}}
+----------------------------------------------------------------------------
+On "UserSelected" emissions from faces we do the following:
+1. Query EntranceUser for the user's name.
+2. Lookup their edje in in the config system.
+3. Load that edje, register a pointer to the object in EntranceSession
+4. Swallow it into Entrance's main edje in a part called "EnticeFace" if
+the part exists.
+5. Emit a signal to Entrance's main edje called "UserSelected"
+
+----------------------------------------------------------------------------
+
+On "UserUnSelected" emissions from faces we do the following:
+1. entrance_session_user_reset()
+2. Query entrance's main edje for "EntranceFace" part
+3. If part exists, delete it from the evas.
+
+----------------------------------------------------------------------------
+
+On "UserSelected" emissions from entice's main edje we do the following:
+1. Query the current "EntranceFace" part and get the username.
+2. Set the entrance user to this value, attempt user recognition.
+3. If user recognition fails, emit "EntranceUserFail" 
+4. If user recognition succeeds, query the current "EdjeFace" for the
+session string.
+5. If the current session as not yet been set, set if session string
+returned was non-null.
+6. Query the current "EdjeFace" for the password string
+7. If the password string is non-null, attempt system auth with password
+supplied.
+ 7.a. If authentication is successful, emit "EntranceUserAuthSuccess"
+ 7.b. If authentication fails, goto 8 :)
+8. If the password string is null, emit "EntranceUserAuth" so the theme
+goes to its next state.
+/*========================================================================*/
