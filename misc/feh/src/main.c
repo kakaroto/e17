@@ -63,8 +63,10 @@ main_loop (void)
   for (;;)
     {
       XFlush (disp);
+      D(("In event loop\n"));
       while (XPending (disp))
 	{
+      D(("In event loop - events pending\n"));
 	  if (window_num == 0)
 	    exit (0);
 	  XNextEvent (disp, &ev);
@@ -234,6 +236,7 @@ main_loop (void)
 		D (("A window has timeout set\n"));
 		break;
 	      }
+	  D(("Performing select, timeout is %d\n",timeout));
 	  if (timeout)
 	    count = select (fdsize, &fdset, NULL, NULL, &tval);
 	  else
@@ -298,6 +301,7 @@ main_loop (void)
 		      XClearWindow (disp, windows[j]->win);
 		      XFlush (disp);
 		      windows[j]->timeout = 0;
+		      timeout=0;
 		    }
 		}
 	    }

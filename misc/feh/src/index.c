@@ -74,8 +74,11 @@ init_index_mode (void)
   imlib_context_set_font (fn);
   imlib_context_set_direction (IMLIB_TEXT_TO_RIGHT);
   imlib_context_set_color (255, 255, 255, 255);
-  if (!fn)
-    fprintf (stderr, "Error loading font\n");
+  if ((!fn) || (!title_fn))
+  {
+      fprintf (stderr, "Error loading font\n");
+      exit(1);
+  }
 
   /* Use bg image dimensions for default size */
   if (opt.bg && opt.bg_file)
