@@ -143,6 +143,35 @@ they look tinted, have them rendered only within a certain area of the
 canvas and more.
 @:para@
 @tile_area_end@
+@:para@
+Text is a very important part of many applications. Evas of course provides
+a nice simple way of getting text into the Evas you have up without much
+fuss or bother AND to boot it will anti-alias it so your edges are smooth
+and not jagged AND allow fo the text to be semi-transparent and much more.
+@:para@
+@tile_area_start@
+<img src=img/evas_text.png width=128 height=128>
+@tile_area_text@
+@:para@
+@:cent@@:title@Text@:_title@@:_cent@
+@:para@
+Text allows you to display information in your Evas without needing image
+objects with pre-rendered text. But first you have to realise fonts are
+handled a little differently. First there is a font path - this is a list of
+directories where to find font files. Evas supports Truetype fonts only -
+some may think this bad, but there are more turetype fonts than any other
+format out there and many are very good quality.
+@:para@
+Evas looks at the fonts in a directory by their filename, so a font you
+reference in evas as "myfont", Evas will look in the directories (in the
+order given) for a "myfont.ttf" file. It is case sensitive, but this system
+proves to be nice and simple. Here is a simple example.
+@:para@
+object = ..
+@:para@
+@:para@
+@:para@
+@tile_area_end@
 
 @end@
 @bottom@
