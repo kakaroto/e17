@@ -2229,3 +2229,12 @@ Mon Nov 10 00:59:56 CET 2003
 (Kim)
 
 Shuffling stuff around, cleanups.
+
+-------------------------------------------------------------------------------
+
+Sun Nov 16 00:08:35 CET 2003
+(Kim)
+
+Initial imlib2 port.
+Rely on DISPLAY, not -display when restarting WM.
+Use "fixed" as fallback font.
