@@ -341,11 +341,13 @@ _entice_thumb_load(void *_data, Evas * _e, Evas_Object * _o, void *_ev)
          edje_object_part_geometry_get(entice->edje, "entice.image", NULL,
                                        NULL, &w, &h);
          evas_object_resize(new_current, w, h);
+         evas_object_layer_set(new_current, evas_object_layer_get(o));
          evas_object_show(new_current);
 
          edje_object_part_geometry_get(entice->edje, "entice.scroller", NULL,
                                        NULL, &w, &h);
          evas_object_resize(new_scroller, w, h);
+         evas_object_layer_set(new_scroller, evas_object_layer_get(o));
          evas_object_show(new_scroller);
 
          if (entice->current)
