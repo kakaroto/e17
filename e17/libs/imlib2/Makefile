@@ -89,10 +89,15 @@ LDFLAGS = -L/usr/X11R6/lib
 INCLUDES = -I/usr/X11R6/include -I$(top_srcdir)/libltdl
 
 pkgdir = $(HOME)/.loaders/image
-pkg_LTLIBRARIES = png.la
+pkg_LTLIBRARIES = png.la jpeg.la
+
 png_la_SOURCES = loader_png.c
 png_la_LDFLAGS = -no-undefined -module -avoid-version
 png_la_LIBADD = -lpng -lz -lX11 -lXext
+
+jpeg_la_SOURCES = loader_jpeg.c
+jpeg_la_LDFLAGS = -no-undefined -module -avoid-version
+jpeg_la_LIBADD = -ljpeg
 
 bin_PROGRAMS = imlib2
 imlib2_SOURCES = rend.c ximage.c scale.c main.c rgba.c image.c 		  color.c grab.c blend.c file.c rgbadraw.c api.c draw.c 		  context.c
@@ -112,6 +117,8 @@ CPPFLAGS =
 LIBS = 
 png_la_DEPENDENCIES = 
 png_la_OBJECTS =  loader_png.lo
+jpeg_la_DEPENDENCIES = 
+jpeg_la_OBJECTS =  loader_jpeg.lo
 PROGRAMS =  $(bin_PROGRAMS)
 
 imlib2_OBJECTS =  rend.o ximage.o scale.o main.o rgba.o image.o color.o \
@@ -133,11 +140,11 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 TAR = gtar
 GZIP_ENV = --best
 DEP_FILES =  .deps/api.P .deps/blend.P .deps/color.P .deps/context.P \
-.deps/draw.P .deps/file.P .deps/grab.P .deps/image.P .deps/loader_png.P \
-.deps/main.P .deps/rend.P .deps/rgba.P .deps/rgbadraw.P .deps/scale.P \
-.deps/ximage.P
-SOURCES = $(png_la_SOURCES) $(imlib2_SOURCES)
-OBJECTS = $(png_la_OBJECTS) $(imlib2_OBJECTS)
+.deps/draw.P .deps/file.P .deps/grab.P .deps/image.P \
+.deps/loader_jpeg.P .deps/loader_png.P .deps/main.P .deps/rend.P \
+.deps/rgba.P .deps/rgbadraw.P .deps/scale.P .deps/ximage.P
+SOURCES = $(png_la_SOURCES) $(jpeg_la_SOURCES) $(imlib2_SOURCES)
+OBJECTS = $(png_la_OBJECTS) $(jpeg_la_OBJECTS) $(imlib2_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
@@ -244,6 +251,9 @@ maintainer-clean-libtool:
 
 png.la: $(png_la_OBJECTS) $(png_la_DEPENDENCIES)
 	$(LINK) -rpath $(pkgdir) $(png_la_LDFLAGS) $(png_la_OBJECTS) $(png_la_LIBADD) $(LIBS)
+
+jpeg.la: $(jpeg_la_OBJECTS) $(jpeg_la_DEPENDENCIES)
+	$(LINK) -rpath $(pkgdir) $(jpeg_la_LDFLAGS) $(jpeg_la_OBJECTS) $(jpeg_la_LIBADD) $(LIBS)
 
 mostlyclean-binPROGRAMS:
 

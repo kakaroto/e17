@@ -14,10 +14,15 @@ LDFLAGS		= -L/usr/X11R6/lib
 INCLUDES	= -I/usr/X11R6/include -I$(top_srcdir)/libltdl
 
 pkgdir		= $(HOME)/.loaders/image
-pkg_LTLIBRARIES	= png.la
+pkg_LTLIBRARIES	= png.la jpeg.la
+
 png_la_SOURCES	= loader_png.c
 png_la_LDFLAGS	= -no-undefined -module -avoid-version
 png_la_LIBADD	= -lpng -lz -lX11 -lXext
+
+jpeg_la_SOURCES	= loader_jpeg.c
+jpeg_la_LDFLAGS	= -no-undefined -module -avoid-version
+jpeg_la_LIBADD	= -ljpeg
 
 bin_PROGRAMS	= imlib2
 imlib2_SOURCES	= rend.c ximage.c scale.c main.c rgba.c image.c \

@@ -248,6 +248,8 @@ imlib_render_pixmaps_for_whole_image(Imlib_Image image, Display *display,
 
    CAST_IMAGE(im, image);
    cm = (ImlibColorModifier *)color_modifier;
+   if ((!(im->data)) && (im->loader))
+      im->loader->load(im, NULL, 0, 1);
    __imlib_CreatePixmapsForImage(display, drawable, visual, depth, colormap, 
 				 im, pixmap_return, mask_return, 0, 0, 
 				 im->w, im->h, im->w, im->h,
@@ -274,6 +276,8 @@ imlib_render_pixmaps_for_whole_image_at_size(Imlib_Image image, Display *display
 
    CAST_IMAGE(im, image);
    cm = (ImlibColorModifier *)color_modifier;
+   if ((!(im->data)) && (im->loader))
+      im->loader->load(im, NULL, 0, 1);
    __imlib_CreatePixmapsForImage(display, drawable, visual, depth, colormap, 
 				 im, pixmap_return, mask_return, 0, 0, 
 				 im->w, im->h, width, height,
@@ -297,6 +301,8 @@ imlib_render_image_on_drawable(Imlib_Image image, Display *display,
    
    CAST_IMAGE(im, image);
    cm = (ImlibColorModifier *)color_modifier;
+   if ((!(im->data)) && (im->loader))
+      im->loader->load(im, NULL, 0, 1);
    __imlib_RenderImage(display, im, drawable, 0, visual, colormap, depth, 
 		       0, 0, im->w, im->h, x, y, im->w, im->h,
 		       0,
@@ -320,8 +326,37 @@ imlib_render_image_on_drawable_at_size(Imlib_Image image, Display *display,
 
    CAST_IMAGE(im, image);
    cm = (ImlibColorModifier *)color_modifier;
+   if ((!(im->data)) && (im->loader))
+      im->loader->load(im, NULL, 0, 1);
    __imlib_RenderImage(display, im, drawable, 0, visual, colormap, depth, 
 		       0, 0, im->w, im->h, x, y, width, height,
+		       anti_aliased_scaling,
+		       dithered_rendering,
+		       alpha_blending, 0, 
+		       cm);
+}
+
+void imlib_render_image_part_on_drawable_at_size(Imlib_Image image, Display *display,
+						 Drawable drawable, Visual *visual,
+						 Colormap colormap, int depth,
+						 char anti_aliased_scaling,
+						 char dithered_rendering,
+						 char alpha_blending,
+						 int source_x, int source_y,
+						 int source_width, int source_height,
+						 int x, int y, int width, int height,
+						 Imlib_Color_Modifier color_modifier)
+{
+   ImlibImage *im;
+   ImlibColorModifier *cm;
+
+   CAST_IMAGE(im, image);
+   cm = (ImlibColorModifier *)color_modifier;
+   if ((!(im->data)) && (im->loader))
+      im->loader->load(im, NULL, 0, 1);
+   __imlib_RenderImage(display, im, drawable, 0, visual, colormap, depth, 
+		       source_x, source_y, 
+		       source_width, source_height, x, y, width, height,
 		       anti_aliased_scaling,
 		       dithered_rendering,
 		       alpha_blending, 0, 
@@ -350,6 +385,10 @@ imlib_blend_image_onto_image(Imlib_Image source_image,
    CAST_IMAGE(im_src, source_image);
    CAST_IMAGE(im_dst, destination_image);
    /* FIXME: doesnt do clipping in any way or form - must fix */
+   if ((!(im_src->data)) && (im_src->loader))
+      im_src->loader->load(im_src, NULL, 0, 1);
+   if ((!(im_dst->data)) && (im_dst->loader))
+      im_dst->loader->load(im_src, NULL, 0, 1);
 
    if ((source_width == destination_width) &&
        (source_height == destination_height))
@@ -380,7 +419,7 @@ imlib_blend_image_onto_image(Imlib_Image source_image,
 	int       y, h, hh;
 	
 	sx = source_x;
-	sy = source_x;
+	sy = source_y;
 	sw = source_width;
 	sh = source_height;
 	dx = destination_x;
@@ -431,7 +470,7 @@ imlib_blend_image_onto_image(Imlib_Image source_image,
 	dxx = dx - psx;
 	dyy = dy - psy;
 	dxx += (x2 * destination_width) / source_width;
-	dyy += (y2 * destination_width) / source_width;
+	dyy += (y2 * destination_height) / source_height;
 
         /* do a second check to see if we now have invalid coords */
         /* dont do anything if we have a 0 widht or height image to render */
@@ -690,6 +729,8 @@ imlib_clone_image(Imlib_Image image)
    ImlibImage *im, *im_old;
 
    CAST_IMAGE(im_old, image);
+   if ((!(im_old->data)) && (im_old->loader))
+      im_old->loader->load(im_old, NULL, 0, 1);
    im = __imlib_CreateImage(im_old->w, im_old->h, NULL);
    im->data = malloc(im->w * im->h *sizeof(DATA32));
    memcpy(im->data, im_old->data, im->w * im->h *sizeof(DATA32));

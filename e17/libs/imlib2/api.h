@@ -92,6 +92,16 @@ void imlib_render_image_on_drawable_at_size(Imlib_Image image, Display *display,
 					    char alpha_blending,
 					    int x, int y, int width, int height,
 					    Imlib_Color_Modifier color_modifier);
+void imlib_render_image_part_on_drawable_at_size(Imlib_Image image, Display *display,
+						 Drawable drawable, Visual *visual,
+						 Colormap colormap, int depth,
+						 char anti_aliased_scaling,
+						 char dithered_rendering,
+						 char alpha_blending,
+						 int source_x, int source_y,
+						 int source_width, int source_height,
+						 int x, int y, int width, int height,
+						 Imlib_Color_Modifier color_modifier);
 /* rgba space ops */
 void imlib_blend_image_onto_image(Imlib_Image source_image,
 				  Imlib_Image destination_image,

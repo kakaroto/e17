@@ -20,15 +20,31 @@
 #include "api.h"
 
 Display *disp;
+Window win;
+Visual *vis;
+Colormap cm;
+int depth;
+
+progress(Imlib_Image *im, char percent,
+	 int update_x, int update_y,
+	 int update_w, int update_h)
+{
+   printf("image laod for %3i%% done (%ix%i %i,%i)\n",
+	  percent, update_w, update_h, update_x, update_y);
+   imlib_render_image_part_on_drawable_at_size(im, disp, win, vis, cm, depth, 
+					       0, 0, 0,
+					       update_x, update_y,
+					       update_w, update_h,
+					       1700 + update_x, 100 + update_y,
+					       update_w, update_h,
+					       NULL);
+}
 
 #if 1
 int main (int argc, char **argv)
 {
-   Window win;
    int i, j;
    Imlib_Image *im;
-   Visual *vis;
-   int depth;
    int sec1, usec1, sec2, usec2;
    int pixels = 0;
    struct timeval timev;
@@ -75,8 +91,14 @@ int main (int argc, char **argv)
      }
    printf("init\n");
    disp = XOpenDisplay(NULL);
-   printf("load\n");
-   im = imlib_load_image(file);
+   vis = DefaultVisual(disp, DefaultScreen(disp));
+   depth = DefaultDepth(disp, DefaultScreen(disp));    
+   cm = DefaultColormap(disp, DefaultScreen(disp));
+   if (root)
+      win = DefaultRootWindow(disp);
+   else
+      win = XCreateSimpleWindow(disp, DefaultRootWindow(disp), 0, 0, 10, 10, 0, 0, 0);
+   im = imlib_load_image_with_progress_callback(file, progress, 1);
    if (!im)
      {
 	printf("load fialed\n");
@@ -87,11 +109,9 @@ int main (int argc, char **argv)
 	w = imlib_image_get_width(im);
 	h = imlib_image_get_height(im);   
      }
-   if (root)
-      win = DefaultRootWindow(disp);
-   else
+   if (!root)
      {
-	win = XCreateSimpleWindow(disp, DefaultRootWindow(disp), 0, 0, w, h, 0, 0, 0);
+	XResizeWindow(disp, win, w, h);
 	XMapWindow(disp, win);
      }
    if (scale)
@@ -101,8 +121,6 @@ int main (int argc, char **argv)
 	
 	XGetGeometry(disp, win, &d, &dd, &dd, &w, &h, &dd, &dd);
      }
-   vis = DefaultVisual(disp, DefaultScreen(disp));
-   depth = DefaultDepth(disp, DefaultScreen(disp));    
    XSync(disp, False);
    printf("rend\n");
    gettimeofday(&timev,NULL);
@@ -114,7 +132,7 @@ int main (int argc, char **argv)
 	for (i = 0; i < w; i++)
 	  {
 	     imlib_render_image_on_drawable_at_size(im, disp, win, vis, 
-						    DefaultColormap(disp, DefaultScreen(disp)),
+						    cm,
 						    depth, 
 						    aa, dith, blend, 
 						    0, 0,
@@ -127,7 +145,7 @@ int main (int argc, char **argv)
      {
 	Imlib_Image im2;
 	
-	im2 = imlib_create_image(640, 480);
+	im2 = imlib_create_image(1024, 768);
 	while (1)
 	  {
 	     int x, y, dum;
@@ -136,15 +154,15 @@ int main (int argc, char **argv)
 	     
 	     XQueryPointer(disp, win, &rt, &rt, &x, &y,
 			   &dum, &dum, &dui);
+	     x -= 1700; y -= 100;		
 	     imlib_blend_image_onto_image(im, im2, 
 					  
-					  0, 0, w, h, 
+					  0, 0, w - 200, h - 200, 
 					  
-					  x - (w / 2), y - (h / 2), 
-					  x * 2, y * 2);
+					  x - 32, y - 32, 
+					  -20 + x * 8, y * 8);
 	     imlib_render_image_on_drawable(im2, disp, win, vis, 
-					    DefaultColormap(disp, DefaultScreen(disp)),
-					    depth, dith, 1, 1700, 100, NULL);
+					    cm, depth, dith, 1, 1700, 100, NULL);
 	  }
      }
    else
@@ -152,7 +170,7 @@ int main (int argc, char **argv)
 	for (i = 0; i < w; i++)
 	  {
 	     imlib_render_image_on_drawable_at_size(im, disp, win, vis, 
-						    DefaultColormap(disp, DefaultScreen(disp)),
+						    cm,
 						    depth, 
 						    aa, dith, blend, 
 						    0, 0,
