@@ -1,9 +1,10 @@
-#ifndef E_IM_H
-#define E_IM_H
+#ifndef EXPRESS_H
+#define EXPRESS_H
 
 #include <Evas.h>
 #include <Ecore.h>
 #include <Ecore_Evas.h>
+#include <Ecore_Con.h>
 #include <Edje.h>
 #include <Etox.h>
 #include <Esmart/Esmart_Container.h>
@@ -13,9 +14,6 @@ typedef struct _Exp Exp;
 typedef struct _Exp_Buddy Exp_Buddy;
 typedef struct _Exp_Conversation Exp_Conversation;
 typedef struct _Exp_Message Exp_Message;
-
-typedef enum _Exp_Buddy_State Exp_Buddy_State;
-
 
 struct _Exp
 {
@@ -38,6 +36,21 @@ struct _Exp
     unsigned char size : 1;
     unsigned char active_conv : 1;
   } changes;
+
+  struct 
+  {
+    char *name;
+    int port;
+    unsigned char *cookie;
+
+    Ecore_Con_Server *server;
+
+    struct
+    {
+      char *msg;
+      int len;
+    } store;
+  } server;
 };
 
 struct _Exp_Buddy

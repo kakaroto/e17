@@ -1,3 +1,7 @@
+/*
+ * vim:ts=4:cino=t0
+ */
+
 #include "Express.h"
 
 static int exp_fake_conversation(void *data);

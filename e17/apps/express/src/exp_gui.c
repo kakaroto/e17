@@ -1,15 +1,25 @@
+/*
+ * vim:ts=4:cino=t0
+ */
+
 #include "Express.h"
 
 static void exp_gui_cb_resize(Ecore_Evas *ee);
 static int exp_gui_idler_before(void *data);
 static void _exp_gui_scroll_callback(void *data, Evas_Object *obj, const char *sig, const char *src);
 
-void
-exp_gui_setup(Exp *exp)
+int
+exp_gui_init(Exp *exp)
 {
   Evas_Coord mw, mh, dw = 0, dh = 0;
   const char *tmp;
+
+  /* FIXME make this a config option */
   exp->theme_path = strdup(PACKAGE_DATA_DIR"/themes/express.eet");
+
+  exp->ee = ecore_evas_software_x11_new(0,0,0,0,255,255);
+  exp->evas = ecore_evas_get(exp->ee);
+  ecore_evas_data_set(exp->ee, "exp", exp);
 
   exp->gui = edje_object_add(exp->evas);
   edje_object_file_set(exp->gui, exp->theme_path, "express.base");
@@ -25,7 +35,7 @@ exp_gui_setup(Exp *exp)
   edje_object_part_swallow(exp->gui, "express.buddylist", exp->buddy_cont);
   evas_object_name_set(exp->buddy_cont, "express.buddylist");
   evas_object_show(exp->buddy_cont);
-  
+
   edje_object_size_min_get(exp->gui, &mw, &mh);
   tmp = edje_object_data_get(exp->gui, "default.w");
   if (tmp) dw = atoi(tmp);
@@ -57,6 +67,8 @@ exp_gui_setup(Exp *exp)
 
   edje_color_class_set("express.message.received", 255, 214, 214, 255, 255, 214, 214, 255, 255, 214, 214, 255);
   edje_color_class_set("express.message.sent", 229, 239, 255, 255, 229, 239, 255, 255, 229, 239, 255, 255);
+
+  return 1;
 }
 
 
@@ -93,7 +105,7 @@ exp_gui_idler_before(void *data)
     if (conv->destroy)
     {
       removals = evas_list_append(removals, conv);
-    
+
       if (conv == exp->active_conversation)
       {
         edje_object_part_unswallow(exp->gui, exp->active_conversation->cont);
@@ -163,13 +175,13 @@ exp_gui_idler_before(void *data)
     for (l = exp->conversations; l; l = l->next)
     {
       Exp_Conversation *conv = l->data;
-      
+
       if (conv->active)
       {
         double p;
         edje_object_part_swallow(exp->gui, "express.conversation", conv->cont);
         evas_object_show(conv->cont);
-      
+
         conv->changed = 1;
         conv->buddy->active = 1;
         conv->buddy->changed = 1;
@@ -183,7 +195,7 @@ exp_gui_idler_before(void *data)
     {
       /* show a different conversation? */
     }
-    
+
     exp->changes.active_conv = 0;
   }
 
@@ -195,9 +207,9 @@ _exp_gui_scroll_callback(void *data, Evas_Object *obj, const char *sig, const ch
 {
   Exp *exp = data;
   double dx, dy;
-  
+
   if (!exp) return;
-  
+
   edje_object_part_drag_value_get(exp->gui, "scrollbar.bar", &dx, &dy);
   if (exp->active_conversation)
   {

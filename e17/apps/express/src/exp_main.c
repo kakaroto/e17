@@ -1,3 +1,7 @@
+/*
+ * vim:ts=4:cino=t0
+ */
+
 #include "Express.h"
 
 static void exp_fake_buddies(Exp *exp);
@@ -7,18 +11,36 @@ main (int argc, char **argv)
 {
   Exp *exp;
 
-  ecore_init();
-  ecore_evas_init();
-  edje_init();
+  if (!ecore_init())
+  {
+	printf("Unable to init ecore\n");
+	return 1;
+  }
+  if (!ecore_evas_init())
+  {
+	printf("Unable to init ecore evas\n");
+	return 1;
+  }
+  if (!edje_init())
+  {
+	printf("Unable to init edje\n");
+	return 1;
+  }
 
   ecore_app_args_set(argc, (const char **)argv);
   
   exp = (Exp *)calloc(1, sizeof(Exp));
-  exp->ee = ecore_evas_software_x11_new(0,0,0,0,255,255);
-  exp->evas = ecore_evas_get(exp->ee);
-  ecore_evas_data_set(exp->ee, "exp", exp);
 
-  exp_gui_setup(exp);
+  if (!exp_eb_init("~/.everybuddy"))
+  {
+	printf("Unable to setup Everybuddy subsystem\n");
+	return 1;
+  }
+
+  if (!exp_gui_init(exp))
+  {
+    printf("Unable to setup GUI subsystem\n");
+  }
 
   ecore_evas_show(exp->ee);
 

@@ -1,3 +1,7 @@
+/*
+ * vim:ts=4:cino=t0
+ */
+
 #include "Express.h"
 
 static void _exp_message_realize(Exp_Message *msg);
