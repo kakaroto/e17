@@ -9,7 +9,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#include <e.h>
+#include "e.h"
 #include "config.h"
 
 #define ARROW_SPACE 6
