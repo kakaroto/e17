@@ -33,7 +33,7 @@ permissions(char *file)
 {
    struct stat         st;
    
-   if (!stat(file, &st) < 0)
+   if (stat(file, &st) < 0)
       return 0;
    return st.st_mode;
 }
@@ -43,7 +43,7 @@ exists(char *file)
 {
    struct stat         st;
    
-   if (!stat(file, &st) < 0)
+   if (stat(file, &st) < 0)
       return 0;
    return 1;
 }
@@ -72,7 +72,7 @@ load (ImlibImage *im, ImlibProgressFunction progress,
    DBM                 *db;
    char                 file[4096], key[4096], *ptr;
    datum                dkey, ret;
-   DATA32 *body;
+   DATA32              *body;
       
    if (im->data)
       return 0;
@@ -123,7 +123,7 @@ load (ImlibImage *im, ImlibProgressFunction progress,
      }
    /* header */
      {
-	int header[8];
+	DATA32 header[8];
 	
 	if (ret.dsize < 32)
 	  {
@@ -138,7 +138,6 @@ load (ImlibImage *im, ImlibProgressFunction progress,
 		SWAP32(header[i]);
 	  }
 #endif
-	body = &(header[8]);
 	if (header[0] != (int)0xac1dfeed)
 	  {
 	     dbm_close(db);
@@ -174,6 +173,7 @@ load (ImlibImage *im, ImlibProgressFunction progress,
 	int     y, pl = 0;
 	char    pper = 0;
 
+	body = &(((DATA32 *)ret.dptr)[8]);
 	/* must set the im->data member before callign progress function */
 	ptr = im->data = malloc(w * h * sizeof(DATA32));
 	if (!im->data)
@@ -187,12 +187,12 @@ load (ImlibImage *im, ImlibProgressFunction progress,
 	       {
 		  int x;
 		  
-		  memcpy(ptr, &(body[y * w]), im->w * 4);
+		  memcpy(ptr, &(body[y * w]), im->w * sizeof(DATA32));
 		  for (x = 0; x < im->w; x++)
 		     SWAP32(ptr[x]);
 	       }
 #else
-	     memcpy(ptr, &(body[y * w]), im->w * 4);
+	     memcpy(ptr, &(body[y * w]), im->w * sizeof(DATA32));
 #endif	     
 	     ptr += im->w;
 	     if (progress)
@@ -226,7 +226,7 @@ save (ImlibImage *im, ImlibProgressFunction progress,
 {
    int                 alpha = 0;
    char                 file[4096], key[4096], *cp;
-   int                 *header;
+   DATA32              *header;
    datum                dkey, ret;
    DATA32             *buf;
    DBM                 *db;
@@ -282,19 +282,19 @@ save (ImlibImage *im, ImlibProgressFunction progress,
    dkey.dptr = key;
    dkey.dsize = strlen(key);
    
-   buf = (DATA32 *) malloc((im->w * im->h) + 32);   
+   buf = (DATA32 *) malloc(((im->w * im->h) + 8) * sizeof(DATA32));   
    header = buf;
    header[0] = 0xac1dfeed;
    header[1] = im->w;
    header[2] = im->h;
    header[3] = alpha;
    header[4] = 0;
-   memcpy(&(buf[8]), im->data, im->w * im->h * 4);
+   memcpy(&(buf[8]), im->data, im->w * im->h * sizeof(DATA32));
 #ifdef WORDS_BIGENDIAN
    for (y = 0; y < (im->w * im->h) + 8; y++)
       SWAP32(buf[y]);
 #endif
-   ret.dsize = ((im->w * im->h) + 8) * 4;
+   ret.dsize = ((im->w * im->h) + 8) * sizeof(DATA32);
    ret.dptr = buf;
    dbm_store(db, dkey, ret, DBM_REPLACE);
    free(buf);
