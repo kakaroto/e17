@@ -350,6 +350,52 @@ setup (void)
 		     NULL);
   evas_callback_add (evas, o_txt_panel_box1, CALLBACK_MOUSE_DOWN, test_basic,
 		     NULL);
+
+  /* Setup message etox */
+  /* Clip rectangle for bounding where the message text is drawn */
+  clip_msg = evas_add_rectangle (evas);
+  evas_show (evas, clip_msg);
+  evas_set_color (evas, clip_msg, 255, 0, 255, 255);
+  evas_move (evas, clip_msg, 40, 40);
+  evas_resize (evas, clip_msg, 520, 140);
+
+  /* Create message etox */
+  e_msg = etox_new_all (evas, 40, 40, 520, 140, 255, ETOX_ALIGN_LEFT);
+  etox_context_set_align (e_msg, ETOX_ALIGN_LEFT);
+  etox_context_set_font (e_msg, "sinon", 14);
+  etox_context_set_style (e_msg, "plain");
+  etox_context_set_color (e_msg, 255, 255, 255, 255);
+  etox_set_text(e_msg, "");
+  etox_set_clip (e_msg, clip_msg);
+  etox_set_alpha (e_msg, 255);
+  etox_set_layer (e_msg, 1000);
+  etox_show (e_msg);
+
+
+  /* Setup test etox */
+  /* Setup test etox background */
+  o_bg_etox = evas_add_rectangle (evas);
+  evas_move (evas, o_bg_etox, 40, 200);
+  evas_resize (evas, o_bg_etox, 520, 260);
+  evas_set_color (evas, o_bg_etox, 0, 100, 100, 100);
+  evas_set_layer (evas, o_bg_etox, 100);
+  evas_show (evas, o_bg_etox);
+  /* Clip rectangle for bounding where the test text is drawn */
+  clip_test = evas_add_rectangle (evas);
+  evas_set_color (evas, clip_test, 255, 0, 255, 255);
+  evas_move (evas, clip_test, 40, 200);
+  evas_resize (evas, clip_test, 520, 260);
+  evas_show (evas, clip_test);
+  /* Create test etox */
+  e_test = etox_new_all (evas, 40, 200, 520, 260, 255, ETOX_ALIGN_CENTER);
+  etox_context_set_align (e_test, ETOX_ALIGN_CENTER);
+  etox_context_set_font (e_test, "sinon", 14);
+  etox_context_set_style (e_test, "plain");
+  etox_context_set_color (e_test, 255, 255, 255, 255);
+  etox_set_text(e_test, "");
+  etox_set_clip (e_test, clip_test);
+  etox_set_alpha (e_test, 255);
+  etox_set_layer (e_test, 1000);
 }
 
 int
