@@ -150,7 +150,6 @@ c1: .word 0x1, 0x1, 0x1, 0x1
 	popl %ebp		;\
 	ret
 
-/****!!!!!!!!1 has bug wiht 1 line high ********/
 PR_(imlib_mmx_blend_rgba_to_rgb):
 	ENTER
 
