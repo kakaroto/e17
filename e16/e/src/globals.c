@@ -47,8 +47,8 @@ FnlibData          *pFnlibData;
 #endif
 List               *lists;
 Root                root;
-EConf               conf;
-EMode               mode;
+EConf               Conf;
+EMode               Mode;
 Desktops            desks;
 Window              init_win1 = 0;
 Window              init_win2 = 0;

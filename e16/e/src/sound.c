@@ -142,7 +142,7 @@ SamplePlay(Sample * s)
 
    EDBUG(5, "SamplePlay");
 #ifdef HAVE_LIBESD
-   if ((sound_fd < 0) || (!conf.sound) || (!s))
+   if ((sound_fd < 0) || (!Conf.sound) || (!s))
       EDBUG_RETURN_;
    if (!s->id)
      {
@@ -225,7 +225,7 @@ SclassApply(SoundClass * sclass)
    if (!sclass)
       EDBUG_RETURN_;
 #ifdef HAVE_LIBESD
-   if ((!sclass->sample) && (conf.sound))
+   if ((!sclass->sample) && (Conf.sound))
      {
 	f = FindFile(sclass->file);
 	if (f)
@@ -234,7 +234,7 @@ SclassApply(SoundClass * sclass)
 	     Efree(f);
 	  }
      }
-   if ((conf.sound) && (sclass->sample))
+   if ((Conf.sound) && (sclass->sample))
       SamplePlay(sclass->sample);
 #endif
    EDBUG_RETURN_;
@@ -292,7 +292,7 @@ SoundInit(void)
 
    EDBUG(5, "SoundInit");
 #ifdef HAVE_LIBESD
-   if (!conf.sound)
+   if (!Conf.sound)
       EDBUG_RETURN_;
    if (sound_fd != -1)
       EDBUG_RETURN_;
@@ -305,10 +305,10 @@ SoundInit(void)
 	       _("Audio was enabled for Enlightenment but there was an error\n"
 		 "communicating with the audio server (Esound). Audio will\n"
 		 "now be disabled.\n"));
-	conf.sound = 0;
+	Conf.sound = 0;
      }
 #else
-   conf.sound = 0;
+   Conf.sound = 0;
 #endif
    EDBUG_RETURN_;
 }

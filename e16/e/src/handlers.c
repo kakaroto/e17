@@ -180,7 +180,7 @@ EHandleXError(Display * d, XErrorEvent * ev)
    if ((ev->request_code == X_ChangeWindowAttributes)
        && (ev->error_code == BadAccess))
      {
-	if ((!no_overwrite) && (mode.xselect))
+	if ((!no_overwrite) && (Mode.xselect))
 	  {
 	     AlertX(_("Another Window Manager is already running"),
 		    _("OK (edit file)"), "", _("Cancel (do NOT edit)"),

@@ -110,8 +110,8 @@ AddEToFile(char *file)
 	fclose(f2);
      }
    if (!hase)
-      cp(tmp, file);
-   rm(tmp);
+      E_cp(tmp, file);
+   E_rm(tmp);
    EDBUG_RETURN(1);
 }
 
@@ -205,16 +205,16 @@ CreateStartupDisplay(char start)
 	EMapWindow(disp, win1);
 	EMapWindow(disp, win2);
 
-	b1 = ECreateWindow(w1, 0, root.h - conf.desks.dragbar_width, root.w,
-			   conf.desks.dragbar_width, 0);
-	b2 = ECreateWindow(w2, 0, 0, root.w, conf.desks.dragbar_width, 0);
+	b1 = ECreateWindow(w1, 0, root.h - Conf.desks.dragbar_width, root.w,
+			   Conf.desks.dragbar_width, 0);
+	b2 = ECreateWindow(w2, 0, 0, root.w, Conf.desks.dragbar_width, 0);
 	EMapRaised(disp, b1);
 	EMapRaised(disp, b2);
 
 	pq = queue_up;
 	queue_up = 0;
-	IclassApply(ic, b1, root.w, conf.desks.dragbar_width, 0, 0, 0, 0);
-	IclassApply(ic, b2, root.w, conf.desks.dragbar_width, 0, 0, 0, 0);
+	IclassApply(ic, b1, root.w, Conf.desks.dragbar_width, 0, 0, 0, 0);
+	IclassApply(ic, b2, root.w, Conf.desks.dragbar_width, 0, 0, 0, 0);
 	queue_up = pq;
 	SetBackgroundTo(win1, bg, 1);
 	SetBackgroundTo(win2, bg, 1);
@@ -239,7 +239,7 @@ CreateStartupDisplay(char start)
 	if ((!ic) || (!bg))
 	   EDBUG_RETURN_;
 
-	speed = conf.slidespeedcleanup / 2;
+	speed = Conf.slidespeedcleanup / 2;
 	spd = 16;
 	min = 2;
 	fy = 0;

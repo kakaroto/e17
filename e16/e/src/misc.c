@@ -25,7 +25,7 @@
 
 void                EdgeTimeout(int val, void *data);
 
-static char        *dir = NULL;
+static char        *userDir = NULL;
 static char        *cacheDir = NULL;
 
 static const char  *const bins[] = { "eesh", "epp" };
@@ -101,7 +101,7 @@ EDirRoot(void)
 void
 EDirUserSet(const char *d)
 {
-   dir = Estrdup(d);
+   userDir = Estrdup(d);
 }
 
 char               *
@@ -109,15 +109,15 @@ EDirUser(void)
 {
    char               *home, buf[4096];
 
-   if (dir)
-      return dir;
+   if (userDir)
+      return userDir;
 
    home = homedir(getuid());
    Esnprintf(buf, sizeof(buf), "%s/.enlightenment", home);
    Efree(home);
-   dir = Estrdup(buf);
+   userDir = Estrdup(buf);
 
-   return dir;
+   return userDir;
 }
 
 void
@@ -186,7 +186,7 @@ ShowEdgeWindows(void)
 {
    int                 ax, ay, cx, cy;
 
-   if (conf.edge_flip_resistance <= 0)
+   if (Conf.edge_flip_resistance <= 0)
      {
 	HideEdgeWindows();
 	return;
@@ -213,19 +213,19 @@ ShowEdgeWindows(void)
    GetCurrentArea(&cx, &cy);
    GetAreaSize(&ax, &ay);
 
-   if (cx == 0 && !conf.areas.wraparound)
+   if (cx == 0 && !Conf.areas.wraparound)
       EUnmapWindow(disp, w1);
    else
       EMapRaised(disp, w1);
-   if (cx == (ax - 1) && !conf.areas.wraparound)
+   if (cx == (ax - 1) && !Conf.areas.wraparound)
       EUnmapWindow(disp, w2);
    else
       EMapRaised(disp, w2);
-   if (cy == 0 && !conf.areas.wraparound)
+   if (cy == 0 && !Conf.areas.wraparound)
       EUnmapWindow(disp, w3);
    else
       EMapRaised(disp, w3);
-   if (cy == (ay - 1) && !conf.areas.wraparound)
+   if (cy == (ay - 1) && !Conf.areas.wraparound)
       EUnmapWindow(disp, w4);
    else
       EMapRaised(disp, w4);
@@ -267,7 +267,7 @@ EdgeHandleEnter(XEvent * ev)
    dir = IsEdgeWin(ev->xcrossing.window);
    if (dir < 0)
       return;
-   DoIn("EDGE_TIMEOUT", ((double)conf.edge_flip_resistance) / 100.0,
+   DoIn("EDGE_TIMEOUT", ((double)Conf.edge_flip_resistance) / 100.0,
 	EdgeTimeout, dir, NULL);
 }
 
@@ -288,7 +288,7 @@ EdgeHandleMotion(XEvent * ev)
    static int          lastdir = -1;
    int                 dir;
 
-   if (mode.mode != MODE_MOVE_PENDING && mode.mode != MODE_MOVE)
+   if (Mode.mode != MODE_MOVE_PENDING && Mode.mode != MODE_MOVE)
       return;
 
    dir = -1;
@@ -301,12 +301,12 @@ EdgeHandleMotion(XEvent * ev)
    else if (ev->xmotion.y_root == (root.h - 1))
       dir = 3;
 
-   if ((lastdir != dir) && (conf.edge_flip_resistance))
+   if ((lastdir != dir) && (Conf.edge_flip_resistance))
      {
 	if (dir < 0)
 	   RemoveTimerEvent("EDGE_TIMEOUT");
 	else
-	   DoIn("EDGE_TIMEOUT", ((double)conf.edge_flip_resistance) / 100.0,
+	   DoIn("EDGE_TIMEOUT", ((double)Conf.edge_flip_resistance) / 100.0,
 		EdgeTimeout, dir, NULL);
 	lastdir = dir;
      }
@@ -319,9 +319,9 @@ EdgeTimeout(int val, void *data)
 {
    int                 ax, ay, aw, ah, dx, dy, dax, day;
 
-   if (mode.cur_menu_mode > 0)
+   if (Mode.cur_menu_mode > 0)
       return;
-   if (!conf.edge_flip_resistance)
+   if (!Conf.edge_flip_resistance)
       return;
    throw_move_events_away = 1;
    GetCurrentArea(&ax, &ay);
@@ -333,25 +333,25 @@ EdgeTimeout(int val, void *data)
    switch (val)
      {
      case 0:
-	if (ax == 0 && !conf.areas.wraparound)
+	if (ax == 0 && !Conf.areas.wraparound)
 	   return;
 	dx = root.w - 2;
 	dax = -1;
 	break;
      case 1:
-	if (ax == (aw - 1) && !conf.areas.wraparound)
+	if (ax == (aw - 1) && !Conf.areas.wraparound)
 	   return;
 	dx = -(root.w - 2);
 	dax = 1;
 	break;
      case 2:
-	if (ay == 0 && !conf.areas.wraparound)
+	if (ay == 0 && !Conf.areas.wraparound)
 	   return;
 	dy = root.h - 2;
 	day = -1;
 	break;
      case 3:
-	if (ay == (ah - 1) && !conf.areas.wraparound)
+	if (ay == (ah - 1) && !Conf.areas.wraparound)
 	   return;
 	dy = -(root.h - 2);
 	day = 1;
@@ -359,9 +359,9 @@ EdgeTimeout(int val, void *data)
      default:
 	break;
      }
-   mode.flipp = 1;
+   Mode.flipp = 1;
    MoveCurrentAreaBy(dax, day);
-   mode.flipp = 0;
+   Mode.flipp = 0;
    if (aw == 1)
       dx = 0;
    if (ah == 1)

@@ -36,7 +36,7 @@ TransparencyMakeColorModifier(void)
    for (i = 0; i < 256; i++)
      {
 	gray[i] = i;
-	alpha[i] = 255 - conf.theme.transparency;
+	alpha[i] = 255 - Conf.theme.transparency;
      }
 
    if (icm == NULL)
@@ -59,7 +59,7 @@ TransparencySet(int transparency)
    else if (transparency > 255)
       transparency = 255;
 
-   conf.theme.transparency = transparency;
+   Conf.theme.transparency = transparency;
 
    /* Generate the color modifier tables */
    TransparencyMakeColorModifier();
@@ -420,7 +420,7 @@ ImageStateMakePmapMask(ImageState * is, Drawable win, PmapMask * pmm,
    pmm->pmap = pmm->mask = 0;
 
 #ifdef ENABLE_TRANSPARENCY
-   if (conf.theme.transparency ||
+   if (Conf.theme.transparency ||
        (is->transparent && is->pixmapfillstyle == FILL_STRETCH &&
 	imlib_image_has_alpha()))
      {
@@ -749,7 +749,7 @@ IclassApply(ImageClass * iclass, Window win, int w, int h, int active,
 	  {
 	     ImageStateMakePmapMask(is, win, NULL, 1, w, h);
 
-	     if ((is->unloadable) || (conf.memory_paranoia))
+	     if ((is->unloadable) || (Conf.memory_paranoia))
 	       {
 		  imlib_context_set_image(is->im);
 		  imlib_free_image();
@@ -805,7 +805,7 @@ IclassApplyCopy(ImageClass * iclass, Window win, int w, int h, int active,
      {
 	ImageStateMakePmapMask(is, win, pmm, make_mask, w, h);
 
-	if ((is->unloadable) || (conf.memory_paranoia))
+	if ((is->unloadable) || (Conf.memory_paranoia))
 	  {
 	     imlib_context_set_image(is->im);
 	     imlib_free_image();

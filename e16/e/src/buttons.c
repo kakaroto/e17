@@ -618,7 +618,7 @@ ButtonsEventMouseDown(XEvent * ev)
 	     ev->xany.window = id;
 	  }
 
-	mode.button = buttons[i];
+	Mode.button = buttons[i];
 	buttons[i]->state = STATE_CLICKED;
 	ButtonDraw(buttons[i]);
 	ac = FindItem("ACTION_BUTTON_DRAG", 0, LIST_FINDBY_NAME,
@@ -652,7 +652,7 @@ ButtonsEventMouseUp(XEvent * ev)
 	if ((win != buttons[i]->win) && (win != buttons[i]->event_win))
 	   continue;
 
-	if (buttons[i]->inside_win && !mode.action_inhibit)
+	if (buttons[i]->inside_win && !Mode.action_inhibit)
 	  {
 	     Window              id = ev->xany.window;	/* ??? */
 
@@ -661,7 +661,7 @@ ButtonsEventMouseUp(XEvent * ev)
 			ButtonReleaseMask, ev);
 	     ev->xany.window = id;
 	  }
-	mode.button = buttons[i];
+	Mode.button = buttons[i];
 	if ((buttons[i]->state == STATE_CLICKED) && (!buttons[i]->left))
 	   buttons[i]->state = STATE_HILITED;
 	else
@@ -695,7 +695,7 @@ ButtonsEventMouseIn(XEvent * ev)
 	if ((win != buttons[i]->win) && (win != buttons[i]->event_win))
 	   continue;
 
-	mode.button = buttons[i];
+	Mode.button = buttons[i];
 	if (buttons[i]->state == STATE_CLICKED)
 	   buttons[i]->left = 0;
 	else
@@ -730,7 +730,7 @@ ButtonsEventMouseOut(XEvent * ev)
 	if ((win != buttons[i]->win) && (win != buttons[i]->event_win))
 	   continue;
 
-	mode.button = NULL;
+	Mode.button = NULL;
 	if (buttons[i]->state == STATE_CLICKED)
 	   buttons[i]->left = 1;
 	else

@@ -56,7 +56,7 @@ Etmp(char *s)
 }
 
 void
-md(const char *s)
+E_md(const char *s)
 {
    EDBUG(9, "md");
    if ((!s) || (!*s))
@@ -93,7 +93,7 @@ mkdirs(const char *s)
 	if (s[i] == '/')
 	  {
 	     if (!exists(ss))
-		md(ss);
+		E_md(ss);
 	     else if (!isdir(ss))
 		return;
 	  }
@@ -138,7 +138,7 @@ isabspath(const char *path)
 }
 
 char              **
-ls(const char *dir, int *num)
+E_ls(const char *dir, int *num)
 {
    int                 i, dirlen;
    int                 done = 0;
@@ -219,7 +219,7 @@ freestrlist(char **l, int num)
 }
 
 void
-rm(const char *s)
+E_rm(const char *s)
 {
    EDBUG(9, "rm");
    if ((!s) || (!*s))
@@ -229,7 +229,7 @@ rm(const char *s)
 }
 
 void
-mv(const char *s, const char *ss)
+E_mv(const char *s, const char *ss)
 {
    EDBUG(9, "mv");
    if ((!s) || (!ss) || (!*s) || (!*ss))
@@ -239,7 +239,7 @@ mv(const char *s, const char *ss)
 }
 
 void
-cp(const char *s, const char *ss)
+E_cp(const char *s, const char *ss)
 {
    int                 i;
    FILE               *f, *ff;
@@ -322,7 +322,7 @@ filedev(const char *s)
 }
 
 void
-cd(const char *s)
+E_cd(const char *s)
 {
    EDBUG(9, "cd");
    if ((!s) || (!*s))
@@ -356,6 +356,7 @@ permissions(const char *s)
    EDBUG_RETURN(st.st_mode);
 }
 
+#if 0				/* Not used */
 int
 owner(const char *s)
 {
@@ -381,6 +382,7 @@ group(const char *s)
       EDBUG_RETURN(0);
    EDBUG_RETURN(st.st_gid);
 }
+#endif
 
 char               *
 username(int uid)
@@ -731,13 +733,13 @@ fword(char *s, int num, char *wd)
 }
 
 char               *
-field(char *s, int field)
+field(char *s, int fieldno)
 {
    char                buf[4096];
 
    EDBUG(9, "field");
    buf[0] = 0;
-   fword(s, field + 1, buf);
+   fword(s, fieldno + 1, buf);
    if (buf[0])
      {
 	if ((!strcmp(buf, "NULL")) || (!strcmp(buf, "(null)")))
@@ -748,13 +750,13 @@ field(char *s, int field)
 }
 
 int
-fillfield(char *s, int field, char *buf)
+fillfield(char *s, int fieldno, char *buf)
 {
    EDBUG(9, "fillfield");
    if (!buf)
       EDBUG_RETURN(0);
    buf[0] = 0;
-   fword(s, field + 1, buf);
+   fword(s, fieldno + 1, buf);
    if (buf[0])
      {
 	if ((!strcmp(buf, "NULL")) || (!strcmp(buf, "(null)")))

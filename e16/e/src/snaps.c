@@ -285,7 +285,7 @@ SnapshotEwinDialog(EWin * ewin)
    table = DialogInitItem(d);
    DialogItemTableSetOptions(table, 4, 0, 0, 0);
 
-   if (conf.dialogs.headers)
+   if (Conf.dialogs.headers)
      {
 	di = DialogAddItem(table, DITEM_IMAGE);
 	DialogItemSetPadding(di, 2, 2, 2, 2);
@@ -757,7 +757,7 @@ SnapshotEwinGroups(EWin * ewin, char onoff)
 	return;
      }
 
-   gwins = ListWinGroupMembersForEwin(ewin, ACTION_NONE, mode.nogroup, &num);
+   gwins = ListWinGroupMembersForEwin(ewin, ACTION_NONE, Mode.nogroup, &num);
    for (i = 0; i < num; i++)
      {
 	if (onoff)
@@ -933,7 +933,7 @@ Real_SaveSnapInfo(int dumval, void *dumdat)
    fclose(f);
 
    Esnprintf(buf, sizeof(buf), "%s.snapshots.%i", GetGenericSMFile(), root.scr);
-   mv(s, buf);
+   E_mv(s, buf);
    if (!isfile(buf))
       Alert(_("Error saving snaps file\n"));
 
@@ -1319,7 +1319,7 @@ RememberImportantInfoForEwins(EWin * ewin)
    int                 i, num;
    EWin              **gwins;
 
-   gwins = ListWinGroupMembersForEwin(ewin, ACTION_MOVE, mode.nogroup, &num);
+   gwins = ListWinGroupMembersForEwin(ewin, ACTION_MOVE, Mode.nogroup, &num);
    if (gwins)
      {
 	for (i = 0; i < num; i++)

@@ -254,7 +254,7 @@ SaveWindowStates(void)
 	       }
 	     fclose(f);
 	     Esnprintf(ss, sizeof(ss), "%s.clients.%i", GetSMFile(), root.scr);
-	     mv(s, ss);
+	     E_mv(s, ss);
 	     if (!isfile(ss))
 		Alert(_("There was an error writing the clients "
 			"session save file.\n" "You may have run out of disk "
@@ -428,16 +428,16 @@ MatchEwinToSM(EWin * ewin)
 void
 autosave(void)
 {
-   if (mode.startup)
+   if (Mode.startup)
       return;
-   if (conf.autosave)
+   if (Conf.autosave)
      {
 	char                s[4096];
 
 	Real_SaveSnapInfo(0, NULL);
 	Etmp(s);
 	SaveUserControlConfig(fopen(s, "w"));
-	mv(s, GetGenericSMFile());
+	E_mv(s, GetGenericSMFile());
 	if (!isfile(GetGenericSMFile()))
 	   Alert(_("There was an error saving your autosave data - filing\n"
 		   "system problems.\n"));
@@ -445,7 +445,7 @@ autosave(void)
  * if (strcmp(GetSMFile(), GetGenericSMFile()))
  * {
  * if (exists(GetGenericSMFile()))
- * rm(GetGenericSMFile());
+ * E_rm(GetGenericSMFile());
  * symlink(GetSMFile(), GetGenericSMFile());
  * }
  */
@@ -457,7 +457,7 @@ autosave(void)
  *      Esnprintf(buf, sizeof(buf) / sizeof(char), "rm %s*", GetSMFile());
  *      system(buf); */
 
-	rm(GetGenericSMFile());
+	E_rm(GetGenericSMFile());
      }
 }
 
@@ -716,7 +716,7 @@ callback_save_yourself(SmcConn smc_conn, SmPointer client_data, int save_style,
  * if (strcmp(GetSMFile(), GetGenericSMFile()))
  * {
  * if (exists(GetGenericSMFile()))
- * rm(GetGenericSMFile());
+ * E_rm(GetGenericSMFile());
  * symlink(GetSMFile(), GetGenericSMFile());
  * }
  */
@@ -1049,14 +1049,14 @@ doSMExit(void *params)
 			  "exec %s -single -ext_init_win %li -theme %s "
 			  "-econfdir %s -ecachedir %s "
 			  "-smfile %s -smid %s", command,
-			  init_win_ext, conf.theme.name, EDirUser(),
+			  init_win_ext, Conf.theme.name, EDirUser(),
 			  EDirUserCache(), sm_file, sm_client_id);
 	     else
 		Esnprintf(s, sizeof(s),
 			  "exec %s -single -ext_init_win %li -theme %s "
 			  "-econfdir %s -ecachedir %s "
 			  "-smfile %s", command, init_win_ext,
-			  conf.theme.name, EDirUser(), EDirUserCache(),
+			  Conf.theme.name, EDirUser(), EDirUserCache(),
 			  sm_file);
 	     execl(DEFAULT_SH_PATH, DEFAULT_SH_PATH, "-c", s, NULL);
 	  }
@@ -1158,7 +1158,7 @@ doSMExit(void *params)
 		  Esnprintf(sss, sizeof(sss),
 			    "exec %s -single -ext_init_win %li -theme %s "
 			    "-econfdir %s -ecachedir %s", command,
-			    w, conf.theme.name, EDirUser(), EDirUserCache());
+			    w, Conf.theme.name, EDirUser(), EDirUserCache());
 		  execl(DEFAULT_SH_PATH, DEFAULT_SH_PATH, "-c", sss, NULL);
 	       }
 	     else

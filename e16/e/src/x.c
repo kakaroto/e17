@@ -152,7 +152,7 @@ ECreateWindow(Window parent, int x, int y, int w, int h, int saveunder)
    attr.border_pixel = 0;
 /*   attr.background_pixel = 0; */
    attr.background_pixmap = None;
-   if ((saveunder == 1) && (conf.save_under))
+   if ((saveunder == 1) && (Conf.save_under))
       attr.save_under = True;
    else if (saveunder == 2)
       attr.save_under = True;
@@ -710,9 +710,9 @@ void
 GrabX()
 {
    EDBUG(6, "GrabX");
-   if (mode.server_grabbed <= 0)
+   if (Mode.server_grabbed <= 0)
       XGrabServer(disp);
-   mode.server_grabbed++;
+   Mode.server_grabbed++;
    EDBUG_RETURN_;
 }
 
@@ -720,14 +720,14 @@ void
 UngrabX()
 {
    EDBUG(6, "UngrabX");
-   if (mode.server_grabbed == 1)
+   if (Mode.server_grabbed == 1)
      {
 	XUngrabServer(disp);
 	XFlush(disp);
      }
-   mode.server_grabbed--;
-   if (mode.server_grabbed < 0)
-      mode.server_grabbed = 0;
+   Mode.server_grabbed--;
+   if (Mode.server_grabbed < 0)
+      Mode.server_grabbed = 0;
    EDBUG_RETURN_;
 }
 

@@ -48,7 +48,7 @@ HintsInit(void)
    XChangeProperty(disp, root.win, atom, XA_STRING, 8, PropModeReplace,
 		   (unsigned char *)e_wm_version, strlen(e_wm_version));
 
-   conf.hints.set_xroot_info_on_root_window = 0;
+   Conf.hints.set_xroot_info_on_root_window = 0;
 
    EDBUG_RETURN_;
 }
@@ -304,7 +304,7 @@ HintsSetRootInfo(Window win, Pixmap pmap, int color)
 			(unsigned char *)&alive_win, 1);
      }
 
-   if (conf.hints.set_xroot_info_on_root_window)
+   if (Conf.hints.set_xroot_info_on_root_window)
       win = root.win;
    XChangeProperty(disp, win, a, XA_PIXMAP, 32, PropModeReplace,
 		   (unsigned char *)&pmap, 1);

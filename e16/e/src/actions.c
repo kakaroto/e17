@@ -360,12 +360,12 @@ ActionsCall(unsigned int id, EWin * ewin, void *params)
    if (!af->ok_zoom && InZoom())
       return 0;
    if (!af->ok_movres &&
-       ((mode.mode == MODE_MOVE_PENDING) || (mode.mode == MODE_MOVE) ||
-	(mode.mode == MODE_RESIZE_H) || (mode.mode == MODE_RESIZE_V) ||
-	(mode.mode == MODE_RESIZE)))
+       ((Mode.mode == MODE_MOVE_PENDING) || (Mode.mode == MODE_MOVE) ||
+	(Mode.mode == MODE_RESIZE_H) || (Mode.mode == MODE_RESIZE_V) ||
+	(Mode.mode == MODE_RESIZE)))
       return 0;
 
-   if (af->hide_slideouts && mode.slideout)
+   if (af->hide_slideouts && Mode.slideout)
       SlideoutsHide();
 
    if (af->need_ewin)
@@ -425,14 +425,14 @@ EventAclass(XEvent * ev, EWin * ewin, ActionClass * a)
 
    EDBUG(5, "EventAclass");
 
-   if (mode.action_inhibit)
+   if (Mode.action_inhibit)
       EDBUG_RETURN(0);
 
    key = type = button = modifiers = mouse = 0;
 
 #if 0				/* FIXME - Do we use this? */
-   if ((conf.movemode == 0) && (ewin) &&
-       ((mode.mode == MODE_MOVE) || (mode.mode == MODE_MOVE_PENDING)))
+   if ((Conf.movemode == 0) && (ewin) &&
+       ((Mode.mode == MODE_MOVE) || (Mode.mode == MODE_MOVE_PENDING)))
       DetermineEwinFloat(ewin, 0, 0);
 #endif
 
@@ -584,12 +584,12 @@ spawnMenu(EWin * ewin, void *params)
    if (!params)
       EDBUG_RETURN(0);
 
-   if (mode.cur_menu_depth > 0)
+   if (Mode.cur_menu_depth > 0)
       EDBUG_RETURN(0);
 
-   for (i = 0; i < conf.desks.num; i++)
+   for (i = 0; i < Conf.desks.num; i++)
      {
-	if (mode.context_win == desks.desk[i].win)
+	if (Mode.context_win == desks.desk[i].win)
 	  {
 	     desk_click = 1;
 	     break;
@@ -597,23 +597,23 @@ spawnMenu(EWin * ewin, void *params)
      }
    if (!desk_click)
      {
-	if ((ewin) && (ewin->win != mode.context_win) && (mode.context_win))
+	if ((ewin) && (ewin->win != Mode.context_win) && (Mode.context_win))
 	  {
-	     EGetGeometry(disp, mode.context_win, &dw, &di, &di, &w, &h, &d,
+	     EGetGeometry(disp, Mode.context_win, &dw, &di, &di, &w, &h, &d,
 			  &d);
-	     XTranslateCoordinates(disp, mode.context_win, root.win, 0, 0, &x,
+	     XTranslateCoordinates(disp, Mode.context_win, root.win, 0, 0, &x,
 				   &y, &dw);
 
 	     if (w >= h)
-		mode.y = -(y + h);
+		Mode.y = -(y + h);
 	     else
-		mode.x = -(x + w);
-	     mode.context_w = w;
-	     mode.context_h = h;
+		Mode.x = -(x + w);
+	     Mode.context_w = w;
+	     Mode.context_h = h;
 	  }
      }
 
-   if (mode.button)
+   if (Mode.button)
       clickmenu = 1;
 
    sscanf((char *)params, "%1000s %1000s", s, s2);
@@ -638,14 +638,14 @@ spawnMenu(EWin * ewin, void *params)
 	ShowNamedMenu(s2);
      }
 
-   if (((ewin) && (ewin->win == mode.context_win))
-       || (ewin = FindEwinByChildren(mode.context_win)))
+   if (((ewin) && (ewin->win == Mode.context_win))
+       || (ewin = FindEwinByChildren(Mode.context_win)))
      {
-	if ((ewin) && (mode.cur_menu_depth > 0) && (mode.cur_menu[0]))
-	   ewin->shownmenu = MenuWindow(mode.cur_menu[0]);
+	if ((ewin) && (Mode.cur_menu_depth > 0) && (Mode.cur_menu[0]))
+	   ewin->shownmenu = MenuWindow(Mode.cur_menu[0]);
      }
 
-   if (mode.cur_menu_depth == 0)
+   if (Mode.cur_menu_depth == 0)
       EDBUG_RETURN(0);
    EDBUG_RETURN(1);
 }
@@ -689,7 +689,7 @@ runApp(char *exe, char *params)
 	     exit(0);
 	  }
 
-	if (!mode.startup)
+	if (!Mode.startup)
 	  {
 	     path = pathtofile(exe);
 	     if (!path)
@@ -928,7 +928,7 @@ doMoveNoGroup(EWin * ewin, void *params)
 static int
 doSwapMove(EWin * ewin, void *params)
 {
-   mode.swapmovemode = 1;
+   Mode.swapmovemode = 1;
    return ActionMoveStart(ewin, params, 0, 0);
 }
 
@@ -946,7 +946,7 @@ ActionsHandleMotion(void)
    int                 dx, dy;
    int                 x, y;
 
-   switch (mode.mode)
+   switch (Mode.mode)
      {
      case MODE_MOVE_PENDING:
      case MODE_MOVE:
@@ -960,35 +960,35 @@ ActionsHandleMotion(void)
 	break;
 
      case MODE_DESKDRAG:
-	dx = mode.x - mode.px;
-	dy = mode.y - mode.py;
-	switch (conf.desks.dragdir)
+	dx = Mode.x - Mode.px;
+	dy = Mode.y - Mode.py;
+	switch (Conf.desks.dragdir)
 	  {
 	  case 0:
-	     if ((desks.desk[mode.deskdrag].x + dx) < 0)
-		dx = -desks.desk[mode.deskdrag].x;
-	     MoveDesktop(mode.deskdrag, desks.desk[mode.deskdrag].x + dx,
-			 desks.desk[mode.deskdrag].y);
+	     if ((desks.desk[Mode.deskdrag].x + dx) < 0)
+		dx = -desks.desk[Mode.deskdrag].x;
+	     MoveDesktop(Mode.deskdrag, desks.desk[Mode.deskdrag].x + dx,
+			 desks.desk[Mode.deskdrag].y);
 	     break;
 	  case 1:
-	     if ((desks.desk[mode.deskdrag].x + dx) > 0)
-		MoveDesktop(mode.deskdrag, 0, desks.desk[mode.deskdrag].y);
+	     if ((desks.desk[Mode.deskdrag].x + dx) > 0)
+		MoveDesktop(Mode.deskdrag, 0, desks.desk[Mode.deskdrag].y);
 	     else
-		MoveDesktop(mode.deskdrag, desks.desk[mode.deskdrag].x + dx,
-			    desks.desk[mode.deskdrag].y);
+		MoveDesktop(Mode.deskdrag, desks.desk[Mode.deskdrag].x + dx,
+			    desks.desk[Mode.deskdrag].y);
 	     break;
 	  case 2:
-	     if ((desks.desk[mode.deskdrag].y + dy) < 0)
-		dy = -desks.desk[mode.deskdrag].y;
-	     MoveDesktop(mode.deskdrag, desks.desk[mode.deskdrag].x,
-			 desks.desk[mode.deskdrag].y + dy);
+	     if ((desks.desk[Mode.deskdrag].y + dy) < 0)
+		dy = -desks.desk[Mode.deskdrag].y;
+	     MoveDesktop(Mode.deskdrag, desks.desk[Mode.deskdrag].x,
+			 desks.desk[Mode.deskdrag].y + dy);
 	     break;
 	  case 3:
-	     if ((desks.desk[mode.deskdrag].y + dy) > 0)
-		MoveDesktop(mode.deskdrag, desks.desk[mode.deskdrag].x, 0);
+	     if ((desks.desk[Mode.deskdrag].y + dy) > 0)
+		MoveDesktop(Mode.deskdrag, desks.desk[Mode.deskdrag].x, 0);
 	     else
-		MoveDesktop(mode.deskdrag, desks.desk[mode.deskdrag].x,
-			    desks.desk[mode.deskdrag].y + dy);
+		MoveDesktop(Mode.deskdrag, desks.desk[Mode.deskdrag].x,
+			    desks.desk[Mode.deskdrag].y + dy);
 	     break;
 	  default:
 	     break;
@@ -996,29 +996,29 @@ ActionsHandleMotion(void)
 	break;
 
      case MODE_BUTTONDRAG:
-	dx = mode.x - mode.px;
-	dy = mode.y - mode.py;
-	if (mode.button_move_pending)
+	dx = Mode.x - Mode.px;
+	dy = Mode.y - Mode.py;
+	if (Mode.button_move_pending)
 	  {
-	     x = mode.x - mode.start_x;
-	     y = mode.y - mode.start_y;
+	     x = Mode.x - Mode.start_x;
+	     y = Mode.y - Mode.start_y;
 	     if (x < 0)
 		x = -x;
 	     if (y < 0)
 		y = -y;
-	     if ((x > conf.button_move_resistance)
-		 || (y > conf.button_move_resistance))
-		mode.button_move_pending = 0;
+	     if ((x > Conf.button_move_resistance)
+		 || (y > Conf.button_move_resistance))
+		Mode.button_move_pending = 0;
 	  }
-	if (!mode.button_move_pending)
+	if (!Mode.button_move_pending)
 	  {
-	     if (mode.button)
+	     if (Mode.button)
 	       {
-		  ButtonMoveRelative(mode.button, dx, dy);
-		  if (conf.deskmode == MODE_DESKRAY)
+		  ButtonMoveRelative(Mode.button, dx, dy);
+		  if (Conf.deskmode == MODE_DESKRAY)
 		    {
-		       MoveDesktop(mode.deskdrag, desks.desk[mode.deskdrag].x,
-				   desks.desk[mode.deskdrag].y + dy);
+		       MoveDesktop(Mode.deskdrag, desks.desk[Mode.deskdrag].x,
+				   desks.desk[Mode.deskdrag].y + dy);
 		    }
 	       }
 	  }
@@ -1032,7 +1032,7 @@ ActionsHandleMotion(void)
 int
 ActionsSuspend(void)
 {
-   switch (mode.mode)
+   switch (Mode.mode)
      {
      case MODE_MOVE_PENDING:
      case MODE_MOVE:
@@ -1051,7 +1051,7 @@ ActionsSuspend(void)
 int
 ActionsResume(void)
 {
-   switch (mode.mode)
+   switch (Mode.mode)
      {
      case MODE_MOVE_PENDING:
      case MODE_MOVE:
@@ -1067,25 +1067,25 @@ ActionsEnd(EWin * ewin)
 {
    int                 did_end = 1;
 
-   switch (mode.mode)
+   switch (Mode.mode)
      {
      case MODE_RESIZE:
      case MODE_RESIZE_H:
      case MODE_RESIZE_V:
 	ActionResizeEnd(ewin);
-	mode.action_inhibit = 1;
+	Mode.action_inhibit = 1;
 	break;
      case MODE_MOVE_PENDING:
      case MODE_MOVE:
 	ActionMoveEnd(ewin);
-	mode.action_inhibit = 1;
+	Mode.action_inhibit = 1;
 	break;
      case MODE_DESKDRAG:
-	mode.mode = MODE_NONE;
+	Mode.mode = MODE_NONE;
 	break;
      case MODE_BUTTONDRAG:
-	if (!mode.button_move_pending)
-	   mode.action_inhibit = 1;
+	if (!Mode.button_move_pending)
+	   Mode.action_inhibit = 1;
 	doDragButtonEnd(NULL);
 	break;
      default:
@@ -1244,8 +1244,8 @@ doCleanup(EWin * edummy, void *params)
 
    type = (char *)params;
    method = ARRANGE_BY_SIZE;
-   speed = conf.slidespeedcleanup;
-   doslide = conf.cleanupslide;
+   speed = Conf.slidespeedcleanup;
+   doslide = Conf.cleanupslide;
 
    if (params)
      {
@@ -1529,12 +1529,12 @@ doDragDesktop(EWin * edummy, void *params)
       d = desks.current;
    else
       d = atoi((char *)params);
-   mode.deskdrag = d;
-   mode.mode = MODE_DESKDRAG;
-   mode.start_x = mode.x;
-   mode.start_y = mode.y;
-   mode.win_x = desks.desk[d].x;
-   mode.win_y = desks.desk[d].y;
+   Mode.deskdrag = d;
+   Mode.mode = MODE_DESKDRAG;
+   Mode.start_x = Mode.x;
+   Mode.start_y = Mode.y;
+   Mode.win_x = desks.desk[d].x;
+   Mode.win_y = desks.desk[d].y;
 
    EDBUG_RETURN(0);
    edummy = NULL;
@@ -1666,23 +1666,23 @@ doDragButtonStart(EWin * edummy, void *params)
 
    EDBUG(6, "doDragButtonStart");
 
-   b = mode.button;
+   b = Mode.button;
    if (!b)
       EDBUG_RETURN(0);
 
    if (ButtonIsFixed(b))
      {
-	mode.button = NULL;
+	Mode.button = NULL;
 	EDBUG_RETURN(0);
      }
 
    GrabThePointer(root.win);
-   mode.mode = MODE_BUTTONDRAG;
-   mode.button_move_pending = 1;
-   mode.start_x = mode.x;
-   mode.start_y = mode.y;
-   ButtonGetGeometry(b, &mode.win_x, &mode.win_y, NULL, NULL);
-   mode.firstlast = 0;
+   Mode.mode = MODE_BUTTONDRAG;
+   Mode.button_move_pending = 1;
+   Mode.start_x = Mode.x;
+   Mode.start_y = Mode.y;
+   ButtonGetGeometry(b, &Mode.win_x, &Mode.win_y, NULL, NULL);
+   Mode.firstlast = 0;
 
    EDBUG_RETURN(0);
    edummy = NULL;
@@ -1697,21 +1697,21 @@ doDragButtonEnd(void *params)
 
    EDBUG(6, "doDragButtonEnd");
 
-   b = mode.button;
+   b = Mode.button;
    if (!b)
       EDBUG_RETURN(0);
 
-   mode.mode = MODE_NONE;
+   Mode.mode = MODE_NONE;
    UnGrabTheButtons();
-   if (!mode.button_move_pending)
+   if (!Mode.button_move_pending)
      {
-	d = DesktopAt(mode.x, mode.y);
+	d = DesktopAt(Mode.x, Mode.y);
 	ButtonMoveToDesktop(b, d);
 	d = ButtonGetDesktop(b);
 	ButtonMoveRelative(b, -desks.desk[d].x, -desks.desk[d].y);
      }
    else
-      mode.button_move_pending = 0;
+      Mode.button_move_pending = 0;
 
    autosave();
 
@@ -1728,20 +1728,20 @@ doFocusModeSet(EWin * edummy, void *params)
    if (params)
      {
 	if (!strcmp("pointer", (char *)params))
-	   conf.focus.mode = MODE_FOCUS_POINTER;
+	   Conf.focus.mode = MODE_FOCUS_POINTER;
 	else if (!strcmp("sloppy", (char *)params))
-	   conf.focus.mode = MODE_FOCUS_SLOPPY;
+	   Conf.focus.mode = MODE_FOCUS_SLOPPY;
 	else if (!strcmp("click", (char *)params))
-	   conf.focus.mode = MODE_FOCUS_CLICK;
+	   Conf.focus.mode = MODE_FOCUS_CLICK;
      }
    else
      {
-	if (conf.focus.mode == MODE_FOCUS_POINTER)
-	   conf.focus.mode = MODE_FOCUS_SLOPPY;
-	else if (conf.focus.mode == MODE_FOCUS_SLOPPY)
-	   conf.focus.mode = MODE_FOCUS_CLICK;
-	else if (conf.focus.mode == MODE_FOCUS_CLICK)
-	   conf.focus.mode = MODE_FOCUS_POINTER;
+	if (Conf.focus.mode == MODE_FOCUS_POINTER)
+	   Conf.focus.mode = MODE_FOCUS_SLOPPY;
+	else if (Conf.focus.mode == MODE_FOCUS_SLOPPY)
+	   Conf.focus.mode = MODE_FOCUS_CLICK;
+	else if (Conf.focus.mode == MODE_FOCUS_CLICK)
+	   Conf.focus.mode = MODE_FOCUS_POINTER;
      }
    FocusFix();
    autosave();
@@ -1755,17 +1755,17 @@ doMoveModeSet(EWin * edummy, void *params)
    EDBUG(6, "doMoveModeSet");
    if (params)
      {
-	conf.movemode = atoi((char *)params);
+	Conf.movemode = atoi((char *)params);
      }
    else
      {
-	conf.movemode++;
-	if (conf.movemode > 5)
-	   conf.movemode = 0;
+	Conf.movemode++;
+	if (Conf.movemode > 5)
+	   Conf.movemode = 0;
      }
 #if !USE_IMLIB2
-   if ((prImlib_Context) && (conf.movemode == 5))
-      conf.movemode = 3;
+   if ((prImlib_Context) && (Conf.movemode == 5))
+      Conf.movemode = 3;
 #endif
    autosave();
    EDBUG_RETURN(0);
@@ -1778,16 +1778,16 @@ doResizeModeSet(EWin * edummy, void *params)
    EDBUG(6, "doResizeModeSet");
    if (params)
      {
-	conf.resizemode = atoi((char *)params);
+	Conf.resizemode = atoi((char *)params);
      }
    else
      {
-	conf.resizemode++;
-	if (conf.resizemode > 4)
-	   conf.resizemode = 0;
+	Conf.resizemode++;
+	if (Conf.resizemode > 4)
+	   Conf.resizemode = 0;
      }
-   if (conf.resizemode == 5)
-      conf.resizemode = 3;
+   if (Conf.resizemode == 5)
+      Conf.resizemode = 3;
    autosave();
    EDBUG_RETURN(0);
    edummy = NULL;
@@ -1799,13 +1799,13 @@ doSlideModeSet(EWin * edummy, void *params)
    EDBUG(6, "doSlideModeSet");
    if (params)
      {
-	conf.slidemode = atoi((char *)params);
+	Conf.slidemode = atoi((char *)params);
      }
    else
      {
-	conf.slidemode++;
-	if (conf.slidemode > 4)
-	   conf.slidemode = 0;
+	Conf.slidemode++;
+	if (Conf.slidemode > 4)
+	   Conf.slidemode = 0;
      }
    autosave();
    EDBUG_RETURN(0);
@@ -1818,14 +1818,14 @@ doCleanupSlideSet(EWin * edummy, void *params)
    EDBUG(6, "doCleanupSlideSet");
    if (params)
      {
-	conf.cleanupslide = atoi((char *)params);
+	Conf.cleanupslide = atoi((char *)params);
      }
    else
      {
-	if (conf.cleanupslide)
-	   conf.cleanupslide = 0;
+	if (Conf.cleanupslide)
+	   Conf.cleanupslide = 0;
 	else
-	   conf.cleanupslide = 1;
+	   Conf.cleanupslide = 1;
      }
    autosave();
    EDBUG_RETURN(0);
@@ -1837,13 +1837,13 @@ doMapSlideSet(EWin * edummy, void *params)
 {
    EDBUG(6, "doMapSlideSet");
    if (params)
-      conf.mapslide = atoi((char *)params);
+      Conf.mapslide = atoi((char *)params);
    else
      {
-	if (conf.mapslide)
-	   conf.mapslide = 0;
+	if (Conf.mapslide)
+	   Conf.mapslide = 0;
 	else
-	   conf.mapslide = 1;
+	   Conf.mapslide = 1;
      }
    autosave();
    EDBUG_RETURN(0);
@@ -1856,19 +1856,19 @@ doSoundSet(EWin * edummy, void *params)
    char                snd;
 
    EDBUG(6, "doSoundSet");
-   snd = conf.sound;
+   snd = Conf.sound;
    if (params)
-      conf.sound = atoi((char *)params);
+      Conf.sound = atoi((char *)params);
    else
      {
-	if (conf.sound)
-	   conf.sound = 0;
+	if (Conf.sound)
+	   Conf.sound = 0;
 	else
-	   conf.sound = 1;
+	   Conf.sound = 1;
      }
-   if (conf.sound != snd)
+   if (Conf.sound != snd)
      {
-	if (conf.sound)
+	if (Conf.sound)
 	   SoundInit();
 	else
 	   SoundExit();
@@ -1883,7 +1883,7 @@ doButtonMoveResistSet(EWin * edummy, void *params)
 {
    EDBUG(6, "doButtonMoveResistSet");
    if (params)
-      conf.button_move_resistance = atoi((char *)params);
+      Conf.button_move_resistance = atoi((char *)params);
    autosave();
    EDBUG_RETURN(0);
    edummy = NULL;
@@ -1894,7 +1894,7 @@ doDesktopBgTimeoutSet(EWin * edummy, void *params)
 {
    EDBUG(6, "doDesktopBgTimeoutSet");
    if (params)
-      conf.backgrounds.timeout = atoi((char *)params);
+      Conf.backgrounds.timeout = atoi((char *)params);
    autosave();
    EDBUG_RETURN(0);
    edummy = NULL;
@@ -1905,7 +1905,7 @@ doMapSlideSpeedSet(EWin * edummy, void *params)
 {
    EDBUG(6, "doMapSlideSpeedSet");
    if (params)
-      conf.slidespeedmap = atoi((char *)params);
+      Conf.slidespeedmap = atoi((char *)params);
    autosave();
    EDBUG_RETURN(0);
    edummy = NULL;
@@ -1916,7 +1916,7 @@ doCleanupSlideSpeedSet(EWin * edummy, void *params)
 {
    EDBUG(6, "doCleanupSlideSpeedSet");
    if (params)
-      conf.slidespeedcleanup = atoi((char *)params);
+      Conf.slidespeedcleanup = atoi((char *)params);
    autosave();
    EDBUG_RETURN(0);
    edummy = NULL;
@@ -1930,16 +1930,16 @@ doDragdirSet(EWin * edummy, void *params)
    int                 i;
 
    EDBUG(6, "doDragdirSet");
-   pd = conf.desks.dragdir;
+   pd = Conf.desks.dragdir;
    if (params)
-      conf.desks.dragdir = atoi((char *)params);
+      Conf.desks.dragdir = atoi((char *)params);
    else
      {
-	conf.desks.dragdir++;
-	if (conf.desks.dragdir > 3)
-	   conf.desks.dragdir = 0;
+	Conf.desks.dragdir++;
+	if (Conf.desks.dragdir > 3)
+	   Conf.desks.dragdir = 0;
      }
-   if (pd != conf.desks.dragdir)
+   if (pd != Conf.desks.dragdir)
      {
 	GotoDesktop(desks.current);
 	for (i = 0; i < ENLIGHTENMENT_CONF_NUM_DESKTOPS; i++)
@@ -1965,16 +1965,16 @@ doDragbarOrderSet(EWin * edummy, void *params)
    Button             *b;
 
    EDBUG(6, "doDragbarOrderSet");
-   pd = conf.desks.dragbar_ordering;
+   pd = Conf.desks.dragbar_ordering;
    if (params)
-      conf.desks.dragbar_ordering = atoi((char *)params);
+      Conf.desks.dragbar_ordering = atoi((char *)params);
    else
      {
-	conf.desks.dragbar_ordering++;
-	if (conf.desks.dragbar_ordering > 5)
-	   conf.desks.dragbar_ordering = 0;
+	Conf.desks.dragbar_ordering++;
+	if (Conf.desks.dragbar_ordering > 5)
+	   Conf.desks.dragbar_ordering = 0;
      }
-   if (pd != conf.desks.dragbar_ordering)
+   if (pd != Conf.desks.dragbar_ordering)
      {
 	while ((b = RemoveItem("_DESKTOP_DRAG_CONTROL", 0,
 			       LIST_FINDBY_NAME, LIST_TYPE_BUTTON)))
@@ -1994,10 +1994,10 @@ doDragbarWidthSet(EWin * edummy, void *params)
    Button             *b;
 
    EDBUG(6, "doDragbarWidthSet");
-   pd = conf.desks.dragbar_width;
+   pd = Conf.desks.dragbar_width;
    if (params)
-      conf.desks.dragbar_width = atoi((char *)params);
-   if (pd != conf.desks.dragbar_width)
+      Conf.desks.dragbar_width = atoi((char *)params);
+   if (pd != Conf.desks.dragbar_width)
      {
 	while ((b = RemoveItem("_DESKTOP_DRAG_CONTROL", 0,
 			       LIST_FINDBY_NAME, LIST_TYPE_BUTTON)))
@@ -2017,10 +2017,10 @@ doDragbarLengthSet(EWin * edummy, void *params)
    Button             *b;
 
    EDBUG(6, "doDragbarLengthSet");
-   pd = conf.desks.dragbar_length;
+   pd = Conf.desks.dragbar_length;
    if (params)
-      conf.desks.dragbar_length = atoi((char *)params);
-   if (pd != conf.desks.dragbar_length)
+      Conf.desks.dragbar_length = atoi((char *)params);
+   if (pd != Conf.desks.dragbar_length)
      {
 	while ((b = RemoveItem("_DESKTOP_DRAG_CONTROL", 0,
 			       LIST_FINDBY_NAME, LIST_TYPE_BUTTON)))
@@ -2038,13 +2038,13 @@ doDeskSlideSet(EWin * edummy, void *params)
 {
    EDBUG(6, "doDeskSlideSet");
    if (params)
-      conf.desks.slidein = atoi((char *)params);
+      Conf.desks.slidein = atoi((char *)params);
    else
      {
-	if (conf.desks.slidein)
-	   conf.desks.slidein = 0;
+	if (Conf.desks.slidein)
+	   Conf.desks.slidein = 0;
 	else
-	   conf.desks.slidein = 1;
+	   Conf.desks.slidein = 1;
      }
    autosave();
    EDBUG_RETURN(0);
@@ -2056,7 +2056,7 @@ doDeskSlideSpeedSet(EWin * edummy, void *params)
 {
    EDBUG(6, "doDeskSlideSpeedSet");
    if (params)
-      conf.desks.slidespeed = atoi((char *)params);
+      Conf.desks.slidespeed = atoi((char *)params);
    autosave();
    EDBUG_RETURN(0);
    edummy = NULL;
@@ -2067,13 +2067,13 @@ doHiQualityBgSet(EWin * edummy, void *params)
 {
    EDBUG(6, "doHiQualityBgSet");
    if (params)
-      conf.backgrounds.hiquality = atoi((char *)params);
+      Conf.backgrounds.hiquality = atoi((char *)params);
    else
      {
-	if (conf.backgrounds.hiquality)
-	   conf.backgrounds.hiquality = 0;
+	if (Conf.backgrounds.hiquality)
+	   Conf.backgrounds.hiquality = 0;
 	else
-	   conf.backgrounds.hiquality = 1;
+	   Conf.backgrounds.hiquality = 1;
      }
    autosave();
    EDBUG_RETURN(0);
@@ -2085,13 +2085,13 @@ doAutosaveSet(EWin * edummy, void *params)
 {
    EDBUG(6, "doAutosaveSet");
    if (params)
-      conf.autosave = atoi((char *)params);
+      Conf.autosave = atoi((char *)params);
    else
      {
-	if (conf.autosave)
-	   conf.autosave = 0;
+	if (Conf.autosave)
+	   Conf.autosave = 0;
 	else
-	   conf.autosave = 1;
+	   Conf.autosave = 1;
      }
    EDBUG_RETURN(0);
    edummy = NULL;
@@ -2102,9 +2102,9 @@ doToolTipSet(EWin * edummy, void *params)
 {
    EDBUG(6, "doToolTipSet");
    if (params)
-      conf.tooltips.enable = atoi((char *)params);
+      Conf.tooltips.enable = atoi((char *)params);
    else
-      conf.tooltips.enable = !conf.tooltips.enable;
+      Conf.tooltips.enable = !Conf.tooltips.enable;
    autosave();
    EDBUG_RETURN(0);
    edummy = NULL;
@@ -2135,24 +2135,24 @@ doDeskray(EWin * edummy, void *params)
 	if (!atoi((char *)params))
 	  {
 	     HideDesktopTabs();
-	     conf.deskmode = MODE_NONE;
+	     Conf.deskmode = MODE_NONE;
 	  }
 	else
 	  {
-	     conf.deskmode = MODE_DESKRAY;
+	     Conf.deskmode = MODE_DESKRAY;
 	     ShowDesktopTabs();
 	  }
      }
    else
      {
-	if (conf.deskmode == MODE_DESKRAY)
+	if (Conf.deskmode == MODE_DESKRAY)
 	  {
 	     HideDesktopTabs();
-	     conf.deskmode = MODE_NONE;
+	     Conf.deskmode = MODE_NONE;
 	  }
 	else
 	  {
-	     conf.deskmode = MODE_DESKRAY;
+	     Conf.deskmode = MODE_DESKRAY;
 	     ShowDesktopTabs();
 	  }
      }
@@ -2341,7 +2341,7 @@ doSlideout(EWin * ewin, void *params)
    if (s)
      {
 	SoundPlay("SOUND_SLIDEOUT_SHOW");
-	SlideoutShow(s, ewin, mode.context_win);
+	SlideoutShow(s, ewin, Mode.context_win);
      }
    EDBUG_RETURN(0);
 }
@@ -2561,7 +2561,7 @@ static int
 doFocusNext(EWin * edummy, void *params)
 {
    EDBUG(6, "doFocusNext");
-   if (conf.warplist.enable && mode.current_event->type == KeyPress)
+   if (Conf.warplist.enable && Mode.current_event->type == KeyPress)
       WarpFocus(1);
    else
       FocusGetNextEwin();
@@ -3162,10 +3162,10 @@ doInsertKeys(EWin * edummy, void *params)
 	       {
 		  int                 j;
 
-		  ev.x = mode.x;
-		  ev.y = mode.y;
-		  ev.x_root = mode.x;
-		  ev.y_root = mode.y;
+		  ev.x = Mode.x;
+		  ev.y = Mode.y;
+		  ev.x_root = Mode.x;
+		  ev.y_root = Mode.y;
 		  for (j = 0; j < (int)(sizeof(ks) / sizeof(struct _keyset));
 		       j++)
 		    {

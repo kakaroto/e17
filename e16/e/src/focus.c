@@ -48,7 +48,7 @@ FocusEwinSelect(void)
    EWin              **lst, *ewin = NULL;
    int                 num, i;
 
-   switch (conf.focus.mode)
+   switch (Conf.focus.mode)
      {
      default:
      case MODE_FOCUS_POINTER:
@@ -77,7 +77,7 @@ AutoraiseTimeout(int val, void *data)
 {
    EWin               *ewin;
 
-   if (conf.focus.mode == MODE_FOCUS_CLICK)
+   if (Conf.focus.mode == MODE_FOCUS_CLICK)
       return;
 
    ewin = FindItem("", val, LIST_FINDBY_ID, LIST_TYPE_EWIN);
@@ -138,7 +138,7 @@ FocusCycle(int inc)
 
    for (i = 0; i < num; i++)
      {
-	if (mode.focuswin == lst[i])
+	if (Mode.focuswin == lst[i])
 	   break;
      }
    i += inc + num;
@@ -166,9 +166,9 @@ FocusGetPrevEwin(void)
 void
 FocusEwinSetGrabs(EWin * ewin)
 {
-   if ((conf.focus.mode != MODE_FOCUS_CLICK &&
-	ewin->active && conf.focus.clickraises) ||
-       (conf.focus.mode == MODE_FOCUS_CLICK && !ewin->active))
+   if ((Conf.focus.mode != MODE_FOCUS_CLICK &&
+	ewin->active && Conf.focus.clickraises) ||
+       (Conf.focus.mode == MODE_FOCUS_CLICK && !ewin->active))
      {
 	XGrabButton(disp, AnyButton, AnyModifier, ewin->win_container,
 		    False, ButtonPressMask, GrabModeSync, GrabModeAsync,
@@ -223,36 +223,36 @@ FocusToEWin(EWin * ewin, int why)
    switch (why)
      {
      default:
-	if (ewin == mode.focuswin)
+	if (ewin == Mode.focuswin)
 	   EDBUG_RETURN_;
 	break;
 
      case FOCUS_EWIN_GONE:
-	if (ewin != mode.focuswin)
+	if (ewin != Mode.focuswin)
 	   EDBUG_RETURN_;
 	ewin = FocusEwinSelect();
 	break;
 
      case FOCUS_EWIN_NEW:
-	if (conf.focus.all_new_windows_get_focus)
+	if (Conf.focus.all_new_windows_get_focus)
 	  {
 	     do_follow = 2;
 	  }
-	else if (conf.focus.new_transients_get_focus)
+	else if (Conf.focus.new_transients_get_focus)
 	  {
 	     if (ewin->client.transient)
 		do_follow = 2;
 	  }
-	else if (conf.focus.new_transients_get_focus_if_group_focused)
+	else if (Conf.focus.new_transients_get_focus_if_group_focused)
 	  {
 	     EWin               *ewin2;
 
 	     ewin2 = FindItem(NULL, ewin->client.transient_for,
 			      LIST_FINDBY_ID, LIST_TYPE_EWIN);
-	     if ((ewin2) && (mode.focuswin == ewin2))
+	     if ((ewin2) && (Mode.focuswin == ewin2))
 		do_follow = 2;
 	  }
-	else if (mode.place)
+	else if (Mode.place)
 	  {
 	     do_follow = 1;
 	  }
@@ -270,7 +270,7 @@ FocusToEWin(EWin * ewin, int why)
      }
 
    if (!ewin)
-      goto exit;
+      goto done;
 
    /* NB! ewin != NULL */
 
@@ -284,29 +284,29 @@ FocusToEWin(EWin * ewin, int why)
    if (ewin->menu)
       EDBUG_RETURN_;
 
-   if (do_follow && !mode.startup)
+   if (do_follow && !Mode.startup)
       GotoDesktopByEwin(ewin);
 
    if (!EwinIsOnScreen(ewin))
       EDBUG_RETURN_;
 
-   if (conf.autoraise.enable)
+   if (Conf.autoraise.enable)
      {
 	RemoveTimerEvent("AUTORAISE_TIMEOUT");
 
-	if (conf.focus.mode != MODE_FOCUS_CLICK)
-	   DoIn("AUTORAISE_TIMEOUT", conf.autoraise.delay, AutoraiseTimeout,
+	if (Conf.focus.mode != MODE_FOCUS_CLICK)
+	   DoIn("AUTORAISE_TIMEOUT", Conf.autoraise.delay, AutoraiseTimeout,
 		ewin->client.win, NULL);
      }
 
-   if ((conf.focus.raise_on_next_focus && (why == FOCUS_NEXT)) ||
-       (conf.focus.raise_after_next_focus && (why == FOCUS_WARP_DONE)))
+   if ((Conf.focus.raise_on_next_focus && (why == FOCUS_NEXT)) ||
+       (Conf.focus.raise_after_next_focus && (why == FOCUS_WARP_DONE)))
       RaiseEwin(ewin);
 
-   if ((conf.focus.warp_on_next_focus && (why == FOCUS_NEXT)) ||
-       (conf.focus.warp_after_next_focus && (why == FOCUS_WARP_DONE)))
+   if ((Conf.focus.warp_on_next_focus && (why == FOCUS_NEXT)) ||
+       (Conf.focus.warp_after_next_focus && (why == FOCUS_WARP_DONE)))
      {
-	if (ewin != mode.mouse_over_win)
+	if (ewin != Mode.mouse_over_win)
 	   XWarpPointer(disp, None, ewin->win, 0, 0, 0, 0, ewin->w / 2,
 			ewin->h / 2);
      }
@@ -318,10 +318,10 @@ FocusToEWin(EWin * ewin, int why)
 
    SoundPlay("SOUND_FOCUS_SET");
    EwinListFocusRaise(ewin);
- exit:
+ done:
    ICCCM_Cmap(ewin);
    ICCCM_Focus(ewin);
-   mode.focuswin = ewin;
+   Mode.focuswin = ewin;
 
    EDBUG_RETURN_;
 }
@@ -455,7 +455,7 @@ FocusNewDesk(void)
 				  PointerMotionMask);
 	       }
 
-	     if (mode.mode == MODE_DESKSWITCH && ewin->sticky && ewin->visible)
+	     if (Mode.mode == MODE_DESKSWITCH && ewin->sticky && ewin->visible)
 		EwinRefresh(ewin);
 	  }
 	Efree(lst);
@@ -489,9 +489,9 @@ FocusHandleEnter(XEvent * ev)
 
    ewin = GetEwinByCurrentPointer();
 
-   mode.mouse_over_win = ewin;
+   Mode.mouse_over_win = ewin;
 
-   switch (conf.focus.mode)
+   switch (Conf.focus.mode)
      {
      default:
      case MODE_FOCUS_CLICK:
@@ -534,7 +534,7 @@ FocusHandleEnter(XEvent * ev)
     */
    if (ev->xany.window == root.win)
      {
-	if (!mode.focuswin || conf.focus.mode == MODE_FOCUS_POINTER)
+	if (!Mode.focuswin || Conf.focus.mode == MODE_FOCUS_POINTER)
 	   HandleFocusWindow(0);
      }
    else
@@ -554,7 +554,7 @@ FocusHandleLeave(XEvent * ev)
    if (ev->xcrossing.window == root.win)
      {
 	if (ev->xcrossing.mode == NotifyNormal
-	    && ev->xcrossing.detail != NotifyInferior && mode.focuswin)
+	    && ev->xcrossing.detail != NotifyInferior && Mode.focuswin)
 	   HandleFocusWindow(0);
 	else
 	   HandleFocusWindow(ev->xcrossing.window);
@@ -574,7 +574,7 @@ FocusHandleClick(Window win)
    if (!ewin)
       return;
 
-   if ((conf.focus.clickraises) || (conf.focus.mode == MODE_FOCUS_CLICK))
+   if ((Conf.focus.clickraises) || (Conf.focus.mode == MODE_FOCUS_CLICK))
      {
 	RaiseEwin(ewin);
 	FocusToEWin(ewin, FOCUS_CLICK);

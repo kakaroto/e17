@@ -50,7 +50,7 @@ static void         PagerUpdateTimeout(int val, void *data);
 static void         PagerEwinUpdateMini(Pager * p, EWin * ewin);
 static void         PagerEwinUpdateFromPager(Pager * p, EWin * ewin);
 
-#define HIQ conf.pagers.hiq
+#define HIQ Conf.pagers.hiq
 
 static void
 PagerUpdateTimeout(int val, void *data)
@@ -71,21 +71,21 @@ PagerUpdateTimeout(int val, void *data)
    if ((cur_time - last_time) < 0.05)
       calls++;
    last_time = cur_time;
-   in = 1 / ((double)conf.pagers.scanspeed);
+   in = 1 / ((double)Conf.pagers.scanspeed);
    if (calls > 50)
      {
 	calls = 0;
 	in = 0.25;
      }
-   if (conf.pagers.scanspeed > 0)
+   if (Conf.pagers.scanspeed > 0)
       DoIn(s, in, PagerUpdateTimeout, 0, p);
-   if (!conf.pagers.snap)
+   if (!Conf.pagers.snap)
       return;
    if (!p->visible)
       return;
    if (p->desktop != desks.current)
       return;
-   if (mode.mode != MODE_NONE)
+   if (Mode.mode != MODE_NONE)
       return;
 
    GetAreaSize(&ax, &ay);
@@ -126,10 +126,10 @@ PagerCreate(void)
    XSetWindowAttributes attr;
    static char         did_dialog = 0;
 
-   if (!conf.pagers.enable)
+   if (!Conf.pagers.enable)
       return NULL;
 
-   if ((!did_dialog) && (conf.pagers.snap))
+   if ((!did_dialog) && (Conf.pagers.snap))
      {
 #if !USE_IMLIB2
 	if (pImlib_Context->x.shm)
@@ -231,7 +231,7 @@ PagerMoveResize(EWin * ewin, int resize)
    EWin              **lst;
    int                 i, num;
 
-   if (!conf.pagers.enable || !p)
+   if (!Conf.pagers.enable || !p)
       return;
 
    w = ewin->client.w;
@@ -311,7 +311,7 @@ PagerShow(Pager * p)
    char                s[64];
    char                pq;
 
-   if (!conf.pagers.enable)
+   if (!Conf.pagers.enable)
       return;
 
    if (p->ewin)
@@ -365,7 +365,7 @@ PagerShow(Pager * p)
 	else
 	  {
 	     /* no snapshots ? first time ? make a row on the bottom left up */
-	     MoveResizeEwin(ewin, 0, root.h - (conf.desks.num -
+	     MoveResizeEwin(ewin, 0, root.h - (Conf.desks.num -
 					       p->desktop) * ewin->h, w, h);
 	  }
 	PagerRedraw(p, 1);
@@ -375,11 +375,11 @@ PagerShow(Pager * p)
 	if (((sn) && (sn->use_sticky) && (sn->sticky)) || (!sn))
 	   MakeWindowSticky(ewin);
 	RememberImportantInfoForEwin(ewin);
-	if (conf.pagers.snap)
+	if (Conf.pagers.snap)
 	  {
 	     Esnprintf(s, sizeof(s), "__.%x", (unsigned)p->win);
-	     if (conf.pagers.scanspeed > 0)
-		DoIn(s, 1 / ((double)conf.pagers.scanspeed), PagerUpdateTimeout,
+	     if (Conf.pagers.scanspeed > 0)
+		DoIn(s, 1 / ((double)Conf.pagers.scanspeed), PagerUpdateTimeout,
 		     0, p);
 	  }
 	AddItem(p, "PAGER", p->win, LIST_TYPE_PAGER);
@@ -417,7 +417,7 @@ PagersForDesktop(int d, int *num)
    Pager             **pl = NULL;
    int                 i, pnum;
 
-   if (!conf.pagers.enable)
+   if (!Conf.pagers.enable)
       return NULL;
 
    *num = 0;
@@ -444,7 +444,7 @@ RedrawPagersForDesktop(int d, char newbg)
    Pager             **pl;
    int                 i, num;
 
-   if (!conf.pagers.enable)
+   if (!Conf.pagers.enable)
       return;
 
    pl = PagersForDesktop(d, &num);
@@ -462,7 +462,7 @@ ForceUpdatePagersForDesktop(int d)
    Pager             **pl;
    int                 i, num;
 
-   if (!conf.pagers.enable)
+   if (!Conf.pagers.enable)
       return;
 
    pl = PagersForDesktop(d, &num);
@@ -496,7 +496,7 @@ PagerEwinUpdateMini(Pager * p, EWin * ewin)
 {
    int                 w, h, ax, ay, cx, cy;
 
-   if (!conf.pagers.enable)
+   if (!Conf.pagers.enable)
       return;
 
    GetAreaSize(&ax, &ay);
@@ -518,7 +518,7 @@ PagerEwinUpdateMini(Pager * p, EWin * ewin)
 	ewin->mini_h = h;
 
 	if ((ewin->desktop != desks.current) || (ewin->area_x != cx)
-	    || (ewin->area_y != cy) || (!conf.pagers.snap))
+	    || (ewin->area_y != cy) || (!Conf.pagers.snap))
 	  {
 	     ImageClass         *ic = NULL;
 
@@ -548,12 +548,12 @@ PagerEwinUpdateFromPager(Pager * p, EWin * ewin)
    static GC           gc = 0;
    XGCValues           gcv;
 
-   if (!conf.pagers.snap)
+   if (!Conf.pagers.snap)
      {
 	PagerEwinUpdateMini(p, ewin);
 	return;
      }
-   if (!conf.pagers.enable)
+   if (!Conf.pagers.enable)
       return;
 
    GetAreaSize(&ax, &ay);
@@ -591,7 +591,7 @@ PagerRedraw(Pager * p, char newbg)
    EWin              **lst;
    int                 i, num;
 
-   if (!conf.pagers.enable || mode.mode == MODE_DESKSWITCH)
+   if (!Conf.pagers.enable || Mode.mode == MODE_DESKSWITCH)
       return;
 
    if (queue_up)
@@ -630,7 +630,7 @@ PagerRedraw(Pager * p, char newbg)
      {
 	if ((newbg > 0) && (newbg < 3))
 	  {
-	     if (!conf.pagers.snap)
+	     if (!Conf.pagers.snap)
 	       {
 		  ImageClass         *ic = NULL;
 		  PmapMask            pmm;
@@ -760,7 +760,7 @@ PagerForceUpdate(Pager * p)
    EWin              **lst;
    int                 i, num;
 
-   if (!conf.pagers.enable || mode.mode == MODE_DESKSWITCH)
+   if (!Conf.pagers.enable || Mode.mode == MODE_DESKSWITCH)
       return;
 
    if (queue_up)
@@ -789,7 +789,7 @@ PagerForceUpdate(Pager * p)
 	return;
      }
 
-   if ((p->desktop != desks.current) || (!conf.pagers.snap))
+   if ((p->desktop != desks.current) || (!Conf.pagers.snap))
      {
 	PagerRedraw(p, 0);
 	return;
@@ -818,7 +818,7 @@ PagerReArea(void)
    Pager             **pl = NULL;
    int                 i, pnum, w, h, ax, ay;
 
-   if (!conf.pagers.enable)
+   if (!Conf.pagers.enable)
       return;
 
    pl = (Pager **) ListItemType(&pnum, LIST_TYPE_PAGER);
@@ -851,14 +851,14 @@ PagerReArea(void)
 void
 PagerEwinOutsideAreaUpdate(EWin * ewin)
 {
-   if (!conf.pagers.enable)
+   if (!Conf.pagers.enable)
       return;
 
    if (ewin->sticky)
      {
 	int                 i;
 
-	for (i = 0; i < conf.desks.num; i++)
+	for (i = 0; i < Conf.desks.num; i++)
 	   RedrawPagersForDesktop(i, 0);
 	ForceUpdatePagersForDesktop(ewin->desktop);
 	return;
@@ -883,7 +883,7 @@ EwinInPagerAt(Pager * p, int x, int y)
    EWin              **lst;
    int                 i, num;
 
-   if (!conf.pagers.enable)
+   if (!Conf.pagers.enable)
       return NULL;
 
    GetAreaSize(&ax, &ay);
@@ -914,7 +914,7 @@ PagerAreaAt(Pager * p, int x, int y, int *ax, int *ay)
 {
    int                 asx, asy;
 
-   if (!conf.pagers.enable)
+   if (!Conf.pagers.enable)
       return;
 
    GetAreaSize(&asx, &asy);
@@ -931,7 +931,7 @@ PagerMenuShow(Pager * p, int x, int y)
    char                s[1024];
    int                 ax, ay;
 
-   if (!conf.pagers.enable)
+   if (!Conf.pagers.enable)
       return;
 
    ewin = EwinInPagerAt(p, x, y);
@@ -980,7 +980,7 @@ PagerMenuShow(Pager * p, int x, int y)
 		       NULL);
    MenuAddItem(p_menu, mi);
 
-   if (conf.pagers.snap)
+   if (Conf.pagers.snap)
      {
 	mi = MenuItemCreate(_("High Quality On"), NULL, ACTION_SET_PAGER_HIQ,
 			    "1", NULL);
@@ -1006,7 +1006,7 @@ PagerTitle(Pager * p, char *title)
 {
    XTextProperty       xtp;
 
-   if (!conf.pagers.enable)
+   if (!Conf.pagers.enable)
       return;
 
    xtp.encoding = XA_STRING;
@@ -1024,7 +1024,7 @@ UpdatePagerSel(void)
    int                 i, pnum, cx, cy;
    ImageClass         *ic;
 
-   if (!conf.pagers.enable)
+   if (!Conf.pagers.enable)
       return;
 
    pl = (Pager **) ListItemType(&pnum, LIST_TYPE_PAGER);
@@ -1058,17 +1058,17 @@ PagerShowTt(EWin * ewin)
    static EWin        *tt_ewin = NULL;
    ToolTip            *tt;
 
-   if (!conf.pagers.title || (ewin == tt_ewin))
+   if (!Conf.pagers.title || (ewin == tt_ewin))
       return;
 
-   if (mode.cur_menu_depth)	/* Don't show Tooltip when menu is up */
+   if (Mode.cur_menu_depth)	/* Don't show Tooltip when menu is up */
       return;
 
    tt = FindItem("PAGER", 0, LIST_FINDBY_NAME, LIST_TYPE_TOOLTIP);
    if (tt)
      {
 	if (ewin)
-	   ShowToolTip(tt, EwinGetIconName(ewin), NULL, mode.x, mode.y);
+	   ShowToolTip(tt, EwinGetIconName(ewin), NULL, Mode.x, Mode.y);
 	else
 	   HideToolTip(tt);
      }
@@ -1082,7 +1082,7 @@ PagerHideAllHi(void)
    Pager             **pl = NULL;
    int                 i, pnum;
 
-   if (!conf.pagers.enable)
+   if (!Conf.pagers.enable)
       return;
 
    pl = (Pager **) ListItemType(&pnum, LIST_TYPE_PAGER);
@@ -1113,7 +1113,7 @@ PagerShowHi(Pager * p, EWin * ewin, int x, int y, int w, int h)
    char                pq;
    ImageClass         *ic = NULL;
 
-   if (mode.cur_menu_depth)	/* Don't show HiWin when menu is up */
+   if (Mode.cur_menu_depth)	/* Don't show HiWin when menu is up */
       return;
 
    pq = queue_up;
@@ -1157,7 +1157,7 @@ PagerShowHi(Pager * p, EWin * ewin, int x, int y, int w, int h)
 		       {
 			  imlib_free_image_and_decache();
 			  EUnmapWindow(disp, p->hi_win);
-			  goto exit;
+			  goto done;
 		       }
 		  }
 	       }
@@ -1185,7 +1185,7 @@ PagerShowHi(Pager * p, EWin * ewin, int x, int y, int w, int h)
 		       {
 			  imlib_free_image_and_decache();
 			  EUnmapWindow(disp, p->hi_win);
-			  goto exit;
+			  goto done;
 		       }
 		  }
 	       }
@@ -1221,7 +1221,7 @@ PagerShowHi(Pager * p, EWin * ewin, int x, int y, int w, int h)
 			 || (py >= (y + h)))
 		       {
 			  EUnmapWindow(disp, p->hi_win);
-			  goto exit;
+			  goto done;
 		       }
 		  }
 	       }
@@ -1245,7 +1245,7 @@ PagerShowHi(Pager * p, EWin * ewin, int x, int y, int w, int h)
 			 || (py >= (y + h)))
 		       {
 			  EUnmapWindow(disp, p->hi_win);
-			  goto exit;
+			  goto done;
 		       }
 		  }
 	       }
@@ -1287,7 +1287,7 @@ PagerShowHi(Pager * p, EWin * ewin, int x, int y, int w, int h)
 		       {
 			  EFreePixmap(disp, pmap);
 			  EUnmapWindow(disp, p->hi_win);
-			  goto exit;
+			  goto done;
 		       }
 		  }
 	       }
@@ -1315,7 +1315,7 @@ PagerShowHi(Pager * p, EWin * ewin, int x, int y, int w, int h)
 		       {
 			  EFreePixmap(disp, pmap);
 			  EUnmapWindow(disp, p->hi_win);
-			  goto exit;
+			  goto done;
 		       }
 		  }
 	       }
@@ -1327,7 +1327,7 @@ PagerShowHi(Pager * p, EWin * ewin, int x, int y, int w, int h)
    p->hi_visible = 1;
    p->hi_ewin = ewin;
 
- exit:
+ done:
    queue_up = pq;
 }
 
@@ -1338,7 +1338,7 @@ PagerHandleMotion(Pager * p, Window win, int x, int y, int in)
    Window              rw, cw;
    EWin               *ewin = NULL;
 
-   if (!conf.pagers.enable)
+   if (!Conf.pagers.enable)
       return;
 
    XQueryPointer(disp, p->win, &rw, &cw, &hx, &hy, &x, &y, &hx);
@@ -1348,7 +1348,7 @@ PagerHandleMotion(Pager * p, Window win, int x, int y, int in)
    else
       ewin = NULL;
 
-   if (!conf.pagers.zoom)
+   if (!Conf.pagers.zoom)
      {
 	if (in == PAGER_EVENT_MOUSE_OUT)
 	   PagerShowTt(NULL);
@@ -1428,10 +1428,10 @@ EnableAllPagers(void)
 {
    int                 i;
 
-   if (!conf.pagers.enable)
+   if (!Conf.pagers.enable)
      {
-	conf.pagers.enable = 1;
-	for (i = 0; i < conf.desks.num; i++)
+	Conf.pagers.enable = 1;
+	for (i = 0; i < Conf.desks.num; i++)
 	   EnableSinglePagerForDesktop(i);
 	UpdatePagerSel();
      }
@@ -1474,11 +1474,11 @@ DisableAllPagers(void)
 {
    int                 i;
 
-   if (conf.pagers.enable)
+   if (Conf.pagers.enable)
      {
-	for (i = 0; i < conf.desks.num; i++)
+	for (i = 0; i < Conf.desks.num; i++)
 	   DisablePagersForDesktop(i);
-	conf.pagers.enable = 0;
+	Conf.pagers.enable = 0;
      }
    return;
 }
@@ -1524,7 +1524,7 @@ PagerSetSnap(char onoff)
    int                 i, num;
    char                s[256];
 
-   conf.pagers.snap = onoff;
+   Conf.pagers.snap = onoff;
 
    lst = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
    if (lst)
@@ -1544,11 +1544,11 @@ PagerSetSnap(char onoff)
 	     PagerHideHi(pl[i]);
 	     PagerRedraw(pl[i], 2);
 	     PagerForceUpdate(pl[i]);
-	     if (conf.pagers.snap)
+	     if (Conf.pagers.snap)
 	       {
 		  Esnprintf(s, sizeof(s), "__.%x", (unsigned)pl[i]->win);
-		  if (conf.pagers.scanspeed > 0)
-		     DoIn(s, 1 / ((double)conf.pagers.scanspeed),
+		  if (Conf.pagers.scanspeed > 0)
+		     DoIn(s, 1 / ((double)Conf.pagers.scanspeed),
 			  PagerUpdateTimeout, 0, pl[i]);
 	       }
 	  }
@@ -1603,10 +1603,10 @@ void
 PagerEventUnmap(Pager * p)
 {
    PagerHideHi(p);
-   if (p == mode.context_pager)
+   if (p == Mode.context_pager)
      {
-	mode.context_pager = NULL;
-	mode.mode = MODE_NONE;
+	Mode.context_pager = NULL;
+	Mode.mode = MODE_NONE;
      }
 }
 
@@ -1620,7 +1620,7 @@ PagersEventMotion(XEvent * ev)
    int                 ax, ay, cx, cy, i, num;
    EWin              **gwins;
 
-   switch (mode.mode)
+   switch (Mode.mode)
      {
      case MODE_NONE:
 	p = FindPager(ev->xmotion.window);
@@ -1633,8 +1633,8 @@ PagersEventMotion(XEvent * ev)
 
      case MODE_PAGER_DRAG_PENDING:
      case MODE_PAGER_DRAG:
-	mode.mode = MODE_PAGER_DRAG;
-	p = mode.context_pager;
+	Mode.mode = MODE_PAGER_DRAG;
+	p = Mode.context_pager;
 	if (p == NULL)
 	   break;
 
@@ -1642,8 +1642,8 @@ PagersEventMotion(XEvent * ev)
 	cx = desks.desk[p->desktop].current_area_x;
 	cy = desks.desk[p->desktop].current_area_y;
 	GetAreaSize(&ax, &ay);
-	dx = mode.x - mode.px;
-	dy = mode.y - mode.py;
+	dx = Mode.x - Mode.px;
+	dy = Mode.y - Mode.py;
 	if (!FindItem
 	    ((char *)p->hi_ewin, 0, LIST_FINDBY_POINTER, LIST_TYPE_EWIN))
 	   p->hi_ewin = NULL;
@@ -1666,7 +1666,7 @@ PagersEventMotion(XEvent * ev)
 
 	gwins =
 	   ListWinGroupMembersForEwin(p->hi_ewin, ACTION_MOVE,
-				      mode.nogroup, &num);
+				      Mode.nogroup, &num);
 	for (i = 0; i < num; i++)
 	  {
 	     if ((gwins[i] != p->hi_ewin) && (!gwins[i]->pager)
@@ -1699,7 +1699,7 @@ PagersEventMouseDown(XEvent * ev)
       return 0;
 
    gwins =
-      ListWinGroupMembersForEwin(p->hi_ewin, ACTION_MOVE, mode.nogroup, &num);
+      ListWinGroupMembersForEwin(p->hi_ewin, ACTION_MOVE, Mode.nogroup, &num);
    gwin_px = calloc(num, sizeof(int));
    gwin_py = calloc(num, sizeof(int));
 
@@ -1722,7 +1722,7 @@ PagersEventMouseDown(XEvent * ev)
 	ev->xbutton.y += hy;
      }
 
-   if ((int)ev->xbutton.button == conf.pagers.menu_button)
+   if ((int)ev->xbutton.button == Conf.pagers.menu_button)
      {
 	if ((ev->xbutton.x >= 0) && (ev->xbutton.y >= 0)
 	    && (ev->xbutton.x < p->w) && (ev->xbutton.y < p->h))
@@ -1731,7 +1731,7 @@ PagersEventMouseDown(XEvent * ev)
 	     PagerMenuShow(p, ev->xbutton.x, ev->xbutton.y);
 	  }
      }
-   else if ((int)ev->xbutton.button == conf.pagers.win_button)
+   else if ((int)ev->xbutton.button == Conf.pagers.win_button)
      {
 	ewin = EwinInPagerAt(p, ev->xbutton.x, ev->xbutton.y);
 	if ((ewin) && (!ewin->pager))
@@ -1756,8 +1756,8 @@ PagersEventMouseDown(XEvent * ev)
 	     p->hi_ewin = ewin;
 	     p->hi_win_w = ww;
 	     p->hi_win_h = wh;
-	     mode.mode = MODE_PAGER_DRAG_PENDING;
-	     mode.context_pager = p;
+	     Mode.mode = MODE_PAGER_DRAG_PENDING;
+	     Mode.context_pager = p;
 	  }
      }
 
@@ -1777,22 +1777,22 @@ PagersEventMouseUp(XEvent * ev)
 
    p = FindPager(win);
    if (p == NULL)
-      goto exit;
+      goto done;
 
-   mode_was = mode.mode;
-   mode.mode = MODE_NONE;
+   mode_was = Mode.mode;
+   Mode.mode = MODE_NONE;
 
-   if (((int)ev->xbutton.button == conf.pagers.sel_button))
+   if (((int)ev->xbutton.button == Conf.pagers.sel_button))
      {
-	if (win != mode.last_bpress)
-	   goto exit;
+	if (win != Mode.last_bpress)
+	   goto done;
 	PagerAreaAt(p, ev->xbutton.x, ev->xbutton.y, &pax, &pay);
 	GotoDesktop(p->desktop);
 	if (p->desktop != desks.current)
 	   SoundPlay("SOUND_DESKTOP_SHUT");
 	SetCurrentArea(pax, pay);
      }
-   else if (((int)ev->xbutton.button == conf.pagers.win_button))
+   else if (((int)ev->xbutton.button == Conf.pagers.win_button))
      {
 	int                 prev_desk = -1;
 
@@ -1861,7 +1861,7 @@ PagersEventMouseUp(XEvent * ev)
 		       gwins =
 			  ListWinGroupMembersForEwin(p->hi_ewin,
 						     ACTION_MOVE,
-						     mode.nogroup, &num);
+						     Mode.nogroup, &num);
 		       /* get get the location of the base win so we can move the */
 		       /* rest of the windows in the group to the correct offset */
 		       for (i = 0; i < num; i++)
@@ -1890,7 +1890,7 @@ PagersEventMouseUp(XEvent * ev)
 
 		  /* Iconify after moving back to pre-drag position */
 		  gwins = ListWinGroupMembersForEwin(p->hi_ewin, ACTION_MOVE,
-						     mode.nogroup, &num);
+						     Mode.nogroup, &num);
 		  for (i = 0; i < num; i++)
 		    {
 		       if (!gwins[i]->pager)
@@ -1915,7 +1915,7 @@ PagersEventMouseUp(XEvent * ev)
 		  GetAreaSize(&ax, &ay);
 
 		  gwins = ListWinGroupMembersForEwin(p->hi_ewin, ACTION_MOVE,
-						     mode.nogroup, &num);
+						     Mode.nogroup, &num);
 		  for (i = 0; i < num; i++)
 		     if (gwins[i] == p->hi_ewin)
 		       {
@@ -1962,11 +1962,11 @@ PagersEventMouseUp(XEvent * ev)
 	     PagerHideHi(p);
 	  }
 
-	mode.context_pager = NULL;
+	Mode.context_pager = NULL;
 	UnGrabTheButtons();
      }
 
- exit:
+ done:
    /* unallocate the space that was holding the old positions of the */
    /* windows */
    if (gwin_px)

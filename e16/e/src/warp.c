@@ -54,7 +54,7 @@ WarpFocusHandleEvent(XEvent * ev)
 {
    EDBUG(5, "WarpFocusHandleEvent");
 
-   if (!conf.warplist.enable)
+   if (!Conf.warplist.enable)
       EDBUG_RETURN(0);
 
    if (ev->type != KeyPress && ev->type != KeyRelease)
@@ -86,7 +86,7 @@ WarpFocus(int delta)
 
    EDBUG(5, "WarpFocus");
 
-   if (!conf.warplist.enable)
+   if (!Conf.warplist.enable)
       EDBUG_RETURN_;
 
    lst = (EWin **) ListItemType(&num, LIST_TYPE_WARP_RING);
@@ -105,11 +105,11 @@ WarpFocus(int delta)
 			/* Exclude windows that explicitely say so */
 			&& (!ewin->skipfocus)
 			/* Keep shaded windows if conf say so */
-			&& ((!ewin->shaded) || (conf.warplist.warpshaded))
+			&& ((!ewin->shaded) || (Conf.warplist.warpshaded))
 			/* Keep sticky windows if conf say so */
-			&& ((!ewin->sticky) || (conf.warplist.warpsticky))
+			&& ((!ewin->sticky) || (Conf.warplist.warpsticky))
 			/* Keep iconified windows if conf say so */
-			&& ((!ewin->iconified) || (conf.warplist.warpiconified))
+			&& ((!ewin->iconified) || (Conf.warplist.warpiconified))
 			/*&& (ewin->client.mwm_decor_title) &&
 			 * (ewin->client.mwm_decor_border) */
 		     )
@@ -156,7 +156,7 @@ WarpFocusFinish(void)
 	   ewin = NULL;
 	if (ewin)
 	  {
-	     if (conf.warplist.warpiconified && ewin->iconified)
+	     if (Conf.warplist.warpiconified && ewin->iconified)
 		DeIconifyEwin(ewin);
 	     FocusToEWin(ewin, FOCUS_WARP_DONE);
 	  }

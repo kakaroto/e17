@@ -266,7 +266,7 @@ SetupX()
    XSetIOErrorHandler((XIOErrorHandler) HandleXIOError);
 
    /* select all the root window events to start managing */
-   mode.xselect = 1;
+   Mode.xselect = 1;
    XSelectInput(disp, root.win,
 		ButtonPressMask | ButtonReleaseMask | EnterWindowMask |
 		LeaveWindowMask | ButtonMotionMask | PropertyChangeMask |
@@ -274,7 +274,7 @@ SetupX()
 		PointerMotionMask | ResizeRedirectMask |
 		SubstructureNotifyMask);
    XSync(disp, False);
-   mode.xselect = 0;
+   Mode.xselect = 0;
 
    /* warn, if necessary about X version problems */
    if (ProtocolVersion(disp) != 11)
@@ -344,95 +344,95 @@ SetupX()
 
    /* Now we're going to set a bunch of default settings in E - in case we
     * don't ever get to load a config file for some odd reason. */
-   memset(&conf, 0, sizeof(EConf));
-   conf.areas.nx = 2;
-   conf.areas.ny = 1;
-   conf.areas.wraparound = 0;
-   conf.autoraise.enable = 0;
-   conf.autoraise.delay = 0.5;
-   conf.backgrounds.hiquality = 1;
-   conf.backgrounds.user = 1;
-   conf.backgrounds.timeout = 240;
-   conf.desks.num = 2;
-   conf.desks.wraparound = 0;
-   conf.desks.dragdir = 2;
-   conf.desks.dragbar_width = 16;
-   conf.desks.dragbar_ordering = 1;
-   conf.desks.dragbar_length = 0;
-   conf.desks.slidein = 1;
-   conf.desks.slidespeed = 6000;
-   conf.dialogs.headers = 0;
-   conf.dock.dirmode = DOCK_DOWN;
-   conf.dock.startx = 0;
-   conf.dock.starty = 0;
-   conf.focus.mode = MODE_FOCUS_SLOPPY;
-   conf.focus.clickraises = 0;
-   conf.focus.transientsfollowleader = 1;
-   conf.focus.switchfortransientmap = 1;
-   conf.focus.all_new_windows_get_focus = 0;
-   conf.focus.new_transients_get_focus = 0;
-   conf.focus.new_transients_get_focus_if_group_focused = 1;
-   conf.focus.raise_on_next_focus = 1;
-   conf.focus.raise_after_next_focus = 1;
-   conf.focus.warp_on_next_focus = 0;
-   conf.focus.warp_after_next_focus = 0;
-   conf.group_config.iconify = 1;
-   conf.group_config.kill = 0;
-   conf.group_config.move = 1;
-   conf.group_config.raise = 0;
-   conf.group_config.set_border = 1;
-   conf.group_config.stick = 1;
-   conf.group_config.shade = 1;
-   conf.group_config.mirror = 1;
-   conf.pagers.enable = 1;
-   conf.pagers.zoom = 1;
-   conf.pagers.title = 1;
-   conf.pagers.hiq = 1;
-   conf.pagers.snap = 1;
-   conf.pagers.scanspeed = 10;
-   conf.group_swapmove = 1;
-   conf.pagers.sel_button = 2;
-   conf.pagers.win_button = 1;
-   conf.pagers.menu_button = 3;
-   conf.snap.enable = 1;
-   conf.snap.edge_snap_dist = 8;
-   conf.snap.screen_snap_dist = 32;
-   conf.tooltips.enable = 1;
-   conf.tooltips.delay = 0.5;
-   conf.tooltips.showroottooltip = 1;
+   memset(&Conf, 0, sizeof(EConf));
+   Conf.areas.nx = 2;
+   Conf.areas.ny = 1;
+   Conf.areas.wraparound = 0;
+   Conf.autoraise.enable = 0;
+   Conf.autoraise.delay = 0.5;
+   Conf.backgrounds.hiquality = 1;
+   Conf.backgrounds.user = 1;
+   Conf.backgrounds.timeout = 240;
+   Conf.desks.num = 2;
+   Conf.desks.wraparound = 0;
+   Conf.desks.dragdir = 2;
+   Conf.desks.dragbar_width = 16;
+   Conf.desks.dragbar_ordering = 1;
+   Conf.desks.dragbar_length = 0;
+   Conf.desks.slidein = 1;
+   Conf.desks.slidespeed = 6000;
+   Conf.dialogs.headers = 0;
+   Conf.dock.dirmode = DOCK_DOWN;
+   Conf.dock.startx = 0;
+   Conf.dock.starty = 0;
+   Conf.focus.mode = MODE_FOCUS_SLOPPY;
+   Conf.focus.clickraises = 0;
+   Conf.focus.transientsfollowleader = 1;
+   Conf.focus.switchfortransientmap = 1;
+   Conf.focus.all_new_windows_get_focus = 0;
+   Conf.focus.new_transients_get_focus = 0;
+   Conf.focus.new_transients_get_focus_if_group_focused = 1;
+   Conf.focus.raise_on_next_focus = 1;
+   Conf.focus.raise_after_next_focus = 1;
+   Conf.focus.warp_on_next_focus = 0;
+   Conf.focus.warp_after_next_focus = 0;
+   Conf.group_config.iconify = 1;
+   Conf.group_config.kill = 0;
+   Conf.group_config.move = 1;
+   Conf.group_config.raise = 0;
+   Conf.group_config.set_border = 1;
+   Conf.group_config.stick = 1;
+   Conf.group_config.shade = 1;
+   Conf.group_config.mirror = 1;
+   Conf.pagers.enable = 1;
+   Conf.pagers.zoom = 1;
+   Conf.pagers.title = 1;
+   Conf.pagers.hiq = 1;
+   Conf.pagers.snap = 1;
+   Conf.pagers.scanspeed = 10;
+   Conf.group_swapmove = 1;
+   Conf.pagers.sel_button = 2;
+   Conf.pagers.win_button = 1;
+   Conf.pagers.menu_button = 3;
+   Conf.snap.enable = 1;
+   Conf.snap.edge_snap_dist = 8;
+   Conf.snap.screen_snap_dist = 32;
+   Conf.tooltips.enable = 1;
+   Conf.tooltips.delay = 0.5;
+   Conf.tooltips.showroottooltip = 1;
 #ifdef WITH_TARTY_WARP
-   conf.warplist.enable = 1;
+   Conf.warplist.enable = 1;
 #else
-   conf.warplist.enable = 0;
+   Conf.warplist.enable = 0;
 #endif /* WITH_TARTY_WARP */
-   conf.warplist.warpsticky = 1;
-   conf.warplist.warpshaded = 1;
-   conf.warplist.warpiconified = 0;
-   conf.warplist.warpfocused = 1;
+   Conf.warplist.warpsticky = 1;
+   Conf.warplist.warpshaded = 1;
+   Conf.warplist.warpiconified = 0;
+   Conf.warplist.warpfocused = 1;
 
-   conf.deskmode = MODE_NONE;
-   conf.movemode = 0;
-   conf.dockapp_support = 1;
-   conf.primaryicondir = ICON_RIGHT;
-   conf.resizemode = 1;
-   conf.geominfomode = 1;
-   conf.slidemode = 0;
-   conf.cleanupslide = 1;
-   conf.mapslide = 1;
-   conf.slidespeedmap = 6000;
-   conf.slidespeedcleanup = 8000;
-   conf.shadespeed = 8000;
-   conf.animate_shading = 1;
-   conf.sound = 1;
-   conf.button_move_resistance = 5;
-   conf.autosave = 1;
-   conf.memory_paranoia = 1;
-   conf.save_under = 0;
-   conf.menuslide = 0;
-   conf.menusonscreen = 1;
-   conf.warpmenus = 1;
-   conf.manual_placement = 0;
-   conf.edge_flip_resistance = 15;
+   Conf.deskmode = MODE_NONE;
+   Conf.movemode = 0;
+   Conf.dockapp_support = 1;
+   Conf.primaryicondir = ICON_RIGHT;
+   Conf.resizemode = 1;
+   Conf.geominfomode = 1;
+   Conf.slidemode = 0;
+   Conf.cleanupslide = 1;
+   Conf.mapslide = 1;
+   Conf.slidespeedmap = 6000;
+   Conf.slidespeedcleanup = 8000;
+   Conf.shadespeed = 8000;
+   Conf.animate_shading = 1;
+   Conf.sound = 1;
+   Conf.button_move_resistance = 5;
+   Conf.autosave = 1;
+   Conf.memory_paranoia = 1;
+   Conf.save_under = 0;
+   Conf.menuslide = 0;
+   Conf.menusonscreen = 1;
+   Conf.warpmenus = 1;
+   Conf.manual_placement = 0;
+   Conf.edge_flip_resistance = 15;
 
    ScreenInit();
 
@@ -495,47 +495,47 @@ SetupDirs()
 	if (!isdir(s))
 	  {
 	     Esnprintf(ss, sizeof(ss), "%s.old", EDirUser());
-	     mv(s, ss);
-	     md(s);
+	     E_mv(s, ss);
+	     E_md(s);
 	  }
 	else
 	   ChkDir(EDirUser());
      }
    else
-      md(s);
+      E_md(s);
    Esnprintf(s, sizeof(s), "%s/themes", EDirUser());
    if (!exists(s))
-      md(s);
+      E_md(s);
    else
       ChkDir(s);
    Esnprintf(s, sizeof(s), "%s/backgrounds", EDirUser());
    if (!exists(s))
-      md(s);
+      E_md(s);
    else
       ChkDir(s);
    Esnprintf(s, sizeof(s), "%s/cached", EDirUserCache());
    if (!exists(s))
-      md(s);
+      E_md(s);
    else
       ChkDir(s);
    Esnprintf(s, sizeof(s), "%s/cached/img", EDirUserCache());
    if (!exists(s))
-      md(s);
+      E_md(s);
    else
       ChkDir(s);
    Esnprintf(s, sizeof(s), "%s/cached/cfg", EDirUserCache());
    if (!exists(s))
-      md(s);
+      E_md(s);
    else
       ChkDir(s);
    Esnprintf(s, sizeof(s), "%s/cached/bgsel", EDirUserCache());
    if (!exists(s))
-      md(s);
+      E_md(s);
    else
       ChkDir(s);
    Esnprintf(s, sizeof(s), "%s/cached/pager", EDirUserCache());
    if (!exists(s))
-      md(s);
+      E_md(s);
    else
       ChkDir(s);
    EDBUG_RETURN_;
@@ -766,11 +766,11 @@ SetupUserInitialization(void)
    Esnprintf(file, sizeof(file), "%s/.initialized", EDirUser());
    if (isfile(file))
      {
-	mode.firsttime = 0;
+	Mode.firsttime = 0;
      }
    else
      {
-	mode.firsttime = 1;
+	Mode.firsttime = 1;
 	f = fopen(file, "w");
 	fprintf(f, "Congratulations, you have run enlightenment before.\n");
 	fprintf(f, "Removing this file and the *.menu files in this\n");

@@ -52,16 +52,15 @@ FindMode(int w, int h)
 
    for (i = 0; i < std_vid_modes_num; i++)
      {
-	int                 close = 0x7fffffff;
+	int                 value = 0x7fffffff;
 
-	if ((std_vid_modes[i]->hdisplay >= w)
-	    && (std_vid_modes[i]->vdisplay >= h))
-	   close =
-	      ((std_vid_modes[i]->hdisplay - w) +
-	       (std_vid_modes[i]->vdisplay - h));
-	if (close < closest)
+	if ((std_vid_modes[i]->hdisplay >= w) &&
+	    (std_vid_modes[i]->vdisplay >= h))
+	   value = ((std_vid_modes[i]->hdisplay - w) +
+		    (std_vid_modes[i]->vdisplay - h));
+	if (value < closest)
 	  {
-	     closest = close;
+	     closest = value;
 	     chosen = std_vid_modes[i];
 	  }
      }

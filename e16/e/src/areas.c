@@ -31,14 +31,14 @@ AreaFix(int *ax, int *ay)
 {
    if (*ax < 0)
      {
-	if (conf.areas.wraparound)
+	if (Conf.areas.wraparound)
 	   *ax = area_w - 1;
 	else
 	   *ax = 0;
      }
    else if (*ax >= area_w)
      {
-	if (conf.areas.wraparound)
+	if (Conf.areas.wraparound)
 	   *ax = 0;
 	else
 	   *ax = area_w - 1;
@@ -46,14 +46,14 @@ AreaFix(int *ax, int *ay)
 
    if (*ay < 0)
      {
-	if (conf.areas.wraparound)
+	if (Conf.areas.wraparound)
 	   *ay = area_h - 1;
 	else
 	   *ay = 0;
      }
    else if (*ay >= area_h)
      {
-	if (conf.areas.wraparound)
+	if (Conf.areas.wraparound)
 	   *ay = 0;
 	else
 	   *ay = area_h - 1;
@@ -139,8 +139,8 @@ SetAreaSize(int aw, int ah)
       aw = 1;
    if (ah < 1)
       ah = 1;
-   conf.areas.nx = area_w = aw;
-   conf.areas.ny = area_h = ah;
+   Conf.areas.nx = area_w = aw;
+   Conf.areas.ny = area_h = ah;
    HintsSetViewportConfig();
    PagerReArea();
    EDBUG_RETURN_;
@@ -252,8 +252,8 @@ SetCurrentArea(int ax, int ay)
 
    EDBUG(4, "SetCurrentArea");
 
-   if ((mode.mode == MODE_RESIZE) || (mode.mode == MODE_RESIZE_H)
-       || (mode.mode == MODE_RESIZE_V))
+   if ((Mode.mode == MODE_RESIZE) || (Mode.mode == MODE_RESIZE_H)
+       || (Mode.mode == MODE_RESIZE_V))
       EDBUG_RETURN_;
 
    AreaFix(&ax, &ay);
@@ -290,7 +290,7 @@ SetCurrentArea(int ax, int ay)
    lst = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
    if (lst)
      {
-	if (conf.desks.slidein)
+	if (Conf.desks.slidein)
 	  {
 	     int                 wnum = 0;
 	     Window             *wl = NULL;
@@ -301,7 +301,7 @@ SetCurrentArea(int ax, int ay)
 		  if ((lst[i]->desktop == desks.current) && (!lst[i]->sticky)
 		      && (!lst[i]->fixedpos) && (!lst[i]->iconified))
 		    {
-		       if ((lst[i]->floating) && (conf.movemode > 0))
+		       if ((lst[i]->floating) && (Conf.movemode > 0))
 			 {
 			    wnum++;
 			    wl = Erealloc(wl, sizeof(Window) * wnum);
@@ -319,7 +319,7 @@ SetCurrentArea(int ax, int ay)
 	     /* slide them */
 	     if (wl)
 	       {
-		  SlideWindowsBy(wl, wnum, -dx, -dy, conf.desks.slidespeed);
+		  SlideWindowsBy(wl, wnum, -dx, -dy, Conf.desks.slidespeed);
 		  Efree(wl);
 	       }
 
@@ -335,14 +335,14 @@ SetCurrentArea(int ax, int ay)
 
 			    a1 = lst[i]->area_x;
 			    a2 = lst[i]->area_y;
-			    if (!mode.flipp)
+			    if (!Mode.flipp)
 			      {
 				 setflip = 1;
-				 mode.flipp = 1;
+				 Mode.flipp = 1;
 			      }
 			    MoveEwin(lst[i], lst[i]->x - dx, lst[i]->y - dy);
 			    if (setflip)
-			       mode.flipp = 0;
+			       Mode.flipp = 0;
 			    lst[i]->area_x = a1;
 			    lst[i]->area_y = a2;
 			    HintsSetWindowArea(lst[i]);
@@ -363,7 +363,7 @@ SetCurrentArea(int ax, int ay)
 		       /* well work out the xy stuff later when the move finishes */
 		       if (lst[i]->floating)
 			 {
-			    if (conf.movemode > 0)
+			    if (Conf.movemode > 0)
 			      {
 				 GetWinXY(lst[i]->win, &x, &y);
 				 EMoveWindow(disp, lst[i]->win, x - dx, y - dy);
@@ -376,14 +376,14 @@ SetCurrentArea(int ax, int ay)
 
 			    a1 = lst[i]->area_x;
 			    a2 = lst[i]->area_y;
-			    if (!mode.flipp)
+			    if (!Mode.flipp)
 			      {
 				 setflip = 1;
-				 mode.flipp = 1;
+				 Mode.flipp = 1;
 			      }
 			    MoveEwin(lst[i], lst[i]->x - dx, lst[i]->y - dy);
 			    if (setflip)
-			       mode.flipp = 0;
+			       Mode.flipp = 0;
 			    lst[i]->area_x = a1;
 			    lst[i]->area_y = a2;
 			    HintsSetWindowArea(lst[i]);

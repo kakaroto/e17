@@ -413,7 +413,7 @@ DialogSetExitFunction(Dialog * d, void (*func) (int val, void *data), int val,
 
 void
 DialogAddButton(Dialog * d, char *text, void (*func) (int val, void *data),
-		char close)
+		char doclose)
 {
    DButton            *db;
    int                 w, h;
@@ -432,7 +432,7 @@ DialogAddButton(Dialog * d, char *text, void (*func) (int val, void *data),
    db->h = -1;
    db->hilited = 0;
    db->clicked = 0;
-   db->close = close;
+   db->close = doclose;
 
    db->tclass =
       FindItem("DIALOG_BUTTON", 0, LIST_FINDBY_NAME, LIST_TYPE_TCLASS);
@@ -573,7 +573,7 @@ DialogMoveResize(EWin * ewin, int resize)
    if (!d)
       return;
 
-   if (conf.theme.transparency || IclassIsTransparent(d->iclass))
+   if (Conf.theme.transparency || IclassIsTransparent(d->iclass))
       DialogRedraw(d);
    return;
    resize = 0;
@@ -2223,7 +2223,7 @@ DialogEventMotion(XEvent * ev)
       return 0;
 
    if (di == NULL)
-      goto exit;
+      goto done;
 
    if (di->type == DITEM_AREA)
      {
@@ -2234,8 +2234,8 @@ DialogEventMotion(XEvent * ev)
      {
 	if (ev->xmotion.window == di->item.slider.knob_win)
 	  {
-	     dx = mode.x - mode.px;
-	     dy = mode.y - mode.py;
+	     dx = Mode.x - Mode.px;
+	     dy = Mode.y - Mode.py;
 	     if (di->item.slider.horizontal)
 	       {
 		  di->item.slider.wanted_val += dx;
@@ -2274,7 +2274,7 @@ DialogEventMotion(XEvent * ev)
 	DialogDrawItems(d, di, 0, 0, 99999, 99999);
      }
 
- exit:
+ done:
    return 1;
 }
 
@@ -2292,14 +2292,14 @@ DialogEventExpose(XEvent * ev)
      {
 	DialogDrawArea(d, ev->xexpose.x, ev->xexpose.y,
 		       ev->xexpose.width, ev->xexpose.height);
-	goto exit;
+	goto done;
      }
 
    d = FindDialogButton(win, &bnum);
    if (d)
      {
 	DialogDrawButton(d, bnum);
-	goto exit;
+	goto done;
      }
 
    di = FindDialogItem(win, &d);
@@ -2311,7 +2311,7 @@ DialogEventExpose(XEvent * ev)
    DialogDrawArea(d, x, y, w, h);
 
    if (di == NULL)
-      goto exit;
+      goto done;
 
    if (di->type == DITEM_AREA)
      {
@@ -2319,7 +2319,7 @@ DialogEventExpose(XEvent * ev)
 	   (di->func) (di->val, di->data);
      }
 
- exit:
+ done:
    return 1;
 }
 
@@ -2335,7 +2335,7 @@ DialogEventMouseDown(XEvent * ev)
    if (d)
      {
 	DialogActivateButton(win, 2);
-	goto exit;
+	goto done;
      }
 
    di = FindDialogItem(win, &d);
@@ -2343,7 +2343,7 @@ DialogEventMouseDown(XEvent * ev)
       return 0;
 
    if (di == NULL)
-      goto exit;
+      goto done;
 
    if (di->type == DITEM_AREA)
      {
@@ -2391,14 +2391,14 @@ DialogEventMouseDown(XEvent * ev)
    di->clicked = 1;
    DialogDrawItems(d, di, 0, 0, 99999, 99999);
 
- exit:
+ done:
    return 1;
 }
 
 int
 DialogEventMouseUp(XEvent * ev)
 {
-   Window              win = mode.context_win;
+   Window              win = Mode.context_win;
    Dialog             *d;
    int                 bnum;
    DItem              *di;
@@ -2407,7 +2407,7 @@ DialogEventMouseUp(XEvent * ev)
    if (d)
      {
 	DialogActivateButton(win, 3);
-	goto exit;
+	goto done;
      }
 
    di = FindDialogItem(win, &d);
@@ -2415,7 +2415,7 @@ DialogEventMouseUp(XEvent * ev)
       return 0;
 
    if (di == NULL)
-      goto exit;
+      goto done;
 
    di->clicked = 0;
    if (win)
@@ -2465,7 +2465,7 @@ DialogEventMouseUp(XEvent * ev)
 	   (di->func) (di->val, di->data);
      }
 
- exit:
+ done:
    return 1;
 }
 
@@ -2481,7 +2481,7 @@ DialogEventMouseIn(XEvent * ev)
    if (d)
      {
 	DialogActivateButton(win, 0);
-	goto exit;
+	goto done;
      }
 
    di = FindDialogItem(win, &d);
@@ -2489,7 +2489,7 @@ DialogEventMouseIn(XEvent * ev)
       return 0;
 
    if (di == NULL)
-      goto exit;
+      goto done;
 
    if (di->type == DITEM_AREA)
      {
@@ -2504,7 +2504,7 @@ DialogEventMouseIn(XEvent * ev)
    di->hilited = 1;
    DialogDrawItems(d, di, 0, 0, 99999, 99999);
 
- exit:
+ done:
    return 1;
 }
 
@@ -2520,7 +2520,7 @@ DialogEventMouseOut(XEvent * ev)
    if (d)
      {
 	DialogActivateButton(win, 1);
-	goto exit;
+	goto done;
      }
 
    di = FindDialogItem(win, &d);
@@ -2528,7 +2528,7 @@ DialogEventMouseOut(XEvent * ev)
       return 0;
 
    if (di == NULL)
-      goto exit;
+      goto done;
 
    if (di->type == DITEM_AREA)
      {
@@ -2543,7 +2543,7 @@ DialogEventMouseOut(XEvent * ev)
    di->hilited = 0;
    DialogDrawItems(d, di, 0, 0, 99999, 99999);
 
- exit:
+ done:
    return 1;
 }
 

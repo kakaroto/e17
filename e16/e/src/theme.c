@@ -144,7 +144,7 @@ append_merge_dir(char *dir, char ***list, int *count)
    char                already, *tmp, *tmp2, ok;
    int                 i, j, num;
 
-   str = ls(dir, &num);
+   str = E_ls(dir, &num);
    if (str)
      {
 	for (i = 0; i < num; i++)
@@ -282,7 +282,7 @@ ThemeSetDefault(const char *theme)
 
    Esnprintf(ss, sizeof(ss), "%s/themes/DEFAULT", EDirUser());
    if (exists(ss))
-      rm(ss);
+      E_rm(ss);
    if (theme)
       symlink(theme, ss);
 }
@@ -305,7 +305,7 @@ ThemeExtract(const char *theme)
    if (isdir(theme))
      {
 	oktheme = theme;
-	goto exit;
+	goto done;
      }
 
    /* its a file - check its type */
@@ -313,7 +313,7 @@ ThemeExtract(const char *theme)
      {
 	f = fopen(theme, "r");
 	if (!f)
-	   goto exit;
+	   goto done;
 
 	fread(buf, 1, 320, f);
 	fclose(f);
@@ -322,7 +322,7 @@ ThemeExtract(const char *theme)
 	name = fileof(theme);
 	Esnprintf(th, sizeof(th), "%s/themes/%s", EDirUser(), name);
 	Efree(name);
-	md(th);
+	E_md(th);
 
 	/* check magic numbers */
 	if ((buf[0] == 31) && (buf[1] == 139))
@@ -344,7 +344,7 @@ ThemeExtract(const char *theme)
 	oktheme = th;
      }
 
- exit:
+ done:
    if (oktheme && SanitiseThemeDir(oktheme))
       EDBUG_RETURN(Estrdup(oktheme));
 
@@ -374,9 +374,9 @@ FindTheme(const char *theme)
 
    EDBUG(6, "FindTheme");
 
-   if (conf.theme.name)
-      Efree(conf.theme.name);
-   conf.theme.name = Estrdup(theme);
+   if (Conf.theme.name)
+      Efree(Conf.theme.name);
+   Conf.theme.name = Estrdup(theme);
    badreason = _("Unknown\n");
 
    if (!theme[0])

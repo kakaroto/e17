@@ -63,9 +63,9 @@ main(int argc, char **argv)
     */
 
    /* Init state variable struct */
-   memset(&mode, 0, sizeof(EMode));
-   mode.mode = MODE_NONE;
-   mode.startup = 1;
+   memset(&Mode, 0, sizeof(EMode));
+   Mode.mode = MODE_NONE;
+   Mode.startup = 1;
 
    single_screen_mode = 0;
 /*  unsetenv("LD_PRELOAD"); */
@@ -80,7 +80,7 @@ main(int argc, char **argv)
 
    str = getenv("EDBUG");
    if (str)
-      mode.debug = atoi(str);
+      Mode.debug = atoi(str);
    str = getenv("EDBUG_FLAGS");
    if (str)
       EventDebugInit(str);
@@ -248,12 +248,12 @@ main(int argc, char **argv)
    desks.desk[0].viewable = 0;
    /* now we're going to load the configuration/theme */
    LoadEConfig(themepath);
-   SetAreaSize(conf.areas.nx, conf.areas.ny);
-   TransparencySet(conf.theme.transparency);
+   SetAreaSize(Conf.areas.nx, Conf.areas.ny);
+   TransparencySet(Conf.theme.transparency);
 
    desks.desk[0].viewable = 1;
    RefreshDesktop(0);
-   if (conf.sound)
+   if (Conf.sound)
      {
 	SoundPlay("SOUND_STARTUP");
 	SoundFree("SOUND_STARTUP");
@@ -270,7 +270,7 @@ main(int argc, char **argv)
    /* retreive stuff from last time we were loaded if we're restarting */
    ICCCM_GetMainEInfo();
    SetupEnv();
-   if (conf.mapslide)
+   if (Conf.mapslide)
       CreateStartupDisplay(0);
    MapUnmap(1);
    /* set some more hints */
@@ -278,9 +278,9 @@ main(int argc, char **argv)
    desks.current = 0;
    /* Set up the internal pagers */
    IB_Setup();
-   if (conf.pagers.enable)
+   if (Conf.pagers.enable)
      {
-	conf.pagers.enable = 0;
+	Conf.pagers.enable = 0;
 	queue_up = 0;
 	EnableAllPagers();
 	queue_up = DRAW_QUEUE_ENABLE;
@@ -297,8 +297,8 @@ main(int argc, char **argv)
    queue_up = DRAW_QUEUE_ENABLE;
 
    /* hello!  we don't have a resizemode of 5! */
-   if (conf.resizemode == 5)
-      conf.resizemode = 0;
+   if (Conf.resizemode == 5)
+      Conf.resizemode = 0;
    /* of course, we have to set the cursors */
    ec = FindItem("DEFAULT", 0, LIST_FINDBY_NAME, LIST_TYPE_ECURSOR);
    if (ec)
@@ -308,45 +308,45 @@ main(int argc, char **argv)
 	ec->inroot = 1;
      }
 
-   mode.startup = 0;
+   Mode.startup = 0;
    /* ok - paranoia - save current settings to disk */
    if (root.scr == 0)
       autosave();
    /* let's make sure we set this up and go to our desk anyways */
    ICCCM_GetMainEInfo();
    GotoDesktop(desks.current);
-   if (desks.current < (conf.desks.num - 1))
+   if (desks.current < (Conf.desks.num - 1))
      {
 	char                ps = 0;
 
-	if (!conf.mapslide)
+	if (!Conf.mapslide)
 	  {
-	     ps = conf.desks.slidein;
-	     conf.desks.slidein = 0;
+	     ps = Conf.desks.slidein;
+	     Conf.desks.slidein = 0;
 	  }
 	GotoDesktop(desks.current + 1);
 	GotoDesktop(desks.current - 1);
-	if (!conf.mapslide)
-	   conf.desks.slidein = ps;
+	if (!Conf.mapslide)
+	   Conf.desks.slidein = ps;
      }
    else if (desks.current > 0)
      {
 	char                ps = 0;
 
-	if (!conf.mapslide)
+	if (!Conf.mapslide)
 	  {
-	     ps = conf.desks.slidein;
-	     conf.desks.slidein = 0;
+	     ps = Conf.desks.slidein;
+	     Conf.desks.slidein = 0;
 	  }
 	GotoDesktop(desks.current - 1);
 	GotoDesktop(desks.current + 1);
-	if (!conf.mapslide)
-	   conf.desks.slidein = ps;
+	if (!Conf.mapslide)
+	   Conf.desks.slidein = ps;
      }
    XSync(disp, False);
 
    /* if we didn't have an external window piped to us, we'll do some stuff */
-   if (!conf.mapslide)
+   if (!Conf.mapslide)
       CreateStartupDisplay(0);
 
    if ((bg = RemoveItem("STARTUP_BACKGROUND_SIDEWAYS", 0,
@@ -362,12 +362,12 @@ main(int argc, char **argv)
 #endif
 
    SetupUserInitialization();
-   if (mode.firsttime)
+   if (Mode.firsttime)
       runDocBrowser();
 
-   mode.startup = 1;
+   Mode.startup = 1;
    SpawnSnappedCmds();
-   mode.startup = 0;
+   Mode.startup = 0;
 
    ThemeBadDialog();
    /* The primary event loop */

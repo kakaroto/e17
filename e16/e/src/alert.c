@@ -54,7 +54,7 @@ AlertInit(void)
 
 void
 AlertX(const char *title, const char *ignore,
-       const char *restart, const char *exit, const char *fmt, ...)
+       const char *restart, const char *quit, const char *fmt, ...)
 {
    char                text[10240];
    va_list             ap;
@@ -64,7 +64,7 @@ AlertX(const char *title, const char *ignore,
    AssignTitleText(title);
    AssignIgnoreText(ignore);
    AssignRestartText(restart);
-   AssignExitText(exit);
+   AssignExitText(quit);
 
    va_start(ap, fmt);
    Evsnprintf(text, 10240, fmt, ap);

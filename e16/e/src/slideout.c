@@ -114,7 +114,7 @@ SlideoutShow(Slideout * s, EWin * ewin, Window win)
    EDBUG(5, "SlideoutShow");
 
    /* Don't ever show more than one slideout */
-   if (mode.slideout)
+   if (Mode.slideout)
       EDBUG_RETURN_;
 
    SlideoutCalcSize(s);
@@ -203,7 +203,7 @@ SlideoutShow(Slideout * s, EWin * ewin, Window win)
 	XSync(disp, False);
 	EMapRaised(disp, s->win);
 	SlideWindowSizeTo(s->win, xx + s->w, yy, xx, yy, 0, s->h, s->w, s->h,
-			  conf.slidespeedmap);
+			  Conf.slidespeedmap);
 	break;
      case 1:
 	att.win_gravity = NorthWestGravity;
@@ -215,7 +215,7 @@ SlideoutShow(Slideout * s, EWin * ewin, Window win)
 	XSync(disp, False);
 	EMapRaised(disp, s->win);
 	SlideWindowSizeTo(s->win, xx, yy, xx, yy, 0, s->h, s->w, s->h,
-			  conf.slidespeedmap);
+			  Conf.slidespeedmap);
 	break;
      case 2:
 	att.win_gravity = SouthEastGravity;
@@ -227,7 +227,7 @@ SlideoutShow(Slideout * s, EWin * ewin, Window win)
 	XSync(disp, False);
 	EMapRaised(disp, s->win);
 	SlideWindowSizeTo(s->win, xx, yy + s->h, xx, yy, s->w, 0, s->w, s->h,
-			  conf.slidespeedmap);
+			  Conf.slidespeedmap);
 	break;
      case 3:
 	att.win_gravity = NorthWestGravity;
@@ -239,7 +239,7 @@ SlideoutShow(Slideout * s, EWin * ewin, Window win)
 	XSync(disp, False);
 	EMapRaised(disp, s->win);
 	SlideWindowSizeTo(s->win, xx, yy, xx, yy, s->w, 0, s->w, s->h,
-			  conf.slidespeedmap);
+			  Conf.slidespeedmap);
 	break;
      default:
 	break;
@@ -247,7 +247,7 @@ SlideoutShow(Slideout * s, EWin * ewin, Window win)
    s->from_win = win;
    s->ref_count++;
 
-   mode.slideout = s;
+   Mode.slideout = s;
 
    EDBUG_RETURN_;
 }
@@ -263,7 +263,7 @@ SlideoutHide(Slideout * s)
    EUnmapWindow(disp, s->win);
    s->from_win = 0;
    s->ref_count--;
-   mode.slideout = NULL;
+   Mode.slideout = NULL;
 
    EDBUG_RETURN_;
 }
@@ -385,8 +385,8 @@ SlideoutGetName(Slideout * s)
 EWin               *
 SlideoutsGetContextEwin(void)
 {
-   if (mode.slideout)
-      return FindEwinByChildren(mode.slideout->from_win);
+   if (Mode.slideout)
+      return FindEwinByChildren(Mode.slideout->from_win);
 
    return NULL;
 }
@@ -394,13 +394,13 @@ SlideoutsGetContextEwin(void)
 void
 SlideoutsHide(void)
 {
-   if (mode.slideout)
-      SlideoutHide(mode.slideout);
+   if (Mode.slideout)
+      SlideoutHide(Mode.slideout);
 }
 
 void
 SlideoutsHideIfContextWin(Window win)
 {
-   if ((mode.slideout) && (mode.slideout->from_win == win))
-      SlideoutHide(mode.slideout);
+   if ((Mode.slideout) && (Mode.slideout->from_win == win))
+      SlideoutHide(Mode.slideout);
 }

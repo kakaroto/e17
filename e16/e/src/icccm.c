@@ -300,14 +300,14 @@ ICCCM_MatchSize(EWin * ewin)
 	if ((w > 0) && (h > 0))
 	  {
 	     aspect = ((double)w) / ((double)h);
-	     if (mode.mode == MODE_RESIZE_H)
+	     if (Mode.mode == MODE_RESIZE_H)
 	       {
 		  if (aspect < ewin->client.aspect_min)
 		     h = (int)((double)w / ewin->client.aspect_min);
 		  if (aspect > ewin->client.aspect_max)
 		     h = (int)((double)w / ewin->client.aspect_max);
 	       }
-	     else if (mode.mode == MODE_RESIZE_V)
+	     else if (Mode.mode == MODE_RESIZE_V)
 	       {
 		  if (aspect < ewin->client.aspect_min)
 		     w = (int)((double)h * ewin->client.aspect_min);
@@ -466,15 +466,15 @@ ICCCM_Cmap(EWin * ewin)
 
    if (!ewin)
      {
-	if (mode.current_cmap)
+	if (Mode.current_cmap)
 	  {
-	     XUninstallColormap(disp, mode.current_cmap);
-	     mode.current_cmap = 0;
+	     XUninstallColormap(disp, Mode.current_cmap);
+	     Mode.current_cmap = 0;
 	  }
 	EDBUG_RETURN_;
      }
 
-   if (mode.cur_menu_mode)
+   if (Mode.cur_menu_mode)
       EDBUG_RETURN_;
 
    ICCCM_GetColormap(ewin);
@@ -482,7 +482,7 @@ ICCCM_Cmap(EWin * ewin)
    if (ewin->internal)
       EDBUG_RETURN_;
 
-   if ((ewin->client.cmap) && (mode.current_cmap != ewin->client.cmap))
+   if ((ewin->client.cmap) && (Mode.current_cmap != ewin->client.cmap))
      {
 	wlist =
 	   AtomGet(ewin->client.win, E_XA_WM_COLORMAP_WINDOWS, XA_WINDOW, &num);
@@ -495,7 +495,7 @@ ICCCM_Cmap(EWin * ewin)
 		       if (xwa.colormap != DefaultColormap(disp, root.scr))
 			 {
 			    XInstallColormap(disp, xwa.colormap);
-			    mode.current_cmap = xwa.colormap;
+			    Mode.current_cmap = xwa.colormap;
 			 }
 		    }
 	       }
@@ -503,7 +503,7 @@ ICCCM_Cmap(EWin * ewin)
 	     EDBUG_RETURN_;
 	  }
 	XInstallColormap(disp, ewin->client.cmap);
-	mode.current_cmap = ewin->client.cmap;
+	Mode.current_cmap = ewin->client.cmap;
      }
 
    EDBUG_RETURN_;
@@ -591,7 +591,7 @@ ICCCM_GetGeoms(EWin * ewin, Atom atom_change)
 		       int                 dsk;
 
 		       dsk = ewin->desktop;
-		       if ((dsk < 0) || (dsk >= conf.desks.num))
+		       if ((dsk < 0) || (dsk >= Conf.desks.num))
 			  dsk = desks.current;
 		       ewin->client.x -= desks.desk[dsk].x;
 		       ewin->client.y -= desks.desk[dsk].y;
@@ -1208,7 +1208,7 @@ ICCCM_GetEInfo(EWin * ewin)
    num = (int)lnum;
    if ((num >= 8) && (c))
      {
-	if (mode.startup)
+	if (Mode.startup)
 	  {
 	     ewin->desktop = c[0];
 	     ewin->sticky = c[1];

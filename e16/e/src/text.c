@@ -157,17 +157,17 @@ TextStateLoadFont(TextState * ts)
    if (!ts->efont)
 #endif
      {
-	char                s[4096], w[4046], *dup, *ss;
+	char                s[4096], w[4046], *s2, *ss;
 
-	dup = NULL;
-	dup = Estrdup(ts->fontname);
-	ss = strchr(dup, '/');
+	s2 = NULL;
+	s2 = Estrdup(ts->fontname);
+	ss = strchr(s2, '/');
 	if (ss)
 	  {
 	     *ss = ' ';
-	     word(dup, 1, w);
+	     word(s2, 1, w);
 	     Esnprintf(s, sizeof(s), "ttfonts/%s.ttf", w);
-	     word(dup, 2, w);
+	     word(s2, 2, w);
 	     ss = FindFile(s);
 	     if (ss)
 	       {
@@ -175,8 +175,8 @@ TextStateLoadFont(TextState * ts)
 		  Efree(ss);
 	       }
 	  }
-	if (dup)
-	   Efree(dup);
+	if (s2)
+	   Efree(s2);
      }
 #if USE_FNLIB
    if ((!ts->font) && (!ts->efont))

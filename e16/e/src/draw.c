@@ -25,7 +25,7 @@
 #include <sys/shm.h>
 
 /* Hmmm... */
-#define HIQ conf.pagers.hiq
+#define HIQ Conf.pagers.hiq
 
 void
 HandleDrawQueue()
@@ -35,17 +35,17 @@ HandleDrawQueue()
    char                already, p_queue;
 
    EDBUG(4, "HandleDrawQueue");
-   switch (mode.mode)
+   switch (Mode.mode)
      {
      case MODE_MOVE_PENDING:
      case MODE_MOVE:
-	if (conf.movemode > 0)
+	if (Conf.movemode > 0)
 	   EDBUG_RETURN_;
 	break;
      case MODE_RESIZE:
      case MODE_RESIZE_H:
      case MODE_RESIZE_V:
-	if (conf.resizemode > 0)
+	if (Conf.resizemode > 0)
 	   EDBUG_RETURN_;
 	break;
      }
@@ -1343,8 +1343,8 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
 	   break;
      }
 
-   if ((mode.mode == MODE_RESIZE) || (mode.mode == MODE_RESIZE_H)
-       || (mode.mode == MODE_RESIZE_V))
+   if ((Mode.mode == MODE_RESIZE) || (Mode.mode == MODE_RESIZE_H)
+       || (Mode.mode == MODE_RESIZE_V))
      {
 	w1 = ewin->client.w;
 	h1 = ewin->client.h;
@@ -1359,8 +1359,8 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
 	ewin->client.h = h1;
      }
    if ((md == 5)
-       && ((mode.mode == MODE_RESIZE) || (mode.mode == MODE_RESIZE_H)
-	   || (mode.mode == MODE_RESIZE_V) || (ewin->groups && check_move)))
+       && ((Mode.mode == MODE_RESIZE) || (Mode.mode == MODE_RESIZE_H)
+	   || (Mode.mode == MODE_RESIZE_V) || (ewin->groups && check_move)))
       md = 0;
    if (md == 5)
      {
@@ -1388,7 +1388,7 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
      {
      case 0:
 	MoveResizeEwin(ewin, x, y, w, h);
-	if (mode.mode != MODE_NONE)
+	if (Mode.mode != MODE_NONE)
 	   SetCoords(ewin);
 	break;
      case 1:
@@ -1561,7 +1561,7 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
 	       {
 		  DO_DRAW_MODE_1(x1, y1, w1, h1);
 	       }
-	     if ((mode.mode != MODE_NONE)
+	     if ((Mode.mode != MODE_NONE)
 		 && (!ewin->groups || (ewin->groups && !check_move)))
 		SetCoords(ewin);
 	     if (firstlast < 2)
@@ -1575,7 +1575,7 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
 	       {
 		  DO_DRAW_MODE_2(x1, y1, w1, h1);
 	       }
-	     if ((mode.mode != MODE_NONE)
+	     if ((Mode.mode != MODE_NONE)
 		 && (!ewin->groups || (ewin->groups && !check_move)))
 		SetCoords(ewin);
 	     if (firstlast < 2)
@@ -1589,7 +1589,7 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
 	       {
 		  DO_DRAW_MODE_3(x1, y1, w1, h1);
 	       }
-	     if ((mode.mode != MODE_NONE)
+	     if ((Mode.mode != MODE_NONE)
 		 && (!ewin->groups || (ewin->groups && !check_move)))
 		SetCoords(ewin);
 	     if (firstlast < 2)
@@ -1604,7 +1604,7 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
 		  DO_DRAW_MODE_4(x1, y1, w1, h1);
 	       }
 	     if (firstlast < 2)
-		if ((mode.mode != MODE_NONE)
+		if ((Mode.mode != MODE_NONE)
 		    && (!ewin->groups || (ewin->groups && !check_move)))
 		   SetCoords(ewin);
 	     if (firstlast < 2)
@@ -1639,11 +1639,11 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
 		  draw_pi = ECreatePixImg(root.win, ewin->w, ewin->h);
 		  if ((!root_pi) || (!ewin_pi) || (!draw_pi))
 		    {
-		       conf.movemode = 0;
+		       Conf.movemode = 0;
 		       UngrabX();
-		       DrawEwinShape(ewin, conf.movemode, x, y, w, h,
+		       DrawEwinShape(ewin, Conf.movemode, x, y, w, h,
 				     firstlast);
-		       goto exit;
+		       goto done;
 		    }
 		  EFillPixmap(root.win, root_pi->pmap, x1, y1, ewin->w,
 			      ewin->h);
@@ -1749,7 +1749,7 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
 		     EDestroyPixImg(root_pi);
 		  root_pi->pmap = 0;
 	       }
-	     if (mode.mode != MODE_NONE)
+	     if (Mode.mode != MODE_NONE)
 		SetCoords(ewin);
 	  }
 	if (firstlast == 2)
@@ -1772,7 +1772,7 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
 	break;
      }
 
- exit:
+ done:
    queue_up = pq;
    EDBUG_RETURN_;
 }

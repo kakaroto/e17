@@ -21,7 +21,6 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
-#include "conf.h"
 
 ToolTip            *
 CreateToolTip(char *name, ImageClass * ic0, ImageClass * ic1,
@@ -582,7 +581,7 @@ ShowToolTip(ToolTip * tt, const char *text, ActionClass * ac, int x, int y)
    IclassApply(tt->s_iclass[1], tt->s_win[1], 16, 16, 0, 0, STATE_NORMAL, 0);
    IclassApply(tt->s_iclass[2], tt->s_win[2], 24, 24, 0, 0, STATE_NORMAL, 0);
    IclassApply(tt->s_iclass[3], tt->s_win[3], 32, 32, 0, 0, STATE_NORMAL, 0);
-   if (conf.theme.transparency && tt->iclass->norm.normal->transparent == 0)
+   if (Conf.theme.transparency && tt->iclass->norm.normal->transparent == 0)
       tt->iclass->norm.normal->transparent = 2;
    IclassApply(tt->iclass, tt->win, w, h, 0, 0, STATE_NORMAL, 0);
    EMapRaised(disp, tt->s_win[0]);

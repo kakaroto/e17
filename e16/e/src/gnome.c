@@ -615,7 +615,7 @@ GNOME_SetDeskCount(void)
    EDBUG(6, "GNOME_SetDeskCount");
    if (!atom_set)
       atom_set = XInternAtom(disp, XA_WIN_WORKSPACE_COUNT, False);
-   val = conf.desks.num;
+   val = Conf.desks.num;
    XChangeProperty(disp, root.win, atom_set, XA_CARDINAL, 32, PropModeReplace,
 		   (unsigned char *)&val, 1);
    EDBUG_RETURN_;
@@ -650,17 +650,17 @@ GNOME_SetDeskNames(void)
    EDBUG(6, "GNOME_SetDeskNames");
    if (!atom_set)
       atom_set = XInternAtom(disp, XA_WIN_WORKSPACE_NAMES, False);
-   for (i = 0; i < conf.desks.num; i++)
+   for (i = 0; i < Conf.desks.num; i++)
      {
 	Esnprintf(s, sizeof(s), "%i", i);
 	names[i] = Estrdup(s);
      }
-   if (XStringListToTextProperty(names, conf.desks.num, &text))
+   if (XStringListToTextProperty(names, Conf.desks.num, &text))
      {
 	XSetTextProperty(disp, root.win, &text, atom_set);
 	XFree(text.value);
      }
-   for (i = 0; i < conf.desks.num; i++)
+   for (i = 0; i < Conf.desks.num; i++)
       if (names[i])
 	 Efree(names[i]);
    EDBUG_RETURN_;
@@ -772,11 +772,11 @@ GNOME_SetHints(Window win_wm_check)
       CARD32              val;
 
       atom_set = XInternAtom(disp, "_WIN_DESKTOP_BUTTON_PROXY", False);
-      mode.button_proxy_win = ECreateWindow(root.win, -80, -80, 24, 24, 0);
-      val = mode.button_proxy_win;
+      Mode.button_proxy_win = ECreateWindow(root.win, -80, -80, 24, 24, 0);
+      val = Mode.button_proxy_win;
       XChangeProperty(disp, root.win, atom_set, XA_CARDINAL, 32,
 		      PropModeReplace, (unsigned char *)&val, 1);
-      XChangeProperty(disp, mode.button_proxy_win, atom_set, XA_CARDINAL, 32,
+      XChangeProperty(disp, Mode.button_proxy_win, atom_set, XA_CARDINAL, 32,
 		      PropModeReplace, (unsigned char *)&val, 1);
    }
 

@@ -49,7 +49,7 @@ MaxSizeHV(EWin * ewin, char *resize_type, int direction)
 	ewin->lw = ewin->client.w;
 	ewin->lh = ewin->client.h;
 	ewin->toggle = 0;
-	goto exit;
+	goto done;
      }
 
    type = MAX_ABSOLUTE;		/* Select default */
@@ -167,7 +167,7 @@ MaxSizeHV(EWin * ewin, char *resize_type, int direction)
    MoveResizeEwin(ewin, x, y, w, h);
    ewin->toggle = 1;
 
- exit:;
+ done:;
 }
 
 void

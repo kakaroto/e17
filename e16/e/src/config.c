@@ -267,7 +267,7 @@ GetLine(char *s, int size, FILE * f)
 		     break;
 		case_eol:
 		  *so++ = '\0';	/* Terminate and return */
-		  goto exit;
+		  goto done;
 	       case '\r':	/* Ignore */
 		  break;
 	       case '\\':	/* Escape */
@@ -297,12 +297,12 @@ GetLine(char *s, int size, FILE * f)
 		  if (--size > 1)
 		     break;
 		  *so = '\0';
-		  goto exit;
+		  goto done;
 	       }
 	  }
      }
 
- exit:
+ done:
    bufptr = si;
    return s;
 }
@@ -642,7 +642,7 @@ Config_Control(FILE * ConfigFile)
 {
 
    /* this function reads in the control segment of the
-    * configuration file...  this contains all the generic mode.blah
+    * configuration file...  this contains all the generic Mode.blah
     * stuff as well as desks.blah
     */
 
@@ -681,249 +681,249 @@ Config_Control(FILE * ConfigFile)
 	  case CONFIG_CLOSE:
 	     return;
 	  case CONFIG_SOUND:
-	     conf.sound = i2;
+	     Conf.sound = i2;
 	     break;
 	  case CONTROL_SAVE_UNDER:
-	     conf.save_under = i2;
+	     Conf.save_under = i2;
 	     break;
 	  case CONTROL_FOCUSMODE:
-	     conf.focus.mode = i2;
+	     Conf.focus.mode = i2;
 	     break;
 	  case CONTROL_MOVEMODE:
-	     conf.movemode = i2;
+	     Conf.movemode = i2;
 	     break;
 	  case CONTROL_RESIZEMODE:
-	     conf.resizemode = i2;
+	     Conf.resizemode = i2;
 	     break;
 	  case CONTROL_GEOMINFOMODE:
-	     conf.geominfomode = i2;
+	     Conf.geominfomode = i2;
 	     break;
 	  case CONTROL_SLIDEMODE:
-	     conf.slidemode = i2;
+	     Conf.slidemode = i2;
 	     break;
 	  case CONTROL_CLEANUPSLIDE:
-	     conf.cleanupslide = i2;
+	     Conf.cleanupslide = i2;
 	     break;
 	  case CONTROL_DOCKDIRMODE:
-	     conf.dock.dirmode = i2;
+	     Conf.dock.dirmode = i2;
 	     break;
 	  case CONTROL_MAPSLIDE:
-	     conf.mapslide = i2;
+	     Conf.mapslide = i2;
 	     break;
 	  case CONTROL_TOOLTIPS:
-	     conf.tooltips.enable = i2;
+	     Conf.tooltips.enable = i2;
 	     break;
 	  case CONTROL_MENUSLIDE:
-	     conf.menuslide = i2;
+	     Conf.menuslide = i2;
 	     break;
 	  case CONTROL_NUMDESKTOPS:
-	     conf.desks.num = i2;
-	     if (conf.desks.num <= 0)
-		conf.desks.num = 1;
-	     else if (conf.desks.num > ENLIGHTENMENT_CONF_NUM_DESKTOPS)
-		conf.desks.num = ENLIGHTENMENT_CONF_NUM_DESKTOPS;
+	     Conf.desks.num = i2;
+	     if (Conf.desks.num <= 0)
+		Conf.desks.num = 1;
+	     else if (Conf.desks.num > ENLIGHTENMENT_CONF_NUM_DESKTOPS)
+		Conf.desks.num = ENLIGHTENMENT_CONF_NUM_DESKTOPS;
 	     break;
 	  case CONTROL_MEMORYPARANOIA:
-	     conf.memory_paranoia = i2;
+	     Conf.memory_paranoia = i2;
 	     break;
 	  case CONTROL_TRANSIENTS_FOLLOW_LEADER:
-	     conf.focus.transientsfollowleader = i2;
+	     Conf.focus.transientsfollowleader = i2;
 	     break;
 	  case CONTROL_SWITCH_FOR_TRANSIENT_MAP:
-	     conf.focus.switchfortransientmap = i2;
+	     Conf.focus.switchfortransientmap = i2;
 	     break;
 	  case CONTROL_SHOWICONS:
 	     /* Obsolete */
 	     break;
 	  case CONTROL_ALL_NEW_WINDOWS_GET_FOCUS:
-	     conf.focus.all_new_windows_get_focus = i2;
+	     Conf.focus.all_new_windows_get_focus = i2;
 	     break;
 	  case CONTROL_NEW_TRANSIENTS_GET_FOCUS:
-	     conf.focus.new_transients_get_focus = i2;
+	     Conf.focus.new_transients_get_focus = i2;
 	     break;
 	  case CONTROL_NEW_TRANSIENTS_GET_FOCUS_IF_GROUP:
-	     conf.focus.new_transients_get_focus_if_group_focused = i2;
+	     Conf.focus.new_transients_get_focus_if_group_focused = i2;
 	     break;
 	  case CONTROL_MANUAL_PLACEMENT:
-	     conf.manual_placement = i2;
+	     Conf.manual_placement = i2;
 	     break;
 	  case CONTROL_MANUAL_PLACEMENT_MOUSE_POINTER:
-	     conf.manual_placement_mouse_pointer = i2;
+	     Conf.manual_placement_mouse_pointer = i2;
 	     break;
 	  case CONTROL_RAISE_ON_NEXT_FOCUS:
-	     conf.focus.raise_on_next_focus = i2;
+	     Conf.focus.raise_on_next_focus = i2;
 	     break;
 	  case CONTROL_RAISE_AFTER_NEXT_FOCUS:
-	     conf.focus.raise_after_next_focus = i2;
+	     Conf.focus.raise_after_next_focus = i2;
 	     break;
 	  case CONTROL_DISPLAY_WARP:
-	     conf.warplist.enable = i2;
+	     Conf.warplist.enable = i2;
 	     break;
 	  case CONTROL_WARP_ON_NEXT_FOCUS:
-	     conf.focus.warp_on_next_focus = i2;
+	     Conf.focus.warp_on_next_focus = i2;
 	     break;
 	  case CONTROL_WARP_AFTER_NEXT_FOCUS:
-	     conf.focus.warp_after_next_focus = i2;
+	     Conf.focus.warp_after_next_focus = i2;
 	     break;
 	  case CONTROL_PAGER_SCANSPEED:
-	     conf.pagers.scanspeed = i2;
+	     Conf.pagers.scanspeed = i2;
 	     break;
 	  case CONTROL_EDGE_FLIP_RESISTANCE:
-	     conf.edge_flip_resistance = i2;
+	     Conf.edge_flip_resistance = i2;
 	     break;
 	  case CONTROL_TOOLTIPTIME:
 	     sscanf(s, "%*i %f", &f1);
-	     conf.tooltips.delay = f1;
+	     Conf.tooltips.delay = f1;
 	     break;
 	  case CONTROL_AUTORAISE:
-	     conf.autoraise.enable = i2;
+	     Conf.autoraise.enable = i2;
 	     break;
 	  case CONTROL_AUTORAISETIME:
 	     sscanf(s, "%*i %f", &f1);
-	     conf.autoraise.delay = f1;
+	     Conf.autoraise.delay = f1;
 	     break;
 	  case CONTROL_GROUP_BORDER:
-	     conf.group_config.set_border = i2;
+	     Conf.group_config.set_border = i2;
 	     break;
 	  case CONTROL_GROUP_KILL:
-	     conf.group_config.kill = i2;
+	     Conf.group_config.kill = i2;
 	     break;
 	  case CONTROL_GROUP_MOVE:
-	     conf.group_config.move = i2;
+	     Conf.group_config.move = i2;
 	     break;
 	  case CONTROL_GROUP_RAISE:
-	     conf.group_config.raise = i2;
+	     Conf.group_config.raise = i2;
 	     break;
 	  case CONTROL_GROUP_ICONIFY:
-	     conf.group_config.iconify = i2;
+	     Conf.group_config.iconify = i2;
 	     break;
 	  case CONTROL_GROUP_STICK:
-	     conf.group_config.stick = i2;
+	     Conf.group_config.stick = i2;
 	     break;
 	  case CONTROL_GROUP_SHADE:
-	     conf.group_config.shade = i2;
+	     Conf.group_config.shade = i2;
 	     break;
 	  case CONTROL_GROUP_MIRROR:
-	     conf.group_config.mirror = i2;
+	     Conf.group_config.mirror = i2;
 	     break;
 	  case CONTROL_GROUP_SWAPMOVE:
-	     conf.group_swapmove = i2;
+	     Conf.group_swapmove = i2;
 	     break;
 	  case DESKTOP_DRAGDIR:
-	     conf.desks.dragdir = i2;
+	     Conf.desks.dragdir = i2;
 	     break;
 	  case DESKTOP_DRAGBAR_WIDTH:
-	     conf.desks.dragbar_width = i2;
+	     Conf.desks.dragbar_width = i2;
 	     break;
 	  case DESKTOP_DRAGBAR_ORDERING:
-	     conf.desks.dragbar_ordering = i2;
+	     Conf.desks.dragbar_ordering = i2;
 	     break;
 	  case DESKTOP_DRAGBAR_LENGTH:
-	     conf.desks.dragbar_length = i2;
+	     Conf.desks.dragbar_length = i2;
 	     break;
 	  case DESKTOP_SLIDEIN:
-	     conf.desks.slidein = i2;
+	     Conf.desks.slidein = i2;
 	     break;
 	  case DESKTOP_SLIDESPEED:
-	     conf.desks.slidespeed = i2;
+	     Conf.desks.slidespeed = i2;
 	     break;
 	  case CONTROL_SHADESPEED:
-	     conf.shadespeed = i2;
+	     Conf.shadespeed = i2;
 	     break;
 	  case CONTROL_ANIMATESHADING:
-	     conf.animate_shading = i2;
+	     Conf.animate_shading = i2;
 	     break;
 	  case CONTROL_MENUONSCREEN:
-	     conf.menusonscreen = i2;
+	     Conf.menusonscreen = i2;
 	     break;
 	  case CONTROL_WARPMENUS:
-	     conf.warpmenus = i2;
+	     Conf.warpmenus = i2;
 	     break;
 	  case CONTROL_WARPSTICKY:
-	     conf.warplist.warpsticky = i2;
+	     Conf.warplist.warpsticky = i2;
 	     break;
 	  case CONTROL_WARPSHADED:
-	     conf.warplist.warpshaded = i2;
+	     Conf.warplist.warpshaded = i2;
 	     break;
 	  case CONTROL_WARPICONIFIED:
-	     conf.warplist.warpiconified = i2;
+	     Conf.warplist.warpiconified = i2;
 	     break;
 	  case CONTROL_WARPFOCUSED:
-	     conf.warplist.warpfocused = i2;
+	     Conf.warplist.warpfocused = i2;
 	     break;
 	  case DESKTOP_HIQUALITYBG:
-	     conf.backgrounds.hiquality = i2;
+	     Conf.backgrounds.hiquality = i2;
 	     break;
 	  case DESKTOP_AREA_SIZE:
 	     sscanf(s, "%i %i %i", &i1, &i2, &i3);
-	     conf.areas.nx = i2;
-	     conf.areas.ny = i3;
+	     Conf.areas.nx = i2;
+	     Conf.areas.ny = i3;
 	     break;
 	  case CONTROL_AREA_WRAPAROUND:
-	     conf.areas.wraparound = i2;
+	     Conf.areas.wraparound = i2;
 	     break;
 	  case CONTROL_DIALOG_HEADERS:
-	     conf.dialogs.headers = i2;
+	     Conf.dialogs.headers = i2;
 	     break;
 	  case CONTROL_DESKTOP_WRAPAROUND:
-	     conf.desks.wraparound = i2;
+	     Conf.desks.wraparound = i2;
 	     break;
 	  case CONTROL_SLIDESPEEDMAP:
-	     conf.slidespeedmap = i2;
+	     Conf.slidespeedmap = i2;
 	     break;
 	  case CONTROL_SLIDESPEEDCLEANUP:
-	     conf.slidespeedcleanup = i2;
+	     Conf.slidespeedcleanup = i2;
 	     break;
 	  case CONTROL_DESKTOP_BG_TIMEOUT:
-	     conf.backgrounds.timeout = i2;
+	     Conf.backgrounds.timeout = i2;
 	     break;
 	  case CONTROL_BUTTON_MOVE_RESISTANCE:
-	     conf.button_move_resistance = i2;
+	     Conf.button_move_resistance = i2;
 	     break;
 	  case CONTROL_AUTOSAVE:
-	     conf.autosave = i2;
+	     Conf.autosave = i2;
 	     break;
 	  case CONTROL_SHOW_PAGERS:
-	     conf.pagers.enable = i2;
+	     Conf.pagers.enable = i2;
 	     break;
 	  case CONTROL_PAGER_ZOOM:
-	     conf.pagers.zoom = i2;
+	     Conf.pagers.zoom = i2;
 	     break;
 	  case CONTROL_PAGER_TITLE:
-	     conf.pagers.title = i2;
+	     Conf.pagers.title = i2;
 	     break;
 	  case CONTROL_PAGER_HIQ:
-	     conf.pagers.hiq = i2;
+	     Conf.pagers.hiq = i2;
 	     break;
 	  case CONTROL_PAGER_SNAP:
-	     conf.pagers.snap = i2;
+	     Conf.pagers.snap = i2;
 	     break;
 	  case CONTROL_USER_BG:
-	     conf.backgrounds.user = i2;
+	     Conf.backgrounds.user = i2;
 	     break;
 	  case CONTROL_THEME_TRANSPARENCY:
-	     conf.theme.transparency = i2;
+	     Conf.theme.transparency = i2;
 	     break;
 	  case CONTROL_DOCKSTARTPOS:
-	     sscanf(s, "%*s %d %d ", &conf.dock.startx, &conf.dock.starty);
+	     sscanf(s, "%*s %d %d ", &Conf.dock.startx, &Conf.dock.starty);
 	     break;
 	  case CONTROL_KDESUPPORT:
 #if 0				/* Ignore */
 #endif
 	     break;
 	  case CONTROL_SHOWROOTTOOLTIP:
-	     conf.tooltips.showroottooltip = i2;
+	     Conf.tooltips.showroottooltip = i2;
 	     break;
 	  case CONTROL_PAGER_BUTTONS:
-	     sscanf(s, "%*s %i %i %i ", &conf.pagers.sel_button,
-		    &conf.pagers.win_button, &conf.pagers.menu_button);
+	     sscanf(s, "%*s %i %i %i ", &Conf.pagers.sel_button,
+		    &Conf.pagers.win_button, &Conf.pagers.menu_button);
 	     break;
 	  case CONTROL_CLICK_ALWAYS:
-	     conf.focus.clickraises = i2;
+	     Conf.focus.clickraises = i2;
 	     break;
 	  case CONFIG_EXTRA_HEAD:
 #ifdef HAS_XINERAMA
-	     conf.extra_head = i2;
+	     Conf.extra_head = i2;
 #endif
 	     break;
 	  case CONTROL_ICONTEXT:
@@ -933,16 +933,16 @@ Config_Control(FILE * ConfigFile)
 
 		s2[0] = 0;
 		word(s, 2, s2);
-		conf.icon_textclass =
+		Conf.icon_textclass =
 		   FindItem(s2, 0, LIST_FINDBY_NAME, LIST_TYPE_TCLASS);
-		if (conf.icon_textclass)
-		   conf.icon_textclass->ref_count++;
+		if (Conf.icon_textclass)
+		   Conf.icon_textclass->ref_count++;
 
 	     }
 #endif
 	     break;
 	  case CONTROL_DOCKAPP_SUPPORT:
-	     conf.dockapp_support = i2;
+	     Conf.dockapp_support = i2;
 	     break;
 	  default:
 	     RecoverUserConfig();
@@ -1870,7 +1870,7 @@ Config_Desktop(FILE * ConfigFile)
 		      && (atoi(s2) >= 0))
 		    {
 		       if ((desks.desk[atoi(s2)].bg == NULL) ||
-			   (conf.backgrounds.user))
+			   (Conf.backgrounds.user))
 			 {
 #if !USE_IMLIB2
 			    if ((prImlib_Context) && (atoi(s2) == 0))
@@ -1904,7 +1904,7 @@ Config_Desktop(FILE * ConfigFile)
 		      && (atoi(s2) >= 0))
 		    {
 		       if ((desks.desk[atoi(s2)].bg == NULL) ||
-			   (conf.backgrounds.user))
+			   (Conf.backgrounds.user))
 			 {
 			    if (bg)
 			      {
@@ -2218,7 +2218,7 @@ Config_ActionClass(FILE * ConfigFile)
 	     if (ac)
 	       {
 		  if (!strcmp(s2, "KEYBINDINGS"))
-		     mode.keybinds_changed = 1;
+		     Mode.keybinds_changed = 1;
 		  RemoveActionClass(ac);
 	       }
 	     ac = CreateAclass(s2);
@@ -3442,7 +3442,7 @@ LoadOpenConfigFile(FILE * ConfigFile)
 		    }
 		  else
 		    {
-		       conf.autosave = 0;
+		       Conf.autosave = 0;
 		       AlertX(_("User Config Version ERROR"),
 			      _("Restart with Defaults"), " ",
 			      _("Abort and Exit"),
@@ -3533,7 +3533,7 @@ LoadOpenConfigFile(FILE * ConfigFile)
    fclose(ConfigFile);
    if (cfg_tmpfile)
      {
-	rm(cfg_tmpfile);
+	E_rm(cfg_tmpfile);
 	Efree(cfg_tmpfile);
 	cfg_tmpfile = NULL;
      }
@@ -3691,7 +3691,7 @@ LoadEConfig(char *themelocation)
 	     fclose(f);
 	  }
 	Esnprintf(ss, sizeof(ss), "%s/user_theme.cfg", EDirUser());
-	mv(s, ss);
+	E_mv(s, ss);
 	if (!isfile(ss))
 	   Alert(_("WARNING!\n" "There was an error writing the file:\n" "%s\n"
 		   "This may be due to lack of disk space, quota or\n"
@@ -3826,98 +3826,98 @@ SaveUserControlConfig(FILE * autosavefile)
    if (autosavefile)
      {
 	fprintf(autosavefile, "0 999\n");
-	fprintf(autosavefile, "307 %i\n", (int)conf.focus.mode);
-	fprintf(autosavefile, "311 %i\n", (int)conf.movemode);
-	fprintf(autosavefile, "312 %i\n", (int)conf.resizemode);
-	fprintf(autosavefile, "1371 %i\n", (int)conf.geominfomode);
-	fprintf(autosavefile, "9   %i\n", (int)conf.sound);
-	fprintf(autosavefile, "313 %i\n", (int)conf.slidemode);
-	fprintf(autosavefile, "314 %i\n", (int)conf.cleanupslide);
-	fprintf(autosavefile, "315 %i\n", (int)conf.mapslide);
-	fprintf(autosavefile, "316 %i\n", (int)conf.slidespeedmap);
-	fprintf(autosavefile, "317 %i\n", (int)conf.slidespeedcleanup);
-	fprintf(autosavefile, "320 %i\n", (int)conf.backgrounds.timeout);
-	fprintf(autosavefile, "321 %i\n", (int)conf.button_move_resistance);
-	fprintf(autosavefile, "400 %i\n", (int)conf.desks.dragdir);
-	fprintf(autosavefile, "401 %i\n", (int)conf.desks.dragbar_width);
-	fprintf(autosavefile, "402 %i\n", (int)conf.desks.dragbar_ordering);
-	fprintf(autosavefile, "403 %i\n", (int)conf.desks.dragbar_length);
-	fprintf(autosavefile, "404 %i\n", (int)conf.desks.slidein);
-	fprintf(autosavefile, "405 %i\n", (int)conf.desks.slidespeed);
-	fprintf(autosavefile, "406 %i\n", (int)conf.backgrounds.hiquality);
-	fprintf(autosavefile, "1370 %i\n", (int)conf.dockapp_support);
-	fprintf(autosavefile, "325 %i\n", (int)conf.dock.dirmode);
-	fprintf(autosavefile, "326 %i\n", (int)conf.shadespeed);
-	fprintf(autosavefile, "327 %i\n", (int)conf.tooltips.enable);
-	fprintf(autosavefile, "328 %f\n", (float)conf.tooltips.delay);
-	fprintf(autosavefile, "338 %i\n", (int)conf.autoraise.enable);
-	fprintf(autosavefile, "339 %f\n", (float)conf.autoraise.delay);
-	fprintf(autosavefile, "331 %i\n", (int)conf.save_under);
-	fprintf(autosavefile, "330 %i %i\n", (int)conf.dock.startx,
-		(int)conf.dock.starty);
-	fprintf(autosavefile, "334 %i\n", (int)conf.memory_paranoia);
-	fprintf(autosavefile, "332 %i\n", (int)conf.menuslide);
-	fprintf(autosavefile, "333 %i\n", (int)conf.desks.num);
+	fprintf(autosavefile, "307 %i\n", (int)Conf.focus.mode);
+	fprintf(autosavefile, "311 %i\n", (int)Conf.movemode);
+	fprintf(autosavefile, "312 %i\n", (int)Conf.resizemode);
+	fprintf(autosavefile, "1371 %i\n", (int)Conf.geominfomode);
+	fprintf(autosavefile, "9   %i\n", (int)Conf.sound);
+	fprintf(autosavefile, "313 %i\n", (int)Conf.slidemode);
+	fprintf(autosavefile, "314 %i\n", (int)Conf.cleanupslide);
+	fprintf(autosavefile, "315 %i\n", (int)Conf.mapslide);
+	fprintf(autosavefile, "316 %i\n", (int)Conf.slidespeedmap);
+	fprintf(autosavefile, "317 %i\n", (int)Conf.slidespeedcleanup);
+	fprintf(autosavefile, "320 %i\n", (int)Conf.backgrounds.timeout);
+	fprintf(autosavefile, "321 %i\n", (int)Conf.button_move_resistance);
+	fprintf(autosavefile, "400 %i\n", (int)Conf.desks.dragdir);
+	fprintf(autosavefile, "401 %i\n", (int)Conf.desks.dragbar_width);
+	fprintf(autosavefile, "402 %i\n", (int)Conf.desks.dragbar_ordering);
+	fprintf(autosavefile, "403 %i\n", (int)Conf.desks.dragbar_length);
+	fprintf(autosavefile, "404 %i\n", (int)Conf.desks.slidein);
+	fprintf(autosavefile, "405 %i\n", (int)Conf.desks.slidespeed);
+	fprintf(autosavefile, "406 %i\n", (int)Conf.backgrounds.hiquality);
+	fprintf(autosavefile, "1370 %i\n", (int)Conf.dockapp_support);
+	fprintf(autosavefile, "325 %i\n", (int)Conf.dock.dirmode);
+	fprintf(autosavefile, "326 %i\n", (int)Conf.shadespeed);
+	fprintf(autosavefile, "327 %i\n", (int)Conf.tooltips.enable);
+	fprintf(autosavefile, "328 %f\n", (float)Conf.tooltips.delay);
+	fprintf(autosavefile, "338 %i\n", (int)Conf.autoraise.enable);
+	fprintf(autosavefile, "339 %f\n", (float)Conf.autoraise.delay);
+	fprintf(autosavefile, "331 %i\n", (int)Conf.save_under);
+	fprintf(autosavefile, "330 %i %i\n", (int)Conf.dock.startx,
+		(int)Conf.dock.starty);
+	fprintf(autosavefile, "334 %i\n", (int)Conf.memory_paranoia);
+	fprintf(autosavefile, "332 %i\n", (int)Conf.menuslide);
+	fprintf(autosavefile, "333 %i\n", (int)Conf.desks.num);
 	fprintf(autosavefile, "335 %i\n",
-		(int)conf.focus.transientsfollowleader);
+		(int)Conf.focus.transientsfollowleader);
 	fprintf(autosavefile, "336 %i\n",
-		(int)conf.focus.switchfortransientmap);
-	fprintf(autosavefile, "407 %i %i\n", (int)conf.areas.nx,
-		(int)conf.areas.ny);
+		(int)Conf.focus.switchfortransientmap);
+	fprintf(autosavefile, "407 %i %i\n", (int)Conf.areas.nx,
+		(int)Conf.areas.ny);
 	fprintf(autosavefile, "340 %i\n",
-		(int)conf.focus.all_new_windows_get_focus);
+		(int)Conf.focus.all_new_windows_get_focus);
 	fprintf(autosavefile, "341 %i\n",
-		(int)conf.focus.new_transients_get_focus);
+		(int)Conf.focus.new_transients_get_focus);
 	fprintf(autosavefile, "342 %i\n",
-		(int)conf.focus.new_transients_get_focus_if_group_focused);
-	fprintf(autosavefile, "343 %i\n", (int)conf.manual_placement);
+		(int)Conf.focus.new_transients_get_focus_if_group_focused);
+	fprintf(autosavefile, "343 %i\n", (int)Conf.manual_placement);
 	fprintf(autosavefile, "3360 %i\n",
-		(int)conf.manual_placement_mouse_pointer);
-	fprintf(autosavefile, "344 %i\n", (int)conf.focus.raise_on_next_focus);
-	fprintf(autosavefile, "345 %i\n", (int)conf.focus.warp_on_next_focus);
-	fprintf(autosavefile, "346 %i\n", (int)conf.edge_flip_resistance);
-	fprintf(autosavefile, "347 %i\n", (int)conf.pagers.enable);
-	fprintf(autosavefile, "348 %i\n", (int)conf.pagers.hiq);
-	fprintf(autosavefile, "349 %i\n", (int)conf.pagers.snap);
-	fprintf(autosavefile, "350 %i\n", (int)conf.animate_shading);
-	fprintf(autosavefile, "351 %i\n", (int)conf.menusonscreen);
-	fprintf(autosavefile, "352 %i\n", (int)conf.areas.wraparound);
-	fprintf(autosavefile, "353 %i\n", (int)conf.dialogs.headers);
-	fprintf(autosavefile, "354 %i\n", (int)conf.desks.wraparound);
-	fprintf(autosavefile, "666 %i\n", (int)conf.warpmenus);
-	fprintf(autosavefile, "667 %i\n", (int)conf.warplist.warpsticky);
-	fprintf(autosavefile, "668 %i\n", (int)conf.warplist.warpshaded);
-	fprintf(autosavefile, "669 %i\n", (int)conf.warplist.warpiconified);
-	fprintf(autosavefile, "670 %i\n", (int)conf.warplist.warpfocused);
-	fprintf(autosavefile, "1350 %i\n", (int)conf.backgrounds.user);
-	fprintf(autosavefile, "1351 %i\n", (int)conf.pagers.zoom);
-	fprintf(autosavefile, "1352 %i\n", (int)conf.pagers.title);
+		(int)Conf.manual_placement_mouse_pointer);
+	fprintf(autosavefile, "344 %i\n", (int)Conf.focus.raise_on_next_focus);
+	fprintf(autosavefile, "345 %i\n", (int)Conf.focus.warp_on_next_focus);
+	fprintf(autosavefile, "346 %i\n", (int)Conf.edge_flip_resistance);
+	fprintf(autosavefile, "347 %i\n", (int)Conf.pagers.enable);
+	fprintf(autosavefile, "348 %i\n", (int)Conf.pagers.hiq);
+	fprintf(autosavefile, "349 %i\n", (int)Conf.pagers.snap);
+	fprintf(autosavefile, "350 %i\n", (int)Conf.animate_shading);
+	fprintf(autosavefile, "351 %i\n", (int)Conf.menusonscreen);
+	fprintf(autosavefile, "352 %i\n", (int)Conf.areas.wraparound);
+	fprintf(autosavefile, "353 %i\n", (int)Conf.dialogs.headers);
+	fprintf(autosavefile, "354 %i\n", (int)Conf.desks.wraparound);
+	fprintf(autosavefile, "666 %i\n", (int)Conf.warpmenus);
+	fprintf(autosavefile, "667 %i\n", (int)Conf.warplist.warpsticky);
+	fprintf(autosavefile, "668 %i\n", (int)Conf.warplist.warpshaded);
+	fprintf(autosavefile, "669 %i\n", (int)Conf.warplist.warpiconified);
+	fprintf(autosavefile, "670 %i\n", (int)Conf.warplist.warpfocused);
+	fprintf(autosavefile, "1350 %i\n", (int)Conf.backgrounds.user);
+	fprintf(autosavefile, "1351 %i\n", (int)Conf.pagers.zoom);
+	fprintf(autosavefile, "1352 %i\n", (int)Conf.pagers.title);
 	fprintf(autosavefile, "1353 %i\n",
-		(int)conf.focus.raise_after_next_focus);
-	fprintf(autosavefile, "1354 %i\n", (int)conf.warplist.enable);
+		(int)Conf.focus.raise_after_next_focus);
+	fprintf(autosavefile, "1354 %i\n", (int)Conf.warplist.enable);
 	fprintf(autosavefile, "1355 %i\n",
-		(int)conf.focus.warp_after_next_focus);
-	fprintf(autosavefile, "1356 %i\n", (int)conf.pagers.scanspeed);
-	fprintf(autosavefile, "1358 %i\n", (int)conf.group_config.set_border);
-	fprintf(autosavefile, "1359 %i\n", (int)conf.group_config.kill);
-	fprintf(autosavefile, "1360 %i\n", (int)conf.group_config.move);
-	fprintf(autosavefile, "1361 %i\n", (int)conf.group_config.raise);
-	fprintf(autosavefile, "1362 %i\n", (int)conf.group_config.iconify);
-	fprintf(autosavefile, "1363 %i\n", (int)conf.group_config.stick);
-	fprintf(autosavefile, "1364 %i\n", (int)conf.group_config.shade);
-	fprintf(autosavefile, "1365 %i\n", (int)conf.group_config.mirror);
-	fprintf(autosavefile, "1372 %i\n", (int)conf.group_swapmove);
-	fprintf(autosavefile, "1367 %i\n", (int)conf.focus.clickraises);
-	fprintf(autosavefile, "1368 %i\n", (int)conf.tooltips.showroottooltip);
-	fprintf(autosavefile, "1369 %i %i %i\n", (int)conf.pagers.sel_button,
-		(int)conf.pagers.win_button, (int)conf.pagers.menu_button);
-	fprintf(autosavefile, "1373 %i\n", (int)conf.theme.transparency);
+		(int)Conf.focus.warp_after_next_focus);
+	fprintf(autosavefile, "1356 %i\n", (int)Conf.pagers.scanspeed);
+	fprintf(autosavefile, "1358 %i\n", (int)Conf.group_config.set_border);
+	fprintf(autosavefile, "1359 %i\n", (int)Conf.group_config.kill);
+	fprintf(autosavefile, "1360 %i\n", (int)Conf.group_config.move);
+	fprintf(autosavefile, "1361 %i\n", (int)Conf.group_config.raise);
+	fprintf(autosavefile, "1362 %i\n", (int)Conf.group_config.iconify);
+	fprintf(autosavefile, "1363 %i\n", (int)Conf.group_config.stick);
+	fprintf(autosavefile, "1364 %i\n", (int)Conf.group_config.shade);
+	fprintf(autosavefile, "1365 %i\n", (int)Conf.group_config.mirror);
+	fprintf(autosavefile, "1372 %i\n", (int)Conf.group_swapmove);
+	fprintf(autosavefile, "1367 %i\n", (int)Conf.focus.clickraises);
+	fprintf(autosavefile, "1368 %i\n", (int)Conf.tooltips.showroottooltip);
+	fprintf(autosavefile, "1369 %i %i %i\n", (int)Conf.pagers.sel_button,
+		(int)Conf.pagers.win_button, (int)Conf.pagers.menu_button);
+	fprintf(autosavefile, "1373 %i\n", (int)Conf.theme.transparency);
 #ifdef  HAS_XINERAMA
-	fprintf(autosavefile, "2013 %i\n", (int)conf.extra_head);
+	fprintf(autosavefile, "2013 %i\n", (int)Conf.extra_head);
 #endif
 	fprintf(autosavefile, "1000\n");
 	fprintf(autosavefile, "1001 0\n");
-	if (mode.keybinds_changed)
+	if (Mode.keybinds_changed)
 	  {
 	     ac = (ActionClass *) FindItem("KEYBINDINGS", 0, LIST_FINDBY_NAME,
 					   LIST_TYPE_ACLASS_GLOBAL);
@@ -4223,7 +4223,7 @@ RecoverUserConfig(void)
 		"unforeseen\n" "system shutdowns.\n" "\n"
 		"Do you wish Enlightenment to recover its original system\n"
 		"configuration and try again?\n"));
-	conf.autosave = 0;
+	Conf.autosave = 0;
 	MapUnmap(1);
 	if (getpid() == master_pid && init_win_ext)
 	  {

@@ -30,21 +30,21 @@ struct _efont
 };
 
 static void
-ImlibSetFgColorFromGC(Display * disp, GC gc, Colormap cm)
+ImlibSetFgColorFromGC(Display * dpy, GC gc, Colormap cm)
 {
    XGCValues           xgcv;
    XColor              xclr;
    int                 r, g, b;
 
-   XGetGCValues(disp, gc, GCForeground, &xgcv);
+   XGetGCValues(dpy, gc, GCForeground, &xgcv);
    xclr.pixel = xgcv.foreground;
-   XQueryColor(disp, cm, &xclr);
+   XQueryColor(dpy, cm, &xclr);
    EGetColor(&xclr, &r, &g, &b);
    imlib_context_set_color(r, g, b, 255);
 }
 
 void
-EFont_draw_string(Display * disp, Drawable win, GC gc, int x, int y, char *text,
+EFont_draw_string(Display * dpy, Drawable win, GC gc, int x, int y, char *text,
 		  Efont * f, Visual * vis, Colormap cm)
 {
    Imlib_Image         im;
@@ -58,7 +58,7 @@ EFont_draw_string(Display * disp, Drawable win, GC gc, int x, int y, char *text,
    imlib_context_set_image(im);
 
    imlib_context_set_font(f->face);
-   ImlibSetFgColorFromGC(disp, gc, cm);
+   ImlibSetFgColorFromGC(dpy, gc, cm);
    imlib_text_draw(0, 0, text);
    imlib_render_image_on_drawable(x, y - ascent);
    imlib_free_image();

@@ -34,10 +34,10 @@ DockIt(EWin * ewin)
    Esnprintf(id, sizeof(id), "%i", (unsigned)ewin->client.win);
    ac = 0;
    ic = FindItem("DEFAULT_DOCK_BUTTON", 0, LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
-   if (conf.dock.startx >= 0)
+   if (Conf.dock.startx >= 0)
      {
 	bt = ButtonCreate(id, ic, ac, NULL, NULL, 1, 0, 64, 64, 64, 64, 0, 0,
-			  conf.dock.startx, 0, conf.dock.starty, 0, 0, 0, 0, 0,
+			  Conf.dock.startx, 0, Conf.dock.starty, 0, 0, 0, 0, 0,
 			  1, 0, 1);
      }
    else
@@ -51,7 +51,7 @@ DockIt(EWin * ewin)
       EDBUG_RETURN_;
 
    ButtonShow(bt);
-   ButtonFindEmptySpotFor(bt, "DOCK_APP_BUTTON", conf.dock.dirmode);
+   ButtonFindEmptySpotFor(bt, "DOCK_APP_BUTTON", Conf.dock.dirmode);
 
    AddItem(ewin, "EWIN", ewin->client.win, LIST_TYPE_EWIN);
    AddItem(bt, "DOCK_APP_BUTTON", ewin->client.win, LIST_TYPE_BUTTON);

@@ -1077,7 +1077,7 @@ Desk;
 #define ENLIGHTENMENT_CONF_NUM_DESKTOPS 32
 /* the cast is so -1 will == UINT_MAX */
 #define DESKTOPS_WRAP_NUM(x) \
- (((unsigned int) (x)) % conf.desks.num)
+ (((unsigned int) (x)) % Conf.desks.num)
 
 typedef struct _desktops
 {
@@ -1574,7 +1574,7 @@ int                 doDragButtonEnd(void *params);
 void                AlertInit(void);
 void                Alert(const char *fmt, ...);
 void                AlertX(const char *title, const char *ignore,
-			   const char *restart, const char *exit,
+			   const char *restart, const char *quit,
 			   const char *fmt, ...);
 void                InitStringList(void);
 void                AssignIgnoreFunction(int (*FunctionToAssign) (void *),
@@ -1858,7 +1858,7 @@ void                DialogClose(Dialog * d);
 
 void                DialogAddButton(Dialog * d, char *text,
 				    void (*func) (int val, void *data),
-				    char close);
+				    char doclose);
 DItem              *DialogInitItem(Dialog * d);
 DItem              *DialogAddItem(DItem * dii, int type);
 DItem              *DialogItem(Dialog * d);
@@ -2019,26 +2019,24 @@ void                EWMH_ProcessPropertyChange(EWin * ewin, Atom atom_change);
 
 /* file.c */
 void                Etmp(char *s);
-void                md(const char *s);
+void                E_md(const char *s);
 int                 exists(const char *s);
 void                mkdirs(const char *s);
 int                 isfile(const char *s);
 int                 isdir(const char *s);
 int                 isabspath(const char *s);
-char              **ls(const char *dir, int *num);
+char              **E_ls(const char *dir, int *num);
 void                freestrlist(char **l, int num);
-void                rm(const char *s);
-void                mv(const char *s, const char *ss);
-void                cp(const char *s, const char *ss);
+void                E_rm(const char *s);
+void                E_mv(const char *s, const char *ss);
+void                E_cp(const char *s, const char *ss);
 time_t              moddate(const char *s);
 int                 filesize(const char *s);
 int                 fileinode(const char *s);
 int                 filedev(const char *s);
-void                cd(const char *s);
+void                E_cd(const char *s);
 char               *cwd(void);
 int                 permissions(const char *s);
-int                 owner(const char *s);
-int                 group(const char *s);
 char               *username(int uid);
 char               *homedir(int uid);
 char               *usershell(int uid);
@@ -2054,8 +2052,8 @@ char               *fullfileof(const char *s);
 char               *pathtoexec(const char *file);
 char               *pathtofile(const char *file);
 char               *FileExtension(char *file);
-char               *field(char *s, int field);
-int                 fillfield(char *s, int field, char *buf);
+char               *field(char *s, int fieldno);
+int                 fillfield(char *s, int fieldno, char *buf);
 void                fword(char *s, int num, char *wd);
 int                 findLocalizedFile(char *fname);
 void                rmrf(const char *s);
@@ -2747,8 +2745,8 @@ extern FnlibData   *pFnlibData;
 #endif
 extern List        *lists;
 extern Root         root;
-extern EConf        conf;
-extern EMode        mode;
+extern EConf        Conf;
+extern EMode        Mode;
 extern Desktops     desks;
 extern Window       init_win1;
 extern Window       init_win2;

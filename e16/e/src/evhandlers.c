@@ -58,7 +58,7 @@ ToolTipTimeout(int val, void *data)
 
    if (ac->tooltipstring)
      {
-	if (conf.tooltips.showroottooltip)
+	if (Conf.tooltips.showroottooltip)
 	  {
 	     ShowToolTip(ttip, ac->tooltipstring, ac, x, y);
 	  }
@@ -67,7 +67,7 @@ ToolTipTimeout(int val, void *data)
 	     int                 i;
 	     int                 show = 1;
 
-	     for (i = 0; i < conf.desks.num; i++)
+	     for (i = 0; i < Conf.desks.num; i++)
 	       {
 		  if (win == desks.desk[i].win)
 		     show = 0;
@@ -88,15 +88,15 @@ TooltipsHandleEvent(void)
    if (ttip)
       HideToolTip(ttip);
    RemoveTimerEvent("TOOLTIP_TIMEOUT");
-   if (conf.tooltips.enable)
-      DoIn("TOOLTIP_TIMEOUT", conf.tooltips.delay, ToolTipTimeout, 0, NULL);
+   if (Conf.tooltips.enable)
+      DoIn("TOOLTIP_TIMEOUT", Conf.tooltips.delay, ToolTipTimeout, 0, NULL);
 }
 
 static void
 ButtonProxySendEvent(XEvent * ev)
 {
-   if (mode.button_proxy_win)
-      XSendEvent(disp, mode.button_proxy_win, False, SubstructureNotifyMask,
+   if (Mode.button_proxy_win)
+      XSendEvent(disp, Mode.button_proxy_win, False, SubstructureNotifyMask,
 		 ev);
 }
 
@@ -113,10 +113,10 @@ HandleMouseDown(XEvent * ev)
    EDBUG(5, "HandleMouseDown");
 
    /* DON'T handle clicks whilst moving/resizing things unless doing manual placement */
-   if (mode.mode != MODE_NONE)
+   if (Mode.mode != MODE_NONE)
       EDBUG_RETURN_;
 
-   if ((mode.cur_menu_mode) && (!clickmenu))
+   if ((Mode.cur_menu_mode) && (!clickmenu))
      {
 	unsigned int        bmask = 0, evmask;
 
@@ -143,20 +143,20 @@ HandleMouseDown(XEvent * ev)
 
    TooltipsHandleEvent();
 
-   if ((((float)(ev->xbutton.time - mode.last_time) / 1000) <
+   if ((((float)(ev->xbutton.time - Mode.last_time) / 1000) <
 	mode_double_click_time) &&
-       ((int)(ev->xbutton.button) == (int)(mode.last_button)))
+       ((int)(ev->xbutton.button) == (int)(Mode.last_button)))
       double_click = 1;
 
-   mode.last_time = ev->xbutton.time;
-   mode.last_button = ev->xbutton.button;
-   mode.last_bpress = win;
+   Mode.last_time = ev->xbutton.time;
+   Mode.last_button = ev->xbutton.button;
+   Mode.last_bpress = win;
 
-   mode.x = ev->xbutton.x_root;
-   mode.y = ev->xbutton.y_root;
+   Mode.x = ev->xbutton.x_root;
+   Mode.y = ev->xbutton.y_root;
 
    desk_click = -1;
-   for (i = 0; i < conf.desks.num; i++)
+   for (i = 0; i < Conf.desks.num; i++)
      {
 	if (win == desks.desk[i].win)
 	  {
@@ -180,7 +180,7 @@ HandleMouseDown(XEvent * ev)
      }
 
    if (MenusEventMouseDown(ev))
-      goto exit;
+      goto done;
 
    FocusHandleClick(win);
 
@@ -188,13 +188,13 @@ HandleMouseDown(XEvent * ev)
       ev->xbutton.time = 0;
 
    if ( /*!clickmenu && */ BordersEventMouseDown(ev))
-      goto exit;
+      goto done;
 
    if (ButtonsEventMouseDown(ev))
-      goto exit;
+      goto done;
 
    if (DialogEventMouseDown(ev))
-      goto exit;
+      goto done;
 
    ewin = FindEwinByBase(win);
    if (ewin)
@@ -208,15 +208,15 @@ HandleMouseDown(XEvent * ev)
 	     GrabThePointer(ewin->win);
 	     if (EventAclass(ev, ewin, ac))
 	       {
-		  goto exit;
+		  goto done;
 	       }
 	  }
      }
 
    if (PagersEventMouseDown(ev))
-      goto exit;
+      goto done;
 
- exit:
+ done:
    EDBUG_RETURN_;
 }
 
@@ -230,35 +230,35 @@ HandleMouseUp(XEvent * ev)
    EDBUG(5, "HandleMouseUp");
 
    /* DON'T handle clicks whilst moving/resizing things */
-   if ((mode.mode != MODE_NONE) &&
-       (!((mode.place) &&
-	  (mode.mode == MODE_MOVE_PENDING || mode.mode == MODE_MOVE))))
+   if ((Mode.mode != MODE_NONE) &&
+       (!((Mode.place) &&
+	  (Mode.mode == MODE_MOVE_PENDING || Mode.mode == MODE_MOVE))))
      {
-	if ((int)mode.last_button != (int)ev->xbutton.button)
+	if ((int)Mode.last_button != (int)ev->xbutton.button)
 	   EDBUG_RETURN_;
      }
 
    TooltipsHandleEvent();
    UnGrabTheButtons();
 
-   mode.x = ev->xbutton.x_root;
-   mode.y = ev->xbutton.y_root;
+   Mode.x = ev->xbutton.x_root;
+   Mode.y = ev->xbutton.y_root;
 
-   pslideout = mode.slideout;
+   pslideout = Mode.slideout;
 
    ActionsEnd(NULL);
 
-   if ((mode.last_bpress) && (mode.last_bpress != win))
+   if ((Mode.last_bpress) && (Mode.last_bpress != win))
      {
-	ev->xbutton.window = mode.last_bpress;
+	ev->xbutton.window = Mode.last_bpress;
 	BordersEventMouseOut2(ev);
 	ev->xbutton.window = win;
      }
 
-   if (mode.place)
+   if (Mode.place)
      {
-	mode.place = 0;
-	goto exit;
+	Mode.place = 0;
+	goto done;
      }
 
    if (sentpress)
@@ -268,29 +268,29 @@ HandleMouseUp(XEvent * ev)
 	ButtonProxySendEvent(ev);
      }
 
-   mode.context_win = mode.last_bpress;
+   Mode.context_win = Mode.last_bpress;
 
-   if ((((float)(ev->xbutton.time - mode.last_time) / 1000) < 0.5)
-       && (mode.cur_menu_depth > 0) && (!clickmenu))
+   if ((((float)(ev->xbutton.time - Mode.last_time) / 1000) < 0.5)
+       && (Mode.cur_menu_depth > 0) && (!clickmenu))
      {
 	clickmenu = 1;
-	mode.justclicked = 1;
+	Mode.justclicked = 1;
      }
 
    if ( /*!clickmenu && */ BordersEventMouseUp(ev))
-      goto exit;
+      goto done;
 
-   if (mode.action_inhibit)
-      goto exit;
+   if (Mode.action_inhibit)
+      goto done;
 
    if (MenusEventMouseUp(ev))
-      goto exit;
+      goto done;
 
    if (ButtonsEventMouseUp(ev))
-      goto exit;
+      goto done;
 
    if (DialogEventMouseUp(ev))
-      goto exit;
+      goto done;
 
    ewin = FindEwinByBase(win);
    if (ewin)
@@ -303,21 +303,21 @@ HandleMouseUp(XEvent * ev)
 	  {
 	     if (EventAclass(ev, ewin, ac))
 	       {
-		  goto exit;
+		  goto done;
 	       }
 	  }
      }
 
    if (PagersEventMouseUp(ev))
-      goto exit;
+      goto done;
 
- exit:
-   if ((mode.slideout) && (pslideout))
-      SlideoutHide(mode.slideout);
+ done:
+   if ((Mode.slideout) && (pslideout))
+      SlideoutHide(Mode.slideout);
 
-   mode.action_inhibit = 0;
-   mode.justclicked = 0;
-   mode.last_bpress = 0;
+   Mode.action_inhibit = 0;
+   Mode.justclicked = 0;
+   Mode.last_bpress = 0;
 
    EDBUG_RETURN_;
 }
@@ -329,15 +329,15 @@ HandleMotion(XEvent * ev)
 
    TooltipsHandleEvent();
    EdgeHandleMotion(ev);
-   mode.px = mode.x;
-   mode.py = mode.y;
-   mode.x = ev->xmotion.x_root;
-   mode.y = ev->xmotion.y_root;
-   desks.current = DesktopAt(mode.x, mode.y);
+   Mode.px = Mode.x;
+   Mode.py = Mode.y;
+   Mode.x = ev->xmotion.x_root;
+   Mode.y = ev->xmotion.y_root;
+   desks.current = DesktopAt(Mode.x, Mode.y);
 
    if ((!(ev->xmotion.state
 	  & (Button1Mask | Button2Mask | Button3Mask | Button4Mask |
-	     Button5Mask)) && (!mode.place)))
+	     Button5Mask)) && (!Mode.place)))
      {
 	if (ActionsEnd(NULL))
 	   EDBUG_RETURN_;
@@ -346,7 +346,7 @@ HandleMotion(XEvent * ev)
    ActionsHandleMotion();
 
 #define SCROLL_RATIO 2/3
-   if (((mode.cur_menu_mode) || (clickmenu)) && (mode.cur_menu_depth > 0))
+   if (((Mode.cur_menu_mode) || (clickmenu)) && (Mode.cur_menu_depth > 0))
      {
 	int                 i, offx = 0, offy = 0, xdist = 0, ydist = 0;
 	EWin               *ewin;
@@ -358,32 +358,32 @@ HandleMotion(XEvent * ev)
 	static int          menu_scroll_dist = 4;
 	int                 my_width, my_height, x_org, y_org, head_num = 0;
 
-	head_num = ScreenGetGeometry(mode.x, mode.y, &x_org, &y_org,
+	head_num = ScreenGetGeometry(Mode.x, Mode.y, &x_org, &y_org,
 				     &my_width, &my_height);
 
-	if (mode.x > ((x_org + my_width) - (menu_scroll_dist + 1)))
+	if (Mode.x > ((x_org + my_width) - (menu_scroll_dist + 1)))
 	  {
-	     xdist = -(menu_scroll_dist + (mode.x - (x_org + my_width)));
+	     xdist = -(menu_scroll_dist + (Mode.x - (x_org + my_width)));
 	  }
-	else if (mode.x < (menu_scroll_dist + x_org))
+	else if (Mode.x < (menu_scroll_dist + x_org))
 	  {
-	     xdist = x_org + menu_scroll_dist - (mode.x);
+	     xdist = x_org + menu_scroll_dist - (Mode.x);
 	  }
 
-	if (mode.y > (root.h - (menu_scroll_dist + 1)))
+	if (Mode.y > (root.h - (menu_scroll_dist + 1)))
 	  {
-	     ydist = -(menu_scroll_dist + (mode.y - (y_org + my_height)));
+	     ydist = -(menu_scroll_dist + (Mode.y - (y_org + my_height)));
 	  }
-	else if (mode.y < (menu_scroll_dist + y_org))
+	else if (Mode.y < (menu_scroll_dist + y_org))
 	  {
-	     ydist = y_org + menu_scroll_dist - (mode.y);
+	     ydist = y_org + menu_scroll_dist - (Mode.y);
 	  }
 
 	/* That's a hack to avoid unwanted events:
 	 * If the user entered the border area, he has to
 	 * leave it first, before he can scroll menus again ...
 	 */
-	if ((xdist != 0) || (ydist != 0) || mode.doingslide)
+	if ((xdist != 0) || (ydist != 0) || Mode.doingslide)
 	  {
 	     /* -10 has no meaning, only makes sure that the if's */
 	     /* above can't be fulfilled ... */
@@ -394,7 +394,7 @@ HandleMotion(XEvent * ev)
 	     menu_scroll_dist = 13;
 	  }
 
-	if (mode.cur_menu_depth > 0)
+	if (Mode.cur_menu_depth > 0)
 	  {
 	     int                 x1, y1, x2, y2;
 
@@ -404,11 +404,11 @@ HandleMotion(XEvent * ev)
 	     y2 = y_org - 1;
 	     /* work out the minimum and maximum extents of our */
 	     /* currently active menus */
-	     for (i = 0; i < mode.cur_menu_depth; i++)
+	     for (i = 0; i < Mode.cur_menu_depth; i++)
 	       {
-		  if (mode.cur_menu[i])
+		  if (Mode.cur_menu[i])
 		    {
-		       ewin = FindEwinByMenu(mode.cur_menu[i]);
+		       ewin = FindEwinByMenu(Mode.cur_menu[i]);
 		       if (ewin)
 			 {
 			    if (ewin->x < x1)
@@ -466,19 +466,19 @@ HandleMotion(XEvent * ev)
 		  if (xdist > my_height)
 		     xdist = my_height * SCROLL_RATIO;
 
-		  if (mode.cur_menu_depth)
+		  if (Mode.cur_menu_depth)
 		    {
 #ifdef HAS_XINERAMA
-		       ewin = FindEwinByMenu(mode.cur_menu[0]);
+		       ewin = FindEwinByMenu(Mode.cur_menu[0]);
 		       if (ewin->head == head_num)
 			 {
 #endif
-			    for (i = 0; i < mode.cur_menu_depth; i++)
+			    for (i = 0; i < Mode.cur_menu_depth; i++)
 			      {
 				 menus[i] = NULL;
-				 if (mode.cur_menu[i])
+				 if (Mode.cur_menu[i])
 				   {
-				      ewin = FindEwinByMenu(mode.cur_menu[i]);
+				      ewin = FindEwinByMenu(Mode.cur_menu[i]);
 				      if (ewin)
 					{
 					   menus[i] = ewin;
@@ -490,9 +490,9 @@ HandleMotion(XEvent * ev)
 				   }
 			      }
 			    SlideEwinsTo(menus, fx, fy, tx, ty,
-					 mode.cur_menu_depth, conf.shadespeed);
+					 Mode.cur_menu_depth, Conf.shadespeed);
 			    if (((xdist != 0) || (ydist != 0))
-				&& (conf.warpmenus))
+				&& (Conf.warpmenus))
 			       XWarpPointer(disp, None, None, 0, 0, 0, 0, xdist,
 					    ydist);
 #ifdef HAS_XINERAMA
@@ -517,33 +517,33 @@ HandleMouseIn(XEvent * ev)
 
    EDBUG(5, "HandleMouseIn");
 
-   if (mode.mode != MODE_NONE)
+   if (Mode.mode != MODE_NONE)
       EDBUG_RETURN_;
 
    if (win == root.win)
-      goto exit;
+      goto done;
 
-   mode.context_win = win;
+   Mode.context_win = win;
 
    TooltipsHandleEvent();
    EdgeHandleEnter(ev);
 
    if (PagersEventMouseIn(ev))
-      goto exit;
+      goto done;
 
    if (MenusEventMouseIn(ev))
-      goto exit;
+      goto done;
 
    if ( /*!clickmenu && */ BordersEventMouseIn(ev))
-      goto exit;
+      goto done;
 
    if (ButtonsEventMouseIn(ev))
-      goto exit;
+      goto done;
 
    if (DialogEventMouseIn(ev))
-      goto exit;
+      goto done;
 
- exit:
+ done:
    FocusHandleEnter(ev);
 
    EDBUG_RETURN_;
@@ -556,30 +556,30 @@ HandleMouseOut(XEvent * ev)
 
    EDBUG(5, "HandleMouseOut");
 
-   if (mode.mode != MODE_NONE)
+   if (Mode.mode != MODE_NONE)
       EDBUG_RETURN_;
 
    TooltipsHandleEvent();
    EdgeHandleLeave(ev);
 
-   mode.context_win = win;
+   Mode.context_win = win;
 
    if (PagersEventMouseOut(ev))
-      goto exit;
+      goto done;
 
    if (MenusEventMouseOut(ev))
-      goto exit;
+      goto done;
 
    if ( /*!clickmenu && */ BordersEventMouseOut(ev))
-      goto exit;
+      goto done;
 
    if (ButtonsEventMouseOut(ev))
-      goto exit;
+      goto done;
 
    if (DialogEventMouseOut(ev))
-      goto exit;
+      goto done;
 
- exit:
+ done:
    FocusHandleLeave(ev);
 
    EDBUG_RETURN_;
@@ -615,7 +615,7 @@ HandleFocusOut(XEvent * ev)
 
    /* Do nothing if the focus is passed down to child */
    if (ev->xfocus.detail == NotifyInferior)
-      goto exit;
+      goto done;
 
    ewin = FindItem(NULL, win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
    if (ewin && ewin->active)
@@ -626,7 +626,7 @@ HandleFocusOut(XEvent * ev)
 	FocusEwinSetGrabs(ewin);
      }
 
- exit:
+ done:
    EDBUG_RETURN_;
 }
 
@@ -636,15 +636,15 @@ HandleExpose(XEvent * ev)
    EDBUG(5, "HandleExpose");
 
    if (BordersEventExpose(ev))
-      goto exit;
+      goto done;
 
    if (ButtonsEventExpose(ev))
-      goto exit;
+      goto done;
 
    if (DialogEventExpose(ev))
-      goto exit;
+      goto done;
 
- exit:
+ done:
    EDBUG_RETURN_;
 }
 
@@ -659,8 +659,8 @@ HandleDestroy(XEvent * ev)
 
    EForgetWindow(disp, win);
 
-   if (win == mode.context_win)
-      mode.context_win = 0;
+   if (win == Mode.context_win)
+      Mode.context_win = 0;
 
    ewin = RemoveItem(NULL, win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
    if (ewin)
@@ -691,17 +691,17 @@ HandleUnmap(XEvent * ev)
 	if (ewin->pager)
 	   PagerEventUnmap(ewin->pager);
 
-	if (conf.dockapp_support && ewin->docked)
+	if (Conf.dockapp_support && ewin->docked)
 	   DockDestroy(ewin);
 
 	ActionsEnd(ewin);
 	if (ewin == GetContextEwin())
 	   SlideoutsHide();
 
-	if (ewin == mode.focuswin)
+	if (ewin == Mode.focuswin)
 	   FocusToEWin(NULL, FOCUS_EWIN_GONE);
-	if (ewin == mode.mouse_over_win)
-	   mode.mouse_over_win = NULL;
+	if (ewin == Mode.mouse_over_win)
+	   Mode.mouse_over_win = NULL;
 
 	if (!ewin->iconified)
 	  {
@@ -820,7 +820,7 @@ HandleConfigureRequest(XEvent * ev)
 		winrel = ewin2->win;
 	     xwc.sibling = winrel;
 	     xwc.stack_mode = ev->xconfigurerequest.detail;
-	     if (mode.mode == MODE_NONE)
+	     if (Mode.mode == MODE_NONE)
 	       {
 		  if (xwc.stack_mode == Above)
 		     RaiseEwin(ewin);
@@ -851,7 +851,7 @@ HandleConfigureRequest(XEvent * ev)
 	   ewin->client.height.max = h;
 	MoveResizeEwin(ewin, x - ewin->border->border.left,
 		       y - ewin->border->border.top, w, h);
-	if (mode.mode == MODE_MOVE_PENDING || mode.mode == MODE_MOVE)
+	if (Mode.mode == MODE_MOVE_PENDING || Mode.mode == MODE_MOVE)
 	   ICCCM_Configure(ewin);
 	{
 	   char                pshaped;
@@ -950,7 +950,7 @@ HandleProperty(XEvent * ev)
 
    ewin = FindItem(NULL, win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
    if (!ewin)
-      goto exit;
+      goto done;
 
    GrabX();
    EwinChangesStart(ewin);
@@ -967,7 +967,7 @@ HandleProperty(XEvent * ev)
    EwinChangesProcess(ewin);
    UngrabX();
 
- exit:
+ done:
    EDBUG_RETURN_;
 }
 

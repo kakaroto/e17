@@ -91,11 +91,11 @@ FindEwinByPartial(const char *match, int type)
 
    len = strlen(match);
    if (len <= 0)
-      goto exit;
+      goto done;
 
    ewins = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
    if (ewins == NULL)
-      goto exit;
+      goto done;
 
    for (i = 0; i < num; i++)
      {
@@ -113,14 +113,14 @@ FindEwinByPartial(const char *match, int type)
 		continue;
 	  }
 	else
-	   goto exit;
+	   goto done;
 
 	ewin = ewins[i];
 	break;
      }
    Efree(ewins);
 
- exit:
+ done:
    EDBUG_RETURN(ewin);
 }
 
@@ -172,7 +172,7 @@ FindActionClass(Window win)
 	      EDBUG_RETURN(ewin->border->part[i].aclass);
      }
 
-   for (i = 0; i < conf.desks.num; i++)
+   for (i = 0; i < Conf.desks.num; i++)
      {
 	ActionClass        *ac;
 

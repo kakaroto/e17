@@ -80,12 +80,12 @@ void
 GrabTheButtons(Window win)
 {
    EDBUG(4, "GrabTheButtons");
-   if (mode.click_focus_grabbed)
+   if (Mode.click_focus_grabbed)
       EDBUG_RETURN_;
    XGrabPointer(disp, win, True, ButtonPressMask | ButtonReleaseMask,
 		GrabModeAsync, GrabModeAsync, None, None, CurrentTime);
    grab_window = win;
-   mode.click_focus_grabbed = 1;
+   Mode.click_focus_grabbed = 1;
    EDBUG_RETURN_;
 }
 
@@ -95,7 +95,7 @@ GrabThePointer(Window win)
    int                 ret;
 
    EDBUG(4, "GrabThePointer");
-   if (mode.click_focus_grabbed)
+   if (Mode.click_focus_grabbed)
       EDBUG_RETURN(1);
    ret =
       XGrabPointer(disp, win, True,
@@ -103,7 +103,7 @@ GrabThePointer(Window win)
 		   ButtonMotionMask | EnterWindowMask | LeaveWindowMask,
 		   GrabModeAsync, GrabModeAsync, None, None, CurrentTime);
    grab_window = win;
-   mode.click_focus_grabbed = 1;
+   Mode.click_focus_grabbed = 1;
    EDBUG_RETURN(ret);
 }
 
@@ -113,7 +113,7 @@ GrabConfineThePointer(Window win)
    int                 ret;
 
    EDBUG(4, "GrabThePointer");
-   if (mode.click_focus_grabbed)
+   if (Mode.click_focus_grabbed)
       EDBUG_RETURN(1);
    ret =
       XGrabPointer(disp, win, True,
@@ -121,7 +121,7 @@ GrabConfineThePointer(Window win)
 		   ButtonMotionMask | EnterWindowMask | LeaveWindowMask,
 		   GrabModeAsync, GrabModeAsync, win, None, CurrentTime);
    grab_window = win;
-   mode.click_focus_grabbed = 1;
+   Mode.click_focus_grabbed = 1;
    EDBUG_RETURN(ret);
 }
 
@@ -129,10 +129,10 @@ void
 UnGrabTheButtons()
 {
    EDBUG(4, "UnGrabTheButtons");
-   if (!mode.click_focus_grabbed)
+   if (!Mode.click_focus_grabbed)
       EDBUG_RETURN_;
    XUngrabPointer(disp, CurrentTime);
-   mode.click_focus_grabbed = 0;
+   Mode.click_focus_grabbed = 0;
    grab_window = 0;
    EDBUG_RETURN_;
 }

@@ -119,38 +119,38 @@ ChangeNumberOfDesktops(int quantity)
    int                 pnum, i, num;
    EWin              **lst;
 
-   pnum = conf.desks.num;
+   pnum = Conf.desks.num;
    for (i = quantity; i < ENLIGHTENMENT_CONF_NUM_DESKTOPS; i++)
       LowerDesktop(i);
-   conf.desks.num = quantity;
+   Conf.desks.num = quantity;
 
-   if (conf.desks.num <= 0)
-      conf.desks.num = 1;
-   else if (conf.desks.num > ENLIGHTENMENT_CONF_NUM_DESKTOPS)
-      conf.desks.num = ENLIGHTENMENT_CONF_NUM_DESKTOPS;
+   if (Conf.desks.num <= 0)
+      Conf.desks.num = 1;
+   else if (Conf.desks.num > ENLIGHTENMENT_CONF_NUM_DESKTOPS)
+      Conf.desks.num = ENLIGHTENMENT_CONF_NUM_DESKTOPS;
 
    lst = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
    if (lst)
      {
 	for (i = 0; i < num; i++)
 	  {
-	     if (lst[i]->desktop >= conf.desks.num)
-		MoveEwinToDesktop(lst[i], conf.desks.num - 1);
+	     if (lst[i]->desktop >= Conf.desks.num)
+		MoveEwinToDesktop(lst[i], Conf.desks.num - 1);
 	  }
 	Efree(lst);
      }
-   if (conf.desks.num > pnum)
+   if (Conf.desks.num > pnum)
      {
-	for (i = pnum; i < conf.desks.num; i++)
+	for (i = pnum; i < Conf.desks.num; i++)
 	   NewPagerForDesktop(i);
      }
-   else if (conf.desks.num < pnum)
+   else if (Conf.desks.num < pnum)
      {
-	for (i = conf.desks.num; i < pnum; i++)
+	for (i = Conf.desks.num; i < pnum; i++)
 	   DisablePagersForDesktop(i);
      }
-   if (desks.current >= conf.desks.num)
-      GotoDesktop(conf.desks.num - 1);
+   if (desks.current >= Conf.desks.num)
+      GotoDesktop(Conf.desks.num - 1);
 
    HintsSetDesktopConfig();
 }
@@ -544,7 +544,7 @@ SetBackgroundTo(Window win, Background * dsk, char setbg)
    gc = 0;
    rt = imlib_context_get_dither();
 
-   if (conf.backgrounds.hiquality)
+   if (Conf.backgrounds.hiquality)
      {
 	imlib_context_set_dither(1);
 #if 0				/* ??? */
@@ -638,7 +638,7 @@ SetBackgroundTo(Window win, Background * dsk, char setbg)
 	     /* Put image 1:1 onto the current root window */
 	     dpmap = pmap;
 	  }
-	else if (hasbg && !hasfg && dsk->bg_tile && !conf.theme.transparency)
+	else if (hasbg && !hasfg && dsk->bg_tile && !Conf.theme.transparency)
 	  {
 	     /* BG only, tiled */
 	     dpmap = ECreatePixmap(disp, win, w, h, depth);
@@ -889,7 +889,7 @@ InitDesktopControls()
 	  }
 	b = NULL;
 
-	if (conf.desks.dragdir < 2)
+	if (Conf.desks.dragdir < 2)
 	  {
 	     ic = FindItem("DESKTOP_DRAGBUTTON_VERT", 0, LIST_FINDBY_NAME,
 			   LIST_TYPE_ICLASS);
@@ -918,7 +918,7 @@ InitDesktopControls()
 			 LIST_TYPE_ICLASS);
 	  }
 
-	switch (conf.desks.dragbar_ordering)
+	switch (Conf.desks.dragbar_ordering)
 	  {
 	  case 0:
 	     m = 0;
@@ -957,48 +957,48 @@ InitDesktopControls()
 	     break;
 	  }
 
-	switch (conf.desks.dragdir)
+	switch (Conf.desks.dragdir)
 	  {
 	  case 0:
-	     w[0] = w[1] = w[2] = h[0] = h[1] = conf.desks.dragbar_width;
-	     if (conf.desks.dragbar_length == 0)
-		h[2] = root.h - (conf.desks.dragbar_width * 2);
+	     w[0] = w[1] = w[2] = h[0] = h[1] = Conf.desks.dragbar_width;
+	     if (Conf.desks.dragbar_length == 0)
+		h[2] = root.h - (Conf.desks.dragbar_width * 2);
 	     else
-		h[2] = conf.desks.dragbar_length;
+		h[2] = Conf.desks.dragbar_length;
 	     x[0] = x[1] = x[2] = 0;
 	     y[m] = 0;
 	     y[n] = y[m] + h[m];
 	     y[o] = y[n] + h[n];
 	     break;
 	  case 1:
-	     w[0] = w[1] = w[2] = h[0] = h[1] = conf.desks.dragbar_width;
-	     if (conf.desks.dragbar_length == 0)
-		h[2] = root.h - (conf.desks.dragbar_width * 2);
+	     w[0] = w[1] = w[2] = h[0] = h[1] = Conf.desks.dragbar_width;
+	     if (Conf.desks.dragbar_length == 0)
+		h[2] = root.h - (Conf.desks.dragbar_width * 2);
 	     else
-		h[2] = conf.desks.dragbar_length;
-	     x[0] = x[1] = x[2] = root.w - conf.desks.dragbar_width;
+		h[2] = Conf.desks.dragbar_length;
+	     x[0] = x[1] = x[2] = root.w - Conf.desks.dragbar_width;
 	     y[m] = 0;
 	     y[n] = y[m] + h[m];
 	     y[o] = y[n] + h[n];
 	     break;
 	  case 2:
-	     h[0] = h[1] = h[2] = w[0] = w[1] = conf.desks.dragbar_width;
-	     if (conf.desks.dragbar_length == 0)
-		w[2] = root.w - (conf.desks.dragbar_width * 2);
+	     h[0] = h[1] = h[2] = w[0] = w[1] = Conf.desks.dragbar_width;
+	     if (Conf.desks.dragbar_length == 0)
+		w[2] = root.w - (Conf.desks.dragbar_width * 2);
 	     else
-		w[2] = conf.desks.dragbar_length;
+		w[2] = Conf.desks.dragbar_length;
 	     y[0] = y[1] = y[2] = 0;
 	     x[m] = 0;
 	     x[n] = x[m] + w[m];
 	     x[o] = x[n] + w[n];
 	     break;
 	  case 3:
-	     h[0] = h[1] = h[2] = w[0] = w[1] = conf.desks.dragbar_width;
-	     if (conf.desks.dragbar_length == 0)
-		w[2] = root.w - (conf.desks.dragbar_width * 2);
+	     h[0] = h[1] = h[2] = w[0] = w[1] = Conf.desks.dragbar_width;
+	     if (Conf.desks.dragbar_length == 0)
+		w[2] = root.w - (Conf.desks.dragbar_width * 2);
 	     else
-		w[2] = conf.desks.dragbar_length;
-	     y[0] = y[1] = y[2] = root.h - conf.desks.dragbar_width;
+		w[2] = Conf.desks.dragbar_length;
+	     y[0] = y[1] = y[2] = root.h - Conf.desks.dragbar_width;
 	     x[m] = 0;
 	     x[n] = x[m] + w[m];
 	     x[o] = x[n] + w[n];
@@ -1007,7 +1007,7 @@ InitDesktopControls()
 	     break;
 	  }
 
-	if (conf.desks.dragbar_width > 0)
+	if (Conf.desks.dragbar_width > 0)
 	  {
 	     b = ButtonCreate("_DESKTOP_DRAG_CONTROL", ic2, ac2, NULL, NULL, -1,
 			      FLAG_FIXED, 1, 99999, 1, 99999, 0, 0, x[0], 0,
@@ -1024,23 +1024,23 @@ InitDesktopControls()
 	  }
 	if (i > 0)
 	  {
-	     if (conf.desks.dragdir == 0)
+	     if (Conf.desks.dragdir == 0)
 	       {
 		  b = ButtonCreate("_DESKTOP_DESKRAY_DRAG_CONTROL", ic4, ac,
 				   NULL, NULL, 1, FLAG_FIXED_VERT, 1, 99999, 1,
 				   99999, 0, 0, desks.desk[i].x, 0,
 				   desks.desk[i].y, 0, 0, 0, 0, 0, 1, 0, 1);
 	       }
-	     else if (conf.desks.dragdir == 1)
+	     else if (Conf.desks.dragdir == 1)
 	       {
 		  b = ButtonCreate("_DESKTOP_DESKRAY_DRAG_CONTROL", ic4, ac,
 				   NULL, NULL, 1, FLAG_FIXED_VERT, 1, 99999, 1,
 				   99999, 0, 0,
 				   desks.desk[i].x + root.w -
-				   conf.desks.dragbar_width, 0, desks.desk[i].y,
+				   Conf.desks.dragbar_width, 0, desks.desk[i].y,
 				   0, 0, 0, 0, 0, 1, 0, 1);
 	       }
-	     else if (conf.desks.dragdir == 2)
+	     else if (Conf.desks.dragdir == 2)
 	       {
 		  b = ButtonCreate("_DESKTOP_DESKRAY_DRAG_CONTROL", ic4, ac,
 				   NULL, NULL, 1, FLAG_FIXED_HORIZ, 1, 99999, 1,
@@ -1053,7 +1053,7 @@ InitDesktopControls()
 				   NULL, NULL, 1, FLAG_FIXED_HORIZ, 1, 99999, 1,
 				   99999, 0, 0, desks.desk[i].x, 0,
 				   desks.desk[i].y + root.h -
-				   conf.desks.dragbar_width, 0, 0, 0, 0, 0, 1,
+				   Conf.desks.dragbar_width, 0, 0, 0, 0, 0, 1,
 				   0, 1);
 	       }
 	     AddItem(b, b->name, 2, LIST_TYPE_BUTTON);
@@ -1202,14 +1202,14 @@ GotoDesktop(int desk)
 
    EDBUG(2, "GotoDesktop");
 
-   if (conf.desks.wraparound)
+   if (Conf.desks.wraparound)
      {
-	if (desk >= conf.desks.num)
+	if (desk >= Conf.desks.num)
 	   desk = 0;
 	else if (desk < 0)
-	   desk = conf.desks.num - 1;
+	   desk = Conf.desks.num - 1;
      }
-   if (desk < 0 || desk >= conf.desks.num || desk == desks.current)
+   if (desk < 0 || desk >= Conf.desks.num || desk == desks.current)
       EDBUG_RETURN_;
 
    pdesk = desks.current;
@@ -1235,40 +1235,40 @@ GotoDesktop(int desk)
 
    FocusNewDeskBegin();
 
-   if (mode.mode == MODE_NONE)
-      mode.mode = MODE_DESKSWITCH;
+   if (Mode.mode == MODE_NONE)
+      Mode.mode = MODE_DESKSWITCH;
 
    if (desk > 0)
      {
-	if (conf.desks.slidein)
+	if (Conf.desks.slidein)
 	  {
 	     if (!desks.desk[desk].viewable)
 	       {
-		  switch (conf.desks.dragdir)
+		  switch (Conf.desks.dragdir)
 		    {
 		    case 0:
 		       MoveDesktop(desk, root.w, 0);
 		       RaiseDesktop(desk);
 		       SlideWindowTo(desks.desk[desk].win, root.w, 0, 0, 0,
-				     conf.desks.slidespeed);
+				     Conf.desks.slidespeed);
 		       break;
 		    case 1:
 		       MoveDesktop(desk, -root.w, 0);
 		       RaiseDesktop(desk);
 		       SlideWindowTo(desks.desk[desk].win, -root.w, 0, 0, 0,
-				     conf.desks.slidespeed);
+				     Conf.desks.slidespeed);
 		       break;
 		    case 2:
 		       MoveDesktop(desk, 0, root.h);
 		       RaiseDesktop(desk);
 		       SlideWindowTo(desks.desk[desk].win, 0, root.h, 0, 0,
-				     conf.desks.slidespeed);
+				     Conf.desks.slidespeed);
 		       break;
 		    case 3:
 		       MoveDesktop(desk, 0, -root.h);
 		       RaiseDesktop(desk);
 		       SlideWindowTo(desks.desk[desk].win, 0, -root.h, 0, 0,
-				     conf.desks.slidespeed);
+				     Conf.desks.slidespeed);
 		       break;
 		    default:
 		       break;
@@ -1279,7 +1279,7 @@ GotoDesktop(int desk)
 		  GetWinXY(desks.desk[desk].win, &x, &y);
 		  SlideWindowTo(desks.desk[desk].win, desks.desk[desk].x,
 				desks.desk[desk].y, 0, 0,
-				conf.desks.slidespeed);
+				Conf.desks.slidespeed);
 		  RaiseDesktop(desk);
 	       }
 	     StackDesktops();
@@ -1299,8 +1299,8 @@ GotoDesktop(int desk)
    ActionsResume();
    FocusNewDesk();
 
-   if (mode.mode == MODE_DESKSWITCH)
-      mode.mode = MODE_NONE;
+   if (Mode.mode == MODE_DESKSWITCH)
+      Mode.mode = MODE_NONE;
 
    RedrawPagersForDesktop(pdesk, 0);
    RedrawPagersForDesktop(desk, 3);
@@ -1320,7 +1320,7 @@ MoveDesktop(int desk, int x, int y)
    EDBUG(3, "MoveDesktop");
    if (desk < 0)
       EDBUG_RETURN_;
-   if (desk >= conf.desks.num)
+   if (desk >= Conf.desks.num)
       EDBUG_RETURN_;
    if (desk == 0)
       EDBUG_RETURN_;
@@ -1425,7 +1425,7 @@ RaiseDesktop(int desk)
 
    EDBUG(3, "RaiseDesktop");
 
-   if ((desk < 0) || (desk >= conf.desks.num))
+   if ((desk < 0) || (desk >= Conf.desks.num))
       EDBUG_RETURN_;
 
    FocusNewDeskBegin();
@@ -1464,7 +1464,7 @@ LowerDesktop(int desk)
 {
    EDBUG(3, "LowerDesktop");
 
-   if ((desk <= 0) || (desk >= conf.desks.num))
+   if ((desk <= 0) || (desk >= Conf.desks.num))
       EDBUG_RETURN_;
 
    FocusNewDeskBegin();
@@ -1494,7 +1494,7 @@ HideDesktop(int desk)
 {
    EDBUG(3, "HideDesktop");
 
-   if ((desk < 0) || (desk >= conf.desks.num))
+   if ((desk < 0) || (desk >= Conf.desks.num))
       EDBUG_RETURN_;
    if (desk == 0)
       EDBUG_RETURN_;
@@ -1517,7 +1517,7 @@ ShowDesktop(int desk)
 
    if (desk < 0)
       EDBUG_RETURN_;
-   if (desk >= conf.desks.num)
+   if (desk >= Conf.desks.num)
       EDBUG_RETURN_;
 
    desks.desk[desk].viewable = 1;
@@ -1643,8 +1643,8 @@ StackDesktop(int desk)
 	   continue;
 
 	_APPEND_TO_WIN_LIST(ewin->win);
-	if (ewin->win == mode.menu_win_covered)
-	   _APPEND_TO_WIN_LIST(mode.menu_cover_win);
+	if (ewin->win == Mode.menu_win_covered)
+	   _APPEND_TO_WIN_LIST(Mode.menu_cover_win);
      }
 
    /* Non-sticky, "below" buttons */
@@ -1682,7 +1682,7 @@ UncoverDesktop(int desk)
    EDBUG(3, "UncoverDesktop");
    if (desk < 0)
       EDBUG_RETURN_;
-   if (desk >= conf.desks.num)
+   if (desk >= Conf.desks.num)
       EDBUG_RETURN_;
    desks.desk[desk].viewable = 1;
    RefreshDesktop(desk);
@@ -1852,7 +1852,7 @@ DesktopAccounting()
 	for (i = 0; i < num; i++)
 	  {
 	     if ((lst[i]->pmap == 0) ||
-		 ((now - lst[i]->last_viewed) <= conf.backgrounds.timeout))
+		 ((now - lst[i]->last_viewed) <= Conf.backgrounds.timeout))
 		continue;
 
 	     for (j = 0; j < ENLIGHTENMENT_CONF_NUM_DESKTOPS; j++)

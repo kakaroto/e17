@@ -35,7 +35,7 @@ SetCoords(EWin * ewin)
    int                 md;
    int                 x, y, w, h;
 
-   if (!conf.geominfomode)
+   if (!Conf.geominfomode)
       return;
    if (ewin == NULL)
       return;
@@ -59,10 +59,10 @@ SetCoords(EWin * ewin)
    if (ewin)
      {
 	md = 0;
-	if (mode.mode == MODE_MOVE)
-	   md = conf.movemode;
+	if (Mode.mode == MODE_MOVE)
+	   md = Conf.movemode;
 	else
-	   md = conf.resizemode;
+	   md = Conf.resizemode;
 	if ((md > 0) && ((cw >= (ewin->w)) || (ch >= (ewin->h))))
 	  {
 	     cx = 0;
@@ -72,7 +72,7 @@ SetCoords(EWin * ewin)
 	  {
 	     cx = 0;
 	     cy = 0;
-	     if (conf.geominfomode == 1)
+	     if (Conf.geominfomode == 1)
 	       {
 		  switch (md)
 		    {

@@ -37,7 +37,7 @@ IB_Animate(char iconify, EWin * from, EWin * to)
    GC                  gc;
    XGCValues           gcv;
 
-   if (mode.startup)
+   if (Mode.startup)
       return;
    GrabX();
    spd = 0.00001;
@@ -532,7 +532,7 @@ IconboxMoveResize(EWin * ewin, int resize)
       return;
    call_depth++;
 
-   if (!conf.theme.transparency &&
+   if (!Conf.theme.transparency &&
        ib->w == ewin->client.w && ib->h == ewin->client.h)
       return;
 
@@ -553,7 +553,7 @@ IconboxRefresh(EWin * ewin)
    if (!ib)
       return;
 
-   if (!conf.theme.transparency)
+   if (!Conf.theme.transparency)
       return;
 
    ib->force_update = 1;
@@ -2282,7 +2282,7 @@ IconboxesHandleEvent(XEvent * ev)
    Iconbox           **ib;
    int                 i, num;
 
-   if (mode.mode != MODE_NONE)
+   if (Mode.mode != MODE_NONE)
       return;
 
    ib = ListAllIconboxes(&num);
@@ -2439,15 +2439,15 @@ IconboxesHandleEvent(XEvent * ev)
 		  if (ev->type == MotionNotify)
 		    {
 		       ewin = IB_FindIcon(ib[i], ev->xmotion.x, ev->xmotion.y);
-		       mode.x = ev->xmotion.x_root;
-		       mode.y = ev->xmotion.y_root;
+		       Mode.x = ev->xmotion.x_root;
+		       Mode.y = ev->xmotion.y_root;
 		    }
 		  else
 		    {
 		       ewin =
 			  IB_FindIcon(ib[i], ev->xcrossing.x, ev->xcrossing.y);
-		       mode.x = ev->xcrossing.x_root;
-		       mode.y = ev->xcrossing.y_root;
+		       Mode.x = ev->xcrossing.x_root;
+		       Mode.y = ev->xcrossing.y_root;
 		    }
 
 		  if (ib[i]->shownames && ewin != name_ewin)
@@ -2464,7 +2464,7 @@ IconboxesHandleEvent(XEvent * ev)
 
 				 name = EwinGetIconName(ewin);
 				 if (name)
-				    ShowToolTip(tt, name, NULL, mode.x, mode.y);
+				    ShowToolTip(tt, name, NULL, Mode.x, Mode.y);
 			      }
 			 }
 		       name_ewin = ewin;
@@ -2508,7 +2508,7 @@ IconboxesHandleEvent(XEvent * ev)
 			  HideToolTip(tt);
 		       gwins =
 			  ListWinGroupMembersForEwin(ewin, ACTION_ICONIFY,
-						     mode.nogroup, &num);
+						     Mode.nogroup, &num);
 		       iconified = ewin->iconified;
 
 		       if (gwins)

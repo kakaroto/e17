@@ -62,7 +62,7 @@ EventsInit(void)
    if (XShapeQueryExtension(disp, &event_base_shape, &error_base_shape))
      {
 	XShapeQueryVersion(disp, &major, &minor);
-	if (mode.debug)
+	if (Mode.debug)
 	   printf("Found extension Shape version %d.%d\n"
 		  " Event/error base = %d/%d\n",
 		  major, minor, event_base_shape, error_base_shape);
@@ -83,7 +83,7 @@ EventsInit(void)
    if (XRRQueryExtension(disp, &event_base_randr, &error_base_randr))
      {
 	XRRQueryVersion(disp, &major, &minor);
-	if (mode.debug)
+	if (Mode.debug)
 	   printf("Found extension RandR version %d.%d\n"
 		  " Event/error base = %d/%d\n",
 		  major, minor, event_base_randr, error_base_randr);
@@ -207,7 +207,7 @@ HandleEvent(XEvent * ev)
    if (EventDebug(ev->type))
       EventShow(ev);
 #endif
-   mode.current_event = ev;
+   Mode.current_event = ev;
 
    switch (ev->type)
      {

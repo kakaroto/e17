@@ -258,14 +258,14 @@ EWMH_SetDesktopCount(void)
 
    EDBUG(6, "EWMH_SetDesktopCount");
 
-   val = conf.desks.num;
+   val = Conf.desks.num;
    _ATOM_SET_CARD32(_NET_NUMBER_OF_DESKTOPS, root.win, &val, 1);
 
-   for (i = 0; i < conf.desks.num; i++)
+   for (i = 0; i < Conf.desks.num; i++)
      {
 	wl[i] = desks.desk[i].win;
      }
-   _ATOM_SET_WINDOW(_NET_VIRTUAL_ROOTS, root.win, &wl, conf.desks.num);
+   _ATOM_SET_WINDOW(_NET_VIRTUAL_ROOTS, root.win, &wl, Conf.desks.num);
 
    EDBUG_RETURN_;
 }
@@ -279,7 +279,7 @@ EWMH_SetDesktopNames(void)
    EDBUG(6, "EWMH_SetDesktopNames");
 
    s = buf;
-   for (i = 0; i < conf.desks.num; i++)
+   for (i = 0; i < Conf.desks.num; i++)
       s += sprintf(s, "Desk-%d", i) + 1;
 
    _ATOM_SET_UTF8_STRING_LIST(_NET_DESKTOP_NAMES, root.win, buf, s - buf);
@@ -309,11 +309,11 @@ EWMH_SetWorkArea(void)
 
    EDBUG(6, "EWMH_SetWorkArea");
 
-   n_coord = 4 * conf.desks.num;
+   n_coord = 4 * Conf.desks.num;
    p_coord = Emalloc(n_coord * sizeof(CARD32));
    if (p_coord)
      {
-	for (i = 0; i < conf.desks.num; i++)
+	for (i = 0; i < Conf.desks.num; i++)
 	  {
 	     p_coord[4 * i] = 0;
 	     p_coord[4 * i + 1] = 0;
@@ -344,11 +344,11 @@ EWMH_SetDesktopViewport(void)
    int                 n_coord, i;
 
    EDBUG(6, "EWMH_SetDesktopViewport");
-   n_coord = 2 * conf.desks.num;
+   n_coord = 2 * Conf.desks.num;
    p_coord = Emalloc(n_coord * sizeof(CARD32));
    if (p_coord)
      {
-	for (i = 0; i < conf.desks.num; i++)
+	for (i = 0; i < Conf.desks.num; i++)
 	  {
 	     p_coord[2 * i] = desks.desk[i].current_area_x * root.w;
 	     p_coord[2 * i + 1] = desks.desk[i].current_area_y * root.h;
@@ -480,7 +480,7 @@ EWMH_GetWindowName(EWin * ewin)
 
    val = AtomGet(ewin->client.win, _NET_WM_NAME, E_XA_UTF8_STRING, &size);
    if (!val)
-      goto exit;
+      goto done;
 
    if (ewin->ewmh.wm_name)
       Efree(ewin->ewmh.wm_name);
@@ -489,7 +489,7 @@ EWMH_GetWindowName(EWin * ewin)
    Efree(val);
    EwinChange(ewin, EWIN_CHANGE_NAME);
 
- exit:
+ done:
    EDBUG_RETURN_;
 }
 
@@ -503,7 +503,7 @@ EWMH_GetWindowIconName(EWin * ewin)
 
    val = AtomGet(ewin->client.win, _NET_WM_ICON_NAME, E_XA_UTF8_STRING, &size);
    if (!val)
-      goto exit;
+      goto done;
 
    if (ewin->ewmh.wm_icon_name)
       Efree(ewin->ewmh.wm_icon_name);
@@ -512,7 +512,7 @@ EWMH_GetWindowIconName(EWin * ewin)
    Efree(val);
    EwinChange(ewin, EWIN_CHANGE_ICON_NAME);
 
- exit:
+ done:
    EDBUG_RETURN_;
 }
 
@@ -526,7 +526,7 @@ EWMH_GetWindowDesktop(EWin * ewin)
 
    val = AtomGet(ewin->client.win, _NET_WM_DESKTOP, XA_CARDINAL, &size);
    if (!val)
-      goto exit;
+      goto done;
 
    if ((unsigned)val[0] == 0xFFFFFFFF)
      {
@@ -542,7 +542,7 @@ EWMH_GetWindowDesktop(EWin * ewin)
    Efree(val);
    EwinChange(ewin, EWIN_CHANGE_DESKTOP);
 
- exit:
+ done:
    EDBUG_RETURN_;
 }
 
@@ -560,7 +560,7 @@ EWMH_GetWindowState(EWin * ewin)
    p_atoms = AtomGet(ewin->client.win, _NET_WM_STATE, XA_ATOM, &n_atoms);
    n_atoms /= sizeof(Atom);	/* Silly */
    if (!p_atoms)
-      goto exit;
+      goto done;
 
    /* We must clear/set all according to not present/present */
    ewin->sticky = ewin->shaded = 0;
@@ -592,7 +592,7 @@ EWMH_GetWindowState(EWin * ewin)
      }
    Efree(p_atoms);
 
- exit:
+ done:
    EDBUG_RETURN_;
 }
 
@@ -608,7 +608,7 @@ EWMH_GetWindowType(EWin * ewin)
    p_atoms = AtomGet(ewin->client.win, _NET_WM_WINDOW_TYPE, XA_ATOM, &n_atoms);
    n_atoms /= sizeof(Atom);	/* Silly */
    if (!p_atoms)
-      goto exit;
+      goto done;
 
    atom = p_atoms[0];
    if (atom == _NET_WM_WINDOW_TYPE_DESKTOP)
@@ -657,7 +657,7 @@ EWMH_GetWindowType(EWin * ewin)
 #endif
    Efree(p_atoms);
 
- exit:
+ done:
    EDBUG_RETURN_;
 }
 
@@ -720,12 +720,12 @@ EWMH_ProcessClientMessage(XClientMessageEvent * event)
    if (event->message_type == _NET_CURRENT_DESKTOP)
      {
 	GotoDesktop(event->data.l[0]);
-	goto exit;
+	goto done;
      }
    else if (event->message_type == _NET_DESKTOP_VIEWPORT)
      {
 	SetCurrentArea(event->data.l[0] / root.w, event->data.l[1] / root.h);
-	goto exit;
+	goto done;
      }
 
    /*
@@ -733,7 +733,7 @@ EWMH_ProcessClientMessage(XClientMessageEvent * event)
     */
    ewin = FindItem(NULL, event->window, LIST_FINDBY_ID, LIST_TYPE_EWIN);
    if (ewin == NULL)
-      goto exit;
+      goto done;
 
    if (event->message_type == _NET_ACTIVE_WINDOW)
      {
@@ -884,7 +884,7 @@ EWMH_ProcessClientMessage(XClientMessageEvent * event)
 	  }
      }
 
- exit:
+ done:
    EDBUG_RETURN_;
 }
 
