@@ -3712,10 +3712,8 @@ Epplet_find_instance(char *name)
 {
   struct stat st;
   char s[1024];
-  int i = 0;
-  FILE *fp;
-
-  epplet_instance = 1;
+  int i = 0, fd;
+  pid_t pid;
 
   /* make sure basic dir exists */
   sprintf(s, "%s/.enlightenment/epplet_config", getenv("HOME"));
@@ -3728,6 +3726,8 @@ Epplet_find_instance(char *name)
 	  sprintf(err, "Unable to create epplet config directory %s -- %s.\n",
 		  s, strerror(errno));
 	  Epplet_dialog_ok(err);
+	  epplet_instance = 1;
+	  return;
 	}
     }
 
@@ -3743,28 +3743,70 @@ Epplet_find_instance(char *name)
 	  sprintf(err, "Unable to create epplet config directory %s -- %s.\n",
 		  s, strerror(errno));
 	  Epplet_dialog_ok(err);
+	  epplet_instance = 1;
+	  return;
 	}
     }
 
-  /* find out instance */
-  do
+  /* Pick our instance number.  255 is the max to avoid infinite loops, which could be caused by
+     lack of insert permissions in the config directory. */
+  for (i = 1; i < 256; i++)
     {
-      i++;
       sprintf(s, "%s/.lock_%i", conf_dir, i);
+      if (stat(s, &st) >= 0)
+	{
+	  /* Lock file exists.  Read from it. */
+	  if ((fd = open(s, O_RDONLY)) < 0)
+	    {
+	      /* Either it's there and we can't read it, or it's gone now.  Next! */
+	      fprintf(stderr, "Unable to read lock file %s -- %s\n", s, strerror(errno));
+	      continue;
+	    }
+	  if ((read(fd, &pid, sizeof(pid_t))) < ((int) sizeof(pid_t)))
+	    {
+	      /* We didn't get enough bytes.  Next! */
+	      fprintf(stderr, "Read attempt for lock file %s failed -- %s\n", s, strerror(errno));
+	      continue;
+	    }
+	  if (pid <= 0)
+	    {
+	      /* We got a bogus process ID.  Next! */
+	      fprintf(stderr, "Lock file %s contained a bogus process ID (%lu)\n", s, (unsigned long) pid);
+	      continue;
+	    }
+	  if ((kill(pid, 0) == 0) || (errno != ESRCH))
+	    {
+	      /* The process exists.  Next! */
+	      continue;
+	    }
+	  /* Okay, looks like a stale lockfile at this point.  Remove it. */
+	  if ((unlink(s)) != 0)
+	    {
+	      /* Removal failed.  Next! */
+	      fprintf(stderr, "Unable to remove stale lock file %s -- %s.  Please remove it manually.\n",
+		      s, strerror(errno));
+	      continue;
+	    }
+	}
+      if ((fd = open(s, (O_WRONLY | O_EXCL | O_CREAT))) < 0)
+	{
+	  /* Apparently another process just came in under us and created it.  Next! */
+	  continue;
+	}
+      pid = getpid();
+      write(fd, &pid, sizeof(pid_t));  /* Not sure how best to deal with write errors here */
+      close(fd);
+      /* If we made it here, we've just written the lock file and saved it.  We have our instance
+	 number, so exit the loop. */
+      break;
     }
-  while (stat(s, &st) >= 0);
-  epplet_instance = i;
-  
-  /* create lock file */
-  if (!(fp = fopen(s, "w")))
+
+  /* Anything this high is probably an error. */
+  if (i >= 255)
     {
-      char err[255];
-      
-      sprintf(err, "Unable to create lock file %s -- %s.\n", s, strerror(errno));
-      Epplet_dialog_ok(err);
+      i = 1;
     }
-  else
-    fclose(fp);
+  epplet_instance = i;
   
   /* find out epplet's name */
   if (epplet_instance > 1)

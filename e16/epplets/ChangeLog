@@ -67,3 +67,14 @@ Sat Oct 23 21:00:30 PDT 1999
 (Mandrake)
 
 Second patch from horms about popup entry removal
+
+-------------------------------------------------------------------------------
+
+Sun Oct 24 12:14:07 PDT 1999
+(KainX)
+
+Lock files now store PID's so that stale checks can be made.  It seems to
+work here, but I'll need lots of testing.
+
+PLEASE remove all .lock files from ~/.enlightenment/epplet_config/*/ and close
+all running epplets before running any new ones!
