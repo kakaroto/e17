@@ -15,6 +15,7 @@
 // author: tokyo
 // esmart.filedialog by atmos
 // iio for euphoria
+// various fixed by trill
 
 	collections { 
 	group { name, "euphoria"; min, 413 94; max, 413 94;
@@ -34,6 +35,7 @@
 #include "programs/playlist.edc" 
 	    } 
 	}
+/*
 	group { name, "alternate"; min, 93 187; max, 93 187;
 	parts { 
 #include "collections/switch.edc" 
@@ -42,7 +44,7 @@
 #include "programs/switch.edc" 
 	    } 
 	}
-
+*/
 group { name, "esmart.filedialog"; min, 413 188; max, 413 9999;
 	data {
 #include "hashes/containers.edc"

@@ -8,7 +8,7 @@ program {
 #define PB "PLAYBACK_STATE_"
 ///////////////////////////////////////////////////////////////////////
 // slides
-
+/*
 program { name, "hide_Lpanel"; signal, "mouse,clicked,*"; source, LEFT"border";
 	action, STATE_SET "slide" 0.0; transition, DECELERATE, 0.5; 
 	target, LEFT"border"; target, LEFT"border-slide"; target, LEFT"lcd";
@@ -30,6 +30,7 @@ program { name, "show_Rpanel"; signal, "mouse,clicked,*"; source, RIGHT"border-s
 	action, STATE_SET "default" 0.0; transition, DECELERATE, 0.5;
 	target, RIGHT"border"; target, RIGHT"border-slide"; target, RIGHT"lcd";
 }
+*/
 ///////////////////////////////////////////////////////////////////////
 // playback signals
 // no longer in use
@@ -64,6 +65,7 @@ program { name, "seeker-stop"; signal, "mouse,up,1"; source, "seeker_grabber";
 }
 ///////////////////////////////////////////////////////////////////////
 // switch
+/*
 program { name, "switch_hi"; signal, "mouse,in"; source, "switch_stance";
 	action, STATE_SET "hilited" 0.0; transition, LINEAR, 0.1; target, "switch_stance";
 }
@@ -78,7 +80,7 @@ program { name, "switch_unclicked"; signal, "mouse,up,*"; source, "switch_stance
 }
 program { name, "switch_exec"; signal,  "mouse,down,*"; source, "switch_stance";
 	action, SIGNAL_EMIT "SWITCH_GROUP" "alternate"; }
-
+*/
 ///////////////////////////////////////////////////////////////////////
 
 #define PLAY "play_button"

@@ -329,24 +329,11 @@
 	rel2 { to, "seekerTrough"; relative, 1 1; offset,  -1 -1; } 
 	border, 5 5 1 1; } }
 //
-	part { name, "switch_stance"; type, IMAGE; mouse_events, 1; clip_to, "trans_Rect";
+	part { name, "switch_stance"; type, RECT; mouse_events, 1; clip_to, "trans_Rect";
 	description { min, 10 10; max, 10 10; state, "default" 0.0;
 	rel1 { relative, 1.0 0.0; offset, 190 4; to, "time_arrow"; }
 	rel2 { relative, 1.0 0.0; offset, 0 0; to, "time_arrow"; }
-	image { normal, "switch_button.png"; }
-	fill { smooth, 1; } }
-
-	description { min, 10 10; max, 10 10; state, "hilited" 0.0;
-	rel1 { relative, 1.0 0.0; offset, 190 4; to, "time_arrow"; }
-	rel2 { relative, 1.0 0.0; offset, 0 0; to, "time_arrow"; }
-	image { normal, "switch_button_hilited.png"; }
-	fill { smooth, 1; } }
-
-	description { min, 10 10; max, 10 10; state, "clicked" 0.0;
-	rel1 { relative, 1.0 0.0; offset, 190 4; to, "time_arrow"; }
-	rel2 { relative, 1.0 0.0; offset, 0 0; to, "time_arrow"; }
-	image { normal, "switch_button_clicked.png"; }
-	fill { smooth, 1; } } }
+	color, 0 0 0 0; } }
 ///////////////////////////////////////////////////////////////////////
 // PLAYLIST
 
