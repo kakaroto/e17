@@ -573,7 +573,7 @@ static int ewl_spinner_timer(void *data)
 	 * Check the theme for a velocity setting and bring it within normal
 	 * useable bounds.
 	 */
-	velocity = ewl_theme_data_get_int(EWL_WIDGET(s), "velocity");
+	velocity = ewl_theme_data_int_get(EWL_WIDGET(s), "velocity");
 	if (velocity < 1)
 		velocity = 1;
 	else if (velocity > 10)
@@ -583,7 +583,7 @@ static int ewl_spinner_timer(void *data)
 	 * Check the theme for a delay setting and bring it within normal
 	 * useable bounds.
 	 */
-	delay = ewl_theme_data_get_int(EWL_WIDGET(s), "delay");
+	delay = ewl_theme_data_int_get(EWL_WIDGET(s), "delay");
 	if (delay < 1)
 		delay = 1;
 	else if (delay > 10)

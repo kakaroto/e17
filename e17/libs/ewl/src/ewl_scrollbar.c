@@ -148,7 +148,7 @@ void ewl_scrollbar_init(Ewl_Scrollbar * s, Ewl_Orientation orientation)
 	/*
 	 * Set the alignment of the buttons to the seeker.
 	 */
-	s->buttons_alignment = ewl_theme_data_get_int(EWL_WIDGET(s),
+	s->buttons_alignment = ewl_theme_data_int_get(EWL_WIDGET(s),
 						      "button_order");
 
 	/*
@@ -425,7 +425,7 @@ static int ewl_scrollbar_timer(void *data)
 	 * Check the theme for a velocity setting and bring it within normal
 	 * useable bounds.
 	 */
-	velocity = ewl_theme_data_get_int(EWL_WIDGET(s), "velocity");
+	velocity = ewl_theme_data_int_get(EWL_WIDGET(s), "velocity");
 	if (velocity < 1)
 		velocity = 1;
 	else if (velocity > 10)

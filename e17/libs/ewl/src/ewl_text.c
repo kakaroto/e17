@@ -543,19 +543,19 @@ void ewl_text_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	ta->etox = etox_new(emb->evas);
 	ta->context = etox_get_context(ta->etox);
 
-	tmp = ewl_theme_data_get_str(w, "font");
+	tmp = ewl_theme_data_str_get(w, "font");
 	etox_context_set_font(ta->context, tmp,
-			      ewl_theme_data_get_int(w, "font_size"));
+			      ewl_theme_data_int_get(w, "font_size"));
 	IF_FREE(tmp);
 
-	tmp = ewl_theme_data_get_str(w, "style");
+	tmp = ewl_theme_data_str_get(w, "style");
 	etox_context_set_style(ta->context, tmp);
 	IF_FREE(tmp);
 
-	r = ewl_theme_data_get_int(w, "color/r");
-	g = ewl_theme_data_get_int(w, "color/g");
-	b = ewl_theme_data_get_int(w, "color/b");
-	a = ewl_theme_data_get_int(w, "color/a");
+	r = ewl_theme_data_int_get(w, "color/r");
+	g = ewl_theme_data_int_get(w, "color/g");
+	b = ewl_theme_data_int_get(w, "color/b");
+	a = ewl_theme_data_int_get(w, "color/a");
 	etox_context_set_color(ta->context, r, g, b, a);
 
 	if (w->fx_clip_box)

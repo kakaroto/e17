@@ -50,7 +50,7 @@ __create_table_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	table_box = ewl_vbox_new();
 	ewl_object_fill_policy_set(EWL_OBJECT(table_box), EWL_FLAG_FILL_FILL);
 	ewl_container_append_child(EWL_CONTAINER(table_win), table_box);
-	ewl_theme_data_set_str(table_box,
+	ewl_theme_data_str_set(table_box,
 			       "/appearance/box/vertical/base/visible", "no");
 	ewl_widget_show(table_box);
 

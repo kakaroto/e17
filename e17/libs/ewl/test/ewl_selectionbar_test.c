@@ -44,7 +44,7 @@ __create_selectionbar_test_window(Ewl_Widget * w, void *ev_data,
 	box = ewl_vbox_new();
 	ewl_object_fill_policy_set(EWL_OBJECT(box), EWL_FLAG_FILL_FILL);
 	ewl_container_append_child(EWL_CONTAINER(sbar_win), box);
-	ewl_theme_data_set_str(box, 
+	ewl_theme_data_str_set(box, 
 			"/appearance/box/vertical/base/visible", "yes");
 	ewl_widget_show(box);
 	

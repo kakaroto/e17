@@ -58,13 +58,13 @@ __create_selectionbook_test_window(Ewl_Widget * w, void *ev_data,
 	panel[0] = ewl_vbox_new();
 	ewl_object_fill_policy_set(EWL_OBJECT(panel[0]), EWL_FLAG_FILL_FILL);
 	ewl_object_alignment_set(EWL_OBJECT(panel[0]), EWL_FLAG_ALIGN_LEFT);
-	ewl_theme_data_set_str(panel[0],
+	ewl_theme_data_str_set(panel[0],
 			       "/appearance/box/vertical/base/visible", "yes");
 
 	panel[1] = ewl_vbox_new();
 	ewl_object_fill_policy_set(EWL_OBJECT(panel[1]), EWL_FLAG_FILL_FILL);
 	ewl_object_alignment_set(EWL_OBJECT(panel[1]), EWL_FLAG_ALIGN_LEFT);
-	ewl_theme_data_set_str(panel[1],
+	ewl_theme_data_str_set(panel[1],
 			       "/appearance/box/vertical/base/visible", "yes");
 
 

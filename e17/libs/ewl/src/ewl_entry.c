@@ -859,7 +859,7 @@ static int ewl_entry_timer(void *data)
 	 * Check the theme for a velocity setting and bring it within normal
 	 * useable bounds.
 	 */
-	velocity = ewl_theme_data_get_int(EWL_WIDGET(e), "velocity");
+	velocity = ewl_theme_data_int_get(EWL_WIDGET(e), "velocity");
 	if (velocity < 1)
 		velocity = 1;
 	else if (velocity > 10)

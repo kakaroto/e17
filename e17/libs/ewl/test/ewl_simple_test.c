@@ -168,13 +168,13 @@ int main(int argc, char **argv)
 	win = ewl_window_new();
 	ewl_callback_append(win, EWL_CALLBACK_DELETE_WINDOW, close_cb, NULL);
 	ewl_object_size_request(EWL_OBJECT(win), 240, 320);
-	ewl_theme_data_set_str(win, "/window/file", tmp);
-	ewl_theme_data_set_str(win, "/window/group", "bg");
+	ewl_theme_data_str_set(win, "/window/file", tmp);
+	ewl_theme_data_str_set(win, "/window/group", "bg");
 	ewl_widget_show(win);
 
 	vbox = ewl_vbox_new();
-	ewl_theme_data_set_str(vbox, "/vbox/file", tmp);
-	ewl_theme_data_set_str(vbox, "/vbox/group", "box");
+	ewl_theme_data_str_set(vbox, "/vbox/file", tmp);
+	ewl_theme_data_str_set(vbox, "/vbox/group", "box");
 	ewl_object_alignment_set(EWL_OBJECT(vbox), EWL_FLAG_ALIGN_TOP);
 	ewl_object_fill_policy_set(EWL_OBJECT(vbox), EWL_FLAG_FILL_HFILL);
 	ewl_container_append_child(EWL_CONTAINER(win), vbox);
@@ -191,8 +191,8 @@ int main(int argc, char **argv)
 	logo = NEW(Ewl_Widget, 1);
 	ewl_widget_init(logo, "demo_logo");
 	ewl_callback_append(logo, EWL_CALLBACK_REALIZE, realize_logo_cb, label);
-	ewl_theme_data_set_str(logo, "/demo_logo/file", tmp);
-	ewl_theme_data_set_str(logo, "/demo_logo/group", "tour");
+	ewl_theme_data_str_set(logo, "/demo_logo/file", tmp);
+	ewl_theme_data_str_set(logo, "/demo_logo/group", "tour");
 	ewl_object_preferred_inner_size_set(EWL_OBJECT(logo), 150, 150);
 	ewl_object_fill_policy_set(EWL_OBJECT(logo), EWL_FLAG_FILL_NONE);
 	ewl_object_alignment_set(EWL_OBJECT(logo), EWL_FLAG_ALIGN_CENTER);

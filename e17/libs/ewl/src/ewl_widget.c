@@ -37,7 +37,7 @@ int ewl_widget_init(Ewl_Widget * w, char *appearance)
 	/*
 	 * Set up the necessary theme structures 
 	 */
-	if (!ewl_theme_init_widget(w))
+	if (!ewl_theme_widget_init(w))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
 	ewl_object_state_remove(EWL_OBJECT(w), EWL_FLAGS_STATE_MASK);
@@ -933,7 +933,7 @@ void ewl_widget_destroy_cb(Ewl_Widget * w, void *ev_data, void *data)
 	/*
 	 * Free up appearance related information
 	 */
-	ewl_theme_shutdown_widget(w);
+	ewl_theme_widget_shutdown(w);
 	IF_FREE(w->appearance);
 
 	/*
@@ -1056,7 +1056,7 @@ void ewl_widget_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	 * theme file.
 	 */
 	i = ewl_theme_image_get(w, "file");
-	group = ewl_theme_data_get_str(w, "group");
+	group = ewl_theme_data_str_get(w, "group");
 
 	if (group) {
 		emb = ewl_embed_find_by_widget(w);
