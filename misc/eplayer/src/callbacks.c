@@ -44,9 +44,10 @@ static void playback_state_set(ePlayer *player, PlaybackState new_state) {
 	assert(player);
 
 	if (new_state != playback_state)
+        {
+	        playback_state = new_state;
 		signal_playback_state(player);
-	
-	playback_state = new_state;
+	}
 }
 
 /**
@@ -241,7 +242,7 @@ EDJE_CB(playlist_item_play) {
 	
 	if (eplayer_playback_start(player, true))
 		state = PLAYBACK_STATE_PLAYING;
-	
+
 	playback_state_set(player, state);
 }
 
