@@ -10,8 +10,6 @@ typedef struct _ewl_row Ewl_Row;
 struct _ewl_row
 {
 	Ewl_Container container;
-	Ewl_Object *max;
-
 	Ewl_Row *header;
 };
 

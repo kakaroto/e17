@@ -225,20 +225,11 @@ __ewl_row_header_destroy(Ewl_Widget * w, void *ev_data, void *user_data)
 static void
 __ewl_row_add(Ewl_Container *c, Ewl_Widget *w)
 {
-	int size;
 	Ewl_Row *row;
 
 	row = EWL_ROW(c);
 
-	/*
-	 * Adjust the preferred height to the largest widget added.
-	 */
-	size = ewl_object_get_preferred_h(EWL_OBJECT(w));
-	if (!row->max || ewl_object_get_preferred_h(row->max) > size) {
-		row->max = EWL_OBJECT(w);
-		ewl_object_set_preferred_h(EWL_OBJECT(c), size);
-	}
-
+	ewl_container_prefer_largest(c, EWL_ORIENTATION_VERTICAL);
 	ewl_object_set_preferred_w(EWL_OBJECT(c), PREFERRED_W(c) +
 			ewl_object_get_preferred_w(EWL_OBJECT(w)));
 }
@@ -248,33 +239,14 @@ __ewl_row_resize(Ewl_Container *c, Ewl_Widget *w, int size, Ewl_Orientation o)
 {
 	Ewl_Row *row;
 
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
 	row = EWL_ROW(c);
-	if (o == EWL_ORIENTATION_VERTICAL) {
-		if (EWL_OBJECT(w) == row->max && size > 0)
-			ewl_object_set_preferred_h(EWL_OBJECT(c),
-					PREFERRED_H(c) + size);
-		else {
-			int h;
-			int max_h = 0;
-			Ewl_Object *child;
-
-			/*
-			 * Search out the tallest widget in the row
-			 */
-			ewd_list_goto_first(c->children);
-			while ((child = ewd_list_next(c->children))) {
-				h = ewl_object_get_preferred_h(child);
-				if (h > max_h) {
-					max_h = h;
-					row->max = child;
-				}
-			}
-
-			PREFERRED_H(c) = max_h;
-		}
-	}
-	else {
+	if (o == EWL_ORIENTATION_VERTICAL)
+		ewl_container_prefer_largest(c, EWL_ORIENTATION_VERTICAL);
+	else
 		ewl_object_set_preferred_w(EWL_OBJECT(c),
 				PREFERRED_W(c) + size);
-	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
