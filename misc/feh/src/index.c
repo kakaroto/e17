@@ -269,7 +269,6 @@ init_index_mode (void)
 
   for (file = filelist; file; file = file->next)
     {
-      i++;
       D (("   About to load image %s\n", file->filename));
       if (feh_load_image (&im_temp, file) != 0)
 	{
@@ -287,6 +286,7 @@ init_index_mode (void)
 
 	      fprintf (stdout, ".");
 	      fflush (stdout);
+	      i++;
 	    }
 	  D (("   Successfully loaded %s\n", file->filename));
 	  www = opt.thumb_w;

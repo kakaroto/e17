@@ -172,7 +172,6 @@ init_montage_mode (void)
 
   for (file = filelist; file; file = file->next)
     {
-      i++;
       D (("   About to load image %s\n", file->filename));
       if (opt.verbose)
 	{
@@ -188,6 +187,7 @@ init_montage_mode (void)
 
 	  fprintf (stdout, ".");
 	  fflush (stdout);
+	  i++;
 	}
       if (feh_load_image (&im_temp, file) != 0)
 	{
