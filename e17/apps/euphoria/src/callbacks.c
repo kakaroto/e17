@@ -189,13 +189,6 @@ static void remove_playlist_item(Euphoria *e, PlayListItem *pli) {
 	assert(pli);
 	
 	xmmsc_playlist_remove(e->xmms, pli->id);
-	/* This is all commented out pending xmms feeding us a valid id, on
-	 * playlist item removal */
-	/*
-	if(e->playlist->current_item == pli && e->track_current_pos > 0)
-	    xmmsc_playback_next(e->xmms);
-	playlist_item_remove(e->playlist, pli);
-	 */
 }
 
 EDJE_CB(playlist_item_remove) {
@@ -511,11 +504,14 @@ XMMS_CB(playback_status) {
 
 XMMS_CB(playback_playtime) {
 	PlayListItem *pli = e->playlist->current_item;
-	e->track_current_pos = (int) arg / 1000; /* time is in msecs */
 
-	ui_refresh_time(e, e->track_current_pos);
-	ui_refresh_seeker(e, (double) e->track_current_pos /
+	if(pli) {
+	    e->track_current_pos = (int) arg / 1000; /* time is in msecs */
+
+	    ui_refresh_time(e, e->track_current_pos);
+	    ui_refresh_seeker(e, (double) e->track_current_pos /
 	                  playlist_item_duration_get(pli));
+	}
 }
 
 XMMS_CB(playback_currentid) {
@@ -585,10 +581,11 @@ XMMS_CB(playlist_remove) {
 	PlayListItem *pli = NULL;
 	unsigned int id = (unsigned int) arg;
 	
-	/* FIXME: I think this is xmms2, id is always 0, stopping segv */
-	if (id < 1)
-	    fprintf(stderr, "Is %d what really was removed??? :)\n", id);
-	else {
+	if (id > 0) {
+	    if (xmmscs_playback_current_id(e->xmms) == id) {
+		xmmsc_playback_stop(e->xmms);
+		e->playlist->current_item = NULL;
+	    }
 	    pli = playlist_item_find_by_id(e->playlist, id);
 	    assert(pli);
 	    playlist_item_remove(e->playlist, pli);
