@@ -59,14 +59,6 @@ E_Power_epplet_SOURCES = E-Power.c
 E_Power_epplet_DEPENDENCIES = $(top_srcdir)/api/libepplet.la
 E_Power_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
 
-EppletTest_epplet_SOURCES = TestEpplet.c
-EppletTest_epplet_DEPENDENCIES = $(top_srcdir)/api/libepplet.la
-EppletTest_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
-
-EppletConfigTest_epplet_SOURCES = ConfigTestEpplet.c
-EppletConfigTest_epplet_DEPENDENCIES = $(top_srcdir)/api/libepplet.la
-EppletConfigTest_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
-
 E_Biff_epplet_SOURCES = E-Biff.c mbox.c
 E_Biff_epplet_DEPENDENCIES = $(top_srcdir)/api/libepplet.la
 E_Biff_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
