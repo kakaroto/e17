@@ -934,6 +934,7 @@ RaiseDesktop(int desk)
    if ((desk < 0) || (desk >= Conf.desks.num))
       EDBUG_RETURN_;
 
+   MenusHide();
    FocusNewDeskBegin();
    desks.desk[desk].viewable = 1;
    RefreshDesktop(desk);
