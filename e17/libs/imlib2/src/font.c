@@ -3,10 +3,14 @@
 #include "colormod.h"
 #include "image.h"
 #include "blend.h"
+#ifdef HAVE_FREETYPE1_FREETYPE_FREETYPE_H
+#include <freetype1/freetype/freetype.h>
+#else
 #ifdef HAVE_FREETYPE_FREETYPE_H
 #include <freetype/freetype.h>
 #else
 #include <freetype.h>
+#endif
 #endif
 #include "font.h"
 #include <sys/types.h>

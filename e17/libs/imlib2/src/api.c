@@ -24,10 +24,14 @@
 #include "updates.h"
 #include "rgbadraw.h"
 #include "Imlib2.h"
-#ifdef HAVE_FREETYPE_FREETYPE_H
+#ifdef HAVE_FREETYPE1_FREETYPE_FREETYPE_H
+#include <freetype1/freetype/freetype.h>
+#else 
+#if HAVE_FREETYPE_FREETYPE_H
 #include <freetype/freetype.h>
 #else
 #include <freetype.h>
+#endif
 #endif
 #include "font.h"
 #include "grad.h"
@@ -3236,14 +3240,33 @@ imlib_image_draw_pixel(int x, int y, char make_updates)
       return NULL;
    __imlib_DirtyImage(im);
    __imlib_DirtyPixmapsForImage(im);
-   return (Imlib_Updates) __imlib_draw_pixel(im, x, y,
-                                             (DATA8) ctx->color.red,
-					     (DATA8) ctx->color.green,
-					     (DATA8) ctx->color.blue,
-					     (DATA8) ctx->color.alpha,
-					     ctx->operation,
-					     (char) make_updates);
-}  
+   if (ctx->cliprect.w)
+   {
+      __imlib_set_point(im, x, y,
+                        (DATA8) ctx->color.red,
+                        (DATA8) ctx->color.green,
+                        (DATA8) ctx->color.blue,
+                        (DATA8) ctx->color.alpha,
+                        ctx->operation);
+   }
+   else
+   {
+      __imlib_set_point_clipped(im, x, y,
+                                ctx->cliprect.x,
+                                ctx->cliprect.x +
+                                ctx->cliprect.w - 1,
+                                ctx->cliprect.y,
+                                ctx->cliprect.y +
+                                ctx->cliprect.h - 1,
+                                (DATA8) ctx->color.red,
+                                (DATA8) ctx->color.green,
+                                (DATA8) ctx->color.blue,
+                                (DATA8) ctx->color.alpha,
+                                ctx->operation);
+   }  
+   if (!make_updates) return (Imlib_Updates) NULL;
+   return (Imlib_Updates) __imlib_AddUpdate(NULL, x, y, 1, 1);
+}
 
 Imlib_Updates
 imlib_image_draw_line(int x1, int y1, int x2, int y2, char make_updates)
