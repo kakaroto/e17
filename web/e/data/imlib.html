@@ -521,7 +521,7 @@ shape color, or if it is not desired, it can be removed by setting the RGB
 values for the Shape Color to R,G,B -1,-1,-1.
 <p>
 The way to retrieve the shape color, examine it and set it is as follows. It
-is assumes images have been loaded, Imlib initialised etc. already:
+is assumes images have been loaded, Imlib initialized etc. already:
 <p>
 <center><table width=100% border=1><tr><td bgcolor=#6a7a8a><pre>
 ImlibData *id;
@@ -671,7 +671,7 @@ all freed and their reference counts are zero, they will be freed from memory.
 Below is a list of All Imlib functions - the Xlib version fist, then the GDK
 version listed second. GDK Imlib functions do not use the ImlibData pointer
 at the start, and so this parameter, being common to ALL Xlib Imlib
-functions will not be mentioned, but it will be assumed you realise that it
+functions will not be mentioned, but it will be assumed you realize that it
 is required.
 <hr>
 <p>
@@ -709,9 +709,9 @@ void gdk_imlib_init_params(GdkImlibInitParams *p);
 <p>
 This function inititalised Imlib, BUT allows the programmer to specify
 startup parameters that override the users or system imrc file. Use these
-options with cauthion, as it is assumed you know what you are doing.
+options with caution, as it is assumed you know what you are doing.
 <p>
-The structure containing the parameters to giv Imlib is:
+The structure containing the parameters to give Imlib is:
 <p>
 <center><table width=100% border=1><tr><td bgcolor=#6a7a8a><pre>
 typedef struct _ImlibInitParams
@@ -743,11 +743,11 @@ typedef struct _ImlibInitParams
 #define PARAMS_PIXMAPCACHESIZE 1<<10
 </td></tr></table></center>
 <p>
-with a simliar one for gdk (same members), and same defines for the flags.
+with a similar one for gdk (same members), and same defines for the flags.
 <p>
 You set the bits in the flags member with the appropriate defines 
 (PARAMS_VISUALID | PARAMS_PALETTEFILE | PARAMS_SHAREDMEM etc.) which flag
-whihc members of the structure are actually relevant and should be used by
+which members of the structure are actually relevant and should be used by
 Imlib in overriding the user/system defaults. If the flag bit is set, then
 that structure member is used. the members are as follows:
 <p>
@@ -845,7 +845,7 @@ GdkImlibImage *gdk_imlib_load_image(char *file);
 This function loads the named file and returns a pointer to an image
 structure. Imlib will first check to see if the file has magic numbers
 defining it as a file Imlib can natively read - and then attempt to read it.
-If Imlib doesn't recognise the magic numbers, or certain native loaders
+If Imlib doesn't recognize the magic numbers, or certain native loaders
 have not been compiled in, it will fall back to asking Imagemagick's convert
 utility to convert the image into a PPM format image for Imlib to read in.
 If this doesn't work, Imlib will call on the NETPBM utilities to convert the
@@ -1281,12 +1281,12 @@ Visual *Imlib_get_visual(ImlibData *id);
 GdkVisual *gdk_imlib_get_visual();
 </td></tr></table></center>
 <p>
-This function returns the Visual that Imlib has decided to use (accoridng to
+This function returns the Visual that Imlib has decided to use (according to
 imrc and XServer capabilities).
 <p>
 <center><table width=100% border=1><tr><td bgcolor=#6a7a8a><pre>
 Colormap Imlib_get_colormap(ImlibData *id);
-GdkColormap *gdk_imlib_get_colormap();
+Gdk Colormap *gdk_imlib_get_colormap();
 </td></tr></table></center>
 <p>
 This function returns the Colormap that Imlib has chosen to use for its
@@ -1351,9 +1351,9 @@ void gdk_imlib_best_color_get(GdkColor *c);
 </td></tr></table></center>
 <p>
 This is a gdk_imlib only API call, as much of GTK and GDK pass GdkColor
-structs around, and so Imlbi will fill the pixel value of the GdkColro and
+structs around, and so Imlbi will fill the pixel value of the GdkColor and
 set the red, green and blue members to a member form Imlib's palette (unless
-it is in 15bpp or higher and palette remapping sin't forced), thus
+it is in 15bpp or higher and palette remapping isn't forced), thus
 conserving colors wherever possible. In truecolor and higher it will give
 exact matches.
 <p>
@@ -1369,7 +1369,7 @@ to determine filetype to save as, so saving as image.jpg will save as a jpeg,
 or saving as file.png will save as a png file etc. The info pointer can be 
 NULL, in which case the image will be saved with certain settings if the 
 format supports it. for example a jpeg image will always be saved at 80% 
-quality unless you provide a pointer to this structre and set the quality 
+quality unless you provide a pointer to this structure and set the quality 
 member to a value from 0 to 256, 256 being 100% quality, 0 being 0% quality. 
 Only jpeg images use this member. The other members of the info structure are 
 used for postscript saving, so if you plan to output as a postscript, file 

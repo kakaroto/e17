@@ -10,7 +10,7 @@ rectangles for speed if your CPU or graphics hardware are too slow.</p>
 <p>Evas abstracts any need to know much about what the characteristics of your
 XServer's display are, what depth or what magic visuals etc, it has. The
 most you need to tell Evas is how many colors (at a maximum) to use if the
-display is not a turecolor display. By default it is suggested to use 216
+display is not a truecolor display. By default it is suggested to use 216
 colors (as this equates to a 6x6x6 color cube - exactly the same color cube
 Netscape, Mozilla, gdkrgb etc. use so colors will be shared). If Evas can't
 allocate enough colors it keeps reducing the size of the color cube until it
@@ -77,7 +77,7 @@ program actually draws the data, with structured mode the program describes
 the data with primitives and lets the canvas handle the drawing. This means
 the program has to describe what it wants to draw in terms of the primitives
 given. Once this is done manipulating them is very easy since the canvas
-holds all the state of the boject and knows what changed. Here is a list of 
+holds all the state of the object and knows what changed. Here is a list of 
 them.
 </p>
 
@@ -136,8 +136,8 @@ Our result would be something like this:
 You may think "I can do this just as easily with normal X drawing primitives
 and a little extra sugar thrown in" but Evas does a whole lot more for you.
 You never need to know how to render the objects or handle re-rendering
-them. Evas does this and optimise's it for you. It handles layering and
-re-sizing, it optimise's everything to minimize CPU effort with a dynamic set 
+them. Evas does this and optimizes it for you. It handles layering and
+re-sizing, it optimizes everything to minimize CPU effort with a dynamic set 
 of objects. It handles the work to the point where ALL you need to do is
 create, destroy, show, hide, move, resize etc. objects and Evas does the
 rest of the nasty work for you.
@@ -382,7 +382,7 @@ evas_set_color(evas, object, 128, 0, 0, 128);
 <p>
 <a href=evas_recolor_eg_6.html><img src=img/evas_recolor_eg_6_thumb.png width=80 height=80 border=1></a>
 </p><p>
-As you can see, fading images out, tinting images is almost no workat all. 
+As you can see, fading images out, tinting images is almost no work at all. 
 In addition to being able to scale them, raise and lower them above and below
 other objects, have them alpha blend and more, you have a pretty simple way
 of creating complex effects within an Evas' canvas.
@@ -402,7 +402,7 @@ only what you can see through the "window" (or clip region) to show through.
 In theory you can use any object as a "window", or clip object, but due to
 back-end renderer limitations, Evas only supports using rectangle objects as
 clip objects for now. Using any other kind of object has undefined results. 
-Clip objects can be used to impliment things such as viewports, windows and 
+Clip objects can be used to implement things such as viewports, windows and 
 much more - you will need to use your imagination to really use them fully.
 </p><p>
 Also just like a window that may be stained a certain color, Evas can let
@@ -419,7 +419,7 @@ being able to tint and fade objects that are clipped all in one go.
 <p class="contenttitle">The Viewport and Resizing</p>
 <p>
 Evas operates on the concept of a viewport. A viewport is a rectangular
-region of an area that deifnes what part of that area we are looking at. In
+region of an area that defines what part of that area we are looking at. In
 Evas you tell Evas what the location and size of the viewport is. An  Evas
 canvas is almost infinite in size (as large a value as can be fit in a
 double precision number in both X and Y directions), and thus you need to
@@ -440,10 +440,10 @@ not display correctly.
 <p class="contenttitle">Handling Exposes</p>
 <p>
 Evas itself doe not hook to your event layer at all. It relies on you
-feeding events into it. One of these, required for consistant output, is
+feeding events into it. One of these, required for consistent output, is
 telling evas when a section of its output has been "exposed" (you get an
 expose event from X when this happens). This means that that area of the
-window has been damaged and needs to be redrawn. When you get na expose
+window has been damaged and needs to be redrawn. When you get an expose
 event you simply tell Evas about this event, and that's all you ever have to
 do. This is the only time you should need this function call at all since
 moving objects or changing things in the Evas canvas will internally trigger
@@ -460,7 +460,7 @@ the time whenever you make any changes at all to an Evas), Evas will keep
 rendering to a bare minimum for you, and still retain display quality and
 rendering speed. Remember to only call Evas's render calls when you program
 goes IDLE - ie no more events to process and no state to change. Doing
-otherwise will impact perfromance badly.
+otherwise will impact performance badly.
 </p>
 
 <p class="contenttitle"><img src=img/evas_canvas.png width=128 height=128></p>
@@ -474,7 +474,7 @@ Evas is to render to the display target by selecting the render method.
 <p class="contenttitle"><img src=img/evas_canvas.png width=128 height=128></p>
 <p class="contenttitle">Extra Text Calls</p>
 <p>
-Some extraq information on other calls to query text objects, allowing for
+Some extra information on other calls to query text objects, allowing for
 more complex formatting etc.
 </p>
 

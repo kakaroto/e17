@@ -46,18 +46,18 @@ handles filtering events and calling idle handlers when appropriate. Ecore is
 just what it says - a very complex CORE subsystem. It is all callback based,
 and keeps everything abstracted - but does not move away from normal X11
 primitives like other abstractions (gdk for example), thus keeping 100% 
-compatability with normal Xlib stuff. The core innards of E17 rely heavily on
+compatibility with normal Xlib stuff. The core innards of E17 rely heavily on
 Ecore and its ability to not just work, but work well and optimize silently for
 E17.
 </p>
 <p class="contenttitle"><img alt="" src="img/ruler.gif"></p>
 <p>
 <a href=ebits.html>Ebits</a> is a higher level abstraction of image groups
-built ontop of Evas. Basically it's what the old E16 window border logic 
+built on top of Evas. Basically it's what the old E16 window border logic 
 was - but on steroids. It can do a WHOLE lot more and is being used as the
 basic building block for all widgets in E17. A GUI editor is also there
 called Etcher - it can edit Ebits files - thus letting you have a nice GUI to 
-desing your widgets, window borders etc. in. 
+design your widgets, window borders etc. in. 
 </p>
 <p class="contenttitle"><img alt="" src="img/ruler.gif"></p>
 <p>
@@ -69,13 +69,13 @@ obstacles in the text area.
 </p>
 <p class="contenttitle"><img alt="" src="img/ruler.gif"></p>
 <p>
-<a href=edb.html>Edb</a> is a database abstraction layer to Berkley
+<a href=edb.html>Edb</a> is a database abstraction layer to Berkeley
 Databases. Edb contains the source for db 2.7.7, thus freezing the database
 format on disk, making sure it will never become incompatible (as is a habit
 of the db interface in libc). Edb wraps this with a convenience and
-optimization API layer, making database access easy, fast and consistant. It
+optimization API layer, making database access easy, fast and consistent. It
 handles typing of information in the database and much more. Edb is *VERY*
-fast and all of E17 configuration management is build ontop of it -
+fast and all of E17 configuration management is build on top of it -
 every configuration file is a database - including Ebits files. 
 </p>
 <p class="contenttitle"><img alt="" src="img/ruler.gif"></p>
@@ -93,7 +93,7 @@ does the nasty IO work. cK is currently busy working on this.
 </p>
 <p class="contenttitle"><img alt="" src="img/ruler.gif"></p>
 <p>
-<a href=ewl.html>Ewl</a> is a widget set built ontop of these subsystems.
+<a href=ewl.html>Ewl</a> is a widget set built on top of these subsystems.
 </p>
 <p class="contenttitle"><img alt="" src="img/ruler.gif"></p>
 <p>
