@@ -202,7 +202,7 @@ _note_config_menu_new (Note *n)
    e_menu_item_label_set (mi, "Blue Bg");
    e_menu_item_radio_set(mi, 1);
    e_menu_item_radio_group_set(mi, 2);
-   if (n->conf->bgcolor == BGCOLOR_GREEN) e_menu_item_toggle_set (mi, 1);
+   if (n->conf->bgcolor == BGCOLOR_BLUE) e_menu_item_toggle_set (mi, 1);
    e_menu_item_callback_set (mi, _note_menu_bgcolor_blue, n);
    
    mi = e_menu_item_new(mn);
