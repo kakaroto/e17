@@ -110,11 +110,18 @@ int main(int argc, char **argv)
 							 GTK_SIGNAL_FUNC(OpenImageFromMenu), NULL);
 	gtk_signal_connect(GTK_OBJECT(FSave), "activate",
 							 GTK_SIGNAL_FUNC(SaveImage), NULL);
+	gtk_signal_connect(GTK_OBJECT(FSaveAs), "activate",
+							 GTK_SIGNAL_FUNC(ShowSaveSel), NULL);
 
 	gtk_signal_connect(GTK_OBJECT(GTK_FILE_SELECTION(FileSel)->cancel_button),
 							 "clicked", (GtkSignalFunc) CloseFileSel, FileSel);
 	gtk_signal_connect(GTK_OBJECT(GTK_FILE_SELECTION(FileSel)->ok_button),
 							 "clicked", (GtkSignalFunc) FileOpen, FileSel);
+	
+	gtk_signal_connect(GTK_OBJECT(GTK_FILE_SELECTION(SaveSel)->cancel_button),
+							 "clicked", (GtkSignalFunc) CloseSaveSel, SaveSel);
+	gtk_signal_connect(GTK_OBJECT(GTK_FILE_SELECTION(SaveSel)->ok_button),
+							 "clicked", (GtkSignalFunc) SaveImageAs, SaveSel);
 	
 	gtk_signal_connect(GTK_OBJECT(FExit), "activate",
 							 GTK_SIGNAL_FUNC(CloseWindow), NULL);
@@ -234,6 +241,24 @@ void SaveImage(GtkWidget *widget, GdkEvent *event, gpointer data)
 {
 	printf("Saving %s\n...", currentimage);
 	imlib_save_image(currentimage);
+}
+
+void ShowSaveSel(GtkWidget *widget, GdkEvent *event, gpointer data)
+{
+	gtk_widget_show(SaveSel);
+}
+
+void CloseSaveSel(GtkWidget *widget, GdkEvent *event, gpointer data)
+{
+	gtk_widget_hide(SaveSel);
+}
+
+void SaveImageAs(GtkWidget *widget, GtkFileSelection *fs)
+{
+	printf("save as function\n");
+	imagefile = gtk_file_selection_get_filename(GTK_FILE_SELECTION(fs));
+	gtk_widget_hide(SaveSel);
+	imlib_save_image(imagefile);
 }
 
 void RefreshImage(GtkWidget *widget, GdkEvent *event, gpointer data)
