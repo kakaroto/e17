@@ -132,4 +132,4 @@ AC_SUBST(evas_libs)
 AC_SUBST(ttf_includes)
 AC_SUBST(ttf_libs)
 
-AC_OUTPUT([ Makefile src/Makefile debian/Makefile ], )
+AC_OUTPUT([ Makefile src/Makefile debian/Makefile test/Makefile], )
