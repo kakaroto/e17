@@ -147,3 +147,45 @@ ewl_widget_set_type(Ewl_Widget * w, Ewl_Widget_Type t)
 
 	DLEAVE_FUNCTION;
 }
+
+void
+ewl_widget_set_data(Ewl_Widget * w, char * k, void * v)
+{
+	DENTER_FUNCTION;
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_PARAM_PTR("k", k);
+	DCHECK_PARAM_PTR("v", v);
+
+	if (!w->data)
+		w->data = ewd_hash_new(ewd_str_hash, ewd_str_compare);
+
+	ewd_hash_set(w->data, k, v);
+
+	DLEAVE_FUNCTION;
+}
+
+void
+ewl_widget_del_data(Ewl_Widget * w, char * k)
+{
+	DENTER_FUNCTION;
+	DCHECK_PARAM_PTR("w", w);
+	DCHECK_PARAM_PTR("k", k);
+
+	if (!w->data)
+		DRETURN;
+
+	DLEAVE_FUNCTION;
+}
+
+void *
+ewl_widget_get_data(Ewl_Widget * w, char * k)
+{
+	DENTER_FUNCTION;
+	DCHECK_PARAM_PTR_RET("w", w, NULL);
+	DCHECK_PARAM_PTR_RET("k", k, NULL);
+
+	if (!w->data)
+		DRETURN_PTR(NULL);
+
+	DRETURN_PTR(ewd_hash_get(w->data, k));
+}
