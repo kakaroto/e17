@@ -84,7 +84,7 @@ int e_mouse_move(void *data, int type, void * ev)
 	info = (Evas_Engine_Info_Software_X11 *)evas_engine_info_get(evas);
 	if (e->win != info->info.drawable)
 		return 1;
-	evas_event_feed_mouse_move(evas, e->x, e->y);
+	evas_event_feed_mouse_move(evas, e->x, e->y, NULL);
 	return 1;
 	data = NULL;
 	type = 0;
@@ -99,7 +99,7 @@ int e_mouse_down(void *data, int type, void * ev)
 	info = (Evas_Engine_Info_Software_X11 *)evas_engine_info_get(evas);
 	if (e->win != info->info.drawable)
 		return 1;
-	evas_event_feed_mouse_down(evas, e->button);
+	evas_event_feed_mouse_down(evas, e->button, EVAS_BUTTON_NONE, NULL);
 	return 1;
 	data = NULL;
 	type = 0;
@@ -114,7 +114,7 @@ int e_mouse_up(void *data, int type, void * ev)
 	info = (Evas_Engine_Info_Software_X11 *)evas_engine_info_get(evas);
 	if (e->win != info->info.drawable)
 		return 1;
-	evas_event_feed_mouse_up(evas, e->button);
+	evas_event_feed_mouse_up(evas, e->button, EVAS_BUTTON_NONE, NULL);
 	return 1;
 	data = NULL;
 	type = 0;
