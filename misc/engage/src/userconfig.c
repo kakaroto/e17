@@ -68,6 +68,24 @@ _userconfig_applinks_change(void *data, E_App *a, E_App_Change ch)
           od_icon_del(tmp);
         }
         break;
+      case E_APP_CHANGE:
+        /* this is a hack for now, if icon is changed see if it really is new.
+         */
+        l = dock.applnks;
+        tmp = NULL;
+        while (l) {
+          if (strcmp(((OD_Icon *) l->data)->winclass, a->winclass) == 0) {
+             tmp = l->data;
+             break;
+          }
+          l = l->next;
+        }
+        if (!tmp) {
+          tmp = od_icon_new_applnk(a, NULL, NULL);
+          tmp->launcher = 1;
+          od_dock_add_applnk(tmp);
+        }
+        break;
       default:
         printf("Unhandled callback on applinks %d\n", ch);
     }
