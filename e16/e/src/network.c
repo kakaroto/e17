@@ -126,7 +126,8 @@ GetNetText(char *URL)
 
 }
 
-time_t GetNetFileDate(char *URL)
+time_t
+GetNetFileDate(char *URL)
 {
 
 #ifdef AUTOUPGRADE

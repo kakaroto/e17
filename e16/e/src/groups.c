@@ -599,9 +599,10 @@ ChooseGroupDialog(EWin * ewin, char *message, char group_select, int action)
        && (action == ACTION_BREAK_GROUP || action == ACTION_REMOVE_FROM_GROUP))
      {
 	DIALOG_OK(_("Window Group Error"),
-	      _("\n  This window currently does not belong to any groups.  \n"
-	     "  You can only destroy groups or remove windows from groups  \n"
-		"  through a window that actually belongs to at least one group.\n\n"));
+		  _
+		  ("\n  This window currently does not belong to any groups.  \n"
+		   "  You can only destroy groups or remove windows from groups  \n"
+		   "  through a window that actually belongs to at least one group.\n\n"));
 	return;
      }
    if ((num_groups == 0) && (group_select == GROUP_SELECT_ALL_EXCEPT_EWIN))
@@ -615,7 +616,8 @@ ChooseGroupDialog(EWin * ewin, char *message, char group_select, int action)
    if (!tmp_groups)
      {
 	DIALOG_OK(_("Window Group Error"),
-		  _("\n  Currently, no groups exist. You have to start a group first.\n\n"));
+		  _
+		  ("\n  Currently, no groups exist. You have to start a group first.\n\n"));
 	return;
      }
 

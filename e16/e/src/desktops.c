@@ -421,7 +421,7 @@ FreeDesktopBG(Background * bg)
 	char                stuff[255];
 
 	Esnprintf(stuff, sizeof(stuff), _("%u references remain\n"),
-					 bg->ref_count);
+		  bg->ref_count);
 	DIALOG_OK(_("Background Error!"), stuff);
 
 	EDBUG_RETURN_;
@@ -1110,9 +1110,9 @@ InitDesktopControls()
 		     duplicate(_("Hold down the mouse button and drag\n"
 				 "the mouse to be able to drag the desktop\n"
 				 "back and forth.\n"
-			        "Click right mouse button for a list of all\n"
+				 "Click right mouse button for a list of all\n"
 				 "Desktops and their applications.\n"
-			       "Click middle mouse button for a list of all\n"
+				 "Click middle mouse button for a list of all\n"
 				 "applications currently running.\n"));
 	       }
 	     else
@@ -1120,9 +1120,9 @@ InitDesktopControls()
 		  ac->tooltipstring =
 		     duplicate(_("This is the Root desktop.\n"
 				 "You cannot drag the root desktop around.\n"
-			        "Click right mouse button for a list of all\n"
+				 "Click right mouse button for a list of all\n"
 				 "Desktops and their applications.\n"
-			       "Click middle mouse button for a list of all\n"
+				 "Click middle mouse button for a list of all\n"
 				 "applications currently running.\n"));
 	       }
 	  }

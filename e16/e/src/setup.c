@@ -221,10 +221,10 @@ SetupX()
 	Alert(_("Enlightenment cannot connect to the display nominated by\n"
 		"your shell's DISPLAY environment variable. You may set this\n"
 		"variable to indicate which display name Enlightenment is to\n"
-	     "connect to. It may be that you do not have an Xserver already\n"
-	      "running to serve that Display connection, or that you do not\n"
-	      "have permission to connect to that display. Please make sure\n"
-	     "all is correct before trying again. Run an Xserver by running\n"
+		"connect to. It may be that you do not have an Xserver already\n"
+		"running to serve that Display connection, or that you do not\n"
+		"have permission to connect to that display. Please make sure\n"
+		"all is correct before trying again. Run an Xserver by running\n"
 		"xdm or startx first, or contact your local system\n"
 		"administrator, or Xserver vendor, or read the X, xdm and\n"
 		"startx manual pages before proceeding.\n"));
@@ -751,7 +751,8 @@ SetupEnv()
    return;
 }
 
-Window MakeExtInitWin(void)
+Window
+MakeExtInitWin(void)
 {
    Display            *d2;
    Window              win;

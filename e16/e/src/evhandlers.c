@@ -1,18 +1,18 @@
 /*
  * Copyright (C) 2000 Carsten Haitzler, Geoff Harrison and various contributors
- *
+ * *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
  * deal in the Software without restriction, including without limitation the
  * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
  * sell copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * *
  * The above copyright notice and this permission notice shall be included in
  * all copies of the Software, its documentation and marketing & publicity
  * materials, and acknowledgment shall be given in the documentation, materials
  * and software packages that this Software was used.
- *
+ * *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
@@ -492,8 +492,7 @@ HandleMotion(XEvent * ev)
 								  (gwins
 								   [i]->reqx,
 								   gwins[i]->x,
-								   mode.
-								   edge_snap_dist)))))))
+								   mode.edge_snap_dist)))))))
 		       {
 			  jumpx = 1;
 			  ndx = gwins[i]->reqx - gwins[i]->x + dx;
@@ -516,8 +515,7 @@ HandleMotion(XEvent * ev)
 								  (gwins
 								   [i]->reqy,
 								   gwins[i]->y,
-								   mode.
-								   edge_snap_dist)))))))
+								   mode.edge_snap_dist)))))))
 		       {
 			  jumpy = 1;
 			  ndy = gwins[i]->reqy - gwins[i]->y + dy;
@@ -773,7 +771,6 @@ HandleMotion(XEvent * ev)
 #ifdef HAS_XINERAMA
 	static XineramaScreenInfo *screens;
 	static int          num_screens;
-
 #endif
 	EWin               *menus[256];
 	int                 fx[256];
@@ -782,6 +779,11 @@ HandleMotion(XEvent * ev)
 	int                 ty[256];
 	static int          menu_scroll_dist = 4;
 	int                 my_width, my_height, x_org, y_org;
+
+	my_width = root.w;
+	my_height = root.h;
+	x_org = 0;
+	y_org = 0;
 
 #ifdef HAS_XINERAMA
 	if (xinerama_active)
@@ -803,74 +805,35 @@ HandleMotion(XEvent * ev)
 				 if (mode.y <=
 				     (screens[i].height + screens[i].y_org))
 				   {
-				      if (mode.x >
-					  ((screens[i].x_org + screens[i].width)
-					   - (menu_scroll_dist + 1)))
-					{
-					   xdist =
-					      -(menu_scroll_dist +
-						(mode.x -
-						 (screens[i].x_org +
-						  screens[i].width)));
-					}
-				      else if (mode.x <
-					       (menu_scroll_dist +
-						screens[i].x_org))
-					{
-					   xdist =
-					      menu_scroll_dist - (mode.x -
-								  screens[i].
-								  x_org);
-					}
-				      if (mode.y >
-					  ((screens
-					    [i].y_org + screens[i].height) -
-					   (menu_scroll_dist + 1)))
-					{
-					   ydist =
-					      -(menu_scroll_dist +
-						(mode.y -
-						 (screens[i].y_org +
-						  screens[i].width)));
-					}
-				      else if (mode.y <
-					       (menu_scroll_dist +
-						screens[i].y_org))
-					{
-					   ydist =
-					      menu_scroll_dist - (mode.y -
-								  screens[i].
-								  y_org);
-					}
+				      my_width = screens[i].width;
+				      my_height = screens[i].height;
+				      x_org = screens[i].x_org;
+				      y_org = screens[i].y_org;
 				   }
 			      }
 			 }
 		    }
 	       }
 	  }
-	else
-	  {
 #endif
-	     if (mode.x > (root.w - (menu_scroll_dist + 1)))
-	       {
-		  xdist = -(menu_scroll_dist + (mode.x - root.w));
-	       }
-	     else if (mode.x < menu_scroll_dist)
-	       {
-		  xdist = menu_scroll_dist - (mode.x);
-	       }
 
-	     if (mode.y > (root.h - (menu_scroll_dist + 1)))
-	       {
-		  ydist = -(menu_scroll_dist + (mode.y - root.h));
-	       }
-	     else if (mode.y < menu_scroll_dist)
-	       {
-		  ydist = menu_scroll_dist - (mode.y);
-	       }
-#ifdef HAS_XINERAMA
+	if (mode.x > ((x_org + my_width) - (menu_scroll_dist + 1)))
+	  {
+	     xdist = -(menu_scroll_dist + (mode.x - (x_org + my_width)));
 	  }
-#endif
+	else if (mode.x < (menu_scroll_dist + x_org))
+	  {
+	     xdist = x_org + menu_scroll_dist - (mode.x);
+	  }
+
+	if (mode.y > (root.h - (menu_scroll_dist + 1)))
+	  {
+	     ydist = -(menu_scroll_dist + (mode.y - (y_org + my_height)));
+	  }
+	else if (mode.y < (menu_scroll_dist + y_org))
+	  {
+	     ydist = y_org + menu_scroll_dist - (mode.y);
+	  }
 
 	/* That's a hack to avoid unwanted events:
 	 * If the user entered the border area, he has to
@@ -878,9 +841,9 @@ HandleMotion(XEvent * ev)
 	 */
 	if ((xdist != 0) || (ydist != 0) || mode.doingslide)
 	  {
-	     menu_scroll_dist = -10;
 	     /* -10 has no meaning, only makes sure that the if's */
 	     /* above can't be fulfilled ... */
+	     menu_scroll_dist = -10;
 	  }
 	else
 	  {
@@ -891,46 +854,10 @@ HandleMotion(XEvent * ev)
 	  {
 	     int                 x1, y1, x2, y2;
 
-	     x1 = root.w;
-	     x2 = -1;
-	     y1 = root.h;
-	     y2 = -1;
-#ifdef HAS_XINERAMA
-	     if (xinerama_active)
-	       {
-		  int                 i;
-
-		  if (!screens)
-		    {
-		       screens = XineramaQueryScreens(disp, &num_screens);
-		    }
-		  for (i = 0; i < num_screens; i++)
-		    {
-		       if (mode.x >= screens[i].x_org)
-			 {
-			    if (mode.x <= (screens[i].width + screens[i].x_org))
-			      {
-				 if (mode.y >= screens[i].y_org)
-				   {
-				      if (mode.y <=
-					  (screens[i].height +
-					   screens[i].y_org))
-					{
-					   x1 =
-					      screens[i].x_org +
-					      screens[i].width;
-					   x2 = screens[i].x_org - 1;
-					   x1 =
-					      screens[i].y_org +
-					      screens[i].height;
-					   x2 = screens[i].y_org - 1;
-					}
-				   }
-			      }
-			 }
-		    }
-	       }
-#endif
+	     x1 = x_org + my_width;
+	     x2 = x_org - 1;
+	     y1 = y_org + my_height;
+	     y2 = y_org - 1;
 	     /* work out the minimum and maximum extents of our */
 	     /* currently active menus */
 	     for (i = 0; i < mode.cur_menu_depth; i++)
@@ -952,76 +879,22 @@ HandleMotion(XEvent * ev)
 		    }
 	       }
 
-#ifdef HAS_XINERAMA
-	     if (xinerama_active)
+	     if (xdist < 0)
 	       {
-		  int                 i;
-
-		  if (!screens)
-		    {
-		       screens = XineramaQueryScreens(disp, &num_screens);
-		    }
-		  for (i = 0; i < num_screens; i++)
-		    {
-		       if (mode.x >= screens[i].x_org)
-			 {
-			    if (mode.x <= (screens[i].width + screens[i].x_org))
-			      {
-				 if (mode.y >= screens[i].y_org)
-				   {
-				      if (mode.y <=
-					  (screens[i].height +
-					   screens[i].y_org))
-					{
-					   if (xdist < 0)
-					     {
-						offx =
-						   screens[i].width +
-						   screens[i].x_org - x2;
-					     }
-					   else if (xdist > 0)
-					     {
-						offx = -x1;
-					     }
-
-					   if (ydist < 0)
-					     {
-						offy =
-						   screens[i].height +
-						   screens[i].y_org - y2;
-					     }
-					   else if (ydist > 0)
-					     {
-						offy = -y1;
-					     }
-					}
-				   }
-			      }
-			 }
-		    }
+		  offx = (x_org + my_width) - x2;
 	       }
-	     else
+	     else if (xdist > 0)
 	       {
-#endif
-		  if (xdist < 0)
-		    {
-		       offx = root.w - x2;
-		    }
-		  else if (xdist > 0)
-		    {
-		       offx = -x1;
-		    }
-		  if (ydist < 0)
-		    {
-		       offy = root.h - y2;
-		    }
-		  else if (ydist > 0)
-		    {
-		       offy = -y1;
-		    }
-#ifdef HAS_XINERAMA
+		  offx = x_org - x1;
 	       }
-#endif
+	     if (ydist < 0)
+	       {
+		  offy = (y_org + my_height) - y2;
+	       }
+	     else if (ydist > 0)
+	       {
+		  offy = y_org - y1;
+	       }
 
 	     if ((xdist < 0) && (offx <= 0))
 		xdist = offx;
@@ -1032,52 +905,12 @@ HandleMotion(XEvent * ev)
 	     if ((ydist > 0) && (offy >= 0))
 		ydist = offy;
 
-	     my_width = root.w;
-	     my_height = root.h;
-	     x_org = 0;
-	     y_org = 0;
-
-#ifdef HAS_XINERAMA
-	     if (xinerama_active)
-	       {
-		  int                 i;
-
-		  if (!screens)
-		    {
-		       screens = XineramaQueryScreens(disp, &num_screens);
-		    }
-		  for (i = 0; i < num_screens; i++)
-		    {
-		       if (mode.x >= screens[i].x_org)
-			 {
-			    if (mode.x <= (screens[i].width + screens[i].x_org))
-			      {
-				 if (mode.y >= screens[i].y_org)
-				   {
-				      if (mode.y <=
-					  (screens[i].height +
-					   screens[i].y_org))
-					{
-					   my_width = screens[i].width;
-					   my_height = screens[i].height;
-					   x_org = screens[i].x_org;
-					   y_org = screens[i].y_org;
-					}
-				   }
-			      }
-			 }
-		    }
-	       }
-#endif
 	     /* only if any active menus are partially off screen then scroll */
-	     if (
-		 (((xdist > 0) && (x1 < x_org))
+	     if ((((xdist > 0) && (x1 < x_org))
 		  || ((xdist < 0) && (x2 >= (x_org + my_width))))
 		 || (((ydist > 0) && (y1 < y_org))
 		     || ((ydist < 0) && (y2 >= (y_org + my_height)))))
 	       {
-		  char                doit = 0;
-
 		  /* If we would scroll too far, limit scrolling to 2/3s of screen */
 		  if (ydist < -my_width)
 		     ydist = -my_width * SCROLL_RATIO;
@@ -1091,56 +924,22 @@ HandleMotion(XEvent * ev)
 
 		  for (i = 0; i < mode.cur_menu_depth; i++)
 		    {
+		       menus[i] = NULL;
 		       if (mode.cur_menu[i])
 			 {
 			    ewin = FindEwinByMenu(mode.cur_menu[i]);
 			    if (ewin)
 			      {
-				 char                ok = 0;
-
-				 if (ewin->x >= x_org)
-				   {
-				      if (ewin->x <= (x_org + my_width))
-					{
-					   if (ewin->y >= y_org)
-					     {
-						if (ewin->y <=
-						    (my_height + y_org))
-						  {
-						     ok = 1;
-						  }
-					     }
-					}
-				   }
-				 if (!ok)
-				   {
-				      doit = 1;
-				   }
+				 menus[i] = ewin;
+				 fx[i] = ewin->x;
+				 fy[i] = ewin->y;
+				 tx[i] = ewin->x + xdist;
+				 ty[i] = ewin->y + ydist;
 			      }
 			 }
 		    }
-
-		  if (doit)
-		    {
-		       for (i = 0; i < mode.cur_menu_depth; i++)
-			 {
-			    menus[i] = NULL;
-			    if (mode.cur_menu[i])
-			      {
-				 ewin = FindEwinByMenu(mode.cur_menu[i]);
-				 if (ewin)
-				   {
-				      menus[i] = ewin;
-				      fx[i] = ewin->x;
-				      fy[i] = ewin->y;
-				      tx[i] = ewin->x + xdist;
-				      ty[i] = ewin->y + ydist;
-				   }
-			      }
-			 }
-		       SlideEwinsTo(menus, fx, fy, tx, ty, mode.cur_menu_depth,
-				    mode.shadespeed);
-		    }
+		  SlideEwinsTo(menus, fx, fy, tx, ty, mode.cur_menu_depth,
+			       mode.shadespeed);
 	       }
 	  }
 	if (((xdist != 0) || (ydist != 0)) && (mode.warpmenus))
@@ -1210,6 +1009,7 @@ HandleMotion(XEvent * ev)
 	       }
 	  }
      }
+   /* dialogs? */
    {
       Dialog             *d;
       DItem              *di;
@@ -1244,8 +1044,8 @@ HandleMotion(XEvent * ev)
 		       {
 			  di->item.slider.wanted_val += dy;
 			  di->item.slider.val = di->item.slider.lower +
-			     ((((di->
-				 item.slider.base_h - di->item.slider.knob_h -
+			     ((((di->item.
+				 slider.base_h - di->item.slider.knob_h -
 				 di->item.slider.wanted_val) *
 				(di->item.slider.upper -
 				 di->item.slider.lower)) /
@@ -1563,10 +1363,10 @@ HandleConfigureRequest(XEvent * ev)
 		  else if (xwc.stack_mode == Below)
 		     LowerEwin(ewin);
 	       }
-/*        else
- * XConfigureWindow(disp, ewin->win,
- * ev->xconfigurerequest.value_mask &
- * (CWSibling | CWStackMode), &xwc); */
+	     /*        else
+	      * XConfigureWindow(disp, ewin->win,
+	      * ev->xconfigurerequest.value_mask &
+	      * (CWSibling | CWStackMode), &xwc); */
 	  }
 	/* this ugly workaround here is because x11amp is very brain-dead */
 	/* and sets its minunum and maximm sizes the same - fair enough */
@@ -1950,14 +1750,14 @@ HandleMouseDown(XEvent * ev)
 	   FocusToEWin(ewin);
 	if (ewin)
 	   RaiseEwin(ewin);
-/* allow click to pass thorugh */
+	/* allow click to pass thorugh */
 	if ((ewin) && (ewin->win_container == win))
 	  {
 	     XSync(disp, False);
 	     XAllowEvents(disp, ReplayPointer, CurrentTime);
 	     XSync(disp, False);
 	  }
-/* done */
+	/* done */
      }
    if (m)
      {
@@ -2184,8 +1984,7 @@ HandleMouseDown(XEvent * ev)
 		if ((ewin) && (!ewin->pager))
 		  {
 		     Window              dw;
-		     int                 wx, wy, ww, wh, ax, ay, cx, cy;
-		     int                 px, py;
+		     int                 wx, wy, ww, wh, ax, ay, cx, cy, px, py;
 
 		     PagerHideHi(p);
 		     pwin_px = ewin->x;
@@ -2683,8 +2482,7 @@ HandleMouseUp(XEvent * ev)
 		  if ((ewin) && (ewin->pager))
 		    {
 		       Pager              *pp;
-		       int                 w, h, x, y, ax, ay, cx, cy;
-		       int                 px, py;
+		       int                 w, h, x, y, ax, ay, cx, cy, px, py;
 		       int                 wx, wy, base_x = 0, base_y = 0;
 		       Window              dw;
 

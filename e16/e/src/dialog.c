@@ -1194,8 +1194,8 @@ DialogRealizeItem(Dialog * d, DItem * di)
 		  ImlibImage         *im;
 
 		  im =
-		     ELoadImage(di->item.slider.ic_border->norm.
-				normal->im_file);
+		     ELoadImage(di->item.slider.ic_border->norm.normal->
+				im_file);
 		  if (im)
 		    {
 		       di->item.slider.border_orig_w = im->rgb_width;
@@ -1471,13 +1471,12 @@ DialogRealizeItem(Dialog * d, DItem * di)
 					       dii->y +
 					       ((dii->h
 						 -
-						 dii->item.
-						 check_button.check_orig_h) /
-						2),
-					       dii->item.
-					       check_button.check_orig_w,
-					       dii->item.
-					       check_button.check_orig_h);
+						 dii->item.check_button.
+						 check_orig_h) / 2),
+					       dii->item.check_button.
+					       check_orig_w,
+					       dii->item.check_button.
+					       check_orig_h);
 			  if (dii->type == DITEM_RADIOBUTTON)
 			     EMoveResizeWindow(disp,
 					       dii->item.radio_button.radio_win,
@@ -1485,13 +1484,12 @@ DialogRealizeItem(Dialog * d, DItem * di)
 					       dii->y +
 					       ((dii->h
 						 -
-						 dii->item.
-						 radio_button.radio_orig_h) /
-						2),
-					       dii->item.
-					       radio_button.radio_orig_w,
-					       dii->item.
-					       radio_button.radio_orig_h);
+						 dii->item.radio_button.
+						 radio_orig_h) / 2),
+					       dii->item.radio_button.
+					       radio_orig_w,
+					       dii->item.radio_button.
+					       radio_orig_h);
 			  if (dii->type == DITEM_AREA)
 			    {
 			       dii->item.area.w = dii->w -
@@ -2001,7 +1999,8 @@ DialogItemAreaSetSize(DItem * di, int w, int h)
    di->item.area.h = h;
 }
 
-Window DialogItemAreaGetWindow(DItem * di)
+Window
+DialogItemAreaGetWindow(DItem * di)
 {
    return di->item.area.area_win;
 }

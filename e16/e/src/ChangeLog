@@ -4617,3 +4617,10 @@ Fri Apr  7 11:44:00 GMT 2000
 
 Tasklist/desktop menu window raising fix requested by lee@brave.com.
 
+
+-------------------------------------------------------------------------------
+
+Mon Apr 10 12:45:00 PDT 2000
+(Mandrake)
+
+redid all the xinerama menu code

@@ -1381,7 +1381,7 @@ Config_Border(FILE * ConfigFile)
 	  }
      }
    Alert(_("Warning:  Configuration appears to have ended before we were\n"
-	 "Done loading a Main Border block.  Outcome is likely not good.\n"));
+	   "Done loading a Main Border block.  Outcome is likely not good.\n"));
 }
 
 void
@@ -2274,7 +2274,7 @@ Config_ActionClass(FILE * ConfigFile)
       Efree(action_tooltipstring);
    RecoverUserConfig();
    Alert(_("Warning:  Configuration appears to have ended before we were\n"
-       "Done loading an Action Class block.  Outcome is likely not good.\n"));
+	   "Done loading an Action Class block.  Outcome is likely not good.\n"));
 }
 
 void
@@ -2479,7 +2479,7 @@ Config_ImageClass(FILE * ConfigFile)
 	  }
      }
    Alert(_("Warning:  Configuration appears to have ended before we were\n"
-	 "Done loading an ImageClass block.  Outcome is likely not good.\n"));
+	   "Done loading an ImageClass block.  Outcome is likely not good.\n"));
 }
 
 void
@@ -3672,14 +3672,14 @@ LoadEConfig(char *themelocation)
 		"system, and so it will have almost no configuration loaded\n"
 		"when it starts up. This is most likely the sign of a bad\n"
 		"installation of Enlightenment if this directory is missing.\n"
-	      "The likely causes are that the package was improperly built,\n"
+		"The likely causes are that the package was improperly built,\n"
 		"if a binary package, or 'make install' hasn't been typed\n"
 		"or during the installation the directory above was not\n"
 		"able to be copied over for installation perhaps due to\n"
-	      "permissions or lack of disk space. It also could be that the\n"
+		"permissions or lack of disk space. It also could be that the\n"
 		"config directory has been inadvertently deleted since\n"
 		"installation.\n"
-	     "This is a serious problem and should be rectified immediately\n"
+		"This is a serious problem and should be rectified immediately\n"
 		"Please contact your system administrator or package "
 		"maintainer.\n"
 		"If you are the administrator of your own system please\n"
@@ -4164,13 +4164,13 @@ RecoverUserConfig(void)
 	ASSIGN_ALERT(_("Recover system config?"),
 		     _("Yes, Attempt recovery"),
 		     _("Restart and try again"), _("Quit and give up"));
-	Alert(
-	  _("Enlightenment has encountered parsing errors in your autosaved\n"
-	    "configuration.\n" "\n"
-	    "This may be due to filing system errors, Minor bugs or "
-	    "unforeseen\n" "system shutdowns.\n" "\n"
-	    "Do you wish Enlightenment to recover its original system\n"
-	    "configuration and try again?\n"));
+	Alert(_
+	      ("Enlightenment has encountered parsing errors in your autosaved\n"
+	       "configuration.\n" "\n"
+	       "This may be due to filing system errors, Minor bugs or "
+	       "unforeseen\n" "system shutdowns.\n" "\n"
+	       "Do you wish Enlightenment to recover its original system\n"
+	       "configuration and try again?\n"));
 	RESET_ALERT;
 	mode.autosave = 0;
 	MapUnmap(1);
