@@ -2079,3 +2079,33 @@ buttons working in addition to labels and images.  The default setup is now
 prettier as well.  I also included another sample config file to give you an
 idea of the flexibility it supports.  And there's more to come, of course.
 
+-------------------------------------------------------------------------------
+
+Wed Apr 26 20:06:43 PDT 2000
+(KainX)
+
+First off, I altered the API library so that images would be properly scaled
+before being drawn, rather than just assuming that the image size was okay.  I
+also added a function, Epplet_add_sized_popup_entry(), to allow for image
+buttons with scaled images in a popup.  Added popup support to E-Toolbox as
+well.  You can now have buttons that popup other buttons, and those other
+buttons can have images or labels.  So can the popup button itself, and the
+popup button can be a "standard" button too.  (The only caviat is that the
+popup button must come before any of the buttons in the menu that it pops up;
+no biggie.)
+
+I've included a sample config file to demonstrate this.  popup-sample.cfg
+shows a single 1x1 up-arrow button which pops up several other buttons.  Nice
+and small; stays out of your way until you need it. :-)
+
+I had to fix several issues with the epplet library to make some of this stuff
+work, but nothing that violates the spirit of epplets.  For example,
+Epplet_gadget_show() now delays the actual drawing of the epplet gadgets until
+the epplet itself is unhidden.  And the image button sizing bug with the popup
+stuff is fixed.  Stuff like that. =)
+
+I'm going to try to add a GUI configuration interface, as well as come up with
+some more sophisticated sample configs.  Just give me time.
+
+Also, if you have a toolbox icon (preferably rendered) or can make one, please
+let me know.  E-Toolbox needs an icon. :-)

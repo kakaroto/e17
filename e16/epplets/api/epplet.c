@@ -46,6 +46,7 @@ static char        *epplet_name = NULL;
 static char        *epplet_cfg_file = NULL;
 static int          epplet_instance = 0;
 static int          need_remember = 0;
+static char         epplet_visible = 0;
 
 static int          gad_num = 0;
 static Epplet_gadget *gads = NULL;
@@ -958,6 +959,8 @@ Epplet_show(void)
 {
    XEvent              ev;
 
+   epplet_visible = 1;
+   Epplet_redraw();
    XMapWindow(disp, mainwin->win);
    /* wait for the window to map */
    XMaskEvent(disp, StructureNotifyMask, &ev);
@@ -2224,12 +2227,23 @@ Epplet_draw_textbox(Epplet_gadget eg)
 	im = Imlib_load_image(id, g->image);
 	if (im)
 	  {
-	     int                 x, y;
-
-	     x = (g->w - im->rgb_width) / 2;
-	     y = (g->h - im->rgb_height) / 2;
-	     Imlib_paste_image(id, im, g->pmap, x, y,
-			       im->rgb_width, im->rgb_height);
+             int                 x, y, w, h;
+            
+             if (g->w > im->rgb_width) {
+               w = im->rgb_width;
+               x = (g->w - im->rgb_width) / 2;
+             } else {
+               w = g->w;
+               x = 0;
+             }
+             if (g->h > im->rgb_height) {
+               h = im->rgb_height;
+               y = (g->h - im->rgb_height) / 2;
+             } else {
+               h = g->h;
+               y = 0;
+             }
+             Imlib_paste_image(id, im, g->pmap, x, y, w, h);
 	     Imlib_destroy_image(id, im);
 	  }
      }
@@ -2680,12 +2694,23 @@ Epplet_draw_button(Epplet_gadget eg)
 	     im = Imlib_load_image(id, g->image);
 	     if (im)
 	       {
-		  int                 x, y;
+		  int                 x, y, w, h;
 
-		  x = (g->w - im->rgb_width) / 2;
-		  y = (g->h - im->rgb_height) / 2;
-		  Imlib_paste_image(id, im, g->pmap, x, y,
-				    im->rgb_width, im->rgb_height);
+                  if (g->w > im->rgb_width) {
+                    w = im->rgb_width;
+                    x = (g->w - im->rgb_width) / 2;
+                  } else {
+                    w = g->w;
+                    x = 0;
+                  }
+                  if (g->h > im->rgb_height) {
+                    h = im->rgb_height;
+                    y = (g->h - im->rgb_height) / 2;
+                  } else {
+                    h = g->h;
+                    y = 0;
+                  }
+		  Imlib_paste_image(id, im, g->pmap, x, y, w, h);
 		  Imlib_destroy_image(id, im);
 	       }
 	  }
@@ -2712,12 +2737,23 @@ Epplet_draw_button(Epplet_gadget eg)
 	     im = Imlib_load_image(id, g->image);
 	     if (im)
 	       {
-		  int                 x, y;
+		  int                 x, y, w, h;
 
-		  x = (g->w - im->rgb_width) / 2;
-		  y = (g->h - im->rgb_height) / 2;
-		  Imlib_paste_image(id, im, g->pmap, x, y,
-				    im->rgb_width, im->rgb_height);
+                  if (g->w > im->rgb_width) {
+                    w = im->rgb_width;
+                    x = (g->w - im->rgb_width) / 2;
+                  } else {
+                    w = g->w;
+                    x = 0;
+                  }
+                  if (g->h > im->rgb_height) {
+                    h = im->rgb_height;
+                    y = (g->h - im->rgb_height) / 2;
+                  } else {
+                    h = g->h;
+                    y = 0;
+                  }
+		  Imlib_paste_image(id, im, g->pmap, x, y, w, h);
 		  Imlib_destroy_image(id, im);
 	       }
 	  }
@@ -2822,12 +2858,23 @@ Epplet_draw_togglebutton(Epplet_gadget eg)
 	im = Imlib_load_image(id, g->image);
 	if (im)
 	  {
-	     int                 x, y;
-
-	     x = (g->w - im->rgb_width) / 2;
-	     y = (g->h - im->rgb_height) / 2;
-	     Imlib_paste_image(id, im, g->pmap, x, y,
-			       im->rgb_width, im->rgb_height);
+             int                 x, y, w, h;
+            
+             if (g->w > im->rgb_width) {
+               w = im->rgb_width;
+               x = (g->w - im->rgb_width) / 2;
+             } else {
+               w = g->w;
+               x = 0;
+             }
+             if (g->h > im->rgb_height) {
+               h = im->rgb_height;
+               y = (g->h - im->rgb_height) / 2;
+             } else {
+               h = g->h;
+               y = 0;
+             }
+             Imlib_paste_image(id, im, g->pmap, x, y, w, h);
 	     Imlib_destroy_image(id, im);
 	  }
      }
@@ -3412,6 +3459,12 @@ void
 Epplet_add_popup_entry(Epplet_gadget gadget, char *label, char *pixmap,
 		       void                (*func) (void *data), void *data)
 {
+  Epplet_add_sized_popup_entry(gadget, label, pixmap, -1, -1, func, data);
+}
+
+void
+Epplet_add_sized_popup_entry(Epplet_gadget gadget, char *label, char *pixmap, int w, int h, void (*func) (void *data), void *data)
+{
    GadPopup           *g;
 
    g = (GadPopup *) gadget;
@@ -3432,18 +3485,18 @@ Epplet_add_popup_entry(Epplet_gadget gadget, char *label, char *pixmap,
 	ImlibImage         *im;
 
 	im = Imlib_load_image(id, g->entry[g->entry_num - 1].image);
-	g->w = im->rgb_width;
-	g->h = im->rgb_height;
+	g->entry[g->entry_num - 1].w = ((w == -1) ? im->rgb_width : w);
+	g->entry[g->entry_num - 1].h = ((h == -1) ? im->rgb_height : h);
 	Imlib_destroy_image(id, im);
      }
    else if (g->entry[g->entry_num - 1].label)
      {
-	int                 w, h;
+	int                 tw, th;
 
 	Epplet_textclass_get_size("EPPLET_POPUP",
-				  &w, &h, g->entry[g->entry_num - 1].label);
-	g->entry[g->entry_num - 1].w = w;
-	g->entry[g->entry_num - 1].h = h;
+				  &tw, &th, g->entry[g->entry_num - 1].label);
+	g->entry[g->entry_num - 1].w = ((w == -1) ? tw : w);
+	g->entry[g->entry_num - 1].h = ((h == -1) ? th : h);
      }
    g->changed = 1;
 }
@@ -3721,12 +3774,23 @@ Epplet_draw_popupbutton(Epplet_gadget eg)
 	     im = Imlib_load_image(id, g->image);
 	     if (im)
 	       {
-		  int                 x, y;
+		  int                 x, y, w, h;
 
-		  x = (g->w - im->rgb_width) / 2;
-		  y = (g->h - im->rgb_height) / 2;
-		  Imlib_paste_image(id, im, g->pmap, x, y,
-				    im->rgb_width, im->rgb_height);
+                  if (g->w > im->rgb_width) {
+                    w = im->rgb_width;
+                    x = (g->w - im->rgb_width) / 2;
+                  } else {
+                    w = g->w;
+                    x = 0;
+                  }
+                  if (g->h > im->rgb_height) {
+                    h = im->rgb_height;
+                    y = (g->h - im->rgb_height) / 2;
+                  } else {
+                    h = g->h;
+                    y = 0;
+                  }
+		  Imlib_paste_image(id, im, g->pmap, x, y, w, h);
 		  Imlib_destroy_image(id, im);
 	       }
 	  }
@@ -4695,6 +4759,8 @@ Epplet_gadget_show(Epplet_gadget gadget)
    if (gg->visible)
       return;
    gg->visible = 1;
+   if (!epplet_visible)
+      return;
    switch (gg->type)
      {
      case E_BUTTON:
@@ -4986,12 +5052,18 @@ void
 Epplet_redraw(void)
 {
    int                 i;
+   GadGeneral     *gg;
 
    Epplet_refresh_backgrounds();
 
    for (i = 0; i < gad_num; i++)
      {
-	Epplet_gadget_draw(gads[i], 0, 0);
+        gg = (GadGeneral *) gads[i];
+        if (gg->visible)
+          {
+             gg->visible = 0;
+             Epplet_gadget_show(gads[i]);
+          }
      }
 }
 

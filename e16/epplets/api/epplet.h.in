@@ -336,6 +336,10 @@ Epplet_gadget       Epplet_create_popup(void);
 void                Epplet_add_popup_entry(Epplet_gadget gadget, char *label,
 					   char *pixmap,
 			void                (*func) (void *data), void *data);
+/* same as above, but specify a size */
+void                Epplet_add_sized_popup_entry(Epplet_gadget gadget, char *label,
+                                                 char *pixmap, int w, int h,
+                                                 void (*func) (void *data), void *data);
 
 /* remove an entry from a popup gadget */
 /* If entry num is positive or zero then it is relateive to elements */
