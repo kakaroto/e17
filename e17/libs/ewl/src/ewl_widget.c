@@ -1073,6 +1073,8 @@ void ewl_widget_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	 * Set up the theme object on the widgets evas
 	 */
 	if (w->theme_object) {
+		if (w->bit_state)
+  			edje_object_signal_emit(w->theme_object, w->bit_state, "EWL");
 
 		evas_object_layer_set(w->theme_object,
 				ewl_widget_layer_sum_get(w));
