@@ -47,7 +47,6 @@ create_toplevel (void)
   GtkWidget *separator3;
   GtkWidget *undo1;
   GtkWidget *redo1;
-  GtkWidget *etchings1;
   GtkWidget *help1;
   GtkWidget *help1_menu;
   GtkAccelGroup *help1_menu_accels;
@@ -487,13 +486,6 @@ create_toplevel (void)
   gtk_widget_add_accelerator (redo1, "activate", accel_group,
                               GDK_r, GDK_CONTROL_MASK,
                               GTK_ACCEL_VISIBLE);
-
-  etchings1 = gtk_menu_item_new_with_label (_("Etchings"));
-  gtk_widget_ref (etchings1);
-  gtk_object_set_data_full (GTK_OBJECT (toplevel), "etchings1", etchings1,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (etchings1);
-  gtk_container_add (GTK_CONTAINER (menubar1), etchings1);
 
   help1 = gtk_menu_item_new_with_label (_("Help"));
   gtk_widget_ref (help1);
@@ -1596,7 +1588,6 @@ create_toplevel (void)
   gtk_object_set_data_full (GTK_OBJECT (toplevel), "class", class,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (class);
-  gtk_entry_set_editable (GTK_ENTRY (class), FALSE);
   gtk_entry_set_text (GTK_ENTRY (class), _("Decoration"));
 
   label11 = gtk_label_new (_("Name"));
@@ -2392,9 +2383,6 @@ create_toplevel (void)
                       NULL);
   gtk_signal_connect (GTK_OBJECT (redo1), "activate",
                       GTK_SIGNAL_FUNC (on_redo1_activate),
-                      NULL);
-  gtk_signal_connect (GTK_OBJECT (etchings1), "activate",
-                      GTK_SIGNAL_FUNC (on_etchings1_activate),
                       NULL);
   gtk_signal_connect (GTK_OBJECT (about1), "activate",
                       GTK_SIGNAL_FUNC (on_about1_activate),
