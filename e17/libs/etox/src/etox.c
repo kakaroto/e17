@@ -283,9 +283,10 @@ void etox_insert_text(Evas_Object * obj, char *text, int index)
 	text2 = etox_get_text(obj);
 	if (text2) {
 		int len, len2;
+		char *tmp;
+
 		len = strlen(text);
 		len2 = strlen(text2);
-		char *tmp;
 
 		text2 = realloc(text2, len2 + len + 1);
 		tmp = text2 + index;
