@@ -47,7 +47,7 @@ init_parse_options(int argc, char **argv)
    opt.bg_r = 255;
    opt.fn_a = 255;
    opt.justification = JUST_LEFT;
-   opt.font = estrdup("20thcent/16");
+   opt.font = estrdup("helmetr/16");
    opt.pipe = 0;
    opt.bg_image = NULL;
    opt.bg_resize = 0;
@@ -254,7 +254,7 @@ show_usage(void)
            "                          white (255,255,255,255).\n"
            " -F, --font STR           draw using font STR. Size is specified with the\n"
            "                          name, eg \"arial/12\" for 12pt arial, default\n"
-           "                          is 20thcent/16 (a font supplied by gozer).\n"
+           "                          is helmetr/16 (a font supplied by gozer).\n"
            " -G, --bg-file FILE       load image FILE and draw the text on it\n"
            " -j, --justification STR  justify text, allowed values for STR are left,\n"
            "                          right, center or block. Default is left.\n"

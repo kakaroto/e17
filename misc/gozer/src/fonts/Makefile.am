@@ -6,13 +6,7 @@ AUTOMAKE_OPTIONS = 1.4 foreign
 MAINTAINERCLEANFILES = Makefile.in				
 
 fonts_DATA = \
-20thcent.ttf \
-cinema.ttf \
-goodtime.ttf \
-joystix.ttf \
-morpheus.ttf \
-notepad.ttf \
-soulpapa.ttf
+helmetr.ttf
 
 fontsdir=$(prefix)/share/@PACKAGE@/fonts
 
