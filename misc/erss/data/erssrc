@@ -10,6 +10,9 @@
 	<!-- Path to browser for launching urls -->
 	<browser>/usr/bin/galeon</browser>
 
+	<!-- Number of seconds before tooltip is displayed -->
+	<tooltip_delay>0.5</tooltip_delay>
+
 	<!-- Set your proxy server. Leave blank if none! -->
 	<proxy></proxy>
 	<proxy_port>3128</proxy_port>
