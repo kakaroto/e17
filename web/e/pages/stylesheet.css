@@ -33,7 +33,7 @@ a:active {
 
 /* Table data */
 td {
-  background-color: inherit;
+  background-color: transparent;
   color: #e0e0ff;
   font-family: "Helvetica", "Arial", "Lucida", sans-serif;
   font-size: 10pt;
@@ -42,13 +42,13 @@ td {
 /* <tr style="team-dark"> */
 tr.team-dark {
   background-color: #6a7a8a;
-  color: inherit;
+  color: transparent;
 } 
   
 /* Table border */
 table.border {
   background-color: #556677;
-  color: inherit;
+  color: transparent;
 }
 
 /* Table contents */
@@ -80,7 +80,7 @@ td.newsbody {
 td.border-tl {
   background-color: #667788;
   background-image: url(img/border_tl.gif);
-  color: inherit;
+  color: transparent;
   height: 25px;
   max-height: 25px;
   max-width: 25px;
@@ -93,14 +93,14 @@ td.border-tl {
 td.border-t {
   background-color: #667788;
   background-image: url(img/border_t.gif);
-  color: inherit;
+  color: transparent;
 }
   
 /* Top-right border */
 td.border-tr {
   background-color: #667788;
   background-image: url(img/border_tr.gif);
-  color: inherit;
+  color: transparent;
   height: 25px;
   max-height: 25px;
   max-width: 25px;
@@ -113,14 +113,14 @@ td.border-tr {
 td.border-r {
   background-color: #667788;
   background-image: url(img/border_r.gif);
-  color: inherit;
+  color: transparent;
 }
   
 /* Bottom-right border */
 td.border-br {
   background-color: #667788;
   background-image: url(img/border_br.gif);
-  color: inherit;
+  color: transparent;
   height: 25px;
   max-height: 25px;
   max-width: 25px;
@@ -133,14 +133,14 @@ td.border-br {
 td.border-b {
   background-color: #667788;
   background-image: url(img/border_b.gif);
-  color: inherit;
+  color: transparent;
 }
   
 /* Bottom-left border */
 td.border-bl {
   background-color: #667788;
   background-image: url(img/border_bl.gif);
-  color: inherit;
+  color: transparent;
   height: 25px;
   max-height: 25px;
   max-width: 25px;
@@ -153,12 +153,12 @@ td.border-bl {
 td.border-l {
   background-color: #667788;
   background-image: url(img/border_l.gif);
-  color: inherit;
+  color: transparent;
 }
   
 /* Paragraphs */
 p {
-  background-color: inherit;
+  background-color: transparent;
   color: #ffffff;
   font-family: "Arial", "Helvetica", "Lucida", sans-serif;
   font-size: 12pt;
@@ -167,7 +167,7 @@ p {
   
 /* <p style="items"> */
 p.items {
-  background-color: inherit;
+  background-color: transparent;
   color: #e0e0ff;
   font-family: "Arial", "Helvetica", "Lucida", sans-serif;
   font-size: 10pt;
@@ -177,7 +177,7 @@ p.items {
 
 /* <p style="contenttitle"> */
 p.contenttitle {
-  background-color: inherit;
+  background-color: transparent;
   color: #ffffff;
   font-family: "Arial", "Helvetica", "Lucida", sans-serif;
   font-size: 14pt;
@@ -196,7 +196,7 @@ pre {
 
 /* Unordered lists */
 ul {
-  background-color: inherit;
+  background-color: transparent;
   color: #ffffff;
   font-family: "Arial", "Helvetica", "Lucida", sans-serif;
   font-size: 10pt;
