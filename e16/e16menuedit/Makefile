@@ -2,7 +2,7 @@
 PACKAGE  = efm-test
 VERSION  = 0.0.0
 SRCS     = \
-    viewer.c menus.c ipc.c
+    viewer.c menus.c
 HEADERS  = \
     viewer.h menus.h
 DATA     =
@@ -129,31 +129,6 @@ dep depend:
 	$(SED) '/^# CUT/,$$d' Makefile > Makefile.tmp
 	echo "# CUT" >> Makefile.tmp
 	$(MAKEDEP) $(SRCS) >> Makefile.tmp && mv Makefile.tmp Makefile
-
-# File dependencies.  Do not remove the next line.  sed needs it.
 # CUT
-batch.o: batch.c batch.h events.h x.h ev_filter.h str.h mem.h util.h \
- file.h
-db.o: db.c db.h mem.h util.h str.h
-efm_view.o: efm_view.c x.h str.h mem.h util.h file.h events.h ev_x.h \
- ev_filter.h efm_view.h db.h im_engine.h batch.h glob.h
-ev_dispatch.o: ev_dispatch.c ev_dispatch.h events.h x.h str.h mem.h \
- util.h
-ev_filter.o: ev_filter.c ev_filter.h events.h x.h str.h mem.h util.h
-ev_ipc.o: ev_ipc.c events.h x.h ev_ipc.h str.h mem.h util.h file.h
-ev_session.o: ev_session.c str.h mem.h util.h
-ev_signal.o: ev_signal.c events.h x.h ev_signal.h str.h mem.h util.h
-ev_x.o: ev_x.c events.h x.h ev_x.h str.h mem.h util.h
-events.o: events.c events.h x.h ev_filter.h str.h mem.h util.h
-file.o: file.c file.h mem.h str.h events.h x.h db.h glob.h ev_ipc.h \
- jobs.h util.h
-glob.o: glob.c str.h glob.h
-im_engine.o: im_engine.c util.h mem.h str.h x.h events.h ev_x.h \
- im_engine.h db.h
-jobs.o: jobs.c jobs.h
-main.o: main.c events.h x.h ev_signal.h ev_x.h ev_ipc.h ev_filter.h \
- batch.h efm_view.h file.h db.h im_engine.h mem.h util.h str.h
-mem.o: mem.c mem.h
-str.o: str.c str.h mem.h
-util.o: util.c util.h mem.h str.h
-x.o: x.c x.h mem.h str.h
+viewer.o: viewer.c
+menus.o: menus.c menus.h viewer.h
