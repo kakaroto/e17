@@ -63,7 +63,6 @@ __imlib_BestVisual(Display *d, int screen, int *depth_return)
 	     XFree(xvir);
 	  }
      }
-   printf("%x\n", v->visualid);
    if (depth_return)
       *depth_return = maxd;
    return v;
