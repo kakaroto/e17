@@ -529,7 +529,7 @@ int ewd_tree_remove_node(Ewd_Tree * tree, Ewd_Tree_Node * node)
 		}
 
 		/*
-		 * Hide the 
+		 * Unlink the node to be moved from it's parent.
 		 */
 		if (traverse->parent) {
 			if (traverse->parent->left_child == traverse)
