@@ -47,27 +47,27 @@ tiff_la_LIBADD	     = @TIFFLIBS@ -lImlib2
 
 gif_la_SOURCES	     = loader_gif.c
 gif_la_LDFLAGS	     = -no-undefined -module -avoid-version -L$(top_builddir)/src
-gif_la_LIBADD	     = @GIFLIBS@ -lImlib2
+gif_la_LIBADD	     = @GIFLIBS@
 
 pnm_la_SOURCES	     = loader_pnm.c
 pnm_la_LDFLAGS	     = -no-undefined -module -avoid-version -L$(top_builddir)/src
-pnm_la_LIBADD	     = -lImlib2
+pnm_la_LIBADD	     = 
 
 argb_la_SOURCES	     = loader_argb.c
 argb_la_LDFLAGS	     = -no-undefined -module -avoid-version -L$(top_builddir)/src
-argb_la_LIBADD	     = -lImlib2
+argb_la_LIBADD	     = 
 
 bmp_la_SOURCES	     = loader_bmp.c
 bmp_la_LDFLAGS	     = -no-undefined -module -avoid-version -L$(top_builddir)/src
-bmp_la_LIBADD	     = -lImlib2
+bmp_la_LIBADD	     =
 
 xpm_la_SOURCES	     = loader_xpm.c
 xpm_la_LDFLAGS	     = -no-undefined -module -avoid-version -L$(top_builddir)/src
-xpm_la_LIBADD	     = -lImlib2
+xpm_la_LIBADD	     = 
 
 tga_la_SOURCES       = loader_tga.c
 tga_la_LDFLAGS	     = -no-undefined -module -avoid-version -L$(top_builddir)/src
-tga_la_LIBADD	     = -lImlib2
+tga_la_LIBADD	     = 
 
 gzbz2_la_SOURCES     = loader_gzbz2.c
 gzbz2_la_LDFLAGS     = -no-undefined -module -avoid-version -L$(top_builddir)/src
