@@ -1,5 +1,11 @@
 dnl# $Id$
 
+test "x$LIBTOOLIZE" = "x" && LIBTOOLIZE=true
+test "x$AUTOHEADER" = "x" && AUTOHEADER=true
+test "x$ACLOCAL" = "x" && ACLOCAL=true
+test "x$AUTOMAKE" = "x" && AUTOMAKE=true
+test "x$AUTOCONF" = "x" && AUTOCONF=true
+
 AC_SUBST(LIBTOOLIZE)
 AC_SUBST(AUTOHEADER)
 AC_SUBST(ACLOCAL)

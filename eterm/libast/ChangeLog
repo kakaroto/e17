@@ -643,3 +643,7 @@ Wed Mar 10 17:58:14 2004                        Michael Jennings (mej)
 
 Added array and dlinked_list implementations of the map interface.
 ----------------------------------------------------------------------
+Wed Mar 10 18:05:28 2004                        Michael Jennings (mej)
+
+Fix "make distcheck"
+----------------------------------------------------------------------
