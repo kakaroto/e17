@@ -136,7 +136,9 @@ int handler_server_add (void *data, int type, void *event)
 			 * Remove the evas object from the list 
 			 * and destory it.
 			 */
-			e_container_element_destroy (cont, ptr->obj);
+
+			if (ptr->obj)
+				e_container_element_destroy (cont, ptr->obj);
 
 			if (ptr->url)
 				free (ptr->url);
