@@ -202,6 +202,17 @@ main(int argc, char **argv)
    pagenum = 0;
 
    disp = XOpenDisplay(NULL);
+
+   /* now we'll set the locale */
+   setlocale(LC_ALL, "");
+   if (!XSupportsLocale())
+      setlocale(LC_ALL, "C");
+   XSetLocaleModifiers("");
+   setlocale(LC_ALL, NULL);
+
+   /* I dont want any internationalisation of my numeric input & output */
+   setlocale(LC_NUMERIC, "C");
+
    params.flags = PARAMS_IMAGECACHESIZE | PARAMS_PIXMAPCACHESIZE;
    params.imagecachesize = (w * h * 3 * 2);
    params.pixmapcachesize = (w * h * 3 * 2 * 8);

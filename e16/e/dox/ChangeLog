@@ -48,3 +48,11 @@ Sat Jul 10 16:45:42 PDT 1999
 
 added patch from Christian Kreibich <kreibich@informatik.tu-muenchen.de>
 to stop the memory leak in dox
+
+-----------------------------------------------------------------
+
+Sun Dec 26 22:54:57 PST 1999
+(Mandrake)
+
+Added patch from Yukihiro Nakai <nakai@internetsolutions.co.jp>
+to add setlocale to dox.c
