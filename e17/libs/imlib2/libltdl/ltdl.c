@@ -650,7 +650,6 @@ static int
 presym_close (handle)
 	lt_dlhandle handle;
 {
-	handle = 0;
 	return 0;
 }
 
@@ -974,7 +973,6 @@ load_deplibs(handle, deplibs)
 	const char *deplibs;
 {
 	/* FIXME: load deplibs */
-	deplibs = NULL;
 	handle->depcount = 0;
 	handle->deplibs = 0;
 	return 0;
@@ -985,7 +983,6 @@ unload_deplibs(handle)
 	lt_dlhandle handle;
 {
 	/* FIXME: unload deplibs */
-	handle = 0;
 	return 0;
 }
 

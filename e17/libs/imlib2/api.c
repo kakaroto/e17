@@ -200,6 +200,17 @@ imlib_image_get_data(Imlib_Image image)
    return im->data;
 }
 
+DATA32 *
+imlib_image_get_data_for_reading_only(Imlib_Image image)
+{
+   ImlibImage *im;
+
+   CAST_IMAGE(im, image);
+   if (!(im->data))
+      im->loader->load(im, NULL, 0, 1);
+   return im->data;
+}
+
 void 
 imlib_image_put_back_data(Imlib_Image image)
 {
@@ -269,6 +280,54 @@ imlib_image_set_format(Imlib_Image image, char *format)
    if (im->format)
       free(im->format);
    im->format = strdup(format);
+}
+
+void
+imlib_image_set_irrelevant_format(Imlib_Image image, char irrelevant)
+{
+   ImlibImage *im;
+
+   CAST_IMAGE(im, image);
+   if (irrelevant)
+     {
+	SET_FLAG(im->flags, F_FORMAT_IRRELEVANT); 
+     }
+   else
+     {
+	UNSET_FLAG(im->flags, F_FORMAT_IRRELEVANT); 
+     }
+}
+
+void
+imlib_image_set_irrelevant_border(Imlib_Image image, char irrelevant)
+{
+   ImlibImage *im;
+
+   CAST_IMAGE(im, image);
+   if (irrelevant)
+     {
+	SET_FLAG(im->flags, F_BORDER_IRRELEVANT); 
+     }
+   else
+     {
+	UNSET_FLAG(im->flags, F_BORDER_IRRELEVANT); 
+     }
+}
+
+void
+imlib_image_set_irrelevant_alpha(Imlib_Image image, char irrelevant)
+{
+   ImlibImage *im;
+
+   CAST_IMAGE(im, image);
+   if (irrelevant)
+     {
+	SET_FLAG(im->flags, F_ALPHA_IRRELEVANT); 
+     }
+   else
+     {
+	UNSET_FLAG(im->flags, F_ALPHA_IRRELEVANT); 
+     }
 }
 
 char *
@@ -1232,4 +1291,154 @@ imlib_apply_color_modifier(Imlib_Image image,
    CAST_IMAGE(im, image);
    __imlib_DataCmodApply(im->data, im->w, im->h, 0, 
 			 (ImlibColorModifier *)color_modifier);
+}
+
+void 
+imlib_apply_color_modifier_to_rectangle(Imlib_Image image, 
+					Imlib_Color_Modifier color_modifier,
+					int x, int y, int width, 
+					int height)
+{
+   ImlibImage *im;
+   
+   CAST_IMAGE(im, image);
+   if (x < 0)
+     {
+	width += x;
+	x = 0;
+     }
+   if (width <= 0)
+      return;
+   if ((x + width) > im->w)
+      width = (im->w - x);
+   if (width <= 0)
+      return;
+   if (y < 0)
+     {
+	height += y;
+	y = 0;
+     }
+   if (height <= 0)
+      return;
+   if ((y + height) > im->h)
+      height = (im->h - y);
+   if (height <= 0)
+      return;
+   __imlib_DataCmodApply(im->data + (y * im->w) + x, width, height, 
+			 im->w - width, 
+			 (ImlibColorModifier *)color_modifier);
+}
+
+Imlib_Updates
+imlib_image_draw_line(Imlib_Image image, int x1, int y1, int x2, int y2,
+		      Imlib_Color *color, Imlib_Operation operation,
+		      int make_updates)
+{
+   ImlibImage *im;
+   
+   CAST_IMAGE(im, image);
+   return (Imlib_Updates)__imlib_draw_line(im, x1, y1, x2, y2, 
+					   (DATA8)color->red, 
+					   (DATA8)color->green, 
+					   (DATA8)color->blue, 
+					   (DATA8)color->alpha, 
+					   (ImlibOp)operation,
+					   (char)make_updates);
+}
+
+void 
+imlib_image_draw_rectangle(Imlib_Image image, int x, int y, int width,
+			   int height, Imlib_Color *color, 
+			   Imlib_Operation operation)
+{
+   ImlibImage *im;
+   
+   CAST_IMAGE(im, image);
+   __imlib_draw_box(im, x, y, width, height, color->red, color->green,
+		    color->blue, color->alpha, (ImlibOp)operation);
+}
+
+void 
+imlib_image_fill_rectangle(Imlib_Image image, int x, int y, int width,
+			   int height, Imlib_Color *color, 
+			   Imlib_Operation operation)
+{
+   ImlibImage *im;
+   
+   CAST_IMAGE(im, image);
+   __imlib_draw_filled_box(im, x, y, width, height, color->red, color->green,
+			   color->blue, color->alpha, (ImlibOp)operation);
+}
+
+void 
+imlib_image_copy_alpha_to_image(Imlib_Image image_source,
+				Imlib_Image image_destination,
+				int x, int y)
+{
+   ImlibImage *im, *im2;
+   
+   CAST_IMAGE(im, image_source);
+   CAST_IMAGE(im2, image_destination);
+   __imlib_copy_alpha_data(im, im2, 0, 0, im->w, im->h, x, y);
+}
+
+void 
+imlib_image_copy_alpha_rectangle_to_image(Imlib_Image image_source,
+					  Imlib_Image image_destination,
+					  int x, int y, int width,
+					  int height, int destination_x,
+					  int destination_y)
+{
+   ImlibImage *im, *im2;
+   
+   CAST_IMAGE(im, image_source);
+   CAST_IMAGE(im2, image_destination);
+   __imlib_copy_alpha_data(im, im2, x, y, width, height, destination_x, 
+			   destination_y);
+}
+
+void 
+imlib_image_scroll_rect(Imlib_Image image, int x, int y, int width, 
+			int height, int delta_x, int delta_y)
+{
+   ImlibImage *im;
+   int xx, yy, w, h, nx, ny;
+   
+   CAST_IMAGE(im, image);
+   if (delta_x > 0)
+     {
+	xx = x;
+	nx = x + delta_x;
+	w = width - delta_x;
+     }
+   else
+     {
+	xx = x - delta_x;
+	nx = x;
+	w = width + delta_x;
+     }
+   if (delta_y > 0)
+     {
+	yy = y;
+	ny = y + delta_y;
+	h = height - delta_y;
+     }
+   else
+     {
+	yy = y - delta_y;
+	ny = y;
+	h = height + delta_y;
+     }
+   
+   __imlib_copy_image_data(im, xx, yy, w, h, nx, ny);
+}
+
+void 
+imlib_image_copy_rect(Imlib_Image image, int x, int y, int width, int height, 
+		      int new_x,int new_y)
+{
+   ImlibImage *im;
+   
+   CAST_IMAGE(im, image);
+   __imlib_copy_image_data(im, x, y, width, height, new_x, new_y);
 }

@@ -107,6 +107,7 @@ void imlib_free_image_and_decache(Imlib_Image image);
 int     imlib_image_get_width(Imlib_Image image);
 int     imlib_image_get_height(Imlib_Image image);
 DATA32 *imlib_image_get_data(Imlib_Image image);
+DATA32 *imlib_image_get_data_for_reading_only(Imlib_Image image);
 char    imlib_image_has_alpha(Imlib_Image image);
 char   *imlib_image_format(Imlib_Image image);
 void    imlib_image_put_back_data(Imlib_Image image);
@@ -115,7 +116,9 @@ void    imlib_image_set_never_changes_on_disk(Imlib_Image image);
 void    imlib_image_get_border(Imlib_Image image, Imlib_Border *border);
 void    imlib_image_set_border(Imlib_Image image, Imlib_Border *border);
 void    imlib_image_set_format(Imlib_Image image, char *format);
-
+void    imlib_image_set_irrelevant_format(Imlib_Image image, char irrelevant);
+void    imlib_image_set_irrelevant_border(Imlib_Image image, char irrelevant);
+void    imlib_image_set_irrelevant_alpha(Imlib_Image image, char irrelevant);
 /* image drawing/rendering functions */
 
 void imlib_render_pixmaps_for_whole_image(Imlib_Image image, Display *display,
@@ -311,24 +314,43 @@ void imlib_get_color_modifier_tables(Imlib_Color_Modifier color_modifier,
 void imlib_rset_color_modifier(Imlib_Color_Modifier color_modifier);
 void imlib_apply_color_modifier(Imlib_Image image, 
 				Imlib_Color_Modifier color_modifier);
+void imlib_apply_color_modifier_to_rectangle(Imlib_Image image, 
+					     Imlib_Color_Modifier color_modifier,
+					     int x, int y, int width, 
+					     int height);
 
-
-# if 0
-void imlib_image_draw_line(Imlib_Image image, int x1, int y1, int x1, int y2,
-			   Imlib_Color *color, Imlib_Operation operation);
-
-void imlib_image_copy_alpha_to_image(Imlib_Image image_source,
-				     Imlib_Image image_destination,
-				     int x, int y);
-void imlib_image_scroll_rect(Imlib_Image image, int x, int y, 
-			     int width, int height, int delta_x,
-			     int delta_y);
+Imlib_Updates imlib_image_draw_line(Imlib_Image image, int x1, int y1, 
+				    int x2, int y2,
+				    Imlib_Color *color, 
+				    Imlib_Operation operation,
+				    int make_updates);
 void imlib_image_draw_rectangle(Imlib_Image image, int x, int y, int width,
 				int height, Imlib_Color *color, 
 				Imlib_Operation operation);
 void imlib_image_fill_rectangle(Imlib_Image image, int x, int y, int width,
 				int height, Imlib_Color *color, 
 				Imlib_Operation operation);
+
+void imlib_image_copy_alpha_to_image(Imlib_Image image_source,
+				     Imlib_Image image_destination,
+				     int x, int y);
+void imlib_image_copy_alpha_rectangle_to_image(Imlib_Image image_source,
+					       Imlib_Image image_destination,
+					       int x, int y, int width,
+					       int height, int destination_x,
+					       int destination_y);
+void imlib_image_scroll_rect(Imlib_Image image, int x, int y, 
+			     int width, int height, int delta_x,
+			     int delta_y);
+void imlib_image_copy_rect(Imlib_Image image, int x, int y, 
+			     int width, int height, int new_x,
+			     int new_y);
+
+# if 0
+/* need to add arbitary rotation */
+/* polygon fills */
+
+
 Imlib_Color_Range imlib_create_color_range(void);
 void imlib_free_color_range(Imlib_Color_Range color_range);
 void imlib_add_color_to_color_range(Imlib_Color_Range color_range,

@@ -281,12 +281,35 @@ int main (int argc, char **argv)
 					       NULL, IMLIB_OP_COPY);
 		  first = 0;
 	       }
+#if 0	     
 	       {
 		  Imlib_Updates uu;
+		  Imlib_Color col;
 		  
-		  uu = (Imlib_Updates) __imlib_draw_line(im, 200, 200, x, y, 255, 255,
-				  255, 255, 0);
+		  col.red = 255;
+		  col.green = 255;
+		  col.blue = 255;
+		  col.alpha = 255;
+		  uu = imlib_image_draw_line(im, 200, 200, x, y, &col, 
+					     IMLIB_OP_COPY, 1);
 		  up = imlib_updates_append_updates(up, uu);
+	       }
+#endif
+	       {
+		  void *rg = NULL;;
+		  
+		  if (!rg)
+		    {
+		       rg = __imlib_CreateRange();
+		       __imlib_AddRangeColor(rg, 255, 255, 255, 255, 0);
+		       __imlib_AddRangeColor(rg, 255, 255, 160, 200, 1);
+		       __imlib_AddRangeColor(rg, 255, 160, 120, 140, 1);
+		       __imlib_AddRangeColor(rg, 100, 80, 100, 80, 1);
+		       __imlib_AddRangeColor(rg, 32, 48, 80, 0, 1);
+		    }
+		  __imlib_DrawGradient(im, 30, 30, 256, 256, rg, (double)x,
+				       IMLIB_OP_COPY);
+		  up = imlib_update_append_rect(up, 40, 40, 256, 256);
 	       }
 	     if (fon)
 	       {
