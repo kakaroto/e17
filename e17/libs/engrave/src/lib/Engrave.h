@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <Evas.h>
 
 typedef enum _Engrave_Image_Type Engrave_Image_Type;

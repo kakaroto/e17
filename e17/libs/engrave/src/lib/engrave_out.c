@@ -36,27 +36,27 @@ char *_text_effect_string[ENGRAVE_TEXT_EFFECT_NUM] = {
         };
 
 char *_action_string[ENGRAVE_ACTION_NUM] = {
-  	"STATE_SET",
-  	"ACTION_STOP",
-  	"SIGNAL_EMIT",
-  	"DRAG_VAL_SET",
-  	"DRAG_VAL_STEP",
-  	"DRAG_VAL_PAGE",
-  	"SCRIPT"
+        "STATE_SET",
+        "ACTION_STOP",
+        "SIGNAL_EMIT",
+        "DRAG_VAL_SET",
+        "DRAG_VAL_STEP",
+        "DRAG_VAL_PAGE",
+        "SCRIPT"
         };
 
 char *_transition_string[ENGRAVE_TRANSITION_NUM] = {
-	"LINEAR",
-	"SINUSOIDAL",
-	"ACCELERATE",
-	"DECELERATE"
+        "LINEAR",
+        "SINUSOIDAL",
+        "ACCELERATE",
+        "DECELERATE"
         };
 
 char *_aspect_preference_string[ENGRAVE_ASPECT_PREFERENCE_NUM] = {
-	"NONE",
-	"VERTICAL",
-	"HORIZONTAL",
-	"BOTH"
+        "NONE",
+        "VERTICAL",
+        "HORIZONTAL",
+        "BOTH"
         };
 
 static char *
