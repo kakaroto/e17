@@ -21,22 +21,32 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef _LIBAST_ARRAY_H_
-#define _LIBAST_ARRAY_H_
+#ifndef _LIBAST_AVL_TREE_H_
+#define _LIBAST_AVL_TREE_H_
+
+/*
+ * interface goop
+ */
 
 /* Standard typecast macros.... */
-#define SPIF_ARRAY(obj)                      (SPIF_CAST(array) (obj))
+#define SPIF_AVL_TREE_NODE(obj)                 (SPIF_CAST(avl_tree_node) (obj))
+#define SPIF_AVL_TREE(obj)                      (SPIF_CAST(avl_tree) (obj))
 
-#define SPIF_ARRAY_ISNULL(o)                 (SPIF_ARRAY(o) == SPIF_NULL_TYPE(array))
-#define SPIF_OBJ_IS_ARRAY(o)                 (SPIF_OBJ_IS_TYPE((o), array))
+#define SPIF_AVL_TREE_NODE_ISNULL(o)            (SPIF_AVL_TREE_NODE(o) == SPIF_NULL_TYPE(avl_tree_node))
+#define SPIF_OBJ_IS_AVL_TREE_NODE(o)            (SPIF_OBJ_IS_TYPE((o), avl_tree_node))
 
-SPIF_DEFINE_OBJ(array) {
-    SPIF_DECL_PARENT_TYPE(obj);
-    size_t len;
-    spif_obj_t *items;
+SPIF_DEFINE_OBJ(avl_tree_node) {
+    SPIF_DECL_PARENT_TYPE(nullobj);
+    spif_obj_t data;
+    spif_int8_t balance;
+    spif_avl_tree_node_t left, right;
 };
 
-extern spif_listclass_t SPIF_LISTCLASS_VAR(array);
-extern spif_vectorclass_t SPIF_VECTORCLASS_VAR(array);
+SPIF_DEFINE_OBJ(avl_tree) {
+    SPIF_DECL_PARENT_TYPE(obj);
+    size_t len;
+    spif_avl_tree_node_t root;
+};
 
-#endif /* _LIBAST_ARRAY_H_ */
+extern spif_vectorclass_t SPIF_VECTORCLASS_VAR(avl_tree);
+#endif /* _LIBAST_AVL_TREE_H_ */

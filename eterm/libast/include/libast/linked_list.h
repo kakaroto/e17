@@ -47,5 +47,5 @@ SPIF_DEFINE_OBJ(linked_list) {
     spif_linked_list_item_t head;
 };
 
-extern spif_listclass_t SPIF_CLASS_VAR(linked_list);
+extern spif_listclass_t SPIF_LISTCLASS_VAR(linked_list);
 #endif /* _LIBAST_LINKED_LIST_H_ */

@@ -106,9 +106,13 @@ extern int re_exec();
 #include <libast/url.h>
 
 #include <libast/list_if.h>
+#include <libast/vector_if.h>
+
 #include <libast/array.h>
 #include <libast/linked_list.h>
 #include <libast/dlinked_list.h>
+
+#include <libast/avl_tree.h>
 
 /******************************* GENERIC GOOP *********************************/
 #define USE_VAR(x)   (void) x

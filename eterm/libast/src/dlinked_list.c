@@ -51,6 +51,7 @@ static spif_classname_t spif_dlinked_list_type(spif_dlinked_list_t);
 static spif_bool_t spif_dlinked_list_append(spif_dlinked_list_t, spif_obj_t);
 static spif_bool_t spif_dlinked_list_contains(spif_dlinked_list_t, spif_obj_t);
 static size_t spif_dlinked_list_count(spif_dlinked_list_t);
+static spif_obj_t spif_dlinked_list_find(spif_dlinked_list_t, spif_obj_t);
 static spif_obj_t spif_dlinked_list_get(spif_dlinked_list_t, size_t);
 static size_t spif_dlinked_list_index(spif_dlinked_list_t, spif_obj_t);
 static spif_bool_t spif_dlinked_list_insert(spif_dlinked_list_t, spif_obj_t);
@@ -92,6 +93,7 @@ static spif_const_listclass_t dl_class = {
     (spif_func_t) spif_dlinked_list_append,
     (spif_func_t) spif_dlinked_list_contains,
     (spif_func_t) spif_dlinked_list_count,
+    (spif_func_t) spif_dlinked_list_find,
     (spif_func_t) spif_dlinked_list_get,
     (spif_func_t) spif_dlinked_list_index,
     (spif_func_t) spif_dlinked_list_insert,
@@ -104,7 +106,7 @@ static spif_const_listclass_t dl_class = {
     (spif_func_t) spif_dlinked_list_reverse,
     (spif_func_t) spif_dlinked_list_to_array
 };
-spif_listclass_t SPIF_CLASS_VAR(dlinked_list) = &dl_class;
+spif_listclass_t SPIF_LISTCLASS_VAR(dlinked_list) = &dl_class;
 /* *INDENT-ON* */
 
 static spif_dlinked_list_item_t
@@ -217,7 +219,7 @@ static spif_bool_t
 spif_dlinked_list_init(spif_dlinked_list_t self)
 {
     spif_obj_init(SPIF_OBJ(self));
-    spif_obj_set_class(SPIF_OBJ(self), SPIF_CLASS(SPIF_CLASS_VAR(dlinked_list)));
+    spif_obj_set_class(SPIF_OBJ(self), SPIF_CLASS(SPIF_LISTCLASS_VAR(dlinked_list)));
     self->len = 0;
     self->head = SPIF_NULL_TYPE(dlinked_list_item);
     self->tail = SPIF_NULL_TYPE(dlinked_list_item);
@@ -340,20 +342,26 @@ spif_dlinked_list_append(spif_dlinked_list_t self, spif_obj_t obj)
 static spif_bool_t
 spif_dlinked_list_contains(spif_dlinked_list_t self, spif_obj_t obj)
 {
-    spif_dlinked_list_item_t current;
-
-    for (current = self->head; current; current = current->next) {
-        if (SPIF_CMP_IS_EQUAL(SPIF_OBJ_COMP(current->data, obj))) {
-            return TRUE;
-        }
-    }
-    return FALSE;
+    return ((SPIF_LIST_ISNULL(spif_dlinked_list_find(self, obj))) ? (FALSE) : (TRUE));
 }
 
 static size_t
 spif_dlinked_list_count(spif_dlinked_list_t self)
 {
     return self->len;
+}
+
+static spif_obj_t
+spif_dlinked_list_find(spif_dlinked_list_t self, spif_obj_t obj)
+{
+    spif_dlinked_list_item_t current;
+
+    for (current = self->head; current; current = current->next) {
+        if (SPIF_CMP_IS_EQUAL(SPIF_OBJ_COMP(current->data, obj))) {
+            return current->data;
+        }
+    }
+    return SPIF_NULL_TYPE(obj);
 }
 
 static spif_obj_t

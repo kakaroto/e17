@@ -43,5 +43,5 @@ SPIF_DEFINE_OBJ(dlinked_list) {
     spif_dlinked_list_item_t head, tail;
 };
 
-extern spif_listclass_t SPIF_CLASS_VAR(dlinked_list);
+extern spif_listclass_t SPIF_LISTCLASS_VAR(dlinked_list);
 #endif /* _LIBAST_DLINKED_LIST_H_ */

@@ -29,17 +29,23 @@ static const char cvs_ident[] = "$Id$";
 
 #include <libast_internal.h>
 
-static spif_array_t spif_array_new(void);
-static spif_bool_t spif_array_init(spif_array_t);
+static spif_array_t spif_array_list_new(void);
+static spif_array_t spif_array_vector_new(void);
+static spif_bool_t spif_array_list_init(spif_array_t);
+static spif_bool_t spif_array_vector_init(spif_array_t);
 static spif_bool_t spif_array_done(spif_array_t);
 static spif_bool_t spif_array_del(spif_array_t);
 static spif_str_t spif_array_show(spif_array_t, spif_charptr_t, spif_str_t, size_t);
 static spif_cmp_t spif_array_comp(spif_array_t, spif_array_t);
-static spif_array_t spif_array_dup(spif_array_t);
+static spif_array_t spif_array_list_dup(spif_array_t);
+static spif_array_t spif_array_vector_dup(spif_array_t);
 static spif_classname_t spif_array_type(spif_array_t);
 static spif_bool_t spif_array_append(spif_array_t, spif_obj_t);
-static spif_bool_t spif_array_contains(spif_array_t, spif_obj_t);
+static spif_bool_t spif_array_list_contains(spif_array_t, spif_obj_t);
+static spif_bool_t spif_array_vector_contains(spif_array_t, spif_obj_t);
 static size_t spif_array_count(spif_array_t);
+static spif_obj_t spif_array_list_find(spif_array_t, spif_obj_t);
+static spif_obj_t spif_array_vector_find(spif_array_t, spif_obj_t);
 static spif_obj_t spif_array_get(spif_array_t, size_t);
 static size_t spif_array_index(spif_array_t, spif_obj_t);
 static spif_bool_t spif_array_insert(spif_array_t, spif_obj_t);
@@ -56,18 +62,19 @@ static spif_obj_t *spif_array_to_array(spif_array_t);
 static spif_const_listclass_t a_class = {
     {
         SPIF_DECL_CLASSNAME(array),
-        (spif_func_t) spif_array_new,
-        (spif_func_t) spif_array_init,
+        (spif_func_t) spif_array_list_new,
+        (spif_func_t) spif_array_list_init,
         (spif_func_t) spif_array_done,
         (spif_func_t) spif_array_del,
         (spif_func_t) spif_array_show,
         (spif_func_t) spif_array_comp,
-        (spif_func_t) spif_array_dup,
+        (spif_func_t) spif_array_list_dup,
         (spif_func_t) spif_array_type
     },
     (spif_func_t) spif_array_append,
-    (spif_func_t) spif_array_contains,
+    (spif_func_t) spif_array_list_contains,
     (spif_func_t) spif_array_count,
+    (spif_func_t) spif_array_list_find,
     (spif_func_t) spif_array_get,
     (spif_func_t) spif_array_index,
     (spif_func_t) spif_array_insert,
@@ -80,24 +87,67 @@ static spif_const_listclass_t a_class = {
     (spif_func_t) spif_array_reverse,
     (spif_func_t) spif_array_to_array
 };
-spif_listclass_t SPIF_CLASS_VAR(array) = &a_class;
+spif_listclass_t SPIF_LISTCLASS_VAR(array) = &a_class;
+
+static spif_const_vectorclass_t av_class = {
+    {
+        SPIF_DECL_CLASSNAME(array),
+        (spif_func_t) spif_array_vector_new,
+        (spif_func_t) spif_array_vector_init,
+        (spif_func_t) spif_array_done,
+        (spif_func_t) spif_array_del,
+        (spif_func_t) spif_array_show,
+        (spif_func_t) spif_array_comp,
+        (spif_func_t) spif_array_vector_dup,
+        (spif_func_t) spif_array_type
+    },
+    (spif_func_t) spif_array_vector_contains,
+    (spif_func_t) spif_array_count,
+    (spif_func_t) spif_array_vector_find,
+    (spif_func_t) spif_array_insert,
+    (spif_func_t) spif_array_iterator,
+    (spif_func_t) spif_array_next,
+    (spif_func_t) spif_array_remove,
+    (spif_func_t) spif_array_to_array
+};
+spif_vectorclass_t SPIF_VECTORCLASS_VAR(array) = &av_class;
 /* *INDENT-ON* */
 
 static spif_array_t
-spif_array_new(void)
+spif_array_list_new(void)
 {
     spif_array_t self;
 
     self = SPIF_ALLOC(array);
-    spif_array_init(self);
+    spif_array_list_init(self);
     return self;
 }
 
 static spif_bool_t
-spif_array_init(spif_array_t self)
+spif_array_list_init(spif_array_t self)
 {
     spif_obj_init(SPIF_OBJ(self));
-    spif_obj_set_class(SPIF_OBJ(self), SPIF_CLASS(SPIF_CLASS_VAR(array)));
+    spif_obj_set_class(SPIF_OBJ(self), SPIF_CLASS(SPIF_LISTCLASS_VAR(array)));
+    self->len = 0;
+    self->items = SPIF_NULL_CTYPE(spif_obj_t *);
+    return TRUE;
+}
+
+static spif_array_t
+spif_array_vector_new(void)
+{
+    spif_array_t self;
+
+    self = SPIF_ALLOC(array);
+    spif_array_vector_init(self);
+    return self;
+}
+
+static spif_bool_t
+spif_array_vector_init(spif_array_t self)
+{
+    spif_obj_init(SPIF_OBJ(self));
+    spif_obj_set_class(SPIF_OBJ(self), SPIF_CLASS(SPIF_VECTORCLASS_VAR(array)));
     self->len = 0;
     self->items = SPIF_NULL_CTYPE(spif_obj_t *);
     return TRUE;
@@ -170,12 +220,27 @@ spif_array_comp(spif_array_t self, spif_array_t other)
 }
 
 static spif_array_t
-spif_array_dup(spif_array_t self)
+spif_array_list_dup(spif_array_t self)
 {
     spif_array_t tmp;
     size_t i;
 
-    tmp = spif_array_new();
+    tmp = spif_array_list_new();
+    memcpy(tmp, self, SPIF_SIZEOF_TYPE(array));
+    tmp->items = SPIF_CAST_C(spif_obj_t *) MALLOC(SPIF_SIZEOF_TYPE(obj) * self->len);
+    for (i = 0; i < self->len; i++) {
+        tmp->items[i] = SPIF_CAST(obj) SPIF_OBJ_DUP(SPIF_OBJ(self->items[i]));
+    }
+    return tmp;
+}
+
+static spif_array_t
+spif_array_vector_dup(spif_array_t self)
+{
+    spif_array_t tmp;
+    size_t i;
+
+    tmp = spif_array_vector_new();
     memcpy(tmp, self, SPIF_SIZEOF_TYPE(array));
     tmp->items = SPIF_CAST_C(spif_obj_t *) MALLOC(SPIF_SIZEOF_TYPE(obj) * self->len);
     for (i = 0; i < self->len; i++) {
@@ -204,22 +269,60 @@ spif_array_append(spif_array_t self, spif_obj_t obj)
 }
 
 static spif_bool_t
-spif_array_contains(spif_array_t self, spif_obj_t obj)
+spif_array_list_contains(spif_array_t self, spif_obj_t obj)
 {
-    size_t i;
+    return ((SPIF_LIST_ISNULL(spif_array_list_find(self, obj))) ? (FALSE) : (TRUE));
+}
 
-    for (i = 0; i < self->len; i++) {
-        if (SPIF_CMP_IS_EQUAL(SPIF_OBJ_COMP(self->items[i], obj))) {
-            return TRUE;
-        }
-    }
-    return FALSE;
+static spif_bool_t
+spif_array_vector_contains(spif_array_t self, spif_obj_t obj)
+{
+    return ((SPIF_VECTOR_ISNULL(spif_array_vector_find(self, obj))) ? (FALSE) : (TRUE));
 }
 
 static size_t
 spif_array_count(spif_array_t self)
 {
     return self->len;
+}
+
+static spif_obj_t
+spif_array_list_find(spif_array_t self, spif_obj_t obj)
+{
+    size_t i;
+
+    for (i = 0; i < self->len; i++) {
+        if (SPIF_CMP_IS_EQUAL(SPIF_OBJ_COMP(self->items[i], obj))) {
+            return self->items[i];
+        }
+    }
+    return SPIF_NULL_TYPE(obj);
+}
+
+static spif_obj_t
+spif_array_vector_find(spif_array_t self, spif_obj_t obj)
+{
+    size_t start, end, mid;
+    spif_cmp_t diff;
+
+    if (self->len == 0) {
+        return SPIF_NULL_TYPE(obj);
+    }
+    for (start = 0, end = self->len - 1; start <= end; ) {
+        mid = (end - start) / 2 + start;
+        diff = SPIF_OBJ_COMP(self->items[mid], obj);
+        if (SPIF_CMP_IS_EQUAL(diff)) {
+            return self->items[mid];
+        } else if (SPIF_CMP_IS_LESS(diff)) {
+            start = mid + 1;
+        } else {
+            end = mid - 1;
+            if (end == (size_t) -1) {
+                break;
+            }
+        }
+    }
+    return SPIF_NULL_TYPE(obj);
 }
 
 static spif_obj_t

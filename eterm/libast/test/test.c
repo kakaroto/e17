@@ -42,6 +42,7 @@ int test_str(void);
 int test_tok(void);
 int test_url(void);
 int test_list(void);
+int test_vector(void);
 int test_socket(void);
 int test_regexp(void);
 
@@ -876,6 +877,18 @@ test_list(void)
         TEST_FAIL_IF(SPIF_LIST_COUNT(testlist) != 6);
         TEST_PASS();
 
+        TEST_BEGIN("SPIF_LIST_FIND() macro");
+        s = spif_str_new_from_ptr("0");
+        TEST_FAIL_IF(SPIF_STR_COMP(s, SPIF_STR(SPIF_LIST_FIND(testlist, s))) != SPIF_CMP_EQUAL);
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "3");
+        TEST_FAIL_IF(SPIF_STR_COMP(s, SPIF_STR(SPIF_LIST_FIND(testlist, s))) != SPIF_CMP_EQUAL);
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "8");
+        TEST_FAIL_IF(!SPIF_STR_ISNULL(SPIF_STR(SPIF_LIST_FIND(testlist, s))));
+        spif_str_del(s);
+        TEST_PASS();
+
         TEST_BEGIN("SPIF_LIST_GET() macro");
         s = spif_str_new_from_ptr("2");
         TEST_FAIL_IF(SPIF_STR_COMP(s, SPIF_STR(SPIF_LIST_GET(testlist, 2))) != SPIF_CMP_EQUAL);
@@ -1048,6 +1061,123 @@ test_list(void)
     }
 
     TEST_PASSED("list interface class");
+    return 0;
+}
+
+int
+test_vector(void)
+{
+    unsigned short i;
+    spif_vector_t testvector;
+    spif_str_t s, s2;
+    spif_obj_t *vector_array;
+
+    for (i = 0; i < 1; i++) {
+        if (i == 0) {
+            TEST_NOTICE("Testing vector interface class, array instance:");
+            testvector = SPIF_VECTOR_NEW(array);
+        } else if (i == 1) {
+        }
+
+        TEST_BEGIN("SPIF_VECTOR_INSERT() macro");
+        SPIF_VECTOR_INSERT(testvector, spif_str_new_from_ptr("1"));
+        s = spif_str_new_from_ptr("1");
+        TEST_FAIL_IF(!SPIF_VECTOR_CONTAINS(testvector, s));
+        spif_str_done(s);
+        SPIF_VECTOR_INSERT(testvector, spif_str_new_from_ptr("3"));
+        spif_str_init_from_ptr(s, "3");
+        TEST_FAIL_IF(!SPIF_VECTOR_CONTAINS(testvector, s));
+        spif_str_done(s);
+        SPIF_VECTOR_INSERT(testvector, spif_str_new_from_ptr("2"));
+        spif_str_init_from_ptr(s, "2");
+        TEST_FAIL_IF(!SPIF_VECTOR_CONTAINS(testvector, s));
+        spif_str_done(s);
+        SPIF_VECTOR_INSERT(testvector, spif_str_new_from_ptr("5"));
+        spif_str_init_from_ptr(s, "5");
+        TEST_FAIL_IF(!SPIF_VECTOR_CONTAINS(testvector, s));
+        spif_str_done(s);
+        SPIF_VECTOR_INSERT(testvector, spif_str_new_from_ptr("0"));
+        spif_str_init_from_ptr(s, "0");
+        TEST_FAIL_IF(!SPIF_VECTOR_CONTAINS(testvector, s));
+        spif_str_done(s);
+        SPIF_VECTOR_INSERT(testvector, spif_str_new_from_ptr("4"));
+        spif_str_init_from_ptr(s, "4");
+        TEST_FAIL_IF(!SPIF_VECTOR_CONTAINS(testvector, s));
+        spif_str_del(s);
+        TEST_PASS();
+
+        TEST_BEGIN("SPIF_VECTOR_CONTAINS() macro");
+        s = spif_str_new_from_ptr("0");
+        TEST_FAIL_IF(!SPIF_VECTOR_CONTAINS(testvector, s));
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "3");
+        TEST_FAIL_IF(!SPIF_VECTOR_CONTAINS(testvector, s));
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "5");
+        TEST_FAIL_IF(!SPIF_VECTOR_CONTAINS(testvector, s));
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "8");
+        TEST_FAIL_IF(SPIF_VECTOR_CONTAINS(testvector, s));
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "0.2");
+        TEST_FAIL_IF(SPIF_VECTOR_CONTAINS(testvector, s));
+        spif_str_del(s);
+        TEST_PASS();
+
+        TEST_BEGIN("SPIF_VECTOR_COUNT() macro");
+        TEST_FAIL_IF(SPIF_VECTOR_COUNT(testvector) != 6);
+        TEST_PASS();
+
+        TEST_BEGIN("SPIF_VECTOR_FIND() macro");
+        s = spif_str_new_from_ptr("0");
+        TEST_FAIL_IF(SPIF_STR_COMP(s, SPIF_STR(SPIF_VECTOR_FIND(testvector, s))) != SPIF_CMP_EQUAL);
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "3");
+        TEST_FAIL_IF(SPIF_STR_COMP(s, SPIF_STR(SPIF_VECTOR_FIND(testvector, s))) != SPIF_CMP_EQUAL);
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "8");
+        TEST_FAIL_IF(!SPIF_STR_ISNULL(SPIF_STR(SPIF_VECTOR_FIND(testvector, s))));
+        spif_str_del(s);
+        TEST_PASS();
+
+        TEST_BEGIN("SPIF_VECTOR_REMOVE() macro");
+        s = spif_str_new_from_ptr("3");
+        s2 = SPIF_CAST(str) SPIF_VECTOR_REMOVE(testvector, s);
+        TEST_FAIL_IF(SPIF_OBJ_ISNULL(s2));
+        spif_str_del(s2);
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "GRIN");
+        s2 = SPIF_CAST(str) SPIF_VECTOR_REMOVE(testvector, s);
+        TEST_FAIL_IF(!SPIF_OBJ_ISNULL(s2));
+        spif_str_del(s2);
+        spif_str_del(s);
+        TEST_PASS();
+
+        TEST_BEGIN("SPIF_VECTOR_TO_ARRAY() macro");
+        vector_array = SPIF_VECTOR_TO_ARRAY(testvector);
+
+        s = spif_str_new_from_ptr("0");
+        TEST_FAIL_IF(!SPIF_CMP_IS_EQUAL(SPIF_OBJ_COMP(vector_array[0], s)));
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "1");
+        TEST_FAIL_IF(!SPIF_CMP_IS_EQUAL(SPIF_OBJ_COMP(vector_array[1], s)));
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "2");
+        TEST_FAIL_IF(!SPIF_CMP_IS_EQUAL(SPIF_OBJ_COMP(vector_array[2], s)));
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "4");
+        TEST_FAIL_IF(!SPIF_CMP_IS_EQUAL(SPIF_OBJ_COMP(vector_array[3], s)));
+        spif_str_done(s);
+        spif_str_init_from_ptr(s, "5");
+        TEST_FAIL_IF(!SPIF_CMP_IS_EQUAL(SPIF_OBJ_COMP(vector_array[4], s)));
+        spif_str_del(s);
+        TEST_PASS();
+
+        /*SPIF_SHOW(testvector, stdout);*/
+        SPIF_VECTOR_DEL(testvector);
+    }
+
+    TEST_PASSED("vector interface class");
     return 0;
 }
 
@@ -1516,6 +1646,9 @@ main(int argc, char *argv[])
         return ret;
     }
     if ((ret = test_list()) != 0) {
+        return ret;
+    }
+    if ((ret = test_vector()) != 0) {
         return ret;
     }
     if ((ret = test_socket()) != 0) {

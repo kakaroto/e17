@@ -760,7 +760,7 @@ FILE *
 open_config_file(char *name)
 {
     FILE *fp;
-    int ver;
+    spif_cmp_t ver;
     char buff[256], test[30], *begin_ptr, *end_ptr;
 
     ASSERT_RVAL(name != NULL, NULL);
@@ -779,7 +779,8 @@ open_config_file(char *name)
             if ((end_ptr = strchr(buff, '>')) != NULL) {
                 *end_ptr = 0;
             }
-            if ((ver = BEG_STRCASECMP(begin_ptr, libast_program_version)) > 0) {
+            ver = version_compare(begin_ptr, libast_program_version);
+            if (SPIF_CMP_IS_GREATER(ver)) {
                 print_warning("Config file is designed for a newer version of %s\n", libast_program_name);
             }
         }

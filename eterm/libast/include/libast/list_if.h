@@ -32,6 +32,9 @@
 #define SPIF_LIST(o)                                    (SPIF_CAST(list) (o))
 #define SPIF_LIST_CLASS(o)                              (SPIF_CAST(listclass) SPIF_OBJ_CLASS(o))
 
+/* Name of class variable associated with list interface */
+#define SPIF_LISTCLASS_VAR(type)                        spif_ ## type ## _listclass
+
 /* Check if a list is NULL */
 #define SPIF_LIST_ISNULL(o)                             (SPIF_LIST(o) == SPIF_NULL_TYPE(list))
 
@@ -42,7 +45,7 @@
 #define SPIF_LIST_CALL_METHOD(o, meth)                  SPIF_LIST_CLASS(o)->meth
 
 /* Calls to the basic functions. */
-#define SPIF_LIST_NEW(type)                             SPIF_LIST((SPIF_CLASS(SPIF_CLASS_VAR(type)))->noo())
+#define SPIF_LIST_NEW(type)                             SPIF_LIST((SPIF_CLASS(SPIF_LISTCLASS_VAR(type)))->noo())
 #define SPIF_LIST_INIT(o)                               SPIF_OBJ_INIT(o)
 #define SPIF_LIST_DONE(o)                               SPIF_OBJ_DONE(o)
 #define SPIF_LIST_DEL(o)                                SPIF_OBJ_DEL(o)
@@ -54,6 +57,7 @@
 #define SPIF_LIST_APPEND(o, item)                       SPIF_CAST(bool) ((SPIF_LIST_CALL_METHOD((o), append))(o, item))
 #define SPIF_LIST_CONTAINS(o, item)                     SPIF_CAST(bool) ((SPIF_LIST_CALL_METHOD((o), contains))(o, item))
 #define SPIF_LIST_COUNT(o)                              SPIF_CAST_C(size_t) ((SPIF_LIST_CALL_METHOD((o), count))(o))
+#define SPIF_LIST_FIND(o, item)                         SPIF_CAST(obj) ((SPIF_LIST_CALL_METHOD((o), find))(o, item))
 #define SPIF_LIST_GET(o, index)                         SPIF_CAST(obj) ((SPIF_LIST_CALL_METHOD((o), get))(o, index))
 #define SPIF_LIST_INDEX(o, item)                        SPIF_CAST_C(size_t) ((SPIF_LIST_CALL_METHOD((o), index))(o, item))
 #define SPIF_LIST_INSERT(o, item)                       SPIF_CAST(bool) ((SPIF_LIST_CALL_METHOD((o), insert))(o, item))
@@ -74,6 +78,7 @@ SPIF_DEFINE_OBJ(listclass) {
     spif_func_t append;
     spif_func_t contains;
     spif_func_t count;
+    spif_func_t find;
     spif_func_t get;
     spif_func_t index;
     spif_func_t insert;

@@ -331,3 +331,23 @@ Tue Nov  5 14:57:46 2002                        Michael Jennings (mej)
 
 Solaris fixes (I hope) thanks to Kevin Doherty <kdoherty@uu.net>.
 ----------------------------------------------------------------------
+Mon Dec 30 17:49:43 2002                        Michael Jennings (mej)
+
+I added a new interface, this one called a "vector."  The difference
+between a vector and a list is that a vector, as the name implies, is
+guaranteed to be "pointing in one direction," i.e. ordered.  This
+interface should be used in preference to the "list" interface for
+ordered lists, specifically where search speed is vastly more
+important than insertion/deletion speed.
+
+The array implementation is now doing double-duty, as it implements
+both the list and the vector interfaces.
+
+Most of an AVL tree implementation is included in this commit as well.
+Brian Schenkenfelder <brians@nplus1.net> graciously offered me an AVL
+tree implementation that he'd written awhile back, which I modified to
+use the libast semantics.  Unfortunately, he never implemented the
+removal code, so I'm hoping that some kind soul who has had a data
+structures class more recently than I have will jump in and finish it
+for me.  (*hint hint*)  :-)
+----------------------------------------------------------------------
