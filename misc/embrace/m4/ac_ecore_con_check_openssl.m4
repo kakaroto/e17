@@ -15,8 +15,7 @@ AC_DEFUN(AC_ECORE_CON_CHECK_OPENSSL, [
 
 	AC_MSG_CHECKING(whether Ecore_Con supports OpenSSL)
 
-	AC_TRY_RUN([
-		#include <Ecore_Con.h>
+	AC_TRY_RUN([#include <Ecore_Con.h>
 		int main() {
 			return !HAVE_ECORE_CON_OPENSSL;
 		}], success=yes)
