@@ -134,7 +134,6 @@ main(int argc, char **argv)
   evas_object_show(iconbar);
   
   ecore_evas_show(ee);
-  ecore_evas_move_resize(ee, x, y, w, h);
 
   ecore_main_loop_begin();
   
