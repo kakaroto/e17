@@ -926,7 +926,7 @@ __imlib_LoadImage(const char *file,
 {
    ImlibImage  *im;
    ImlibLoader *best_loader;
-   char loader_ret;
+   char loader_ret = 0;
 
    /* see if we alreayd have the image cached */
    im = __imlib_FindCachedImage(file);
