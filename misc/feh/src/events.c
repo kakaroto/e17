@@ -82,6 +82,7 @@ feh_event_handle_ButtonPress(XEvent * ev)
       feh_menu_hide(menu_root);
       D_RETURN_;
    }
+   
    switch (ev->xbutton.button)
    {
      case 1:
@@ -429,7 +430,7 @@ feh_event_handle_ClientMessage(XEvent * ev)
        && ev->xclient.data.l[0] == (signed) wmDeleteWindow)
    {
       winwid = winwidget_get_from_window(ev->xclient.window);
-      if (winwid != NULL)
+      if (winwid)
          winwidget_destroy(winwid);
    }
 

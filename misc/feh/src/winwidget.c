@@ -64,8 +64,7 @@ winwidget_allocate(void)
    D_RETURN(ret);
 }
 
-winwidget
-winwidget_create_from_image(Imlib_Image * im, char *name, char type)
+winwidget winwidget_create_from_image(Imlib_Image * im, char *name, char type)
 {
    winwidget ret = NULL;
 
@@ -93,8 +92,7 @@ winwidget_create_from_image(Imlib_Image * im, char *name, char type)
    D_RETURN(ret);
 }
 
-winwidget
-winwidget_create_from_file(feh_file * file, char *name, char type)
+winwidget winwidget_create_from_file(feh_file * file, char *name, char type)
 {
    winwidget ret = NULL;
 
@@ -392,7 +390,6 @@ feh_draw_checks(winwidget win)
    static Imlib_Image *checks = NULL;
    static Pixmap checks_pmap = None;
    static GC gc = None;
-   XGCValues gcval;
 
    D_ENTER;
 
@@ -402,14 +399,8 @@ feh_draw_checks(winwidget win)
    if (!checks)
    {
       int onoff, x, y;
+      XGCValues gcval;
 
-#if 0
-      unsigned int w, h;
-
-      XQueryBestTile(disp, win->win, 16, 16, &w, &h);
-
-      printf("best tile %dx%d - I should do something with this...\n", w, h);
-#endif
       checks = imlib_create_image(16, 16);
 
       if (!checks)
@@ -473,8 +464,7 @@ winwidget_destroy_all(void)
    int i;
 
    D_ENTER;
-   /* Have to DESCEND the list here, 'cos of the way _unregister works. *
-      I'll re-implement the list at some point. A linked list * beckons :) */
+   /* Have to DESCEND the list here, 'cos of the way _unregister works */
    for (i = window_num - 1; i >= 0; i--)
       winwidget_destroy(windows[i]);
    D_RETURN_;
@@ -505,8 +495,6 @@ winwidget_show(winwidget winwid)
 void
 winwidget_resize(winwidget winwid, int w, int h)
 {
-/*   XEvent ev; */
-
    D_ENTER;
    if (!winwid)
       D_RETURN_;
@@ -514,11 +502,6 @@ winwidget_resize(winwidget winwid, int w, int h)
    winwid->w = w;
    winwid->h = h;
    winwid->had_resize = 1;
-   /* 
-      D(("Waiting for window to resize\n"));
-      XMaskEvent(disp, StructureNotifyMask, &ev);
-      D(("Window resized\n"));
-    */
    D_RETURN_;
 }
 
@@ -572,8 +555,7 @@ winwidget_unregister(winwidget win)
    D_RETURN_;
 }
 
-winwidget
-winwidget_get_from_window(Window win)
+winwidget winwidget_get_from_window(Window win)
 {
    winwidget ret = NULL;
 

@@ -53,7 +53,6 @@
 
 #include "debug.h"
 
-#define CHECK_SIZE 160
 #define PROGRESS_GRANULARITY 10
 #define SLIDESHOW_RELOAD_MAX 4096
 

@@ -247,10 +247,6 @@ progressive_load_cb(Imlib_Image im, char percent, int update_x, int update_y,
    {
       progwin->w = progwin->im_w = imlib_image_get_width();
       progwin->h = progwin->im_h = imlib_image_get_height();
-      if (progwin->w == 0 && progwin->h == 0)
-      {
-         D_RETURN(0);
-      }
       /* do we need to create a window for the image? */
       if (!progwin->win)
       {
