@@ -325,6 +325,17 @@ imlib_blend_image_onto_image(Imlib_Image source_image,
 }
 
 Imlib_Image 
+imlib_create_image(int width, int height)
+{
+   DATA32 *data;
+   
+   data = malloc(width *height * sizeof(DATA32));
+   if (data)
+      return (Imlib_Image)__imlib_CreateImage(width, height, data);
+   return NULL;
+}
+
+Imlib_Image 
 imlib_create_image_using_data(int width, int height,
 			      DATA32 *data)
 {
@@ -338,9 +349,15 @@ imlib_create_image_using_copied_data(int width, int height,
    ImlibImage *im;
    
    im = __imlib_CreateImage(width, height, NULL);
+   if (!im)
+      return;
    im->data = malloc(width * height *sizeof(DATA32));
-   memcpy(im->data, data, width * height *sizeof(DATA32));
-   return (Imlib_Image)im;
+   if (data)
+     {
+	memcpy(im->data, data, width * height *sizeof(DATA32));
+	return (Imlib_Image)im;
+     }
+   return NULL;
 }
 
 Imlib_Image 

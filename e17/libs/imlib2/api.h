@@ -101,6 +101,7 @@ void imlib_blend_image_onto_image(Imlib_Image source_image,
 /* apply alpha of one image to another */
 
 /* image creation and grabbing */
+Imlib_Image imlib_create_image(int width, int height);
 Imlib_Image imlib_create_image_using_data(int width, int height, 
 					  DATA32 *data);
 Imlib_Image imlib_create_image_using_copied_data(int width, int height, 
