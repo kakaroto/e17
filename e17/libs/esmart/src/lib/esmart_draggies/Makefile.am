@@ -1,0 +1,16 @@
+pkgdir = @libdir@/@PACKAGE@
+pkg_LTLIBRARIES = libesmart_draggies.la
+
+INCLUDES = -I. \
+			  @evas_cflags@ \
+			  @ecore_cflags@
+
+installed_headersdir = @prefix@/include/Esmart
+installed_headers_DATA = Esmart_Draggies.h
+
+libesmart_draggies_la_SOURCES = esmart_draggies.c \
+											Esmart_Draggies.h
+
+libesmart_draggies_la_LDFLAGS = -shared -version-info 0:9:0
+libesmart_draggies_la_LIBADD = @evas_libs@ -lecore -lecore_x -lecore_evas
+
