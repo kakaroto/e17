@@ -6,67 +6,45 @@ extern FILE *yyin;
 Engrave_File *
 engrave_parse(char *file)
 {
-  engrave_file = (Engrave_File *)calloc(1, sizeof(Engrave_File));
+  engrave_file = engrave_file_new();
 
   yyin = fopen(file, "r");
   yyparse();
   fclose(yyin);
 
-  return(engrave_file);
+  return (engrave_file);
 }
 
 void
 engrave_parse_font(char *file, char *name)
 {
   Engrave_Font *font;
-
-  font = (Engrave_Font *)calloc(1, sizeof(Engrave_Font));
-  font->file = (char *)strdup(file);
-  font->name = (char *)strdup(name);
-
-  engrave_file->fonts = evas_list_append(engrave_file->fonts, font);
-  return;
+  font = engrave_font_new(file, name);
+  engrave_file_font_add(engrave_file, font);
 }
 
 void
 engrave_parse_image(char *name, Engrave_Image_Type type, double value)
 {
   Engrave_Image *image;
-
-  image = (Engrave_Image *)calloc(1, sizeof(Engrave_Image));
-  image->name = (char *)strdup(name);
-  image->type = type; 
-  image->value = value;
-
-  engrave_file->images = evas_list_append(engrave_file->images, image);
-  return;
+  image = engrave_image_new(name, type, value);
+  engrave_file_image_add(engrave_file, image);
 }
 
 void
 engrave_parse_data(char *key, char *value)
 {
   Engrave_Data *data;
-
-  data = (Engrave_Data *)calloc(1, sizeof(Engrave_Data));
-  data->key = (char *)strdup(key);
-  data->value = (char *)strdup(value);
-
-  engrave_file->data = evas_list_append(engrave_file->data, data);
-  return;
+  data = engrave_data_new(key, value);
+  engrave_file_data_add(engrave_file, data);
 }
 
 void
 engrave_parse_group()
 {
   Engrave_Group *group;
-  group = (Engrave_Group *)calloc(1, sizeof(Engrave_Group));
-
-  /* defaults */
-  group->max.w = -1;
-  group->max.h = -1;
-  
-  engrave_file->groups = evas_list_append(engrave_file->groups, group);
-  return;
+  group = engrave_group_new();
+  engrave_file_group_add(engrave_file, group);
 }
 
 void
@@ -74,64 +52,46 @@ engrave_parse_group_data(char *key, char *value)
 {
   Engrave_Group *group;
   Engrave_Data *data;
+ 
+  /* XXX why is this put inboth file and group data? */
+  data = engrave_data_new(key, value);
+  engrave_file_data_add(engrave_file, data);
 
-  group = evas_list_data(evas_list_last(engrave_file->groups));
-
-  data = (Engrave_Data *)calloc(1, sizeof(Engrave_Data));
-  data->key = (char *)strdup(key);
-  data->value = (char *)strdup(value);
-
-  engrave_file->data = evas_list_append(engrave_file->data, data);
-
-  group = evas_list_data(evas_list_last(engrave_file->groups));
-
-  group->data = evas_list_append(group->data, data);
+  group = engrave_file_group_last_get(engrave_file);
+  engrave_group_data_add(group, data);
 }
 
 void
 engrave_parse_group_script(char *script)
 {
   Engrave_Group *group;
-
-  group = evas_list_data(evas_list_last(engrave_file->groups));
-  
-  if (group->script) free(group->script);
-  group->script = (char *)strdup(script); 
+  group = engrave_file_group_last_get(engrave_file);
+  engrave_group_script_set(group, script); 
 }
 
 void
 engrave_parse_group_name(char *name)
 {
   Engrave_Group *group;
-
-  group = evas_list_data(evas_list_last(engrave_file->groups));
-
-  if(group->name) free(group->name);
-  group->name = (char *)strdup(name);
+  group = engrave_file_group_last_get(engrave_file);
+  engrave_group_name_set(group, name);
 }
 
 void
 engrave_parse_group_min(int w, int h)
 {
   Engrave_Group *group;
-
-  group = evas_list_data(evas_list_last(engrave_file->groups));
-
-  group->min.w = w;
-  group->min.h = h;
+  group = engrave_file_group_last_get(engrave_file);
+  engrave_group_min_size_set(group, w, h);
 }
 
 void
 engrave_parse_group_max(int w, int h)
 {
   Engrave_Group *group;
-
-  group = evas_list_data(evas_list_last(engrave_file->groups));
-
-  group->max.w = w;
-  group->max.h = h;
+  group = engrave_file_group_last_get(engrave_file);
+  engrave_group_max_size_set(group, w, h);
 }
-
 
 void
 engrave_parse_part()
@@ -139,14 +99,12 @@ engrave_parse_part()
   Engrave_Group *group;
   Engrave_Part *part;
 
-  part = (Engrave_Part *)calloc(1, sizeof(Engrave_Part));
-  group = evas_list_data(evas_list_last(engrave_file->groups));
-
-  part->type = ENGRAVE_PART_TYPE_IMAGE;
-  part->mouse_events = 1;
-  part->repeat_events = 0;
-
-  group->parts = evas_list_append(group->parts, part);
+  part = engrave_part_new(ENGRAVE_PART_TYPE_IMAGE);
+  engrave_part_mouse_events_set(part, 1);
+  engrave_part_repeat_events_set(part, 0);
+ 
+  group = engrave_file_group_last_get(engrave_file);
+  engrave_group_part_add(group, part);
 }
 
 void
@@ -155,11 +113,9 @@ engrave_parse_part_name(char *name)
   Engrave_Group *group;
   Engrave_Part *part;
 
-  group = evas_list_data(evas_list_last(engrave_file->groups));
-  part = evas_list_data(evas_list_last(group->parts));
-
-  if(part->name) free(part->name);
-  part->name = (char *)strdup(name);
+  group = engrave_file_group_last_get(engrave_file);
+  part = engrave_group_part_last_get(group);
+  engrave_part_name_set(part, name);
 }
 
 void
@@ -168,10 +124,9 @@ engrave_parse_part_type(Engrave_Part_Type type)
   Engrave_Group *group;
   Engrave_Part *part;
 
-  group = evas_list_data(evas_list_last(engrave_file->groups));
-  part = evas_list_data(evas_list_last(group->parts));
-
-  part->type = type;
+  group = engrave_file_group_last_get(engrave_file);
+  part = engrave_group_part_last_get(group);
+  engrave_part_type_set(part, type);
 }
 
 void
@@ -180,10 +135,9 @@ engrave_parse_part_effect(Engrave_Text_Effect effect)
   Engrave_Group *group;
   Engrave_Part *part;
 
-  group = evas_list_data(evas_list_last(engrave_file->groups));
-  part = evas_list_data(evas_list_last(group->parts));
-
-  part->effect = effect;
+  group = engrave_file_group_last_get(engrave_file);
+  part = engrave_group_part_last_get(group);
+  engrave_part_effect_set(part, effect);
 }
 
 void
@@ -192,10 +146,9 @@ engrave_parse_part_mouse_events(int mouse_events)
   Engrave_Group *group;
   Engrave_Part *part;
 
-  group = evas_list_data(evas_list_last(engrave_file->groups));
-  part = evas_list_data(evas_list_last(group->parts));
-
-  part->mouse_events = mouse_events;
+  group = engrave_file_group_last_get(engrave_file);
+  part = engrave_group_part_last_get(group);
+  engrave_part_mouse_events_set(part, mouse_events);
 }
 
 void
@@ -204,10 +157,9 @@ engrave_parse_part_repeat_events(int repeat_events)
   Engrave_Group *group;
   Engrave_Part *part;
 
-  group = evas_list_data(evas_list_last(engrave_file->groups));
-  part = evas_list_data(evas_list_last(group->parts));
-
-  part->repeat_events = repeat_events;
+  group = engrave_file_group_last_get(engrave_file);
+  part = engrave_group_part_last_get(group);
+  engrave_part_repeat_events_set(part, repeat_events);
 }
 
 void
@@ -216,11 +168,9 @@ engrave_parse_part_clip_to(char *clip_to)
   Engrave_Group *group;
   Engrave_Part *part;
 
-  group = evas_list_data(evas_list_last(engrave_file->groups));
-  part = evas_list_data(evas_list_last(group->parts));
-
-  if(part->clip_to) free(part->clip_to);
-  part->clip_to = (char *)strdup(clip_to);
+  group = engrave_file_group_last_get(engrave_file);
+  part = engrave_group_part_last_get(group);
+  engrave_part_clip_to_set(part, clip_to);
 }
 
 void
@@ -229,12 +179,9 @@ engrave_parse_part_dragable_x(int x, int step, int count)
   Engrave_Group *group;
   Engrave_Part *part;
 
-  group = evas_list_data(evas_list_last(engrave_file->groups));
-  part = evas_list_data(evas_list_last(group->parts));
-
-  part->dragable.x = x;
-  part->dragable.step.x = step;
-  part->dragable.count.x = count;
+  group = engrave_file_group_last_get(engrave_file);
+  part = engrave_group_part_last_get(group);
+  engrave_part_dragable_x_set(part, x, step, count);
 }
 
 void
@@ -243,12 +190,9 @@ engrave_parse_part_dragable_y(int y, int step, int count)
   Engrave_Group *group;
   Engrave_Part *part;
 
-  group = evas_list_data(evas_list_last(engrave_file->groups));
-  part = evas_list_data(evas_list_last(group->parts));
-
-  part->dragable.y = y;
-  part->dragable.step.y = step;
-  part->dragable.count.y = count;
+  group = engrave_file_group_last_get(engrave_file);
+  part = engrave_group_part_last_get(group);
+  engrave_part_dragable_y_set(part, y, step, count);
 }
 
 void
@@ -257,11 +201,9 @@ engrave_parse_part_dragable_confine(char *confine)
   Engrave_Group *group;
   Engrave_Part *part;
 
-  group = evas_list_data(evas_list_last(engrave_file->groups));
-  part = evas_list_data(evas_list_last(group->parts));
-
-  if (part->dragable.confine) free (part->dragable.confine);
-  part->dragable.confine = (char *)strdup(confine);
+  group = engrave_file_group_last_get(engrave_file);
+  part = engrave_group_part_last_get(group);
+  engrave_part_dragable_confine_set(part, confine);
 }
 
 void
@@ -271,53 +213,11 @@ engrave_parse_state()
   Engrave_Part *part;
   Engrave_Part_State *state;
 
-  state = (Engrave_Part_State *)calloc(1, sizeof(Engrave_Part_State));
+  state = engrave_part_state_new();
 
-  group = evas_list_data(evas_list_last(engrave_file->groups));
-  part = evas_list_data(evas_list_last(group->parts));
-
-  /* defaults */
-  state->visible = 1;
-  state->align.x = 0.5;
-  state->align.y = 0.5;
-  state->min.w = 0;
-  state->min.h = 0;
-  state->max.w = -1;
-  state->max.h = -1;
-  state->rel1.relative.x = 0.0;
-  state->rel1.relative.y = 0.0;
-  state->rel1.offset.x = 0;
-  state->rel1.offset.y = 0;
-  state->rel2.relative.x = 1.0;
-  state->rel2.relative.y = 1.0;
-  state->rel2.offset.x = -1;
-  state->rel2.offset.y = -1;
-  state->fill.smooth = 1;
-  state->fill.pos_rel.x = 0.0;
-  state->fill.pos_abs.x = 0;
-  state->fill.rel.x = 1.0;
-  state->fill.abs.x = 0;
-  state->fill.pos_rel.y = 0.0;
-  state->fill.pos_abs.y = 0;
-  state->fill.rel.y = 1.0;
-  state->fill.abs.y = 0;
-  state->color_class = NULL;
-  state->color.r = 255;
-  state->color.g = 255;
-  state->color.b = 255;
-  state->color.a = 255;
-  state->color2.r = 0;
-  state->color2.g = 0;
-  state->color2.b = 0;
-  state->color2.a = 255;
-  state->color3.r = 0;
-  state->color3.g = 0;
-  state->color3.b = 0;
-  state->color3.a = 128;
-  state->text.align.x = 0.5;
-  state->text.align.y = 0.5;
-
-  part->states = evas_list_append(part->states, state);
+  group = engrave_file_group_last_get(engrave_file);
+  part = engrave_group_part_last_get(group);
+  engrave_part_state_add(part, state);
 }
 
 void
@@ -327,13 +227,10 @@ engrave_parse_state_name(char *name, double value)
   Engrave_Part *part;
   Engrave_Part_State *state;
 
-  group = evas_list_data(evas_list_last(engrave_file->groups));
-  part = evas_list_data(evas_list_last(group->parts));
-  state = evas_list_data(evas_list_last(part->states));
-
-  if(state->name) free(state->name);
-  state->name = (char *)strdup(name);
-  state->value = value;
+  group = engrave_file_group_last_get(engrave_file);
+  part = engrave_group_part_last_get(group);
+  state = engrave_part_state_last_get(part);
+  engrave_part_state_name_set(state, name, value);
 }
 
 void
@@ -343,11 +240,10 @@ engrave_parse_state_visible(int visible)
   Engrave_Part *part;
   Engrave_Part_State *state;
 
-  group = evas_list_data(evas_list_last(engrave_file->groups));
-  part = evas_list_data(evas_list_last(group->parts));
-  state = evas_list_data(evas_list_last(part->states));
-
-  state->visible = visible;
+  group = engrave_file_group_last_get(engrave_file);
+  part = engrave_group_part_last_get(group);
+  state = engrave_part_state_last_get(part);
+  engrave_part_state_visible_set(state, visible);
 }
 
 void
@@ -357,12 +253,10 @@ engrave_parse_state_align(double x, double y)
   Engrave_Part *part;
   Engrave_Part_State *state;
 
-  group = evas_list_data(evas_list_last(engrave_file->groups));
-  part = evas_list_data(evas_list_last(group->parts));
-  state = evas_list_data(evas_list_last(part->states));
-
-  state->align.x = x;
-  state->align.y = y;
+  group = engrave_file_group_last_get(engrave_file);
+  part = engrave_group_part_last_get(group);
+  state = engrave_part_state_last_get(part);
+  engrave_part_state_align_set(state, x, y);
 }
 
 void
@@ -372,12 +266,10 @@ engrave_parse_state_step(double x, double y)
   Engrave_Part *part;
   Engrave_Part_State *state;
 
-  group = evas_list_data(evas_list_last(engrave_file->groups));
-  part = evas_list_data(evas_list_last(group->parts));
-  state = evas_list_data(evas_list_last(part->states));
-
-  state->step.x = x;
-  state->step.y = y;
+  group = engrave_file_group_last_get(engrave_file);
+  part = engrave_group_part_last_get(group);
+  state = engrave_part_state_last_get(part);
+  engrave_part_state_step_set(state, x, y);
 }
 
 void
@@ -387,12 +279,10 @@ engrave_parse_state_min(double w, double h)
   Engrave_Part *part;
   Engrave_Part_State *state;
 
-  group = evas_list_data(evas_list_last(engrave_file->groups));
-  part = evas_list_data(evas_list_last(group->parts));
-  state = evas_list_data(evas_list_last(part->states));
-
-  state->min.w = w;
-  state->min.h = h;
+  group = engrave_file_group_last_get(engrave_file);
+  part = engrave_group_part_last_get(group);
+  state = engrave_part_state_last_get(part);
+  engrave_part_state_min_size_set(state, w, h);
 }
 
 void
@@ -402,12 +292,10 @@ engrave_parse_state_max(double w, double h)
   Engrave_Part *part;
   Engrave_Part_State *state;
 
-  group = evas_list_data(evas_list_last(engrave_file->groups));
-  part = evas_list_data(evas_list_last(group->parts));
-  state = evas_list_data(evas_list_last(part->states));
-
-  state->max.w = w;
-  state->max.h = h;
+  group = engrave_file_group_last_get(engrave_file);
+  part = engrave_group_part_last_get(group);
+  state = engrave_part_state_last_get(part);
+  engrave_part_state_min_size_set(state, w, h);
 }
 
 void
@@ -417,12 +305,10 @@ engrave_parse_state_aspect(double w, double h)
   Engrave_Part *part;
   Engrave_Part_State *state;
 
-  group = evas_list_data(evas_list_last(engrave_file->groups));
-  part = evas_list_data(evas_list_last(group->parts));
-  state = evas_list_data(evas_list_last(part->states));
-
-  state->aspect.w = w;
-  state->aspect.h = h;
+  group = engrave_file_group_last_get(engrave_file);
+  part = engrave_group_part_last_get(group);
+  state = engrave_part_state_last_get(part);
+  engrave_part_state_aspect_set(state, w, h);
 }
 
 void
@@ -432,13 +318,11 @@ engrave_parse_state_aspect_preference(Engrave_Aspect_Preference prefer)
   Engrave_Part *part;
   Engrave_Part_State *state;
 
-  group = evas_list_data(evas_list_last(engrave_file->groups));
-  part = evas_list_data(evas_list_last(group->parts));
-  state = evas_list_data(evas_list_last(part->states));
-
-  state->aspect.prefer = prefer;
+  group = engrave_file_group_last_get(engrave_file);
+  part = engrave_group_part_last_get(group);
+  state = engrave_part_state_last_get(part);
+  engrave_part_state_aspect_preference_set(state, prefer);
 }
-
 
 void
 engrave_parse_state_rel1_relative(double x, double y)
@@ -447,12 +331,10 @@ engrave_parse_state_rel1_relative(double x, double y)
   Engrave_Part *part;
   Engrave_Part_State *state;
 
-  group = evas_list_data(evas_list_last(engrave_file->groups));
-  part = evas_list_data(evas_list_last(group->parts));
-  state = evas_list_data(evas_list_last(part->states));
-
-  state->rel1.relative.x = x;
-  state->rel1.relative.y = y;
+  group = engrave_file_group_last_get(engrave_file);
+  part = engrave_group_part_last_get(group);
+  state = engrave_part_state_last_get(part);
+  engrave_part_state_rel1_relative_set(state, x, y);
 }
 
 void
@@ -462,14 +344,11 @@ engrave_parse_state_rel1_offset(int x, int y)
   Engrave_Part *part;
   Engrave_Part_State *state;
 
-  group = evas_list_data(evas_list_last(engrave_file->groups));
-  part = evas_list_data(evas_list_last(group->parts));
-  state = evas_list_data(evas_list_last(part->states));
-
-  state->rel1.offset.x = x;
-  state->rel1.offset.y = y;
+  group = engrave_file_group_last_get(engrave_file);
+  part = engrave_group_part_last_get(group);
+  state = engrave_part_state_last_get(part);
+  engrave_part_state_rel1_offset_set(state, x, y);
 }
-
 
 void
 engrave_parse_state_rel1_to_x(char *to)
@@ -478,12 +357,10 @@ engrave_parse_state_rel1_to_x(char *to)
   Engrave_Part *part;
   Engrave_Part_State *state;
 
-  group = evas_list_data(evas_list_last(engrave_file->groups));
-  part = evas_list_data(evas_list_last(group->parts));
-  state = evas_list_data(evas_list_last(part->states));
-
-  if (state->rel1.to_x) free(state->rel1.to_x);
-  state->rel1.to_x = (char *)strdup(to);
+  group = engrave_file_group_last_get(engrave_file);
+  part = engrave_group_part_last_get(group);
+  state = engrave_part_state_last_get(part);
+  engrave_part_state_rel1_to_x_set(state, to);
 }
 
 void
@@ -493,12 +370,10 @@ engrave_parse_state_rel1_to_y(char *to)
   Engrave_Part *part;
   Engrave_Part_State *state;
 
-  group = evas_list_data(evas_list_last(engrave_file->groups));
-  part = evas_list_data(evas_list_last(group->parts));
-  state = evas_list_data(evas_list_last(part->states));
-
-  if (state->rel1.to_y) free(state->rel1.to_y);
-  state->rel1.to_y = (char *)strdup(to);
+  group = engrave_file_group_last_get(engrave_file);
+  part = engrave_group_part_last_get(group);
+  state = engrave_part_state_last_get(part);
+  engrave_part_state_rel1_to_y_set(state, to);
 }
 
 void
@@ -508,14 +383,10 @@ engrave_parse_state_rel1_to(char *to)
   Engrave_Part *part;
   Engrave_Part_State *state;
 
-  group = evas_list_data(evas_list_last(engrave_file->groups));
-  part = evas_list_data(evas_list_last(group->parts));
-  state = evas_list_data(evas_list_last(part->states));
-
-  if (state->rel1.to_x) free(state->rel1.to_x);
-  state->rel1.to_x = (char *)strdup(to);
-  if (state->rel1.to_y) free(state->rel1.to_y);
-  state->rel1.to_y = (char *)strdup(to);
+  group = engrave_file_group_last_get(engrave_file);
+  part = engrave_group_part_last_get(group);
+  state = engrave_part_state_last_get(part);
+  engrave_part_state_rel1_to_set(state, to);
 }
 
 void
@@ -525,12 +396,10 @@ engrave_parse_state_rel2_relative(double x, double y)
   Engrave_Part *part;
   Engrave_Part_State *state;
 
-  group = evas_list_data(evas_list_last(engrave_file->groups));
-  part = evas_list_data(evas_list_last(group->parts));
-  state = evas_list_data(evas_list_last(part->states));
-
-  state->rel2.relative.x = x;
-  state->rel2.relative.y = y;
+  group = engrave_file_group_last_get(engrave_file);
+  part = engrave_group_part_last_get(group);
+  state = engrave_part_state_last_get(part);
+  engrave_part_state_rel2_relative_set(state, x, y);
 }
 
 void
@@ -540,14 +409,11 @@ engrave_parse_state_rel2_offset(int x, int y)
   Engrave_Part *part;
   Engrave_Part_State *state;
 
-  group = evas_list_data(evas_list_last(engrave_file->groups));
-  part = evas_list_data(evas_list_last(group->parts));
-  state = evas_list_data(evas_list_last(part->states));
-
-  state->rel2.offset.x = x;
-  state->rel2.offset.y = y;
+  group = engrave_file_group_last_get(engrave_file);
+  part = engrave_group_part_last_get(group);
+  state = engrave_part_state_last_get(part);
+  engrave_part_state_rel2_offset_set(state, x, y);
 }
-
 
 void
 engrave_parse_state_rel2_to_x(char *to)
@@ -556,12 +422,10 @@ engrave_parse_state_rel2_to_x(char *to)
   Engrave_Part *part;
   Engrave_Part_State *state;
 
-  group = evas_list_data(evas_list_last(engrave_file->groups));
-  part = evas_list_data(evas_list_last(group->parts));
-  state = evas_list_data(evas_list_last(part->states));
-
-  if (state->rel2.to_x) free(state->rel2.to_x);
-  state->rel2.to_x = (char *)strdup(to);
+  group = engrave_file_group_last_get(engrave_file);
+  part = engrave_group_part_last_get(group);
+  state = engrave_part_state_last_get(part);
+  engrave_part_state_rel2_to_x_set(state, to);
 }
 
 void
@@ -571,12 +435,10 @@ engrave_parse_state_rel2_to_y(char *to)
   Engrave_Part *part;
   Engrave_Part_State *state;
 
-  group = evas_list_data(evas_list_last(engrave_file->groups));
-  part = evas_list_data(evas_list_last(group->parts));
-  state = evas_list_data(evas_list_last(part->states));
-
-  if (state->rel2.to_y) free(state->rel2.to_y);
-  state->rel2.to_y = (char *)strdup(to);
+  group = engrave_file_group_last_get(engrave_file);
+  part = engrave_group_part_last_get(group);
+  state = engrave_part_state_last_get(part);
+  engrave_part_state_rel2_to_y_set(state, to);
 }
 
 void
@@ -586,14 +448,10 @@ engrave_parse_state_rel2_to(char *to)
   Engrave_Part *part;
   Engrave_Part_State *state;
 
-  group = evas_list_data(evas_list_last(engrave_file->groups));
-  part = evas_list_data(evas_list_last(group->parts));
-  state = evas_list_data(evas_list_last(part->states));
-
-  if (state->rel2.to_x) free(state->rel2.to_x);
-  state->rel2.to_x = (char *)strdup(to);
-  if (state->rel2.to_y) free(state->rel2.to_y);
-  state->rel2.to_y = (char *)strdup(to);
+  group = engrave_file_group_last_get(engrave_file);
+  part = engrave_group_part_last_get(group);
+  state = engrave_part_state_last_get(part);
+  engrave_part_state_rel2_to_set(state, to);
 }
 
 void
@@ -604,9 +462,9 @@ engrave_parse_state_image_normal(char *name)
   Engrave_Part_State *state;
   Evas_List *l;
  
-  group = evas_list_data(evas_list_last(engrave_file->groups));
-  part = evas_list_data(evas_list_last(group->parts));
-  state = evas_list_data(evas_list_last(part->states));
+  group = engrave_file_group_last_get(engrave_file);
+  part = engrave_group_part_last_get(group);
+  state = engrave_part_state_last_get(part);
 
   for (l = engrave_file->images; l; l = l->next)
   {
@@ -628,9 +486,9 @@ engrave_parse_state_image_tween(char *name)
   Engrave_Part_State *state;
   Evas_List *l;
  
-  group = evas_list_data(evas_list_last(engrave_file->groups));
-  part = evas_list_data(evas_list_last(group->parts));
-  state = evas_list_data(evas_list_last(part->states));
+  group = engrave_file_group_last_get(engrave_file);
+  part = engrave_group_part_last_get(group);
+  state = engrave_part_state_last_get(part);
 
   for (l = engrave_file->images; l; l = l->next)
   {
@@ -651,9 +509,9 @@ engrave_parse_state_border(int l, int r, int t, int b)
   Engrave_Part *part;
   Engrave_Part_State *state;
 
-  group = evas_list_data(evas_list_last(engrave_file->groups));
-  part = evas_list_data(evas_list_last(group->parts));
-  state = evas_list_data(evas_list_last(part->states));
+  group = engrave_file_group_last_get(engrave_file);
+  part = engrave_group_part_last_get(group);
+  state = engrave_part_state_last_get(part);
 
   state->border.l = l;
   state->border.r = r;
@@ -668,9 +526,9 @@ engrave_parse_state_color_class(char *color_class)
   Engrave_Part *part;
   Engrave_Part_State *state;
 
-  group = evas_list_data(evas_list_last(engrave_file->groups));
-  part = evas_list_data(evas_list_last(group->parts));
-  state = evas_list_data(evas_list_last(part->states));
+  group = engrave_file_group_last_get(engrave_file);
+  part = engrave_group_part_last_get(group);
+  state = engrave_part_state_last_get(part);
 
   if (state->color_class) free(state->color_class);
   state->color_class = (char *)strdup(color_class);
@@ -683,9 +541,9 @@ engrave_parse_state_color(int r, int g, int b, int a)
   Engrave_Part *part;
   Engrave_Part_State *state;
 
-  group = evas_list_data(evas_list_last(engrave_file->groups));
-  part = evas_list_data(evas_list_last(group->parts));
-  state = evas_list_data(evas_list_last(part->states));
+  group = engrave_file_group_last_get(engrave_file);
+  part = engrave_group_part_last_get(group);
+  state = engrave_part_state_last_get(part);
 
   state->color.r = r;
   state->color.g = g;
@@ -700,9 +558,9 @@ engrave_parse_state_color2(int r, int g, int b, int a)
   Engrave_Part *part;
   Engrave_Part_State *state;
 
-  group = evas_list_data(evas_list_last(engrave_file->groups));
-  part = evas_list_data(evas_list_last(group->parts));
-  state = evas_list_data(evas_list_last(part->states));
+  group = engrave_file_group_last_get(engrave_file);
+  part = engrave_group_part_last_get(group);
+  state = engrave_part_state_last_get(part);
 
   state->color2.r = r;
   state->color2.g = g;
@@ -717,9 +575,9 @@ engrave_parse_state_color3(int r, int g, int b, int a)
   Engrave_Part *part;
   Engrave_Part_State *state;
 
-  group = evas_list_data(evas_list_last(engrave_file->groups));
-  part = evas_list_data(evas_list_last(group->parts));
-  state = evas_list_data(evas_list_last(part->states));
+  group = engrave_file_group_last_get(engrave_file);
+  part = engrave_group_part_last_get(group);
+  state = engrave_part_state_last_get(part);
 
   state->color3.r = r;
   state->color3.g = g;
@@ -736,9 +594,9 @@ engrave_parse_state_fill_smooth(int smooth)
   Engrave_Part *part;
   Engrave_Part_State *state;
 
-  group = evas_list_data(evas_list_last(engrave_file->groups));
-  part = evas_list_data(evas_list_last(group->parts));
-  state = evas_list_data(evas_list_last(part->states));
+  group = engrave_file_group_last_get(engrave_file);
+  part = engrave_group_part_last_get(group);
+  state = engrave_part_state_last_get(part);
 
   state->fill.smooth = smooth;
 }
@@ -750,9 +608,9 @@ engrave_parse_state_fill_origin_relative(double x, double y)
   Engrave_Part *part;
   Engrave_Part_State *state;
 
-  group = evas_list_data(evas_list_last(engrave_file->groups));
-  part = evas_list_data(evas_list_last(group->parts));
-  state = evas_list_data(evas_list_last(part->states));
+  group = engrave_file_group_last_get(engrave_file);
+  part = engrave_group_part_last_get(group);
+  state = engrave_part_state_last_get(part);
 
   state->fill.pos_rel.x = x;
   state->fill.pos_rel.y = y;
@@ -765,9 +623,9 @@ engrave_parse_state_fill_size_relative(double x, double y)
   Engrave_Part *part;
   Engrave_Part_State *state;
 
-  group = evas_list_data(evas_list_last(engrave_file->groups));
-  part = evas_list_data(evas_list_last(group->parts));
-  state = evas_list_data(evas_list_last(part->states));
+  group = engrave_file_group_last_get(engrave_file);
+  part = engrave_group_part_last_get(group);
+  state = engrave_part_state_last_get(part);
 
   state->fill.rel.x = x;
   state->fill.rel.y = y;
@@ -780,9 +638,9 @@ engrave_parse_state_fill_origin_offset(int x, int y)
   Engrave_Part *part;
   Engrave_Part_State *state;
 
-  group = evas_list_data(evas_list_last(engrave_file->groups));
-  part = evas_list_data(evas_list_last(group->parts));
-  state = evas_list_data(evas_list_last(part->states));
+  group = engrave_file_group_last_get(engrave_file);
+  part = engrave_group_part_last_get(group);
+  state = engrave_part_state_last_get(part);
 
   state->fill.pos_abs.x = x;
   state->fill.pos_abs.y = y;
@@ -795,9 +653,9 @@ engrave_parse_state_fill_size_offset(int x, int y)
   Engrave_Part *part;
   Engrave_Part_State *state;
 
-  group = evas_list_data(evas_list_last(engrave_file->groups));
-  part = evas_list_data(evas_list_last(group->parts));
-  state = evas_list_data(evas_list_last(part->states));
+  group = engrave_file_group_last_get(engrave_file);
+  part = engrave_group_part_last_get(group);
+  state = engrave_part_state_last_get(part);
 
   state->fill.abs.x = x;
   state->fill.abs.y = y;
@@ -811,9 +669,9 @@ engrave_parse_state_text_text(char *text)
   Engrave_Part *part;
   Engrave_Part_State *state;
 
-  group = evas_list_data(evas_list_last(engrave_file->groups));
-  part = evas_list_data(evas_list_last(group->parts));
-  state = evas_list_data(evas_list_last(part->states));
+  group = engrave_file_group_last_get(engrave_file);
+  part = engrave_group_part_last_get(group);
+  state = engrave_part_state_last_get(part);
 
   if (state->text.text) free(state->text.text);
   state->text.text = (char *)strdup(text);
@@ -826,9 +684,9 @@ engrave_parse_state_text_text_class(char *text_class)
   Engrave_Part *part;
   Engrave_Part_State *state;
 
-  group = evas_list_data(evas_list_last(engrave_file->groups));
-  part = evas_list_data(evas_list_last(group->parts));
-  state = evas_list_data(evas_list_last(part->states));
+  group = engrave_file_group_last_get(engrave_file);
+  part = engrave_group_part_last_get(group);
+  state = engrave_part_state_last_get(part);
 
   if (state->text.text_class) free(state->text.text_class);
   state->text.text_class = (char *)strdup(text_class);
@@ -841,9 +699,9 @@ engrave_parse_state_text_font(char *font)
   Engrave_Part *part;
   Engrave_Part_State *state;
 
-  group = evas_list_data(evas_list_last(engrave_file->groups));
-  part = evas_list_data(evas_list_last(group->parts));
-  state = evas_list_data(evas_list_last(part->states));
+  group = engrave_file_group_last_get(engrave_file);
+  part = engrave_group_part_last_get(group);
+  state = engrave_part_state_last_get(part);
 
   if (state->text.font) free(state->text.font);
   state->text.font = (char *)strdup(font);
@@ -856,9 +714,9 @@ engrave_parse_state_text_size(int size)
   Engrave_Part *part;
   Engrave_Part_State *state;
 
-  group = evas_list_data(evas_list_last(engrave_file->groups));
-  part = evas_list_data(evas_list_last(group->parts));
-  state = evas_list_data(evas_list_last(part->states));
+  group = engrave_file_group_last_get(engrave_file);
+  part = engrave_group_part_last_get(group);
+  state = engrave_part_state_last_get(part);
 
   state->text.size = size;
 }
@@ -870,9 +728,9 @@ engrave_parse_state_text_fit(int x, int y)
   Engrave_Part *part;
   Engrave_Part_State *state;
 
-  group = evas_list_data(evas_list_last(engrave_file->groups));
-  part = evas_list_data(evas_list_last(group->parts));
-  state = evas_list_data(evas_list_last(part->states));
+  group = engrave_file_group_last_get(engrave_file);
+  part = engrave_group_part_last_get(group);
+  state = engrave_part_state_last_get(part);
 
   state->text.fit.x = x;
   state->text.fit.y = y;
@@ -885,9 +743,9 @@ engrave_parse_state_text_min(int x, int y)
   Engrave_Part *part;
   Engrave_Part_State *state;
 
-  group = evas_list_data(evas_list_last(engrave_file->groups));
-  part = evas_list_data(evas_list_last(group->parts));
-  state = evas_list_data(evas_list_last(part->states));
+  group = engrave_file_group_last_get(engrave_file);
+  part = engrave_group_part_last_get(group);
+  state = engrave_part_state_last_get(part);
 
   state->text.min.x = x;
   state->text.min.y = y;
@@ -900,16 +758,13 @@ engrave_parse_state_text_align(double x, double y)
   Engrave_Part *part;
   Engrave_Part_State *state;
 
-  group = evas_list_data(evas_list_last(engrave_file->groups));
-  part = evas_list_data(evas_list_last(group->parts));
-  state = evas_list_data(evas_list_last(part->states));
+  group = engrave_file_group_last_get(engrave_file);
+  part = engrave_group_part_last_get(group);
+  state = engrave_part_state_last_get(part);
 
   state->text.align.x = x;
   state->text.align.y = y;
 }
-
-
-
 
 void
 engrave_parse_program()
@@ -918,7 +773,7 @@ engrave_parse_program()
   Engrave_Program *program;
 
   program = (Engrave_Program *)calloc(1, sizeof(Engrave_Program));
-  group = evas_list_data(evas_list_last(engrave_file->groups));
+  group = engrave_file_group_last_get(engrave_file);
 
   group->programs = evas_list_append(group->programs, program);
 }
@@ -929,8 +784,8 @@ engrave_parse_program_script(char *script)
   Engrave_Group *group;
   Engrave_Program *program;
 
-  group = evas_list_data(evas_list_last(engrave_file->groups));
-  program = evas_list_data(evas_list_last(group->programs));
+  group = engrave_file_group_last_get(engrave_file);
+  program = engrave_group_program_last_get(group);
 
   if(program->script) free(program->script);
   program->script = (char *)strdup(script);
@@ -943,8 +798,8 @@ engrave_parse_program_name(char *name)
   Engrave_Group *group;
   Engrave_Program *program;
 
-  group = evas_list_data(evas_list_last(engrave_file->groups));
-  program = evas_list_data(evas_list_last(group->programs));
+  group = engrave_file_group_last_get(engrave_file);
+  program = engrave_group_program_last_get(group);
 
   if(program->name) free(program->name);
   program->name = (char *)strdup(name);
@@ -956,8 +811,8 @@ engrave_parse_program_signal(char *signal)
   Engrave_Group *group;
   Engrave_Program *program;
 
-  group = evas_list_data(evas_list_last(engrave_file->groups));
-  program = evas_list_data(evas_list_last(group->programs));
+  group = engrave_file_group_last_get(engrave_file);
+  program = engrave_group_program_last_get(group);
 
   if(program->signal) free(program->signal);
   program->signal = (char *)strdup(signal);
@@ -969,8 +824,8 @@ engrave_parse_program_source(char *source)
   Engrave_Group *group;
   Engrave_Program *program;
 
-  group = evas_list_data(evas_list_last(engrave_file->groups));
-  program = evas_list_data(evas_list_last(group->programs));
+  group = engrave_file_group_last_get(engrave_file);
+  program = engrave_group_program_last_get(group);
 
   if(program->source) free(program->source);
   program->source = (char *)strdup(source);
@@ -982,8 +837,8 @@ engrave_parse_program_target(char *target)
   Engrave_Group *group;
   Engrave_Program *program;
 
-  group = evas_list_data(evas_list_last(engrave_file->groups));
-  program = evas_list_data(evas_list_last(group->programs));
+  group = engrave_file_group_last_get(engrave_file);
+  program = engrave_group_program_last_get(group);
 
   program->targets = evas_list_append(program->targets, (char *)strdup(target));
 }
@@ -994,8 +849,8 @@ engrave_parse_program_after(char *after)
   Engrave_Group *group;
   Engrave_Program *program;
 
-  group = evas_list_data(evas_list_last(engrave_file->groups));
-  program = evas_list_data(evas_list_last(group->programs));
+  group = engrave_file_group_last_get(engrave_file);
+  program = engrave_group_program_last_get(group);
 
   program->afters = evas_list_append(program->afters, (char *)strdup(after));
 }
@@ -1006,8 +861,8 @@ engrave_parse_program_in(double from, double range)
   Engrave_Group *group;
   Engrave_Program *program;
 
-  group = evas_list_data(evas_list_last(engrave_file->groups));
-  program = evas_list_data(evas_list_last(group->programs));
+  group = engrave_file_group_last_get(engrave_file);
+  program = engrave_group_program_last_get(group);
 
   program->in.from = from;
   program->in.range = range;
@@ -1020,9 +875,8 @@ engrave_parse_program_action(Engrave_Action action, char *state, char *state2, d
   Engrave_Group *group;
   Engrave_Program *program;
 
-  group = evas_list_data(evas_list_last(engrave_file->groups));
-  program = evas_list_data(evas_list_last(group->programs));
-
+  group = engrave_file_group_last_get(engrave_file);
+  program = engrave_group_program_last_get(group);
 
   if (program->state) free(program->state);
   if (program->state2) free(program->state2);
@@ -1040,8 +894,8 @@ engrave_parse_program_transition(Engrave_Transition transition, double duration)
   Engrave_Group *group;
   Engrave_Program *program;
 
-  group = evas_list_data(evas_list_last(engrave_file->groups));
-  program = evas_list_data(evas_list_last(group->programs));
+  group = engrave_file_group_last_get(engrave_file);
+  program = engrave_group_program_last_get(group);
 
   program->transition = transition;
   program->duration = duration;

@@ -1,12 +1,12 @@
+AUTOMAKE_OPTIONS 		= 1.4 foreign
+MAINTAINERCLEANFILES 	= Makefile.in
 
-INCLUDES = \
--I. -I$(top_srcdir)/src/lib -I$(top_srcdir)
+CFLAGS		= -g -W -Wall -Wno-implicit
+INCLUDES	= -I$(top_srcdir)/src/lib @ECORE_CFLAGS@
 
-bin_PROGRAMS = \
-engrave_test
+bin_PROGRAMS	= engrave_test
 
-engrave_test_SOURCES = engrave_test_main.c
-engrave_test_LDADD = $(top_builddir)/src/lib/libengrave.la
-engrave_test_LDFLAGS = $(LDFLAGS)
-engrave_test_CFLAGS = $(CFLAGS)
+engrave_test_DEPENDENCIES 	= $(top_builddir)/src/lib/libengrave.la
+engrave_test_SOURCES 		= engrave_test_main.c
+engrave_test_LDADD			= $(top_builddir)/src/lib/libengrave.la @ECORE_LIBS@
 

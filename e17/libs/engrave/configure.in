@@ -66,45 +66,23 @@ dnl Set PACKAGE_SOURCE_DIR in config.h.
 packagesrcdir=`cd $srcdir && pwd`
 AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}", [Source code directory])
 
+AC_ARG_WITH(evas,
+        [  --with-evas=DIR          use evas in <DIR>],
+                [CFLAGS="$CFLAGS -I$withval/include"
+                         LIBS="-L$withval/lib $LIBS"])
 
-PROG="evas-config";
-AC_PATH_PROG(EVAS_CONFIG, $PROG, "", $PATH)
-if [ test -z $EVAS_CONFIG ]; then
-  echo $PROG " is not in your \$PATH. Please ensure it is.";
-  echo "Read the manual page for you shell as to how to extend your path.";
-  echo "FATAL ERROR. ABORT.";
-  exit -1;
-fi
-evas_cflags=`$EVAS_CONFIG --cflags`
-evas_libs=`$EVAS_CONFIG --libs`
-AC_SUBST(evas_cflags)
-AC_SUBST(evas_libs)
+AC_PATH_GENERIC(evas, , ,
+    AC_MSG_ERROR(Cannot find evas: Is evas-config in path?))
 
-PROG="ecore-config";
-AC_PATH_PROG(ECORE_CONFIG, $PROG, "", $PATH)
-if [ test -z $ECORE_CONFIG ]; then
-  echo $PROG " is not in your \$PATH. Please ensure it is.";
-  echo "Read the manual page for you shell as to how to extend your path.";
-  echo "FATAL ERROR. ABORT.";
-  exit -1;
-fi
-ecore_cflags=`$ECORE_CONFIG --cflags`
-ecore_libs=`$ECORE_CONFIG --libs`
-AC_SUBST(ecore_cflags)
-AC_SUBST(ecore_libs)
+AC_ARG_WITH(ecore,
+        [  --with-ecore=DIR          use ecore in <DIR>],
+                [CFLAGS="$CFLAGS -I$withval/include"
+                         LIBS="-L$withval/lib $LIBS"])
 
-PROG="edje-config";
-AC_PATH_PROG(EDJE_CONFIG, $PROG, "", $PATH)
-if [ test -z $EDJE_CONFIG ]; then
-  echo $PROG " is not in your \$PATH. Please ensure it is.";
-  echo "Read the manual page for you shell as to how to extend your path.";
-  echo "FATAL ERROR. ABORT.";
-  exit -1;
-fi
-edje_cflags=`$EDJE_CONFIG --cflags`
-edje_libs=`$EDJE_CONFIG --libs`
-AC_SUBST(edje_cflags)
-AC_SUBST(edje_libs)
+AC_PATH_GENERIC(ecore, , ,
+    AC_MSG_ERROR(Cannot find ecore: Is ecore-config in path?))
+
+
 
 AC_OUTPUT([
 Makefile 
