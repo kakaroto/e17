@@ -159,7 +159,8 @@ load (ImlibImage *im, ImlibProgressFunction progress,
       return 0;
    
    fread(&magic_number, sizeof(uint16), 1, file);
-   rewind(file);
+   /* Apparently rewind(f) isn't sufficient */
+   fseek(file, (long)0, SEEK_SET);
    
    if ((magic_number != TIFF_BIGENDIAN) /* Checks if actually tiff file */
        && (magic_number != TIFF_LITTLEENDIAN))
@@ -170,6 +171,7 @@ load (ImlibImage *im, ImlibProgressFunction progress,
    
    fd = fileno(file);
    fd = dup(fd);
+   lseek(fd, (long)0, SEEK_SET);
    fclose(file);
    
    tif = TIFFFdOpen(fd, im->file, "r");
