@@ -10,29 +10,25 @@
  * @param udata Pointer to an ePlayer struct.
  */
 int track_play_chunk(void *udata) {
+#define BUF_SIZE 18432
 	ePlayer *player = udata;
 	PlayListItem *pli = player->playlist->cur_item->data;
 	InputPlugin *plugin = pli->plugin;
-	int bytes_read, big_endian = 0;
-	static unsigned char pcmout[8192];
+	int read;
+	static unsigned char pcmout[BUF_SIZE];
 
-#ifdef WORDS_BIGENDIAN
-	big_endian = 1;
-#endif
-	
 	/* read the data ... */
-	bytes_read = plugin->read(pcmout, sizeof(pcmout), big_endian);
-	
-	if (bytes_read) /* ...and play it */
-		player->output->play(pcmout, bytes_read);
-	else /* EOF -> move to the next track */
+	if ((read = plugin->read(pcmout, BUF_SIZE))) {
+		/* ...and play it */
+		player->output->play(pcmout, read);
+	} else /* EOF -> move to the next track */
 		edje_object_signal_emit(player->gui.edje,
 		                        "PLAY_NEXT", "next_button");
 
 	/* the edje callback will re-add the idler, so we can remove it here,
 	 * in case ov_read() failed
 	 */
-	return !!bytes_read;
+	return !!read;
 }
 
 int track_update_time(void *udata) {
@@ -57,15 +53,9 @@ int track_update_time(void *udata) {
 
 static int prepare_output(ePlayer *player) {
 	PlayListItem *current = player->playlist->cur_item->data;
-	int bigendian = 0;
-
-#ifdef WORDS_BIGENDIAN
-	bigendian = 1;
-#endif
 
 	return player->output->configure(current->channels,
-	                                 current->sample_rate,
-	                                 16, bigendian);
+	                                 current->sample_rate, 16);
 }
 
 /**

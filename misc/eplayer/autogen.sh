@@ -1,12 +1,14 @@
 #!/bin/sh
 
-## Script to bootstrap the build enviroment
-
 rm -rf autom4te.cache
 rm -f aclocal.m4
 
-aclocal $ACLOCAL_FLAGS -I m4
-autoheader
-autoconf
-libtoolize --automake
-automake --add-missing --copy --gnu
+echo "Running aclocal..."; aclocal $ACLOCAL_FLAGS -I m4 \
+&& echo "Running autoheader..."; autoheader \
+&& echo "Running autoconf..."; autoconf \
+&& echo "Running libtoolize..."; libtoolize --automake \
+&& echo "Running automake..."; automake --add-missing --copy --gnu
+
+echo
+echo "Bootstrap complete, now run ./configure"
+echo

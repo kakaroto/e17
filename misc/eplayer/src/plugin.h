@@ -29,7 +29,7 @@ typedef struct {
 	int (*get_channels)();
 	int (*get_sample_rate)();
 	
-	int (*read)(unsigned char *buf, int len, int bigendian);
+	int (*read)(unsigned char *buf, int len);
 
 	int (*get_current_pos)();
 	void (*set_current_pos)(int pos);
@@ -41,7 +41,7 @@ typedef struct {
 	void (*shutdown)();
 
 	/* playback */
-	int (*configure)(int channels, int rate, int bits, int bigendian);
+	int (*configure)(int channels, int rate, int bits);
 	int (*play)(unsigned char *data, int len);
 
 	/* mixer */

@@ -23,7 +23,7 @@ void alsa_shutdown() {
 	}
 }
 
-int alsa_configure(int channels, int rate, int bits, int bigendian) {
+int alsa_configure(int channels, int rate, int bits) {
 	snd_pcm_hw_params_t *params;
 	snd_pcm_access_mask_t *access;
 	int tmp;

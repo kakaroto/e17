@@ -1,5 +1,8 @@
 $Id$
 
+2003-10-24 Tilman Sauerbeck <tilman@code-monkey.de>
+        * src/input/avcodec: Added libavcodec input plugin
+
 2003-10-23 Tilman Sauerbeck <tilman@code-monkey.de>
         * src/input: Added a input plugin system
         * src/vorbis.c, src/input/vorbis: Move vorbis specific code

@@ -31,6 +31,18 @@ AC_ARG_ENABLE(debug,
 		CFLAGS=`echo "$CFLAGS -g -Wall" | sed s/" -s"//`
 	])
 
+AC_PATH_GENERIC(ecore, , ,
+	AC_MSG_ERROR(Cannot find ecore: Is ecore-config in path?))
+
+AC_PATH_GENERIC(evas, , ,
+	AC_MSG_ERROR(Cannot find evas: Is evas-config in path?))
+
+AC_PATH_GENERIC(edje, , ,
+	AC_MSG_ERROR(Cannot find edje: Is edje-config in path?))
+
+AC_PATH_GENERIC(esmart, , ,
+	AC_MSG_ERROR(Cannot find esmart: Is esmart-config in path?))
+
 dnl Check for libdl
 tmp=$LIBS
 AC_CHECK_HEADERS(dlfcn.h, , AC_MSG_ERROR(Cannot find dlfcn.h))
@@ -56,17 +68,22 @@ fi
 LIBS=$tmp
 AM_CONDITIONAL(HAVE_VORBIS, test "$have_vorbis" = "yes")
 
-AC_PATH_GENERIC(ecore, , ,
-	AC_MSG_ERROR(Cannot find ecore: Is ecore-config in path?))
+dnl Check for libavcodec
+tmp=$LIBS
 
-AC_PATH_GENERIC(evas, , ,
-	AC_MSG_ERROR(Cannot find evas: Is evas-config in path?))
+AC_CHECK_LIB(avcodec, avcodec_init,
+	[
+		have_avcodec="yes"
+		
+		AVCODEC_CFLAGS="-I/usr/include/ffmpeg"
+		AVCODEC_LIBS="-lavcodec"
+		
+		AC_SUBST(AVCODEC_CFLAGS)
+		AC_SUBST(AVCODEC_LIBS)
+	], have_avcodec="no")
 
-AC_PATH_GENERIC(edje, , ,
-	AC_MSG_ERROR(Cannot find edje: Is edje-config in path?))
-
-AC_PATH_GENERIC(esmart, , ,
-	AC_MSG_ERROR(Cannot find esmart: Is esmart-config in path?))
+LIBS=$tmp
+AM_CONDITIONAL(HAVE_AVCODEC, test "$have_avcodec" = "yes")
 
 dnl Check for OSS
 AC_CHECK_HEADERS(sys/soundcard.h machine/soundcard.h, [have_oss="yes"; break], have_oss="no")
@@ -79,7 +96,7 @@ AM_CONDITIONAL(HAVE_ALSA, test "x$have_alsa" = "xyes")
 dnl Check for Solaris audio stuff
 AC_CHECK_HEADER(sys/audioio.h, have_solaris="yes", have_solaris="no")
 AM_CONDITIONAL(HAVE_SOLARIS, test "$have_solaris" = "yes")
-			   
+
 AC_OUTPUT([
 Makefile
 data/Makefile
@@ -89,6 +106,7 @@ etc/Makefile
 m4/Makefile
 src/Makefile
 src/input/Makefile
+src/input/avcodec/Makefile
 src/input/vorbis/Makefile
 src/output/Makefile
 src/output/alsa/Makefile
@@ -102,6 +120,7 @@ echo
 echo
 echo "Input Plugins"
 echo
+echo "AVCodec.......: $have_avcodec"
 echo "Ogg Vorbis....: $have_vorbis"
 echo
 echo

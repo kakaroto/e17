@@ -16,7 +16,7 @@ void solaris_shutdown() {
 	}
 }
 
-int solaris_configure(int channels, int rate, int bits, int bigendian) {
+int solaris_configure(int channels, int rate, int bits) {
 	audio_info_t info;
 
 	assert(fd != -1);

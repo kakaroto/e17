@@ -21,7 +21,13 @@ void oss_shutdown() {
 	}
 }
 
-int oss_configure(int channels, int rate, int bits, int bigendian) {
+int oss_configure(int channels, int rate, int bits) {
+#ifdef WORDS_BIGENDIAN
+	static int bigendian = 1;
+#else
+	static int bigendian = 0;
+#endif
+
 	int format, tmp;
 
 	assert(fd != -1);
