@@ -477,7 +477,7 @@ AddToFamily(Window win)
      }
 
    /* if it hasn't been planted on a desktop - assign it the current desktop */
-   if (ewin->desktop < 0 || ewin->props.vroot)
+   if (ewin->sticky || ewin->desktop < 0 || ewin->props.vroot)
      {
 	ewin->desktop = desks.current;
      }
