@@ -78,12 +78,12 @@ init_index_mode(void)
 
       title_fn = feh_imlib_load_font(opt.title_font);
       if (!fn)
-         title_fn = feh_imlib_load_font("20thcent/22");
+         title_fn = feh_imlib_load_font(DEFAULT_FONT_TITLE);
       feh_imlib_get_text_size(title_fn, "W", &fw, &fh, IMLIB_TEXT_TO_RIGHT);
       title_area_h = fh + 4;
    }
    else
-      title_fn = feh_imlib_load_font("20thcent/22");
+      title_fn = feh_imlib_load_font(DEFAULT_FONT_TITLE);
 
    if ((!fn) || (!title_fn))
       eprintf("Error loading fonts");

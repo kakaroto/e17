@@ -84,7 +84,7 @@ init_thumbnail_mode(void)
       title_area_h = fh + 4;
    }
    else
-      title_fn = imlib_load_font("20thcent/22");
+      title_fn = imlib_load_font(DEFAULT_FONT_TITLE);
 
    if ((!fn) || (!title_fn))
       eprintf("Error loading fonts");
@@ -713,7 +713,7 @@ feh_thumbnail_mark_removed(feh_file * file, int deleted)
       w = winwidget_get_first_window_of_type(WIN_TYPE_THUMBNAIL);
       if (w)
       {
-         fn = imlib_load_font("20thcent/20");
+         fn = imlib_load_font(DEFAULT_FONT_TITLE);
          if (deleted)
             feh_imlib_image_fill_rectangle(w->im, thumb->x, thumb->y,
                                            thumb->w, thumb->h, 255, 0, 0,
@@ -732,7 +732,7 @@ feh_thumbnail_mark_removed(feh_file * file, int deleted)
                                 IMLIB_TEXT_TO_RIGHT, 205, 205, 50, 255);
          }
          else
-            weprintf("couldn't load font 20thcent/20");
+            weprintf(DEFAULT_FONT_TITLE);
          winwidget_render_image(w, 0, 1);
       }
       thumb->exists = 0;

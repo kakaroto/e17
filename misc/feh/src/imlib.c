@@ -614,7 +614,7 @@ feh_draw_zoom(winwidget w)
       D_RETURN_(4);
 
    if (!fn)
-      fn = feh_imlib_load_font("20thcent/12");
+      fn = feh_imlib_load_font(DEFAULT_FONT);
 
    if (!fn)
    {
@@ -661,9 +661,9 @@ feh_draw_filename(winwidget w)
    if (!fn)
    {
       if (w->full_screen)
-         fn = feh_imlib_load_font("20thcent/16");
+         fn = feh_imlib_load_font(DEFAULT_FONT_BIG);
       else
-         fn = feh_imlib_load_font("20thcent/10");
+         fn = feh_imlib_load_font(DEFAULT_FONT);
    }
 
    if (!fn)

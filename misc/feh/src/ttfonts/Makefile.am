@@ -6,15 +6,7 @@ AUTOMAKE_OPTIONS = 1.4 foreign
 MAINTAINERCLEANFILES = Makefile.in				
 
 testfonts_DATA = \
-20thcent.ttf \
-cinema.ttf \
-droid.ttf \
-goodtime.ttf \
-grunge.ttf \
-joystix.ttf \
-morpheus.ttf \
-notepad.ttf \
-soulpapa.ttf
+helmetr.ttf
 
 testfontsdir=$(prefix)/share/feh/fonts
 

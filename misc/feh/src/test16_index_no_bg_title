@@ -8,5 +8,5 @@ FEH="feh"
 echo ""
 echo "This test should create an index print with a title."
 echo ""
-$FEH $1 --font 20thcent/10 --title-font 20thcent/24 -V -o _test14.jpg -i --thumb-width 100 --thumb-height 100 testimages
+$FEH $1 --font helmetr/10 --title-font helmetr/24 -V -o _test14.jpg -i --thumb-width 100 --thumb-height 100 testimages
 echo ""

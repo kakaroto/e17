@@ -54,8 +54,8 @@ init_parse_options(int argc, char **argv)
    opt.slideshow_delay = -1.0;
    opt.thumb_w = 60;
    opt.thumb_h = 60;
-   opt.menu_font = estrdup("20thcent/12");
-   opt.font = estrdup("20thcent/8");
+   opt.menu_font = estrdup(DEFAULT_MENU_FONT);
+   opt.font = estrdup(DEFAULT_FONT);
    opt.menu_bg = estrdup(PREFIX "/share/feh/images/menubg.png");
    opt.next_button = 1;
    opt.zoom_button = 2;

@@ -1,3 +1,9 @@
+Sat Jan 26 14:10:54 GMT 2002  Tom Gilbert <tom@linuxbrit.co.uk>
+
+  * Goodbye, non-free fonts, hello, free font. Turns out the guy who made
+    those "public domain" fonts doesn't actually want to release them under a
+    free license, so they gotta go.
+
 Mon Jan 14 19:51:18 2002  Tom Gilbert  <tom@linuxbrit.co.uk>
 
 	* Fixed --bg-seamless from the commandline.
