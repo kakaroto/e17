@@ -66,6 +66,12 @@ _etox_object_get_available_size(Etox e, Etox_Object obj)
   Etox_Obstacle obst;
   double w = 0.0;
 
+  if (!e || !obj)
+    return 0;
+
+  if (obj->y > e->y)
+    return 0;
+
   obj->w = e->w;
   obj->h = (obj->bit.font->ascent - obj->bit.font->descent) + e->padding;
 
@@ -168,6 +174,9 @@ void
 _etox_object_move(Etox e, Etox_Object obj)
 {
   Etox_Obstacle obst;
+
+  if (!e || !obj)
+    return;
 
   if (e->obstacles)
     {

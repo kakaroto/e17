@@ -30,7 +30,7 @@ __create_etox_objects(Etox e, Etox_All_Bits bits,
       if (!_etox_object_get_available_size(e, et_obj))
         {
           _etox_object_free(et_obj);
-          return;
+          break;
         }
       if (_etox_object_get_string_that_fits(e, et_obj))
         {

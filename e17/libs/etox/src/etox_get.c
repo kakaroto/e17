@@ -131,10 +131,7 @@ etox_get_align_v(Etox e)
 Etox_Align_Type
 etox_get_align_h(Etox e)
 {
-  if (!e)
-    return ETOX_ALIGN_TYPE_NULL;
-
-  if (!e->def.align)
+  if (!e || !e->def.align)
     return ETOX_ALIGN_TYPE_NULL;
 
   return e->def.align->h;

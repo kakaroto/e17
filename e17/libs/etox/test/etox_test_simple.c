@@ -15,10 +15,6 @@
 #define OBST_X 100.0
 #define OBST_Y 100.0
 
-
-#define DEBUG
-
-
 double obstacle_w = -1.0, obstacle_h = -1.0, obstacle_x, obstacle_y;
 
 static void e_idle(void *data);
