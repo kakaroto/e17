@@ -79,11 +79,11 @@ void ewl_entry_init(Ewl_Entry * e, char *text)
 	ewl_container_append_child(EWL_CONTAINER(e), e->text);
 	ewl_widget_show(e->text);
 
-	e->cursor = ewl_cursor_new();
+	e->selection = ewl_selection_new();
 	ewl_container_append_child(EWL_CONTAINER(e), e->selection);
 	ewl_widget_show(e->selection);
-
-	e->selection = ewl_selection_new();
+	
+	e->cursor = ewl_cursor_new();
 	ewl_container_append_child(EWL_CONTAINER(e), e->cursor);
 	ewl_widget_show(e->cursor);
 

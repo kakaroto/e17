@@ -594,7 +594,7 @@ __ewl_grid_auto_resize(Ewl_Container * p, Ewl_Widget * child, int size,
 	int             used = 0;
 	int             start_off, end_off;
 	Ewl_Grid_Info  *info;
-	int             i, num_spread = 0;
+	int             i, num_spread = 1;
 	Ewl_Grid_Child *cdata;
 	unsigned int    (*widget_size) (Ewl_Object * o);
 
