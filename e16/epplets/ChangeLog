@@ -600,3 +600,12 @@ Wed Nov 17 14:18:42 PST 1999
 
 Cleanups to the libgtop stuff.  Someone (Mark) please tell me if this doesn't
 work on Solaris....
+
+-------------------------------------------------------------------------------
+
+Wed Nov 17 21:46:41 EST 1999
+(StriderZ)
+
+Made most of the functions in epplets/cloak.c non-static so that they can be 
+accessed by other epplets. Also Added E-NetGraph, a wmnet wannabe epplet.
+

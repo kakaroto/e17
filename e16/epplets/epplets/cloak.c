@@ -15,17 +15,17 @@ int rr, gg, bb;
 extern RGB_buf buf;
 int load_val = 35;
 
-static void aa_line (int x1, int y1, int x2, int y2, unsigned char b,
+void aa_line (int x1, int y1, int x2, int y2, unsigned char b,
 		     unsigned char rr, unsigned char gg, unsigned char bb);
-static void set_col_pixel (int x, int y, unsigned char c, unsigned char rrr,
+void set_col_pixel (int x, int y, unsigned char c, unsigned char rrr,
 			   unsigned char ggg, unsigned char bbb);
 /* static void set_pixel (int x, int y, unsigned char c); */
-static void aa_pixel (double wx, double wy, unsigned char c,
+void aa_pixel (double wx, double wy, unsigned char c,
 		      unsigned char rrr, unsigned char ggg,
 		      unsigned char bbb);
-static void color_buf (unsigned char rr, unsigned char gg, unsigned char bb);
-static void fade_buf (int percent);
-static void scroll_buf (void);
+void color_buf (unsigned char rr, unsigned char gg, unsigned char bb);
+void fade_buf (int percent);
+void scroll_buf (void);
 static void
 get_warpedcolor (unsigned char *rrr, unsigned char *ggg, unsigned char *bbb);
 
@@ -178,7 +178,7 @@ fade_buf (int percentage)
 }
 
 /* Scrolls buf along one to the left */
-static void
+void
 scroll_buf (void)
 {
   int x, y;
@@ -1000,7 +1000,7 @@ draw_sine (void)
 /* ************************* */
 
 /* Maybe I'll optimise this later ;-) */
-static void
+void
 aa_line (int x1, int y1, int x2, int y2, unsigned char b,
 	 unsigned char rr, unsigned char gg, unsigned char bb)
 {
@@ -1194,7 +1194,7 @@ aa_line (int x1, int y1, int x2, int y2, unsigned char b,
 }
 
 /* Draw an anti-aliased pixel */
-static void
+void
 aa_pixel (double wx, double wy, unsigned char c, unsigned char rrr,
 	  unsigned char ggg, unsigned char bbb)
 {
@@ -1219,7 +1219,7 @@ aa_pixel (double wx, double wy, unsigned char c, unsigned char rrr,
 }
 
 /* Set a pixel, takes a brightness and a colour value */
-static void
+void
 set_col_pixel (int x, int y, unsigned char c, unsigned char rrr,
 	       unsigned char ggg, unsigned char bbb)
 {
