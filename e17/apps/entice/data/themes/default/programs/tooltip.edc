@@ -4,36 +4,61 @@
 		source, ""; 
 		action, STATE_SET "default" 0.0; 
 		transition, DECELERATE 1.0; 
-		target, "EnticeToolTipClip"; in, 1.25 0.0; 
+		target, "EnticeToolTipClip"; 
+		in, 1.25 0.0; 
+		after: "ToolTipHideEmbryo";
 	    } 
 	    program { 
-		name, "ToolTipShow"; 
+		name, "ToolTipHideEmbryo"; 
 		signal, ""; 
 		source, ""; 
-		action, STATE_SET "visible" 0.0; 
-		transition, DECELERATE 1.0; 
-		target, "EnticeToolTipClip";
+		script {
+		    set_int(tooltips_visible, 0);
+		}
 	    } 
 #define TOOLTIP_CB(pname, pstate, ptext) \
 	    program { name, "ToolTipKillCBS"pname; \
 		signal, "mouse,in"; source, pname; \
 		action, ACTION_STOP; target, "ToolTipHide"; } \
-	    program { name, "ToolTipClippy"pname; signal, "mouse,in"; \
-			source, pname; action, STATE_SET "visible" 0.0; \
-			transition, ACCELERATE 0.35; \
-			target, "EnticeToolTipClip"; } \
-	    program { name, "ToolTip"pname; signal, "mouse,in"; \
-			source, pname; \
-			script {  \
-			    set_text(PART:"EnticeToolTip", ptext); \
-			} \
-			after, "ToolTipShow"; } \
-	    program { name, "ToolTipHide"pname; signal, "mouse,out"; \
-			source, pname; action, ACTION_STOP; \
-			target, "ToolTipHide"; \
-			target, "ToolTip"pname; \
-			target, "ToolTipKillCBS"pname; \
-			after, "ToolTipHide"; in: 0.5 0.0; }
+	    program { \
+		name, "ToolTipText"pname; \
+		signal, "mouse,in"; \
+		source, pname; \
+		script {  \
+		    set_text(PART:"EnticeToolTip", ptext); \
+		} \
+		in: 0.25 0.0; \
+	    } \
+	    program { \
+		name, "ToolTipShow"pname; \
+		signal, "mouse,in"; \
+		source, pname;  \
+		action, STATE_SET "visible" 0.0; \
+		target, "EnticeToolTipClip"; \
+		transition, LINEAR 0.25; \
+		after: "ToolTipShowAfter"pname; \
+	    } \
+	    program {  \
+		name, "ToolTipShowAfter"pname; \
+		signal, ""; \
+		source, ""; \
+		action, STATE_SET "visible" 1.0; \
+		target, "EnticeToolTipClip"; \
+		transition, SINUSOIDAL 0.75; \
+		in: 0.1 0.0; \
+	    } \
+	    program { \
+		name, "ToolTipHide"pname; \
+		signal, "mouse,out"; \
+		source, pname; \
+		action, ACTION_STOP; \
+		target, "ToolTipHide"; \
+		target, "ToolTipShow"pname; \
+		target, "ToolTipShowAfter"pname; \
+		target, "ToolTipText"pname; \
+		after, "ToolTipHide"; \
+		in: 1.5 0.0; \
+	    }
 
 	TOOLTIP_CB("ButtonDeleteImage", "delete_image", \
 					"Delete the current Image")

@@ -37,6 +37,12 @@
 			offset, -10 50;
 			to_y, "Buttons";
 		    }
+		    color, 255 255 255 0;
+		}
+		description
+		{
+		    state, "visible" 1.0;
+		    inherit: "visible" 0.0;
 		    color, 255 255 255 255;
 		}
 	    }
