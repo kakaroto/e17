@@ -9,10 +9,10 @@
 /* #undef HAVE_LIBSM */
 /* #undef HAVE_PAM */
 /* #undef PACKAGE_LOCALE_DIR */
-#define PACKAGE_DATA_DIR "/usr/share/erss"
-#define PACKAGE_SOURCE_DIR "/usr/src/app/misc/erss"
-#define PACKAGE_CFG_DIR "/usr/etc"
-#define PREFIX "/usr"
+#define PACKAGE_DATA_DIR "/usr/local/share/erss"
+#define PACKAGE_SOURCE_DIR "/home/z1/e17misc/erss"
+#define PACKAGE_CFG_DIR "/usr/local/etc"
+#define PREFIX "/usr/local/"
 /* #undef ENTRANCE_XSESSION */
 /* #undef HAVE_ECORE_GL_X11 */
 

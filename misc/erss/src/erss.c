@@ -47,11 +47,12 @@ char *erss_time_format () {
 	curtime = time(NULL);
 	ts = localtime(&curtime);
 
-	str = malloc (11);
+	str = malloc (9*sizeof(char));
 
-	snprintf (str, 20, "%02d:%02d:%02d", 
+	snprintf (str, 9, "%02d:%02d:%02d", 
 			ts->tm_hour, ts->tm_min, ts->tm_sec);
 
+	/*free(ts);*/
 	return str;
 }
 

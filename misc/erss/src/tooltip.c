@@ -168,3 +168,28 @@ int erss_tooltip_for(Erss_Article *item) {
     }
     return FALSE;
 }
+
+void erss_tooltip_free(Erss_Article *item) {
+    Erss_Tooltip *tt;
+
+    /* get rid of our callbacks */
+    evas_object_event_callback_del (item->obj,
+				    EVAS_CALLBACK_MOUSE_IN, erss_tooltip_mouse_in);
+    tt = evas_object_event_callback_del (item->obj,
+				    EVAS_CALLBACK_MOUSE_OUT, erss_tooltip_mouse_out);
+    if (tt==NULL) {
+	fprintf(stderr,"%s error: trying to free non-existent tooltip\n", PACKAGE);
+	return;
+    }
+    evas_object_event_callback_del (tt->etox,
+				    EVAS_CALLBACK_MOUSE_UP, erss_tooltip_mouse_clicked);
+    evas_object_event_callback_del (tt->bg,
+				    EVAS_CALLBACK_MOUSE_UP, erss_tooltip_mouse_clicked);
+
+    /* then lose the ecore_evas */
+    ecore_evas_free(tt->ee);
+    ecore_x_window_del(tt->win);
+    /* finally free the damn thing */
+    memset(tt,0,sizeof(Erss_Tooltip));
+    free(tt);
+}

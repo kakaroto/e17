@@ -40,7 +40,7 @@ int erss_net_poll (void *data)
 		fprintf (stderr, "%s error: Could not connect to server ..\n", PACKAGE);
 	else {
 		f->total_connects++;
-		f->last_time = strdup (erss_time_format ());
+		f->last_time = erss_time_format ();
 		erss_set_time (f);
 	}
 

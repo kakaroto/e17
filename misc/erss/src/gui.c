@@ -29,16 +29,19 @@ Evas_Object *bg=NULL,
 int erss_set_time (void *data)
 {
 	Erss_Feed *f=(Erss_Feed *)data;
-	char      *str;
+	/* these commented out bits stopped being used when we stopped showing
+	 * the clock in the window - left in case they are ever wanted again
+	 */
+	/* char      *str; */
 	char       text[100];
 
-	str = erss_time_format ();
+	/* str = erss_time_format (); */
 	if (f->last_time)
 		snprintf (text, sizeof (text), "Last update: %s", f->last_time);
 
 	edje_object_part_text_set (tid, "clock", text);
 
-	free (str);
+	/* free (str); */
 
 	return TRUE;
 }
@@ -220,8 +223,11 @@ int erss_gui_items_drop(Ewd_List **l) {
 		return FALSE;
 
 	item = ewd_list_goto_first (list);
-	while ((item = ewd_list_next(list)))
+	while ((item = ewd_list_next(list))) {
+		if (item->description && item->obj)
+			erss_tooltip_free(item);
 		erss_gui_item_dst(&item);
+	}
 
 	ewd_list_remove (list);
 

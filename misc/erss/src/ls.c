@@ -90,8 +90,8 @@ void erss_list_config_files (int output)
 	}
 
 	/*
-	 * Finished reading and printing avaliable config files
-	 * now remove the paths list since we don't need it anyumore.
+	 * Finished reading and printing available config files
+	 * now remove the paths list since we don't need it anymore.
 	 */
 	ptr = ewd_list_goto_first (paths);
 	while ((ptr = ewd_list_current (paths))) {

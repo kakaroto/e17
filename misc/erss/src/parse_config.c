@@ -1,5 +1,5 @@
-#include "erss.h"
-#include "parse_config.h"      /* Erss_Config, Erss_Rc_Config  */
+#include "erss.h"              /* Erss_Config */
+#include "parse_config.h"      /* Erss_Rc_Config  */
 #include "ls.h"                /* erss_list_config_files() */
 
 Erss_Rc_Config *rc = NULL;
