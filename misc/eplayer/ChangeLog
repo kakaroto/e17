@@ -2,6 +2,8 @@ $Id$
 
 2003-01-24 Tilman Sauerbeck <tilman@code-monkey.de>
         * src/eplayer.c, src/plugin.c: Switched to libltdl
+        * src/interface.c: added draggie support, removed the RAISE
+          signal.
 
 2003-12-28 Tilman Sauerbeck <tilman@code-monkey.de>
         * src/callbacks.c, src/playlist.c, src/interface.c,
