@@ -292,6 +292,7 @@ done_cb(void *data, Evas_Object * o, const char *emission, const char *source)
    }
    else
    {
+      SYSLOG(LOG_CRIT, "Theme attempted to launch session without finishing authentication. Please fix your theme.");
       exit(0);
    }
 }
