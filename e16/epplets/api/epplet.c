@@ -5328,6 +5328,114 @@ Epplet_modify_config(char *key, char *value)
    Epplet_add_config(key, value);
 }
 
+void            
+Epplet_modify_multi_config(char *shortkey, char **values, int num)
+{
+   int                 i,j,k, matches;
+   char                key[64], key2[64];
+   char               *s;
+
+   if (!shortkey)
+      return;
+
+   /* build the actual key: */
+   Esnprintf(key, sizeof(key), "__%s__", shortkey);
+   matches = 0;
+
+   /* first wipe out old ones */
+   for (i = 0; i < config_dict->num_entries; i++)
+     {
+	if (config_dict->entries[i].key)
+	  {
+	    s = strstr(config_dict->entries[i].key, key);
+	    if (s == config_dict->entries[i].key)
+	      /* we've found a key matching at the beginning */
+	      {
+		/* check how many keys match (in a row) */
+		for (j = i+1; j < config_dict->num_entries; j++)
+		  {
+		    s = strstr(config_dict->entries[i].key, key);
+		    if (s != config_dict->entries[i].key)
+		      break;
+		  }
+		/* free their pointers */
+		matches = j - i;
+		for (k = i; k < j; k++)
+		  {
+		    free(config_dict->entries[k].key);
+		    free(config_dict->entries[k].value);
+		  }
+		/* and move the rest. */
+		for (k = 0; k < config_dict->num_entries - j; k++)
+		  {
+		    config_dict->entries[i+k] = config_dict->entries[j+k];
+		  }
+		break;
+	      }
+	  }
+     }
+
+   /* then insert new ones */
+   config_dict->entries = realloc(config_dict->entries,
+				  sizeof(ConfigItem) * (config_dict->num_entries - matches + num));
+   for (i = 0, j = config_dict->num_entries - matches; i < num; i++, j++)
+     {
+       Esnprintf(key2, sizeof(key2), "%s%i", key, i);
+       config_dict->entries[j].key = strdup(key2);
+       config_dict->entries[j].value = strdup(values[i]);		    
+     }
+   config_dict->num_entries = config_dict->num_entries - matches + num;
+}
+
+char          **
+Epplet_query_multi_config(char *shortkey, int *num)
+{
+  char              **result = NULL;
+  char               *s;
+  char                key[64];
+  int                 i,j,k;
+  
+  if (!shortkey)
+    return NULL;
+  
+  /* build the actual key: */
+  Esnprintf(key, sizeof(key), "__%s__", shortkey);
+  *num = 0;
+  
+  for (i = 0; i < config_dict->num_entries; i++)
+    {
+      if (config_dict->entries[i].key)
+	{
+	  s = strstr(config_dict->entries[i].key, key);
+	  if (s == config_dict->entries[i].key)
+	    /* we've found a key matching at the beginning */
+	    {
+	      /* check how many keys match (in a row) */
+	      for (j = i+1, (*num) = 1; j < config_dict->num_entries; j++, (*num)++)
+		{
+		  s = strstr(config_dict->entries[j].key, key);
+		  if (s != config_dict->entries[j].key)
+		    break;
+		}
+	      /* and build result */
+	      result = (char**)malloc(sizeof(char*) * (*num));
+	      if (result)
+		{
+		  for (k = 0; k < (*num); k++)
+		    {
+		      result[k] = config_dict->entries[i+k].value;
+		    }
+		  return result;
+		}
+	      *num = 0;
+	      return NULL;
+	    }
+	}
+    }
+  *num = 0;
+  return NULL;
+}
+
 int
 Epplet_get_hslider_clicked(Epplet_gadget gadget)
 {

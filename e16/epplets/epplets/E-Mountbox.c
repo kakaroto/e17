@@ -100,11 +100,146 @@ CallbackHelp(void *data)
 
 
 static void
+Callback_ConfigOK(void *data)
+{
+  Epplet_window_destroy (config_win);
+  config_win = 0;
+  return;
+  data = NULL;
+}
+
+
+static void
+Callback_ConfigApply(void *data)
+{
+  return;
+  data = NULL;
+}
+
+
+static void
+Callback_ConfigCancel(void *data)
+{
+  Epplet_window_destroy (config_win);
+  config_win = 0;
+  return;
+  data = NULL;
+}
+
+
+static void
+Callback_DefaultChange(void *data)
+{
+  return;
+  data = NULL;
+}
+
+
+static void
+Callback_BGChange(void *data)
+{
+  return;
+  data = NULL;
+}
+
+
+static void
+Callback_KeyChange(void *data)
+{
+  return;
+  data = NULL;
+}
+
+
+static void
+Callback_ConfigLeft(void *data)
+{
+  if (current_type->prev)
+    {
+      current_type = current_type->prev;
+      Epplet_change_textbox(tbox_key, current_type->key);
+      Epplet_change_textbox(tbox_file, current_type->imagefile);
+    }
+  return;
+  data = NULL;
+}
+
+
+static void
+Callback_ConfigRight(void *data)
+{
+  if (current_type->next)
+    {
+      current_type = current_type->next;
+      Epplet_change_textbox(tbox_key, current_type->key);
+      Epplet_change_textbox(tbox_file, current_type->imagefile);
+    }
+  return;
+  data = NULL;
+}
+
+
+static void
+Callback_FileChange(void *data)
+{
+  return;
+  data = NULL;
+}
+
+
+static void
 CallbackConfigure(void *data)
 {
-  Epplet_dialog_ok("You are using a development version of this epplet.\n"
-		   "This button doesn't do anything yet --\n"
-		   "We apologize for the inconvenience :)");
+  if (config_win)
+    return;
+
+  current_type = types;
+
+  config_win =
+    Epplet_create_window_config (420, 190 , "E-Mountbox Configuration",
+				 Callback_ConfigOK, &config_win,
+				 Callback_ConfigApply, &config_win,
+				 Callback_ConfigCancel, &config_win);
+
+  Epplet_gadget_show (Epplet_create_label (12, 10,
+					   "Default icon",
+					   2));
+  Epplet_gadget_show ((tbox_default = Epplet_create_textbox (NULL, Epplet_query_config("DEFAULT"),
+							     10, 23, 400, 20,
+							     2, Callback_DefaultChange, NULL)));
+
+  Epplet_gadget_show (Epplet_create_label (12, 55,
+					   "Background",
+					   2));
+  Epplet_gadget_show ((tbox_bg = Epplet_create_textbox (NULL, Epplet_query_config("BG_IMAGE"),
+							     10, 68, 400, 20,
+							     2, Callback_BGChange, NULL)));
+
+
+  Epplet_gadget_show (Epplet_create_label (12, 100,
+					   "Pattern",
+					   2));
+  Epplet_gadget_show (Epplet_create_label (72, 100,
+					   "Image file",
+					   2));
+  Epplet_gadget_show ((tbox_key = Epplet_create_textbox (NULL, current_type->key,
+							 10, 113, 60, 20,
+							 2, Callback_KeyChange, NULL)));
+  Epplet_gadget_show ((tbox_file = Epplet_create_textbox (NULL, current_type->imagefile,
+							 70, 113, 340, 20,
+							 2, Callback_FileChange, NULL)));
+  Epplet_gadget_show((Epplet_create_button(NULL, NULL, 
+					   170, 140, 0, 0, "ARROW_LEFT", 0, NULL, 
+					   Callback_ConfigLeft, NULL)));
+  Epplet_gadget_show((Epplet_create_button("Add", NULL, 187, 140, 24, 12, NULL, 0, NULL, NULL, NULL)));
+  Epplet_gadget_show((Epplet_create_button("Delete", NULL, 216, 140, 36, 12, NULL, 0, NULL, NULL, NULL)));
+  Epplet_gadget_show((Epplet_create_button(NULL, NULL, 
+					   257, 140, 0, 0, "ARROW_RIGHT", 0, NULL, 
+					   Callback_ConfigRight, NULL)));
+
+  Epplet_window_show (config_win);
+  Epplet_window_pop_context ();
+
   CallbackShowMore(NULL);
   return;
   data = NULL;
@@ -261,10 +396,13 @@ SetupMounts(void)
 void            
 AddMountPoint(char *device, char *path)
 {
-  Tile *newtile = NULL;
-  char *tmp_dev = NULL;
-  char *tmp_path = NULL;
-  int   i;
+  Tile           *newtile = NULL;
+  char           *tmp_dev = NULL;
+  char           *tmp_path = NULL;
+  int             i;
+  MountPointType *type = NULL;
+  char           *s = NULL;
+  ImlibImage     *tmp_image = NULL;
 
   if (!tiles)
     {
@@ -311,26 +449,43 @@ AddMountPoint(char *device, char *path)
 	    tmp_dev[i] = (char)(tolower(tmp_dev[i]));
 	  if (tmp_path && tmp_dev)
 	    {
-	      if (strstr(tmp_dev, "fd"))
+	      type = types;
+	      while (type)
 		{
-		  current_tile->mountpoint->type = TYPE_FD;
+		  if (strstr(tmp_dev, type->key))
+		    {
+		      current_tile->image = type->image;
+		      break;
+		    }
+		  else if (strstr(tmp_path, type->key))
+		    {
+		      current_tile->image = type->image;
+		      break;
+		    }
+		  type = type->next;
 		}
-	      else if (strstr(tmp_dev, "cd") || strstr(tmp_path, "cd"))
+	      
+	      if (current_tile->image == NULL)
 		{
-		  current_tile->mountpoint->type = TYPE_CD;
-		}	      
-	      else if (strstr(tmp_path, "zip"))
-		{
-		  current_tile->mountpoint->type = TYPE_ZIP;
+		  s = Epplet_query_config("DEFAULT");
+
+		  if (!default_image)
+		    {
+		      tmp_image = Imlib_load_image(id, s);  
+		      if (!tmp_image)
+			tmp_image = Imlib_load_image(id, __DEFAULT);  
+		      if (!tmp_image)
+			{
+			  Epplet_dialog_ok("  E-Mountbox could not load a default icon\n  "
+					   "  for the mountpoints. Check your installation.  ");
+			  error_exit();
+			}
+		      default_image = Imlib_clone_scaled_image(id, tmp_image, 44, 32);
+		      Imlib_destroy_image(id, tmp_image);
+		    }
+		  current_tile->image = default_image;
 		}
-	      else if (strstr(tmp_path, "jazz"))
-		{
-		  current_tile->mountpoint->type = TYPE_JAZZ;
-		}
-	      else
-		{
-		  current_tile->mountpoint->type = TYPE_HD;
-		}
+
 	      free(tmp_path);
 	      free(tmp_dev);
 	    }
@@ -339,15 +494,62 @@ AddMountPoint(char *device, char *path)
 }
 
 
+void            
+AddMountPointType(int index, char *key, char *image)
+{
+  MountPointType *newtype = NULL;
+  ImlibImage     *tmp_image = NULL;
+
+  if (!types)
+    {
+      types = (MountPointType*)malloc(sizeof(MountPointType));
+      if (types)
+	{
+	  memset(types, 0, sizeof(MountPointType));
+	  num_types = 1;
+	}
+    }
+  else
+    {
+      newtype = (MountPointType*)malloc(sizeof(MountPointType));
+      if (newtype)
+	{
+	  memset(newtype, 0, sizeof(MountPointType));
+	  newtype->next = types;
+	  types->prev = newtype;
+	  types = newtype;
+	  num_types++;
+	}
+    }
+
+  if (types)
+    {
+      if ((types->key == NULL) && (types->image == NULL))
+	{
+	  types->config_index = index;
+	  types->key = strdup(key);
+	  types->imagefile = strdup(image);
+	  tmp_image = Imlib_load_image(id, image);  
+	  if (tmp_image)
+	    {
+	      types->image = Imlib_clone_scaled_image(id, tmp_image, 44, 32);
+	      Imlib_destroy_image(id, tmp_image);
+	    }
+	}
+    }
+}
+
+
 void
 FreeImages(void)
 {
-  int i;
-
-  for (i=0; i<MAXTYPE; i++)
+  if (bg_image)
     {
-      Imlib_destroy_image(id, images[i]);
-      images[i] = NULL;
+      Imlib_destroy_image(id, bg_image);
+    }
+  if (default_image)
+    {
+      Imlib_destroy_image(id, default_image);
     }
 }
 
@@ -369,6 +571,34 @@ FreeMounts(void)
 	  free(current->mountpoint);
 	}
       /* images need _not_ be freed here */
+      tmp = current;
+      current = current->next;
+      free(tmp);
+    }
+}
+
+
+void        
+FreeMountPointTypes(void)
+{
+  MountPointType *current, *tmp;
+
+  current = types;
+  while (current)
+    {
+      if (current->key)
+	{
+	  free(current->key);
+	}
+      if (current->imagefile)
+	{
+	  free(current->imagefile);
+	}
+      if (current->image)
+	{
+	  Imlib_destroy_image(id, current->image);
+	  current->image = NULL;
+	}
       tmp = current;
       current = current->next;
       free(tmp);
@@ -646,6 +876,7 @@ CallbackExit(void * data)
 {
   data = NULL;
   FreeMounts();
+  FreeMountPointTypes();
   FreeImages();
   Epplet_unremember();
   Esync();
@@ -746,113 +977,92 @@ CallbackExpose(void *data, Window win, int x, int y, int w, int h)
 void
 SetupDefaults(void)
 {
-  int i;
-
+  int    i, num_results;
+  char  *s, *key = NULL, *image = NULL, *token;
+  char **results = NULL;
+  
   for (i=0; i<(int)(sizeof(defaults)/sizeof(ConfigItem)); i++)
     {
       if (!Epplet_query_config(defaults[i].key))
 	Epplet_add_config(defaults[i].key, defaults[i].value);
     }
+
+  results = Epplet_query_multi_config("TYPEDEF", &num_results);
+  if (!results)
+    {
+      Epplet_modify_multi_config("TYPEDEF", default_types, (int)(sizeof(default_types)/sizeof(char*)));
+      results = Epplet_query_multi_config("TYPEDEF", &num_results);
+      if (!results)
+	{
+	  Epplet_dialog_ok("  Could not set up mountpoint types.  \n"
+			   "  Check your installation.  \n");
+	  error_exit();
+	}
+    }
+  
+  for (i = 0; i < num_results; i++)
+    {
+      if (results[i])
+	{
+	  s = strdup(results[i]);
+	  token = strtok(s, " \t");
+	  if (token)
+	    key = strdup(token);
+	  token = strtok(NULL, " \t");
+	  if (token)
+	    image = strdup(token);
+	  
+	  if (key && image)
+	    {
+	      AddMountPointType(i, key, image);
+	    }
+	  free(key);
+	  free(image);
+	  free(s);
+	}
+    }
+  free(results);
 }
 
 
 void
 SetupGraphx(void)
 {
-  int         i, j, k, check, linear, linear_w;
+  int         i, j, k, linear, linear_w;
   ImlibImage *tmp = NULL;
-  ImlibBorder border;
   Tile       *tile;
+  char       *s = NULL;
 
-  id = Epplet_get_imlib_data();
+  s = Epplet_query_config("BG_IMAGE");
 
-  /* load all images, scaled appropriately */
-  memset(images, 0, MAXTYPE * sizeof(ImlibImage*));
-  tmp = Imlib_load_image(id, Epplet_query_config("CD_IMAGE"));  
-  if (tmp || (tmp = Imlib_load_image(id, defaults[TYPE_CD].value)))
-    {
-      images[TYPE_CD] = Imlib_clone_scaled_image(id, tmp, 44, 32);
-      Imlib_destroy_image(id, tmp);
-    }
-  tmp = Imlib_load_image(id, Epplet_query_config("HD_IMAGE"));  
-  if (tmp || (tmp = Imlib_load_image(id, defaults[TYPE_HD].value)))
-    {
-      images[TYPE_HD] = Imlib_clone_scaled_image(id, tmp, 44, 32);
-      Imlib_destroy_image(id, tmp);
-    }
-  tmp = Imlib_load_image(id, Epplet_query_config("FD_IMAGE"));  
-  if (tmp || (tmp = Imlib_load_image(id, defaults[TYPE_FD].value)))
-    {
-      images[TYPE_FD] = Imlib_clone_scaled_image(id, tmp, 44, 32);
-      Imlib_destroy_image(id, tmp);
-    }
-  tmp = Imlib_load_image(id, Epplet_query_config("ZIP_IMAGE"));  
-  if (tmp || (tmp = Imlib_load_image(id, defaults[TYPE_ZIP].value)))
-    {
-      images[TYPE_ZIP] = Imlib_clone_scaled_image(id, tmp, 44, 32);
-      Imlib_destroy_image(id, tmp);
-    }
-  tmp = Imlib_load_image(id, Epplet_query_config("JAZZ_IMAGE"));  
-  if (tmp || (tmp = Imlib_load_image(id, defaults[TYPE_JAZZ].value)))
-    {
-      images[TYPE_JAZZ] = Imlib_clone_scaled_image(id, tmp, 44, 32);
-      Imlib_destroy_image(id, tmp);
-    }
-  tmp = Imlib_load_image(id, Epplet_query_config("BG_IMAGE"));  
-  if (tmp || (tmp = Imlib_load_image(id, defaults[TYPE_BG].value)))
-    {
-      sscanf(Epplet_query_config("BG_BORDER"), "%i %i %i %i",
-	     &(border.left), &(border.right), &(border.top), &(border.bottom));    
-      Imlib_set_image_border(id, tmp, &border);
-      images[TYPE_BG] = Imlib_clone_scaled_image(id, tmp, 44 * num_tiles, 32);
-      Imlib_destroy_image(id, tmp);
-    }
 
-  /* see if we got all of them */
-  for (check=1, i=0; i<MAXTYPE; i++)
-    check = (check && images[i]);
-  if (!check)
+  tmp = Imlib_load_image(id, s);  
+  if (!tmp)
+    tmp = Imlib_load_image(id, __BG_IMAGE);  
+  if (!tmp)
     {
       /* Even the fallbacks didn't work.  If we don't exit
-         here, we'll seg fault about 60 lines down.  -- mej */
+         here, we'll seg fault.  -- mej */
       Epplet_dialog_ok("Could not load all images.");
       Esync();
       exit(-1);
     }
-
-  /* set tile images according to mountpoint types */
-  tile = tiles;
-  while (tile)
-    {
-      switch (tile->mountpoint->type)
-	{
-	case TYPE_CD:
-	  tile->image = images[TYPE_CD];
-	  break;
-	case TYPE_FD:
-	  tile->image = images[TYPE_FD];
-	  break;
-	case TYPE_ZIP:
-	  tile->image = images[TYPE_ZIP];
-	  break;
-	case TYPE_JAZZ:
-	  tile->image = images[TYPE_JAZZ];
-	  break;
-	default:
-	  tile->image = images[TYPE_HD];
-	  break;
-	}
-      tile = tile->next;
-    }
+  /*
+    sscanf(Epplet_query_config("BG_BORDER"), "%i %i %i %i",
+    &(border.left), &(border.right), &(border.top), &(border.bottom));    
+    Imlib_set_image_border(id, tmp, &border);
+  */
+  bg_image = Imlib_clone_scaled_image(id, tmp, 44 * num_tiles, 32);
+  Imlib_destroy_image(id, tmp);
 
   /* setup widescreen according to current mounts */
   window_buf = Epplet_make_rgb_buf(44, 32);  
   widescreen_buf = Epplet_make_rgb_buf((44 * num_tiles), 32);  
   widescreen_canvas_buf = Epplet_make_rgb_buf((44 * num_tiles), 32);  
 
-  memcpy(widescreen_buf->im->rgb_data, images[TYPE_BG]->rgb_data,
+  memcpy(widescreen_buf->im->rgb_data, bg_image->rgb_data,
 	 sizeof(unsigned char) * 44 * 3 * num_tiles * 32); 
-  memcpy(widescreen_canvas_buf->im->rgb_data, images[TYPE_BG]->rgb_data,
+  memcpy(widescreen_canvas_buf->im->rgb_data, bg_image->rgb_data,
 	 sizeof(unsigned char) * 44 * 3 * num_tiles * 32); 
 
   tile = tiles;
@@ -887,15 +1097,15 @@ SetupGraphx(void)
     }
 
 
-  Epplet_gadget_show((button_left = Epplet_create_button(NULL, NULL, 
-							 2, 34, 0, 0, "ARROW_LEFT", 0, NULL, 
-							 CallbackSlideLeft, NULL)));
-  Epplet_gadget_show((button_right = Epplet_create_button(NULL, NULL, 
-							  33, 34, 0, 0, "ARROW_RIGHT", 0, NULL, 
-							  CallbackSlideRight, NULL)));
+  Epplet_gadget_show((Epplet_create_button(NULL, NULL, 
+					   2, 34, 0, 0, "ARROW_LEFT", 0, NULL, 
+					   CallbackSlideLeft, NULL)));
+  Epplet_gadget_show((Epplet_create_button(NULL, NULL, 
+					   33, 34, 0, 0, "ARROW_RIGHT", 0, NULL, 
+					   CallbackSlideRight, NULL)));
   Epplet_gadget_show((action_area = Epplet_create_drawingarea(2, 2, 44, 32)));
 
-  Epplet_gadget_show((button_more = Epplet_create_button("...", NULL, 14, 34, 20, 12, NULL, 0, NULL, CallbackShowMore, NULL)));
+  Epplet_gadget_show((Epplet_create_button("...", NULL, 14, 34, 20, 12, NULL, 0, NULL, CallbackShowMore, NULL)));
   button_help = Epplet_create_button(NULL, NULL, 3, 3, 0, 0, "HELP", 0, NULL, CallbackHelp, NULL);
   button_close = Epplet_create_button(NULL, NULL, 33, 3, 0, 0, "CLOSE", 0, NULL, CallbackExit, NULL);
   button_config = Epplet_create_button(NULL, NULL, 18, 3, 0, 0, "CONFIGURE", 0, NULL, CallbackConfigure, NULL);
@@ -921,6 +1131,7 @@ main(int argc, char** argv)
    Epplet_Init("E-Mountbox", "0.1", "Enlightenment Mount Epplet",
 	       3, 3, argc, argv, 0);
    Epplet_load_config();
+   id = Epplet_get_imlib_data();
 
    SetupDefaults();
    SetupMounts();

@@ -468,6 +468,19 @@ void            Epplet_modify_config(char *key, char *value);
 /* time than the above function.                                            */
 void            Epplet_add_config(char *key, char *value);
 
+/* If you have a set of configurations that belong together and whose       */
+/* number may change at runtime, use these:                                 */
+
+/* Here you can define multiple settings. 'num' is the number of strings    */
+/* in the 'values' array.                                                   */
+void            Epplet_modify_multi_config(char *key, char **values, int num);
+
+/* This lets you query for multiple settings.                               */
+/* Note that you have to free the result that is returned here, in contrast */
+/* to Epplet_query_config(). The pointer to 'num' returns the number of     */
+/* strings that are returned.                                               */
+char          **Epplet_query_multi_config(char *key, int *num);
+
 /* This lets you save your current config settings. This is done automati-  */
 /* cally when you call Epplet_cleanup(), so you only need to call this when */
 /* you want to force the configs to disk for some reason.                   */

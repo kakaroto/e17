@@ -1623,3 +1623,29 @@ Mon Dec 13 16:17:37 EST 1999
 
 Forgot to make cursor position reset itself when the textbox does...
 
+-------------------------------------------------------------------------------
+
+Mon Dec 13 18:18:27 EST 1999
+(Christian)
+
+Added querying for multiple configs. If you have a group of configuration
+settings that you want to refer to under the same key (e.g. the apps that
+a launcher starts up etc), use
+
+void Epplet_modify_multi_config(char *key, char **values, int num);
+
+And if you want to query for a group of settings, use this:
+
+char **Epplet_query_multi_config(char *key, int *num);
+
+Note that you have to free() the returned array here. The key is internally
+encoded into __key__1 for the first string, __key__2 for the second etc.
+
+I put some testing code for this into ConfigTestEpplet.c The epplet will
+remember all the command line parameters you give on startup and dump
+them.
+	
+Also extended E-Mountbox so that the users can now define the patterns
+in the device or mountpoint and corresponding icons themselves. Currently
+still via the config file, but the dialog is there. Not functional yet,
+though.
