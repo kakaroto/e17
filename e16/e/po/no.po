@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.5\n"
-"POT-Creation-Date: 2003-05-31 09:44+0200\n"
+"POT-Creation-Date: 2003-06-03 22:30+0200\n"
 "PO-Revision-Date: 2000-03-07 12:08+0100\n"
 "Last-Translator: Terje Røsten <terjeros@phys.ntnu.no>\n"
 "Language-Team: Norwegian <no@li.org>\n"
@@ -114,16 +114,16 @@ msgstr ""
 "Dette programmet kunne ikke bli kjørt.\n"
 "Årsaken er at fila ikke er en normal fil.\n"
 
-#: src/actions.c:3265
+#: src/actions.c:3270
 #, c-format
 msgid "About Enlightenment %s"
 msgstr "Om Enlightenment %s"
 
-#: src/actions.c:3281
+#: src/actions.c:3286
 msgid "Welcome to the "
 msgstr "Velkommen til "
 
-#: src/actions.c:3281
+#: src/actions.c:3286
 msgid ""
 " version\n"
 "of the Enlightenment window manager.\n"
@@ -137,7 +137,7 @@ msgid ""
 "This code last updated on:\n"
 msgstr ""
 
-#: src/actions.c:3291
+#: src/actions.c:3296
 msgid ""
 "\n"
 "\n"
@@ -147,7 +147,7 @@ msgid ""
 "Mandrake - mandrake@mandrake.net\n"
 msgstr ""
 
-#: src/actions.c:3296 src/dialog.c:304 src/groups.c:693 src/settings.c:329
+#: src/actions.c:3301 src/dialog.c:304 src/groups.c:693 src/settings.c:329
 #: src/settings.c:599 src/settings.c:971 src/settings.c:1179
 #: src/settings.c:1416 src/settings.c:1560 src/settings.c:1663
 #: src/settings.c:1771 src/settings.c:1855 src/settings.c:1936
@@ -157,11 +157,11 @@ msgstr ""
 msgid "OK"
 msgstr "Ok"
 
-#: src/actions.c:3452
+#: src/actions.c:3457
 msgid "  Pick the group the window will belong to:  \n"
 msgstr " Velg den gruppa som vinduet skal tilhøre: \n"
 
-#: src/actions.c:3807
+#: src/actions.c:3812
 msgid ""
 "\n"
 "  There's no current group at the moment.  \n"
@@ -180,23 +180,23 @@ msgstr ""
 "  Velg en annen gruppe som dette vinduet skal tilhøre:  \n"
 "\n"
 
-#: src/actions.c:3840
+#: src/actions.c:3845
 msgid "   Select the group to remove the window from.  "
 msgstr "  Velg gruppa som vinduet skal fjernes fra.  "
 
-#: src/actions.c:3864
+#: src/actions.c:3869
 msgid "  Select the group to break  "
 msgstr " Velg gruppa som skal brytes opp "
 
-#: src/actions.c:3892
+#: src/actions.c:3897
 msgid "You have been warned about the dangers of Zoom mode\n"
 msgstr "Du har nå blitt anvart om farene ved bruk av Zoom modus\n"
 
-#: src/actions.c:3895
+#: src/actions.c:3900
 msgid "Warning !!!"
 msgstr "Advarsel!"
 
-#: src/actions.c:3896
+#: src/actions.c:3901
 msgid ""
 "This feature is heavily reliant on a feature of your\n"
 "X Server called the Vid Mode Extension. This feature exists\n"
