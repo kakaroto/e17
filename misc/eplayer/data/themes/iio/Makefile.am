@@ -14,7 +14,7 @@ theme_DATA = $(EET)
 all: $(EDC)
 
 .edc.eet:
-	edje_cc -v -id img $< $@
+	edje_cc -v -id img -fd fonts $< $@
 
 preview: $(EET)
 	edje $(EET) eplayer

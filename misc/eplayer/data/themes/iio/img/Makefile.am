@@ -1,6 +1,6 @@
 EXTRA_DIST = a_8.png a_s_lcd_0127.png bar_delay_hilited.png play_button.png \
 a_1.png a_9.png a_s_lcd_0128.png bar_delay_left.png play_button_clicked.png \
-a_10.png a_base.png a_s_lcd_0129.png bar_delay_right.png play_button_hilited.png \ 
+a_10.png a_base.png a_s_lcd_0129.png bar_delay_right.png play_button_hilited.png \
 a_11.png a_s_lcd.png a_s_lcd_0130.png bar_delay_right_clicked.png previous_button.png \
 a_12.png a_s_lcd_01.png a_s_lcd_0131.png bar_delay_right_hilited.png previous_button_clicked.png \
 a_13.png a_s_lcd_010.png a_s_lcd_0132.png base_anim.png previous_button_hilited.png \
