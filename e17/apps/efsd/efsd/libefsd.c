@@ -588,7 +588,8 @@ efsd_get_metadata(EfsdConnection *ec, char *key, char *filename,
 		  EfsdDatatype datatype)
 {
   EfsdCommand  cmd;
-
+   EfsdCmdId cmd_id;
+   
   D_ENTER;
 
   if (!ec || !filename || filename[0] == '\0'
@@ -618,8 +619,9 @@ efsd_get_metadata(EfsdConnection *ec, char *key, char *filename,
   if (send_command(ec, &cmd) < 0)
     goto error_return;
 
+   cmd_id = cmd.efsd_get_metadata_cmd.id;
   efsd_cmd_cleanup(&cmd);
-  D_RETURN_(cmd.efsd_get_metadata_cmd.id);
+  D_RETURN_(cmd_id);
 
  error_return:
   efsd_cmd_cleanup(&cmd);
