@@ -17,11 +17,26 @@ char *main_buffer;
 char *last_time;
 
 int bufsize = 0;
+int waiting_for_reply = FALSE;
+int total_connects = 0;
 
 
 int erss_connect (void *data)
 {
+
+	if (waiting_for_reply) {
+		fprintf (stderr, "%s warning: client has not recived all information ", 
+				PACKAGE);
+		fprintf (stderr, "from the last connection attempt yet! \n");
+		return TRUE;
+	}
+	
 	server = NULL;
+	
+	if (last_time)
+		free (last_time);
+	else
+		printf ("%s info: connecting to '%s' ...\n", PACKAGE, cfg->url);
 
 	if (cfg->proxy) {
 		if (!strcasecmp (cfg->proxy, "")) {
@@ -47,11 +62,7 @@ int erss_connect (void *data)
 		exit (-1);
 	}
 
-	if (last_time)
-		free (last_time);
-	else
-		printf ("%s: conneting to %s\n", PACKAGE, cfg->url);
-	
+	total_connects++;
 	last_time = strdup (time_format ());
 	set_time (NULL);
 	
@@ -177,10 +188,16 @@ int handler_server_add (void *data, int type, void *event)
 	/*
 	 * We want to be connected before sending the request.
 	 */
+	
+	if (total_connects == 1)
+		printf ("%s info: sending HTTP request ...\n", PACKAGE);
+
 	snprintf (c, sizeof (c), "GET %s HTTP/1.0\r\n", cfg->url);
 	ecore_con_server_send (server, c, strlen (c));
 	snprintf (c, sizeof (c), "Host: %s \r\n\r\n", cfg->hostname);
 	ecore_con_server_send (server, c, strlen (c));
+
+	waiting_for_reply = TRUE;
 
 	return 1;
 }
@@ -188,6 +205,9 @@ int handler_server_add (void *data, int type, void *event)
 int handler_server_data (void *data, int type, void *event)
 {
 	Ecore_Con_Event_Server_Data *e = event;
+
+	if (total_connects == 1)
+		printf ("%s info: reciving data ...\n", PACKAGE);
 
 	/* 
 	 * Read everything we recive into one big buffer, and handle
@@ -204,6 +224,9 @@ int handler_server_del (void *data, int type, void *event)
 {
 	Ecore_Con_Event_Server_Del *e = event;
 	char *leader;
+
+	if (total_connects == 1)
+		printf ("%s info: disconnecting ...\n", PACKAGE);
 
 	/*
 	 * Now split our main buffer in each newline and then parse 
@@ -231,16 +254,27 @@ int handler_server_del (void *data, int type, void *event)
 	ecore_con_server_del (e->server);
 	server = NULL;
 	
-	if (!list) {
-		printf ("Erss: error parsing data\n");
-		printf ("------------------------\n");
-		printf ("%s\n", main_buffer);
+	if (ewd_list_is_empty (list)) {
+		printf ("\n%s error: parsing data\n", PACKAGE);
+		if (main_buffer) 
+			printf ("%s\n", main_buffer);
+		else 
+			printf ("%s error: could not connect to '%s'\n", PACKAGE, cfg->url);
+		
+		exit (-1);
 	}
 
-	if (main_buffer)
+	if (main_buffer) {
 		free (main_buffer);
+		main_buffer = NULL;
+	}
 
 	bufsize = 0;
+	waiting_for_reply = FALSE;
+
+	if (total_connects == 1)
+		printf ("%s info: connection information only displays on first connect.\n", 
+				PACKAGE);
 
 	return 1;
 }
