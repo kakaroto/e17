@@ -27,5 +27,10 @@ int
 __os_abspath(path)
 	const char *path;
 {
+#ifndef __EMX__
 	return (path[0] == '/');
+#else	
+	return (((isalpha((int)path[0])) && (path[1]==':') && 
+        ((path[2]=='\\') || (path[2]=='/'))));
+#endif        
 }
