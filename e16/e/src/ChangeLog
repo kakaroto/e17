@@ -3171,3 +3171,14 @@ Wed Oct  6 20:31:02 PDT 1999
 (Raster)
 
 need to add nop ipc call - need it for syncing purposes.
+
+-------------------------------------------------------------------------------
+
+Wed Oct  6 23:40:32 PDT 1999
+(Raster)
+
+/* that's it - people are stupid and have executable images and just */
+/* don't get it - so I'm disablign this to save people from their own */
+/* stupidity */
+
+ho hum.........

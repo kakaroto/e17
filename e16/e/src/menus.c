@@ -1207,13 +1207,17 @@ CreateMenuFromDirectory(char *name, MenuStyle * ms, char *dir)
 		  if (f)
 		     fprintf(f, "DIR %s\n", list[i]);
 	       }
-	     else if (st.st_mode & (S_IXUSR | S_IXGRP | S_IXOTH))
-	       {
-		  mi = CreateMenuItem(list[i], NULL, ACTION_EXEC, ss, NULL);
-		  AddItemToMenu(m, mi);
-		  if (f)
-		     fprintf(f, "EXE %s\n", list[i]);
-	       }
+/* that's it - people are stupid and have executable images and just */
+/* don't get it - so I'm disablign this to save people from their own */
+/* stupidity */
+/*           else if (st.st_mode & (S_IXUSR | S_IXGRP | S_IXOTH))
+ * {
+ * mi = CreateMenuItem(list[i], NULL, ACTION_EXEC, ss, NULL);
+ * AddItemToMenu(m, mi);
+ * if (f)
+ * fprintf(f, "EXE %s\n", list[i]);
+ * }
+ */ 
 	     else if ((!strcmp(ext, "jpg")) || (!strcmp(ext, "JPG")) ||
 		      (!strcmp(ext, "jpeg")) || (!strcmp(ext, "Jpeg")) ||
 		      (!strcmp(ext, "JPEG")) || (!strcmp(ext, "Jpg")) ||
