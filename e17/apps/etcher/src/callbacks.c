@@ -249,12 +249,14 @@ static gint
 view_scroll_logo(gpointer data)
 {
    double x, y, w, h;
+   int eh;
 
    if (!o_logo) return FALSE;
    evas_get_geometry(view_evas, o_logo, &x, &y, &w, &h);
+   evas_get_drawable_size(view_evas, NULL, &eh);
    evas_move(view_evas, o_logo,
-	     x, y + (-y / 10) + 1);
-   if (y < 0)
+	     x, y + ((((eh - h) / 2) -y) / 10) + 1);
+   if (y < ((eh - h) / 2))
      {
 	gtk_idle_add(view_redraw, NULL);
 	gtk_timeout_add(50, view_scroll_logo, NULL);
@@ -321,7 +323,7 @@ void
 on_about1_activate                     (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-   int w, h;
+   int w, h, ew;
 
    if (o_logo)
      {
@@ -333,8 +335,9 @@ on_about1_activate                     (GtkMenuItem     *menuitem,
    evas_set_layer(view_evas, o_logo, 900);
    evas_show(view_evas, o_logo);
    evas_get_image_size(view_evas, o_logo, &w, &h);
+   evas_get_drawable_size(view_evas, &ew, NULL);
    evas_move(view_evas, o_logo, 
-	     (view_evas->current.drawable_width - w) / 2,
+	     (ew - w) / 2,
 	     -h);
    gtk_timeout_add(50, view_scroll_logo, NULL);   
 }
