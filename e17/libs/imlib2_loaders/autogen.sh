@@ -1,5 +1,10 @@
 #! /bin/sh
 
+abort () {
+    echo "$1 not found or command failed. Aborting!"
+    exit 1
+}
+
 echo
 echo 
 echo "NOTE:"
@@ -14,11 +19,11 @@ THEDIR="`pwd`"
 cd "$srcdir"
 DIE=0
 
-autoheader
-libtoolize --ltdl --force --copy
-aclocal
-automake --foreign --add-missing
-autoconf
+aclocal || abort "aclocal"
+libtoolize --ltdl --force --copy || abort "libtoolize"
+autoconf || abort "autoconf"
+autoheader || abort "autoheader"
+automake --foreign --add-missing || abort "automake"
 
 if test -z "$*"; then
         echo "I am going to run ./configure with no arguments - if you wish "
@@ -27,7 +32,7 @@ fi
 
 cd "$THEDIR"
 
-$srcdir/configure "$@"
+$srcdir/configure "$@" || abort "configure"
 
 set +x
 
