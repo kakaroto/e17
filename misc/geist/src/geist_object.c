@@ -36,6 +36,7 @@ geist_object_init(geist_object * obj)
    obj->get_rendered_area = geist_object_int_get_rendered_area;
    obj->check_resize_click = geist_object_int_check_resize_click;
    obj->get_resize_box_coords = geist_object_int_get_resize_box_coords;
+   obj->click_is_selection = geist_object_int_click_is_selection;
    obj->name = estrdup("Untitled Object");
 
    D_RETURN_(5);
@@ -70,7 +71,8 @@ geist_object_free(geist_object * obj)
    D_RETURN_(5);
 }
 
-geist_object_type geist_object_get_type(geist_object * obj)
+geist_object_type
+geist_object_get_type(geist_object * obj)
 {
    return obj->type;
 }
@@ -206,7 +208,8 @@ geist_object_add_to_object_list(geist_object * obj)
    D_RETURN_(3);
 }
 
-Imlib_Image geist_object_get_rendered_image(geist_object * obj)
+Imlib_Image
+geist_object_get_rendered_image(geist_object * obj)
 {
    D_ENTER(5);
 
@@ -214,7 +217,8 @@ Imlib_Image geist_object_get_rendered_image(geist_object * obj)
 }
 
 
-Imlib_Image geist_object_int_get_rendered_image(geist_object * obj)
+Imlib_Image
+geist_object_int_get_rendered_image(geist_object * obj)
 {
    D_ENTER(5);
 
@@ -333,7 +337,8 @@ geist_object_int_render_selected(geist_object * obj, Imlib_Image dest,
    D_RETURN_(5);
 }
 
-Imlib_Updates geist_object_int_get_selection_updates(geist_object * obj)
+Imlib_Updates
+geist_object_int_get_selection_updates(geist_object * obj)
 {
    Imlib_Updates up = NULL;
 
@@ -486,7 +491,8 @@ geist_object_int_get_resize_box_coords(geist_object * obj, int resize, int *x,
    D_RETURN_(3);
 }
 
-Imlib_Updates geist_object_get_selection_updates(geist_object * obj)
+Imlib_Updates
+geist_object_get_selection_updates(geist_object * obj)
 {
    D_ENTER(3);
 
@@ -931,4 +937,29 @@ geist_object_get_clipped_render_areas(geist_object * obj, int x, int y, int w,
    *dh = *sh;
 
    D_RETURN_(3);
+}
+
+unsigned char
+geist_object_click_is_selection(geist_object * obj, int x, int y)
+{
+   D_ENTER(3);
+
+   D_RETURN(3, obj->click_is_selection(obj, x, y));
+}
+
+unsigned char
+geist_object_int_click_is_selection(geist_object * obj, int x, int y)
+{
+   int ox, oy, ow, oh;
+   D_ENTER(3);
+
+   geist_object_get_rendered_area(obj, &ox, &oy, &ow, &oh);
+
+   if(XY_IN_RECT(x, y, ox, oy, ow, oh))
+   {
+      if (!geist_object_part_is_transparent(obj, x - ox, y - oy))
+            D_RETURN(3, 1);
+   }
+
+   D_RETURN(3, 0);
 }

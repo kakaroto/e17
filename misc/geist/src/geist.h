@@ -36,7 +36,7 @@
 #include "utils.h"
 
 #define XY_IN_RECT(x, y, rx, ry, rw, rh) \
-(((x) >= (rx)) && ((y) >= (ry)) && ((x) < ((rx) + (rw))) && ((y) < ((ry) + (rh))))
+(((x) >= (rx)) && ((y) >= (ry)) && ((x) <= ((rx) + (rw))) && ((y) <= ((ry) + (rh))))
 
 #define SPANS_COMMON(x1, w1, x2, w2) \
 (!((((x2) + (w2)) <= (x1)) || ((x2) >= ((x1) + (w1)))))
@@ -46,6 +46,7 @@
 
 #define HALF_SEL_WIDTH 3
 #define HALF_SEL_HEIGHT 3
+#define TRANS_THRESHOLD 0
 
 #ifndef PACKAGE
 #define PACKAGE "geist"

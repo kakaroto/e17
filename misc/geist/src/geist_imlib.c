@@ -459,7 +459,6 @@ geist_imlib_image_part_is_transparent(Imlib_Image im, int x, int y)
    if ((x > w) || (y > h))
       return 1;
 
-
    leftmost = x - 1;
    if (leftmost < 0)
       leftmost = 0;
@@ -484,7 +483,7 @@ geist_imlib_image_part_is_transparent(Imlib_Image im, int x, int y)
    ave = ave / num;
 
 /* TODO Make this fuzziness an OPTION */
-   if (ave)
+   if (ave > TRANS_THRESHOLD)
       return 0;
 
    return 1;

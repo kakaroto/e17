@@ -40,6 +40,7 @@ geist_line_init(geist_line * line)
    obj->resize_event = geist_line_resize;
    obj->get_resize_box_coords = geist_line_get_resize_box_coords;
    obj->check_resize_click = geist_line_check_resize_click;
+   obj->click_is_selection = geist_line_click_is_selection;
    obj->sizemode = SIZEMODE_STRETCH;
    obj->alignment = ALIGN_NONE;
    geist_object_set_type(obj, GEIST_TYPE_LINE);
@@ -493,7 +494,8 @@ geist_line_render_selected(geist_object * obj, Imlib_Image dest,
    }
 }
 
-Imlib_Updates geist_line_get_selection_updates(geist_object * obj)
+Imlib_Updates
+geist_line_get_selection_updates(geist_object * obj)
 {
    Imlib_Updates up = NULL;
    int clip_x0, clip_y0, clip_x1, clip_y1;
@@ -576,4 +578,61 @@ geist_line_check_resize_click(geist_object * obj, int x, int y)
       D_RETURN(5, RESIZE_RIGHT);
 
    D_RETURN(5, RESIZE_NONE);
+}
+
+unsigned char
+geist_line_click_is_selection(geist_object * obj, int x, int y)
+{
+   int clip_x0, clip_y0, clip_x1, clip_y1;
+   geist_line *line;
+   int i;
+   double gradient;
+   int line_y;
+   int ox, oy, ow, oh;
+
+   D_ENTER(3);
+
+   line = GEIST_LINE(obj);
+
+   /* handle simple case of translucent line */
+   if (line->a <= TRANS_THRESHOLD)
+      D_RETURN(3, 0);
+
+   /* check whether click is anywhere near line */
+   geist_object_get_rendered_area(obj, &ox, &oy, &ow, &oh);
+   if (!XY_IN_RECT(x, y, ox - 5, oy - 5, ow + 10, oh + 10))
+   {
+      D(5, ("xy not in rect\n"));
+      D_RETURN(3, 0);
+   }
+
+   /* Here, we need to see if the click is within a few pixels of the line in
+      either direction */
+   if (!geist_line_get_clipped_line
+       (GEIST_LINE(line), &clip_x0, &clip_y0, &clip_x1, &clip_y1))
+   {
+      D(5, ("no clipped line returned\n"));
+      D_RETURN(3, 0);
+   }
+
+   /* need to handle special cases of vertical lines, otherwise the gradient
+    * is infinite. This obviously leads to tricky maths ;-) */
+   if ((clip_x1 >= clip_x0 - 5) && (clip_x1 <= clip_x0 + 5))
+   {
+      if ((x >= clip_x0 - 5) && (x <= clip_x0 + 5) && (y >= clip_y0 - 5)
+          && (y <= clip_y1 + 5))
+         D_RETURN(3, 1);
+   }
+
+   /* do some maths ;-) */
+   gradient = ((double) clip_y1 - clip_y0) / ((double) clip_x1 - clip_x0);
+   D(5, ("gradient %f\n", gradient));
+   for (i = x - 5; i < x + 6; i++)
+   {
+      line_y = (gradient * (i - clip_x0)) + clip_y0;
+      if ((y >= line_y - 5) && (y <= line_y + 5))
+         D_RETURN(3, 1);
+   }
+
+   D_RETURN(3, 0);
 }

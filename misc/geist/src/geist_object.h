@@ -104,11 +104,12 @@ struct __geist_object
    unsigned char (*part_is_transparent) (geist_object * obj, int x, int y);
    void (*resize_event) (geist_object * obj, int x, int y);
    GtkWidget *(*display_props) (geist_object * obj);
-   void (*get_rendered_area) (geist_object * obj, int *x, int *y,
-                                           int *w, int *h);
+   void (*get_rendered_area) (geist_object * obj, int *x, int *y, int *w,
+                              int *h);
    int (*check_resize_click) (geist_object * obj, int x, int y);
    void (*get_resize_box_coords) (geist_object * obj, int resize, int *x,
-                                 int *y);
+                                  int *y);
+   unsigned char (*click_is_selection) (geist_object * obj, int x, int y);
 
 };
 
@@ -186,8 +187,13 @@ void geist_object_get_clipped_render_areas(geist_object * obj, int x, int y,
                                            int *dw, int *dh);
 int geist_object_int_check_resize_click(geist_object * obj, int x, int y);
 void geist_object_int_get_resize_box_coords(geist_object * obj, int resize,
-
                                             int *x, int *y);
+unsigned char geist_object_click_is_selection(geist_object * obj, int x,
+
+                                              int y);
+unsigned char geist_object_int_click_is_selection(geist_object * obj, int x,
+
+                                                  int y);
 
 #define geist_object_set_state(o, s) (o->state |=  s)
 #define geist_object_unset_state(o, s) (o->state &= ~(s))
