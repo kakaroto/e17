@@ -909,6 +909,8 @@ redraw_gradient_object()
     evas_gradient_free(og);
 
     evas_show(evas, bl->obj);
+    return;
+    UN(g);
 }
 void
 gradient_one_cs_ok_button_clicked(GtkWidget *w, gpointer data)
@@ -958,7 +960,7 @@ gradient_one_color_drawing_area_expose(GtkWidget *w,
 {
     GdkColor fg;
     static GdkGC *gc1 = NULL;
-    E_Background_Gradient g;
+    E_Background_Gradient g = NULL;
    
     if(!w) return(FALSE);
     if(!w->window) return(FALSE);
@@ -990,7 +992,7 @@ gboolean
 gradient_two_color_drawing_area_expose(GtkWidget *w, 
 				    GdkEventExpose *e, gpointer data)
 {
-    E_Background_Gradient g;
+    E_Background_Gradient g = NULL;
     GdkColor fg;
     static GdkGC *gc2 = NULL;
     

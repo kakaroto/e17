@@ -33,4 +33,5 @@ void advanced_widgets_show_for_image(void);
 gint ebony_status_clear(gpointer data);
 void ebony_status_message(gchar *message, gint delay);
 
+void on_scroll_changed(GtkWidget *w, gpointer data);
 #endif

@@ -82,6 +82,7 @@ save_as_ok_clicked(GtkWidget *w, gpointer data)
     bg = e_bg_load((char*)file);
     if(bg)
     {
+	char buf[PATH_MAX];
 	if(_bg) e_bg_free(_bg);
 
 	e_bg_add_to_evas(bg, evas);
@@ -91,6 +92,8 @@ save_as_ok_clicked(GtkWidget *w, gpointer data)
     
 	g_snprintf(errstr, 1024, "Saved background: %s", (char*)file);
 	ebony_status_message(errstr, EBONY_STATUS_TO);
+	snprintf(buf, PATH_MAX, "Ebony - %s", (char*)file);
+	gtk_window_set_title(GTK_WINDOW(win_ref), buf);
     }
     else
     {
@@ -145,6 +148,8 @@ advanced_widgets_show_for_image(void)
     gtk_widget_show(w);
     w = gtk_object_get_data(GTK_OBJECT(win_ref), "gradient_frame");
     gtk_widget_hide(w);
+    w = gtk_object_get_data(GTK_OBJECT(win_ref), "layer_scroll_follow");
+    gtk_widget_show(w);
     w = gtk_object_get_data(GTK_OBJECT(win_ref), "size_orig_w");
     if(w) gtk_widget_set_sensitive(w, TRUE);
     w = gtk_object_get_data(GTK_OBJECT(win_ref), "size_orig_h");
@@ -158,6 +163,8 @@ advanced_widgets_show_for_gradient(void)
     w = gtk_object_get_data(GTK_OBJECT(win_ref), "image_file_frame");
     gtk_widget_hide(w);
     w = gtk_object_get_data(GTK_OBJECT(win_ref), "layer_color_frame");
+    gtk_widget_hide(w);
+    w = gtk_object_get_data(GTK_OBJECT(win_ref), "layer_scroll_follow");
     gtk_widget_hide(w);
     w = gtk_object_get_data(GTK_OBJECT(win_ref), "layer_fill_frame");
     gtk_widget_hide(w);
@@ -178,6 +185,8 @@ advanced_widgets_show_for_color(void)
     w = gtk_object_get_data(GTK_OBJECT(win_ref), "layer_color_frame");
     gtk_widget_show(w);
     w = gtk_object_get_data(GTK_OBJECT(win_ref), "layer_fill_frame");
+    gtk_widget_hide(w);
+    w = gtk_object_get_data(GTK_OBJECT(win_ref), "layer_scroll_follow");
     gtk_widget_hide(w);
     w = gtk_object_get_data(GTK_OBJECT(win_ref), "gradient_frame");
     gtk_widget_hide(w);
@@ -202,6 +211,7 @@ new_bg(GtkWidget *w, void *data)
 	_bl->size.w = _bl->size.h = 1.0;
 	_bg->layers = evas_list_append(_bg->layers, _bl);
 	display_bg(_bg);
+	gtk_window_set_title(GTK_WINDOW(win_ref), "Ebony - New Background");
     }
     return;
     UN(w);
@@ -306,6 +316,31 @@ open_bg_cb(GtkWidget *w, gpointer data)
 {
     if(!data) return;
     open_bg_named((char*)data);
+    return;
+    UN(w);
+    UN(data);
+}
+double
+get_range_value(char *named)
+{
+    GtkWidget *w;
+    double result = 0.0;
+    
+    w = gtk_object_get_data(GTK_OBJECT(win_ref), named);
+    if(w)
+	result = (gtk_range_get_adjustment(GTK_RANGE(w))->value);
+    return(result); 
+}
+void
+on_scroll_changed(GtkWidget *w, gpointer data)
+{
+    if(!bg) return;
+    if(!bl) return;
+    e_bg_set_scroll(bg, (int)get_range_value("hscroll"),
+			(int)get_range_value("vscroll"));
+    if((bl->scroll.x) || (bl->scroll.y))
+	DRAW();
+
     return;
     UN(w);
     UN(data);

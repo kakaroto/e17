@@ -7,7 +7,6 @@
 #include <Evas.h>
 #include <Ebg.h>
 
-#define D(string) fprintf(stderr, string)
 #define MAX_RECENT_BG_COUNT 5
 
 int idle;

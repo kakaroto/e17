@@ -869,6 +869,9 @@ create_ebony_controls_page(GtkWidget *win)
     gtk_box_pack_start(GTK_BOX(vbox), frame, FALSE, TRUE, 3);
     /* ROW 5 */
     frame = create_layer_scroll_follow_frame(win);
+    gtk_widget_ref(frame);
+    gtk_object_set_data_full(GTK_OBJECT(win), "layer_scroll_follow", frame,
+			    (GtkDestroyNotify)gtk_widget_unref);
     gtk_frame_set_shadow_type(GTK_FRAME(frame), GTK_SHADOW_ETCHED_IN);
     gtk_box_pack_start(GTK_BOX(vbox), frame, FALSE, TRUE, 3);
     /* ROW 6 */ 
@@ -945,6 +948,8 @@ create_ebony_main_section(GtkWidget *win)
     GtkWidget *p1, *da;
     GtkWidget *align;
     GtkWidget *rpd;	/* right pane data */
+    GtkWidget *hbox, *vbox;
+    GtkWidget *hscroll, *vscroll;
 
     result = gtk_hpaned_new();
     p1 = gtk_vpaned_new();
@@ -954,19 +959,53 @@ create_ebony_main_section(GtkWidget *win)
     gtk_paned_pack1(GTK_PANED(result), p1, TRUE, FALSE);
     gtk_paned_pack2(GTK_PANED(result), align, FALSE, FALSE);
     
+    vbox = gtk_vbox_new(FALSE, 0);
+
+    /* hbox for the top */
+    hbox = gtk_hbox_new(FALSE, 0);
+
+    /* drawing area stuffs */
     da = gtk_drawing_area_new();
     gtk_widget_ref(da);
     gtk_object_set_data_full(GTK_OBJECT(win), "evas", da,
 			    (GtkDestroyNotify) gtk_widget_unref);
     
-    gtk_paned_pack1(GTK_PANED(p1), da, TRUE, FALSE);
     gtk_widget_set_usize(da, 320, 240);
     gtk_widget_set_events(da, GDK_EXPOSURE_MASK | GDK_CONFIGURE);
     gtk_signal_connect(GTK_OBJECT(da), "configure_event",
 		    GTK_SIGNAL_FUNC(drawing_area_configure_event), NULL);
     gtk_signal_connect(GTK_OBJECT(da), "expose_event",
 		    GTK_SIGNAL_FUNC(drawing_area_expose_event), NULL);
+    gtk_box_pack_start(GTK_BOX(hbox), da, TRUE, TRUE, 2);
     
+    /* vertical scaler */ 
+    vscroll = gtk_vscale_new(GTK_ADJUSTMENT(
+		    gtk_adjustment_new(0, 0, 300, 3, 5, 10)));
+    gtk_signal_connect(GTK_OBJECT(gtk_range_get_adjustment(GTK_RANGE(vscroll)))
+	    ,"value_changed", GTK_SIGNAL_FUNC(on_scroll_changed), NULL);
+    gtk_widget_ref(vscroll);
+    gtk_object_set_data_full(GTK_OBJECT(win), "vscroll", vscroll,
+			    (GtkDestroyNotify) gtk_widget_unref);
+    gtk_box_pack_start(GTK_BOX(hbox), vscroll, FALSE, FALSE, 2);
+    gtk_box_pack_start(GTK_BOX(vbox), hbox, TRUE, TRUE, 2);
+
+    /* horizontal scroller */
+    hscroll = gtk_hscale_new(GTK_ADJUSTMENT(
+		    gtk_adjustment_new(0, 0, 400, 3, 5, 10)));
+    gtk_widget_ref(hscroll);
+    gtk_signal_connect(GTK_OBJECT(gtk_range_get_adjustment(GTK_RANGE(hscroll)))
+	    ,"value_changed", GTK_SIGNAL_FUNC(on_scroll_changed), NULL);
+    gtk_object_set_data_full(GTK_OBJECT(win), "hscroll", hscroll,
+			    (GtkDestroyNotify) gtk_widget_unref);
+
+    gtk_box_pack_start(GTK_BOX(vbox), hscroll, FALSE, FALSE, 2);
+   
+    gtk_paned_pack1(GTK_PANED(p1), vbox, TRUE, FALSE);
+    
+    gtk_widget_show(vscroll);
+    gtk_widget_show(hscroll);
+    gtk_widget_show(hbox);
+    gtk_widget_show(vbox);
     gtk_widget_show(rpd);
     gtk_widget_show(da);
     gtk_widget_show(align);
