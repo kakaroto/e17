@@ -1,0 +1,68 @@
+<!--
+#######################################################
+A simple Imlib2 image flipping recipe
+#######################################################
+-->
+<section>
+<sectioninfo>
+  <author>
+    <firstname>dan</firstname>
+    <surname>sinclair</surname>
+    <email>zero@perplexity.org</email>
+    <othername>dj2</othername>
+  </author>
+  <date>08 July 2004</date>
+</sectioninfo>
+
+<title>Recipe: Creating EDB files from the shell</title>
+
+<para>
+It is often desired to create the EDB files from a simple
+shell script, it can then be made part of the build process.
+</para>
+
+<para>
+This can easily be accomplished by using the <command>edb_ed</command>
+program. <command>edb_ed</command> is a very simple interface into
+EDB, allowing you to create/edit/delete keys/value pairs inside
+of EDB databases.
+</para>
+
+<example>
+<title>EDB file shell script</title>
+<programlisting>
+#!/bin/sh
+
+DB=out.db
+
+edb_ed $DB add /global/debug_lvl int 2
+edb_ed $DB add /foo/theme str "default"
+edb_ed $DB add /bar/number_of_accounts int 1
+edb_ed $DB add /nan/another float 2.3
+</programlisting>
+</example>
+<para>
+If the output file does not exist the first time an <function>add</function> 
+command is called, then <command>edb_ed</command> will create the file and do 
+any required setup. The <function>add</function> is used to add entries
+into the DB. The first parameter after add is the key that the data will be
+inserted into the DB with. This key will be used to look up the data by your
+application in the future. The next parameter is the type of data to be added.
+This can be one of:
+<itemizedlist spacing="compact" mark="bullet">
+ <listitem><para>int</para></listitem>
+ <listitem><para>str</para></listitem>
+ <listitem><para>float</para></listitem>
+ <listitem><para>data</para></listitem>
+</itemizedlist>
+The last parameter is the value that is to be associated with this key.
+</para>
+
+<para>
+Using <command>edb_ed</command> you can quickly and easily create/edit/view
+any EDB files required for your application.
+</para>
+
+</section>
+
+

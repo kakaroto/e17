@@ -39,6 +39,9 @@
  <!ENTITY imlib_free_rotate SYSTEM "xml/imlib/imlib_free_rotate.xml">
  <!ENTITY imlib_90_rotate SYSTEM "xml/imlib/imlib_90_rotate.xml">
  <!ENTITY imlib_flip SYSTEM "xml/imlib/imlib_flip.xml">
+
+ <!-- edb -->
+ <!ENTITY edb_shell_file_create SYSTEM "xml/edb/edb_shell_file_create.xml">
 ]>
 
 <book>

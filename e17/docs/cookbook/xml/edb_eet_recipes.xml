@@ -51,5 +51,7 @@ to arbitary files on the system. All data is encoded in a platform independant w
 and can be written and read by any architecture.
 </para>
 
+&edb_shell_file_create;
+
 </chapter>
 
