@@ -7,8 +7,12 @@
 
 #include "ee2.h"
 
+#define CHECKS 160
+
+GtkWidget *EventBox;
+
 GtkWidget *MainWindow, *FileSel, *SaveSel,
-			 *MenuBar, *area, *vbox1;
+			 *RootMenu, *area, *vbox1;
 
 GtkWidget *FileMenu, *FileItem, *FOpen, *FSave, *FSaveAs,
 			 *FSep1, *FExit;
@@ -28,6 +32,7 @@ gint simgw = 0, simgh = 0;
 char currentimage[255];
 char *imagefile = NULL;
 char *splashfile = NULL;
+Imlib_Image *bg = NULL;
 Imlib_Image *im = NULL;
 
 int main(int argc, char **argv)
@@ -36,9 +41,10 @@ int main(int argc, char **argv)
 	
 	/* tell the widgets what they are */
 	MainWindow = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	EventBox = gtk_event_box_new();
 	FileSel = gtk_file_selection_new("Open Image...");
 	SaveSel = gtk_file_selection_new("Save Image As...");
-	MenuBar = gtk_menu_bar_new();
+	RootMenu = gtk_menu_new();
 	area = gtk_drawing_area_new();
 	vbox1 = gtk_vbox_new(FALSE, 0);
 	FileMenu = gtk_menu_new();
@@ -74,9 +80,9 @@ int main(int argc, char **argv)
 	
 	/* menu stuff */
 	gtk_menu_item_set_submenu(GTK_MENU_ITEM(FileItem), FileMenu);
-	gtk_menu_bar_append(GTK_MENU_BAR(MenuBar), FileItem);
+	gtk_menu_append(GTK_MENU(RootMenu), FileItem);
 	gtk_menu_item_set_submenu(GTK_MENU_ITEM(ImageItem), ImageMenu);
-	gtk_menu_bar_append(GTK_MENU_BAR(MenuBar), ImageItem);
+	gtk_menu_append(GTK_MENU(RootMenu), ImageItem);
 	
 	gtk_menu_append(GTK_MENU(FileMenu), FOpen);
 	gtk_menu_append(GTK_MENU(FileMenu), FSave);
@@ -142,10 +148,21 @@ int main(int argc, char **argv)
 							 GTK_SIGNAL_FUNC(Flip2), NULL);
 	gtk_signal_connect(GTK_OBJECT(IFlip3), "activate",
 							 GTK_SIGNAL_FUNC(Flip3), NULL);
+	
+	/* button press events */
+	gtk_signal_connect_object(GTK_OBJECT(EventBox), "button_press_event",
+							 GTK_SIGNAL_FUNC(ButtonPressed), GTK_OBJECT(RootMenu));
 
 	/* pack into box */
-	gtk_box_pack_start(GTK_BOX(vbox1), MenuBar, FALSE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox1), area, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox1), EventBox, TRUE, TRUE, 0);
+	
+	/* pack the drawing area into the event box.  this
+	 * will allow us to bind X events to the drawing 
+	 * area... for menus and such...
+	 */
+	gtk_container_add(GTK_CONTAINER(EventBox), area);
+	
+	gtk_widget_set_events(EventBox, GDK_BUTTON_PRESS_MASK);
 	
 	/* main stuff */
 	if(argc == 2){
@@ -157,7 +174,8 @@ int main(int argc, char **argv)
 	}
 	
 	/* show the widgets */
-	gtk_widget_show(MenuBar);
+	gtk_widget_show(RootMenu);
+	gtk_widget_show(EventBox);
 	gtk_widget_show(FileMenu);
 	gtk_widget_show(FileItem);
 	gtk_widget_show(ImageMenu);
@@ -203,6 +221,10 @@ void LoadImage(char *imagetoload)
 }
 
 
+void DrawChecks(void)
+{
+}
+
 void CloseWindow(GtkWidget *widget, GdkEvent *event, gpointer data)
 {
 	gtk_main_quit();
@@ -228,6 +250,8 @@ void FileOpen(GtkWidget *widget, GtkFileSelection *fs)
 	imlib_render_image_on_drawable_at_size(0, 0, imgw, imgh);
 	printf("%d - %d\n", imgw, imgh);
 	gtk_widget_set_usize(area, imgw, imgh);
+	gtk_widget_set_usize(EventBox, imgw, imgh);
+	gtk_widget_set_usize(MainWindow, imgw, imgh);
 	gtk_widget_show(area);
 }
 
@@ -309,8 +333,27 @@ void Flip3(GtkWidget *widget, GdkEvent *event, gpointer data)
 	imgw = imlib_image_get_width();
 	imgh = imlib_image_get_height();
 	gtk_widget_set_usize(area, imgw, imgh);
+	gtk_widget_set_usize(EventBox, imgw, imgh);
+	gtk_widget_set_usize(MainWindow, imgw, imgh);
 	imlib_render_image_on_drawable(0, 0);
 	gtk_widget_show(area);
+}
+
+gint ButtonPressed(GtkWidget *widget, GdkEvent *event, gpointer data)
+{
+	GtkMenu *menu;
+	GdkEventButton *event_button;
+	
+	menu = GTK_MENU(widget);
+	if(event->type == GDK_BUTTON_PRESS){
+		event_button = (GdkEventButton *)event;
+		if(event_button->button == 3){
+			gtk_menu_popup(menu, NULL, NULL, NULL, NULL,
+								event_button->button, event_button->time);
+			return TRUE;
+		}
+	}
+	return FALSE;
 }
 
 gboolean a_config(GtkWidget *widget,
@@ -341,6 +384,8 @@ gboolean a_config(GtkWidget *widget,
 	/* only happens once! */
 	if(im && i == 0){
 		gtk_widget_set_usize(area, imgw, imgh);
+		gtk_widget_set_usize(EventBox, imgw, imgh);
+		gtk_widget_set_usize(MainWindow, imgw, imgh);
 	}
 	
 	printf("configure event\n");

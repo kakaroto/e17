@@ -20,6 +20,7 @@
 
 /* functions */
 void LoadImage(char *imagetoload);
+void DrawChecks(void);
 void CloseWindow(GtkWidget *widget, GdkEvent *event, gpointer data);
 void CloseFileSel(GtkWidget *widget, GdkEvent *event, gpointer data);
 void FileOpen(GtkWidget *widget, GtkFileSelection *fs);
@@ -36,6 +37,7 @@ void SharpenImageMore(GtkWidget *widget, GdkEvent *event, gpointer data);
 void Flip1(GtkWidget *widget, GdkEvent *event, gpointer data);
 void Flip2(GtkWidget *widget, GdkEvent *event, gpointer data);
 void Flip3(GtkWidget *widget, GdkEvent *event, gpointer data);
+gint ButtonPressed(GtkWidget *widget, GdkEvent *event, gpointer data);
 
 gboolean a_config(GtkWidget *widget, GdkEventConfigure *event, gpointer user_data);
 gboolean a_expose(GtkWidget *widget, GdkEventConfigure *event, gpointer user_data);

@@ -75,3 +75,14 @@ chekerboard stuff.
 
 -------------------------------------------------------------------------------
 
+Wed Feb 9 21:37:37 CST 2000
+(dphase)
+
+Took the grotesque looking menubar off of the top of the window... now you
+can right click on the image and a menu should come up :)  sounds good I hope.
+i have an issue where the window will not be resized properly... open an
+image then open a smaller image.... window stays the same... i think i know
+what is going on here, but im kinda tired... (sleep is calling).
+
+-------------------------------------------------------------------------------
+
