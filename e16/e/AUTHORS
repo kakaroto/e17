@@ -82,6 +82,9 @@ Brent A. Nelson <brent@astro.ufl.edu>
 
 Graham A MacDonald <graham@34southpark.freeserve.co.uk>
         patch to fix groups segfault bug
-		
+
+Martin Tyler <mtx@boo.org>
+	groups menu feature patch
+	
 And others whose names we probably forgot to add (email us and we'll put you
 in here)
