@@ -159,16 +159,17 @@ make, make install, and ldconfig. If all goes well you should shoot right throug
 <p><strong>If you have problems building the source, the most common problems involve
 old versions of the build tools.  If you can't even get autogen.sh to run properly
 you should check versions of libtool, automake, autoconf, and gettext.
-Present versions recommended are autoconf 2.54, automake 1.7, libtool 1.4.2, gettext 0.11.5.
-It's also common to have
-problems with multiple aclocal directories (ie: both /usr/share/aclocal 
-and /usr/local/share/aclocal) which you should fix.</strong></p>
+Present versions recommended are GNU m4 1.4, autoconf 2.54, automake 1.7, libtool 1.4.3, and gettext 0.11.5.
+It's also common to have problems with multiple aclocal directories (ie: both /usr/share/aclocal 
+and /usr/local/share/aclocal) which you should fix by moving the contents from one to the other, then
+remove (or move) the directory and symlink it to the place that you copied the ac's to, that way both
+aclocal directories point to the same place.</strong></p>
 
 <p><strong>
 CVS normally builds fine.  Breakage occurs from time to time and will be fixed when the developers get a chance.  The denizens of #e do not look fondly on questions about build errors from CVS.  You have been warned!
 </strong></p>
 
-<p>People are working currently on getting E CVS working on Solaris/SPARC and FreeBSD/x86.</p>
+<p>E CVS is actively tested and developed on the following platforms: Linux/X86, Linux/PPC, Linux/Sparc, Linux/HP-PA,  Solaris/SPARC, HP-UX/HP-PA and FreeBSD/x86.</p>
 
 <hr>
 
@@ -182,16 +183,15 @@ CVS normally builds fine.  Breakage occurs from time to time and will be fixed w
 <li>e17/libs/imlib2_loaders
 <li>e17/libs/evas
 <li>e17/libs/ecore
+<li>e17/proto/esmart
 <li>e17/libs/ewd
 <li>e17/libs/estyle
 <li>e17/libs/etox
 <li>e17/libs/edje
 <li>e17/libs/ewl
-<li>e17/proto/esmart
 </ol>
 
 <ul>The following apps will build on the above libs:
-<li>e17/apps/elicit
 <li>e17/apps/iconbar
 <li>e17/apps/entice
 <li>e17/apps/entrance
@@ -237,6 +237,9 @@ CVS normally builds fine.  Breakage occurs from time to time and will be fixed w
 
 <p>
 was a good choice.
+</p>
+
+<p> (note2) - Ecore is made up of serveral modules, make sure you build in all the appropriate modules to avoid dependancy issues later.
 </p>
 
 </td>
