@@ -1631,3 +1631,14 @@ and stuff so you cant accidentally drop it off screen, also ignore othr windows
 apart from pagers and iconboxes when doing the drop.
 
 * flim
+
+-------------------------------------------------------------------------------
+
+Sat Sep 11 13:49:43 PDT 1999
+(Raster)
+
+add ABOUT section to Brushed Metal theme so the "about this theme" entry in 
+the middle-desktop button menu works and displays something nice.
+
+i hope all theme desginers use this to plug themselves and any comments or
+credits they want to give for their theme.
