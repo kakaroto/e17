@@ -135,7 +135,8 @@ feh_load_image(Imlib_Image * im, feh_file * file)
          if (!opt.keep_http)
             unlink(tmpname);
       }
-      add_file_to_rm_filelist(tmpname);
+      if(!opt.keep_http)
+         add_file_to_rm_filelist(tmpname);
       free(tmpname);
    }
    else
@@ -244,9 +245,9 @@ feh_http_load_image(char *url)
 
    D_ENTER(4);
 
-   if(opt.keep_http)
+   if (opt.keep_http)
    {
-      if(opt.output_dir)
+      if (opt.output_dir)
          path = opt.output_dir;
       else
          path = "";
@@ -255,13 +256,13 @@ feh_http_load_image(char *url)
       path = "/tmp/";
 
    basename = strrchr(url, '/') + 1;
-   tmpname =
-         feh_unique_filename(path, basename);
-   
+   tmpname = feh_unique_filename(path, basename);
+
    if (opt.wget_timestamp)
    {
       char cppid[10];
       pid_t ppid;
+
       ppid = getpid();
       snprintf(cppid, sizeof(cppid), "%06ld", ppid);
       tmpname_timestamper =
@@ -607,6 +608,11 @@ feh_draw_filename(winwidget w)
    Imlib_Image im = NULL;
 
    D_ENTER(4);
+
+   if ((!w->file) || (!FEH_FILE(w->file->data))
+       || (!FEH_FILE(w->file->data)->filename))
+      D_RETURN_(4);
+
    if (!fn)
    {
       if (opt.full_screen)
@@ -637,9 +643,6 @@ feh_draw_filename(winwidget w)
    feh_imlib_render_image_on_drawable(w->bg_pmap, im, 0, 0, 1, 0, 0);
 
    feh_imlib_free_image_and_decache(im);
-
-   XSetWindowBackgroundPixmap(disp, w->win, w->bg_pmap);
-   XClearArea(disp, w->win, 0, 0, tw, th, False);
    D_RETURN_(4);
 }
 

@@ -1,3 +1,14 @@
+Sat Aug 25 02:49:54 2001  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* okay. feh menus now support toggleable items.
+	* I was gonna use ellipses for the toggle state, but I found that
+	I had broken ellipses in imlib2 a while back (at least I think it
+	was me). So it's rectangles. I fixed imlib2 now, but there won't
+	be a release for a while.
+	* A couple of options can now be configured through the menus,
+	will add more in time.
+	* some other stuff I forget, I'm tired :)
+
 Fri Aug 24 08:44:46 2001  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Even better, you can copy a pixmap between displays :) This is

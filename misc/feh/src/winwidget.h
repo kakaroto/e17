@@ -118,6 +118,7 @@ void winwidget_rotate_image(winwidget winid, double angle);
 void winwidget_resize(winwidget winwid, int w, int h);
 void winwidget_setup_pixmaps(winwidget winwid);
 void winwidget_update_title(winwidget ret);
+void winwidget_rerender_all(int resize, int alias);
 winwidget winwidget_get_from_window(Window win);
 winwidget winwidget_create_from_file(feh_list * filename, char *name,
 

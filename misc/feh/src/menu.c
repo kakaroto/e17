@@ -51,8 +51,6 @@ static void feh_menu_cb_remove(feh_menu * m, feh_menu_item * i, void *data);
 static void feh_menu_cb_delete(feh_menu * m, feh_menu_item * i, void *data);
 static void feh_menu_cb_reset(feh_menu * m, feh_menu_item * i, void *data);
 
-/* FIXME if someone can tell me which option is causing indent to be
-   braindead here, I will buy them a beer */
 static void feh_menu_cb_remove_thumb(feh_menu * m, feh_menu_item * i,
                                      void *data);
 static void feh_menu_cb_delete_thumb(feh_menu * m, feh_menu_item * i,
@@ -96,6 +94,10 @@ static void feh_menu_cb_save_image(feh_menu * m, feh_menu_item * i,
 static void feh_menu_cb_save_filelist(feh_menu * m, feh_menu_item * i,
                                       void *data);
 static void feh_menu_cb_fit(feh_menu * m, feh_menu_item * i, void *data);
+static void feh_menu_cb_opt_draw_filename(feh_menu * m, feh_menu_item * i,
+                                          void *data);
+static void feh_menu_cb_opt_keep_http(feh_menu * m, feh_menu_item * i,
+                                      void *data);
 
 
 feh_menu *
@@ -474,6 +476,7 @@ feh_menu_add_entry(feh_menu * m, char *text, Imlib_Image icon, char *submenu,
    mi = (feh_menu_item *) emalloc(sizeof(feh_menu_item));
    mi->state = MENU_ITEM_STATE_NORMAL;
    mi->icon = icon;
+   mi->is_toggle = FALSE;
    if (text)
       mi->text = estrdup(text);
    else
@@ -540,6 +543,7 @@ feh_menu_calc_size(feh_menu * m)
    int prev_w, prev_h;
    feh_menu_item *i;
    int j = 0, count = 0, max_w = 0, max_h = 0, icon_w = 0, next_w = 0;
+   int toggle_w = 0;
 
    D_ENTER(4);
 
@@ -561,6 +565,12 @@ feh_menu_calc_size(feh_menu * m)
          next_w = FEH_MENU_SUBMENU_W;
          if (FEH_MENU_SUBMENU_H > max_h)
             max_h = FEH_MENU_SUBMENU_H;
+      }
+      if (i->is_toggle)
+      {
+         toggle_w = FEH_MENU_TOGGLE_W + FEH_MENU_TOGGLE_PAD;
+         if (FEH_MENU_TOGGLE_H > max_h)
+            max_h = FEH_MENU_TOGGLE_H;
       }
       count++;
    }
@@ -590,7 +600,6 @@ feh_menu_calc_size(feh_menu * m)
             }
             if (ow > icon_w)
                icon_w = ow;
-            feh_imlib_free_image(im);
          }
       }
    }
@@ -599,9 +608,10 @@ feh_menu_calc_size(feh_menu * m)
    {
       i->x = FEH_MENU_PAD_LEFT;
       i->y = m->h;
-      i->w = max_w + icon_w + next_w;
+      i->w = max_w + icon_w + toggle_w + next_w;
       i->icon_x = FEH_MENUITEM_PAD_LEFT;
-      i->text_x = i->icon_x + icon_w;
+      i->toggle_x = i->icon_x + icon_w;
+      i->text_x = i->toggle_x + toggle_w;
       i->sub_x = i->text_x + max_w;
       if (i->text)
          i->h = max_h;
@@ -611,7 +621,9 @@ feh_menu_calc_size(feh_menu * m)
       j++;
    }
    m->h += FEH_MENU_PAD_BOTTOM;
-   m->w = next_w + icon_w + max_w + FEH_MENU_PAD_LEFT + FEH_MENU_PAD_RIGHT;
+   m->w =
+      next_w + toggle_w + icon_w + max_w + FEH_MENU_PAD_LEFT +
+      FEH_MENU_PAD_RIGHT;
 
    if ((prev_w != m->w) || (prev_h != m->h))
    {
@@ -723,28 +735,24 @@ feh_menu_draw_item(feh_menu * m, feh_menu_item * i, Imlib_Image im, int ox,
       if (i->submenu)
       {
          D(5, ("submenu item\n"));
-         if (MENU_ITEM_IS_SELECTED(i))
-         {
-            D(5, ("selected item\n"));
-            feh_menu_draw_submenu_at(i->x + i->sub_x,
-                                     i->y + FEH_MENUITEM_PAD_TOP +
-                                     ((i->h - FEH_MENUITEM_PAD_TOP -
-                                       FEH_MENUITEM_PAD_BOTTOM -
-                                       FEH_MENU_SUBMENU_H) / 2),
-                                     FEH_MENU_SUBMENU_W, FEH_MENU_SUBMENU_H,
-                                     im, ox, oy, 1);
-         }
-         else
-         {
-            D(5, ("unselected item\n"));
-            feh_menu_draw_submenu_at(i->x + i->sub_x,
-                                     i->y + FEH_MENUITEM_PAD_TOP +
-                                     ((i->h - FEH_MENUITEM_PAD_TOP -
-                                       FEH_MENUITEM_PAD_BOTTOM -
-                                       FEH_MENU_SUBMENU_H) / 2),
-                                     FEH_MENU_SUBMENU_W, FEH_MENU_SUBMENU_H,
-                                     im, ox, oy, 0);
-         }
+         feh_menu_draw_submenu_at(i->x + i->sub_x,
+                                  i->y + FEH_MENUITEM_PAD_TOP +
+                                  ((i->h - FEH_MENUITEM_PAD_TOP -
+                                    FEH_MENUITEM_PAD_BOTTOM -
+                                    FEH_MENU_SUBMENU_H) / 2),
+                                  FEH_MENU_SUBMENU_W, FEH_MENU_SUBMENU_H, im,
+                                  ox, oy, MENU_ITEM_IS_SELECTED(i));
+      }
+      if (i->is_toggle)
+      {
+         D(5, ("toggleable item\n"));
+         feh_menu_draw_toggle_at(i->x + i->toggle_x,
+                                 i->y + FEH_MENUITEM_PAD_TOP +
+                                 ((i->h - FEH_MENUITEM_PAD_TOP -
+                                   FEH_MENUITEM_PAD_BOTTOM -
+                                   FEH_MENU_TOGGLE_H) / 2), FEH_MENU_TOGGLE_W,
+                                 FEH_MENU_TOGGLE_H, im, ox, oy,
+                                 MENU_ITEM_IS_ON(i));
       }
    }
    else
@@ -847,6 +855,22 @@ feh_menu_draw_menu_bg(feh_menu * m, Imlib_Image im, int ox, int oy)
    else
       feh_imlib_image_fill_rectangle(im, 0, 0, w, h, 205, 203, 176, 255);
 
+   D_RETURN_(5);
+}
+
+void
+feh_menu_draw_toggle_at(int x, int y, int w, int h, Imlib_Image dst, int ox,
+                        int oy, int on)
+{
+   int xc, yc;
+
+   D_ENTER(5);
+   x -= ox;
+   y -= oy;
+   if (on)
+      feh_imlib_image_fill_rectangle(dst, x, y, w, h, 0, 0, 0, 255);
+   else
+      feh_imlib_image_draw_rectangle(dst, x, y, w, h, 0, 0, 0, 255);
    D_RETURN_(5);
 }
 
@@ -982,6 +1006,9 @@ feh_menu_init_main(void)
       mi->func_gen_sub = feh_menu_func_gen_info;
       feh_menu_add_entry(menu_main, NULL, NULL, NULL, NULL, NULL, NULL);
    }
+   feh_menu_add_entry(menu_main, "Options", NULL, "OPTIONS", NULL, NULL,
+                      NULL);
+
    if (!opt.full_screen)
       feh_menu_add_entry(menu_main, "About " PACKAGE, NULL, NULL,
                          feh_menu_cb_about, NULL, NULL);
@@ -1016,6 +1043,7 @@ feh_menu_init_common()
    int num_desks, i;
    char buf[30];
    feh_menu *m;
+   feh_menu_item *mi;
 
    D_ENTER(4);
 
@@ -1040,6 +1068,19 @@ feh_menu_init_common()
                          feh_menu_cb_sort_filesize, NULL, NULL);
    feh_menu_add_entry(m, "Randomize", NULL, NULL, feh_menu_cb_sort_randomize,
                       NULL, NULL);
+
+   m = feh_menu_new();
+   m->name = estrdup("OPTIONS");
+   mi =
+      feh_menu_add_entry(m, "Draw Filename", NULL, NULL,
+                         feh_menu_cb_opt_draw_filename, NULL, NULL);
+   mi->is_toggle = TRUE;
+   MENU_ITEM_TOGGLE_SET(mi, opt.draw_filename);
+   mi =
+      feh_menu_add_entry(m, "Keep http files", NULL, NULL,
+                         feh_menu_cb_opt_keep_http, NULL, NULL);
+   mi->is_toggle = TRUE;
+   MENU_ITEM_TOGGLE_SET(mi, opt.keep_http);
 
    m = feh_menu_new();
    m->name = estrdup("CONFIRM");
@@ -1207,6 +1248,8 @@ feh_menu_init_single_win(void)
                          NULL, NULL);
    mi->func_gen_sub = feh_menu_func_gen_info;
    feh_menu_add_entry(menu_single_win, NULL, NULL, NULL, NULL, NULL, NULL);
+   feh_menu_add_entry(menu_single_win, "Options", NULL, "OPTIONS", NULL, NULL,
+                      NULL);
    feh_menu_add_entry(menu_single_win, "About " PACKAGE, NULL, NULL,
                       feh_menu_cb_about, NULL, NULL);
    feh_menu_add_entry(menu_single_win, "Close", NULL, NULL, feh_menu_cb_close,
@@ -1242,6 +1285,8 @@ feh_menu_init_thumbnail_win(void)
                       feh_menu_cb_save_filelist, NULL, NULL);
    feh_menu_add_entry(m, "Background", NULL, "BACKGROUND", NULL, NULL, NULL);
    feh_menu_add_entry(menu_thumbnail_win, NULL, NULL, NULL, NULL, NULL, NULL);
+   feh_menu_add_entry(menu_thumbnail_win, "Options", NULL, "OPTIONS", NULL,
+                      NULL, NULL);
    feh_menu_add_entry(menu_thumbnail_win, "About " PACKAGE, NULL, NULL,
                       feh_menu_cb_about, NULL, NULL);
    feh_menu_add_entry(menu_thumbnail_win, "Close", NULL, NULL,
@@ -1290,6 +1335,8 @@ feh_menu_init_thumbnail_viewer(void)
    mi->func_gen_sub = feh_menu_func_gen_info;
    feh_menu_add_entry(menu_thumbnail_viewer, NULL, NULL, NULL, NULL, NULL,
                       NULL);
+   feh_menu_add_entry(menu_thumbnail_viewer, "Options", NULL, "OPTIONS", NULL,
+                      NULL, NULL);
    feh_menu_add_entry(menu_thumbnail_viewer, "About " PACKAGE, NULL, NULL,
                       feh_menu_cb_about, NULL, NULL);
    feh_menu_add_entry(menu_thumbnail_viewer, "Close", NULL, NULL,
@@ -1658,4 +1705,25 @@ static void
 feh_menu_cb_save_filelist(feh_menu * m, feh_menu_item * i, void *data)
 {
    feh_save_filelist();
+}
+
+static void
+feh_menu_cb_opt_draw_filename(feh_menu * m, feh_menu_item * i, void *data)
+{
+   MENU_ITEM_TOGGLE(i);
+   if (MENU_ITEM_IS_ON(i))
+      opt.draw_filename = TRUE;
+   else
+      opt.draw_filename = FALSE;
+   winwidget_rerender_all(0, 1);
+}
+
+static void
+feh_menu_cb_opt_keep_http(feh_menu * m, feh_menu_item * i, void *data)
+{
+   MENU_ITEM_TOGGLE(i);
+   if (MENU_ITEM_IS_ON(i))
+      opt.keep_http = TRUE;
+   else
+      opt.keep_http = FALSE;
 }

@@ -33,6 +33,7 @@ typedef struct _feh_menu_list feh_menu_list;
 
 #define MENU_ITEM_STATE_NORMAL   0x00
 #define MENU_ITEM_STATE_SELECTED 0x01
+#define MENU_ITEM_STATE_ON       0x02
 
 #define MENU_ITEM_IS_SELECTED(item) \
 ((item)->state & MENU_ITEM_STATE_SELECTED)
@@ -40,6 +41,18 @@ typedef struct _feh_menu_list feh_menu_list;
 (item)->state = (item)->state & (~MENU_ITEM_STATE_SELECTED)
 #define MENU_ITEM_SET_SELECTED(item) \
 (item)->state = (item)->state | MENU_ITEM_STATE_SELECTED
+
+#define MENU_ITEM_IS_ON(item) \
+((item)->state & MENU_ITEM_STATE_ON)
+#define MENU_ITEM_TOGGLE_ON(item) \
+((item)->state |= MENU_ITEM_STATE_ON)
+#define MENU_ITEM_TOGGLE_OFF(item) \
+((item)->state &= ~(MENU_ITEM_STATE_ON))
+#define MENU_ITEM_TOGGLE_SET(item, setting) \
+((setting) ? MENU_ITEM_TOGGLE_ON(item) : MENU_ITEM_TOGGLE_OFF(item))
+#define MENU_ITEM_TOGGLE(item) \
+(((item)->state & MENU_ITEM_STATE_ON) ? MENU_ITEM_TOGGLE_OFF(item) : MENU_ITEM_TOGGLE_ON(item))
+
 
 #define RECTS_INTERSECT(x, y, w, h, xx, yy, ww, hh) \
 ((SPANS_COMMON((x), (w), (xx), (ww))) && (SPANS_COMMON((y), (h), (yy), (hh))))
@@ -60,14 +73,17 @@ typedef struct _feh_menu_list feh_menu_list;
 #define FEH_MENU_SEP_MAX_H 5
 
 #define FEH_MENU_SUBMENU_H 14
-#define FEH_MENU_SUBMENU_W 8
+#define FEH_MENU_SUBMENU_W 9
+
+#define FEH_MENU_TOGGLE_H 7
+#define FEH_MENU_TOGGLE_W 7
+#define FEH_MENU_TOGGLE_PAD 3
 
 #define FEH_MENU_FONT_SHADOW_OFF_X 2
 #define FEH_MENU_FONT_SHADOW_OFF_Y 2
 
 typedef void (*menu_func) (feh_menu * m, feh_menu_item * i, void *data);
 typedef feh_menu *(*menuitem_func_gen) (feh_menu * m, feh_menu_item * i,
-
                                         void *data);
 
 struct _feh_menu_list
@@ -86,7 +102,8 @@ struct _feh_menu_item
    void (*func_free) (void *data);
    void *data;
    feh_menu_item *next;
-   int text_x, icon_x, sub_x;
+   unsigned char is_toggle;
+   int text_x, icon_x, sub_x, toggle_x;
    int x, y, w, h;
    menuitem_func_gen func_gen_sub;
 };
@@ -146,6 +163,8 @@ void feh_menu_draw_separator_at(int x, int y, int w, int h, Imlib_Image dst,
                                 int ox, int oy);
 void feh_menu_item_draw_at(int x, int y, int w, int h, Imlib_Image dst,
                            int ox, int oy, int selected);
+void feh_menu_draw_toggle_at(int x, int y, int w, int h, Imlib_Image dst,
+                             int ox, int oy, int on);
 void feh_redraw_menus(void);
 feh_menu *feh_menu_find(char *name);
 void feh_redraw_menus(void);

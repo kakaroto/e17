@@ -263,9 +263,7 @@ feh_event_handle_ButtonRelease(XEvent * ev)
       {
          feh_menu *m;
 
-         if (ev->xbutton.window == menu_cover)
-            feh_menu_hide(menu_root);
-         else if ((m = feh_menu_get_from_window(ev->xbutton.window)))
+         if ((m = feh_menu_get_from_window(ev->xbutton.window)))
          {
             feh_menu_item *i = NULL;
 

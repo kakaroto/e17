@@ -202,8 +202,7 @@ feh_clean_exit(void)
 {
    D_ENTER(4);
 
-   if (!opt.keep_http)
-      delete_rm_files();
+   delete_rm_files();
 
    if (opt.filelistfile)
       feh_write_filelist(filelist, opt.filelistfile);

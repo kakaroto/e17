@@ -158,7 +158,7 @@ winwidget_create_window(winwidget ret, int w, int h)
       w = scr->width;
       h = scr->height;
    }
-   else if(opt.geom)
+   else if (opt.geom)
    {
       w = opt.geom_w;
       h = opt.geom_h;
@@ -325,8 +325,8 @@ winwidget_render_image(winwidget winwid, int resize, int alias)
    winwidget_setup_pixmaps(winwid);
 
    if (!opt.full_screen
-       && ((feh_imlib_image_has_alpha(winwid->im))
-           || (opt.geom) || (winwid->im_x || winwid->im_y) || (winwid->zoom != 1.0)
+       && ((feh_imlib_image_has_alpha(winwid->im)) || (opt.geom)
+           || (winwid->im_x || winwid->im_y) || (winwid->zoom != 1.0)
            || (winwid->w > winwid->im_w || winwid->h > winwid->im_h)
            || (winwid->has_rotated)))
       feh_draw_checks(winwid);
@@ -346,12 +346,13 @@ winwidget_render_image(winwidget winwid, int resize, int alias)
    {
       int smaller;              /* Is the image smaller than screen? */
       int max_w, max_h;
-      if(opt.full_screen)
+
+      if (opt.full_screen)
       {
          max_w = scr->width;
          max_h = scr->height;
       }
-      else if(opt.geom)
+      else if (opt.geom)
       {
          max_w = opt.geom_w;
          max_h = opt.geom_h;
@@ -442,9 +443,18 @@ winwidget_render_image(winwidget winwid, int resize, int alias)
 
    D(5, ("winwidget_render(): winwid->im_angle = %f\n", winwid->im_angle));
    if (winwid->has_rotated)
-      feh_imlib_render_image_part_on_drawable_at_size_with_rotation
-         (winwid->bg_pmap, winwid->im, sx, sy, sw, sh, dx, dy, dw, dh,
-          winwid->im_angle, 1, 1, alias);
+      feh_imlib_render_image_part_on_drawable_at_size_with_rotation(winwid->
+                                                                    bg_pmap,
+                                                                    winwid->
+                                                                    im, sx,
+                                                                    sy, sw,
+                                                                    sh, dx,
+                                                                    dy, dw,
+                                                                    dh,
+                                                                    winwid->
+                                                                    im_angle,
+                                                                    1, 1,
+                                                                    alias);
    else
       feh_imlib_render_image_part_on_drawable_at_size(winwid->bg_pmap,
                                                       winwid->im, sx, sy, sw,
@@ -452,6 +462,8 @@ winwidget_render_image(winwidget winwid, int resize, int alias)
                                                       feh_imlib_image_has_alpha
                                                       (winwid->im), alias);
 
+   if (opt.draw_filename)
+      feh_draw_filename(winwid);
    XSetWindowBackgroundPixmap(disp, winwid->win, winwid->bg_pmap);
    XClearWindow(disp, winwid->win);
    D_RETURN_(4);
@@ -475,7 +487,8 @@ feh_calc_needed_zoom(double *zoom, int orig_w, int orig_h, int dest_w,
    D_RETURN(4, ratio);
 }
 
-Pixmap feh_create_checks(void)
+Pixmap
+feh_create_checks(void)
 {
    static Pixmap checks_pmap = None;
    Imlib_Image checks = NULL;
@@ -575,7 +588,19 @@ winwidget_destroy_all(void)
    D_RETURN_(4);
 }
 
-winwidget winwidget_get_first_window_of_type(unsigned int type)
+void winwidget_rerender_all(int resize, int alias)
+{
+   int i;
+
+   D_ENTER(4);
+   /* Have to DESCEND the list here, 'cos of the way _unregister works */
+   for (i = window_num - 1; i >= 0; i--)
+      winwidget_render_image(windows[i], resize, alias);
+   D_RETURN_(4);
+}
+
+winwidget
+winwidget_get_first_window_of_type(unsigned int type)
 {
    int i;
 
@@ -619,7 +644,7 @@ void
 winwidget_resize(winwidget winwid, int w, int h)
 {
    D_ENTER(4);
-   if(opt.geom)
+   if (opt.geom)
    {
       winwid->had_resize = 1;
       return;
@@ -798,10 +823,11 @@ winwidget_sanitise_offsets(winwidget winwid)
 }
 
 
-void winwidget_size_to_image(winwidget winwid)
+void
+winwidget_size_to_image(winwidget winwid)
 {
    D_ENTER(4);
-   winwidget_resize(winwid,winwid->im_w * winwid->zoom,
+   winwidget_resize(winwid, winwid->im_w * winwid->zoom,
                     winwid->im_h * winwid->zoom);
    winwid->im_x = winwid->im_y = 0;
    winwidget_render_image(winwid, 0, 1);

@@ -51,10 +51,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "config.h"
 #include "structs.h"
 #include "feh_imlib2.h"
+#include "menu.h"
 
 #include "utils.h"
 #include "getopt.h"
-#include "menu.h"
 
 
 #include "debug.h"
