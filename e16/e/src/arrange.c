@@ -1037,8 +1037,6 @@ ArrangeEwin(EWin * ewin)
 	     ewin->y = (root.h - ewin->h) >> 1;
 #ifdef HAS_XINERAMA
 	  }
-	printf("setting it to %d %d\n", ewin->x, ewin->y);
-	fflush(stdout);
 #endif
      }
    MoveEwin(ewin, ewin->x, ewin->y);

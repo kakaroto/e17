@@ -4468,3 +4468,10 @@ Sat Mar 25 20:51:51 PST 2000
 more xinerama support.  This time settings dialogs pop up centered on the
 current head if there isn't a settings dialog already open.
 Next - edge resistance between heads.
+
+-------------------------------------------------------------------------------
+
+Sat Mar 25 20:58:49 PST 2000
+(Mandrake)
+
+oops, debugging printfs
