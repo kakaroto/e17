@@ -909,7 +909,7 @@ _engage_cb_event_dnd_drop(void *data, int type, void *event)
 
    ev = event;
    /* FIXME - we do not really want plain text files! */
-   ecore_x_selection_xdnd_request(ev->win, "text/plain");
+   ecore_x_selection_xdnd_request(ev->win, "text/uri-list");
    return 1;
 }
 
@@ -917,13 +917,12 @@ int
 _engage_cb_event_dnd_selection(void *data, int type, void *event)
 {
    Ecore_X_Event_Selection_Notify *ev;
-   int i, len;
-   char *buf;
+   int i;
 
    ev = event;
-   ecore_x_selection_xdnd_request_data_get(&buf, &len);
-   printf("ENGAGE DND GOT %s\n", buf);
-   free(buf);
+   
+   for (i = 0; i < ev->num_files; i++)
+      printf("ENGAGE DND GOT %s\n", ev->files[i]);
    ecore_x_dnd_send_finished();
    return 1;
 }
