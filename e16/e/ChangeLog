@@ -2478,3 +2478,15 @@ Set skip-focus-list flag on iconboxes, menus, and pagers.
 Include no or all iconified windows in focus list.
  (patch from Alan Schmitt <alan.schmitt@polytechnique.org>).
 Partial fix to broken click-to-focus.
+
+-------------------------------------------------------------------------------
+
+Mon Mar  1 22:11:37 CET 2004
+(Kim)
+
+More focus fixes.
+Renamed duplicate to Estrdup, introduced Estrndup.
+Preparing for _NET_WM_NAME (UTF-8).
+Do expose event compression.
+Fix update of E-internal windows after move/deskswitch when theme transparency
+is on.
