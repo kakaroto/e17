@@ -7,7 +7,9 @@ bin_SCRIPTS = entrance_wrapper
 localstate_DATA = 
 
 entranced_SOURCES = \
-	Entranced.h spawner.c md5.c md5.h auth.c util.c
+	auth.c auth.h Entranced.h md5.c md5.h spawner.c util.c
 
 entranced_LDADD = @x_libs@ -lXau @ecore_libs@ @edb_libs@
 
+install-data-hook:
+	chmod 700 @localstatedir@
