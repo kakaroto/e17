@@ -83,6 +83,8 @@ engrave_load_eet(const char *filename)
   char *work_dir = NULL;
   static char tmpn[4096];
   char *cpp_extra = NULL;
+  char *out_dir = NULL;
+
 
   if (!filename) return NULL;
   old_fname = strdup(filename);
@@ -148,18 +150,20 @@ engrave_load_eet(const char *filename)
   /* we need the info on the work dir to pass the cpp so it can
    * include files correctly 
    */
-  len = strlen(ptr) + strlen(work_dir) + 4;
-  cpp_extra = (char *)calloc(len, sizeof(char));
-  snprintf(cpp_extra, len, "-I%s/%s", work_dir, ptr);
+  len = strlen(ptr) + strlen(work_dir) + 2;
+  out_dir = (char *)calloc(len, sizeof(char));
+  snprintf(out_dir, len, "%s/%s", work_dir, ptr);
 
-  len = strlen(work_dir) + strlen(ptr) +
-          strlen(MAIN_EDC_NAME) + 3;
+  len = strlen(out_dir) + 3;
+  cpp_extra = (char *)calloc(len, sizeof(char));
+  snprintf(cpp_extra, len, "-I%s", out_dir);
+
+  len = strlen(out_dir) + strlen(MAIN_EDC_NAME) + 2;
   new_fname = (char *)calloc(len, sizeof(char));
-  snprintf(new_fname, len, "%s/%s/%s", work_dir, ptr, 
-            MAIN_EDC_NAME);
+  snprintf(new_fname, len, "%s/%s", out_dir, MAIN_EDC_NAME);
   FREE(old_fname);
 
-  enf = engrave_load_edc(new_fname, work_dir, work_dir);
+  enf = engrave_load_edc(new_fname, out_dir, out_dir);
 
   FREE(work_dir);
 
