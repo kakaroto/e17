@@ -1,9 +1,46 @@
+#define BTN(NAME, IMG, REL1_REL, REL1_OFF, REL2_REL, REL2_OFF)\
+    part { \
+      name, "btn_"NAME; \
+      type, IMAGE; \
+      mouse_events, 1; \
+      description { \
+        state, "default" 0.0; \
+        visible, 1; \
+        color, POSTIT_COL 255; \
+        rel1 { \
+          relative, REL1_REL; \
+          offset, REL1_OFF; \
+        } rel2 { \
+          relative, REL2_REL; \
+          offset, REL2_OFF; \
+        } \
+        image { \
+          normal, IMG".png"; \
+        } \
+      } \
+      description { \
+        state, "over" 0.0; \
+        visible, 1; \
+        color, POSTIT_COL 255; \
+        rel1 { \
+          relative, REL1_REL; \
+          offset, REL1_OFF; \
+        } rel2 { \
+          relative, REL2_REL; \
+          offset, REL2_OFF; \
+        } \
+        image { \
+          normal, IMG"_over.png"; \
+        } \
+      } \
+    }
+
 group {
   name, "vscroll-up";
   min, 7 7;
   max, 7 7;
   parts {
-    BUTTON("up", "arrow_up", 0.0 0.0, 0 0, 1.0 1.0, -1 -1)
+    BTN("up", "arrow_up", 0.0 0.0, 0 0, 1.0 1.0, -1 -1)
   }
   programs {
     BUTTON_PROG("up", "")
@@ -15,7 +52,7 @@ group {
   min, 7 7;
   max, 7 7;
   parts {
-    BUTTON("down", "arrow_dn", 0.0 0.0, 0 0, 1.0 1.0, -1 -1)
+    BTN("down", "arrow_dn", 0.0 0.0, 0 0, 1.0 1.0, -1 -1)
   }
 
   programs {
@@ -28,7 +65,7 @@ group {
   min, 7 7;
   max, 7 7;
   parts {
-    BUTTON("left", "arrow_lt", 0.0 0.0, 0 0, 1.0 1.0, -1 -1)
+    BTN("left", "arrow_lt", 0.0 0.0, 0 0, 1.0 1.0, -1 -1)
   }
 
   programs {
@@ -41,7 +78,7 @@ group {
   min, 7 7;
   max, 7 7;
   parts {
-    BUTTON("right", "arrow_rt", 0.0 0.0, 0 0, 1.0 1.0, -1 -1)
+    BTN("right", "arrow_rt", 0.0 0.0, 0 0, 1.0 1.0, -1 -1)
   }
 
   programs {
