@@ -362,7 +362,9 @@ __imlib_CopyRGBAToRGBCmod(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump,
 {
    LOOP_START
 
-   *p2 = (*p2 & 0xff000000) | (*p1 & 0x00ffffff);
+   R_VAL(p2) = R_CMOD(cm, R_VAL(p1));
+   G_VAL(p2) = G_CMOD(cm, G_VAL(p1));
+   B_VAL(p2) = B_CMOD(cm, B_VAL(p1));
 
    LOOP_END_WITH_INCREMENT
 }
@@ -374,7 +376,10 @@ __imlib_CopyRGBAToRGBACmod(DATA32 *src, int src_jump, DATA32 *dst, int dst_jump,
    /* FIXME: This could be a memcpy operation. */
    LOOP_START
 
-   *p2 = *p1;
+   R_VAL(p2) = R_CMOD(cm, R_VAL(p1));
+   G_VAL(p2) = G_CMOD(cm, G_VAL(p1));
+   B_VAL(p2) = B_CMOD(cm, B_VAL(p1));
+   A_VAL(p2) = A_CMOD(cm, A_VAL(p1));
 
    LOOP_END_WITH_INCREMENT
 }
