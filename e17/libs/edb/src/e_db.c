@@ -447,13 +447,6 @@ e_db_str_set(E_DB_File * edb, char *key, char *str)
    e_db_type_set(edb, key, "str");
 }
 
-void
-e_db_bytestr_set(E_DB_File * edb, char *key, char *str, int len)
-{
-   e_db_data_set(edb, key, str, len);
-   e_db_type_set(edb, key, "str");
-}
-
 char               *
 e_db_str_get(E_DB_File * edb, char *key)
 {
@@ -469,18 +462,6 @@ e_db_str_get(E_DB_File * edb, char *key)
    s[size] = 0;
    FREE(dat);
    return s;
-}
-
-char               *
-e_db_bytestr_get(E_DB_File * edb, char *key, int *len)
-{
-   char               *dat, *s;
-   int                 size;
-
-   if (!len)
-     return NULL;
-
-   return e_db_data_get(edb, key, len);
 }
 
 void
