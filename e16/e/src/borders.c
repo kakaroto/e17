@@ -66,12 +66,12 @@ BorderWinpartRealise(EWin * ewin, int i)
      {
 	if ((ewb->w < 0) || (ewb->h < 0))
 	  {
-	     EUnmapWindow(disp, ewb->win);
+	     EUnmapWindow(ewb->win);
 	  }
 	else
 	  {
-	     EMapWindow(disp, ewb->win);
-	     EMoveResizeWindow(disp, ewb->win, ewb->x, ewb->y, ewb->w, ewb->h);
+	     EMapWindow(ewb->win);
+	     EMoveResizeWindow(ewb->win, ewb->x, ewb->y, ewb->w, ewb->h);
 	  }
      }
 }
@@ -450,7 +450,7 @@ HonorIclass(char *s, int id)
 	       {
 		  ewin->bits[a->ewin_bit].win = id;
 		  BorderWinpartRealise(ewin, a->ewin_bit);
-		  EMapWindow(disp, id);
+		  EMapWindow(id);
 		  ewin->shapedone = 0;
 		  if (!ewin->shapedone)
 		    {
@@ -530,7 +530,7 @@ EwinBorderDetach(EWin * ewin)
 	EventCallbackUnregister(ewin->bits[i].win, 0,
 				BorderWinpartHandleEvents, &ewin->bits[i]);
 	if (ewin->bits[i].win)
-	   EDestroyWindow(disp, ewin->bits[i].win);
+	   EDestroyWindow(ewin->bits[i].win);
      }
    if (ewin->bits)
       Efree(ewin->bits);
@@ -596,7 +596,7 @@ EwinBorderSetTo(EWin * ewin, const Border * b)
 	     ewin->bits[i].win =
 		ECreateWindow(EoGetWin(ewin), -10, -10, 1, 1, 0);
 	     ECursorApply(b->part[i].ec, ewin->bits[i].win);
-	     EMapWindow(disp, ewin->bits[i].win);
+	     EMapWindow(ewin->bits[i].win);
 	     EventCallbackRegister(ewin->bits[i].win, 0,
 				   BorderWinpartHandleEvents, &ewin->bits[i]);
 	     /*
@@ -614,11 +614,9 @@ EwinBorderSetTo(EWin * ewin, const Border * b)
 	      * OwnerGrabButtonMask
 	      */
 	     if (b->part[i].flags & FLAG_TITLE)
-		XSelectInput(disp, ewin->bits[i].win,
-			     EWIN_BORDER_TITLE_EVENT_MASK);
+		ESelectInput(ewin->bits[i].win, EWIN_BORDER_TITLE_EVENT_MASK);
 	     else
-		XSelectInput(disp, ewin->bits[i].win,
-			     EWIN_BORDER_PART_EVENT_MASK);
+		ESelectInput(ewin->bits[i].win, EWIN_BORDER_PART_EVENT_MASK);
 	     ewin->bits[i].x = -10;
 	     ewin->bits[i].y = -10;
 	     ewin->bits[i].w = -10;
@@ -656,7 +654,7 @@ EwinBorderSetTo(EWin * ewin, const Border * b)
    }
 
    if (!ewin->shaded)
-      EMoveWindow(disp, ewin->win_container, b->border.left, b->border.top);
+      EMoveWindow(ewin->win_container, b->border.left, b->border.top);
 
    EwinBorderCalcSizes(ewin);
    EwinPropagateShapes(ewin);
@@ -930,11 +928,10 @@ EwinBorderEventsConfigure(EWin * ewin, int mode)
    for (i = 0; i < ewin->border->num_winparts; i++)
      {
 	if (ewin->border->part[i].flags & FLAG_TITLE)
-	   XSelectInput(disp, ewin->bits[i].win,
+	   ESelectInput(ewin->bits[i].win,
 			EWIN_BORDER_TITLE_EVENT_MASK & emask);
 	else
-	   XSelectInput(disp, ewin->bits[i].win,
-			EWIN_BORDER_PART_EVENT_MASK & emask);
+	   ESelectInput(ewin->bits[i].win, EWIN_BORDER_PART_EVENT_MASK & emask);
      }
 }
 

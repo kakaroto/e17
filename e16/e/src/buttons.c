@@ -140,7 +140,7 @@ ButtonCreate(const char *name, int id, ImageClass * iclass,
    b->ref_count = 0;
 
    EoSetWin(b, ECreateWindow(DeskGetWin(desk), -100, -100, 50, 50, 0));
-   XSelectInput(disp, EoGetWin(b), BUTTON_EVENT_MASK);
+   ESelectInput(EoGetWin(b), BUTTON_EVENT_MASK);
    EventCallbackRegister(EoGetWin(b), 0, ButtonHandleEvents, b);
 
    EobjInit(&b->o, EOBJ_TYPE_BUTTON, -1, -1, -1, -1);
@@ -177,7 +177,7 @@ ButtonDestroy(Button * b)
       Efree(b->name);
 
    if (EoGetWin(b))
-      EDestroyWindow(disp, EoGetWin(b));
+      EDestroyWindow(EoGetWin(b));
 
    if (b->iclass)
       b->iclass->ref_count--;
@@ -268,18 +268,18 @@ ButtonShow(Button * b)
       resize = 1;
 
    if ((move) && (resize))
-      EMoveResizeWindow(disp, EoGetWin(b), EoGetX(b), EoGetY(b), EoGetW(b),
+      EMoveResizeWindow(EoGetWin(b), EoGetX(b), EoGetY(b), EoGetW(b),
 			EoGetH(b));
    else if (move)
-      EMoveWindow(disp, EoGetWin(b), EoGetX(b), EoGetY(b));
+      EMoveWindow(EoGetWin(b), EoGetX(b), EoGetY(b));
    else if (resize)
-      EResizeWindow(disp, EoGetWin(b), EoGetW(b), EoGetH(b));
+      EResizeWindow(EoGetWin(b), EoGetW(b), EoGetH(b));
    if (EoIsSticky(b))
-      XRaiseWindow(disp, EoGetWin(b));
+      ERaiseWindow(EoGetWin(b));
 
    ButtonDraw(b);
    b->visible = 1;
-   EMapWindow(disp, EoGetWin(b));
+   EMapWindow(EoGetWin(b));
    b->cx = EoGetX(b);
    b->cy = EoGetY(b);
    b->cw = EoGetW(b);
@@ -300,14 +300,13 @@ ButtonMoveToDesktop(Button * b, int desk)
    EoSetDesk(b, desk);
 
    if (desk != pdesk)
-      EReparentWindow(disp, EoGetWin(b), DeskGetWin(desk), EoGetX(b),
-		      EoGetY(b));
+      EReparentWindow(EoGetWin(b), DeskGetWin(desk), EoGetX(b), EoGetY(b));
 }
 
 void
 ButtonHide(Button * b)
 {
-   EUnmapWindow(disp, EoGetWin(b));
+   EUnmapWindow(EoGetWin(b));
    b->visible = 0;
 }
 
@@ -391,14 +390,14 @@ ButtonMoveToCoord(Button * b, int x, int y)
    if ((EoGetW(b) != b->cw) || (EoGetH(b) != b->ch))
       resize = 1;
    if ((move) && (resize))
-      EMoveResizeWindow(disp, EoGetWin(b), EoGetX(b), EoGetY(b), EoGetW(b),
+      EMoveResizeWindow(EoGetWin(b), EoGetX(b), EoGetY(b), EoGetW(b),
 			EoGetH(b));
    else if (move)
-      EMoveWindow(disp, EoGetWin(b), EoGetX(b), EoGetY(b));
+      EMoveWindow(EoGetWin(b), EoGetX(b), EoGetY(b));
    else if (resize)
-      EResizeWindow(disp, EoGetWin(b), EoGetW(b), EoGetH(b));
+      EResizeWindow(EoGetWin(b), EoGetW(b), EoGetH(b));
    if (EoIsSticky(b))
-      XRaiseWindow(disp, EoGetWin(b));
+      ERaiseWindow(EoGetWin(b));
    b->cx = EoGetX(b);
    b->cy = EoGetY(b);
    b->cw = EoGetW(b);
@@ -550,19 +549,19 @@ ButtonEmbedWindow(Button * b, Window WindowToEmbed)
 
    unsigned int        w, h;
 
-   EReparentWindow(disp, WindowToEmbed, EoGetWin(b), 0, 0);
+   EReparentWindow(WindowToEmbed, EoGetWin(b), 0, 0);
    b->inside_win = WindowToEmbed;
    GetWinWH(WindowToEmbed, &w, &h);
-   EMoveWindow(disp, b->inside_win, (EoGetW(b) - w) >> 1, (EoGetH(b) - h) >> 1);
+   EMoveWindow(b->inside_win, (EoGetW(b) - w) >> 1, (EoGetH(b) - h) >> 1);
    b->event_win = ECreateEventWindow(EoGetWin(b), 0, 0, w, h);
    EventCallbackRegister(b->event_win, 0, ButtonHandleEvents, b);
 
-   XSelectInput(disp, b->event_win,
+   ESelectInput(b->event_win,
 		ButtonPressMask | ButtonReleaseMask | EnterWindowMask |
 		LeaveWindowMask | ButtonMotionMask);
 
-   EMoveWindow(disp, b->event_win, (EoGetW(b) - w) >> 1, (EoGetH(b) - h) >> 1);
-   EMapRaised(disp, b->event_win);
+   EMoveWindow(b->event_win, (EoGetW(b) - w) >> 1, (EoGetH(b) - h) >> 1);
+   EMapRaised(b->event_win);
 
    return 0;
 }

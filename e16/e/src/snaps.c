@@ -1524,7 +1524,7 @@ MatchEwinToSnapInfo(EWin * ewin)
 	     ewin->client.x += ((sn->area_x - ax) * VRoot.w);
 	     ewin->client.y += ((sn->area_y - ay) * VRoot.h);
 	  }
-	EMoveResizeWindow(disp, ewin->client.win, ewin->client.x,
+	EMoveResizeWindow(ewin->client.win, ewin->client.x,
 			  ewin->client.y, ewin->client.w, ewin->client.h);
      }
 

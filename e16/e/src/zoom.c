@@ -183,10 +183,10 @@ ZoomMask(int x, int y, int w, int h)
       return 0;
 
    win = ECreateWindow(VRoot.win, x, y, w, h, 0);
-   XSetWindowBackgroundPixmap(disp, win, None);
-   XSetWindowBackground(disp, win, BlackPixel(disp, VRoot.scr));
-   XRaiseWindow(disp, win);
-   XMapWindow(disp, win);
+   ESetWindowBackgroundPixmap(win, None);
+   ESetWindowBackground(win, BlackPixel(disp, VRoot.scr));
+   ERaiseWindow(win);
+   EMapWindow(win);
 
    return win;
 }
@@ -207,13 +207,13 @@ Zoom(EWin * ewin)
 /*           XUngrabPointer(disp, CurrentTime); */
 	     MoveEwin(ewin, zoom_last_x, zoom_last_y);
 	     if (zoom_mask_1)
-		EDestroyWindow(disp, zoom_mask_1);
+		EDestroyWindow(zoom_mask_1);
 	     if (zoom_mask_2)
-		EDestroyWindow(disp, zoom_mask_2);
+		EDestroyWindow(zoom_mask_2);
 	     if (zoom_mask_3)
-		EDestroyWindow(disp, zoom_mask_3);
+		EDestroyWindow(zoom_mask_3);
 	     if (zoom_mask_4)
-		EDestroyWindow(disp, zoom_mask_4);
+		EDestroyWindow(zoom_mask_4);
 	     SwitchRes(0, 0, 0, 0, 0);
 	     XWarpPointer(disp, None, ewin->client.win, 0, 0, 0, 0,
 			  ewin->client.w / 2, ewin->client.h / 2);

@@ -633,10 +633,10 @@ BackgroundApply(Background * bg, Window win, int setbg)
 	   BackgroundPixmapFree(bg);
 	bg->pmap = dpmap;
 	if (dpmap)
-	   XSetWindowBackgroundPixmap(disp, win, dpmap);
+	   ESetWindowBackgroundPixmap(win, dpmap);
 	else
-	   XSetWindowBackground(disp, win, bg->bg_solid.pixel);
-	XClearWindow(disp, win);
+	   ESetWindowBackground(win, bg->bg_solid.pixel);
+	EClearWindow(win);
      }
    else
      {
@@ -1234,8 +1234,8 @@ BackgroundsAccounting(void)
 	     win = DeskGetWin(j);
 	     if (!Conf.hints.set_xroot_info_on_root_window)
 		HintsSetRootInfo(win, 0, 0);
-	     XSetWindowBackground(disp, win, 0);
-	     XClearWindow(disp, win);
+	     ESetWindowBackground(win, 0);
+	     EClearWindow(win);
 	  }
 
 	BackgroundPixmapFree(lst[i]);
@@ -1391,9 +1391,9 @@ CB_DesktopMiniDisplayRedraw(Dialog * d __UNUSED__, int val __UNUSED__,
 			 tmp_bg->top.yperc);
 
    pmap = ecore_x_pixmap_new(win, w, h, VRoot.depth);
-   ESetWindowBackgroundPixmap(disp, win, pmap);
+   ESetWindowBackgroundPixmap(win, pmap);
    BackgroundApply(bg, pmap, 0);
-   XClearWindow(disp, win);
+   EClearWindow(win);
    ecore_x_pixmap_del(pmap);
 
    BackgroundDestroy(bg);
@@ -1585,7 +1585,7 @@ BG_RedrawView(char nuke_old)
 
    XSetForeground(disp, gc, BlackPixel(disp, VRoot.scr));
    XFillRectangle(disp, pmap, gc, 0, 0, w, h);
-   ESetWindowBackgroundPixmap(disp, win, pmap);
+   ESetWindowBackgroundPixmap(win, pmap);
 
    x = -(tmp_bg_sel_sliderval * (64 + 8) / 4);
    if (x < (w - ((64 + 8) * num)))
@@ -1678,7 +1678,7 @@ BG_RedrawView(char nuke_old)
    ecore_x_pixmap_del(pmap);
    Efree(bglist);
 
-   XClearWindow(disp, win);
+   EClearWindow(win);
 
  done:
    return;

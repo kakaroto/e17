@@ -28,7 +28,7 @@ void                ECompMgrMoveResizeFix(EObj * eo, int x, int y, int w,
 #define ECompMgrActive() 0	/* FIXME - Remove */
 
 #define ECompMgrWinDel(eo, gone, do_fade)
-#define ExMoveResizeWindow(eo, x, y, w, h) EMoveResizeWindow(disp, (eo)->win, x, y, w, h)
+#define ExMoveResizeWindow(eo, x, y, w, h) EMoveResizeWindow((eo)->win, x, y, w, h)
 
 #endif
 

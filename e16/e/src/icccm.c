@@ -177,7 +177,7 @@ ICCCM_Delete(const EWin * ewin)
 {
    if (EwinIsInternal(ewin))
      {
-	EUnmapWindow(disp, ewin->client.win);
+	EUnmapWindow(ewin->client.win);
 	return;
      }
 
@@ -201,7 +201,7 @@ ICCCM_Save(const EWin * ewin)
 void
 ICCCM_Iconify(const EWin * ewin)
 {
-   EUnmapWindow(disp, ewin->client.win);
+   EUnmapWindow(ewin->client.win);
    ecore_x_icccm_state_set_iconic(ewin->client.win);
    AddItem(ewin, "ICON", ewin->client.win, LIST_TYPE_ICONIFIEDS);
 }
@@ -209,7 +209,7 @@ ICCCM_Iconify(const EWin * ewin)
 void
 ICCCM_DeIconify(const EWin * ewin)
 {
-   EMapWindow(disp, ewin->client.win);
+   EMapWindow(ewin->client.win);
    ecore_x_icccm_state_set_normal(ewin->client.win);
    RemoveItem("ICON", ewin->client.win, LIST_FINDBY_BOTH, LIST_TYPE_ICONIFIEDS);
 }
@@ -440,7 +440,7 @@ ICCCM_GetGeoms(EWin * ewin, Atom atom_change)
    w = ewin->client.w;
    h = ewin->client.h;
    bw = ewin->client.bw;
-   EGetGeometry(disp, ewin->client.win, &ww, &x, &y, &w, &h, &bw, &dummy);
+   EGetGeometry(ewin->client.win, &ww, &x, &y, &w, &h, &bw, &dummy);
    ewin->client.x = x;
    ewin->client.y = y;
    ewin->client.w = w;
@@ -883,14 +883,14 @@ ICCCM_GetShapeInfo(EWin * ewin)
    Window              rt;
 
    ecore_x_grab();
-   EGetGeometry(disp, ewin->client.win, &rt, &x, &y, &w, &h, &d, &d);
-   rl = EShapeGetRectangles(disp, ewin->client.win, ShapeBounding, &rn, &ord);
+   EGetGeometry(ewin->client.win, &rt, &x, &y, &w, &h, &d, &d);
+   rl = EShapeGetRectangles(ewin->client.win, ShapeBounding, &rn, &ord);
    ecore_x_ungrab();
 
    if (rn < 1)
      {
 	ewin->client.shaped = 0;
-	EShapeCombineMask(disp, ewin->win_container, ShapeBounding, 0, 0, None,
+	EShapeCombineMask(ewin->win_container, ShapeBounding, 0, 0, None,
 			  ShapeSet);
      }
    else if (rn == 1)
@@ -899,20 +899,20 @@ ICCCM_GetShapeInfo(EWin * ewin)
 	    && (rl[0].height >= h))
 	  {
 	     ewin->client.shaped = 0;
-	     EShapeCombineMask(disp, ewin->win_container, ShapeBounding, 0, 0,
+	     EShapeCombineMask(ewin->win_container, ShapeBounding, 0, 0,
 			       None, ShapeSet);
 	  }
 	else
 	  {
 	     ewin->client.shaped = 1;
-	     EShapeCombineShape(disp, ewin->win_container, ShapeBounding, 0, 0,
+	     EShapeCombineShape(ewin->win_container, ShapeBounding, 0, 0,
 				ewin->client.win, ShapeBounding, ShapeSet);
 	  }
      }
    else
      {
 	ewin->client.shaped = 1;
-	EShapeCombineShape(disp, ewin->win_container, ShapeBounding, 0, 0,
+	EShapeCombineShape(ewin->win_container, ShapeBounding, 0, 0,
 			   ewin->client.win, ShapeBounding, ShapeSet);
      }
    if (rl)

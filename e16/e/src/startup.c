@@ -72,14 +72,14 @@ StartupWindowsCreate(int start)
 	     win2 = ECreateWindow(w2, 0, -(VRoot.h / 2), VRoot.w, VRoot.h, 0);
 	  }
 
-	EMapWindow(disp, win1);
-	EMapWindow(disp, win2);
+	EMapWindow(win1);
+	EMapWindow(win2);
 
 	b1 = ECreateWindow(w1, 0, VRoot.h - Conf.desks.dragbar_width, VRoot.w,
 			   Conf.desks.dragbar_width, 0);
 	b2 = ECreateWindow(w2, 0, 0, VRoot.w, Conf.desks.dragbar_width, 0);
-	EMapRaised(disp, b1);
-	EMapRaised(disp, b2);
+	EMapRaised(b1);
+	EMapRaised(b2);
 
 	pq = Mode.queue_up;
 	Mode.queue_up = 0;
@@ -93,8 +93,8 @@ StartupWindowsCreate(int start)
 	BackgroundImagesFree(bg, 1);
 	init_win1 = w1;
 	init_win2 = w2;
-	EMapRaised(disp, w1);
-	EMapRaised(disp, w2);
+	EMapRaised(w1);
+	EMapRaised(w2);
      }
    else
      {
@@ -125,15 +125,15 @@ StartupWindowsCreate(int start)
 		  y = ty;
 	       }
 
-	     EMoveWindow(disp, w1, x + xOffset, -y - yOffset);
-	     EMoveWindow(disp, w2, -x - xOffset, y + yOffset);
+	     EMoveWindow(w1, x + xOffset, -y - yOffset);
+	     EMoveWindow(w2, -x - xOffset, y + yOffset);
 	     ecore_x_sync();
 
 	     k = ETimedLoopNext();
 	  }
 
-	EDestroyWindow(disp, w1);
-	EDestroyWindow(disp, w2);
+	EDestroyWindow(w1);
+	EDestroyWindow(w2);
 	init_win1 = 0;
 	init_win2 = 0;
 
@@ -148,7 +148,7 @@ StartupWindowsRaise(void)
 {
    if (init_win1)
      {
-	XRaiseWindow(disp, init_win1);
-	XRaiseWindow(disp, init_win2);
+	ERaiseWindow(init_win1);
+	ERaiseWindow(init_win2);
      }
 }

@@ -51,8 +51,8 @@ EwinEventsConfigure(EWin * ewin, int mode)
 
    emask = (mode) ? ~((long)0) : ~(EnterWindowMask | LeaveWindowMask);
 
-   XSelectInput(disp, EoGetWin(ewin), EWIN_TOP_EVENT_MASK & emask);
-   XSelectInput(disp, ewin->client.win, ewin->client.event_mask & emask);
+   ESelectInput(EoGetWin(ewin), EWIN_TOP_EVENT_MASK & emask);
+   ESelectInput(ewin->client.win, ewin->client.event_mask & emask);
    EwinBorderEventsConfigure(ewin, mode);
 }
 
@@ -108,14 +108,13 @@ EwinCreate(Window win, int type)
 
    att.event_mask = EWIN_CONTAINER_EVENT_MASK;
    att.do_not_propagate_mask = ButtonPressMask | ButtonReleaseMask;
-   XChangeWindowAttributes(disp, ewin->win_container,
+   EChangeWindowAttributes(ewin->win_container,
 			   CWEventMask | CWDontPropagate, &att);
-   EMapWindow(disp, ewin->win_container);
+   EMapWindow(ewin->win_container);
 
    att.event_mask = EWIN_TOP_EVENT_MASK;
    att.do_not_propagate_mask = ButtonPressMask | ButtonReleaseMask;
-   XChangeWindowAttributes(disp, EoGetWin(ewin),
-			   CWEventMask | CWDontPropagate, &att);
+   EChangeWindowAttributes(EoGetWin(ewin), CWEventMask | CWDontPropagate, &att);
    ewin->client.win = win;
    FocusEwinSetGrabs(ewin);
    GrabButtonGrabs(ewin);
@@ -221,7 +220,7 @@ EwinDestroy(EWin * ewin)
    if (ewin->icccm.wm_icon_name)
       Efree(ewin->icccm.wm_icon_name);
    if (EoGetWin(ewin))
-      EDestroyWindow(disp, EoGetWin(ewin));
+      EDestroyWindow(EoGetWin(ewin));
    if (ewin->bits)
       Efree(ewin->bits);
    if (ewin->session_id)
@@ -495,7 +494,7 @@ static void
 EwinAdopt(EWin * ewin)
 {
    /* We must reparent after getting original window position */
-   EReparentWindow(disp, ewin->client.win, ewin->win_container, 0, 0);
+   EReparentWindow(ewin->client.win, ewin->win_container, 0, 0);
    ICCCM_Adopt(ewin);
 }
 
@@ -963,7 +962,7 @@ EwinWithdraw(EWin * ewin)
    XTranslateCoordinates(disp, ewin->client.win, VRoot.win,
 			 -ewin->border->border.left,
 			 -ewin->border->border.top, &x, &y, &win);
-   EReparentWindow(disp, ewin->client.win, VRoot.win, x, y);
+   EReparentWindow(ewin->client.win, VRoot.win, x, y);
    ICCCM_Withdraw(ewin);
    HintsDelWindowHints(ewin);
 
@@ -983,7 +982,7 @@ EwinConformToDesktop(EWin * ewin)
    if ((ewin->iconified) && (ewin->parent != dwin))
      {
 	ewin->parent = dwin;
-	EReparentWindow(disp, EoGetWin(ewin), dwin, EoGetX(ewin), EoGetY(ewin));
+	EReparentWindow(EoGetWin(ewin), dwin, EoGetX(ewin), EoGetY(ewin));
 	RaiseEwin(ewin);
 	ICCCM_Configure(ewin);
      }
@@ -992,7 +991,7 @@ EwinConformToDesktop(EWin * ewin)
 	if ((ewin->parent != VRoot.win) && (EoIsFloating(ewin) == 2))
 	  {
 	     ewin->parent = VRoot.win;
-	     EReparentWindow(disp, EoGetWin(ewin), VRoot.win, EoGetX(ewin),
+	     EReparentWindow(EoGetWin(ewin), VRoot.win, EoGetX(ewin),
 			     EoGetY(ewin));
 	     EoSetDesk(ewin, 0);
 	  }
@@ -1003,7 +1002,7 @@ EwinConformToDesktop(EWin * ewin)
    else if (ewin->parent != dwin)
      {
 	ewin->parent = dwin;
-	EReparentWindow(disp, EoGetWin(ewin), dwin, EoGetX(ewin), EoGetY(ewin));
+	EReparentWindow(EoGetWin(ewin), dwin, EoGetX(ewin), EoGetY(ewin));
 	RaiseEwin(ewin);
 	MoveEwin(ewin, EoGetX(ewin), EoGetY(ewin));
      }
@@ -1024,7 +1023,7 @@ EwinConformToDesktop(EWin * ewin)
 void
 EwinReparent(EWin * ewin, Window parent)
 {
-   EReparentWindow(disp, ewin->client.win, parent, 0, 0);
+   EReparentWindow(ewin->client.win, parent, 0, 0);
 }
 
 static void
@@ -1121,8 +1120,8 @@ EwinEventUnmap(EWin * ewin)
 
    ewin->shown = 0;
    /* FIXME - This is to sync the client.win EXID mapped state */
-   EUnmapWindow(disp, ewin->client.win);
-   EUnmapWindow(disp, EoGetWin(ewin));
+   EUnmapWindow(ewin->client.win);
+   EUnmapWindow(EoGetWin(ewin));
 
    ModulesSignal(ESIGNAL_EWIN_UNMAP, ewin);
 
@@ -1241,7 +1240,7 @@ EwinEventConfigureRequest(EWin * ewin, XEvent * ev)
 	xwc.border_width = ev->xconfigurerequest.border_width;
 	xwc.sibling = ev->xconfigurerequest.above;
 	xwc.stack_mode = ev->xconfigurerequest.detail;
-	EConfigureWindow(disp, win, ev->xconfigurerequest.value_mask, &xwc);
+	EConfigureWindow(win, ev->xconfigurerequest.value_mask, &xwc);
      }
 }
 
@@ -1273,8 +1272,7 @@ EwinEventResizeRequest(EWin * ewin, XEvent * ev)
      }
    else
      {
-	EResizeWindow(disp, win, ev->xresizerequest.width,
-		      ev->xresizerequest.height);
+	EResizeWindow(win, ev->xresizerequest.width, ev->xresizerequest.height);
      }
 }
 
@@ -1295,9 +1293,9 @@ EwinEventCirculateRequest(EWin * ewin, XEvent * ev)
    else
      {
 	if (ev->xcirculaterequest.place == PlaceOnTop)
-	   XRaiseWindow(disp, win);
+	   ERaiseWindow(win);
 	else
-	   XLowerWindow(disp, win);
+	   ELowerWindow(win);
      }
 }
 
@@ -1438,7 +1436,7 @@ RestackEwin(EWin * ewin)
 #if 0				/* FIXME - remove? */
    if (EoIsFloating(ewin))
      {
-	XRaiseWindow(disp, EoGetWin(ewin));
+	ERaiseWindow(EoGetWin(ewin));
 	goto done;
      }
 #endif
@@ -1492,7 +1490,7 @@ RaiseEwin(EWin * ewin)
 #if 0				/* FIXME - remove? */
 	if (EoIsFloating(ewin))
 	  {
-	     XRaiseWindow(disp, EoGetWin(ewin));
+	     ERaiseWindow(EoGetWin(ewin));
 	     goto done;
 	  }
 #endif
@@ -1574,12 +1572,12 @@ ShowEwin(EWin * ewin)
    if (ewin->client.win)
      {
 	if (ewin->shaded)
-	   EMoveResizeWindow(disp, ewin->win_container, -30, -30, 1, 1);
-	EMapWindow(disp, ewin->client.win);
+	   EMoveResizeWindow(ewin->win_container, -30, -30, 1, 1);
+	EMapWindow(ewin->client.win);
      }
 
    if (EoGetWin(ewin))
-      EMapWindow(disp, EoGetWin(ewin));
+      EMapWindow(EoGetWin(ewin));
 }
 
 void
@@ -1592,10 +1590,10 @@ HideEwin(EWin * ewin)
    if (GetZoomEWin() == ewin)
       Zoom(NULL);
 
-   EUnmapWindow(disp, ewin->client.win);
+   EUnmapWindow(ewin->client.win);
 
    if (EoGetWin(ewin))
-      EUnmapWindow(disp, EoGetWin(ewin));
+      EUnmapWindow(EoGetWin(ewin));
 }
 
 Window
@@ -1815,7 +1813,7 @@ EwinsSetFree(void)
 
 	/* This makes E determine the client window stacking at exit */
 	EwinInstantUnShade(ewin);
-	EReparentWindow(disp, ewin->client.win, VRoot.win,
+	EReparentWindow(ewin->client.win, VRoot.win,
 			ewin->client.x, ewin->client.y);
      }
 }

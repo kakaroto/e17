@@ -189,10 +189,10 @@ EdgeWindowsShow(void)
 	w2 = ECreateEventWindow(VRoot.win, VRoot.w - 1, 0, 1, VRoot.h);
 	w3 = ECreateEventWindow(VRoot.win, 0, 0, VRoot.w, 1);
 	w4 = ECreateEventWindow(VRoot.win, 0, VRoot.h - 1, VRoot.w, 1);
-	XSelectInput(disp, w1, EnterWindowMask | LeaveWindowMask);
-	XSelectInput(disp, w2, EnterWindowMask | LeaveWindowMask);
-	XSelectInput(disp, w3, EnterWindowMask | LeaveWindowMask);
-	XSelectInput(disp, w4, EnterWindowMask | LeaveWindowMask);
+	ESelectInput(w1, EnterWindowMask | LeaveWindowMask);
+	ESelectInput(w2, EnterWindowMask | LeaveWindowMask);
+	ESelectInput(w3, EnterWindowMask | LeaveWindowMask);
+	ESelectInput(w4, EnterWindowMask | LeaveWindowMask);
 	EventCallbackRegister(w1, 0, EdgeHandleEvents, (void *)0);
 	EventCallbackRegister(w2, 0, EdgeHandleEvents, (void *)1);
 	EventCallbackRegister(w3, 0, EdgeHandleEvents, (void *)2);
@@ -202,21 +202,21 @@ EdgeWindowsShow(void)
    GetAreaSize(&ax, &ay);
 
    if (cx == 0 && !Conf.desks.areas_wraparound)
-      EUnmapWindow(disp, w1);
+      EUnmapWindow(w1);
    else
-      EMapRaised(disp, w1);
+      EMapRaised(w1);
    if (cx == (ax - 1) && !Conf.desks.areas_wraparound)
-      EUnmapWindow(disp, w2);
+      EUnmapWindow(w2);
    else
-      EMapRaised(disp, w2);
+      EMapRaised(w2);
    if (cy == 0 && !Conf.desks.areas_wraparound)
-      EUnmapWindow(disp, w3);
+      EUnmapWindow(w3);
    else
-      EMapRaised(disp, w3);
+      EMapRaised(w3);
    if (cy == (ay - 1) && !Conf.desks.areas_wraparound)
-      EUnmapWindow(disp, w4);
+      EUnmapWindow(w4);
    else
-      EMapRaised(disp, w4);
+      EMapRaised(w4);
 }
 
 void
@@ -224,9 +224,9 @@ EdgeWindowsHide(void)
 {
    if (w1)
      {
-	EUnmapWindow(disp, w1);
-	EUnmapWindow(disp, w2);
-	EUnmapWindow(disp, w3);
-	EUnmapWindow(disp, w4);
+	EUnmapWindow(w1);
+	EUnmapWindow(w2);
+	EUnmapWindow(w3);
+	EUnmapWindow(w4);
      }
 }

@@ -86,11 +86,11 @@ CoordsShow(EWin * ewin)
    if (!c_win)
       c_win = ECreateWindow(VRoot.win, 0, 0, 1, 1, 2);
 
-   EMoveResizeWindow(disp, c_win, cx, cy, cw, ch);
-   XRaiseWindow(disp, c_win);
+   EMoveResizeWindow(c_win, cx, cy, cw, ch);
+   ERaiseWindow(c_win);
 
    if (!coords_visible)
-      EMapWindow(disp, c_win);
+      EMapWindow(c_win);
    coords_visible = 1;
 
    pq = Mode.queue_up;
@@ -105,6 +105,6 @@ void
 CoordsHide(void)
 {
    if (c_win)
-      EUnmapWindow(disp, c_win);
+      EUnmapWindow(c_win);
    coords_visible = 0;
 }

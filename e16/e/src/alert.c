@@ -245,21 +245,21 @@ ShowAlert(char *text)
 	b1 = XCreateWindow(dd, win, -100, -100, 1, 1, 0,
 			   DefaultDepth(dd, DefaultScreen(dd)), InputOutput,
 			   DefaultVisual(dd, DefaultScreen(dd)), mask, &att);
-	EMapWindow(dd, b1);
+	XMapWindow(dd, b1);
      }
    if (sscanf(str2, "%s", line) > 0)
      {
 	b2 = XCreateWindow(dd, win, -100, -100, 1, 1, 0,
 			   DefaultDepth(dd, DefaultScreen(dd)), InputOutput,
 			   DefaultVisual(dd, DefaultScreen(dd)), mask, &att);
-	EMapWindow(dd, b2);
+	XMapWindow(dd, b2);
      }
    if (sscanf(str3, "%s", line) > 0)
      {
 	b3 = XCreateWindow(dd, win, -100, -100, 1, 1, 0,
 			   DefaultDepth(dd, DefaultScreen(dd)), InputOutput,
 			   DefaultVisual(dd, DefaultScreen(dd)), mask, &att);
-	EMapWindow(dd, b3);
+	XMapWindow(dd, b3);
      }
 
    gc = XCreateGC(dd, win, 0, &gcv);

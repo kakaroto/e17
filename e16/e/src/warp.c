@@ -84,7 +84,7 @@ WarpFocusShowTitle(EWin * ewin)
 
    pq = Mode.queue_up;
    Mode.queue_up = 0;
-   XRaiseWindow(disp, warpFocusTitleWindow);
+   ERaiseWindow(warpFocusTitleWindow);
 
    if (!warpFocusTitleShowing)
      {
@@ -102,7 +102,7 @@ WarpFocusShowTitle(EWin * ewin)
 				      warplist_num * sizeof(WarplistItem));
 		  warplist[warplist_num - 1].win =
 		     ECreateWindow(warpFocusTitleWindow, 0, 0, 1, 1, 0);
-		  EMapWindow(disp, warplist[warplist_num - 1].win);
+		  EMapWindow(warplist[warplist_num - 1].win);
 		  warplist[warplist_num - 1].ewin = lst[i];
 		  Esnprintf(s, sizeof(s), (lst[i]->iconified) ? "[%s]" : "%s",
 			    EwinGetName(lst[i]));
@@ -123,11 +123,10 @@ WarpFocusShowTitle(EWin * ewin)
 	y += (hh - h * warplist_num) / 2;
 	mw = w;
 	mh = h;
-	EMoveResizeWindow(disp, warpFocusTitleWindow, x, y, w,
-			  (h * warplist_num));
+	EMoveResizeWindow(warpFocusTitleWindow, x, y, w, (h * warplist_num));
 	for (i = 0; i < warplist_num; i++)
 	  {
-	     EMoveResizeWindow(disp, warplist[i].win, 0, (h * i), mw, mh);
+	     EMoveResizeWindow(warplist[i].win, 0, (h * i), mw, mh);
 	     if (ewin == warplist[i].ewin)
 		ImageclassApply(ic, warplist[i].win, mw, mh, 0, 0,
 				STATE_CLICKED, 0, ST_WARPLIST);
@@ -136,7 +135,7 @@ WarpFocusShowTitle(EWin * ewin)
 				0, ST_WARPLIST);
 	  }
 	PropagateShapes(warpFocusTitleWindow);
-	EMapWindow(disp, warpFocusTitleWindow);
+	EMapWindow(warpFocusTitleWindow);
 
 	/*
 	 * Grab the keyboard. The grab is automatically released when
@@ -177,10 +176,10 @@ WarpFocusHideTitle(void)
 
    if (warpFocusTitleWindow)
      {
-	EUnmapWindow(disp, warpFocusTitleWindow);
+	EUnmapWindow(warpFocusTitleWindow);
 	for (i = 0; i < warplist_num; i++)
 	  {
-	     EDestroyWindow(disp, warplist[i].win);
+	     EDestroyWindow(warplist[i].win);
 	     Efree(warplist[i].txt);
 	  }
      }

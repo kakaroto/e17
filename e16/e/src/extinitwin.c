@@ -134,18 +134,18 @@ ExtInitWinMain(void)
 		imlib_context_set_image(im);
 		imlib_context_set_drawable(w2);
 		imlib_render_pixmaps_for_whole_image(&pmap, &mask);
-		EShapeCombineMask(disp, w2, ShapeBounding, 0, 0, mask,
+		XShapeCombineMask(disp, w2, ShapeBounding, 0, 0, mask,
 				  ShapeSet);
-		ESetWindowBackgroundPixmap(disp, w2, pmap);
+		XSetWindowBackgroundPixmap(disp, w2, pmap);
 		imlib_free_pixmap_and_mask(pmap);
 		XClearWindow(disp, w2);
 		XQueryPointer(disp, win, &ww, &ww, &dd, &dd, &x, &y, &mm);
-		EMoveResizeWindow(disp, w2,
+		XMoveResizeWindow(disp, w2,
 				  x - imlib_image_get_width() / 2,
 				  y - imlib_image_get_height() / 2,
 				  imlib_image_get_width(),
 				  imlib_image_get_height());
-		EMapWindow(disp, w2);
+		XMapWindow(disp, w2);
 		imlib_free_image();
 	     }
 	   tv.tv_sec = 0;

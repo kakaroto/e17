@@ -349,31 +349,31 @@ IconboxCreate(const char *name)
    ib->scrollbarknob_win = ECreateWindow(ib->scrollbar_win, -20, -20, 4, 4, 0);
    ib->pmap = ecore_x_pixmap_new(ib->icon_win, 128, 32, VRoot.depth);
 
-   XSelectInput(disp, ib->icon_win,
+   ESelectInput(ib->icon_win,
 		EnterWindowMask | LeaveWindowMask | ButtonPressMask |
 		ButtonReleaseMask | PointerMotionMask);
-   XSelectInput(disp, ib->scroll_win,
+   ESelectInput(ib->scroll_win,
 		EnterWindowMask | LeaveWindowMask | ButtonPressMask |
 		ButtonReleaseMask);
-   XSelectInput(disp, ib->cover_win,
+   ESelectInput(ib->cover_win,
 		EnterWindowMask | LeaveWindowMask | ButtonPressMask |
 		ButtonReleaseMask);
-   XSelectInput(disp, ib->arrow1_win,
+   ESelectInput(ib->arrow1_win,
 		EnterWindowMask | LeaveWindowMask | ButtonPressMask |
 		ButtonReleaseMask);
-   XSelectInput(disp, ib->arrow2_win,
+   ESelectInput(ib->arrow2_win,
 		EnterWindowMask | LeaveWindowMask | ButtonPressMask |
 		ButtonReleaseMask);
-   XSelectInput(disp, ib->scrollbar_win,
+   ESelectInput(ib->scrollbar_win,
 		EnterWindowMask | LeaveWindowMask | ButtonPressMask |
 		ButtonReleaseMask | PointerMotionMask);
 
-   EMapWindow(disp, ib->icon_win);
-   EMapWindow(disp, ib->scroll_win);
-   EMapWindow(disp, ib->arrow1_win);
-   EMapWindow(disp, ib->arrow2_win);
-   EMapWindow(disp, ib->scrollbar_win);
-   EMapWindow(disp, ib->scrollbarknob_win);
+   EMapWindow(ib->icon_win);
+   EMapWindow(ib->scroll_win);
+   EMapWindow(ib->arrow1_win);
+   EMapWindow(ib->arrow2_win);
+   EMapWindow(ib->scrollbar_win);
+   EMapWindow(ib->scrollbarknob_win);
 
    ib->ewin = NULL;
    ib->num_objs = 0;
@@ -418,7 +418,7 @@ IconboxDestroy(Iconbox * ib)
    if (ib->pmap)
       ecore_x_pixmap_del(ib->pmap);
 
-   EDestroyWindow(disp, ib->win);
+   EDestroyWindow(ib->win);
 
    Efree(ib);
    IconboxesConfigSave();
@@ -671,7 +671,7 @@ IconboxWindowAdd(Iconbox * ib, Window win)
 
    XReparentWindow(disp, win, ib->icon_win, 0, 0);
    IconboxRedraw(ib);
-   EMapWindow(disp, win);
+   XMapWindow(disp, win);
 
    return 0;
 }
@@ -817,7 +817,7 @@ IB_GetAppIcon(EWin * ewin)
 
    w = 0;
    h = 0;
-   EGetGeometry(disp, ewin->client.icon_pmap, &rt, &x, &y, &w, &h, &bw, &depth);
+   XGetGeometry(disp, ewin->client.icon_pmap, &rt, &x, &y, &w, &h, &bw, &depth);
 
    if (w < 1 || h < 1)
       return;
@@ -1466,11 +1466,11 @@ IB_DrawScroll(Iconbox * ib)
 
 	ic = ImageclassFind("ICONBOX_SCROLLKNOB_VERTICAL", 0);
 	if ((ic) && (bw > ib->knob_length))
-	   EMoveResizeWindow(disp, ib->scrollbarknob_win, 0,
+	   EMoveResizeWindow(ib->scrollbarknob_win, 0,
 			     (bw - ib->knob_length) / 2, ib->bar_thickness,
 			     ib->knob_length);
 	else
-	   EMoveResizeWindow(disp, ib->scrollbarknob_win, -9999, -9999,
+	   EMoveResizeWindow(ib->scrollbarknob_win, -9999, -9999,
 			     ib->bar_thickness, ib->knob_length);
 	if (show_sb)
 	  {
@@ -1481,18 +1481,18 @@ IB_DrawScroll(Iconbox * ib)
 		  /* start */
 		  if (ib->arrow_side == 0)
 		    {
-		       EMapWindow(disp, ib->arrow1_win);
-		       EMapWindow(disp, ib->arrow2_win);
-		       EMoveResizeWindow(disp, ib->arrow1_win,
+		       EMapWindow(ib->arrow1_win);
+		       EMapWindow(ib->arrow2_win);
+		       EMoveResizeWindow(ib->arrow1_win,
 					 ib->w - ib->scroll_thickness, 0,
 					 ib->scroll_thickness,
 					 ib->arrow_thickness);
-		       EMoveResizeWindow(disp, ib->arrow2_win,
+		       EMoveResizeWindow(ib->arrow2_win,
 					 ib->w - ib->scroll_thickness,
 					 ib->arrow_thickness,
 					 ib->scroll_thickness,
 					 ib->arrow_thickness);
-		       EMoveResizeWindow(disp, ib->scroll_win,
+		       EMoveResizeWindow(ib->scroll_win,
 					 ib->w - ib->scroll_thickness,
 					 ib->arrow_thickness * 2,
 					 ib->scroll_thickness,
@@ -1501,18 +1501,18 @@ IB_DrawScroll(Iconbox * ib)
 		  /* both ends */
 		  else if (ib->arrow_side == 1)
 		    {
-		       EMapWindow(disp, ib->arrow1_win);
-		       EMapWindow(disp, ib->arrow2_win);
-		       EMoveResizeWindow(disp, ib->arrow1_win,
+		       EMapWindow(ib->arrow1_win);
+		       EMapWindow(ib->arrow2_win);
+		       EMoveResizeWindow(ib->arrow1_win,
 					 ib->w - ib->scroll_thickness, 0,
 					 ib->scroll_thickness,
 					 ib->arrow_thickness);
-		       EMoveResizeWindow(disp, ib->arrow2_win,
+		       EMoveResizeWindow(ib->arrow2_win,
 					 ib->w - ib->scroll_thickness,
 					 ib->h - ib->arrow_thickness,
 					 ib->scroll_thickness,
 					 ib->arrow_thickness);
-		       EMoveResizeWindow(disp, ib->scroll_win,
+		       EMoveResizeWindow(ib->scroll_win,
 					 ib->w - ib->scroll_thickness,
 					 ib->arrow_thickness,
 					 ib->scroll_thickness,
@@ -1521,19 +1521,19 @@ IB_DrawScroll(Iconbox * ib)
 		  /* end */
 		  else if (ib->arrow_side == 2)
 		    {
-		       EMapWindow(disp, ib->arrow1_win);
-		       EMapWindow(disp, ib->arrow2_win);
-		       EMoveResizeWindow(disp, ib->arrow1_win,
+		       EMapWindow(ib->arrow1_win);
+		       EMapWindow(ib->arrow2_win);
+		       EMoveResizeWindow(ib->arrow1_win,
 					 ib->w - ib->scroll_thickness,
 					 ib->h - (ib->arrow_thickness * 2),
 					 ib->scroll_thickness,
 					 ib->arrow_thickness);
-		       EMoveResizeWindow(disp, ib->arrow2_win,
+		       EMoveResizeWindow(ib->arrow2_win,
 					 ib->w - ib->scroll_thickness,
 					 ib->h - ib->arrow_thickness,
 					 ib->scroll_thickness,
 					 ib->arrow_thickness);
-		       EMoveResizeWindow(disp, ib->scroll_win,
+		       EMoveResizeWindow(ib->scroll_win,
 					 ib->w - ib->scroll_thickness, 0,
 					 ib->scroll_thickness,
 					 ib->h - (ib->arrow_thickness * 2));
@@ -1541,9 +1541,9 @@ IB_DrawScroll(Iconbox * ib)
 		  /* no arrows */
 		  else
 		    {
-		       EUnmapWindow(disp, ib->arrow1_win);
-		       EUnmapWindow(disp, ib->arrow2_win);
-		       EMoveResizeWindow(disp, ib->scroll_win,
+		       EUnmapWindow(ib->arrow1_win);
+		       EUnmapWindow(ib->arrow2_win);
+		       EMoveResizeWindow(ib->scroll_win,
 					 ib->w - ib->scroll_thickness, 0,
 					 ib->scroll_thickness, ib->h);
 		    }
@@ -1554,16 +1554,16 @@ IB_DrawScroll(Iconbox * ib)
 		  /* start */
 		  if (ib->arrow_side == 0)
 		    {
-		       EMapWindow(disp, ib->arrow1_win);
-		       EMapWindow(disp, ib->arrow2_win);
-		       EMoveResizeWindow(disp, ib->arrow1_win, 0, 0,
+		       EMapWindow(ib->arrow1_win);
+		       EMapWindow(ib->arrow2_win);
+		       EMoveResizeWindow(ib->arrow1_win, 0, 0,
 					 ib->scroll_thickness,
 					 ib->arrow_thickness);
-		       EMoveResizeWindow(disp, ib->arrow2_win, 0,
+		       EMoveResizeWindow(ib->arrow2_win, 0,
 					 ib->arrow_thickness,
 					 ib->scroll_thickness,
 					 ib->arrow_thickness);
-		       EMoveResizeWindow(disp, ib->scroll_win, 0,
+		       EMoveResizeWindow(ib->scroll_win, 0,
 					 ib->arrow_thickness * 2,
 					 ib->scroll_thickness,
 					 ib->h - (ib->arrow_thickness * 2));
@@ -1571,16 +1571,16 @@ IB_DrawScroll(Iconbox * ib)
 		  /* both ends */
 		  else if (ib->arrow_side == 1)
 		    {
-		       EMapWindow(disp, ib->arrow1_win);
-		       EMapWindow(disp, ib->arrow2_win);
-		       EMoveResizeWindow(disp, ib->arrow1_win, 0, 0,
+		       EMapWindow(ib->arrow1_win);
+		       EMapWindow(ib->arrow2_win);
+		       EMoveResizeWindow(ib->arrow1_win, 0, 0,
 					 ib->scroll_thickness,
 					 ib->arrow_thickness);
-		       EMoveResizeWindow(disp, ib->arrow2_win, 0,
+		       EMoveResizeWindow(ib->arrow2_win, 0,
 					 ib->h - ib->arrow_thickness,
 					 ib->scroll_thickness,
 					 ib->arrow_thickness);
-		       EMoveResizeWindow(disp, ib->scroll_win, 0,
+		       EMoveResizeWindow(ib->scroll_win, 0,
 					 ib->arrow_thickness,
 					 ib->scroll_thickness,
 					 ib->h - (ib->arrow_thickness * 2));
@@ -1588,37 +1588,37 @@ IB_DrawScroll(Iconbox * ib)
 		  /* end */
 		  else if (ib->arrow_side == 2)
 		    {
-		       EMapWindow(disp, ib->arrow1_win);
-		       EMapWindow(disp, ib->arrow2_win);
-		       EMoveResizeWindow(disp, ib->arrow1_win, 0,
+		       EMapWindow(ib->arrow1_win);
+		       EMapWindow(ib->arrow2_win);
+		       EMoveResizeWindow(ib->arrow1_win, 0,
 					 ib->h - (ib->arrow_thickness * 2),
 					 ib->scroll_thickness,
 					 ib->arrow_thickness);
-		       EMoveResizeWindow(disp, ib->arrow2_win, 0,
+		       EMoveResizeWindow(ib->arrow2_win, 0,
 					 ib->h - ib->arrow_thickness,
 					 ib->scroll_thickness,
 					 ib->arrow_thickness);
-		       EMoveResizeWindow(disp, ib->scroll_win, 0, 0,
+		       EMoveResizeWindow(ib->scroll_win, 0, 0,
 					 ib->scroll_thickness,
 					 ib->h - (ib->arrow_thickness * 2));
 		    }
 		  /* no arrows */
 		  else
 		    {
-		       EUnmapWindow(disp, ib->arrow1_win);
-		       EUnmapWindow(disp, ib->arrow2_win);
-		       EMoveResizeWindow(disp, ib->scroll_win, 0, 0,
+		       EUnmapWindow(ib->arrow1_win);
+		       EUnmapWindow(ib->arrow2_win);
+		       EMoveResizeWindow(ib->scroll_win, 0, 0,
 					 ib->scroll_thickness, ib->h);
 		    }
 	       }
 	  }
 	else
 	  {
-	     EMoveResizeWindow(disp, ib->scroll_win, -9999, -9999, 2, 2);
-	     EMoveResizeWindow(disp, ib->arrow1_win, -9999, -9999, 2, 2);
-	     EMoveResizeWindow(disp, ib->arrow2_win, -9999, -9999, 2, 2);
+	     EMoveResizeWindow(ib->scroll_win, -9999, -9999, 2, 2);
+	     EMoveResizeWindow(ib->arrow1_win, -9999, -9999, 2, 2);
+	     EMoveResizeWindow(ib->arrow2_win, -9999, -9999, 2, 2);
 	  }
-	EMoveResizeWindow(disp, ib->scrollbar_win,
+	EMoveResizeWindow(ib->scrollbar_win,
 			  (ib->scroll_thickness - ib->bar_thickness) / 2, bx,
 			  ib->bar_thickness, bw);
 
@@ -1709,11 +1709,11 @@ IB_DrawScroll(Iconbox * ib)
 	   show_sb = 0;
 	ic = ImageclassFind("ICONBOX_SCROLLKNOB_HORIZONTAL", 0);
 	if ((ic) && (bw > ib->knob_length))
-	   EMoveResizeWindow(disp, ib->scrollbarknob_win,
+	   EMoveResizeWindow(ib->scrollbarknob_win,
 			     (bw - ib->knob_length) / 2, 0, ib->knob_length,
 			     ib->bar_thickness);
 	else
-	   EMoveResizeWindow(disp, ib->scrollbarknob_win, -9999, -9999,
+	   EMoveResizeWindow(ib->scrollbarknob_win, -9999, -9999,
 			     ib->knob_length, ib->bar_thickness);
 
 	if (show_sb)
@@ -1724,18 +1724,18 @@ IB_DrawScroll(Iconbox * ib)
 		  /* start */
 		  if (ib->arrow_side == 0)
 		    {
-		       EMapWindow(disp, ib->arrow1_win);
-		       EMapWindow(disp, ib->arrow2_win);
-		       EMoveResizeWindow(disp, ib->arrow1_win, 0,
+		       EMapWindow(ib->arrow1_win);
+		       EMapWindow(ib->arrow2_win);
+		       EMoveResizeWindow(ib->arrow1_win, 0,
 					 ib->h - ib->scroll_thickness,
 					 ib->arrow_thickness,
 					 ib->scroll_thickness);
-		       EMoveResizeWindow(disp, ib->arrow2_win,
+		       EMoveResizeWindow(ib->arrow2_win,
 					 ib->arrow_thickness,
 					 ib->h - ib->scroll_thickness,
 					 ib->arrow_thickness,
 					 ib->scroll_thickness);
-		       EMoveResizeWindow(disp, ib->scroll_win,
+		       EMoveResizeWindow(ib->scroll_win,
 					 ib->arrow_thickness * 2,
 					 ib->h - ib->scroll_thickness,
 					 ib->w - (ib->arrow_thickness * 2),
@@ -1744,18 +1744,18 @@ IB_DrawScroll(Iconbox * ib)
 		  /* both ends */
 		  else if (ib->arrow_side == 1)
 		    {
-		       EMapWindow(disp, ib->arrow1_win);
-		       EMapWindow(disp, ib->arrow2_win);
-		       EMoveResizeWindow(disp, ib->arrow1_win, 0,
+		       EMapWindow(ib->arrow1_win);
+		       EMapWindow(ib->arrow2_win);
+		       EMoveResizeWindow(ib->arrow1_win, 0,
 					 ib->h - ib->scroll_thickness,
 					 ib->arrow_thickness,
 					 ib->scroll_thickness);
-		       EMoveResizeWindow(disp, ib->arrow2_win,
+		       EMoveResizeWindow(ib->arrow2_win,
 					 ib->w - ib->arrow_thickness,
 					 ib->h - ib->scroll_thickness,
 					 ib->arrow_thickness,
 					 ib->scroll_thickness);
-		       EMoveResizeWindow(disp, ib->scroll_win,
+		       EMoveResizeWindow(ib->scroll_win,
 					 ib->arrow_thickness,
 					 ib->h - ib->scroll_thickness,
 					 ib->w - (ib->arrow_thickness * 2),
@@ -1764,19 +1764,19 @@ IB_DrawScroll(Iconbox * ib)
 		  /* end */
 		  else if (ib->arrow_side == 2)
 		    {
-		       EMapWindow(disp, ib->arrow1_win);
-		       EMapWindow(disp, ib->arrow2_win);
-		       EMoveResizeWindow(disp, ib->arrow1_win,
+		       EMapWindow(ib->arrow1_win);
+		       EMapWindow(ib->arrow2_win);
+		       EMoveResizeWindow(ib->arrow1_win,
 					 ib->w - (ib->arrow_thickness * 2),
 					 ib->h - ib->scroll_thickness,
 					 ib->arrow_thickness,
 					 ib->scroll_thickness);
-		       EMoveResizeWindow(disp, ib->arrow2_win,
+		       EMoveResizeWindow(ib->arrow2_win,
 					 ib->w - ib->arrow_thickness,
 					 ib->h - ib->scroll_thickness,
 					 ib->arrow_thickness,
 					 ib->scroll_thickness);
-		       EMoveResizeWindow(disp, ib->scroll_win, 0,
+		       EMoveResizeWindow(ib->scroll_win, 0,
 					 ib->h - ib->scroll_thickness,
 					 ib->w - (ib->arrow_thickness * 2),
 					 ib->scroll_thickness);
@@ -1784,9 +1784,9 @@ IB_DrawScroll(Iconbox * ib)
 		  /* no arrows */
 		  else
 		    {
-		       EUnmapWindow(disp, ib->arrow1_win);
-		       EUnmapWindow(disp, ib->arrow2_win);
-		       EMoveResizeWindow(disp, ib->scroll_win, 0,
+		       EUnmapWindow(ib->arrow1_win);
+		       EUnmapWindow(ib->arrow2_win);
+		       EMoveResizeWindow(ib->scroll_win, 0,
 					 ib->h - ib->scroll_thickness, ib->w,
 					 ib->scroll_thickness);
 		    }
@@ -1797,16 +1797,16 @@ IB_DrawScroll(Iconbox * ib)
 		  /* start */
 		  if (ib->arrow_side == 0)
 		    {
-		       EMapWindow(disp, ib->arrow1_win);
-		       EMapWindow(disp, ib->arrow2_win);
-		       EMoveResizeWindow(disp, ib->arrow1_win, 0, 0,
+		       EMapWindow(ib->arrow1_win);
+		       EMapWindow(ib->arrow2_win);
+		       EMoveResizeWindow(ib->arrow1_win, 0, 0,
 					 ib->arrow_thickness,
 					 ib->scroll_thickness);
-		       EMoveResizeWindow(disp, ib->arrow2_win,
+		       EMoveResizeWindow(ib->arrow2_win,
 					 ib->arrow_thickness, 0,
 					 ib->arrow_thickness,
 					 ib->scroll_thickness);
-		       EMoveResizeWindow(disp, ib->scroll_win,
+		       EMoveResizeWindow(ib->scroll_win,
 					 ib->arrow_thickness * 2, 0,
 					 ib->w - (ib->arrow_thickness * 2),
 					 ib->scroll_thickness);
@@ -1814,16 +1814,16 @@ IB_DrawScroll(Iconbox * ib)
 		  /* both ends */
 		  else if (ib->arrow_side == 1)
 		    {
-		       EMapWindow(disp, ib->arrow1_win);
-		       EMapWindow(disp, ib->arrow2_win);
-		       EMoveResizeWindow(disp, ib->arrow1_win, 0, 0,
+		       EMapWindow(ib->arrow1_win);
+		       EMapWindow(ib->arrow2_win);
+		       EMoveResizeWindow(ib->arrow1_win, 0, 0,
 					 ib->arrow_thickness,
 					 ib->scroll_thickness);
-		       EMoveResizeWindow(disp, ib->arrow2_win,
+		       EMoveResizeWindow(ib->arrow2_win,
 					 ib->w - ib->arrow_thickness, 0,
 					 ib->arrow_thickness,
 					 ib->scroll_thickness);
-		       EMoveResizeWindow(disp, ib->scroll_win,
+		       EMoveResizeWindow(ib->scroll_win,
 					 ib->arrow_thickness, 0,
 					 ib->w - (ib->arrow_thickness * 2),
 					 ib->scroll_thickness);
@@ -1831,38 +1831,38 @@ IB_DrawScroll(Iconbox * ib)
 		  /* end */
 		  else if (ib->arrow_side == 2)
 		    {
-		       EMapWindow(disp, ib->arrow1_win);
-		       EMapWindow(disp, ib->arrow2_win);
-		       EMoveResizeWindow(disp, ib->arrow1_win,
+		       EMapWindow(ib->arrow1_win);
+		       EMapWindow(ib->arrow2_win);
+		       EMoveResizeWindow(ib->arrow1_win,
 					 ib->w - (ib->arrow_thickness * 2), 0,
 					 ib->arrow_thickness,
 					 ib->scroll_thickness);
-		       EMoveResizeWindow(disp, ib->arrow2_win,
+		       EMoveResizeWindow(ib->arrow2_win,
 					 ib->w - ib->arrow_thickness, 0,
 					 ib->arrow_thickness,
 					 ib->scroll_thickness);
-		       EMoveResizeWindow(disp, ib->scroll_win, 0, 0,
+		       EMoveResizeWindow(ib->scroll_win, 0, 0,
 					 ib->w - (ib->arrow_thickness * 2),
 					 ib->scroll_thickness);
 		    }
 		  /* no arrows */
 		  else
 		    {
-		       EUnmapWindow(disp, ib->arrow1_win);
-		       EUnmapWindow(disp, ib->arrow2_win);
-		       EMoveResizeWindow(disp, ib->scroll_win, 0, 0, ib->w,
+		       EUnmapWindow(ib->arrow1_win);
+		       EUnmapWindow(ib->arrow2_win);
+		       EMoveResizeWindow(ib->scroll_win, 0, 0, ib->w,
 					 ib->scroll_thickness);
 		    }
 	       }
 	  }
 	else
 	  {
-	     EMoveResizeWindow(disp, ib->scroll_win, -9999, -9999, 2, 2);
-	     EMoveResizeWindow(disp, ib->arrow1_win, -9999, -9999, 2, 2);
-	     EMoveResizeWindow(disp, ib->arrow2_win, -9999, -9999, 2, 2);
+	     EMoveResizeWindow(ib->scroll_win, -9999, -9999, 2, 2);
+	     EMoveResizeWindow(ib->arrow1_win, -9999, -9999, 2, 2);
+	     EMoveResizeWindow(ib->arrow2_win, -9999, -9999, 2, 2);
 	  }
 
-	EMoveResizeWindow(disp, ib->scrollbar_win, bx,
+	EMoveResizeWindow(ib->scrollbar_win, bx,
 			  (ib->scroll_thickness - ib->bar_thickness) / 2, bw,
 			  ib->bar_thickness);
 
@@ -2063,7 +2063,7 @@ IconboxRedraw(Iconbox * ib)
 	ib->w = w;
 	ib->h = h;
 	MoveResizeEwin(ib->ewin, x, y, w, h);
-	EResizeWindow(disp, ib->win, w, h);
+	EResizeWindow(ib->win, w, h);
 	im = imlib_create_image(w, h);
 	ib->force_update = 0;
      }
@@ -2099,19 +2099,19 @@ IconboxRedraw(Iconbox * ib)
 	ib_hh = ib->h - ib->scroll_thickness;
      }
 
-   EMoveResizeWindow(disp, ib->icon_win, ib_xlt, ib_ylt, ib_ww, ib_hh);
+   EMoveResizeWindow(ib->icon_win, ib_xlt, ib_ylt, ib_ww, ib_hh);
 
    if (ib_ic_cover && (!(ib->cover_hide)))
      {
-	EMoveResizeWindow(disp, ib->cover_win, ib_xlt, ib_ylt, ib_ww, ib_hh);
-	EMapWindow(disp, ib->cover_win);
+	EMoveResizeWindow(ib->cover_win, ib_xlt, ib_ylt, ib_ww, ib_hh);
+	EMapWindow(ib->cover_win);
 	ImageclassApply(ib_ic_cover, ib->cover_win, -1, -1, 0, 0, STATE_NORMAL,
 			0, ST_ICONBOX);
      }
    else
      {
-	EMoveResizeWindow(disp, ib->cover_win, -30000, -30000, 2, 2);
-	EUnmapWindow(disp, ib->cover_win);
+	EMoveResizeWindow(ib->cover_win, -30000, -30000, 2, 2);
+	EUnmapWindow(ib->cover_win);
      }
 
    if (!ib->nobg && ib_ic_box)
@@ -2217,7 +2217,7 @@ IconboxRedraw(Iconbox * ib)
 	else
 	  {
 	     w = h = ib->iconsize;
-	     EMoveResizeWindow(disp, ib->objs[i].win, x, y, w, h);
+	     EMoveResizeWindow(ib->objs[i].win, x, y, w, h);
 	  }
 
 	if (ib->orientation)
@@ -2233,13 +2233,12 @@ IconboxRedraw(Iconbox * ib)
    imlib_context_set_image(im);
    imlib_image_set_has_alpha(1);
    imlib_render_pixmaps_for_whole_image(&ib->pmap, &ib->mask);
-   ESetWindowBackgroundPixmap(disp, ib->icon_win, ib->pmap);
-   EShapeCombineMask(disp, ib->icon_win, ShapeBounding, 0, 0, ib->mask,
-		     ShapeSet);
+   ESetWindowBackgroundPixmap(ib->icon_win, ib->pmap);
+   EShapeCombineMask(ib->icon_win, ShapeBounding, 0, 0, ib->mask, ShapeSet);
    if (ib->nobg && ib->num_objs == 0)
-      EMoveWindow(disp, ib->icon_win, -ib->w, -ib->h);
+      EMoveWindow(ib->icon_win, -ib->w, -ib->h);
    imlib_free_image();
-   XClearWindow(disp, ib->icon_win);
+   EClearWindow(ib->icon_win);
 
    PropagateShapes(ib->win);
    ICCCM_GetShapeInfo(ib->ewin);
@@ -3359,7 +3358,7 @@ SystrayInit(Iconbox * obj, Window win, int screen)
 
    Eprintf("Window %#lx is now system tray\n", win);
 
-   XSelectInput(disp, win, SubstructureRedirectMask | ResizeRedirectMask |
+   ESelectInput(win, SubstructureRedirectMask | ResizeRedirectMask |
 		SubstructureNotifyMask);
    EventCallbackRegister(win, 0, SystrayEvent, obj);
 

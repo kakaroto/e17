@@ -803,7 +803,7 @@ TextDrawRotTo(Window win, Drawable * drawable, int x, int y, int w, int h,
 	imlib_render_image_on_drawable_at_size(0, 0, w, h);
 	break;
      case FONT_TO_DOWN:
-	EGetGeometry(disp, win, &rr, &win_x, &win_y, &win_w, &win_h,
+	XGetGeometry(disp, win, &rr, &win_x, &win_y, &win_w, &win_h,
 		     &win_b, &win_d);
 	ecore_x_sync();		/* Workaround for crash seen with Absolute E (Imlib2?) */
 	imlib_context_set_drawable(win);
@@ -850,7 +850,7 @@ TextDrawRotBack(Window win, Pixmap drawable, int x, int y, int w, int h,
 	break;
      case FONT_TO_DOWN:
 	imlib_context_set_drawable(drawable);
-	EGetGeometry(disp, win, &rr, &win_x, &win_y, &win_w, &win_h,
+	XGetGeometry(disp, win, &rr, &win_x, &win_y, &win_w, &win_h,
 		     &win_b, &win_d);
 	ii = imlib_create_image_from_drawable(0, 0, 0, w, h, 0);
 	imlib_context_set_image(ii);

@@ -63,7 +63,7 @@ MapUnmap(int start)
 			 }
 		       else
 			 {
-			    EUnmapWindow(disp, wlist[i]);
+			    XUnmapWindow(disp, wlist[i]);
 			 }
 		    }
 	       }
@@ -89,12 +89,12 @@ MapUnmap(int start)
 #endif
 				 StartupWindowsRaise();
 				 ProgressbarsRaise();
-				 EMapWindow(disp, wlist[i]);
+				 XMapWindow(disp, wlist[i]);
 			      }
 			    else
 			      {
 				 if (Mode.wm.exiting)
-				    EMapWindow(disp, wlist[i]);
+				    XMapWindow(disp, wlist[i]);
 				 else
 				    AddToFamily(NULL, wlist[i]);
 			      }

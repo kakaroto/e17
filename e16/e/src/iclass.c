@@ -1059,22 +1059,22 @@ ITApply(Window win, ImageClass * ic, ImageState * is, int w, int h, int state,
 		  /* Set window pixmap */
 		  if (pmm.w == w && pmm.h == h)
 		    {
-		       ESetWindowBackgroundPixmap(disp, win, pmm.pmap);
-		       EShapeCombineMask(disp, win, ShapeBounding, 0, 0,
+		       ESetWindowBackgroundPixmap(win, pmm.pmap);
+		       EShapeCombineMask(win, ShapeBounding, 0, 0,
 					 pmm.mask, ShapeSet);
 		    }
 		  else
 		    {
 		       /* Tiled */
-		       ESetWindowBackgroundPixmap(disp, win, pmm.pmap);
+		       ESetWindowBackgroundPixmap(win, pmm.pmap);
 		       if (pmm.mask)
-			  EShapeCombineMaskTiled(disp, win, ShapeBounding, 0, 0,
+			  EShapeCombineMaskTiled(win, ShapeBounding, 0, 0,
 						 pmm.mask, ShapeSet, w, h);
 		    }
 	       }
 
 	     FreePmapMask(&pmm);
-	     XClearWindow(disp, win);
+	     EClearWindow(win);
 
 	     if ((is->unloadable) || (Conf.memory_paranoia))
 	       {
@@ -1089,8 +1089,8 @@ ITApply(Window win, ImageClass * ic, ImageState * is, int w, int h, int state,
 	else
 	  {
 	     /* FIXME - No text */
-	     ESetWindowBackground(disp, win, is->bg.pixel);
-	     XClearWindow(disp, win);
+	     ESetWindowBackground(win, is->bg.pixel);
+	     EClearWindow(win);
 	  }
      }
 

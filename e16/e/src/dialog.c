@@ -287,7 +287,7 @@ DialogDestroy(Dialog * d)
    if (d->keybindings)
       Efree(d->keybindings);
 
-   EDestroyWindow(disp, d->win);
+   EDestroyWindow(d->win);
 
    Efree(d);
 }
@@ -353,7 +353,7 @@ DialogAddButton(Dialog * d, const char *text, DialogCallbackFunc * func,
    db->func = func;
    db->win = ECreateWindow(d->win, -20, -20, 2, 2, 0);
    EventCallbackRegister(db->win, 0, DButtonHandleEvents, db);
-   EMapWindow(disp, db->win);
+   EMapWindow(db->win);
    db->x = -1;
    db->y = -1;
    db->w = -1;
@@ -373,7 +373,7 @@ DialogAddButton(Dialog * d, const char *text, DialogCallbackFunc * func,
    TextSize(db->tclass, 0, 0, STATE_NORMAL, text, &w, &h, 17);
    db->w = w + db->iclass->padding.left + db->iclass->padding.right;
    db->h = h + db->iclass->padding.top + db->iclass->padding.bottom;
-   XSelectInput(disp, db->win,
+   ESelectInput(db->win,
 		EnterWindowMask | LeaveWindowMask | ButtonPressMask |
 		ButtonReleaseMask | ExposureMask);
 }
@@ -549,12 +549,12 @@ ShowDialog(Dialog * d)
 
 	d->button[i]->w = mw;
 	d->button[i]->h = mh;
-	EMoveResizeWindow(disp, d->button[i]->win, d->button[i]->x,
+	EMoveResizeWindow(d->button[i]->win, d->button[i]->x,
 			  d->button[i]->y, d->button[i]->w, d->button[i]->h);
      }
    d->w = w;
    d->h = h;
-   EResizeWindow(disp, d->win, w, h);
+   EResizeWindow(d->win, w, h);
 
    pq = Mode.queue_up;
    Mode.queue_up = 0;
@@ -564,7 +564,7 @@ ShowDialog(Dialog * d)
    if (ewin)
      {
 	ewin->client.event_mask |= KeyPressMask | ExposureMask;
-	XSelectInput(disp, d->win, ewin->client.event_mask);
+	ESelectInput(d->win, ewin->client.event_mask);
 
 	if (ewin->client.already_placed)
 	  {
@@ -597,7 +597,7 @@ DialogClose(Dialog * d)
    if (d->exit_func)
       d->exit_func(d, d->exit_val, NULL);
 
-   EUnmapWindow(disp, d->win);
+   EUnmapWindow(d->win);
 }
 
 DItem              *
@@ -914,21 +914,21 @@ DialogRealizeItem(Dialog * d, DItem * di)
 	if (di->item.slider.numeric)
 	  {
 	     di->win = ECreateWindow(d->win, -20, -20, 2, 2, 0);
-	     EMapWindow(disp, di->win);
-	     XSelectInput(disp, di->win,
+	     EMapWindow(di->win);
+	     ESelectInput(di->win,
 			  EnterWindowMask | LeaveWindowMask | ButtonPressMask
 			  | ButtonReleaseMask);
 	  }
 	di->item.slider.base_win = ECreateWindow(d->win, -20, -20, 2, 2, 0);
-	EMapWindow(disp, di->item.slider.base_win);
+	EMapWindow(di->item.slider.base_win);
 	di->item.slider.knob_win = ECreateWindow(d->win, -20, -20, 2, 2, 0);
-	EMapWindow(disp, di->item.slider.knob_win);
-	XSelectInput(disp, di->item.slider.base_win,
+	EMapWindow(di->item.slider.knob_win);
+	ESelectInput(di->item.slider.base_win,
 		     EnterWindowMask | LeaveWindowMask | ButtonPressMask |
 		     ButtonReleaseMask);
 	EventCallbackRegister(di->item.slider.base_win, 0, DialogHandleEvents,
 			      d);
-	XSelectInput(disp, di->item.slider.knob_win,
+	ESelectInput(di->item.slider.knob_win,
 		     ButtonPressMask | ButtonReleaseMask | PointerMotionMask);
 	EventCallbackRegister(di->item.slider.knob_win, 0, DialogHandleEvents,
 			      d);
@@ -1021,7 +1021,7 @@ DialogRealizeItem(Dialog * d, DItem * di)
 		       imlib_free_image();
 		       di->item.slider.border_win =
 			  ECreateWindow(d->win, -20, -20, 2, 2, 0);
-		       EMapWindow(disp, di->item.slider.border_win);
+		       EMapWindow(di->item.slider.border_win);
 		    }
 	       }
 	     di->item.slider.ic_border->ref_count++;
@@ -1049,8 +1049,8 @@ DialogRealizeItem(Dialog * d, DItem * di)
 	iw += di->iclass->padding.left + di->iclass->padding.right;
 	ih += di->iclass->padding.top + di->iclass->padding.bottom;
 	di->win = ECreateWindow(d->win, -20, -20, 2, 2, 0);
-	EMapWindow(disp, di->win);
-	XSelectInput(disp, di->win,
+	EMapWindow(di->win);
+	ESelectInput(di->win,
 		     EnterWindowMask | LeaveWindowMask | ButtonPressMask |
 		     ButtonReleaseMask | ExposureMask);
 	di->w = iw;
@@ -1062,11 +1062,11 @@ DialogRealizeItem(Dialog * d, DItem * di)
 	iw += di->iclass->padding.left + di->iclass->padding.right;
 	ih += di->iclass->padding.top + di->iclass->padding.bottom;
 	di->win = ECreateWindow(d->win, -20, -20, 2, 2, 0);
-	EMapWindow(disp, di->win);
-	XSelectInput(disp, di->win, ExposureMask);
+	EMapWindow(di->win);
+	ESelectInput(di->win, ExposureMask);
 	di->item.area.area_win = ECreateWindow(di->win, -20, -20, 2, 2, 0);
-	EMapWindow(disp, di->item.area.area_win);
-	XSelectInput(disp, di->item.area.area_win,
+	EMapWindow(di->item.area.area_win);
+	ESelectInput(di->item.area.area_win,
 		     EnterWindowMask | LeaveWindowMask | ButtonPressMask |
 		     ButtonReleaseMask | ExposureMask | PointerMotionMask);
 	EventCallbackRegister(di->item.area.area_win, 0, DialogHandleEvents, d);
@@ -1095,9 +1095,9 @@ DialogRealizeItem(Dialog * d, DItem * di)
 	di->item.check_button.check_win =
 	   ECreateWindow(d->win, -20, -20, 2, 2, 0);
 	di->win = ECreateEventWindow(d->win, -20, -20, 2, 2);
-	EMapWindow(disp, di->item.check_button.check_win);
-	EMapWindow(disp, di->win);
-	XSelectInput(disp, di->win,
+	EMapWindow(di->item.check_button.check_win);
+	EMapWindow(di->win);
+	ESelectInput(di->win,
 		     EnterWindowMask | LeaveWindowMask | ButtonPressMask |
 		     ButtonReleaseMask | ExposureMask);
 	di->w = iw;
@@ -1122,12 +1122,11 @@ DialogRealizeItem(Dialog * d, DItem * di)
 		iw = imlib_image_get_width();
 		ih = imlib_image_get_height();
 		di->win = ECreateWindow(d->win, 0, 0, iw, ih, 0);
-		EMapWindow(disp, di->win);
+		EMapWindow(di->win);
 		register_win_callback = 0;
 		imlib_render_pixmaps_for_whole_image(&pmap, &mask);
-		ESetWindowBackgroundPixmap(disp, di->win, pmap);
-		EShapeCombineMask(disp, di->win, ShapeBounding, 0,
-				  0, mask, ShapeSet);
+		ESetWindowBackgroundPixmap(di->win, pmap);
+		EShapeCombineMask(di->win, ShapeBounding, 0, 0, mask, ShapeSet);
 		imlib_free_pixmap_and_mask(pmap);
 		imlib_free_image();
 	     }
@@ -1139,7 +1138,7 @@ DialogRealizeItem(Dialog * d, DItem * di)
 	iw = di->iclass->padding.left + di->iclass->padding.right;
 	ih = di->iclass->padding.top + di->iclass->padding.bottom;
 	di->win = ECreateWindow(d->win, -20, -20, 2, 2, 0);
-	EMapWindow(disp, di->win);
+	EMapWindow(di->win);
 	register_win_callback = 0;
 	di->w = iw;
 	di->h = ih;
@@ -1166,9 +1165,9 @@ DialogRealizeItem(Dialog * d, DItem * di)
 	di->item.radio_button.radio_win =
 	   ECreateWindow(d->win, -20, -20, 2, 2, 0);
 	di->win = ECreateEventWindow(d->win, -20, -20, 2, 2);
-	EMapWindow(disp, di->item.radio_button.radio_win);
-	EMapWindow(disp, di->win);
-	XSelectInput(disp, di->win,
+	EMapWindow(di->item.radio_button.radio_win);
+	EMapWindow(di->win);
+	ESelectInput(di->win,
 		     EnterWindowMask | LeaveWindowMask | ButtonPressMask |
 		     ButtonReleaseMask | ExposureMask);
 	di->w = iw;
@@ -1300,11 +1299,10 @@ DialogRealizeItem(Dialog * d, DItem * di)
 				- (dii->padding.top + dii->padding.bottom) -
 				dii->h) * dii->align_v) >> 10);
 			  if (dii->win)
-			     EMoveResizeWindow(disp, dii->win, dii->x, dii->y,
+			     EMoveResizeWindow(dii->win, dii->x, dii->y,
 					       dii->w, dii->h);
 			  if (dii->type == DITEM_CHECKBUTTON)
-			     EMoveResizeWindow(disp,
-					       dii->item.check_button.
+			     EMoveResizeWindow(dii->item.check_button.
 					       check_win, dii->x,
 					       dii->y +
 					       ((dii->h -
@@ -1315,8 +1313,7 @@ DialogRealizeItem(Dialog * d, DItem * di)
 					       dii->item.check_button.
 					       check_orig_h);
 			  if (dii->type == DITEM_RADIOBUTTON)
-			     EMoveResizeWindow(disp,
-					       dii->item.radio_button.
+			     EMoveResizeWindow(dii->item.radio_button.
 					       radio_win, dii->x,
 					       dii->y +
 					       ((dii->h -
@@ -1334,8 +1331,7 @@ DialogRealizeItem(Dialog * d, DItem * di)
 			       dii->item.area.h =
 				  dii->h - (dii->iclass->padding.top +
 					    dii->iclass->padding.bottom);
-			       EMoveResizeWindow(disp,
-						 dii->item.area.area_win,
+			       EMoveResizeWindow(dii->item.area.area_win,
 						 dii->iclass->padding.left,
 						 dii->iclass->padding.top,
 						 dii->item.area.w,
@@ -1356,8 +1352,7 @@ DialogRealizeItem(Dialog * d, DItem * di)
 			       dii->item.slider.knob_h =
 				  dii->item.slider.knob_orig_h;
 			       if (dii->item.slider.base_win)
-				  EMoveResizeWindow(disp,
-						    dii->item.slider.base_win,
+				  EMoveResizeWindow(dii->item.slider.base_win,
 						    dii->x +
 						    dii->item.slider.base_x,
 						    dii->y +
@@ -1365,8 +1360,7 @@ DialogRealizeItem(Dialog * d, DItem * di)
 						    dii->item.slider.base_w,
 						    dii->item.slider.base_h);
 			       if (dii->item.slider.border_win)
-				  EMoveResizeWindow(disp,
-						    dii->item.slider.
+				  EMoveResizeWindow(dii->item.slider.
 						    border_win,
 						    dii->x +
 						    dii->item.slider.border_x,
@@ -1375,7 +1369,7 @@ DialogRealizeItem(Dialog * d, DItem * di)
 						    dii->item.slider.border_w,
 						    dii->item.slider.border_h);
 			       if (dii->win)
-				  EMoveResizeWindow(disp, dii->win,
+				  EMoveResizeWindow(dii->win,
 						    dii->x +
 						    dii->item.slider.
 						    numeric_x,
@@ -1432,37 +1426,37 @@ MoveTableBy(Dialog * d, DItem * di, int dx, int dy)
 	if (dii->type == DITEM_TABLE)
 	   MoveTableBy(d, dii, dx, dy);
 	if (dii->win)
-	   EMoveWindow(disp, dii->win, dii->x, dii->y);
+	   EMoveWindow(dii->win, dii->x, dii->y);
 	if (dii->type == DITEM_CHECKBUTTON)
-	   EMoveWindow(disp, dii->item.check_button.check_win, dii->x,
+	   EMoveWindow(dii->item.check_button.check_win, dii->x,
 		       dii->y +
 		       ((dii->h - dii->item.check_button.check_orig_h) / 2));
 	if (dii->type == DITEM_RADIOBUTTON)
-	   EMoveWindow(disp, dii->item.radio_button.radio_win, dii->x,
+	   EMoveWindow(dii->item.radio_button.radio_win, dii->x,
 		       dii->y +
 		       ((dii->h - dii->item.radio_button.radio_orig_h) / 2));
 	if (dii->type == DITEM_SLIDER)
 	  {
 	     if (dii->item.slider.base_win)
-		EMoveResizeWindow(disp, dii->item.slider.base_win,
+		EMoveResizeWindow(dii->item.slider.base_win,
 				  dii->x + dii->item.slider.base_x,
 				  dii->y + dii->item.slider.base_y,
 				  dii->item.slider.base_w,
 				  dii->item.slider.base_h);
 	     if (dii->item.slider.knob_win)
-		EMoveResizeWindow(disp, dii->item.slider.knob_win,
+		EMoveResizeWindow(dii->item.slider.knob_win,
 				  dii->x + dii->item.slider.knob_x,
 				  dii->y + dii->item.slider.knob_y,
 				  dii->item.slider.knob_w,
 				  dii->item.slider.knob_h);
 	     if (dii->item.slider.border_win)
-		EMoveResizeWindow(disp, dii->item.slider.border_win,
+		EMoveResizeWindow(dii->item.slider.border_win,
 				  dii->x + dii->item.slider.border_x,
 				  dii->y + dii->item.slider.border_y,
 				  dii->item.slider.border_w,
 				  dii->item.slider.border_h);
 	     if (dii->win)
-		EMoveResizeWindow(disp, dii->win,
+		EMoveResizeWindow(dii->win,
 				  dii->x + dii->item.slider.numeric_x,
 				  dii->y + dii->item.slider.numeric_y,
 				  dii->item.slider.numeric_w,
@@ -1540,7 +1534,7 @@ DialogDrawItems(Dialog * d, DItem * di, int x, int y, int w, int h)
 		     ((di->item.slider.base_w - di->item.slider.knob_w) / 2);
 	       }
 	     if (di->item.slider.knob_win)
-		EMoveResizeWindow(disp, di->item.slider.knob_win,
+		EMoveResizeWindow(di->item.slider.knob_win,
 				  di->x + di->item.slider.knob_x,
 				  di->y + di->item.slider.knob_y,
 				  di->item.slider.knob_w,
@@ -1604,7 +1598,7 @@ DialogDrawItems(Dialog * d, DItem * di, int x, int y, int w, int h)
 				di->item.check_button.check_orig_w,
 				di->item.check_button.check_orig_h, 0, 0, state,
 				0, ST_WIDGET);
-	     XClearArea(disp, d->win, di->x, di->y, di->w, di->h, False);
+	     EClearArea(d->win, di->x, di->y, di->w, di->h, False);
 	     TextDraw(di->tclass, d->win, 0, 0, STATE_NORMAL,
 		      di->item.check_button.text,
 		      di->x + di->item.check_button.check_orig_w +
@@ -1614,7 +1608,7 @@ DialogDrawItems(Dialog * d, DItem * di, int x, int y, int w, int h)
 		      di->tclass->justification);
 	     break;
 	  case DITEM_TEXT:
-	     XClearArea(disp, d->win, di->x, di->y, di->w, di->h, False);
+	     EClearArea(d->win, di->x, di->y, di->w, di->h, False);
 	     TextDraw(di->tclass, d->win, 0, 0, STATE_NORMAL,
 		      di->item.text.text, di->x, di->y, di->w, 99999, 17,
 		      di->tclass->justification);
@@ -1647,7 +1641,7 @@ DialogDrawItems(Dialog * d, DItem * di, int x, int y, int w, int h)
 				di->item.radio_button.radio_orig_w,
 				di->item.radio_button.radio_orig_w, 0, 0, state,
 				0, ST_WIDGET);
-	     XClearArea(disp, d->win, di->x, di->y, di->w, di->h, False);
+	     EClearArea(d->win, di->x, di->y, di->w, di->h, False);
 	     TextDraw(di->tclass, d->win, 0, 0, STATE_NORMAL,
 		      di->item.radio_button.text,
 		      di->x + di->item.radio_button.radio_orig_w +

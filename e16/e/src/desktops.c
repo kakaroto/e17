@@ -343,7 +343,7 @@ DeskEventsConfigure(Desk * d, int mode)
      }
    else
      {
-	XGetWindowAttributes(disp, EoGetWin(d), &xwa);
+	EGetWindowAttributes(EoGetWin(d), &xwa);
 	d->event_mask = xwa.your_event_mask | EDESK_EVENT_MASK;
 	event_mask =
 	   PropertyChangeMask | SubstructureRedirectMask |
@@ -353,7 +353,7 @@ DeskEventsConfigure(Desk * d, int mode)
 	event_mask |= SubstructureNotifyMask;
 #endif
      }
-   XSelectInput(disp, EoGetWin(d), event_mask);
+   ESelectInput(EoGetWin(d), event_mask);
 }
 
 static Desk        *
@@ -453,7 +453,7 @@ DeskDestroy(int desk)
    if (desk > 0)
       EobjListStackDel(&d->o);
 
-   EDestroyWindow(disp, EoGetWin(d));
+   EDestroyWindow(EoGetWin(d));
 
    Efree(d);
    desks.desk[desk] = NULL;
@@ -468,9 +468,9 @@ DeskResize(int desk, int w, int h)
 
    if (desk > 0)
      {
-	EResizeWindow(disp, EoGetWin(d), w, h);
+	EResizeWindow(EoGetWin(d), w, h);
 	if (!d->viewable)
-	   EMoveWindow(disp, EoGetWin(d), VRoot.w, 0);
+	   EMoveWindow(EoGetWin(d), VRoot.w, 0);
      }
    BackgroundPixmapFree(d->bg);
    RefreshDesktop(desk);
@@ -812,12 +812,12 @@ SlideWindowTo(Window win, int fx, int fy, int tx, int ty, int speed)
      {
 	x = ((fx * (1024 - k)) + (tx * k)) >> 10;
 	y = ((fy * (1024 - k)) + (ty * k)) >> 10;
-	EMoveWindow(disp, win, x, y);
+	EMoveWindow(win, x, y);
 	ecore_x_sync();
 
 	k = ETimedLoopNext();
      }
-   EMoveWindow(disp, win, tx, ty);
+   EMoveWindow(win, tx, ty);
 
    ecore_x_ungrab();
 }
@@ -929,8 +929,8 @@ MoveStickyWindowsToCurrentDesk(void)
 
 	EoSetDesk(ewin, desk);
 	ewin->parent = EoGetWin(d);
-	EReparentWindow(disp, EoGetWin(ewin), ewin->parent, VRoot.w, VRoot.h);
-	EMoveWindow(disp, EoGetWin(ewin), EoGetX(ewin), EoGetY(ewin));
+	EReparentWindow(EoGetWin(ewin), ewin->parent, VRoot.w, VRoot.h);
+	EMoveWindow(EoGetWin(ewin), EoGetX(ewin), EoGetY(ewin));
 	HintsSetWindowArea(ewin);
 	HintsSetWindowDesktop(ewin);
      }
@@ -1136,7 +1136,7 @@ MoveDesktop(int desk, int x, int y)
 	  }
      }
 
-   EMoveWindow(disp, EoGetWin(d), x, y);
+   EMoveWindow(EoGetWin(d), x, y);
 
    if (d->tag)
       ButtonMoveRelative(d->tag, dx, dy);
@@ -1163,7 +1163,7 @@ UncoverDesktop(int desk)
    d->viewable = 1;
    RefreshDesktop(desk);
    if (desk != 0)
-      EMapWindow(disp, EoGetWin(d));
+      EMapWindow(EoGetWin(d));
 }
 
 void
@@ -1204,7 +1204,7 @@ RaiseDesktop(int desk)
    if (Mode.mode == MODE_NONE)
       HandleDrawQueue();
    HintsSetCurrentDesktop();
-   EMapWindow(disp, EoGetWin(d));
+   EMapWindow(EoGetWin(d));
    ecore_x_sync();
 }
 
@@ -1246,7 +1246,7 @@ HideDesktop(int desk)
    if (d->viewable)
       BackgroundTouch(d->bg);
    d->viewable = 0;
-   EMoveWindow(disp, EoGetWin(d), VRoot.w, 0);
+   EMoveWindow(EoGetWin(d), VRoot.w, 0);
 }
 
 void
@@ -1272,7 +1272,7 @@ ShowDesktop(int desk)
    else
      {
 	StackDesktops();
-	EMapWindow(disp, EoGetWin(d));
+	EMapWindow(EoGetWin(d));
      }
 }
 
@@ -1721,7 +1721,7 @@ CB_DesktopDisplayRedraw(Dialog * d __UNUSED__, int val, void *data)
 	     wins[i] = ECreateWindow(win, 0, 0, 64, 48, 0);
 	     XSetWindowBorderWidth(disp, wins[i], 1);
 	     pmap = ecore_x_pixmap_new(wins[i], 64, 48, VRoot.depth);
-	     ESetWindowBackgroundPixmap(disp, wins[i], pmap);
+	     ESetWindowBackgroundPixmap(wins[i], pmap);
 
 	     bg = DeskGetBackground(i);
 	     if (bg)
@@ -1745,16 +1745,16 @@ CB_DesktopDisplayRedraw(Dialog * d __UNUSED__, int val, void *data)
 	num = tmp_desktops - 1;
 	if (num < 1)
 	   num = 1;
-	XRaiseWindow(disp, wins[i]);
-	EMoveWindow(disp, wins[i], (i * (w - 64 - 2)) / num,
+	ERaiseWindow(wins[i]);
+	EMoveWindow(wins[i], (i * (w - 64 - 2)) / num,
 		    (i * (h - 48 - 2)) / num);
-	EMapWindow(disp, wins[i]);
+	EMapWindow(wins[i]);
      }
 
    for (i = tmp_desktops; i < Conf.desks.num; i++)
      {
-	EUnmapWindow(disp, wins[i]);
-	EDestroyWindow(disp, wins[i]);
+	EUnmapWindow(wins[i]);
+	EDestroyWindow(wins[i]);
 	wins[i] = None;
      }
 
@@ -1996,16 +1996,16 @@ CB_AreaDisplayRedraw(Dialog * d __UNUSED__, int val, void *data)
 	  {
 	     ImageclassApplyCopy(ic, awin, 18, 14, 0, 0, STATE_NORMAL, &pmm, 0,
 				 ST_UNKNWN);
-	     ESetWindowBackgroundPixmap(disp, awin, pmm.pmap);
+	     ESetWindowBackgroundPixmap(awin, pmm.pmap);
 	     FreePmapMask(&pmm);
 	  }
-	XClearWindow(disp, awin);
+	EClearWindow(awin);
 	called = 1;
      }
-   EMoveResizeWindow(disp, awin, ((w / 2) - (9 * tmp_area_x)),
+   EMoveResizeWindow(awin, ((w / 2) - (9 * tmp_area_x)),
 		     ((h / 2) - (7 * (9 - tmp_area_y))), 18 * tmp_area_x,
 		     14 * (9 - tmp_area_y));
-   EMapWindow(disp, awin);
+   EMapWindow(awin);
 
    if ((tmp_area_x > 1) || ((9 - tmp_area_y) > 1))
       Esnprintf(s, sizeof(s), _("%i x %i\nScreens in size"), tmp_area_x,

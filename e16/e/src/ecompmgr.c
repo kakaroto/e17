@@ -293,7 +293,7 @@ ECompMgrMoveResizeFix(EObj * eo, int x, int y, int w, int h)
 
    if (!c || !Conf_compmgr.resize_fix_enable)
      {
-	EMoveResizeWindow(disp, eo->win, x, y, w, h);
+	EMoveResizeWindow(eo->win, x, y, w, h);
 	return;
      }
 
@@ -301,7 +301,7 @@ ECompMgrMoveResizeFix(EObj * eo, int x, int y, int w, int h)
    GetWinWH(eo->win, &wo, &ho);
    if (wo <= 0 || ho <= 0 || (wo == w && ho == h))
      {
-	EMoveResizeWindow(disp, eo->win, x, y, w, h);
+	EMoveResizeWindow(eo->win, x, y, w, h);
 	return;
      }
 
@@ -311,7 +311,7 @@ ECompMgrMoveResizeFix(EObj * eo, int x, int y, int w, int h)
 		    0, 0, 0, 0, 0, 0, wo, ho);
 
    /* Resize (+move) */
-   EMoveResizeWindow(disp, eo->win, x, y, w, h);
+   EMoveResizeWindow(eo->win, x, y, w, h);
 
    /* Paste old contents back in */
    if (w < wo)

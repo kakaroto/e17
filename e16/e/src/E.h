@@ -2225,44 +2225,49 @@ void                EventCallbacksProcess(XEvent * ev);
 
 Window              ECreateWindow(Window parent, int x, int y, int w, int h,
 				  int saveunder);
-void                EWindowSync(Window win);
-void                EMoveWindow(Display * d, Window win, int x, int y);
-void                EResizeWindow(Display * d, Window win, int w, int h);
-void                EMoveResizeWindow(Display * d, Window win, int x, int y,
-				      int w, int h);
-void                EDestroyWindow(Display * d, Window win);
-void                EMapWindow(Display * d, Window win);
-void                EUnmapWindow(Display * d, Window win);
-void                EShapeCombineMask(Display * d, Window win, int dest, int x,
-				      int y, Pixmap pmap, int op);
-void                EShapeCombineMaskTiled(Display * d, Window win, int dest,
-					   int x, int y, Pixmap pmap, int op,
-					   int w, int h);
-void                EShapeCombineRectangles(Display * d, Window win, int dest,
-					    int x, int y, XRectangle * rect,
-					    int n_rects, int op, int ordering);
-void                EShapeCombineShape(Display * d, Window win, int dest, int x,
-				       int y, Window src_win, int src_kind,
-				       int op);
-XRectangle         *EShapeGetRectangles(Display * d, Window win, int dest,
-					int *rn, int *ord);
-void                EReparentWindow(Display * d, Window win, Window parent,
-				    int x, int y);
-void                EMapRaised(Display * d, Window win);
-int                 EGetGeometry(Display * d, Window win, Window * root_return,
-				 int *x, int *y, unsigned int *w,
-				 unsigned int *h, unsigned int *bw,
-				 unsigned int *depth);
-void                EConfigureWindow(Display * d, Window win, unsigned int mask,
-				     XWindowChanges * wc);
-void                ESetWindowBackgroundPixmap(Display * d, Window win,
-					       Pixmap pmap);
-void                ESetWindowBackground(Display * d, Window win, int col);
 Window              ECreateEventWindow(Window parent, int x, int y, int w,
 				       int h);
 Window              ECreateFocusWindow(Window parent, int x, int y, int w,
 				       int h);
+void                EWindowSync(Window win);
+
+void                EMoveWindow(Window win, int x, int y);
+void                EResizeWindow(Window win, int w, int h);
+void                EMoveResizeWindow(Window win, int x, int y, int w, int h);
+void                EDestroyWindow(Window win);
+void                EMapWindow(Window win);
+void                EMapRaised(Window win);
+void                EUnmapWindow(Window win);
+void                EShapeCombineMask(Window win, int dest, int x, int y,
+				      Pixmap pmap, int op);
+void                EShapeCombineMaskTiled(Window win, int dest, int x, int y,
+					   Pixmap pmap, int op, int w, int h);
+void                EShapeCombineRectangles(Window win, int dest, int x, int y,
+					    XRectangle * rect, int n_rects,
+					    int op, int ordering);
+void                EShapeCombineShape(Window win, int dest, int x, int y,
+				       Window src_win, int src_kind, int op);
+XRectangle         *EShapeGetRectangles(Window win, int dest, int *rn,
+					int *ord);
+void                EReparentWindow(Window win, Window parent, int x, int y);
+int                 EGetGeometry(Window win, Window * root_return,
+				 int *x, int *y, unsigned int *w,
+				 unsigned int *h, unsigned int *bw,
+				 unsigned int *depth);
+void                EConfigureWindow(Window win, unsigned int mask,
+				     XWindowChanges * wc);
+void                ESetWindowBackgroundPixmap(Window win, Pixmap pmap);
+void                ESetWindowBackground(Window win, int col);
 Pixmap              EWindowGetShapePixmap(Window win);
+
+#define ESelectInput(win, mask) XSelectInput(disp, win, mask)
+#define EGetWindowAttributes(win, attr) XGetWindowAttributes(disp, win, attr)
+#define EChangeWindowAttributes(win, mask, attr) XChangeWindowAttributes(disp, win, mask, attr)
+#define ERaiseWindow(win) XRaiseWindow(disp, win)
+#define ELowerWindow(win) XLowerWindow(disp, win)
+#define EClearWindow(win) XClearWindow(disp, win)
+#define EClearArea(win, x, y, w, h, exp) XClearArea(disp, win, x, y, w, h, exp)
+
 void                ESetColor(XColor * pxc, int r, int g, int b);
 void                EGetColor(const XColor * pxc, int *pr, int *pg, int *pb);
 void                GetWinXY(Window win, int *x, int *y);

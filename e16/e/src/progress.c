@@ -94,11 +94,11 @@ ProgressbarDestroy(Progressbar * p)
    if (p->name)
       Efree(p->name);
    if (p->win)
-      EDestroyWindow(disp, p->win);
+      EDestroyWindow(p->win);
    if (p->win)
-      EDestroyWindow(disp, p->n_win);
+      EDestroyWindow(p->n_win);
    if (p->win)
-      EDestroyWindow(disp, p->p_win);
+      EDestroyWindow(p->p_win);
 
    for (i = 0; i < pnum; i++)
      {
@@ -108,12 +108,11 @@ ProgressbarDestroy(Progressbar * p)
 	       {
 		  plist[j] = plist[j + 1];
 		  plist[j]->y -= p->h;
-		  EMoveWindow(disp, p->win, plist[j]->x, plist[j]->y);
-		  EMoveWindow(disp, p->n_win,
+		  EMoveWindow(p->win, plist[j]->x, plist[j]->y);
+		  EMoveWindow(p->n_win,
 			      plist[j]->x + plist[j]->w - (plist[j]->h * 5),
 			      plist[j]->y);
-		  EMoveWindow(disp, p->p_win, plist[j]->x,
-			      plist[j]->y + plist[j]->h);
+		  EMoveWindow(p->p_win, plist[j]->x, plist[j]->y + plist[j]->h);
 	       }
 	     i = pnum;
 	  }
@@ -169,7 +168,7 @@ ProgressbarSet(Progressbar * p, int progress)
    TextclassApply(p->inc, p->n_win, p->h * 5, p->h, 0, 0, STATE_CLICKED, 0,
 		  p->tnc, s);
    ImageclassApply(p->inc, p->p_win, w, p->h, 1, 0, STATE_NORMAL, 0, ST_UNKNWN);
-   EResizeWindow(disp, p->p_win, w, p->h);
+   EResizeWindow(p->p_win, w, p->h);
    Mode.queue_up = pq;
    XFlush(disp);
 }
@@ -192,9 +191,9 @@ ProgressbarShow(Progressbar * p)
    ImageclassApply(p->inc, p->n_win, (p->h * 5), p->h, 0, 0, STATE_CLICKED, 0,
 		   ST_UNKNWN);
    ImageclassApply(p->ipc, p->p_win, w, p->h, 1, 0, STATE_NORMAL, 0, ST_UNKNWN);
-   EMapRaised(disp, p->win);
-   EMapRaised(disp, p->n_win);
-   EMapRaised(disp, p->p_win);
+   EMapRaised(p->win);
+   EMapRaised(p->n_win);
+   EMapRaised(p->p_win);
    ecore_x_sync();
    TextclassApply(p->ic, p->win, p->w - (p->h * 5), p->h, 0, 0, STATE_NORMAL, 0,
 		  p->tc, p->name);
@@ -204,9 +203,9 @@ ProgressbarShow(Progressbar * p)
 void
 ProgressbarHide(Progressbar * p)
 {
-   EUnmapWindow(disp, p->win);
-   EUnmapWindow(disp, p->n_win);
-   EUnmapWindow(disp, p->p_win);
+   EUnmapWindow(p->win);
+   EUnmapWindow(p->n_win);
+   EUnmapWindow(p->p_win);
 }
 
 Window             *
@@ -239,9 +238,9 @@ ProgressbarsRaise(void)
 
    for (i = 0; i < pnum; i++)
      {
-	XRaiseWindow(disp, plist[i]->win);
-	XRaiseWindow(disp, plist[i]->n_win);
-	XRaiseWindow(disp, plist[i]->p_win);
+	ERaiseWindow(plist[i]->win);
+	ERaiseWindow(plist[i]->n_win);
+	ERaiseWindow(plist[i]->p_win);
      }
 
    return;

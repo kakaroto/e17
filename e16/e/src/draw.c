@@ -409,8 +409,7 @@ EBlendRemoveShape(EWin * ewin, Pixmap pmap, int x, int y)
    h = EoGetH(ewin);
    if (!rl)
      {
-	rl =
-	   EShapeGetRectangles(disp, EoGetWin(ewin), ShapeBounding, &rn, &ord);
+	rl = EShapeGetRectangles(EoGetWin(ewin), ShapeBounding, &rn, &ord);
 	if (rn < 1)
 	   return;
 	else if (rn == 1)
@@ -474,8 +473,7 @@ EBlendPixImg(EWin * ewin, PixImg * s1, PixImg * s2, PixImg * dst, int x, int y,
      }
    if (!rl)
      {
-	rl =
-	   EShapeGetRectangles(disp, EoGetWin(ewin), ShapeBounding, &rn, &ord);
+	rl = EShapeGetRectangles(EoGetWin(ewin), ShapeBounding, &rn, &ord);
 	if (rl)
 	   XSetClipRectangles(disp, gc, x, y, rl, rn, ord);
 	if (!rl)
@@ -1812,7 +1810,7 @@ PropagateShapes(Window win)
 	AddItem(dq, "DRAW", dq->win, LIST_TYPE_DRAW);
 	return;
      }
-   EGetGeometry(disp, win, &rt, &x, &y, &w, &h, &d, &d);
+   EGetGeometry(win, &rt, &x, &y, &w, &h, &d, &d);
    if ((w <= 0) || (h <= 0))
       return;
 
@@ -1833,8 +1831,7 @@ PropagateShapes(Window win)
 	     if ((att.class == InputOutput) && (att.map_state != IsUnmapped))
 	       {
 		  rl = NULL;
-		  rl = EShapeGetRectangles(disp, list[i], ShapeBounding, &rn,
-					   &ord);
+		  rl = EShapeGetRectangles(list[i], ShapeBounding, &rn, &ord);
 		  if (rl)
 		    {
 		       num_rects += rn;
@@ -1870,28 +1867,27 @@ PropagateShapes(Window win)
 	/* set the rects as the shape mask */
 	if (rects)
 	  {
-	     EShapeCombineRectangles(disp, win, ShapeBounding, 0, 0, rects,
+	     EShapeCombineRectangles(win, ShapeBounding, 0, 0, rects,
 				     num_rects, ShapeSet, Unsorted);
 	     Efree(rects);
 	     rl = NULL;
-	     rl = EShapeGetRectangles(disp, win, ShapeBounding, &rn, &ord);
+	     rl = EShapeGetRectangles(win, ShapeBounding, &rn, &ord);
 	     if (rl)
 	       {
 		  if (rn < 1)
-		     EShapeCombineMask(disp, win, ShapeBounding, 0, 0, None,
+		     EShapeCombineMask(win, ShapeBounding, 0, 0, None,
 				       ShapeSet);
 		  else if (rn == 1)
 		    {
 		       if ((rl[0].x == 0) && (rl[0].y == 0)
 			   && (rl[0].width == ww) && (rl[0].height == hh))
-			  EShapeCombineMask(disp, win, ShapeBounding, 0, 0,
+			  EShapeCombineMask(win, ShapeBounding, 0, 0,
 					    None, ShapeSet);
 		    }
 		  Efree(rl);
 	       }
 	     else
-		EShapeCombineMask(disp, win, ShapeBounding, 0, 0, None,
-				  ShapeSet);
+		EShapeCombineMask(win, ShapeBounding, 0, 0, None, ShapeSet);
 	  }
 	XFree(list);
      }

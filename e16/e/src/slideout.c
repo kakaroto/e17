@@ -51,12 +51,12 @@ SlideWindowSizeTo(Window win, int fx, int fy, int tx, int ty, int fw, int fh,
 	y = ((fy * (1024 - k)) + (ty * k)) >> 10;
 	w = ((fw * (1024 - k)) + (tw * k)) >> 10;
 	h = ((fh * (1024 - k)) + (th * k)) >> 10;
-	EMoveResizeWindow(disp, win, x, y, w, h);
+	EMoveResizeWindow(win, x, y, w, h);
 	ecore_x_sync();
 
 	k = ETimedLoopNext();
      }
-   EMoveResizeWindow(disp, win, tx, ty, tw, th);
+   EMoveResizeWindow(win, tx, ty, tw, th);
 
    ecore_x_ungrab();
 }
@@ -97,7 +97,7 @@ SlideoutShow(Slideout * s, EWin * ewin, Window win)
       return;
 
    SlideoutCalcSize(s);
-   EGetGeometry(disp, win, &dw, &di, &di, &w, &h, &d, &d);
+   EGetGeometry(win, &dw, &di, &di, &w, &h, &d, &d);
    XTranslateCoordinates(disp, win, VRoot.win, 0, 0, &x, &y, &dw);
 
    xx = 0;
@@ -168,59 +168,59 @@ SlideoutShow(Slideout * s, EWin * ewin, Window win)
 	yy -= DeskGetY(desk);
 	dw = DeskGetWin(desk);
      }
-   EReparentWindow(disp, s->win, dw, xx, yy);
+   EReparentWindow(s->win, dw, xx, yy);
 
    switch (s->direction)
      {
      case 0:
 	att.win_gravity = SouthEastGravity;
-	XChangeWindowAttributes(disp, s->win, CWWinGravity, &att);
+	EChangeWindowAttributes(s->win, CWWinGravity, &att);
 	att.win_gravity = NorthWestGravity;
 	for (i = 0; i < s->num_buttons; i++)
-	   XChangeWindowAttributes(disp, ButtonGetWindow(s->button[i]),
+	   EChangeWindowAttributes(ButtonGetWindow(s->button[i]),
 				   CWWinGravity, &att);
-	EMoveResizeWindow(disp, s->win, xx, yy, 1, 1);
+	EMoveResizeWindow(s->win, xx, yy, 1, 1);
 	ecore_x_sync();
-	EMapRaised(disp, s->win);
+	EMapRaised(s->win);
 	SlideWindowSizeTo(s->win, xx + s->w, yy, xx, yy, 0, s->h, s->w, s->h,
 			  Conf.slidespeedmap);
 	break;
      case 1:
 	att.win_gravity = NorthWestGravity;
-	XChangeWindowAttributes(disp, s->win, CWWinGravity, &att);
+	EChangeWindowAttributes(s->win, CWWinGravity, &att);
 	att.win_gravity = SouthEastGravity;
 	for (i = 0; i < s->num_buttons; i++)
-	   XChangeWindowAttributes(disp, ButtonGetWindow(s->button[i]),
+	   EChangeWindowAttributes(ButtonGetWindow(s->button[i]),
 				   CWWinGravity, &att);
-	EMoveResizeWindow(disp, s->win, xx, yy, 1, 1);
+	EMoveResizeWindow(s->win, xx, yy, 1, 1);
 	ecore_x_sync();
-	EMapRaised(disp, s->win);
+	EMapRaised(s->win);
 	SlideWindowSizeTo(s->win, xx, yy, xx, yy, 0, s->h, s->w, s->h,
 			  Conf.slidespeedmap);
 	break;
      case 2:
 	att.win_gravity = SouthEastGravity;
-	XChangeWindowAttributes(disp, s->win, CWWinGravity, &att);
+	EChangeWindowAttributes(s->win, CWWinGravity, &att);
 	att.win_gravity = NorthWestGravity;
 	for (i = 0; i < s->num_buttons; i++)
-	   XChangeWindowAttributes(disp, ButtonGetWindow(s->button[i]),
+	   EChangeWindowAttributes(ButtonGetWindow(s->button[i]),
 				   CWWinGravity, &att);
-	EMoveResizeWindow(disp, s->win, xx, yy, 1, 1);
+	EMoveResizeWindow(s->win, xx, yy, 1, 1);
 	ecore_x_sync();
-	EMapRaised(disp, s->win);
+	EMapRaised(s->win);
 	SlideWindowSizeTo(s->win, xx, yy + s->h, xx, yy, s->w, 0, s->w, s->h,
 			  Conf.slidespeedmap);
 	break;
      case 3:
 	att.win_gravity = NorthWestGravity;
-	XChangeWindowAttributes(disp, s->win, CWWinGravity, &att);
+	EChangeWindowAttributes(s->win, CWWinGravity, &att);
 	att.win_gravity = SouthEastGravity;
 	for (i = 0; i < s->num_buttons; i++)
-	   XChangeWindowAttributes(disp, ButtonGetWindow(s->button[i]),
+	   EChangeWindowAttributes(ButtonGetWindow(s->button[i]),
 				   CWWinGravity, &att);
-	EMoveResizeWindow(disp, s->win, xx, yy, 1, 1);
+	EMoveResizeWindow(s->win, xx, yy, 1, 1);
 	ecore_x_sync();
-	EMapRaised(disp, s->win);
+	EMapRaised(s->win);
 	SlideWindowSizeTo(s->win, xx, yy, xx, yy, s->w, 0, s->w, s->h,
 			  Conf.slidespeedmap);
 	break;
@@ -239,7 +239,7 @@ SlideoutHide(Slideout * s)
    if (!s)
       return;
 
-   EUnmapWindow(disp, s->win);
+   EUnmapWindow(s->win);
    s->from_win = 0;
    s->ref_count--;
    Mode.slideout = NULL;
@@ -283,7 +283,7 @@ SlideoutCalcSize(Slideout * s)
 	  }
      }
 
-   EResizeWindow(disp, s->win, mx, my);
+   EResizeWindow(s->win, mx, my);
    s->w = mx;
    s->h = my;
 
@@ -296,22 +296,20 @@ SlideoutCalcSize(Slideout * s)
 	  {
 	  case 2:
 	     y += bh;
-	     EMoveWindow(disp, ButtonGetWindow(s->button[i]),
+	     EMoveWindow(ButtonGetWindow(s->button[i]),
 			 (s->w - bw) >> 1, s->h - y);
 	     break;
 	  case 3:
-	     EMoveWindow(disp, ButtonGetWindow(s->button[i]),
-			 (s->w - bw) >> 1, y);
+	     EMoveWindow(ButtonGetWindow(s->button[i]), (s->w - bw) >> 1, y);
 	     y += bh;
 	     break;
 	  case 0:
 	     x += bw;
-	     EMoveWindow(disp, ButtonGetWindow(s->button[i]), s->w - x,
+	     EMoveWindow(ButtonGetWindow(s->button[i]), s->w - x,
 			 (s->h - bh) >> 1);
 	     break;
 	  case 1:
-	     EMoveWindow(disp, ButtonGetWindow(s->button[i]), x,
-			 (s->h - bh) >> 1);
+	     EMoveWindow(ButtonGetWindow(s->button[i]), x, (s->h - bh) >> 1);
 	     x += bw;
 	  default:
 	     break;
@@ -331,7 +329,7 @@ SlideoutAddButton(Slideout * s, Button * b)
    s->num_buttons++;
    s->button = Erealloc(s->button, sizeof(Button *) * s->num_buttons);
    s->button[s->num_buttons - 1] = b;
-   EReparentWindow(disp, ButtonGetWindow(b), s->win, 0, 0);
+   EReparentWindow(ButtonGetWindow(b), s->win, 0, 0);
    ButtonSetSwallowed(b);
    ButtonShow(b);
    SlideoutCalcSize(s);

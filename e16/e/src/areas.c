@@ -186,7 +186,7 @@ SlideWindowsBy(Window * win, int num, int dx, int dy, int speed)
 	  {
 	     x = ((xy[i].x * (1024 - k)) + ((xy[i].x + dx) * k)) >> 10;
 	     y = ((xy[i].y * (1024 - k)) + ((xy[i].y + dy) * k)) >> 10;
-	     EMoveWindow(disp, win[i], x, y);
+	     EMoveWindow(win[i], x, y);
 	  }
 	ecore_x_sync();
 
@@ -194,7 +194,7 @@ SlideWindowsBy(Window * win, int num, int dx, int dy, int speed)
      }
 
    for (i = 0; i < num; i++)
-      EMoveWindow(disp, win[i], xy[i].x + dx, xy[i].y + dy);
+      EMoveWindow(win[i], xy[i].x + dx, xy[i].y + dy);
 
    if (xy)
       Efree(xy);

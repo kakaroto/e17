@@ -171,8 +171,8 @@ MenuHide(Menu * m)
 {
    if (m->win)
      {
-	EUnmapWindow(disp, m->win);
-	EReparentWindow(disp, m->win, VRoot.win, 0, 0);
+	EUnmapWindow(m->win);
+	EReparentWindow(m->win, VRoot.win, 0, 0);
      }
 
    MenuActivateItem(m, NULL);
@@ -313,28 +313,27 @@ MenuShow(Menu * m, char noshow)
    if ((Mode.x >= 0) && (Mode.y >= 0))
      {
 	if (Conf.menus.onscreen)
-	   EMoveWindow(disp, m->win, wx, wy);
+	   EMoveWindow(m->win, wx, wy);
 	else
-	   EMoveWindow(disp, m->win, Mode.x - x - (w / 2),
-		       Mode.y - y - (h / 2));
+	   EMoveWindow(m->win, Mode.x - x - (w / 2), Mode.y - y - (h / 2));
      }
    else if ((Mode.x >= 0) && (Mode.y < 0))
      {
 	if (((-Mode.y) + (int)mh) > (int)VRoot.h)
 	   Mode.y = -((-Mode.y) - Mode.context_h - mh);
 	if (Conf.menus.onscreen)
-	   EMoveWindow(disp, m->win, wx, -Mode.y);
+	   EMoveWindow(m->win, wx, -Mode.y);
 	else
-	   EMoveWindow(disp, m->win, Mode.x - x - (w / 2), -Mode.y);
+	   EMoveWindow(m->win, Mode.x - x - (w / 2), -Mode.y);
      }
    else if ((Mode.x < 0) && (Mode.y >= 0))
      {
 	if (((-Mode.x) + (int)mw) > (int)VRoot.w)
 	   Mode.x = -((-Mode.x) - Mode.context_w - mw);
 	if (Conf.menus.onscreen)
-	   EMoveWindow(disp, m->win, -Mode.x, wy);
+	   EMoveWindow(m->win, -Mode.x, wy);
 	else
-	   EMoveWindow(disp, m->win, -Mode.x, Mode.y - y - (h / 2));
+	   EMoveWindow(m->win, -Mode.x, Mode.y - y - (h / 2));
      }
    else
      {
@@ -342,7 +341,7 @@ MenuShow(Menu * m, char noshow)
 	   Mode.x = -((-Mode.x) - Mode.context_w - mw);
 	if (((-Mode.y) + (int)mh) > (int)VRoot.h)
 	   Mode.y = -((-Mode.y) - Mode.context_h - mh);
-	EMoveWindow(disp, m->win, -Mode.x, -Mode.y);
+	EMoveWindow(m->win, -Mode.x, -Mode.y);
      }
 
    ewin = AddInternalToFamily(m->win, m->style->border_name, EWIN_TYPE_MENU, m,
@@ -350,7 +349,7 @@ MenuShow(Menu * m, char noshow)
    if (ewin)
      {
 	ewin->client.event_mask |= KeyPressMask;
-	XSelectInput(disp, m->win, ewin->client.event_mask);
+	ESelectInput(m->win, ewin->client.event_mask);
 
 	ewin->head = head_num;
 	if (Conf.menus.slide)
@@ -535,7 +534,7 @@ MenuDestroy(Menu * m)
    MenuHide(m);
 
    if (m->win)
-      EDestroyWindow(disp, m->win);
+      EDestroyWindow(m->win);
 
    Esnprintf(s, sizeof(s), "__.%s", m->name);
    RemoveTimerEvent(s);
@@ -601,7 +600,7 @@ MenuEmpty(Menu * m)
 	     for (j = 0; j < 3; j++)
 		FreePmapMask(&(m->items[i]->pmm[j]));
 	     if (m->items[i]->win)
-		EDestroyWindow(disp, m->items[i]->win);
+		EDestroyWindow(m->items[i]->win);
 	     if (m->items[i])
 		Efree(m->items[i]);
 	  }
@@ -684,8 +683,8 @@ MenuRealize(Menu * m)
 	m->items[i]->win = ECreateWindow(m->win, 0, 0, 1, 1, 0);
 	EventCallbackRegister(m->items[i]->win, 0, MenuItemHandleEvents,
 			      m->items[i]);
-	XSelectInput(disp, m->items[i]->win, MENU_ITEM_EVENT_MASK);
-	EMapWindow(disp, m->items[i]->win);
+	ESelectInput(m->items[i]->win, MENU_ITEM_EVENT_MASK);
+	EMapWindow(m->items[i]->win);
 
 	if ((m->style) && (m->style->tclass) && (m->items[i]->text))
 	  {
@@ -707,7 +706,7 @@ MenuRealize(Menu * m)
 		     ECreateWindow(m->items[i]->win, 0, 0,
 				   imlib_image_get_width(),
 				   imlib_image_get_height(), 0);
-		  EMapWindow(disp, m->items[i]->icon_win);
+		  EMapWindow(m->items[i]->icon_win);
 		  m->items[i]->icon_w = imlib_image_get_width();
 		  m->items[i]->icon_h = imlib_image_get_height();
 		  if (imlib_image_get_height() > maxh)
@@ -776,14 +775,14 @@ MenuRealize(Menu * m)
 
    for (i = 0; i < m->num; i++)
      {
-	EMoveResizeWindow(disp, m->items[i]->win, x, y, maxw, maxh);
+	EMoveResizeWindow(m->items[i]->win, x, y, maxw, maxh);
 	if (m->style->iconpos == ICON_LEFT)
 	  {
 	     m->items[i]->text_x = m->style->item_iclass->padding.left + maxx2;
 	     m->items[i]->text_w = maxx1;
 	     m->items[i]->text_y = (maxh - m->items[i]->text_h) / 2;
 	     if (m->items[i]->icon_win)
-		EMoveWindow(disp, m->items[i]->icon_win,
+		EMoveWindow(m->items[i]->icon_win,
 			    m->style->item_iclass->padding.left +
 			    ((maxx2 - m->items[i]->icon_w) / 2),
 			    ((maxh - m->items[i]->icon_h) / 2));
@@ -794,7 +793,7 @@ MenuRealize(Menu * m)
 	     m->items[i]->text_w = maxx1;
 	     m->items[i]->text_y = (maxh - m->items[i]->text_h) / 2;
 	     if (m->items[i]->icon_win)
-		EMoveWindow(disp, m->items[i]->icon_win,
+		EMoveWindow(m->items[i]->icon_win,
 			    maxw - m->style->item_iclass->padding.right -
 			    maxx2 + ((maxx2 - w) / 2), ((maxh - h) / 2));
 	  }
@@ -845,7 +844,7 @@ MenuRealize(Menu * m)
      }
 
    m->redraw = 1;
-   EResizeWindow(disp, m->win, mmw, mmh);
+   EResizeWindow(m->win, mmw, mmh);
 
    Mode.queue_up = pq;
 }
@@ -872,9 +871,8 @@ MenuRedraw(Menu * m)
 	FreePmapMask(&m->pmm);
 	ImageclassApplyCopy(m->style->bg_iclass, m->win, w, h, 0, 0,
 			    STATE_NORMAL, &m->pmm, 1, ST_MENU);
-	ESetWindowBackgroundPixmap(disp, m->win, m->pmm.pmap);
-	EShapeCombineMask(disp, m->win, ShapeBounding, 0, 0, m->pmm.mask,
-			  ShapeSet);
+	ESetWindowBackgroundPixmap(m->win, m->pmm.pmap);
+	EShapeCombineMask(m->win, ShapeBounding, 0, 0, m->pmm.mask, ShapeSet);
 	for (i = 0; i < m->num; i++)
 	   MenuDrawItem(m, m->items[i], 0);
      }
@@ -949,10 +947,9 @@ MenuDrawItem(Menu * m, MenuItem * mi, char shape)
 	  }
      }
 
-   ESetWindowBackgroundPixmap(disp, mi->win, mi_pmm->pmap);
-   EShapeCombineMask(disp, mi->win, ShapeBounding, 0, 0, mi_pmm->mask,
-		     ShapeSet);
-   XClearWindow(disp, mi->win);
+   ESetWindowBackgroundPixmap(mi->win, mi_pmm->pmap);
+   EShapeCombineMask(mi->win, ShapeBounding, 0, 0, mi_pmm->mask, ShapeSet);
+   EClearWindow(mi->win);
 
    if ((shape) && (m->style->use_item_bg))
       PropagateShapes(m->win);
@@ -988,10 +985,10 @@ MenuShowMasker(Menu * m)
 	EobjSetDesk(eo, EoGetDesk(ewin));
 	EobjSetLayer(eo, 20);
 	EobjListStackLower(eo);
-	XSelectInput(disp, Mode_menus.cover_win,
+	ESelectInput(Mode_menus.cover_win,
 		     ButtonPressMask | ButtonReleaseMask | EnterWindowMask |
 		     LeaveWindowMask);
-	EMapWindow(disp, Mode_menus.cover_win);
+	EMapWindow(Mode_menus.cover_win);
 	EventCallbackRegister(Mode_menus.cover_win, 0, MenuMaskerHandleEvents,
 			      NULL);
 #if 1				/* FIXME - Too expensive */
@@ -1006,7 +1003,7 @@ MenuHideMasker(void)
    if (Mode_menus.cover_win)
      {
 	EobjUnregister(Mode_menus.cover_win);
-	EDestroyWindow(disp, Mode_menus.cover_win);
+	EDestroyWindow(Mode_menus.cover_win);
 	Mode_menus.cover_win = 0;
 	Mode_menus.win_covered = 0;
      }
@@ -1626,7 +1623,7 @@ MenusSetEvents(int on)
 	   continue;
 
 	for (j = 0; j < m->num; j++)
-	   XSelectInput(disp, m->items[j]->win, event_mask);
+	   ESelectInput(m->items[j]->win, event_mask);
      }
 }
 

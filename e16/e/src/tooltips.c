@@ -431,13 +431,13 @@ TooltipShow(ToolTip * tt, const char *text, ActionClass * ac, int x, int y)
      {
 	ix = tt->iclass->padding.left;
 	iy = (h - ih) / 2;
-	EMoveResizeWindow(disp, tt->iwin, ix, iy, iw, ih);
-	EMapWindow(disp, tt->iwin);
+	EMoveResizeWindow(tt->iwin, ix, iy, iw, ih);
+	EMapWindow(tt->iwin);
 	ImageclassApply(tt->tooltippic, tt->iwin, iw, ih, 0, 0, STATE_NORMAL, 0,
 			ST_TOOLTIP);
      }
    else
-      EUnmapWindow(disp, tt->iwin);
+      EUnmapWindow(tt->iwin);
 
    dx = x - VRoot.w / 2;
    dy = y - VRoot.h / 2;
@@ -466,19 +466,19 @@ TooltipShow(ToolTip * tt, const char *text, ActionClass * ac, int x, int y)
 
 	yy = y - ((ady * 10 * dist) / 100);
 	xx = x - (dist * 10 * dx) / (100 * VRoot.w / 2);
-	EMoveWindow(disp, tt->s_win[0], xx - 4, yy - 4);
+	EMoveWindow(tt->s_win[0], xx - 4, yy - 4);
 
 	yy = y - ((ady * 30 * dist) / 100);
 	xx = x - (dist * 30 * dx) / (100 * VRoot.w / 2);
-	EMoveWindow(disp, tt->s_win[1], xx - 8, yy - 8);
+	EMoveWindow(tt->s_win[1], xx - 8, yy - 8);
 
 	yy = y - ((ady * 50 * dist) / 100);
 	xx = x - (dist * 50 * dx) / (100 * VRoot.w / 2);
-	EMoveWindow(disp, tt->s_win[2], xx - 12, yy - 12);
+	EMoveWindow(tt->s_win[2], xx - 12, yy - 12);
 
 	yy = y - ((ady * 80 * dist) / 100);
 	xx = x - (dist * 80 * dx) / (100 * VRoot.w / 2);
-	EMoveWindow(disp, tt->s_win[3], xx - 16, yy - 16);
+	EMoveWindow(tt->s_win[3], xx - 16, yy - 16);
 
 	yy = y - ((ady * 100 * dist) / 100);
 	xx = x - (dist * 100 * dx) / (100 * VRoot.w / 2);
@@ -511,16 +511,16 @@ TooltipShow(ToolTip * tt, const char *text, ActionClass * ac, int x, int y)
 	adx = adx / dx;
 	xx = x - ((adx * 10 * dist) / 100);
 	yy = y - (dist * 10 * dy) / (100 * VRoot.h / 2);
-	EMoveWindow(disp, tt->s_win[0], xx - 4, yy - 4);
+	EMoveWindow(tt->s_win[0], xx - 4, yy - 4);
 	xx = x - ((adx * 30 * dist) / 100);
 	yy = y - (dist * 30 * dy) / (100 * VRoot.h / 2);
-	EMoveWindow(disp, tt->s_win[1], xx - 8, yy - 8);
+	EMoveWindow(tt->s_win[1], xx - 8, yy - 8);
 	xx = x - ((adx * 50 * dist) / 100);
 	yy = y - (dist * 50 * dy) / (100 * VRoot.h / 2);
-	EMoveWindow(disp, tt->s_win[2], xx - 12, yy - 12);
+	EMoveWindow(tt->s_win[2], xx - 12, yy - 12);
 	xx = x - ((adx * 80 * dist) / 100);
 	yy = y - (dist * 80 * dy) / (100 * VRoot.h / 2);
-	EMoveWindow(disp, tt->s_win[3], xx - 16, yy - 16);
+	EMoveWindow(tt->s_win[3], xx - 16, yy - 16);
 	xx = x - ((adx * 100 * dist) / 100);
 	yy = y - (dist * 100 * dy) / (100 * VRoot.h / 2);
 	if (adx < 0)
@@ -534,7 +534,7 @@ TooltipShow(ToolTip * tt, const char *text, ActionClass * ac, int x, int y)
 	hh = (h / 2) + ((dy * h) / (VRoot.h / 2));
      }
 
-   EMoveResizeWindow(disp, tt->win, xx - ww, yy - hh, w, h);
+   EMoveResizeWindow(tt->win, xx - ww, yy - hh, w, h);
 
    ImageclassApply(tt->s_iclass[0], tt->s_win[0], 8, 8, 0, 0, STATE_NORMAL, 0,
 		   ST_TOOLTIP);
@@ -546,11 +546,11 @@ TooltipShow(ToolTip * tt, const char *text, ActionClass * ac, int x, int y)
 		   ST_TOOLTIP);
    ImageclassApply(tt->iclass, tt->win, w, h, 0, 0, STATE_NORMAL, 0,
 		   ST_TOOLTIP);
-   EMapRaised(disp, tt->s_win[0]);
-   EMapRaised(disp, tt->s_win[1]);
-   EMapRaised(disp, tt->s_win[2]);
-   EMapRaised(disp, tt->s_win[3]);
-   EMapRaised(disp, tt->win);
+   EMapRaised(tt->s_win[0]);
+   EMapRaised(tt->s_win[1]);
+   EMapRaised(tt->s_win[2]);
+   EMapRaised(tt->s_win[3]);
+   EMapRaised(tt->win);
    ecore_x_sync();
 
    xx = tt->iclass->padding.left + iw;
@@ -655,11 +655,11 @@ TooltipHide(ToolTip * tt)
       return;
 
    tt->visible = 0;
-   EUnmapWindow(disp, tt->win);
-   EUnmapWindow(disp, tt->s_win[0]);
-   EUnmapWindow(disp, tt->s_win[1]);
-   EUnmapWindow(disp, tt->s_win[2]);
-   EUnmapWindow(disp, tt->s_win[3]);
+   EUnmapWindow(tt->win);
+   EUnmapWindow(tt->s_win[0]);
+   EUnmapWindow(tt->s_win[1]);
+   EUnmapWindow(tt->s_win[2]);
+   EUnmapWindow(tt->s_win[3]);
    ecore_x_sync();
 }
 
