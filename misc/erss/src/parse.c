@@ -1,17 +1,18 @@
 #include "erss.h"
 #include "parse.h"
 #include "parse_config.h"
+#include "tooltip.h"
 
 Ewd_List *list = NULL;
-Article *item = NULL;
+Erss_Article *item = NULL;
 
 
 void erss_story_new ()
 {
-	item = malloc (sizeof (Article));
+	item = malloc (sizeof (Erss_Article));
   item->description = NULL;
   item->url = NULL;
-  memset(item, 0, sizeof (Article));
+  memset(item, 0, sizeof (Erss_Article));
 }
 
 void erss_story_end ()
@@ -21,6 +22,7 @@ void erss_story_end ()
 
 void erss_parse_story (xmlDocPtr doc, xmlNodePtr cur)
 {
+	Erss_Tooltip *tt = NULL;
 	char *text;
 	xmlChar *str;
 	int i;
@@ -51,10 +53,10 @@ void erss_parse_story (xmlDocPtr doc, xmlNodePtr cur)
 			evas_object_show (item->obj);
 
 			evas_object_event_callback_add (item->obj,
-					EVAS_CALLBACK_MOUSE_IN, cb_mouse_in, item);
+					EVAS_CALLBACK_MOUSE_IN, erss_mouse_in_cursor_change, NULL);
 			evas_object_event_callback_add (item->obj,
-					EVAS_CALLBACK_MOUSE_OUT, cb_mouse_out, item);
-		
+					EVAS_CALLBACK_MOUSE_OUT, erss_mouse_out_cursor_change, NULL);
+			
 			e_container_element_append(cont, item->obj);
 			edje_object_part_text_set (item->obj, "article", text);
 
@@ -68,7 +70,7 @@ void erss_parse_story (xmlDocPtr doc, xmlNodePtr cur)
 				item->url = strdup (str);
 
 				edje_object_signal_callback_add (item->obj, "exec*", "*",
-						cb_mouse_out_item, item);
+						erss_mouse_click_item, item);
 				edje_object_signal_emit (item->obj, "mouse,in", "article");
 				edje_object_signal_emit (item->obj, "mouse,out", "article");
 
@@ -80,7 +82,15 @@ void erss_parse_story (xmlDocPtr doc, xmlNodePtr cur)
 			if (!strcmp(cur->name, cfg->item_description) && item) {
 				str = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
 
-				item->description = strdup (str);
+				tt = erss_tooltip_new (str);
+		
+				if (item->obj) {
+					evas_object_event_callback_add (item->obj,
+							EVAS_CALLBACK_MOUSE_IN, erss_tooltip_mouse_in, tt);
+					evas_object_event_callback_add (item->obj,
+							EVAS_CALLBACK_MOUSE_OUT, erss_tooltip_mouse_out, tt);
+				}
+				
 				xmlFree (str);
 			}
 		}

@@ -1,11 +1,14 @@
-typedef struct _article {
+
+typedef struct _erss_article Erss_Article;
+
+struct _erss_article {
 	Evas_Object *obj;
 
 	char *url;
 	char *description;
-} Article;
+};
 
-extern Article *item;
+extern Erss_Article *item;
 
 void erss_story_new ();
 void erss_story_end ();

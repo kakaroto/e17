@@ -2,8 +2,8 @@
 #include "parse.h"
 #include "parse_config.h"
 
-Config *cfg = NULL;
-Rc_Config *rc = NULL;
+Erss_Config *cfg = NULL;
+Erss_Rc_Config *rc = NULL;
 
 
 int erss_parse_rc_file ()
@@ -15,8 +15,8 @@ int erss_parse_rc_file ()
 
 	snprintf (file, PATH_MAX, "%s/.erssrc", getenv ("HOME"));
 
-	rc = malloc (sizeof (Rc_Config));
-	memset(rc, 0, sizeof(Rc_Config));
+	rc = malloc (sizeof (Erss_Rc_Config));
+	memset(rc, 0, sizeof (Erss_Rc_Config));
 	
 	if (!rc)
 		return FALSE;
@@ -48,6 +48,10 @@ int erss_parse_rc_file ()
 				str = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
 				if (str)
 					rc->proxy_port = atoi (str);
+			} else if (!strcmp(cur->name, "tooltip_delay")) {
+				str = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+				if (str)
+					rc->tooltip_delay = atof (str);
 			}
 
 			if (str) {
@@ -71,6 +75,9 @@ int erss_parse_rc_file ()
 		rc->browser = strdup(getenv("BROWSER"));
 	if (!rc->browser)
 		rc->browser = strdup("mozilla");
+
+	if (!rc->tooltip_delay)
+		rc->tooltip_delay = 1.5;
 
 	/* 
 	 * If there is no rc file return false for us to know
@@ -133,8 +140,8 @@ void erss_parse_config_file (char *file)
 	/*
 	 * Now allocate and fill the config struct
 	 */
-	cfg = malloc (sizeof (Config));
-	memset(cfg, 0, sizeof (Config));
+	cfg = malloc (sizeof (Erss_Config));
+	memset(cfg, 0, sizeof (Erss_Config));
 
 	if (!cfg) {
 		fprintf (stderr, "%s error: out of memory\n", PACKAGE);
