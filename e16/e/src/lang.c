@@ -23,6 +23,10 @@
  */
 #include "E.h"
 
+#if HAVE_LANGINFO_CODESET
+#include <langinfo.h>
+#endif
+
 #if 0				/* Not used yet */
 
 #include <iconv.h>
@@ -51,9 +55,11 @@ Eiconv(const char *txt, size_t len)
 void
 LangInit(void)
 {
-   const char         *str;
+   const char         *enc_env, *enc_int;
 
+   /* Set up things according to env vars */
    setlocale(LC_ALL, "");
+
    bindtextdomain(PACKAGE, LOCALEDIR);
    textdomain(PACKAGE);
 
@@ -64,18 +70,22 @@ LangInit(void)
    /* I dont want any internationalisation of my numeric input & output */
    setlocale(LC_NUMERIC, "C");
 
-   str = getenv("E_CHARSET");
-#if 0
-   if (str == NULL)
-      str = "UTF-8";
+   /* Get the environment character encoding */
+#if HAVE_LANGINFO_CODESET
+   enc_env = nl_langinfo(CODESET);
+#else
+   enc_env = "ISO-8859-1";
 #endif
-   if (str)
-     {
-	bind_textdomain_codeset(PACKAGE, str);
-#if 0
-	iconv_cd = iconv_open(str, "ISO_8859-1");
-#endif
-     }
+
+   /* Debug - possibility to set desired internal representation */
+   enc_int = getenv("E_CHARSET");
+   if (enc_int)
+      bind_textdomain_codeset(PACKAGE, enc_int);
+   else
+      enc_int = enc_env;
+
+   if (!strcasecmp(enc_int, "utf8") || !strcasecmp(enc_int, "utf-8"))
+      Mode.text.utf8 = 1;
 }
 
 #if 0				/* Not used yet */

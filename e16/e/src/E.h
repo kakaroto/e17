@@ -1275,6 +1275,10 @@ typedef struct
       char                swap;
       int                 swapcoord_x, swapcoord_y;
    } move;
+   struct
+   {
+      char                utf8;	/* Use UTF8 internally */
+   } text;
    int                 debug;
    int                 mode;
    char                place;

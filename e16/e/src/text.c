@@ -28,6 +28,34 @@ static void         TextDrawRotTo(Window win, Drawable * drawable, int x, int y,
 static void         TextDrawRotBack(Window win, Drawable drawable, int x, int y,
 				    int w, int h, TextState * ts);
 
+static int
+ExTextExtents(XFontSet font_set, const char *string, int len,
+	      XRectangle * oir, XRectangle * olr)
+{
+#ifdef X_HAVE_UTF8_STRING
+   if (Mode.text.utf8)
+     {
+	return Xutf8TextExtents(font_set, string, len, oir, olr);
+     }
+#endif
+
+   return XmbTextExtents(font_set, string, len, oir, olr);
+}
+
+static void
+ExDrawString(Display * display, Drawable d, XFontSet font_set, GC
+	     gc, int x, int y, const char *string, int len)
+{
+#ifdef X_HAVE_UTF8_STRING
+   if (Mode.text.utf8)
+     {
+	Xutf8DrawString(display, d, font_set, gc, x, y, string, len);
+	return;
+     }
+#endif
+   XmbDrawString(display, d, font_set, gc, x, y, string, len);
+}
+
 TextState          *
 TextGetState(TextClass * tclass, int active, int sticky, int state)
 {
@@ -139,91 +167,91 @@ void
 TextStateLoadFont(TextState * ts)
 {
    EDBUG(5, "TextStateLoadFont");
+
+   if (!ts->fontname)
+      EDBUG_RETURN_;
+
+   /* Quit if already done */
 #if USE_FNLIB
    if ((ts->font) || (ts->efont) || (ts->xfont) || (ts->xfontset))
 #else
    if ((ts->efont) || (ts->xfont) || (ts->xfontset))
 #endif
       EDBUG_RETURN_;
-   if (!ts->fontname)
-      EDBUG_RETURN_;
+
 #if USE_FNLIB
-   if ((!ts->font) && (!ts->efont))
-      ts->font = Fnlib_load_font(pFnlibData, ts->fontname);
+   /* Try Fnlib */
+   ts->font = Fnlib_load_font(pFnlibData, ts->fontname);
+   if (ts->font)
+      goto done;
 #endif
-#if USE_FNLIB
-   if ((!ts->font) && (!ts->efont))
-#else
-   if (!ts->efont)
-#endif
-     {
-	char                s[4096], w[4046], *s2, *ss;
 
-	s2 = NULL;
-	s2 = Estrdup(ts->fontname);
-	ss = strchr(s2, '/');
-	if (ss)
-	  {
-	     *ss = ' ';
-	     word(s2, 1, w);
-	     Esnprintf(s, sizeof(s), "ttfonts/%s.ttf", w);
-	     word(s2, 2, w);
-	     ss = FindFile(s);
-	     if (ss)
-	       {
-		  ts->efont = Efont_load(ss, atoi(w));
-		  Efree(ss);
-	       }
-	  }
-	if (s2)
-	   Efree(s2);
-     }
-#if USE_FNLIB
-   if ((!ts->font) && (!ts->efont))
-#else
-   if (!ts->efont)
-#endif
-     {
-	if ((!ts->xfont) && (strchr(ts->fontname, ',') == NULL))
-	  {
-	     ts->xfont = XLoadQueryFont(disp, ts->fontname);
-	  }
-	else if (!ts->xfontset)
-	  {
-	     int                 i, missing_cnt, font_cnt;
-	     char              **missing_list, *def_str, **fn;
-	     XFontStruct       **fs;
+   /* Try FreeType */
+   {
+      char                s[4096], w[4046], *s2, *ss;
 
-	     ts->xfontset =
-		XCreateFontSet(disp, ts->fontname, &missing_list, &missing_cnt,
-			       &def_str);
-	     if (missing_cnt)
-	       {
-		  XFreeStringList(missing_list);
-		  /* EDBUG_RETURN_; */
-	       }
+      s2 = NULL;
+      s2 = Estrdup(ts->fontname);
+      ss = strchr(s2, '/');
+      if (ss)
+	{
+	   *ss = ' ';
+	   word(s2, 1, w);
+	   Esnprintf(s, sizeof(s), "ttfonts/%s.ttf", w);
+	   word(s2, 2, w);
+	   ss = FindFile(s);
+	   if (ss)
+	     {
+		ts->efont = Efont_load(ss, atoi(w));
+		Efree(ss);
+	     }
+	}
+      if (s2)
+	 Efree(s2);
+   }
+   if (ts->efont)
+      goto done;
 
-	     if (!ts->xfontset)
-	       {
-		  ts->xfontset =
-		     XCreateFontSet(disp, "fixed", &missing_list, &missing_cnt,
-				    &def_str);
-		  if (missing_cnt)
-		     XFreeStringList(missing_list);
-	       }
+   /* Try X11 XCreateFontSet */
+   {
+      int                 i, missing_cnt, font_cnt;
+      char              **missing_list, *def_str, **fn;
+      XFontStruct       **fs;
 
-	     if (ts->xfontset)
-	       {
-		  ts->xfontset_ascent = 0;
-		  font_cnt = XFontsOfFontSet(ts->xfontset, &fs, &fn);
-		  for (i = 0; i < font_cnt; i++)
-		     ts->xfontset_ascent =
-			MAX(fs[i]->ascent, ts->xfontset_ascent);
-	       }
-	  }
-	if (!ts->xfont)
-	   ts->xfont = XLoadQueryFont(disp, "fixed");
-     }
+      ts->xfontset = XCreateFontSet(disp, ts->fontname, &missing_list,
+				    &missing_cnt, &def_str);
+      if (missing_cnt)
+	 XFreeStringList(missing_list);
+
+      if (!ts->xfontset)
+	{
+	   ts->xfontset = XCreateFontSet(disp, "fixed", &missing_list,
+					 &missing_cnt, &def_str);
+	   if (missing_cnt)
+	      XFreeStringList(missing_list);
+	}
+
+      if (ts->xfontset)
+	{
+	   ts->xfontset_ascent = 0;
+	   font_cnt = XFontsOfFontSet(ts->xfontset, &fs, &fn);
+	   for (i = 0; i < font_cnt; i++)
+	      ts->xfontset_ascent = MAX(fs[i]->ascent, ts->xfontset_ascent);
+	}
+   }
+   if (ts->xfontset)
+      goto done;
+
+   /* Try X11 XLoadQueryFont */
+   if (strchr(ts->fontname, ',') == NULL)
+      ts->xfont = XLoadQueryFont(disp, ts->fontname);
+   if (ts->xfont)
+      goto done;
+
+   /* This one really should succeed! */
+   ts->xfont = XLoadQueryFont(disp, "fixed");
+
+ done:
    EDBUG_RETURN_;
 }
 
@@ -282,8 +310,8 @@ TextSize(TextClass * tclass, int active, int sticky, int state,
 	  {
 	     XRectangle          ret1, ret2;
 
-	     XmbTextExtents(ts->xfontset, lines[i], strlen(lines[i]), &ret1,
-			    &ret2);
+	     ExTextExtents(ts->xfontset, lines[i], strlen(lines[i]), &ret1,
+			   &ret2);
 	     *height += ret2.height;
 	     if (ret2.width > *width)
 		*width = ret2.width;
@@ -476,8 +504,8 @@ TextDraw(TextClass * tclass, Window win, int active, int sticky, int state,
 	  {
 	     XRectangle          ret1, ret2;
 
-	     XmbTextExtents(ts->xfontset, lines[i], strlen(lines[i]), &ret1,
-			    &ret2);
+	     ExTextExtents(ts->xfontset, lines[i], strlen(lines[i]), &ret1,
+			   &ret2);
 	     if (ret2.width > textwidth_limit)
 	       {
 		  char               *new_line;
@@ -548,8 +576,8 @@ TextDraw(TextClass * tclass, Window win, int active, int sticky, int state,
 				   lines[i] + ((len - nuke_count) / 2) +
 				   nuke_count);
 			 }
-		       XmbTextExtents(ts->xfontset, new_line, strlen(new_line),
-				      &ret1, &ret2);
+		       ExTextExtents(ts->xfontset, new_line, strlen(new_line),
+				     &ret1, &ret2);
 		    }
 		  Efree(lines[i]);
 		  lines[i] = new_line;
@@ -584,26 +612,26 @@ TextDraw(TextClass * tclass, Window win, int active, int sticky, int state,
 	       {
 		  EAllocColor(&ts->bg_col);
 		  XSetForeground(disp, gc, ts->bg_col.pixel);
-		  XmbDrawString(disp, drawable, ts->xfontset, gc, offset_x + 1,
-				offset_y + 1, lines[i], strlen(lines[i]));
+		  ExDrawString(disp, drawable, ts->xfontset, gc, offset_x + 1,
+			       offset_y + 1, lines[i], strlen(lines[i]));
 	       }
 	     else if (ts->effect == 2)
 	       {
 		  EAllocColor(&ts->bg_col);
 		  XSetForeground(disp, gc, ts->bg_col.pixel);
-		  XmbDrawString(disp, drawable, ts->xfontset, gc, offset_x - 1,
-				offset_y, lines[i], strlen(lines[i]));
-		  XmbDrawString(disp, drawable, ts->xfontset, gc, offset_x + 1,
-				offset_y, lines[i], strlen(lines[i]));
-		  XmbDrawString(disp, drawable, ts->xfontset, gc, offset_x,
-				offset_y - 1, lines[i], strlen(lines[i]));
-		  XmbDrawString(disp, drawable, ts->xfontset, gc, offset_x,
-				offset_y + 1, lines[i], strlen(lines[i]));
+		  ExDrawString(disp, drawable, ts->xfontset, gc, offset_x - 1,
+			       offset_y, lines[i], strlen(lines[i]));
+		  ExDrawString(disp, drawable, ts->xfontset, gc, offset_x + 1,
+			       offset_y, lines[i], strlen(lines[i]));
+		  ExDrawString(disp, drawable, ts->xfontset, gc, offset_x,
+			       offset_y - 1, lines[i], strlen(lines[i]));
+		  ExDrawString(disp, drawable, ts->xfontset, gc, offset_x,
+			       offset_y + 1, lines[i], strlen(lines[i]));
 	       }
 	     EAllocColor(&ts->fg_col);
 	     XSetForeground(disp, gc, ts->fg_col.pixel);
-	     XmbDrawString(disp, drawable, ts->xfontset, gc, offset_x, offset_y,
-			   lines[i], strlen(lines[i]));
+	     ExDrawString(disp, drawable, ts->xfontset, gc, offset_x, offset_y,
+			  lines[i], strlen(lines[i]));
 
 	     TextDrawRotBack(win, drawable, xx - 1,
 			     yy - (ts->xfontset_ascent) - 1, ret2.width + 2,
