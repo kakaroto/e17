@@ -286,24 +286,10 @@ progressive_load_cb(Imlib_Image im, char percent, int update_x, int update_y,
    }
 
    if (progwin->im_angle != 0)
-      feh_imlib_render_image_part_on_drawable_at_size_with_rotation(progwin->
-                                                                    bg_pmap,
-                                                                    im,
-                                                                    update_x,
-                                                                    update_y,
-                                                                    update_w,
-                                                                    update_h,
-                                                                    dest_x +
-                                                                    update_x,
-                                                                    dest_y +
-                                                                    update_y,
-                                                                    update_w,
-                                                                    update_h,
-                                                                    progwin->
-                                                                    im_angle,
-                                                                    1,
-                                                                    feh_imlib_image_has_alpha
-                                                                    (im), 0);
+      feh_imlib_render_image_part_on_drawable_at_size_with_rotation
+         (progwin->bg_pmap, im, update_x, update_y, update_w, update_h,
+          dest_x + update_x, dest_y + update_y, update_w, update_h,
+          progwin->im_angle, 1, feh_imlib_image_has_alpha(im), 0);
    else
       feh_imlib_render_image_part_on_drawable_at_size(progwin->bg_pmap, im,
                                                       update_x, update_y,
@@ -486,7 +472,7 @@ feh_set_bg(char *fil, Imlib_Image im, int centered, int scaled, int desktop,
            int set)
 {
    FILE *eesh = NULL;
-   char buf[1024];
+   char *eeshloc;
    char bgname[20];
    int num = (int) rand();
    char bgfil[4096];
@@ -495,9 +481,8 @@ feh_set_bg(char *fil, Imlib_Image im, int centered, int scaled, int desktop,
    D_ENTER;
 
    snprintf(bgname, sizeof(bgname), "%d_FEHBG", num);
-   sprintf(buf, "%s/eesh",
-           getenv("EBIN") ? getenv("EBIN") : PREFIX "/enlightenment/bin");
-
+   eeshloc = feh_wm_get_eesh_location();
+   
    if (fil == NULL)
    {
       snprintf(bgfil, sizeof(bgfil), "%s/.%s.jpg", getenv("HOME"), bgname);
@@ -507,9 +492,11 @@ feh_set_bg(char *fil, Imlib_Image im, int centered, int scaled, int desktop,
    }
    D(("Setting bg %s\n", fil));
 
-   if ((stat(buf, &st)) != -1)
+   if(eeshloc != NULL)
+      eesh = popen(eeshloc, "w");
+   
+   if(eesh)
    {
-      eesh = popen(buf, "w");
       fprintf(eesh, "background %s bg.file %s\n", bgname, fil);
 
       if (scaled)
@@ -586,33 +573,57 @@ feh_set_bg(char *fil, Imlib_Image im, int centered, int scaled, int desktop,
    D_RETURN_;
 }
 
+char *
+feh_wm_get_eesh_location(void)
+{
+   static char loc[1024];
+   char *eroot;
+   struct stat st;
+
+   D_ENTER;
+
+   /* is E actually running? */
+   eroot = getenv("EROOT");
+   if((eroot == NULL) || (eroot[0]=='\0'))
+      D_RETURN(NULL);
+
+   snprintf(loc, sizeof(loc), "%s/eesh", getenv("EBIN"));
+
+   if ((stat(loc, &st)) == -1)
+   {
+      snprintf(loc, sizeof(loc), "%s/eesh", PREFIX "/enlightenment/bin");
+      if ((stat(loc, &st)) == -1)
+         D_RETURN(NULL);
+   }
+
+   printf("found eesh at %s\n", loc);
+   D_RETURN(loc);
+}
+
 int
 feh_wm_get_num_desks(void)
 {
    FILE *eesh;
    char buf[1024];
-   char ebuf[1024];
+   char *eeshlocation;
    int desks = 0;
-   struct stat st;
    char *ptr;
 
    D_ENTER;
 
-   snprintf(ebuf, sizeof(ebuf), "%s/eesh",
-            getenv("EBIN") ? getenv("EBIN") : PREFIX "/enlightenment/bin");
-   snprintf(buf, sizeof(buf), "%s/eesh -ewait \"num_desks ?\"",
-            getenv("EBIN") ? getenv("EBIN") : PREFIX "/enlightenment/bin");
-
-   if ((stat(ebuf, &st)) == -1)
+   eeshlocation = feh_wm_get_eesh_location();
+   if (eeshlocation == NULL)
       D_RETURN(-1);
+
+   snprintf(buf, sizeof(buf), "%s -ewait \"num_desks ?\"", eeshlocation);
 
    eesh = popen(buf, "r");
    if (eesh == NULL)
       D_RETURN(-1);
 
    fgets(buf, sizeof(buf), eesh);
-   ptr=buf;
-   while(ptr && !isdigit(*ptr))
+   ptr = buf;
+   while (ptr && !isdigit(*ptr))
       ptr++;
    desks = atoi(ptr);
 
