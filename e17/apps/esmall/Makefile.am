@@ -1,4 +1,5 @@
 SUBDIRS = \
-	src
+	src \
+	amx
 
 EXTRA_DIST = configure configure.in
