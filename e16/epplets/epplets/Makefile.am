@@ -188,6 +188,7 @@ E-MoonClock-data/E-MoonClock-58.png E-MoonClock-data/E-MoonClock-59.png \
 E-MoonClock-data/E-MoonClock-60.png E-Mountbox-data/E-Mountbox-bg.png \
 E-Mountbox-data/E-Mountbox-blockdev.png E-Mountbox-data/E-Mountbox-cd.png \
 E-Mountbox-data/E-Mountbox-floppy.png E-Mountbox-data/E-Mountbox-zip.png \
+E-Mountbox-data/E-Mountbox-jazz.png \
 E-Power-data/E-Power-Bat-0.png E-Power-data/E-Power-Bat-10.png \
 E-Power-data/E-Power-Bat-100.png E-Power-data/E-Power-Bat-20.png \
 E-Power-data/E-Power-Bat-30.png E-Power-data/E-Power-Bat-40.png \
