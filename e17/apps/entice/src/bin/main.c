@@ -226,9 +226,11 @@ main(int argc, char *argv[])
       if (!entice_ipc_init(argc, ((const char **) argv)))
       {
          entice_config_geometry_get(&x, &y, &w, &h);
+#if HAVE_ECORE_EVAS_GL
          if (entice_config_engine_get() == GL_X11)
             ee = ecore_evas_gl_x11_new(NULL, 0, x, y, w, h);
          else
+#endif
             ee = ecore_evas_software_x11_new(NULL, 0, x, y, w, h);
 
          if (ee)
