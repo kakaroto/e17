@@ -947,6 +947,7 @@ int execvp_with_timeout(int timeout, char *file, char **argv)
    {
       /* child */
       execvp(file, argv);
+      fprintf(stderr, "execvp %s (%s)\n", file, strerror(errno));
       exit(2);
    }
    else if (pid > 0)
