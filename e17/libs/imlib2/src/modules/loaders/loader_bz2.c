@@ -21,7 +21,7 @@ static int uncompress_file (FILE *fp, int dest)
 {
 	BZFILE *bf;
 	DATA8 outbuf[OUTBUF_SIZE];
-	int bytes, error;
+	int bytes, error, ret = 1;
 
 	bf = BZ2_bzReadOpen (&error, fp, 0, 0, NULL, 0);
 
@@ -35,13 +35,18 @@ static int uncompress_file (FILE *fp, int dest)
 
 		if (error == BZ_OK || error == BZ_STREAM_END)
 			write (dest, outbuf, bytes);
-		else
+
+		if (error == BZ_STREAM_END)
 			break;
+		else if (error != BZ_OK) {
+			ret = 0;
+			break;
+		}
 	}
 
 	BZ2_bzReadClose (&error, bf);
 
-	return 1;
+	return ret;
 }
 
 char load (ImlibImage *im, ImlibProgressFunction progress,
