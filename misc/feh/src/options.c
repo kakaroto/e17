@@ -61,8 +61,9 @@ init_parse_options(int argc, char **argv)
    opt.next_button = 1;
    opt.zoom_button = 2;
    opt.pan_button = 3;
+   opt.no_pan_ctrl_mask = 0;
    opt.menu_button = 3;
-   opt.no_menu_ctrl_mask = 0;
+   opt.menu_ctrl_mask = 0;
    opt.reload_button = 0;
 
    opt.rotate_button = 2;
@@ -330,7 +331,7 @@ feh_parse_option_array(int argc, char **argv)
       {"preload", 0, 0, 'p'},
       {"reverse", 0, 0, 'n'},
       {"thumbnails", 0, 0, 't'},
-      {"no-menu-ctrl-mask", 0, 0, '5'},     /* okay */
+      {"menu-ctrl-mask", 0, 0, '5'},     /* okay */
       {"scale-down", 0, 0, '.'},     /* okay */
       /* options with values */
       {"output", 1, 0, 'o'},                /* okay */
@@ -364,6 +365,7 @@ feh_parse_option_array(int argc, char **argv)
       {"no-rotate-ctrl-mask", 0, 0, '7'},
       {"blur-button", 1, 0, '8'},
       {"no-blur-ctrl-mask", 0, 0, '9'},
+      {"no-pan-ctrl-mask", 0, 0, '$'},
   	  {"reload-button", 1, 0, '0'},
       {"start-at", 1, 0, '|'},
       {"rcfile", 1, 0, '_'},
@@ -589,7 +591,7 @@ feh_parse_option_array(int argc, char **argv)
            opt.menu_button = atoi(optarg);
            break;
         case '5':
-           opt.no_menu_ctrl_mask = 1;
+           opt.menu_ctrl_mask = 1;
            break;
         case '6':
            opt.rotate_button = atoi(optarg);
@@ -602,6 +604,9 @@ feh_parse_option_array(int argc, char **argv)
            break;
         case '9':
            opt.no_blur_ctrl_mask = 1;
+           break;
+        case '$':
+           opt.no_pan_ctrl_mask = 1;
            break;
         case '|':
            opt.start_list_at = atoi(optarg);
@@ -849,12 +854,14 @@ show_usage(void)
            "                            mode (defaults to 2, usually the middle button).\n"
            "  -3, --pan-button B        Use button B to pan the current image in any\n"
            "                            mode (defaults to 3, usually the right button).\n"
+           "      --no-pan-ctrl-mask    Don't require CTRL+Button for panning in\n"
+           "                            any mode -- just use the button (default=off).\n"
            "  -4, --menu-button B       Use CTRL+Button B to activate the menu in any\n"
            "                            mode.  Set to 0 for any button.  This option\n"
            "                            is disabled if the -N or --no-menus option is set\n"
            "                            (defaults to 3, usually the right button).\n"
-           "  -5, --no-menu-ctrl-mask   Don't require CTRL+Button for menu activation in\n"
-           "                            any mode -- just use the button (default=off).\n"
+           "  -5, --menu-ctrl-mask      Require CTRL+Button for menu activation in\n"
+           "                            any mode (default=off).\n"
            "  -6, --rotate-button B     Use CTRL+Button B to rotate the current image in\n"
            "                            any mode (default=2).\n"
            "  -7, --no-rotate-ctrl-mask Don't require CTRL+Button for rotation in\n"
@@ -940,11 +947,12 @@ show_usage(void)
            " button 3 activates the context-sensitive menu.  Buttons can be redefined\n"
            " with the -1 through -9 (or --*-button) cmdline flags.  All you people\n"
            " with million button mice can remove the ctrl mask with the --no-*-ctrl-mask\n"
-           " options.\n" "\n" "See 'man feh' for more detailed information\n"
+           " options.\n"
+           "\n" "See 'man feh' for more detailed information\n"
            "\n"
            "This program is free software see the file COPYING for licensing info.\n"
            "Copyright Tom Gilbert (and various contributors) 1999, 2000\n"
-           "Email bugs to <gilbertt@linuxbrit.co.uk>\n");
+           "Email bugs to <feh_sucks@linuxbrit.co.uk>\n");
    exit(0);
 }
 

@@ -1,3 +1,15 @@
+Sun Oct 22 02:01:33 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Swapped the default right mouse button config. You now hold
+	ctrl to pan, or don't to get menus.
+	* Changed --no-menu-ctrl-mask to --menu-ctrl-mask
+	* Added --no-pan-ctrl-mask
+	* Use the options feh --no-pan-ctrl-mask --menu-ctrl-mask to
+	simulate the old behaviour, or add that line to ~/.fehrc to keep
+	it.
+	* Need to change all the --*-ctrl-mask options to booleans so it
+	is properly configurable, I think.
+
 Sat Oct 21 23:22:09 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Fixed the -k option (to save files viewed by http). It now saves

@@ -81,13 +81,14 @@ struct __fehoptions
    unsigned char zoom_button;
    unsigned char pan_button;
    unsigned char menu_button;
-   unsigned char no_menu_ctrl_mask;
+   unsigned char menu_ctrl_mask;
 
    unsigned char rotate_button;
    unsigned char blur_button;
    unsigned char reload_button;
    unsigned char no_rotate_ctrl_mask;
    unsigned char no_blur_ctrl_mask;
+   unsigned char no_pan_ctrl_mask;
 
    int thumb_w;
    int thumb_h;
