@@ -261,7 +261,7 @@ progressive_load_cb(Imlib_Image im, char percent, int update_x, int update_y,
       {
          feh_draw_checks(progwin);
          if (!new)
-            XResizeWindow(disp, progwin->win, progwin->w, progwin->h);
+            winwidget_resize(progwin, progwin->w, progwin->h);
       }
       XSetWindowBackgroundPixmap(disp, progwin->win, progwin->bg_pmap);
       XClearWindow(disp, progwin->win);

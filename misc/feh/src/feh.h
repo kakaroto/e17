@@ -297,6 +297,7 @@ void winwidget_show(winwidget winwid);
 void winwidget_hide(winwidget winwid);
 void winwidget_destroy_all(void);
 void winwidget_render_image(winwidget winwid);
+void winwidget_resize(winwidget winwid, int w, int h);
 void winwidget_setup_pixmaps(winwidget winwid);
 void winwidget_update_title(winwidget ret);
 winwidget winwidget_get_from_window(Window win);

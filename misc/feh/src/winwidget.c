@@ -307,7 +307,7 @@ winwidget_render_image(winwidget winwid)
       {
          winwid->h = winwid->im_h;
          winwid->w = winwid->im_w;
-         XResizeWindow(disp, winwid->win, winwid->im_w, winwid->im_h);
+         winwidget_resize(winwid, winwid->w, winwid->h);
       }
    }
 
@@ -390,6 +390,22 @@ winwidget_show(winwidget winwid)
    D(("Window mapped\n"));
    winwid->visible = 1;
    D_RETURN_;
+}
+
+void winwidget_resize(winwidget winwid, int w, int h)
+{
+   XEvent ev;
+   
+    D_ENTER;
+    if(!winwid)
+          D_RETURN_;
+    XResizeWindow(disp, winwid->win, w, h);
+    /* wait for the window to resize */
+    D(("Waiting for window to resize\n"));
+    XMaskEvent(disp, StructureNotifyMask, &ev);
+    D(("Window resized\n"));
+    
+    D_RETURN_;
 }
 
 void
