@@ -10,39 +10,47 @@
 #include "retina.h"
 #include "../img/listing.xpm"
 
+extern Evas_Object e_area, e_br_bg;
+extern Evas_Object e_scr_t;
+extern GtkWidget *window;
+extern int br_status;
+
+void
+r_browser_dismiss()
+{
+}
+
 void
 r_browser_init()
 {
-	extern GtkWidget *bwin, *list;
-	GtkWidget *fr, *btn, *sep, *logo, *b1;
-	GdkPixmap *gpix;
-	GdkBitmap *gbit;
+	int w, h;
+	e_br_bg = evas_add_image_from_file(e_area, "../img/browser_bg.png");
+	evas_set_layer(e_area, e_br_bg, 1);
+	evas_get_image_size(e_area, e_br_bg, &w, &h);
+	evas_set_image_fill(e_area, e_br_bg, 0, 0, w, h);
+	evas_move(e_area, e_br_bg, 0, 0);
+	evas_resize(e_area, e_br_bg, 9999, 9999);
 
-	bwin = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-	gtk_window_set_title(GTK_WINDOW(bwin), "Retina - Browser");
-	gtk_container_set_border_width(GTK_CONTAINER(bwin), 2);
-	
-	b1 = gtk_vbox_new(FALSE, 0);
-	gtk_container_add(GTK_CONTAINER(bwin), b1);
-	gtk_widget_show(b1);
+	/* setup scrollbar images */
+	e_scr_t = evas_add_image_from_file(e_area, "../img/scrollbar_t.png");
+	evas_set_layer(e_area, e_scr_t, 1);
 
-	fr = gtk_frame_new(NULL);
-	gtk_frame_set_shadow_type(GTK_FRAME(fr), GTK_SHADOW_IN);
-	gtk_box_pack_start(GTK_BOX(b1), fr, FALSE, FALSE, 1);
-	gtk_widget_show(fr);
+	r_scrollbar_render();
+}
 
-	gpix = gdk_pixmap_create_from_xpm_d(GDK_ROOT_PARENT(), &gbit,
-			NULL, listing_xpm);
-	logo = gtk_pixmap_new(gpix, gbit);
-	gtk_widget_set_usize(GTK_WIDGET(logo), 200, 25);
-	gtk_widget_show(logo);
-	gtk_container_add(GTK_CONTAINER(fr), logo);
+void
+r_scrollbar_render()
+{
+	int w, h;
+	w = window->allocation.width;
+	h = window->allocation.height;
 
-	{
-		gchar *listt[2] = {"  Thumbnail  ","  Filename  "};
-		list = gtk_clist_new_with_titles(2, listt);
-		gtk_box_pack_start(GTK_BOX(b1), list, TRUE, TRUE, 1);
-		gtk_widget_set_usize(GTK_WIDGET(list), 200, 250);
-		gtk_widget_show(list);
-	}
+	evas_set_image_fill(e_area, e_scr_t, 0, 0, 12, h);
+	evas_resize(e_area, e_scr_t, 12, h);
+	evas_move(e_area, e_scr_t, w-12, 0);
+}
+
+void
+r_browser_add(char *img)
+{
 }

@@ -13,9 +13,10 @@ extern Evas e_area;
 extern Evas_Object e_img;
 extern Evas_Object e_checks;
 extern Evas_Object e_btn1, e_btn2, e_btn3, e_btn4, e_btn5, e_bs;
+extern Evas_Object e_br_bg, e_scr_t;
 extern GtkWidget *area, *window;
 extern GtkWidget *bwin;
-extern int tb_status;
+extern int tb_status, br_status;
 extern int mouse_button;
 extern guint current_idle;
 
@@ -24,14 +25,12 @@ void
 r_cb_init()
 {
 	/* Attack callbacks to objects */
-	//evas_callback_add(e_area, e_img, CALLBACK_MOUSE_DOWN, r_cb_m_down, NULL);
 	evas_callback_add(e_area, e_btn1, CALLBACK_MOUSE_DOWN, r_b1_click, NULL);
 	evas_callback_add(e_area, e_btn2, CALLBACK_MOUSE_DOWN, r_b2_click, NULL);
 	evas_callback_add(e_area, e_btn3, CALLBACK_MOUSE_DOWN, r_b3_click, NULL);
 	evas_callback_add(e_area, e_btn4, CALLBACK_MOUSE_DOWN, r_b4_click, NULL);
 	evas_callback_add(e_area, e_btn5, CALLBACK_MOUSE_DOWN, r_b5_click, NULL);
 
-	//evas_callback_add(e_area, e_img, CALLBACK_MOUSE_UP, r_m_up, NULL);
 	evas_callback_add(e_area, e_btn1, CALLBACK_MOUSE_UP, r_m_up, NULL);
 	evas_callback_add(e_area, e_btn2, CALLBACK_MOUSE_UP, r_m_up, NULL);
 	evas_callback_add(e_area, e_btn3, CALLBACK_MOUSE_UP, r_m_up, NULL);
@@ -92,7 +91,23 @@ r_b2_click(void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
 void
 r_b3_click(void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
 {
-  gtk_widget_show(bwin);
+	int w, h, x, y, imgw, imgh;
+
+	switch(br_status){
+		case 0:
+			evas_show(e_area, e_br_bg);
+			evas_show(e_area, e_scr_t);
+			br_status = 1;
+			break;
+
+		case 1:
+			evas_hide(e_area, e_br_bg);
+			evas_hide(e_area, e_scr_t);
+			br_status = 0;
+			break;
+	}
+	
+	QUEUE_DRAW;
 }
 
 void

@@ -78,7 +78,7 @@ r_evas_config_event(GtkWidget *area, GdkEventConfigure *event)
    /* The Configure event */
 	 int w, h, x, y;
 	 int imgw, imgh;
-   
+
    /* If we have an e_img, center it in the window */
    if(e_img){
 		 evas_get_image_size(e_area, e_img, &imgw, &imgh);
@@ -101,6 +101,9 @@ r_evas_config_event(GtkWidget *area, GdkEventConfigure *event)
    }
 
 	 evas_move(e_area, e_img, x, y);
+
+	 /* move the scrollbar for the browser window */
+	 r_scrollbar_render();
    
    evas_set_output_size(e_area,
 			event->width,
@@ -174,7 +177,13 @@ r_evas_load(char *img)
 	 evas_callback_add(e_area, e_img, CALLBACK_MOUSE_UP, r_m_up, NULL);
    
    gtk_widget_set_usize(GTK_WIDGET(area), w, h);
-   gtk_widget_set_usize(GTK_WIDGET(window), w, h);
+
+	 if(w < 300)
+		 gtk_widget_set_usize(GTK_WIDGET(window), 300, h+30);
+	 else if(h < 180)
+		 gtk_widget_set_usize(GTK_WIDGET(window), w+30, 180);
+	 else
+		 gtk_widget_set_usize(GTK_WIDGET(window), w, h);
    
    QUEUE_DRAW;
 

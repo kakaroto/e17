@@ -14,6 +14,7 @@ Evas e_area;
 Evas_Object e_img;
 Evas_Object e_checks;
 Evas_Object e_btn1, e_btn2, e_btn3, e_btn4, e_btn5, e_bs;
+Evas_Object e_br_bg, e_scr_t;
 
 /* Global GTK+ Variables */
 GtkWidget *window, *area;
@@ -28,7 +29,7 @@ guint current_idle = 0;
 /* Other Globals */
 char window_title[255] = "Retina - Nothing Loaded...";
 char image_title[255];
-int tb_status = 0;
+int tb_status = 0, br_status = 0;
 int mouse_button;
 
 int

@@ -15,6 +15,7 @@ r_gtk_init()
    extern GtkWidget *window, *area, *filesel;
    
    window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	 gtk_window_set_default_size(GTK_WINDOW(window), 300, 180);
    gtk_window_set_title(GTK_WINDOW(window), "Retina - Nothing Loaded...");
    
    area = gtk_drawing_area_new();
