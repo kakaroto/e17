@@ -2921,3 +2921,11 @@ Sat Jun 19 03:51:03 CEST 2004
 Another attempt to fix some window placement and saved settings issues.
 Transparency tweaks.
 Attempt to fix stacking and other problems with transients.
+
+-------------------------------------------------------------------------------
+
+Sun Jun 20 11:18:00 CEST 2004
+(Kim)
+
+Selective Transparency - config updates (Jaron Omega <jaron@sock-stream.net>).
+Enable continuing startup when there are errors in ...e_session-XXXXXX.
