@@ -1,42 +1,30 @@
 #include <Ewd.h>
 
+#define EWD_HASH_CHAIN_MAX 3
+
 #define EWD_HASH_INCREASE(hash) ((hash && hash->size < PRIME_MAX) ? \
-		((double)hash->nodes / (double)ewd_prime_table[hash->size]) > \
+		(hash->nodes / ewd_prime_table[hash->size]) > \
 		EWD_HASH_CHAIN_MAX : FALSE)
 #define EWD_HASH_REDUCE(hash) ((hash && hash->size > PRIME_MIN) ? \
 		(double)hash->nodes / (double)ewd_prime_table[hash->size-1] \
-		< ((double)EWD_HASH_CHAIN_MAX * 3.0 / 8.0) : FALSE)
-
-#define EWD_HASH_KEY_IN_TABLE(table, key) (table == NULL ? FALSE : \
-		((key < (table->base + table->size)) && (key >= table->base)))
-
-#define FIND_TABLE(index) (index > PRIME_MIN ? \
-                ((log((double)index) / log(2.0)) - 4) : 0)
+		< ((double)EWD_HASH_CHAIN_MAX * 0.375) : FALSE)
 
 
 /* Private hash manipulation functions */
-static int ewd_hash_add_node(Ewd_Hash *hash, Ewd_Hash_Node *node);
-static Ewd_Hash_Node * ewd_hash_get_node(Ewd_Hash *hash, void *key);
-static int ewd_hash_increase(Ewd_Hash *hash);
-static int ewd_hash_decrease(Ewd_Hash *hash);
-static Ewd_Hash_Node *ewd_hash_get_with_size(Ewd_Hash *hash, void *key,
-		int size);
-static int ewd_hash_find_table(Ewd_Hash *hash, unsigned int index);
-static Ewd_Hash_Node *ewd_hash_get_bucket(Ewd_Hash *hash, Ewd_List *bucket,
+static int _ewd_hash_add_node(Ewd_Hash *hash, Ewd_Hash_Node *node);
+static Ewd_Hash_Node * _ewd_hash_get_node(Ewd_Hash *hash, void *key);
+static int _ewd_hash_increase(Ewd_Hash *hash);
+static int _ewd_hash_decrease(Ewd_Hash *hash);
+inline int _ewd_hash_rehash(Ewd_Hash *hash, Ewd_List **old_table, int old_size);
+static int _ewd_hash_bucket_destroy(Ewd_List *list, Ewd_Free_Cb keyd,
+		Ewd_Free_Cb valued);
+inline Ewd_Hash_Node * _ewd_hash_get_bucket(Ewd_Hash *hash, Ewd_List *bucket,
 		void *key);
-static int ewd_hash_table_rehash(Ewd_Hash *hash, Ewd_Hash_Table *table);
 
-
-/* Private hash table manipulation functions */
-static Ewd_Hash_Table *ewd_hash_table_new(int size);
-static int ewd_hash_table_init(Ewd_Hash_Table *table, int size);
-static int ewd_hash_table_destroy(Ewd_Hash_Table *table, Ewd_Free_Cb keyd,
+static Ewd_Hash_Node *_ewd_hash_node_new(void *key, void *value);
+static int _ewd_hash_node_init(Ewd_Hash_Node *node, void *key, void *value);
+static int _ewd_hash_node_destroy(Ewd_Hash_Node *node, Ewd_Free_Cb keyd,
 		Ewd_Free_Cb valued);
-static Ewd_Hash_Node *ewd_hash_node_new(void *key, void *value);
-static int ewd_hash_node_init(Ewd_Hash_Node *node, void *key, void *value);
-static int ewd_hash_node_destroy(Ewd_Hash_Node *node, Ewd_Free_Cb keyd,
-		Ewd_Free_Cb valued);
-
 
 /*
  * Description: Create and initialize a new hash
@@ -76,7 +64,9 @@ int ewd_hash_init(Ewd_Hash *hash, Ewd_Hash_Cb hash_func, Ewd_Compare_Cb compare)
 	if (compare)
 		hash->compare = compare;
 
-	hash->tables[0] = ewd_hash_table_new(ewd_prime_table[0]);
+	hash->buckets = (Ewd_List **)malloc(ewd_prime_table[0] *
+			sizeof(Ewd_List *));
+	memset(hash->buckets, 0, ewd_prime_table[0] * sizeof(Ewd_List *));
 
 	EWD_INIT_LOCKS(hash);
 
@@ -94,7 +84,9 @@ int ewd_hash_set_free_key(Ewd_Hash *hash, Ewd_Free_Cb function)
 	CHECK_PARAM_POINTER_RETURN("hash", hash, FALSE);
 	CHECK_PARAM_POINTER_RETURN("function", function, FALSE);
 
+	EWD_WRITE_LOCK(hash);
 	hash->free_key = function;
+	EWD_WRITE_UNLOCK(hash);
 
 	return TRUE;
 }
@@ -110,7 +102,9 @@ int ewd_hash_set_free_value(Ewd_Hash *hash, Ewd_Free_Cb function)
 	CHECK_PARAM_POINTER_RETURN("hash", hash, FALSE);
 	CHECK_PARAM_POINTER_RETURN("function", function, FALSE);
 
+	EWD_WRITE_LOCK(hash);
 	hash->free_value = function;
+	EWD_WRITE_UNLOCK(hash);
 
 	return TRUE;
 }
@@ -130,14 +124,16 @@ int ewd_hash_set(Ewd_Hash *hash, void *key, void *value)
 
 	CHECK_PARAM_POINTER_RETURN("hash", hash, FALSE);
 
-	node = ewd_hash_get_node(hash, key);
+	EWD_WRITE_LOCK(hash);
+	node = _ewd_hash_get_node(hash, key);
 	if (node)
 		node->value = value;
 	else {
-		node = ewd_hash_node_new(key, value);
+		node = _ewd_hash_node_new(key, value);
 		if (node)
-			ret = ewd_hash_add_node(hash, node);
+			ret = _ewd_hash_add_node(hash, node);
 	}
+	EWD_WRITE_UNLOCK(hash);
 
 	return ret;
 }
@@ -153,15 +149,15 @@ void ewd_hash_destroy(Ewd_Hash *hash)
 
 	CHECK_PARAM_POINTER("hash", hash);
 
-	EWD_WRITE_LOCK_STRUCT(hash);
+	EWD_WRITE_LOCK(hash);
 
-	while (i <= hash->size) {
-		ewd_hash_table_destroy(hash->tables[i], hash->free_key,
-				hash->free_value);
+	while (i < ewd_prime_table[hash->size]) {
+		_ewd_hash_bucket_destroy(hash->buckets[i],
+				hash->free_key, hash->free_value);
 		i++;
 	}
 
-	EWD_WRITE_UNLOCK_STRUCT(hash);
+	EWD_WRITE_UNLOCK(hash);
 	EWD_DESTROY_LOCKS(hash);
 
 	FREE(hash);
@@ -169,31 +165,15 @@ void ewd_hash_destroy(Ewd_Hash *hash)
 	return;
 }
 
-/*
- * Description: Free the hash table and the data contained inside it
- * Parameters: 1. table - the table to destroy
- * Returns: TRUE on success, FALSE on error
- */
 static int
-ewd_hash_table_destroy(Ewd_Hash_Table *table, Ewd_Free_Cb keyd,
-		Ewd_Free_Cb valued)
+_ewd_hash_bucket_destroy(Ewd_List *list, Ewd_Free_Cb keyd, Ewd_Free_Cb valued)
 {
-	int i;
-	Ewd_List *list;
+	Ewd_Hash_Node *node;
 
-	CHECK_PARAM_POINTER_RETURN("table", table, FALSE);
+	CHECK_PARAM_POINTER_RETURN("list", list, FALSE);
 
-	for (i = 0; i < table->size; i++) {
-		Ewd_Hash_Node *node;
-		list = table->table[i];
-
-		if (list) {
-			ewd_list_goto_first(list);
-			while ((node = EWD_HASH_NODE(ewd_list_next(list)))
-					!= NULL)
-				ewd_hash_node_destroy(node, keyd, valued);
-		}
-	}
+	while ((node = ewd_list_remove_first(list)) != NULL)
+		_ewd_hash_node_destroy(node, keyd, valued);
 
 	return TRUE;
 }
@@ -205,10 +185,8 @@ ewd_hash_table_destroy(Ewd_Hash_Table *table, Ewd_Free_Cb keyd,
  * Returns: FALSE on error, TRUE on success
  */
 static int
-ewd_hash_add_node(Ewd_Hash *hash, Ewd_Hash_Node *node)
+_ewd_hash_add_node(Ewd_Hash *hash, Ewd_Hash_Node *node)
 {
-	int i = 0;
-	Ewd_Hash_Table *table;
 	unsigned int hash_val;
 
 	CHECK_PARAM_POINTER_RETURN("hash", hash, FALSE);
@@ -216,41 +194,20 @@ ewd_hash_add_node(Ewd_Hash *hash, Ewd_Hash_Node *node)
 
 	/* Check to see if the hash needs to be resized */
 	if (EWD_HASH_INCREASE(hash))
-		ewd_hash_increase(hash);
+		_ewd_hash_increase(hash);
 	else if (EWD_HASH_REDUCE(hash))
-		ewd_hash_decrease(hash);
+		_ewd_hash_decrease(hash);
 
 	/* Compute the position in the table */
 	hash_val = hash->hash_func(node->key) % ewd_prime_table[hash->size];
 
-	/* Traverse the list of tables until the one containing calculated
-	 * index is reached */
-	/*
-	while (i <= hash->size && !EWD_HASH_KEY_IN_TABLE(hash->tables[i],
-				hash_val))
-		i++;
-	*/
-	i = FIND_TABLE(hash_val);
-	table = hash->tables[i];
-	if (!table)
-		return FALSE;
-
-	while (table->base + table->size < hash_val) {
-		i++;
-		table = hash->tables[i];
-		if (!table)
-			return FALSE;
-	}
-
-	/* Find the index into the table and create a list if none exists */
-	hash_val -= table->base;
-	if (!table->table[hash_val])
-		table->table[hash_val] = ewd_list_new();
+	/* Create the list if it's not already present */
+	if (!hash->buckets[hash_val])
+		hash->buckets[hash_val] = ewd_list_new();
 
 	/* Append the node to the list at the index position */
-	if (!ewd_list_append(table->table[hash_val], node))
+	if (!ewd_list_prepend(hash->buckets[hash_val], node))
 		return FALSE;
-
 	hash->nodes++;
 
 	return TRUE;
@@ -269,11 +226,13 @@ void *ewd_hash_get(Ewd_Hash *hash, void *key)
 
 	CHECK_PARAM_POINTER_RETURN("hash", hash, FALSE);
 
-	node = ewd_hash_get_node(hash, key);
+	node = _ewd_hash_get_node(hash, key);
+	if (!node)
+		return NULL;
 
-	EWD_READ_LOCK_STRUCT(node);
-	data = (node ? node->value : NULL);
-	EWD_READ_UNLOCK_STRUCT(node);
+	EWD_READ_LOCK(node);
+	data = node->value;
+	EWD_READ_UNLOCK(node);
 
 	return data;
 }
@@ -285,71 +244,20 @@ void *ewd_hash_get(Ewd_Hash *hash, void *key)
  * Returns: NULL on error, node corresponding to key on success
  */
 static Ewd_Hash_Node *
-ewd_hash_get_node(Ewd_Hash *hash, void *key)
-{
-	int size;
-	Ewd_Hash_Node *node = NULL;
-
-	CHECK_PARAM_POINTER_RETURN("hash", hash, NULL);
-
-	size = hash->size;
-	do {
-		node = ewd_hash_get_with_size(hash, key, ewd_prime_table[size]);
-		size--;
-	} while (size >= 0 && !node);
-
-	return node;
-}
-
-/*
- * Description: Search for a node using the given table size
- * Parameters: 1. hash - the hash table to search for the key
- *             2. key - the key to search the hash table
- *             3. size - the size of the hash table for this search
- * Returns: The found node on success, NULL on error or not found
- */
-static Ewd_Hash_Node *
-ewd_hash_get_with_size(Ewd_Hash *hash, void *key, int size)
+_ewd_hash_get_node(Ewd_Hash *hash, void *key)
 {
 	unsigned int hash_val;
-	Ewd_Hash_Table *table = NULL;
-	Ewd_List *list = NULL;
 	Ewd_Hash_Node *node = NULL;
 
 	CHECK_PARAM_POINTER_RETURN("hash", hash, NULL);
 
-	hash_val = hash->hash_func(key) % size;
-	table = hash->tables[ewd_hash_find_table(hash, hash_val)];
-/*	printf("%d: %d\n", hash_val, ewd_hash_find_table(hash, hash_val)); */
-	if (table) {
-		hash_val -= table->base;
-		list = table->table[hash_val];
-	}
-
-	if (list)
-		node = ewd_hash_get_bucket(hash, list, key);
+	EWD_READ_LOCK(hash);
+	hash_val = hash->hash_func(key) % ewd_prime_table[hash->size];
+	if (hash->buckets[hash_val])
+		node = _ewd_hash_get_bucket(hash, hash->buckets[hash_val], key);
+	EWD_READ_UNLOCK(hash);
 
 	return node;
-}
-
-/*
- * Description: Determine the table that contains the given index
- * Parameters: 1. hash - the hash table to search
- *             2. index - the index to determine the needed table
- * Returns: -1 on error, a hash table index number on success
- */
-static int
-ewd_hash_find_table(Ewd_Hash *hash, unsigned int index)
-{
-	int i;
-
-	CHECK_PARAM_POINTER_RETURN("hash", hash, -1);
-
-	i = FIND_TABLE(index);
-	while (index >= ewd_prime_table[i] && i <= hash->size)
-		i++;
-
-	return i;
 }
 
 /*
@@ -359,53 +267,67 @@ ewd_hash_find_table(Ewd_Hash *hash, unsigned int index)
  *             3. key - the key to search for in the list
  * Returns: NULL on error or not found, the found node on success
  */
-static Ewd_Hash_Node *
-ewd_hash_get_bucket(Ewd_Hash *hash, Ewd_List *bucket, void *key)
+inline Ewd_Hash_Node *
+_ewd_hash_get_bucket(Ewd_Hash *hash, Ewd_List *bucket, void *key)
 {
 	Ewd_Hash_Node *node = NULL;
 
+	EWD_READ_LOCK(hash);
+	ewd_list_goto_first(bucket);
 	if (hash->compare) {
 		while ((node = ewd_list_next(bucket)) != NULL) {
-			if (hash->compare(node->key, key) == 0)
+			EWD_READ_LOCK(node);
+			if (hash->compare(node->key, key) == 0) {
+				EWD_READ_UNLOCK(node);
+				EWD_READ_UNLOCK(hash);
 				return node;
+			}
+			EWD_READ_UNLOCK(node);
 		}
 	}
 	else {
 		while ((node = ewd_list_next(bucket)) != NULL) {
-			if (node->key == key)
+			EWD_READ_LOCK(node);
+			if (node->key == key) {
+				EWD_READ_UNLOCK(node);
+				EWD_READ_UNLOCK(hash);
 				return node;
+			}
+			EWD_READ_UNLOCK(node);
 		}
 	}
+	EWD_READ_UNLOCK(hash);
 
 	return NULL;
 }
 
 /*
- * Description: Increase the size of the hash table by > 2 * current size
+ * Description: Increase the size of the hash table by approx.  2 * current size
  * Parameters: 1. hash - the hash table to increase the size of
  * Returns: TRUE on success, FALSE on error
  */
 static int
-ewd_hash_increase(Ewd_Hash *hash)
+_ewd_hash_increase(Ewd_Hash *hash)
 {
-	Ewd_Hash_Table *table, *last;
-
 	CHECK_PARAM_POINTER_RETURN("hash", hash, FALSE);
 
+	/* Max size reached so return FALSE */
 	if (hash->size == PRIME_TABLE_MAX)
 		return FALSE;
 
-	table = ewd_hash_table_new(ewd_prime_table[hash->size + 1] -
-			ewd_prime_table[hash->size]);
-	if (!table)
-		return FALSE;
-
-	last = hash->tables[hash->size];
-	if (last)
-		table->base = last->base + last->size;
-
 	hash->size++;
-	hash->tables[hash->size] = table;
+	hash->buckets = (Ewd_List **)realloc(hash->buckets,
+			ewd_prime_table[hash->size] * sizeof(Ewd_List *));
+	if (!hash->buckets) {
+		hash->size--;
+		return FALSE;
+	}
+
+	memset(hash->buckets + ewd_prime_table[hash->size - 1], 0,
+			(ewd_prime_table[hash->size] -
+			 ewd_prime_table[hash->size - 1]) * sizeof(Ewd_List *));
+	hash->nodes = 0;
+	_ewd_hash_rehash(hash, hash->buckets, hash->size - 1);
 
 	return TRUE;
 }
@@ -416,21 +338,38 @@ ewd_hash_increase(Ewd_Hash *hash)
  * Returns: TRUE on success, FALSE on error
  */
 static int
-ewd_hash_decrease(Ewd_Hash *hash)
+_ewd_hash_decrease(Ewd_Hash *hash)
 {
-	Ewd_Hash_Table *table;
+	Ewd_List **old;
 
 	CHECK_PARAM_POINTER_RETURN("hash", hash, FALSE);
 
 	if (ewd_prime_table[hash->size] == PRIME_MIN)
 		return FALSE;
 
-	table = hash->tables[hash->size];
 	hash->size--;
-	ewd_hash_table_rehash(hash, table);
-	ewd_hash_table_destroy(table, hash->free_key, hash->free_value);
+	old = hash->buckets;
+	hash->buckets = (Ewd_List **)malloc(ewd_prime_table[hash->size] *
+			sizeof(Ewd_List *));
+	if (!hash->buckets) {
+		hash->buckets = old;
+		hash->size++;
+		return FALSE;
+	}
+	memset(hash->buckets, 0, ewd_prime_table[hash->size]
+			* sizeof(Ewd_List *));
+	hash->nodes = 0;
 
-	return TRUE;
+	if (_ewd_hash_rehash(hash, old, hash->size - 1)) {
+		int i;
+
+		for (i = 0; i < ewd_prime_table[hash->size - 1]; i++)
+			ewd_list_destroy(old[i]);
+		FREE(old);
+		return TRUE;
+	}
+
+	return FALSE;
 }
 
 /*
@@ -439,65 +378,34 @@ ewd_hash_decrease(Ewd_Hash *hash)
  *             2. table - the table to remove the nodes from and place in hash
  * Returns: TRUE on success, FALSE on success
  */
-static int
-ewd_hash_table_rehash(Ewd_Hash *hash, Ewd_Hash_Table *table)
+inline int
+_ewd_hash_rehash(Ewd_Hash *hash, Ewd_List **old_table, int old_size)
 {
 	int i;
 	Ewd_Hash_Node *node;
+	Ewd_List *old;
 
+	printf("Rehashing now: %d nodes\n", hash->nodes);
 	CHECK_PARAM_POINTER_RETURN("hash", hash, FALSE);
-	CHECK_PARAM_POINTER_RETURN("table", table, FALSE);
+	CHECK_PARAM_POINTER_RETURN("old_table", old_table, FALSE);
 
-	for (i = 0; i < table->size; i++) {
-		while ((node = EWD_HASH_NODE(ewd_list_remove(table->table[i])))
-				!= NULL)
-			ewd_hash_add_node(hash, node);
-		ewd_list_destroy(table->table[i]);
-		table->table[i] = NULL;
+	for (i = 0; i < ewd_prime_table[old_size]; i++) {
+		/* Hash into a new list to avoid loops of rehashing the same
+		 * nodes */
+		old = old_table[i];
+		old_table[i] = NULL;
+
+		/* Loop through re-adding each node to the hash table */
+		while (old && (node = ewd_list_remove_last(old))) {
+/*			EWD_WRITE_UNLOCK(hash); */
+			_ewd_hash_add_node(hash, node);
+/*			EWD_WRITE_LOCK(hash); */
+		}
+
+		/* Now free up the old list space */
+		if (old)
+			ewd_list_destroy(old);
 	}
-
-	return TRUE;
-}
-
-/*
- * Description: Create and initialize a new table
- * Parameters: 1. size - the size of the table to be created
- * Returns: NULL on error, a new table on success
- */
-static Ewd_Hash_Table *
-ewd_hash_table_new(int size)
-{
-	Ewd_Hash_Table *table;
-
-	table = (Ewd_Hash_Table *)malloc(sizeof(Ewd_Hash_Table));
-	if (!table)
-		return NULL;
-
-	if (!ewd_hash_table_init(table, size)) {
-		FREE(table);
-		return NULL;
-	}
-
-	return table;
-}
-
-/*
- * Description: Initialize a table to some sane starting value
- * Parameters: 1. table - the table to initialize
- * Returns: TRUE on success, FALSE on error
- */
-static int
-ewd_hash_table_init(Ewd_Hash_Table *table, int size)
-{
-	CHECK_PARAM_POINTER_RETURN("table", table, FALSE);
-
-	memset(table, 0, sizeof(Ewd_Hash_Table));
-
-	table->table = (Ewd_List **)malloc(size * sizeof(Ewd_List *));
-	if (!table->table)
-		return FALSE;
-
-	table->size = size;
 
 	return TRUE;
 }
@@ -509,7 +417,7 @@ ewd_hash_table_init(Ewd_Hash_Table *table, int size)
  * Returns: NULL on error, a new hash node on success
  */
 static Ewd_Hash_Node *
-ewd_hash_node_new(void *key, void *value)
+_ewd_hash_node_new(void *key, void *value)
 {
 	Ewd_Hash_Node *node;
 
@@ -517,7 +425,7 @@ ewd_hash_node_new(void *key, void *value)
 	if (!node)
 		return NULL;
 
-	if (!ewd_hash_node_init(node, key, value)) {
+	if (!_ewd_hash_node_init(node, key, value)) {
 		FREE(node);
 		return NULL;
 	}
@@ -533,7 +441,7 @@ ewd_hash_node_new(void *key, void *value)
  * Returns: TRUE on success, FALSE on error
  */
 static int
-ewd_hash_node_init(Ewd_Hash_Node *node, void *key, void *value)
+_ewd_hash_node_init(Ewd_Hash_Node *node, void *key, void *value)
 {
 	CHECK_PARAM_POINTER_RETURN("node", node, FALSE);
 
@@ -551,7 +459,8 @@ ewd_hash_node_init(Ewd_Hash_Node *node, void *key, void *value)
  * Returns: TRUE on success, FALSE on error
  */
 static int
-ewd_hash_node_destroy(Ewd_Hash_Node *node, Ewd_Free_Cb keyd, Ewd_Free_Cb valued)
+_ewd_hash_node_destroy(Ewd_Hash_Node *node, Ewd_Free_Cb keyd,
+		Ewd_Free_Cb valued)
 {
 	CHECK_PARAM_POINTER_RETURN("node", node, FALSE);
 

@@ -45,20 +45,13 @@ int main()
         }
 /*	printf("Got through the first loop\n"); */
 
-	times(&end_buf);
-	sys_use = end_buf.tms_stime - start_buf.tms_stime;
-	user_use = end_buf.tms_utime - start_buf.tms_utime;
-
-	printf("Used %ld ms of system time at halfway point\n", sys_use);
-	printf("Used %ld ms of user time at halfway point\n", user_use);
-
 	while (--i) {
 		int value;
 
-		printf("Key: %d\t", i);
+/*		printf("Key: %d\t", i); */
 		value = (int)HASH_GET(hash, (void *)i);
-		printf("Value: %d\n", value);
-		fflush(stdout);
+/*		printf("Value: %d\n", value); */
+/*	       	fflush(stdout); */
 
 	}
 /*	printf("Got through the second loop\n"); */

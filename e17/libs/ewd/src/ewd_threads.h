@@ -28,14 +28,14 @@ if (structure) { \
 	pthread_cond_destroy(&structure->readers_cond); \
 }
 
-#define EWD_READ_LOCK_STRUCT(structure) \
+#define EWD_READ_LOCK(structure) \
 if (structure) { \
 	pthread_mutex_lock(&structure->readers_mutex); \
 	structure->readers++; \
 	pthread_mutex_unlock(&structure->readers_mutex); \
 }
 
-#define EWD_READ_UNLOCK_STRUCT(structure) \
+#define EWD_READ_UNLOCK(structure) \
 if (structure) { \
 	pthread_mutex_lock(&structure->readers_mutex); \
 	if (--structure->readers == 0) \
@@ -43,7 +43,7 @@ if (structure) { \
 	pthread_mutex_unlock(&structure->readers_mutex); \
 }
 
-#define EWD_WRITE_LOCK_STRUCT(structure) \
+#define EWD_WRITE_LOCK(structure) \
 if (structure) { \
 	pthread_mutex_lock(&structure->readers_mutex); \
 	pthread_mutex_lock(&structure->writers_mutex); \
@@ -53,7 +53,7 @@ if (structure) { \
 	pthread_mutex_unlock(&structure->readers_mutex); \
 }
 
-#define EWD_WRITE_UNLOCK_STRUCT(structure) \
+#define EWD_WRITE_UNLOCK(structure) \
 if (structure) \
 	pthread_mutex_unlock(&structure->writers_mutex); \
 
@@ -70,10 +70,10 @@ if (function) { \
 
 #define EWD_DECLARE_LOCKS
 #define EWD_INIT_LOCKS(structure)
-#define EWD_READ_LOCK_STRUCT(structure)
-#define EWD_READ_UNLOCK_STRUCT(structure)
-#define EWD_WRITE_LOCK_STRUCT(structure)
-#define EWD_WRITE_UNLOCK_STRUCT(structure)
+#define EWD_READ_LOCK(structure)
+#define EWD_READ_UNLOCK(structure)
+#define EWD_WRITE_LOCK(structure)
+#define EWD_WRITE_UNLOCK(structure)
 #define EWD_THREAD_CREATE(function, args)
 #define EWD_DESTROY_LOCKS(structure)
 

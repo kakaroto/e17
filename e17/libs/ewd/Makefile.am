@@ -4,7 +4,7 @@ SUBDIRS = src test
 
 MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess ewd-config.h.in \
 			config.sub configure install-sh ltconfig ltmain.sh \
-			missing mkinstalldirs stamp-h.in
+			missing mkinstalldirs stamp-h.in config.h.in
 
 dist-hook:
 	if test -d data; then \

@@ -26,13 +26,12 @@ if (debug >= DEBUG_LEVEL) \
 #define   CHECK_PARAM_POINTER_RETURN(sparam, param, ret) \
 if (!(param)) \
 { \
-  fprintf(stderr, "***** %s Developer Warning ***** :\n" \
+  fprintf(stderr, "***** Developer Warning ***** :\n" \
                   "\tThis program is calling:\n\n" \
                   "\t%s();\n\n" \
                   "\tWith the parameter:\n\n" \
                   "\t%s\n\n" \
-                  "\tbeing NULL. Please fix your program.\n", PACKAGE, \
-								  __FUNCTION__,\
+                  "\tbeing NULL. Please fix your program.\n", __FUNCTION__,\
 								  sparam); \
   fflush(stdout); \
   return ret; \
@@ -43,13 +42,12 @@ if (!(param)) \
 #define   CHECK_PARAM_POINTER(sparam, param) \
 if (!(param)) \
 { \
-  fprintf(stderr, "***** %s Developer Warning ***** :\n" \
+  fprintf(stderr, "***** Developer Warning ***** :\n" \
                   "\tThis program is calling:\n\n" \
                   "\t%s();\n\n" \
                   "\tWith the parameter:\n\n" \
                   "\t%s\n\n" \
-                  "\tbeing NULL. Please fix your program.\n", PACKAGE, \
-								 __FUNCTION__, \
+                  "\tbeing NULL. Please fix your program.\n", __FUNCTION__, \
 								 sparam); \
   fflush(stdout); \
   return; \
