@@ -42,7 +42,7 @@ typedef unsigned long big_type;
  * The last six characters of TEMPLATE must be "XXXXXX";
  * they are replaced with a string that makes the filename unique.
  * Returns a file descriptor open on the file for reading and writing.  */
-int
+int 
 Emkstemp(char *template)
 {
    static const char   letters[]
@@ -154,7 +154,7 @@ Match;
 
 Match              *matches = NULL;
 
-void
+void 
 SetSMUserThemePath(char *path)
 {
    userthemepath = duplicate(path);
@@ -164,7 +164,7 @@ SetSMUserThemePath(char *path)
  * recieved the new sm_file value from the master_pid process */
 static int          stale_sm_file = 0;
 
-void
+void 
 SetSMFile(char *path)
 {
    if (sm_file)
@@ -189,7 +189,7 @@ GetGenericSMFile(void)
 }
 
 /* This code covers X11R6 and X11R5 clients (xterm, KDE, ...). */
-static void
+static void 
 SaveWindowStates(void)
 {
    EWin              **lst, *ewin;
@@ -251,7 +251,7 @@ SaveWindowStates(void)
      }
 }
 
-static void
+static void 
 LoadWindowStates(void)
 {
    FILE               *f;
@@ -319,7 +319,7 @@ LoadWindowStates(void)
 
 /* These matching rules try to cover everyone with minimal work done
  * for clients that actually comply with the X11R6 ICCCM. */
-void
+void 
 MatchEwinToSM(EWin * ewin)
 {
    int                 i;
@@ -417,7 +417,7 @@ MatchEwinToSM(EWin * ewin)
 }
 
 /* Used when X11R6 session management is not available. */
-void
+void 
 autosave(void)
 {
    if (mode.startup)
@@ -448,9 +448,9 @@ autosave(void)
      {
 /*      char                buf[1024];
  * 
- * * Esnprintf(buf, sizeof(buf) / sizeof(char), "rm %s*", GetSMFile());
- * * 
- * * system(buf); */
+ * * * Esnprintf(buf, sizeof(buf) / sizeof(char), "rm %s*", GetSMFile());
+ * * * 
+ * * * system(buf); */
 	rm(GetGenericSMFile());
      }
 }
@@ -458,7 +458,7 @@ autosave(void)
 #ifndef HAVE_SM
 static void         LogoutCB(int val, void *data);
 
-void
+void 
 SessionInit(void)
 {
    int                 i;
@@ -466,35 +466,35 @@ SessionInit(void)
    LoadWindowStates();
 }
 
-void
+void 
 ProcessICEMSGS(void)
 {
 }
 
-int
+int 
 GetSMfd(void)
 {
    return -1;
 }
 
-void
+void 
 SessionGetInfo(EWin * ewin, Atom atom_change)
 {
 }
 
-void
+void 
 SetSMID(char *smid)
 {
 }
 
-void
+void 
 SaveSession(int shutdown)
 {
    /* don't need */
    /* autosave(); */
 }
 
-static void
+static void 
 LogoutCB(int val, void *data)
 {
    doSMExit(NULL);
@@ -503,7 +503,7 @@ LogoutCB(int val, void *data)
 }
 
 static void         CB_SettingsEscape(int val, void *data);
-static void
+static void 
 CB_SettingsEscape(int val, void *data)
 {
    DialogClose((Dialog *) data);
@@ -511,7 +511,7 @@ CB_SettingsEscape(int val, void *data)
 }
 
 /* This is the original code from actions.c(doExit). */
-void
+void 
 doSMExit(void *params)
 {
    char                s[1024];
@@ -528,10 +528,6 @@ doSMExit(void *params)
       SaveSession(1);
    if ((disp) && ((!params) || ((params) && strcmp((char *)params, "logout"))))
       SetEInfoOnAll();
-
-   /* kill off kde */
-   if (mode.kde_support)
-      KDE_Shutdown();
 
    if (params)
      {
@@ -589,6 +585,9 @@ doSMExit(void *params)
 	  }
 	else if (!strcmp(s, "restart_wm"))
 	  {
+	     /* kill off kde */
+	     if (mode.kde_support)
+		KDE_Shutdown();
 	     AUDIO_PLAY("SOUND_EXIT");
 	     if (sound_fd >= 0)
 		close(sound_fd);
@@ -634,6 +633,9 @@ doSMExit(void *params)
 	     return;
 	  }
      }
+   /* kill off kde */
+   if (mode.kde_support)
+      KDE_Shutdown();
    AUDIO_PLAY("SOUND_EXIT");
    EExit(0);
 }
@@ -660,7 +662,7 @@ static void         callback_save_complete(SmcConn smc_conn,
 static void         callback_shutdown_cancelled(SmcConn smc_conn,
 						SmPointer client_data);
 
-static void
+static void 
 set_save_props(SmcConn smc_conn, int master_flag)
 {
    char               *user = NULL;
@@ -822,7 +824,7 @@ set_save_props(SmcConn smc_conn, int master_flag)
  * so that the SM will restart it in a different theme. Therefore, we include
  * a suicide clause at the end.
  */
-static void
+static void 
 callback_save_yourself2(SmcConn smc_conn, SmPointer client_data)
 {
    char                master_flag = (master_pid == getpid());
@@ -855,7 +857,7 @@ callback_save_yourself2(SmcConn smc_conn, SmPointer client_data)
    client_data = NULL;
 }
 
-static void
+static void 
 callback_save_yourself(SmcConn smc_conn, SmPointer client_data,
 		       int save_style, Bool shutdown, int interact_style,
 		       Bool fast)
@@ -895,7 +897,7 @@ callback_save_yourself(SmcConn smc_conn, SmPointer client_data,
    fast = 0;
 }
 
-static void
+static void 
 callback_die(SmcConn smc_conn, SmPointer client_data)
 {
    if (master_pid == getpid())
@@ -906,14 +908,14 @@ callback_die(SmcConn smc_conn, SmPointer client_data)
    client_data = NULL;
 }
 
-static void
+static void 
 callback_save_complete(SmcConn smc_conn, SmPointer client_data)
 {
    smc_conn = 0;
    client_data = NULL;
 }
 
-static void
+static void 
 callback_shutdown_cancelled(SmcConn smc_conn, SmPointer client_data)
 {
    SmcSaveYourselfDone(smc_conn, False);
@@ -925,7 +927,7 @@ static Atom         atom_wm_client_leader;
 
 static IceConn      ice_conn;
 
-static void
+static void 
 ice_io_error_handler(IceConn connection)
 {
    /* The less we do here the better - the default handler does an
@@ -933,7 +935,7 @@ ice_io_error_handler(IceConn connection)
    connection = 0;
 }
 
-void
+void 
 SessionInit(void)
 {
    static SmPointer    context;
@@ -1003,7 +1005,7 @@ SessionInit(void)
    LoadWindowStates();
 }
 
-void
+void 
 ProcessICEMSGS(void)
 {
    IceProcessMessagesStatus status;
@@ -1032,13 +1034,13 @@ ProcessICEMSGS(void)
      }
 }
 
-int
+int 
 GetSMfd(void)
 {
    return sm_fd;
 }
 
-void
+void 
 SessionGetInfo(EWin * ewin, Atom atom_change)
 {
    char               *s;
@@ -1071,13 +1073,13 @@ SessionGetInfo(EWin * ewin, Atom atom_change)
      }
 }
 
-void
+void 
 SetSMID(char *smid)
 {
    sm_client_id = smid;
 }
 
-static void
+static void 
 LogoutCB(int val, void *data)
 {
    if (sm_conn)
@@ -1093,7 +1095,7 @@ LogoutCB(int val, void *data)
    data = NULL;
 }
 
-void
+void 
 SaveSession(int shutdown)
 {
    /* dont' need anymore */
@@ -1107,7 +1109,7 @@ SaveSession(int shutdown)
 }
 
 static void         CB_SettingsEscape(int val, void *data);
-static void
+static void 
 CB_SettingsEscape(int val, void *data)
 {
    DialogClose((Dialog *) data);
@@ -1123,7 +1125,7 @@ CB_SettingsEscape(int val, void *data)
  * and then restore it on restart. We grab X input via the ext_init_win
  * so the our clients remain frozen while we are down.
  */
-void
+void 
 doSMExit(void *params)
 {
    char                s[1024];
@@ -1132,9 +1134,6 @@ doSMExit(void *params)
    master_flag = (master_pid == getpid())? 1 : 0;
    do_master_kill = 1;
 
-   /* kill off kde */
-   if (mode.kde_support)
-      KDE_Shutdown();
    restarting = True;
 
    s[0] = 0;
@@ -1184,6 +1183,9 @@ doSMExit(void *params)
    else if (!strcmp(s, "restart_wm"))
      {
 	AUDIO_PLAY("SOUND_WAIT");
+	/* kill off kde */
+	if (mode.kde_support)
+	   KDE_Shutdown();
 	XCloseDisplay(disp);
 	disp = NULL;
 	Esnprintf(s, sizeof(s), "exec %s -display %s",
@@ -1265,9 +1267,13 @@ doSMExit(void *params)
    else if (!strcmp((char *)s, "error"))
       EExit(0);
 
+   /* kill off kde */
+   if (mode.kde_support)
+      KDE_Shutdown();
    restarting = False;
    SaveSession(1);
    AUDIO_PLAY("SOUND_EXIT");
    EExit(0);
 }
+
 #endif /* HAVE_SM */

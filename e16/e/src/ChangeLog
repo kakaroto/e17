@@ -3835,3 +3835,11 @@ Thu Oct 28 16:16:36 PDT 1999
 (Raster)
 
 update desktop property even if its sticky.........
+
+-------------------------------------------------------------------------------
+
+Sat Oct 30 12:37:48 PDT 1999
+(Mandrake)
+
+fixed KDE from accidentally closing when we didn't mean to exit.
+
