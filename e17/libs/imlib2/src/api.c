@@ -4663,11 +4663,11 @@ imlib_save_image_with_error_return(const char *filename,
 }
 
 /**
- * @param angle An angle in degree.
+ * @param angle An angle in radians.
  * @return A new image, or NULL.
  * 
  * Creates an new copy of the current image, but rotated by @p angle
- * degrees. On success it returns a valid image handle, otherwise
+ * radians. On success it returns a valid image handle, otherwise
  * NULL. 
  **/
 Imlib_Image
