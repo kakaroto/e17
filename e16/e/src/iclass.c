@@ -386,7 +386,7 @@ static void
 ImageStateMakePmapMask(ImageState * is, Drawable win, PmapMask * pmm,
 		       int make_mask, int w, int h)
 {
-   int                 apply;
+   int                 apply, trans;
    int                 ww, hh;
    PmapMask            pmml;
    Pixmap              mask = 0;
@@ -419,10 +419,12 @@ ImageStateMakePmapMask(ImageState * is, Drawable win, PmapMask * pmm,
    pmm->type = 1;
    pmm->pmap = pmm->mask = 0;
 
+   trans = (Conf.theme.transparency ||
+	    (is->transparent && is->pixmapfillstyle == FILL_STRETCH &&
+	     imlib_image_has_alpha()));
+
 #ifdef ENABLE_TRANSPARENCY
-   if (Conf.theme.transparency ||
-       (is->transparent && is->pixmapfillstyle == FILL_STRETCH &&
-	imlib_image_has_alpha()))
+   if (trans)
      {
 	Window              cr;
 	Pixmap              bg;
@@ -450,7 +452,7 @@ ImageStateMakePmapMask(ImageState * is, Drawable win, PmapMask * pmm,
      }
 #endif
 
-   if (is->pixmapfillstyle == FILL_STRETCH)
+   if (is->pixmapfillstyle == FILL_STRETCH || trans)
      {
 #ifdef ENABLE_TRANSPARENCY
 	if (ii)
@@ -518,7 +520,7 @@ ImageStateMakePmapMask(ImageState * is, Drawable win, PmapMask * pmm,
    if (apply)
      {
 	/* Rendering on drawable */
-	if (is->pixmapfillstyle == FILL_STRETCH)
+	if (is->pixmapfillstyle == FILL_STRETCH || trans)
 	  {
 	     if (pmm->pmap)
 	       {
@@ -543,7 +545,7 @@ ImageStateMakePmapMask(ImageState * is, Drawable win, PmapMask * pmm,
    else
      {
 	/* Making pmap/mask */
-	if (is->pixmapfillstyle == FILL_STRETCH)
+	if (is->pixmapfillstyle == FILL_STRETCH || trans)
 	  {
 	     /* pmap and mask are already rendered at the correct size */
 	  }
