@@ -631,9 +631,9 @@ winwidget_resize(winwidget winwid, int w, int h)
    {
       D(4, ("Really doing a resize\n"));
       /* winwidget_clear_background(winwid); */
-      XResizeWindow(disp, winwid->win, w, h);
       winwid->w = (w > scr->width) ? scr->width : w;
       winwid->h = (h > scr->height) ? scr->height : h;
+      XResizeWindow(disp, winwid->win, winwid->w, winwid->h);
       winwid->had_resize = 1;
    }
    else
