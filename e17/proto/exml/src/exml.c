@@ -336,6 +336,40 @@ char *exml_next(EXML *xml)
 }
 
 /**
+ * Move the current xml to its next sibling, return NULL and move to parent
+ * at the end of the list
+ * @param   xml The xml document
+ * @return  The current xml tag name or NULL
+ * @ingroup EXML_Traversal_Group
+ */
+char *exml_next_nomove(EXML *xml)
+{
+	Ecore_List *p_list;
+	EXML_Node *parent, *cur;
+
+	CHECK_PARAM_POINTER_RETURN("xml", xml, NULL);
+
+	if( xml->current ) {
+		cur = xml->current;
+		parent = cur->parent;
+
+		if( parent ) {
+			p_list = parent->children;
+
+			ecore_list_goto( p_list, xml->current );
+			ecore_list_next( p_list );
+			if( (xml->current = ecore_list_current( p_list )) == NULL ) {
+				xml->current = cur;
+				return NULL;
+			}
+		} else
+			xml->current = NULL;
+	}
+
+	return xml->current ? xml->current->tag : NULL;
+}
+
+/**
  * Move the current xml to its first child if there are children
  * @param   xml The xml document
  * @return  The current xml tag name
