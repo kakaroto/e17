@@ -50,7 +50,8 @@ winwidget_allocate (void)
   return ret;
 }
 
-winwidget winwidget_create_from_image (Imlib_Image * im, char *name)
+winwidget
+winwidget_create_from_image (Imlib_Image * im, char *name)
 {
   winwidget ret = NULL;
 
@@ -79,7 +80,8 @@ winwidget winwidget_create_from_image (Imlib_Image * im, char *name)
   return ret;
 }
 
-winwidget winwidget_create_from_file (char *filename, char *name)
+winwidget
+winwidget_create_from_file (char *filename, char *name)
 {
   winwidget ret = NULL;
 
@@ -133,7 +135,7 @@ winwidget_create_blank_bg (winwidget ret)
   if (ret->blank_im)
     {
       imlib_context_set_image (ret->blank_im);
-      imlib_free_image ();
+      imlib_free_image_and_decache ();
     }
 
   ret->blank_im = imlib_create_image (ret->w, ret->h);
@@ -354,7 +356,8 @@ winwidget_unregister (winwidget win)
     }
 }
 
-winwidget winwidget_get_from_window (Window win)
+winwidget
+winwidget_get_from_window (Window win)
 {
   /* Loop through windows */
   int i;

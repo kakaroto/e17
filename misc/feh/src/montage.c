@@ -114,7 +114,7 @@ init_montage_mode (void)
 	  fprintf (stderr,
 		   PACKAGE
 		   " - WARNING! The image size you requested (%d by %d) is"
-		   " NOT big enough to fit the number of thumbnails specified"
+		   " NOT big\n      enough to fit the number of thumbnails specified"
 		   " (%d).\nNot all images will be shown (only %d). May I recommend a"
 		   " size of %d by %d?\n",
 		   w, h, file_num, im_per_row * im_per_col, rec_w, rec_h);

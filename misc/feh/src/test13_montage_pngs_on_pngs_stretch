@@ -1,2 +1,8 @@
 #!/bin/bash
+echo ""
+echo "This test should create a png on png montage, but this time the -s"
+echo "option has been selected to stretch the pngs beyond their original"
+echo "size if necessary. Transparency should be maintained"
+echo ""
 ./feh $1 -s -V -o _test13.jpg -m --bg testimages/pngs/bg.png --thumb-width 100 --thumb-height 100 testimages/pngs
+echo ""

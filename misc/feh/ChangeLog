@@ -1,3 +1,9 @@
+Sun Dec 19 15:43:07 1999  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
+
+	* Big performance improvements in the main loop. Squashed another
+	couple of bugs, and made things real stable. Tightened up the
+	tests somewhat, and split the source up more clearly.
+
 Sun Dec 19 02:58:35 1999  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
 
 	* Fixed a number of bugs introduced by the new progressive loading

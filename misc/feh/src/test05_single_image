@@ -1,2 +1,7 @@
 #!/bin/bash
+echo ""
+echo "This test should quietly open and display a single image"
+echo "No options are specified on the commandline."
+echo ""
 ./feh $1 testimages/nell05.jpg
+echo ""

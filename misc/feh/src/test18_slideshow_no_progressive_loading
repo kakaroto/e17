@@ -1,0 +1,7 @@
+#!/bin/bash
+echo ""
+echo "This test should be the same as the other slideshow test"
+echo "But without progressive loading"
+echo ""
+./feh $1 -V -S -P testimages/nurding01.jpg testimages/nurding02.jpg testimages/nurding03.jpg testimages/nell01.jpg
+echo ""

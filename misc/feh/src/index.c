@@ -76,10 +76,10 @@ init_index_mode (void)
   imlib_context_set_direction (IMLIB_TEXT_TO_RIGHT);
   imlib_context_set_color (255, 255, 255, 255);
   if ((!fn) || (!title_fn))
-  {
+    {
       fprintf (stderr, "Error loading font\n");
-      exit(1);
-  }
+      exit (1);
+    }
 
   /* Use bg image dimensions for default size */
   if (opt.bg && opt.bg_file)
@@ -158,7 +158,7 @@ init_index_mode (void)
 	  fprintf (stderr,
 		   PACKAGE
 		   " - WARNING! The image size you requested (%d by %d) is"
-		   " NOT big enough to fit the number of thumbnails specified"
+		   " NOT big\n      enough to fit the number of thumbnails specified"
 		   " (%d).\nNot all images will be shown (only %d). May I recommend a"
 		   " size of %d by %d?\n",
 		   w, h, file_num, im_per_row * im_per_col, rec_w, rec_h);

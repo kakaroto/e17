@@ -1,2 +1,9 @@
 #!/bin/bash
+echo ""
+echo "This test should open 4 images in 4 separate windows. It is important"
+echo "that zooming and progressive loading works for each image"
+echo "individually, and that each image can be closed individually,"
+echo "or all together with a right-click"
+echo ""
 ./feh $1 -V testimages/nurding01.jpg testimages/nurding02.jpg testimages/nurding03.jpg testimages/nell01.jpg
+echo ""

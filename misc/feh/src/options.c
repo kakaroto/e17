@@ -20,6 +20,8 @@
 
 #include "feh.h"
 
+static void check_options (void);
+
 void
 init_parse_options (int argc, char **argv)
 {
@@ -141,6 +143,62 @@ init_parse_options (int argc, char **argv)
     }
   if (file_num == 0)
     show_mini_usage ();
+
+  check_options ();
+}
+
+static void
+check_options (void)
+{
+  if (opt.slideshow)
+    {
+      if (opt.montage || opt.index)
+	{
+	  fprintf (stderr,
+		   PACKAGE
+		   " - you can't use slideshow mode in conjunction with montage\n"
+		   "   or index mode. Slideshow mode has been disabled\n");
+	  opt.slideshow = 0;
+	}
+      else if (opt.output)
+	{
+	  fprintf (stderr,
+		   PACKAGE
+		   " - Slideshow mode does not create any output, so use of -o or -O\n"
+		   "   is unecessary and has been disabled\n");
+	  opt.output = 0;
+	}
+    }
+
+  if (opt.slideshow && opt.alpha)
+    {
+      fprintf (stderr,
+	       PACKAGE
+	       " - you can't use slideshow mode in conjunction with an alpha\n"
+	       "   setting. Use of alpha has been disabled\n");
+      opt.alpha = 0;
+    }
+
+  if (opt.montage && opt.index)
+    {
+      fprintf (stderr,
+	       PACKAGE
+	       " - you can't use montage mode and index mode together.\n"
+	       "   Montage mode has been disabled\n");
+      opt.montage = 0;
+    }
+
+  if (!(opt.montage || opt.index))
+    {
+      if (opt.font || opt.title_font)
+	{
+	  fprintf (stderr,
+		   PACKAGE
+		   " - you can't use fonts without montage or index mode.\n"
+		   "   The fonts you specified will be ignored\n");
+	  opt.font = opt.title_font = NULL;
+	}
+    }
 }
 
 void

@@ -1,2 +1,7 @@
 #!/bin/bash
+echo ""
+echo "This test creates a montage of 100x100 pixel thumbnails and stretches"
+echo "them out of shape as necessary, ignoring aspect ratio"
+echo ""
 ./feh $1 -A -V -o _test02.jpg -m --bg testimages/heidi.jpg --thumb-width 100 --thumb-height 100 testimages
+echo ""

@@ -1,0 +1,7 @@
+#!/bin/bash
+echo ""
+echo "This test creates a montage, but the verbose option is not used, so"
+echo "the app should be quiet, and only output to stdout on error"
+echo ""
+./feh $1 -o _test01.jpg -m --bg testimages/heidi.jpg --thumb-width 100 --thumb-height 100 testimages
+echo ""

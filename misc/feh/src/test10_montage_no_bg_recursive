@@ -1,2 +1,7 @@
 #!/bin/bash
+echo ""
+echo "This test should create a montage containing the contents of the"
+echo "testimages directory, recursively. There should be some pngs in there"
+echo ""
 ./feh $1 -r -V -o _test10.jpg -m --thumb-width 100 --thumb-height 100 testimages
+echo ""

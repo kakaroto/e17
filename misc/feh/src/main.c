@@ -37,6 +37,8 @@ main (int argc, char **argv)
     init_montage_mode ();
   else if (opt.index)
     init_index_mode ();
+  else if (opt.slideshow)
+    init_slideshow_mode ();
   else if (opt.multiwindow)
     init_multiwindow_mode ();
 
@@ -51,11 +53,12 @@ main_loop (void)
   winwidget winwid = NULL;
   XEvent ev;
   int timeout = 0;
-  int x = -9999, y = -9999;
   struct timeval tval;
   fd_set fdset;
   double t1;
   int xfd, count, fdsize, j;
+  /* A global zoom mode to save cpu on motionnotify */
+  int zoom_mode = 0;
 
   D (("In main_loop, window_num is %d\n", window_num));
   if (window_num == 0)
@@ -65,7 +68,7 @@ main_loop (void)
       XFlush (disp);
       while (XPending (disp))
 	{
-      D(("In event loop - events pending\n"));
+	  D (("In event loop - events pending\n"));
 	  if (window_num == 0)
 	    exit (0);
 	  XNextEvent (disp, &ev);
@@ -76,8 +79,6 @@ main_loop (void)
 	      break;
 	    case ButtonPress:
 	      D (("Received ButtonPress event\n"));
-	      x = ev.xbutton.x;
-	      y = ev.xbutton.y;
 	      switch (ev.xbutton.button)
 		{
 		case 1:
@@ -95,9 +96,10 @@ main_loop (void)
 		  if (winwid != NULL)
 		    {
 		      D (("  Enabling zoom mode\n"));
+		      zoom_mode = 1;
 		      winwid->zoom_mode = 1;
-		      winwid->zx = x;
-		      winwid->zy = y;
+		      winwid->zx = ev.xbutton.x;
+		      winwid->zy = ev.xbutton.y;
 		      imlib_context_set_anti_alias (0);
 		      imlib_context_set_dither (0);
 		      imlib_context_set_blend (1);
@@ -119,8 +121,6 @@ main_loop (void)
 	      break;
 	    case ButtonRelease:
 	      D (("Received ButtonRelease event\n"));
-	      x = ev.xbutton.x;
-	      y = ev.xbutton.y;
 	      switch (ev.xbutton.button)
 		{
 		case 2:
@@ -129,6 +129,7 @@ main_loop (void)
 		  if (winwid != NULL)
 		    {
 		      winwid->zoom_mode = 0;
+		      zoom_mode = 0;
 		    }
 		  break;
 		case 3:
@@ -141,67 +142,73 @@ main_loop (void)
 	      break;
 	    case MotionNotify:
 	      D (("Received MotionNotify event\n"));
-	      winwid = winwidget_get_from_window (ev.xmotion.window);
-	      if (winwid != NULL)
+	      /* If zoom mode is set, then a window needs zooming, 'cos
+	       * button 2 must be pressed */
+	      if (zoom_mode)
 		{
-		  while (XCheckTypedWindowEvent
-			 (disp, winwid->win, MotionNotify, &ev));
-		  x = ev.xmotion.x;
-		  y = ev.xmotion.y;
-		  if (winwid->zoom_mode)
+		  winwid = winwidget_get_from_window (ev.xmotion.window);
+		  if (winwid != NULL)
 		    {
-		      int sx, sy, sw, sh, dx, dy, dw, dh;
-
-		      imlib_context_set_anti_alias (0);
-		      imlib_context_set_dither (0);
-		      imlib_context_set_blend (1);
-
-		      winwid->zoom =
-			((double) x - (double) winwid->zx) / 32.0;
-		      if (winwid->zoom < 0)
-			winwid->zoom =
-			  1.0 +
-			  ((winwid->zoom * 32.0) /
-			   ((double) (winwid->zx + 1)));
-		      else
-			winwid->zoom += 1.0;
-		      if (winwid->zoom <= 0.0001)
-			winwid->zoom = 0.0001;
-		      if (winwid->zoom > 1.0)
+		      if (winwid->zoom_mode)
 			{
-			  dx = 0;
-			  dy = 0;
-			  dw = winwid->im_w;
-			  dh = winwid->im_h;
+			  int sx, sy, sw, sh, dx, dy, dw, dh;
+			  int x = -9999, y = -9999;
+			  while (XCheckTypedWindowEvent
+				 (disp, winwid->win, MotionNotify, &ev));
+			  x = ev.xmotion.x;
+			  y = ev.xmotion.y;
 
-			  sx = winwid->zx - (winwid->zx / winwid->zoom);
-			  sy = winwid->zy - (winwid->zy / winwid->zoom);
-			  sw = winwid->im_w / winwid->zoom;
-			  sh = winwid->im_h / winwid->zoom;
-			}
-		      else
-			{
-			  dx = winwid->zx - (winwid->zx * winwid->zoom);
-			  dy = winwid->zy - (winwid->zy * winwid->zoom);
-			  dw = winwid->im_w * winwid->zoom;
-			  dh = winwid->im_h * winwid->zoom;
+			  imlib_context_set_anti_alias (0);
+			  imlib_context_set_dither (0);
+			  imlib_context_set_blend (1);
 
-			  sx = 0;
-			  sy = 0;
-			  sw = winwid->im_w;
-			  sh = winwid->im_h;
+			  winwid->zoom =
+			    ((double) x - (double) winwid->zx) / 32.0;
+			  if (winwid->zoom < 0)
+			    winwid->zoom =
+			      1.0 +
+			      ((winwid->zoom * 32.0) /
+			       ((double) (winwid->zx + 1)));
+			  else
+			    winwid->zoom += 1.0;
+			  if (winwid->zoom <= 0.0001)
+			    winwid->zoom = 0.0001;
+			  if (winwid->zoom > 1.0)
+			    {
+			      dx = 0;
+			      dy = 0;
+			      dw = winwid->im_w;
+			      dh = winwid->im_h;
+
+			      sx = winwid->zx - (winwid->zx / winwid->zoom);
+			      sy = winwid->zy - (winwid->zy / winwid->zoom);
+			      sw = winwid->im_w / winwid->zoom;
+			      sh = winwid->im_h / winwid->zoom;
+			    }
+			  else
+			    {
+			      dx = winwid->zx - (winwid->zx * winwid->zoom);
+			      dy = winwid->zy - (winwid->zy * winwid->zoom);
+			      dw = winwid->im_w * winwid->zoom;
+			      dh = winwid->im_h * winwid->zoom;
+
+			      sx = 0;
+			      sy = 0;
+			      sw = winwid->im_w;
+			      sh = winwid->im_h;
+			    }
+			  imlib_context_set_drawable (winwid->bg_pmap);
+			  imlib_context_set_image (winwid->blank_im);
+			  imlib_render_image_on_drawable (0, 0);
+			  imlib_context_set_image (winwid->im);
+			  imlib_render_image_part_on_drawable_at_size
+			    (sx, sy, sw, sh, dx, dy, dw, dh);
+			  XSetWindowBackgroundPixmap (disp, winwid->win,
+						      winwid->bg_pmap);
+			  XClearWindow (disp, winwid->win);
+			  XFlush (disp);
+			  winwid->timeout = 1;
 			}
-		      imlib_context_set_drawable (winwid->bg_pmap);
-		      imlib_context_set_image (winwid->blank_im);
-		      imlib_render_image_on_drawable (0, 0);
-		      imlib_context_set_image (winwid->im);
-		      imlib_render_image_part_on_drawable_at_size
-			(sx, sy, sw, sh, dx, dy, dw, dh);
-		      XSetWindowBackgroundPixmap (disp, winwid->win,
-						  winwid->bg_pmap);
-		      XClearWindow (disp, winwid->win);
-		      XFlush (disp);
-		      winwid->timeout = 1;
 		    }
 		}
 	      break;
@@ -235,23 +242,40 @@ main_loop (void)
 		D (("A window has timeout set\n"));
 		break;
 	      }
-	  D(("Performing select, timeout is %d\n",timeout));
-	  if (timeout)
-	    count = select (fdsize, &fdset, NULL, NULL, &tval);
+	  D (("Performing select, timeout is %d\n", timeout));
+	  if (timeout && !zoom_mode)
+	    {
+	      D (("oo Performing wait then pass-thru select\n"));
+	      count = select (fdsize, &fdset, NULL, NULL, &tval);
+	      D (("oo Performed wait then pass-thru select\n"));
+	    }
+	  else if (!XPending (disp))
+	    {
+	      D (("oo Performing holding select\n"));
+	      count = select (fdsize, &fdset, NULL, NULL, NULL);
+	      D (("oo Performed holding select\n"));
+	    }
 	  else
-	    count = select (fdsize, &fdset, NULL, NULL, NULL);
+	    {
+	      /* Hrm. There's stuff I need to go back and do. No point
+	       * waiting for new events from X when I know there are some
+	       * in the queue */
+	      count = 0;
+	    }
 	  if (count < 0)
 	    {
 	      if ((errno == ENOMEM) || (errno == EINVAL) || (errno == EBADF))
 		exit (1);
 	    }
-	  else
+	  else if ((timeout) && (!zoom_mode) && (count == 0))
 	    {
 	      for (j = 0; j < window_num; j++)
 		{
-		  if ((count == 0) && (windows[j]->timeout))
+		  if (windows[j]->timeout)
 		    {
 		      int sx, sy, sw, sh, dx, dy, dw, dh;
+
+		      D (("Performing smoothing\n"));
 
 		      if (windows[j]->zoom > 1.0)
 			{
@@ -299,7 +323,7 @@ main_loop (void)
 		      XClearWindow (disp, windows[j]->win);
 		      XFlush (disp);
 		      windows[j]->timeout = 0;
-		      timeout=0;
+		      timeout = 0;
 		    }
 		}
 	    }

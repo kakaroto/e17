@@ -38,7 +38,7 @@
 #define D(a) { printf("%s +%u : ",__FILE__,__LINE__); \
                printf a; fflush(stdout); }
 #else
-#define D(a) { /* No debug */; }
+#define D(a) { ; }
 #endif
 
 struct __thumbwidget
@@ -119,6 +119,7 @@ void init_multiwindow_mode (void);
 void init_parse_options (int argc, char **argv);
 void init_montage_mode (void);
 void init_index_mode (void);
+void init_slideshow_mode (void);
 int feh_load_image (Imlib_Image ** im, char *filename);
 void add_file_to_filelist_recursively (char *path, unsigned char enough);
 void show_mini_usage (void);

@@ -57,7 +57,7 @@ feh_load_image (Imlib_Image ** im, char *filename)
     {
       /* Check error code */
       fprintf (stderr,
-	       PACKAGE " - error while loading image: %s\n      ", filename);
+	       PACKAGE " - error loading %s - ", filename);
       switch (err)
 	{
 	case IMLIB_LOAD_ERROR_FILE_DOES_NOT_EXIST:
@@ -120,30 +120,31 @@ void
 progress (Imlib_Image im, char percent, int update_x, int update_y,
 	  int update_w, int update_h)
 {
-    int exists=0;
+  int exists = 0;
   D (("In progressive loading callback\n"));
   if (!progwin)
-  {
-	fprintf(stderr,"progwin does not exist\n");
-	return;
-  }
+    {
+      fprintf (stderr, "progwin does not exist\n");
+      return;
+    }
 
   imlib_context_set_drawable (progwin->bg_pmap);
   imlib_context_set_anti_alias (0);
   imlib_context_set_dither (0);
   imlib_context_set_blend (0);
   /* first time it's called */
+  D (("progwin->im_w %d\n", progwin->im_w));
   if (progwin->im_w == 0)
     {
       imlib_context_set_image (im);
       progwin->w = progwin->im_w = imlib_image_get_width ();
       progwin->h = progwin->im_h = imlib_image_get_height ();
-      if(!progwin->win)
-      {
+      if (!progwin->win)
+	{
 	  winwidget_create_window (progwin, progwin->w, progwin->h);
-      }
+	}
       else
-	  exists=1;
+	exists = 1;
       winwidget_create_blank_bg (progwin);
       if (progwin->bg_pmap)
 	XFreePixmap (disp, progwin->bg_pmap);
@@ -154,11 +155,11 @@ progress (Imlib_Image im, char percent, int update_x, int update_y,
       imlib_context_set_image (progwin->blank_im);
       imlib_render_image_on_drawable (0, 0);
       XSetWindowBackgroundPixmap (disp, progwin->win, progwin->bg_pmap);
-      if(exists)
-	    XResizeWindow(disp,progwin->win,progwin->w, progwin->h);
+      if (exists)
+	XResizeWindow (disp, progwin->win, progwin->w, progwin->h);
       XClearWindow (disp, progwin->win);
-      if(!exists)
-	    XMapWindow (disp, progwin->win);
+      if (!exists)
+	XMapWindow (disp, progwin->win);
       XSync (disp, False);
     }
   imlib_context_set_drawable (progwin->bg_pmap);

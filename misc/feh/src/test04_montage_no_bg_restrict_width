@@ -1,2 +1,7 @@
 #!/bin/bash
+echo ""
+echo "This test should create a montage limited to 300 pixels in width."
+echo "The thumbnails should be 50x50 and retain aspect ratio"
+echo ""
 ./feh $1 -V -o _test04.jpg -m --thumb-width 50 --thumb-height 50 --limit-width 300 testimages
+echo ""
