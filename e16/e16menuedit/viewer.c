@@ -477,6 +477,9 @@ void
 quit_cb(GtkWidget * widget, gpointer user_data)
 {
    gtk_exit(0);
+   return;
+   widget = NULL;
+   user_data = NULL;
 }
 
 void
@@ -498,6 +501,9 @@ save_menus(GtkWidget * widget, gpointer user_data)
 
    /* TODO This makes the entry_data structs leak */
    g_node_destroy(node);
+   return;
+   widget = NULL;
+   user_data = NULL;
 }
 
 gboolean
@@ -523,6 +529,8 @@ tree_to_gnode(GtkCTree * ctree,
    gnode->data = edata;
 
    return TRUE;
+   depth = 0;
+   data = NULL;
 }
 
 gint write_menu(GNode * node, gchar * file)

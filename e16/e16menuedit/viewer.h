@@ -15,6 +15,7 @@ GtkAccelGroup      *accel_group;
 void                save_menus(GtkWidget * widget, gpointer user_data);
 gint                write_menu(GNode * node, gchar * filename);
 void                write_menu_title(GNode * node, FILE * fp);
+gint write_menu_entry(GNode * node, FILE * fp);
 gboolean            tree_to_gnode(GtkCTree * ctree,
 				  guint depth,
 				  GNode * gnode, GtkCTreeNode * cnode,
