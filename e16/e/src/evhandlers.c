@@ -703,12 +703,6 @@ HandleMotion(XEvent * ev)
      {
 	int                 i, offx = 0, offy = 0, xdist = 0, ydist = 0;
 	EWin               *ewin;
-
-#ifdef HAS_XINERAMA
-	static XineramaScreenInfo *screens;
-	static int          num_screens;
-
-#endif
 	EWin               *menus[256];
 	int                 fx[256];
 	int                 fy[256];
@@ -717,43 +711,8 @@ HandleMotion(XEvent * ev)
 	static int          menu_scroll_dist = 4;
 	int                 my_width, my_height, x_org, y_org, head_num = 0;
 
-	my_width = root.w;
-	my_height = root.h;
-	x_org = 0;
-	y_org = 0;
-
-#ifdef HAS_XINERAMA
-	if (xinerama_active)
-	  {
-	     int                 i;
-
-	     if (!screens)
-	       {
-		  screens = XineramaQueryScreens(disp, &num_screens);
-	       }
-	     for (i = 0; i < num_screens; i++)
-	       {
-		  if (mode.x >= screens[i].x_org)
-		    {
-		       if (mode.x <= (screens[i].width + screens[i].x_org))
-			 {
-			    if (mode.y >= screens[i].y_org)
-			      {
-				 if (mode.y <=
-				     (screens[i].height + screens[i].y_org))
-				   {
-				      my_width = screens[i].width;
-				      my_height = screens[i].height;
-				      x_org = screens[i].x_org;
-				      y_org = screens[i].y_org;
-				      head_num = i;
-				   }
-			      }
-			 }
-		    }
-	       }
-	  }
-#endif
+	head_num = ScreenGetGeometry(mode.x, mode.y, &x_org, &y_org,
+				     &my_width, &my_height);
 
 	if (mode.x > ((x_org + my_width) - (menu_scroll_dist + 1)))
 	  {

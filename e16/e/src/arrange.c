@@ -92,58 +92,22 @@ ArrangeRects(RectBox * fixed, int fixed_count, RectBox * floating,
 
 #define Filled(x,y) (filled[(y * (xsize - 1)) + x])
 
-#ifdef HAS_XINERAMA
    if (initial_window)
      {
-	if (xinerama_active)
-	  {
-	     Window              rt, ch;
-	     int                 d;
-	     unsigned int        ud;
-	     int                 pointer_x, pointer_y;
-	     int                 num;
-	     XineramaScreenInfo *screens;
+	int                 xx1, yy1, xx2, yy2;
 
-	     XQueryPointer(disp, root.win, &rt, &ch, &pointer_x, &pointer_y, &d,
-			   &d, &ud);
-
-	     screens = XineramaQueryScreens(disp, &num);
-	     for (i = 0; i < num; i++)
-	       {
-		  if (pointer_x >= screens[i].x_org)
-		    {
-		       if (pointer_x <= (screens[i].width + screens[i].x_org))
-			 {
-			    if (pointer_y >= screens[i].y_org)
-			      {
-				 if (pointer_y <=
-				     (screens[i].height + screens[i].y_org))
-				   {
-				      if (screens[i].x_org > startx)
-					 startx = screens[i].x_org;
-				      if ((screens[i].x_org + screens[i].width)
-					  < width)
-					 width =
-					    screens[i].x_org + screens[i].width;
-				      if (screens[i].y_org > starty)
-					 starty = screens[i].y_org;
-				      if ((screens[i].y_org + screens[i].height)
-					  < height)
-					 height =
-					    screens[i].y_org +
-					    screens[i].height;
-				   }
-			      }
-			 }
-		    }
-	       }
-
-	     XFree(screens);
-	  }
+	GetPointerScreenGeometry(&xx1, &yy1, &xx2, &yy2);
+	xx2 += xx1;
+	yy2 += yy1;
+	if (startx < xx1)
+	   startx = xx1;
+	if (width > xx2)
+	   width = xx2;
+	if (starty < yy1)
+	   starty = yy1;
+	if (height > yy2)
+	   height = yy2;
      }
-#else
-   initial_window = 0;
-#endif
 
    switch (policy)
      {
@@ -626,13 +590,7 @@ SnapEwin(EWin * ewin, int dx, int dy, int *new_dx, int *new_dy)
    EWin              **lst, **gwins;
    int                 gnum, num, i, j, screen_snap_dist, odx, ody;
    static char         last_res = 0;
-
-#ifdef HAS_XINERAMA
-   static XineramaScreenInfo *screens = NULL;
-
-#endif
-   static int          num_screens = 0;
-   int                 top_bound, bottom_bound, left_bound, right_bound;
+   int                 top_bound, bottom_bound, left_bound, right_bound, w, h;
 
    EDBUG(5, "SnapEwin");
    if (!ewin)
@@ -645,49 +603,10 @@ SnapEwin(EWin * ewin, int dx, int dy, int *new_dx, int *new_dy)
 	EDBUG_RETURN_;
      }
 
-   left_bound = 0;
-   right_bound = root.w;
-   top_bound = 0;
-   bottom_bound = root.h;
-
-   screen_snap_dist =
-      mode.constrained ? (root.w + root.h) : mode.screen_snap_dist;
-
-#ifdef HAS_XINERAMA
-
-   if (xinerama_active)
-     {
-	if (!screens)
-	   screens = XineramaQueryScreens(disp, &num_screens);
-	for (i = 0; i < num_screens; i++)
-	  {
-	     if (ewin->x >= screens[i].x_org)
-	       {
-		  if (ewin->x <= (screens[i].width + screens[i].x_org))
-		    {
-		       if (ewin->y >= screens[i].y_org)
-			 {
-			    if (ewin->y <=
-				(screens[i].height + screens[i].y_org))
-			      {
-				 left_bound = screens[i].x_org;
-				 right_bound =
-				    screens[i].x_org + screens[i].width;
-				 top_bound = screens[i].y_org;
-				 bottom_bound =
-				    screens[i].y_org + screens[i].height;
-				 screen_snap_dist =
-				    mode.constrained ? (screens[i].width +
-							screens[i].height) :
-				    mode.screen_snap_dist;
-			      }
-			 }
-		    }
-	       }
-
-	  }
-     }
-#endif
+   ScreenGetGeometry(ewin->x, ewin->y, &left_bound, &top_bound, &w, &h);
+   right_bound = left_bound + w;
+   bottom_bound = top_bound + h;
+   screen_snap_dist = mode.constrained ? (w + h) : mode.screen_snap_dist;
 
    lst = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
    gwins = ListWinGroupMembersForEwin(ewin, ACTION_MOVE, mode.nogroup

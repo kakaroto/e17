@@ -23,8 +23,6 @@
 #include "E.h"
 #include <math.h>
 
-#define _COORD_MODULO(a, b, c) { a = b % c; if (a < 0) a += c; }
-
 static void         IcondefChecker(int val, void *data);
 
 #define IB_ANIM_TIME 0.25
@@ -276,7 +274,7 @@ DeIconifyEwin(EWin * ewin)
 {
    static int          call_depth = 0;
    Iconbox            *ib;
-   int                 x, y;
+   int                 x1, y1, x2, y2, dx, dy;
 
    EDBUG(6, "DeIconifyEwin");
    call_depth++;
@@ -289,11 +287,29 @@ DeIconifyEwin(EWin * ewin)
      {
 	ib = SelectIconboxForEwin(ewin);
 	RemoveMiniIcon(ewin);
+
+	ScreenGetGeometry(ewin->x, ewin->y, &x1, &y1, &x2, &y2);
+	/* Allow 75% of client (container) offscreen */
+	dx = 3 * ewin->w / 4;
+	dy = 3 * ewin->h / 4;
+	x2 = x1 + x2 - (ewin->w - dx);
+	y2 = y1 + y2 - (ewin->h - dy);
+	x1 -= dx;
+	y1 -= dy;
+	dx = dy = 0;
+	if (ewin->x < x1)
+	   dx = x1 - ewin->x;
+	if (ewin->x > x2)
+	   dx = x2 - ewin->x;
+	if (ewin->y < y1)
+	   dy = y1 - ewin->y;
+	if (ewin->y > y2)
+	   dy = y2 - ewin->y;
+
 	if (!ewin->sticky)
 	  {
-	     _COORD_MODULO(x, ewin->x, root.w);
-	     _COORD_MODULO(y, ewin->y, root.h);
-	     MoveEwinToDesktopAt(ewin, desks.current, x, y);
+	     MoveEwinToDesktopAt(ewin, desks.current,
+				 ewin->x + dx, ewin->y + dy);
 	  }
 	else
 	   ConformEwinToDesktop(ewin);
@@ -322,10 +338,9 @@ DeIconifyEwin(EWin * ewin)
 			 {
 			    if (!lst[i]->sticky)
 			      {
-				 _COORD_MODULO(x, lst[i]->x, root.w);
-				 _COORD_MODULO(y, lst[i]->y, root.h);
 				 MoveEwinToDesktopAt(lst[i], desks.current,
-						     x, y);
+						     lst[i]->x + dx,
+						     lst[i]->y + dy);
 			      }
 			    else
 			       ConformEwinToDesktop(lst[i]);

@@ -1,6 +1,6 @@
-
 /*
  * Copyright (C) 2000 Carsten Haitzler, Geoff Harrison and various contributors
+ * Copyright (C) 2003 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -23,197 +23,24 @@
  */
 #include "E.h"
 
-void
-MaxHeight(EWin * ewin, char *resize_type)
-{
+#define MAX_HOR 0x1
+#define MAX_VER 0x2
 
-   int                 x, y, w, h, y1, y2;
+#define MAX_ABSOLUTE     0
+#define MAX_AVAILABLE    1
+#define MAX_CONSERVATIVE 2
+
+static void
+MaxSizeHV(EWin * ewin, char *resize_type, int direction)
+{
+   int                 x, y, w, h, x1, x2, y1, y2, type;
+   EWin              **lst, *pe;
+   int                 i, num;
 
    if (!ewin)
       return;
 
-   if (!ewin->toggle)
-     {
-	x = ewin->x;
-	y = 0;
-	w = ewin->client.w;
-	h = root.h - ewin->border->border.top - ewin->border->border.bottom;
-	if ((resize_type) && (!strcmp(resize_type, "available")))
-	  {
-	     EWin              **lst;
-	     int                 i, num;
-
-	     lst = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
-	     if (lst)
-	       {
-		  y = ewin->y;
-		  h = ewin->h;
-#if ENABLE_KDE
-		  if (mode.kde_support)
-		    {
-		       y1 = mode.kde_y1;
-		       y2 = mode.kde_y2;
-		    }
-		  else
-		    {
-#endif
-		       y1 = 0;
-		       y2 = root.h;
-#if ENABLE_KDE
-		    }
-#endif
-#ifdef HAS_XINERAMA
-		  if (xinerama_active)
-		    {
-		       XineramaScreenInfo *screens;
-		       int                 num_screens;
-
-		       screens = XineramaQueryScreens(disp, &num_screens);
-		       for (i = 0; i < num_screens; i++)
-			 {
-			    if (ewin->x >= screens[i].x_org)
-			      {
-				 if (ewin->x <=
-				     (screens[i].width + screens[i].x_org))
-				   {
-				      if (ewin->y >= screens[i].y_org)
-					{
-					   if (ewin->y <=
-					       (screens[i].height +
-						screens[i].y_org))
-					     {
-						if (screens[i].y_org > y1)
-						  {
-						     y1 = screens[i].y_org;
-						  }
-						if (screens[i].y_org +
-						    screens[i].height < y2)
-						  {
-						     y2 = screens[i].y_org +
-							screens[i].height;
-						  }
-					     }
-					}
-				   }
-			      }
-			 }
-		    }
-#endif
-		  for (i = 0; i < num; i++)
-		    {
-		       if ((((ewin->desktop == lst[i]->desktop)
-			     && !(lst[i]->iconified)) || (lst[i]->sticky))
-			   && (!(lst[i]->floating)) && (lst[i] != ewin)
-			   && (!(lst[i]->ignorearrange))
-			   && SPANS_COMMON(ewin->x, ewin->w, lst[i]->x,
-					   lst[i]->w))
-			 {
-			    if (((lst[i]->y + lst[i]->h) <= y)
-				&& ((lst[i]->y + lst[i]->h) >= y1))
-			       y1 = lst[i]->y + lst[i]->h;
-			    else if (((y + h) <= lst[i]->y)
-				     && (y2 >= lst[i]->y))
-			       y2 = lst[i]->y;
-			 }
-		    }
-		  Efree(lst);
-		  y = y1;
-		  h = y2 - y1 - (ewin->border->border.top +
-				 ewin->border->border.bottom);
-	       }
-	  }
-	else if ((resize_type) && (!strcmp(resize_type, "conservative")))
-	  {
-	     EWin              **lst;
-	     int                 i, num;
-
-	     lst = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
-	     if (lst)
-	       {
-		  y = ewin->y;
-		  h = ewin->h;
-#if ENABLE_KDE
-		  if (mode.kde_support)
-		    {
-		       y1 = mode.kde_y1;
-		       y2 = mode.kde_y2;
-		    }
-		  else
-		    {
-#endif
-		       y1 = 0;
-		       y2 = root.h;
-#if ENABLE_KDE
-		    }
-#endif
-#ifdef HAS_XINERAMA
-		  if (xinerama_active)
-		    {
-		       XineramaScreenInfo *screens;
-		       int                 num_screens;
-
-		       screens = XineramaQueryScreens(disp, &num_screens);
-		       for (i = 0; i < num_screens; i++)
-			 {
-			    if (ewin->x >= screens[i].x_org)
-			      {
-				 if (ewin->x <=
-				     (screens[i].width + screens[i].x_org))
-				   {
-				      if (ewin->y >= screens[i].y_org)
-					{
-					   if (ewin->y <=
-					       (screens[i].height +
-						screens[i].y_org))
-					     {
-						if (screens[i].y_org > y1)
-						  {
-						     y1 = screens[i].y_org;
-						  }
-						if (screens[i].y_org +
-						    screens[i].height < y2)
-						  {
-						     y2 = screens[i].y_org +
-							screens[i].height;
-						  }
-					     }
-					}
-				   }
-			      }
-			 }
-		    }
-#endif
-		  for (i = 0; i < num; i++)
-		    {
-		       if ((((ewin->desktop == lst[i]->desktop)
-			     && !(lst[i]->iconified)) || (lst[i]->sticky))
-			   && (!(lst[i]->floating)) && (lst[i] != ewin)
-			   && (lst[i]->never_use_area)
-			   && SPANS_COMMON(ewin->x, ewin->w, lst[i]->x,
-					   lst[i]->w))
-			 {
-			    if (((lst[i]->y + lst[i]->h) <= y)
-				&& ((lst[i]->y + lst[i]->h) >= y1))
-			       y1 = lst[i]->y + lst[i]->h;
-			    else if (((y + h) <= lst[i]->y)
-				     && (y2 >= lst[i]->y))
-			       y2 = lst[i]->y;
-			 }
-		    }
-		  Efree(lst);
-		  y = y1;
-		  h = y2 - y1 - (ewin->border->border.top +
-				 ewin->border->border.bottom);
-	       }
-	  }
-	ewin->lx = ewin->x;
-	ewin->ly = ewin->y;
-	ewin->lw = ewin->client.w;
-	ewin->lh = ewin->client.h;
-	MoveResizeEwin(ewin, x, y, w, h);
-	ewin->toggle = 1;
-     }
-   else
+   if (ewin->toggle)
      {
 	MoveResizeEwin(ewin, ewin->lx, ewin->ly, ewin->lw, ewin->lh);
 	ewin->lx = ewin->x;
@@ -221,493 +48,145 @@ MaxHeight(EWin * ewin, char *resize_type)
 	ewin->lw = ewin->client.w;
 	ewin->lh = ewin->client.h;
 	ewin->toggle = 0;
+	goto exit;
      }
 
-   return;
+   if ((resize_type) && (!strcmp(resize_type, "available")))
+      type = MAX_AVAILABLE;
+   else if ((resize_type) && (!strcmp(resize_type, "conservative")))
+      type = MAX_CONSERVATIVE;
+   else
+      type = MAX_ABSOLUTE;
+
+   /* Default is no change */
+   y = ewin->y;
+   h = ewin->h;
+   x = ewin->x;
+   w = ewin->w;
+
+   switch (type)
+     {
+     case MAX_ABSOLUTE:
+	if (direction & MAX_HOR)
+	  {
+	     x = 0;
+	     w = root.w - ewin->border->border.left -
+		ewin->border->border.right;
+	  }
+	if (direction & MAX_VER)
+	  {
+	     y = 0;
+	     h = root.h - ewin->border->border.top -
+		ewin->border->border.bottom;
+	  }
+	break;
+
+     case MAX_CONSERVATIVE:
+     case MAX_AVAILABLE:
+	lst = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
+	if (!lst)
+	   break;
+
+	ScreenGetGeometry(ewin->x, ewin->y, &x1, &y1, &x2, &y2);
+	x2 += x1;
+	y2 += y1;
+
+#if ENABLE_KDE
+	if (mode.kde_support)
+	  {
+	     if (x1 < mode.kde_x1)
+		x1 = mode.kde_x1;
+	     if (x2 > mode.kde_x2)
+		x2 = mode.kde_x2;
+	     if (y1 < mode.kde_y1)
+		y1 = mode.kde_y1;
+	     if (y2 > mode.kde_y2)
+		y2 = mode.kde_y2;
+	  }
+#endif
+
+	if (direction & MAX_VER)
+	  {
+	     for (i = 0; i < num; i++)
+	       {
+		  pe = lst[i];
+		  if (pe == ewin ||
+		      pe->iconified ||
+		      pe->floating ||
+		      pe->ignorearrange ||
+		      (ewin->desktop != pe->desktop && !pe->sticky) ||
+		      (pe->type & (EWIN_TYPE_DIALOG | EWIN_TYPE_MENU)) ||
+		      (type == MAX_AVAILABLE && pe->never_use_area) ||
+		      !SPANS_COMMON(x, w, pe->x, pe->w))
+		     continue;
+
+		  if (((pe->y + pe->h) <= y) && ((pe->y + pe->h) >= y1))
+		     y1 = pe->y + pe->h;
+		  else if (((y + h) <= pe->y) && (y2 >= pe->y))
+		     y2 = pe->y;
+	       }
+	     y = y1;
+	     h = y2 - y1 - (ewin->border->border.top +
+			    ewin->border->border.bottom);
+	  }
+
+	if (direction & MAX_HOR)
+	  {
+	     for (i = 0; i < num; i++)
+	       {
+		  pe = lst[i];
+		  if (pe == ewin ||
+		      pe->iconified ||
+		      pe->floating ||
+		      pe->ignorearrange ||
+		      (ewin->desktop != pe->desktop && !pe->sticky) ||
+		      (pe->type & (EWIN_TYPE_DIALOG | EWIN_TYPE_MENU)) ||
+		      (type == MAX_AVAILABLE && pe->never_use_area) ||
+		      !SPANS_COMMON(y, h, pe->y, pe->h))
+		     continue;
+
+		  if (((pe->x + pe->w) <= x) && ((pe->x + pe->w) >= x1))
+		     x1 = pe->x + pe->w;
+		  else if (((x + w) <= pe->x) && (x2 >= pe->x))
+		     x2 = pe->x;
+	       }
+	     x = x1;
+	     w = x2 - x1 - (ewin->border->border.left +
+			    ewin->border->border.right);
+	  }
+
+	Efree(lst);
+	break;
+     }
+
+   ewin->lx = ewin->x;
+   ewin->ly = ewin->y;
+   ewin->lw = ewin->client.w;
+   ewin->lh = ewin->client.h;
+   MoveResizeEwin(ewin, x, y, w, h);
+   ewin->toggle = 1;
+
+ exit:;
+#if ENABLE_KDE
+   if (mode.kde_support)
+      KDE_UpdateClient(ewin);
+#endif
 }
 
 void
 MaxWidth(EWin * ewin, char *resize_type)
 {
+   MaxSizeHV(ewin, resize_type, MAX_HOR);
+}
 
-   int                 x, y, w, h, x1, x2;
-
-   if (!ewin)
-      return;
-
-   if (!ewin->toggle)
-     {
-	x = 0;
-	y = ewin->y;
-	w = root.w - ewin->border->border.left - ewin->border->border.right;
-	h = ewin->client.h;
-	if ((resize_type) && (!strcmp(resize_type, "available")))
-	  {
-	     EWin              **lst;
-	     int                 i, num;
-
-	     lst = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
-	     if (lst)
-	       {
-		  x = ewin->x;
-		  w = ewin->w;
-#if ENABLE_KDE
-		  if (mode.kde_support)
-		    {
-		       x1 = mode.kde_x1;
-		       x2 = mode.kde_x2;
-		    }
-		  else
-		    {
-#endif
-		       x1 = 0;
-		       x2 = root.w;
-#if ENABLE_KDE
-		    }
-#endif
-#ifdef HAS_XINERAMA
-		  if (xinerama_active)
-		    {
-		       XineramaScreenInfo *screens;
-		       int                 num_screens;
-
-		       screens = XineramaQueryScreens(disp, &num_screens);
-		       for (i = 0; i < num_screens; i++)
-			 {
-			    if (ewin->x >= screens[i].x_org)
-			      {
-				 if (ewin->x <=
-				     (screens[i].width + screens[i].x_org))
-				   {
-				      if (ewin->y >= screens[i].y_org)
-					{
-					   if (ewin->y <=
-					       (screens[i].height +
-						screens[i].y_org))
-					     {
-						if (screens[i].x_org > x1)
-						  {
-						     x1 = screens[i].x_org;
-						  }
-						if (screens[i].x_org +
-						    screens[i].width < x2)
-						  {
-						     x2 = screens[i].x_org +
-							screens[i].width;
-						  }
-					     }
-					}
-				   }
-			      }
-			 }
-		    }
-#endif
-		  for (i = 0; i < num; i++)
-		    {
-		       if ((((ewin->desktop == lst[i]->desktop)
-			     && !(lst[i]->iconified)) || (lst[i]->sticky))
-			   && (!(lst[i]->floating)) && (lst[i] != ewin)
-			   && (!(lst[i]->ignorearrange))
-			   && SPANS_COMMON(ewin->y, ewin->h, lst[i]->y,
-					   lst[i]->h))
-			 {
-			    if (((lst[i]->x + lst[i]->w) <= x)
-				&& ((lst[i]->x + lst[i]->w) >= x1))
-			       x1 = lst[i]->x + lst[i]->w;
-			    else if (((x + w) <= lst[i]->x)
-				     && (x2 >= lst[i]->x))
-			       x2 = lst[i]->x;
-			 }
-		    }
-		  Efree(lst);
-		  x = x1;
-		  w = x2 - x1 - (ewin->border->border.left +
-				 ewin->border->border.right);
-	       }
-	  }
-	else if ((resize_type) && (!strcmp(resize_type, "conservative")))
-	  {
-	     EWin              **lst;
-	     int                 i, num;
-
-	     lst = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
-	     if (lst)
-	       {
-		  x = ewin->x;
-		  w = ewin->w;
-#if ENABLE_KDE
-		  if (mode.kde_support)
-		    {
-		       x1 = mode.kde_x1;
-		       x2 = mode.kde_x2;
-		    }
-		  else
-		    {
-#endif
-		       x1 = 0;
-		       x2 = root.w;
-#if ENABLE_KDE
-		    }
-#endif
-#ifdef HAS_XINERAMA
-		  if (xinerama_active)
-		    {
-		       XineramaScreenInfo *screens;
-		       int                 num_screens;
-
-		       screens = XineramaQueryScreens(disp, &num_screens);
-		       for (i = 0; i < num_screens; i++)
-			 {
-			    if (ewin->x >= screens[i].x_org)
-			      {
-				 if (ewin->x <=
-				     (screens[i].width + screens[i].x_org))
-				   {
-				      if (ewin->y >= screens[i].y_org)
-					{
-					   if (ewin->y <=
-					       (screens[i].height +
-						screens[i].y_org))
-					     {
-						if (screens[i].x_org > x1)
-						  {
-						     x1 = screens[i].x_org;
-						  }
-						if (screens[i].x_org +
-						    screens[i].width < x2)
-						  {
-						     x2 = screens[i].x_org +
-							screens[i].width;
-						  }
-					     }
-					}
-				   }
-			      }
-			 }
-		    }
-#endif
-		  for (i = 0; i < num; i++)
-		    {
-		       if ((lst[i] != ewin) && (!(lst[i]->ignorearrange))
-			   && (!(lst[i]->floating)) && !(lst[i]->iconified)
-			   &&
-			   (((ewin->desktop
-			      == lst[i]->desktop) && (lst[i]->fixedpos))
-			    || (lst[i]->sticky))
-			   && SPANS_COMMON(ewin->y, ewin->h, lst[i]->y,
-					   lst[i]->h))
-			 {
-			    if (((lst[i]->x + lst[i]->w) <= x)
-				&& ((lst[i]->x + lst[i]->w) >= x1))
-			       x1 = lst[i]->x + lst[i]->w;
-			    else if (((x + w) <= lst[i]->x)
-				     && (x2 >= lst[i]->x))
-			       x2 = lst[i]->x;
-			 }
-		    }
-		  Efree(lst);
-		  x = x1;
-		  w = x2 - x1 - (ewin->border->border.left +
-				 ewin->border->border.right);
-	       }
-	  }
-	ewin->lx = ewin->x;
-	ewin->ly = ewin->y;
-	ewin->lw = ewin->client.w;
-	ewin->lh = ewin->client.h;
-	MoveResizeEwin(ewin, x, y, w, h);
-	ewin->toggle = 1;
-     }
-   else
-     {
-	MoveResizeEwin(ewin, ewin->lx, ewin->ly, ewin->lw, ewin->lh);
-	ewin->lx = ewin->x;
-	ewin->ly = ewin->y;
-	ewin->lw = ewin->client.w;
-	ewin->lh = ewin->client.h;
-	ewin->toggle = 0;
-     }
-
-   return;
+void
+MaxHeight(EWin * ewin, char *resize_type)
+{
+   MaxSizeHV(ewin, resize_type, MAX_VER);
 }
 
 void
 MaxSize(EWin * ewin, char *resize_type)
 {
-
-   int                 x, y, w, h, x1, x2, y1, y2;
-
-   if (!ewin)
-      return;
-
-   if (!ewin->toggle)
-     {
-	x = 0;
-	y = 0;
-	w = root.w - ewin->border->border.left - ewin->border->border.right;
-	h = root.h - ewin->border->border.top - ewin->border->border.bottom;
-	if ((resize_type) && (!strcmp(resize_type, "available")))
-	  {
-	     EWin              **lst;
-	     int                 i, num;
-
-	     lst = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
-	     if (lst)
-	       {
-		  y = ewin->y;
-		  h = ewin->h;
-		  x = ewin->x;
-		  w = ewin->w;
-#if ENABLE_KDE
-		  if (mode.kde_support)
-		    {
-		       x1 = mode.kde_x1;
-		       x2 = mode.kde_x2;
-		       y1 = mode.kde_y1;
-		       y2 = mode.kde_y2;
-		    }
-		  else
-		    {
-#endif
-		       x1 = 0;
-		       x2 = root.w;
-		       y1 = 0;
-		       y2 = root.h;
-#if ENABLE_KDE
-		    }
-#endif
-#ifdef HAS_XINERAMA
-		  if (xinerama_active)
-		    {
-		       XineramaScreenInfo *screens;
-		       int                 num_screens;
-
-		       screens = XineramaQueryScreens(disp, &num_screens);
-		       for (i = 0; i < num_screens; i++)
-			 {
-			    if (ewin->x >= screens[i].x_org)
-			      {
-				 if (ewin->x <=
-				     (screens[i].width + screens[i].x_org))
-				   {
-				      if (ewin->y >= screens[i].y_org)
-					{
-					   if (ewin->y <=
-					       (screens[i].height +
-						screens[i].y_org))
-					     {
-						if (screens[i].x_org > x1)
-						  {
-						     x1 = screens[i].x_org;
-						  }
-						if (screens[i].x_org +
-						    screens[i].width < x2)
-						  {
-						     x2 = screens[i].x_org +
-							screens[i].width;
-						  }
-						if (screens[i].y_org > y1)
-						  {
-						     y1 = screens[i].y_org;
-						  }
-						if (screens[i].y_org +
-						    screens[i].height < y2)
-						  {
-						     y2 = screens[i].y_org +
-							screens[i].height;
-						  }
-					     }
-					}
-				   }
-			      }
-			 }
-		    }
-#endif
-		  for (i = 0; i < num; i++)
-		    {
-		       if ((((ewin->desktop == lst[i]->desktop)
-			     && !(lst[i]->iconified)) || (lst[i]->sticky))
-			   && (!(lst[i]->floating)) && (lst[i] != ewin)
-			   && (!(lst[i]->ignorearrange))
-			   && SPANS_COMMON(ewin->x, ewin->w, lst[i]->x,
-					   lst[i]->w))
-			 {
-			    if (((lst[i]->y + lst[i]->h) <= y)
-				&& ((lst[i]->y + lst[i]->h) >= y1))
-			       y1 = lst[i]->y + lst[i]->h;
-			    else if (((y + h) <= lst[i]->y)
-				     && (y2 >= lst[i]->y))
-			       y2 = lst[i]->y;
-			 }
-		    }
-		  y = y1;
-		  h = y2 - y1 - (ewin->border->border.top +
-				 ewin->border->border.bottom);
-		  for (i = 0; i < num; i++)
-		    {
-		       if (((ewin->desktop == lst[i]->desktop)
-			    || (lst[i]->sticky)) && (!(lst[i]->floating))
-			   && (lst[i] != ewin) && (!(lst[i]->ignorearrange))
-			   && SPANS_COMMON(y, h, lst[i]->y, lst[i]->h))
-			 {
-			    if (((lst[i]->x + lst[i]->w) <= x)
-				&& ((lst[i]->x + lst[i]->w) >= x1))
-			       x1 = lst[i]->x + lst[i]->w;
-			    else if (((x + w) <= lst[i]->x)
-				     && (x2 >= lst[i]->x))
-			       x2 = lst[i]->x;
-			 }
-		    }
-		  x = x1;
-		  w = x2 - x1 - (ewin->border->border.left +
-				 ewin->border->border.right);
-		  Efree(lst);
-	       }
-	  }
-	else if ((resize_type) && (!strcmp(resize_type, "conservative")))
-	  {
-	     EWin              **lst;
-	     int                 i, num;
-
-	     lst = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
-	     if (lst)
-	       {
-		  y = ewin->y;
-		  h = ewin->h;
-		  x = ewin->x;
-		  w = ewin->w;
-#if ENABLE_KDE
-		  if (mode.kde_support)
-		    {
-		       x1 = mode.kde_x1;
-		       x2 = mode.kde_x2;
-		       y1 = mode.kde_y1;
-		       y2 = mode.kde_y2;
-		    }
-		  else
-		    {
-#endif
-		       x1 = 0;
-		       x2 = root.w;
-		       y1 = 0;
-		       y2 = root.h;
-#if ENABLE_KDE
-		    }
-#endif
-#ifdef HAS_XINERAMA
-		  if (xinerama_active)
-		    {
-		       XineramaScreenInfo *screens;
-		       int                 num_screens;
-
-		       screens = XineramaQueryScreens(disp, &num_screens);
-		       for (i = 0; i < num_screens; i++)
-			 {
-			    if (ewin->x >= screens[i].x_org)
-			      {
-				 if (ewin->x <=
-				     (screens[i].width + screens[i].x_org))
-				   {
-				      if (ewin->y >= screens[i].y_org)
-					{
-					   if (ewin->y <=
-					       (screens[i].height +
-						screens[i].y_org))
-					     {
-						if (screens[i].x_org > x1)
-						  {
-						     x1 = screens[i].x_org;
-						  }
-						if (screens[i].x_org +
-						    screens[i].width < x2)
-						  {
-						     x2 = screens[i].x_org +
-							screens[i].width;
-						  }
-						if (screens[i].y_org > y1)
-						  {
-						     y1 = screens[i].y_org;
-						  }
-						if (screens[i].y_org +
-						    screens[i].height < y2)
-						  {
-						     y2 = screens[i].y_org +
-							screens[i].height;
-						  }
-					     }
-					}
-				   }
-			      }
-			 }
-		    }
-#endif
-		  for (i = 0; i < num; i++)
-		    {
-		       if (((lst[i] != ewin) && (!(lst[i]->ignorearrange))
-			    && !(lst[i]->iconified)) && (!(lst[i]->floating))
-			   &&
-			   (((ewin->desktop
-			      == lst[i]->desktop) && (lst[i]->fixedpos))
-			    || (lst[i]->sticky))
-			   && SPANS_COMMON(ewin->x, ewin->w, lst[i]->x,
-					   lst[i]->w))
-			 {
-			    if (((lst[i]->y + lst[i]->h) <= y)
-				&& ((lst[i]->y + lst[i]->h) >= y1))
-			       y1 = lst[i]->y + lst[i]->h;
-			    else if (((y + h) <= lst[i]->y)
-				     && (y2 >= lst[i]->y))
-			       y2 = lst[i]->y;
-			 }
-		    }
-		  y = y1;
-		  h = y2 - y1 - (ewin->border->border.top +
-				 ewin->border->border.bottom);
-		  for (i = 0; i < num; i++)
-		    {
-		       if ((lst[i] != ewin) && (!(lst[i]->ignorearrange))
-			   && (!(lst[i]->floating))
-			   &&
-			   (((ewin->desktop
-			      == lst[i]->desktop) && (lst[i]->fixedpos))
-			    || (lst[i]->sticky))
-			   && SPANS_COMMON(y, h, lst[i]->y, lst[i]->h))
-			 {
-			    if (((lst[i]->x + lst[i]->w) <= x)
-				&& ((lst[i]->x + lst[i]->w) >= x1))
-			       x1 = lst[i]->x + lst[i]->w;
-			    else if (((x + w) <= lst[i]->x)
-				     && (x2 >= lst[i]->x))
-			       x2 = lst[i]->x;
-			 }
-		    }
-		  x = x1;
-		  w = x2 - x1 - (ewin->border->border.left +
-				 ewin->border->border.right);
-		  Efree(lst);
-	       }
-	  }
-	ewin->lx = ewin->x;
-	ewin->ly = ewin->y;
-	ewin->lw = ewin->client.w;
-	ewin->lh = ewin->client.h;
-	MoveResizeEwin(ewin, x, y, w, h);
-	ewin->toggle = 1;
-     }
-   else
-     {
-	MoveResizeEwin(ewin, ewin->lx, ewin->ly, ewin->lw, ewin->lh);
-	ewin->lx = ewin->x;
-	ewin->ly = ewin->y;
-	ewin->lw = ewin->client.w;
-	ewin->lh = ewin->client.h;
-	ewin->toggle = 0;
-     }
-
-#if ENABLE_KDE
-   if (mode.kde_support)
-      KDE_UpdateClient(ewin);
-#endif
-
-   return;
+   MaxSizeHV(ewin, resize_type, MAX_HOR | MAX_VER);
 }

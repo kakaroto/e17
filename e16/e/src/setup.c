@@ -606,10 +606,7 @@ SetupX()
    desks.hiqualitybg = 1;
    SetAreaSize(2, 1);
 
-#ifdef HAS_XINERAMA
-   xinerama_active = XineramaIsActive(disp);
-   mode.extra_head = 0;
-#endif
+   ScreenInit();
 
    for (i = 0; i < ENLIGHTENMENT_CONF_NUM_DESKTOPS; task_menu[i++] = NULL);
 

@@ -77,9 +77,6 @@ char               *badtheme = NULL;
 char               *badreason = NULL;
 char               *e_machine_name = NULL;
 
-#ifdef HAS_XINERAMA
-char                xinerama_active;
-#endif
 #ifdef DEBUG
 int                 call_level;
 int                 debug_level;

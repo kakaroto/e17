@@ -1935,8 +1935,6 @@ void                PastePixmap(Display * d, Drawable w, Pixmap p, Mask m,
 				int x, int y);
 void                PasteMask(Display * d, Drawable w, Pixmap p, int x, int y,
 			      int wd, int ht);
-int                 GetPointerScreenGeometry(int *px, int *py, int *pw,
-					     int *ph);
 
 void                CheckEvent(void);
 void                WaitEvent(void);
@@ -3021,6 +3019,13 @@ char                InZoom(void);
 char                CanZoom(void);
 void                ZoomInit(void);
 void                Zoom(EWin * ewin);
+
+/* screen.c functions */
+void                ScreenInit(void);
+int                 ScreenGetGeometry(int x, int y, int *px, int *py,
+				      int *pw, int *ph);
+int                 GetPointerScreenGeometry(int *px, int *py,
+					     int *pw, int *ph);
 
 /* Global vars */
 extern const char   e_wm_name[];
