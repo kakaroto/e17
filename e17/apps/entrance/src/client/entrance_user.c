@@ -6,6 +6,7 @@
 #include <string.h>
 #include <limits.h>
 #include "../config.h"
+#include "util.h"
 
 /**
 @file entrance_user.c
@@ -164,6 +165,9 @@ _entrance_user_icon_load(Evas_Object * o, char *file)
          result = evas_object_image_add(evas_object_evas_get(o));
          evas_object_image_file_set(result, buf, NULL);
       }
+      evas_object_intercept_resize_callback_add(result,
+                                                entrance_edje_object_resize_intercept_cb,
+                                                NULL);
    }
    evas_object_pass_events_set(result, 1);
    evas_object_move(result, -999, -999);
