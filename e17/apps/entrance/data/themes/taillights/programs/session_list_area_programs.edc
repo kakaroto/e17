@@ -2,18 +2,30 @@
 		name, "show_session_menu";
 		signal, "mouse,clicked,1";
 		source, "session_mouse_area";
-		action, STATE_SET "visible" 1.0;
+		action, STATE_SET "visible" 0.0;
 		target, "session_list_clip";
 		target, "session_list_border";
 		target, "user_list_clip";
 		target, "user_list_border";
 		transition, ACCELERATE 0.5;
+		after, "show_session_menu_after";
+	    }
+	    program {
+		name, "show_session_menu_after";
+		signal, "";
+		source, "";
+		action, STATE_SET "visible" 1.0;
+		target, "session_list_clip";
+		target, "session_list_border";
+		target, "user_list_clip";
+		target, "user_list_border";
+		transition, DECELERATE 0.3;
 	    }
 	    program {
 		name, "show_session_description";
 		signal, "mouse,in";
 		source, "session_mouse_area";
-		action, STATE_SET "visible" 0.0;
+		action, STATE_SET "visible" 1.0;
 		target, "session_description";
 		target, "session_clip";
 		target, "entrance_session_button";
@@ -37,20 +49,6 @@
 		target, "entrance_session_button";
 		transition, DECELERATE 0.5;
 		in, 0.2 0.0;
-	    }
-	    program {
-		name, "kill_show_session_description";
-		signal, "mouse,out";
-		source, "session_mouse_area";
-		action, ACTION_STOP;
-		target, "show_session_description";
-	    }
-	    program {
-		name, "show_session_menu";
-		signal, "mouse,out";
-		source, "session_mouse_area";
-		action, ACTION_STOP;
-		target, "show_session_menu";
 	    }
 	    program {
 		name, "hide_session_menu";

@@ -204,8 +204,8 @@ collections {
     group
     {
 	name, "User";
-	min, 100 80;
-	max, 100 80;
+	min, 106 80;
+	max, 106 80;
 	parts
 	{
 /**
@@ -228,7 +228,7 @@ collections {
     {
 	name, "Preview";
 	min, 80 60;
-	max, 60 60;
+	max, 80 60;
 	parts
 	{
 #include "parts/preview_group.edc"

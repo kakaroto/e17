@@ -108,10 +108,10 @@
 		    visible, 1;
 		    rel1 {
 			relative, 1.0 0.5;
-			offset, -115 -50;
+			offset, -115 -SESSION_LIST_HEIGHT;
 		    } rel2 {
 			relative, 1.0 0.5;
-			offset, -25 50;
+			offset, -25 SESSION_LIST_HEIGHT;
 		    }
 		    border, 25 80 20 20;
 		    image 

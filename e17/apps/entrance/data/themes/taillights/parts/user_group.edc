@@ -38,7 +38,7 @@
 		    rel2
 		    {
 			relative, 1.0 1.0;
-			offset, -2 -2;
+			offset, -2 -3;
 			to, "base_outline";
 		    }
 		    color, 192 192 192 192;
