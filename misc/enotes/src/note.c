@@ -218,6 +218,9 @@ setup_note(Evas_List ** note, int x, int y, int width, int height,
 
 	p->content = ewl_text_new(fcontent);
 	ewl_container_child_append((Ewl_Container *) p->emb, p->content);
+	ewl_object_fill_policy_set((Ewl_Object *) p->content, EWL_FLAG_FILL_FILL);
+	ewl_callback_append(p->emb, EWL_CALLBACK_CONFIGURE, note_move_embed,
+                            p->content);
 	ewl_widget_show(p->content);
 
 	/* Ecore Callbacks */
