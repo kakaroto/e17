@@ -3189,3 +3189,10 @@ Thu Oct  7 12:10:53 PDT 1999
 (Raster)
 
 have the SetupUserInitialization chekc if the fopen succeeded.
+
+-------------------------------------------------------------------------------
+
+Thu Oct  7 13:49:23 PDT 1999
+(Raster)
+
+do the SetupUserInitialization late in the startup - not early.. :)

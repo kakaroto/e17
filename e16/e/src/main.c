@@ -217,7 +217,6 @@ main(int argc, char **argv)
    CommsSetup();
    CommsFindCommsWindow();
    GrabX();
-   SetupUserInitialization();
    LoadGroups();
    LoadSnapInfo();
    MapUnmap(0);
@@ -358,6 +357,7 @@ main(int argc, char **argv)
    for (i = 0; i < child_count; i++)
       kill(e_children[i], SIGCONT);
 
+   SetupUserInitialization();
    if (FindItem("", 0, LIST_FINDBY_NONE,
 		LIST_TYPE_COLORMODIFIER))
      {
