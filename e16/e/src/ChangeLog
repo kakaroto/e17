@@ -2462,3 +2462,10 @@ Tue Sep 28 00:12:05 PDT 1999
 (Mandrake)
 
 fixed the "restart on wrong desktop if it's the last desktop available" bug.
+
+-------------------------------------------------------------------------------
+
+Tue Sep 28 00:44:15 PDT 1999
+(Raster)
+
+add bugs to TODO

@@ -1,5 +1,11 @@
 BUGS:
 raster: 	must update dox docs fully
+raster:         need to investigate "The icons in the iconbox have garbage three pixels to the right of where the image doesn't have transparency exept for the part where the image has transparency." issue reported.
+raster:         need to write scripts to generate file menus for app launching etc. and distribute them and have default menu config soruce them sanely
+raster:         E seems to have a problme following focus at times by "forgetting events. need to work around this.
+raster:         add eterem automode imageclasses to burshed metal
+raster:         need to fix restart/exit stuff for multihead
+raster:         reported stuff-up if you remember borders for dialog windows
 cK:		keeping the groups file in sync with the existing groups that need to be remembered. I'm sure there are bugs in that.
 cK		hammering on this whole raise/lower/raiselower stuff in groups.
 
