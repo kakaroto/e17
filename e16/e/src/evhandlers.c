@@ -1021,6 +1021,8 @@ HandleProperty(XEvent * ev)
 	     {
 		UpdateBorderInfo(ewin);
 		CalcEwinSizes(ewin);
+		if (mode.kde_support)
+		   KDE_UpdateTitle(ewin);
 	     }
 	if (ewin->iconified)
 	  {

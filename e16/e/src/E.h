@@ -2255,6 +2255,7 @@ void                KDE_UpdateFocusedWindow(void);
 void                KDE_SetNumDesktops(void);
 void                KDE_NewWindow(EWin * ewin);
 void                KDE_RemoveWindow(EWin * ewin);
+void                KDE_UpdateTitle(EWin * ewin);
 
 /* sound.c functions */
 Sample             *LoadWav(char *file);
