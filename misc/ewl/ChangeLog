@@ -907,3 +907,9 @@ system for widgets.  Fuck you Tom. ;)
 	"alpha_software" "basic_hardware" "3d_hardware" "alpha_hardware"
 (yes, they correspond to their Evas equivalents... how odd)
 
+-----
+20000902-0627-PDT, pabs
+
+- updated README and  INSTALL to reflect Evas dependency, and AUTHORS 
+with all I know about RbdPngn (ie not much.. info please?).
+

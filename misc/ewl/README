@@ -1,8 +1,9 @@
 EWL 0.2 README
 ==============
-This document was last updated on 20000622-1116-PDT.
-Please see http://www.pablotron.org/projects/ewl for the latest
-version of EWL and this document.
+This document was last updated on 20000902-0625-PDT.
+The latest version of EWL and this document are available via
+Enlightenment CVS (module ewl).  For more information, please visit
+http://www.enlightenment.org/cvs.html.
 
 
 Table of Contents
@@ -19,10 +20,10 @@ Table of Contents
 Introduction
 ============
 EWL (Enlightened Widget Library)  is a themable widget library using
-Imlib2, and ndbm (db2) configuration files.  EWL features a gtk+-style
-programming interface, but with a more abstract theming interface (eg
-greater customization by the user), layered and translucent widgets, a
-simple callback-based event-handling API.  Future plans include an
+Imlib2, Evas, and ndbm (db2) configuration files.  EWL features a
+GTK+-style programming API, but with a more abstract theming interface
+(eg greater customization by the user), layered and translucent widgets,
+a simple callback-based event-handling API.  Future plans include an
 internal lightweight network protocol, a dynamic widget registry (run-
 time objects),
 
