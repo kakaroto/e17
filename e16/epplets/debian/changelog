@@ -1,10 +1,9 @@
-enlightenment-epplets (0.0-0-cvs01) unstable; urgency=low
+epplets (0.0-0-cvs0d) unstable; urgency=low
 
-  * misplaced the changelog
-  * missed the epplet icons and images
-  * added debian dir to cvs tree
+  * renamed package to epplets
+  * split package: epplets/libepplet0/libepplet-dev
 
- -- Laurence John Lane <ljlane@debian.org>  Mon,  1 Nov 1999 23:48:09 -0500
+ -- Laurence John Lane <ljlane@debian.org>  Sat, 20 Nov 1999 18:14:06 -0500
 
 Local variables:
 mode: debian-changelog
