@@ -55,22 +55,21 @@ hookup_edje_signals(Evas_Object * o)
       "EnticeImageScrollStop", "EnticeImageModified",
       "EnticeImageSave", "EnticeQuit", NULL
    };
-   void (*funcs[])(void *data, Evas_Object *o, const char *emission,
-   const char *source) = { _entice_delete_current, _entice_remove_current,
-      _entice_image_next, _entice_image_prev,
-      _entice_zoom_in, _entice_zoom_out,
-      _entice_zoom_in_focused, _entice_zoom_out_focused,
-      _entice_zoom_default, _entice_zoom_fit,
-      _entice_fit_window, _entice_rotate_left,
-      _entice_rotate_right, _entice_flip_horizontal,
-      _entice_flip_vertical, _entice_fullscreen,
-      _entice_thumbs_scroll_next_start, _entice_thumbs_scroll_prev_start,
-      _entice_thumbs_scroll_stop,
-      _entice_image_scroll_east_start, _entice_image_scroll_west_start,
-      _entice_image_scroll_north_start, _entice_image_scroll_south_start,
-      _entice_image_scroll_stop, _entice_image_modified,
-      _entice_image_save, _entice_quit, NULL
-   };
+   void (*funcs[]) (void *data, Evas_Object * o, const char *emission,
+                    const char *source) =
+   {
+   _entice_delete_current, _entice_remove_current, _entice_image_next,
+         _entice_image_prev, _entice_zoom_in, _entice_zoom_out,
+         _entice_zoom_in_focused, _entice_zoom_out_focused,
+         _entice_zoom_default, _entice_zoom_fit, _entice_fit_window,
+         _entice_rotate_left, _entice_rotate_right,
+         _entice_flip_horizontal, _entice_flip_vertical,
+         _entice_fullscreen, _entice_thumbs_scroll_next_start,
+         _entice_thumbs_scroll_prev_start, _entice_thumbs_scroll_stop,
+         _entice_image_scroll_east_start, _entice_image_scroll_west_start,
+         _entice_image_scroll_north_start,
+         _entice_image_scroll_south_start, _entice_image_scroll_stop,
+         _entice_image_modified, _entice_image_save, _entice_quit, NULL};
    count = sizeof(signals) / sizeof(char *);
    for (i = 0; i < count; i++)
       edje_object_signal_callback_add(o, signals[i], "", funcs[i], NULL);
@@ -471,7 +470,12 @@ entice_file_remove(const char *file)
          evas_object_del(o);
          entice_current_free();
          if (evas_list_count(entice->thumb.list) == 0)
+         {
             entice->thumb.current = NULL;
+            edje_object_part_text_set(entice->edje, "EnticeFileDimensions",
+                                      "");
+            edje_object_part_text_set(entice->edje, "EnticeFileName", "");
+         }
       }
       else
          result = 1;
