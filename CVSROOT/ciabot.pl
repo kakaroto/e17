@@ -146,7 +146,7 @@ $project = $ARGV[2] if $ARGV[2];
 $from_email = $ARGV[3] if $ARGV[3];
 $dest_email = $ARGV[4] if $ARGV[4];
 # Testing purposes
-$dest_email = "$dest_email, xcomp@speedstar.xcomputerman.com";
+$dest_email = "$dest_email, xcomp\@speedstar.xcomputerman.com";
 $ignore_regexp = $ARGV[5] if $ARGV[5];
 
 
