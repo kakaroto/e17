@@ -180,8 +180,7 @@ __ewl_seeker_init(Ewl_Seeker * s, Ewl_Orientation orientation)
 		   */
 		  ewl_widget_set_appearance(drag_button,
 					    "/appearance/seeker/horizontal/dragbar");
-	  }
-	else
+	} else
 	  {
 		  ewl_container_init(EWL_CONTAINER(w),
 				     "/appearance/seeker/vertical");
@@ -441,8 +440,7 @@ __ewl_seeker_position_to_value(Ewl_Widget * w, int in_x, int in_y)
 		  x = req_x;
 		  width = height;
 
-	  }
-	else
+	} else
 	  {
 
 		  /*
@@ -540,8 +538,7 @@ __ewl_seeker_value_to_position(Ewl_Widget * w, double val)
 
 		  width = height;
 
-	  }
-	else
+	} else
 	  {
 
 		  /*

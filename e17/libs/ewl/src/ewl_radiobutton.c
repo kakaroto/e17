@@ -20,6 +20,13 @@ void __ewl_checkbutton_mouse_down(Ewl_Widget * w, void *ev_data,
 
 void ewl_checkbutton_init(Ewl_CheckButton * b, char *l);
 
+
+/**
+ * ewl_radiobutton_new - allocate and initialize a new radio button
+ * @label: the label to associate with the radio button
+ *
+ * Returns a pointer to the new radio button on success, NULL on failure.
+ */
 Ewl_Widget *
 ewl_radiobutton_new(char *label)
 {
@@ -37,6 +44,14 @@ ewl_radiobutton_new(char *label)
 	DRETURN_PTR(EWL_WIDGET(b), DLEVEL_STABLE);
 }
 
+/**
+ * ewl_radiobutton_set_chain - attach the button to a chain of radio buttons
+ * @w: the radio button to be added to a chain of radio buttons
+ * @c: a radio button already in the chain of radio buttons
+ *
+ * Returns no value. Associates @w with the same chain as @c, in order to
+ * ensure that only one radio button of that group is checked at any time.
+ */
 void
 ewl_radiobutton_set_chain(Ewl_Widget * w, Ewl_Widget * c)
 {
@@ -60,8 +75,7 @@ ewl_radiobutton_set_chain(Ewl_Widget * w, Ewl_Widget * c)
 
 		  ewd_list_append(crb->chain, w);
 		  ewd_list_append(crb->chain, c);
-	  }
-	else
+	} else
 	  {
 		  rb->chain = crb->chain;
 
@@ -72,6 +86,16 @@ ewl_radiobutton_set_chain(Ewl_Widget * w, Ewl_Widget * c)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+
+/**
+ * ewl_radiobutton_set_checked - change the checked status of the radio button
+ * @w: the radio button to change the status
+ * @c: the new status of the radio button
+ *
+ * Returns no value. Changes the checked status of the radio button and
+ * updates it's appearance to reflect the change. Also unchecks any previously
+ * checked radio button in it's group.
+ */
 void
 ewl_radiobutton_set_checked(Ewl_Widget * w, int c)
 {
@@ -92,6 +116,13 @@ ewl_radiobutton_set_checked(Ewl_Widget * w, int c)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+
+/**
+ * ewl_radiobutton_is_checked - determine the check state of the radio button
+ * @w: the radio button to examine for it's checked state
+ *
+ * Returns TRUE if the button is checked, FALSE if not.
+ */
 int
 ewl_radiobutton_is_checked(Ewl_Widget * w)
 {
@@ -115,6 +146,14 @@ __ewl_radiobutton_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * ewl_radiobutton_init - initialize the radio button fields and callbacks
+ * @rb: the radio button to initialize
+ * @label: the label for the initialized radio button
+ *
+ * Returns no value. Sets internal fields of the radio button to default
+ * values and sets the label to the specified @label.
+ */
 void
 ewl_radiobutton_init(Ewl_RadioButton * rb, char *label)
 {

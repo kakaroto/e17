@@ -130,101 +130,101 @@ ewl_notebook_insert_page(Ewl_Widget * w, Ewl_Widget * c, Ewl_Widget * l,
 Ewl_NotebookPage *
 ewl_notebook_remove_first_page(Ewl_Widget * w)
 {
-        Ewl_Notebook *n;
-        Ewl_NotebookPage *np;
-        Ewl_NotebookPage *nnp;
-        Ewl_Widget *tab;
-        Ewl_Widget *page;
+	Ewl_Notebook *n;
+	Ewl_NotebookPage *np;
+	Ewl_NotebookPage *nnp;
+	Ewl_Widget *tab;
+	Ewl_Widget *page;
 
-        DENTER_FUNCTION(DLEVEL_STABLE);
-        DCHECK_PARAM_PTR_RET("w", w, NULL);
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("w", w, NULL);
 
-        n = EWL_NOTEBOOK(w);
-        np = NULL;
+	n = EWL_NOTEBOOK(w);
+	np = NULL;
 
-        if (!n->pages || ewd_list_is_empty(n->pages))
-                DRETURN_PTR(NULL, DLEVEL_STABLE);
+	if (!n->pages || ewd_list_is_empty(n->pages))
+		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
-        np = ewd_list_goto_first(n->pages);
+	np = ewd_list_goto_first(n->pages);
 
-        if (np == n->visible_np)
-                DRETURN_PTR(ewl_notebook_remove_visible(w), DLEVEL_STABLE);
+	if (np == n->visible_np)
+		DRETURN_PTR(ewl_notebook_remove_visible(w), DLEVEL_STABLE);
 
-        if (!np)
-                DRETURN_PTR(NULL, DLEVEL_STABLE);
+	if (!np)
+		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
-        ewd_list_remove(n->pages);
+	ewd_list_remove(n->pages);
 
-        ewl_container_remove_child(EWL_CONTAINER(n->tab_box), np->tab);
-        ewl_container_remove_child(EWL_CONTAINER(w), np->page);
+	ewl_container_remove_child(EWL_CONTAINER(n->tab_box), np->tab);
+	ewl_container_remove_child(EWL_CONTAINER(w), np->page);
 
-        tab = ewd_list_goto_first(EWL_CONTAINER(np->tab)->children);
-        ewl_container_remove_child(EWL_CONTAINER(np->tab), tab);
-        ewl_widget_hide(tab);
+	tab = ewd_list_goto_first(EWL_CONTAINER(np->tab)->children);
+	ewl_container_remove_child(EWL_CONTAINER(np->tab), tab);
+	ewl_widget_hide(tab);
 
-        page = ewd_list_goto_first(EWL_CONTAINER(np->page)->children);
-        ewl_container_remove_child(EWL_CONTAINER(np->page), page);
-        ewl_widget_hide(page);
+	page = ewd_list_goto_first(EWL_CONTAINER(np->page)->children);
+	ewl_container_remove_child(EWL_CONTAINER(np->page), page);
+	ewl_widget_hide(page);
 
-        nnp = ewl_notebook_page_new(tab, page);
+	nnp = ewl_notebook_page_new(tab, page);
 
-        ewl_widget_destroy_recursive(np->tab);
-        ewl_widget_destroy_recursive(np->page);
+	ewl_widget_destroy_recursive(np->tab);
+	ewl_widget_destroy_recursive(np->page);
 
-        ewl_widget_configure(w);
-        ewl_widget_configure(w);
+	ewl_widget_configure(w);
+	ewl_widget_configure(w);
 
-        DRETURN_PTR(nnp, DLEVEL_STABLE);
+	DRETURN_PTR(nnp, DLEVEL_STABLE);
 }
 
 Ewl_NotebookPage *
 ewl_notebook_remove_last_page(Ewl_Widget * w)
 {
-        Ewl_Notebook *n;
-        Ewl_NotebookPage *np;
-        Ewl_NotebookPage *nnp;
-        Ewl_Widget *tab;
-        Ewl_Widget *page;
+	Ewl_Notebook *n;
+	Ewl_NotebookPage *np;
+	Ewl_NotebookPage *nnp;
+	Ewl_Widget *tab;
+	Ewl_Widget *page;
 
-        DENTER_FUNCTION(DLEVEL_STABLE);
-        DCHECK_PARAM_PTR_RET("w", w, NULL);
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("w", w, NULL);
 
-        n = EWL_NOTEBOOK(w);
-        np = NULL;
-        
-        if (!n->pages || ewd_list_is_empty(n->pages))
-                DRETURN_PTR(NULL, DLEVEL_STABLE);
-        
-        np = ewd_list_goto_last(n->pages);
+	n = EWL_NOTEBOOK(w);
+	np = NULL;
 
-        if (np == n->visible_np)
-                DRETURN_PTR(ewl_notebook_remove_visible(w), DLEVEL_STABLE);
-        
-        if (!np)
-                DRETURN_PTR(NULL, DLEVEL_STABLE);
-        
-        ewd_list_remove(n->pages);
+	if (!n->pages || ewd_list_is_empty(n->pages))
+		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
-        ewl_container_remove_child(EWL_CONTAINER(n->tab_box), np->tab);
-        ewl_container_remove_child(EWL_CONTAINER(w), np->page);
-        
-        tab = ewd_list_goto_first(EWL_CONTAINER(np->tab)->children);
-        ewl_container_remove_child(EWL_CONTAINER(np->tab), tab);
-        ewl_widget_hide(tab);
+	np = ewd_list_goto_last(n->pages);
 
-        page = ewd_list_goto_first(EWL_CONTAINER(np->page)->children);
-        ewl_container_remove_child(EWL_CONTAINER(np->page), page);
-        ewl_widget_hide(page);
+	if (np == n->visible_np)
+		DRETURN_PTR(ewl_notebook_remove_visible(w), DLEVEL_STABLE);
 
-        nnp = ewl_notebook_page_new(tab, page);
+	if (!np)
+		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
-        ewl_widget_destroy_recursive(np->tab);
-        ewl_widget_destroy_recursive(np->page);
-        
-        ewl_widget_configure(w);
-        ewl_widget_configure(w);
+	ewd_list_remove(n->pages);
 
-        DRETURN_PTR(nnp, DLEVEL_STABLE);
+	ewl_container_remove_child(EWL_CONTAINER(n->tab_box), np->tab);
+	ewl_container_remove_child(EWL_CONTAINER(w), np->page);
+
+	tab = ewd_list_goto_first(EWL_CONTAINER(np->tab)->children);
+	ewl_container_remove_child(EWL_CONTAINER(np->tab), tab);
+	ewl_widget_hide(tab);
+
+	page = ewd_list_goto_first(EWL_CONTAINER(np->page)->children);
+	ewl_container_remove_child(EWL_CONTAINER(np->page), page);
+	ewl_widget_hide(page);
+
+	nnp = ewl_notebook_page_new(tab, page);
+
+	ewl_widget_destroy_recursive(np->tab);
+	ewl_widget_destroy_recursive(np->page);
+
+	ewl_widget_configure(w);
+	ewl_widget_configure(w);
+
+	DRETURN_PTR(nnp, DLEVEL_STABLE);
 }
 
 Ewl_NotebookPage *

@@ -15,7 +15,12 @@ void __ewl_checkbutton_theme_update(Ewl_Widget * w, void *ev_data,
 				    void *user_data);
 void ewl_button_init(Ewl_Button * b, char *l);
 
-
+/**
+ * ewl_checkbutton_new - allocate and initialize a new check button
+ * @label: the label to display with the checkbutton, NULL for no label
+ *
+ * Returns the newly allocated checkbutton on success, NULL on failure.
+ */
 Ewl_Widget *
 ewl_checkbutton_new(char *label)
 {
@@ -33,6 +38,14 @@ ewl_checkbutton_new(char *label)
 	DRETURN_PTR(EWL_WIDGET(b), DLEVEL_STABLE);
 }
 
+/**
+ * ewl_checkbutton_set_checked - change the checked status of the check button
+ * @w: the check button to change the status
+ * @c: the new status of the check button
+ *
+ * Returns no value. Changes the checked status of the check button and
+ * updates it's appearance to reflect the change.
+ */
 void
 ewl_checkbutton_set_checked(Ewl_Widget * w, int c)
 {
@@ -53,6 +66,12 @@ ewl_checkbutton_set_checked(Ewl_Widget * w, int c)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * ewl_checkbutton_is_checked - determine the check state of the check button
+ * @w: the check button to examine for it's checked state
+ *
+ * Returns TRUE if the button is checked, FALSE if not.
+ */
 int
 ewl_checkbutton_is_checked(Ewl_Widget * w)
 {
@@ -66,6 +85,14 @@ ewl_checkbutton_is_checked(Ewl_Widget * w)
 	DRETURN_INT(cb->checked, DLEVEL_STABLE);
 }
 
+/**
+ * ewl_checkbutton_set_label_position - set the check buttons label position
+ * @w: the widget to change the label positioning
+ * @p: the new position of the label
+ *
+ * Returns no value. Changes the position of the label associated with the
+ * check button.
+ */
 void
 ewl_checkbutton_set_label_position(Ewl_Widget * w, Ewl_Position p)
 {
@@ -83,6 +110,14 @@ ewl_checkbutton_set_label_position(Ewl_Widget * w, Ewl_Position p)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * ewl_checkbutton_init - initialize the members and callbacks of a check button
+ * @cb: the check button to initialize
+ * @label: the label to give the initialized check button
+ *
+ * Returns no vlalue.The internal structures and callbacks of the checkbutton
+ * are initialized ot default values.
+ */
 void
 ewl_checkbutton_init(Ewl_CheckButton * cb, char *label)
 {
@@ -129,8 +164,7 @@ __ewl_checkbutton_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 			    REQUEST_Y(b->label_object) = CURRENT_Y(w) + 17;
 			    MINIMUM_H(w) = MINIMUM_H(b->label_object);
 			    MAXIMUM_H(w) = MINIMUM_H(b->label_object);
-		    }
-		  else
+		  } else
 		    {
 			    REQUEST_Y(b->label_object) = CURRENT_Y(w);
 			    REQUEST_Y(b->label_object) +=
@@ -162,8 +196,7 @@ __ewl_checkbutton_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 					       REQUEST_Y(w));
 
 		    }
-	  }
-	else
+	} else
 	  {
 		  MAXIMUM_W(w) = 17;
 		  MAXIMUM_H(w) = 17;

@@ -13,6 +13,11 @@ static void __ewl_window_destroy(Ewl_Widget * w, void *ev_data,
 static void __ewl_window_configure(Ewl_Widget * w, void *ev_data,
 				   void *user_data);
 
+/**
+ * ewl_window_new - allocate and initialize a new window
+ *
+ * Returns a new window on success, or NULL on failure.
+ */
 Ewl_Widget *
 ewl_window_new()
 {
@@ -275,6 +280,13 @@ __ewl_window_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * ewl_window_find_window - find an ewl window by it's X window
+ * @window: the X window to search for on the list of ewl window's
+ *
+ * Returns the found ewl window on success, NULL on failure to find the
+ * window.
+ */
 Ewl_Window *
 ewl_window_find_window(Window window)
 {
@@ -292,6 +304,12 @@ ewl_window_find_window(Window window)
 	DRETURN_PTR(NULL, DLEVEL_STABLE);
 }
 
+/**
+ * ewl_window_find_window_by_evas_window - find an ewl window by its evas window
+ * @window: the evas window to search for on the list of windows
+ *
+ * Returns the found window on success, NULL on failure to find the window.
+ */
 Ewl_Window *
 ewl_window_find_window_by_evas_window(Window window)
 {
@@ -311,6 +329,15 @@ ewl_window_find_window_by_evas_window(Window window)
 	DRETURN_PTR(NULL, DLEVEL_STABLE);
 }
 
+/**
+ * ewl_window_resize - resize the specified window to the specified size
+ * @widget: the window to resize
+ * @w: the new width for the window
+ * @h: the new height for the window
+ *
+ * Returns no value. Resize the specified window the the specified size,
+ * configure is called to have the display updated.
+ */
 void
 ewl_window_resize(Ewl_Widget * widget, int w, int h)
 {
@@ -331,6 +358,14 @@ ewl_window_resize(Ewl_Widget * widget, int w, int h)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * ewl_window_set_min_size - set the minimum size a window can attain
+ * @widget: the window to change the minimum size
+ * @w: the minimum width the window can attain
+ * @h: the minimum height the window can attain
+ *
+ * Returns no value. Sets the minimum size the window can attain.
+ */
 void
 ewl_window_set_min_size(Ewl_Widget * widget, int w, int h)
 {
@@ -348,6 +383,15 @@ ewl_window_set_min_size(Ewl_Widget * widget, int w, int h)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+
+/**
+ * ewl_window_set_max_size - set the maximum size a window can attain
+ * @widget: the window to change the maximum size
+ * @w: the maximum width the window can attain
+ * @h: the maximum height the window can attain
+ *
+ * Returns no value. Sets the maximum size the window can attain.
+ */
 void
 ewl_window_set_max_size(Ewl_Widget * widget, int w, int h)
 {
@@ -365,6 +409,14 @@ ewl_window_set_max_size(Ewl_Widget * widget, int w, int h)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * ewl_window_set_title - set the title of the specified window
+ * @w: the window to change the title
+ * @title: the title to set for the window
+ *
+ * Returns no value. Sets the title of window @w to @title and calls the
+ * necessary X lib functions to update the window.
+ */
 void
 ewl_window_set_title(Ewl_Widget * w, char *title)
 {
@@ -385,6 +437,13 @@ ewl_window_set_title(Ewl_Widget * w, char *title)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * ewl_window_get_title - retrieve the title of the specified window
+ * @widget: the window to retrieve the window
+ *
+ * Returns a pointer to a newly allocated copy of the title, NULL on failure.
+ * The returned title should be freed.
+ */
 char *
 ewl_window_get_title(Ewl_Widget * widget)
 {
@@ -394,6 +453,13 @@ ewl_window_get_title(Ewl_Widget * widget)
 	DRETURN_PTR(strdup(EWL_WINDOW(widget)->title), DLEVEL_STABLE);
 }
 
+/**
+ * ewl_window_set_borderless - remove the border from the specified window
+ * @w: the window to remove the border
+ *
+ * Returns no value. Remove the border from the specified widget and call the
+ * necessary X lib functions to update the appearance.
+ */
 void
 ewl_window_set_borderless(Ewl_Widget * w)
 {
@@ -408,6 +474,15 @@ ewl_window_set_borderless(Ewl_Widget * w)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * ewl_window_move - move the specified window to the given position
+ * @w: the window to move
+ * @x: the x coordinate of the new position
+ * @y: the y coordinate of the new position
+ *
+ * Returns no value. Moves the window into the specified position in the
+ * window manager environment.
+ */
 void
 ewl_window_move(Ewl_Widget * w, int x, int y)
 {

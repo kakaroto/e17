@@ -12,8 +12,11 @@ static E_DB_File *theme_db = NULL;
 static Ewd_Hash *cached_theme_data = NULL;
 static Ewd_Hash *def_theme_data = NULL;
 
-/* Initialize the data structures involved with theme handling. This involves
- * finding the specified theme file. */
+/**
+ * ewl_theme_init - initialize the themeing  system
+ *
+ * Returns TRUE on success, FALSE on failure. Initializes the data structures
+ * involved with theme handling. This involves finding the specified theme file. */
 int
 ewl_theme_init(void)
 {
@@ -21,6 +24,8 @@ ewl_theme_init(void)
 	char *theme_name;
 	char theme_db_path[1024];
 	char *home;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	/*
 	 * Alloacte and clear the default theme 
@@ -40,7 +45,7 @@ ewl_theme_init(void)
 		  DERROR("Environment variable HOME not defined\n"
 			 "Try export HOME=/home/user in a bash like environemnt or\n"
 			 "setenv HOME=/home/user in a sh like environment.\n");
-		  return -1;
+		  DRETURN_INT(FALSE, DLEVEL_STABLE);
 	  }
 
 	snprintf(theme_path, PATH_LEN, "%s/.e/ewl/themes/%s", home,
@@ -77,10 +82,16 @@ ewl_theme_init(void)
 
 	IF_FREE(theme_name);
 
-	return 1;
+	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
-/* Initialize the widget's theme */
+/**
+ * ewl_theme_init_widget - initialize a widgets theme information to the default
+ * @w: the widget to initialize theme information
+ *
+ * Returns no value. Sets the widget @w's theme information to the default
+ * values.
+ */
 void
 ewl_theme_init_widget(Ewl_Widget * w)
 {
@@ -92,6 +103,13 @@ ewl_theme_init_widget(Ewl_Widget * w)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * ewl_theme_deinit_widget - remove the theme information from a widget
+ * @w: the widget to remove theme information
+ *
+ * Returns no value. Removes and frees (if not default) the theme information
+ * from the widget @w.
+ */
 void
 ewl_theme_deinit_widget(Ewl_Widget * w)
 {
@@ -115,10 +133,15 @@ ewl_theme_deinit_widget(Ewl_Widget * w)
 char *
 ewl_theme_path()
 {
-	return strdup(theme_path);
+	DRETURN_PTR(strdup(theme_path), DLEVEL_STABLE);
 }
 
-/* Return the path of the current theme's fonts */
+/**
+ * ewl_theme_font_path - retrieve the path of a widgets theme's fonts
+ * @w: the widget to search
+ *
+ * Returns the font path associated with widget @w on success, NULL on failure.
+ */
 char *
 ewl_theme_font_path()
 {
@@ -137,10 +160,16 @@ ewl_theme_font_path()
 			   theme_path);
 	  }
 
-	return font_path;
+	DRETURN_PTR(font_path, DLEVEL_STABLE);
 }
 
-/* Return a string with the path to the specified image */
+/**
+ * ewl_theme_image_get - retrieve the path to an image from a widgets theme
+ * @w: the widget to search
+ * @k: the image to search for
+ *
+ * Returns the path associated with image key @k on success, NULL on failure.
+ */
 char *
 ewl_theme_image_get(Ewl_Widget * w, char *k)
 {
@@ -162,8 +191,7 @@ ewl_theme_image_get(Ewl_Widget * w, char *k)
 		  path = NEW(char, PATH_LEN);
 
 		  snprintf(path, PATH_LEN, "%s%s", theme_path, data);
-	  }
-	else			/* Absolute path given, so return it */
+	} else			/* Absolute path given, so return it */
 		path = strdup(data);
 
 	if (((stat(path, &st)) == -1) || !S_ISREG(st.st_mode))
@@ -172,8 +200,15 @@ ewl_theme_image_get(Ewl_Widget * w, char *k)
 	DRETURN_PTR(path, DLEVEL_STABLE);
 }
 
-/* Retrieve data from the theme */
-void *
+
+/**
+ * ewl_theme_data_get_str - retrieve an string value from a widgets theme
+ * @w: the widget to search
+ * @k: the key to search for
+ *
+ * Returns the string associated with key @k on success, NULL on failure.
+ */
+char *
 ewl_theme_data_get_str(Ewl_Widget * w, char *k)
 {
 	void *ret = NULL;
@@ -207,16 +242,20 @@ ewl_theme_data_get_str(Ewl_Widget * w, char *k)
 	DRETURN_PTR(ret, DLEVEL_STABLE);
 }
 
-void
-ewl_theme_data_get_int(Ewl_Widget * w, char *k, int *v)
+/**
+ * ewl_theme_data_get_int - retrieve an integer value from a widgets theme
+ * @w: the widget to search
+ * @k: the key to search for
+ *
+ * Returns the integer associated with key @k on success, 0 on failure.
+ */
+int
+ewl_theme_data_get_int(Ewl_Widget * w, char *k)
 {
 	int ret = 0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("k", k);
-
-	if (!v)
-		DRETURN(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("k", k, FALSE);
 
 	if (w->theme)
 		ret = (int) (ewd_hash_get(w->theme, k));
@@ -238,12 +277,18 @@ ewl_theme_data_get_int(Ewl_Widget * w, char *k, int *v)
 			  ewd_hash_set(cached_theme_data, k, (void *) ret);
 	  }
 
-	*v = ret;
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+	DRETURN_INT(ret, DLEVEL_STABLE);
 }
 
-/* Store data into the theme */
+/**
+ * ewl_theme_data_set -  store data into a widgets theme
+ * @w: the widget to change theme data
+ * @k: the key to change
+ * @v: the data to assign to the key
+ *
+ * Returns no value. Changes the theme data in widget @w so that key @k now is
+ * associated with value @v.
+ */
 void
 ewl_theme_data_set(Ewl_Widget * w, char *k, char *v)
 {
@@ -264,6 +309,14 @@ ewl_theme_data_set(Ewl_Widget * w, char *k, char *v)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * ewl_theme_data_set_default - set a theme key to a default value
+ * @k: the key to be set
+ * @v: the value to set for the key
+ *
+ * Returns no value. Sets the data associated with key @k to value @v in the
+ * default theme data.
+ */
 void
 ewl_theme_data_set_default(char *k, char *v)
 {

@@ -33,16 +33,16 @@ ewl_init(int argc, char **argv)
 	e_ev_signal_init();
 	e_ev_x_init();
 
-	if ((ewl_config_init()) == -1)
+	if (!ewl_config_init())
 		DERROR("Couldn't init config data.. Exiting....");
 
-	if ((ewl_ev_init()) == -1)
+	if (!ewl_ev_init())
 		DERROR("Couldn't init event data.. Exiting....");
 
-	if ((ewl_fx_init()) == -1)
+	if (!ewl_fx_init())
 		DERROR("Couldn't init fx data.. Exiting....");
 
-	if ((ewl_theme_init()) == -1)
+	if (!ewl_theme_init())
 		DERROR("Couldn't init theme data.. Exiting....");
 
 	ewl_window_list = ewd_list_new();

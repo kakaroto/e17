@@ -15,10 +15,9 @@ void __ewl_button_theme_update(Ewl_Widget * w, void *ev_data,
 
 /**
  * ewl_button_new - allocate and initialize a new button
- *
  * @label: the string to use as a label for the button
  *
- * Returns NULL on failure, a pointer to the new button on success
+ * Returns NULL on failure, a pointer to a new button on success
  */
 Ewl_Widget *
 ewl_button_new(char *label)
@@ -40,11 +39,10 @@ ewl_button_new(char *label)
 
 /**
  * ewl_button_init - initialize a button to starting values
- *
  * @b: the button to initialize
  * @label: the string to use as the buttons label
  *
- * Returns no value.
+ * Returns no value. Initializes a button to default values and callbacks.
  */
 void
 ewl_button_init(Ewl_Button * b, char *label)
@@ -153,9 +151,8 @@ __ewl_button_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 		  if (tmp)
 			  ewl_text_set_style(b->label_object, tmp);
 
-		  ewl_theme_data_get_int(b->label_object,
-					 "/appearance/button/default/text/font_size",
-					 &itmp);
+		  itmp = ewl_theme_data_get_int(b->label_object,
+						"/appearance/button/default/text/font_size");
 
 
 		  if (tmp)
@@ -215,8 +212,7 @@ __ewl_button_mouse_up(Ewl_Widget * w, void *ev_data, void *user_data)
 	  {
 		  ewl_widget_update_appearance(w, "hilited");
 		  ewl_callback_call(w, EWL_CALLBACK_CLICKED);
-	  }
-	else
+	} else
 		ewl_widget_update_appearance(w, "normal");
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -267,7 +263,7 @@ __ewl_button_update_label(Ewl_Button * b)
 		ewl_text_set_font(b->label_object, tmp);
 
 	snprintf(key, PATH_LEN, "%s/text/font_size", w->appearance);
-	ewl_theme_data_get_int(w, key, &itmp);
+	itmp = ewl_theme_data_get_int(w, key);
 
 	if (itmp)
 		ewl_text_set_font_size(b->label_object, itmp);

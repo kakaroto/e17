@@ -200,8 +200,7 @@ __ewl_entry_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 		  xx += CURRENT_W(e->text);
 		  ww = 5;
 		  hh = CURRENT_H(w) - tt - bb;
-	  }
-	else
+	} else
 	  {
 		  xx += xx2;
 		  yy += yy2;
@@ -235,8 +234,7 @@ __ewl_entry_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 			    ww -= sw;
 			    ww += ex - sx;
 			    ww += ew;
-		    }
-		  else if (ee < 0)
+		  } else if (ee < 0)
 		    {
 			    xx -= sx;
 			    xx += ex;
@@ -330,8 +328,7 @@ __ewl_entry_mouse_down(Ewl_Widget * w, void *ev_data, void *user_data)
 
 		  if (str)
 			  len = index = strlen(str);
-	  }
-	else
+	} else
 		ewl_text_get_index_at(e->text, (double) (ev->x),
 				      (double) (CURRENT_Y(e->text) +
 						(CURRENT_H(e->text) / 2)),
@@ -402,11 +399,9 @@ __ewl_entry_mouse_move(Ewl_Widget * w, void *ev_data, void *user_data)
 
 			    ewl_cursor_set_position(e->cursor, index + 1);
 
-		    }
-		  else if (ev->x < CURRENT_X(e->text))
+		  } else if (ev->x < CURRENT_X(e->text))
 		    {
-		    }
-		  else if (ev->x > CURRENT_X(e->text) + CURRENT_W(e->text))
+		  } else if (ev->x > CURRENT_X(e->text) + CURRENT_W(e->text))
 		    {
 			    char *str;
 
@@ -470,8 +465,8 @@ __ewl_entry_theme_update(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	font = ewl_theme_data_get_str(w,
 				      "/appearance/entry/default/text/font");
-	ewl_theme_data_get_int(w, "/appearance/entry/default/text/font_size",
-			       &size);
+	size = ewl_theme_data_get_int(w,
+				      "/appearance/entry/default/text/font_size");
 	style = ewl_theme_data_get_str(w,
 				       "/appearance/entry/default/text/style");
 

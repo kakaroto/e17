@@ -17,8 +17,10 @@ static void ewl_ev_mouse_down(Eevent * _ev);
 static void ewl_ev_mouse_up(Eevent * _ev);
 static void ewl_ev_mouse_move(Eevent * _ev);
 
-/*
- * Initialize the event handlers for dispatching to the proper widgets
+/**
+ * ewl_ev_init - initialize the event handlers for dispatching to proper widgets
+ *
+ * Returns true or false to indicate success in initiating the event filters.
  */
 int
 ewl_ev_init(void)
@@ -40,13 +42,20 @@ ewl_ev_init(void)
 	DRETURN_INT(1, DLEVEL_STABLE);
 }
 
-/*
- * Widgets don't need to know about this usually, but we still need to let
- * them know in case a widget is using a non-evas based draw method
+/**
+ * ewl_ev_window_expose - handles the exposing of a window
+ * @_ev: the expose event information
+ *
+ * Returns no value. Dispatches the expose event to the appropriate window for
+ * handling.
  */
 static void
 ewl_ev_window_expose(Eevent * _ev)
 {
+	/*
+	 * Widgets don't need to know about this usually, but we still need to
+	 * let them know in case a widget is using a non-evas based draw method
+	 */
 	Ev_Window_Expose *ev;
 	Ewl_Window *window;
 
@@ -65,13 +74,20 @@ ewl_ev_window_expose(Eevent * _ev)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-/*
- * When a configure event occurs, we must update the windows geometry based on
- * the coordinates and dimensions given in the Eevent.
+/**
+ * ewl_ev_window_configure - handles configure events that occur in windows
+ * @_ev: the configure event information
+ *
+ * Returns no value. Dispatches a configure even to the appropriate ewl
+ * window.
  */
 static void
 ewl_ev_window_configure(Eevent * _ev)
 {
+	/*
+	 * When a configure event occurs, we must update the windows geometry
+	 * based on the coordinates and dimensions given in the Eevent.
+	 */
 	Ev_Window_Configure *ev;
 	Ewl_Window *window;
 
@@ -106,13 +122,20 @@ ewl_ev_window_reparent(Eevent * _ev)
 }
  */
 
-/*
- * Retrieve the appropriate ewl_window using the x window id that is held
- * in the eevent, and call it's handlers for a window delete event.
+/**
+ * ewl_ev_window_delete - handles delete events that occur to windows
+ * @_ev: the delete event information
+ *
+ * Returns no value. Dispatches the delete event to the appropriate ewl
+ * window.
  */
 static void
 ewl_ev_window_delete(Eevent * _ev)
 {
+	/*
+	 * Retrieve the appropriate ewl_window using the x window id that is
+	 * held in the eevent, and call it's handlers for a window delete event.
+	 */
 	Ev_Window_Delete *ev;
 	Ewl_Window *window;
 
@@ -130,12 +153,20 @@ ewl_ev_window_delete(Eevent * _ev)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-/*
- * Dispatcher of key down events, these get sent to the last widget selected
+/**
+ * ewl_ev_key_down - handles key down events in windows
+ * @_ev: the key down event information
+ *
+ * Returns no value. Dispatches the key down event to the appropriate ewl
+ * window.
  */
 static void
 ewl_ev_key_down(Eevent * _ev)
 {
+	/*
+	 * Dispatcher of key down events, these get sent to the last widget
+	 * selected.
+	 */
 	Ewl_Window *window;
 	Ev_Key_Down *ev;
 
@@ -160,12 +191,19 @@ ewl_ev_key_down(Eevent * _ev)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-/*
- * Dispatch key up events to the appropriate widget
+/**
+ * ewl_ev_key_up - handles key up events in windows
+ * @_ev: the key up event information
+ *
+ * Returns no value. Dispatches the key up event to the appropriate ewl
+ * window.
  */
 static void
 ewl_ev_key_up(Eevent * _ev)
 {
+	/*
+	 * Dispatch key up events to the appropriate widget
+	 */
 	Ewl_Window *window;
 	Ev_Key_Up *ev;
 
@@ -188,6 +226,14 @@ ewl_ev_key_up(Eevent * _ev)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+
+/**
+ * ewl_ev_mouse_down - handles mouse down events in windows
+ * @_ev: the mouse down event information
+ *
+ * Returns no value. Dispatches the mouse down event to the appropriate ewl
+ * window. Also determines the widgets clicked state.
+ */
 static void
 ewl_ev_mouse_down(Eevent * _ev)
 {
@@ -247,6 +293,14 @@ ewl_ev_mouse_down(Eevent * _ev)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+
+/**
+ * ewl_ev_mouse_up - handles mouse up events in windows
+ * @_ev: the mouse up event information
+ *
+ * Returns no value. Dispatches the mouse up event to the appropriate ewl
+ * window. Also determines the widgets clicked state.
+ */
 static void
 ewl_ev_mouse_up(Eevent * _ev)
 {
@@ -272,6 +326,14 @@ ewl_ev_mouse_up(Eevent * _ev)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+
+/**
+ * ewl_ev_mouse_move - handles mouse move events in windows
+ * @_ev: the mouse move event information
+ *
+ * Returns no value. Dispatches the mouse move event to the appropriate ewl
+ * window.
+ */
 static void
 ewl_ev_mouse_move(Eevent * _ev)
 {

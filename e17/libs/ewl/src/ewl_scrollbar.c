@@ -92,8 +92,7 @@ ewl_scrollbar_init(Ewl_Scrollbar * s, Ewl_Orientation orientation)
 		  ewl_container_append_child(EWL_CONTAINER(s), s->decrement);
 		  ewl_container_append_child(EWL_CONTAINER(s), s->seeker);
 		  ewl_container_append_child(EWL_CONTAINER(s), s->increment);
-	  }
-	else
+	} else
 	  {
 		  ewl_widget_set_appearance(s->decrement,
 					    "/appearance/scrollbar/vertical/increment");

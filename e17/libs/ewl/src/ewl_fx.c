@@ -2,19 +2,34 @@
 #include <Ewl.h>
 
 
-static void ewl_fx_handle_fade_in(int val, void *data);
-static void ewl_fx_handle_fade_out(int val, void *data);
-static void ewl_fx_handle_glow(int val, void *data);
+static void __ewl_fx_handle_fade_in(int val, void *data);
+static void __ewl_fx_handle_fade_out(int val, void *data);
+static void __ewl_fx_handle_glow(int val, void *data);
 
 
+/**
+ * ewl_fx_init - initialize the fx system
+ *
+ * Returns TRUE on success, FALSE on failure. Sets up any necessary internal
+ * structures for the fx system.
+ */
 int
 ewl_fx_init()
 {
-	DENTER_FUNCTION(DLEVEL_STABLE);
+	DENTER_FUNCTION(DLEVEL_TESTING);
 
-	DRETURN_INT(1, DLEVEL_TESTING);
+	DRETURN_INT(TRUE, DLEVEL_TESTING);
 }
 
+/**
+ * ewl_fx_add - add fx of a specified type to a widget
+ * @widget: the widget to add the fx
+ * @type: the type of fx to add
+ * @func: the callback function when the fx are executed
+ * @func_data: the function data passed to the callback function
+ *
+ * Returns no value. Adds the specified fx to the widget @widget.
+ */
 void
 ewl_fx_add(Ewl_Widget * widget, Ewl_FX_Type type,
 	   void (*func) (Ewl_Widget * widget, void *func_data),
@@ -22,9 +37,8 @@ ewl_fx_add(Ewl_Widget * widget, Ewl_FX_Type type,
 {
 	Ewl_FX_Timer *timer = NULL;
 
-	DENTER_FUNCTION(DLEVEL_STABLE);
-
-	CHECK_PARAM_POINTER("widget", widget);
+	DENTER_FUNCTION(DLEVEL_TESTING);
+	DCHECK_PARAM_PTR("widget", widget);
 
 	timer = NEW(Ewl_FX_Timer, 1);
 	if (!timer)
@@ -67,29 +81,30 @@ ewl_fx_add(Ewl_Widget * widget, Ewl_FX_Type type,
 	if (timer->type == EWL_FX_TYPE_FADE_IN)
 		e_add_event_timer(timer->name,
 				  timer->timeout,
-				  ewl_fx_handle_fade_in, timer->start_val,
+				  __ewl_fx_handle_fade_in, timer->start_val,
 				  timer);
 	else if (timer->type == EWL_FX_TYPE_FADE_OUT)
 		e_add_event_timer(timer->name,
 				  timer->timeout,
-				  ewl_fx_handle_fade_out, timer->start_val,
+				  __ewl_fx_handle_fade_out, timer->start_val,
 				  timer);
 	else if (timer->type == EWL_FX_TYPE_GLOW)
 		e_add_event_timer(timer->name,
 				  timer->timeout,
-				  ewl_fx_handle_glow, timer->start_val,
+				  __ewl_fx_handle_glow, timer->start_val,
 				  timer);
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+	DLEAVE_FUNCTION(DLEVEL_TESTING);
 }
 
 static void
-ewl_fx_handle_fade_in(int val, void *data)
+__ewl_fx_handle_fade_in(int val, void *data)
 {
 	Ewl_FX_Timer *timer = NULL;
 	Ewl_Widget *widget = NULL;
 
-	CHECK_PARAM_POINTER("data", data);
+	DENTER_FUNCTION(DLEVEL_TESTING);
+	DCHECK_PARAM_PTR("data", data);
 
 	timer = data;
 	widget = timer->widget;
@@ -102,35 +117,36 @@ ewl_fx_handle_fade_in(int val, void *data)
 	  {
 		  e_add_event_timer(timer->name,
 				    timer->timeout,
-				    ewl_fx_handle_fade_in,
+				    __ewl_fx_handle_fade_in,
 				    val + timer->increase, timer);
-	  }
-	else
+	} else
 	  {
 		  timer->repeat--;
 		  if (timer->repeat > 0)
 		    {
 			    e_add_event_timer(timer->name,
 					      timer->timeout,
-					      ewl_fx_handle_fade_in,
+					      __ewl_fx_handle_fade_in,
 					      timer->start_val, timer);
-		    }
-		  else
+		  } else
 		    {
 			    if (timer->func)
 				    timer->func(timer->widget,
 						timer->func_data);
 		    }
 	  }
+
+	DLEAVE_FUNCTION(DLEVEL_TESTING);
 }
 
 static void
-ewl_fx_handle_fade_out(int val, void *data)
+__ewl_fx_handle_fade_out(int val, void *data)
 {
 	Ewl_FX_Timer *timer = NULL;
 	Ewl_Widget *widget = NULL;
 
-	CHECK_PARAM_POINTER("data", data);
+	DENTER_FUNCTION(DLEVEL_TESTING);
+	DCHECK_PARAM_PTR("data", data);
 
 	timer = data;
 	widget = timer->widget;
@@ -143,35 +159,36 @@ ewl_fx_handle_fade_out(int val, void *data)
 	  {
 		  e_add_event_timer(timer->name,
 				    timer->timeout,
-				    ewl_fx_handle_fade_out,
+				    __ewl_fx_handle_fade_out,
 				    val - timer->increase, timer);
-	  }
-	else
+	} else
 	  {
 		  timer->repeat--;
 		  if (timer->repeat > 0)
 		    {
 			    e_add_event_timer(timer->name,
 					      timer->timeout,
-					      ewl_fx_handle_fade_out,
+					      __ewl_fx_handle_fade_out,
 					      timer->start_val, timer);
-		    }
-		  else
+		  } else
 		    {
 			    if (timer->func)
 				    timer->func(timer->widget,
 						timer->func_data);
 		    }
 	  }
+
+	DLEAVE_FUNCTION(DLEVEL_TESTING);
 }
 
 static void
-ewl_fx_handle_glow(int val, void *data)
+__ewl_fx_handle_glow(int val, void *data)
 {
 	Ewl_FX_Timer *timer = NULL;
 	Ewl_Widget *widget = NULL;
 
-	CHECK_PARAM_POINTER("data", data);
+	DENTER_FUNCTION(DLEVEL_TESTING);
+	DCHECK_PARAM_PTR("data", data);
 
 	timer = data;
 	widget = timer->widget;
@@ -183,13 +200,12 @@ ewl_fx_handle_glow(int val, void *data)
 	if (timer->start_val == 5 && val < 255)
 	  {
 		  e_add_event_timer(timer->name,
-				    timer->timeout, ewl_fx_handle_glow,
+				    timer->timeout, __ewl_fx_handle_glow,
 				    val + 5, timer);
-	  }
-	else if (timer->start_val == 255 && val > 5)
+	} else if (timer->start_val == 255 && val > 5)
 	  {
 		  e_add_event_timer(timer->name,
-				    timer->timeout, ewl_fx_handle_glow,
+				    timer->timeout, __ewl_fx_handle_glow,
 				    val - 5, timer);
 
 	  }
@@ -199,7 +215,7 @@ ewl_fx_handle_glow(int val, void *data)
 		  timer->start_val = 5;
 		  e_add_event_timer(timer->name,
 				    timer->timeout,
-				    ewl_fx_handle_glow, timer->start_val,
+				    __ewl_fx_handle_glow, timer->start_val,
 				    timer);
 	  }
 
@@ -208,7 +224,9 @@ ewl_fx_handle_glow(int val, void *data)
 		  timer->start_val = 255;
 		  e_add_event_timer(timer->name,
 				    timer->timeout,
-				    ewl_fx_handle_glow, timer->start_val,
+				    __ewl_fx_handle_glow, timer->start_val,
 				    timer);
 	  }
+
+	DLEAVE_FUNCTION(DLEVEL_TESTING);
 }

@@ -16,8 +16,7 @@ static void __ewl_vbox_configure_fillers(Ewl_Widget * w, Ewd_List * f,
 static void __ewl_vbox_layout_children(Ewl_Widget * w);
 
 /**
- * ewl_box_new - alloacte and initialize a new box with orientation
- *
+ * ewl_box_new - allocate and initialize a new box with given orientation
  * @o: the orientation for the box's layout
  *
  * Returns NULL on failure, or a newly allocated box on success.
@@ -41,11 +40,11 @@ ewl_box_new(Ewl_Orientation o)
 
 /**
  * ewl_box_init - initialize the box to starting values
- *
  * @b: the box to initialize
  * @o: the orientation for the box to layout child widgets
  *
- * Returns no value.
+ * Returns no value. Responsible for setting up default values and callbacks
+ * within a box structure.
  */
 void
 ewl_box_init(Ewl_Box * b, Ewl_Orientation o)
@@ -82,11 +81,11 @@ ewl_box_init(Ewl_Box * b, Ewl_Orientation o)
 
 /**
  * ewl_box_set_orientation - change the specified box's orientation
- *
  * @b: the box to change the orientation
  * @o: the orientation to set for the box
  *
- * Returns no value.
+ * Returns no value. Changes the orientation of the specified box, and
+ * reconfigures it in order for the appearance to be updated.
  */
 void
 ewl_box_set_orientation(Ewl_Box * b, Ewl_Orientation o)
@@ -118,11 +117,11 @@ ewl_box_set_orientation(Ewl_Box * b, Ewl_Orientation o)
 
 /**
  * ewl_box_set_spacing - changes the spacing between the objects in the box
- *
  * @b: the box to change the spacing
  * @s: the spacing to put between the child widgets
  *
- * Returns no value.
+ * Returns no value. Adjust the spacing of the specified box and reconfigure
+ * it to change the appearance.
  */
 void
 ewl_box_set_spacing(Ewl_Box * b, int s)

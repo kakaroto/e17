@@ -211,8 +211,8 @@ char *getenv();
 
 static char *
 my_index(str, chr)
-     const char *str;
-     int chr;
+const char *str;
+int chr;
 {
 	while (*str)
 	  {
@@ -306,7 +306,7 @@ static void exchange(char **);
 
 static void
 exchange(argv)
-     char **argv;
+char **argv;
 {
 	int bottom = first_nonopt;
 	int middle = last_nonopt;
@@ -375,8 +375,7 @@ exchange(argv)
 			     * Exclude the moved bottom segment from further swapping.  
 			     */
 			    top -= len;
-		    }
-		  else
+		  } else
 		    {
 			    /*
 			     * Top segment is the short one.  
@@ -416,9 +415,9 @@ static const char *_getopt_initialize(int, char *const *, const char *);
 #endif
 static const char *
 _getopt_initialize(argc, argv, optstring)
-     int argc;
-     char *const *argv;
-     const char *optstring;
+int argc;
+char *const *argv;
+const char *optstring;
 {
 	/*
 	 * Start processing options with ARGV-element 1 (since ARGV-element 0 is
@@ -440,13 +439,11 @@ _getopt_initialize(argc, argv, optstring)
 	  {
 		  ordering = RETURN_IN_ORDER;
 		  ++optstring;
-	  }
-	else if (optstring[0] == '+')
+	} else if (optstring[0] == '+')
 	  {
 		  ordering = REQUIRE_ORDER;
 		  ++optstring;
-	  }
-	else if (posixly_correct != NULL)
+	} else if (posixly_correct != NULL)
 		ordering = REQUIRE_ORDER;
 	else
 		ordering = PERMUTE;
@@ -482,8 +479,7 @@ _getopt_initialize(argc, argv, optstring)
 			      }
 		    }
 		  nonoption_flags_len = nonoption_flags_max_len;
-	  }
-	else
+	} else
 		nonoption_flags_len = 0;
 #endif
 
@@ -548,12 +544,12 @@ _getopt_initialize(argc, argv, optstring)
 
 int
 _getopt_internal(argc, argv, optstring, longopts, longind, long_only)
-     int argc;
-     char *const *argv;
-     const char *optstring;
-     const struct option *longopts;
-     int *longind;
-     int long_only;
+int argc;
+char *const *argv;
+const char *optstring;
+const struct option *longopts;
+int *longind;
+int long_only;
 {
 	optarg = NULL;
 
@@ -734,16 +730,14 @@ _getopt_internal(argc, argv, optstring, longopts, longind, long_only)
 					      indfound = option_index;
 					      exact = 1;
 					      break;
-				      }
-				    else if (pfound == NULL)
+				    } else if (pfound == NULL)
 				      {
 					      /*
 					       * First nonexact match found.  
 					       */
 					      pfound = p;
 					      indfound = option_index;
-				      }
-				    else
+				    } else
 					    /*
 					     * Second or later nonexact match found.  
 					     */
@@ -795,8 +789,7 @@ _getopt_internal(argc, argv, optstring, longopts, longind, long_only)
 						optopt = pfound->val;
 						return '?';
 					}
-			      }
-			    else if (pfound->has_arg == 1)
+			    } else if (pfound->has_arg == 1)
 			      {
 				      if (optind < argc)
 					      optarg = argv[optind++];
@@ -921,8 +914,7 @@ _getopt_internal(argc, argv, optstring, longopts, longind, long_only)
 				     * * must advance to the next element now.  
 				     */
 				    optind++;
-			    }
-			  else if (optind == argc)
+			  } else if (optind == argc)
 			    {
 				    if (opterr)
 				      {
@@ -940,8 +932,7 @@ _getopt_internal(argc, argv, optstring, longopts, longind, long_only)
 				    else
 					    c = '?';
 				    return c;
-			    }
-			  else
+			  } else
 				  /*
 				   * We already incremented `optind' once; increment it again when
 				   * * taking next ARGV-elt as argument.  
@@ -978,16 +969,14 @@ _getopt_internal(argc, argv, optstring, longopts, longind, long_only)
 						      indfound = option_index;
 						      exact = 1;
 						      break;
-					      }
-					    else if (pfound == NULL)
+					    } else if (pfound == NULL)
 					      {
 						      /*
 						       * First nonexact match found.  
 						       */
 						      pfound = p;
 						      indfound = option_index;
-					      }
-					    else
+					    } else
 						    /*
 						     * Second or later nonexact match found.  
 						     */
@@ -1026,8 +1015,7 @@ _getopt_internal(argc, argv, optstring, longopts, longind, long_only)
 								(nextchar);
 							return '?';
 						}
-				      }
-				    else if (pfound->has_arg == 1)
+				    } else if (pfound->has_arg == 1)
 				      {
 					      if (optind < argc)
 						      optarg = argv[optind++];
@@ -1068,12 +1056,10 @@ _getopt_internal(argc, argv, optstring, longopts, longind, long_only)
 				      {
 					      optarg = nextchar;
 					      optind++;
-				      }
-				    else
+				    } else
 					    optarg = NULL;
 				    nextchar = NULL;
-			    }
-			  else
+			  } else
 			    {
 				    /*
 				     * This is an option that requires an argument.  
@@ -1086,8 +1072,7 @@ _getopt_internal(argc, argv, optstring, longopts, longind, long_only)
 					       * * we must advance to the next element now.  
 					       */
 					      optind++;
-				      }
-				    else if (optind == argc)
+				    } else if (optind == argc)
 				      {
 					      if (opterr)
 						{
@@ -1104,8 +1089,7 @@ _getopt_internal(argc, argv, optstring, longopts, longind, long_only)
 						      c = ':';
 					      else
 						      c = '?';
-				      }
-				    else
+				    } else
 					    /*
 					     * We already incremented `optind' once; increment it again
 					     * * when taking next ARGV-elt as argument.  
@@ -1120,9 +1104,9 @@ _getopt_internal(argc, argv, optstring, longopts, longind, long_only)
 
 int
 getopt(argc, argv, optstring)
-     int argc;
-     char *const *argv;
-     const char *optstring;
+int argc;
+char *const *argv;
+const char *optstring;
 {
 	return _getopt_internal(argc, argv, optstring,
 				(const struct option *) 0, (int *) 0, 0);
@@ -1137,8 +1121,8 @@ getopt(argc, argv, optstring)
 
 int
 main(argc, argv)
-     int argc;
-     char **argv;
+int argc;
+char **argv;
 {
 	int c;
 	int digit_optind = 0;

@@ -287,8 +287,7 @@ __ewl_spinner_deselect(Ewl_Widget * w, void *ev_data, void *user_data)
 		  val = atoi(str);
 
 		  __ewl_spinner_set_value(EWL_WIDGET(s), (double) (val));
-	  }
-	else if (str)
+	} else if (str)
 		FREE(str);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);

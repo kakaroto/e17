@@ -11,6 +11,15 @@ void __ewl_container_destroy_recursive(Ewl_Widget * w, void *ev_data,
 void __ewl_container_child_destroy(Ewl_Widget * w, void *ev_data,
 				   void *user_data);
 
+/**
+ * ewl_container_init - initialize a containers default fields and callbacks
+ * @c: the container to initialize
+ * @appearance: the appearance key for this container
+ *
+ * Returns no value. Initializes the default values of the container, this
+ * also sets up the widget fields of the container, so the @appearance string
+ * is necessary.
+ */
 void
 ewl_container_init(Ewl_Container * c, char *appearance)
 {
@@ -50,6 +59,14 @@ ewl_container_init(Ewl_Container * c, char *appearance)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * ewl_container_append_child - add a child at the end of the container
+ * @pc: the parent container that will hold the child
+ * @child: the child to add to the container
+ *
+ * Returns no value. Attaches the child to the end of the parent containers
+ * child list.
+ */
 void
 ewl_container_append_child(Ewl_Container * pc, Ewl_Widget * child)
 {
@@ -77,6 +94,15 @@ ewl_container_append_child(Ewl_Container * pc, Ewl_Widget * child)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+
+/**
+ * ewl_container_prepend_child - add a child at the end of the container
+ * @pc: the parent container that will hold the child
+ * @child: the child to add to the container
+ *
+ * Returns no value. Attaches the child to the start of the parent containers
+ * child list.
+ */
 void
 ewl_container_prepend_child(Ewl_Container * pc, Ewl_Widget * child)
 {
@@ -104,6 +130,16 @@ ewl_container_prepend_child(Ewl_Container * pc, Ewl_Widget * child)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+
+/**
+ * ewl_container_insert_child - add a child at an index of the container
+ * @pc: the parent container that will hold the child
+ * @child: the child to add to the container
+ * @index: the position in the child list to add the cihld
+ *
+ * Returns no value. Attaches the child to the @index position of the parent
+ * containers child list.
+ */
 void
 ewl_container_insert_child(Ewl_Container * pc, Ewl_Widget * child, int index)
 {
@@ -132,6 +168,14 @@ ewl_container_insert_child(Ewl_Container * pc, Ewl_Widget * child, int index)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * ewl_container_remove_child - remove the specified child from the container
+ * @pc: the container to search for the child to remove
+ * @child: the child to remove from the container
+ *
+ * Returns no value. Removes the specified child from the container without
+ * destroying the child.
+ */
 void
 ewl_container_remove_child(Ewl_Container * pc, Ewl_Widget * child)
 {
@@ -158,6 +202,15 @@ ewl_container_remove_child(Ewl_Container * pc, Ewl_Widget * child)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * ewl_container_get_child_at - find the child at the given coordinates
+ * @widget: the searched container
+ * @x: the x coordinate to search for
+ * @y: the y coordinate to search for
+ *
+ * Returns the found widget on success, NULL on failure. The given container
+ * is searched to find any child that intersects the given coordinates.
+ */
 Ewl_Widget *
 ewl_container_get_child_at(Ewl_Container * widget, int x, int y)
 {
@@ -185,7 +238,6 @@ ewl_container_get_child_at(Ewl_Container * widget, int x, int y)
 
 /**
  * ewl_container_get_child_at_recursive - find child that intersects coordinates
- *
  * @widget: the widget to search for intersecting child
  * @x: the x coordinate of the intersection point
  * @y: the y coordinate of the intersection point

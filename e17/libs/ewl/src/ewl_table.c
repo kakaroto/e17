@@ -13,9 +13,7 @@ void __ewl_table_fill_fillers(Ewl_Table * t, int rem_w, int rem_h,
 static void __ewl_table_layout_children(Ewl_Table * w);
 
 /**
- * ewl_table_new - allocate a new table with default column spacing, row
- * spacing and homogenous settings.
- *
+ * ewl_table_new - allocate a new table with default settings
  * @columns: the number of columns in the table
  * @rows: the number of rows in the table
  *
@@ -31,8 +29,7 @@ ewl_table_new(unsigned int columns, unsigned int rows)
 
 /**
  * ewl_table_new_all - allocate a new table with specified settings
- *
- * @homogenous: set whether the table is homogenous
+ * @homogeneous: set whether the table is homogeneous
  * @columns: the number of columns in the table
  * @rows: the number of rows in the table
  * @col_spacing: the space between each column
@@ -62,7 +59,6 @@ ewl_table_new_all(unsigned int homogeneous,
 
 /**
  * ewl_table_attach - attach a widget to the table in the specified locations
- *
  * @t: the table to attach the child
  * @c: the child to attach to the table
  * @start_col: the starting column of the child in the table
@@ -100,7 +96,6 @@ ewl_table_attach(Ewl_Table * t, Ewl_Widget * c,
 
 /**
  * ewl_table_detach - remove the child in the specified column and row
- *
  * @t: the table to detach the child
  * @c: the column of the child to detach
  * @r: the row of the child to detach
@@ -136,7 +131,6 @@ ewl_table_detach(Ewl_Table * t, unsigned int c, unsigned int r)
 
 /**
  * ewl_table_resize - resize to the table to the specified dimensions
- *
  * @t: the table to resize
  * @c: the number of columns for the table
  * @r: the number of rows for the table
@@ -163,7 +157,6 @@ ewl_table_resize(Ewl_Table * t, unsigned int c, unsigned int r)
 
 /**
  * ewl_table_get_columns - retrieve the number of columns in the table
- *
  * @t: the table to retrieve the number of columns
  *
  * Returns the number of columns in the table
@@ -179,7 +172,6 @@ ewl_table_get_columns(Ewl_Table * t)
 
 /**
  * ewl_table_get_rows - retrieve the number of rows in the table
- *
  * @t: the table to retrieve the number of rows
  *
  * Returns the number of rows in the table
@@ -194,10 +186,9 @@ ewl_table_get_rows(Ewl_Table * t)
 }
 
 /**
- * ewl_table_set_homogeneous - set the homogenous setting of the table
- *
- * @t: the table to set the homogenous setting
- * @h: the new value for the homogenous setting
+ * ewl_table_set_homogeneous - set the homogeneous setting of the table
+ * @t: the table to set the homogeneous setting
+ * @h: the new value for the homogeneous setting
  *
  * Returns no value.
  */
@@ -215,9 +206,8 @@ ewl_table_set_homogeneous(Ewl_Table * t, unsigned int h)
 
 /**
  * ewl_table_set_col_spacing - set the column spacing setting of the table
- *
  * @t: the table to set the column spacing setting
- * @h: the new spacing between the columns in the table
+ * @cs: the new spacing between the columns in the table
  *
  * Returns no value.
  */
@@ -235,9 +225,8 @@ ewl_table_set_col_spacing(Ewl_Table * t, unsigned int cs)
 
 /**
  * ewl_table_set_row_spacing - set the row spacing setting of the table
- *
  * @t: the table to set the row spacing setting
- * @h: the new spacing between the rows in the table
+ * @rs: the new spacing between the rows in the table
  *
  * Returns no value.
  */
@@ -256,7 +245,6 @@ ewl_table_set_row_spacing(Ewl_Table * t, unsigned int rs)
 
 /**
  * ewl_table_column_set_width - set the width of the specified column
- *
  * @t: the table to change the specified columns width
  * @c: the column to change the width
  * @w: the width to change the column
@@ -275,9 +263,8 @@ ewl_table_column_set_width(Ewl_Table * t, unsigned int c, unsigned int w)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-/*
+/**
  * ewl_table_get_column_width - get the width of the specified column
- *
  * @t: the table to retrieve the column width
  * @c: the column to retrieve the width
  *
@@ -292,9 +279,8 @@ ewl_table_get_column_width(Ewl_Table * t, unsigned int c)
 	DRETURN_INT(EWL_TABLE(t)->col_w[c - 1], DLEVEL_STABLE);
 }
 
-/*
+/**
  * ewl_table_get_child - retrieve the child at the specified row and column
- *
  * @t: the table to retrieve the child
  * @c: the column of the child to retrieve
  * @r: the row of the child to retrieve
@@ -326,9 +312,8 @@ ewl_table_get_child(Ewl_Table * t, unsigned int c, unsigned int r)
 	DRETURN_PTR(NULL, DLEVEL_STABLE);
 }
 
-/*
+/**
  * ewl_table_get_row_geometry - get the specified row's position and shape
- *
  * @t: the table to retrieve the geometry
  * @r: the row to retrieve the geometry
  * @x: the integer to store the x position of the row
@@ -368,12 +353,11 @@ ewl_table_get_row_geometry(Ewl_Table * t, unsigned int r, int *x, int *y,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-/*
+/**
  * ewl_table_init - initialize the tables fields
- *
  * @t: the table to initialize
- * @homogeneous: the homogenous setting of the table
- * @column: the number of columns in the table
+ * @homogeneous: the homogeneous setting of the table
+ * @columns: the number of columns in the table
  * @rows: the number of rows in the table
  * @col_spacing: the space between columns in the table
  * @row_spacing: the space between rows in the table
@@ -622,8 +606,7 @@ __ewl_table_fill_normal(Ewl_Table * t, int *rem_w, int *rem_h)
 		  if (EWL_OBJECT(c)->fill == EWL_FILL_POLICY_NORMAL)
 		    {
 			    __ewl_table_normal_span(t, c, rem_w, rem_h);
-		    }
-		  else
+		  } else
 		    {
 			    if (!fillers)
 				    fillers = ewd_list_new();
@@ -820,8 +803,7 @@ __ewl_table_layout_children(Ewl_Table * t)
 							t->y_offsets[c->
 								     start_row
 								     - 1]);
-		    }
-		  else
+		  } else
 		    {
 			    int i, wide = 0, high = 0;
 
