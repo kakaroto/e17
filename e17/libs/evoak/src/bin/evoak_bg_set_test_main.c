@@ -65,7 +65,7 @@ main(int argc, char **argv)
      {
 	Evoak *ev;
 	
-	ecore_app_args_set(argc, argv);
+	ecore_app_args_set(argc, (const char **)argv);
 	ecore_config_init("evoak_background_client");
 	ecore_config_app_describe("A background setting app for the Evoak canvas server\n\
 Version 0.0.1\n\
@@ -77,7 +77,11 @@ usage: evoak_bg_set_test [options]");
 	ecore_config_describe("evoak.background", "Override the saved location for your background image");
         ecore_config_load();
 
-	ecore_config_args_parse();
+	if (ecore_config_args_parse() != ECORE_CONFIG_PARSE_CONTINUE)
+	  {
+	     ecore_config_shutdown();
+	     exit(0);
+	  }
 	ecore_config_listen("bg_file", "evoak.background", bg_listener, 0, NULL);
         
 	if (argc == 2)
