@@ -53,7 +53,8 @@ cd "$THEDIR"
 
 cd "$THEDIR/man"
 
-./builddocs
+cat ../dox/E-docs/MAIN | ./e2mp > enlightenment.pod
+pod2man enlightenment.pod > enlightenment.1
 
 cd "$THEDIR"
 
