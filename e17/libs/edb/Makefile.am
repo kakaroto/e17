@@ -13,4 +13,4 @@ SUBDIRS		     = src test
 
 bin_SCRIPTS = edb-config
 
-EXTRA_DIST = README AUTHORS COPYING
+EXTRA_DIST = README AUTHORS COPYING edb.spec
