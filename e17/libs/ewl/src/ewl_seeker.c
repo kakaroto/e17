@@ -144,7 +144,8 @@ __ewl_seeker_init(Ewl_Seeker * s, Ewl_Orientation orientation)
 		   * button
 		   */
 		  ewl_object_set_minimum_size(EWL_OBJECT(w), 100, 15);
-		  ewl_object_set_maximum_size(EWL_OBJECT(w), MAXIMUM_W(w), 15);
+		  ewl_object_set_maximum_size(EWL_OBJECT(w), MAXIMUM_W(w),
+					      15);
 		  ewl_object_set_minimum_size(EWL_OBJECT(drag_button), 5, 5);
 
 		  /*
@@ -170,7 +171,8 @@ __ewl_seeker_init(Ewl_Seeker * s, Ewl_Orientation orientation)
 		   * button
 		   */
 		  ewl_object_set_minimum_size(EWL_OBJECT(w), 15, 100);
-		  ewl_object_set_maximum_size(EWL_OBJECT(w), 15, MAXIMUM_H(w));
+		  ewl_object_set_maximum_size(EWL_OBJECT(w), 15,
+					      MAXIMUM_H(w));
 		  ewl_object_set_minimum_size(EWL_OBJECT(drag_button), 5, 5);
 
 		  /*

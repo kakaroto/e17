@@ -149,7 +149,7 @@ __ewl_window_hide(Ewl_Widget * widget, void *ev_data, void *user_data)
 static void
 __ewl_window_destroy(Ewl_Widget * w, void *ev_data, void *user_data)
 {
-	Ewl_Window * win;
+	Ewl_Window *win;
 
 	DENTER_FUNCTION;
 	DCHECK_PARAM_PTR("w", w);
@@ -219,7 +219,7 @@ __ewl_window_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	evas_set_output_viewport(w->evas, 0, 0, CURRENT_W(w), CURRENT_H(w));
 
 	if (!EWL_CONTAINER(w)->children ||
-			ewd_list_is_empty(EWL_CONTAINER(w)->children))
+	    ewd_list_is_empty(EWL_CONTAINER(w)->children))
 		DRETURN;
 
 	ewd_list_goto_first(EWL_CONTAINER(w)->children);
@@ -313,7 +313,7 @@ ewl_window_find_window_by_evas_window(Window window)
 void
 ewl_window_resize(Ewl_Widget * widget, int w, int h)
 {
-	Ewl_Window * win;
+	Ewl_Window *win;
 
 	DENTER_FUNCTION;
 	DCHECK_PARAM_PTR("widget", widget);

@@ -140,9 +140,9 @@ __ewl_text_destroy(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	t = EWL_TEXT(w);
 
-		  etox_hide(t->tox);
-		  etox_unset_clip(t->tox);
-		  etox_free(t->tox);
+	etox_hide(t->tox);
+	etox_unset_clip(t->tox);
+	etox_free(t->tox);
 
 	IF_FREE(t->text);
 
@@ -416,4 +416,20 @@ ewl_text_set_alignment(Ewl_Widget * w, Ewl_Alignment a)
 	etox_set_align(t->tox, h_align, v_align);
 
 	DLEAVE_FUNCTION;
+}
+
+int
+ewl_text_get_index_at(Ewl_Widget * w, double x, double y, int *index)
+{
+	Ewl_Text *t;
+	int ret;
+
+	DENTER_FUNCTION;
+	DCHECK_PARAM_PTR("w", w);
+
+	t = EWL_TEXT(w);
+
+	ret = etox_get_index_at(t->tox, x, y, index);
+
+	DRETURN_INT(ret);
 }

@@ -38,6 +38,8 @@ void ewl_object_set_current_size(Ewl_Object * o, int w, int h);
 void ewl_object_get_current_size(Ewl_Object * o, int *w, int *h);
 
 void ewl_object_request_geometry(Ewl_Object * o, int x, int y, int w, int h);
+void ewl_object_request_size(Ewl_Object * o, int w, int h);
+void ewl_object_request_position(Ewl_Object * o, int x, int y);
 inline void ewl_object_request_x(Ewl_Object * o, int x);
 inline void ewl_object_request_y(Ewl_Object * o, int y);
 inline void ewl_object_request_w(Ewl_Object * o, int w);

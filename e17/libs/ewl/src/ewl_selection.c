@@ -39,7 +39,7 @@ ewl_selection_set_covered(Ewl_Widget * w, int s, int e)
 }
 
 void
-ewl_selection_get_position(Ewl_Widget * w, int * s, int * e)
+ewl_selection_get_covered(Ewl_Widget * w, int *s, int *e)
 {
 	Ewl_Selection *se;
 
@@ -48,10 +48,32 @@ ewl_selection_get_position(Ewl_Widget * w, int * s, int * e)
 
 	se = EWL_SELECTION(w);
 
-	if (*s)
+	if (s)
 		*s = se->start_pos;
-	if (*e)
+	if (e)
 		*e = se->end_pos;
+
+	DLEAVE_FUNCTION;
+}
+
+void
+ewl_selection_expand(Ewl_Widget * w, int p)
+{
+	Ewl_Selection *se;
+
+	DENTER_FUNCTION;
+	DCHECK_PARAM_PTR("w", w);
+
+	se = EWL_SELECTION(w);
+
+	if (p < se->start_pos)
+		se->start_pos = p;
+	else if (p > se->end_pos)
+		se->end_pos = p;
+	else
+		DRETURN;
+
+	ewl_callback_call(w, EWL_CALLBACK_VALUE_CHANGED);
 
 	DLEAVE_FUNCTION;
 }

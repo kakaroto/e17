@@ -11,9 +11,10 @@ struct _ewl_separator
 	Ewl_Widget widget;
 	Ewl_Orientation orientation;
 
-	int u_padding;
-	int l_padding;
-	double fill_percentage;
+	struct
+	{
+		int l, r, t, b;
+	} padd;
 };
 
 #define ewl_hseparator_new() ewl_separator_new(EWL_ORIENTATION_HORIZONTAL)

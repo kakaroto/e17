@@ -222,10 +222,14 @@ __ewl_button_theme_update(Ewl_Widget * w, void *ev_data, void *user_data)
 void
 __ewl_button_update_label(Ewl_Button * b)
 {
+	Ewl_Widget *w;
+	char key[PATH_LEN];
 	void *tmp;
 
 	DENTER_FUNCTION;
 	DCHECK_PARAM_PTR("b", b);
+
+	w = EWL_WIDGET(b);
 
 	if (!b->label)
 		DRETURN;
@@ -235,23 +239,15 @@ __ewl_button_update_label(Ewl_Button * b)
 	else if (REALIZED(b))
 		ewl_widget_realize(b->label_object);
 
-	/*
-	 * Retrieve theme information
-	 */
-	tmp = ewl_theme_data_get(EWL_WIDGET(b), "text/font");
+	snprintf(key, PATH_LEN, "%s/text/font", w->appearance);
+	tmp = ewl_theme_data_get(w, key);
 
 	if (tmp)
-	  {
-		  ewl_text_set_font(b->label_object, tmp);
-		  FREE(tmp);
-	  }
-	FREE(tmp);
+		ewl_text_set_font(b->label_object, tmp);
 
-	tmp = ewl_theme_data_get(EWL_WIDGET(b), "text/font_size");
+	snprintf(key, PATH_LEN, "%s/text/font_size", w->appearance);
+	tmp = ewl_theme_data_get(w, key);
 
-	/*
-	 * Apply theme info to the text
-	 */
 	if (tmp)
 		ewl_text_set_font_size(b->label_object, (int) (tmp));
 

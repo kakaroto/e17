@@ -89,6 +89,24 @@ ewl_object_request_geometry(Ewl_Object * o, int x, int y, int w, int h)
 	o->request.h = h;
 }
 
+void
+ewl_object_request_size(Ewl_Object * o, int w, int h)
+{
+	DCHECK_PARAM_PTR("o", o);
+
+	o->request.w = w;
+	o->request.h = h;
+}
+
+void
+ewl_object_request_position(Ewl_Object * o, int x, int y)
+{
+	DCHECK_PARAM_PTR("o", o);
+
+	o->request.x = x;
+	o->request.y = y;
+}
+
 inline void
 ewl_object_request_x(Ewl_Object * o, int x)
 {

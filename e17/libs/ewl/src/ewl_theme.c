@@ -70,9 +70,9 @@ static void *theme_keys[] = {
 	"/appearance/seeker/vertical/dragbar.bits.db",
 	"/appearance/seeker/vertical/dragbar/visible", "yes",
 
-        "/appearance/selection/default/base",
-        "/appearance/selection/default/base.bits.db",
-        "/appearance/selection/default/base/visible", "yes",
+	"/appearance/selection/default/base",
+	"/appearance/selection/default/base.bits.db",
+	"/appearance/selection/default/base/visible", "yes",
 
 	"/appearance/table/default/base",
 	"/appearance/table/default/base.bits.db",

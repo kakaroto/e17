@@ -53,10 +53,10 @@ ewl_container_init(Ewl_Container * c, char *appearance)
 }
 
 void
-ewl_container_append_child(Ewl_Container * parent, Ewl_Widget * child)
+ewl_container_append_child(Ewl_Container * pc, Ewl_Widget * child)
 {
 	DENTER_FUNCTION;
-	DCHECK_PARAM_PTR("parent", parent);
+	DCHECK_PARAM_PTR("pc", pc);
 	DCHECK_PARAM_PTR("child", child);
 
 	/*
@@ -64,19 +64,23 @@ ewl_container_append_child(Ewl_Container * parent, Ewl_Widget * child)
 	 * list of the container's children and then notify the child that
 	 * it's parent has been changed.
 	 */
-	child->parent = EWL_WIDGET(parent);
-	ewd_list_append(parent->children, child);
+	child->parent = EWL_WIDGET(pc);
+	ewd_list_append(pc->children, child);
 
 	ewl_widget_reparent(child);
+
+	if (!pc->children || ewd_list_is_empty(pc->children))
+		evas_set_color(EWL_WIDGET(pc)->evas, pc->clip_box, 255, 255,
+			       255, 255);
 
 	DLEAVE_FUNCTION;
 }
 
 void
-ewl_container_prepend_child(Ewl_Container * parent, Ewl_Widget * child)
+ewl_container_prepend_child(Ewl_Container * pc, Ewl_Widget * child)
 {
 	DENTER_FUNCTION;
-	DCHECK_PARAM_PTR("parent", parent);
+	DCHECK_PARAM_PTR("pc", pc);
 	DCHECK_PARAM_PTR("child", child);
 
 	/*
@@ -84,20 +88,23 @@ ewl_container_prepend_child(Ewl_Container * parent, Ewl_Widget * child)
 	 * list of the container's children and then notify the child that
 	 * it's parent has been changed.
 	 */
-	child->parent = EWL_WIDGET(parent);
-	ewd_list_prepend(parent->children, child);
+	child->parent = EWL_WIDGET(pc);
+	ewd_list_prepend(pc->children, child);
 
 	ewl_widget_reparent(child);
+
+	if (!pc->children || ewd_list_is_empty(pc->children))
+		evas_set_color(EWL_WIDGET(pc)->evas, pc->clip_box, 255, 255,
+			       255, 255);
 
 	DLEAVE_FUNCTION;
 }
 
 void
-ewl_container_insert_child(Ewl_Container * parent, Ewl_Widget * child,
-			   int index)
+ewl_container_insert_child(Ewl_Container * pc, Ewl_Widget * child, int index)
 {
 	DENTER_FUNCTION;
-	DCHECK_PARAM_PTR("parent", parent);
+	DCHECK_PARAM_PTR("pc", pc);
 	DCHECK_PARAM_PTR("child", child);
 
 	/*
@@ -105,29 +112,38 @@ ewl_container_insert_child(Ewl_Container * parent, Ewl_Widget * child,
 	 * list of the container's children at the designated position and then
 	 * notify the child that it's parent has been changed.
 	 */
-	child->parent = EWL_WIDGET(parent);
-	ewd_list_goto_index(parent->children, index);
-	ewd_list_insert(parent->children, child);
+	child->parent = EWL_WIDGET(pc);
+	ewd_list_goto_index(pc->children, index);
+	ewd_list_insert(pc->children, child);
 	ewl_widget_reparent(child);
+
+	if (!pc->children || ewd_list_is_empty(pc->children))
+		evas_set_color(EWL_WIDGET(pc)->evas, pc->clip_box, 255, 255,
+			       255, 255);
 
 	DLEAVE_FUNCTION;
 }
 
 void
-ewl_container_remove_child(Ewl_Container * container, Ewl_Widget * child)
+ewl_container_remove_child(Ewl_Container * pc, Ewl_Widget * child)
 {
 	Ewl_Widget *temp;
 
 	DENTER_FUNCTION;
-	DCHECK_PARAM_PTR("container", container);
+	DCHECK_PARAM_PTR("pc", pc);
 	DCHECK_PARAM_PTR("child", child);
 
-	ewd_list_goto_first(container->children);
-	for (temp = ewd_list_current(container->children); temp != child;
-	     ewd_list_next(container->children));
+	ewd_list_goto_first(pc->children);
+
+	for (temp = ewd_list_current(pc->children); temp != child;
+	     ewd_list_next(pc->children));
 
 	if (temp)
-		ewd_list_remove(container->children);
+		ewd_list_remove(pc->children);
+
+	if (!pc->children || ewd_list_is_empty(pc->children))
+		evas_set_color(EWL_WIDGET(pc)->evas, pc->clip_box, 0, 0, 0,
+			       0);
 
 	DLEAVE_FUNCTION;
 }
@@ -241,10 +257,10 @@ __ewl_container_realize(Ewl_Widget * w, void *event_data, void *user_data)
 	 * Now clip the container portion of this widget to the widget
 	 * fx_clip_box.
 	 */
-	if (w->parent && w->fx_clip_box && c->clip_box)
+	if (w->fx_clip_box && c->clip_box)
 		evas_set_clip(w->evas, c->clip_box, w->fx_clip_box);
 
-	if (!c->children)
+	if (!c->children || ewd_list_is_empty(c->children))
 		DRETURN;
 
 	/*
@@ -314,7 +330,7 @@ static void
 __ewl_container_destroy_recursive(Ewl_Widget * w, void *event_data,
 				  void *user_data)
 {
-	Ewl_Container * c;
+	Ewl_Container *c;
 	Ewl_Widget *child;
 
 	DENTER_FUNCTION;

@@ -20,7 +20,7 @@ ewl_separator_new(Ewl_Orientation o)
 }
 
 void
-ewl_separator_set_padding(Ewl_Widget * w, int u, int l)
+ewl_separator_set_padding(Ewl_Widget * w, int l, int r, int t, int b)
 {
 	Ewl_Separator *s;
 
@@ -29,25 +29,10 @@ ewl_separator_set_padding(Ewl_Widget * w, int u, int l)
 
 	s = EWL_SEPARATOR(w);
 
-	s->u_padding = u;
-	s->l_padding = l;
-
-	ewl_widget_configure(w);
-
-	DLEAVE_FUNCTION;
-}
-
-void
-ewl_separator_set_fill_percentage(Ewl_Widget * w, double p)
-{
-	Ewl_Separator *s;
-
-	DENTER_FUNCTION;
-	DCHECK_PARAM_PTR("w", w);
-
-	s = EWL_SEPARATOR(w);
-
-	s->fill_percentage = p;
+	s->padd.l = l;
+	s->padd.r = r;
+	s->padd.t = t;
+	s->padd.b = b;
 
 	ewl_widget_configure(w);
 
@@ -78,9 +63,6 @@ __ewl_separator_init(Ewl_Separator * s, Ewl_Orientation o)
 			    __ewl_separator_theme_update, NULL);
 
 	s->orientation = o;
-	s->fill_percentage = 80;
-	s->u_padding = 2;
-	s->l_padding = 2;
 
 	DLEAVE_FUNCTION;
 }

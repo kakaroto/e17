@@ -9,7 +9,7 @@ typedef struct _ewl_text Ewl_Text;
 struct _ewl_text
 {
 	Ewl_Widget widget;
-	Etox * tox;
+	Etox *tox;
 	Etox_Color color;
 	Etox_Style style;
 
@@ -38,5 +38,6 @@ void ewl_text_get_letter_geometry_at(Ewl_Widget * w, double x, double y,
 				     double *tx, double *ty, double *tw,
 				     double *th);
 void ewl_text_set_alignment(Ewl_Widget * w, Ewl_Alignment a);
+int ewl_text_get_index_at(Ewl_Widget * w, double x, double y, int *index);
 
 #endif

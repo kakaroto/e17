@@ -126,7 +126,7 @@ main(int argc, char **argv)
 	ewl_container_append_child(EWL_CONTAINER(vbox[2]), button[8]);
 
 	ewl_callback_append(button[8], EWL_CALLBACK_CLICKED,
-				__create_text_test_window, NULL);
+			    __create_text_test_window, NULL);
 
 	ewl_widget_show(button[8]);
 

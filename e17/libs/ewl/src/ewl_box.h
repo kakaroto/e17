@@ -28,6 +28,6 @@ Ewl_Widget *ewl_box_new(Ewl_Orientation orientation);
 void ewl_box_init(Ewl_Box * box, Ewl_Orientation orientation);
 void ewl_box_set_orientation(Ewl_Widget * w, Ewl_Orientation o);
 void ewl_box_set_spacing(Ewl_Widget * w, unsigned int spacing);
-void ewl_box_set_padding(Ewl_Widget * w, int xp, int yp);
+void ewl_box_child_set_padding(Ewl_Widget * w, int xp, int yp);
 
 #endif /* __EWL_BOX_H__ */

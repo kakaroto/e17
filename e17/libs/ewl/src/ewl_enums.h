@@ -63,11 +63,10 @@ typedef enum _ewl_state Ewl_State;
 
 enum _ewl_state
 {
-	EWL_STATE_NORMAL = 1 << 0,
-	EWL_STATE_HILITED = 1 << 1,
-	EWL_STATE_PRESSED = 1 << 2,
-	EWL_STATE_SELECTED = 1 << 3,
-	EWL_STATE_DND = 1 << 4
+	EWL_STATE_HILITED = 0x1,
+	EWL_STATE_PRESSED = 0x2,
+	EWL_STATE_SELECTED = 0x10,
+	EWL_STATE_DND = 0x20
 };
 
 

@@ -8,7 +8,7 @@ typedef struct _ewl_entry Ewl_Entry;
 
 struct _ewl_entry
 {
-	Ewl_Box box;
+	Ewl_Container container;
 
 	Ewl_Widget *text;
 	Ewl_Widget *cursor;
