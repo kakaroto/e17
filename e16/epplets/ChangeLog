@@ -1419,3 +1419,10 @@ Mon Dec  6 14:31:34 PST 1999
 Applied Tom's patch to E-Slides to support maintaining the aspect ratio when
 displaying images in the epplet window.  Also cleaned up the E-MoonClock code
 and set the buffer size to 1024 so that everyone will hush. =)
+
+-------------------------------------------------------------------------------
+
+Mon Dec  6 14:46:15 PST 1999
+(KainX)
+
+Sorry folks, forgot this part.  My bad.

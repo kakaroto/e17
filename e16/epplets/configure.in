@@ -162,6 +162,8 @@ if test "$IMLIB_CONFIG" = "no"; then
 
 fi
 
+AC_CHECK_LIB(kstat, kstat_open, LIBS="$LIBS -lkstat")
+
 AC_MSG_CHECKING(for Linux)
 if test "`uname -s`" != "Linux"; then
   AC_MSG_RESULT(no)
