@@ -85,8 +85,8 @@ double gevastext_get_max_ascent( GtkgEvasObj* object );
 double gevastext_get_max_descent( GtkgEvasObj* object );
 void   gevastext_get_advance(GtkgEvasObj* object, double *h_advance, double *v_advance);
 double gevastext_get_inset( GtkgEvasObj* object );
-void   gevastext_set_string(GtkgEvasObj* object, gchar *text);
-void   gevastext_set_font(GtkgEvasObj* object, gchar *font, int size);
+void   gevastext_set_string(GtkgEvasObj* object, const gchar *text);
+void   gevastext_set_font(GtkgEvasObj* object, const gchar *font, const int size);
 
 #define GEVASTEXT_DEFAULT_FONT "helvetica"
 
