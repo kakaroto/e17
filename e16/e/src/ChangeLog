@@ -4695,3 +4695,11 @@ windows centered under the mouse pointer.
 vertically are positioned so that the top is visible, instead of the other
 way around).
 
+-------------------------------------------------------------------------------
+
+Thu Jul 20 16:14:29 PDT 2000
+(KainX)
+
+If GNOME-friendly E happens to be running in a non-GNOME environment, you
+won't be able to exit E without eesh.  So now there are separate "Exit E" and
+"Logout" options in the menu.
