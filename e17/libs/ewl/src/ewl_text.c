@@ -620,6 +620,13 @@ void ewl_text_destroy_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	ecore_dlist_destroy(ta->applied);
 	ta->applied = NULL;
 
+	/*
+	 * Finished with the etox, so now would be a good time to cleanup
+	 * extra resources hanging around. FIXME: Should be called at some
+	 * regular interval too, in case the text changes, but is never freed.
+	 */
+	etox_gc_collect();
+
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
