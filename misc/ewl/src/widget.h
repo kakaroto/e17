@@ -76,6 +76,12 @@ void        ewl_widget_set_min_rect(EwlWidget *widget, EwlRect *rect);
 EwlRect    *ewl_widget_get_max_rect(EwlWidget *widget);
 void        ewl_widget_set_max_rect(EwlWidget *widget, EwlRect *rect);
 
+EwlRect    *ewl_widget_get_resize_rect(EwlWidget *widget);
+void        ewl_widget_set_resize_rect(EwlWidget *widget, EwlRect *rect);
+
+EwlRect    *ewl_widget_get_previous_rect(EwlWidget *widget);
+void        ewl_widget_set_previous_rect(EwlWidget *widget, EwlRect *rect);
+
 /* WIDGET PADDING FUNCTIONS */
 int        *ewl_widget_get_padding(EwlWidget *widget);
 void        ewl_widget_set_padding(EwlWidget *widget,

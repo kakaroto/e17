@@ -196,6 +196,8 @@ void        ewl_widget_resize_handler(void    *object,
 
 	UNUSED(object);
 	UNUSED(type);
+	UNUSED(min);
+	UNUSED(max);
 
 	if (RECT_COMPARE(rect,req))	{
 		ewl_widget_set_requested_rect(widget,NULL);
@@ -237,6 +239,7 @@ void        ewl_widget_get_requisition_handler(void    *object,
 	                min_h = min?min->h:0,
 	                max_w = max?max->w:0,
 	                max_h = max?max->h:0;
+	UNUSED(type);
 	r = ewl_requisition_new_with_values(req, min_w, min_h, max_w, max_h);
 	ewl_hash_set(params, "requisition", r);
 	return;
@@ -268,7 +271,6 @@ void        ewl_widget_set_rect(EwlWidget *widget, EwlRect *rect)
 {
 	ewl_rect_free(ewl_widget_get_rect(widget));
 	ewl_set(widget, "/widget/rect", rect);
-	/* FIXME -- add evas stuff here */
 	return;
 }
 
@@ -282,7 +284,6 @@ void        ewl_widget_set_requested_rect(EwlWidget *widget, EwlRect *rect)
 {
 	ewl_rect_free(ewl_widget_get_requested_rect(widget));
 	ewl_set(widget, "/widget/req_rect", rect);
-	/* FIXME -- add evas stuff here */
 	return;
 }
 
@@ -296,7 +297,6 @@ void        ewl_widget_set_min_rect(EwlWidget *widget, EwlRect *rect)
 {
 	ewl_rect_free(ewl_widget_get_min_rect(widget));
 	ewl_set(widget, "/widget/min_rect", rect);
-	/* FIXME -- add evas stuff here */
 	return;
 }
 
@@ -310,9 +310,34 @@ void        ewl_widget_set_max_rect(EwlWidget *widget, EwlRect *rect)
 {
 	ewl_rect_free(ewl_widget_get_max_rect(widget));
 	ewl_set(widget, "/widget/max_rect", rect);
-	/* FIXME -- add evas stuff here */
 	return;
 }
+
+EwlRect    *ewl_widget_get_resize_rect(EwlWidget *widget)
+{
+	return ewl_get(widget, "/widget/resize_rect");
+}
+
+void        ewl_widget_set_resize_rect(EwlWidget *widget, EwlRect *rect)
+{
+	ewl_rect_free(ewl_widget_get_resize_rect(widget));
+	ewl_set(widget, "/widget/resize_rect", rect);
+	return;
+}
+
+
+EwlRect    *ewl_widget_get_previous_rect(EwlWidget *widget)
+{
+	return ewl_get(widget, "/widget/previous_rect");
+}
+
+void        ewl_widget_set_previous_rect(EwlWidget *widget, EwlRect *rect)
+{
+	ewl_rect_free(ewl_widget_get_previous_rect(widget));
+	ewl_set(widget, "/widget/previous_rect", rect);
+	return;
+}
+
 
 /* WIDGET PADDING FUNCTIONS */
 int        *ewl_widget_get_padding(EwlWidget *widget)
