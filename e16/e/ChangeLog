@@ -3054,3 +3054,16 @@ Fix segv in "Advanced Settings" dialog when dialog headers are enabled.
 Enable showing some menu info for debug (+tidy up some menu state stuff).
 Debug for tracking area and desktop changes.
 Debug commands to set/unset pointer grabs.
+
+-------------------------------------------------------------------------------
+
+Fri Aug 13 23:15:13 CEST 2004
+(Kim)
+
+--- 0.16.7.1 0.04 ---
+Fix window placement at (re)start (don't follow transients to leader).
+- Many thanks to Onur Kucuk <onur@delipenguen.net> for help to track this one
+  down.
+Use png (not ppm) for image chaching, avoid some code duplication.
+Debian build updates by Julien Portalier <trash@portalier.com>.
+Hide menus when switching desktop.
