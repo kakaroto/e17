@@ -944,6 +944,10 @@ IPC_WinOps(const char *params, Client * c __UNUSED__)
 	else
 	   Zoom(ewin);
      }
+   else if (!strncmp(operation, "noshadow", 2))
+     {
+	EoDisableShadows(ewin);
+     }
    else
      {
 	IpcPrintf("Error: unknown operation");
@@ -1652,20 +1656,22 @@ IpcItem             IPCArray[] = {
     "You can use ? after most of these commands to receive the current\n"
     "status of that flag\n"
     "available win_op commands are:\n"
-    "  win_op <windowid> <close/annihilate>\n"
-    "  win_op <windowid> <iconify/shade/stick>\n"
+    "  win_op <windowid> <close/kill>\n"
+    "  win_op <windowid> <fixedpos/never_use_area>\n"
+    "  win_op <windowid> <focus/focusclick/neverfocus>\n"
+    "  win_op <windowid> <fullscreen/iconify/shade/stick>\n"
+    "  win_op <windowid> <raise/lower>\n"
+    "  win_op <windowid> skiplists\n"
+    "  win_op <windowid> noshadow\n"
     "  win_op <windowid> toggle_<width/height/size> <conservative/available/xinerama>\n"
     "          (or none for absolute)\n"
     "  win_op <windowid> border <BORDERNAME>\n"
     "  win_op <windowid> desk <desktochangeto/next/prev>\n"
     "  win_op <windowid> area <x> <y>\n"
-    "  win_op <windowid> <raise/lower>\n"
     "  win_op <windowid> <move/resize> <x> <y>\n"
     "          (you can use ? and ?? to retreive client and frame locations)\n"
-    "  win_op <windowid> focus\n"
     "  win_op <windowid> title <title>\n"
     "  win_op <windowid> layer <0-100,4=normal>\n"
-    "  win_op <windowid> <fixedpos/never_use_area/focusclick/neverfocus>\n"
     "<windowid> may be substituted with \"current\" to use the current window\n"},
    {
     IPC_WinList,
