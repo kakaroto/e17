@@ -23,12 +23,37 @@ What is a window manager and why do I need one?
 History of X Window Managers and Environments
 
 	* Other window managers (aka, Things That Make You Go Ewww)
-		- twm
-		- fvwm and variants
-		- afterstep
-		- windowmaker
-		- kde
-		- gnome
+
+		- TWM
+			+ original X window manager
+			+ simple, colored, small borders
+			+ menus for launching applications
+
+		- FVWM and variants
+			+ themable through text files
+			+ dockapp support
+
+		- Windowmaker
+			+ GNUStep implementation of NeXTStep
+			+ configurable through GUI
+			+ some applications with corresponding theme
+			+ dockapps
+
+		- Afterstep (Themable window manager with dockapps)
+			+ dockapps
+
+		- KDE
+			+ Desktop Environment for X11
+			+ Window manager
+			+ File manager
+			+ Full set of applications
+
+		- Gnome
+			+ Desktop Environment for X11
+			+ Window manager
+			+ File manager
+			+ Full set of applications
+			+ Implemented in response to QT License
 
 	* Enlightenment
 		- Originally hacked fvwm to support pixmaps, called fvwm-xpm
@@ -73,6 +98,7 @@ Overview of Libraries
 			+ Cairo
 			+ Memory buffer
 		- Consistent and easy to use API
+
 	* Ecore
 		- Event queue
 		- Data structures
@@ -82,17 +108,22 @@ Overview of Libraries
 			+ Networking, including SSL
 			+ Linux Framebuffer
 			+ X11
+
 	* Edje
 		- UI layout
 		- Key state animation
 		- Signals
 		- Scripting
+
 	* Emotion
 		- Allows manipulation of video like an image object
 		- Designed to allow multiple decoders
 		- Currently uses libxine for video decoding
+
 	* EWL
 		- High level toolkit
+		- Fast user interface development
+		- Provides interfaces to lower level functionality
 		- Uses Edje as it's theme engine
 
 Emphasis on Portability
@@ -106,9 +137,11 @@ Emphasis on Portability
 		- Mac OS X
 		- OS/2
 		- Solaris
+
 	* Portables
 		- PDA
 		- Cell phone
+
 	* Set-top
 		- DVD Player
 		- PVR
@@ -118,7 +151,6 @@ How do they fit together?
 
 	* Dependancy graphic
 	* Explanation of applications
-
 
 Future
 ------
@@ -146,20 +178,24 @@ How can I get involved?
 		- Fill in TODO items
 		- Expand features
 		- Design new components
+
 	* Testing
 		- Unit testing of API's
 		- Debugging of autotools setup
 		- Narrowing down bug details
+
 	* Documentation
 		- User documents for setup, and configuration
 		- API Documentation
 		- Developer Tutorials
 		- Gain familiarity with the code
+
 	* PR
 		- Demo the applications
 		- Encourage use
 		- Contact publishers
 		- Organize events
+
 	* Financial
 		- Donations of all sizes accepted
 		- Corporate sponsorship
