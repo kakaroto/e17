@@ -26,10 +26,8 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
-#define HAVE_GL 1
-
 /* preliminary OpenGL Checking */
-#ifdef HAVE_GL
+#ifdef HAVE_LIBGL
 #include <GL/glut.h>
 #include <GL/glx.h>
 #endif
@@ -439,7 +437,7 @@ void            Epplet_paste_buf(RGB_buf buf, Window win, int x, int y);
 /* free an RGB buffer */
 void            Epplet_free_rgb_buf(RGB_buf buf);
 
-#ifdef HAVE_GL
+#ifdef HAVE_LIBGL
 /****************************************************************************/
 /* OpenGL (GLX) calls. Use these functions to setup and destroy a OpenGL    */
 /* context for epplets. All glx contexts are linked to an epplet drawing    */
@@ -449,8 +447,13 @@ void            Epplet_free_rgb_buf(RGB_buf buf);
 /* this as the code matures.                                                */
 /****************************************************************************/
 /* Create an Epplet glx context, pick the default visual, and bind it to a
-   window (obtained from Epplet_get_drawingarea_window) */
-GLXContext      Epplet_bind_GL(Window win, Display *dpy);
+   window (obtained from Epplet_get_drawingarea_window) 
+	 with a double buffer */
+GLXContext      Epplet_bind_double_GL(Window win, Display *dpy);
+/* Create an Epplet glx context, pick the default visual, and bind it to a
+   window (obtained from Epplet_get_drawingarea_window) 
+	 with a single font buffer */
+GLXContext      Epplet_bind_single_GL(Window win, Display *dpy);
 /* Destroy (unbind) a glx context. */
 void            Epplet_unbind_GL(Display *dpy, GLXContext cx);
 #endif
