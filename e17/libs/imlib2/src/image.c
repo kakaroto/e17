@@ -356,7 +356,7 @@ __imlib_CleanupImageCache(void)
    }
    /* while the cache size of 0 ref coutn data is bigger than the set value */
    /* clean out the oldest members of the imaeg cache */
-   while ((current_cache > cache_size) || (operation))
+   while ((current_cache > cache_size) && (operation))
    {
       im_last = NULL;
       operation = 0;
@@ -373,7 +373,8 @@ __imlib_CleanupImageCache(void)
          __imlib_ConsumeImage(im_last);
          operation = 1;
       }
-      current_cache = __imlib_CurrentCacheSize();
+      if (operation)
+	current_cache = __imlib_CurrentCacheSize();
    }
 }
 
@@ -542,7 +543,8 @@ __imlib_CleanupImagePixmapCache(void)
          __imlib_ConsumeImagePixmap(ip_last);
          operation = 1;
       }
-      current_cache = __imlib_CurrentCacheSize();
+      if (operation)
+	current_cache = __imlib_CurrentCacheSize();
    }
 }
 #endif
