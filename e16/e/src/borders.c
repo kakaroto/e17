@@ -1311,6 +1311,7 @@ AdoptInternal(Window win, Border * border, int type)
 	ewin->skipfocus = 1;
 	ewin->skipwinlist = 1;
 	ewin->neverfocus = 1;
+	ewin->client.grav = StaticGravity;
 	break;
      case EWIN_TYPE_ICONBOX:
 	ewin->sticky = 1;
