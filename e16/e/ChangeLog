@@ -3177,3 +3177,11 @@ Fix some session management property types.
 More pointer grab fixes.
 Still more pointer grab stuff.
 Stack desktop windows below buttons.
+
+-------------------------------------------------------------------------------
+
+Fri Dec 10 20:46:24 CET 2004
+(Kim)
+
+--- 0.16.7.2 0.99.1 ---
+Add border frame action handling (enables things like auto shade/unshade).
