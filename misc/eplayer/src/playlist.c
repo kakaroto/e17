@@ -194,12 +194,14 @@ static void playlist_append_list(PlayList *pl, Evas_List *list) {
 	if (!pl || !list)
 		return;
 	
-	if (!pl->items)
+	if (!pl->items) {
 		pl->items = list;
-	else {
+		pl->num = evas_list_count(list);
+	} else {
 		pl->items->last->next = list;
 		list->prev = pl->items->last;
 		pl->items->last = list->last;
+		pl->num += evas_list_count(list);
 	}
 }
 
@@ -253,6 +255,7 @@ static void finish_playlist(PlayList *pl, Evas_List *list, int append) {
 		playlist_remove_all(pl);
 		pl->items = list;
 		pl->cur_item = pl->items;
+		pl->num = evas_list_count(list);
 	}
 }
 
