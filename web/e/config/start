@@ -4,10 +4,10 @@
   <td colspan="2">
     <table border="0" width="100%">
       <tr>
-        <td align="left"><a href="main.html"><img border="0" src="img/enlightenment.gif" alt="E logo"></a></td>
+        <td align="left"><a href="main.html"><img src="img/enlightenment.gif" alt="E logo" border="0" height="79" width="386" /></a></td>
         <td align="right">
-	  Stable Version: 16.5<br>
-	  CVS Version: 17.0<br>
+	  Stable Version: 16.5<br />
+	  CVS Version: 17.0<br />
         </td>
       </tr>
     </table>
@@ -23,5 +23,5 @@
   <td class="border-tr" width="25" height="25">&nbsp;</td>
 </tr>
 <tr>
-  <td class="border-l" width="25"><img src="img/empty.gif" width="25" alt=""></td>
+  <td class="border-l" width="25"><img src="img/empty.gif" height="1" width="25" alt="" /></td>
   <td class="content" valign="top" align="center" width="100%">
