@@ -441,33 +441,9 @@ SnapshotEwinUpdate(EWin * ewin, unsigned int flags)
 static void
 SnapshotEwinRemove(EWin * ewin)
 {
-   Snapshot           *sn;
-
    if (ewin->snap)
-     {
-	sn = ewin->snap;
-	SnapshotEwinUnmatch(ewin);
-	sn = RemoveItem((char *)sn, 0, LIST_FINDBY_POINTER, LIST_TYPE_SNAPSHOT);
-     }
-   else
-     {
-	char                buf[4096];
-
-	if (SnapEwinMakeID(ewin, buf, sizeof(buf)))
-	   return;
-	sn = RemoveItem(buf, 0, LIST_FINDBY_BOTH, LIST_TYPE_SNAPSHOT);
-     }
-
-   if (sn)
-     {
-	if (sn->name)
-	   Efree(sn->name);
-	if (sn->border_name)
-	   Efree(sn->border_name);
-	if (sn->groups)
-	   Efree(sn->groups);
-	Efree(sn);
-     }
+      SnapshotDestroy(ewin->snap);
+   ewin->snap = NULL;
 }
 
 /*
