@@ -236,6 +236,8 @@ setup (void)
 int
 main (int argc, char **argv)
 {
+  Evas_List l;
+  
   /* init X */
   if (!ecore_display_init (NULL))
     {
@@ -264,6 +266,8 @@ main (int argc, char **argv)
 
   etox_free (e_msg);
   etox_free (e_test);
+  for (l = pbuttons; l; l = l->next)
+    panel_button_free (evas, pbuttons->data);
   evas_list_free (pbuttons);
   evas_free (evas);
 

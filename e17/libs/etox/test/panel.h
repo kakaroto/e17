@@ -9,5 +9,6 @@ void setup_panel (Evas _e);
 
 Panel_Button *panel_button (Evas _e, char *_label);
 Panel_Button *panel_button_new (Evas _e);
+void panel_button_free (Evas _e, Panel_Button *pbutton);
 
 #endif /* __PANEL_H__ */

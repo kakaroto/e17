@@ -196,3 +196,13 @@ Panel_Button
   pbutton->label = NULL;
   return pbutton;
 }
+
+void
+panel_button_free (Evas _e, Panel_Button *pbutton)
+{
+  if (pbutton->box)
+    evas_del_object (_e, pbutton->box);
+  if (pbutton->label)
+    evas_del_object (_e, pbutton->label);
+  free (pbutton);
+}
