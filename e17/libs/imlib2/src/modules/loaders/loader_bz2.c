@@ -51,14 +51,25 @@ char load (ImlibImage *im, ImlibProgressFunction progress,
 	FILE *fp;
 	int dest, res;
 	char *file, tmp[] = "/tmp/imlib2_loader_bz2-XXXXXX", *p;
+	char real_ext[16];
 
 	assert (im);
 
+	/* make sure this file ends in ".bz2" and that there's another ext
+	 * (e.g. "foo.png.bz2"
+	 */
 	p = strrchr(im->real_file, '.');
-	if (p) {
+	if (p && p != im->real_file) {
 		if (strcasecmp(p + 1, "bz2"))
 			return 0;
 	} else
+		return 0;
+
+	strncpy (real_ext, p - sizeof (real_ext) + 1, sizeof (real_ext));
+	real_ext[sizeof (real_ext) - 1] = '\0';
+
+	/* abort if there's no dot in the "real" filename */
+	if (!strrchr (real_ext, '.'))
 		return 0;
 
 	if (!(fp = fopen (im->real_file, "rb"))) {
@@ -79,7 +90,7 @@ char load (ImlibImage *im, ImlibProgressFunction progress,
 		return 0;
 	}
 
-	if (!(loader = __imlib_FindBestLoaderForFile (tmp, 0))) {
+	if (!(loader = __imlib_FindBestLoaderForFile (real_ext, 0))) {
 		unlink (tmp);
 		return 0;
 	}

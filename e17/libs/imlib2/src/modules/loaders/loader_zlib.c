@@ -68,16 +68,26 @@ char load (ImlibImage *im, ImlibProgressFunction progress,
 	ImlibLoader *loader;
 	int src, dest;
 	char *file, *p, tmp[] = "/tmp/imlib2_loader_zlib-XXXXXX";
+	char real_ext[16];
 	struct stat st;
 
 	assert (im);
 
-	/* check that this file ends in *.gz */
+	/* check that this file ends in *.gz and that there's another ext
+	 * (e.g. "foo.png.gz"
+	 */
 	p = strrchr(im->real_file, '.');
-	if (p) {
+	if (p && p != im->real_file) {
 		if (strcasecmp(p + 1, "gz"))
 			return 0;
 	} else
+		return 0;
+
+	strncpy (real_ext, p - sizeof (real_ext) + 1, sizeof (real_ext));
+	real_ext[sizeof (real_ext) - 1] = '\0';
+
+	/* abort if there's no dot in the "real" filename */
+	if (!strrchr (real_ext, '.'))
 		return 0;
 
 	if (stat (im->real_file, &st) < 0)
@@ -97,7 +107,7 @@ char load (ImlibImage *im, ImlibProgressFunction progress,
 	close (src);
 	close (dest);
 
-	if (!(loader = __imlib_FindBestLoaderForFile (tmp, 0))) {
+	if (!(loader = __imlib_FindBestLoaderForFile (real_ext, 0))) {
 		unlink (tmp);
 		return 0;
 	}
