@@ -33,6 +33,7 @@ static void display_string (char *string);
 static void handle_url (char *url, char *type);
 static void add_url_to_popup (char *url);
 static int url_in_popup (char *url);
+static char * validate_url (char *url);
 
 static void
 choose_random_cloak (void *data)
@@ -372,6 +373,7 @@ static void
 cb_url_listp (void *data)
 {
   char *url = (char *) data;
+  D (("In cb_url_listp: About to call handle_url on -->%s<--\n", url));
   handle_url (url, "www");
 }
 
@@ -382,6 +384,8 @@ build_url_list (void)
 
   j = num_urls - 1;
 
+  D (("In build_url_list: num_urls = -->%d<--\n", num_urls));
+
   url_p = Epplet_create_popup ();
 
   for (i = 0; i < 10; i++)
@@ -390,6 +394,7 @@ build_url_list (void)
 	{
 	  Epplet_add_popup_entry (url_p, urllist[j], NULL,
 				  cb_url_listp, (void *) urllist[j]);
+	  D (("In build_url_list: adding = -->%s<--\n", urllist[j]));
 	  --j;
 	  if (j < 0)
 	    j = 9;
@@ -406,6 +411,8 @@ add_url_to_url_list (char *url)
   if (num_urls == 10)
     num_urls = 0;
 
+  D (("In add_url_to_url_list: adding = -->%s<--\n", url));
+
   if (urllist[num_urls])
     {
       free (urllist[num_urls]);
@@ -420,6 +427,9 @@ add_url_to_url_list (char *url)
 static void
 add_url_to_popup (char *url)
 {
+
+  D (("In add_url_to_popup: adding = -->%s<--\n", url));
+
   add_url_to_url_list (url);
 
   build_url_list ();
@@ -480,20 +490,25 @@ get_url_from_file_list (char *file, int position)
 static void
 display_url_from_file (char *url)
 {
+  char *validurl;
+
+  if ((validurl = validate_url (url)) == NULL)
+    return;
+
   /* Perform new url command (eg play a sound) */
   if (opt.do_new_url_command && opt.new_url_command)
     system (opt.new_url_command);
 
   if (opt.always_show_file_urls)
-    handle_url (url, "www");
+    handle_url (validurl, "www");
   else
     {
-      display_string (url);
+      display_string (validurl);
       Epplet_gadget_show (btn_file_url);
     }
 
-  if (!url_in_popup (url))
-    add_url_to_popup (url);
+  if (!url_in_popup (validurl))
+    add_url_to_popup (validurl);
 }
 
 static void
@@ -669,10 +684,21 @@ url_in_popup (char *url)
 {
   int i;
 
+  D (("In url_in_popup: url is -->%s<--\n", url));
+
   for (i = 0; i < 10; i++)
     {
       if ((urllist[i]) && (!strcmp (urllist[i], url)))
-	return 1;
+	{
+	  D (("In url_in_popup: A match! Returning TRUE\n"));
+	  return 1;
+	}
+      else
+	{
+	  D (
+	     ("In url_in_popup: No match between list item -->%s<-- and url -->%s<--\n",
+	      urllist[i], url));
+	}
     }
   return 0;
 }
@@ -693,48 +719,42 @@ static void
 handle_url (char *url, char *type)
 {
   char *sys;
-  char *validurl;
 
   if (url == NULL)
     return;
 
   D (("In handle_url: url -->%s<--\n", url));
 
-  if ((validurl = validate_url (url)) == NULL)
-    return;
-
-  display_string (validurl);
-
-  D (("In handle_url: valid url -->%s<--\n", validurl));
+  display_string (url);
 
   if (!strcmp (type, "www"))
     {
-      sys = _Strjoin (NULL, opt.www_command, " \"", validurl, "\" &", NULL);
+      sys = _Strjoin (NULL, opt.www_command, " \"", url, "\" &", NULL);
     }
   else if (!strcmp (type, "ftp"))
     {
-      sys = _Strjoin (NULL, opt.ftp_command, " \"", validurl, "\" &", NULL);
+      sys = _Strjoin (NULL, opt.ftp_command, " \"", url, "\" &", NULL);
     }
   else if (!strcmp (type, "get"))
     {
-      sys = _Strjoin (NULL, opt.get_command, " \"", validurl, "\" &", NULL);
+      sys = _Strjoin (NULL, opt.get_command, " \"", url, "\" &", NULL);
     }
   else
     {
-      sys = _Strjoin (NULL, opt.www_command, " \"", validurl, "\" &", NULL);
+      sys = _Strjoin (NULL, opt.www_command, " \"", url, "\" &", NULL);
     }
 
   D (("In handle_url: About to system() -->%s<--\n", sys));
 
   system (sys);
 
-  if (!url_in_popup (validurl))
-    add_url_to_popup (validurl);
+  if (!url_in_popup (url))
+    add_url_to_popup (url);
 
   free (sys);
 
   if (opt.save_urls)
-    save_url (validurl);
+    save_url (url);
 }
 
 /* Amongst all the fluff, this is the bit that does the actual work. */
@@ -742,12 +762,18 @@ static void
 cb_shoot (void *data)
 {
   char *url;
+  char *validurl;
 
   url = get_url_from_paste_buffer ();
 
   D (("In cb_shoot: url -->%s<--\n", url));
 
-  handle_url (url, data);
+  if ((validurl = validate_url (url)) == NULL)
+    return;
+
+  D (("In cb_shoot: valid url -->%s<--\n", validurl));
+
+  handle_url (validurl, data);
 
   return;
 }
