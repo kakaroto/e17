@@ -135,7 +135,7 @@ feh_load_image(Imlib_Image * im, feh_file * file)
          if (!opt.keep_http)
             unlink(tmpname);
       }
-      if(!opt.keep_http)
+      if (!opt.keep_http)
          add_file_to_rm_filelist(tmpname);
       free(tmpname);
    }
@@ -610,16 +610,11 @@ feh_draw_zoom(winwidget w)
 
    D_ENTER(4);
 
-   if(!w->im)
+   if (!w->im)
       D_RETURN_(4);
 
    if (!fn)
-   {
-      if (w->full_screen)
-         fn = feh_imlib_load_font("20thcent/16");
-      else
-         fn = feh_imlib_load_font("20thcent/12");
-   }
+      fn = feh_imlib_load_font("20thcent/12");
 
    if (!fn)
    {
@@ -627,22 +622,22 @@ feh_draw_zoom(winwidget w)
       D_RETURN_(4);
    }
 
-   snprintf(buf, sizeof(buf), "%.1f%%, %dx%d", w->zoom * 100, (int) (w->im_w * w->zoom), (int) (w->im_h * w->zoom));
+   snprintf(buf, sizeof(buf), "%.0f%%, %dx%d", w->zoom * 100,
+            (int) (w->im_w * w->zoom), (int) (w->im_h * w->zoom));
 
    /* Work out how high the font is */
-   feh_imlib_get_text_size(fn, buf, &tw, &th,
-                           IMLIB_TEXT_TO_RIGHT);
+   feh_imlib_get_text_size(fn, buf, &tw, &th, IMLIB_TEXT_TO_RIGHT);
 
-   tw+=2;
-   th+=2;
+   tw += 2;
+   th += 2;
    im = imlib_create_image(tw, th);
    if (!im)
       eprintf("Couldn't create image. Out of memory?");
 
    feh_imlib_image_fill_rectangle(im, 0, 0, tw, th, 0, 0, 0, 255);
 
-   feh_imlib_text_draw(im, fn, 1, 1, buf,
-                       IMLIB_TEXT_TO_RIGHT, 255, 255, 255, 255);
+   feh_imlib_text_draw(im, fn, 1, 1, buf, IMLIB_TEXT_TO_RIGHT, 255, 255, 255,
+                       255);
 
    feh_imlib_render_image_on_drawable(w->bg_pmap, im, 0, w->h - th, 1, 0, 0);
 
@@ -681,8 +676,8 @@ feh_draw_filename(winwidget w)
    feh_imlib_get_text_size(fn, FEH_FILE(w->file->data)->filename, &tw, &th,
                            IMLIB_TEXT_TO_RIGHT);
 
-   tw +=2;
-   th +=2;
+   tw += 2;
+   th += 2;
    im = imlib_create_image(tw, th);
    if (!im)
       eprintf("Couldn't create image. Out of memory?");
