@@ -71,6 +71,13 @@ struct _etox_context
 	} marker;
 };
 
+typedef struct _etox_rect Etox_Rect;
+struct _etox_rect
+{
+	double x, y;
+	double w, h;
+};
+
 typedef struct _etox_obstacle Etox_Obstacle;
 typedef struct _etox_selection Etox_Selection;
 
@@ -171,7 +178,7 @@ void etox_obstacle_resize(Etox_Obstacle * obstacle, double w, double h);
 Etox_Selection *etox_select_coords(Evas_Object * et, double sx, double sy,
 		double ex, double ey);
 Etox_Selection *etox_select_index(Evas_Object * et, int si, int ei);
-Etox_Selection *etox_select_str(Evas_Object * et, char *match, char **last);
+Etox_Selection *etox_select_str(Evas_Object * et, char *match, int *index);
 
 /*
  * Release a selection that is no longer needed.
@@ -209,5 +216,6 @@ void etox_selection_del_callback(Etox_Selection * selected,
 				 Evas_Callback_Type callback);
 void etox_selection_apply_context(Etox_Selection *selected,
                                   Etox_Context *context);
+Etox_Rect *etox_selection_get_geometry(Etox_Selection *selected, int *num);
 
 #endif

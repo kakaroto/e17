@@ -493,7 +493,6 @@ char *etox_get_text(Evas_Object * obj)
 	 */
 	if (!et->lines)
 		return NULL;
-
 	ret = (char *) calloc((et->length + 1), sizeof(char));
 
 	temp = ret;

@@ -372,7 +372,10 @@ void etox_line_get_text(Etox_Line * line, char *buf)
 	for (l = line->bits; l; l = l->next) {
 		es = l->data;
 		temp = estyle_get_text(es);
+		printf("*** temp:\n%s\n", temp);
 		strcat(buf, temp);
+		printf("*** buf:\n%s\n", buf);
+		free(temp);
 	}
 
 	strcat(buf, "\n");
@@ -697,3 +700,21 @@ etox_line_apply_context(Etox_Line *line, Etox_Context *context, Evas_Object *sta
   }
 }
 
+void
+etox_line_get_geometry(Etox_Line *line, double *x, double *y,
+                       double *w, double *h)
+{
+  if (!line)
+  {
+    if (x) *x = 0;
+    if (y) *y = 0;
+    if (w) *w = 0;
+    if (h) *h = 0;
+    return;
+  }
+  
+  if (x) *x = line->x;
+  if (y) *y = line->y;
+  if (w) *w = line->w;
+  if (h) *h = line->h;
+}

@@ -17,6 +17,8 @@ void etox_line_get_text(Etox_Line * line, char *buf);
 int etox_line_wrap(Etox *et, Etox_Line *line);
 void etox_line_split(Etox_Line *line, Evas_Object *bit, int index);
 void etox_line_unwrap(Etox *et, Etox_Line *line);
+void etox_line_get_geometry(Etox_Line *line, double *x, double *y,
+                            double *w, double *h);
 Evas_Object *etox_line_coord_to_bit(Etox_Line *line, int x);
 Evas_Object *etox_line_index_to_bit(Etox_Line *line, int *i);
 void etox_line_index_to_geometry(Etox_Line *line, int index, double *x,
