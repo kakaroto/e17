@@ -607,6 +607,8 @@ AddToFamily(Window win)
 	RaiseProgressbars();
 	ShowEwin(ewin);
 	StackDesktops();
+	UngrabX();
+	ewin->iconified = 0;
 	IconifyEwin(ewin);
 	EDBUG_RETURN_;
      }
@@ -774,7 +776,7 @@ AddToFamily(Window win)
 }
 
 EWin               *
-AddInternalToFamily(Window win, char noshow, char *bname)
+AddInternalToFamily(Window win, char noshow, char *bname, int type, void *ptr)
 {
    EWin               *ewin;
    int                 x, y;
@@ -789,16 +791,12 @@ AddInternalToFamily(Window win, char noshow, char *bname)
       b = FindItem(bname, 0, LIST_FINDBY_NAME, LIST_TYPE_BORDER);
    if (!b)
       b = FindItem("DEFAULT", 0, LIST_FINDBY_NAME, LIST_TYPE_BORDER);
-   ewin = AdoptInternal(win, b);
+   ewin = AdoptInternal(win, b, type, ptr);
    ResizeEwin(ewin, ewin->client.w, ewin->client.h);
    if (ewin->desktop < 0)
-     {
-	ewin->desktop = desks.current;
-     }
+      ewin->desktop = desks.current;
    else
-     {
-	ewin->desktop = DESKTOPS_WRAP_NUM(ewin->desktop);
-     }
+      ewin->desktop = DESKTOPS_WRAP_NUM(ewin->desktop);
    x = ewin->client.x - ewin->border->border.left;
    y = ewin->client.y - ewin->border->border.top;
    AddItem(ewin, "EWIN", ewin->client.win, LIST_TYPE_EWIN);
@@ -1258,7 +1256,7 @@ Adopt(Window win)
 }
 
 EWin               *
-AdoptInternal(Window win, Border * border)
+AdoptInternal(Window win, Border * border, int type, void *ptr)
 {
    EWin               *ewin;
    Border             *b;
@@ -1274,6 +1272,11 @@ AdoptInternal(Window win, Border * border)
    ICCCM_GetShapeInfo(ewin);
    ICCCM_GetGeoms(ewin, 0);
 
+/*   if (type == 1)
+ * MatchEwinToSnapInfoPager(ewin, (Pager *)ptr);
+ * else if (type == 2)
+ * MatchEwinToSnapInfoIconbox(ewin, (Iconbox *)ptr);
+ * else  */
    MatchEwinToSnapInfo(ewin);
    if (!ewin->border)
       ewin->border = border;

@@ -331,7 +331,18 @@ EShapeGetRectangles(Display * d, Window win, int dest, int *rn, int *ord)
 	   return NULL;
      }
    else
-      return XShapeGetRectangles(d, win, dest, rn, ord);
+     {
+	XRectangle         *r, *rr;
+
+	r = XShapeGetRectangles(d, win, dest, rn, ord);
+	if (r)
+	  {
+	     rr = Emalloc(sizeof(XRectangle) * *rn);
+	     memcpy(rr, r, sizeof(XRectangle) * *rn);
+	     XFree(r);
+	     return rr;
+	  }
+     }
    return NULL;
 }
 
@@ -549,7 +560,7 @@ DelXID(Window win)
      {
 	XDeleteContext(disp, win, xid_context);
 	if (xid->rects)
-	   Efree(xid->rects);
+	   XFree(xid->rects);
 	Efree(xid);
      }
 }

@@ -2128,3 +2128,20 @@ Tue Sep 21 17:06:31 EST 1999
 (Christian)
 
 Updated the Eterm theme and some minor fixes.
+
+-------------------------------------------------------------------------------
+
+Tue Sep 21 19:37:31 PDT 1999
+(Raster)
+
+fix possible memory leak
+
+cleaned up some code
+
+fixed positioning on restart/start of internal wins
+
+fixed iconified startup bugs for clients that ask to be iconified on start
+
+fixed icon pixmap bugs
+
+took my iguana for a walk around the block

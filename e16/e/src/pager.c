@@ -525,9 +525,13 @@ CreatePager(void)
    attr.border_pixel = 0;
    attr.background_pixel = 0;
    attr.save_under = False;
-   p->win = ECreateWindow(root.win, 0, 0, ((48 * root.w) / root.h) * ax, 48 * ay, 0);
-   p->pmap = ECreatePixmap(disp, p->win, ((48 * root.w) / root.h) * ax, 48 * ay, id->x.depth);
-   p->bgpmap = ECreatePixmap(disp, p->win, ((48 * root.w) / root.h) * ax, 48, id->x.depth);
+   p->w = ((48 * root.w) / root.h) * ax;
+   p->h = 48 * ay;
+   p->dw = ((48 * root.w) / root.h) * ax;
+   p->dh = 48;
+   p->win = ECreateWindow(root.win, 0, 0, p->w, p->h, 0);
+   p->pmap = ECreatePixmap(disp, p->win, p->w, p->h, id->x.depth);
+   p->bgpmap = ECreatePixmap(disp, p->win, p->w / ax, p->h / ay, id->x.depth);
    ESetWindowBackgroundPixmap(disp, p->win, p->pmap);
    XSelectInput(disp, p->win, ButtonPressMask | ButtonReleaseMask |
 		PointerMotionMask);
@@ -537,15 +541,11 @@ CreatePager(void)
    XSelectInput(disp, p->hi_win, ButtonPressMask | ButtonReleaseMask |
 		PointerMotionMask);
    p->desktop = 0;
-   p->w = ((48 * root.w) / root.h) * ax;
-   p->h = 48 * ay;
-   p->dw = ((48 * root.w) / root.h) * ax;
-   p->dh = 48;
    p->visible = 0;
    p->update_phase = 0;
    p->ewin = NULL;
    p->border_name = NULL;
-   p->sel_win = ECreateWindow(p->win, 0, 0, ((48 * root.w) / root.h) * ax, 48, 0);
+   p->sel_win = ECreateWindow(p->win, 0, 0, p->w / ax, p->h / ay, 0);
    pq = queue_up;
    queue_up = 0;
    ic = FindItem("PAGER_SEL", 0, LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
@@ -629,10 +629,11 @@ PagerShow(Pager * p)
    XFree(xch);
    pq = queue_up;
    queue_up = 0;
+   MatchToSnapInfoPager(p);
    if (p->border_name)
-      ewin = AddInternalToFamily(p->win, 1, p->border_name);
+      ewin = AddInternalToFamily(p->win, 1, p->border_name, 1, p);
    else
-      ewin = AddInternalToFamily(p->win, 1, "PAGER");
+      ewin = AddInternalToFamily(p->win, 1, "PAGER", 1, p);
    if (ewin)
      {
 	char                s[4096];
@@ -651,24 +652,14 @@ PagerShow(Pager * p)
 	ewin->client.width.max = 320 * ax;
 	ewin->client.height.max = 240 * ay;
 	ewin->pager = p;
-	ewin->desktop = desks.current;
 	p->ewin = ewin;
 	p->visible = 1;
-	DesktopRemoveEwin(ewin);
-	ewin->sticky = 1;
 	sn = FindSnapshot(ewin);
 	/* get the size right damnit! */
 	if (sn)
 	  {
 	     if (sn->use_wh)
-	       {
-		  if ((sn->use_shade) && (sn->shade))
-		     InstantUnShadeEwin(ewin);
-		  p->w = 0;
-		  p->h = 0;
-		  ResizeEwin(ewin, sn->w, sn->h);
-		  PagerRedraw(p, 1);
-	       }
+		PagerRedraw(p, 1);
 	  }
 	/* no snapshots ? first time ? make a row on the bottom left up */
 	else
@@ -683,13 +674,10 @@ PagerShow(Pager * p)
 	     PagerResize(p, pw, ph);
 	     PagerRedraw(p, 1);
 	  }
-	ConformEwinToDesktop(ewin);
 	/* show the pager ewin */
-	DesktopRemoveEwin(ewin);
-	DesktopAddEwinToTop(ewin);
-	if ((sn) && (sn->use_shade) && (sn->shade))
-	   ShadeEwin(ewin);
 	ShowEwin(ewin);
+	if (((sn) && (sn->use_sticky) && (sn->sticky)) || (!sn))
+	   MakeWindowSticky(ewin);
 	RememberImportantInfoForEwin(ewin);
 	if (SNAP)
 	  {

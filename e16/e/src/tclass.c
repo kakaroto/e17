@@ -209,7 +209,10 @@ TclassApply(ImageClass * iclass, Window win, int w, int h, int active,
 	dq->tclass = tclass;
 	if (dq->tclass)
 	   dq->tclass->ref_count++;
-	dq->text = duplicate(text);
+	if (text)
+	   dq->text = duplicate(text);
+	else
+	   dq->text = NULL;
 	dq->w = w;
 	dq->shape_propagate = 0;
 	dq->pager = NULL;

@@ -393,7 +393,7 @@ ShowMenu(Menu * m, char noshow)
 	   mode.y = -((-mode.y) - mode.context_h - mh);
 	EMoveWindow(disp, m->win, -mode.x, -mode.y);
      }
-   ewin = AddInternalToFamily(m->win, 1, m->style->border_name);
+   ewin = AddInternalToFamily(m->win, 1, m->style->border_name, 0, m);
    if (ewin)
      {
 	DesktopRemoveEwin(ewin);
@@ -680,7 +680,8 @@ AddTitleToMenu(Menu * menu, char *title)
 void
 RealizeMenu(Menu * m)
 {
-   int                 i, maxh, maxw, maxx1, maxx2, w, h, x, y, r, mmw, mmh;
+   int                 i, maxh = 0, maxw = 0, maxx1, maxx2, w, h, x, y, r,
+                       mmw, mmh;
    unsigned int        iw, ih;
    ImlibImage         *im;
    XSetWindowAttributes att;
@@ -1046,7 +1047,6 @@ CreateMenuFromDirectory(char *name, MenuStyle * ms, char *dir)
 	       {
 		  s[strlen(s) - 1] = 0;
 		  word(s, 1, ss);
-		  EDisplayMemUse();
 		  if (!strcmp(ss, "BG"))
 		    {
 		       Background         *bg;

@@ -5,10 +5,57 @@
 /*#define MEM_OUT 1 */
 
 #ifdef DBUG_MEM
-#define POINTERS_SIZE 256000
+#define POINTERS_SIZE 50000
 static unsigned int num_pointers = 0;
 static void        *pointers_ptr[POINTERS_SIZE];
 static unsigned int pointers_size[POINTERS_SIZE];
+
+#ifdef MEM_OUT
+static void        *pointers_stack[POINTERS_SIZE][32];
+static char         pointers_file[POINTERS_SIZE][16];
+static int          pointers_line[POINTERS_SIZE];
+static time_t       pointers_time[POINTERS_SIZE];
+
+#define PSTK(y, x) if (__builtin_frame_address(x)) \
+                    pointers_stack[y][x] = __builtin_return_address(x);\
+                else goto end;
+#define PST(y)\
+{\
+   int _pi;\
+   for (_pi = 0; _pi < 32; _pi++)\
+      pointers_stack[y][_pi] = NULL;\
+   PSTK(y, 0); PSTK(y, 1); PSTK(y, 2); PSTK(y, 3); PSTK(y, 4);\
+   PSTK(y, 5); PSTK(y, 6); PSTK(y, 7); PSTK(y, 8); PSTK(y, 9);\
+   PSTK(y, 10); PSTK(y, 11); PSTK(y, 12); PSTK(y, 13); PSTK(y, 14);\
+   PSTK(y, 15); PSTK(y, 16); PSTK(y, 17); PSTK(y, 18); PSTK(y, 19);\
+   PSTK(y, 20); PSTK(y, 21); PSTK(y, 22); PSTK(y, 23); PSTK(y, 24);\
+   PSTK(y, 25); PSTK(y, 26); PSTK(y, 27); PSTK(y, 28); PSTK(y, 29);\
+   PSTK(y, 30); PSTK(y, 31);\
+end: \
+}
+
+static struct _symtab
+  {
+     void               *val;
+     char               *symbol;
+  }
+                   *sym = NULL;
+
+static int          sym_count = 0;
+
+char               *
+getsym(void *p)
+{
+   int                 i;
+
+   for (i = 0; i < sym_count - 1; i++)
+     {
+	if ((p > sym[i].val) && (p < sym[i + 1].val))
+	   return sym[i].symbol;
+     }
+   return "";
+}
+#endif
 
 #endif
 
@@ -16,24 +63,82 @@ void
 EDisplayMemUse()
 {
 #ifdef DBUG_MEM
+   FILE               *f;
    unsigned int        i, min, max, sum;
 
    max = 0;
    min = 0x7ffffff;
    sum = 0;
+   if (!sym)
+     {
+	f = fopen("e.sym", "r");
+	if (f)
+	  {
+	     void               *p;
+	     char                buf[256];
+
+	     while (fscanf(f, "%x %*s %250s\n", &p, buf) != EOF)
+	       {
+		  sym_count++;
+		  sym = realloc(sym, sizeof(struct _symtab) * sym_count);
+
+		  sym[sym_count - 1].val = p;
+		  sym[sym_count - 1].symbol = strdup(buf);
+	       }
+	     fclose(f);
+	  }
+     }
+   f = fopen("e.mem.out", "w");
    for (i = 0; i < num_pointers; i++)
      {
+	char                tm[32];
+	struct tm           tim;
+	struct tm          *tim2;
+	time_t              t2;
+
 	sum += pointers_size[i];
 	if (pointers_size[i] < min)
 	   min = pointers_size[i];
 	if (pointers_size[i] > max)
 	   max = pointers_size[i];
+	t2 = pointers_time[i];
+	tim2 = localtime(&t2);
+	if (tim2)
+	  {
+	     memcpy(&tim, tim2, sizeof(struct tm));
+
+	     strftime(tm, 31, "%T", &tim);
+	  }
+	fprintf(f, "%6i > %p %5i @ %s - %16s line %5i : "
+		"%s %s %s %s %s %s %s %s "
+		"%s %s %s %s %s %s %s %s "
+		"%s %s %s %s %s %s %s %s "
+		"%s %s %s %s %s %s %s %s\n",
+		i, pointers_ptr[i], pointers_size[i], tm,
+		pointers_file[i], pointers_line[i],
+		getsym(pointers_stack[i][0]), getsym(pointers_stack[i][1]),
+		getsym(pointers_stack[i][2]), getsym(pointers_stack[i][3]),
+		getsym(pointers_stack[i][4]), getsym(pointers_stack[i][5]),
+		getsym(pointers_stack[i][6]), getsym(pointers_stack[i][7]),
+		getsym(pointers_stack[i][8]), getsym(pointers_stack[i][9]),
+		getsym(pointers_stack[i][10]), getsym(pointers_stack[i][11]),
+		getsym(pointers_stack[i][12]), getsym(pointers_stack[i][13]),
+		getsym(pointers_stack[i][14]), getsym(pointers_stack[i][15]),
+		getsym(pointers_stack[i][16]), getsym(pointers_stack[i][17]),
+		getsym(pointers_stack[i][18]), getsym(pointers_stack[i][19]),
+		getsym(pointers_stack[i][20]), getsym(pointers_stack[i][21]),
+		getsym(pointers_stack[i][22]), getsym(pointers_stack[i][23]),
+		getsym(pointers_stack[i][24]), getsym(pointers_stack[i][25]),
+		getsym(pointers_stack[i][26]), getsym(pointers_stack[i][27]),
+		getsym(pointers_stack[i][28]), getsym(pointers_stack[i][29]),
+		getsym(pointers_stack[i][30]), getsym(pointers_stack[i][31]));
      }
    if (num_pointers > 0)
      {
-	fprintf(stderr, "Num:%6i Sum:%8i Av:%8i Min:%8i Max%6i\n",
+	fprintf(f, "Num:%6i Sum:%8i Av:%8i Min:%8i Max%6i\n",
 		num_pointers, sum, sum / num_pointers, min, max);
      }
+   fclose(f);
 #endif
 }
 
@@ -77,26 +182,13 @@ __Emalloc(int size, const char *file, int line)
 	num_pointers++;
 	pointers_ptr[num_pointers - 1] = p;
 	pointers_size[num_pointers - 1] = size;
-     }
-#endif
 #ifdef MEM_OUT
-   {
-      FILE               *f;
-
-      f = fopen("e.mem.out", "a");
-      if (f)
-	{
-#ifdef DEBUG
-	   int                 i_call_level;
-
-	   fprintf(f, "%i ", call_level);
-	   for (i_call_level = 0; i_call_level < call_level; i_call_level++)
-	      fprintf(f, "%s ", call_stack[i_call_level]);
+	strcpy(pointers_file[num_pointers - 1], file);
+	pointers_line[num_pointers - 1] = line;
+	pointers_time[num_pointers - 1] = time(NULL);
+	PST(num_pointers - 1);
 #endif
-	   fprintf(f, " = MALLOC %s %i : %i = %p\n", file, line, size, p);
-	   fclose(f);
-	}
-   }
+     }
 #endif
    EDBUG_RETURN(p);
 }
@@ -205,31 +297,6 @@ __Erealloc(void *ptr, int size, const char *file, int line)
 	  }
      }
 #endif
-#ifdef MEM_OUT
-   {
-      FILE               *f;
-
-      f = fopen("e.mem.out", "a");
-      if (f)
-	{
-#ifdef DEBUG
-	   int                 i_call_level;
-
-	   fprintf(f, "%i ", call_level);
-	   for (i_call_level = 0; i_call_level < call_level; i_call_level++)
-	      fprintf(f, "%s ", call_stack[i_call_level]);
-#endif
-	   fprintf(f, " = FREE %s %i : %p\n", file, line, ptr);
-#ifdef DEBUG
-	   fprintf(f, "%i ", call_level);
-	   for (i_call_level = 0; i_call_level < call_level; i_call_level++)
-	      fprintf(f, "%s ", call_stack[i_call_level]);
-#endif
-	   fprintf(f, " = MALLOC %s %i : %i = %p\n", file, line, size, p);
-	   fclose(f);
-	}
-   }
-#endif
    EDBUG_RETURN(p);
 }
 
@@ -243,7 +310,7 @@ __Efree(void *ptr, const char *file, int line)
    EDBUG(9, "Efree");
 #ifdef DBUG_MEM
    {
-      unsigned int        i, j;
+      unsigned int        i, j, k;
 
       bad = 1;
       for (i = 0; i < num_pointers; i++)
@@ -254,6 +321,13 @@ __Efree(void *ptr, const char *file, int line)
 		  {
 		     pointers_ptr[j] = pointers_ptr[j + 1];
 		     pointers_size[j] = pointers_size[j + 1];
+#ifdef MEM_OUT
+		     for (k = 0; k < 32; k++)
+			pointers_stack[j][k] = pointers_stack[j + 1][k];
+		     strcpy(pointers_file[j], pointers_file[j + 1]);
+		     pointers_line[j] = pointers_line[j + 1];
+		     pointers_time[j] = pointers_time[j + 1];
+#endif
 		  }
 		bad = 0;
 		i = num_pointers;
@@ -306,25 +380,6 @@ __Efree(void *ptr, const char *file, int line)
 	EDBUG_RETURN_;
      }
    free(ptr);
-#ifdef MEM_OUT
-   {
-      FILE               *f;
-
-      f = fopen("e.mem.out", "a");
-      if (f)
-	{
-#ifdef DEBUG
-	   int                 i_call_level;
-
-	   fprintf(f, "%i ", call_level);
-	   for (i_call_level = 0; i_call_level < call_level; i_call_level++)
-	      fprintf(f, "%s ", call_stack[i_call_level]);
-#endif
-	   fprintf(f, " = FREE %s %i : %p\n", file, line, ptr);
-	   fclose(f);
-	}
-   }
-#endif
    EDBUG_RETURN_;
 }
 #endif

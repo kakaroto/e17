@@ -43,7 +43,6 @@ HandleDrawQueue()
 	       {
 		  if ((lst[i]->win == dq->win) && (lst[i]->text))
 		    {
-		       Efree(dq->text);
 		       already = 1;
 		       i = num;
 		    }
@@ -146,6 +145,8 @@ HandleDrawQueue()
 		     dq->iclass->ref_count--;
 		  if (dq->tclass)
 		     dq->tclass->ref_count--;
+		  if (dq->text)
+		     Efree(dq->text);
 		  Efree(dq);
 	       }
 	  }
@@ -203,6 +204,10 @@ HandleDrawQueue()
 		     PagerRedraw(lst[i]->redraw_pager, lst[i]->newbg);
 /*            printf("p %x\n", lst[i]->win); */
 	       }
+	     if (lst[i]->iclass)
+		lst[i]->iclass->ref_count--;
+	     if (lst[i]->tclass)
+		lst[i]->tclass->ref_count--;
 	     Efree(lst[i]);
 	  }
 	Efree(lst);
@@ -755,6 +760,7 @@ EBlendPixImg(EWin * ewin, PixImg * s1, PixImg * s2, PixImg * dst, int x, int y, 
 	  }
 /* workaround since XCopyArea doesnt always work with shared pixmaps */
 	XShmPutImage(disp, root.win, gc, dst->xim, ox, oy, x, y, w, h, False);
+/*      XCopyArea(disp, dst->pmap, root.win, gc, ox, oy, w, h, x, y); */
      }
 /* I dont believe it - you cannot do this to a shared pixmaps to the screen */
 /* XCopyArea(disp, dst->pmap, root.win, dst->gc, x, y, w, h, x, y); */
@@ -1318,7 +1324,7 @@ PropagateShapes(Window win)
 				 rects[num_rects - rn + k].height = rl[k].height;
 			      }
 			 }
-		       XFree(rl);
+		       Efree(rl);
 		    }
 		  else
 		    {
@@ -1352,7 +1358,7 @@ PropagateShapes(Window win)
 			  EShapeCombineMask(disp, win, ShapeBounding, 0, 0,
 					    None, ShapeSet);
 		    }
-		  XFree(rl);
+		  Efree(rl);
 	       }
 	     else
 		EShapeCombineMask(disp, win, ShapeBounding, 0, 0, None, ShapeSet);

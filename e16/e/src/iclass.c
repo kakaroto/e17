@@ -658,8 +658,8 @@ IclassApply(ImageClass * iclass, Window win, int w, int h,
 				 ESetWindowBackgroundPixmap(disp, win, pmap);
 				 EShapeCombineMask(disp, win, ShapeBounding,
 						   0, 0, mask, ShapeSet);
+				 Imlib_free_pixmap(id, pmap);
 			      }
-			    Imlib_free_pixmap(id, pmap);
 			 }
 		       else
 			 {
@@ -711,16 +711,14 @@ IclassApply(ImageClass * iclass, Window win, int w, int h,
 						   0, 0, tm, ShapeSet);
 				 EFreePixmap(disp, tm);
 			      }
-			    Imlib_free_pixmap(id, pmap);
 			    ESetWindowBackgroundPixmap(disp, win, pmap);
+			    Imlib_free_pixmap(id, pmap);
 			 }
 		    }
 	       }
 	     if (!is->im)
-	       {
-		  /* bg color */
-		  ESetWindowBackground(disp, win, is->bg.pixel);
-	       }
+		/* bg color */
+		ESetWindowBackground(disp, win, is->bg.pixel);
 	     else if (is->im_file)
 	       {
 		  /* if unloadable - then unload */

@@ -25,6 +25,9 @@
 #include <Imlib.h>
 #include <Fnlib.h>
 
+/* dmalloc debugging */
+/*#include <dmalloc.h> */
+
 /* sgi's stdio.h has:
  * 
  * #if _SGIAPI && _NO_ANSIMODE
@@ -1816,7 +1819,7 @@ void                SlideEwinTo(EWin * ewin, int fx, int fy, int tx, int ty,
 void                SlideEwinsTo(EWin ** ewin, int *fx, int *fy, int *tx,
 				 int *ty, int num_wins, int speed);
 void                AddToFamily(Window win);
-EWin               *AddInternalToFamily(Window win, char noshow, char *bname);
+EWin               *AddInternalToFamily(Window win, char noshow, char *bname, int type, void *ptr);
 void                SetEwinBorder(EWin * ewin);
 void                SetEwinToBorder(EWin * ewin, Border * b);
 void                HonorIclass(char *s, int id);
@@ -1830,7 +1833,7 @@ int                 ChangeEwinWinpartContents(EWin * ewin, int i);
 void                CalcEwinWinpart(EWin * ewin, int i);
 void                CalcEwinSizes(EWin * ewin);
 EWin               *Adopt(Window win);
-EWin               *AdoptInternal(Window win, Border * border);
+EWin               *AdoptInternal(Window win, Border * border, int type, void *ptr);
 EWin               *CreateEwin(void);
 void                FreeEwin(EWin * ewin);
 
@@ -2531,6 +2534,8 @@ void                SetSMUserThemePath(char *path);
 char               *GetSMFile(void);
 char               *GetGenericSMFile(void);
 void                MatchEwinToSM(EWin * ewin);
+void                MatchToSnapInfoPager(Pager * p);
+void                MatchToSnapInfoIconbox(Iconbox * ib);
 void                SaveSession(int shutdown);
 void                autosave(void);
 

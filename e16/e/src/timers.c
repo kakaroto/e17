@@ -19,6 +19,7 @@ DoIn(char *name, double in_time, void (*func) (int val, void *data),
    double              tally;
 
    EDBUG(5, "DoIn");
+   RemoveTimerEvent(name);
    qe = Emalloc(sizeof(Qentry));
    if (!qe)
       EDBUG_RETURN_;

@@ -492,7 +492,7 @@ SnapshotEwinBorder(EWin * ewin)
    sn->border_name = NULL;
    if (ewin->previous_border)
       sn->border_name = duplicate(ewin->previous_border->name);
-   else
+   else if (ewin->border)
       sn->border_name = duplicate(ewin->border->name);
 }
 
@@ -530,7 +530,7 @@ SnapshotEwinLocation(EWin * ewin)
    if (!sn)
       return;
    sn->use_xy = 1;
-   if (ewin->pager)
+   if (((ewin->pager) || (ewin->ibox)) && (ewin->border))
      {
 	sn->x = ewin->x + ewin->border->border.left;
 	sn->y = ewin->y + ewin->border->border.top;
@@ -732,29 +732,6 @@ SaveSnapInfo(void)
    char                buf[4096], s[4096];
    FILE               *f;
 
-   {
-      Pager             **pl;
-
-      pl = (Pager **) ListItemType(&num, LIST_TYPE_PAGER);
-      if (pl)
-	{
-	   for (i = 0; i < num; i++)
-	     {
-		if (pl[i]->ewin)
-		  {
-		     SnapshotEwinBorder(pl[i]->ewin);
-		     SnapshotEwinSize(pl[i]->ewin);
-		     SnapshotEwinLocation(pl[i]->ewin);
-		     SnapshotEwinLayer(pl[i]->ewin);
-		     SnapshotEwinSticky(pl[i]->ewin);
-		     SnapshotEwinDesktop(pl[i]->ewin);
-		     SnapshotEwinShade(pl[i]->ewin);
-		  }
-	     }
-	   Efree(pl);
-	}
-   }
-/*  Esnprintf(buf, sizeof(buf), "%s.snapshots.%i", GetSMFile(), root.scr); */
    Etmp(s);
    f = fopen(s, "w");
    if (!f)
@@ -1059,6 +1036,58 @@ MatchEwinToSnapInfo(EWin * ewin)
 		AddEwinToGroup(ewin, g);
 	  }
      }
+}
+
+void
+MatchToSnapInfoPager(Pager * p)
+{
+   XClassHint          hint;
+   char                buf[1024];
+   Snapshot           *sn = NULL;
+
+   if ((!XGetClassHint(disp, p->win, &hint)))
+      return;
+   if ((hint.res_name) && (hint.res_class))
+     {
+	Esnprintf(buf, sizeof(buf), "%s.%s", hint.res_name, hint.res_class);
+	sn = FindItem(buf, 0, LIST_FINDBY_BOTH, LIST_TYPE_SNAPSHOT);
+     }
+   if (hint.res_name)
+      XFree(hint.res_name);
+   if (hint.res_class)
+      XFree(hint.res_class);
+   if (!sn)
+      return;
+   if (sn->use_xy)
+      EMoveWindow(disp, p->win, sn->x, sn->y);
+   if (sn->use_wh)
+      PagerResize(p, sn->w, sn->h);
+}
+
+void
+MatchToSnapInfoIconbox(Iconbox * ib)
+{
+   XClassHint          hint;
+   char                buf[1024];
+   Snapshot           *sn = NULL;
+
+   if ((!XGetClassHint(disp, ib->win, &hint)))
+      return;
+   if ((hint.res_name) && (hint.res_class))
+     {
+	Esnprintf(buf, sizeof(buf), "%s.%s", hint.res_name, hint.res_class);
+	sn = FindItem(buf, 0, LIST_FINDBY_BOTH, LIST_TYPE_SNAPSHOT);
+     }
+   if (hint.res_name)
+      XFree(hint.res_name);
+   if (hint.res_class)
+      XFree(hint.res_class);
+   if (!sn)
+      return;
+   if (sn->use_xy)
+      EMoveWindow(disp, ib->win, sn->x, sn->y);
+   if (sn->use_wh)
+      IconboxResize(ib, sn->w, sn->h);
 }
 
 void

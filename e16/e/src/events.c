@@ -560,6 +560,18 @@ HKeyRelease(XEvent * ev)
    EDBUG_RETURN_;
 }
 
+#if 0
+struct _pbuf
+{
+   int                 w, h, depth;
+   Pixmap              id;
+   void               *stack[32];
+   struct _pbuf       *next;
+};
+extern struct _pbuf *pbuf = NULL;
+
+#endif
+
 void
 HButtonPress(XEvent * ev)
 {
@@ -568,6 +580,60 @@ HButtonPress(XEvent * ev)
 			LIST_FINDBY_NAME, LIST_TYPE_SCLASS));
    HandleMouseDown(ev);
    EDisplayMemUse();
+#if 0
+   {
+      int                 x, y, maxh = 0, count = 0, mcount = 0, ww, hh;
+      struct _pbuf       *pb;
+      GC                  gc;
+      XGCValues           gcv;
+
+      gc = XCreateGC(disp, root.win, 0, &gcv);
+      XSetForeground(disp, gc, WhitePixel(disp, root.scr));
+      fprintf(stderr, "Pixmaps allocated:\n");
+      x = 0;
+      y = 0;
+      XClearWindow(disp, root.win);
+      for (pb = pbuf; pb; pb = pb->next)
+	{
+	   ww = pb->w;
+	   hh = pb->h;
+	   if (ww > 64)
+	      ww = 64;
+	   if (hh > 64)
+	      hh = 64;
+	   if (x + ww > root.w)
+	     {
+		x = 0;
+		y += maxh;
+		maxh = 0;
+	     }
+	   XCopyArea(disp, pb->id, root.win, gc, 0, 0, ww, hh, x, y);
+	   XDrawRectangle(disp, root.win, gc, x, y, ww, hh);
+	   x += ww;
+	   if (hh > maxh)
+	      maxh = hh;
+	   count++;
+	   if (pb->depth == 1)
+	      mcount++;
+	   fprintf(stderr, "%08x (%5ix%5i %i) : "
+		   "%x %x %x %x %x %x %x %x "
+		   "%x %x %x %x %x %x %x %x "
+		   "%x %x %x %x %x %x %x %x "
+		   "%x %x %x %x %x %x %x %x\n",
+		   pb->id, pb->w, pb->h, pb->depth,
+		   pb->stack[0], pb->stack[1], pb->stack[2], pb->stack[3],
+		   pb->stack[4], pb->stack[5], pb->stack[6], pb->stack[7],
+		   pb->stack[8], pb->stack[9], pb->stack[10], pb->stack[11],
+		   pb->stack[12], pb->stack[13], pb->stack[14], pb->stack[15],
+		   pb->stack[16], pb->stack[17], pb->stack[18], pb->stack[19],
+		   pb->stack[20], pb->stack[21], pb->stack[22], pb->stack[23],
+		   pb->stack[24], pb->stack[25], pb->stack[26], pb->stack[27],
+		   pb->stack[28], pb->stack[29], pb->stack[30], pb->stack[31]);
+	}
+      fprintf(stderr, "Total %i, %i of them bitmaps\n", count, mcount);
+      XFreeGC(disp, gc);
+   }
+#endif
    EDBUG_RETURN_;
 }
 

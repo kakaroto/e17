@@ -22,14 +22,19 @@ create_font_raster(int width, int height)
 {
    TT_Raster_Map      *rmap;
 
-   rmap = malloc(sizeof(TT_Raster_Map));
+   rmap = Emalloc(sizeof(TT_Raster_Map));
    rmap->width = (width + 3) & -4;
    rmap->rows = height;
    rmap->flow = TT_Flow_Down;
    rmap->cols = rmap->width;
    rmap->size = rmap->rows * rmap->width;
-   rmap->bitmap = malloc(rmap->size);
-   memset(rmap->bitmap, 0, rmap->size);
+   if (rmap->size > 0)
+     {
+	rmap->bitmap = Emalloc(rmap->size);
+	memset(rmap->bitmap, 0, rmap->size);
+     }
+   else
+      rmap->bitmap = NULL;
    return rmap;
 }
 
@@ -38,10 +43,15 @@ duplicate_raster(TT_Raster_Map * rmap)
 {
    TT_Raster_Map      *new_rmap;
 
-   new_rmap = malloc(sizeof(TT_Raster_Map));
+   new_rmap = Emalloc(sizeof(TT_Raster_Map));
    *new_rmap = *rmap;
-   new_rmap->bitmap = malloc(new_rmap->size);
-   memcpy(new_rmap->bitmap, rmap->bitmap, new_rmap->size);
+   if (new_rmap->size > 0)
+     {
+	new_rmap->bitmap = Emalloc(new_rmap->size);
+	memcpy(new_rmap->bitmap, rmap->bitmap, new_rmap->size);
+     }
+   else
+      new_rmap->bitmap = NULL;
    return new_rmap;
 }
 
@@ -54,8 +64,11 @@ clear_raster(TT_Raster_Map * rmap)
 static void
 destroy_font_raster(TT_Raster_Map * rmap)
 {
-   free(rmap->bitmap);
-   free(rmap);
+   if (!rmap)
+      return;
+   if (rmap->bitmap)
+      Efree(rmap->bitmap);
+   Efree(rmap);
 }
 
 static TT_Raster_Map *
@@ -693,9 +706,11 @@ Efont_free(Efont * f)
 	if (!TT_VALID(f->glyphs[i]))
 	   TT_Done_Glyph(f->glyphs[i]);
      }
-   free(f->glyphs);
-   free(f->glyphs_cached);
-   free(f);
+   if (f->glyphs)
+      Efree(f->glyphs);
+   if (f->glyphs_cached)
+      Efree(f->glyphs_cached);
+   Efree(f);
 }
 
 Efont              *
@@ -719,12 +734,12 @@ Efont_load(char *file, int size)
 	   return NULL;
 	have_engine = 1;
      }
-   f = malloc(sizeof(Efont));
+   f = Emalloc(sizeof(Efont));
    f->engine = engine;
    error = TT_Open_Face(f->engine, file, &f->face);
    if (error)
      {
-	free(f);
+	Efree(f);
 /*      fprintf(stderr, "Unable to open font\n"); */
 	return NULL;
      }
@@ -732,7 +747,7 @@ Efont_load(char *file, int size)
    if (error)
      {
 	TT_Close_Face(f->face);
-	free(f);
+	Efree(f);
 /*      fprintf(stderr, "Unable to get face properties\n"); */
 	return NULL;
      }
@@ -740,7 +755,7 @@ Efont_load(char *file, int size)
    if (error)
      {
 	TT_Close_Face(f->face);
-	free(f);
+	Efree(f);
 /*      fprintf(stderr, "Unable to create instance\n"); */
 	return NULL;
      }
@@ -765,14 +780,14 @@ Efont_load(char *file, int size)
 	num_glyphs = f->properties.num_Glyphs;
 	TT_Done_Instance(f->instance);
 	TT_Close_Face(f->face);
-	free(f);
+	Efree(f);
 /*      fprintf(stderr, "Sorry, but this font doesn't contain any Unicode mapping table\n"); */
 	return NULL;
      }
    f->num_glyph = 256;
-   f->glyphs = (TT_Glyph *) malloc(256 * sizeof(TT_Glyph));
+   f->glyphs = (TT_Glyph *) Emalloc(256 * sizeof(TT_Glyph));
    memset(f->glyphs, 0, 256 * sizeof(TT_Glyph));
-   f->glyphs_cached = (TT_Raster_Map **) malloc(256 * sizeof(TT_Raster_Map *));
+   f->glyphs_cached = (TT_Raster_Map **) Emalloc(256 * sizeof(TT_Raster_Map *));
    memset(f->glyphs_cached, 0, 256 * sizeof(TT_Raster_Map *));
 
    load_flags = TTLOAD_SCALE_GLYPH | TTLOAD_HINT_GLYPH;

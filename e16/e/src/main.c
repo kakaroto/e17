@@ -5,7 +5,6 @@
 int
 main(int argc, char **argv)
 {
-
    /* This function runs all the setup for startup, and then 
     * proceeds into the primary event loop at the end.
     */
@@ -223,11 +222,11 @@ main(int argc, char **argv)
    SessionInit();
    ShowDesktopControls();
    CheckEvent();
-   if (mode.mapslide)
-      CreateStartupDisplay(0);
    /* retreive stuff from last time we were loaded if we're restarting */
    ICCCM_GetMainEInfo();
    SetupEnv();
+   if (mode.mapslide)
+      CreateStartupDisplay(0);
    MapUnmap(1);
    /* set some more stuff for gnome */
    GNOME_SetCurrentArea();
@@ -244,8 +243,6 @@ main(int argc, char **argv)
 	EnableAllPagers();
 	queue_up = 1;
      }
-   if (!mode.mapslide)
-      CreateStartupDisplay(0);
    if (getpid() == master_pid && init_win_ext)
      {
 	XKillClient(disp, init_win_ext);
@@ -279,6 +276,43 @@ main(int argc, char **argv)
    if (mode.display_warp < 0)
       mode.display_warp = 0;
    mode.startup = 0;
+   /*  SC_Kill(); */
+   /* ok - paranoia - save current settings to disk */
+   autosave();
+   /* let's make sure we set this up and go to our desk anyways */
+   ICCCM_GetMainEInfo();
+   GotoDesktop(desks.current);
+   if (desks.current < (ENLIGHTENMENT_CONF_NUM_DESKTOPS - 1))
+     {
+	char                ps = 0;
+
+	if (!mode.mapslide)
+	  {
+	     ps = desks.slidein;
+	     desks.slidein = 0;
+	  }
+	GotoDesktop(desks.current + 1);
+	GotoDesktop(desks.current - 1);
+	if (!mode.mapslide)
+	   desks.slidein = ps;
+     }
+   else if (desks.current > 0)
+     {
+	char                ps = 0;
+
+	if (!mode.mapslide)
+	  {
+	     ps = desks.slidein;
+	     desks.slidein = 0;
+	  }
+	GotoDesktop(desks.current - 1);
+	GotoDesktop(desks.current + 1);
+	if (!mode.mapslide)
+	   desks.slidein = ps;
+     }
+   XSync(disp, False);
+   if (!mode.mapslide)
+      CreateStartupDisplay(0);
    {
       Background         *bg;
 
@@ -289,12 +323,6 @@ main(int argc, char **argv)
 			   LIST_TYPE_BACKGROUND)))
 	 FreeDesktopBG(bg);
    }
-   /*  SC_Kill(); */
-   /* ok - paranoia - save current settings to disk */
-   autosave();
-   /* let's make sure we set this up and go to our desk anyways */
-   ICCCM_GetMainEInfo();
-   GotoDesktop(desks.current);
 
    /* The primary event loop */
    for (;;)

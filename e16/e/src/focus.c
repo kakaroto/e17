@@ -1,11 +1,45 @@
-
 #include "E.h"
 
-void                ReverseTimeout(int val, void *data);
-void                AutoraiseTimeout(int val, void *data);
+static void         ReverseTimeout(int val, void *data);
+static void         AutoraiseTimeout(int val, void *data);
+static void         FixUpBadFocus(int val, void *data);
+
+static void
+FixUpBadFocus(int val, void *data)
+{
+   EWin               *ewin;
+   Window              win;
+   int                 revert;
+
+   if (mode.focusmode == FOCUS_CLICK)
+      return;
+   XGetInputFocus(disp, &win, &revert);
+   ewin = GetEwinPointerInClient();
+   if ((!ewin) && (mode.focusmode = FOCUS_POINTER))
+     {
+	ewin = FindItem("", win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
+	if (ewin)
+	  {
+	     XSetInputFocus(disp, root.win, RevertToPointerRoot, CurrentTime);
+	     mode.focuswin = NULL;
+	     mode.realfocuswin = NULL;
+	     mode.context_ewin = NULL;
+	     if (mode.kde_support)
+		KDE_UpdateFocusedWindow();
+	  }
+	return;
+     }
+   if (ewin)
+     {
+	if (win != ewin->client.win)
+	   XSetInputFocus(disp, ewin->client.win, RevertToPointerRoot, CurrentTime);
+     }
+   val = 0;
+   data = NULL;
+}
 
 /* Mostly stolen from the temporary 'ToolTipTimeout' */
-void
+static void
 AutoraiseTimeout(int val, void *data)
 {
    EWin               *found_ewin;
@@ -18,7 +52,7 @@ AutoraiseTimeout(int val, void *data)
    data = NULL;
 }
 
-void
+static void
 ReverseTimeout(int val, void *data)
 {
    EWin               *ewin;
@@ -269,6 +303,7 @@ FocusToEWin(EWin * ewin)
 		       ButtonPressMask,
 		       GrabModeSync, GrabModeAsync, None, None);
      }
+   DoIn("FIXUP_FOCUS", 0.2, FixUpBadFocus, 0, NULL);
    if (!ewin)
      {
 	XSetInputFocus(disp, root.win, RevertToPointerRoot, CurrentTime);
