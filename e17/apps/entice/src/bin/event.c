@@ -198,7 +198,7 @@ e_key_down(Ecore_Event * ev)
      {
 	e_fade_info_in(0, NULL);
      }
-   else if (!strcmp(e->key, "h"))
+   else if (!strcmp(e->key, "?"))
      {
 	/* FIXME: display help */
      }
@@ -213,6 +213,14 @@ e_key_down(Ecore_Event * ev)
    else if (!strcmp(e->key, "l"))
      {
 	e_rotate_l_current_image();
+     }
+   else if (!strcmp(e->key, "h"))
+     {
+	e_flip_h_current_image();
+     }
+   else if (!strcmp(e->key, "v"))
+     {
+	e_flip_v_current_image();
      }
    else if (!strcmp(e->key, "p"))
      {

@@ -223,6 +223,84 @@ image_delete(Image * im)
 }
 
 static void
+e_flip_object(Evas_Object *obj, int direction)
+{
+   int w;
+   int h;
+   DATA32 *image_data;
+   Imlib_Image image;
+
+   if (!obj)
+       return;
+
+   /* Get image data from Evas */
+   evas_object_image_size_get(obj, &w, &h);
+   image_data = evas_object_image_data_get(obj, 0);
+   if (!image_data)
+     {
+         evas_object_image_data_set(obj, image_data);
+         return;
+     }
+
+   /* Set up imlib image */
+   image = imlib_create_image_using_copied_data(w, h, image_data);
+   evas_object_image_data_set(obj, image_data);
+   imlib_context_set_image(image);
+
+   /* Flip image */
+   if (direction==1)
+         imlib_image_flip_horizontal();
+   else
+         imlib_image_flip_vertical();
+
+   /* Get image data from Imblib */
+   image_data = imlib_image_get_data_for_reading_only();
+
+   /* Set Evas Image Data */
+   evas_object_image_size_set(obj, w, h);
+   evas_object_image_data_copy_set(obj, image_data);
+
+   /* Free Imlib image */
+   imlib_image_put_back_data(image_data);
+   imlib_free_image();
+}
+
+static void
+e_flip_current_image(int direction)
+{
+   Image *im;
+
+   if (!current_image || !current_image->data)
+       return;
+
+   im = (Image *) (current_image->data);
+
+   /* Flip image */
+   e_flip_object(o_image, direction);
+   e_flip_object(o_mini_image, direction);
+   e_flip_object(im->o_thumb, direction);
+
+   /* Update Display */
+   e_handle_resize();
+   e_fix_icons();
+   e_scroll_list(0, NULL);
+   e_fade_scroller_in(0, (void *)1);
+
+}
+
+void
+e_flip_h_current_image(void)
+{
+	e_flip_current_image(1);
+}
+
+void
+e_flip_v_current_image(void)
+{
+	e_flip_current_image(2);
+}
+
+static void
 e_rotate_object(Evas_Object *obj, int rotation)
 {
    int w;
@@ -236,6 +314,11 @@ e_rotate_object(Evas_Object *obj, int rotation)
    /* Get image data from Evas */
    evas_object_image_size_get(obj, &w, &h);
    image_data = evas_object_image_data_get(obj, 0);
+   if (!image_data)
+     {
+         evas_object_image_data_set(obj, image_data);
+         return;
+     }
 
    /* Set up imlib image */
    image = imlib_create_image_using_copied_data(w, h, image_data);
