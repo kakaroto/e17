@@ -216,6 +216,15 @@ void ewl_container_remove_child(Ewl_Container * pc, Ewl_Widget * child)
 	DCHECK_PARAM_PTR("child", child);
 
 	/*
+	 * First remove reference to the parent if necessary.
+	 */
+	if (EWL_CONTAINER(child->parent) == pc)
+		ewl_widget_set_parent(child, NULL);
+
+	if (!pc->children)
+		DRETURN(DLEVEL_STABLE);
+
+	/*
 	 * Traverse the list to the child.
 	 */
 	temp = ewd_list_goto(pc->children, child);
@@ -232,8 +241,6 @@ void ewl_container_remove_child(Ewl_Container * pc, Ewl_Widget * child)
 	ewd_list_remove(pc->children);
 	if (pc->child_remove && VISIBLE(child))
 		pc->child_remove(pc, child);
-
-	ewl_widget_set_parent(child, NULL);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

@@ -6,7 +6,7 @@ void            __create_button_test_window(Ewl_Widget * w, void *ev_data,
 					    void *user_data);
 
 void
-__destroy_button_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
+__delete_button_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	ewl_widget_destroy(w);
 
@@ -34,7 +34,7 @@ __create_button_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	button_win = ewl_window_new();
 	ewl_callback_append(button_win, EWL_CALLBACK_DELETE_WINDOW,
-			    __destroy_button_test_window, NULL);
+			    __delete_button_test_window, NULL);
 	ewl_widget_show(button_win);
 
 	/*

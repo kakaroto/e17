@@ -7,6 +7,7 @@ char           *xdisplay = NULL;
 extern Ewd_List *ewl_embed_list;
 static Ewd_List *configure_list = NULL;
 static Ewd_List *realize_list = NULL;
+static Ewd_List *destroy_list = NULL;
 
 void            __ewl_init_parse_options(int argc, char **argv);
 void            __ewl_parse_option_array(int argc, char **argv);
@@ -44,6 +45,7 @@ void ewl_init(int argc, char **argv)
 
 	configure_list = ewd_list_new();
 	realize_list = ewd_list_new();
+	destroy_list = ewd_list_new();
 	__ewl_init_parse_options(argc, argv);
 
 	ecore_init();
@@ -120,6 +122,12 @@ int ewl_idle_render(void *data)
 		DERROR("EWL has not been initialized. Exiting....\n");
 		exit(-1);
 	}
+
+	/*
+	 * Clean out the unused widgets first, to avoid them being drawn or
+	 * unnecessary work done from configuration.
+	 */
+	ewl_garbage_collect();
 
 	if (ewd_list_is_empty(ewl_embed_list))
 		DRETURN_INT(TRUE, DLEVEL_STABLE);
@@ -439,6 +447,30 @@ void ewl_realize_request(Ewl_Widget *w)
 	}
 
 	ewd_list_append(realize_list, w);
+}
+
+void ewl_destroy_request(Ewl_Widget *w)
+{
+	if (w->flags & EWL_FLAGS_DSCHEDULED)
+		DRETURN(DLEVEL_STABLE);
+
+	w->flags |= EWL_FLAGS_DSCHEDULED;
+	ewd_list_append(destroy_list, w);
+}
+
+void ewl_garbage_collect()
+{
+	Ewl_Widget *w;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	while ((w = ewd_list_remove_first(destroy_list))) {
+		ewl_callback_call(w, EWL_CALLBACK_DESTROY);
+		ewl_callback_del_type(w, EWL_CALLBACK_DESTROY);
+		FREE(w);
+	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 int __ewl_ecore_exit(void *data, int type, void *event)

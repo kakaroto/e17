@@ -153,8 +153,10 @@ void __ewl_radiobutton_destroy(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewd_list_goto(rb->chain, w);
 	ewd_list_remove(rb->chain);
 
-	if (ewd_list_is_empty(rb->chain))
+	if (ewd_list_is_empty(rb->chain)) {
 		ewd_list_destroy(rb->chain);
+		rb->chain = NULL;
+	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

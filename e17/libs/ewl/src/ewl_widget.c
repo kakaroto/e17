@@ -235,6 +235,9 @@ void ewl_widget_destroy(Ewl_Widget * w)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
+	if (w->flags & EWL_FLAGS_DSCHEDULED)
+		DRETURN(DLEVEL_STABLE);
+
 	if (last_selected == w)
 		last_selected = NULL;
 
@@ -247,11 +250,7 @@ void ewl_widget_destroy(Ewl_Widget * w)
 	if (dnd_widget == w)
 		dnd_widget = NULL;
 
-	ewl_callback_call(w, EWL_CALLBACK_DESTROY);
-
-	ewl_callback_del_type(w, EWL_CALLBACK_DESTROY);
-
-	FREE(w);
+	ewl_destroy_request(w);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -480,37 +479,31 @@ void ewl_widget_set_state(Ewl_Widget * w, char *state)
  */
 void ewl_widget_set_parent(Ewl_Widget * w, Ewl_Widget * p)
 {
+	Ewl_Container *op;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
+
+	op = EWL_CONTAINER(w->parent);
+	w->parent = p;
 
 	/*
 	 * A widget cannot be the child of multiple widgets, so remove it
 	 * from a previous parent before adding to this parent.
 	 */
-	if (w->parent) {
-		ewl_container_remove_child(EWL_CONTAINER(w->parent), w);
-	}
-	else if (p) {
-		/*
-		 * Append a destroy callback to the child to remove it from the
-		 * container.
-		 */
-		ewl_callback_prepend(w, EWL_CALLBACK_DESTROY,
-				__ewl_widget_child_destroy, NULL);
-	}
-	else {
-		/*
-		 * Remove the callback from the child for removing it from the
-		 * container upon destruction.
-		 */
-		ewl_callback_del(w, EWL_CALLBACK_DESTROY,
+	if (op) {
+		ewl_container_remove_child(op, w);
+		if (!p)
+			ewl_callback_del(w, EWL_CALLBACK_DESTROY,
 				 __ewl_widget_child_destroy);
 	}
 
-	w->parent = p;
-
-	if (p)
+	if (p) {
+		if (!op)
+			ewl_callback_prepend(w, EWL_CALLBACK_DESTROY,
+					__ewl_widget_child_destroy, NULL);
 		ewl_callback_call(w, EWL_CALLBACK_REPARENT);
+	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
