@@ -780,7 +780,7 @@ __imlib_list_fonts(int *num_ret)
 		    {
 		       TT_Face f;
 		       
-		       path = malloc(strlen(fpath[i]) + 1 + strlen(dir[j] + 1));
+		       path = malloc(strlen(fpath[i]) + 1 + strlen(dir[j]) + 1);
 		       strcpy(path, fpath[i]);
 		       strcat(path, "/");
 		       strcat(path, dir[j]);
