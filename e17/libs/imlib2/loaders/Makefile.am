@@ -12,7 +12,7 @@ INCLUDES	     = -I/usr/X11R6/include -I$(top_srcdir)/libltdl \
 		       -I$(top_srcdir)/loaders
 
 pkgdir		     = $(libdir)/loaders/image
-pkg_LTLIBRARIES	     = png.la jpeg.la
+pkg_LTLIBRARIES	     = png.la jpeg.la pnm.la
 
 png_la_SOURCES	     = loader_png.c
 png_la_LDFLAGS	     = -no-undefined -module -avoid-version
