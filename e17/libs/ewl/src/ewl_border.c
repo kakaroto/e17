@@ -55,6 +55,7 @@ int ewl_border_init(Ewl_Border * b, char *label)
 
 	ewl_container_redirect_set(EWL_CONTAINER(b), EWL_CONTAINER(b->body));
 	ewl_widget_appearance_set(EWL_WIDGET(b), "border");
+	ewl_widget_inherit(EWL_WIDGET(b), "border");
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }

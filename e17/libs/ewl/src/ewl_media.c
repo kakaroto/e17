@@ -44,6 +44,7 @@ void ewl_media_init(Ewl_Media *m, char *media)
 	w = EWL_WIDGET(m);
 
 	ewl_widget_init(EWL_WIDGET(w), "media");
+	ewl_widget_inherit(EWL_WIDGET(w), "media");
 
 	ewl_callback_append(w, EWL_CALLBACK_REALIZE, ewl_media_realize_cb,
 				NULL);

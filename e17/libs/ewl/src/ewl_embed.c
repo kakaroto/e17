@@ -91,6 +91,7 @@ int ewl_embed_init(Ewl_Embed * w)
 	if (!ewl_overlay_init(EWL_OVERLAY(w)))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 	ewl_widget_appearance_set(EWL_WIDGET(w), "embed");
+	ewl_widget_inherit(EWL_WIDGET(w), "embed");
 
 	ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_NONE);
 	ewl_object_toplevel_set(EWL_OBJECT(w), EWL_FLAG_PROPERTY_TOPLEVEL);

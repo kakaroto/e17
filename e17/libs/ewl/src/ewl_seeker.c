@@ -59,6 +59,7 @@ int ewl_seeker_init(Ewl_Seeker * s, Ewl_Orientation orientation)
 				EWL_FLAG_FILL_VFILL |
 				EWL_FLAG_FILL_VSHRINK);
 	}
+	ewl_widget_inherit(w, "seeker");
 
 	ewl_container_show_notify_set(EWL_CONTAINER(w), ewl_seeker_child_show_cb);
 

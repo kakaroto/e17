@@ -100,6 +100,8 @@ int ewl_entry_init(Ewl_Entry * e, char *text)
 	if (!ewl_container_init(EWL_CONTAINER(w), "entry"))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
+	ewl_widget_inherit(EWL_WIDGET(w), "entry");
+
 	e->in_select_mode = FALSE;
 	e->multiline = FALSE;
 

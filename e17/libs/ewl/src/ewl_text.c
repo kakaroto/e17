@@ -47,6 +47,7 @@ void ewl_text_init(Ewl_Text * ta, char *text)
 	ewl_entry_editable_set(EWL_ENTRY(ta), FALSE);
 
 	ewl_widget_appearance_set(w, "text");
+	ewl_widget_inherit(w, "text");
 	ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_NONE);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);

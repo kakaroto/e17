@@ -38,6 +38,8 @@ void ewl_progressbar_init(Ewl_Progressbar * p)
 	if (!ewl_container_init(EWL_CONTAINER(w), "progressbar"))
 		DRETURN(DLEVEL_STABLE);
 
+	ewl_widget_inherit(w, "progressbar");
+
 	ewl_container_show_notify_set(EWL_CONTAINER(w),
 				  ewl_progressbar_child_show_cb);
 	ewl_container_resize_notify_set(EWL_CONTAINER(w),

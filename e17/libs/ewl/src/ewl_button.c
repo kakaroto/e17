@@ -41,6 +41,7 @@ int ewl_button_init(Ewl_Button * b, char *label)
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
 	ewl_widget_appearance_set(w, "button");
+	ewl_widget_inherit(w, "button");
 
 	/*
 	 * Create and setup the label for the button if it's desired.

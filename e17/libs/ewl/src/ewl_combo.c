@@ -43,6 +43,7 @@ void ewl_combo_init(Ewl_Combo * combo, char *title)
 			EWL_FLAG_FILL_HSHRINK);
 
 	ewl_widget_appearance_set( EWL_WIDGET(combo), "combo" );
+	ewl_widget_inherit(EWL_WIDGET(combo), "combo");
 
 	if (EWL_MENU_ITEM(combo)->icon)
 		ewl_widget_destroy(EWL_MENU_ITEM(combo)->icon);

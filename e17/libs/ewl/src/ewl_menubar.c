@@ -64,6 +64,7 @@ int ewl_menubar_init(Ewl_Menubar *mb, Ewl_Orientation orientation)
 	ewl_widget_show(EWL_WIDGET(mb->inner_box));
 
 	ewl_widget_appearance_set(w, "menubar");
+	ewl_widget_inherit(w, "menubar");
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }

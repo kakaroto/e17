@@ -45,6 +45,7 @@ void ewl_separator_init(Ewl_Separator * s, Ewl_Orientation o)
 		ewl_widget_init(w, "vseparator");
 		ewl_object_fill_policy_set(EWL_OBJECT(s), EWL_FLAG_FILL_VFILL);
 	}
+	ewl_widget_inherit(w, "separator");
 
 	ewl_object_alignment_set(EWL_OBJECT(s), EWL_FLAG_ALIGN_LEFT);
 
@@ -52,3 +53,4 @@ void ewl_separator_init(Ewl_Separator * s, Ewl_Orientation o)
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
+

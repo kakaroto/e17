@@ -33,6 +33,8 @@ int ewl_colorpicker_init(Ewl_ColorPicker *cp)
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
 	ewl_widget_appearance_set(EWL_WIDGET(cp), "colorpicker");
+	ewl_widget_inherit(EWL_WIDGET(cp), "colorpicker");
+
 	ewl_box_spacing_set(EWL_BOX(cp), 20);
 
 	/*

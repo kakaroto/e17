@@ -42,6 +42,7 @@ void ewl_checkbutton_init(Ewl_CheckButton * cb, char *label)
 
 	ewl_button_init(b, label);
 	ewl_widget_appearance_set(w, "checkbutton");
+	ewl_widget_inherit(w, "checkbutton");
 
 	ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_NONE);
 	ewl_callback_append(w, EWL_CALLBACK_CLICKED,

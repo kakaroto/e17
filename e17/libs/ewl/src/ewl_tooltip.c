@@ -40,6 +40,7 @@ int ewl_tooltip_init (Ewl_Tooltip *t, Ewl_Widget *parent)
 
 	ewl_box_init(EWL_BOX(w), EWL_ORIENTATION_VERTICAL);
 	ewl_widget_appearance_set(EWL_WIDGET (w), "tooltip");
+	ewl_widget_inherit(EWL_WIDGET(w), "tooltip");
 	ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_NONE);
 	ewl_widget_layer_set(w, 2000);
 

@@ -41,6 +41,7 @@ int ewl_dialog_init(Ewl_Dialog * dialog, Ewl_Position pos)
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
 	ewl_widget_appearance_set(w, "window");
+	ewl_widget_inherit(w, "dialog");
 
 	dialog->position = pos;
 

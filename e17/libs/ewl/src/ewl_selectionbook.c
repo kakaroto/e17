@@ -46,6 +46,8 @@ void ewl_selectionbook_init(Ewl_Selectionbook * s)
 	 * Initialize the inherited box fields
 	 */
 	ewl_box_init(EWL_BOX(w), EWL_ORIENTATION_VERTICAL);
+	ewl_widget_inherit(w, "selectionbook");
+
 	ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_FILL);
 
 	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE,

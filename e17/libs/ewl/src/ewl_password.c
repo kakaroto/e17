@@ -38,6 +38,7 @@ void ewl_password_init(Ewl_Password * e, char *text)
 	w = EWL_WIDGET(e);
 
 	ewl_entry_init(EWL_ENTRY(w), NULL);
+	ewl_widget_inherit(w, "password");
 	e->obscure = '*';
 
 	/*

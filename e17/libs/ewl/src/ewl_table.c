@@ -49,8 +49,10 @@ int ewl_table_init(Ewl_Table * t, int cols, int rows, char **col_headers)
 	/*
 	 * Iniitialize the tables inherited fields
 	 */
-	if (!ewl_container_init(EWL_CONTAINER(t), "table"))
+	if (!ewl_container_init(EWL_CONTAINER(t), "table")) {
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
+	}
+	ewl_widget_inherit(EWL_WIDGET(t), "table");
 	ewl_object_fill_policy_set(EWL_OBJECT(t), EWL_FLAG_FILL_FILL);
 
 	/*

@@ -39,6 +39,8 @@ void ewl_spectrum_init(Ewl_Spectrum * sp)
 
 	ewl_image_init(EWL_IMAGE(w), NULL, NULL);
 	ewl_widget_appearance_set(w, "spectrum");
+	ewl_widget_inherit(w, "spectrum");
+
 	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE,
 			    ewl_spectrum_configure_cb, NULL);
 

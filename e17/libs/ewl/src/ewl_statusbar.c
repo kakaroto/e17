@@ -57,6 +57,7 @@ int ewl_statusbar_init(Ewl_Statusbar *sb)
 			EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_VSHRINK);
 
 	ewl_widget_appearance_set(w, "statusbar");
+	ewl_widget_inherit(w, "statusbar");
 
 	sb->left = ewl_hbox_new();
 	ewl_container_child_append(EWL_CONTAINER(sb), sb->left);

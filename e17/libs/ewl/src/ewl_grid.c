@@ -46,6 +46,8 @@ int ewl_grid_init(Ewl_Grid * g, int cols, int rows)
 	if (!ewl_container_init(EWL_CONTAINER(g), "vbox"))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
+	ewl_widget_inherit(EWL_WIDGET(g), "grid");
+
 	ewl_container_show_notify_set(EWL_CONTAINER(g), ewl_grid_child_show_cb);
 	ewl_container_resize_notify_set(EWL_CONTAINER(g), ewl_grid_child_resize_cb);
 

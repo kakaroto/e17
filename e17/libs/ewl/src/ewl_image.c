@@ -46,6 +46,7 @@ void ewl_image_init(Ewl_Image * i, char *path, char *key)
 	w = EWL_WIDGET(i);
 
 	ewl_widget_init(w, "image");
+	ewl_widget_inherit(w, "image");
 
 	/*
 	 * Append necessary callbacks.

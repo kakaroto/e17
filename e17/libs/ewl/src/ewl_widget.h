@@ -123,6 +123,12 @@ void            ewl_widget_appearance_set(Ewl_Widget * w, char *appearance);
  * Retrieve the appearance string of a widget.
  */
 char           *ewl_widget_appearance_get(Ewl_Widget * w);
+
+/*
+ * Append to the inherited string 
+ */
+void            ewl_widget_inherit(Ewl_Widget *widget, char *type);
+
 unsigned int    ewl_widget_type_is(Ewl_Widget *widget, char *type);
 
 /*

@@ -63,6 +63,7 @@ int ewl_selectionbar_init(Ewl_Selectionbar * s, Ewl_Widget * parent)
 
 	if (!ewl_container_init(EWL_CONTAINER(s->bar), "selectionbar"))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
+	ewl_widget_init(w, "selectionbar");
 
 	ewl_object_fill_policy_set(EWL_OBJECT(s->bar), EWL_FLAG_FILL_HFILL |
 				   EWL_FLAG_FILL_HSHRINK);

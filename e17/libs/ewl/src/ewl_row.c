@@ -37,7 +37,8 @@ int ewl_row_init(Ewl_Row *row)
 
 	if (!ewl_container_init(EWL_CONTAINER(row), "row"))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
-	
+	ewl_widget_inherit(EWL_WIDGET(row), "row");
+
 	ewl_container_show_notify_set(EWL_CONTAINER(row), ewl_row_child_show_cb);
 	ewl_container_resize_notify_set(EWL_CONTAINER(row), ewl_row_resize_cb);
 

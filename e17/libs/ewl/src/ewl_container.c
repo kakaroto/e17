@@ -26,6 +26,7 @@ ewl_container_init(Ewl_Container * c, char *appearance)
 		DRETURN_INT(0, DLEVEL_STABLE);
 
 	ewl_widget_appearance_set(w, appearance);
+	ewl_widget_inherit(w, "container");
 	ewl_object_recursive_set(EWL_OBJECT(w), TRUE);
 
 	/*

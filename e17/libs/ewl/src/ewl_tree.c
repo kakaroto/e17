@@ -50,6 +50,8 @@ int ewl_tree_init(Ewl_Tree *tree, unsigned short columns)
 	DCHECK_PARAM_PTR_RET("columns", columns, FALSE);
 
 	ewl_container_init(EWL_CONTAINER(tree), "tree");
+	ewl_widget_inherit(EWL_WIDGET(tree), "tree");
+
 	ewl_container_show_notify_set(EWL_CONTAINER(tree),
 				      (Ewl_Child_Show)ewl_tree_child_resize_cb);
 	ewl_container_hide_notify_set(EWL_CONTAINER(tree),

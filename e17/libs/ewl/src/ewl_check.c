@@ -84,6 +84,8 @@ void ewl_check_init(Ewl_Check * cb)
 	ewl_callback_append(w, EWL_CALLBACK_FOCUS_OUT,
 			    ewl_check_update_check_cb, NULL);
 
+	ewl_widget_inherit(w, "check");
+
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 

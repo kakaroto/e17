@@ -72,7 +72,7 @@ int ewl_widget_init(Ewl_Widget * w, char *appearance)
 	ewl_callback_append(w, EWL_CALLBACK_MOUSE_MOVE,
 			    ewl_widget_mouse_move_cb, NULL);
 
-	w->inheritance = strdup(":widget:");
+	ewl_widget_inherit(w, "widget");
 	ewl_widget_appearance_set(w, appearance);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
@@ -388,8 +388,7 @@ void           *ewl_widget_data_get(Ewl_Widget * w, void *k)
  */
 void ewl_widget_appearance_set(Ewl_Widget * w, char *appearance)
 {
-	int il = 0, al;
-	char *current;
+	int al;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -411,21 +410,6 @@ void ewl_widget_appearance_set(Ewl_Widget * w, char *appearance)
 		DRETURN(DLEVEL_STABLE);
 
 	snprintf(w->appearance, al, "%s",  appearance);
-
-	/*
-	 * We don't throw away any inheritance info, so we can just allocate
-	 * the memory we need and place the new info on the end.
-	 */
-	if (w->inheritance)
-		il = strlen(w->inheritance);
-
-	il += al + 2;
-	current = (char *)malloc(il);
-	if (current) {
-		snprintf(current, il, "%s:%s:", w->inheritance, appearance);
-		FREE(w->inheritance);
-		w->inheritance = current;
-	}
 
 	/*
 	 * Recreate the visible components of the widget if necessary.
@@ -766,6 +750,33 @@ void ewl_widget_internal_set(Ewl_Widget *w, unsigned int val)
 		ewl_object_flags_remove(EWL_OBJECT(w),
 				EWL_FLAG_PROPERTY_INTERNAL,
 				EWL_FLAGS_PROPERTY_MASK);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param widget: the widget to set the inheritance on
+ * @param inherit: the string to append to the inheritance
+ * @return Returns no value.
+ * @brief Appends the given inheritance to this widgets inheritance string.
+ */
+void ewl_widget_inherit(Ewl_Widget *widget, char *inherit)
+{
+	char *tmp = NULL;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("widget", widget);
+	DCHECK_PARAM_PTR("inherit", inherit);
+
+	if (widget->inheritance)
+		tmp = widget->inheritance;
+	else
+		tmp = strdup("");
+
+	widget->inheritance = malloc(sizeof(char) * 
+				(strlen(inherit) + strlen(tmp) + 3));
+	sprintf(widget->inheritance, "%s:%s:", tmp, inherit);
+	FREE(tmp);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

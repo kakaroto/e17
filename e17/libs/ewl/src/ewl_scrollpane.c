@@ -40,6 +40,7 @@ int ewl_scrollpane_init(Ewl_ScrollPane * s)
 
 	if (!ewl_container_init(EWL_CONTAINER(s), "scrollpane"))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
+	ewl_widget_inherit(w, "scrollpane");
 
 	ewl_container_show_notify_set(EWL_CONTAINER(s),
 				  ewl_scrollpane_child_resize_cb);

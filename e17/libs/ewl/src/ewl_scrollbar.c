@@ -44,6 +44,7 @@ void ewl_scrollbar_init(Ewl_Scrollbar * s, Ewl_Orientation orientation)
 	w = EWL_WIDGET(s);
 
 	ewl_box_init(EWL_BOX(w), orientation);
+	ewl_widget_inherit(w, "scrollbar");
 
 	/*
 	 * Create the basic widgets that are contained in the scrollbar.

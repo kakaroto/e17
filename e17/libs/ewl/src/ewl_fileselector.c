@@ -73,6 +73,8 @@ void ewl_fileselector_init(Ewl_Fileselector * fs)
 				   EWL_FLAG_FILL_SHRINK |
 				   EWL_FLAG_FILL_HFILL);
 
+	ewl_widget_inherit(w, "fileselector");
+
 	/* The entry for the current directory */
 	/* and some icons */
 	hbox = ewl_hbox_new();

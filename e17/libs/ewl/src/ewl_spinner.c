@@ -39,6 +39,7 @@ int ewl_spinner_init(Ewl_Spinner * s)
 
 	if (!ewl_container_init(EWL_CONTAINER(w), "spinner"))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
+	ewl_widget_inherit(w, "spinner");
 
 	ewl_container_show_notify_set(EWL_CONTAINER(w), ewl_spinner_child_show_cb);
 	ewl_container_resize_notify_set(EWL_CONTAINER(w),

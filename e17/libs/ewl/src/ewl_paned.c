@@ -94,6 +94,7 @@ ewl_paned_init(Ewl_Paned *p, Ewl_Orientation orient)
 	ewl_container_redirect_set(EWL_CONTAINER(p), EWL_CONTAINER(p->first));
 
 	ewl_widget_appearance_set(w, "paned");
+	ewl_widget_inherit(w, "paned");
 	ewl_widget_appearance_set(EWL_WIDGET(p->first), "first");
 	ewl_widget_appearance_set(EWL_WIDGET(p->second), "second");
 

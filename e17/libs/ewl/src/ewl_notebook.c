@@ -86,6 +86,7 @@ ewl_notebook_init(Ewl_Notebook * n)
 	ewl_notebook_tabs_position_set(n, EWL_POSITION_TOP);
 	ewl_notebook_tabs_alignment_set(n, EWL_FLAG_ALIGN_CENTER);
 	ewl_widget_appearance_set(w, "notebook");
+	ewl_widget_inherit(w, "notebook");
 
 	ewl_callback_append(EWL_WIDGET(n), EWL_CALLBACK_DESTROY, 
 							ewl_notebook_destroy_cb, NULL);
@@ -592,7 +593,6 @@ void
 ewl_notebook_destroy_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 {
 	Ewl_Notebook *n;
-	Ewl_Notebook_Page *p;
 
 	n = EWL_NOTEBOOK(w);
 

@@ -44,6 +44,8 @@ int ewl_cell_init(Ewl_Cell *cell)
 	ewl_callback_append(EWL_WIDGET(cell), EWL_CALLBACK_CONFIGURE,
 			    ewl_cell_configure_cb, NULL);
 
+	ewl_widget_inherit(EWL_WIDGET(cell), "cell");
+
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 

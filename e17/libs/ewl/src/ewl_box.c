@@ -137,6 +137,8 @@ int ewl_box_init(Ewl_Box * b, Ewl_Orientation o)
 	b->orientation = 0xdeadbeef;
 	ewl_box_orientation_set(b, o);
 
+	ewl_widget_inherit(w, "box");
+
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
