@@ -4,7 +4,6 @@
 #include <signal.h>
 #include <sys/wait.h>
 #include <errno.h>
-#include <dirent.h>
 #include "epplet.h"
 
 #if 0
@@ -20,7 +19,7 @@
 #define NEXT_HACK()      ((void) 0)
 #define INC_HACK()       do {idx++; if (idx == image_cnt) idx = 0;} while (0)
 
-Epplet_gadget close_button, play_button, pause_button, prev_button, next_button, zoom_button, draw_area;
+Epplet_gadget close_button, prev_button, next_button, zoom_button, draw_area;
 unsigned long idx = 0, hack_cnt = 0;
 double delay = 5.0;
 char **hacks = NULL, *hack = NULL;
@@ -155,20 +154,11 @@ play_cb(void *data) {
 static void
 in_cb(void *data, Window w) {
 
-  if (w == Epplet_get_drawingarea_window(draw_area) || w == Epplet_get_main_window()) {
-    stop_hack();
-    Epplet_gadget_show(close_button);
-    Epplet_gadget_show(zoom_button);
-#if 0
-    Epplet_gadget_show(prev_button);
-    Epplet_gadget_show(next_button);
-    if (paused) {
-      Epplet_gadget_show(play_button);
-    } else {
-      Epplet_gadget_show(pause_button);
-    }
-#endif
-  }
+  Epplet_gadget_hide(draw_area);
+  Epplet_gadget_show(close_button);
+  Epplet_gadget_show(zoom_button);
+  Epplet_gadget_show(prev_button);
+  Epplet_gadget_show(next_button);
   return;
   data = NULL;
   w = (Window) 0;
@@ -177,17 +167,11 @@ in_cb(void *data, Window w) {
 static void
 out_cb(void *data, Window w) {
 
-  if (w == Epplet_get_drawingarea_window(draw_area) || w == Epplet_get_main_window()) {
-    start_hack();
-    Epplet_gadget_hide(close_button);
-    Epplet_gadget_hide(zoom_button);
-#if 0
-    Epplet_gadget_hide(prev_button);
-    Epplet_gadget_hide(next_button);
-    Epplet_gadget_hide(play_button);
-    Epplet_gadget_hide(pause_button);
-#endif
-  }
+  Epplet_gadget_show(draw_area);
+  Epplet_gadget_hide(close_button);
+  Epplet_gadget_hide(zoom_button);
+  Epplet_gadget_hide(prev_button);
+  Epplet_gadget_hide(next_button);
   return;
   data = NULL;
   w = (Window) 0;
@@ -196,7 +180,7 @@ out_cb(void *data, Window w) {
 static void
 parse_config(void) {
 
-  hack = Epplet_query_config_def("hack", "bubbles");
+  hack = Epplet_query_config_def("hack", "kaleidescope");
 }
 
 int
@@ -214,18 +198,16 @@ main(int argc, char **argv) {
   close_button = Epplet_create_button(NULL, NULL, 3, 3, 0, 0, "CLOSE", 0, NULL, close_cb, NULL);
   zoom_button = Epplet_create_button(NULL, NULL, 33, 3, 0, 0, "EJECT", 0, NULL, zoom_cb, NULL);
   prev_button = Epplet_create_button(NULL, NULL, 3, 33, 0, 0, "PREVIOUS", 0, NULL, play_cb, (void *) (-1));
-  play_button = Epplet_create_button(NULL, NULL, 18, 33, 0, 0, "PLAY", 0, NULL, play_cb, (void *) (1));
-  pause_button = Epplet_create_button(NULL, NULL, 18, 33, 0, 0, "PAUSE", 0, NULL, close_cb, (void *) (0));
   next_button = Epplet_create_button(NULL, NULL, 33, 33, 0, 0, "NEXT", 0, NULL, play_cb, (void *) (2));
   Epplet_gadget_show(prev_button);
   Epplet_gadget_show(next_button);
-  Epplet_gadget_show(pause_button);
-  draw_area = Epplet_create_drawingarea(3, 3, 42, 28);
+  draw_area = Epplet_create_drawingarea(3, 3, 42, 42);
   Epplet_gadget_show(draw_area);
   Epplet_show();
 
-  Epplet_register_mouse_enter_handler(in_cb, NULL);
-  Epplet_register_mouse_leave_handler(out_cb, NULL);
+  Epplet_register_focus_in_handler(in_cb, NULL);
+  Epplet_register_focus_out_handler(out_cb, NULL);
+  start_hack();
   Epplet_Loop();
 
   return 0;
