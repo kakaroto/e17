@@ -101,10 +101,10 @@ _econf_get_data_from_disk(char *loc,unsigned long *length)
 				}
 			}
 		}
-		return allocedspace;
 		free(paths);
+		if(allocedspace)
+			return allocedspace;
 	}
-
 
 	/* obviously we didn't find it anywhere in here */
 
