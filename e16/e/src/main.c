@@ -23,6 +23,8 @@
 #include "E.h"
 #include "timestamp.h"
 #include <sys/utsname.h>
+#include <signal.h>
+#include <time.h>
 
 static void
 runDocBrowser(void)

@@ -22,6 +22,7 @@
  */
 #define DECLARE_STRUCT_ICONBOX
 #include "E.h"
+#include <time.h>
 
 typedef struct _remwinlist
 {

@@ -21,6 +21,8 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
+#include <sys/wait.h>
+#include <signal.h>
 
 static void
 SignalHandler(int sig)

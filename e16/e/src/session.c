@@ -23,7 +23,6 @@
 #include "E.h"
 #include <errno.h>
 #include <fcntl.h>
-#include <unistd.h>
 #include <sys/time.h>
 
 #ifndef DEFAULT_SH_PATH

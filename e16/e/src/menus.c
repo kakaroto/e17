@@ -22,6 +22,8 @@
  */
 #define DECLARE_STRUCT_MENU 1
 #include "E.h"
+#include <sys/stat.h>
+#include <errno.h>
 
 static void         MenuRedraw(Menu * m);
 static void         MenuDrawItem(Menu * m, MenuItem * mi, char shape);

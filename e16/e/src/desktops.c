@@ -22,6 +22,7 @@
  */
 #define DECLARE_STRUCT_BUTTON
 #include "E.h"
+#include <time.h>
 #include <sys/time.h>
 
 char               *

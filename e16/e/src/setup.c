@@ -22,6 +22,9 @@
  */
 #include "E.h"
 #include <X11/keysym.h>
+#if !USE_IMLIB2
+#include <X11/cursorfont.h>
+#endif
 
 void
 MapUnmap(int start)

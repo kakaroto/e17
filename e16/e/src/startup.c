@@ -22,6 +22,7 @@
  */
 #include "E.h"
 #include <sys/time.h>
+#include <time.h>
 
 int
 AddEToFile(char *file)

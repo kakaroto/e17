@@ -31,7 +31,6 @@
 #include <X11/Xproto.h>
 #include <X11/Xatom.h>
 #include <X11/Xlocale.h>
-#include <X11/cursorfont.h>
 #include <X11/extensions/shape.h>
 #include <X11/extensions/XShm.h>
 
@@ -182,23 +181,10 @@ if (__xim) XDestroyImage(__xim);}
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
 #include <stdarg.h>
 #include <string.h>
-#include <fcntl.h>
-#include <dirent.h>
-#include <signal.h>
-#include <time.h>
-#include <math.h>
-#include <pwd.h>
-#include <errno.h>
-#include <sys/stat.h>
 #include <sys/types.h>
-#include <sys/wait.h>
-#include <sys/stat.h>
-#include <sys/resource.h>
-#include <sys/ipc.h>
-#include <sys/shm.h>
+#include <unistd.h>
 
 /* workaround for 64bit architectures - xlib expects 32bit CARDINALS to be */
 /* long's on 64bit machines... thus well the CARD32's Im unsing shoudl be.. */

@@ -21,6 +21,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
+#include <math.h>
 
 /* Someone may do this right one day, but for now - kill'em */
 #define ENABLE_FX_INFO 0

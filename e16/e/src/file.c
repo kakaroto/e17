@@ -21,7 +21,11 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
+#include <sys/stat.h>
 #include <ctype.h>
+#include <dirent.h>
+#include <pwd.h>
+#include <time.h>
 
 char               *
 FileExtension(char *file)
