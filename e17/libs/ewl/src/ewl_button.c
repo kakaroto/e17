@@ -42,17 +42,6 @@ void ewl_button_init(Ewl_Button * b, char *label)
 	ewl_widget_set_appearance(w, "button");
 
 	/*
-	 * FIXME: Should we really do this? Might be better to just trigger
-	 * mouse down for all enclosing containers.
-	 */
-	ewl_container_notify_callback(EWL_CONTAINER(b),
-			EWL_CALLBACK_MOUSE_DOWN);
-	ewl_container_notify_callback(EWL_CONTAINER(b),
-			EWL_CALLBACK_MOUSE_UP);
-	ewl_container_notify_callback(EWL_CONTAINER(b),
-			EWL_CALLBACK_CLICKED);
-
-	/*
 	 * Create and setup the label for the button if it's desired.
 	 */
 	if (label) {

@@ -154,10 +154,7 @@ int ewl_ev_window_delete(void *data, int type, void *_ev)
  */
 int ewl_ev_key_down(void *data, int type, void *_ev)
 {
-	/*
-	 * Dispatcher of key down events, these get sent to the last widget
-	 * selected.
-	 */
+	Ewl_Widget     *temp;
 	Ewl_Embed      *embed;
 	Ecore_X_Event_Key_Down *ev;
 
@@ -174,14 +171,21 @@ int ewl_ev_key_down(void *data, int type, void *_ev)
 	 * If a widget has been selected then we send the keystroke to the
 	 * appropriate widget.
 	 */
-	if (last_selected) {
-		ewl_callback_call_with_event_data(last_selected,
-						  EWL_CALLBACK_KEY_DOWN, ev);
+	if (last_selected)
 		last_key = last_selected;
-	} else {
-		ewl_callback_call_with_event_data(EWL_WIDGET(embed),
-						  EWL_CALLBACK_KEY_DOWN, ev);
+	else
 		last_key = EWL_WIDGET(embed);
+
+	/*
+	 * Dispatcher of key down events, these get sent to the last widget
+	 * selected, and every parent above it.
+	 */
+	temp = last_key;
+	while (temp) {
+		if (!(temp->state & EWL_STATE_DISABLED))
+			ewl_callback_call_with_event_data(temp,
+					EWL_CALLBACK_KEY_DOWN, ev);
+		temp = temp->parent;
 	}
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
@@ -412,9 +416,9 @@ int ewl_ev_mouse_out(void *data, int type, void *_ev)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	if (last_focused) {
+	while (last_focused) {
 		ewl_callback_call(last_focused, EWL_CALLBACK_FOCUS_OUT);
-		last_focused = NULL;
+		last_focused = last_focused->parent;
 	}
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
