@@ -54,6 +54,7 @@ static void
 handle_pre_render_cb(Ecore_Evas * _ee)
 {
   edje_thaw();
+  if (need_redraw)
   od_dock_redraw(_ee);
 }
 static void

@@ -37,7 +37,8 @@ od_tray_layout() {
   int oddflag;
 
   tray_width = ((tray_count + 1) / 2) * 24;
-  ecore_x_window_resize(tray_container, tray_width, 48);
+  ecore_x_window_resize(tray_container, tray_width, options.height -
+      options.size - ARROW_SPACE_DOUBLE - 1);
 
   tmp = tray_list;
   xpos = 0;
@@ -147,7 +148,8 @@ od_tray_move(double xx)
   if (xx == tray_x)
     return;
 
-  ecore_x_window_move(tray_container, xx, options.height - 48);
+  ecore_x_window_move(tray_container, xx, options.height - options.size
+      - ARROW_SPACE_DOUBLE + 1);
   tray_x = xx;
 }
 

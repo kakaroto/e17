@@ -86,7 +86,7 @@ od_dock_reposition()
     if (dock.sysicons)
       width += options.spacing + 1.0;   // another spacer
   }
-  width += tray_width + 8;
+  width += 3; /* expand under tray */
 
 #define POSITION(__icons) \
 		{ \
@@ -115,7 +115,6 @@ od_dock_reposition()
 
   dock.left_pos = 0.5 * (options.width - width) - 1.0;
   dock.right_pos = 0.5 * (options.width - width) + width + 1.0;
-  od_tray_move(dock.right_pos - tray_width - 2);
 
   need_redraw = true;
 }
@@ -187,17 +186,25 @@ od_dock_redraw(Ecore_Evas * ee)
                      options.height - options.size - ARROW_SPACE_DOUBLE);
   }
 
-  od_tray_move(dock.right_end - tray_width - 2);
+  od_tray_move(dock.right_end - 1);
 
+  need_redraw = false;
 }
 
 void
 zoom_function(double d, double *zoom, double *disp)
 {
-  double          range = 2.5;
-  double          f = 1.5;
-  double          x = d / range;
-  double          zoom_factor;
+  double          range, f, x, zoom_factor;
+  double          ff, sqrt_ffxx, sqrt_ff_1;
+  
+  range = 2.5;
+  f = 1.5;
+  x = d / range;
+
+  /* some more vars to save computing things over and over */
+  ff = f * f;
+  sqrt_ffxx = sqrt(ff - x * x);
+  sqrt_ff_1 = sqrt(ff - 1.0);
 
   if (options.zoom)
     zoom_factor = options.zoomfactor;
@@ -205,23 +212,22 @@ zoom_function(double d, double *zoom, double *disp)
     zoom_factor = 1;
   if (d > -range && d < range) {
     *zoom = (dock.zoom - 1.0) * (zoom_factor - 1.0) *
-      ((sqrt(f * f - 1.0) - sqrt(f * f - x * x)) / (sqrt(f * f - 1.0) - f)
+      ((sqrt_ff_1 - sqrt_ffxx) / (sqrt_ff_1 - f)
       )
       + 1.0;
     *disp = (options.size + options.spacing) *
       ((dock.zoom - 1.0) * (zoom_factor - 1.0) *
        (range *
-        (x * (2 * sqrt(f * f - 1.0) - sqrt(f * f - x * x)) -
-         f * f * atan(x / sqrt(f * f - x * x))) / (2.0 * (sqrt(f * f - 1.0) -
-                                                          f))
+        (x * (2 * sqrt_ff_1 - sqrt_ffxx) -
+         ff * atan(x / sqrt_ffxx)) / (2.0 * (sqrt_ff_1 - f))
        )
        + d);
   } else {
     *zoom = 1.0;
     *disp = (options.size + options.spacing) *
       ((dock.zoom - 1.0) * (zoom_factor - 1.0) *
-       (range * (sqrt(f * f - 1.0) - f * f * atan(1.0 / sqrt(f * f - 1.0))) /
-        (2.0 * (sqrt(f * f - 1.0) - f))
+       (range * (sqrt_ff_1 - ff * atan(1.0 / sqrt_ff_1)) /
+        (2.0 * (sqrt_ff_1 - f))
        )
        + range + fabs(d) - range);
     if (d < 0.0)
