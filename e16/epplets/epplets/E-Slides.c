@@ -45,7 +45,7 @@
 #define NEXT_PIC()      ((void) 0)
 #define INC_PIC()       do {idx++; if (idx == image_cnt) idx = 0;} while (0)
 
-Epplet_gadget close_button, play_button, pause_button, prev_button, next_button, zoom_button, picture;
+Epplet_gadget close_button, play_button, pause_button, prev_button, next_button, zoom_button, bg_popup, bg_button, picture;
 unsigned long idx = 0, image_cnt = 0;
 double delay = 5.0;
 char **filenames = NULL, *path, *zoom_cmd;
@@ -54,8 +54,10 @@ Window zoom_win = None;
 int w = 3, h = 3;
 
 static char **dirscan(char *dir, unsigned long *num);
+static void set_background(int tiled, int keep_aspect);
 static void change_image(void *data);
 static void close_cb(void *data);
+static void set_bg_cb(void *data);
 static void zoom_cb(void *data);
 static void play_cb(void *data);
 static void in_cb(void *data, Window w);
@@ -149,6 +151,49 @@ dirscan(char *dir, unsigned long *num)
 }
 
 static void
+set_background(int tiled, int keep_aspect) {
+
+  unsigned char current_desk = 0;
+  char *reply, *ptr, bg_name[64], buff[255];
+
+  Epplet_send_ipc("goto_desktop ?");
+  reply = Epplet_wait_for_ipc();
+  if ((ptr = strchr(reply, ':')) != NULL) {
+    current_desk = atoi(++ptr);
+  }
+  Esnprintf(bg_name, sizeof(bg_name), "E_SLIDES_BG_%s", filenames[CUR_PIC()]);
+
+  Esnprintf(buff, sizeof(buff), "background %s bg.file %s/%s", bg_name, path, filenames[CUR_PIC()]);
+  fprintf(stderr, "%s\n", buff);
+  Epplet_send_ipc(buff);
+  Esnprintf(buff, sizeof(buff), "background %s bg.solid 0 0 0", bg_name);
+  fprintf(stderr, "%s\n", buff);
+  Epplet_send_ipc(buff);
+  Esnprintf(buff, sizeof(buff), "background %s bg.tile %d", bg_name, tiled);
+  fprintf(stderr, "%s\n", buff);
+  Epplet_send_ipc(buff);
+  Esnprintf(buff, sizeof(buff), "background %s bg.keep_aspect %d", bg_name, keep_aspect);
+  fprintf(stderr, "%s\n", buff);
+  Epplet_send_ipc(buff);
+  Esnprintf(buff, sizeof(buff), "background %s bg.xperc %d", bg_name, (tiled ? 0 : 1024));
+  fprintf(stderr, "%s\n", buff);
+  Epplet_send_ipc(buff);
+  Esnprintf(buff, sizeof(buff), "background %s bg.yperc %d", bg_name, (tiled ? 0 : 1024));
+  fprintf(stderr, "%s\n", buff);
+  Epplet_send_ipc(buff);
+  Esnprintf(buff, sizeof(buff), "background %s bg.xjust %d", bg_name, (tiled ? 0 : 512));
+  fprintf(stderr, "%s\n", buff);
+  Epplet_send_ipc(buff);
+  Esnprintf(buff, sizeof(buff), "background %s bg.yjust %d", bg_name, (tiled ? 0 : 512));
+  fprintf(stderr, "%s\n", buff);
+  Epplet_send_ipc(buff);
+  Esnprintf(buff, sizeof(buff), "use_bg %s %d", bg_name, current_desk);
+  fprintf(stderr, "%s\n", buff);
+  Epplet_send_ipc(buff);
+  Esync();
+}
+
+static void
 change_image(void *data) {
 
   ImlibImage *im = NULL;
@@ -179,6 +224,19 @@ close_cb(void *data) {
   Esync();
   exit(0);
   data = NULL;
+}
+
+static void
+set_bg_cb(void *data) {
+
+  int n = (int) data;
+
+  switch (n) {
+    case 0:  set_background(1, 1); break;
+    case 1:  set_background(0, 0); break;
+    case 2:  set_background(0, 1); break;
+    default: break;
+  }
 }
 
 static void
@@ -235,6 +293,7 @@ in_cb(void *data, Window w) {
   Epplet_gadget_show(zoom_button);
   Epplet_gadget_show(prev_button);
   Epplet_gadget_show(next_button);
+  Epplet_gadget_show(bg_button);
   if (paused) {
     Epplet_gadget_show(play_button);
   } else {
@@ -254,6 +313,7 @@ out_cb(void *data, Window w) {
   Epplet_gadget_hide(next_button);
   Epplet_gadget_hide(play_button);
   Epplet_gadget_hide(pause_button);
+  Epplet_gadget_hide(bg_button);
   return;
   data = NULL;
   w = (Window) 0;
@@ -315,12 +375,19 @@ main(int argc, char **argv) {
     exit(-1);
   }
   chdir(path);
-  
+
+  bg_popup = Epplet_create_popup();
+  Epplet_add_popup_entry(bg_popup, "Set Background...", NULL, NULL, NULL);
+  Epplet_add_popup_entry(bg_popup, "Tiled", NULL, set_bg_cb, (void *) 0);
+  Epplet_add_popup_entry(bg_popup, "Scaled", NULL, set_bg_cb, (void *) 1);
+  Epplet_add_popup_entry(bg_popup, "Scaled w/ Aspect", NULL, set_bg_cb, (void *) 2);
+
   close_button = Epplet_create_button(NULL, NULL, 3, 3, 0, 0, "CLOSE", 0, NULL, close_cb, NULL);
   zoom_button = Epplet_create_button(NULL, NULL, ((16 * w) - 15), 3, 0, 0, "EJECT", 0, NULL, zoom_cb, NULL);
   prev_button = Epplet_create_button(NULL, NULL, 3, ((16 * h) - 15), 0, 0, "PREVIOUS", 0, NULL, play_cb, (void *) (-1));
   play_button = Epplet_create_button(NULL, NULL, ((16 * w / 2) - 6), ((16 * h) - 15), 0, 0, "PLAY", 0, NULL, play_cb, (void *) (1));
   pause_button = Epplet_create_button(NULL, NULL, ((16 * w / 2) - 6), ((16 * h) - 15), 0, 0, "PAUSE", 0, NULL, play_cb, (void *) (0));
+  bg_button = Epplet_create_popupbutton(NULL, NULL, ((16 * w / 2) - 6), 3, 0, 0, "ARROW_UP", bg_popup);
   next_button = Epplet_create_button(NULL, NULL, ((16 * w) - 15), ((16 * h) - 15), 0, 0, "NEXT", 0, NULL, play_cb, (void *) (2));
   picture = Epplet_create_image(3, 3, ((w * 16) - 6), ((h * 16) - 6), "/dev/null");
   Epplet_show();

@@ -1107,7 +1107,7 @@ Epplet_handle_timer(void)
    et = q_first;
    q_first = q_first->next;
    (*(et->func)) (et->data);
-   if (et->name)
+   if (et && et->name)
       free(et->name);
    if (et)
       free(et);

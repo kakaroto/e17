@@ -1058,3 +1058,14 @@ one window will be around...
 I am currently using E-ScreenSave as my test epplet for this code, as I know
 only about 2 people use it ;) Try it to see the code working.
 
+-------------------------------------------------------------------------------
+
+Wed Dec  1 19:11:13 PST 1999
+(KainX)
+
+For one thing, I think I've fixed the seg fault in E-MoonClock.  Here's
+hoping.
+
+I also added the background setting functionality to E-Slides, but this time
+it was done *right*. :-)  Take a look and see for yourself.  If you look at
+the code, it also demonstrates how to use E IPC to set backgrounds.
