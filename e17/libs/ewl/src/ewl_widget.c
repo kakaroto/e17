@@ -95,7 +95,7 @@ ewl_widget_hide(Ewl_Widget * w)
 	DENTER_FUNCTION;
 	DCHECK_PARAM_PTR("w", w);
 
-	if (!w->visible)
+	if (!VISIBLE(w))
 		DRETURN;
 
 	w->visible = EWL_VISIBILITY_HIDDEN;

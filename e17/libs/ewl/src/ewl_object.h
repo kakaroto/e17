@@ -51,6 +51,9 @@ void ewl_object_set_minimum_size(Ewl_Object * o, int w, int h);
 void ewl_object_get_minimum_size(Ewl_Object * o, int *w, int *h);
 
 void ewl_object_set_maximum_size(Ewl_Object * o, int w, int h);
+inline void ewl_object_set_maximum_width(Ewl_Object * o, int w);
+inline void ewl_object_set_maximum_height(Ewl_Object * o, int h);
+
 void ewl_object_get_maximum_size(Ewl_Object * o, int *w, int *h);
 
 inline void ewl_object_set_alignment(Ewl_Object * o, Ewl_Alignment align);

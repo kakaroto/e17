@@ -76,7 +76,8 @@ void __ewl_widget_theme_update(Ewl_Widget * w, void *event_data,
 void ewl_widget_set_parent(Ewl_Widget * w, Ewl_Widget * p);
 
 #define REALIZED(w) (EWL_WIDGET(w)->visible & EWL_VISIBILITY_REALIZED)
-#define VISIBLE(w) EWL_WIDGET(w)->visible
+#define VISIBLE(w) (EWL_WIDGET(w)->visible & EWL_VISIBILITY_SHOWN)
+#define HIDDEN(w) (EWL_WIDGET(w)->visible & EWL_VISIBILITY_HIDDEN)
 #define LAYER(w) EWL_WIDGET(w)->layer
 
 #endif /* __EWL_WIDGET_H__ */

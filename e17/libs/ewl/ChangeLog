@@ -1,4 +1,8 @@
-Thu Sep  26 18:25:12 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
+Fri Sep  28 04:42:45 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
+	* Added a Ewl_Notebook widget.
+	* Created a Ewl_Notebook test section in the test program.
+
+Thu Sep  27 18:25:12 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
 	* Converted the Ewl_Spinner to match the new code.
 	* I set the default Ewl_Entry font size to 10.
 	* Added a Ewl_Spinner test section to the test application.

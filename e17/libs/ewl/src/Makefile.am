@@ -24,6 +24,7 @@ installed_headers_DATA = \
 	ewl_list.h \
 	ewl_macros.h \
 	ewl_misc.h \
+	ewl_notebook.h \
 	ewl_object.h \
 	ewl_radiobutton.h \
 	ewl_seeker.h \
@@ -50,6 +51,7 @@ libewl_la_SOURCES = \
 	ewl_image.c \
 	ewl_list.c \
 	ewl_misc.c \
+	ewl_notebook.c \
 	ewl_object.c \
 	ewl_radiobutton.c \
 	ewl_seeker.c \

@@ -54,3 +54,4 @@
 #include <ewl_cursor.h>
 #include <ewl_selection.h>
 #include <ewl_separator.h>
+#include <ewl_notebook.h>
