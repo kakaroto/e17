@@ -52,7 +52,7 @@ test "x$RPM_BUILD_ROOT" != "x" && rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-, root, root)
-%doc AUTHORS COPYING ChangeLog INSTALL README FAQ
+%doc AUTHORS COPYING ChangeLog FAQ INSTALL README README-0.16.8
 %{_datadir}/e16/*
 %{_datadir}/locale/*/LC_MESSAGES/e16.mo
 %{_bindir}/*
