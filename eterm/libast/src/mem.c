@@ -29,6 +29,8 @@
  * This file contains the memory management subsystem.
  *
  * @author Michael Jennings <mej@eterm.org>
+ * $Revision$
+ * $Date$
  */
 
 static const char cvs_ident[] = "$Id$";
@@ -46,20 +48,73 @@ static void memrec_chg_var(memrec_t *, const char *, const char *, unsigned long
 static void memrec_dump_pointers(memrec_t *);
 static void memrec_dump_resources(memrec_t *);
 
-/* 
- * These're added for a pretty obvious reason -- they're implemented towards
- * The beginning of each one's respective function. (The ones with capitalized
- * letters. I'm not sure that they'll be useful outside of gdb. Maybe. 
- */
 #ifdef MALLOC_CALL_DEBUG
+/*@{*/
+/**
+ * @name Memory Management Call Tracking
+ * Count calls to memory management functions.
+ *
+ * This group of variables is used to count calls to the memory
+ * management functions.  Call counting is controlled by the
+ * #MALLOC_CALL_DEBUG symbol, and is off by default.
+ *
+ * @see DOXGRP_MEM
+ * @ingroup DOXGRP_MEM
+ */
+
+/** Count calls to MALLOC().  Count calls to MALLOC(). */
 static int malloc_count = 0;
+/** Count calls to CALLOC().  Count calls to CALLOC(). */
 static int calloc_count = 0;
+/** Count calls to REALLOC().  Count calls to REALLOC(). */
 static int realloc_count = 0;
+/** Count calls to FREE().  Count calls to FREE(). */
 static int free_count = 0;
+/*@}*/
 #endif
 
-static memrec_t malloc_rec, pixmap_rec, gc_rec;
+/**
+ * Allocated pointers.
+ *
+ * This structure keeps track of the pointer array which represents
+ * pointers allocated via the memory management interface.
+ *
+ * @see DOXGRP_MEM, memrec_t_struct
+ * @ingroup DOXGRP_MEM
+ */
+static memrec_t malloc_rec;
+/**
+ * Allocated pixmaps.
+ *
+ * This structure keeps track of the pixmap array which represents
+ * pixmaps allocated via the memory management interface.
+ *
+ * @see DOXGRP_MEM, memrec_t_struct
+ * @ingroup DOXGRP_MEM
+ */
+static memrec_t pixmap_rec;
+/**
+ * Allocated GC's.
+ *
+ * This structure keeps track of the GC array which represents
+ * X11 Graphics Context objects, or GC's, allocated via the memory
+ * management interface.
+ *
+ * @see DOXGRP_MEM, memrec_t_struct
+ * @ingroup DOXGRP_MEM
+ */
+static memrec_t gc_rec;
 
+/**
+ * Initialize memory management system.
+ *
+ * A call to this function must occur before any other part of the
+ * memory management system is used.  This function initializes the
+ * pointer lists.
+ *
+ * @see DOXGRP_MEM
+ * @ingroup DOXGRP_MEM
+ */
 void
 memrec_init(void)
 {
@@ -69,6 +124,24 @@ memrec_init(void)
     gc_rec.ptrs = (ptr_t *) malloc(sizeof(ptr_t));
 }
 
+/**
+ * Add a variable to a record set.
+ *
+ * This is the static, internal-use-only function that does the actual
+ * work of recording information on a variable to be tracked.  This
+ * information includes file and line number information and is stored
+ * as a #ptr_t.
+ *
+ * @param memrec   Address of the #memrec_t we're adding to.
+ * @param filename The filename where the variable was allocated.
+ * @param line     The line number of @a filename where the variable
+ *                 was allocated.
+ * @param ptr      The allocated variable.
+ * @param size     The number of bytes requested.
+ *
+ * @see DOXGRP_MEM, MALLOC(), libast_malloc()
+ * @ingroup DOXGRP_MEM
+ */
 static void
 memrec_add_var(memrec_t *memrec, const char *filename, unsigned long line, void *ptr, size_t size)
 {
@@ -89,6 +162,20 @@ memrec_add_var(memrec_t *memrec, const char *filename, unsigned long line, void 
     p->line = line;
 }
 
+/**
+ * Find a variable within a record set.
+ *
+ * This function searches through the pointer list of the specified
+ * @a memrec object for a given pointer.
+ *
+ * @param memrec Address of the #memrec_t we're searching.
+ * @param ptr    The value of the requested pointer.
+ * @return       A pointer to the #ptr_t object within @a memrec
+ *               that matches @a ptr, or NULL if not found.
+ *
+ * @see DOXGRP_MEM, MALLOC(), libast_malloc()
+ * @ingroup DOXGRP_MEM
+ */
 static ptr_t *
 memrec_find_var(memrec_t *memrec, const void *ptr)
 {
@@ -107,6 +194,23 @@ memrec_find_var(memrec_t *memrec, const void *ptr)
     return NULL;
 }
 
+/**
+ * Remove a variable from a record set.
+ *
+ * This is the static, internal-use-only function that does the actual
+ * work of freeing recorded information for a deleted pointer.
+ *
+ * @param memrec   Address of the #memrec_t we're removing from.
+ * @param var      The variable name being freed (for diagnostic
+ *                 purposes only).
+ * @param filename The filename where the variable was freed.
+ * @param line     The line number of @a filename where the variable
+ *                 was freed.
+ * @param ptr      The freed variable.
+ *
+ * @see DOXGRP_MEM, FREE(), libast_free()
+ * @ingroup DOXGRP_MEM
+ */
 static void
 memrec_rem_var(memrec_t *memrec, const char *var, const char *filename, unsigned long line, const void *ptr)
 {
@@ -126,6 +230,25 @@ memrec_rem_var(memrec_t *memrec, const char *var, const char *filename, unsigned
     }
 }
 
+/**
+ * Resize a variable in a record set.
+ *
+ * This is the static, internal-use-only function that does the actual
+ * work of altering information on a tracked variable.
+ *
+ * @param memrec   Address of the #memrec_t we're modifying.
+ * @param var      The variable name being resized (for diagnostic
+ *                 purposes only).
+ * @param filename The filename where the variable was resized.
+ * @param line     The line number of @a filename where the variable
+ *                 was resized.
+ * @param oldp     The old value of the pointer.
+ * @param newp     The new value of the pointer.
+ * @param size     The new size in bytes.
+ *
+ * @see DOXGRP_MEM, REALLOC(), libast_realloc()
+ * @ingroup DOXGRP_MEM
+ */
 static void
 memrec_chg_var(memrec_t *memrec, const char *var, const char *filename, unsigned long line, const void *oldp, void *newp, size_t size)
 {
@@ -145,6 +268,19 @@ memrec_chg_var(memrec_t *memrec, const char *var, const char *filename, unsigned
     p->line = line;
 }
 
+/**
+ * Dump listing of tracked pointers.
+ *
+ * This function dumps a listing of all pointers in @a memrec along
+ * with the filename, line number, address, size, and contents for
+ * each.  Contents are displayed in both hex and ASCII, the latter
+ * having non-printable characters replaced with periods ('.').
+ *
+ * @param memrec Address of the #memrec_t we're dumping.
+ *
+ * @see DOXGRP_MEM, MALLOC_DUMP(), libast_dump_mem_tables()
+ * @ingroup DOXGRP_MEM
+ */
 static void
 memrec_dump_pointers(memrec_t *memrec)
 {
@@ -214,6 +350,18 @@ memrec_dump_pointers(memrec_t *memrec)
     fflush(LIBAST_DEBUG_FD);
 }
 
+/**
+ * Dump listing of tracked resources.
+ *
+ * This function is very similar to memrec_dump_pointers() but is
+ * intended for use with non-pointer data.
+ *
+ * @param memrec Address of the #memrec_t we're dumping.
+ *
+ * @see DOXGRP_MEM, MALLOC_DUMP(), libast_dump_mem_tables(),
+ *      memrec_dump_pointers()
+ * @ingroup DOXGRP_MEM
+ */
 static void
 memrec_dump_resources(memrec_t *memrec)
 {
@@ -240,6 +388,25 @@ memrec_dump_resources(memrec_t *memrec)
 }
 
 /******************** MEMORY ALLOCATION INTERFACE ********************/
+
+/**
+ * LibAST implementation of malloc().
+ *
+ * When memory debugging is active (via #DEBUG_MEM), all calls to the
+ * MALLOC() macro are routed here.  The macro allows filename and line
+ * number information to be provided thanks to the __FILE__ and
+ * __LINE__ symbols pre-defined by cpp.
+ *
+ * @param filename The filename where the variable is being
+ *                 allocated.
+ * @param line     The line number of @a filename where the variable
+ *                 is being allocated.
+ * @param size     The requested size in bytes (as passed to MALLOC()).
+ * @return         A pointer to the newly-allocated memory.
+ *
+ * @see DOXGRP_MEM, MALLOC()
+ * @ingroup DOXGRP_MEM
+ */
 void *
 libast_malloc(const char *filename, unsigned long line, size_t size)
 {
@@ -262,6 +429,26 @@ libast_malloc(const char *filename, unsigned long line, size_t size)
     return (temp);
 }
 
+/**
+ * LibAST implementation of realloc().
+ *
+ * When memory debugging is active (via #DEBUG_MEM), all calls to the
+ * REALLOC() macro are routed here.  The macro allows variable name,
+ * filename, and line number information to be provided.
+ *
+ * @param var      The variable name being resized.
+ * @param filename The filename where the variable is being
+ *                 reallocated.
+ * @param line     The line number of @a filename where the variable
+ *                 is being reallocated.
+ * @param ptr      The old value of the pointer being resized.
+ * @param size     The new requested size in bytes (as passed to
+ *                 REALLOC()). 
+ * @return         The new value (possibly moved) of the pointer.
+ *
+ * @see DOXGRP_MEM, REALLOC()
+ * @ingroup DOXGRP_MEM
+ */
 void *
 libast_realloc(const char *var, const char *filename, unsigned long line, void *ptr, size_t size)
 {
@@ -287,6 +474,26 @@ libast_realloc(const char *var, const char *filename, unsigned long line, void *
     return (temp);
 }
 
+/**
+ * LibAST implementation of calloc().
+ *
+ * When memory debugging is active (via #DEBUG_MEM), all calls to the
+ * CALLOC() macro are routed here.  The macro allows filename and line
+ * number information to be provided thanks to the __FILE__ and
+ * __LINE__ symbols pre-defined by cpp.
+ *
+ * @param filename The filename where the variable is being
+ *                 allocated.
+ * @param line     The line number of @a filename where the variable
+ *                 is being allocated.
+ * @param count    The number of objects being allocated.
+ * @param size     The size in bytes of each object (as passed to
+ *                 CALLOC()).
+ * @return         A pointer to the newly-allocated, zeroed memory.
+ *
+ * @see DOXGRP_MEM, CALLOC()
+ * @ingroup DOXGRP_MEM
+ */
 void *
 libast_calloc(const char *filename, unsigned long line, size_t count, size_t size)
 {
@@ -308,6 +515,22 @@ libast_calloc(const char *filename, unsigned long line, size_t count, size_t siz
     return (temp);
 }
 
+/**
+ * LibAST implementation of free().
+ *
+ * When memory debugging is active (via #DEBUG_MEM), all calls to the
+ * FREE() macro are routed here.  The macro allows variable name,
+ * filename, and line number information to be provided.
+ *
+ * @param var      The variable name being freed.
+ * @param filename The filename where the variable is being freed.
+ * @param line     The line number of @a filename where the variable
+ *                 is being freed.
+ * @param ptr      The pointer being freed (as passed to FREE()).
+ *
+ * @see DOXGRP_MEM, FREE()
+ * @ingroup DOXGRP_MEM
+ */
 void
 libast_free(const char *var, const char *filename, unsigned long line, void *ptr)
 {
@@ -329,6 +552,23 @@ libast_free(const char *var, const char *filename, unsigned long line, void *ptr
     }
 }
 
+/**
+ * LibAST implementation of strdup().
+ *
+ * When memory debugging is active (via #DEBUG_MEM), all calls to the
+ * STRDUP() macro are routed here.  The macro allows variable name,
+ * filename, and line number information to be provided.
+ *
+ * @param var      The variable name being duplicated.
+ * @param filename The filename where the variable is being duplicated.
+ * @param line     The line number of @a filename where the variable
+ *                 is being duplicated.
+ * @param str      The string being duplicated (as passed to STRDUP()).
+ * @return         A pointer to a newly-allocated copy of @a str.
+ *
+ * @see DOXGRP_MEM, STRDUP()
+ * @ingroup DOXGRP_MEM
+ */
 char *
 libast_strdup(const char *var, const char *filename, unsigned long line, const char *str)
 {
@@ -343,6 +583,15 @@ libast_strdup(const char *var, const char *filename, unsigned long line, const c
     return (newstr);
 }
 
+/**
+ * Dump listing of tracked pointers.
+ *
+ * This function simply calls memrec_dump_pointers() and passes in the
+ * address of the #malloc_rec variable.
+ *
+ * @see DOXGRP_MEM, MALLOC_DUMP(), memrec_dump_pointers()
+ * @ingroup DOXGRP_MEM
+ */
 void
 libast_dump_mem_tables(void)
 {
@@ -354,6 +603,27 @@ libast_dump_mem_tables(void)
 
 /******************** PIXMAP ALLOCATION INTERFACE ********************/
 
+/**
+ * LibAST implementation of XCreatePixmap().
+ *
+ * When memory debugging is active (via #DEBUG_MEM), all calls to the
+ * X_CREATE_PIXMAP() macro are routed here.  The macro allows filename
+ * and line number information to be provided thanks to the __FILE__
+ * and __LINE__ symbols pre-defined by cpp.
+ *
+ * @param filename The filename where the pixmap is being created.
+ * @param line     The line number of @a filename where the pixmap is
+ *                 being created.
+ * @param d        The Display for the new pixmap.
+ * @param win      The Drawable for the new pixmap.
+ * @param w        Width of the pixmap, in pixels.
+ * @param h        Height of the pixmap, in pixels.
+ * @param depth    The color depth for the new pixmap.
+ * @return         A newly-created Pixmap.
+ *
+ * @see DOXGRP_MEM, X_CREATE_PIXMAP()
+ * @ingroup DOXGRP_MEM
+ */
 Pixmap
 libast_x_create_pixmap(const char *filename, unsigned long line, Display * d, Drawable win, unsigned int w, unsigned int h,
                        unsigned int depth)
@@ -370,6 +640,23 @@ libast_x_create_pixmap(const char *filename, unsigned long line, Display * d, Dr
     return (p);
 }
 
+/**
+ * LibAST implementation of XFreePixmap().
+ *
+ * When memory debugging is active (via #DEBUG_MEM), all calls to the
+ * X_FREE_PIXMAP() macro are routed here.  The macro allows variable
+ * name, filename, and line number information to be provided.
+ *
+ * @param var      The variable name of the pixmap being freed.
+ * @param filename The filename where the pixmap is being freed.
+ * @param line     The line number of @a filename where the pixmap is
+ *                 being freed.
+ * @param d        The Display for the pixmap.
+ * @param p        The Pixmap to be freed.
+ *
+ * @see DOXGRP_MEM, X_FREE_PIXMAP()
+ * @ingroup DOXGRP_MEM
+ */
 void
 libast_x_free_pixmap(const char *var, const char *filename, unsigned long line, Display * d, Pixmap p)
 {
@@ -385,6 +672,22 @@ libast_x_free_pixmap(const char *var, const char *filename, unsigned long line, 
 }
 
 # ifdef LIBAST_IMLIB2_SUPPORT
+/**
+ * Register a pixmap for tracking.
+ *
+ * Imlib has its own mechanism for creating pixmaps internally.  In
+ * order to keep track of these pixmaps, they must be registered with
+ * LibAST using this function (via the IMLIB_REGISTER_PIXMAP() macro).
+ *
+ * @param var      The variable name of the pixmap being registered.
+ * @param filename The filename where the pixmap is being registered.
+ * @param line     The line number of @a filename where the pixmap is
+ *                 being registered.
+ * @param p        The Pixmap being registered.
+ *
+ * @see DOXGRP_MEM, IMLIB_REGISTER_PIXMAP()
+ * @ingroup DOXGRP_MEM
+ */
 void
 libast_imlib_register_pixmap(const char *var, const char *filename, unsigned long line, Pixmap p)
 {
@@ -402,6 +705,23 @@ libast_imlib_register_pixmap(const char *var, const char *filename, unsigned lon
     }
 }
 
+/**
+ * Free a pixmap created by Imlib.
+ *
+ * Imlib has its own mechanism for freeing pixmaps, and their
+ * associated mask (if any), internally.  All pixmaps created by Imlib
+ * must also be freed by Imlib.  It is safe, albeit a bit slower, to
+ * free all pixmaps via Imlib, regardless of how they were created.
+ *
+ * @param var      The variable name of the pixmap being freed.
+ * @param filename The filename where the pixmap is being freed.
+ * @param line     The line number of @a filename where the pixmap is
+ *                 being freed.
+ * @param p        The Pixmap being freed.
+ *
+ * @see DOXGRP_MEM, IMLIB_FREE_PIXMAP()
+ * @ingroup DOXGRP_MEM
+ */
 void
 libast_imlib_free_pixmap(const char *var, const char *filename, unsigned long line, Pixmap p)
 {
@@ -417,6 +737,15 @@ libast_imlib_free_pixmap(const char *var, const char *filename, unsigned long li
 }
 # endif
 
+/**
+ * Dump listing of tracked pixmaps.
+ *
+ * This function simply calls memrec_dump_resources() and passes in
+ * the address of the #pixmap_rec variable.
+ *
+ * @see DOXGRP_MEM, PIXMAP_DUMP(), memrec_dump_resources()
+ * @ingroup DOXGRP_MEM
+ */
 void
 libast_dump_pixmap_tables(void)
 {
@@ -428,6 +757,26 @@ libast_dump_pixmap_tables(void)
 
 /********************** GC ALLOCATION INTERFACE **********************/
 
+/**
+ * LibAST implementation of XCreateGC().
+ *
+ * When memory debugging is active (via #DEBUG_MEM), all calls to the
+ * X_CREATE_GC() macro are routed here.  The macro allows filename
+ * and line number information to be provided thanks to the __FILE__
+ * and __LINE__ symbols pre-defined by cpp.
+ *
+ * @param filename The filename where the GC is being created.
+ * @param line     The line number of @a filename where the GC is
+ *                 being created.
+ * @param d        The Display for the new GC.
+ * @param win      The Drawable for the new GC.
+ * @param mask     Bitwise OR of zero or more GC flags.
+ * @param gcv      Pointer to XGCValues structure.
+ * @return         A newly-created GC.
+ *
+ * @see DOXGRP_MEM, X_CREATE_GC()
+ * @ingroup DOXGRP_MEM
+ */
 GC
 libast_x_create_gc(const char *filename, unsigned long line, Display * d, Drawable win, unsigned long mask, XGCValues * gcv)
 {
@@ -443,6 +792,23 @@ libast_x_create_gc(const char *filename, unsigned long line, Display * d, Drawab
     return (gc);
 }
 
+/**
+ * LibAST implementation of XFreeGC().
+ *
+ * When memory debugging is active (via #DEBUG_MEM), all calls to the
+ * X_FREE_GC() macro are routed here.  The macro allows variable
+ * name, filename, and line number information to be provided.
+ *
+ * @param var      The variable name of the GC being freed.
+ * @param filename The filename where the GC is being freed.
+ * @param line     The line number of @a filename where the GC is
+ *                 being freed.
+ * @param d        The Display for the GC.
+ * @param gc       The GC to be freed.
+ *
+ * @see DOXGRP_MEM, X_FREE_GC()
+ * @ingroup DOXGRP_MEM
+ */
 void
 libast_x_free_gc(const char *var, const char *filename, unsigned long line, Display * d, GC gc)
 {
@@ -457,6 +823,15 @@ libast_x_free_gc(const char *var, const char *filename, unsigned long line, Disp
     }
 }
 
+/**
+ * Dump listing of tracked GC's.
+ *
+ * This function simply calls memrec_dump_resources() and passes in
+ * the address of the #gc_rec variable.
+ *
+ * @see DOXGRP_MEM, GC_DUMP(), memrec_dump_resources()
+ * @ingroup DOXGRP_MEM
+ */
 void
 libast_dump_gc_tables(void)
 {
@@ -465,7 +840,23 @@ libast_dump_gc_tables(void)
 }
 #endif
 
-/* Convenience function for freeing a list. */
+/**
+ * Free an array of pointers.
+ *
+ * This really doesn't relate to the memory management subsystem, per
+ * se.  It is simply a convenience function which simplifies the
+ * freeing of pointer arrays.  The first @a count pointers in the
+ * array are freed, after which the array itself is freed.  If
+ * @a count is 0, the array must be NULL-terminated.  All pointers up
+ * to the first NULL pointer encountered will be freed.
+ *
+ * @param list  The pointer array to be freed.  This variable's value
+ *              MUST NOT be used after being passed to this function.
+ * @param count The number of pointers in the array, or 0 for a
+ *              NULL-terminated array.
+ *
+ * @ingroup DOXGRP_MEM
+ */
 void
 free_array(void *list, size_t count)
 {
