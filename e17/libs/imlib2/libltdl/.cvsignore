@@ -4,6 +4,7 @@ config.log
 libtool
 config.h
 config.status
+stamp-h.in
 stamp-h
 Makefile.am
 Makefile.in
@@ -19,3 +20,6 @@ aclocal.m4
 config.h.in
 COPYING.LIB
 README
+autom4te.cache
+config-h.in
+stamp-h1

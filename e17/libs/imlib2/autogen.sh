@@ -36,6 +36,8 @@ for EACHDIR in $SUBDIRS ; do
     autoheader || abort "autoheader"
     automake --foreign --add-missing || abort "automake"
     autoconf || abort "autoconf"
+    (cd libltdl && aclocal) || abort "in libltdl, aclocal"
+    (cd libltdl && autoconf) || abort "in libltdl, autoconf"
 done
 
 if test -z "$*"; then

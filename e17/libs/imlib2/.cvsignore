@@ -27,3 +27,6 @@ dox
 install-sh
 missing
 mkinstalldirs
+build-stamp
+configure-stamp
+stamp-h1

@@ -72,6 +72,11 @@ AS=$CC
 AC_SUBST(ASFLAGS)
 AC_SUBST(AS)
 
+CCASFLAGS="$ASFLAGS"
+CCAS="$AS"
+AC_SUBST(CCASFLAGS)
+AC_SUBST(CCAS)
+
 
 AC_MSG_CHECKING(whether fopen accepts "b" mode)
 AC_CACHE_VAL([ag_cv_func_fopen_binary],
