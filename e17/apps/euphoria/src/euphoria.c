@@ -144,6 +144,8 @@ static void handle_args(Euphoria *e, int argc, const char **argv) {
 	                        {"theme", required_argument, 0, 't'},
 	                        {NULL, 0, NULL, 0}};
 
+	ecore_app_args_set(argc, argv);
+
 	while ((o = getopt_long(argc, (char **) argv, "hvo:e:t:", opts,
 	                        NULL)) != -1) {
 		switch (o) {
