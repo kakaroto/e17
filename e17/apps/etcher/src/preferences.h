@@ -1,3 +1,6 @@
+#ifndef ETCHER_PREF_H
+#define ETCHER_PREF_H
+
 #include <gtk/gtk.h>
 
 int
@@ -30,3 +33,5 @@ pref_color_changed(GtkWidget *widget, GtkColorSelection * colorsel);
 void
 pref_gridimage_changed                   (GtkEditable     *editable,
 					  gpointer         user_data);
+
+#endif
