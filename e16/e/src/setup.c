@@ -705,10 +705,12 @@ MakeExtInitWin(void)
 	gc = XCreateGC(d2, pmap, 0, &gcv);
 	XSetForeground(d2, gc, 0);
 	XFillRectangle(d2, pmap, gc, 0, 0, 16, 16);
+	XFreeGC(d2, gc);
 	mask = ECreatePixmap(d2, w2, 16, 16, 1);
 	gc = XCreateGC(d2, mask, 0, &gcv);
 	XSetForeground(d2, gc, 0);
 	XFillRectangle(d2, mask, gc, 0, 0, 16, 16);
+	XFreeGC(d2, gc);
 	cs = XCreatePixmapCursor(d2, pmap, mask, &cl, &cl, 0, 0);
 	XDefineCursor(d2, win, cs);
 	XDefineCursor(d2, w2, cs);
