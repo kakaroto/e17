@@ -9,7 +9,7 @@
 
 static GtkWidget *BrWin, *BrClist, *area2, *infol;
 static void browser_cb(gpointer);
-gchar *cimg;
+static gchar *cimg = NULL;
 
 void
 browser_init(void)
@@ -138,22 +138,27 @@ void
 browser_sel(GtkWidget *clist, gint row, gint column,
 						GdkEventButton *event, gpointer data)
 {
-	gchar *lblt;
-	
-	gtk_clist_get_text(GTK_CLIST(clist), row, column, &cimg);
-	if(cimg){
-		LoadImage(cimg);
-		DrawImage(im, 0, 0);
-	}
-	/* FIXME (im to tired atm)
-	if(im){
-		imlib_context_set_image(im);
-		sprintf(lblt, "Resolution:  %d x %d\n"
-						"File Size:  \n"
-						"Last Modification:  \n"
-						"Has Alpha:  ",
-						imlib_image_get_width(),
-						imlib_image_get_height());
-		gtk_label_set_text(GTK_LABEL(infol), lblt);
+   gchar *lblt;
+   gchar *img;
+   
+   gtk_clist_get_text(GTK_CLIST(clist), row, 0, &img);
+   
+   if (cimg) g_free(cimg);
+   cimg = NULL;
+   if (img) cimg = g_strdup(img);
+   if(cimg){
+      LoadImage(cimg);
+      DrawImage(im, 0, 0);
+   }
+   /* FIXME (im to tired atm)
+      if(im){
+	 imlib_context_set_image(im);
+	 sprintf(lblt, "Resolution:  %d x %d\n"
+		 "File Size:  \n"
+		 "Last Modification:  \n"
+		 "Has Alpha:  ",
+		 imlib_image_get_width(),
+		 imlib_image_get_height());
+	 gtk_label_set_text(GTK_LABEL(infol), lblt);
 	}*/
 }

@@ -11,8 +11,8 @@
 GtkWidget *MainWindow, *FileSel, *SaveSel, *area;
 
 /* Xlib Stuff */
-Display *disp;
-Visual *vis;
+Display *disp = NULL;
+Visual *vis = NULL;
 Window root, win;
 Colormap cm;
 Pixmap pm;
@@ -182,6 +182,7 @@ DrawImage(Imlib_Image * im, int w, int h)
   D(("DrawImage(%8p, %d, %d)\n", im, w, h));
 
   if (!disp) {
+     gtk_widget_realize(area);
     disp = GDK_WINDOW_XDISPLAY(area->window);
     win = GDK_WINDOW_XWINDOW(area->window);
     vis = GDK_VISUAL_XVISUAL(gtk_widget_get_visual(area));
