@@ -65,10 +65,6 @@ struct _GtkgEvasEvHGroupSelector
 	gint	tracking_iy;
 	GtkgEvasObj* rect;
 
-	gint tl_top, tl_left;	// deprecated... remove.
-
-
-
 	Evas_List selected_objs;		// the current selection
 	GtkgEvasEvHSelectable* selected_objs_lastadded;	// Last object added to selected_objs;
 };
@@ -97,8 +93,6 @@ void gevasevh_group_selector_movesel(GtkgEvasEvHGroupSelector* ev, gint32 dx, gi
 gboolean 
 gevasevh_group_selector_isinsel(GtkgEvasEvHGroupSelector* ev, GtkgEvasEvHSelectable* o );
 
-
-//void gevasevh_group_selector_add_evh( GtkgEvasEvHGroupSelector* ev, GtkgEvasEvHSelectable* o );
 
 #ifdef __cplusplus
 }
