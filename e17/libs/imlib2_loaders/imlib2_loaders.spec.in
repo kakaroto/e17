@@ -1,11 +1,11 @@
 Summary: Additional image loaders for Imlib2
-Name: imlib2_loaders
-Version: 1.2.0
-Release: 2.%(date '+%Y%m%d')
+Name: @PACKAGE@
+Version: @VERSION@
+Release: 1
 License: Mixed
 Group: System Environment/Libraries
 URL: http://www.enlightenment.org
-Source: ftp://ftp.enlightenment.org/pub/enlightenment/e17/libs/%{name}-%{version}.tar.gz
+Source: %{name}-%{version}.tar.gz
 Packager: %{?_packager:%{_packager}}%{!?_packager:Michael Jennings <mej@eterm.org>}
 Vendor: %{?_vendorinfo:%{_vendorinfo}}%{!?_vendorinfo:The Enlightenment Project (http://www.enlightenment.org/)}
 Distribution: %{?_distribution:%{_distribution}}%{!?_distribution:%{_vendor}}

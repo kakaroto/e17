@@ -1,8 +1,17 @@
-SUBDIRS = src debian
+SUBDIRS = src
 
 MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess \
                        config.h.in config.sub configure install-sh \
 		       ltconfig ltmain.sh missing mkinstalldirs \
-		       stamp-h.in
+		       stamp-h.in build-stamp configure-stamp depcomp \
+		       README \
+		       eet.spec \
+		       debian/changelog
 
-EXTRA_DIST = README AUTHORS COPYING COPYING-PLAIN imlib2_loaders.spec COPYING.loader_xcf
+EXTRA_DIST = AUTHORS COPYING COPYING-PLAIN COPYING.loader_xcf imlib2_loaders.spec imlib2_loaders.spec.in \
+             README.in README \
+	     debian/changelog.in debian/changelog \
+	     debian/control
+	     debian/copyright
+	     debian/rules
+	     

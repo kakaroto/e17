@@ -1,0 +1,48 @@
+Imlib2_loaders @VERSION@
+
+Additional Image Loaders
+
+This package contains image loader plugins for Imlib 2 that are not dis-
+tributed together with the Imlib 2 package itself. More about Imlib 2
+can be found on http://www.rasterman.com/imlib.html.
+
+XCF loader:
+
+The XCF loader cannot be packaged together with Imlib 2 because Imlib 2
+is distributed under the BSD license, whereas the XCF loader is using
+elements of the Gimp's (www.gimp.org) codebase, which is distributed
+under the GPL. The XCF loader therefore is GPL'd as well.
+
+2 other loaders are here too:
+
+EDB and EET
+
+------------------------------------------------------------------------------
+COMPILING AND INSTALLING:
+
+  ./configure
+  make
+(as root unless youa re installing in your users directories):
+  make install
+      
+------------------------------------------------------------------------------
+BUILDING PACKAGES:
+
+RPM: To build rpm packages:
+  
+  sudo rpm -ta @PACKAGE@-@VERSION@.tar.gz
+
+You will find rpm packages in your system /usr/src/redhat/* dirs (note you may
+not need to use sudo or root if you have your own ~/.rpmrc. see rpm documents
+for more details)
+
+DEB: To build deb packages:
+
+  tar zvf @PACKAGE@-@VERSION@.tar.gz
+  cd @PACKAGE@-@VERSION@
+  dpkg-buildpackage -us -uc -rfakeroot
+  cd ..
+  rm -rf @PACKAGE@-@VERSION@
+
+You will find all the debian source, binary etc. packages put in the directory
+where you first untarred the source tarball.
