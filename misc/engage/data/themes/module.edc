@@ -266,6 +266,34 @@ group {
 	    }
 	    color: 0 0 0 0;
 	 }
+	 description {
+	    state:    "iconified" 0.0;
+	    rel1 {
+	       relative: 0.0  0.5;
+	       offset:   0   0;
+	    }
+	    rel2 {
+	       relative: 0.5  1.0;
+	       offset:   -1   -1;
+	    }
+	    color: 0 0 0 0;
+	 }
+      }
+   }
+   programs {
+      program {
+         name:    "iconify";
+	 signal:  "iconify";
+	 source:  "";
+	 action:  STATE_SET "iconified" 0.0;
+	 target:  "item";
+      }
+      program {
+         name:    "uniconify";
+	 signal:  "uniconify";
+	 source:  "";
+	 action:  STATE_SET "default" 0.0;
+	 target:  "item";
       }
    }
 }
@@ -389,7 +417,7 @@ group {
 	       offset:   -1   -1;
 	       to:       "base";
 	    }
-	    color: 255 255 255 205;
+	    color: 255 255 255 56;
 	    image {
 	       normal: "iconified_emblem.png";
 	    }

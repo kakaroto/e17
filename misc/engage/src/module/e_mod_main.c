@@ -764,7 +764,10 @@ _engage_app_icon_new(Engage_Icon *ic, E_Border *bd, int min)
    edje_object_signal_emit(ai->bg_object, "passive", "");
    edje_object_signal_emit(ai->overlay_object, "passive", "");
    if (ai->min)
-     edje_object_signal_emit(ai->overlay_object, "iconify", "");
+     {
+	edje_object_signal_emit(ai->overlay_object, "iconify", "");
+	edje_object_signal_emit(ai->bg_object, "iconify", "");
+     }
    return ai;
 }
 
@@ -937,6 +940,7 @@ _engage_cb_event_border_iconify(void *data, int type, void *event)
 	  {
 	     ai->min = 1;
 	     edje_object_signal_emit(ai->overlay_object, "iconify", "");
+	     edje_object_signal_emit(ai->bg_object, "iconify", "");
 	     return 0;
 	  }
 	icons = icons->next;
@@ -977,6 +981,7 @@ _engage_cb_event_border_uniconify(void *data, int type, void *event)
 	  {
 	      ai->min = 0;
 	      edje_object_signal_emit(ai->overlay_object, "uniconify", "");
+	      edje_object_signal_emit(ai->bg_object, "uniconify", "");
 	      return;
 	  }
 	icons = icons->next;
