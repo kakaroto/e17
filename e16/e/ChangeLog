@@ -1992,3 +1992,21 @@ events.c cosmetics: Make local functions static.
 
 ewmh.c: Shut up indent.
 
+
+-------------------------------------------------------------------------------
+
+Sat Jul 12 12:01:04 CEST 2003
+(Kim)
+
+Make XID stuff local to x.c.
+
+Do SaveSet ops (only) in ICCCM functions.
+
+Trivial cleanups of ICCCM_Adopt... functions.
+
+Remove som redundant DesktopRemoveEwin()'s.
+
+Fix problem with losing control over windows being deiconified (+cleanups).
+
+Avoid calling StackDesktops() before configuration has been read.
+
