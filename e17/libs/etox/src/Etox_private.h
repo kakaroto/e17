@@ -165,8 +165,6 @@ struct _etox_selection
 		Etox_Line *line;
 		Evas_Object *bit;
 	} start, end;
-
-	Etox_Context *context;
 };
 
 void etox_free(Evas_Object * et);

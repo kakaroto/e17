@@ -96,8 +96,6 @@ etox_selection_new(Etox *etox, Etox_Line *l1, Etox_Line *l2,
 	selected->end.line = l2;
 	selected->end.bit = s2;
 
-	selected->context = etox_context_save(etox->smart_obj);
-
 	active_selections = evas_list_prepend(active_selections, selected);
 
 	etox_layout(etox);
@@ -112,7 +110,6 @@ etox_selection_free(Etox_Selection *selected)
 {
         CHECK_PARAM_POINTER("selected", selected);
 
-	etox_context_free(selected->context);
 	active_selections = evas_list_remove(active_selections, selected);
 	FREE(selected);
 }
@@ -147,7 +144,6 @@ etox_selection_free_by_etox(Evas_Object *obj)
           selected = l->data;
 
           active_selections = evas_list_remove(active_selections, selected);
-          etox_context_free(selected->context);
           free(selected);
         }
 
@@ -262,118 +258,6 @@ void
 etox_selection_bounds(Etox_Selection *selected, double *sx, double *sy,
 		double *ex, double *ey)
 {
-}
-
-/**
- */
-void
-etox_selection_set_font(Etox_Selection *selected, char *font, int font_size)
-{
-	/*
-	 * Make the necessary context changes.
-	 */
-	IF_FREE(selected->context->font);
-	selected->context->font = strdup(font);
-	selected->context->font_size = font_size;
-
-	SELECTION_LOOP_START(selected);
-		estyle_set_font(bit, font, font_size);
-	SELECTION_LOOP_END;
-
-	etox_layout(selected->etox);
-
-	return;
-}
-
-/**
- */
-void
-etox_selection_set_style(Etox_Selection *selected, char *style)
-{
-	/*
-	 * Make the necessary context changes.
-	 */
-	IF_FREE(selected->context->style);
-	selected->context->style = strdup(style);
-
-	SELECTION_LOOP_START(selected);
-		estyle_set_style(bit, style);
-	SELECTION_LOOP_END;
-
-	etox_layout(selected->etox);
-
-	return;
-}
-
-/**
- */
-void
-etox_selection_set_color(Etox_Selection *selected, int r, int g, int b, int a)
-{
-	/*
-	 * Make the necessary context changes.
-	 */
-	selected->context->a = a;
-	selected->context->r = r;
-	selected->context->g = g;
-	selected->context->b = b;
-
-	SELECTION_LOOP_START(selected);
-		evas_object_color_set(bit, r, g, b, a);
-	SELECTION_LOOP_END;
-
-	etox_layout(selected->etox);
-
-	return;
-}
-
-/**
- */
-void
-etox_selection_set_wrap_marker_color(Etox_Selection *selected, int r, int g,
-		int b, int a)
-{
-	/*
-	 * Make the necessary context changes.
-	 */
-	selected->context->marker.a = a;
-	selected->context->marker.r = r;
-	selected->context->marker.g = g;
-	selected->context->marker.b = b;
-
-	SELECTION_LOOP_START(selected);
-		if (!bl->prev && line->flags & ETOX_LINE_WRAPPED) {
-			evas_object_color_set(bit, r, g, b, a);
-		}
-	SELECTION_LOOP_END;
-
-	etox_layout(selected->etox);
-
-	return;
-}
-
-/**
- */
-void
-etox_selection_set_wrap_marker(Etox_Selection *selected, char *marker,
-		char *style)
-{
-	/*
-	 * Make the necessary context changes.
-	 */
-	IF_FREE(selected->context->marker.text);
-	IF_FREE(selected->context->marker.style);
-
-	SELECTION_LOOP_START(selected);
-		if (!bl->prev && line->flags & ETOX_LINE_WRAPPED) {
-			estyle_set_text(bit, marker);
-			estyle_set_style(bit, style);
-		}
-	SELECTION_LOOP_END;
-
-	etox_layout(selected->etox);
-
-	return;
 }
 
 /**
