@@ -11,6 +11,8 @@ struct _ewl_entry {
 
 	Ewl_Widget     *text;
 	Ewl_Widget     *cursor;
+
+	int             base_click;
 };
 
 Ewl_Widget     *ewl_entry_new(char *text);

@@ -194,7 +194,7 @@ void __ewl_entry_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 		ewl_text_get_letter_geometry(EWL_TEXT(e->text), --c_spos, &sx,
 					     &sy, NULL, NULL);
 
-		c_epos = ewl_cursor_get_start_position(EWL_CURSOR(e->cursor));
+		c_epos = ewl_cursor_get_end_position(EWL_CURSOR(e->cursor));
 		ewl_text_get_letter_geometry(EWL_TEXT(e->text), --c_epos, &ex,
 					     &ey, &ew, &eh);
 
@@ -266,7 +266,9 @@ void __ewl_entry_mouse_down(Ewl_Widget * w, void *ev_data, void *user_data)
 					      CURRENT_Y(e->text) +
 					      (CURRENT_H(e->text) / 2));
 
-	ewl_cursor_set_position(EWL_CURSOR(e->cursor), index + 1, index + 1);
+	index++;
+	ewl_cursor_set_position(EWL_CURSOR(e->cursor), index, index);
+	e->base_click = index;
 
 	ewl_widget_configure(w);
 
@@ -278,6 +280,8 @@ void __ewl_entry_mouse_down(Ewl_Widget * w, void *ev_data, void *user_data)
  */
 void __ewl_entry_mouse_move(Ewl_Widget * w, void *ev_data, void *user_data)
 {
+	int             ss, ee;
+	int             index = 0;
 	Ecore_Event_Mouse_Move *ev;
 	Ewl_Entry      *e;
 
@@ -290,33 +294,41 @@ void __ewl_entry_mouse_move(Ewl_Widget * w, void *ev_data, void *user_data)
 	/*
 	 * Check for the button pressed state, otherwise, do nothing.
 	 */
-	if (w->state & EWL_STATE_PRESSED) {
-		int             ss, ee;
-		int             index = 0;
+	if (!(w->state & EWL_STATE_PRESSED))
+		DRETURN(DLEVEL_STABLE);
 
-		ss = ewl_cursor_get_start_position(EWL_CURSOR(e->cursor));
-		ee = ewl_cursor_get_end_position(EWL_CURSOR(e->cursor));
+	ss = ewl_cursor_get_start_position(EWL_CURSOR(e->cursor));
+	ee = ewl_cursor_get_end_position(EWL_CURSOR(e->cursor));
 
-		/*
-		 * FIXME: the correct behavior here is to scroll to the left
-		 * or right when selecting text.
-		 */
-		if (ev->x < CURRENT_X(e->text))
-			ss = 1;
-		else if (ev->x > CURRENT_X(e->text) + CURRENT_W(e->text))
-			ee = ewl_text_get_length(EWL_TEXT(e->text)) + 1;
-		else {
-			index = ewl_text_get_index_at(EWL_TEXT(e->text), ev->x,
-					      (CURRENT_Y(e->text) +
-					       (CURRENT_H(e->text) / 2)));
-
-			ee = index - ss;
-		}
-
-		ewl_cursor_set_position(EWL_CURSOR(e->cursor), ss, ee);
-
-		ewl_widget_configure(w);
+	/*
+	 * FIXME: the correct behavior here is to scroll to the left
+	 * or right when selecting text.
+	 */
+	if (ev->x < CURRENT_X(e->text))
+		index = 0;
+	else if (ev->x > CURRENT_X(e->text) + CURRENT_W(e->text))
+		index = ewl_text_get_length(EWL_TEXT(e->text));
+	else {
+		index = ewl_text_get_index_at(EWL_TEXT(e->text), ev->x,
+				      (CURRENT_Y(e->text) +
+				       (CURRENT_H(e->text) / 2)));
 	}
+
+	index++;
+	if (index < e->base_click) {
+		ss = index;
+		ee = e->base_click;
+	}
+	else if (index > e->base_click) {
+		ss = e->base_click;
+		ee = index;
+	}
+	else
+		ss = ee = index;
+
+	ewl_cursor_set_position(EWL_CURSOR(e->cursor), ss, ee);
+
+	ewl_widget_configure(w);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -444,7 +456,7 @@ void __ewl_entry_insert_text(Ewl_Widget * w, char *s)
 {
 	Ewl_Entry      *e;
 	char           *s2, *s3;
-	int             l = 0, l2 = 0, p = 0;
+	int             l = 0, l2 = 0, sp = 0, ep = 0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -455,24 +467,26 @@ void __ewl_entry_insert_text(Ewl_Widget * w, char *s)
 	l = strlen(s);
 	l2 = strlen(s2);
 
-	p = ewl_cursor_get_start_position(EWL_CURSOR(e->cursor));
+	sp = ewl_cursor_get_start_position(EWL_CURSOR(e->cursor));
 
 	s3 = NEW(char, l + 1 + l2);
 
 	s3[0] = 0;
-	strncat(s3, s2, p - 1);
+	strncat(s3, s2, sp - 1);
 	strcat(s3, s);
 
-	p = ewl_cursor_get_end_position(EWL_CURSOR(e->cursor));
-	strcat(s3, &(s2[p - 1]));
+	ep = ewl_cursor_get_end_position(EWL_CURSOR(e->cursor));
+	if (sp != ep)
+		ep++;
+	strcat(s3, &(s2[ep - 1]));
 
 	ewl_entry_set_text(EWL_ENTRY(w), s3);
 
 	FREE(s2);
 	FREE(s3);
 
-	p += l;
-	ewl_cursor_set_position(EWL_CURSOR(e->cursor), p, p);
+	sp++;
+	ewl_cursor_set_position(EWL_CURSOR(e->cursor), sp, sp);
 	ewl_widget_configure(w);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -481,32 +495,34 @@ void __ewl_entry_insert_text(Ewl_Widget * w, char *s)
 void __ewl_entry_delete_to_left(Ewl_Widget * w)
 {
 	Ewl_Entry      *e;
-	char           *s, *s2;
-	int             p;
+	char           *s;
+	unsigned int    sp, ep;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
 	e = EWL_ENTRY(w);
-	p = ewl_cursor_get_start_position(EWL_CURSOR(e->cursor));
-
-	if (p <= 1)
-		DRETURN(DLEVEL_STABLE);
-
-	s2 = ewl_entry_get_text(EWL_ENTRY(w));
-	if (!strlen(s2))
-		DRETURN(DLEVEL_STABLE);
+	sp = ewl_cursor_get_start_position(EWL_CURSOR(e->cursor));
+	ep = ewl_cursor_get_end_position(EWL_CURSOR(e->cursor));
 
 	s = ewl_entry_get_text(EWL_ENTRY(w));
+	if (!strlen(s) || sp < 2) {
+		FREE(s);
+		DRETURN(DLEVEL_STABLE);
+	}
 
-	strcpy(&(s[p - 2]), &(s2[p - 1]));
+	if (sp != ep) {
+		sp++;
+		ep++;
+	}
+
+	strcpy(&(s[sp - 2]), &(s[ep - 1]));
 	ewl_entry_set_text(EWL_ENTRY(w), s);
-	p--;
+	sp--;
 
 	FREE(s);
-	FREE(s2);
 
-	ewl_cursor_set_position(EWL_CURSOR(e->cursor), p, p);
+	ewl_cursor_set_position(EWL_CURSOR(e->cursor), sp, sp);
 	ewl_widget_configure(w);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -515,28 +531,27 @@ void __ewl_entry_delete_to_left(Ewl_Widget * w)
 void __ewl_entry_delete_to_right(Ewl_Widget * w)
 {
 	Ewl_Entry      *e;
-	char           *s, *s2;
-	int             p;
+	char           *s;
+	int             sp, ep;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
 	e = EWL_ENTRY(w);
-	p = ewl_cursor_get_end_position(EWL_CURSOR(e->cursor));
-
-	s2 = ewl_entry_get_text(EWL_ENTRY(w));
-
-	if (!strlen(s2) || p == strlen(s2) + 1)
-		DRETURN(DLEVEL_STABLE);
+	sp = ewl_cursor_get_start_position(EWL_CURSOR(e->cursor));
+	ep = ewl_cursor_get_end_position(EWL_CURSOR(e->cursor));
 
 	s = ewl_entry_get_text(EWL_ENTRY(w));
 
-	strcpy(&(s[p - 1]), &(s2[p]));
+	if (!strlen(s) || ep == strlen(s) + 1)
+		DRETURN(DLEVEL_STABLE);
+
+	strcpy(&(s[sp - 1]), &(s[ep]));
 	ewl_entry_set_text(EWL_ENTRY(w), s);
 
 	FREE(s);
 
-	ewl_cursor_set_position(EWL_CURSOR(e->cursor), p, p);
+	ewl_cursor_set_position(EWL_CURSOR(e->cursor), sp, sp);
 	ewl_widget_configure(w);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);

@@ -74,8 +74,8 @@ ewl_cursor_set_position(Ewl_Cursor * c, unsigned int start, unsigned int end)
 }
 
 /**
- * ewl_cursor_get_position - retrieve the position of the cursor
- * @w: the entry cursor to retrieve the current position
+ * ewl_cursor_get_start_position - retrieve the start position of the cursor
+ * @w: the entry cursor to retrieve the current start position
  *
  * Returns the current start position of the cursor widget @w.
  */
@@ -88,8 +88,8 @@ unsigned int ewl_cursor_get_start_position(Ewl_Cursor * c)
 }
 
 /**
- * ewl_cursor_get_position - retrieve the position of the cursor
- * @w: the entry cursor to retrieve the current position
+ * ewl_cursor_get_end_position - retrieve the end position of the cursor
+ * @w: the entry cursor to retrieve the current end position
  *
  * Returns the current end position of the cursor widget @w.
  */

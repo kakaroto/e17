@@ -59,8 +59,8 @@ ewl_text_init(Ewl_Text * t, char *text)
 	ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FILL_POLICY_NONE);
 
 	t->text = (text ? strdup(text) : strdup(""));
+	t->length = strlen(t->text);
 	t->align = EWL_ALIGNMENT_TOP | EWL_ALIGNMENT_LEFT;
-	t->length = strlen(text);
 
 	/*
 	 * Set up appropriate callbacks for specific events

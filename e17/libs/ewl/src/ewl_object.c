@@ -539,6 +539,12 @@ inline void ewl_object_set_minimum_w(Ewl_Object * o, unsigned int w)
 	if (MAXIMUM_W(o) < w)
 		MAXIMUM_W(o) = w;
 
+	/*
+	 * Notify the parent widgets of the change in size.
+	 */
+	ewl_container_resize_child(EWL_WIDGET(o), 0,
+				   EWL_ORIENTATION_HORIZONTAL);
+
 	if (CURRENT_W(o) < w)
 		ewl_object_request_w(o, w);
 
@@ -564,6 +570,12 @@ inline void ewl_object_set_minimum_h(Ewl_Object * o, unsigned int h)
 
 	if (MAXIMUM_H(o) < h)
 		MAXIMUM_H(o) = h;
+
+	/*
+	 * Notify the parent widgets of the change in size.
+	 */
+	ewl_container_resize_child(EWL_WIDGET(o), 0,
+				   EWL_ORIENTATION_VERTICAL);
 
 	if (CURRENT_H(o) < h)
 		ewl_object_request_h(o, h);
