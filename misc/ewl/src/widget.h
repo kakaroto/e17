@@ -35,12 +35,12 @@ void        ewl_widget_free(EwlWidget *widget);
 /* WIDGET REALIZE/UNREALIZE FUNCTIONS */
 void        ewl_widget_realize(EwlWidget *widget);
 void        ewl_widget_unrealize(EwlWidget *widget);
-void        ewl_widget_handle_realize(void     *object,
-                                      EwlEvent *event,
-                                      void     *data);
-void        ewl_widget_handle_unrealize(void     *object,
+void        ewl_widget_realize_callback(void     *object,
                                         EwlEvent *event,
                                         void     *data);
+void        ewl_widget_unrealize_callback(void     *object,
+                                          EwlEvent *event,
+                                          void     *data);
 
 /* WIDGET SHOW/HIDE FUNCTIONS */
 void        ewl_widget_show(EwlWidget *widget);

@@ -25,6 +25,6 @@ void       ewl_box_pack_start(EwlWidget *widget, EwlWidget *child);
 void       ewl_box_pack_end(EwlWidget *widget, EwlWidget *child);
 void       ewl_box_remove(EwlWidget *widget, EwlWidget *child);
 
-void       ewl_box_handle_resize(void *object, EwlEvent *event, void *data);
+void       ewl_box_resize_callback(void *object, EwlEvent *event, void *data);
 
 #endif /* _BOX_H_ */

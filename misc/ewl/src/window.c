@@ -14,12 +14,12 @@ void       ewl_window_init(EwlWidget *widget)
 	ewl_container_init(widget);
 	ewl_set(widget, "/object/type", ewl_string_dup("EwlWindow"));
 
-	ewl_callback_add(widget, "configure", ewl_window_handle_configure, NULL);
-	ewl_callback_add(widget, "expose", ewl_window_handle_expose, NULL);
-	ewl_callback_push(widget, "realize", ewl_window_handle_realize, NULL);
-	ewl_callback_push(widget, "unrealize", ewl_window_handle_unrealize, NULL);
-	ewl_callback_add(widget, "show", ewl_window_handle_show, NULL);
-	ewl_callback_add(widget, "hide", ewl_window_handle_hide, NULL);
+	ewl_callback_add(widget, "configure", ewl_window_configure_callback, NULL);
+	ewl_callback_add(widget, "expose", ewl_window_expose_callback, NULL);
+	ewl_callback_push(widget, "realize", ewl_window_realize_callback, NULL);
+	ewl_callback_push(widget, "unrealize", ewl_window_unrealize_callback, NULL);
+	ewl_callback_add(widget, "show", ewl_window_show_callback, NULL);
+	ewl_callback_add(widget, "hide", ewl_window_hide_callback, NULL);
 
 	window->evas = evas_new();
 	ewl_set(widget, "/window/title", ewl_string_dup("Untitled Window"));
@@ -61,7 +61,7 @@ EwlWidget *ewl_window_find_by_xwin(Window xwin)
 }
 
 
-void       ewl_window_handle_configure(void     *object,
+void       ewl_window_configure_callback(void     *object,
                                        EwlEvent *event,
                                        void     *data)
 {
@@ -102,7 +102,7 @@ void       ewl_window_handle_configure(void     *object,
 	return;
 }
 
-void       ewl_window_handle_expose(void     *object,
+void       ewl_window_expose_callback(void     *object,
                                     EwlEvent *event,
                                     void     *data)
 {
@@ -116,7 +116,7 @@ void       ewl_window_handle_expose(void     *object,
 
 	return;
 }
-void       ewl_window_handle_realize(void     *object,
+void       ewl_window_realize_callback(void     *object,
                                      EwlEvent *event,
                                      void     *data)
 {
@@ -255,7 +255,7 @@ void       ewl_window_handle_realize(void     *object,
 	return;
 }
 
-void       ewl_window_handle_unrealize(void     *object,
+void       ewl_window_unrealize_callback(void     *object,
                                        EwlEvent *event,
                                        void     *data)
 {
@@ -265,7 +265,7 @@ void       ewl_window_handle_unrealize(void     *object,
 	return;
 }
 
-void       ewl_window_handle_show(void     *object,
+void       ewl_window_show_callback(void     *object,
                                   EwlEvent *event,
                                   void     *data)
 {
@@ -281,7 +281,7 @@ void       ewl_window_handle_show(void     *object,
 	return;
 }
 
-void       ewl_window_handle_hide(void     *object,
+void       ewl_window_hide_callback(void     *object,
                                   EwlEvent *event,
                                   void     *data)
 {

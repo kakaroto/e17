@@ -29,24 +29,24 @@ void       ewl_container_foreach(EwlWidget *widget,
                                  void      *data);
 
 /* CONTAINER EVENT CALLBACK FUNCTIONS */
-void       ewl_container_handle_realize(void      *object,
-                                        EwlEvent  *event,
-                                        void      *data);
-void       ewl_container_handle_unrealize(void      *object,
+void       ewl_container_realize_callback(void      *object,
                                           EwlEvent  *event,
                                           void      *data);
-void       ewl_container_handle_show(void      *object,
-                                     EwlEvent  *event,
-                                     void      *data);
-void       ewl_container_handle_hide(void      *object,
-                                     EwlEvent  *event,
-                                     void      *data);
-void       ewl_container_handle_move(void      *object,
-                                     EwlEvent  *event,
-                                     void      *data);
-void       ewl_container_handle_resize(void      *object,
+void       ewl_container_unrealize_callback(void      *object,
+                                            EwlEvent  *event,
+                                            void      *data);
+void       ewl_container_show_callback(void      *object,
                                        EwlEvent  *event,
                                        void      *data);
+void       ewl_container_hide_callback(void      *object,
+                                       EwlEvent  *event,
+                                       void      *data);
+void       ewl_container_move_callback(void      *object,
+                                       EwlEvent  *event,
+                                       void      *data);
+void       ewl_container_resize_callback(void      *object,
+                                         EwlEvent  *event,
+                                         void      *data);
 
 /* PRIVATE */
 typedef struct {

@@ -28,22 +28,22 @@ Evas       ewl_window_get_evas(EwlWidget *widget);
 EwlWidget *ewl_window_find_by_evas(Window xwin);
 
 /* WINDOW EVENT CALLBACKS */
-void       ewl_window_handle_configure(void     *object,
+void       ewl_window_configure_callback(void     *object,
                                        EwlEvent *event,
                                        void     *data);
-void       ewl_window_handle_expose(void     *object,
+void       ewl_window_expose_callback(void     *object,
                                     EwlEvent *event,
                                     void     *data);
-void       ewl_window_handle_realize(void     *object,
+void       ewl_window_realize_callback(void     *object,
                                      EwlEvent *event,
                                      void     *data);
-void       ewl_window_handle_unrealize(void     *object,
+void       ewl_window_unrealize_callback(void     *object,
                                        EwlEvent *event,
                                        void     *data);
-void       ewl_window_handle_show(void     *object,
+void       ewl_window_show_callback(void     *object,
                                   EwlEvent *event,
                                   void     *data);
-void       ewl_window_handle_hide(void     *object,
+void       ewl_window_hide_callback(void     *object,
                                   EwlEvent *event,
                                   void     *data);
 #endif /* _WINDOW_H_ */

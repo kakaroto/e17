@@ -17,17 +17,17 @@ void       ewl_container_init(EwlWidget *widget)
 	container->children = ewl_list_new();
 
 	ewl_callback_add(widget, "realize",
-	                 ewl_container_handle_realize, NULL);
+	                 ewl_container_realize_callback, NULL);
 	ewl_callback_push(widget, "unrealize",
-	                  ewl_container_handle_unrealize, NULL);
+	                  ewl_container_unrealize_callback, NULL);
 	ewl_callback_add(widget, "show",
-	                 ewl_container_handle_show, NULL);
+	                 ewl_container_show_callback, NULL);
 	ewl_callback_add(widget, "hide",
-	                 ewl_container_handle_hide, NULL);
+	                 ewl_container_hide_callback, NULL);
 	ewl_callback_add(widget, "move",
-	                 ewl_container_handle_move, NULL);
+	                 ewl_container_move_callback, NULL);
 	ewl_callback_add(widget, "resize",
-	                 ewl_container_handle_resize, NULL);
+	                 ewl_container_resize_callback, NULL);
 
 	return;
 }
@@ -105,39 +105,14 @@ void       ewl_container_foreach(EwlWidget *widget,
 }
 
 
-void       ewl_container_handle_realize_cb(EwlWidget *widget, void *data)
+void       ewl_container_realize_callback_cb(EwlWidget *widget, void *data)
 {
 	UNUSED(data);
 	ewl_widget_realize(widget);
 	return;
 }
 
-void       ewl_container_handle_realize(void      *object,
-                                        EwlEvent  *event,
-                                        void      *data)
-{
-	EwlWidget *widget = EWL_WIDGET(object);
-	UNUSED(event);
-	UNUSED(data);
-
-	fprintf(stderr,"ewl_container_handle_realize(): children = %d\n",
-	        ewl_list_len(EWL_CONTAINER(object)->children));
-	if (ewl_list_len(EWL_CONTAINER(object)->children))
-		ewl_container_foreach(widget, ewl_container_handle_realize_cb, NULL);
-	else 
-		fprintf(stderr,"DEBUG: no children to realize.\n");
-	
-	return;
-}
-
-void       ewl_container_handle_unrealize_cb(EwlWidget *widget, void *data)
-{
-	UNUSED(data);
-	ewl_widget_unrealize(widget);
-	return;
-}
-
-void       ewl_container_handle_unrealize(void      *object,
+void       ewl_container_realize_callback(void      *object,
                                           EwlEvent  *event,
                                           void      *data)
 {
@@ -145,12 +120,37 @@ void       ewl_container_handle_unrealize(void      *object,
 	UNUSED(event);
 	UNUSED(data);
 
-	ewl_container_foreach(widget, ewl_container_handle_unrealize_cb, NULL);
+	fprintf(stderr,"ewl_container_realize_callback(): children = %d\n",
+	        ewl_list_len(EWL_CONTAINER(object)->children));
+	if (ewl_list_len(EWL_CONTAINER(object)->children))
+		ewl_container_foreach(widget, ewl_container_realize_callback_cb, NULL);
+	else 
+		fprintf(stderr,"DEBUG: no children to realize.\n");
 	
 	return;
 }
 
-void       ewl_container_handle_show_cb(EwlWidget *widget, void *data)
+void       ewl_container_unrealize_callback_cb(EwlWidget *widget, void *data)
+{
+	UNUSED(data);
+	ewl_widget_unrealize(widget);
+	return;
+}
+
+void       ewl_container_unrealize_callback(void      *object,
+                                            EwlEvent  *event,
+                                            void      *data)
+{
+	EwlWidget *widget = EWL_WIDGET(object);
+	UNUSED(event);
+	UNUSED(data);
+
+	ewl_container_foreach(widget, ewl_container_unrealize_callback_cb, NULL);
+	
+	return;
+}
+
+void       ewl_container_show_callback_cb(EwlWidget *widget, void *data)
 {
 	UNUSED(data);
 	if (ewl_widget_get_flag(widget, "visible"))
@@ -158,39 +158,39 @@ void       ewl_container_handle_show_cb(EwlWidget *widget, void *data)
 	return;
 }
 
-void       ewl_container_handle_show(void      *object,
-                                     EwlEvent  *event,
-                                     void      *data)
+void       ewl_container_show_callback(void      *object,
+                                       EwlEvent  *event,
+                                       void      *data)
 {
 	EwlWidget *widget = EWL_WIDGET(object);
 	UNUSED(object); 
 	UNUSED(event);
 	UNUSED(data);
-	ewl_container_foreach(widget, ewl_container_handle_show_cb, NULL);
+	ewl_container_foreach(widget, ewl_container_show_callback_cb, NULL);
 	return;
 }
 
-void       ewl_container_handle_hide_cb(EwlWidget *widget, void *data)
+void       ewl_container_hide_callback_cb(EwlWidget *widget, void *data)
 {
 	UNUSED(data);
 	ewl_widget_hide(widget);
 	return;
 }
 
-void       ewl_container_handle_hide(void      *object,
-                                     EwlEvent  *event,
-                                     void      *data)
+void       ewl_container_hide_callback(void      *object,
+                                       EwlEvent  *event,
+                                       void      *data)
 {
 	EwlWidget *widget = EWL_WIDGET(object);
 	UNUSED(event);
 	UNUSED(data);
-	ewl_container_foreach(widget, ewl_container_handle_hide_cb, NULL);
+	ewl_container_foreach(widget, ewl_container_hide_callback_cb, NULL);
 	return;
 }
 
-void       ewl_container_handle_move(void      *object,
-                                     EwlEvent  *event,
-                                     void      *data)
+void       ewl_container_move_callback(void      *object,
+                                       EwlEvent  *event,
+                                       void      *data)
 {
 	EwlWidget *widget = EWL_WIDGET(object);
 	UNUSED(widget);
@@ -199,9 +199,9 @@ void       ewl_container_handle_move(void      *object,
 	return;
 }
 
-void       ewl_container_handle_resize(void      *object,
-                                       EwlEvent  *event,
-                                       void      *data)
+void       ewl_container_resize_callback(void      *object,
+                                         EwlEvent  *event,
+                                         void      *data)
 {
 	EwlWidget *widget = EWL_WIDGET(object);
 	UNUSED(widget);

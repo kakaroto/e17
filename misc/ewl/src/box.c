@@ -38,7 +38,7 @@ void       ewl_box_init(EwlWidget *widget)
 	ewl_container_init(widget);
 	ewl_set(widget, "/object/type", ewl_string_dup("EwlBox"));
 
-	ewl_callback_add(widget, "resize", ewl_box_handle_resize, NULL);
+	ewl_callback_add(widget, "resize", ewl_box_resize_callback, NULL);
 	
 	return;
 }
@@ -66,7 +66,7 @@ void       ewl_box_remove(EwlWidget *widget, EwlWidget *child)
 	ewl_container_remove(widget,child);
 }
 
-void       ewl_box_handle_resize(void *object, EwlEvent *event, void *data)
+void       ewl_box_resize_callback(void *object, EwlEvent *event, void *data)
 {
 	EwlContainer *container = EWL_CONTAINER(object);
 	EwlWidget    *widget = EWL_WIDGET(object),

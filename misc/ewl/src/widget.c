@@ -54,8 +54,8 @@ void        ewl_widget_init(EwlWidget *widget)
 	ewl_set(widget, "/object/type", ewl_string_dup("EwlWidget"));
 	/*ewl_widget_set_flag(widget, "realized", FALSE);
 	ewl_widget_set_flag(widget, "visible", FALSE);*/
-	ewl_callback_add(widget, "realize", ewl_widget_handle_realize, NULL);
-	ewl_callback_push(widget, "unrealize", ewl_widget_handle_unrealize, NULL);
+	ewl_callback_add(widget, "realize", ewl_widget_realize_callback, NULL);
+	ewl_callback_push(widget, "unrealize", ewl_widget_unrealize_callback, NULL);
 
 	return;
 }
@@ -79,9 +79,9 @@ void        ewl_widget_unrealize(EwlWidget *widget)
 	return;
 }
 
-void        ewl_widget_handle_realize(void     *object,
-                                      EwlEvent *event,
-                                      void     *data)
+void        ewl_widget_realize_callback(void     *object,
+                                        EwlEvent *event,
+                                        void     *data)
 {
 	UNUSED(event); UNUSED(data);
 	ewl_widget_set_flag(EWL_WIDGET(object),"realized", TRUE);
@@ -90,9 +90,9 @@ void        ewl_widget_handle_realize(void     *object,
 	return;
 }
 
-void        ewl_widget_handle_unrealize(void     *object,
-                                        EwlEvent *event,
-                                        void     *data)
+void        ewl_widget_unrealize_callback(void     *object,
+                                          EwlEvent *event,
+                                          void     *data)
 {
 	UNUSED(event); UNUSED(data);
 	ewl_widget_set_flag(EWL_WIDGET(object),"realized", FALSE);
