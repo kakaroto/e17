@@ -170,7 +170,7 @@ void _e_bg_bg_eet_gen(char *filename) {
 
    file = _e_bg_bg_file_getfile(filename);
    dir = _e_bg_bg_file_getdir(filename);
-   edc = strdup(PACKAGE_DATA_DIR "/data/e17setroot/e17setroot_template.edc ");
+   edc = strdup(PACKAGE_DATA_DIR "/data/e17setroot/e17setroot_template.edc");
    edj = strdup("edje_cc -id ");
 
    filenoext = _e_bg_bg_file_stripext(filename);
@@ -186,7 +186,7 @@ void _e_bg_bg_eet_gen(char *filename) {
    
    /* change edc to the one stored in /tmp */
    free(edc);
-   edc = strdup("/tmp/e17setroot_template.edc ");
+   edc = strdup("/tmp/e17setroot_template.edc");
    
    /* Set up eet path */
    eet = malloc(strlen(getenv("HOME")) +  strlen("/.e/e/backgrounds/") 
@@ -204,8 +204,9 @@ void _e_bg_bg_eet_gen(char *filename) {
    strcat(edje, edc);
 
    /* Set up edje_cc command + eet path */
-   cmd = malloc(strlen(edje) + strlen(eet) + 1);
+   cmd = malloc(strlen(edje) + strlen(eet) + 2);
    strcpy(cmd, edje);
+   strcat(cmd, " ");
    strcat(cmd, eet);
 
    /* Determine image width / height */
@@ -236,21 +237,6 @@ void _e_bg_bg_eet_gen(char *filename) {
 
    e_background_set(eet);
 
-   sed = malloc(100 + strlen(filename) + strlen(edc));
-   sprintf(sed, "sed -i -e 's,%s,FILENAME,' %s",filename,edc);
-   system(sed);
-   free(sed);
-
-   sed = malloc(100  + 1 + strlen(edc));
-   sprintf(sed, "sed -i -e 's/%d/WIDTH/' %s",w,edc);
-   system(sed);
-   free(sed);
-
-   sed = malloc(100 + 1 + strlen(edc));
-   sprintf(sed, "sed -i -e 's/%d/HEIGHT/' %s",h,edc);
-   system(sed);
-   free(sed);
-   
    /* If we're using pseudo-trans for eterm, then this will help */
    esetroot = malloc(strlen("Esetroot ") + strlen(filename) + 1);
    strcpy(esetroot, "Esetroot ");
@@ -259,7 +245,7 @@ void _e_bg_bg_eet_gen(char *filename) {
    free(esetroot);
    
    /* unlink the temp edc */
-   unlink("/tmp/e17setroot_template.edc");
+   unlink(edc);
 }
 
 int main(int argc, char **argv)
