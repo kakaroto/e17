@@ -1,7 +1,7 @@
 Summary: The Enlightenment window manager.
 Name: enlightenment
 Version: 0.16.7
-Release: 0.11
+Release: 0.12
 Copyright: BSD
 Group: User Interface/Desktops
 Source: ftp://ftp.enlightenment.org/pub/enlightenment/enlightenment-%{version}.tar.gz

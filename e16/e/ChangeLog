@@ -2299,3 +2299,14 @@ Tue Dec  9 21:40:53 CET 2003
 
 Use (v)snprintf from libc when available + assiociated fixups.
 Attempt to improve on remembered settings, now also using WM_WINDOW_ROLE.
+
+-------------------------------------------------------------------------------
+
+Sat Dec 13 15:15:24 CET 2003
+(Kim)
+
+Fix some compiler warnings.
+Collect freetype stuff in ttfont.c.
+Fix another pager mini-window tooltip bug.
+Minor pager and dialog event handler changes.
+Deleted unused mode item, moved a "private" one.
