@@ -297,10 +297,18 @@ static char       xcf_file_init(char* filename);
 static void       xcf_cleanup(void);
 static void       xcf_to_imlib(ImlibImage *im);
 
-/* Stuff for pixel merging:
+/* Stuff for layer merging:
 */
-extern void combine_pixels (DATA8* src, int src_w, int src_h, DATA8* dest, int dest_w, int dest_h, int dest_x, int dest_y);
-/* ... */
+extern void combine_pixels_normal (DATA8* src, int src_w, int src_h, DATA8* dest, int dest_w, int dest_h, int dest_x, int dest_y);
+extern void combine_pixels_add (DATA8* src, int src_w, int src_h, DATA8* dest, int dest_w, int dest_h, int dest_x, int dest_y);
+extern void combine_pixels_sub (DATA8* src, int src_w, int src_h, DATA8* dest, int dest_w, int dest_h, int dest_x, int dest_y);
+extern void combine_pixels_diff (DATA8* src, int src_w, int src_h, DATA8* dest, int dest_w, int dest_h, int dest_x, int dest_y);
+extern void combine_pixels_darken (DATA8* src, int src_w, int src_h, DATA8* dest, int dest_w, int dest_h, int dest_x, int dest_y);
+extern void combine_pixels_lighten (DATA8* src, int src_w, int src_h, DATA8* dest, int dest_w, int dest_h, int dest_x, int dest_y);
+extern void combine_pixels_mult (DATA8* src, int src_w, int src_h, DATA8* dest, int dest_w, int dest_h, int dest_x, int dest_y);
+extern void combine_pixels_div (DATA8* src, int src_w, int src_h, DATA8* dest, int dest_w, int dest_h, int dest_x, int dest_y);
+extern void combine_pixels_screen (DATA8* src, int src_w, int src_h, DATA8* dest, int dest_w, int dest_h, int dest_x, int dest_y);
+extern void combine_pixels_overlay (DATA8* src, int src_w, int src_h, DATA8* dest, int dest_w, int dest_h, int dest_x, int dest_y);
 
 
 /* ---------------------------------------------------------------------------- globals ------------ */
@@ -1432,106 +1440,69 @@ flatten_image(void)
 	{
 	  switch (l->mode)
 	    {
-	    case DISSOLVE_MODE:
-	      /*
-		if (! has_alpha2)
-		add_alpha_pixels (src2, *dest, length, bytes2);
-		
-		dissolve_pixels (src2, *dest, x, y, opacity, length, bytes2,
-		((has_alpha2) ? bytes2 : bytes2 + 1), has_alpha2);
-		combine = (has_alpha1) ? COMBINE_INTEN_A_INTEN_A : COMBINE_INTEN_INTEN_A;
-		break;
-	      */
 	    case MULTIPLY_MODE:
-	      /*
-		multiply_pixels (src1, src2, *dest, length, bytes1, bytes2, has_alpha1, has_alpha2);
-		break;
-	      */
+	      combine_pixels_mult(l->data, l->width, l->height,
+				  image->data, image->width, image->height,
+				  l->offset_x, l->offset_y);
+	      break;
 	    case DIVIDE_MODE:
-	      /*
-		divide_pixels (src1, src2, *dest, length, bytes1, bytes2, has_alpha1, has_alpha2);
-		break;
-	      */
+	      combine_pixels_div(l->data, l->width, l->height,
+				 image->data, image->width, image->height,
+				 l->offset_x, l->offset_y);
+	      break;
 	    case SCREEN_MODE:
-	      /*
-		screen_pixels (src1, src2, *dest, length, bytes1, bytes2, has_alpha1, has_alpha2);
-		break;
-	      */
+	      combine_pixels_screen(l->data, l->width, l->height,
+				    image->data, image->width, image->height,
+				    l->offset_x, l->offset_y);
+	      break;
 	    case OVERLAY_MODE:
-	      /*
-		overlay_pixels (src1, src2, *dest, length, bytes1, bytes2, has_alpha1, has_alpha2);
-		break;
-	      */
+	      combine_pixels_overlay(l->data, l->width, l->height,
+				     image->data, image->width, image->height,
+				     l->offset_x, l->offset_y);
+	      break;
 	    case DIFFERENCE_MODE:
-	      /*
-		difference_pixels (src1, src2, *dest, length, bytes1, bytes2, has_alpha1, has_alpha2);
-		break;
-	      */
+	      combine_pixels_diff(l->data, l->width, l->height,
+				  image->data, image->width, image->height,
+				  l->offset_x, l->offset_y);
+	      break;
 	    case ADDITION_MODE:
-	      /*
-		add_pixels (src1, src2, *dest, length, bytes1, bytes2, has_alpha1, has_alpha2);
-		break;
-	      */
+	      combine_pixels_add(l->data, l->width, l->height,
+				 image->data, image->width, image->height,
+				 l->offset_x, l->offset_y);
+	      break;
 	    case SUBTRACT_MODE:
-	      /*
-		subtract_pixels (src1, src2, *dest, length, bytes1, bytes2, has_alpha1, has_alpha2);
-		break;
-	      */
+	      combine_pixels_sub(l->data, l->width, l->height,
+				 image->data, image->width, image->height,
+				 l->offset_x, l->offset_y);
+	      break;
 	    case DARKEN_ONLY_MODE:
-	      /*
-		darken_pixels (src1, src2, *dest, length, bytes1, bytes2, has_alpha1, has_alpha2);
-		break;
-	      */
+	      combine_pixels_darken(l->data, l->width, l->height,
+				    image->data, image->width, image->height,
+				    l->offset_x, l->offset_y);
+	      break;
 	    case LIGHTEN_ONLY_MODE:
-	      /*
-		lighten_pixels (src1, src2, *dest, length, bytes1, bytes2, has_alpha1, has_alpha2);
-		break;
-	      */
-	    case HUE_MODE: case SATURATION_MODE: case VALUE_MODE:
-	      /*
-		if (bytes1 > 2)
-		hsv_only_pixels (src1, src2, *dest, mode, length, bytes1, bytes2, has_alpha1, has_alpha2);
-		else
-		*dest = src2;
-		break;
-	      */
+	      combine_pixels_lighten(l->data, l->width, l->height,
+				     image->data, image->width, image->height,
+				     l->offset_x, l->offset_y);
+	      break;
+
+	      /* These are still to be finished ... */
+	    case HUE_MODE:
+	    case SATURATION_MODE:
+	    case VALUE_MODE:
 	    case COLOR_MODE:
-	      /*
-		if (bytes1 > 2)
-		color_only_pixels (src1, src2, *dest, mode, length, bytes1, bytes2, has_alpha1, has_alpha2);
-		else
-		*dest = src2;
-		break;
-	      */
+	    case DISSOLVE_MODE:
+
+	      /* None of those is actually valid for layer blending, fall through: */
 	    case BEHIND_MODE:
-	      /*
-	       *dest = src2;
-	       if (has_alpha1)
-	       combine = BEHIND_INTEN;
-	       else
-	       combine = NO_COMBINATION;
-	       break;
-	      */
 	    case REPLACE_MODE:
-	      /*
-	       *dest = src2;
-	       combine = REPLACE_INTEN;
-	       break;
-	      */
 	    case ERASE_MODE:
-	      /*
-	       *dest = src2;
-	       combine = ERASE_INTEN;
-	       break;
-	      */
 	    case ANTI_ERASE_MODE:
-	      /*
-	       *dest = src2;
-	       combine = ANTI_ERASE_INTEN;
-	       break;
-	      */
+
 	    case NORMAL_MODE:
-	      combine_pixels(l->data, l->width, l->height, image->data, image->width, image->height, l->offset_x, l->offset_y);
+	      combine_pixels_normal(l->data, l->width, l->height,
+				    image->data, image->width, image->height,
+				    l->offset_x, l->offset_y);
 	      break;
 	      
 	    default:
