@@ -79,6 +79,9 @@ Simon [unknown last name] <snf100@york.ac.uk>
 
 Brent A. Nelson <brent@astro.ufl.edu>
 		private colormap patch for 8bpp 
+
+Graham A MacDonald <graham@34southpark.freeserve.co.uk>
+        patch to fix groups segfault bug
 		
 And others whose names we probably forgot to add (email us and we'll put you
 in here)
