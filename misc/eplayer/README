@@ -5,7 +5,8 @@ ePlayer v0.7
 Written by Ben Rockwood [benr@cuddletech.com] and various contributors.
 See AUTHORS for the complete list.
 
-DEPENDANCIES
+
+DEPENDENCIES
 ------------
 
 ePlayer requires the following:
@@ -13,18 +14,23 @@ ePlayer requires the following:
 EVAS CVS
 Ecore CVS with EVAS module
 Edje CVS
-AVcodec 0.4.8+ (AVcodec is found as part of the FFmpeg project - http://ffmpeg.sourceforge.net/)
-libVorbis 1.0+
-libOgg 1.0+
-libAO 1.0+	(support depreciated)
+Esmart CVS
+
+AVcodec 0.4.8  (optional, only needed by the MP3 decoding plugin;
+                AVcodec is found as part of the FFmpeg project)
+libVorbis 1.0+ (optional, only needed by the Ogg Vorbis decoding plugin)
+libOgg 1.0+    (ditto)
+
 
 ABOUT
 -------
 
 ePlayer is an audio player which is based on Ecore, Evas and Edje.
 Audio decoding and output is done by plugins.
-At the moment, there's an Ogg Vorbis input plugin and there are output
-plugins for OSS, ALSA and Solaris.
+At the moment, there are input plugins for Ogg Vorbis and MP3
+and there are output plugins for OSS, ALSA and Solaris.
+
+Note that the MP3 plugin is broken at the moment.
 
 
 FAQ
