@@ -17,7 +17,7 @@
 
 eConfigType         eConfig;
 
-int 
+int
 eConfigAddPath(char *path)
 {
 
@@ -51,7 +51,7 @@ eConfigAddPath(char *path)
 
 }
 
-int 
+int
 eConfigRemovePath(char *path)
 {
 

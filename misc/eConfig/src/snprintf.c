@@ -61,7 +61,7 @@ static void         dopr_outch(int c);
 static char        *end;
 int                 visible_control = 1;
 
-int 
+int
 _econf_vsnprintf(char *str, size_t count, const char *fmt, va_list args)
 {
    str[0] = 0;
@@ -75,10 +75,10 @@ _econf_vsnprintf(char *str, size_t count, const char *fmt, va_list args)
 }
 
 #ifdef HAVE_STDARGS
-int 
+int
 _econf_snprintf(char *str, size_t count, const char *fmt,...)
 #else
-int 
+int
 _econf_snprintf(va_alist)
      va_dcl
 
@@ -103,7 +103,7 @@ _econf_snprintf(va_alist)
    return (strlen(str));
 }
 
-static void 
+static void
 dopr(char *buffer, const char *format, va_list args)
 {
    int                 ch;
@@ -276,7 +276,7 @@ dopr(char *buffer, const char *format, va_list args)
  * len = minimum length
  * precision = numbers of chars in string to use
  */
-static void 
+static void
 fmtstr(char *value, int ljust, int len, int zpad, int precision)
 {
    int                 padlen, strlen, i, c;	/* amount to pad */
@@ -328,7 +328,7 @@ fmtstr(char *value, int ljust, int len, int zpad, int precision)
      }
 }
 
-static void 
+static void
 fmtnum(long value, int base, int dosign, int ljust,
        int len, int zpad, int precision)
 {
@@ -402,7 +402,7 @@ fmtnum(long value, int base, int dosign, int ljust,
      }
 }
 
-static void 
+static void
 fmtdouble(int fmt, double value, int ljust, int len, int zpad, int precision)
 {
    char                convert[128];
@@ -440,14 +440,14 @@ fmtdouble(int fmt, double value, int ljust, int len, int zpad, int precision)
    dostr(convert);
 }
 
-static void 
+static void
 dostr(char *str)
 {
    while (*str)
       dopr_outch(*str++);
 }
 
-static void 
+static void
 dopr_outch(int c)
 {
    if (end == 0 || output < end)

@@ -20,15 +20,49 @@ eConfigGetKeys(char *stringtomatch, unsigned long *numberofmatches)
 {
    char              **paths;
    int                 num;
+   char              **listofkeys = NULL;
 
    if (!stringtomatch)
       return NULL;
-   if (!numberofmatches)
-      return NULL;
+
+   *numberofmatches = 0;
 
    if ((paths = eConfigPaths(&num)))
      {
+	int                 i;
 
+	for (i = 0; i < num; i++)
+	  {
+	     char              **returns;
+	     unsigned long       numrecords;
+
+	     returns = _econf_snarf_keys_from_fat_table(paths[i], stringtomatch,
+							&numrecords);
+	     if (returns)
+	       {
+		  unsigned long       j;
+
+		  if (listofkeys)
+		    {
+		       listofkeys = realloc(listofkeys,
+				       (sizeof(char *) *   (*numberofmatches))
+		       +                   (sizeof(char *) * numrecords) + 1);
+		    }
+		  else
+		    {
+		       listofkeys = malloc((sizeof(char *) * numrecords) + 1);
+		    }
+		  for (j = 0; j < numrecords; j++)
+		    {
+		       listofkeys[*numberofmatches + j] = returns[j];
+		    }
+		  free(returns);
+		  *numberofmatches += numrecords;
+	       }
+	  }
+	free(paths);
+	if (listofkeys)
+	   return listofkeys;
      }
    return NULL;
 

@@ -15,7 +15,7 @@
 #include "eConfig.internal.h"
 #include "eConfig.h"
 
-unsigned long 
+unsigned long
 _econf_timestamp(void)
 {
 

@@ -73,3 +73,11 @@ Mon Dec 13 10:47:15 PST 1999
 (Mandrake)
 
 key searching stuff.  still need to hook in primary api interface
+
+-------------------------------------------------------------------------------
+
+Mon Dec 13 16:45:32 PST 1999
+(Mandrake)
+
+key searching should work now.  eConfigGetKeys()
+
