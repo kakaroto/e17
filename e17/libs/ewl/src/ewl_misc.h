@@ -28,5 +28,7 @@ void 		ewl_garbage_collect();
 void            ewl_enter_realize_phase();
 void            ewl_exit_realize_phase();
 int             ewl_in_realize_phase();
+void            ewl_evas_destroy(Evas *evas);
+void            ewl_evas_object_destroy(Evas_Object *obj);
 
 #endif				/* __EWL_MISC_H__ */

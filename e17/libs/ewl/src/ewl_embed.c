@@ -148,7 +148,7 @@ Evas_Object *ewl_embed_set_evas(Ewl_Embed *emb, Evas *evas)
 	}
 
 	if (emb->smart) {
-		evas_object_del(emb->smart);
+		ewl_evas_object_destroy(emb->smart);
 		emb->smart = NULL;
 	}
 
@@ -303,7 +303,7 @@ void __ewl_embed_unrealize(Ewl_Widget *w, void *ev_data, void *user_data)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	if (EWL_EMBED(w)->smart) {
-		evas_object_del(EWL_EMBED(w)->smart);
+		ewl_evas_object_destroy(EWL_EMBED(w)->smart);
 		EWL_EMBED(w)->smart = NULL;
 	}
 

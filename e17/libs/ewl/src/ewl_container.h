@@ -91,6 +91,7 @@ int             ewl_container_parent_of(Ewl_Widget *c, Ewl_Widget *w);
 void            ewl_container_prefer_largest(Ewl_Container *c,
 					     Ewl_Orientation o);
 void            ewl_container_call_child_add(Ewl_Container *c, Ewl_Widget *w);
+void            ewl_container_call_child_remove(Ewl_Container *c, Ewl_Widget *w);
 
 /**
  * @}

@@ -40,11 +40,6 @@ static void     __ewl_widget_mouse_move(Ewl_Widget * w, void *ev_data,
 				     void *user_data);
  */
 
-void __ewl_evas_object_del(void *data, Evas *e, Evas_Object *obj,
-		void *event_info);
-void __ewl_evas_clip_del(void *data, Evas *e, Evas_Object *obj,
-		void *event_info);
-
 void __ewl_widget_get_theme_padding(Ewl_Widget *w, int *l, int *r, int *t,
 		int *b);
 void __ewl_widget_get_theme_insets(Ewl_Widget *w, int *l, int *r, int *t,
@@ -224,8 +219,8 @@ void ewl_widget_hide(Ewl_Widget * w)
 		DRETURN(DLEVEL_STABLE);
 
 	pc = EWL_CONTAINER(w->parent);
-	if (pc && pc->child_remove)
-		pc->child_remove(EWL_CONTAINER(w->parent), w);
+	if (pc)
+		ewl_container_call_child_remove(pc, w);
 
 	ewl_object_remove_visible(EWL_OBJECT(w), EWL_FLAG_VISIBLE_SHOWN);
 	ewl_callback_call(w, EWL_CALLBACK_HIDE);
@@ -496,6 +491,9 @@ void ewl_widget_set_parent(Ewl_Widget * w, Ewl_Widget * p)
 	DCHECK_PARAM_PTR("w", w);
 
 	op = EWL_CONTAINER(w->parent);
+	if (op == EWL_CONTAINER(p))
+		DRETURN(DLEVEL_STABLE);
+
 	w->parent = p;
 
 	/*
@@ -509,11 +507,17 @@ void ewl_widget_set_parent(Ewl_Widget * w, Ewl_Widget * p)
 				 __ewl_widget_child_destroy);
 	}
 
+	/*
+	 * A widget that has not had a previous parent needs the parent
+	 * destruction callback added.
+	 */
 	if (p) {
 		if (!op)
 			ewl_callback_prepend(w, EWL_CALLBACK_DESTROY,
 					__ewl_widget_child_destroy, NULL);
 		ewl_callback_call(w, EWL_CALLBACK_REPARENT);
+		if (REALIZED(w) && VISIBLE(w))
+			ewl_container_call_child_add(EWL_CONTAINER(p), w);
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -718,7 +722,7 @@ void __ewl_widget_show(Ewl_Widget * w, void *ev_data, void *user_data)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
-	if (w->fx_clip_box)
+	if (w->fx_clip_box && (w->theme_object || RECURSIVE(w)))
 		evas_object_show(w->fx_clip_box);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -764,8 +768,6 @@ void __ewl_widget_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 	 * entire contents of the widget
 	 */
 	w->fx_clip_box = evas_object_rectangle_add(emb->evas);
-	evas_object_event_callback_add(w->fx_clip_box, EVAS_CALLBACK_FREE,
-			__ewl_evas_clip_del, w);
 	evas_object_layer_set(w->fx_clip_box, ewl_widget_get_layer_sum(w));
 
 	pc = EWL_CONTAINER(w->parent);
@@ -828,8 +830,6 @@ void __ewl_widget_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 		 * Load the theme object
 		 */
 		w->theme_object = edje_object_add(emb->evas);
-		evas_object_event_callback_add(w->theme_object,
-				EVAS_CALLBACK_FREE, __ewl_evas_object_del, w);
 		
 		edje_object_file_set(w->theme_object, i, group);
 		FREE(i);
@@ -908,15 +908,15 @@ void __ewl_widget_unrealize(Ewl_Widget * w, void *ev_data, void *user_data)
 	 * Destroy the clip box used for fx.
 	 */
 	if (w->fx_clip_box) {
-		evas_object_del(w->fx_clip_box);
+		ewl_evas_object_destroy(w->fx_clip_box);
+		w->fx_clip_box = NULL;
 	}
 
 	/*
 	 * Destroy old image (if any) 
 	 */
 	if (w->theme_object) {
-		evas_object_del(w->theme_object);
-		w->theme_object = NULL;
+		ewl_evas_object_destroy(w->theme_object);
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -1148,24 +1148,4 @@ __ewl_widget_child_destroy(Ewl_Widget * w, void *ev_data, void *user_data)
 		ewl_container_remove_child(EWL_CONTAINER(w->parent), w);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-void
-__ewl_evas_object_del(void *data, Evas *e, Evas_Object *obj, void *event_info)
-{
-	Ewl_Widget *w;
-
-	w = EWL_WIDGET(data);
-	w->theme_object = NULL;
-	ewl_widget_destroy(w);
-}
-
-void
-__ewl_evas_clip_del(void *data, Evas *e, Evas_Object *obj, void *event_info)
-{
-	Ewl_Widget *w;
-
-	w = EWL_WIDGET(data);
-	w->fx_clip_box = NULL;
-	ewl_widget_destroy(w);
 }

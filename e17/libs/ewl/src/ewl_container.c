@@ -10,9 +10,6 @@ void            __ewl_container_reparent(Ewl_Widget * w, void *ev_data,
 void            __ewl_container_unrealize(Ewl_Widget *w, void *ev_data,
 					  void *user_data);
 
-void            __ewl_evas_clip_box_del(void *data, Evas *e, Evas_Object *obj,
-					void *event_info);
-
 /**
  * @param c: the container to initialize
  * @param appearance: the appearance key for this container
@@ -141,9 +138,7 @@ void ewl_container_append_child(Ewl_Container * pc, Ewl_Widget * child)
 	DCHECK_PARAM_PTR("child", child);
 
 	ewd_list_append(pc->children, child);
-
 	ewl_widget_set_parent(child, EWL_WIDGET(pc));
-	ewl_container_call_child_add(pc, child);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -164,9 +159,7 @@ void ewl_container_prepend_child(Ewl_Container * pc, Ewl_Widget * child)
 	DCHECK_PARAM_PTR("child", child);
 
 	ewd_list_prepend(pc->children, child);
-
 	ewl_widget_set_parent(child, EWL_WIDGET(pc));
-	ewl_container_call_child_add(pc, child);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -191,9 +184,7 @@ ewl_container_insert_child(Ewl_Container * pc, Ewl_Widget * child, int index)
 
 	ewd_list_goto_index(pc->children, index);
 	ewd_list_insert(pc->children, child);
-
 	ewl_widget_set_parent(child, EWL_WIDGET(pc));
-	ewl_container_call_child_add(pc, child);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -238,8 +229,7 @@ void ewl_container_remove_child(Ewl_Container * pc, Ewl_Widget * child)
 	 * Remove the child from the parent and set the childs parent to NULL
 	 */
 	ewd_list_remove(pc->children);
-	if (pc->child_remove && VISIBLE(child))
-		pc->child_remove(pc, child);
+	ewl_container_call_child_remove(pc, child);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -522,6 +512,18 @@ void ewl_container_call_child_add(Ewl_Container *c, Ewl_Widget *w)
 }
 
 /**
+ * @param c: the container removing a child widget
+ * @param w: the child widget removed from the container
+ * @return Returns no value.
+ * @brief Triggers the child_remove callback for the container @a c.
+ */
+void ewl_container_call_child_remove(Ewl_Container *c, Ewl_Widget *w)
+{
+	if (c->child_remove && VISIBLE(w))
+		c->child_remove(c, w);
+}
+
+/**
  * @param c: the container to destroy children
  * @return Returns no value.
  * @brief Destroy all the sub-children of the container.
@@ -605,8 +607,6 @@ void __ewl_container_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 	 */
 	c->clip_box = evas_object_rectangle_add(emb->evas);
 
-	evas_object_event_callback_add(c->clip_box, EVAS_CALLBACK_FREE,
-			__ewl_evas_clip_box_del, c);
 	evas_object_move(c->clip_box, CURRENT_X(w), CURRENT_Y(w));
 	evas_object_resize(c->clip_box, CURRENT_W(w), CURRENT_H(w));
 	evas_object_clip_set(c->clip_box, w->fx_clip_box);
@@ -674,19 +674,9 @@ void __ewl_container_unrealize(Ewl_Widget *w, void *ev_data, void *user_data)
 	 * Clean up the clip box of the container.
 	 */
 	if (c->clip_box) {
-		evas_object_del(c->clip_box);
+		ewl_evas_object_destroy(c->clip_box);
 		c->clip_box = NULL;
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-void
-__ewl_evas_clip_box_del(void *data, Evas *e, Evas_Object *obj, void *event_info)
-{
-	Ewl_Container *c;
-
-	c = EWL_CONTAINER(data);
-	c->clip_box = NULL;
-	ewl_widget_destroy(EWL_WIDGET(c));
 }

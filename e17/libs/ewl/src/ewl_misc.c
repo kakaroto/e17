@@ -11,6 +11,9 @@ Ewd_List *configure_list = NULL;
 Ewd_List *realize_list = NULL;
 Ewd_List *destroy_list = NULL;
 
+Ewd_List *free_evas_list = NULL;
+Ewd_List *free_evas_object_list = NULL;
+
 void            __ewl_init_parse_options(int argc, char **argv);
 void            __ewl_parse_option_array(int argc, char **argv);
 int             __ewl_ecore_exit(void *data, int type, void *event);
@@ -48,6 +51,8 @@ void ewl_init(int argc, char **argv)
 	configure_list = ewd_list_new();
 	realize_list = ewd_list_new();
 	destroy_list = ewd_list_new();
+	free_evas_list = ewd_list_new();
+	free_evas_object_list = ewd_list_new();
 	__ewl_init_parse_options(argc, argv);
 
 	ecore_init();
@@ -544,9 +549,21 @@ void ewl_destroy_request(Ewl_Widget *w)
 		ewl_container_destroy(EWL_CONTAINER(w));
 }
 
+void ewl_evas_destroy(Evas *evas)
+{
+	ewd_list_append(free_evas_list, evas);
+}
+
+void ewl_evas_object_destroy(Evas_Object *obj)
+{
+	ewd_list_append(free_evas_object_list, obj);
+}
+
 void ewl_garbage_collect()
 {
+	Evas *evas;
 	Ewl_Widget *w;
+	Evas_Object *obj;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -555,6 +572,12 @@ void ewl_garbage_collect()
 		ewl_callback_del_type(w, EWL_CALLBACK_DESTROY);
 		FREE(w);
 	}
+
+	while ((obj = ewd_list_remove_first(free_evas_object_list)))
+		evas_object_del(obj);
+
+	while ((evas = ewd_list_remove_first(free_evas_object_list)))
+		evas_free(evas);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

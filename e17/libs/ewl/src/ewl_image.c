@@ -121,7 +121,7 @@ void ewl_image_set_file(Ewl_Image * i, char *im)
 			 */
 			evas_object_hide(i->image);
 			evas_object_clip_unset(i->image);
-			evas_object_del(i->image);
+			ewl_evas_object_destroy(i->image);
 			i->image = NULL;
 		}
 

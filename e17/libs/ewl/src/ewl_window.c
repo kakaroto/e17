@@ -293,7 +293,7 @@ void __ewl_window_unrealize(Ewl_Widget * w, void *ev_data, void *user_data)
 	embed = EWL_EMBED(w);
 	o = EWL_OBJECT(w);
 
-	evas_free(embed->evas);
+	ewl_evas_destroy(embed->evas);
 	embed->evas = NULL;
 
 	ecore_x_window_del(EWL_WINDOW(embed)->window);

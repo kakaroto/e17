@@ -645,7 +645,7 @@ __ewl_text_unrealize(Ewl_Widget * w, void *ev_data, void *user_data)
 	t = EWL_TEXT(w);
 
 	if (t->estyle) {
-		evas_object_del(t->estyle);
+		ewl_evas_object_destroy(t->estyle);
 		t->estyle = NULL;
 	}
 
