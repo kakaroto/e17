@@ -8,7 +8,7 @@ MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess esmart-config.h.in \
 
 bin_SCRIPTS = esmart-config
 
-EXTRA_DIST = README AUTHORS COPYING esmart.pc.in
+EXTRA_DIST = README AUTHORS COPYING esmart.pc.in esmart.spec
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = esmart.pc
