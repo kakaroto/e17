@@ -12,6 +12,14 @@
 #include "e_login_auth.h"
 #include "e_login_config.h"
 
+struct _E_Login_Session_Type
+{
+   char *name;
+   char *path;
+};
+
+typedef struct _E_Login_Session_Type E_Login_Session_Type;
+
 struct _E_Login_Session
 {
    Evas *evas;                  /* the evas being used in the X session */
@@ -30,7 +38,12 @@ struct _E_Login_Session
       int w, h;
    }
    geom;                        /* the height/width of the evas */
-   char *session;               /* The session to load */
+
+   E_Login_Session_Type *session;	/* The 
+	   session 
+	   to 
+	   load 
+	 */
    int session_index;
 
    Evas_List *users;            /* recent users */
@@ -45,5 +58,7 @@ void e_login_session_init(E_Login_Session e);
 
 int e_login_session_auth_user(E_Login_Session e);
 void e_login_session_reset_user(E_Login_Session e);
+void e_login_session_select_session(E_Login_Session e,
+                                    E_Login_Session_Type * t);
 
 #endif

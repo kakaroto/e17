@@ -144,15 +144,6 @@ e_key_down(Ecore_Event * ev)
             memset(&typebuffer.buf, 0, USER_PASS_MAX);
             typebuffer.buf_index = 0;
          }
-         else if (!(strcmp(e->key, "Up")))
-         {
-            elogin_select_prev_session(e_session);
-         }
-         else if (!(strcmp(e->key, "Down")))
-         {
-            elogin_select_next_session(e_session);
-         }
-
          if (typebuffer.buf_index >= USER_PASS_MAX)
             return;
          else if (!(strcmp(e->key, "space")))

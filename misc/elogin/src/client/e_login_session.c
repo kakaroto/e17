@@ -58,7 +58,6 @@ e_login_session_init(E_Login_Session e)
    Evas *evas;
    Evas_List *l;
    Evas_Object *li;
-   E_Login_Session_Type *st = NULL;
    int iw, ih, ix, iy;
 
    if (!e)
@@ -142,6 +141,7 @@ e_login_session_init(E_Login_Session e)
    evas_object_resize(e->pointer, iw, ih);
    evas_object_image_fill_set(e->pointer, 0.0, 0.0, (double) iw, (double) ih);
    evas_object_layer_set(e->pointer, 2000);
+   evas_object_pass_events_set(e->pointer, 1);
    evas_object_show(e->pointer);
 
    /* Session list background image */
@@ -153,7 +153,7 @@ e_login_session_init(E_Login_Session e)
    evas_object_resize(e->listbg, iw, ih);
    evas_object_image_fill_set(e->listbg, 0.0, 0.0, (double) iw, (double) ih);
    evas_object_layer_set(e->listbg, 1);
-   evas_object_move(e->listbg, 280.0, 40.0);
+   evas_object_move(e->listbg, (double) (e->geom.w - 250) / 2.0, 40.0);
    evas_object_show(e->listbg);
 
    /* Session list heading */
@@ -162,23 +162,29 @@ e_login_session_init(E_Login_Session e)
    evas_object_text_text_set(e->listhead, "Select Session");
    evas_object_layer_set(e->listhead, 2);
    evas_object_color_set(e->listhead, 90, 60, 25, 255);
-   evas_object_move(e->listhead, 300.0, 80.0);
+   ix = (e->geom.w - 250) / 2 + 20;
+   iy = 80;
+   evas_object_move(e->listhead, (double) ix, (double) iy);
    evas_object_show(e->listhead);
 
    /* Build session list */
-   ix = 334;
+   ix = (e->geom.w - 250) / 2 + 50;
    iy = 120;
 
    e->listitems = NULL;
    for (l = e->config->sessions; l && iy <= 330; l = l->next)
    {
-      st = (E_Login_Session_Type *) evas_list_data(l);
+      char *session_name = ((E_Login_Session_Type *) evas_list_data(l))->name;
+
       li = evas_object_text_add(evas);
       evas_object_text_font_set(li, "notepad.ttf", 16.0);
-      evas_object_text_text_set(li, st->name);
-      evas_object_layer_set(li, 5);
+      evas_object_text_text_set(li, session_name);
+      evas_object_layer_set(li, 25);
       evas_object_color_set(li, 0, 0, 0, 255);
+      evas_object_resize(li, 180, 30);
       evas_object_move(li, (double) ix, (double) iy);
+      evas_object_event_callback_add(li, EVAS_CALLBACK_MOUSE_UP,
+                                     elogin_session_list_clicked, e);
       evas_object_show(li);
       e->listitems = evas_list_append(e->listitems, li);
       iy += 30;
@@ -193,16 +199,13 @@ e_login_session_init(E_Login_Session e)
    evas_object_resize(e->bullet, iw, ih);
    evas_object_image_fill_set(e->bullet, 0.0, 0.0, (double) iw, (double) ih);
    evas_object_layer_set(e->bullet, 5);
-   evas_object_move(e->bullet, 300, 120);
+   evas_object_move(e->bullet, -99999, -99999);
    evas_object_show(e->bullet);
 
    /* Set default session to first in list (for now) */ ;
    l = e->config->sessions;
    if (l)
-   {
-      st = evas_list_data(l);
-      e->session = st->path;
-   }
+      e->session = evas_list_data(l);
    else
       e->session = NULL;
 

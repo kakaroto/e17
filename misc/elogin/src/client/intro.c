@@ -1,5 +1,6 @@
 #include "elogin.h"
 #include "e_login_config.h"
+#include "callbacks.h"
 
 #define PERCENT_DESC_HORIZONTAL_PLACEMENT 0.5
 #define PERCENT_DESC_VERTICAL_PLACEMENT 0.8
@@ -123,6 +124,9 @@ intro_init(E_Login_Session e)
    if (!config)
       config = e->config;
 
+
+   /* select a default session */
+   elogin_select_session(e, 0);
 
    o = evas_object_text_add(evas);
    evas_object_text_font_set(o, config->welcome.font.name,

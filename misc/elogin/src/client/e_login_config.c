@@ -1,5 +1,6 @@
 #include "elogin.h"
 #include "e_login_config.h"
+#include "e_login_session.h"
 
 #define REMEMBER_USERS 3
 
