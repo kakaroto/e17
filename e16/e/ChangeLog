@@ -3097,3 +3097,13 @@ Wed Aug 25 18:07:04 CEST 2004
 Bump version numbers.
 Make keys used for menu navigation configurable.
  (patch from Alan Schmitt <alan.schmitt@polytechnique.org>).
+
+-------------------------------------------------------------------------------
+
+Tue Aug 31 19:25:59 CEST 2004
+(Kim)
+
+--- 0.16.7.2 0.02 ---
+Bosnian translation from Kemal Sanjta <gomez@lugzdk.ba>.
+Korean translation updates from Michael Kim <lavnrose@e.sarang.net>.
+Improve dockapp handling.
