@@ -407,6 +407,23 @@ validate_url (char **url)
 }
 
 static void
+save_url(char * url)
+{
+    FILE *fp;
+
+    char * home=getenv("HOME");
+    char filename[256];
+
+    Esnprintf(filename, sizeof(filename),"%s/%s",home, ".Urls");
+    
+    if((fp=fopen(filename,"a")) !=NULL)
+    {
+	fprintf(fp, "%s\n",url);
+	fclose(fp);
+    }
+}
+
+static void
 handle_url (char *url)
 {
   char *sys;
@@ -427,6 +444,9 @@ handle_url (char *url)
   system (sys);
 
   free (sys);
+
+  if(opt.save_urls)
+	save_url(url);
 }
 
 /* Amongst all the fluff, this is the bit that does the actual work. */
