@@ -42,8 +42,6 @@
 #define NUM_9 29
 #define NUM_PI 30
 
-#define FONTS "/usr/local/share/edje/data/test/fonts"
-
 /**
  * defined in calc.tab.c
  */
@@ -366,7 +364,7 @@ equate_edje_init(Equate * eq)
       ecore_evas_callback_move_set(eq->gui.ee, win_move_cb);
 
       evas = ecore_evas_get(eq->gui.ee);
-      evas_font_path_append(evas, FONTS);
+      ecore_config_evas_font_path_apply(evas);
 
       o = evas_object_rectangle_add(evas);
       evas_object_move(o, 0, 0);
