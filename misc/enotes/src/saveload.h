@@ -111,5 +111,9 @@ void            ewl_load_delete(Ewl_Widget * o, void *ev_data, void *null);
 void            ewl_load_listitem_click(Ewl_Widget * o, void *ev_data,
 					void *null);
 
+/** BOTH **/
+void            save_and_load_move_embed(Ewl_Widget * w, void *ev_data,
+					 void *user_data);
+
 
 #endif

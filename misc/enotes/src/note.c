@@ -202,10 +202,14 @@ setup_note(Evas_List ** note, int width, int height, char *title, char *content)
 
 	evas_object_show(p->eo);
 
+
 	p->vbox = ewl_vbox_new();
 	ewl_object_set_fill_policy((Ewl_Object *) p->vbox, EWL_FLAG_FILL_FILL);
 	ewl_container_append_child((Ewl_Container *) p->emb, p->vbox);
 	ewl_widget_show(p->vbox);
+
+	ewl_callback_append(p->emb, EWL_CALLBACK_CONFIGURE, note_move_embed,
+			    p->vbox);
 
 	p->title = ewl_entry_new(title);
 	ewl_container_append_child((Ewl_Container *) p->vbox, p->title);
@@ -505,4 +509,16 @@ Evas_List      *
 get_cycle_previous_note(Evas_List * note)
 {
 	return (evas_list_prev(note));
+}
+
+/**
+ * @param w: The widget to size according to the embed.
+ * @params ev_data and user_data: Callback info.
+ * @brief: Moves embed contents to correct location.
+ */
+void
+note_move_embed(Ewl_Widget * w, void *ev_data, void *user_data)
+{
+	ewl_object_request_geometry(EWL_OBJECT(user_data), CURRENT_X(w),
+				    CURRENT_Y(w), CURRENT_W(w), CURRENT_H(w));
 }

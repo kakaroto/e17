@@ -88,6 +88,7 @@ void            note_edje_minimise(Evas_List * note, Evas_Object * o,
 char           *get_date_string(void);
 int             note_edje_close_timer(void *p);
 int             timer_val_compare(void *data);
+void            note_move_embed(Ewl_Widget * w, void *ev_data, void *user_data);
 
 
 /* External Interaction */

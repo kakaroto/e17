@@ -88,6 +88,9 @@ setup_saveload_win(void)
 				   EWL_FLAG_FILL_FILL);
 	ewl_widget_show(saveload->vbox);
 
+	ewl_callback_append(saveload->emb, EWL_CALLBACK_CONFIGURE,
+			    save_and_load_move_embed, saveload->vbox);
+
 	saveload->tree = ewl_tree_new(1);
 	ewl_container_append_child((Ewl_Container *) saveload->vbox,
 				   saveload->tree);
@@ -410,6 +413,9 @@ setup_load_win(void)
 				   EWL_FLAG_FILL_FILL);
 	ewl_widget_show(load->vbox);
 
+	ewl_callback_append(load->emb, EWL_CALLBACK_CONFIGURE,
+			    save_and_load_move_embed, load->vbox);
+
 	load->tree = ewl_tree_new(1);
 	ewl_container_append_child((Ewl_Container *) load->vbox, load->tree);
 	ewl_object_set_fill_policy((Ewl_Object *) load->tree,
@@ -656,4 +662,16 @@ ewl_load_delete(Ewl_Widget * o, void *ev_data, void *null)
 	free_note_stor(p);
 	ewl_load_revert(NULL, NULL, NULL);
 	return;
+}
+
+/**
+ * @param w: The widget to size according to the embed.
+ * @params ev_data and user_data: Callback info.
+ * @brief: Moves embed contents to correct location.
+ */
+void
+save_and_load_move_embed(Ewl_Widget * w, void *ev_data, void *user_data)
+{
+	ewl_object_request_geometry(EWL_OBJECT(user_data), CURRENT_X(w),
+				    CURRENT_Y(w), CURRENT_W(w), CURRENT_H(w));
 }

@@ -78,6 +78,9 @@ setup_settings_win(Settings * s)
 	ewl_object_set_fill_policy((Ewl_Object *) s->vbox, EWL_FLAG_FILL_FILL);
 	ewl_widget_show(s->vbox);
 
+	ewl_callback_append(s->emb, EWL_CALLBACK_CONFIGURE, settings_move_embed,
+			    s->vbox);
+
 	s->tree = ewl_tree_new(2);
 	ewl_container_append_child((Ewl_Container *) s->vbox, s->tree);
 	ewl_object_set_fill_policy((Ewl_Object *) s->tree, EWL_FLAG_FILL_FILL);
@@ -337,4 +340,16 @@ save_settings(void)
 
 	free(locfn);
 	return;
+}
+
+/**
+ * @param w: The widget to size according to the embed.
+ * @params ev_data and user_data: Callback info.
+ * @brief: Moves embed contents to correct location.
+ */
+void
+settings_move_embed(Ewl_Widget * w, void *ev_data, void *user_data)
+{
+	ewl_object_request_geometry(EWL_OBJECT(user_data), CURRENT_X(w),
+				    CURRENT_Y(w), CURRENT_W(w), CURRENT_H(w));
 }

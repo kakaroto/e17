@@ -60,6 +60,8 @@ void            setup_settings_win(Settings * s);
 void            fill_tree(void);
 void            settings_setup_button(Ewl_Widget * c, Ewl_Widget ** b,
 				      char *label);
+void            settings_move_embed(Ewl_Widget * w, void *ev_data,
+				    void *user_data);
 
 /* Setting up the Options */
 Settings_Opt    setup_settings_opt(Ewl_Widget * tree, char *caption,
