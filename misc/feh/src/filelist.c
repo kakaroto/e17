@@ -56,12 +56,12 @@ feh_file_free (feh_file file)
   free (file);
 }
 
-void
-feh_file_rm_and_free (feh_file file)
+feh_file
+feh_file_rm_and_free (feh_file list, feh_file file)
 {
   D (("In feh_file_rm_and_free\n"));
   unlink (file->filename);
-  feh_file_free (file);
+  return filelist_remove_file (list, file);
 }
 
 
@@ -148,15 +148,20 @@ filelist_num (feh_file list, feh_file file)
   return -1;
 }
 
-void
-filelist_remove_file (feh_file file)
+feh_file
+filelist_remove_file (feh_file list, feh_file file)
 {
   D (("In filelist_remove_file\n"));
+  if(!file)
+	return;
   if (file->prev)
-    file->prev->next = file->next;
+	file->prev->next = file->next;
+  else
+	list = file->next;
   if (file->next)
     file->next->prev = file->prev;
   feh_file_free (file);
+  return list;
 }
 
 /* Recursive */

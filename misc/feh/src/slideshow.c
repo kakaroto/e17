@@ -26,12 +26,19 @@ init_slideshow_mode (void)
   winwidget w = NULL;
   int success = 0;
   char *s = NULL;
-  feh_file file = NULL;
+  feh_file file = NULL, last = NULL;
+  int remove_last = 0;
 
   D (("In init_slideshow_mode\n"));
 
   for (file = filelist; file; file = file->next)
     {
+      if (remove_last && last)
+	{
+	  filelist = filelist_remove_file (filelist, last);
+	  last = NULL;
+	  remove_last = 0;
+	}
       current_file = file;
       s = slideshow_create_name (file->filename);
       if ((w = winwidget_create_from_file (file, s)) != NULL)
@@ -49,7 +56,11 @@ init_slideshow_mode (void)
 	  break;
 	}
       else
-	free (s);
+	{
+	  free (s);
+	  remove_last = 1;
+	  last = file;
+	}
     }
   if (!success)
     show_mini_usage ();
@@ -108,10 +119,13 @@ void
 slideshow_change_image (winwidget winwid, int change)
 {
   int success = 0;
-  int file_num = filelist_length (filelist);
-  feh_file file;
+  feh_file file, last;
+  int remove_last = 0;
+  int i = 0, file_num = 0;
 
   D (("In slideshow_change_image\n"));
+
+  file_num = filelist_length (filelist);
 
   /* Without this, clicking a one-image slideshow reloads it. Not very
    * intelligent behaviour :-) */
@@ -134,7 +148,7 @@ slideshow_change_image (winwidget winwid, int change)
     }
 
   /* The for loop prevents us looping infinitely */
-  for (file = filelist; file; file = file->next)
+  for (i = 0; i < file_num; i++)
     {
       if (winwid->im)
 	{
@@ -157,6 +171,12 @@ slideshow_change_image (winwidget winwid, int change)
 	    current_file = current_file->prev;
 	  else
 	    current_file = filelist_last (current_file);
+	}
+      if (remove_last && last)
+	{
+	  filelist = filelist_remove_file (filelist, last);
+	  last = NULL;
+	  remove_last = 0;
 	}
       if (opt.progressive)
 	{
@@ -188,6 +208,11 @@ slideshow_change_image (winwidget winwid, int change)
 	      winwidget_rerender_image (winwid);
 	    }
 	  break;
+	}
+      else
+	{
+	  remove_last = 1;
+	  last = current_file;
 	}
     }
   if (!success)

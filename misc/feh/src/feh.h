@@ -228,12 +228,12 @@ int feh_load_image_char (Imlib_Image ** im, char * filename);
 
 feh_file filelist_addtofront (feh_file root, feh_file newfile);
 feh_file filelist_newitem (char *filename);
-void filelist_remove_file (feh_file file);
+feh_file filelist_remove_file (feh_file list, feh_file file);
 void feh_file_free (feh_file file);
 int filelist_length (feh_file file);
 feh_file filelist_last (feh_file file);
 feh_file filelist_first (feh_file file);
-void feh_file_rm_and_free (feh_file file);
+feh_file feh_file_rm_and_free (feh_file list, feh_file file);
 int filelist_num (feh_file list, feh_file file);
 feh_file filelist_reverse (feh_file list);
 

@@ -1,3 +1,13 @@
+Thu Feb 17 23:14:09 2000  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
+
+	* Ooh. Cool. Now slideshow/deletion numbering works more sanely -
+	thanks to the new filelist code.
+
+Thu Feb 17 23:13:22 2000  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
+
+	* Hehe. That was more dumb than usual. Deleting files somewhat
+	destroyed the list, and caused nice segfaults.
+
 Thu Feb 17 22:05:40 2000  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
 
 	* More file-list fixes.

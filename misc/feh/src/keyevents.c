@@ -56,8 +56,10 @@ handle_keypress_event (XEvent * ev, Window win)
 	{
 	  if (kev->state & ControlMask)
 	    {
-              feh_file_rm_and_free(current_file);
+	      feh_file doomed;
+	      doomed = current_file;
 	      slideshow_change_image (winwid, SLIDE_NEXT);
+	      feh_file_rm_and_free (filelist, doomed);
 	    }
 	}
       break;

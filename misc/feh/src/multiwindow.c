@@ -42,9 +42,7 @@ init_multiwindow_mode (void)
 	    winwidget_show (w);
 	  w->file = file;
 	  if (opt.reload > 0)
-	  {
 	      feh_add_unique_timer (cb_reload_timer, w, opt.reload);
-	  }
 	}
       else
       {
