@@ -214,7 +214,7 @@ static int _ewd_list_append(Ewd_List * list, Ewd_List_Node *end)
 	list->last = end;
 
 	if (list->first == NULL) {
-		list->first = list->current = end;
+		list->first = end;
 		list->index = 1;
 	}
 
@@ -256,10 +256,6 @@ static int _ewd_list_prepend(Ewd_List * list, Ewd_List_Node *start)
 	EWD_WRITE_UNLOCK(start);
 
 	list->first = start;
-
-	/* If there's no current item selected, select the first one */
-	if (!list->current)
-		list->current = list->first;
 
 	/* If no last node, then the first node is the last node */
 	if (list->last == NULL)
@@ -513,17 +509,20 @@ static void *_ewd_list_remove_last(Ewd_List * list)
 		return FALSE;
 
 	old = list->last;
+	if (list->current == old)
+		list->current = NULL;
+
+	if (list->first == old)
+		list->first = NULL;
 	for (prev = list->first; prev && prev->next != old; prev = prev->next);
 	if (prev) {
 		prev->next = NULL;
 		list->last = prev;
 		if (list->current == old) {
-			list->current = prev;
-			list->index--;
+			list->current = NULL;
 		}
 	}
-	else
-		list->first = list->current = list->last = NULL;
+
 
 	EWD_WRITE_LOCK(old);
 	if (old) {
