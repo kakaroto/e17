@@ -99,7 +99,6 @@ main(int argc, char **argv)
            break;
         default:
            fprintf(stderr, "Warning: Unknown command line option\n");
-           exit(1);
       }
    }
 
