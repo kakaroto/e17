@@ -93,18 +93,18 @@ enum {
 	ARG_SELECTED_OBJ,
 };
 
-//
-// We need to veto a drag handler for group dragging.
-//
+/**/
+/* We need to veto a drag handler for group dragging.*/
+/**/
 static GEVASEV_HANDLER_PRIORITY gevasev_selectable_get_priority( GtkgEvasEvH* evh )
 {
 	return GEVASEV_HANDLER_PRIORITY_HI;
 }
 
-//
-// Attachs the handler, we also but outself in the evasobj so that things can
-// be done faster later.
-//
+/**/
+/* Attachs the handler, we also but outself in the evasobj so that things can*/
+/* be done faster later.*/
+/**/
 void gevasevh_selectable_set_normal_gevasobj(
 	GtkgEvasEvHSelectable* ev, 
 	GtkgEvasObj* nor )
@@ -125,10 +125,10 @@ void gevasevh_selectable_set_selector( GtkgEvasEvHSelectable* evh, GtkObject* ev
 }
 
 
-//
-// A callback type function used by group_selector to select and unselect objects
-// as it sees fit.
-//
+/**/
+/* A callback type function used by group_selector to select and unselect objects*/
+/* as it sees fit.*/
+/**/
 void gevas_selectable_select( GtkgEvasEvHSelectable * ev, gboolean s )
 {
 
@@ -139,7 +139,7 @@ void gevas_selectable_select( GtkgEvasEvHSelectable * ev, gboolean s )
 		gint32 by = ev->border_y;
 		int lay=0;
 
-//		printf("showing for selectable\n");
+/*		printf("showing for selectable\n");*/
 		gevasobj_get_geometry( ev->normal, &x, &y, &w, &h );
 		gevasobj_move( ev->selected, x - bx, y - by);
 		gevasobj_resize( ev->selected, w + 2*bx, h + 2*by);
@@ -151,14 +151,14 @@ void gevas_selectable_select( GtkgEvasEvHSelectable * ev, gboolean s )
 		gevasobj_show( ev->selected );
 	}
 	else {
-//		printf("hiding for selectable\n");
+/*		printf("hiding for selectable\n");*/
 		gevasobj_hide( ev->selected );
 	}
 }
 
-//
-// Callback for group_selector.
-//
+/**/
+/* Callback for group_selector.*/
+/**/
 void gevas_selectable_move( GtkgEvasEvHSelectable * ev, gint32 dx, gint32 dy )
 {
 	double x=0, y=0;
@@ -168,7 +168,7 @@ void gevas_selectable_move( GtkgEvasEvHSelectable * ev, gint32 dx, gint32 dy )
 	gevasobj_get_location( ev->normal, &x, &y );
 	x+=dx;	
 	y+=dy;
-//	printf("gevas_selectable_move() x:%f y:%f dx:%d dy:%d\n",x,y,dx,dy);
+/*	printf("gevas_selectable_move() x:%f y:%f dx:%d dy:%d\n",x,y,dx,dy);*/
 	gevasobj_move( ev->normal, x, y );
 	gevasobj_move( ev->selected, x-bx, y-by);
 }
@@ -183,7 +183,7 @@ gevasev_selectable_mouse_in(GtkObject * object, GtkObject * gevasobj, int _b,
 						 GEVASEV_HANDLER_RET_NEXT);
 	ev = GTK_GEVASEVH_SELECTABLE(object);
 
-//	gevasev_selectable_show(ev, ev->hot);
+/*	gevasev_selectable_show(ev, ev->hot);*/
 	return GEVASEV_HANDLER_RET_NEXT;
 }
 
@@ -197,7 +197,7 @@ gevasev_selectable_mouse_out(GtkObject * object, GtkObject * gevasobj, int _b,
 						 GEVASEV_HANDLER_RET_NEXT);
 	ev = GTK_GEVASEVH_SELECTABLE(object);
 
-//	gevasev_selectable_show(ev, ev->cold);
+/*	gevasev_selectable_show(ev, ev->cold);*/
 	return GEVASEV_HANDLER_RET_NEXT;
 }
 
@@ -221,24 +221,24 @@ gevasev_selectable_mouse_down(GtkObject * object, GtkObject * gevasobj, int _b,
 	ev->tracking_y = _y;
 
 	gdkev = gevas_get_current_event( ev->normal->gevas );
-//	printf("got gdkev:%p\n", gdkev );
-	if( gdkev ) //&& gdkev->type == GDK_BUTTON_PRESS )
+/*	printf("got gdkev:%p\n", gdkev );*/
+	if( gdkev ) /*&& gdkev->type == GDK_BUTTON_PRESS )*/
 	{
 		GdkEventButton* gdkbev;
 
-//		printf("got gdkev button\n");
+/*		printf("got gdkev button\n");*/
 
 		gdkbev = (GdkEventButton*)gdkev;
 
 		if( gdkbev->state & GDK_SHIFT_MASK )
 		{
-//			printf("gevasev_selectable_mouse_down() shift key\n");
+/*			printf("gevasev_selectable_mouse_down() shift key\n");*/
 			gevasevh_group_selector_floodtosel( ev->evh_selector, ev );
-//			return GEVASEV_HANDLER_RET_NEXT;
+/*			return GEVASEV_HANDLER_RET_NEXT;*/
 		}
 		if( gdkbev->state & GDK_CONTROL_MASK )
 		{
-//			printf("gevasev_selectable_mouse_down() control key\n");
+/*			printf("gevasev_selectable_mouse_down() control key\n");*/
 			if( gevasevh_group_selector_isinsel( ev->evh_selector, ev ))
 				gevasevh_group_selector_remfromsel( ev->evh_selector, ev );
 			else
@@ -248,7 +248,7 @@ gevasev_selectable_mouse_down(GtkObject * object, GtkObject * gevasobj, int _b,
 
 	}
 
-//	printf("selectable down\n");
+/*	printf("selectable down\n");*/
 
 
 	if( !gevasevh_group_selector_isinsel( ev->evh_selector, ev ))
@@ -256,7 +256,7 @@ gevasev_selectable_mouse_down(GtkObject * object, GtkObject * gevasobj, int _b,
 		gevasevh_group_selector_flushsel( ev->evh_selector );
 		gevasevh_group_selector_addtosel( ev->evh_selector, ev );
 	}
-//	printf("selectable down(ret)\n");
+/*	printf("selectable down(ret)\n");*/
 
 
 	return GEVASEV_HANDLER_RET_NEXT;
@@ -276,10 +276,10 @@ gevasev_selectable_mouse_up(GtkObject * object, GtkObject * gevasobj, int _b,
 						 GEVASEV_HANDLER_RET_NEXT);
 	ev = GTK_GEVASEVH_SELECTABLE(object);
 
-//	gevas_selectable_select( ev , 0 );
+/*	gevas_selectable_select( ev , 0 );*/
 
-//	gevasevh_group_selector_remfromsel( ev->evh_selector, ev );
-//	printf("gevasev_selectable_mouse_up()\n");
+/*	gevasevh_group_selector_remfromsel( ev->evh_selector, ev );*/
+/*	printf("gevasev_selectable_mouse_up()\n");*/
 	ev->tracking = 0;
 
 	return GEVASEV_HANDLER_RET_NEXT;
@@ -301,7 +301,7 @@ gevasev_selectable_mouse_move(GtkObject * object, GtkObject * gevasobj, int _b,
 
 		dx = _x - ev->tracking_x;
 		dy = _y - ev->tracking_y;
-//printf("selectable_mouse_move() ev:%p  dx:%d dy:%d\n",ev, dx,dy);
+/*printf("selectable_mouse_move() ev:%p  dx:%d dy:%d\n",ev, dx,dy);*/
 		gevasevh_group_selector_movesel( ev->evh_selector, dx, dy );
 		ev->tracking_x = _x;
 		ev->tracking_y = _y;
@@ -311,7 +311,7 @@ gevasev_selectable_mouse_move(GtkObject * object, GtkObject * gevasobj, int _b,
 
 	if( gevasevh_group_selector_isinsel( ev->evh_selector, ev ))
 	{
-//		printf("gevasev_selectable_mouse_move() is in sel...\n");
+/*		printf("gevasev_selectable_mouse_move() is in sel...\n");*/
 		return GEVASEV_HANDLER_RET_CHOMP;
 	}
 	

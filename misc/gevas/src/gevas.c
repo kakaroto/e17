@@ -883,19 +883,19 @@ static void gevas_paint(GtkgEvas * ev, GdkRectangle * area)
 		return;
 
   
-// XXX: doesn't work without this line.
+/* XXX: doesn't work without this line.*/
 	evas_update_rect(ev->evas, area->x, area->y, area->width, area->height);
 
     
-//	printf("evas_update_rect() x:%d y:%d w:%d h:%d\n",
-//		area->x, area->y, area->width, area->height);
+/*	printf("evas_update_rect() x:%d y:%d w:%d h:%d\n",*/
+/*		area->x, area->y, area->width, area->height);*/
 
 	ev->evas_r = *area;
 
-    //
-    // Now we carve up the area outside of the current expose event so
-    // that evas doesn't waste time rendering stuff that already is drawn ok.
-    //
+    /**/
+    /* Now we carve up the area outside of the current expose event so*/
+    /* that evas doesn't waste time rendering stuff that already is drawn ok.*/
+    /**/
     evas_clear_obscured_rects(ev->evas);
     {
         int x = ev->evas_r.x;
@@ -905,14 +905,14 @@ static void gevas_paint(GtkgEvas * ev, GdkRectangle * area)
         int aw = widget->allocation.width;
         int ah = widget->allocation.height;
 
-//        printf("paint() x:%d y:%d w:%d h:%d aw:%d ah:%d\n",
-//               x,y,w,h,aw,ah);
+/*        printf("paint() x:%d y:%d w:%d h:%d aw:%d ah:%d\n",*/
+/*               x,y,w,h,aw,ah);*/
 
-        // Left and right blocks
+        /* Left and right blocks*/
         evas_add_obscured_rect(ev->evas, 0, 0, x, ah );
         evas_add_obscured_rect(ev->evas, x+w, 0, aw - x+w, ah );
         
-        // Top and bottom blocks
+        /* Top and bottom blocks*/
         evas_add_obscured_rect(ev->evas, x, 0, x+w, y );
         evas_add_obscured_rect(ev->evas, x, y+h, x+w, ah );
     }
@@ -943,18 +943,18 @@ gint gevas_view_redraw_cb(gpointer data)
     evas_clear_obscured_rects(ev->evas);
     evas_render(ev->evas);
 
-/*
-  // Although the below code *seems* faster (due to calling paint, and thus having
-  // obscures working to block parts of the evas) the dumber code above seems faster.
+#if 0
+  * Although the below code *seems* faster (due to calling paint, and thus having*/
+  /* obscures working to block parts of the evas) the dumber code above seems faster.*/
 
-//    printf("gevas_view_redraw_cb %p %p\n", ev->scrolledwindow, ev->scrolledwindow_viewport);
+/*    printf("gevas_view_redraw_cb %p %p\n", ev->scrolledwindow, ev->scrolledwindow_viewport);*/
     {
         GtkAdjustment* a = 0;
     
         a = gtk_scrolled_window_get_hadjustment( ev->scrolledwindow );
         
-//        printf("scrolledwindow_viewport2... low:%f hi:%f val:%f pagesize:%f\n",
-//               a->lower, a->upper, a->value, a->page_size );
+/*        printf("scrolledwindow_viewport2... low:%f hi:%f val:%f pagesize:%f\n",*/
+/*               a->lower, a->upper, a->value, a->page_size );*/
 
         rect.x     = a->value;
         rect.width = a->page_size;
@@ -964,7 +964,7 @@ gint gevas_view_redraw_cb(gpointer data)
         rect.height = a->page_size;
     }
     gevas_paint( ev, &rect );
-*/
+#endif
     
 	gevas->current_idle = 0;
 	return FALSE;
@@ -974,8 +974,8 @@ gint gevas_view_redraw_cb(gpointer data)
 
 void gevas_queue_redraw(GtkgEvas * gevas)
 {
-    // This call seems to be much slower to use.
-    //gtk_widget_queue_draw( gevas );
+    /* This call seems to be much slower to use.*/
+    /*gtk_widget_queue_draw( gevas );*/
 
 	if (gevas->current_idle)
 		gtk_idle_remove(gevas->current_idle);
