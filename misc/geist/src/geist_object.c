@@ -20,7 +20,8 @@ void geist_object_init(geist_object *obj)
 
    memset(obj, 0, sizeof(geist_object));
    obj->free = geist_object_int_free;
-   obj->render = geist_object_render;
+   obj->render = geist_object_int_render;
+   obj->render_partial = geist_object_int_render_partial;
    obj->sizemode = SIZEMODE_ZOOM; 
    
    D_RETURN_(5);
@@ -55,6 +56,25 @@ void geist_object_free(geist_object *obj)
    D_RETURN_(5);
 }
 
+void geist_object_int_render(geist_object *obj, Imlib_Image dest)
+{  
+   D_ENTER(5);
+   
+   printf("IMPLEMENT\n");
+   
+   D_RETURN_(5);
+}
+
+void geist_object_int_render_partial(geist_object *obj, Imlib_Image dest, int x, int y, int w, int h)
+{  
+   D_ENTER(5);
+
+   printf("IMPLEMENT\n");
+
+   D_RETURN_(5);
+}
+
+
 void geist_object_render(geist_object *obj, Imlib_Image dest)
 {  
    D_ENTER(5);
@@ -63,6 +83,17 @@ void geist_object_render(geist_object *obj, Imlib_Image dest)
    
    D_RETURN_(5);
 }
+
+void geist_object_render_partial(geist_object *obj, Imlib_Image dest, int x, int y, int w, int h)
+{
+   D_ENTER(5);
+
+D(5, ("rendering area %d,%d %dx%d\n", x, y, w, h));
+   obj->render_partial(obj, dest, x, y, w, h);
+
+   D_RETURN_(5);
+}
+
 
 void geist_object_show(geist_object *obj)
 {

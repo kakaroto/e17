@@ -80,7 +80,7 @@ main(int argc, char *argv[])
 
 
    doc = geist_document_new(400, 400);
-   
+
    geist_document_add_layer(doc);
 
    geist_document_add_object(doc,
@@ -139,32 +139,57 @@ gboolean configure_cb(GtkWidget * widget, GdkEventConfigure * event,
 gint evbox_buttonpress_cb(GtkWidget * widget, GdkEventButton * event)
 {
    geist_object *obj;
+
    D_ENTER(5);
 
-   if(event->button == 1)
+   if (event->button == 1)
    {
       obj = geist_document_find_clicked_object(doc, event->x, event->y);
-      if(!obj)
+      if (!obj)
          D_RETURN(5, 1);
       D(2, ("setting object state SELECTED\n"));
-      printf("selecting object %p\n", obj);
-      /* geist_object_set_state(obj, SELECTED); */
+      geist_object_set_state(obj, SELECTED);
+      D(2, ("setting object state DRAG\n"));
+      geist_object_set_state(obj, DRAG);
+      gtk_object_set_data_full(GTK_OBJECT(mainwin), "drag", obj, NULL);
    }
-   
+
    D_RETURN(5, 1);
 }
 
 gint
 evbox_buttonrelease_cb(GtkWidget * widget, GdkEventButton * event)
 {
+   geist_object *obj;
+
    D_ENTER(5);
+
+   obj = geist_document_find_clicked_object(doc, event->x, event->y);
+   if (!obj)
+      D_RETURN(5, 1);
+   D(2, ("unsetting object state DRAG\n"));
+   geist_object_unset_state(obj, DRAG);
+   gtk_object_set_data_full(GTK_OBJECT(mainwin), "drag", NULL, NULL);
 
    D_RETURN(5, 1);
 }
 
 gint evbox_mousemove_cb(GtkWidget * widget, GdkEventMotion * event)
 {
+   geist_object *obj;
+
    D_ENTER(5);
+
+   obj = gtk_object_get_data(GTK_OBJECT(mainwin), "drag");
+   if (obj)
+   {
+      D(5, ("moving object to %f, %f\n", event->x, event->y));
+      geist_document_render_partial(doc, obj->x, obj->y, obj->w, obj->h);
+      obj->x = event->x;
+      obj->y = event->y;
+      geist_document_render_partial(doc, obj->x, obj->y, obj->w, obj->h);
+      geist_document_render_to_gtk_window(doc, darea);
+   }
 
    D_RETURN(5, 1);
 }

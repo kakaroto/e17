@@ -52,6 +52,32 @@ geist_layer_render(geist_layer * layer, Imlib_Image dest)
 }
 
 void
+geist_layer_render_partial(geist_layer * layer, Imlib_Image dest, int x, int y, int w, int h)
+{
+   geist_list *l;
+   geist_object *obj;
+
+   D_ENTER(3);
+
+   if (layer->visible)
+   {
+      D(3, ("rendering layer %p\n", layer));
+      for (l = layer->objects; l; l = l->next)
+      {
+         obj = ((geist_object *) l->data);
+         if(RECTS_INTERSECT(x, y, w, h, obj->x, obj->y, obj->w, obj->h))
+         {
+            D(4, ("rects intersect: %d,%d %dx%d   and   %d,%d %dx%d\n", x, y, w, h, obj->x, obj->y, obj->w, obj->h));
+            geist_object_render_partial(obj, dest, x, y, w, h);
+         }
+      }
+   }
+
+   D_RETURN_(3);
+}
+
+
+void
 geist_layer_add_object(geist_layer * layer, geist_object * obj)
 {
    D_ENTER(3);

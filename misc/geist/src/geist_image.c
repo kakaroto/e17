@@ -35,6 +35,8 @@ geist_image_new_from_file(int x, int y, char *filename)
       D_RETURN(5, NULL);
    }
 
+   img->filename = estrdup(filename);
+
    obj->x = x;
    obj->y = y;
 
@@ -52,6 +54,7 @@ geist_image_init(geist_image * img)
    geist_object_init(obj);
    obj->free = geist_image_free;
    obj->render = geist_image_render;
+   obj->render_partial = geist_image_render_partial;
 
    D_RETURN_(5);
 }
@@ -101,9 +104,50 @@ geist_image_render(geist_object * obj, Imlib_Image dest)
    sw = geist_imlib_image_get_width(im->im);
    sh = geist_imlib_image_get_height(im->im);
 
-   D(3, ("Rendering image %p\n", obj));
+   D(3, ("Rendering image %p with filename %s\n", obj, im->filename));
    geist_imlib_blend_image_onto_image(dest, im->im, 0, 0, 0, sw, sh, obj->x,
                                       obj->y, sw, sh, 1,
+                                      geist_imlib_image_has_alpha(im->im),
+                                      im->alias);
+
+   D_RETURN_(5);
+}
+
+void
+geist_image_render_partial(geist_object * obj, Imlib_Image dest, int x, int y,
+                           int w, int h)
+{
+   geist_image *im;
+   int sw, sh, dw, dh, sx, sy, dx, dy;
+
+   D_ENTER(5);
+
+   if (!obj->visible)
+      D_RETURN_(5);
+
+   im = (geist_image *) obj;
+   if (!im->im)
+      D_RETURN_(5);
+
+   sx = x - obj->x;
+   sy = y - obj->y;
+   if(sx < 0)
+      sx = 0;
+   if(sy < 0)
+      sy = 0;
+   sw = w - sx;
+   sh = w - sy;
+   
+   dx = x;
+   dy = y;
+   dw = w;
+   dh = h;
+
+   D(3, ("Rendering image area:\nsx: %d\tsy: %d\nsw: %d\tsh: %d\ndx: %d\tdy: %d\ndw: %d\tdh: %d\n", sx, sy, sw, sh, dx, dy, dw, dh));
+
+   D(3, ("Rendering partial image %s\n", im->filename));
+   geist_imlib_blend_image_onto_image(dest, im->im, 0, sx, sy, sw, sh, dx, dy,
+                                      dw, dh, 1,
                                       geist_imlib_image_has_alpha(im->im),
                                       im->alias);
 

@@ -62,6 +62,30 @@ geist_document_render(geist_document * document)
 }
 
 void
+geist_document_render_partial(geist_document * document, int x, int y, int w,
+                              int h)
+{
+   geist_list *l;
+
+   D_ENTER(3);
+
+   geist_imlib_image_fill_rectangle(document->im, x, y, w, h, 255, 255, 255,
+                                    255);
+
+   for (l = document->layers; l; l = l->next)
+      geist_layer_render_partial((geist_layer *) l->data, document->im, x, y,
+                                 w, h);
+
+   geist_imlib_render_image_part_on_drawable_at_size(document->pmap,
+                                                     document->im, 0, 0, w, h,
+                                                     x, y, w, h, 1, 1,
+                                                     0);
+
+   D_RETURN_(3);
+
+}
+
+void
 geist_document_add_object(geist_document * doc, geist_object * obj)
 {
    geist_list *top;
@@ -89,13 +113,14 @@ geist_document_find_clicked_object(geist_document * doc, int x, int y)
 {
    geist_list *l;
    geist_object *ret = NULL;
+
    D_ENTER(3);
 
    for (l = doc->layers; l; l = l->next)
    {
       ret = geist_layer_find_clicked_object((geist_layer *) l->data, x, y);
    }
-   
-  D_RETURN(3, ret);
+
+   D_RETURN(3, ret);
 
 }

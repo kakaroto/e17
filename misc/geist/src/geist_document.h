@@ -22,6 +22,8 @@ struct __geist_document
 geist_document *geist_document_new(int w, int h);
 void geist_document_free(geist_document * l);
 void geist_document_render(geist_document * document);
+void geist_document_render_partial(geist_document * document, int x, int y,
+                                   int w, int h);
 
 void geist_document_add_object(geist_document * doc, geist_object * obj);
 void geist_document_add_layer(geist_document * doc);
