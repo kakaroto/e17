@@ -495,7 +495,7 @@ void ewl_object_request_w(Ewl_Object * o, int w)
 	 * Bound the width by the preferred size first.
 	 */
 	if ((w < o->preferred.w && !(o->flags & EWL_FLAG_FILL_HSHRINK))
-	    || (w > o->preferred.w &&
+	    || (o->preferred.w && w > o->preferred.w &&
 		!(o->flags & EWL_FLAG_FILL_HFILL)))
 		w = o->preferred.w;
 
@@ -537,7 +537,7 @@ void ewl_object_request_h(Ewl_Object * o, int h)
 	 * Bound the width by the preferred size first.
 	 */
 	if ((h < o->preferred.h && !(o->flags & EWL_FLAG_FILL_VSHRINK))
-	    || (h > o->preferred.h &&
+	    || (o->preferred.h && h > o->preferred.h &&
 		!(o->flags & EWL_FLAG_FILL_VFILL)))
 		h = o->preferred.h;
 

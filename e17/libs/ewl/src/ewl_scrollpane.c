@@ -43,8 +43,7 @@ int ewl_scrollpane_init(Ewl_ScrollPane * s)
 	ewl_container_resize_notify(EWL_CONTAINER(s),
 				    (Ewl_Child_Resize)
 				    ewl_scrollpane_child_resize_cb);
-	ewl_object_set_fill_policy(EWL_OBJECT(s), EWL_FLAG_FILL_FILL |
-			EWL_FLAG_FILL_SHRINK);
+	ewl_object_set_fill_policy(EWL_OBJECT(s), EWL_FLAG_FILL_ALL);
 
 	s->overlay = ewl_overlay_new();
 	ewl_object_set_fill_policy(EWL_OBJECT(s->overlay), EWL_FLAG_FILL_ALL);
