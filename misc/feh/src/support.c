@@ -168,9 +168,16 @@ feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
       if (scaled) {
          w = scr->width;
          h = scr->height;
-         pmap_d1 = XCreatePixmap(disp, root, scr->width, scr->height, depth);
-         gib_imlib_render_image_on_drawable_at_size(pmap_d1, im, 0, 0,
-                                                    scr->width, scr->height,
+
+#ifdef HAVE_LIBXINERAMA
+         if (xinerama_screens) {
+           w = xinerama_screens[xinerama_screen].width;
+           h = xinerama_screens[xinerama_screen].width;
+         }
+#endif /* HAVE_LIBXINERAMA */
+
+         pmap_d1 = XCreatePixmap(disp, root, w, h, depth);
+         gib_imlib_render_image_on_drawable_at_size(pmap_d1, im, 0, 0, w, h,
                                                     1, 0, 1);
          fehbg = estrjoin(" ", "feh --bg-scale", fil, NULL);
       } else if (centered) {
@@ -181,12 +188,20 @@ feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
          D(3, ("centering\n"));
          w = scr->width;
          h = scr->height;
-         pmap_d1 = XCreatePixmap(disp, root, scr->width, scr->height, depth);
+
+#ifdef HAVE_LIBXINERAMA
+         if (xinerama_screens) {
+           w = xinerama_screens[xinerama_screen].width;
+           h = xinerama_screens[xinerama_screen].width;
+         }
+#endif /* HAVE_LIBXINERAMA */
+
+         pmap_d1 = XCreatePixmap(disp, root, w, h, depth);
          gcval.foreground = BlackPixel(disp, DefaultScreen(disp));
          gc = XCreateGC(disp, root, GCForeground, &gcval);
-         XFillRectangle(disp, pmap_d1, gc, 0, 0, scr->width, scr->height);
-         x = (scr->width - gib_imlib_image_get_width(im)) >> 1;
-         y = (scr->height - gib_imlib_image_get_height(im)) >> 1;
+         XFillRectangle(disp, pmap_d1, gc, 0, 0, w, h);
+         x = (w - gib_imlib_image_get_width(im)) >> 1;
+         y = (h - gib_imlib_image_get_height(im)) >> 1;
          gib_imlib_render_image_on_drawable(pmap_d1, im, x, y, 1, 0, 0);
          XFreeGC(disp, gc);
          fehbg = estrjoin(" ", "feh --bg-center", fil, NULL);

@@ -44,6 +44,13 @@ XContext xid_context = 0;
 Window root = 0;
 winwidget progwin = NULL;
 
+/* Xinerama support */
+#ifdef HAVE_LIBXINERAMA
+XineramaScreenInfo *xinerama_screens = NULL;
+int xinerama_screen;
+int num_xinerama_screens;
+#endif /* HAVE_LIBXINERAMA */
+
 void
 init_x_and_imlib(void)
 {
@@ -58,6 +65,16 @@ init_x_and_imlib(void)
    root = RootWindow(disp, DefaultScreen(disp));
    scr = ScreenOfDisplay(disp, DefaultScreen(disp));
    xid_context = XUniqueContext();
+
+#ifdef HAVE_LIBXINERAMA
+   /* initialize Xinerama */
+   if (opt.xinerama && XineramaIsActive(disp)) {
+     int major, minor;
+     xinerama_screen = 0;
+     XineramaQueryVersion(disp, &major, &minor);
+     xinerama_screens = XineramaQueryScreens(disp, &num_xinerama_screens);
+   }
+#endif /* HAVE_LIBXINERAMA */
 
    imlib_context_set_display(disp);
    imlib_context_set_visual(vis);

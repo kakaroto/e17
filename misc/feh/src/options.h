@@ -63,6 +63,7 @@ struct __fehoptions
    unsigned char builtin_http;
    unsigned char wget_timestamp;
    unsigned char bgmode;
+   unsigned char xinerama;
 
    char *output_file;
    char *output_dir;

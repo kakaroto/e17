@@ -386,6 +386,19 @@ feh_menu_show_at_xy(feh_menu * m,
     x = scr->width - m->w;
   if ((y + m->h) > scr->height)
     y = scr->height - m->h;
+
+#if 0 
+/* #ifdef HAVE_LIBXINERAMA */
+/* this doesn't work correctly :( -- pabs */
+  if (xinerama_screens) {
+    if ((x + m->w) > xinerama_screens[xinerama_screen].width)
+      x = xinerama_screens[xinerama_screen].width - m->w;
+    if ((y + m->h) > xinerama_screens[xinerama_screen].height)
+      y = xinerama_screens[xinerama_screen].height - m->h;
+
+  }
+#endif /* HAVE_LIBXINERAMA */
+
   if (x < 0)
     x = 0;
   if (y < 0)
@@ -1894,13 +1907,58 @@ feh_menu_cb_opt_fullscreen(feh_menu * m,
                            feh_menu_item * i,
                            void *data)
 {
+  int curr_screen = 0;
+
   MENU_ITEM_TOGGLE(i);
   if (MENU_ITEM_IS_ON(i))
     m->fehwin->full_screen = TRUE;
   else
     m->fehwin->full_screen = FALSE;
+
+#ifdef HAVE_LIBXINERAMA
+  if (xinerama_screens) {
+    int i, rect[4];
+
+    /* FIXME: this doesn't do what it should;  XGetGeometry always
+     * returns x,y == 0,0.  I think that's due to the hints being passed
+     * (or more specifically, a missing hint) to X in winwidget_create
+     */
+    winwidget_get_geometry(m->fehwin, rect);
+    /* printf("window: (%d, %d)\n", rect[0], rect[1]);
+    printf("found %d screens.\n", num_xinerama_screens); */
+    for (i = 0; i < num_xinerama_screens; i++) {
+      xinerama_screen = 0;
+      /* printf("%d: [%d, %d, %d, %d] (%d, %d)\n",
+             i,
+             xinerama_screens[i].x_org, xinerama_screens[i].y_org,
+             xinerama_screens[i].width, xinerama_screens[i].height,
+             rect[0], rect[1]);*/
+      if (XY_IN_RECT(rect[0], rect[1],
+            xinerama_screens[i].x_org, xinerama_screens[i].y_org,
+            xinerama_screens[i].width, xinerama_screens[i].height)) {
+        curr_screen = xinerama_screen = i;
+        break;
+      }
+
+    }
+  }
+#endif /* HAVE_LIBXINERAMA */
+
   winwidget_destroy_xwin(m->fehwin);
   winwidget_create_window(m->fehwin, m->fehwin->im_w, m->fehwin->im_h);
+
   winwidget_render_image(m->fehwin, 1, 1);
   winwidget_show(m->fehwin);
+
+#ifdef HAVE_LIBXINERAMA
+  /* if we have xinerama and we're using it, then full screen the window
+   * on the head that the window was active on */
+  if (m->fehwin->full_screen == TRUE && xinerama_screens) {
+    xinerama_screen = curr_screen;
+    winwidget_move(m->fehwin,
+                   xinerama_screens[curr_screen].x_org,
+                   xinerama_screens[curr_screen].y_org);
+  }
+#endif /* HAVE_LIBXINERAMA */
+
 }

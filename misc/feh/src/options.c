@@ -70,6 +70,12 @@ init_parse_options(int argc, char **argv)
 
    opt.builtin_http = 0;
 
+   opt.xinerama = 0;
+#ifdef HAVE_LIBXINERAMA
+   /* if we're using xinerama, then enable it by default */
+   opt.xinerama = 1;
+#endif /* HAVE_LIBXINERAMA */
+   
    D(3, ("About to parse env options (if any)\n"));
    /* Check for and parse any options in FEH_OPTIONS */
    feh_parse_environment_options();
@@ -377,6 +383,7 @@ feh_parse_option_array(int argc, char **argv)
       {"bg-seamless", 1, 0, 203},
       {"menu-style", 1, 0, 204},
       {"zoom", 1, 0, 205},
+      {"xinerama", 1, 0, 206},
       {0, 0, 0, 0}
    };
    int optch = 0, cmdx = 0, i = 0;
@@ -648,6 +655,8 @@ feh_parse_option_array(int argc, char **argv)
         case 205:
            opt.default_zoom = atoi(optarg);
            break;
+        case 206:
+           opt.xinerama = atoi(optarg);
         default:
            break;
       }
@@ -909,6 +918,8 @@ show_usage(void)
            "                            any mode (default=1).\n"
            "  -9, --no-blur-ctrl-mask   Don't require CTRL+Button for blurring in\n"
            "                            any mode -- just use the button (default=off).\n"
+           "      --xinerama [0|1]      Enable/disable Xinerama support.  Has no effect\n"
+           "                            unless you have an Xinerama compiled in.\n"
            " FORMAT SPECIFIERS\n"
            "                            %%f image path/filename\n"
            "                            %%n image name\n"

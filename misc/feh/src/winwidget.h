@@ -78,6 +78,8 @@ enum win_type
 struct __winwidget
 {
    Window win;
+   int x;
+   int y;
    int w;
    int h;
    int im_w;
@@ -115,6 +117,7 @@ void winwidget_destroy_all(void);
 void winwidget_free_image(winwidget w);
 void winwidget_render_image(winwidget winwid, int resize, int alias);
 void winwidget_rotate_image(winwidget winid, double angle);
+void winwidget_move(winwidget winwid, int x, int y);
 void winwidget_resize(winwidget winwid, int w, int h);
 void winwidget_setup_pixmaps(winwidget winwid);
 void winwidget_update_title(winwidget ret);
@@ -122,6 +125,9 @@ void winwidget_rerender_all(int resize, int alias);
 void winwidget_destroy_xwin(winwidget winwid);
 int winwidget_count(void);
 
+void winwidget_get_geometry(winwidget winwid, int *rect);
+int winwidget_get_width(winwidget winwid);
+int winwidget_get_height(winwidget winwid);
 winwidget winwidget_get_from_window(Window win);
 winwidget winwidget_create_from_file(gib_list * filename, char *name,
 

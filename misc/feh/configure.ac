@@ -40,7 +40,13 @@ GIBLIB_CFLAGS=`giblib-config --cflags`
 AC_SUBST(GIBLIB_LIBS)
 AC_SUBST(GIBLIB_CFLAGS)
 
-LIBS="$LIBS -lm"
+dnl Check for Xinerama
+CFLAGS="-I/usr/X11R6/include $CFLAGS"
+LIBS="-L/usr/X11R6/lib $LIBS -lm"
+AC_CHECK_LIB(Xext,XMissingExtension,, [CFLAGS="$CFLAGS -I/usr/X11R6/include"])
+AC_CHECK_LIB(Xinerama,XineramaQueryScreens,, [CFLAGS="$CFLAGS -I/usr/X11R6/include"])
+AC_SUBST(HAVE_XINERAMA)
+AC_SUBST(XINERAMA_LIBS)
 
 AC_CHECK_FUNC(getopt_long,,[AC_LIBOBJ="$AC_LIBOBJ getopt.o getopt1.o"])
 AC_SUBST(AC_LIBOBJ)

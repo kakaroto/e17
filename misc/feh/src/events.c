@@ -76,6 +76,16 @@ static void
 feh_event_handle_ButtonPress(XEvent * ev)
 {
    winwidget winwid = NULL;
+   int scr_width, scr_height;
+
+   scr_width = scr->width;
+   scr_height = scr->height;
+#ifdef HAVE_LIBXINERAMA
+    if (xinerama_screens) {
+      scr_width = xinerama_screens[xinerama_screen].width;
+      scr_height = xinerama_screens[xinerama_screen].height;
+    }
+#endif /* HAVE_LIBXINERAMA */
 
    D_ENTER(4);
    /* hide the menus and get the heck out if it's a mouse-click on the
@@ -186,8 +196,8 @@ feh_event_handle_ButtonPress(XEvent * ev)
          winwid->zoom = 1.0;
          if (winwid->full_screen)
          {
-            winwid->im_x = (scr->width - winwid->im_w) >> 1;
-            winwid->im_y = (scr->height - winwid->im_h) >> 1;
+            winwid->im_x = (scr_width - winwid->im_w) >> 1;
+            winwid->im_y = (scr_height - winwid->im_h) >> 1;
          }
          else if (opt.geom)
          {
@@ -459,6 +469,16 @@ feh_event_handle_MotionNotify(XEvent * ev)
 {
    winwidget winwid = NULL;
    int dx, dy;
+   int scr_width, scr_height;
+
+   scr_width = scr->width;
+   scr_height = scr->height;
+#ifdef HAVE_LIBXINERAMA
+    if (xinerama_screens) {
+      scr_width = xinerama_screens[xinerama_screen].width;
+      scr_height = xinerama_screens[xinerama_screen].height;
+    }
+#endif /* HAVE_LIBXINERAMA */
 
    D_ENTER(5);
    if (menu_root)
@@ -494,12 +514,16 @@ feh_event_handle_MotionNotify(XEvent * ev)
           * screen. If so, and if the menu we are currently over is partially
           * hidden, slide the menu to the left and/or up until it is
           * fully visible */
+
+         /* FIXME: get this working nicely with xinerama screen edges --
+          * at the moment it does really funky stuff with
+          * scr_{width,height} instead of scr->{width,height} -- pabs*/
          if (mouseover_item
              && ((scr->width - (ev->xmotion.x + m->x)) < m->w
                  || (scr->height - (ev->xmotion.y + m->y)) < m->w))
          {
-            dx = scr->width - (m->x + m->w);
-            dy = scr->height - (m->y + m->h);
+            dx = scr_width - (m->x + m->w);
+            dy = scr_height - (m->y + m->h);
             dx = dx < 0 ? dx : 0;
             dy = dy < 0 ? dy : 0;
             if (dx || dy)

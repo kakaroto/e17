@@ -1,3 +1,9 @@
+Sun Oct 20 05:48:40 2002 EDT  Paul Duncan <pabs@pablotron.org>
+  
+  * Added Xinerama support.  Currently defaults to fullscreen on the
+    first head (this can be fixed with a little work).
+  * Added winwidget_{move,get_geometry}();
+
 Wed Sep 11 19:53:31 BST 2002  Tom Gilbert <tom@linuxbrit.co.uk>
 
   * REALLY release 1.2.1

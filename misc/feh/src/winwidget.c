@@ -164,6 +164,13 @@ winwidget_create_window(winwidget ret,
   if (ret->full_screen) {
     w = scr->width;
     h = scr->height;
+
+#ifdef HAVE_LIBXINERAMA
+    if (xinerama_screens) {
+      w = xinerama_screens[xinerama_screen].width;
+      h = xinerama_screens[xinerama_screen].height;
+    }
+#endif /* HAVE_LIBXINERAMA */
   } else if (opt.geom) {
     w = opt.geom_w;
     h = opt.geom_h;
@@ -172,8 +179,19 @@ winwidget_create_window(winwidget ret,
       w = scr->width;
     if (h > scr->height)
       h = scr->height;
+
+#ifdef HAVE_LIBXINERAMA
+    if (xinerama_screens) {
+      if (w > xinerama_screens[xinerama_screen].width)
+        w = xinerama_screens[xinerama_screen].width;
+      if (h > xinerama_screens[xinerama_screen].height)
+        h = xinerama_screens[xinerama_screen].height;
+    }
+#endif /* HAVE_LIBXINERAMA */
   }
 
+  ret->x = 0;
+  ret->y = 0;
   ret->w = w;
   ret->h = h;
   ret->visible = False;
@@ -340,6 +358,12 @@ winwidget_render_image(winwidget winwid,
     if (winwid->full_screen) {
       max_w = scr->width;
       max_h = scr->height;
+#ifdef HAVE_LIBXINERAMA
+      if (xinerama_screens) {
+        max_w = xinerama_screens[xinerama_screen].width;
+        max_h = xinerama_screens[xinerama_screen].height;
+      }
+#endif /* HAVE_LIBXINERAMA */
     } else if (opt.geom) {
       max_w = opt.geom_w;
       max_h = opt.geom_h;
@@ -666,6 +690,25 @@ winwidget_count(void)
   D_RETURN(4, window_num);
 }
 
+void 
+winwidget_move(winwidget winwid,
+               int x,
+               int y)
+{
+  D_ENTER(4);
+  if (winwid && ((winwid->x != x) || (winwid->y != y))) {
+    winwid->x = x;
+    winwid->y = y;
+    winwid->x = (x > scr->width) ? scr->width : x;
+    winwid->y = (y > scr->height) ? scr->height : y;
+    XMoveWindow(disp, winwid->win, winwid->x, winwid->y);
+    XFlush(disp);
+  } else {
+    D(4, ("No move actually needed\n"));
+  }
+  D_RETURN_(4);
+}
+
 void
 winwidget_resize(winwidget winwid,
                  int w,
@@ -684,9 +727,28 @@ winwidget_resize(winwidget winwid,
     XResizeWindow(disp, winwid->win, winwid->w, winwid->h);
     winwid->had_resize = 1;
     XFlush(disp);
+
+#ifdef HAVE_LIBXINERAMA
+    if (xinerama_screens) {
+      int i;
+
+      for (i = 0; i < num_xinerama_screens; i++) {
+        xinerama_screen = 0;
+        if (XY_IN_RECT(winwid->x, winwid->y,
+                       xinerama_screens[i].x_org, xinerama_screens[i].y_org,
+                       xinerama_screens[i].width, xinerama_screens[i].height)) {
+          xinerama_screen = i;
+          break;
+        }
+          
+      }
+    }
+#endif /* HAVE_LIBXINERAMA */
+
   } else {
     D(4, ("No resize actually needed\n"));
   }
+
   D_RETURN_(4);
 }
 
@@ -847,5 +909,36 @@ winwidget_size_to_image(winwidget winwid)
                    winwid->im_h * winwid->zoom);
   winwid->im_x = winwid->im_y = 0;
   winwidget_render_image(winwid, 0, 1);
+  D_RETURN_(4);
+}
+
+int winwidget_get_width(winwidget winwid) {
+  int rect[4];
+  D_ENTER(4);
+  winwidget_get_geometry(winwid, rect);
+  D_RETURN(4, rect[2]);
+}
+
+int winwidget_get_height(winwidget winwid) {
+  int rect[4];
+  D_ENTER(4);
+  winwidget_get_geometry(winwid, rect);
+  D_RETURN(4, rect[3]);
+}
+
+void winwidget_get_geometry(winwidget winwid, int *rect) {
+  int bw, bp;
+  D_ENTER(4);
+  if (!rect)
+    return;
+
+  XGetGeometry(disp, winwid->win, &root, 
+               &(rect[0]), &(rect[1]), &(rect[2]), &(rect[3]), &bw, &bp);
+
+  /* update the window geometry (in case it's inaccurate) */
+  winwid->x = rect[0];
+  winwid->y = rect[1];
+  winwid->w = rect[2];
+  winwid->h = rect[3];
   D_RETURN_(4);
 }

@@ -26,12 +26,18 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef FEH_H
 #define FEH_H
 
+#include "config.h"
+
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <X11/Xatom.h>
 #include <X11/Xos.h>
 #include <X11/keysym.h>
 #include <X11/Xresource.h>
+#ifdef HAVE_LIBXINERAMA
+#include <X11/extensions/Xinerama.h>
+#include <X11/X.h>
+#endif /* HAVE_LIBXINERAMA */
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -49,7 +55,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <Imlib2.h>
 #include <giblib/giblib.h>
 
-#include "config.h"
 #include "structs.h"
 #include "menu.h"
 
@@ -135,6 +140,12 @@ extern Visual *vis;
 extern Colormap cm;
 extern int depth;
 extern Atom wmDeleteWindow;
+
+#ifdef HAVE_LIBXINERAMA
+extern int num_xinerama_screens;
+extern XineramaScreenInfo *xinerama_screens;
+extern int xinerama_screen;
+#endif /* HAVE_LIBXINERAMA */
 
 /* Thumbnail sizes */
 extern int cmdargc;
