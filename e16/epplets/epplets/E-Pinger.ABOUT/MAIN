@@ -1,13 +1,12 @@
 <page columns=1 padding=16 name=front background=bg.png linkcolor=#88dddd>
 <font face=aircut3/32 color=#ffffff>
 <p align=50%>
-E-Clock
+E-Pinger
 <font face=aircut3/18 color=#88eeff>
 <p align=50%>
-Small Analogue Clock
+Ping Hosts
 <font face=aircut3/12 color=#ffffff>
 <p align=50%>
 By Horms - 2000
 <p>
-The E-Pinger Epplet can be used to monitor network access to a host
-using ping. 
+Verify connectivity to hosts using ping.
