@@ -169,7 +169,7 @@ Usage:
   cam [-f|--full-screen] keys
     Start feh in full-screen mode (aka -g and --giblets-mom \"viewing\" mode).
   cam [-k|--keep-images] keys
-    Keep the images in /tmp/ (aka --save-pr0n).
+    Save each image in the current directory (aka --save-pr0n).
   cam [-v|--verbose] options
     Start feh in verbose mode (feh -V).
   cam <-h|-?|--help>
