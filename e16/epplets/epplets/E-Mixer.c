@@ -291,9 +291,6 @@ create_mixer_gadget (void)
   Epplet_gadget_show (closebtn);
   Epplet_gadget_show (helpbtn);
   Epplet_timer (mixer_timeout_callback, NULL, 0.5, "TIMER");
-
-  Epplet_timer (mixer_timeout_callback, NULL, 0.5, "TIMER");
-
 }
 
 int
