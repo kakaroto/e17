@@ -7,6 +7,15 @@
 #define RadPerDeg        0.01745329251994329576
 
 double angle360();
+void addthe(double C1, double S1, double C2, double S2, double *C, double *S);
+void term(int P, int Q, int R, int S, double *X, double *Y);
+void addsol(double COEFFL, double COEFFS, double COEFFG, double COEFFP, int P, int Q, int R, int S);
+void addn(double COEFFN, int P, int Q, int R, int S);
+double Moon(double T, double *LAMBDA, double *BETA, double *R, double *AGE);
+double sine(double);
+double frac(double);
+double NewMoon(double, double, double);
+int MiniMoon(double, double *, double *);
 
 
 double	TwoPi = 6.283185308;

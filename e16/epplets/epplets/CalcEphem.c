@@ -1,5 +1,15 @@
 #include "CalcEphem.h"
 
+int DayofYear(int, int, int);
+int DayofWeek(int, int, int, char[]);
+double kepler(double, double);
+double jd(int, int, int, double);
+double hour24(double);
+double angle2pi(double);
+double angle360(double);
+void Radec_to_Cart(double, double, Vector *);
+int LeapYear(int);
+
 int DayofYear(year, month, day)
 int year, month, day;
 {

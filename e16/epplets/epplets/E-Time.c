@@ -249,6 +249,7 @@ main(int argc, char **argv)
   Epplet_gadget_show(label4 = Epplet_create_label(4 * just, 36, "", 1));
   Epplet_register_focus_in_handler(in_cb, NULL);
   Epplet_register_focus_out_handler(out_cb, NULL);
+  Epplet_register_delete_event_handler(delete_cb, NULL);
 
   Epplet_show();
   timer_cb(NULL);

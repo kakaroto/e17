@@ -153,8 +153,7 @@ E-Power.ABOUT/MAIN E-SD.ABOUT/MAIN E-ScreenSave.ABOUT/MAIN  \
 E-ScreenShoot.ABOUT/E_ScreenShoot_buttons.png  \
 E-ScreenShoot.ABOUT/E_ScreenShoot_cloak.png E-ScreenShoot.ABOUT/MAIN \
 Emix.ABOUT/MAIN E-UrlWatch.ABOUT/MAIN E-PlayCD.ABOUT/EPlayCD.jpg \
-E-PlayCD.ABOUT/Edoc_bg.png E-PlayCD.ABOUT/MAIN E-PlayCD.ABOUT/batmanforever.ttf \
-E-PlayCD.ABOUT/title.png
+E-PlayCD.ABOUT/MAIN E-PlayCD.ABOUT/E-PlayCD_Controls.png
 
 # ICONS = `(cd epplets && ls -1d icons/*.icon | grep -v CVS)`
 ICONS = icons/E-Biff.icon icons/E-Clock.icon icons/E-Cpu.icon icons/E-Disk.icon \
@@ -217,7 +216,7 @@ E-Magic-data/answers.txt E-Magic-data/8ball.png
 EXTRA_DIST = ${ICONS} ${ABOUT_DOCS} ${DATA_FILES}
 
 NEED_FONT = E-Clock E-Mixer E-MoonClock E-Mountbox E-NetFlame E-Power E-SD E-ScreenSave E-ScreenShoot Emix E-UrlWatch E-PlayCD
-NEED_BG = E-Clock E-Mixer E-MoonClock E-Mountbox E-NetFlame E-Power E-SD E-ScreenSave E-ScreenShoot Emix E-UrlWatch
+NEED_BG = E-Clock E-Mixer E-MoonClock E-Mountbox E-NetFlame E-Power E-SD E-ScreenSave E-ScreenShoot Emix E-UrlWatch E-PlayCD
 BG_SRC = E-Cpu.ABOUT/bg.png
 FONT_SRC = E-Cpu.ABOUT/aircut3.ttf
 

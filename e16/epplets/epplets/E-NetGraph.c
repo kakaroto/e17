@@ -507,6 +507,7 @@ main(int argc, char **argv)
    cfg_button = Epplet_create_std_button("CONFIGURE", 33, 2, config_cb, NULL);
    Epplet_register_focus_in_handler(cb_in, NULL);
    Epplet_register_focus_out_handler(cb_out, NULL);
+   Epplet_register_delete_event_handler(delete_cb, NULL);
 
    gettimeofday(&last_time, NULL);
 

@@ -344,6 +344,7 @@ main(int argc, char **argv)
 
   Epplet_register_focus_in_handler(in_cb, NULL);
   Epplet_register_focus_out_handler(out_cb, NULL);
+  Epplet_register_delete_event_handler(delete_cb, NULL);
   Epplet_show();
 
   Epplet_Loop();
