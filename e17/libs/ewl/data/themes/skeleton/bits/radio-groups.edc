@@ -127,7 +127,7 @@
 	  }
           program {
 	      name, "clicked";
-	      signal, "mouse,down";
+	      signal, "mouse,down,*";
 	      source, "*";
 	      action, STATE_SET "clicked" 0.0;
 	      transition, LINEAR, 0.0;
