@@ -49,7 +49,7 @@ void ewd_list_destroy(Ewd_List * list)
 
 	CHECK_PARAM_POINTER("list", list);
 
-	EWD_WRITE_LOCK_STRUCT(list);
+	EWD_WRITE_LOCK(list);
 
 	while (list->first) {
 		data = _ewd_list_remove_first(list);
@@ -57,7 +57,7 @@ void ewd_list_destroy(Ewd_List * list)
 			list->free_func(data);
 	}
 
-	EWD_WRITE_UNLOCK_STRUCT(list);
+	EWD_WRITE_UNLOCK(list);
 	EWD_DESTROY_LOCKS(list);
 
 	FREE(list);
@@ -76,11 +76,11 @@ int ewd_list_set_free_cb(Ewd_List * list, Ewd_Free_Cb free_func)
 {
 	CHECK_PARAM_POINTER_RETURN("list", list, FALSE);
 
-	EWD_WRITE_LOCK_STRUCT(list);
+	EWD_WRITE_LOCK(list);
 
 	list->free_func = free_func;
 
-	EWD_WRITE_UNLOCK_STRUCT(list);
+	EWD_WRITE_UNLOCK(list);
 
 	return TRUE;
 }
@@ -96,12 +96,12 @@ int ewd_list_is_empty(Ewd_List * list)
 
 	CHECK_PARAM_POINTER_RETURN("list", list, FALSE);
 
-	EWD_READ_LOCK_STRUCT(list);
+	EWD_READ_LOCK(list);
 
 	if (list->nodes)
 		ret = FALSE;
 
-	EWD_READ_UNLOCK_STRUCT(list);
+	EWD_READ_UNLOCK(list);
 
 	return ret;
 }
@@ -117,11 +117,11 @@ int ewd_list_index(Ewd_List * list)
 
 	CHECK_PARAM_POINTER_RETURN("list", list, FALSE);
 
-	EWD_READ_LOCK_STRUCT(list);
+	EWD_READ_LOCK(list);
 
 	ret = list->index;
 
-	EWD_READ_UNLOCK_STRUCT(list);
+	EWD_READ_UNLOCK(list);
 
 	return ret;
 }
@@ -137,11 +137,11 @@ int ewd_list_nodes(Ewd_List * list)
 
 	CHECK_PARAM_POINTER_RETURN("list", list, FALSE);
 
-	EWD_READ_LOCK_STRUCT(list);
+	EWD_READ_LOCK(list);
 
 	ret = list->nodes;
 
-	EWD_READ_UNLOCK_STRUCT(list);
+	EWD_READ_UNLOCK(list);
 
 	return ret;
 }
@@ -158,11 +158,11 @@ int ewd_list_append(Ewd_List * list, void *data)
 
 	CHECK_PARAM_POINTER_RETURN("list", list, FALSE);
 
-	EWD_WRITE_LOCK_STRUCT(list);
+	EWD_WRITE_LOCK(list);
 
 	ret = _ewd_list_append(list, data);
 
-	EWD_WRITE_UNLOCK_STRUCT(list);
+	EWD_WRITE_UNLOCK(list);
 
 	return ret;
 }
@@ -180,14 +180,14 @@ int _ewd_list_append(Ewd_List * list, void *data)
 		return FALSE;
 
 	if (list->last) {
-		EWD_WRITE_LOCK_STRUCT(list->last);
+		EWD_WRITE_LOCK(list->last);
 		list->last->next = end;
-		EWD_WRITE_UNLOCK_STRUCT(list->last);
+		EWD_WRITE_UNLOCK(list->last);
 	}
 
-	EWD_WRITE_LOCK_STRUCT(end);
+	EWD_WRITE_LOCK(end);
 	end->data = data;
-	EWD_WRITE_UNLOCK_STRUCT(end);
+	EWD_WRITE_UNLOCK(end);
 
 	list->last = end;
 
@@ -213,9 +213,9 @@ int ewd_list_prepend(Ewd_List * list, void *data)
 
 	CHECK_PARAM_POINTER_RETURN("list", list, FALSE);
 
-	EWD_WRITE_LOCK_STRUCT(list);
+	EWD_WRITE_LOCK(list);
 	ret = _ewd_list_prepend(list, data);
-	EWD_WRITE_UNLOCK_STRUCT(list);
+	EWD_WRITE_UNLOCK(list);
 
 	return ret;
 }
@@ -234,10 +234,10 @@ int _ewd_list_prepend(Ewd_List * list, void *data)
 		return FALSE;
 
 	/* Put it at the beginning of the list */
-	EWD_WRITE_LOCK_STRUCT(start);
+	EWD_WRITE_LOCK(start);
 	start->next = list->first;
 	start->data = data;
-	EWD_WRITE_UNLOCK_STRUCT(start);
+	EWD_WRITE_UNLOCK(start);
 
 	list->first = start;
 
@@ -267,9 +267,9 @@ int ewd_list_insert(Ewd_List * list, void *data)
 
 	CHECK_PARAM_POINTER_RETURN("list", list, FALSE);
 
-	EWD_WRITE_LOCK_STRUCT(list);
+	EWD_WRITE_LOCK(list);
 	ret = _ewd_list_insert(list, data);
-	EWD_WRITE_UNLOCK_STRUCT(list);
+	EWD_WRITE_UNLOCK(list);
 
 	return ret;
 }
@@ -297,17 +297,17 @@ int _ewd_list_insert(Ewd_List * list, void *data)
 		return FALSE;
 
 	/* Setup the fields of the new node */
-	EWD_WRITE_LOCK_STRUCT(new);
+	EWD_WRITE_LOCK(new);
 	new->data = data;
 	new->next = list->current;
-	EWD_WRITE_UNLOCK_STRUCT(new);
+	EWD_WRITE_UNLOCK(new);
 
 	/* And hook the node into the list */
 	_ewd_list_goto_index(list, ewd_list_index(list) - 1);
 
-	EWD_WRITE_LOCK_STRUCT(list->current);
+	EWD_WRITE_LOCK(list->current);
 	list->current->next = new;
-	EWD_WRITE_UNLOCK_STRUCT(list->current);
+	EWD_WRITE_UNLOCK(list->current);
 
 	list->current = new;
 	list->index++;
@@ -327,9 +327,9 @@ void *ewd_list_remove(Ewd_List * list)
 
 	CHECK_PARAM_POINTER_RETURN("list", list, FALSE);
 
-	EWD_WRITE_LOCK_STRUCT(list);
+	EWD_WRITE_LOCK(list);
 	ret = _ewd_list_remove(list);
-	EWD_WRITE_UNLOCK_STRUCT(list);
+	EWD_WRITE_UNLOCK(list);
 
 	return ret;
 }
@@ -359,8 +359,8 @@ void *_ewd_list_remove(Ewd_List * list)
 
 	_ewd_list_goto_index(list, list->index - 1);
 
-	EWD_WRITE_LOCK_STRUCT(list->current);
-	EWD_WRITE_LOCK_STRUCT(old);
+	EWD_WRITE_LOCK(list->current);
+	EWD_WRITE_LOCK(old);
 
 	list->current->next = old->next;
 	old->next = NULL;
@@ -369,8 +369,8 @@ void *_ewd_list_remove(Ewd_List * list)
 
 	_ewd_list_next(list);
 
-	EWD_WRITE_UNLOCK_STRUCT(old);
-	EWD_WRITE_UNLOCK_STRUCT(list->current);
+	EWD_WRITE_UNLOCK(old);
+	EWD_WRITE_UNLOCK(list->current);
 
 	ewd_list_node_destroy(old, NULL);
 	list->nodes--;
@@ -389,12 +389,12 @@ int ewd_list_remove_destroy(Ewd_List *list)
 
 	CHECK_PARAM_POINTER_RETURN("list", list, FALSE);
 
-	EWD_WRITE_LOCK_STRUCT(list);
+	EWD_WRITE_LOCK(list);
 	data = _ewd_list_remove(list);
 	if (list->free_func)
 		list->free_func(data);
 
-	EWD_WRITE_UNLOCK_STRUCT(list);
+	EWD_WRITE_UNLOCK(list);
 
 	return TRUE;
 }
@@ -410,9 +410,9 @@ void *ewd_list_remove_first(Ewd_List * list)
 
 	CHECK_PARAM_POINTER_RETURN("list", list, FALSE);
 
-	EWD_WRITE_LOCK_STRUCT(list);
+	EWD_WRITE_LOCK(list);
 	ret = _ewd_list_remove_first(list);
-	EWD_WRITE_UNLOCK_STRUCT(list);
+	EWD_WRITE_UNLOCK(list);
 
 	return ret;
 }
@@ -426,8 +426,10 @@ void *_ewd_list_remove_first(Ewd_List * list)
 	if (!list)
 		return FALSE;
 
+	EWD_WRITE_UNLOCK(list);
 	if (ewd_list_is_empty(list))
 		return FALSE;
+	EWD_WRITE_LOCK(list);
 
 	if (!list->first)
 		return FALSE;
@@ -444,10 +446,10 @@ void *_ewd_list_remove_first(Ewd_List * list)
 	if (list->last == old)
 		list->last = list->first;
 
-	EWD_WRITE_LOCK_STRUCT(old);
+	EWD_WRITE_LOCK(old);
 	ret = old->data;
 	old->data = NULL;
-	EWD_WRITE_UNLOCK_STRUCT(old);
+	EWD_WRITE_UNLOCK(old);
 
 	ewd_list_node_destroy(old, NULL);
 	list->nodes--;
@@ -466,9 +468,9 @@ void *ewd_list_remove_last(Ewd_List * list)
 
 	CHECK_PARAM_POINTER_RETURN("list", list, FALSE);
 
-	EWD_WRITE_LOCK_STRUCT(list);
+	EWD_WRITE_LOCK(list);
 	ret = _ewd_list_remove_last(list);
-	EWD_WRITE_UNLOCK_STRUCT(list);
+	EWD_WRITE_UNLOCK(list);
 
 	return ret;
 }
@@ -497,13 +499,13 @@ void *_ewd_list_remove_last(Ewd_List * list)
 	else
 		list->first = list->current = list->last = NULL;
 
-	EWD_WRITE_LOCK_STRUCT(old);
+	EWD_WRITE_LOCK(old);
 	if (old) {
 		old->next = NULL;
 		ret = old->data;
 		old->data = NULL;
 	}
-	EWD_WRITE_UNLOCK_STRUCT(old);
+	EWD_WRITE_UNLOCK(old);
 
 	ewd_list_node_destroy(old, NULL);
 	list->nodes--;
@@ -523,9 +525,9 @@ int ewd_list_goto_index(Ewd_List * list, int index)
 
 	CHECK_PARAM_POINTER_RETURN("list", list, FALSE);
 
-	EWD_WRITE_LOCK_STRUCT(list);
+	EWD_WRITE_LOCK(list);
 	ret = _ewd_list_goto_index(list, index);
-	EWD_WRITE_UNLOCK_STRUCT(list);
+	EWD_WRITE_UNLOCK(list);
 
 	return ret;
 }
@@ -566,9 +568,9 @@ int ewd_list_goto(Ewd_List * list, void *data)
 
 	CHECK_PARAM_POINTER_RETURN("list", list, FALSE);
 
-	EWD_WRITE_LOCK_STRUCT(list);
+	EWD_WRITE_LOCK(list);
 	ret = _ewd_list_goto(list, data);
-	EWD_WRITE_UNLOCK_STRUCT(list);
+	EWD_WRITE_UNLOCK(list);
 
 	return ret;
 }
@@ -585,7 +587,7 @@ int _ewd_list_goto(Ewd_List * list, void *data)
 	index = 1;
 
 	node = list->first;
-	EWD_READ_LOCK_STRUCT(node);
+	EWD_READ_LOCK(node);
 	while (node && node->data) {
 		Ewd_List_Node *next;
 
@@ -593,15 +595,15 @@ int _ewd_list_goto(Ewd_List * list, void *data)
 			break;
 
 		next = node->next;
-		EWD_READ_UNLOCK_STRUCT(node);
+		EWD_READ_UNLOCK(node);
 
 		node = next;
 
-		EWD_READ_LOCK_STRUCT(node);
+		EWD_READ_LOCK(node);
 		index++;
 	}
 
-	EWD_READ_UNLOCK_STRUCT(node);
+	EWD_READ_UNLOCK(node);
 	if (!node)
 		return FALSE;
 
@@ -622,11 +624,11 @@ int ewd_list_goto_first(Ewd_List *list)
 
 	CHECK_PARAM_POINTER_RETURN("list", list, FALSE);
 
-	EWD_WRITE_LOCK_STRUCT(list);
+	EWD_WRITE_LOCK(list);
 
 	ret = _ewd_list_goto_first(list);
 
-	EWD_WRITE_UNLOCK_STRUCT(list);
+	EWD_WRITE_UNLOCK(list);
 
 	return ret;
 }
@@ -654,9 +656,9 @@ int ewd_list_goto_last(Ewd_List * list)
 
 	CHECK_PARAM_POINTER_RETURN("list", list, FALSE);
 
-	EWD_WRITE_LOCK_STRUCT(list);
+	EWD_WRITE_LOCK(list);
 	ret = _ewd_list_goto_last(list);
-	EWD_WRITE_UNLOCK_STRUCT(list);
+	EWD_WRITE_UNLOCK(list);
 
 	return ret;
 }
@@ -684,9 +686,9 @@ void *ewd_list_current(Ewd_List * list)
 
 	CHECK_PARAM_POINTER_RETURN("list", list, FALSE);
 
-	EWD_READ_LOCK_STRUCT(list);
+	EWD_READ_LOCK(list);
 	ret = _ewd_list_current(list);
-	EWD_READ_UNLOCK_STRUCT(list);
+	EWD_READ_UNLOCK(list);
 
 	return ret;
 }
@@ -699,9 +701,9 @@ void *_ewd_list_current(Ewd_List * list)
 	if (!list->current)
 		return NULL;
 
-	EWD_READ_LOCK_STRUCT(list->current);
+	EWD_READ_LOCK(list->current);
 	ret = list->current->data;
-	EWD_READ_UNLOCK_STRUCT(list->current);
+	EWD_READ_UNLOCK(list->current);
 
 	return ret;
 }
@@ -717,9 +719,9 @@ void *ewd_list_next(Ewd_List * list)
 
 	CHECK_PARAM_POINTER_RETURN("list", list, FALSE);
 
-	EWD_WRITE_LOCK_STRUCT(list);
+	EWD_WRITE_LOCK(list);
 	data = _ewd_list_next(list);
-	EWD_WRITE_UNLOCK_STRUCT(list);
+	EWD_WRITE_UNLOCK(list);
 
 	return data;
 }
@@ -734,17 +736,17 @@ void *_ewd_list_next(Ewd_List * list)
 	if (!list->current)
 		return NULL;
 
-	EWD_READ_LOCK_STRUCT(list->current);
+	EWD_READ_LOCK(list->current);
 	ret = list->current;
 	next = list->current->next;
-	EWD_READ_UNLOCK_STRUCT(list->current);
+	EWD_READ_UNLOCK(list->current);
 
 	list->current = next;
 	list->index++;
 
-	EWD_READ_LOCK_STRUCT(ret);
+	EWD_READ_LOCK(ret);
 	data = ret->data;
-	EWD_READ_UNLOCK_STRUCT(ret);
+	EWD_READ_UNLOCK(ret);
 
 	return data;
 }
@@ -759,7 +761,7 @@ int ewd_list_clear(Ewd_List * list)
 	void *data;
 	CHECK_PARAM_POINTER_RETURN("list", list, FALSE);
 
-	EWD_WRITE_LOCK_STRUCT(list);
+	EWD_WRITE_LOCK(list);
 
 	if (ewd_list_is_empty(list))
 		return TRUE;
@@ -772,7 +774,7 @@ int ewd_list_clear(Ewd_List * list)
 			list->free_func(data);
 	}
 
-	EWD_WRITE_UNLOCK_STRUCT(list);
+	EWD_WRITE_UNLOCK(list);
 
 	return TRUE;
 }
@@ -789,9 +791,9 @@ int ewd_list_for_each(Ewd_List *list, Ewd_For_Each function)
 
 	CHECK_PARAM_POINTER_RETURN("list", list, FALSE);
 
-	EWD_READ_LOCK_STRUCT(list);
+	EWD_READ_LOCK(list);
 	ret = _ewd_list_for_each(list, function);
-	EWD_READ_UNLOCK_STRUCT(list);
+	EWD_READ_UNLOCK(list);
 
 	return ret;
 }
@@ -855,12 +857,12 @@ int ewd_list_node_destroy(Ewd_List_Node * node, Ewd_Free_Cb free_func)
 {
 	CHECK_PARAM_POINTER_RETURN("node", node, FALSE);
 
-	EWD_WRITE_LOCK_STRUCT(node);
+	EWD_WRITE_LOCK(node);
 
 	if (free_func && node->data)
 		free_func(node->data);
 
-	EWD_WRITE_UNLOCK_STRUCT(node);
+	EWD_WRITE_UNLOCK(node);
 	EWD_DESTROY_LOCKS(node);
 
 	FREE(node);
