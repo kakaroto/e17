@@ -93,6 +93,7 @@ char *title_font = "arial/8";
 char *ttf_dir = "/usr/X11R6/lib/X11/fonts/TrueType";
 char *archive_ext = "jpg";
 char *grab_archive = NULL;
+int archive_shot_every = 1; /* default to archive every shot */
 char *grab_blockfile = NULL;
 char *upload_blockfile = NULL;
 char *grab_postprocess = NULL;
@@ -610,8 +611,12 @@ archive_jpeg(Imlib_Image im)
   time_t t;
   struct tm *tm;
   struct stat st;
+  static int shot_counter = 0;
 
-  if (grab_archive) {
+  shot_counter++;
+
+  if (grab_archive && archive_shot_every 
+                   && shot_counter >= archive_shot_every) {
     time(&t);
     tm = localtime(&t);
     strftime(date, 127, "%Y-%m-%d_%H%M%S", tm);
@@ -622,6 +627,7 @@ archive_jpeg(Imlib_Image im)
     }
     while (stat(buffer, &st) == 0);
     save_image(im, buffer);
+    shot_counter = 0;
   }
 }
 
@@ -637,6 +643,7 @@ log(char *fmt,
 
   if (!logfile) {
     va_start(args, fmt);
+    fprintf(stderr, "camE: ");
     vfprintf(stderr, fmt, args);
     va_end(args);
     return;
@@ -1246,6 +1253,8 @@ main(int argc,
     scale_width = i;
   if (-1 != (i = cfg_get_int("grab", "scale_height")))
     scale_height = i;
+  if (-1 != (i = cfg_get_int("grab", "archive_shot_every")))
+    archive_shot_every = i;
 
   if (cam_framerate > 60)
     cam_framerate = 60;

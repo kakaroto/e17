@@ -9,6 +9,8 @@ file = webcam.jpg
 # camE uploads to a temp file, and moves it across when done
 # this way people don't view half-uploaded images
 tmp  = uploading.jpg
+# keep the connection open (1) or reopen it for each shot (0)
+keepalive = 1
 # do passive ftp?
 passive = 1
 #an interface to use for non-passive ftp.  use "-" to let libcurl choose, or
@@ -63,6 +65,9 @@ infofile = /home/gilbertt/.caminfo
 archive = /opt/images/webcam
 # extension (determines type) of archived images.
 archive_ext = jpg
+# determines how many shots are taken before a pic is archived
+# (1 == every pic, 0 == don't archive)
+archive_shot_every = 1
 # jpeg quality (you can save as png etc too, but then quality does squat)
 quality = 80
 input  = 0
