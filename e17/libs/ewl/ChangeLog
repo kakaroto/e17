@@ -1,3 +1,9 @@
+Tue Oct  09 09:37:56 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
+	* Now move to the page after the one removed by
+	  ewl_notebook_remove_visible() instead of just jumping to the first
+	  page.
+	* Made the notebook use its special .bits.db.
+
 Tue Oct  09 07:49:30 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
 	* When a widget is destroyed it now removes itself from it's parent
 	  list of children.
@@ -6,6 +12,8 @@ Tue Oct  09 07:49:30 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
 	* ewl_callback_call* had a possible segv if the callback type was
 	  EWL_CALLBACK_DESTROY and it free'd the widget, but still continued
 	  traversing the callback list looking for more functions to execute.
+	* Fixed segv in __ewl_text_destroy, etox_free got called even the
+	  Ewl_Text hadn't been realized.
 
 Mon Oct  08 02:58:33 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
 	* I've fixed known bugs in the cursor behaviour in Ewl_Entry.

@@ -88,12 +88,6 @@ ewl_widget_show(Ewl_Widget * w)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
-/*	if (!REALIZED(w))
-	  {
-		ewl_widget_realize(w);
-		DRETURN(DLEVEL_STABLE);
-	  }*/
-
 	w->visible |= EWL_VISIBILITY_SHOWN;
 
 	ewl_callback_call(w, EWL_CALLBACK_SHOW);
@@ -545,7 +539,7 @@ __ewl_widget_reparent(Ewl_Widget * w, void *ev_data, void *user_data)
 	if (!w->parent)
 	  {
 		  w->evas = NULL;
-		  w->evas_window = NULL;
+		  w->evas_window = 0;
 		  if (w->fx_clip_box)
 			  LAYER(w) = 0;
 

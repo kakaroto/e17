@@ -58,7 +58,7 @@ edb_ed $DB add "/appearance/list/marker/base/visible" str "yes"
 
 # Add keys for notebook widget
 echo -n "."
-edb_ed $DB add "/appearance/notebook/default/base" str "/appearance/button/default/base.bits.db"
+edb_ed $DB add "/appearance/notebook/default/base" str "/appearance/notebook/default/base.bits.db"
 edb_ed $DB add "/appearance/notebook/default/base/visible" str "yes"
 edb_ed $DB add "/appearance/notebook/content_box/base" str "/appearance/notebook/content_box/base.bits.db"
 edb_ed $DB add "/appearance/notebook/content_box/base/visible" str "no"

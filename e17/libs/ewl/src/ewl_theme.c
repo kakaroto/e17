@@ -259,8 +259,7 @@ ewl_theme_data_set(Ewl_Widget * w, char *k, char *v)
 	else
 		ewd_hash_set(w->theme, k, v);
 
-	if (REALIZED(w))
-		ewl_widget_theme_update(w);
+	ewl_widget_theme_update(w);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
