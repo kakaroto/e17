@@ -8,7 +8,7 @@
 #include <assert.h>
 #include "../../plugin.h"
 
-#define BUF_SIZE 2048
+#define INBUF_SIZE 2048
 
 static FILE *fp = NULL;
 static AVCodecContext *ctx = NULL;
@@ -31,13 +31,13 @@ static void strchomp(char *str) {
 }
 
 static void avdec_init() {
-	static unsigned char inbuf[BUF_SIZE + FF_INPUT_BUFFER_PADDING_SIZE];
+	static unsigned char inbuf[INBUF_SIZE + FF_INPUT_BUFFER_PADDING_SIZE];
 	static short outbuf[AVCODEC_MAX_AUDIO_FRAME_SIZE];
 	int read, written;
 
-	memset(&inbuf[BUF_SIZE], 0, FF_INPUT_BUFFER_PADDING_SIZE);
+	memset(&inbuf[INBUF_SIZE], 0, FF_INPUT_BUFFER_PADDING_SIZE);
 	
-	if (!(read = fread(inbuf, 1, BUF_SIZE, fp)))
+	if (!(read = fread(inbuf, 1, INBUF_SIZE, fp)))
 		return;
 
 	avcodec_decode_audio(ctx, outbuf, &written, inbuf, read);
@@ -138,15 +138,19 @@ int avdec_get_sample_rate() {
 	return sample_rate;
 }
 
-int avdec_read(unsigned char *outbuf, int outbuf_len) {
-	static unsigned char inbuf[BUF_SIZE + FF_INPUT_BUFFER_PADDING_SIZE];
+int avdec_read(unsigned char **buf) {
+#define OUTBUF_SIZE 65536
+	static unsigned char inbuf[INBUF_SIZE + FF_INPUT_BUFFER_PADDING_SIZE];
+	static unsigned char outbuf[OUTBUF_SIZE];
 	static short tmp[AVCODEC_MAX_AUDIO_FRAME_SIZE];
-	char *ptr = inbuf;
+	unsigned char *ptr = inbuf;
 	int read = 0, decoded, written, total = 0;
 
-	memset(&inbuf[BUF_SIZE], 0, FF_INPUT_BUFFER_PADDING_SIZE);
+	*buf = outbuf;
+
+	memset(&inbuf[INBUF_SIZE], 0, FF_INPUT_BUFFER_PADDING_SIZE);
 	
-	if (!(read = fread(inbuf, 1, BUF_SIZE, fp)))
+	if (!(read = fread(inbuf, 1, INBUF_SIZE, fp)))
 		return 0;
 	
 	while (read > 0) {
@@ -161,7 +165,7 @@ int avdec_read(unsigned char *outbuf, int outbuf_len) {
 		
 		if (written) {
 			/* make sure we don't overflow the output buffer */
-			assert(total + written <= outbuf_len);
+			assert(total + written <= OUTBUF_SIZE);
 			memcpy(&outbuf[total], tmp, written);
 			total += written;
 		}

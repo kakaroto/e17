@@ -11,15 +11,14 @@
  * @param udata Pointer to an ePlayer struct.
  */
 void track_play_chunk(void *udata) {
-#define BUF_SIZE 65536
 	ePlayer *player = udata;
 	PlayListItem *pli = player->playlist->cur_item->data;
 	int read;
-	static unsigned char pcmout[BUF_SIZE];
+	unsigned char *buf = NULL;
 
 	while (!player->playback_stop &&
-	       (read = pli->plugin->read(pcmout, BUF_SIZE))) {
-		player->output->play(pcmout, read);
+	       (read = pli->plugin->read(&buf))) {
+		player->output->play(buf, read);
 
 		pthread_mutex_lock(&pli->pos_mutex);
 		pli->current_pos = pli->plugin->get_current_pos();

@@ -81,14 +81,19 @@ int vorbis_get_sample_rate() {
 	return sample_rate;
 }
 
-int vorbis_read(unsigned char *buf, int len) {
+int vorbis_read(unsigned char **buf) {
+#define BUF_SIZE 4096
+	static unsigned char outbuf[BUF_SIZE];
+	
 #ifdef WORDS_BIGENDIAN
 	static int bigendian = 1;
 #else
 	static int bigendian = 0;
 #endif
 
-	return ov_read(&track, buf, len, bigendian, 2, 1, NULL);
+	*buf = outbuf;
+
+	return ov_read(&track, *buf, BUF_SIZE, bigendian, 2, 1, NULL);
 }
 
 int vorbis_get_current_pos() {

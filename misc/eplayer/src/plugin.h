@@ -29,7 +29,7 @@ typedef struct {
 	int (*get_channels)();
 	int (*get_sample_rate)();
 	
-	int (*read)(unsigned char *buf, int len);
+	int (*read)(unsigned char **buf);
 
 	int (*get_current_pos)();
 	void (*set_current_pos)(int pos);
