@@ -21,7 +21,6 @@ fi
 # find eesh
 EESH=`which eesh`
 # generate file menu if it doesn't exist
-touch $OUT
 if [ ! -f "$OUT" ]; then
   echo \"User Menus\" > $OUT
   echo \"User Application list\" NULL menu \"user_apps.menu\" >> $OUT
@@ -33,10 +32,10 @@ if [ ! -f "$OUT" ]; then
     echo \"Log Out\" NULL exec \"$EESH -e \'exit\'\" >> $OUT
   fi
 fi
+touch $OUT
 
 # generate a stub user_apps menu if it doesnt exist
 OUT=$OUT_DIR"/user_apps.menu"
-touch $OUT
 if [ ! -f "$OUT" ]; then
   echo \"User Application List\" > $OUT
   echo \"Eterm\" NULL exec \"Eterm\" >> $OUT
@@ -67,3 +66,4 @@ if [ ! -f "$OUT" ]; then
   echo \"Civilization\" NULL exec \"civctp\" >> $OUT
   echo \"Myth 2\" NULL exec \"myth2\" >> $OUT
 fi
+touch $OUT
