@@ -1024,7 +1024,6 @@ __imlib_LoadImage(const char *file, ImlibProgressFunction progress,
    ImlibImage *im;
    ImlibLoader *best_loader;
    char loader_ret = 0;
-   struct stat st;
 
    if (!file) return NULL;
    if (file[0] == 0) return NULL;
@@ -1064,16 +1063,13 @@ __imlib_LoadImage(const char *file, ImlibProgressFunction progress,
    /* so produce a new one and load an image into that */
    im = __imlib_ProduceImage();
    im->file = strdup(file);
-   printf("file is %s\n", file);
    if(__imlib_IsRealFile(file))
      {
-        printf("file %s exists\n", file);
 	im->real_file = strdup(im->file);
 	im->key = NULL;
      }
    else
      {
-        printf("file %s does not exist\n", file);
 	im->real_file = __imlib_FileRealFile(file);
 	im->key = __imlib_FileKey(file);
      }
