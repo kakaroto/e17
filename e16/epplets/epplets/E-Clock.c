@@ -1,5 +1,5 @@
 #include "epplet.h"
-Epplet_gadget b_close;
+Epplet_gadget b_close, b_help;
 Window        win;
 double        minutes = 20, hours = 12, seconds = 0;
 
@@ -9,6 +9,7 @@ static void cb_in(void *data, Window w);
 static void cb_out(void *data, Window w);
 static void cb_expose(void *data, Window win, int x, int y, int w, int h);
 static void draw_arms(void);
+static void cb_help(void *data);
 
 static void
 cb_timer(void *data)
@@ -47,18 +48,26 @@ static void
 cb_in(void *data, Window w)
 {
    Epplet_gadget_show(b_close);
+   Epplet_gadget_show(b_help);
 }
 
 static void
 cb_out(void *data, Window w)
 {
    Epplet_gadget_hide(b_close);
+   Epplet_gadget_hide(b_help);
 }
 
 static void
 cb_expose(void *data, Window win, int x, int y, int w, int h)
 {
    draw_arms();
+}
+
+static void
+cb_help(void *data)
+{
+   Epplet_show_about("E-Clock");
 }
 
 static void
@@ -97,6 +106,9 @@ main(int argc, char **argv)
    b_close = Epplet_create_button(NULL, NULL, 
 				  2, 2, 0, 0, "CLOSE", 0, NULL, 
 				  cb_close, NULL);
+   b_help = Epplet_create_button(NULL, NULL,
+				 34, 2, 0, 0, "HELP", win, NULL,
+				 cb_help, NULL);
    Epplet_gadget_show(Epplet_create_image(2, 2, 44, 44, 
 					  EROOT"/epplet_icons/E-Clock-Image.png"));
    Epplet_register_focus_in_handler(cb_in, NULL);

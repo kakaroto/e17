@@ -2,5 +2,18 @@
 <font face=aircut3/32 color=#ffffff>
 <p align=50%>
 E-Cpu
+<font face=aircut3/18 color=#88eeff>
+<p align=50%>
+The Flaming Cpu monitor.
 <font face=aircut3/12 color=#ffffff>
 <p align=50%>
+By The Rasterman - 1999
+<p>
+This Epplet displays your CPU usage as a flame. The more CPU activity, the
+brighter the flame. when your focus is ont he epplet it will display close, 
+help and configure butotns - click the configure button (the tool) to bring
+up a button that will select one of several color schemes for the flame.
+<p>
+If you have multpile CPU's the flame will flare in sections at the bottom 
+depending on which CPU is active - so if you have a dual CPU machine the left
+half is for the first CPU, the right is for the 2nd and so on.

@@ -27,7 +27,8 @@ EppletTest_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
 INCLUDES = -DEBIN=\"$(EBIN)\" -DEROOT=\"$(EROOT)\" -I. -I$(top_srcdir)/api -I$(top_srcdir) -I.. -I$(includedir) -I$(prefix)/include $(X_CFLAGS)
 LDADD = $(top_builddir)/api/libepplet.la -L$(libdir) -L$(prefix)/lib $(LIBS) $(X_LIBS)
 
-ABOUT_DOCS = E-Cpu.ABOUT/MAIN E-Cpu.ABOUT/bg.png E-Cpu.ABOUT/aircut3.ttf
+ABOUT_DOCS = E-Cpu.ABOUT/MAIN E-Cpu.ABOUT/bg.png E-Cpu.ABOUT/aircut3.ttf \
+E-Clock.ABOUT/MAIN E-Clock.ABOUT/bg.png E-Clock.ABOUT/aircut3.ttf
 ICONS = E-Load.icon E-Clock.icon E-Net.icon E-Cpu.icon
 DATA =E-Clock-Image.png
 
