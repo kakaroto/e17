@@ -55,7 +55,7 @@ void ewl_checkbutton_init(Ewl_CheckButton * cb, char *label)
 	cb->check = ewl_check_new();
 	ewl_widget_internal_set(cb->check, TRUE);
 	ewl_callback_del(cb->check, EWL_CALLBACK_CLICKED, ewl_check_clicked_cb);
-	ewl_container_prepend_child(EWL_CONTAINER(cb), cb->check);
+	ewl_container_child_prepend(EWL_CONTAINER(cb), cb->check);
 	ewl_widget_show(cb->check);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -84,22 +84,22 @@ void ewl_checkbutton_set_label_position(Ewl_Widget * w, Ewl_Position p)
 		DRETURN(DLEVEL_STABLE);
 
 	cb->label_position = p;
-	ewl_container_remove_child(EWL_CONTAINER(cb),
+	ewl_container_child_remove(EWL_CONTAINER(cb),
 			EWL_WIDGET(b->label_object));
-	ewl_container_remove_child(EWL_CONTAINER(cb), cb->check);
+	ewl_container_child_remove(EWL_CONTAINER(cb), cb->check);
 
 	/*
 	 * Add the label and check back into the checkbutton with the correct
 	 * order.
 	 */
 	if (p == EWL_POSITION_RIGHT) {
-		ewl_container_append_child(EWL_CONTAINER(cb), cb->check);
-		ewl_container_append_child(EWL_CONTAINER(cb),
+		ewl_container_child_append(EWL_CONTAINER(cb), cb->check);
+		ewl_container_child_append(EWL_CONTAINER(cb),
 					   EWL_WIDGET(b->label_object));
 	} else {
-		ewl_container_append_child(EWL_CONTAINER(cb),
+		ewl_container_child_append(EWL_CONTAINER(cb),
 					   EWL_WIDGET(b->label_object));
-		ewl_container_append_child(EWL_CONTAINER(cb), cb->check);
+		ewl_container_child_append(EWL_CONTAINER(cb), cb->check);
 	}
 
 	ewl_widget_configure(w);

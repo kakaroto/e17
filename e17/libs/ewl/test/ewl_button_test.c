@@ -41,7 +41,7 @@ __create_button_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	 * Create the main box for holding the button widgets
 	 */
 	button_box = ewl_vbox_new();
-	ewl_container_append_child(EWL_CONTAINER(button_win), button_box);
+	ewl_container_child_append(EWL_CONTAINER(button_win), button_box);
 	ewl_box_set_spacing(EWL_BOX(button_box), 10);
 	ewl_widget_show(button_box);
 
@@ -49,7 +49,7 @@ __create_button_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	 * Create a button to be displayed witha label.
 	 */
 	button[0] = ewl_button_new("With Label");
-	ewl_container_append_child(EWL_CONTAINER(button_box), button[0]);
+	ewl_container_child_append(EWL_CONTAINER(button_box), button[0]);
 	ewl_object_alignment_set(EWL_OBJECT(button[0]), EWL_FLAG_ALIGN_LEFT);
 	ewl_widget_show(button[0]);
 
@@ -57,7 +57,7 @@ __create_button_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	 * Create a button that does not contain a label
 	 */
 	button[1] = ewl_button_new(NULL);
-	ewl_container_append_child(EWL_CONTAINER(button_box), button[1]);
+	ewl_container_child_append(EWL_CONTAINER(button_box), button[1]);
 	ewl_object_alignment_set(EWL_OBJECT(button[1]), EWL_FLAG_ALIGN_LEFT);
 	ewl_widget_show(button[1]);
 
@@ -65,14 +65,14 @@ __create_button_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	 * Add a separator between the classic buttons and the check buttons.
 	 */
 	separator[0] = ewl_hseparator_new();
-	ewl_container_append_child(EWL_CONTAINER(button_box), separator[0]);
+	ewl_container_child_append(EWL_CONTAINER(button_box), separator[0]);
 	ewl_widget_show(separator[0]);
 
 	/*
 	 * Create a check button with a label.
 	 */
 	check_button[0] = ewl_checkbutton_new("With Label");
-	ewl_container_append_child(EWL_CONTAINER(button_box), check_button[0]);
+	ewl_container_child_append(EWL_CONTAINER(button_box), check_button[0]);
 	ewl_object_alignment_set(EWL_OBJECT(check_button[0]),
 				 EWL_FLAG_ALIGN_LEFT);
 	ewl_widget_show(check_button[0]);
@@ -81,7 +81,7 @@ __create_button_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	 * Create a check button w/o a label.
 	 */
 	check_button[1] = ewl_checkbutton_new(NULL);
-	ewl_container_append_child(EWL_CONTAINER(button_box), check_button[1]);
+	ewl_container_child_append(EWL_CONTAINER(button_box), check_button[1]);
 	ewl_object_alignment_set(EWL_OBJECT(check_button[1]),
 				 EWL_FLAG_ALIGN_LEFT);
 	ewl_widget_show(check_button[1]);
@@ -90,14 +90,14 @@ __create_button_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	 * Add a separator between the check buttons and the radio buttons
 	 */
 	separator[1] = ewl_hseparator_new();
-	ewl_container_append_child(EWL_CONTAINER(button_box), separator[1]);
+	ewl_container_child_append(EWL_CONTAINER(button_box), separator[1]);
 	ewl_widget_show(separator[1]);
 
 	/*
 	 * Add a radio button with
 	 */
 	radio_button[0] = ewl_radiobutton_new("With Label");
-	ewl_container_append_child(EWL_CONTAINER(button_box), radio_button[0]);
+	ewl_container_child_append(EWL_CONTAINER(button_box), radio_button[0]);
 	ewl_object_alignment_set(EWL_OBJECT(radio_button[0]),
 				 EWL_FLAG_ALIGN_LEFT);
 	ewl_widget_show(radio_button[0]);
@@ -105,7 +105,7 @@ __create_button_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	radio_button[1] = ewl_radiobutton_new(NULL);
 	ewl_radiobutton_set_chain(EWL_RADIOBUTTON(radio_button[1]), 
 	                          EWL_RADIOBUTTON(radio_button[0]));
-	ewl_container_append_child(EWL_CONTAINER(button_box), radio_button[1]);
+	ewl_container_child_append(EWL_CONTAINER(button_box), radio_button[1]);
 	ewl_object_alignment_set(EWL_OBJECT(radio_button[1]),
 				 EWL_FLAG_ALIGN_LEFT);
 	ewl_widget_show(radio_button[1]);

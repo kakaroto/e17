@@ -51,7 +51,7 @@ int ewl_button_init(Ewl_Button * b, char *label)
 	if (b->label_object) {
 		ewl_object_alignment_set(EWL_OBJECT(b->label_object),
 					 EWL_FLAG_ALIGN_CENTER);
-		ewl_container_append_child(EWL_CONTAINER(b), b->label_object);
+		ewl_container_child_append(EWL_CONTAINER(b), b->label_object);
 		ewl_widget_show(b->label_object);
 	}
 
@@ -80,7 +80,7 @@ void ewl_button_set_label(Ewl_Button * b, char *l)
 	else if (!b->label_object) {
 		b->label_object = ewl_text_new(l);
 		ewl_widget_show(b->label_object);
-		ewl_container_append_child(EWL_CONTAINER(b), b->label_object);
+		ewl_container_child_append(EWL_CONTAINER(b), b->label_object);
 	}
 	else
 		ewl_text_text_set(EWL_TEXT(b->label_object), l);

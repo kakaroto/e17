@@ -136,7 +136,7 @@ void open_cb(Ewl_Widget *w, void *event, void *data ) {
     ewl_widget_show(fd_win);
 
     fd = ewl_filedialog_new(EWL_FILEDIALOG_TYPE_OPEN);
-    ewl_container_append_child(EWL_CONTAINER(fd_win), fd);
+    ewl_container_child_append(EWL_CONTAINER(fd_win), fd);
     ewl_callback_append(fd, EWL_CALLBACK_VALUE_CHANGED, open_file_cb, NULL);
     ewl_widget_show(fd);
 
@@ -184,7 +184,7 @@ int main(int argc, char ** argv) {
 
     /* box to contain everything */
     b = ewl_vbox_new();
-    ewl_container_append_child(EWL_CONTAINER(win), b);
+    ewl_container_child_append(EWL_CONTAINER(win), b);
     ewl_object_fill_policy_set(EWL_OBJECT(b), EWL_FLAG_FILL_ALL);
     ewl_widget_show(b);
 
@@ -193,7 +193,7 @@ int main(int argc, char ** argv) {
 
     /* the video */
     video = ewl_media_new(file);
-    ewl_container_append_child(EWL_CONTAINER(b), video);
+    ewl_container_child_append(EWL_CONTAINER(b), video);
     ewl_object_fill_policy_set(EWL_OBJECT(video), EWL_FLAG_FILL_ALL);
     ewl_callback_append(video, EWL_CALLBACK_REALIZE, video_realize_cb, NULL);
     ewl_callback_append(video, EWL_CALLBACK_VALUE_CHANGED, video_change_cb, time);
@@ -203,12 +203,12 @@ int main(int argc, char ** argv) {
     controls = ewl_vbox_new();
     ewl_object_fill_policy_set(EWL_OBJECT(controls), 
 		EWL_FLAG_FILL_VSHRINK | EWL_FLAG_FILL_HFILL);
-    ewl_container_append_child(EWL_CONTAINER(b), controls);
+    ewl_container_child_append(EWL_CONTAINER(b), controls);
     ewl_widget_show(controls);
 
     /* hold he controls */
     b = ewl_hbox_new();
-    ewl_container_append_child(EWL_CONTAINER(controls), b);
+    ewl_container_child_append(EWL_CONTAINER(controls), b);
     ewl_widget_show(b);
 
     {
@@ -224,7 +224,7 @@ int main(int argc, char ** argv) {
 
 	for(i = 0; controls[i].name != NULL; i++) {
 	    o = ewl_button_with_stock_new(controls[i].name);
-	    ewl_container_append_child(EWL_CONTAINER(b), o);
+	    ewl_container_child_append(EWL_CONTAINER(b), o);
 	    ewl_callback_append(o, EWL_CALLBACK_CLICKED, 
 					controls[i].func, NULL);
 	    ewl_widget_show(o);
@@ -232,12 +232,12 @@ int main(int argc, char ** argv) {
     }
 
     b = ewl_hbox_new();
-    ewl_container_append_child(EWL_CONTAINER(controls), b);
+    ewl_container_child_append(EWL_CONTAINER(controls), b);
     ewl_widget_show(b);
 
     /* the video seeker */
     seeker = ewl_seeker_new(EWL_ORIENTATION_HORIZONTAL);
-    ewl_container_append_child(EWL_CONTAINER(b), seeker);
+    ewl_container_child_append(EWL_CONTAINER(b), seeker);
     ewl_object_fill_policy_set(EWL_OBJECT(seeker), 
 	    EWL_FLAG_FILL_VSHRINK | EWL_FLAG_FILL_HFILL);
     ewl_seeker_set_value(EWL_SEEKER(seeker), 0.0);
@@ -247,7 +247,7 @@ int main(int argc, char ** argv) {
     ewl_widget_show(seeker);
 
     /* the time text spot */
-    ewl_container_append_child(EWL_CONTAINER(b), time);
+    ewl_container_child_append(EWL_CONTAINER(b), time);
     ewl_object_insets_set(EWL_OBJECT(time), 0, 3, 0, 0);
     ewl_object_fill_policy_set(EWL_OBJECT(time), EWL_FLAG_FILL_SHRINK);
     ewl_widget_show(time);

@@ -40,8 +40,8 @@ int ewl_spinner_init(Ewl_Spinner * s)
 	if (!ewl_container_init(EWL_CONTAINER(w), "spinner"))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
-	ewl_container_show_notify(EWL_CONTAINER(w), ewl_spinner_child_show_cb);
-	ewl_container_resize_notify(EWL_CONTAINER(w),
+	ewl_container_show_notify_set(EWL_CONTAINER(w), ewl_spinner_child_show_cb);
+	ewl_container_resize_notify_set(EWL_CONTAINER(w),
 				    ewl_spinner_child_resize_cb);
 
 	ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_HFILL);
@@ -54,18 +54,18 @@ int ewl_spinner_init(Ewl_Spinner * s)
 			    NULL);
 
 	s->entry = ewl_entry_new("0");
-	ewl_container_append_child(EWL_CONTAINER(s), s->entry);
+	ewl_container_child_append(EWL_CONTAINER(s), s->entry);
 	ewl_widget_show(s->entry);
 
 	s->button_increase = ewl_button_new(NULL);
-	ewl_container_append_child(EWL_CONTAINER(s), s->button_increase);
+	ewl_container_child_append(EWL_CONTAINER(s), s->button_increase);
 	ewl_widget_appearance_set(s->button_increase, "button_increment");
 	ewl_object_fill_policy_set(EWL_OBJECT(s->button_increase),
 			EWL_FLAG_FILL_NONE);
 	ewl_widget_show(s->button_increase);
 
 	s->button_decrease = ewl_button_new(NULL);
-	ewl_container_append_child(EWL_CONTAINER(s), s->button_decrease);
+	ewl_container_child_append(EWL_CONTAINER(s), s->button_decrease);
 	ewl_widget_appearance_set(s->button_decrease, "button_decrement");
 	ewl_object_fill_policy_set(EWL_OBJECT(s->button_decrease),
 			EWL_FLAG_FILL_NONE);

@@ -41,9 +41,9 @@ int ewl_scrollpane_init(Ewl_ScrollPane * s)
 	if (!ewl_container_init(EWL_CONTAINER(s), "scrollpane"))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
-	ewl_container_show_notify(EWL_CONTAINER(s),
+	ewl_container_show_notify_set(EWL_CONTAINER(s),
 				  ewl_scrollpane_child_resize_cb);
-	ewl_container_resize_notify(EWL_CONTAINER(s),
+	ewl_container_resize_notify_set(EWL_CONTAINER(s),
 				    (Ewl_Child_Resize)
 				    ewl_scrollpane_child_resize_cb);
 	ewl_object_fill_policy_set(EWL_OBJECT(s), EWL_FLAG_FILL_ALL);
@@ -67,10 +67,10 @@ int ewl_scrollpane_init(Ewl_ScrollPane * s)
 	/*
 	 * Add the parts to the scrollpane
 	 */
-	ewl_container_append_child(EWL_CONTAINER(s), s->overlay);
-	ewl_container_append_child(EWL_CONTAINER(s->overlay), s->box);
-	ewl_container_append_child(EWL_CONTAINER(s), s->hscrollbar);
-	ewl_container_append_child(EWL_CONTAINER(s), s->vscrollbar);
+	ewl_container_child_append(EWL_CONTAINER(s), s->overlay);
+	ewl_container_child_append(EWL_CONTAINER(s->overlay), s->box);
+	ewl_container_child_append(EWL_CONTAINER(s), s->hscrollbar);
+	ewl_container_child_append(EWL_CONTAINER(s), s->vscrollbar);
 
 	ewl_widget_internal_set(s->overlay, TRUE);
 	ewl_widget_internal_set(s->box, TRUE);
@@ -82,7 +82,7 @@ int ewl_scrollpane_init(Ewl_ScrollPane * s)
 	ewl_widget_show(s->hscrollbar);
 	ewl_widget_show(s->vscrollbar);
 
-	ewl_container_set_redirect(EWL_CONTAINER(s), EWL_CONTAINER(s->box));
+	ewl_container_redirect_set(EWL_CONTAINER(s), EWL_CONTAINER(s->box));
 
 	/*
 	 * Append necessary callbacks for the scrollpane.

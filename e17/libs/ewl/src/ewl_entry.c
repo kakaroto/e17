@@ -44,24 +44,24 @@ int ewl_entry_init(Ewl_Entry * e, char *text)
 	if (!ewl_container_init(EWL_CONTAINER(w), "entry"))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
-	ewl_container_show_notify(EWL_CONTAINER(w), ewl_entry_child_show_cb);
-	ewl_container_resize_notify(EWL_CONTAINER(w),
+	ewl_container_show_notify_set(EWL_CONTAINER(w), ewl_entry_child_show_cb);
+	ewl_container_resize_notify_set(EWL_CONTAINER(w),
 				    ewl_entry_child_resize_cb);
 
 	ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_HSHRINK |
 			EWL_FLAG_FILL_HFILL);
-	ewl_container_intercept_callback(EWL_CONTAINER(w), EWL_CALLBACK_SELECT);
-	ewl_container_intercept_callback(EWL_CONTAINER(w),
+	ewl_container_callback_intercept(EWL_CONTAINER(w), EWL_CALLBACK_SELECT);
+	ewl_container_callback_intercept(EWL_CONTAINER(w),
 					 EWL_CALLBACK_DESELECT);
 
 	e->text = ewl_text_new(text);
-	ewl_container_append_child(EWL_CONTAINER(e), e->text);
+	ewl_container_child_append(EWL_CONTAINER(e), e->text);
 	ewl_callback_append(e->text, EWL_CALLBACK_CONFIGURE,
 			    ewl_entry_configure_text_cb, e);
 	ewl_widget_show(e->text);
 
 	e->cursor = ewl_cursor_new();
-	ewl_container_append_child(EWL_CONTAINER(e), e->cursor);
+	ewl_container_child_append(EWL_CONTAINER(e), e->cursor);
 
 	ewl_cursor_set_base(EWL_CURSOR(e->cursor), 1);
 

@@ -60,14 +60,14 @@ int ewl_seeker_init(Ewl_Seeker * s, Ewl_Orientation orientation)
 				EWL_FLAG_FILL_VSHRINK);
 	}
 
-	ewl_container_show_notify(EWL_CONTAINER(w), ewl_seeker_child_show_cb);
+	ewl_container_show_notify_set(EWL_CONTAINER(w), ewl_seeker_child_show_cb);
 
 	/*
 	 * Create and add the button portion of the seeker
 	 */
 	s->button = ewl_button_new(NULL);
 	ewl_widget_internal_set(s->button, TRUE);
-	ewl_container_append_child(EWL_CONTAINER(s), s->button);
+	ewl_container_child_append(EWL_CONTAINER(s), s->button);
 	ewl_widget_show(s->button);
 
 	/*
@@ -100,7 +100,7 @@ int ewl_seeker_init(Ewl_Seeker * s, Ewl_Orientation orientation)
 	/*
 	 * We want to catch mouse movement events from the button.
 	 */
-	ewl_container_notify_callback(EWL_CONTAINER(s),
+	ewl_container_callback_notify(EWL_CONTAINER(s),
 			EWL_CALLBACK_MOUSE_MOVE);
 
 	DRETURN_INT(FALSE, DLEVEL_STABLE);

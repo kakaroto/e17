@@ -138,12 +138,12 @@ __create_image_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	 * Create the main box for holding the widgets
 	 */
 	image_box = ewl_vbox_new();
-	ewl_container_append_child(EWL_CONTAINER(image_win), image_box);
+	ewl_container_child_append(EWL_CONTAINER(image_win), image_box);
 	ewl_box_set_spacing(EWL_BOX(image_box), 10);
 	ewl_widget_show(image_box);
 
 	scrollpane = ewl_scrollpane_new();
-	ewl_container_append_child(EWL_CONTAINER(image_box), scrollpane);
+	ewl_container_child_append(EWL_CONTAINER(image_box), scrollpane);
 	ewl_widget_show(scrollpane);
 
 	if ((__image_exists(PACKAGE_DATA_DIR "/images/e-logo.png")) != -1)
@@ -158,21 +158,21 @@ __create_image_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	image = ewl_image_new(image_file, NULL);
 	ewl_object_padding_set(EWL_OBJECT(image), 0, 0, 5, 0);
 	ewl_object_alignment_set(EWL_OBJECT(image), EWL_FLAG_ALIGN_CENTER);
-	ewl_container_append_child(EWL_CONTAINER(scrollpane), image);
+	ewl_container_child_append(EWL_CONTAINER(scrollpane), image);
 	ewl_widget_show(image);
 
 	if (image_file)
 		ecore_dlist_append(images, image_file);
 
 	entry_path = ewl_entry_new(image_file);
-	ewl_container_append_child(EWL_CONTAINER(image_box), entry_path);
+	ewl_container_child_append(EWL_CONTAINER(image_box), entry_path);
 	ewl_widget_show(entry_path);
 
 	button_hbox = ewl_hbox_new();
 	ewl_box_set_spacing(EWL_BOX(button_hbox), 5);
 	ewl_object_alignment_set(EWL_OBJECT(button_hbox), EWL_FLAG_ALIGN_CENTER);
 	ewl_object_custom_size_set(EWL_OBJECT(button_hbox), 300, 26);
-	ewl_container_append_child(EWL_CONTAINER(image_box), button_hbox);
+	ewl_container_child_append(EWL_CONTAINER(image_box), button_hbox);
 	ewl_widget_show(button_hbox);
 
 	button_prev = ewl_button_new("Previous");
@@ -185,9 +185,9 @@ __create_image_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_object_set_custom_size(EWL_OBJECT(button_next), 32, NULL);
 */
 
-	ewl_container_append_child(EWL_CONTAINER(button_hbox), button_prev);
-	ewl_container_append_child(EWL_CONTAINER(button_hbox), button_load);
-	ewl_container_append_child(EWL_CONTAINER(button_hbox), button_next);
+	ewl_container_child_append(EWL_CONTAINER(button_hbox), button_prev);
+	ewl_container_child_append(EWL_CONTAINER(button_hbox), button_load);
+	ewl_container_child_append(EWL_CONTAINER(button_hbox), button_next);
 
 	image_file = NULL;
 
@@ -246,14 +246,14 @@ __create_image_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 
 
 	note_box = ewl_hbox_new();
-	ewl_container_append_child(EWL_CONTAINER(image_box), note_box);
+	ewl_container_child_append(EWL_CONTAINER(image_box), note_box);
 	ewl_object_alignment_set(EWL_OBJECT(note_box), EWL_FLAG_ALIGN_CENTER);
 	ewl_object_maximum_h_set(EWL_OBJECT(note_box), 20);
 	ewl_widget_show(note_box);
 
 	note = ewl_text_new("These buttons don't do shit.");
 	ewl_text_color_set(EWL_TEXT(note), 255, 0, 0, 255);
-	ewl_container_append_child(EWL_CONTAINER(note_box), note);
+	ewl_container_child_append(EWL_CONTAINER(note_box), note);
 	ewl_widget_show(note);
 
 

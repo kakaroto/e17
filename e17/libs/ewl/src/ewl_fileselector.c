@@ -102,13 +102,13 @@ void ewl_fileselector_init(Ewl_Fileselector * fs)
 
 	fs->dirs = ewl_tree_new (1);
 	ewl_tree_headers_set (EWL_TREE (fs->dirs), head_dirs);
-	ewl_container_append_child(EWL_CONTAINER(w), fs->dirs);
+	ewl_container_child_append(EWL_CONTAINER(w), fs->dirs);
 	ewl_object_padding_set(EWL_OBJECT(fs->dirs), 2, 2, 2, 2);
 	ewl_widget_show (fs->dirs);
 
 	fs->files = ewl_tree_new (1);
 	ewl_tree_headers_set (EWL_TREE (fs->files), head_files);
-	ewl_container_append_child(EWL_CONTAINER(w), fs->files);
+	ewl_container_child_append(EWL_CONTAINER(w), fs->files);
 	ewl_object_padding_set(EWL_OBJECT(fs->files), 2, 2, 2, 2);
 	ewl_widget_show (fs->files);
 

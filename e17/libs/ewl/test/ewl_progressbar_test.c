@@ -147,12 +147,12 @@ void __create_progressbar_test_window(Ewl_Widget * w, void *ev_data, void *user_
 	ewl_widget_show(progressbar_win);
 	
 	progressbar_vbox = ewl_vbox_new();
-	ewl_container_append_child(EWL_CONTAINER(progressbar_win), progressbar_vbox);
+	ewl_container_child_append(EWL_CONTAINER(progressbar_win), progressbar_vbox);
 	ewl_box_set_spacing(EWL_BOX(progressbar_vbox), 0);
 	ewl_widget_show(progressbar_vbox);
 
 	progressbar_box = ewl_hbox_new();
-	ewl_container_append_child(EWL_CONTAINER(progressbar_vbox), 
+	ewl_container_child_append(EWL_CONTAINER(progressbar_vbox), 
 			progressbar_box);
 	ewl_box_set_spacing(EWL_BOX(progressbar_box), 0);
 	ewl_widget_show(progressbar_box);
@@ -168,7 +168,7 @@ void __create_progressbar_test_window(Ewl_Widget * w, void *ev_data, void *user_
 		progress_timer[i] = ecore_timer_add(0.1, __increment_progress,
 				(Ewl_Progressbar *) progressbar[i]);
 	
-		ewl_container_append_child(EWL_CONTAINER(progressbar_box), progressbar[i]);
+		ewl_container_child_append(EWL_CONTAINER(progressbar_box), progressbar[i]);
 	}
 	
 
@@ -182,20 +182,20 @@ void __create_progressbar_test_window(Ewl_Widget * w, void *ev_data, void *user_
 	progress_timer[2] = ecore_timer_add(0.1, __increment_progress,
 			(Ewl_Progressbar *) progressbar[2]);
 	
-	ewl_container_append_child(EWL_CONTAINER(progressbar_vbox), progressbar[2]);
+	ewl_container_child_append(EWL_CONTAINER(progressbar_vbox), progressbar[2]);
 
 	
 	/*
 	 * Add buttons at the bottom
 	 */
 	progressbar_box = ewl_hbox_new();
-	ewl_container_append_child(EWL_CONTAINER(progressbar_vbox),
+	ewl_container_child_append(EWL_CONTAINER(progressbar_vbox),
 			progressbar_box);
 	ewl_box_set_spacing(EWL_BOX(progressbar_box), 0);
 	ewl_widget_show(progressbar_box);
 					
 	button = ewl_button_new ("Rerun");
-	ewl_container_append_child(EWL_CONTAINER(progressbar_box), button);
+	ewl_container_child_append(EWL_CONTAINER(progressbar_box), button);
 	ewl_callback_prepend(button, EWL_CALLBACK_CLICKED, 
 			__rerun_progressbars, NULL);
 		
@@ -203,7 +203,7 @@ void __create_progressbar_test_window(Ewl_Widget * w, void *ev_data, void *user_
 	ewl_widget_show (button);
 
 	button = ewl_button_new ("Set a random range from 0-500");
-	ewl_container_append_child(EWL_CONTAINER(progressbar_box), button);
+	ewl_container_child_append(EWL_CONTAINER(progressbar_box), button);
 	ewl_callback_prepend(button, EWL_CALLBACK_CLICKED,
 			__set_new_range, NULL);
 	ewl_object_fill_policy_set(EWL_OBJECT(button), EWL_FLAG_FILL_SHRINK);

@@ -49,14 +49,14 @@ __create_seeker_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_object_position_request(EWL_OBJECT(hseeker), 30, 0);
 	ewl_callback_append(hseeker, EWL_CALLBACK_VALUE_CHANGED, __print_value,
 			NULL);
-	ewl_container_append_child(EWL_CONTAINER(seeker_win), hseeker);
+	ewl_container_child_append(EWL_CONTAINER(seeker_win), hseeker);
 	ewl_widget_show(hseeker);
 
 	vseeker = ewl_vseeker_new();
 	ewl_object_position_request(EWL_OBJECT(vseeker), 0, 30);
 	ewl_callback_append(vseeker, EWL_CALLBACK_VALUE_CHANGED, __print_value,
 			NULL);
-	ewl_container_append_child(EWL_CONTAINER(seeker_win), vseeker);
+	ewl_container_child_append(EWL_CONTAINER(seeker_win), vseeker);
 	ewl_widget_show(vseeker);
 
 	return;

@@ -38,21 +38,22 @@ int ewl_border_init(Ewl_Border * b, char *label)
 	if (!ewl_container_init(EWL_CONTAINER(w), "border"))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
-	ewl_container_show_notify(EWL_CONTAINER(w), ewl_border_child_size_cb);
-	ewl_container_resize_notify(EWL_CONTAINER(w), 
-				    (Ewl_Child_Resize)ewl_border_child_size_cb);
+	ewl_container_show_notify_set(EWL_CONTAINER(w),
+				      ewl_border_child_size_cb);
+	ewl_container_resize_notify_set(EWL_CONTAINER(w), 
+				        (Ewl_Child_Resize)ewl_border_child_size_cb);
 
 	ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_FILL);
 
 	b->label = ewl_text_new(label);
-	ewl_container_append_child(EWL_CONTAINER(b), b->label);
+	ewl_container_child_append(EWL_CONTAINER(b), b->label);
 	ewl_widget_show(b->label);
 
 	b->box = ewl_vbox_new();
-	ewl_container_append_child(EWL_CONTAINER(b), b->box);
+	ewl_container_child_append(EWL_CONTAINER(b), b->box);
 	ewl_widget_show(b->box);
 
-	ewl_container_set_redirect(EWL_CONTAINER(b), EWL_CONTAINER(b->box));
+	ewl_container_redirect_set(EWL_CONTAINER(b), EWL_CONTAINER(b->box));
 
 	/*
 	 * Attach necessary callback mechanisms 
@@ -129,8 +130,8 @@ ewl_border_child_size_cb(Ewl_Container * c, Ewl_Widget * w)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	b = EWL_BORDER(c);
-	ewl_container_prefer_largest(c, EWL_ORIENTATION_HORIZONTAL);
-	ewl_container_prefer_sum(c, EWL_ORIENTATION_VERTICAL);
+	ewl_container_largest_prefer(c, EWL_ORIENTATION_HORIZONTAL);
+	ewl_container_sum_prefer(c, EWL_ORIENTATION_VERTICAL);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

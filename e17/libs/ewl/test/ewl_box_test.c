@@ -141,7 +141,7 @@ __create_box_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	 * Create the main box for holding the widgets
 	 */
 	box_box = ewl_vbox_new();
-	ewl_container_append_child(EWL_CONTAINER(box_win), box_box);
+	ewl_container_child_append(EWL_CONTAINER(box_win), box_box);
 	ewl_widget_show(box_box);
 
 	/*
@@ -149,7 +149,7 @@ __create_box_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	 * left corner.
 	 */
 	hbox[0] = ewl_hbox_new();
-	ewl_container_append_child(EWL_CONTAINER(box_box), hbox[0]);
+	ewl_container_child_append(EWL_CONTAINER(box_box), hbox[0]);
 	ewl_widget_show(hbox[0]);
 
 	/******************************************************************/
@@ -157,14 +157,14 @@ __create_box_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	/******************************************************************/
 	vbox[0] = ewl_vbox_new();
-	ewl_container_append_child(EWL_CONTAINER(hbox[0]), vbox[0]);
+	ewl_container_child_append(EWL_CONTAINER(hbox[0]), vbox[0]);
 	ewl_widget_show(vbox[0]);
 
 	/*
 	 * Create and setup the button that starts in the left position.
 	 */
 	vbox_button[0][0] = ewl_button_new("Left");
-	ewl_container_append_child(EWL_CONTAINER(vbox[0]), vbox_button[0][0]);
+	ewl_container_child_append(EWL_CONTAINER(vbox[0]), vbox_button[0][0]);
 	ewl_object_fill_policy_set(EWL_OBJECT(vbox_button[0][0]),
 				   EWL_FLAG_FILL_NONE);
 	ewl_object_alignment_set(EWL_OBJECT(vbox_button[0][0]),
@@ -177,7 +177,7 @@ __create_box_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	 * Create and setup the button that starts in the center position.
 	 */
 	vbox_button[0][1] = ewl_button_new("Center");
-	ewl_container_append_child(EWL_CONTAINER(vbox[0]), vbox_button[0][1]);
+	ewl_container_child_append(EWL_CONTAINER(vbox[0]), vbox_button[0][1]);
 	ewl_object_fill_policy_set(EWL_OBJECT(vbox_button[0][1]),
 				   EWL_FLAG_FILL_NONE);
 	ewl_object_alignment_set(EWL_OBJECT(vbox_button[0][1]),
@@ -190,7 +190,7 @@ __create_box_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	 * Create and setup the button that starts in the right position.
 	 */
 	vbox_button[0][2] = ewl_button_new("Right");
-	ewl_container_append_child(EWL_CONTAINER(vbox[0]), vbox_button[0][2]);
+	ewl_container_child_append(EWL_CONTAINER(vbox[0]), vbox_button[0][2]);
 	ewl_object_fill_policy_set(EWL_OBJECT(vbox_button[0][2]),
 				   EWL_FLAG_FILL_NONE);
 	ewl_object_alignment_set(EWL_OBJECT(vbox_button[0][2]),
@@ -204,14 +204,14 @@ __create_box_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	/****************************************************************/
 	vbox[1] = ewl_vbox_new();
-	ewl_container_append_child(EWL_CONTAINER(hbox[0]), vbox[1]);
+	ewl_container_child_append(EWL_CONTAINER(hbox[0]), vbox[1]);
 	ewl_widget_show(vbox[1]);
 
 	/*
 	 * Create and setup a button with no filling by default.
 	 */
 	vbox_button[1][0] = ewl_button_new("None");
-	ewl_container_append_child(EWL_CONTAINER(vbox[1]), vbox_button[1][0]);
+	ewl_container_child_append(EWL_CONTAINER(vbox[1]), vbox_button[1][0]);
 	ewl_object_fill_policy_set(EWL_OBJECT(vbox_button[1][0]),
 				   EWL_FLAG_FILL_NONE);
 	ewl_box_set_orientation(EWL_BOX(vbox_button[1][0]),
@@ -226,7 +226,7 @@ __create_box_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	 * Create and setup a button with filling by default.
 	 */
 	vbox_button[1][1] = ewl_button_new("Fill");
-	ewl_container_append_child(EWL_CONTAINER(vbox[1]), vbox_button[1][1]);
+	ewl_container_child_append(EWL_CONTAINER(vbox[1]), vbox_button[1][1]);
 	ewl_box_set_orientation(EWL_BOX(vbox_button[1][1]),
 			EWL_ORIENTATION_VERTICAL);
 	ewl_object_fill_policy_set(EWL_OBJECT(vbox_button[1][1]),
@@ -241,7 +241,7 @@ __create_box_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	 * Create and setup a button with no filling by default.
 	 */
 	vbox_button[1][2] = ewl_button_new("None");
-	ewl_container_append_child(EWL_CONTAINER(vbox[1]), vbox_button[1][2]);
+	ewl_container_child_append(EWL_CONTAINER(vbox[1]), vbox_button[1][2]);
 	ewl_box_set_orientation(EWL_BOX(vbox_button[1][2]),
 			EWL_ORIENTATION_VERTICAL);
 	ewl_object_fill_policy_set(EWL_OBJECT(vbox_button[1][2]),
@@ -257,14 +257,14 @@ __create_box_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	/****************************************************************/
 	hbox[1] = ewl_hbox_new();
-	ewl_container_append_child(EWL_CONTAINER(box_box), hbox[1]);
+	ewl_container_child_append(EWL_CONTAINER(box_box), hbox[1]);
 	ewl_widget_show(hbox[1]);
 
 	/*
 	 * Create and setup a button with top alignment by default.
 	 */
 	hbox_button[0][0] = ewl_button_new("Top");
-	ewl_container_append_child(EWL_CONTAINER(hbox[1]), hbox_button[0][0]);
+	ewl_container_child_append(EWL_CONTAINER(hbox[1]), hbox_button[0][0]);
 	ewl_object_fill_policy_set(EWL_OBJECT(hbox_button[0][0]),
 				   EWL_FLAG_FILL_NONE);
 	ewl_object_alignment_set(EWL_OBJECT(hbox_button[0][0]),
@@ -277,7 +277,7 @@ __create_box_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	 * Create and setup a button with center alignment by default.
 	 */
 	hbox_button[0][1] = ewl_button_new("Center");
-	ewl_container_append_child(EWL_CONTAINER(hbox[1]), hbox_button[0][1]);
+	ewl_container_child_append(EWL_CONTAINER(hbox[1]), hbox_button[0][1]);
 	ewl_object_fill_policy_set(EWL_OBJECT(hbox_button[0][1]),
 				   EWL_FLAG_FILL_NONE);
 	ewl_object_alignment_set(EWL_OBJECT(hbox_button[0][1]),
@@ -290,7 +290,7 @@ __create_box_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	 * Create and setup a button with bottom alignment by default.
 	 */
 	hbox_button[0][2] = ewl_button_new("Bottom");
-	ewl_container_append_child(EWL_CONTAINER(hbox[1]), hbox_button[0][2]);
+	ewl_container_child_append(EWL_CONTAINER(hbox[1]), hbox_button[0][2]);
 	ewl_object_fill_policy_set(EWL_OBJECT(hbox_button[0][2]),
 				   EWL_FLAG_FILL_NONE);
 	ewl_object_alignment_set(EWL_OBJECT(hbox_button[0][2]),
@@ -304,7 +304,7 @@ __create_box_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	/****************************************************************/
 
 	hbox[2] = ewl_hbox_new();
-	ewl_container_append_child(EWL_CONTAINER(box_box), hbox[2]);
+	ewl_container_child_append(EWL_CONTAINER(box_box), hbox[2]);
 	ewl_object_fill_policy_set(EWL_OBJECT(hbox[2]), EWL_FLAG_FILL_HFILL);
 	ewl_widget_show(hbox[2]);
 
@@ -315,7 +315,7 @@ __create_box_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 		ewl_button_new("Shrink This Box To Fit It's Parent");
 	ewl_object_fill_policy_set(EWL_OBJECT(hbox_button[1][0]),
 				   EWL_FLAG_FILL_HSHRINK);
-	ewl_container_append_child(EWL_CONTAINER(hbox[2]), hbox_button[1][0]);
+	ewl_container_child_append(EWL_CONTAINER(hbox[2]), hbox_button[1][0]);
 	ewl_callback_append(hbox_button[1][0], EWL_CALLBACK_CLICKED,
 			    __toggle_child_shrink, NULL);
 	ewl_widget_show(hbox_button[1][0]);
@@ -327,7 +327,7 @@ __create_box_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 		ewl_button_new("Shrink This Box To Fit It's Parent");
 	ewl_object_fill_policy_set(EWL_OBJECT(hbox_button[1][1]),
 				   EWL_FLAG_FILL_HSHRINK);
-	ewl_container_append_child(EWL_CONTAINER(hbox[2]), hbox_button[1][1]);
+	ewl_container_child_append(EWL_CONTAINER(hbox[2]), hbox_button[1][1]);
 	ewl_callback_append(hbox_button[1][1], EWL_CALLBACK_CLICKED,
 			    __toggle_child_shrink, NULL);
 	ewl_widget_show(hbox_button[1][1]);
@@ -338,7 +338,7 @@ __create_box_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	hbox_button[1][2] = ewl_button_new("Don't shrink this box at all");
 	ewl_object_fill_policy_set(EWL_OBJECT(hbox_button[1][2]),
 				   EWL_FLAG_FILL_NONE);
-	ewl_container_append_child(EWL_CONTAINER(hbox[2]), hbox_button[1][2]);
+	ewl_container_child_append(EWL_CONTAINER(hbox[2]), hbox_button[1][2]);
 	ewl_callback_append(hbox_button[1][2], EWL_CALLBACK_CLICKED,
 			    __toggle_child_shrink, NULL);
 	ewl_widget_show(hbox_button[1][2]);

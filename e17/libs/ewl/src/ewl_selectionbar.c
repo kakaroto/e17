@@ -66,7 +66,7 @@ int ewl_selectionbar_init(Ewl_Selectionbar * s, Ewl_Widget * parent)
 
 	ewl_object_fill_policy_set(EWL_OBJECT(s->bar), EWL_FLAG_FILL_HFILL |
 				   EWL_FLAG_FILL_HSHRINK);
-	ewl_container_append_child(EWL_CONTAINER(w), EWL_WIDGET(s->bar));
+	ewl_container_child_append(EWL_CONTAINER(w), EWL_WIDGET(s->bar));
 	ewl_callback_append(EWL_WIDGET(s->bar), EWL_CALLBACK_FOCUS_OUT,
 			    ewl_selectionbar_focus_out_cb, w);
 	ewl_callback_append(EWL_WIDGET(s->bar), EWL_CALLBACK_FOCUS_IN,
@@ -80,7 +80,7 @@ int ewl_selectionbar_init(Ewl_Selectionbar * s, Ewl_Widget * parent)
 
 	s->scroller.top = ewl_vbox_new();
 	ewl_object_size_request(EWL_OBJECT(s->scroller.top), 30, 10);
-	ewl_container_append_child(s->bar, s->scroller.top);
+	ewl_container_child_append(s->bar, s->scroller.top);
 
 /*	ewl_callback_append(s->scroller.top, EWL_CALLBACK_MOUSE_MOVE,
 			ewl_selectionbar_mouse_move_child, s);
@@ -90,7 +90,7 @@ int ewl_selectionbar_init(Ewl_Selectionbar * s, Ewl_Widget * parent)
 
 	s->scroller.bottom = ewl_vbox_new();
 	ewl_object_size_request(EWL_OBJECT(s->scroller.bottom), 30, 10);
-	ewl_container_append_child(s->bar, s->scroller.bottom);
+	ewl_container_child_append(s->bar, s->scroller.bottom);
 
 /*	ewl_callback_append(s->scroller.bottom, EWL_CALLBACK_MOUSE_MOVE,
 			ewl_selectionbar_mouse_move_child, s);
@@ -98,7 +98,7 @@ int ewl_selectionbar_init(Ewl_Selectionbar * s, Ewl_Widget * parent)
 	ewl_widget_appearance_set(s->scroller.bottom, "/selectionbar/scroller/bottom");
 
 
-	ewl_container_add_notify(EWL_CONTAINER(w),
+	ewl_container_add_notify_set(EWL_CONTAINER(w),
 				 ewl_selectionbar_child_add_cb);
 
 	s->OPEN = 1;
@@ -110,8 +110,8 @@ int ewl_selectionbar_init(Ewl_Selectionbar * s, Ewl_Widget * parent)
 
 void ewl_selectionbar_child_add_cb(Ewl_Container * parent, Ewl_Widget * child)
 {
-	ewl_container_append_child(EWL_SELECTIONBAR(parent)->bar, child);
-	ewl_container_remove_child(parent, child);
+	ewl_container_child_append(EWL_SELECTIONBAR(parent)->bar, child);
+	ewl_container_child_remove(parent, child);
 
 	ewl_callback_append(child, EWL_CALLBACK_MOUSE_MOVE,
 			    ewl_selectionbar_mouse_move_child_cb, parent);

@@ -50,37 +50,37 @@ void ewl_combo_init(Ewl_Combo * combo, char *title)
 		ewl_widget_destroy(EWL_MENU_ITEM(combo)->text);
 	EWL_MENU_ITEM(combo)->text = NULL;
 
-	redirect = ewl_container_get_redirect( EWL_CONTAINER(combo) );
-	ewl_container_set_redirect( EWL_CONTAINER(combo), NULL );
+	redirect = ewl_container_redirect_get( EWL_CONTAINER(combo) );
+	ewl_container_redirect_set( EWL_CONTAINER(combo), NULL );
 
 	combo->button = ewl_button_new(NULL);
 	ewl_widget_appearance_set(combo->button, "button_decrement");
 	ewl_object_alignment_set(EWL_OBJECT(combo->button), EWL_FLAG_ALIGN_RIGHT);
-	ewl_container_append_child(EWL_CONTAINER(combo), combo->button);
+	ewl_container_child_append(EWL_CONTAINER(combo), combo->button);
 	ewl_widget_show(combo->button);
 
 	combo->selected = ewl_entry_new(title);
 	ewl_object_alignment_set(EWL_OBJECT(combo->selected), EWL_FLAG_ALIGN_CENTER);
-	ewl_container_append_child(EWL_CONTAINER(combo), combo->selected);
+	ewl_container_child_append(EWL_CONTAINER(combo), combo->selected);
 	ewl_widget_show(combo->selected);
 
 	ewl_callback_del(EWL_WIDGET(combo), EWL_CALLBACK_SELECT,
 									 ewl_menu_base_expand_cb);
 
-	ewl_container_nointercept_callback( EWL_CONTAINER(combo),
+	ewl_container_callback_nointercept( EWL_CONTAINER(combo),
 																			EWL_CALLBACK_CLICKED );
-	ewl_container_nointercept_callback( EWL_CONTAINER(combo),
+	ewl_container_callback_nointercept( EWL_CONTAINER(combo),
 																			EWL_CALLBACK_MOUSE_DOWN );
-	ewl_container_nointercept_callback( EWL_CONTAINER(combo),
+	ewl_container_callback_nointercept( EWL_CONTAINER(combo),
 																			EWL_CALLBACK_MOUSE_UP );
-	ewl_container_nointercept_callback( EWL_CONTAINER(combo),
+	ewl_container_callback_nointercept( EWL_CONTAINER(combo),
 																			EWL_CALLBACK_MOUSE_MOVE );
-	ewl_container_nointercept_callback( EWL_CONTAINER(combo),
+	ewl_container_callback_nointercept( EWL_CONTAINER(combo),
 																			EWL_CALLBACK_SELECT );
-	ewl_container_nointercept_callback( EWL_CONTAINER(combo),
+	ewl_container_callback_nointercept( EWL_CONTAINER(combo),
 																			EWL_CALLBACK_DESELECT );
 
-	ewl_container_set_redirect( EWL_CONTAINER(combo), redirect );
+	ewl_container_redirect_set( EWL_CONTAINER(combo), redirect );
 
 	ewl_callback_append(combo->button, EWL_CALLBACK_MOUSE_DOWN,
 											ewl_combo_expand_cb, combo);
@@ -225,7 +225,7 @@ void ewl_combo_expand_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	if (!REALIZED(combo->base.popup)) {
 		emb = ewl_embed_find_by_widget(w);
-		ewl_container_append_child(EWL_CONTAINER(emb),
+		ewl_container_child_append(EWL_CONTAINER(emb),
 					   combo->base.popup); 
 	}
 

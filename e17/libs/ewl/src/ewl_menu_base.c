@@ -46,7 +46,7 @@ void ewl_menu_base_init(Ewl_Menu_Base * menu, char *image, char *title)
 	 * Redirect the container so that newly added children go in the popup
 	 * menu.
 	 */
-	ewl_container_set_redirect(EWL_CONTAINER(menu),
+	ewl_container_redirect_set(EWL_CONTAINER(menu),
 				   EWL_CONTAINER(menu->popbox));
 	ewl_widget_internal_set(menu->popbox, TRUE);
 
@@ -96,9 +96,9 @@ int ewl_menu_item_init(Ewl_Menu_Item * item, char *image, char *text)
 	if (!ewl_container_init(EWL_CONTAINER(item), "menuitem"))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
-	ewl_container_show_notify(EWL_CONTAINER(item),
+	ewl_container_show_notify_set(EWL_CONTAINER(item),
 				  ewl_menu_item_child_show_cb);
-	ewl_container_resize_notify(EWL_CONTAINER(item),
+	ewl_container_resize_notify_set(EWL_CONTAINER(item),
 				  ewl_menu_item_child_resize_cb);
 	ewl_object_fill_policy_set(EWL_OBJECT(item), EWL_FLAG_FILL_HFILL);
 
@@ -108,17 +108,17 @@ int ewl_menu_item_init(Ewl_Menu_Item * item, char *image, char *text)
 	/*
 	 * Intercept mouse events this will cause callbacks to on this widget.
 	 */
-	ewl_container_intercept_callback(EWL_CONTAINER(item),
+	ewl_container_callback_intercept(EWL_CONTAINER(item),
 					 EWL_CALLBACK_CLICKED);
-	ewl_container_intercept_callback(EWL_CONTAINER(item),
+	ewl_container_callback_intercept(EWL_CONTAINER(item),
 					 EWL_CALLBACK_MOUSE_DOWN);
-	ewl_container_intercept_callback(EWL_CONTAINER(item),
+	ewl_container_callback_intercept(EWL_CONTAINER(item),
 					 EWL_CALLBACK_MOUSE_UP);
-	ewl_container_intercept_callback(EWL_CONTAINER(item),
+	ewl_container_callback_intercept(EWL_CONTAINER(item),
 					 EWL_CALLBACK_MOUSE_MOVE);
-	ewl_container_intercept_callback(EWL_CONTAINER(item),
+	ewl_container_callback_intercept(EWL_CONTAINER(item),
 					 EWL_CALLBACK_SELECT);
-	ewl_container_intercept_callback(EWL_CONTAINER(item),
+	ewl_container_callback_intercept(EWL_CONTAINER(item),
 					 EWL_CALLBACK_DESELECT);
 
 	item->icon = NULL;
@@ -132,7 +132,7 @@ int ewl_menu_item_init(Ewl_Menu_Item * item, char *image, char *text)
 		item->text = ewl_text_new(text);
 
 	if (item->text) {
-		ewl_container_append_child(EWL_CONTAINER(item), item->text);
+		ewl_container_child_append(EWL_CONTAINER(item), item->text);
 		ewl_object_alignment_set(EWL_OBJECT(item->text),
 				EWL_FLAG_ALIGN_LEFT);
 		ewl_widget_show(item->text);
@@ -150,9 +150,9 @@ static int ewl_menu_item_create_image( Ewl_Menu_Item *item,
 	if (item->icon)
 		ewl_widget_destroy(item->icon);
 
-	redirect = ewl_container_get_redirect(EWL_CONTAINER(item));
+	redirect = ewl_container_redirect_get(EWL_CONTAINER(item));
 
-	ewl_container_set_redirect(EWL_CONTAINER(item), NULL);
+	ewl_container_redirect_set(EWL_CONTAINER(item), NULL);
 
 	/*
 	 * Create the icon if one is requested, or a spacer if not, but there is
@@ -173,10 +173,10 @@ static int ewl_menu_item_create_image( Ewl_Menu_Item *item,
 	 */
 	ewl_object_alignment_set(EWL_OBJECT(item->icon), EWL_FLAG_ALIGN_CENTER);
 	ewl_object_maximum_size_set(EWL_OBJECT(item->icon), 20, 20);
-	ewl_container_prepend_child(EWL_CONTAINER(item), item->icon);
+	ewl_container_child_prepend(EWL_CONTAINER(item), item->icon);
 	ewl_widget_show(item->icon);
 
-	ewl_container_set_redirect(EWL_CONTAINER(item), redirect);
+	ewl_container_redirect_set(EWL_CONTAINER(item), redirect);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -276,7 +276,7 @@ void ewl_menu_separator_init(Ewl_Menu_Separator *sep)
 	if (!separator)
 		DRETURN(DLEVEL_STABLE);
 
-	ewl_container_append_child(EWL_CONTAINER(sep), separator);
+	ewl_container_child_append(EWL_CONTAINER(sep), separator);
 	ewl_widget_show(separator);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -310,7 +310,7 @@ void ewl_menu_item_child_show_cb(Ewl_Container *parent, Ewl_Widget *child)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	ewl_container_prefer_largest(parent, EWL_ORIENTATION_VERTICAL);
+	ewl_container_largest_prefer(parent, EWL_ORIENTATION_VERTICAL);
 	ewl_object_preferred_inner_w_set(EWL_OBJECT(parent), PREFERRED_W(parent) +
 			ewl_object_preferred_w_get(EWL_OBJECT(child)));
 
@@ -324,7 +324,7 @@ ewl_menu_item_child_resize_cb(Ewl_Container *parent, Ewl_Widget *child,
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	if (o == EWL_ORIENTATION_VERTICAL)
-		ewl_container_prefer_largest(parent, o);
+		ewl_container_largest_prefer(parent, o);
 	else
 		ewl_object_preferred_inner_w_set(EWL_OBJECT(parent),
 				PREFERRED_W(parent) + size);
@@ -346,7 +346,7 @@ ewl_menu_base_expand_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 		DRETURN(DLEVEL_STABLE);
 
 	if (!REALIZED(menu->popup))
-		ewl_container_append_child(EWL_CONTAINER(menu->popup),
+		ewl_container_child_append(EWL_CONTAINER(menu->popup),
 					   menu->popbox);
 
 	if (item->inmenu) {

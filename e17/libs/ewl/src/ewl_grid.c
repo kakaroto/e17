@@ -46,8 +46,8 @@ int ewl_grid_init(Ewl_Grid * g, int cols, int rows)
 	if (!ewl_container_init(EWL_CONTAINER(g), "vbox"))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
-	ewl_container_show_notify(EWL_CONTAINER(g), ewl_grid_child_show_cb);
-	ewl_container_resize_notify(EWL_CONTAINER(g), ewl_grid_child_resize_cb);
+	ewl_container_show_notify_set(EWL_CONTAINER(g), ewl_grid_child_show_cb);
+	ewl_container_resize_notify_set(EWL_CONTAINER(g), ewl_grid_child_resize_cb);
 
 	/*
 	 * Initialize the lists that keep track of the
@@ -195,7 +195,7 @@ ewl_grid_add(Ewl_Grid * g, Ewl_Widget * w,
 
 	/* store the child info in the child widget */
 	ewl_widget_data_set(w, (void *) g, child);
-	ewl_container_append_child(EWL_CONTAINER(g), w);
+	ewl_container_child_append(EWL_CONTAINER(g), w);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

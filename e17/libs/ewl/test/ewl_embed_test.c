@@ -36,7 +36,7 @@ int main(int argc, char **argv)
 	ewl_widget_show(embed);
 
 	button = ewl_button_new("This button does jack shit");
-	ewl_container_append_child(EWL_CONTAINER(embed), button);
+	ewl_container_child_append(EWL_CONTAINER(embed), button);
 	ewl_callback_append(button, EWL_CALLBACK_CLICKED, print_cb, button);
 	ewl_widget_show(button);
 

@@ -114,11 +114,11 @@ int ewl_box_init(Ewl_Box * b, Ewl_Orientation o)
 			DRETURN_INT(FALSE, DLEVEL_STABLE);
 	}
 
-	ewl_container_add_notify(EWL_CONTAINER(b), ewl_box_child_add_cb);
-	ewl_container_remove_notify(EWL_CONTAINER(b), ewl_box_child_remove_cb);
-	ewl_container_resize_notify(EWL_CONTAINER(b), ewl_box_child_resize_cb);
-	ewl_container_show_notify(EWL_CONTAINER(b), ewl_box_child_show_cb);
-	ewl_container_hide_notify(EWL_CONTAINER(b), ewl_box_child_hide_cb);
+	ewl_container_add_notify_set(EWL_CONTAINER(b), ewl_box_child_add_cb);
+	ewl_container_remove_notify_set(EWL_CONTAINER(b), ewl_box_child_remove_cb);
+	ewl_container_resize_notify_set(EWL_CONTAINER(b), ewl_box_child_resize_cb);
+	ewl_container_show_notify_set(EWL_CONTAINER(b), ewl_box_child_show_cb);
+	ewl_container_hide_notify_set(EWL_CONTAINER(b), ewl_box_child_hide_cb);
 
 	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE, ewl_box_configure_cb,
 			NULL);
@@ -215,9 +215,9 @@ void ewl_box_set_homogeneous(Ewl_Box *b, int h)
 				ewl_box_configure_cb);
 		ewl_callback_append(EWL_WIDGET(b), EWL_CALLBACK_CONFIGURE,
 				ewl_box_configure_homogeneous_cb, NULL);
-		ewl_container_show_notify(EWL_CONTAINER(b),
+		ewl_container_show_notify_set(EWL_CONTAINER(b),
 					  ewl_box_child_homogeneous_show_cb);
-		ewl_container_hide_notify(EWL_CONTAINER(b),
+		ewl_container_hide_notify_set(EWL_CONTAINER(b),
 					  ewl_box_child_homogeneous_show_cb);
 	}
 	else {
@@ -225,9 +225,9 @@ void ewl_box_set_homogeneous(Ewl_Box *b, int h)
 				ewl_box_configure_homogeneous_cb);
 		ewl_callback_append(EWL_WIDGET(b), EWL_CALLBACK_CONFIGURE,
 				ewl_box_configure_cb, NULL);
-		ewl_container_show_notify(EWL_CONTAINER(b),
+		ewl_container_show_notify_set(EWL_CONTAINER(b),
 					  ewl_box_child_show_cb);
-		ewl_container_hide_notify(EWL_CONTAINER(b),
+		ewl_container_hide_notify_set(EWL_CONTAINER(b),
 					  ewl_box_child_hide_cb);
 	}
 
@@ -683,13 +683,13 @@ ewl_box_child_show_cb(Ewl_Container * c, Ewl_Widget * w)
 		size = PREFERRED_W(c) +
 			ewl_object_preferred_w_get(EWL_OBJECT(w)) + space;
 		ewl_object_preferred_inner_w_set(EWL_OBJECT(c), size);
-		ewl_container_prefer_largest(c, EWL_ORIENTATION_VERTICAL);
+		ewl_container_largest_prefer(c, EWL_ORIENTATION_VERTICAL);
 	}
 	else {
 		size = PREFERRED_H(c) +
 			ewl_object_preferred_h_get(EWL_OBJECT(w)) + space;
 		ewl_object_preferred_inner_h_set(EWL_OBJECT(c), size);
-		ewl_container_prefer_largest(c, EWL_ORIENTATION_HORIZONTAL);
+		ewl_container_largest_prefer(c, EWL_ORIENTATION_HORIZONTAL);
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -707,8 +707,8 @@ ewl_box_child_homogeneous_show_cb(Ewl_Container * c, Ewl_Widget * w)
 	if (numc)
 		space = EWL_BOX(c)->spacing;
 
-	ewl_container_prefer_largest(c, EWL_ORIENTATION_HORIZONTAL);
-	ewl_container_prefer_largest(c, EWL_ORIENTATION_VERTICAL);
+	ewl_container_largest_prefer(c, EWL_ORIENTATION_HORIZONTAL);
+	ewl_container_largest_prefer(c, EWL_ORIENTATION_VERTICAL);
 	if (EWL_BOX(c)->orientation == EWL_ORIENTATION_HORIZONTAL) {
 		size = (PREFERRED_W(c) + space) * numc - space;
 		ewl_object_preferred_inner_w_set(EWL_OBJECT(c), size);
@@ -738,14 +738,14 @@ ewl_box_child_hide_cb(Ewl_Container * c, Ewl_Widget * w)
 				ewl_object_preferred_w_get(EWL_OBJECT(w)) -
 				space);
 
-		ewl_container_prefer_largest(c, EWL_ORIENTATION_VERTICAL);
+		ewl_container_largest_prefer(c, EWL_ORIENTATION_VERTICAL);
 	}
 	else {
 		ewl_object_preferred_inner_h_set(EWL_OBJECT(c),
 				PREFERRED_H(c) - 
 				ewl_object_preferred_h_get(EWL_OBJECT(w)) -
 				space);
-		ewl_container_prefer_largest(c, EWL_ORIENTATION_HORIZONTAL);
+		ewl_container_largest_prefer(c, EWL_ORIENTATION_HORIZONTAL);
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -790,7 +790,7 @@ ewl_box_child_resize_cb(Ewl_Container * c, Ewl_Widget * w, int size,
 	 * Find the new largest widget in the alignment direction
 	 */
 	else
-		ewl_container_prefer_largest(c, o);
+		ewl_container_largest_prefer(c, o);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

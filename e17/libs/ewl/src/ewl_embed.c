@@ -301,7 +301,7 @@ ewl_embed_feed_mouse_down(Ewl_Embed *embed, int b, int clicks, int x, int y,
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("embed", embed);
 
-	widget = ewl_container_get_child_at_recursive(EWL_CONTAINER(embed),
+	widget = ewl_container_child_at_recursive_get(EWL_CONTAINER(embed),
 			x, y);
 	if (!widget)
 		widget = EWL_WIDGET(embed);
@@ -431,7 +431,7 @@ ewl_embed_feed_mouse_move(Ewl_Embed *embed, int x, int y, unsigned int mods)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("embed", embed);
 
-	widget = ewl_container_get_child_at_recursive(EWL_CONTAINER(embed),
+	widget = ewl_container_child_at_recursive_get(EWL_CONTAINER(embed),
 			x, y);
 	if (!widget)
 		widget = EWL_WIDGET(embed);

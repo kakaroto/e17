@@ -107,7 +107,7 @@ void ewl_menu_expand_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	if (!REALIZED(menu->base.popup)) {
 		emb = ewl_embed_find_by_widget(w);
-		ewl_container_append_child(EWL_CONTAINER(emb),
+		ewl_container_child_append(EWL_CONTAINER(emb),
 					   menu->base.popup); 
 	}
 

@@ -38,8 +38,8 @@ int ewl_row_init(Ewl_Row *row)
 	if (!ewl_container_init(EWL_CONTAINER(row), "row"))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 	
-	ewl_container_show_notify(EWL_CONTAINER(row), ewl_row_child_show_cb);
-	ewl_container_resize_notify(EWL_CONTAINER(row), ewl_row_resize_cb);
+	ewl_container_show_notify_set(EWL_CONTAINER(row), ewl_row_child_show_cb);
+	ewl_container_resize_notify_set(EWL_CONTAINER(row), ewl_row_resize_cb);
 
 	ewl_object_fill_policy_set(EWL_OBJECT(row), EWL_FLAG_FILL_HFILL);
 
@@ -238,7 +238,7 @@ ewl_row_child_show_cb(Ewl_Container *c, Ewl_Widget *w)
 
 	row = EWL_ROW(c);
 
-	ewl_container_prefer_largest(c, EWL_ORIENTATION_VERTICAL);
+	ewl_container_largest_prefer(c, EWL_ORIENTATION_VERTICAL);
 	ewl_object_preferred_inner_w_set(EWL_OBJECT(c), PREFERRED_W(c) +
 			ewl_object_preferred_w_get(EWL_OBJECT(w)));
 }
@@ -252,7 +252,7 @@ ewl_row_resize_cb(Ewl_Container *c, Ewl_Widget *w, int size, Ewl_Orientation o)
 
 	row = EWL_ROW(c);
 	if (o == EWL_ORIENTATION_VERTICAL)
-		ewl_container_prefer_largest(c, EWL_ORIENTATION_VERTICAL);
+		ewl_container_largest_prefer(c, EWL_ORIENTATION_VERTICAL);
 	else
 		ewl_object_preferred_inner_w_set(EWL_OBJECT(c),
 				PREFERRED_W(c) + size);

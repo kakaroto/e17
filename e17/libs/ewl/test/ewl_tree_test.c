@@ -54,7 +54,7 @@ __create_tree_test_window(Ewl_Widget * w, void *ev_data,
 	}
 
 	tree = ewl_tree_new(COLS);
-	ewl_container_append_child(EWL_CONTAINER(tree_win), tree);
+	ewl_container_child_append(EWL_CONTAINER(tree_win), tree);
 	ewl_tree_headers_set(EWL_TREE(tree), headers);
 	ewl_widget_show(tree);
 
@@ -80,7 +80,7 @@ __create_tree_test_window(Ewl_Widget * w, void *ev_data,
 
 		/*
 		prow = ewl_entry_new(entries[0]);
-		ewl_container_append_child(EWL_CONTAINER(tree), prow);
+		ewl_container_child_append(EWL_CONTAINER(tree), prow);
 		ewl_widget_show(prow);
 		*/
 

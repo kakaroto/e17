@@ -80,7 +80,7 @@ __create_entry_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	 * Create the main box for holding the widgets
 	 */
 	entry_box = ewl_vbox_new();
-	ewl_container_append_child(EWL_CONTAINER(entry_win), entry_box);
+	ewl_container_child_append(EWL_CONTAINER(entry_win), entry_box);
 	ewl_box_set_spacing(EWL_BOX(entry_box), 10);
 	ewl_widget_show(entry_box);
 
@@ -88,7 +88,7 @@ __create_entry_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_text_color_set(EWL_TEXT(EWL_ENTRY(entry[0])->text),
 			255, 0, 0, 255);
 	ewl_object_padding_set(EWL_OBJECT(entry[0]), 5, 5, 5, 0);
-	ewl_container_append_child(EWL_CONTAINER(entry_box), entry[0]);
+	ewl_container_child_append(EWL_CONTAINER(entry_box), entry[0]);
 	ewl_callback_append(entry[0], EWL_CALLBACK_VALUE_CHANGED,
 			    __fetch_entry_text, NULL);
 	ewl_widget_show(entry[0]);
@@ -97,25 +97,25 @@ __create_entry_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_text_color_set(EWL_TEXT(EWL_ENTRY(entry[1])->text),
 			255, 0, 0, 255);
 	ewl_object_padding_set(EWL_OBJECT(entry[1]), 5, 5, 0, 0);
-	ewl_container_append_child(EWL_CONTAINER(entry_box), entry[1]);
+	ewl_container_child_append(EWL_CONTAINER(entry_box), entry[1]);
 	ewl_callback_append(entry[1], EWL_CALLBACK_VALUE_CHANGED,
 			    __fetch_entry_text, NULL);
 	ewl_widget_show(entry[1]);
 
 	button_hbox = ewl_hbox_new();
 	ewl_object_alignment_set(EWL_OBJECT(button_hbox), EWL_FLAG_ALIGN_CENTER);
-	ewl_container_append_child(EWL_CONTAINER(entry_box), button_hbox);
+	ewl_container_child_append(EWL_CONTAINER(entry_box), button_hbox);
 	ewl_box_set_spacing(EWL_BOX(button_hbox), 5);
 	ewl_widget_show(button_hbox);
 
 	button[0] = ewl_button_new("Fetch text");
-	ewl_container_append_child(EWL_CONTAINER(button_hbox), button[0]);
+	ewl_container_child_append(EWL_CONTAINER(button_hbox), button[0]);
 	ewl_callback_append(button[0], EWL_CALLBACK_CLICKED,
 			    __fetch_entry_text, NULL);
 	ewl_widget_show(button[0]);
 
 	button[1] = ewl_button_new("Set Text");
-	ewl_container_append_child(EWL_CONTAINER(button_hbox), button[1]);
+	ewl_container_child_append(EWL_CONTAINER(button_hbox), button[1]);
 	ewl_callback_append(button[1], EWL_CALLBACK_CLICKED,
 			    __set_entry_text, NULL);
 	ewl_widget_show(button[1]);

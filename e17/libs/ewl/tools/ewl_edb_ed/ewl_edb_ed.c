@@ -44,18 +44,18 @@ int main(int argc, char ** argv) {
     ewl_widget_show(win);
 
     box = ewl_vbox_new();
-    ewl_container_append_child(EWL_CONTAINER(win), box);
+    ewl_container_child_append(EWL_CONTAINER(win), box);
     ewl_widget_show(box);
 
 	/* box to hold menu */
     menu_box = ewl_hbox_new();
-    ewl_container_append_child(EWL_CONTAINER(box), menu_box);
+    ewl_container_child_append(EWL_CONTAINER(box), menu_box);
     ewl_object_fill_policy_set(EWL_OBJECT(menu_box),
             EWL_FLAG_FILL_VSHRINK | EWL_FLAG_FILL_HFILL);
     ewl_widget_show(menu_box);
 
     hbox = ewl_hbox_new();
-    ewl_container_append_child(EWL_CONTAINER(box), hbox);
+    ewl_container_child_append(EWL_CONTAINER(box), hbox);
     ewl_widget_show(hbox);
 
 	/* create the tree */
@@ -64,65 +64,65 @@ int main(int argc, char ** argv) {
 				"type", "key", "value"
 		};
 	    tree = ewl_tree_new(3);
-	    ewl_container_append_child(EWL_CONTAINER(hbox), tree);
+	    ewl_container_child_append(EWL_CONTAINER(hbox), tree);
 		ewl_object_padding_set(EWL_OBJECT(tree), 2, 0, 0, 0);
 		ewl_tree_headers_set(EWL_TREE(tree), headers);
 	    ewl_widget_show(tree);
 	}
 
 	box2 = ewl_vbox_new();
-	ewl_container_append_child(EWL_CONTAINER(hbox), box2);
+	ewl_container_child_append(EWL_CONTAINER(hbox), box2);
 	ewl_widget_show(box2);
 
     /* create the combo box */
     combo = ewl_combo_new("data type");
-    ewl_container_append_child(EWL_CONTAINER(box2), combo);
+    ewl_container_child_append(EWL_CONTAINER(box2), combo);
 	ewl_object_padding_set(EWL_OBJECT(combo), 5, 0, 0, 0);
     ewl_widget_show(combo);
 
     {	
         o = ewl_menu_item_new(NULL, "int");
-        ewl_container_append_child(EWL_CONTAINER(combo), o);
+        ewl_container_child_append(EWL_CONTAINER(combo), o);
 		ewl_callback_append(o, EWL_CALLBACK_SELECT, type_sel_cb, (int *)EWL_EDB_TYPE_INT);
         ewl_widget_show(o);
 
         o = ewl_menu_item_new(NULL, "str");
-        ewl_container_append_child(EWL_CONTAINER(combo), o);
+        ewl_container_child_append(EWL_CONTAINER(combo), o);
 		ewl_callback_append(o, EWL_CALLBACK_SELECT, type_sel_cb, (int *)EWL_EDB_TYPE_STR);
         ewl_widget_show(o);
 
         o = ewl_menu_item_new(NULL, "float");
-        ewl_container_append_child(EWL_CONTAINER(combo), o);
+        ewl_container_child_append(EWL_CONTAINER(combo), o);
 		ewl_callback_append(o, EWL_CALLBACK_SELECT, type_sel_cb, (int *)EWL_EDB_TYPE_FLOAT);
         ewl_widget_show(o);
 
         o = ewl_menu_item_new(NULL, "data");
-        ewl_container_append_child(EWL_CONTAINER(combo), o);
+        ewl_container_child_append(EWL_CONTAINER(combo), o);
 		ewl_callback_append(o, EWL_CALLBACK_SELECT, type_sel_cb, (int *)EWL_EDB_TYPE_DATA);
         ewl_widget_show(o);
     }
 
     /* value entry box */
     val_box = ewl_entry_new("");
-    ewl_container_append_child(EWL_CONTAINER(box2), val_box);
+    ewl_container_child_append(EWL_CONTAINER(box2), val_box);
 	ewl_object_alignment_set(EWL_OBJECT(val_box), EWL_FLAG_ALIGN_CENTER);
     ewl_widget_show(val_box);
 
 	/* add/delete buttons on right */
 	{
 		Ewl_Widget *add_del_box = ewl_hbox_new();
-		ewl_container_append_child(EWL_CONTAINER(box2), add_del_box);
+		ewl_container_child_append(EWL_CONTAINER(box2), add_del_box);
 		ewl_widget_show(add_del_box);
 
 		o = ewl_button_new("add");
-		ewl_container_append_child(EWL_CONTAINER(add_del_box), o);
+		ewl_container_child_append(EWL_CONTAINER(add_del_box), o);
 		ewl_callback_append(o, EWL_CALLBACK_CLICKED, add_cb, NULL);
 		ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_SHRINK);
 		ewl_object_padding_set(EWL_OBJECT(o), 5, 5, 2, 2);
 		ewl_widget_show(o);
 
 		o = ewl_button_new("delete");
-		ewl_container_append_child(EWL_CONTAINER(add_del_box), o);
+		ewl_container_child_append(EWL_CONTAINER(add_del_box), o);
 		ewl_callback_append(o, EWL_CALLBACK_CLICKED, delete_cb, NULL);
 		ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_SHRINK);
 		ewl_object_padding_set(EWL_OBJECT(o), 0, 5, 2, 2);
@@ -134,53 +134,53 @@ int main(int argc, char ** argv) {
         Ewl_Widget *file = NULL;
 
         file = ewl_imenu_new(NULL, "file");
-        ewl_container_append_child(EWL_CONTAINER(menu_box), file);
+        ewl_container_child_append(EWL_CONTAINER(menu_box), file);
         ewl_object_fill_policy_set(EWL_OBJECT(file), EWL_FLAG_FILL_SHRINK);
         ewl_object_padding_set(EWL_OBJECT(file), 2, 2, 2, 0);
         ewl_widget_show(file);
 
         o = ewl_menu_item_new(NULL, "open");
-        ewl_container_append_child(EWL_CONTAINER(file), o);
+        ewl_container_child_append(EWL_CONTAINER(file), o);
 		ewl_callback_append(o, EWL_CALLBACK_SELECT, open_cb, NULL);
         ewl_widget_show(o);
 
         o = ewl_menu_item_new(NULL, "save");
-        ewl_container_append_child(EWL_CONTAINER(file), o);
+        ewl_container_child_append(EWL_CONTAINER(file), o);
 		ewl_callback_append(o, EWL_CALLBACK_SELECT, save_cb, NULL);
         ewl_widget_show(o);
 
         o = ewl_menu_item_new(NULL, "quit");
-        ewl_container_append_child(EWL_CONTAINER(file), o);
+        ewl_container_child_append(EWL_CONTAINER(file), o);
         ewl_callback_append(o, EWL_CALLBACK_SELECT, win_del_cb, NULL);
         ewl_widget_show(o);
     }
 
     /* key name entry box */
     key_name_box = ewl_entry_new("");
-    ewl_container_append_child(EWL_CONTAINER(box), key_name_box);
+    ewl_container_child_append(EWL_CONTAINER(box), key_name_box);
     ewl_widget_show(key_name_box);
 
 	o = ewl_hseparator_new();
-	ewl_container_append_child(EWL_CONTAINER(box), o);
+	ewl_container_child_append(EWL_CONTAINER(box), o);
 	ewl_widget_show(o);
 
 	/* save /quit buttons on bottom */
 	box2 = ewl_hbox_new();
-	ewl_container_append_child(EWL_CONTAINER(box), box2);
+	ewl_container_child_append(EWL_CONTAINER(box), box2);
 	ewl_object_fill_policy_set(EWL_OBJECT(box2), 
 						EWL_FLAG_FILL_VSHRINK | EWL_FLAG_FILL_HFILL);
 	ewl_object_alignment_set(EWL_OBJECT(box2), EWL_FLAG_ALIGN_RIGHT);
 	ewl_widget_show(box2);
 
 	o = ewl_button_with_stock_new(EWL_STOCK_SAVE);
-	ewl_container_append_child(EWL_CONTAINER(box2), o);
+	ewl_container_child_append(EWL_CONTAINER(box2), o);
 	ewl_callback_append(o, EWL_CALLBACK_CLICKED, save_cb, NULL);
 	ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_SHRINK);
 	ewl_object_padding_set(EWL_OBJECT(o), 5, 5, 2, 2);
 	ewl_widget_show(o);
 
 	o = ewl_button_with_stock_new(EWL_STOCK_QUIT);
-	ewl_container_append_child(EWL_CONTAINER(box2), o);
+	ewl_container_child_append(EWL_CONTAINER(box2), o);
 	ewl_callback_append(o, EWL_CALLBACK_CLICKED, win_del_cb, NULL);
 	ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_SHRINK);
 	ewl_object_padding_set(EWL_OBJECT(o), 0, 5, 2, 2);
@@ -290,7 +290,7 @@ void open_cb(Ewl_Widget *w, void *event, void *data) {
 	ewl_widget_show(fd_win);
 
 	fd = ewl_filedialog_new(EWL_FILEDIALOG_TYPE_OPEN);
-	ewl_container_append_child(EWL_CONTAINER(fd_win), fd);
+	ewl_container_child_append(EWL_CONTAINER(fd_win), fd);
 	ewl_callback_append(fd, EWL_CALLBACK_VALUE_CHANGED, open_file_cb, fd_win);
 	ewl_widget_show(fd);
 

@@ -160,7 +160,7 @@ void ewl_widget_show(Ewl_Widget * w)
 	if (REALIZED(w)) {
 		ewl_callback_call(w, EWL_CALLBACK_SHOW);
 		if (w->parent)
-			ewl_container_call_child_show(EWL_CONTAINER(w->parent),
+			ewl_container_child_show_call(EWL_CONTAINER(w->parent),
 						      w);
 	}
 	else if (pc) {
@@ -203,7 +203,7 @@ void ewl_widget_hide(Ewl_Widget * w)
 
 	pc = EWL_CONTAINER(w->parent);
 	if (pc)
-		ewl_container_call_child_hide(pc, w);
+		ewl_container_child_hide_call(pc, w);
 
 	ewl_object_visible_remove(EWL_OBJECT(w), EWL_FLAG_VISIBLE_SHOWN);
 	ewl_callback_call(w, EWL_CALLBACK_HIDE);
@@ -243,7 +243,7 @@ void ewl_widget_destroy(Ewl_Widget * w)
 		dnd_widget = NULL;
 
 	if (w->parent)
-		ewl_container_remove_child(EWL_CONTAINER(w->parent), w);
+		ewl_container_child_remove(EWL_CONTAINER(w->parent), w);
 
 	ewl_destroy_request(w);
 
@@ -531,7 +531,7 @@ void ewl_widget_parent_set(Ewl_Widget * w, Ewl_Widget * p)
 	 * from a previous parent before adding to this parent.
 	 */
 	if (op) {
-		ewl_container_remove_child(op, w);
+		ewl_container_child_remove(op, w);
 		if (!p)
 			ewl_callback_del(w, EWL_CALLBACK_DESTROY,
 				 ewl_widget_child_destroy_cb);
@@ -548,7 +548,7 @@ void ewl_widget_parent_set(Ewl_Widget * w, Ewl_Widget * p)
 		if (VISIBLE(w)) {
 			if (REALIZED(w)) {
 				ewl_callback_call(w, EWL_CALLBACK_REPARENT);
-				ewl_container_call_child_show(EWL_CONTAINER(p),
+				ewl_container_child_show_call(EWL_CONTAINER(p),
 							     w);
 			}
 			else {
@@ -926,7 +926,7 @@ void ewl_widget_destroy_cb(Ewl_Widget * w, void *ev_data, void *data)
 	 * references.
 	 */
 	if (w->parent)
-		ewl_container_remove_child(EWL_CONTAINER(w->parent), w);
+		ewl_container_child_remove(EWL_CONTAINER(w->parent), w);
 
 	ewl_widget_unrealize(w);
 
@@ -1428,7 +1428,7 @@ ewl_widget_child_destroy_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	DCHECK_PARAM_PTR("w", w);
 
 	if (w->parent)
-		ewl_container_remove_child(EWL_CONTAINER(w->parent), w);
+		ewl_container_child_remove(EWL_CONTAINER(w->parent), w);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

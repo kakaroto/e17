@@ -177,7 +177,7 @@ int main(int argc, char **argv)
 	ewl_theme_data_str_set(vbox, "/vbox/group", "box");
 	ewl_object_alignment_set(EWL_OBJECT(vbox), EWL_FLAG_ALIGN_TOP);
 	ewl_object_fill_policy_set(EWL_OBJECT(vbox), EWL_FLAG_FILL_HFILL);
-	ewl_container_append_child(EWL_CONTAINER(win), vbox);
+	ewl_container_child_append(EWL_CONTAINER(win), vbox);
 	ewl_widget_show(vbox);
 
 	/*
@@ -196,28 +196,28 @@ int main(int argc, char **argv)
 	ewl_object_preferred_inner_size_set(EWL_OBJECT(logo), 150, 150);
 	ewl_object_fill_policy_set(EWL_OBJECT(logo), EWL_FLAG_FILL_NONE);
 	ewl_object_alignment_set(EWL_OBJECT(logo), EWL_FLAG_ALIGN_CENTER);
-	ewl_container_append_child(EWL_CONTAINER(vbox), logo);
+	ewl_container_child_append(EWL_CONTAINER(vbox), logo);
 	ewl_widget_show(logo);
 
 	start_text(label, NULL, label);
-	ewl_container_append_child(EWL_CONTAINER(vbox), label);
+	ewl_container_child_append(EWL_CONTAINER(vbox), label);
 	ewl_widget_show(label);
 
 	hbox = ewl_hbox_new();
 	ewl_box_set_spacing(EWL_BOX(hbox), 10);
-	ewl_container_append_child(EWL_CONTAINER(vbox), hbox);
+	ewl_container_child_append(EWL_CONTAINER(vbox), hbox);
 	ewl_object_fill_policy_set(EWL_OBJECT(hbox), EWL_FLAG_FILL_NONE);
 	ewl_object_alignment_set(EWL_OBJECT(hbox), EWL_FLAG_ALIGN_CENTER);
 	ewl_widget_show(hbox);
 
 	button = ewl_button_new("Take the tour!");
-	ewl_container_append_child(EWL_CONTAINER(hbox), button);
+	ewl_container_child_append(EWL_CONTAINER(hbox), button);
 	ewl_object_fill_policy_set(EWL_OBJECT(button), EWL_FLAG_FILL_NONE);
 	ewl_callback_append(button, EWL_CALLBACK_CLICKED, button_down, logo);
 	ewl_widget_show(button);
 
 	button = ewl_button_new("Quit");
-	ewl_container_append_child(EWL_CONTAINER(hbox), button);
+	ewl_container_child_append(EWL_CONTAINER(hbox), button);
 	ewl_object_fill_policy_set(EWL_OBJECT(button), EWL_FLAG_FILL_NONE);
 	ewl_callback_append(button, EWL_CALLBACK_CLICKED, quit_demo, NULL);
 	ewl_widget_show(button);

@@ -95,11 +95,11 @@ ewl_selectionbook_add_page(Ewl_Selectionbook * s, Ewl_Widget * tab,
 		s->current_page = p;
 		ewl_callback_del(p->tab, EWL_CALLBACK_CLICKED,
 				 ewl_selectionbook_page_switch_cb);
-		ewl_container_append_child(EWL_CONTAINER(s), page);
+		ewl_container_child_append(EWL_CONTAINER(s), page);
 		ewl_widget_show(page);
 	}
 
-	ewl_container_append_child(EWL_CONTAINER(s->tab_bar), tab);
+	ewl_container_child_append(EWL_CONTAINER(s->tab_bar), tab);
 
 	ecore_list_append(s->pages, p);
 
@@ -285,7 +285,7 @@ ewl_selectionbook_page_switch_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 				    EWL_CALLBACK_CLICKED,
 				    ewl_selectionbook_page_switch_cb, s);
 		ewl_widget_hide(p->page);
-		ewl_container_remove_child(EWL_CONTAINER(s), p->page);
+		ewl_container_child_remove(EWL_CONTAINER(s), p->page);
 		//ewl_widget_hide(p->page);
 	}
 
@@ -294,7 +294,7 @@ ewl_selectionbook_page_switch_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	p = s->current_page;
 	ewl_callback_del(p->tab, EWL_CALLBACK_CLICKED,
 			 ewl_selectionbook_page_switch_cb);
-	ewl_container_append_child(EWL_CONTAINER(s), p->page);
+	ewl_container_child_append(EWL_CONTAINER(s), p->page);
 	ewl_widget_show(p->page);
 
 	ewl_widget_configure(EWL_WIDGET(s));

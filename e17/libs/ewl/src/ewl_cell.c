@@ -38,8 +38,8 @@ int ewl_cell_init(Ewl_Cell *cell)
 	if (!ewl_container_init(EWL_CONTAINER(cell), "cell"))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
-	ewl_container_show_notify(EWL_CONTAINER(cell), ewl_cell_child_show_cb);
-	ewl_container_resize_notify(EWL_CONTAINER(cell),
+	ewl_container_show_notify_set(EWL_CONTAINER(cell), ewl_cell_child_show_cb);
+	ewl_container_resize_notify_set(EWL_CONTAINER(cell),
 				    ewl_cell_child_resize_cb);
 	ewl_callback_append(EWL_WIDGET(cell), EWL_CALLBACK_CONFIGURE,
 			    ewl_cell_configure_cb, NULL);
@@ -82,7 +82,7 @@ ewl_cell_child_show_cb(Ewl_Container *c, Ewl_Widget *w)
 	ecore_list_goto_first(c->children);
 	while ((child = ecore_list_next(c->children))) {
 		if (child != w)
-			ewl_container_remove_child(c, child);
+			ewl_container_child_remove(c, child);
 	}
 
 	ewl_object_preferred_inner_size_set(EWL_OBJECT(c),

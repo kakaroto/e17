@@ -58,7 +58,7 @@ ewl_container_init(Ewl_Container * c, char *appearance)
  * Changes the add notifier function of @a container to @a add.
  */
 void
-ewl_container_add_notify(Ewl_Container * container, Ewl_Child_Add add)
+ewl_container_add_notify_set(Ewl_Container * container, Ewl_Child_Add add)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -78,7 +78,7 @@ ewl_container_add_notify(Ewl_Container * container, Ewl_Child_Add add)
  * Changes the remove notifier function of @a container to @a remove.
  */
 void
-ewl_container_remove_notify(Ewl_Container * container, Ewl_Child_Remove remove)
+ewl_container_remove_notify_set(Ewl_Container * container, Ewl_Child_Remove remove)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -98,7 +98,7 @@ ewl_container_remove_notify(Ewl_Container * container, Ewl_Child_Remove remove)
  * Changes the resize notifier function of @a container to @a resize.
  */
 void
-ewl_container_resize_notify(Ewl_Container * container, Ewl_Child_Resize resize)
+ewl_container_resize_notify_set(Ewl_Container * container, Ewl_Child_Resize resize)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -118,7 +118,7 @@ ewl_container_resize_notify(Ewl_Container * container, Ewl_Child_Resize resize)
  * Changes the show notifier function of @a container to @a show.
  */
 void
-ewl_container_show_notify(Ewl_Container * container, Ewl_Child_Show show)
+ewl_container_show_notify_set(Ewl_Container * container, Ewl_Child_Show show)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -138,7 +138,7 @@ ewl_container_show_notify(Ewl_Container * container, Ewl_Child_Show show)
  * Changes the hide notifier function of @a container to @a hide.
  */
 void
-ewl_container_hide_notify(Ewl_Container * container, Ewl_Child_Hide hide)
+ewl_container_hide_notify_set(Ewl_Container * container, Ewl_Child_Hide hide)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -157,7 +157,7 @@ ewl_container_hide_notify(Ewl_Container * container, Ewl_Child_Hide hide)
  *
  * Attaches the child to the end of the parent containers child list.
  */
-void ewl_container_append_child(Ewl_Container * pc, Ewl_Widget * child)
+void ewl_container_child_append(Ewl_Container * pc, Ewl_Widget * child)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("pc", pc);
@@ -176,7 +176,7 @@ void ewl_container_append_child(Ewl_Container * pc, Ewl_Widget * child)
 
 	ecore_list_append(pc->children, child);
 	ewl_widget_parent_set(child, EWL_WIDGET(pc));
-	ewl_container_call_child_add(pc, child);
+	ewl_container_child_add_call(pc, child);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -190,7 +190,7 @@ void ewl_container_append_child(Ewl_Container * pc, Ewl_Widget * child)
  *
  * Attaches the child to the start of the parent containers child list.
  */
-void ewl_container_prepend_child(Ewl_Container * pc, Ewl_Widget * child)
+void ewl_container_child_prepend(Ewl_Container * pc, Ewl_Widget * child)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("pc", pc);
@@ -209,7 +209,7 @@ void ewl_container_prepend_child(Ewl_Container * pc, Ewl_Widget * child)
 
 	ecore_list_prepend(pc->children, child);
 	ewl_widget_parent_set(child, EWL_WIDGET(pc));
-	ewl_container_call_child_add(pc, child);
+	ewl_container_child_add_call(pc, child);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -226,7 +226,7 @@ void ewl_container_prepend_child(Ewl_Container * pc, Ewl_Widget * child)
  * list.
  */
 void
-ewl_container_insert_child(Ewl_Container * pc, Ewl_Widget * child, int index)
+ewl_container_child_insert(Ewl_Container * pc, Ewl_Widget * child, int index)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("pc", pc);
@@ -246,7 +246,7 @@ ewl_container_insert_child(Ewl_Container * pc, Ewl_Widget * child, int index)
 	ecore_list_goto_index(pc->children, index);
 	ecore_list_insert(pc->children, child);
 	ewl_widget_parent_set(child, EWL_WIDGET(pc));
-	ewl_container_call_child_add(pc, child);
+	ewl_container_child_add_call(pc, child);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -259,7 +259,7 @@ ewl_container_insert_child(Ewl_Container * pc, Ewl_Widget * child, int index)
  *
  * Removes the specified child from the container without destroying the child.
  */
-void ewl_container_remove_child(Ewl_Container * pc, Ewl_Widget * child)
+void ewl_container_child_remove(Ewl_Container * pc, Ewl_Widget * child)
 {
 	Ewl_Widget     *temp;
 
@@ -300,7 +300,7 @@ void ewl_container_remove_child(Ewl_Container * pc, Ewl_Widget * child)
 	 * Remove the child from the parent and set the childs parent to NULL
 	 */
 	ecore_list_remove(pc->children);
-	ewl_container_call_child_remove(pc, child);
+	ewl_container_child_remove_call(pc, child);
 
 	if (ecore_list_is_empty(pc->children) && pc->clip_box)
 		evas_object_hide(pc->clip_box);
@@ -317,7 +317,7 @@ void ewl_container_remove_child(Ewl_Container * pc, Ewl_Widget * child)
  * @return Returns no value.
  * @brief Notify a container of a child pref size change
  */
-void ewl_container_resize_child(Ewl_Widget * w, int size, Ewl_Orientation o)
+void ewl_container_child_resize(Ewl_Widget * w, int size, Ewl_Orientation o)
 {
 	int             old_w, old_h;
 	int             new_w, new_h;
@@ -379,7 +379,7 @@ void ewl_container_resize_child(Ewl_Widget * w, int size, Ewl_Orientation o)
  * The given container is searched to find any child that intersects the given
  * coordinates.
  */
-Ewl_Widget     *ewl_container_get_child_at(Ewl_Container * widget, int x, int y)
+Ewl_Widget *ewl_container_child_at_get(Ewl_Container * widget, int x, int y)
 {
 	Ewl_Widget     *found = NULL;
 	Ewl_Widget     *child = NULL;
@@ -417,8 +417,8 @@ Ewl_Widget     *ewl_container_get_child_at(Ewl_Container * widget, int x, int y)
  * @return Returns the intersecting widget on success, NULL on failure.
  * @brief Find child that intersects coordinates
  */
-Ewl_Widget     *ewl_container_get_child_at_recursive(Ewl_Container * widget,
-						     int x, int y)
+Ewl_Widget *ewl_container_child_at_recursive_get(Ewl_Container * widget,
+						 int x, int y)
 {
 	/*
 	 * These temporary variables allow for traversing recursive
@@ -442,7 +442,7 @@ Ewl_Widget     *ewl_container_get_child_at_recursive(Ewl_Container * widget,
 	 * Now move down through the tree of widgets until the bottom layer is
 	 * found.
 	 */
-	while ((child2 = ewl_container_get_child_at(EWL_CONTAINER(child),
+	while ((child2 = ewl_container_child_at_get(EWL_CONTAINER(child),
 						    x, y))) {
 		if (RECURSIVE(child2))
 			child = child2;
@@ -544,7 +544,7 @@ void ewl_container_child_iterate_begin(Ewl_Container *c)
  * @brief Retrieve the next elligible child in a container.
  * @return Returns the next valid child on success, NULL on failure.
  */
-Ewl_Widget *ewl_container_next_child(Ewl_Container *c)
+Ewl_Widget *ewl_container_child_next(Ewl_Container *c)
 {
 	Ewl_Widget *w;
 
@@ -573,7 +573,7 @@ Ewl_Widget *ewl_container_next_child(Ewl_Container *c)
  * Do not use this unless you know are writing a custom container of your own.
  */
 void
-ewl_container_set_child_iterator(Ewl_Container *c, Ewl_Container_Iterator i)
+ewl_container_child_iterator_set(Ewl_Container *c, Ewl_Container_Iterator i)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("c", c);
@@ -592,7 +592,7 @@ ewl_container_set_child_iterator(Ewl_Container *c, Ewl_Container_Iterator i)
  * Marks the callbacks of type @a t that are directed to children to be
  * triggered on the container @a c, and not propagated to the receiving child.
  */
-void ewl_container_intercept_callback(Ewl_Container *c, Ewl_Callback_Type t)
+void ewl_container_callback_intercept(Ewl_Container *c, Ewl_Callback_Type t)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("c", c);
@@ -611,7 +611,7 @@ void ewl_container_intercept_callback(Ewl_Container *c, Ewl_Callback_Type t)
  * Marks the callbacks of type @a t that are directed to children to be
  * propagated to the receiving child.
  */
-void ewl_container_nointercept_callback(Ewl_Container *c, Ewl_Callback_Type t)
+void ewl_container_callback_nointercept(Ewl_Container *c, Ewl_Callback_Type t)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("c", c);
@@ -630,7 +630,7 @@ void ewl_container_nointercept_callback(Ewl_Container *c, Ewl_Callback_Type t)
  * Marks the callbacks of type @a t that are directed to children to be
  * triggered on the container @a c, and propagated to the receiving child.
  */
-void ewl_container_notify_callback(Ewl_Container *c, Ewl_Callback_Type t)
+void ewl_container_callback_notify(Ewl_Container *c, Ewl_Callback_Type t)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("c", c);
@@ -650,7 +650,7 @@ void ewl_container_notify_callback(Ewl_Container *c, Ewl_Callback_Type t)
  * to set it's preferred width to that of it's widest child.
  */
 void
-ewl_container_prefer_largest(Ewl_Container *c, Ewl_Orientation o)
+ewl_container_largest_prefer(Ewl_Container *c, Ewl_Orientation o)
 {
 	Ewl_Object *child;
 	int max_size = 0;
@@ -689,7 +689,7 @@ ewl_container_prefer_largest(Ewl_Container *c, Ewl_Orientation o)
  * @param c: the container to use the child size sum in a specified direction
  * @param o: the orientation direction of the sum to use
  */
-void ewl_container_prefer_sum(Ewl_Container *c, Ewl_Orientation o)
+void ewl_container_sum_prefer(Ewl_Container *c, Ewl_Orientation o)
 {
 	Ewl_Object *child;
 	int curr_size = 0;
@@ -726,7 +726,7 @@ void ewl_container_prefer_sum(Ewl_Container *c, Ewl_Orientation o)
  * @return Returns no value.
  * @brief Triggers the child_add callback for the container @a c.
  */
-void ewl_container_call_child_add(Ewl_Container *c, Ewl_Widget *w)
+void ewl_container_child_add_call(Ewl_Container *c, Ewl_Widget *w)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -743,7 +743,7 @@ void ewl_container_call_child_add(Ewl_Container *c, Ewl_Widget *w)
  * @return Returns no value.
  * @brief Triggers the child_remove callback for the container @a c.
  */
-void ewl_container_call_child_remove(Ewl_Container *c, Ewl_Widget *w)
+void ewl_container_child_remove_call(Ewl_Container *c, Ewl_Widget *w)
 {
 	if (c->child_remove && VISIBLE(w))
 		c->child_remove(c, w);
@@ -755,7 +755,7 @@ void ewl_container_call_child_remove(Ewl_Container *c, Ewl_Widget *w)
  * @return Returns no value.
  * @brief Triggers the child_show callback for the container @a c.
  */
-void ewl_container_call_child_show(Ewl_Container *c, Ewl_Widget *w)
+void ewl_container_child_show_call(Ewl_Container *c, Ewl_Widget *w)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -773,7 +773,7 @@ void ewl_container_call_child_show(Ewl_Container *c, Ewl_Widget *w)
  * @return Returns no value.
  * @brief Triggers the child_hide callback for the container @a c.
  */
-void ewl_container_call_child_hide(Ewl_Container *c, Ewl_Widget *w)
+void ewl_container_child_hide_call(Ewl_Container *c, Ewl_Widget *w)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
@@ -821,7 +821,7 @@ void ewl_container_destroy(Ewl_Container * c)
  * @return Returns the container children are placed in, NULL if none.
  * @brief Searches for the last redirected container of the container.
  */
-Ewl_Container *ewl_container_get_end_redirect(Ewl_Container *c)
+Ewl_Container *ewl_container_end_redirect_get(Ewl_Container *c)
 {
 	Ewl_Container *rc;
 
@@ -844,7 +844,7 @@ Ewl_Container *ewl_container_get_end_redirect(Ewl_Container *c)
  * @return Returns the container children are placed in, NULL if none.
  * @brief Retrieves for the redirected container of the container.
  */
-Ewl_Container *ewl_container_get_redirect(Ewl_Container *c)
+Ewl_Container *ewl_container_redirect_get(Ewl_Container *c)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("c", c, NULL);
@@ -858,7 +858,7 @@ Ewl_Container *ewl_container_get_redirect(Ewl_Container *c)
  * @return Returns no value.
  * @brief Changes the redirected container of the container.
  */
-void ewl_container_set_redirect(Ewl_Container *c, Ewl_Container *rc)
+void ewl_container_redirect_set(Ewl_Container *c, Ewl_Container *rc)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("c", c);

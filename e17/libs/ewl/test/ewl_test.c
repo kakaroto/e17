@@ -139,14 +139,14 @@ main(int argc, char **argv)
 	 * Create the main box for holding the button widgets
 	 */
 	main_box = ewl_hbox_new();
-	ewl_container_append_child(EWL_CONTAINER(main_win), main_box);
+	ewl_container_child_append(EWL_CONTAINER(main_win), main_box);
 	ewl_box_set_spacing(EWL_BOX(main_box), 6);
 	ewl_box_set_homogeneous (EWL_BOX (main_box), FALSE);
 	ewl_widget_show(main_box);
 
 	main_tree = ewl_tree_new(1);
 	ewl_tree_headers_set (EWL_TREE (main_tree), header);
-	ewl_container_append_child(EWL_CONTAINER(main_box), main_tree);
+	ewl_container_child_append(EWL_CONTAINER(main_box), main_tree);
 	ewl_object_fill_policy_set (EWL_OBJECT (main_tree),
 				     EWL_FLAG_FILL_HSHRINK |
 				     EWL_FLAG_FILL_VFILL);
@@ -156,10 +156,10 @@ main(int argc, char **argv)
 /* 	ewl_object_fill_policy_set (EWL_OBJECT (main_area), */
 /* 				     EWL_FLAG_FILL_SHRINK || EWL_FLAG_FILL_FILL); */
 	ewl_widget_show(main_area);
-	ewl_container_append_child(EWL_CONTAINER(main_box), main_area);
+	ewl_container_child_append(EWL_CONTAINER(main_box), main_area);
 
 	main_text = ewl_text_new ("  Click on the objects on the left to\nshow a working example and the source\nof the corresponding widget.\n  Keep the mouse on the button to see\na brief description of the widget.");
-	ewl_container_append_child(EWL_CONTAINER(main_area),
+	ewl_container_child_append(EWL_CONTAINER(main_area),
 				   main_text);
 /* 	ewl_text_font_set (EWL_TEXT (main_text), "Vera", 8); */
 	ewl_widget_show(main_text);
@@ -186,7 +186,7 @@ main(int argc, char **argv)
 		/* Add the tooltips */
 		tooltip = ewl_tooltip_new (prow[i]);
 		ewl_tooltip_delay_set (EWL_TOOLTIP (tooltip), 1.5);
-		ewl_container_append_child (EWL_CONTAINER (main_win),
+		ewl_container_child_append (EWL_CONTAINER (main_win),
 					    tooltip);
 		ewl_tooltip_text_set (EWL_TOOLTIP (tooltip), tooltips[i]);
 

@@ -37,12 +37,12 @@ __create_scrollbar_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	hscrollbar = ewl_hscrollbar_new();
 	ewl_object_set_padding(EWL_OBJECT(hscrollbar), 10, 10, 10, 0);
-	ewl_container_append_child(EWL_CONTAINER(scrollbar_win), hscrollbar);
+	ewl_container_child_append(EWL_CONTAINER(scrollbar_win), hscrollbar);
 	ewl_widget_show(hscrollbar);
 
 	vscrollbar = ewl_vscrollbar_new();
 	ewl_object_set_padding(EWL_OBJECT(vscrollbar), 10, 10, 10, 10);
-	ewl_container_append_child(EWL_CONTAINER(scrollbar_win), vscrollbar);
+	ewl_container_child_append(EWL_CONTAINER(scrollbar_win), vscrollbar);
 	ewl_widget_show(vscrollbar);
 
 	return;

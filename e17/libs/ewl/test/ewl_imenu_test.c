@@ -65,7 +65,7 @@ __create_imenu_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	 */
 	imenu_box = ewl_vbox_new();
 	ewl_object_fill_policy_set(EWL_OBJECT(imenu_box), EWL_FLAG_FILL_FILL);
-	ewl_container_append_child(EWL_CONTAINER(imenu_win), imenu_box);
+	ewl_container_child_append(EWL_CONTAINER(imenu_win), imenu_box);
 	ewl_widget_show(imenu_box);
 
 	/*
@@ -73,7 +73,7 @@ __create_imenu_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	 */
 	imenu1 = ewl_imenu_new(NULL, "test menu");
 	ewl_object_fill_policy_set(EWL_OBJECT(imenu1), EWL_FLAG_FILL_NONE);
-	ewl_container_append_child(EWL_CONTAINER(imenu_box), imenu1);
+	ewl_container_child_append(EWL_CONTAINER(imenu_box), imenu1);
 	ewl_callback_append(imenu1, EWL_CALLBACK_CONFIGURE,
 			    __imenu_configure, NULL);
 	ewl_widget_show(imenu1);
@@ -82,21 +82,21 @@ __create_imenu_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	 * Append some test items
 	 */
 	item = ewl_menu_item_new("/usr/share/pixmaps/dia-diagram.png", "dia");
-	ewl_container_append_child(EWL_CONTAINER(imenu1), item);
+	ewl_container_child_append(EWL_CONTAINER(imenu1), item);
 	ewl_callback_append(item, EWL_CALLBACK_SELECT, __imenu_select, NULL);
 	ewl_widget_show(item);
 
 	item = ewl_menu_separator_new();
-	ewl_container_append_child(EWL_CONTAINER(imenu1), item);
+	ewl_container_child_append(EWL_CONTAINER(imenu1), item);
 	ewl_widget_show(item);
 
 	item = ewl_menu_item_new("/usr/share/pixmaps/wilber.png", "gimp");
-	ewl_container_append_child(EWL_CONTAINER(imenu1), item);
+	ewl_container_child_append(EWL_CONTAINER(imenu1), item);
 	ewl_callback_append(item, EWL_CALLBACK_SELECT, __imenu_select, NULL);
 	ewl_widget_show(item);
 
 	item = ewl_menu_item_new(NULL, "button");
-	ewl_container_append_child(EWL_CONTAINER(imenu1), item);
+	ewl_container_child_append(EWL_CONTAINER(imenu1), item);
 	ewl_callback_append(item, EWL_CALLBACK_SELECT, __imenu_select, NULL);
 	ewl_widget_show(item);
 
@@ -104,18 +104,18 @@ __create_imenu_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	 * Create a sub-menu
 	 */
 	imenu2 = ewl_imenu_new(NULL, "Sub menu");
-	ewl_container_append_child(EWL_CONTAINER(imenu1), imenu2);
+	ewl_container_child_append(EWL_CONTAINER(imenu1), imenu2);
 	ewl_callback_append(imenu2, EWL_CALLBACK_CONFIGURE,
 			    __imenu_configure, NULL);
 	ewl_widget_show(imenu2);
 
 	item = ewl_menu_item_new(NULL, "button");
-	ewl_container_append_child(EWL_CONTAINER(imenu2), item);
+	ewl_container_child_append(EWL_CONTAINER(imenu2), item);
 	ewl_callback_append(item, EWL_CALLBACK_SELECT, __imenu_select, NULL);
 	ewl_widget_show(item);
 
 	item = ewl_menu_item_new(NULL, "button");
-	ewl_container_append_child(EWL_CONTAINER(imenu2), item);
+	ewl_container_child_append(EWL_CONTAINER(imenu2), item);
 	ewl_callback_append(item, EWL_CALLBACK_SELECT, __imenu_select, NULL);
 	ewl_widget_show(item);
 

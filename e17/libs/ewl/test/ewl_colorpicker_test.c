@@ -55,7 +55,7 @@ __create_colorpicker_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	colorpicker_box = ewl_vbox_new();
 	ewl_object_fill_policy_set(EWL_OBJECT(colorpicker_box),
 				   EWL_FLAG_FILL_FILL);
-	ewl_container_append_child(EWL_CONTAINER(colorpicker_win),
+	ewl_container_child_append(EWL_CONTAINER(colorpicker_win),
 				   colorpicker_box);
 	ewl_widget_show(colorpicker_box);
 
@@ -63,7 +63,7 @@ __create_colorpicker_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	 * Create the menu
 	 */
 	colorpicker1 = ewl_colorpicker_new();
-	ewl_container_append_child(EWL_CONTAINER(colorpicker_box),
+	ewl_container_child_append(EWL_CONTAINER(colorpicker_box),
 				   colorpicker1);
 	ewl_callback_append(colorpicker1, EWL_CALLBACK_VALUE_CHANGED,
 			    __color_value_changed, NULL);

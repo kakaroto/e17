@@ -43,7 +43,7 @@ __create_selectionbook_test_window(Ewl_Widget * w, void *ev_data,
 
 	sbook = ewl_selectionbook_new();
 	ewl_object_fill_policy_set(EWL_OBJECT(sbook), EWL_FLAG_FILL_FILL);
-	ewl_container_append_child(EWL_CONTAINER(sbook_win), sbook);
+	ewl_container_child_append(EWL_CONTAINER(sbook_win), sbook);
 	ewl_widget_show(sbook);
 
 	tab[0] = ewl_button_new("Tab - ONE");
@@ -69,12 +69,12 @@ __create_selectionbook_test_window(Ewl_Widget * w, void *ev_data,
 
 
 	spinner = ewl_spinner_new();
-	ewl_container_append_child(EWL_CONTAINER(panel[0]), spinner);
+	ewl_container_child_append(EWL_CONTAINER(panel[0]), spinner);
 	ewl_widget_show(spinner);
 
 
 	separator = ewl_hseparator_new();
-	ewl_container_append_child(EWL_CONTAINER(panel[1]), separator);
+	ewl_container_child_append(EWL_CONTAINER(panel[1]), separator);
 	ewl_widget_show(separator);
 
 

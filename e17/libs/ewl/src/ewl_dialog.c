@@ -56,14 +56,14 @@ ewl_dialog_init (Ewl_Dialog *dialog, Ewl_Position pos)
 
   if (box)
     {
-      ewl_container_append_child(EWL_CONTAINER(dialog), box);
+      ewl_container_child_append(EWL_CONTAINER(dialog), box);
       ewl_widget_show(box);
     }
 
   dialog->vbox = ewl_vbox_new ();
   if (dialog->vbox)
     {
-      ewl_container_append_child(EWL_CONTAINER(box), dialog->vbox);
+      ewl_container_child_append(EWL_CONTAINER(box), dialog->vbox);
       ewl_box_set_homogeneous (EWL_BOX (dialog->vbox), FALSE);
       switch (pos)
 	{
@@ -101,25 +101,25 @@ ewl_dialog_init (Ewl_Dialog *dialog, Ewl_Position pos)
 	{
 	case EWL_POSITION_LEFT: 
 	  {
-	    ewl_container_prepend_child (EWL_CONTAINER (box),
+	    ewl_container_child_prepend (EWL_CONTAINER (box),
 					 dialog->separator);
 	    break;
 	  }
 	case EWL_POSITION_TOP:
 	  {
-	    ewl_container_prepend_child (EWL_CONTAINER (box),
+	    ewl_container_child_prepend (EWL_CONTAINER (box),
 					 dialog->separator);
 	    break;
 	  }
 	case EWL_POSITION_RIGHT:
 	  {
-	    ewl_container_append_child (EWL_CONTAINER (box),
+	    ewl_container_child_append (EWL_CONTAINER (box),
 					dialog->separator);
 	    break;
 	  }
 	default: 
 	  {
-	    ewl_container_append_child (EWL_CONTAINER (box),
+	    ewl_container_child_append (EWL_CONTAINER (box),
 					dialog->separator);
 	    break;
 	  }
@@ -135,7 +135,7 @@ ewl_dialog_init (Ewl_Dialog *dialog, Ewl_Position pos)
 	{
 	case EWL_POSITION_LEFT: 
 	  {
-	    ewl_container_prepend_child (EWL_CONTAINER (box), 
+	    ewl_container_child_prepend (EWL_CONTAINER (box), 
 					dialog->action_area);
 	    ewl_object_fill_policy_set (EWL_OBJECT (dialog->action_area), 
 					EWL_FLAG_FILL_VFILL);
@@ -143,7 +143,7 @@ ewl_dialog_init (Ewl_Dialog *dialog, Ewl_Position pos)
 	  }
 	case EWL_POSITION_TOP:
 	  {
-	    ewl_container_prepend_child (EWL_CONTAINER (box), 
+	    ewl_container_child_prepend (EWL_CONTAINER (box), 
 					dialog->action_area);
 	    ewl_object_fill_policy_set (EWL_OBJECT (dialog->action_area), 
 					EWL_FLAG_FILL_HFILL);
@@ -151,7 +151,7 @@ ewl_dialog_init (Ewl_Dialog *dialog, Ewl_Position pos)
 	  }
 	case EWL_POSITION_RIGHT:
 	  {
-	    ewl_container_append_child (EWL_CONTAINER (box), 
+	    ewl_container_child_append (EWL_CONTAINER (box), 
 					 dialog->action_area);
 	    ewl_object_fill_policy_set (EWL_OBJECT (dialog->action_area), 
 					EWL_FLAG_FILL_VFILL);
@@ -159,7 +159,7 @@ ewl_dialog_init (Ewl_Dialog *dialog, Ewl_Position pos)
 	  }
 	default: 
 	  {
-	    ewl_container_append_child (EWL_CONTAINER (box), 
+	    ewl_container_child_append (EWL_CONTAINER (box), 
 					dialog->action_area);
 	    ewl_object_fill_policy_set (EWL_OBJECT (dialog->action_area), 
 					EWL_FLAG_FILL_HFILL);
@@ -171,12 +171,12 @@ ewl_dialog_init (Ewl_Dialog *dialog, Ewl_Position pos)
       ewl_widget_show (dialog->action_area);
       
       spacer = ewl_spacer_new();
-      ewl_container_append_child(EWL_CONTAINER(dialog->action_area),
+      ewl_container_child_append(EWL_CONTAINER(dialog->action_area),
 				 spacer);
       ewl_object_fill_policy_set (EWL_OBJECT (spacer), EWL_FLAG_FILL_FILL);
       ewl_widget_show (spacer);
 
-      ewl_container_set_redirect (EWL_CONTAINER (dialog), 
+      ewl_container_redirect_set (EWL_CONTAINER (dialog), 
 				  EWL_CONTAINER (dialog->action_area));
     }
   
@@ -202,22 +202,22 @@ ewl_dialog_add_widget (Ewl_Dialog *dialog, Ewl_Widget *w)
     {
     case EWL_POSITION_LEFT: 
       {
-	ewl_container_append_child (EWL_CONTAINER (dialog->vbox), w);
+	ewl_container_child_append (EWL_CONTAINER (dialog->vbox), w);
 	break;
       }
     case EWL_POSITION_TOP:
       {
-	ewl_container_append_child (EWL_CONTAINER (dialog->vbox), w);
+	ewl_container_child_append (EWL_CONTAINER (dialog->vbox), w);
 	break;
       }
     case EWL_POSITION_RIGHT:
       {
-	ewl_container_prepend_child (EWL_CONTAINER (dialog->vbox), w);
+	ewl_container_child_prepend (EWL_CONTAINER (dialog->vbox), w);
 	break;
       }
     default: 
       {
-	ewl_container_prepend_child (EWL_CONTAINER (dialog->vbox), w);
+	ewl_container_child_prepend (EWL_CONTAINER (dialog->vbox), w);
 	break;
       }
     }
@@ -231,8 +231,8 @@ ewl_dialog_add_widget (Ewl_Dialog *dialog, Ewl_Widget *w)
  * @return Returns a button, or NULL on failure.
  * @brief Convenient function to create a (stock) button. To add this
  * button in the action_area of a dialog, just use
- * ewl_container_append_child(dialog, button) or 
- * ewl_container_append_child(dialog, button). Use this way to add
+ * ewl_container_child_append(dialog, button) or 
+ * ewl_container_child_append(dialog, button). Use this way to add
  * buttons, instead of ewl_dialog_add_button() or
  * ewl_dialog_add_button_left().
  */
@@ -275,7 +275,7 @@ ewl_dialog_add_button (Ewl_Dialog *dialog, char *button_text,
 
   button = ewl_button_with_stock_new (button_text);
   ewl_object_padding_set (EWL_OBJECT (button), 0, 3, 3, 3);
-  ewl_container_append_child (EWL_CONTAINER (dialog->action_area),
+  ewl_container_child_append (EWL_CONTAINER (dialog->action_area),
 			      button);
   ewl_object_fill_policy_set (EWL_OBJECT (button),
 			      EWL_FLAG_FILL_VFILL || EWL_FLAG_FILL_SHRINK);
@@ -308,7 +308,7 @@ ewl_dialog_add_button_left (Ewl_Dialog *dialog, char *button_text,
 
   button = ewl_button_with_stock_new (button_text);
   ewl_object_padding_set (EWL_OBJECT (button), 0, 3, 3, 3);
-  ewl_container_prepend_child (EWL_CONTAINER (dialog->action_area),
+  ewl_container_child_prepend (EWL_CONTAINER (dialog->action_area),
 			       button);
   ewl_object_fill_policy_set (EWL_OBJECT (button),
 			      EWL_FLAG_FILL_VFILL || EWL_FLAG_FILL_SHRINK);
@@ -361,16 +361,16 @@ ewl_dialog_set_has_separator (Ewl_Dialog *dialog,
       ewl_container_child_iterate_begin (EWL_CONTAINER (EWL_DIALOG
 							(dialog)->vbox));
       n = 0;
-      child = ewl_container_next_child (EWL_CONTAINER (EWL_DIALOG
+      child = ewl_container_child_next (EWL_CONTAINER (EWL_DIALOG
 						       (dialog)->vbox));
       while (child)
 	{
 	  n++;
-	  child = ewl_container_next_child (EWL_CONTAINER (EWL_DIALOG
+	  child = ewl_container_child_next (EWL_CONTAINER (EWL_DIALOG
 							   (dialog)->vbox));
 	}
       dialog->separator = ewl_hseparator_new();
-      ewl_container_insert_child(EWL_CONTAINER(dialog->vbox),
+      ewl_container_child_insert(EWL_CONTAINER(dialog->vbox),
 				 dialog->separator, n);
       ewl_object_fill_policy_set (EWL_OBJECT (dialog->separator), 
 				  EWL_FLAG_FILL_SHRINK);

@@ -35,18 +35,18 @@ void __create_tooltip_test_window(Ewl_Widget * w, void *ev_data, void *user_data
 	ewl_widget_show(tooltip_win);
 	
 	tooltip_vbox = ewl_vbox_new();
-	ewl_container_append_child(EWL_CONTAINER(tooltip_win), tooltip_vbox);
+	ewl_container_child_append(EWL_CONTAINER(tooltip_win), tooltip_vbox);
 	ewl_box_set_spacing(EWL_BOX(tooltip_vbox), 0);
 	ewl_widget_show(tooltip_vbox);
 
 	button = ewl_button_new ("Hoover on this button");
-	ewl_container_append_child(EWL_CONTAINER (tooltip_vbox), button);
+	ewl_container_child_append(EWL_CONTAINER (tooltip_vbox), button);
 	ewl_object_fill_policy_set(EWL_OBJECT(button), EWL_FLAG_FILL_SHRINK);
 	ewl_widget_show (button);
 
 	tooltip = ewl_tooltip_new (button);
 	ewl_tooltip_delay_set (EWL_TOOLTIP (tooltip), 2.5);
-	ewl_container_append_child(EWL_CONTAINER (tooltip_win), tooltip);
+	ewl_container_child_append(EWL_CONTAINER (tooltip_win), tooltip);
 
 	return;
 	w = NULL;

@@ -49,7 +49,7 @@ __create_table_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	 */
 	table_box = ewl_vbox_new();
 	ewl_object_fill_policy_set(EWL_OBJECT(table_box), EWL_FLAG_FILL_FILL);
-	ewl_container_append_child(EWL_CONTAINER(table_win), table_box);
+	ewl_container_child_append(EWL_CONTAINER(table_win), table_box);
 	ewl_theme_data_str_set(table_box,
 			       "/appearance/box/vertical/base/visible", "no");
 	ewl_widget_show(table_box);
@@ -61,14 +61,14 @@ __create_table_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	headers[3] = four;
 
 	table = ewl_table_new(4, 5, headers);
-	ewl_container_append_child(EWL_CONTAINER(table_box), table);
+	ewl_container_child_append(EWL_CONTAINER(table_box), table);
 	ewl_widget_show(table);
 
 	
 
 	cell = ewl_cell_new();
 	button[0] = ewl_button_new("FIRST");
-	ewl_container_append_child(EWL_CONTAINER(cell), button[0]);
+	ewl_container_child_append(EWL_CONTAINER(cell), button[0]);
 	ewl_table_add(EWL_TABLE(table), EWL_CELL(cell), 3, 4, 2, 3);
 	ewl_widget_show(button[0]);
 	ewl_widget_show(cell);

@@ -50,11 +50,11 @@ int ewl_tree_init(Ewl_Tree *tree, unsigned short columns)
 	DCHECK_PARAM_PTR_RET("columns", columns, FALSE);
 
 	ewl_container_init(EWL_CONTAINER(tree), "tree");
-	ewl_container_show_notify(EWL_CONTAINER(tree),
+	ewl_container_show_notify_set(EWL_CONTAINER(tree),
 				  (Ewl_Child_Show)ewl_tree_child_resize_cb);
-	ewl_container_hide_notify(EWL_CONTAINER(tree),
+	ewl_container_hide_notify_set(EWL_CONTAINER(tree),
 				  (Ewl_Child_Hide)ewl_tree_child_resize_cb);
-	ewl_container_resize_notify(EWL_CONTAINER(tree),
+	ewl_container_resize_notify_set(EWL_CONTAINER(tree),
 				    (Ewl_Child_Resize)ewl_tree_child_resize_cb);
 	ewl_object_fill_policy_set(EWL_OBJECT(tree), EWL_FLAG_FILL_SHRINK |
 			EWL_FLAG_FILL_FILL);
@@ -73,24 +73,24 @@ int ewl_tree_init(Ewl_Tree *tree, unsigned short columns)
 		ewl_object_fill_policy_set(EWL_OBJECT(button),
 				EWL_FLAG_FILL_HSHRINK |
 				EWL_FLAG_FILL_HFILL);
-		ewl_container_append_child(EWL_CONTAINER(row), button);
+		ewl_container_child_append(EWL_CONTAINER(row), button);
 		ewl_widget_show(button);
 	}
 
 	tree->header = row;
-	ewl_container_append_child(EWL_CONTAINER(tree), row);
+	ewl_container_child_append(EWL_CONTAINER(tree), row);
 	ewl_widget_show(row);
 
 	ewl_callback_append(row, EWL_CALLBACK_SELECT, ewl_tree_row_select_cb,
 			    NULL);
 
 	tree->scrollarea = ewl_scrollpane_new();
-	ewl_container_append_child(EWL_CONTAINER(tree), tree->scrollarea);
+	ewl_container_child_append(EWL_CONTAINER(tree), tree->scrollarea);
 	ewl_callback_append(tree->scrollarea, EWL_CALLBACK_VALUE_CHANGED,
 			    ewl_tree_hscroll_cb, tree);
 	ewl_widget_show(tree->scrollarea);
 
-	ewl_container_set_redirect(EWL_CONTAINER(tree),
+	ewl_container_redirect_set(EWL_CONTAINER(tree),
 				   EWL_CONTAINER(tree->scrollarea));
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
@@ -178,7 +178,7 @@ ewl_tree_row_add(Ewl_Tree *tree, Ewl_Row *prow, Ewl_Widget **children)
 
 	EWL_TREE_NODE(node)->tree = tree;
 	EWL_TREE_NODE(node)->row = row;
-	ewl_container_append_child(EWL_CONTAINER(node), row);
+	ewl_container_child_append(EWL_CONTAINER(node), row);
 	ewl_callback_append(row, EWL_CALLBACK_SELECT, ewl_tree_row_select_cb,
 			    NULL);
 
@@ -196,14 +196,14 @@ ewl_tree_row_add(Ewl_Tree *tree, Ewl_Row *prow, Ewl_Widget **children)
 		}
 
 		ewl_widget_internal_set(cell, TRUE);
-		ewl_container_append_child(EWL_CONTAINER(row), cell);
+		ewl_container_child_append(EWL_CONTAINER(row), cell);
 		ewl_object_fill_policy_set(EWL_OBJECT(cell),
 				EWL_FLAG_FILL_HFILL |
 				EWL_FLAG_FILL_HSHRINK);
 		ewl_widget_show(cell);
 
 		if (children[i]) {
-			ewl_container_append_child(EWL_CONTAINER(cell),
+			ewl_container_child_append(EWL_CONTAINER(cell),
 						   children[i]);
 		}
 	}
@@ -214,10 +214,10 @@ ewl_tree_row_add(Ewl_Tree *tree, Ewl_Row *prow, Ewl_Widget **children)
 	if (prow && w->parent) {
 		if (EWL_TREE_NODE(w->parent)->expanded == EWL_TREE_NODE_EXPANDED)
 			ewl_widget_show(node);
-		ewl_container_append_child(EWL_CONTAINER(w->parent), node);
+		ewl_container_child_append(EWL_CONTAINER(w->parent), node);
 	}
 	else {
-		ewl_container_append_child(EWL_CONTAINER(tree), node);
+		ewl_container_child_append(EWL_CONTAINER(tree), node);
 		ewl_widget_show(node);
 	}
 
@@ -324,7 +324,7 @@ void ewl_tree_row_remove(Ewl_Tree *tree, Ewl_Row *row)
 
 	if (c->children) {
 		while ((w = ecore_list_goto_first(c->children)))
-			ewl_container_remove_child(c, w);
+			ewl_container_child_remove(c, w);
 	}
 
 	ewl_widget_destroy(EWL_WIDGET(node));
@@ -440,8 +440,8 @@ void ewl_tree_configure_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 void
 ewl_tree_child_resize_cb(Ewl_Container *c)
 {
-	ewl_container_prefer_largest(c, EWL_ORIENTATION_HORIZONTAL);
-	ewl_container_prefer_sum(c, EWL_ORIENTATION_VERTICAL);
+	ewl_container_largest_prefer(c, EWL_ORIENTATION_HORIZONTAL);
+	ewl_container_sum_prefer(c, EWL_ORIENTATION_VERTICAL);
 }
 
 /**
@@ -482,15 +482,15 @@ int ewl_tree_node_init(Ewl_Tree_Node *node)
 	if (!ewl_container_init(EWL_CONTAINER(node), "node"))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 	
-	ewl_container_show_notify(EWL_CONTAINER(node),
+	ewl_container_show_notify_set(EWL_CONTAINER(node),
 				  ewl_tree_node_child_show_cb);
-	ewl_container_hide_notify(EWL_CONTAINER(node),
+	ewl_container_hide_notify_set(EWL_CONTAINER(node),
 				  ewl_tree_node_child_hide_cb);
-	ewl_container_resize_notify(EWL_CONTAINER(node),
+	ewl_container_resize_notify_set(EWL_CONTAINER(node),
 				    ewl_tree_node_resize_cb);
-	ewl_container_add_notify(EWL_CONTAINER(node),
+	ewl_container_add_notify_set(EWL_CONTAINER(node),
 				    ewl_tree_node_child_add_cb);
-	ewl_container_remove_notify(EWL_CONTAINER(node),
+	ewl_container_remove_notify_set(EWL_CONTAINER(node),
 				    ewl_tree_node_child_add_cb);
 
 	ewl_object_fill_policy_set(EWL_OBJECT(node), EWL_FLAG_FILL_HFILL |
@@ -507,7 +507,7 @@ int ewl_tree_node_init(Ewl_Tree_Node *node)
 	ewl_object_fill_policy_set(EWL_OBJECT(node->handle),
 				   EWL_FLAG_FILL_NONE);
 	ewl_object_alignment_set(EWL_OBJECT(node->handle), EWL_FLAG_ALIGN_TOP);
-	ewl_container_append_child(EWL_CONTAINER(node), node->handle);
+	ewl_container_child_append(EWL_CONTAINER(node), node->handle);
 	ewl_callback_append(node->handle, EWL_CALLBACK_VALUE_CHANGED,
 			    ewl_tree_node_toggle_cb, node);
 	ewl_widget_show(node->handle);
@@ -680,7 +680,7 @@ ewl_tree_node_child_show_cb(Ewl_Container *c, Ewl_Widget *w)
 	node = EWL_TREE_NODE(c);
 
 	if (node->expanded) {
-		ewl_container_prefer_sum(c, EWL_ORIENTATION_VERTICAL);
+		ewl_container_sum_prefer(c, EWL_ORIENTATION_VERTICAL);
 		if (REALIZED(node->handle) && VISIBLE(node->handle))
 			ewl_object_preferred_inner_h_set(EWL_OBJECT(c),
 					PREFERRED_H(c) -
@@ -691,7 +691,7 @@ ewl_tree_node_child_show_cb(Ewl_Container *c, Ewl_Widget *w)
 					   ewl_object_preferred_h_get(EWL_OBJECT(node->row)));
 	}
 
-	ewl_container_prefer_largest(c, EWL_ORIENTATION_HORIZONTAL);
+	ewl_container_largest_prefer(c, EWL_ORIENTATION_HORIZONTAL);
 	if (REALIZED(node->handle) && VISIBLE(node->handle))
 		ewl_object_preferred_inner_w_set(EWL_OBJECT(c), PREFERRED_W(c) +
 			ewl_object_preferred_w_get(EWL_OBJECT(node->handle)));
@@ -724,7 +724,7 @@ ewl_tree_node_child_hide_cb(Ewl_Container *c, Ewl_Widget *w)
 
 	width = ewl_object_preferred_w_get(EWL_OBJECT(w));
 	if (PREFERRED_W(c) >= width)
-		ewl_container_prefer_largest(c, EWL_ORIENTATION_HORIZONTAL);
+		ewl_container_largest_prefer(c, EWL_ORIENTATION_HORIZONTAL);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

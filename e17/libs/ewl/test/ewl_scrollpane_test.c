@@ -39,13 +39,13 @@ __create_scrollpane_test_window(Ewl_Widget * w, void *ev_data,
 	ewl_widget_show(scrollpane_win);
 
 	scrollpane = ewl_scrollpane_new();
-	ewl_container_append_child(EWL_CONTAINER(scrollpane_win), scrollpane);
+	ewl_container_child_append(EWL_CONTAINER(scrollpane_win), scrollpane);
 	ewl_widget_show(scrollpane);
 
 	button = ewl_button_new(NULL);
 	ewl_object_set_custom_size(EWL_OBJECT(button), 500, 500);
 	ewl_object_set_padding(EWL_OBJECT(button), 20, 20, 20, 20);
-	ewl_container_append_child(EWL_CONTAINER(scrollpane), button);
+	ewl_container_child_append(EWL_CONTAINER(scrollpane), button);
 	ewl_widget_show(button);
 
 	return;

@@ -46,7 +46,7 @@ int ewl_tooltip_init (Ewl_Tooltip *t, Ewl_Widget *parent)
 	t->text = ewl_text_new ("test tooltip");
 	ewl_object_alignment_set (EWL_OBJECT(t->text),
 			EWL_FLAG_ALIGN_TOP | EWL_FLAG_ALIGN_LEFT);
-	ewl_container_append_child (EWL_CONTAINER(w), t->text);
+	ewl_container_child_append (EWL_CONTAINER(w), t->text);
 
 	ewl_widget_show (t->text);
 
