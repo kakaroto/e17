@@ -12,3 +12,11 @@ Mon Dec 27 10:04:09 PST 1999
 starting to evolve out of glade, so removing the glade project file so no one
 accidentally rebuilds it.  Some minor interface bits.  Going to hook
 everything together today.
+
+---------------------------------------------------------------------------
+
+Mon Dec 27 10:30:44 PST 1999
+(Mandrake)
+
+finally added the graphics for all the play/pause/etc buttons.  Still have
+more cleaning to do in here.

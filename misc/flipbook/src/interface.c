@@ -37,6 +37,9 @@ GtkWidget *
 	GtkWidget *scrolledwindow1;
 	GtkWidget *text1;
 	GtkWidget *pixmap1;
+	GtkWidget *pixmap2;
+	GtkWidget *pixmap3;
+	GtkWidget *pixmap4;
 	GtkWidget *hbox1;
 	GtkWidget *lodalabel_;
 	GtkWidget *progressbar2;
@@ -103,17 +106,31 @@ GtkWidget *
 	gtk_widget_show(hbox9);
 	gtk_box_pack_start(GTK_BOX(vbox1), hbox9, TRUE, TRUE, 0);
 
-	rewind_button = gtk_button_new_with_label("Rewind");
+	pixmap2 = create_pixmap(VA_Flipbook, "rewind.xpm");
+	gtk_widget_ref(pixmap2);
+	gtk_object_set_data_full(GTK_OBJECT(VA_Flipbook), "pixmap2", pixmap2,
+							 (GtkDestroyNotify) gtk_widget_unref);
+	gtk_widget_show(pixmap2);
+
+	rewind_button = gtk_button_new();
 	gtk_widget_ref(rewind_button);
 	gtk_object_set_data_full(GTK_OBJECT(VA_Flipbook), "rewind_button", rewind_button,
 							 (GtkDestroyNotify) gtk_widget_unref);
+	gtk_container_add(GTK_CONTAINER(rewind_button), pixmap2);
 	gtk_widget_show(rewind_button);
 	gtk_box_pack_start(GTK_BOX(hbox9), rewind_button, FALSE, FALSE, 0);
 
-	play_button = gtk_button_new_with_label("Play\nPause");
+	pixmap3 = create_pixmap(VA_Flipbook, "play.xpm");
+	gtk_widget_ref(pixmap3);
+	gtk_object_set_data_full(GTK_OBJECT(VA_Flipbook), "pixmap3", pixmap3,
+							 (GtkDestroyNotify) gtk_widget_unref);
+	gtk_widget_show(pixmap3);
+
+	play_button = gtk_button_new();
 	gtk_widget_ref(play_button);
 	gtk_object_set_data_full(GTK_OBJECT(VA_Flipbook), "play_button", play_button,
 							 (GtkDestroyNotify) gtk_widget_unref);
+	gtk_container_add(GTK_CONTAINER(play_button), pixmap3);
 	gtk_widget_show(play_button);
 	gtk_box_pack_start(GTK_BOX(hbox9), play_button, FALSE, FALSE, 0);
 
@@ -124,10 +141,17 @@ GtkWidget *
 	gtk_widget_show(hscale3);
 	gtk_box_pack_start(GTK_BOX(hbox9), hscale3, TRUE, TRUE, 0);
 
-	forward_button = gtk_button_new_with_label("Fast\nForward");
+	pixmap4 = create_pixmap(VA_Flipbook, "fastforward.xpm");
+	gtk_widget_ref(pixmap4);
+	gtk_object_set_data_full(GTK_OBJECT(VA_Flipbook), "pixmap4", pixmap4,
+							 (GtkDestroyNotify) gtk_widget_unref);
+	gtk_widget_show(pixmap4);
+
+	forward_button = gtk_button_new();
 	gtk_widget_ref(forward_button);
 	gtk_object_set_data_full(GTK_OBJECT(VA_Flipbook), "forward_button", forward_button,
 							 (GtkDestroyNotify) gtk_widget_unref);
+	gtk_container_add(GTK_CONTAINER(forward_button), pixmap4);
 	gtk_widget_show(forward_button);
 	gtk_box_pack_start(GTK_BOX(hbox9), forward_button, FALSE, FALSE, 0);
 
@@ -184,8 +208,6 @@ GtkWidget *
 							 (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(progressbar2);
 	gtk_box_pack_start(GTK_BOX(hbox1), progressbar2, FALSE, FALSE, 0);
-	gtk_tooltips_set_tip(tooltips, progressbar2, "Loading Movie", NULL);
-	gtk_progress_set_show_text(GTK_PROGRESS(progressbar2), TRUE);
 
 	percentdone = gtk_label_new("##:##:## remaining\n##:##:## done");
 	gtk_widget_ref(percentdone);
