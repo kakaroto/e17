@@ -231,8 +231,35 @@ geist_document_add_object(geist_document * doc, geist_object * obj)
 
    top = geist_list_last(doc->layers);
    geist_layer_add_object(((geist_layer *) top->data), obj);
-   geist_object_add_to_object_list(obj);
+   if(GEIST_OBJECT_DOC(obj) == current_doc)
+      geist_object_add_to_object_list(obj);
    geist_object_dirty(obj);
+
+   D_RETURN_(3);
+}
+
+
+void
+geist_document_reset_object_list(geist_document * d)
+{
+   geist_list *l, *ll;
+
+   D_ENTER(3);
+
+   gtk_signal_handler_block(GTK_OBJECT(obj_list), obj_sel_handler);
+   gtk_signal_handler_block(GTK_OBJECT(obj_list), obj_unsel_handler);
+   gtk_clist_freeze(GTK_CLIST(obj_list));
+   gtk_clist_clear(GTK_CLIST(obj_list));
+   for (l = d->layers; l; l = l->next)
+   {
+      for (ll = GEIST_LAYER(l->data)->objects; ll; ll = ll->next)
+      {
+         geist_object_add_to_object_list(GEIST_OBJECT(ll->data));
+      }
+   }
+   gtk_clist_thaw(GTK_CLIST(obj_list));
+   gtk_signal_handler_unblock(GTK_OBJECT(obj_list), obj_sel_handler);
+   gtk_signal_handler_unblock(GTK_OBJECT(obj_list), obj_unsel_handler);
 
    D_RETURN_(3);
 }
@@ -269,7 +296,8 @@ geist_document_find_clicked_object(geist_document * doc, int x, int y)
 
 }
 
-void geist_document_render_full(geist_document * d)
+void
+geist_document_render_full(geist_document * d)
 {
    D_ENTER(3);
 
@@ -334,11 +362,12 @@ geist_document_dirty_selection(geist_document * doc)
    D_RETURN_(3);
 }
 
-void geist_document_rename(geist_document *d, char *name)
+void
+geist_document_rename(geist_document * d, char *name)
 {
    D_ENTER(3);
 
-   if(d->name)
+   if (d->name)
       efree(d->name);
    d->name = estrdup(name);
 

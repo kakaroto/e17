@@ -72,6 +72,7 @@ nbook_switch_page_cb(GtkNotebook * notebook, GtkNotebookPage * page,
    D_ENTER(3);
 
    current_doc = GEIST_DOCUMENT((geist_list_nth(doc_list, page_num))->data);
+   geist_document_reset_object_list(current_doc);
 
    D_RETURN_(3);
 }
@@ -208,7 +209,7 @@ geist_gtk_new_document_page(GtkWidget * parent, int w, int h, char *name)
    gtk_signal_connect_after(GTK_OBJECT(darea), "configure_event",
                             GTK_SIGNAL_FUNC(configure_cb), doc);
    gtk_widget_show(darea);
-
+   
    D_RETURN(3, doc);
 }
 

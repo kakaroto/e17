@@ -41,6 +41,8 @@ main(int argc, char *argv[])
    doc->bg_fill->b = 237;
    doc->bg_fill->a = 255;
 
+   gtk_clist_freeze(GTK_CLIST(obj_list));
+
    geist_document_add_object(doc,
                              geist_image_new_from_file(0, 0,
                                                        PREFIX
@@ -101,6 +103,7 @@ main(int argc, char *argv[])
                                                       255, 0, 100, 255));
    geist_document_render_full(doc);
 
+   gtk_clist_thaw(GTK_CLIST(obj_list));
    gtk_main();
    D_RETURN(3, 0);
 }
