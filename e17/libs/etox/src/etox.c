@@ -1212,6 +1212,7 @@ Etox *Etox_new_all(Evas *evas, char *name, double x, double y, double w, double 
      }
    e->vertical_align = vertical_align;
    e->alpha_mod = 255;
+   return e;
 }
 
 void etox_set_alpha_mod(Etox *e, int amod) {

@@ -65,7 +65,8 @@ main(int argc, char **argv)
    root_win = DefaultRootWindow(disp);
 
    e = evas_new_all(disp, root_win, 128, 0, win_w, win_h,
-		    0, 216, 4 * 1024 * 1024, 4 * 1024 * 1024,
+		    RENDER_METHOD_ALPHA_SOFTWARE, 
+		    216, 4 * 1024 * 1024, 4 * 1024 * 1024,
 		    FNTDIR);
 
    win = evas_get_window(e);
