@@ -94,27 +94,53 @@ main(int argc, char **argv)
 		{ 0, 0, 0 }
 	};
 	static char* tooltips[] = {
-	        "Defines the Ewl_Box class used for\nlaying out Ewl_Widget's in a horizontal\nor vertical line.",
-		"The button class is a basic button\nwith a label. This class inherits from\nthe Ewl_Box to allow for placing any\nother widget inside the button.",
-		"Defines a color picker.",
-		"Defines a combo box used internally.\nThe contents on the box are not drawn\noutside of the Evas.",
+	    	"Defines the Ewl_Box class used for\n"
+			"laying out Ewl_Widget's in a horizontal\n"
+			"or vertical line.",
+	    	"The button class is a basic button\n"
+			"with a label. This class inherits from\n"
+			"the Ewl_Box to allow for placing any\n"
+			"other widget inside the button.",
+	    	"Defines a color picker.",
+		"Defines a combo box used internally.\n"
+			"The contents on the box are not drawn\n"
+			"outside of the Evas.",
 		"Defines a dialog window.",
-		"Defines the Ewl_Entry class to allow\nfor single line editable text.",
-		"The filedialog is intended to be used\nfor a simple file chooser.",
-		"Defines a widget for layering above other\n widgets in EWL's drawing area, with\nthe ability to follow the movement of\nanother widget.",
-		"Provides a widget for displaying evas\nloadable images, and edjes.",
-		"Defines a menu used internally. The\ncontents on the menu are not drawn\noutside of the Evas.",
-		"Defines the basic menu classes that\nare extended to an actual menu\nimplementation by inheriting classes\nsuch as Ewl_Menu and Ewl_IMenu.",
+		"Defines the Ewl_Entry class to allow\n"
+			"for single line editable text.",
+		"The filedialog is intended to be used\n"
+			"for a simple file chooser.",
+		"Defines a widget for layering above other\n "
+			"widgets in EWL's drawing area, with\n"
+			"the ability to follow the movement of\n"
+			"another widget.",
+		"Provides a widget for displaying evas\n"
+			"loadable images, and edjes.",
+		"Defines a menu used internally. The\n"
+			"contents on the menu are not drawn\n"
+			"outside of the Evas.",
+		"Defines the basic menu classes that\n"
+			"are extended to an actual menu\n"
+			"implementation by inheriting classes\n"
+			"such as Ewl_Menu and Ewl_IMenu.",
 		"Defines a menubar that can be used to hold menus.",
-		"Provides a container whose children\nare pages that can be switched\nbetween using tab labels along one\nedge",
+		"Provides a container whose children\n"
+			"are pages that can be switched\n"
+			"between using tab labels along one\nedge",
 		"Defines the Ewl_Paned to hold two resizable panes of content.",
-		"Defines the Ewl_Password class to allow\nfor single line obscured text.",
+		"Defines the Ewl_Password class to allow\n"
+			"for single line obscured text.",
 		"Provides a statusbar from a given value.",
-		"Provides a field for entering numerical\nvalues, along with buttons to increment\nand decrement the value.",
-		"Defines a class for multi-line text layout\nand formatting.",
-		"Defines a widget for displaying short\nmessages after a delay.",
-		"Defines a widget for laying out other\nwidgets in a tree or list like manner.",
-		0
+		"Provides a field for entering numerical\n"
+			"values, along with buttons to increment\n"
+			"and decrement the value.",
+		"Defines a class for multi-line text layout\n"
+			"and formatting.",
+		"Defines a widget for displaying short\n"
+			"messages after a delay.",
+		"Defines a widget for laying out other\n"
+			"widgets in a tree or list like manner.",
+		NULL
 	};
 	void *heap_start, *heap_end;
 	char *header[1] = {
@@ -124,9 +150,9 @@ main(int argc, char **argv)
 	heap_start = sbrk(0);
 
 	if (!ewl_init(&argc, argv)) {
-        fprintf(stderr, "Could not init ewl. Exiting...\n");
-        return 1;
-    }
+		fprintf(stderr, "Could not init ewl. Exiting...\n");
+		return 1;
+	}
 
 	heap_end = sbrk(0);
 	printf("HEAP SIZE:\t%u bytes\n", heap_end - heap_start);
@@ -160,15 +186,16 @@ main(int argc, char **argv)
 	ewl_widget_show(main_tree);
 
 	main_area = ewl_scrollpane_new();
-/* 	ewl_object_fill_policy_set (EWL_OBJECT (main_area), */
-/* 				     EWL_FLAG_FILL_SHRINK || EWL_FLAG_FILL_FILL); */
 	ewl_widget_show(main_area);
 	ewl_container_child_append(EWL_CONTAINER(main_box), main_area);
 
-	main_text = ewl_text_new ("  Click on the objects on the left to\nshow a working example and the source\nof the corresponding widget.\n  Keep the mouse on the button to see\na brief description of the widget.");
+	main_text = ewl_text_new ("  Click on the objects on the left to\n"
+				"show a working example and the source\n"
+				"of the corresponding widget.\n"
+				"Keep the mouse on the button to see\n"
+				"a brief description of the widget.");
 	ewl_container_child_append(EWL_CONTAINER(main_area),
 				   main_text);
-/* 	ewl_text_font_set (EWL_TEXT (main_text), "Vera", 8); */
 	ewl_widget_show(main_text);
 
 	i = 0;
