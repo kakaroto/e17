@@ -1142,15 +1142,15 @@ _ebits_evaluate(Ebits_Object_Bit_State state)
 {
    Evas_List           l;
 
-   if (state->description->normal.image)
+   if (state->description->normal.image && !state->normal.image)
       state->normal.image = imlib_load_image(state->description->normal.image);
-   if (state->description->hilited.image)
+   if (state->description->hilited.image && !state->hilited.image)
       state->hilited.image =
 	 imlib_load_image(state->description->hilited.image);
-   if (state->description->clicked.image)
+   if (state->description->clicked.image && !state->clicked.image)
       state->clicked.image =
 	 imlib_load_image(state->description->clicked.image);
-   if (state->description->disabled.image)
+   if (state->description->disabled.image && !state->disabled.image)
       state->disabled.image =
 	 imlib_load_image(state->description->disabled.image);
 
