@@ -81,8 +81,8 @@
         target, NAME;			\
       }					\
       program {				\
-        name, NAME"-down1";		\
-	signal, "mouse,up,1";		\
+	name, NAME"-clicked";		\
+	signal, "mouse,clicked,1";		\
 	source, NAME;			\
 	action, SIGNAL_EMIT SIG NAME;	\
       }					\

@@ -1,5 +1,10 @@
 $Id$
 
+2004-02-15 Tilman Sauerbeck <tilman -at- code-monkey.de>
+        * src/interface.c, src/playlist_item.[ch], src/plugin.h,
+          src/input/vorbis/vorbis.c: added bitrate and sample rate
+          parts
+
 2004-02-03 Tilman Sauerbeck <tilman -at- code-monkey.de>
         * src/playlist.c, src/playlist_item.c, src/callbacks.c:
           The UI parts and playlist are now correctly re-initialized

@@ -37,6 +37,7 @@ typedef struct {
 	int (*get_duration)();
 	int (*get_channels)();
 	int (*get_sample_rate)();
+	int (*get_bitrate)();
 	
 	int (*read)(unsigned char **buf);
 

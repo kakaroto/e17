@@ -176,6 +176,7 @@ void ui_shutdown(ePlayer *player) {
 
 void ui_fill_track_info(ePlayer *player) {
 	PlayListItem *pli;
+	char buf[128];
 
 	if (!(pli = playlist_current_item_get(player->playlist)))
 		return;
@@ -196,6 +197,18 @@ void ui_fill_track_info(ePlayer *player) {
 	                          pli->comment[COMMENT_ID_ARTIST]);
 	edje_object_part_text_set(player->gui.edje, "album_name",
 	                          pli->comment[COMMENT_ID_ALBUM]);
+
+	/* sample rate */
+	snprintf(buf, sizeof(buf), "%.1f",
+	         (float) pli->sample_rate / 1000);
+	edje_object_part_text_set(player->gui.edje, "track_sample_rate",
+	                          buf);
+
+	/* bitrate */
+	snprintf(buf, sizeof(buf), "%.1f",
+	         (float) pli->bitrate / 1000);
+	edje_object_part_text_set(player->gui.edje, "track_bitrate",
+	                          buf);
 }
 
 bool ui_init_edje(ePlayer *player, const char *name) {

@@ -22,6 +22,7 @@ static void playlist_item_get_info(PlayListItem *pli) {
 	pli->channels = pli->plugin->get_channels();
 	pli->duration = pli->plugin->get_duration();
 	pli->sample_rate = pli->plugin->get_sample_rate();
+	pli->bitrate = pli->plugin->get_bitrate();
 
 	for (i = 0; i < COMMENT_ID_NUM; i++)
 		snprintf(pli->comment[i], MAX_COMMENT_LEN, "%s",

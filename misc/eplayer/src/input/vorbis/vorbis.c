@@ -10,7 +10,7 @@
 
 static OggVorbis_File track = {0};
 static char comment[COMMENT_ID_NUM][MAX_COMMENT_LEN] = {{0}};
-static int channels = 0, sample_rate = 0, duration = 0;
+static int channels = 0, sample_rate = 0, duration = 0, bitrate = 0;
 
 static void parse_comments(vorbis_comment *vc) {
 	char *cmt, *key[COMMENT_ID_NUM] = {NULL};
@@ -60,6 +60,7 @@ int vorbis_open(const char *file) {
 	sample_rate = info->rate;
 	channels = info->channels;
 	duration = ov_time_total(&track, -1);
+	bitrate = ov_bitrate(&track, -1);
 
 	return 1;
 }
@@ -83,6 +84,10 @@ int vorbis_get_channels() {
 
 int vorbis_get_sample_rate() {
 	return sample_rate;
+}
+
+int vorbis_get_bitrate() {
+	return bitrate;
 }
 
 int vorbis_read(unsigned char **buf) {
@@ -120,6 +125,7 @@ int plugin_init(InputPlugin *ip) {
 	ip->get_duration = vorbis_get_duration;
 	ip->get_channels = vorbis_get_channels;
 	ip->get_sample_rate = vorbis_get_sample_rate;
+	ip->get_bitrate = vorbis_get_bitrate;
 	
 	ip->read = vorbis_read;
 	

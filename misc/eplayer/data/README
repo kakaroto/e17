@@ -51,16 +51,18 @@ and the third signal is emitted to indicate playback is stopped.
 
 The Edje provides the following parts for text display, etc:
 
-    Part: "title"            -> Window Title
-    Part: "artist_name"      -> Name of artist
-    Part: "album_name"       -> Name of album
-    Part: "song_name"        -> Name of song
-    Part: "time_text"        -> Current pos in track ([-]00:00)
-    Part: "vol_display_text" -> Current Volume Level (0 - 100)
+    Part: "title"             -> Window Title
+    Part: "artist_name"       -> Name of artist
+    Part: "album_name"        -> Name of album
+    Part: "song_name"         -> Name of song
+    Part: "track_bitrate"     -> Bitrate of song (in kbps)
+	Part: "track_sample_rate" -> Sample rate of song (in khz)
+    Part: "time_text"         -> Current pos in track ([-]00:00)
+    Part: "vol_display_text"  -> Current Volume Level (0 - 100)
 
-    Part: "playlist"         -> where to swallow the playlist
-    Part: "seeker"           -> draggable set to track position (%)
-    Part: "seeker_grabber"   -> special (see below)
+    Part: "playlist"          -> where to swallow the playlist
+    Part: "seeker"            -> draggable set to track position (%)
+    Part: "seeker_grabber"    -> special (see below)
 
 The seeker:
   The seeker involves two parts. One, "seeker" is a draggable that gets set to the current song position (as a percent). Often, this can be an invisible part with other parts relative to it (to create a bar, for instance). Second is the "seeker_grabber" part, which captures mouse down/move events to actually seek. Create programs for this part that emit SEEKER_START on mouse down, SEEKER_UPDATE on mouse move and SEEKER_STOP on mouse up. 

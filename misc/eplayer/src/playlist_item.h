@@ -18,6 +18,7 @@ typedef struct {
 	int duration;
 	int channels; /* number of channels */
 	long sample_rate; /* sample rate */
+	int bitrate;
 
 	int current_pos;
 	pthread_mutex_t pos_mutex;
