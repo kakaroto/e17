@@ -429,7 +429,7 @@ ImageStateMakePmapMask(ImageState * is, Drawable win, PmapMask * pmm,
 	int                 xx, yy;
 
 	XTranslateCoordinates(disp, win, root.win, 0, 0, &xx, &yy, &cr);
-/*	printf("ImageStateMakePmapMask %#lx %d %d %d %d\n", win, xx, yy, w, h); */
+/*	Eprintf("ImageStateMakePmapMask %#lx %d %d %d %d\n", win, xx, yy, w, h); */
 	if (xx < root.w && yy < root.h && xx + w >= 0 && yy + h >= 0)
 	  {
 	     /* Create the background base image */
@@ -446,7 +446,7 @@ ImageStateMakePmapMask(ImageState * is, Drawable win, PmapMask * pmm,
      }
    else
      {
-/*	printf("ImageStateMakePmapMask %#lx %d %d\n", win, w, h); */
+/*	Eprintf("ImageStateMakePmapMask %#lx %d %d\n", win, w, h); */
      }
 #endif
 
@@ -849,7 +849,7 @@ IclassApplyCopy(ImageClass * iclass, Window win, int w, int h, int active,
 	Pixmap              pmap;
 
 	if (pmm->pmap)
-	   printf("IclassApplyCopy: Hmm... pmm->pmap already set\n");
+	   Eprintf("IclassApplyCopy: Hmm... pmm->pmap already set\n");
 
 	pmap = ECreatePixmap(disp, win, w, h, root.depth);
 	pmm->type = 0;
@@ -884,7 +884,7 @@ ImageStateRealize(ImageState * is)
    is->im = ELoadImage(is->real_file);
    imlib_context_set_image(is->im);
    if (is->im == NULL)
-      printf
+      Eprintf
 	 ("ImageStateRealize: Hmmm... is->im is NULL (im_file=%s real_file=%s\n",
 	  is->im_file, is->real_file);
 

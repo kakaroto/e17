@@ -165,12 +165,12 @@ FocusEwinSetGrabs(EWin * ewin)
 	XGrabButton(disp, AnyButton, AnyModifier, ewin->win_container,
 		    False, ButtonPressMask, GrabModeSync, GrabModeAsync,
 		    None, None);
-/*	printf("FocusEwinSetGrabs: %#lx grab\n", ewin->client.win); */
+/*	Eprintf("FocusEwinSetGrabs: %#lx grab\n", ewin->client.win); */
      }
    else
      {
 	XUngrabButton(disp, AnyButton, AnyModifier, ewin->win_container);
-/*	printf("FocusEwinSetGrabs: %#lx ungrab\n", ewin->client.win); */
+/*	Eprintf("FocusEwinSetGrabs: %#lx ungrab\n", ewin->client.win); */
      }
 }
 
@@ -212,10 +212,10 @@ FocusToEWin(EWin * ewin, int why)
    if (EventDebug(EDBUG_TYPE_FOCUS))
      {
 	if (ewin)
-	   printf("FocusToEWin %#lx %s why=%d\n", ewin->client.win,
-		  ewin->icccm.wm_res_name, why);
+	   Eprintf("FocusToEWin %#lx %s why=%d\n", ewin->client.win,
+		   ewin->icccm.wm_res_name, why);
 	else
-	   printf("FocusToEWin None why=%d\n", why);
+	   Eprintf("FocusToEWin None why=%d\n", why);
      }
 
    switch (why)

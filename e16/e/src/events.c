@@ -67,9 +67,9 @@ EventsInit(void)
      {
 	XShapeQueryVersion(disp, &major, &minor);
 	if (Mode.debug)
-	   printf("Found extension Shape version %d.%d\n"
-		  " Event/error base = %d/%d\n",
-		  major, minor, event_base_shape, error_base_shape);
+	   Eprintf("Found extension Shape version %d.%d\n"
+		   " Event/error base = %d/%d\n",
+		   major, minor, event_base_shape, error_base_shape);
      }
    else
      {
@@ -88,9 +88,9 @@ EventsInit(void)
      {
 	XRRQueryVersion(disp, &major, &minor);
 	if (Mode.debug)
-	   printf("Found extension RandR version %d.%d\n"
-		  " Event/error base = %d/%d\n",
-		  major, minor, event_base_randr, error_base_randr);
+	   Eprintf("Found extension RandR version %d.%d\n"
+		   " Event/error base = %d/%d\n",
+		   major, minor, event_base_randr, error_base_randr);
 
 	/* Listen for RandR events */
 	XRRSelectInput(disp, root.win, RRScreenChangeNotifyMask);
@@ -281,8 +281,8 @@ EventsCompress(XEvent * evq, int count)
    /* Debug - should be taken out */
    if (EventDebug(EDBUG_TYPE_COMPRESSION))
       for (i = 0; i < count; i++)
-	 printf("EventsCompress-1 %3d t=%s w=%#lx\n", i, EventName(evq[i].type),
-		evq[i].xany.window);
+	 Eprintf("EventsCompress-1 %3d t=%s w=%#lx\n", i,
+		 EventName(evq[i].type), evq[i].xany.window);
 
    /* Loop through event list, starting with latest */
    for (i = count - 1; i > 0; i--)
@@ -311,8 +311,8 @@ EventsCompress(XEvent * evq, int count)
 		    }
 	       }
 	     if (n && EventDebug(EDBUG_TYPE_COMPRESSION))
-		printf("EventsCompress MotionNotify %#lx n=%4d x,y = %d,%d\n",
-		       ev->xmotion.window, n, ev->xmotion.x, ev->xmotion.y);
+		Eprintf("EventsCompress MotionNotify %#lx n=%4d x,y = %d,%d\n",
+			ev->xmotion.window, n, ev->xmotion.x, ev->xmotion.y);
 	     break;
 
 	  case Expose:
@@ -347,8 +347,9 @@ EventsCompress(XEvent * evq, int count)
 		  ev->xexpose.height = yb - ya;
 	       }
 	     if (EventDebug(EDBUG_TYPE_COMPRESSION))
-		printf("EventsCompress Expose %#lx n=%4d x=%4d-%4d y=%4d-%4d\n",
-		       ev->xexpose.window, n, xa, xb, ya, yb);
+		Eprintf
+		   ("EventsCompress Expose %#lx n=%4d x=%4d-%4d y=%4d-%4d\n",
+		    ev->xexpose.window, n, xa, xb, ya, yb);
 	     break;
 
 	  default:
@@ -366,8 +367,8 @@ EventsCompress(XEvent * evq, int count)
 			 }
 		    }
 		  if (n && EventDebug(EDBUG_TYPE_COMPRESSION))
-		     printf("EventsCompress ShapeNotify %#lx n=%4d\n",
-			    ev->xmotion.window, n);
+		     Eprintf("EventsCompress ShapeNotify %#lx n=%4d\n",
+			     ev->xmotion.window, n);
 	       }
 	     break;
 	  }
@@ -376,8 +377,8 @@ EventsCompress(XEvent * evq, int count)
    /* Debug - should be taken out */
    if (EventDebug(EDBUG_TYPE_COMPRESSION))
       for (i = 0; i < count; i++)
-	 printf("EventsCompress-2 %3d t=%s w=%#lx\n", i, EventName(evq[i].type),
-		evq[i].xany.window);
+	 Eprintf("EventsCompress-2 %3d t=%s w=%#lx\n", i,
+		 EventName(evq[i].type), evq[i].xany.window);
 }
 
 static int
@@ -653,22 +654,22 @@ EventShow(const XEvent * ev)
 	goto case_common;
      case ButtonPress:
      case ButtonRelease:
-	printf("EV-%s win=%#lx state=%#x button=%#x\n", name, win,
-	       ev->xbutton.state, ev->xbutton.button);
+	Eprintf("EV-%s win=%#lx state=%#x button=%#x\n", name, win,
+		ev->xbutton.state, ev->xbutton.button);
 	break;
      case MotionNotify:
 	goto case_common;
      case EnterNotify:
      case LeaveNotify:
-	printf("EV-%s win=%#lx m=%s d=%s\n", name, win,
-	       EventNotifyModeName(ev->xcrossing.mode),
-	       EventNotifyDetailName(ev->xcrossing.detail));
+	Eprintf("EV-%s win=%#lx m=%s d=%s\n", name, win,
+		EventNotifyModeName(ev->xcrossing.mode),
+		EventNotifyDetailName(ev->xcrossing.detail));
 	break;
      case FocusIn:
      case FocusOut:
-	printf("EV-%s win=%#lx m=%s d=%s\n", name, win,
-	       EventNotifyModeName(ev->xfocus.mode),
-	       EventNotifyDetailName(ev->xfocus.detail));
+	Eprintf("EV-%s win=%#lx m=%s d=%s\n", name, win,
+		EventNotifyModeName(ev->xfocus.mode),
+		EventNotifyDetailName(ev->xfocus.detail));
 	break;
      case KeymapNotify:
      case Expose:
@@ -681,19 +682,20 @@ EventShow(const XEvent * ev)
      case UnmapNotify:
      case MapNotify:
      case MapRequest:
-	printf("EV-%s ev=%#lx win=%#lx\n", name, win, ev->xcreatewindow.window);
+	Eprintf("EV-%s ev=%#lx win=%#lx\n", name, win,
+		ev->xcreatewindow.window);
 	break;
      case ReparentNotify:
 	goto case_common;
      case ConfigureNotify:
-	printf("EV-%s: win=%#lx event=%#lx %d+%d %dx%d bw=%d above=%#lx\n",
-	       name, ev->xconfigure.window, win,
-	       ev->xconfigure.x, ev->xconfigure.y,
-	       ev->xconfigure.width, ev->xconfigure.height,
-	       ev->xconfigure.border_width, ev->xconfigure.above);
+	Eprintf("EV-%s: win=%#lx event=%#lx %d+%d %dx%d bw=%d above=%#lx\n",
+		name, ev->xconfigure.window, win,
+		ev->xconfigure.x, ev->xconfigure.y,
+		ev->xconfigure.width, ev->xconfigure.height,
+		ev->xconfigure.border_width, ev->xconfigure.above);
 	break;
      case ConfigureRequest:
-	printf
+	Eprintf
 	   ("EV-%s: win=%#lx parent=%#lx m=%#lx %d+%d %dx%d bw=%d above=%#lx stk=%d\n",
 	    name, ev->xconfigurerequest.window, win,
 	    ev->xconfigurerequest.value_mask, ev->xconfigurerequest.x,
@@ -704,16 +706,16 @@ EventShow(const XEvent * ev)
      case GravityNotify:
 	goto case_common;
      case ResizeRequest:
-	printf("EV-%s: win=%#lx %dx%d\n",
-	       name, win, ev->xresizerequest.width, ev->xresizerequest.height);
+	Eprintf("EV-%s: win=%#lx %dx%d\n",
+		name, win, ev->xresizerequest.width, ev->xresizerequest.height);
 	break;
      case CirculateNotify:
      case CirculateRequest:
 	goto case_common;
      case PropertyNotify:
 	txt = XGetAtomName(disp, ev->xproperty.atom);
-	printf("EV-%s: win=%#lx Atom=%s(%ld)\n",
-	       name, win, txt, ev->xproperty.atom);
+	Eprintf("EV-%s: win=%#lx Atom=%s(%ld)\n",
+		name, win, txt, ev->xproperty.atom);
 	XFree(txt);
 	break;
      case SelectionClear:
@@ -723,7 +725,7 @@ EventShow(const XEvent * ev)
 	goto case_common;
      case ClientMessage:
 	txt = XGetAtomName(disp, ev->xclient.message_type);
-	printf
+	Eprintf
 	   ("EV-%s win=%#lx ev_type=%s(%ld) data[0-3]= %08lx %08lx %08lx %08lx\n",
 	    name, win, txt, ev->xclient.message_type, ev->xclient.data.l[0],
 	    ev->xclient.data.l[1], ev->xclient.data.l[2],
@@ -732,17 +734,17 @@ EventShow(const XEvent * ev)
 	break;
      case MappingNotify:
       case_common:
-	printf("EV-%s win=%#lx\n", name, win);
+	Eprintf("EV-%s win=%#lx\n", name, win);
 	break;
      default:
 	if (ev->type == event_base_shape + ShapeNotify)
-	   printf("EV-ShapeNotify win=%#lx\n", win);
+	   Eprintf("EV-ShapeNotify win=%#lx\n", win);
 #ifdef USE_XRANDR
 	else if (ev->type == event_base_randr + RRScreenChangeNotify)
-	   printf("EV-RRScreenChangeNotify win=%#lx\n", win);
+	   Eprintf("EV-RRScreenChangeNotify win=%#lx\n", win);
 #endif
 	else
-	   printf("EV-??? Type=%d win=%#lx\n", ev->type, win);
+	   Eprintf("EV-??? Type=%d win=%#lx\n", ev->type, win);
 	break;
      }
 }

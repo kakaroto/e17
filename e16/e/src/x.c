@@ -571,7 +571,7 @@ EGetGeometry(Display * d, Window win, Window * root_return, int *x, int *y,
      }
 #if 0				/* Debug */
    if (!ok)
-      printf("EGetGeometry win=%#x, error %d\n", (unsigned)win, ok);
+      Eprintf("EGetGeometry win=%#x, error %d\n", (unsigned)win, ok);
 #endif
    return ok;
 }

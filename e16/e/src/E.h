@@ -36,7 +36,6 @@
 #define USE_LIBC_SETENV  1	/* Use libc setenv  if present */
 #endif
 #define USE_LIBC_MALLOC  1	/* Use unwrapped libc malloc/realloc/free */
-#define DEBUG_EWMH  0
 
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
@@ -2372,11 +2371,7 @@ void                EdgeHandleLeave(XEvent * ev);
 void                EdgeHandleMotion(XEvent * ev);
 void                Quicksort(void **a, int l, int r,
 			      int (*CompareFunc) (void *d1, void *d2));
-#if USE_LIBC_SETENV
-#define Esetenv setenv
-#else
-int                 Esetenv(const char *name, const char *value, int overwrite);
-#endif
+void                Eprintf(const char *fmt, ...);
 
 /* moveresize.c */
 int                 ActionMoveStart(EWin * ewin, const void *params,
@@ -2756,6 +2751,11 @@ char               *Estrdup(const char *s);
 #define Estrndup(s,n) ((s) ? strndup(s,n) : NULL)
 #else
 char               *Estrndup(const char *s, int n);
+#endif
+#if USE_LIBC_SETENV
+#define Esetenv setenv
+#else
+int                 Esetenv(const char *name, const char *value, int overwrite);
 #endif
 
 /*

@@ -61,9 +61,9 @@ WarpFocusHandleEvent(XEvent * ev)
       EDBUG_RETURN(0);
 
 #if 0				/* Debug */
-   printf("WarpFocusHandleEvent win=%#x key=%#x(%#x) %d\n",
-	  (unsigned)ev->xkey.window, ev->xkey.keycode,
-	  warpFocusKey, warpFocusTitleShowing);
+   Eprintf("WarpFocusHandleEvent win=%#x key=%#x(%#x) %d\n",
+	   (unsigned)ev->xkey.window, ev->xkey.keycode,
+	   warpFocusKey, warpFocusTitleShowing);
 #endif
    if (warpFocusTitleShowing)
      {

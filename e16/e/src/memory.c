@@ -428,3 +428,14 @@ Estrndup(const char *s, int n)
    EDBUG_RETURN(ss);
 }
 #endif
+
+#if !USE_LIBC_SETENV
+int
+Esetenv(const char *name, const char *value, int overwrite __UNUSED__)
+{
+   char                envvar[FILEPATH_LEN_MAX];
+
+   Esnprintf(envvar, FILEPATH_LEN_MAX, "%s=%s", name, value);
+   return putenv(Estrdup(envvar));
+}
+#endif

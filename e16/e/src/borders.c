@@ -1715,8 +1715,8 @@ doMoveResizeEwin(EWin * ewin, int x, int y, int w, int h, int flags)
    call_depth++;
 
    if (EventDebug(EDBUG_TYPE_MOVERESIZE))
-      printf("doMoveResizeEwin %#lx %d+%d %d*%d %d %s\n",
-	     ewin->client.win, x, y, w, h, flags, EwinGetTitle(ewin));
+      Eprintf("doMoveResizeEwin %#lx %d+%d %d*%d %d %s\n",
+	      ewin->client.win, x, y, w, h, flags, EwinGetTitle(ewin));
 
    if (Mode.mode == MODE_NONE)
      {
@@ -1924,7 +1924,7 @@ RestackEwin(EWin * ewin)
    EDBUG(3, "RestackEwin");
 
    if (EventDebug(EDBUG_TYPE_STACKING))
-      printf("RestackEwin %#lx %s\n", ewin->client.win, EwinGetTitle(ewin));
+      Eprintf("RestackEwin %#lx %s\n", ewin->client.win, EwinGetTitle(ewin));
 
    if (ewin->floating)
      {
@@ -1951,8 +1951,8 @@ RestackEwin(EWin * ewin)
      }
    value_mask = CWSibling | CWStackMode;
    if (EventDebug(EDBUG_TYPE_STACKING))
-      printf("RestackEwin %#10lx %s %#10lx\n", ewin->win,
-	     (xwc.stack_mode == Above) ? "Above" : "Below", xwc.sibling);
+      Eprintf("RestackEwin %#10lx %s %#10lx\n", ewin->win,
+	      (xwc.stack_mode == Above) ? "Above" : "Below", xwc.sibling);
    XConfigureWindow(disp, ewin->win, value_mask, &xwc);
 
    if (Mode.mode == MODE_NONE)
@@ -1978,8 +1978,8 @@ RaiseEwin(EWin * ewin)
    call_depth++;
 
    if (EventDebug(EDBUG_TYPE_RAISELOWER))
-      printf("RaiseEwin(%d) %#lx %s\n", call_depth, ewin->client.win,
-	     EwinGetTitle(ewin));
+      Eprintf("RaiseEwin(%d) %#lx %s\n", call_depth, ewin->client.win,
+	      EwinGetTitle(ewin));
 
    if (ewin->win)
      {
@@ -2029,8 +2029,8 @@ LowerEwin(EWin * ewin)
    call_depth++;
 
    if (EventDebug(EDBUG_TYPE_RAISELOWER))
-      printf("LowerEwin(%d) %#lx %s\n", call_depth, ewin->client.win,
-	     EwinGetTitle(ewin));
+      Eprintf("LowerEwin(%d) %#lx %s\n", call_depth, ewin->client.win,
+	      EwinGetTitle(ewin));
 
    if ((ewin->win) && (!ewin->floating))
      {

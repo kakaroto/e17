@@ -438,13 +438,13 @@ Quicksort(void **a, int l, int r, int (*CompareFunc) (void *d1, void *d2))
      }
 }
 
-#if !USE_LIBC_SETENV
-int
-Esetenv(const char *name, const char *value, int overwrite __UNUSED__)
+void
+Eprintf(const char *fmt, ...)
 {
-   char                envvar[FILEPATH_LEN_MAX];
+   va_list             args;
 
-   Esnprintf(envvar, FILEPATH_LEN_MAX, "%s=%s", name, value);
-   return putenv(Estrdup(envvar));
+   fprintf(stdout, "[%d] ", getpid());
+   va_start(args, fmt);
+   vfprintf(stdout, fmt, args);
+   va_end(args);
 }
-#endif

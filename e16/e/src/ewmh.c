@@ -25,11 +25,6 @@
  */
 #include "E.h"
 
-#if DEBUG_EWMH
-#undef EDBUG
-#define EDBUG(a,b) printf(b "\n")
-#endif
-
 #define _ATOM_INIT(atom) atom = XInternAtom(disp, #atom, False); \
     atom_list[atom_count++] = atom
 
@@ -389,7 +384,7 @@ EWMH_SetClientList(void)
    lst = (EWin **) EwinListGetStacking(&num);
    /* FIXME: num must be unchanged here! Check! */
    if (num != nwin)
-      printf("*** ERROR: no=%d nn=%d\n", nwin, num);
+      Eprintf("*** ERROR: no=%d nn=%d\n", nwin, num);
    if (num > nwin)
       wl = Erealloc(wl, num * sizeof(Window));
    nwin = 0;

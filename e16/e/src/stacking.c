@@ -42,13 +42,13 @@ EwinListShow(const char *txt, EWinList * ewl)
    if (!EventDebug(EDBUG_TYPE_STACKING))
       return;
 
-   printf("%s-%s:\n", ewl->name, txt);
+   Eprintf("%s-%s:\n", ewl->name, txt);
    for (i = 0; i < ewl->nwins; i++)
      {
 	ewin = ewl->list[i];
-	printf(" %2d: %#10lx %#10lx %d %d %s\n", i, ewin->win, ewin->client.win,
-	       ewin->desktop, (ewin->floating) ? 999 : ewin->layer,
-	       EwinGetTitle(ewin));
+	Eprintf(" %2d: %#10lx %#10lx %d %d %s\n", i, ewin->win,
+		ewin->client.win, ewin->desktop,
+		(ewin->floating) ? 999 : ewin->layer, EwinGetTitle(ewin));
      }
 }
 #else
