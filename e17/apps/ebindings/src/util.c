@@ -262,7 +262,7 @@ write_emenu_to_db_with_ewd_list(E_DB_File * db, Ewd_List * l, int menu_level)
            e_db_str_set(db, buf, e->exec);
            sprintf(buf, "/menu/%i/%i/text", menu_level, i);
            e_db_str_set(db, buf, e->text);
-           if (e->icon)
+           if (e->icon && (strlen(e->icon) > 0))
            {
               sprintf(buf, "/menu/%i/%i/icon", menu_level, i);
               e_db_str_set(db, buf, e->icon);
@@ -276,7 +276,7 @@ write_emenu_to_db_with_ewd_list(E_DB_File * db, Ewd_List * l, int menu_level)
            sprintf(buf, "/menu/%i/%i/submenu", menu_level, i);
            e_db_int_set(db, buf, ++menu_count);
 
-           if (e->icon)
+           if (e->icon && (strlen(e->icon) > 0))
            {
               sprintf(buf, "/menu/%i/%i/icon", menu_level, i);
               e_db_str_set(db, buf, e->icon);
@@ -293,7 +293,7 @@ write_emenu_to_db_with_ewd_list(E_DB_File * db, Ewd_List * l, int menu_level)
            e_db_str_set(db, buf, e->exec);
            sprintf(buf, "/menu/%i/%i/text", menu_level, i);
            e_db_str_set(db, buf, e->text);
-           if (e->icon)
+           if (e->icon && (strlen(e->icon) > 0))
            {
               sprintf(buf, "/menu/%i/%i/icon", menu_level, i);
               e_db_str_set(db, buf, e->icon);
