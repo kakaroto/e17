@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!/usr/bin/perl -w
 #
 # ciabot -- Mail a CVS log message to a given address, for the purposes of CIA
 #
@@ -11,18 +11,25 @@
 # the terms of the GNU General Public License version 2, as published by the
 # Free Software Foundation.
 #
+# The master location of this file is
+# http://pasky.ji.cz/~pasky/dev/cvs/ciabot.pl.
+#
 # This program is designed to run from the loginfo CVS administration file. It
 # takes a log message, massaging it and mailing it to the address given below.
 #
 # Its record in the loginfo file should look like:
 #
-#       ALL        $CVSROOT/CVSROOT/ciabot.pl %s $USER
+#       ALL        $CVSROOT/CVSROOT/ciabot.pl %s $USER project from_email dest_email
 #
-
+# Note that the last three parameters are optional, you can alternatively change
+# the defaults below in the configuration section.
+#
+# $Id$
 
 use strict;
-use vars qw ($project $from_email $dest_email $max_lines $sync_delay
-		$commit_template $branch_template $trimmed_template);
+use vars qw ($project $from_email $dest_email @sendmail $max_lines $max_files
+		$sync_delay $xml $commit_template $branch_template
+		$trimmed_template);
 
 
 
@@ -33,20 +40,33 @@ use vars qw ($project $from_email $dest_email $max_lines $sync_delay
 $project = 'e';
 
 # The from address in the generated mails.
-$from_email = 'info@enlightenment.org';
+$from_email = 'enlightenment-cvs@lists.sourceforge.net';
 
 # Mail all reports to this address.
 $dest_email = 'commits@picogui.org';
 
+# Path to your sendmail binary. If you have it at a different place (and
+# outside of $PATH), add your location at the start of the list. By all means
+# keep the trailing empty string in the array.
+@sendmail = ('sendmail', '/usr/lib/sendmail', '/usr/sbin/sendmail', '');
+
 # The maximal number of lines the log message should have.
 $max_lines = 6;
+
+# Number of files to show at once before an abbreviation (m files in n dirs) is
+# used.
+$max_files = 2;
 
 # Number of seconds to wait for possible concurrent instances. CVS calls up
 # this script for each involved directory separately and this is the sync
 # delay. 5s looks as a safe value, but feel free to increase if you are running
 # this on a slower (or overloaded) machine or if you have really a lot of
 # directories.
-$sync_delay = 20;
+$sync_delay = 5;
+
+# Shall we use XML format for the commit messages. Note that this is
+# unsupported by the server for now, thus you do not want to do it.
+$xml = 0;
 
 # The template string describing how the commit message should look like.
 # Expansions:
@@ -79,8 +99,8 @@ $trimmed_template = '(log message trimmed)';
 use vars qw ($user $module $tag @files $logmsg);
 
 my @dir; # This array stores all the affected directories
-my @ci;  # This array is mapped to the @dir array and contains files affected
-         # in each directory
+my @dirfiles;  # This array is mapped to the @dir array and contains files
+               # affected in each directory
 my $logmsg_lines;
 
 
@@ -91,9 +111,12 @@ my $logmsg_lines;
 # These arguments are from %s; first the relative path in the repository
 # and then the list of files modified.
 
-@files = split (' ', $ARGV[0]);
+@files = split (' ', ($ARGV[0] or ''));
 $dir[0] = shift @files or die "$0: no directory specified\n";
-$ci[0] = "@files" or die "$0: no files specified\n";
+$dirfiles[0] = "@files" or die "$0: no files specified\n";
+
+
+# Guess module name.
 
 $module = $dir[0]; $module =~ s#/.*##;
 
@@ -101,6 +124,13 @@ $module = $dir[0]; $module =~ s#/.*##;
 # Figure out who is doing the update.
 
 $user = $ARGV[1];
+
+
+# Use the optional parameters, if supplied.
+
+$project = $ARGV[2] if $ARGV[2];
+$from_email = $ARGV[3] if $ARGV[3];
+$dest_email = $ARGV[4] if $ARGV[4];
 
 
 # Parse stdin (what's interesting is the tag and log message)
@@ -136,7 +166,7 @@ if (-f $syncfile) {
   # first ones. So let's just dump what we know and exit.
 
   open(FF, ">>$syncfile") or die "aieee... can't log, can't log! $syncfile blocked!";
-  print FF "$ci[0]!@!$dir[0]\n";
+  print FF "$dirfiles[0]!@!$dir[0]\n";
   close(FF);
   exit;
 
@@ -154,11 +184,11 @@ if (-f $syncfile) {
   sleep($sync_delay);
 
   open(FF, $syncfile);
-  my ($i) = 1;
+  my ($dirnum) = 1; # 0 is the one we got triggerred for
   while (<FF>) {
     chomp;
-    ($ci[$i], $dir[$i]) = split(/!@!/);
-    $i++;
+    ($dirfiles[$dirnum], $dir[$dirnum]) = split(/!@!/);
+    $dirnum++;
   }
   close(FF);
 
@@ -172,44 +202,96 @@ if (-f $syncfile) {
 
 # Open our mail program
 
-open (MAIL, '| /usr/lib/sendmail -t -oi -oem')
-    or die "$0: cannot fork sendmail: $!\n";
+foreach my $sendmail (@sendmail) {
+  die "$0: cannot fork sendmail: $!\n" unless ($sendmail);
+  open (MAIL, "| $sendmail -t -oi -oem") and last;
+}
 
 
 # The mail header
 
+my $subject;
+$subject = "Announce $project";
+my $ctype;
+$ctype = 'text/' . ($xml ? 'xml' : 'plain');
+
 print MAIL <<EOM;
 From: $from_email
 To: $dest_email
-Content-type: text/plain
-Subject: Announce $project
+Content-type: $ctype
+Subject: $subject
 
 EOM
 
 
+# Skip all this nonsense if we're doing XML output.
+
+if ($xml) {
+  # TODO: DTD
+  print MAIL "<commit>\n";
+  print MAIL " <author>$user</author>\n";
+  print MAIL " <module>$module</module>\n";
+  print MAIL " <branch>$tag</branch>\n" if ($tag);
+  print MAIL " <objects>\n";
+
+  for (my $dirnum = 0; $dirnum < @dir; $dirnum++) {
+    map {
+      $dir[$dirnum] . '/' . $_;
+      s/ /&nbsp;/g;
+      s/</&lt;/g;
+      s/>/&gt;/g;
+      print "  <file>$_</file>\n";
+    } split(/ /, $dirfiles[$dirnum]);
+  }
+
+  print MAIL " </objects>\n";
+  print MAIL " <message>$logmsg</message>\n";
+  print MAIL "</commit>\n";
+
+  goto body_finished;
+}
+
+
 # Compute the longest common path, plus make up the file and directory count
 
-my (@commondir, $files, $file, $i);
+my (@commondir, $files, @showfiles, $dirnum);
 
-for ($i = 0; $i < @dir; $i++) {
-  my ($dir) = $dir[$i];
+for ($dirnum = 0; $dirnum < @dir; $dirnum++) {
+  my ($dir) = $dir[$dirnum];
 
-  my (@cd) = split(/\//, $dir);
-  for (my $j = 0; $j < @cd; $j++) {
-    if (defined $commondir[$j] and $commondir[$j] ne $cd[$j]) {
-      splice(@commondir, $j);
+  # Update the @commondir array...
+
+  my (@currdir) = split(/\//, $dir);
+  for (my $cdirnum = 0; $cdirnum < @currdir; $cdirnum++) {
+
+    # Cut the part which is not common(@commondir,@currdir)
+    if (defined $commondir[$cdirnum]
+        and $commondir[$cdirnum] ne $currdir[$cdirnum]) {
+      splice(@commondir, $cdirnum);
       last;
     }
-    if ($i == 0) {
-      $commondir[$j] = $cd[$j];
-    } elsif (not defined $commondir[$j]) {
+
+    if ($dirnum == 0) {
+      # This is our first run, fill @commondir with @currdir
+      $commondir[$cdirnum] = $currdir[$cdirnum];
+    } elsif (not defined $commondir[$cdirnum]) {
+      # @commondir is over, no need to go on and we can't make it longer,
+      # obviously (it would not be common w/ some of the previous dirs)
       last;
     }
   }
 
-  my (@cii) = split(/ /, $ci[$i]);
-  $files += @cii;
-  $file = $cii[0] if ($files == 1);
+  # Update the files count
+
+  my (@currdirfiles) = split(/ /, $dirfiles[$dirnum]);
+  $files += @currdirfiles;
+
+  # Fill @showfiles
+  for (my $toshowfiles = $max_files;
+       $toshowfiles > 0 and @currdirfiles;
+       $toshowfiles--) {
+    push(@showfiles, [ shift(@currdirfiles), \@currdir ]);
+  }
 }
 
 die "No files!" unless ($files > 0);
@@ -222,15 +304,33 @@ shift(@commondir); # Throw away the module name.
 
 my ($path) = join('/', @commondir);
 
+
 my ($filestr); # the file name or file count or whatever
-if ($files > 1) {
+
+if ($files > $max_files) {
+  # Too many files to show their full list
   $filestr = $files . ' files';
-  if ($i > 1) {
-    $filestr .= ' in ' . $i . ' dirs';
+  if ($dirnum > 1) {
+    $filestr .= ' in ' . $dirnum . ' dirs';
   }
+
 } else {
-  $filestr = $file;
+  # Show files list bravely
+  $filestr = '';
+  my @filestr;
+  while ($_ = shift(@showfiles)) {
+    my $filename = $_->[0];
+    my @currdir = @{$_->[1]};
+
+    # commondir will be already displayed (and module too)
+    splice(@currdir, 0, scalar(@commondir) + 1);
+    push(@currdir, '') if (@currdir); # trailing slash
+
+    push(@filestr, join('/', @currdir) . $filename);
+  }
+  $filestr = join(' ', @filestr);
 }
+
 
 my ($trimmedstr); # the trimmed string, if any at all
 if ($logmsg_lines > $max_lines) {
@@ -260,6 +360,8 @@ $bodystr =~ s/\%logmsg\%/$logmsg/g;
 
 print MAIL $bodystr."\n";
 
+
+body_finished:
 
 # Close the mail
 
