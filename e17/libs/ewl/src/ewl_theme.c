@@ -347,13 +347,10 @@ char *ewl_theme_data_str_get(Ewl_Widget * w, char *k)
 	if (ewl_config.theme.print_keys) 
 		printf("%s\n", key);
 
-
-	for (temp = key; temp && !ret; temp = strchr(temp, '/')) {
+	temp = key;
+	while (temp && !ret) {
 		if (w && w->theme)
 			ret = ecore_hash_get(w->theme, temp);
-
-		if (!ret && def_theme_data)
-			ret = ecore_hash_get(def_theme_data, temp);
 
 		if (!ret && ewl_config.theme.cache && cached_theme_data)
 			ret = ecore_hash_get(cached_theme_data, temp);
@@ -361,16 +358,24 @@ char *ewl_theme_data_str_get(Ewl_Widget * w, char *k)
 		if (!ret) {
 			ret = edje_file_data_get(theme_path, temp);
 
-			if (ret && ewl_config.theme.cache) {
-				if (!cached_theme_data)
-					cached_theme_data =
-						ecore_hash_new(ecore_str_hash,
-								ecore_str_compare);
-				ecore_hash_set(cached_theme_data, temp,
-						strdup(ret));
-			}
 		}
 		temp++;
+		temp = strchr(temp, '/');
+		if (!temp && w->parent) {
+			temp = key;
+			w = w->parent;
+		}
+	}
+
+	if (!ret && def_theme_data) {
+		ret = ecore_hash_get(def_theme_data, temp);
+
+		if (ret && ewl_config.theme.cache) {
+			if (!cached_theme_data)
+				cached_theme_data = ecore_hash_new(ecore_str_hash,
+							   ecore_str_compare);
+			ecore_hash_set(cached_theme_data, temp, strdup(ret));
+		}
 	}
 
 	DRETURN_PTR(ret, DLEVEL_STABLE);
