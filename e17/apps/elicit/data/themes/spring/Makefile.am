@@ -1,5 +1,3 @@
-SUBDIRS = img macros parts programs fonts
-
 THEME = spring
 EDC = $(THEME).edc
 EET = $(EDC:%.edc=%.eet)

@@ -9,8 +9,11 @@ elicit_SOURCES = \
         elicit.c Elicit.h \
         callbacks.c callbacks.h \
         util.c util.h \
+        swatches.c swatches.h \
+        shots.c shots.h \
+        themes.c themes.h \
         conf.c conf.h
 
 elicit_LDADD = @edje_libs@ @ecore_libs@ @edb_libs@ @evas_libs@ \
-@esmart_libs@ @imlib2_libs@ -lesmart_draggies
+@esmart_libs@ @imlib2_libs@ -lesmart_draggies -lesmart_container
 

@@ -3,7 +3,7 @@
 SUBDIRS = src data
 
 EXTRA_DIST = \
-	autogen.sh README AUTHORS COPYING
+	README AUTHORS COPYING
 
 MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess \
                        config.h.in config.sub configure install-sh \
@@ -12,5 +12,5 @@ MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess \
 
 dist-hook:
 	if test -d data; then \
-	  (cd $(srcdir); tar -cf - data) | (cd $(distdir); tar -xf -) \
+	  (cd $(srcdir); tar -cf - data) | (cd $(distdir); tar -xf -; rm -rf `find . -name CVS`) \
 	fi

@@ -1,8 +1,9 @@
 todo
 ----
-o use a config db to store:
-  - size
-  - zoom
-  - last color chosen
-  - theme to use
-  - anything else?
+  o fix scrollbar dragging when list of elts is smaller than height
+  o add support for horizontal scrollbars / swatch,shot lists
+  o get theme panel working
+  o add panels to spring theme
+  o don't allow blank space at bottom after deleting swatches/shots 
+    (scroll to end of list instead)
+  o document all the part names / signals necessary

@@ -8,6 +8,7 @@
 #include <Ecore_Config.h>
 #include <Edje.h>
 #include <Esmart/Esmart_Draggies.h>
+#include <Esmart/Esmart_Container.h>
 #include <X11/Xlib.h>
 #include <Imlib2.h>
 #include <stdlib.h>
@@ -20,10 +21,15 @@
 #define DATADIR PACKAGE_DATA_DIR
 
 typedef struct _Elicit Elicit;
+typedef struct _Elicit_Swatch Elicit_Swatch;
+typedef struct _Elicit_Shot Elicit_Shot;
 
 #include "callbacks.h"
 #include "util.h"
 #include "conf.h"
+#include "swatches.h"
+#include "shots.h"
+#include "themes.h"
 
 
 struct _Elicit
@@ -51,10 +57,35 @@ struct _Elicit
     int shooting;
     int changed;
     int changing;
+    int swatch_scrolling;
+    int shot_scrolling;
   } flags;
+
+  struct {
+    Evas_Object *cont;
+    double length;
+    int scrolling;
+  } swatches, shots, themes;
 
   Ecore_Timer *change_timer;
   char *change_sig;
+};
+
+struct _Elicit_Swatch
+{
+  Evas_Object *obj;
+  Evas_Object *rect;
+
+  char *name;
+  int r, g, b;
+};
+
+struct _Elicit_Shot
+{
+  Evas_Object *obj;
+  Evas_Object *shot;
+
+  char *name;
 };
 
 void elicit_ui_theme_set(Elicit *el, char *name, char *group);
