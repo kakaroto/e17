@@ -7,5 +7,6 @@ EXTRA_DIST = background-dark-green.png background-green.png \
 	set-button-normal.png small-text-button.png \
 	tracktor-sample-alive.png tracktor-sample-dead.png \
 	vol-display.png vol-label.png vol-minus-clicked.png \
-	vol-minus.png vol-plus-clicked.png vol-plus.png
+	vol-minus.png vol-plus-clicked.png vol-plus.png \
+	button-small-clicked.png button-small-normal.png
 
