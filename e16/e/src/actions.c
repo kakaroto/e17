@@ -842,6 +842,8 @@ doResizeH(void *params)
    ewin = mode.ewin = GetFocusEwin();
    if (!ewin)
       EDBUG_RETURN(0);
+   if (ewin->shaded)
+      EDBUG_RETURN(0);
    if (mode.resizemode > 0)
      {
 	FX_Pause();
@@ -888,6 +890,8 @@ doResizeV(void *params)
       HideSlideout(mode.slideout, mode.context_win);
    ewin = mode.ewin = GetFocusEwin();
    if (!ewin)
+      EDBUG_RETURN(0);
+   if (ewin->shaded)
       EDBUG_RETURN(0);
    if (mode.resizemode > 0)
      {
