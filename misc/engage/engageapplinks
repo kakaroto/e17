@@ -1,0 +1,16 @@
+#copy this to $HOME/.e/apps/engage/applinks
+
+#normal items (left hand side)
+#format is command|windowclass
+firefox &|Firefox-bin
+thunderbird &|Thunderbird-bin
+Eterm &|Eterm
+equate &|Equate
+gvim|Gvim
+gimp &|Gimp
+
+#dock right items
+#format is command|windowclass|iconname
+evidence ~/ &#|Home|folder
+evidence Desktop/Trash &#|Trash|trash
+xtrlock#|Lock Screen|lock

@@ -1,0 +1,14 @@
+# application mappings
+# format is windowclass|text|iconname
+Firefox-bin|Firefox|firefox
+Thunderbird-bin|Thunderbird|thunderbird
+Eterm|Eterm|term
+Equate|Equate|calc
+Gvim|Vim|vim
+Gimp|Gimp|gimp
+Gkrellm2|Gkrellm|sysmon
+Evidence|Evidence|folder
+XClock|Clock|clock
+kdesktop|KDesktop|desktop
+
+
