@@ -45,7 +45,7 @@ static equate_button basic_buttons[] = {
    {5, 2, 1, 1, "2", "2", (void *) calc_append, NULL},
    {5, 3, 1, 1, "3", "3", (void *) calc_append, NULL},
    {5, 4, 2, 1, "=", "=", (void *) calc_exec, NULL},
-//  {6, 1, 1, 1, "c", "c", (void *) calc_clear, NULL},
+/*  {6, 1, 1, 1, "c", "c", (void *) calc_clear, NULL},*/
    {6, 1, 1, 2, "0", "0", (void *) calc_append, NULL},
    {6, 3, 1, 1, ".", ".", (void *) calc_append, NULL},
 };
@@ -212,7 +212,6 @@ init_gui(Equate * equate, int argc, char **argv)
       calc_mode = equate->conf.mode;
       switch (equate->conf.type) {
       case EDJE:
-         //fprintf(stderr, "%s\n", equate->conf.path);
          if (ecore_init()) {
             ecore_app_args_set(argc, (const char **) argv);
             equate_edje_init(equate);

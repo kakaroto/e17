@@ -12,7 +12,7 @@ typedef enum {
    EDJE
 } UI;
 
-// needed 'cos generated h files suck
+/* needed 'cos generated h files suck */
 double          yyresult(void);
 
 void            update_display(char *text);
