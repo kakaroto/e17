@@ -1000,59 +1000,7 @@ HandleCirculate(XEvent * ev)
 void
 HandleReparent(XEvent * ev)
 {
-   Window              par;
-   EWin               *ewin, *ewin2;
-   void              **lst;
-   int                 i, num, found = 0;
-
    EDBUG(5, "HandleReparent");
-   par = ev->xreparent.window;
-   EDBUG_RETURN_;
-   ewin = FindItem(NULL, ev->xreparent.window, LIST_FINDBY_ID, LIST_TYPE_EWIN);
-   if (!ewin)
-      EDBUG_RETURN_;
-   lst = ListItemType(&num, LIST_TYPE_EWIN);
-   if ((lst) && (num > 0))
-     {
-	for (i = 0; i < num; i++)
-	  {
-	     ewin2 = (EWin *) lst[i];
-	     if (ewin2->win == ev->xreparent.parent)
-		found = 1;
-	  }
-     }
-   if (lst)
-      Efree(lst);
-   if (!found)
-     {
-	ewin =
-	   RemoveItem(NULL, ev->xreparent.window, LIST_FINDBY_ID,
-		      LIST_TYPE_EWIN);
-	if (ewin)
-	  {
-	     if (ewin == mode.ewin)
-	       {
-		  switch (mode.mode)
-		    {
-		    case MODE_RESIZE:
-		    case MODE_RESIZE_H:
-		    case MODE_RESIZE_V:
-		       doResizeEnd(NULL);
-		       break;
-		    case MODE_MOVE:
-		       doMoveEnd(NULL);
-		       break;
-		    default:
-		       break;
-		    }
-	       }
-	     ewin->client.win = 0;
-	     if ((mode.slideout) && (ewin == mode.ewin))
-		HideSlideout(mode.slideout, mode.context_win);
-	     FreeEwin(ewin);
-	     HintsSetClientList();
-	  }
-     }
    EDBUG_RETURN_;
 }
 
