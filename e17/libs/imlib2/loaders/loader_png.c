@@ -252,7 +252,7 @@ save(ImlibImage * im, ImlibProgressFunction progress, char progress_granularity)
    int                 pl = 0;
    char                pper = 0;
    ImlibImageTag      *tag;
-   int                 quality = 75, compression = 3;
+   int                 quality = 75, compression = 3, num_passes = 1, pass;
 
    f = fopen(im->real_file, "wb");
    if (!f)
@@ -277,11 +277,21 @@ save(ImlibImage * im, ImlibProgressFunction progress, char progress_granularity)
         png_destroy_info_struct(png_ptr, (png_infopp) & info_ptr);
         return 0;
      }
+
+   /* check whether we should use interlacing */
+   if ((tag = __imlib_GetTag(im, "interlacing")) && tag->val)
+     {
+#ifdef PNG_WRITE_INTERLACING_SUPPORTED
+	  png_ptr->interlaced = PNG_INTERLACE_ADAM7;
+	  num_passes = png_set_interlace_handling(png_ptr);
+#endif
+     }
+   
    png_init_io(png_ptr, f);
    if (im->flags & F_HAS_ALPHA)
      {
         png_set_IHDR(png_ptr, info_ptr, im->w, im->h, 8,
-                     PNG_COLOR_TYPE_RGB_ALPHA, PNG_INTERLACE_NONE,
+                     PNG_COLOR_TYPE_RGB_ALPHA, png_ptr->interlaced,
                      PNG_COMPRESSION_TYPE_BASE, PNG_FILTER_TYPE_BASE);
 #ifdef WORDS_BIGENDIAN
         png_set_swap_alpha(png_ptr);
@@ -292,7 +302,7 @@ save(ImlibImage * im, ImlibProgressFunction progress, char progress_granularity)
    else
      {
         png_set_IHDR(png_ptr, info_ptr, im->w, im->h, 8, PNG_COLOR_TYPE_RGB,
-                     PNG_INTERLACE_NONE, PNG_COMPRESSION_TYPE_BASE,
+                     png_ptr->interlaced, PNG_COMPRESSION_TYPE_BASE,
                      PNG_FILTER_TYPE_BASE);
         data = malloc(im->w * 3 * sizeof(char));
      }
@@ -339,49 +349,53 @@ save(ImlibImage * im, ImlibProgressFunction progress, char progress_granularity)
    png_set_shift(png_ptr, &sig_bit);
    png_set_packing(png_ptr);
 
-   ptr = im->data;
-   for (y = 0; y < im->h; y++)
+   for (pass = 0; pass < num_passes; pass++)
      {
-        if (im->flags & F_HAS_ALPHA)
-           row_ptr = (png_bytep) ptr;
-        else
-          {
-             for (j = 0, x = 0; x < im->w; x++)
-               {
-                  data[j++] = (ptr[x] >> 16) & 0xff;
-                  data[j++] = (ptr[x] >> 8) & 0xff;
-                  data[j++] = (ptr[x]) & 0xff;
-               }
-             row_ptr = (png_bytep) data;
-          }
-        png_write_rows(png_ptr, &row_ptr, 1);
-        if (progress)
-          {
-             char                per;
-             int                 l;
+      ptr = im->data;
 
-             per = (char)((100 * y) / im->h);
-             if ((per - pper) >= progress_granularity)
-               {
-                  l = y - pl;
-                  if (!progress(im, per, 0, (y - l), im->w, l))
-                    {
-                       if (data)
-                          free(data);
-                       png_write_end(png_ptr, info_ptr);
-                       png_destroy_write_struct(&png_ptr,
-                                                (png_infopp) & info_ptr);
-                       png_destroy_info_struct(png_ptr,
-                                               (png_infopp) & info_ptr);
-                       fclose(f);
-                       return 2;
-                    }
-                  pper = per;
-                  pl = y;
-               }
-          }
-        ptr += im->w;
-     }
+      for (y = 0; y < im->h; y++)
+        {
+           if (im->flags & F_HAS_ALPHA)
+              row_ptr = (png_bytep) ptr;
+           else
+             {
+                for (j = 0, x = 0; x < im->w; x++)
+                  {
+                     data[j++] = (ptr[x] >> 16) & 0xff;
+                     data[j++] = (ptr[x] >> 8) & 0xff;
+                     data[j++] = (ptr[x]) & 0xff;
+                  }
+                row_ptr = (png_bytep) data;
+             }
+           png_write_rows(png_ptr, &row_ptr, 1);
+           if (progress)
+             {
+                char                per;
+                int                 l;
+
+                per = 100 * (pass + y / (float) im->h) / num_passes;
+                if ((per - pper) >= progress_granularity)
+                  {
+                     l = y - pl;
+                     if (!progress(im, per, 0, (y - l), im->w, l))
+                       {
+                          if (data)
+                             free(data);
+                          png_write_end(png_ptr, info_ptr);
+                          png_destroy_write_struct(&png_ptr,
+                                                   (png_infopp) & info_ptr);
+                          png_destroy_info_struct(png_ptr,
+                                                  (png_infopp) & info_ptr);
+                          fclose(f);
+                          return 2;
+                       }
+                     pper = per;
+                     pl = y;
+                  }
+             }
+           ptr += im->w;
+        }
+    }
    if (data)
       free(data);
    png_write_end(png_ptr, info_ptr);
