@@ -2007,8 +2007,8 @@ imlib_load_font(const char *font_name)
 
 	if (!ttfname || !xfontsetname )
 	  {
-	    free(ttfname);
-	    free(xfontsetname);
+	    if (ttfname) free(ttfname);
+	    if (xfontsetname) free(xfontsetname);
 	    return NULL;
 	  }
 
@@ -2058,8 +2058,8 @@ imlib_load_font(const char *font_name)
 	if (fn->type == IMLIB_FONT_TYPE_TTF_X)
 	  fn->xf.ttffont->hdr.references++;
 
-	free(ttfname);
-	free(xfontsetname);
+	if (ttfname) free(ttfname);
+	if (xfontsetname) free(xfontsetname);
 
 	return fn;
      }
@@ -2079,8 +2079,8 @@ imlib_load_font(const char *font_name)
 	    /* error */
 	    if (!xf)
 	      {
-		free(ttfname);
-		free(xfontsetname);
+		if (ttfname) free(ttfname);
+		if (xfontsetname) free(xfontsetname);
 		return NULL;
 	      }
 	  }
