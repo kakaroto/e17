@@ -86,6 +86,16 @@ ToolTipTimeout(int val, void *data)
 }
 
 void
+TooltipsHandleEvent(void)
+{
+   if (ttip)
+      HideToolTip(ttip);
+   RemoveTimerEvent("TOOLTIP_TIMEOUT");
+   if (mode.tooltips)
+      DoIn("TOOLTIP_TIMEOUT", mode.tiptime, ToolTipTimeout, 0, NULL);
+}
+
+void
 HandleClientMessage(XEvent * ev)
 {
    EDBUG(5, "HandleClientMessage");
@@ -215,12 +225,7 @@ HandleMotion(XEvent * ev)
 
    EDBUG(5, "HandleMotion");
 
-   if (ttip)
-      HideToolTip(ttip);
-   RemoveTimerEvent("TOOLTIP_TIMEOUT");
-   if (mode.tooltips)
-      DoIn("TOOLTIP_TIMEOUT", mode.tiptime, ToolTipTimeout, 0, NULL);
-
+   TooltipsHandleEvent();
    EdgeHandleMotion(ev);
    mode.px = mode.x;
    mode.py = mode.y;
@@ -1389,11 +1394,7 @@ HandleMouseDown(XEvent * ev)
 	  }
      }
 
-   if (ttip)
-      HideToolTip(ttip);
-   RemoveTimerEvent("TOOLTIP_TIMEOUT");
-   if (mode.tooltips)
-      DoIn("TOOLTIP_TIMEOUT", mode.tiptime, ToolTipTimeout, 0, NULL);
+   TooltipsHandleEvent();
 
    if ((((float)(ev->xbutton.time - last_time) / 1000) <
 	mode_double_click_time)
@@ -1546,13 +1547,9 @@ HandleMouseUp(XEvent * ev)
 	   EDBUG_RETURN_;
      }
 
-   if (ttip)
-      HideToolTip(ttip);
-   RemoveTimerEvent("TOOLTIP_TIMEOUT");
-   if (mode.tooltips)
-      DoIn("TOOLTIP_TIMEOUT", mode.tiptime, ToolTipTimeout, 0, NULL);
-
+   TooltipsHandleEvent();
    UnGrabTheButtons();
+
    win2 = WindowAtXY(ev->xbutton.x_root, ev->xbutton.y_root);
    win = ev->xbutton.window;
 
@@ -1775,12 +1772,7 @@ HandleMouseIn(XEvent * ev)
 
    EDBUG(5, "HandleMouseIn");
 
-   if (ttip)
-      HideToolTip(ttip);
-   RemoveTimerEvent("TOOLTIP_TIMEOUT");
-   if (mode.tooltips)
-      DoIn("TOOLTIP_TIMEOUT", mode.tiptime, ToolTipTimeout, 0, NULL);
-
+   TooltipsHandleEvent();
    EdgeHandleEnter(ev);
    win = ev->xcrossing.window;
    mode.context_win = win;
@@ -1842,11 +1834,7 @@ HandleMouseOut(XEvent * ev)
 
    EDBUG(5, "HandleMouseOut");
 
-   if (ttip)
-      HideToolTip(ttip);
-   RemoveTimerEvent("TOOLTIP_TIMEOUT");
-   if (mode.tooltips)
-      DoIn("TOOLTIP_TIMEOUT", mode.tiptime, ToolTipTimeout, 0, NULL);
+   TooltipsHandleEvent();
 
    EdgeHandleLeave(ev);
 
