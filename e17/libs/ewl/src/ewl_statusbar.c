@@ -89,6 +89,162 @@ int ewl_statusbar_init(Ewl_Statusbar *sb)
 }
 
 /**
+ * @param sb: The statusbar to work on
+ * @return Returns no value
+ * @brief hide the box on the left of the status bar
+ */
+void ewl_statusbar_left_hide(Ewl_Statusbar *sb)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("sb", sb);
+
+	ewl_container_child_remove(EWL_CONTAINER(sb), sb->left);
+	ewl_widget_hide(sb->left);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param sb: The statusbar to work on
+ * @return Returns no value
+ * @brief show the box on the left of the status bar
+ */
+void ewl_statsbar_left_show(Ewl_Statusbar *sb)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("sb", sb);
+
+	ewl_container_child_prepend(EWL_CONTAINER(sb), sb->left);
+	ewl_widget_show(sb->left);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param sb: The statusbar to work on
+ * @return Returns no value
+ * @brief hide the box on the right of the status bar
+ */
+void ewl_statusbar_right_hide(Ewl_Statusbar *sb)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("sb", sb);
+
+	ewl_container_child_remove(EWL_CONTAINER(sb), sb->right);
+	ewl_widget_hide(sb->right);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param sb: The statusbar to work on
+ * @return Returns no value
+ * @brief show the box on the right of the status bar
+ */
+void ewl_statusbar_right_show(Ewl_Statusbar *sb)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("sb", sb);
+
+	ewl_container_child_append(EWL_CONTAINER(sb), sb->right);
+	ewl_widget_show(sb->right);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param sb: The status bar to work on
+ * @param pos: The side of the statusbar to set active either
+ * EWL_POSITION_LEFT or EWL_POSITION_RIGHT
+ * @return Returns no value
+ * @brief Sets the active statusbar container
+ */
+void ewl_statusbar_active_set(Ewl_Statusbar *sb, Ewl_Position pos)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("sb", sb);
+
+	if ((pos == EWL_POSITION_LEFT) || (pos == EWL_POSITION_TOP))
+		ewl_container_redirect_set(EWL_CONTAINER(sb), EWL_CONTAINER(sb->left));
+	else
+		ewl_container_redirect_set(EWL_CONTAINER(sb), EWL_CONTAINER(sb->right));
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+					  
+/**
+ * @param sb: The statusbar to operate on
+ * @param w: The widget to add to the container
+ * @return Returns no value
+ * @brief pack the given widget @a w into the statusbar @a sb
+ * into right of the left box.
+ */
+void ewl_statusbar_left_append(Ewl_Statusbar *sb, Ewl_Widget *w)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("sb", sb);
+	DCHECK_PARAM_PTR("w", w);
+
+	ewl_container_child_append(EWL_CONTAINER(sb->left), w);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param sb: The statusbar to operate on
+ * @param w: The widget to add to the container
+ * @return Returns no value
+ * @brief pack the given widget @a w into the statusbar @a sb
+ * into the left of the left box
+ */
+void ewl_statusbar_left_prepend(Ewl_Statusbar *sb, Ewl_Widget *w)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("sb", sb);
+	DCHECK_PARAM_PTR("w", w);
+
+	ewl_container_child_prepend(EWL_CONTAINER(sb->left), w);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param sb: The statusbar to operate on
+ * @param w: The widget to add to the container
+ * @return Returns no value
+ * @brief pack the given widget @a w into the statusbar @a sb
+ * into the right of the right box
+ */
+void ewl_statusbar_right_append(Ewl_Statusbar *sb, Ewl_Widget *w)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("sb", sb);
+	DCHECK_PARAM_PTR("w", w);
+
+	ewl_container_child_append(EWL_CONTAINER(sb->right), w);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param sb: The statusbar to operate on
+ * @param w: The widget to add to the container
+ * @return Returns no value
+ * @brief pack the given widget @a w into the statusbar
+ * @a sb into the left of the right box
+ */
+void ewl_statusbar_right_prepend(Ewl_Statusbar *sb, Ewl_Widget *w)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("sb", sb);
+	DCHECK_PARAM_PTR("w", w);
+
+	ewl_container_child_prepend(EWL_CONTAINER(sb->right), w);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
  * @param sb: the statusbar to add the message too
  * @param txt: the status message to display
  * @return Returns no value

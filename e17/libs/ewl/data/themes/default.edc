@@ -100,7 +100,7 @@ data {
 }
 
 collections {
-#include "default/bits/tree-row.edc"
+##include "default/bits/tree-row.edc"
 #include "default/bits/button-groups.edc"
 #include "default/bits/cell-groups.edc"
 #include "default/bits/checkbox-groups.edc"

@@ -43,7 +43,7 @@ ewl_test_SOURCES		=	ewl_test.h \
 					ewl_tree_test.c
 
 # ewl_test_LDFLAGS		=	
-ewl_test_LDADD			=	$(top_builddir)/src/libewl.la @edje_libs@ @ecore_libs@ @evas_libs@ @emotion_libs@ -lMallocDebug
+ewl_test_LDADD			=	$(top_builddir)/src/libewl.la @edje_libs@ @ecore_libs@ @evas_libs@ @emotion_libs@ 
 
 ewl_embed_test_DEPENDENCIES	=	$(top_builddir)/src/libewl.la
 ewl_embed_test_SOURCES		=	ewl_embed_test.c
