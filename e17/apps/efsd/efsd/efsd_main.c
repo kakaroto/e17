@@ -646,7 +646,8 @@ main_handle_connections(void)
   fd_set          fdwset;
   fd_set         *fdwset_ptr = NULL;
   char            have_fam_thread = FALSE;
-
+  struct timeval  tv;
+   
   D_ENTER;
 
   ev_q = efsd_queue_new();
@@ -744,7 +745,9 @@ main_handle_connections(void)
          command, or queued events can now be sent to formerly
          clogged clients ... no timeout.
       */
-      while ((n = select(fdsize+1, &fdrset, fdwset_ptr, NULL, NULL)) < 0)
+      tv.tv_sec  = 1;
+      tv.tv_usec = 0;       
+      while ((n = select(fdsize+1, &fdrset, fdwset_ptr, NULL, &tv)) < 0)
 	{
 	  if (errno == EINTR)
 	    {
@@ -762,7 +765,12 @@ main_handle_connections(void)
 	      fprintf(stderr, __FUNCTION__ ": select error -- exiting.\n");
 	      exit(-1);
 	    }
+	  tv.tv_sec  = 1;
+	  tv.tv_usec = 0;
 	}
+       /* if we timed out - ie 0 fd's available */
+       if (n == 0)
+	 efsd_meta_idle();
 
       /* Check if anything is queued to be written
          to the writable fds ... */

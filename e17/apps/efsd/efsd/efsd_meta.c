@@ -42,7 +42,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <efsd_statcache.h>
 #include <efsd_lock.h>
 
-static EfsdLock       *meta_lock;
+EfsdLock              *meta_lock;
 
 static unsigned int    meta_hash_filename(char *filename);
 static int             meta_db_get_file(char *filename, char *dbfile, int len, int create);
@@ -76,7 +76,7 @@ static int
 meta_db_get_file(char *filename, char *dbfile, int len, int create)
 {
   char           s[MAXPATHLEN];
-  char          *path, *file;
+  char          *path, *file, *newfilename, *dir;
   int            use_home_dir = FALSE;
   unsigned int   h;
   struct stat    st;
@@ -88,17 +88,21 @@ meta_db_get_file(char *filename, char *dbfile, int len, int create)
       errno = ENOENT;
       D_RETURN_(FALSE);
     }
-  
-  path = filename;
 
-  file = strrchr(filename, '/');
+  newfilename = strdup(filename);
+  /* eww - changed code that modified the filename buffer passed into this */
+  /* func itself */
+  path = newfilename;
+
+  file = strrchr(newfilename, '/');
   if (!file)
     {
       /* Something's wrong -- this is supposed to be
 	 a chanonical path ...
       */
-      D("Couldn't find '/' in filename '%s'\n", filename);
+      D("Couldn't find '/' in filename '%s'\n", newfilename);
       errno = EINVAL;
+      if (newfilename) free(newfilename);
       D_RETURN_(FALSE);
     }
 
@@ -114,6 +118,8 @@ meta_db_get_file(char *filename, char *dbfile, int len, int create)
     {
       snprintf(s, MAXPATHLEN, "%s/%s", path, EFSD_META_DIR_NAME);
     }
+   
+  dir = strdup(path);
 
 
   if (efsd_misc_file_exists(s))
@@ -128,7 +134,8 @@ meta_db_get_file(char *filename, char *dbfile, int len, int create)
     {
       if (!create)
 	{
-	  *(file-1) = '/';
+	  if (newfilename) free(newfilename);
+	  if (dir) free(dir);
 	  D_RETURN_(FALSE);
 	}
 
@@ -173,17 +180,18 @@ meta_db_get_file(char *filename, char *dbfile, int len, int create)
 
   if (use_home_dir)
     {
-      h = meta_hash_filename(file);
+      h = meta_hash_filename(dir);
       snprintf(dbfile, len, "%s/efsd_meta_%u.db",
 	       efsd_misc_get_user_dir(), h);
     }
   else
     {
-      h = meta_hash_filename(filename);
-      snprintf(dbfile, len, "%s/efsd_meta_%u.db",
-	       s, h);
+      snprintf(dbfile, len, "%s/efsd_meta.db",
+	       s);
     }  
 
+  if (dir) free(dir);
+  if (newfilename) free(newfilename);
   D_RETURN_(TRUE);
 }
 
@@ -192,7 +200,9 @@ static int
 meta_db_set_data(EfsdSetMetadataCmd *esmc, char *dbfile)
 {
   E_DB_File *db;
-
+  char       s[MAXPATHLEN];
+  char      *last_slash;
+   
   D_ENTER;
 
   efsd_lock_get_write_access(meta_lock);
@@ -203,32 +213,45 @@ meta_db_set_data(EfsdSetMetadataCmd *esmc, char *dbfile)
       D_RETURN_(0);
     }
 
+  last_slash = strrchr(esmc->file, '/');
+  if (last_slash)
+    snprintf(s, sizeof(s), ".meta/%s/%s", last_slash + 1, esmc->key);
+  else
+    snprintf(s, sizeof(s), ".meta/%s/%s", esmc->file, esmc->key);
   switch (esmc->datatype)
     {
     case EFSD_INT:
       D("Setting metadata key '%s' to int value %i\n",
 	 esmc->key, *((int*)esmc->data));
-      e_db_int_set(db, esmc->key, *((int*)esmc->data));
+      e_db_int_set(db, s, *((int*)esmc->data));
       break;
     case EFSD_FLOAT:
-      e_db_float_set(db, esmc->key, *((float*)esmc->data));
+      e_db_float_set(db, s, *((float*)esmc->data));
       break;
     case EFSD_STRING:
-      e_db_str_set(db, esmc->key, esmc->data);
+      e_db_str_set(db, s, esmc->data);
       break;
     case EFSD_RAW:
-      e_db_data_set(db, esmc->key, esmc->data, esmc->data_len);
+      e_db_data_set(db, s, esmc->data, esmc->data_len);
       break;
     default:
       D("Unknown data type!\n");
       e_db_close(db);
-      e_db_flush();
+/* oooooh - no no. we can be much better here - don't flush. we don't really */
+/* need to as well - wel will likely be the only opener of this meta db */
+/* since we are the file system daemon... notice the MASSIVE speedups */
+/* in accessing metadata for read/write... */
+/*      e_db_flush(); */
       efsd_lock_release_write_access(meta_lock);
       D_RETURN_(0);
     }
 
   e_db_close(db);
-  e_db_flush();
+/* oooooh - no no. we can be much better here - don't flush. we don't really */
+/* need to as well - wel will likely be the only opener of this meta db */
+/* since we are the file system daemon... notice the MASSIVE speedups */
+/* in accessing metadata for read/write... */
+/* e_db_flush(); */
   efsd_lock_release_write_access(meta_lock);
 
   D_RETURN_(1);
@@ -242,6 +265,8 @@ meta_db_get_data(EfsdGetMetadataCmd *egmc,
   void        *result = NULL;
   int          success = FALSE;
   E_DB_File   *db;
+  char         s[MAXPATHLEN];
+  char        *last_slash;
 
   D_ENTER;
   D("Getting metadata %s from %s\n",
@@ -249,13 +274,21 @@ meta_db_get_data(EfsdGetMetadataCmd *egmc,
 
   efsd_lock_get_read_access(meta_lock);
 
-  if ( (db = e_db_open_read(dbfile)) == NULL)
+   /* changed this to open read/write - not harmful as we control */
+   /* the meta data entirely */
+  if ( (db = e_db_open(dbfile)) == NULL)
     {
       errno = ENODATA;
       efsd_lock_release_read_access(meta_lock);
       D_RETURN_(NULL);
     }
 
+  last_slash = strrchr(egmc->file, '/');
+  if (last_slash)
+    snprintf(s, sizeof(s), ".meta/%s/%s", last_slash + 1, egmc->key);
+  else
+    snprintf(s, sizeof(s), ".meta/%s/%s", egmc->file, egmc->key);
+   
   switch (egmc->datatype)
     {
     case EFSD_INT:
@@ -263,7 +296,7 @@ meta_db_get_data(EfsdGetMetadataCmd *egmc,
 	result = NEW(int);
 	*data_len = sizeof(int);
 
-	success = e_db_int_get(db, egmc->key, (int*)result);
+	success = e_db_int_get(db, s, (int*)result);
       }
       break;
     case EFSD_FLOAT:
@@ -271,12 +304,12 @@ meta_db_get_data(EfsdGetMetadataCmd *egmc,
 	result = NEW(float);
 	*data_len = sizeof(float);
 
-	success = e_db_float_get(db, egmc->key, (float*)result);
+	success = e_db_float_get(db, s, (float*)result);
       }
       break;
     case EFSD_STRING:
       {
-	result = e_db_str_get(db, egmc->key);
+	result = e_db_str_get(db, s);
 
 	if (result)
 	  {
@@ -289,7 +322,7 @@ meta_db_get_data(EfsdGetMetadataCmd *egmc,
       break;
     case EFSD_RAW:
       {
-	result = e_db_data_get(db, egmc->key, data_len);
+	result = e_db_data_get(db, s, data_len);
 	
 	if (result)
 	  success = TRUE;
@@ -306,7 +339,11 @@ meta_db_get_data(EfsdGetMetadataCmd *egmc,
     errno = ENODATA;
 
   e_db_close(db);
-  e_db_flush();
+/* oooooh - no no. we can be much better here - don't flush. we don't really */
+/* need to as well - wel will likely be the only opener of this meta db */
+/* since we are the file system daemon... notice the MASSIVE speedups */
+/* in accessing metadata for read/write... */
+/* e_db_flush(); */
   efsd_lock_release_read_access(meta_lock);
 
   if (!success)
@@ -393,3 +430,11 @@ efsd_meta_get_meta_file(char *filename, char *metafile, int len, int create)
   D_RETURN_(result);
 }
 
+
+void
+efsd_meta_idle(void)
+{
+   efsd_lock_get_write_access(meta_lock);
+   e_db_flush();
+   efsd_lock_release_write_access(meta_lock);
+}
