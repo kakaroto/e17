@@ -59,8 +59,6 @@ AH_VERBATIM([_BOOL], [
 #endif
 ])
 
-AH_TEMPLATE(HAVE_OPENSSL, [Have OpenSSL])
-
 AC_EXPAND_DIR(DATA_DIR, "$datadir/$PACKAGE")
 AC_DEFINE_UNQUOTED(DATA_DIR, "$DATA_DIR", [Directory to install data files in])
 
@@ -114,18 +112,6 @@ AC_PATH_GENERIC(edje, , ,
 AC_PATH_GENERIC(esmart, , ,
 	AC_MSG_ERROR(Cannot find esmart: Is esmart-config in path?))
 
-AC_ARG_ENABLE(openssl,
-	[  --enable-openssl        enable openssl support (default: autodetect)],
-	[have_openssl=$enableval], have_openssl=yes)
-
-if test x$have_openssl = xyes; then
-	AC_ECORE_CON_CHECK_OPENSSL(, have_openssl=no)
-fi
-
-if test x$have_openssl = xyes; then
-	AC_DEFINE(HAVE_OPENSSL)
-fi
-
 AC_CHECK_LIB(ltdl, lt_dlopen, ,
 	AC_MSG_ERROR(Cannot find libltdl))
 
@@ -167,9 +153,6 @@ echo "mbox..................: $build_mbox"
 echo "POP3..................: $build_pop3"
 echo "IMAP..................: $build_imap"
 echo "Sylpheed..............: $build_sylpheed"
-echo
-echo
-echo "OpenSSL support.......: $have_openssl"
 echo
 echo
 echo "$PACKAGE $VERSION will be installed in $prefix"

@@ -3,6 +3,10 @@ $Id$
 2005-01-30 Tilman Sauerbeck (tilman at code-monkey de)
         * src/plugins/sylpheed/sylpheed.c:
           Fixed the Sylpheed plugin, which was horribly broken
+        * configure.ac, m4/ac_ecore_con_check_openssl.m4,
+          src/plugins/pop3/pop3.c, src/plugins/imap/imap.c:
+          HAVE_ECORE_CON_OPENSSL was superseeded by
+          ecore_con_ssl_available_get()
 
 2005-01-29 Tilman Sauerbeck <tilman -at- code-monkey.de>
         * configure.ac, src/plugins/sylpheed:

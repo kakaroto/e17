@@ -170,10 +170,9 @@ static bool pop3_check (MailBox *mb)
 		return false;
 	}
 
-#ifdef HAVE_OPENSSL
-	if (mailbox_property_get (mb, "ssl"))
+	if (ecore_con_ssl_available_get () &&
+	    mailbox_property_get (mb, "ssl"))
 		type |= ECORE_CON_USE_SSL;
-#endif
 
 	server = ecore_con_server_connect (type, host, port, mb);
 
@@ -233,15 +232,15 @@ static bool pop3_load_config (MailBox *mb, E_DB_File *edb,
 	assert (edb);
 	assert (root);
 
-#ifdef HAVE_OPENSSL
-	/* check whether OpenSSL should be used */
-	snprintf (key, sizeof (key), "%s/ssl", root);
+	if (ecore_con_ssl_available_get ()) {
+		/* check whether OpenSSL should be used */
+		snprintf (key, sizeof (key), "%s/ssl", root);
 
-	if (!e_db_int_get (edb, key, &use_ssl))
-		use_ssl = 0;
+		if (!e_db_int_get (edb, key, &use_ssl))
+			use_ssl = 0;
 
-	mailbox_property_set (mb, "ssl", (int *) use_ssl);
-#endif
+		mailbox_property_set (mb, "ssl", (int *) use_ssl);
+	}
 
 	/* read server */
 	snprintf (key, sizeof (key), "%s/host", root);
