@@ -43,4 +43,4 @@ med_hide_commit_tool(void);
 void
 med_indicate_entries_dirty(void);
 
-#endif __EVASWIN_H__
+#endif /* __EVASWIN_H__ */
