@@ -1,5 +1,14 @@
 #include "term.h"
 
+struct winsize *get_font_dim(Term *term)
+{
+   static struct winsize w;
+   w.ws_row = term->tcanvas->rows;
+   w.ws_col = term->tcanvas->cols;
+   w.ws_xpixel = w.ws_ypixel = 0;
+   return &w;
+}
+
 int get_pty(Term *term)
 {
    /* do we need this here? */

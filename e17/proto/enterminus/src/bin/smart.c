@@ -2,24 +2,16 @@
 
 /* Evas Smart Object API Wrapping methods */
 
-/* move this elsewhere */
-struct winsize *get_font_dim(Term *term)
-{
-   static struct winsize w;
-   w.ws_row = term->tcanvas->rows;
-   w.ws_col = term->tcanvas->cols;
-   w.ws_xpixel = w.ws_ypixel = 0;
-   return &w;
-}
-
 static Evas_Smart *smart;
 
+/* instantiate a new terminal */
 Evas_Object *term_new(Evas *evas) {
    Evas_Object *term;
    term = evas_object_smart_add(evas, term_smart_get());
    return term;
 }
 
+/* knit smart object with its functions */
 Evas_Smart *term_smart_get() {   
    if(smart) return smart;
    smart = evas_smart_new ("term",
@@ -42,6 +34,7 @@ Evas_Smart *term_smart_get() {
    return smart;
 }
 
+/* add the term object */
 void term_smart_add(Evas_Object *o) {   
    Term *data;
    
@@ -50,6 +43,7 @@ void term_smart_add(Evas_Object *o) {
    evas_object_smart_data_set(o, data);
 }
 
+/* delete the term object */
 void term_smart_del(Evas_Object *o) {
 }
 

@@ -11,6 +11,11 @@
 #define COLOR7 250, 250, 250
 #define COLOR8 231, 105, 50
 
+/* set the bg */
+/* TODO: This should now be here, what we need to have is a rectangle
+ * that will simply capture keys. This should be set by the application
+ * that uses the smart object
+ */
 void term_term_bg_set(Term *term, char *img) {
 
    if(!term->bg) {
@@ -37,32 +42,42 @@ void term_redraw(void *data) {
    Evas_Object *ob;
    Term_EGlyph *gl;
    Term_TGlyph *tgl;   
-      
-   i2 = term->tcanvas->scroll_region_start;
    
+   i2 = term->tcanvas->scroll_region_start;
+
+   /* loop over all rows, see what has changed */
+   /* the general idea is to only inspect as many rows from the tcanvas
+    * as we have in the term->grid. We loop that man times, which is
+    * term->tcanvas->rows times, and look for changed flags in each row.
+    * Since i (0 -> rows) cant be used to subscript the current rows, we
+    * start it from scroll_region_start.
+    */
    for(i = 0; i < term->tcanvas->rows; i++) {
       if(term->tcanvas->changed_rows[i2] != 1) {
+	 /* unchanged row, increment i2 and continue */
 	 i2++;
 	 continue;
       }
-      /* printf("Rendering c-row %d  g-row %d\n",i2,i); */
+      
+      /* fetch the text glyph */
       for(j = 0; j < term->tcanvas->cols; j++) {
-	 tgl = &term->tcanvas->grid[j + 
-				    (term->tcanvas->cols * 
-				     (i2)
-				     )];	 
+	 tgl = &term->tcanvas->grid[j + (term->tcanvas->cols * i2)];	 
 	 if(tgl->changed != 1) {
+	    /* unchanged glyph, continue */
 	    continue;
 	 }
+	 /* unsure as to why this is here, I dont think we need it */
 	 if(tgl->c == '\033') {
 	    printf("Got escape in term_redraw()!\n");
 	    continue;
 	 }
 	 
+	 /* check if start pointer has gone past virtual scroll buffer */
+	 /* when we overflow, we store row numbers in ig */
 	 if(i + term->tcanvas->scroll_region_start <= (term->tcanvas->rows - 1)*term->tcanvas->scroll_size) {
 	    gl = &term->grid[j + (term->tcanvas->cols * i)];
 	 } else {
-	    printf("Overflowing: [cur_row=%d] [start: %d, end: %d] [ig=%d]\n",term->tcanvas->cur_row,term->tcanvas->scroll_region_start,term->tcanvas->scroll_region_end,ig);	    
+	    DPRINT((stderr,"Overflowing: [cur_row=%d] [start: %d, end: %d] [ig=%d]\n",term->tcanvas->cur_row,term->tcanvas->scroll_region_start,term->tcanvas->scroll_region_end,ig));
 	    gl = &term->grid[j + (term->tcanvas->cols * ig)];
 	 }
 	 
@@ -196,13 +211,14 @@ void term_add_rows(Term *term, int pos, int n) {
 }
 
 /* Save the current screen */
-void term_tcanvas_save(Term *term) {
+void term_tcanvas_save(Term *term) {   
 }
 
 /* Restore the last saved screen */
 void term_tcanvas_restore(Term *term) {
 }
 
+/* clear a certain part of the screen */
 void term_clear_area(Term *term, int x1, int y1, int x2, int y2) {
    int i, j;  
    Term_TGlyph *tgl;
@@ -225,76 +241,81 @@ void term_clear_area(Term *term, int x1, int y1, int x2, int y2) {
    }
 }
 
+/* scroll window / region upwards */
 void term_scroll_up(Term *term, int rows) {
 
    
    int i, i2, j;
    int x,y;
    Term_TGlyph *gl;   
+
+   if(term->tcanvas->scroll_in_region) {
+      /* TODO: implement this */
+      DPRINT((stderr,"Scrolling: in region\n"));
+   } else {
+      DPRINT((stderr,"Scrolling: window\n"));
+      /* Going past the virtual scroll buffer, we need to wrap  */
+      if(term->tcanvas->scroll_region_end + rows >
+	 (term->tcanvas->rows-1) * term->tcanvas->scroll_size) {
+	 DPRINT((stderr,"End gone past max scroll buffer, wrapping\n"));      
+	 term->tcanvas->scroll_region_end = rows - (((term->tcanvas->rows-1) * 
+						     term->tcanvas->scroll_size) -  term->tcanvas->scroll_region_end);
+	 /* we're going back to the top, clear the rows we want to overwrite */
+	 for(i = 0; i <= term->tcanvas->scroll_region_end; i++) {
+	    term->tcanvas->changed_rows[i] = 1;
+	    for(j = 0; j <= term->tcanvas->cols; j++) {
+	       gl = & term->tcanvas->grid[j + (term->tcanvas->cols * i)];
+	       gl->c = ' ';
+	       gl->changed = 1;
+	    }
+	 }
+      } else {
+	 /* normal scrolling */
+	 term->tcanvas->scroll_region_end+=rows;      
+      }
       
-   if(term->tcanvas->scroll_region_end + rows >
-      (term->tcanvas->rows-1) * term->tcanvas->scroll_size) {
-      printf("End gone past max scroll buffer, wrapping\n");                  
-      term->tcanvas->scroll_region_end = rows - (((term->tcanvas->rows-1) * 
-	term->tcanvas->scroll_size) -  term->tcanvas->scroll_region_end);
-      /* we're going back to the top, clear the rows we want to overwrite */
-      for(i = 0; i <= term->tcanvas->scroll_region_end; i++) {
+      /* Start pointer going past virtual scroll buffer */
+      if(term->tcanvas->scroll_region_start + rows >
+	 (term->tcanvas->rows-1) * term->tcanvas->scroll_size) {
+	 DPRINT((stderr,"Start gone past scroll area max, going back to start\n"));
+	 term->tcanvas->scroll_region_start = rows - (((term->tcanvas->rows-1) * 
+						       term->tcanvas->scroll_size) -  term->tcanvas->scroll_region_start);
+      } else {
+	 /* normal scrolling */
+	 term->tcanvas->scroll_region_start+= rows;
+      }
+      
+      /* set changed flags on chars */
+      /* if start and end are havent gone past virtual scroll buffer */
+      if(term->tcanvas->scroll_region_start < term->tcanvas->scroll_region_end)
+	i2 = term->tcanvas->scroll_region_end;
+      else {
+	 /* we now have two areas to modify:
+	  * the first being at the end of the virtual scroll buffer
+	  * the second being at the start
+	  */
+	 for(i = 0; i <= term->tcanvas->scroll_region_end; i++) {
+	    term->tcanvas->changed_rows[i] = 1;
+	    for(j = 0; j <= term->tcanvas->cols; j++) {
+	       gl = & term->tcanvas->grid[j + (term->tcanvas->cols * i)];
+	       gl->changed = 1;
+	    }	 
+	 }
+	 i2 = (term->tcanvas->rows - 1) * term->tcanvas->scroll_size;
+      }
+      
+      /* set changed flag from start until determined end */
+      for(i = term->tcanvas->scroll_region_start; i <= i2; i++) {
 	 term->tcanvas->changed_rows[i] = 1;
 	 for(j = 0; j <= term->tcanvas->cols; j++) {
 	    gl = & term->tcanvas->grid[j + (term->tcanvas->cols * i)];
-	    gl->c = ' ';
 	    gl->changed = 1;
 	 }
-      }
-   } else {
-      term->tcanvas->scroll_region_end+=rows;
-      
-   }
-   
-   if(term->tcanvas->scroll_region_start + rows >
-      (term->tcanvas->rows-1) * term->tcanvas->scroll_size) {
-      printf("Start gone past scroll area max, going back to start\n");      
-      term->tcanvas->scroll_region_start = rows - (((term->tcanvas->rows-1) * 
-	term->tcanvas->scroll_size) -  term->tcanvas->scroll_region_start);
-   } else {
-      term->tcanvas->scroll_region_start+= rows;
-   }
-            
-   /* fix this and make it set changed flags properly */
-
-   if(term->tcanvas->scroll_region_start < term->tcanvas->scroll_region_end)
-     i2 = term->tcanvas->scroll_region_end;
-   else {
-      for(i = 0; i <= term->tcanvas->scroll_region_end; i++) {
-	 term->tcanvas->changed_rows[i] = 1;
-	 for(j = 0; j <= term->tcanvas->cols; j++) {
-	    gl = & term->tcanvas->grid[j + (term->tcanvas->cols * i)];
-	    gl->changed = 1;
-	 }	 
-      }
-      i2 = (term->tcanvas->rows - 1) * term->tcanvas->scroll_size;
-   }
-   
-   for(i = term->tcanvas->scroll_region_start;
-       i <= i2;
-       i++) {
-      term->tcanvas->changed_rows[i] = 1;
-      for(j = 0; j <= term->tcanvas->cols; j++) {
-	 gl = & term->tcanvas->grid[j + (term->tcanvas->cols * i)];
-	 gl->changed = 1;
-      }
-   }
-
-
-   return;
-   
-   if(term->tcanvas->scroll_in_region) {
-      printf("SCROLL IN REGION!!!!!!!!!!!!!!!!!!!!\n");
-   } else {
-      
+      }        
    }
 }
 
+/* scroll window / region down */
 void term_scroll_down(Term *term, int rows) {
    if(term->tcanvas->scroll_in_region) {
       

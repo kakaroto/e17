@@ -22,6 +22,13 @@
 #define NPAR 16
 #define DATADIR PACKAGE_DATA_DIR"/"
 
+#ifdef DEBUG
+#define DPRINT(stuff) fprintf stuff;
+#else
+#define DPRINT(stuff)
+#endif
+
+
 enum Term_Key_Modifiers
 {
      TERM_KEY_MODIFIER_SHIFT = 0x1,
@@ -112,65 +119,66 @@ struct _Term {
 
 typedef struct _Term Term;
 
-Term          *term_init(Evas_Object *o);
-Term_TCanvas  *term_tcanvas_new();
-int            term_tcanvas_data(void *data);
-void           term_tcanvas_glyph_push(Term *term, char c);
-void           term_tcanvas_fg_color_set(Term *term, int c);
-void           term_tcanvas_bg_color_set(Term *term, int c);
-int            term_font_get_width(Term *term);
-int            term_font_get_height(Term *term);
+Term           *term_init(Evas_Object *o);
+Term_TCanvas   *term_tcanvas_new();
+int             term_tcanvas_data(void *data);
+void            term_tcanvas_glyph_push(Term *term, char c);
+void            term_tcanvas_fg_color_set(Term *term, int c);
+void            term_tcanvas_bg_color_set(Term *term, int c);
+int             term_font_get_width(Term *term);
+int             term_font_get_height(Term *term);
 
-void           term_handler_xterm_seq(int op, Term *term);
-int            term_handler_escape_seq(Term *term);
+void            term_handler_xterm_seq(int op, Term *term);
+int             term_handler_escape_seq(Term *term);
 
-void           term_cb_key_down(void *data, Evas *e, Evas_Object *obj, void *event_info);
-void           term_cb_resize(Ecore_Evas *ee);
+void            term_cb_key_down(void *data, Evas *e, Evas_Object *obj, void *event_info);
+void            term_cb_resize(Ecore_Evas *ee);
 
-static void    strupper(char *str);
-int            term_timers(void *data);
+static void     strupper(char *str);
+int             term_timers(void *data);
 
-int            get_pty(Term *term);
-int            get_tty(Term *term);
-void           sigchld_handler(int a);
-struct passwd *find_user(void);
-int            execute_command(Term *term);//, int argc, const char **argv);
+struct winsize *get_font_dim(Term *term);
+int             get_pty(Term *term);
+int             get_tty(Term *term);
+void            sigchld_handler(int a);
+struct passwd  *find_user(void);
+int             execute_command(Term *term);//, int argc, const char **argv);
 
-void           term_window_init(Ecore_Evas *ee, Evas *evas);
-void           term_term_bg_set(Term *term, char *img);
-void           term_redraw(void *data);
+void            term_window_init(Ecore_Evas *ee, Evas *evas);
+void            term_term_bg_set(Term *term, char *img);
+void            term_redraw(void *data);
 
-int            term_cursor_move_up(Term *term, int n);
-int            term_cursor_move_down(Term *term, int n);
-int            term_cursor_move_left(Term *term, int n);
-int            term_cursor_move_right(Term *term, int n);
-int            term_cursor_move_col(Term *term, int n);
-int            term_cursor_move_row(Term *term, int n);
-void           term_cursor_goto(Term *term, int x, int y);
-void           term_cursor_rego(Term *term);
-void           term_delete_rows(Term *term, int start, int n);
-void           term_add_rows(Term *term, int pos, int n);
-void           term_tcanvas_save(Term *term);
-void           term_tcanvas_restore(Term *term);
-void           term_clear_area(Term *term, int x1, int y1, int x2, int y2);
-void           term_scroll_up(Term *term, int rows);
-void           term_scroll_down(Term *term, int rows);
+int             term_cursor_move_up(Term *term, int n);
+int             term_cursor_move_down(Term *term, int n);
+int             term_cursor_move_left(Term *term, int n);
+int             term_cursor_move_right(Term *term, int n);
+int             term_cursor_move_col(Term *term, int n);
+int             term_cursor_move_row(Term *term, int n);
+void            term_cursor_goto(Term *term, int x, int y);
+void            term_cursor_rego(Term *term);
+void            term_delete_rows(Term *term, int start, int n);
+void            term_add_rows(Term *term, int pos, int n);
+void            term_tcanvas_save(Term *term);
+void            term_tcanvas_restore(Term *term);
+void            term_clear_area(Term *term, int x1, int y1, int x2, int y2);
+void            term_scroll_up(Term *term, int rows);
+void            term_scroll_down(Term *term, int rows);
    
-void           term_smart_add(Evas_Object *o);
-void           term_smart_del(Evas_Object *o);
-void           term_smart_layer_set(Evas_Object *o, int l);
-void           term_smart_raise(Evas_Object *o);
-void           term_smart_lower(Evas_Object *o);
-void           term_smart_stack_above(Evas_Object *o, Evas_Object *above);
-void           term_smart_stack_below(Evas_Object *o, Evas_Object *below);
-void           term_smart_move(Evas_Object *o, Evas_Coord x, Evas_Coord y);
-void           term_smart_resize(Evas_Object *o, Evas_Coord w, Evas_Coord h);
-void           term_smart_show(Evas_Object *o);
-void           term_smart_hide(Evas_Object *o);
-void           term_smart_color_set(Evas_Object *o, int r, int g, int b, int a);
-void           term_smart_clip_set(Evas_Object *o, Evas_Object *clip);
-void           term_smart_clip_unset(Evas_Object *o);
-Evas_Smart    *term_smart_get();
+void            term_smart_add(Evas_Object *o);
+void            term_smart_del(Evas_Object *o);
+void            term_smart_layer_set(Evas_Object *o, int l);
+void            term_smart_raise(Evas_Object *o);
+void            term_smart_lower(Evas_Object *o);
+void            term_smart_stack_above(Evas_Object *o, Evas_Object *above);
+void            term_smart_stack_below(Evas_Object *o, Evas_Object *below);
+void            term_smart_move(Evas_Object *o, Evas_Coord x, Evas_Coord y);
+void            term_smart_resize(Evas_Object *o, Evas_Coord w, Evas_Coord h);
+void            term_smart_show(Evas_Object *o);
+void            term_smart_hide(Evas_Object *o);
+void            term_smart_color_set(Evas_Object *o, int r, int g, int b, int a);
+void            term_smart_clip_set(Evas_Object *o, Evas_Object *clip);
+void            term_smart_clip_unset(Evas_Object *o);
+Evas_Smart     *term_smart_get();
 
-void           enterm_init(Ecore_Evas *ee, Evas_Object *term);   
-void           enterm_cb_resize(Ecore_Evas *ee);
+void            enterm_init(Ecore_Evas *ee, Evas_Object *term);   
+void            enterm_cb_resize(Ecore_Evas *ee);

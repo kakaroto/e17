@@ -3,7 +3,7 @@
 int main(int argc, char **argv) {
 
    Ecore_Evas  *ee;     /* ecore_evas */
-   Evas        *evas;   /* evas */
+   Evas        *evas;   /* evas       */
    Evas_Object *term;   /* terminal   */
       
    ee = ecore_evas_software_x11_new(0, 0, 0, 0, 0, 0);
@@ -11,8 +11,7 @@ int main(int argc, char **argv) {
    evas = ecore_evas_get(ee);
       
    term = term_new(evas);
-   evas_object_show(term);
-   //evas_object_resize(term, 640, 480);
+   evas_object_show(term);   
    
    enterm_init(ee, term);   
    
