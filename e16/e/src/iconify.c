@@ -1946,6 +1946,7 @@ IconboxRedraw(Iconbox * ib)
       PropagateShapes(ib->icon_win);
    PropagateShapes(ib->win);
    ICCCM_GetShapeInfo(ib->ewin);
+   EwinPropagateShapes(ib->ewin);
 
    Mode.queue_up = pq;
 }
