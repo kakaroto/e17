@@ -54,33 +54,46 @@ test_macros(void)
     char sc1 = 'X', sc2 = 'K';
     int si1 = 472, si2 = 8786345;
     unsigned long sl1 = 0x98765432, sl2 = 0xffeeddff;
+    void *vp1 = &sc1, *vp2 = &sc2;
 
     TEST_BEGIN("MEMSET() macro");
     MEMSET(memset_test, '!', CONST_STRLEN(memset_test));
-    TEST_EXPECT(!strcmp(memset_test, "!!!!!!!!!!!!!!!!!!!!!!!!!!"));
+    TEST_FAIL_IF(strcmp(memset_test, "!!!!!!!!!!!!!!!!!!!!!!!!!!"));
+    MEMSET(memset_test + 3, '*', 14);
+    TEST_FAIL_IF(strcmp(memset_test, "!!!**************!!!!!!!!!"));
+    MEMSET(memset_test, '&', 0 );
+    TEST_FAIL_IF(strcmp(memset_test, "!!!**************!!!!!!!!!"));
+    MEMSET(SPIF_NULL_TYPE(charptr), '_', CONST_STRLEN(memset_test));
+    TEST_PASS();
 
     TEST_BEGIN("SWAP() macro");
     SWAP(sc1, sc2);
     SWAP(si1, si2);
     SWAP(sl1, sl2);
+    SWAP(vp1, vp2);
     TEST_FAIL_IF(sc1 != 'K');
     TEST_FAIL_IF(sc2 != 'X');
     TEST_FAIL_IF(si1 != 8786345);
     TEST_FAIL_IF(si2 != 472);
     TEST_FAIL_IF(sl1 != 0xffeeddff);
     TEST_FAIL_IF(sl2 != 0x98765432);
+    TEST_FAIL_IF(vp1 != &sc2);
+    TEST_FAIL_IF(vp2 != &sc1);
     TEST_PASS();
 
     TEST_BEGIN("BINSWAP() macro");
     BINSWAP(sc1, sc2);
     BINSWAP(si1, si2);
     BINSWAP(sl1, sl2);
+    BINSWAP(vp1, vp2);
     TEST_FAIL_IF(sc1 != 'X');
     TEST_FAIL_IF(sc2 != 'K');
     TEST_FAIL_IF(si1 != 472);
     TEST_FAIL_IF(si2 != 8786345);
     TEST_FAIL_IF(sl1 != 0x98765432);
     TEST_FAIL_IF(sl2 != 0xffeeddff);
+    TEST_FAIL_IF(vp1 != &sc1);
+    TEST_FAIL_IF(vp2 != &sc2);
     TEST_PASS();
 
     TEST_BEGIN("BEG_STRCASECMP() macro");

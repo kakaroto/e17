@@ -25,15 +25,16 @@
 #  define _LIBAST_TEST_H_
 
 #  define TEST_NOTICE(s)                       do {printf("%s\n", s); fflush(stdout);} while (0)
-#  define TEST_BEGIN(s)                        do {tnum = 1; printf("Testing " s "...");} while (0)
+#  define TEST_BEGIN(s)                        do {tnum = 1; printf("Testing %s...", s); fflush(stdout);} while (0)
 #  define TEST_PASS()                          do {printf("passed (%hu).\n", tnum - 1); fflush(stdout);} while (0)
 #  define TEST_FAIL(t)                         do { \
                                                    printf("failed at %s:%d (test #%hu):  Test \"%s\" returned %d.\n", \
                                                           __FILE__, __LINE__, tnum, #t, (t)); \
+                                                   fflush(stdout); \
                                                    return 1; \
                                                } while (0)
 #  define TEST_FAIL_IF(t)                      do {if (t) {TEST_FAIL(t);} tnum++;} while (0)
-#  define TEST_EXPECT(t)                       do {if (t) {TEST_PASS();} else {TEST_FAIL(t);}} while (0)
-#  define TEST_PASSED(s)                       do {printf("All " s " tests passed.\n\n"); fflush(stdout); return 0;} while (0)
+#  define TEST_EXPECT(t)                       do {if (t) {tnum++; TEST_PASS();} else {TEST_FAIL(t);}} while (0)
+#  define TEST_PASSED(s)                       do {printf("All %s tests passed.\n\n", s); fflush(stdout); return 0;} while (0)
 
 #endif

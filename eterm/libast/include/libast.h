@@ -1171,6 +1171,9 @@ extern int re_exec();
     long *l_dest = (long *)(s); \
     char *c_dest; \
  \
+    if (!(s)) { \
+        break; \
+    } \
     /* areas of less than 4 * sizeof(long) are set in 1-byte chunks. */ \
     if (((unsigned long) count) >= 4 * sizeof(long)) { \
         /* fill l with c. */ \
