@@ -8,6 +8,7 @@
 #include <errno.h>
 #include <dirent.h>
 #include <unistd.h>
+#include "config.h"
 #include "epplet.h"
 #include <GL/glut.h>
 #include <stdlib.h>
