@@ -27,3 +27,18 @@ elicit,zoom,down,start
 
 elicit,copy,hex
 
+elicit,freeze
+elicit,thaw
+
+elicit,resize,W,H
+elicit,size,min,W,H
+
+where W and H are 1 of
+  (1) an integer, e.g. 200
+  (2) a signed integer, e.g. +150 or -20
+
+if (1), then the relevant size will be set to that value
+if (2), then the size will be increased/decreased by that value
+
+note: the size cannot be set to anything less that the min size (which by default is the edje groups min size).
+  

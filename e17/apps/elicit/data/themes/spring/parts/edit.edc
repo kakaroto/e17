@@ -65,8 +65,81 @@ SLIDER("blue", "edit-inset", 0 0, 10 28, "edit-inset", 1 0, -11 36, "edit-clip",
 SLIDER("hue", "edit-inset", 0 0, 10 48, "edit-inset", 1 0, -11 56, "edit-clip", "H")
 SLIDER("sat", "edit-inset", 0 0, 10 58, "edit-inset", 1 0, -11 66, "edit-clip", "S")
 SLIDER("val", "edit-inset", 0 0, 10 68, "edit-inset", 1 0, -11 76, "edit-clip", "V")
-SLIDER("zoom", "edit-inset", 0 0, 10 88, "edit-inset", 1 0, -11 96, "edit-clip", "Z")
+SLIDER_IMAGE("zoom", "edit-inset", 0 0, 10 108, "edit-inset", 1 0, -11 116, "edit-clip", "mag.png", 10, 10)
 
+    /* this part makes the hex value pulse when you copy */
+      part {
+        name, "hex-clip";
+        clip_to, "edit-clip";
+        type, RECT;
+        description {
+          state, "default" 0.0;
+          color, 0 0 0 255;
+        }
+        description {
+          state, "off" 0.0;
+          color, 0 0 0 0;
+        }
+      }
+
+    part {  
+      name, "hex-label";  
+      clip_to, "edit-clip";  
+      type, TEXT;  
+      description {  
+        state, "default" 0.0;  
+        align, 0.5 0.5;  
+        rel1 {  
+          to, "edit-inset"; 
+          relative, 0 0;  
+          offset, 10 88;  
+        }  
+        rel2 {  
+          to, "edit-inset"; 
+          relative, 1 0;  
+          offset, -11 96;  
+        }  
+        color, 0 0 0 200;  
+        text {  
+          text, "hex";  
+          font, "spring-italic";  
+          size, 7;  
+          fit, 0 0;  
+          min, 1 1;  
+          align, 0.0 0.5;  
+        }  
+      }  
+    }  
+
+
+    part {  
+      name, "hex-val2";  
+      clip_to, "hex-clip";  
+      type, TEXT;  
+      description {  
+        state, "default" 0.0;  
+        align, 0.5 0.5;  
+        rel1 {  
+          to, "edit-inset"; 
+          relative, 0 0;  
+          offset, 10 88;  
+        }  
+        rel2 {  
+          to, "edit-inset"; 
+          relative, 1 0;  
+          offset, -11 96;  
+        }  
+        color, 0 0 0 200;  
+        text {  
+          text, "255";  
+          font, "spring-italic";  
+          size, 7;  
+          fit, 0 0;  
+          min, 1 1;  
+          align, 1.0 0.5;  
+        }  
+      }  
+    }  
 
 
       part {

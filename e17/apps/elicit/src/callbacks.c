@@ -178,7 +178,6 @@ elicit_cb_size_min(void *data, Evas_Object *o, const char *sig, const char *src)
   char *wstr, *hstr, *sub;
   int woff = 0, hoff = 0;
 
-  printf("set min\n");
   ecore_evas_size_min_get(el->ee, &ow, &oh);
 
   /* if we have an arg */
