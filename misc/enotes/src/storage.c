@@ -145,7 +145,7 @@ note_load(char *target)
 		if (strcmp("", fullstr))
 			if ((p = get_notestor_from_value(fullstr)) != NULL){
 				note=new_note_with_values_return(p->x, p->y, p->width, p->height, p->content);
-				edje_object_signal_emit(note->edje,"enotes,loaded","");
+				edje_object_signal_emit(note->edje,NOTE_LOADED_SIGNAL,"");
 			}
 	}
 

@@ -255,6 +255,12 @@ ewl_saveload_load(Ewl_Widget * o, void *ev_data, void *null)
 	return;
 }
 
+void
+ewl_saveload_save_by_name(char *p){
+	saveload=p;
+	ewl_saveload_save(NULL,NULL,NULL);
+}
+
 /**
  * @param o: The widget which was clicked.  We don't use this.
  * @param ev_data: The event data, we don't use this.
@@ -291,7 +297,7 @@ ewl_saveload_save(Ewl_Widget * o, void *ev_data, void *null)
 
 	if(append_note_stor(n)==1){
 		/* Animation or something */
-		edje_object_signal_emit(note->edje,"enotes,saved","");
+		edje_object_signal_emit(note->edje,NOTE_SAVED_SIGNAL,"");
 	}
 	free_note_stor(n);
 

@@ -311,6 +311,7 @@ setup_note(Evas_List ** note, int x, int y, int width, int height,
 	edje_object_signal_callback_add(p->edje,
 					EDJE_SIGNAL_NOTE_MINIMISE, "",
 					(void *) note_edje_minimise, *note);
+	edje_object_signal_callback_add(p->edje,EDJE_SIGNAL_NOTE_SAVE,"",(void*)note_edje_save,*note);
 
 	/* Free Temporarily used Variables */
 	if (datestr != NULL)
@@ -514,6 +515,18 @@ note_edje_minimise(Evas_List * note, Evas_Object * o,
 
 	ecore_evas_iconified_set(p->win, 1);
 
+	return;
+}
+
+void
+note_edje_save(Evas_List * note, Evas_Object * o,
+const char *emission, const char *source){
+	Note *p;
+	dml("Saving a Note",2);
+	p=evas_list_data(note);
+
+	ewl_saveload_save_by_name(get_title_by_content(ewl_entry_text_get(p->content)));
+	
 	return;
 }
 

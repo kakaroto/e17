@@ -33,6 +33,7 @@
 
 #define EDJE_SIGNAL_NOTE_CLOSE "ENOTES_QUIT"
 #define EDJE_SIGNAL_NOTE_MINIMISE "ENOTES_MINIMIZE"
+#define EDJE_SIGNAL_NOTE_SAVE "ENOTES_SAVE"
 
 #define EDJE_CONTAINER "EnoteContainer"
 #define EDJE_TEXT_USER "EnoteUser"
@@ -53,6 +54,9 @@
 #define EDJE_INFO_FONTNAME "EnoteInfoFontName"
 #define EDJE_INFO_FONTSIZE "EnoteInfoFontSize"
 #define EDJE_INFO_FONTSTYLE "EnoteInfoFontStyle"
+
+#define NOTE_SAVED_SIGNAL "ENOTES,SAVED"
+#define NOTE_LOADED_SIGNAL "ENOTES,LOADED"
 
 #define COMPARE_INTERVAL 0.01
 #define TITLE_LENGTH 20
@@ -121,6 +125,7 @@ void            note_edje_close(Evas_List * note, Evas_Object * o,
 				const char *emission, const char *source);
 void            note_edje_minimise(Evas_List * note, Evas_Object * o,
 				   const char *emission, const char *source);
+void            note_edje_save(Evas_List*note,Evas_Object*o,const char*emission,const char*source);
 
 /* Misc */
 char           *get_date_string(void);
