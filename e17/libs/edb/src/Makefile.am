@@ -5,7 +5,6 @@ AUTOMAKE_OPTIONS     = 1.4 foreign
 # A list of all the files in the current directory which can be regenerated
 MAINTAINERCLEANFILES = Makefile.in
 
-LDFLAGS		     =
 INCLUDES	     = -I. \
 		       -I$(top_srcdir)/src \
 			-DLIBDIR=\"$(libdir)\" \
@@ -54,6 +53,5 @@ sparc.gcc \
 x86.gcc \
 uts4_cc.s
 
-libedb_la_LIBADD       = $(LDFLAGS)
 libedb_la_DEPENDENCIES = $(top_builddir)/config.h
 libedb_la_LDFLAGS      = -version-info 1:5:0

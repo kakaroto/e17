@@ -14,10 +14,8 @@ bin_PROGRAMS = edb_ed $(edb_vt_ed_PROGRAM)
 
 edb_ed_DEPENDENCIES = $(top_builddir)/src/libedb.la
 edb_ed_SOURCES = edb_ed.c
-edb_ed_LDFLAGS =
 edb_ed_LDADD = $(top_builddir)/src/libedb.la
 
 edb_vt_ed_DEPENDENCIES = $(top_builddir)/src/libedb.la
 edb_vt_ed_SOURCES = edb_vt_ed.c
-edb_vt_ed_LDFLAGS = -lncurses
-edb_vt_ed_LDADD = $(top_builddir)/src/libedb.la
+edb_vt_ed_LDADD = -lncurses $(top_builddir)/src/libedb.la
