@@ -42,6 +42,10 @@
 #define EDJE_SIGNAL_CC_NEW "ENOTES_NOTE_NEW"
 #define EDJE_SIGNAL_CC_SAVELOAD "ENOTES_NOTES_SAVELOAD"
 #define EDJE_SIGNAL_CC_SETTINGS "ENOTES_SETTINGS"
+#define EDJE_SIGNAL_CC_MINIMIZE "ENOTES_CONTROL_MINIMIZE"
+
+/* Configuration */
+#define DEF_CC_CONFIG_LOC "%s/.e/notes/cc.xml"
 
 typedef struct {
 	Ecore_Evas     *win;
@@ -50,11 +54,22 @@ typedef struct {
 	Evas_Object    *edje;
 } ControlCentre;
 
+typedef struct {
+	int             x;
+	int             y;
+	int             width;
+	int             height;
+} CCPos;
+
 extern ControlCentre *controlcentre;
 extern MainConfig *main_config;
 
 /* Setting the Control Centre up */
 void            setup_cc(void);
+
+/* Configuration */
+CCPos          *get_cc_pos();
+void            set_cc_pos();
 
 /* Callbacks */
 void            cc_resize(Ecore_Evas * ee);
@@ -62,5 +77,6 @@ void            cc_close(void *data);
 void            cc_saveload(void *data);
 void            cc_newnote(void *data);
 void            cc_settings(void *data);
+void            cc_minimize(void *data);
 
 #endif

@@ -97,12 +97,13 @@ main(int argc, char *argv[])
 				if ((tmpn =
 				     get_notestor_from_value(tmpstr)) != NULL)
 					new_note_with_values(tmpn->x,
-							     tmpn->y,tmpn->width,
+							     tmpn->y,
+							     tmpn->width,
 							     tmpn->height,
 							     tmpn->content);
 			} else {
 				dml("Using default note template", 2);
-				new_note_with_values(0,0,0, 0, INTRO_CONTENT);
+				new_note_with_values(0, 0, 0, 0, INTRO_CONTENT);
 			}
 
 			dml("Introduction Note Created", 1);
@@ -125,6 +126,9 @@ main(int argc, char *argv[])
 		ecore_main_loop_begin();
 
 		dml("Main Loop Ended", 1);
+
+		/* Save Controlcentre Settings */
+		set_cc_pos();
 
 		/* Autosaving */
 		if (main_config->autosave == 1) {

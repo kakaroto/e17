@@ -183,3 +183,21 @@ xml_write_append_entry(XmlWriteHandle * h, char *name, char *value)
 	xmlTextWriterWriteFormatElement(h->writer, BAD_CAST name, "%s", value);
 	return;
 }
+
+/**
+ * @param h: The write handle to add an entry too.
+ * @param name: The xml tag name you want to append to the handle file.
+ * @param value: The value to put inside these tags (int).
+ * @brief: Appends an xml entry into the opened xml file pointed
+ *         to by h.
+ */
+void
+xml_write_append_entry_int(XmlWriteHandle * h, char *name, int value)
+{
+	char           *tmp = malloc(PATH_MAX);
+
+	snprintf(tmp, PATH_MAX, "%d", value);
+	xml_write_append_entry(h, name, tmp);
+	free(tmp);
+	return;
+}

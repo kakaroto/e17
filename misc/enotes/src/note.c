@@ -30,7 +30,7 @@ new_note(void)
 	dml("Creating a Note", 2);
 
 	new = append_note();
-	setup_note(&new, 0,0,0, 0, DEF_CONTENT);
+	setup_note(&new, 0, 0, 0, 0, DEF_CONTENT);
 	return;
 }
 
@@ -42,14 +42,14 @@ new_note(void)
  * @brief: Opens a new note.
  */
 void
-new_note_with_values(int x,int y,int width, int height, char *content)
+new_note_with_values(int x, int y, int width, int height, char *content)
 {
 	Evas_List      *new;
 
 	dml("Creating a Note", 2);
 
 	new = append_note();
-	setup_note(&new, x,y,width, height, content);
+	setup_note(&new, x, y, width, height, content);
 	return;
 }
 
@@ -122,7 +122,8 @@ remove_note(Evas_List * note)
  * @brief: Sets up the note objects, window, callbacks, etc...
  */
 void
-setup_note(Evas_List ** note, int x,int y,int width, int height, char *content)
+setup_note(Evas_List ** note, int x, int y, int width, int height,
+	   char *content)
 {
 	Evas_List      *pl;
 	Note           *p;
@@ -151,7 +152,8 @@ setup_note(Evas_List ** note, int x,int y,int width, int height, char *content)
 	ecore_evas_show(p->win);
 
 	/* Move the damn window  */
-	ecore_x_window_prop_xy_set(ecore_evas_software_x11_window_get(p->win), x, y);
+	ecore_x_window_prop_xy_set(ecore_evas_software_x11_window_get(p->win),
+				   x, y);
 
 	/* Setup the Canvas, fonts, etc... */
 	p->evas = ecore_evas_get(p->win);
@@ -386,24 +388,22 @@ int
 timer_val_compare(void *data)
 {
 	Note           *p = (Note *) data;
-	char *tmp;
+	char           *tmp;
 
 	if (p->timcomp == NULL)
 		return (0);
 
 	if (p->txt_title != NULL) {
-		tmp=get_title_by_note_struct(p);
-		if (strcmp
-		    (p->txt_title,tmp)) {
+		tmp = get_title_by_note_struct(p);
+		if (strcmp(p->txt_title, tmp)) {
 			if (saveload != NULL)
 				ewl_saveload_revert(NULL, NULL, saveload->tree);
 
-			if (p->txt_title!=NULL)
+			if (p->txt_title != NULL)
 				free(p->txt_title);
-			p->txt_title =
-				get_title_by_note_struct(p);
+			p->txt_title = get_title_by_note_struct(p);
 		}
-		if(tmp!=NULL)
+		if (tmp != NULL)
 			free(tmp);
 	} else {
 		p->txt_title = get_title_by_note_struct(p);
@@ -510,27 +510,28 @@ get_content_by_note_struct(Note * note)
  * @brief: Takes TITLE_LENGTH worth of characters
  *         from the front (or newline).
  */
-char*                   
+char           *
 get_title_by_content(char *content)
 {
-        char *cont=content;
-        int a=0;        
-        int newlength=0;        
+	char           *cont = content;
+	int             a = 0;
+	int             newlength = 0;
 
-        if (strlen(content)>TITLE_LENGTH)
-                while (a<TITLE_LENGTH&&cont!=NULL){
-                        if (!strncmp(cont,"\n",1)){
-                                newlength=a;
-                                break;
-                        }
-                        a++;
-                        cont++;
-                } a=0;
+	if (strlen(content) > TITLE_LENGTH)
+		while (a < TITLE_LENGTH && cont != NULL) {
+			if (!strncmp(cont, "\n", 1)) {
+				newlength = a;
+				break;
+			}
+			a++;
+			cont++;
+		}
+	a = 0;
 
-        if (newlength==0)
-                newlength=TITLE_LENGTH;
-        
-        return((char*)strndup(content,newlength));
+	if (newlength == 0)
+		newlength = TITLE_LENGTH;
+
+	return ((char *) strndup(content, newlength));
 }
 
 /**

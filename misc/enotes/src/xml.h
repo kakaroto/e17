@@ -65,5 +65,7 @@ void            xml_write_end(XmlWriteHandle * h);
 
 void            xml_write_append_entry(XmlWriteHandle * h, char *name,
 				       char *value);
+void            xml_write_append_entry_int(XmlWriteHandle * h, char *name,
+					   int value);
 
 #endif

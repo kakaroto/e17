@@ -61,15 +61,16 @@ Evas_List      *gbl_notes;
 
 /* High Level */
 void            new_note(void);
-void            new_note_with_values(int x, int y, int width, int height, char *content);
+void            new_note_with_values(int x, int y, int width, int height,
+				     char *content);
 
 /* Lists and Allocation */
 Evas_List      *append_note(void);
 void            remove_note(Evas_List * note);
 
 /* GUI Setup */
-void            setup_note(Evas_List ** note, int x,int y,int width, int height,
-			   char *content);
+void            setup_note(Evas_List ** note, int x, int y, int width,
+			   int height, char *content);
 
 /* Ecore Callbacks */
 void            note_ecore_close(Ecore_Evas * ee);
@@ -93,9 +94,9 @@ Evas_List      *get_note_by_title(char *title);
 Evas_List      *get_note_by_content(char *content);
 
 char           *get_title_by_note(Evas_List * note);
-char           *get_title_by_note_struct (Note *note);
+char           *get_title_by_note_struct(Note * note);
 char           *get_content_by_note(Evas_List * note);
-char           *get_content_by_note_struct (Note *note);
+char           *get_content_by_note_struct(Note * note);
 char           *get_title_by_content(char *content);
 
 Evas_List      *get_cycle_begin(void);

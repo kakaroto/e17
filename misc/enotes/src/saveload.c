@@ -284,8 +284,8 @@ ewl_saveload_save(Ewl_Widget * o, void *ev_data, void *null)
 	ecore_evas_geometry_get(note->win, &x, &y, &w, &h);
 	n->width = w;
 	n->height = h;
-	n->x=x;
-	n->y=y;
+	n->x = x;
+	n->y = y;
 	n->content = strdup(get_content_by_note(p));
 
 	append_note_stor(n);
@@ -406,7 +406,8 @@ fill_load_tree(void)
 	if (r != NULL) {
 		while (r->cur != NULL) {
 			p = stor_cycle_get_notestor(r);
-			setup_load_opt(load->tree, get_title_by_content(p->content));
+			setup_load_opt(load->tree,
+				       get_title_by_content(p->content));
 			free_note_stor(p);
 			stor_cycle_next(r);
 		}
@@ -481,7 +482,7 @@ ewl_load_load(Ewl_Widget * o, void *ev_data, void *null)
 {
 	NoteStor       *p;
 	XmlReadHandle  *r;
-	char *tmp;
+	char           *tmp;
 
 	dml("Loading Saved Note", 2);
 
@@ -490,11 +491,12 @@ ewl_load_load(Ewl_Widget * o, void *ev_data, void *null)
 	if (r != NULL) {
 		while (r->cur != NULL) {
 			p = stor_cycle_get_notestor(r);
-			tmp=get_title_by_content(p->content);
+			tmp = get_title_by_content(p->content);
 			if (!strcmp(tmp, load_selected))
-				new_note_with_values(p->x,p->y,p->width, p->height,
-						     p->content);
-			if(tmp!=NULL) free(tmp);
+				new_note_with_values(p->x, p->y, p->width,
+						     p->height, p->content);
+			if (tmp != NULL)
+				free(tmp);
 			free_note_stor(p);
 			stor_cycle_next(r);
 		}
@@ -533,7 +535,7 @@ ewl_load_delete(Ewl_Widget * o, void *ev_data, void *null)
 {
 	NoteStor       *p;
 	XmlReadHandle  *r;
-	char *tmp=NULL;
+	char           *tmp = NULL;
 
 	dml("Deleting Saved Note", 2);
 
@@ -541,12 +543,14 @@ ewl_load_delete(Ewl_Widget * o, void *ev_data, void *null)
 	if (r != NULL) {
 		while (r->cur != NULL) {
 			p = stor_cycle_get_notestor(r);
-			tmp=get_title_by_content(p->content);
-			if (!strcmp(tmp, load_selected)){
-				if(tmp!=NULL)free(tmp);
+			tmp = get_title_by_content(p->content);
+			if (!strcmp(tmp, load_selected)) {
+				if (tmp != NULL)
+					free(tmp);
 				break;
 			}
-			if(tmp!=NULL)free(tmp);
+			if (tmp != NULL)
+				free(tmp);
 			free_note_stor(p);
 			stor_cycle_next(r);
 		}

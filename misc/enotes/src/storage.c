@@ -340,7 +340,8 @@ autoload(void)
 	if (r != NULL) {
 		while (r->cur != NULL) {
 			p = stor_cycle_get_notestor(r);
-			new_note_with_values(p->x,p->y,p->width, p->height, p->content);
+			new_note_with_values(p->x, p->y, p->width, p->height,
+					     p->content);
 			free_note_stor(p);
 			stor_cycle_next(r);
 		}
@@ -375,8 +376,8 @@ autosave(void)
 		n = alloc_note_stor();
 		n->width = w;
 		n->height = h;
-		n->x=x;
-		n->y=y;
+		n->x = x;
+		n->y = y;
 		n->content = strdup(get_content_by_note(tmp));
 		append_autosave_note_stor(n);
 		free_note_stor(n);
@@ -474,8 +475,10 @@ get_value_from_notestor(NoteStor * p)
 {
 	char           *retval = malloc(MAX_VALUE);
 
-	snprintf(retval, MAX_VALUE, "%s%s%d%s%d%s%d%s%d", p->content, DEF_VALUE_SEPERATION,
-		 p->width, DEF_VALUE_SEPERATION, p->height,DEF_VALUE_SEPERATION,p->x,DEF_VALUE_SEPERATION,p->y);
+	snprintf(retval, MAX_VALUE, "%s%s%d%s%d%s%d%s%d", p->content,
+		 DEF_VALUE_SEPERATION, p->width, DEF_VALUE_SEPERATION,
+		 p->height, DEF_VALUE_SEPERATION, p->x, DEF_VALUE_SEPERATION,
+		 p->y);
 
 	return (retval);
 }
