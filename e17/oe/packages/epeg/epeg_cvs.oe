@@ -7,7 +7,7 @@ DEPENDS = "jpeg"
 PV = "0.0cvs${CVSDATE}"
 PR = "r0"
 
-SRC_URI = "cvs://${E_CVS_USER}@cvs.sourceforge.net/cvsroot/enlightenment;module=e17/libs/epeg${CVS_METHOD}"
+SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/enlightenment;module=e17/libs/epeg${CVS_METHOD}"
 
 S = "${WORKDIR}/epeg"
 
