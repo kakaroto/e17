@@ -13,6 +13,9 @@ Etox.h
 
 libetox_la_SOURCES = \
 Etox.h \
+Etox_private.h \
+etox_line.h \
+etox_obstacle.h \
 etox.c \
 etox_line.c \
 etox_context.c \
