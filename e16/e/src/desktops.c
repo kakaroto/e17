@@ -1938,10 +1938,6 @@ DesktopAccounting()
 		 ((now - lst[i]->last_viewed) <= conf.desktop_bg_timeout))
 		continue;
 
-	     IMLIB1_SET_CONTEXT(lst[i] == desks.desk[0].bg);
-	     imlib_free_pixmap_and_mask(lst[i]->pmap);
-	     lst[i]->pmap = 0;
-
 	     for (j = 0; j < ENLIGHTENMENT_CONF_NUM_DESKTOPS; j++)
 	       {
 		  if ((desks.desk[j].bg == lst[i]) && (!desks.desk[j].viewable))
@@ -1951,6 +1947,10 @@ DesktopAccounting()
 		       HintsSetRootInfo(win, 0, 0);
 		       XSetWindowBackground(disp, win, 0);
 		       XClearWindow(disp, win);
+
+		       IMLIB1_SET_CONTEXT(lst[i] == desks.desk[0].bg);
+		       imlib_free_pixmap_and_mask(lst[i]->pmap);
+		       lst[i]->pmap = 0;
 		    }
 	       }
 
