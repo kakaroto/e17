@@ -7,18 +7,16 @@ typedef struct _ewl_fileinfo Ewl_Fileinfo;
 
 #define EWL_FILEINFO(fi) ((Ewl_Fileinfo *))
 struct _ewl_fileinfo {
-	char            name[PATH_MAX];	/* filename */
-	char            path[PATH_MAX];	/* path to file */
-	struct stat     status;	/* info from stat() */
+	char            *name;	/* filename */
+	char            *path;	/* path to file */
 };
 
 typedef struct _ewl_dirinfo Ewl_Dirinfo;
 
 #define EWL_DIRINFO(di) ((Ewl_Dirinfo *))
 struct _ewl_dirinfo {
-	char            name[PATH_MAX];	/* directory name */
-	char            path[PATH_MAX];	/* path to directory */
-	struct dirent  *dirEntry;
+	char            *name;	/* directory name */
+	char            *path;	/* path to directory */
 };
 
 
@@ -33,9 +31,6 @@ struct _ewl_fileselector {
 
 	Ewl_Widget     *dirs;	/* directory table */
 	Ewl_Widget     *files;	/* file table */
-
-	Ewl_Fileinfo   *f_info;
-	Ewl_Dirinfo    *d_info;
 
 	Ewl_Callback_Function file_clicked;
 };

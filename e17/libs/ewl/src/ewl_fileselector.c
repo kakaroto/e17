@@ -5,8 +5,11 @@
 #endif
 
 static void ewl_filedialog_process_directory(Ewl_Fileselector * fs, char *dir);
-static void __ewl_filedialog_file_click (Ewl_Widget * w, void *ev_data, 
+static void __ewl_filedialog_file_clicked (Ewl_Widget * w, void *ev_data, 
 		void *user_data);
+void __ewl_filedialog_directory_clicked (Ewl_Widget * w, void *ev_data, 
+		void *user_data);
+
 
 
 /** Addition for Solaris compatablity in scandir dep. -benr **/
@@ -179,19 +182,24 @@ ewl_fileselector_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 }
 
 
-void
-ewl_filedialog_directory_clicked_cb(Ewl_Widget * w, void *ev_data,
+void __ewl_filedialog_directory_clicked(Ewl_Widget * w, void *ev_data,
 				    void *user_data)
 {
-	char            dir[PATH_MAX];
+	char dir[PATH_MAX];
 	Ewl_Fileselector *fs;
+	Ewl_Dirinfo *d_info = ewl_widget_get_data (EWL_WIDGET (w), "filedialog_info");
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
-	fs = EWL_FILESELECTOR(user_data);
+	fs = EWL_FILESELECTOR (user_data);
 
-	ewl_filedialog_process_directory(EWL_FILESELECTOR(user_data), dir);
+	snprintf (dir, PATH_MAX, "%s/%s", d_info->path, d_info->name);
+	printf ("DIR clicked: %s\n", dir);
+
+	ewl_container_reset (EWL_CONTAINER (fs->dirs));
+	ewl_container_reset (EWL_CONTAINER (fs->files));
+	ewl_filedialog_process_directory (EWL_FILESELECTOR(user_data), dir);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -206,7 +214,8 @@ ewl_filedialog_process_directory(Ewl_Fileselector * fs, char *directory)
 	char          file[PATH_MAX];
 	struct stat   statbuf;
 	Ewl_Widget    *items[1];
-	Ewl_Widget    *row;
+	Ewl_Dirinfo   *d_info;
+	Ewl_Fileinfo  *f_info;
 	
 	
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -234,26 +243,46 @@ ewl_filedialog_process_directory(Ewl_Fileselector * fs, char *directory)
 		ewl_widget_show (items[0]);
 		
 		if (S_ISDIR(statbuf.st_mode)) {
+			d_info = NEW (Ewl_Dirinfo, 1);
+			
+			d_info->name = strdup (dentries[num]->d_name);
+			d_info->path = strdup (dir);
+			ewl_widget_set_data (EWL_WIDGET (items[0]), "filedialog_info", d_info);
+			
 			ewl_tree_add_row (EWL_TREE (fs->dirs), NULL, items);
+			
+			ewl_callback_append (items[0], EWL_CALLBACK_DOUBLE_CLICKED,
+					__ewl_filedialog_directory_clicked, fs);
 		} else if (S_ISREG(statbuf.st_mode)) {
-			row = ewl_tree_add_row (EWL_TREE (fs->files), NULL, items);
+			f_info = NEW (Ewl_Fileinfo, 1);
+
+			f_info->name = strdup (dentries[num]->d_name);
+			f_info->path = strdup (dir);
+			ewl_widget_set_data (EWL_WIDGET (items[0]), "filedialog_info", f_info);
+
+			ewl_tree_add_row (EWL_TREE (fs->files), NULL, items);
 			ewl_callback_append (items[0], EWL_CALLBACK_DOUBLE_CLICKED, 
 					fs->file_clicked, fs);
 			ewl_callback_append (items[0], EWL_CALLBACK_CLICKED,
-					__ewl_filedialog_file_click, fs);
+					__ewl_filedialog_file_clicked, fs);
 		}
 	}
 	
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-static void __ewl_filedialog_file_click (Ewl_Widget * w, void *ev_data,
+static void __ewl_filedialog_file_clicked (Ewl_Widget * w, void *ev_data,
 		void *user_data)
 {
+	char file[PATH_MAX];
+	Ewl_Dirinfo *f_info = ewl_widget_get_data (EWL_WIDGET (w), "filedialog_info");
+	
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
-	printf ("single click catched\n");
+	snprintf (file, PATH_MAX, "%s/%s", f_info->path, f_info->name);
+	printf ("FILE clicked: %s\n", file);
+		
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
