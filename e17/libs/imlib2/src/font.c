@@ -288,15 +288,7 @@ __imlib_load_font(char *fontname)
 	  }
      }
    if (i == n)
-     {
-	no_cmap = 1;
-	num_glyphs = f->properties.num_Glyphs;
-	TT_Done_Instance(f->instance);
-	TT_Close_Face(f->face);
-	free(f->name);
-	free(f);
-	return NULL;
-     }
+      TT_Get_CharMap(f->face, 0, &char_map);
    f->num_glyph = 256;
    f->glyphs = (TT_Glyph *)malloc(f->num_glyph * sizeof(TT_Glyph));
    memset(f->glyphs, 0, f->num_glyph * sizeof(TT_Glyph));
