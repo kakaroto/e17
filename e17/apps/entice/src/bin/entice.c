@@ -121,7 +121,7 @@ entice_init(Ecore_Evas * ee)
       edje_object_file_set(o, entice_config_theme_get(), "entice");
       evas_object_name_set(o, "EnticeEdje");
       evas_object_move(o, 0, 0);
-      evas_object_resize(o, w, h);
+      evas_object_resize(o, (Evas_Coord) w, (Evas_Coord) h);
       evas_object_layer_set(o, 0);
 
       edje_object_size_min_get(o, &ew, &eh);
@@ -171,15 +171,15 @@ entice_init(Ecore_Evas * ee)
          if (ew > eh)
          {
             esmart_container_fill_policy_set(e->container,
-                                        CONTAINER_FILL_POLICY_FILL_Y |
-                                        CONTAINER_FILL_POLICY_KEEP_ASPECT);
+                                             CONTAINER_FILL_POLICY_FILL_Y |
+                                             CONTAINER_FILL_POLICY_KEEP_ASPECT);
             esmart_container_direction_set(e->container, 0);
          }
          else
          {
             esmart_container_fill_policy_set(e->container,
-                                        CONTAINER_FILL_POLICY_FILL_X |
-                                        CONTAINER_FILL_POLICY_KEEP_ASPECT);
+                                             CONTAINER_FILL_POLICY_FILL_X |
+                                             CONTAINER_FILL_POLICY_KEEP_ASPECT);
             esmart_container_direction_set(e->container, 1);
          }
          edje_object_part_swallow(e->edje, "entice.thumbnail.area",
@@ -197,10 +197,11 @@ entice_init(Ecore_Evas * ee)
             o = esmart_trans_x11_new(ecore_evas_get(ee));
             evas_object_layer_set(o, 0);
             evas_object_move(o, 0, 0);
-            evas_object_resize(o, w, h);
+            evas_object_resize(o, (Evas_Coord) w, (Evas_Coord) h);
             evas_object_name_set(o, "trans");
 
-            esmart_trans_x11_freshen(o, x, y, w, h);
+            esmart_trans_x11_freshen(o, (Evas_Coord) x, (Evas_Coord) y,
+                                     (Evas_Coord) w, (Evas_Coord) h);
             evas_object_show(o);
             ecore_evas_borderless_set(ee, 1);
          }
@@ -431,7 +432,6 @@ entice_file_add(const char *file)
       {
          if ((o = esmart_thumb_new(ecore_evas_get(entice->ee), buf)))
          {
-
             evas_object_layer_set(o,
                                   evas_object_layer_get(entice->container));
             edje = edje_object_add(ecore_evas_get(entice->ee));
@@ -445,7 +445,7 @@ entice_file_add(const char *file)
                {
                   entice->thumb.list =
                      evas_list_append(entice->thumb.list, o);
-                  evas_object_resize(o, 48, 48);
+                  evas_object_resize(o, (Evas_Coord) 48, (Evas_Coord) 48);
                   hookup_entice_thumb_signals(edje, o);
                   evas_object_layer_set(o,
                                         evas_object_layer_get(entice->
@@ -480,7 +480,10 @@ entice_file_add(const char *file)
             }
          }
          else
+	 {
+	     fprintf(stderr, "FUDGE YO\n");
             result = 1;
+	 }
       }
       else
          result = 2;
@@ -841,16 +844,17 @@ entice_resize(int w, int h)
 
    if (entice && entice->edje && entice->current)
    {
-      double ww, hh;
+      Evas_Coord ww, hh;
 
-      evas_object_resize(entice->edje, (double) w, (double) h);
+      evas_object_resize(entice->edje, (Evas_Coord) w, (Evas_Coord) h);
       edje_object_part_geometry_get(entice->edje, "entice.image", NULL, NULL,
                                     &ww, &hh);
       evas_object_resize(entice->current, ww, hh);
       if ((o = evas_object_name_find(ecore_evas_get(entice->ee), "trans")))
       {
          ecore_evas_geometry_get(entice->ee, &ex, &ey, &ew, &eh);
-         esmart_trans_x11_freshen(o, ex, ey, ew, eh);
+         esmart_trans_x11_freshen(o, (Evas_Coord) ex, (Evas_Coord) ey,
+                                  (Evas_Coord) ew, (Evas_Coord) eh);
       }
    }
 }
@@ -863,7 +867,7 @@ entice_preview_thumb(Evas_Object * o)
 
    if (o && entice && entice->edje)
    {
-      double x, y, w, h;
+      Evas_Coord x, y, w, h;
 
       if (esmart_thumb_freshen(o) == EPSILON_OK)
       {
@@ -910,7 +914,7 @@ entice_preview_thumb(Evas_Object * o)
           * an artifact immediately before a preview request happens 
           */
          evas_object_move(newpreview, -50, -50);
-         evas_object_resize(newpreview, 48, 48);
+         evas_object_resize(newpreview, (Evas_Coord) 48, (Evas_Coord) 48);
          edje_object_part_swallow(entice->edje, "entice.preview", newpreview);
          evas_object_show(newpreview);
 

@@ -677,7 +677,7 @@ entice_image_stack_below(Evas_Object * o, Evas_Object * below)
    }
 }
 static void
-entice_image_move(Evas_Object * o, double x, double y)
+entice_image_move(Evas_Object * o, Evas_Coord x, Evas_Coord y)
 {
    Entice_Image *im = NULL;
 
@@ -694,13 +694,13 @@ entice_image_move(Evas_Object * o, double x, double y)
    }
 }
 static void
-entice_image_resize(Evas_Object * o, double w, double h)
+entice_image_resize(Evas_Object * o, Evas_Coord w, Evas_Coord h)
 {
    Entice_Image *im = NULL;
 
    if ((im = evas_object_smart_data_get(o)))
    {
-      double ww = 0.0, hh = 0.0;
+      Evas_Coord ww = 0.0, hh = 0.0;
 
       im->w = w;
       im->h = h;
@@ -712,8 +712,8 @@ entice_image_resize(Evas_Object * o, double w, double h)
       if (im->zoom > w || im->zoom > h)
          im->zoom = w < h ? w : h;
 
-      ww = (int) ((double) im->iw / im->zoom);
-      hh = (int) ((double) im->ih / im->zoom);
+      ww = (Evas_Coord) ((double) im->iw / im->zoom);
+      hh = (Evas_Coord) ((double) im->ih / im->zoom);
 #if 0
       if (ww > w)
       {

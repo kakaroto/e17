@@ -51,7 +51,8 @@ struct _Entice_Image
    char *format;                /* we need to keep track of this too */
    Entice_Image_Moving_State state;
    /* current moving state */
-   int x, y, w, h, iw, ih;      /* geometry */
+   Evas_Coord x, y, w, h;       /* geometry */
+   int iw, ih;                  /* image size */
    Evas_Coord dx, dy;
    Evas_Object *obj;            /* the image object */
    Evas_Object *clip;           /* clip to this area when we swallow */

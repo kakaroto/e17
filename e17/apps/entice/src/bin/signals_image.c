@@ -482,8 +482,10 @@ _entice_image_align_seek(void *data, Evas_Object * o, const char *emission,
    if (edje_object_part_exists(o, source))
    {
       edje_object_part_geometry_get(o, source, &x, &y, &w, &h);
+#if DEBUG
       fprintf(stderr, "Seek on %s(%0.2f,%0.2f,%0.2f, %0.2f)\n", source, x, y,
               w, h);
+#endif
    }
 
 }
