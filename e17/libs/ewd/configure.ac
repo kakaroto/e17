@@ -48,12 +48,27 @@ AC_SUBST(PTHREAD_LIBS)
 AC_SUBST(HAVE_PTHREADS)
 
 if test x$pthreads = xyes ; then
-AC_CHECK_HEADERS(pthread.h,AC_DEFINE_UNQUOTED(HAVE_PTHREADS, "yes"),
-  AC_MSG_ERROR([*** POSIX thread support not found ***]))
-PTHREAD_LIBS=-lpthread
-HAVE_PTHREADS=1
+AC_CHECK_HEADERS(pthread.h,pthread_header_ok="yes", pthread_header_ok="no")
+   if test "$pthread_header_ok" = "yes"; then
+      AC_CHECK_LIB(pthread, main, PTHREAD_LIBS="-lpthread", PTHREAD_LIBS="error")
+      if test "$PTHREAD_LIBS" = "error"; then
+         AC_CHECK_LIB(c_r, main, PTHREAD_LIBS="-pthread", pthread_lib_ok="no")
+      fi
+   fi
+   if test "$pthread_header_ok" = "no" -o "$pthread_lib_ok" = "no"; then
+      HAVE_PTHREADS=0
+   else
+      HAVE_PTHREADS=1
+   fi
+   if test "$PTHREAD_LIBS" = "-pthread"; then
+      LIBS="$LIBS $PTHREAD_LIBS"
+   else
+      PTHREAD_CFLAGS="-D_REENTRANT -D_POSIX_PTHREAD_SEMANTICS"
+      LIBS="$LIBS $PTHREAD_LIBS"
+   fi
 else
 HAVE_PTHREADS=0
+PTHREAD_LIBS=""
 fi
 
 
