@@ -291,7 +291,7 @@ _How_To_Edit_Menus(editmenus)<br>
 _How_To_Change_Keybindings(editkeys)<br>
 _Themes(themes)<br>
 _Extra_Eyecandy(eyecandy)<br>
-_Maintenance_Scripts(maint)<br>
+_Maintainance_Scripts(maint)<br>
 
 
 
@@ -953,7 +953,8 @@ Recovering Minimized Applications
 <font face=aircut3/12 color=#ffffff>
 <p>
 There are several ways to recover an application once you have minimized it.
-The most obvious way is to use the _Iconbox(iconbox).  Of course, you might
+The most obvious way is to use the<br>
+_Iconbox(iconbox).  Of course, you might
 have had some applications in your Iconbox when you accidentally closed it.  Or
 maybe you minimized some applications and forgot you didn't have an Iconbox.
 Or maybe you don't like the Iconbox and usually use KDE or GNOME's panel to
@@ -985,7 +986,7 @@ that window (note: only one of these dialogs can be active at any one time), as
 shown to our right.
 <p>
 This dialog lets you selectively snapshot certain attributes of that window at
-that time and have Enlightenment remember them. You may chose to only remember
+that time and have Enlightenment remember them. You may choose to only remember
 some of the attributes, and possibly not have the application started
 automatically for you. Chose what you want Enlightenment to remember about that
 window and hit "Apply" or "OK" if you don't need the dialog anymore, and
@@ -1054,7 +1055,7 @@ the right.
 <img src=E_groups_menu.png x=320 y=25>
 <font face=aircut3/12 color=#ffffff>
 <p>
-There are two different ways for manipulating window groups. First, there's a
+There are two different methods for manipulating window groups. First, there's a
 comprehensive submenu available in each window's operations menu
 called "Window Groups".  This menu is shown here on the right.  You also are
 able to configure the group individually apart from the default group settings
@@ -1470,7 +1471,7 @@ should create a directory under your home directory called .enlightenment.  In
 this directory, there will be a file called "file.menu" - this file controls
 the contents of your left-mouse button _Menu(rootmenu) .  The very first line
 of this file contains the title for the menu, and the remainder of the file
-looks a bit something like this:
+looks something like this:
 <font face=aircut3/10 color=#112222>
 <p>
 "Eterm" NULL exec "Eterm"
@@ -1567,13 +1568,13 @@ enabled it through.
 <img src=E_maint_menu.png x=265 y=60>
 <font face=rothwell/25 color=#ffffff>
 <p>
-Included Maintenance Scripts
+Included Maintainance Scripts
 <font face=aircut3/12 color=#ffffff>
 <p>
 Enlightenment comes with several scripts that are executable out of the middle
 mouse button _menu(rootmenu) - these scripts can perform all sorts of
 maintenance on the files that enlightenment creates automatically for you.
-When you select "Maintenance" you should get a menu that looks something like
+When you select "Maintainance" you should get a menu that looks something like
 the one above-right.  You can also rebuild the _KDE_and_GNOME(deskenv) menus
 enlightenment uses from here<p>
 As a warning, when you purge configuration information, the next time you
