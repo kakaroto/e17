@@ -24,6 +24,7 @@ static const char cvs_ident[] = "$Id$";
 #include <unistd.h>
 #include <signal.h>
 #include <errno.h>
+#include <math.h>
 #include <gtk/gtk.h>
 #include <gdk_imlib.h>
 
@@ -56,7 +57,7 @@ play_game(void) {
   game_win = gtk_window_new(GTK_WINDOW_TOPLEVEL);
   gtk_window_set_title(GTK_WINDOW(game_win), "Game in Progress");
   gtk_window_set_transient_for(GTK_WINDOW(game_win), GTK_WINDOW(pregame_win));
-  gtk_window_set_position(GTK_WINDOW(game_win), GTK_WIN_POS_CENTER);
+  gtk_window_set_position(GTK_WINDOW(game_win), GTK_WIN_POS_MOUSE);
   gtk_signal_connect(GTK_OBJECT(game_win), "destroy", GTK_SIGNAL_FUNC(close_cb), NULL);
   gtk_signal_connect(GTK_OBJECT(game_win), "delete_event", GTK_SIGNAL_FUNC(close_cb), NULL);
   gtk_container_set_border_width(GTK_CONTAINER(game_win), 5);
@@ -75,9 +76,10 @@ play_game(void) {
   dest_group = dest_group_get_current();
   dest_current = dest_group->members;
   dest_total = (unsigned char) g_list_length(dest_current);
-  rows = dest_total / 3;
-  if (rows == 0) rows = 1;
-  cols = dest_total / 3 + ((dest_total % 3) ? 1 : 0);
+  rows = (unsigned short) (sqrt(dest_total));
+  cols = rows + (((rows * rows) < dest_total) ? 1 : 0);
+  if ((rows * cols) < dest_total) rows++;
+  D(("There are %lu destinations, %lu rows, and %lu columns.\n", dest_total, rows, cols));
   dest_table = gtk_table_new(rows, cols, FALSE);
   gtk_table_set_row_spacings(GTK_TABLE(dest_table), 3);
   gtk_table_set_col_spacings(GTK_TABLE(dest_table), 3);
@@ -86,15 +88,14 @@ play_game(void) {
 
   dest_buttons = (GtkWidget **) malloc(sizeof(GtkWidget *) * dest_total);
   for (r=0, c=0, dest_cnt = 0; (dest_current != NULL); dest_current = g_list_next(dest_current), dest_cnt++) {
-    GtkWidget *button;
     char *name;
 
     name = ((player_t *) (dest_current->data))->name;
-    button = gtk_button_new_with_label(name);
-    gtk_signal_connect(GTK_OBJECT(button), "clicked", GTK_SIGNAL_FUNC(click_cb), NULL);
-    gtk_object_set_data(GTK_OBJECT(button), "label", (void *) name);
-    gtk_table_attach_defaults(GTK_TABLE(dest_table), GTK_WIDGET(button), c, c+1, r, r+1);
-    gtk_widget_show(button);
+    dest_buttons[dest_cnt] = gtk_button_new_with_label(name);
+    gtk_signal_connect(GTK_OBJECT(dest_buttons[dest_cnt]), "clicked", GTK_SIGNAL_FUNC(click_cb), NULL);
+    gtk_object_set_data(GTK_OBJECT(dest_buttons[dest_cnt]), "label", (void *) name);
+    gtk_table_attach_defaults(GTK_TABLE(dest_table), GTK_WIDGET(dest_buttons[dest_cnt]), c, c+1, r, r+1);
+    gtk_widget_show(dest_buttons[dest_cnt]);
     if (++c == cols) {
       c = 0;
       if (++r == rows) {
@@ -150,6 +151,7 @@ play_game(void) {
 static gint
 close_cb(void) {
   gtk_widget_destroy(game_win);
+  game_win = NULL;
   return ((gint) 1);
 }
 
@@ -158,6 +160,8 @@ click_cb(GtkWidget *button, gpointer data) {
 
   unsigned short i;
   char *label_text;
+
+  D(("click_cb():  button == 0x%08x, data == 0x%08x\n", (int) button, (int) data));
 
   if (GTK_IS_BUTTON(button)) {
     gtk_widget_set_sensitive(button, FALSE);

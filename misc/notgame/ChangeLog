@@ -89,3 +89,13 @@ Tue Sep 14 19:16:06 PDT 1999	Michael Jennings <mej@eterm.org>
 	Working towards getting the "play game" data from the right places.
 	
 -------------------------------------------------------------------------------
+Thu Sep 16 16:56:20 PDT 1999	Michael Jennings <mej@eterm.org>
+
+	The Not Game is now completely playable.  Only a few additions left
+	to make (namely, making the "Current Player" label accurate, coding
+	the "Add" dialog boxes, and writing a configuration saver).
+
+	Please report any bugs, with debugging output if possible (specify
+	--with-debugging when running configure or autogen.sh).
+	
+-------------------------------------------------------------------------------
