@@ -8,6 +8,7 @@
     int lnum = 1;
     int col = 0;
     char *cur_file = NULL;
+    extern char *filename;
 
     static int comment = 0, cpp_comment = 0;
     static int script_level = 0;
@@ -199,7 +200,7 @@ y					{ KEYWORD_RETURN(Y); }
 
 #[ \t]+[0-9]+[ \t]+\".*\".* {
     /* this handles the #line <num> <name> <something>
-	 * so that the linenum and cfname hold correct 
+	 * so that the lnum and cur_file hold correct 
 	 * values for this file
 	 */              
 
@@ -210,20 +211,15 @@ y					{ KEYWORD_RETURN(Y); }
 	char *tmp;
 	
 	c = *txt;
-
-	/* skip the # and space (until the first number) */
 	while(c == '#' || c == ' ') 
 		c = *++txt; 
 
 	lpos = txt;
-
-	/* move over all the numbers */
 	while(c >= 48 && c <= 57) {
 		c = *++txt;
 		count ++;
 	}       
 	
-	/* get the lnum from the string */
 	tmp = (char *)calloc(count + 1, sizeof(char));
 	strncpy(tmp, lpos, count);
 
@@ -232,29 +228,27 @@ y					{ KEYWORD_RETURN(Y); }
 	lnum = atoi(tmp) - 1;
 	free(tmp);
 
-	/* now we wana get the fname so skip all space
-	 * and the first " */
 	while(c == ' ' || c == '\"') 
 		c = *++txt;   
 
 	lpos = txt;
 	count = 1;
-	
-	/* move over the fname */
 	while(c != '\"') {
 		c = *++txt; 
 		count ++;
 	}
-
-	/* ignore the last " */
 	count --;
 
 	if (cur_file)
 		free(cur_file);
 
-	/* now get the fname */
 	cur_file = (char *)calloc(count + 1, sizeof(char));
 	strncpy(cur_file, lpos, count);
+
+	if (!strcmp(cur_file, "<stdin>")) {
+		free(cur_file);
+		cur_file = strdup(filename);
+	}
 }
 
 #                   { CPP_COMMENT(); }
