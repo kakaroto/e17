@@ -590,7 +590,7 @@ shell_expand(char *s)
                   for (pbuff++; *pbuff && *pbuff != '`' && l < max; pbuff++, l++) {
                       Command[l] = *pbuff;
                   }
-                  ASSERT(l < CONFIG_BUFF);
+                  ASSERT_RVAL(l < CONFIG_BUFF, NULL);
                   Command[l] = 0;
                   Command = shell_expand(Command);
                   Output = builtin_exec(Command);
@@ -672,7 +672,7 @@ shell_expand(char *s)
               newbuff[j] = *pbuff;
         }
     }
-    ASSERT(j < CONFIG_BUFF);
+    ASSERT_RVAL(j < CONFIG_BUFF, NULL);
     newbuff[j] = 0;
 
     D_PARSE(("shell_expand(%s) returning \"%s\"\n", s, newbuff));
@@ -763,7 +763,7 @@ open_config_file(char *name)
     int ver;
     char buff[256], test[30], *begin_ptr, *end_ptr;
 
-    ASSERT(name != NULL);
+    ASSERT_RVAL(name != NULL, NULL);
 
     snprintf(test, sizeof(test), "<%s-", libast_program_name);
     fp = fopen(name, "rt");

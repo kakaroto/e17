@@ -736,8 +736,8 @@ hex_dump(void *buff, register size_t count)
     for (ptr = (unsigned char *) buff, j = 0; j < count; j += 8) {
         print_error(" %8p | %06lu | %07x | ", buff, (unsigned long) count, (unsigned int) j);
         l = ((count - j < 8) ? (count - j) : (8));
-        memset(buffr, 0, 9);
         memcpy(buffr, ptr + j, l);
+        memset(buffr + l, 0, 9 - l);
         for (k = 0; k < l; k++) {
             print_error("%02x ", buffr[k]);
         }
@@ -746,4 +746,112 @@ hex_dump(void *buff, register size_t count)
         }
         print_error("| %-8s\n", safe_str((char *) buffr, l));
     }
+}
+
+#define CHAR_CLASS_MATCH(a, b)      ((isalpha(a) && isalpha(b)) \
+                                     || (isdigit(a) && isdigit(b)) \
+                                     || (!isalnum(a) && !isalnum(b)))
+spif_cmp_t
+version_compare(const char *v1, const char *v2)
+{
+    char buff1[128], buff2[128];
+
+    for (; *v1 && *v2; ) {
+        if (isalpha(*v1) && isalpha(*v2)) {
+            char *p1 = buff1, *p2 = buff2;
+            spif_int8_t ival1 = 5, ival2 = 5;
+
+            /* Compare words.  First, copy each word into buffers. */
+            for (; isalpha(*v1); v1++, p1++) *p1 = *v1;
+            for (; isalpha(*v2); v2++, p2++) *p2 = *v2;
+            *p1 = *p2 = 0;
+
+            /* Change the buffered strings to lowercase for easier comparison. */
+            downcase_str(buff1);
+            downcase_str(buff2);
+
+            /* Some strings require special handling. */
+            if (!strcmp(buff1, "snap")) {
+                ival1 = 1;
+            } else if (!strcmp(buff1, "pre")) {
+                ival1 = 2;
+            } else if (!strcmp(buff1, "alpha")) {
+                ival1 = 3;
+            } else if (!strcmp(buff1, "beta")) {
+                ival1 = 4;
+            }
+            if (!strcmp(buff2, "snap")) {
+                ival2 = 1;
+            } else if (!strcmp(buff2, "pre")) {
+                ival2 = 2;
+            } else if (!strcmp(buff2, "alpha")) {
+                ival2 = 3;
+            } else if (!strcmp(buff2, "beta")) {
+                ival2 = 4;
+            }
+            if (ival1 != ival2) {
+                /* If the values are different, compare them. */
+                return SPIF_CMP_FROM_INT(ival1 - ival2);
+            } else if (ival1 == 5) {
+                int c;
+
+                /* Two arbitrary strings.  Compare them too. */
+                if ((c = strcmp(buff1, buff2)) != 0) {
+                    return SPIF_CMP_FROM_INT(c);
+                }
+            }
+        } else if (isdigit(*v1) && isdigit(*v2)) {
+            char *p1 = buff1, *p2 = buff2;
+            spif_int32_t ival1, ival2;
+            spif_cmp_t c;
+
+            /* Compare numbers.  First, copy each number into buffers. */
+            for (; isdigit(*v1); v1++, p1++) *p1 = *v1;
+            for (; isdigit(*v2); v2++, p2++) *p2 = *v2;
+            *p1 = *p2 = 0;
+
+            /* Convert the strings into actual integers. */
+            ival1 = SPIF_CAST(int32) strtol(buff1, (char **) NULL, 10);
+            ival2 = SPIF_CAST(int32) strtol(buff2, (char **) NULL, 10);
+
+            /* Compare the integers and return if not equal. */
+            c = SPIF_CMP_FROM_INT(ival1 - ival2);
+            if (!SPIF_CMP_IS_EQUAL(c)) {
+                return c;
+            }
+        } else if (!isalnum(*v1) && !isalnum(*v2)) {
+            char *p1 = buff1, *p2 = buff2;
+            spif_cmp_t c;
+
+            /* Compare non-alphanumeric strings. */
+            for (; !isalnum(*v1); v1++, p1++) *p1 = *v1;
+            for (; !isalnum(*v2); v2++, p2++) *p2 = *v2;
+            *p1 = *p2 = 0;
+
+            c = SPIF_CMP_FROM_INT(strcasecmp(buff1, buff2));
+            if (!SPIF_CMP_IS_EQUAL(c)) {
+                return c;
+            }
+        } else {
+            return SPIF_CMP_FROM_INT(strcasecmp(buff1, buff2));
+        }
+    }
+
+    /* We've reached the end of one of the strings. */
+    if (*v1) {
+        if (!BEG_STRCASECMP(v1, "snap") || !BEG_STRCASECMP(v1, "pre")
+            || !BEG_STRCASECMP(v1, "alpha") || !BEG_STRCASECMP(v1, "beta")) {
+            return SPIF_CMP_LESS;
+        } else {
+            return SPIF_CMP_GREATER;
+        }
+    } else if (*v2) {
+        if (!BEG_STRCASECMP(v2, "snap") || !BEG_STRCASECMP(v2, "pre")
+            || !BEG_STRCASECMP(v2, "alpha") || !BEG_STRCASECMP(v2, "beta")) {
+            return SPIF_CMP_GREATER;
+        } else {
+            return SPIF_CMP_LESS;
+        }
+    }
+    return SPIF_CMP_EQUAL;
 }

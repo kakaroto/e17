@@ -86,7 +86,7 @@ memrec_find_var(memrec_t *memrec, const void *ptr)
     register ptr_t *p;
     register unsigned long i;
 
-    ASSERT(memrec != NULL);
+    ASSERT_RVAL(memrec != NULL, NULL);
     REQUIRE_RVAL(ptr != NULL, NULL);
 
     for (i = 0, p = memrec->ptrs; i < memrec->cnt; i++, p++) {

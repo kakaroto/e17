@@ -221,6 +221,24 @@ test_strings(void)
     free_array(SPIF_CAST(ptr) slist, 5);
     TEST_PASS();
 
+    TEST_BEGIN("version_compare() function");
+    TEST_FAIL_IF(!SPIF_CMP_IS_LESS(version_compare("1.0", "1.0.1")));
+    TEST_FAIL_IF(!SPIF_CMP_IS_LESS(version_compare("2.9.99", "3.0")));
+    TEST_FAIL_IF(!SPIF_CMP_IS_LESS(version_compare("3.0", "29.9.9")));
+    TEST_FAIL_IF(!SPIF_CMP_IS_LESS(version_compare("1.0pre2", "1.0")));
+    TEST_FAIL_IF(!SPIF_CMP_IS_GREATER(version_compare("0.5.3", "0.5.3snap4")));
+    TEST_FAIL_IF(!SPIF_CMP_IS_GREATER(version_compare("2.2.4", "2.2.4beta3")));
+    TEST_FAIL_IF(!SPIF_CMP_IS_GREATER(version_compare("2.2.4beta3", "2.2.4alpha7")));
+    TEST_FAIL_IF(!SPIF_CMP_IS_GREATER(version_compare("1.27.3", "1.13.1")));
+    TEST_FAIL_IF(!SPIF_CMP_IS_GREATER(version_compare("0.10", "0.9.2")));
+    TEST_FAIL_IF(!SPIF_CMP_IS_GREATER(version_compare("2.3.2a", "2.3.2")));
+    TEST_FAIL_IF(!SPIF_CMP_IS_GREATER(version_compare("4.0p1", "4.0")));
+    TEST_FAIL_IF(!SPIF_CMP_IS_EQUAL(version_compare("3.4.5", "3.4.5")));
+    TEST_FAIL_IF(!SPIF_CMP_IS_EQUAL(version_compare("1.2.0b3", "1.2.0b3")));
+    TEST_FAIL_IF(!SPIF_CMP_IS_EQUAL(version_compare("2.0alpha", "2.0alpha")));
+    TEST_FAIL_IF(!SPIF_CMP_IS_EQUAL(version_compare("5.4pre1", "5.4pre1")));
+    TEST_PASS();
+
     TEST_PASSED("string");
     return 0;
 }

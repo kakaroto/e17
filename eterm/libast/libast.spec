@@ -1,7 +1,7 @@
 Summary: Library of Assorted Spiffy Things
 Name: libast
 Version: 0.5
-Release: 1
+Release: 0.1
 Copyright: BSD
 Group: System Environment/Libraries
 Source: %{name}-%{version}.tar.gz

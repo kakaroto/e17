@@ -670,6 +670,7 @@ extern char *garbage_collect(char *, size_t);
 extern char *file_garbage_collect(char *, size_t);
 extern char *condense_whitespace(char *);
 extern void hex_dump(void *, size_t);
+extern spif_cmp_t version_compare(const char *, const char *);
 #ifndef HAVE_MEMMEM
 extern void *memmem(const void *, size_t, const void *, size_t);
 #endif

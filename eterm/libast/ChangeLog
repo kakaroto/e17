@@ -244,3 +244,10 @@ Sun Jun  9 14:16:38 2002                        Michael Jennings (mej)
 
 Return on failed assert.
 ----------------------------------------------------------------------
+Sat Jul 13 23:26:12 2002                        Michael Jennings (mej)
+
+New function, version_compare(), which accurately compares package
+version numbers.  Take a look at the various test cases to see what
+kinds of comparisons it can accurately make, and if you see any that
+aren't there, let me know.
+----------------------------------------------------------------------

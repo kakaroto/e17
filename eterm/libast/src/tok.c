@@ -178,11 +178,13 @@ spif_tok_eval(spif_tok_t self)
     const char *pstr, *delim = NULL;
     spif_str_t tmp;
     char quote;
+    size_t len;
 
     if (SPIF_STR_ISNULL(self->src)) {
         return FALSE;
     }
     pstr = SPIF_CAST_C(const char *) SPIF_STR_STR(SPIF_STR(self->src));
+    len = spif_str_get_len(SPIF_STR(self->src));
 
     if (!SPIF_STR_ISNULL(self->sep)) {
         delim = SPIF_CAST_C(const char *) SPIF_STR_STR(SPIF_STR(self->sep));
@@ -199,7 +201,7 @@ spif_tok_eval(spif_tok_t self)
     /* The outermost for loop is where we traverse the string.  Each new
        word brings us back to the top where we resize our string list. */
     for (quote = 0; *pstr; ) {
-        tmp = spif_str_new_from_buff("", 4096);
+        tmp = spif_str_new_from_buff("", len);
         spif_str_clear(tmp, 0);
 
         /* This for loop is where we process each character. */
@@ -230,6 +232,7 @@ spif_tok_eval(spif_tok_t self)
 
         /* Reallocate the new string to be just the right size. */
         spif_str_trim(tmp);
+        len -= spif_str_get_len(tmp);
 
         /* Add it to the list */
         SPIF_LIST_APPEND(self->tokens, tmp);
