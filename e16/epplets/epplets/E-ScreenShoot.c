@@ -29,17 +29,17 @@
 #include "E-ScreenShoot.h"
 
 static void
-choose_random_cloak(void *data)
+choose_random_cloak (void *data)
 {
   static int last_anim = 0;
 
   do
     {
-      opt.cloak_anim = (int) (15 * ((float) rand()) / (RAND_MAX + 1.0)) + 1;
+      opt.cloak_anim = (int) (16 * ((float) rand ()) / (RAND_MAX + 1.0)) + 1;
     }
-  while (opt.cloak_anim == last_anim);  /* Don't pick the same one twice in a row. */
+  while (opt.cloak_anim == last_anim);	/* Don't pick the same one twice in a row. */
   last_anim = opt.cloak_anim;
-  Epplet_timer(choose_random_cloak, NULL, opt.rand_delay, "RAND_TIMER");
+  Epplet_timer (choose_random_cloak, NULL, opt.rand_delay, "RAND_TIMER");
   return;
   data = NULL;
 }
@@ -48,34 +48,34 @@ static void
 save_config (void)
 {
   char buf[10];
-  Esnprintf (buf, sizeof(buf), "%d", opt.quality);
+  Esnprintf (buf, sizeof (buf), "%d", opt.quality);
   Epplet_modify_config ("QUALITY", buf);
-  Esnprintf (buf, sizeof(buf), "%d", opt.win);
+  Esnprintf (buf, sizeof (buf), "%d", opt.win);
   Epplet_modify_config ("WIN_AREA", buf);
-  Esnprintf (buf, sizeof(buf), "%.2f", opt.delay);
+  Esnprintf (buf, sizeof (buf), "%f", opt.delay);
   Epplet_modify_config ("SHOT_DELAY", buf);
-  Esnprintf (buf, sizeof(buf), "%.2f", opt.cloak_delay);
+  Esnprintf (buf, sizeof (buf), "%f", opt.cloak_delay);
   Epplet_modify_config ("CLOAK_DELAY", buf);
-  Esnprintf (buf, sizeof(buf), "%.2f", opt.draw_interval);
+  Esnprintf (buf, sizeof (buf), "%f", opt.draw_interval);
   Epplet_modify_config ("DRAW_INTERVAL", buf);
-  Esnprintf (buf, sizeof(buf), "%.2f", opt.rand_delay);
+  Esnprintf (buf, sizeof (buf), "%f", opt.rand_delay);
   Epplet_modify_config ("RAND_DELAY", buf);
-  Esnprintf (buf, sizeof(buf), "%d", opt.do_cloak);
+  Esnprintf (buf, sizeof (buf), "%d", opt.do_cloak);
   Epplet_modify_config ("DO_CLOAK", buf);
   if (opt.rand_cloak)
     {
-      strcpy (buf, "16");
+      strcpy (buf, "25");
     }
   else
     {
-      Esnprintf (buf, sizeof(buf), "%d", opt.cloak_anim);
+      Esnprintf (buf, sizeof (buf), "%d", opt.cloak_anim);
     }
   Epplet_modify_config ("CLOAK_ANIM", buf);
-  Esnprintf (buf, sizeof(buf), "%d", opt.frame);
+  Esnprintf (buf, sizeof (buf), "%d", opt.frame);
   Epplet_modify_config ("WM_FRAME", buf);
-  Esnprintf (buf, sizeof(buf), "%d", opt.beep);
+  Esnprintf (buf, sizeof (buf), "%d", opt.beep);
   Epplet_modify_config ("BEEP", buf);
-  Esnprintf (buf, sizeof(buf), "%d", opt.run_script);
+  Esnprintf (buf, sizeof (buf), "%d", opt.run_script);
   Epplet_modify_config ("RUN_SCRIPT", buf);
   Epplet_modify_config ("DIRECTORY", opt.dir);
   Epplet_modify_config ("FILE_PREFIX", opt.file_prefix);
@@ -95,10 +95,10 @@ load_config (void)
   opt.do_cloak = atoi (Epplet_query_config_def ("DO_CLOAK", "1"));
   opt.beep = atoi (Epplet_query_config_def ("BEEP", "1"));
   opt.cloak_anim = atoi (Epplet_query_config_def ("CLOAK_ANIM", "8"));
-  if (opt.cloak_anim == 16)
+  if (opt.cloak_anim == 25)
     {
       opt.rand_cloak = 1;
-      choose_random_cloak(NULL);
+      choose_random_cloak (NULL);
     }
   else
     {
@@ -218,35 +218,35 @@ cloak_draw (void *data)
 	Epplet_timer (cloak_draw, NULL, opt.draw_interval, "DRAW_TIMER");
 	break;
       }
-      case 11:
+    case 11:
       {
-        draw_ball ();
-        Epplet_timer (cloak_draw, NULL, opt.draw_interval, "DRAW_TIMER");
-        break;
+	draw_ball ();
+	Epplet_timer (cloak_draw, NULL, opt.draw_interval, "DRAW_TIMER");
+	break;
       }
-      case 12:
+    case 12:
       {
-        draw_atoms ();
-        Epplet_timer (cloak_draw, NULL, opt.draw_interval, "DRAW_TIMER");
-        break;
+	draw_atoms ();
+	Epplet_timer (cloak_draw, NULL, opt.draw_interval, "DRAW_TIMER");
+	break;
       }
-      case 13:
+    case 13:
       {
-        draw_text ();
-        Epplet_timer (cloak_draw, NULL, opt.draw_interval, "DRAW_TIMER");
-        break;
+	draw_text ();
+	Epplet_timer (cloak_draw, NULL, opt.draw_interval, "DRAW_TIMER");
+	break;
       }
-      case 14:
+    case 14:
       {
-        draw_sine ();
-        Epplet_timer (cloak_draw, NULL, opt.draw_interval, "DRAW_TIMER");
-        break;
+	draw_sine ();
+	Epplet_timer (cloak_draw, NULL, opt.draw_interval, "DRAW_TIMER");
+	break;
       }
-      case 15:
+    case 15:
       {
-        draw_funky_rotator ();
-        Epplet_timer (cloak_draw, NULL, opt.draw_interval, "DRAW_TIMER");
-        break;
+	draw_funky_rotator ();
+	Epplet_timer (cloak_draw, NULL, opt.draw_interval, "DRAW_TIMER");
+	break;
       }
     default:
       {
@@ -284,17 +284,17 @@ cb_cloak_anim (void *data)
   cb_in (NULL, 0);
   opt.do_cloak = 1;
   opt.cloak_anim = *((int *) data);
-  if (opt.cloak_anim == 16)
+  if (opt.cloak_anim == 25)
     {
       opt.rand_cloak = 1;
-      choose_random_cloak(NULL);
+      choose_random_cloak (NULL);
     }
   else
     {
       if (opt.rand_cloak)
-        {
-          Epplet_remove_timer("RAND_TIMER");
-        }
+	{
+	  Epplet_remove_timer ("RAND_TIMER");
+	}
       opt.rand_cloak = 0;
     }
   Epplet_timer (cloak_epplet, NULL, opt.cloak_delay, "CLOAK_TIMER");
@@ -379,37 +379,42 @@ do_shot (void *data)
   char frame_buf[10];
   char beep_buf[20];
 
-  Esnprintf (qual_buf, sizeof(qual_buf), "%d", opt.quality);
+  Esnprintf (qual_buf, sizeof (qual_buf), "%d", opt.quality);
 
   filename_buf =
-    _Strjoin (NULL, opt.dir, opt.file_prefix, opt.file_stamp, ".",
-	      opt.file_type, NULL);
+    _Strjoin (NULL, "SCRTEMP=\"", opt.dir, opt.file_prefix, opt.file_stamp,
+	      ".", opt.file_type, "\"", NULL);
 
   if (opt.frame)
-    Esnprintf (frame_buf, sizeof(frame_buf), "-frame");
+    Esnprintf (frame_buf, sizeof (frame_buf), "-frame");
   else
     frame_buf[0] = '\0';
 
   if (opt.beep)
     beep_buf[0] = '\0';
   else
-    Esnprintf (beep_buf, sizeof(beep_buf), "-silent");
+    Esnprintf (beep_buf, sizeof (beep_buf), "-silent");
 
   if (!opt.win)
     {
       sys = _Strjoin (" ",
+		      filename_buf,
+		      "&&",
 		      "import",
 		      beep_buf,
-		      "-window", "root", "-quality", qual_buf, filename_buf,
+		      "-window", "root", "-quality", qual_buf, "$SCRTEMP",
 		      "&", NULL);
     }
   else
     {
       sys = _Strjoin (" ",
+		      filename_buf,
+		      "&&",
 		      "import", beep_buf, frame_buf, "-quality", qual_buf,
-		      filename_buf, "&", NULL);
+		      "$SCRTEMP", "&", NULL);
     }
 
+/*  printf ("%s\n", sys);  */
   system (sys);
   free (sys);
   free (filename_buf);
@@ -486,6 +491,10 @@ create_epplet_layout (void)
 			  (void *) (&(cloak_anims[8])));
   Epplet_add_popup_entry (p, "Funky Mesh", NULL, cb_cloak_anim,
 			  (void *) (&(cloak_anims[15])));
+/* 
+ *   Epplet_add_popup_entry (p, "Bendy Mesh", NULL, cb_cloak_anim,
+ * 			  (void *) (&(cloak_anims[16])));
+ */
   Epplet_add_popup_entry (p, "Scanner", NULL, cb_cloak_anim,
 			  (void *) (&(cloak_anims[9])));
   Epplet_add_popup_entry (p, "ColorShift", NULL, cb_cloak_anim,
@@ -499,7 +508,7 @@ create_epplet_layout (void)
   Epplet_add_popup_entry (p, "SineWave", NULL, cb_cloak_anim,
 			  (void *) (&(cloak_anims[14])));
   Epplet_add_popup_entry (p, "Random", NULL, cb_cloak_anim,
-			  (void *) (&(cloak_anims[16])));
+			  (void *) (&(cloak_anims[25])));
 
   col_p = Epplet_create_popup ();
   Epplet_add_popup_entry (col_p, "Flame Colors", NULL, NULL, NULL);
