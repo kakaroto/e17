@@ -18,15 +18,10 @@
 #include "interface.h"
 #include "support.h"
 
-/*******/
-extern GdkVisual *gdk_vis;
-extern GdkColormap *gdk_cmap;
-/*******/
-
 GtkWidget*
-create_main (void)
+create_toplevel (void)
 {
-  GtkWidget *main;
+  GtkWidget *toplevel;
   GtkWidget *vbox1;
   GtkWidget *menubar1;
   GtkWidget *flie1;
@@ -66,8 +61,6 @@ create_main (void)
   GtkWidget *prop_apply;
   GtkWidget *prop_reset;
   GtkWidget *draft;
-  GtkWidget *frame1;
-  GtkWidget *zoom;
   GtkWidget *notebook1;
   GtkWidget *scrolledwindow3;
   GtkWidget *images;
@@ -260,68 +253,75 @@ create_main (void)
   GtkWidget *bit_step_v;
   GtkWidget *label52;
   GtkWidget *hbuttonbox1;
+  GtkWidget *frame1;
+  GtkWidget *vbox7;
+  GtkWidget *frame6;
+  GtkWidget *zoom;
+  GtkWidget *hbox2;
+  GtkWidget *button1;
+  GtkWidget *button2;
   GtkTooltips *tooltips;
 
   tooltips = gtk_tooltips_new ();
 
-  main = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-  gtk_object_set_data (GTK_OBJECT (main), "main", main);
-  gtk_window_set_title (GTK_WINDOW (main), _("Etcher"));
-  gtk_window_set_policy (GTK_WINDOW (main), FALSE, TRUE, TRUE);
-  gtk_window_set_wmclass (GTK_WINDOW (main), "Main", "Etcher");
+  toplevel = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+  gtk_object_set_data (GTK_OBJECT (toplevel), "toplevel", toplevel);
+  gtk_window_set_title (GTK_WINDOW (toplevel), _("Etcher"));
+  gtk_window_set_policy (GTK_WINDOW (toplevel), FALSE, TRUE, TRUE);
+  gtk_window_set_wmclass (GTK_WINDOW (toplevel), "Main", "Etcher");
 
   vbox1 = gtk_vbox_new (FALSE, 0);
   gtk_widget_ref (vbox1);
-  gtk_object_set_data_full (GTK_OBJECT (main), "vbox1", vbox1,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "vbox1", vbox1,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (vbox1);
-  gtk_container_add (GTK_CONTAINER (main), vbox1);
+  gtk_container_add (GTK_CONTAINER (toplevel), vbox1);
 
   menubar1 = gtk_menu_bar_new ();
   gtk_widget_ref (menubar1);
-  gtk_object_set_data_full (GTK_OBJECT (main), "menubar1", menubar1,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "menubar1", menubar1,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (menubar1);
   gtk_box_pack_start (GTK_BOX (vbox1), menubar1, FALSE, FALSE, 0);
 
   flie1 = gtk_menu_item_new_with_label (_("File"));
   gtk_widget_ref (flie1);
-  gtk_object_set_data_full (GTK_OBJECT (main), "flie1", flie1,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "flie1", flie1,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (flie1);
   gtk_container_add (GTK_CONTAINER (menubar1), flie1);
 
   flie1_menu = gtk_menu_new ();
   gtk_widget_ref (flie1_menu);
-  gtk_object_set_data_full (GTK_OBJECT (main), "flie1_menu", flie1_menu,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "flie1_menu", flie1_menu,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_menu_item_set_submenu (GTK_MENU_ITEM (flie1), flie1_menu);
   flie1_menu_accels = gtk_menu_ensure_uline_accel_group (GTK_MENU (flie1_menu));
 
   open1 = gtk_menu_item_new_with_label (_("Open..."));
   gtk_widget_ref (open1);
-  gtk_object_set_data_full (GTK_OBJECT (main), "open1", open1,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "open1", open1,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (open1);
   gtk_container_add (GTK_CONTAINER (flie1_menu), open1);
 
   save1 = gtk_menu_item_new_with_label (_("Save"));
   gtk_widget_ref (save1);
-  gtk_object_set_data_full (GTK_OBJECT (main), "save1", save1,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "save1", save1,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (save1);
   gtk_container_add (GTK_CONTAINER (flie1_menu), save1);
 
   save_as1 = gtk_menu_item_new_with_label (_("Save As..."));
   gtk_widget_ref (save_as1);
-  gtk_object_set_data_full (GTK_OBJECT (main), "save_as1", save_as1,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "save_as1", save_as1,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (save_as1);
   gtk_container_add (GTK_CONTAINER (flie1_menu), save_as1);
 
   separator1 = gtk_menu_item_new ();
   gtk_widget_ref (separator1);
-  gtk_object_set_data_full (GTK_OBJECT (main), "separator1", separator1,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "separator1", separator1,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (separator1);
   gtk_container_add (GTK_CONTAINER (flie1_menu), separator1);
@@ -329,14 +329,14 @@ create_main (void)
 
   preferences1 = gtk_menu_item_new_with_label (_("Preferences..."));
   gtk_widget_ref (preferences1);
-  gtk_object_set_data_full (GTK_OBJECT (main), "preferences1", preferences1,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "preferences1", preferences1,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (preferences1);
   gtk_container_add (GTK_CONTAINER (flie1_menu), preferences1);
 
   separator2 = gtk_menu_item_new ();
   gtk_widget_ref (separator2);
-  gtk_object_set_data_full (GTK_OBJECT (main), "separator2", separator2,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "separator2", separator2,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (separator2);
   gtk_container_add (GTK_CONTAINER (flie1_menu), separator2);
@@ -344,35 +344,35 @@ create_main (void)
 
   exit1 = gtk_menu_item_new_with_label (_("Exit"));
   gtk_widget_ref (exit1);
-  gtk_object_set_data_full (GTK_OBJECT (main), "exit1", exit1,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "exit1", exit1,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (exit1);
   gtk_container_add (GTK_CONTAINER (flie1_menu), exit1);
 
   edit1 = gtk_menu_item_new_with_label (_("Edit"));
   gtk_widget_ref (edit1);
-  gtk_object_set_data_full (GTK_OBJECT (main), "edit1", edit1,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "edit1", edit1,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (edit1);
   gtk_container_add (GTK_CONTAINER (menubar1), edit1);
 
   edit1_menu = gtk_menu_new ();
   gtk_widget_ref (edit1_menu);
-  gtk_object_set_data_full (GTK_OBJECT (main), "edit1_menu", edit1_menu,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "edit1_menu", edit1_menu,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_menu_item_set_submenu (GTK_MENU_ITEM (edit1), edit1_menu);
   edit1_menu_accels = gtk_menu_ensure_uline_accel_group (GTK_MENU (edit1_menu));
 
   delete1 = gtk_menu_item_new_with_label (_("Delete"));
   gtk_widget_ref (delete1);
-  gtk_object_set_data_full (GTK_OBJECT (main), "delete1", delete1,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "delete1", delete1,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (delete1);
   gtk_container_add (GTK_CONTAINER (edit1_menu), delete1);
 
   help1 = gtk_menu_item_new_with_label (_("Help"));
   gtk_widget_ref (help1);
-  gtk_object_set_data_full (GTK_OBJECT (main), "help1", help1,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "help1", help1,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (help1);
   gtk_container_add (GTK_CONTAINER (menubar1), help1);
@@ -380,28 +380,28 @@ create_main (void)
 
   help1_menu = gtk_menu_new ();
   gtk_widget_ref (help1_menu);
-  gtk_object_set_data_full (GTK_OBJECT (main), "help1_menu", help1_menu,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "help1_menu", help1_menu,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_menu_item_set_submenu (GTK_MENU_ITEM (help1), help1_menu);
   help1_menu_accels = gtk_menu_ensure_uline_accel_group (GTK_MENU (help1_menu));
 
   about1 = gtk_menu_item_new_with_label (_("About"));
   gtk_widget_ref (about1);
-  gtk_object_set_data_full (GTK_OBJECT (main), "about1", about1,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "about1", about1,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (about1);
   gtk_container_add (GTK_CONTAINER (help1_menu), about1);
 
   table1 = gtk_table_new (3, 3, FALSE);
   gtk_widget_ref (table1);
-  gtk_object_set_data_full (GTK_OBJECT (main), "table1", table1,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "table1", table1,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (table1);
   gtk_box_pack_start (GTK_BOX (vbox1), table1, TRUE, TRUE, 0);
 
   scrolledwindow1 = gtk_scrolled_window_new (NULL, NULL);
   gtk_widget_ref (scrolledwindow1);
-  gtk_object_set_data_full (GTK_OBJECT (main), "scrolledwindow1", scrolledwindow1,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "scrolledwindow1", scrolledwindow1,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (scrolledwindow1);
   gtk_table_attach (GTK_TABLE (table1), scrolledwindow1, 1, 2, 1, 2,
@@ -413,25 +413,14 @@ create_main (void)
 
   viewport1 = gtk_viewport_new (NULL, NULL);
   gtk_widget_ref (viewport1);
-  gtk_object_set_data_full (GTK_OBJECT (main), "viewport1", viewport1,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "viewport1", viewport1,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (viewport1);
   gtk_container_add (GTK_CONTAINER (scrolledwindow1), viewport1);
 
-   /*******/
-   gtk_widget_push_visual(gdk_vis);
-   gtk_widget_push_colormap(gdk_cmap);
-   /*******/
-   
   view = gtk_drawing_area_new ();
-   
-   /*******/
-   gtk_widget_pop_visual();
-   gtk_widget_pop_colormap();
-   /*******/
-   
   gtk_widget_ref (view);
-  gtk_object_set_data_full (GTK_OBJECT (main), "view", view,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "view", view,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (view);
   gtk_container_add (GTK_CONTAINER (viewport1), view);
@@ -439,7 +428,7 @@ create_main (void)
 
   alignment2 = gtk_alignment_new (0.5, 0.5, 1, 1);
   gtk_widget_ref (alignment2);
-  gtk_object_set_data_full (GTK_OBJECT (main), "alignment2", alignment2,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "alignment2", alignment2,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (alignment2);
   gtk_table_attach (GTK_TABLE (table1), alignment2, 0, 1, 1, 3,
@@ -448,20 +437,20 @@ create_main (void)
 
   vbox3 = gtk_vbox_new (FALSE, 0);
   gtk_widget_ref (vbox3);
-  gtk_object_set_data_full (GTK_OBJECT (main), "vbox3", vbox3,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "vbox3", vbox3,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (vbox3);
   gtk_container_add (GTK_CONTAINER (alignment2), vbox3);
 
   toolbar3 = gtk_toolbar_new (GTK_ORIENTATION_VERTICAL, GTK_TOOLBAR_BOTH);
   gtk_widget_ref (toolbar3);
-  gtk_object_set_data_full (GTK_OBJECT (main), "toolbar3", toolbar3,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "toolbar3", toolbar3,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (toolbar3);
   gtk_box_pack_start (GTK_BOX (vbox3), toolbar3, FALSE, FALSE, 0);
   gtk_container_set_border_width (GTK_CONTAINER (toolbar3), 2);
 
-  tmp_toolbar_icon = create_pixmap (main, "image.xpm");
+  tmp_toolbar_icon = create_pixmap (toplevel, "image.xpm");
   new_image = gtk_toolbar_append_element (GTK_TOOLBAR (toolbar3),
                                 GTK_TOOLBAR_CHILD_BUTTON,
                                 NULL,
@@ -469,11 +458,11 @@ create_main (void)
                                 _("Add a new image"), NULL,
                                 tmp_toolbar_icon, NULL, NULL);
   gtk_widget_ref (new_image);
-  gtk_object_set_data_full (GTK_OBJECT (main), "new_image", new_image,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "new_image", new_image,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (new_image);
 
-  tmp_toolbar_icon = create_pixmap (main, "icon.xpm");
+  tmp_toolbar_icon = create_pixmap (toplevel, "icon.xpm");
   new_icon = gtk_toolbar_append_element (GTK_TOOLBAR (toolbar3),
                                 GTK_TOOLBAR_CHILD_BUTTON,
                                 NULL,
@@ -481,12 +470,12 @@ create_main (void)
                                 _("Not implimented yet"), NULL,
                                 tmp_toolbar_icon, NULL, NULL);
   gtk_widget_ref (new_icon);
-  gtk_object_set_data_full (GTK_OBJECT (main), "new_icon", new_icon,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "new_icon", new_icon,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (new_icon);
   gtk_widget_set_sensitive (new_icon, FALSE);
 
-  tmp_toolbar_icon = create_pixmap (main, "text.xpm");
+  tmp_toolbar_icon = create_pixmap (toplevel, "text.xpm");
   new_text = gtk_toolbar_append_element (GTK_TOOLBAR (toolbar3),
                                 GTK_TOOLBAR_CHILD_BUTTON,
                                 NULL,
@@ -494,14 +483,14 @@ create_main (void)
                                 _("Not implimented yet"), NULL,
                                 tmp_toolbar_icon, NULL, NULL);
   gtk_widget_ref (new_text);
-  gtk_object_set_data_full (GTK_OBJECT (main), "new_text", new_text,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "new_text", new_text,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (new_text);
   gtk_widget_set_sensitive (new_text, FALSE);
 
   gtk_toolbar_append_space (GTK_TOOLBAR (toolbar3));
 
-  tmp_toolbar_icon = create_pixmap (main, "raise.xpm");
+  tmp_toolbar_icon = create_pixmap (toplevel, "raise.xpm");
   raise = gtk_toolbar_append_element (GTK_TOOLBAR (toolbar3),
                                 GTK_TOOLBAR_CHILD_BUTTON,
                                 NULL,
@@ -509,11 +498,11 @@ create_main (void)
                                 _("Raise bit above others"), NULL,
                                 tmp_toolbar_icon, NULL, NULL);
   gtk_widget_ref (raise);
-  gtk_object_set_data_full (GTK_OBJECT (main), "raise", raise,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "raise", raise,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (raise);
 
-  tmp_toolbar_icon = create_pixmap (main, "lower.xpm");
+  tmp_toolbar_icon = create_pixmap (toplevel, "lower.xpm");
   lower = gtk_toolbar_append_element (GTK_TOOLBAR (toolbar3),
                                 GTK_TOOLBAR_CHILD_BUTTON,
                                 NULL,
@@ -521,11 +510,11 @@ create_main (void)
                                 _("Lower bit below others"), NULL,
                                 tmp_toolbar_icon, NULL, NULL);
   gtk_widget_ref (lower);
-  gtk_object_set_data_full (GTK_OBJECT (main), "lower", lower,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "lower", lower,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (lower);
 
-  tmp_toolbar_icon = create_pixmap (main, "delete.xpm");
+  tmp_toolbar_icon = create_pixmap (toplevel, "delete.xpm");
   delete = gtk_toolbar_append_element (GTK_TOOLBAR (toolbar3),
                                 GTK_TOOLBAR_CHILD_BUTTON,
                                 NULL,
@@ -533,11 +522,11 @@ create_main (void)
                                 _("Delete bit"), NULL,
                                 tmp_toolbar_icon, NULL, NULL);
   gtk_widget_ref (delete);
-  gtk_object_set_data_full (GTK_OBJECT (main), "delete", delete,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "delete", delete,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (delete);
 
-  tmp_toolbar_icon = create_pixmap (main, "reset.xpm");
+  tmp_toolbar_icon = create_pixmap (toplevel, "reset.xpm");
   reset = gtk_toolbar_append_element (GTK_TOOLBAR (toolbar3),
                                 GTK_TOOLBAR_CHILD_BUTTON,
                                 NULL,
@@ -545,13 +534,13 @@ create_main (void)
                                 _("Reset packing area to default size and location"), NULL,
                                 tmp_toolbar_icon, NULL, NULL);
   gtk_widget_ref (reset);
-  gtk_object_set_data_full (GTK_OBJECT (main), "reset", reset,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "reset", reset,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (reset);
 
   vbuttonbox1 = gtk_vbutton_box_new ();
   gtk_widget_ref (vbuttonbox1);
-  gtk_object_set_data_full (GTK_OBJECT (main), "vbuttonbox1", vbuttonbox1,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "vbuttonbox1", vbuttonbox1,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (vbuttonbox1);
   gtk_box_pack_start (GTK_BOX (vbox3), vbuttonbox1, TRUE, TRUE, 0);
@@ -562,7 +551,7 @@ create_main (void)
 
   prop_apply = gtk_button_new_with_label (_("Apply"));
   gtk_widget_ref (prop_apply);
-  gtk_object_set_data_full (GTK_OBJECT (main), "prop_apply", prop_apply,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "prop_apply", prop_apply,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (prop_apply);
   gtk_container_add (GTK_CONTAINER (vbuttonbox1), prop_apply);
@@ -571,7 +560,7 @@ create_main (void)
 
   prop_reset = gtk_button_new_with_label (_("Reset"));
   gtk_widget_ref (prop_reset);
-  gtk_object_set_data_full (GTK_OBJECT (main), "prop_reset", prop_reset,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "prop_reset", prop_reset,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (prop_reset);
   gtk_container_add (GTK_CONTAINER (vbuttonbox1), prop_reset);
@@ -580,7 +569,7 @@ create_main (void)
 
   draft = gtk_toggle_button_new_with_label (_("Draft"));
   gtk_widget_ref (draft);
-  gtk_object_set_data_full (GTK_OBJECT (main), "draft", draft,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "draft", draft,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (draft);
   gtk_table_attach (GTK_TABLE (table1), draft, 0, 1, 0, 1,
@@ -590,29 +579,9 @@ create_main (void)
   gtk_tooltips_set_tip (tooltips, draft, _("Toggle draft display mode"), NULL);
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (draft), TRUE);
 
-  frame1 = gtk_frame_new (NULL);
-  gtk_widget_ref (frame1);
-  gtk_object_set_data_full (GTK_OBJECT (main), "frame1", frame1,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (frame1);
-  gtk_table_attach (GTK_TABLE (table1), frame1, 2, 3, 2, 3,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (GTK_FILL), 0, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (frame1), 2);
-  gtk_frame_set_shadow_type (GTK_FRAME (frame1), GTK_SHADOW_IN);
-
-  zoom = gtk_drawing_area_new ();
-  gtk_widget_ref (zoom);
-  gtk_object_set_data_full (GTK_OBJECT (main), "zoom", zoom,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (zoom);
-  gtk_container_add (GTK_CONTAINER (frame1), zoom);
-  gtk_widget_set_usize (zoom, 80, 80);
-  gtk_tooltips_set_tip (tooltips, zoom, _("Zoomed view "), NULL);
-
   notebook1 = gtk_notebook_new ();
   gtk_widget_ref (notebook1);
-  gtk_object_set_data_full (GTK_OBJECT (main), "notebook1", notebook1,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "notebook1", notebook1,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (notebook1);
   gtk_table_attach (GTK_TABLE (table1), notebook1, 2, 3, 0, 2,
@@ -625,7 +594,7 @@ create_main (void)
 
   scrolledwindow3 = gtk_scrolled_window_new (NULL, NULL);
   gtk_widget_ref (scrolledwindow3);
-  gtk_object_set_data_full (GTK_OBJECT (main), "scrolledwindow3", scrolledwindow3,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "scrolledwindow3", scrolledwindow3,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (scrolledwindow3);
   gtk_container_add (GTK_CONTAINER (notebook1), scrolledwindow3);
@@ -634,7 +603,7 @@ create_main (void)
 
   images = gtk_clist_new (1);
   gtk_widget_ref (images);
-  gtk_object_set_data_full (GTK_OBJECT (main), "images", images,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "images", images,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (images);
   gtk_container_add (GTK_CONTAINER (scrolledwindow3), images);
@@ -643,14 +612,14 @@ create_main (void)
 
   label1 = gtk_label_new (_("Images"));
   gtk_widget_ref (label1);
-  gtk_object_set_data_full (GTK_OBJECT (main), "label1", label1,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "label1", label1,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label1);
   gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook1), gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook1), 0), label1);
 
   scrolledwindow2 = gtk_scrolled_window_new (NULL, NULL);
   gtk_widget_ref (scrolledwindow2);
-  gtk_object_set_data_full (GTK_OBJECT (main), "scrolledwindow2", scrolledwindow2,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "scrolledwindow2", scrolledwindow2,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (scrolledwindow2);
   gtk_container_add (GTK_CONTAINER (notebook1), scrolledwindow2);
@@ -659,7 +628,7 @@ create_main (void)
 
   states = gtk_clist_new (1);
   gtk_widget_ref (states);
-  gtk_object_set_data_full (GTK_OBJECT (main), "states", states,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "states", states,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (states);
   gtk_container_add (GTK_CONTAINER (scrolledwindow2), states);
@@ -669,14 +638,14 @@ create_main (void)
 
   label2 = gtk_label_new (_("States"));
   gtk_widget_ref (label2);
-  gtk_object_set_data_full (GTK_OBJECT (main), "label2", label2,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "label2", label2,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label2);
   gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook1), gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook1), 1), label2);
 
   hbox1 = gtk_hbox_new (FALSE, 0);
   gtk_widget_ref (hbox1);
-  gtk_object_set_data_full (GTK_OBJECT (main), "hbox1", hbox1,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "hbox1", hbox1,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (hbox1);
   gtk_table_attach (GTK_TABLE (table1), hbox1, 1, 2, 0, 1,
@@ -685,7 +654,7 @@ create_main (void)
 
   file = gtk_entry_new ();
   gtk_widget_ref (file);
-  gtk_object_set_data_full (GTK_OBJECT (main), "file", file,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "file", file,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (file);
   gtk_box_pack_start (GTK_BOX (hbox1), file, TRUE, TRUE, 0);
@@ -695,7 +664,7 @@ create_main (void)
 
   label48 = gtk_label_new (_("X"));
   gtk_widget_ref (label48);
-  gtk_object_set_data_full (GTK_OBJECT (main), "label48", label48,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "label48", label48,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label48);
   gtk_box_pack_start (GTK_BOX (hbox1), label48, FALSE, FALSE, 0);
@@ -703,7 +672,7 @@ create_main (void)
 
   x = gtk_entry_new ();
   gtk_widget_ref (x);
-  gtk_object_set_data_full (GTK_OBJECT (main), "x", x,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "x", x,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (x);
   gtk_box_pack_start (GTK_BOX (hbox1), x, FALSE, TRUE, 0);
@@ -711,7 +680,7 @@ create_main (void)
 
   label49 = gtk_label_new (_("Y"));
   gtk_widget_ref (label49);
-  gtk_object_set_data_full (GTK_OBJECT (main), "label49", label49,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "label49", label49,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label49);
   gtk_box_pack_start (GTK_BOX (hbox1), label49, FALSE, FALSE, 0);
@@ -719,7 +688,7 @@ create_main (void)
 
   y = gtk_entry_new ();
   gtk_widget_ref (y);
-  gtk_object_set_data_full (GTK_OBJECT (main), "y", y,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "y", y,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (y);
   gtk_box_pack_start (GTK_BOX (hbox1), y, FALSE, TRUE, 0);
@@ -727,7 +696,7 @@ create_main (void)
 
   label50 = gtk_label_new (_("Width"));
   gtk_widget_ref (label50);
-  gtk_object_set_data_full (GTK_OBJECT (main), "label50", label50,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "label50", label50,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label50);
   gtk_box_pack_start (GTK_BOX (hbox1), label50, FALSE, FALSE, 0);
@@ -735,7 +704,7 @@ create_main (void)
 
   width = gtk_entry_new ();
   gtk_widget_ref (width);
-  gtk_object_set_data_full (GTK_OBJECT (main), "width", width,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "width", width,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (width);
   gtk_box_pack_start (GTK_BOX (hbox1), width, FALSE, TRUE, 0);
@@ -743,7 +712,7 @@ create_main (void)
 
   label51 = gtk_label_new (_("Height"));
   gtk_widget_ref (label51);
-  gtk_object_set_data_full (GTK_OBJECT (main), "label51", label51,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "label51", label51,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label51);
   gtk_box_pack_start (GTK_BOX (hbox1), label51, FALSE, FALSE, 0);
@@ -751,7 +720,7 @@ create_main (void)
 
   height = gtk_entry_new ();
   gtk_widget_ref (height);
-  gtk_object_set_data_full (GTK_OBJECT (main), "height", height,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "height", height,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (height);
   gtk_box_pack_start (GTK_BOX (hbox1), height, FALSE, TRUE, 0);
@@ -759,7 +728,7 @@ create_main (void)
 
   vbox2 = gtk_vbox_new (FALSE, 0);
   gtk_widget_ref (vbox2);
-  gtk_object_set_data_full (GTK_OBJECT (main), "vbox2", vbox2,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "vbox2", vbox2,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (vbox2);
   gtk_table_attach (GTK_TABLE (table1), vbox2, 1, 2, 2, 3,
@@ -768,7 +737,7 @@ create_main (void)
 
   properties = gtk_notebook_new ();
   gtk_widget_ref (properties);
-  gtk_object_set_data_full (GTK_OBJECT (main), "properties", properties,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "properties", properties,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (properties);
   gtk_box_pack_start (GTK_BOX (vbox2), properties, TRUE, TRUE, 0);
@@ -781,7 +750,7 @@ create_main (void)
 
   table5 = gtk_table_new (7, 3, FALSE);
   gtk_widget_ref (table5);
-  gtk_object_set_data_full (GTK_OBJECT (main), "table5", table5,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "table5", table5,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (table5);
   gtk_container_add (GTK_CONTAINER (properties), table5);
@@ -791,7 +760,7 @@ create_main (void)
 
   label24 = gtk_label_new (_("Horizontal"));
   gtk_widget_ref (label24);
-  gtk_object_set_data_full (GTK_OBJECT (main), "label24", label24,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "label24", label24,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label24);
   gtk_table_attach (GTK_TABLE (table5), label24, 1, 2, 0, 1,
@@ -800,7 +769,7 @@ create_main (void)
 
   label25 = gtk_label_new (_("Vertical"));
   gtk_widget_ref (label25);
-  gtk_object_set_data_full (GTK_OBJECT (main), "label25", label25,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "label25", label25,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label25);
   gtk_table_attach (GTK_TABLE (table5), label25, 2, 3, 0, 1,
@@ -810,7 +779,7 @@ create_main (void)
   tl_abs_h_adj = gtk_adjustment_new (0, -999999, 999999, 1, 10, 10);
   tl_abs_h = gtk_spin_button_new (GTK_ADJUSTMENT (tl_abs_h_adj), 1, 0);
   gtk_widget_ref (tl_abs_h);
-  gtk_object_set_data_full (GTK_OBJECT (main), "tl_abs_h", tl_abs_h,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "tl_abs_h", tl_abs_h,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (tl_abs_h);
   gtk_table_attach (GTK_TABLE (table5), tl_abs_h, 1, 2, 1, 2,
@@ -820,7 +789,7 @@ create_main (void)
   tl_abs_v_adj = gtk_adjustment_new (0, -999999, 999999, 1, 10, 10);
   tl_abs_v = gtk_spin_button_new (GTK_ADJUSTMENT (tl_abs_v_adj), 1, 0);
   gtk_widget_ref (tl_abs_v);
-  gtk_object_set_data_full (GTK_OBJECT (main), "tl_abs_v", tl_abs_v,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "tl_abs_v", tl_abs_v,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (tl_abs_v);
   gtk_table_attach (GTK_TABLE (table5), tl_abs_v, 2, 3, 1, 2,
@@ -830,7 +799,7 @@ create_main (void)
   tl_rel_h_adj = gtk_adjustment_new (0, -9999, 9999, 0.1, 10, 10);
   tl_rel_h = gtk_spin_button_new (GTK_ADJUSTMENT (tl_rel_h_adj), 1, 2);
   gtk_widget_ref (tl_rel_h);
-  gtk_object_set_data_full (GTK_OBJECT (main), "tl_rel_h", tl_rel_h,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "tl_rel_h", tl_rel_h,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (tl_rel_h);
   gtk_table_attach (GTK_TABLE (table5), tl_rel_h, 1, 2, 5, 6,
@@ -840,7 +809,7 @@ create_main (void)
   tl_adj_h_adj = gtk_adjustment_new (0, -999999, 999999, 1, 10, 10);
   tl_adj_h = gtk_spin_button_new (GTK_ADJUSTMENT (tl_adj_h_adj), 1, 0);
   gtk_widget_ref (tl_adj_h);
-  gtk_object_set_data_full (GTK_OBJECT (main), "tl_adj_h", tl_adj_h,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "tl_adj_h", tl_adj_h,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (tl_adj_h);
   gtk_table_attach (GTK_TABLE (table5), tl_adj_h, 1, 2, 6, 7,
@@ -850,7 +819,7 @@ create_main (void)
   tl_adj_v_adj = gtk_adjustment_new (0, -999999, 999999, 1, 10, 10);
   tl_adj_v = gtk_spin_button_new (GTK_ADJUSTMENT (tl_adj_v_adj), 1, 0);
   gtk_widget_ref (tl_adj_v);
-  gtk_object_set_data_full (GTK_OBJECT (main), "tl_adj_v", tl_adj_v,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "tl_adj_v", tl_adj_v,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (tl_adj_v);
   gtk_table_attach (GTK_TABLE (table5), tl_adj_v, 2, 3, 6, 7,
@@ -860,7 +829,7 @@ create_main (void)
   tl_rel_v_adj = gtk_adjustment_new (0, -99999, 99999, 0.1, 10, 10);
   tl_rel_v = gtk_spin_button_new (GTK_ADJUSTMENT (tl_rel_v_adj), 1, 2);
   gtk_widget_ref (tl_rel_v);
-  gtk_object_set_data_full (GTK_OBJECT (main), "tl_rel_v", tl_rel_v,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "tl_rel_v", tl_rel_v,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (tl_rel_v);
   gtk_table_attach (GTK_TABLE (table5), tl_rel_v, 2, 3, 5, 6,
@@ -869,7 +838,7 @@ create_main (void)
 
   tl_rel_combo = gtk_combo_new ();
   gtk_widget_ref (tl_rel_combo);
-  gtk_object_set_data_full (GTK_OBJECT (main), "tl_rel_combo", tl_rel_combo,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "tl_rel_combo", tl_rel_combo,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (tl_rel_combo);
   gtk_table_attach (GTK_TABLE (table5), tl_rel_combo, 1, 3, 3, 4,
@@ -878,13 +847,13 @@ create_main (void)
 
   tl_rel = GTK_COMBO (tl_rel_combo)->entry;
   gtk_widget_ref (tl_rel);
-  gtk_object_set_data_full (GTK_OBJECT (main), "tl_rel", tl_rel,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "tl_rel", tl_rel,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (tl_rel);
 
   hseparator4 = gtk_hseparator_new ();
   gtk_widget_ref (hseparator4);
-  gtk_object_set_data_full (GTK_OBJECT (main), "hseparator4", hseparator4,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "hseparator4", hseparator4,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (hseparator4);
   gtk_table_attach (GTK_TABLE (table5), hseparator4, 0, 3, 2, 3,
@@ -893,7 +862,7 @@ create_main (void)
 
   hseparator3 = gtk_hseparator_new ();
   gtk_widget_ref (hseparator3);
-  gtk_object_set_data_full (GTK_OBJECT (main), "hseparator3", hseparator3,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "hseparator3", hseparator3,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (hseparator3);
   gtk_table_attach (GTK_TABLE (table5), hseparator3, 0, 3, 4, 5,
@@ -902,7 +871,7 @@ create_main (void)
 
   label29 = gtk_label_new (_("Relative Pre-Adjust"));
   gtk_widget_ref (label29);
-  gtk_object_set_data_full (GTK_OBJECT (main), "label29", label29,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "label29", label29,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label29);
   gtk_table_attach (GTK_TABLE (table5), label29, 0, 1, 6, 7,
@@ -912,7 +881,7 @@ create_main (void)
 
   label28 = gtk_label_new (_("Relative Location"));
   gtk_widget_ref (label28);
-  gtk_object_set_data_full (GTK_OBJECT (main), "label28", label28,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "label28", label28,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label28);
   gtk_table_attach (GTK_TABLE (table5), label28, 0, 1, 5, 6,
@@ -922,7 +891,7 @@ create_main (void)
 
   label27 = gtk_label_new (_("Relative to Bit Name"));
   gtk_widget_ref (label27);
-  gtk_object_set_data_full (GTK_OBJECT (main), "label27", label27,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "label27", label27,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label27);
   gtk_table_attach (GTK_TABLE (table5), label27, 0, 1, 3, 4,
@@ -932,7 +901,7 @@ create_main (void)
 
   label26 = gtk_label_new (_("Pixel Location"));
   gtk_widget_ref (label26);
-  gtk_object_set_data_full (GTK_OBJECT (main), "label26", label26,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "label26", label26,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label26);
   gtk_table_attach (GTK_TABLE (table5), label26, 0, 1, 1, 2,
@@ -942,14 +911,14 @@ create_main (void)
 
   label5 = gtk_label_new (_("Top Left"));
   gtk_widget_ref (label5);
-  gtk_object_set_data_full (GTK_OBJECT (main), "label5", label5,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "label5", label5,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label5);
   gtk_notebook_set_tab_label (GTK_NOTEBOOK (properties), gtk_notebook_get_nth_page (GTK_NOTEBOOK (properties), 0), label5);
 
   table8 = gtk_table_new (7, 3, FALSE);
   gtk_widget_ref (table8);
-  gtk_object_set_data_full (GTK_OBJECT (main), "table8", table8,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "table8", table8,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (table8);
   gtk_container_add (GTK_CONTAINER (properties), table8);
@@ -959,7 +928,7 @@ create_main (void)
 
   label42 = gtk_label_new (_("Horizontal"));
   gtk_widget_ref (label42);
-  gtk_object_set_data_full (GTK_OBJECT (main), "label42", label42,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "label42", label42,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label42);
   gtk_table_attach (GTK_TABLE (table8), label42, 1, 2, 0, 1,
@@ -968,7 +937,7 @@ create_main (void)
 
   label43 = gtk_label_new (_("Vertical"));
   gtk_widget_ref (label43);
-  gtk_object_set_data_full (GTK_OBJECT (main), "label43", label43,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "label43", label43,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label43);
   gtk_table_attach (GTK_TABLE (table8), label43, 2, 3, 0, 1,
@@ -978,7 +947,7 @@ create_main (void)
   br_abs_h_adj = gtk_adjustment_new (0, -999999, 999999, 1, 10, 10);
   br_abs_h = gtk_spin_button_new (GTK_ADJUSTMENT (br_abs_h_adj), 1, 0);
   gtk_widget_ref (br_abs_h);
-  gtk_object_set_data_full (GTK_OBJECT (main), "br_abs_h", br_abs_h,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "br_abs_h", br_abs_h,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (br_abs_h);
   gtk_table_attach (GTK_TABLE (table8), br_abs_h, 1, 2, 1, 2,
@@ -988,7 +957,7 @@ create_main (void)
   br_abs_v_adj = gtk_adjustment_new (0, -999999, 999999, 1, 10, 10);
   br_abs_v = gtk_spin_button_new (GTK_ADJUSTMENT (br_abs_v_adj), 1, 0);
   gtk_widget_ref (br_abs_v);
-  gtk_object_set_data_full (GTK_OBJECT (main), "br_abs_v", br_abs_v,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "br_abs_v", br_abs_v,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (br_abs_v);
   gtk_table_attach (GTK_TABLE (table8), br_abs_v, 2, 3, 1, 2,
@@ -998,7 +967,7 @@ create_main (void)
   br_rel_h_adj = gtk_adjustment_new (0, -9999, 9999, 0.1, 10, 10);
   br_rel_h = gtk_spin_button_new (GTK_ADJUSTMENT (br_rel_h_adj), 1, 2);
   gtk_widget_ref (br_rel_h);
-  gtk_object_set_data_full (GTK_OBJECT (main), "br_rel_h", br_rel_h,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "br_rel_h", br_rel_h,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (br_rel_h);
   gtk_table_attach (GTK_TABLE (table8), br_rel_h, 1, 2, 5, 6,
@@ -1008,7 +977,7 @@ create_main (void)
   br_adj_h_adj = gtk_adjustment_new (0, -999999, 999999, 1, 10, 10);
   br_adj_h = gtk_spin_button_new (GTK_ADJUSTMENT (br_adj_h_adj), 1, 0);
   gtk_widget_ref (br_adj_h);
-  gtk_object_set_data_full (GTK_OBJECT (main), "br_adj_h", br_adj_h,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "br_adj_h", br_adj_h,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (br_adj_h);
   gtk_table_attach (GTK_TABLE (table8), br_adj_h, 1, 2, 6, 7,
@@ -1018,7 +987,7 @@ create_main (void)
   br_adj_v_adj = gtk_adjustment_new (0, -999999, 999999, 1, 10, 10);
   br_adj_v = gtk_spin_button_new (GTK_ADJUSTMENT (br_adj_v_adj), 1, 0);
   gtk_widget_ref (br_adj_v);
-  gtk_object_set_data_full (GTK_OBJECT (main), "br_adj_v", br_adj_v,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "br_adj_v", br_adj_v,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (br_adj_v);
   gtk_table_attach (GTK_TABLE (table8), br_adj_v, 2, 3, 6, 7,
@@ -1028,7 +997,7 @@ create_main (void)
   br_rel_v_adj = gtk_adjustment_new (0, -9999, 9999, 0.1, 10, 10);
   br_rel_v = gtk_spin_button_new (GTK_ADJUSTMENT (br_rel_v_adj), 1, 2);
   gtk_widget_ref (br_rel_v);
-  gtk_object_set_data_full (GTK_OBJECT (main), "br_rel_v", br_rel_v,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "br_rel_v", br_rel_v,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (br_rel_v);
   gtk_table_attach (GTK_TABLE (table8), br_rel_v, 2, 3, 5, 6,
@@ -1037,7 +1006,7 @@ create_main (void)
 
   br_rel_combo = gtk_combo_new ();
   gtk_widget_ref (br_rel_combo);
-  gtk_object_set_data_full (GTK_OBJECT (main), "br_rel_combo", br_rel_combo,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "br_rel_combo", br_rel_combo,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (br_rel_combo);
   gtk_table_attach (GTK_TABLE (table8), br_rel_combo, 1, 3, 3, 4,
@@ -1046,13 +1015,13 @@ create_main (void)
 
   br_rel = GTK_COMBO (br_rel_combo)->entry;
   gtk_widget_ref (br_rel);
-  gtk_object_set_data_full (GTK_OBJECT (main), "br_rel", br_rel,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "br_rel", br_rel,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (br_rel);
 
   hseparator8 = gtk_hseparator_new ();
   gtk_widget_ref (hseparator8);
-  gtk_object_set_data_full (GTK_OBJECT (main), "hseparator8", hseparator8,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "hseparator8", hseparator8,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (hseparator8);
   gtk_table_attach (GTK_TABLE (table8), hseparator8, 0, 3, 2, 3,
@@ -1061,7 +1030,7 @@ create_main (void)
 
   hseparator9 = gtk_hseparator_new ();
   gtk_widget_ref (hseparator9);
-  gtk_object_set_data_full (GTK_OBJECT (main), "hseparator9", hseparator9,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "hseparator9", hseparator9,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (hseparator9);
   gtk_table_attach (GTK_TABLE (table8), hseparator9, 0, 3, 4, 5,
@@ -1070,7 +1039,7 @@ create_main (void)
 
   label44 = gtk_label_new (_("Pixel Location"));
   gtk_widget_ref (label44);
-  gtk_object_set_data_full (GTK_OBJECT (main), "label44", label44,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "label44", label44,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label44);
   gtk_table_attach (GTK_TABLE (table8), label44, 0, 1, 1, 2,
@@ -1080,7 +1049,7 @@ create_main (void)
 
   label45 = gtk_label_new (_("Relative to Bit Name"));
   gtk_widget_ref (label45);
-  gtk_object_set_data_full (GTK_OBJECT (main), "label45", label45,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "label45", label45,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label45);
   gtk_table_attach (GTK_TABLE (table8), label45, 0, 1, 3, 4,
@@ -1090,7 +1059,7 @@ create_main (void)
 
   label46 = gtk_label_new (_("Relative Location"));
   gtk_widget_ref (label46);
-  gtk_object_set_data_full (GTK_OBJECT (main), "label46", label46,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "label46", label46,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label46);
   gtk_table_attach (GTK_TABLE (table8), label46, 0, 1, 5, 6,
@@ -1100,7 +1069,7 @@ create_main (void)
 
   label47 = gtk_label_new (_("Relative Pre-Adjust"));
   gtk_widget_ref (label47);
-  gtk_object_set_data_full (GTK_OBJECT (main), "label47", label47,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "label47", label47,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label47);
   gtk_table_attach (GTK_TABLE (table8), label47, 0, 1, 6, 7,
@@ -1110,14 +1079,14 @@ create_main (void)
 
   label6 = gtk_label_new (_("Bottom Right"));
   gtk_widget_ref (label6);
-  gtk_object_set_data_full (GTK_OBJECT (main), "label6", label6,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "label6", label6,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label6);
   gtk_notebook_set_tab_label (GTK_NOTEBOOK (properties), gtk_notebook_get_nth_page (GTK_NOTEBOOK (properties), 1), label6);
 
   table4 = gtk_table_new (5, 3, FALSE);
   gtk_widget_ref (table4);
-  gtk_object_set_data_full (GTK_OBJECT (main), "table4", table4,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "table4", table4,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (table4);
   gtk_container_add (GTK_CONTAINER (properties), table4);
@@ -1127,7 +1096,7 @@ create_main (void)
 
   label21 = gtk_label_new (_("Horizontal"));
   gtk_widget_ref (label21);
-  gtk_object_set_data_full (GTK_OBJECT (main), "label21", label21,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "label21", label21,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label21);
   gtk_table_attach (GTK_TABLE (table4), label21, 1, 2, 0, 1,
@@ -1136,7 +1105,7 @@ create_main (void)
 
   label22 = gtk_label_new (_("Vertical"));
   gtk_widget_ref (label22);
-  gtk_object_set_data_full (GTK_OBJECT (main), "label22", label22,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "label22", label22,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label22);
   gtk_table_attach (GTK_TABLE (table4), label22, 2, 3, 0, 1,
@@ -1146,7 +1115,7 @@ create_main (void)
   content_alignment_h_adj = gtk_adjustment_new (0, -9999, 9999, 0.1, 10, 10);
   content_alignment_h = gtk_spin_button_new (GTK_ADJUSTMENT (content_alignment_h_adj), 1, 2);
   gtk_widget_ref (content_alignment_h);
-  gtk_object_set_data_full (GTK_OBJECT (main), "content_alignment_h", content_alignment_h,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "content_alignment_h", content_alignment_h,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (content_alignment_h);
   gtk_table_attach (GTK_TABLE (table4), content_alignment_h, 1, 2, 1, 2,
@@ -1156,7 +1125,7 @@ create_main (void)
   content_alignment_v_adj = gtk_adjustment_new (0, -9999, 9999, 0.1, 10, 10);
   content_alignment_v = gtk_spin_button_new (GTK_ADJUSTMENT (content_alignment_v_adj), 1, 2);
   gtk_widget_ref (content_alignment_v);
-  gtk_object_set_data_full (GTK_OBJECT (main), "content_alignment_v", content_alignment_v,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "content_alignment_v", content_alignment_v,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (content_alignment_v);
   gtk_table_attach (GTK_TABLE (table4), content_alignment_v, 2, 3, 1, 2,
@@ -1166,7 +1135,7 @@ create_main (void)
   aspect_h_adj = gtk_adjustment_new (1, 0, 999999, 1, 10, 10);
   aspect_h = gtk_spin_button_new (GTK_ADJUSTMENT (aspect_h_adj), 1, 0);
   gtk_widget_ref (aspect_h);
-  gtk_object_set_data_full (GTK_OBJECT (main), "aspect_h", aspect_h,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "aspect_h", aspect_h,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (aspect_h);
   gtk_table_attach (GTK_TABLE (table4), aspect_h, 1, 2, 4, 5,
@@ -1176,7 +1145,7 @@ create_main (void)
   aspect_v_adj = gtk_adjustment_new (1, 0, 999999, 1, 10, 10);
   aspect_v = gtk_spin_button_new (GTK_ADJUSTMENT (aspect_v_adj), 1, 0);
   gtk_widget_ref (aspect_v);
-  gtk_object_set_data_full (GTK_OBJECT (main), "aspect_v", aspect_v,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "aspect_v", aspect_v,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (aspect_v);
   gtk_table_attach (GTK_TABLE (table4), aspect_v, 2, 3, 4, 5,
@@ -1185,7 +1154,7 @@ create_main (void)
 
   hseparator2 = gtk_hseparator_new ();
   gtk_widget_ref (hseparator2);
-  gtk_object_set_data_full (GTK_OBJECT (main), "hseparator2", hseparator2,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "hseparator2", hseparator2,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (hseparator2);
   gtk_table_attach (GTK_TABLE (table4), hseparator2, 0, 3, 2, 3,
@@ -1194,7 +1163,7 @@ create_main (void)
 
   aspect = gtk_check_button_new_with_label (_("Retain Aspect Ratio"));
   gtk_widget_ref (aspect);
-  gtk_object_set_data_full (GTK_OBJECT (main), "aspect", aspect,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "aspect", aspect,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (aspect);
   gtk_table_attach (GTK_TABLE (table4), aspect, 0, 3, 3, 4,
@@ -1203,7 +1172,7 @@ create_main (void)
 
   label23 = gtk_label_new (_("Aspect Ratio"));
   gtk_widget_ref (label23);
-  gtk_object_set_data_full (GTK_OBJECT (main), "label23", label23,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "label23", label23,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label23);
   gtk_table_attach (GTK_TABLE (table4), label23, 0, 1, 4, 5,
@@ -1213,7 +1182,7 @@ create_main (void)
 
   label20 = gtk_label_new (_("Content Alignment"));
   gtk_widget_ref (label20);
-  gtk_object_set_data_full (GTK_OBJECT (main), "label20", label20,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "label20", label20,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label20);
   gtk_table_attach (GTK_TABLE (table4), label20, 0, 1, 1, 2,
@@ -1223,14 +1192,14 @@ create_main (void)
 
   label7 = gtk_label_new (_("Misc"));
   gtk_widget_ref (label7);
-  gtk_object_set_data_full (GTK_OBJECT (main), "label7", label7,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "label7", label7,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label7);
   gtk_notebook_set_tab_label (GTK_NOTEBOOK (properties), gtk_notebook_get_nth_page (GTK_NOTEBOOK (properties), 2), label7);
 
   table3 = gtk_table_new (7, 3, FALSE);
   gtk_widget_ref (table3);
-  gtk_object_set_data_full (GTK_OBJECT (main), "table3", table3,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "table3", table3,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (table3);
   gtk_container_add (GTK_CONTAINER (properties), table3);
@@ -1240,7 +1209,7 @@ create_main (void)
 
   label15 = gtk_label_new (_("Horizontal"));
   gtk_widget_ref (label15);
-  gtk_object_set_data_full (GTK_OBJECT (main), "label15", label15,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "label15", label15,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label15);
   gtk_table_attach (GTK_TABLE (table3), label15, 1, 2, 0, 1,
@@ -1249,7 +1218,7 @@ create_main (void)
 
   label16 = gtk_label_new (_("Vertical"));
   gtk_widget_ref (label16);
-  gtk_object_set_data_full (GTK_OBJECT (main), "label16", label16,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "label16", label16,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label16);
   gtk_table_attach (GTK_TABLE (table3), label16, 2, 3, 0, 1,
@@ -1259,7 +1228,7 @@ create_main (void)
   min_h_adj = gtk_adjustment_new (0, 0, 999999, 1, 10, 10);
   min_h = gtk_spin_button_new (GTK_ADJUSTMENT (min_h_adj), 1, 0);
   gtk_widget_ref (min_h);
-  gtk_object_set_data_full (GTK_OBJECT (main), "min_h", min_h,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "min_h", min_h,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (min_h);
   gtk_table_attach (GTK_TABLE (table3), min_h, 1, 2, 1, 2,
@@ -1269,7 +1238,7 @@ create_main (void)
   min_v_adj = gtk_adjustment_new (0, 0, 999999, 1, 10, 10);
   min_v = gtk_spin_button_new (GTK_ADJUSTMENT (min_v_adj), 1, 0);
   gtk_widget_ref (min_v);
-  gtk_object_set_data_full (GTK_OBJECT (main), "min_v", min_v,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "min_v", min_v,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (min_v);
   gtk_table_attach (GTK_TABLE (table3), min_v, 2, 3, 1, 2,
@@ -1279,7 +1248,7 @@ create_main (void)
   max_h_adj = gtk_adjustment_new (999999, 0, 999999, 1, 10, 10);
   max_h = gtk_spin_button_new (GTK_ADJUSTMENT (max_h_adj), 1, 0);
   gtk_widget_ref (max_h);
-  gtk_object_set_data_full (GTK_OBJECT (main), "max_h", max_h,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "max_h", max_h,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (max_h);
   gtk_table_attach (GTK_TABLE (table3), max_h, 1, 2, 2, 3,
@@ -1289,7 +1258,7 @@ create_main (void)
   max_v_adj = gtk_adjustment_new (999999, 0, 999999, 1, 10, 10);
   max_v = gtk_spin_button_new (GTK_ADJUSTMENT (max_v_adj), 1, 0);
   gtk_widget_ref (max_v);
-  gtk_object_set_data_full (GTK_OBJECT (main), "max_v", max_v,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "max_v", max_v,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (max_v);
   gtk_table_attach (GTK_TABLE (table3), max_v, 2, 3, 2, 3,
@@ -1299,7 +1268,7 @@ create_main (void)
   step_h_adj = gtk_adjustment_new (1, 1, 99999, 1, 10, 10);
   step_h = gtk_spin_button_new (GTK_ADJUSTMENT (step_h_adj), 1, 0);
   gtk_widget_ref (step_h);
-  gtk_object_set_data_full (GTK_OBJECT (main), "step_h", step_h,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "step_h", step_h,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (step_h);
   gtk_table_attach (GTK_TABLE (table3), step_h, 1, 2, 3, 4,
@@ -1309,7 +1278,7 @@ create_main (void)
   step_v_adj = gtk_adjustment_new (1, 1, 99999, 1, 10, 10);
   step_v = gtk_spin_button_new (GTK_ADJUSTMENT (step_v_adj), 1, 0);
   gtk_widget_ref (step_v);
-  gtk_object_set_data_full (GTK_OBJECT (main), "step_v", step_v,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "step_v", step_v,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (step_v);
   gtk_table_attach (GTK_TABLE (table3), step_v, 2, 3, 3, 4,
@@ -1318,7 +1287,7 @@ create_main (void)
 
   use_contents_h = gtk_check_button_new_with_label (_("Use Horizontal Size of Contents"));
   gtk_widget_ref (use_contents_h);
-  gtk_object_set_data_full (GTK_OBJECT (main), "use_contents_h", use_contents_h,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "use_contents_h", use_contents_h,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (use_contents_h);
   gtk_table_attach (GTK_TABLE (table3), use_contents_h, 0, 3, 5, 6,
@@ -1327,7 +1296,7 @@ create_main (void)
 
   use_contents_v = gtk_check_button_new_with_label (_("Use Vertical Size of Contents"));
   gtk_widget_ref (use_contents_v);
-  gtk_object_set_data_full (GTK_OBJECT (main), "use_contents_v", use_contents_v,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "use_contents_v", use_contents_v,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (use_contents_v);
   gtk_table_attach (GTK_TABLE (table3), use_contents_v, 0, 3, 6, 7,
@@ -1336,7 +1305,7 @@ create_main (void)
 
   hseparator1 = gtk_hseparator_new ();
   gtk_widget_ref (hseparator1);
-  gtk_object_set_data_full (GTK_OBJECT (main), "hseparator1", hseparator1,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "hseparator1", hseparator1,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (hseparator1);
   gtk_table_attach (GTK_TABLE (table3), hseparator1, 0, 3, 4, 5,
@@ -1345,7 +1314,7 @@ create_main (void)
 
   label17 = gtk_label_new (_("Min"));
   gtk_widget_ref (label17);
-  gtk_object_set_data_full (GTK_OBJECT (main), "label17", label17,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "label17", label17,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label17);
   gtk_table_attach (GTK_TABLE (table3), label17, 0, 1, 1, 2,
@@ -1355,7 +1324,7 @@ create_main (void)
 
   label18 = gtk_label_new (_("Max"));
   gtk_widget_ref (label18);
-  gtk_object_set_data_full (GTK_OBJECT (main), "label18", label18,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "label18", label18,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label18);
   gtk_table_attach (GTK_TABLE (table3), label18, 0, 1, 2, 3,
@@ -1365,7 +1334,7 @@ create_main (void)
 
   label19 = gtk_label_new (_("Stepping"));
   gtk_widget_ref (label19);
-  gtk_object_set_data_full (GTK_OBJECT (main), "label19", label19,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "label19", label19,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label19);
   gtk_table_attach (GTK_TABLE (table3), label19, 0, 1, 3, 4,
@@ -1375,14 +1344,14 @@ create_main (void)
 
   label8 = gtk_label_new (_("Size"));
   gtk_widget_ref (label8);
-  gtk_object_set_data_full (GTK_OBJECT (main), "label8", label8,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "label8", label8,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label8);
   gtk_notebook_set_tab_label (GTK_NOTEBOOK (properties), gtk_notebook_get_nth_page (GTK_NOTEBOOK (properties), 3), label8);
 
   scrolledwindow4 = gtk_scrolled_window_new (NULL, NULL);
   gtk_widget_ref (scrolledwindow4);
-  gtk_object_set_data_full (GTK_OBJECT (main), "scrolledwindow4", scrolledwindow4,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "scrolledwindow4", scrolledwindow4,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (scrolledwindow4);
   gtk_container_add (GTK_CONTAINER (properties), scrolledwindow4);
@@ -1391,7 +1360,7 @@ create_main (void)
 
   sync_list = gtk_clist_new (1);
   gtk_widget_ref (sync_list);
-  gtk_object_set_data_full (GTK_OBJECT (main), "sync_list", sync_list,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "sync_list", sync_list,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (sync_list);
   gtk_container_add (GTK_CONTAINER (scrolledwindow4), sync_list);
@@ -1401,21 +1370,21 @@ create_main (void)
 
   label14 = gtk_label_new (_("Propagate state to selected bits"));
   gtk_widget_ref (label14);
-  gtk_object_set_data_full (GTK_OBJECT (main), "label14", label14,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "label14", label14,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label14);
   gtk_clist_set_column_widget (GTK_CLIST (sync_list), 0, label14);
 
   label9 = gtk_label_new (_("State Sync"));
   gtk_widget_ref (label9);
-  gtk_object_set_data_full (GTK_OBJECT (main), "label9", label9,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "label9", label9,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label9);
   gtk_notebook_set_tab_label (GTK_NOTEBOOK (properties), gtk_notebook_get_nth_page (GTK_NOTEBOOK (properties), 4), label9);
 
   table2 = gtk_table_new (3, 2, FALSE);
   gtk_widget_ref (table2);
-  gtk_object_set_data_full (GTK_OBJECT (main), "table2", table2,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "table2", table2,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (table2);
   gtk_container_add (GTK_CONTAINER (properties), table2);
@@ -1425,7 +1394,7 @@ create_main (void)
 
   name = gtk_entry_new ();
   gtk_widget_ref (name);
-  gtk_object_set_data_full (GTK_OBJECT (main), "name", name,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "name", name,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (name);
   gtk_table_attach (GTK_TABLE (table2), name, 1, 2, 0, 1,
@@ -1434,7 +1403,7 @@ create_main (void)
 
   class_combo = gtk_combo_new ();
   gtk_widget_ref (class_combo);
-  gtk_object_set_data_full (GTK_OBJECT (main), "class_combo", class_combo,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "class_combo", class_combo,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (class_combo);
   gtk_table_attach (GTK_TABLE (table2), class_combo, 1, 2, 1, 2,
@@ -1467,7 +1436,7 @@ create_main (void)
 
   class = GTK_COMBO (class_combo)->entry;
   gtk_widget_ref (class);
-  gtk_object_set_data_full (GTK_OBJECT (main), "class", class,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "class", class,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (class);
   gtk_entry_set_editable (GTK_ENTRY (class), FALSE);
@@ -1475,7 +1444,7 @@ create_main (void)
 
   label11 = gtk_label_new (_("Name"));
   gtk_widget_ref (label11);
-  gtk_object_set_data_full (GTK_OBJECT (main), "label11", label11,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "label11", label11,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label11);
   gtk_table_attach (GTK_TABLE (table2), label11, 0, 1, 0, 1,
@@ -1485,7 +1454,7 @@ create_main (void)
 
   label12 = gtk_label_new (_("Class"));
   gtk_widget_ref (label12);
-  gtk_object_set_data_full (GTK_OBJECT (main), "label12", label12,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "label12", label12,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label12);
   gtk_table_attach (GTK_TABLE (table2), label12, 0, 1, 1, 2,
@@ -1495,7 +1464,7 @@ create_main (void)
 
   label13 = gtk_label_new (_("Type"));
   gtk_widget_ref (label13);
-  gtk_object_set_data_full (GTK_OBJECT (main), "label13", label13,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "label13", label13,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label13);
   gtk_table_attach (GTK_TABLE (table2), label13, 0, 1, 2, 3,
@@ -1505,7 +1474,7 @@ create_main (void)
 
   type = gtk_option_menu_new ();
   gtk_widget_ref (type);
-  gtk_object_set_data_full (GTK_OBJECT (main), "type", type,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "type", type,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (type);
   gtk_table_attach (GTK_TABLE (table2), type, 1, 2, 2, 3,
@@ -1528,14 +1497,14 @@ create_main (void)
 
   label10 = gtk_label_new (_("Properties"));
   gtk_widget_ref (label10);
-  gtk_object_set_data_full (GTK_OBJECT (main), "label10", label10,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "label10", label10,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label10);
   gtk_notebook_set_tab_label (GTK_NOTEBOOK (properties), gtk_notebook_get_nth_page (GTK_NOTEBOOK (properties), 5), label10);
 
   table7 = gtk_table_new (7, 5, FALSE);
   gtk_widget_ref (table7);
-  gtk_object_set_data_full (GTK_OBJECT (main), "table7", table7,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "table7", table7,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (table7);
   gtk_container_add (GTK_CONTAINER (properties), table7);
@@ -1546,7 +1515,7 @@ create_main (void)
   border_l_adj = gtk_adjustment_new (0, 0, 999999, 1, 10, 10);
   border_l = gtk_spin_button_new (GTK_ADJUSTMENT (border_l_adj), 1, 0);
   gtk_widget_ref (border_l);
-  gtk_object_set_data_full (GTK_OBJECT (main), "border_l", border_l,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "border_l", border_l,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (border_l);
   gtk_table_attach (GTK_TABLE (table7), border_l, 1, 2, 5, 6,
@@ -1556,7 +1525,7 @@ create_main (void)
   border_r_adj = gtk_adjustment_new (0, 0, 999999, 1, 10, 10);
   border_r = gtk_spin_button_new (GTK_ADJUSTMENT (border_r_adj), 1, 0);
   gtk_widget_ref (border_r);
-  gtk_object_set_data_full (GTK_OBJECT (main), "border_r", border_r,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "border_r", border_r,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (border_r);
   gtk_table_attach (GTK_TABLE (table7), border_r, 2, 3, 5, 6,
@@ -1566,7 +1535,7 @@ create_main (void)
   border_t_adj = gtk_adjustment_new (0, 0, 999999, 1, 10, 10);
   border_t = gtk_spin_button_new (GTK_ADJUSTMENT (border_t_adj), 1, 0);
   gtk_widget_ref (border_t);
-  gtk_object_set_data_full (GTK_OBJECT (main), "border_t", border_t,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "border_t", border_t,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (border_t);
   gtk_table_attach (GTK_TABLE (table7), border_t, 3, 4, 5, 6,
@@ -1576,7 +1545,7 @@ create_main (void)
   border_b_adj = gtk_adjustment_new (0, 0, 999999, 1, 10, 10);
   border_b = gtk_spin_button_new (GTK_ADJUSTMENT (border_b_adj), 1, 0);
   gtk_widget_ref (border_b);
-  gtk_object_set_data_full (GTK_OBJECT (main), "border_b", border_b,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "border_b", border_b,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (border_b);
   gtk_table_attach (GTK_TABLE (table7), border_b, 4, 5, 5, 6,
@@ -1585,7 +1554,7 @@ create_main (void)
 
   hseparator7 = gtk_hseparator_new ();
   gtk_widget_ref (hseparator7);
-  gtk_object_set_data_full (GTK_OBJECT (main), "hseparator7", hseparator7,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "hseparator7", hseparator7,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (hseparator7);
   gtk_table_attach (GTK_TABLE (table7), hseparator7, 0, 5, 4, 5,
@@ -1594,7 +1563,7 @@ create_main (void)
 
   img_normal = gtk_entry_new ();
   gtk_widget_ref (img_normal);
-  gtk_object_set_data_full (GTK_OBJECT (main), "img_normal", img_normal,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "img_normal", img_normal,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (img_normal);
   gtk_table_attach (GTK_TABLE (table7), img_normal, 1, 4, 0, 1,
@@ -1603,7 +1572,7 @@ create_main (void)
 
   img_hilited = gtk_entry_new ();
   gtk_widget_ref (img_hilited);
-  gtk_object_set_data_full (GTK_OBJECT (main), "img_hilited", img_hilited,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "img_hilited", img_hilited,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (img_hilited);
   gtk_table_attach (GTK_TABLE (table7), img_hilited, 1, 4, 1, 2,
@@ -1612,7 +1581,7 @@ create_main (void)
 
   img_clicked = gtk_entry_new ();
   gtk_widget_ref (img_clicked);
-  gtk_object_set_data_full (GTK_OBJECT (main), "img_clicked", img_clicked,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "img_clicked", img_clicked,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (img_clicked);
   gtk_table_attach (GTK_TABLE (table7), img_clicked, 1, 4, 2, 3,
@@ -1621,7 +1590,7 @@ create_main (void)
 
   img_disabled = gtk_entry_new ();
   gtk_widget_ref (img_disabled);
-  gtk_object_set_data_full (GTK_OBJECT (main), "img_disabled", img_disabled,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "img_disabled", img_disabled,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (img_disabled);
   gtk_table_attach (GTK_TABLE (table7), img_disabled, 1, 4, 3, 4,
@@ -1630,7 +1599,7 @@ create_main (void)
 
   label61 = gtk_label_new (_("Horizontal"));
   gtk_widget_ref (label61);
-  gtk_object_set_data_full (GTK_OBJECT (main), "label61", label61,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "label61", label61,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label61);
   gtk_table_attach (GTK_TABLE (table7), label61, 1, 2, 6, 7,
@@ -1639,7 +1608,7 @@ create_main (void)
 
   label62 = gtk_label_new (_("Vertical"));
   gtk_widget_ref (label62);
-  gtk_object_set_data_full (GTK_OBJECT (main), "label62", label62,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "label62", label62,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label62);
   gtk_table_attach (GTK_TABLE (table7), label62, 3, 4, 6, 7,
@@ -1648,7 +1617,7 @@ create_main (void)
 
   label37 = gtk_label_new (_("Normal"));
   gtk_widget_ref (label37);
-  gtk_object_set_data_full (GTK_OBJECT (main), "label37", label37,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "label37", label37,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label37);
   gtk_table_attach (GTK_TABLE (table7), label37, 0, 1, 0, 1,
@@ -1658,7 +1627,7 @@ create_main (void)
 
   label38 = gtk_label_new (_("Hilited"));
   gtk_widget_ref (label38);
-  gtk_object_set_data_full (GTK_OBJECT (main), "label38", label38,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "label38", label38,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label38);
   gtk_table_attach (GTK_TABLE (table7), label38, 0, 1, 1, 2,
@@ -1668,7 +1637,7 @@ create_main (void)
 
   label39 = gtk_label_new (_("Clicked"));
   gtk_widget_ref (label39);
-  gtk_object_set_data_full (GTK_OBJECT (main), "label39", label39,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "label39", label39,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label39);
   gtk_table_attach (GTK_TABLE (table7), label39, 0, 1, 2, 3,
@@ -1678,7 +1647,7 @@ create_main (void)
 
   label40 = gtk_label_new (_("Disabled"));
   gtk_widget_ref (label40);
-  gtk_object_set_data_full (GTK_OBJECT (main), "label40", label40,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "label40", label40,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label40);
   gtk_table_attach (GTK_TABLE (table7), label40, 0, 1, 3, 4,
@@ -1688,7 +1657,7 @@ create_main (void)
 
   label41 = gtk_label_new (_("Border Scaling"));
   gtk_widget_ref (label41);
-  gtk_object_set_data_full (GTK_OBJECT (main), "label41", label41,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "label41", label41,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label41);
   gtk_table_attach (GTK_TABLE (table7), label41, 0, 1, 5, 6,
@@ -1698,7 +1667,7 @@ create_main (void)
 
   label60 = gtk_label_new (_("Image Fill"));
   gtk_widget_ref (label60);
-  gtk_object_set_data_full (GTK_OBJECT (main), "label60", label60,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "label60", label60,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label60);
   gtk_table_attach (GTK_TABLE (table7), label60, 0, 1, 6, 7,
@@ -1708,7 +1677,7 @@ create_main (void)
 
   tile_h_combo = gtk_combo_new ();
   gtk_widget_ref (tile_h_combo);
-  gtk_object_set_data_full (GTK_OBJECT (main), "tile_h_combo", tile_h_combo,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "tile_h_combo", tile_h_combo,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (tile_h_combo);
   gtk_table_attach (GTK_TABLE (table7), tile_h_combo, 2, 3, 6, 7,
@@ -1724,7 +1693,7 @@ create_main (void)
 
   tile_h = GTK_COMBO (tile_h_combo)->entry;
   gtk_widget_ref (tile_h);
-  gtk_object_set_data_full (GTK_OBJECT (main), "tile_h", tile_h,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "tile_h", tile_h,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (tile_h);
   gtk_entry_set_editable (GTK_ENTRY (tile_h), FALSE);
@@ -1732,7 +1701,7 @@ create_main (void)
 
   tile_v_combo = gtk_combo_new ();
   gtk_widget_ref (tile_v_combo);
-  gtk_object_set_data_full (GTK_OBJECT (main), "tile_v_combo", tile_v_combo,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "tile_v_combo", tile_v_combo,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (tile_v_combo);
   gtk_table_attach (GTK_TABLE (table7), tile_v_combo, 4, 5, 6, 7,
@@ -1748,7 +1717,7 @@ create_main (void)
 
   tile_v = GTK_COMBO (tile_v_combo)->entry;
   gtk_widget_ref (tile_v);
-  gtk_object_set_data_full (GTK_OBJECT (main), "tile_v", tile_v,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "tile_v", tile_v,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (tile_v);
   gtk_entry_set_editable (GTK_ENTRY (tile_v), FALSE);
@@ -1756,7 +1725,7 @@ create_main (void)
 
   browse_clicked = gtk_button_new_with_label (_("Browse..."));
   gtk_widget_ref (browse_clicked);
-  gtk_object_set_data_full (GTK_OBJECT (main), "browse_clicked", browse_clicked,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "browse_clicked", browse_clicked,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (browse_clicked);
   gtk_table_attach (GTK_TABLE (table7), browse_clicked, 4, 5, 2, 3,
@@ -1765,7 +1734,7 @@ create_main (void)
 
   borwse_hilited = gtk_button_new_with_label (_("Browse..."));
   gtk_widget_ref (borwse_hilited);
-  gtk_object_set_data_full (GTK_OBJECT (main), "borwse_hilited", borwse_hilited,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "borwse_hilited", borwse_hilited,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (borwse_hilited);
   gtk_table_attach (GTK_TABLE (table7), borwse_hilited, 4, 5, 1, 2,
@@ -1774,7 +1743,7 @@ create_main (void)
 
   browse_normal = gtk_button_new_with_label (_("Browse..."));
   gtk_widget_ref (browse_normal);
-  gtk_object_set_data_full (GTK_OBJECT (main), "browse_normal", browse_normal,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "browse_normal", browse_normal,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (browse_normal);
   gtk_table_attach (GTK_TABLE (table7), browse_normal, 4, 5, 0, 1,
@@ -1783,7 +1752,7 @@ create_main (void)
 
   browse_disabled = gtk_button_new_with_label (_("Browse..."));
   gtk_widget_ref (browse_disabled);
-  gtk_object_set_data_full (GTK_OBJECT (main), "browse_disabled", browse_disabled,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "browse_disabled", browse_disabled,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (browse_disabled);
   gtk_table_attach (GTK_TABLE (table7), browse_disabled, 4, 5, 3, 4,
@@ -1792,14 +1761,14 @@ create_main (void)
 
   label36 = gtk_label_new (_("Image"));
   gtk_widget_ref (label36);
-  gtk_object_set_data_full (GTK_OBJECT (main), "label36", label36,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "label36", label36,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label36);
   gtk_notebook_set_tab_label (GTK_NOTEBOOK (properties), gtk_notebook_get_nth_page (GTK_NOTEBOOK (properties), 6), label36);
 
   table9 = gtk_table_new (6, 5, FALSE);
   gtk_widget_ref (table9);
-  gtk_object_set_data_full (GTK_OBJECT (main), "table9", table9,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "table9", table9,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (table9);
   gtk_container_add (GTK_CONTAINER (properties), table9);
@@ -1810,7 +1779,7 @@ create_main (void)
   bit_pad_l_adj = gtk_adjustment_new (0, -999999, 999999, 1, 10, 10);
   bit_pad_l = gtk_spin_button_new (GTK_ADJUSTMENT (bit_pad_l_adj), 1, 0);
   gtk_widget_ref (bit_pad_l);
-  gtk_object_set_data_full (GTK_OBJECT (main), "bit_pad_l", bit_pad_l,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "bit_pad_l", bit_pad_l,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (bit_pad_l);
   gtk_table_attach (GTK_TABLE (table9), bit_pad_l, 1, 2, 3, 4,
@@ -1820,7 +1789,7 @@ create_main (void)
   bit_min_h_adj = gtk_adjustment_new (0, 0, 999999, 1, 10, 10);
   bit_min_h = gtk_spin_button_new (GTK_ADJUSTMENT (bit_min_h_adj), 1, 0);
   gtk_widget_ref (bit_min_h);
-  gtk_object_set_data_full (GTK_OBJECT (main), "bit_min_h", bit_min_h,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "bit_min_h", bit_min_h,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (bit_min_h);
   gtk_table_attach (GTK_TABLE (table9), bit_min_h, 1, 3, 1, 2,
@@ -1830,7 +1799,7 @@ create_main (void)
   bit_min_v_adj = gtk_adjustment_new (0, 0, 999999, 1, 10, 10);
   bit_min_v = gtk_spin_button_new (GTK_ADJUSTMENT (bit_min_v_adj), 1, 0);
   gtk_widget_ref (bit_min_v);
-  gtk_object_set_data_full (GTK_OBJECT (main), "bit_min_v", bit_min_v,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "bit_min_v", bit_min_v,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (bit_min_v);
   gtk_table_attach (GTK_TABLE (table9), bit_min_v, 3, 5, 1, 2,
@@ -1840,7 +1809,7 @@ create_main (void)
   bit_max_h_adj = gtk_adjustment_new (999999, 0, 999999, 1, 10, 10);
   bit_max_h = gtk_spin_button_new (GTK_ADJUSTMENT (bit_max_h_adj), 1, 0);
   gtk_widget_ref (bit_max_h);
-  gtk_object_set_data_full (GTK_OBJECT (main), "bit_max_h", bit_max_h,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "bit_max_h", bit_max_h,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (bit_max_h);
   gtk_table_attach (GTK_TABLE (table9), bit_max_h, 1, 3, 2, 3,
@@ -1850,7 +1819,7 @@ create_main (void)
   bit_max_v_adj = gtk_adjustment_new (999999, 0, 999999, 1, 10, 10);
   bit_max_v = gtk_spin_button_new (GTK_ADJUSTMENT (bit_max_v_adj), 1, 0);
   gtk_widget_ref (bit_max_v);
-  gtk_object_set_data_full (GTK_OBJECT (main), "bit_max_v", bit_max_v,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "bit_max_v", bit_max_v,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (bit_max_v);
   gtk_table_attach (GTK_TABLE (table9), bit_max_v, 3, 5, 2, 3,
@@ -1859,7 +1828,7 @@ create_main (void)
 
   label53 = gtk_label_new (_("Horizontal"));
   gtk_widget_ref (label53);
-  gtk_object_set_data_full (GTK_OBJECT (main), "label53", label53,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "label53", label53,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label53);
   gtk_table_attach (GTK_TABLE (table9), label53, 1, 3, 0, 1,
@@ -1868,7 +1837,7 @@ create_main (void)
 
   label54 = gtk_label_new (_("Vertical"));
   gtk_widget_ref (label54);
-  gtk_object_set_data_full (GTK_OBJECT (main), "label54", label54,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "label54", label54,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label54);
   gtk_table_attach (GTK_TABLE (table9), label54, 3, 5, 0, 1,
@@ -1878,7 +1847,7 @@ create_main (void)
   bit_pad_r_adj = gtk_adjustment_new (0, -999999, 999999, 1, 10, 10);
   bit_pad_r = gtk_spin_button_new (GTK_ADJUSTMENT (bit_pad_r_adj), 1, 0);
   gtk_widget_ref (bit_pad_r);
-  gtk_object_set_data_full (GTK_OBJECT (main), "bit_pad_r", bit_pad_r,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "bit_pad_r", bit_pad_r,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (bit_pad_r);
   gtk_table_attach (GTK_TABLE (table9), bit_pad_r, 2, 3, 3, 4,
@@ -1888,7 +1857,7 @@ create_main (void)
   bit_pad_t_adj = gtk_adjustment_new (0, -999999, 999999, 1, 10, 10);
   bit_pad_t = gtk_spin_button_new (GTK_ADJUSTMENT (bit_pad_t_adj), 1, 0);
   gtk_widget_ref (bit_pad_t);
-  gtk_object_set_data_full (GTK_OBJECT (main), "bit_pad_t", bit_pad_t,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "bit_pad_t", bit_pad_t,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (bit_pad_t);
   gtk_table_attach (GTK_TABLE (table9), bit_pad_t, 3, 4, 3, 4,
@@ -1898,7 +1867,7 @@ create_main (void)
   bit_pad_b_adj = gtk_adjustment_new (0, -999999, 999999, 1, 10, 10);
   bit_pad_b = gtk_spin_button_new (GTK_ADJUSTMENT (bit_pad_b_adj), 1, 0);
   gtk_widget_ref (bit_pad_b);
-  gtk_object_set_data_full (GTK_OBJECT (main), "bit_pad_b", bit_pad_b,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "bit_pad_b", bit_pad_b,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (bit_pad_b);
   gtk_table_attach (GTK_TABLE (table9), bit_pad_b, 4, 5, 3, 4,
@@ -1908,7 +1877,7 @@ create_main (void)
   bit_inset_l_adj = gtk_adjustment_new (0, -999999, 999999, 1, 10, 10);
   bit_inset_l = gtk_spin_button_new (GTK_ADJUSTMENT (bit_inset_l_adj), 1, 0);
   gtk_widget_ref (bit_inset_l);
-  gtk_object_set_data_full (GTK_OBJECT (main), "bit_inset_l", bit_inset_l,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "bit_inset_l", bit_inset_l,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (bit_inset_l);
   gtk_table_attach (GTK_TABLE (table9), bit_inset_l, 1, 2, 4, 5,
@@ -1918,7 +1887,7 @@ create_main (void)
   bit_inset_r_adj = gtk_adjustment_new (0, -999999, 999999, 1, 10, 10);
   bit_inset_r = gtk_spin_button_new (GTK_ADJUSTMENT (bit_inset_r_adj), 1, 0);
   gtk_widget_ref (bit_inset_r);
-  gtk_object_set_data_full (GTK_OBJECT (main), "bit_inset_r", bit_inset_r,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "bit_inset_r", bit_inset_r,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (bit_inset_r);
   gtk_table_attach (GTK_TABLE (table9), bit_inset_r, 2, 3, 4, 5,
@@ -1928,7 +1897,7 @@ create_main (void)
   bit_inset_t_adj = gtk_adjustment_new (0, -999999, 999999, 1, 10, 10);
   bit_inset_t = gtk_spin_button_new (GTK_ADJUSTMENT (bit_inset_t_adj), 1, 0);
   gtk_widget_ref (bit_inset_t);
-  gtk_object_set_data_full (GTK_OBJECT (main), "bit_inset_t", bit_inset_t,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "bit_inset_t", bit_inset_t,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (bit_inset_t);
   gtk_table_attach (GTK_TABLE (table9), bit_inset_t, 3, 4, 4, 5,
@@ -1938,7 +1907,7 @@ create_main (void)
   bit_inset_b_adj = gtk_adjustment_new (0, -999999, 999999, 1, 10, 10);
   bit_inset_b = gtk_spin_button_new (GTK_ADJUSTMENT (bit_inset_b_adj), 1, 0);
   gtk_widget_ref (bit_inset_b);
-  gtk_object_set_data_full (GTK_OBJECT (main), "bit_inset_b", bit_inset_b,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "bit_inset_b", bit_inset_b,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (bit_inset_b);
   gtk_table_attach (GTK_TABLE (table9), bit_inset_b, 4, 5, 4, 5,
@@ -1947,7 +1916,7 @@ create_main (void)
 
   label55 = gtk_label_new (_("Min Size"));
   gtk_widget_ref (label55);
-  gtk_object_set_data_full (GTK_OBJECT (main), "label55", label55,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "label55", label55,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label55);
   gtk_table_attach (GTK_TABLE (table9), label55, 0, 1, 1, 2,
@@ -1957,7 +1926,7 @@ create_main (void)
 
   label56 = gtk_label_new (_("Max Size"));
   gtk_widget_ref (label56);
-  gtk_object_set_data_full (GTK_OBJECT (main), "label56", label56,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "label56", label56,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label56);
   gtk_table_attach (GTK_TABLE (table9), label56, 0, 1, 2, 3,
@@ -1967,7 +1936,7 @@ create_main (void)
 
   label57 = gtk_label_new (_("Padding"));
   gtk_widget_ref (label57);
-  gtk_object_set_data_full (GTK_OBJECT (main), "label57", label57,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "label57", label57,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label57);
   gtk_table_attach (GTK_TABLE (table9), label57, 0, 1, 3, 4,
@@ -1977,7 +1946,7 @@ create_main (void)
 
   label58 = gtk_label_new (_("Insets"));
   gtk_widget_ref (label58);
-  gtk_object_set_data_full (GTK_OBJECT (main), "label58", label58,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "label58", label58,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label58);
   gtk_table_attach (GTK_TABLE (table9), label58, 0, 1, 4, 5,
@@ -1987,7 +1956,7 @@ create_main (void)
 
   label63 = gtk_label_new (_("Stepping"));
   gtk_widget_ref (label63);
-  gtk_object_set_data_full (GTK_OBJECT (main), "label63", label63,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "label63", label63,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label63);
   gtk_table_attach (GTK_TABLE (table9), label63, 0, 1, 5, 6,
@@ -1998,7 +1967,7 @@ create_main (void)
   bit_step_h_adj = gtk_adjustment_new (1, 1, 999999, 1, 10, 10);
   bit_step_h = gtk_spin_button_new (GTK_ADJUSTMENT (bit_step_h_adj), 1, 0);
   gtk_widget_ref (bit_step_h);
-  gtk_object_set_data_full (GTK_OBJECT (main), "bit_step_h", bit_step_h,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "bit_step_h", bit_step_h,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (bit_step_h);
   gtk_table_attach (GTK_TABLE (table9), bit_step_h, 1, 3, 5, 6,
@@ -2008,7 +1977,7 @@ create_main (void)
   bit_step_v_adj = gtk_adjustment_new (1, 1, 999999, 1, 10, 10);
   bit_step_v = gtk_spin_button_new (GTK_ADJUSTMENT (bit_step_v_adj), 1, 0);
   gtk_widget_ref (bit_step_v);
-  gtk_object_set_data_full (GTK_OBJECT (main), "bit_step_v", bit_step_v,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "bit_step_v", bit_step_v,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (bit_step_v);
   gtk_table_attach (GTK_TABLE (table9), bit_step_v, 3, 5, 5, 6,
@@ -2017,19 +1986,81 @@ create_main (void)
 
   label52 = gtk_label_new (_("All"));
   gtk_widget_ref (label52);
-  gtk_object_set_data_full (GTK_OBJECT (main), "label52", label52,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "label52", label52,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label52);
   gtk_notebook_set_tab_label (GTK_NOTEBOOK (properties), gtk_notebook_get_nth_page (GTK_NOTEBOOK (properties), 7), label52);
 
   hbuttonbox1 = gtk_hbutton_box_new ();
   gtk_widget_ref (hbuttonbox1);
-  gtk_object_set_data_full (GTK_OBJECT (main), "hbuttonbox1", hbuttonbox1,
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "hbuttonbox1", hbuttonbox1,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (hbuttonbox1);
   gtk_box_pack_start (GTK_BOX (vbox2), hbuttonbox1, TRUE, TRUE, 0);
 
-  gtk_signal_connect (GTK_OBJECT (main), "delete_event",
+  frame1 = gtk_frame_new (NULL);
+  gtk_widget_ref (frame1);
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "frame1", frame1,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (frame1);
+  gtk_table_attach (GTK_TABLE (table1), frame1, 2, 3, 2, 3,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (GTK_FILL), 0, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (frame1), 2);
+  gtk_frame_set_shadow_type (GTK_FRAME (frame1), GTK_SHADOW_IN);
+
+  vbox7 = gtk_vbox_new (FALSE, 2);
+  gtk_widget_ref (vbox7);
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "vbox7", vbox7,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (vbox7);
+  gtk_container_add (GTK_CONTAINER (frame1), vbox7);
+  gtk_container_set_border_width (GTK_CONTAINER (vbox7), 2);
+
+  frame6 = gtk_frame_new (NULL);
+  gtk_widget_ref (frame6);
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "frame6", frame6,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (frame6);
+  gtk_box_pack_start (GTK_BOX (vbox7), frame6, TRUE, TRUE, 0);
+
+  zoom = gtk_drawing_area_new ();
+  gtk_widget_ref (zoom);
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "zoom", zoom,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (zoom);
+  gtk_container_add (GTK_CONTAINER (frame6), zoom);
+  gtk_widget_set_usize (zoom, 80, 80);
+  GTK_WIDGET_SET_FLAGS (zoom, GTK_CAN_FOCUS);
+  GTK_WIDGET_SET_FLAGS (zoom, GTK_CAN_DEFAULT);
+  gtk_tooltips_set_tip (tooltips, zoom, _("Zoomed view "), NULL);
+  gtk_widget_set_events (zoom, GDK_EXPOSURE_MASK | GDK_POINTER_MOTION_MASK | GDK_KEY_PRESS_MASK | GDK_KEY_RELEASE_MASK | GDK_ENTER_NOTIFY_MASK | GDK_LEAVE_NOTIFY_MASK | GDK_FOCUS_CHANGE_MASK | GDK_STRUCTURE_MASK | GDK_PROPERTY_CHANGE_MASK | GDK_VISIBILITY_NOTIFY_MASK | GDK_PROXIMITY_IN_MASK | GDK_PROXIMITY_OUT_MASK);
+
+  hbox2 = gtk_hbox_new (TRUE, 2);
+  gtk_widget_ref (hbox2);
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "hbox2", hbox2,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (hbox2);
+  gtk_box_pack_start (GTK_BOX (vbox7), hbox2, FALSE, TRUE, 0);
+  gtk_widget_set_usize (hbox2, -2, 20);
+
+  button1 = gtk_button_new_with_label (_("+"));
+  gtk_widget_ref (button1);
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "button1", button1,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (button1);
+  gtk_box_pack_start (GTK_BOX (hbox2), button1, FALSE, TRUE, 0);
+  gtk_widget_set_events (button1, GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK);
+
+  button2 = gtk_button_new_with_label (_("-"));
+  gtk_widget_ref (button2);
+  gtk_object_set_data_full (GTK_OBJECT (toplevel), "button2", button2,
+                            (GtkDestroyNotify) gtk_widget_unref);
+  gtk_widget_show (button2);
+  gtk_box_pack_start (GTK_BOX (hbox2), button2, FALSE, TRUE, 0);
+  gtk_widget_set_events (button2, GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK);
+
+  gtk_signal_connect (GTK_OBJECT (toplevel), "delete_event",
                       GTK_SIGNAL_FUNC (on_main_delete_event),
                       NULL);
   gtk_signal_connect (GTK_OBJECT (open1), "activate",
@@ -2104,12 +2135,6 @@ create_main (void)
   gtk_signal_connect (GTK_OBJECT (draft), "toggled",
                       GTK_SIGNAL_FUNC (on_draft_toggled),
                       NULL);
-  gtk_signal_connect (GTK_OBJECT (zoom), "expose_event",
-                      GTK_SIGNAL_FUNC (on_zoom_expose_event),
-                      NULL);
-  gtk_signal_connect (GTK_OBJECT (zoom), "configure_event",
-                      GTK_SIGNAL_FUNC (on_zoom_configure_event),
-                      NULL);
   gtk_signal_connect (GTK_OBJECT (images), "select_row",
                       GTK_SIGNAL_FUNC (on_images_select_row),
                       NULL);
@@ -2128,10 +2153,22 @@ create_main (void)
   gtk_signal_connect (GTK_OBJECT (browse_disabled), "clicked",
                       GTK_SIGNAL_FUNC (on_browse_disabled_clicked),
                       NULL);
+  gtk_signal_connect (GTK_OBJECT (zoom), "expose_event",
+                      GTK_SIGNAL_FUNC (on_zoom_expose_event),
+                      NULL);
+  gtk_signal_connect (GTK_OBJECT (zoom), "configure_event",
+                      GTK_SIGNAL_FUNC (on_zoom_configure_event),
+                      NULL);
+  gtk_signal_connect (GTK_OBJECT (button1), "clicked",
+                      GTK_SIGNAL_FUNC (on_zoomin_clicked),
+                      NULL);
+  gtk_signal_connect (GTK_OBJECT (button2), "clicked",
+                      GTK_SIGNAL_FUNC (on_zoomout_clicked),
+                      NULL);
 
-  gtk_object_set_data (GTK_OBJECT (main), "tooltips", tooltips);
+  gtk_object_set_data (GTK_OBJECT (toplevel), "tooltips", tooltips);
 
-  return main;
+  return toplevel;
 }
 
 GtkWidget*

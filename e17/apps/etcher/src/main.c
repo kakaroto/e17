@@ -77,7 +77,7 @@ main (int argc, char *argv[])
    add_pixmap_directory (PACKAGE_SOURCE_DIR "/pixmaps");
    
    
-   main_win = create_main();
+   main_win = create_toplevel();
      {
 	GtkWidget *w;
 	gchar *text;

@@ -39,7 +39,7 @@ static Evas_Object o_select_rect, o_select_line1, o_select_line2, o_select_line3
 static Evas_Object o_select_abs1, o_select_rel1, o_select_adj1, o_select_abs2, o_select_rel2, o_select_adj2;
 static double backing_x, backing_y, backing_w, backing_h;
 static gint draft_mode = 1;
-static gint zoom_x, zoom_y;
+static gint zoom_x, zoom_y, zoom_scale = 4;
 
 static Ebits_Object bits = NULL;
 static Ebits_Object_Bit_State selected_state = NULL;
@@ -593,29 +593,29 @@ zoom_redraw(int xx, int yy)
    else
       pmap = zoom->window;
    gdk_draw_rectangle(pmap, gc, 1, 0, 0, zoom->allocation.width, zoom->allocation.height);
-   for (y = 0; y < (zoom->allocation.height + 1) / 4; y++)
+   for (y = 0; y < (zoom->allocation.height + 1) / zoom_scale; y++)
      {
 	int i;
 	
-	for (i = 0; i < 4; i++)
+	for (i = 0; i < zoom_scale; i++)
 	  {
 	     gdk_window_copy_area(pmap, gc, 
-				  0, (y * 4) + i, 
+				  0, (y * zoom_scale) + i, 
 				  view->window,
-				  xx - ((zoom->allocation.width + 1) / 8),
-				  yy - ((zoom->allocation.height + 1) / 8) + y,
-				  (zoom->allocation.width + 1) / 4,
+				  xx - ((zoom->allocation.width + 1) / (2*zoom_scale)),
+				  yy - ((zoom->allocation.height + 1) / (2*zoom_scale)) + y,
+				  (zoom->allocation.width + 1) / zoom_scale,
 				  1);
 	  }
      }
-   for (x = ((zoom->allocation.width + 1) / 4) - 1; x >= 0; x--)
+   for (x = ((zoom->allocation.width + 1) / zoom_scale) - 1; x >= 0; x--)
      {
 	int i;
 	
-	for (i = 3; i >= 0; i--)
+	for (i = zoom_scale-1; i >= 0; i--)
 	  {
 	     gdk_window_copy_area(pmap, gc, 
-				  (x * 4) + i, 0, 
+				  (x * zoom_scale) + i, 0, 
 				  pmap,
 				  x, 0,
 				  1,
@@ -2248,5 +2248,24 @@ on_cancel_clicked                      (GtkButton       *button,
 
    top = gtk_widget_get_toplevel(GTK_WIDGET(button));
    gtk_widget_destroy(top);
+}
+
+
+void
+on_zoomin_clicked                      (GtkButton       *button,
+                                        gpointer         user_data)
+{
+  zoom_scale++;
+  zoom_redraw(zoom_x, zoom_y);
+}
+
+
+void
+on_zoomout_clicked                     (GtkButton       *button,
+                                        gpointer         user_data)
+{
+  if (zoom_scale > 1)
+    zoom_scale--;
+  zoom_redraw(zoom_x, zoom_y);
 }
 

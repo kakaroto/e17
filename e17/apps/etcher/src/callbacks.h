@@ -186,3 +186,11 @@ on_ok_clicked                          (GtkButton       *button,
 void
 on_cancel_clicked                      (GtkButton       *button,
                                         gpointer         user_data);
+
+void
+on_zoomin_clicked                      (GtkButton       *button,
+                                        gpointer         user_data);
+
+void
+on_zoomout_clicked                     (GtkButton       *button,
+                                        gpointer         user_data);
