@@ -18,7 +18,7 @@
 double obstacle_w = -1.0, obstacle_h = -1.0, obstacle_x, obstacle_y;
 
 static void e_idle(void *data);
-static void e_window_expose(Eevent *ev);
+static void ecore_window_expose(Ecore_Event *ev);
 
 void setup(void);
 
@@ -32,11 +32,11 @@ e_idle(void *data)
 }
 
 static void
-e_window_expose(Eevent *ev)
+ecore_window_expose(Ecore_Event *ev)
 {
-  Ev_Window_Expose *e;
+  Ecore_Event_Window_Expose *e;
 
-  e = (Ev_Window_Expose *)ev->event;
+  e = (Ecore_Event_Window_Expose *)ev->event;
   evas_update_rect(evas, e->x, e->y, e->w, e->h);
 }
 
@@ -44,19 +44,19 @@ void setup(void)
 {
   Window win, ewin;
 
-  e_event_filter_handler_add(EV_WINDOW_EXPOSE, e_window_expose);
-  e_event_filter_idle_handler_add(e_idle, NULL);
-  win = e_window_new(0, 0, 0, 400, 400);
+  ecore_event_filter_handler_add(ECORE_EVENT_WINDOW_EXPOSE, ecore_window_expose);
+  ecore_event_filter_idle_handler_add(e_idle, NULL);
+  win = ecore_window_new(0, 0, 0, 400, 400);
 
-  evas = evas_new_all(e_display_get(), win, 0, 0, 400, 400, render_method,
+  evas = evas_new_all(ecore_display_get(), win, 0, 0, 400, 400, render_method,
 		      MAX_EVAS_COLORS, MAX_FONT_CACHE, MAX_IMAGE_CACHE,
 		      PACKAGE_DATA_DIR"/fnt");
 
   ewin = evas_get_window(evas);
 
-  e_window_show(ewin);
-  e_window_set_events(ewin, XEV_EXPOSE);
-  e_window_show(win);
+  ecore_window_show(ewin);
+  ecore_window_set_events(ewin, XEV_EXPOSE);
+  ecore_window_show(win);
 }
 
 int
@@ -102,10 +102,10 @@ main(int argc, char *argv[])
   if (obstacle_h < 0.0)
     obstacle_h = 100.0;
 
-  e_display_init(NULL);
-  e_ev_signal_init();
-  e_event_filter_init();
-  e_ev_x_init();
+  ecore_display_init(NULL);
+  ecore_event_signal_init();
+  ecore_event_filter_init();
+  ecore_event_x_init();
 
   setup();
 
@@ -205,7 +205,7 @@ main(int argc, char *argv[])
     etox_set_clip(e, clip_rect);
   }
 
-  e_event_loop();
+  ecore_event_loop();
 
   etox_free(e);
   evas_free(evas);

@@ -331,7 +331,10 @@ etox_get_actual_geometry(Etox e, double *x, double *y, double *w, double *h)
   my_y += real_h;
 
   if (h)
-    *h = my_y - *y;
+    *h = my_y;
+
+  if (h && y)
+	*h -= *y;
 
   if(x)
     *x = ET_X_TO_EV(*x);
