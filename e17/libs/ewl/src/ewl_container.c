@@ -22,9 +22,10 @@ ewl_container_init(Ewl_Container * c, char *appearance)
 	/*
 	 * Initialize the fields inherited from the widget class
 	 */
-	if (!ewl_widget_init(w, appearance))
+	if (!ewl_widget_init(w, "container"))
 		DRETURN_INT(0, DLEVEL_STABLE);
 
+	ewl_widget_set_appearance(w, appearance);
 	ewl_object_set_recursive(EWL_OBJECT(w), TRUE);
 
 	/*
@@ -728,9 +729,8 @@ void ewl_container_call_child_add(Ewl_Container *c, Ewl_Widget *w)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	if (c->child_add && VISIBLE(w) && REALIZED(w))
+	if (c->child_add)
 		c->child_add(c, w);
-
 	ewl_widget_configure(EWL_WIDGET(c));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
