@@ -115,6 +115,7 @@ struct __winwidget
   Imlib_Image *im;
   Pixmap bg_pmap;
   char *name;
+  char *filename;
 
   /* Stuff for zooming */
   int zoom_mode;
@@ -163,6 +164,7 @@ typedef struct cmdlineoptions
   int limit_h;
   int cur_slide;
   int slideshow_delay;
+  int reload;
 }
 fehoptions;
 
@@ -203,9 +205,10 @@ double feh_get_time (void);
 void feh_remove_timer (char *name);
 void feh_add_timer (void (*func) (void *data), void *data, double in,
 		    char *name);
+void feh_add_unique_timer (void (*func) (void *data),void *data, double in);
 void cb_slide_timer(void *data);
+void cb_reload_timer(void *data);
 char *http_load_image (char *url);
-
 
 
 /* Imlib stuff */

@@ -42,6 +42,13 @@ init_multiwindow_mode (void)
 	{
 	  if (!opt.progressive)
 	    winwidget_show (w);
+	  if (w->filename)
+	    free (w->filename);
+	  w->filename = estrdup (files[i]);
+	  if (opt.reload > 0)
+	  {
+	      feh_add_unique_timer (cb_reload_timer, w, opt.reload);
+	  }
 	}
       else
 	actual_file_num--;

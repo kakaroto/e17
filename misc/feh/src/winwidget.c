@@ -37,6 +37,7 @@ winwidget_allocate (void)
   ret->bg_pmap = 0;
   ret->im = NULL;
   ret->name = NULL;
+  ret->filename = NULL;
 
   /* Zoom stuff */
   ret->zoom_mode = 0;

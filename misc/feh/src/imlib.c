@@ -87,7 +87,6 @@ feh_load_image (Imlib_Image ** im, char *filename)
       unlink (tmpname);
       free (tmpname);
     }
-
   else
     {
       *im = imlib_load_image_with_error_return (filename, &err);

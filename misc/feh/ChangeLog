@@ -1,3 +1,10 @@
+Tue Jan 11 19:07:07 2000  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
+
+	* New option, -R, --reload. Lets you specify a time in seconds,
+	  feh will reload the image for you after this time. This works for
+	  normal files and urls. The image will not be cached, so it is
+	  ideal for viewing webcam images etc.
+
 Mon Jan 10 22:48:46 2000  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
 
 	* Whee. Now feh can load images from urls.

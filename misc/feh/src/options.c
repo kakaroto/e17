@@ -57,6 +57,7 @@ init_parse_options (int argc, char **argv)
   opt.progressive = 1;
   opt.modify_mode = MODIFY_MODE_NONE;
   opt.slideshow_delay = 0;
+  opt.reload=0;
 
   opt.thumb_w = 60;
   opt.thumb_h = 60;
@@ -140,6 +141,13 @@ init_parse_options (int argc, char **argv)
 	{
 	  opt.slideshow_delay = atoi (argv[++i]);
 	}
+      else
+        if (
+            ((!strcmp (argv[i], "--reload"))
+             || (!strcmp (argv[i], "-R"))) && (argc - i > 1))
+        {
+          opt.reload = atoi (argv[++i]);
+        }
       else if ((!strcmp (argv[i], "--alpha")) && (argc - i > 1))
 	{
 	  opt.alpha = 1;
@@ -218,6 +226,9 @@ show_usage (void)
 	   "  -P, --noprogressive       Disable progressive loading and display of images\n"
 	   "  -D, --slideshow-delay NUM For slideshow mode, specifies time delay (seconds)\n"
 	   "                            between automatically changing slides.\n"
+	   "  -R, --reload NUM          Use this option to tell feh to reload an image\n"
+	   "                            after NUM seconds. Useful for viewing webcams\n"
+	   "                            view http, or even on your local machine.\n"
 	   "  -m, --montage             Enable montage mode. Montage mode creates a new\n"
 	   "                            image consisting of a grid of thumbnails of the\n"
 	   "                            images specified using FILE... When montage mode\n"

@@ -40,9 +40,14 @@ init_slideshow_mode (void)
 	  success = 1;
 	  if (!opt.progressive)
 	    winwidget_show (w);
+	  if (w->filename)
+	    free (w->filename);
+	  w->filename = estrdup (files[opt.cur_slide]);
 	  if (opt.slideshow_delay > 0)
 	    feh_add_timer (cb_slide_timer, w, opt.slideshow_delay,
 			   "SLIDE_CHANGE");
+	  else if (opt.reload > 0)
+	    feh_add_unique_timer (cb_reload_timer, w, opt.reload);
 	  break;
 	}
       else
@@ -57,6 +62,48 @@ cb_slide_timer (void *data)
 {
   D (("In cb_slide_timer\n"));
   slideshow_change_image ((winwidget) data, SLIDE_NEXT);
+}
+
+void
+cb_reload_timer (void *data)
+{
+    winwidget w=(winwidget) data;
+  D (("In cb_reload_timer\n"));
+
+  if (w->im)
+    {
+      imlib_context_set_image (w->im);
+      imlib_free_image_and_decache ();
+    }
+
+  if (opt.progressive)
+    {
+      /* Yeah, we have to do this stuff for progressive loading, so
+       * the callback knows it's got to create a new image... */
+      progwin = w;
+      imlib_context_set_progress_function (progress);
+      imlib_context_set_progress_granularity (10);
+      w->im_w = 0;
+      w->im_h = 0;
+      w->w = 0;
+      w->h = 0;
+    }
+  if ((feh_load_image (&(w->im), w->filename)) != 0)
+    {
+      w->zoom_mode = 0;
+      w->zoom = 0.0;
+      if (!opt.progressive)
+	{
+	  imlib_context_set_image (w->im);
+	  w->im_w = imlib_image_get_width ();
+	  w->im_h = imlib_image_get_height ();
+	  winwidget_rerender_image (w);
+	}
+    }
+  else
+    eprintf ("Couldn't reload image. Is it still there?");
+
+  feh_add_unique_timer(cb_reload_timer, w, opt.reload);
 }
 
 void
@@ -129,6 +176,9 @@ slideshow_change_image (winwidget winwid, int change)
 	  success = 1;
 	  winwid->zoom_mode = 0;
 	  winwid->zoom = 0.0;
+	  if (winwid->filename)
+	    free (winwid->filename);
+	  winwid->filename = estrdup (files[opt.cur_slide]);
 	  if (!opt.progressive)
 	    {
 	      imlib_context_set_image (winwid->im);

@@ -29,15 +29,15 @@ feh_handle_timer (void)
 
   D (("In feh_handle_timer\n"));
   if (!first_timer)
-  {
-      D(("   No timer to handle, returning\n"));
+    {
+      D (("   No timer to handle, returning\n"));
       return;
-  }
+    }
   ft = first_timer;
   first_timer = first_timer->next;
-  D(("   Executing timer function now\n"));
+  D (("   Executing timer function now\n"));
   (*(ft->func)) (ft->data);
-  D(("   Freeing the timer\n"));
+  D (("   Freeing the timer\n"));
   if (ft && ft->name)
     free (ft->name);
   if (ft)
@@ -64,11 +64,11 @@ feh_remove_timer (char *name)
   ptr = first_timer;
   while (ptr)
     {
-	D(("   Stepping through event list\n"));
+      D (("   Stepping through event list\n"));
       ft = ptr;
       if (!strcmp (ft->name, name))
 	{
-          D (("   Found it. Removing\n"));
+	  D (("   Found it. Removing\n"));
 	  if (pptr)
 	    pptr->next = ft->next;
 	  else
@@ -101,16 +101,16 @@ feh_add_timer (void (*func) (void *data), void *data, double in, char *name)
   ft->name = estrdup (name);
   ft->just_added = 1;
   ft->in = in;
-  D(("ft->in = %f\n",ft->in));
+  D (("ft->in = %f\n", ft->in));
   tally = 0.0;
   if (!first_timer)
-  {
-      D(("No first timer\n"));
+    {
+      D (("No first timer\n"));
       first_timer = ft;
-  }
+    }
   else
     {
-      D(("There is a first timer\n"));
+      D (("There is a first timer\n"));
       pptr = NULL;
       ptr = first_timer;
       tally = 0.0;
@@ -139,5 +139,19 @@ feh_add_timer (void (*func) (void *data), void *data, double in, char *name)
 	first_timer = ft;
       ft->in -= tally;
     }
-  D(("ft->in = %f\n",ft->in));
+  D (("ft->in = %f\n", ft->in));
+}
+
+void
+feh_add_unique_timer (void (*func) (void *data),void *data, double in)
+{
+  static long i = 0;
+  char evname[20];
+  snprintf (evname, sizeof (evname), "T_%ld", i);
+  D (("In feh_add_unique_timer, adding timer with unique name %s\n", evname));
+  feh_add_timer (func, data, in, evname);
+  i++;
+  /* Mega paranoia ;) */
+  if (i > 1000000)
+    i = 0;
 }
