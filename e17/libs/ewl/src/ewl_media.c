@@ -1,3 +1,4 @@
+#include "ewl-config.h"
 #include <Ewl.h>
 
 static void ewl_media_size_update(Ewl_Media *m);
