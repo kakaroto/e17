@@ -1,6 +1,6 @@
 /** 
 @file
-@brief Entrance/Entranced JeopardE will change the title :)
+@brief Entrance/Entranced 1.0.0 Documentation
  
 */
 
@@ -13,21 +13,46 @@
 @author Corey Donohoe <atmos@atmos.org>
 @date 2003
 
-
-
 <OL>
 <LI><A HREF="index.html#intro">What is Entrance?</A>
+<LI><A HREF="./index.html#running">How do I use it?</A><BR>
+<UL>
+    <LI><A HREF="./index.html#config">Config File</A></LI> 
+    <LI><A HREF="./index.html#config_theme">Setting the Entrance Theme</A></LI> 
+    <LI><A HREF="./index.html#config_auth">Setting the Authentication Type</A></LI> 
+    <LI><A HREF="./index.html#config_pointer">Setting the pointer image</A></LI> 
+    <LI><A HREF="./index.html#config_datetime">Setting up date and time
+    formatting</A></LI> 
+    <LI><A HREF="./index.html#config_system">Enabling/Disabling Shutdown and
+    Reboot</A></LI> 
+    <LI><A HREF="./index.html#config_engine">Setting the Evas Engine</A></LI> 
+    <LI><A HREF="./index.html#config_users">Setting up user lists</A></LI>
+    <LI><A HREF="./index.html#config_sessions">Setting up XSessions</A></LI>
+    </UL></LI>
+<LI><A HREF="./index.html#theme">Themers documentation</A><BR>
+<UL>
+    <LI><A HREF="./index.html#theme_groups">Entrance's Appearance: Edje Groups</A><BR>
+    <UL>
+    <LI><A HREF="./index.html#theme_entrance_session_parts">The Entrance Group</A></LI>
+    <LI><A HREF="./index.html#theme_entrance_session_parts">The EntranceSession Group</A></LI>
+    <LI><A HREF="./index.html#theme_entrance_user_parts">The EntranceUser Group</A></LI>
+    </UL></LI>
+    <LI><A HREF="./index.html#theme_signals">Communicating with Entrance : Edje Signals</A><BR>
+    <UL>
+    <LI><A HREF="./index.html#theme_entrance_progs">Signals your theme
+    can emit to Entrance</A></LI>
+    <LI><A HREF="./index.html#theme_entrance_session_progs">Signals your
+    Session can emit to Entrance</A></LI>
+    <LI><A HREF="./index.html#theme_entrance_progs">Signals your
+    User Icons can emit to Entrance</A></LI>
+    <LI><A HREF="./index.html#theme_entrance_progs">Signals your theme should be aware of</A></LI>
+    </UL></LI>
+    <LI><A HREF="index.html#example1">Theme Example 1</A>
+    <LI><A HREF="index.html#example2">Theme Example 2</A>
+    <LI><A HREF="index.html#example3">Theme Example 3</A>
+</UL></LI>
 <LI><A HREF="index.html#requirements">What does Entrance require?</A>
-<LI><A HREF="index.html#example1">Theme Example 1</A>
-<LI><A HREF="index.html#example2">Theme Example 2</A>
-<LI><A HREF="index.html#example3">Theme Example 3</A>
 </OL>
-
-
-
-
-
-
 
 @section intro What is Entrance?
 Entrance <I>[en-'trans]</I>, v.<BR>
@@ -35,121 +60,63 @@ Entrance <I>[en-'trans]</I>, v.<BR>
 2 : to put into a trance<BR>
 
 Entrance is the Enlightenment Display Manager. And like Enlightenment,
-it takes beauty and customization to levels that KDM and GDM can only
-dream about, without the bloat.  It allows users to log in and out of
-the different Xsession types available on the system. 
+it takes beauty and customization to levels never seen before.  It allows
+users to log in and out of the different Xsession types available on the
+system. 
 
+@section running How do I use Entrance ?
+Entrance is normally started when the system boots.  It's job is to hang
+out and look pretty until someone needs to login to the computer.  
 
-@section requirements What does Entrance require?
-
-The only distribution we're currently aware of supporting Entrance is <A
-HREF="http://www.gentoo.org/">Gentoo</A>.  You can compile it from cvs
-using the following libraries if you're brave.
-
-Entrance relies on a lot of libraries most notably
-  - Edb (library)
-  - Evas (library)
-  - Edje (library)
-  - Esmart (library)
-  - Ecore (library)
-  - Ecore_Evas (library)
-
-There is no need to reinvent the wheel all the time.
-
+@section config How do I customize Entrance ?
+Entrance's goal since day one has been configurability.  Since there are so
+many wonderful configuration options available there is, of course, a
+configuration file that you must edit in order to take advantage of these
+options.  Entrance offers the functionality to change these values, but
+first you must locate your config file and open it up in an editor.
 @verbatim
-1. You need Edb from cvs
-
-  cvs co e17/libs/edb
-  cd e17/libs/edb
-  ./autogen.sh
-  ./configure
-  make
-  sudo make install
-  cd
-
-2. You need Evas from cvs
-
-  cvs co e17/libs/evas
-  cd e17/libs/evas
-  ./autogen.sh
-  ./configure \
-  --enable-software-x11 \
-  --enable-gl-x11 \
-  --enable-image-loader-png \
-  --enable-image-loader-jpeg \
-  --enable-image-loader-eet \
-  --enable-cpu-c \
-  --enable-cpu-mmx \
-  --enable-cpu-p2-only \
-  --enable-scale-smooth \
-  --enable-scale-sample \
-  --enable-convert-8-rgb-332 \
-  --enable-convert-8-rgb-666 \
-  --enable-convert-8-rgb-232 \
-  --enable-convert-8-rgb-222 \
-  --enable-convert-8-rgb-221 \
-  --enable-convert-8-rgb-121 \
-  --enable-convert-8-rgb-111 \
-  --enable-convert-16-rgb-565 \
-  --enable-convert-16-rgb-555 \
-  --enable-convert-16-rgb-rot-0 \
-  --enable-convert-16-rgb-rot-90 \
-  --enable-convert-16-rgb-rot-270 \
-  --enable-convert-32-rgb-8888 \
-  --enable-convert-32-rgbx-8888 \
-  --enable-convert-32-bgr-8888 \
-  --enable-convert-32-bgrx-8888 \
-  --enable-convert-32-rgb-rot-0 \
-  --enable-convert-32-rgb-rot-90 \
-  --enable-convert-32-rgb-rot-270
-  make
-  sudo make install
-  cd
-  
-3. You need Ecore from cvs
-
-  cvs co e17/libs/ecore
-  cd e17/libs/ecore
-  ./autogen.sh
-  ./configure \
-  --enable-ecore-x \
-  --enable-ecore-evas \
-  --enable-ecore-evas-gl \
-  --enable-ecore-job \
-  --enable-ecore-con \
-  --enable-ecore-ipc
-  make
-  sudo make install
-  cd
-
-4. You need Edje from cvs
-
-  cvs co e17/libs/edje
-  cd e17/libs/edje
-  ./autogen.sh
-  make
-  sudo make install
-  cd
-
-5. You need Esmart from cvs
-
-  cvs co e17/proto/esmart
-  cd e17/proto/esmart
-  ./autogen.sh
-  make
-  sudo make install
-  cd
-
-7. You need entice from cvs
-
-  cvs co e17/apps/entrance
-  cd e17/apps/entrance
-  ./autogen.sh
-  make
-  sudo make install
-  cd
-
+$ sudo edb_gtk_ed /etc/entrance_config.db
 @endverbatim
+You'll see quite a few things displayed with edb_gtk_ed pops up and it
+should look something like.
+@image html edb_gtk_ed.jpg
+Henceforth when directions say to "change the key", you should find the in
+the list and change the value in the little box to the right.  You will also
+have to click save for these changes to be permanent.
+
+@section config_theme Setting the Entrance Theme
+Most of the visible beauty to the user comes from the theme.  You can
+download themes in .eet format and copy them to
+'/usr/share/entrance/themes'.  If the theme you'd like to run has been
+installed, changed the key '<B>/entrance/themes</B>' to reflect the filename
+of the theme you just installed.  
+
+@section config_pointer Setting the pointer Image
+Entrance allows you to pick an image file as the pointer when using the
+mouse.  I don't remember how to change this right now.
+
+@section config_datetime Setting up date and time formatting
+Entrance allows you to pick date formatting displayed in your theme.  Your
+best bet to figuring out the format you'd prefer would be to look at the
+strftime manpage.
+@verbatim
+man 3 strftime
+@endverbatim
+You can change key '<B>/entrance/date_format</B>' to modify how the date
+will be displayed in your theme, and you can change the key
+'<B>/entrance/time_format</B>' to modify how the time will be displayed in
+your theme.
+
+@section config_system Enabling/Disabling Shutdown and Reboot
+
+@section config_users Setting up user lists
+TODO
+@section config_session Setting up XSessions
+TODO
+@section config_auth Setting up the Authentication Type
+TODO
+@section config_engine Setting the Evas Engine
+TODO
 
 
 @section example1 Example One 
@@ -1015,6 +982,118 @@ they'd prefer.
 </P>
 <P>If you found this theme tutorial useful or useless please let <A
 HREF="mailto:atmos@atmos.org">me</A> known.</P>
+
+@section requirements What does Entrance require?
+
+The only distribution we're currently aware of supporting Entrance is <A
+HREF="http://www.gentoo.org/">Gentoo</A>.  You can compile it from cvs
+using the following libraries if you're brave.
+
+Entrance relies on a lot of libraries most notably
+  - Edb (library)
+  - Evas (library)
+  - Edje (library)
+  - Esmart (library)
+  - Ecore (library)
+  - Ecore_Evas (library)
+
+There is no need to reinvent the wheel all the time.
+
+@verbatim
+1. You need Edb from cvs
+
+  cvs co e17/libs/edb
+  cd e17/libs/edb
+  ./autogen.sh
+  ./configure
+  make
+  sudo make install
+  cd
+
+2. You need Evas from cvs
+
+  cvs co e17/libs/evas
+  cd e17/libs/evas
+  ./autogen.sh
+  ./configure \
+  --enable-software-x11 \
+  --enable-gl-x11 \
+  --enable-image-loader-png \
+  --enable-image-loader-jpeg \
+  --enable-image-loader-eet \
+  --enable-cpu-c \
+  --enable-cpu-mmx \
+  --enable-cpu-p2-only \
+  --enable-scale-smooth \
+  --enable-scale-sample \
+  --enable-convert-8-rgb-332 \
+  --enable-convert-8-rgb-666 \
+  --enable-convert-8-rgb-232 \
+  --enable-convert-8-rgb-222 \
+  --enable-convert-8-rgb-221 \
+  --enable-convert-8-rgb-121 \
+  --enable-convert-8-rgb-111 \
+  --enable-convert-16-rgb-565 \
+  --enable-convert-16-rgb-555 \
+  --enable-convert-16-rgb-rot-0 \
+  --enable-convert-16-rgb-rot-90 \
+  --enable-convert-16-rgb-rot-270 \
+  --enable-convert-32-rgb-8888 \
+  --enable-convert-32-rgbx-8888 \
+  --enable-convert-32-bgr-8888 \
+  --enable-convert-32-bgrx-8888 \
+  --enable-convert-32-rgb-rot-0 \
+  --enable-convert-32-rgb-rot-90 \
+  --enable-convert-32-rgb-rot-270
+  make
+  sudo make install
+  cd
+  
+3. You need Ecore from cvs
+
+  cvs co e17/libs/ecore
+  cd e17/libs/ecore
+  ./autogen.sh
+  ./configure \
+  --enable-ecore-x \
+  --enable-ecore-evas \
+  --enable-ecore-evas-gl \
+  --enable-ecore-job \
+  --enable-ecore-con \
+  --enable-ecore-ipc
+  make
+  sudo make install
+  cd
+
+4. You need Edje from cvs
+
+  cvs co e17/libs/edje
+  cd e17/libs/edje
+  ./autogen.sh
+  make
+  sudo make install
+  cd
+
+5. You need Esmart from cvs
+
+  cvs co e17/proto/esmart
+  cd e17/proto/esmart
+  ./autogen.sh
+  make
+  sudo make install
+  cd
+
+7. You need entice from cvs
+
+  cvs co e17/apps/entrance
+  cd e17/apps/entrance
+  ./autogen.sh
+  make
+  sudo make install
+  cd
+
+@endverbatim
+
 @todo 
 <UL>
 <LI>Theme edc walkthrough
