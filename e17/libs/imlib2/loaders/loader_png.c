@@ -270,6 +270,13 @@ save (ImlibImage *im,
 	     row_ptr = (png_bytep)data;
 	  }
 	png_write_rows(png_ptr, &row_ptr, 1);
+	if (progress)
+	  {
+	     char per;
+	     
+	     per = (char)((100 * y) / im->h);
+	     progress(im, per, 0, y, im->w, 1);
+	  }
 	ptr += im->w;
      }
    if (data)
@@ -279,7 +286,6 @@ save (ImlibImage *im,
    
    fclose(f);
    return 1;
-   progress = NULL;
 }
 
 /* fills the ImlibLoader struct with a strign array of format file */
