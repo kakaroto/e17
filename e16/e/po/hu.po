@@ -1,0 +1,2107 @@
+# ENLIGHTENMENT HUNGARIAN TRANSLATION
+# Copyright (C) 1999 Free Software Foundation, Inc.
+# Gergely EGERVARY <mauzi@poli.hu>, 1999.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: ENLIGHTENMENT VERSION\n"
+"POT-Creation-Date: 1999-12-07 16:40+0100\n"
+"PO-Revision-Date: 1999-12-07 17:32+0200\n"
+"Last-Translator: Gergely EGERVARY <mauzi@poli.hu>\n"
+"Language-Team: Hungarian <hu@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=iso-8859-2\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/actions.c:664
+#, c-format
+msgid ""
+"There was an error running the program:\n"
+"%s\n"
+"This program could not be executed.\n"
+"This is because the file does not exist.\n"
+msgstr ""
+
+#: src/actions.c:672
+#, c-format
+msgid ""
+"There was an error running the program:\n"
+"%s\n"
+"This program could not be executed.\n"
+"This is most probably because this program is not in the\n"
+"path for your shell which is %s. I suggest you read the manual\n"
+"page for that shell and read up how to change or add to your\n"
+"execution path.\n"
+msgstr ""
+
+#: src/actions.c:692
+#, c-format
+msgid ""
+"There was an error running the program:\n"
+"%s\n"
+"This program could not be executed.\n"
+"I am unsure as to why you could not do this. The file exists,\n"
+"is a file, and you are allowed to execute it. I suggest you look\n"
+"into this.\n"
+msgstr ""
+
+#: src/actions.c:703
+#, c-format
+msgid ""
+"There was an error running the program:\n"
+"%s\n"
+"This program could not be executed.\n"
+"This is because the file exists, is a file, but you are unable\n"
+"to execute it because you do not have execute access to this file.\n"
+msgstr ""
+
+#: src/actions.c:719
+#, c-format
+msgid ""
+"There was an error running the program:\n"
+"%s\n"
+"This program could not be executed.\n"
+"This is because the file is infact a directory.\n"
+msgstr ""
+
+#: src/actions.c:727
+#, c-format
+msgid ""
+"There was an error running the program:\n"
+"%s\n"
+"This program could not be executed.\n"
+"This is because the file is not a regular file.\n"
+msgstr ""
+
+#: src/actions.c:3134
+#, c-format
+msgid "About Enlightenment %s"
+msgstr ""
+
+#: src/actions.c:3150
+msgid "Welcome to the "
+msgstr ""
+
+#: src/actions.c:3172 src/dialog.c:304 src/groups.c:694 src/settings.c:312
+#: src/settings.c:541 src/settings.c:706 src/settings.c:883
+#: src/settings.c:1107 src/settings.c:1211 src/settings.c:1312
+#: src/settings.c:1419 src/settings.c:1481 src/settings.c:1570
+#: src/settings.c:1968 src/settings.c:3361 src/settings.c:3712
+#: src/settings.c:4011 src/settings.c:4149 src/snaps.c:509 src/sound.c:263
+msgid "OK"
+msgstr ""
+
+#: src/actions.c:3326
+msgid "  Pick the group the window will belong to:  \n"
+msgstr ""
+
+#: src/actions.c:3677
+msgid ""
+"\n"
+"  There's no current group at the moment.  \n"
+"  The current group is the last one you created,  \n"
+"  and it exists until you create a new one or break  \n"
+"  the latest one.  \n"
+"\n"
+"  Pick another group that the window will belong to here:  \n"
+"\n"
+msgstr ""
+
+#: src/actions.c:3711
+msgid "   Select the group to remove the window from.  "
+msgstr ""
+
+#: src/actions.c:3736
+msgid "  Select the group to break  "
+msgstr ""
+
+#: src/actions.c:3764
+msgid "You have been warned about the dangers of Zoom mode\n"
+msgstr ""
+
+#: src/actions.c:3767
+msgid "Warning !!!"
+msgstr "Vigyázat !!!"
+
+#: src/actions.c:3769
+msgid ""
+"This feature is heavily reliant on a feature of your\n"
+"X Server called the Vid Mode Extension. This feature exists\n"
+"in XFree86 Servers, but is not a heavily used part of the\n"
+"Server and thus isn't tested much.\n"
+"\n"
+"It is possible your X Server does not deal well with being\n"
+"asked to switch modes quickly and it may hang, glitch,\n"
+"display artifacts or perhaps simply refuse to work.\n"
+"\n"
+"This is a warning and will only be displayed this one time.\n"
+"If your Server does not behave well then you will probably\n"
+"have to avoid using this feature.\n"
+msgstr ""
+
+#: src/alert.c:178
+msgid "Enlightenment Error"
+msgstr "Enlightenment Hiba"
+
+#: src/alert.c:180
+msgid "Ignore"
+msgstr ""
+
+#: src/alert.c:182
+msgid "Restart"
+msgstr ""
+
+#: src/alert.c:184
+msgid "Exit"
+msgstr "Kilépés"
+
+#: src/comms.c:2209
+#, c-format
+msgid ""
+"Received Unknown Client Message.\n"
+"Client Name:    %s\n"
+"Client Version: %s\n"
+"Message Contents:\n"
+"\n"
+"%s\n"
+msgstr ""
+
+#: src/comms.c:2212
+msgid "E IPC Error"
+msgstr "E IPC Hiba"
+
+#: src/config.c:242 src/config.c:477 src/config.c:557 src/config.c:831
+#: src/config.c:949 src/config.c:1191 src/config.c:1320 src/config.c:1426
+#: src/config.c:1642 src/config.c:1890 src/config.c:1960 src/config.c:2056
+#: src/config.c:2313 src/config.c:2530 src/config.c:2794 src/config.c:2887
+#: src/config.c:2964 src/config.c:3065 src/config.c:3387
+#, c-format
+msgid "CONFIG: ignoring extra data in \"%s\"\n"
+msgstr ""
+
+#: src/config.c:248 src/config.c:483 src/config.c:565 src/config.c:837
+#: src/config.c:955 src/config.c:1197 src/config.c:1326 src/config.c:1434
+#: src/config.c:1650 src/config.c:1896 src/config.c:1966 src/config.c:2064
+#: src/config.c:2319 src/config.c:2538 src/config.c:2800 src/config.c:3071
+#: src/config.c:3395
+#, c-format
+msgid "CONFIG: missing required data in \"%s\"\n"
+msgstr ""
+
+#: src/config.c:439 src/config.c:518
+#, c-format
+msgid ""
+"Warning: unable to determine what to do with\n"
+"the following text in the middle of current Text definition:\n"
+"%s\n"
+"Will ignore and continue...\n"
+msgstr ""
+
+#: src/config.c:447
+msgid ""
+"Warning:  Configuration appears to have ended before we were\n"
+"Done loading a text block.  Outcome is likely not good.\n"
+msgstr ""
+
+#: src/config.c:526
+msgid ""
+"Warning:  Configuration appears to have ended before we were\n"
+"Done loading a Slideout block.  Outcome is likely not good.\n"
+msgstr ""
+
+#: src/config.c:797
+#, c-format
+msgid ""
+"Warning: unable to determine what to do with\n"
+"the following text in the middle of current Control definition:\n"
+"%s\n"
+"Will ignore and continue...\n"
+msgstr ""
+
+#: src/config.c:805
+msgid ""
+"Warning:  Configuration appears to have ended before we were\n"
+"Done loading a Control block.  Outcome is likely not good.\n"
+msgstr ""
+
+#: src/config.c:916 src/config.c:1150
+msgid ""
+"Warning:  Configuration appears to have ended before we were\n"
+"Done loading a Menu block.  Outcome is likely not good.\n"
+msgstr ""
+
+#: src/config.c:1288
+msgid ""
+"Warning:  Configuration appears to have ended before we were\n"
+"Done loading a BorderPart block.  Outcome is likely not good.\n"
+msgstr ""
+
+#: src/config.c:1379
+msgid ""
+"Warning:  Configuration appears to have ended before we were\n"
+"Done loading a Main Border block.  Outcome is likely not good.\n"
+msgstr ""
+
+#: src/config.c:1598
+msgid ""
+"Warning:  Configuration appears to have ended before we were\n"
+"Done loading a Button block.  Outcome is likely not good.\n"
+msgstr ""
+
+#: src/config.c:1855 src/config.c:1935
+msgid ""
+"Warning:  Configuration appears to have ended before we were\n"
+"Done loading a Desktop block.  Outcome is likely not good.\n"
+msgstr ""
+
+#: src/config.c:1947
+msgid "Easter Egg!  Iconboxes aren't implemented yet.\n"
+msgstr ""
+
+#: src/config.c:1979
+msgid ""
+"Warning:  Configuration appears to have ended before we were\n"
+"Done loading an Iconbox block.  Outcome is likely not good.\n"
+msgstr ""
+
+#: src/config.c:2015
+msgid ""
+"Warning:  Configuration appears to have ended before we were\n"
+"Done loading an Sound block.  Outcome is likely not good.\n"
+msgstr ""
+
+#: src/config.c:2268
+#, c-format
+msgid ""
+"Warning: unable to determine what to do with\n"
+"the following text in the middle of current ActionClass definition:\n"
+"%s\n"
+"Will ignore and continue...\n"
+msgstr ""
+
+#: src/config.c:2283
+msgid ""
+"Warning:  Configuration appears to have ended before we were\n"
+"Done loading an Action Class block.  Outcome is likely not good.\n"
+msgstr ""
+
+#: src/config.c:2482
+#, c-format
+msgid ""
+"Warning: unable to determine what to do with\n"
+"the following text in the middle of current ImageClass definition:\n"
+"%s\n"
+"Will ignore and continue...\n"
+msgstr ""
+
+#: src/config.c:2490
+msgid ""
+"Warning:  Configuration appears to have ended before we were\n"
+"Done loading an ImageClass block.  Outcome is likely not good.\n"
+msgstr ""
+
+#: src/config.c:2730
+#, c-format
+msgid ""
+"Warning: unable to determine what to do with\n"
+"the following text in the middle of current  ColorModifier definition:\n"
+"%s\n"
+"Will ignore and continue...\n"
+msgstr ""
+
+#: src/config.c:2755
+msgid ""
+"Warning:  Configuration appears to have ended before we were\n"
+"Done loading an ColorModifier block.\n"
+"Outcome is likely not good.\n"
+msgstr ""
+
+#: src/config.c:2848
+#, c-format
+msgid ""
+"Warning: unable to determine what to do with\n"
+"the following text in the middle of current ToolTip definition:\n"
+"%s\n"
+"Will ignore and continue...\n"
+msgstr ""
+
+#: src/config.c:2855
+msgid ""
+"Warning: Configuration appears to have ended before we were\n"
+"Done loading an ToolTip block.  Outcome is likely not good.\n"
+msgstr ""
+
+#: src/config.c:2893
+msgid ""
+"Warning: Configuration appears to have ended before we were\n"
+"Done loading an FX block.  Outcome is likely not good.\n"
+msgstr ""
+
+#: src/config.c:2929
+#, c-format
+msgid ""
+"Warning: unable to determine what to do with\n"
+"the following text in the middle of current Extras definition:\n"
+"%s\n"
+"Will ignore and continue...\n"
+msgstr ""
+
+#: src/config.c:2937
+msgid ""
+"Warning: Configuration appears to have ended before we were\n"
+"Done loading an Extras block.  Outcome is likely not good.\n"
+msgstr ""
+
+#: src/config.c:3027
+#, c-format
+msgid ""
+"Warning: unable to determine what to do with\n"
+"the following text in the middle of current Iconbox definition:\n"
+"%s\n"
+"Will ignore and continue...\n"
+msgstr ""
+
+#: src/config.c:3035
+msgid ""
+"Warning: Configuration appears to have ended before we were\n"
+"Done loading an Iconbox block.  Outcome is likely not good.\n"
+msgstr ""
+
+#: src/config.c:3142
+#, c-format
+msgid ""
+"Warning: unable to determine what to do with\n"
+"the following text in the middle of current WindowMatch definition:\n"
+"%s\n"
+"Will ignore and continue...\n"
+msgstr ""
+
+#: src/config.c:3149
+msgid ""
+"Warning: Configuration appears to have ended before we were\n"
+"Done loading an WindowMatch block.  Outcome is likely not good.\n"
+msgstr ""
+
+#: src/config.c:3198
+#, c-format
+msgid ""
+"Help! Cannot find epp!\n"
+"Enlightenment is looking for epp here:\n"
+"%s\n"
+"This is a FATAL ERROR.\n"
+"This is probably due to either the program not existing or\n"
+"it not being able to be executed by you.\n"
+msgstr ""
+
+#: src/config.c:3205
+msgid "error"
+msgstr "hiba"
+
+#: src/config.c:3405
+msgid "Theme versioning ERROR"
+msgstr ""
+
+#: src/config.c:3406 src/config.c:3440
+msgid "Restart with Defaults"
+msgstr ""
+
+#: src/config.c:3407 src/config.c:3441
+msgid "Abort and Exit"
+msgstr ""
+
+#: src/config.c:3408
+#, c-format
+msgid ""
+"ERROR:\n"
+"\n"
+"The configuration for the theme you are running is\n"
+"incompatible. It's config revision is %i.  It needs to\n"
+"be marked as being revision %i\n"
+"\n"
+"Please contact the theme author or maintainer and\n"
+"inform them that in order for their theme to function\n"
+"with this version of Enlightenment, they have to\n"
+"update it to the current settings, and then match\n"
+"the revision number.\n"
+"\n"
+"If the theme revision is higher than Enlightenment's\n"
+"it may be that you haven't upgraded Enlightenment for\n"
+"a while and this theme takes advantages of new\n"
+"features in Enlightenment in new versions.\n"
+msgstr ""
+
+#: src/config.c:3439
+msgid "User Config Version ERROR"
+msgstr ""
+
+#: src/config.c:3442
+#, c-format
+msgid ""
+"ERROR:\n"
+"\n"
+"The settings you are using are incompatible with\n"
+"this version of Enlightenment.\n"
+"It's revision is %i It needs to be revision %i to\n"
+"be compatible.\n"
+"\n"
+"If you just upgraded to a new version of E\n"
+"Restarting with Defaults will remove your current\n"
+"user preferences and start cleanly with system\n"
+"defaults. You can then modify your configuration to\n"
+"your liking again safely.\n"
+msgstr ""
+
+#: src/config.c:3656
+#, c-format
+msgid ""
+"WARNING!\n"
+"There was an error writing the file:\n"
+"%s\n"
+"This may be due to lack of disk space, quota or\n"
+"filesystem permissions.\n"
+msgstr ""
+
+#: src/config.c:3667
+#, c-format
+msgid ""
+"Enlightenment has just experienced some major problems in\n"
+"attempting to load the theme you specified or the default\n"
+"configuration directory:\n"
+"%s/config/\n"
+"This will prevent Enlightenment from loading any configuration\n"
+"files at all.\n"
+"Since this couldn't be found Enlightenment is probably not\n"
+"going to find any configuration files anywhere on your\n"
+"system, and so it will have almost no configuration loaded\n"
+"when it starts up. This is most likely the sign of a bad\n"
+"installation of Enlightenment if this directory is missing.\n"
+"The likely causes are that the package was improperly built,\n"
+"if a binary package, or 'make install' hasn't been typed\n"
+"or during the installation the directory above was not\n"
+"able to be copied over for installation perhaps due to\n"
+"permissions or lack of disk space. It also could be that the\n"
+"config directory has been inadvertently deleted since\n"
+"installation.\n"
+"This is a serious problem and should be rectified immediately\n"
+"Please contact your system administrator or package maintainer.\n"
+"If you are the administrator of your own system please\n"
+"consult the documentation that came with Enlightenment for\n"
+"additional information.\n"
+msgstr ""
+
+#: src/config.c:3734
+msgid "Enlightenment Starting..."
+msgstr "Az Enlightenment IndÍtása..."
+
+#: src/config.c:4162
+msgid "Recover system config?"
+msgstr ""
+
+#: src/config.c:4163
+msgid "Yes, Attempt recovery"
+msgstr ""
+
+#: src/config.c:4164
+msgid "Restart and try again"
+msgstr ""
+
+#: src/config.c:4165
+msgid "Quit and give up"
+msgstr ""
+
+#: src/config.c:4167
+msgid ""
+"Enlightenment has encountered parsing errors in your autosaved\n"
+"configuration.\n"
+"\n"
+"This may be due to filing system errors, Minor bugs or unforeseen\n"
+"system shutdowns.\n"
+"\n"
+"Do you wish Enlightenment to recover its original system\n"
+"configuration and try again?\n"
+msgstr ""
+
+#: src/desktops.c:1110
+msgid ""
+"Hold down the mouse button and drag\n"
+"the mouse to be able to drag the desktop\n"
+"back and forth.\n"
+"Click right mouse button for a list of all\n"
+"Desktops and their applications.\n"
+"Click middle mouse button for a list of all\n"
+"applications currently running.\n"
+msgstr ""
+
+#: src/desktops.c:1122
+msgid ""
+"This is the Root desktop.\n"
+"You cannot drag the root desktop around.\n"
+"Click right mouse button for a list of all\n"
+"Desktops and their applications.\n"
+"Click middle mouse button for a list of all\n"
+"applications currently running.\n"
+msgstr ""
+
+#: src/desktops.c:1144
+msgid ""
+"Click here to raise this desktop\n"
+"to the top.\n"
+msgstr ""
+
+#: src/desktops.c:1160
+msgid ""
+"Click here to lower this desktop\n"
+"to the bottom.\n"
+msgstr ""
+
+#: src/dialog.c:304
+msgid "Attention !!!"
+msgstr "Figyelem !!!"
+
+#: src/fx.c:254
+msgid "Starting up Ripples FX..."
+msgstr "A Ripples effektek indÍtása..."
+
+#: src/fx.c:255
+msgid ""
+"\n"
+"You have just started the Ripples Effect.\n"
+"\n"
+"If you look closely on your desktop background, and if it\n"
+"doesn't have a solid colour (ie has a background texture or\n"
+"image), you will see a pool of water at the bottom of your\n"
+"screen that reflects everything above it and \"ripples\".\n"
+"\n"
+"To disable this effect just select this option again to toggle\n"
+"it off.\n"
+msgstr ""
+
+#: src/fx.c:387 src/fx.c:406
+msgid "Unable to display raindrops"
+msgstr ""
+
+#: src/fx.c:388
+msgid ""
+"\n"
+"Enlightenment is unable to display raindrops on this\n"
+"display because Shared memory is not available on this\n"
+"X-Server.\n"
+"\n"
+"This may be due to Enlightenment being a remote client\n"
+"running over the network, a MIT-SHM incapable X-server,\n"
+"having run out of SHM ID's on the system or Shared\n"
+"Memory support being turned off in Imlib\n"
+"\n"
+"You may correct this by either running `imlib_config'\n"
+"or copying the system imrc (/usr/etc/imrc) to ~/.imrc\n"
+"and editing it, enabling shared memory.\n"
+"\n"
+msgstr ""
+
+#: src/fx.c:407
+msgid ""
+"\n"
+"Enlightenment is unable to display raindrops on this\n"
+"display because shared pixmaps are not available on this\n"
+"X-Server.\n"
+"\n"
+"This may be due to either the X-Server not implimenting\n"
+"shared pixmaps, or shared pixmaps being disabled in\n"
+"Imlib's configuration.\n"
+"\n"
+"You may correct this by either running `imlib_config'\n"
+"or copying the system imrc (/usr/etc/imrc) to ~/.imrc\n"
+"and editing it, enabling shared pixmaps.\n"
+"\n"
+msgstr ""
+
+#: src/fx.c:423
+msgid "Starting up Raindrops FX..."
+msgstr "A Raindrops effektek indÍtása..."
+
+#: src/fx.c:424
+msgid ""
+"\n"
+"You have just started the Raindrops Effect.\n"
+"\n"
+"If you look closely on your desktop background, and if it\n"
+"doesn't have a solid colour (ie has a background texture or\n"
+"image), you will see \"raindrops\" hit the background and\n"
+"make little splashes. This Effect can be VERY CPU intensive.\n"
+"\n"
+"To disable this effect just select this option again to toggle\n"
+"it off.\n"
+msgstr ""
+
+#: src/fx.c:718
+msgid "Starting up Waves FX..."
+msgstr "A Waves effektek indÍtása..."
+
+#: src/fx.c:719
+msgid ""
+"\n"
+"You have just started the Waves Effect.\n"
+"\n"
+"If you look closely on your desktop background, and if it\n"
+"doesn't have a solid colour (ie has a background texture or\n"
+"image), you will see a pool of water at the bottom of your\n"
+"screen that reflects everything above it and \"waves\".\n"
+"\n"
+"To disable this effect just select this option again to toggle\n"
+"it off.\n"
+msgstr ""
+
+#: src/fx.c:884
+msgid "Starting up imagespinners FX..."
+msgstr ""
+
+#: src/fx.c:885
+msgid ""
+"\n"
+"You have just started the imagespinners Effect.\n"
+"\n"
+"To disable this effect just select this option again to toggle\n"
+"it off.\n"
+msgstr ""
+
+#: src/groups.c:117 src/groups.c:150
+msgid "Cannot comply"
+msgstr ""
+
+#: src/groups.c:119 src/groups.c:152
+msgid ""
+"Iconboxes and Pagers are disallowed from being\n"
+"members of a group. You cannot add these windows\n"
+"to a group.\n"
+msgstr ""
+
+#: src/groups.c:603 src/groups.c:612 src/groups.c:620 src/settings.c:3834
+msgid "Window Group Error"
+msgstr "Ablak Csoport Hiba"
+
+#: src/groups.c:605
+msgid ""
+"\n"
+"  This window currently does not belong to any groups.  \n"
+"  You can only destroy groups or remove windows from groups  \n"
+"  through a window that actually belongs to at least one group.\n"
+"\n"
+msgstr ""
+
+#: src/groups.c:613
+msgid ""
+"\n"
+"  Currently, no groups exist or this window  \n"
+"  already belongs to all existing groups.  \n"
+"  You have to start other groups first.  \n"
+"\n"
+msgstr ""
+
+#: src/groups.c:622
+msgid ""
+"\n"
+"  Currently, no groups exist. You have to start a group first.\n"
+"\n"
+msgstr ""
+
+#: src/groups.c:637
+msgid "Window Group Selection"
+msgstr "Ablak Csoport Kiválasztása"
+
+#: src/groups.c:695 src/pager.c:1278 src/settings.c:314 src/settings.c:543
+#: src/settings.c:708 src/settings.c:885 src/settings.c:1109
+#: src/settings.c:1213 src/settings.c:1314 src/settings.c:1421
+#: src/settings.c:1483 src/settings.c:1572 src/settings.c:1970
+#: src/settings.c:3363 src/settings.c:3714 src/settings.c:4013
+#: src/settings.c:4151
+msgid "Close"
+msgstr "Bezár"
+
+#: src/handlers.c:59
+#, c-format
+msgid ""
+"Enlightenment performed an Illegal Instruction.\n"
+"\n"
+"This most likely is due to you having installed an run a\n"
+"binary of Enlightenment that was compiled for a make or model\n"
+"of CPU not 100% identical or compatible with yours. Please\n"
+"either obtain the correct package for your system, or\n"
+"re-compile enlightenment and possibly any support libraries\n"
+"that you got in binary format to run Enlightenment.\n"
+msgstr ""
+
+#: src/handlers.c:87
+msgid ""
+"Enlightenment caused a Floating Point Exception.\n"
+"\n"
+"This means that Enlightenment or support library routines it calls\n"
+"have performed an illegal mathematical operation (most likely\n"
+"dividing a number by zero). This is most likely a bug. It is\n"
+"recommended to restart now. If you wish to help fix this please\n"
+"compile Enlightenment with debugging symbols in and run\n"
+"Enlightenment under gdb so you can backtrace for where it died and\n"
+"send in a useful bug report with backtrace information and variable\n"
+"dumps etc.\n"
+msgstr ""
+
+#: src/handlers.c:112
+msgid ""
+"Enlightenment caused Segment Violation (Segfault)\n"
+"\n"
+"This means that Enlightenment or support library routines it calls\n"
+"have accessed areas of your system's memory that they are not\n"
+"allowed access to. This is most likely a bug. It is recommended to\n"
+"restart now. If you wish to help fix this please compile\n"
+"Enlightenment with debugging symbols in and run Enlightenment\n"
+"under gdb so you can backtrace for where it died and send in a\n"
+"useful bug report with backtrace information and variable\n"
+"dumps etc.\n"
+msgstr ""
+
+#: src/handlers.c:196
+msgid ""
+"Enlightenment caused Bus Error.\n"
+"\n"
+"It is suggested you check your hardware and OS installation.\n"
+"It is highly unusual to cause Bus Errors on operational\n"
+"hardware.\n"
+msgstr ""
+
+#: src/handlers.c:215
+msgid "Another Window Manager is already running"
+msgstr ""
+
+#: src/handlers.c:216
+msgid "OK (edit file)"
+msgstr "OK (szerkessze)"
+
+#: src/handlers.c:217
+msgid "Cancel (do NOT edit)"
+msgstr "Elvet (NE szerkessze)"
+
+#: src/handlers.c:218
+msgid ""
+"Another Window Manager is already running.\n"
+"\n"
+"You will have to quit your current Window Manager first before\n"
+"you can successfully run Enlightenment.\n"
+"\n"
+"If you haven't edited your user startup files, Enlightenment\n"
+"can do that now for you, so when you log in again after\n"
+"quitting your current window manager, you will have\n"
+"Enlightenment running.\n"
+"\n"
+"If you want to do this, click OK, otherwise hit cancel\n"
+"to abort this operation and edit the files by hand.\n"
+"\n"
+"WARNING WARNING WARNING WARNING!\n"
+"\n"
+"It is possible that this MAY not properly edit your files.\n"
+msgstr ""
+
+#: src/handlers.c:234 src/session.c:1166
+msgid "Are you sure?"
+msgstr "Biztos vagy benne?"
+
+#: src/handlers.c:235
+msgid "YES (edit file)"
+msgstr ""
+
+#: src/handlers.c:236
+msgid "NO (do not edit)"
+msgstr ""
+
+#: src/handlers.c:238
+msgid ""
+"Are you absolutely sure you want to have Enlightenment\n"
+"edit your startup files for you?\n"
+"\n"
+"If your startup files are highly customised this may not\n"
+"work.\n"
+"\n"
+"Are you ABSOLUTELY sure?\n"
+msgstr ""
+
+#: src/iconify.c:2425
+msgid "Iconbox Options"
+msgstr "Ikondoboz Tulajdonságai"
+
+#: src/iconify.c:2431
+msgid "This Iconbox Settings..."
+msgstr "Ennek az Ikondoboznak a Tulajdonságai"
+
+#: src/iconify.c:2434
+msgid "Close Iconbox"
+msgstr "Ikondoboz Bezárása"
+
+#: src/iconify.c:2437
+msgid "Create New Iconbox"
+msgstr ""
+
+#: src/ipc.c:4623
+msgid "Enlightenment IPC Commands Help"
+msgstr ""
+
+#: src/ipc.c:4627 src/ipc.c:4666
+msgid ""
+"\n"
+"commands currently available:\n"
+msgstr ""
+
+#: src/ipc.c:4629
+msgid ""
+"use \"help all\" for descriptions of each command\n"
+"use \"help <command>\" for an individual description\n"
+"\n"
+msgstr ""
+
+#: src/ipc.c:4667
+msgid "use \"help <command>\" for an individual description\n"
+msgstr ""
+
+#: src/ipc.c:4669
+msgid "<command> : <description>\n"
+msgstr ""
+
+#: src/ipc.c:4776
+#, c-format
+msgid ""
+"Enlightenment Version : %s\n"
+"code is current to    : %s\n"
+msgstr ""
+
+#. Set up all the text bits that belong on the GSOD
+#: src/main.c:89
+msgid "Enlightenment Message Dialog"
+msgstr ""
+
+#: src/main.c:90 src/memory.c:196 src/memory.c:278 src/memory.c:298
+#: src/memory.c:380
+msgid "Ignore this"
+msgstr ""
+
+#: src/main.c:91 src/memory.c:197 src/memory.c:278 src/memory.c:299
+#: src/memory.c:380 src/memory.c:398
+msgid "Restart Enlightenment"
+msgstr ""
+
+#: src/main.c:92 src/memory.c:198 src/memory.c:279 src/memory.c:300
+#: src/memory.c:381 src/memory.c:399 src/setup.c:295 src/setup.c:329
+#: src/setup.c:342 src/setup.c:406
+msgid "Quit Enlightenment"
+msgstr ""
+
+#: src/main.c:179
+#, c-format
+msgid ""
+"Enlightenment Version: %s\n"
+"Last updated on: %s\n"
+msgstr ""
+
+#: src/memory.c:195 src/memory.c:297
+msgid "Cannot allocate enough memory"
+msgstr ""
+
+#: src/memory.c:199
+#, c-format
+msgid ""
+"WARNING!!!!!!\n"
+"\n"
+"Allocation for %i bytes (%3.0f Kb or %3.1f Mb) did not succeed.\n"
+"\n"
+"Either this is a bug where ridiculous amounts of memory\n"
+"are being allocated, or your system has run out of both\n"
+"real and virtual memory and is unable to satisfy the request.\n"
+"\n"
+"If you have a low memory system it is suggested to either\n"
+"purchase more memory, increase SWAP space, or reconfigure\n"
+"Enlightenment to use less resources by turning features off.\n"
+"\n"
+"The malloc requested was at %s, line %d\n"
+" "
+msgstr ""
+
+#: src/memory.c:277
+msgid "Error in reallocating memory that hasn't been allocated"
+msgstr ""
+
+#: src/memory.c:281
+#, c-format
+msgid ""
+"WARNING!!!!!!\n"
+"\n"
+"Re-allocation for %i bytes (%3.0f Kb or %f3.1 Mb)\n"
+"for pointer %x is attempting to re-allocate memory for a\n"
+"memory chunk that has not been allocated or has already been\n"
+"freed.\n"
+"\n"
+"This is definitely a bug. Please report it.\n"
+"\n"
+"The error occured at %s, line %d.\n"
+msgstr ""
+
+#: src/memory.c:301
+#, c-format
+msgid ""
+"WARNING!!!!!!\n"
+"\n"
+"Re-allocation for %i bytes (%3.0f Kb or %3.1f Mb) did not succeed.\n"
+"\n"
+"Either this is a bug where ridiculous amounts of memory\n"
+"are being allocated, or your system has run out of both\n"
+"real and virtual memory and is unable to satisfy the request.\n"
+"\n"
+"If you have a low memory system it is suggested to either\n"
+"purchase more memory, increase SWAP space, or reconfigure\n"
+"Enlightenment to use less resources by turning features off.\n"
+"\n"
+"The realloc requested was at %s, line %d\n"
+" "
+msgstr ""
+
+#: src/memory.c:379
+msgid "Error in freeing memory that hasn't been allocated"
+msgstr ""
+
+#: src/memory.c:383
+#, c-format
+msgid ""
+"WARNING!!!!!!\n"
+"\n"
+"freeing for pointer %x is attempting to free memory for a\n"
+"memory chunk that has not been allocated, or has already been\n"
+"freed.\n"
+"\n"
+"This is definitely a bug. Please report it.\n"
+"\n"
+"The error occured at %s, line %d.\n"
+msgstr ""
+
+#: src/memory.c:396
+msgid "Error in attempting to free NULL pointer"
+msgstr ""
+
+#: src/memory.c:397
+msgid "Ignore this (safe)"
+msgstr ""
+
+#: src/memory.c:400
+#, c-format
+msgid ""
+"WARNING!!!!!!\n"
+"\n"
+"Enlightenment attempted to free a NULL pointer.\n"
+"\n"
+"This is definitely a bug. Please report it.\n"
+"It is safe to ignore this error and continue running Enlightenment.\n"
+"\n"
+"The pointer value was %x.\n"
+"The error occured at %s, line %d.\n"
+msgstr ""
+
+#: src/menus.c:1918
+msgid "Go to this Desktop"
+msgstr "Ugrás erre az Asztalra"
+
+#: src/menus.c:1935
+#, c-format
+msgid "Desktop %i"
+msgstr "%i. Asztal"
+
+#: src/menus.c:1998
+msgid "Show/Hide this group"
+msgstr "Csoport MegjelenÍtése/Elrejtése"
+
+#: src/menus.c:2002
+msgid "Iconify this group"
+msgstr ""
+
+#: src/menus.c:2015
+#, c-format
+msgid "Group %i"
+msgstr "%i. Csoport"
+
+#: src/misc.c:61
+#, c-format
+msgid ""
+"!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
+"\n"
+"Enlightenment's utility executable cannot be found at:\n"
+"\n"
+"%s\n"
+"This is a fatal error and Enlightenment will cease to run.\n"
+"Please rectify this situation and ensure it is installed\n"
+"correctly.\n"
+"\n"
+"The reason this could be missing is due to badly created\n"
+"packages, someone manually deleting that program or perhaps\n"
+"an error in installing Enlightenment.\n"
+msgstr ""
+
+#: src/misc.c:77
+#, c-format
+msgid ""
+"!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
+"\n"
+"Enlightenment's dox executable is not able to be executed:\n"
+"\n"
+"%s\n"
+"This is a fatal error and Enlightenment will cease to run.\n"
+"Please rectify this situation and ensure dox is installed\n"
+"correctly.\n"
+msgstr ""
+
+#: src/misc.c:99
+msgid ""
+"!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
+"\n"
+"Enlightenment's documentation is not present or correctly installed\n"
+"\n"
+"This is a fatal error and Enlightenment will cease to run.\n"
+"Please rectify this situation and ensure it is installed\n"
+"correctly.\n"
+"\n"
+"The reason this could be missing is due to badly created\n"
+"packages, someone manually deleting those files or perhaps\n"
+"an error in installing Enlightenment.\n"
+msgstr ""
+
+#: src/misc.c:123
+msgid ""
+"!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
+"\n"
+"Enlightenment's DEFAULT installed theme is missing or inadequately\n"
+"configured to be a useful DEFAULT theme.\n"
+"\n"
+"This is a fatal error and Enlightenment will cease to run.\n"
+"Please rectify this situation and ensure it is installed\n"
+"correctly. The DEFAULT theme Enlightenment comes with normally\n"
+"is BrushedMetal-Tigert and this theme is adequate for a DEFAULT\n"
+"theme.\n"
+msgstr ""
+
+#: src/misc.c:423
+msgid "Theme does not contain a borders.cfg file\n"
+msgstr ""
+
+#: src/misc.c:429
+msgid "Theme does not contain a buttons.cfg file\n"
+msgstr ""
+
+#: src/misc.c:436
+msgid "Theme does not contain a colormodifiers.cfg file\n"
+msgstr ""
+
+#: src/misc.c:442
+msgid "Theme does not contain a cursors.cfg file\n"
+msgstr ""
+
+#: src/misc.c:448
+msgid "Theme does not contain a desktops.cfg file\n"
+msgstr ""
+
+#: src/misc.c:454
+msgid "Theme does not contain a imageclasses.cfg file\n"
+msgstr ""
+
+#: src/misc.c:460
+msgid "Theme does not contain a init.cfg file\n"
+msgstr ""
+
+#: src/misc.c:466
+msgid "Theme does not contain a menustyles.cfg file\n"
+msgstr ""
+
+#: src/misc.c:472
+msgid "Theme does not contain a slideouts.cfg file\n"
+msgstr ""
+
+#: src/misc.c:479
+msgid "Theme does not contain a sound.cfg file\n"
+msgstr ""
+
+#: src/misc.c:486
+msgid "Theme does not contain a tooltips.cfg file\n"
+msgstr ""
+
+#: src/misc.c:493
+msgid "Theme does not contain a windowmatches.cfg file\n"
+msgstr ""
+
+#: src/misc.c:499
+msgid "Theme contains a menus.cfg file\n"
+msgstr ""
+
+#: src/misc.c:505
+msgid "Theme contains a control.cfg file\n"
+msgstr ""
+
+#: src/misc.c:511
+msgid "Theme contains a keybindings.cfg file\n"
+msgstr ""
+
+#: src/modules.c:138
+msgid "Module is Already Loaded.\n"
+msgstr ""
+
+#: src/modules.c:140
+msgid "Module Failed During Load.\n"
+msgstr ""
+
+#: src/modules.c:142
+msgid "Module Unload Failed.\n"
+msgstr ""
+
+#: src/modules.c:144
+msgid "Module is not Loaded.\n"
+msgstr ""
+
+#: src/modules.c:146
+msgid "Unknown Module Error.\n"
+msgstr ""
+
+#: src/pager.c:528 src/pager.c:544 src/pager.c:559
+msgid "Warning!"
+msgstr ""
+
+#: src/pager.c:529
+msgid ""
+"\n"
+"You seem to have an X Server capable of Shared Memory\n"
+"but it is incapable of doing ZPixmap Shared pixmaps\n"
+"(The server does not claim to be able to do them).\n"
+"\n"
+"The pager in enlightenment will run slowly in snapshot\n"
+"mode if you continue to use that mode of the pager\n"
+"under these conditions.\n"
+"\n"
+"It is suggested you change the settings on your pager to\n"
+"disable snapshots to improve performance.\n"
+"\n"
+msgstr ""
+
+#: src/pager.c:545
+msgid ""
+"\n"
+"Your X Server is capable of doing Shared Memory but you do\n"
+"not have Shared Pixmaps enabled in your Imlib configuration.\n"
+"\n"
+"Please enable Shared Pixmaps in your Imlib configuration\n"
+"then restart enlightenment to gain better performance for\n"
+"the pagers when snapshot mode is enabled.\n"
+"\n"
+msgstr ""
+
+#: src/pager.c:560
+msgid ""
+"\n"
+"You seem to be running Enlightenment over a network Connection\n"
+"or on an X Server that does not support Shared Memory, or you\n"
+"have disabled MIT-SHM Shared memory in your Imlib configuration.\n"
+"This means the Enlightenment Pager will perform slowly and use\n"
+"more system resources than it would when Shared Memory is\n"
+"available.\n"
+"\n"
+"To improve performance please either enable MIT-SHM Shared Memory\n"
+"in your Imlib config, if you disabled it, or disable Pager\n"
+"snapshots.\n"
+"\n"
+msgstr ""
+
+#: src/pager.c:1269
+msgid "Window Options"
+msgstr "Ablak Tulajdonságai"
+
+#: src/pager.c:1275
+msgid "Iconify"
+msgstr ""
+
+#: src/pager.c:1282
+msgid "Annihilate"
+msgstr ""
+
+#: src/pager.c:1287
+msgid "Stick / Unstick"
+msgstr ""
+
+#: src/pager.c:1300
+msgid "Desktop Options"
+msgstr ""
+
+#: src/pager.c:1306
+msgid "Pager Settings..."
+msgstr ""
+
+#: src/pager.c:1311
+msgid "Snapshotting On"
+msgstr ""
+
+#: src/pager.c:1316
+msgid "Snapshotting Off"
+msgstr ""
+
+#: src/pager.c:1323
+msgid "High Quality On"
+msgstr ""
+
+#: src/pager.c:1328
+msgid "High Quality Off"
+msgstr ""
+
+#: src/session.c:246
+msgid ""
+"There was an error writing the clients session save file.\n"
+"You may have run out of disk space, not have permission\n"
+"to write to your filing system or other similar problems.\n"
+msgstr ""
+
+#: src/session.c:438
+msgid ""
+"There was an error saving your autosave data - filing\n"
+"system problems.\n"
+msgstr ""
+
+#. Less of the hope.... E survives
+#: src/session.c:1026
+msgid ""
+"ERROR!\n"
+"\n"
+"Lost the Session Manager that was there?\n"
+"Here here session manager... come here... want a bone?\n"
+"Oh come now! Stop sulking! Bugger. Oh well. Will continue without\n"
+"a session manager.\n"
+"\n"
+"I'll survive somehow.\n"
+"\n"
+"\n"
+"... I hope.\n"
+msgstr ""
+
+#: src/session.c:1168
+msgid ""
+"\n"
+"\n"
+"    Are you sure you wish to log out ?    \n"
+"\n"
+"\n"
+msgstr ""
+
+#: src/session.c:1172
+msgid "  Yes, Log Out  "
+msgstr ""
+
+#: src/session.c:1173
+msgid "  No  "
+msgstr ""
+
+#: src/settings.c:87 src/settings.c:194
+msgid "Pager scanning speed:"
+msgstr ""
+
+#: src/settings.c:88 src/settings.c:195
+msgid "lines per second"
+msgstr ""
+
+#: src/settings.c:126
+msgid "Pager Settings"
+msgstr ""
+
+#: src/settings.c:135
+msgid "Enable pager display"
+msgstr ""
+
+#: src/settings.c:145
+msgid "Make miniature snapshots of the screen"
+msgstr ""
+
+#: src/settings.c:155
+msgid "Smooth high quality snapshots in snapshot mode"
+msgstr ""
+
+#: src/settings.c:165
+msgid "Zoom in on pager windows when mouse is over them"
+msgstr ""
+
+#: src/settings.c:175
+msgid "Pop up window title when mouse is over the window"
+msgstr ""
+
+#: src/settings.c:185
+msgid "Continuously scan screen to update pager"
+msgstr ""
+
+#: src/settings.c:215
+msgid "Mouse button to select and drag windows:"
+msgstr ""
+
+#: src/settings.c:221 src/settings.c:253 src/settings.c:285
+#: src/settings.c:1852
+msgid "Left"
+msgstr ""
+
+#: src/settings.c:229 src/settings.c:261 src/settings.c:293
+msgid "Middle"
+msgstr ""
+
+#: src/settings.c:237 src/settings.c:269 src/settings.c:301
+#: src/settings.c:1859
+msgid "Right"
+msgstr ""
+
+#: src/settings.c:247
+msgid "Mouse button to select desktops:"
+msgstr ""
+
+#: src/settings.c:279
+msgid "Mouse button to display pager menu:"
+msgstr ""
+
+#: src/settings.c:313 src/settings.c:542 src/settings.c:707 src/settings.c:884
+#: src/settings.c:1108 src/settings.c:1212 src/settings.c:1313
+#: src/settings.c:1420 src/settings.c:1482 src/settings.c:1571
+#: src/settings.c:1969 src/settings.c:3362 src/settings.c:3713
+#: src/settings.c:4012 src/settings.c:4150 src/snaps.c:510
+msgid "Apply"
+msgstr "Alkalmaz"
+
+#: src/settings.c:384
+msgid "Focus Settings"
+msgstr ""
+
+#: src/settings.c:410
+msgid "Focus follows pointer"
+msgstr ""
+
+#: src/settings.c:418
+msgid "Focus follows pointer sloppily"
+msgstr ""
+
+#: src/settings.c:426
+msgid "Focus follows mouse clicks"
+msgstr ""
+
+#: src/settings.c:443
+msgid "Clicking in a window always raises it"
+msgstr ""
+
+#: src/settings.c:458
+msgid "All new windows first get the focus"
+msgstr ""
+
+#: src/settings.c:468
+msgid "Only new dialog windows get the focus"
+msgstr ""
+
+#: src/settings.c:478
+msgid "Only new dialogs whose owner is focused get the focus"
+msgstr ""
+
+#: src/settings.c:486
+msgid "Raise windows on focus switch"
+msgstr ""
+
+#: src/settings.c:496
+msgid "Send mouse pointer to window on focus switch"
+msgstr ""
+
+#: src/settings.c:511
+msgid "Display and use focuslist"
+msgstr ""
+
+#: src/settings.c:520
+msgid "Raise windows after focus switch"
+msgstr ""
+
+#: src/settings.c:530
+msgid "Send mouse pointer to window after focus switch"
+msgstr ""
+
+#: src/settings.c:585
+msgid "Move & Resize Settings"
+msgstr ""
+
+#: src/settings.c:611
+msgid "Move Methods:"
+msgstr ""
+
+#: src/settings.c:617
+msgid "Resize Methods:"
+msgstr ""
+
+#: src/settings.c:622 src/settings.c:629 src/settings.c:1716
+msgid "Opaque"
+msgstr ""
+
+#: src/settings.c:636 src/settings.c:643 src/settings.c:1733
+msgid "Technical"
+msgstr ""
+
+#: src/settings.c:650 src/settings.c:657 src/settings.c:1749
+msgid "Box"
+msgstr ""
+
+#: src/settings.c:664 src/settings.c:671 src/settings.c:1764
+msgid "Shaded"
+msgstr ""
+
+#: src/settings.c:678 src/settings.c:685 src/settings.c:1779
+msgid "Semi-Solid"
+msgstr ""
+
+#: src/settings.c:693
+msgid "Translucent"
+msgstr ""
+
+#: src/settings.c:796 src/settings.c:855
+#, c-format
+msgid "%i Desktops"
+msgstr ""
+
+#: src/settings.c:798 src/settings.c:857
+#, c-format
+msgid "%i Desktop"
+msgstr ""
+
+#: src/settings.c:822
+msgid "Multiple Desktop Settings"
+msgstr ""
+
+#: src/settings.c:848
+msgid "Number of virtual desktops:\n"
+msgstr ""
+
+#: src/settings.c:971 src/settings.c:1035
+#, c-format
+msgid ""
+"%i x %i\n"
+"Screens in size"
+msgstr ""
+
+#: src/settings.c:974 src/settings.c:1038
+msgid ""
+"1\n"
+"Screen in size"
+msgstr ""
+
+#: src/settings.c:1003
+msgid "Virtual Deskop Settings"
+msgstr ""
+
+#: src/settings.c:1029
+msgid "Virtual Desktop size:\n"
+msgstr ""
+
+#: src/settings.c:1083
+msgid "Enable edge flip"
+msgstr ""
+
+#: src/settings.c:1090
+msgid "Resistance at edge of screen:\n"
+msgstr ""
+
+#: src/settings.c:1155
+msgid "Window Placement Settings"
+msgstr ""
+
+#: src/settings.c:1183
+msgid "Dialog windows appear together with their owner"
+msgstr ""
+
+#: src/settings.c:1193
+msgid "Switch to desktop where dialog appears"
+msgstr ""
+
+#: src/settings.c:1201
+msgid "Place windows manually"
+msgstr ""
+
+#: src/settings.c:1261
+msgid "Autoraise Settings"
+msgstr ""
+
+#: src/settings.c:1287
+msgid "Raise Windows Automatically"
+msgstr ""
+
+#: src/settings.c:1295
+msgid "Autoraise delay:"
+msgstr ""
+
+#: src/settings.c:1360
+msgid "Tooltip Settings"
+msgstr ""
+
+#: src/settings.c:1386
+msgid "Display Tooltips"
+msgstr ""
+
+#: src/settings.c:1394
+msgid "Display Root Window Tips"
+msgstr ""
+
+#: src/settings.c:1402
+msgid "Tooltip Delay:\n"
+msgstr ""
+
+#: src/settings.c:1462
+msgid "KDE Settings"
+msgstr ""
+
+#: src/settings.c:1471
+msgid "Enable KDE Support"
+msgstr ""
+
+#: src/settings.c:1525
+msgid "Audio Settings"
+msgstr ""
+
+#: src/settings.c:1552
+msgid "Enable sounds"
+msgstr ""
+
+#: src/settings.c:1560
+msgid ""
+"Audio not available since EsounD was not\n"
+"present at the time of compilation."
+msgstr ""
+
+#: src/settings.c:1667
+msgid "Special FX Settings"
+msgstr ""
+
+#: src/settings.c:1702
+msgid "Slide Method:"
+msgstr ""
+
+#: src/settings.c:1709
+msgid "Slide desktops around when changing"
+msgstr ""
+
+#: src/settings.c:1726
+msgid "Slide windows around when cleaning up"
+msgstr ""
+
+#: src/settings.c:1742
+msgid "Slide windows in when they appear"
+msgstr ""
+
+#: src/settings.c:1757
+msgid "Animated display of menus"
+msgstr ""
+
+#: src/settings.c:1772
+msgid "Always pop up menus on screen"
+msgstr ""
+
+#: src/settings.c:1790
+msgid "Use saveunders to reduce window exposures"
+msgstr ""
+
+#: src/settings.c:1800
+msgid "Animate shading and unshading of windows"
+msgstr ""
+
+#: src/settings.c:1814
+msgid "Display desktop dragbar"
+msgstr ""
+
+#: src/settings.c:1823
+msgid "Drag bar position:"
+msgstr ""
+
+#: src/settings.c:1834
+msgid "Top"
+msgstr ""
+
+#: src/settings.c:1841
+msgid "Bottom"
+msgstr ""
+
+#: src/settings.c:1878
+msgid "Desktop Slide speed: (slow)\n"
+msgstr ""
+
+#: src/settings.c:1894 src/settings.c:1916 src/settings.c:1938
+#: src/settings.c:1960
+msgid "(fast)\n"
+msgstr ""
+
+#: src/settings.c:1900
+msgid "Cleanup Slide speed: (slow)\n"
+msgstr ""
+
+#: src/settings.c:1922
+msgid "Appear Slide speed: (slow)\n"
+msgstr ""
+
+#: src/settings.c:1944
+msgid "Window Shading speed: (slow)\n"
+msgstr ""
+
+#: src/settings.c:2226 src/settings.c:2348 src/settings.c:2604
+#: src/settings.c:2727 src/settings.c:3346
+msgid "-NONE-"
+msgstr ""
+
+#: src/settings.c:2229 src/settings.c:2351 src/settings.c:2607
+#: src/settings.c:2730 src/settings.c:3349
+#, c-format
+msgid ""
+"Background definition information:\n"
+"Name: %s\n"
+"File: %s\n"
+msgstr ""
+
+#: src/settings.c:2482 src/settings.c:2484
+msgid ""
+"No\n"
+"Background"
+msgstr ""
+
+#: src/settings.c:2669 src/settings.c:3237
+#, c-format
+msgid "Unused backgrounds freed after %2i:%02i:%02i"
+msgstr ""
+
+#: src/settings.c:3000
+msgid "Desktop Background Settings"
+msgstr ""
+
+#: src/settings.c:3026
+msgid "BG Color\n"
+msgstr ""
+
+#: src/settings.c:3037
+msgid "Move to Front\n"
+msgstr ""
+
+#: src/settings.c:3044
+msgid "Duplicate\n"
+msgstr ""
+
+#: src/settings.c:3050
+msgid "Unlist\n"
+msgstr ""
+
+#: src/settings.c:3056
+msgid "Delete File\n"
+msgstr ""
+
+#: src/settings.c:3065
+msgid "Red:\n"
+msgstr ""
+
+#: src/settings.c:3079
+msgid "Use background image"
+msgstr ""
+
+#: src/settings.c:3087
+msgid "Green:\n"
+msgstr ""
+
+#: src/settings.c:3101
+msgid "Keep aspect on scale"
+msgstr ""
+
+#: src/settings.c:3109
+msgid "Blue:\n"
+msgstr ""
+
+#: src/settings.c:3123
+msgid "Tile image across background"
+msgstr ""
+
+#: src/settings.c:3139
+msgid ""
+"Background\n"
+"Image\n"
+"Scaling\n"
+"and\n"
+"Alignment\n"
+msgstr ""
+
+#: src/settings.c:3220
+msgid "Use dithering in Hi-Color"
+msgstr ""
+
+#: src/settings.c:3227
+msgid "Background overrides theme"
+msgstr ""
+
+#: src/settings.c:3284
+msgid "Prescan BG's"
+msgstr ""
+
+#: src/settings.c:3294
+msgid "Sort by File"
+msgstr ""
+
+#: src/settings.c:3300
+msgid "Sort by Attr."
+msgstr ""
+
+#: src/settings.c:3306
+msgid "Sort by Image"
+msgstr ""
+
+#: src/settings.c:3462
+msgid "Iconbox Settings"
+msgstr ""
+
+#: src/settings.c:3488
+msgid "Transparent background"
+msgstr ""
+
+#: src/settings.c:3496
+msgid "Hide border around inner Iconbox"
+msgstr ""
+
+#: src/settings.c:3503
+msgid "Show icon names"
+msgstr ""
+
+#: src/settings.c:3510
+msgid "Draw base image behind Icons"
+msgstr ""
+
+#: src/settings.c:3517
+msgid "Hide scrollbar when not needed"
+msgstr ""
+
+#: src/settings.c:3525
+msgid "Automatically resize to fit Icons"
+msgstr ""
+
+#: src/settings.c:3534
+msgid "Animate when iconifying to this Iconbox"
+msgstr ""
+
+#: src/settings.c:3544
+msgid "Alignment of anchoring when automatically resizing:"
+msgstr ""
+
+#: src/settings.c:3566
+msgid "Icon image display policy (if one operation fails, try the next):"
+msgstr ""
+
+#: src/settings.c:3573
+msgid "Snapshot Windows, Use application icon, Use Enlightenment Icon"
+msgstr ""
+
+#: src/settings.c:3582
+msgid "Use application icon, Use Enlightenment Icon, Snapshot Window"
+msgstr ""
+
+#: src/settings.c:3591
+msgid "Use Enlightenment Icon, Snapshot Window"
+msgstr ""
+
+#: src/settings.c:3605
+msgid "Icon size"
+msgstr ""
+
+#: src/settings.c:3628
+msgid "Orientation:"
+msgstr ""
+
+#: src/settings.c:3634
+msgid "Scrollbar side:"
+msgstr ""
+
+#: src/settings.c:3640
+msgid "Scrollbar arrows:"
+msgstr ""
+
+#: src/settings.c:3645
+msgid "Horizontal"
+msgstr ""
+
+#: src/settings.c:3652
+msgid "Left / Top"
+msgstr ""
+
+#: src/settings.c:3659
+msgid "Start"
+msgstr ""
+
+#: src/settings.c:3666
+msgid "Vertical"
+msgstr ""
+
+#: src/settings.c:3674
+msgid "Right / Bottom"
+msgstr ""
+
+#: src/settings.c:3682
+msgid "Both ends"
+msgstr ""
+
+#: src/settings.c:3692
+msgid "End"
+msgstr ""
+
+#: src/settings.c:3702
+msgid "None"
+msgstr ""
+
+#: src/settings.c:3836
+msgid ""
+"\n"
+"  This window currently does not belong to any groups.  \n"
+"\n"
+msgstr ""
+
+#: src/settings.c:3859
+msgid "Window Group Settings"
+msgstr ""
+
+#: src/settings.c:3886
+msgid "   Pick the group to configure:   "
+msgstr ""
+
+#: src/settings.c:3922
+msgid ""
+"  The following actions are  \n"
+"  applied to all group members:  "
+msgstr ""
+
+#: src/settings.c:3931 src/settings.c:4083
+msgid "Changing Border Style"
+msgstr ""
+
+#: src/settings.c:3941 src/settings.c:4091
+msgid "Iconifying"
+msgstr ""
+
+#: src/settings.c:3951 src/settings.c:4099
+msgid "Killing"
+msgstr ""
+
+#: src/settings.c:3961 src/settings.c:4107
+msgid "Moving"
+msgstr ""
+
+#: src/settings.c:3971 src/settings.c:4115
+msgid "Raising/Lowering"
+msgstr ""
+
+#: src/settings.c:3981 src/settings.c:4123
+msgid "Sticking"
+msgstr ""
+
+#: src/settings.c:3991 src/settings.c:4131
+msgid "Shading"
+msgstr ""
+
+#: src/settings.c:4001 src/settings.c:4139
+msgid "Mirror Shade/Iconify/Stick"
+msgstr ""
+
+#: src/settings.c:4057
+msgid "Default Group Control Settings"
+msgstr ""
+
+#: src/setup.c:222
+msgid ""
+"Enlightenment cannot connect to the display nominated by\n"
+"your shell's DISPLAY environment variable. You may set this\n"
+"variable to indicate which display name Enlightenment is to\n"
+"connect to. It may be that you do not have an Xserver already\n"
+"running to serve that Display connection, or that you do not\n"
+"have permission to connect to that display. Please make sure\n"
+"all is correct before trying again. Run an Xserver by running\n"
+"xdm or startx first, or contact your local system\n"
+"administrator, or Xserver vendor, or read the X, xdm and\n"
+"startx manual pages before proceeding.\n"
+msgstr ""
+
+#: src/setup.c:294 src/setup.c:341
+msgid "X server setup error"
+msgstr ""
+
+#: src/setup.c:296
+msgid ""
+"FATAL ERROR:\n"
+"\n"
+"This Xserver does not support the Shape extension.\n"
+"This is required for Enlightenment to run.\n"
+"\n"
+"Your Xserver probably is too old or mis-configured.\n"
+"\n"
+"Exiting.\n"
+msgstr ""
+
+#: src/setup.c:328
+msgid "Imlib initialisation error"
+msgstr ""
+
+#: src/setup.c:330
+msgid ""
+"FATAL ERROR:\n"
+"\n"
+"Enlightenment is unable to initialise Imlib.\n"
+"\n"
+"This is unusual. Unable to contiune.\n"
+"Exiting.\n"
+msgstr ""
+
+#: src/setup.c:343
+msgid ""
+"FATAL ERROR:\n"
+"\n"
+"Enlightenment is unable to initialise Fnlib.\n"
+"\n"
+"This is unusual. Unable to contiune.\n"
+"Exiting.\n"
+msgstr ""
+
+#: src/setup.c:404
+msgid "X server version error"
+msgstr ""
+
+#: src/setup.c:405
+msgid "Ignore this error"
+msgstr ""
+
+#: src/setup.c:407
+#, c-format
+msgid ""
+"WARNING:\n"
+"This is not an X11 Xserver. It infact talks the X%i protocol.\n"
+"This may mean Enlightenment will either not function, or\n"
+"function incorrectly. If it is later than X11, then your\n"
+"server is one the author of Enlightenment neither have\n"
+"access to, nor have heard of.\n"
+msgstr ""
+
+#: src/setup.c:624
+#, c-format
+msgid ""
+"The directory %s is apparently not a directory\n"
+"This is a fatal condition.\n"
+"Please remove this file\n"
+msgstr ""
+
+#: src/setup.c:631
+#, c-format
+msgid ""
+"Do not have execute access to %s\n"
+"This is a fatal condition.\n"
+"Please check the ownership and permissions of this\n"
+"directory and take steps to rectify this.\n"
+msgstr ""
+
+#: src/setup.c:639
+#, c-format
+msgid ""
+"Do not have read access to %s\n"
+"This is a fatal condition.\n"
+"Please check the ownership and permissions of this\n"
+"directory and take steps to rectify this.\n"
+msgstr ""
+
+#: src/setup.c:647
+#, c-format
+msgid ""
+"Do not have write access to %s\n"
+"This is a fatal condition.\n"
+"Please check the ownership and permissions of this\n"
+"directory and take steps to rectify this.\n"
+msgstr ""
+
+#: src/snaps.c:405
+msgid "Location"
+msgstr "PozÍció"
+
+#: src/snaps.c:413
+msgid "Border style"
+msgstr "Keret stÍlus"
+
+#: src/snaps.c:421
+msgid "Size"
+msgstr "Méret"
+
+#: src/snaps.c:429
+msgid "Desktop"
+msgstr "Asztal"
+
+#: src/snaps.c:437
+msgid "Shaded state"
+msgstr ""
+
+#: src/snaps.c:445
+msgid "Sticky state"
+msgstr ""
+
+#: src/snaps.c:453
+msgid "Stacking layer"
+msgstr ""
+
+#: src/snaps.c:474
+msgid "Restart application on login"
+msgstr ""
+
+#: src/snaps.c:498
+msgid "Remember this window's group(s)"
+msgstr ""
+
+#: src/snaps.c:511
+msgid "Cancel"
+msgstr "Elvet"
+
+#: src/snaps.c:840
+msgid "Error saving snaps file\n"
+msgstr ""
+
+#: src/sound.c:53
+msgid "Error finding sound file"
+msgstr ""
+
+#: src/sound.c:55
+#, c-format
+msgid ""
+"Warning!  Enlightenment was unable to load the\n"
+"following sound file:\n"
+"%s\n"
+"Enlightenment will continue to operate, but you\n"
+"may wish to check your configuration settings.\n"
+msgstr ""
+
+#: src/sound.c:262
+msgid "Error initialising sound"
+msgstr ""
+
+#: src/sound.c:265
+msgid ""
+"Audio was enabled for Enlightenemnt but there was an error\n"
+"communicating with the audio server (Esound). Audio will\n"
+"now be disabled.\n"
+msgstr ""
+
+#: src/theme.c:293
+msgid "Unknown\n"
+msgstr "Ismeretlen\n"
+
+#: src/theme.c:316 src/theme.c:328
+msgid "Theme file/directory does not exist\n"
+msgstr ""
+
+#: src/theme.c:348
+#, c-format
+msgid ""
+"The theme:\n"
+"%s\n"
+"Is a badly formed theme package and is thus not being used.\n"
+"Enlightenment has fallen back to using the DEFAULT theme.\n"
+"\n"
+"The reason this theme is bad is:\n"
+"%s"
+msgstr ""
+
+#: src/theme.c:355
+msgid "Bad Theme"
+msgstr ""
+
+#: src/update.c:166
+msgid "Enlightenment's message of the day"
+msgstr "Az Enlightenment mai tippje"
