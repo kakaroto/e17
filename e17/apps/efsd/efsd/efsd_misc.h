@@ -59,4 +59,6 @@ char   *efsd_misc_get_user_dir(void);
 char   *efsd_misc_get_sys_dir(void);
 char   *efsd_misc_get_socket_file(void);
 
+void    efsd_misc_quicksort(char **a, int l, int r);
+
 #endif

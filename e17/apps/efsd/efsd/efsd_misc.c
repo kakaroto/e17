@@ -159,6 +159,9 @@ efsd_misc_file_is_dotfile(char *filename)
 
   D_ENTER;
   
+  if (!filename || filename[0] == '\0')
+    D_RETURN_(FALSE);
+
   slash = strrchr(filename, '/');
 
   if (slash)
@@ -553,4 +556,55 @@ efsd_misc_get_socket_file(void)
 #endif
   s[sizeof(s)-1] = '\0';
   D_RETURN_(s);
+}
+
+
+void
+efsd_misc_quicksort(char **a, int l, int r)
+{
+  int                 i, j, m;
+  void               *v, *t;
+  
+  if (r > l)
+    {      
+      m = (r + l) / 2 + 1;
+      if (strcmp(a[l], a[r]) > 0)
+	{
+	  t = a[l];
+	  a[l] = a[r];
+	  a[r] = t;
+	}
+      if (strcmp(a[l], a[m]) > 0)
+	{
+	  t = a[l];
+	  a[l] = a[m];
+	  a[m] = t;
+	}
+      if (strcmp(a[r], a[m]) > 0)
+	{
+	  t = a[r];
+	  a[r] = a[m];
+	  a[m] = t;
+	}
+      
+      v = a[r];
+      i = l - 1;
+      j = r;
+      
+      for ( ; ; )
+	{
+	  while (strcmp(a[++i], v) < 0);
+	  while (strcmp(a[--j], v) > 0);
+	  if (i >= j)
+	    break;
+	  t = a[i];
+	  a[i] = a[j];
+	  a[j] = t;
+	}
+      t = a[i];
+      a[i] = a[r];
+      a[r] = t;
+      efsd_misc_quicksort(a, l, i - 1);
+      efsd_misc_quicksort(a, i + 1, r);
+    }
 }

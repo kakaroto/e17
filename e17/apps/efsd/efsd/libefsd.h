@@ -251,10 +251,16 @@ EfsdOption    *efsd_op_get_filetype(void);
 EfsdOption    *efsd_op_force(void);
 EfsdOption    *efsd_op_recursive(void);
 
+/* "Sort" option for efsd_start_monitor_dir --
+   EFSD_FILE_EXISTS events are reported in alphabetical
+   order when selected.
+ */
+EfsdOption    *efsd_op_sort(void);
+
 /* Include files starting with . in listings, like ls -a.
    They're otherwise not reported.
 */
-EfsdOption    *efsd_op_all(void);
+EfsdOption    *efsd_op_list_all(void);
 
 #ifdef __cplusplus
 }

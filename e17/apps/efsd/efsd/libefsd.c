@@ -974,8 +974,16 @@ efsd_op_recursive(void)
 
 
 EfsdOption    *
-efsd_op_all(void)
+efsd_op_list_all(void)
 {
   D_ENTER;
-  D_RETURN_(efsd_option_new_all());
+  D_RETURN_(efsd_option_new_list_all());
+}
+
+
+EfsdOption    *
+efsd_op_sort(void)
+{
+  D_ENTER;
+  D_RETURN_(efsd_option_new_sort());
 }

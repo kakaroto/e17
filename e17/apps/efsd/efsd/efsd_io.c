@@ -739,16 +739,12 @@ fill_option(EfsdIOV *iov, EfsdOption *eo)
   switch (eo->type)
     {
     case EFSD_OP_FORCE:
-      break;
     case EFSD_OP_RECURSIVE:
-      break;
     case EFSD_OP_GET_STAT:
-      break;
     case EFSD_OP_GET_LSTAT:
-      break;
     case EFSD_OP_ALL:
-      break;
     case EFSD_OP_GET_FILETYPE:
+    case EFSD_OP_SORT:
       break;
     case EFSD_OP_GET_META:
       iov->dat[iov->d] = strlen(eo->efsd_op_getmeta.key) + 1;
@@ -984,6 +980,9 @@ efsd_io_read_option(int sockfd, EfsdOption *eo)
 	  break;
 	case EFSD_OP_GET_FILETYPE:
 	  D(("Read filetype option\n"));
+	  break;
+	case EFSD_OP_SORT:
+	  D(("Read sort option\n"));
 	  break;
 	case EFSD_OP_GET_META:
 	  D(("Read meta option\n"));

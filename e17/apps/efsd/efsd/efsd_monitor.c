@@ -46,7 +46,8 @@ EfsdHash *monitors = NULL;
 
 /* Allocator and deallocator for a Monitor */
 static EfsdMonitor     *monitor_new(EfsdCommand *com, int client,
-				    int dir_mode, int temporary);
+				    int dir_mode, int is_temporary,
+				    int is_sorted);
 static void             monitor_free(EfsdMonitor *m);
 
 
@@ -70,7 +71,7 @@ static void             monitor_hash_item_free(EfsdHashItem *it);
 
 
 static EfsdMonitor *         
-monitor_new(EfsdCommand *com, int client, int dir_mode, int temporary)
+monitor_new(EfsdCommand *com, int client, int dir_mode, int is_temporary, int is_sorted)
 {
   EfsdMonitorRequest   *emr;
   EfsdMonitor   *m;
@@ -83,6 +84,7 @@ monitor_new(EfsdCommand *com, int client, int dir_mode, int temporary)
   m->filename   = strdup(com->efsd_file_cmd.files[0]);
   m->fam_req    = NEW(FAMRequest);
   m->clients    = NULL;
+  m->files      = efsd_dca_new();
 
   emr = monitor_request_new(client, com->efsd_file_cmd.id,
 			    com->efsd_file_cmd.num_options,
@@ -107,7 +109,8 @@ monitor_new(EfsdCommand *com, int client, int dir_mode, int temporary)
     m->client_use_count = 1;
 
   m->is_dir = dir_mode;
-  m->is_temporary = temporary;
+  m->is_temporary = is_temporary;
+  m->is_sorted = is_sorted;
 
   efsd_hash_insert(monitors, m->filename, m);
 
@@ -134,6 +137,8 @@ monitor_free(EfsdMonitor *m)
   FREE(m->fam_req);
 
   efsd_list_free(m->clients, (EfsdFunc)monitor_request_free);
+  efsd_dca_free(m->files);
+
   FREE(m);
 
   D_RETURN;
@@ -417,7 +422,7 @@ efsd_monitor_cleanup(void)
 
 
 EfsdMonitor *
-efsd_monitor_start(EfsdCommand *com, int client, int dir_mode)
+efsd_monitor_start(EfsdCommand *com, int client, int dir_mode, int do_sort)
 {
   EfsdMonitor  *m = NULL;
 
@@ -430,7 +435,7 @@ efsd_monitor_start(EfsdCommand *com, int client, int dir_mode)
 
   if ((m = efsd_monitored(com->efsd_file_cmd.files[0])) == NULL)
     {      
-      m = monitor_new(com, client, dir_mode, FALSE);
+      m = monitor_new(com, client, dir_mode, FALSE, do_sort);
 
       if (efsd_misc_file_is_dir(m->filename) && dir_mode)
 	{
@@ -481,7 +486,7 @@ efsd_monitor_start_internal(char *filename, int dir_mode)
   memset(&com, 0, sizeof(EfsdCommand));
   com.efsd_file_cmd.files = &filename;
 
-  D_RETURN_(efsd_monitor_start(&com, EFSD_CLIENT_INTERNAL, dir_mode));
+  D_RETURN_(efsd_monitor_start(&com, EFSD_CLIENT_INTERNAL, dir_mode, TRUE));
 }
 
 
@@ -509,7 +514,7 @@ efsd_monitor_force_startstop(EfsdCommand *com, int client)
 
   D_ENTER;
 
-  m = monitor_new(com, client, FALSE, TRUE);
+  m = monitor_new(com, client, FALSE, TRUE, FALSE);
 
   if (efsd_misc_file_is_dir(m->filename))
     {

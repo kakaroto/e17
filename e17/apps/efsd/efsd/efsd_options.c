@@ -110,7 +110,7 @@ efsd_option_new_recursive(void)
 
 
 EfsdOption *
-efsd_option_new_all(void)
+efsd_option_new_list_all(void)
 {
   EfsdOption *eo;
 
@@ -118,6 +118,19 @@ efsd_option_new_all(void)
   eo = NEW(EfsdOption);
   memset(eo, 0, sizeof(EfsdOption));
   eo->type = EFSD_OP_ALL;
+  D_RETURN_(eo);
+}
+
+
+EfsdOption *
+efsd_option_new_sort(void)
+{
+  EfsdOption *eo;
+
+  D_ENTER;
+  eo = NEW(EfsdOption);
+  memset(eo, 0, sizeof(EfsdOption));
+  eo->type = EFSD_OP_SORT;
   D_RETURN_(eo);
 }
 
@@ -130,14 +143,11 @@ efsd_option_cleanup(EfsdOption *eo)
   switch (eo->type)
     {
     case EFSD_OP_FORCE:
-      break;
     case EFSD_OP_RECURSIVE:
-      break;
     case EFSD_OP_ALL:
-      break;
     case EFSD_OP_GET_STAT:
-      break;
     case EFSD_OP_GET_FILETYPE:
+    case EFSD_OP_SORT:
       break;
     case EFSD_OP_GET_META:
       FREE(eo->efsd_op_getmeta.key);

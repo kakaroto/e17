@@ -43,15 +43,15 @@ EfsdStatus;
 
 typedef enum efsd_filechange_type
 {
-  EFSD_CHANGE_CHANGED     = 1,
-  EFSD_CHANGE_DELETED     = 2,
-  EFSD_CHANGE_START_EXEC  = 3,
-  EFSD_CHANGE_STOP_EXEC   = 4,
-  EFSD_CHANGE_CREATED     = 5,
-  EFSD_CHANGE_MOVED       = 6,
-  EFSD_CHANGE_ACKNOWLEDGE = 7,
-  EFSD_CHANGE_EXISTS      = 8,
-  EFSD_CHANGE_END_EXISTS  = 9
+  EFSD_FILE_CHANGED     = 1,
+  EFSD_FILE_DELETED     = 2,
+  EFSD_FILE_START_EXEC  = 3,
+  EFSD_FILE_STOP_EXEC   = 4,
+  EFSD_FILE_CREATED     = 5,
+  EFSD_FILE_MOVED       = 6,
+  EFSD_FILE_ACKNOWLEDGE = 7,
+  EFSD_FILE_EXISTS      = 8,
+  EFSD_FILE_END_EXISTS  = 9
 }
 EfsdFilechangeType;
 
@@ -101,7 +101,8 @@ typedef enum efsd_option_type
   EFSD_OP_GET_STAT,
   EFSD_OP_GET_LSTAT,
   EFSD_OP_GET_FILETYPE,
-  EFSD_OP_GET_META
+  EFSD_OP_GET_META,
+  EFSD_OP_SORT
 }
 EfsdOptionType;
 

@@ -22,22 +22,36 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 */
-#ifndef efsd_options_h
-#define efsd_options_h
+#ifndef efsd_dyn_char_array_h
+#define efsd_dyn_char_array_h
 
-#include <efsd.h>
+typedef struct efsd_dyn_char_array EfsdDynCharArray;
 
-/* Those fill in an existing EfsdOption struct ... */
-EfsdOption  *efsd_option_new_get_stat(void);
-EfsdOption  *efsd_option_new_get_lstat(void);
-EfsdOption  *efsd_option_new_get_metadata(char *key, EfsdDatatype type);
-EfsdOption  *efsd_option_new_get_filetype(void);
-EfsdOption  *efsd_option_new_force(void);
-EfsdOption  *efsd_option_new_recursive(void);
-EfsdOption  *efsd_option_new_list_all(void);
-EfsdOption  *efsd_option_new_sort(void);
+/* A dynamic char* array, supporting automatic resizing,
+   sorting, inserting and removal. Appends are O(1),
+   sort on average is O(N log N) (Quicksort), inserts
+   and removes are O(log N) for the lookup and O(N) for
+   the shifts.
 
-/* ... and this one cleans up. The struct is NOT freed. */
-void    efsd_option_cleanup(EfsdOption *eo);
+   Inserted strings are strdup()d, so the caller remains
+   responsible for the cleanup of the passed pointers.
+*/
+
+/* Allocation and deallocation. */
+EfsdDynCharArray  *efsd_dca_new(void);
+void               efsd_dca_free(EfsdDynCharArray *a);
+
+/* Append string -- no sorting. */
+void               efsd_dca_append(EfsdDynCharArray *a, const char *s);
+
+/* Sort array */
+void               efsd_dca_sort(EfsdDynCharArray *a);
+
+/* Insertion and removal -- S is duplicated before insertion */
+void               efsd_dca_insert(EfsdDynCharArray *a, const char *s);
+void               efsd_dca_remove(EfsdDynCharArray *a, const char *s);
+
+/* Access to items. Returns NULL if index is invalid. */
+char              *efsd_dca_get(EfsdDynCharArray *a, int i);
 
 #endif

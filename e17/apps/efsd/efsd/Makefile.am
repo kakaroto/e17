@@ -21,6 +21,7 @@ include_HEADERS = \
 efsd_SOURCES = 					\
 	efsd_commands.h efsd_commands.c 	\
 	efsd_debug.h efsd_debug.c		\
+	efsd_dynarray.h efsd_dynarray.c 	\
 	efsd_fam_r.c efsd_fam_r.h 		\
 	efsd_filetype.h efsd_filetype.c 	\
 	efsd_fs.h efsd_fs.c 			\

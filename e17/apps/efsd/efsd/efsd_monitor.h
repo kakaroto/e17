@@ -29,6 +29,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <efsd.h>
 #include <efsd_options.h>
+#include <efsd_dynarray.h>
 #include <efsd_list.h>
 
 
@@ -67,22 +68,32 @@ typedef struct efsd_monitor
   */
   EfsdList             *clients;
 
+  /* The files monitored by this monitor: */
+  EfsdDynCharArray     *files; 
+
   /* whether this monitor can safely
      be deleted, because there won't
      be any further FAM events */
-  char                   is_finished;
+  char                  is_finished;
 
   /* whether this monitor monitors an
      entire directory (checking the file
      won't do -- we could be monitoring
      only the directory file) */
-  char                   is_dir;
+  char                  is_dir;
 
   /* whether this monitor is registered
      as a "full" monitor or just as a
      temporary one. */
   
-  char                   is_temporary;
+  char                  is_temporary;
+
+  /* if this is a directory monitor,
+     specify whether or not the files
+     list is to be kept sorted.
+  */
+
+  char                  is_sorted;
 }
 EfsdMonitor;
 
@@ -99,7 +110,7 @@ void             efsd_monitor_remove(EfsdMonitor *m);
 /* High-level API for monitoring stuff -- refcounting
    & co are handled inside. Return >= 0 on success.
 */
-EfsdMonitor     *efsd_monitor_start(EfsdCommand *com, int client, int dir_mode);
+EfsdMonitor     *efsd_monitor_start(EfsdCommand *com, int client, int dir_mode, int sort);
 int              efsd_monitor_stop(EfsdCommand *cmd, int client);
 
 /* For internal monitoring of files -- specify file name directly.

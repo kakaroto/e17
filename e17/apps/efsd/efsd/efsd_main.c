@@ -101,7 +101,7 @@ static void   main_thread_launch(EfsdCommand *ecom, int client);
 static void   main_thread_detach(void);
 
 static void  *main_handle_client_command(void *container);
-static void   main_handle_listdir_options(char *filename, EfsdMonitorRequest *emr);
+static void   main_handle_file_exists_options(char *filename, EfsdMonitorRequest *emr);
 static void  *main_fam_events_listener(void *dummy);
 static void   main_handle_fam_events(void);
 static void   main_handle_connections(void);
@@ -295,7 +295,7 @@ main_handle_client_command(void *data)
 
 
 static void
-main_handle_listdir_options(char *filename, EfsdMonitorRequest *emr)
+main_handle_file_exists_options(char *filename, EfsdMonitorRequest *emr)
 {
   EfsdCommand *ecmd;
   int i;
@@ -357,6 +357,7 @@ main_handle_listdir_options(char *filename, EfsdMonitorRequest *emr)
 	  }
 	  break;
 	case EFSD_OP_ALL:
+	case EFSD_OP_SORT:
 	  break;
 	default:
 	  D("Nonsense listdir option (code %i)!\n", emr->options[i].type);
@@ -415,12 +416,66 @@ main_fam_events_listener(void *dummy)
 }
 
 
+static void
+main_handle_file_change_event(EfsdMonitor *m, EfsdMonitorRequest *emr,
+			      EfsdFilechangeType type, char *filename)
+{
+  EfsdEvent   ee;
+
+  D_ENTER;
+
+  memset(&ee, 0, sizeof(EfsdEvent));
+  ee.type = EFSD_EVENT_FILECHANGE;
+  ee.efsd_filechange_event.changetype = type;
+  ee.efsd_filechange_event.file = filename;
+
+  /* Register the command id in the reply event: */
+  ee.efsd_filechange_event.id = emr->id;
+			  
+  /* D("Writing FAM event %i to client %i\n",
+     famev.code, emr->client);
+  */
+
+  if (efsd_io_write_event(clientfd[emr->client], &ee) < 0)
+    {
+      if (errno == EPIPE)
+	{
+	  D("Client %i died -- closing connection.\n", emr->client);
+	  efsd_main_close_connection(emr->client);
+	}
+      else
+	{
+	  efsd_queue_add_event(clientfd[emr->client], &ee);
+	  D("write() error when writing FAM event.\n");
+	}
+    }
+	      
+  
+  if ((type == EFSD_FILE_EXISTS)  ||
+      (type == EFSD_FILE_CHANGED) ||
+      (type == EFSD_FILE_CREATED))
+    {
+      if (filename[0] != '/')
+	{
+	  char        s[MAXPATHLEN];
+
+	  snprintf(s, MAXPATHLEN, "%s/%s", m->filename, filename); 
+	  main_handle_file_exists_options(s, emr);
+	}
+      else
+	{
+	  main_handle_file_exists_options(filename, emr);
+	}
+    }
+
+  D_RETURN;
+}
+
+
 static void 
 main_handle_fam_events(void)
 {
   FAMEvent    famev;
-  EfsdEvent   ee;
-  char        s[MAXPATHLEN];
   int         i;
 
   D_ENTER;
@@ -448,25 +503,35 @@ main_handle_fam_events(void)
 	  m = (EfsdMonitor*)famev.userdata;
 
 	  /* D("Handling FAM event %i for file %s\n", famev.code, famev.filename); */
-
-	  memset(&ee, 0, sizeof(EfsdEvent));
-	  ee.type = EFSD_EVENT_FILECHANGE;
-	  ee.efsd_filechange_event.changetype = (EfsdFilechangeType)famev.code;
-	  ee.efsd_filechange_event.file = strdup(famev.filename);
+	  
+	  /* If the monitor is for a directory, and it's a file-exists
+	     event, store the file in the monitor. If another client
+	     requests monitoring this directory, we can then simply
+	     return those files instead of needed a new monitor for
+	     the file-exists events. */
+	  if ((famev.code == FAMExists) && (m->is_dir))
+	    efsd_dca_append(m->files, famev.filename);
+	  
 
 	  for (cl = efsd_list_head(m->clients); cl; cl = efsd_list_next(cl))
 	    {
 	      EfsdMonitorRequest *emr;
 	      char                list_all_files = FALSE;
+	      char                sort_files = FALSE;
 		    
 	      emr = (EfsdMonitorRequest*) efsd_list_data(cl);
 
 	      for (i = 0; i < emr->num_options; i++)
 		{
-		  if (emr->options[i].type == EFSD_OP_ALL)
+		  switch (emr->options[i].type)
 		    {
+		    case EFSD_OP_ALL:
 		      list_all_files = TRUE;
 		      break;
+		    case EFSD_OP_SORT:
+		      sort_files = TRUE;
+		      break;
+		    default:
 		    }
 		}
 
@@ -518,52 +583,55 @@ main_handle_fam_events(void)
 		    }
 		  else		    
 		    {
-		      ee.efsd_filechange_event.id = emr->id;
-		      
-		      if (list_all_files || !efsd_misc_file_is_dotfile(famev.filename))
+		      /* Here the file monitoring events that are delivered to
+			 clients are handled. We have two different cases for
+			 directory monitors -- if sorted file-exists events
+			 have been requested, we need to wait for all exists
+			 events first, otherwise, we can process them directly.
+		      */
+		      if (!m->is_dir || !m->is_sorted)
 			{
-			  /* D("Writing FAM event %i to client %i\n",
-			     famev.code, emr->client);
-			  */
-			  if (efsd_io_write_event(clientfd[emr->client], &ee) < 0)
-			    {
-			      if (errno == EPIPE)
-				{
-				  D("Client %i died -- closing connection.\n", emr->client);
-				  efsd_main_close_connection(emr->client);
-				}
-			      else
-				{
-				  efsd_queue_add_event(clientfd[emr->client], &ee);
-				  D("write() error when writing FAM event.\n");
-				}
-			    }
+			  /* Process directly. */
 			  
-			  if ((famev.code == FAMExists) ||
-			      (famev.code == FAMChanged) ||
-			      (famev.code == FAMCreated))
+			  /* Let's look only at the files we wanted: */
+			  if (list_all_files || !efsd_misc_file_is_dotfile(famev.filename))
 			    {
-			      if (famev.filename[0] != '/')
+			      main_handle_file_change_event(m, emr, famev.code, famev.filename);
+			    }		      			  
+			}
+		      else
+			{
+			  /* Wait end of FILE_EXISTS ... */
+			  
+			  if (famev.code == FAMEndExist)
+			    {
+			      char *filename;
+			      int index = 0;
+
+			      /* ... now sort the files in the monitor, ... */
+			      efsd_dca_sort(m->files);
+
+			      /* ... and handle each of them. */
+			      while ((filename = efsd_dca_get(m->files, index)) != NULL)
 				{
-				  snprintf(s, MAXPATHLEN, "%s/%s", m->filename, famev.filename); 
-				  main_handle_listdir_options(s, emr);
+				  if ((list_all_files || !efsd_misc_file_is_dotfile(filename)))
+				    {
+				      main_handle_file_change_event(m, emr, EFSD_FILE_EXISTS, filename);
+				    }
+				  
+				  index++;
 				}
-			      else
-				{
-				  main_handle_listdir_options(famev.filename, emr);
-				}
+			      
+			      /* Send FILE_END_EXISTS so that the client knows that the end is reached. */
+			      main_handle_file_change_event(m, emr, EFSD_FILE_END_EXISTS, famev.filename);
 			    }
-			}		      
+			}
 		    }
 		}
 	    }
 	  
 	  if (famev.code == FAMAcknowledge)
-	    {
-	      efsd_monitor_remove(m);
-	    }
-	  
-	  efsd_event_cleanup(&ee);
+	    efsd_monitor_remove(m);
 	}
     }
   
