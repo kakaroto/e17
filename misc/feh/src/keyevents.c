@@ -52,6 +52,14 @@ handle_keypress_event(XEvent * ev, Window win)
         if (opt.slideshow)
            slideshow_change_image(winwid, SLIDE_NEXT);
         break;
+     case XK_Page_Up:
+        if (opt.slideshow)
+           slideshow_change_image(winwid, SLIDE_JUMP_BACK);
+        break;
+     case XK_Page_Down:
+        if (opt.slideshow)
+           slideshow_change_image(winwid, SLIDE_JUMP_FWD);
+        break;
      case XK_Delete:
         /* I could do with some confirmation here */
         /* How about holding ctrl? */
@@ -64,10 +72,10 @@ handle_keypress_event(XEvent * ev, Window win)
               doomed = current_file;
               slideshow_change_image(winwid, SLIDE_NEXT);
               filelist = feh_file_rm_and_free(filelist, doomed);
-              if(!filelist)
+              if (!filelist)
               {
-                  /* No more images. Game over ;-) */
-                  winwidget_destroy(winwid);
+                 /* No more images. Game over ;-) */
+                 winwidget_destroy(winwid);
               }
               if (winwid->name)
                  free(winwid->name);

@@ -1,3 +1,8 @@
+Sun Apr 30 02:40:01 2000  Tom Gilbert  <gilbertt@btinternet.com>
+
+	* PageUp/PageDown in slideshows will jump back/forward about
+	1/20th of the total number of files...
+
 Sat Apr 29 21:42:45 2000  Tom Gilbert  <gilbertt@btinternet.com>
 
 	* Hrm. Actually wait for X to resize the window before rendering

@@ -129,7 +129,8 @@ slideshow_change_image(winwidget winwid, int change)
 {
    int success = 0;
    feh_file *last = NULL;
-   int i = 0, file_num = 0;
+   int i = 0, file_num = 0, j = 0;
+   int jmp = 1;
 
    D_ENTER;
 
@@ -160,26 +161,70 @@ slideshow_change_image(winwidget winwid, int change)
    {
       if (winwid->im)
       {
-         /* I would leave these in the cache, but its a big mem * penalty
-            for large slideshows. (In fact it brought down * ljlane's box ;-) 
-          */
+         /* I would leave these in the cache, but its a big mem * penalty for 
+            large slideshows. (In fact it brought down * ljlane's box ;-) */
          imlib_context_set_image(winwid->im);
          imlib_free_image_and_decache();
       }
-      if (change == SLIDE_NEXT)
+      switch (change)
       {
-         if (current_file->next)
-            current_file = current_file->next;
-         else
-            current_file = filelist;
+        case SLIDE_NEXT:
+           if (current_file->next)
+              current_file = current_file->next;
+           else
+              current_file = filelist;
+           break;
+        case SLIDE_PREV:
+           if (current_file->prev)
+              current_file = current_file->prev;
+           else
+              current_file = filelist_last(current_file);
+           break;
+        case SLIDE_JUMP_FWD:
+           if (file_num < 5)
+              jmp = 1;
+           else if (file_num < 40)
+              jmp = 2;
+           else
+              jmp = file_num / 20;
+           if (!jmp)
+              jmp = 2;
+           for (j = 0; j < jmp; j++)
+           {
+              if (current_file->next)
+                 current_file = current_file->next;
+              else
+                 current_file = filelist;
+           }
+           /* important. if the load fails, we only want to step on ONCE to * 
+              try the next file, not another jmp */
+           change = SLIDE_NEXT;
+           break;
+        case SLIDE_JUMP_BACK:
+           if (file_num < 5)
+              jmp = 1;
+           else if (file_num < 40)
+              jmp = 2;
+           else
+              jmp = file_num / 20;
+           if (!jmp)
+              jmp = 2;
+           for (j = 0; j < jmp; j++)
+           {
+              if (current_file->prev)
+                 current_file = current_file->prev;
+              else
+                 current_file = filelist_last(current_file);
+           }
+           /* important. if the load fails, we only want to step back ONCE to
+              * try the previous file, not another jmp */
+           change = SLIDE_NEXT;
+           break;
+        default:
+           eprintf("BUG!\n");
+           break;
       }
-      else if (change == SLIDE_PREV)
-      {
-         if (current_file->prev)
-            current_file = current_file->prev;
-         else
-            current_file = filelist_last(current_file);
-      }
+
       if (last)
       {
          filelist = filelist_remove_file(filelist, last);
