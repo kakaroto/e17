@@ -82,6 +82,7 @@ struct __fehoptions
 };
 
 void init_parse_options(int argc, char **argv);
+char *feh_string_normalize(char *str);
 
 extern fehoptions opt;
 

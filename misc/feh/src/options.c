@@ -182,22 +182,24 @@ feh_parse_options_from_string(char *opts)
    int i = 0;
 
    D_ENTER;
+
    /* So we don't reinvent the wheel (not again, anyway), we use the
       getopt_long function to do this parsing as well. This means it has to
       look like the real argv ;) */
+
    list = malloc(sizeof(char *));
 
    list[num++] = estrdup(PACKAGE);
 
    for (s = opts, t = opts;; t++)
    {
-      if ((*t == ' ') && !(inquote) && (last != '\\'))
+      if ((*t == ' ') && !(inquote))
       {
          *t = '\0';
          num++;
          list = erealloc(list, sizeof(char *) * num);
 
-         list[num - 1] = estrdup(s);
+         list[num - 1] = feh_string_normalize(s);
          s = t + 1;
       }
       else if (*t == '\0')
@@ -205,10 +207,10 @@ feh_parse_options_from_string(char *opts)
          num++;
          list = erealloc(list, sizeof(char *) * num);
 
-         list[num - 1] = estrdup(s);
+         list[num - 1] = feh_string_normalize(s);
          break;
       }
-      else if(*t == '\"' && last !='\\')
+      else if (*t == '\"' && last != '\\')
          inquote = !(inquote);
       last = *t;
    }
@@ -221,6 +223,42 @@ feh_parse_options_from_string(char *opts)
    if (list)
       free(list);
    D_RETURN_;
+}
+
+char *
+feh_string_normalize(char *str)
+{
+   char ret[4096];
+   char *s;
+   int i = 0;
+   char last = 0;
+
+   D_ENTER;
+   D(("normalizing %s\n", str));
+   ret[0] = '\0';
+
+   for (s = str;; s++)
+   {
+      if (*s == '\0')
+         break;
+      else if ((*s == '\"') && (last == '\\'))
+         ret[i++] = '\"';
+      else if ((*s == '\"') && (last == 0))
+         ;
+      else if ((*s == ' ') && (last == '\\'))
+         ret[i++] = ' ';
+      else
+         ret[i++] = *s;
+
+      last = *s;
+   }
+   if (i && ret[i - 1] == '\"')
+      ret[i - 1] = '\0';
+   else
+      ret[i] = '\0';
+   D(("normalized to %s\n", ret));
+
+   D_RETURN(estrdup(ret));
 }
 
 static void
