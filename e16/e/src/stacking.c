@@ -382,7 +382,7 @@ EobjListStackGetForDesk(int *num, int desk)
    for (i = j = 0; i < ewl->nwins; i++)
      {
 	eo = ewl->list[i];
-	if (eo->desk != desk)
+	if (eo->desk != desk && !eo->sticky && !eo->floating)
 	   continue;
 
 	lst[j++] = eo;

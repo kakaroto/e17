@@ -226,6 +226,8 @@ MenuEwinInit(EWin * ewin, void *ptr)
    ewin->Refresh = MenuEwinRefresh;
    ewin->Close = MenuEwinClose;
    EoSetOpacity(ewin, OpacityExt(Conf.menus.opacity));
+   EoSetSticky(ewin, 1);
+   EoSetFloating(ewin, 1);
 }
 
 static void         MenuShowMasker(Menu * m);
@@ -313,39 +315,10 @@ MenuShow(Menu * m, char noshow)
 	  }
      }
 
-   if ((Mode.x >= 0) && (Mode.y >= 0))
-     {
-	if (Conf.menus.onscreen)
-	   EMoveWindow(m->win, wx, wy);
-	else
-	   EMoveWindow(m->win, Mode.x - x - (w / 2), Mode.y - y - (h / 2));
-     }
-   else if ((Mode.x >= 0) && (Mode.y < 0))
-     {
-	if (((-Mode.y) + (int)mh) > (int)VRoot.h)
-	   Mode.y = -((-Mode.y) - Mode.context_h - mh);
-	if (Conf.menus.onscreen)
-	   EMoveWindow(m->win, wx, -Mode.y);
-	else
-	   EMoveWindow(m->win, Mode.x - x - (w / 2), -Mode.y);
-     }
-   else if ((Mode.x < 0) && (Mode.y >= 0))
-     {
-	if (((-Mode.x) + (int)mw) > (int)VRoot.w)
-	   Mode.x = -((-Mode.x) - Mode.context_w - mw);
-	if (Conf.menus.onscreen)
-	   EMoveWindow(m->win, -Mode.x, wy);
-	else
-	   EMoveWindow(m->win, -Mode.x, Mode.y - y - (h / 2));
-     }
+   if (Conf.menus.onscreen)
+      EMoveWindow(m->win, wx, wy);
    else
-     {
-	if (((-Mode.x) + (int)mw) > (int)VRoot.w)
-	   Mode.x = -((-Mode.x) - Mode.context_w - mw);
-	if (((-Mode.y) + (int)mh) > (int)VRoot.h)
-	   Mode.y = -((-Mode.y) - Mode.context_h - mh);
-	EMoveWindow(m->win, -Mode.x, -Mode.y);
-     }
+      EMoveWindow(m->win, Mode.x - x - (w / 2), Mode.y - y - (h / 2));
 
    ewin = AddInternalToFamily(m->win, m->style->border_name, EWIN_TYPE_MENU, m,
 			      MenuEwinInit);
@@ -359,6 +332,7 @@ MenuShow(Menu * m, char noshow)
 	   EwinInstantShade(ewin, 0);
 	ICCCM_Cmap(NULL);
 	MoveEwin(ewin, EoGetX(ewin), EoGetY(ewin));
+	FloatEwinAt(ewin, EoGetX(ewin), EoGetY(ewin));
 	if (!noshow)
 	  {
 	     ShowEwin(ewin);
@@ -988,6 +962,7 @@ MenuShowMasker(Menu * m)
 	eo = EobjRegister(Mode_menus.cover_win, EOBJ_TYPE_OTHER);
 	EobjSetDesk(eo, EoGetDesk(ewin));
 	EobjSetLayer(eo, 20);
+	EobjSetFloating(eo, 1);
 	EobjListStackLower(eo);
 	ESelectInput(Mode_menus.cover_win,
 		     ButtonPressMask | ButtonReleaseMask | EnterWindowMask |

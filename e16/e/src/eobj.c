@@ -54,7 +54,7 @@ EobjSetDesk(EObj * eo, int desk)
 	eo->desk = desk;
 	break;
      case EOBJ_TYPE_EWIN:
-	if (eo->sticky || eo->desk < 0)
+	if (eo->sticky || eo->floating || eo->desk < 0)
 	   eo->desk = DesksGetCurrent();
 	else
 	   eo->desk = desk % Conf.desks.num;
@@ -91,12 +91,6 @@ EobjSetLayer(EObj * eo, int layer)
     * TBD: Override redirect
     */
 
-   if (eo->floating)
-     {
-	eo->ilayer = 500;
-	return;
-     }
-
    switch (eo->type)
      {
      case EOBJ_TYPE_EWIN:
@@ -120,6 +114,11 @@ EobjSetLayer(EObj * eo, int layer)
 	eo->ilayer = 10 * eo->layer;
 	break;
      }
+
+   if (eo->floating)
+      eo->ilayer |= 512;
+   else
+      eo->ilayer &= ~512;
 }
 
 void

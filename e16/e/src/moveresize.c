@@ -70,12 +70,6 @@ ActionMoveStart(EWin * ewin, int grab, char constrained, int nogroup)
    for (i = 0; i < num; i++)
      {
 	FloatEwinAt(gwins[i], EoGetX(gwins[i]), EoGetY(gwins[i]));
-#if 0				/* Will never get here */
-	if (Mode.mode == MODE_MOVE)
-	   DrawEwinShape(gwins[i], Conf.movres.mode_move, EoGetX(gwins[i]),
-			 EoGetY(gwins[i]), gwins[i]->client.w,
-			 gwins[i]->client.h, 0);
-#endif
 	/* This shouldn't be necessary ... will figure it out some other time */
 	gwins[i]->shape_x = EoGetX(gwins[i]);
 	gwins[i]->shape_y = EoGetY(gwins[i]);
