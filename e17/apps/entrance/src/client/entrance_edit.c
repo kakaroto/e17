@@ -11,10 +11,10 @@
 #include <string.h>
 #include <Edje.h>
 #include <Esmart/Esmart_Container.h>
+#include <Esmart/Esmart_Text_Entry.h>
 #include "entrance.h"
 #include "entrance_config.h"
 #include "entrance_x_session.h"
-#include "EvasTextEntry.h"
 
 #define DEBUG 0
 #define WINW 800
@@ -164,7 +164,7 @@ interp_return_key(void *data, const char *str)
    char *old = NULL;
    char *new_str = NULL;
    Evas_Object *o = NULL;
-   Evas_Text_Entry *e = NULL;
+   Esmart_Text_Entry *e = NULL;
 
    int size = 0;
 
@@ -373,7 +373,7 @@ interp_return_key(void *data, const char *str)
                else
                {
                   fprintf(stderr, "You found a invalid eet\n");
-                  evas_text_entry_text_set(o, ecco.config->theme);
+                  esmart_text_entry_text_set(o, ecco.config->theme);
                   free(new_str);
                }
             }
@@ -418,7 +418,7 @@ _key_focus_in(void *data, Evas_Object * o, const char *emission,
 #endif
       if (ecco.entry)
       {
-         evas_text_entry_focus_set(ecco.entry, 1);
+         esmart_text_entry_focus_set(ecco.entry, 1);
          if ((edje_object_part_exists(ecco.edje, str)))
          {
             if ((bstr = edje_object_part_text_get(ecco.edje, str)))
@@ -440,9 +440,9 @@ _key_focus_in(void *data, Evas_Object * o, const char *emission,
                   edje_object_signal_emit(ecco.edje, ecco.focus.signal,
                                           source);
                }
-               evas_text_entry_edje_part_set(ecco.entry, ecco.edje,
+               esmart_text_entry_edje_part_set(ecco.entry, ecco.edje,
                                              (char *) str);
-               evas_text_entry_text_set(ecco.entry, bstr);
+               esmart_text_entry_text_set(ecco.entry, bstr);
                snprintf(buf, PATH_MAX, "%s-2", source);
                ecco.focus.key = strdup(buf);
             }
@@ -1982,14 +1982,14 @@ main(int argc, char *argv[])
          edje_object_signal_callback_add(edje, "ecco,container,scrollbar,*",
                                          "*", _scrollbar_cb, e);
 
-         o = evas_text_entry_new(evas);
+         o = esmart_text_entry_new(evas);
          evas_object_move(o, 0, 0);
          evas_object_resize(o, 200, 200);
          evas_object_layer_set(o, -1);
-         evas_text_entry_max_chars_set(o, PATH_MAX);
-         evas_text_entry_is_password_set(o, 0);
-         evas_text_entry_focus_set(o, 1);
-         evas_text_entry_return_key_callback_set(o, interp_return_key, o);
+         esmart_text_entry_max_chars_set(o, PATH_MAX);
+         esmart_text_entry_is_password_set(o, 0);
+         esmart_text_entry_focus_set(o, 1);
+         esmart_text_entry_return_key_callback_set(o, interp_return_key, o);
          ecco.entry = o;
 
          ecore_evas_show(e);

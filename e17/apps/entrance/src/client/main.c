@@ -9,11 +9,11 @@
 #include <getopt.h>
 #include <string.h>
 #include <Edje.h>
+#include <Esmart/Esmart_Text_Entry.h>
 #include "entrance.h"
 #include "entrance_session.h"
 #include "entrance_x_session.h"
 #include "entrance_ipc.h"
-#include "EvasTextEntry.h"
 
 #define WINW 800
 #define WINH 600
@@ -106,7 +106,7 @@ static void
 focus_swap(Evas_Object * o, int selecto)
 {
    Evas_Object *oo = NULL;
-   Evas_Text_Entry *e = NULL;
+   Esmart_Text_Entry *e = NULL;
 
    if ((e = evas_object_smart_data_get(o)))
    {
@@ -116,9 +116,9 @@ focus_swap(Evas_Object * o, int selecto)
               evas_object_name_find(evas_object_evas_get(o),
                                     "EntranceUserEntry")))
          {
-            evas_text_entry_text_set(oo, "");
+            esmart_text_entry_text_set(oo, "");
          }
-         evas_text_entry_text_set(o, "");
+         esmart_text_entry_text_set(o, "");
       }
       else if (!strcmp(e->edje.part, "EntranceUserEntry"))
       {
@@ -129,12 +129,12 @@ focus_swap(Evas_Object * o, int selecto)
    }
    if (oo)
    {
-      selecto ? evas_text_entry_focus_set(oo,
-                                          0) : evas_text_entry_focus_set(o,
+      selecto ? esmart_text_entry_focus_set(oo,
+                                          0) : esmart_text_entry_focus_set(o,
                                                                          0);
 
-      selecto ? evas_text_entry_focus_set(o,
-                                          1) : evas_text_entry_focus_set(oo,
+      selecto ? esmart_text_entry_focus_set(o,
+                                          1) : esmart_text_entry_focus_set(oo,
                                                                          1);
    }
 }
@@ -149,7 +149,7 @@ interp_return_key(void *data, const char *str)
 {
    Evas_Object *o = NULL;
    Entrance_User *eu = NULL;
-   Evas_Text_Entry *e = NULL;
+   Esmart_Text_Entry *e = NULL;
 
    o = (Evas_Object *) data;
 
@@ -167,7 +167,7 @@ interp_return_key(void *data, const char *str)
          }
          else
          {
-            evas_text_entry_text_set(o, "");
+            esmart_text_entry_text_set(o, "");
             entrance_session_user_reset(session);
             edje_object_signal_emit(e->edje.o, "EntranceUserFail", "");
             focus_swap(o, 1);
@@ -211,17 +211,17 @@ focus(void *data, Evas_Object * o, const char *emission, const char *source)
    {
       if (!strcmp(emission, "In"))
       {
-         if (!evas_text_entry_is_focused(oo))
+         if (!esmart_text_entry_is_focused(oo))
          {
-            evas_text_entry_focus_set(oo, 1);
+            esmart_text_entry_focus_set(oo, 1);
          }
       }
       else if (!strcmp(emission, "Out"))
       {
-         if (evas_text_entry_is_focused(oo))
+         if (esmart_text_entry_is_focused(oo))
          {
-            evas_text_entry_focus_set(oo, 1);
-            evas_text_entry_focus_set(oo, 0);
+            esmart_text_entry_focus_set(oo, 1);
+            esmart_text_entry_focus_set(oo, 0);
          }
       }
       else
@@ -762,16 +762,16 @@ main(int argc, char *argv[])
          if (edje_object_part_exists(edje, entries[i]))
          {
             edje_object_part_geometry_get(edje, entries[i], &x, &y, &w, &h);
-            o = evas_text_entry_new(evas);
+            o = esmart_text_entry_new(evas);
             evas_object_move(o, x, y);
             evas_object_resize(o, w, h);
             evas_object_layer_set(o, 1);
-            evas_text_entry_max_chars_set(o, 32);
-            evas_text_entry_is_password_set(o, i);
+            esmart_text_entry_max_chars_set(o, 32);
+            esmart_text_entry_is_password_set(o, i);
             evas_object_name_set(o, entries[i]);
-            evas_text_entry_edje_part_set(o, edje, entries[i]);
+            esmart_text_entry_edje_part_set(o, edje, entries[i]);
 
-            evas_text_entry_return_key_callback_set(o, interp_return_key, o);
+            esmart_text_entry_return_key_callback_set(o, interp_return_key, o);
 
             edje_object_signal_callback_add(edje, "In", entries[i], focus, o);
 
