@@ -18,7 +18,7 @@ collections {
 					text {
 						text, "test 1";
 						font, "Vera";
-						size, 13;
+						size, 15;
 						fit, 0 0;
 						align, 0.0 1.0;
 					}
@@ -55,7 +55,7 @@ collections {
 					text {
 						text, "";
 						font, "Vera";
-						size, 8;
+						size, 10;
 						fit, 0 0;
 						align, 0.0 1.0;
 					}
@@ -90,7 +90,7 @@ collections {
 					text {
 						text, "";
 						font, "Vera";
-						size, 9;
+						size, 11;
 						fit, 0 0;
 						align, 0.0 1.0;
 					}
@@ -112,7 +112,7 @@ collections {
 					text {
 						text, "test 2";
 						font, "Vera";
-						size, 9;
+						size, 11;
 						fit, 0 0;
 						align, 0.0 1.0;
 					}
@@ -134,7 +134,7 @@ collections {
 					text {
 						text, "irrelevant";
 						font, "Vera";
-						size, 9;
+						size, 11;
 						fit, 0 0;
 						align, 0.0 1.0;
 					}
