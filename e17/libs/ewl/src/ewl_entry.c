@@ -694,7 +694,7 @@ void ewl_entry_configure_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	if (!ch)
 		ch = CURRENT_H(e->cursor);
 
-	printf("Map %d of %d to %d, %d: %d x %d\n", c_pos, l, cx, cy, cw, ch);
+	printf("Map %d(%d) of %d to %d, %d: %d x %d\n", pos, c_pos, l, cx, cy, cw, ch);
 	ewl_object_geometry_request(EWL_OBJECT(e->cursor), cx, cy, 
 				    cw, ch);
 }
@@ -1227,6 +1227,8 @@ void ewl_entry_left_delete(Ewl_Entry * e)
 	if (REALIZED(e))
 		ewl_entry_ops_apply(e);
 
+	e->length --;
+
 	ewl_entry_cursor_position_set(EWL_ENTRY_CURSOR(e->cursor), sp);
 	ewl_widget_configure(EWL_WIDGET(e));
 
@@ -1245,7 +1247,6 @@ void ewl_entry_right_delete(Ewl_Entry * e)
 		DLEAVE_FUNCTION(DLEVEL_STABLE)
 	}
 
-	/* no reason to delete past the end of the text */
 	len = ewl_entry_length_get(e);
 	sp = ep = ewl_entry_cursor_position_get(EWL_ENTRY_CURSOR(e->cursor));
 
@@ -1253,6 +1254,8 @@ void ewl_entry_right_delete(Ewl_Entry * e)
 	ecore_dlist_append(e->ops, op);
 	if (REALIZED(e))
 		ewl_entry_ops_apply(e);
+
+	e->length --;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
