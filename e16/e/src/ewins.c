@@ -1033,6 +1033,11 @@ EwinConformToDesktop(EWin * ewin)
 	MoveEwin(ewin, EoGetX(ewin), EoGetY(ewin));
      }
 
+   /* FIXME - This should not be necessary. It is when a new window is added as
+    * the only one in the lowest layer (e.g. desktop type).
+    * In stead EobjListStackAdd() should mark the object stack dirty. */
+   StackDesktop(EoGetDesk(ewin));
+
    EwinDetermineArea(ewin);
    HintsSetWindowDesktop(ewin);
 

@@ -1410,7 +1410,7 @@ EwinShowInfo2(const EWin * ewin)
 	     "MWM border %i resizeh %i title %i menu %i minimize %i maximize %i\n"
 	     "NeedsInput   %i   TakeFocus    %i   FocusNever   %i   FocusClick   %i\n"
 	     "NeverUseArea %i   FixedPos     %i\n"
-	     "Desktop      %i   Layer        %i\n"
+	     "Desktop      %i   Layer        %i(%i)\n"
 	     "Iconified    %i   Sticky       %i   Shaded       %i   Docked       %i\n"
 	     "State        %i   Shown        %i   Active       %i   Floating     %i\n"
 	     "Member of groups        %i\n",
@@ -1449,7 +1449,8 @@ EwinShowInfo2(const EWin * ewin)
 	     ewin->client.need_input, ewin->client.take_focus,
 	     ewin->neverfocus, ewin->focusclick,
 	     ewin->never_use_area, ewin->fixedpos, EoGetDesk(ewin),
-	     EoGetLayer(ewin), ewin->iconified, EoIsSticky(ewin), ewin->shaded,
+	     EoGetLayer(ewin), ewin->o.ilayer,
+	     ewin->iconified, EoIsSticky(ewin), ewin->shaded,
 	     ewin->docked, ewin->state, ewin->shown, ewin->active,
 	     EoIsFloating(ewin), ewin->num_groups);
 }
