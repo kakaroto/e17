@@ -2010,3 +2010,19 @@ Fix problem with losing control over windows being deiconified (+cleanups).
 
 Avoid calling StackDesktops() before configuration has been read.
 
+
+-------------------------------------------------------------------------------
+
+Sat Jul 12 17:09:47 CEST 2003
+(Kim)
+
+Ganymede theme: Fix some directory permissions.
+ShinyMetal theme: Remove .pager.cfg.swp.
+
+Only one ..._WM_CHECK window.
+Remove _NET_WM_VERSION (not defined in spec).
+Added ENLIGHTENMENT_VERSION property to root window.
+
+Added possibility to configure not to use fnlib (configure --without-fnlib).
+
+No global var should be named "id".
