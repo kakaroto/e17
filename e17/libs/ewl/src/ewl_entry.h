@@ -40,6 +40,7 @@ struct Ewl_Entry
 	int             editable; /**< Flag to indicate if user can edit text */
 	Ecore_Timer    *timer; /**< Time until scrolling text on select */
 	double          start_time; /**< Time timer started */
+	int             in_select_mode; /**< Do keyboard cursor movements select? */
 };
 
 Ewl_Widget     *ewl_entry_new(char *text);
