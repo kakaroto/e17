@@ -141,9 +141,9 @@ void
 bt_zoom_in_up(void *data, Evas * e, Evas_Object * obj, void *event_info)
 {
    evas_object_image_file_set(obj, IM "bt_zoom_in_1.png", NULL);
-   scale -= 0.5;
-   if (scale < 0.5)
-      scale = 0.5;
+   scale /= 1.414;
+   if (scale > 0.03125)
+     scale = 0.03125;
    e_handle_resize();
 }
 
@@ -171,7 +171,7 @@ void
 bt_zoom_out_up(void *data, Evas * e, Evas_Object * obj, void *event_info)
 {
    evas_object_image_file_set(obj, IM "bt_zoom_out_1.png", NULL);
-   scale += 0.5;
+   scale *= 1.414;
    e_handle_resize();
 }
 

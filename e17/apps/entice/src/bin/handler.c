@@ -91,10 +91,8 @@ e_handle_resize(void)
 
    if (o_image)
      {
-	int                 sx, sy, mx, my, pw, ph;
+	int                 mx, my, pw, ph;
 
-	sx = scroll_x;
-	sy = scroll_y;
 	evas_object_image_size_get(o_image, &w, &h);
 	pw = w;
 	ph = h;
@@ -102,31 +100,27 @@ e_handle_resize(void)
 	h = (int)((double)h / scale);
 	if (w > win_w)
 	  {
-	     if (sx > ((w - win_w) / 2))
-		sx = ((w - win_w) / 2);
-	     if (sx < -((w - win_w + 1) / 2))
-		sx = -((w - win_w + 1) / 2);
+	     if (scroll_x > ((w - win_w) / 2))
+		scroll_x = ((w - win_w) / 2);
+	     if (scroll_x < -((w - win_w + 1) / 2))
+		scroll_x = -((w - win_w + 1) / 2);
 	  }
 	else
-	   sx = 0;
+	   scroll_x = 0;
 	if (h > win_h)
 	  {
-	     if (sy > ((h - win_h) / 2))
-		sy = ((h - win_h) / 2);
-	     if (sy < -((h - win_h + 1) / 2))
-		sy = -((h - win_h + 1) / 2);
+	     if (scroll_y > ((h - win_h) / 2))
+		scroll_y = ((h - win_h) / 2);
+	     if (scroll_y < -((h - win_h + 1) / 2))
+		scroll_y = -((h - win_h + 1) / 2);
 	  }
 	else
-	   sy = 0;
-
+	   scroll_y = 0;
 	evas_object_move(o_image,
-			 sx + ((win_w - w) / 2), sy + ((win_h - h) / 2));
+			 scroll_x + ((win_w - w) / 2), scroll_y + ((win_h - h) / 2));
 	evas_object_image_fill_set(o_image, 0, 0, w, h);
 	evas_object_resize(o_image, w, h);
 	evas_object_layer_set(o_image, 100);
-
-	scroll_sx = sx;
-	scroll_sy = sy;
 
 	if ((win_w <= w) && (win_h <= h) &&
 	    (!evas_object_image_alpha_get(o_image)))
@@ -164,13 +158,13 @@ e_handle_resize(void)
 	  {
 	     int                 ww, hh, sw, sh;
 
-	     ww = 48;
-	     hh = (48 * ph) / pw;
-	     if (h > w)
-	       {
-		  hh = 48;
-		  ww = (48 * pw) / ph;
-	       }
+	     if (h > w) {
+	       hh = 48;
+	       ww = (48 * w) / h;
+	     } else {
+	       ww = 48;
+	       hh = (48 * h) / w;
+	     }
 	     evas_object_resize(o_mini_image, ww, hh);
 	     evas_object_image_fill_set(o_mini_image, 0, 0, ww, hh);
 	     evas_object_move(o_mini_image, win_w - ww - 3, win_h - hh - 3);
@@ -181,8 +175,8 @@ e_handle_resize(void)
 		sw = (win_w * ww) / w;
 	     if (win_h < h)
 		sh = (win_h * hh) / h;
-	     mx = (-sx * ww) / pw;
-	     my = (-sy * hh) / ph;
+	     mx = (-scroll_x * ww) / w;
+	     my = (-scroll_y * hh) / h;
 	     evas_object_resize(o_mini_select, sw + 6, sh + 6);
 	     evas_object_image_fill_set(o_mini_select, 0, 0, sw + 6, sh + 6);
 	     evas_object_move(o_mini_select,

@@ -57,8 +57,6 @@ extern enum active_state panel_active;
 extern enum active_state buttons_active;
 extern int          scroll_x;
 extern int          scroll_y;
-extern int          scroll_sx;
-extern int          scroll_sy;
 extern int          arrow_l;
 extern int          arrow_r;
 extern int          arrow_t;

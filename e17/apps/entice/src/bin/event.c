@@ -95,16 +95,16 @@ e_key_down(void* data, Evas * unused, Evas_Object *obj, void *event_info)
    else if ((!strcmp(e->keyname, "minus")) ||
 	    (!strcmp(e->keyname, "o")))
      {
-	scale += 0.5;
+	scale *= 1.414;
 	e_handle_resize();
      }
    else if ((!strcmp(e->keyname, "plus")) ||
 	    (!strcmp(e->keyname, "equal")) ||
 	    (!strcmp(e->keyname, "i")))
      {
-	scale -= 0.5;
-	if (scale < 0.5)
-	   scale = 0.5;
+	scale /= 1.414;
+	if (scale < 0.03125)
+	  scale = 0.03125;
 	e_handle_resize();
      }
    else if (!strcmp(e->keyname, "w"))

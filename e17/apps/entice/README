@@ -25,6 +25,8 @@ On the TODO list at present, in order of randomness, are:
 * maybe add the ability to drag images from one position to another in
   the list
 * maybe make the file info (name & size) fade out after a few seconds
+* allow for slideshow behaviour
+* allow users to rename image files from within entice
 
 There are some known bugs also:
 * image flipping does not update the image: doing a drag or other operation

@@ -53,7 +53,6 @@ int                 dragging = 0;
 enum active_state   panel_active = active_out;
 enum active_state   buttons_active = active_out;
 int                 scroll_x = 0, scroll_y = 0;
-int                 scroll_sx = 0, scroll_sy = 0;
 int                 arrow_l = 0, arrow_r = 0, arrow_t = 0, arrow_b = 0;
 int                 down_x = 0, down_y = 0;
 int                 down_sx = 0, down_sy = 0;

@@ -671,8 +671,6 @@ e_display_current_image(void)
 {
    scroll_x = 0;
    scroll_y = 0;
-   scroll_sx = 0;
-   scroll_sy = 0;
    Imlib_Image im;
    DATA32 *data;
    int mustUseImlib = 0;
@@ -806,8 +804,6 @@ next_image_up(void *data, Evas * e, Evas_Object * obj, void *event_info)
    if (((ev->output.x - down_x) * (ev->output.x - down_x)) +
        ((ev->output.y - down_y) * (ev->output.y - down_y)) > 9)
      {
-	scroll_x = scroll_sx;
-	scroll_y = scroll_sy;
 	e_fade_scroller_out(NULL);
 	return;
      }
@@ -833,10 +829,43 @@ next_image_move(void *data, Evas * e, Evas_Object * obj, void *event_info)
    Evas_Event_Mouse_Move *ev;
 
    ev = event_info;
-   if (ev->buttons != 0)
+   if (ev->buttons != 0 && o_image)
      {
+        int w,h;
+        evas_object_image_size_get(o_image, &w, &h);
+	w = (int)((double)w / scale);
+	h = (int)((double)h / scale);
 	scroll_x = ev->cur.output.x - down_x + down_sx;
 	scroll_y = ev->cur.output.y - down_y + down_sy;
+	if (w > win_w)
+	  {
+	     if (scroll_x > ((w - win_w) / 2))
+		scroll_x = ((w - win_w) / 2);
+	     if (scroll_x < -((w - win_w + 1) / 2))
+		scroll_x = -((w - win_w + 1) / 2);
+	  }
+	else
+	   scroll_x = 0;
+	if (h > win_h)
+	  {
+	     if (scroll_y > ((h - win_h) / 2))
+		scroll_y = ((h - win_h) / 2);
+	     if (scroll_y < -((h - win_h + 1) / 2))
+		scroll_y = -((h - win_h + 1) / 2);
+	  }
+	else
+	   scroll_y = 0;
+
+	/*
+	if (scroll_x > w / 2)
+	  scroll_x = w / 2;
+	else if (scroll_x < -w / 2)
+	  scroll_x = -w / 2;
+	if (scroll_y > h / 2)
+	  scroll_y = h / 2;
+	else if (scroll_y < -h / 2)
+	  scroll_y = -h / 2;
+	*/
 
 	e_handle_resize();
      }
