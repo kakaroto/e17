@@ -108,13 +108,16 @@ sub toggle_show_details {
 			if($prefs{hide_complete_todo}) {
 				if($$item{enddate} ne "") {
 					$$item{checkbox}->hide();
-					$$item{checkbox}->set_active(1);
 				} else {
 					$$item{checkbox}->show();
 				}
 			} else {
 				$$item{checkbox}->show();
 			}
+			if($$item{enddate} ne "") {
+				$$item{checkbox}->set_active(1);
+			}
+			$$item{checkbox}->signal_connect('toggled',\&toggle_todo_item,$item);
 		}
 	} else {
 		$prefs{show_details} = 0;
@@ -126,13 +129,16 @@ sub toggle_show_details {
 			if($prefs{hide_complete_todo}) {
 				if($$item{enddate} ne "") {
 					$$item{checkbox}->hide();
-					$$item{checkbox}->set_active(1);
 				} else {
 					$$item{checkbox}->show();
 				}
 			} else {
 				$$item{checkbox}->show();
 			}
+			if($$item{enddate} ne "") {
+				$$item{checkbox}->set_active(1);
+			}
+			$$item{checkbox}->signal_connect('toggled',\&toggle_todo_item,$item);
 		}
 	}
 
