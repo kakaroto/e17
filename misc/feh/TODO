@@ -3,12 +3,6 @@ Things I need to do to this thang ::)
 Feel free to add stuff to it. I am very happy to delete any lines other
 people add =P
 
-o List mode
-
-I need format specifiers so people can do:
-feh -L "<img src=\"%f\" alt=\"%n\" width=\"%w\" height=\"%h\" border=\"0\">"
-to add images to their web pages (for example) :-)
-
 o General
 
 Rework zoom code to be more flexible/sane :-)
