@@ -32,6 +32,8 @@
 #include <sys/types.h>
 #include <linux/videodev.h>
 
+#include <net/if.h>
+
 #include "parseconfig.h"
 
 void log(char *fmt, ...);
@@ -92,7 +94,9 @@ char *overlay_file = NULL;
 Imlib_Image overlay_im = NULL;
 int overlay_x = 0, overlay_y = 0;
 Imlib_Font title_fn, text_fn;
-char *ftp_pasvmode = "-";
+char *ftp_interface = "-";
+char *watch_interface = NULL;
+int interface_active = 0;
 
 int v_width[5] = { 128, 160, 176, 320, 640 };
 int v_height[5] = { 96, 120, 144, 240, 480 };
@@ -502,7 +506,7 @@ ftp_upload1(char *local, char *remote, char *tmp)
    curl_easy_setopt(curl_handle, CURLOPT_UPLOAD, 1);
 
    if (!ftp_passive)
-      curl_easy_setopt(curl_handle, CURLOPT_FTPPORT, ftp_pasvmode);
+      curl_easy_setopt(curl_handle, CURLOPT_FTPPORT, ftp_interface);
 
    /* get it! */
    ret = curl_easy_perform(curl_handle);
@@ -625,6 +629,14 @@ ftp_upload1(char *local, char *remote, char *tmp)
 }
 
 int
+check_interface(char *watch_interface)
+{
+   if (watch_interface == NULL)
+      return 1;
+   return if_nametoindex(watch_interface);
+}
+
+int
 main(int argc, char *argv[])
 {
    unsigned char *val;
@@ -680,8 +692,8 @@ main(int argc, char *argv[])
       ftp_do = i;
    if (-1 != (i = cfg_get_int("ftp", "timeout")))
       ftp_timeout = i;
-   if (NULL != (val = cfg_get_str("ftp", "pasvmode")))
-      ftp_pasvmode = val;
+   if (NULL != (val = cfg_get_str("ftp", "interface")))
+      ftp_interface = val;
 
    if (NULL != (val = cfg_get_str("scp", "target")))
       scp_target = val;
@@ -728,6 +740,8 @@ main(int argc, char *argv[])
       text_style_file = val;
    if (NULL != (val = cfg_get_str("grab", "overlay_image")))
       overlay_file = val;
+   if (NULL != (val = cfg_get_str("grab", "watch_interface")))
+      watch_interface = val;
    if (-1 != (i = cfg_get_int("grab", "width")))
       grab_width = i;
    if (-1 != (i = cfg_get_int("grab", "height")))
@@ -823,8 +837,10 @@ main(int argc, char *argv[])
       upload_successful = 1;
       end_shot = 0;
       start_shot = 0;
-      if ((grab_blockfile && (stat(grab_blockfile, &st) == -1))
-          || !grab_blockfile)
+      
+      
+      if (((grab_blockfile && (stat(grab_blockfile, &st) == -1))
+          || !grab_blockfile) && check_interface(watch_interface))
       {
          time(&start_shot);
          if (action_pre_shot)

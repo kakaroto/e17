@@ -79,6 +79,8 @@ blockfile = /home/gilbertt/BLOCKCAM
 # File to check before shotting, while this file exists, shots will be taken.
 # but not uploaded.
 uploadblockfile = /home/gilbertt/BLOCKUPLOAD
+# Shots will only be taken/uploaded if the specified interface is active.
+#watch_interface = ppp0
 # image to overlay
 overlay_image = /home/gilbertt/.lb.png
 overlay_x = 5
