@@ -116,7 +116,7 @@ WarpFocus(int delta)
 		     AddItem(ewin, "", 0, LIST_TYPE_WARP_RING);
 	       }
 	  }
-	MoveItemToListBottom(mode.focuswin, LIST_TYPE_WARP_RING);
+	MoveItemToListBottom(GetFocusEwin(), LIST_TYPE_WARP_RING);
 	lst = (EWin **) ListItemType(&num, LIST_TYPE_WARP_RING);
 	warpFocusIndex = num - 1;
      }
@@ -130,17 +130,7 @@ WarpFocus(int delta)
 	if (!FindItem((char *)ewin, 0, LIST_FINDBY_POINTER, LIST_TYPE_EWIN))
 	   ewin = NULL;
 	if (ewin)
-	  {
-	     if (conf.focus.raise_on_next_focus)
-		RaiseEwin(ewin);
-	     if (conf.focus.warp_on_next_focus && !ewin->iconified)
-		XWarpPointer(disp, None, ewin->win, 0, 0, 0, 0, ewin->w / 2,
-			     ewin->h / 2);
-	     /* if (conf.focus.mode == MODE_FOCUS_CLICK) */
-	     /* FocusToEWin(ewin); */
-	     if (conf.warplist.warpfocused && !ewin->iconified)
-		FocusToEWin(ewin, FOCUS_WARP);
-	  }
+	   FocusToEWin(ewin, FOCUS_SET);
 	WarpFocusShowTitle(ewin);
 	Efree(lst);
      }
@@ -168,18 +158,10 @@ WarpFocusFinish(void)
 	  {
 	     if (conf.warplist.warpiconified && ewin->iconified)
 		DeIconifyEwin(ewin);
-	     FocusToEWin(ewin, FOCUS_SET);
-	     if (conf.focus.warp_after_next_focus
-		 || conf.focus.warp_on_next_focus)
-	       {
-		  XWarpPointer(disp, None, ewin->win, 0, 0, 0, 0, ewin->w / 2,
-			       ewin->h / 2);
-	       }
-	     if (conf.focus.raise_after_next_focus)
-		RaiseEwin(ewin);
+	     FocusToEWin(ewin, FOCUS_WARP_DONE);
 	  }
-	/*printf ("Raise: %s\n", ewin->client.title); */
 	Efree(lst);
+
 	while (RemoveItem("", 0, LIST_FINDBY_NONE, LIST_TYPE_WARP_RING));
      }
 

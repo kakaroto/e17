@@ -529,16 +529,6 @@ ICCCM_Focus(EWin * ewin)
 	EDBUG_RETURN_;
      }
 
-   if (ewin->menu)
-      EDBUG_RETURN_;
-
-   if (!ewin->client.need_input)
-     {
-	if (!mode.cur_menu_mode)
-	   mode.context_ewin = ewin;
-	EDBUG_RETURN_;
-     }
-
    foc = 0;
    if (XGetWMProtocols(disp, ewin->client.win, &prop, &num))
      {

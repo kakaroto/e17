@@ -272,9 +272,6 @@ SetCurrentArea(int ax, int ay)
 
    /* remove lots of event masks from windows.. we dont want to bother */
    /* handling events as a result of our playing wiht windows */
-#if 0				/* Clean up if not causing trouble */
-   FocusToEWin(NULL);
-#endif
    FocusNewDeskBegin();
 
    /* move all the windows around */

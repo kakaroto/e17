@@ -1253,7 +1253,6 @@ GotoDesktop(int num)
 
    ActionsSuspend();
 
-   FocusToEWin(NULL, FOCUS_DESK_LEAVE);
    FocusNewDeskBegin();
 
    if (mode.mode == MODE_NONE)

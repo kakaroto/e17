@@ -141,6 +141,21 @@ SetEInfoOnAll()
 }
 
 EWin               *
+GetEwinByCurrentPointer(void)
+{
+   Window              rt, ch;
+   int                 dum, x, y;
+   unsigned int        mr;
+
+   EDBUG(5, "GetEwinByCurrentPointer");
+
+   XQueryPointer(disp, desks.desk[desks.current].win, &rt, &ch, &x, &y, &dum,
+		 &dum, &mr);
+
+   EDBUG_RETURN(FindEwinByBase(ch));
+}
+
+EWin               *
 GetEwinPointerInClient(void)
 {
    Window              rt, ch;
@@ -172,34 +187,21 @@ EWin               *
 GetFocusEwin(void)
 {
    EDBUG(4, "GetFocusEwin");
-
-   if (mode.cur_menu_mode)
-     {
-	if (mode.context_ewin)
-	   EDBUG_RETURN(mode.context_ewin);
-	EDBUG_RETURN(mode.realfocuswin);
-     }
-
-   if (mode.focuswin)
-      EDBUG_RETURN(mode.focuswin);
-
-   EDBUG_RETURN(NULL);
+   EDBUG_RETURN(mode.focuswin);
 }
 
 EWin               *
 GetContextEwin(void)
 {
    EDBUG(4, "GetContextEwin");
-   EDBUG_RETURN(GetFocusEwin());
-}
 
-void
-SetContextEwin(EWin * ewin)
-{
-   EDBUG(4, "SetContextEwin");
-   if (!ewin || (!ewin->menu && !mode.cur_menu_mode))
-      mode.context_ewin = ewin;
-   EDBUG_RETURN_;
+   if (mode.focuswin)
+      EDBUG_RETURN(mode.focuswin);
+
+   if (mode.mouse_over_win);
+   EDBUG_RETURN(mode.mouse_over_win);
+
+   return NULL;
 }
 
 void
@@ -703,47 +705,14 @@ AddToFamily(Window win)
 	ShowEwin(ewin);
 	StackDesktops();
      }
+
    /* send synthetic configure notifies and configure the window */
    ICCCM_Configure(ewin);
 
    DetermineEwinArea(ewin);
-   if (conf.focus.all_new_windows_get_focus)
-     {
-	FocusToEWin(ewin, FOCUS_EWIN_NEW);
-	if ((ewin->desktop != desks.current) && (!ewin->iconified))
-	  {
-	     GotoDesktop(ewin->desktop);
-	     SetCurrentArea(ewin->area_x, ewin->area_y);
-	  }
-     }
-   else if (conf.focus.new_transients_get_focus)
-     {
-	if (ewin->client.transient)
-	  {
-	     FocusToEWin(ewin, FOCUS_EWIN_NEW);
-	     if ((ewin->desktop != desks.current) && (!ewin->iconified))
-	       {
-		  GotoDesktop(ewin->desktop);
-		  SetCurrentArea(ewin->area_x, ewin->area_y);
-	       }
-	  }
-     }
-   else if (conf.focus.new_transients_get_focus_if_group_focused)
-     {
-	ewin2 =
-	   FindItem(NULL, ewin->client.transient_for, LIST_FINDBY_ID,
-		    LIST_TYPE_EWIN);
-	if ((ewin2) && (mode.focuswin == ewin2))
-	  {
-	     FocusToEWin(ewin, FOCUS_EWIN_NEW);
-	     if ((ewin->desktop != desks.current) && (!ewin->iconified))
-	       {
-		  GotoDesktop(ewin->desktop);
-		  SetCurrentArea(ewin->area_x, ewin->area_y);
-	       }
-	  }
-     }
+   FocusToEWin(ewin, FOCUS_EWIN_NEW);
    UngrabX();
+
    EDBUG_RETURN_;
 }
 
@@ -1381,16 +1350,13 @@ CreateEwin()
    XChangeWindowAttributes(disp, ewin->win_container,
 			   CWEventMask | CWDontPropagate, &att);
    EMapWindow(disp, ewin->win_container);
-   if ((conf.focus.clickraises) || (conf.focus.mode == MODE_FOCUS_CLICK))
-      XGrabButton(disp, AnyButton, 0, ewin->win_container, False,
-		  ButtonPressMask, GrabModeSync, GrabModeAsync, None, None);
    att.event_mask =
       StructureNotifyMask | PointerMotionMask | ButtonPressMask |
       ButtonReleaseMask | EnterWindowMask | LeaveWindowMask;
    att.do_not_propagate_mask = ButtonPressMask | ButtonReleaseMask;
    XChangeWindowAttributes(disp, ewin->win, CWEventMask | CWDontPropagate,
 			   &att);
-   GrabButtonGrabs(ewin);
+   FocusEwinSetGrabs(ewin);
    EDBUG_RETURN(ewin);
 }
 
@@ -1430,20 +1396,12 @@ FreeEwin(EWin * ewin)
 	mode.doingslide = 0;
      }
 
-   mode.windowdestroy = 1;
    /* hide any menus this ewin has brought up if they are still up when we */
    /* destroy this ewin */
    if (ewin->shownmenu)
       MenusHideByWindow(ewin->shownmenu);
 
-   if (ewin == mode.focuswin)
-     {
-#if 0				/* Clean up if OK -- Remove FocusToNone */
-	FocusToNone();
-#else
-	FocusToEWin(NULL, FOCUS_EWIN_GONE);
-#endif
-     }
+   FocusToEWin(ewin, FOCUS_EWIN_GONE);
 
    if (ewin->docked)
       DockDestroy(ewin);
@@ -1453,10 +1411,7 @@ FreeEwin(EWin * ewin)
       IconboxDestroy(ewin->ibox);
 
    /* May be an overkill but cannot hurt... */
-   DELETE_EWIN_REFERENCE(ewin, mode.focuswin);
-   DELETE_EWIN_REFERENCE(ewin, mode.realfocuswin);
    DELETE_EWIN_REFERENCE(ewin, mode.mouse_over_win);
-   DELETE_EWIN_REFERENCE(ewin, mode.context_ewin);
 
    HintsDelWindowHints(ewin);
 
@@ -3103,7 +3058,6 @@ BorderWinpartEventMouseUp(XEvent * ev, EWin * ewin, int j)
 static void
 BorderWinpartEventEnter(XEvent * ev, EWin * ewin, int j)
 {
-   SetContextEwin(ewin);
    if (ewin->bits[j].state == STATE_CLICKED)
       ewin->bits[j].left = 0;
    else

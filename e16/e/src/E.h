@@ -1289,9 +1289,7 @@ typedef struct
    char                justclicked;
    char                click_focus_grabbed;
    EWin               *focuswin;
-   EWin               *realfocuswin;
    EWin               *mouse_over_win;
-   EWin               *context_ewin;
    int                 px, py, x, y;
    char                firstlast;
    int                 swapmovemode;
@@ -1308,7 +1306,6 @@ typedef struct
    Menu               *cur_menu[256];
    Window              menu_cover_win;
    Window              menu_win_covered;
-   char                windowdestroy;
    int                 context_w, context_h;
    Pager              *context_pager;
    char                constrained;
@@ -1316,6 +1313,7 @@ typedef struct
    char                keybinds_changed;
    char                firsttime;
    Window              button_proxy_win;
+   const XEvent       *current_event;
 }
 EMode;
 
@@ -1732,12 +1730,13 @@ void                WaitEvent(void);
 void                EventDebugInit(const char *s);
 void                EventShow(const XEvent * ev);
 
+/* borders.c */
 void                DetermineEwinFloat(EWin * ewin, int dx, int dy);
 void                SetEInfoOnAll(void);
 EWin               *GetEwinPointerInClient(void);
+EWin               *GetEwinByCurrentPointer(void);
 EWin               *GetFocusEwin(void);
 EWin               *GetContextEwin(void);
-void                SetContextEwin(EWin * ewin);
 void                SlideEwinTo(EWin * ewin, int fx, int fy, int tx, int ty,
 				int speed);
 void                SlideEwinsTo(EWin ** ewin, int *fx, int *fy, int *tx,
@@ -1860,7 +1859,7 @@ void                PropagateShapes(Window win);
 #define FOCUS_EWIN_GONE  5
 #define FOCUS_DESK_ENTER 6
 #define FOCUS_DESK_LEAVE 7
-#define FOCUS_WARP       8
+#define FOCUS_WARP_DONE  8
 #define FOCUS_CLICK      9
 
 void                FocusGetNextEwin(void);
@@ -1868,8 +1867,6 @@ void                FocusGetPrevEwin(void);
 void                FocusEwinSetGrabs(EWin * ewin);
 void                FocusFix(void);
 void                FocusToEWin(EWin * ewin, int why);
-void                FocusHandleFocusIn(Window win);
-void                FocusHandleFocusOut(Window win);
 void                FocusHandleEnter(XEvent * ev);
 void                FocusHandleLeave(XEvent * ev);
 void                FocusHandleClick(Window win);
@@ -2001,9 +1998,8 @@ void                TclassApply(ImageClass * iclass, Window win, int w, int h,
 				int active, int sticky, int state, char expose,
 				TextClass * tclass, char *text);
 
+/* evhandlers.c */
 void                HandleClientMessage(XEvent * ev);
-void                HandleFocusWindowIn(Window win);
-void                HandleFocusWindow(Window win);
 void                HandleFocusIn(XEvent * ev);
 void                HandleFocusOut(XEvent * ev);
 void                HandleChildShapeChange(XEvent * ev);

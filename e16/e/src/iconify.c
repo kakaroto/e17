@@ -208,12 +208,11 @@ IconboxIconifyEwin(Iconbox * ib, EWin * ewin)
       Zoom(NULL);
    if (ewin->ibox)
       EDBUG_RETURN_;
-   call_depth++;
+
    if (call_depth > 256)
-     {
-	call_depth--;
-	return;
-     }
+      EDBUG_RETURN_;
+   call_depth++;
+
    if (!ewin->iconified)
      {
 	was_shaded = ewin->shaded;
@@ -226,19 +225,14 @@ IconboxIconifyEwin(Iconbox * ib, EWin * ewin)
 	     UpdateAppIcon(ewin, ib->icon_mode);
 	     IconboxAddEwin(ib, ewin);
 	  }
+
 	HideEwin(ewin);
+
 	if (was_shaded != ewin->shaded)
 	   InstantShadeEwin(ewin, 0);
-	ICCCM_Iconify(ewin);
-	if (ewin == mode.focuswin)
-	  {
-	     char                prev_warp;
 
-	     prev_warp = conf.warplist.enable;
-	     conf.warplist.enable = 0;
-	     FocusGetPrevEwin();
-	     conf.warplist.enable = prev_warp;
-	  }
+	ICCCM_Iconify(ewin);
+
 	if (ewin->has_transients)
 	  {
 	     EWin              **lst;
@@ -253,14 +247,17 @@ IconboxIconifyEwin(Iconbox * ib, EWin * ewin)
 			 {
 			    HideEwin(lst[i]);
 			    lst[i]->iconified = 4;
-			    if (lst[i] == mode.focuswin)
-			       FocusToEWin(NULL, FOCUS_EWIN_GONE);
 			 }
 		    }
+#if ENABLE_GNOME
 		  HintsSetClientList();
+#endif
 		  Efree(lst);
 	       }
 	  }
+
+	if (ewin == GetFocusEwin())
+	   FocusGetPrevEwin();
      }
    call_depth--;
 
@@ -321,7 +318,7 @@ DeIconifyEwin(EWin * ewin)
 	RaiseEwin(ewin);
 	ShowEwin(ewin);
 	ICCCM_DeIconify(ewin);
-	FocusToEWin(ewin, FOCUS_EWIN_NEW);
+	FocusToEWin(ewin, FOCUS_SET);
 	if (ewin->has_transients)
 	  {
 	     EWin              **lst, *e;
@@ -346,7 +343,9 @@ DeIconifyEwin(EWin * ewin)
 		       ShowEwin(e);
 		       e->iconified = 0;
 		    }
+#if ENABLE_GNOME
 		  HintsSetClientList();
+#endif
 		  Efree(lst);
 	       }
 	  }

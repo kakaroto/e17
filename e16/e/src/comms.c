@@ -1799,8 +1799,6 @@ HandleComms(XClientMessageEvent * ev)
 
 	char                buf[FILEPATH_LEN_MAX];
 	char                buf3[FILEPATH_LEN_MAX];
-	char                buf4[FILEPATH_LEN_MAX];
-	char                buf5[FILEPATH_LEN_MAX];
 
 	Esnprintf(buf, sizeof(buf), "stuff:\n");
 	if (mode.focuswin)
@@ -1809,21 +1807,9 @@ HandleComms(XClientMessageEvent * ev)
 		       (unsigned)mode.focuswin->client.win);
 	     strcat(buf, buf3);
 	  }
-	if (mode.realfocuswin)
-	  {
-	     Esnprintf(buf4, sizeof(buf4), "mode.realfocuswin - %8x\n",
-		       (unsigned)mode.realfocuswin->client.win);
-	     strcat(buf, buf4);
-	  }
 	if (mode.cur_menu_mode)
 	  {
 	     strcat(buf, "cur_menu_mode is set\n");
-	  }
-	if (mode.context_ewin)
-	  {
-	     Esnprintf(buf5, sizeof(buf5), "context_ewin - %8x\n",
-		       (unsigned)mode.context_ewin->client.win);
-	     strcat(buf, buf5);
 	  }
 	CommsSend(c, buf);
      }

@@ -421,25 +421,19 @@ EventAclass(XEvent * ev, EWin * ewin, ActionClass * a)
    KeyCode             key;
    int                 i, type, button, modifiers, ok, mouse, mask, val = 0;
    Action             *act;
-   char                reset_ewin;
 
    EDBUG(5, "EventAclass");
 
    if (mode.action_inhibit)
       EDBUG_RETURN(0);
 
-   reset_ewin = key = type = button = modifiers = mouse = 0;
-   if (!ewin)
-     {
-	ewin = mode.focuswin;
-	if (!ewin)
-	   ewin = mode.mouse_over_win;
-	reset_ewin = 1;
-     }
+   key = type = button = modifiers = mouse = 0;
 
+#if 0				/* FIXME - Do we use this? */
    if ((conf.movemode == 0) && (ewin) &&
        ((mode.mode == MODE_MOVE) || (mode.mode == MODE_MOVE_PENDING)))
       DetermineEwinFloat(ewin, 0, 0);
+#endif
 
    mask =
       (ShiftMask | ControlMask | Mod1Mask | Mod2Mask | Mod3Mask | Mod4Mask |
@@ -2520,7 +2514,10 @@ static int
 doFocusNext(EWin * edummy, void *params)
 {
    EDBUG(6, "doFocusNext");
-   FocusGetNextEwin();
+   if (conf.warplist.enable && mode.current_event->type == KeyPress)
+      WarpFocus(1);
+   else
+      FocusGetNextEwin();
    EDBUG_RETURN(0);
 }
 
@@ -2546,10 +2543,6 @@ doFocusSet(EWin * ewin, void *params)
       DeIconifyEwin(ewin);
    if (ewin->shaded)
       UnShadeEwin(ewin);
-   if (conf.focus.raise_on_next_focus || conf.focus.raise_after_next_focus)
-      RaiseEwin(ewin);
-   if (conf.focus.warp_on_next_focus)
-      XWarpPointer(disp, None, ewin->win, 0, 0, 0, 0, ewin->w / 2, ewin->h / 2);
    FocusToEWin(ewin, FOCUS_SET);
 
    EDBUG_RETURN(0);

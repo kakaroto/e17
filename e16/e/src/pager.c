@@ -874,6 +874,7 @@ PagerMenuShow(Pager * p, int x, int y)
    static Menu        *p_menu = NULL, *pw_menu = NULL;
    MenuItem           *mi;
    EWin               *ewin;
+   char                s[1024];
    int                 ax, ay;
 
    if (!conf.pagers.enable)
@@ -885,24 +886,21 @@ PagerMenuShow(Pager * p, int x, int y)
 	if (pw_menu)
 	   MenuDestroy(pw_menu);
 
-	SetContextEwin(ewin);
-
 	pw_menu = MenuCreate("__DESK_WIN_MENU");
 	MenuAddTitle(pw_menu, _("Window Options"));
 	MenuAddStyle(pw_menu, "DEFAULT");
 
-	mi = MenuItemCreate(_("Iconify"), NULL, ACTION_ICONIFY, NULL, NULL);
+	Esnprintf(s, sizeof(s), "%i", (unsigned)ewin->client.win);
+	mi = MenuItemCreate(_("Iconify"), NULL, ACTION_ICONIFY, s, NULL);
 	MenuAddItem(pw_menu, mi);
 
-	mi = MenuItemCreate(_("Close"), NULL, ACTION_KILL, NULL, NULL);
+	mi = MenuItemCreate(_("Close"), NULL, ACTION_KILL, s, NULL);
 	MenuAddItem(pw_menu, mi);
 
-	mi =
-	   MenuItemCreate(_("Annihilate"), NULL, ACTION_KILL_NASTY, NULL, NULL);
+	mi = MenuItemCreate(_("Annihilate"), NULL, ACTION_KILL_NASTY, s, NULL);
 	MenuAddItem(pw_menu, mi);
 
-	mi =
-	   MenuItemCreate(_("Stick / Unstick"), NULL, ACTION_STICK, NULL, NULL);
+	mi = MenuItemCreate(_("Stick / Unstick"), NULL, ACTION_STICK, s, NULL);
 	MenuAddItem(pw_menu, mi);
 
 	ActionsCall(ACTION_SHOW_MENU, NULL, "named __DESK_WIN_MENU");

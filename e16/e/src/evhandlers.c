@@ -116,26 +116,41 @@ HandleClientMessage(XEvent * ev)
 void
 HandleFocusIn(XEvent * ev)
 {
-   if (ev->xfocus.detail != NotifyPointer)
-      HandleFocusWindowIn(ev->xfocus.window);
+   Window              win = ev->xfocus.window;
+   EWin               *ewin;
+
+   EDBUG(5, "HandleFocusIn");
+
+   ewin = FindItem(NULL, win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
+   if (ewin && !ewin->active)
+     {
+	ewin->active = 1;
+	DrawEwin(ewin);
+
+	FocusEwinSetGrabs(ewin);
+     }
+
+   EDBUG_RETURN_;
 }
 
 void
 HandleFocusOut(XEvent * ev)
 {
-   if (ev->xfocus.detail == NotifyNonlinear)
-     {
-	Window              rt, ch;
-	int                 d;
-	unsigned int        ud;
+   Window              win = ev->xfocus.window;
+   EWin               *ewin;
 
-	XQueryPointer(disp, root.win, &rt, &ch, &d, &d, &d, &d, &ud);
-	if (rt != root.win)
-	  {
-/*           fprintf(stderr, "HandleFocusWindowIn\n"); */
-	     HandleFocusWindowIn(0);
-	  }
+   EDBUG(5, "HandleFocusOut");
+
+   ewin = FindItem(NULL, win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
+   if (ewin && ewin->active)
+     {
+	ewin->active = 0;
+	DrawEwin(ewin);
+
+	FocusEwinSetGrabs(ewin);
      }
+
+   EDBUG_RETURN_;
 }
 
 void
@@ -618,7 +633,7 @@ HandleUnmap(XEvent * ev)
 	   SlideoutsHide();
 
 	if (ewin == mode.focuswin)
-	   FocusToEWin(NULL, FOCUS_SET);
+	   FocusToEWin(NULL, FOCUS_EWIN_GONE);
 	if (ewin == mode.mouse_over_win)
 	   mode.mouse_over_win = NULL;
 
@@ -765,8 +780,6 @@ HandleMouseDown(XEvent * ev)
    mode.x = ev->xbutton.x_root;
    mode.y = ev->xbutton.y_root;
 
-   mode.context_win = win;
-
    desk_click = -1;
    for (i = 0; i < conf.desks.numdesktops; i++)
      {
@@ -794,24 +807,7 @@ HandleMouseDown(XEvent * ev)
    if (MenusEventMouseDown(ev))
       goto exit;
 
-   if ((conf.focus.clickraises) || (conf.focus.mode == MODE_FOCUS_CLICK))
-     {
-	ewin = FindEwinByChildren(win);
-	if (!ewin)
-	   ewin = FindEwinByBase(win);
-	if (ewin)
-	   FocusToEWin(ewin, FOCUS_CLICK);
-	if (ewin)
-	   RaiseEwin(ewin);
-	/* allow click to pass thorugh */
-	if ((ewin) && (ewin->win_container == win))
-	  {
-	     XSync(disp, False);
-	     XAllowEvents(disp, ReplayPointer, CurrentTime);
-	     XSync(disp, False);
-	  }
-	/* done */
-     }
+   FocusHandleClick(win);
 
    if (double_click)
       ev->xbutton.time = 0;
@@ -1010,8 +1006,6 @@ HandleMouseOut(XEvent * ev)
 
    if (MenusEventMouseOut(ev))
       goto exit;
-
-   ICCCM_Cmap(NULL);
 
    if ( /*!clickmenu && */ BordersEventMouseOut(ev))
       goto exit;

@@ -499,6 +499,7 @@ HandleEvent(XEvent * ev)
    if (EventDebug(ev->type))
       EventShow(ev);
 #endif
+   mode.current_event = ev;
 
    if (ev->type == event_base_shape + ShapeNotify)
       HandleChildShapeChange(ev);
