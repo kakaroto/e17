@@ -35,12 +35,12 @@
 
 /* This is the Modules List that we maintain */
 typedef struct _ModuleMember
-{
+  {
 
-   char               *ModuleName;
-   void               *handle;
+     char               *ModuleName;
+     void               *handle;
 
-}
+  }
 ModuleMember;
 
 int                 ListLength = 0;

@@ -43,11 +43,11 @@
 
 static ToolTip     *ttip = NULL;
 struct _mdata
-{
-   Menu               *m;
-   MenuItem           *mi;
-   EWin               *ewin;
-};
+  {
+     Menu               *m;
+     MenuItem           *mi;
+     EWin               *ewin;
+  };
 
 static void         ToolTipTimeout(int val, void *data);
 static void         SubmenuShowTimeout(int val, void *dat);
@@ -72,10 +72,12 @@ ToolTipTimeout(int val, void *data)
    /* In the case of multiple screens, check to make sure
     * the root window is still where the mouse is... */
    if (False == XQueryPointer(disp, root.win, &rt, &ch, &x, &y, &dum,
-			      &dum, &mask)) EDBUG_RETURN_;
+			      &dum, &mask))
+      EDBUG_RETURN_;
    /* dont pop up tooltip is mouse button down */
    if (mask & (Button1Mask | Button2Mask | Button3Mask |
-	       Button4Mask | Button5Mask)) EDBUG_RETURN_;
+	       Button4Mask | Button5Mask))
+      EDBUG_RETURN_;
    win = WindowAtXY(x, y);
    ac = FindActionClass(win);
    if (!ac)
@@ -478,7 +480,7 @@ HandleMotion(XEvent * ev)
 		     if ((ndx != dx) &&
 			 (((gwins[i]->x == 0) &&
 			   (!(IN_RANGE
-			      (gwins[i]->reqx, gwins[i]->x, screen_snap_dist))))
+			    (gwins[i]->reqx, gwins[i]->x, screen_snap_dist))))
 			  || ((gwins[i]->x == (root.w - gwins[i]->w))
 			      &&
 			      (!(IN_RANGE
@@ -493,7 +495,7 @@ HandleMotion(XEvent * ev)
 								   [i]->reqx,
 								   gwins[i]->x,
 								   mode.
-								   edge_snap_dist)))))))
+							 edge_snap_dist)))))))
 		       {
 			  jumpx = 1;
 			  ndx = gwins[i]->reqx - gwins[i]->x + dx;
@@ -502,7 +504,7 @@ HandleMotion(XEvent * ev)
 		     if ((ndy != dy) &&
 			 (((gwins[i]->y == 0) &&
 			   (!(IN_RANGE
-			      (gwins[i]->reqy, gwins[i]->y, screen_snap_dist))))
+			    (gwins[i]->reqy, gwins[i]->y, screen_snap_dist))))
 			  || ((gwins[i]->y == (root.h - gwins[i]->h))
 			      &&
 			      (!(IN_RANGE
@@ -517,7 +519,7 @@ HandleMotion(XEvent * ev)
 								   [i]->reqy,
 								   gwins[i]->y,
 								   mode.
-								   edge_snap_dist)))))))
+							 edge_snap_dist)))))))
 		       {
 			  jumpy = 1;
 			  ndy = gwins[i]->reqy - gwins[i]->y + dy;
@@ -744,7 +746,8 @@ HandleMotion(XEvent * ev)
 	     if (y < 0)
 		y = -y;
 	     if ((x > mode.button_move_resistance) ||
-		 (y > mode.button_move_resistance)) mode.button_move_pending =
+		 (y > mode.button_move_resistance))
+		mode.button_move_pending =
 		   0;
 	  }
 	if (!mode.button_move_pending)
@@ -773,6 +776,7 @@ HandleMotion(XEvent * ev)
 #ifdef HAS_XINERAMA
 	static XineramaScreenInfo *screens;
 	static int          num_screens;
+
 #endif
 	EWin               *menus[256];
 	int                 fx[256];
@@ -1149,7 +1153,7 @@ HandleDestroy(XEvent * ev)
 	   mode.mouse_over_win = NULL;
 	if (ewin == mode.ewin)
 	   mode.ewin = NULL;
-	if (mode.dockapp_support&&ewin->docked)
+	if (mode.dockapp_support && ewin->docked)
 	   DockDestroy(ewin);
 	DesktopRemoveEwin(ewin);
 	FreeEwin(ewin);
@@ -1494,7 +1498,7 @@ HandleUnmap(XEvent * ev)
 	     mode.mode = MODE_NONE;
 	     mode.context_pager = NULL;
 	  }
-	if (mode.dockapp_support&&ewin->docked)
+	if (mode.dockapp_support && ewin->docked)
 	   DockDestroy(ewin);
 	if (ewin == mode.ewin)
 	  {
@@ -1721,9 +1725,9 @@ HandleMouseDown(XEvent * ev)
       DoIn("TOOLTIP_TIMEOUT", mode.tiptime, ToolTipTimeout, 0, NULL);
 
    if (
-       (((float)(ev->xbutton.time - last_time) / 1000) <
-	mode_double_click_time)
-       && ((int)(ev->xbutton.button) == (int)(last_button)))
+	 (((float)(ev->xbutton.time - last_time) / 1000) <
+	  mode_double_click_time)
+	 && ((int)(ev->xbutton.button) == (int)(last_button)))
       double_click = 1;
    last_time = ev->xbutton.time;
    last_button = ev->xbutton.button;
@@ -2000,7 +2004,8 @@ HandleMouseDown(XEvent * ev)
 		if ((ewin) && (!ewin->pager))
 		  {
 		     Window              dw;
-		     int                 wx, wy, ww, wh, ax, ay, cx, cy, px, py;
+		     int                 wx, wy, ww, wh, ax, ay, cx, cy,
+		                         px, py;
 
 		     PagerHideHi(p);
 		     pwin_px = ewin->x;
@@ -2479,15 +2484,15 @@ HandleMouseUp(XEvent * ev)
 			   ((ew->desktop == desks.current) || (ew->sticky)))
 			 {
 			    if (
-				(ev->xbutton.x_root >=
-				 (ew->x + ew->border->border.left))
-				&& (ev->xbutton.x_root <
-				    (ew->x + ew->w - ew->border->border.right))
-				&& (ev->xbutton.y_root >=
-				    (ew->y + ew->border->border.top))
-				&& (ev->xbutton.y_root <
-				    (ew->y + ew->h -
-				     ew->border->border.bottom)))
+				  (ev->xbutton.x_root >=
+				   (ew->x + ew->border->border.left))
+				  && (ev->xbutton.x_root <
+				   (ew->x + ew->w - ew->border->border.right))
+				  && (ev->xbutton.y_root >=
+				      (ew->y + ew->border->border.top))
+				  && (ev->xbutton.y_root <
+				      (ew->y + ew->h -
+				       ew->border->border.bottom)))
 			      {
 				 ewin = ew;
 				 i = desks.desk[desks.current].num;
@@ -2498,7 +2503,8 @@ HandleMouseUp(XEvent * ev)
 		  if ((ewin) && (ewin->pager))
 		    {
 		       Pager              *pp;
-		       int                 w, h, x, y, ax, ay, cx, cy, px, py;
+		       int                 w, h, x, y, ax, ay, cx, cy, px,
+		                           py;
 		       int                 wx, wy, base_x = 0, base_y = 0;
 		       Window              dw;
 
@@ -2611,7 +2617,7 @@ HandleMouseUp(XEvent * ev)
 		  else
 		    {
 		       int                 ndesk, nx, ny, base_x = 0, base_y =
-			  0, ax, ay;
+		       0,                  ax, ay;
 
 		       ndesk = desks.current;
 		       nx = (int)ev->xbutton.x_root -

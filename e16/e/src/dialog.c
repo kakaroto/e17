@@ -280,7 +280,7 @@ DialogQuit(int val, void *data)
 }
 
 void
-DialogAlert(char *fmt, ...)
+DialogAlert(char *fmt,...)
 {
    char                text[10240];
    va_list             ap;
@@ -293,7 +293,7 @@ DialogAlert(char *fmt, ...)
 }
 
 void
-DialogAlertOK(char *fmt, ...)
+DialogAlertOK(char *fmt,...)
 {
    char                text[10240];
    va_list             ap;
@@ -307,7 +307,7 @@ DialogAlertOK(char *fmt, ...)
 }
 
 void
-DialogSetParamText(Dialog * d, char *fmt, ...)
+DialogSetParamText(Dialog * d, char *fmt,...)
 {
    char                text[10240];
    va_list             ap;
@@ -704,7 +704,7 @@ ShowDialog(Dialog * d)
 				 if (pointer_x >= screens[i].x_org)
 				   {
 				      if (pointer_x <=
-					  (screens[i].width + screens[i].x_org))
+					(screens[i].width + screens[i].x_org))
 					{
 					   if (pointer_y >= screens[i].y_org)
 					     {
@@ -1202,7 +1202,7 @@ DialogRealizeItem(Dialog * d, DItem * di)
 		       di->item.slider.border_orig_h = im->rgb_height;
 		       Imlib_destroy_image(id, im);
 		       di->item.slider.border_win = ECreateWindow(d->win, -20,
-								  -20, 2, 2, 0);
+								-20, 2, 2, 0);
 		       EMapWindow(disp, di->item.slider.border_win);
 		    }
 	       }
@@ -1350,7 +1350,7 @@ DialogRealizeItem(Dialog * d, DItem * di)
 	   if ((cols > 0) && (rows > 0))
 	     {
 		int                 i, *col_size, *row_size = NULL, r = 0,
-		   c = 0, x = 0, y = 0;
+		                    c = 0, x = 0, y = 0;
 
 		col_size = Emalloc(sizeof(int) * cols);
 		row_size = Erealloc(row_size, sizeof(int));
@@ -1466,7 +1466,7 @@ DialogRealizeItem(Dialog * d, DItem * di)
 					       dii->y, dii->w, dii->h);
 			  if (dii->type == DITEM_CHECKBUTTON)
 			     EMoveResizeWindow(disp,
-					       dii->item.check_button.check_win,
+					     dii->item.check_button.check_win,
 					       dii->x,
 					       dii->y +
 					       ((dii->h
@@ -1479,7 +1479,7 @@ DialogRealizeItem(Dialog * d, DItem * di)
 					       check_orig_h);
 			  if (dii->type == DITEM_RADIOBUTTON)
 			     EMoveResizeWindow(disp,
-					       dii->item.radio_button.radio_win,
+					     dii->item.radio_button.radio_win,
 					       dii->x,
 					       dii->y +
 					       ((dii->h
@@ -1529,7 +1529,7 @@ DialogRealizeItem(Dialog * d, DItem * di)
 						    dii->item.slider.base_h);
 			       if (dii->item.slider.border_win)
 				  EMoveResizeWindow(disp,
-						    dii->item.slider.border_win,
+						  dii->item.slider.border_win,
 						    dii->x +
 						    dii->item.slider.border_x,
 						    dii->y +
@@ -1543,7 +1543,7 @@ DialogRealizeItem(Dialog * d, DItem * di)
 						    dii->y +
 						    dii->item.slider.numeric_y,
 						    dii->item.slider.numeric_w,
-						    dii->item.slider.numeric_h);
+						  dii->item.slider.numeric_h);
 			    }
 		       }
 		     x += sw;
@@ -1755,11 +1755,11 @@ DialogDrawItems(Dialog * d, DItem * di, int x, int y, int w, int h)
 	     if (di->item.check_button.onoff)
 		IclassApply(di->iclass, di->item.check_button.check_win,
 			    di->item.check_button.check_orig_w,
-			    di->item.check_button.check_orig_h, 1, 0, state, 0);
+			  di->item.check_button.check_orig_h, 1, 0, state, 0);
 	     else
 		IclassApply(di->iclass, di->item.check_button.check_win,
 			    di->item.check_button.check_orig_w,
-			    di->item.check_button.check_orig_h, 0, 0, state, 0);
+			  di->item.check_button.check_orig_h, 0, 0, state, 0);
 	     XClearArea(disp, d->win, di->x, di->y, di->w, di->h, False);
 	     TextDraw(di->tclass, d->win, 0, 0, STATE_NORMAL,
 		      di->item.check_button.text,
@@ -1796,11 +1796,11 @@ DialogDrawItems(Dialog * d, DItem * di, int x, int y, int w, int h)
 	     if (di->item.radio_button.onoff)
 		IclassApply(di->iclass, di->item.radio_button.radio_win,
 			    di->item.radio_button.radio_orig_w,
-			    di->item.radio_button.radio_orig_h, 1, 0, state, 0);
+			  di->item.radio_button.radio_orig_h, 1, 0, state, 0);
 	     else
 		IclassApply(di->iclass, di->item.radio_button.radio_win,
 			    di->item.radio_button.radio_orig_w,
-			    di->item.radio_button.radio_orig_w, 0, 0, state, 0);
+			  di->item.radio_button.radio_orig_w, 0, 0, state, 0);
 	     XClearArea(disp, d->win, di->x, di->y, di->w, di->h, False);
 	     TextDraw(di->tclass, d->win, 0, 0, STATE_NORMAL,
 		      di->item.radio_button.text,

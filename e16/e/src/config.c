@@ -579,6 +579,9 @@ Config_Control(FILE * ConfigFile)
 	  case CONTROL_RESIZEMODE:
 	     mode.resizemode = i2;
 	     break;
+	  case CONTROL_GEOMINFOMODE:
+	     mode.geominfomode = i2;
+	     break;
 	  case CONTROL_SLIDEMODE:
 	     mode.slidemode = i2;
 	     break;
@@ -1181,7 +1184,7 @@ BorderPartLoad(FILE * ConfigFile, char type, Border * b)
    int                 flags = FLAG_BUTTON;
    char                isregion = 0, keepshade = 1;
    int                 wmin = 0, wmax = 0, hmin = 0, hmax = 0, torigin = 0,
-      txp = 0, txa = 0, typ = 0, tya = 0, borigin = 0;
+                       txp = 0, txa = 0, typ = 0, tya = 0, borigin = 0;
    int                 bxp = 0, bxa = 0, byp = 0, bya = 0;
    int                 fields;
 
@@ -1384,7 +1387,7 @@ Config_Border(FILE * ConfigFile)
 	  }
      }
    Alert(_("Warning:  Configuration appears to have ended before we were\n"
-	   "Done loading a Main Border block.  Outcome is likely not good.\n"));
+	 "Done loading a Main Border block.  Outcome is likely not good.\n"));
 }
 
 void
@@ -1449,7 +1452,7 @@ Config_Button(FILE * ConfigFile)
 	       {
 		  bt = CreateButton(name, ic, ac, tc, label, ontop, flags,
 				    minw, maxw, minh, maxh, xo, yo, xa, xr, ya,
-				    yr, xsr, xsa, ysr, ysa, simg, desk, sticky);
+				  yr, xsr, xsa, ysr, ysa, simg, desk, sticky);
 		  bt->default_show = show;
 		  bt->internal = internal;
 		  AddItem(bt, bt->name, 0, LIST_TYPE_BUTTON);
@@ -2240,7 +2243,7 @@ Config_ActionClass(FILE * ConfigFile)
 	       {
 		  action_tooltipstring = Erealloc(action_tooltipstring,
 						  (strlen(action_tooltipstring)
-						   + strlen(atword(s, 2)) + 2));
+						 + strlen(atword(s, 2)) + 2));
 		  action_tooltipstring = strcat(action_tooltipstring, "\n");
 		  action_tooltipstring =
 		     strcat(action_tooltipstring, atword(s, 2));
@@ -2277,7 +2280,7 @@ Config_ActionClass(FILE * ConfigFile)
       Efree(action_tooltipstring);
    RecoverUserConfig();
    Alert(_("Warning:  Configuration appears to have ended before we were\n"
-	   "Done loading an Action Class block.  Outcome is likely not good.\n"));
+       "Done loading an Action Class block.  Outcome is likely not good.\n"));
 }
 
 void
@@ -2482,7 +2485,7 @@ Config_ImageClass(FILE * ConfigFile)
 	  }
      }
    Alert(_("Warning:  Configuration appears to have ended before we were\n"
-	   "Done loading an ImageClass block.  Outcome is likely not good.\n"));
+	 "Done loading an ImageClass block.  Outcome is likely not good.\n"));
 }
 
 void
@@ -3137,7 +3140,7 @@ Config_WindowMatch(FILE * ConfigFile)
 	  }
      }
    Alert(_("Warning: Configuration appears to have ended before we were\n"
-	   "Done loading an WindowMatch block.  Outcome is likely not good.\n"));
+	"Done loading an WindowMatch block.  Outcome is likely not good.\n"));
 }
 
 int
@@ -3189,7 +3192,7 @@ OpenConfigFileForReading(char *path, char preprocess)
 		     "Enlightenment is looking for epp here:\n"
 		     "%s\n"
 		     "This is a FATAL ERROR.\n"
-		     "This is probably due to either the program not existing or\n"
+		"This is probably due to either the program not existing or\n"
 		     "it not being able to be executed by you.\n"), epp_path);
 	     doExit(_("error"));
 	  }
@@ -3417,7 +3420,7 @@ LoadOpenConfigFile(FILE * ConfigFile)
 			       "Enlightenment's\n"
 			       "it may be that you haven't upgraded "
 			       "Enlightenment for\n"
-			       "a while and this theme takes advantages of new\n"
+			    "a while and this theme takes advantages of new\n"
 			       "features in Enlightenment in new versions.\n"),
 			     e_cfg_ver, min_e_cfg_ver);
 		       RESET_ALERT;
@@ -3439,8 +3442,8 @@ LoadOpenConfigFile(FILE * ConfigFile)
 			       "be compatible.\n"
 			       "\n"
 			       "If you just upgraded to a new version of E\n"
-			       "Restarting with Defaults will remove your current\n"
-			       "user preferences and start cleanly with system\n"
+			 "Restarting with Defaults will remove your current\n"
+			    "user preferences and start cleanly with system\n"
 			       "defaults. You can then modify your "
 			       "configuration to\n"
 			       "your liking again safely.\n"),
@@ -3675,14 +3678,14 @@ LoadEConfig(char *themelocation)
 		"system, and so it will have almost no configuration loaded\n"
 		"when it starts up. This is most likely the sign of a bad\n"
 		"installation of Enlightenment if this directory is missing.\n"
-		"The likely causes are that the package was improperly built,\n"
+	      "The likely causes are that the package was improperly built,\n"
 		"if a binary package, or 'make install' hasn't been typed\n"
 		"or during the installation the directory above was not\n"
 		"able to be copied over for installation perhaps due to\n"
-		"permissions or lack of disk space. It also could be that the\n"
+	      "permissions or lack of disk space. It also could be that the\n"
 		"config directory has been inadvertently deleted since\n"
 		"installation.\n"
-		"This is a serious problem and should be rectified immediately\n"
+	     "This is a serious problem and should be rectified immediately\n"
 		"Please contact your system administrator or package "
 		"maintainer.\n"
 		"If you are the administrator of your own system please\n"
@@ -3696,7 +3699,8 @@ LoadEConfig(char *themelocation)
    {
       Progressbar        *p = NULL;
       int                 i;
-      char               *config_files[] = {
+      char               *config_files[] =
+      {
 	 "init.cfg",
 	 "control.cfg",
 	 "textclasses.cfg",
@@ -3789,6 +3793,7 @@ SaveUserControlConfig(FILE * autosavefile)
 	fprintf(autosavefile, "307 %i\n", (int)mode.focusmode);
 	fprintf(autosavefile, "311 %i\n", (int)mode.movemode);
 	fprintf(autosavefile, "312 %i\n", (int)mode.resizemode);
+	fprintf(autosavefile, "1371 %i\n", (int)mode.geominfomode);
 	fprintf(autosavefile, "9   %i\n", (int)mode.sound);
 	fprintf(autosavefile, "313 %i\n", (int)mode.slidemode);
 	fprintf(autosavefile, "314 %i\n", (int)mode.cleanupslide);
@@ -4169,12 +4174,12 @@ RecoverUserConfig(void)
 		     _("Yes, Attempt recovery"),
 		     _("Restart and try again"), _("Quit and give up"));
 	Alert(_
-	      ("Enlightenment has encountered parsing errors in your autosaved\n"
-	       "configuration.\n" "\n"
-	       "This may be due to filing system errors, Minor bugs or "
-	       "unforeseen\n" "system shutdowns.\n" "\n"
-	       "Do you wish Enlightenment to recover its original system\n"
-	       "configuration and try again?\n"));
+	   ("Enlightenment has encountered parsing errors in your autosaved\n"
+	    "configuration.\n" "\n"
+	    "This may be due to filing system errors, Minor bugs or "
+	    "unforeseen\n" "system shutdowns.\n" "\n"
+	    "Do you wish Enlightenment to recover its original system\n"
+	    "configuration and try again?\n"));
 	RESET_ALERT;
 	mode.autosave = 0;
 	MapUnmap(1);

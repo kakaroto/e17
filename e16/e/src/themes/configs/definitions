@@ -29,6 +29,11 @@
 #define __BOXSHADE 4
 /* for move mode only */
 #define __TRANSLUCENT 5
+/* move and resize geometry display modes */
+#define __NO_GEOMINFO     0
+#define __CENTER_GEOMINFO 1
+#define __CORNER_GEOMINFO 2
+
 
 /* positioning and direction */
 #define __LEFT 0
@@ -96,6 +101,7 @@
 #define __FOCUS_MODE 307
 #define __MOVE_MODE 311
 #define __RESIZE_MODE 312
+#define __GEOMINFO_MODE 1371
 #define __SLIDE_MODE 313
 #define __SLIDE_ON_CLEANUP 314
 #define __SLIDE_ON_MAP 315

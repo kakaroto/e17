@@ -74,7 +74,7 @@ GetNextFocusEwin(void)
 	     ewin = lst0[i];
 	     if (((ewin->sticky) || (ewin->desktop == desks.current)) &&
 		 ((ewin->area_x == ax) && (ewin->area_y == ay)) &&
-		 (!ewin->skipfocus) && (!ewin->neverfocus) && (!ewin->iconified)
+	       (!ewin->skipfocus) && (!ewin->neverfocus) && (!ewin->iconified)
 		 && (!ewin->menu) && (!ewin->pager) && (!ewin->ibox) && (!ewin->iconified)	/*&& (ewin->client.mwm_decor_title) &&
 												 * (ewin->client.mwm_decor_border) */
 		)
@@ -148,8 +148,8 @@ GetPrevFocusEwin(void)
 		 (!ewin->skipfocus) && (!ewin->neverfocus) &&
 		 (!ewin->shaded) && (!ewin->menu) && (!ewin->pager) &&
 		 (!ewin->ibox) && (!ewin->iconified)
-		 /* && (ewin->client.mwm_decor_title) &&
-		  *    (ewin->client.mwm_decor_border) */
+	     /* && (ewin->client.mwm_decor_title) &&
+	      *    (ewin->client.mwm_decor_border) */
 		)
 	       {
 		  num++;

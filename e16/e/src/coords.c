@@ -35,6 +35,9 @@ SetCoords(int x, int y, int w, int h)
    EWin               *ewin;
    int                 md;
 
+   if (!mode.geominfomode)
+      return;
+
    if (!tc)
       tc = FindItem("COORDS", 0, LIST_FINDBY_NAME, LIST_TYPE_TCLASS);
    if (!ic)
@@ -63,34 +66,23 @@ SetCoords(int x, int y, int w, int h)
 	  }
 	else
 	  {
-	     switch (md)
+	     cx = 0;
+	     cy = 0;
+	     if (mode.geominfomode == 1)
 	       {
-	       case 0:
-	       case 1:
-	       case 2:
-		  cx =
-		     ewin->x + ((ewin->w - cw) / 2) +
-		     desks.desk[ewin->desktop].x;
-		  cy =
-		     ewin->y + ((ewin->h - ch) / 2) +
-		     desks.desk[ewin->desktop].y;
-		  break;
-	       case 3:
-		  cx = 0;
-		  cy = 0;
-		  break;
-	       case 4:
-		  cx = 0;
-		  cy = 0;
-		  break;
-	       case 5:
-		  cx = 0;
-		  cy = 0;
-		  break;
-	       default:
-		  cx = 0;
-		  cy = 0;
-		  break;
+		  switch (md)
+		    {
+		    case 0:
+		    case 1:
+		    case 2:
+		       cx =
+			  ewin->x + ((ewin->w - cw) / 2) +
+			  desks.desk[ewin->desktop].x;
+		       cy =
+			  ewin->y + ((ewin->h - ch) / 2) +
+			  desks.desk[ewin->desktop].y;
+		       break;
+		    }
 	       }
 	  }
      }

@@ -251,7 +251,7 @@ RemoveEwinFromGroup(EWin * ewin, Group * g)
 				     root.h)
 				    y = root.h - ewin->border->border.top - 1;
 				 else if ((ewin->y + ewin->h -
-					   ewin->border->border.bottom - 1) < 0)
+					 ewin->border->border.bottom - 1) < 0)
 				    y =
 				       0 - ewin->h +
 				       ewin->border->border.bottom + 1;
@@ -600,9 +600,9 @@ ChooseGroupDialog(EWin * ewin, char *message, char group_select, int action)
      {
 	DIALOG_OK(_("Window Group Error"),
 		  _
-		  ("\n  This window currently does not belong to any groups.  \n"
-		   "  You can only destroy groups or remove windows from groups  \n"
-		   "  through a window that actually belongs to at least one group.\n\n"));
+	       ("\n  This window currently does not belong to any groups.  \n"
+	     "  You can only destroy groups or remove windows from groups  \n"
+		"  through a window that actually belongs to at least one group.\n\n"));
 	return;
      }
    if ((num_groups == 0) && (group_select == GROUP_SELECT_ALL_EXCEPT_EWIN))

@@ -663,7 +663,7 @@ runApp(char *exe, char *params)
 		     DialogAlertOK(_("There was an error running the program:\n"
 				     "%s\n"
 				     "This program could not be executed.\n"
-				     "This is because the file does not exist.\n"),
+				"This is because the file does not exist.\n"),
 				   (char *)exe);
 		  /* relative path */
 		  else
@@ -687,26 +687,26 @@ runApp(char *exe, char *params)
 		       /* can execute it */
 		       if (canexec((char *)path))
 			  DialogAlertOK(_
-					("There was an error running the program:\n"
-					 "%s\n"
-					 "This program could not be executed.\n"
-					 "I am unsure as to why you could not "
-					 "do this. The file exists,\n"
-					 "is a file, and you are allowed to "
-					 "execute it. I suggest you look\n"
-					 "into this.\n"), (char *)path);
+				  ("There was an error running the program:\n"
+				   "%s\n"
+				   "This program could not be executed.\n"
+				   "I am unsure as to why you could not "
+				   "do this. The file exists,\n"
+				   "is a file, and you are allowed to "
+				   "execute it. I suggest you look\n"
+				   "into this.\n"), (char *)path);
 		       /* not executable file */
 		       else
 			  DialogAlertOK(_
-					("There was an error running the program:\n"
-					 "%s\n"
-					 "This program could not be executed.\n"
-					 "This is because the file exists, is a "
-					 "file, but you are unable\n"
-					 "to execute it because you do not "
-					 "have execute "
-					 "access to this file.\n"),
-(char *)path);
+				  ("There was an error running the program:\n"
+				   "%s\n"
+				   "This program could not be executed.\n"
+				   "This is because the file exists, is a "
+				   "file, but you are unable\n"
+				   "to execute it because you do not "
+				   "have execute "
+				   "access to this file.\n"),
+					(char *)path);
 		    }
 		  /* it's not a file */
 		  else
@@ -714,19 +714,19 @@ runApp(char *exe, char *params)
 		       /* its a dir */
 		       if (isdir((char *)path))
 			  DialogAlertOK(_
-					("There was an error running the program:\n"
-					 "%s\n"
-					 "This program could not be executed.\n"
-					 "This is because the file is in fact "
-					 "a directory.\n"), (char *)path);
+				  ("There was an error running the program:\n"
+				   "%s\n"
+				   "This program could not be executed.\n"
+				   "This is because the file is in fact "
+				   "a directory.\n"), (char *)path);
 		       /* its not a file or a dir */
 		       else
 			  DialogAlertOK(_
-					("There was an error running the program:\n"
-					 "%s\n"
-					 "This program could not be executed.\n"
-					 "This is because the file is not a "
-					 "regular file.\n"), (char *)path);
+				  ("There was an error running the program:\n"
+				   "%s\n"
+				   "This program could not be executed.\n"
+				   "This is because the file is not a "
+				   "regular file.\n"), (char *)path);
 		    }
 		  if (path)
 		     Efree(path);
@@ -1369,11 +1369,11 @@ doCleanup(void *params)
 		  floating[j++].h = ((EWin *) lst[i])->h;
 	       }
 	     else if (
-		      (
-		       (((EWin *) lst[i])->desktop == desks.current) ||
-		       (((EWin *) lst[i])->sticky)) &&
-(((EWin *) lst[i])->layer != 4) &&
-(((EWin *) lst[i])->layer != 0) && (!((EWin *) lst[i])->menu))
+			(
+			   (((EWin *) lst[i])->desktop == desks.current) ||
+			   (((EWin *) lst[i])->sticky)) &&
+			(((EWin *) lst[i])->layer != 4) &&
+		(((EWin *) lst[i])->layer != 0) && (!((EWin *) lst[i])->menu))
 	       {
 		  fixed = Erealloc(fixed, sizeof(RectBox) * (k + 1));
 		  fixed[k].data = lst[i];
@@ -2474,7 +2474,7 @@ doHideShowButton(void *params)
 			    if (matchregexp(ss, lst[i]->name))
 			      {
 				 if ((strcmp(lst[i]->name,
-					     "_DESKTOP_DESKRAY_DRAG_CONTROL") &&
+					   "_DESKTOP_DESKRAY_DRAG_CONTROL") &&
 				      (!lst[i]->used)))
 				   {
 				      if (!(lst[i]->visible))
@@ -2504,7 +2504,7 @@ doHideShowButton(void *params)
 			    if (!matchregexp(ss, lst[i]->name))
 			      {
 				 if ((strcmp(lst[i]->name,
-					     "_DESKTOP_DESKRAY_DRAG_CONTROL") &&
+					   "_DESKTOP_DESKRAY_DRAG_CONTROL") &&
 				      (!lst[i]->used)))
 				   {
 				      if (!(lst[i]->visible))
@@ -3469,7 +3469,7 @@ doConfigure(void *params)
 	       {
 		  ChooseGroupDialog(ewin,
 				    _
-				    ("  Pick the group the window will belong to:  \n"),
+			  ("  Pick the group the window will belong to:  \n"),
 				    GROUP_SELECT_ALL_EXCEPT_EWIN,
 				    ACTION_ADD_TO_GROUP);
 	       }
@@ -3496,7 +3496,8 @@ struct _keyset
 int
 doInsertKeys(void *params)
 {
-   const struct _keyset ks[] = {
+   const struct _keyset ks[] =
+   {
       {"a", 0, "a"},
       {"b", 0, "b"},
       {"c", 0, "c"},
@@ -3721,8 +3722,8 @@ doRaiseLower(void *params)
 	       {
 		  if (desks.desk[ewin->desktop].list[i]->layer == ewin->layer &&
 		      (desks.desk[ewin->desktop].list[i] == ewin ||
-		       !FindEwinInList(desks.desk[ewin->desktop].list[i], gwins,
-				       num)))
+		     !FindEwinInList(desks.desk[ewin->desktop].list[i], gwins,
+				     num)))
 		    {
 		       if (desks.desk[ewin->desktop].list[i] != ewin)
 			  raise = 1;
@@ -3827,10 +3828,10 @@ doAddToGroup(void *params)
      {
 	ChooseGroupDialog(ewin,
 			  _("\n  There's no current group at the moment.  \n"
-			    "  The current group is the last one you created,  \n"
-			    "  and it exists until you create a new one or break  \n"
+			"  The current group is the last one you created,  \n"
+		     "  and it exists until you create a new one or break  \n"
 			    "  the latest one.  \n\n"
-			    "  Pick another group that the window will belong to here:  \n\n"),
+	   "  Pick another group that the window will belong to here:  \n\n"),
 			  GROUP_SELECT_ALL_EXCEPT_EWIN, ACTION_ADD_TO_GROUP);
 	EDBUG_RETURN(0);
      }
@@ -3912,19 +3913,19 @@ doZoom(void *params)
 	  {
 	     fprintf(f,
 		     _
-		     ("You have been warned about the dangers of Zoom mode\n"));
+		   ("You have been warned about the dangers of Zoom mode\n"));
 	     fclose(f);
 	  }
 	DIALOG_OK(_("Warning !!!"),
 		  _("This feature is heavily reliant on a feature of your\n"
-		    "X Server called the Vid Mode Extension. This feature exists\n"
-		    "in XFree86 Servers, but is not a heavily used part of the\n"
+	       "X Server called the Vid Mode Extension. This feature exists\n"
+		 "in XFree86 Servers, but is not a heavily used part of the\n"
 		    "Server and thus isn't tested much.\n\n"
-		    "It is possible your X Server does not deal well with being\n"
+		"It is possible your X Server does not deal well with being\n"
 		    "asked to switch modes quickly and it may hang, glitch,\n"
 		    "display artefacts or perhaps simply refuse to work.\n\n"
-		    "This is a warning and will only be displayed this one time.\n"
-		    "If your Server does not behave well then you will probably\n"
+	       "This is a warning and will only be displayed this one time.\n"
+		"If your Server does not behave well then you will probably\n"
 		    "have to avoid using this feature.\n"));
 	EDBUG_RETURN(0);
      }
