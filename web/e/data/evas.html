@@ -2,6 +2,7 @@
 @start@
 @:cent@<img src=img/evas_logo.png width=128 height=128>@:_cent@
 @:cent@@:title@Evas@:_title@@:_cent@
+
 @:para@
 Evas is a hardware-accelerated canvas API for X-Windows that can draw
 anti-aliased text, smooth super and sub-sampled images, alpha-blend, as well
@@ -145,17 +146,18 @@ they look tinted, have them rendered only within a certain area of the
 canvas and more.
 @:para@
 @tile_area_end@
-@:para@
-Text is a very important part of many applications. Evas of course provides
-a nice simple way of getting text into the Evas you have up without much
-fuss or bother AND to boot it will anti-alias it so your edges are smooth
-and not jagged AND allow of the text to be semi-transparent and much more.
+
 @:para@
 @tile_area_start@
 <img src=img/evas_text.png width=128 height=128>
 @tile_area_text@
 @:para@
 @:cent@@:title@Text@:_title@@:_cent@
+@:para@
+Text is a very important part of many applications. Evas of course provides
+a nice simple way of getting text into the Evas you have up without much
+fuss or bother AND to boot it will anti-alias it so your edges are smooth
+and not jagged AND allow of the text to be semi-transparent and much more.
 @:para@
 Text allows you to display information in your Evas without needing image
 objects with pre-rendered text. But first you have to realize fonts are
@@ -198,16 +200,17 @@ implement almost anything you need using text objects, including text entry
 boxes, word processors, HTML and text formatting engines and much much more.
 @:para@
 @tile_area_end@
-@:para@
-Another useful primitive that can be used is the Gradient Box primitive.
-Basically this is a rectangular object that is filled with a linear range of
-colors at an arbitrary angle defined as part of the properties of that object.
+
 @:para@
 @tile_area_start@
 <img src=img/evas_gradient.png width=128 height=128>
 @tile_area_text@
 @:para@
 @:cent@@:title@Gradients@:_title@@:_cent@
+@:para@
+Another useful primitive that can be used is the Gradient Box primitive.
+Basically this is a rectangular object that is filled with a linear range of
+colors at an arbitrary angle defined as part of the properties of that object.
 @:para@
 Gradients are useful for when you want to fill a background or rectangle
 with something other than a solid color, but do not want to go to the
@@ -259,6 +262,7 @@ Polygons, Lines and Rectangles complete this list for now, but future plans
 at a later point may mean Video objects (eg MPEG streams as objects), curved
 objects (ellipses, circles, splines etc.) and more, but for now they are not
 supported.
+
 @:para@
 @tile_area_start@
 <img src=img/evas_primitives.png width=128 height=128>
@@ -319,6 +323,17 @@ And now with these primitives added out Evas canvas will look like this:
 <a href=evas_primitives_eg_0.html><img src=img/evas_primitives_eg_0_thumb.png width=80 height=80 border=1></a>
 @:para@
 @tile_area_end@
+
+@:para@
+There are many other important parts of using Evas to achieve the look and 
+feel you want in your application. It is important you know what else is
+available so you don't do things "incorrectly" and as a result get slower
+performance or bad display quality.
+
+@:para@
+@tile_area_start@
+<img src=img/evas_canvas.png width=128 height=128>
+@tile_area_text@
 @:para@
 @:cent@@:title@Tinting and Fading@:_title@@:_cent@
 @:para@
@@ -386,6 +401,13 @@ In addition to being able to scale them, raise and lower them above and below
 other objects, have them alpha blend and more, you have a pretty simple way
 of creating complex effects within an Evas' canvas.
 @:para@
+@tile_area_end@
+
+@:para@
+@tile_area_start@
+<img src=img/evas_canvas.png width=128 height=128>
+@tile_area_text@
+@:para@
 @:cent@@:title@Clipping@:_title@@:_cent@
 @:para@
 Now lets look at clipping in Evas. Clipping is the process by which you
@@ -402,8 +424,127 @@ clip objects for now. Using any other kind of object has undefined results.
 Clip objects can be used to impliment things such as viewports, windows and 
 much more - you will need to use your imagination to really use them fully.
 @:para@
+Also just like a window that may be stained a certain color, Evas can let
+you "Tint" or "Stain" the objects clipped by a clip object. Just like you
+set the color of an object like and Image, and it gets "tinted", the same
+applies to clip objects. If the clip objects color is opaque white (255,
+255, 255, 255), it does not affect the color of any object it clips - it
+merely limits the drawing region, but if the clip object has any other color
+its RGBA values are multiplied by the color of the objects it clips - thus
+being able to tint and fade objects that are clipped all in one go.
 @:para@
-@:cent@@:title@Your event loop@:_title@@:_cent@
+@tile_area_end@
+
 @:para@
+@tile_area_start@
+<img src=img/evas_canvas.png width=128 height=128>
+@tile_area_text@
+@:para@
+@:cent@@:title@The Viewport and Resizing@:_title@@:_cent@
+@:para@
+Evas operates on the concept of a viewport. A viewport is a rectangular
+region of an area that deifnes what part of that area we are looking at. In
+Evas you tell Evas what the location and size of the viewport is. An  Evas
+canvas is almost infinite in size (as large a value as can be fit in a
+double precision number in both X and Y directions), and thus you need to
+tell Evas what limited area of the "world" (or canvas) you are looking at.
+This is the viewport.
+@:para@
+Evas also requires you tell it the size of the window it's outputting to.
+This is necessary for some of the back-end renderers, but also is useful for
+being able to zoom and pan across the canvas. If you do not change the
+output size of your Evas, but change the viewport size, you will effectively
+zoom and and out of your Evas canvas. By changing the viewport location you
+can scroll around your Evas. If the size of your window changes you MUST
+tell Evas the new drawable output size before rendering again - or things will
+not display correctly.
+@:para@
+@tile_area_end@
+
+@:para@
+@tile_area_start@
+<img src=img/evas_canvas.png width=128 height=128>
+@tile_area_text@
+@:para@
+@:cent@@:title@Handling Exposes@:_title@@:_cent@
+@:para@
+Evas itself doe not hook to your event layer at all. It relies on you
+feeding events into it. One of these, required for consistant output, is
+telling evas when a section of its output has been "exposed" (you get an
+expose event from X when this happens). This means that that area of the
+window has been damaged and needs to be redrawn. When you get na expose
+event you simply tell Evas about this event, and that's all you ever have to
+do. This is the only time you should need this function call at all since
+moving objects or changing things in the Evas canvas will internally trigger
+areas to be marked as dirty and be redrawn anyway.
+@:para@
+@tile_area_end@
+
+@:para@
+@tile_area_start@
+<img src=img/evas_canvas.png width=128 height=128>
+@tile_area_text@
+@:para@
+@:cent@@:title@How Evas Renders@:_title@@:_cent@
+@:para@
+Evas minimizes the amount to render whenever possible. As long as you don't
+force it to do rendering then it doesn't have to (ie uselessly call the
+evas_update_rect() call, or call evas_render() or evas_render_updates() all
+the time whenever you make any changes at all to an Evas), Evas will keep
+rendering to a bare minimum for you, and still retain display quality and
+rendering speed. Remember to only call Evas's render calls when you program
+goes IDLE - ie no more events to process and no state to change. Doing
+otherwise will impact perfromance badly.
+@:para@
+@tile_area_end@
+
+@:para@
+@tile_area_start@
+<img src=img/evas_canvas.png width=128 height=128>
+@tile_area_text@
+@:para@
+@:cent@@:title@The Rendering Engines@:_title@@:_cent@
+@:para@
+Evas provides you with several output targets for an Evas canvas. Once a
+rendering engine is set though, it cannot be changed. You can select how
+Evas is to render to the display target by selecting the render method.
+@:para@
+@tile_area_end@
+
+@:para@
+@tile_area_start@
+<img src=img/evas_canvas.png width=128 height=128>
+@tile_area_text@
+@:para@
+@:cent@@:title@Extra Text Calls@:_title@@:_cent@
+@:para@
+Some extraq information on other calls to query text objects, allowing for
+more complex formatting etc.
+@:para@
+@tile_area_end@
+
+@:para@
+@tile_area_start@
+<img src=img/evas_canvas.png width=128 height=128>
+@tile_area_text@
+@:para@
+@:cent@@:title@Caveats, Gotcha's etc.@:_title@@:_cent@
+@:para@
+Small rules and gotchas you might not expect in Evas
+@:para@
+@tile_area_end@
+
+@:para@
+@tile_area_start@
+<img src=img/evas_canvas.png width=128 height=128>
+@tile_area_text@
+@:para@
+@:cent@@:title@API Reference@:_title@@:_cent@
+@:para@
+This section is currently incomplete and will take a while to fill out as
+there are a lot of calls and new ones are being added.
+@:para@
+@tile_area_end@
+
 @end@
 @bottom@

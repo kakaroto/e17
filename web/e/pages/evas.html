@@ -62,6 +62,7 @@ marginheight=20>
 
 <center><img src=img/evas_logo.png width=128 height=128></center>
 <center><font face=arial,helvetica,lucida size=4><b>Evas</b></font></center>
+
 <font face=arial,helvetica,lucida size=2><p>
 Evas is a hardware-accelerated canvas API for X-Windows that can draw
 anti-aliased text, smooth super and sub-sampled images, alpha-blend, as well
@@ -257,11 +258,7 @@ canvas and more.
 <td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
 <td><img src=img/blank.gif width=1 height=1></td></tr></table>
 
-<font face=arial,helvetica,lucida size=2><p>
-Text is a very important part of many applications. Evas of course provides
-a nice simple way of getting text into the Evas you have up without much
-fuss or bother AND to boot it will anti-alias it so your edges are smooth
-and not jagged AND allow of the text to be semi-transparent and much more.
+
 <font face=arial,helvetica,lucida size=2><p>
 <table border=0 cellpadding=0 cellspacing=0><tr>
 <td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
@@ -287,6 +284,11 @@ and not jagged AND allow of the text to be semi-transparent and much more.
 
 <font face=arial,helvetica,lucida size=2><p>
 <center><font face=arial,helvetica,lucida size=4><b>Text</b></font></center>
+<font face=arial,helvetica,lucida size=2><p>
+Text is a very important part of many applications. Evas of course provides
+a nice simple way of getting text into the Evas you have up without much
+fuss or bother AND to boot it will anti-alias it so your edges are smooth
+and not jagged AND allow of the text to be semi-transparent and much more.
 <font face=arial,helvetica,lucida size=2><p>
 Text allows you to display information in your Evas without needing image
 objects with pre-rendered text. But first you have to realize fonts are
@@ -336,10 +338,7 @@ boxes, word processors, HTML and text formatting engines and much much more.
 <td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
 <td><img src=img/blank.gif width=1 height=1></td></tr></table>
 
-<font face=arial,helvetica,lucida size=2><p>
-Another useful primitive that can be used is the Gradient Box primitive.
-Basically this is a rectangular object that is filled with a linear range of
-colors at an arbitrary angle defined as part of the properties of that object.
+
 <font face=arial,helvetica,lucida size=2><p>
 <table border=0 cellpadding=0 cellspacing=0><tr>
 <td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
@@ -365,6 +364,10 @@ colors at an arbitrary angle defined as part of the properties of that object.
 
 <font face=arial,helvetica,lucida size=2><p>
 <center><font face=arial,helvetica,lucida size=4><b>Gradients</b></font></center>
+<font face=arial,helvetica,lucida size=2><p>
+Another useful primitive that can be used is the Gradient Box primitive.
+Basically this is a rectangular object that is filled with a linear range of
+colors at an arbitrary angle defined as part of the properties of that object.
 <font face=arial,helvetica,lucida size=2><p>
 Gradients are useful for when you want to fill a background or rectangle
 with something other than a solid color, but do not want to go to the
@@ -423,6 +426,7 @@ Polygons, Lines and Rectangles complete this list for now, but future plans
 at a later point may mean Video objects (eg MPEG streams as objects), curved
 objects (ellipses, circles, splines etc.) and more, but for now they are not
 supported.
+
 <font face=arial,helvetica,lucida size=2><p>
 <table border=0 cellpadding=0 cellspacing=0><tr>
 <td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
@@ -509,6 +513,36 @@ And now with these primitives added out Evas canvas will look like this:
 <td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
 <td><img src=img/blank.gif width=1 height=1></td></tr></table>
 
+
+<font face=arial,helvetica,lucida size=2><p>
+There are many other important parts of using Evas to achieve the look and 
+feel you want in your application. It is important you know what else is
+available so you don't do things "incorrectly" and as a result get slower
+performance or bad display quality.
+
+<font face=arial,helvetica,lucida size=2><p>
+<table border=0 cellpadding=0 cellspacing=0><tr>
+<td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
+<td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
+<td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
+<td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
+<td><img src=img/blank.gif width=1 height=1></td>
+</tr><tr>
+<td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
+<td background=img/tile_shadow_tl.png><img src=img/blank.gif width=16 height=16></td>
+<td background=img/tile_shadow_t.png><img src=img/blank.gif width=16 height=16></td>
+<td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
+<td><img src=img/blank.gif width=1 height=1></td>
+</tr><tr>
+<td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
+<td background=img/tile_shadow_l.png><img src=img/blank.gif width=16 height=16></td>
+<td background=img/tile.png align=left valign=top>
+
+<img src=img/evas_canvas.png width=128 height=128>
+<br><img src=img/blank.gif width=144 height=16></td>
+<td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
+<td valign=top align=left><table border=0 cellpadding=8 cellspacing=0><tr><td>
+
 <font face=arial,helvetica,lucida size=2><p>
 <center><font face=arial,helvetica,lucida size=4><b>Tinting and Fading</b></font></center>
 <font face=arial,helvetica,lucida size=2><p>
@@ -576,6 +610,39 @@ In addition to being able to scale them, raise and lower them above and below
 other objects, have them alpha blend and more, you have a pretty simple way
 of creating complex effects within an Evas' canvas.
 <font face=arial,helvetica,lucida size=2><p>
+</td></tr></table></td>
+</tr><tr>
+<td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
+<td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
+<td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
+<td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
+<td><img src=img/blank.gif width=1 height=1></td></tr></table>
+
+
+<font face=arial,helvetica,lucida size=2><p>
+<table border=0 cellpadding=0 cellspacing=0><tr>
+<td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
+<td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
+<td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
+<td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
+<td><img src=img/blank.gif width=1 height=1></td>
+</tr><tr>
+<td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
+<td background=img/tile_shadow_tl.png><img src=img/blank.gif width=16 height=16></td>
+<td background=img/tile_shadow_t.png><img src=img/blank.gif width=16 height=16></td>
+<td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
+<td><img src=img/blank.gif width=1 height=1></td>
+</tr><tr>
+<td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
+<td background=img/tile_shadow_l.png><img src=img/blank.gif width=16 height=16></td>
+<td background=img/tile.png align=left valign=top>
+
+<img src=img/evas_canvas.png width=128 height=128>
+<br><img src=img/blank.gif width=144 height=16></td>
+<td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
+<td valign=top align=left><table border=0 cellpadding=8 cellspacing=0><tr><td>
+
+<font face=arial,helvetica,lucida size=2><p>
 <center><font face=arial,helvetica,lucida size=4><b>Clipping</b></font></center>
 <font face=arial,helvetica,lucida size=2><p>
 Now lets look at clipping in Evas. Clipping is the process by which you
@@ -592,9 +659,317 @@ clip objects for now. Using any other kind of object has undefined results.
 Clip objects can be used to impliment things such as viewports, windows and 
 much more - you will need to use your imagination to really use them fully.
 <font face=arial,helvetica,lucida size=2><p>
+Also just like a window that may be stained a certain color, Evas can let
+you "Tint" or "Stain" the objects clipped by a clip object. Just like you
+set the color of an object like and Image, and it gets "tinted", the same
+applies to clip objects. If the clip objects color is opaque white (255,
+255, 255, 255), it does not affect the color of any object it clips - it
+merely limits the drawing region, but if the clip object has any other color
+its RGBA values are multiplied by the color of the objects it clips - thus
+being able to tint and fade objects that are clipped all in one go.
 <font face=arial,helvetica,lucida size=2><p>
-<center><font face=arial,helvetica,lucida size=4><b>Your event loop</b></font></center>
+</td></tr></table></td>
+</tr><tr>
+<td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
+<td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
+<td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
+<td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
+<td><img src=img/blank.gif width=1 height=1></td></tr></table>
+
+
 <font face=arial,helvetica,lucida size=2><p>
+<table border=0 cellpadding=0 cellspacing=0><tr>
+<td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
+<td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
+<td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
+<td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
+<td><img src=img/blank.gif width=1 height=1></td>
+</tr><tr>
+<td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
+<td background=img/tile_shadow_tl.png><img src=img/blank.gif width=16 height=16></td>
+<td background=img/tile_shadow_t.png><img src=img/blank.gif width=16 height=16></td>
+<td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
+<td><img src=img/blank.gif width=1 height=1></td>
+</tr><tr>
+<td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
+<td background=img/tile_shadow_l.png><img src=img/blank.gif width=16 height=16></td>
+<td background=img/tile.png align=left valign=top>
+
+<img src=img/evas_canvas.png width=128 height=128>
+<br><img src=img/blank.gif width=144 height=16></td>
+<td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
+<td valign=top align=left><table border=0 cellpadding=8 cellspacing=0><tr><td>
+
+<font face=arial,helvetica,lucida size=2><p>
+<center><font face=arial,helvetica,lucida size=4><b>The Viewport and Resizing</b></font></center>
+<font face=arial,helvetica,lucida size=2><p>
+Evas operates on the concept of a viewport. A viewport is a rectangular
+region of an area that deifnes what part of that area we are looking at. In
+Evas you tell Evas what the location and size of the viewport is. An  Evas
+canvas is almost infinite in size (as large a value as can be fit in a
+double precision number in both X and Y directions), and thus you need to
+tell Evas what limited area of the "world" (or canvas) you are looking at.
+This is the viewport.
+<font face=arial,helvetica,lucida size=2><p>
+Evas also requires you tell it the size of the window it's outputting to.
+This is necessary for some of the back-end renderers, but also is useful for
+being able to zoom and pan across the canvas. If you do not change the
+output size of your Evas, but change the viewport size, you will effectively
+zoom and and out of your Evas canvas. By changing the viewport location you
+can scroll around your Evas. If the size of your window changes you MUST
+tell Evas the new drawable output size before rendering again - or things will
+not display correctly.
+<font face=arial,helvetica,lucida size=2><p>
+</td></tr></table></td>
+</tr><tr>
+<td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
+<td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
+<td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
+<td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
+<td><img src=img/blank.gif width=1 height=1></td></tr></table>
+
+
+<font face=arial,helvetica,lucida size=2><p>
+<table border=0 cellpadding=0 cellspacing=0><tr>
+<td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
+<td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
+<td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
+<td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
+<td><img src=img/blank.gif width=1 height=1></td>
+</tr><tr>
+<td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
+<td background=img/tile_shadow_tl.png><img src=img/blank.gif width=16 height=16></td>
+<td background=img/tile_shadow_t.png><img src=img/blank.gif width=16 height=16></td>
+<td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
+<td><img src=img/blank.gif width=1 height=1></td>
+</tr><tr>
+<td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
+<td background=img/tile_shadow_l.png><img src=img/blank.gif width=16 height=16></td>
+<td background=img/tile.png align=left valign=top>
+
+<img src=img/evas_canvas.png width=128 height=128>
+<br><img src=img/blank.gif width=144 height=16></td>
+<td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
+<td valign=top align=left><table border=0 cellpadding=8 cellspacing=0><tr><td>
+
+<font face=arial,helvetica,lucida size=2><p>
+<center><font face=arial,helvetica,lucida size=4><b>Handling Exposes</b></font></center>
+<font face=arial,helvetica,lucida size=2><p>
+Evas itself doe not hook to your event layer at all. It relies on you
+feeding events into it. One of these, required for consistant output, is
+telling evas when a section of its output has been "exposed" (you get an
+expose event from X when this happens). This means that that area of the
+window has been damaged and needs to be redrawn. When you get na expose
+event you simply tell Evas about this event, and that's all you ever have to
+do. This is the only time you should need this function call at all since
+moving objects or changing things in the Evas canvas will internally trigger
+areas to be marked as dirty and be redrawn anyway.
+<font face=arial,helvetica,lucida size=2><p>
+</td></tr></table></td>
+</tr><tr>
+<td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
+<td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
+<td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
+<td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
+<td><img src=img/blank.gif width=1 height=1></td></tr></table>
+
+
+<font face=arial,helvetica,lucida size=2><p>
+<table border=0 cellpadding=0 cellspacing=0><tr>
+<td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
+<td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
+<td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
+<td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
+<td><img src=img/blank.gif width=1 height=1></td>
+</tr><tr>
+<td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
+<td background=img/tile_shadow_tl.png><img src=img/blank.gif width=16 height=16></td>
+<td background=img/tile_shadow_t.png><img src=img/blank.gif width=16 height=16></td>
+<td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
+<td><img src=img/blank.gif width=1 height=1></td>
+</tr><tr>
+<td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
+<td background=img/tile_shadow_l.png><img src=img/blank.gif width=16 height=16></td>
+<td background=img/tile.png align=left valign=top>
+
+<img src=img/evas_canvas.png width=128 height=128>
+<br><img src=img/blank.gif width=144 height=16></td>
+<td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
+<td valign=top align=left><table border=0 cellpadding=8 cellspacing=0><tr><td>
+
+<font face=arial,helvetica,lucida size=2><p>
+<center><font face=arial,helvetica,lucida size=4><b>How Evas Renders</b></font></center>
+<font face=arial,helvetica,lucida size=2><p>
+Evas minimizes the amount to render whenever possible. As long as you don't
+force it to do rendering then it doesn't have to (ie uselessly call the
+evas_update_rect() call, or call evas_render() or evas_render_updates() all
+the time whenever you make any changes at all to an Evas), Evas will keep
+rendering to a bare minimum for you, and still retain display quality and
+rendering speed. Remember to only call Evas's render calls when you program
+goes IDLE - ie no more events to process and no state to change. Doing
+otherwise will impact perfromance badly.
+<font face=arial,helvetica,lucida size=2><p>
+</td></tr></table></td>
+</tr><tr>
+<td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
+<td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
+<td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
+<td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
+<td><img src=img/blank.gif width=1 height=1></td></tr></table>
+
+
+<font face=arial,helvetica,lucida size=2><p>
+<table border=0 cellpadding=0 cellspacing=0><tr>
+<td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
+<td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
+<td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
+<td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
+<td><img src=img/blank.gif width=1 height=1></td>
+</tr><tr>
+<td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
+<td background=img/tile_shadow_tl.png><img src=img/blank.gif width=16 height=16></td>
+<td background=img/tile_shadow_t.png><img src=img/blank.gif width=16 height=16></td>
+<td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
+<td><img src=img/blank.gif width=1 height=1></td>
+</tr><tr>
+<td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
+<td background=img/tile_shadow_l.png><img src=img/blank.gif width=16 height=16></td>
+<td background=img/tile.png align=left valign=top>
+
+<img src=img/evas_canvas.png width=128 height=128>
+<br><img src=img/blank.gif width=144 height=16></td>
+<td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
+<td valign=top align=left><table border=0 cellpadding=8 cellspacing=0><tr><td>
+
+<font face=arial,helvetica,lucida size=2><p>
+<center><font face=arial,helvetica,lucida size=4><b>The Rendering Engines</b></font></center>
+<font face=arial,helvetica,lucida size=2><p>
+Evas provides you with several output targets for an Evas canvas. Once a
+rendering engine is set though, it cannot be changed. You can select how
+Evas is to render to the display target by selecting the render method.
+<font face=arial,helvetica,lucida size=2><p>
+</td></tr></table></td>
+</tr><tr>
+<td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
+<td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
+<td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
+<td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
+<td><img src=img/blank.gif width=1 height=1></td></tr></table>
+
+
+<font face=arial,helvetica,lucida size=2><p>
+<table border=0 cellpadding=0 cellspacing=0><tr>
+<td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
+<td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
+<td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
+<td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
+<td><img src=img/blank.gif width=1 height=1></td>
+</tr><tr>
+<td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
+<td background=img/tile_shadow_tl.png><img src=img/blank.gif width=16 height=16></td>
+<td background=img/tile_shadow_t.png><img src=img/blank.gif width=16 height=16></td>
+<td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
+<td><img src=img/blank.gif width=1 height=1></td>
+</tr><tr>
+<td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
+<td background=img/tile_shadow_l.png><img src=img/blank.gif width=16 height=16></td>
+<td background=img/tile.png align=left valign=top>
+
+<img src=img/evas_canvas.png width=128 height=128>
+<br><img src=img/blank.gif width=144 height=16></td>
+<td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
+<td valign=top align=left><table border=0 cellpadding=8 cellspacing=0><tr><td>
+
+<font face=arial,helvetica,lucida size=2><p>
+<center><font face=arial,helvetica,lucida size=4><b>Extra Text Calls</b></font></center>
+<font face=arial,helvetica,lucida size=2><p>
+Some extraq information on other calls to query text objects, allowing for
+more complex formatting etc.
+<font face=arial,helvetica,lucida size=2><p>
+</td></tr></table></td>
+</tr><tr>
+<td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
+<td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
+<td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
+<td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
+<td><img src=img/blank.gif width=1 height=1></td></tr></table>
+
+
+<font face=arial,helvetica,lucida size=2><p>
+<table border=0 cellpadding=0 cellspacing=0><tr>
+<td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
+<td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
+<td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
+<td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
+<td><img src=img/blank.gif width=1 height=1></td>
+</tr><tr>
+<td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
+<td background=img/tile_shadow_tl.png><img src=img/blank.gif width=16 height=16></td>
+<td background=img/tile_shadow_t.png><img src=img/blank.gif width=16 height=16></td>
+<td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
+<td><img src=img/blank.gif width=1 height=1></td>
+</tr><tr>
+<td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
+<td background=img/tile_shadow_l.png><img src=img/blank.gif width=16 height=16></td>
+<td background=img/tile.png align=left valign=top>
+
+<img src=img/evas_canvas.png width=128 height=128>
+<br><img src=img/blank.gif width=144 height=16></td>
+<td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
+<td valign=top align=left><table border=0 cellpadding=8 cellspacing=0><tr><td>
+
+<font face=arial,helvetica,lucida size=2><p>
+<center><font face=arial,helvetica,lucida size=4><b>Caveats, Gotcha's etc.</b></font></center>
+<font face=arial,helvetica,lucida size=2><p>
+Small rules and gotchas you might not expect in Evas
+<font face=arial,helvetica,lucida size=2><p>
+</td></tr></table></td>
+</tr><tr>
+<td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
+<td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
+<td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
+<td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
+<td><img src=img/blank.gif width=1 height=1></td></tr></table>
+
+
+<font face=arial,helvetica,lucida size=2><p>
+<table border=0 cellpadding=0 cellspacing=0><tr>
+<td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
+<td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
+<td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
+<td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
+<td><img src=img/blank.gif width=1 height=1></td>
+</tr><tr>
+<td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
+<td background=img/tile_shadow_tl.png><img src=img/blank.gif width=16 height=16></td>
+<td background=img/tile_shadow_t.png><img src=img/blank.gif width=16 height=16></td>
+<td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
+<td><img src=img/blank.gif width=1 height=1></td>
+</tr><tr>
+<td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
+<td background=img/tile_shadow_l.png><img src=img/blank.gif width=16 height=16></td>
+<td background=img/tile.png align=left valign=top>
+
+<img src=img/evas_canvas.png width=128 height=128>
+<br><img src=img/blank.gif width=144 height=16></td>
+<td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
+<td valign=top align=left><table border=0 cellpadding=8 cellspacing=0><tr><td>
+
+<font face=arial,helvetica,lucida size=2><p>
+<center><font face=arial,helvetica,lucida size=4><b>API Reference</b></font></center>
+<font face=arial,helvetica,lucida size=2><p>
+This section is currently incomplete and will take a while to fill out as
+there are a lot of calls and new ones are being added.
+<font face=arial,helvetica,lucida size=2><p>
+</td></tr></table></td>
+</tr><tr>
+<td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
+<td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
+<td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
+<td background=img/col_black.png><img src=img/blank.gif width=1 height=1></td>
+<td><img src=img/blank.gif width=1 height=1></td></tr></table>
+
+
 </td>
 <td><img src=img/blank.gif width=20 height=20></td>
 </tr><tr>
