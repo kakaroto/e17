@@ -1,0 +1,9 @@
+//item: "ENTICE_EXIF_CAMERA_MAKE" "";
+item: "ENTICE_EXIF_CAMERA_MODEL" "camera.value";
+item: "ENTICE_EXIF_PHOTO_TAKEN_ON" "dated.value";
+item: "ENTICE_EXIF_FOCAL_LENGTH" "focal_length.value";
+item: "ENTICE_EXIF_EXPOSURE_TIME" "exposure_time.value";
+item: "ENTICE_EXIF_ISO_SPEED" "iso_speed.value";
+item: "ENTICE_EXIF_APERTURE" "aperture.value";
+item: "ENTICE_EXIF_WHITEBALANCE" "white_balance.value";
+item: "ENTICE_EXIF_FLASH" "flash_on.value";
