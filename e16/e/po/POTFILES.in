@@ -30,4 +30,3 @@ src/sound.c
 src/tclass.c
 src/theme.c
 src/tooltips.c
-src/update.c

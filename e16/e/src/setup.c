@@ -482,17 +482,6 @@ SetupX()
    mode.windowdestroy = 0;
    mode.context_w = 0;
    mode.context_h = 0;
-#ifdef AUTOUPGRADE
-   mode.autoupgrade = 1;
-   mode.activenetwork = 0;
-   mode.motddate = 0;
-   mode.motd = 1;
-#else
-   mode.autoupgrade = 0;
-   mode.activenetwork = 0;
-   mode.motddate = 0;
-   mode.motd = 0;
-#endif
    mode.show_pagers = 1;
    mode.context_pager = NULL;
    mode.pager_hiq = 1;
@@ -526,6 +515,7 @@ SetupX()
    desks.slidein = 1;
    desks.slidespeed = 6000;
    desks.hiqualitybg = 1;
+
    SetAreaSize(2, 1);
 
    ScreenInit();

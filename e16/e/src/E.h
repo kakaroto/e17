@@ -1279,11 +1279,6 @@ typedef struct _emode
    char                windowdestroy;
    int                 context_w;
    int                 context_h;
-   char                autoupgrade;
-   char                activenetwork;
-   int                 motddate;
-   char                motd;
-   char                alreadytestingnetwork;
    char                show_pagers;
    Pager              *context_pager;
    char                pager_hiq;

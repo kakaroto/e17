@@ -65,7 +65,6 @@ static void         IPC_WinOps(char *params, Client * c);
 static void         IPC_WinList(char *params, Client * c);
 static void         IPC_GotoArea(char *params, Client * c);
 static void         IPC_ButtonShow(char *params, Client * c);
-static void         IPC_ActiveNetwork(char *params, Client * c);
 static void         IPC_FX(char *params, Client * c);
 static void         IPC_MoveMode(char *params, Client * c);
 static void         IPC_ResizeMode(char *params, Client * c);
@@ -322,12 +321,6 @@ IPCStruct           IPCArray[] = {
     "(removes all buttons and the dragbar)\n\"button_show\" "
     "(removes all buttons)\n \"button_show buttons CONFIG*\" "
     "(removes all buttons with CONFIG in the start)"},
-   {
-    IPC_ActiveNetwork,
-    "active_network", NULL,
-    "Enable or disable networking",
-    "use \"active_network <on/off>\" to toggle\n"
-    "use \"active_network ?\" to test status"},
    {
     IPC_FX,
     "fx", NULL,
@@ -3538,60 +3531,6 @@ IPC_FX(char *params, Client * c)
      {
 	Esnprintf(buf, sizeof(buf), "Error: no effect specified");
      }
-
-   if (buf[0])
-      CommsSend(c, buf);
-}
-
-static void
-IPC_ActiveNetwork(char *params, Client * c)
-{
-   char                buf[FILEPATH_LEN_MAX];
-
-   buf[0] = 0;
-
-   if (params)
-     {
-#ifdef AUTOUPGRADE
-	if (!strcmp(params, "on"))
-	  {
-	     if (!mode.activenetwork)
-	       {
-		  mode.activenetwork = 1;
-		  DoIn("MOTD_CHECK", 5.0, CheckForNewMOTD, 0, NULL);
-	       }
-	  }
-	else if (!strcmp(params, "off"))
-	  {
-	     if (mode.activenetwork)
-	       {
-		  mode.activenetwork = 0;
-		  RemoveTimerEvent("MOTD_CHECK");
-		  RemoveTimerEvent("UPDATE_CHECK");
-	       }
-	     else if (!strcmp(params, "?"))
-	       {
-		  if (mode.activenetwork)
-		    {
-		       Esnprintf(buf, sizeof(buf), "Active network: on");
-		    }
-		  else
-		    {
-		       Esnprintf(buf, sizeof(buf), "Active network: off");
-		    }
-	       }
-	     else
-	       {
-		  Esnprintf(buf, sizeof(buf), "Error: unknown state.");
-	       }
-	  }
-#else
-	Esnprintf(buf, sizeof(buf),
-		  "Active Network not compiled into this version of E");
-#endif
-     }
-   else
-      Esnprintf(buf, sizeof(buf), "Error: no state specified");
 
    if (buf[0])
       CommsSend(c, buf);

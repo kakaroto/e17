@@ -16,7 +16,6 @@ endif
 enlightenment_SOURCES = \
 	E.h			\
 	timestamp.h             \
-	update.h                \
 	actions.c		\
 	alert.c			\
 	areas.c                 \
@@ -60,7 +59,6 @@ enlightenment_SOURCES = \
 	misc.c			\
 	modules.c		\
 	mwm.c			\
-	network.c		\
 	pager.c                 \
 	progress.c		\
 	regex.c			\
@@ -80,7 +78,6 @@ enlightenment_SOURCES = \
 	timers.c		\
 	tooltips.c		\
 	ttfont.c		\
-	update.c		\
 	warp.c			\
 	windowmatch.c   	\
 	x.c                     \
