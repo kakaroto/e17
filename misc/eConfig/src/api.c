@@ -144,7 +144,6 @@ eConfigStoreData(char *loc, void *data, unsigned long length, char *path)
 	 * the theme at *path.  it will create the datapath if necessary, as well
 	 * as test and store the data.  It returns an 0 on failure and a 1 on
 	 * success.
-	 * FIXME: this function isn't doing anything right now.
 	 * This function is exported by eConfig.
 	 */
 
@@ -156,6 +155,22 @@ eConfigStoreData(char *loc, void *data, unsigned long length, char *path)
 		return 0;
 	if(!path)
 		return 0;
+
+	if(_econf_create_new_data_repository(path) < 0) {
+		/* we can't have this path for some reason.
+		 * returning an error
+		 */
+		return 0;
+	} else {
+		/* the config path *path is ready for us to dump data into it */
+		if(_econf_save_data_to_disk(data,loc,length,path) > 0) {
+			/* success - returning success code */
+			return 1;
+		}  else {
+			/* failure - returning error code */
+			return 0;
+		}
+	}
 
 	return 0;
 
@@ -170,9 +185,12 @@ eConfigStoreDataToFirstAvailablePath(char *loc, void *data,
 	 * the first properly writable config path.
 	 * It will test and store the data.
 	 * It returns an 0 on failure and a 1 on success.
-	 * FIXME: this function isn't doing anything right now.
 	 * This function is exported by eConfig.
 	 */
+
+
+	char **paths;
+	int num;
 
 	if(!loc)
 		return 0;
@@ -180,6 +198,23 @@ eConfigStoreDataToFirstAvailablePath(char *loc, void *data,
 		return 0;
 	if(!length)
 		return 0;
+
+	if((paths = eConfigPaths(&num))) {
+		int i;
+
+		for(i=0;i<num;i++) {
+			if(eConfigStoreData(loc, data, length, paths[i])) {
+				/* we successfully stored the data in a path */
+				free(paths);
+				return 1;
+			}
+		}
+		free(paths);
+	} else {
+		/* um, we didn't have any paths to try to save to.  what were
+		 * you thinking? -- returning an error */
+		return 0;
+	}
 
 	return 0;
 }

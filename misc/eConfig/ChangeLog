@@ -164,3 +164,12 @@ Tue Nov  2 22:32:55 PST 1999
 some api changes.  disk.c work (lots of it)  Still trying to make sure I have
 fleshed out enough to get a working test going.  have a couple of minor
 portability issues to work out in disk.c still.
+
+-------------------------------------------------------------------------------
+
+Wed Nov  3 12:04:41 PST 1999
+(Mandrake)
+
+cleaning out api.c - now there should be no FIXME: notes left in that file.
+eConfigStoreData() and eConfigStoreDataToFirstAvailablePath() should both
+work, too.
