@@ -3,10 +3,10 @@ group {
     name, "entry";
 
     data {
-        item, "inset/left" "5";
-        item, "inset/right" "5";
-        item, "inset/top" "2";
-        item, "inset/bottom" "2";
+        item, "inset/left" "6";
+        item, "inset/right" "6";
+        item, "inset/top" "6";
+        item, "inset/bottom" "6";
     }
     parts {
         part {
