@@ -169,9 +169,12 @@ CB_ApplySnap(int val, void *data)
 	  {
 	     Snapshot           *sn;
 
-	     sn = GetSnapshot(ewin);
-	     ClearSnapshot(sn);
 	     UnsnapshotEwin(ewin);
+	     sn = GetSnapshot(ewin);
+	     if (sn)
+	       {
+		  ClearSnapshot(sn);
+	       }
 	     if (tmp_snap_border)
 		SnapshotEwinBorder(ewin);
 	     if (tmp_snap_desktop)
@@ -190,7 +193,8 @@ CB_ApplySnap(int val, void *data)
 		SnapshotEwinShade(ewin);
 	     if (tmp_snap_cmd)
 		SnapshotEwinCmd(ewin);
-	     SnapshotEwinGroups(ewin, tmp_snap_group);
+	     if (tmp_snap_group)
+		SnapshotEwinGroups(ewin, tmp_snap_group);
 	     SaveSnapInfo();
 	  }
      }

@@ -2997,3 +2997,11 @@ Mon Oct  4 13:16:37 PDT 1999
 (KainX)
 
 Removed extraneous files from ShinyMetal per ljlane's request.
+
+-------------------------------------------------------------------------------
+
+Mon Oct  4 13:31:29 PDT 1999
+(Mandrake)
+
+Fixed bugs in snapshotting windows.
+order could have potentially been invalid.
