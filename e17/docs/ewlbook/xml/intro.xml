@@ -20,7 +20,7 @@ The EWL works in a similar fashion to other widget libraries, in that it is
 based on a callback system. As elements are created and added to the 
 interface any desired event callbacks are registered and these functions
 will be triggered when the specified events happen. This simple callback
-method makes it possible to build very complex interfaces from a relitively
+method makes it possible to build very complex interfaces from a relatively
 simple set of base primitives.
 </para>
 

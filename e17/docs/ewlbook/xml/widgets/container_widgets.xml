@@ -97,8 +97,41 @@ they will have their required size.
 <!-- EWL TREE -->
 <sect2 id="sec-EwlTree">
 <title>Ewl_Tree</title>
+
 <para>
+The tree widget allows for laying out widgets in a series of expandable rows.
+When creating a tree, the number of columns can be specified, and future
+changes will allow for changing the number and location of columns at runtime.
 </para>
+
+<para>
+ <example>
+  <title>Creating EWL trees</title>
+  <programlisting role="C">
+   Ewl_Widget *tree = ewl_tree_new(number_columns);
+   ewl_widget_show(tree);
+  </programlisting>
+ </example>
+</para>
+
+<para>
+The functions to manipulate the tree include:
+<itemizedlist mark="bullet" spacing="compact">
+ <listitem><para><function>void ewl_tree_headers_set(Ewl_Tree *, char **)</function></para></listitem>
+ <listitem><para><function>void ewl_tree_columns_set(Ewl_Tree *, unsigned short)</function></para></listitem>
+ <listitem><para><function>Ecore_List *ewl_tree_selected_get(Ewl_Tree *)</function></para></listitem>
+ <listitem><para><function>void ewl_tree_selected_clear(Ewl_Tree *)</function></para></listitem>
+ <listitem><para><function>Ewl_Tree_Mode ewl_tree_mode_get(Ewl_Tree *)</function></para></listitem>
+ <listitem><para><function>void ewl_tree_mode_set(Ewl_Tree *, Ewl_Tree_Mode)</function></para></listitem>
+ <listitem><para><function>void ewl_tree_row_add(Ewl_Tree *, Ewl_Row *, Ewl_Widget **)</function></para></listitem>
+ <listitem><para><function>void ewl_tree_text_row_add(Ewl_Tree *, Ewl_Row *, char **)</function></para></listitem>
+ <listitem><para><function>void ewl_tree_entry_row_add(Ewl_Tree *, Ewl_Row *, char **)</function></para></listitem>
+ <listitem><para><function>void ewl_tree_row_destroy(Ewl_Tree *, Ewl_Row *)</function></para></listitem>
+ <listitem><para><function>void ewl_tree_row_expand_set(Ewl_Row *, Ewl_Tree_Node_Flags)</function></para></listitem>
+ <listitem><para><function>Ewl_Row *ewl_tree_row_find(Ewl_Row *, Ewl_Tree_Node_Flags)</function></para></listitem>
+</itemizedlist>
+</para>
+
 </sect2>
 
 <!-- ################################### -->
