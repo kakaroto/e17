@@ -3,7 +3,8 @@ gettext internationalisation support & patch
 fix to allow setting of which mouse button do what on the pager
 fix to border width handlign in icccm
 fix to warp foucs
-translations into many different languages (de,fr,hu,nl,ru,and more coming)
+translations into many different languages (de,es,fr,hu,ko,nl,no,ru,and more coming)
+added support for freetype/freetype.h (they moved their header file)
 
 
 The Road to 0.17 (post 0.16.x):
