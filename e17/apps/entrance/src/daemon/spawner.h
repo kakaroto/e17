@@ -44,3 +44,13 @@ struct _Entranced_Spawner_Display
 /* structs */
 typedef struct _Entranced_Spawner_Display Entranced_Spawner_Display;
 
+/* Functions */
+int Entranced_Write_Pidfile (pid_t pid);
+void Entranced_Fork_And_Exit(void);
+Entranced_Spawner_Display *Entranced_Spawner_Display_New(void);
+void Entranced_Spawn_X(Entranced_Spawner_Display *d);
+Ecore_Exe * Entranced_Start_Server_Once(Entranced_Spawner_Display *d);
+void Entranced_X_Killall();
+void Entranced_Spawn_Entrance(Entranced_Spawner_Display *d);
+int Entranced_Respawn_Reset(void *data);
+

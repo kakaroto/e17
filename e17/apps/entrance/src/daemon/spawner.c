@@ -74,7 +74,7 @@ Entranced_Spawner_Display *Entranced_Spawner_Display_New(void) {
  * Launch a new X server
  * @param d The spawner display context that will handle this server
  */
-static void Entranced_Spawn_X(Entranced_Spawner_Display *d) {
+void Entranced_Spawn_X(Entranced_Spawner_Display *d) {
     int i = 0;
 
     if (d == NULL)
@@ -178,7 +178,7 @@ int Entranced_Exe_Exited(void *data, int type, void *event) {
 	printf("Ecore_Event_Exe_Exit triggered.\n");
 
     if(is_respawning)
-        return;
+        return 1;
     
     is_respawning = 1;
     respawn_timer = ecore_timer_add(3.0, Entranced_Respawn_Reset, NULL);
