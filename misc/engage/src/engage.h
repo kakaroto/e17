@@ -5,6 +5,7 @@
 #include <Ecore_X.h>
 #include <Ecore_Evas.h>
 #include <Ecore_Config.h>
+#include <Edje.h>
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -70,7 +71,7 @@ void            od_wm_activate_window(Ecore_X_Window win);
 
 struct _OD_Options {
   int             width, height;
-  char           *icon_path;
+  char           *icon_path, *theme;
   OD_Mode         mode;
   int             grab_min_icons, grab_app_icons;
 
@@ -109,7 +110,7 @@ struct _OD_Dock {
 #define OD_ICON_STATE_BOUNCING                 0x00000008
 
 struct _OD_Icon {
-  Evas_Object    *icon, *tt_txt, *tt_shd, *arrow;
+  Evas_Object    *icon, *pic, *tt_txt, *tt_shd, *arrow;
   unsigned        state;        // see above
   char           *name;
   double          x, y;         // relative to evas

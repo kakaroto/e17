@@ -114,9 +114,11 @@ od_icon_grab(OD_Icon * icon, Ecore_X_Window win)
   img = imlib_create_image_from_drawable(mask, x, y, w, h, 0);
   imlib_context_set_image(img);
 
-  evas_object_image_size_set(icon->icon, w, h);
-  evas_object_image_data_copy_set(icon->icon,
+  evas_object_image_size_set(icon->pic, w, h);
+  evas_object_image_data_copy_set(icon->pic,
                                   imlib_image_get_data_for_reading_only());
+  edje_object_part_unswallow(icon->icon, "EquateIcon");
+  edje_object_part_swallow(icon->icon, "EquateIcon", icon->pic);
 
   imlib_free_image();
 
@@ -124,27 +126,62 @@ done:
 }
 #endif
 
+void
+od_object_resize_intercept_cb(void *data, Evas_Object * o,
+                              Evas_Coord w, Evas_Coord h)
+{
+  if (o)
+  {
+    if (!strcmp("edje", evas_object_type_get(o)))
+    {
+      evas_object_resize(o, w, h);
+      o=edje_object_part_swallow_get(o, "EngageIcon");
+      evas_object_image_fill_set(o, 0.5, 0.5, w * 0.5, h * 0.5);
+      evas_object_resize(o, w * 0.5, h * 0.5);
+    }
+  }
+}
+
+
 OD_Icon        *
 od_icon_new(const char *name, const char *icon_file)
 {
   OD_Icon        *ret = (OD_Icon *) malloc(sizeof(OD_Icon));
+  char           *path[PATH_MAX];
 
   ret->name = strdup(name);
   ret->scale = 0.0;
-  Evas_Object    *icon = ret->icon = evas_object_image_add(evas);
+  Evas_Object    *icon = ret->icon = edje_object_add(evas);
   Evas_Object    *tt_txt = ret->tt_txt = evas_object_text_add(evas);
   Evas_Object    *tt_shd = ret->tt_shd = evas_object_text_add(evas);
-
+  Evas_Object    *pic = ret->pic = evas_object_image_add(evas);
+  evas_object_image_file_set(pic, icon_file, NULL);
+  evas_object_image_alpha_set(pic, 1);
+  evas_object_image_smooth_scale_set(pic, 1);
+  evas_object_layer_set(pic, 200);
+  evas_object_name_set(pic, "icon");
+          
+  evas_object_show(pic);
+  
   ret->arrow = NULL;
   ret->state = 0;
   ret->appear_timer = NULL;
+  
 
-  evas_object_image_file_set(icon, icon_file, NULL);
+  if ((strstr(options.theme, "/")))
+    snprintf(path, PATH_MAX, options.theme);
+  else
+    snprintf(path, PATH_MAX, PACKAGE_DATA_DIR "/themes/%s.eet", options.theme);
+
+  edje_object_file_set(icon, path, "Main");
+  edje_object_part_swallow(icon, "EngageIcon", pic);
   evas_object_image_alpha_set(icon, 1);
   evas_object_image_smooth_scale_set(icon, 1);
   evas_object_layer_set(icon, 100);
-  evas_object_name_set(icon, "icon");
   evas_object_show(icon);
+  evas_object_intercept_resize_callback_add(icon,
+                                            od_object_resize_intercept_cb,NULL);
+  
 
   evas_object_text_font_set(tt_txt, options.tt_fa, options.tt_fs);
   evas_object_text_text_set(tt_txt, name);
@@ -161,7 +198,6 @@ od_icon_new(const char *name, const char *icon_file)
                         (options.tt_shd_color >> 8) & 0xff,
                         (options.tt_shd_color >> 0) & 0xff, 127);
   evas_object_layer_set(tt_shd, 199);
-
   return ret;
 }
 

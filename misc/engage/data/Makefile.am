@@ -1,1 +1,1 @@
-SUBDIRS = icons
+SUBDIRS = icons themes

@@ -105,6 +105,19 @@ imlib_libs=`$IMLIB_CONFIG --libs`
 AC_SUBST(imlib_cflags)
 AC_SUBST(imlib_libs)
         
+PROG="edje-config";
+AC_PATH_PROG(EDJE_CONFIG, $PROG, "", $PATH)
+if [ test -z $EDJE_CONFIG ]; then
+  echo $PROG " is not in your \$PATH. Please ensure it is.";
+  echo "Read the manual page for you shell as to how to extend your path.";
+  echo "FATAL ERROR. ABORT.";
+  exit -1;
+fi
+edje_cflags=`$EDJE_CONFIG --cflags`
+edje_libs=`$EDJE_CONFIG --libs`
+AC_SUBST(edje_cflags)
+AC_SUBST(edje_libs)
+
 
 dnl Set PACKAGE_SOURCE_DIR in config.h.
 #packagesrcdir=`cd $srcdir && pwd`
@@ -141,5 +154,6 @@ Makefile
 src/Makefile
 data/Makefile
 data/icons/Makefile
+data/themes/Makefile
 ],[
 ])

@@ -21,6 +21,41 @@ static void     handle_mouse_move(void *data, Evas * e, Evas_Object * obj,
                                   void *event);
 
 void
+od_window_move()
+{ 
+  int x, y, w, h;
+  Evas_Object *o = NULL;
+  
+  ecore_evas_geometry_get (ee, &x, &y, &w, &h);
+  
+#ifdef HAVE_TRANS_BG
+  if((o = evas_object_name_find(ecore_evas_get(ee), "trans")))
+    esmart_trans_x11_freshen(o, x, y, w, h);
+#endif
+}
+
+void
+od_window_resize()
+{
+  int x, y, w, h;
+  Evas_Object *o = NULL;
+  
+  ecore_evas_geometry_get(ee, &x, &y, &w, &h);
+
+#ifdef HAVE_TRANS_BG
+  if((o = evas_object_name_find(ecore_evas_get(ee), "trans")))
+  {
+    evas_object_resize(o, w, h);
+    esmart_trans_x11_freshen(o, x, y, w, h);
+  }
+#endif
+  options.width = w;
+  options.height = h;
+  ecore_config_set_int("engage.options.width", w);
+  ecore_config_set_int("engage.options.height", h);
+}
+
+void
 od_window_init()
 {
   Ecore_X_Display *dsp;
@@ -47,8 +82,6 @@ od_window_init()
     ecore_evas_shaped_set(ee, 1);
   else
     ecore_evas_shaped_set(ee, 0);
-  ecore_evas_size_min_set(ee, options.width, options.height);
-  ecore_evas_size_max_set(ee, options.width, options.height);
   ecore_evas_callback_pre_render_set(ee, od_dock_redraw);
   ecore_evas_callback_focus_out_set(ee, handle_mouse_out);
 
@@ -77,6 +110,8 @@ od_window_init()
     ecore_x_window_prop_layer_set(od_window, ECORE_X_WINDOW_LAYER_BELOW);
 
   ecore_evas_show(ee);
+  ecore_evas_callback_move_set(ee, od_window_move);
+  ecore_evas_callback_resize_set(ee, od_window_resize);
 
   if (options.mode == OM_BELOW) {
 #ifdef HAVE_TRANS_BG
@@ -130,7 +165,7 @@ handle_mouse_down(void *data, Evas * e, Evas_Object * obj, void *event)
         Evas_List      *i2 = dock.icons;
 
         while (i2 && !done) {
-          if (((OD_Icon *) (i2->data))->icon == (Evas_Object *) item->data) {
+          if (((OD_Icon *) (i2->data))->pic == (Evas_Object *) item->data) {
             icon = (OD_Icon *) i2->data;
             done = true;
           }

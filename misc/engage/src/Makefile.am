@@ -5,6 +5,7 @@ INCLUDES = \
 -I/usr/local/include \
 -I$(top_srcdir)/lib \
 @evas_cflags@ \
+@edje_cflags@ \
 @ecore_cflags@ \
 @esmart_cflags@ \
 @imlib_cflags@
@@ -21,5 +22,5 @@ window.c \
 userconfig.c
 
 
-engage_LDADD = @evas_libs@ @ecore_libs@ @esmart_libs@ @imlib_libs@
+engage_LDADD = @evas_libs@ @edje_libs@ @ecore_libs@ @esmart_libs@ @imlib_libs@
 
