@@ -30,7 +30,7 @@
 #define EWIN_CONTAINER_EVENT_MASK \
   (/* ButtonPressMask | ButtonReleaseMask | */ \
    /* StructureNotifyMask | ResizeRedirectMask | */ \
-   SubstructureNotifyMask | SubstructureRedirectMask)
+   /* SubstructureNotifyMask | */ SubstructureRedirectMask)
 #define EWIN_BORDER_PART_EVENT_MASK \
   (KeyPressMask | KeyReleaseMask | ButtonPressMask | ButtonReleaseMask | \
    EnterWindowMask | LeaveWindowMask | PointerMotionMask | ExposureMask)
@@ -39,7 +39,7 @@
 
 #define EWIN_CLIENT_EVENT_MASK \
   (EnterWindowMask | LeaveWindowMask | FocusChangeMask | \
-   /* StructureNotifyMask | */ ResizeRedirectMask | \
+   StructureNotifyMask | ResizeRedirectMask | \
    PropertyChangeMask | ColormapChangeMask)
 
 static void         EwinSetBorderInit(EWin * ewin);
@@ -1289,6 +1289,9 @@ EwinCreate(Window win)
 
    XShapeSelectInput(disp, win, ShapeNotifyMask);
 
+   if (EventDebug(EDBUG_TYPE_EWINS))
+      Eprintf("EwinCreate %#lx state=%d\n", ewin->client.win, ewin->state);
+
    EDBUG_RETURN(ewin);
 }
 
@@ -1310,6 +1313,9 @@ EwinDestroy(EWin * ewin)
    EDBUG(5, "FreeEwin");
    if (!ewin)
       EDBUG_RETURN_;
+
+   if (EventDebug(EDBUG_TYPE_EWINS))
+      Eprintf("EwinDestroy %#lx state=%d\n", ewin->client.win, ewin->state);
 
    RemoveItem(NULL, ewin->client.win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
    EwinListDelete(&EwinListStack, ewin);
@@ -1374,6 +1380,9 @@ EwinWithdraw(EWin * ewin)
 {
    Window              win;
 
+   if (EventDebug(EDBUG_TYPE_EWINS))
+      Eprintf("EwinWithdraw %#lx state=%d\n", ewin->client.win, ewin->state);
+
    /* Park the client window on the root */
    XTranslateCoordinates(disp, ewin->client.win, root.win,
 			 -ewin->border->border.left,
@@ -1389,6 +1398,10 @@ EwinWithdraw(EWin * ewin)
 void
 EwinEventDestroy(EWin * ewin)
 {
+   if (EventDebug(EDBUG_TYPE_EWINS))
+      Eprintf("EwinEventDestroy %#lx state=%d\n", ewin->client.win,
+	      ewin->state);
+
    EwinDestroy(ewin);
 }
 
@@ -1396,6 +1409,9 @@ void
 EwinEventMap(EWin * ewin)
 {
    ewin->state = EWIN_STATE_MAPPED;
+
+   if (EventDebug(EDBUG_TYPE_EWINS))
+      Eprintf("EwinEventMap %#lx state=%d\n", ewin->client.win, ewin->state);
 }
 
 void
@@ -1406,6 +1422,9 @@ EwinEventUnmap(EWin * ewin)
 
    /* Set state to unknown until we can set the correct one */
    ewin->state = (ewin->iconified) ? EWIN_STATE_ICONIC : EWIN_STATE_WITHDRAWN;
+
+   if (EventDebug(EDBUG_TYPE_EWINS))
+      Eprintf("EwinEventUnmap %#lx state=%d\n", ewin->client.win, ewin->state);
 
    ActionsEnd(ewin);
 
