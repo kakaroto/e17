@@ -4327,3 +4327,12 @@ Patch from Marius Aamodt Eriksen <marius@linux.com>. Provides option to
 include shaded windows in focuslist. Now all we need is an "include
 iconified windows" option...
 
+
+-------------------------------------------------------------------------------
+
+Fri Mar 17 21:09:33 GMT 2000
+(gilbertt)
+
+Another patch from Marius Aamodt Eriksen <marius@linux.com>. Adds the
+option to include iconified windows in the focuslist and uniconify them on
+selection. Flim.

@@ -1196,6 +1196,7 @@ typedef struct _emode
    char                warpmenus;
    char                warpsticky;
    char                warpshaded;
+   char                warpiconified;
    char                numdesktops;
    char                transientsfollowleader;
    char                switchfortransientmap;

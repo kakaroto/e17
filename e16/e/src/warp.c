@@ -142,9 +142,10 @@ WarpFocus(int delta)
 		      (ewin->y + ewin->h > 0) && (ewin->y < root.h) &&
 		      (!ewin->skipfocus) && !(ewin->shaded && !mode.warpshaded)
 		      && (!ewin->menu) && (!ewin->pager) && !(ewin->sticky
-							      && !mode.
-							      warpsticky)
-		      && (!ewin->ibox) && (!ewin->iconified)
+							      &&
+							      !mode.warpsticky)
+		      && (!ewin->ibox) && !(ewin->iconified
+					    && !mode.warpiconified)
 		      /*&& (ewin->client.mwm_decor_title) &&
 		       * (ewin->client.mwm_decor_border) */
 		     )
@@ -166,7 +167,7 @@ WarpFocus(int delta)
 	  {
 	     if (mode.raise_on_next_focus)
 		RaiseEwin(ewin);
-	     if (mode.warp_on_next_focus)
+	     if (mode.warp_on_next_focus && !ewin->iconified)
 		XWarpPointer(disp, None, ewin->win, 0, 0, 0, 0, ewin->w / 2,
 			     ewin->h / 2);
 	     /* if (mode.focusmode == FOCUS_CLICK) */
@@ -196,6 +197,8 @@ WarpFocusFinish(void)
 	if (ewin)
 	  {
 	     FocusToEWin(ewin);
+	     if (mode.warpiconified && ewin->iconified)
+		DeIconifyEwin(ewin);
 	     if (mode.warp_after_next_focus || mode.warp_on_next_focus)
 	       {
 		  XWarpPointer(disp, None, ewin->win, 0, 0, 0, 0, ewin->w / 2,
