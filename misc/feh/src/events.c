@@ -74,6 +74,9 @@ static void
 feh_event_handle_ButtonPress(XEvent * ev)
 {
    winwidget winwid = NULL;
+   const int next_button = opt.next_button;
+   const int zoom_button = opt.zoom_button;
+   const int pan_button = opt.pan_button;
 
    D_ENTER;
    /* hide the menus and get the heck out if it's a mouse-click on the
@@ -84,16 +87,14 @@ feh_event_handle_ButtonPress(XEvent * ev)
       D_RETURN_;
    }
 
-   switch (ev->xbutton.button)
+   if (ev->xbutton.button == opt.next_button)
    {
-     case 1:
-        D(("Button 1 Press event\n"));
+        D(("Next Button Press event\n"));
         winwid = winwidget_get_from_window(ev->xbutton.window);
         if ((winwid != NULL) && (winwid->type == WIN_TYPE_SLIDESHOW))
            slideshow_change_image(winwid, SLIDE_NEXT);
-        break;
-     case 2:
-        D(("Button 2 Press event\n"));
+   } else if (ev->xbutton.button == opt.pan_button) {
+        D(("Pan Button Press event\n"));
         winwid = winwidget_get_from_window(ev->xbutton.window);
         if (winwid != NULL)
         {
@@ -104,8 +105,7 @@ feh_event_handle_ButtonPress(XEvent * ev)
            winwid->click_offset_x = ev->xbutton.x - winwid->im_x;
            winwid->click_offset_y = ev->xbutton.y - winwid->im_y;
         }
-        break;
-     case 3:
+   } else if (ev->xbutton.button == opt.zoom_button) {
         D(("Button 3 Press event\n"));
         winwid = winwidget_get_from_window(ev->xbutton.window);
         if (winwid != NULL)
@@ -146,22 +146,18 @@ feh_event_handle_ButtonPress(XEvent * ev)
               winwidget_render_image(winwid, 0, 0);
            }
         }
-        break;
-     case 4:
+	} else if (ev->xbutton.button == 4 /* this is bad */ ) {
         D(("Button 4 Press event\n"));
         winwid = winwidget_get_from_window(ev->xbutton.window);
         if ((winwid != NULL) && (winwid->type == WIN_TYPE_SLIDESHOW))
            slideshow_change_image(winwid, SLIDE_PREV);
-        break;
-     case 5:
+	} else if (ev->xbutton.button == 5 /* this is bad */ ) {
         D(("Button 5 Press event\n"));
         winwid = winwidget_get_from_window(ev->xbutton.window);
         if ((winwid != NULL) && (winwid->type == WIN_TYPE_SLIDESHOW))
            slideshow_change_image(winwid, SLIDE_NEXT);
-        break;
-     default:
+    } else {
         D(("Received other ButtonPress event\n"));
-        break;
    }
    D_RETURN_;
 }

@@ -56,6 +56,9 @@ init_parse_options(int argc, char **argv)
    opt.progress_gran = 10;
    opt.menu_font = estrdup("20thcent/12");
    opt.menu_bg = estrdup(PREFIX "/share/feh/images/menubg.png");
+   opt.next_button = 1;
+   opt.zoom_button = 2;
+   opt.pan_button = 3;
 
    D(("About to parse env options (if any)\n"));
    /* Check for and parse any options in FEH_OPTIONS */
@@ -268,7 +271,7 @@ feh_parse_option_array(int argc, char **argv)
 {
    static char stropts[] =
 
-      "a:A:b:BcC:dD:e:f:Fg:hH:iIklL:mM:nNo:O:pPqrR:sS:t:T:uUvVwW:xXy:zZ";
+      "a:A:b:BcC:dD:e:f:Fg:hH:iIklL:mM:nNo:O:pPqrR:sS:t:T:uUvVwW:xXy:zZ1:2:3:";
    static struct option lopts[] = {
       /* actions */
       {"help", 0, 0, 'h'},                  /* okay */
@@ -319,6 +322,9 @@ feh_parse_option_array(int argc, char **argv)
       {"fontpath", 1, 0, 'C'},
       {"progress-gran", 1, 0, '('},
       {"menu-bg", 1, 0, ')'},
+      {"next-button", 1, 0, '1'},
+      {"zoom-button", 1, 0, '2'},
+      {"pan-button", 1, 0, '3'},
       {0, 0, 0, 0}
    };
    int optch = 0, cmdx = 0;
@@ -508,6 +514,15 @@ feh_parse_option_array(int argc, char **argv)
            break;
         case 'f':
            opt.filelistfile = estrdup(optarg);
+           break;
+        case '1':
+           opt.next_button = atoi(optarg);
+           break;
+        case '2':
+           opt.zoom_button = atoi(optarg);
+           break;
+        case '3':
+           opt.pan_button = atoi(optarg);
            break;
         default:
            break;
@@ -719,6 +734,12 @@ show_usage(void)
            "  -M, --menu-font FONT      Use FONT for the font in menus.\n"
            "      --menu-bg BG          Use BG for the background image in menus.\n"
            "  -N, --no-menus            Don't load or show any menus.\n"
+           "  -1, --next-button B       Use button B to advance to the next image in any\n"
+           "                            mode (defaults to 1, usually the left button).\n"
+           "  -2, --zoom-button B       Use button B to zoom the current image in any\n"
+           "                            mode (defaults to 2, usually the middle button).\n"
+           "  -3, --pan-button B        Use button B to pan the current image in any\n"
+           "                            mode (defaults to 3, usually the right button).\n"
            " FORMAT SPECIFIERS\n"
            "                            %%f image path/filename\n"
            "                            %%n image name\n"

@@ -72,6 +72,10 @@ struct __fehoptions
    char *customlist;
    char *menu_bg;
 
+   unsigned char next_button;
+   unsigned char zoom_button;
+   unsigned char pan_button;
+
    int thumb_w;
    int thumb_h;
    int limit_w;
