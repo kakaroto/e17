@@ -44,13 +44,19 @@ typedef struct
 } SWin;
 
 static void         SystrayInit(Iconbox * ib, Window win, int screen);
+static void         SystrayExit(Iconbox * ib);
 static void         IconboxObjSwinFree(Iconbox * ib, SWin * swin);
 
-typedef union
+typedef struct
 {
-   void               *obj;
-   EWin               *ewin;
-   SWin               *swin;
+   union
+   {
+      void               *obj;
+      EWin               *ewin;
+      SWin               *swin;
+   } u;
+   int                 xo, yo, wo, ho;	/* Outer */
+   int                 xi, yi, wi, hi;	/* Inner */
 } IboxOject;
 
 struct _iconbox
@@ -74,9 +80,14 @@ struct _iconbox
    int                 auto_resize_anchor;
 
    /* internally set stuff */
+   EWin               *ewin;
    int                 w, h;
    int                 pos;
    int                 max, max_min;
+   ImageClass         *ic_box;
+   ImageClass         *ic_item_base;
+   Imlib_Image        *im_item_base;
+
    char                force_update;
    char                arrow1_hilited;
    char                arrow1_clicked;
@@ -87,8 +98,6 @@ struct _iconbox
    char                scrollbar_clicked;
    char                scrollbox_clicked;
 
-   Pixmap              pmap, mask;
-
    Window              win;
    Window              cover_win;
    Window              icon_win;
@@ -97,7 +106,6 @@ struct _iconbox
    Window              arrow2_win;
    Window              scrollbar_win;
    Window              scrollbarknob_win;
-   EWin               *ewin;
 
    int                 num_objs;
    IboxOject          *objs;
@@ -299,7 +307,7 @@ IconboxCreate(const char *name)
 {
    Iconbox            *ib;
 
-   ib = Emalloc(sizeof(Iconbox));
+   ib = Ecalloc(1, sizeof(Iconbox));
    ib->name = Estrdup(name);
    ib->type = (!strncmp(name, "_ST_", 4)) ? IB_TYPE_SYSTRAY : IB_TYPE_ICONBOX;
    ib->orientation = 0;
@@ -348,7 +356,6 @@ IconboxCreate(const char *name)
    ib->scrollbar_win = ECreateWindow(ib->scroll_win, 122, 26, 6, 6, 0);
    EventCallbackRegister(ib->scrollbar_win, 0, IboxEventScrollbarWin, ib);
    ib->scrollbarknob_win = ECreateWindow(ib->scrollbar_win, -20, -20, 4, 4, 0);
-   ib->pmap = ecore_x_pixmap_new(ib->icon_win, 128, 32, VRoot.depth);
 
    ESelectInput(ib->icon_win,
 		EnterWindowMask | LeaveWindowMask | ButtonPressMask |
@@ -398,25 +405,31 @@ IconboxDestroy(Iconbox * ib, int exiting)
    if (ib->name)
       Efree(ib->name);
 
+   switch (ib->type)
+     {
+     case IB_TYPE_ICONBOX:
+	break;
+     case IB_TYPE_SYSTRAY:
+	SystrayExit(ib);
+	break;
+     }
+
    for (i = 0; i < ib->num_objs; i++)
      {
 	switch (ib->type)
 	  {
 	  case IB_TYPE_ICONBOX:
 	     if (!exiting)
-		EwinDeIconify(ib->objs[i].ewin);
+		EwinDeIconify(ib->objs[i].u.ewin);
 	     break;
 	  case IB_TYPE_SYSTRAY:
-	     IconboxObjSwinFree(ib, ib->objs[i].swin);
+	     IconboxObjSwinFree(ib, ib->objs[i].u.swin);
 	     break;
 	  }
      }
 
    if (ib->objs)
       Efree(ib->objs);
-
-   if (ib->pmap)
-      ecore_x_pixmap_del(ib->pmap);
 
    EDestroyWindow(ib->win);
 
@@ -429,9 +442,9 @@ IconboxDestroy(Iconbox * ib, int exiting)
 static void
 IB_Reconfigure(Iconbox * ib)
 {
-   ImageClass         *ic;
+   ImageClass         *ic, *ic2;
    EWin               *ewin;
-   int                 extra = 0;
+   int                 extra;
 
    ewin = ib->ewin;
    ib->force_update = 1;
@@ -442,11 +455,18 @@ IB_Reconfigure(Iconbox * ib)
    ewin->client.no_resize_h = 0;
    ewin->client.no_resize_v = 0;
 
+   extra = 0;
    if (ib->orientation)
      {
 	ic = ImageclassFind("ICONBOX_VERTICAL", 0);
 	if (ic)
 	   extra = ic->padding.left + ic->padding.right;
+	if (ib->draw_icon_base)
+	  {
+	     ic2 = ImageclassFind("DEFAULT_ICON_BUTTON", 0);
+	     if (ic2)
+		extra += ic2->padding.left + ic2->padding.right;
+	  }
 	ewin->client.width.max = ewin->client.width.min =
 	   ib->iconsize + ib->scroll_thickness + extra;
 	ewin->client.no_resize_h = 1;
@@ -456,7 +476,13 @@ IB_Reconfigure(Iconbox * ib)
      {
 	ic = ImageclassFind("ICONBOX_HORIZONTAL", 0);
 	if (ic)
-	   extra = ic->padding.left + ic->padding.right;
+	   extra = ic->padding.top + ic->padding.bottom;
+	if (ib->draw_icon_base)
+	  {
+	     ic2 = ImageclassFind("DEFAULT_ICON_BUTTON", 0);
+	     if (ic2)
+		extra += ic2->padding.top + ic2->padding.bottom;
+	  }
 	ewin->client.height.max = ewin->client.height.min =
 	   ib->iconsize + ib->scroll_thickness + extra;
 	ewin->client.no_resize_v = 1;
@@ -529,8 +555,16 @@ IconboxShow(Iconbox * ib)
    pq = Mode.queue_up;
    Mode.queue_up = 0;
 
-   HintsSetWindowName(ib->win, "Iconbox");
-   HintsSetWindowClass(ib->win, ib->name, "Enlightenment_IconBox");
+   if (ib->type == IB_TYPE_ICONBOX)
+     {
+	HintsSetWindowName(ib->win, "Iconbox");
+	HintsSetWindowClass(ib->win, ib->name, "Enlightenment_IconBox");
+     }
+   else
+     {
+	HintsSetWindowName(ib->win, "Systray");
+	HintsSetWindowClass(ib->win, ib->name, "Enlightenment_IconBox");
+     }
 
    ewin = AddInternalToFamily(ib->win, NULL, EWIN_TYPE_ICONBOX, ib,
 			      IconboxEwinInit);
@@ -580,7 +614,7 @@ IconboxObjectFind(Iconbox * ib, void *obj)
    int                 i;
 
    for (i = 0; i < ib->num_objs; i++)
-      if (ib->objs[i].obj == obj)
+      if (ib->objs[i].u.obj == obj)
 	 return i;
 
    return -1;
@@ -594,8 +628,8 @@ IconboxObjectAdd(Iconbox * ib, void *obj)
       return -1;
 
    ib->num_objs++;
-   ib->objs = Erealloc(ib->objs, sizeof(EWin *) * ib->num_objs);
-   ib->objs[ib->num_objs - 1].obj = obj;
+   ib->objs = Erealloc(ib->objs, sizeof(IboxOject) * ib->num_objs);
+   ib->objs[ib->num_objs - 1].u.obj = obj;
 
    return 0;			/* Success */
 }
@@ -614,7 +648,7 @@ IconboxObjectDel(Iconbox * ib, void *obj)
       ib->objs[j] = ib->objs[j + 1];
    ib->num_objs--;
    if (ib->num_objs > 0)
-      ib->objs = Erealloc(ib->objs, sizeof(EWin *) * ib->num_objs);
+      ib->objs = Erealloc(ib->objs, sizeof(IboxOject) * ib->num_objs);
    else
      {
 	Efree(ib->objs);
@@ -733,7 +767,6 @@ IB_SnapEWin(EWin * ewin)
 	imlib_context_set_drawable(draw);
 	im = imlib_create_scaled_image_from_drawable(mask, 0, 0, EoGetW(ewin),
 						     EoGetH(ewin), w, h, 1, 0);
-	ecore_x_pixmap_del(ib->pmap);
 	imlib_context_set_image(im);
 	imlib_image_set_has_alpha(1);	/* Should be set by imlib? */
      }
@@ -975,43 +1008,24 @@ UpdateAppIcon(EWin * ewin, int imode)
 }
 
 static void
-IconboxFindIconSize(Iconbox * ib, Imlib_Image * im, int type __UNUSED__,
-		    int *pw, int *ph)
+IconboxFindIconSize(Imlib_Image * im, int *pw, int *ph, int size)
 {
-   int                 w, h, minsz, maxsz, maxwh;
+   int                 w, h, minsz, maxwh;
 
    imlib_context_set_image(im);
    w = imlib_image_get_width();
    h = imlib_image_get_height();
+
    maxwh = (w > h) ? w : h;
    if (maxwh <= 1)
       goto done;
 
-   maxsz = ib->iconsize;
+   minsz = (size * 3) / 4;
 
-   if (ib->draw_icon_base)
+   if (maxwh < minsz || maxwh > size)
      {
-	ImageClass         *ic;
-	int                 maxpad;
-
-	ic = ImageclassFind("DEFAULT_ICON_BUTTON", 0);
-	if (ic)
-	  {
-	     maxpad = ic->padding.left + ic->padding.right;
-	     if (maxpad < ic->padding.top + ic->padding.bottom)
-		maxpad = ic->padding.top + ic->padding.bottom;
-	     maxsz -= maxpad;
-	     if (maxsz < 8)
-		maxsz = 8;
-	  }
-     }
-
-   minsz = (maxsz * 3) / 4;
-
-   if (maxwh < minsz || maxwh > maxsz)
-     {
-	w = (w * maxsz) / maxwh;
-	h = (h * maxsz) / maxwh;
+	w = (w * size) / maxwh;
+	h = (h * size) / maxwh;
      }
 
  done:
@@ -1020,51 +1034,138 @@ IconboxFindIconSize(Iconbox * ib, Imlib_Image * im, int type __UNUSED__,
 }
 
 static void
-IB_CalcMax(Iconbox * ib)
+IconboxLayoutImageWin(Iconbox * ib)
 {
-   int                 i, x, y, w, h;
+   int                 i, xo, yo, wo, ho, wi, hi;
+   int                 item_pad, padl, padr, padt, padb;
+   IboxOject          *ibo;
 
-   x = 0;
-   y = 0;
+   if (ib->orientation)
+      ib->ic_box = ImageclassFind("ICONBOX_VERTICAL", 0);
+   else
+      ib->ic_box = ImageclassFind("ICONBOX_HORIZONTAL", 0);
+
+   if (ib->draw_icon_base && !ib->im_item_base)
+     {
+	ib->ic_item_base = ImageclassFind("DEFAULT_ICON_BUTTON", 0);
+	if (ib->ic_item_base)
+	   ib->im_item_base =
+	      ImageclassGetImage(ib->ic_item_base, 0, 0, STATE_NORMAL);
+	if (!ib->im_item_base)
+	  {
+	     ib->ic_item_base = NULL;
+	     ib->draw_icon_base = 0;
+	  }
+     }
+
+   if (ib->draw_icon_base)
+     {
+	padl = ib->ic_item_base->padding.left;
+	padr = ib->ic_item_base->padding.right;
+	padt = ib->ic_item_base->padding.top;
+	padb = ib->ic_item_base->padding.bottom;
+
+	item_pad = 0;
+     }
+   else
+     {
+	padl = padr = padt = padb = 0;
+
+	item_pad = 2;
+     }
+
+   xo = 0;
+   yo = 0;
+   if (ib->ic_box)
+     {
+	xo += ib->ic_box->padding.left;
+	yo += ib->ic_box->padding.top;
+     }
+
    for (i = 0; i < ib->num_objs; i++)
      {
-	w = 8;
-	h = 8;
+	ibo = &ib->objs[i];
+
+	/* Inner size */
 	if (ib->type == IB_TYPE_ICONBOX)
 	  {
 	     EWin               *ewin;
 
-	     ewin = ib->objs[i].ewin;
+	     ewin = ibo->u.ewin;
 	     if (!ewin->icon_image)
 		UpdateAppIcon(ewin, ib->icon_mode);
+	     wi = hi = 8;
 	     if (ewin->icon_image)
-		IconboxFindIconSize(ib, ewin->icon_image, ewin->icon_type, &w,
-				    &h);
+		IconboxFindIconSize(ewin->icon_image, &wi, &hi, ib->iconsize);
 	  }
 	else
 	  {
-	     if (ib->objs[i].swin->mapped)
-		w = h = ib->iconsize;
-	     else
-		w = h = 0;
+	     wi = hi = ib->iconsize;
 	  }
 
-	if (ib->draw_icon_base)
+	/* Outer size */
+	if (ib->draw_icon_base && ib->im_item_base)
 	  {
-	     x += ib->iconsize;
-	     y += ib->iconsize;
+	     if (ib->type == IB_TYPE_ICONBOX)
+	       {
+		  wo = ib->iconsize + padl + padr;
+		  ho = ib->iconsize + padt + padb;
+	       }
+	     else
+	       {
+		  if (ib->objs[i].u.swin->mapped)
+		    {
+		       wo = ib->iconsize + padl + padr;
+		       ho = ib->iconsize + padt + padb;
+		    }
+		  else
+		     wo = ho = 0;
+	       }
 	  }
 	else
 	  {
-	     x += w + 2;
-	     y += h + 2;
+	     if (ib->orientation)
+	       {
+		  wo = ib->iconsize;
+		  ho = hi;
+	       }
+	     else
+	       {
+		  wo = wi;
+		  ho = ib->iconsize;
+	       }
 	  }
+
+	ibo->xo = xo;
+	ibo->yo = yo;
+	ibo->wo = wo;
+	ibo->ho = ho;
+	ibo->xi = xo + (wo - wi) / 2;
+	ibo->yi = yo + (ho - hi) / 2;
+	ibo->wi = wi;
+	ibo->hi = hi;
+#if 0
+	Eprintf("xo,yo=%d,%d wo,ho=%d,%d  xi,yi=%d,%d wi,hi=%d,%d\n",
+		ibo->xo, ibo->yo, ibo->wo, ibo->ho, ibo->xi, ibo->yi, ibo->wi,
+		ibo->hi);
+#endif
+
+	if (ib->orientation)
+	   yo += ho + item_pad;
+	else
+	   xo += wo + item_pad;
+     }
+
+   if (ib->ic_box)
+     {
+	xo += ib->ic_box->padding.right;
+	yo += ib->ic_box->padding.bottom;
      }
 
    if (ib->orientation)
-      ib->max = y - 2;
+      ib->max = yo - item_pad;
    else
-      ib->max = x - 2;
+      ib->max = xo - item_pad;
 
    if (ib->max < ib->max_min)
       ib->max = ib->max_min;
@@ -1073,87 +1174,19 @@ IB_CalcMax(Iconbox * ib)
 static EWin        *
 IB_FindIcon(Iconbox * ib, int px, int py)
 {
-   int                 i, x = 0, y = 0;
-   ImageClass         *ic = NULL;
+   int                 i;
+   IboxOject          *ibo;
 
-   if (ib->orientation)
-     {
-	ic = ImageclassFind("ICONBOX_VERTICAL", 0);
-	y = -ib->pos;
-	x = 0;
-	if (ic)
-	  {
-	     x += ic->padding.left;
-	     y += ic->padding.top;
-	  }
-     }
-   else
-     {
-	ic = ImageclassFind("ICONBOX_HORIZONTAL", 0);
-	x = -ib->pos;
-	y = 0;
-	if (ic)
-	  {
-	     x += ic->padding.left;
-	     y += ic->padding.top;
-	  }
-     }
+   if (ib->type != IB_TYPE_ICONBOX)
+      return NULL;
 
    for (i = 0; i < ib->num_objs; i++)
      {
-	int                 w, h, xx, yy;
+	ibo = &ib->objs[i];
 
-	w = 8;
-	h = 8;
-	if (ib->type == IB_TYPE_ICONBOX)
-	  {
-	     EWin               *ewin;
-
-	     ewin = ib->objs[i].ewin;
-	     if (!ewin->icon_image)
-		UpdateAppIcon(ewin, ib->icon_mode);
-	     if (ewin->icon_image)
-	       {
-		  IconboxFindIconSize(ib, ewin->icon_image, ewin->icon_type, &w,
-				      &h);
-		  xx = x;
-		  yy = y;
-		  if (ib->orientation)
-		    {
-		       if (ib->draw_icon_base)
-			  yy += (ib->iconsize - h) / 2;
-		       xx += (ib->iconsize - w) / 2;
-		    }
-		  else
-		    {
-		       if (ib->draw_icon_base)
-			  xx += (ib->iconsize - w) / 2;
-		       yy += (ib->iconsize - h) / 2;
-		    }
-		  if ((px >= (xx - 1)) && (py >= (yy - 1))
-		      && (px < (xx + w + 1)) && (py < (yy + h + 1)))
-		     return ewin;
-	       }
-	  }
-	else
-	  {
-	     w = h = ib->iconsize;
-	  }
-
-	if (ib->orientation)
-	  {
-	     if (ib->draw_icon_base)
-		y += ib->iconsize;
-	     else
-		y += h + 2;
-	  }
-	else
-	  {
-	     if (ib->draw_icon_base)
-		x += ib->iconsize;
-	     else
-		x += w + 2;
-	  }
+	if (px >= ibo->xo - 1 && py >= ibo->yo - 1 &&
+	    px < ibo->xo + ibo->wo + 1 && py < ibo->yo + ibo->ho + 1)
+	   return ibo->u.ewin;
      }
    return NULL;
 }
@@ -1173,13 +1206,9 @@ IB_DrawScroll(Iconbox * ib)
 	   bs = ib->h - (ib->arrow_thickness * 2);
 	else
 	   bs = ib->h;
-	bw = (ib->h * bs) / ib->max;
 	if (ic)
-	  {
-	     bs -= (ic->padding.top + ic->padding.bottom);
-	     bw = ((ib->h - (ic->padding.top + ic->padding.bottom)) * bs) /
-		ib->max;
-	  }
+	   bs -= (ic->padding.top + ic->padding.bottom);
+	bw = (ib->h * bs) / ib->max;
 	if (bs < 1)
 	   bs = 1;
 	if (bw > bs)
@@ -1200,6 +1229,7 @@ IB_DrawScroll(Iconbox * ib)
 	else
 	   EMoveResizeWindow(ib->scrollbarknob_win, -9999, -9999,
 			     ib->bar_thickness, ib->knob_length);
+
 	if (show_sb)
 	  {
 	     /* fix this area */
@@ -1417,13 +1447,9 @@ IB_DrawScroll(Iconbox * ib)
 	   bs = ib->w - (ib->arrow_thickness * 2);
 	else
 	   bs = ib->w;
-	bw = (ib->w * bs) / ib->max;
 	if (ic)
-	  {
-	     bs -= (ic->padding.left + ic->padding.right);
-	     bw = ((ib->w - (ic->padding.left + ic->padding.right)) * bs) /
-		ib->max;
-	  }
+	   bs -= (ic->padding.left + ic->padding.right);
+	bw = (ib->w * bs) / ib->max;
 	if (bs < 1)
 	   bs = 1;
 	if (bw > bs)
@@ -1435,6 +1461,7 @@ IB_DrawScroll(Iconbox * ib)
 	   bx += ic->padding.left;
 	if ((ib->scrollbar_hide) && (bw == bs))
 	   show_sb = 0;
+
 	ic = ImageclassFind("ICONBOX_SCROLLKNOB_HORIZONTAL", 0);
 	if ((ic) && (bw > ib->knob_length))
 	   EMoveResizeWindow(ib->scrollbarknob_win,
@@ -1651,6 +1678,7 @@ IB_DrawScroll(Iconbox * ib)
 			     ST_ICONBOX);
 	  }
      }
+#if 0				/* FIXME - Remove? */
    PropagateShapes(ib->win);
    if (ib->ewin)
      {
@@ -1661,38 +1689,23 @@ IB_DrawScroll(Iconbox * ib)
 	if (ib->ewin->border == b)
 	   EwinPropagateShapes(ib->ewin);
      }
+#endif
 }
 
 static void
 IB_FixPos(Iconbox * ib)
 {
+   int                 v;
+
    if (ib->orientation)
-     {
-	ImageClass         *ic;
-	int                 v = 0;
-
-	ic = ImageclassFind("ICONBOX_SCROLLBAR_BASE_VERTICAL", 0);
-	v = ib->max - ib->h;
-	if (ic)
-	   v += ic->padding.top + ic->padding.bottom;
-	if (ib->pos > v)
-	   ib->pos = v;
-     }
+      v = ib->max - ib->h;
    else
-     {
-	ImageClass         *ic;
-	int                 v = 0;
+      v = ib->max - ib->w;
 
-	ic = ImageclassFind("ICONBOX_SCROLLBAR_BASE_HORIZONTAL", 0);
-	v = ib->max - ib->w;
-	if (ic)
-	   v += ic->padding.left + ic->padding.right;
-	if (ib->pos > v)
-	   ib->pos = v;
-     }
+   if (ib->pos > v)
+      ib->pos = v;
    if (ib->pos < 0)
       ib->pos = 0;
-
 }
 
 static void
@@ -1701,29 +1714,22 @@ IconboxRedraw(Iconbox * ib)
    char                pq;
    char                was_shaded = 0;
    int                 i, x, y, w, h;
-   ImageClass         *ib_ic_cover, *ib_ic_box;
-   int                 ib_x0, ib_y0, ib_xlt, ib_ylt, ib_ww, ib_hh;
+   ImageClass         *ib_ic_cover;
+   int                 ib_xlt, ib_ylt, ib_ww, ib_hh;
+   int                 ib_x0, ib_y0, ib_w0, ib_h0;
    Imlib_Image        *im, *im2;
    int                 ww, hh;
+   Pixmap              pmap, mask;
 
-   if (!ib)
+   if (!ib || !ib->ewin)
       return;
-   if (!ib->ewin)
-      return;
-
-   if (ib->orientation)
-     {
-	ib_ic_box = ImageclassFind("ICONBOX_VERTICAL", 0);
-     }
-   else
-     {
-	ib_ic_box = ImageclassFind("ICONBOX_HORIZONTAL", 0);
-     }
 
    x = EoGetX(ib->ewin);
    y = EoGetY(ib->ewin);
    w = ib->w;
    h = ib->h;
+
+   IconboxLayoutImageWin(ib);
 
    if (ib->auto_resize)
      {
@@ -1735,12 +1741,9 @@ IconboxRedraw(Iconbox * ib)
 	     EwinUnShade(ib->ewin);
 	  }
 
-	IB_CalcMax(ib);
 	if (ib->orientation)
 	  {
-	     if (ib_ic_box)
-		add = ib_ic_box->padding.top + ib_ic_box->padding.bottom;
-	     add += ib->max;
+	     add = ib->max;
 	     if (ib->ewin->border)
 	       {
 		  if ((ib->ewin->border->border.top +
@@ -1761,9 +1764,7 @@ IconboxRedraw(Iconbox * ib)
 	  }
 	else
 	  {
-	     if (ib_ic_box)
-		add = ib_ic_box->padding.left + ib_ic_box->padding.right;
-	     add += ib->max;
+	     add = ib->max;
 	     if (ib->ewin->border)
 	       {
 		  if ((ib->ewin->border->border.left +
@@ -1784,15 +1785,13 @@ IconboxRedraw(Iconbox * ib)
 	  }
      }
 
-   if (ib->force_update || (x != EoGetX(ib->ewin))
-       || (y != EoGetY(ib->ewin)) || (w != ib->ewin->client.w)
-       || (h != ib->ewin->client.h))
+   if (ib->force_update ||
+       (x != EoGetX(ib->ewin)) || (y != EoGetY(ib->ewin)) ||
+       (w != ib->ewin->client.w) || (h != ib->ewin->client.h))
      {
 	ib->w = w;
 	ib->h = h;
 	MoveResizeEwin(ib->ewin, x, y, w, h);
-	EResizeWindow(ib->win, w, h);
-	im = imlib_create_image(w, h);
 	ib->force_update = 0;
      }
 
@@ -1802,32 +1801,46 @@ IconboxRedraw(Iconbox * ib)
    pq = Mode.queue_up;
    Mode.queue_up = 0;
 
-   IB_CalcMax(ib);
    IB_FixPos(ib);
    IB_DrawScroll(ib);
 
+   /* Geometry of iconbox window, excluding scrollbar */
+   ib_xlt = 0;
+   ib_ylt = 0;
+   ib_ww = ib->w;
+   ib_hh = ib->h;
    if (ib->orientation)
      {
 	ib_ic_cover = ImageclassFind("ICONBOX_COVER_VERTICAL", 0);
-	ib_x0 = 0;
-	ib_y0 = -ib->pos;
-	ib_xlt = (ib->scrollbar_side == 1) ? 0 : ib->scroll_thickness;
-	ib_ylt = 0;
-	ib_ww = ib->w - ib->scroll_thickness;
-	ib_hh = ib->h;
+	if (ib->scrollbar_side == 0)
+	   ib_xlt = ib->scroll_thickness;
+	ib_ww -= ib->scroll_thickness;
+
+	/* Geometry of icon window (including invisible parts) */
+	ib_x0 = ib_xlt;
+	ib_y0 = ib_ylt - ib->pos;
+	ib_w0 = ib_ww;
+	ib_h0 = ib_hh;
+	if (ib_h0 < ib->max)
+	   ib_h0 = ib->max;
      }
    else
      {
 	ib_ic_cover = ImageclassFind("ICONBOX_COVER_HORIZONTAL", 0);
-	ib_x0 = -ib->pos;
-	ib_y0 = 0;
-	ib_xlt = 0;
-	ib_ylt = (ib->scrollbar_side == 1) ? 0 : ib->scroll_thickness;
-	ib_ww = ib->w;
-	ib_hh = ib->h - ib->scroll_thickness;
+	if (ib->scrollbar_side == 0)
+	   ib_ylt = ib->scroll_thickness;
+	ib_hh -= ib->scroll_thickness;
+
+	/* Geometry of icon window (including invisible parts) */
+	ib_x0 = ib_xlt - ib->pos;
+	ib_y0 = ib_ylt;
+	ib_w0 = ib_ww;
+	if (ib_w0 < ib->max)
+	   ib_w0 = ib->max;
+	ib_h0 = ib_hh;
      }
 
-   EMoveResizeWindow(ib->icon_win, ib_xlt, ib_ylt, ib_ww, ib_hh);
+   EMoveResizeWindow(ib->icon_win, ib_x0, ib_y0, ib_w0, ib_h0);
 
    if (ib_ic_cover && !ib->cover_hide)
      {
@@ -1842,94 +1855,56 @@ IconboxRedraw(Iconbox * ib)
 	EUnmapWindow(ib->cover_win);
      }
 
-   if (!ib->nobg && ib_ic_box)
+   if (ib->ic_box &&
+       ((ib->type == IB_TYPE_ICONBOX && !ib->nobg) ||
+	(ib->type == IB_TYPE_SYSTRAY && (!ib->nobg || !ib->draw_icon_base))))
      {
-	im2 = ImageclassGetImage(ib_ic_box, 0, 0, STATE_NORMAL);
+	/* Start out with iconbox image class image */
+	im2 = ImageclassGetImage(ib->ic_box, 0, 0, STATE_NORMAL);
 	imlib_context_set_image(im2);
 	ww = imlib_image_get_width();
 	hh = imlib_image_get_height();
-	im = imlib_create_cropped_scaled_image(0, 0, ww, hh, w, h);
-	imlib_context_set_image(im2);
+	im = imlib_create_cropped_scaled_image(0, 0, ww, hh, ib_w0, ib_h0);
 	imlib_free_image();
      }
    else
      {
-	im = imlib_create_image(w, h);
+	/* Start out with blank image */
+	im = imlib_create_image(ib_w0, ib_h0);
 	imlib_context_set_image(im);
 	imlib_image_set_has_alpha(1);
 	imlib_context_set_blend(0);
 	imlib_context_set_color(0, 0, 0, 0);
-	imlib_image_fill_rectangle(0, 0, w, h);
-     }
-
-   x = ib_x0;
-   y = ib_y0;
-   if (ib_ic_box)
-     {
-	x += ib_ic_box->padding.left;
-	y += ib_ic_box->padding.top;
+	imlib_image_fill_rectangle(0, 0, ib_w0, ib_h0);
      }
 
    for (i = 0; i < ib->num_objs; i++)
      {
-	EWin               *ewin;
+	IboxOject          *ibo;
 
-	w = 8;
-	h = 8;
+	ibo = &ib->objs[i];
+
+	if (ib->draw_icon_base && ib->im_item_base)
+	  {
+	     imlib_context_set_image(ib->im_item_base);
+	     ww = imlib_image_get_width();
+	     hh = imlib_image_get_height();
+	     imlib_context_set_image(im);
+	     imlib_context_set_blend(1);
+	     imlib_blend_image_onto_image(ib->im_item_base, 1, 0, 0,
+					  ww, hh, ibo->xo, ibo->yo,
+					  ibo->wo, ibo->ho);
+	     imlib_context_set_blend(0);
+	  }
 
 	if (ib->type == IB_TYPE_ICONBOX)
 	  {
-	     if (ib->draw_icon_base)
-	       {
-		  ImageClass         *ic;
+	     EWin               *ewin;
 
-		  /* get the base pixmap */
-		  ic = ImageclassFind("DEFAULT_ICON_BUTTON", 0);
-		  if (ic)
-		    {
-		       im2 = ImageclassGetImage(ic, 0, 0, STATE_NORMAL);
-		       imlib_context_set_image(im2);
-		       ww = imlib_image_get_width();
-		       hh = imlib_image_get_height();
-		       imlib_context_set_image(im);
-		       imlib_context_set_blend(0);
-		       imlib_blend_image_onto_image(im2, 1, 0, 0, ww, hh,
-						    x, y, ib->iconsize,
-						    ib->iconsize);
-#if 0
-		       imlib_context_set_image(im2);
-		       imlib_free_image();
-#endif
-		    }
-	       }
+	     ewin = ib->objs[i].u.ewin;
 
-	     ewin = ib->objs[i].ewin;
-
-	     if (!ewin->icon_image)
-		UpdateAppIcon(ewin, ib->icon_mode);
 	     if (ewin->icon_image)
 	       {
-		  int                 xoff, yoff;
-
-		  IconboxFindIconSize(ib, ewin->icon_image, ewin->icon_type, &w,
-				      &h);
-
-		  if (ib->draw_icon_base)
-		    {
-		       xoff = (ib->iconsize - w) / 2;
-		       yoff = (ib->iconsize - h) / 2;
-		    }
-		  else if (ib->orientation)
-		    {
-		       xoff = (ib->iconsize - w) / 2;
-		       yoff = 0;
-		    }
-		  else
-		    {
-		       xoff = 0;
-		       yoff = (ib->iconsize - h) / 2;
-		    }
-
 		  imlib_context_set_image(ewin->icon_image);
 		  ww = imlib_image_get_width();
 		  hh = imlib_image_get_height();
@@ -1938,46 +1913,39 @@ IconboxRedraw(Iconbox * ib)
 		  imlib_context_set_blend(1);
 		  imlib_blend_image_onto_image(ewin->icon_image, 1,
 					       0, 0, ww, hh,
-					       x + xoff, y + yoff, w, h);
+					       ibo->xi, ibo->yi, ibo->wi,
+					       ibo->hi);
+		  imlib_context_set_blend(0);
 		  imlib_context_set_anti_alias(0);
 	       }
 	  }
 	else
 	  {
-	     if (ib->objs[i].swin->mapped)
+	     if (ib->objs[i].u.swin->mapped)
 	       {
-		  w = h = ib->iconsize;
-		  EMoveResizeWindow(ib->objs[i].swin->win, x, y, w, h);
-	       }
-	     else
-	       {
-		  w = h = 0;
+		  EMoveResizeWindow(ib->objs[i].u.swin->win,
+				    ibo->xi, ibo->yi, ibo->wi, ibo->hi);
 	       }
 	  }
-
-	if (ib->orientation)
-	   y += (ib->draw_icon_base) ? ib->iconsize : h + 2;
-	else
-	   x += (ib->draw_icon_base) ? ib->iconsize : w + 2;
      }
 
-   if (ib->pmap != None)
-      imlib_free_pixmap_and_mask(ib->pmap);
-   ib->pmap = ib->mask = None;
    imlib_context_set_drawable(ib->icon_win);
    imlib_context_set_image(im);
    imlib_image_set_has_alpha(1);
-   imlib_render_pixmaps_for_whole_image(&ib->pmap, &ib->mask);
-   ESetWindowBackgroundPixmap(ib->icon_win, ib->pmap);
-   EShapeCombineMask(ib->icon_win, ShapeBounding, 0, 0, ib->mask, ShapeSet);
+   pmap = mask = None;
+   imlib_render_pixmaps_for_whole_image(&pmap, &mask);
+   ESetWindowBackgroundPixmap(ib->icon_win, pmap);
+   EShapeCombineMask(ib->icon_win, ShapeBounding, 0, 0, mask, ShapeSet);
    if (ib->nobg && ib->num_objs == 0)
       EMoveWindow(ib->icon_win, -ib->w, -ib->h);
+   imlib_free_pixmap_and_mask(pmap);
    imlib_free_image();
    EClearWindow(ib->icon_win);
 
+   if (ib->type == IB_TYPE_SYSTRAY && ib->nobg && !ib->draw_icon_base)
+      PropagateShapes(ib->icon_win);
    PropagateShapes(ib->win);
    ICCCM_GetShapeInfo(ib->ewin);
-   EwinPropagateShapes(ib->ewin);
 
    Mode.queue_up = pq;
 }
@@ -2092,17 +2060,26 @@ IboxEventScrollWin(XEvent * ev, void *prm)
 	else if (ev->xbutton.button == 3)
 	   IB_ShowMenu(ib, ev->xbutton.x, ev->xbutton.y);
 	break;
+
      case ButtonRelease:
 	if (!ib->scrollbox_clicked)
 	   break;
-
 	ib->scrollbox_clicked = 0;
-	GetWinXY(ib->scrollbar_win, &x, &y);
-	GetWinWH(ib->scrollbar_win, (unsigned int *)&w, (unsigned int *)&h);
-	if (ev->xbutton.x < x)
-	   IB_Scroll(ib, -8);
-	if (ev->xbutton.x > (x + w))
-	   IB_Scroll(ib, 8);
+	EGetGeometry(ib->scrollbar_win, NULL, &x, &y, &w, &h, NULL, NULL);
+	if (ib->orientation)
+	  {
+	     if (ev->xbutton.y < y)
+		IB_Scroll(ib, -8);
+	     else if (ev->xbutton.y > (y + h))
+		IB_Scroll(ib, 8);
+	  }
+	else
+	  {
+	     if (ev->xbutton.x < x)
+		IB_Scroll(ib, -8);
+	     else if (ev->xbutton.x > (x + w))
+		IB_Scroll(ib, 8);
+	  }
 	break;
      }
 }
@@ -2111,8 +2088,8 @@ static void
 IboxEventScrollbarWin(XEvent * ev, void *prm)
 {
    Iconbox            *ib = (Iconbox *) prm;
-   static int          px, py;
-   int                 dx, dy, bs, x, y;
+   static int          px, py, pos0;
+   int                 bs, dp, ppos;
    ImageClass         *ic;
 
    switch (ev->type)
@@ -2122,6 +2099,7 @@ IboxEventScrollbarWin(XEvent * ev, void *prm)
 	  {
 	     px = ev->xbutton.x_root;
 	     py = ev->xbutton.y_root;
+	     pos0 = ib->pos;
 	     ib->scrollbar_clicked = 1;
 	  }
 	else if (ev->xbutton.button == 3)
@@ -2145,43 +2123,32 @@ IboxEventScrollbarWin(XEvent * ev, void *prm)
 	if (!ib->scrollbar_clicked)
 	   break;
 
-	dx = ev->xmotion.x_root - px;
-	dy = ev->xmotion.y_root - py;
-	px = ev->xmotion.x_root;
-	py = ev->xmotion.y_root;
-
 	if (ib->orientation)
 	  {
 	     ic = ImageclassFind("ICONBOX_SCROLLBAR_BASE_VERTICAL", 0);
-	     GetWinXY(ib->scrollbar_win, &x, &y);
 	     bs = ib->h - (ib->arrow_thickness * 2);
 	     if (ic)
-	       {
-		  bs -= (ic->padding.top + ic->padding.bottom);
-		  y -= ic->padding.top;
-	       }
+		bs -= (ic->padding.top + ic->padding.bottom);
 	     if (bs < 1)
 		bs = 1;
-	     ib->pos = ((y + dy + 1) * ib->max) / bs;
-	     IB_FixPos(ib);
-	     IconboxRedraw(ib);
+	     dp = ev->xmotion.y_root - py;
 	  }
 	else
 	  {
 	     ic = ImageclassFind("ICONBOX_SCROLLBAR_BASE_HORIZONTAL", 0);
-	     GetWinXY(ib->scrollbar_win, &x, &y);
 	     bs = ib->w - (ib->arrow_thickness * 2);
 	     if (ic)
-	       {
-		  bs -= (ic->padding.left + ic->padding.right);
-		  x -= ic->padding.left;
-	       }
+		bs -= (ic->padding.left + ic->padding.right);
 	     if (bs < 1)
 		bs = 1;
-	     ib->pos = ((x + dx + 1) * ib->max) / bs;
-	     IB_FixPos(ib);
-	     IconboxRedraw(ib);
+	     dp = ev->xmotion.x_root - px;
 	  }
+	ppos = ib->pos;
+	ib->pos = pos0 + (dp * ib->max) / bs;
+	IB_FixPos(ib);
+	if (ib->pos != ppos)
+	   IconboxRedraw(ib);
+	break;
      }
    IB_DrawScroll(ib);
 }
@@ -2251,7 +2218,7 @@ IboxEventArrow2Win(XEvent * ev, void *prm)
 	if (!ib->arrow2_clicked)
 	   break;
 	ib->arrow2_clicked = 0;
-	IB_Scroll(ib, -8);
+	IB_Scroll(ib, 8);
 	break;
 
      case EnterNotify:
@@ -2272,9 +2239,8 @@ IboxEventIconWin(XEvent * ev, void *prm)
    static EWin        *name_ewin = NULL;
    ToolTip            *tt;
    EWin               *ewin;
-   EWin              **gwins;
-   int                 j, numg;
-   char                iconified;
+   int                 x, y;
+   const char         *name;
 
    switch (ev->type)
      {
@@ -2291,60 +2257,46 @@ IboxEventIconWin(XEvent * ev, void *prm)
 
 	ib->icon_clicked = 0;
 	ewin = IB_FindIcon(ib, ev->xbutton.x, ev->xbutton.y);
-	if (ewin)
-	  {
-	     tt = FindItem("ICONBOX", 0, LIST_FINDBY_NAME, LIST_TYPE_TOOLTIP);
-	     if (tt)
-		TooltipHide(tt);
-	     gwins = ListWinGroupMembersForEwin(ewin, GROUP_ACTION_ICONIFY,
-						Mode.nogroup, &numg);
-	     iconified = ewin->iconified;
+	if (!ewin)
+	   break;
 
-	     if (gwins)
-	       {
-		  for (j = 0; j < numg; j++)
-		    {
-		       if ((gwins[j]->iconified) && (iconified))
-			  EwinDeIconify(gwins[j]);
-		    }
-		  Efree(gwins);
-	       }
-	  }
+	tt = FindItem("ICONBOX", 0, LIST_FINDBY_NAME, LIST_TYPE_TOOLTIP);
+	if (tt)
+	   TooltipHide(tt);
+
+	EwinOpIconify(ewin, 0);
 	break;
 
      case MotionNotify:
+	x = ev->xmotion.x;
+	y = ev->xmotion.y;
+	goto do_motion;
+
      case EnterNotify:
-	if (ev->type == MotionNotify)
-	  {
-	     ewin = IB_FindIcon(ib, ev->xmotion.x, ev->xmotion.y);
-	     Mode.x = ev->xmotion.x_root;
-	     Mode.y = ev->xmotion.y_root;
-	  }
-	else
-	  {
-	     ewin = IB_FindIcon(ib, ev->xcrossing.x, ev->xcrossing.y);
-	     Mode.x = ev->xcrossing.x_root;
-	     Mode.y = ev->xcrossing.y_root;
-	  }
+	x = ev->xcrossing.x;
+	y = ev->xcrossing.y;
+	goto do_motion;
 
-	if (ib->shownames && ewin != name_ewin)
-	  {
-	     tt = FindItem("ICONBOX", 0, LIST_FINDBY_NAME, LIST_TYPE_TOOLTIP);
-	     if (tt)
-	       {
-		  const char         *name;
+      do_motion:
+	if (!ib->shownames)
+	   break;
 
-		  TooltipHide(tt);
-		  if (ewin)
-		    {
+	ewin = IB_FindIcon(ib, x, y);
+	if (ewin == name_ewin)
+	   break;
+	name_ewin = ewin;
 
-		       name = EwinGetIconName(ewin);
-		       if (name)
-			  TooltipShow(tt, name, NULL, Mode.x, Mode.y);
-		    }
-	       }
-	     name_ewin = ewin;
-	  }
+	tt = FindItem("ICONBOX", 0, LIST_FINDBY_NAME, LIST_TYPE_TOOLTIP);
+	if (!tt)
+	   break;
+
+	TooltipHide(tt);
+	if (!ewin)
+	   break;
+
+	name = EwinGetIconName(ewin);
+	if (name)
+	   TooltipShow(tt, name, NULL, Mode.x, Mode.y);
 	break;
 
      case LeaveNotify:
@@ -2357,26 +2309,6 @@ IboxEventIconWin(XEvent * ev, void *prm)
 	break;
      }
 }
-
-#if 0
-static void
-IboxEventScrolWin(XEvent * ev, void *prm)
-{
-   MenuItem           *mi = (MenuItem *) prm;
-
-   switch (ev->type)
-     {
-     case ButtonPress:
-	break;
-     case ButtonRelease:
-	break;
-     case EnterNotify:
-	break;
-     case LeaveNotify:
-	break;
-     }
-}
-#endif
 
 /*
  * Configuration dialog
@@ -2429,10 +2361,24 @@ CB_ConfigureIconbox(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
 }
 
 static void
+CB_IconSizeSlider(Dialog * d, int val __UNUSED__, void *data)
+{
+   DItem              *di;
+   char                s[256];
+
+   di = data;
+   Esnprintf(s, sizeof(s), _("Icon size: %2d"), tmp_ib_iconsize);
+   DialogItemTextSetText(di, s);
+   DialogDrawItems(d, di, 0, 0, 99999, 99999);
+}
+
+static void
 IconboxConfigure(Iconbox * ib)
 {
    Dialog             *d;
-   DItem              *table, *di, *radio1, *radio2, *radio3, *radio4, *table2;
+   DItem              *di, *table, *table2;
+   DItem              *radio1, *radio2, *radio3, *radio4, *label;
+   char                s[256];
 
    if (!ib)
       return;
@@ -2616,11 +2562,12 @@ IconboxConfigure(Iconbox * ib)
    DialogItemSetFill(di, 1, 0);
    DialogItemSeparatorSetOrientation(di, 0);
 
-   di = DialogAddItem(table, DITEM_TEXT);
+   label = di = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 0, 0);
    DialogItemSetAlign(di, 0, 512);
-   DialogItemTextSetText(di, _("Icon size"));
+   Esnprintf(s, sizeof(s), _("Icon size: %2d"), tmp_ib_iconsize);
+   DialogItemTextSetText(di, s);
 
    di = DialogAddItem(table, DITEM_SLIDER);
    DialogItemSetPadding(di, 2, 2, 2, 2);
@@ -2630,6 +2577,7 @@ IconboxConfigure(Iconbox * ib)
    DialogItemSliderSetJump(di, 8);
    DialogItemSliderSetVal(di, tmp_ib_iconsize);
    DialogItemSliderSetValPtr(di, &tmp_ib_iconsize);
+   DialogItemSetCallback(di, CB_IconSizeSlider, 0, label);
 
    di = DialogAddItem(table, DITEM_SEPARATOR);
    DialogItemSetPadding(di, 2, 2, 2, 2);
@@ -3096,7 +3044,7 @@ IconboxObjSwinFind(Iconbox * ib, Window win)
    int                 i;
 
    for (i = 0; i < ib->num_objs; i++)
-      if (ib->objs[i].swin->win == win)
+      if (ib->objs[i].u.swin->win == win)
 	 return i;
 
    return -1;
@@ -3143,8 +3091,8 @@ IconboxObjSwinAdd(Iconbox * ib, Window win)
    XReparentWindow(disp, win, ib->icon_win, 0, 0);
    if (swin->mapped)
      {
-	IconboxRedraw(ib);
 	XMapWindow(disp, win);
+	IconboxRedraw(ib);
      }
    EventCallbackRegister(win, 0, SystrayEvent, ib);
 
@@ -3163,7 +3111,7 @@ IconboxObjSwinDel(Iconbox * ib, Window win)
    if (i < 0)
       return;
 
-   if (IconboxObjectDel(ib, ib->objs[i].swin) == 0)
+   if (IconboxObjectDel(ib, ib->objs[i].u.swin) == 0)
       IconboxRedraw(ib);
 }
 
@@ -3178,7 +3126,7 @@ IconboxObjSwinMapUnmap(Iconbox * ib, Window win)
    if (i < 0)
       return;
 
-   swin = ib->objs[i].swin;
+   swin = ib->objs[i].u.swin;
 
    SystrayGetXembedInfo(win, xembed_info);
    if (EventDebug(EDBUG_TYPE_ICONBOX))
@@ -3190,21 +3138,25 @@ IconboxObjSwinMapUnmap(Iconbox * ib, Window win)
       return;
 
    if (map)
-      XMapWindow(disp, win);
+      EMapWindow(win);
    else
-      XUnmapWindow(disp, win);
+      EUnmapWindow(win);
 
    swin->mapped = map;
    IconboxRedraw(ib);
 }
 
 static void
-IconboxObjSwinFree(Iconbox * ib __UNUSED__, SWin * swin)
+IconboxObjSwinFree(Iconbox * ib, SWin * swin)
 {
    if (EventDebug(EDBUG_TYPE_ICONBOX))
       Eprintf("IconboxObjSwinFree %#lx\n", swin->win);
+
    if (disp)
      {
+	EventCallbackUnregister(swin->win, 0, SystrayEvent, ib);
+	EUnregisterWindow(swin->win);
+
 	XUnmapWindow(disp, swin->win);
 	XReparentWindow(disp, swin->win, VRoot.win, 0, 0);
      }
@@ -3320,4 +3272,10 @@ SystrayInit(Iconbox * ib, Window win, int screen)
 
    ecore_x_client_message32_send(VRoot.win, E_XA_MANAGER, StructureNotifyMask,
 				 CurrentTime, _NET_SYSTEM_TRAY_Sx, win, 0, 0);
+}
+
+static void
+SystrayExit(Iconbox * ib)
+{
+   EventCallbackUnregister(ib->win, 0, SystrayEvent, ib);
 }
