@@ -36,7 +36,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "image.h"
 #include "color_values.h"
 
-/*#define ANI_DBG*/
+#define ANI_DBG
 
 #ifdef ANI_DBG
 #define D(fmt, args...) \
@@ -207,6 +207,14 @@ ani_load_chunk(MsAni *ani)
     ((char*)&chunk_id)[2], ((char*)&chunk_id)[3], chunk_size);
 
   chunk = (MsChunk*) calloc(1, sizeof(MsChunk*) + 2 * sizeof(DATA32) + chunk_size);
+
+  if (!chunk)
+    {
+      D("Warning, failed to allocate ANI chunk of size %d\n", sizeof(MsChunk*)
+		      + 2 * sizeof(DATA32) + chunk_size);
+      return NULL;
+    }
+
   chunk->chunk_id = chunk_id;
   chunk->chunk_size = chunk_size;
   
@@ -222,7 +230,7 @@ ani_load (MsAni *ani)
   MsChunk *last_chunk;
   MsChunk *chunk;
 
-  if (!ani)
+  if (!ani || !ani->chunks)
     return;
 
   ani->chunks = ani_load_chunk(ani);
