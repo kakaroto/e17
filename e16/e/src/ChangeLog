@@ -2121,3 +2121,10 @@ weren't reset after closing some dialogs.
 Tweaked the user name mapping in ecvs so that it works on my
 lappy :)
  
+
+-------------------------------------------------------------------------------
+
+Tue Sep 21 17:06:31 EST 1999
+(Christian)
+
+Updated the Eterm theme and some minor fixes.
