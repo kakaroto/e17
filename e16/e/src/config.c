@@ -3058,26 +3058,26 @@ OpenConfigFileForReading(char *path, char preprocess)
 		  "-D HOME_DIR=%s "
 		  "-D USER_SHELL=%s "
 		  "-D ENLIGHTENMENT_VERSION_015=1 "
-		  "%s %s/.enlightenment/cached/cfg/%s.preparsed",
+		  "%s %s/cached/cfg/%s.preparsed",
 		  epp_path, ENLIGHTENMENT_ROOT, ENLIGHTENMENT_ROOT,
 		  ENLIGHTENMENT_VERSION, ENLIGHTENMENT_ROOT, ENLIGHTENMENT_BIN,
 		  themepath,
 		  root.w, root.h, root.w, root.h, root.depth,
 		  def_user, def_home, def_shell,
-		  path, def_home, s);
+		  path, UserEDir(), s);
 	system(execline);
 	Esnprintf(execline, sizeof(execline),
-		  "%s/.enlightenment/cached/cfg/%s.preparsed",
-		  def_home, s);
+		  "%s/cached/cfg/%s.preparsed",
+		  UserEDir(), s);
 	fpin = fopen(execline, "r");
 	if (s)
 	   Efree(s);
 	if (def_user)
 	   Efree(def_user);
-	if (def_home)
-	   Efree(def_home);
 	if (def_shell)
 	   Efree(def_shell);
+	if (def_home)
+	   Efree(def_home);
 	EDBUG_RETURN(fpin);
      }
    else
@@ -3347,7 +3347,6 @@ char               *
 FindFile(char *file)
 {
    char                s[FILEPATH_LEN_MAX];
-   char               *home;
 
    EDBUG(6, "FindFile");
    /* if absolute path - and file exists - return it */
@@ -3357,9 +3356,7 @@ FindFile(char *file)
 	   EDBUG_RETURN(duplicate(file));
      }
    /* look in ~/.enlightenment first */
-   home = homedir(getuid());
-   Esnprintf(s, sizeof(s), "%s/.enlightenment/%s", home, file);
-   Efree(home);
+   Esnprintf(s, sizeof(s), "%s/%s", UserEDir(), file);
    if (isfile(s))
       EDBUG_RETURN(duplicate(s));
    /* look in theme dir */
@@ -3378,7 +3375,6 @@ char               *
 FindNoThemeFile(char *file)
 {
    char                s[FILEPATH_LEN_MAX];
-   char               *home;
 
    EDBUG(6, "FindFile");
    /* if absolute path - and file exists - return it */
@@ -3388,9 +3384,7 @@ FindNoThemeFile(char *file)
 	   EDBUG_RETURN(duplicate(file));
      }
    /* look in ~/.enlightenment first */
-   home = homedir(getuid());
-   Esnprintf(s, sizeof(s), "%s/.enlightenment/%s", home, file);
-   Efree(home);
+   Esnprintf(s, sizeof(s), "%s/%s", UserEDir(), file);
    if (isfile(s))
       EDBUG_RETURN(duplicate(s));
    /* look in system config dir */
@@ -3405,15 +3399,13 @@ int
 LoadEConfig(char *themelocation)
 {
    char                s[FILEPATH_LEN_MAX], ss[FILEPATH_LEN_MAX];
-   char               *theme, *home;
+   char               *theme;
    FILE               *f;
 
    EDBUG(5, "LoadEConfig");
-   home = NULL;
    mustdel = 0;
 
-   home = homedir(getuid());
-   Esnprintf(s, sizeof(s), "%s/.enlightenment/", home);
+   Esnprintf(s, sizeof(s), "%s/", UserEDir());
    Fnlib_add_dir(fd, s);
    Esnprintf(s, sizeof(s), "%s/config/", ENLIGHTENMENT_ROOT);
    Fnlib_add_dir(fd, s);
@@ -3427,7 +3419,7 @@ LoadEConfig(char *themelocation)
 	     fprintf(f, "%s\n", themelocation);
 	     fclose(f);
 	  }
-	Esnprintf(ss, sizeof(ss), "%s/.enlightenment/user_theme.cfg", home);
+	Esnprintf(ss, sizeof(ss), "%s/user_theme.cfg", UserEDir());
 	rm(ss);
 	mv(s, ss);
 	if (!isfile(ss))
@@ -3468,8 +3460,6 @@ LoadEConfig(char *themelocation)
 	      "If you are the administrator of your own system please\n"
 	      "consult the documentation that came with Enlightenment for\n"
 	      "addional information.\n", ENLIGHTENMENT_ROOT);
-	if (home)
-	   Efree(home);
 	EDBUG_RETURN(0);
      }
    strcpy(themepath, theme);
@@ -3536,8 +3526,6 @@ LoadEConfig(char *themelocation)
    }
    if (theme)
       Efree(theme);
-   if (home)
-      Efree(home);
    themelocation = NULL;
    EDBUG_RETURN(0);
 }

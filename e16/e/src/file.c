@@ -18,15 +18,12 @@ FileExtension(char *file)
 void
 Etmp(char *s)
 {
-   static char        *home = NULL;
    static unsigned long n_calls = 0;
 
    EDBUG(9, "Etmp");
    if (!n_calls)
       n_calls = (unsigned long)time(NULL) + (unsigned long)getpid();
-   if (!home)
-      home = homedir(getuid());
-   Esnprintf(s, 1024, "%s/.enlightenment/TMP_%Xl", home, n_calls);
+   Esnprintf(s, 1024, "%s/TMP_%Xl", UserEDir(), n_calls);
    n_calls++;
    EDBUG_RETURN_
 }

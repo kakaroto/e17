@@ -98,11 +98,8 @@ default_save_prefix(void)
    if (!def_prefix)
      {
 	char                s[1024];
-	char               *home;
 
-	home = homedir(getuid());
-	Esnprintf(s, sizeof(s), "%s/.enlightenment/...e_session-XXXXXX", home);
-	Efree(home);
+	Esnprintf(s, sizeof(s), "%s/...e_session-XXXXXX", UserEDir());
 	def_prefix = duplicate(s);
      }
    return def_prefix;

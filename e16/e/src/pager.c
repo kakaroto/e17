@@ -907,16 +907,14 @@ PagerRedraw(Pager * p, char newbg)
 	     if (desks.desk[p->desktop].bg)
 	       {
 		  char                s[4096];
-		  char               *home, *uniq;
+		  char               *uniq;
 		  ImlibImage         *im;
 
-		  home = homedir(getuid());
 		  uniq = GetUniqueBGString(desks.desk[p->desktop].bg);
 		  Esnprintf(s, sizeof(s),
-			    "%s/.enlightenment/cached/pager/%s.%i.%i.%s",
-			    home, desks.desk[p->desktop].bg->name, (p->w / ax),
+			    "%s/cached/pager/%s.%i.%i.%s",
+			    UserEDir(), desks.desk[p->desktop].bg->name, (p->w / ax),
 			    (p->h / ay), uniq);
-		  Efree(home);
 		  Efree(uniq);
 
 		  im = Imlib_load_image(id, s);

@@ -64,6 +64,10 @@ main(int argc, char **argv)
 	     {
 		Esnprintf(themepath, sizeof(themepath), "%s", argv[++j]);
 	     }
+	   else if ((!strcmp("-econfdir", argv[j])) && (argc - j > 1))
+	     {
+		SetEDir(argv[++j]);
+	     }
 	   else if (!strcmp("-single", argv[j]))
 	     {
 		single_screen_mode = 1;
@@ -91,6 +95,18 @@ main(int argc, char **argv)
 	   else if (!strcmp("-no_overwrite", argv[j]))
 	     {
 		no_overwrite = 1;
+	     }
+	   else if (!strcmp("-help", argv[j]))
+	     {
+		printf("enlightenment options:                      \n"
+		       "\t-theme /path/to/theme                     \n"
+		       "\t-econfdir /path/to/.enlightenment/conf/dir\n"
+		       "\t[-smid | -clientId | --sm-client-id] id   \n"
+		       "\t-smfile file                              \n"
+		       "\t-ext_init_win window_id                   \n"
+		       "\t-no_overwrite                             \n"
+		       "\t[-v | -version | --version]               \n");
+		exit(0);
 	     }
 	   else if ((!strcmp("-v", argv[j])) ||
 		    (!strcmp("-version", argv[j])) ||

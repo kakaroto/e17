@@ -565,50 +565,42 @@ SetupX()
 void
 SetupDirs()
 {
-   char               *home;
    char                s[1024], ss[1024];
 
    EDBUG(6, "SetupDirs");
-   home = homedir(getuid());
-   Esnprintf(s, sizeof(s), "%s/.enlightenment", home);
+   Esnprintf(s, sizeof(s), "%s", UserEDir());
    if (exists(s))
      {
 	if (isfile(s))
 	  {
-	     Esnprintf(ss, sizeof(ss), "%s/.enlightenment.old", home);
+	     Esnprintf(ss, sizeof(ss), "%s.old", UserEDir());
 	     mv(s, ss);
 	     md(s);
 	  }
      }
    else
       md(s);
-
-   Esnprintf(s, sizeof(s), "%s/.enlightenment/themes", home);
+   Esnprintf(s, sizeof(s), "%s/themes", UserEDir());
    if (!exists(s))
       md(s);
-
-   Esnprintf(s, sizeof(s), "%s/.enlightenment/cached", home);
+   Esnprintf(s, sizeof(s), "%s/backgrounds", UserEDir());
+   if (!exists(s))
+      md(s);   
+   Esnprintf(s, sizeof(s), "%s/cached", UserEDir());
    if (!exists(s))
       md(s);
-
-   Esnprintf(s, sizeof(s), "%s/.enlightenment/cached/img", home);
+   Esnprintf(s, sizeof(s), "%s/cached/img", UserEDir());
    if (!exists(s))
       md(s);
-
-   Esnprintf(s, sizeof(s), "%s/.enlightenment/cached/cfg", home);
+   Esnprintf(s, sizeof(s), "%s/cached/cfg", UserEDir());
    if (!exists(s))
       md(s);
-
-   Esnprintf(s, sizeof(s), "%s/.enlightenment/cached/bgsel", home);
+   Esnprintf(s, sizeof(s), "%s/cached/bgsel", UserEDir());
    if (!exists(s))
       md(s);
-
-   Esnprintf(s, sizeof(s), "%s/.enlightenment/cached/pager", home);
+   Esnprintf(s, sizeof(s), "%s/cached/pager", UserEDir());
    if (!exists(s))
       md(s);
-
-   Efree(home);
-
    EDBUG_RETURN_;
 }
 

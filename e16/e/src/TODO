@@ -12,3 +12,5 @@ raster: add dnd to iconbox
 raster: icoify animation suport
 raster: changing virtual desktop size screws up pager content draws.
 raster: double "close sound" playing atthe moment - fix.
+raster: need to lock .enlightenment dir for multiple logins etc.
+

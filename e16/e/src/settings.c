@@ -1797,13 +1797,11 @@ CB_ConfigureBG(int val, void *data)
 	       }
 	  }
 	{
-	   char               *home, s[4096];
+	   char                s[4096];
 	   ImlibImage         *im;
 	   Pixmap              p2;
 
-	   home = homedir(getuid());
-	   Esnprintf(s, sizeof(s), "%s/.enlightenment/cached/bgsel/%s", home, tmp_bg->name);
-	   Efree(home);
+	   Esnprintf(s, sizeof(s), "%s/cached/bgsel/%s", UserEDir(), tmp_bg->name);
 	   p2 = ECreatePixmap(disp, root.win, 64, 48, root.depth);
 	   SetBackgroundTo(id, p2, tmp_bg, 0);
 	   im = Imlib_create_image_from_drawable(id, p2, 0, 0, 0, 64, 48);
@@ -2185,11 +2183,7 @@ BG_RedrawView(char nuke_old)
 		  im = ELoadImage(s);
 		  if (!im)
 		    {
-		       char               *home;
-
-		       home = homedir(getuid());
-		       Esnprintf(s, sizeof(s), "%s/.enlightenment/cached/bgsel/%s", home, bglist[i]->name);
-		       Efree(home);
+		       Esnprintf(s, sizeof(s), "%s/cached/bgsel/%s", UserEDir(), bglist[i]->name);
 		       p2 = ECreatePixmap(disp, pmap, 64, 48, root.depth);
 		       SetBackgroundTo(id, p2, bglist[i], 0);
 		       XCopyArea(disp, p2, pmap, gc, 0, 0, 64, 48, x + 4, 4);

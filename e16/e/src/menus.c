@@ -938,7 +938,6 @@ CreateMenuFromDirectory(char *name, MenuStyle * ms, char *dir)
    struct stat         st;
    const char         *chmap =
    "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_";
-   char               *dhome = NULL;
    FILE               *f;
 
    EDBUG(5, "CreateMenuFromDirectory");
@@ -949,7 +948,6 @@ CreateMenuFromDirectory(char *name, MenuStyle * ms, char *dir)
      {
 	int                 aa, bb, cc;
 
-	dhome = homedir(getuid());
 	aa = (int)st.st_ino;
 	bb = (int)st.st_dev;
 	cc = 0;
@@ -958,8 +956,8 @@ CreateMenuFromDirectory(char *name, MenuStyle * ms, char *dir)
 	else
 	   cc = st.st_ctime;
 	Esnprintf(cs, sizeof(cs),
-	 "%s/.enlightenment/cached/img/.%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c",
-		  dhome,
+	 "%s/cached/img/.%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c",
+		  UserEDir(),
 		  chmap[(aa >> 0) & 0x3f],
 		  chmap[(aa >> 6) & 0x3f],
 		  chmap[(aa >> 12) & 0x3f],
@@ -978,7 +976,6 @@ CreateMenuFromDirectory(char *name, MenuStyle * ms, char *dir)
 		  chmap[(cc >> 18) & 0x3f],
 		  chmap[(cc >> 24) & 0x3f],
 		  chmap[(cc >> 28) & 0x3f]);
-	Efree(dhome);
 	/* cached dir listing - use it */
 	if (exists(cs))
 	  {
@@ -992,7 +989,6 @@ CreateMenuFromDirectory(char *name, MenuStyle * ms, char *dir)
 		    {
 		       Background         *bg;
 		       char                ok = 1;
-		       static char        *home = NULL;
 		       char                s2[4096], s3[512];
 
 		       word(s, 3, s3);
@@ -1016,9 +1012,7 @@ CreateMenuFromDirectory(char *name, MenuStyle * ms, char *dir)
 				 int                 maxw = 48, maxh = 48;
 				 int                 justx = 512, justy = 512;
 
-				 if (!home)
-				    home = homedir(getuid());
-				 Esnprintf(s2, sizeof(s2), "%s/.enlightenment/cached/img/%s", home, s3);
+				 Esnprintf(s2, sizeof(s2), "%s/cached/img/%s", UserEDir(), s3);
 				 width = im->rgb_width;
 				 height = im->rgb_height;
 				 h2 = maxh;
@@ -1188,7 +1182,6 @@ CreateMenuFromDirectory(char *name, MenuStyle * ms, char *dir)
 	       {
 		  Background         *bg;
 		  char                ok = 1;
-		  static char        *home = NULL;
 		  char                s2[4096], s3[512];
 		  int                 aa, bb, cc;
 
@@ -1235,9 +1228,7 @@ CreateMenuFromDirectory(char *name, MenuStyle * ms, char *dir)
 			    int                 scr_asp, im_asp, w2, h2;
 			    int                 maxw = 48, maxh = 48;
 
-			    if (!home)
-			       home = homedir(getuid());
-			    Esnprintf(s2, sizeof(s2), "%s/.enlightenment/cached/img/%s", home, s3);
+			    Esnprintf(s2, sizeof(s2), "%s/cached/img/%s", UserEDir(), s3);
 			    width = im->rgb_width;
 			    height = im->rgb_height;
 			    h2 = maxh;

@@ -69,13 +69,11 @@ append_merge_dir(char *dir, char ***list, int *count)
 char              **
 ListThemes(int *number)
 {
-   char                s[FILEPATH_LEN_MAX], **list = NULL, *home, *def = NULL,
+   char                s[FILEPATH_LEN_MAX], **list = NULL, *def = NULL,
                       *def2 = NULL;
    int                 count = 0;
 
-   home = homedir(getuid());
-   Esnprintf(s, sizeof(s), "%s/.enlightenment/themes", home);
-   Efree(home);
+   Esnprintf(s, sizeof(s), "%s/themes", UserEDir());
    def = append_merge_dir(s, &list, &count);
    Esnprintf(s, sizeof(s), "%s/themes", ENLIGHTENMENT_ROOT);
    def2 = append_merge_dir(s, &list, &count);
@@ -96,12 +94,11 @@ ListThemes(int *number)
 char               *
 GetDefaultTheme(void)
 {
-   char                s[FILEPATH_LEN_MAX], ss[FILEPATH_LEN_MAX], *home;
+   char                s[FILEPATH_LEN_MAX], ss[FILEPATH_LEN_MAX];
    char               *def = NULL;
    int                 count;
 
-   home = homedir(getuid());
-   Esnprintf(ss, sizeof(ss), "%s/.enlightenment/themes/DEFAULT", home);
+   Esnprintf(ss, sizeof(ss), "%s/themes/DEFAULT", UserEDir());
    count = readlink(ss, s, sizeof(s));
    if ((exists(ss)) && (count > 0))
      {
@@ -110,11 +107,10 @@ GetDefaultTheme(void)
 	   def = duplicate(s);
 	else
 	  {
-	     Esnprintf(ss, sizeof(ss), "%s/.enlightenment/themes/%s", home, s);
+	     Esnprintf(ss, sizeof(ss), "%s/themes/%s", UserEDir(), s);
 	     def = duplicate(ss);
 	  }
      }
-   Efree(home);
    if (!def)
      {
 	Esnprintf(ss, sizeof(ss), "%s/themes/DEFAULT", ENLIGHTENMENT_ROOT);
@@ -137,11 +133,9 @@ GetDefaultTheme(void)
 void
 SetDefaultTheme(char *theme)
 {
-   char                ss[FILEPATH_LEN_MAX], *home;
+   char                ss[FILEPATH_LEN_MAX];
 
-   home = homedir(getuid());
-   Esnprintf(ss, sizeof(ss), "%s/.enlightenment/themes/DEFAULT", home);
-   Efree(home);
+   Esnprintf(ss, sizeof(ss), "%s/themes/DEFAULT", UserEDir());
    if (exists(ss))
       rm(ss);
    if (theme)
@@ -176,17 +170,15 @@ ExtractTheme(char *theme)
 	f = fopen(theme, "r");
 	if (f)
 	  {
-	     char               *home, *themename;
+	     char               *themename;
 
 	     fread(buf, 1, 320, f);
 	     fclose(f);
 	     /* make the temp dir */
 
-	     home = homedir(getuid());
 	     themename = fileof(theme);
-	     Esnprintf(th, sizeof(th), "%s/.enlightenment/themes/%s",
-		       home, themename);
-	     Efree(home);
+	     Esnprintf(th, sizeof(th), "%s/themes/%s",
+		       UserEDir(), themename);
 	     Efree(themename);
 	     md(th);
 	     /* check magic numbers */
@@ -227,7 +219,7 @@ char               *
 FindTheme(char *theme)
 {
    char                s[FILEPATH_LEN_MAX];
-   char               *home, *ret = NULL;
+   char               *ret = NULL;
 
    EDBUG(6, "FindTheme");
    if (!theme[0])
@@ -239,9 +231,7 @@ FindTheme(char *theme)
       ret = ExtractTheme(theme);
    if (!ret)
      {
-	home = homedir(getuid());
-	Esnprintf(s, sizeof(s), "%s/.enlightenment/themes/%s", home, theme);
-	Efree(home);
+	Esnprintf(s, sizeof(s), "%s/themes/%s", UserEDir(), theme);
 	if (exists(s))
 	   ret = ExtractTheme(s);
 	if (!ret)

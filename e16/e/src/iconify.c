@@ -774,12 +774,10 @@ void
 IB_SaveIcodefs(void)
 {
    /* save the icondefs */
-   char                s[1024], *home;
+   char                s[1024];
    FILE               *f;
 
-   home = homedir(getuid());
-   Esnprintf(s, sizeof(s), "%s/.enlightenment/icondefs.cfg", home);
-   Efree(home);
+   Esnprintf(s, sizeof(s), "%s/icondefs.cfg", UserEDir());
    f = fopen(s, "w");
    if (f)
      {
