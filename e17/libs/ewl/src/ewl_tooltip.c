@@ -110,7 +110,8 @@ int ewl_tooltip_focus_timer (void *data)
 	if (t->hide)
 		return FALSE;
 
-	ewl_object_request_position (EWL_OBJECT(t), t->x, t->y);
+	ewl_object_request_position (EWL_OBJECT(t), t->x + EWL_TOOLTIP_OFFSET,
+						    t->y + EWL_TOOLTIP_OFFSET);
 	ewl_widget_show (EWL_WIDGET (t));
 
 	printf ("Opening tooltip after %lf secs\n", t->delay);
