@@ -8,7 +8,9 @@ void    __imlib_RGBA_init(void *rd, void *gd, void *bd, int depth,
 typedef void (*ImlibRGBAFunction)(DATA32*, int, DATA8*,
 				  int, int, int, int, int);
 ImlibRGBAFunction
-__imlib_GetRGBAFunction(int depth, char bgr, char hiq, DATA8 palette_type);
+__imlib_GetRGBAFunction(int depth, 
+			unsigned long rm, unsigned long gm, unsigned long bm, 
+			char hiq, DATA8 palette_type);
 ImlibRGBAFunction
 __imlib_GetMaskFunction(char hiq);
 

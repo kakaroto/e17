@@ -19,7 +19,7 @@ __imlib_XActualDepth(Display *d, Visual *v)
      {
 	depth = xvir[0].depth;
 	if ((depth == 16) && 
-	    ((xvir->red_mask | xvir->green_mask | xvir->blue_mask) != 0xffff))
+	    ((xvir->red_mask | xvir->green_mask | xvir->blue_mask) == 0x7fff))
 	   depth = 15;
 	XFree(xvir);
      }

@@ -1,4 +1,1 @@
-* write generic "slow path" renderign code and make sure all fast 
-path rendering is correct for that visual
-* formalize loader/saver api
 * fix loaders to only build if libs are present

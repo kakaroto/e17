@@ -3437,7 +3437,9 @@ __imlib_RGBA_to_Nothing(DATA32 *src , int src_jump,
 }
 
 ImlibRGBAFunction
-__imlib_GetRGBAFunction(int depth, char bgr, char hiq, DATA8 palette_type)
+__imlib_GetRGBAFunction(int depth, 
+			unsigned long rm, unsigned long gm, unsigned long bm,
+			char hiq, DATA8 palette_type)
 {
    unsigned int did;
    static ImlibRGBAFunction functions[11][2][2] = {
@@ -3490,22 +3492,101 @@ __imlib_GetRGBAFunction(int depth, char bgr, char hiq, DATA8 palette_type)
 	{ &__imlib_RGBA_to_RGB1_fast, &__imlib_RGBA_to_RGB1_dither } },
    };
 #endif
-   switch (depth) {
-      case 15: did = 0; break;
-      case 16: did = 1; break;
-      case 24: did = 2; break;
-      case 32: did = 3; break;
-      case 8:  did = palette_type + 4; break;
-      default: return __imlib_RGBA_to_Nothing;
-   }
-   if (did >= 11) return __imlib_RGBA_to_Nothing;
-   /*\ Boolean sanity \*/
-   bgr = bgr ? 1 : 0; hiq = hiq ? 1 : 0;
+   if (depth == 16)
+     {
+	if (hiq)
+	  {
+	     if ((rm == 0xf800) && (gm == 0x7e0) && (bm == 0x1f))
+		return __imlib_RGBA_to_RGB565_dither;
+	     if ((rm == 0x7c00) && (gm == 0x3e0) && (bm == 0x1f))
+		return __imlib_RGBA_to_RGB555_dither;
+	     if ((bm == 0xf800) && (gm == 0x7e0) && (rm == 0x1f))
+		return __imlib_RGBA_to_BGR565_dither;
+	     if ((bm == 0x7c00) && (gm == 0x3e0) && (rm == 0x1f))
+		return __imlib_RGBA_to_BGR555_dither;
+	  }
+	else
+	  {
 #ifdef DO_MMX_ASM
-   if (__imlib_get_cpuid() && CPUID_MMX)
-      return mmx_functions[did][bgr][hiq];
+	     if (__imlib_get_cpuid() && CPUID_MMX)
+	       {
+		  if ((rm == 0xf800) && (gm == 0x7e0) && (bm == 0x1f))
+		     return __imlib_mmx_rgb565_fast;
+		  if ((rm == 0x7c00) && (gm == 0x3e0) && (bm == 0x1f))
+		     return __imlib_mmx_rgb555_fast;
+		  if ((bm == 0xf800) && (gm == 0x7e0) && (rm == 0x1f))
+		     return __imlib_mmx_bgr565_fast;
+		  if ((bm == 0x7c00) && (gm == 0x3e0) && (rm == 0x1f))
+		     return __imlib_mmx_bgr555_fast;
+	       }
+	     else
 #endif
-   return functions[did][bgr][hiq];
+	       {
+		  if ((rm == 0xf800) && (gm == 0x7e0) && (bm == 0x1f))
+		     return __imlib_RGBA_to_RGB565_fast;
+		  if ((rm == 0x7c00) && (gm == 0x3e0) && (bm == 0x1f))
+		     return __imlib_RGBA_to_RGB555_fast;
+		  if ((bm == 0xf800) && (gm == 0x7e0) && (rm == 0x1f))
+		     return __imlib_RGBA_to_BGR565_fast;
+		  if ((bm == 0x7c00) && (gm == 0x3e0) && (rm == 0x1f))
+		     return __imlib_RGBA_to_BGR555_fast;
+	       }
+	  }
+	return NULL;
+     }
+   else if (depth == 32)
+     {
+	if ((rm == 0xff0000) && (gm == 0xff00) && (bm == 0xff))
+	   return __imlib_RGBA_to_RGB8888_fast;
+	return NULL;
+     }
+   else if (depth == 24)
+     {
+	if ((rm == 0xff0000) && (gm == 0xff00) && (bm == 0xff))
+	   return __imlib_RGBA_to_RGB888_fast;
+	return NULL;
+     }
+   else if (depth == 8)
+     {
+	if (hiq)
+	  {
+	     if (palette_type == 0)
+		return __imlib_RGBA_to_RGB232_dither;
+	     if (palette_type == 1)
+		return __imlib_RGBA_to_RGB222_dither;
+	     if (palette_type == 2)
+		return __imlib_RGBA_to_RGB221_dither;
+	     if (palette_type == 3)
+		return __imlib_RGBA_to_RGB121_dither;
+	     if (palette_type == 4)
+		return __imlib_RGBA_to_RGB111_dither;
+	     if (palette_type == 5)
+		return __imlib_RGBA_to_RGB1_dither;
+	  }
+	else
+	  {
+	     if (palette_type == 0)
+		return __imlib_RGBA_to_RGB232_fast;
+	     if (palette_type == 1)
+		return __imlib_RGBA_to_RGB222_fast;
+	     if (palette_type == 2)
+		return __imlib_RGBA_to_RGB221_fast;
+	     if (palette_type == 3)
+		return __imlib_RGBA_to_RGB121_fast;
+	     if (palette_type == 4)
+		return __imlib_RGBA_to_RGB111_fast;
+	     if (palette_type == 5)
+		return __imlib_RGBA_to_RGB1_fast;
+	  }
+	/* FIXME: return 1 byte rendering for mask */
+     }
+   else if (depth == 1)
+     {
+	printf("Imlib2: eeek! cannot handle depth 1\n");
+	return NULL;
+     }
+   printf("Imlib2: unknown depth %i\n", depth);
+   return NULL;
 }
 
 ImlibRGBAFunction

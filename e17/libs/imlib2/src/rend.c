@@ -23,6 +23,70 @@ if ((x + w) > ((xx) + (ww))) {w = (ww) - x;} \
 if ((y + h) > ((yy) + (hh))) {h = (hh) - y;}
 
 void
+__imlib_generic_render(DATA32 *src, int jump, int w, int h, int dx, int dy, 
+		       XImage *xim, Visual *v)
+{
+   unsigned int x, y, r, g, b, val, hh;
+   unsigned int rmask, gmask, bmask;
+   int i, rshift, gshift, bshift;
+
+   rmask = xim->red_mask;
+   gmask = xim->green_mask;
+   bmask = xim->blue_mask;
+   rshift = 0;
+   gshift = 0;
+   bshift = 0;
+   for (i = 31; i >= 0; i--)
+     {
+	if (rmask >= (1 << i))
+	  {
+	     rshift = i - 7;
+	     break;
+	  }
+     }
+   for (i = 31; i >= 0; i--)
+     {
+	if (gmask >= (1 << i))
+	  {
+	     gshift = i - 7;
+	     break;
+	  }
+     }
+   for (i = 31; i >= 0; i--)
+     {
+	if (bmask >= (1 << i))
+	  {
+	     bshift = i - 7;
+	     break;
+	  }
+     }
+   hh = dy + h;
+   for (y = dy; y < hh; y++)
+     {
+	for (x = dx; x < w; x++)
+	  {
+	     r = R_VAL(src);
+	     if (rshift >= 0)
+		val = ((r << rshift) & rmask);
+	     else
+		val = ((r >> (-rshift)) & rmask);
+	     g = G_VAL(src);
+	     if (gshift >= 0)
+		val |= ((g << gshift) & gmask);
+	     else
+		val |= ((g >> (-gshift)) & gmask);
+	     b = B_VAL(src);
+	     if (bshift >= 0)
+		val |= ((b << bshift) & bmask);
+	     else
+		val |= ((b >> (-bshift)) & bmask);
+	     XPutPixel(xim, x, y, val);
+	     src++;
+	  }
+     }
+}
+
+void
 __imlib_RenderImage(Display *d, ImlibImage *im, 
 		    Drawable w, Drawable m, 
 		    Visual *v, Colormap cm, int depth, 
@@ -42,7 +106,7 @@ __imlib_RenderImage(Display *d, ImlibImage *im,
    ImlibScaleInfo *scaleinfo = NULL;
    int       psx, psy, psw, psh;
    int       actual_depth = 0;
-   char      shm = 0, bgr = 0;
+   char      shm = 0;
    ImlibRGBAFunction rgbaer, masker;
    ImlibBlendFunction blender = NULL;
    int       do_mmx;
@@ -96,9 +160,7 @@ __imlib_RenderImage(Display *d, ImlibImage *im,
    actual_depth = depth;
    if (depth == 16)
       actual_depth = __imlib_XActualDepth(d, v);
-   if (v->blue_mask > v->red_mask)
-      bgr = 1;
-   __imlib_RGBASetupContext(ct);
+    __imlib_RGBASetupContext(ct);
    if ((blend) && (IMAGE_HAS_ALPHA(im)))
      {
 	back = malloc(dw *dh *sizeof(DATA32));
@@ -149,7 +211,9 @@ __imlib_RenderImage(Display *d, ImlibImage *im,
    h = dh;
    /* scale in LINESIZE Y chunks and convert to depth*/
    /*\ Get rgba and mask functions for XImage rendering \*/
-   rgbaer = __imlib_GetRGBAFunction(actual_depth, bgr, hiq, ct->palette_type);
+   rgbaer = __imlib_GetRGBAFunction(xim->bits_per_pixel, 
+				    v->red_mask, v->green_mask, v->blue_mask, 
+				    hiq, ct->palette_type);
    if (m) masker = __imlib_GetMaskFunction(dither_mask);
 #ifdef DO_MMX_ASM
    do_mmx = __imlib_get_cpuid() & CPUID_MMX;
@@ -226,9 +290,13 @@ __imlib_RenderImage(Display *d, ImlibImage *im,
 	     jump = 0;
 	  }
 	/* once scaled... convert chunk to bit depth into XImage bufer */
-        rgbaer(pointer, jump,
-	       ((DATA8 *)xim->data) + (y * (xim->bytes_per_line)),
-	       xim->bytes_per_line, dw, hh, dx, dy + y);
+/*	if (rgbaer)*/
+	if (0)
+	   rgbaer(pointer, jump,
+		  ((DATA8 *)xim->data) + (y * (xim->bytes_per_line)),
+		  xim->bytes_per_line, dw, hh, dx, dy + y);
+	else
+	   __imlib_generic_render(pointer, jump, dw, hh, 0, y, xim, v);
 	if (m)
 	   masker(pointer, jump,
 		  ((DATA8 *)mxim->data) + (y * (mxim->bytes_per_line)),
