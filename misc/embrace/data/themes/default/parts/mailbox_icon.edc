@@ -7,6 +7,8 @@
 part {
 	name, "icon";
 	type, IMAGE;
+	repeat_events, true;
+	mouse_events, true;
 
 	description {
 		state, "default" 0.0;

@@ -3,6 +3,7 @@
 part {
 	name, "background";
 	type, RECT;
+	repeat_events, true;
 
 	description {
 		state, "default" 0.0;

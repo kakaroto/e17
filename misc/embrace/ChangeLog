@@ -1,5 +1,11 @@
 $Id$
 
+2005-02-06 Tilman Sauerbeck (tilman at code-monkey de)
+        * data/themes/default/embrace.edc,
+          data/themes/default/parts/mailbox_background.edc,
+          data/themes/default/parts/mailbox_icon.edc,
+          src/embrace.c: Fixed the force-mailbox-check feature.
+
 2005-01-30 Tilman Sauerbeck (tilman at code-monkey de)
         * src/mailbox.c, data/themes/default/programs/mailbox.edc:
           Force a mailbox check on right-click on the "icon" part
