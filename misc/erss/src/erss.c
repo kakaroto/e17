@@ -17,6 +17,15 @@ int main_bufsize = 0;
 int waiting_for_reply = FALSE;
 int total_connects = 0;
 
+Erss_Tooltip *tt = NULL;
+
+
+void erss_xml_error_handler (void *ctx, const char *msg, ...)
+{
+	fprintf (stderr, "%s xml report: %s\n", PACKAGE, msg);
+
+	return;
+}
 
 int erss_connect (void *data)
 {
@@ -177,7 +186,8 @@ int handler_server_add (void *data, int type, void *event)
 	ecore_con_server_send (server, c, strlen (c));
 	snprintf (c, sizeof (c), "Host: %s \r\n", cfg->hostname);
 	ecore_con_server_send (server, c, strlen (c));
-   snprintf (c, sizeof (c), "User-Agent: ERSS/"VERSION"\r\n\r\n");
+   snprintf (c, sizeof (c), "User-Agent: %s/%s\r\n\r\n", 
+			 PACKAGE, VERSION);
    ecore_con_server_send (server, c, strlen (c));
 	
 	waiting_for_reply = TRUE;
@@ -301,21 +311,101 @@ void cb_mouse_out_item (void *data, Evas_Object *o, const char *sig,
 	ecore_exe_run (c, NULL);
 }
 
+
+int erss_tooltip_timer (void *data)
+{
+	Article *item = data;
+	int x, y, w, h;
+		
+	tt->timer = NULL;
+	
+	if (!item->description) 
+		return FALSE;
+	
+	printf ("Opening tooltip after %lf secs\n", 1.5);
+
+
+	if (!tt->ee) {
+		tt->ee = ecore_evas_software_x11_new (NULL, 0, 0, 0, 350, 200);
+		ecore_evas_borderless_set (tt->ee, TRUE);
+		ecore_evas_shaped_set (tt->ee, TRUE);
+		tt->win = ecore_evas_software_x11_window_get(ee);
+		ecore_x_window_prop_window_type_utility_set (tt->win);
+		ecore_evas_geometry_get (tt->ee, &x, &y, &w, &h);
+
+		tt->evas = ecore_evas_get (tt->ee);	  
+		evas_font_path_append (tt->evas, PACKAGE_DATA_DIR"/fonts/");
+
+
+		tt->bg = esmart_trans_x11_new (tt->evas);
+		evas_object_move (tt->bg, 0, 0);
+		evas_object_layer_set (tt->bg, -5);
+		evas_object_resize (tt->bg, w, h);
+		evas_object_name_set(tt->bg, "root_background");
+		evas_object_show (tt->bg);
+		
+		tt->bg = evas_object_rectangle_add(tt->evas);
+		evas_object_move (tt->bg, 0, 0);
+		evas_object_layer_set (tt->bg, -6);
+		evas_object_resize (tt->bg, w, h);
+		evas_object_color_set(tt->bg, 255, 255, 255, 0);
+		evas_object_name_set(tt->bg, "background");
+		evas_object_show (tt->bg);
+	
+		tt->etox = etox_new_all(tt->evas, x, y, w, h , 255, ETOX_ALIGN_LEFT);
+		etox_context_set_align(etox_get_context(tt->etox), ETOX_ALIGN_LEFT);
+		etox_context_set_font(etox_get_context(tt->etox), "Vera", 10);
+		etox_context_set_style(etox_get_context(tt->etox), "shadow");
+		etox_context_set_color(etox_get_context(tt->etox), 225, 225, 225, 255);
+		etox_set_soft_wrap(tt->etox, 1);
+		etox_set_alpha(tt->etox, 255);
+		evas_object_layer_set(tt->etox, 1000);
+		etox_set_text (tt->etox, item->description);
+		evas_object_show (tt->etox);
+
+
+		ecore_evas_callback_move_set (tt->ee, erss_window_move);
+		ecore_evas_callback_resize_set(tt->ee, erss_window_resize);
+	}
+	
+	ecore_evas_show (tt->ee);
+	
+	return FALSE;
+}
+
 void cb_mouse_in (void *data, Evas *e, Evas_Object *obj, 
 		void *event_info) 
 {
-   Ecore_X_Window win;
-   win = ecore_evas_software_x11_window_get(ee);
-   if (cfg->item_url)
-   	ecore_x_cursor_shape_set(win, ECORE_X_CURSOR_HAND1);
+	Evas_Event_Mouse_In *event = event_info;
+	Article *item = data;
+  Ecore_X_Window win;
+
+	/*
+	printf ("x: %d  y: %d\n", event->output.x, event->output.y);
+	*/
+
+	tt->timer = ecore_timer_add (1.5, erss_tooltip_timer, item);
+  
+	win = ecore_evas_software_x11_window_get(ee);
+	if (cfg->item_url)
+   	ecore_x_cursor_shape_set(win, ECORE_X_CURSOR_HAND2);
 }
 
 void cb_mouse_out (void *data, Evas *e, Evas_Object *obj, 
 		void *event_info) 
 {
    Ecore_X_Window win;
-   win = ecore_evas_software_x11_window_get(ee);
-   ecore_x_cursor_set(win, 0);
+	 
+	if (tt->ee) 
+		ecore_evas_hide (tt->ee);
+
+	if (tt->timer) {
+		ecore_timer_del (tt->timer);
+		tt->timer = NULL;
+	}
+	
+  win = ecore_evas_software_x11_window_get(ee);
+  ecore_x_cursor_set(win, 0);
 } 
 
 
@@ -441,6 +531,11 @@ int main (int argc, char * const argv[])
 	struct stat statbuf;
 
 	cfg = NULL;
+
+	/*
+	 * Disable this for now..
+	 * xmlSetGenericErrorFunc (NULL, erss_xml_error_handler);
+	 */
 	
 	while ((c = getopt (argc, argv, "cvhlt")) != -1) 
 	{
@@ -530,8 +625,11 @@ int main (int argc, char * const argv[])
 
 	ee = ecore_evas_software_x11_new (NULL, 0, 0, 0, width, height);
 	win = ecore_evas_software_x11_window_get(ee);
-   ecore_x_window_prop_window_type_desktop_set(win);
+  ecore_x_window_prop_window_type_desktop_set(win);
 
+	tt = malloc (sizeof (Erss_Tooltip));
+	memset(tt, 0, sizeof (Erss_Tooltip));
+	
 	if (!ee)
 		return -1;
 

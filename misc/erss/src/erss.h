@@ -11,6 +11,7 @@
 #include <Ewd.h>
 #include <Esmart/Esmart_Trans.h>
 #include <Esmart/container.h>
+#include <Etox.h>
 #include <math.h>
 #include <X11/Xatom.h>
 #include <X11/Xlib.h>
@@ -26,9 +27,22 @@
 #include <time.h>
 
 #include <libxml2/libxml/xmlmemory.h>
+#include <libxml2/libxml/xmlerror.h>
 #include <libxml2/libxml/parser.h>
 
 #include "config.h"
+
+typedef struct _erss_tooltip Erss_Tooltip;
+
+struct _erss_tooltip {
+	 Evas *evas;
+	 Ecore_Evas *ee;
+	 Ecore_X_Window win;
+	 Evas_Object *bg;
+	 Evas_Object *etox;
+
+	 Ecore_Timer *timer;
+};
 
 extern Evas *evas;
 extern Ecore_Evas *ee;
@@ -37,6 +51,7 @@ extern Evas_Object *cont;
 extern Ewd_List *config_files;
 
 
+void erss_xml_error_handler (void *ctx, const char *msg, ...);
 int erss_connect (void *data);
 int erss_alphasort (const void *a, const void *b);
 

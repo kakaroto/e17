@@ -62,6 +62,17 @@ ewd_cflags=`ewd-config --cflags`
 AC_SUBST(ewd_libs)
 AC_SUBST(ewd_cflags)
 
+AC_PATH_GENERIC(etox, 0.0.2, [
+	AC_SUBST(etox_libs)
+	AC_SUBST(etox_cflags) ],
+	AC_MSG_ERROR(Cannot find etox: Is etox-config in path?))
+etox_libs=`etox-config --libs`
+etox_cflags=`etox-config --cflags`
+AC_SUBST(etox_libs)
+AC_SUBST(etox_cflags)
+
+
+
 AC_PATH_GENERIC(xml2, 2.6.0, [
 	AC_SUBST(xml2_libs)
 	AC_SUBST(xml2_cflags) ],

@@ -51,9 +51,9 @@ void erss_parse_story (xmlDocPtr doc, xmlNodePtr cur)
 			evas_object_show (item->obj);
 
 			evas_object_event_callback_add (item->obj,
-					EVAS_CALLBACK_MOUSE_IN, cb_mouse_in, ee);
+					EVAS_CALLBACK_MOUSE_IN, cb_mouse_in, item);
 			evas_object_event_callback_add (item->obj,
-					EVAS_CALLBACK_MOUSE_OUT, cb_mouse_out, ee);
+					EVAS_CALLBACK_MOUSE_OUT, cb_mouse_out, item);
 		
 			e_container_element_append(cont, item->obj);
 			edje_object_part_text_set (item->obj, "article", text);
@@ -79,6 +79,7 @@ void erss_parse_story (xmlDocPtr doc, xmlNodePtr cur)
 		if (cfg->item_description) {
 			if (!strcmp(cur->name, cfg->item_description) && item) {
 				str = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+
 				item->description = strdup (str);
 				xmlFree (str);
 			}

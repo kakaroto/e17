@@ -27,6 +27,11 @@ every 5th min for a period of time)
 You can find lots of feeds here, just make config files for them:
 http://blogs.law.harvard.edu/tech/directory/5/feeds
 
+"Hidden" features:
+- Click on titles and open an url in your defined browser.
+- Hoover on the titles to view a tooltip if description is defined for your
+	feed.
+
 
 If you do make a config for a feed and want to share it with us
 please e-mail Martin Sarajervi <ms@klmoberg.no>
