@@ -1,0 +1,18 @@
+Source: edb
+Section: devel
+Priority: optional
+Maintainer: Laurence J. Lane <ljlane@debian.org>
+Standards-Version: 3.0.1
+
+Package: libedb-dev
+Architecture: any
+Depends: libedb0 (= ${Source-Version}), libc6-dev
+Description: file attribute monitor development files
+ Library and header files for developing programs that use
+ SGI's file attribute monitor.
+
+Package: libedb0
+Architecture: any
+Depends: ${shlibs:Depends}
+Description: E's db convenience wrapper library
+ E's db convenience wrapper library

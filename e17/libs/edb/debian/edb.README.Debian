@@ -1,0 +1,6 @@
+NOTE: Add this line to /etc/rpc to get fam working:
+
+  sgi_fam         391002  fam             # File Alteration Monitor
+
+Adding it to the bottom of the file should work fine. You may have
+to restart fam by running "/etc/init.d/fam restart".

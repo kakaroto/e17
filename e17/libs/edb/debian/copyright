@@ -1,0 +1,11 @@
+This package was debianized by laurence john lane <ljlane@debian.org> on
+Sun, 23 Apr 2000 20:18:27 -0400.
+
+It was downloaded from ftp://oss.sgi.com/www/projects/fam/download/
+
+Upstream Author(s): Bruce Karsh, Bob Miller, Roger Chickering, Wes Smith, and Rusty Ballinger
+
+Copyright:
+
+fam is GPL and libfam is LGPL. Look in /usr/share/common-licences/ for
+the respective licenses.

@@ -1,0 +1,11 @@
+edb (0.1.0-2000091001) unstable; urgency=low
+
+  * A CVS release.
+
+ -- Laurence J. Lane <ljlane@debian.org>  Sun, 10 Sep 2000 18:42:41 -0400
+
+Local variables:
+mode: debian-changelog
+add-log-mailing-address: "ljlane@debian.org"
+End:
+eoch
