@@ -149,37 +149,37 @@ test -x /sbin/ldconfig && /sbin/ldconfig
 %{_includedir}/*
 
 %files filters
-%attr(755,root,root) %{_libdir}/loaders/filter/*
+%attr(755,root,root) %{_libdir}/imlib2_loaders/filter/*
 
 %files loader_jpeg
-%attr(755,root,root) %{_libdir}/loaders/image/jpeg.*
+%attr(755,root,root) %{_libdir}/imlib2_loaders/image/jpeg.*
 
 %files loader_png
-%attr(755,root,root) %{_libdir}/loaders/image/png.*
+%attr(755,root,root) %{_libdir}/imlib2_loaders/image/png.*
 
 %files loader_argb
-%attr(755,root,root) %{_libdir}/loaders/image/argb.*
+%attr(755,root,root) %{_libdir}/imlib2_loaders/image/argb.*
 
 %files loader_bmp
-%attr(755,root,root) %{_libdir}/loaders/image/bmp.*
+%attr(755,root,root) %{_libdir}/imlib2_loaders/image/bmp.*
 
 %files loader_gif
-%attr(755,root,root) %{_libdir}/loaders/image/gif.*
+%attr(755,root,root) %{_libdir}/imlib2_loaders/image/gif.*
 
 %files loader_pnm
-%attr(755,root,root) %{_libdir}/loaders/image/pnm.*
+%attr(755,root,root) %{_libdir}/imlib2_loaders/image/pnm.*
 
 %files loader_tga
-%attr(755,root,root) %{_libdir}/loaders/image/tga.*
+%attr(755,root,root) %{_libdir}/imlib2_loaders/image/tga.*
 
 %files loader_tiff
-%attr(755,root,root) %{_libdir}/loaders/image/tiff.*
+%attr(755,root,root) %{_libdir}/imlib2_loaders/image/tiff.*
 
 %files loader_xpm
-%attr(755,root,root) %{_libdir}/loaders/image/xpm.*
+%attr(755,root,root) %{_libdir}/imlib2_loaders/image/xpm.*
 
 %files loader_gzbz2
-%attr(755,root,root) %{_libdir}/loaders/image/gzbz2.*
+%attr(755,root,root) %{_libdir}/imlib2_loaders/image/gzbz2.*
 
 %changelog
 * Mon Jan 8 2001 The Rasterman <raster@rasterman.com>

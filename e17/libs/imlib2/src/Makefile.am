@@ -3,7 +3,7 @@
 AUTOMAKE_OPTIONS     = 1.4 foreign
 
 # A list of all the files in the current directory which can be regenerated
-MAINTAINERCLEANFILES = Makefile.in loaderpath.h
+MAINTAINERCLEANFILES = Makefile.in
 
 LDFLAGS		     = -L/usr/X11R6/lib
 INCLUDES             = -I. -I$(top_srcdir) -I$(top_srcdir)/src \
@@ -24,7 +24,7 @@ libImlib2_la_SOURCES = scale.c image.c blend.c file.c rgbadraw.c api.c \
                        Imlib2.h image.h scale.h blend.h updates.h colormod.h \
 		       file.h common.h rgbadraw.h font.h format.h \
 		       rotate.h grad.h filter.h script.h dynamic_filters.h \
-		       color_helpers.h 
+		       color_helpers.h loaderpath.h
 
 EXTRA_libImlib2_la_SOURCES = rend.c ximage.c rgba.c color.c grab.c draw.c \
 			     context.c color.h context.h draw.h grab.h rend.h \

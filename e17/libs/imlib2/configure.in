@@ -7,6 +7,60 @@ AM_INIT_AUTOMAKE(imlib2, 1.1.1)
 
 AM_CONFIG_HEADER(config.h)
 
+if test "x${exec_prefix}" = "xNONE"; then
+  if test "x${prefix}" = "xNONE"; then
+    bindir="${ac_default_prefix}/bin";
+  else
+    bindir="${prefix}/bin";
+  fi
+else
+  if test "x${prefix}" = "xNONE"; then
+    bindir="${ac_default_prefix}/bin";
+  else
+    bindir="${prefix}/bin";
+  fi
+fi
+
+if test "x${exec_prefix}" = "xNONE"; then
+  if test "x${prefix}" = "xNONE"; then
+    libdir="${ac_default_prefix}/lib";
+  else
+    libdir="${prefix}/lib";
+  fi
+else
+  if test "x${prefix}" = "xNONE"; then
+    libdir="${ac_default_prefix}/lib";
+  else
+    libdir="${prefix}/lib";
+  fi
+fi
+
+dnl Set PACKAGE_BIN_DIR in config.h.
+if test "x${bindir}" = 'xNONE'; then
+  if test "x${prefix}" = "xNONE"; then
+    AC_DEFINE_UNQUOTED(PACKAGE_BIN_DIR, "${ac_default_prefix}/bin", [Installation directory for user executables])
+  else
+    AC_DEFINE_UNQUOTED(PACKAGE_BIN_DIR, "${prefix}/bin", [Installation directory for user executables])
+  fi
+else
+  AC_DEFINE_UNQUOTED(PACKAGE_BIN_DIR, "${bindir}", [Installation directory for user executables])
+fi
+
+if test "x${libdir}" = 'xNONE'; then
+  if test "x${prefix}" = "xNONE"; then
+    AC_DEFINE_UNQUOTED(PACKAGE_LIB_DIR, "${ac_default_prefix}/lib", [Installation directory for libraries] )
+  else
+    AC_DEFINE_UNQUOTED(PACKAGE_LIB_DIR, "${prefix}/lib", [Installation directory for libraries])
+  fi
+else
+  AC_DEFINE_UNQUOTED(PACKAGE_LIB_DIR, "${libdir}", [Installation directory for libraries])
+fi
+
+dnl Set PACKAGE_SOURCE_DIR in config.h.
+packagesrcdir=`cd $srcdir && pwd`
+AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}", [Source code directory])
+
+
 dnl here was freetype stuff (1)
 
 # check for freetype
@@ -355,13 +409,11 @@ AC_SUBST(dlopen_libs)
 AC_SUBST(freetype_cflags)
 AC_SUBST(freetype_libs)
 
-AC_SUBST(pkglibdir)
-
 dnl AC_SUBST(freetype_libs)
 dnl AC_SUBST(freetype_includes)
 
 AC_CONFIG_FILES([imlib2-config imlib2.pc Makefile loaders/Makefile src/Makefile test/Makefile \
-          filters/Makefile demo/Makefile doc/Makefile src/loaderpath.h \
+          filters/Makefile demo/Makefile doc/Makefile \
 	  ])
 AC_CONFIG_COMMANDS([default],[[
 chmod +x imlib2-config

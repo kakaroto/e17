@@ -11,7 +11,7 @@ INCLUDES             = -I. -I$(top_srcdir) -I$(top_srcdir)/src \
                        -I/usr/X11R6/include $(X_CFLAGS) \
                        -I$(prefix)/include -I$(includedir)
 
-pkgdir		     = $(libdir)/loaders/image
+pkgdir		     = $(libdir)/imlib2_loaders/image
 
 if JPEG_LOADER
 JPEG_L              = jpeg.la
