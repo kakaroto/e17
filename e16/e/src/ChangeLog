@@ -3843,3 +3843,14 @@ Sat Oct 30 12:37:48 PDT 1999
 
 fixed KDE from accidentally closing when we didn't mean to exit.
 
+
+-------------------------------------------------------------------------------
+
+Wed Nov  3 00:45:47 EST 1999
+(Christian)
+
+Fixed the segfault that Cale Gibbard reported -- hitting
+the close button in groups dialogs. Hey who among the
+gentlemen around here removed the apply button? He missed
+that :)
+ 

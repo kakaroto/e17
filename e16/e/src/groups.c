@@ -517,7 +517,7 @@ ChooseGroup(int val, void *data)
      {
 	ShowHideWinGroups(tmp_ewin, tmp_groups[tmp_index], SET_OFF);
      }
-   if (val < 2)
+   if (val == 0)
      {
 	if (tmp_groups)
 	  {
