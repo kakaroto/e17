@@ -6,78 +6,176 @@
 
 /**
 
-@mainpage Entice Developers and Themers Documentation
+@mainpage Epbb Users and Themers Documentation
 @image html epbb.png
 @version 0.0.5
 @author Corey Donohoe <atmos@atmos.org>
 @date 2004
 
 
-
-
-
-
-
-
-
+<OL>
+<LI><A HREF="index.html#intro">What is Epbb?</A></LI>
+<LI><A HREF="index.html#requirements">What do I need to run Epbb?</A></LI>
+<LI><A HREF="index.html#edje">What signals are available to edje?</A></LI>
+<LI><A HREF="index.html#themes">How do I install a theme I downloaded?</A></LI>
+</OL>
 
 @section intro What is Epbb
 
-TODO
+Epbb is a client for <A
+HREF="http://www.cymes.de/members/joker/projects/pbbuttons/pbbuttons.html">pbbuttonsd</A>
+by Matthias Grimm.  It provides a wonderful mechanism for communicating with
+<A HREF="http://www.apple.com">Apple</A> specific hardware under Linux PPC.
+The goal of epbb was to create a very basic client that piped messages from
+pbbuttons to edje.  This in turn allows for the appearance to change without
+ever having to recompile the application.  If you're new to edje or haven't
+even heard of edje before checkout <A
+HREF="http://www.cuddletech.com/edje/">benr's Edje page</A>.  If you write
+any themes for this application please contact me. :)
 
 
-@section requirements What does Entice require?
+@section requirements What does Epbb require?
 
-Entice relies on a lot of libraries most notably
+Epbb relies on a few libraries most notably
+  - Imlib2 (library)
   - Eet (library)
+  - Imlib2 Eet loader (library)
   - Evas (library)
   - Ecore (library)
   - Edje (library)
+  - libpbb (library)
 
 The following instructions assume you've checked out the e17 directory
-from cvs.  You'll notice most of these directories have a script called
-conf-e-x11.sh which contain the long list of configure opts listed
-below.  If you're on a BSD substitute gmake for make.
+from enligtenment cvs.  
 
 @verbatim
 
-1. You need Eet from cvs
-
-  cd eet
+1. You need Imlib2 > 1.1.0 (only if you want to compile themes)
+  cd e17/libs/imlib2
   ./autogen.sh
   make
   sudo make install
   cd ..
 
-2. You need Evas from cvs
+2. You need Eet from cvs
 
-  cd evas
+  cd e17/libs/eet
+  ./autogen.sh
+  make
+  sudo make install
+  cd ..
+
+3. You need the Imlib2 loader for Eet from cvs
+
+  cd e17/libs/imlib2_loaders
+  ./autogen.sh
+  make
+  sudo make install
+  cd ..
+
+4. You need Evas from cvs
+
+  cd e17/libs/evas
   ./autogen.sh
   make
   sudo make install
   cd ..
   
-3. You need Ecore from cvs
+5. You need Ecore from cvs
 
-  cd ecore
+  cd e17/libs/ecore
   ./autogen.sh
   make
   sudo make install
   cd ..
 
-4. You need Edje from cvs
+6. You need Edje from cvs
 
-  cd edje
+  cd e17/libs/edje
   ./autogen.sh
   make
   sudo make install
   cd ..
 
+7. You need pbbuttons from http://www.cymes.de/members/joker/projects/pbbuttons/pbbuttons.html
+
+  Fetch the latest source tarball from the Pbbuttons website
+  tar zxvf pbbuttonsd-0.5.x.tar.gz
+  cd pbbuttonsd-0.5.x
+  ./configure
+  make
+  sudo make install
+  cd ..
+  Read the pbbuttonsd documentation, it's very useful and complete.
 
 @endverbatim
 
+@section edje What signals are available to Edje?
 
+<UL> Signals Understood by Epbb when your edje emits them.
+<LI><B>window,show</B>: Show the epbb window
+<LI><B>window,hide</B>: Hide the epbb window
+</UL>
 
+<UL> Signals Epbb emits to your Edje
+<LI><B>pbb,warning,sleep</B>: Pbbuttons emitted a signal telling us the
+machine is going to sleep.
+<LI><B>pbb,warning,battery,1</B>: Pbbuttons emitted a signal telling us that
+battery warn level one has been reached.
+<LI><B>pbb,warning,battery,2</B>: Pbbuttons emitted a signal telling us that
+battery warn level two has been reached.
+<LI><B>pbb,warning,battery,3</B>: Pbbuttons emitted a signal telling us that
+battery warn level last has been reached.
+<LI><B>pbb,audio,mute</B>: Pbbuttons emitted a signal telling us that
+the speakers have been muted.
+<LI><B>pbb,audio,volume</B>: Pbbuttons emitted a signal telling us that
+the speaker volume has changed.
+<LI><B>pbb,display,brightness</B>: Pbbuttons emitted a signal telling us that
+the brightness of the screen has changed.
+<LI><B>pbb,battery,changed</B>: Pbbuttons emitted a signal telling us that
+the status of the battery has changed.
+<LI><B>pbb,ac,on</B>: Pbbuttons emitted a signal telling us that
+the ac adapter has been plugged in.
+<LI><B>pbb,ac,off</B>: Pbbuttons emitted a signal telling us that
+the ac adapter has been plugged in.
+</UL>
+
+A basic Epbb edje will do the following.
+<OL>
+<LI>setup Edje programs to trap the signals epbb emits
+<LI>show the window(window,show) after changing the look to match the signal
+<LI>timeout after a short period and emit window,hide
+<LI>wait for more signals
+</OL>
+Keep in mind that you might get a whole bunch of events at once, and you'll
+have to be smart with using your timers.  Remember that ACTION_STOP is your
+friend.
+
+@section themes How do I install a theme I downloaded ?
+
+The first time you run epbb it creates a directory structure to store user
+specific data.  
+@verbatim
+~/.e/
+~/.e/apps/
+~/.e/apps/epbb/
+~/.e/apps/epbb/fonts
+@endverbatim.
+
+If you downloaded a theme called winter.eet you should simply copy it to
+your user theme directory and name it 'epbb.eet'.
+@verbatim
+$ cp winter.eet ~/.e/apps/epbb/epbb.eet
+@endverbatim
+You should then exit epbb, and start it again.  If the theme is malformed
+it will fall back to the default, but you'll probably be using your new
+winter theme.  If the theme you downloaded supplies fonts for status
+messages, the fonts
+should be copied to the user font directory.
+@verbatim
+$ cp *.ttf ~/.e/apps/epbb/fonts/
+@endverbatim
+That's about it for user themes.  If you write one, let me know. :)
 
 @todo Theme edc walkthrough
 
