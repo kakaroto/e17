@@ -1802,7 +1802,6 @@ msgstr ""
 "¥ª¡¼¥È¥»¡¼¥Ö¥Ç¡¼¥¿¤ò½ñ¤­¹þ¤ß»þÅÀ¤Ç¥¨¥é¡¼¤¬µ¯¤­¤Þ¤·¤¿¡£\n"
 "¥Õ¥¡¥¤¥ë¥·¥¹¥Æ¥à¤ËÌäÂê¤¬¤¢¤ê¤Þ¤¹¡£\n"
 
-#. Less of the hope.... E survives
 #: src/session.c:1090
 msgid ""
 "ERROR!\n"
@@ -1948,7 +1947,8 @@ msgstr "¥Þ¥¦¥¹¤Î¤¢¤ë¥¦¥£¥ó¥É¥¦¤¬¥Õ¥©¡¼¥«¥¹"
 
 #: src/settings.c:449
 msgid "Focus follows pointer sloppily"
-msgstr "¥Þ¥¦¥¹¤Î¤¢¤ë¥¦¥£¥ó¥É¥¦¤¬¥Õ¥©¡¼¥«¥¹(¥¦¥£¥ó¥É¥¦¤òÎ¥¤ì¤Æ¤â¥Õ¥©¡¼¥«¥¹¤ÏÊÝ»ý)"
+msgstr ""
+"¥Þ¥¦¥¹¤Î¤¢¤ë¥¦¥£¥ó¥É¥¦¤¬¥Õ¥©¡¼¥«¥¹(¥¦¥£¥ó¥É¥¦¤òÎ¥¤ì¤Æ¤â¥Õ¥©¡¼¥«¥¹¤ÏÊÝ»ý)"
 
 #: src/settings.c:457
 msgid "Focus follows mouse clicks"
@@ -1968,7 +1968,9 @@ msgstr "¿·µ¬¥À¥¤¥¢¥í¥°¥¦¥£¥ó¥É¥¦¤À¤±¤¬¥Õ¥©¡¼¥«¥¹¤µ¤ì¤ë"
 
 #: src/settings.c:504
 msgid "Only new dialogs whose owner is focused get the focus"
-msgstr "¿·µ¬¥À¥¤¥¢¥í¥°¤Ï´Ø·¸¤¹¤ë¥¦¥£¥ó¥É¥¦¤¬¥Õ¥©¡¼¥«¥¹¤µ¤ì¤Æ¤¤¤ë¤È¤­¤À¤±¥Õ¥©¡¼¥«¥¹¤µ¤ì¤ë"
+msgstr ""
+"¿·µ¬¥À¥¤¥¢¥í¥°¤Ï´Ø·¸¤¹¤ë¥¦¥£¥ó¥É¥¦¤¬¥Õ¥©¡¼¥«¥¹¤µ¤ì¤Æ¤¤¤ë¤È¤­¤À¤±¥Õ¥©¡¼¥«¥¹¤µ¤"
+"ì¤ë"
 
 #: src/settings.c:512
 msgid "Raise windows on focus switch"
@@ -2528,11 +2530,13 @@ msgstr "¥¢¥¤¥³¥ó²èÁüÉ½¼¨¤Î¥Ý¥ê¥·¡¼ (¤â¤·°ì¤Ä¤¬¼ºÇÔ¤·¤¿¤é¼¡¤ò¤¿¤á¤·¤Þ¤¹):"
 
 #: src/settings.c:4069
 msgid "Snapshot Windows, Use application icon, Use Enlightenment Icon"
-msgstr "¥¦¥£¥ó¥É¥¦¥¹¥Ê¥Ã¥×¥·¥ç¥Ã¥È¡¢¥¢¥×¥ê¥±¡¼¥·¥ç¥ó¥¢¥¤¥³¥ó¡¢Enlightenment ¥¢¥¤¥³¥ó"
+msgstr ""
+"¥¦¥£¥ó¥É¥¦¥¹¥Ê¥Ã¥×¥·¥ç¥Ã¥È¡¢¥¢¥×¥ê¥±¡¼¥·¥ç¥ó¥¢¥¤¥³¥ó¡¢Enlightenment ¥¢¥¤¥³¥ó"
 
 #: src/settings.c:4078
 msgid "Use application icon, Use Enlightenment Icon, Snapshot Window"
-msgstr "¥¢¥×¥ê¥±¡¼¥·¥ç¥ó¥¢¥¤¥³¥ó¡¢Enlightenment ¥¢¥¤¥³¥ó¡¢¥¦¥£¥ó¥É¥¦¥¹¥Ê¥Ã¥×¥·¥ç¥Ã¥È"
+msgstr ""
+"¥¢¥×¥ê¥±¡¼¥·¥ç¥ó¥¢¥¤¥³¥ó¡¢Enlightenment ¥¢¥¤¥³¥ó¡¢¥¦¥£¥ó¥É¥¦¥¹¥Ê¥Ã¥×¥·¥ç¥Ã¥È"
 
 #: src/settings.c:4086
 msgid "Use Enlightenment Icon, Snapshot Window"

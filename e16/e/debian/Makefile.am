@@ -21,7 +21,5 @@ enlightenment.menu \
 enlightenment.menu-method \
 enlightenment.postinst \
 enlightenment.prerm \
-files \
 menumangler.pl \
-rules \
-substvars
+rules
