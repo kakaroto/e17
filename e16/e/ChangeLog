@@ -2836,3 +2836,19 @@ Clean up setting internal window name/class hints.
 Fix segv when there are no client windows.
 Added "verbose" command line option.
 Localisation/UTF8 fixed.
+
+-------------------------------------------------------------------------------
+
+Sun May 30 00:58:49 CEST 2004
+(Kim)
+
+Additional NULL pointer checks (fixes some segv's).
+Minor winter theme fixes
+- Bad permissions on vixar.ttf made "About this theme" empty.
+- Bad ICONBOX_COVER_.. image classes caused problems with transparent iconboxes.
+More spec file updates by Stuart Children <stuart@terminus.co.uk>
+Fix segv if UTF8 locale and not TT font.
+Attempt to improve dockapp handling.
+Introduce Ecalloc.
+Fix pager redraw on client unmap.
+Ignore WM_TRANSIENT_FOR if pointing to self (fixes Mathematica startup).
