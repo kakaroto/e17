@@ -22,5 +22,11 @@ struct _Esmart_Draggies
 
 Evas_Object *esmart_draggies_new (Ecore_Evas * evas);
 void esmart_draggies_button_set (Evas_Object * o, int button);
+void esmart_draggies_event_callback_add (Evas_Object * o,
+					 Evas_Callback_Type type,
+					 void (*func) (void *data, Evas * e,
+						       Evas_Object * o,
+						       void *ev),
+					 const void *data);
 
 #endif

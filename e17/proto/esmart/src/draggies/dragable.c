@@ -148,6 +148,20 @@ esmart_draggies_button_set (Evas_Object * o, int button)
     }
 }
 
+void
+esmart_draggies_event_callback_add (Evas_Object * o, Evas_Callback_Type type,
+				    void (*func) (void *data, Evas * e,
+						  Evas_Object * obj,
+						  void *ev),
+				    const void *user_data)
+{
+  Esmart_Draggies *data = NULL;
+  if ((data = evas_object_smart_data_get (o)))
+    {
+      evas_object_event_callback_add (data->obj, type, func, user_data);
+    }
+}
+
 /*==========================================================================
  * Smart Object Code, Go Away
  *========================================================================*/
