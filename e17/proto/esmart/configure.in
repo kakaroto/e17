@@ -30,7 +30,7 @@ if test "x${prefix}" = "xNONE"; then
 else
   container_plugin_dir=${prefix}/lib/${PACKAGE}/layout
 fi
-AC_DEFINE_UNQUOTED(CONTAINER_PLUGIN_DIR, ${container_plugin_dir}, [Container Plugin Directory])
+AC_DEFINE_UNQUOTED(CONTAINER_PLUGIN_DIR, "${container_plugin_dir}", [Container Plugin Directory])
 AC_SUBST(CONTAINER_PLUGIN_DIR)
 
 changequote(,)dnl
