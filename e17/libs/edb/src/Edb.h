@@ -22,6 +22,17 @@ typedef void        E_DB_File;
 E_DB_File          *e_db_open(char *file);
 
 /**
+ * e_db_open_mode - Opens a db with a user-specified mode
+ * @file: name of the db file.
+ * @flags: bitmask in the format specified by open(2)
+ *
+ * This function opens an edb database file for access as specified by
+ * flags. It returns NULL if not possible, a pointer to an E_DB_File
+ * otherwise.
+ */
+E_DB_File          *e_db_open_mode(char *file, int flags);
+
+/**
  * e_db_property_set - Sets the value of a Property Field.
  * @edb: A database handle.
  * @property: The name of the Property Field to edit.

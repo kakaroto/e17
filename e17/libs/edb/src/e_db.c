@@ -179,6 +179,13 @@ _e_db_data_set(E_DB_File * edb, datum dkey, void *data, int size)
 E_DB_File          *
 e_db_open(char *file)
 {
+  return e_db_open_mode(file, O_RDWR | O_CREAT);
+}
+
+
+E_DB_File          *
+e_db_open_mode(char *file, int flags)
+{
    _E_DB_File         *edbf;
    DBM                *edb = NULL;
    int                 edbs_count = 0;
@@ -222,7 +229,7 @@ e_db_open(char *file)
 	       (newfile[newfilelen - 1] == 'b'))
 	      newfile[newfilelen - 3] = 0;
 	   
-	   edb = edbm_open(newfile, O_RDWR | O_CREAT, 0664);
+	   edb = edbm_open(newfile, flags, 0664);
 	   FREE(newfile);
 	}
    }

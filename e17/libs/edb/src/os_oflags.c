@@ -45,6 +45,11 @@ __edb_oflags(oflags)
 		edbflags |= DB_RDONLY;
 	if (oflags & O_TRUNC)
 		edbflags |= DB_TRUNCATE;
+	if (oflags & O_EXCL)
+		edbflags |= DB_EXCL;
+	if (oflags & O_TRUNC)
+		edbflags |= DB_TRUNCATE;
+
 	return (edbflags);
 }
 
