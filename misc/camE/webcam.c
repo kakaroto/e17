@@ -35,6 +35,7 @@
 #include <net/if.h>
 
 #include "parseconfig.h"
+#include "pwc-ioctl.h"
 
 void log(char *fmt, ...);
 
@@ -78,6 +79,12 @@ int bg_b = 0;
 int bg_a = 150;
 int close_dev = 0;
 int ftp_timeout = 30;
+int cam_contrast = 50;
+int cam_brightness = 50;
+int cam_hue = 50;
+int cam_colour = 50;
+int cam_whiteness = 50;
+int cam_framerate = 10;
 char *title_font = "arial/8";
 char *ttf_dir = "/usr/X11R6/lib/X11/fonts/TrueType";
 char *archive_ext = "jpg";
@@ -97,6 +104,7 @@ Imlib_Font title_fn, text_fn;
 char *ftp_interface = "-";
 char *watch_interface = NULL;
 int interface_active = 0;
+int device_palette;
 
 int v_width[5] = { 128, 160, 176, 320, 640 };
 int v_height[5] = { 96, 120, 144, 240, 480 };
@@ -106,6 +114,8 @@ int bw_percent = 100;
 int delay_correct = 0;
 int reinit_device = 0;
 
+struct video_picture cam_pic;
+
 /* these work for v4l only, not v4l2 */
 int grab_input = 0;
 int grab_norm = VIDEO_MODE_PAL;
@@ -114,7 +124,8 @@ static struct video_mmap grab_buf;
 static int grab_fd = -1;
 static int grab_size = 0;
 static unsigned char *grab_data = NULL;
-Imlib_Image convert_yuv_to_imlib2(unsigned char *mem, int width, int height);
+Imlib_Image convert_yuv420p_to_imlib2(unsigned char *mem, int width,
+                                      int height);
 int execvp_with_timeout(int timeout, char *file, char **argv);
 void alarm_handler(int sig);
 
@@ -132,12 +143,42 @@ close_device()
    grab_fd = -1;
 }
 
+int
+try_palette(int fd, int pal, int depth)
+{
+   cam_pic.palette = pal;
+   cam_pic.depth = depth;
+   if (ioctl(fd, VIDIOCSPICT, &cam_pic) < 0)
+      return FALSE;
+   if (ioctl(fd, VIDIOCGPICT, &cam_pic) < 0)
+      return FALSE;
+   if (cam_pic.palette == pal)
+      return TRUE;
+   return FALSE;
+}
+
+int
+find_palette(int fd, struct video_mmap *vid)
+{
+   if (try_palette(fd, VIDEO_PALETTE_YUV420P, 16))
+      return VIDEO_PALETTE_YUV420P;
+   if (try_palette(fd, VIDEO_PALETTE_YUV420, 16))
+      return VIDEO_PALETTE_YUV420;
+   if (try_palette(fd, VIDEO_PALETTE_RGB24, 24))
+      return VIDEO_PALETTE_RGB24;
+   fprintf(stderr,
+           "No supported palette found, please report your device to the author\n");
+   exit(2);
+   return 0;
+}
+
 void
 grab_init()
 {
    struct video_capability grab_cap;
    struct video_channel grab_chan;
    struct video_mbuf vid_mbuf;
+   int type;
 
    if ((grab_fd = open(grab_device, O_RDWR)) == -1)
    {
@@ -148,6 +189,49 @@ grab_init()
    {
       fprintf(stderr, "%s: no v4l device\n", grab_device);
       exit(1);
+   }
+
+   memset(&cam_pic, 0, sizeof(struct video_picture));
+   cam_pic.contrast = 65535 * (cam_contrast / 100);
+   cam_pic.brightness = 65535 * (cam_brightness / 100);
+   cam_pic.hue = 65535 * (cam_hue / 100);
+   cam_pic.colour = 65535 * (cam_colour / 100);
+   cam_pic.whiteness = 65535 * (cam_whiteness / 100);
+
+   device_palette = find_palette(grab_fd, &grab_buf);
+   grab_buf.format = device_palette;
+   grab_buf.frame = 0;
+   grab_buf.width = grab_width;
+   grab_buf.height = grab_height;
+
+   ioctl(grab_fd, VIDIOCGMBUF, &vid_mbuf);
+   
+   /* special philips features */
+   if (sscanf(grab_cap.name, "Philips %d webcam", &type) > 0)
+   {
+      struct video_window vwin;
+      int shutter = -1;
+      int gain = -1;
+
+      /* philips cam detected, maybe enable special features */
+      printf("Philips %d webcam detected\n", type);
+
+      ioctl(grab_fd, VIDIOCGWIN, &vwin);
+      if (vwin.flags & PWC_FPS_MASK)
+      {
+         /* Set new framerate */
+         vwin.flags &= ~PWC_FPS_FRMASK;
+         vwin.flags |= (cam_framerate << PWC_FPS_SHIFT);
+      }
+
+      /* Turning on snapshot mode */
+      vwin.flags |= PWC_FPS_SNAPSHOT;
+
+      ioctl(grab_fd, VIDIOCSWIN, &vwin);
+      if(ioctl(grab_fd, VIDIOCPWCSAGC, &gain) < 0)
+         perror("trying to set gain");
+      if(ioctl(grab_fd, VIDIOCPWCSSHUTTER, &shutter) < 0)
+         perror("trying to set shutter");
    }
 
    /* set image source and TV norm */
@@ -165,14 +249,6 @@ grab_init()
       exit(1);
    }
 
-   /* try to setup mmap-based capture */
-   grab_buf.format = VIDEO_PALETTE_YUV420P;
-   grab_buf.frame = 0;
-   grab_buf.width = grab_width;
-   grab_buf.height = grab_height;
-
-   ioctl(grab_fd, VIDIOCGMBUF, &vid_mbuf);
-
    /*   grab_size = grab_buf.width * grab_buf.height * 3; */
    grab_size = vid_mbuf.size;
    grab_data =
@@ -185,17 +261,9 @@ grab_init()
    }
 }
 
-/**
-  \brief convert YUV 4:2:0 data into RGB
-  \param width Width of yuv data, in pixels
-  \param height Height of yuv data, in pixels
-  \param src beginning of YUV data
-  \param dst beginning of RGB data, \b including the initial offset into the viewport
-  
- This is a really simplistic approach. Speedups are welcomed. 
-*/
+/* This is a really simplistic approach. Speedups are welcomed. */
 Imlib_Image
-convert_yuv_to_imlib2(unsigned char *src, int width, int height)
+convert_yuv420p_to_imlib2(unsigned char *src, int width, int height)
 {
    int line, col;
    int y, u, v, yy, vr = 0, ug = 0, vg = 0, ub = 0;
@@ -262,6 +330,119 @@ convert_yuv_to_imlib2(unsigned char *src, int width, int height)
    return im;
 }
 
+/* This is a really simplistic approach. Speedups are welcomed. */
+Imlib_Image
+convert_yuv420i_to_imlib2(unsigned char *src, int width, int height)
+{
+   int line, col, linewidth;
+   int y, u, v, yy, vr = 0, ug = 0, vg = 0, ub = 0;
+   int r, g, b;
+   unsigned char *sy, *su, *sv;
+   Imlib_Image im;
+   DATA32 *data, *dest;
+
+   im = imlib_create_image(width, height);
+   imlib_context_set_image(im);
+   data = imlib_image_get_data();
+   dest = data;
+
+   linewidth = width + (width >> 1);
+   sy = src;
+   su = sy + 4;
+   sv = su + linewidth;
+
+   /* 
+      The biggest problem is the interlaced data, and the fact that odd
+      add even lines have V and U data, resp. 
+    */
+
+   for (line = 0; line < height; line++)
+   {
+      for (col = 0; col < width; col++)
+      {
+         y = *sy++;
+         yy = y << 8;
+         if ((col & 1) == 0)
+         {
+            /* only at even colums we update the u/v data */
+            u = *su - 128;
+            ug = 88 * u;
+            ub = 454 * u;
+            v = *sv - 128;
+            vg = 183 * v;
+            vr = 359 * v;
+
+            su++;
+            sv++;
+         }
+         if ((col & 3) == 3)
+         {
+            sy += 2;    /* skip u/v */
+            su += 4;    /* skip y */
+            sv += 4;    /* skip y */
+         }
+         r = (yy + vr) >> 8;
+         g = (yy - ug - vg) >> 8;
+         b = (yy + ub) >> 8;
+
+         if (r < 0)
+            r = 0;
+         if (r > 255)
+            r = 255;
+         if (g < 0)
+            g = 0;
+         if (g > 255)
+            g = 255;
+         if (b < 0)
+            b = 0;
+         if (b > 255)
+            b = 255;
+
+         *dest = (r << 16) | (g << 8) | b | 0xff000000;
+         dest++;
+      }
+      if (line & 1)
+      {
+         su += linewidth;
+         sv += linewidth;
+      }
+      else
+      {
+         su -= linewidth;
+         sv -= linewidth;
+      }
+   }
+   imlib_image_put_back_data(data);
+   return im;
+}
+
+Imlib_Image
+convert_rgb24_to_imlib2(unsigned char *mem, int width, int height)
+{
+   Imlib_Image im;
+   DATA32 *data, *dest;
+   unsigned char *src;
+   int i;
+
+   im = imlib_create_image(width, height);
+   imlib_context_set_image(im);
+   data = imlib_image_get_data();
+
+   dest = data;
+   src = mem;
+   i = width * height;
+   while (i--)
+   {
+      *dest = (src[2] << 16) | (src[1] << 8) | src[0] | 0xff000000;
+      dest++;
+      src += 3;
+   }
+
+   imlib_image_put_back_data(data);
+
+   return im;
+}
+
 
 Imlib_Image
 grab_one(int *width, int *height)
@@ -286,7 +467,27 @@ grab_one(int *width, int *height)
          return NULL;
       }
    }
-   im = convert_yuv_to_imlib2(grab_data, grab_buf.width, grab_buf.height);
+   switch (device_palette)
+   {
+     case VIDEO_PALETTE_YUV420P:
+        im =
+           convert_yuv420p_to_imlib2(grab_data, grab_buf.width,
+                                     grab_buf.height);
+        break;
+     case VIDEO_PALETTE_YUV420:
+        im =
+           convert_yuv420i_to_imlib2(grab_data, grab_buf.width,
+                                     grab_buf.height);
+        break;
+     case VIDEO_PALETTE_RGB24:
+        im =
+           convert_rgb24_to_imlib2(grab_data, grab_buf.width,
+                                   grab_buf.height);
+        break;
+     default:
+        fprintf(stderr, "eeek");
+        exit(2);
+   }
    if (close_dev)
       close_device();
    if (im)
@@ -366,33 +567,6 @@ add_time_text(Imlib_Image image, char *message, int width, int height)
                           IMLIB_TEXT_TO_RIGHT, text_r, text_g, text_b,
                           text_a);
    }
-}
-
-Imlib_Image
-old_convert_yuv_to_imlib2(unsigned char *mem, int width, int height)
-{
-   Imlib_Image im;
-   DATA32 *data, *dest;
-   unsigned char *src;
-   int i;
-
-   im = imlib_create_image(width, height);
-   imlib_context_set_image(im);
-   data = imlib_image_get_data();
-
-   dest = data;
-   src = mem;
-   i = width * height;
-   while (i--)
-   {
-      *dest = (src[2] << 16) | (src[1] << 8) | src[0] | 0xff000000;
-      dest++;
-      src += 3;
-   }
-
-   imlib_image_put_back_data(data);
-
-   return im;
 }
 
 /* ---------------------------------------------------------------------- */
@@ -868,9 +1042,26 @@ main(int argc, char *argv[])
       overlay_x = i;
    if (-1 != (i = cfg_get_int("grab", "overlay_y")))
       overlay_y = i;
+   if (-1 != (i = cfg_get_int("grab", "colour")))
+      cam_colour = i;
+   if (-1 != (i = cfg_get_int("grab", "brightness")))
+      cam_brightness = i;
+   if (-1 != (i = cfg_get_int("grab", "contrast")))
+      cam_contrast = i;
+   if (-1 != (i = cfg_get_int("grab", "hue")))
+      cam_hue = i;
+   if (-1 != (i = cfg_get_int("grab", "whiteness")))
+      cam_whiteness = i;
+   if (-1 != (i = cfg_get_int("grab", "framerate")))
+      cam_framerate = i;
+
+   if(cam_framerate > 60)
+      cam_framerate = 60;
+   if(cam_framerate < 1)
+      cam_framerate = 1;
 
    /* print config */
-   fprintf(stderr, "camE v1.0 - (c) 1999, 2000 Gerd Knorr, Tom Gilbert\n");
+   fprintf(stderr, "camE v1.1 - (c) 1999, 2000 Gerd Knorr, Tom Gilbert\n");
    fprintf(stderr,
            "grabber config: size %dx%d, input %d, norm %d, "
            "jpeg quality %d\n", grab_width, grab_height, grab_input,

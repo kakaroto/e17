@@ -46,6 +46,14 @@ correct = 1
 # percentage of the delay to spend uploading the image,
 # 100 disables, useful values are < 40
 percent = 100
+# only for philps cams right now
+framerate = 5
+# image settings
+colour = 50
+brightness = 50
+contrast = 50
+hue = 50
+whiteness = 50
 # where to log activity. comment out this line to disable logging
 logfile = /home/gilbertt/.camlog
 # gets the message text from here. one line allowed only. means you can do
