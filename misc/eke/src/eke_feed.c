@@ -233,13 +233,13 @@ eke_feed_update(void *data)
         return 1;
     }
 
+    IF_FREE(feed->server.data.data);
+    feed->server.data.size = 0;
+
     /* XXX proxy stuff ... */
     if (!ecore_con_server_connect(ECORE_CON_REMOTE_SYSTEM,
                                 feed->server.name, feed->server.port, feed))
             printf("Error with connection to (%s)\n", feed->server.name);
-
-    IF_FREE(feed->server.data.data);
-    feed->server.data.size = 0;
 
     return 1;
 }
@@ -279,7 +279,9 @@ eke_feed_server_del_cb(void *data, int type, void *ev)
     e = ev;
 
     feed = ecore_con_server_data_get(e->server);
-    ecore_con_server_del(e->server);
+/*    ecore_con_server_del(e->server);
+*/
+
     eke_feed_data_handle(feed);
 
     if (feed->data.type != EKE_FEED_DATA_RESPONSE_NO_CHANGE) {

@@ -60,21 +60,20 @@ main(int argc, char ** argv)
 
     /* setup cmdline feed if given */
     last_arg++;
-    if (last_arg < argc) {
+    while (last_arg < argc) {
         Eke_Feed *feed;
+
         if (!strncmp(argv[last_arg], "http://", 7)) {
             feed = eke_feed_new_from_uri(argv[last_arg]);
 
         } else {
             printf("incorrect format for URI\n");
-
-            eke_gui_shutdown(&eke);
-            eke_feed_shutdown();
-            return 0;
+            continue;
         }
-
         eke_gui_feed_register(&eke, feed);
         eke_feed_update(feed);
+
+        last_arg ++;
     }
 
     /* XXX setup any feeds stored in the cfg ... */

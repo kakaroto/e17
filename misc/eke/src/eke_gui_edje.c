@@ -245,4 +245,8 @@ eke_gui_edje_feed_container_scroll_cb(void *data, Evas_Object *o,
                 break;
         }
     }
+
+    return;
+    em = NULL;
 }
+
