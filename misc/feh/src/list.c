@@ -85,6 +85,7 @@ real_loadables_mode(int loadable)
    for (l = filelist; l; l = l->next)
    {
       Imlib_Image im = NULL;
+
       file = FEH_FILE(l->data);
 
       if (feh_load_image(&im, file, NULL))

@@ -475,7 +475,7 @@ feh_event_handle_MotionNotify(XEvent * ev)
             (winwid->w / 2) - (winwid->im_click_offset_x * winwid->zoom);
          winwid->im_y =
             (winwid->h / 2) - (winwid->im_click_offset_y * winwid->zoom);
-         
+
          winwidget_render_image(winwid, 0, 0);
       }
    }

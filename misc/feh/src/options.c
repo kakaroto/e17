@@ -192,8 +192,9 @@ feh_parse_environment_options(void)
    if ((opts = getenv("FEH_OPTIONS")) == NULL)
       D_RETURN_;
 
-   weprintf("The FEH_OPTIONS configuration method is depreciated and will soon die.\n"
-      "Use the .fehrc configuration file instead.");
+   weprintf
+      ("The FEH_OPTIONS configuration method is depreciated and will soon die.\n"
+       "Use the .fehrc configuration file instead.");
 
    /* We definitely have some options to parse */
    feh_parse_options_from_string(opts);
@@ -346,7 +347,7 @@ feh_parse_option_array(int argc, char **argv)
       {"slideshow-delay", 1, 0, 'D'},
       {"font", 1, 0, 'e'},
       {"title-font", 1, 0, '@'},
-	  {"title", 1, 0, '^'},
+      {"title", 1, 0, '^'},
       {"bg", 1, 0, 'b'},
       {"fontpath", 1, 0, 'C'},
       {"progress-gran", 1, 0, '('},
@@ -512,9 +513,9 @@ feh_parse_option_array(int argc, char **argv)
         case '@':
            opt.title_font = estrdup(optarg);
            break;
-	    case '^':
-		   opt.title = estrdup(optarg);
-		   break;
+        case '^':
+           opt.title = estrdup(optarg);
+           break;
         case 'b':
            opt.bg = 1;
            opt.bg_file = estrdup(optarg);
@@ -620,9 +621,8 @@ check_options(void)
    D_ENTER;
    if ((opt.index + opt.collage) > 1)
    {
-      weprintf
-         ("you can't use collage mode and index mode together.\n"
-          "   I'm going with index");
+      weprintf("you can't use collage mode and index mode together.\n"
+               "   I'm going with index");
       opt.collage = 0;
    }
 
@@ -644,8 +644,7 @@ check_options(void)
       opt.multiwindow = 0;
    }
 
-   if (opt.list
-       && (opt.multiwindow || opt.index || opt.collage))
+   if (opt.list && (opt.multiwindow || opt.index || opt.collage))
    {
       weprintf("list mode can't be combined with other processing modes,\n"
                "   list mode disabled.");

@@ -77,7 +77,8 @@ init_x_and_imlib(void)
 }
 
 int
-feh_load_image_char(Imlib_Image * im, char *filename, Imlib_Progress_Function pfunc)
+feh_load_image_char(Imlib_Image * im, char *filename,
+                    Imlib_Progress_Function pfunc)
 {
    feh_file *file;
    int i;
@@ -90,7 +91,8 @@ feh_load_image_char(Imlib_Image * im, char *filename, Imlib_Progress_Function pf
 }
 
 int
-feh_load_image(Imlib_Image * im, feh_file * file, Imlib_Progress_Function pfunc)
+feh_load_image(Imlib_Image * im, feh_file * file,
+               Imlib_Progress_Function pfunc)
 {
    Imlib_Load_Error err;
 
@@ -102,7 +104,7 @@ feh_load_image(Imlib_Image * im, feh_file * file, Imlib_Progress_Function pfunc)
 
    imlib_context_set_progress_function(pfunc);
    imlib_context_set_progress_granularity(opt.progress_gran);
-   
+
    /* Handle URLs */
    if ((!strncmp(file->filename, "http://", 7))
        || (!strncmp(file->filename, "ftp://", 6)))
@@ -250,7 +252,7 @@ progressive_load_cb(Imlib_Image im, char percent, int update_x, int update_y,
       progwin->im_w = feh_imlib_image_get_width(im);
       progwin->im_h = feh_imlib_image_get_height(im);
       winwidget_reset_image(progwin);
-      if(opt.full_screen)
+      if (opt.full_screen)
       {
          progwin->im_x = (scr->width - progwin->im_w) >> 1;
          progwin->im_y = (scr->height - progwin->im_h) >> 1;
@@ -290,24 +292,10 @@ progressive_load_cb(Imlib_Image im, char percent, int update_x, int update_y,
    }
 
    if (progwin->has_rotated)
-      feh_imlib_render_image_part_on_drawable_at_size_with_rotation(progwin->
-                                                                    bg_pmap,
-                                                                    im,
-                                                                    update_x,
-                                                                    update_y,
-                                                                    update_w,
-                                                                    update_h,
-                                                                    dest_x +
-                                                                    update_x,
-                                                                    dest_y +
-                                                                    update_y,
-                                                                    update_w,
-                                                                    update_h,
-                                                                    progwin->
-                                                                    im_angle,
-                                                                    1,
-                                                                    feh_imlib_image_has_alpha
-                                                                    (im), 0);
+      feh_imlib_render_image_part_on_drawable_at_size_with_rotation
+         (progwin->bg_pmap, im, update_x, update_y, update_w, update_h,
+          dest_x + update_x, dest_y + update_y, update_w, update_h,
+          progwin->im_angle, 1, feh_imlib_image_has_alpha(im), 0);
    else
       feh_imlib_render_image_part_on_drawable_at_size(progwin->bg_pmap, im,
                                                       update_x, update_y,

@@ -113,7 +113,7 @@ feh_file_rm_and_free(feh_list * list, feh_list * l)
 }
 
 feh_list *
-feh_file_remove_from_list(feh_list *list, feh_list *l)
+feh_file_remove_from_list(feh_list * list, feh_list * l)
 {
    D_ENTER;
    feh_file_free(FEH_FILE(l->data));
@@ -267,7 +267,7 @@ feh_file_info_preload(feh_list * list)
 
    for (l = list; l; l = l->next)
    {
-       file = FEH_FILE(l->data);
+      file = FEH_FILE(l->data);
       D(("file %p, file->next %p, file->name %s\n", l, l->next, file->name));
       if (last)
       {
@@ -358,52 +358,53 @@ feh_file_info_load(feh_file * file, Imlib_Image im)
 }
 
 int
-feh_cmp_filename(void * file1, void * file2)
+feh_cmp_filename(void *file1, void *file2)
 {
    D_ENTER;
    D_RETURN(strcmp(FEH_FILE(file1)->filename, FEH_FILE(file2)->filename));
 }
 
 int
-feh_cmp_name(void * file1, void * file2)
+feh_cmp_name(void *file1, void *file2)
 {
    D_ENTER;
    D_RETURN(strcmp(FEH_FILE(file1)->name, FEH_FILE(file2)->name));
 }
 
 int
-feh_cmp_width(void * file1, void * file2)
+feh_cmp_width(void *file1, void *file2)
 {
    D_ENTER;
    D_RETURN((FEH_FILE(file1)->info->width - FEH_FILE(file2)->info->width));
 }
 
 int
-feh_cmp_height(void * file1, void * file2)
+feh_cmp_height(void *file1, void *file2)
 {
    D_ENTER;
    D_RETURN((FEH_FILE(file1)->info->height - FEH_FILE(file2)->info->height));
 }
 
 int
-feh_cmp_pixels(void * file1, void * file2)
+feh_cmp_pixels(void *file1, void *file2)
 {
    D_ENTER;
    D_RETURN((FEH_FILE(file1)->info->pixels - FEH_FILE(file2)->info->pixels));
 }
 
 int
-feh_cmp_size(void * file1, void * file2)
+feh_cmp_size(void *file1, void *file2)
 {
    D_ENTER;
    D_RETURN((FEH_FILE(file1)->info->size - FEH_FILE(file2)->info->size));
 }
 
 int
-feh_cmp_format(void * file1, void * file2)
+feh_cmp_format(void *file1, void *file2)
 {
    D_ENTER;
-   D_RETURN(strcmp(FEH_FILE(file1)->info->format, FEH_FILE(file2)->info->format));
+   D_RETURN(strcmp
+            (FEH_FILE(file1)->info->format, FEH_FILE(file2)->info->format));
 }
 
 void

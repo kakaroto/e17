@@ -50,17 +50,17 @@ init_collage_mode(void)
    /* Use bg image dimensions for default size */
    if (opt.bg && opt.bg_file)
    {
-       if (!strcmp(opt.bg_file, "trans"))
+      if (!strcmp(opt.bg_file, "trans"))
          trans_bg = 1;
       else
       {
 
-      D(("Time to apply a background to blend onto\n"));
-      if (feh_load_image_char(&bg_im, opt.bg_file, NULL) != 0)
-      {
-         bg_w = feh_imlib_image_get_width(bg_im);
-         bg_h = feh_imlib_image_get_height(bg_im);
-      }
+         D(("Time to apply a background to blend onto\n"));
+         if (feh_load_image_char(&bg_im, opt.bg_file, NULL) != 0)
+         {
+            bg_w = feh_imlib_image_get_width(bg_im);
+            bg_h = feh_imlib_image_get_height(bg_im);
+         }
       }
    }
 
@@ -98,13 +98,14 @@ init_collage_mode(void)
       eprintf("Imlib error creating image");
 
    if (bg_im)
-      feh_imlib_blend_image_onto_image(im_main, bg_im, 0, 0, 0, bg_w, bg_h, 0,
-         0, w, h, 1, 0, 0);
+      feh_imlib_blend_image_onto_image(im_main, bg_im,
+                                       feh_imlib_image_has_alpha(bg_im), 0, 0,
+                                       bg_w, bg_h, 0, 0, w, h, 1, 0, 0);
    else if (trans_bg)
-   {  
+   {
       feh_imlib_image_fill_rectangle(im_main, 0, 0, w, h, 0, 0, 0, 0);
       feh_imlib_image_set_has_alpha(im_main, 1);
-   }    
+   }
    else
    {
       /* Colour the background */
@@ -180,8 +181,10 @@ init_collage_mode(void)
                                                         hhh, NULL, NULL, NULL,
                                                         atab);
          }
-         feh_imlib_blend_image_onto_image(im_main, im_thumb, 0, 0, 0, www,
-                                          hhh, xxx, yyy, www, hhh, 1,
+         feh_imlib_blend_image_onto_image(im_main, im_thumb,
+                                          feh_imlib_image_has_alpha(im_thumb),
+                                          0, 0, www, hhh, xxx, yyy, www, hhh,
+                                          1,
                                           feh_imlib_image_has_alpha(im_thumb),
                                           0);
          feh_imlib_free_image_and_decache(im_thumb);
@@ -195,8 +198,8 @@ init_collage_mode(void)
       if (opt.display && opt.progressive)
       {
          winwidget_render_image(winwid, 0, 0);
-         if(!feh_main_iteration(0))
-               exit(0);
+         if (!feh_main_iteration(0))
+            exit(0);
       }
    }
    if (opt.verbose)

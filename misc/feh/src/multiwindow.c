@@ -42,7 +42,8 @@ init_multiwindow_mode(void)
    {
       char *s = NULL;
       int len = 0;
-       file = FEH_FILE(l->data);
+
+      file = FEH_FILE(l->data);
 
       len = strlen(PACKAGE " - ") + strlen(file->filename) + 1;
       s = emalloc(len);
@@ -52,9 +53,11 @@ init_multiwindow_mode(void)
       {
          if (opt.draw_filename)
             feh_draw_filename(w);
-            winwidget_show(w);
+         winwidget_show(w);
          if (opt.reload > 0)
             feh_add_unique_timer(cb_reload_timer, w, opt.reload);
+         if(!feh_main_iteration(0))
+            exit(0);
       }
       else
       {

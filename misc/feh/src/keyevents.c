@@ -70,13 +70,13 @@ handle_keypress_event(XEvent * ev, Window win)
            filelist. Just DEL gets you filelist removal only. */
         if (kev->state & ControlMask)
         {
-           if(winwid->type == WIN_TYPE_THUMBNAIL_VIEWER)
+           if (winwid->type == WIN_TYPE_THUMBNAIL_VIEWER)
               feh_thumbnail_mark_removed(FEH_FILE(winwid->file->data), 1);
            feh_filelist_image_remove(winwid, 1);
         }
         else
         {
-           if(winwid->type == WIN_TYPE_THUMBNAIL_VIEWER)
+           if (winwid->type == WIN_TYPE_THUMBNAIL_VIEWER)
               feh_thumbnail_mark_removed(FEH_FILE(winwid->file->data), 0);
            feh_filelist_image_remove(winwid, 0);
         }

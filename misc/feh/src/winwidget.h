@@ -70,7 +70,8 @@ MWMHints;
 
 enum win_type
 {
-   WIN_TYPE_UNSET, WIN_TYPE_SLIDESHOW, WIN_TYPE_SINGLE, WIN_TYPE_ABOUT, WIN_TYPE_THUMBNAIL, WIN_TYPE_THUMBNAIL_VIEWER
+   WIN_TYPE_UNSET, WIN_TYPE_SLIDESHOW, WIN_TYPE_SINGLE, WIN_TYPE_ABOUT,
+      WIN_TYPE_THUMBNAIL, WIN_TYPE_THUMBNAIL_VIEWER
 };
 
 struct __winwidget
@@ -96,7 +97,7 @@ struct __winwidget
    /* New stuff */
    int im_x;                    /* image offset from window top left */
    int im_y;                    /* image offset from window top left */
-   double zoom;            /* From 0 (not visible) to 100 (actual size)
+   double zoom;                 /* From 0 (not visible) to 100 (actual size)
                                    all the way up to INT_MAX (ouch) */
    int click_offset_x;
    int click_offset_y;
@@ -106,7 +107,8 @@ struct __winwidget
    unsigned char has_rotated;
 };
 
-int winwidget_loadimage(winwidget winwid, feh_file * filename, Imlib_Progress_Function pfunc);
+int winwidget_loadimage(winwidget winwid, feh_file * filename,
+                        Imlib_Progress_Function pfunc);
 void winwidget_show(winwidget winwid);
 void winwidget_hide(winwidget winwid);
 void winwidget_destroy_all(void);
@@ -126,7 +128,9 @@ void winwidget_destroy(winwidget winwid);
 void winwidget_create_window(winwidget ret, int w, int h);
 void winwidget_clear_background(winwidget w);
 Pixmap feh_create_checks(void);
-double feh_calc_needed_zoom(double *zoom, int orig_w, int orig_h, int dest_w, int dest_h);
+double feh_calc_needed_zoom(double *zoom, int orig_w, int orig_h, int dest_w,
+
+                            int dest_h);
 void feh_debug_print_winwid(winwidget winwid);
 winwidget winwidget_get_first_window_of_type(unsigned int type);
 void winwidget_reset_image(winwidget winwid);

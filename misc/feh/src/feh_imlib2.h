@@ -38,24 +38,23 @@ void feh_imlib_render_image_on_drawable(Drawable d, Imlib_Image im, int x,
                                         char alias);
 void feh_imlib_render_image_on_drawable_with_rotation(Drawable d,
                                                       Imlib_Image im, int x,
-
                                                       int y, double angle,
                                                       char dither, char blend,
+
                                                       char alias);
 void feh_imlib_render_image_part_on_drawable_at_size(Drawable d,
                                                      Imlib_Image im, int sx,
                                                      int sy, int sw, int sh,
                                                      int dx, int dy, int dw,
-
                                                      int dh, char dither,
                                                      char blend, char alias);
 void feh_imlib_render_image_part_on_drawable_at_size_with_rotation(Drawable d,
                                                                    Imlib_Image
                                                                    im, int sx,
+
                                                                    int sy,
                                                                    int sw,
                                                                    int sh,
-
                                                                    int dx,
                                                                    int dy,
                                                                    int dw,

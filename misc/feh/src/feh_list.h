@@ -33,15 +33,16 @@ struct __feh_list
    feh_list *prev;
 };
 
-typedef int (feh_compare_fn) (void * data1, void * data2);
+typedef int (feh_compare_fn) (void *data1, void *data2);
 
 feh_list *feh_list_new(void);
-feh_list *feh_list_add_front(feh_list * root, void * data);
+feh_list *feh_list_add_front(feh_list * root, void *data);
 feh_list *feh_list_cat(feh_list * root, feh_list * l);
 int feh_list_length(feh_list * l);
 feh_list *feh_list_last(feh_list * l);
 feh_list *feh_list_first(feh_list * l);
 feh_list *feh_list_jump(feh_list * root, feh_list * l, int direction,
+
                         int num);
 feh_list *feh_list_reverse(feh_list * l);
 feh_list *feh_list_randomize(feh_list * list);
@@ -49,6 +50,7 @@ int feh_list_num(feh_list * root, feh_list * l);
 feh_list *feh_list_remove(feh_list * root, feh_list * l);
 feh_list *feh_list_sort(feh_list * list, feh_compare_fn cmp);
 feh_list *feh_list_sort_merge(feh_list * l1, feh_list * l2,
+
                               feh_compare_fn cmp);
 
 #endif

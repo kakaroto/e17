@@ -66,7 +66,7 @@
 
 #define XY_IN_RECT(x, y, rx, ry, rw, rh) \
 (((x) >= (rx)) && ((y) >= (ry)) && ((x) < ((rx) + (rw))) && ((y) < ((ry) + (rh))))
-	
+
 
 enum mode_type
 { MODE_NORMAL = 0, MODE_PAN, MODE_ZOOM, MODE_ROTATE, MODE_BLUR };
@@ -78,7 +78,7 @@ enum slide_change
 enum direction
 { FORWARD, BACK };
 
-typedef void (*sighandler_t)(int);
+typedef void (*sighandler_t) (int);
 
 void show_usage(void);
 void show_version(void);
@@ -94,10 +94,12 @@ void init_list_mode(void);
 void init_loadables_mode(void);
 void init_unloadables_mode(void);
 void feh_clean_exit(void);
-int feh_load_image(Imlib_Image * im, feh_file * file, Imlib_Progress_Function pfunc);
+int feh_load_image(Imlib_Image * im, feh_file * file,
+
+                   Imlib_Progress_Function pfunc);
 void show_mini_usage(void);
 void slideshow_change_image(winwidget winwid, int change);
-char *slideshow_create_name(feh_file *file);
+char *slideshow_create_name(feh_file * file);
 char *chop_file_from_full_path(char *str);
 void handle_keypress_event(XEvent * ev, Window win);
 void feh_action_run(feh_file * file);
@@ -109,7 +111,8 @@ void feh_draw_checks(winwidget win);
 void cb_slide_timer(void *data);
 void cb_reload_timer(void *data);
 char *feh_http_load_image(char *url);
-int feh_load_image_char(Imlib_Image * im, char *filename, Imlib_Progress_Function pfunc);
+int feh_load_image_char(Imlib_Image * im, char *filename,
+                        Imlib_Progress_Function pfunc);
 void feh_draw_filename(winwidget w);
 void feh_display_status(char stat);
 void real_loadables_mode(int loadable);

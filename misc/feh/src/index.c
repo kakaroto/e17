@@ -316,8 +316,9 @@ init_index_mode(void)
       eprintf("Imlib error creating index image, are you low on RAM?");
 
    if (bg_im)
-      feh_imlib_blend_image_onto_image(im_main, bg_im, 0, 0, 0, bg_w, bg_h, 0,
-                                       0, w, h, 1, 0, 0);
+      feh_imlib_blend_image_onto_image(im_main, bg_im,
+                                       feh_imlib_image_has_alpha(bg_im), 0, 0,
+                                       bg_w, bg_h, 0, 0, w, h, 1, 0, 0);
    else if (trans_bg)
    {
       feh_imlib_image_fill_rectangle(im_main, 0, 0, w, h + title_area_h, 0, 0,
@@ -465,8 +466,10 @@ init_index_mode(void)
          }
 
          /* Draw now */
-         feh_imlib_blend_image_onto_image(im_main, im_thumb, 0, 0, 0, www,
-                                          hhh, xxx, yyy, www, hhh, 1,
+         feh_imlib_blend_image_onto_image(im_main, im_thumb,
+                                          feh_imlib_image_has_alpha(im_thumb),
+                                          0, 0, www, hhh, xxx, yyy, www, hhh,
+                                          1,
                                           feh_imlib_image_has_alpha(im_thumb),
                                           0);
 
@@ -501,12 +504,12 @@ init_index_mode(void)
             feh_display_status('x');
          last = l;
       }
-         if (opt.display && opt.progressive)
-         {
-            winwidget_render_image(winwid, 0, 0);
-            if(!feh_main_iteration(0))
-               exit(0);
-         }
+      if (opt.display && opt.progressive)
+      {
+         winwidget_render_image(winwid, 0, 0);
+         if (!feh_main_iteration(0))
+            exit(0);
+      }
    }
    if (opt.verbose)
       fprintf(stdout, "\n");

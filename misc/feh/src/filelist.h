@@ -69,15 +69,15 @@ void feh_prepare_filelist(void);
 int feh_write_filelist(feh_list * list, char *filename);
 feh_list *feh_read_filelist(char *filename);
 char *feh_absolute_path(char *path);
-feh_list *feh_file_remove_from_list(feh_list *list, feh_list *l);
+feh_list *feh_file_remove_from_list(feh_list * list, feh_list * l);
 
-int feh_cmp_name(void * file1, void * file2);
-int feh_cmp_filename(void * file1, void * file2);
-int feh_cmp_width(void * file1, void * file2);
-int feh_cmp_height(void * file1, void * file2);
-int feh_cmp_pixels(void * file1, void * file2);
-int feh_cmp_size(void * file1, void * file2);
-int feh_cmp_format(void * file1, void * file2);
+int feh_cmp_name(void *file1, void *file2);
+int feh_cmp_filename(void *file1, void *file2);
+int feh_cmp_width(void *file1, void *file2);
+int feh_cmp_height(void *file1, void *file2);
+int feh_cmp_pixels(void *file1, void *file2);
+int feh_cmp_size(void *file1, void *file2);
+int feh_cmp_format(void *file1, void *file2);
 
 extern feh_list *filelist;
 extern feh_list *current_file;

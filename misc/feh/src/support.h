@@ -26,7 +26,7 @@
 #define SUPPORT_H
 
 #include <X11/Xfuncproto.h>
-#include <X11/Intrinsic.h>  /* Xlib, Xutil, Xresource, Xfuncproto */
+#include <X11/Intrinsic.h>                  /* Xlib, Xutil, Xresource, Xfuncproto */
 
 #define IPC_TIMEOUT    ((char *) 1)
 
@@ -35,17 +35,15 @@
 extern Window ipc_win;
 extern Atom ipc_atom;
 
-_XFUNCPROTOBEGIN
-extern Window enl_ipc_get_win(void);
+_XFUNCPROTOBEGIN extern Window enl_ipc_get_win(void);
 extern void enl_ipc_send(char *);
 extern char *enl_wait_for_reply(void);
 extern char *enl_ipc_get(const char *);
 extern char *enl_send_and_wait(char *);
 extern void feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
-
-                int desktop, int set);
+                          int desktop, int set);
 extern int feh_wm_get_num_desks(void);
 extern signed char feh_wm_get_wm_is_e(void);
-_XFUNCPROTOEND
 
+_XFUNCPROTOEND
 #endif
