@@ -154,9 +154,12 @@ LangInit(void)
    else
       enc_int = enc_loc;
 
-   if (Mode.debug >= 1)
-      Eprintf("Locale: %s  Character encoding: locale=%s internal=%s\n",
-	      setlocale(LC_ALL, NULL), enc_loc, enc_int);
+   if (EventDebug(EDBUG_TYPE_VERBOSE))
+     {
+	Eprintf("Locale: %s\n", setlocale(LC_ALL, NULL));
+	Eprintf("Character encoding: locale=%s internal=%s\n", enc_loc,
+		enc_int);
+     }
 
    if (!strcasecmp(enc_loc, "utf8") || !strcasecmp(enc_loc, "utf-8"))
       Mode.text.utf8_loc = 1;

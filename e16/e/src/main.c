@@ -73,13 +73,10 @@ main(int argc, char **argv)
    Mode.wm.startup = 1;
    Mode.move.check = 1;
 
-   str = getenv("EDBUG");
-   if (str)
-      Mode.debug = atoi(str);
-   str = getenv("EDBUG_FLAGS");
+   str = getenv("EDEBUG");
    if (str)
       EventDebugInit(str);
-   str = getenv("EDBUG_COREDUMP");
+   str = getenv("EDEBUG_COREDUMP");
    if (str)
       Mode.wm.coredump = 1;
 
@@ -101,9 +98,6 @@ main(int argc, char **argv)
       Mode.wm.machine_name = Estrdup(ubuf.nodename);
    if (!Mode.wm.machine_name)
       Mode.wm.machine_name = Estrdup("localhost");
-
-   /* Initialise internationalisation */
-   LangInit();
 
    /* Now we're going to interpret any of the commandline parameters
     * that are passed to it -- Well, at least the ones that we
@@ -185,13 +179,13 @@ main(int argc, char **argv)
 		 (!strcmp("-version", argv[i])) ||
 		 (!strcmp("--version", argv[i])))
 	  {
-	     printf(_("Enlightenment Version: %s\nLast updated on: %s\n"),
+	     printf("Enlightenment %s - %s\n",
 		    ENLIGHTENMENT_VERSION, E_CHECKOUT_DATE);
 	     exit(0);
 	  }
 	else if ((!strcmp("-v", argv[i])) || (!strcmp("-verbose", argv[i])))
 	  {
-	     Mode.debug++;
+	     EventDebugSet(EDBUG_TYPE_VERBOSE, 1);
 	  }
 #if USE_COMPOSITE
 	else if ((!strcmp("-C", argv[i])))
@@ -200,6 +194,9 @@ main(int argc, char **argv)
 	  }
 #endif
      }
+
+   /* Initialise internationalisation */
+   LangInit();
 
    /* run most of the setup */
    AlertInit();			/* Set up all the text bits that belong on the GSOD */

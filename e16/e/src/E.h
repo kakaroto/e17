@@ -1016,7 +1016,6 @@ typedef struct
       pid_t              *children;
       char               *machine_name;
    } wm;
-   int                 debug;
    int                 mode;
    char                place;
    char                flipp;
@@ -1538,10 +1537,13 @@ int                 EobjIsShaped(const EObj * eo);
 #define EDBUG_TYPE_IPC          141
 #define EDBUG_TYPE_EVENTS       142
 #define EDBUG_TYPE_ICONBOX      143
+#define EDBUG_TYPE_VERBOSE      144
 
 int                 EventDebug(unsigned int type);
+void                EventDebugSet(unsigned int type, int value);
 #else
 #define             EventDebug(type) 0
+#define             EventDebugSet(type, value)
 #endif
 void                EventsInit(void);
 void                CheckEvent(void);

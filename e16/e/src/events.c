@@ -71,8 +71,8 @@ static void
 EventsExtensionShowInfo(const char *name, int major, int minor,
 			int event_base, int error_base)
 {
-   if (Mode.debug)
-      Eprintf("Found extension %-8s version %d.%d -"
+   if (EventDebug(EDBUG_TYPE_VERBOSE))
+      Eprintf("Found extension %-10s version %d.%d -"
 	      " Event/error base = %d/%d\n", name,
 	      major, minor, event_base, error_base);
 }
@@ -356,12 +356,14 @@ EventsCompress(XEvent * evq, int count)
    int                 i, j, n;
    int                 xa, ya, xb, yb;
 
+#if ENABLE_DEBUG_EVENTS
    /* Debug - should be taken out */
    if (EventDebug(EDBUG_TYPE_COMPRESSION))
       for (i = 0; i < count; i++)
 	 if (evq[i].type)
 	    Eprintf("EventsCompress-1 %3d %s w=%#lx\n", i,
 		    EventName(evq[i].type), evq[i].xany.window);
+#endif
 
    /* Loop through event list, starting with latest */
    for (i = count - 1; i > 0; i--)
@@ -389,10 +391,12 @@ EventsCompress(XEvent * evq, int count)
 		       ev2->type = 0;
 		    }
 	       }
+#if ENABLE_DEBUG_EVENTS
 	     if (n && EventDebug(EDBUG_TYPE_COMPRESSION))
 		Eprintf("EventsCompress n=%4d %s %#lx x,y = %d,%d\n",
 			n, EventName(ev->type), ev->xmotion.window,
 			ev->xmotion.x, ev->xmotion.y);
+#endif
 	     break;
 
 	  case Expose:
@@ -426,10 +430,12 @@ EventsCompress(XEvent * evq, int count)
 		  ev->xexpose.y = ya;
 		  ev->xexpose.height = yb - ya;
 	       }
+#if ENABLE_DEBUG_EVENTS
 	     if (EventDebug(EDBUG_TYPE_COMPRESSION))
 		Eprintf("EventsCompress n=%4d %s %#lx x=%4d-%4d y=%4d-%4d\n",
 			n, EventName(ev->type), ev->xexpose.window,
 			xa, xb, ya, yb);
+#endif
 	     break;
 
 	  default:
@@ -446,20 +452,24 @@ EventsCompress(XEvent * evq, int count)
 			    ev2->type = 0;
 			 }
 		    }
+#if ENABLE_DEBUG_EVENTS
 		  if (n && EventDebug(EDBUG_TYPE_COMPRESSION))
 		     Eprintf("EventsCompress n=%4d %s %#lx\n",
 			     n, EventName(ev->type), ev->xmotion.window);
+#endif
 	       }
 	     break;
 	  }
      }
 
+#if ENABLE_DEBUG_EVENTS
    /* Debug - should be taken out */
    if (EventDebug(EDBUG_TYPE_COMPRESSION))
       for (i = 0; i < count; i++)
 	 if (evq[i].type)
 	    Eprintf("EventsCompress-2 %3d %s w=%#lx\n", i,
 		    EventName(evq[i].type), evq[i].xany.window);
+#endif
 }
 
 static int
@@ -737,6 +747,16 @@ EventDebug(unsigned int type)
    return ev_debug && (type < sizeof(ev_debug_flags)) && ev_debug_flags[type];
 }
 
+void
+EventDebugSet(unsigned int type, int value)
+{
+   if (type >= sizeof(ev_debug_flags))
+      return;
+
+   ev_debug = 1;
+   ev_debug_flags[type] = value;
+}
+
 static const char  *const TxtEventNames[] = {
    "Error", "Reply", "KeyPress", "KeyRelease", "ButtonPress",
    "ButtonRelease", "MotionNotify", "EnterNotify", "LeaveNotify", "FocusIn",
@@ -936,7 +956,7 @@ EventShow(const XEvent * ev)
 #else
 
 void
-EventDebugInit(const char *param)
+EventDebugInit(const char *param __UNUSED__)
 {
 }
 
