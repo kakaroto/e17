@@ -41,8 +41,7 @@ msgid ""
 "Ha ocurrido un error durante la ejecución del programa:\n"
 "%s\n"
 "Este programa no ha podido ser ejecutado.\n"
-"No estoy seguro del motivo por el cual no ha podido hacer esto. El archivo
-existe,\n"
+"No estoy seguro del motivo por el cual no ha podido hacer esto. El archivo existe,\n"
 "es un archivo, y tiene permisos para ejecutarlo. Le sugiero que le de\n"
 "una mirada a esto.\n"
 msgstr ""
@@ -2080,8 +2079,7 @@ msgstr ""
 #: src/sound.c:265
 msgid ""
 "El Audio ha sido activado en Enlightenemnt pero ha ocurrido\n"
-"un error de comunicación con el Servidor de Audio (Esound). 
-Audio will\n"
+"un error de comunicación con el Servidor de Audio (Esound).  Audio will\n"
 " now be disabled.\n"
 msgstr ""
 
