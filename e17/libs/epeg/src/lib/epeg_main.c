@@ -554,19 +554,19 @@ _epeg_open_header(Epeg_Image *im)
 {
    struct jpeg_marker_struct *m;
 
+   im->in.jinfo.err  = jpeg_std_error(&(im->jerr.pub));
+
    im->jerr.pub.error_exit     = _epeg_fatal_error_handler;
    im->jerr.pub.emit_message   = _epeg_error_handler2;
    im->jerr.pub.output_message = _epeg_error_handler;
    
-   im->in.jinfo.err  = jpeg_std_error(&(im->jerr.pub));
-
    if (setjmp(im->jerr.setjmp_buffer))
      {
 	error:
 	epeg_close(im);
 	return NULL;
      }
-
+   
    jpeg_create_decompress(&(im->in.jinfo));
    jpeg_save_markers(&(im->in.jinfo), JPEG_APP0 + 7, 1024);
    jpeg_save_markers(&(im->in.jinfo), JPEG_COM,      65535);
@@ -741,7 +741,19 @@ _epeg_encode(Epeg_Image *im)
 	im->error = 1;
 	return;
      }
+   
    im->out.jinfo.err = jpeg_std_error(&(im->jerr.pub));
+   
+   im->jerr.pub.error_exit     = _epeg_fatal_error_handler;
+   im->jerr.pub.emit_message   = _epeg_error_handler2;
+   im->jerr.pub.output_message = _epeg_error_handler;
+   
+   if (setjmp(im->jerr.setjmp_buffer))
+     {
+	error:
+	return;
+     }
+   
    jpeg_create_compress(&(im->out.jinfo));
    jpeg_stdio_dest(&(im->out.jinfo), im->out.f);
    im->out.jinfo.image_width      = im->out.w;
@@ -812,6 +824,7 @@ _epeg_fatal_error_handler(j_common_ptr cinfo)
    emptr errmgr;
    
    errmgr = (emptr)cinfo->err;
+   longjmp(errmgr->setjmp_buffer, 1);
    return;
 }
 
