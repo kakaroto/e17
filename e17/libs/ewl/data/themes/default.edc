@@ -1,0 +1,80 @@
+fonts {
+   font: "default/fonts/Vera.ttf" "Vera";
+}
+
+images {
+#include "default/bits/button-images.edc"
+#include "default/bits/checkbox-images.edc"
+#include "default/bits/entry-images.edc"
+#include "default/bits/filedialog-images.edc"
+#include "default/bits/misc-images.edc"
+#include "default/bits/progressbar-images.edc"
+#include "default/bits/radio-images.edc"
+#include "default/bits/scrollbar-images.edc"
+#include "default/bits/window-images.edc"
+}
+
+data {
+	item, "/bar/group" "bar";
+	item, "/button/group" "button";
+	item, "/button/label/font" "Vera";
+	item, "/button/label/style" "plain";
+	item, "/button/text/font" "Vera";
+	item, "/button/text/style" "plain";
+	item, "/check/group" "checkbox";
+	item, "/cursor/group" "cursor";
+	item, "/embed/group" "embed";
+	item, "/entry/group" "entry";
+	item, "/entry/text/font" "Vera";
+	item, "/entry/text/style" "plain";
+	item, "/filedialog/group" "filedialog";
+	item, "/hscrollbar/button_decrement/group" "hscroll-left";
+	item, "/hscrollbar/button_increment/group" "hscroll-right";
+	item, "/hseeker/group" "trough";
+	item, "/hseparator/group" "hline";
+	item, "/imenu/group" "dialog";
+	item, "/notebook/tab_button/label/font" "Vera";
+	item, "/notebook/tab_button/label/style" "plain";
+	item, "/progressbar/group" "progressbar";
+	item, "/radio/group" "radio";
+	item, "/scrollpane/group" "trough";
+	item, "/spacer/group" "spacer";
+	item, "/spinner/button_decrement/group" "vscroll-mini-down";
+	item, "/spinner/button_increment/group" "vscroll-mini-up";
+	item, "/text/font" "Vera";
+	item, "/text/style" "plain";
+	item, "/textarea/group" "textarea";
+	item, "/theme/author" "rephorm (www.rephorm.com)";
+	item, "/theme/font_path" "fonts";
+	item, "/theme/license" "Creative Commons License: http://creativecommons.org/licenses/by-sa/1.0";
+	item, "/theme/name" "winter";
+	item, "/tooltip/group" "dialog";
+	item, "/tree/group" "tree";
+	item, "/vscrollbar/button_decrement/group" "vscroll-down";
+	item, "/vscrollbar/button_increment/group" "vscroll-up";
+	item, "/vseeker/group" "trough";
+	item, "/vseparator/group" "vline";
+	item, "/window/group" "window";
+	item, "/button/label/font_size" "10";
+	item, "/button/text/font_size" "10";
+	item, "/entry/text/font_size" "10";
+	item, "/hscrollbar/velocity" "5";
+	item, "/notebook/tab_button/label/font_size" "12";
+	item, "/progressbar/text/font_size" "8";
+	item, "/text/color/a" "255";
+	item, "/text/font_size" "10";
+	item, "/textarea/a" "255";
+	item, "/vscrollbar/velocity" "5";
+}
+
+collections {
+#include "default/bits/button-groups.edc"
+#include "default/bits/checkbox-groups.edc"
+#include "default/bits/entry-groups.edc"
+#include "default/bits/filedialog-groups.edc"
+#include "default/bits/misc-groups.edc"
+#include "default/bits/progressbar-groups.edc"
+#include "default/bits/radio-groups.edc"
+#include "default/bits/scrollbar-groups.edc"
+#include "default/bits/window-groups.edc"
+}
