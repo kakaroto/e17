@@ -9,6 +9,7 @@ elicit_config_init(Elicit *el)
 
   elicit_config_load(el);
   ecore_config_listen("theme", "/settings/theme", elicit_config_listener, 0, el);
+  return 1;
 }
 
 void
@@ -42,7 +43,7 @@ elicit_config_save()
 void
 elicit_config_shutdown()
 {
-  elicit_config_save(el);
+  elicit_config_save();
   ecore_config_exit();
 }
 
@@ -51,7 +52,6 @@ elicit_config_theme_get()
 {
   char *theme = ecore_config_get_string("/settings/theme");
 
-  printf("theme: %s\n", theme);
   return theme ? theme : "winter";
 }
 
@@ -71,8 +71,8 @@ elicit_config_size_get(int *w, int *h)
 void
 elicit_config_size_set(int w, int h)
 {
-  ecore_config_set_int("/window/w");
-  ecore_config_set_int("/window/h");
+  ecore_config_set_int("/window/w", w);
+  ecore_config_set_int("/window/h", h);
 }
 
 void
@@ -86,9 +86,9 @@ elicit_config_color_get(int *r, int *g, int *b)
 void
 elicit_config_color_set(int r, int g, int b)
 {
-  ecore_config_set_int("/color/r");
-  ecore_config_set_int("/color/g");
-  ecore_config_set_int("/color/b");
+  ecore_config_set_int("/color/r", r);
+  ecore_config_set_int("/color/g", g);
+  ecore_config_set_int("/color/b", b);
 }
 
 static int
@@ -99,7 +99,10 @@ elicit_config_listener(const char *key, const Ecore_Config_Type type, const int 
   {
     case ELICIT_CONF_TAG_THEME:
       if (el->gui)
+      {
         elicit_ui_theme_set(el, ecore_config_get_string(key));
+      }
       break;
   }
+  return 1;
 }

@@ -12,5 +12,5 @@ elicit_SOURCES = \
         conf.c conf.h
 
 elicit_LDADD = @edje_libs@ @ecore_libs@ @edb_libs@ @evas_libs@ \
-@esmart_libs@
+@esmart_libs@ 
 

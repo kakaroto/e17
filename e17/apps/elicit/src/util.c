@@ -4,17 +4,16 @@
 #include "util.h"
 
 void
-elicit_action_color_get(int *r, int *g, int *b)
+elicit_util_color_get(int *r, int *g, int *b)
 {
   Imlib_Image *im;
   Imlib_Color col;
-  int red, green, blue;
-  int h, s, v;
   int x, y;
   int tr;
+  Window dummy;
 
   /* where are we pointing? */
-  XQueryPointer(ecore_x_display_get(), RootWindow(ecore_x_display_get(),0), &tr, &tr, &tr, &tr, &x, &y, &tr);
+  XQueryPointer(ecore_x_display_get(), RootWindow(ecore_x_display_get(),0), &dummy, &dummy, &tr, &tr, &x, &y, &tr);
 
   /* setup the imlib context */
   imlib_context_set_display(ecore_x_display_get());
@@ -45,7 +44,7 @@ elicit_action_color_get(int *r, int *g, int *b)
 }
 
 void
-elicit_action_shoot(Evas_Object *shot, int w, int h)
+elicit_util_shoot(Evas_Object *shot, int w, int h)
 {
   Imlib_Image *im;
   int x, y;
@@ -53,8 +52,9 @@ elicit_action_shoot(Evas_Object *shot, int w, int h)
   int dw, dh;
   int tr;
   double sw, sh;
+  Window dummy;
 
-  XQueryPointer(ecore_x_display_get(), RootWindow(ecore_x_display_get(),0), &tr, &tr, &tr, &tr, &px, &py, &tr);
+  XQueryPointer(ecore_x_display_get(), RootWindow(ecore_x_display_get(),0), &dummy, &dummy, &tr, &tr, &px, &py, &tr);
 
   x = px - .5 * w;
   y = py - .5 * h;
@@ -101,7 +101,7 @@ elicit_color_rgb_to_hsv(int rr, int gg, int bb, double *hh, double *ss, double *
    int r, g, b;
    int f;
    float i,j,k,max,min,d;
-   float h, s, v;
+   float h = 0, s = 0, v = 0;
 
    r = rr;
    g = gg;
@@ -150,7 +150,7 @@ elicit_color_hsv_to_rgb(double hh, double ss, double vv, int *rr, int *gg, int *
 {
    int i,p,q,t;
    float vs,vsf;
-   int r, g, b;
+   int r = 0, g = 0, b = 0;
    float h, s, v;
 
    h = hh;
@@ -212,14 +212,14 @@ elicit_color_hsv_to_rgb(double hh, double ss, double vv, int *rr, int *gg, int *
 char * 
 elicit_color_rgb_to_hex(int rr, int gg, int bb)
 {
-  char buf[8];
+  char buf[10];
 
-  sprintf(buf, "#%.2x%.2x%.2x\0", rr, gg, bb);
+  snprintf(buf, 10, "#%.2x%.2x%.2x", rr, gg, bb);
   return (char *)strdup(buf);
 }
 
 int
-elicit_glob_match(char *str, char *glob)
+elicit_glob_match(const char *str, const char *glob)
 {
    if (!strcmp(glob, "*")) return 1;
    if (!fnmatch(glob, str, 0)) return 1;
@@ -240,6 +240,5 @@ elicit_theme_find(const char *name)
     return eet;
 
   snprintf(eet, sizeof(eet), DATADIR"/themes/%s.eet", name);
-
   return stat(eet, &st) ? NULL : eet;
 }

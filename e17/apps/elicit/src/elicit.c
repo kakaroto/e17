@@ -5,9 +5,6 @@
 int setup(int argc, char **argv, Elicit *el);
 void pick_color();
 void shoot();
-void elicit_ui_update_text(Elicit *el);
-void elicit_ui_theme_set(Elicit *el, char *name);
-int timer_color(void *data);
 
 /* variables */
 
@@ -22,6 +19,7 @@ main (int argc, char **argv)
     printf("ERROR: can't initialize Ecore.\n");
     return 1;
   }
+  ecore_app_args_set(argc, (const char **)argv);
   
   if (!ecore_evas_init())
   {
@@ -88,9 +86,6 @@ main (int argc, char **argv)
 int
 setup(int argc, char **argv, Elicit *el)
 {
-  Evas_Object *o;
-  double mw, mh;
-
   elicit_config_init(el);
 
   ecore_evas_borderless_set(el->ee, 1);

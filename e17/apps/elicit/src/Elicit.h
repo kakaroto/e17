@@ -13,9 +13,10 @@
 #include <stdio.h>
 #include <limits.h>
 #include <sys/stat.h>
+#include <fnmatch.h>
 
 #include "config.h"
-#define DATADIR PACKAGE_DATA_DIR"/data"
+#define DATADIR PACKAGE_DATA_DIR
 
 typedef struct _Elicit Elicit;
 
@@ -51,6 +52,8 @@ struct _Elicit
   char *change_sig;
 };
 
+void elicit_ui_update_text(Elicit *el);
+void elicit_ui_theme_set(Elicit *el, char *name);
 
 #endif
 

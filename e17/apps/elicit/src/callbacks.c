@@ -12,7 +12,7 @@ elicit_cb_exit(Ecore_Evas *ee)
 void 
 elicit_cb_resize(Ecore_Evas *ee)
 {
-  int x,y,w, h;
+  int w, h;
   double sw, sh;
   Evas_Object *gui, *shot;
 
@@ -45,7 +45,7 @@ void elicit_cb_pick(void *data, Evas_Object *o, const char *sig, const char *src
   {
     if (el->flags.picking == 1)
     {
-      elicit_action_color_get(&(el->color.r), &(el->color.g), &(el->color.b));
+      elicit_util_color_get(&(el->color.r), &(el->color.g), &(el->color.b));
       evas_object_color_set(el->swatch, el->color.r, el->color.g, el->color.b, 255);
       elicit_color_rgb_to_hsv(el->color.r, el->color.g, el->color.b,
                               &(el->color.h), &(el->color.s), &(el->color.v));
@@ -74,12 +74,12 @@ void elicit_cb_shoot(void *data, Evas_Object *o, const char *sig, const char *sr
     if (el->flags.shooting == 1)
     {
       double sw, sh;
-      double x, y, w, h;
+      double w, h;
 
       evas_object_geometry_get(el->shot, NULL, NULL, &sw, &sh);
       w = sw * (1 / el->zoom);
       h = sh * (1 / el->zoom);
-      elicit_action_shoot(el->shot, (int)w, (int)h);
+      elicit_util_shoot(el->shot, (int)w, (int)h);
     }
   }
 }
@@ -108,7 +108,6 @@ elicit_timer_color(void *data)
   static double start = 0.0;
   double duration = 2.0;
   double r, d, dir;
-  int w;
 
   /* we're done */
   if (!el->flags.changing)
@@ -219,13 +218,9 @@ elicit_timer_color(void *data)
 
   el->flags.changed = 1;
   
-  /* if changing, keep on calling it */
-  if (el->flags.changing)
-  {
-   /* we want the time to wait to depend on how far along it is... */
-   el->change_timer = ecore_timer_add(.16 - .15*r, elicit_timer_color, el);
-   return 0; 
-  }
+  /* we want the time to wait to depend on how far along it is... */
+  el->change_timer = ecore_timer_add(.16 - .15*r, elicit_timer_color, el);
 
+  return 0;
 }
 
