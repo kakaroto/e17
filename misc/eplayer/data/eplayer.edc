@@ -1373,6 +1373,20 @@ collections {
 			//after, 	    "vol_incr_stop";
                 }
 
+                program {
+                        name,       "vol_incr_sig_wheel1";
+                        signal,     "mouse,wheel,0,-1";
+                        source,     "vol_incr_button";
+                        action,     SIGNAL_EMIT "VOL_INCR" "vol_incr_button";
+                }
+
+                program {
+                        name,       "vol_incr_sig_wheel2";
+                        signal,     "mouse,wheel,0,1";
+                        source,     "vol_incr_button";
+                        action,     SIGNAL_EMIT "VOL_DECR" "vol_decr_button";
+                }
+
 
 		/** NOTES: All programs MUST have AT LEAST, a NAME, SOURCE (even if "*";), and an ACTION **/
 
@@ -1396,27 +1410,6 @@ collections {
                         target,     "vol_incr_sig";     // <-- This target program.
                 }
 */
-/*
-<raster> oh for in,
-<raster> the first is the base amount to wait
-<raster> ie 0.2 secodns
-<raster> the second is how many more secodns to add to that at random
-<raster> so 0.2 1.0 will wait at LEAST 0.2 seconds and then up to 1.2 and any range in between (randomly)
-<benr> so "in" is always used as a delay.
-<benr> for looping programs.
-<benr> does the delay occur before or after the program is run?
-<raster> basically the progrm will START running IN that time
-<raster> its basicalyl delayed by that period defined
-<raster> then it starts
-<raster> its not considered to be running yet at thats tage
-<raster> the delay happend BEFORE
-<benr> so it waits before running........ kool.
-<raster> its liek saying "this program here.. instead of runing it now, run it in X seconds"
-<raster> where X = base + (random range from 0 to RAND parameter)
-<raster> thats why its in,
-<raster> ie do this IN this many seconds
-*/
-
 
 		/* Lower Volume */
                 program {
@@ -1441,6 +1434,21 @@ collections {
                         source,     "vol_decr_button";
                         action,     SIGNAL_EMIT "VOL_DECR" "vol_decr_button";
                 }
+
+                program {
+                        name,       "vol_decr_sig_wheel1";
+                        signal,     "mouse,wheel,0,-1";
+                        source,     "vol_decr_button";
+                        action,     SIGNAL_EMIT "VOL_INCR" "vol_incr_button";
+                }
+
+                program {
+                        name,       "vol_decr_sig_wheel2";
+                        signal,     "mouse,wheel,0,1";
+                        source,     "vol_decr_button";
+                        action,     SIGNAL_EMIT "VOL_DECR" "vol_decr_button";
+                }
+
 		} /* Close Programs */
 	} /* Close Group */
 
