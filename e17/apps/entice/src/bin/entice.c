@@ -97,6 +97,7 @@ entice_init(Ecore_Evas * ee)
    char *layout = NULL;
    Evas_Object *o = NULL;
    const char *str = NULL;
+   Evas_Coord ew, eh;
 
    if ((ee) && (e = (Entice *) malloc(sizeof(Entice))))
    {
@@ -112,6 +113,21 @@ entice_init(Ecore_Evas * ee)
       evas_object_move(o, 0, 0);
       evas_object_resize(o, w, h);
       evas_object_layer_set(o, 0);
+
+      edje_object_size_min_get(o, &ew, &eh);
+      if ((ew > 0) && (eh > 0))
+         ecore_evas_size_min_set(ee, (int) ew, (int) eh);
+
+      edje_object_size_max_get(o, &ew, &eh);
+
+      if ((ew > 0) && (eh > 0))
+      {
+         if (ew > INT_MAX)
+            ew = INT_MAX;
+         if (eh > INT_MAX)
+            eh = INT_MAX;
+         ecore_evas_size_max_set(ee, (int) ew, (int) eh);
+      }
       hookup_edje_signals(o);
       evas_object_show(o);
       e->edje = o;
@@ -139,12 +155,10 @@ entice_init(Ecore_Evas * ee)
 
       if (edje_object_part_exists(e->edje, "EnticeThumbnailArea"))
       {
-         double w, h;
-
          edje_object_part_geometry_get(e->edje, "EnticeThumbnailArea", NULL,
-                                       NULL, &w, &h);
+                                       NULL, &ew, &eh);
 
-         if (w > h)
+         if (ew > eh)
          {
             e_container_fill_policy_set(e->container,
                                         CONTAINER_FILL_POLICY_FILL_Y |
