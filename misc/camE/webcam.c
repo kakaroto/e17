@@ -778,7 +778,7 @@ main(int argc, char *argv[])
       overlay_y = i;
 
    /* print config */
-   fprintf(stderr, "camE v0.8 - (c) 1999, 2000 Gerd Knorr, Tom Gilbert\n");
+   fprintf(stderr, "camE v0.9 - (c) 1999, 2000 Gerd Knorr, Tom Gilbert\n");
    fprintf(stderr,
            "grabber config: size %dx%d, input %d, norm %d, "
            "jpeg quality %d\n", grab_width, grab_height, grab_input,
@@ -788,8 +788,12 @@ main(int argc, char *argv[])
               ftp_host, ftp_dir, ftp_tmp, ftp_file);
    
    /* clear logfile */
-   fp = fopen(logfile, "w");
-   fclose(fp);
+   if(logfile)
+   {
+     fp = fopen(logfile, "w");
+     if(fp)
+        fclose(fp);
+   }
 
    /* init everything */
    grab_init();
@@ -853,6 +857,7 @@ main(int argc, char *argv[])
          gib_imlib_save_image(image, temp_file);
          do_postprocess(temp_file);
          archive_jpeg(image);
+         gib_imlib_free_image_and_decache(image);
          if (ftp_do)
          {
             if ((upload_blockfile && (stat(upload_blockfile, &st) == -1))
@@ -903,7 +908,6 @@ main(int argc, char *argv[])
                }
             }
          }
-         gib_imlib_free_image_and_decache(image);
          just_shot = 1;
          time(&end_shot);
       }
