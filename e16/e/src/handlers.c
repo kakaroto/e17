@@ -180,28 +180,25 @@ EHandleXError(Display * d, XErrorEvent * ev)
      {
 	if ((!no_overwrite) && (mode.xselect))
 	  {
-	     ASSIGN_ALERT(_("Another Window Manager is already running"),
-			  _("OK (edit file)"), "", _("Cancel (do NOT edit)"));
-	     Alert(_
-		   ("Another Window Manager is already running.\n" "\n"
-		    "You will have to quit your current Window Manager first before\n"
-		    "you can successfully run Enlightenment.\n" "\n"
-		    "If you haven't edited your user start-up files, Enlightenment\n"
-		    "can do that now for you, so when you log in again after\n"
-		    "quitting your current window manager, you will have\n"
-		    "Enlightenment running.\n" "\n"
-		    "If you want to do this, click OK, otherwise hit cancel\n"
-		    "to abort this operation and edit the files by hand.\n" "\n"
-		    "WARNING WARNING WARNING WARNING!\n" "\n"
-		    "It is possible that this MAY not properly edit your files.\n"));
-	     ASSIGN_ALERT(_("Are you sure?"), _("YES (edit file)"), "",
-			  _("NO (do not edit)"));
-	     Alert(_
-		   ("Are you absolutely sure you want to have Enlightenment\n"
-		    "edit your start-up files for you?\n" "\n"
-		    "If your start-up files are highly customised this may not\n"
-		    "work.\n" "\n" "Are you ABSOLUTELY sure?\n"));
-	     RESET_ALERT;
+	     AlertX(_("Another Window Manager is already running"),
+		    _("OK (edit file)"), "", _("Cancel (do NOT edit)"),
+		    _("Another Window Manager is already running.\n" "\n"
+		      "You will have to quit your current Window Manager first before\n"
+		      "you can successfully run Enlightenment.\n" "\n"
+		      "If you haven't edited your user start-up files, Enlightenment\n"
+		      "can do that now for you, so when you log in again after\n"
+		      "quitting your current window manager, you will have\n"
+		      "Enlightenment running.\n" "\n"
+		      "If you want to do this, click OK, otherwise hit cancel\n"
+		      "to abort this operation and edit the files by hand.\n"
+		      "\n" "WARNING WARNING WARNING WARNING!\n" "\n"
+		      "It is possible that this MAY not properly edit your files.\n"));
+	     AlertX(_("Are you sure?"), _("YES (edit file)"), "",
+		    _("NO (do not edit)"),
+		    _("Are you absolutely sure you want to have Enlightenment\n"
+		      "edit your start-up files for you?\n" "\n"
+		      "If your start-up files are highly customised this may not\n"
+		      "work.\n" "\n" "Are you ABSOLUTELY sure?\n"));
 	     AddE();
 	     EExit((void *)1);
 	  }

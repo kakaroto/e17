@@ -76,9 +76,6 @@ main(int argc, char **argv)
 
 /* End of gettext stuff */
 
-#ifdef DEBUG
-   call_level = 0;
-#endif
    str = getenv("EDBUG");
    if (str)
       mode.debug = atoi(str);
@@ -93,16 +90,6 @@ main(int argc, char **argv)
     */
    lists = Emalloc(sizeof(List) * LIST_TYPE_COUNT);
    lists = memset(lists, 0, (sizeof(List) * LIST_TYPE_COUNT));
-
-   /* Set up all the text bits that belong on the GSOD */
-   AssignTitleText(_("Enlightenment Message Dialog"));
-   AssignIgnoreText(_("Ignore this"));
-   AssignRestartText(_("Restart Enlightenment"));
-   AssignExitText(_("Quit Enlightenment"));
-
-   /* We'll set up what the buttons do now, too */
-   AssignRestartFunction(SessionExit, "restart");
-   AssignExitFunction(SessionExit, NULL);
 
    srand(time(NULL));
 
@@ -237,6 +224,7 @@ main(int argc, char **argv)
    SetSMUserThemePath(themepath);
 
    /* run most of the setup */
+   AlertInit();			/* Set up all the text bits that belong on the GSOD */
    SignalsSetup();
    SetupX();
    BlumFlimFrub();

@@ -301,12 +301,10 @@ SoundInit(void)
       sound_fd = fd;
    else
      {
-	ASSIGN_ALERT(_("Error initialising sound"), _("OK"), " ", " ");
-	Alert(_
-	      ("Audio was enabled for Enlightenment but there was an error\n"
-	       "communicating with the audio server (Esound). Audio will\n"
-	       "now be disabled.\n"));
-	RESET_ALERT;
+	AlertX(_("Error initialising sound"), _("OK"), " ", " ",
+	       _("Audio was enabled for Enlightenment but there was an error\n"
+		 "communicating with the audio server (Esound). Audio will\n"
+		 "now be disabled.\n"));
 	conf.sound = 0;
      }
 #else

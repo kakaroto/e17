@@ -204,18 +204,6 @@ if (__xim) XDestroyImage(__xim);}
 /* long's on 64bit machines... thus well the CARD32's Im unsing shoudl be.. */
 #define CARD32 long
 
-#define RESET_ALERT \
-   AssignTitleText(_("Enlightenment Message Dialog")); \
-   AssignIgnoreText(_("Ignore this")); \
-   AssignRestartText(_("Restart Enlightenment")); \
-   AssignExitText(_("Quit Enlightenment"));
-
-#define ASSIGN_ALERT(a, b, c, d) \
-  AssignTitleText(a); \
-  AssignIgnoreText(b); \
-  AssignRestartText(c); \
-  AssignExitText(d);
-
 #ifndef HAVE_GETCWD
 #error "ERROR: Enlightenment needs a system with getcwd() in it's libs."
 #error "You may have to upgrade your Operating system, Distribution, base"
@@ -1589,7 +1577,11 @@ int                 execApplication(void *params);
 int                 doDragButtonEnd(void *params);
 
 /* alert.c */
-void                Alert(char *fmt, ...);
+void                AlertInit(void);
+void                Alert(const char *fmt, ...);
+void                AlertX(const char *title, const char *ignore,
+			   const char *restart, const char *exit,
+			   const char *fmt, ...);
 void                InitStringList(void);
 void                AssignIgnoreFunction(int (*FunctionToAssign) (void *),
 					 void *params);
@@ -1597,10 +1589,10 @@ void                AssignRestartFunction(int (*FunctionToAssign) (void *),
 					  void *params);
 void                AssignExitFunction(int (*FunctionToAssign) (void *),
 				       void *params);
-void                AssignTitleText(char *text);
-void                AssignIgnoreText(char *text);
-void                AssignRestartText(char *text);
-void                AssignExitText(char *text);
+void                AssignTitleText(const char *text);
+void                AssignIgnoreText(const char *text);
+void                AssignRestartText(const char *text);
+void                AssignExitText(const char *text);
 
 /* areas.c */
 void                AreaFix(int *ax, int *ay);

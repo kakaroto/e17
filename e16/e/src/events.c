@@ -73,15 +73,13 @@ EventsInit(void)
      }
    else
      {
-	ASSIGN_ALERT(_("X server setup error"), "", "",
-		     _("Quit Enlightenment"));
-	Alert(_
-	      ("FATAL ERROR:\n" "\n"
-	       "This Xserver does not support the Shape extension.\n"
-	       "This is required for Enlightenment to run.\n" "\n"
-	       "Your Xserver probably is too old or mis-configured.\n" "\n"
-	       "Exiting.\n"));
-	RESET_ALERT;
+	AlertX(_("X server setup error"), "", "",
+	       _("Quit Enlightenment"),
+	       _("FATAL ERROR:\n" "\n"
+		 "This Xserver does not support the Shape extension.\n"
+		 "This is required for Enlightenment to run.\n" "\n"
+		 "Your Xserver probably is too old or mis-configured.\n" "\n"
+		 "Exiting.\n"));
 	EExit((void *)1);
      }
 

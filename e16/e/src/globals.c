@@ -68,6 +68,6 @@ char               *dstr = NULL;
 char               *e_machine_name = NULL;
 
 #ifdef DEBUG
-int                 call_level;
+int                 call_level = 0;
 char               *call_stack[1024];
 #endif

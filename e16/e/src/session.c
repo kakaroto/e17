@@ -257,12 +257,11 @@ SaveWindowStates(void)
 	     Esnprintf(ss, sizeof(ss), "%s.clients.%i", GetSMFile(), root.scr);
 	     mv(s, ss);
 	     if (!isfile(ss))
-		Alert(_
-		      ("There was an error writing the clients "
-		       "session save file.\n" "You may have run out of disk "
-		       "space, not have permission\n"
-		       "to write to your filing system "
-		       "or other similar problems.\n"));
+		Alert(_("There was an error writing the clients "
+			"session save file.\n" "You may have run out of disk "
+			"space, not have permission\n"
+			"to write to your filing system "
+			"or other similar problems.\n"));
 	  }
 	Efree(lst);
      }
@@ -441,9 +440,8 @@ autosave(void)
 	SaveUserControlConfig(fopen(s, "w"));
 	mv(s, GetGenericSMFile());
 	if (!isfile(GetGenericSMFile()))
-	   Alert(_
-		 ("There was an error saving your autosave data - filing\n"
-		  "system problems.\n"));
+	   Alert(_("There was an error saving your autosave data - filing\n"
+		   "system problems.\n"));
 /*      
  * if (strcmp(GetSMFile(), GetGenericSMFile()))
  * {
@@ -856,13 +854,12 @@ ProcessICEMSGS(void)
    if (status == IceProcessMessagesIOError)
      {
 	/* Less of the hope.... E survives */
-	DialogAlert(_
-		    ("ERROR!\n" "\n"
-		     "Lost the Session Manager that was there?\n"
-		     "Here here session manager... come here... want a bone?\n"
-		     "Oh come now! Stop sulking! Bugger. Oh well. "
-		     "Will continue without\n" "a session manager.\n" "\n"
-		     "I'll survive somehow.\n" "\n" "\n" "... I hope.\n"));
+	DialogAlert(_("ERROR!\n" "\n"
+		      "Lost the Session Manager that was there?\n"
+		      "Here here session manager... come here... want a bone?\n"
+		      "Oh come now! Stop sulking! Bugger. Oh well. "
+		      "Will continue without\n" "a session manager.\n" "\n"
+		      "I'll survive somehow.\n" "\n" "\n" "... I hope.\n"));
 	SmcCloseConnection(sm_conn, 0, NULL);
 	sm_conn = NULL;
 	sm_fd = -1;

@@ -39,7 +39,49 @@ static char        *ExitText = NULL;
 static char        *TitleText = NULL;
 
 void
-Alert(char *fmt, ...)
+AlertInit(void)
+{
+   /* Set up all the text bits that belong on the GSOD */
+   AssignTitleText(_("Enlightenment Message Dialog"));
+   AssignIgnoreText(_("Ignore this"));
+   AssignRestartText(_("Restart Enlightenment"));
+   AssignExitText(_("Quit Enlightenment"));
+
+   /* We'll set up what the buttons do now, too */
+   AssignRestartFunction(SessionExit, "restart");
+   AssignExitFunction(SessionExit, NULL);
+}
+
+void
+AlertX(const char *title, const char *ignore,
+       const char *restart, const char *exit, const char *fmt, ...)
+{
+   char                text[10240];
+   va_list             ap;
+
+   EDBUG(7, "AlertX");
+
+   AssignTitleText(title);
+   AssignIgnoreText(ignore);
+   AssignRestartText(restart);
+   AssignExitText(exit);
+
+   va_start(ap, fmt);
+   Evsnprintf(text, 10240, fmt, ap);
+   va_end(ap);
+   SoundPlay("SOUND_ALERT");
+   ShowAlert(text);
+
+   AssignTitleText(_("Enlightenment Message Dialog"));
+   AssignIgnoreText(_("Ignore this"));
+   AssignRestartText(_("Restart Enlightenment"));
+   AssignExitText(_("Quit Enlightenment"));
+
+   EDBUG_RETURN_;
+}
+
+void
+Alert(const char *fmt, ...)
 {
    char                text[10240];
    va_list             ap;
@@ -56,7 +98,7 @@ Alert(char *fmt, ...)
 }
 
 void
-AssignTitleText(char *text)
+AssignTitleText(const char *text)
 {
    EDBUG(7, "AssignTitleText");
 
@@ -68,7 +110,7 @@ AssignTitleText(char *text)
 }
 
 void
-AssignIgnoreText(char *text)
+AssignIgnoreText(const char *text)
 {
    EDBUG(7, "AssignIgnoreText");
 
@@ -81,7 +123,7 @@ AssignIgnoreText(char *text)
 }
 
 void
-AssignRestartText(char *text)
+AssignRestartText(const char *text)
 {
    EDBUG(7, "AssignRestartText");
 
@@ -94,7 +136,7 @@ AssignRestartText(char *text)
 }
 
 void
-AssignExitText(char *text)
+AssignExitText(const char *text)
 {
    EDBUG(7, "AssignExitText");
 

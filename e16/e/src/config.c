@@ -553,16 +553,14 @@ Config_Text(FILE * ConfigFile)
 	       }
 	     break;
 	  default:
-	     Alert(_
-		   ("Warning: unable to determine what to do with\n"
-		    "the following text in the middle of current Text"
-		    " definition:\n" "%s\nWill ignore and continue...\n"), s);
+	     Alert(_("Warning: unable to determine what to do with\n"
+		     "the following text in the middle of current Text"
+		     " definition:\n" "%s\nWill ignore and continue...\n"), s);
 	  }
 
      }
-   Alert(_
-	 ("Warning:  Configuration appears to have ended before we were\n"
-	  "Done loading a text block.  Outcome is likely not good.\n"));
+   Alert(_("Warning:  Configuration appears to have ended before we were\n"
+	   "Done loading a text block.  Outcome is likely not good.\n"));
 }
 
 static void
@@ -629,16 +627,14 @@ Config_Slideout(FILE * ConfigFile)
 	     }
 	     break;
 	  default:
-	     Alert(_
-		   ("Warning: unable to determine what to do with\n"
-		    "the following text in the middle of current Text "
-		    "definition:\n" "%s\nWill ignore and continue...\n"), s);
+	     Alert(_("Warning: unable to determine what to do with\n"
+		     "the following text in the middle of current Text "
+		     "definition:\n" "%s\nWill ignore and continue...\n"), s);
 	  }
 
      }
-   Alert(_
-	 ("Warning:  Configuration appears to have ended before we were\n"
-	  "Done loading a Slideout block.  Outcome is likely not good.\n"));
+   Alert(_("Warning:  Configuration appears to have ended before we were\n"
+	   "Done loading a Slideout block.  Outcome is likely not good.\n"));
 }
 
 static void
@@ -951,16 +947,14 @@ Config_Control(FILE * ConfigFile)
 	     break;
 	  default:
 	     RecoverUserConfig();
-	     Alert(_
-		   ("Warning: unable to determine what to do with\n"
-		    "the following text in the middle of current Control "
-		    "definition:\n" "%s\nWill ignore and continue...\n"), s);
+	     Alert(_("Warning: unable to determine what to do with\n"
+		     "the following text in the middle of current Control "
+		     "definition:\n" "%s\nWill ignore and continue...\n"), s);
 	  }
      }
    RecoverUserConfig();
-   Alert(_
-	 ("Warning:  Configuration appears to have ended before we were\n"
-	  "Done loading a Control block.  Outcome is likely not good.\n"));
+   Alert(_("Warning:  Configuration appears to have ended before we were\n"
+	   "Done loading a Control block.  Outcome is likely not good.\n"));
 }
 
 static void
@@ -1068,9 +1062,8 @@ Config_MenuStyle(FILE * ConfigFile)
 	     break;
 	  }
      }
-   Alert(_
-	 ("Warning:  Configuration appears to have ended before we were\n"
-	  "Done loading a Menu block.  Outcome is likely not good.\n"));
+   Alert(_("Warning:  Configuration appears to have ended before we were\n"
+	   "Done loading a Menu block.  Outcome is likely not good.\n"));
 }
 
 static void
@@ -1297,9 +1290,8 @@ Config_Menu(FILE * ConfigFile)
 	     break;
 	  }
      }
-   Alert(_
-	 ("Warning:  Configuration appears to have ended before we were\n"
-	  "Done loading a Menu block.  Outcome is likely not good.\n"));
+   Alert(_("Warning:  Configuration appears to have ended before we were\n"
+	   "Done loading a Menu block.  Outcome is likely not good.\n"));
 }
 
 static void
@@ -1434,9 +1426,8 @@ BorderPartLoad(FILE * ConfigFile, char type, Border * b)
 	     break;
 	  }
      }
-   Alert(_
-	 ("Warning:  Configuration appears to have ended before we were\n"
-	  "Done loading a BorderPart block.  Outcome is likely not good.\n"));
+   Alert(_("Warning:  Configuration appears to have ended before we were\n"
+	   "Done loading a BorderPart block.  Outcome is likely not good.\n"));
 }
 
 static void
@@ -1524,9 +1515,8 @@ Config_Border(FILE * ConfigFile)
 	       }
 	  }
      }
-   Alert(_
-	 ("Warning:  Configuration appears to have ended before we were\n"
-	  "Done loading a Main Border block.  Outcome is likely not good.\n"));
+   Alert(_("Warning:  Configuration appears to have ended before we were\n"
+	   "Done loading a Main Border block.  Outcome is likely not good.\n"));
 }
 
 static void
@@ -1743,9 +1733,8 @@ Config_Button(FILE * ConfigFile)
       Efree(name);
 
    RecoverUserConfig();
-   Alert(_
-	 ("Warning:  Configuration appears to have ended before we were\n"
-	  "Done loading a Button block.  Outcome is likely not good.\n"));
+   Alert(_("Warning:  Configuration appears to have ended before we were\n"
+	   "Done loading a Button block.  Outcome is likely not good.\n"));
 
    return;
 }
@@ -2003,9 +1992,8 @@ Config_Desktop(FILE * ConfigFile)
       Efree(bg2);
 
    RecoverUserConfig();
-   Alert(_
-	 ("Warning:  Configuration appears to have ended before we were\n"
-	  "Done loading a Desktop block.  Outcome is likely not good.\n"));
+   Alert(_("Warning:  Configuration appears to have ended before we were\n"
+	   "Done loading a Desktop block.  Outcome is likely not good.\n"));
 
    return;
 }
@@ -2086,9 +2074,8 @@ Config_ECursor(FILE * ConfigFile)
       Efree(name);
    if (file)
       Efree(file);
-   Alert(_
-	 ("Warning:  Configuration appears to have ended before we were\n"
-	  "Done loading a Desktop block.  Outcome is likely not good.\n"));
+   Alert(_("Warning:  Configuration appears to have ended before we were\n"
+	   "Done loading a Desktop block.  Outcome is likely not good.\n"));
 }
 
 static void
@@ -2129,9 +2116,8 @@ Config_Iconbox(FILE * ConfigFile)
 	     break;
 	  }
      }
-   Alert(_
-	 ("Warning:  Configuration appears to have ended before we were\n"
-	  "Done loading an Iconbox block.  Outcome is likely not good.\n"));
+   Alert(_("Warning:  Configuration appears to have ended before we were\n"
+	   "Done loading an Iconbox block.  Outcome is likely not good.\n"));
 }
 
 static void
@@ -2164,9 +2150,8 @@ Config_Sound(FILE * ConfigFile)
 	     sc = SclassCreate(s1, s2);
 	  }
      }
-   Alert(_
-	 ("Warning:  Configuration appears to have ended before we were\n"
-	  "Done loading an Sound block.  Outcome is likely not good.\n"));
+   Alert(_("Warning:  Configuration appears to have ended before we were\n"
+	   "Done loading an Sound block.  Outcome is likely not good.\n"));
 }
 
 static void
@@ -2418,11 +2403,10 @@ Config_ActionClass(FILE * ConfigFile)
 	     break;
 	  default:
 	     RecoverUserConfig();
-	     Alert(_
-		   ("Warning: unable to determine what to do with\n"
-		    "the following text in the middle of current "
-		    "ActionClass definition:\n"
-		    "%s\nWill ignore and continue...\n"), s);
+	     Alert(_("Warning: unable to determine what to do with\n"
+		     "the following text in the middle of current "
+		     "ActionClass definition:\n"
+		     "%s\nWill ignore and continue...\n"), s);
 	     break;
 	  }
      }
@@ -2433,9 +2417,8 @@ Config_ActionClass(FILE * ConfigFile)
    if (action_tooltipstring)
       Efree(action_tooltipstring);
    RecoverUserConfig();
-   Alert(_
-	 ("Warning:  Configuration appears to have ended before we were\n"
-	  "Done loading an Action Class block.  Outcome is likely not good.\n"));
+   Alert(_("Warning:  Configuration appears to have ended before we were\n"
+	   "Done loading an Action Class block.  Outcome is likely not good.\n"));
 }
 
 static void
@@ -2635,17 +2618,15 @@ Config_ImageClass(FILE * ConfigFile)
 	     ICToRead = ic->sticky_active.disabled;
 	     break;
 	  default:
-	     Alert(_
-		   ("Warning: unable to determine what to do with\n"
-		    "the following text in the middle of current "
-		    "ImageClass definition:\n"
-		    "%s\nWill ignore and continue...\n"), s);
+	     Alert(_("Warning: unable to determine what to do with\n"
+		     "the following text in the middle of current "
+		     "ImageClass definition:\n"
+		     "%s\nWill ignore and continue...\n"), s);
 	     break;
 	  }
      }
-   Alert(_
-	 ("Warning:  Configuration appears to have ended before we were\n"
-	  "Done loading an ImageClass block.  Outcome is likely not good.\n"));
+   Alert(_("Warning:  Configuration appears to have ended before we were\n"
+	   "Done loading an ImageClass block.  Outcome is likely not good.\n"));
 }
 
 static void
@@ -2883,11 +2864,10 @@ Config_ColorModifier(FILE * ConfigFile)
 	     break;
 	  default:
 	     RecoverUserConfig();
-	     Alert(_
-		   ("Warning: unable to determine what to do with\n"
-		    "the following text in the middle of current "
-		    " ColorModifier definition:\n"
-		    "%s\nWill ignore and continue...\n"), s);
+	     Alert(_("Warning: unable to determine what to do with\n"
+		     "the following text in the middle of current "
+		     " ColorModifier definition:\n"
+		     "%s\nWill ignore and continue...\n"), s);
 	     break;
 	  }
      }
@@ -2908,10 +2888,9 @@ Config_ColorModifier(FILE * ConfigFile)
       Efree(by);
 
    RecoverUserConfig();
-   Alert(_
-	 ("Warning:  Configuration appears to have ended before we were\n"
-	  "Done loading an ColorModifier block.\n"
-	  "Outcome is likely not good.\n"));
+   Alert(_("Warning:  Configuration appears to have ended before we were\n"
+	   "Done loading an ColorModifier block.\n"
+	   "Outcome is likely not good.\n"));
 
    return;
 }
@@ -3000,17 +2979,15 @@ Config_ToolTip(FILE * ConfigFile)
 		FindItem(s2, 0, LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
 	     break;
 	  default:
-	     Alert(_
-		   ("Warning: unable to determine what to do with\n"
-		    "the following text in the middle of current "
-		    "ToolTip definition:\n"
-		    "%s\nWill ignore and continue...\n"), s);
+	     Alert(_("Warning: unable to determine what to do with\n"
+		     "the following text in the middle of current "
+		     "ToolTip definition:\n"
+		     "%s\nWill ignore and continue...\n"), s);
 	     break;
 	  }
      }
-   Alert(_
-	 ("Warning: Configuration appears to have ended before we were\n"
-	  "Done loading an ToolTip block.  Outcome is likely not good.\n"));
+   Alert(_("Warning: Configuration appears to have ended before we were\n"
+	   "Done loading an ToolTip block.  Outcome is likely not good.\n"));
 
 }
 
@@ -3047,9 +3024,8 @@ Config_FX(FILE * ConfigFile)
 	  }
      }
    RecoverUserConfig();
-   Alert(_
-	 ("Warning: Configuration appears to have ended before we were\n"
-	  "Done loading an FX block.  Outcome is likely not good.\n"));
+   Alert(_("Warning: Configuration appears to have ended before we were\n"
+	   "Done loading an FX block.  Outcome is likely not good.\n"));
 }
 
 static void
@@ -3138,18 +3114,16 @@ Config_Ibox(FILE * ConfigFile)
 	     return;
 	     break;
 	  default:
-	     Alert(_
-		   ("Warning: unable to determine what to do with\n"
-		    "the following text in the middle of current "
-		    "Iconbox definition:\n"
-		    "%s\nWill ignore and continue...\n"), s);
+	     Alert(_("Warning: unable to determine what to do with\n"
+		     "the following text in the middle of current "
+		     "Iconbox definition:\n"
+		     "%s\nWill ignore and continue...\n"), s);
 	     break;
 	  }
      }
    RecoverUserConfig();
-   Alert(_
-	 ("Warning: Configuration appears to have ended before we were\n"
-	  "Done loading an Iconbox block.  Outcome is likely not good.\n"));
+   Alert(_("Warning: Configuration appears to have ended before we were\n"
+	   "Done loading an Iconbox block.  Outcome is likely not good.\n"));
 }
 
 static void
@@ -3184,18 +3158,16 @@ Config_Extras(FILE * ConfigFile)
 	     return;
 	     break;
 	  default:
-	     Alert(_
-		   ("Warning: unable to determine what to do with\n"
-		    "the following text in the middle of current "
-		    "Extras definition:\n"
-		    "%s\nWill ignore and continue...\n"), s);
+	     Alert(_("Warning: unable to determine what to do with\n"
+		     "the following text in the middle of current "
+		     "Extras definition:\n"
+		     "%s\nWill ignore and continue...\n"), s);
 	     break;
 	  }
      }
    RecoverUserConfig();
-   Alert(_
-	 ("Warning: Configuration appears to have ended before we were\n"
-	  "Done loading an Extras block.  Outcome is likely not good.\n"));
+   Alert(_("Warning: Configuration appears to have ended before we were\n"
+	   "Done loading an Extras block.  Outcome is likely not good.\n"));
 }
 
 static void
@@ -3300,17 +3272,15 @@ Config_WindowMatch(FILE * ConfigFile)
 	     bm->make_sticky = atoi(s2);
 	     break;
 	  default:
-	     Alert(_
-		   ("Warning: unable to determine what to do with\n"
-		    "the following text in the middle of current "
-		    "WindowMatch definition:\n"
-		    "%s\nWill ignore and continue...\n"), s);
+	     Alert(_("Warning: unable to determine what to do with\n"
+		     "the following text in the middle of current "
+		     "WindowMatch definition:\n"
+		     "%s\nWill ignore and continue...\n"), s);
 	     break;
 	  }
      }
-   Alert(_
-	 ("Warning: Configuration appears to have ended before we were\n"
-	  "Done loading an WindowMatch block.  Outcome is likely not good.\n"));
+   Alert(_("Warning: Configuration appears to have ended before we were\n"
+	   "Done loading an WindowMatch block.  Outcome is likely not good.\n"));
 }
 
 static char        *cfg_tmpfile = NULL;
@@ -3338,12 +3308,11 @@ OpenConfigFileForReading(char *path, char preprocess)
 
 	if ((!have_epp) && (!(isfile(epp_path)) && (canexec(epp_path))))
 	  {
-	     Alert(_
-		   ("Help! Cannot find epp!\n"
-		    "Enlightenment is looking for epp here:\n" "%s\n"
-		    "This is a FATAL ERROR.\n"
-		    "This is probably due to either the program not existing or\n"
-		    "it not being able to be executed by you.\n"), epp_path);
+	     Alert(_("Help! Cannot find epp!\n"
+		     "Enlightenment is looking for epp here:\n" "%s\n"
+		     "This is a FATAL ERROR.\n"
+		     "This is probably due to either the program not existing or\n"
+		     "it not being able to be executed by you.\n"), epp_path);
 	     SessionExit("error");
 	  }
 	else
@@ -3446,53 +3415,51 @@ LoadOpenConfigFile(FILE * ConfigFile)
 	       {
 		  if (!is_autosave)
 		    {
-		       ASSIGN_ALERT(_("Theme versioning ERROR"),
-				    _("Restart with Defaults"), " ",
-				    _("Abort and Exit"));
-		       Alert(_
-			     ("ERROR:\n" "\n"
-			      "The configuration for the theme you are "
-			      "running is\n"
-			      "incompatible. It's config revision is %i.  "
-			      "It needs to\n" "be marked as being revision %i\n"
-			      "\n" "Please contact the theme author or "
-			      "maintainer and\n"
-			      "inform them that in order for their theme "
-			      "to function\n"
-			      "with this version of Enlightenment, they "
-			      "have to\n"
-			      "update it to the current settings, and "
-			      "then match\n" "the revision number.\n" "\n"
-			      "If the theme revision is higher than "
-			      "Enlightenment's\n"
-			      "it may be that you haven't upgraded "
-			      "Enlightenment for\n"
-			      "a while and this theme takes advantages of new\n"
-			      "features in Enlightenment in new versions.\n"),
-			     e_cfg_ver, min_e_cfg_ver);
-		       RESET_ALERT;
+		       AlertX(_("Theme versioning ERROR"),
+			      _("Restart with Defaults"), " ",
+			      _("Abort and Exit"),
+			      _("ERROR:\n" "\n"
+				"The configuration for the theme you are "
+				"running is\n"
+				"incompatible. It's config revision is %i.  "
+				"It needs to\n"
+				"be marked as being revision %i\n" "\n"
+				"Please contact the theme author or "
+				"maintainer and\n"
+				"inform them that in order for their theme "
+				"to function\n"
+				"with this version of Enlightenment, they "
+				"have to\n"
+				"update it to the current settings, and "
+				"then match\n" "the revision number.\n" "\n"
+				"If the theme revision is higher than "
+				"Enlightenment's\n"
+				"it may be that you haven't upgraded "
+				"Enlightenment for\n"
+				"a while and this theme takes advantages of new\n"
+				"features in Enlightenment in new versions.\n"),
+			      e_cfg_ver, min_e_cfg_ver);
 		       SessionExit("restart_theme DEFAULT");
 		    }
 		  else
 		    {
 		       conf.autosave = 0;
-		       ASSIGN_ALERT(_("User Config Version ERROR"),
-				    _("Restart with Defaults"), " ",
-				    _("Abort and Exit"));
-		       Alert(_
-			     ("ERROR:\n" "\n" "The settings you are using are "
-			      "incompatible with\n"
-			      "this version of Enlightenment.\n"
-			      "It's revision is %i It needs to be revision "
-			      "%i to\n" "be compatible.\n" "\n"
-			      "If you just upgraded to a new version of E\n"
-			      "Restarting with Defaults will remove your current\n"
-			      "user preferences and start cleanly with system\n"
-			      "defaults. You can then modify your "
-			      "configuration to\n"
-			      "your liking again safely.\n"), e_cfg_ver,
-			     min_e_cfg_ver);
-		       RESET_ALERT;
+		       AlertX(_("User Config Version ERROR"),
+			      _("Restart with Defaults"), " ",
+			      _("Abort and Exit"),
+			      _("ERROR:\n" "\n"
+				"The settings you are using are "
+				"incompatible with\n"
+				"this version of Enlightenment.\n"
+				"It's revision is %i It needs to be revision "
+				"%i to\n" "be compatible.\n" "\n"
+				"If you just upgraded to a new version of E\n"
+				"Restarting with Defaults will remove your current\n"
+				"user preferences and start cleanly with system\n"
+				"defaults. You can then modify your "
+				"configuration to\n"
+				"your liking again safely.\n"), e_cfg_ver,
+			      min_e_cfg_ver);
 		       SessionExit("restart");
 		    }
 	       }
@@ -3727,39 +3694,37 @@ LoadEConfig(char *themelocation)
 	Esnprintf(ss, sizeof(ss), "%s/user_theme.cfg", EDirUser());
 	mv(s, ss);
 	if (!isfile(ss))
-	   Alert(_
-		 ("WARNING!\n" "There was an error writing the file:\n" "%s\n"
-		  "This may be due to lack of disk space, quota or\n"
-		  "filesystem permissions.\n"), ss);
+	   Alert(_("WARNING!\n" "There was an error writing the file:\n" "%s\n"
+		   "This may be due to lack of disk space, quota or\n"
+		   "filesystem permissions.\n"), ss);
      }
 
    theme = FindTheme(themelocation);
    if (!theme)
      {
-	Alert(_
-	      ("Enlightenment has just experienced some major problems in\n"
-	       "attempting to load the theme you specified or the default\n"
-	       "configuration directory:\n" "%s/config/\n"
-	       "This will prevent Enlightenment from loading any "
-	       "configuration\n" "files at all.\n"
-	       "Since this couldn't be found Enlightenment is probably not\n"
-	       "going to find any configuration files anywhere on your\n"
-	       "system, and so it will have almost no configuration loaded\n"
-	       "when it starts up. This is most likely the sign of a bad\n"
-	       "installation of Enlightenment if this directory is missing.\n"
-	       "The likely causes are that the package was improperly built,\n"
-	       "if a binary package, or 'make install' hasn't been typed\n"
-	       "or during the installation the directory above was not\n"
-	       "able to be copied over for installation perhaps due to\n"
-	       "permissions or lack of disk space. It also could be that the\n"
-	       "config directory has been inadvertently deleted since\n"
-	       "installation.\n"
-	       "This is a serious problem and should be rectified immediately\n"
-	       "Please contact your system administrator or package "
-	       "maintainer.\n"
-	       "If you are the administrator of your own system please\n"
-	       "consult the documentation that came with Enlightenment for\n"
-	       "additional information.\n"), EDirRoot());
+	Alert(_("Enlightenment has just experienced some major problems in\n"
+		"attempting to load the theme you specified or the default\n"
+		"configuration directory:\n" "%s/config/\n"
+		"This will prevent Enlightenment from loading any "
+		"configuration\n" "files at all.\n"
+		"Since this couldn't be found Enlightenment is probably not\n"
+		"going to find any configuration files anywhere on your\n"
+		"system, and so it will have almost no configuration loaded\n"
+		"when it starts up. This is most likely the sign of a bad\n"
+		"installation of Enlightenment if this directory is missing.\n"
+		"The likely causes are that the package was improperly built,\n"
+		"if a binary package, or 'make install' hasn't been typed\n"
+		"or during the installation the directory above was not\n"
+		"able to be copied over for installation perhaps due to\n"
+		"permissions or lack of disk space. It also could be that the\n"
+		"config directory has been inadvertently deleted since\n"
+		"installation.\n"
+		"This is a serious problem and should be rectified immediately\n"
+		"Please contact your system administrator or package "
+		"maintainer.\n"
+		"If you are the administrator of your own system please\n"
+		"consult the documentation that came with Enlightenment for\n"
+		"additional information.\n"), EDirRoot());
 	EDBUG_RETURN(0);
      }
 
@@ -4251,16 +4216,14 @@ RecoverUserConfig(void)
 {
    if (is_autosave)
      {
-	ASSIGN_ALERT(_("Recover system config?"), _("Yes, Attempt recovery"),
-		     _("Restart and try again"), _("Quit and give up"));
-	Alert(_
-	      ("Enlightenment has encountered parsing errors in your autosaved\n"
-	       "configuration.\n" "\n"
-	       "This may be due to filing system errors, Minor bugs or "
-	       "unforeseen\n" "system shutdowns.\n" "\n"
-	       "Do you wish Enlightenment to recover its original system\n"
-	       "configuration and try again?\n"));
-	RESET_ALERT;
+	AlertX(_("Recover system config?"), _("Yes, Attempt recovery"),
+	       _("Restart and try again"), _("Quit and give up"),
+	       ("Enlightenment has encountered parsing errors in your autosaved\n"
+		"configuration.\n" "\n"
+		"This may be due to filing system errors, Minor bugs or "
+		"unforeseen\n" "system shutdowns.\n" "\n"
+		"Do you wish Enlightenment to recover its original system\n"
+		"configuration and try again?\n"));
 	conf.autosave = 0;
 	MapUnmap(1);
 	if (getpid() == master_pid && init_win_ext)

@@ -44,27 +44,25 @@ BlumFlimFrub(void)
 	Esnprintf(s, sizeof(s), "%s/%s", EDirBin(), bins[i]);
 	if (!exists(s))
 	  {
-	     Alert(_
-		   ("!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n" "\n"
-		    "Enlightenment's utility executable cannot be found at:\n"
-		    "\n" "%s\n"
-		    "This is a fatal error and Enlightenment will cease to run.\n"
-		    "Please rectify this situation and ensure it is installed\n"
-		    "correctly.\n" "\n"
-		    "The reason this could be missing is due to badly created\n"
-		    "packages, someone manually deleting that program or perhaps\n"
-		    "an error in installing Enlightenment.\n"), s);
+	     Alert(_("!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n" "\n"
+		     "Enlightenment's utility executable cannot be found at:\n"
+		     "\n" "%s\n"
+		     "This is a fatal error and Enlightenment will cease to run.\n"
+		     "Please rectify this situation and ensure it is installed\n"
+		     "correctly.\n" "\n"
+		     "The reason this could be missing is due to badly created\n"
+		     "packages, someone manually deleting that program or perhaps\n"
+		     "an error in installing Enlightenment.\n"), s);
 	     EExit(NULL);
 	  }
 	if (!canexec(s))
 	  {
-	     Alert(_
-		   ("!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n" "\n"
-		    "Enlightenment's dox executable is not able to be executed:\n"
-		    "\n" "%s\n"
-		    "This is a fatal error and Enlightenment will cease to run.\n"
-		    "Please rectify this situation and ensure dox is installed\n"
-		    "correctly.\n"), s);
+	     Alert(_("!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n" "\n"
+		     "Enlightenment's dox executable is not able to be executed:\n"
+		     "\n" "%s\n"
+		     "This is a fatal error and Enlightenment will cease to run.\n"
+		     "Please rectify this situation and ensure dox is installed\n"
+		     "correctly.\n"), s);
 	     EExit(NULL);
 	  }
      }
@@ -74,15 +72,14 @@ BlumFlimFrub(void)
 	Esnprintf(s, sizeof(s), "%s/%s", EDirRoot(), thms[i]);
 	if (!exists(s))
 	  {
-	     Alert(_
-		   ("!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n" "\n"
-		    "Enlightenment's DEFAULT installed theme is missing or inadequately\n"
-		    "configured to be a useful DEFAULT theme.\n" "\n"
-		    "This is a fatal error and Enlightenment will cease to run.\n"
-		    "Please rectify this situation and ensure it is installed\n"
-		    "correctly. The DEFAULT theme Enlightenment comes with normally\n"
-		    "is BrushedMetal-Tigert and this theme is adequate for a DEFAULT\n"
-		    "theme.\n"));
+	     Alert(_("!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n" "\n"
+		     "Enlightenment's DEFAULT installed theme is missing or inadequately\n"
+		     "configured to be a useful DEFAULT theme.\n" "\n"
+		     "This is a fatal error and Enlightenment will cease to run.\n"
+		     "Please rectify this situation and ensure it is installed\n"
+		     "correctly. The DEFAULT theme Enlightenment comes with normally\n"
+		     "is BrushedMetal-Tigert and this theme is adequate for a DEFAULT\n"
+		     "theme.\n"));
 	     EExit(NULL);
 	  }
      }
