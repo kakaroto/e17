@@ -1,8 +1,10 @@
 dnl Process this file with autoconf to create configure.
 
 AC_INIT(src/Imlib2.h)
-AM_CONFIG_HEADER(config.h)
 AC_CANONICAL_SYSTEM
+AM_INIT_AUTOMAKE(imlib2, 1.0.0)
+
+AM_CONFIG_HEADER(config.h)
 
 AC_ARG_WITH(edb,
         [  --with-edb=DIR          use edb rooted at <DIR>],
@@ -34,8 +36,7 @@ fi
 if test x$mmx = xyes; then
   AC_DEFINE(DO_MMX_ASM, 1, [enabling MMX Assembly])
 fi
-
-AM_INIT_AUTOMAKE(imlib2, 1.0.0)
+AM_CONDITIONAL(HAVE_MMX, test x$mmx = xyes)
 
 pkglibdir='${libdir}'/loaders
 AC_SUBST(pkglibdir)
