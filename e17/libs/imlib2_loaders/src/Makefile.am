@@ -20,11 +20,15 @@ INCLUDES             = $(CFLAGS_ALL)
 
 pkgdir		     = $(libdir)/loaders/image
 
+if XCF_LOADER
+XCF_L               = xcf.la
+endif
+
 if EDB_LOADER
 EDB_L               = db.la
 endif
 
-pkg_LTLIBRARIES      = xcf.la $(EDB_L)
+pkg_LTLIBRARIES      = $(XCF_L) $(EDB_L)
 
 xcf_la_SOURCES       = \
 	loader_xcf.c \
