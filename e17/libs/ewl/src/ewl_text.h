@@ -37,6 +37,6 @@ void ewl_text_get_letter_geometry(Ewl_Widget * w, int index, int *xx,
 void ewl_text_get_letter_geometry_at(Ewl_Widget * w, int x, int y,
 				     int *tx, int *ty, int *tw, int *th);
 void ewl_text_set_alignment(Ewl_Widget * w, Ewl_Alignment a);
-int ewl_text_get_index_at(Ewl_Widget * w, int x, int y, int *index);
+void ewl_text_get_index_at(Ewl_Widget * w, int x, int y, int *index);
 
 #endif
