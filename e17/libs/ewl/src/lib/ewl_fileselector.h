@@ -51,7 +51,7 @@ struct Ewl_Fileselector
 
 
 Ewl_Widget 	*ewl_fileselector_new();
-void 		 ewl_fileselector_init(Ewl_Fileselector *fs);
+int  		 ewl_fileselector_init(Ewl_Fileselector *fs);
 
 char 		*ewl_fileselector_path_get(Ewl_Fileselector *fs);
 char 		*ewl_fileselector_file_get(Ewl_Fileselector *fs);

@@ -18,8 +18,11 @@ static char *ewl_fileselector_path_home_get(void);
 static char *ewl_fileselector_size_string_get(off_t st_size);
 static char *ewl_fileselector_perm_string_get(mode_t st_mode);
 static void ewl_fileselector_file_list_get(char *path, char *filter, 
-					Ecore_List *flist, Ecore_List *dlist);
+					   Ecore_List *flist,
+					   Ecore_List *dlist);
 static void ewl_fileselector_path_setup(Ewl_Fileselector *fs, char *path);
+static void ewl_fileselector_show_cb(Ewl_Widget *entry, void *ev_data,
+					void *user_data);
 static void ewl_fileselector_dir_data_cleanup_cb(Ewl_Widget *entry, 
 					void *ev_data, void *user_data);
 static void ewl_fileselector_file_data_cleanup_cb(Ewl_Widget *entry, 
@@ -39,7 +42,10 @@ Ewl_Widget *ewl_fileselector_new()
 	if (!fs)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
-	ewl_fileselector_init(fs);
+	if (!ewl_fileselector_init(fs)) {
+		FREE(fs);
+		fs = NULL;
+	}
 
 	DRETURN_PTR(EWL_WIDGET(fs), DLEVEL_STABLE);
 }
@@ -49,7 +55,7 @@ Ewl_Widget *ewl_fileselector_new()
  * @return Returns no value.
  * @brief Initalize the fileselector
  */
-void ewl_fileselector_init(Ewl_Fileselector * fs)
+int ewl_fileselector_init(Ewl_Fileselector * fs)
 {
 	char *tmp;
 	Ewl_Widget *w;
@@ -65,17 +71,21 @@ void ewl_fileselector_init(Ewl_Fileselector * fs)
 	};
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("fs", fs);
+	DCHECK_PARAM_PTR_RET("fs", fs, FALSE);
 
 	w = EWL_WIDGET(fs);
 
-	ewl_box_init(EWL_BOX(w), EWL_ORIENTATION_VERTICAL);
+	if (!ewl_box_init(EWL_BOX(w), EWL_ORIENTATION_VERTICAL))
+		DRETURN_INT(FALSE, DLEVEL_STABLE);
+
+	ewl_widget_inherit(w, "fileselector");
 	ewl_object_size_request(EWL_OBJECT(w), 500, 450);
 	ewl_object_fill_policy_set(EWL_OBJECT(w),
 				   EWL_FLAG_FILL_SHRINK |
 				   EWL_FLAG_FILL_HFILL);
+	ewl_callback_append(w, EWL_CALLBACK_SHOW,
+			    ewl_fileselector_show_cb, NULL);
 
-	ewl_widget_inherit(w, "fileselector");
 
 	/* The entry for the current directory */
 	/* and some icons */
@@ -181,7 +191,8 @@ void ewl_fileselector_init(Ewl_Fileselector * fs)
 
 		fs->entry_filter = ewl_entry_new("^[^\\.]");
 		ewl_callback_append(fs->entry_filter,
-				EWL_CALLBACK_VALUE_CHANGED, ewl_fileselector_filter_cb,
+				EWL_CALLBACK_VALUE_CHANGED,
+				ewl_fileselector_filter_cb,
 				fs);
 		ewl_container_child_append(EWL_CONTAINER(hbox),
 					   fs->entry_filter);
@@ -192,9 +203,9 @@ void ewl_fileselector_init(Ewl_Fileselector * fs)
 	}
 
 	tmp = getenv("HOME");
-	ewl_fileselector_path_setup(fs, (tmp ? tmp : "/"));
+	fs->path = strdup((tmp ? tmp : "/"));
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
 /**
@@ -250,7 +261,10 @@ void ewl_fileselector_path_set(Ewl_Fileselector * fs, char *path)
 	DCHECK_PARAM_PTR("fs", fs);
 	DCHECK_PARAM_PTR("path", path);
 
-	ewl_fileselector_path_setup(fs, path);
+	if (REALIZED(fs))
+		ewl_fileselector_path_setup(fs, path);
+	else
+		fs->path = strdup(path);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -474,6 +488,13 @@ static void ewl_fileselector_file_list_get(char *path, char *filter,
  * Internally used callbacks, override at your own risk.
  */
 void
+ewl_fileselector_show_cb(Ewl_Widget * w, void *ev_data, void *user_data)
+{
+	Ewl_Fileselector *fs = EWL_FILESELECTOR(w);
+	ewl_fileselector_path_setup(fs, fs->path);
+}
+
+void
 ewl_fileselector_tooltip_destroy_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	if (user_data)
@@ -626,7 +647,7 @@ static void ewl_fileselector_path_setup(Ewl_Fileselector * fs, char *path)
 		ewl_fileselector_tooltip_add(prow, ecore_list_current(dirs));
 		ewl_fileselector_data_free(d);
 
-		ewl_callback_append(prow, EWL_CALLBACK_CLICKED,
+		ewl_callback_append(prow, EWL_CALLBACK_DOUBLE_CLICKED,
 				    ewl_fileselector_select_dir_cb, fs);
 		ewl_callback_append(prow, EWL_CALLBACK_DESTROY,
 				ewl_fileselector_dir_data_cleanup_cb, NULL);

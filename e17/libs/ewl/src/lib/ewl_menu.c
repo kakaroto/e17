@@ -98,6 +98,7 @@ void ewl_menu_expand_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	menu = EWL_MENU(w);
 
 	ewl_widget_show(menu->base.popup);
+	ewl_window_raise(EWL_WINDOW(menu->base.popup));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
