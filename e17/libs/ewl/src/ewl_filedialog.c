@@ -39,6 +39,7 @@ ewl_filedialog_init(Ewl_Filedialog * fd, Ewl_Filedialog_Type type,
 		Ewl_Callback_Function ok_cb, Ewl_Callback_Function cancel_cb)
 {
 	Ewl_Widget     *w;
+	Ewl_Widget     *hbox;
 	Ewl_Widget     *vbox;
 	
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -54,18 +55,44 @@ ewl_filedialog_init(Ewl_Filedialog * fd, Ewl_Filedialog_Type type,
 	ewl_widget_set_appearance (EWL_WIDGET (w), "filedialog");
 
 	vbox = ewl_vbox_new ();
+	ewl_widget_set_internal(vbox, TRUE);
 	ewl_object_set_fill_policy(EWL_OBJECT(vbox), EWL_FLAG_FILL_SHRINK |
 						     EWL_FLAG_FILL_FILL);
 	ewl_container_append_child(EWL_CONTAINER(fd), vbox);
 	ewl_widget_show (vbox);
 
 	fd->path_label = ewl_text_new ("");
+	ewl_widget_set_internal(fd->path_label, TRUE);
 	ewl_container_append_child(EWL_CONTAINER(vbox), fd->path_label);
 	ewl_object_set_padding(EWL_OBJECT(fd->path_label), 2, 2, 2, 2);
 	ewl_widget_show (fd->path_label);
 
+	hbox = ewl_hbox_new();
+	ewl_box_set_homogeneous(EWL_BOX(hbox), FALSE);
+	ewl_widget_set_internal(hbox, TRUE);
+	ewl_container_append_child(EWL_CONTAINER(vbox), hbox);
+	ewl_widget_show (hbox);
+
+	/*
+	 * This box will be redirected to, to allow users to pack additional
+	 * buttons and widgets inside the filedialog.
+	 */
+	fd->decor_box = ewl_vbox_new();
+	ewl_widget_set_internal(fd->decor_box, TRUE);
+	ewl_object_set_fill_policy(EWL_OBJECT(fd->decor_box),
+				   EWL_FLAG_FILL_VFILL);
+	ewl_box_set_spacing(EWL_BOX(fd->decor_box), 4);
+	ewl_object_set_padding(EWL_OBJECT(fd->decor_box), 10, 10, 10, 10);
+	/*
+	ewl_object_set_fill_policy(EWL_OBJECT(fd->decor_box), EWL_FLAG_FILL_NONE);
+	*/
+	ewl_object_set_alignment(EWL_OBJECT(fd->decor_box), EWL_FLAG_ALIGN_RIGHT);
+	ewl_container_append_child(EWL_CONTAINER(hbox), fd->decor_box);
+	ewl_widget_show(fd->decor_box);
+
 	fd->selector = ewl_fileselector_new(ok_cb);
-	ewl_container_append_child(EWL_CONTAINER(vbox), fd->selector);
+	ewl_widget_set_internal(fd->selector, TRUE);
+	ewl_container_append_child(EWL_CONTAINER(hbox), fd->selector);
 	ewl_callback_append (EWL_WIDGET (fd->selector),
 			EWL_CALLBACK_VALUE_CHANGED,
 			ewl_filedialog_change_labels, fd);
@@ -73,7 +100,8 @@ ewl_filedialog_init(Ewl_Filedialog * fd, Ewl_Filedialog_Type type,
 			EWL_CALLBACK_CLICKED, ewl_filedialog_change_entry, fd);
 	ewl_widget_show(fd->selector);
 
-	fd->button_box = ewl_box_new(EWL_ORIENTATION_HORIZONTAL);
+	fd->button_box = ewl_hbox_new();
+	ewl_widget_set_internal(fd->button_box, TRUE);
 	ewl_object_set_fill_policy(EWL_OBJECT(fd->button_box),
 			EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_HSHRINK);
 	ewl_box_set_spacing(EWL_BOX(fd->button_box), 4);
@@ -86,6 +114,7 @@ ewl_filedialog_init(Ewl_Filedialog * fd, Ewl_Filedialog_Type type,
 	ewl_widget_show(fd->button_box);
 
 	fd->entry = ewl_entry_new ("");
+	ewl_widget_set_internal(fd->entry, TRUE);
 	ewl_container_append_child(EWL_CONTAINER(fd->button_box), fd->entry);
 	ewl_callback_append (fd->entry, EWL_CALLBACK_VALUE_CHANGED,
 			ewl_filedialog_change_path, fd);
@@ -97,6 +126,7 @@ ewl_filedialog_init(Ewl_Filedialog * fd, Ewl_Filedialog_Type type,
 	else
 		fd->ok = ewl_button_new("Save");
 
+	ewl_widget_set_internal(fd->ok, TRUE);
 	ewl_object_set_fill_policy(EWL_OBJECT(fd->ok), EWL_FLAG_FILL_NONE);
 	ewl_callback_append(fd->ok, EWL_CALLBACK_CLICKED,
 			    ewl_filedialog_hide_cb, fd);
@@ -108,6 +138,7 @@ ewl_filedialog_init(Ewl_Filedialog * fd, Ewl_Filedialog_Type type,
 	ewl_widget_show(fd->ok);
 
 	fd->cancel = ewl_button_new("Cancel");
+	ewl_widget_set_internal(fd->cancel, TRUE);
 	ewl_object_set_fill_policy(EWL_OBJECT(fd->cancel), EWL_FLAG_FILL_NONE);
 	ewl_callback_append(fd->cancel, EWL_CALLBACK_CLICKED,
 			    ewl_filedialog_hide_cb, fd);
@@ -118,6 +149,7 @@ ewl_filedialog_init(Ewl_Filedialog * fd, Ewl_Filedialog_Type type,
 	ewl_container_append_child(EWL_CONTAINER(fd->button_box), fd->cancel);
 	ewl_widget_show(fd->cancel);
 
+	ewl_container_set_redirect(EWL_CONTAINER(fd), fd->decor_box);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

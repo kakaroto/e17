@@ -28,17 +28,18 @@ typedef struct Ewl_Filedialog Ewl_Filedialog;
  */
 struct Ewl_Filedialog
 {
-	Ewl_Box        box;        /**< the box container */
-	Ewl_Filedialog_Type type;   /**< define what type of filedialog */
+	Ewl_Box        box;          /**< the box container */
+	Ewl_Filedialog_Type type;    /**< define what type of filedialog */
 	
-	Ewl_Widget     *selector;   /**< Ewl_Fileselector */
-	Ewl_Widget     *path_label; /**< label to display current path */
-	Ewl_Widget     *entry;      /**< entry for manual input or current selected */
+	Ewl_Widget     *selector;    /**< Ewl_Fileselector */
+	Ewl_Widget     *path_label;  /**< label to display current path */
+	Ewl_Widget     *entry;       /**< entry for manual input or current selected */
 	
+	Ewl_Widget     *decor_box;   /**< box to hold additional widgets */
 	Ewl_Widget     *button_box;  /**< box to hold the buttons */
 
-	Ewl_Widget     *ok; /**< open/save button */
-	Ewl_Widget     *cancel; /**< cancel button */
+	Ewl_Widget     *ok;          /**< open/save button */
+	Ewl_Widget     *cancel;      /**< cancel button */
 };
 
 

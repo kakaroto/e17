@@ -74,10 +74,16 @@ void __start_fd (Ewl_Widget *w, void *ev_data, void *user_data)
 	static Ewl_Widget *fd = NULL;
 
 	if (!fd) {
+		Ewl_Widget *home_button;
+
 		fd = ewl_filedialog_new(EWL_FILEDIALOG_TYPE_OPEN, __open_file,
 				NULL);
 
 		ewl_container_append_child(EWL_CONTAINER(vbox), fd);
+
+		home_button = ewl_button_new("Home");
+		ewl_container_append_child(EWL_CONTAINER(fd), home_button);
+		ewl_widget_show(home_button);
 	}
 	ewl_widget_show(fd);
 
