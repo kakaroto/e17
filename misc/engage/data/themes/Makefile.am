@@ -1,4 +1,4 @@
-THEMES = gentoo none
+THEMES = gentoo none module
 EDCS = $(THEMES:%=%.edc)
 EETS = $(THEMES:%=%.eet)
 SUFFIXES = .edc .eet

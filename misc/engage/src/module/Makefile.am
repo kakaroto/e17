@@ -1,0 +1,23 @@
+MAINTAINERCLEANFILES = Makefile.in
+
+if HAVE_E17
+# data files for the module
+filesdir = $(libdir)/engage/module
+files_DATA = \
+module_icon.png
+
+EXTRA_DIST = $(files_DATA)
+
+# the module .so file
+INCLUDES               = -I. \
+			 -I$(top_srcdir) \
+			 -I$(includedir) \
+			 @e_cflags@
+pkgdir                 = $(libdir)/engage/module
+pkg_LTLIBRARIES        = module.la
+module_la_SOURCES      = e_mod_main.c \
+		         e_mod_main.h
+module_la_LIBADD       = @e_libs@
+module_la_LDFLAGS      = -module -avoid-version
+module_la_DEPENDENCIES = $(top_builddir)/config.h
+endif

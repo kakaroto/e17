@@ -3,6 +3,8 @@ thanks to genneth for the origional code ;)
 
 Requirements: ECORE, EVAS
 
+e17 uses read src/module/README too - an early e17 module version
+
 Read INSTALL for installation and and AUTHORS for some credits
 
 Quick guide to mouse clicks: (supplied ("none" and "gentoo") themes only)
