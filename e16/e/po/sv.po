@@ -42,7 +42,7 @@ msgstr ""
 "Det beror antagligen på att programmet inte finns i sökvägen\n"
 "för ditt skal, som är %s. Jag föreslår att du läser man sidan\n"
 "för detta shell, och kollar upp hur man lägger till eller ändrar\n"
-"sökvägen för skalet."
+"sökvägen för skalet.\n"
 
 #: src/actions.c:692
 #, c-format
@@ -268,7 +268,7 @@ msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading a Slideout block.  Outcome is likely not good.\n"
 msgstr ""
-"Varning: Konfigureringen verkar ha avbrutits innan "glidut-delen"\n"
+"Varning: Konfigureringen verkar ha avbrutits innan glidut-delen\n"
 "hade laddats färdigt. Resultatet blir felaktigt.\n"
 
 #: src/config.c:797
@@ -370,7 +370,7 @@ msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading an Action Class block.  Outcome is likely not good.\n"
 msgstr ""
-"Varning:  Konfigureringen verkar ha avbrutits innan Action Class
+"Varning:  Konfigureringen verkar ha avbrutits innan Action Class"
 "delen hade laddats färdigt.  Resultatet blir felaktigt.\n"
 
 #: src/config.c:2482
@@ -454,7 +454,7 @@ msgid ""
 "Will ignore and continue...\n"
 msgstr ""
 "Varning: Det går ej att bestämma vad som skall göras med följande \n"
-"text i mitten på aktiv Extras definitionen:
+"text i mitten på aktiv Extras definitionen:\n"
 "%s\n"
 "Ignorerar och fortsätter...\n"
 
@@ -599,7 +599,7 @@ msgid ""
 msgstr ""
 "FEL:\n"
 "\n"
-"Inställningarna som används är ej kompatibla
+"Inställningarna som används är ej kompatibla\n"
 "med denna version av Enlightenment.\n"
 "Versionsnummret är %i måste vara minst version %i för\n"
 "att vara kompatibelt.\n"
@@ -826,7 +826,7 @@ msgstr ""
 "som har kört slut på SHM ID's på systemet, eller\n"
 "så har Shared Memory stödet slagits av i Imlib\n"
 "\n"
-"Du kan korrigera detta antingen genom att köra "imlib_config"\n"
+"Du kan korrigera detta antingen genom att köra `imlib_config`\n"
 "eller kopiera systemets imrc (/usr/etc/imrc) to ~/.imrc\n"
 "och redigera den, för att stödja shared memory.\n"
 "\n"
@@ -856,7 +856,7 @@ msgstr ""
 "shared pixmaps, eller så har shared pixmaps slagits av i\n"
 "Imlib's konfigurering.\n"
 "\n"
-"Du kan korrigera detta antingen genom att köra "imlib_config"\n"
+"Du kan korrigera detta antingen genom att köra 'imlib_config'\n"
 "eller kopiera systemets imrc (/usr/etc/imrc) to ~/.imrc\n"
 "och redigera den, för att stödja shared pixmaps.\n"
 "\n"
@@ -1585,7 +1585,7 @@ msgstr "Temat innehåller inte en windowmatches.cfg fil\n"
 
 #: src/misc.c:499
 msgid "Theme contains a menus.cfg file\n"
-msgstr "Temat innehåller en menus.cfg fil\"
+msgstr "Temat innehåller en menus.cfg fil\n"
 
 #: src/misc.c:505
 msgid "Theme contains a control.cfg file\n"
@@ -2135,7 +2135,7 @@ msgstr "Ner"
 
 #: src/settings.c:1879
 msgid "Desktop Slide speed: (slow)\n"
-msgstr "Skrivbordets glid fart: (sakta)\"
+msgstr "Skrivbordets glid fart: (sakta)\n"
 
 #: src/settings.c:1895 src/settings.c:1917 src/settings.c:1939
 #: src/settings.c:1961
@@ -2304,7 +2304,7 @@ msgstr "Animera vid ikonifiering till denna ikonlåda"
 
 #: src/settings.c:3545
 msgid "Alignment of anchoring when automatically resizing:"
-msgstr "Placering av förankring vid auto storleksförändring:""
+msgstr "Placering av förankring vid auto storleksförändring:"
 
 #: src/settings.c:3567
 msgid "Icon image display policy (if one operation fails, try the next):"
@@ -2625,7 +2625,7 @@ msgstr "Starta om applikation vid inloggning"
 
 #: src/snaps.c:498
 msgid "Remember this window's group(s)"
-msgstr "Kom ihåg detta fönsters grupp(er)""
+msgstr "Kom ihåg detta fönsters grupp(er)"
 
 #: src/snaps.c:511
 msgid "Cancel"
