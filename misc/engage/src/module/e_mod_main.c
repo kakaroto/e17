@@ -13,7 +13,6 @@
  * * hook up event callbacks for Engage_App_Icon s
  * * store ignore list in config
  * * fix mouse overs etc to reach all the sub icons
- * * add emblems to show what is iconified and what is running
  *
  * * pick up iconified apps and running apps on startup
  * * zoom and unzoom (eb->zoom from 1.0 to conf->zoom_factor) on timer
@@ -764,6 +763,8 @@ _engage_app_icon_new(Engage_Icon *ic, E_Border *bd, int min)
 
    edje_object_signal_emit(ai->bg_object, "passive", "");
    edje_object_signal_emit(ai->overlay_object, "passive", "");
+   if (ai->min)
+     edje_object_signal_emit(ai->overlay_object, "iconify", "");
    return ai;
 }
 
@@ -935,12 +936,13 @@ _engage_cb_event_border_iconify(void *data, int type, void *event)
 	if (ai->border == e->border)
 	  {
 	     ai->min = 1;
+	     edje_object_signal_emit(ai->overlay_object, "iconify", "");
 	     return 0;
 	  }
 	icons = icons->next;
      }
    /* fallback, is this needed? */
-   ai = _engage_app_icon_new(ic, e->border, 1);
+//   ai = _engage_app_icon_new(ic, e->border, 1);
 }
 
 static int
@@ -959,9 +961,6 @@ _engage_cb_event_border_uniconify(void *data, int type, void *event)
    if (e->border->container != eb->con)
      return;
 
-   /* FIXME we can remove this when this is a real iconify event */
-   if (!e->border->iconic)
-     return;
    app = e_app_window_name_class_find(e->border->client.icccm.name,
 				      e->border->client.icccm.class);
    if (!app)
@@ -977,12 +976,13 @@ _engage_cb_event_border_uniconify(void *data, int type, void *event)
 	if (ai->min && ai->border == e->border)
 	  {
 	      ai->min = 0;
+	      edje_object_signal_emit(ai->overlay_object, "uniconify", "");
 	      return;
 	  }
 	icons = icons->next;
      }
    /* fallback, is this needed? */
-   ai = _engage_app_icon_new(ic, e->border, 0);
+//   ai = _engage_app_icon_new(ic, e->border, 0);
 }
 
 
