@@ -8,6 +8,7 @@ Evas_List *basic_tests()
 	l = evas_list_append(l, test_basic_get);
 	l = evas_list_append(l, test_basic_set);
 	l = evas_list_append(l, test_basic_append);
+	l = evas_list_append(l, test_basic_prepend);
 
 	return l;
 }
@@ -94,6 +95,28 @@ void test_basic_append()
 	return;
 }
 
+void test_basic_prepend()
+{
+	char msg[] =
+	    "Text can be appended to the text already existent\n"
+	    "in the etox.\n"
+	    "\n"
+	    "The second paragraph shown below was appended\n"
+	    "at the end of the etox through etox_append_text.\n";
+
+	char string[] =
+	    "The Tao that is seen\n"
+	    "Is not the true Tao\n" "Until you bring fresh toner.\n" "\n";
+
+	/* Change message */
+	etox_set_text(e_msg, msg);
+
+	/* Change test etox */
+	etox_prepend_text(e_test, string);
+
+	return;
+}
+
 Evas_List *style_tests()
 {
 	Evas_List *l = NULL;
@@ -118,7 +141,6 @@ void test_style_init()
 	    "\n" "A style-less sample paragraph is shown below.\n";
 
 	char string[] =
-	    "\n\n\n"
 	    "Chaos reigns within.\n"
 	    "Stop, reflect, and reboot.\n" "Order shall return.\n";
 
@@ -138,7 +160,6 @@ void test_style_bold()
 	char msg[] = "\"Bold\" style.\n";
 
 	char string[] =
-	    "\n\n\n"
 	    "Chaos reigns within.\n"
 	    "Stop, reflect, and reboot.\n" "Order shall return.\n";
 
@@ -157,7 +178,6 @@ void test_style_outline()
 	char msg[] = "\"Outline\" style.\n";
 
 	char string[] =
-	    "\n\n\n"
 	    "Chaos reigns within.\n"
 	    "Stop, reflect, and reboot.\n" "Order shall return.\n";
 
@@ -176,7 +196,6 @@ void test_style_raised()
 	char msg[] = "\"Raised\" style.\n";
 
 	char string[] =
-	    "\n\n\n"
 	    "Chaos reigns within.\n"
 	    "Stop, reflect, and reboot.\n" "Order shall return.\n";
 
@@ -195,7 +214,6 @@ void test_style_shadow()
 	char msg[] = "\"Shadow\" style.\n";
 
 	char string[] =
-	    "\n\n\n"
 	    "Chaos reigns within.\n"
 	    "Stop, reflect, and reboot.\n" "Order shall return.\n";
 

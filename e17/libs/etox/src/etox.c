@@ -189,7 +189,7 @@ void etox_hide(Etox * et)
  */
 void etox_append_text(Etox * et, char *text)
 {
-	Evas_List *lines, *l;
+	Evas_List *lines;
 	Etox_Line *end = NULL, *start;
 
 	CHECK_PARAM_POINTER("et", et);
@@ -203,14 +203,15 @@ void etox_append_text(Etox * et, char *text)
 	if (!lines)
 		return;
 
-	for (l = et->lines; l; l = l->next)
-		end = l->data;
-
 	/*
 	 * Merge the last line of the existing text with the first line of the
 	 * new text.
 	 */
 	if (et->lines) {
+		Evas_List *l;
+
+		l = evas_list_last(et->lines);
+		end = l->data;
 		start = lines->data;
 		lines = evas_list_remove(lines, start);
 
@@ -263,7 +264,7 @@ void etox_append_text(Etox * et, char *text)
  */
 void etox_prepend_text(Etox * et, char *text)
 {
-	Evas_List *lines, *l;
+	Evas_List *lines;
 	Etox_Line *end = NULL, *start;
 
 	CHECK_PARAM_POINTER("et", et);
@@ -277,14 +278,15 @@ void etox_prepend_text(Etox * et, char *text)
 	if (!lines)
 		return;
 
-	for (l = lines; l; l = l->next)
-		end = l->data;
-
 	/*
 	 * Merge the first line of the existing text with the last line of the
 	 * new text.
 	 */
 	if (et->lines) {
+		Evas_List *l;
+
+		l = evas_list_last(lines);
+		end = l->data;
 		start = et->lines->data;
 		et->lines = evas_list_remove(et->lines, start);
 

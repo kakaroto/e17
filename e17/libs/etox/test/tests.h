@@ -9,6 +9,7 @@ void test_basic_init();
 void test_basic_get();
 void test_basic_set();
 void test_basic_append();
+void test_basic_prepend();
 
 /*
  * Style tests prototypes
