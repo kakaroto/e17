@@ -2,6 +2,8 @@ libtool
 config.status
 config.log
 config.cache
+config.h
+config.h.in
 aclocal.m4
 stamp-h.in
 Makefile.in
