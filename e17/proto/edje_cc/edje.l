@@ -39,6 +39,7 @@
 
     #define CHAR_RETURN()   VAL_RETURN(yytext[0]);
 %}
+
 %option noyywrap
 %option nounput
 
@@ -46,6 +47,8 @@ start_part [-+]?
 exponent_part [eE][-+]?[0-9]+
 fractional_constant ([0-9]*"."[0-9]+)|([0-9]+".")
 floating_constant ((({start_part}{fractional_constant}{exponent_part}?)|({start_part}[0-9]+{exponent_part}))[FfLl]?)|({start_part}[0-9][0-9]*)
+
+%x c_comment
 
 %%
 ACCELERATE			{ KEYWORD_RETURN(ACCELERATE); }
@@ -133,6 +136,17 @@ y					{ KEYWORD_RETURN(Y); }
 
 \/\/				{ CPP_COMMENT(); }
 #                   { CPP_COMMENT(); }
+
+"/*"                { BEGIN(c_comment); }
+<c_comment>{
+  [^*]*
+
+  "*"+[^*/\n]*
+
+  "*"+"/"           { BEGIN(INITIAL); }
+}
+
+
 
 .                   { CHAR_RETURN(); }
 
