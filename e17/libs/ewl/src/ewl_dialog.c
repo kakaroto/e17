@@ -24,7 +24,7 @@ ewl_dialog_new (Ewl_Position pos)
 /**
  * @param dialog: the dialog to initialize.
  * @param pos: the position of the action area.
- * @return: Return TRUE on success, FALSE otherwise.
+ * @return Return TRUE on success, FALSE otherwise.
  * @brief Initialize an internal dialog to starting values
  */
 int
@@ -186,8 +186,8 @@ ewl_dialog_init (Ewl_Dialog *dialog, Ewl_Position pos)
 /**
  * @param dialog: the dialog to add the widget in.
  * @param w: the widget to add in the vbox.
- * @return: Returns no value.
- * @brief Convinient function to add widgets in the vbox.
+ * @return Returns no value.
+ * @brief Convenient function to add widgets in the vbox.
  */
 void
 ewl_dialog_add_widget (Ewl_Dialog *dialog, Ewl_Widget *w)
@@ -228,7 +228,7 @@ ewl_dialog_add_widget (Ewl_Dialog *dialog, Ewl_Widget *w)
 /**
  * @param button_text: the text of the button or a stock Id.
  * @param response_id: The Id that will be retured when clicking on the button.
- * @return: Returns a button, or NULL on failure.
+ * @return Returns a button, or NULL on failure.
  * @brief Convenient function to create a (stock) button. To add this
  * button in the action_area of a dialog, just use
  * ewl_container_append_child(dialog, button) or 
@@ -258,7 +258,7 @@ ewl_dialog_set_button (char *button_text,
  * @param dialog: the dialog to add the button in.
  * @param button_text: the text of the button or a stock Id.
  * @param response_id: The Id that will be retured when clicking on the button.
- * @return: Returns a button, or NULL on failure.
+ * @return Returns a button, or NULL on failure.
  * @brief Add a (stock) button on the right of the action_area of @a dialog.
  */
 Ewl_Widget *
@@ -291,8 +291,8 @@ ewl_dialog_add_button (Ewl_Dialog *dialog, char *button_text,
  * @param dialog: the dialog to add the button in.
  * @param button_text: the text of the button or a stock Id.
  * @param response_id: The Id that will be retured when clicking on the button.
- * @return: Returns a button, or NULL on failure.
- * @brief Same as ewl_dialog_add_button (), but add the button on the left.
+ * @return Returns a button, or NULL on failure.
+ * @brief Same as ewl_dialog_add_button(), but add the button on the left.
  */
 Ewl_Widget *
 ewl_dialog_add_button_left (Ewl_Dialog *dialog, char *button_text,
@@ -321,8 +321,8 @@ ewl_dialog_add_button_left (Ewl_Dialog *dialog, char *button_text,
 }
 
 /**
- * @param dialog: the dialog to add the button in.
- * @return: Returns TRUE if @a dialog has a separator.
+ * @param dialog: the dialog.
+ * @return Returns TRUE if @a dialog has a separator.
  * @brief Checks if @a dialog has a separator or not.
  */
 unsigned int
@@ -338,9 +338,9 @@ ewl_dialog_get_has_separator (Ewl_Dialog *dialog)
 }
 
 /**
- * @param dialog: the dialog to add the button in.
+ * @param dialog: the dialog.
  * @param has_sep: TRUE to draw the separator, FALSE to hide it.
- * @return: Returns no value.
+ * @return Returns no value.
  * @brief Sets the separator of @a dialog.
  */
 void

@@ -7,9 +7,10 @@ extern "C" {
 #endif /* __cplusplus */
 
 /**
- * @defgroup Ewl_Dialog Window: A Window to prompt the user for
+ * @defgroup Ewl_Dialog Dialog: A Window to prompt the user for
  * Displaying Messages, asking
- * questions or warning him
+ * questions or warnings.
+ * 
  * @brief Defines the Ewl_Dialog class which extends the Ewl_Window class.
  *
  * @{
@@ -36,7 +37,7 @@ enum _Ewl_Response_Type
 
 /**
  * The dialog structure is a window with two area: a box (vbox) to hold
- * messages and another box (action_area to put buttons
+ * messages and another box (action_area) to put buttons
  * (usually). These boxes can be separated by a line.
  */
 typedef struct _Ewl_Dialog Ewl_Dialog;
