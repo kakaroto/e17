@@ -406,7 +406,7 @@ etox_line_wrap(Etox *et, Etox_Line *line)
 		FREE(tmp);
 	}
 
-	if (index < estyle_length(bit)) {
+	if (index >= 0 && index < estyle_length(bit)) {
 
 		etox_line_split(line, bit, index);
 		ll = evas_list_find_list(et->lines, line);

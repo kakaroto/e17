@@ -33,6 +33,15 @@ window_resize(Ecore_Evas *ee)
 	ee = NULL;
 }
 
+int sig_exit(void *data, int type, void * ev)
+{
+	ecore_main_loop_quit();
+	return 1;
+	data = NULL;
+	type = 0;
+	ev = NULL;
+}
+
 int main(int argc, const char **argv)
 {
 	Etox_Selection *selected1;
@@ -116,6 +125,7 @@ int main(int argc, const char **argv)
 	etox_append_text(etox, "Well slap my ass and call me Sally!");
 
 	ecore_evas_callback_resize_set(ee, window_resize);
+	ecore_event_handler_add(ECORE_EVENT_SIGNAL_EXIT, sig_exit, NULL);
 
 	ecore_main_loop_begin();
 

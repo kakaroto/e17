@@ -66,6 +66,15 @@ void window_resize(Ecore_Evas *ee)
 	ee = NULL;
 }
 
+int sig_exit(void *data, int type, void * ev)
+{
+	ecore_main_loop_quit();
+	return 1;
+	data = NULL;
+	type = 0;
+	ev = NULL;
+}
+
 int e_mouse_move(void *data, int type, void * ev)
 {
 	Ecore_X_Event_Mouse_Move *e;
@@ -406,6 +415,7 @@ int main(int argc, const char **argv)
 			NULL);
 	ecore_event_handler_add(ECORE_X_EVENT_MOUSE_BUTTON_UP, e_mouse_up,
 			NULL);
+	ecore_event_handler_add(ECORE_EVENT_SIGNAL_EXIT, sig_exit, NULL);
 
 	evas = ecore_evas_get(ee);
 	evas_font_path_append(evas, FONT_DIRECTORY);
