@@ -79,6 +79,7 @@ int main (int argc, char **argv)
    int origone = 0;
    int bump_map_to_point = 0;
    Imlib_Color_Modifier colormod = 0;
+   ImlibPolygon poly, poly2, poly3;
    
    /**
     * Parse all the command line arguments
@@ -293,6 +294,21 @@ int main (int argc, char **argv)
    gettimeofday(&timev,NULL);
    sec1=(int)timev.tv_sec; /* and stores it so we can time outselves */
    usec1=(int)timev.tv_usec; /* we will use this to vary speed of rot */
+
+   poly = imlib_polygon_new(POLY_CLOSED);
+   imlib_polygon_add_point(poly, 400,50);
+   imlib_polygon_add_point(poly, 450,100);
+   imlib_polygon_add_point(poly, 350,100);
+
+   poly2 = imlib_polygon_new(POLY_OPEN);
+   imlib_polygon_add_point(poly2, 400,150);
+   imlib_polygon_add_point(poly2, 450,200);
+   imlib_polygon_add_point(poly2, 350,200);
+
+   poly3 = imlib_polygon_new(POLY_CLOSED);
+   imlib_polygon_add_point(poly3, 400,250);
+   imlib_polygon_add_point(poly3, 450,300);
+   imlib_polygon_add_point(poly3, 350,300);
    
    if (loop)
      {
@@ -815,6 +831,21 @@ int main (int argc, char **argv)
           up = imlib_update_append_rect(up, 115,70,60,30);
           imlib_image_draw_rectangle(30,120,50,50);
           up = imlib_update_append_rect(up, 30,120,50,50);
+
+          imlib_context_set_cliprect(0,0,0,0);
+          
+          /* test polygons */
+          imlib_context_set_color(255, 255, 255, 255);
+          imlib_image_draw_polygon(poly);
+          imlib_image_draw_polygon(poly2);
+          imlib_image_draw_polygon(poly3);
+          imlib_image_draw_rectangle(380,260,50,50);
+          
+          imlib_context_set_color(255, 55, 55, 255);
+          imlib_context_set_cliprect(380,260,50,50);
+          imlib_image_draw_polygon(poly3);
+          imlib_context_set_cliprect(0,0,0,0);
+
 
 	       }
 	       {

@@ -248,6 +248,7 @@ void imlib_image_copy_rect(int x, int y, int width, int height, int new_x,int ne
 ImlibPolygon imlib_polygon_new(int type);
 void imlib_polygon_free(ImlibPolygon poly);
 void imlib_polygon_add_point(ImlibPolygon poly, int x, int y);
+void imlib_image_draw_polygon(ImlibPolygon poly);
 
 Imlib_Color_Range imlib_create_color_range(void);
 void imlib_free_color_range(void);

@@ -2720,3 +2720,31 @@ void imlib_polygon_free(ImlibPolygon poly)
   __imlib_polygon_free(poly);
 }
 
+void imlib_image_draw_polygon(ImlibPolygon poly)
+{
+   ImlibImage         *im;
+
+   CHECK_PARAM_POINTER("imlib_image_draw_polygon", "image", ctxt_image);
+   CAST_IMAGE(im, ctxt_image);
+   if ((!(im->data)) && (im->loader) && (im->loader->load))
+      im->loader->load(im, NULL, 0, 1);
+   if (!(im->data))
+      return;
+   __imlib_DirtyImage(im);
+   __imlib_DirtyPixmapsForImage(im);
+   if(ctxt_cliprect.w)
+   {
+      __imlib_draw_polygon_clipped(im, poly,
+                            ctxt_cliprect.x,
+                            ctxt_cliprect.x + ctxt_cliprect.w,
+                            ctxt_cliprect.y,
+                            ctxt_cliprect.y + ctxt_cliprect.h,
+                            ctxt_color.red, ctxt_color.green,
+                            ctxt_color.blue, ctxt_color.alpha, ctxt_operation);
+   }
+   else
+   {
+      __imlib_draw_polygon(im, poly, ctxt_color.red, ctxt_color.green,
+                   ctxt_color.blue, ctxt_color.alpha, ctxt_operation);
+   }
+}

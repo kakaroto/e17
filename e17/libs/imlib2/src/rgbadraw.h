@@ -31,7 +31,6 @@ struct _imlib_polygon
    unsigned char closed, filled;
    ImlibPoint *points;
    int pointcount;
-   DATA8 r,g,b,a;
 };
 
 void __imlib_polygon_free(ImlibPoly poly);
@@ -60,6 +59,9 @@ void __imlib_copy_image_data(ImlibImage *im, int x, int y, int w, int h, int nx,
 void __imlib_copy_alpha_data(ImlibImage *src, ImlibImage *dst, int x, int y, int w, int h, int nx, int ny);
 ImlibOutCode __imlib_comp_outcode(double x, double y, double xmin, double xmax,
                                   double ymin, double ymax);
+void
+__imlib_draw_polygon(ImlibImage * im, ImlibPoly poly, DATA8 r, DATA8 g,
+                 DATA8 b, DATA8 a, ImlibOp op);
 ImlibUpdate        *
 __imlib_draw_line_clipped(ImlibImage * im, int x1, int y1, int x2, int y2,
                           int clip_xmin, int clip_xmax, int clip_ymin,
@@ -70,4 +72,8 @@ __imlib_draw_box_clipped(ImlibImage * im, int x, int y, int w, int h,
                          int clip_xmin, int clip_xmax, int clip_ymin,
                          int clip_ymax, DATA8 r, DATA8 g, DATA8 b, DATA8 a,
                          ImlibOp op);
+void
+__imlib_draw_polygon_clipped(ImlibImage * im, ImlibPoly poly, int clip_xmin,
+   int clip_xmax, int clip_ymin, int clip_ymax, DATA8 r, DATA8 g,  DATA8 b,
+   DATA8 a, ImlibOp op);
 #endif
