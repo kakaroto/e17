@@ -856,7 +856,8 @@ void __ewl_widget_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 
 		if (ewl_object_has_state(EWL_OBJECT(w),
 					EWL_FLAG_STATE_DISABLED))
-			edje_object_signal_emit(w->theme_object, "disabled", "EWL");
+			edje_object_signal_emit(w->theme_object, "disabled",
+						"EWL");
 
 		/*
 		 * Propagate minimum sizes from the bit theme to the widget.
@@ -865,10 +866,10 @@ void __ewl_widget_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 		i_l = (int)(width);
 		i_t = (int)(height);
 
-		if (i_l && MINIMUM_W(w) == EWL_OBJECT_MIN_SIZE)
+		if (i_l > 0 && MINIMUM_W(w) == EWL_OBJECT_MIN_SIZE)
 			ewl_object_set_minimum_w(EWL_OBJECT(w), i_l);
 
-		if (i_t && MINIMUM_H(w) == EWL_OBJECT_MIN_SIZE)
+		if (i_t > 0 && MINIMUM_H(w) == EWL_OBJECT_MIN_SIZE)
 			ewl_object_set_minimum_h(EWL_OBJECT(w), i_t);
 
 		/*
@@ -878,10 +879,10 @@ void __ewl_widget_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 		i_l = (int)(width);
 		i_t = (int)(height);
 
-		if (i_l && MAXIMUM_W(w) == EWL_OBJECT_MAX_SIZE)
+		if (i_l > 0 && MAXIMUM_W(w) == EWL_OBJECT_MAX_SIZE)
 			ewl_object_set_maximum_w(EWL_OBJECT(w), i_l);
 
-		if (i_t && MAXIMUM_H(w) == EWL_OBJECT_MAX_SIZE)
+		if (i_t > 0 && MAXIMUM_H(w) == EWL_OBJECT_MAX_SIZE)
 			ewl_object_set_maximum_h(EWL_OBJECT(w), i_t);
 	}
 
