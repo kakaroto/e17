@@ -255,10 +255,11 @@ entice_config_generate_original_db(char *filename)
    char buf[PATH_MAX];
    E_DB_File *db = NULL;
 
-   char *signals[] = { "EnticeZoomIn", "EnticeZoomOut", "EnticeFullScreen",
-      "EnticeImageNext", "EnticeImagePrev", "EnticeZoomDefault",
-      "EnticeZoomFit", "EnticeQuit", "EnticeRotateLeft",
-      "EnticeRotateRight", "EnticeFlipH", "EnticeFlipV",
+   char *signals[] = { "EnticeImageZoomIn", "EnticeImageZoomOut",
+      "EnticeFullScreen",
+      "EnticeImageNext", "EnticeImagePrev", "EnticeImageZoomDefault",
+      "EnticeImageZoomFit", "EnticeQuit", "EnticeImageRotateLeft",
+      "EnticeImageRotateRight", "EnticeImageFlipH", "EnticeImageFlipV",
       "EnticeImageRemove"
    };
    char *keys[] =
