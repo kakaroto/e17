@@ -313,13 +313,19 @@ ewl_window_find_window_by_evas_window(Window window)
 void
 ewl_window_resize(Ewl_Widget * widget, int w, int h)
 {
+	Ewl_Window * win;
+
 	DENTER_FUNCTION;
 	DCHECK_PARAM_PTR("widget", widget);
 
-	EWL_OBJECT(widget)->current.w = w;
-	EWL_OBJECT(widget)->current.h = h;
+	win = EWL_WINDOW(widget);
 
-	e_window_resize(EWL_WINDOW(widget)->window, w, h);
+	ewl_object_set_current_size(EWL_OBJECT(widget), w, h);
+
+	if (!win->window)
+		DRETURN;
+
+	e_window_resize(win->window, w, h);
 
 	DLEAVE_FUNCTION;
 }
