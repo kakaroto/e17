@@ -1,4 +1,3 @@
-
 EXTRA_DIST = ChangeLog README
 
 bin_PROGRAMS = edox

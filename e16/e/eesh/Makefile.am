@@ -3,7 +3,7 @@ bin_PROGRAMS = eesh
 
 eesh_SOURCES = E.h comms.c lists.c main.c
 
-LDADD = $(X_LIBS) -lX11 $(RL_LIBS)
+LDADD = $(X_LIBS) -lX11
 
 INCLUDES = -I$(top_builddir) -I$(top_srcdir)/intl $(X_CFLAGS)
 
