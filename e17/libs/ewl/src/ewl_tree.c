@@ -86,6 +86,8 @@ int ewl_tree_init(Ewl_Tree *tree, unsigned short columns)
 
 	tree->scrollarea = ewl_scrollpane_new();
 	ewl_container_append_child(EWL_CONTAINER(tree), tree->scrollarea);
+	ewl_callback_append(tree->scrollarea, EWL_CALLBACK_VALUE_CHANGED,
+			    ewl_tree_hscroll_cb, tree);
 	ewl_widget_show(tree->scrollarea);
 
 	ewl_container_set_redirect(EWL_CONTAINER(tree),
@@ -403,16 +405,22 @@ void ewl_tree_set_row_expand(Ewl_Row *row, Ewl_Tree_Node_Flags expanded)
 
 void ewl_tree_configure_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 {
-	int h;
+	int x, width, height;
+	double scroll;
 	Ewl_Tree *tree = EWL_TREE(w);
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	ewl_object_request_geometry(EWL_OBJECT(tree->header), CURRENT_X(tree),
-				    CURRENT_Y(tree), CURRENT_W(tree), 1);
-	h = ewl_object_get_current_h(EWL_OBJECT(tree->header));
+	scroll = ewl_scrollpane_get_hscrollbar_value(EWL_SCROLLPANE(tree->scrollarea));
+	width = ewl_object_get_preferred_w(EWL_OBJECT(tree->header));
+	x = CURRENT_X(tree);
+	if (scroll > 0 && width > CURRENT_W(tree))
+		x -= (int)((double)scroll * (double)(width - CURRENT_W(tree)));
+	ewl_object_request_geometry(EWL_OBJECT(tree->header), x, CURRENT_Y(tree),
+				    CURRENT_W(tree), width);
+	height = ewl_object_get_current_h(EWL_OBJECT(tree->header));
 	ewl_object_request_geometry(EWL_OBJECT(tree->scrollarea),
-				    CURRENT_X(tree), CURRENT_Y(tree) + h,
-				    CURRENT_W(tree), CURRENT_H(tree) - h);
+				    CURRENT_X(tree), CURRENT_Y(tree) + height,
+				    CURRENT_W(tree), CURRENT_H(tree) - height);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -686,6 +694,16 @@ ewl_tree_row_select_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 	tree = node->tree;
 
 	ecore_list_append(tree->selected, w);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void
+ewl_tree_hscroll_cb(Ewl_Widget *w, void *ev_data, void *user_data)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	ewl_widget_configure(user_data);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

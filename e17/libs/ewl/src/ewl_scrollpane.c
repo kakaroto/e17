@@ -367,6 +367,7 @@ void ewl_scrollpane_hscroll_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_PARAM_PTR("user_data", user_data);
 
+	ewl_callback_call(user_data, EWL_CALLBACK_VALUE_CHANGED);
 	ewl_widget_configure(user_data);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -382,6 +383,7 @@ void ewl_scrollpane_vscroll_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_PARAM_PTR("user_data", user_data);
 
+	ewl_callback_call(user_data, EWL_CALLBACK_VALUE_CHANGED);
 	ewl_widget_configure(user_data);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
