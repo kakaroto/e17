@@ -14,12 +14,12 @@ edb_ed_SOURCES = edb_ed.c
 edb_ed_LDFLAGS =
 edb_ed_LDADD = $(top_builddir)/src/libedb.la
 
-edb_ed_DEPENDENCIES = $(top_builddir)/src/libedb.la
-edb_ed_SOURCES = edb_vt_ed.c
-edb_ed_LDFLAGS = -lncurses
-edb_ed_LDADD = $(top_builddir)/src/libedb.la
+edb_vt_ed_DEPENDENCIES = $(top_builddir)/src/libedb.la
+edb_vt_ed_SOURCES = edb_vt_ed.c
+edb_vt_ed_LDFLAGS = -lncurses
+edb_vt_ed_LDADD = $(top_builddir)/src/libedb.la
 
-edb_ed_DEPENDENCIES = $(top_builddir)/src/libedb.la
-edb_ed_SOURCES = edb_gtk_ed.c
-edb_ed_LDFLAGS = `gtk-config --libs`
-edb_ed_LDADD = $(top_builddir)/src/libedb.la
+edb_gtk_ed_DEPENDENCIES = $(top_builddir)/src/libedb.la
+edb_gtk_ed_SOURCES = edb_gtk_ed.c
+edb_gtk_ed_LDFLAGS = `gtk-config --libs`
+edb_gtk_ed_LDADD = $(top_builddir)/src/libedb.la
