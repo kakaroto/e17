@@ -81,16 +81,35 @@ BuildWindowGroup(EWin ** ewins, int num)
      }
 }
 
+
+int 
+EwinInGroup(EWin * ewin, Group * g) 
+{
+  int i;
+  if (ewin && g) 
+    {
+	for (i=0; i < g->num_members; i++) 
+	  {
+		if (g->members[i] == ewin)
+		  return 1;
+	  }
+    }
+  return 0;
+}
+
 void
 AddEwinToGroup(EWin * ewin, Group * g)
 {
    if (ewin && g)
      {
-	RemoveEwinFromGroup(ewin);
-	ewin->group = g;
-	g->num_members++;
-	g->members = Erealloc(g->members, sizeof(EWin *) * g->num_members);
-	g->members[g->num_members - 1] = ewin;
+	if (!EwinInGroup(ewin, g)) 
+	  {
+		/*RemoveEwinFromGroup(ewin);*/
+		ewin->group = g;
+		g->num_members++;
+		g->members = Erealloc(g->members, sizeof(EWin *) * g->num_members);
+		g->members[g->num_members - 1] = ewin;
+	  }
      }
 }
 
@@ -175,10 +194,7 @@ ChooseGroupForEwinDialog(EWin * ewin)
    groups = (Group **) ListItemType(&num_groups, LIST_TYPE_GROUP);
    if (!groups)
      {
-	DIALOG_OK("Window Group Error", 
-		  "\n"
-		  "  Currently, no groups exist.  \n"
-		  "  You have to start a group first.  \n");
+	DIALOG_OK("Window Group Error", "\n  Currently, no groups exist. You have to start a group first.  \n");
 	/* FIXME... so we could start a group here by default...? */
 	EDBUG_RETURN_;
      }
@@ -199,7 +215,7 @@ ChooseGroupForEwinDialog(EWin * ewin)
 
    if ((d = FindItem("GROUP_SELECTION", 0, LIST_FINDBY_NAME, LIST_TYPE_DIALOG)))
      {
-	AUDIO_PLAY("SOUND_GROUP_SETTINGS_ACTIVE");
+	AUDIO_PLAY("GROUP_SETTINGS_ACTIVE");
 	ShowDialog(d);
 	return;
      }
