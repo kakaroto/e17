@@ -1125,23 +1125,49 @@ all the various settings for each individual background available.
 
 
 <page columns=1 padding=16 name=tooltips background=Edoc_bg.png linkcolor=#88dddd>
+<img src=E_tooltips.png x=260 y=65>
+<img src=E_tooltip_settings.png x=20 y=245>
 <font face=rothwell/25 color=#ffffff>
 <p>
 Tooltips
 <font face=aircut3/12 color=#ffffff>
 <p>
-Tooltips are, like, cool.
+From time to time, as you use enlightenment, if you don't remember what does
+what, if you keep the mouse still for a little bit a tooltip will pop up.  The
+easiest example of this is when you hold the mouse over a _Window_Border(tut7)
+.
+<p>
+<br>
+<br>
+<br>
+You can disable the tooltips or change the delay before they pop up by
+selecting the "Tooltip Settings" dialog from the _settings(settings) menu, as
+shown here on the left.
 
 
 
 
 <page columns=1 padding=16 name=audio background=Edoc_bg.png linkcolor=#88dddd>
+<img src=E_audio_settings.png x=300 y=220>
 <font face=rothwell/25 color=#ffffff>
 <p>
 Audio
 <font face=aircut3/12 color=#ffffff>
 <p>
-Audio is, like, cool.
+<br>
+<br>
+Of course, Enlightenment comes preconfigured to play lots of little blips and
+beeps when you do various things on your desktop.  In order to use sound in
+enlightenment, you must have both ESounD and audiofile installed.  You can find
+more information about these libraries from http://www.gnome.org.
+<p>
+<br>
+<br>
+<br>
+<br>
+You can enable and/or disable sound at runtime simply by selecting from the
+_Settings(settings) menu the "Audio Settings" option, which brings up a dialog,
+shown here at right.
 
 
 <page columns=1 padding=16 name=fx background=Edoc_bg.png linkcolor=#88dddd>
