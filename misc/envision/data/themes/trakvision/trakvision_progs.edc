@@ -85,7 +85,7 @@
                         }
 
                         program {
-                                name,       "seekback_click";
+                                name,       "seekback_run";
                                 signal,     "mouse,up,1";
                                 source,     "seekback_button";
                                 action,     SIGNAL_EMIT "SEEK_BACK" "seekback_button";
@@ -134,7 +134,7 @@
                         program {
                                 name,       "pause_unblink";
                                 source,     "*";
-                                action,     ACTION_STOP "pause_blink" 0.0;
+                                action,     ACTION_STOP;
                                 target,     "pause_blink";
                                 after,      "play_blink";
                         }
@@ -151,7 +151,7 @@
                         }
 
                         program {
-                                name,       "play_click";
+                                name,       "play_run";
                                 signal,     "mouse,up,1";
                                 source,     "play_button";
                                 action,     SIGNAL_EMIT "PLAY" "play_button";
@@ -180,7 +180,7 @@
                         program {
                                 name,       "play_unblink";
                                 source,     "*";
-                                action,     ACTION_STOP "play_blink" 0.0;
+                                action,     ACTION_STOP;
                                 target,     "play_blink";
                                 after,      "pause_blink";
                         }
@@ -195,7 +195,7 @@
                         }
 
                         program {
-                                name,       "pause_click";
+                                name,       "pause_run";
                                 signal,     "mouse,up,1";
                                 source,     "pause_button";
                                 action,     SIGNAL_EMIT "PAUSE" "pause_button";
@@ -261,7 +261,7 @@
                                 target,     "next_button";
                         }
                         program {
-                                name,       "next_click";
+                                name,       "next_run";
                                 signal,     "mouse,up,1";
                                 source,     "next_button";
                                 action,     SIGNAL_EMIT "PLAY_NEXT" "next_button";
