@@ -7,6 +7,7 @@ translations into many different languages (de,es,fr,hu,ko,nl,no,ru,and more com
 added support for freetype/freetype.h (they moved their header file)
 added extended display to window_list ipc command (see IPC help)
 animation no longer occurs when iconifying from the pager.
+minor bug with setting backgrounds via IPC is fixed
 
 The Road to 0.17 (post 0.16.x):
 File Manager Preview Application (you'll hopefully get a chance to see a little bit of a preview of what E's filemanager will look like)
