@@ -248,6 +248,7 @@ entrance_session_start_user_session(Entrance_Session * e)
    syslog(LOG_CRIT, "Executing %s", buf);
 
    ecore_evas_shutdown();
+   ecore_x_sync();
 
    syslog(LOG_NOTICE, "Starting session for user \"%s\".", e->auth->user);
 
@@ -274,7 +275,11 @@ entrance_session_start_user_session(Entrance_Session * e)
       syslog(LOG_CRIT, "Unable to set user id.");
 
    entrance_auth_free(e->auth); /* clear users's password out of memory */
-   execl("/bin/sh", "/bin/sh", "-c", buf, NULL);
+//   execl("/bin/sh", "/bin/sh", "-c", buf, NULL);
+   system(buf);
+   ecore_x_shutdown();
+   ecore_shutdown();
+   exit(0);
 }
 
 static void

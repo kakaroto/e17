@@ -471,7 +471,7 @@ main(int argc, char *argv[])
    if (!ecore_init())
       return (-1);
    ecore_app_args_set(argc, (const char **) argv);
-#if 0
+#if 1
    if (!ecore_x_init(buf))
    {
       if ((str = getenv("DISPLAY")))
