@@ -371,6 +371,12 @@ void etox_selection_bounds(Etox_Selection * selected, int *x, int *y,
 void etox_selection_set_font(Etox_Selection * selected, char *font,
 			     int size);
 void etox_selection_set_style(Etox_Selection * selected, char *style);
+void etox_selection_set_color(Etox_Selection *selected, int r, int g, int b,
+		int a);
+void etox_selection_set_wrap_marker(Etox_Selection *selected, char *marker,
+		char *style);
+void etox_selection_set_wrap_marker_color(Etox_Selection *selected, int r,
+		int g, int b, int a);
 
 /*
  * These functions manipulate callbacks on the selected region.

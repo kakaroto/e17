@@ -2,8 +2,31 @@
 
 Evas_List *active_selections = NULL;
 
+#define SELECTION_LOOP_START(selected) \
+do { \
+	Estyle *bit = NULL; \
+	Etox_Line *line; \
+	Evas_List *l, *bl; \
+	line = selected->start.line; \
+	l = evas_list_find_list(selected->etox->lines, selected->start.line); \
+	bl = evas_list_find_list(line->bits, selected->start.bit); \
+	while (bl && bit != selected->end.bit) { \
+		bit = bl->data
+
+#define SELECTION_LOOP_END \
+		if (!bl) { \
+			l = l->next; \
+			line = l->data; \
+			bl = line->bits; \
+		} \
+		else \
+			bl = bl->next; \
+	} \
+} while (0)
+
+
 Estyle *
-etox_selection_split_bit(Etox_Line *line, Estyle *bit, int index)
+etox_split_bit(Etox_Line *line, Estyle *bit, int index)
 {
 	Evas_List *l;
 	Estyle *point = bit;
@@ -40,7 +63,7 @@ etox_selection_new(Etox *etox, Etox_Line *l1, Etox_Line *l2,
 	 * Split bits on their index boundaries, this updates selections that
 	 * contain the bits.
 	 */
-	temp = etox_selection_split_bit(l1, s1, i1);
+	temp = etox_split_bit(l1, s1, i1);
 	if (s1 == s2) {
 		i2 -= i1;
 		s2 = temp;
@@ -51,7 +74,7 @@ etox_selection_new(Etox *etox, Etox_Line *l1, Etox_Line *l2,
 	 * Split on the ending index, we use the original s2 for the end,
 	 * since it's the bit portion before the split.
 	 */
-	etox_selection_split_bit(l2, s2, i2);
+	etox_split_bit(l2, s2, i2);
 
 	selected = calloc(1, sizeof(Etox_Selection));
 	memset(selected, 0, sizeof(Etox_Selection));
@@ -67,6 +90,8 @@ etox_selection_new(Etox *etox, Etox_Line *l1, Etox_Line *l2,
 	selected->context = etox_context_save(etox);
 
 	active_selections = evas_list_prepend(active_selections, selected);
+
+	etox_layout(etox);
 
 	return selected;
 }
@@ -110,11 +135,11 @@ etox_select_coords(Etox * et, int sx, int sy, int ex, int ey)
 	Estyle *sb, *eb = NULL;
 	Etox_Selection *selected = NULL;
 
-	sl = _etox_coord_to_line(et, sy);
+	sl = etox_coord_to_line(et, sy);
 	if (!sl)
 		goto out;
 
-	el = _etox_coord_to_line(et, ey);
+	el = etox_coord_to_line(et, ey);
 	if (!el)
 		goto out;
 
@@ -153,11 +178,11 @@ etox_select_index(Etox * et, int si, int ei)
 	/*
 	 * First determine the lines containing the indices.
 	 */
-	sl = _etox_index_to_line(et, &si);
+	sl = etox_index_to_line(et, &si);
 	if (!sl)
 		goto out;
 
-	el = _etox_index_to_line(et, &ei);
+	el = etox_index_to_line(et, &ei);
 	if (!el)
 		goto out;
 
@@ -199,10 +224,6 @@ etox_selection_bounds(Etox_Selection *selected, int *sx, int *sy,
 void
 etox_selection_set_font(Etox_Selection *selected, char *font, int font_size)
 {
-	Evas_List *l, *bl;
-	Etox_Line *line;
-	Estyle *bit;
-
 	/*
 	 * Make the necessary context changes.
 	 */
@@ -210,30 +231,12 @@ etox_selection_set_font(Etox_Selection *selected, char *font, int font_size)
 	selected->context->font = strdup(font);
 	selected->context->font_size = font_size;
 
-	/*
-	 * Apply the settings to all bits between the selections start and end
-	 * points.
-	 */
-	line = selected->start.line;
-	l = evas_list_find_list(selected->etox->lines, selected->start.line);
-	bl = evas_list_find_list(line->bits, selected->start.bit);
-	while (bl) {
-		bit = bl->data;
+	SELECTION_LOOP_START(selected);
 		estyle_set_font(bit, font, font_size);
+	SELECTION_LOOP_END;
 
-		if (bit == selected->end.bit)
-			goto out;
+	etox_layout(selected->etox);
 
-		if (!bl) {
-			l = l->next;
-			line = l->data;
-			bl = line->bits;
-		}
-		else
-			bl = bl->next;
-	}
-
-out:
 	return;
 }
 
@@ -242,40 +245,89 @@ out:
 void
 etox_selection_set_style(Etox_Selection *selected, char *style)
 {
-	Evas_List *l, *bl;
-	Etox_Line *line;
-	Estyle *bit;
-
 	/*
 	 * Make the necessary context changes.
 	 */
 	IF_FREE(selected->context->style);
 	selected->context->style = strdup(style);
 
-	/*
-	 * Apply the settings to all bits between the selections start and end
-	 * points.
-	 */
-	line = selected->start.line;
-	l = evas_list_find_list(selected->etox->lines, selected->start.line);
-	bl = evas_list_find_list(line->bits, selected->start.bit);
-	while (bl) {
-		bit = bl->data;
+	SELECTION_LOOP_START(selected);
 		estyle_set_style(bit, style);
+	SELECTION_LOOP_END;
 
-		if (bit == selected->end.bit)
-			goto out;
+	etox_layout(selected->etox);
 
-		if (!bl) {
-			l = l->next;
-			line = l->data;
-			bl = line->bits;
+	return;
+}
+
+/**
+ */
+void
+etox_selection_set_color(Etox_Selection *selected, int r, int g, int b, int a)
+{
+	/*
+	 * Make the necessary context changes.
+	 */
+	selected->context->a = a;
+	selected->context->r = r;
+	selected->context->g = g;
+	selected->context->b = b;
+
+	SELECTION_LOOP_START(selected);
+		estyle_set_color(bit, r, g, b, a);
+	SELECTION_LOOP_END;
+
+	etox_layout(selected->etox);
+
+	return;
+}
+
+/**
+ */
+void
+etox_selection_set_wrap_marker_color(Etox_Selection *selected, int r, int g,
+		int b, int a)
+{
+	/*
+	 * Make the necessary context changes.
+	 */
+	selected->context->marker.a = a;
+	selected->context->marker.r = r;
+	selected->context->marker.g = g;
+	selected->context->marker.b = b;
+
+	SELECTION_LOOP_START(selected);
+		if (!bl->prev && line->flags & ETOX_LINE_WRAPPED) {
+			estyle_set_color(bit, r, g, b, a);
 		}
-		else
-			bl = bl->next;
-	}
+	SELECTION_LOOP_END;
 
-out:
+	etox_layout(selected->etox);
+
+	return;
+}
+
+/**
+ */
+void
+etox_selection_set_wrap_marker(Etox_Selection *selected, char *marker,
+		char *style)
+{
+	/*
+	 * Make the necessary context changes.
+	 */
+	IF_FREE(selected->context->marker.text);
+	IF_FREE(selected->context->marker.style);
+
+	SELECTION_LOOP_START(selected);
+		if (!bl->prev && line->flags & ETOX_LINE_WRAPPED) {
+			estyle_set_text(bit, marker);
+			estyle_set_style(bit, style);
+		}
+	SELECTION_LOOP_END;
+
+	etox_layout(selected->etox);
+
 	return;
 }
 

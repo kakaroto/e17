@@ -32,8 +32,10 @@ struct _etox_bit
 	Evas_List *regions;
 };
 
-Etox_Line * _etox_coord_to_line(Etox *et, int y);
-Etox_Line * _etox_index_to_line(Etox *et, int *i);
+void etox_layout(Etox * et);
+
+Etox_Line * etox_coord_to_line(Etox *et, int y);
+Etox_Line * etox_index_to_line(Etox *et, int *i);
 
 #include "etox_line.h"
 #include "etox_obstacle.h"
