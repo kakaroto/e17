@@ -15,7 +15,6 @@ sample-scripts/lcdmover.sh \
 sample-scripts/testroller.pl \
 sample-scripts/shade-pagers.pl \
 e.spec \
-e.rh.spec \
 configure \
 configure.in \
 econfig.h.in \

@@ -236,4 +236,7 @@ scripts/enlightenment.install
 po/Makefile.in
 intl/Makefile
 debian/Makefile
+],
+[
+cp econfig.h config.h
 ])

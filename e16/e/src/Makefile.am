@@ -114,7 +114,7 @@ LDADD = \
 	$(XINERAMA_LIBS)              \
 	-lm
 
-INCLUDES=-I$(top_srcdir) $(ESD_CFLAGS) $(IMLIB_CFLAGS) -I$(includedir) -I.. -I../intl -I$(top_srcdir)/intl
+INCLUDES=-I$(top_srcdir) $(ESD_CFLAGS) $(IMLIB_CFLAGS) -I$(includedir) -I.. -I../intl -I$(top_srcdir)/intl -I/usr/include/freetype1
 
 DEFS=-DENLIGHTENMENT_ROOT=\"@ENLIGHTENMENT_ROOT@\" -DENLIGHTENMENT_BIN=\"@ENLIGHTENMENT_BIN@\" -DLOCALEDIR=\"@LOCALEDIR@\"
 

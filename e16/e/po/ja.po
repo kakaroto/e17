@@ -10,7 +10,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.5\n"
-"POT-Creation-Date: 2003-03-22 09:50-0500\n"
+"POT-Creation-Date: 2003-03-27 11:11+1100\n"
 "PO-Revision-Date: 2001-01-07 14:00+0900\n"
 "Last-Translator: Enlightenment-jp Mailing List <enlightenment-jp@UaUa.ORG>\n"
 "Language-Team: Japanese <ja@li.org>\n"

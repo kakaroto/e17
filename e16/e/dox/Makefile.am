@@ -31,7 +31,7 @@ dox_SOURCES = \
 
 LDADD = $(TTF_LIBS) $(FNLIB_LIBS) $(IMLIB_LIBS) $(XINERAMA_LIBS) -lm
 
-INCLUDES=-I$(top_srcdir) $(IMLIB_CFLAGS) -I$(includedir) -I..
+INCLUDES=-I$(top_srcdir) $(IMLIB_CFLAGS) -I$(includedir) -I.. -I/usr/include/freetype1
 
 DEFS=-DENLIGHTENMENT_ROOT=\"@ENLIGHTENMENT_ROOT@\" -DENLIGHTENMENT_BIN=\"@ENLIGHTENMENT_BIN@\"
 
