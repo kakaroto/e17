@@ -37,6 +37,8 @@ for EACHDIR in $SUBDIRS ; do
     automake --foreign --add-missing || abort "automake"
     autoconf || abort "autoconf"
     (cd libltdl && aclocal) || abort "in libltdl, aclocal"
+    (cd libltdl && autoheader) || abort "in libltdl, autoheader"
+    (cd libltdl && automake --add-missing) || abort "in libltdl, automake"
     (cd libltdl && autoconf) || abort "in libltdl, autoconf"
 done
 
