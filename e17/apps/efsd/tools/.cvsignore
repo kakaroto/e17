@@ -3,3 +3,5 @@ Makefile.in
 Makefile
 magic2db
 efsdsh
+pattern.db
+magic.db
