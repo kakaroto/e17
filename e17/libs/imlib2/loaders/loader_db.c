@@ -281,7 +281,7 @@ save (ImlibImage *im, ImlibProgressFunction progress,
    *tmp++ = '\0';
    if(!tmp)
       return 0;
-   strcpy(key, tmp + 1);
+   strcpy(key, tmp);
    
    if (exists(file))
      {
