@@ -17,6 +17,8 @@ void            __ewl_container_child_destroy(Ewl_Widget * w, void *ev_data,
  * ewl_container_init - initialize a containers default fields and callbacks
  * @c: the container to initialize
  * @appearance: the appearance key for this container
+ * @add: the function to call when children added to container
+ * @rs: the function to call when children of container are resized
  *
  * Returns no value. Initializes the default values of the container, this
  * also sets up the widget fields of the container, so the @appearance string
@@ -127,7 +129,6 @@ void ewl_container_append_child(Ewl_Container * pc, Ewl_Widget * child)
 	 * it's parent has been changed.
 	 */
 	child->parent = EWL_WIDGET(pc);
-	LAYER(child) = LAYER(pc) + 5;
 	ewd_list_append(pc->children, child);
 
 	/*
@@ -179,7 +180,6 @@ void ewl_container_prepend_child(Ewl_Container * pc, Ewl_Widget * child)
 	 * it's parent has been changed.
 	 */
 	child->parent = EWL_WIDGET(pc);
-	LAYER(child) = LAYER(pc) + 5;
 	ewd_list_prepend(pc->children, child);
 
 	/*
@@ -233,7 +233,6 @@ ewl_container_insert_child(Ewl_Container * pc, Ewl_Widget * child, int index)
 	 * notify the child that it's parent has been changed.
 	 */
 	child->parent = EWL_WIDGET(pc);
-	LAYER(child) = LAYER(pc) + 5;
 	ewd_list_goto_index(pc->children, index);
 	ewd_list_insert(pc->children, child);
 

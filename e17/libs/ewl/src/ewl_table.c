@@ -80,10 +80,10 @@ void ewl_table_init(Ewl_Table * t, int cols, int rows, char **col_headers)
 	 * Iniitialize the tables inherited fields
 	 */
 	ewl_container_init(EWL_CONTAINER(t),
-			   "/appearance/box/vertical", NULL, NULL);
+			   "/box/vertical", NULL, NULL);
 	ewl_object_set_fill_policy(EWL_OBJECT(t), EWL_FILL_POLICY_FILL);
-	ewl_theme_data_set_str(EWL_WIDGET(t),
-			       "/appearance/box/vertical/base/visible", "no");
+	ewl_theme_data_set_str(EWL_WIDGET(t), "/box/vertical/base/visible",
+			"no");
 
 
 	/*
@@ -92,7 +92,7 @@ void ewl_table_init(Ewl_Table * t, int cols, int rows, char **col_headers)
 	t->grid = (Ewl_Grid *) ewl_grid_new(cols, rows);
 	ewl_container_append_child(EWL_CONTAINER(t), EWL_WIDGET(t->grid));
 	ewl_theme_data_set_str(EWL_WIDGET(t->grid),
-			       "/appearance/box/vertical/base/visible", "no");
+			       "/box/vertical/base/visible", "no");
 
 
 	/*
@@ -135,7 +135,7 @@ void ewl_table_init(Ewl_Table * t, int cols, int rows, char **col_headers)
 
 /**
  * ewl_table_add - add a child widget to the table
- * @t: the table
+ * @table: the table
  * @text: the text to add
  * @dm_click: callback function to be called on double mouse click
  * @start_col: the start column
@@ -180,7 +180,7 @@ ewl_table_add(Ewl_Table * table, char *text,
 
 /**
  * ewl_table_add_return - add a child widget to the table
- * @t: the table
+ * @table: the table
  * @text: the text to add
  * @start_col: the start column
  * @end_col: the end columnt
@@ -212,8 +212,7 @@ Ewl_Widget     *ewl_table_add_return(Ewl_Table * table, char *text,
 	}
 
 	txt = ewl_button_new(text);
-	ewl_theme_data_set_str(txt,
-			       "/appearance/button/default/base/visible", "no");
+	ewl_theme_data_set_str(txt, "/button/default/base/visible", "no");
 	child = __ewl_table_create_child(txt);
 	ewl_grid_add(table->grid, EWL_WIDGET(child),
 		     start_col, end_col, start_row, end_row);
@@ -230,6 +229,7 @@ Ewl_Widget     *ewl_table_add_return(Ewl_Table * table, char *text,
 /**
  * ewl_table_get_col_row - get the column and row of a widget
  * @t: the table
+ * @text: the text to add
  * @w: the widget to find
  * @start_col: integer pointer to store the start column
  * @end_col: integer pointer to store the end column in
@@ -339,7 +339,7 @@ Ewd_List       *ewl_table_find(Ewl_Table * t, int start_col, int end_col,
 
 /**
  * ewl_table_set_col_w - set the width of a table column
- * @t: the table
+ * @table: the table
  * @col: the column
  * @width: the new width
  *
@@ -364,7 +364,7 @@ void ewl_table_set_col_w(Ewl_Table * table, int col, int width)
 
 /**
  * ewl_table_get_col_w - get the width of a table column
- * @t: the table
+ * @table: the table
  * @col: the column
  * @width: integer pointer to store the width in
  *
@@ -389,7 +389,7 @@ void ewl_table_get_col_w(Ewl_Table * table, int col, int *width)
 
 /**
  * ewl_table_set_row_h - set the height of a table row
- * @t: the table
+ * @table: the table
  * @row: the row
  * @height: the new height
  *
@@ -414,7 +414,7 @@ void ewl_table_set_row_h(Ewl_Table * table, int row, int height)
 
 /**
  * ewl_table_get_row_h - get the height of a table row
- * @t: the table
+ * @table: the table
  * @row: the row
  * @height: integer pointer to store the height in
  *
@@ -543,8 +543,7 @@ Ewl_Table_Child *__ewl_table_create_child(Ewl_Widget * w)
 	/*
 	 * Initialize the inherited fields
 	 */
-	ewl_container_init(EWL_CONTAINER(child),
-			   "/appearance/box/vertical", NULL, NULL);
+	ewl_container_init(EWL_CONTAINER(child), "/box/vertical", NULL, NULL);
 	ewl_object_set_fill_policy(EWL_OBJECT(child), EWL_FILL_POLICY_FILL);
 
 

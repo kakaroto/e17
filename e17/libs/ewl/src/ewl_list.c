@@ -82,8 +82,7 @@ void ewl_list_append_text(Ewl_Widget * l, char *text[])
 		Ewl_Widget     *text_widgets[EWL_TABLE(table)->columns];
 
 		for (i = 0; i < EWL_TABLE(table)->columns; i++) {
-			text_widgets[i] = ewl_text_new();
-			ewl_text_set_text(EWL_TEXT(text_widgets[i]), text[i]);
+			text_widgets[i] = ewl_text_new(text[i]);
 			ewl_text_set_font_size(EWL_TEXT(text_widgets[i]), 8);
 
 /*			  ewl_table_attach(table, text_widgets[i],
@@ -166,7 +165,7 @@ void __ewl_list_init(Ewl_List * list)
 	/*
 	 * Initialize the list widget
 	 */
-	ewl_container_init(EWL_CONTAINER(w), "/appearance/list/default",
+	ewl_container_init(EWL_CONTAINER(w), "/list/default",
 			   NULL, NULL);
 
 	ewl_callback_append(w, EWL_CALLBACK_REALIZE, __ewl_list_realize, NULL);
@@ -284,7 +283,7 @@ void __ewl_list_select_row(Ewl_Widget * l, int row)
 	sel = NEW(Ewl_List_Selection, 1);
 	sel->row = row;
 
-	image = ewl_theme_image_get(l, "/appearance/list/default/selection");
+	image = ewl_theme_image_get(l, "/list/default/selection");
 
 	sel->ebits_object = ebits_load(image);
 	FREE(image);

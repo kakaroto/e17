@@ -465,28 +465,27 @@ void ewl_notebook_set_tabs_position(Ewl_Notebook * n, Ewl_Position p)
 	switch (n->tabs_position) {
 	case EWL_POSITION_LEFT:
 		snprintf(file, PATH_LEN,
-			 "/appearance/notebook/tab_button/base-left.bits.db");
+			 "/notebook/tab_button/base-left.bits.db");
 		break;
 	case EWL_POSITION_RIGHT:
 		snprintf(file, PATH_LEN,
-			 "/appearance/notebook/tab_button/base-right.bits.db");
+			 "/notebook/tab_button/base-right.bits.db");
 		break;
 	case EWL_POSITION_BOTTOM:
 		snprintf(file, PATH_LEN,
-			 "/appearance/notebook/tab_button/base-bottom.bits.db");
+			 "/notebook/tab_button/base-bottom.bits.db");
 		break;
 	case EWL_POSITION_TOP:
 	default:
 		snprintf(file, PATH_LEN,
-			 "/appearance/notebook/tab_button/base-top.bits.db");
+			 "/notebook/tab_button/base-top.bits.db");
 		break;
 	}
 
 	ewd_list_goto_first(n->pages);
 
 	while ((np = ewd_list_next(n->pages)) != NULL)
-		ewl_theme_data_set_str(np->tab,
-				       "/appearance/notebook/tab_button/base",
+		ewl_theme_data_set_str(np->tab, "/notebook/tab_button/base",
 				       file);
 
 	ewl_widget_configure(w);
@@ -555,8 +554,7 @@ void ewl_notebook_init(Ewl_Notebook * n)
 	 * Initialize the container portion of the notebook and set the fill
 	 * policy to fill the area available.
 	 */
-	ewl_container_init(EWL_CONTAINER(w),
-			   "/appearance/notebook/default", NULL, NULL);
+	ewl_container_init(EWL_CONTAINER(w), "/notebook/default", NULL, NULL);
 
 	ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FILL_POLICY_FILL);
 
@@ -565,7 +563,7 @@ void ewl_notebook_init(Ewl_Notebook * n)
 	 * notebook.
 	 */
 	n->tab_box = ewl_hbox_new();
-	ewl_widget_set_appearance(n->tab_box, "/appearance/notebook/tab_box");
+	ewl_widget_set_appearance(n->tab_box, "/notebook/tab_box");
 	ewl_object_set_fill_policy(EWL_OBJECT(n->tab_box),
 				   EWL_FILL_POLICY_FILL);
 
@@ -1021,32 +1019,32 @@ Ewl_NotebookPage *__ewl_notebook_page_create(Ewl_Notebook * n, Ewl_Widget * c,
 	switch (n->tabs_position) {
 	case EWL_POSITION_LEFT:
 		snprintf(file, PATH_LEN,
-			 "/appearance/notebook/tab_button/base-left.bits.db");
+			 "/notebook/tab_button/base-left.bits.db");
 		break;
 	case EWL_POSITION_RIGHT:
 		snprintf(file, PATH_LEN,
-			 "/appearance/notebook/tab_button/base-right.bits.db");
+			 "/notebook/tab_button/base-right.bits.db");
 		break;
 	case EWL_POSITION_BOTTOM:
 		snprintf(file, PATH_LEN,
-			 "/appearance/notebook/tab_button/base-bottom.bits.db");
+			 "/notebook/tab_button/base-bottom.bits.db");
 		break;
 	case EWL_POSITION_TOP:
 	default:
 		snprintf(file, PATH_LEN,
-			 "/appearance/notebook/tab_button/base-top.bits.db");
+			 "/notebook/tab_button/base-top.bits.db");
 		break;
 
 	}
 
 	box = ewl_vbox_new();
-	ewl_widget_set_appearance(box, "/appearance/notebook/content_box");
+	ewl_widget_set_appearance(box, "/notebook/content_box");
 	ewl_container_append_child(EWL_CONTAINER(box), c);
 	ewl_object_request_position(EWL_OBJECT(box), 1 << 15, 1 << 15);
 	ewl_widget_configure(box);
 
 	button = ewl_button_new(NULL);
-	ewl_widget_set_appearance(button, "/appearance/notebook/tab_button");
+	ewl_widget_set_appearance(button, "/notebook/tab_button");
 	ewl_callback_append(button, EWL_CALLBACK_CONFIGURE,
 			    __ewl_notebook_tab_button_configure, NULL);
 	ewl_callback_append(button, EWL_CALLBACK_MOUSE_DOWN,

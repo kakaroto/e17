@@ -13,8 +13,6 @@ typedef struct _ewl_button Ewl_Button;
 
 struct _ewl_button {
 	Ewl_Box         box;
-
-	char           *label;
 	Ewl_Widget     *label_object;
 };
 

@@ -72,36 +72,6 @@ void ewl_menu_init(Ewl_Menu * menu, char *image, char *title)
 }
 
 
-/**
- * ewl_menu_set_title_expandable - allow title to be expanded/contracted
- * @menu: the menu
- *
- * Returns nothing.
- */
-void ewl_menu_set_title_expandable(Ewl_Menu * menu)
-{
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-
-	menu->t_expand = 1;
-
-	/*
-	 * ewl_object_set_maximum_size (EWL_OBJECT(menu->corner), 30, 22);
-	 * ewl_object_set_minimum_size (EWL_OBJECT(menu->corner), 30, 22);
-	 */
-
-	/*
-	 * ewl_callback_append(menu->corner_button, EWL_CALLBACK_MOUSE_UP,
-	 * __expand_menu, menu);
-	 * ewl_container_append_child(EWL_CONTAINER(menu->corner), 
-	 * menu->corner_button);
-	 * 
-	 * ewl_widget_configure(EWL_WIDGET(menu->corner));
-	 */
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
 void __expand_menu(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	int             x, y;
@@ -141,28 +111,4 @@ void __expand_menu(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	ewl_window_move(EWL_WINDOW(menu->popup), x, y);
 	printf("Moving popup to %d, %d\n", x, y);
-}
-
-void __expand_menu_animator(int val, void *ev_data)
-{
-}
-
-
-void __collapse_menu_animator(int val, void *ev_data)
-{
-}
-
-
-void __expand_menu_and_title_animator(int val, void *ev_data)
-{
-}
-
-
-void __collapse_menu_and_title_animator(int val, void *ev_data)
-{
-}
-
-
-void __ewl_menu_start(Ewl_Widget * w)
-{
 }

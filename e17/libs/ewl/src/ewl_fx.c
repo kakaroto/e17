@@ -115,17 +115,19 @@ void ewl_fx_init_widget(Ewl_Widget * w)
 	/*
 	 * Check for an error in the appearance string.
 	 */
+	/*
 	if (strncmp(w->appearance, "/appearance/", 12)) {
 		D(DLEVEL_STABLE,
 		  "Widget %p has this:\n\n\t%s\n\nWierd appearance string\n",
 		  w, w->appearance);
 		DRETURN(DLEVEL_STABLE);
 	}
+	*/
 
 	/*
 	 * Determine the key for fx to load for this widget.
 	 */
-	sscanf(w->appearance, "/appearance/%[^/]/", wname);
+	sscanf(w->appearance, "/%[^/]/", wname);
 
 	/*
 	 * Now determine how many fx to apply to this widget.
@@ -1087,17 +1089,19 @@ __ewl_fx_widget_appearance_changed(Ewl_Widget * w, void *ev_data,
 	/*
 	 * Check for a valid appearance string.
 	 */
+	/*
 	if (strncmp(w->appearance, "/appearance/", 12)) {
 		DWARNING
 		    ("Widget %p has this:\n\n\t%s\n\nWierd appearance string\n",
 		     w, w->appearance);
 		DRETURN(DLEVEL_STABLE);
 	}
+	*/
 
 	/*
 	 * Determine the number of fx that need to be setup for the widgets.
 	 */
-	sscanf(w->appearance, "/appearance/%[^/]/", wname);
+	sscanf(w->appearance, "/%[^/]/", wname);
 	snprintf(key, PATH_LEN, "/user/%s/count", wname);
 	count = ewl_config_get_int("fx", key);
 

@@ -223,6 +223,10 @@ __create_box_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_container_append_child(EWL_CONTAINER(vbox[1]), vbox_button[1][0]);
 	ewl_object_set_fill_policy(EWL_OBJECT(vbox_button[1][0]),
 				   EWL_FILL_POLICY_NONE);
+	ewl_box_set_orientation(EWL_BOX(vbox_button[1][0]),
+			EWL_ORIENTATION_VERTICAL);
+	ewl_object_set_alignment(EWL_OBJECT(EWL_BUTTON(vbox_button[1][0])->label_object),
+				 EWL_ALIGNMENT_CENTER);
 	ewl_callback_append(vbox_button[1][0], EWL_CALLBACK_CLICKED,
 			    __toggle_child_fill, NULL);
 	ewl_widget_show(vbox_button[1][0]);
@@ -232,8 +236,12 @@ __create_box_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	 */
 	vbox_button[1][1] = ewl_button_new("Fill");
 	ewl_container_append_child(EWL_CONTAINER(vbox[1]), vbox_button[1][1]);
+	ewl_box_set_orientation(EWL_BOX(vbox_button[1][1]),
+			EWL_ORIENTATION_VERTICAL);
 	ewl_object_set_fill_policy(EWL_OBJECT(vbox_button[1][1]),
 				   EWL_FILL_POLICY_FILL);
+	ewl_object_set_alignment(EWL_OBJECT(EWL_BUTTON(vbox_button[1][1])->label_object),
+				 EWL_ALIGNMENT_CENTER);
 	ewl_callback_append(vbox_button[1][1], EWL_CALLBACK_CLICKED,
 			    __toggle_child_fill, NULL);
 	ewl_widget_show(vbox_button[1][1]);
@@ -243,8 +251,12 @@ __create_box_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	 */
 	vbox_button[1][2] = ewl_button_new("None");
 	ewl_container_append_child(EWL_CONTAINER(vbox[1]), vbox_button[1][2]);
+	ewl_box_set_orientation(EWL_BOX(vbox_button[1][2]),
+			EWL_ORIENTATION_VERTICAL);
 	ewl_object_set_fill_policy(EWL_OBJECT(vbox_button[1][2]),
 				   EWL_FILL_POLICY_NONE);
+	ewl_object_set_alignment(EWL_OBJECT(EWL_BUTTON(vbox_button[1][2])->label_object),
+				 EWL_ALIGNMENT_CENTER);
 	ewl_callback_append(vbox_button[1][2], EWL_CALLBACK_CLICKED,
 			    __toggle_child_fill, NULL);
 	ewl_widget_show(vbox_button[1][2]);

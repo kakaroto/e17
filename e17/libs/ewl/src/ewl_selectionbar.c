@@ -80,15 +80,14 @@ void ewl_selectionbar_init(Ewl_Selectionbar * s, Ewl_Widget * parent)
 	ewl_callback_append(w, EWL_CALLBACK_SHOW, __ewl_selectionbar_show,
 			    NULL);
 	ewl_theme_data_set_str(EWL_WIDGET(s),
-			       "/appearance/box/vertical/base/visible", "no");
+			       "/box/vertical/base/visible", "no");
 
 
 	s->bar = NEW(Ewl_Container, 1);
 	memset(s->bar, 0, sizeof(Ewl_Container));
 
 
-	ewl_container_init(EWL_CONTAINER(s->bar), "/appearance/box/vertical",
-			   NULL, NULL);
+	ewl_container_init(EWL_CONTAINER(s->bar), "/box/vertical", NULL, NULL);
 	ewl_object_set_fill_policy(EWL_OBJECT(s->bar), EWL_FILL_POLICY_NORMAL);
 	ewl_container_append_child(EWL_CONTAINER(w), EWL_WIDGET(s->bar));
 	ewl_callback_append(EWL_WIDGET(s->bar), EWL_CALLBACK_FOCUS_OUT,
@@ -96,7 +95,7 @@ void ewl_selectionbar_init(Ewl_Selectionbar * s, Ewl_Widget * parent)
 	ewl_callback_append(EWL_WIDGET(s->bar), EWL_CALLBACK_FOCUS_IN,
 			    __focus_in, w);
 	ewl_theme_data_set_str(EWL_WIDGET(s->bar),
-			       "/appearance/box/vertical/base/visible", "yes");
+			       "/box/vertical/base/visible", "yes");
 
 
 	window = ewl_window_find_window_by_widget(parent);
@@ -110,9 +109,9 @@ void ewl_selectionbar_init(Ewl_Selectionbar * s, Ewl_Widget * parent)
 
 /*	ewl_callback_append(s->scroller.top, EWL_CALLBACK_MOUSE_MOVE,
 			__mouse_move_over_children, s);
-*/ ewl_theme_data_set_str(s->scroller.top,
-							     "/appearance/box/vertical/base/visible",
-							     "yes");
+*/
+	ewl_theme_data_set_str(s->scroller.top, "/box/vertical/base/visible",
+			"yes");
 
 
 	s->scroller.bottom = ewl_vbox_new();
@@ -121,9 +120,9 @@ void ewl_selectionbar_init(Ewl_Selectionbar * s, Ewl_Widget * parent)
 
 /*	ewl_callback_append(s->scroller.bottom, EWL_CALLBACK_MOUSE_MOVE,
 			__mouse_move_over_children, s);
-*/ ewl_theme_data_set_str(s->scroller.bottom,
-							     "/appearance/box/vertical/base/visible",
-							     "yes");
+*/
+	ewl_theme_data_set_str(s->scroller.bottom, "/box/vertical/base/visible",
+			"yes");
 
 
 	ewl_container_add_notify(EWL_CONTAINER(w), __child_add);

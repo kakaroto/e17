@@ -117,11 +117,11 @@ void ewl_box_init(Ewl_Box * b, Ewl_Orientation o)
 	 */
 	if (o == EWL_ORIENTATION_VERTICAL)
 		ewl_container_init(EWL_CONTAINER(b),
-				   "/appearance/box/vertical",
+				   "/box/vertical",
 				   __ewl_box_add, __ewl_box_child_resize);
 	else
 		ewl_container_init(EWL_CONTAINER(b),
-				   "/appearance/box/horizontal",
+				   "/box/horizontal",
 				   __ewl_box_add, __ewl_box_child_resize);
 
 	ewl_callback_prepend(w, EWL_CALLBACK_CONFIGURE, __ewl_box_configure,

@@ -60,7 +60,7 @@ void ewl_scrollpane_init(Ewl_ScrollPane * s)
 
 	w = EWL_WIDGET(s);
 
-	ewl_container_init(EWL_CONTAINER(s), "/appearance/scrollpane/default",
+	ewl_container_init(EWL_CONTAINER(s), "/scrollpane/default",
 			   __ewl_scrollpane_add, __ewl_scrollpane_child_resize);
 
 	/*
@@ -70,7 +70,7 @@ void ewl_scrollpane_init(Ewl_ScrollPane * s)
 	s->box = NEW(Ewl_Container, 1);
 	ZERO(s->box, Ewl_Container, 1);
 	ewl_container_init(EWL_CONTAINER(s->box),
-			   "/appearance/scrollpane/default/box",
+			   "/scrollpane/default/box",
 			   __ewl_scrollpane_box_add,
 			   __ewl_scrollpane_box_resize);
 
@@ -420,14 +420,12 @@ __ewl_scrollpane_child_resize(Ewl_Container * parent, Ewl_Widget * child,
 	 */
 	if (o == EWL_ORIENTATION_HORIZONTAL)
 		ewl_object_set_preferred_w(EWL_OBJECT(parent),
-					   ewl_object_get_preferred_w(EWL_OBJECT
-								      (s->
-								       box)));
+				ewl_object_get_preferred_w(EWL_OBJECT(s->box))
+				+ ewl_object_get_preferred_w(EWL_OBJECT(s->vscrollbar)));
 	else
 		ewl_object_set_preferred_h(EWL_OBJECT(parent),
-					   ewl_object_get_preferred_h(EWL_OBJECT
-								      (s->
-								       box)));
+				ewl_object_get_preferred_h(EWL_OBJECT(s->box))
+				+ ewl_object_get_preferred_h(EWL_OBJECT(s->hscrollbar)));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

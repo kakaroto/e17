@@ -52,7 +52,7 @@ void ewl_button_init(Ewl_Button * b, char *label)
 	w = EWL_WIDGET(b);
 
 	ewl_box_init(EWL_BOX(b), EWL_ORIENTATION_HORIZONTAL);
-	ewl_widget_set_appearance(w, "/appearance/button/default");
+	ewl_widget_set_appearance(w, "/button/default");
 
 	/*
 	 * Override the default recursive setting on containers. This prevents
@@ -80,12 +80,11 @@ void ewl_button_init(Ewl_Button * b, char *label)
 	 * Create and setup the label for the button if it's desired.
 	 */
 	if (label) {
-		b->label_object = ewl_text_new();
+		b->label_object = ewl_text_new(label);
 		ewl_widget_set_appearance(b->label_object,
-					  "/appearance/button/label");
+					  "/button/default/label");
 		ewl_object_set_alignment(EWL_OBJECT(b->label_object),
 					 EWL_ALIGNMENT_CENTER);
-		ewl_text_set_text(EWL_TEXT(b->label_object), label);
 		ewl_container_append_child(EWL_CONTAINER(b), b->label_object);
 	}
 
@@ -192,7 +191,6 @@ void __ewl_button_theme_update(Ewl_Widget * w, void *ev_data, void *user_data)
 		DRETURN(DLEVEL_STABLE);
 
 	snprintf(appearance, PATH_LEN, "%s/label", w->appearance);
-
 	ewl_widget_set_appearance(b->label_object, appearance);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);

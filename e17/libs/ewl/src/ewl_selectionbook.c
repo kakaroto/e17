@@ -67,8 +67,7 @@ void ewl_selectionbook_init(Ewl_Selectionbook * s)
 			    __ewl_selectionbook_realize, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_DESTROY,
 			    __ewl_selectionbook_destroy, NULL);
-	ewl_theme_data_set_str(w, "/appearance/box/vertical/base/visible",
-			       "no");
+	ewl_theme_data_set_str(w, "/box/vertical/base/visible", "no");
 
 
 

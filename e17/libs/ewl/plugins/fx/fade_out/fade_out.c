@@ -111,17 +111,15 @@ void
 create_about_dialog(void)
 {
 	about_dialog.window = ewl_window_new();
-	ewl_window_resize(about_dialog.window, 370, 150);
-	ewl_window_set_title(about_dialog.window,
+	ewl_window_resize(EWL_WINDOW(about_dialog.window), 370, 150);
+	ewl_window_set_title(EWL_WINDOW(about_dialog.window),
 			     "EWL Fade Out Plugin: About");
 	ewl_object_set_custom_size(EWL_OBJECT(about_dialog.window), 370, 150);
 	ewl_callback_append(about_dialog.window, EWL_CALLBACK_DELETE_WINDOW,
 			    close_about_dialog, NULL);
 	ewl_widget_realize(about_dialog.window);
 
-	about_dialog.text = ewl_text_new();
-	ewl_text_set_text(about_dialog.text,
-			  "           EWL Fade Out Plugin\n\n"
+	about_dialog.text = ewl_text_new("           EWL Fade Out Plugin\n\n"
 			  "Created by Christopher 'smugg' Rosendahl");
 	ewl_object_set_alignment(EWL_OBJECT(about_dialog.text),
 				 EWL_ALIGNMENT_CENTER);

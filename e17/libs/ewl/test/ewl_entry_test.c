@@ -24,11 +24,11 @@ __fetch_entry_text(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	char           *s;
 
-	s = ewl_entry_get_text(entry[0]);
+	s = ewl_entry_get_text(EWL_ENTRY(entry[0]));
 	printf("First entry covers: %s\n", s);
 	FREE(s);
 
-	s = ewl_entry_get_text(entry[1]);
+	s = ewl_entry_get_text(EWL_ENTRY(entry[1]));
 	printf("Second entry covers: %s\n", s);
 	FREE(s);
 
@@ -42,8 +42,8 @@ __fetch_entry_text(Ewl_Widget * w, void *ev_data, void *user_data)
 void
 __set_entry_text(Ewl_Widget * w, void *ev_data, void *user_data)
 {
-	ewl_entry_set_text(entry[0], "Play with me ?");
-	ewl_entry_set_text(entry[1], "E W L ! ! !");
+	ewl_entry_set_text(EWL_ENTRY(entry[0]), "Play with me ?");
+	ewl_entry_set_text(EWL_ENTRY(entry[1]), "E W L ! ! !");
 
 	return;
 	w = NULL;
@@ -64,8 +64,8 @@ __create_entry_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	entry_button = w;
 
 	entry_win = ewl_window_new();
-	ewl_window_resize(entry_win, 371, 96);
-	ewl_window_set_min_size(entry_win, 371, 96);
+	ewl_window_resize(EWL_WINDOW(entry_win), 371, 96);
+	ewl_window_set_min_size(EWL_WINDOW(entry_win), 371, 96);
 	ewl_callback_append(entry_win, EWL_CALLBACK_DELETE_WINDOW,
 			    __destroy_entry_test_window, NULL);
 	ewl_widget_show(entry_win);
@@ -78,14 +78,12 @@ __create_entry_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_box_set_spacing(EWL_BOX(entry_box), 10);
 	ewl_widget_show(entry_box);
 
-	entry[0] = ewl_entry_new();
-	ewl_entry_set_text(entry[0], "Play with me ?");
+	entry[0] = ewl_entry_new("Play with me ?");
 	ewl_object_set_padding(EWL_OBJECT(entry[0]), 5, 5, 5, 0);
 	ewl_container_append_child(EWL_CONTAINER(entry_box), entry[0]);
 	ewl_widget_show(entry[0]);
 
-	entry[1] = ewl_entry_new();
-	ewl_entry_set_text(entry[1], "E W L ! ! !");
+	entry[1] = ewl_entry_new("E W L ! ! !");
 	ewl_object_set_padding(EWL_OBJECT(entry[1]), 5, 5, 0, 0);
 	ewl_container_append_child(EWL_CONTAINER(entry_box), entry[1]);
 	ewl_widget_show(entry[1]);

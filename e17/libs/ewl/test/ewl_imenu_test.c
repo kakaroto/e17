@@ -49,7 +49,7 @@ __create_imenu_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	imenu_button = w;
 
 	imenu_win = ewl_window_new();
-	ewl_window_resize(imenu_win, 300, 300);
+	ewl_window_resize(EWL_WINDOW(imenu_win), 300, 300);
 	ewl_callback_append(imenu_win, EWL_CALLBACK_DELETE_WINDOW,
 			    __destroy_imenu_test_window, NULL);
 	ewl_widget_show(imenu_win);

@@ -43,7 +43,7 @@ int ewl_theme_init(void)
 	if (!home) {
 		DERROR("Environment variable HOME not defined\n"
 		       "Try export HOME=/home/user in a bash like environemnt or\n"
-		       "setenv HOME=/home/user in a sh like environment.\n");
+		       "setenv HOME=/home/user in a csh like environment.\n");
 		exit(-1);
 	}
 
@@ -113,7 +113,7 @@ void ewl_theme_deinit_widget(Ewl_Widget * w)
 
 	/*
 	 * We only want to destroy the hash if its not def_theme_data
-	 * * We destroy def_theme_data from else where.. 
+	 * We destroy def_theme_data from else where.. 
 	 */
 	if (w->theme && w->theme != def_theme_data)
 		ewd_hash_destroy(w->theme);
@@ -148,7 +148,7 @@ char           *ewl_theme_font_path()
 	if (!font_path) {
 		font_path = NEW(char, PATH_LEN);
 
-		snprintf(font_path, PATH_LEN, "%s/appearance/fonts",
+		snprintf(font_path, PATH_LEN, "%s/fonts",
 			 theme_path);
 	}
 
@@ -177,10 +177,10 @@ char           *ewl_theme_image_get(Ewl_Widget * w, char *k)
 	if (!data)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
-	if (!strncmp(data, "/appearance", 11)) {
+	if (*data != '/') {
 		path = NEW(char, PATH_LEN);
 
-		snprintf(path, PATH_LEN, "%s%s", theme_path, data);
+		snprintf(path, PATH_LEN, "%s/%s", theme_path, data);
 
 		FREE(data);
 	} else			/* Absolute path given, so return it */
@@ -346,40 +346,3 @@ void ewl_theme_data_set_default_int(char *k, int v)
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
-
-
-/* This isn't needed yet...
-void
-ewl_theme_data_gen_default_theme_db(char *f)
-{
-	E_DB_File *db;
-	char str[7], key[512], val[512];
-	int i = -1, j, jj, l;
-
-	db = e_db_open(f);
-
-	while (theme_keys[++i]) {
-		snprintf(key, 512, "%s", (char *) theme_keys[i]);
-
-		l = strlen(key);
-
-		jj = 0;
-
-		for (j = l - 7; j < l; j++)
-			str[jj++] = key[j];
-
-		if (!strncasecmp(str, "visible", 7))
-			snprintf(val, 512, "yes");
-		else
-			snprintf(val, 512, "%s.bits.db", theme_keys[i]);
-
-		e_db_str_set(db, key, val);
-
-		++i;
-	}
-
-	e_db_flush();
-
-	e_db_close(db);
-}
-*/

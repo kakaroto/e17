@@ -72,28 +72,33 @@ void ewl_seeker_init(Ewl_Seeker * s, Ewl_Orientation orientation)
 	 * type
 	 */
 	if (orientation == EWL_ORIENTATION_HORIZONTAL) {
-		ewl_container_init(EWL_CONTAINER(w),
-				   "/appearance/seeker/horizontal", NULL, NULL);
-
-		/*
-		 * Override the buttons default appearance
-		 */
-		ewl_widget_set_appearance(s->dragbar,
-					  "/appearance/seeker/horizontal/dragbar");
+		ewl_container_init(EWL_CONTAINER(w), "/seeker/horizontal",
+				NULL, NULL);
 		ewl_object_set_custom_height(EWL_OBJECT(w), 16);
 		ewl_object_set_preferred_h(EWL_OBJECT(w), 16);
-	} else {
+	}
+	else {
 		ewl_container_init(EWL_CONTAINER(w),
-				   "/appearance/seeker/vertical", NULL, NULL);
-
-		/*
-		 * Override the buttons default appearance
-		 */
-		ewl_widget_set_appearance(s->dragbar,
-					  "/appearance/seeker/vertical/dragbar");
+				   "/seeker/vertical", NULL, NULL);
 		ewl_object_set_custom_width(EWL_OBJECT(w), 16);
 		ewl_object_set_preferred_w(EWL_OBJECT(w), 16);
 	}
+
+	/*
+	 * Create and add the dragbar portion of the seeker
+	 */
+	s->dragbar = ewl_button_new(NULL);
+	ewl_container_append_child(EWL_CONTAINER(s), s->dragbar);
+
+	/*
+	 * Override the buttons default appearance
+	 */
+	if (orientation == EWL_ORIENTATION_HORIZONTAL)
+		ewl_widget_set_appearance(s->dragbar,
+					  "/seeker/horizontal/dragbar");
+	else
+		ewl_widget_set_appearance(s->dragbar,
+					  "/seeker/vertical/dragbar");
 
 	ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FILL_POLICY_FILL);
 
@@ -104,12 +109,6 @@ void ewl_seeker_init(Ewl_Seeker * s, Ewl_Orientation orientation)
 	s->range = 100.0;
 	s->value = 0.0;
 	s->step = 5.0;
-
-	/*
-	 * Create and add the dragbar portion of the seeker
-	 */
-	s->dragbar = ewl_button_new(NULL);
-	ewl_container_append_child(EWL_CONTAINER(s), s->dragbar);
 
 	/*
 	 * Add necessary configuration callbacks

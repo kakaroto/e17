@@ -713,6 +713,7 @@ void __ewl_widget_reparent(Ewl_Widget * w, void *ev_data, void *user_data)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
+	LAYER(w) = LAYER(w->parent) + 5;
 	win = ewl_window_find_window_by_widget(w);
 
 	/*

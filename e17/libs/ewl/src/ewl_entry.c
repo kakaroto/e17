@@ -39,7 +39,7 @@ void            __ewl_entry_child_resize(Ewl_Container * entry,
  * Returns a newly allocated and initialized entry widget on success, NULL on
  * failure.
  */
-Ewl_Widget     *ewl_entry_new(void)
+Ewl_Widget     *ewl_entry_new(char *text)
 {
 	Ewl_Entry      *e;
 
@@ -51,7 +51,7 @@ Ewl_Widget     *ewl_entry_new(void)
 
 	ZERO(e, Ewl_Entry, 1);
 
-	e->text = ewl_text_new();
+	e->text = ewl_text_new(text);
 	e->cursor = ewl_cursor_new();
 	e->selection = ewl_selection_new();
 
@@ -73,12 +73,8 @@ Ewl_Widget     *ewl_entry_new(void)
  */
 void ewl_entry_set_text(Ewl_Entry * e, char *t)
 {
-	Ewl_Widget     *w;
-
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("e", e);
-
-	w = EWL_WIDGET(e);
 
 	ewl_text_set_text(EWL_TEXT(e->text), t);
 
@@ -113,7 +109,7 @@ void ewl_entry_init(Ewl_Entry * e)
 
 	w = EWL_WIDGET(e);
 
-	ewl_container_init(EWL_CONTAINER(w), "/appearance/entry/default",
+	ewl_container_init(EWL_CONTAINER(w), "/entry/default",
 			   NULL, __ewl_entry_child_resize);
 	ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FILL_POLICY_FILL);
 	ewl_object_set_minimum_size(EWL_OBJECT(w), 20, 20);
@@ -139,7 +135,7 @@ void ewl_entry_init(Ewl_Entry * e)
 	ewl_callback_append(w, EWL_CALLBACK_THEME_UPDATE,
 			    __ewl_entry_theme_update, NULL);
 
-	ewl_widget_set_appearance(e->text, "/appearance/entry/default/text");
+	ewl_widget_set_appearance(e->text, "/entry/default/text");
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -415,11 +411,9 @@ void __ewl_entry_theme_update(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	e = EWL_ENTRY(w);
 
-	font = ewl_theme_data_get_str(w, "/appearance/entry/default/text/font");
-	size = ewl_theme_data_get_int(w,
-				      "/appearance/entry/default/text/font_size");
-	style = ewl_theme_data_get_str(w,
-				       "/appearance/entry/default/text/style");
+	font = ewl_theme_data_get_str(w, "/entry/default/text/font");
+	size = ewl_theme_data_get_int(w, "/entry/default/text/font_size");
+	style = ewl_theme_data_get_str(w, "/entry/default/text/style");
 
 	if (font)
 		ewl_text_set_font(EWL_TEXT(e->text), font);

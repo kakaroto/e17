@@ -59,6 +59,10 @@ void            __create_selectionbar_test_window(Ewl_Widget * w,
 void
 __close_main_window(Ewl_Widget * w, void *ev_data, void *user_data)
 {
+	int x, y, width, height;
+
+	ewl_window_get_geometry(EWL_WINDOW(w), &x, &y, &width, &height);
+
 	ewl_widget_destroy(w);
 
 	ewl_main_quit();
@@ -82,12 +86,12 @@ main(int argc, char **argv)
 	ewl_init(argc, argv);
 
 	main_win = ewl_window_new();
-	ewl_window_set_title(main_win,
+	ewl_window_set_title(EWL_WINDOW(main_win),
 			     "The Enlightenment Widget Library Developer Test Program");
 	ewl_callback_append(main_win, EWL_CALLBACK_DELETE_WINDOW,
 			    __close_main_window, NULL);
-	ewl_window_resize(main_win, 237, 450);
-	ewl_window_set_min_size(main_win, 237, 390);
+	ewl_window_resize(EWL_WINDOW(main_win), 237, 450);
+	ewl_window_set_auto_size(EWL_WINDOW(main_win), TRUE);
 	ewl_widget_show(main_win);
 
 	i = 0;

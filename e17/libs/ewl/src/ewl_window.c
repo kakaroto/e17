@@ -118,14 +118,14 @@ void ewl_window_resize(Ewl_Window * win, int w, int h)
 	if (!win->window)
 		DRETURN(DLEVEL_STABLE);
 
-	ecore_window_resize(win->window, w, h);
+	ecore_window_resize(win->window, CURRENT_W(win), CURRENT_H(win));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
  * ewl_window_set_min_size - set the minimum size a window can attain
- * @widget: the window to change the minimum size
+ * @win: the window to change the minimum size
  * @w: the minimum width the window can attain
  * @h: the minimum height the window can attain
  *
@@ -150,7 +150,7 @@ void ewl_window_set_min_size(Ewl_Window * win, int w, int h)
 
 /**
  * ewl_window_set_max_size - set the maximum size a window can attain
- * @widget: the window to change the maximum size
+ * @win: the window to change the maximum size
  * @w: the maximum width the window can attain
  * @h: the maximum height the window can attain
  *
@@ -193,7 +193,7 @@ void ewl_window_get_geometry(Ewl_Window * win, int *x, int *y, int *w, int *h)
 
 /**
  * ewl_window_set_geometry - set the current size and position of a window
- * @widget: the window to change geometry
+ * @win: the window to change geometry
  * @x: the new x position of the window
  * @y: the new y position of the window
  * @w: the new width of the window
@@ -211,7 +211,7 @@ void ewl_window_set_geometry(Ewl_Window * win, int x, int y, int w, int h)
 
 /**
  * ewl_window_set_title - set the title of the specified window
- * @w: the window to change the title
+ * @win: the window to change the title
  * @title: the title to set for the window
  *
  * Returns no value. Sets the title of window @w to @title and calls the
@@ -237,7 +237,7 @@ void ewl_window_set_title(Ewl_Window * win, char *title)
 
 /**
  * ewl_window_get_title - retrieve the title of the specified window
- * @widget: the window to retrieve the window
+ * @win: the window to retrieve the window
  *
  * Returns a pointer to a newly allocated copy of the title, NULL on failure.
  * The returned title should be freed.
@@ -252,7 +252,7 @@ char           *ewl_window_get_title(Ewl_Window * win)
 
 /**
  * ewl_window_set_borderless - remove the border from the specified window
- * @w: the window to remove the border
+ * @win: the window to remove the border
  *
  * Returns no value. Remove the border from the specified widget and call the
  * necessary X lib functions to update the appearance.
@@ -287,7 +287,7 @@ void ewl_window_set_auto_size(Ewl_Window * win, int value)
 
 /**
  * ewl_window_move - move the specified window to the given position
- * @w: the window to move
+ * @win: the window to move
  * @x: the x coordinate of the new position
  * @y: the y coordinate of the new position
  *
@@ -348,7 +348,7 @@ void ewl_window_init(Ewl_Window * w)
 	/*
 	 * Initialize the fields of the inherited container class
 	 */
-	ewl_container_init(EWL_CONTAINER(w), "/appearance/window/default",
+	ewl_container_init(EWL_CONTAINER(w), "/window/default",
 			   __ewl_window_child_add, NULL);
 	ewl_object_request_size(EWL_OBJECT(w), 256, 256);
 	ewl_object_request_size(EWL_OBJECT(w), 256, 256);
@@ -489,40 +489,46 @@ void __ewl_window_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	/*
 	 * Resize to fit the preferred size of the contents.
 	 */
-	if (win->auto_resize) {
-		ewl_object_set_preferred_size(EWL_OBJECT(w), 0, 0);
+	ewl_object_set_preferred_size(EWL_OBJECT(w), 0, 0);
 
-		ewd_list_goto_first(EWL_CONTAINER(win)->children);
-		while ((child = ewd_list_next(EWL_CONTAINER(win)->children))) {
-			int             ws;
-			int             cs;
+	ewd_list_goto_first(EWL_CONTAINER(win)->children);
+	while ((child = ewd_list_next(EWL_CONTAINER(win)->children))) {
+		int             ws;
+		int             cs;
 
-			ws = ewl_object_get_preferred_w(EWL_OBJECT(win));
-			cs = CURRENT_X(child) +
-			    ewl_object_get_preferred_w(child);
+		ws = ewl_object_get_preferred_w(EWL_OBJECT(win));
 
-			/*
-			 * Check the width and x position vs. window width.
-			 */
-			if (ws < cs)
-				ewl_object_set_preferred_w(EWL_OBJECT(win), cs);
+		/*
+		 * Adjust children for insets
+		 */
+		if (CURRENT_X(child) < INSET_LEFT(win))
+			ewl_object_request_x(child, INSET_LEFT(win));
+		if (CURRENT_Y(child) < INSET_TOP(win))
+			ewl_object_request_y(child, INSET_TOP(win));
 
-			ws = ewl_object_get_preferred_h(EWL_OBJECT(win));
-			cs = CURRENT_Y(child) +
-			    ewl_object_get_preferred_h(child);
+		cs = CURRENT_X(child) + ewl_object_get_preferred_w(child);
 
-			/*
-			 * Check the height and y position vs. window height.
-			 */
-			if (ws < cs)
-				ewl_object_set_preferred_h(EWL_OBJECT(win), cs);
+		/*
+		 * Check the width and x position vs. window width.
+		 */
+		if (ws < cs)
+			ewl_object_set_preferred_w(EWL_OBJECT(win), cs);
 
-		}
+		ws = ewl_object_get_preferred_h(EWL_OBJECT(win));
+		cs = CURRENT_Y(child) + ewl_object_get_preferred_h(child);
 
+		/*
+		 * Check the height and y position vs. window height.
+		 */
+		if (ws < cs)
+			ewl_object_set_preferred_h(EWL_OBJECT(win), cs);
+
+	}
+
+	if (win->auto_resize)
 		ewl_window_resize(win,
 				  ewl_object_get_preferred_w(EWL_OBJECT(w)),
 				  ewl_object_get_preferred_h(EWL_OBJECT(w)));
-	}
 
 	if (win->bg_rect) {
 		evas_move(win->evas, win->bg_rect, 0, 0);
@@ -542,11 +548,14 @@ void __ewl_window_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 		/*
 		 * Try to give the child the full size of the window from it's
 		 * base position. The object will constrict it based on the
-		 * fill policy.
+		 * fill policy. Don't add the TOP and LEFT insets since
+		 * they've already been accounted for.
 		 */
 		ewl_object_request_size(child,
-					CURRENT_W(w) - CURRENT_X(child),
-					CURRENT_H(w) - CURRENT_Y(child));
+					CURRENT_W(w) - (CURRENT_X(child) +
+						INSET_RIGHT(win)),
+					CURRENT_H(w) - (CURRENT_Y(child) +
+						INSET_BOTTOM(win)));
 
 		/*
 		 * Now configure the widget.

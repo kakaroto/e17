@@ -19,7 +19,7 @@ struct _ewl_text {
 	int             r, g, b, a;
 };
 
-Ewl_Widget     *ewl_text_new();
+Ewl_Widget     *ewl_text_new(char *text);
 
 void            ewl_text_set_text(Ewl_Text * t, char *text);
 char           *ewl_text_get_text(Ewl_Text * t);

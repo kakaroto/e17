@@ -1,6 +1,5 @@
 
 #include <Ewl.h>
-#include "getopt.h"
 
 void            ewl_idle_render(void *data);
 
@@ -193,6 +192,7 @@ void __ewl_init_parse_options(int argc, char **argv)
  */
 void __ewl_parse_option_array(int argc, char **argv)
 {
+	/*
 	char            stropts[] =
 	    "a:A:b:BcC:dD:e:f:Fg:hH:iIklL:mM:nNo:O:pPqQrR:sS:tT:uUvVwW:xXy:zZ1:2:3:4:56:78:90:";
 
@@ -201,11 +201,13 @@ void __ewl_parse_option_array(int argc, char **argv)
 		{0, 0, 0, 0}
 	};
 	int             optch = 0, cmdx = 0;
+	*/
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
+	/*
 	while ((optch =
-		getopt_long_only(argc, argv, stropts, lopts, &cmdx)) != EOF) {
+		 getopt_long_only(argc, argv, stropts, lopts, &cmdx)) != EOF) {
 		switch (optch) {
 		case 0:
 			break;
@@ -216,6 +218,7 @@ void __ewl_parse_option_array(int argc, char **argv)
 			break;
 		}
 	}
+	*/
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

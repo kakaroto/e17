@@ -131,17 +131,17 @@ void ewl_scrollbar_init(Ewl_Scrollbar * s, Ewl_Orientation orientation)
 		 * Set the appearance strings for the parts of the scrollbar
 		 */
 		ewl_widget_set_appearance(s->button_decrement,
-					  "/appearance/scrollbar/horizontal/button_increment");
+					  "/scrollbar/horizontal/button_increment");
 		ewl_widget_set_appearance(s->seeker,
-					  "/appearance/scrollbar/horizontal");
+					  "/scrollbar/horizontal");
 		ewl_widget_set_appearance(s->button_increment,
-					  "/appearance/scrollbar/horizontal/button_decrement");
+					  "/scrollbar/horizontal/button_decrement");
 
 		/*
 		 * Set the alignment of the buttons to the seeker.
 		 */
 		s->buttons_alignment = ewl_theme_data_get_int(EWL_WIDGET(s),
-							      "/appearance/scrollbar/horizontal/button_order");
+							      "/scrollbar/horizontal/button_order");
 
 		if (s->buttons_alignment & EWL_ALIGNMENT_LEFT) {
 
@@ -185,17 +185,17 @@ void ewl_scrollbar_init(Ewl_Scrollbar * s, Ewl_Orientation orientation)
 		 * Set the appearances for the parts of the scrollbar.
 		 */
 		ewl_widget_set_appearance(s->button_decrement,
-					  "/appearance/scrollbar/vertical/button_increment");
+					  "/scrollbar/vertical/button_increment");
 		ewl_widget_set_appearance(s->seeker,
-					  "/appearance/scrollbar/vertical");
+					  "/scrollbar/vertical");
 		ewl_widget_set_appearance(s->button_increment,
-					  "/appearance/scrollbar/vertical/button_decrement");
+					  "/scrollbar/vertical/button_decrement");
 
 		/*
 		 * Set the alignment of the buttons to the seeker.
 		 */
 		s->buttons_alignment = ewl_theme_data_get_int(EWL_WIDGET(s),
-							      "/appearance/scrollbar/vertical/button_order");
+							      "/scrollbar/vertical/button_order");
 
 		if (s->buttons_alignment & EWL_ALIGNMENT_TOP) {
 

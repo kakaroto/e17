@@ -43,9 +43,7 @@ __create_text_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_container_append_child(EWL_CONTAINER(text_win), text_box);
 	ewl_widget_show(text_box);
 
-	text = ewl_text_new();
-	ewl_text_set_text(EWL_TEXT(text),
-			  "Enlightenment Widget Library\n"
+	text = ewl_text_new("Enlightenment Widget Library\n"
 			  "\n"
 			  "Bla bla bla bla bla bla bla bla bla\n"
 			  "Bla bla bla bla bla bla bla bla bla\n"

@@ -1,15 +1,22 @@
-Thu Apr 11 09:38:57 2001 Nathan Ingersoll <ningerso@d.umn.edu>
-	+ Added a preferred size field to objects, and removed the requested
+Thu Aug 12 19:39:57 2002 Nathan Ingersoll <ningerso@d.umn.edu>
+	* Shortened theme keys, this will eventually be replaced with keys
+	  based on inheritance mapping type strings.
+	* Updated API documentation comments.
+	* Changed ewl_text_new and ewl_entry_new to take a string argument.
+	* Layers are now adjusted in the __ewl_widget_reparent function.
+
+Thu Apr 11 09:38:57 2002 Nathan Ingersoll <ningerso@d.umn.edu>
+	* Added a preferred size field to objects, and removed the requested
 	  size field. Originally the requested size would be the preferred
 	  size, but that detail got lost along the way.
 	* Documented large sections of code.
-	+ Added add, and resize notifiers to the containers, the resize
+	* Added add, and resize notifiers to the containers, the resize
 	  notifier is called when a child's preferred size changes.
-	+ Expanded the possible fill policies and implemented them within the
+	* Expanded the possible fill policies and implemented them within the
 	  object sizing functions.
-	+ ymer started a widget called selectionbook that is essentially a
+	* ymer started a widget called selectionbook that is essentially a
 	  prettier notebook.
-	+ Worked with ymer to develop an internal menu, this may eventually be
+	* Worked with ymer to develop an internal menu, this may eventually be
 	  the basis for global menus.
 
 Mon Nov 12 20:28:57 2001 Christopher Rosendahl <crosendahl@trustlab.com>

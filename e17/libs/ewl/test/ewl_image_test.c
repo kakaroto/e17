@@ -63,8 +63,8 @@ __image_update_window_size(void)
 	else
 		hh += 100;
 
-	ewl_window_resize(image_win, ww, hh);
-	ewl_window_set_min_size(image_win, ww, hh);
+	ewl_window_resize(EWL_WINDOW(image_win), ww, hh);
+	ewl_window_set_min_size(EWL_WINDOW(image_win), ww, hh);
 }
 
 void
@@ -78,7 +78,7 @@ __image_goto_prev_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	if (!img)
 		img = ewd_dlist_goto_last(images);
 
-	ewl_entry_set_text(entry_path, img);
+	ewl_entry_set_text(EWL_ENTRY(entry_path), img);
 	ewl_image_set_file(EWL_IMAGE(image), img);
 
 	ewl_widget_configure(image_win);
@@ -96,7 +96,7 @@ __image_load_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	char           *img = NULL;
 
-	img = ewl_entry_get_text(entry_path);
+	img = ewl_entry_get_text(EWL_ENTRY(entry_path));
 
 	if (img && __image_exists(img)) {
 		ewd_dlist_append(images, img);
@@ -127,7 +127,7 @@ __image_goto_next_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	if (!img)
 		img = ewd_dlist_goto_first(images);
 
-	ewl_entry_set_text(entry_path, img);
+	ewl_entry_set_text(EWL_ENTRY(entry_path), img);
 	ewl_image_set_file(EWL_IMAGE(image), img);
 
 	ewl_widget_configure(image_win);
@@ -155,8 +155,8 @@ __create_image_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	images = ewd_dlist_new();
 
 	image_win = ewl_window_new();
-	ewl_window_resize(image_win, 390, 297);
-	ewl_window_set_min_size(image_win, 390, 297);
+	ewl_window_resize(EWL_WINDOW(image_win), 390, 297);
+	ewl_window_set_min_size(EWL_WINDOW(image_win), 390, 297);
 	ewl_callback_append(image_win, EWL_CALLBACK_DELETE_WINDOW,
 			    __destroy_image_test_window, NULL);
 	ewl_widget_show(image_win);
@@ -189,9 +189,7 @@ __create_image_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	if (image_file)
 		ewd_dlist_append(images, image_file);
 
-	entry_path = ewl_entry_new();
-	if (image_file)
-		ewl_entry_set_text(entry_path, image_file);
+	entry_path = ewl_entry_new(image_file);
 	ewl_container_append_child(EWL_CONTAINER(image_box), entry_path);
 	ewl_widget_show(entry_path);
 

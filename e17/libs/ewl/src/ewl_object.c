@@ -78,9 +78,9 @@ void ewl_object_get_current_size(Ewl_Object * o, int *w, int *h)
 
 /**
  * ewl_object_get_current_w - get the current width of the object
- * @ob: the object to retrieve the current width
+ * @o: the object to retrieve the current width
  *
- * Returns the current width of the object @ob.
+ * Returns the current width of the object @o.
  */
 int ewl_object_get_current_w(Ewl_Object * o)
 {
@@ -91,9 +91,9 @@ int ewl_object_get_current_w(Ewl_Object * o)
 
 /**
  * ewl_object_get_current_h - get the current height of the object
- * @ob: the object to retrieve the current height
+ * @o: the object to retrieve the current height
  *
- * Returns the current height of the object @ob.
+ * Returns the current height of the object @o.
  */
 int ewl_object_get_current_h(Ewl_Object * o)
 {
@@ -128,6 +128,7 @@ void ewl_object_set_preferred_size(Ewl_Object * o, int w, int h)
 /**
  * ewl_object_set_preferred_w - set the preferred width of the object
  * @o: the object to change preferred width
+ * @w: the value to use as the preferred width
  *
  * Returns no value. Sets the preferred of @o width to @w or as close as
  * possible according to the bounds.
@@ -168,6 +169,7 @@ void ewl_object_set_preferred_w(Ewl_Object * o, int w)
 /**
  * ewl_object_set_preferred_h - set the preferred height of the object
  * @o: the object to change preferred height 
+ * @h: the value to use as the preferred height
  *
  * Returns no value. Sets the preferred of @o height to @w or as close as
  * possible according to the bounds.
@@ -226,9 +228,9 @@ void ewl_object_get_preferred_size(Ewl_Object * o, int *w, int *h)
 
 /**
  * ewl_object_get_preferred_w - get the preferred width of the object
- * @ob: the object to retrieve the preferred width
+ * @o: the object to retrieve the preferred width
  *
- * Returns the preferred width of the object @ob.
+ * Returns the preferred width of the object @o.
  */
 int ewl_object_get_preferred_w(Ewl_Object * o)
 {
@@ -239,9 +241,9 @@ int ewl_object_get_preferred_w(Ewl_Object * o)
 
 /**
  * ewl_object_get_preferred_h - get the preferred height of the object
- * @ob: the object to retrieve the preferred height
+ * @o: the object to retrieve the preferred height
  *
- * Returns the preferred height of the object @ob.
+ * Returns the preferred height of the object @o.
  */
 int ewl_object_get_preferred_h(Ewl_Object * o)
 {

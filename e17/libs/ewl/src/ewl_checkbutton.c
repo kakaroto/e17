@@ -46,7 +46,7 @@ void ewl_checkbutton_init(Ewl_CheckButton * cb, char *label)
 	w = EWL_WIDGET(cb);
 
 	ewl_button_init(b, label);
-	ewl_widget_set_appearance(w, "/appearance/button/check");
+	ewl_widget_set_appearance(w, "/button/check");
 	RECURSIVE(b) = FALSE;
 
 	ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FILL_POLICY_NONE);
@@ -89,7 +89,8 @@ void ewl_checkbutton_set_label_position(Ewl_Widget * w, Ewl_Position p)
 		DRETURN(DLEVEL_STABLE);
 
 	cb->label_position = p;
-	ewl_container_remove_child(EWL_CONTAINER(cb), EWL_WIDGET(b->label));
+	ewl_container_remove_child(EWL_CONTAINER(cb),
+			EWL_WIDGET(b->label_object));
 	ewl_container_remove_child(EWL_CONTAINER(cb), cb->check);
 
 	/*
@@ -99,10 +100,10 @@ void ewl_checkbutton_set_label_position(Ewl_Widget * w, Ewl_Position p)
 	if (p == EWL_POSITION_RIGHT) {
 		ewl_container_append_child(EWL_CONTAINER(cb), cb->check);
 		ewl_container_append_child(EWL_CONTAINER(cb),
-					   EWL_WIDGET(b->label));
+					   EWL_WIDGET(b->label_object));
 	} else {
 		ewl_container_append_child(EWL_CONTAINER(cb),
-					   EWL_WIDGET(b->label));
+					   EWL_WIDGET(b->label_object));
 		ewl_container_append_child(EWL_CONTAINER(cb), cb->check);
 	}
 

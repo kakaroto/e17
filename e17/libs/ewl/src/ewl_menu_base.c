@@ -29,7 +29,7 @@ void ewl_menu_base_init(Ewl_Menu_Base * menu, char *image, char *title)
 	ewl_menu_item_init(EWL_MENU_ITEM(menu), image, title);
 	ewl_object_set_fill_policy(EWL_OBJECT(menu), EWL_FILL_POLICY_NONE);
 
-	ewl_callback_append(EWL_WIDGET(menu), EWL_CALLBACK_CLICKED,
+	ewl_callback_append(EWL_WIDGET(menu), EWL_CALLBACK_SELECT,
 			    __expand_menu_base, NULL);
 
 	ewl_callback_append(EWL_WIDGET(menu), EWL_CALLBACK_DESELECT,
@@ -118,8 +118,7 @@ void ewl_menu_item_init(Ewl_Menu_Item * item, char *image, char *text)
 	 * Create the text object for the menu item.
 	 */
 	if (text) {
-		item->text = ewl_text_new();
-		ewl_text_set_text(EWL_TEXT(item->text), text);
+		item->text = ewl_text_new(text);
 		ewl_container_append_child(EWL_CONTAINER(item), item->text);
 	}
 
@@ -175,7 +174,6 @@ void __expand_menu_base(Ewl_Widget *w, void *ev_data, void *user_data)
 
 	ewl_widget_show(menu->popup);
 	ewl_widget_realize(menu->popup);
-	ewl_widget_show(menu->popbox);
 
 	ewl_container_append_child(EWL_CONTAINER(menu->popup), menu->popbox);
 	ewl_widget_show(menu->popbox);

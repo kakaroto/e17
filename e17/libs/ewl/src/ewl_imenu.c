@@ -138,26 +138,6 @@ void __expand_imenu(Ewl_Widget * w, void *ev_data, void *user_data)
 }
 
 
-void __expand_imenu_animator(int val, void *ev_data)
-{
-}
-
-
-void __collapse_imenu_animator(int val, void *ev_data)
-{
-}
-
-
-void __expand_imenu_and_title_animator(int val, void *ev_data)
-{
-}
-
-
-void __collapse_imenu_and_title_animator(int val, void *ev_data)
-{
-}
-
-
 void __ewl_imenu_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_IMenu      *menu;
@@ -167,8 +147,4 @@ void __ewl_imenu_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_container_append_child(EWL_CONTAINER
 				   (ewl_window_find_window_by_widget(w)),
 				   menu->popup);
-}
-
-void __ewl_imenu_start(Ewl_Widget * w)
-{
 }

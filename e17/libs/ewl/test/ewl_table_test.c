@@ -36,7 +36,7 @@ __create_table_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	table_button = w;
 
 	table_win = ewl_window_new();
-	ewl_window_resize(table_win, 300, 300);
+	ewl_window_resize(EWL_WINDOW(table_win), 300, 300);
 	ewl_callback_append(table_win, EWL_CALLBACK_DELETE_WINDOW,
 			    __destroy_table_test_window, NULL);
 	ewl_widget_show(table_win);
@@ -63,7 +63,7 @@ __create_table_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 
 
 	button[0] = ewl_button_new("FIRST");
-	ewl_table_add(EWL_TABLE(table), button[0], 3, 4, 2, 3);
+	/* ewl_table_add(EWL_TABLE(table), button[0], 3, 4, 2, 3); */
 	ewl_widget_show(button[0]);
 
 /*

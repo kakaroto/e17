@@ -83,8 +83,7 @@ __notebook_create_main_page(Ewl_Widget * notebook)
 
 	n = NEW(Ewl_Widget, 2);
 
-	tab = ewl_text_new();
-	ewl_text_set_text(EWL_TEXT(tab), "Main");
+	tab = ewl_text_new("Main");
 	ewl_text_set_font_size(EWL_TEXT(tab), 8);
 	ewl_widget_show(tab);
 
@@ -92,8 +91,7 @@ __notebook_create_main_page(Ewl_Widget * notebook)
 	ewl_box_set_spacing(EWL_BOX(main_vbox), 10);
 	ewl_widget_show(main_vbox);
 
-	text = ewl_text_new();
-	ewl_text_set_text(EWL_TEXT(text), "Main");
+	text = ewl_text_new("Main");
 	ewl_object_set_alignment(EWL_OBJECT(text), EWL_ALIGNMENT_CENTER);
 	ewl_container_append_child(EWL_CONTAINER(main_vbox), text);
 	ewl_widget_show(text);
@@ -104,8 +102,7 @@ __notebook_create_main_page(Ewl_Widget * notebook)
 	ewl_container_append_child(EWL_CONTAINER(main_vbox), avbox);
 	ewl_widget_show(avbox);
 
-	alabel = ewl_text_new();
-	ewl_text_set_text(EWL_TEXT(alabel), "Tabs Alignment");
+	alabel = ewl_text_new("Tabs Alignment");
 	ewl_container_append_child(EWL_CONTAINER(avbox), alabel);
 	ewl_widget_show(alabel);
 
@@ -150,8 +147,7 @@ __notebook_create_main_page(Ewl_Widget * notebook)
 	ewl_container_append_child(EWL_CONTAINER(main_vbox), pvbox);
 	ewl_widget_show(pvbox);
 
-	plabel = ewl_text_new();
-	ewl_text_set_text(EWL_TEXT(plabel), "Tabs Position");
+	plabel = ewl_text_new("Tabs Position");
 	ewl_container_append_child(EWL_CONTAINER(pvbox), plabel);
 	ewl_widget_show(plabel);
 
@@ -204,8 +200,7 @@ __notebook_generate_page(Ewl_Widget * notebook)
 
 	n = NEW(Ewl_Widget, 2);
 
-	tab = ewl_text_new();
-	ewl_text_set_text(EWL_TEXT(tab), label);
+	tab = ewl_text_new(label);
 	ewl_text_set_font_size(EWL_TEXT(tab), 8);
 	ewl_widget_show(tab);
 
@@ -213,8 +208,7 @@ __notebook_generate_page(Ewl_Widget * notebook)
 	ewl_box_set_spacing(EWL_BOX(main_vbox), 10);
 	ewl_widget_show(main_vbox);
 
-	text = ewl_text_new();
-	ewl_text_set_text(EWL_TEXT(text), label);
+	text = ewl_text_new(label);
 	ewl_object_set_alignment(EWL_OBJECT(text), EWL_ALIGNMENT_CENTER);
 	ewl_container_append_child(EWL_CONTAINER(main_vbox), text);
 	ewl_widget_show(text);
@@ -318,8 +312,8 @@ __create_notebook_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	notebook_button = w;
 
 	notebook_win = ewl_window_new();
-	ewl_window_resize(notebook_win, 305, 256);
-	ewl_window_set_min_size(notebook_win, 305, 256);
+	ewl_window_resize(EWL_WINDOW(notebook_win), 305, 256);
+	ewl_window_set_min_size(EWL_WINDOW(notebook_win), 305, 256);
 	ewl_callback_append(notebook_win, EWL_CALLBACK_DELETE_WINDOW,
 			    __destroy_notebook_test_window, NULL);
 	ewl_widget_show(notebook_win);

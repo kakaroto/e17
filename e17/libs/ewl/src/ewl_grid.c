@@ -54,7 +54,7 @@ void ewl_grid_init(Ewl_Grid * g, int cols, int rows)
 	 * Initialize the grids inherited fields
 	 */
 	ewl_container_init(EWL_CONTAINER(g),
-			   "/appearance/box/vertical", __ewl_grid_add,
+			   "/box/vertical", __ewl_grid_add,
 			   __ewl_grid_auto_resize);
 
 	/*

@@ -175,6 +175,8 @@ ewl_callback_prepend(Ewl_Widget * w, Ewl_Callback_Type t,
  * @t: the type of the callback that is being attached
  * @f: the function to attach as a callback
  * @user_data: the data to be passed to the callback function
+ * @after: the function of the callback to append after
+ * @after_data: the user data of the callback to append after
  *
  * Returns 0 on failure, the id of the new callback on success. Same
  * functionality as ewl_callback_append, but the callback is placed after the

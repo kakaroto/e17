@@ -2,7 +2,7 @@
 #include <Ewl.h>
 #include <Estyle.h>
 
-void            ewl_text_init(Ewl_Text * t);
+void            ewl_text_init(Ewl_Text * t, char *text);
 void            __ewl_text_realize(Ewl_Widget * w, void *ev_data,
 				   void *user_data);
 void            __ewl_text_destroy(Ewl_Widget * w, void *ev_data,
@@ -17,11 +17,13 @@ void            __ewl_text_update_size(Ewl_Text * t);
 
 /**
  * ewl_text_new - allocate a new text widget
+ * @text: the text to display
  *
  * Returns a pointer to a newly allocated text widget on success, NULL on
  * failure.
  */
-Ewl_Widget     *ewl_text_new()
+Ewl_Widget *
+ewl_text_new(char *text)
 {
 	Ewl_Text       *t;
 
@@ -30,7 +32,7 @@ Ewl_Widget     *ewl_text_new()
 	t = NEW(Ewl_Text, 1);
 	ZERO(t, Ewl_Text, 1);
 
-	ewl_text_init(t);
+	ewl_text_init(t, text);
 
 	DRETURN_PTR(EWL_WIDGET(t), DLEVEL_STABLE);
 }
@@ -42,33 +44,20 @@ Ewl_Widget     *ewl_text_new()
  * Returns no value. Sets the fields and callbacks of the text widget @t to
  * their defaults.
  */
-void ewl_text_init(Ewl_Text * t)
+void
+ewl_text_init(Ewl_Text * t, char *text)
 {
 	Ewl_Widget     *w;
-	char            key[PATH_MAX];
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
 
 	w = EWL_WIDGET(t);
 
-	ewl_widget_init(w, "/appearance/text/default");
+	ewl_widget_init(w, "/text/default");
 	ewl_object_set_fill_policy(EWL_OBJECT(w), EWL_FILL_POLICY_NONE);
 
-	/*
-	 * Setup the default font.
-	 */
-	snprintf(key, PATH_LEN, "%s/font", w->appearance);
-	t->font = ewl_theme_data_get_str(w, key);
-
-	snprintf(key, PATH_LEN, "%s/font_size", w->appearance);
-	t->font_size = ewl_theme_data_get_int(w, key);
-
-	/*
-	 * Setup the default style alignment and text.
-	 */
-	t->text = strdup("");
-	t->style = ewl_theme_data_get_str(w, "/appearance/text/default/style");
+	t->text = (text ? strdup(text) : strdup(""));
 	t->align = EWL_ALIGNMENT_TOP | EWL_ALIGNMENT_LEFT;
 
 	/*
@@ -83,6 +72,11 @@ void ewl_text_init(Ewl_Text * t)
 	ewl_callback_append(w, EWL_CALLBACK_REPARENT, __ewl_text_reparent,
 			    NULL);
 
+	t->r = 255;
+	t->g = 255;
+	t->b = 255;
+	t->a = 255;
+
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
@@ -93,7 +87,8 @@ void ewl_text_init(Ewl_Text * t)
  *
  * Returns no value. Sets the text of the text widget @t to @text.
  */
-void ewl_text_set_text(Ewl_Text * t, char *text)
+void
+ewl_text_set_text(Ewl_Text * t, char *text)
 {
 	Ewl_Widget     *w;
 
@@ -133,7 +128,8 @@ void ewl_text_set_text(Ewl_Text * t, char *text)
  *
  * Returns a pointer to a copy of the text in @t on success, NULL on failure.
  */
-char           *ewl_text_get_text(Ewl_Text * t)
+char *
+ewl_text_get_text(Ewl_Text * t)
 {
 	Ewl_Widget     *w;
 
@@ -153,7 +149,8 @@ char           *ewl_text_get_text(Ewl_Text * t)
  * Returns no value. Sets the name of the font for text widget @t to @f and
  * updates the display to use that font.
  */
-void ewl_text_set_font(Ewl_Text * t, char *f)
+void
+ewl_text_set_font(Ewl_Text * t, char *f)
 {
 	Ewl_Widget     *w;
 
@@ -190,7 +187,8 @@ void ewl_text_set_font(Ewl_Text * t, char *f)
  * Returns a pointer to a copy of the font name used by @t on success, NULL on
  * failure.
  */
-char           *ewl_text_get_font(Ewl_Text * t)
+char *
+ewl_text_get_font(Ewl_Text * t)
 {
 	Ewl_Widget     *w;
 
@@ -209,7 +207,8 @@ char           *ewl_text_get_font(Ewl_Text * t)
  *
  * Returns no value. Sets the font size for the text widget @t to @s.
  */
-void ewl_text_set_font_size(Ewl_Text * t, int s)
+void
+ewl_text_set_font_size(Ewl_Text * t, int s)
 {
 	Ewl_Widget     *w;
 
@@ -242,7 +241,8 @@ void ewl_text_set_font_size(Ewl_Text * t, int s)
  *
  * Returns the font size of the text widget on success, 0 on failure.
  */
-int ewl_text_get_font_size(Ewl_Text * t)
+int
+ewl_text_get_font_size(Ewl_Text * t)
 {
 	Ewl_Widget     *w;
 
@@ -265,7 +265,8 @@ int ewl_text_get_font_size(Ewl_Text * t)
  * Returns no value. Sets the color of the text in the text widget @t to the
  * new color values specified.
  */
-void ewl_text_set_color(Ewl_Text * t, int r, int g, int b, int a)
+void
+ewl_text_set_color(Ewl_Text * t, int r, int g, int b, int a)
 {
 	Ewl_Widget     *w;
 
@@ -276,6 +277,11 @@ void ewl_text_set_color(Ewl_Text * t, int r, int g, int b, int a)
 
 	if (t->estyle)
 		estyle_set_color(t->estyle, r, g, b, a);
+
+	t->r = r;
+	t->g = g;
+	t->b = b;
+	t->a = a;
 
 	ewl_widget_configure(w);
 
@@ -292,7 +298,8 @@ void ewl_text_set_color(Ewl_Text * t, int r, int g, int b, int a)
  *
  * Returns no value. Stores the color values into any non-NULL color pointers.
  */
-void ewl_text_get_color(Ewl_Text * t, int *r, int *g, int *b, int *a)
+void
+ewl_text_get_color(Ewl_Text * t, int *r, int *g, int *b, int *a)
 {
 	Ewl_Widget     *w;
 
@@ -324,7 +331,8 @@ void ewl_text_get_color(Ewl_Text * t, int *r, int *g, int *b, int *a)
  * Returns no value. Changes the text style of the text widget @t to the style
  * identified by the name @s.
  */
-void ewl_text_set_style(Ewl_Text * t, char *s)
+void
+ewl_text_set_style(Ewl_Text * t, char *s)
 {
 	Ewl_Widget     *w;
 
@@ -464,7 +472,8 @@ ewl_text_get_letter_geometry_at(Ewl_Text * t, int x, int y,
  *
  * Returns no value. Changes the alignment of the text in @t to @a.
  */
-void ewl_text_set_alignment(Ewl_Text * t, Ewl_Alignment a)
+void
+ewl_text_set_alignment(Ewl_Text * t, Ewl_Alignment a)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("t", t);
@@ -485,7 +494,8 @@ void ewl_text_set_alignment(Ewl_Text * t, Ewl_Alignment a)
  * Returns the index of the letter at the coordinates @x, @y in the text
  * widget @t.
  */
-int ewl_text_get_index_at(Ewl_Text * t, int x, int y)
+int
+ewl_text_get_index_at(Ewl_Text * t, int x, int y)
 {
 	Ewl_Widget     *w;
 
@@ -501,7 +511,8 @@ int ewl_text_get_index_at(Ewl_Text * t, int x, int y)
 		    DLEVEL_STABLE);
 }
 
-void __ewl_text_realize(Ewl_Widget * w, void *ev_data, void *user_data)
+void
+__ewl_text_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Text       *t;
 	Ewl_Window     *win;
@@ -516,7 +527,8 @@ void __ewl_text_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void __ewl_text_destroy(Ewl_Widget * w, void *ev_data, void *user_data)
+void
+__ewl_text_destroy(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Text       *t;
 
@@ -534,7 +546,8 @@ void __ewl_text_destroy(Ewl_Widget * w, void *ev_data, void *user_data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void __ewl_text_configure(Ewl_Widget * w, void *ev_data, void *user_data)
+void
+__ewl_text_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Text       *t;
 
@@ -544,16 +557,17 @@ void __ewl_text_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	t = EWL_TEXT(w);
 
 	if (t->estyle)
-		estyle_move(t->estyle, CURRENT_X(t) + INSET_LEFT(w) +
-			    PADDING_LEFT(w), CURRENT_Y(t) + INSET_TOP(w) +
-			    PADDING_TOP(w));
+		estyle_move(t->estyle, CURRENT_X(t) + INSET_LEFT(w),
+				CURRENT_Y(t) + INSET_TOP(w));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void __ewl_text_theme_update(Ewl_Widget * w, void *ev_data, void *user_data)
+void
+__ewl_text_theme_update(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Text       *t;
+	char            key[PATH_MAX];
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -566,17 +580,39 @@ void __ewl_text_theme_update(Ewl_Widget * w, void *ev_data, void *user_data)
 	/*
 	 * Set the correct font and size.
 	 */
+	if (!t->font) {
+		/*
+		 * Setup the default font.
+		 */
+		snprintf(key, PATH_MAX, "%s/font", w->appearance);
+		t->font = ewl_theme_data_get_str(w, key);
+
+		snprintf(key, PATH_MAX, "%s/font_size", w->appearance);
+		t->font_size = ewl_theme_data_get_int(w, key);
+	}
+
 	estyle_set_font(t->estyle, t->font, t->font_size);
+
+	if (!t->style) {
+		/*
+		 * Setup the default style alignment and text.
+		 */
+		snprintf(key, PATH_MAX, "%s/style", w->appearance);
+		t->style = ewl_theme_data_get_str(w, key);
+	}
+
+	estyle_set_style(t->estyle, t->style);
 
 	/*
 	 * Set move it into the correct position.
 	 */
-	estyle_set_layer(t->estyle, LAYER(w));
+	estyle_set_color(t->estyle, t->r, t->g, t->b, t->a);
 
 	/*
 	 * Adjust the clip box for the estyle and then display it.
 	 */
 	estyle_set_clip(t->estyle, w->fx_clip_box);
+	estyle_set_layer(t->estyle, LAYER(w));
 	estyle_show(t->estyle);
 
 	__ewl_text_update_size(t);
@@ -584,7 +620,8 @@ void __ewl_text_theme_update(Ewl_Widget * w, void *ev_data, void *user_data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void __ewl_text_reparent(Ewl_Widget * w, void *ev_data, void *user_data)
+void
+__ewl_text_reparent(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Text       *t;
 
@@ -596,12 +633,15 @@ void __ewl_text_reparent(Ewl_Widget * w, void *ev_data, void *user_data)
 	if (!t->estyle)
 		DRETURN(DLEVEL_STABLE);
 
+
 	estyle_set_clip(t->estyle, w->fx_clip_box);
+	estyle_set_layer(t->estyle, LAYER(w));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void __ewl_text_update_size(Ewl_Text * t)
+void
+__ewl_text_update_size(Ewl_Text * t)
 {
 	int             x, y, width, height;
 
