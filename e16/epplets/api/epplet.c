@@ -3945,10 +3945,18 @@ Epplet_get_instance(void)
 void
 Epplet_add_config(char *key, char *value)
 {
-  config_dict->entries = realloc(config_dict->entries, sizeof(ConfigItem) * (config_dict->num_entries + 1));
-  config_dict->entries[config_dict->num_entries].key = strdup(key);
-  config_dict->entries[config_dict->num_entries].value = strdup(value);
-  config_dict->num_entries++;
+  if (!config_dict)
+    {
+      config_dict = (ConfigDict*) malloc(sizeof(ConfigDict));
+      memset(config_dict, 0, sizeof(ConfigDict));
+    }
+  if (config_dict)
+    {
+      config_dict->entries = realloc(config_dict->entries, sizeof(ConfigItem) * (config_dict->num_entries + 1));
+      config_dict->entries[config_dict->num_entries].key = strdup(key);
+      config_dict->entries[config_dict->num_entries].value = strdup(value);
+      config_dict->num_entries++;
+    }
 }
 
 void
