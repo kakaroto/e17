@@ -438,7 +438,7 @@ TextclassApply(ImageClass * iclass, Window win, int w, int h, int active,
    if ((!iclass) || (!tclass) || (!text) || (!win) || (w < 1) || (h < 1))
       return;
 
-#if 0				/* Try not using the draw queue here. */
+#if USE_DQ_TCLASS		/* Try not using the draw queue here. */
    if (Mode.queue_up)
      {
 	DrawQueue          *dq;

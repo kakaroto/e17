@@ -1086,22 +1086,30 @@ Qentry;
 #define DIALOG_BUTTON_APPLY  3
 #define DIALOG_BUTTON_CLOSE  4
 
+/* Disable, but Keep around a bit longer */
+#define USE_DQ_ICLASS 0
+#define USE_DQ_TCLASS 0
+
 typedef struct _drawqueue
 {
    void                (*func) (struct _drawqueue *);
    Window              win;
+   int                 x, y, w, h;
+#if USE_DQ_ICLASS
    ImageClass         *iclass;
-   int                 w, h, active, sticky, state, expose;
+   int                 image_type;
+   int                 active, sticky, state, expose;
+#endif
+#if USE_DQ_TCLASS
    TextClass          *tclass;
    char               *text;
+#endif
    char                shape_propagate;
    Pager              *pager;
    Pager              *redraw_pager;
    char                newbg;
    Dialog             *d;
    DItem              *di;
-   int                 x, y;
-   int                 image_type;
 }
 DrawQueue;
 

@@ -985,7 +985,7 @@ ITApply(Window win, ImageClass * ic, ImageState * is, int w, int h, int state,
    if (w <= 0 || h <= 0)
       return;
 
-#if 0				/* Try not using the draw queue here. */
+#if USE_DQ_ICLASS		/* Try not using the draw queue here. */
    if (Mode.queue_up)
      {
 	DrawQueue          *dq;

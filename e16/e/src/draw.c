@@ -71,6 +71,7 @@ HandleDrawQueue()
 		    }
 	       }
 	  }
+#if USE_DQ_TCLASS
 	else if (dq->text)
 	  {
 	     for (i = 0; i < num; i++)
@@ -82,6 +83,8 @@ HandleDrawQueue()
 		    }
 	       }
 	  }
+#endif
+#if USE_DQ_ICLASS
 	else if (dq->iclass)
 	  {
 	     for (i = 0; i < num; i++)
@@ -94,6 +97,7 @@ HandleDrawQueue()
 		    }
 	       }
 	  }
+#endif
 	else if (dq->pager)
 	  {
 	     for (i = 0; i < num; i++)
@@ -176,12 +180,16 @@ HandleDrawQueue()
 	  {
 	     if (dq)
 	       {
+#if USE_DQ_ICLASS
 		  if (dq->iclass)
 		     dq->iclass->ref_count--;
+#endif
+#if USE_DQ_TCLASS
 		  if (dq->tclass)
 		     dq->tclass->ref_count--;
 		  if (dq->text)
 		     Efree(dq->text);
+#endif
 		  Efree(dq);
 	       }
 	  }
@@ -204,6 +212,7 @@ HandleDrawQueue()
 		  if (WinExists(dq->win))
 		     PropagateShapes(dq->win);
 	       }
+#if USE_DQ_TCLASS
 	     else if (dq->text)
 	       {
 /*            printf("T %x\n", dq->win); */
@@ -213,6 +222,8 @@ HandleDrawQueue()
 				    dq->expose, dq->tclass, dq->text);
 		  Efree(dq->text);
 	       }
+#endif
+#if USE_DQ_ICLASS
 	     else if (dq->iclass)
 	       {
 /*            printf("I %x\n", dq->win); */
@@ -221,6 +232,7 @@ HandleDrawQueue()
 				     dq->active, dq->sticky, dq->state, 0,
 				     dq->image_type);
 	       }
+#endif
 	     else if (dq->pager)
 	       {
 /*            printf("P %x\n", dq->win); */
@@ -245,10 +257,14 @@ HandleDrawQueue()
 		       LIST_TYPE_PAGER))
 		     dq->func(dq);
 	       }
+#if USE_DQ_ICLASS
 	     if (dq->iclass)
 		dq->iclass->ref_count--;
+#endif
+#if USE_DQ_TCLASS
 	     if (dq->tclass)
 		dq->tclass->ref_count--;
+#endif
 	     Efree(dq);
 	  }
 	Efree(lst);
@@ -1788,24 +1804,9 @@ PropagateShapes(Window win)
      {
 	DrawQueue          *dq;
 
-	dq = Emalloc(sizeof(DrawQueue));
+	dq = Ecalloc(1, sizeof(DrawQueue));
 	dq->win = win;
-	dq->iclass = NULL;
-	dq->w = 0;
-	dq->h = 0;
-	dq->active = 0;
-	dq->sticky = 0;
-	dq->state = 0;
-	dq->expose = 0;
-	dq->tclass = NULL;
-	dq->text = NULL;
 	dq->shape_propagate = 1;
-	dq->pager = NULL;
-	dq->redraw_pager = NULL;
-	dq->d = NULL;
-	dq->di = NULL;
-	dq->x = 0;
-	dq->y = 0;
 	AddItem(dq, "DRAW", dq->win, LIST_TYPE_DRAW);
 	return;
      }
