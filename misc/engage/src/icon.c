@@ -150,6 +150,7 @@ od_icon_grab(OD_Icon * icon, Ecore_X_Window win)
   imlib_free_image();
 
 done:
+  return; // just fix compiler warnings - why do we have an empty done?
 }
 #endif
 
