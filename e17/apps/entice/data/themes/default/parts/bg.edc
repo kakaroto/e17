@@ -307,7 +307,7 @@
 	    }
 	    part
 	    {
-		name, "entice.image.current.filename.dimensions";
+		name, "entice.image.current.dimensions";
 		type, TEXT;
 		effect, OUTLINE;
 		mouse_events, 0;
