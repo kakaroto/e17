@@ -207,7 +207,7 @@ get_exec() {
   VAL=`grep '^Exec=' $1 | head -1`
   if [ -n "$VAL" ]; then
     VAL2=`echo $VAL | awk -F= '{printf("%s", $2);}'`
-    echo -n $VAL2
+    echo $VAL2 | tr -d '\n'
     return 0
   fi
   return 1
