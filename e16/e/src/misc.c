@@ -184,53 +184,51 @@ Quicksort(void **a, int l, int r, int (*CompareFunc) (void *d1, void *d2))
 /*
  * Stuff to make loops for animated effects.
  */
-struct timeval      etl_tv_last;
-static int          etl_speed;
-static int          etl_k1, etl_k2, etl_ki;
-static double       etl_k;
+struct timeval      etl_tv_start;
+static int          etl_k1, etl_k2;
+static double       etl_k, etl_fac;
+
+/*
+ * Return elapsed time in seconds since t0
+ */
+static double
+ETimeElapsed(struct timeval *t0)
+{
+   struct timeval      tv;
+   int                 sec, usec;
+
+   gettimeofday(&tv, NULL);
+   sec = tv.tv_sec - t0->tv_sec;
+   usec = tv.tv_usec - t0->tv_usec;
+   return (double)sec + (((double)usec) / 1000000);
+}
 
 void
 ETimedLoopInit(int k1, int k2, int speed)
 {
    etl_k1 = k1;
    etl_k2 = k2;
-   etl_speed = speed;
+   if (speed < 500)
+      speed = 500;
+   /* When speed is 1000 the loop will take one sec. */
+   etl_fac = (k2 - k1) * speed / 1000.;
 
-   etl_k = 1.0 * etl_k1;
-   gettimeofday(&etl_tv_last, NULL);
+   gettimeofday(&etl_tv_start, NULL);
 }
 
 int
 ETimedLoopNext(void)
 {
-   struct timeval      tv;
-   int                 dsec, dusec;
-   double              spd, tm;
-
-   etl_ki++;			/* Increment iteration count */
+   double              tm;
 
    /* Find elapsed time since loop start */
-   gettimeofday(&tv, NULL);
-   dsec = tv.tv_sec - etl_tv_last.tv_sec;
-   dusec = tv.tv_usec - etl_tv_last.tv_usec;
-   etl_tv_last.tv_sec = tv.tv_sec;
-   etl_tv_last.tv_usec = tv.tv_usec;
-   if (dusec < 0)
-     {
-	dsec--;
-	dusec += 1000000;
-     }
-   tm = (double)dsec + (((double)dusec) / 1000000);
-
-   spd = ((double)etl_speed * tm);
-   if (spd < 0.001)		/* More or less arbitrary limit */
-      spd = 0.001;
+   tm = ETimeElapsed(&etl_tv_start);
 #if 0
-   Eprintf("SlideEwinTo k=%4f tm=%.3f spd=%f\n", etl_k, 1e3 * tm, spd);
+   Eprintf("ETimedLoopNext k=%4f tm=%.3f\n", etl_k, tm);
 #endif
-   etl_k += spd;
+   etl_k = etl_k1 + tm * etl_fac;
 
-   return (int)etl_k;
+   return etl_k;
 }
 
 /*
