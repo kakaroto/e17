@@ -4547,3 +4547,11 @@ Mon Apr  3 12:00:47 PDT 2000
 
 the remembered settings dialog was too big.  This has less information in it
 but isn't so big when I have a lot of remembered windows on screen.
+
+-------------------------------------------------------------------------------
+
+Mon Apr  3 15:07:12 PDT 2000
+(Mandrake)
+
+beginnings of xinerama menu support.  just have to fix the remainder of the
+"stay on screen as I scroll" bits"

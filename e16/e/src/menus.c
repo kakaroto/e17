@@ -1,18 +1,18 @@
 /*
  * Copyright (C) 2000 Carsten Haitzler, Geoff Harrison and various contributors
- * *
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
  * deal in the Software without restriction, including without limitation the
  * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
  * sell copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * *
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies of the Software, its documentation and marketing & publicity
  * materials, and acknowledgment shall be given in the documentation, materials
  * and software packages that this Software was used.
- * *
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
@@ -274,22 +274,7 @@ ShowMenu(Menu * m, char noshow)
    EWin               *ewin;
    int                 x, y, wx = 0, wy = 0;	/* wx, wy added to stop menus
 
-						 * 
-						 * * 
-						 * * * 
-						 * * * * 
-						 * * * * * 
-						 * * * * * * 
-						 * * * * * * * 
-						 * * * * * * * * 
-						 * * * * * * * * * 
-						 * * * * * * * * * * 
-						 * * * * * * * * * * * 
-						 * * * * * * * * * * * * 
-						 * * * * * * * * * * * * * 
-						 * * * * * * * * * * * * * * 
-						 * * * * * * * * * * * * * * * 
-						 * * * * * * * * * * * * * * * * from appearing offscreen */
+						 * * from appearing offscreen */
    unsigned int        w, h, mw, mh;
 
    EDBUG(5, "ShowMenu");
@@ -359,22 +344,71 @@ ShowMenu(Menu * m, char noshow)
 				LIST_TYPE_BORDER);
 	if (b)
 	  {
-	     if (mode.x - x - ((int)mw / 2) > (int)root.w)
-		wx = 0 + (int)b->border.left;
-	     else if (mode.x + ((int)mw / 2) > (int)root.w)
-		wx = root.w - (int)mw - (int)b->border.right;
+	     int                 width;
+	     int                 height;
+	     int                 x_origin;
+	     int                 y_origin;
+
+	     width = root.w;
+	     height = root.h;
+	     x_origin = 0;
+	     y_origin = 0;
+
+#ifdef HAS_XINERAMA
+	     if (xinerama_active)
+	       {
+		  Window              rt, ch;
+		  XineramaScreenInfo *screens;
+		  int                 pointer_x, pointer_y;
+		  int                 num;
+		  int                 d;
+		  unsigned int        ud;
+		  int                 i;
+
+		  XQueryPointer(disp, root.win, &rt, &ch, &pointer_x,
+				&pointer_y, &d, &d, &ud);
+		  screens = XineramaQueryScreens(disp, &num);
+		  for (i = 0; i < num; i++)
+		    {
+		       if (pointer_x >= screens[i].x_org)
+			 {
+			    if (pointer_x <=
+				(screens[i].width + screens[i].x_org))
+			      {
+				 if (pointer_y >= screens[i].y_org)
+				   {
+				      if (pointer_y <= (screens[i].height +
+							screens[i].y_org))
+					{
+					   x_origin = screens[i].x_org;
+					   y_origin = screens[i].y_org;
+					   width = screens[i].width;
+					   height = screens[i].height;
+					}
+				   }
+			      }
+			 }
+		    }
+		  XFree(screens);
+	       }
+#endif
+
+	     if (mode.x - x - ((int)mw / 2) > (x_origin + width))
+		wx = x_origin + (int)b->border.left;
+	     else if (mode.x + ((int)mw / 2) > (int)(x_origin + width))
+		wx = (x_origin + width) - (int)mw - (int)b->border.right;
 	     else
 		wx = mode.x - x - ((int)w / 2);
 
-	     if ((wx - ((int)w / 2)) < 0)
-		wx = (int)b->border.left;
+	     if ((wx - ((int)w / 2)) < x_origin)
+		wx = x_origin + (int)b->border.left;
 
 	     if (mode.y + (int)mh > (int)root.h)
-		wy = (int)root.h - (int)mh - (int)b->border.bottom;
+		wy = (y_origin + height) - (int)mh - (int)b->border.bottom;
 	     else
 		wy = mode.y - y - ((int)h / 2);
 
-	     if ((wy - ((int)h / 2) - (int)b->border.top) < 0)
+	     if ((wy - ((int)h / 2) - (int)b->border.top) < y_origin)
 		wy = (int)b->border.top;
 	  }
      }

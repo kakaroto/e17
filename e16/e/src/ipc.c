@@ -1779,8 +1779,8 @@ IPC_ImageClass(char *params, Client * c)
 			    if (iclass->norm.normal->real_file)
 			       im =
 				  Imlib_load_image(id,
-						   iclass->norm.normal->
-						   real_file);
+						   iclass->norm.
+						   normal->real_file);
 			    if (im)
 			      {
 				 Esnprintf(buf, sizeof(buf),
@@ -5465,8 +5465,8 @@ IPC_RememberList(char *params, Client * c)
 				 lst[i]->win_title ? lst[i]->win_title : nstr,
 				 lst[i]->win_name ? lst[i]->win_name : nstr,
 				 lst[i]->win_class ? lst[i]->win_class : nstr,
-				 lst[i]->
-				 border_name ? lst[i]->border_name : nstr,
+				 lst[i]->border_name ? lst[i]->
+				 border_name : nstr,
 				 /*lst[i]->used?"yes":"no", */
 				 lst[i]->use_desktop,
 				 lst[i]->desktop,
