@@ -1308,7 +1308,6 @@ typedef struct
    Menu               *cur_menu[256];
    Window              menu_cover_win;
    Window              menu_win_covered;
-   char                borderpartpress;
    char                windowdestroy;
    int                 context_w, context_h;
    Pager              *context_pager;
@@ -1760,6 +1759,9 @@ EWin               *AdoptInternal(Window win, Border * border, int type,
 				  void *ptr);
 EWin               *CreateEwin(void);
 void                FreeEwin(EWin * ewin);
+int                 EwinGetDesk(EWin * ewin);
+int                 EwinWinpartIndex(EWin * ewin, Window win);
+
 int                 BordersEventMouseDown(XEvent * ev);
 int                 BordersEventMouseUp(XEvent * ev);
 int                 BordersEventMouseIn(XEvent * ev);

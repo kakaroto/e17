@@ -180,11 +180,14 @@ SlideoutShow(Slideout * s, EWin * ewin, Window win)
    /* If the slideout is associated with an ewin,
     * put it on the same virtual desktop. */
    dw = root.win;
-   if (ewin /* && !ewin->sticky */  && !ewin->floating)
+   if (ewin && EwinWinpartIndex(ewin, win) >= 0 &&
+       !ewin->floating /* && !ewin->sticky */ )
      {
-	xx -= desks.desk[ewin->desktop].x;
-	yy -= desks.desk[ewin->desktop].y;
-	dw = desks.desk[ewin->desktop].win;
+	int                 desk = EwinGetDesk(ewin);
+
+	xx -= desks.desk[desk].x;
+	yy -= desks.desk[desk].y;
+	dw = desks.desk[desk].win;
      }
    EReparentWindow(disp, s->win, dw, xx, yy);
 

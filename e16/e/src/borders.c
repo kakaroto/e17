@@ -3099,6 +3099,26 @@ UnShadeEwin(EWin * ewin)
    EDBUG_RETURN_;
 }
 
+int
+EwinGetDesk(EWin * ewin)
+{
+   return (ewin->sticky) ? desks.current : ewin->desktop;
+}
+
+int
+EwinWinpartIndex(EWin * ewin, Window win)
+{
+   int                 i;
+
+   for (i = 0; i < ewin->border->num_winparts; i++)
+     {
+	if (win == ewin->bits[i].win)
+	   return i;
+     }
+
+   return -1;			/* Not found */
+}
+
 /*
  * Border event handlers
  */
