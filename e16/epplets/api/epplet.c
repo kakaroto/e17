@@ -112,6 +112,7 @@ static void    Epplet_event(Epplet_gadget gadget, XEvent *ev);
 static void    Epplet_add_gad(Epplet_gadget gadget);
 static void    Epplet_del_gad(Epplet_gadget gadget);
 static void    Epplet_draw_button(Epplet_gadget eg);
+static void    Epplet_draw_textbox(Epplet_gadget eg);
 static void    Epplet_draw_togglebutton(Epplet_gadget eg);
 static void    Epplet_draw_drawingarea(Epplet_gadget eg);
 static void    Epplet_draw_hslider(Epplet_gadget eg);
@@ -632,6 +633,14 @@ Epplet_handle_event(XEvent *ev)
 	break;
      case KeyPress:
 	  {
+	if (XFindContext(disp, ev->xkey.window, xid_context,
+			 (XPointer *) & g) == XCNOENT)
+	  g = NULL;
+
+	if (g)
+	  Epplet_event(g, ev);
+	else
+	  {
 	     char *key;
 	     
 	     key = 
@@ -641,6 +650,7 @@ Epplet_handle_event(XEvent *ev)
 	     if (keypress_func)
 		(*keypress_func) (keypress_data, ev->xkey.window
 				  , key);
+	  }
 	  }
 	break;
      case KeyRelease:
@@ -1264,6 +1274,7 @@ typedef enum gad_type
 {
    E_BUTTON,
    E_DRAWINGAREA,
+   E_TEXTBOX,
    E_HSLIDER,
    E_VSLIDER,
    E_TOGGLEBUTTON,
@@ -1371,6 +1382,238 @@ Epplet_del_gad(Epplet_gadget gadget)
 	  }
      }
    
+}
+
+typedef struct
+{
+  GadGeneral          general;
+  int                 x, y, w, h, cursor_pos, text_offset;
+  char               *image;
+  char               *contents;
+  char                hilited;
+  char                size;
+  void                (*func) (void *data);
+  void               *data;
+  Window              win;
+  Pixmap              pmap, mask;
+}
+GadTextBox;
+
+Epplet_gadget
+Epplet_create_textbox(char *image, char *contents, int x, int y,
+		      int w, int h, char size, void (*func) (void *data),
+		      void *data)
+{
+  GadTextBox         *g;
+  XSetWindowAttributes attr;
+
+  g = malloc(sizeof(GadTextBox));
+  g->general.type = E_TEXTBOX;
+  g->x = x;
+  g->y = y;
+  g->contents = Estrdup(contents);
+  g->cursor_pos = contents != NULL ? strlen(contents) : 0;
+  g->text_offset = 0;
+  g->w = w;
+  g->h = h;
+  g->size = size;
+  g->func = func;
+  g->data = data;
+  g->pmap = 0;
+  g->mask = 0;
+  g->image = Estrdup(image);
+  g->hilited = 0;
+  attr.backing_store = NotUseful;
+  attr.override_redirect = False;
+  attr.colormap = Imlib_get_colormap(id);
+  attr.border_pixel = 0;
+  attr.background_pixel = 0;
+  attr.save_under = False;
+  attr.event_mask =
+    EnterWindowMask | LeaveWindowMask | KeyPressMask | KeyReleaseMask;
+  g->general.visible = 0;
+  g->win = XCreateWindow(disp, win, x, y, g->w, g->h, 0,
+			 id->x.depth, InputOutput, Imlib_get_visual(id),
+			 CWOverrideRedirect | CWSaveUnder | CWBackingStore |
+			 CWColormap | CWBackPixel | CWBorderPixel |
+			 CWEventMask, &attr);
+  XSaveContext(disp, g->win, xid_context, (XPointer) g);
+  Epplet_add_gad((Epplet_gadget) g);
+  return (Epplet_gadget) g;
+}
+
+char               *
+Epplet_textbox_contents(Epplet_gadget eg)
+{
+  GadTextBox         *g;
+
+  g = (GadTextBox *) eg;
+
+  return g->contents;
+}
+
+void
+Epplet_draw_textbox(Epplet_gadget eg)
+{
+  GadTextBox         *g;
+  char               *state;
+
+  g = (GadTextBox *) eg;
+
+  if (g->hilited)
+    state = "hilited";
+  else
+    state = "normal";
+
+  if (g->pmap)
+    XFreePixmap(disp, g->pmap);
+  if (g->mask)
+    XFreePixmap(disp, g->mask);
+  g->pmap = 0;
+  g->mask = 0;
+  Epplet_imageclass_get_pixmaps("EPPLET_BUTTON", "clicked",
+				&(g->pmap), &(g->mask), g->w, g->h);
+  if (g->image)
+    {
+      ImlibImage         *im;
+
+      ESYNC;
+      im = Imlib_load_image(id, g->image);
+      if (im)
+	{
+	  int                 x, y;
+
+	  x = (g->w - im->rgb_width) / 2;
+	  y = (g->h - im->rgb_height) / 2;
+	  Imlib_paste_image(id, im, g->pmap, x, y,
+			    im->rgb_width, im->rgb_height);
+	  Imlib_destroy_image(id, im);
+	}
+    }
+  if (g->contents)
+    {
+      int                 x, y, w, h;
+      char               *s;
+
+      s = &g->contents[g->text_offset];
+
+      x = 2;
+
+      switch (g->size)
+	{
+	case 0:
+	  Epplet_textclass_get_size("EPPLET_BUTTON", &w, &h, s);
+	  s[w] = '\0';
+	  y = (g->h - h) / 2;
+	  Epplet_textclass_draw("EPPLET_BUTTON", state, g->pmap, x, y, s);
+	  break;
+	case 1:
+	  Epplet_textclass_get_size("EPPLET_TEXT_TINY", &w, &h, s);
+	  //s[w-1] = '\0';
+	  y = (g->h - h) / 2;
+	  Epplet_textclass_draw("EPPLET_TEXT_TINY", state, g->pmap, x, y, s);
+	  break;
+	case 2:
+	  Epplet_textclass_get_size("EPPLET_TEXT_MEDIUM", &w, &h, g->contents);
+	  s[w] = '\0';
+	  y = (g->h - h) / 2;
+	  Epplet_textclass_draw("EPPLET_TEXT_MEDIUM", state, g->pmap, x, y, s);
+	  break;
+	case 3:
+	  Epplet_textclass_get_size("EPPLET_TEXT_LARGE", &w, &h, g->contents);
+	  s[w] = '\0';
+	  y = (g->h - h) / 2;
+	  Epplet_textclass_draw("EPPLET_TEXT_LARGE", state, g->pmap, x, y, s);
+	  break;
+	}
+    }
+  ESYNC;
+  XSetWindowBackgroundPixmap(disp, g->win, g->pmap);
+  XShapeCombineMask(disp, g->win, ShapeBounding, 0, 0, g->mask, ShapeSet);
+  XClearWindow(disp, g->win);
+}
+
+void
+Epplet_textbox_handle_keyevent(XEvent * ev, GadTextBox * g)
+{
+  char               *s = NULL;
+  char               *TheKey;
+  char                c;
+  int                 shift;
+  int                 space;
+  XKeyEvent          *kev;
+
+  kev = (XKeyEvent *) ev;
+
+  shift = (ev->xkey.state & ShiftMask);	//Thank you Eterm
+  //ctrl = (ev->xkey.state & ControlMask);
+  //meta = (ev->xkey.state & Mod1Mask);
+
+  TheKey = XKeysymToString(XKeycodeToKeysym(disp, kev->keycode, 0));
+
+  if (TheKey == NULL)
+    return;
+
+  space = strcmp(TheKey, "space");
+
+  if ((strlen(TheKey) == 1) || !space)
+    {
+      if (shift)
+	c = (char)toupper(TheKey[0]);
+      else
+	c = TheKey[0];
+
+      if (!space)
+	c = ' ';
+
+      if (g->contents != NULL)
+	{
+	  s = g->contents;
+
+	  g->contents = malloc(sizeof(char) * (strlen(s) + 2));
+
+	  if (g->contents != NULL)
+	    sprintf(g->contents, "%s%c", s, c);
+
+	  free(s);
+	}
+      else
+	{
+	  g->contents = malloc(2);
+
+	  if (g->contents != NULL)
+	    sprintf(g->contents, "%s", TheKey);
+	}
+
+      if (g->cursor_pos <= g->w)
+	g->cursor_pos++;
+      else
+	g->text_offset++;
+
+    }
+
+  if (strcmp(TheKey, "Return") == 0)
+    {
+
+      if (g->func)
+	(*(g->func)) (g->data);
+
+    }
+
+  if ((strcmp(TheKey, "BackSpace") == 0) && (strlen(g->contents) > 0))
+    {
+      s = malloc(strlen(g->contents));
+      if (s != NULL)
+	{
+	  s[0] = '\0';
+
+	  strncat(s, g->contents, strlen(g->contents) - 1);
+	  free(g->contents);
+	  g->contents = s;
+	  g->cursor_pos--;
+	}
+    }
+
 }
 
 Epplet_gadget 
@@ -2715,6 +2958,46 @@ Epplet_event(Epplet_gadget gadget, XEvent *ev)
    gg = (GadGeneral *)gadget;
    switch (ev->type)
      {
+    case KeyPress:
+      rx = ev->xbutton.x_root;
+      ry = ev->xbutton.y_root;
+      switch (gg->type)
+	{
+	case E_BUTTON:
+	  break;
+	case E_TEXTBOX:
+	  {
+	    GadTextBox         *g;
+
+	    g = (GadTextBox *) gadget;
+
+	    Epplet_textbox_handle_keyevent(ev, g);
+
+	    Epplet_draw_textbox(g);
+	  }
+	  break;
+	case E_VSLIDER:
+	  break;
+	case E_HSLIDER:
+	  break;
+	case E_POPUPBUTTON:
+	  break;
+	case E_DRAWINGAREA:
+	  break;
+	case E_IMAGE:
+	  break;
+	case E_LABEL:
+	  break;
+	case E_VBAR:
+	  break;
+	case E_HBAR:
+	  break;
+	case E_TOGGLEBUTTON:
+	  break;
+	case E_POPUP:
+	  break;
+	}
+      break;
      case ButtonPress:
 	rx = ev->xbutton.x_root;
 	ry = ev->xbutton.y_root;
@@ -2959,6 +3242,15 @@ Epplet_event(Epplet_gadget gadget, XEvent *ev)
 		  Epplet_draw_button(gadget);
 	       }
 	     break;
+	case E_TEXTBOX:
+	  {
+	    GadTextBox         *g;
+
+	    g = (GadTextBox *) gadget;
+	    g->hilited = 1;
+	    Epplet_draw_textbox(gadget);
+	  }
+	  break;
 	  case E_HSLIDER:
 	       {
 		  GadHSlider *g;
@@ -3013,6 +3305,15 @@ Epplet_event(Epplet_gadget gadget, XEvent *ev)
 		  Epplet_draw_button(gadget);
 	       }
 	     break;
+	case E_TEXTBOX:
+	  {
+	    GadTextBox         *g;
+
+	    g = (GadTextBox *) gadget;
+	    g->hilited = 0;
+	    Epplet_draw_textbox(gadget);
+	  }
+	  break;
 	  case E_HSLIDER:
 	       {
 		  GadHSlider *g;
@@ -3371,6 +3672,15 @@ Epplet_gadget_show(Epplet_gadget gadget)
 	     XMapWindow(disp, g->win);
 	  }
 	break;
+    case E_TEXTBOX:
+      {
+	GadTextBox         *g;
+
+	g = (GadTextBox *) gadget;
+	Epplet_draw_textbox(gadget);
+	XMapWindow(disp, g->win);
+      }
+      break;
      case E_DRAWINGAREA:
 	  {
 	     GadDrawingArea *g;
@@ -3575,6 +3885,9 @@ Epplet_redraw(void)
 	       case E_BUTTON:
 		  Epplet_draw_button(gads[i]);
 		  break;
+	    case E_TEXTBOX:
+	      Epplet_draw_textbox(gads[i]);
+	      break;
 	       case E_DRAWINGAREA:
 		  Epplet_draw_drawingarea(gads[i]);
 		  break;

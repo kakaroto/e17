@@ -6,7 +6,11 @@ bin_PROGRAMS = E-Load.epplet E-Clock.epplet E-Time.epplet E-Net.epplet \
 E-Cpu.epplet EppletTest.epplet E-Biff.epplet E-Power.epplet Emix.epplet \
 E-MemWatch.epplet E-Disk.epplet E-Areas.epplet EppletConfigTest.epplet \
 E-NetFlame.epplet E-Sys.epplet E-ScreenShoot.epplet E-Slides.epplet \
-E-Xss.epplet E-Mountbox.epplet
+E-Xss.epplet E-Mountbox.epplet E-Exec.epplet
+
+E_Exec_epplet_SOURCES = E-Exec.c
+E_Exec_epplet_DEPENDENCIES = $(top_srcdir)/api/libepplet.la
+E_Exec_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
 
 E_Load_epplet_SOURCES = E-Load.c
 E_Load_epplet_DEPENDENCIES = $(top_srcdir)/api/libepplet.la
