@@ -142,6 +142,7 @@ void e_container_empty (Evas_Object *container)
     cont->elements = evas_list_remove(cont->elements, el);
     free(el);
   }
+  cont->scroll_offset = 0;
   _container_elements_changed(cont);
 }
 
