@@ -15,4 +15,6 @@ void                e_dnd_drop_request(Ecore_Event * ev);
 void                e_dnd_drop(Ecore_Event * ev);
 void                e_dnd_drop_request_free(void);
 
+void                e_size_match(void);
+    
 #endif /* __MISC_H__ */

@@ -327,10 +327,11 @@ e_child(Ecore_Event * ev)
      }
 }
 
+static int          full = 0;
+
 void
 e_toggle_fullscreen(void)
 {
-   static int          full = 0;
    static Window       win = 0;
    static int          pw = W, ph = H;
 
@@ -507,4 +508,16 @@ e_dnd_drop_request_free(void)
    dnd_files = NULL;
    dnd_num_files = 0;
    return;
+}
+
+void
+e_size_match(void)
+{
+   if (!full)
+     {
+	double w, h;
+	
+	evas_object_geometry_get(o_image, NULL, NULL, &w, &h);
+	ecore_window_resize(main_win, w, h);
+     }
 }

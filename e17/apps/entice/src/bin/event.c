@@ -256,6 +256,10 @@ e_key_down(Ecore_Event * ev)
      {
         e_turntable_l_current_image();
      }
+   else if (!strcmp(e->key, "e"))
+     {
+        e_size_match();
+     }
    else if (!strcmp(e->key, "Escape"))
      {
 	exit(0);
