@@ -38,7 +38,6 @@ engrave_load_edc(char *file, char *imdir, char *fontdir)
   return(enf);
 }
 
-/* FIXME this does't work yet */
 Engrave_File *
 engrave_load_eet(char *filename)
 {
@@ -46,13 +45,13 @@ engrave_load_eet(char *filename)
   char *cmd = NULL;
   char *old_fname = (char *)strdup(filename);
   char *new_fname = NULL;
+  char *ptr = NULL;
   int len = 0;
   int ret = 0;
   char *work_dir = NULL;
   static char tmpn[4096];
   char *cpp_extra = NULL;
 
-//  free(filename);
   memset(tmpn, '\0', sizeof(tmpn));
   strcpy(tmpn, "/tmp/engrave.edc-tmp-XXXXXX");
   if (mkdtemp(tmpn) == NULL) {
@@ -62,9 +61,13 @@ engrave_load_eet(char *filename)
   }
   work_dir = (char *)strdup(tmpn);
 
-  len = strlen(work_dir) + strlen(old_fname) + 5;
+  ptr = strrchr(old_fname, '/');
+  if (ptr == NULL)
+      ptr = old_fname;
+
+  len = strlen(work_dir) + strlen(old_fname) + strlen(ptr) + 6;
   cmd = (char *)calloc(len,sizeof(char));
-  snprintf(cmd, len, "cp %s %s", old_fname, work_dir);
+  snprintf(cmd, len, "cp %s %s/%s", old_fname, work_dir, ptr);
   ret = system(cmd);
   free(cmd);
 
@@ -84,14 +87,14 @@ engrave_load_eet(char *filename)
     return 0;
   }
 
-  len = strlen(work_dir) + strlen(old_fname) + 12;
+  len = strlen(work_dir) + strlen(ptr) + 12;
   cmd = (char *)calloc(len, sizeof(char));
-  snprintf(cmd, len, "edje_decc %s/%s", work_dir, old_fname);
+  snprintf(cmd, len, "edje_decc %s/%s", work_dir, ptr);
   ret = system(cmd);
   free(cmd);
 
   if (ret < 0) {
-    fprintf(stderr, "Unable to de-compile %s\n", old_fname);
+    fprintf(stderr, "Unable to de-compile %s\n", ptr);
     return 0;
   }
 
@@ -104,20 +107,20 @@ engrave_load_eet(char *filename)
     return 0;
   }
 
-  cmd = strstr(old_fname, ".eet");
+  cmd = strstr(ptr, ".eet");
   *cmd = '\0';
 
   /* we need the info on the work dir to pass the cpp so it can
    * include files correctly 
    */
-  len = strlen(old_fname) + strlen(work_dir) + 4;
+  len = strlen(ptr) + strlen(work_dir) + 4;
   cpp_extra = (char *)calloc(len, sizeof(char));
-  snprintf(cpp_extra, len, "-I%s/%s", work_dir, old_fname);
+  snprintf(cpp_extra, len, "-I%s/%s", work_dir, ptr);
 
-  len = strlen(work_dir) + strlen(old_fname) +
+  len = strlen(work_dir) + strlen(ptr) +
           strlen(MAIN_EDC_NAME) + 3;
   new_fname = (char *)calloc(len, sizeof(char));
-  snprintf(new_fname, len, "%s/%s/%s", work_dir, old_fname, 
+  snprintf(new_fname, len, "%s/%s/%s", work_dir, ptr, 
             MAIN_EDC_NAME);
   free(old_fname);
 
