@@ -627,7 +627,6 @@ typedef struct _snapshot Snapshot;
 typedef struct _iconbox Iconbox;
 typedef struct _group Group;
 typedef struct _button Button;
-typedef struct _buttoncontainer Container;
 typedef struct _slideout Slideout;
 typedef struct _soundclass SoundClass;
 
@@ -2101,15 +2100,6 @@ DItem              *FindDialogItem(Window win, Dialog ** dret);
 /* mwm.c functions */
 void                MWM_GetHints(EWin * ewin, Atom atom_change);
 void                MWM_SetInfo(void);
-
-/* containers.c functions */
-Container          *InitializeContainer(char *name, ImageClass * iclass,
-					int width, int height,
-					char orientation);
-void                AddButtonToContainer(Container * bc, Button * b);
-void                RemoveButtonFromContainer(Container * bc, Button * b);
-void                DestroyContainer(Container * bc);
-void                RemoveContainer(Container * bc);
 
 /* buttons.c functions */
 Button             *ButtonCreate(char *name, ImageClass * iclass,
