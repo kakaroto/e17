@@ -3382,7 +3382,8 @@ int
 doRaiseLower(void *params)
 {
    EWin               *ewin;
-   int                 i;
+   EWin              **gwins;
+   int                 i, num, j;
 
    EDBUG(6, "doRaiseLower");
    if (InZoom())
@@ -3395,26 +3396,34 @@ doRaiseLower(void *params)
       ewin = GetFocusEwin();
    if (!ewin)
       EDBUG_RETURN(0);
-   if (desks.desk[ewin->desktop].list)
+
+   gwins = ListWinGroupMembersForEwin(ewin, ACTION_NONE, 0, &num);
+   for (j = 0; j < num; j++)
      {
-	for (i = 0; i < desks.desk[ewin->desktop].num - 1; i++)
+	ewin = gwins[j];
+	if (desks.desk[ewin->desktop].list)
 	  {
-	     if (desks.desk[ewin->desktop].list[i]->layer == ewin->layer)
+	     for (i = 0; i < desks.desk[ewin->desktop].num - 1; i++)
 	       {
-		  if (desks.desk[ewin->desktop].list[i] == ewin)
+		  if (desks.desk[ewin->desktop].list[i]->layer == ewin->layer)
 		    {
-		       AUDIO_PLAY("SOUND_LOWER");
-		       LowerEwin(ewin);
+		       if (desks.desk[ewin->desktop].list[i] == ewin)
+			 {
+			    AUDIO_PLAY("SOUND_LOWER");
+			    LowerEwin(ewin);
+			 }
+		       else
+			 {
+			    AUDIO_PLAY("SOUND_RAISE");
+			    RaiseEwin(ewin);
+			 }
+		       i = desks.desk[ewin->desktop].num;
 		    }
-		  else
-		    {
-		       AUDIO_PLAY("SOUND_RAISE");
-		       RaiseEwin(ewin);
-		    }
-		  break;
 	       }
 	  }
      }
+   Efree(gwins);
+
    EDBUG_RETURN(0);
 }
 

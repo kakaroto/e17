@@ -1982,7 +1982,8 @@ HandleMouseUp(XEvent * ev)
 		    {
 		       if (ww == ewin->bits[i].win)
 			 {
-			    if (ewin->border->part[i].flags & FLAG_TITLE)
+			    if ((ewin->border->part[i].flags & FLAG_TITLE) &&
+				(ewin->menu))
 			      {
 				 ewin->menu->stuck = 1;
 				 mode.context_ewin = ewin;

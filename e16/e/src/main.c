@@ -164,7 +164,6 @@ main(int argc, char **argv)
 /*  SC_Init();
  * SC_SetHotspot(30, 30);
  * SC_SetWait(); */
-   SetupEnv();
    InitDesktopBgs();
    GotoDesktop(0);
    CommsSetup();
@@ -228,6 +227,7 @@ main(int argc, char **argv)
       CreateStartupDisplay(0);
    /* retreive stuff from last time we were loaded if we're restarting */
    ICCCM_GetMainEInfo();
+   SetupEnv();
    MapUnmap(1);
    /* set some more stuff for gnome */
    GNOME_SetCurrentArea();

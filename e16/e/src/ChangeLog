@@ -1721,3 +1721,14 @@ they are switched in one of the groups dialogs. Apparently there's a bug
 with imageclasses that use transparency, probably an Imlib issue.
 
 
+
+-------------------------------------------------------------------------------
+
+Tue Sep 14 10:53:14 PDT 1999
+(Raster)
+
+fix menu segfault bug
+
+fix raiswlower for groups :)
+
+make "abotu this theme" brign up the ABOUT for the CURRENT theme :)
