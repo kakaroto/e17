@@ -257,20 +257,25 @@ collections {
 @endverbatim
 
 If everything worked ok, you should get something like <A
-HREF="Example1.jpg">Example1</A>.
-So what's worth taking notice of? 
-<I><B>EntranceUserEntry</B></I> this is where the input goes if the
-system is in a state accepting username input.  You <B>MUST</B> have
-this part in any theme you make, if you don't want to see it don't make
-the part visible.
-<I><B>EntrancePassEntry</B></I> this is where the keyboard input goes if
-the system is in a state accepting the user's password.  Like
-EntranceUserEntry, this has to be present in every theme.
-<I><B>EntranceUserAuthSuccess</B></I> needs to be caught in your edje by
-a program.  The idea behind this is that you can have neat effects after
-the user successfully logs in.  It's the themer's job to let Entrance
-know that it's done and the user's session should start by emitting
-<I><B>EntranceUserAuthSuccessDone</B></I>.
+HREF="Example1.jpg">Example1</A>.  So what's worth taking notice of? 
+The group "Main" is what entrance loads and fills the screen with.<BR>
+<B>Edje Parts</B><UL>
+<LI><B>EntranceUserEntry:</B> is a text part, this is where keyboard
+input goes if the system is in a state accepting username
+input.<B>REQUIRED</B>
+<LI> <B>EntrancePassEntry:</B> is a text part, this is where keyboard
+input goes if the system is in a state accepting the user's
+password.<B>REQUIRED</B>
+</UL>
+<B>Edje Signals</B><UL>
+<LI><B>EntranceUserAuthSuccess:</B> Entrance emits this signal when the
+user successfully authenticates.  A program must always exist in your
+theme that catches this signal.  The idea behind this is that you can
+have neat effects after the user successfully logs in.  
+<LI><B>EntranceUserAuthSuccessDone:</B> It's the themer's job to let
+Entrance know that it's done and the user's session should start by
+emitting this signal.
+</UL>
 
 @section example2 Example Two
 You're probably thinking that Example 1 was really lame, and
@@ -721,16 +726,54 @@ after, "errorreset"; }
 }
 @endverbatim
 <B>Oy!</B> That's a lot!  Most notably Example2 has a second Edje group
-defined titled "Session".  Entrance will use this group as a template
-and fill in the different parts with system specific session
-information.  The text provided from the system config goes to
-<B><I>EntranceSessionTitle</I></B>, the icon is swallowed into the
-<B><I>EntranceSessionIcon</I></B>.  You can emit two signals from this
-group, <B><I>SessionSelected</I></B> and
-<I><B>SessionUnSelected</B></I>, Entrance will catch these signals, and
-set/unset the current session based on which session it receives the
-signal from.</P>
-<P>Now lets focus our attention back to the "Main" group.  
+defined,"Session".<BR><P>Entrance will use the "Session" group as
+a template and fill in the different parts with system specific session
+information.<BR>
+<B>Edje Parts</B><UL> 
+<LI><B>EntranceSessionTitle</B>, Is a text part, the text will be set by
+the system to the appropriate session's name.
+<LI><B>EntranceSessionIcon</B>.  Is a rect part, the icon is swallowed
+into this area if present.
+</UL>
+<B>Edje Signals</B><UL> 
+<LI><B>SessionSelected:</B> Your "Session" edje emits this signal when
+it requests entrance to accept it as the new chosen session.
+<LI><B>SessionUnSelected:</B> Your "Session" edje emits this signal when
+it requests Entrance to deselect it as the current x session.
+</UL>
+<P>Now lets focus our attention back to the "Main" group.  <BR>
+<B>Edje Parts</B><UL>
+<LI><B>EntranceHostname:</B> EntranceHostname is a text part that will
+be filled with the greeting specified in the system configuration.
+<LI><B>EntranceTime:</B> EntranceTime is a text part that will be filled
+with the current time every second.  The time format is specified in the
+system configuration.  If this part is present, it'll display the right
+time :)
+<LI><B>EntranceDate:</B> EntranceDate is a text part that will be filled
+with the current date.  The format for the date is specified in the
+system configuration file.
+<LI><B>EntranceSession:</B> EntranceSession is a rect part that will
+swallow the currently selected session.  If this part is present, an
+instance of the "Session" group will be swallow to this rectangle.
+<LI><B>EntranceFace:</B> EntranceFace is a rect part that will swallow
+the currently selected user icon.  If this part is present a unique
+edje specific to that user will be displayed in that region.
+<LI><B>EntranceSessionList</B> EntranceSessionList is a rect part that
+will swallow a list of "Session" group edjes.  The sessions available on
+each system may vary, Entrance will properly pack all the available
+xsessions into this area that the system configuration specifies.  
+<LI><B>EntranceUserList</B> EntranceUserList is a rect part that will
+swallow a list of users the system knows about.  The themer need only
+define the area they should be swallowed into, Entrance will handle
+adding them.
+</UL>
+<B>Edje Signals</B><UL>
+<LI><B>EntranceUserFail:</B> Emitted if the username entered in
+EntranceUserEntry is unknown to the system.
+signal.
+<LI><B>EntranceUserAuthFail:</B> Emitted if the password entered in the
+EntrancePassEntry fails to authenticate with the system.
+</UL>
 
 @todo Theme edc walkthrough
 
