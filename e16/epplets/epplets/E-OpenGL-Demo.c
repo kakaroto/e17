@@ -279,7 +279,6 @@ save_conf(void)
 	Esnprintf(s, sizeof(s), "%i", gLighting);
 	Epplet_modify_config("gLighting", s);
 
-	printf("gWhichRotate=%i, gLighting%i\n", gWhichRotate, gLighting);
 	Epplet_save_config();
 }
 
@@ -292,8 +291,6 @@ load_conf(void)
 	sscanf(str, "%i", &gWhichRotate);
 	str = Epplet_query_config_def("gLighting", "0");
 	sscanf(str, "%i", &gLighting);
-	
-	printf("gWhichRotate=%i, gLighting%i\n", gWhichRotate, gLighting);
 }
 
 int
