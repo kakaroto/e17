@@ -50,6 +50,7 @@ init (E_Module *m)
    /* actually init ibar */
    n = _note_init (m);
    m->config_menu = _note_config_menu_new (n);
+
    
    return n;
 }
@@ -224,7 +225,7 @@ _note_menu_bgcolor_green (void *data, E_Menu *m, E_Menu_Item *mi)
       
    n = (Note *)data;
    bg = evas_object_rectangle_add(n->face->evas);
-   evas_object_color_set(bg, 187, 243, 168, 255);
+   evas_object_color_set(bg, 187, 243, 168, 100);
    esmart_textarea_bg_set(n->face->note_object, bg);
 }
 
@@ -248,7 +249,7 @@ _note_menu_bgcolor_white (void *data, E_Menu *m, E_Menu_Item *mi)
       
    n = (Note *)data;
    bg = evas_object_rectangle_add(n->face->evas);
-   evas_object_color_set(bg, 255, 255, 255, 255);
+   evas_object_color_set(bg, 255, 255, 255, 100);
    esmart_textarea_bg_set(n->face->note_object, bg);
 }
 
@@ -260,7 +261,7 @@ _note_menu_bgcolor_blue (void *data, E_Menu *m, E_Menu_Item *mi)
       
    n = (Note *)data;
    bg = evas_object_rectangle_add(n->face->evas);
-   evas_object_color_set(bg, 149, 207, 226, 255);
+   evas_object_color_set(bg, 149, 207, 226, 100);
    esmart_textarea_bg_set(n->face->note_object, bg);
 }
 

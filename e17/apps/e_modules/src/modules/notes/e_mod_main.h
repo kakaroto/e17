@@ -37,7 +37,7 @@ struct _Note_Face
    Evas_Object     *note_edje;
    Evas_Coord       xx, yy, ww;
    E_Gadman_Client *gmc;
-   
+   E_Menu          *menu;   
 };
 
 EAPI void *init     (E_Module *m);
