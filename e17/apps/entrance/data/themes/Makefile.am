@@ -1,1 +1,1 @@
-SUBDIRS = default Nebulous taillights E17
+SUBDIRS = default Nebulous taillights
