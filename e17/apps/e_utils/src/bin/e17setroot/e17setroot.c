@@ -21,6 +21,7 @@
 static int e_bg_type = 0;
 static int e_bg_no_load = 0;
 static char *e_bg_img_file = NULL;
+static char *esetroot_opt = NULL;
 
 enum E_Bg_Types
 {
@@ -73,23 +74,27 @@ void _e_bg_bg_parseargs(int argc, char **argv) {
        case E_BG_TILE:	   
        case 't':	    
 	 e_bg_type = E_BG_TILE;
+	 esetroot_opt = strdup(" ");
 	 break;
 
 	 /* scale */
        case E_BG_SCALE:
        case 's':
 	 e_bg_type = E_BG_SCALE;
+	 esetroot_opt = strdup(" -s ");
 	 break;
 	 
 	 /* center */
        case E_BG_CENTER:
        case 'c':
 	 e_bg_type = E_BG_CENTER;
+	 esetroot_opt = strdup(" -c ");	 
 	 break;
 	 
 	 /* fit */
        case E_BG_FIT:
        case 'f':
+	 esetroot_opt = strdup(" -f ");
 	 break;
 
 	 /* get current bg */
@@ -288,8 +293,9 @@ void _e_bg_bg_eet_gen(char *filename) {
       return;
 
    /* If we're using pseudo-trans for eterm, then this will help */
-   esetroot = malloc(strlen("Esetroot ") + strlen(filename) + 1);
+   esetroot = malloc(strlen("Esetroot ") + strlen(esetroot_opt) + strlen(filename) + 1);
    strcpy(esetroot, "Esetroot ");
+   strcat(esetroot, esetroot_opt);
    strcat(esetroot, filename);
    system(esetroot);
    free(esetroot);
