@@ -1,0 +1,49 @@
+<!-- Esmart Recipes -->
+<!-- 
+###################################################
+This example section is commented out:
+
+<section>
+<title>Recipe: Example</title>
+
+<para>
+This is the first paragraph of the recipe.
+</para>
+
+<example>
+<title>Code Example Title</title>
+<programlisting>
+// Sample EDC
+images {
+        image,  "background.png" LOSSY 95;
+}
+
+collections {
+   group {
+      name, "test";
+      min, 32 32;
+      max, 1024 768;
+	...
+</programlisting>               
+</example> 
+
+<para>
+Another paragraph.  Don't forget to replace less-than and greater-than 
+symbols with the proper &lt; and &gt; even in your program listings.
+</para>
+</section>
+#################################################
+-->
+
+<!--	\/ \/ \/ CONTENT \/ \/ \/	-->
+
+<chapter>
+<title>Esmart</title>
+
+<para>
+Esmart provides a variety of EVAS smart objects that provide significant power
+to your EVAS and EFL based applications.
+</para>
+
+
+</chapter>

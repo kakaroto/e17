@@ -1,0 +1,213 @@
+The Enlightenment Foundation Libraries CookBook
+-----------------------------------------------
+
+Editor: Ben 'technikolor' Rockwood [benr@cuddletech.com]
+
+
+
+
+ABOUT THIS DOCUMENT
+-------------------
+	
+	This is a community document, in the same style
+as the popular O'Reilly cookbooks (example: http://cookbooks.oreilly.com/).
+Any is free to contribute to this document, and as such is a perpetual
+work-in-progress.  The document is split into chapters, each covering
+a diffrent componant, or set of componants, that make up the collective
+EFL.  
+
+
+
+HOW TO CONTRIBUTE
+-----------------
+
+	Jump right in!  Each chapter is made up of recipes.  A 
+recipe is in the form of a problem (or task) and solution.
+The key to a good recipe, just as a cooking recipe, is to be complete.
+Whenever possible or practical you should include complete code
+examples, from the pre-proccessor directives (#include...) to the final
+closing bracket, so that inexperienced or new coders aren't confused 
+by where your code snippet goes.
+ [ More here ]
+
+
+DOCBOOK BASICS FOR CONTRIBUTERS
+-------------------------------
+
+	This document is formated in DocBook/XML.  Using DocBook
+is simple, and I don't intend each author to understand, be
+experienced with, or give a rats ass about DocBook itself.  The 
+important thing is to concentrate on the content.
+
+	In the xml/ directory are several XML files, which 
+are individual chapters of the document.  There is a commented
+out example of how to add a recipe in each file, but lets review
+the basics of DocBook/XML...
+
+	DocBook comes in a variety of flavors, including SGML
+and XML.  We're using XML, which if your new to XML in general, looks
+and works very much like HTML.  Unlike HTML, however, you MUST close
+each tag, there is no tag in XML which can stand alone without being
+closed, so everything is done in open/close pairs.  A <book> is made up
+of <chapter>s which are made up of <para>graphs and <section>s, which are
+themeselves made up of <para>graphs.  Each <section> and <chapter>
+can be given a <title>.  Like HTML, certain charrectors are special
+and can not be used literally, so the "&" symbol becomes "&amp;", the
+"<" symbol becomes "&lt;", and the ">" symbol becomes "&gt;".
+
+	<chapter>s and <section>s can also contain <figure>s and
+<example>s, which are wrappers for a <screen> example or a
+<programlisting>, which works similarly to the HTML <pre> tag
+to maintain program indentation, etc.  <figure>s and <example>s are 
+special because they can have <title>s which are listed in figure index
+in the begining of the book.  <figure>s can also include <graphic>s
+for screenshots.  In the img/ directory you can place your graphics
+to be included.  Remember that because files in the xml/ directory 
+are included into the main DocBook/XML document in the root directory
+before being rendered that your refereances to images should
+be in the form "img/my_shot.png", not "../img/my_shot.png".
+SVG, JPEG, PNG and other formats can be used in DocBook/XML, but
+for portablity purposes it is recommended that you confine yourself
+to using PNG.
+
+	The framework of the document is in place, therefore
+as a contributing author you don't need to concern yourself
+with the headers, bookinfo, and chapter formating; you only need
+to know how to add a new section to each chapter that will be your
+recipe.  There should be 1 new section per recipe.  Sub-sections
+for a recipe can be used, but are discouraged.
+
+	The following is an example of what you would add:
+
+--------------------------------------------------------------------
+<section>
+<title>Recipe: Simple Drag-N-Drop</title>
+<!-- This is a DocBook/XML comment -->
+<!-- Recipe added by: Ben Rockwood -->
+
+<para>
+This is the first paragraph of the recipe about
+how nifty Drag-N-Drop is.
+</para>
+
+<example>
+<title>EVAS Drag-N-Drop Example</title>
+<programlisting>
+#include &lt;Evas.h&gt;
+
+int main() {
+	int * pCounter;
+	int i;
+
+	pCounter = &amp;i;
+	// My example.
+}
+</programlisting>
+</example>
+
+<para>
+Another paragraph.  Don't forget to replace less-than and greater-than
+symbols with the proper &lt;, &amp; and &gt; even in your program listings.
+</para>
+
+<figure>
+<title>An illistration or screenshot </title>
+<graphic format='PNG' align='center' fileref='img/my_image.png' />
+</figure>
+
+<para>
+Some more stuff.
+</para>
+
+<figure>
+<title>A figure of textual output</title>
+<screen>
+benr@nexus6 points_calc$ make
+gcc -Wall `ewl-config --libs --cflags`  -lGL point_calc.c -o point_calc
+point_calc.c: In function `points_calc':
+</screen>
+</figure>
+
+</section>
+--------------------------------------------------------------------
+
+	You can use as many <para>graphs as you need, and line breaks in the XML 
+source, like XML, are unimportant.  The only place your indentation/line-breaks
+will matter is within the <programlisting> or <screen> tags.  I'll point out
+putting a slash at the end of a tag will close it at the same time, so
+<para /> is functionally the same as <para></para>, as you see in the
+<graphic>s tag above.
+
+	Thats it!  Pretty simple.  At least 90% of your recipe will
+be in <para>'s, and for the rest just follow the examples in each file, 
+or refer back here.  Don't bother trying to get fancy with your syntax;
+simplicity is best.  Just remember to make sure you close all your tags,
+and you'll do fine.
+
+
+
+CREATING OUTPUT & USING THE MAKEFILE
+------------------------------------
+
+	The Makefile included is my own special brew that I use
+for various documents that I create.  It relies on the following things
+being on your system:
+
+1)  XSLTproc, which is part of the libxslt package (http://xmlsoft.org/XSLT/).
+	Gentoo users need to emerge "libxslt".
+2)  FOP, a PDF/PS renderer from the Apache XML project (http://xml.apache.org/fop/)
+	Gentoo users need to emerge "fop-bin".
+3) XMLlint, part of the libxml package (http://xmlsoft.org/)
+	Gentoo users need to emerge "libxml" and "libxml2".
+4) The DocBook Official XSL Style Sheets (1.64.0 as of this writting)
+	http://docbook.sourceforge.net/projects/xsl/
+	
+5) The DocBook Official DTD  (4.3CR1 as of this writting)
+	http://docbook.org/xml/index.html
+
+	Install each of the above and modify the Makefile as needed to
+fit your enviroment.  Gentoo installs of the XSL and DTDs are possbile, but 
+personally discouraged.  
+
+	!!!!!!!!!!!!!NOTE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	No help will be provided in getting PDF or HTML
+	output to build properly.  This document will 
+	regularly be rendered for the website, etc.  
+	!!!!!!!!!!!!!NOTE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+
+HELPFUL DOCBOOK/XML INFO FOR THE CURIOUS
+----------------------------------------
+
+	This document is setup to be a simple as possible
+to contribute to, with the intention that you don't feel
+compelled to learn all of DocBook/XML.  However, if you
+want to learn more, here are some handy places to look:
+
+1) The Official DocBook Homepage:
+	http://docbook.org/
+	
+2) The DocBook Open Repository Project
+	http://docbook.sourceforge.net/
+
+3) DocBook: The Definitive Guide [Online O'Reilly Book]
+	http://docbook.org/tdg/en/html/docbook.html
+
+4) DocBook XSL: The Complete Guide
+	http://www.sagehill.net/docbookxsl/index.html
+
+5) Docbook Frequently Asked Questions (Best FAQ Around)
+	http://www.dpawson.co.uk/docbook/
+
+6) The DocBook Wiki
+	http://docbook.org/wiki/moin.cgi/FrontPage
+
+
+LICENSING OF THIS DOCUMENT
+--------------------------
+
+	This document is licensed under the Creative Commons
+NonCommercial-ShareAlike 1.0 license.  Learn about this license
+here: http://creativecommons.org/licenses/nc-sa/1.0/
+

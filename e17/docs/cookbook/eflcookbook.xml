@@ -1,0 +1,49 @@
+<?xml version='1.0' encoding="UTF-8"?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.3CR1//EN"
+        "file:///usr/share/sgml/docbook/xml-dtd-4.3CR1/docbookx.dtd" [
+<!ENTITY bookinfo SYSTEM "xml/bookinfo.xml">
+<!ENTITY intro SYSTEM "xml/intro.xml">
+<!ENTITY imlib_recipes SYSTEM "xml/imlib_recipes.xml">
+<!ENTITY edb_eet_recipes SYSTEM "xml/edb_eet_recipes.xml">
+<!ENTITY evas_recipes SYSTEM "xml/evas_recipes.xml">
+<!ENTITY ecore_recipes SYSTEM "xml/ecore_recipes.xml">
+<!ENTITY esmart_recipes SYSTEM "xml/esmart_recipes.xml">
+<!ENTITY estyle_etox_recipes SYSTEM "xml/estyle_etox_recipes.xml">
+<!ENTITY ewd_recipes SYSTEM "xml/ewd_recipes.xml">
+<!ENTITY edje_edc_recipes SYSTEM "xml/edje_edc_recipes.xml">
+<!ENTITY edje_recipes SYSTEM "xml/edje_recipes.xml">
+<!ENTITY ewl_recipes SYSTEM "xml/ewl_recipes.xml">
+
+]>
+
+
+
+<book>
+
+&bookinfo;
+
+<!-- Chapters Go Here -->
+
+&intro;
+
+&imlib_recipes;
+
+&evas_recipes;
+&ecore_recipes;
+
+&edb_eet_recipes;
+
+&esmart_recipes;
+
+&estyle_etox_recipes;
+&ewd_recipes;
+
+&edje_edc_recipes;
+&edje_recipes;
+
+&ewl_recipes;
+
+
+
+
+</book>

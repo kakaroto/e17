@@ -1,0 +1,49 @@
+<!-- EWL Recipes -->
+<!-- 
+###################################################
+This example section is commented out:
+
+<section>
+<title>Recipe: Example</title>
+
+<para>
+This is the first paragraph of the recipe.
+</para>
+
+<example>
+<title>Code Example Title</title>
+<programlisting>
+// Sample EDC
+images {
+        image,  "background.png" LOSSY 95;
+}
+
+collections {
+   group {
+      name, "test";
+      min, 32 32;
+      max, 1024 768;
+	...
+</programlisting>               
+</example> 
+
+<para>
+Another paragraph.  Don't forget to replace less-than and greater-than 
+symbols with the proper &lt; and &gt; even in your program listings.
+</para>
+</section>
+#################################################
+-->
+
+<!--	\/ \/ \/ CONTENT \/ \/ \/	-->
+
+<chapter>
+<title>EWL</title>
+
+<para>
+The Enlightenment Widget Library provides a full blown widget kit similar in feel to
+GTK, QT or MOTIF, but based apon the power of the Enlightenment Foundation Libraries.
+</para>
+
+
+</chapter>
