@@ -147,7 +147,8 @@ update_background(E_Background _bg)
    h = _bg->geom.h;
    _bg->geom.w = 0;
    _bg->geom.h = 0;
-   e_bg_set_scale(_bg, w, h);
+   e_bg_set_scale(_bg, export_info.screen.w * export_info.xinerama.h, 
+	   export_info.screen.h * export_info.xinerama.v);
    e_bg_set_layer(_bg, 0);
    if ((bl) && (bl->obj))
       outline_evas_object(bl->obj);
