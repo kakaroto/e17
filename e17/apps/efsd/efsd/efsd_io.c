@@ -127,10 +127,12 @@ read_data(int sockfd, void *dest, int size)
 static int     
 read_int(int sockfd, int *dest)
 {
-  if (read_data(sockfd, dest, sizeof(int)) != sizeof(int))
+  int count = 0;
+   
+  if ((count = read_data(sockfd, dest, sizeof(int))) != sizeof(int))
     return (-1);
 
-  return (0);
+  return (count);
 }
 
 
@@ -143,15 +145,16 @@ static int
 read_string(int sockfd, char **s)
 {
   int i;
+  int count = 0, count2 = 0;
 
-  if (read_data(sockfd, &i, sizeof(int)) != sizeof(int))
+  if ((count = read_data(sockfd, &i, sizeof(int))) != sizeof(int))
     return (-1);
 
   *s = (char*)malloc(sizeof(char) * i);
-  if (read_data(sockfd, *s, i) != i)
+  if ((count2 = read_data(sockfd, *s, i)) != i)
     return (-1);
 
-  return (0);
+  return (count + count2);
 }
 
 
@@ -197,83 +200,109 @@ write_string(int sockfd, char *data)
 static int     
 read_remove_cmd(int sockfd, EfsdCommand *cmd)
 {
-  if (read_int(sockfd, &(cmd->efsd_file_cmd.id)) < 0)
+  int count = 0, count2;
+   
+  if ((count = read_int(sockfd, &(cmd->efsd_file_cmd.id))) < 0)
     return (-1);
-
-  if (read_int(sockfd, &(cmd->efsd_file_cmd.options)) < 0)
+  count2 = count;
+   
+  if ((count = read_int(sockfd, &(cmd->efsd_file_cmd.options))) < 0)
     return (-1);
-
-  if (read_string(sockfd, &(cmd->efsd_file_cmd.file)) < 0)
+  count2 += count;
+   
+  if ((count = read_string(sockfd, &(cmd->efsd_file_cmd.file))) < 0)
     return (-1);
+  count2 += count;
 
-  return (0);
+  return (count2);
 }
 
 
 static int     
 read_move_cmd(int sockfd, EfsdCommand *cmd)
 {
-  if (read_int(sockfd, &(cmd->efsd_2file_cmd.id)) < 0)
+  int count = 0, count2;
+   
+  if ((count = read_int(sockfd, &(cmd->efsd_2file_cmd.id))) < 0)
     return (-1);
+  count2 = count;
 
-  if (read_int(sockfd, &(cmd->efsd_2file_cmd.options)) < 0)
+  if ((count = read_int(sockfd, &(cmd->efsd_2file_cmd.options))) < 0)
     return (-1);
+  count2 += count;
 
-  if (read_string(sockfd, &(cmd->efsd_2file_cmd.file1)) < 0)
+  if ((count = read_string(sockfd, &(cmd->efsd_2file_cmd.file1))) < 0)
     return (-1);
+  count2 += count;
   
-  if (read_string(sockfd, &(cmd->efsd_2file_cmd.file2)) < 0)
+  if ((count = read_string(sockfd, &(cmd->efsd_2file_cmd.file2))) < 0)
     return (-1);
+  count2 += count;
   
-  return (0);
+  return (count2);
 }
 
 
 static int     
 read_listdir_cmd(int sockfd, EfsdCommand *cmd)
 {
-  if (read_int(sockfd, &(cmd->efsd_file_cmd.id)) < 0)
+  int count = 0, count2;
+   
+  if ((count = read_int(sockfd, &(cmd->efsd_file_cmd.id))) < 0)
     return (-1);
+  count2 = count;
 
-  if (read_int(sockfd, &(cmd->efsd_file_cmd.options)) < 0)
+  if ((count = read_int(sockfd, &(cmd->efsd_file_cmd.options))) < 0)
     return (-1);
+  count2 += count;
 
-  if (read_string(sockfd, &(cmd->efsd_file_cmd.file)) < 0)
+  if ((count = read_string(sockfd, &(cmd->efsd_file_cmd.file))) < 0)
     return (-1);
+  count2 += count;
 
-  return (0);
+  return (count2);
 }
 
 
 static int     
 read_makedir_cmd(int sockfd, EfsdCommand *cmd)
 {
-  if (read_int(sockfd, &(cmd->efsd_file_cmd.id)) < 0)
+  int count = 0, count2;
+   
+  if ((count = read_int(sockfd, &(cmd->efsd_file_cmd.id))) < 0)
     return (-1);
+  count2 = count;
 
-  if (read_int(sockfd, &(cmd->efsd_file_cmd.options)) < 0)
+  if ((count = read_int(sockfd, &(cmd->efsd_file_cmd.options))) < 0)
     return (-1);
+  count2 += count;
 
-  if (read_string(sockfd, &(cmd->efsd_file_cmd.file)) < 0)
+  if ((count = read_string(sockfd, &(cmd->efsd_file_cmd.file))) < 0)
     return (-1);
+  count2 += count;
   
-  return (0);
+  return (count2);
 }
 
 
 static int     
 read_chmod_cmd(int sockfd, EfsdCommand *cmd)
 {
-  if (read_int(sockfd, &(cmd->efsd_chmod_cmd.id)) < 0)
+  int count = 0, count2;
+   
+  if ((count = read_int(sockfd, &(cmd->efsd_chmod_cmd.id))) < 0)
     return (-1);
+  count2 = count;
 
-  if (read_string(sockfd, &(cmd->efsd_chmod_cmd.file)) < 0)
+  if ((count = read_string(sockfd, &(cmd->efsd_chmod_cmd.file))) < 0)
     return (-1);
+  count2 += count;
   
-  if (read_data(sockfd, &(cmd->efsd_chmod_cmd.mode), sizeof(mode_t)) != sizeof(mode_t))
+  if ((count = read_data(sockfd, &(cmd->efsd_chmod_cmd.mode), sizeof(mode_t))) != sizeof(mode_t))
     return (-1);
+  count2 += count;
   
-  return (0);
+  return (count2);
 }
 
 
@@ -281,117 +310,151 @@ static int
 read_set_metadata_cmd(int sockfd, EfsdCommand *cmd)
 {
   int  i;
+  int count = 0, count2;
 
-  if (read_int(sockfd, &(cmd->efsd_set_metadata_cmd.id)) < 0)
+  if ((count = read_int(sockfd, &(cmd->efsd_set_metadata_cmd.id))) < 0)
     return (-1);
+  count2 = count;
 
-  if (read_data(sockfd, &(cmd->efsd_set_metadata_cmd.datatype),
-		sizeof(EfsdDatatype)) != sizeof(EfsdDatatype))
+  if ((count = read_data(sockfd, &(cmd->efsd_set_metadata_cmd.datatype),
+		sizeof(EfsdDatatype))) != sizeof(EfsdDatatype))
     return (-1);
+  count2 += count;
   
-  if (read_int(sockfd, &(cmd->efsd_set_metadata_cmd.data_len)) < 0)
+  if ((count = read_int(sockfd, &(cmd->efsd_set_metadata_cmd.data_len))) < 0)
     return (-1);
+  count2 += count;
   
   i = cmd->efsd_set_metadata_cmd.data_len;
   cmd->efsd_set_metadata_cmd.data = malloc(i);
-  if (read_data(sockfd, &(cmd->efsd_set_metadata_cmd.data), i) != i)
+  if ((count = read_data(sockfd, &(cmd->efsd_set_metadata_cmd.data), i)) != i)
     return (-1);
+  count2 += count;
 
-  if (read_string(sockfd, &(cmd->efsd_set_metadata_cmd.key)) < 0)
+  if ((count = read_string(sockfd, &(cmd->efsd_set_metadata_cmd.key))) < 0)
     return (-1);
+  count2 += count;
   
-  if (read_string(sockfd, &(cmd->efsd_set_metadata_cmd.file)) < 0)
+  if ((count = read_string(sockfd, &(cmd->efsd_set_metadata_cmd.file))) < 0)
     return (-1);
+  count2 += count;
    
-  return (0);
+  return (count2);
 }
 
 
 static int     
 read_get_metadata_cmd(int sockfd, EfsdCommand *cmd)
 {
-  if (read_int(sockfd, &(cmd->efsd_get_metadata_cmd.id)) < 0)
+  int count = 0, count2;
+   
+  if ((count = read_int(sockfd, &(cmd->efsd_get_metadata_cmd.id))) < 0)
     return (-1);
+  count2 = count;
 
-  if (read_string(sockfd, &(cmd->efsd_get_metadata_cmd.key)) < 0)
+  if ((count = read_string(sockfd, &(cmd->efsd_get_metadata_cmd.key))) < 0)
     return (-1);
+  count2 += count;
 
-  if (read_string(sockfd, &(cmd->efsd_get_metadata_cmd.file)) < 0)
+  if ((count = read_string(sockfd, &(cmd->efsd_get_metadata_cmd.file))) < 0)
     return (-1);
+  count2 += count;
   
-  return (0);
+  return (count2);
 }
 
 
 static int     
 read_start_monitor_cmd(int sockfd, EfsdCommand *cmd)
 {
-  if (read_int(sockfd, &(cmd->efsd_file_cmd.id)) < 0)
+  int count = 0, count2;
+   
+  if ((count = read_int(sockfd, &(cmd->efsd_file_cmd.id))) < 0)
     return (-1);
+  count2 = count;
 
-  if (read_int(sockfd, &(cmd->efsd_file_cmd.options)) < 0)
+  if ((count = read_int(sockfd, &(cmd->efsd_file_cmd.options))) < 0)
     return (-1);
+  count2 += count;
 
-  if (read_string(sockfd, &(cmd->efsd_file_cmd.file)) < 0)
+  if ((count = read_string(sockfd, &(cmd->efsd_file_cmd.file))) < 0)
     return (-1);
+  count2 += count;
 
-  return (0);
+  return (count2);
 }
 
 
 static int     
 read_stop_monitor_cmd(int sockfd, EfsdCommand *cmd)
 {
-  if (read_int(sockfd, &(cmd->efsd_file_cmd.id)) < 0)
+  int count = 0, count2;
+   
+  if ((count = read_int(sockfd, &(cmd->efsd_file_cmd.id))) < 0)
     return (-1);
+  count2 = count;
 
-  if (read_int(sockfd, &(cmd->efsd_file_cmd.options)) < 0)
+  if ((count = read_int(sockfd, &(cmd->efsd_file_cmd.options))) < 0)
     return (-1);
+  count2 += count;
 
-  if (read_string(sockfd, &(cmd->efsd_file_cmd.file)) < 0)
+  if ((count = read_string(sockfd, &(cmd->efsd_file_cmd.file))) < 0)
     return (-1);
+  count2 += count;
   
-  return (0);
+  return (count2);
 }
 
 
 static int     
 read_filechange_event(int sockfd, EfsdEvent *ee)
 {
-  if (read_int(sockfd, &(ee->efsd_filechange_event.id)) < 0)
+  int count, count2;
+   
+  if ((count = read_int(sockfd, &(ee->efsd_filechange_event.id))) < 0)
     return (-1);
+  count2 = count;
 
-  if (read_int(sockfd, &(ee->efsd_filechange_event.changecode)) < 0)
+  if ((count = read_int(sockfd, &(ee->efsd_filechange_event.changecode))) < 0)
     return (-1);
+  count2 += count;
 
-  if (read_string(sockfd, &(ee->efsd_filechange_event.file)) < 0)
+  if ((count = read_string(sockfd, &(ee->efsd_filechange_event.file))) < 0)
     return (-1);
+  count2 += count;
 
-  return (0);
+  return (count2);
 }
 
 
 static int     
 read_reply_event(int sockfd, EfsdEvent *ee)
 {
-  if (efsd_read_command(sockfd, &(ee->efsd_reply_event.command)) < 0)
+  int count = 0, count2;
+   
+  if ((count = efsd_read_command(sockfd, &(ee->efsd_reply_event.command))) < 0)
     return (-1);
+  count2 = count;
 
-  if (read_int(sockfd, (int*)&(ee->efsd_reply_event.status)) < 0)
+  if ((count = read_int(sockfd, (int*)&(ee->efsd_reply_event.status))) < 0)
     return (-1);
+  count2 += count;
 
-  if (read_int(sockfd, &(ee->efsd_reply_event.errorcode)) < 0)
+  if ((count = read_int(sockfd, &(ee->efsd_reply_event.errorcode))) < 0)
     return (-1);
+  count2 += count;
 
-  if (read_int(sockfd, &(ee->efsd_reply_event.data_len)) < 0)
+  if ((count = read_int(sockfd, &(ee->efsd_reply_event.data_len))) < 0)
     return (-1);
+  count2 += count;
   
   if (ee->efsd_reply_event.data_len > 0)
     {
       ee->efsd_reply_event.data = malloc(ee->efsd_reply_event.data_len);
-      if (read_data(sockfd, &(ee->efsd_reply_event.data),
-		    ee->efsd_reply_event.data_len) < 0)
+      if ((count = read_data(sockfd, &(ee->efsd_reply_event.data),
+			     ee->efsd_reply_event.data_len)) < 0)
 	return (-1);
+      count2 += count;
     }
   else
     {
@@ -399,7 +462,7 @@ read_reply_event(int sockfd, EfsdEvent *ee)
       ee->efsd_reply_event.data = NULL;
     }
 
-  return (0);  
+  return (count2);  
 }
 
 
@@ -660,11 +723,12 @@ int
 efsd_read_command(int sockfd, EfsdCommand *cmd)
 {
   int result = -1;
+  int count = 0;
 
   if (!cmd)
     return (-1);  
 
-  if (read_int(sockfd, (int*)&(cmd->type)) >= 0)
+  if ((count = read_int(sockfd, (int*)&(cmd->type))) >= 0)
     {
       switch (cmd->type)
 	{
@@ -703,7 +767,7 @@ efsd_read_command(int sockfd, EfsdCommand *cmd)
     }
 
   
-  return result;
+  return (result + count);
 }
 
 
@@ -740,11 +804,12 @@ int
 efsd_read_event(int sockfd, EfsdEvent *ee)
 {
   int result = -1;
-
+  int count = 0;
+   
   if (!ee)
     return (-1);
 
-  if (read_int(sockfd, (int*)&(ee->type)) >= 0)
+  if ((count = read_int(sockfd, (int*)&(ee->type))) >= 0)
     {
       switch (ee->type)
 	{
@@ -758,7 +823,7 @@ efsd_read_event(int sockfd, EfsdEvent *ee)
 	}
     }
 
-  return result;
+  return (count + result);
 }
 
 
@@ -778,28 +843,52 @@ efsd_cleanup_command(EfsdCommand *ecom)
     case STOPMON:
     case STAT:
       if (ecom->efsd_file_cmd.file)
-	free(ecom->efsd_file_cmd.file);
+	 {
+	    free(ecom->efsd_file_cmd.file);
+	    ecom->efsd_file_cmd.file = NULL;
+	 }
       break;
     case MOVE:
     case SYMLINK:
       if (ecom->efsd_2file_cmd.file2)
-	free(ecom->efsd_2file_cmd.file1);
+	 {
+	    free(ecom->efsd_2file_cmd.file1);
+	    ecom->efsd_2file_cmd.file1 = NULL;
+	 }
       if (ecom->efsd_2file_cmd.file2)
-	free(ecom->efsd_2file_cmd.file2);
+	 {
+	    free(ecom->efsd_2file_cmd.file2);
+	    ecom->efsd_2file_cmd.file2 = NULL;
+	 }
       break;
     case SETMETA:
       if (ecom->efsd_set_metadata_cmd.data)
-	free(ecom->efsd_set_metadata_cmd.data);
+	 {
+	    free(ecom->efsd_set_metadata_cmd.data);
+	    ecom->efsd_set_metadata_cmd.data = NULL;
+	 }
       if (ecom->efsd_set_metadata_cmd.key)
-	free(ecom->efsd_set_metadata_cmd.key);
+	 {
+	    free(ecom->efsd_set_metadata_cmd.key);
+	    ecom->efsd_set_metadata_cmd.key = NULL;
+	 }
       if (ecom->efsd_set_metadata_cmd.file)
-	free(ecom->efsd_set_metadata_cmd.file);
+	 {
+	    free(ecom->efsd_set_metadata_cmd.file);
+	    ecom->efsd_set_metadata_cmd.file = NULL;
+	 }
       break;
     case GETMETA:
       if (ecom->efsd_get_metadata_cmd.key)
-	free(ecom->efsd_get_metadata_cmd.key);
+	 {
+	    free(ecom->efsd_get_metadata_cmd.key);
+	    ecom->efsd_get_metadata_cmd.key = NULL;
+	 }
       if (ecom->efsd_get_metadata_cmd.file)
-	free(ecom->efsd_get_metadata_cmd.file);
+	 {
+	    free(ecom->efsd_get_metadata_cmd.file);
+	    ecom->efsd_get_metadata_cmd.file = NULL;
+	 }
       break;
     case CLOSE:
       break;
@@ -818,11 +907,17 @@ efsd_cleanup_event(EfsdEvent *ev)
     {
     case REPLY:
       if (ev->efsd_reply_event.data)
-	free(ev->efsd_reply_event.data);
+	 {
+	    free(ev->efsd_reply_event.data);
+	    ev->efsd_reply_event.data = NULL;
+	 }
       break;
     case FILECHANGE:
       if (ev->efsd_filechange_event.file)
-	free(ev->efsd_filechange_event.file);
+	 {
+	    free(ev->efsd_filechange_event.file);
+	    ev->efsd_filechange_event.file = NULL;
+	 }
       break;
     default:
     }     

@@ -421,8 +421,18 @@ efsd_initialize(void)
   for (i = 0; i < EFSD_CLIENTS; i++)
     clientnums[i] = i;
   
+   /* lots of paranoia - clean up dead socket on exit no matter what */
+   /* only case it doesnt work: SIGKILL (kill -9) */
   signal(SIGINT,  efsd_cleanup);
-  signal(SIGKILL, efsd_cleanup);
+  signal(SIGQUIT, efsd_cleanup);
+  signal(SIGSEGV, efsd_cleanup);
+  signal(SIGTERM, efsd_cleanup);
+  signal(SIGBUS, efsd_cleanup);
+  signal(SIGSYS, efsd_cleanup);
+  signal(SIGXCPU, efsd_cleanup);
+  signal(SIGXFSZ, efsd_cleanup);
+  signal(SIGXCPU, efsd_cleanup);
+  signal(SIGSTKFLT, efsd_cleanup);
   signal(SIGPIPE, SIG_IGN);
 }
 
