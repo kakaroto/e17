@@ -155,7 +155,7 @@ pregame_menu_init(GtkWidget *window, GtkWidget *vbox) {
 static void
 pregame_player_frame_init(GtkWidget *window, GtkWidget *vbox) {
 
-  GtkWidget *player_frame, *player_table, *align;
+  GtkWidget *player_frame, *player_table, *align, *scroller;
   GtkWidget *label, *player_groups, *player_clist;
   const char *cols[] = { "Player Name", "Player Type" };
 
@@ -197,11 +197,15 @@ pregame_player_frame_init(GtkWidget *window, GtkWidget *vbox) {
   gtk_widget_show(player_groups);
 
   /* The clist for the players in the current group */
+  scroller = gtk_scrolled_window_new(NULL, NULL);
+  gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW(scroller), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+  gtk_table_attach_defaults(GTK_TABLE(player_table), GTK_WIDGET(scroller), 1, 2, 1, 2);
   player_clist = gtk_clist_new_with_titles(2, (gchar **) cols);
+  gtk_widget_set_usize(player_clist, 1, 80);
+  gtk_container_add(GTK_CONTAINER(scroller), player_clist);
   gtk_clist_column_titles_passive(GTK_CLIST(player_clist));
   gtk_clist_set_column_justification(GTK_CLIST(player_clist), 1, GTK_JUSTIFY_LEFT);
   gtk_clist_set_column_justification(GTK_CLIST(player_clist), 2, GTK_JUSTIFY_LEFT);
-  gtk_table_attach_defaults(GTK_TABLE(player_table), GTK_WIDGET(player_clist), 1, 2, 1, 2);
 
   /* Player Names are hardcoded for now.  Change these to whatever names you want, and add/remove
      names as needed.  To add more entries, simply copy one of the lines below as many times as
@@ -222,6 +226,7 @@ pregame_player_frame_init(GtkWidget *window, GtkWidget *vbox) {
     gtk_clist_append(GTK_CLIST(player_clist), (gchar **) r6);
   }
   gtk_widget_show(player_clist);
+  gtk_widget_show(scroller);
 
   gtk_widget_show(player_table);
   gtk_widget_show(player_frame);
@@ -231,7 +236,7 @@ pregame_player_frame_init(GtkWidget *window, GtkWidget *vbox) {
 static void
 pregame_dest_frame_init(GtkWidget *window, GtkWidget *vbox) {
 
-  GtkWidget *dest_frame, *dest_table, *align;
+  GtkWidget *dest_frame, *dest_table, *align, *scroller;
   GtkWidget *label, *dest_groups, *dest_list, *dest_clist;
   const char *cols[] = { "Destination" };
 
@@ -269,10 +274,14 @@ pregame_dest_frame_init(GtkWidget *window, GtkWidget *vbox) {
   gtk_widget_show(dest_groups);
 
   /* The clist for the dests in the current group */
+  scroller = gtk_scrolled_window_new(NULL, NULL);
+  gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW(scroller), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+  gtk_table_attach_defaults(GTK_TABLE(dest_table), GTK_WIDGET(scroller), 1, 2, 1, 2);
   dest_clist = gtk_clist_new_with_titles(1, (gchar **) cols);
+  gtk_widget_set_usize(dest_clist, 1, 80);
   gtk_clist_column_titles_passive(GTK_CLIST(dest_clist));
   gtk_clist_set_column_justification(GTK_CLIST(dest_clist), 1, GTK_JUSTIFY_LEFT);
-  gtk_table_attach_defaults(GTK_TABLE(dest_table), GTK_WIDGET(dest_clist), 1, 2, 1, 2);
+  gtk_container_add(GTK_CONTAINER(scroller), dest_clist);
 
   /* Dest Names are hardcoded for now.  Change these to whatever names you want, and add/remove
      names as needed.  To add more entries, simply copy one of the lines below as many times as
@@ -299,6 +308,7 @@ pregame_dest_frame_init(GtkWidget *window, GtkWidget *vbox) {
     gtk_clist_append(GTK_CLIST(dest_clist), (gchar **) r9);
   }
   gtk_widget_show(dest_clist);
+  gtk_widget_show(scroller);
 
   gtk_widget_show(dest_table);
   gtk_widget_show(dest_frame);

@@ -51,3 +51,12 @@ Tue Aug 31 17:05:25 PDT 1999	Michael Jennings <mej@eterm.org>
 	Oops.  Don't create more than one game window.  Thanks mandrake. :)
 	
 -------------------------------------------------------------------------------
+Tue Aug 31 19:13:29 PDT 1999	Michael Jennings <mej@eterm.org>
+
+	At this point, the interface is pretty much finalized all around.
+	The next step is to write the configuration engine, which will be a
+	very pluggable version of Eterm's current parser, but will fix some of
+	the flexibility problems in the current parser's design.  Once it's
+	completed and tested, I plan to merge the new stuff back into Eterm.
+	
+-------------------------------------------------------------------------------
