@@ -216,7 +216,7 @@ void term_clear_area(Term *term, int x1, int y1, int x2, int y2) {
    int i, j;  
    Term_TGlyph *tgl;
    /* TODO: Finalize this shit before shipping code out */
-   //x1--;y1--;x2--;y2--;
+   x1--;y1--;x2--;y2--;
    printf("Clearing: %d %d, %d %d\n",x1,y1,x2,y2);
    for(i = y1; i <= y2; i++) {      
       for(j = x1; j <= x2; j++) {
@@ -224,7 +224,7 @@ void term_clear_area(Term *term, int x1, int y1, int x2, int y2) {
 	 if(tgl->c != ' ' && tgl->c != '\0') {
 	    tgl->c = '\0';
 	    tgl->changed = 1;
-	    term->tcanvas->changed_rows[i-1] = 1;
+	    term->tcanvas->changed_rows[i] = 1;
 	 }
       }   
    }
