@@ -2,8 +2,7 @@
 
 ## Script to bootstrap the build enviroment
 
-aclocal
-libtoolize --force --copy
+aclocal $ACLOCAL_FLAGS -I m4
 autoconf
 autoheader
 automake --add-missing --copy --gnu

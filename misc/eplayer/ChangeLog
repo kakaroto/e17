@@ -7,3 +7,5 @@ $Id$
           and playlist.h
         * src/playlist.c,h: Added playlist object
         * src/eplayer.c, interface.c: Added basic playlist support
+        * autogen.sh, configure.ac, src/Makefile.am:
+          Updated build system
