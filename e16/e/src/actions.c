@@ -177,6 +177,17 @@ Espawn(int argc __UNUSED__, char **argv)
 }
 
 void
+EspawnCmd(const char *cmd)
+{
+   int                 argc;
+   char              **argv;
+
+   argv = EstrlistDecodeEscaped(cmd, &argc);
+   Espawn(argc, argv);
+   EstrlistFree(argv, argc);
+}
+
+void
 ActionsHandleMotion(void)
 {
    switch (Mode.mode)

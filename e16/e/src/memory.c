@@ -488,6 +488,7 @@ EstrlistFree(char **lst, int num)
    Efree(lst);
 }
 
+#if 0				/* FIXME - Remove? */
 char               *
 EstrlistJoin(char **lst, int num)
 {
@@ -512,6 +513,7 @@ EstrlistJoin(char **lst, int num)
 
    return s;
 }
+#endif
 
 char               *
 EstrlistEncodeEscaped(char *buf, int len, char **lst, int num)

@@ -547,25 +547,22 @@ ICCCM_GetInfo(EWin * ewin, Atom atom_change)
 
    if (atom_change == 0 || atom_change == ECORE_X_ATOM_WM_COMMAND)
      {
-	_EFREE(ewin->icccm.wm_command);
-	if (ewin->icccm.wm_command_argv)
-	   EstrlistFree(ewin->icccm.wm_command_argv,
-			ewin->icccm.wm_command_argc);
+	int                 argc;
+	char              **argv, s[4096];
 
-	ewin->icccm.wm_command_argv =
-	   ecore_x_window_prop_string_list_get(ewin->client.win,
-					       ECORE_X_ATOM_WM_COMMAND,
-					       &(ewin->icccm.wm_command_argc));
-	if (!ewin->icccm.wm_command && TryGroup(ewin))
-	   ewin->icccm.wm_command_argv =
-	      ecore_x_window_prop_string_list_get(ewin->client.group,
-						  ECORE_X_ATOM_WM_COMMAND,
-						  &(ewin->icccm.
-						    wm_command_argc));
+	_EFREE(ewin->icccm.wm_command);
+
+	argv = ecore_x_window_prop_string_list_get(ewin->client.win,
+						   ECORE_X_ATOM_WM_COMMAND,
+						   &argc);
+	if (!argv && TryGroup(ewin))
+	   argv = ecore_x_window_prop_string_list_get(ewin->client.group,
+						      ECORE_X_ATOM_WM_COMMAND,
+						      &argc);
 
 	ewin->icccm.wm_command =
-	   EstrlistJoin(ewin->icccm.wm_command_argv,
-			ewin->icccm.wm_command_argc);
+	   Estrdup(EstrlistEncodeEscaped(s, sizeof(s), argv, argc));
+	EstrlistFree(argv, argc);
      }
 
    if (atom_change == 0 || atom_change == ECORE_X_ATOM_WM_CLIENT_MACHINE)

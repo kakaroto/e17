@@ -745,8 +745,6 @@ struct _ewin
       char               *wm_res_class;
       char               *wm_role;
       char               *wm_command;
-      int                 wm_command_argc;
-      char              **wm_command_argv;
       char               *wm_machine;
    } icccm;
    struct
@@ -1163,6 +1161,7 @@ void                About(void);
 
 int                 execApplication(const char *params);
 void                Espawn(int argc, char **argv);
+void                EspawnCmd(const char *cmd);
 
 /* alert.c */
 void                AlertInit(void);

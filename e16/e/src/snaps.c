@@ -42,8 +42,6 @@ struct _snapshot
    char                sticky;
    char                shaded;
    char               *cmd;
-   int                 cmd_argc;
-   char              **cmd_argv;
    int                *groups;
    int                 num_groups;
    char                skiptask;
@@ -91,8 +89,6 @@ SnapshotDestroy(Snapshot * sn)
       Efree(sn->border_name);
    if (sn->cmd)
       Efree(sn->cmd);
-   if (sn->cmd_argv)
-      EstrlistFree(sn->cmd_argv, sn->cmd_argc);
    if (sn->groups)
       Efree(sn->groups);
    Efree(sn);
@@ -285,12 +281,7 @@ SnapEwinCmd(Snapshot * sn, EWin * ewin)
 
    if (sn->cmd)
       Efree(sn->cmd);
-   if (sn->cmd_argv)
-      EstrlistFree(sn->cmd_argv, sn->cmd_argc);
    sn->cmd = Estrdup(ewin->icccm.wm_command);
-   sn->cmd_argv =
-      EstrlistDup(ewin->icccm.wm_command_argv, ewin->icccm.wm_command_argc);
-   sn->cmd_argc = ewin->icccm.wm_command_argc;
 }
 
 static void
@@ -1090,7 +1081,7 @@ Real_SaveSnapInfo(int dumval __UNUSED__, void *dumdat __UNUSED__)
 {
    Snapshot          **lst, *sn;
    int                 i, j, num;
-   char                buf[4096], s[4096], ss[4096];
+   char                buf[4096], s[4096];
    FILE               *f;
 
    if (!Mode.wm.save_ok)
@@ -1119,9 +1110,7 @@ Real_SaveSnapInfo(int dumval __UNUSED__, void *dumdat __UNUSED__)
 	     if (sn->use_flags & SNAP_USE_BORDER)
 		fprintf(f, "BORDER: %s\n", sn->border_name);
 	     if (sn->use_flags & SNAP_USE_COMMAND)
-		fprintf(f, "CMD: %s\n",
-			EstrlistEncodeEscaped(ss, sizeof(ss),
-					      sn->cmd_argv, sn->cmd_argc));
+		fprintf(f, "CMD: %s\n", sn->cmd);
 	     if (sn->use_flags & SNAP_USE_DESK)
 		fprintf(f, "DESKTOP: %i\n", sn->desktop);
 	     if (sn->use_flags & SNAP_USE_POS)
@@ -1187,7 +1176,7 @@ SpawnSnappedCmds(void)
 	  {
 	     sn = lst[i];
 	     if ((sn->use_flags & SNAP_USE_COMMAND) && (sn->cmd) && !sn->used)
-		Espawn(sn->cmd_argc, sn->cmd_argv);
+		EspawnCmd(sn->cmd);
 	  }
 	Efree(lst);
      }
@@ -1238,9 +1227,7 @@ LoadSnapInfo(void)
 	     else if (!strcmp(s, "CMD:"))
 	       {
 		  sn->use_flags |= SNAP_USE_COMMAND;
-		  sn->cmd_argv =
-		     EstrlistDecodeEscaped(atword(buf, 2), &(sn->cmd_argc));
-		  sn->cmd = EstrlistJoin(sn->cmd_argv, sn->cmd_argc);
+		  sn->cmd = Estrdup(atword(buf, 2));
 	       }
 	     else if (!strcmp(s, "DESKTOP:"))
 	       {
