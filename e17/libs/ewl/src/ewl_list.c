@@ -305,6 +305,7 @@ __ewl_list_select_row(Ewl_Widget * l, int row)
 	image = ewl_theme_image_get(l, "/appearance/list/default/selection");
 
 	sel->ebits_object = ebits_load(image);
+	FREE(image);
 	ebits_add_to_evas(sel->ebits_object, l->evas);
 	ebits_set_layer(sel->ebits_object, l->layer + 5);
 	ebits_set_clip(sel->ebits_object, l->fx_clip_box);

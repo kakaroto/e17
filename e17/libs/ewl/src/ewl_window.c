@@ -96,6 +96,7 @@ __ewl_window_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 			       ewl_config_get_render_method(),
 			       216, 1024 * 1024 * 2,
 			       1024 * 1024 * 5, font_path);
+	FREE(font_path);
 
 	w->evas_window = evas_get_window(w->evas);
 	e_window_set_events(w->evas_window, XEV_KEY | XEV_BUTTON |

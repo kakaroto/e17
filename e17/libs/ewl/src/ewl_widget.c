@@ -522,6 +522,7 @@ __ewl_widget_theme_update(Ewl_Widget * w, void *ev_data, void *user_data)
 	  }
 
 	FREE(key);
+	FREE(i);
 
 	DRETURN(DLEVEL_STABLE);
 }

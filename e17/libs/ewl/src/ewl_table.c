@@ -462,7 +462,7 @@ static void
 __ewl_table_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Table *t;
-	int rem_w, rem_h;
+	int rem_w = 0, rem_h = 0;
 	Ewd_List *fillers;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
