@@ -205,7 +205,7 @@ collections {
     {
 	name, "User";
 	min, 106 80;
-	max, 106 80;
+	max, 640 480;
 	parts
 	{
 /**
