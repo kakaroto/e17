@@ -1,4 +1,5 @@
 #include <Engrave.h>
+#include "engrave_macros.h"
 
 /**
  * engrave_font_new - create a new Engrave_Font object.

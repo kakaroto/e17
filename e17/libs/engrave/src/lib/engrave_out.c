@@ -1,7 +1,8 @@
 #include <errno.h>
 #include <stdio.h>
 #include <stdarg.h>
-#include "Engrave.h"
+#include <Engrave.h>
+#include "engrave_macros.h"
 
 static void _engrave_output_part(Engrave_Part *part, void *data);
 static void _engrave_output_program(Engrave_Program *program, void *data);
@@ -203,7 +204,7 @@ _engrave_output_group(Engrave_Group *group, void *data)
 
   tmp = engrave_group_name_get(group);
   engrave_out_data(out, "name", "\"%s\"", tmp);
-  if (tmp) free(tmp);
+  IF_FREE(tmp);
 
   engrave_group_min_size_get(group, &w, &h);
   if (w != 0 || h != 0)
@@ -228,7 +229,7 @@ _engrave_output_group(Engrave_Group *group, void *data)
     /* FIXME scripts are wierd... */
     fprintf(out, "%s", tmp);
     engrave_out_end(out);
-    free(tmp);
+    FREE(tmp);
   }
 
   /* parts */
@@ -256,7 +257,7 @@ _engrave_output_part(Engrave_Part *part, void *data)
 
   tmp = engrave_part_name_get(part);
   engrave_out_data(out, "name", "\"%s\"", tmp);
-  if (tmp) free(tmp);
+  IF_FREE(tmp);
 
   engrave_out_data(out, "type", "%s", 
         _part_type_string[engrave_part_type_get(part)]);
@@ -277,7 +278,7 @@ _engrave_output_part(Engrave_Part *part, void *data)
   if (tmp)
   {
     engrave_out_data(out, "clip_to", "\"%s\"", tmp);
-    free(tmp);
+    FREE(tmp);
   }
 
   engrave_part_dragable_x_get(part, &x, &step_x, &count_x);
@@ -292,7 +293,7 @@ _engrave_output_part(Engrave_Part *part, void *data)
     if (tmp)
     {
       engrave_out_data(out, "confine", "\"%s\"", tmp);
-      free(tmp);
+      FREE(tmp);
     }
     engrave_out_end(out);
   }
@@ -313,15 +314,15 @@ _engrave_output_program(Engrave_Program *program, void *data)
 
   tmp = engrave_program_name_get(program);
   engrave_out_data(out, "name", "\"%s\"", tmp);
-  if (tmp) free(tmp);
+  IF_FREE(tmp);
 
   tmp = engrave_program_signal_get(program);
   engrave_out_data(out, "signal", "\"%s\"", tmp);
-  if (tmp) free(tmp);
+  IF_FREE(tmp);
 
   tmp = engrave_program_source_get(program);
   engrave_out_data(out, "source", "\"%s\"", tmp);
-  if (tmp) free(tmp);
+  IF_FREE(tmp);
 
   engrave_program_action_get(program, &action, state, 
                               state2, &value, &value2);
@@ -365,7 +366,7 @@ _engrave_output_program(Engrave_Program *program, void *data)
           /* FIXME scripts are wierd ... */
           fprintf(out, "%s", script);
           engrave_out_end(out);
-          free(script);
+          FREE(script);
         }
       }
       break;
@@ -546,7 +547,7 @@ _engrave_output_image(Engrave_Image *image, void *data)
     engrave_out_data(out, "image", "\"%s\" %s", name,
               _image_type_string[engrave_image_type_get(image)]);
 
-  if (name) free(name);
+  IF_FREE(name);
 }
 
 static void
@@ -560,8 +561,8 @@ _engrave_output_font(Engrave_Font *font, void *data)
   path = engrave_font_path_get(font);
 
   engrave_out_data(out, "font", "\"%s\" \"%s\"", path, name);
-  if (name) free(name);
-  if (path) free(path);
+  IF_FREE(name);
+  IF_FREE(path);
 }
 
 static void
@@ -580,8 +581,8 @@ _engrave_output_data(Engrave_Data *data, void *udata)
     engrave_out_data(out, "item", "\"%s\" %d",
                             key, engrave_data_int_value_get(data));
 
-  free(key);
-  free(value);
+  IF_FREE(key);
+  IF_FREE(value);
 }
 
 static void
@@ -605,7 +606,7 @@ _engrave_part_state_output_tween(Engrave_Image *ei, void *data)
   char *name = engrave_image_name_get(ei);
 
   engrave_out_data(out, "tween", "\"%s\"", name);
-  if (name) free(name);
+  IF_FREE(name);
 }
 
 

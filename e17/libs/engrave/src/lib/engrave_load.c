@@ -1,7 +1,8 @@
 #include <errno.h>
 
-#include "Engrave.h"
+#include <Engrave.h>
 #include "engrave_parse.h"
+#include "engrave_macros.h"
 
 #define MAIN_EDC_NAME "main_edje_source.edc"
 

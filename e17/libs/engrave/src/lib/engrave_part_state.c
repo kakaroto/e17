@@ -1,4 +1,5 @@
 #include <Engrave.h>
+#include "engrave_macros.h"
 
 /**
  * engrave_part_state_new - create a new Engrave_Part_State object.

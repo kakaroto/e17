@@ -1,4 +1,5 @@
 #include <Engrave.h>
+#include "engrave_macros.h"
 
 /**
  * engrave_image_new - create a new Engrave_Image object.

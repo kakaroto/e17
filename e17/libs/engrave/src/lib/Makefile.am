@@ -23,7 +23,6 @@ ENGRAVEHEADERS = \
 	engrave_group.h \
 	engrave_image.h \
 	engrave_load.h \
-	engrave_macros.h \
 	engrave_out.h \
 	engrave_parse.h \
 	engrave_part.h \

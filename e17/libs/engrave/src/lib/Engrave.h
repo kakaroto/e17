@@ -79,7 +79,6 @@ extern "C" {
 #include <string.h>
 #include <Evas.h>
 
-#include <engrave_macros.h>
 #include <engrave_enums.h>
 #include <engrave_data.h>
 #include <engrave_image.h>
