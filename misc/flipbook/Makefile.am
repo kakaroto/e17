@@ -23,4 +23,8 @@ dist-hook:
 	  done \
 	fi
 
-extra: flipbook.glade
+extra: pixmaps/fastforward.xpm \
+	   pixmaps/play.xpm \
+       pixmaps/rewind.xpm \
+       pixmaps/valogo.xpm
+

@@ -6,4 +6,5 @@ config.h
 config.cache
 config.status
 stamp-h
+stamp-h.in
 aclocal.m4
