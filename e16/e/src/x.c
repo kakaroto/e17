@@ -264,14 +264,61 @@ ECreateWindow(Window parent, int x, int y, int w, int h, int saveunder)
       attr.save_under = True;
    else
       attr.save_under = False;
-   win = XCreateWindow(disp, parent, x, y, w, h, 0, VRoot.depth, InputOutput,
-		       VRoot.vis,
+   win = XCreateWindow(disp, parent, x, y, w, h, 0,
+		       CopyFromParent, InputOutput, CopyFromParent,
 		       CWOverrideRedirect | CWSaveUnder | CWBackingStore |
 		       CWColormap | CWBackPixmap | CWBorderPixel, &attr);
    EXidSet(win, parent, x, y, w, h, VRoot.depth);
 
    return win;
 }
+
+Window
+ECreateEventWindow(Window parent, int x, int y, int w, int h)
+{
+   Window              win;
+   XSetWindowAttributes attr;
+
+   attr.override_redirect = False;
+   win = XCreateWindow(disp, parent, x, y, w, h, 0, 0, InputOnly,
+		       CopyFromParent, CWOverrideRedirect, &attr);
+   EXidSet(win, parent, x, y, w, h, VRoot.depth);
+
+   return win;
+}
+
+#if 0				/* Not used */
+/*
+ * create a window which will accept the keyboard focus when no other 
+ * windows have it
+ */
+Window
+ECreateFocusWindow(Window parent, int x, int y, int w, int h)
+{
+   Window              win;
+   XSetWindowAttributes attr;
+
+   attr.backing_store = NotUseful;
+   attr.override_redirect = True;
+   attr.colormap = VRoot.cmap;
+   attr.border_pixel = 0;
+   attr.background_pixel = 0;
+   attr.save_under = False;
+   attr.event_mask = KeyPressMask | FocusChangeMask;
+
+   win = XCreateWindow(disp, parent, x, y, w, h, 0, 0, InputOnly,
+		       CopyFromParent,
+		       CWOverrideRedirect | CWSaveUnder | CWBackingStore |
+		       CWColormap | CWBackPixel | CWBorderPixel | CWEventMask,
+		       &attr);
+
+   XSetWindowBackground(disp, win, 0);
+   XMapWindow(disp, win);
+   XSetInputFocus(disp, win, RevertToParent, CurrentTime);
+
+   return win;
+}
+#endif
 
 void
 EMoveWindow(Window win, int x, int y)
@@ -814,51 +861,6 @@ ESetWindowBackground(Window win, int col)
       XSetWindowBackground(disp, win, col);
 }
 
-Window
-ECreateEventWindow(Window parent, int x, int y, int w, int h)
-{
-   Window              win;
-   XSetWindowAttributes attr;
-
-   attr.override_redirect = False;
-   win = XCreateWindow(disp, parent, x, y, w, h, 0, 0, InputOnly, VRoot.vis,
-		       CWOverrideRedirect, &attr);
-   EXidSet(win, parent, x, y, w, h, VRoot.depth);
-
-   return win;
-}
-
-/*
- * create a window which will accept the keyboard focus when no other 
- * windows have it
- */
-Window
-ECreateFocusWindow(Window parent, int x, int y, int w, int h)
-{
-   Window              win;
-   XSetWindowAttributes attr;
-
-   attr.backing_store = NotUseful;
-   attr.override_redirect = True;
-   attr.colormap = VRoot.cmap;
-   attr.border_pixel = 0;
-   attr.background_pixel = 0;
-   attr.save_under = False;
-   attr.event_mask = KeyPressMask | FocusChangeMask;
-
-   win = XCreateWindow(disp, parent, x, y, w, h, 0, 0, InputOnly,
-		       CopyFromParent,
-		       CWOverrideRedirect | CWSaveUnder | CWBackingStore |
-		       CWColormap | CWBackPixel | CWBorderPixel | CWEventMask,
-		       &attr);
-
-   XSetWindowBackground(disp, win, 0);
-   XMapWindow(disp, win);
-   XSetInputFocus(disp, win, RevertToParent, CurrentTime);
-
-   return win;
-}
-
 void
 ESelectInputAdd(Window win, long mask)
 {
@@ -867,6 +869,31 @@ ESelectInputAdd(Window win, long mask)
    XGetWindowAttributes(disp, win, &xwa);
    xwa.your_event_mask |= mask;
    XSelectInput(disp, win, xwa.your_event_mask);
+}
+
+GC
+ECreateGC(Drawable d, unsigned long mask, XGCValues * val)
+{
+   XGCValues           xgcv;
+
+   if (val)
+     {
+	mask |= GCGraphicsExposures;
+	val->graphics_exposures = False;
+     }
+   else
+     {
+	mask = GCGraphicsExposures;
+	val = &xgcv;
+	val->graphics_exposures = False;
+     }
+   return XCreateGC(disp, d, mask, val);
+}
+
+int
+EFreeGC(GC gc)
+{
+   return XFreeGC(disp, gc);
 }
 
 void

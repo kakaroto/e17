@@ -2234,8 +2234,9 @@ Pixmap              EWindowGetShapePixmap(Window win);
 #define EClearArea(win, x, y, w, h, exp) XClearArea(disp, win, x, y, w, h, exp)
 #define ECreatePixmap(draw, w, h, dep) XCreatePixmap(disp, draw, w, h, dep)
 #define EFreePixmap(pmap) XFreePixmap(disp, pmap)
-#define ECreateGC(draw, mask, val) XCreateGC(disp, draw, mask, val)
-#define EFreeGC(gc) XFreeGC(disp, gc)
+
+GC                  ECreateGC(Drawable d, unsigned long mask, XGCValues * val);
+int                 EFreeGC(GC gc);
 
 void                ESetColor(XColor * pxc, int r, int g, int b);
 void                EGetColor(const XColor * pxc, int *pr, int *pg, int *pb);

@@ -22,8 +22,6 @@
  */
 #include "E.h"
 
-extern char         throw_move_events_away;
-
 static Window       w1 = 0, w2 = 0, w3 = 0, w4 = 0;
 
 static void
@@ -46,7 +44,6 @@ EdgeTimeout(int val, void *data __UNUSED__)
    if (ewin && ewin->st.fullscreen)
       return;
 
-   throw_move_events_away = 1;
    DeskGetCurrentArea(&ax, &ay);
    GetAreaSize(&aw, &ah);
    dx = 0;

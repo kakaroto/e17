@@ -59,8 +59,8 @@ ExtInitWinMain(void)
    attr.border_pixel = 0;
    attr.background_pixel = 0;
    attr.save_under = True;
-   win = XCreateWindow(disp, VRoot.win, 0, 0, VRoot.w, VRoot.h, 0, VRoot.depth,
-		       InputOutput, VRoot.vis,
+   win = XCreateWindow(disp, VRoot.win, 0, 0, VRoot.w, VRoot.h, 0,
+		       CopyFromParent, InputOutput, CopyFromParent,
 		       CWOverrideRedirect | CWSaveUnder | CWBackingStore |
 		       CWColormap | CWBackPixel | CWBorderPixel, &attr);
 
@@ -91,8 +91,8 @@ ExtInitWinMain(void)
       Cursor              cs = 0;
       XColor              cl;
 
-      w2 = XCreateWindow(disp, win, 0, 0, 32, 32, 0, VRoot.depth, InputOutput,
-			 VRoot.vis,
+      w2 = XCreateWindow(disp, win, 0, 0, 32, 32, 0, CopyFromParent,
+			 InputOutput, CopyFromParent,
 			 CWOverrideRedirect | CWBackingStore | CWColormap |
 			 CWBackPixel | CWBorderPixel, &attr);
 

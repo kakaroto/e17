@@ -237,28 +237,24 @@ ShowAlert(char *text)
    mask = CWBackPixel | CWBorderPixel | CWOverrideRedirect | CWSaveUnder |
       CWBackingStore;
    win = XCreateWindow(dd, DefaultRootWindow(dd), -100, -100, 1, 1, 0,
-		       DefaultDepth(dd, DefaultScreen(dd)), InputOutput,
-		       DefaultVisual(dd, DefaultScreen(dd)), mask, &att);
+		       CopyFromParent, InputOutput, CopyFromParent, mask, &att);
 
    if (sscanf(str1, "%s", line) > 0)
      {
-	b1 = XCreateWindow(dd, win, -100, -100, 1, 1, 0,
-			   DefaultDepth(dd, DefaultScreen(dd)), InputOutput,
-			   DefaultVisual(dd, DefaultScreen(dd)), mask, &att);
+	b1 = XCreateWindow(dd, win, -100, -100, 1, 1, 0, CopyFromParent,
+			   InputOutput, CopyFromParent, mask, &att);
 	XMapWindow(dd, b1);
      }
    if (sscanf(str2, "%s", line) > 0)
      {
-	b2 = XCreateWindow(dd, win, -100, -100, 1, 1, 0,
-			   DefaultDepth(dd, DefaultScreen(dd)), InputOutput,
-			   DefaultVisual(dd, DefaultScreen(dd)), mask, &att);
+	b2 = XCreateWindow(dd, win, -100, -100, 1, 1, 0, CopyFromParent,
+			   InputOutput, CopyFromParent, mask, &att);
 	XMapWindow(dd, b2);
      }
    if (sscanf(str3, "%s", line) > 0)
      {
-	b3 = XCreateWindow(dd, win, -100, -100, 1, 1, 0,
-			   DefaultDepth(dd, DefaultScreen(dd)), InputOutput,
-			   DefaultVisual(dd, DefaultScreen(dd)), mask, &att);
+	b3 = XCreateWindow(dd, win, -100, -100, 1, 1, 0, CopyFromParent,
+			   InputOutput, CopyFromParent, mask, &att);
 	XMapWindow(dd, b3);
      }
 

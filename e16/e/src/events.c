@@ -56,8 +56,6 @@ static int          event_base_render = 0;
 static int          error_base_render = 0;
 #endif
 
-char                throw_move_events_away = 0;
-
 static int          evq_num = 0;
 static XEvent      *evq_ptr = NULL;
 
@@ -366,7 +364,7 @@ EventsCompress(XEvent * evq, int count)
 #endif
 
    /* Loop through event list, starting with latest */
-   for (i = count - 1; i > 0; i--)
+   for (i = count - 1; i >= 0; i--)
      {
 	ev = evq + i;
 
@@ -377,10 +375,8 @@ EventsCompress(XEvent * evq, int count)
 	     break;
 
 	  case MotionNotify:
-	     if (throw_move_events_away)	/* Discard all motion events */
-		j = i;
-	     else		/* Discard all but last motion event */
-		j = i - 1;
+	     /* Discard all but last motion event */
+	     j = i - 1;
 	     n = 0;
 	     for (; j >= 0; j--)
 	       {
@@ -438,26 +434,32 @@ EventsCompress(XEvent * evq, int count)
 #endif
 	     break;
 
-	  default:
-	     if (ev->type == event_base_shape + ShapeNotify)
+	  case EX_EVENT_SHAPE_NOTIFY:
+	     n = 0;
+	     for (j = i - 1; j >= 0; j--)
 	       {
-		  n = 0;
-		  for (j = i - 1; j >= 0; j--)
+		  ev2 = evq + j;
+		  if (ev2->type == ev->type &&
+		      ev2->xany.window == ev->xany.window)
 		    {
-		       ev2 = evq + j;
-		       if (ev2->type == ev->type &&
-			   ev2->xany.window == ev->xany.window)
-			 {
-			    n++;
-			    ev2->type = 0;
-			 }
+		       n++;
+		       ev2->type = 0;
 		    }
-#if ENABLE_DEBUG_EVENTS
-		  if (n && EventDebug(EDBUG_TYPE_COMPRESSION))
-		     Eprintf("EventsCompress n=%4d %s %#lx\n",
-			     n, EventName(ev->type), ev->xmotion.window);
-#endif
 	       }
+#if ENABLE_DEBUG_EVENTS
+	     if (n && EventDebug(EDBUG_TYPE_COMPRESSION))
+		Eprintf("EventsCompress n=%4d %s %#lx\n",
+			n, EventName(ev->type), ev->xmotion.window);
+#endif
+	     break;
+
+	  case GraphicsExpose:
+	  case NoExpose:
+	     /* Not using these */
+	     ev->type = 0;
+	     break;
+
+	  default:
 	     break;
 	  }
      }
@@ -859,7 +861,6 @@ EventShow(const XEvent * ev)
      case KeymapNotify:
      case Expose:
      case GraphicsExpose:
-     case NoExpose:
 	Eprintf("%#08lx EV-%s: win=%#lx %d+%d %dx%d\n", ser, name, win,
 		ev->xexpose.x, ev->xexpose.y,
 		ev->xexpose.width, ev->xexpose.height);
