@@ -1,10 +1,3 @@
-
-/* These are the tons of different functions for merging layers.
-   All of them assume merging of src2 ONTO src1. Heavily adapted
-   from gimp's paint_funcs.c.
-                                                   --cK.
-*/
-
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
 #endif
@@ -23,18 +16,10 @@
 #include "image.h"
 #include "color_values.h"
 
-#define STD_BUF_SIZE       1021
-#define MAXDIFF            195076
-#define HASH_TABLE_SIZE    1021
-#define RANDOM_TABLE_SIZE  4096
-#define RANDOM_SEED        314159265
 #define EPSILON            0.0001
-
 #define MAX(a, b) ((a > b) ? a : b)
 #define MIN(a, b) ((a < b) ? a : b)
-
 #define INT_MULT(a,b,t)  ((t) = (a) * (b) + 0x80, ((((t) >> 8) + (t)) >> 8))
-
 #define LINEAR(x,y,w) ((w*y + x)*4)
 
 #define alphify(src_alpha,new_alpha) \
