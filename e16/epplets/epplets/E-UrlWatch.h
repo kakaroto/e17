@@ -22,8 +22,8 @@ int rand_delays[] = {
 struct
 {
     char *str;
-    int len;
-    int pos;
+    unsigned int len;
+    unsigned int pos;
 }dtext;
 
 struct

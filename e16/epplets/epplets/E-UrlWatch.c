@@ -27,6 +27,8 @@
 #include "cloak.h"
 #include "E-UrlWatch.h"
 
+static void display_string (char *string);
+
 static void
 choose_random_cloak (void *data)
 {
@@ -438,18 +440,58 @@ save_url (char *url)
 static void
 reset_string (void *data)
 {
-  Epplet_change_label (lbl_url, "E-UrlWatch");
+  display_string("E-UrlWatch");
   return;
   data = NULL;
 }
 
 static void
-scroll_string(void *data)
+scroll_string (void *data)
 {
-    Epplet_change_label (lbl_url, dtext.str);
+  char buf[20];
+  static int back = 0;
+  static int pause = 0;
 
-    return;
-    data=NULL;
+  if(dtext.len > 19)
+  {
+  if (dtext.pos > (dtext.len - 19))
+    {
+      dtext.pos = dtext.len - 19;
+      back = 1;
+      pause = 1;
+    }
+  else if (dtext.pos == 0)
+    {
+      back = 0;
+      pause = 1;
+    }
+  
+  Esnprintf (buf, sizeof (buf), "%s", dtext.str + dtext.pos);
+
+  if (!back)
+    dtext.pos += 1;
+  else
+    dtext.pos -= 1;
+
+  Epplet_change_label (lbl_url, buf);
+  }
+  else
+  {
+      Epplet_change_label (lbl_url, dtext.str);
+  }
+
+  if (pause)
+    {
+      Epplet_timer (scroll_string, NULL, 1.0, "SCROLL_TIMER");
+      pause = 0;
+    }
+  else
+    Epplet_timer (scroll_string, NULL, 0.3, "SCROLL_TIMER");
+
+  Esync ();
+
+  return;
+  data = NULL;
 }
 
 static void
@@ -460,9 +502,8 @@ display_string (char *string)
   dtext.str = _Strdup (string);
   dtext.len = strlen (string);
   dtext.pos = 0;
-  Epplet_change_label (lbl_url, string);
   Epplet_timer (scroll_string, NULL, 0.1, "SCROLL_TIMER");
-  Epplet_timer (reset_string, NULL, 10, "RESET_TIMER");
+  Epplet_timer (reset_string, NULL, 20, "RESET_TIMER");
 }
 
 static void
@@ -536,9 +577,7 @@ cb_color (void *data)
 static void
 create_epplet_layout (void)
 {
-  Epplet_gadget_show (lbl_url =
-		      Epplet_create_label (2, 34, "Welcome to E-UrlWatch :-)",
-					   0));
+  Epplet_gadget_show (lbl_url = Epplet_create_label (2, 34, " ", 0));
 
   Epplet_gadget_show (btn_close =
 		      Epplet_create_button (NULL, NULL, 2,
@@ -638,9 +677,9 @@ create_epplet_layout (void)
   set_flame_col (0);
   if (opt.do_cloak)
     Epplet_timer (cloak_epplet, NULL, opt.cloak_delay, "CLOAK_TIMER");
-  Epplet_timer (reset_string, NULL, 10, "RESET_TIMER");
   Epplet_register_mouse_enter_handler (cb_in, (void *) win);
   Epplet_register_mouse_leave_handler (cb_out, NULL);
+  display_string ("Welcome to E-UrlWatch ;-)");
 }
 
 static void
