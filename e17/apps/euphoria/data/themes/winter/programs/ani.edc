@@ -1,0 +1,80 @@
+#define DOT_PROG(NUM, S1, S2) \
+      program { \
+        name, "ani"NUM".1"; \
+        action, STATE_SET "end" 0.0; \
+        transition, DECELERATE S1; \
+        target, "dot"NUM; \
+        after, "ani"NUM".2"; \
+      } \
+      program { \
+        name, "ani"NUM".2"; \
+        action, STATE_SET "default" 0.0; \
+        target, "dot"NUM; \
+        transition, LINEAR 0.0; \
+        after, "ani"NUM".3"; \
+        in, .5 .5; \
+      } \
+      program { \
+        name, "ani"NUM".3"; \
+        action, STATE_SET "end" 0.0; \
+        transition, DECELERATE S2; \
+        target, "dot"NUM; \
+        after, "ani"NUM".4"; \
+      } \
+      program { \
+        name, "ani"NUM".4"; \
+        action, STATE_SET "default" 0.0; \
+        target, "dot"NUM; \
+        transition, LINEAR 0.0; \
+        after, "ani"NUM".1"; \
+        in, .5 .5; \
+      } \
+      program { \
+        name, "ani"NUM".stop"; \
+        action, ACTION_STOP; \
+        target, "ani"NUM".1"; \
+        target, "ani"NUM".2"; \
+        target, "ani"NUM".3"; \
+        target, "ani"NUM".4"; \
+        after, "ani"NUM".reset"; \
+      } \
+      program { \
+        name, "ani"NUM".init"; \
+        signal, "show"; \
+        source, ""; \
+        after, "ani"NUM".stop";\
+      } \
+      program { \
+        name, "ani"NUM".reset"; \
+        action, STATE_SET "default" 0.0; \
+        target, "dot"NUM; \
+        transition, LINEAR 0.0; \
+        in, .5 .5; \
+      } \
+      program {  \
+        name, "ani"NUM".playing"; \
+        signal, "PLAYBACK_STATE_PLAYING";  \
+        source, "*";  \
+        after, "ani"NUM".1"; \
+      } \
+      program {  \
+        name, "ani"NUM".paused"; \
+        signal, "PLAYBACK_STATE_PAUSED";  \
+        source, "*";  \
+        after, "ani"NUM".stop"; \
+      } \
+      program {  \
+        name, "ani"NUM".paused"; \
+        signal, "PLAYBACK_STATE_STOPPED";  \
+        source, "*";  \
+        after, "ani"NUM".stop"; \
+      } \
+
+
+DOT_PROG(0, 1.15, .85)
+DOT_PROG(1, .75, 1)
+DOT_PROG(2, 1.5, 2.0)
+DOT_PROG(3, 1.25, .75)
+DOT_PROG(4, 1.0, 1.5)
+
+

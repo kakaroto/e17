@@ -1,0 +1,38 @@
+BUTTON_PROG("prev", "PLAY_PREVIOUS")
+//BUTTON_PROG("rew", "SEEK_BACK")
+BUTTON_PROG3("rew", "SEEK_BACK_START", "SEEK_BACK_STOP")
+//BUTTON_PROG("play", "PLAY")
+//BUTTON_PROG("pause", "PAUSE")
+TOGGLE_BUTTON_PROG("play", "PLAY", "PAUSE")
+//BUTTON_PROG("ff", "SEEK_FORWARD")
+BUTTON_PROG3("ff", "SEEK_FORWARD_START", "SEEK_FORWARD_STOP")
+BUTTON_PROG("next", "PLAY_NEXT")
+
+
+BUTTON_PROG("pl", "")
+BUTTON_PROG("x", "QUIT")
+
+
+BUTTON_PROG("plus", "PLAYLIST_ADD")
+BUTTON_PROG("minus", "PLAYLIST_DEL")
+BUTTON_PROG("edit", "")
+
+
+      program {                 
+        name, "play-started"; 
+        signal, "PLAYBACK_STATE_PLAYING"; 
+        source, "*"; 
+        action, STATE_SET "toggled" 0.0; 
+        transition, LINEAR 0.0; 
+        target, "play"; 
+        target, "play-2"; 
+      } 
+      program {                 
+        name, "play-stopped"; 
+        signal, "PLAYBACK_STATE_STOPPED"; 
+        source, "*"; 
+        action, STATE_SET "default" 0.0; 
+        transition, LINEAR 0.0; 
+        target, "play"; 
+        target, "play-2"; 
+      } 

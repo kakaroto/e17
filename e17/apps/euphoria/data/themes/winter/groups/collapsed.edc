@@ -1,0 +1,249 @@
+  group {
+    name, "collapsed";
+    min, 118 32;
+    max, 9999 32;
+    parts {
+      part {
+        name, "main";
+	mouse_events, 1;
+	repeat_events, 1;
+	description {
+	  state, "default" 0.0;
+	  min, 110 32;
+	  max, 110 32;
+	  border, 10 2 2 2;
+	  rel1 {
+	    relative, 0 0;
+	    offset, 0 0;
+	  }
+	  rel2 {
+	    relative, 0 1;
+	    offset, 110 -1;
+	  }
+	  image {
+	      normal, "small-main.png";
+	  }
+	}
+      } //part
+      part {
+        name, "right";
+	mouse_events, 1;
+	repeat_events, 1;
+	description {
+	  state, "default" 0.0;
+	  min, 9 32;
+	  max, 9 32;
+	  rel1 {
+	    relative, 1 0;
+	    offset, -9 0;
+	  }
+	  rel2 {
+	    relative, 1 1;
+	    offset, -1 -1;
+	  }
+	  image {
+	      normal, "small-right.png";
+	  }
+	}
+      } //part
+      part {
+        name, "panel";
+	mouse_events, 1;
+	repeat_events, 1;
+	description {
+	  state, "default" 0.0;
+	  min, 0 30;
+	  max, 9999 30;
+	  border, 10 2 2 2;
+	  rel1 {
+            to, "main";
+	    relative, 1 0;
+	    offset, 0 1;
+	  }
+	  rel2 {
+            to, "right";
+	    relative, 0 1;
+	    offset, -1 -2;
+	  }
+	  image {
+	      normal, "small-panel.png";
+	  }
+	}
+      } //part
+
+    BUTTON("prev", "small-prev1.png", "small-prev2.png", 16, 14,
+           "main", 0 1, 31 -17,
+           "main", 0 1, 47 -3);
+    BUTTON("rew", "small-rew1.png", "small-rew2.png", 11, 14,
+           "main", 0 1, 45 -17,
+           "main", 0 1, 56 -3);
+    TOGGLE_BUTTON("play", "small-play1.png", "small-play2.png",
+           "small-pause1.png", "small-pause2.png", 13, 13,
+           "main", 0 1, 55 -17,
+           "main", 0 1, 68 -4);
+    BUTTON("ff", "small-ff1.png", "small-ff2.png", 11, 14,
+           "main", 0 1, 66 -17,
+           "main", 0 1, 77 -3);
+    BUTTON("next", "small-next1.png", "small-next2.png", 16, 14,
+           "main", 0 1, 75 -17,
+           "main", 0 1, 91 -3);
+
+      part {
+        name, "seekerTrough";
+	mouse_events, 0;
+	description {
+	  state, "default" 0.0;
+	  min, 17 4;
+	  max, 9999 4;
+	  border, 3 3 2 2;
+	  rel1 {
+            to, "main";
+	    relative, 0 0;
+	    offset, 18 7;
+	  }
+	  rel2 {
+            to, "main";
+	    relative, 1 0;
+	    offset, -9 11;
+	  }
+	  image {
+	      normal, "small-seeker-trough.png";
+	  }
+	}
+      } //part
+
+      part {
+        name, "seekerBar";
+	mouse_events, 0;
+	description {
+	  state, "default" 0.0;
+	  min, 0 2;
+	  max, 9999 2;
+	  border, 3 3 2 2;
+	  rel1 {
+            to, "seekerTrough";
+	    relative, 0 0;
+	    offset, 1 1;
+	  }
+	  rel2 {
+            to_x, "seeker";
+            to_y, "seekerTrough";
+	    relative, 0 1;
+	    offset, 0 -2;
+	  }
+	  image {
+	      normal, "small-seeker-bar.png";
+	  }
+	}
+      } //part
+
+      part {
+        name, "seeker";
+        type, RECT;
+	mouse_events, 0;
+        dragable {
+          x, 1 1 1;
+          y, 0 0 0;
+          confine, "seekerTrough";
+        }
+	description {
+	  state, "default" 0.0;
+          visible, 0;
+	  min, 1 4;
+	  max, 1 4;
+	  rel1 {
+            to, "seekerTrough";
+	    relative, 0 0;
+	    offset, 0 0;
+	  }
+	  rel2 {
+            to, "seekerTrough";
+	    relative, 1 1;
+	    offset, -1 -1;
+	  }
+	}
+      } //part
+
+      part {
+        name, "seeker_grabber";
+        type, RECT;
+        mouse_events, 1;
+        description {
+          state, "default" 0.0;
+          visible, 1;
+          color, 0 0 0 0;
+          rel1 {
+            to, "seekerTrough";
+            relative, 0 0;
+            offset, -2 -2;
+          }
+          rel2 {
+            to, "seekerTrough";
+            relative, 1 1;
+            offset,  1 1;
+          }
+        }
+      } //part
+
+    } //parts 
+
+    programs {
+      BUTTON_PROG("prev", "PLAY_PREVIOUS")
+      BUTTON_PROG3("rew", "SEEK_BACK_START", "SEEK_BACK_STOP")
+      TOGGLE_BUTTON_PROG("play", "PLAY", "PAUSE")
+      BUTTON_PROG3("ff", "SEEK_FORWARD_START", "SEEK_FORWARD_STOP")
+      BUTTON_PROG("next", "PLAY_NEXT")
+
+      program {
+        name, "switch";
+        signal, "mouse,down,1,double";
+        source, "main";
+        action, SIGNAL_EMIT "SWITCH_GROUP" "euphoria";
+      }
+      program {
+        name, "seeker-start";
+	signal, "mouse,down,1";
+	source, "seeker_grabber";
+	action, SIGNAL_EMIT "SEEKER_START" "";
+      }
+      program {
+        name, "seeker-update";
+	signal, "mouse,move";
+	source, "seeker_grabber";
+	action, SIGNAL_EMIT "SEEKER_UPDATE" "";
+      }
+      program {
+        name, "seeker-stop";
+	signal, "mouse,up,1";
+	source, "seeker_grabber";
+	action, SIGNAL_EMIT "SEEKER_STOP" "";
+      }
+      program {
+        name, "toggle-playing";
+        signal, "PLAYBACK_STATE_PLAYING";
+        source, "*";
+        action, STATE_SET "toggled" 0.0; 
+        transition, LINEAR 0.0; 
+        target, "play"; 
+        target, "play-2"; 
+      }
+      program {
+        name, "toggle-stopped";
+        signal, "PLAYBACK_STATE_STOPPED";
+        source, "*";
+        action, STATE_SET "default" 0.0; 
+        transition, LINEAR 0.0; 
+        target, "play"; 
+        target, "play-2"; 
+      }
+      program {
+        name, "toggle-paused";
+        signal, "PLAYBACK_STATE_PAUSED";
+        source, "*";
+        action, STATE_SET "default" 0.0; 
+        transition, LINEAR 0.0; 
+        target, "play"; 
+        target, "play-2"; 
+      }
+    } //programs
+  } //group

@@ -1,0 +1,64 @@
+
+			part {
+                                name, "clip";
+                                type, RECT;
+
+                                description {
+                                        state, "default" 0.0;
+                                }
+                        }
+
+                        part {
+                                name, "background";
+                                type, RECT;
+                                clip_to, "clip";
+
+                                description {
+                                        state, "default" 0.0;
+                                        color, 0 0 0 0;
+                                }
+
+                                description {
+                                        state, "selected" 0.0;
+                                        color, 73 104 111 128;
+                                }
+                        }
+
+                        part {
+                                name, "title";
+                                type, TEXT;
+                                mouse_events, 1;
+                                clip_to, "clip";
+
+                                description {
+                                        color, 181 247 255 255;
+                                        align, 0.0 0.0;
+                                        max, 150 12;
+
+                                        text {
+                                                text, "Dummy";
+                                                font, "redensek";
+                                                size, 12;
+                                                align, 0.0 0.0;
+                                        }
+                                }
+                        }
+
+                        part {
+                                name, "length";
+                                type, TEXT;
+                                mouse_events, 1;
+                                clip_to, "clip";
+
+                                description {
+                                        color, 181 247 255 255;
+
+                                        text {
+                                                text, "2:55";
+                                                font, "redensek";
+                                                size, 12;
+                                                align, 1.0 0.0;
+                                        }
+                                }
+                        }
+

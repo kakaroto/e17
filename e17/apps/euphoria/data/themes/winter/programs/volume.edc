@@ -1,0 +1,3 @@
+
+BUTTON_PROG2("vol-dn", "vol-dn.over", "vol-dn.out", "vol-dn.down", "vol-dn.down2", "vol-dn.up", "VOL_DECR")
+BUTTON_PROG2("vol-up", "vol-up.over", "vol-up.out", "vol-up.down", "vol-up.down2", "vol-up.up", "VOL_INCR")

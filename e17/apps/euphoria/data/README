@@ -1,0 +1,119 @@
+######## EUPHORIA EDJE GUIDE #########
+
+An Euphoria theme consists of two Edjes:
+ * The main Edje, called "euphoria"
+ * The playlist item Edje, called "playlist_item"
+
+The "euphoria" Edje emits the following signals:
+
+    action,     SIGNAL_EMIT "PLAY_PREVIOUS" "*";
+    action,     SIGNAL_EMIT "PLAY_NEXT" "*";
+
+    action,     SIGNAL_EMIT "PAUSE" "*";
+    action,     SIGNAL_EMIT "PLAY" "*";
+    action,     SIGNAL_EMIT "STOP" "*";
+
+    action,     SIGNAL_EMIT "SEEK_FORWARD" "*";
+    action,     SIGNAL_EMIT "SEEK_BACK" "*";
+
+    action,     SIGNAL_EMIT "SEEK_FORWARD_START" "*";
+    action,     SIGNAL_EMIT "SEEK_FORWARD_STOP" "*";
+    action,     SIGNAL_EMIT "SEEK_BACKWARD_START" "*";
+    action,     SIGNAL_EMIT "SEEK_BACKWARD_STOP" "*";
+
+    action,     SIGNAL_EMIT "TOGGLE_TIME_DISPLAY_MODE" "*";
+    action,     SIGNAL_EMIT "TOGGLE_REPEAT_MODE" "*";
+
+    action,     SIGNAL_EMIT "SWITCH_GROUP" "foo";
+
+    action,     SIGNAL_EMIT "QUIT" "*";
+
+    action,     SIGNAL_EMIT "SEEKER_START" "*";
+    action,     SIGNAL_EMIT "SEEKER_UPDATE" "*"; 
+    action,     SIGNAL_EMIT "SEEKER_STOP" "*";
+
+    action,     SIGNAL_EMIT "PLAYLIST_ADD" "*";
+    action,     SIGNAL_EMIT "PLAYLIST_DEL" "*";
+
+The "SWITCH_GROUP" signal is special. It will reload the Edje using the
+group "foo" (src argument). This way, you can easily implement
+collapsed/expanded states etc.
+
+Euphoria itself also emits signals:
+
+    action,     SIGNAL_EMIT "PLAYBACK_STATE_PLAYING" "Euphoria";
+    action,     SIGNAL_EMIT "PLAYBACK_STATE_PAUSED"  "Euphoria";
+    action,     SIGNAL_EMIT "PLAYBACK_STATE_STOPPED" "Euphoria";
+
+The first signal is emitted to indicate Euphoria is currently playing
+a track, the second signal is emitted to indicate playback is paused,
+and the third signal is emitted to indicate playback is stopped.
+
+The Edje provides the following parts for text display, etc:
+
+    Part: "title"             -> Window Title
+    Part: "artist_name"       -> Name of artist
+    Part: "album_name"        -> Name of album
+    Part: "song_name"         -> Name of song
+    Part: "track_bitrate"     -> Bitrate of song (in kbps)
+	Part: "track_sample_rate" -> Sample rate of song (in khz)
+    Part: "time_text"         -> Current pos in track ([-]00:00)
+    Part: "vol_display_text"  -> Current Volume Level (0 - 100)
+
+    Part: "playlist"          -> where to swallow the playlist
+    Part: "seeker"            -> draggable set to track position (%)
+    Part: "seeker_grabber"    -> special (see below)
+
+The seeker:
+  The seeker involves two parts. One, "seeker" is a draggable that
+  gets set to the current song position (as a percent). Often, this
+  can be an invisible part with other parts relative to it (to create
+  a bar, for instance). Second is the "seeker_grabber" part, which
+  captures mouse down/move events to actually seek. Create programs for
+  this part that emit SEEKER_START on mouse down, SEEKER_UPDATE on mouse
+  move and SEEKER_STOP on mouse up.
+
+Dragging:
+  Euphoria contains an object underneath the theme that catches mouse
+  events to allow window dragging. In order to take advantage of this,
+  you must allow events to pass through to this layer in any areas you
+  want to allow for dragging.
+  Do this by adding "repeat_events, 1" to the relevant parts.
+
+
+The "playlist_item" Edje contains a "title" and a "length" part.
+
+These parts emit the following signals:
+
+    action,     SIGNAL_EMIT "PLAYLIST_SCROLL_UP" "";
+    action,     SIGNAL_EMIT "PLAYLIST_SCROLL_DOWN" "";
+    action,     SIGNAL_EMIT "PLAYLIST_ITEM_PLAY" "";
+    action,     SIGNAL_EMIT "PLAYLIST_ITEM_REMOVE" "";
+
+
+
+---------------------------------------------------------
+benr@cuddletech.com		The Enlightenment Project
+
+ChangeLog:
+
+7/28/03: Edje2 Intreface started drawing on the inferface
+		of Native Instruments "Traktor DJ Studio"
+7/29/03: Interface cleaned up emensly 
+7/30/03: Added this README and abstracted signals
+
+
+
+To Do:
+	-> New controls need to be added (vol control?)
+	-> Clipping layer for LCD doesn't work, hides 
+		text when used (clip_to, )
+	-> Layout methods for Buttons could be better ?
+	-> LCD could contain more information and have 
+		some seperation
+	-> Buttons are currently 2 stage, should be 3-4
+	-> Play/Pause buttons should stay down to illistrate
+		that you are currently playing.
+
+	-> Play/Pause button should blink when waiting......
+	

@@ -1,0 +1,52 @@
+/*** Streamline Euphoria Theme - An Alternation on the default theme ***/
+/***  By: Ben Rockwood                                               ***/
+
+images {
+	#include "streamline_images.edc"
+}
+
+collections {
+        group {
+                min, 300 60;
+                max, 300 60;
+                name, "euphoria_small";
+		
+		parts {
+			#include "streamline_small_parts.edc"
+		}
+		programs {
+			#include "streamline_small_progs.edc"
+		}
+			
+	}
+
+        group {
+                min, 510 90;
+                max, 510 90;
+                name, "euphoria";
+                parts {
+			#include "streamline_parts.edc"
+		}
+                programs {
+                        #include "streamline_progs.edc"
+                }
+
+        }
+
+        group {
+                name, "playlist_item";
+                min, 200 12;
+                max, 200 12;
+
+                parts {
+			#include "streamline_playlist_parts.edc"
+                }
+                programs {
+                        #include "streamline_playlist_progs.edc"
+                }
+
+        }
+
+}
+
+

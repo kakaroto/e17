@@ -1,0 +1,163 @@
+$Id$
+
+2004-02-22 Tilman Sauerbeck <tilman -at- code-monkey.de>
+        * This sweet application is a XMMS2 frontend now
+
+2004-02-15 Tilman Sauerbeck <tilman -at- code-monkey.de>
+        * src/interface.c, src/playlist_item.[ch], src/plugin.h,
+          src/input/vorbis/vorbis.c: added bitrate and sample rate
+          parts
+
+2004-02-03 Tilman Sauerbeck <tilman -at- code-monkey.de>
+        * src/playlist.c, src/playlist_item.c, src/callbacks.c:
+          The UI parts and playlist are now correctly re-initialized
+          after a group switch
+
+2004-02-01 Tilman Sauerbeck <tilman -at- code-monkey.de>
+        * src/eplayer.c, src/interface.c, src/playlist.c,
+          src/playlist_item.c: Each PlayListItem object now
+          has its own Edje object
+        * data/README, src/eplayer.c: Added two signals,
+          PLAYBACK_STARTED and PLAYBACK_STOPPED
+        * src/callbacks.c: The playlist marker now always follows
+          the track that's being played
+
+2004-01-24 Tilman Sauerbeck <tilman -at- code-monkey.de>
+        * src/eplayer.c, src/plugin.c: Switched to libltdl
+        * src/interface.c: added draggie support, removed the RAISE
+          signal.
+
+2003-12-28 Tilman Sauerbeck <tilman -at- code-monkey.de>
+        * src/callbacks.c, src/playlist.c, src/interface.c,
+          data/README: Added PLAYLIST_ITEM_REMOVE (thanks to atmos).
+
+2003-12-07 Tilman Sauerbeck <tilman -at- code-monkey.de>
+        * src/output/alsa/alsa.c: make sure changes made to the
+          mixer levels w/ other applications (like alsamixer) are
+          reflected in eplayer
+        * src/eplayer.c, src/track.c, src/interface.c:
+          update the track info parts etc on group switch
+        * src/interface.c, src/callbacks.[ch], data/README:
+          added STOP signal
+
+2003-12-04 Tilman Sauerbeck <tilman -at- code-monkey.de>
+        * src/eplayer.c: eplayer.db lives in ~/.e/apps/eplayer now
+        * data/themes/default/default.edc: Added repeat mode toggle
+          button
+
+2003-11-30 Tilman Sauerbeck <tilman -at- code-monkey.de>
+        * src/data/eplayer.edc: Added "small" (collapsed) mode
+          to the eplayer theme (thanks to digitalfallout!).
+          Fixed indentation as well.
+
+2003-11-24 Tilman Sauerbeck <tilman -at- code-monkey.de>
+        * src/interface.[ch], scr/callbacks.[ch], data/README:
+          Added SWITCH_GROUP edje signal
+
+2003-11-18 Tilman Sauerbeck <tilman -at- code-monkey.de>
+        * src/interface.c, src/eplayer.c, src/eplayer.h:
+          The theme that's to be used can now be set in eplayer.db
+
+2003-11-17 Tilman Sauerbeck <tilman -at- code-monkey.de>
+        * src/playlist.c: Fixed playlist_load_dir()
+        * src/interface.c, data/README:
+          Added QUIT signal, thanks to digitalfallout
+        * src/interface.c, src/callbacks.c, data/README:
+          Updated playlist scrolling signals/code, added
+          PLAYLIST_ITEM_PLAY
+
+2003-11-15 Tilman Sauerbeck <tilman -at- code-monkey.de>
+        * src/interface.c: Fixed playlist scrolling
+        * src/interface.c, src/callbacks.c, data/README:
+          Added repeat mode stuff
+        * src/interface.c, src/callbacks.c, data/eplayer.edc,
+          data/README: Simplified playlist code
+
+2003-11-14 Tilman Sauerbeck <tilman -at- ¢ode-monkey.de>
+        * src/playlist.c, src/eplayer.c, src/interface.c:
+          The playlist is loaded/displayed after the GUI has been
+          initialized now.
+
+2003-11-10 Tilman Sauerbeck <tilman -at- code-monkey.de>
+        * src/playlist.c: Misc fixes
+        * src/callbacks.c: Reset paused state on next/prev/seek
+        * data/README: Updated Edje documentation
+
+2003-10-25 Tilman Sauerbeck <tilman -at- code-monkey.de>
+        * src/eplayer.c, src/track.c: Put the decoding/playing
+          code in a separate thread
+
+2003-10-24 Tilman Sauerbeck <tilman -at- code-monkey.de>
+        * src/input/avcodec: Added libavcodec input plugin
+        * src/input/avcodec/avcodec.c: Now uses libavformat to read
+          MP3 tags.
+
+2003-10-23 Tilman Sauerbeck <tilman -at- code-monkey.de>
+        * src/input: Added a input plugin system
+        * src/vorbis.c, src/input/vorbis: Move vorbis specific code
+          to its own plugin
+
+2003-10-22 Tilman Sauerbeck <tilman -at- code-monkey.de>
+        * configure.ac: Fix OSS check, add checks for Solaris' audioio.h
+          and ALSA
+        * src/output/solaris: Added Solaris output plugin
+        * src/output/alsa: Added ALSA output plugin
+        * etc/Makefile.am, src/eplayer.c: We have a config file now
+
+2003-10-21 Tilman Sauerbeck <tilman -at- code-monkey.de>
+        * configure.ac: check for sys/soundcard.h to determine whether
+          the OSS output plugin should be built
+        * src/vorbis.c, src/output: added output plugin stuff to replace
+          libao
+        * src/output/oss/oss.c: added OSS output plugin
+        * src/mixer.c, src/mixer.h: removed, mixer is controlled by the
+          output plugin now
+        * misc other stuff
+
+2003-10-18 Tilman Sauerbeck <tilman -at- code-monkey.de>
+        * src/vorbis.c: track_open() initializes the "time_text"
+          part, too
+        * src/callbacks.c: when cb_track_next() is called after the
+          last playlist item, it moves to the beginning again, without
+          starting playback.
+        * src/callbacks.c: cb_track_prev() does nothing when it's
+          called on the beginning of the playlist
+
+2003-10-17 Tilman Sauerbeck <tilman -at- code-monkey.de>
+        * src/mixer.c, src/mixer.h, src/eplayer.c, src/callbacks.c,
+          interface.c:
+          Rewrote mixer code, the mixer is periodically read now to
+          reflect changes made by other applications
+        * src/eplayer.c: Added _playback_start(), _playback_stop()
+        * src/vorbis.c: The "time" part is updated in a sane
+          period now
+        * src/vorbis.c, src/eplayer.c: Tidied up libao calls
+        * data/eplayer.edc: buttons emit their signals on mouse_up now
+        * src/vorbis.c: Fixed a memory leak which was caused by not
+          calling ao_close() in track_close()
+        * data/eplayer.edc, src/callbacks.c, src/interface.c:
+          The playlist can be scrolled using the mousewheel now
+        * src/eplayer.c: check ao_default_driver_id() on startup
+
+2003-10-16 Tilman Sauerbeck <tilman -at- code-monkey.de>
+        * configure.ac: Added endianess-check, added --enable-debug
+          switch
+        * src/eplayer.c, src/playlist.c: added playlist_load_any(),
+          eplayer will now load files and directories as well
+        * code cleanup
+        * configure.ac, Makefile.am etc: implemented install and
+          dist targets
+        * src/playlist.c: Fixed a potential segfault
+        * src/vorbis.c: Fixed a segfault that occurred when
+          play_loop() called open_track() with player->cur_item
+          being NULL
+
+2003-10-15 Tilman Sauerbeck <tilman -at- code-monkey.de>
+        * data/eplayer.edc: Added basic playlist support,
+          time_text shows elapsed time or time left
+        * src/Makefile.am: Now linking to libesmart, included playlist.c
+          and playlist.h
+        * src/playlist.c,h: Added playlist object
+        * src/eplayer.c, interface.c: Added basic playlist support
+        * autogen.sh, configure.ac, src/Makefile.am:
+          Updated build system

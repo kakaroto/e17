@@ -1,0 +1,50 @@
+/*****************************************************************/
+/* Euphoria Default Theme - by: Ben Rockwood                     */
+/* Design to pay homage to the awsome interface design           */
+/*    of the Native Instruments tools, namely Traktor            */
+/*****************************************************************/
+
+images {
+	#include "default_images.edc"
+}
+
+collections {
+        group {
+                min, 300 60;
+                max, 300 60;
+                name, "euphoria_small";
+
+		parts {
+			#include "default_small_parts.edc"
+		}
+		programs {
+			#include "default_small_progs.edc"
+		}
+	}
+
+	group {
+		min, 200 320;
+                max, 200 1280;
+                name, "euphoria";
+                parts {
+			#include "default_parts.edc"
+		}
+                programs {
+                        #include "default_progs.edc"
+                }
+        }
+
+        group {
+                name, "playlist_item";
+                min, 200 12;
+                max, 200 12;
+
+                parts {
+			#include "default_playlist_parts.edc"
+		}
+		programs {
+			#include "default_playlist_progs.edc"
+		}
+	}
+}
+

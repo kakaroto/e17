@@ -1,0 +1,89 @@
+$Id$
+
+Euphoria v0.7.5
+
+Written by Ben Rockwood, Tilman Sauerbeck and various contributors.
+See AUTHORS for details/the complete list.
+
+
+DEPENDENCIES
+------------
+
+Euphoria requires the following:
+
+EVAS CVS
+Ecore CVS with EVAS module
+Edje CVS
+Esmart CVS
+XMMS2 CVS
+
+
+ABOUT
+-------
+
+Euphoria is an audio player which is based on Ecore, Evas and Edje.
+It acts as a frontend to XMMS2.
+
+
+CREATING A PERSONAL EUPHORIA CONFIG
+----------------------------------
+
+Euphoria can get some configuration information from a personal
+configuration file thanks to EDB.  To create one follow 
+these sets:
+
+ 1) Create the directory ~/.e/apps/euphoria
+ 2) Using the EDB tool of choice create a euphoria.db
+	(ie: "edb_gtk_ed euphoria")
+ 3) Add the following keys:
+	/euphoria/evas_engine
+	/euphoria/output_plugin
+	/euphoria/theme	
+ 4) If you wish to use GL or FB: 
+  a)	Set evas_engine to a string type with the value "gl" or "fb".
+ 5) If you wish to use a non-default theme:
+  a)    Create the directory: ~/.e/apps/euphoria/themes
+  b)    Copy the EETs for the themes you want to use there.
+  c)    Set theme to a string type with the name of the theme minus the .eet
+		(ie: iio.eet is put in the edb as just "iio")
+
+If you do not with to over-ride the default setting for Euphoria,
+simply don't create the key, or leave the type as int.
+
+You can also use the following directories:
+ ~/.e/apps/euphoria/fonts      Fonts for use by Euphoria themes
+
+
+REPORTING BUGS
+---------------
+
+You can report bugs here: http://xcomputerman.com/bugs/
+
+
+FAQ
+-------
+
+Q: Why another damned audio player?
+A: -> The purpose of Euphoria has always been to be used as a vehicle
+by which to better learn the EFL components.
+
+An audio player was chosen because it's interesting, the OggVorbis
+API is very simple and can easily drawn on Ecore's strengths
+(ie: idlers and timers) and provides a number of interesting interface
+possibilities.
+
+Q: Will you support WinAmp skins?
+A: -> Nope.... go use XMMS(1) if you want traditional skins.
+Refer to the first question.
+
+But I will admit that I have considered the possiblity of automating
+the conversion of WinAmpv3 skins (.wal's) to Edje.
+It doesn't look hard, and Edje can do everything and more that WinAmp
+can do with it's interface, but in a far more general way.
+
+The problem is really just parsing all that XML (the WA skin config
+files are now XML).  With PERL there could probly be an easy conversion,
+but if there is one thing I hate parsing it's XML.
+
+It would instantly make this audio player the player to use though!
+

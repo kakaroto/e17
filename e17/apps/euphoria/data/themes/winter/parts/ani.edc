@@ -1,0 +1,49 @@
+#define DOT(NUM, Y1, Y2) \
+      part { \
+        name, "dot"NUM; \
+        description { \
+          state, "default" 0.0; \
+          min, 3 3; \
+          max, 3 3; \
+          color, 0 0 0 127; \
+          rel1 { \
+            to, "screen"; \
+            relative, 0 1; \
+            offset, 5 Y1;  \
+          } \
+          rel2 { \
+            to, "screen"; \
+            relative, 0 1; \
+            offset, 8 Y2;  \
+          } \
+          image { \
+            normal, "dot.png"; \
+          } \
+        } \
+        description { \
+          state, "end" 0.0; \
+          min, 3 3; \
+          max, 3 3; \
+          color, 0 0 0 0; \
+          rel1 { \
+            to, "screen"; \
+            relative, .5 1; \
+            offset, -3 Y1;  \
+          } \
+          rel2 { \
+            to, "screen"; \
+            relative, .5 1; \
+            offset, 0 Y2;  \
+          } \
+          image { \
+            normal, "dot.png"; \
+          } \
+        } \
+      } 
+
+DOT(0, -24, -21)
+DOT(1, -20, -17)
+DOT(2, -16, -13)
+DOT(3, -12, -9)
+DOT(4, -8, -5)
+

@@ -1,0 +1,26 @@
+    group {
+        name, "euphoria";
+	min, 200, 300;
+	max, 99999, 99999;
+	parts {
+#include "../parts/main.edc"
+#include "../parts/playlist.edc"
+#include "../parts/buttons.edc"
+#include "../parts/volume.edc"
+#include "../parts/text.edc"
+#include "../parts/seeker.edc"
+#include "../parts/ani.edc"
+	
+	} //parts
+
+	programs {
+#include "../programs/buttons.edc"
+#include "../programs/volume.edc"
+#include "../programs/playlist.edc"
+#include "../programs/seeker.edc"
+#include "../programs/text.edc"
+#include "../programs/ani.edc"
+#include "../programs/switch.edc"
+	} //programs
+	
+    } //group

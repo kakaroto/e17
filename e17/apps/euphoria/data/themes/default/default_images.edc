@@ -1,0 +1,57 @@
+/** Image Spec List:
+background-dark-green.png:    PNG image data, 32 x 32, 8-bit/color RGBA, non-interlaced
+background-green.png:         PNG image data, 30 x 30, 8-bit/color RGB, non-interlaced
+border-scale.png:             PNG image data, 28 x 28, 8-bit/color RGBA, non-interlaced
+button-3stage-fulldown.png:   PNG image data, 56 x 40, 8-bit/color RGBA, non-interlaced
+button-3stage-selected.png:   PNG image data, 56 x 40, 8-bit/color RGBA, non-interlaced
+button-3stage-unselected.png: PNG image data, 56 x 40, 8-bit/color RGBA, non-interlaced
+button-full-blinking.png:     PNG image data, 56 x 40, 8-bit/color RGBA, non-interlaced
+button-full-clicked.png:      PNG image data, 56 x 40, 8-bit/color RGBA, non-interlaced
+button-full-normal.png:       PNG image data, 56 x 40, 8-bit/color RGBA, non-interlaced
+button-full-unblinking.png:   PNG image data, 56 x 40, 8-bit/color RGBA, non-interlaced
+button-off.png:               PNG image data, 57 x 20, 8-bit/color RGB, non-interlaced
+button-on.png:                PNG image data, 57 x 20, 8-bit/color RGB, non-interlaced
+button-small-clicked.png:     PNG image data, 28 x 20, 8-bit/color RGBA, non-interlaced
+button-small-normal.png:      PNG image data, 28 x 20, 8-bit/color RGBA, non-interlaced
+close_button.png:             PNG image data, 8 x 8, 8-bit/color RGBA, non-interlaced
+controls-back.png:            PNG image data, 37 x 19, 8-bit/color RGBA, non-interlaced
+function-button-clicked.png:  PNG image data, 54 x 20, 8-bit/color RGB, non-interlaced
+function-button-normal.png:   PNG image data, 54 x 20, 8-bit/color RGB, non-interlaced
+lcd_area.png:                 PNG image data, 14 x 13, 8-bit/color RGB, non-interlaced
+minimize.png:                 PNG image data, 7 x 2, 8-bit/color RGBA, non-interlaced
+set-button-normal.png:        PNG image data, 58 x 43, 8-bit/color RGB, non-interlaced
+small-text-button.png:        PNG image data, 34 x 20, 8-bit/color RGBA, non-interlaced
+vol-display.png:              PNG image data, 23 x 20, 8-bit/color RGBA, non-interlaced
+vol-label.png:                PNG image data, 21 x 20, 8-bit/color RGBA, non-interlaced
+vol-minus-clicked.png:        PNG image data, 29 x 20, 8-bit/color RGBA, non-interlaced
+vol-minus.png:                PNG image data, 29 x 20, 8-bit/color RGBA, non-interlaced
+vol-plus-clicked.png:         PNG image data, 25 x 20, 8-bit/color RGBA, non-interlaced
+vol-plus.png:                 PNG image data, 25 x 20, 8-bit/color RGBA, non-interlaced
+											**/
+
+        image, "border-scale.png" RAW;
+        image, "button-full-clicked.png" RAW;
+        image, "button-full-normal.png" RAW;
+        image, "lcd_area.png" RAW;
+        image, "background-dark-green.png" RAW;
+        image, "controls-back.png" RAW;
+        image, "button-3stage-fulldown.png"     RAW;
+        image, "button-3stage-selected.png"     RAW;
+        image, "button-3stage-unselected.png"   RAW;
+        image, "button-full-blinking.png" RAW;
+        image, "button-full-unblinking.png" RAW;
+        image, "vol-display.png" RAW;
+        image, "vol-label.png" RAW;
+        image, "vol-minus.png" RAW;
+        image, "vol-plus.png" RAW;
+        image, "vol-minus-clicked.png" RAW;
+        image, "vol-plus-clicked.png" RAW;
+        image, "small-text-button.png" RAW;
+        image, "button-small-normal.png" RAW;
+        image, "button-small-clicked.png" RAW;
+        image, "button-on.png" RAW;
+        image, "button-off.png" RAW;
+        image, "close_button.png" RAW;
+        image, "minimize.png" RAW;
+        image, "function-button-clicked.png" RAW;
+        image, "function-button-normal.png" RAW;
