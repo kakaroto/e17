@@ -341,7 +341,7 @@
  * @param meth The name of the method to call.
  * @return     A pointer to the specified method for that object.
  *
- * @see DOXGRP_OBJ, SPIF_OBJ_CLASS(), spif_class_t
+ * @see DOXGRP_OBJ, SPIF_OBJ_CLASS()
  */
 #define SPIF_OBJ_CALL_METHOD(obj, meth)  SPIF_OBJ_CLASS(obj)->meth
 
@@ -514,25 +514,36 @@
 /*@}*/
 
 
-/* The type for the classname variables.  I don't see any reason why this
-   would be anything but a const char *, but you never know.  :-) */
-typedef const char *spif_classname_t;
+/*@{*/
+/**
+ * @name Basic Object Class Definitions
+ * ---
+ *
+ * These types form the foundation of the LibAST object hierarchy.
+ *
+ * @ingroup DOXGRP_OBJ
+ */
 
-/* Generic function pointer. */
-typedef void * (*spif_func_t)();
-
-/* The class contains the function pointers for the generic object functions. */
+/**
+ * @anchor spif_class_t
+ * Object class structure.
+ *
+ * This class contains the object class structure.
+ */
 SPIF_DEFINE_OBJ(class) {
-  spif_classname_t classname;
+    /** Text representation of class name. */
+    spif_classname_t classname;
 
-  spif_func_t noo;
-  spif_func_t init;
-  spif_func_t done;
-  spif_func_t del;
-  spif_func_t show;
-  spif_func_t comp;
-  spif_func_t dup;
-  spif_func_t type;
+    /** Pointer to object's constructor. */
+    spif_func_t noo;
+    /** Pointer to object's initializer. */
+    spif_func_t init;
+    spif_func_t done;
+    spif_func_t del;
+    spif_func_t show;
+    spif_func_t comp;
+    spif_func_t dup;
+    spif_func_t type;
 };
 
 /* An obj is the most basic object type.  It contains simply a pointer to
@@ -540,6 +551,7 @@ SPIF_DEFINE_OBJ(class) {
 SPIF_DEFINE_OBJ(obj) {
   spif_class_t cls;
 };
+/*@}*/
 
 
 

@@ -552,7 +552,19 @@ typedef void *spif_ptr_t;
  *
  * @see DOXGRP_TYPES
  */
-typedef spif_ptr_t (*spif_fptr_t)(spif_ptr_t, ...);
+typedef void * (*spif_func_t)();
+
+/**
+ * A class name.
+ *
+ * This typedef abstracts the actual type of a classname variable.  At
+ * this point I can't imagine it needing to be anything else, but one
+ * never knows....
+ *
+ * @see DOXGRP_TYPES
+ */
+typedef const spif_charptr_t spif_classname_t;
+
 /*@}*/
 
 /*@{*/
