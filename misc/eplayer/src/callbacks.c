@@ -203,6 +203,9 @@ EDJE_CB(playlist_item_play) {
 	playlist_current_item_set(player->playlist, pli);
 	eplayer_playback_start(player, 1);
 	state = PLAYBACK_STATE_PLAYING;
+
+        /* pass the signal to the main edje */
+        edje_object_signal_emit(player->gui.edje, "PLAYLIST_PLAY", "ePlayer");
 }
 
 EDJE_CB(playlist_item_remove) {
