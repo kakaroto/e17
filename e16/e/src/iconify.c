@@ -3304,9 +3304,6 @@ SystrayEventClientMessage(void *ib, XClientMessageEvent * ev)
 	if (IconboxWindowAdd(ib, win))
 	   goto done;
 
-	Eprintf("XAddToSaveSet %#lx\n", win);
-	XAddToSaveSet(disp, win);
-
 	/* Should proto be set according to clients _XEMBED_INFO? */
 	ecore_x_client_message32_send(win, E_XA__XEMBED, NoEventMask,
 				      CurrentTime, XEMBED_EMBEDDED_NOTIFY, 0,
