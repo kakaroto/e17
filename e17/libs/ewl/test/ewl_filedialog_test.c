@@ -5,7 +5,7 @@ static Ewl_Widget *vbox;
 
 
 void __start_fd (Ewl_Widget *w, void *ev_data, void *user_data);
-void __open_file (Ewl_Widget *row, void *ev_data, void *user_data);
+void __destroy_fd_window (Ewl_Widget *w, void *ev, void *data);
 
 void
 __destroy_filedialog_test_window(Ewl_Widget * w, void *ev_data,
@@ -68,41 +68,23 @@ __create_filedialog_test_window(Ewl_Widget * w, void *ev_data,
 	user_data = NULL;
 }
 
-void goto_home(Ewl_Widget *w, void *ev_data, void *user_data)
-{
-	char *home;
-	Ewl_Filedialog *fd = user_data;
-
-	home = getenv("HOME");
-	if (home)
-		ewl_filedialog_path_set(fd, home);
-
-    return;
-    w = NULL;
-    ev_data = NULL;
-}
-
 void __start_fd (Ewl_Widget *w, void *ev_data, void *user_data)
 {
 	static Ewl_Widget *fd = NULL;
 
-	if (!fd) {
-		Ewl_Widget *home_button;
-
-		fd = ewl_filedialog_new(EWL_FILEDIALOG_TYPE_OPEN);
-		ewl_callback_append(fd, EWL_CALLBACK_VALUE_CHANGED, __open_file,
-				    NULL);
-
-		ewl_container_child_append(EWL_CONTAINER(vbox), fd);
-
-		home_button = ewl_button_new("Home");
-		ewl_callback_append(home_button, EWL_CALLBACK_CLICKED,
-				    goto_home, fd);
-		ewl_object_fill_policy_set(EWL_OBJECT(home_button),
-					   EWL_FLAG_FILL_HFILL);
-		ewl_container_child_append(EWL_CONTAINER(fd), home_button);
-		ewl_widget_show(home_button);
+	if (fd) {
+	        ewl_widget_show (EWL_WINDOW (fd));
+	        ewl_window_raise (EWL_WINDOW (fd));
+		return;
 	}
+
+	fd = ewl_filedialog_new();
+	ewl_window_title_set (EWL_WINDOW (fd), "File Dialog");
+	ewl_window_name_set (EWL_WINDOW (fd), "EWL Test Application");
+	ewl_window_class_set (EWL_WINDOW (fd), "EFL Test Application");
+	ewl_object_size_request (EWL_OBJECT (fd), 500, 450);
+	ewl_callback_append (fd, EWL_CALLBACK_DELETE_WINDOW,
+			     EWL_CALLBACK_FUNCTION (__destroy_fd_window), NULL);
 	ewl_widget_show(fd);
 
 	return;
@@ -111,16 +93,45 @@ void __start_fd (Ewl_Widget *w, void *ev_data, void *user_data)
 	user_data = NULL;
 }
 
-
-void __open_file (Ewl_Widget *fd, void *ev_data, void *user_data)
+void
+__destroy_fd_window (Ewl_Widget *w, void *ev, void *data)
 {
-	char *file = ev_data;
+  ewl_widget_destroy (EWL_WIDGET (w));
 
-	if (file) {
-		printf("file open from test program: %s\n", file);
-	}
-	ewl_widget_hide(fd);
+  return;
+  w = NULL;
+  ev = NULL;
+  data = NULL;
+}
 
-	return;
-	user_data = NULL;
+void
+__create_fd_window_response (Ewl_Widget *w, int *id, void *data)
+{
+  Ewl_Widget        *label;
+  int                response = (int)*id;
+
+  switch (response)
+    {
+    case EWL_RESPONSE_OK:
+      {
+	printf("file open from test program: %s\n", 
+	       ewl_filedialog_file_get (EWL_FILEDIALOG (w)));
+
+	ewl_widget_hide(w);
+
+	break;
+      }
+    case EWL_RESPONSE_CANCEL:
+      {
+	ewl_widget_hide(w);
+
+	break;
+      }
+    }
+
+  return;
+
+  w = NULL;
+  id = NULL;
+  data = NULL;
 }
