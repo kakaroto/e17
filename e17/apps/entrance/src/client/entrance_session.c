@@ -47,7 +47,14 @@ entrance_session_new(const char *config, const char *display, int testing)
 
    openlog("entrance", LOG_NOWAIT, LOG_DAEMON);
    if (!display)
+   {
+      if (!getenv("DISPLAY"))
+      {
+         syslog(LOG_CRIT, "entrance_session_new: Unexpected error occured." );
+         exit(EXITCODE);
+      }
       e->display = strdup(getenv("DISPLAY"));
+   }
    else
       e->display = strdup(display);
 
@@ -57,7 +64,7 @@ entrance_session_new(const char *config, const char *display, int testing)
    {
       fprintf(stderr, "Could not load %s\n", db);
       syslog(LOG_CRIT, "Fatal Error: Unable to read config file %s.", db);
-      exit(1);
+      exit(EXITCODE);
    }
    e->session = strdup("");
    e->testing = testing;

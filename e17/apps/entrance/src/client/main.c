@@ -1000,7 +1000,7 @@ main(int argc, char *argv[])
    else
    {
       fprintf(stderr, "Fatal error: Could not initialize ecore_evas!\n");
-      exit(1);
+      exit(EXITCODE);
    }
    return (0);
 }
