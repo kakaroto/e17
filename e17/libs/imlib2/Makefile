@@ -100,7 +100,7 @@ jpeg_la_LDFLAGS = -no-undefined -module -avoid-version
 jpeg_la_LIBADD = -ljpeg
 
 bin_PROGRAMS = imlib2
-imlib2_SOURCES = rend.c ximage.c scale.c main.c rgba.c image.c 		  color.c grab.c blend.c file.c rgbadraw.c api.c draw.c 		  context.c updates.c colormod.c 		  api.h  image.h scale.h blend.h context.h updates.h 		  color.h draw.h rend.h ximage.h colormod.h file.h rgba.h 		  common.h grab.h rgbadraw.h
+imlib2_SOURCES = rend.c ximage.c scale.c main.c rgba.c image.c 		  color.c grab.c blend.c file.c rgbadraw.c api.c draw.c 		  context.c updates.c colormod.c font.c format.c 		  api.h  image.h scale.h blend.h context.h updates.h 		  color.h draw.h rend.h ximage.h colormod.h file.h rgba.h 		  common.h grab.h rgbadraw.h font.h format.h
 
 
 imlib2_LDADD = -export-dynamic $(top_builddir)/libltdl/libltdlc.la -lX11 -lXext
@@ -124,7 +124,7 @@ PROGRAMS =  $(bin_PROGRAMS)
 
 imlib2_OBJECTS =  rend.o ximage.o scale.o main.o rgba.o image.o color.o \
 grab.o blend.o file.o rgbadraw.o api.o draw.o context.o updates.o \
-colormod.o
+colormod.o font.o format.o
 imlib2_DEPENDENCIES =  $(top_builddir)/libltdl/libltdlc.la
 imlib2_LDFLAGS = 
 CFLAGS = -O2                     -mpentium -mcpu=pentium -march=pentium -malign-loops=2 -malign-jumps=2 -malign-functions=2 -g  -W -Wall -Wmissing-prototypes -Wmissing-declarations -Wpointer-arith   
@@ -142,10 +142,10 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 TAR = gtar
 GZIP_ENV = --best
 DEP_FILES =  .deps/api.P .deps/blend.P .deps/color.P .deps/colormod.P \
-.deps/context.P .deps/draw.P .deps/file.P .deps/grab.P .deps/image.P \
-.deps/loader_jpeg.P .deps/loader_png.P .deps/main.P .deps/rend.P \
-.deps/rgba.P .deps/rgbadraw.P .deps/scale.P .deps/updates.P \
-.deps/ximage.P
+.deps/context.P .deps/draw.P .deps/file.P .deps/font.P .deps/format.P \
+.deps/grab.P .deps/image.P .deps/loader_jpeg.P .deps/loader_png.P \
+.deps/main.P .deps/rend.P .deps/rgba.P .deps/rgbadraw.P .deps/scale.P \
+.deps/updates.P .deps/ximage.P
 SOURCES = $(png_la_SOURCES) $(jpeg_la_SOURCES) $(imlib2_SOURCES)
 OBJECTS = $(png_la_OBJECTS) $(jpeg_la_OBJECTS) $(imlib2_OBJECTS)
 
