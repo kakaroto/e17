@@ -50,7 +50,7 @@ they are effectively different libraries - but they Have very similar functional
 Imlib2 can do the following:
 </para>
 
-<itemizedlist mark='bullet'>
+<itemizedlist mark="bullet" spacing="compact">
  <listitem>Load image files from disk in one of many formats</listitem>
  <listitem>Save images to disk in one of many formats</listitem>
  <listitem>Render image data onto other images</listitem>

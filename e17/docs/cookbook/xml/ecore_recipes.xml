@@ -54,7 +54,7 @@ timers, and initialization and shutdown functions. The abstraction
 modules for Ecore include:
 </para>
 
-<itemizedlist mark='bullet'>
+<itemizedlist mark="bullet" spacing="compact">
  <listitem>
   Ecore X
  </listitem>
