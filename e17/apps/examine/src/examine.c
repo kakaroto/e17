@@ -421,7 +421,7 @@ render_ewl(void)
   ewl_object_fill_policy_set((Ewl_Object *) row, EWL_FLAG_FILL_HFILL);
   ewl_widget_show(row);
 
-  save = ewl_button_new("Save");
+  save = ewl_button_new("Apply");
   ewl_callback_append(save, EWL_CALLBACK_MOUSE_DOWN, cb_save, NULL);
   revert = ewl_button_new("Revert");
   ewl_callback_append(revert, EWL_CALLBACK_MOUSE_DOWN, cb_revert, NULL);
@@ -454,9 +454,9 @@ add_tab(char *name)
   button = ewl_text_new(name);
   ewl_widget_show(button);
 
-//  pane = ewl_scrollpane_new(); FIXME: ewl scrollpane does not allow
+  pane = ewl_scrollpane_new(); /* FIXME: ewl scrollpane does not allow */
 //  additions after realisation
-  pane = ewl_vbox_new();
+//  pane = ewl_vbox_new();
   ewl_object_alignment_set(EWL_OBJECT(pane), EWL_FLAG_ALIGN_TOP);
   ewl_widget_show(pane);
 
