@@ -2277,7 +2277,7 @@ msgstr "Sortera efter bild"
 
 #: src/settings.c:3440
 msgid "Iconbox Settings"
-msgstr "Ikonlådsinställningar
+msgstr "Ikonlådsinställningar"
 
 #: src/settings.c:3464
 msgid "Transparent background"
