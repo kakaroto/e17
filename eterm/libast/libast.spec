@@ -1,7 +1,7 @@
 Summary: Library of Assorted Spiffy Things
 Name: libast
 Version: 0.5
-Release: 0.1
+Release: 1
 Copyright: BSD
 Group: System Environment/Libraries
 Source: %{name}-%{version}.tar.gz
@@ -34,16 +34,17 @@ make
 %install
 make DESTDIR=$RPM_BUILD_ROOT install
 %post
-/sbin/ldconfig
+test -x /sbin/ldconfig && /sbin/ldconfig
 
 %postun
-/sbin/ldconfig
+test -x /sbin/ldconfig && /sbin/ldconfig
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root)
+%doc ChangeLog DESIGN README
 %{_bindir}/*
 %{_libdir}/*
 %{_includedir}/*

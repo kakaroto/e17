@@ -8,7 +8,7 @@ bin_SCRIPTS = libast-config
 MACROS = libast.m4
 macrodir = $(datadir)/aclocal
 
-EXTRA_DIST = README $(MACROS)
+EXTRA_DIST = DESIGN README $(MACROS)
 
 test: all
 	cd test && $(MAKE) test

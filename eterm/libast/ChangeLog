@@ -318,3 +318,7 @@ Wed Sep 25 00:01:29 2002                        Michael Jennings (mej)
 
 Patch from Kirby Kuehl <kkuehl@cisco.com> for compilation on FreeBSD.
 ----------------------------------------------------------------------
+Mon Sep 30 11:53:59 2002                        Michael Jennings (mej)
+
+Final commit for release of libast 0.5.
+----------------------------------------------------------------------
