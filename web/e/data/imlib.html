@@ -1,17 +1,8 @@
-<html>
-<head><title>
-Imlib Programmers Guide
-</title></head>
-<body
-background=bg.gif
-bgcolor=#c0c0b0
-text=#000000
-link=#0000aa
-vlink=#000088
-alink=#ffff00
->
+@top@
+@start@
+
 <font face=helvetica size=3>
-<center><img src=imlib.gif alt="Imlib"></center>
+<center><img src=img/imlib.gif alt="Imlib"></center>
 <center><b><font color=#ffffff size=6>The Imlib Programmers Guide</font></b></center>
 <p>
 <b>What is Imlib?</b><br>
@@ -570,7 +561,7 @@ is with an example.
 <p>
 <center><table border=1>
 <tr>
-<td align=center><img src=border_eg1.gif width=128 alt="Unscaled Image"></td>
+<td align=center><img src=img/border_eg1.gif width=128 alt="Unscaled Image"></td>
 <td><font face= helvetica size=3>
 Notice how this is the original image, with a hilighted bevel of 3 pixels on
 each side. This is the original and so, we want these borders to to remain
@@ -578,21 +569,21 @@ each side. This is the original and so, we want these borders to to remain
 32x32 pixels.
 </font></td>
 </tr><tr>
-<td align=center><img src=border_eg2.gif width=320 alt="Scaled Image"></td>
+<td align=center><img src=img/border_eg2.gif width=320 alt="Scaled Image"></td>
 <td><font face= helvetica size=3>
 Here is an example of the image scaled to 80x40 pixels, when the borders are
 set to 0 pixels - notice how the bevels get scaled too, giving quite an
 un-aesthetic look? This is how a vanilla scaling algorithm would work.
 </font></td>
 </tr><tr>
-<td align=center><img src=border_eg3.gif width=320 alt="Scaled Image"></td>
+<td align=center><img src=img/border_eg3.gif width=320 alt="Scaled Image"></td>
 <td><font face= helvetica size=3>
 Now take a look at this third example scaled to the same size, but it has
 the border attributes set to 3 pixels for top, bottom, left and right
 borders. This time the image looks correct.
 </font></td>
 </tr><tr>
-<td align=center><img src=border_diag.gif alt="Diagram"></td>
+<td align=center><img src=img/border_diag.gif alt="Diagram"></td>
 <td><font face= helvetica size=3>
 Note with this diagram that the borders map out an inner and outer boxes with
 corner pieces, effectively dividing the Image into 9 segments. The borders
@@ -641,7 +632,7 @@ settings in effect.
 There are also identical modifier settings for the red, green and blue
 channels, so these can be used for white point adjustment and other functions.
 <p>
-<img src=curve1.gif alt="Curve" align=left>
+<img src=img/curve1.gif alt="Curve" align=left>
 It is also possible to gain direct access to these map-table curves and set
 the values in them manually for finer control. There are 3 tables - one for
 red, one for green and one for blue. The functions Imlib_set_image_red_curve,
@@ -662,7 +653,7 @@ describing this mapping. If you want you could set the table per red, green
 and blue channel to perhaps something like the graph below, that would then 
 give a more interesting mapping. The tables for each channel can be different,
 and so could be used for re-coloring images in interesting ways.
-<img src=curve2.gif alt="Curve" align=right>
+<img src=img/curve2.gif alt="Curve" align=right>
 <p>
 It is also possible to then use these mappings to in fact modify the original
 24-bit data for the image - making the changes permanent, and thus not
@@ -1543,5 +1534,6 @@ ImlibData - Imlib hunts and chooses the best quality visual on the Xserver
 for its rendering. If you do not use this visual and depth the results are
 implementation dependent - ie, may vary between Xservers.
 </font>
-</body>
-</html>
+@end@
+@bottom@
+
