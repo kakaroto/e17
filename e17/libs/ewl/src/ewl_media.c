@@ -123,6 +123,23 @@ int ewl_media_length_get(Ewl_Media *m)
 
 /**
  * @param m: the media widget to act upon
+ * @param h: hours variable
+ * @param min: minutes variable
+ * @param s: seconds variable
+ * @brief Puts the length of the video into the @h, @m, @s variables
+ */
+void ewl_media_length_time_get(Ewl_Media *m, int *h, int *min, double *s)
+{
+    double pos = ewl_media_length_get(m);
+
+    /* stolen from envision by benr */
+    *h = (int)pos / (60 * 60);
+    *min = ((int)pos / 60) - (*h * 60);
+    *s = pos - (*h * 60 * 60) - (*min * 60);
+}
+
+/**
+ * @param m: the media widget to act upon
  * @param p: the value to set play too
  * @return Returns no value
  * @brief Sets the media widget into the given state
@@ -172,6 +189,23 @@ double ewl_media_position_get(Ewl_Media *m)
 	    p = emotion_object_position_get(m->video);
 
 	DRETURN_FLOAT(p, DLEVEL_STABLE);
+}
+
+/**
+ * @param m: the media widget to act upon
+ * @param h: hours variable
+ * @param min: minutes variable
+ * @param s: seconds variable
+ * @brief Puts the position of the video into the @h, @m, @s variables
+ */
+void ewl_media_position_time_get(Ewl_Media *m, int *h, int *min, double *s)
+{
+    double pos = ewl_media_position_get(m);
+
+    /* stolen from envision by benr */
+    *h = (int)pos / (60 * 60);
+    *min = ((int)pos / 60) - (*h * 60);
+    *s = pos - (*h * 60 * 60) - (*min * 60);
 }
 
 /**

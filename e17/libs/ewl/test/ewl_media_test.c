@@ -75,11 +75,7 @@ void video_change_cb(Ewl_Widget *w, void *event, void *data) {
     double pos = ewl_media_position_get(EWL_MEDIA(video));
 
     ewl_seeker_set_value(EWL_SEEKER(seeker), pos);
-
-    /* stolen from envision by benr */
-    h = (int)pos / (60 * 60);
-    m = ((int)pos / 60) - (h * 60);
-    s = pos - (h * 60 * 60) - (m * 60);
+    ewl_media_position_time_get(EWL_MEDIA(video), &h, &m, &s);
     snprintf(buf, sizeof(buf), "%02i:%02i:%02.0f", h, m, s);
     ewl_text_text_set(t, buf);
 

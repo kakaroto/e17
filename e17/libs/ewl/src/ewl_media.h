@@ -38,10 +38,12 @@ void         ewl_media_init(Ewl_Media * m, char *media);
 void         ewl_media_media_set(Ewl_Media * m, char *media);
 char        *ewl_media_media_get(Ewl_Media * m);
 int          ewl_media_length_get(Ewl_Media *m);
+void 	     ewl_media_length_time_get(Ewl_Media *m, int *h, int *min, double *s);
 
 void         ewl_media_play_set(Ewl_Media *m, int p);
 int	     ewl_media_seekable_get(Ewl_Media *m);
 double	     ewl_media_position_get(Ewl_Media *m);
+void	     ewl_media_position_time_get(Ewl_Media *m, int *h, int *min, double *s);
 void	     ewl_media_position_set(Ewl_Media *m, double p);
 
 int	     ewl_media_audio_mute_get(Ewl_Media *m);
