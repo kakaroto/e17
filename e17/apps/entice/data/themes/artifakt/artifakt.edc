@@ -1,9 +1,4 @@
 
-// Currently:
-// Sun Mar 14 2004
-// Sat Apr 11 2004
-// Sat Apr 24 2004 
-
 // artifakt Edje
 // Author: tokyo@cored.org
 
@@ -15,19 +10,19 @@ images {
 #include "images.edc"
 }
 
-//
+#include "macros/macros.edc"
+
 data { item, "container_layout" "entice"; }
-//
 
 collections { 
 
 group { name, "entice"; data { item, "entice.window.type" "shaped";
 	item, "entice.window.dragable" "true";  } min, 400 298; max, 9999 9999;
 
-#define BG "bg" // <--- be very afraid of the Macro !
+#include "embryo/globals.edc"
 
 parts {
-#include "include.edc"
+
 #include "parts/panel.edc"
 #include "parts/bg.edc"
 #include "parts/image.edc"
@@ -38,10 +33,16 @@ parts {
 }
 
 programs {
+
+program { name, "artifakt_loaded"; signal, "load"; source, ""; 
+	script { set_int(panel_is_visible, 0); } 
+}
+
 #include "programs/panel.edc"
 #include "programs/mouse_wheel.edc"
 #include "programs/icons.edc"
 #include "programs/tool_panel.edc"
+#include "programs/enticethumbnail_area.edc"
 #include "programs/buttons.edc"
 	}
 }
