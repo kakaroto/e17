@@ -6,6 +6,7 @@
 #ifdef DMALLOC
 #include "dmalloc.h"
 #endif
+#include <assert.h>
 
 /**
  * A list of all the X Window clients, data is type OD_Window *
@@ -178,10 +179,9 @@ od_wm_window_prev_by_window_class_get(const char *name)
 char           *
 od_wm_get_winclass(Ecore_X_Window win)
 {
-  char           *ret = NULL, *dummy = NULL;
+  char           *ret = NULL;
 
-  ecore_x_window_prop_name_class_get(win, &dummy, &ret);
-  free(dummy);
+  ecore_x_window_prop_name_class_get(win, NULL, &ret);
   if (ret)
     return ret;
   else
