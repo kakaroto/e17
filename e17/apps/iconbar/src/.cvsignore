@@ -1,0 +1,8 @@
+.deps
+.libs
+config.h
+config.h.in
+iconbar
+Makefile
+Makefile.in
+stamp-h1
