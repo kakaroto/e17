@@ -82,7 +82,6 @@ geist_create_main_window(void)
                       GTK_SIGNAL_FUNC(mainwin_delete_cb), NULL);
    gtk_signal_connect(GTK_OBJECT(mainwin), "destroy_event",
                       GTK_SIGNAL_FUNC(mainwin_destroy_cb), NULL);
-   gtk_widget_show(mainwin);
 
    mvbox = gtk_vbox_new(FALSE, 0);
    gtk_widget_show(mvbox);
@@ -136,6 +135,7 @@ geist_create_main_window(void)
    statusbar = gtk_statusbar_new();
    gtk_box_pack_end(GTK_BOX(mvbox), statusbar, FALSE, FALSE, 0);
    gtk_widget_show(statusbar);
+   gtk_widget_show(mainwin);
 
    D_RETURN(3, mainwin);
 }

@@ -122,6 +122,19 @@ geist_image_render(geist_object * obj, Imlib_Image dest)
       D_RETURN_(5);
 
 
+   /*
+   dw = geist_imlib_image_get_width(dest);
+   dh = geist_imlib_image_get_height(dest);
+   sw = geist_imlib_image_get_width(im->im);
+   sh = geist_imlib_image_get_height(im->im);
+
+   D(3, ("Rendering image %p with filename %s\n", obj, im->filename));
+   geist_imlib_blend_image_onto_image(dest, im->im, 0, 0, 0, sw, sh, obj->x,
+                                      obj->y, sw, sh, 1,
+                                      geist_imlib_image_has_alpha(im->im),
+                                      obj->alias);
+    */
+
    /* just render to the full size of the object */
    geist_image_render_partial(obj, dest, obj->x, obj->y, obj->w, obj->h);
    D_RETURN_(5);
@@ -133,7 +146,6 @@ geist_image_render_partial(geist_object * obj, Imlib_Image dest, int x, int y,
 {
    geist_image *im;
    int sw, sh, dw, dh, sx, sy, dx, dy;
-   int ox,oy,ow,oh;
 
    D_ENTER(5);
 
@@ -144,14 +156,12 @@ geist_image_render_partial(geist_object * obj, Imlib_Image dest, int x, int y,
    if (!im->im)
       D_RETURN_(5);
 
-   geist_object_get_rendered_area(obj,&ox,&oy,&ow,&oh);
-
    if (obj->rendered_x < 0)
-      sx = x - obj->x - obj->rendered_x;
+      sx = x - obj->x;
    else
       sx = x - (obj->x + obj->rendered_x);
    if (obj->rendered_y < 0)
-      sy = y - obj->y - obj->rendered_y;
+      sy = y - obj->y;
    else
       sy = y - (obj->y + obj->rendered_y);
 
@@ -160,21 +170,15 @@ geist_image_render_partial(geist_object * obj, Imlib_Image dest, int x, int y,
    if (sy < 0)
       sy = 0;
 
-   /*
    if (obj->rendered_w > obj->w)
       sw = obj->w - sx;
    else
-   sw = obj->rendered_w - sx;
-    */
-   sw = ow;
+      sw = obj->rendered_w - sx;
 
-   /*
    if (obj->rendered_h > obj->h)
       sh = obj->h - sy;
    else
       sh = obj->rendered_h - sy;
-   */
-   sh = oh;
 
    if (sw > w)
       sw = w;
@@ -182,11 +186,11 @@ geist_image_render_partial(geist_object * obj, Imlib_Image dest, int x, int y,
       sh = h;
 
    if (obj->rendered_x < 0)
-      dx = obj->x;
+      dx = obj->x + sx;
    else
       dx = (obj->x + obj->rendered_x) + sx;
    if (obj->rendered_y < 0)
-      dy = obj->y;
+      dy = obj->y + sy;
    else
       dy = (obj->y + obj->rendered_y) + sy;
    dw = sw;
