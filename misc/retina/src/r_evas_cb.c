@@ -13,7 +13,7 @@ extern Evas e_area;
 extern Evas_Object e_img;
 extern Evas_Object e_checks;
 extern Evas_Object e_btn1, e_btn2, e_btn3, e_btn4, e_btn5, e_bs;
-extern Evas_Object e_br_bg, e_scr_t;
+extern Evas_Object e_br_bg, e_scr_t, e_scr_b1, e_scr_b2;
 extern GtkWidget *area, *window;
 extern GtkWidget *bwin;
 extern int tb_status, br_status;
@@ -97,12 +97,16 @@ r_b3_click(void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
 		case 0:
 			evas_show(e_area, e_br_bg);
 			evas_show(e_area, e_scr_t);
+			evas_show(e_area, e_scr_b1);
+			evas_show(e_area, e_scr_b2);
 			br_status = 1;
 			break;
 
 		case 1:
 			evas_hide(e_area, e_br_bg);
 			evas_hide(e_area, e_scr_t);
+			evas_hide(e_area, e_scr_b1);
+			evas_hide(e_area, e_scr_b2);
 			br_status = 0;
 			break;
 	}

@@ -14,7 +14,7 @@ Evas e_area;
 Evas_Object e_img;
 Evas_Object e_checks;
 Evas_Object e_btn1, e_btn2, e_btn3, e_btn4, e_btn5, e_bs;
-Evas_Object e_br_bg, e_scr_t;
+Evas_Object e_br_bg, e_scr_t, e_scr_b1, e_scr_b2;
 
 /* Global GTK+ Variables */
 GtkWidget *window, *area;
