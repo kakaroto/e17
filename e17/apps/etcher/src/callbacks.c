@@ -12,6 +12,7 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 
 #include "callbacks.h"
 #include "interface.h"
@@ -26,7 +27,8 @@ gint render_method = 0;
 gint zoom_method = 0;
 
 static int new_evas = 1;
-static Evas_Object o_logo = NULL;
+static int new_fade = 0;
+static Evas_Object o_logo = NULL, o_info1 = NULL, o_info2, o_info3, o_info4;
 static Evas_Object o_handle1 = NULL, o_handle2, o_handle3, o_handle4, o_edge1, o_edge2, o_edge3, o_edge4, o_backing, o_pointer = NULL;
 static Evas_Object o_select_rect, o_select_line1, o_select_line2, o_select_line3, o_select_line4;
 static Evas_Object o_select_abs1, o_select_rel1, o_select_adj1, o_select_abs2, o_select_rel2, o_select_adj2;
@@ -53,7 +55,9 @@ static void handle_adjuster_mouse_down (void *_data, Evas _e, Evas_Object _o, in
 static void handle_adjuster_mouse_up (void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y);
 static void handle_adjuster_mouse_move (void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y);
 static gint view_shrink_logo(gpointer data);
+static gint view_fade_info(gpointer data);
 static gint view_scroll_logo(gpointer data);
+static gint view_scroll_info(gpointer data);
 gint view_configure_handles(gpointer data);
 
 #define GET_SPIN(name, val) w = gtk_object_get_data(GTK_OBJECT(main_win), name); selected_state->description->val = gtk_spin_button_get_value_as_float(GTK_SPIN_BUTTON(w));
@@ -1048,6 +1052,45 @@ view_shrink_logo(gpointer data)
 }
 
 static gint
+view_fade_info(gpointer data)
+{
+   static double val;
+   int alpha;
+   
+   if (new_fade)
+     {
+	val = 0.0;	
+	new_fade = 0;
+     }
+   if (!o_info1) return FALSE;
+   alpha = (int)(255 * (1.0 - val));
+   evas_set_color(view_evas, o_info1, 255, 255, 255, alpha);
+   evas_set_color(view_evas, o_info2, 255, 255, 255, alpha);
+   evas_set_color(view_evas, o_info3, 255, 255, 255, alpha);
+   evas_set_color(view_evas, o_info4, 255, 255, 255, alpha);
+
+   if (val < 1.0)
+     {
+	val += 0.01;
+	gtk_idle_add(view_redraw, NULL);
+	gtk_timeout_add(50, view_fade_info, NULL);
+     }
+   else
+     {
+	evas_del_object(view_evas, o_info1);
+	evas_del_object(view_evas, o_info2);
+	evas_del_object(view_evas, o_info3);
+	evas_del_object(view_evas, o_info4);
+	o_info1 = NULL;
+	o_info2 = NULL;
+	o_info3 = NULL;
+	o_info4 = NULL;
+	gtk_idle_add(view_redraw, NULL);
+     }
+   return FALSE;
+}
+
+static gint
 view_scroll_logo(gpointer data)
 {
    double x, y, w, h;
@@ -1067,6 +1110,76 @@ view_scroll_logo(gpointer data)
      {
 	gtk_idle_add(view_redraw, NULL);
 	gtk_timeout_add(3000, view_shrink_logo, NULL);
+     }
+   return FALSE;
+}
+
+static gint
+view_scroll_info(gpointer data)
+{
+   double x, y, w, h, hh;
+   static double pos, val;
+   int ew, eh;
+
+   if (!o_info1)
+     {
+	val = 0;
+	evas_font_add_path(view_evas, PACKAGE_DATA_DIR"/pixmaps");
+	o_info1 = evas_add_text(view_evas, "nationff", 20, 
+				"Copyright (C) The Rasterman 2000");
+	o_info2 = evas_add_text(view_evas, "nationff", 20, 
+				"Version 1.0");
+	o_info3 = evas_add_text(view_evas, "nationff", 20, 
+				"Enlightenment Graphical Ebit Editor");
+	o_info4 = evas_add_text(view_evas, "nationff", 20, 
+				"http://www.enlightenment.org");
+	evas_set_color(view_evas, o_info1, 255, 255, 255, 255);
+	evas_set_color(view_evas, o_info2, 255, 255, 255, 255);
+	evas_set_color(view_evas, o_info3, 255, 255, 255, 255);
+	evas_set_color(view_evas, o_info4, 255, 255, 255, 255);
+	evas_set_layer(view_evas, o_info1, 900);
+	evas_set_layer(view_evas, o_info2, 900);
+	evas_set_layer(view_evas, o_info3, 900);
+	evas_set_layer(view_evas, o_info4, 900);
+	evas_show(view_evas, o_info1);
+	evas_show(view_evas, o_info2);
+	evas_show(view_evas, o_info3);
+	evas_show(view_evas, o_info4);
+     }
+   pos = cos((1.0 - val) * (3.141592654 / 2));
+   evas_get_drawable_size(view_evas, &ew, &eh);
+   evas_get_geometry(view_evas, o_info1, &x, &y, &w, &h);
+   evas_move(view_evas, o_info1, 
+	     (pos * (((double)ew - w) / 2)) + ((1.0 - pos) * (-w)),
+	     ((eh / 2) + 16));
+   hh = h;
+   evas_get_geometry(view_evas, o_info2, &x, &y, &w, &h);
+   evas_move(view_evas, o_info2, 
+	     (pos * (((double)ew - w) / 2)) + ((1.0 - pos) * (ew)),
+	     ((eh / 2) + 16 + hh));
+   hh += h;
+   evas_get_geometry(view_evas, o_info3, &x, &y, &w, &h);
+   evas_move(view_evas, o_info3, 
+	     (ew - w) / 2,
+	     (pos * ((eh / 2) + 16 + hh)) + ((1.0 - pos) * (eh)));
+   hh += h;
+   evas_get_geometry(view_evas, o_info4, &x, &y, &w, &h);
+   evas_move(view_evas, o_info4,
+	     (ew - w) / 2,
+	     (pos * ((eh / 2) + 16 + hh)) + ((1.0 - pos) * (-h)));
+   hh += h;
+	     
+   if (val < 1.0)
+     {
+	val += 0.02;
+	gtk_idle_add(view_redraw, NULL);
+	gtk_timeout_add(50, view_scroll_info, NULL);
+     }
+   else
+     {
+	gtk_idle_add(view_redraw, NULL);
+	new_fade = 1;
+	gtk_timeout_add(1000, view_fade_info, NULL);
      }
    return FALSE;
 }
@@ -1428,6 +1541,7 @@ on_about1_activate                     (GtkMenuItem     *menuitem,
 	     (ew - w) / 2,
 	     -h);
    gtk_timeout_add(50, view_scroll_logo, NULL);   
+   gtk_timeout_add(50, view_scroll_info, NULL);   
 }
 
 
@@ -1605,6 +1719,7 @@ on_view_expose_event                   (GtkWidget       *widget,
 	evas_callback_add(view_evas, o_select_adj2, CALLBACK_MOUSE_MOVE, handle_adjuster_mouse_move, NULL);
 	
 	gtk_timeout_add(50, view_scroll_logo, NULL);
+	gtk_timeout_add(50, view_scroll_info, NULL);   
 	  {
 	     GdkPixmap *src, *mask;
 	     GdkColor fg, bg;

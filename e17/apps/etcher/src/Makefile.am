@@ -13,5 +13,5 @@ etcher_SOURCES = \
 	callbacks.c callbacks.h \
 	bits.c bits.h
 
-etcher_LDADD = @evas_libs@ @edb_libs@ @GTK_LIBS@ $(INTLLIBS)
+etcher_LDADD = @evas_libs@ @edb_libs@ -lm @GTK_LIBS@ $(INTLLIBS)
 
