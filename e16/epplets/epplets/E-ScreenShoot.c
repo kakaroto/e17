@@ -77,11 +77,14 @@ save_config (void)
   Epplet_modify_config ("BEEP", buf);
   Esnprintf (buf, sizeof (buf), "%d", opt.run_script);
   Epplet_modify_config ("RUN_SCRIPT", buf);
+  Esnprintf (buf, sizeof (buf), "%d", opt.view_shot);
+  Epplet_modify_config ("VIEW_SHOT", buf);
   Epplet_modify_config ("DIRECTORY", opt.dir);
   Epplet_modify_config ("FILE_PREFIX", opt.file_prefix);
   Epplet_modify_config ("FILE_STAMP", opt.file_stamp);
   Epplet_modify_config ("FILE_TYPE", opt.file_type);
   Epplet_modify_config ("SCRIPT_TO_RUN", opt.script);
+  Epplet_modify_config ("SHOT_VIEWER", opt.viewer);
 }
 
 static void
@@ -91,6 +94,7 @@ load_config (void)
   invquality = (100 - opt.quality);
   opt.win = atoi (Epplet_query_config_def ("WIN_AREA", "0"));
   opt.run_script = atoi (Epplet_query_config_def ("RUN_SCRIPT", "0"));
+  opt.view_shot = atoi (Epplet_query_config_def ("VIEW_SHOT", "1"));
   opt.frame = atoi (Epplet_query_config_def ("WM_FRAME", "1"));
   opt.do_cloak = atoi (Epplet_query_config_def ("DO_CLOAK", "1"));
   opt.beep = atoi (Epplet_query_config_def ("BEEP", "1"));
@@ -127,6 +131,9 @@ load_config (void)
     free (opt.script);
   opt.script =
     _Strdup (Epplet_query_config_def ("SCRIPT_TO_RUN", "scrshot_script"));
+  if (opt.viewer)
+    free (opt.viewer);
+  opt.viewer = _Strdup (Epplet_query_config_def ("SHOT_VIEWER", "ee"));
 }
 
 static void
@@ -378,6 +385,9 @@ do_shot (void *data)
   char *filename_buf;
   char frame_buf[10];
   char beep_buf[20];
+  char import_buf[50];
+  char *script_buf = NULL;
+  char *view_buf = NULL;
 
   Esnprintf (qual_buf, sizeof (qual_buf), "%d", opt.quality);
 
@@ -385,7 +395,7 @@ do_shot (void *data)
     _Strjoin (NULL, "SCRTEMP=\"", opt.dir, opt.file_prefix, opt.file_stamp,
 	      ".", opt.file_type, "\"", NULL);
 
-  if (opt.frame)
+  if ((opt.frame) && (opt.win))
     Esnprintf (frame_buf, sizeof (frame_buf), "-frame");
   else
     frame_buf[0] = '\0';
@@ -395,28 +405,33 @@ do_shot (void *data)
   else
     Esnprintf (beep_buf, sizeof (beep_buf), "-silent");
 
-  if (!opt.win)
-    {
-      sys = _Strjoin (" ",
-		      filename_buf,
-		      "&&",
-		      "import",
-		      beep_buf,
-		      "-window", "root", "-quality", qual_buf, "$SCRTEMP",
-		      "&", NULL);
-    }
+  if (opt.win)
+    Esnprintf (import_buf, sizeof (import_buf), "import");
   else
-    {
-      sys = _Strjoin (" ",
-		      filename_buf,
-		      "&&",
-		      "import", beep_buf, frame_buf, "-quality", qual_buf,
-		      "$SCRTEMP", "&", NULL);
-    }
+    Esnprintf (import_buf, sizeof (import_buf), "import -window root");
 
-/*  printf ("%s\n", sys);  */
+  if (opt.run_script)
+    script_buf = _Strjoin (" ", "&&", opt.script, "$SCRTEMP", NULL);
+  else
+    script_buf = _Strdup (" ");
+
+  if (opt.view_shot)
+    view_buf = _Strjoin (" ", "&&", opt.viewer, "$SCRTEMP", NULL);
+  else
+    view_buf = _Strdup (" ");
+
+  sys = _Strjoin (" ",
+		  "(",
+		  filename_buf,
+		  "&&",
+		  import_buf, beep_buf, frame_buf, "-quality", qual_buf,
+		  "$SCRTEMP", script_buf, view_buf, ")&", NULL);
+
+  printf ("%s\n", sys);
   system (sys);
   free (sys);
+  free (script_buf);
+  free (view_buf);
   free (filename_buf);
   return;
   data = NULL;

@@ -12,7 +12,7 @@ static void cb_in (void *data, Window w);
 int invquality = 0;
 
 int cloak_anims[] = {
-  0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17
+  0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24,25
 };
 int cloak_delays[] = {
   1, 2, 3, 4, 5, 10, 15, 20, 30, 60, 120
@@ -34,6 +34,7 @@ struct
   int do_cloak;
   int rand_cloak;
   int run_script;
+  int view_shot;
   double delay;
   double cloak_delay;
   double rand_delay;
@@ -43,5 +44,6 @@ struct
   char *file_stamp;
   char *file_type;
   char *script;
+  char *viewer;
 }
 opt;
