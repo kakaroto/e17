@@ -106,7 +106,8 @@ _eapp_edit_read(Eet_File *ef, char *key, char *lang, char *desc,
     ret = (char *) eet_read(ef, buf, &size_ret);
     ret_buf = malloc(size_ret + 1);
     snprintf(ret_buf, size_ret + 1, "%s", ret);
-  }
+  } else
+    ret_buf = "";
                   
   cell1 = ewl_cell_new();
   cell2 = ewl_cell_new();
@@ -125,8 +126,9 @@ _eapp_edit_read(Eet_File *ef, char *key, char *lang, char *desc,
   ewl_widget_show(cell2);
   ewl_grid_add(EWL_GRID(grid), cell1, 1, 1, row, row);
   ewl_grid_add(EWL_GRID(grid), cell2, 2, 3, row, row);
-  free(ret_buf);
 
+  if (ef)
+    free(ret_buf);
   return part;
 }
 
