@@ -116,6 +116,7 @@ handle_keypress_event(XEvent * ev, Window win)
            char *caption_filename;
            caption_filename = build_caption_filename(FEH_FILE(winwid->file->data));
            winwid->caption_entry = 0;
+           winwidget_render_image(winwid, 0, 0);
            fp = fopen(caption_filename, "w");
            if (!fp) {
              weprintf("couldn't write to captions file %s:", caption_filename);
@@ -274,6 +275,7 @@ handle_keypress_event(XEvent * ev, Window win)
      case 'C':
         if (opt.caption_path)
           winwid->caption_entry = 1;
+          winwidget_render_image(winwid, 0, 0);
         break;
      case 'r':
      case 'R':
