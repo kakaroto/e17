@@ -51,7 +51,6 @@ __imlib_BlendRGBAToData(DATA32 *src, int src_w, int src_h, DATA32 *dst,
       h = dst_h - dy;   
    if ((w <= 0) || (h <= 0))
       return;
-   printf("%i\n", dalpha);
    if (cm)
      {
 	switch(op)
