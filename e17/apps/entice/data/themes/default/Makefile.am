@@ -1,15 +1,21 @@
-EXTRA_DIST= default.edc images.edc macros/slider.edc embryo/globals.edc parts/status.edc programs/status.edc programs/enticepreview.edc
 SUBDIRS = parts programs
-DB = default.eet
-CC = edje_cc
-INCLUDES = -v -id ../../images -fd ../../fonts
 
-CLEANFILES = $(DB)
+EXTRA_DIST= \
+default.edc \
+images.edc \
+fonts.edc \
+macros/macros.edc \
+embryo/globals.edc
 
-defaultdir = $(pkgdatadir)/themes
-default_DATA = $(DB)
+THEME = default
+EDC = $(THEME).edc
+EET = $(EDC:%.edc=%.eet)
+SUFFIXES = .edc .eet
 
-all: $(DB)
+themedir = $(pkgdatadir)/themes
+theme_DATA = $(EET)
 
-$(DB): default.edc
-	$(CC) $(INCLUDES) default.edc $@
+all: $(EDC)
+
+.edc.eet:
+	edje_cc -v -id $(top_srcdir)/data/images -fd $(top_srcdir)/data/fonts $< $@

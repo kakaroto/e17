@@ -1,16 +1,21 @@
-EXTRA_DIST= artifakt.edc images.edc fonts.edc macros/macros.edc embryo/globals.edc
-
 SUBDIRS = parts programs images fonts
-DB = artifakt.eet
-CC = edje_cc
-INCLUDES = -v -id ./images -fd ./fonts
 
-CLEANFILES = $(DB)
+EXTRA_DIST= \
+artifakt.edc \
+images.edc \
+fonts.edc \
+macros/macros.edc \
+embryo/globals.edc
 
-artifaktdir = $(pkgdatadir)/themes
-artifakt_DATA = $(DB)
+THEME = artifakt
+EDC = $(THEME).edc
+EET = $(EDC:%.edc=%.eet)
+SUFFIXES = .edc .eet
 
-all: $(DB)
+themedir = $(pkgdatadir)/themes
+theme_DATA = $(EET)
 
-$(DB): artifakt.edc
-	$(CC) $(INCLUDES) artifakt.edc $@
+all: $(EDC)
+
+.edc.eet:
+	edje_cc -v -id $(top_srcdir)/data/themes/$(THEME)/images -fd $(top_srcdir)/data/themes/$(THEME)/fonts $< $@
