@@ -424,6 +424,8 @@ void estyle_set_text(Evas_Object *obj, char *text)
 	CHECK_PARAM_POINTER("obj", obj);
 
 	es = evas_object_smart_data_get(obj);
+	if (!text)
+		text = strdup("");
 
 	/*
 	 * Wheee!! what fun, to get the sizing right when spaces end the
