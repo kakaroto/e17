@@ -368,30 +368,3 @@ efsd_fam_cleanup_client(int client)
   return (0);
 }
 
-
-GList*
-efsd_fam_get_clients_for_event(FAMEvent *fe)
-{
-  GList *l;
-
-  if (!fe)
-    return NULL;
-
-  l = g_list_first(monitors);
-
-  while (l)
-    {
-      EfsdFamMonitor *m;
-      m = (EfsdFamMonitor *)l->data;
-
-      if (fe->fr.reqnum == m->fam_req->reqnum)
-	{
-	  return m->clients;
-	}
-
-      l = g_list_next(l);
-    }
-
-  return NULL;
-}
-

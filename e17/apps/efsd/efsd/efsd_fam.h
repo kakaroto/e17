@@ -96,9 +96,5 @@ int              efsd_fam_is_monitored(char *filename);
 */
 int              efsd_fam_cleanup_client(int client);
 
-/* Get a list of all clients that requested monitoring
-   the given file. Not to be freed.
-*/
-GList           *efsd_fam_get_clients_for_event(FAMEvent *fe);
 
 #endif
