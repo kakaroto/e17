@@ -934,7 +934,7 @@ void ewl_widget_destroy_cb(Ewl_Widget * w, void *ev_data, void *data)
 	/*
 	 * Free up appearance related information
 	 */
-	ewl_theme_deinit_widget(w);
+	ewl_theme_shutdown_widget(w);
 	IF_FREE(w->appearance);
 
 	/*

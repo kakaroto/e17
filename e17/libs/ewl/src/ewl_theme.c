@@ -219,7 +219,7 @@ int ewl_theme_init_widget(Ewl_Widget * w)
  *
  * Removes and frees the theme information from the widget @a w.
  */
-void ewl_theme_deinit_widget(Ewl_Widget * w)
+void ewl_theme_shutdown_widget(Ewl_Widget * w)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);

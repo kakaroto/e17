@@ -117,7 +117,7 @@ void ewl_shutdown()
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	ecore_timer_del(config_timer);
-	ewl_callbacks_deinit();
+	ewl_callbacks_shutdown();
 	ewl_theme_shutdown();
 	ewl_config_shutdown();
 

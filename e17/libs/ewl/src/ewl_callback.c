@@ -35,7 +35,7 @@ void ewl_callbacks_init()
  * Destroys some important variables for tracking callbacks that allow shared
  * callbacks.
  */
-void ewl_callbacks_deinit()
+void ewl_callbacks_shutdown()
 {
 	ewd_hash_destroy(cb_registration);
 }
