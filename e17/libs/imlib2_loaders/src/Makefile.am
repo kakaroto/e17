@@ -44,4 +44,4 @@ db_la_SOURCES       = \
     common.h \
     image.h
 db_la_LDFLAGS	     = -no-undefined -module -avoid-version
-db_la_LIBADD	     = $(LIBS_EDB) -ledb
+db_la_LIBADD	     = $(LIBS_EDB) -ledb -lz
