@@ -341,9 +341,9 @@
 #define __LOCK 901
 #define __CTRL 902
 #define __ALT 903
-#define __WINDOWS_KEY 904
+#define __META2 904
 #define __META3 905
-#define __META4 906
+#define __WINDOWS_KEY 906
 #define __META5 907
 #define __CTRL_ALT 910
 #define __CTRL_SHIFT 911

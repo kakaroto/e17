@@ -3057,3 +3057,11 @@ Tue Oct  5 11:54:49 PDT 1999
 (Raster)
 
 handle window gravities correctly... :)
+
+-------------------------------------------------------------------------------
+
+Tue Oct  5 12:06:49 PDT 1999
+(Raster)
+
+__WINDOWS_KEY was the wrang meta modifier - chnage the definitions define...
+add a windowskey+left mosue and ctrl+left mouse optison to briugn up menus
