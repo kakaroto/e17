@@ -62,10 +62,7 @@ load(void)
 void
 fx_start(Ewl_Widget * w)
 {
-	double interval;
-	double step;
 	int r, g, b, a;
-	int hits;
 
 	ewl_fx_clip_box_get_color(w, &r, &g, &b, &a);
 
@@ -74,11 +71,8 @@ fx_start(Ewl_Widget * w)
 	else
 		start_val = (double) (a);
 
-	interval = ewl_fx_calculate_interval(fps, timeout);
-	step = ewl_fx_calculate_step(start_val, end_val, fps, timeout);
-	hits = start_val - end_val / (int) (ceil(step));
-
-	ewl_fx_timer_add(w, fade_out.name, interval, step, hits, NULL);
+	ewl_fx_timer_add(w, fade_out.name, timeout, fps, start_val - end_val,
+			NULL);
 }
 
 

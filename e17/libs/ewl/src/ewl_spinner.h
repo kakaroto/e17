@@ -20,6 +20,7 @@ typedef struct _ewl_spinner Ewl_Spinner;
 #define EWL_SPINNER(spinner) ((Ewl_Spinner *) spinner)
 
 Ewl_Widget *ewl_spinner_new();
+void ewl_spinner_init(Ewl_Spinner * spinner);
 void ewl_spinner_set_value(Ewl_Widget * widget, double value);
 double ewl_spinner_get_value(Ewl_Widget * widget);
 void ewl_spinner_set_digits(Ewl_Widget * widget, int digits);

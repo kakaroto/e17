@@ -332,6 +332,44 @@ ewl_window_set_max_size(Ewl_Widget * widget, int w, int h)
 }
 
 /**
+ * ewl_window_get_geometry - retrieve the size and position of a window
+ * @win: the window to retrieve the size
+ * @x: the pointer to the integer to store the x position
+ * @y: the pointer to the integer to store the y position
+ * @w: the pointer to the integer to store the width
+ * @h: the pointer to the integer to store the height
+ *
+ * Returns no value. Stores the current position and size of the window into
+ * @x, @y, @w, and @h.
+ */
+void
+ewl_window_get_geometry(Ewl_Window * win, int *x, int *y, int *w, int *h)
+{
+	DCHECK_PARAM_PTR("win", win);
+
+	ecore_window_get_geometry(win->window, x, y, w, h);
+}
+
+/**
+ * ewl_window_set_geometry - set the current size and position of a window
+ * @widget: the window to change geometry
+ * @x: the new x position of the window
+ * @y: the new y position of the window
+ * @w: the new width of the window
+ * @h: the new height of the window
+ *
+ * Returns no value. Changes the current size and position of the window.
+ */
+void
+ewl_window_set_geometry(Ewl_Widget *widget, int x, int y, int w, int h)
+{
+	DCHECK_PARAM_PTR("widget", widget);
+
+	ewl_window_resize(widget, w, h);
+	ewl_window_move(widget, x, y);
+}
+
+/**
  * ewl_window_set_title - set the title of the specified window
  * @w: the window to change the title
  * @title: the title to set for the window

@@ -22,6 +22,7 @@ struct _ewl_config
 	struct
 	{
 		Ewd_List *paths;
+		int fps;
 	}
 	fx;
 	struct

@@ -284,10 +284,10 @@ main(int argc, char **argv)
 	ewl_widget_show(e_conf.global_fps_label);
 
 	e_conf.global_fps = ewl_spinner_new();
-	ewl_spinner_set_min_val(e_conf.global_fps, 10.0);
+	ewl_spinner_set_min_val(e_conf.global_fps, 1.0);
 	ewl_spinner_set_max_val(e_conf.global_fps, 80.0);
 	ewl_spinner_set_digits(e_conf.global_fps, 1);
-	ewl_spinner_set_step(e_conf.global_fps, 0.1);
+	ewl_spinner_set_step(e_conf.global_fps, 1.0);
 	ewl_container_append_child(EWL_CONTAINER(e_conf.page_fx),
 				   e_conf.global_fps);
 	ewl_widget_show(e_conf.global_fps);
@@ -481,6 +481,8 @@ ewl_config_read_config(Ewl_Config * conf)
 
 	conf->theme.cache = ewl_config_get_int("system", "/theme/cache");
 
+	conf->fx.fps = ewl_config_get_int("system", "/fx/fps");
+
 	return 1;
 }
 
@@ -507,8 +509,7 @@ ewl_set_settings(Ewl_Config * c)
 	ewl_checkbutton_set_checked(e_conf.enable_debug, c->debug.enable);
 	ewl_spinner_set_value(e_conf.debug_level, (double) (c->debug.level));
 
-/*	ewl_spinner_set_value(e_conf.max_fps, (double) (c->fx.max_fps));
-	ewl_spinner_set_value(e_conf.timeout, (double) (c->fx.timeout));*/
+	ewl_spinner_set_value(e_conf.global_fps, (double) (c->fx.fps));
 
 	ewl_entry_set_text(e_conf.theme_name, c->theme.name);
 
@@ -553,6 +554,7 @@ ewl_get_settings(void)
 		c->theme.name = strdup("default");
 
 	c->theme.cache = ewl_checkbutton_is_checked(e_conf.theme_cache);
+	c->fx.fps = ewl_spinner_get_value(e_conf.global_fps);
 
 	return c;
 }
@@ -573,6 +575,7 @@ ewl_save_config(Ewl_Config * c)
 
 	ewl_config_set_str("system", "/theme/name", c->theme.name);
 	ewl_config_set_int("system", "/theme/cache", c->theme.cache);
+	ewl_config_set_int("system", "/fx/fps", c->fx.fps);
 }
 
 void
@@ -647,7 +650,8 @@ ewl_config_exit_cb(Ewl_Widget * w, void *user_data, void *ev_data)
 	     nc->evas.image_cache != oc.evas.image_cache ||
 	     strcasecmp(nc->evas.render_method, oc.evas.render_method) ||
 	     strcmp(nc->theme.name, oc.theme.name) ||
-	     nc->theme.cache != oc.theme.cache) && !confirm.win)
+	     nc->theme.cache != oc.theme.cache || nc->fx.fps != oc.fx.fps) &&
+			!confirm.win)
 		ewl_config_create_confirm_dialog();
 	else
 	  {

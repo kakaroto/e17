@@ -57,7 +57,7 @@ __spinner_main_window_configure(Ewl_Widget * w, void *ev_data,
 {
 	int xx, yy, ww, hh;
 
-	ewl_object_get_current_geometry(EWL_OBJECT(tmp_win), &xx, &yy, &ww,
+	ewl_window_get_geometry(EWL_OBJECT(tmp_win), &xx, &yy, &ww,
 					&hh);
 
 	ewl_callback_del(spinner[0], EWL_CALLBACK_VALUE_CHANGED,

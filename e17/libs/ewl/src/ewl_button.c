@@ -95,7 +95,6 @@ ewl_button_init(Ewl_Button * b, char *label)
 
 /**
  * ewl_button_set_label - change the label of the specified button
- *
  * @b: the buttons whose label will be changed
  * @l: the new label for the button
  *

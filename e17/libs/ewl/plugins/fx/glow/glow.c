@@ -61,13 +61,7 @@ load(void)
 void
 fx_start(Ewl_Widget * w)
 {
-	double interval;
-	double step;
-
-	interval = ewl_fx_calculate_interval(fps, timeout);
-	step = ewl_fx_calculate_step(start_val, end_val, fps, timeout);
-
-	ewl_fx_timer_add(w, glow.name, interval, step, 0, NULL);
+	ewl_fx_timer_add(w, glow.name, timeout, fps, end_val - start_val, NULL);
 }
 
 
@@ -78,10 +72,10 @@ fx_cont(Ewl_FX_Timer * t)
 
 	ewl_fx_clip_box_get_color(t->widget, &r, &g, &b, &a);
 
-	if (!t->data)
-		a += (int) (ceil(t->step));
-	else
+	if (t->data)
 		a -= (int) (ceil(t->step));
+	else
+		a += (int) (ceil(t->step));
 
 	if (a <= start_val)
 	  {
@@ -94,6 +88,8 @@ fx_cont(Ewl_FX_Timer * t)
 		  a = 255;
 		  t->data = (void *) 1;
 	  }
+
+	t->count--;
 
 	ewl_fx_clip_box_set_color(t->widget, r, g, b, a);
 }

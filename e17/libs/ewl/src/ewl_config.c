@@ -330,6 +330,7 @@ __create_user_config(void)
 	ewl_config_set_str("system", "/fx/paths/0",
 			   PACKAGE_DATA_DIR "/plugins/fx");
 	ewl_config_set_int("system", "/fx/paths/count", 1);
+	ewl_config_set_int("system", "/fx/fps", 50);
 	ewl_config_set_str("system", "/theme/name", "default");
 	ewl_config_set_int("system", "/theme/cache", 0);
 

@@ -1,5 +1,15 @@
 #include <Ewl.h>
 
+static char *long_text = "This is a long string to test\n"
+			"the effectiveness of\n"
+			"the new text area.\n"
+			"It's possible that it contains\n"
+			"unprintable characters such\n"
+			"as  or extremely long\n"
+			"lines. Beware, it may\n"
+			"trigger bugs in etox or\n"
+			"ewl\nso\ntrace\ncarefully.";
+
 static Ewl_Widget *textarea_button;
 
 void __create_textarea_test_window(Ewl_Widget * w, void *ev_data,
@@ -37,7 +47,7 @@ __create_textarea_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_widget_show(textarea_win);
 
 	textarea = ewl_textarea_new();
-	ewl_textarea_set_text(EWL_TEXTAREA(textarea), "Test! =)");
+	ewl_textarea_set_text(EWL_TEXTAREA(textarea), long_text);
 	ewl_object_set_padding(EWL_OBJECT(textarea), 10, 10, 10, 10);
 	ewl_container_append_child(EWL_CONTAINER(textarea_win), textarea);
 	ewl_widget_show(textarea);

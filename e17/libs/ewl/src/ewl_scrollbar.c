@@ -16,7 +16,6 @@ void __ewl_scrollbar_seeker_value_changed(Ewl_Widget * w, void *ev_data,
 
 /**
  * ewl_scrollbar_new - allocate and initialize a new scrollbar widget
- *
  * @orientation: the desired orientation of the scrollbar
  *
  * Returns NULL on failure, or a pointer to the newly allocated scrollbar
@@ -105,6 +104,14 @@ ewl_scrollbar_new(Ewl_Orientation orientation)
 	DRETURN_PTR(EWL_WIDGET(s), DLEVEL_STABLE);
 }
 
+/**
+ * ewl_scrollbar_set_fill_percentage - set the percentage filled by drag button
+ * @s: the scrollbar to change fill percentage
+ * @fp: the percentage of the scrollbar filled by the drag button
+ *
+ * Returns no value. Changes the area of the scrollbar that is filled by the
+ * drag button.
+ */
 void
 ewl_scrollbar_set_fill_percentage(Ewl_Scrollbar * s, double fp)
 {
@@ -128,6 +135,13 @@ ewl_scrollbar_set_fill_percentage(Ewl_Scrollbar * s, double fp)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * ewl_scrollbar_get_fill_percentage - get the percentage filled by drag button
+ * @s: the scrollbar to retrieve fill percentage
+ *
+ * Returns the percentage of the scrollbar that the drag button fills on
+ * success, -1 on failure.
+ */
 double
 ewl_scrollbar_get_fill_percentage(Ewl_Scrollbar * s)
 {

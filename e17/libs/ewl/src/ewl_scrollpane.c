@@ -17,6 +17,12 @@ void __ewl_scrollpane_box_configure_clip_box(Ewl_Widget * w, void *ev_data,
 					     void *user_data);
 
 
+/**
+ * ewl_scrollpane_new - create a new scrollpane
+ *
+ * Returns a pointer to a newly allocated scrollpane on success, NULL on
+ * failure.
+ */
 Ewl_Widget *
 ewl_scrollpane_new(void)
 {
@@ -33,6 +39,14 @@ ewl_scrollpane_new(void)
 	DRETURN_PTR(EWL_WIDGET(s), DLEVEL_UNSTABLE);
 }
 
+/**
+ * ewl_scrollpane_set_hscrollbar_flag - set flags for horizontal scrollbar
+ * @s: the scrollpane that contains the scrollbar to change
+ * @f: the flags to set on the horizontal scrollbar in @s
+ *
+ * Returns no value. The scrollbar flags for the horizontal scrollbar are set
+ * to @f.
+ */
 void
 ewl_scrollpane_set_hscrollbar_flag(Ewl_ScrollPane * s, Ewl_ScrollBar_Flags f)
 {
@@ -44,6 +58,14 @@ ewl_scrollpane_set_hscrollbar_flag(Ewl_ScrollPane * s, Ewl_ScrollBar_Flags f)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * ewl_scrollpane_set_vscrollbar_flag - set flags for vertical scrollbar
+ * @s: the scrollpane that contains the scrollbar to change
+ * @f: the flags to set on the vertical scrollbar in @s
+ *
+ * Returns no value. The scrollbar flags for the vertical scrollbar are set
+ * to @f.
+ */
 void
 ewl_scrollpane_set_vscrollbar_flag(Ewl_ScrollPane * s, Ewl_ScrollBar_Flags f)
 {
@@ -55,6 +77,12 @@ ewl_scrollpane_set_vscrollbar_flag(Ewl_ScrollPane * s, Ewl_ScrollBar_Flags f)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * ewl_scrollpane_get_hscrollbar_flag - get flags for horizontal scrollbar
+ * @s: the scrollpane that contains the scrollbar to retrieve
+ *
+ * Returns the flags of the horizontal scrollbar on success, NULL on failure.
+ */
 Ewl_ScrollBar_Flags
 ewl_scrollpane_get_hscrollbar_flag(Ewl_ScrollPane * s)
 {
@@ -68,6 +96,12 @@ ewl_scrollpane_get_hscrollbar_flag(Ewl_ScrollPane * s)
 	DRETURN_INT(f, DLEVEL_STABLE);
 }
 
+/**
+ * ewl_scrollpane_get_vscrollbar_flag - get flags for vertical scrollbar
+ * @s: the scrollpane that contains the scrollbar to retrieve
+ *
+ * Returns the flags of the vertical scrollbar on success, NULL on failure.
+ */
 Ewl_ScrollBar_Flags
 ewl_scrollpane_get_vscrollbar_flag(Ewl_ScrollPane * s)
 {
@@ -81,7 +115,13 @@ ewl_scrollpane_get_vscrollbar_flag(Ewl_ScrollPane * s)
 	DRETURN_INT(f, DLEVEL_STABLE);
 }
 
-
+/**
+ * ewl_scrollpane_init - initialize the fields of a scrollpane
+ * @s: the scrollpane to initialize
+ *
+ * Returns no value. Sets up default callbacks and field values for the
+ * scrollpane @s.
+ */
 void
 ewl_scrollpane_init(Ewl_ScrollPane * s)
 {

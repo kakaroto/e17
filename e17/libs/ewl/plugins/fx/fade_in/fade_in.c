@@ -74,11 +74,12 @@ fx_start(Ewl_Widget * w)
 	else
 		start_val = (double) (a);
 
-	interval = ewl_fx_calculate_interval(fps, timeout);
-	step = ewl_fx_calculate_step(start_val, end_val, fps, timeout);
-	hits = (end_val - start_val) / (int) (ceil(step));
+	hits = timeout * fps;
+	step = (end_val - start_val) / (int)(hits + 0.5);
+	interval = 1 / fps;
 
-	ewl_fx_timer_add(w, fade_in.name, interval, step, hits, NULL);
+	ewl_fx_timer_add(w, fade_in.name, timeout, fps, end_val - start_val,
+			NULL);
 
 	start_val = 0.0;
 }

@@ -28,6 +28,9 @@ void ewl_window_set_min_size(Ewl_Widget * widget, int w, int h);
 void ewl_window_set_max_size(Ewl_Widget * widget, int w, int h);
 void ewl_window_set_title(Ewl_Widget * widget, char *title);
 char *ewl_window_get_title(Ewl_Widget * widget);
+void ewl_window_get_geometry(Ewl_Window * win, int *x, int *y, int *w,
+		int *h);
+void ewl_window_set_geometry(Ewl_Widget * widget, int x, int y, int w, int h);
 void ewl_window_set_borderless(Ewl_Widget * w);
 void ewl_window_move(Ewl_Widget * w, int x, int y);
 

@@ -215,7 +215,8 @@ ewl_widget_configure(Ewl_Widget * w)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
-	ewl_callback_call(w, EWL_CALLBACK_CONFIGURE);
+	if (REALIZED(w) && VISIBLE(w))
+		ewl_callback_call(w, EWL_CALLBACK_CONFIGURE);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

@@ -16,6 +16,12 @@ static Ewd_Hash *fx_timers = NULL;
 static int fx_group_id = -1;
 
 
+/**
+ * ewl_fx_init - initialize any fx variables that must be set up ahead of time
+ * 
+ * Returns no value. The programmer should not call this, it is used by
+ * ewl_init, and nothing else.
+ */
 int
 ewl_fx_init(void)
 {
@@ -49,6 +55,12 @@ ewl_fx_init(void)
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
+/**
+ * ewl_fx_init - initialize any fx variables that must be set up ahead of time
+ * 
+ * Returns no value. The programmer should not call this, it is used by
+ * ewl_deinit, and nothing else.
+ */
 int
 ewl_fx_deinit(void)
 {
@@ -59,6 +71,12 @@ ewl_fx_deinit(void)
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
+/**
+ * ewl_fx_init_widget - initialize fx for a specified widget
+ * @w: the widget to setup fx variables
+ *
+ * Returns no value. Internal variables for fx to be used are setup on @w.
+ */
 void
 ewl_fx_init_widget(Ewl_Widget * w)
 {
@@ -131,6 +149,12 @@ ewl_fx_init_widget(Ewl_Widget * w)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * ewl_fx_deinit_widget - deinitialize fx for a specified widget
+ * @w: the widget to remove fx variables
+ *
+ * Returns no value. Frees fx variables attached to the widget @w.
+ */
 void
 ewl_fx_deinit_widget(Ewl_Widget * w)
 {
@@ -139,6 +163,18 @@ ewl_fx_deinit_widget(Ewl_Widget * w)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * ewl_fx_add_proto - add a prototype for executing fx
+ * @name: the identifier for the fx
+ * @fx_start: the function called when the fx begin
+ * @fx_cont: the function called at specified intervals
+ * @fx_stop: the function called when the fx stop
+ * @modifies: a bit mask that specifies which properties the fx alter
+ *
+ * Returns -1 on error, 0 if a cached version of the proto is found, 1 if a
+ * newly allocated prototype is used. This should be used if a programmer
+ * wishes to include their own plugins.
+ */
 int
 ewl_fx_add_proto(char *name,
 		 Ewl_FX_Function fx_start,
@@ -169,15 +205,27 @@ ewl_fx_add_proto(char *name,
 	DRETURN_INT(1, DLEVEL_STABLE);
 }
 
+/**
+ * ewl_fx_del_proto - delete the prototype for the fx with the specified @name
+ * @name: the name identifier for the fx prototype to remove.
+ *
+ * Returns TRUE on success, FALSE on failure.
+ */
 int
 ewl_fx_del_proto(char *name)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("name", name, -1);
+	DCHECK_PARAM_PTR_RET("name", name, FALSE);
 
-	DRETURN_INT(1, DLEVEL_STABLE);
+	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
+/**
+ * ewl_fx_proto_get - retrieve a prototype for the plugin of the specified @name
+ * @name: the name identifier for the desired fx prototype
+ *
+ * Returns a pointer to the found fx prototype on success, NULL on failure.
+ */
 Ewl_FX_Proto *
 ewl_fx_proto_get(char *name)
 {
@@ -191,6 +239,16 @@ ewl_fx_proto_get(char *name)
 	DRETURN_PTR(fxp, DLEVEL_STABLE);
 }
 
+/**
+ * ewl_fx_add - add fx to a specified widget
+ * @w: the widget to add the fx
+ * @name: the name of the fx to add
+ * @cb_start: the callback to indicate the fx have started
+ * @cb_stop: the callback to indicate the fx have stopped
+ *
+ * Returns -1 on error, 0 if the fx have already been started, 1 if the fx are
+ * newly started.
+ */
 int
 ewl_fx_add(Ewl_Widget * w, char *name, Ewl_Callback_Type cb_start,
 	   Ewl_Callback_Type cb_stop)
@@ -250,6 +308,16 @@ ewl_fx_add(Ewl_Widget * w, char *name, Ewl_Callback_Type cb_start,
 	DRETURN_INT(1, DLEVEL_STABLE);
 }
 
+/**
+ * ewl_fx_del - delete the specified fx from the widget @w
+ * @w: the widget to delete fx
+ * @name: the name of the fx to remove from @w
+ * @cb_start: the callback to indicate the start of the fx
+ * @cb_stop: the callback to indicate the stop of the fx
+ *
+ * Returns -1 on error, 0 if the fx are not running, 1 if the fx are running
+ * and have been stopped.
+ */
 int
 ewl_fx_del(Ewl_Widget * w, char *name, Ewl_Callback_Type cb_start,
 	   Ewl_Callback_Type cb_stop)
@@ -307,6 +375,12 @@ ewl_fx_del(Ewl_Widget * w, char *name, Ewl_Callback_Type cb_start,
 	DRETURN_INT(1, DLEVEL_STABLE);
 }
 
+/**
+ * ewd_fx_del_all - remove all fx from the specified widget
+ * @w: the widget to remove fx
+ *
+ * Returns no value. Any fx currently running are stopped.
+ */
 void
 ewl_fx_del_all(Ewl_Widget * w)
 {
@@ -342,14 +416,26 @@ ewl_fx_del_all(Ewl_Widget * w)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * ewl_fx_timer_add - add a timer for the specified fx on the a widget
+ * @w: the widget to add the fx timer
+ * @name: the name of the fx to add the timer
+ * @interval: the interval between timer notifications
+ * @step: FIXME what does this do? the only references to it just calculate it
+ * @count: the number of times to execute the timer
+ * @data: user specified data to pass to the timer function
+ *
+ * Returns no value. Sets up a timer to be executed at regular intervals to
+ * allow animation of fx.
+ */
 void
-ewl_fx_timer_add(Ewl_Widget * w, char *name, double interval,
-		 double step, int count, void *data)
+ewl_fx_timer_add(Ewl_Widget * w, char *name, double timeout, int fps,
+		 int value_span, void *data)
 {
 	Ewl_FX_Timer *timer;
 	Ewl_FX_Pending *pend = NULL;
 	Ewl_FX_Proto *fxp;
-	int l;
+	int l, ufps;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -383,12 +469,20 @@ ewl_fx_timer_add(Ewl_Widget * w, char *name, double interval,
 	timer = NEW(Ewl_FX_Timer, 1);
 	ZERO(timer, Ewl_FX_Timer, 1);
 
+	/*
+	 * Allow the user to override the programmers chosen fps if that value
+	 * is specified and smaller than the programmers fps.
+	 */
+	ufps = ewl_config_get_int("system", "/fx/fps");
+	if (ufps && ufps < fps)
+		fps = ufps;
+
 	timer->widget = w;
 	timer->func = fxp->fx_cont;
-	timer->step = step;
-	timer->interval = interval;
+	timer->interval = 1 / (float)fps;
 	timer->count = 0;
-	timer->hits = count;
+	timer->hits = timeout * fps;
+	timer->step = (float)value_span / (timer->hits + 0.5);
 	timer->data = data;
 	timer->pend = pend;
 
@@ -407,6 +501,13 @@ ewl_fx_timer_add(Ewl_Widget * w, char *name, double interval,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * ewl_fx_timer_del - remove a timer of a specified name from a widget
+ * @w: the widget to remove the timer
+ * @name: the name of the timer attached to @w that is to be removed
+ *
+ * Returns no value. Removes the timer specified by @name from the widget @w.
+ */
 void
 ewl_fx_timer_del(Ewl_Widget * w, char *name)
 {
@@ -444,29 +545,45 @@ ewl_fx_timer_del(Ewl_Widget * w, char *name)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * ewl_fx_calculate_interval - determine the interval between frames
+ * @fps: the desired frames per second
+ *
+ * Returns the interval between frames on success, 0 on failure.
+ */
 double
-ewl_fx_calculate_interval(double fps, double timeout)
+ewl_fx_calculate_interval(double fps)
 {
 	double ival = 0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	ival = timeout / (fps * timeout);
+	/*
+	 * Need to check fps to ensure we don't get a divide by zero error.
+	 */
+	DCHECK_PARAM_PTR_RET("fps", fps, 0.0);
+
+	ival = 1 / fps;
 
 	D(DLEVEL_STABLE, "interval = %f", ival);
 
 	DRETURN_FLOAT(ival, DLEVEL_STABLE);
 }
 
+/**
+ * ewl_fx_calculate_step - determine the step between frames
+ * @start_val: the beginning value of the step
+ * @end_val: the ending value of the step
+ * @fps: the frames per second of the animation
+ */
 double
-ewl_fx_calculate_step(double start_val, double end_val,
-		      double fps, double timeout)
+ewl_fx_calculate_step(double start_val, double end_val, double fps)
 {
 	double step = 0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	step = timeout / (fps * timeout);
+	step = 1 / fps;
 
 	if (end_val > start_val)
 		step *= (end_val - start_val);
@@ -478,6 +595,17 @@ ewl_fx_calculate_step(double start_val, double end_val,
 	DRETURN_FLOAT(step, DLEVEL_STABLE);
 }
 
+/**
+ * ewl_fx_clip_box_get_color - retrieve the current color of the fx clip box
+ * @w: the widget to check the clip box color
+ * @r: a pointer to the integer to store the red value
+ * @g: a pointer to the integer to store the green value
+ * @b: a pointer to the integer to store the blue value
+ * @a: a pointer to the integer to store the alpha value
+ *
+ * Returns no value. The RGBA values of @w's fx clip box are stored into any
+ * non-NULL pointers @r, @g, @b, and @a respectively.
+ */
 void
 ewl_fx_clip_box_get_color(Ewl_Widget * w, int *r, int *g, int *b, int *a)
 {
@@ -501,6 +629,17 @@ ewl_fx_clip_box_get_color(Ewl_Widget * w, int *r, int *g, int *b, int *a)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * ewl_fx_clip_box_set_color - set the color for a widgets fx clip box
+ * @w: the widget to set the color
+ * @r: the red value to be set
+ * @g: the green value to be set
+ * @b: the blue value to be set
+ * @a: the alpha value to be set
+ *
+ * Returns no value. Sets the RGBA colors of @w's fx clib box to @r, @g, @b,
+ * and @a respectively.
+ */
 void
 ewl_fx_clip_box_set_color(Ewl_Widget * w, int r, int g, int b, int a)
 {
@@ -513,6 +652,12 @@ ewl_fx_clip_box_set_color(Ewl_Widget * w, int r, int g, int b, int a)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * ewl_fx_plugin_load - load a plugin of a specified name
+ * @name: the name of the plugin to load
+ *
+ * Returns a pointer to the fx prototype on success, NULL on failure.
+ */
 Ewl_FX_Proto *
 ewl_fx_plugin_load(char *name)
 {
@@ -549,6 +694,12 @@ ewl_fx_plugin_load(char *name)
 	DRETURN_PTR(fxp, DLEVEL_STABLE);
 }
 
+/**
+ * ewl_fx_get_available - get a list of available plugins
+ * 
+ *
+ * Returns a list of available plugins on success, NULL on failure.
+ */
 Ewd_List *
 ewl_fx_get_available(void)
 {
@@ -561,6 +712,13 @@ ewl_fx_get_available(void)
 	DRETURN_PTR(avail, DLEVEL_STABLE);
 }
 
+/**
+ * ewl_fx_start - start pending fx on a widget
+ * @w: the widget to start pending fx
+ * @pend: the pending effect to start
+ *
+ * Returns no value. Starts the pending fx @pend on widget @w.
+ */
 void
 ewl_fx_start(Ewl_Widget * w, Ewl_FX_Pending * pend)
 {
@@ -626,10 +784,10 @@ ewl_fx_start(Ewl_Widget * w, Ewl_FX_Pending * pend)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-/*
+/**
  * ewl_fx_stop - stop a pending effect.
  * @w: the widget to stop the pending effect on.
- * @pend what pending effect to stop.
+ * @pend: the pending effect to stop.
  *
  * Returns no value. Here we stop the pending effect and search through
  * qued effects and start matching effects and remove them from the que list.

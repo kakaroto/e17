@@ -1,7 +1,6 @@
 
 #include <Ewl.h>
 
-static void __ewl_spinner_init(Ewl_Spinner * spinner);
 static void __ewl_spinner_realize(Ewl_Widget * widget, void *ev_data,
 				  void *user_data);
 static void __ewl_spinner_configure(Ewl_Widget * widget, void *ev_data,
@@ -46,7 +45,7 @@ ewl_spinner_new()
 	s->button_increase = ewl_button_new(NULL);
 	s->button_decrease = ewl_button_new(NULL);
 
-	__ewl_spinner_init(s);
+	ewl_spinner_init(s);
 
 	ewl_container_append_child(EWL_CONTAINER(s), s->entry);
 	ewl_container_append_child(EWL_CONTAINER(s), s->button_increase);
@@ -114,8 +113,8 @@ ewl_spinner_set_step(Ewl_Widget * w, double step)
 }
 
 
-static void
-__ewl_spinner_init(Ewl_Spinner * s)
+void
+ewl_spinner_init(Ewl_Spinner * s)
 {
 	Ewl_Widget *w;
 

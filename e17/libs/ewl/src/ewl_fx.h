@@ -70,13 +70,12 @@ int ewl_fx_del(Ewl_Widget * w, char *name, Ewl_Callback_Type cb_start,
 	       Ewl_Callback_Type cb_stop);
 void ewl_fx_del_all(Ewl_Widget * w);
 
-void ewl_fx_timer_add(Ewl_Widget * w, char *name, double interval,
-		      double step, int count, void *data);
+void ewl_fx_timer_add(Ewl_Widget * w, char *name, double timeout, int fps,
+		 int value_span, void *data);
 void ewl_fx_timer_del(Ewl_Widget * w, char *name);
 
-double ewl_fx_calculate_interval(double fps, double timeout);
-double ewl_fx_calculate_step(double start_val, double end_val,
-			     double fps, double timeout);
+double ewl_fx_calculate_interval(double fps);
+double ewl_fx_calculate_step(double start_val, double end_val, double fps);
 
 void ewl_fx_clip_box_get_color(Ewl_Widget * w, int *r, int *g, int *b,
 			       int *a);
