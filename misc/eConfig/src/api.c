@@ -12,6 +12,7 @@ void *eConfigGetData(char *loc, unsigned long *length) {
 	 */
 
 	eConfigData *cur_data;
+	void *data;
 
 	if(!loc) {
 		*length = 0;
@@ -31,7 +32,9 @@ void *eConfigGetData(char *loc, unsigned long *length) {
 		}
 	}
 
-	
+	if((data = _econf_get_data_from_disk(loc,length))) {
+		return data;
+	}
 
 	eConfigUpdateCache();
 	*length = 0;

@@ -59,3 +59,11 @@ Sat Oct 30 17:19:36 PDT 1999
 API editing (slightly).  I have a question - how portable is using time_t?
 Anyone care to take that one?  time_t in a file, that is.  I want to be able to
 store the last modification date of something NOT as a string.
+
+-------------------------------------------------------------------------------
+
+Sat Oct 30 18:31:02 PDT 1999
+(Mandrake)
+
+eConfigGetData() is starting to take shape now - we just have to figure out
+what to do about these binary timestamps
