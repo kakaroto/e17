@@ -323,30 +323,38 @@ MenuShow(Menu * m, char noshow)
 	     head_num =
 		GetPointerScreenGeometry(&x_origin, &y_origin, &width, &height);
 
-	     if (Mode.x - x - ((int)mw / 2) > (x_origin + width))
-		wx = x_origin + (int)b->border.left;
-	     else if (Mode.x + ((int)mw / 2) > (int)(x_origin + width))
-		wx = (x_origin + width) - (int)mw - (int)b->border.right;
+	     if (Mode.x - x - ((int)mw / 2) > x_origin + width)
+		wx = x_origin + b->border.left;
+	     else if (Mode.x + ((int)mw / 2) > x_origin + width)
+		wx = x_origin + width - mw - b->border.right;
 	     else
-		wx = Mode.x - x - ((int)w / 2);
+		wx = Mode.x - x - (w / 2);
 
 	     if ((wx - ((int)w / 2)) < x_origin)
-		wx = x_origin + (int)b->border.left;
+		wx = x_origin + b->border.left;
 
-	     if (Mode.y + (int)mh > (int)VRoot.h)
-		wy = (y_origin + height) - (int)mh - (int)b->border.bottom;
+	     if (Mode.y + (int)mh > VRoot.h)
+		wy = (y_origin + height) - mh - b->border.bottom;
 	     else
-		wy = Mode.y - y - ((int)h / 2);
+		wy = Mode.y - y - (h / 2);
 
-	     if ((wy - ((int)h / 2) - (int)b->border.top) < y_origin)
-		wy = y_origin + (int)b->border.top;
+	     if ((wy - ((int)h / 2) - b->border.top) < y_origin)
+		wy = y_origin + b->border.top;
+	  }
+	else
+	  {
+	     /* We should never get here */
+	     wx = Mode.x - x - (w / 2);
+	     wy = Mode.y - y - (h / 2);
 	  }
      }
-
-   if (Conf.menus.onscreen)
-      EMoveWindow(m->win, wx, wy);
    else
-      EMoveWindow(m->win, Mode.x - x - (w / 2), Mode.y - y - (h / 2));
+     {
+	wx = Mode.x - x - (w / 2);
+	wy = Mode.y - y - (h / 2);
+     }
+
+   EMoveWindow(m->win, wx, wy);
 
    ewin = AddInternalToFamily(m->win, m->style->border_name, EWIN_TYPE_MENU, m,
 			      MenuEwinInit);
@@ -359,11 +367,11 @@ MenuShow(Menu * m, char noshow)
 	ewin->head = head_num;
 	if (Conf.menus.animate)
 	   EwinInstantShade(ewin, 0);
-	ICCCM_Cmap(NULL);
-	MoveEwin(ewin, EoGetX(ewin), EoGetY(ewin));
-	FloatEwinAt(ewin, EoGetX(ewin), EoGetY(ewin));
 	if (!noshow)
 	  {
+	     ICCCM_Cmap(NULL);
+	     MoveEwin(ewin, EoGetX(ewin), EoGetY(ewin));
+	     FloatEwinAt(ewin, EoGetX(ewin), EoGetY(ewin));
 	     ShowEwin(ewin);
 	     if (Conf.menus.animate)
 		EwinUnShade(ewin);
@@ -761,13 +769,6 @@ MenuRealize(Menu * m)
 	maxw += m->style->sub_iclass->padding.left;
 	maxw += m->style->sub_iclass->padding.right;
      }
-   x = 0;
-   y = 0;
-   if ((m->style->bg_iclass) && (!m->style->use_item_bg))
-     {
-	x = m->style->bg_iclass->padding.left;
-	y = m->style->bg_iclass->padding.top;
-     }
 
    r = 0;
    mmw = 0;
@@ -775,8 +776,15 @@ MenuRealize(Menu * m)
    pq = Mode.queue_up;
    Mode.queue_up = 0;
 
+   x = 0;
+   y = 0;
    for (i = 0; i < m->num; i++)
      {
+	if (r == 0 && (m->style->bg_iclass) && (!m->style->use_item_bg))
+	  {
+	     x += m->style->bg_iclass->padding.left;
+	     y += m->style->bg_iclass->padding.top;
+	  }
 	EMoveResizeWindow(m->items[i]->win, x, y, maxw, maxh);
 	if (m->style->iconpos == ICON_LEFT)
 	  {
@@ -880,6 +888,7 @@ MenuRedraw(Menu * m)
 			    STATE_NORMAL, &m->pmm, 1, ST_MENU);
 	ESetWindowBackgroundPixmap(m->win, m->pmm.pmap);
 	EShapeCombineMask(m->win, ShapeBounding, 0, 0, m->pmm.mask, ShapeSet);
+	EClearWindow(m->win);
 	for (i = 0; i < m->num; i++)
 	   MenuDrawItem(m, m->items[i], 0);
      }
