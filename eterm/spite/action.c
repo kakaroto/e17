@@ -130,7 +130,71 @@ im_type_cb(GtkWidget *widget, gpointer data)
       }
     }
   }            
-
+  if (strcmp(cur_im_widget, "down arrow") == 0){
+    if (strcmp(cur_im_state, "normal") == 0) {
+      gtk_entry_set_text(GTK_ENTRY (im_file_entry), imageclass->image_down_arrow->normal->file);
+    }
+    else {
+      if (strcmp(cur_im_state, "selected") == 0) {
+        gtk_entry_set_text(GTK_ENTRY (im_file_entry), imageclass->image_down_arrow->selected->file);
+      }
+      else {
+        gtk_entry_set_text(GTK_ENTRY (im_file_entry), imageclass->image_down_arrow->clicked->file);
+      }
+    }
+  }
+  if (strcmp(cur_im_widget, "menu") == 0){
+    if(strcmp(cur_im_state, "normal") == 0) {
+      gtk_entry_set_text(GTK_ENTRY (im_file_entry), imageclass->image_menu->normal->file);
+    }
+    else {
+      if (strcmp(cur_im_state, "selected") == 0) {
+        gtk_entry_set_text(GTK_ENTRY (im_file_entry), imageclass->image_menu->selected->file);
+      }
+      else {
+        gtk_entry_set_text(GTK_ENTRY (im_file_entry), imageclass->image_menu->clicked->file);
+      }
+    }
+  }
+  if (strcmp(cur_im_widget, "submenu") == 0) {
+    if (strcmp(cur_im_state, "normal") == 0) {
+      gtk_entry_set_text(GTK_ENTRY (im_file_entry), imageclass->image_submenu->normal->file);
+    }
+    else {
+      if (strcmp(cur_im_state, "selected") == 0) {
+        gtk_entry_set_text(GTK_ENTRY (im_file_entry), imageclass->image_submenu->selected->file);
+      }
+      else {
+        gtk_entry_set_text(GTK_ENTRY (im_file_entry), imageclass->image_submenu->clicked->file);
+      }
+    }
+  }
+  if (strcmp(cur_im_widget, "buttonbar") == 0){
+    if(strcmp(cur_im_state, "normal") == 0) {
+      gtk_entry_set_text(GTK_ENTRY (im_file_entry), imageclass->image_buttonbar->normal->file);
+    }
+    else {
+      if (strcmp(cur_im_state, "selected") == 0) {
+        gtk_entry_set_text(GTK_ENTRY (im_file_entry), imageclass->image_buttonbar->selected->file);
+      }
+      else {
+        gtk_entry_set_text(GTK_ENTRY (im_file_entry), imageclass->image_buttonbar->clicked->file);
+      }
+    }
+  }
+  if (strcmp(cur_im_widget, "button") == 0) {
+    if (strcmp(cur_im_state, "normal") == 0) {
+      gtk_entry_set_text(GTK_ENTRY (im_file_entry), imageclass->image_button->normal->file);
+    }
+    else {
+      if (strcmp(cur_im_state, "selected") == 0) {
+        gtk_entry_set_text(GTK_ENTRY (im_file_entry), imageclass->image_button->selected->file);
+      }
+      else {
+        gtk_entry_set_text(GTK_ENTRY (im_file_entry), imageclass->image_button->clicked->file);
+      }
+    }
+  }
 }
 
 extern void
@@ -426,6 +490,58 @@ set_defaults(void)
   strcpy(imageclass->image_up_arrow->clicked->file, "button_arrow_up_3.png");
   strcpy(imageclass->image_up_arrow->clicked->geom, ":scale");
   strcpy(imageclass->image_up_arrow->clicked->border, "2 2 2 2");
+  strcpy(imageclass->image_down_arrow->normal->file, "button_arrow_down_1.png");
+  strcpy(imageclass->image_down_arrow->normal->color, "black #666666");
+  strcpy(imageclass->image_down_arrow->normal->geom, ":scale");
+  strcpy(imageclass->image_down_arrow->normal->border, "2 2 2 2");
+  strcpy(imageclass->image_down_arrow->selected->file, "button_arrow_down_2.png");
+  strcpy(imageclass->image_down_arrow->selected->geom, ":scale");
+  strcpy(imageclass->image_down_arrow->selected->border, "2 2 2 2");
+  strcpy(imageclass->image_down_arrow->clicked->file, "button_arrow_down_3.png");
+  strcpy(imageclass->image_down_arrow->clicked->geom, ":scale");
+  strcpy(imageclass->image_down_arrow->clicked->border, "2 2 2 2");
+  strcpy(imageclass->image_menu->normal->file, "bar_horizontal_1.png");
+  strcpy(imageclass->image_menu->normal->color, "black #666666");
+  strcpy(imageclass->image_menu->normal->geom, "100x100+0+0:scale");
+  strcpy(imageclass->image_menu->normal->border, "2 3 2 3");
+  strcpy(imageclass->image_menu->selected->file, "bar_horizontal_2.png");
+  strcpy(imageclass->image_menu->selected->geom, "100x100+0+0:scale");
+  strcpy(imageclass->image_menu->selected->border, "2 3 2 3");
+  strcpy(imageclass->image_menu->clicked->file, "bar_horizontal_2.png");
+  strcpy(imageclass->image_menu->clicked->geom, "100x100+0+0:scale");
+  strcpy(imageclass->image_menu->clicked->border, "2 3 2 3");
+  strcpy(imageclass->image_submenu->normal->file, "menu1.png");
+  strcpy(imageclass->image_submenu->normal->color, "black #666666");
+  strcpy(imageclass->image_submenu->normal->geom, "100x100+0+0:scale");
+  strcpy(imageclass->image_submenu->normal->border, "3 15 3 3");
+  strcpy(imageclass->image_submenu->selected->file, "menu2.png");
+  strcpy(imageclass->image_submenu->selected->geom, "100x100+0+0:scale");
+  strcpy(imageclass->image_submenu->selected->border, "3 15 3 3");
+  strcpy(imageclass->image_submenu->clicked->file, "menu3.png");
+  strcpy(imageclass->image_submenu->clicked->geom, "100x100+0+0:scale");
+  strcpy(imageclass->image_submenu->clicked->border, "3 15 3 3");
+
+  strcpy(imageclass->image_buttonbar->normal->file, "bar_horizontal_1.png");
+  strcpy(imageclass->image_buttonbar->normal->color, "black #999999");
+  strcpy(imageclass->image_buttonbar->normal->geom, "100x100+0+0:scale");
+  strcpy(imageclass->image_buttonbar->normal->border, "2 3 2 2");
+  strcpy(imageclass->image_buttonbar->selected->file, "bar_horizontal_1.png");
+  strcpy(imageclass->image_buttonbar->selected->geom, "100x100+0+0:scale");
+  strcpy(imageclass->image_buttonbar->selected->border, "2 3 2 2");
+  strcpy(imageclass->image_buttonbar->clicked->file, "bar_horizontal_1.png");
+  strcpy(imageclass->image_buttonbar->clicked->geom, "100x100+0+0:scale");
+  strcpy(imageclass->image_buttonbar->clicked->border, "2 3 2 2");
+  strcpy(imageclass->image_button->normal->file, "bar_horizontal_1.png");
+  strcpy(imageclass->image_button->normal->color, "black #cccccc");
+  strcpy(imageclass->image_button->normal->geom, "100x100+0+0:scale");
+  strcpy(imageclass->image_button->normal->border, "2 3 3 2");
+  strcpy(imageclass->image_button->selected->file, "bar_horizontal_2.png");
+  strcpy(imageclass->image_button->selected->geom, "100x100+0+0:scale");
+  strcpy(imageclass->image_button->selected->border, "2 3 2 2");
+  strcpy(imageclass->image_button->clicked->file, "bar_horizontal_3.png");
+  strcpy(imageclass->image_button->clicked->geom, "100x100+0+0:scale");
+  strcpy(imageclass->image_button->clicked->border, "2 3 2 2");
+
   gtk_entry_set_text(GTK_ENTRY (im_file_entry), imageclass->image_bg->normal->file);
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (im_image_btn), TRUE);
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (im_trans_btn), TRUE);

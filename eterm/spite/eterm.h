@@ -75,6 +75,7 @@ typedef struct {
   Image *image_menu;
   Image *image_submenu;
   Image *image_buttonbar;
+  Image *image_button;
 }Imageclass;
 
 typedef struct {
