@@ -64,6 +64,10 @@ _esmart_trans_x11_pixmap_get(Evas *evas, Evas_Object *old, int x, int y, int w, 
    else
       root = 0;
 
+   imlib_context_set_display(ecore_x_display_get());
+   imlib_context_set_visual(DefaultVisual(ecore_x_display_get(),DefaultScreen(ecore_x_display_get())));
+   imlib_context_set_colormap(DefaultColormap(ecore_x_display_get(),DefaultScreen(ecore_x_display_get())));
+
    /* Attempt to find the current virtual desktop using NetWM properties */
    if (ecore_x_window_prop_property_get(root, x_current_desktop, 
                                         x_cardinal,
@@ -147,7 +151,7 @@ _esmart_trans_x11_pixmap_get(Evas *evas, Evas_Object *old, int x, int y, int w, 
                                                   sx - dx, sy - dy, pw, ph);
                   
                imlib_context_set_image(im);
-               imlib_free_image();
+               imlib_free_image_and_decache();
                imlib_context_set_image(dest);
             }
 
@@ -156,7 +160,7 @@ _esmart_trans_x11_pixmap_get(Evas *evas, Evas_Object *old, int x, int y, int w, 
             evas_object_image_alpha_set(new, 0);
             evas_object_image_size_set(new, w, h);
             evas_object_image_data_copy_set(new, imlib_image_get_data_for_reading_only());
-            imlib_free_image();
+            imlib_free_image_and_decache();
 
             evas_object_image_fill_set(new, 0, 0, w, h);
             evas_object_resize(new, w, h);
@@ -230,11 +234,7 @@ Evas_Object *
 esmart_trans_x11_new(Evas *e)
 {
   Evas_Object *x11_trans_object;
-  
-  imlib_context_set_display(ecore_x_display_get());
-  imlib_context_set_visual(DefaultVisual(ecore_x_display_get(),DefaultScreen(ecore_x_display_get())));
-  imlib_context_set_colormap(DefaultColormap(ecore_x_display_get(),DefaultScreen(ecore_x_display_get())));
-  
+
   x11_trans_object = evas_object_smart_add(e,
 				_esmart_trans_x11_smart_get());
   return x11_trans_object;
