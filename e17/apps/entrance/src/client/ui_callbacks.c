@@ -54,6 +54,7 @@ void
 update_login_face(Entrance_Session e, char *name)
 {
    char buf[PATH_MAX];
+   int iw, ih;
 
    snprintf(buf, PATH_MAX, "%s/%s.png", PACKAGE_DATA_DIR "/data/images/users",
             name);
@@ -65,7 +66,11 @@ update_login_face(Entrance_Session e, char *name)
       evas_object_hide(e->face_shadow);
       return;
    }
-   THEME_IMAGE_RESIZE(e->face, e->theme->face);
+   
+   evas_object_image_size_get(e->face, &iw, &ih);
+   evas_object_resize(e->face, (double) iw, (double) ih);
+   evas_object_image_fill_set(e->face, 0.0, 0.0, (double) iw, (double) ih);
+   
    fx_fade_in(e->face_shadow, 0.15);
    fx_fade_in(e->face, 0.15);
 }
