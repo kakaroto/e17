@@ -319,6 +319,67 @@ command_line(EfsdConnection *ec)
 	{
 	  if (!strcmp(tok, "exit"))
 	    return;
+	  else if (!strcmp(tok, "ln"))
+	    {
+	      char *file1, *file2;
+	      
+	      if ((file1 = strtok(NULL, " \t\n")) &&
+		  (file2 = strtok(NULL, " \t\n")))
+		{
+		  if ((id = efsd_symlink(ec, file1, file2)) < 0)
+		    printf("Couldn't issue ln command.\n");
+		}
+	    }
+	  else if (!strcmp(tok, "cp") || !strcmp(tok, "mv"))
+	    {
+	      char force = 0;
+	      char rec = 0;
+	      char move = 0;
+
+	      if (!strcmp(tok, "mv"))
+		move = 1;
+
+	      while ((tok = strtok(NULL, " \t\n")))
+		{
+		  if (!strcmp(tok, "-f"))
+		    {
+		      num_options++;
+		      force = 1;
+		    }
+		  else if (!strcmp(tok, "-r"))
+		    {
+		      num_options++;
+		      rec = 1;
+		    }
+		  else
+		    {
+		      char *target;
+		      EfsdOptions *ops = NULL;
+		      
+		      if (num_options > 0)
+			{
+			  ops = efsd_ops_create(num_options);
+			  
+			  if (force) efsd_ops_add(ops, efsd_op_force());
+			  if (rec)   efsd_ops_add(ops, efsd_op_recursive());
+			}
+		      
+		      if ((target = strtok(NULL, " \t\n")))
+			{
+			  if (move)
+			    {
+			      if ((id = efsd_move(ec, tok, target, ops)) < 0)
+				printf("Couldn't issue mv command.\n");
+			    }
+			  else
+			    {
+			      if ((id = efsd_copy(ec, tok, target, ops)) < 0)
+				printf("Couldn't issue cp command.\n");
+			    }
+			}
+		    }
+		}
+	    }
 	  else if (!strcmp(tok, "ls"))
 	    {
 	      char show_all = 0;
