@@ -436,7 +436,6 @@ evbox_buttonpress_cb(GtkWidget * widget, GdkEventButton * event)
                D(2, ("setting object state DRAG\n"));
                geist_object_set_state(obj, DRAG);
                geist_object_raise(doc, obj);
-               geist_document_dirty_object(doc, obj);
             }
          }
          gtk_object_set_data_full(GTK_OBJECT(mainwin), "draglist", list,
@@ -647,7 +646,6 @@ gboolean obj_del_cb(GtkWidget * widget, gpointer * data)
                                                     obj));
       gtk_signal_handler_unblock(GTK_OBJECT(obj_list), obj_sel_handler);
       gtk_signal_handler_unblock(GTK_OBJECT(obj_list), obj_unsel_handler);
-      geist_document_dirty_object(doc, obj);
       geist_document_remove_object(doc, obj);
       geist_object_free(obj);
    }
@@ -807,7 +805,6 @@ gboolean obj_unsel_cb(GtkWidget * widget, int row, int column,
    if (obj)
    {
       geist_object_unselect(doc, obj);
-      geist_document_dirty_object(doc, obj);
 
       selection = GTK_CLIST(widget)->selection;
       if (g_list_length(selection) > 1)
