@@ -42,7 +42,7 @@ init_index_mode(void)
    int w = 800, h = 600, ww = 0, hh = 0, www, hhh, xxx, yyy;
    int x = 0, y = 0;
    int bg_w = 0, bg_h = 0;
-   winwidget winwid;
+   winwidget winwid = NULL;
    Imlib_Image bg_im = NULL, im_thumb = NULL;
    int tot_thumb_h;
    int text_area_h = 50;
@@ -207,7 +207,7 @@ init_index_mode(void)
       vertical = 1;
       h = opt.limit_h;
       /* calc w */
-      for (l = filelist; l;l = l->next)
+      for (l = filelist; l; l = l->next)
       {
          file = FEH_FILE(l->data);
          text_area_w = opt.thumb_w;
@@ -260,7 +260,7 @@ init_index_mode(void)
 
       for (l = filelist; l; l = l->next)
       {
-          file = FEH_FILE(l->data);
+         file = FEH_FILE(l->data);
          text_area_w = opt.thumb_w;
          if (opt.index_show_name)
          {
@@ -319,6 +319,14 @@ init_index_mode(void)
                                      0, 255);
    }
 
+   if (opt.display && opt.progressive)
+   {
+      winwid =
+         winwidget_create_from_image(im_main, PACKAGE " [index mode]",
+                                     WIN_TYPE_SINGLE);
+      winwidget_show(winwid);
+   }
+
    for (l = filelist; l; l = l->next)
    {
       file = FEH_FILE(l->data);
@@ -338,10 +346,6 @@ init_index_mode(void)
          ww = feh_imlib_image_get_width(im_temp);
          hh = feh_imlib_image_get_height(im_temp);
          thumbnailcount++;
-         if (feh_imlib_image_has_alpha(im_temp))
-            imlib_context_set_blend(1);
-         else
-            imlib_context_set_blend(0);
 
          if (opt.aspect)
          {
@@ -477,6 +481,8 @@ init_index_mode(void)
             y += tot_thumb_h;
          else
             x += text_area_w;
+         if (opt.display && opt.progressive)
+            winwidget_render_image(winwid, 1, 0);
       }
       else
       {
@@ -519,10 +525,15 @@ init_index_mode(void)
 
    if (opt.display)
    {
-      winwid =
-         winwidget_create_from_image(im_main, PACKAGE " [index mode]",
-                                     WIN_TYPE_SINGLE);
-      winwidget_show(winwid);
+      if (opt.progressive && winwid)
+         winwidget_render_image(winwid, 1, 1);
+      else
+      {
+         winwid =
+            winwidget_create_from_image(im_main, PACKAGE " [index mode]",
+                                        WIN_TYPE_SINGLE);
+         winwidget_show(winwid);
+      }
    }
    else
       feh_imlib_free_image_and_decache(im_main);

@@ -1,3 +1,12 @@
+Thu Jun 22 23:28:33 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Woop. Something I should've done a WHILE ago. If progressive
+	loading is enabled (ie not -P), you can see the index/montage
+	being created in front of your eyes ;-) It's sweet.
+	* Next I will make it respond to events during the creation
+	(quiting/zooming while still creating), and make it work for
+	thumbnail and collage modes too.
+
 Thu Jun 22 22:23:48 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Fix for trying to reload a montage
