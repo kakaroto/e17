@@ -30,6 +30,7 @@
 
 /* initialize all the KDE Hint Atoms */
 
+#if 0 /* we dont need these right now */
 static Atom         KDE_COMMAND = 0;
 static Atom         KDE_ACTIVATE_WINDOW = 0;
 static Atom         KDE_DO_NOT_MANAGE = 0;
@@ -65,6 +66,7 @@ static Atom         KDE_WIN_ICONIFIED = 0;
 static Atom         KDE_WIN_MAXIMIZED = 0;
 static Atom         KDE_WIN_STICKY = 0;
 static Atom         KDE_WIN_ICON_GEOMETRY = 0;
+#endif
 
 /* the modules I have to communicate to */
 typedef struct KModuleList

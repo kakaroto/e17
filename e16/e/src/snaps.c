@@ -332,7 +332,7 @@ SnapshotEwinDialog(EWin * ewin)
 
 	     s[0] = 0;
 	     slice = 80;
-	     while (i <= strlen(ewin->client.command))
+	     while (i <= (int)strlen(ewin->client.command))
 	       {
 		  last = i;
 		  i += 80;

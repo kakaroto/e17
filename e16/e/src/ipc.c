@@ -485,7 +485,8 @@ IPCStruct           IPCArray[] =
    {
       IPC_ReloadMenus,
       "reload_menus",
-      "Reload menus.cfg without restarting (Asmodean_)"
+      "Reload menus.cfg without restarting (Asmodean_)",
+      NULL
    }
 };
 
@@ -4386,4 +4387,7 @@ IPC_ReloadMenus(char *params, Client * c) {
   } 
 
   LoadConfigFile("menus.cfg");
+
+   params = NULL;
+   c = NULL;   
 }

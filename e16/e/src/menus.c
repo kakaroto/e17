@@ -300,29 +300,20 @@ ShowMenu(Menu * m, char noshow)
    GetWinWH(m->items[0]->win, &w, &h);
    GetWinWH(m->win, &mw, &mh);
 
+   wx = 0; wy = 0;
    if (mode.menusonscreen)
      {
-	if (mode.x - x - (w / 2) > root.w)
-	  {
-	     wx = 0 + (mw - w);
-	  }
-	else if (mode.x + w > root.w)
-	  {
-	     wx = root.w - mw - (mw - w);
-	  }
+	if (mode.x - x - ((int)w / 2) > (int)root.w)
+	   wx = 0 + ((int)mw - (int)w);
+	else if (mode.x + (int)w > (int)root.w)
+	   wx = root.w - (int)mw - ((int)mw - (int)w);
 	else
-	  {
-	     wx = mode.x - x - (w / 2);
-	  }
+	   wx = mode.x - x - ((int)w / 2);
 
-	if (mode.y + mh > root.h)
-	  {
-	     wy = root.h - mh;
-	  }
+	if (mode.y + (int)mh > (int)root.h)
+	   wy = (int)root.h - (int)mh;
 	else
-	  {
-	     wy = mode.y - y - (h / 2);
-	  }
+	   wy = mode.y - y - ((int)h / 2);
      }
 
    if ((mode.x >= 0) && (mode.y >= 0))

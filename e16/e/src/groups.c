@@ -4,7 +4,6 @@ Group              *
 CreateGroup()
 {
    Group              *g;
-   struct timeval      timev;
 
    g = Emalloc(sizeof(Group));
    if (!g)

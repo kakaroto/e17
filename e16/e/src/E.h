@@ -2514,6 +2514,7 @@ void                SnapshotEwinIcon(EWin * ewin);
 void                SnapshotEwinShade(EWin * ewin);
 void                SnapshotEwinCmd(EWin * ewin);
 void                SnapshotEwinAllInstances(EWin * ewin, char onoff);
+void                SnapshotEwinGroup(EWin * ewin, char onoff);
 void                SnapshotEwinAll(EWin * ewin);
 void                UnsnapshotEwin(EWin * ewin);
 void                SaveSnapInfo(void);
@@ -2720,6 +2721,8 @@ void                BreakWindowGroup(EWin * ewin);
 void                BuildWindowGroup(EWin ** ewins, int num);
 void                AddEwinToGroup(EWin * ewin, Group * g);
 void                RemoveEwinFromGroup(EWin * ewin);
+void                ChooseGroupForEwinDialog(EWin * ewin);
+void                FreeGroup(Group * g);
 
 EWin               *GetZoomEWin(void);
 void                ReZoom(EWin * ewin);
