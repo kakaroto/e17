@@ -326,6 +326,10 @@ feh_http_load_image(char *url)
    }
    else if (pid == 0)
    {
+      if (opt.verbose)
+          execlp("wget", "wget", "--cache", "0", url, "-O", tmpname, NULL);
+      else 
+          execlp("wget", "wget", "-q", "--cache", "0", url, "-O", tmpname, NULL);
       execlp("wget", "wget", "-q", "--cache", "0", url, "-O", tmpname, NULL);
       eprintf("url: exec failed: wget:");
    }
