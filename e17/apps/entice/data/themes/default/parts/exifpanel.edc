@@ -91,8 +91,8 @@
 	    }
 	    image {
 		normal: "border-bevel.png";
-	    }
 	    border: 10 10 10 10;
+	    }
 	    color: 255 255 255 0;
 	}
 	description {
@@ -108,8 +108,8 @@
 	    }
 	    image {
 		normal: "border-bevel.png";
-	    }
 	    border: 13 13 13 13;
+	    }
 	}
     }
     part {
@@ -155,8 +155,8 @@
 	    }
 	    image {
 		normal: "border-bevel.png";
-	    }
 	    border: 2 2 10 10;
+	    }
 	}
 	description {
 	    state: "visible" 0.0;
@@ -171,8 +171,8 @@
 	    }
 	    image {
 		normal: "border-bevel.png";
-	    }
 	    border: 10 10 10 10;
+	    }
 	}
     }
     part {
@@ -192,8 +192,8 @@
 	    }
 	    image {
 		normal: "border-bevel.png";
-	    }
 	    border: 10 10 10 10;
+	    }
 	}
     }
 #include "exifpanel_itemlist.edc"

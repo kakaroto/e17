@@ -90,10 +90,10 @@
 			offset, -13 28;
 			to, "Panel";
 		    }
-		    border, 4 4 4 4;
 		    image 
 		    {
 			normal, "list_sel.png";
+		    border, 4 4 4 4;
 		    }
 		}
 	    }

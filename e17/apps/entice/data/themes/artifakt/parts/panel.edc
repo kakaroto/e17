@@ -14,7 +14,7 @@
 	description { state, "default" 0.0; visible, 1; min, 123 99; max, 123 99;
 	r1 { to, "Panel"; relative, 0.5 0.45; offset, 68 0; }
 	r2 { to, "Panel"; relative, 0.0 0.0; offset, 0 0; }
-	image { normal, "thumb_preview.png"; } border, 2 2 3 3; fill { smooth, 1; } } }
+	image { normal, "thumb_preview.png"; border, 2 2 3 3; } fill { smooth, 1; } } }
 
 	part { name, "entice.thumbnail.area"; type, RECT; mouse_events, 1; 
 	description { state, "default" 0.0; visible, 1; min, 102 96; max, 102 96;

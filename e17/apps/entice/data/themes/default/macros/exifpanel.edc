@@ -30,8 +30,7 @@
 	    align: 0.5 0.5; \
 	    rel1 { relative: 0.0 0.0; offset: 0 0; to: object".box"; } \
 	    rel2 { relative: 1.0 1.0; offset: 0 0; to: object".box"; } \
-	    image { normal: "border-bevel.png"; } \
-	    border: 10 12 10 10; \
+	    image { normal: "border-bevel.png"; border: 10 12 10 10; } \
 	} \
     } \
     part { \
@@ -64,8 +63,7 @@
 	    align: 0.5 0.5; \
 	    rel1 { relative: 0.0 0.0; offset: 0 0; to: object".box"; } \
 	    rel2 { relative: 1.0 1.0; offset: 0 0; to: object".box"; } \
-	    image { normal: "border-bevel.png"; } \
-	    border: 10 12 10 10; \
+	    image { normal: "border-bevel.png"; border: 10 12 10 10; } \
 	} \
     }
 

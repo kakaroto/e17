@@ -43,8 +43,8 @@
 	  }				\
 	  image {			\
 	      normal, "border-bevel.png"; \
-	  }				\
 	  border, BORDER; 		\
+	  }				\
 	}				\
       }					\
       part {				\
@@ -87,8 +87,8 @@
 	  }				\
 	  image {			\
 	      normal, "bt_dragable.png"; \
-	  } 				\
 	  border, 4 4 4 4;		\
+	  } 				\
 	}				\
       }					
 #define HSLIDER(NAME, REL1_TO, REL1_REL, REL1_OFF, \

@@ -47,8 +47,8 @@
 		    }
 		    image {
 			normal, "border-bevel.png";
-		    }
 		    border, 12 12 12 12;
+		    }
 		    color, 255 255 255 192;
 		}
 	    }
