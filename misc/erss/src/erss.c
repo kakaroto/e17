@@ -557,7 +557,6 @@ int main (int argc, char * const argv[])
 	snprintf(theme_file, PATH_MAX, "erss - %s", config_file);
 	ecore_evas_title_set (ee, theme_file);
 	ecore_evas_shaped_set (ee, 1);
-   ecore_x_window_prop_window_type_set(win, ECORE_X_WINDOW_TYPE_DOCK);
    ecore_x_window_prop_layer_set(win, -1);
 	ecore_evas_show (ee);
 	
