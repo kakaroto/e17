@@ -1025,7 +1025,7 @@ doResizeEnd(void *params)
 	ForceUpdatePagersForDesktop(desks.current);
 	EDBUG_RETURN(0);
      }
-   queue_up = 1;
+   queue_up = DRAW_QUEUE_ENABLE;
    mode.mode = MODE_NONE;
    if (mode.noewin)
       mode.ewin = NULL;

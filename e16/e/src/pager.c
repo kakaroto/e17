@@ -737,9 +737,10 @@ PagerShow(Pager * p)
 		DoIn(s, 1 / ((double)mode.pager_scanspeed), PagerUpdateTimeout,
 		     0, p);
 	  }
-	queue_up = pq;
 	AddItem(p, "PAGER", p->win, LIST_TYPE_PAGER);
      }
+
+   queue_up = pq;
 }
 
 void
@@ -945,6 +946,7 @@ PagerRedraw(Pager * p, char newbg)
 
    if (!mode.show_pagers)
       return;
+
    if (queue_up)
      {
 	DrawQueue          *dq;
@@ -1104,6 +1106,7 @@ PagerForceUpdate(Pager * p)
 
    if (!mode.show_pagers)
       return;
+
    if (queue_up)
      {
 	DrawQueue          *dq;
@@ -1419,7 +1422,10 @@ PagerHideHi(Pager * p)
 void
 PagerShowHi(Pager * p, EWin * ewin, int x, int y, int w, int h)
 {
+   char                pq;
    ImageClass         *ic = NULL;
+
+   pq = queue_up;
 
    if (mode.pager_zoom)
      {
@@ -1460,7 +1466,7 @@ PagerShowHi(Pager * p, EWin * ewin, int x, int y, int w, int h)
 			    {
 			       Imlib_kill_image(pImlibData, im);
 			       EUnmapWindow(disp, p->hi_win);
-			       return;
+			       goto exit;
 			    }
 		       }
 		    }
@@ -1490,7 +1496,7 @@ PagerShowHi(Pager * p, EWin * ewin, int x, int y, int w, int h)
 			    {
 			       Imlib_kill_image(pImlibData, im);
 			       EUnmapWindow(disp, p->hi_win);
-			       return;
+			       goto exit;
 			    }
 		       }
 		    }
@@ -1502,10 +1508,8 @@ PagerShowHi(Pager * p, EWin * ewin, int x, int y, int w, int h)
 	  }
 	else if (ic)
 	  {
-	     char                pq;
 	     int                 xx, yy, ww, hh, i;
 
-	     pq = queue_up;
 	     queue_up = 0;
 	     if (w > h)
 	       {
@@ -1527,7 +1531,7 @@ PagerShowHi(Pager * p, EWin * ewin, int x, int y, int w, int h)
 			      || (py >= (y + h)))
 			    {
 			       EUnmapWindow(disp, p->hi_win);
-			       return;
+			       goto exit;
 			    }
 		       }
 		    }
@@ -1552,14 +1556,13 @@ PagerShowHi(Pager * p, EWin * ewin, int x, int y, int w, int h)
 			      || (py >= (y + h)))
 			    {
 			       EUnmapWindow(disp, p->hi_win);
-			       return;
+			       goto exit;
 			    }
 		       }
 		    }
 	       }
 	     EMoveResizeWindow(disp, p->hi_win, x - (w / 2), y - (h / 2), w * 2,
 			       h * 2);
-	     queue_up = pq;
 	  }
 	else
 	  {
@@ -1604,7 +1607,7 @@ PagerShowHi(Pager * p, EWin * ewin, int x, int y, int w, int h)
 			    {
 			       EFreePixmap(disp, pmap);
 			       EUnmapWindow(disp, p->hi_win);
-			       return;
+			       goto exit;
 			    }
 		       }
 		    }
@@ -1632,7 +1635,7 @@ PagerShowHi(Pager * p, EWin * ewin, int x, int y, int w, int h)
 			    {
 			       EFreePixmap(disp, pmap);
 			       EUnmapWindow(disp, p->hi_win);
-			       return;
+			       goto exit;
 			    }
 		       }
 		    }
@@ -1643,6 +1646,7 @@ PagerShowHi(Pager * p, EWin * ewin, int x, int y, int w, int h)
 	  }
 	p->hi_visible = 1;
      }
+
    if (mode.pager_title)
      {
 	ToolTip            *tt = NULL;
@@ -1654,6 +1658,9 @@ PagerShowHi(Pager * p, EWin * ewin, int x, int y, int w, int h)
 	     p->hi_visible = 1;
 	  }
      }
+
+ exit:
+   queue_up = pq;
 }
 
 void

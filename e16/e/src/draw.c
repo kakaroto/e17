@@ -55,7 +55,7 @@ HandleDrawQueue()
 		  if ((lst[i]->win == dq->win) && (lst[i]->shape_propagate))
 		    {
 		       already = 1;
-		       i = num;
+		       break;
 		    }
 	       }
 	  }
@@ -66,7 +66,7 @@ HandleDrawQueue()
 		  if ((lst[i]->win == dq->win) && (lst[i]->text))
 		    {
 		       already = 1;
-		       i = num;
+		       break;
 		    }
 	       }
 	  }
@@ -78,7 +78,7 @@ HandleDrawQueue()
 		      && (!lst[i]->text))
 		    {
 		       already = 1;
-		       i = num;
+		       break;
 		    }
 	       }
 	  }
@@ -89,7 +89,7 @@ HandleDrawQueue()
 		  if ((lst[i]->win == dq->win) && (lst[i]->pager))
 		    {
 		       already = 1;
-		       i = num;
+		       break;
 		    }
 	       }
 	  }
@@ -117,7 +117,7 @@ HandleDrawQueue()
 			  lst[i]->h +=
 			     (dq->y + dq->h) - (lst[i]->y + lst[i]->h);
 		       already = 1;
-		       i = num;
+		       break;
 		    }
 	       }
 	  }
@@ -155,10 +155,11 @@ HandleDrawQueue()
 			    break;
 			 }
 		       already = 1;
-		       i = num;
+		       break;
 		    }
 	       }
 	  }
+
 	if (already)
 	  {
 	     if (dq)
@@ -184,58 +185,62 @@ HandleDrawQueue()
      {
 	for (i = num - 1; i >= 0; i--)
 	  {
-	     if (lst[i]->shape_propagate)
+	     dq = lst[i];
+	     if (dq->shape_propagate)
 	       {
-		  PropagateShapes(lst[i]->win);
-/*            printf("S %x\n", lst[i]->win); */
+/*            printf("S %x\n", dq->win); */
+		  if (WinExists(dq->win))
+		     PropagateShapes(dq->win);
 	       }
-	     else if (lst[i]->text)
+	     else if (dq->text)
 	       {
-		  TclassApply(lst[i]->iclass, lst[i]->win, lst[i]->w, lst[i]->h,
-			      lst[i]->active, lst[i]->sticky, lst[i]->state,
-			      lst[i]->expose, lst[i]->tclass, lst[i]->text);
-		  Efree(lst[i]->text);
-/*            printf("T %x\n", lst[i]->win); */
+/*            printf("T %x\n", dq->win); */
+		  if (WinExists(dq->win))
+		     TclassApply(dq->iclass, dq->win, dq->w, dq->h, dq->active,
+				 dq->sticky, dq->state, dq->expose, dq->tclass,
+				 dq->text);
+		  Efree(dq->text);
 	       }
-	     else if (lst[i]->iclass)
+	     else if (dq->iclass)
 	       {
-		  IclassApply(lst[i]->iclass, lst[i]->win, lst[i]->w, lst[i]->h,
-			      lst[i]->active, lst[i]->sticky, lst[i]->state, 0);
-/*            printf("I %x\n", lst[i]->win); */
+/*            printf("I %x\n", dq->win); */
+		  if (WinExists(dq->win))
+		     IclassApply(dq->iclass, dq->win, dq->w, dq->h, dq->active,
+				 dq->sticky, dq->state, 0);
 	       }
-	     else if (lst[i]->pager)
+	     else if (dq->pager)
 	       {
+/*            printf("P %x\n", dq->win); */
 		  if (FindItem
-		      ((char *)(lst[i]->pager), 0, LIST_FINDBY_POINTER,
+		      ((char *)(dq->pager), 0, LIST_FINDBY_POINTER,
 		       LIST_TYPE_PAGER))
-		     PagerForceUpdate(lst[i]->pager);
-/*            printf("P %x\n", lst[i]->win); */
+		     PagerForceUpdate(dq->pager);
 	       }
-	     else if (lst[i]->d)
+	     else if (dq->d)
 	       {
+/*            printf("D %x\n", dq->d->ewin->client.win); */
 		  if (FindItem
-		      ((char *)(lst[i]->d), 0, LIST_FINDBY_POINTER,
+		      ((char *)(dq->d), 0, LIST_FINDBY_POINTER,
 		       LIST_TYPE_DIALOG))
-		     DialogDrawItems(lst[i]->d, lst[i]->di, lst[i]->x,
-				     lst[i]->y, lst[i]->w, lst[i]->h);
-/*            printf("D %x\n", lst[i]->d->ewin->client.win); */
+		     DialogDrawItems(dq->d, dq->di, dq->x, dq->y, dq->w, dq->h);
 	       }
-	     else if (lst[i]->redraw_pager)
+	     else if (dq->redraw_pager)
 	       {
+/*            printf("p %x\n", dq->win); */
 		  if (FindItem
-		      ((char *)(lst[i]->redraw_pager), 0, LIST_FINDBY_POINTER,
+		      ((char *)(dq->redraw_pager), 0, LIST_FINDBY_POINTER,
 		       LIST_TYPE_PAGER))
-		     PagerRedraw(lst[i]->redraw_pager, lst[i]->newbg);
-/*            printf("p %x\n", lst[i]->win); */
+		     PagerRedraw(dq->redraw_pager, dq->newbg);
 	       }
-	     if (lst[i]->iclass)
-		lst[i]->iclass->ref_count--;
-	     if (lst[i]->tclass)
-		lst[i]->tclass->ref_count--;
-	     Efree(lst[i]);
+	     if (dq->iclass)
+		dq->iclass->ref_count--;
+	     if (dq->tclass)
+		dq->tclass->ref_count--;
+	     Efree(dq);
 	  }
 	Efree(lst);
      }
+
    queue_up = p_queue;
    EDBUG_RETURN_;
 }
@@ -1214,7 +1219,7 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
 		       UngrabX();
 		       DrawEwinShape(ewin, mode.movemode, x, y, w, h,
 				     firstlast);
-		       EDBUG_RETURN_;
+		       goto exit;
 		    }
 		  EFillPixmap(root.win, root_pi->pmap, x1, y1, ewin->w,
 			      ewin->h);
@@ -1346,6 +1351,8 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
      default:
 	break;
      }
+
+ exit:
    queue_up = pq;
    EDBUG_RETURN_;
 }

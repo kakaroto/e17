@@ -298,7 +298,7 @@ main(int argc, char **argv)
 	mode.show_pagers = 0;
 	queue_up = 0;
 	EnableAllPagers();
-	queue_up = 1;
+	queue_up = DRAW_QUEUE_ENABLE;
      }
    if (getpid() == master_pid && init_win_ext)
      {
@@ -315,7 +315,7 @@ main(int argc, char **argv)
 
    /* sync just to make sure */
    XSync(disp, False);
-   queue_up = 1;
+   queue_up = DRAW_QUEUE_ENABLE;
 
    /* hello!  we don't have a resizemode of 5! */
    if (mode.resizemode == 5)

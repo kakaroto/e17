@@ -2936,7 +2936,6 @@ UnShadeEwin(EWin * ewin)
 		   spd = min;
 	     }
 	ewin->w = b;
-	queue_up = 1;
 	MoveResizeEwin(ewin, ewin->x, ewin->y, ewin->client.w, ewin->client.h);
 	XSync(disp, False);
 	break;
@@ -2995,7 +2994,6 @@ UnShadeEwin(EWin * ewin)
 	ewin->w = b;
 	ewin->x = d;
 	ewin->reqx = d;
-	queue_up = 1;
 	MoveResizeEwin(ewin, ewin->x, ewin->y, ewin->client.w, ewin->client.h);
 	XSync(disp, False);
 	break;
@@ -3050,7 +3048,6 @@ UnShadeEwin(EWin * ewin)
 		   spd = min;
 	     }
 	ewin->h = b;
-	queue_up = 1;
 	MoveResizeEwin(ewin, ewin->x, ewin->y, ewin->client.w, ewin->client.h);
 	XSync(disp, False);
 	break;
@@ -3109,7 +3106,6 @@ UnShadeEwin(EWin * ewin)
 	ewin->h = b;
 	ewin->y = d;
 	ewin->reqy = d;
-	queue_up = 1;
 	MoveResizeEwin(ewin, ewin->x, ewin->y, ewin->client.w, ewin->client.h);
 	XSync(disp, False);
 	break;

@@ -3036,6 +3036,8 @@ extern char         themepath[FILEPATH_LEN_MAX];
 extern char         themename[FILEPATH_LEN_MAX];
 extern char        *command;
 extern char         mustdel;
+
+#define DRAW_QUEUE_ENABLE 1
 extern char         queue_up;
 extern Menu        *all_task_menu;
 extern Menu        *task_menu[ENLIGHTENMENT_CONF_NUM_DESKTOPS];

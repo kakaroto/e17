@@ -512,6 +512,7 @@ EGetGeometry(Display * d, Window win, Window * root_return, int *x, int *y,
 	     unsigned int *w, unsigned int *h, unsigned int *bw,
 	     unsigned int *depth)
 {
+   int                 ok;
    EXID               *xid;
 
    xid = FindXID(win);
@@ -531,9 +532,17 @@ EGetGeometry(Display * d, Window win, Window * root_return, int *x, int *y,
 	   *depth = xid->depth;
 	if (root_return)
 	   *root_return = root.win;
-	return 1;
+	ok = 1;
      }
-   return XGetGeometry(d, win, root_return, x, y, w, h, bw, depth);
+   else
+     {
+	ok = XGetGeometry(d, win, root_return, x, y, w, h, bw, depth);
+     }
+#if 0
+   if (!ok)
+      printf("EGetGeometry win=%#x, error %d\n", (unsigned)win, ok);
+#endif
+   return ok;
 }
 
 void
