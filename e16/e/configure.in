@@ -101,16 +101,11 @@ ENLIGHTENMENT_BIN=`eval echo ${bindir}`
 
 if test "x$enable_sound" = "xyes"; then
 AM_PATH_ESD(0.2.17,AC_DEFINE(HAVE_LIBESD, 1, [libesd.so]),[
-echo "WARNING: Enlightenment needs a system with libesd.so (EsounD)"
+echo "WARNING: Enlightenment needs a system with libesd.so (esound)"
 echo "0.2.17 or higher to use sound support."
 echo "Enlightenment can use EsounD (ESD) to be installed to compile."
 echo "Sound will be disabled in this binary. If you ever want sound"
-echo "You will need to get and install EsounD then recompile Enlightenment"
-echo "Please see the EsounD homepage below on how to obtain/install it."
-echo "http://pw1.netcom.com/~ericmit/EsounD.html"
-echo "You can also obtain it from:"
-echo "ftp://ftp.enlightenment.org/pub/enlightenment/"
-echo "ftp://www.rasterman.com/pub/enlightenment/"
+echo "You will need to get and install EsounD then recompile Enlightenment."
 AC_MSG_WARN([Warning: no EsounD detected.])])
 else
 echo "Sound support has been turned off, per the --enable-sound=no"
@@ -118,11 +113,7 @@ echo "passed to your configure line."
 fi
 
 AM_PATH_IMLIB(1.9.8, , [
-echo "ERROR: Enlightenment needs a system with Imlib 1.9.8 or higher"
-echo "You can obtain it from:"
-echo "ftp://ftp.enlightenment.org/pub/enlightenment/"
-echo "ftp://www.rasterman.com/pub/enlightenment/"
-echo "ftp://ftp.labs.redhat.com/pub/imlib/"
+echo "ERROR: Enlightenment needs a system with Imlib 1.9.8 or higher."
 AC_MSG_ERROR([Fatal Error: no Imlib detected.])])
 
 LDFLAGS="$LDFLAGS -L$prefix/lib"
@@ -133,11 +124,7 @@ XTST_LIBS=""
 if test "x$with_fnlib" = "xyes"; then
 # AC_CHECK_HEADER(Fnlib.h, ,AC_MSG_ERROR([Fatal Error: no Fnlib header detected.]))
 AC_CHECK_LIB(Fnlib, Fnlib_init, FNLIB_LIBS=-lFnlib , [
-echo "ERROR: Enlightenment needs a system with libFnlib.so (Fnlib)"
-echo "You can obtain it from:"
-echo "ftp://ftp.enlightenment.org/pub/enlightenment/"
-echo "ftp://www.rasterman.com/pub/enlightenment/"
-echo "ftp://ftp.labs.redhat.com/pub/fnlib/"
+echo "ERROR: Enlightenment needs a system with libFnlib.so (fnlib)."
 AC_MSG_ERROR([Fatal Error: no Fnlib detected.])], $IMLIB_LIBS)
 AC_SUBST(FNLIB_LIBS)
 AC_DEFINE(USE_FNLIB, 1, [Fnlib support])
@@ -156,14 +143,7 @@ AC_SUBST(GHTTP_LIBS)
 
 AC_CHECK_HEADERS(freetype.h freetype/freetype.h freetype1/freetype/freetype.h,[ break] , )
 AC_CHECK_LIB(ttf, TT_Init_FreeType, TTF_LIBS=-lttf, [
-echo "ERROR: Enlightenment needs a system with libttf.so (TrueType Font Library)"
-echo "You can obtain it from:"
-echo "ftp://ftp.enlightenment.org/pub/enlightenment/"
-echo "ftp://www.rasterman.com/pub/enlightenment/"
-echo "You can also obtain it from:"
-echo "http://www.freetype.org/"
-echo "You can obtain some truetype fonts from:"
-echo "http://voyager.cns.ohiou.edu/~sadkins/web_library/fonts/font_archive/"
+echo "ERROR: Enlightenment needs a system with libttf.so (freetype)."
 AC_MSG_ERROR([Fatal Error: no FreeType detected.])], -lm)
 AC_SUBST(TTF_LIBS)
 

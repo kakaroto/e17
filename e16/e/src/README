@@ -93,7 +93,10 @@ Woody
 Wojtek
 X5rings
 
-If you have this you have a SNAPSHOT of Enlightenment Dr 0.15
+*********************
+
+
+If you have this you have a SNAPSHOT of Enlightenment DR 0.16
 
 This is a complete rewrite of E. Bascially it is a NEW windowmanager written
 from the ground up.
@@ -106,66 +109,22 @@ libgif
 libtiff
 zlib
 esound (0.2.4 or higher)
-Imlib1.x (1.8 or higher recommended)
-Fnlib
-Freetype (1.1 or higher)
+imlib (1.9.8 or higher recommended)
+fnlib
+freetype (1.1 or higher)
 
 Where can u get these?
 
----- LIBZ
-Please see the PNG homepage for more information:
-	http://www.cdrom.com/pub/png/
-You can also obtain libz from:
-	ftp://ftp.enlightenment.org/pub/enlightenment/
-	ftp://www.rasterman.com/pub/enlightenment/
-	ftp://ftp.labs.redhat.com/pub/imlib/
+First, look for (-devel) versions of these libraries shipping with your
+distribution (if using any).
 
----- LIBTIFF
-You can obtain libTIFF from:
-	ftp://ftp.enlightenment.org/pub/enlightenment/
-	ftp://www.rasterman.com/pub/enlightenment/
-	ftp://ftp.labs.redhat.com/pub/imlib/
-and
-	ftp://ftp.sgi.com/graphics/tiff/
+Next, check out
+http://www.enlightenment.org/pages/download.html
 
----- LIBGIF
-You can obtain it from:
-	ftp://ftp.enlightenment.org/pub/enlightenment/
-	ftp://www.rasterman.com/pub/enlightenment/
-	ftp://ftp.labs.redhat.com/pub/imlib/
+If still no luck, your favorite search engine will find it.
 
----- LIBPNG
-Please see the PNG homepage for more information:
-	http://www.cdrom.com/pub/png/
-You can also obtain it from:
-	ftp://ftp.enlightenment.org/pub/enlightenment/
-	ftp://www.rasterman.com/pub/enlightenment/
-	ftp://ftp.labs.redhat.com/pub/imlib/
 
----- IMLIB
-You can obtain it from:
-	ftp://ftp.labs.redhat.com/pub/raster/
-	ftp://ftp.enlightenment.org/pub/enlightenment/
-	ftp://www.rasterman.com/pub/enlightenment/
-	ftp://ftp.labs.redhat.com/pub/imlib/
-
----- FNLIB
-You can obtain it from:
-	ftp://ftp.labs.redhat.com/pub/raster/
-	ftp://ftp.enlightenment.org/pub/enlightenment/
-	ftp://www.rasterman.com/pub/enlightenment/
-	ftp://ftp.labs.redhat.com/pub/imlib/
-
----- FREETYPE
-You can obtain it from:
-	http://www.freetype.org/
-
----- ESOUND
-Enlightenment requires EsounD (ESD) to be installed to compile.
-Please see the EsounD homepage below on how to obtain/install it.
-	http://pw1.netcom.com/~ericmit/EsounD.html"
-
-you need all these compiled and installed first - make sure Imlib is compiled
+You need all these compiled and installed first - make sure imlib is compiled
 with support for libjpeg libpng libgif and libtiff
 
 *********************
@@ -186,13 +145,15 @@ how to install?
 after compiling:
 make install
 
-how to run:
-
 
 *********************
+
+
+how to run?
 
 edit your .xsession or .Xinitrc or .Xclients files to run enlightenment OR
 if you're scared to or don't know what I mean then...
 
 /usr/local/enlightenment/bin/enlightenment
+
 
