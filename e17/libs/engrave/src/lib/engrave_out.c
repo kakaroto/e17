@@ -120,8 +120,8 @@ int
 engrave_eet_output(Engrave_File *engrave_file, const char *path)
 {
   static char tmpn[1024];
-  int len = 0, fd = 0, ret = 0;
-  char *cmd = NULL;
+  int fd = 0, ret = 0;
+  char cmd[2048];
   const char *imgdir, *fontdir;
 
   strcpy(tmpn, "/tmp/engrave_cc.edc-tmp-XXXXXX");
@@ -137,9 +137,8 @@ engrave_eet_output(Engrave_File *engrave_file, const char *path)
   imgdir = engrave_file_image_dir_get(engrave_file);
   fontdir = engrave_file_font_dir_get(engrave_file);
 
-  len = strlen(tmpn) + strlen(path) + strlen(imgdir) + strlen(fontdir) + 23;
-  cmd = (char *)calloc(len, sizeof(char));
-  snprintf(cmd, len, "edje_cc -v -id %s -fd %s %s %s", imgdir, fontdir, tmpn, path);
+  snprintf(cmd, sizeof(cmd), "edje_cc -v -id %s -fd %s %s %s", 
+  					imgdir, fontdir, tmpn, path);
   ret = system(cmd);
 
   if (ret < 0) {
