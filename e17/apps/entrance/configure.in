@@ -150,6 +150,7 @@ data/themes/Makefile
 data/themes/BlueCrystal/Makefile
 data/themes/matrix0/Makefile
 data/themes/default/Makefile
+data/themes/Nebulous/Makefile
 ])
 
 echo
