@@ -228,24 +228,6 @@ if (__xim) XDestroyImage(__xim);}
 #error "particular Operating System or Distribution"
 #endif
 
-#ifndef DEFAULT_SH_PATH
-#ifdef __sgi
-/*
- * It appears that SGI (at least IRIX 6.4) uses ksh as their sh, and it
- * seems to run in restricted mode, so things like restart fail miserably.
- * Let's use csh instead
- * -KDT 07/31/98
- */
-#define DEFAULT_SH_PATH "/sbin/csh"
-#else
-#ifdef __EMX__
-#define DEFAULT_SH_PATH "sh.exe"
-#else
-#define DEFAULT_SH_PATH "/bin/sh"
-#endif
-#endif
-#endif
-
 #define FILEPATH_LEN_MAX 4096
 /* This turns on E's internal stack tracking system for  coarse debugging */
 /* and being able to trace E for profiling/optimisation purposes (which */
@@ -2035,6 +2017,7 @@ int                 exists(const char *s);
 void                mkdirs(const char *s);
 int                 isfile(const char *s);
 int                 isdir(const char *s);
+int                 isabspath(const char *s);
 char              **ls(const char *dir, int *num);
 void                freestrlist(char **l, int num);
 void                rm(const char *s);

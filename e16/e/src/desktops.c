@@ -29,14 +29,7 @@ GetUniqueBGString(Background * bg)
 {
    char                s[256];
    const char         *chmap =
-#ifndef __EMX__
       "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_";
-
-#else
-      "0123456789abcdefghijklmnopqrstuvwxyz€‚ƒ„…†‡ˆŠ‹Œ‘’“”•–—˜™-_";
-
-   /* cyrillic symbols from 866 page correctly handled instead of eng. capitals */
-#endif
    int                 r, g, b;
    int                 n1, n2, n3, n4, n5, f1, f2, f3, f4, f5, f6;
 

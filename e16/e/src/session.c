@@ -26,6 +26,20 @@
 #include <unistd.h>
 #include <sys/time.h>
 
+#ifndef DEFAULT_SH_PATH
+#ifdef __sgi
+/*
+ * It appears that SGI (at least IRIX 6.4) uses ksh as their sh, and it
+ * seems to run in restricted mode, so things like restart fail miserably.
+ * Let's use csh instead
+ * -KDT 07/31/98
+ */
+#define DEFAULT_SH_PATH "/sbin/csh"
+#else
+#define DEFAULT_SH_PATH "/bin/sh"
+#endif
+#endif
+
 #ifdef _LIBC
 #include <stdint.h>
 #define gettimeofday __gettimeofday
@@ -49,13 +63,7 @@ int
 Emkstemp(char *template)
 {
    static const char   letters[]
-#ifndef __EMX__
       = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-
-#else
-      = "abcdefghijklmnopqrstuvwxyz€‚ƒ„…†‡ˆŠ‹Œ‘’“”•–—˜™0123456789";
-
-#endif
 
    static big_type     value;
    struct timeval      tv;
@@ -265,11 +273,7 @@ LoadWindowStates(void)
    char                s[4096], s1[4096];
 
    Esnprintf(s, sizeof(s), "%s.clients.%i", GetSMFile(), root.scr);
-#ifndef __EMX__
    f = fopen(s, "r");
-#else
-   f = fopen(s, "rt");
-#endif
    if (f)
      {
 	while (fgets(s, sizeof(s), f))
@@ -1137,9 +1141,7 @@ doSMExit(void *params)
    if (params)
      {
 	SoundExit();
-#ifndef __EMX__
 	setsid();
-#endif
 	sscanf(params, "%1000s", s);
 	ThemeCleanup();
 

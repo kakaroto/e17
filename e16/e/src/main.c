@@ -33,8 +33,8 @@ runDocBrowser(void)
    if (fork())
       EDBUG_RETURN_;
 
-   Esnprintf(file, sizeof(file), "exec %s/dox %s/E-docs", ENLIGHTENMENT_BIN,
-	     ENLIGHTENMENT_ROOT);
+   Esnprintf(file, sizeof(file), "exec %s/dox %s/E-docs",
+	     EDirBin(), EDirRoot());
    execl(usershell(getuid()), usershell(getuid()), "-c", (char *)file, NULL);
    exit(0);
 
@@ -199,11 +199,7 @@ main(int argc, char **argv)
 	if (file)
 	  {
 	     s[0] = 0;
-#ifndef __EMX__
 	     f = fopen(file, "r");
-#else
-	     f = fopen(file, "rt");
-#endif
 	     if (f)
 	       {
 		  if (fscanf(f, "%4000s", s) < 1)

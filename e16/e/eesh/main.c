@@ -23,9 +23,6 @@
 
 #include "E.h"
 #include <sys/time.h>
-#ifdef __EMX__
-#include <io.h>			/* for select() in EMX */
-#endif
 #include <sys/types.h>
 #include <unistd.h>
 

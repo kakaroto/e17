@@ -23,9 +23,6 @@
 #include "E.h"
 #include <errno.h>
 #include <sys/time.h>
-#ifdef __EMX__
-#include <io.h>			/* EMX select() */
-#endif
 
 static int          event_base_shape = 0;
 

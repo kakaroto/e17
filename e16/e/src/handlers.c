@@ -110,11 +110,7 @@ SignalHandler(int sig)
 	break;
 
      case SIGCHLD:
-#ifndef __EMX__
 	while (waitpid(-1, &status, WNOHANG) > 0);
-#else
-	waitpid(-1, &status, WNOHANG);
-#endif
 	break;
      }
    EDBUG_RETURN_;
@@ -137,11 +133,7 @@ SignalsSetup(void)
    for (i = 0; i < sizeof(signals) / sizeof(int); i++)
      {
 	sa.sa_handler = SignalHandler;
-#ifndef __EMX__
 	sa.sa_flags = (signals[i] == SIGCHLD) ? SA_RESTART : 0;
-#else
-	sa.sa_flags = 0;
-#endif
 	sigemptyset(&sa.sa_mask);
 	sigaction(signals[i], &sa, (struct sigaction *)0);
      }

@@ -23,7 +23,6 @@
 #include "E.h"
 #include <sys/time.h>
 
-#ifndef __EMX__
 int
 AddEToFile(char *file)
 {
@@ -129,12 +128,10 @@ CreateEFile(char *file)
    fclose(f);
    EDBUG_RETURN(1);
 }
-#endif
 
 void
 AddE()
 {
-#ifndef __EMX__
    char               *h;
    char                s[1024];
    int                 val;
@@ -160,7 +157,6 @@ AddE()
    if (h)
       Efree(h);
    EDBUG_RETURN_;
-#endif
 }
 
 void

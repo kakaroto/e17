@@ -21,9 +21,6 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
-#ifdef __EMX__
-#include <process.h>
-#endif
 
 static Snapshot    *NewSnapshot(char *name);
 
@@ -982,13 +979,10 @@ LoadSnapInfo(void)
    if (!exists(buf))
       Esnprintf(buf, sizeof(buf), "%s.snapshots.%i", GetGenericSMFile(),
 		root.scr);
-#ifndef __EMX__
    f = fopen(buf, "r");
-#else
-   f = fopen(buf, "rt");
-#endif
    if (!f)
       return;
+
    res_w = root.w;
    res_h = root.h;
    while (fgets(buf, sizeof(buf), f))

@@ -22,11 +22,6 @@
  */
 #include "E.h"
 
-#ifdef __EMX__
-#include <process.h>
-extern char        *__XOS2RedirRoot(const char *);
-#endif
-
 #define ENABLE_THEME_SANITY_CHECKING 0
 
 static char        *badtheme = NULL;
@@ -96,14 +91,12 @@ SanitiseThemeDir(char *dir)
 	badreason = _("Theme does not contain a slideouts.cfg file\n");
 	return 0;
      }
-#ifndef __EMX__			/* OS/2 Team will compile ESound after XMMS project */
    Esnprintf(s, sizeof(s), "%s/%s", dir, "sound.cfg");
    if (!isfile(s))
      {
 	badreason = _("Theme does not contain a sound.cfg file\n");
 	return 0;
      }
-#endif
    Esnprintf(s, sizeof(s), "%s/%s", dir, "tooltips.cfg");
    if (!isfile(s))
      {
@@ -173,7 +166,6 @@ append_merge_dir(char *dir, char ***list, int *count)
 		  if (!strcmp(str[i], "DEFAULT"))
 		    {
 		       Esnprintf(ss, sizeof(ss), "%s/%s", dir, str[i]);
-#ifndef __EMX__
 		       if (readlink(ss, s, sizeof(s)) > 0)
 			 {
 			    if (s[0] == '/')
@@ -184,17 +176,6 @@ append_merge_dir(char *dir, char ***list, int *count)
 				 def = duplicate(s);
 			      }
 			 }
-#else
-		       if (isdir(ss))
-			 {
-			    def = duplicate(ss);
-			    (*count)++;
-			    (*list) =
-			       Erealloc(*list, (*count) * sizeof(char *));
-
-			    (*list)[(*count) - 1] = duplicate(ss);
-			 }
-#endif
 		    }
 		  else
 		    {
@@ -259,51 +240,41 @@ ThemeGetDefault(void)
    int                 count;
 
    Esnprintf(ss, sizeof(ss), "%s/themes/DEFAULT", EDirUser());
-#ifndef __EMX__
    count = readlink(ss, s, sizeof(s));
    if ((exists(ss)) && (count > 0))
      {
 	s[count] = 0;
-	if (s[0] == '/')
+	if (isabspath(s))
 	   def = duplicate(s);
 	else
 	  {
 	     Esnprintf(ss, sizeof(ss), "%s/themes/%s", EDirUser(), s);
 	     def = duplicate(ss);
 	  }
+	return def;
      }
-#else
-   if (isdir(ss))
-      def = duplicate(ss);
-#endif
-   if (!def)
+
+   Esnprintf(ss, sizeof(ss), "%s/themes/DEFAULT", EDirRoot());
+   count = readlink(ss, s, sizeof(s));
+   if ((exists(ss)) && (count > 0))
      {
-	Esnprintf(ss, sizeof(ss), "%s/themes/DEFAULT", EDirRoot());
-#ifndef __EMX__
-	count = readlink(ss, s, sizeof(s));
-	if ((exists(ss)) && (count > 0))
+	s[count] = 0;
+	if (isabspath(s))
+	   def = duplicate(s);
+	else
 	  {
-	     s[count] = 0;
-	     if (s[0] == '/')
-		def = duplicate(s);
-	     else
-	       {
-		  Esnprintf(ss, sizeof(ss), "%s/themes/%s", EDirRoot(), s);
-		  def = duplicate(ss);
-	       }
+	     Esnprintf(ss, sizeof(ss), "%s/themes/%s", EDirRoot(), s);
+	     def = duplicate(ss);
 	  }
-#else
-	if (isdir(ss))
-	   def = duplicate(ss);
-#endif
+	return def;
      }
-   return def;
+
+   return NULL;
 }
 
 void
 ThemeSetDefault(const char *theme)
 {
-#ifndef __EMX__
 /* os2 has no symlink,
  * but it doesn't matter since we have ~/.enlightenment/user_theme.cfg
  */
@@ -314,7 +285,6 @@ ThemeSetDefault(const char *theme)
       rm(ss);
    if (theme)
       symlink(theme, ss);
-#endif
 }
 
 static char        *
@@ -415,11 +385,7 @@ FindTheme(const char *theme)
 	EDBUG_RETURN(duplicate(s));
      }
 
-#ifndef __EMX__
-   if (theme[0] == '/')
-#else
-   if (_fnisabs(theme))
-#endif
+   if (isabspath(theme))
       ret = ThemeExtract(theme);
    if (!ret)
      {

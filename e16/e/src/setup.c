@@ -23,12 +23,6 @@
 #include "E.h"
 #include <X11/keysym.h>
 
-#ifdef __EMX__
-extern char        *__XOS2RedirRoot(const char *);
-
-#include <io.h>
-#endif
-
 void
 MapUnmap(int start)
 {
@@ -574,11 +568,6 @@ SetupEnv()
    Esetenv("ETHEME", themepath, 1);
    Esetenv("ECONFDIR", EDirUser(), 1);
    Esetenv("ECACHEDIR", EDirUserCache(), 1);
-
-#ifdef __EMX__
-   Esetenv("EMXSHELL", "sh.exe", 1);
-#endif
-   return;
 }
 
 Window

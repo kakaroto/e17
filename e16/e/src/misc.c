@@ -21,34 +21,28 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
-#ifdef __EMX__
-extern char        *__XOS2RedirRoot(const char *);
-
-#endif
 
 void                EdgeTimeout(int val, void *data);
 
 static char        *dir = NULL;
 static char        *cacheDir = NULL;
 
+static const char  *const bins[] = { "dox", "eesh", "epp" };
+static const char  *const docs[] =
+   { "E-docs/MAIN", "E-docs/Edoc_bg.png", "E-docs/E_logo.png" };
+static const char  *const thms[] = { "themes/DEFAULT/epplets/epplets.cfg" };
+
+#define N_BINS (sizeof(bins)/sizeof(char*))
+#define N_DOCS (sizeof(docs)/sizeof(char*))
+#define N_THMS (sizeof(thms)/sizeof(char*))
+
 void
 BlumFlimFrub(void)
 {
    int                 i;
    char                s[1024];
-   char               *bins[3] =
-#ifndef __EMX__
-   { "dox", "eesh", "epp" };
 
-#else
-   { "dox.exe", "eesh.exe", "epp.exe" };
-
-#endif
-   char               *docs[4] =
-      { "E-docs/MAIN", "E-docs/Edoc_bg.png", "E-docs/E_logo.png" };
-   char               *thms[1] = { "themes/DEFAULT/epplets/epplets.cfg" };
-
-   for (i = 0; i < 3; i++)
+   for (i = 0; i < N_BINS; i++)
      {
 	Esnprintf(s, sizeof(s), "%s/%s", EDirBin(), bins[i]);
 	if (!exists(s))
@@ -78,7 +72,7 @@ BlumFlimFrub(void)
 	  }
      }
 
-   for (i = 0; i < 3; i++)
+   for (i = 0; i < N_DOCS; i++)
      {
 	Esnprintf(s, sizeof(s), "%s/%s", EDirRoot(), docs[i]);
 	if (!exists(s))
@@ -97,7 +91,7 @@ BlumFlimFrub(void)
 	  }
      }
 
-   for (i = 0; i < 1; i++)
+   for (i = 0; i < N_THMS; i++)
      {
 	Esnprintf(s, sizeof(s), "%s/%s", EDirRoot(), thms[i]);
 	if (!exists(s))
@@ -119,21 +113,13 @@ BlumFlimFrub(void)
 const char         *
 EDirBin(void)
 {
-#ifndef __EMX__
    return ENLIGHTENMENT_BIN;
-#else
-   return __XOS2RedirRoot(ENLIGHTENMENT_BIN);
-#endif
 }
 
 const char         *
 EDirRoot(void)
 {
-#ifndef __EMX__
    return ENLIGHTENMENT_ROOT;
-#else
-   return __XOS2RedirRoot(ENLIGHTENMENT_ROOT);
-#endif
 }
 
 void
@@ -145,17 +131,16 @@ EDirUserSet(const char *d)
 char               *
 EDirUser(void)
 {
+   char               *home, buf[4096];
+
    if (dir)
       return dir;
 
-   {
-      char               *home, buf[4096];
+   home = homedir(getuid());
+   Esnprintf(buf, sizeof(buf), "%s/.enlightenment", home);
+   Efree(home);
+   dir = duplicate(buf);
 
-      home = homedir(getuid());
-      Esnprintf(buf, sizeof(buf), "%s/.enlightenment", home);
-      Efree(home);
-      dir = duplicate(buf);
-   }
    return dir;
 }
 
