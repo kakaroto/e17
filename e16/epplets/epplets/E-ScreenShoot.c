@@ -195,6 +195,12 @@ cloak_draw (void *data)
         Epplet_timer (cloak_draw, NULL, opt.draw_interval, "DRAW_TIMER");
         break;
       }
+      case 13:
+      {
+        draw_text ();
+        Epplet_timer (cloak_draw, NULL, opt.draw_interval, "DRAW_TIMER");
+        break;
+      }
     default:
       {
 	blank_buf ();
@@ -426,6 +432,8 @@ create_epplet_layout (void)
 			  (void *) (&(cloak_anims[11])));
   Epplet_add_popup_entry (p, "Atoms", NULL, cb_cloak_anim,
 			  (void *) (&(cloak_anims[12])));
+  Epplet_add_popup_entry (p, "Banner", NULL, cb_cloak_anim,
+			  (void *) (&(cloak_anims[13])));
 
   col_p = Epplet_create_popup ();
   Epplet_add_popup_entry (col_p, "Flame Colors", NULL, NULL, NULL);
