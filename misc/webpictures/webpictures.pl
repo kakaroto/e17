@@ -1,16 +1,16 @@
 #!/usr/bin/perl
 
-use Gtk::Gdk::ImlibImage;
+use Imlib2;
 use Gtk;
 use Gtk::Atoms;
 
 init Gtk;
-init Gtk::Gdk::ImlibImage;
 
-$pixmap = 0;
+
+#$pixmap = 0;
 $path = "";
 $do_not_edit = 0;
-
+$first = 0;
 $lastfile = 0;
 
 %descriptions = ();
@@ -171,19 +171,30 @@ sub select_clist {
 	($widget,$row,$col,$ev,$data) = @_;
 
 	$text = $widget->get_text($row,$col);
-	
-	$im = load_image Gtk::Gdk::ImlibImage($path . "/" . $text);
-	if($im->rgb_width > $im->rgb_height) {
-		my $mult = ($im->rgb_width / 300);
-		$im->render(300,($im->rgb_height / $mult));
+	Imlib2::free_image();	
+	$im = Imlib2::load_image ($path . "/" . $text);
+	Imlib2::set_context($im);
+	$w = Imlib2::get_width();
+	$h = Imlib2::get_height();
+	if($w > $h) {
+		$mult = ($w / 300);
+		$h = $h/$mult;
+		$w = 300;
+		$da->size($w,$h);
+		$da->window->clear();
+		Imlib2::render_image_on_drawable_at_size(0,0,$w,$h);
 	} else {
-		my $mult = ($im->rgb_height / 300);
-		$im->render(($im->rgb_width / $mult),300);
+		$mult = ($h / 300);
+		$w = $w/$mult; 
+		$h = 300;
+		$da->size($w,$h);
+		$da->window->clear();
+		Imlib2::render_image_on_drawable_at_size(0,0,$w,$h);
 	}
-	$p->imlib_free;
-	$p = $im->move_image();
-	$m = $im->move_mask();
-	$im->destroy_image;
+#	$p->imlib_free;
+#	$p = $im->move_image();
+#	$m = $im->move_mask();
+#	$im->destroy_image;
 	$do_not_edit = 1;
 	$menu_items{"Left->Right"}->activate;
 	$omenu->set_history(0);
@@ -210,7 +221,7 @@ sub select_clist {
 		$menu->reposition;
 	}
 	$do_not_edit = 0;
-	$pixmap->set($p,$m);
+#	$pixmap->set($p,$m);
 }
 
 sub update_text {
@@ -378,17 +389,25 @@ $hbox = new Gtk::HBox(0,0);
 $hbox->border_width(2);
 $vbox->pack_start($hbox,1,1,0);
 $hbox->show;
+$da = new Gtk::DrawingArea();
+$hbox->pack_start($da,0,0,0);
+$da->show();
+Imlib2_Init();
+$im = Imlib2::load_image ("webpictures.logo.jpg");
+Imlib2::set_context($im);
+$w = Imlib2::get_width();
+$h = Imlib2::get_height();
+$da->size($w,$h);
+$da->signal_connect("expose_event", \&render);
+#Imlib2::render_on_drawable(0,0);
+#$p = $im->move_image();
+#$m = $im->move_mask;
+#$im->destroy_image;
 
-$im = load_image Gtk::Gdk::ImlibImage("webpictures.logo.jpg");
-$im->render(300,300);
-$p = $im->move_image();
-$m = $im->move_mask;
-$im->destroy_image;
+#$pixmap = new Gtk::Pixmap($p,$m);
+#$pixmap->show;
 
-$pixmap = new Gtk::Pixmap($p,$m);
-$pixmap->show;
 
-$hbox->pack_start($pixmap,0,0,0);
 
 $vbox2 = new Gtk::VBox(0,0);
 $vbox2->border_width(2);
@@ -468,3 +487,28 @@ $clist->show;
 
 $p_window->show;
 main Gtk;
+
+sub Imlib2_Init
+{
+	 $da->realize();
+	 my $cmap = $da->get_colormap()->XCOLORMAP;
+	 my $visual = $da->get_visual()->XVISUAL;
+	 my $display = $da->window->XDISPLAY;
+	 Imlib2::context_set_display($display);
+	 Imlib2::context_set_colormap($cmap);
+	 Imlib2::context_set_visual($visual);	 
+	 Imlib2::context_set_drawable($da->window->XWINDOW);
+	 return 1;
+}	 
+								 
+								 
+sub render
+{	
+	if (!$first) {
+ 		Imlib2::render_image_on_drawable(0,0);
+		$first = 1;
+		return;
+	}	
+	Imlib2::render_image_on_drawable_at_size(0,0,$w,$h);
+ 	return;
+}	
