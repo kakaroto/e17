@@ -157,7 +157,7 @@ spif_avl_tree_node_show(spif_avl_tree_node_t self, spif_charptr_t name, spif_str
     char tmp[4096];
 
     memset(tmp, ' ', indent);
-    snprintf(tmp + indent, sizeof(tmp) - indent, "(spif_avl_tree_node_t) %s (%9p):  ",
+    snprintf(tmp + indent, sizeof(tmp) - indent, "(spif_avl_tree_node_t) %s:  %010p {\n",
              name, self);
     if (SPIF_STR_ISNULL(buff)) {
         buff = spif_str_new_from_ptr(tmp);
@@ -186,6 +186,9 @@ spif_avl_tree_node_show(spif_avl_tree_node_t self, spif_charptr_t name, spif_str
     if (!SPIF_AVL_TREE_NODE_ISNULL(self->right)) {
         buff = spif_avl_tree_node_show(self->right, "right", buff, indent + 2);
     }
+    memset(tmp, ' ', indent);
+    snprintf(tmp + indent, sizeof(tmp) - indent, "}\n");
+    spif_str_append_from_ptr(buff, tmp);
     return buff;
 }
 

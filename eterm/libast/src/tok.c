@@ -254,7 +254,7 @@ spif_tok_show(spif_tok_t self, spif_charptr_t name, spif_str_t buff, size_t inde
     }
 
     memset(tmp, ' ', indent);
-    snprintf(tmp + indent, sizeof(tmp) - indent, "(spif_tok_t) %s:  {\n", name);
+    snprintf(tmp + indent, sizeof(tmp) - indent, "(spif_tok_t) %s:  %010p {\n", name, self);
     if (SPIF_STR_ISNULL(buff)) {
         buff = spif_str_new_from_ptr(tmp);
     } else {

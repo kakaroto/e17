@@ -160,7 +160,7 @@ spif_socket_show(spif_socket_t self, spif_charptr_t name, spif_str_t buff, size_
     }
         
     memset(tmp, ' ', indent);
-    snprintf(tmp + indent, sizeof(tmp) - indent, "(spif_socket_t) %s:  {\n", name);
+    snprintf(tmp + indent, sizeof(tmp) - indent, "(spif_socket_t) %s:  %010p {\n", name, self);
     if (SPIF_STR_ISNULL(buff)) {
         buff = spif_str_new_from_ptr(tmp);
     } else {

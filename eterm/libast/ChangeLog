@@ -473,3 +473,20 @@ didn't account for the possibility of a leading "0x".
 
 Fixed typos in hex_dump().
 ----------------------------------------------------------------------
+Tue Nov 18 23:15:59 2003                        Michael Jennings (mej)
+
+Added D_*_IF macros for doing debugging conditionals more cleanly.
+
+Removed the bogus "next" member function from the array and vector
+interface classes.
+
+Fleshed out the iterator interface and implemented it for arrays.
+
+Fixed stupid mistake that made property functions overly type-strict.
+
+Cleaned up the "show" member functions.
+
+Added a routine for testing a regexp vs. a C string.
+
+Property-ized the URL class objects.
+----------------------------------------------------------------------

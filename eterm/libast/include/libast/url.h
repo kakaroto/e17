@@ -46,11 +46,13 @@
 
 SPIF_DECL_OBJ(url) {
     SPIF_DECL_PARENT_TYPE(str);
-    spif_str_t proto;
-    spif_str_t user, passwd;
-    spif_str_t host, port;
-    spif_str_t path;
-    spif_str_t query;
+    SPIF_DECL_PROPERTY(str, proto);
+    SPIF_DECL_PROPERTY(str, user);
+    SPIF_DECL_PROPERTY(str, passwd);
+    SPIF_DECL_PROPERTY(str, host);
+    SPIF_DECL_PROPERTY(str, port);
+    SPIF_DECL_PROPERTY(str, path);
+    SPIF_DECL_PROPERTY(str, query);
 };
 
 extern spif_class_t SPIF_CLASS_VAR(url);
@@ -66,20 +68,13 @@ extern spif_str_t spif_url_show(spif_url_t, spif_charptr_t, spif_str_t, size_t);
 extern spif_cmp_t spif_url_comp(spif_url_t, spif_url_t);
 extern spif_url_t spif_url_dup(spif_url_t);
 extern spif_classname_t spif_url_type(spif_url_t);
-extern spif_str_t spif_url_get_proto(spif_url_t);
-extern spif_bool_t spif_url_set_proto(spif_url_t, spif_str_t);
-extern spif_str_t spif_url_get_user(spif_url_t);
-extern spif_bool_t spif_url_set_user(spif_url_t, spif_str_t);
-extern spif_str_t spif_url_get_passwd(spif_url_t);
-extern spif_bool_t spif_url_set_passwd(spif_url_t, spif_str_t);
-extern spif_str_t spif_url_get_host(spif_url_t);
-extern spif_bool_t spif_url_set_host(spif_url_t, spif_str_t);
-extern spif_str_t spif_url_get_port(spif_url_t);
-extern spif_bool_t spif_url_set_port(spif_url_t, spif_str_t);
-extern spif_str_t spif_url_get_path(spif_url_t);
-extern spif_bool_t spif_url_set_path(spif_url_t, spif_str_t);
-extern spif_str_t spif_url_get_query(spif_url_t);
-extern spif_bool_t spif_url_set_query(spif_url_t, spif_str_t);
+SPIF_DECL_PROPERTY_FUNC(url, str, proto);
+SPIF_DECL_PROPERTY_FUNC(url, str, user);
+SPIF_DECL_PROPERTY_FUNC(url, str, passwd);
+SPIF_DECL_PROPERTY_FUNC(url, str, host);
+SPIF_DECL_PROPERTY_FUNC(url, str, port);
+SPIF_DECL_PROPERTY_FUNC(url, str, path);
+SPIF_DECL_PROPERTY_FUNC(url, str, query);
 extern spif_bool_t spif_url_unparse(spif_url_t);
 
 #endif /* _LIBAST_URL_H_ */

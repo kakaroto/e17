@@ -62,8 +62,7 @@
 #define SPIF_LIST_INDEX(o, item)                        SPIF_CAST_C(size_t) ((SPIF_LIST_CALL_METHOD((o), index))(o, item))
 #define SPIF_LIST_INSERT(o, item)                       SPIF_CAST(bool) ((SPIF_LIST_CALL_METHOD((o), insert))(o, item))
 #define SPIF_LIST_INSERT_AT(o, item, index)             SPIF_CAST(bool) ((SPIF_LIST_CALL_METHOD((o), insert_at))(o, item, index))
-#define SPIF_LIST_ITERATOR(o)                           SPIF_CAST(bool) ((SPIF_LIST_CALL_METHOD((o), iterator))(o))
-#define SPIF_LIST_NEXT(o)                               SPIF_CAST(obj) ((SPIF_LIST_CALL_METHOD((o), next))(o))
+#define SPIF_LIST_ITERATOR(o)                           SPIF_CAST(iterator) ((SPIF_LIST_CALL_METHOD((o), iterator))(o))
 #define SPIF_LIST_PREPEND(o, item)                      SPIF_CAST(bool) ((SPIF_LIST_CALL_METHOD((o), prepend))(o, item))
 #define SPIF_LIST_REMOVE(o, item)                       SPIF_CAST(obj) ((SPIF_LIST_CALL_METHOD((o), remove))(o, item))
 #define SPIF_LIST_REMOVE_AT(o, index)                   SPIF_CAST(obj) ((SPIF_LIST_CALL_METHOD((o), remove_at))(o, index))
@@ -84,7 +83,6 @@ SPIF_DECL_OBJ(listclass) {
     spif_func_t insert;
     spif_func_t insert_at;
     spif_func_t iterator;
-    spif_func_t next;
     spif_func_t prepend;
     spif_func_t remove;
     spif_func_t remove_at;

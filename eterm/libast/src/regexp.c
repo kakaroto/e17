@@ -258,6 +258,55 @@ spif_regexp_matches_str(spif_regexp_t self, spif_str_t subject)
 #endif
 }
 
+spif_bool_t
+spif_regexp_matches_ptr(spif_regexp_t self, spif_charptr_t subject)
+{
+#ifdef LIBAST_REGEXP_SUPPORT_PCRE
+    {
+        int rc;
+
+        rc = pcre_exec(SPIF_CAST_C(pcre *) self->data, NULL, subject,
+                       strlen(subject), 0, 0, NULL, 0);
+        if (rc == 0) {
+            return TRUE;
+        } else if (rc == PCRE_ERROR_NOMATCH) {
+            return FALSE;
+        } else {
+            print_error("PCRE matching error %d on \"%s\"\n", rc, subject);
+            return FALSE;
+        }
+    }
+#elif defined(LIBAST_REGEXP_SUPPORT_POSIX)
+    {
+        int rc;
+        char errbuf[256];
+
+        rc = regexec(SPIF_CAST_C(regex_t *) self->data, subject, (size_t) 0, (regmatch_t *) NULL,
+                     ((self->flags >> 8) & 0xffff));
+        if (rc == 0) {
+            return TRUE;
+        } else if (rc == REG_NOMATCH) {
+            return FALSE;
+        } else {
+            regerror(rc, SPIF_CAST_C(regex_t *) self->data, errbuf, sizeof(errbuf));
+            print_error("POSIX regexp matching error on \"%s\" -- %s\n", subject, errbuf);
+            return FALSE;
+        }
+    }
+#elif defined(LIBAST_REGEXP_SUPPORT_BSD)
+    {
+        spif_charptr_t err;
+
+        err = SPIF_CAST(charptr) re_comp(SPIF_STR_STR(SPIF_STR(self)));
+        if (err != SPIF_NULL_TYPE(charptr)) {
+            print_error("BSD regexp compilation of \"%s\" failed -- %s\n", SPIF_STR_STR(SPIF_STR(self)), err);
+            return FALSE;
+        }
+        return ((re_exec(subject) == 0) ? (FALSE) : (TRUE));
+    }
+#endif
+}
+
 int
 spif_regexp_get_flags(spif_regexp_t self)
 {

@@ -193,12 +193,9 @@
  */
 #define SPIF_DEFINE_PROPERTY_FUNC(otype, vtype, name)  \
   SPIF_TYPE(vtype) spif_ ## otype ## _get_ ## name (SPIF_TYPE(otype) self) \
-    { return ((SPIF_OBJ_IS_TYPE(self, otype)) ? (self->name) : (SPIF_NULL_TYPE(vtype))); } \
+    { return (self->name); } \
   SPIF_TYPE(bool) spif_ ## otype ## _set_ ## name (SPIF_TYPE(otype) self, SPIF_TYPE(vtype) new_ ## name) \
     { \
-        if (!SPIF_OBJ_IS_TYPE(self, otype)) { \
-            return FALSE; \
-        } \
         if (!SPIF_OBJ_ISNULL(self->name)) { \
             SPIF_OBJ_DEL(self->name); \
         } \
@@ -223,12 +220,9 @@
  */
 #define SPIF_DEFINE_PROPERTY_FUNC_NONOBJ(otype, vtype, name)  \
   SPIF_TYPE(vtype) spif_ ## otype ## _get_ ## name (SPIF_TYPE(otype) self) \
-    { return ((SPIF_OBJ_IS_TYPE(self, otype)) ? (self->name) : (SPIF_CAST(vtype) (0))); } \
+    { return (self->name); } \
   SPIF_TYPE(bool) spif_ ## otype ## _set_ ## name (SPIF_TYPE(otype) self, SPIF_TYPE(vtype) new_ ## name) \
     { \
-        if (!SPIF_OBJ_IS_TYPE(self, otype)) { \
-            return FALSE; \
-        } \
         self->name = new_ ## name; \
         return TRUE; \
     }
@@ -247,12 +241,9 @@
  */
 #define SPIF_DEFINE_PROPERTY_FUNC_C(otype, vtype, name)  \
   vtype spif_ ## otype ## _get_ ## name (SPIF_TYPE(otype) self) \
-    { return ((SPIF_OBJ_IS_TYPE(self, otype)) ? (self->name) : (SPIF_NULL_TYPE_C(vtype))); } \
+    { return (self->name); } \
   SPIF_TYPE(bool) spif_ ## otype ## _set_ ## name (SPIF_TYPE(otype) self, vtype new_ ## name) \
     { \
-        if (!SPIF_OBJ_IS_TYPE(self, otype)) { \
-            return FALSE; \
-        } \
         self->name = new_ ## name; \
         return TRUE; \
     }
@@ -629,7 +620,7 @@
 #define SPIF_SHOW(o, fd)                 do { \
                                            spif_str_t tmp__; \
                                            tmp__ = SPIF_OBJ_SHOW(o, SPIF_NULL_TYPE(str), 0); \
-                                           fprintf(fd, "%s\n", SPIF_STR_STR(tmp__)); \
+                                           fprintf(fd, "%s", SPIF_STR_STR(tmp__)); \
                                            spif_str_del(tmp__); \
                                          } while (0)
 

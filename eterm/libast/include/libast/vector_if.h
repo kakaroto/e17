@@ -58,8 +58,7 @@
 #define SPIF_VECTOR_COUNT(o)                              SPIF_CAST_C(size_t) ((SPIF_VECTOR_CALL_METHOD((o), count))(o))
 #define SPIF_VECTOR_FIND(o, item)                         SPIF_CAST(obj) ((SPIF_VECTOR_CALL_METHOD((o), find))(o, item))
 #define SPIF_VECTOR_INSERT(o, item)                       SPIF_CAST(bool) ((SPIF_VECTOR_CALL_METHOD((o), insert))(o, item))
-#define SPIF_VECTOR_ITERATOR(o)                           SPIF_CAST(bool) ((SPIF_VECTOR_CALL_METHOD((o), iterator))(o))
-#define SPIF_VECTOR_NEXT(o)                               SPIF_CAST(obj) ((SPIF_VECTOR_CALL_METHOD((o), next))(o))
+#define SPIF_VECTOR_ITERATOR(o)                           SPIF_CAST(iterator) ((SPIF_VECTOR_CALL_METHOD((o), iterator))(o))
 #define SPIF_VECTOR_REMOVE(o, item)                       SPIF_CAST(obj) ((SPIF_VECTOR_CALL_METHOD((o), remove))(o, item))
 #define SPIF_VECTOR_TO_ARRAY(o)                           SPIF_CAST_PTR(obj) ((SPIF_VECTOR_CALL_METHOD((o), to_array))(o))
 
@@ -73,7 +72,6 @@ SPIF_DECL_OBJ(vectorclass) {
     spif_func_t find;
     spif_func_t insert;
     spif_func_t iterator;
-    spif_func_t next;
     spif_func_t remove;
     spif_func_t to_array;
 };

@@ -728,9 +728,16 @@ extern int re_exec();
  * @see DOXGRP_DEBUG
  * @ingroup DOXGRP_DEBUG
  */
-#define D_OPTIONS(x)           DPRINTF1(x)
+#if DEBUG >= DEBUG_OPTIONS
+#  define D_OPTIONS_IF           if (DEBUG_LEVEL >= DEBUG_OPTIONS)
+#  define D_OPTIONS(x)           do { D_OPTIONS_IF {DPRINTF(x);} } while (0)
+#else
+#  define D_OPTIONS_IF           if (0)
+#  define D_OPTIONS(x)           NOP
+#endif
+
 /** Set object system debugging to level 2.  @see DOXGRP_DEBUG */
-#define DEBUG_OBJ              2
+#define DEBUG_OBJ                2
 /**
  * Object debugging macro.
  *
@@ -741,9 +748,16 @@ extern int re_exec();
  * @see DOXGRP_DEBUG
  * @ingroup DOXGRP_DEBUG
  */
-#define D_OBJ(x)               DPRINTF2(x)
+#if DEBUG >= DEBUG_OBJ
+#  define D_OBJ_IF               if (DEBUG_LEVEL >= DEBUG_OBJ)
+#  define D_OBJ(x)               do { D_OBJ_IF {DPRINTF(x);} } while (0)
+#else
+#  define D_OBJ_IF               if (0)
+#  define D_OBJ(x)               NOP
+#endif
+
 /** Set config file parser debugging to level 3.  @see DOXGRP_DEBUG */
-#define DEBUG_CONF             3
+#define DEBUG_CONF               3
 /**
  * Config file parser debugging macro.
  *
@@ -754,9 +768,16 @@ extern int re_exec();
  * @see DOXGRP_DEBUG
  * @ingroup DOXGRP_DEBUG
  */
-#define D_CONF(x)              DPRINTF3(x)
+#if DEBUG >= DEBUG_CONF
+#  define D_CONF_IF              if (DEBUG_LEVEL >= DEBUG_CONF)
+#  define D_CONF(x)              do { D_CONF_IF {DPRINTF(x);} } while (0)
+#else
+#  define D_CONF_IF              if (0)
+#  define D_CONF(x)              NOP
+#endif
+
 /** Set memory allocation debugging to level 5.  @see DOXGRP_DEBUG */
-#define DEBUG_MEM              5
+#define DEBUG_MEM                5
 /**
  * Memory allocation debugging macro.
  *
@@ -767,9 +788,16 @@ extern int re_exec();
  * @see DOXGRP_DEBUG
  * @ingroup DOXGRP_DEBUG
  */
-#define D_MEM(x)               DPRINTF5(x)
+#if DEBUG >= DEBUG_MEM
+#  define D_MEM_IF               if (DEBUG_LEVEL >= DEBUG_MEM)
+#  define D_MEM(x)               do { D_MEM_IF {DPRINTF(x);} } while (0)
+#else
+#  define D_MEM_IF               if (0)
+#  define D_MEM(x)               NOP
+#endif
+
 /** Set strings module debugging to level 9999.  @see DOXGRP_DEBUG */
-#define DEBUG_STRINGS          9999
+#define DEBUG_STRINGS            9999
 /**
  * String routine debugging macro.
  *
@@ -780,9 +808,15 @@ extern int re_exec();
  * @see DOXGRP_DEBUG
  * @ingroup DOXGRP_DEBUG
  */
-#define D_STRINGS(x)           D_NEVER(x)
+#if DEBUG >= DEBUG_STRINGS
+#  define D_STRINGS_IF           if (DEBUG_LEVEL >= DEBUG_STRINGS)
+#  define D_STRINGS(x)           do { D_STRINGS_IF {DPRINTF(x);} } while (0)
+#else
+#  define D_STRINGS_IF           if (0)
+#  define D_STRINGS(x)           NOP
+#endif
 /** Set lexer/parser debugging to level 9999.  @see DOXGRP_DEBUG */
-#define DEBUG_PARSE            9999
+#define DEBUG_PARSE              9999
 /**
  * Lexer/parser debugging macro.
  *
@@ -793,7 +827,13 @@ extern int re_exec();
  * @see DOXGRP_DEBUG
  * @ingroup DOXGRP_DEBUG
  */
-#define D_PARSE(x)             D_NEVER(x)
+#if DEBUG >= DEBUG_PARSE
+#  define D_PARSE_IF             if (DEBUG_LEVEL >= DEBUG_PARSE)
+#  define D_PARSE(x)             do { D_PARSE_IF {DPRINTF(x);} } while (0)
+#else
+#  define D_PARSE_IF             if (0)
+#  define D_PARSE(x)             NOP
+#endif
 
 
 

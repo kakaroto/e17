@@ -189,7 +189,7 @@ spif_obj_show(spif_obj_t self, spif_charptr_t name, spif_str_t buff, size_t inde
     }
 
     memset(tmp, ' ', indent);
-    snprintf(tmp + indent, sizeof(tmp) - indent, "(spif_obj_t) %s:  (spif_obj_t) { \"%s\" }\n", name, SPIF_OBJ_CLASSNAME(self));
+    snprintf(tmp + indent, sizeof(tmp) - indent, "(spif_obj_t) %s:  %010p \"%s\"\n", name, self, SPIF_OBJ_CLASSNAME(self));
     if (SPIF_STR_ISNULL(buff)) {
         buff = spif_str_new_from_ptr(tmp);
     } else {

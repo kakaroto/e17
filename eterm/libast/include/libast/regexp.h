@@ -63,6 +63,7 @@ extern spif_str_t spif_regexp_show(spif_regexp_t, spif_charptr_t, spif_str_t, si
 extern spif_classname_t spif_regexp_type(spif_regexp_t);
 extern spif_bool_t spif_regexp_compile(spif_regexp_t);
 extern spif_bool_t spif_regexp_matches_str(spif_regexp_t, spif_str_t);
+extern spif_bool_t spif_regexp_matches_ptr(spif_regexp_t self, spif_charptr_t subject);
 extern int spif_regexp_get_flags(spif_regexp_t);
 extern spif_bool_t spif_regexp_set_flags(spif_regexp_t, spif_charptr_t);
 

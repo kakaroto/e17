@@ -56,8 +56,7 @@ static spif_obj_t spif_dlinked_list_get(spif_dlinked_list_t, size_t);
 static size_t spif_dlinked_list_index(spif_dlinked_list_t, spif_obj_t);
 static spif_bool_t spif_dlinked_list_insert(spif_dlinked_list_t, spif_obj_t);
 static spif_bool_t spif_dlinked_list_insert_at(spif_dlinked_list_t, spif_obj_t, size_t);
-static spif_bool_t spif_dlinked_list_iterator(spif_dlinked_list_t);
-static spif_obj_t spif_dlinked_list_next(spif_dlinked_list_t);
+static spif_iterator_t spif_dlinked_list_iterator(spif_dlinked_list_t);
 static spif_bool_t spif_dlinked_list_prepend(spif_dlinked_list_t, spif_obj_t);
 static spif_obj_t spif_dlinked_list_remove(spif_dlinked_list_t, spif_obj_t);
 static spif_obj_t spif_dlinked_list_remove_at(spif_dlinked_list_t, size_t);
@@ -99,7 +98,6 @@ static spif_const_listclass_t dl_class = {
     (spif_func_t) spif_dlinked_list_insert,
     (spif_func_t) spif_dlinked_list_insert_at,
     (spif_func_t) spif_dlinked_list_iterator,
-    (spif_func_t) spif_dlinked_list_next,
     (spif_func_t) spif_dlinked_list_prepend,
     (spif_func_t) spif_dlinked_list_remove,
     (spif_func_t) spif_dlinked_list_remove_at,
@@ -262,7 +260,7 @@ spif_dlinked_list_show(spif_dlinked_list_t self, spif_charptr_t name, spif_str_t
     size_t i;
 
     memset(tmp, ' ', indent);
-    snprintf(tmp + indent, sizeof(tmp) - indent, "(spif_dlinked_list_t) %s:  {\n", name);
+    snprintf(tmp + indent, sizeof(tmp) - indent, "(spif_dlinked_list_t) %s:  %010p {\n", name, self);
     if (SPIF_STR_ISNULL(buff)) {
         buff = spif_str_new_from_ptr(tmp);
     } else {
@@ -454,18 +452,11 @@ spif_dlinked_list_insert_at(spif_dlinked_list_t self, spif_obj_t obj, size_t idx
     return TRUE;
 }
 
-static spif_bool_t
+static spif_iterator_t
 spif_dlinked_list_iterator(spif_dlinked_list_t self)
 {
     USE_VAR(self);
-    return FALSE;
-}
-
-static spif_obj_t
-spif_dlinked_list_next(spif_dlinked_list_t self)
-{
-    USE_VAR(self);
-    return FALSE;
+    return SPIF_NULL_TYPE(iterator);
 }
 
 static spif_bool_t

@@ -177,7 +177,7 @@ spif_url_show(spif_url_t self, spif_charptr_t name, spif_str_t buff, size_t inde
     }
 
     memset(tmp, ' ', indent);
-    snprintf(tmp + indent, sizeof(tmp) - indent, "(spif_url_t) %s:  {\n", name);
+    snprintf(tmp + indent, sizeof(tmp) - indent, "(spif_url_t) %s:  %010p {\n", name, self);
     if (SPIF_STR_ISNULL(buff)) {
         buff = spif_str_new_from_ptr(tmp);
     } else {
@@ -225,131 +225,13 @@ spif_url_type(spif_url_t self)
     return SPIF_OBJ_CLASSNAME(self);
 }
 
-spif_str_t
-spif_url_get_proto(spif_url_t self)
-{
-    REQUIRE_RVAL(SPIF_OBJ_IS_URL(self), SPIF_NULL_TYPE(str));
-    return self->proto;
-}
-
-spif_bool_t
-spif_url_set_proto(spif_url_t self, spif_str_t newproto)
-{
-    REQUIRE_RVAL(SPIF_OBJ_IS_URL(self), FALSE);
-    if (!SPIF_STR_ISNULL(self->proto)) {
-        spif_str_done(self->proto);
-    }
-    self->proto = spif_str_dup(newproto);
-    return TRUE;
-}
-
-spif_str_t
-spif_url_get_user(spif_url_t self)
-{
-    REQUIRE_RVAL(SPIF_OBJ_IS_URL(self), SPIF_NULL_TYPE(str));
-    return self->user;
-}
-
-spif_bool_t
-spif_url_set_user(spif_url_t self, spif_str_t newuser)
-{
-    REQUIRE_RVAL(SPIF_OBJ_IS_URL(self), FALSE);
-    if (!SPIF_STR_ISNULL(self->user)) {
-        spif_str_done(self->user);
-    }
-    self->user = spif_str_dup(newuser);
-    return TRUE;
-}
-
-spif_str_t
-spif_url_get_passwd(spif_url_t self)
-{
-    REQUIRE_RVAL(SPIF_OBJ_IS_URL(self), SPIF_NULL_TYPE(str));
-    return self->passwd;
-}
-
-spif_bool_t
-spif_url_set_passwd(spif_url_t self, spif_str_t newpasswd)
-{
-    REQUIRE_RVAL(SPIF_OBJ_IS_URL(self), FALSE);
-    if (!SPIF_STR_ISNULL(self->passwd)) {
-        spif_str_done(self->passwd);
-    }
-    self->passwd = spif_str_dup(newpasswd);
-    return TRUE;
-}
-
-spif_str_t
-spif_url_get_host(spif_url_t self)
-{
-    REQUIRE_RVAL(SPIF_OBJ_IS_URL(self), SPIF_NULL_TYPE(str));
-    return self->host;
-}
-
-spif_bool_t
-spif_url_set_host(spif_url_t self, spif_str_t newhost)
-{
-    REQUIRE_RVAL(SPIF_OBJ_IS_URL(self), FALSE);
-    if (!SPIF_STR_ISNULL(self->host)) {
-        spif_str_done(self->host);
-    }
-    self->host = spif_str_dup(newhost);
-    return TRUE;
-}
-
-spif_str_t
-spif_url_get_port(spif_url_t self)
-{
-    REQUIRE_RVAL(SPIF_OBJ_IS_URL(self), SPIF_NULL_TYPE(str));
-    return self->port;
-}
-
-spif_bool_t
-spif_url_set_port(spif_url_t self, spif_str_t newport)
-{
-    REQUIRE_RVAL(SPIF_OBJ_IS_URL(self), FALSE);
-    if (!SPIF_STR_ISNULL(self->port)) {
-        spif_str_done(self->port);
-    }
-    self->port = spif_str_dup(newport);
-    return TRUE;
-}
-
-spif_str_t
-spif_url_get_path(spif_url_t self)
-{
-    REQUIRE_RVAL(SPIF_OBJ_IS_URL(self), SPIF_NULL_TYPE(str));
-    return self->path;
-}
-
-spif_bool_t
-spif_url_set_path(spif_url_t self, spif_str_t newpath)
-{
-    REQUIRE_RVAL(SPIF_OBJ_IS_URL(self), FALSE);
-    if (!SPIF_STR_ISNULL(self->path)) {
-        spif_str_done(self->path);
-    }
-    self->path = spif_str_dup(newpath);
-    return TRUE;
-}
-
-spif_str_t
-spif_url_get_query(spif_url_t self)
-{
-    REQUIRE_RVAL(SPIF_OBJ_IS_URL(self), SPIF_NULL_TYPE(str));
-    return self->query;
-}
-
-spif_bool_t
-spif_url_set_query(spif_url_t self, spif_str_t newquery)
-{
-    REQUIRE_RVAL(SPIF_OBJ_IS_URL(self), FALSE);
-    if (!SPIF_STR_ISNULL(self->query)) {
-        spif_str_done(self->query);
-    }
-    self->query = spif_str_dup(newquery);
-    return TRUE;
-}
+SPIF_DEFINE_PROPERTY_FUNC(url, str, proto);
+SPIF_DEFINE_PROPERTY_FUNC(url, str, user);
+SPIF_DEFINE_PROPERTY_FUNC(url, str, passwd);
+SPIF_DEFINE_PROPERTY_FUNC(url, str, host);
+SPIF_DEFINE_PROPERTY_FUNC(url, str, port);
+SPIF_DEFINE_PROPERTY_FUNC(url, str, path);
+SPIF_DEFINE_PROPERTY_FUNC(url, str, query);
 
 static spif_bool_t
 spif_url_parse(spif_url_t self)

@@ -29,6 +29,14 @@ static const char cvs_ident[] = "$Id$";
 
 #include <libast_internal.h>
 
+/* *INDENT-OFF* */
+SPIF_DECL_OBJ(array_iterator) {
+    SPIF_DECL_PARENT_TYPE(obj);
+    spif_array_t subject;
+    size_t current_index;
+};
+/* *INDENT-ON* */
+
 static spif_array_t spif_array_list_new(void);
 static spif_array_t spif_array_vector_new(void);
 static spif_bool_t spif_array_list_init(spif_array_t);
@@ -50,13 +58,22 @@ static spif_obj_t spif_array_get(spif_array_t, size_t);
 static size_t spif_array_index(spif_array_t, spif_obj_t);
 static spif_bool_t spif_array_insert(spif_array_t, spif_obj_t);
 static spif_bool_t spif_array_insert_at(spif_array_t, spif_obj_t, size_t);
-static spif_bool_t spif_array_iterator(spif_array_t);
-static spif_obj_t spif_array_next(spif_array_t);
+static spif_iterator_t spif_array_iterator(spif_array_t);
 static spif_bool_t spif_array_prepend(spif_array_t, spif_obj_t);
 static spif_obj_t spif_array_remove(spif_array_t, spif_obj_t);
 static spif_obj_t spif_array_remove_at(spif_array_t, size_t);
 static spif_bool_t spif_array_reverse(spif_array_t);
 static spif_obj_t *spif_array_to_array(spif_array_t);
+static spif_array_iterator_t spif_array_iterator_new(spif_array_t subject);
+static spif_bool_t spif_array_iterator_init(spif_array_iterator_t self, spif_array_t subject);
+static spif_bool_t spif_array_iterator_done(spif_array_iterator_t self);
+static spif_bool_t spif_array_iterator_del(spif_array_iterator_t self);
+static spif_str_t spif_array_iterator_show(spif_array_iterator_t self, spif_charptr_t name, spif_str_t buff, size_t indent);
+static spif_cmp_t spif_array_iterator_comp(spif_array_iterator_t self, spif_array_iterator_t other);
+static spif_array_iterator_t spif_array_iterator_dup(spif_array_iterator_t self);
+static spif_classname_t spif_array_iterator_type(spif_array_iterator_t self);
+static spif_bool_t spif_array_iterator_has_next(spif_array_iterator_t self);
+static spif_obj_t spif_array_iterator_next(spif_array_iterator_t self);
 
 /* *INDENT-OFF* */
 static spif_const_listclass_t a_class = {
@@ -80,7 +97,6 @@ static spif_const_listclass_t a_class = {
     (spif_func_t) spif_array_insert,
     (spif_func_t) spif_array_insert_at,
     (spif_func_t) spif_array_iterator,
-    (spif_func_t) spif_array_next,
     (spif_func_t) spif_array_prepend,
     (spif_func_t) spif_array_remove,
     (spif_func_t) spif_array_remove_at,
@@ -106,11 +122,27 @@ static spif_const_vectorclass_t av_class = {
     (spif_func_t) spif_array_vector_find,
     (spif_func_t) spif_array_insert,
     (spif_func_t) spif_array_iterator,
-    (spif_func_t) spif_array_next,
     (spif_func_t) spif_array_remove,
     (spif_func_t) spif_array_to_array
 };
 spif_vectorclass_t SPIF_VECTORCLASS_VAR(array) = &av_class;
+
+static spif_const_iteratorclass_t ai_class = {
+    {
+        SPIF_DECL_CLASSNAME(array),
+        (spif_func_t) spif_array_iterator_new,
+        (spif_func_t) spif_array_iterator_init,
+        (spif_func_t) spif_array_iterator_done,
+        (spif_func_t) spif_array_iterator_del,
+        (spif_func_t) spif_array_iterator_show,
+        (spif_func_t) spif_array_iterator_comp,
+        (spif_func_t) spif_array_iterator_dup,
+        (spif_func_t) spif_array_iterator_type
+    },
+    (spif_func_t) spif_array_iterator_has_next,
+    (spif_func_t) spif_array_iterator_next
+};
+spif_iteratorclass_t SPIF_ITERATORCLASS_VAR(array) = &ai_class;
 /* *INDENT-ON* */
 
 static spif_array_t
@@ -182,8 +214,13 @@ spif_array_show(spif_array_t self, spif_charptr_t name, spif_str_t buff, size_t 
     char tmp[4096];
     size_t i;
 
+    if (SPIF_LIST_ISNULL(self)) {
+        SPIF_OBJ_SHOW_NULL(array, name, buff, indent, tmp);
+        return buff;
+    }
+
     memset(tmp, ' ', indent);
-    snprintf(tmp + indent, sizeof(tmp) - indent, "(spif_array_t) %s:  {\n", name);
+    snprintf(tmp + indent, sizeof(tmp) - indent, "(spif_array_t) %s:  %010p {\n", name, self);
     if (SPIF_STR_ISNULL(buff)) {
         buff = spif_str_new_from_ptr(tmp);
     } else {
@@ -385,18 +422,10 @@ spif_array_insert_at(spif_array_t self, spif_obj_t obj, size_t idx)
     return TRUE;
 }
 
-static spif_bool_t
+static spif_iterator_t
 spif_array_iterator(spif_array_t self)
 {
-    USE_VAR(self);
-    return FALSE;
-}
-
-static spif_obj_t
-spif_array_next(spif_array_t self)
-{
-    USE_VAR(self);
-    return FALSE;
+    return SPIF_CAST(iterator) spif_array_iterator_new(self);
 }
 
 static spif_bool_t
@@ -472,5 +501,120 @@ spif_array_to_array(spif_array_t self)
     for (i = 0; i < self->len; i++) {
         tmp[i] = SPIF_CAST(obj) SPIF_OBJ(self->items[i]);
     }
+    return tmp;
+}
+
+static spif_array_iterator_t
+spif_array_iterator_new(spif_array_t subject)
+{
+    spif_array_iterator_t self;
+
+    self = SPIF_ALLOC(array_iterator);
+    spif_array_iterator_init(self, subject);
+    return self;
+}
+
+static spif_bool_t
+spif_array_iterator_init(spif_array_iterator_t self, spif_array_t subject)
+{
+    spif_obj_init(SPIF_OBJ(self));
+    spif_obj_set_class(SPIF_OBJ(self), SPIF_CLASS(SPIF_ITERATORCLASS_VAR(array)));
+    self->subject = subject;
+    self->current_index = 0;
+    return TRUE;
+}
+
+static spif_bool_t
+spif_array_iterator_done(spif_array_iterator_t self)
+{
+    self->subject = SPIF_NULL_TYPE(array);
+    self->current_index = 0;
+    return TRUE;
+}
+
+static spif_bool_t
+spif_array_iterator_del(spif_array_iterator_t self)
+{
+    spif_array_iterator_done(self);
+    SPIF_DEALLOC(self);
+    return TRUE;
+}
+
+static spif_str_t
+spif_array_iterator_show(spif_array_iterator_t self, spif_charptr_t name, spif_str_t buff, size_t indent)
+{
+    char tmp[4096];
+
+    if (SPIF_ITERATOR_ISNULL(self)) {
+        SPIF_OBJ_SHOW_NULL(iterator, name, buff, indent, tmp);
+        return buff;
+    }
+
+    memset(tmp, ' ', indent);
+    snprintf(tmp + indent, sizeof(tmp) - indent, "(spif_array_iterator_t) %s:  %010p {\n", name, self);
+    if (SPIF_STR_ISNULL(buff)) {
+        buff = spif_str_new_from_ptr(tmp);
+    } else {
+        spif_str_append_from_ptr(buff, tmp);
+    }
+
+    buff = spif_array_show(self->subject, "subject", buff, indent + 2);
+
+    memset(tmp, ' ', indent + 2);
+    snprintf(tmp + indent, sizeof(tmp) - indent, "  (size_t) current_index:  %lu\n",
+             SPIF_CAST_C(unsigned long) self->current_index);
+    spif_str_append_from_ptr(buff, tmp);
+
+    snprintf(tmp + indent, sizeof(tmp) - indent, "}\n");
+    spif_str_append_from_ptr(buff, tmp);
+    return buff;
+}
+
+static spif_cmp_t
+spif_array_iterator_comp(spif_array_iterator_t self, spif_array_iterator_t other)
+{
+    return SPIF_CMP_FROM_INT((int) (self->current_index - other->current_index));
+}
+
+static spif_array_iterator_t
+spif_array_iterator_dup(spif_array_iterator_t self)
+{
+    spif_array_iterator_t tmp;
+
+    tmp = spif_array_iterator_new(self->subject);
+    tmp->current_index = self->current_index;
+    return tmp;
+}
+
+static spif_classname_t
+spif_array_iterator_type(spif_array_iterator_t self)
+{
+    return SPIF_OBJ_CLASSNAME(self);
+}
+
+static spif_bool_t
+spif_array_iterator_has_next(spif_array_iterator_t self)
+{
+    spif_array_t subject;
+
+    ASSERT_RVAL(!SPIF_ITERATOR_ISNULL(self), FALSE);
+    subject = self->subject;
+    REQUIRE_RVAL(!SPIF_LIST_ISNULL(subject), FALSE);
+    if (self->current_index >= subject->len) {
+        return FALSE;
+    } else {
+        return TRUE;
+    }
+}
+
+static spif_obj_t
+spif_array_iterator_next(spif_array_iterator_t self)
+{
+    spif_obj_t tmp;
+
+    ASSERT_RVAL(!SPIF_ITERATOR_ISNULL(self), SPIF_NULL_TYPE(obj));
+    REQUIRE_RVAL(!SPIF_LIST_ISNULL(self->subject), SPIF_NULL_TYPE(obj));
+    tmp = spif_array_get(self->subject, self->current_index);
+    self->current_index++;
     return tmp;
 }
