@@ -17,11 +17,15 @@ msgstr ""
 #: src/actions.c:664
 #, c-format
 msgid ""
+"There was an error running the program:\n"
+"%s\n"
+"This program could not be executed.\n"
+"This is because the file does not exist.\n"
+msgstr ""
 "Bei der Auführung des Programms ist ein Fehler aufgetreten:\n"
 "%s\n"
 "Das Programm konnte nicht gestartet werden.\n"
 "Ursache: die Datei existiert nicht.\n"
-msgstr ""
 
 #: src/actions.c:672
 #, c-format
