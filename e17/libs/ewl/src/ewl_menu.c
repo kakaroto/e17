@@ -87,12 +87,11 @@ void __expand_menu(Ewl_Widget * w, void *ev_data, void *user_data)
 	 * called.
 	 */
 	menu->popup = ewl_window_new();
-	ewl_window_set_auto_size(EWL_WINDOW(menu->popup), TRUE);
 	ewl_window_set_borderless(EWL_WINDOW(menu->popup));
 	ewl_object_set_fill_policy(EWL_OBJECT(menu->popup),
 				   EWL_FILL_POLICY_NONE);
 
-	ewl_window_get_geometry(pwin, &x, &y, NULL, NULL);
+	ewl_window_get_position(pwin, &x, &y);
 
 	/*
 	 * Position the popup menu relative to the menu.
@@ -104,7 +103,7 @@ void __expand_menu(Ewl_Widget * w, void *ev_data, void *user_data)
 		x += CURRENT_X(w);
 		y += CURRENT_Y(w) + CURRENT_H(w);
 
-		ewl_window_set_min_size(EWL_WINDOW(menu->popup),
+		ewl_object_set_minimum_size(EWL_OBJECT(menu->popup),
 					CURRENT_W(menu),
 					MINIMUM_H(menu->popup));
 	}

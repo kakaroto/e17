@@ -52,24 +52,6 @@ __image_exists(char *i)
 }
 
 void
-__image_update_window_size(void)
-{
-	int             ww, hh;
-
-	ewl_object_get_current_size(EWL_OBJECT(image), &ww, &hh);
-
-	if (ww < 390)
-		ww = 390;
-	if (hh < 297)
-		hh = 297;
-	else
-		hh += 100;
-
-	ewl_window_resize(EWL_WINDOW(image_win), ww, hh);
-	ewl_window_set_min_size(EWL_WINDOW(image_win), ww, hh);
-}
-
-void
 __image_goto_prev_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	char           *img = NULL;
@@ -84,8 +66,6 @@ __image_goto_prev_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_image_set_file(EWL_IMAGE(image), img);
 
 	ewl_widget_configure(image_win);
-
-	__image_update_window_size();
 
 	return;
 	w = NULL;
@@ -110,8 +90,6 @@ __image_load_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	ewl_widget_configure(image_win);
 
-	__image_update_window_size();
-
 	return;
 	w = NULL;
 	ev_data = NULL;
@@ -134,8 +112,6 @@ __image_goto_next_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 
 	ewl_widget_configure(image_win);
 
-	__image_update_window_size();
-
 	return;
 	w = NULL;
 	ev_data = NULL;
@@ -157,8 +133,6 @@ __create_image_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	images = ewd_dlist_new();
 
 	image_win = ewl_window_new();
-	ewl_window_resize(EWL_WINDOW(image_win), 390, 297);
-	ewl_window_set_min_size(EWL_WINDOW(image_win), 390, 297);
 	ewl_callback_append(image_win, EWL_CALLBACK_DELETE_WINDOW,
 			    __destroy_image_test_window, NULL);
 	ewl_widget_show(image_win);

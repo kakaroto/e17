@@ -76,7 +76,9 @@ void ewl_config_destroy_confirm_dialog(Ewl_Widget * w, void *ev_data,
 int
 main(int argc, char **argv)
 {
+	/*
 	Ewd_List *avail;
+	*/
 
 	memset(&e_conf, 0, sizeof(struct _ewl_config_main));
 	memset(&confirm, 0, sizeof(struct _confirm_win));
@@ -90,8 +92,6 @@ main(int argc, char **argv)
 	ewl_config_read_configs();
 
 	e_conf.main_win = ewl_window_new();
-	ewl_window_resize(EWL_WINDOW(e_conf.main_win), 446, 300);
-	ewl_window_set_min_size(EWL_WINDOW(e_conf.main_win), 446, 300);
 	ewl_window_set_title(EWL_WINDOW(e_conf.main_win),
 			"EWL Configuration Program");
 	ewl_callback_append(e_conf.main_win, EWL_CALLBACK_DELETE_WINDOW,
@@ -666,8 +666,6 @@ void
 ewl_config_create_confirm_dialog(void)
 {
 	confirm.win = ewl_window_new();
-	ewl_window_resize(EWL_WINDOW(confirm.win), 473, 264);
-	ewl_window_set_min_size(EWL_WINDOW(confirm.win), 473, 264);
 	ewl_widget_show(confirm.win);
 
 	confirm.main_vbox = ewl_vbox_new();

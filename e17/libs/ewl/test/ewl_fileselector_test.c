@@ -35,8 +35,6 @@ __create_fileselector_test_window(Ewl_Widget * w, void *ev_data,
 
 
 	fs_win = ewl_window_new();
-	ewl_window_resize(EWL_WINDOW(fs_win), 400, 300);
-	ewl_window_set_min_size(EWL_WINDOW(fs_win), 145, 230);
 	ewl_callback_append(fs_win, EWL_CALLBACK_DELETE_WINDOW,
 			    __destroy_fileselector_test_window, NULL);
 	ewl_widget_show(fs_win);

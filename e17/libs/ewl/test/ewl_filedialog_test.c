@@ -36,8 +36,6 @@ __create_filedialog_test_window(Ewl_Widget * w, void *ev_data,
 
 
 	fd_win = ewl_window_new();
-	ewl_window_resize(EWL_WINDOW(fd_win), 400, 300);
-	ewl_window_set_min_size(EWL_WINDOW(fd_win), 145, 230);
 	ewl_callback_append(fd_win, EWL_CALLBACK_DELETE_WINDOW,
 			    __destroy_filedialog_test_window, NULL);
 	ewl_widget_show(fd_win);

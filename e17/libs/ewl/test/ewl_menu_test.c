@@ -49,7 +49,6 @@ __create_menu_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	menu_button = w;
 
 	menu_win = ewl_window_new();
-	ewl_window_resize(EWL_WINDOW(menu_win), 300, 300);
 	ewl_callback_append(menu_win, EWL_CALLBACK_DELETE_WINDOW,
 			    __destroy_menu_test_window, NULL);
 	ewl_widget_show(menu_win);

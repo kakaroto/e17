@@ -64,7 +64,6 @@ __create_entry_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	entry_button = w;
 
 	entry_win = ewl_window_new();
-	ewl_window_set_auto_size(EWL_WINDOW(entry_win), TRUE);
 	ewl_callback_append(entry_win, EWL_CALLBACK_DELETE_WINDOW,
 			    __destroy_entry_test_window, NULL);
 	ewl_widget_show(entry_win);

@@ -130,117 +130,6 @@ Ewl_Window     *ewl_window_find_window_by_widget(Ewl_Widget * w)
 }
 
 /**
- * ewl_window_resize - resize the specified window to the specified size
- * @win: the window to resize
- * @w: the new width for the window
- * @h: the new height for the window
- *
- * Returns no value. Resize the specified window the the specified size,
- * configure is called to have the display updated.
- */
-void ewl_window_resize(Ewl_Window * win, int w, int h)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("win", win);
-
-	ewl_object_request_size(EWL_OBJECT(win), w, h);
-
-	if (!win->window)
-		DRETURN(DLEVEL_STABLE);
-
-	ecore_window_resize(win->window,
-			ewl_object_get_current_w(EWL_OBJECT(win)),
-			ewl_object_get_current_h(EWL_OBJECT(win)));
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/**
- * ewl_window_set_min_size - set the minimum size a window can attain
- * @win: the window to change the minimum size
- * @w: the minimum width the window can attain
- * @h: the minimum height the window can attain
- *
- * Returns no value. Sets the minimum size the window can attain.
- */
-void ewl_window_set_min_size(Ewl_Window * win, int w, int h)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("win", win);
-
-	ewl_object_set_minimum_size(EWL_OBJECT(win), w, h);
-
-	if (!REALIZED(win))
-		DRETURN(DLEVEL_STABLE);
-
-	ecore_window_set_min_size(win->window, w, h);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-
-/**
- * ewl_window_set_max_size - set the maximum size a window can attain
- * @win: the window to change the maximum size
- * @w: the maximum width the window can attain
- * @h: the maximum height the window can attain
- *
- * Returns no value. Sets the maximum size the window can attain.
- */
-void ewl_window_set_max_size(Ewl_Window * win, int w, int h)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("win", win);
-
-	EWL_OBJECT(win)->maximum.w = w;
-	EWL_OBJECT(win)->maximum.h = h;
-
-	if (!REALIZED(win))
-		return;
-
-	ecore_window_set_max_size(win->window, w, h);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/**
- * ewl_window_get_geometry - retrieve the size and position of a window
- * @win: the window to retrieve the size
- * @x: the pointer to the integer to store the x position
- * @y: the pointer to the integer to store the y position
- * @w: the pointer to the integer to store the width
- * @h: the pointer to the integer to store the height
- *
- * Returns no value. Stores the current position and size of the window into
- * @x, @y, @w, and @h.
- */
-void ewl_window_get_geometry(Ewl_Window * win, int *x, int *y, int *w, int *h)
-{
-	DCHECK_PARAM_PTR("win", win);
-
-	ecore_window_get_geometry(win->window, x, y, w, h);
-	ecore_window_get_root_relative_location(win->window, x, y);
-}
-
-/**
- * ewl_window_set_geometry - set the current size and position of a window
- * @win: the window to change geometry
- * @x: the new x position of the window
- * @y: the new y position of the window
- * @w: the new width of the window
- * @h: the new height of the window
- *
- * Returns no value. Changes the current size and position of the window.
- */
-void ewl_window_set_geometry(Ewl_Window * win, int x, int y, int w, int h)
-{
-	DCHECK_PARAM_PTR("win", win);
-
-	ewl_window_resize(win, w, h);
-	ewl_window_move(win, x, y);
-}
-
-/**
  * ewl_window_set_title - set the title of the specified window
  * @win: the window to change the title
  * @title: the title to set for the window
@@ -303,24 +192,6 @@ void ewl_window_set_borderless(Ewl_Window * win)
 }
 
 /**
- * ewl_window_set_auto_size - set the window to resize to fit contents
- * @win: the window to change auto resize flag
- * @value: the TRUE or FALSE value for the auto resize flag
- *
- * Returns no value.
- */
-void ewl_window_set_auto_size(Ewl_Window * win, int value)
-{
-	DCHECK_PARAM_PTR("win", win);
-
-	if (value)
-		win->flags |= EWL_WINDOW_AUTO_SIZE;
-	else
-		win->flags &= (~EWL_WINDOW_AUTO_SIZE);
-	ewl_widget_configure(EWL_WIDGET(win));
-}
-
-/**
  * ewl_window_move - move the specified window to the given position
  * @win: the window to move
  * @x: the x coordinate of the new position
@@ -334,13 +205,26 @@ void ewl_window_move(Ewl_Window * win, int x, int y)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("win", win);
 
-	/*
-	CURRENT_X(win) = x;
-	CURRENT_Y(win) = y;
-	*/
-
 	if (REALIZED(win))
 		ecore_window_move(win->window, x, y);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * ewl_window_get_position - retrieve the position of the window
+ * @x: a pointer to the integer that should receive the x coordinate
+ * @y: a pointer to the integer that should receive the y coordinate
+ *
+ * Returns no value. Stores the window position into the parameters @x and @y.
+ */
+void ewl_window_get_position(Ewl_Window * win, int *x, int *y)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("win", win);
+
+	if (REALIZED(win))
+		ecore_window_get_geometry(win->window, x, y, NULL, NULL);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -657,6 +541,8 @@ void __ewl_window_child_resize(Ewl_Container *c, Ewl_Widget *w,
 	Ewl_Window    *win;
 	Ewl_Object    *child;
 
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
 	child = EWL_OBJECT(w);
 	win = EWL_WINDOW(c);
 
@@ -697,4 +583,6 @@ void __ewl_window_child_resize(Ewl_Container *c, Ewl_Widget *w,
 	ewl_object_request_size(EWL_OBJECT(c),
 				ewl_object_get_current_w(EWL_OBJECT(c)),
 				ewl_object_get_current_h(EWL_OBJECT(c)));
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

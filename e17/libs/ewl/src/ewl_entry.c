@@ -193,8 +193,9 @@ void __ewl_entry_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Entry      *e;
 	int             xx, yy, ww, hh;
-	int             c_spos, c_epos, l;
-	int             sx = 0, sy = 0, ex = 0, ey = 0, ew = 0, eh = 0;
+	int             c_spos, c_epos, base, l;
+	int             sx = 0, sy = 0, ex = 0, ey = 0;
+	unsigned int    ew = 0;
 	char           *str;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -211,19 +212,19 @@ void __ewl_entry_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 	hh = CURRENT_H(w);
 
 	/*
-	 * First position the text.
-	 * FIXME: This needs to be scrollable
+	 * First position the text to a known base position.
 	 */
 	ewl_object_request_geometry(EWL_OBJECT(e->text), xx, yy, ww, hh);
 
 	str = ewl_text_get_text(EWL_TEXT(e->text));
 	c_spos = ewl_cursor_get_start_position(EWL_CURSOR(e->cursor));
 	c_epos = ewl_cursor_get_end_position(EWL_CURSOR(e->cursor));
+	base = ewl_cursor_get_base_position(EWL_CURSOR(e->cursor));
 
 	l = ewl_text_get_length(EWL_TEXT(e->text));
 	if (str && l && c_spos > l) {
-		xx += ewl_object_get_current_w(EWL_OBJECT(e->text));
-		ww = 5;
+		sx = xx + ewl_object_get_current_w(EWL_OBJECT(e->text));
+		ew = 5 + sx;
 	} else {
 
 		/*
@@ -234,13 +235,32 @@ void __ewl_entry_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 					     &sy, NULL, NULL);
 
 		ewl_text_get_letter_geometry(EWL_TEXT(e->text), --c_epos, &ex,
-					     &ey, &ew, &eh);
+					     &ey, &ew, NULL);
+		base--;
 
-		xx = sx;
-		ww = (ex + ew) - sx;
+		ew = (ex + ew);
 	}
 
-	ewl_object_request_geometry(EWL_OBJECT(e->cursor), xx, yy, ww, hh);
+	/*
+	 * Scroll the text to fit the contents.
+	 */
+	if ((c_spos == base) && (ew > (int)(xx + ww))) {
+		xx -= (ex + ew) - (xx + ww);
+
+		ewl_object_request_geometry(EWL_OBJECT(e->text), xx,
+					CURRENT_Y(e), CURRENT_W(e), hh);
+		printf("Scrolling text to (%d, %d) dimensions %d x %d\n",
+				CURRENT_X(e->text), CURRENT_Y(e->text),
+				CURRENT_W(e->text), CURRENT_H(e->text));
+	}
+	else if ((c_epos == base) && (sx < xx)) {
+		xx -= sx;
+
+		ewl_object_request_geometry(EWL_OBJECT(e->text), xx,
+				CURRENT_Y(e), CURRENT_W(e), hh);
+	}
+
+	ewl_object_request_geometry(EWL_OBJECT(e->cursor), sx, yy, ew - sx, hh);
 
 	FREE(str);
 

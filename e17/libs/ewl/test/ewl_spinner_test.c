@@ -40,7 +40,6 @@ __spinner_value_changed(Ewl_Widget * w, void *ev_data, void *user_data)
 			 __spinner_main_window_configure);
 
 	ewl_window_move(EWL_WINDOW(tmp_win), xx, yy);
-	ewl_window_resize(EWL_WINDOW(tmp_win), ww, hh);
 
 	ewl_callback_append(tmp_win, EWL_CALLBACK_CONFIGURE,
 			    __spinner_main_window_configure, NULL);
@@ -56,7 +55,8 @@ __spinner_main_window_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	int             xx, yy, ww, hh;
 
-	ewl_window_get_geometry(EWL_WINDOW(tmp_win), &xx, &yy, &ww, &hh);
+	ewl_window_get_position(EWL_WINDOW(tmp_win), &xx, &yy);
+	ewl_object_get_current_size(EWL_OBJECT(tmp_win), &ww, &hh);
 
 	ewl_callback_del(spinner[0], EWL_CALLBACK_VALUE_CHANGED,
 			 __spinner_value_changed);
@@ -101,7 +101,6 @@ __create_spinner_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	spinner_button = w;
 
 	spinner_win = ewl_window_new();
-	ewl_window_set_min_size(EWL_WINDOW(spinner_win), 151, 316);
 	ewl_callback_append(spinner_win, EWL_CALLBACK_DELETE_WINDOW,
 			    __destroy_spinner_test_window, NULL);
 	ewl_widget_show(spinner_win);

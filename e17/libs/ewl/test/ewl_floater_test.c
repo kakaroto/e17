@@ -34,8 +34,6 @@ __create_floater_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	floater_button = w;
 
 	floater_win = ewl_window_new();
-	ewl_window_resize(EWL_WINDOW(floater_win), 145, 230);
-	ewl_window_set_min_size(EWL_WINDOW(floater_win), 145, 230);
 	ewl_callback_append(floater_win, EWL_CALLBACK_DELETE_WINDOW,
 			    __destroy_floater_test_window, NULL);
 	ewl_widget_show(floater_win);

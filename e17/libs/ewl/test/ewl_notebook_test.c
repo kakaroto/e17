@@ -290,8 +290,6 @@ __create_notebook_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	notebook_button = w;
 
 	notebook_win = ewl_window_new();
-	ewl_window_resize(EWL_WINDOW(notebook_win), 305, 256);
-	ewl_window_set_min_size(EWL_WINDOW(notebook_win), 305, 256);
 	ewl_callback_append(notebook_win, EWL_CALLBACK_DELETE_WINDOW,
 			    __destroy_notebook_test_window, NULL);
 	ewl_widget_show(notebook_win);

@@ -37,7 +37,6 @@ __create_table_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	table_button = w;
 
 	table_win = ewl_window_new();
-	ewl_window_resize(EWL_WINDOW(table_win), 300, 300);
 	ewl_callback_append(table_win, EWL_CALLBACK_DELETE_WINDOW,
 			    __destroy_table_test_window, NULL);
 	ewl_widget_show(table_win);
