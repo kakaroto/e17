@@ -6,6 +6,12 @@
 #include <errno.h>
 #include <epplet.h>
 
+#ifdef HAVE_GLIBTOP
+#include <glibtop.h>
+#include <glibtop/cpu.h>
+#include "proc.h"
+#endif
+
 int                 cpus = 0;
 double             *prev_val = NULL;
 int                *load_val = NULL;
@@ -194,6 +200,28 @@ draw_flame(void)
 static void
 cb_timer(void *data)
 {
+#ifdef HAVE_GLIBTOP
+
+    glibtop_cpu cpu;
+    double val, val2;
+    int i;
+    glibtop_get_cpu (&cpu);
+
+    for (i = 0; i < cpus; i++) {	
+	val = (double)(cpu.xcpu_user[i]+cpu.xcpu_nice[i]+cpu.xcpu_sys[i]);
+	if (prev_val[i] == 0)
+          prev_val[i] = val;
+	val2 = (val - prev_val[i]);
+	prev_val[i] = val;
+       	val2 *= 10;
+	if (val2 > 100)
+	  val2 = 100; 
+        load_val[i] = val2;
+	/*	printf ("CPU%d: %ld : %ld : %d : %d\n",i, val, prev_val[i], val2, load_val[i]);*/
+    }
+
+#else
+
    static FILE *f;
    int i;
 
@@ -220,10 +248,13 @@ cb_timer(void *data)
 	     load_val[i] = val2;
 	  }
 	fclose(f);
+     }
+
+#endif
+
 	draw_flame();
 	Epplet_paste_buf(buf, win, 0, 0);
 	Epplet_timer(cb_timer, NULL, 0.1, "TIMER");   
-     }
    data = NULL;
 }
 
@@ -286,6 +317,22 @@ cb_out(void *data, Window w)
 static int
 count_cpus(void)
 {
+#ifdef HAVE_GLIBTOP
+  int i,c = 0;
+  int bits;
+  glibtop_cpu cpu;
+
+    glibtop_get_cpu (&cpu);
+    bits= (int)cpu.xcpu_flags;
+    for (i=0; i<GLIBTOP_NCPU; i++) {
+      c += bits&1;
+      /*      printf ("%d: %o - %d\n",i,bits,c ); */
+      bits>>=1;
+    }
+    /* printf ("CPUs: %d\n", c); */
+ 
+  return c;
+#else
    FILE *f;
    char s[256];
    
@@ -313,6 +360,7 @@ count_cpus(void)
 	return count;
      }
    exit(1);
+#endif
 }
 
 static void

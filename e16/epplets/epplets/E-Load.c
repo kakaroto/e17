@@ -1,5 +1,12 @@
 #include "epplet.h"
 
+#ifdef HAVE_GLIBTOP
+#include <glibtop.h>
+#include <glibtop/loadavg.h>
+#include <glibtop/cpu.h>
+#include "proc.h"
+#endif
+
 int cpus = 0;
 double *prev_val = NULL;
 int                *load_val = NULL;
@@ -12,6 +19,26 @@ int count_cpus(void);
 static void
 cb_timer(void *data)
 {
+#ifdef HAVE_GLIBTOP
+
+/* libgtop only handles total load, not per-CPU load */
+
+    glibtop_loadavg loadavg;
+    double val, val2;
+    int i;
+    glibtop_get_loadavg (&loadavg);
+    val2=loadavg.loadavg[0];
+    val2 *= 20;
+
+   /* printf ("Load: %f\n", val2); */
+
+    if (val2 > 100)
+      val2 = 100;
+    load_val[0] = val2;
+    Epplet_gadget_data_changed(load[0]);
+
+#else
+
    static FILE *f;
    int i;
 
@@ -39,9 +66,12 @@ cb_timer(void *data)
 	     Epplet_gadget_data_changed(load[i]);
 	  }
 	fclose(f);
-	Esync();
-	Epplet_timer(cb_timer, NULL, 0.333, "TIMER");   
      }
+
+#endif
+
+   Esync();
+   Epplet_timer(cb_timer, NULL, 0.333, "TIMER");   
    data = NULL;
 }
 
@@ -54,9 +84,26 @@ cb_close(void *data)
    exit(0);
 }
 
+
 int
 count_cpus(void)
 {
+#ifdef HAVE_GLIBTOP
+  int i,c = 0;
+  int bits;
+  glibtop_cpu cpu;
+
+    glibtop_get_cpu (&cpu);
+    bits= (int)cpu.xcpu_flags;
+    for (i=0; i<GLIBTOP_NCPU; i++) {
+      c += bits&1;
+      /*      printf ("%d: %o - %d\n",i,bits,c ); */
+      bits>>=1;
+    }
+    /* printf ("CPUs: %d\n", c); */
+ 
+  return c;
+#else
    FILE *f;
    char s[256];
    
@@ -84,6 +131,7 @@ count_cpus(void)
 	return count;
      }
    exit(1);
+#endif
 }
 
 int

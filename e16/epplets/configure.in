@@ -140,6 +140,7 @@ if test "$IMLIB_CONFIG" != "no"; then
 
 fi
 
+
 if test "$IMLIB_CONFIG" = "no"; then
 
   AC_CHECK_LIB(png, png_get_valid, GRLIBS="$GRLIBS -lpng -lz -lm", ,
@@ -159,6 +160,34 @@ if test "$IMLIB_CONFIG" = "no"; then
                AC_MSG_WARN([WARNING:  libImlib not found.  Attempting to continue anyway.])],
                $GRLIBS $SUBLIBS $X_LIBS)
 
+fi
+
+AC_CHECK_PROG(LIBGTOP_CONFIG, libgtop-config, libgtop-config, no)
+
+if test "$LIBGTOP_CONFIG" != "no"; then
+  
+  LIBGTOP_CONF_SH="`$LIBGTOP_CONFIG --config`"
+  if test ! -z "$LIBGTOP_CONF_SH"; then
+    . $LIBGTOP_CONF_SH
+
+    AC_MSG_CHECKING(libgtop-config for the value of CFLAGS)
+    CFLAGS="$CFLAGS $LIBGTOP_INCS -DHAVE_LIBGTOP"
+    AC_MSG_RESULT($CFLAGS)
+
+    AC_MSG_CHECKING(libgtop-config for the value of LIBS)
+    GTLIBS="$GTLIBS $LIBGTOP_LIBS $LIBGTOP_EXTRA_LIBS"
+    AC_MSG_RESULT($GTLIBS)
+
+    SAVE_LIBS="$LIBS"
+    LIBS="$GTLIBS"
+
+    AC_MSG_CHECKING(the sanity of new compile/link flags)
+    AC_TRY_LINK(, , echo "yes", echo "no" ; LIBGTOP_CONFIG="no" ; 
+                AC_WARN(Compile/link failed.  Reverting to manual method.)
+    )
+
+    LIBS="$SAVE_LIBS"
+  fi
 fi
 
 # Build test programs?

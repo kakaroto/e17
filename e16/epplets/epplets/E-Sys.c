@@ -6,6 +6,12 @@
 #include <errno.h>
 #include "epplet.h"
 
+#ifdef HAVE_GLIBTOP
+#include <glibtop.h>
+#include <glibtop/uptime.h>
+#include "proc.h"
+#endif
+
 #if 0
 #  define D(x) do {printf("%10s | %7d:  [debug] ", __FILE__, __LINE__); printf x; fflush(stdout);} while (0)
 #else
@@ -25,10 +31,20 @@ static void out_cb(void *data, Window w);
 static void
 timer_cb(void *data) {
 
-  FILE *fp;
   char buff[1024];
   unsigned long days, hours, mins, secs;
   double total_secs, delay;
+
+#ifdef HAVE_GLIBTOP
+
+  glibtop_uptime uptime;
+
+  glibtop_get_uptime(&uptime);
+  secs = (unsigned long)uptime.uptime;
+
+#else
+
+  FILE *fp;
 
   if ((fp = fopen("/proc/uptime", "r")) == NULL) {
     D(("Failed to open /proc/uptime -- %s\n", strerror(errno)));
@@ -37,6 +53,9 @@ timer_cb(void *data) {
   fgets(buff, sizeof(buff), fp);
   sscanf(buff, "%lf", &total_secs);
   secs = (unsigned long) total_secs;
+  fclose(fp);
+
+#endif
 
   days = secs / 86400;
   secs %= 86400;
@@ -56,7 +75,6 @@ timer_cb(void *data) {
   Esnprintf(buff, sizeof(buff), "%lu mins", mins);
   Epplet_change_label(label4, buff);
 
-  fclose(fp);
   Esync();
   Epplet_timer(timer_cb, NULL, delay, "TIMER");
   return;

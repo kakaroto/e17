@@ -6,6 +6,13 @@
 #include <errno.h>
 #include "epplet.h"
 
+#ifdef HAVE_GLIBTOP
+#include <glibtop.h>
+#include <glibtop/mem.h>
+#include <glibtop/swap.h>
+#include "proc.h"
+#endif
+
 #if 0
 #  define D(x) do {printf("%10s | %7d:  [debug] ", __FILE__, __LINE__); printf x; fflush(stdout);} while (0)
 #else
@@ -25,9 +32,21 @@ static void out_cb(void *data, Window w);
 static void
 timer_cb(void *data) {
 
-  FILE *fp;
   char buff[1024];
   unsigned long total, used, buffers, cached;
+
+#ifdef HAVE_GLIBTOP
+  int check=0;
+  glibtop_mem mem;
+  glibtop_swap swap;
+  glibtop_get_mem (&mem);
+  
+  total=(unsigned long)mem.total;
+  used=(unsigned long)mem.used;
+  buffers=(unsigned long)mem.buffer;
+  cached=(unsigned long)mem.cached;
+#else
+  FILE *fp;
 
   if ((fp = fopen("/proc/meminfo", "r")) == NULL) {
     D(("Failed to open /proc/meminfo -- %s\n", strerror(errno)));
@@ -37,6 +56,7 @@ timer_cb(void *data) {
   fgets(buff, sizeof(buff), fp);
   sscanf(buff, "%*s %lu %lu %*u %*u %lu %lu", 
 	 &total, &used, &buffers, &cached);
+#endif
   used -= (buffers + cached); 
   mem_val = (int) ((((float) used) / total) * 100.0);
   D(("%d = 100 * %lu / %lu\n", (100 * used) / total, used, total));
@@ -53,9 +73,24 @@ timer_cb(void *data) {
   }
   Epplet_change_label(mem_label, buff);
 
+#ifdef HAVE_GLIBTOP
+  glibtop_get_swap (&swap);
+  check=0;
+
+ do {
+    total=(unsigned long)swap.total;
+    used=(unsigned long)swap.used;
+ } while (swap.total==0 && swap.used==0 && check++<15);
+#else
   fgets(buff, sizeof(buff), fp);
   sscanf(buff, "%*s %lu %lu", &total, &used);
+
+  fclose(fp);
+#endif
   swap_val = (int) ((((float) used) / total) * 100.0);
+
+  /*printf ("Swap: %lu %lu %d%%\n", total, used, swap_val); */
+
   D(("Swap:  %d%% (%lu/%lu)\n", swap_val, used, total));
   Epplet_gadget_data_changed(swap_bar);
   if (used < 1024) {
@@ -69,7 +104,6 @@ timer_cb(void *data) {
   }
   Epplet_change_label(swap_label, buff);
 
-  fclose(fp);
   Esync();
   Epplet_timer(timer_cb, NULL, 3.0, "TIMER");
   return;

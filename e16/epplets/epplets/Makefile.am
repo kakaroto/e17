@@ -159,7 +159,7 @@ E-Mountbox-bg.png E-Mountbox-blockdev.png E-Mountbox-cd.png \
 E-Mountbox-floppy.png E-Mountbox-zip.png \
 E-SD_minitime.png E-SD_standby.png
 
-EXTRA_DIST = ${ICONS} ${ABOUT_DOCS} ${IMAGES}
+EXTRA_DIST = ${ICONS} ${ABOUT_DOCS} ${IMAGES} proc.h
 
 install-data-hook:
 	$(mkinstalldirs) $(EROOT)/epplet_icons
