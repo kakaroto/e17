@@ -2158,6 +2158,9 @@ void                KDE_AddModule(EWin * ewin);
 void                KDE_RemoveModule(EWin * ewin);
 void                KDE_Init(void);
 void                KDE_Shutdown(void);
+void                KDE_ClientInit(EWin * ewin);
+void                KDE_ClientChange(EWin * ewin, XPropertyEvent * event);
+void                KDE_GetDecorationHint(EWin * ewin, long *dechints);
 
 /* sound.c functions */
 Sample             *LoadWav(char *file);

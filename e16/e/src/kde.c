@@ -30,7 +30,6 @@
 
 /* initialize all the KDE Hint Atoms */
 
-																										      /*#if 0 *//* we dont need these right now */
 static Atom         KDE_COMMAND = 0;
 static Atom         KDE_ACTIVE_WINDOW = 0;
 static Atom         KDE_ACTIVATE_WINDOW = 0;
@@ -68,8 +67,6 @@ static Atom         KDE_WIN_MAXIMIZED = 0;
 static Atom         KDE_WIN_STICKY = 0;
 static Atom         KDE_WIN_ICON_GEOMETRY = 0;
 
-/* #endif */
-
 /* the modules I have to communicate to */
 typedef struct KModuleList
   {
@@ -82,7 +79,7 @@ KModuleList;
 
 static KModuleList *KModules = NULL;
 
-void
+void 
 KDE_ClientMessage(EWin * ewin, Atom atom, long data, Time timestamp)
 {
 
@@ -105,7 +102,7 @@ KDE_ClientMessage(EWin * ewin, Atom atom, long data, Time timestamp)
 
 }
 
-void
+void 
 KDE_ClientTextMessage(EWin * ewin, Atom atom, char *data)
 {
 
@@ -127,7 +124,7 @@ KDE_ClientTextMessage(EWin * ewin, Atom atom, char *data)
 
 }
 
-void
+void 
 KDE_SendMessagesToModules(Atom atom, long data)
 {
 
@@ -146,9 +143,13 @@ KDE_SendMessagesToModules(Atom atom, long data)
 
 }
 
-void
+void 
 KDE_AddModule(EWin * ewin)
 {
+
+   /*
+    * This function will add a new module into the KModules list
+    */
 
    KModuleList        *ptr;
 
@@ -221,9 +222,13 @@ KDE_AddModule(EWin * ewin)
 
 }
 
-void
+void 
 KDE_RemoveModule(EWin * ewin)
 {
+
+   /*
+    * This function will remove a module from the KModules list.
+    */
 
    KModuleList        *ptr, *last;
 
@@ -272,9 +277,14 @@ KDE_RemoveModule(EWin * ewin)
 
 }
 
-void
+void 
 KDE_Init(void)
 {
+   /*
+    * In this function we initialize pretty much everything that
+    * we need to initialize to make sure everyone knows we work just like
+    * KWM.
+    */
 
    EDBUG(6, "KDE_Init");
 
@@ -352,20 +362,170 @@ KDE_Init(void)
 
 	memset(KDE_DESKTOP_NAME, 0, sizeof(KDE_DESKTOP_NAME));
      }
-
+   /* and we tell the root window to announce we're KDE compliant */
    setSimpleHint(root.win, KDE_RUNNING, 1);
 
    EDBUG_RETURN_;
 
 }
 
-void
+void 
 KDE_Shutdown(void)
 {
 
    EDBUG(6, "KDE_Shutdown");
 
+   /* tell the root window we're not doing KDE compliance anymore */
    deleteHint(root.win, KDE_RUNNING);
 
    EDBUG_RETURN_;
+}
+
+void 
+KDE_ClientInit(EWin * ewin)
+{
+
+   EDBUG(6, "KDE_ClientInit");
+
+   /* grab everything from the Client about KStuffs */
+   if (getSimpleHint(ewin->win, KDE_WIN_STICKY))
+     {
+	MakeWindowSticky(ewin);
+     }
+   if (getSimpleHint(ewin->win, KDE_WIN_ICONIFIED))
+     {
+	IconifyEwin(ewin);
+     }
+   if (getSimpleHint(ewin->win, KDE_WIN_MAXIMIZED))
+     {
+	MaxSize(ewin, "conservative");
+     }
+   if (getSimpleHint(ewin->win, KDE_WIN_DECORATION))
+     {
+	KDE_GetDecorationHint(ewin, getSimpleHint(ewin->win,
+						  KDE_WIN_DECORATION));
+     }
+   /* we currently do not support the GEOMETRY RESTORE HINT */
+
+   EDBUG_RETURN_;
+
+}
+
+void 
+KDE_ClientChange(EWin * ewin, XPropertyEvent * event)
+{
+
+   EDBUG(6, "KDE_ClientChange");
+
+   if (event->atom == KDE_WIN_STICKY)
+     {
+	if (getSimpleHint(ewin->win, KDE_WIN_STICKY))
+	  {
+	     MakeWindowSticky(ewin);
+	  }
+	else
+	  {
+	     MakeWindowUnSticky(ewin);
+	  }
+     }
+   else if (event->atom == KDE_WIN_MAXIMIZED)
+     {
+	if (getSimpleHint(ewin->win, KDE_WIN_MAXIMIZED))
+	  {
+	     ewin->toggle = 0;
+	     MaxSize(ewin, "conservative");
+	  }
+	else
+	  {
+	     ewin->toggle = 1;
+	     MaxSize(ewin, "conservative");
+	  }
+     }
+   else if (event->atom == KDE_WIN_ICONIFIED)
+     {
+	if (getSimpleHint(ewin->win, KDE_WIN_ICONIFIED))
+	  {
+	     if (!ewin->iconified)
+	       {
+		  IconifyEwin(ewin);
+	       }
+	  }
+	else
+	  {
+	     if (ewin->iconified)
+	       {
+		  DeIconifyEwin(ewin);
+	       }
+	  }
+     }
+   else if (event->atom == KDE_WIN_DECORATION)
+     {
+	KDE_GetDecorationHint(ewin, getSimpleHint(ewin->win,
+						  KDE_WIN_DECORATION));
+     }
+   else if (event->atom == KDE_WIN_DESKTOP)
+     {
+	if (getSimpleHint(ewin->win, KDE_WIN_DESKTOP))
+	  {
+	     long               *desktop;
+
+	     desktop = getSimpleHint(ewin->win, KDE_WIN_DESKTOP) - 1;
+	     if (ewin->desktop != *desktop)
+	       {
+		  MoveEwinToDesktop(ewin, *desktop);
+
+	       }
+	  }
+     }
+   /* we currently do not support the GEOMETRY RESTORE HINT */
+   EDBUG_RETURN_;
+
+}
+
+void 
+KDE_GetDecorationHint(EWin * ewin, long *dechints)
+{
+
+   Border             *b;
+
+   EDBUG(6, "KDE_GetDecorationHint");
+
+   ewin->skipfocus = *dechints & _KDE_NO_FOCUS;
+
+   switch (*dechints & ~_KDE_NO_FOCUS)
+     {
+     case _KDE_NO_DECORATION:
+	b = (Border *) FindItem("BORDERLESS", 0, LIST_FINDBY_NAME,
+				LIST_TYPE_BORDER);
+	break;
+     case _KDE_TINY_DECORATION:
+	b = (Border *) FindItem("TRANSIENT", 0, LIST_FINDBY_NAME,
+				LIST_TYPE_BORDER);
+	break;
+     case _KDE_NORMAL_DECORATION:
+     default:
+	b = (Border *) FindItem("DEFAULT", 0, LIST_FINDBY_NAME,
+				LIST_TYPE_BORDER);
+	break;
+
+     }
+   if (!b)
+     {
+	b = (Border *) FindItem("DEFAULT", 0, LIST_FINDBY_NAME,
+				LIST_TYPE_BORDER);
+	if (!b)
+	  {
+	     b = (Border *) FindItem("__FALLBACK_BORDER", 0, LIST_FINDBY_NAME,
+				     LIST_TYPE_BORDER);
+
+	  }
+     }
+   ewin->border_new = 1;
+   SetEwinToBorder(ewin, b);
+   ICCCM_MatchSize(ewin);
+   MoveResizeEwin(ewin, ewin->x, ewin->y, ewin->client.w,
+		  ewin->client.h);
+
+   EDBUG_RETURN_;
+
 }

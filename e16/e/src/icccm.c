@@ -1240,7 +1240,9 @@ ICCCM_GetEInfo(EWin * ewin)
 		    {
 		       Border             *b;
 
-		       b = (Border *) FindItem("BORDERLESS", 0, LIST_FINDBY_NAME, LIST_TYPE_BORDER);
+		       b = (Border *) FindItem("BORDERLESS", 0,
+					       LIST_FINDBY_NAME,
+					       LIST_TYPE_BORDER);
 		       ewin->border_new = 1;
 		       SetEwinToBorder(ewin, b);
 		       ICCCM_MatchSize(ewin);
