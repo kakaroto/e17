@@ -1,8 +1,116 @@
 <chapter id="ch-Widgets">
 <title>Widgets</title>
+<para>
+We will now look at each widget individually. See the code that creates the widget and a 
+screenshot of the widget in action. 
+</para>
 
-<sect1 id="sec-FileDialog">
-<title>File Dialog</title>
+<sect1 id="sec-EwlBox">
+<title>ewl_hbox and ewl_vbox</title>
+<para>
+</para>
+</sect1>
+
+<sect1 id="sec-EwlDialog">
+<title>ewl_dialog</title>
+<para>
+</para>
+</sect1>
+
+<sect1 id="sec-EwlEntry">
+<title>ewl_entry</title>
+<para>
+</para>
+</sect1>
+
+<sect1 id="sec-EwlFileDialog">
+<title>ewl_filedialog</title>
+<para>
+</para>
+</sect1>
+
+<sect1 id="sec-EwlImage">
+<title>ewl_image</title>
+<para>
+</para>
+</sect1>
+
+<sect1 id="sec-EwlMenu">
+<title>ewl_menu</title>
+<para>
+</para>
+</sect1>
+
+<sect1 id="sec-EwlNotebook">
+<title>ewl_notebook</title>
+<para>
+</para>
+</sect1>
+
+<sect1 id="sec-EwlPassword">
+<title>ewl_password</title>
+<para>
+</para>
+</sect1>
+
+<sect1 id="sec-EwlProgressBar">
+<title>ewl_progressbar</title>
+<para>
+</para>
+</sect1>
+
+<sect1 id="sec-Ewl-RadioButton">
+<title>ewl_radiobutton</title>
+<para>
+</para>
+</sect1>
+
+<sect1 id="sec-EwlScrollpane">
+<title>ewl_scrollpane</title>
+<para>
+</para>
+</sect1>
+
+<sect1 id="sec-EwlSeeker">
+<title>ewl_seeker</title>
+<para>
+</para>
+</sect1>
+
+<sect1 id="sec-EwlSpinner">
+<title>ewl_spinner</title>
+<para>
+</para>
+</sect1>
+
+<sect1 id="sec-EwlTable">
+<title>ewl_table</title>
+<para>
+</para>
+</sect1>
+
+<sect1 id="sec-EwlText">
+<title>ewl_text</title>
+<para>
+</para>
+</sect1>
+
+<sect1 id="sec-EwlTooltip">
+<title>ewl_tooltip</title>
+<para>
+</para>
+</sect1>
+
+<sect1 id="sec-EwlTree">
+<title>ewl_tree</title>
+<para>
+</para>
+</sect1>
+
+<sect1 id="sec-EwlWindow">
+<title>ewl_window</title>
+<para>
+</para>
 </sect1>
 
 </chapter>
