@@ -120,11 +120,7 @@ $_ = $dir[0];
 if((my $first, my $second, my $third) = /^e17\/(\w*)\/(\w*)\/(.*)/) {
     $module = "e17/" . $first . "/" . $second;
 } elsif(($first, $second, $third) = /^(e16|misc)\/(\w*)\/(.*)/) {
-  if($first eq "e16" || $first eq "web") {
-    $module = $first . "/" . $second;
-  } else {
-    $module = $second;
-  }
+  $module = $first . "/" . $second;
 } else {
   $module = $dir[0];
 }
