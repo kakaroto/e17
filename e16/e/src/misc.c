@@ -34,8 +34,7 @@ BlumFlimFrub(void)
    char               *bins[3] =
    {"dox", "eesh", "epp"};
    char               *docs[4] =
-   {"E-docs/MAIN", "E-docs/Enlightenment.png",
-    "E-docs/Edoc_bg.png", "E-docs/E_logo.png"};
+   {"E-docs/MAIN", "E-docs/Edoc_bg.png", "E-docs/E_logo.png"};
    char               *thms[1] =
    {"themes/DEFAULT/epplets/epplets.cfg"};
 
@@ -72,7 +71,7 @@ BlumFlimFrub(void)
 	  }
 	Esnprintf(s, sizeof(s), "%s/dox", ENLIGHTENMENT_BIN);
      }
-   for (i = 0; i < 4; i++)
+   for (i = 0; i < 3; i++)
      {
 	Esnprintf(s, sizeof(s), "%s/%s", ENLIGHTENMENT_ROOT, docs[i]);
 	if (!exists(s))
