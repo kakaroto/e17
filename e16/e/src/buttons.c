@@ -149,9 +149,9 @@ ButtonCreate(const char *name, int id, ImageClass * iclass,
    EoSetLayer(b, ontop);
    EoSetShadow(b, 0);
 
-   EobjListStackAdd(&b->o, 0);
+   EobjListStackAdd(&b->o, 1);
 
-   AddItem(b, b->name, id, LIST_TYPE_BUTTON);
+   AddItemEnd(b, b->name, id, LIST_TYPE_BUTTON);
 
    return b;
 }
