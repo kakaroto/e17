@@ -267,12 +267,13 @@ winwidget_create_window(winwidget ret,
 void
 winwidget_update_title(winwidget ret)
 {
+  char *name;
+
   D_ENTER(4);
   D(4, ("winwid->name = %s\n", ret->name));
-  if (ret->name)
-    XStoreName(disp, ret->win, ret->name);
-  else
-    XStoreName(disp, ret->win, "feh");
+  name = ret->name ? ret->name : "feh";
+  XStoreName(disp, ret->win, name);
+  XSetIconName(disp, ret->win, name);
   XFlush(disp);
   D_RETURN_(4);
 }

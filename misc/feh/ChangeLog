@@ -1,3 +1,8 @@
+Fri Apr 11 11:46:55 BST 2003  Tom Gilbert <tom@linuxbrit.co.uk>
+
+  * Patch from Eric Dorland <eric.dorland@mail.mcgill.ca>
+  * Set icon name as well as title on change.
+
 Fri Apr 11 11:34:41 BST 2003  Tom Gilbert <tom@linuxbrit.co.uk>
 
   * Patch from Rami Lehti <rammer@vapaa.dc.inet.fi>
