@@ -22,6 +22,7 @@ struct _Elation_Info
    Evas *evas;
    struct {
       void (*action_broadcast) (int action);
+      Elation_Module *(*module_open) (Elation_Info *inf, Elation_Module *em, char *name);
    } func;
 };
 
@@ -65,7 +66,15 @@ enum {
      ELATION_ACT_SKIP,
      ELATION_ACT_DISK_OUT,
      ELATION_ACT_DISK_IN,
-     ELATION_ACT_DISK_EJECT
+     ELATION_ACT_DISK_EJECT,
+     ELATION_ACT_DISK_TYPE_UNKNOWN,
+     ELATION_ACT_DISK_TYPE_AUDIO,
+     ELATION_ACT_DISK_TYPE_VCD,
+     ELATION_ACT_DISK_TYPE_SVCD,
+     ELATION_ACT_DISK_TYPE_DVD,
+     ELATION_ACT_DISK_TYPE_DATA,
+     ELATION_ACT_DISK_TYPE_MIXED,
+     ELATION_ACT_DISK_TYPE_BLANK
 };
 
 Elation_Module *elation_module_open(Elation_Info *info, Elation_Module *parent, char *name);

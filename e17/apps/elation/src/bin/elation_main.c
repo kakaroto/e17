@@ -7,12 +7,12 @@ int  main_signal_exit(void *data, int ev_type, void *ev);
 void main_delete_request(Ecore_Evas *ee);
 void bg_setup(void);
 void bg_resize(void);
-void dvd_setup(void);
+void media_setup(void);
 void disk_setup(void);
 
 static Evas_Object *o_bg = NULL;
 static Elation_Module *em_disk = NULL;
-static Elation_Module *em_dvd = NULL;
+static Elation_Module *em_media = NULL;
 
 Ecore_Evas  *ecore_evas = NULL;
 Evas        *evas       = NULL;
@@ -26,10 +26,11 @@ main(int argc, char **argv)
 {
    /* methods modules can call */
    elation_info.func.action_broadcast = elation_module_action_broadcast;
+   elation_info.func.module_open = elation_module_open;
    
    if (main_start(argc, argv) < 1) return -1;
    bg_setup();
-   dvd_setup();
+   media_setup();
    disk_setup();
    bg_resize();
    elation_module_resize_broadcast();
@@ -177,16 +178,16 @@ bg_resize(void)
    evas_object_resize(o_bg, w, h);
 }
 
-/*** dvd ***/
+/*** media ***/
 
 void
-dvd_setup(void)
+media_setup(void)
 {
    Elation_Module *em;
    Evas_Coord w, h;
    
-   em = elation_module_open(&elation_info, NULL, "dvd");
-   em_dvd = em;
+   em = elation_module_open(&elation_info, NULL, "media");
+   em_media = em;
    if (em)
      {
 	em->show(em);
