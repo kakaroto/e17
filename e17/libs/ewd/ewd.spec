@@ -1,5 +1,5 @@
 # this is NOT relocatable, unless you alter the patch!
-%define	name	ewl
+%define	name	ewd
 %define	ver	0.0.1
 %define	rel	1
 %define prefix  /usr
@@ -17,15 +17,15 @@ Source: ftp://ftp.enlightenment.org/enlightenment/%{name}-%{ver}.tar.gz
 BuildRoot: /var/tmp/%{name}-root
 
 %description
-Ewl is brub.
+Ewd is brub.
 
 %package devel
-Summary: Ewl headers and development libraries.
+Summary: Ewd headers and development libraries.
 Group: Development/Libraries
 Requires: %{name} = %{ver}
 
 %description devel
-Ewl development files
+Ewd development files
 
 %prep
 %setup -q
@@ -53,11 +53,11 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root)
-%{prefix}/lib/libewl.so.*
+%{prefix}/lib/libewd.so.*
 
 %files devel
 %defattr(-,root,root)
-%{prefix}/lib/libewl.so
-%{prefix}/lib/libewl.*a
-%{prefix}/include/Ewl.h
-%{prefix}/bin/ewl-config
+%{prefix}/lib/libewd.so
+%{prefix}/lib/libewd.*a
+%{prefix}/include/Ewd.h
+%{prefix}/bin/ewd-config
