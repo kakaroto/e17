@@ -28,7 +28,7 @@ static void parse_comments(vorbis_comment *vc) {
 		cmt = vc->user_comments[i];
 
 		for (j = 0; j < COMMENT_ID_NUM; j++)
-			if (!strncmp(cmt, key[j], len[j]))
+			if (!strncasecmp(cmt, key[j], len[j]))
 				snprintf(comment[j], MAX_COMMENT_LEN, "%s",
 				         &cmt[len[j]]);
 	}
