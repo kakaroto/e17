@@ -55,7 +55,7 @@ void
 engrave_part_state_name_set(Engrave_Part_State *eps, char *name, double value)
 {
   if (!eps) return;
-  if (eps->name) free(eps->name);
+  IF_FREE(eps->name);
   eps->name = (name ? strdup(name) : NULL);
   eps->value = value;
 }
@@ -151,7 +151,7 @@ void
 engrave_part_state_rel1_to_x_set(Engrave_Part_State *eps, char *to)
 {
   if (!eps) return;
-  if (eps->rel1.to_x) free(eps->rel1.to_x);
+  IF_FREE(eps->rel1.to_x);
   eps->rel1.to_x = (to ? strdup(to) : NULL);
 }
 
@@ -159,7 +159,7 @@ void
 engrave_part_state_rel2_to_x_set(Engrave_Part_State *eps, char *to)
 {
   if (!eps) return;
-  if (eps->rel2.to_x) free(eps->rel2.to_x);
+  IF_FREE(eps->rel2.to_x);
   eps->rel2.to_x = (to ? strdup(to) : NULL);
 }
 
@@ -167,7 +167,7 @@ void
 engrave_part_state_rel1_to_y_set(Engrave_Part_State *eps, char *to)
 {
   if (!eps) return;
-  if (eps->rel1.to_y) free(eps->rel1.to_y);
+  IF_FREE(eps->rel1.to_y);
   eps->rel1.to_y = (to ? strdup(to) : NULL);
 }
 
@@ -175,7 +175,7 @@ void
 engrave_part_state_rel2_to_y_set(Engrave_Part_State *eps, char *to)
 {
   if (!eps) return;
-  if (eps->rel2.to_y) free(eps->rel2.to_y);
+  IF_FREE(eps->rel2.to_y);
   eps->rel2.to_y = (to ? strdup(to) : NULL);
 }
 
@@ -192,4 +192,173 @@ engrave_part_state_rel2_to_set(Engrave_Part_State *eps, char *to)
   engrave_part_state_rel2_to_x_set(eps, to);
   engrave_part_state_rel2_to_y_set(eps, to);
 }
+
+void
+engrave_part_state_image_normal_set(Engrave_Part_State *eps, 
+                                      Engrave_Image *im)
+{
+  if (!eps) return;
+  eps->image.normal = im;
+}
+
+void
+engrave_part_state_image_tween_add(Engrave_Part_State *eps,
+                                      Engrave_Image *im)
+{
+  if (!eps || !im) return;
+  eps->image.tween = evas_list_append(eps->image.tween, im);
+}
+
+void
+engrave_part_state_border_set(Engrave_Part_State *eps, 
+                                int l, int r, int t, int b)
+{
+  if (!eps) return;
+  eps->border.l = l;
+  eps->border.r = r;
+  eps->border.t = t;
+  eps->border.b = b;
+}
+
+void
+engrave_part_state_color_class_set(Engrave_Part_State *eps, char *class)
+{
+  if (!eps) return;
+  IF_FREE(eps->color_class);
+  eps->color_class = (class ? strdup(class) : NULL);
+}
+
+void
+engrave_part_state_color_set(Engrave_Part_State *eps, 
+                                int r, int g, int b, int a)
+{
+  if (!eps) return;
+  eps->color.r = r;
+  eps->color.g = g;
+  eps->color.b = b;
+  eps->color.a = a;
+}
+
+void
+engrave_part_state_color2_set(Engrave_Part_State *eps, 
+                                int r, int g, int b, int a)
+{
+  if (!eps) return;
+  eps->color2.r = r;
+  eps->color2.g = g;
+  eps->color2.b = b;
+  eps->color2.a = a;
+}
+
+void
+engrave_part_state_color3_set(Engrave_Part_State *eps, 
+                                int r, int g, int b, int a)
+{
+  if (!eps) return;
+  eps->color3.r = r;
+  eps->color3.g = g;
+  eps->color3.b = b;
+  eps->color3.a = a;
+}
+
+void
+engrave_part_state_fill_smooth_set(Engrave_Part_State *eps, int smooth)
+{
+  if (!eps) return;
+  eps->fill.smooth = smooth;
+}
+
+void
+engrave_part_state_fill_origin_relative_set(Engrave_Part_State *eps,
+                                                double x, double y)
+{
+  if (!eps) return;
+  eps->fill.pos_rel.x = x;
+  eps->fill.pos_rel.y = y;
+}
+
+void
+engrave_part_state_fill_size_relative_set(Engrave_Part_State *eps,
+                                                double x, double y)
+{
+  if (!eps) return;
+  eps->fill.rel.x = x;
+  eps->fill.rel.y = y;
+}
+
+void
+engrave_part_state_fill_origin_offset_set(Engrave_Part_State *eps,
+                                                      int x, int y)
+{
+  if (!eps) return;
+  eps->fill.pos_abs.x = x;
+  eps->fill.pos_abs.y = y;
+}
+
+void
+engrave_part_state_fill_size_offset_set(Engrave_Part_State *eps,
+                                                int x, int y)
+{
+  if (!eps) return;
+  eps->fill.abs.x = x;
+  eps->fill.abs.y = y;
+}
+
+void
+engrave_part_state_text_text_set(Engrave_Part_State *eps, char *text)
+{
+  if (!eps) return;
+  IF_FREE(eps->text.text);
+  eps->text.text = (text ? strdup(text) : NULL); 
+}
+
+void
+engrave_part_state_text_text_class_set(Engrave_Part_State *eps,
+                                                char *text_class)
+{
+  if (!eps) return;
+  IF_FREE(eps->text.text_class);
+  eps->text.text_class = (text_class ? strdup(text_class) : NULL); 
+}
+
+void
+engrave_part_state_text_font_set(Engrave_Part_State *eps,
+                                                char *font)
+{
+  if (!eps) return;
+  IF_FREE(eps->text.font);
+  eps->text.font = (font ? strdup(font) : NULL); 
+}
+
+void
+engrave_part_state_text_size_set(Engrave_Part_State *eps, int size)
+{
+  if (!eps) return;
+  eps->text.size = size;
+}
+
+void
+engrave_part_state_text_fit_set(Engrave_Part_State *eps, int x, int y)
+{
+  if (!eps) return;
+  eps->text.fit.x = x;
+  eps->text.fit.y = y;
+}
+
+void
+engrave_part_state_text_min_set(Engrave_Part_State *eps, int x, int y)
+{
+  if (!eps) return;
+  eps->text.min.x = x;
+  eps->text.min.y = y;
+}
+
+void
+engrave_part_state_text_align_set(Engrave_Part_State *eps, double x, double y)
+{
+  if (!eps) return;
+  eps->text.align.x = x;
+  eps->text.align.y = y;
+}
+
 

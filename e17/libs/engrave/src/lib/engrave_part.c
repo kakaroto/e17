@@ -27,7 +27,7 @@ void
 engrave_part_name_set(Engrave_Part *ep, char *name)
 {
   if (!ep) return;
-  if (ep->name) free(ep->name);
+  IF_FREE(ep->name);
   ep->name = (name ? strdup(name) : NULL);
 }
 
@@ -49,7 +49,7 @@ void
 engrave_part_clip_to_set(Engrave_Part *ep, char *clip_to)
 {
   if (!ep) return;
-  if (ep->clip_to) free(ep->clip_to);
+  IF_FREE(ep->clip_to);
   ep->clip_to = (clip_to ? strdup(clip_to) : NULL);
 }
 
@@ -82,7 +82,7 @@ void
 engrave_part_dragable_confine_set(Engrave_Part *ep, char *confine)
 {
   if (!ep) return;
-  if (ep->dragable.confine) free (ep->dragable.confine);
+  IF_FREE(ep->dragable.confine);
   ep->dragable.confine = (confine ? strdup(confine) : NULL);
 }
 

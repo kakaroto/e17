@@ -42,6 +42,7 @@ ENGRAVEFILES = \
 	engrave_parse.c \
 	engrave_part.c \
 	engrave_part_state.c \
+	engrave_program.c \
 	engrave_load.c \
 	$(ENGRAVEHEADERS)
 

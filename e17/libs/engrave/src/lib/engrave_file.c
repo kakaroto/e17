@@ -42,3 +42,16 @@ engrave_file_group_last_get(Engrave_File *ef)
   return evas_list_data(evas_list_last(ef->groups));
 }
 
+Engrave_Image *
+engrave_file_image_by_name_find(Engrave_File *ef, char *name)
+{
+  Evas_List *l;
+  for (l = ef->images; l; l = l->next)
+  {
+    Engrave_Image *im = l->data;
+    if (im && !strcmp(im->name, name))
+      return im;
+  }
+  return NULL;
+}
+

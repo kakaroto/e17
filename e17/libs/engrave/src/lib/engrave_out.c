@@ -74,7 +74,7 @@ engrave_out_start(FILE *out, char *type)
 {
     char *buf = engrave_output_mk_tabs();
     fprintf(out, "%s%s {\n", buf, type);
-    free(buf);
+    FREE(buf);
 
     level ++;
 }
@@ -87,7 +87,7 @@ engrave_out_end(FILE *out)
     level--;
     buf = engrave_output_mk_tabs();
     fprintf(out, "%s}\n", buf);
-    free(buf);
+    FREE(buf);
 
 }
 
@@ -103,7 +103,7 @@ engrave_out_data(FILE *out, char *name, char *fmt, ...)
     vfprintf(out, fmt_new, ap);
     va_end(ap);
 
-    free(buf);
+    FREE(buf);
 }
 
 int

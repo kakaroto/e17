@@ -32,7 +32,9 @@ void engrave_part_repeat_events_set(Engrave_Part *ep, int val);
 void engrave_part_type_set(Engrave_Part *ep, Engrave_Part_Type type);
 void engrave_part_effect_set(Engrave_Part *ep, Engrave_Text_Effect effect);
 void engrave_part_clip_to_set(Engrave_Part *ep, char *clip_to);
-Engrave_Part_State * engrave_part_state_last_get(Engrave_Part *ep);
+
+Engrave_Part_State *engrave_part_state_last_get(Engrave_Part *ep);
+
 void engrave_part_dragable_x_set(Engrave_Part *ep, int x, int step, int count);
 void engrave_part_dragable_y_set(Engrave_Part *ep, int y, int step, int count);
 void engrave_part_dragable_confine_set(Engrave_Part *ep, char *confine);

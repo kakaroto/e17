@@ -23,7 +23,7 @@ void
 engrave_group_script_set(Engrave_Group *eg, char *script)
 {
   if (!eg) return;
-  if (eg->script) free(eg->script);
+  IF_FREE(eg->script);
   eg->script = (script ? strdup(script) : NULL); 
 }
 
@@ -31,7 +31,7 @@ void
 engrave_group_name_set(Engrave_Group *eg, char *name)
 {
   if (!eg) return;
-  if (eg->name) free(eg->name);
+  IF_FREE(eg->name);
   eg->name = (name ? strdup(name) : NULL);
 }
 

@@ -460,22 +460,17 @@ engrave_parse_state_image_normal(char *name)
   Engrave_Group *group;
   Engrave_Part *part;
   Engrave_Part_State *state;
-  Evas_List *l;
- 
+  Engrave_Image *im;
+
   group = engrave_file_group_last_get(engrave_file);
   part = engrave_group_part_last_get(group);
   state = engrave_part_state_last_get(part);
 
-  for (l = engrave_file->images; l; l = l->next)
-  {
-    Engrave_Image *im = l->data;
-    if (im && !strcmp(im->name, name))
-    {
-      state->image.normal = im;
-      return;
-    }
-  }
-  printf("Error: image \"%s\" does not exist\n", name);
+  im = engrave_file_image_by_name_find(engrave_file, name);
+  if (im)
+    engrave_part_state_image_normal_set(state, im);
+  else
+    printf("Error: image \"%s\" does not exist\n", name);
 }
 
 void
@@ -484,22 +479,17 @@ engrave_parse_state_image_tween(char *name)
   Engrave_Group *group;
   Engrave_Part *part;
   Engrave_Part_State *state;
-  Evas_List *l;
+  Engrave_Image *im;
  
   group = engrave_file_group_last_get(engrave_file);
   part = engrave_group_part_last_get(group);
   state = engrave_part_state_last_get(part);
 
-  for (l = engrave_file->images; l; l = l->next)
-  {
-    Engrave_Image *im = l->data;
-    if (im && !strcmp(im->name, name))
-    {
-      state->image.tween = evas_list_append(state->image.tween, im);
-      return;
-    }
-  }
-  printf("Error: image \"%s\" does not exist\n", name);
+  im = engrave_file_image_by_name_find(engrave_file, name);
+  if (im)
+    engrave_part_state_image_tween_add(state, im);
+  else
+    printf("Error: image \"%s\" does not exist\n", name);
 }
 
 void
@@ -512,11 +502,7 @@ engrave_parse_state_border(int l, int r, int t, int b)
   group = engrave_file_group_last_get(engrave_file);
   part = engrave_group_part_last_get(group);
   state = engrave_part_state_last_get(part);
-
-  state->border.l = l;
-  state->border.r = r;
-  state->border.t = t;
-  state->border.b = b;
+  engrave_part_state_border_set(state, l, r, t, b);
 }
 
 void
@@ -529,9 +515,7 @@ engrave_parse_state_color_class(char *color_class)
   group = engrave_file_group_last_get(engrave_file);
   part = engrave_group_part_last_get(group);
   state = engrave_part_state_last_get(part);
-
-  if (state->color_class) free(state->color_class);
-  state->color_class = (char *)strdup(color_class);
+  engrave_part_state_color_class_set(state, color_class);
 }
 
 void
@@ -544,11 +528,7 @@ engrave_parse_state_color(int r, int g, int b, int a)
   group = engrave_file_group_last_get(engrave_file);
   part = engrave_group_part_last_get(group);
   state = engrave_part_state_last_get(part);
-
-  state->color.r = r;
-  state->color.g = g;
-  state->color.b = b;
-  state->color.a = a;
+  engrave_part_state_color_set(state, r, g, b, a);
 }
 
 void
@@ -561,11 +541,7 @@ engrave_parse_state_color2(int r, int g, int b, int a)
   group = engrave_file_group_last_get(engrave_file);
   part = engrave_group_part_last_get(group);
   state = engrave_part_state_last_get(part);
-
-  state->color2.r = r;
-  state->color2.g = g;
-  state->color2.b = b;
-  state->color2.a = a;
+  engrave_part_state_color2_set(state, r, g, b, a);
 }
 
 void
@@ -578,14 +554,8 @@ engrave_parse_state_color3(int r, int g, int b, int a)
   group = engrave_file_group_last_get(engrave_file);
   part = engrave_group_part_last_get(group);
   state = engrave_part_state_last_get(part);
-
-  state->color3.r = r;
-  state->color3.g = g;
-  state->color3.b = b;
-  state->color3.a = a;
+  engrave_part_state_color3_set(state, r, g, b, a);
 }
-
-/* FIXME fill and text handlers */
 
 void
 engrave_parse_state_fill_smooth(int smooth)
@@ -597,8 +567,7 @@ engrave_parse_state_fill_smooth(int smooth)
   group = engrave_file_group_last_get(engrave_file);
   part = engrave_group_part_last_get(group);
   state = engrave_part_state_last_get(part);
-
-  state->fill.smooth = smooth;
+  engrave_part_state_fill_smooth_set(state, smooth);
 }
 
 void
@@ -611,9 +580,7 @@ engrave_parse_state_fill_origin_relative(double x, double y)
   group = engrave_file_group_last_get(engrave_file);
   part = engrave_group_part_last_get(group);
   state = engrave_part_state_last_get(part);
-
-  state->fill.pos_rel.x = x;
-  state->fill.pos_rel.y = y;
+  engrave_part_state_fill_origin_relative_set(state, x, y);
 }
 
 void
@@ -626,9 +593,7 @@ engrave_parse_state_fill_size_relative(double x, double y)
   group = engrave_file_group_last_get(engrave_file);
   part = engrave_group_part_last_get(group);
   state = engrave_part_state_last_get(part);
-
-  state->fill.rel.x = x;
-  state->fill.rel.y = y;
+  engrave_part_state_fill_size_relative_set(state, x, y);
 }
 
 void
@@ -641,9 +606,7 @@ engrave_parse_state_fill_origin_offset(int x, int y)
   group = engrave_file_group_last_get(engrave_file);
   part = engrave_group_part_last_get(group);
   state = engrave_part_state_last_get(part);
-
-  state->fill.pos_abs.x = x;
-  state->fill.pos_abs.y = y;
+  engrave_part_state_fill_origin_offset_set(state, x, y);
 }
 
 void
@@ -656,11 +619,8 @@ engrave_parse_state_fill_size_offset(int x, int y)
   group = engrave_file_group_last_get(engrave_file);
   part = engrave_group_part_last_get(group);
   state = engrave_part_state_last_get(part);
-
-  state->fill.abs.x = x;
-  state->fill.abs.y = y;
+  engrave_part_state_fill_size_offset_set(state, x, y);
 }
-
 
 void
 engrave_parse_state_text_text(char *text)
@@ -672,9 +632,7 @@ engrave_parse_state_text_text(char *text)
   group = engrave_file_group_last_get(engrave_file);
   part = engrave_group_part_last_get(group);
   state = engrave_part_state_last_get(part);
-
-  if (state->text.text) free(state->text.text);
-  state->text.text = (char *)strdup(text);
+  engrave_part_state_text_text_set(state, text);
 }
 
 void
@@ -687,9 +645,7 @@ engrave_parse_state_text_text_class(char *text_class)
   group = engrave_file_group_last_get(engrave_file);
   part = engrave_group_part_last_get(group);
   state = engrave_part_state_last_get(part);
-
-  if (state->text.text_class) free(state->text.text_class);
-  state->text.text_class = (char *)strdup(text_class);
+  engrave_part_state_text_text_class_set(state, text_class);
 }
 
 void
@@ -702,9 +658,7 @@ engrave_parse_state_text_font(char *font)
   group = engrave_file_group_last_get(engrave_file);
   part = engrave_group_part_last_get(group);
   state = engrave_part_state_last_get(part);
-
-  if (state->text.font) free(state->text.font);
-  state->text.font = (char *)strdup(font);
+  engrave_part_state_text_font_set(state, font);
 }
 
 void
@@ -717,8 +671,7 @@ engrave_parse_state_text_size(int size)
   group = engrave_file_group_last_get(engrave_file);
   part = engrave_group_part_last_get(group);
   state = engrave_part_state_last_get(part);
-
-  state->text.size = size;
+  engrave_part_state_text_size_set(state, size);
 }
 
 void
@@ -731,9 +684,7 @@ engrave_parse_state_text_fit(int x, int y)
   group = engrave_file_group_last_get(engrave_file);
   part = engrave_group_part_last_get(group);
   state = engrave_part_state_last_get(part);
-
-  state->text.fit.x = x;
-  state->text.fit.y = y;
+  engrave_part_state_text_fit_set(state, x, y);
 }
 
 void
@@ -746,9 +697,7 @@ engrave_parse_state_text_min(int x, int y)
   group = engrave_file_group_last_get(engrave_file);
   part = engrave_group_part_last_get(group);
   state = engrave_part_state_last_get(part);
-
-  state->text.min.x = x;
-  state->text.min.y = y;
+  engrave_part_state_text_min_set(state, x, y);
 }
 
 void
@@ -761,9 +710,7 @@ engrave_parse_state_text_align(double x, double y)
   group = engrave_file_group_last_get(engrave_file);
   part = engrave_group_part_last_get(group);
   state = engrave_part_state_last_get(part);
-
-  state->text.align.x = x;
-  state->text.align.y = y;
+  engrave_part_state_text_align_set(state, x, y);
 }
 
 void
@@ -772,7 +719,7 @@ engrave_parse_program()
   Engrave_Group *group;
   Engrave_Program *program;
 
-  program = (Engrave_Program *)calloc(1, sizeof(Engrave_Program));
+  program = engrave_program_new();
   group = engrave_file_group_last_get(engrave_file);
 
   group->programs = evas_list_append(group->programs, program);
@@ -786,10 +733,7 @@ engrave_parse_program_script(char *script)
 
   group = engrave_file_group_last_get(engrave_file);
   program = engrave_group_program_last_get(group);
-
-  if(program->script) free(program->script);
-  program->script = (char *)strdup(script);
-  program->action = ENGRAVE_ACTION_SCRIPT;
+  engrave_program_script_set(program, script);
 }
 
 void
@@ -800,9 +744,7 @@ engrave_parse_program_name(char *name)
 
   group = engrave_file_group_last_get(engrave_file);
   program = engrave_group_program_last_get(group);
-
-  if(program->name) free(program->name);
-  program->name = (char *)strdup(name);
+  engrave_program_name_set(program, name);
 }
 
 void
@@ -813,9 +755,7 @@ engrave_parse_program_signal(char *signal)
 
   group = engrave_file_group_last_get(engrave_file);
   program = engrave_group_program_last_get(group);
-
-  if(program->signal) free(program->signal);
-  program->signal = (char *)strdup(signal);
+  engrave_program_signal_set(program, signal);
 }
 
 void
@@ -826,9 +766,7 @@ engrave_parse_program_source(char *source)
 
   group = engrave_file_group_last_get(engrave_file);
   program = engrave_group_program_last_get(group);
-
-  if(program->source) free(program->source);
-  program->source = (char *)strdup(source);
+  engrave_program_source_set(program, source);
 }
 
 void
@@ -839,8 +777,7 @@ engrave_parse_program_target(char *target)
 
   group = engrave_file_group_last_get(engrave_file);
   program = engrave_group_program_last_get(group);
-
-  program->targets = evas_list_append(program->targets, (char *)strdup(target));
+  engrave_program_target_add(program, target);
 }
 
 void
@@ -851,8 +788,7 @@ engrave_parse_program_after(char *after)
 
   group = engrave_file_group_last_get(engrave_file);
   program = engrave_group_program_last_get(group);
-
-  program->afters = evas_list_append(program->afters, (char *)strdup(after));
+  engrave_program_after_add(program, after);
 }
 
 void
@@ -863,29 +799,20 @@ engrave_parse_program_in(double from, double range)
 
   group = engrave_file_group_last_get(engrave_file);
   program = engrave_group_program_last_get(group);
-
-  program->in.from = from;
-  program->in.range = range;
+  engrave_program_in_set(program, from, range);
 }
 
 /* handle different action types */
 void
-engrave_parse_program_action(Engrave_Action action, char *state, char *state2, double value, double value2)
+engrave_parse_program_action(Engrave_Action action, char *state, 
+                                char *state2, double value, double value2)
 {
   Engrave_Group *group;
   Engrave_Program *program;
 
   group = engrave_file_group_last_get(engrave_file);
   program = engrave_group_program_last_get(group);
-
-  if (program->state) free(program->state);
-  if (program->state2) free(program->state2);
-
-  program->action = action;
-  if (state) program->state = (char *)strdup(state);
-  if (state2) program->state2 = (char *)strdup(state2);
-  program->value = value;
-  program->value2 = value2;
+  engrave_program_action_set(program, action, state, state2, value, value2);
 }
 
 void
@@ -896,8 +823,6 @@ engrave_parse_program_transition(Engrave_Transition transition, double duration)
 
   group = engrave_file_group_last_get(engrave_file);
   program = engrave_group_program_last_get(group);
-
-  program->transition = transition;
-  program->duration = duration;
+  engrave_program_transition_set(program, transition, duration);
 }
 

@@ -34,7 +34,7 @@ engrave_load_edc(char *file, char *imdir, char *fontdir)
 
   engrave_filename = strdup(file);
   enf = engrave_parse(file);
-  free(engrave_filename);
+  FREE(engrave_filename);
   unlink(tmpf);
 
   return(enf);
@@ -71,7 +71,7 @@ engrave_load_eet(char *filename)
   cmd = (char *)calloc(len,sizeof(char));
   snprintf(cmd, len, "cp %s %s/%s", old_fname, work_dir, ptr);
   ret = system(cmd);
-  free(cmd);
+  FREE(cmd);
 
   if (ret < 0) {
     fprintf(stderr, "Unable to copy %s to tmp dir %s: %s\n",
@@ -93,7 +93,7 @@ engrave_load_eet(char *filename)
   cmd = (char *)calloc(len, sizeof(char));
   snprintf(cmd, len, "edje_decc %s/%s", work_dir, ptr);
   ret = system(cmd);
-  free(cmd);
+  FREE(cmd);
 
   if (ret < 0) {
     fprintf(stderr, "Unable to de-compile %s\n", ptr);
@@ -124,11 +124,11 @@ engrave_load_eet(char *filename)
   new_fname = (char *)calloc(len, sizeof(char));
   snprintf(new_fname, len, "%s/%s/%s", work_dir, ptr, 
             MAIN_EDC_NAME);
-  free(old_fname);
+  FREE(old_fname);
 
   enf = engrave_load_edc(new_fname, work_dir, work_dir);
 
-  free(work_dir);
+  FREE(work_dir);
 
   return enf;
 }

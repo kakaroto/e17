@@ -18,5 +18,8 @@ void engrave_file_group_add(Engrave_File *ef, Engrave_Group *eg);
 
 Engrave_Group *engrave_file_group_last_get(Engrave_File *ef);
 
+Engrave_Image * engrave_file_image_by_name_find(Engrave_File *ef,
+                                                      char *name);
+
 #endif
 
