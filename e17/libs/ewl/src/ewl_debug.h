@@ -41,9 +41,9 @@ inline void     ewl_print_warning(void);
 	if (ewl_config.debug.enable && ewl_config.debug.level >= lvl) \
 	  { \
 		fprintf(stderr, "<--  %s:%i\tReturning %p in %s();\n", \
-			__FILE__, __LINE__, ptr, __FUNCTION__); \
+			__FILE__, __LINE__, (void *)ptr, __FUNCTION__); \
 	  } \
-	return ptr; \
+	return (void *)ptr; \
 }
 
 #define DRETURN_FLOAT(num, lvl) \

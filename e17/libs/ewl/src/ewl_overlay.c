@@ -116,26 +116,26 @@ void ewl_overlay_child_resize_cb(Ewl_Container *c, Ewl_Widget *w,
 			       int size, Ewl_Orientation o)
 {
 	int            maxw = 0, maxh = 0;
-	Ewl_Embed     *o;
+	Ewl_Overlay   *overlay;
 	Ewl_Object    *child;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	child = EWL_OBJECT(w);
-	o = EWL_EMBED(c);
+	overlay = EWL_OVERLAY(c);
 
-	ewd_list_goto_first(EWL_CONTAINER(o)->children);
-	while ((child = ewd_list_next(EWL_CONTAINER(o)->children))) {
+	ewd_list_goto_first(EWL_CONTAINER(overlay)->children);
+	while ((child = ewd_list_next(EWL_CONTAINER(overlay)->children))) {
 		int             cs;
 
 		/*
 		 * FIXME: Do we really want to do this?
 		 * Move children within the bounds of the viewable area
 		 */
-		if (ewl_object_get_current_x(child) < CURRENT_X(o))
-			ewl_object_request_x(child, CURRENT_X(o));
-		if (ewl_object_get_current_y(child) < CURRENT_Y(o))
-			ewl_object_request_y(child, CURRENT_Y(o));
+		if (ewl_object_get_current_x(child) < CURRENT_X(overlay))
+			ewl_object_request_x(child, CURRENT_X(overlay));
+		if (ewl_object_get_current_y(child) < CURRENT_Y(overlay))
+			ewl_object_request_y(child, CURRENT_Y(overlay));
 
 		cs = ewl_object_get_current_x(child) +
 			ewl_object_get_preferred_w(child);
@@ -157,7 +157,7 @@ void ewl_overlay_child_resize_cb(Ewl_Container *c, Ewl_Widget *w,
 
 	}
 
-	ewl_object_set_preferred_size(EWL_OBJECT(o), maxw, maxh);
+	ewl_object_set_preferred_size(EWL_OBJECT(overlay), maxw, maxh);
 	ewl_object_request_size(EWL_OBJECT(c),
 				ewl_object_get_current_w(EWL_OBJECT(c)),
 				ewl_object_get_current_h(EWL_OBJECT(c)));

@@ -73,6 +73,7 @@ int ewl_widget_init(Ewl_Widget * w, char *appearance)
 	ewl_callback_append(w, EWL_CALLBACK_MOUSE_MOVE,
 			    ewl_widget_mouse_move_cb, NULL);
 
+	w->inheritance = strdup("/widget");
 	ewl_widget_set_appearance(w, appearance);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
@@ -384,10 +385,12 @@ void           *ewl_widget_get_data(Ewl_Widget * w, void *k)
  */
 void ewl_widget_set_appearance(Ewl_Widget * w, char *appearance)
 {
+	int il = 0, al;
 	char *current;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
+	DCHECK_PARAM_PTR("appearance", appearance);
 
 	/*
 	 * Only continue if the appearance has changed.
@@ -403,12 +406,42 @@ void ewl_widget_set_appearance(Ewl_Widget * w, char *appearance)
 		FREE(w->appearance);
 	}
 
+	al = strlen(appearance) + 1;
+
 	/*
 	 * The base appearance is used for determining the theme key of the
-	 * widget
+	 * widget.
 	 */
-	w->appearance = strdup(appearance);
+	w->appearance = (char *)malloc(al);
+	if (!w->appearance)
+		DRETURN(DLEVEL_STABLE);
 
+	strcpy(w->appearance, appearance);
+
+	/*
+	 * We don't throw away any inheritance info, so we can just allocate
+	 * the memory we need and place the new info on the end.
+	 */
+	if (w->inheritance)
+		il = strlen(w->inheritance);
+
+	il += al;
+	current = (char *)malloc(il);
+	if (current) {
+		/*
+		 * NOTE: This strcat should be safe, the strings lengths have
+		 * already been computed to determine the size of the
+		 * allocation.
+		 */
+		strcat(current, appearance);
+		IF_FREE(w->inheritance);
+		w->inheritance = current;
+	}
+
+	/*
+	 * Regenerate the entire path of widgets in the heirarchy, and
+	 * recreate the visible components of the widget if necessary.
+	 */
 	ewl_widget_rebuild_appearance(w);
 	if (REALIZED(w)) {
 		ewl_widget_unrealize(w);
@@ -629,12 +662,9 @@ int ewl_widget_get_layer(Ewl_Widget *w)
 int ewl_widget_get_layer_sum(Ewl_Widget *w)
 {
 	int sum = 0;
-	Ewl_Widget *emb = NULL;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("w", w, 0);
-
-	emb = ewl_embed_find_by_widget(w);
 
 	while (!REALIZED(w) && w->parent) {
 		sum += LAYER(w);
@@ -734,6 +764,28 @@ void ewl_widget_set_internal(Ewl_Widget *w, unsigned int val)
 				EWL_FLAGS_PROPERTY_MASK);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param widget: the widget to determine if a type is inherited
+ * @param type: the type to check for inheritance in the widget
+ * @return Returns TRUE if @w inherited the type @t, otherwise FALSE.
+ * @brief Determine if the widget @w has inherited from the type @t.
+ */
+unsigned int ewl_widget_is_type(Ewl_Widget *widget, char *type)
+{
+	int found = FALSE;
+	char tmp[PATH_MAX];
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET("widget", widget, FALSE);
+	DCHECK_PARAM_PTR_RET("type", type, FALSE);
+
+	snprintf(tmp, PATH_MAX, "/%s/", type);
+	if (widget->inheritance && strstr(widget->inheritance, tmp))
+		found = TRUE;
+
+	DRETURN_INT(found, DLEVEL_STABLE);
 }
 
 /**

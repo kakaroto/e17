@@ -42,6 +42,7 @@ struct Ewl_Widget
 	Evas_Object    *theme_object; /**< Appearance shown on canvas */
 	char           *bit_state; /**< State of the appaarance */
 	char           *appearance; /**< Key to lookup appearance in theme */
+	char           *inheritance; /**< Key to lookup inhertiance of widget */
 	int             layer; /**< Current layer of widget on canvas */
 
 	Ewd_Hash       *theme; /**< Overriding theme settings of this widget */
@@ -122,6 +123,7 @@ void            ewl_widget_set_appearance(Ewl_Widget * w, char *appearance);
  * Retrieve the appearance string of a widget.
  */
 char           *ewl_widget_get_appearance(Ewl_Widget * w);
+unsigned int    ewl_widget_is_type(Ewl_Widget *widget, char *type);
 
 /*
  * Change the parent of a widget.
