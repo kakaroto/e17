@@ -3,7 +3,7 @@
 "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [
   <!ENTITY legal SYSTEM "legal.xml">
   <!ENTITY appversion "0.2">
-  <!ENTITY manrevision "0.1">
+  <!ENTITY manrevision "1">
   <!ENTITY date "August 2004">
   <!ENTITY app "<application>E16 Menu Editor II</application>">
   <!-- Information about the entities
@@ -15,7 +15,7 @@
 ]>
 <article id="index" lang="en">
   <articleinfo>
-    <title>&app; Manual V&manrevision;</title>
+    <title>&app; Manual v&manrevision;</title>
     <copyright> 
       <year>2004</year> 
       <holder>Andreas Volz</holder> 
@@ -40,7 +40,7 @@
     </authorgroup>
     <revhistory>      
       <revision>
-        <revnumber>&app; Manual v&appversion;</revnumber>
+        <revnumber>&app; Manual v1</revnumber>
         <date>2004</date>
         <revdescription>
           <para role="author">Andreas Volz
@@ -65,7 +65,8 @@
   <sect1 id="intro">
     <title>Introduction</title>
     <para>In this user guide is explained how to use the functions
-      in &app;. The main functions <emphasis>save</emphasis>, <emphasis>New Enty</emphasis>,
+      in &app; v&appversion;. The main functions <emphasis>save</emphasis>, 
+      <emphasis>New Enty</emphasis>,
       <emphasis>Choose Icon</emphasis>, <emphasis>Delete Entry</emphasis> and 
       <emphasis>Quit</emphasis> are available though the menu- and toolbar. 
     </para>

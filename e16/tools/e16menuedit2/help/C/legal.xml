@@ -1,58 +1,31 @@
   <legalnotice id="legalnotice">
 	<para>
-	  Permission is granted to copy, distribute and/or modify this
-	  document under the terms of the GNU Free Documentation
-	  License (GFDL), Version 1.1 or any later version published
-	  by the Free Software Foundation with no Invariant Sections,
-	  no Front-Cover Texts, and no Back-Cover Texts.  You can find
-	  a copy of the GFDL at this <ulink type="help"
-	  url="ghelp:fdl">link</ulink> or in the file COPYING-DOCS
-	  distributed with this manual.
-         </para>
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to
+  deal in the Software without restriction, including without limitation the
+  rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+  sell copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
+	</para>
 
 	<para>
-	  DOCUMENT AND MODIFIED VERSIONS OF THE DOCUMENT ARE PROVIDED
-	  UNDER  THE TERMS OF THE GNU FREE DOCUMENTATION LICENSE
-	  WITH THE FURTHER UNDERSTANDING THAT:
-
 	  <orderedlist>
 		<listitem>
-		  <para>DOCUMENT IS PROVIDED ON AN "AS IS" BASIS,
-                    WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
-                    IMPLIED, INCLUDING, WITHOUT LIMITATION, WARRANTIES
-                    THAT THE DOCUMENT OR MODIFIED VERSION OF THE
-                    DOCUMENT IS FREE OF DEFECTS MERCHANTABLE, FIT FOR
-                    A PARTICULAR PURPOSE OR NON-INFRINGING. THE ENTIRE
-                    RISK AS TO THE QUALITY, ACCURACY, AND PERFORMANCE
-                    OF THE DOCUMENT OR MODIFIED VERSION OF THE
-                    DOCUMENT IS WITH YOU. SHOULD ANY DOCUMENT OR
-                    MODIFIED VERSION PROVE DEFECTIVE IN ANY RESPECT,
-                    YOU (NOT THE INITIAL WRITER, AUTHOR OR ANY
-                    CONTRIBUTOR) ASSUME THE COST OF ANY NECESSARY
-                    SERVICING, REPAIR OR CORRECTION. THIS DISCLAIMER
-                    OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS
-                    LICENSE. NO USE OF ANY DOCUMENT OR MODIFIED
-                    VERSION OF THE DOCUMENT IS AUTHORIZED HEREUNDER
-                    EXCEPT UNDER THIS DISCLAIMER; AND
+		  <para>
+  The above copyright notice and this permission notice shall be included in
+  all copies of the Software, its documentation and marketing &#038; publicity
+  materials, and acknowledgment shall be given in the documentation, materials
+  and software packages that this Software was used.
 		  </para>
 		</listitem>
 		<listitem>
-		  <para>UNDER NO CIRCUMSTANCES AND UNDER NO LEGAL
-                       THEORY, WHETHER IN TORT (INCLUDING NEGLIGENCE),
-                       CONTRACT, OR OTHERWISE, SHALL THE AUTHOR,
-                       INITIAL WRITER, ANY CONTRIBUTOR, OR ANY
-                       DISTRIBUTOR OF THE DOCUMENT OR MODIFIED VERSION
-                       OF THE DOCUMENT, OR ANY SUPPLIER OF ANY OF SUCH
-                       PARTIES, BE LIABLE TO ANY PERSON FOR ANY
-                       DIRECT, INDIRECT, SPECIAL, INCIDENTAL, OR
-                       CONSEQUENTIAL DAMAGES OF ANY CHARACTER
-                       INCLUDING, WITHOUT LIMITATION, DAMAGES FOR LOSS
-                       OF GOODWILL, WORK STOPPAGE, COMPUTER FAILURE OR
-                       MALFUNCTION, OR ANY AND ALL OTHER DAMAGES OR
-                       LOSSES ARISING OUT OF OR RELATING TO USE OF THE
-                       DOCUMENT AND MODIFIED VERSIONS OF THE DOCUMENT,
-                       EVEN IF SUCH PARTY SHALL HAVE BEEN INFORMED OF
-                       THE POSSIBILITY OF SUCH DAMAGES.
+		  <para>
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+  THE AUTHORS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 		  </para>
 		</listitem>
 	  </orderedlist>
