@@ -7,7 +7,7 @@ int                prev_up[16] =
 {0, 0, 0, 0, 0, 0, 0, 0, 
    0, 0, 0, 0, 0, 0, 0, 0};
 int                prev_count = 0;
-Epplet_gadget      b_close, b_help, image, label;
+Epplet_gadget      b_close, b_suspend, b_sleep,  b_help, image, label;
 
 static void cb_timer(void *data);
 static void cb_close(void *data);
@@ -55,51 +55,51 @@ cb_timer(void *data)
         if( bat_flags != 0xff
 	    && bat_flags & 0x80 )
 	  {
-	    s_ptr += Esnprintf( s_ptr, sizeof(s_ptr), "no battery" );
+	    s_ptr += sprintf( s_ptr, "no battery" );
 	  }
 	else
 	  {
 	    if( bat_val > 0 )
-	      s_ptr += Esnprintf( s_ptr, sizeof(s_ptr), "%i%%", bat_val );
+	      s_ptr += sprintf( s_ptr, "%i%%", bat_val );
 
 	    switch( bat_stat )
 	      {
 		case 0:
-	          s_ptr += Esnprintf( s_ptr, sizeof(s_ptr), ", high" );
+	          s_ptr += sprintf( s_ptr, ", high" );
 		  break;
 		case 1:
-	          s_ptr += Esnprintf( s_ptr, sizeof(s_ptr), ", low" );
+	          s_ptr += sprintf( s_ptr, ", low" );
 		  break;
 		case 2:
-	          s_ptr += Esnprintf( s_ptr, sizeof(s_ptr), ", crit." );
+	          s_ptr += sprintf( s_ptr, ", crit." );
 		  break;
 		case 3:
-	          s_ptr += Esnprintf( s_ptr, sizeof(s_ptr), ", charge" );
+	          s_ptr += sprintf( s_ptr, ", charge" );
 		  break;
 	      }
 	  }
-	s_ptr += Esnprintf( s_ptr, sizeof(s_ptr), "\n" );
+	s_ptr += sprintf( s_ptr, "\n" );
 
 
 	if( ac_stat == 1 )
           {
-	    s_ptr += Esnprintf(s_ptr, sizeof(s_ptr), "AC on-line" );
+	    s_ptr += sprintf(s_ptr, "AC on-line" );
           }
         else
           {
 	    hours = time_val / 3600;
             minutes = (time_val / 60) % 60;
 	    if (up2 > 0)
-	       s_ptr += Esnprintf(s_ptr, sizeof(s_ptr), "(%i:%02i)\n%i:%02i", 
+	       s_ptr += sprintf(s_ptr, "(%i:%02i)\n%i:%02i", 
 		       		(((100 - bat_val) * 2 * 60) / up2) / 60, 
 		       		(((100 - bat_val) * 2 * 60) / up2) % 60, 
 		       		hours, minutes);
 	    else
-	       s_ptr += Esnprintf(s_ptr, sizeof(s_ptr), "%i:%02i", hours, minutes);
+	       s_ptr += sprintf(s_ptr, "%i:%02i", hours, minutes);
           }
 	Epplet_change_label(label, s);
 
-	Esnprintf(s, sizeof(s), EROOT"/epplet_data/E-Power/E-Power-Bat-%i.png", 
+	sprintf(s, EROOT"/epplet_icons/E-Power-Bat-%i.png", 
 		((bat_val + 5) / 10) * 10);
 	Epplet_change_image(image, 44, 24, s);
 	Epplet_timer(cb_timer, NULL, 30.0, "TIMER");   
@@ -114,6 +114,7 @@ cb_close(void *data)
 {
    Epplet_unremember();
    Esync();
+   Epplet_cleanup();
    data = NULL;
    exit(0);
 }
@@ -121,25 +122,25 @@ cb_close(void *data)
 static void
 cb_in(void *data, Window w)
 {
-   if (w == Epplet_get_main_window())
-     {
-       Epplet_gadget_show(b_close);
-       Epplet_gadget_show(b_help);
-     }
+   Epplet_gadget_show(b_close);
+   Epplet_gadget_show(b_suspend);
+   Epplet_gadget_show(b_sleep);
+   Epplet_gadget_show(b_help);
    return;
    data = NULL;
+   w = (Window) 0;
 }
 
 static void
 cb_out(void *data, Window w)
 {
-   if (w == Epplet_get_main_window())
-     {
-       Epplet_gadget_hide(b_close);
-       Epplet_gadget_hide(b_help);
-     }
+   Epplet_gadget_hide(b_close);
+   Epplet_gadget_hide(b_suspend);
+   Epplet_gadget_hide(b_sleep);
+   Epplet_gadget_hide(b_help);
    return;
    data = NULL;
+   w = (Window) 0;
 }
 
 static void
@@ -150,10 +151,25 @@ cb_help(void *data)
    data = NULL;
 }
 
+static void
+cb_suspend(void *data)
+{
+  system("/usr/bin/apm -s");
+  return;
+  data=NULL;
+}
+
+static void
+cb_sleep(void *data)
+{
+  system("/usr/bin/apm -S");
+  return;
+  data-NULL;
+}
+
 int
 main(int argc, char **argv)
 {
-   atexit(Epplet_cleanup);
    Epplet_Init("E-Power", "0.1", "Enlightenment Laptop Power Epplet",
 	       3, 3, argc, argv, 0);
    Epplet_timer(cb_timer, NULL, 30.0, "TIMER");
@@ -163,10 +179,16 @@ main(int argc, char **argv)
    b_help = Epplet_create_button(NULL, NULL,
 				 34, 2, 0, 0, "HELP", 0, NULL,
 				 cb_help, NULL);
+   b_suspend = Epplet_create_button(NULL, NULL,
+				    2, 34, 0, 0, "PAUSE", 0, NULL,
+				    cb_suspend, NULL);    
+   b_sleep = Epplet_create_button(NULL, NULL,
+				    34, 34, 0, 0, "STOP", 0, NULL,
+				    cb_sleep, NULL);    
    Epplet_gadget_show(image = 
 		      Epplet_create_image
 		      (2, 2, 44, 24,
-		       EROOT"/epplet_data/E-Power/E-Power-Bat-100.png"));
+		       EROOT"/epplet_icons/E-Power-Bat-100.png"));
    Epplet_gadget_show(label = 
 		      Epplet_create_label
 		      (2, 28, "APM not\nin Kernel", 1));

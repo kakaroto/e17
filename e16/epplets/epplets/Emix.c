@@ -6,7 +6,11 @@
 
 #include "epplet.h"
 #include <sys/ioctl.h>
+#ifdef __FreeBSD__
+#include <machine/soundcard.h>
+#else
 #include <sys/soundcard.h>
+#endif
 
 int open_mixer(void);
 int read_volume(int);
