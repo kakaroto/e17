@@ -3683,3 +3683,12 @@ Wed Oct 20 15:00:25 PDT 1999
 (Raster)
 
 fix colormap problem with ximtool :)
+
+-------------------------------------------------------------------------------
+
+Wed Oct 20 18:09:59 PDT 1999
+(Mandrake)
+
+updated man pages.
+Now it should automatically build from the e/dox/E-docs/MAIN file
+
