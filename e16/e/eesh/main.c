@@ -14,9 +14,49 @@ main(int argc, char **argv)
    int                 i, j, k;
    fd_set              fd;
    char                ret;
+   char               *command;
 
    waitonly = 0;
    lists.next = NULL;
+   display_name = NULL;
+   command = NULL;
+
+   for (i = 0; i < argc; i++)
+     {
+	if (!strcmp(argv[i], "-e"))
+	  {
+	     if (i != (argc - 1))
+	       {
+                  command = argv[++i];
+	       }
+	  }
+	else if (!strcmp(argv[i], "-ewait"))
+	  {
+	     waitonly = 1;
+	     if (i != (argc - 1))
+                command = argv[++i];
+	  }
+        else if (!strcmp(argv[i], "-display"))
+          {
+	     if (i != (argc - 1))
+                display_name = duplicate(argv[++i]);
+          }
+	else if ((!strcmp(argv[i], "-h")) ||
+		 (!strcmp(argv[i], "--h")) ||
+		 (!strcmp(argv[i], "-help")) ||
+		 (!strcmp(argv[i], "--help")))
+	  {
+	     printf("%s [ -e \"Command to Send to Enlightenment then exit\"]\n"
+		    "     [ -ewait \"Command to Send to E then wait for a reply then exit\"]\n",
+		    argv[0]);
+	     printf("Use \"%s\" by itself to enter the \"interactive mode\"\n"
+		    "Ctrl-D will exit interactive mode (EOF)\n"
+		    "use \"help\" from inside interactive mode for further "
+		    "assistance\n", argv[0]);
+	     exit(0);
+	  }
+     }
+
    SetupX();
    CommsSetup();
    CommsFindCommsWindow();
@@ -35,37 +75,14 @@ main(int argc, char **argv)
    CommsSend(e, "set info Enlightenment IPC Shell - talk to E direct");
 /*  CommsSend(e, "set pixmap 0"); */
 
-   for (i = 0; i < argc; i++)
+   if (command)
      {
-	if (!strcmp(argv[i], "-e"))
-	  {
-	     if (i != (argc - 1))
-	       {
-		  CommsSend(e, argv[++i]);
-		  XSync(disp, False);
-		  exit(0);
-	       }
-	  }
-	else if (!strcmp(argv[i], "-ewait"))
-	  {
-	     waitonly = 1;
-	     if (i != (argc - 1))
-		CommsSend(e, argv[++i]);
-	  }
-	else if ((!strcmp(argv[i], "-h")) ||
-		 (!strcmp(argv[i], "--h")) ||
-		 (!strcmp(argv[i], "-help")) ||
-		 (!strcmp(argv[i], "--help")))
-	  {
-	     printf("%s [ -e \"Command to Send to Enlightenment then exit\"]\n"
-		    "     [ -ewait \"Command to Send to E then wait for a reply then exit\"]\n",
-		    argv[0]);
-	     printf("Use \"%s\" by itself to enter the \"interactive mode\"\n"
-		    "Ctrl-D will exit interactive mode (EOF)\n"
-		    "use \"help\" from inside interactive mode for further "
-		    "assistance\n", argv[0]);
-	     exit(0);
-	  }
+        CommsSend(e, command);
+        if (!waitonly)
+          {
+             XSync(disp, False);
+             exit(0);
+          }
      }
 
    XSync(disp, False);

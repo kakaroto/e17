@@ -254,3 +254,4 @@ extern List         lists;
 extern Window       comms_win;
 extern Window       my_win;
 extern Root         root;
+extern char        *display_name;

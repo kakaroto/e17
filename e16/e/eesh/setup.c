@@ -5,7 +5,8 @@ SetupX()
 {
    EDBUG(6, "SetupX");
    /* Open a connection to the diplay nominated by the DISPLAY variable */
-   disp = XOpenDisplay(NULL);
+   /* Or set with the -display option */
+   disp = XOpenDisplay(display_name);
    /* if cannot connect to display */
    if (!disp)
      {
