@@ -1,14 +1,15 @@
 #include "Estyle_private.h"
 #include <ctype.h>
+#include <Evas.h>
 
 #define ESTYLE_TABWIDTH 8
 #define DEFAULT_FONT "nationff"
 #define DEFAULT_SIZE 12
 
-void __estyle_update_position(Estyle * es);
-void __estyle_update_dimensions(Estyle * es);
-void __estyle_callback_dispatcher(void *_data, Evas _e, Evas_Object _o,
-				  int _b, int _x, int _y);
+void __estyle_update_position(Estyle *es);
+void __estyle_update_dimensions(Estyle *es);
+void __estyle_callback_dispatcher(void *_data, Evas *_e, Evas_Object *_o,
+				  void *event_info);
 
 static int estyle_setup_complete = 0;
 
@@ -21,7 +22,7 @@ static int estyle_setup_complete = 0;
  * Returns a pointer to the newly allocated estyle on success, NULL on
  * failure. The estyle doesn't get displayed until estyle_show gets called.
  */
-Estyle *estyle_new(Evas evas, char *text, char *style)
+Estyle *estyle_new(Evas *evas, char *text, char *style)
 {
 	Estyle *es;
 
@@ -42,13 +43,14 @@ Estyle *estyle_new(Evas evas, char *text, char *style)
 	memset(es, 0, sizeof(Estyle));
 
 	es->evas = evas;
-	evas_font_add_path(es->evas, PACKAGE_DATA_DIR "/fonts");
+	evas_object_font_path_append(es->evas, PACKAGE_DATA_DIR"/fonts");
 
 	/*
 	 * Create the Evas_Object and set the default font and font size.
 	 */
-	es->bit =
-	    evas_add_text(es->evas, DEFAULT_FONT, DEFAULT_SIZE, text);
+	es->bit = evas_object_text_add(es->evas);
+	evas_object_text_font_set(es->bit,DEFAULT_FONT,DEFAULT_SIZE);
+	evas_object_text_text_set(es->bit,text);
 
 	/*
 	 * Set some default colors, font, and font size.
@@ -84,14 +86,14 @@ Estyle *estyle_new(Evas evas, char *text, char *style)
  *
  * Returns no value. Frees the data in @es as well as @es itself.
  */
-void estyle_free(Estyle * es)
+void estyle_free(Estyle *es)
 {
-	Evas_List l;
+	Evas_List *l;
 
 	CHECK_PARAM_POINTER("es", es);
 
 	if (es->bit)
-		evas_del_object(es->evas, es->bit);
+		evas_object_del(es->bit);
 
 	if (es->style)
 		_estyle_style_release(es->style, es->evas);
@@ -111,13 +113,13 @@ void estyle_free(Estyle * es)
  *
  * Returns no value. Updates the display to reflect changes to @estyle.
  */
-void estyle_show(Estyle * es)
+void estyle_show(Estyle *es)
 {
 	CHECK_PARAM_POINTER("es", es);
 
 	es->flags |= ESTYLE_BIT_VISIBLE;
 	_estyle_style_show(es);
-	evas_show(es->evas, es->bit);
+	evas_object_show(es->bit);
 }
 
 
@@ -127,13 +129,13 @@ void estyle_show(Estyle * es)
  *
  * Returns no value
  */
-void estyle_hide(Estyle * es)
+void estyle_hide(Estyle *es)
 {
 	CHECK_PARAM_POINTER("es", es);
 
 	es->flags &= ~ESTYLE_BIT_VISIBLE;
 	_estyle_style_hide(es);
-	evas_hide(es->evas, es->bit);
+	evas_object_hide(es->bit);
 }
 
 /**
@@ -153,11 +155,10 @@ void estyle_move(Estyle * es, int x, int y)
 
 	es->x = x;
 	es->y = y;
-	evas_move(es->evas, es->bit,
-		  (double) (x + (es->style ?
-				 es->style->info->left_push : 0)),
-		  (double) (y + (es->style ?
-				 es->style->info->top_push : 0)));
+	evas_object_move(es->bit, 
+	      (double)(x + (es->style ? es->style->info->left_push : 0)),
+	      (double)(y + (es->style ? es->style->info->top_push : 0)));
+	
 	if (es->style)
 		_estyle_style_move(es);
 }
@@ -203,7 +204,7 @@ void estyle_set_color(Estyle * es, int r, int g, int b, int a)
 	CHECK_PARAM_POINTER("es", es);
 
 	es->color = _estyle_color_instance(r, g, b, a);
-	evas_set_color(es->evas, es->bit, r, g, b, a);
+	evas_object_color_set(es->bit, r, g, b, a);
 	_estyle_style_set_color(es);
 }
 
@@ -240,14 +241,14 @@ void estyle_lookup_color_db(char *name, int *r, int *g, int *b, int *a)
  * estyle_set_color_db - set the color of an estyle based on color name
  * @es: the estyle to change the color
  */
-void estyle_set_color_db(Estyle * es, char *name)
+void estyle_set_color_db(Estyle *es, char *name)
 {
 	CHECK_PARAM_POINTER("es", es);
 	CHECK_PARAM_POINTER("name", name);
 
 	es->color = _estyle_color_instance_db(name);
-	evas_set_color(es->evas, es->bit, es->color->r, es->color->g,
-		       es->color->b, es->color->a);
+	evas_object_color_set(es->bit, es->color->r, es->color->g,
+			es->color->b, es->color->a);
 	if (es->style)
 		_estyle_style_set_color(es);
 }
@@ -258,7 +259,7 @@ void estyle_set_color_db(Estyle * es, char *name)
  *
  * Returns the name the style or NULL if no style specified.
  */
-char *estyle_get_style(Estyle * es)
+char *estyle_get_style(Estyle *es)
 {
 	CHECK_PARAM_POINTER_RETURN("es", es, NULL);
 
@@ -275,10 +276,11 @@ char *estyle_get_style(Estyle * es)
  *
  * Returns no value. The style of @es is changed to @name.
  */
-void estyle_set_style(Estyle * es, char *name)
+void estyle_set_style(Estyle *es, char *name)
 {
-	char *text;
-	Evas_Object clip;
+	int layer;
+	const char *text;
+	Evas_Object *clip;
 
 	CHECK_PARAM_POINTER("es", es);
 	CHECK_PARAM_POINTER("name", name);
@@ -292,17 +294,20 @@ void estyle_set_style(Estyle * es, char *name)
 	if ((es->style = _estyle_style_instance(name)) == NULL)
 		return;
 
-	text = evas_get_text_string(es->evas, es->bit);
+	text = evas_object_text_text_get(es->bit);
 
 	/*
 	 * Draw the new style bits and set the correct layer for all of the
 	 * estyle contents. Also clip the contents to the clip rectangle.
 	 */
-	_estyle_style_draw(es, text);
+	_estyle_style_draw(es, (char *)text);
+
+	layer = evas_object_layer_get(es->bit);
+	estyle_set_layer(es, layer);
 
 	_estyle_style_move(es);
 
-	if ((clip = evas_get_clip_object(es->evas, es->bit)) != NULL)
+	if ((clip = evas_object_clip_get(es->bit)) != NULL)
 		_estyle_style_set_clip(es, clip);
 
 	__estyle_update_position(es);
@@ -321,15 +326,15 @@ void estyle_set_style(Estyle * es, char *name)
  */
 char *estyle_get_text(Estyle * es)
 {
-	char *ret;
+	const char *ret;
 
 	CHECK_PARAM_POINTER_RETURN("es", es, NULL);
 
-	ret = evas_get_text_string(es->evas, es->bit);
+	ret = evas_object_text_text_get(es->bit);
 	if (ret)
 		ret = strdup(ret);
 
-	return ret;
+	return (char *)ret;
 }
 
 /**
@@ -340,11 +345,11 @@ char *estyle_get_text(Estyle * es)
  * Returns no value. Changes the text in @es to @text and updates the display
  * if visible.
  */
-void estyle_set_text(Estyle * es, char *text)
+void estyle_set_text(Estyle *es, char *text)
 {
 	CHECK_PARAM_POINTER("es", es);
 
-	evas_set_text(es->evas, es->bit, text);
+	evas_object_text_text_set(es->bit, text);
 
 	/*
 	 * Set the text for the style bits.
@@ -369,7 +374,7 @@ int estyle_get_layer(Estyle * es)
 {
 	CHECK_PARAM_POINTER_RETURN("es", es, FALSE);
 
-	return evas_get_layer(es->evas, es->bit);
+	return evas_object_layer_get(es->bit);
 }
 
 /**
@@ -380,13 +385,13 @@ int estyle_get_layer(Estyle * es)
  * Returns no value. Changes the layer of @es to @layer along with all of
  * it's style bits.
  */
-void estyle_set_layer(Estyle * es, int layer)
+void estyle_set_layer(Estyle *es, int layer)
 {
 	int index = 0;
 
 	CHECK_PARAM_POINTER("es", es);
 
-	evas_set_layer(es->evas, es->bit, layer - 1);
+	evas_object_layer_set(es->bit, layer - 1);
 
 	/*
 	 * Changing the layer of the style bits must be broken into to steps to
@@ -395,7 +400,7 @@ void estyle_set_layer(Estyle * es, int layer)
 	if (es->style)
 		index = _estyle_style_set_layer_lower(es, layer);
 
-	evas_set_layer(es->evas, es->bit, layer);
+	evas_object_layer_set(es->bit, layer);
 
 	if (es->style)
 		_estyle_style_set_layer_upper(es, layer, index);
@@ -409,9 +414,11 @@ void estyle_set_layer(Estyle * es, int layer)
  */
 char *estyle_get_font(Estyle * es)
 {
+	char *font;
+	double size;
 	CHECK_PARAM_POINTER_RETURN("es", es, NULL);
-
-	return evas_get_text_font(es->evas, es->bit);
+	evas_object_text_font_get(es->bit, &font, &size);
+	return font;
 }
 
 /**
@@ -419,12 +426,14 @@ char *estyle_get_font(Estyle * es)
  * @es: the estyle to get the font size from
  *
  * Returns the font size (an int) or FALSE if an error occurs.
- */
-int estyle_get_font_size(Estyle * es)
+ */  
+int estyle_get_font_size(Estyle *es)
 {
-	CHECK_PARAM_POINTER_RETURN("es", es, FALSE);
-
-	return evas_get_text_size(es->evas, es->bit);
+	char *font;
+	double size;
+	CHECK_PARAM_POINTER_RETURN("es", es, 0);
+	evas_object_text_font_get(es->bit, &font, &size);
+	return (int)size;
 }
 
 /**
@@ -434,12 +443,12 @@ int estyle_get_font_size(Estyle * es)
  *
  * Returns no value. Changes the font for the specified estyle to @name.
  */
-void estyle_set_font(Estyle * es, char *font, int size)
+void estyle_set_font(Estyle *es, char *font, int size)
 {
 	CHECK_PARAM_POINTER("es", es);
 	CHECK_PARAM_POINTER("font", font);
 
-	evas_set_font(es->evas, es->bit, font, size);
+	evas_object_text_font_set(es->bit, font, size);
 	if (es->style)
 		_estyle_style_set_font(es, font, size);
 
@@ -452,12 +461,12 @@ void estyle_set_font(Estyle * es, char *font, int size)
  *
  * Returns an Evas_Object or NULL if no clip box specified.
  */
-Evas_Object estyle_get_clip(Estyle * es)
+Evas_Object *estyle_get_clip(Estyle *es)
 {
 	CHECK_PARAM_POINTER_RETURN("es", es, NULL);
 
-	return evas_get_clip_object(es->evas, es->bit);
-}
+	return evas_object_clip_get(es->bit);
+} 
 
 /**
  * estyle_set_clip - set the clip box for the estyle
@@ -466,14 +475,14 @@ Evas_Object estyle_get_clip(Estyle * es)
  *
  * Returns no value. Sets the clip box of the estyle to @clip.
  */
-void estyle_set_clip(Estyle * es, Evas_Object clip)
+void estyle_set_clip(Estyle *es, Evas_Object *clip)
 {
 	CHECK_PARAM_POINTER("es", es);
 
 	if (clip)
-		evas_set_clip(es->evas, es->bit, clip);
+		evas_object_clip_set(es->bit, clip);
 	else
-		evas_unset_clip(es->evas, es->bit);
+		evas_object_clip_unset(es->bit);
 
 	if (es->style)
 		_estyle_style_set_clip(es, clip);
@@ -487,7 +496,7 @@ void estyle_set_clip(Estyle * es, Evas_Object clip)
  * Returns TRUE if the bits are able to be merged, otherwise FALSE. Appends the
  * text in @es2 to the text in @es1 and destroys @es2.
  */
-int estyle_merge(Estyle * es1, Estyle * es2)
+int estyle_merge(Estyle *es1, Estyle *es2)
 {
 	char *new_text, *text1, *text2;
 
@@ -501,8 +510,8 @@ int estyle_merge(Estyle * es1, Estyle * es2)
 	 * These return a pointer to the actual text in the evas object, not a
 	 * copy of it. So don't free them.
 	 */
-	text1 = evas_get_text_string(es1->evas, es1->bit);
-	text2 = evas_get_text_string(es2->evas, es2->bit);
+	text1 = (char *)evas_object_text_text_get(es1->bit);
+	text2 = (char *)evas_object_text_text_get(es2->bit);
 
 	/*
 	 * When the evas changes text it free's the old text, so malloc a new
@@ -533,7 +542,7 @@ int estyle_merge(Estyle * es1, Estyle * es2)
  * Returns the newly created estyle on success, NULL on failure. The old
  * estyle is updated to reflect the changes.
  */
-Estyle *estyle_split(Estyle * es, unsigned int index)
+Estyle *estyle_split(Estyle *es, unsigned int index)
 {
 	char temp;
 	char *content;
@@ -585,6 +594,25 @@ Estyle *estyle_split(Estyle * es, unsigned int index)
 	estyle_set_clip(new_es, estyle_get_clip(es));
 	estyle_set_font(new_es, estyle_get_font(es),
 			estyle_get_font_size(es));
+
+	/*
+	 * Set the new color for the estyle.
+	 */
+	estyle_get_color(es, &r, &g, &b, &a);
+	estyle_set_color(new_es, r, g, b, a);
+
+	/*
+	 * Put it on the same layer as the old estyle
+	 */
+	estyle_set_layer(new_es, estyle_get_layer(es));
+
+	FREE(content);
+
+	/*
+	 * Give this new estyle the same settings as the previous estyle.
+	 */
+	estyle_set_clip(new_es, estyle_get_clip(es));
+	estyle_set_font(new_es, estyle_get_font(es), estyle_get_font_size(es));
 
 	/*
 	 * Set the new color for the estyle.
@@ -659,24 +687,20 @@ void estyle_text_at(Estyle * es, int index, int *char_x, int *char_y,
 
 	CHECK_PARAM_POINTER("es", es);
 
-	evas_text_at(es->evas, es->bit, index, &xx, &yy, &ww, &hh);
+	evas_object_text_char_pos_get(es->bit, index,  &xx, &yy, &ww, &hh);
 
 	if (char_x)
 		*char_x = D2I_ROUND(xx) + es->x;
 	if (char_y)
 		*char_y = D2I_ROUND(yy) + es->y;
 	if (char_w)
-		*char_w = D2I_ROUND(ww) + (es->style ?
-					   es->style->info->left_push
-					   +
-					   es->style->info->
-					   right_push : 0);
-	if (char_h)
-		*char_h = D2I_ROUND(hh) + (es->style ?
-					   es->style->info->top_push
-					   +
-					   es->style->info->
-					   bottom_push : 0);
+		*char_w = D2I_ROUND(ww) + (es->style ? 
+			es->style->info->left_push
+			+ es->style->info->right_push : 0);
+        if (char_h)
+		*char_h = D2I_ROUND(hh) + (es->style ? 
+			es->style->info->top_push
+			+ es->style->info->bottom_push : 0);
 }
 
 /**
@@ -701,27 +725,21 @@ int estyle_text_at_position(Estyle * es, int x, int y, int *char_x,
 
 	CHECK_PARAM_POINTER_RETURN("es", es, 0);
 
-	ret =
-	    evas_text_at_position(es->evas, es->bit, (double) (x - es->x),
-				  (double) (y - es->y), &xx, &yy, &ww,
-				  &hh);
+	ret = evas_object_text_char_coords_get(es->bit, (double)(x - es->x),
+			(double)(y - es->y + (es->h / 2)), &xx, &yy, &ww, &hh);
 
 	if (char_x)
 		*char_x = D2I_ROUND(xx) + es->x;
 	if (char_y)
 		*char_y = D2I_ROUND(yy) + es->y;
 	if (char_w)
-		*char_w = D2I_ROUND(ww) + (es->style ?
-					   es->style->info->left_push
-					   +
-					   es->style->info->
-					   right_push : 0);
+		*char_w = D2I_ROUND(ww) + (es->style ? 
+			es->style->info->left_push
+			+ es->style->info->right_push : 0);
 	if (char_h)
-		*char_h = D2I_ROUND(hh) + (es->style ?
-					   es->style->info->top_push
-					   +
-					   es->style->info->
-					   bottom_push : 0);
+		*char_h = D2I_ROUND(hh) + (es->style ? 
+			es->style->info->top_push
+			+ es->style->info->bottom_push : 0);
 
 	return ret;
 }
@@ -774,7 +792,7 @@ void estyle_unfix_geometry(Estyle * es)
 
 	CHECK_PARAM_POINTER("es", es);
 
-	evas_get_geometry(es->evas, es->bit, &x, &y, &w, &h);
+	evas_object_geometry_get(es->bit, &x, &y, &w, &h);
 	es->x = D2I_ROUND(x);
 	es->y = D2I_ROUND(y);
 	es->w = D2I_ROUND(w);
@@ -784,43 +802,34 @@ void estyle_unfix_geometry(Estyle * es)
 /*
  * __estyle_update_position - update the position of the estyle
  */
-void __estyle_update_position(Estyle * es)
+void __estyle_update_position(Estyle *es)
 {
 	if (es->style)
-		evas_move(es->evas, es->bit,
-			  (double) (es->x + (es->style ?
-					     es->style->info->
-					     left_push : 0)),
-			  (double) (es->y +
-				    (es->style ? es->style->info->
-				     top_push : 0)));
+		evas_object_move(es->bit,
+			(double)(es->x + (es->style ?
+				es->style->info->left_push : 0)),
+			(double)(es->y + (es->style ?
+				es->style->info->top_push : 0)));
 }
 
 /*
  * __estyle_update_dimensions - update the dimensions of the estyle
  */
-void __estyle_update_dimensions(Estyle * es)
+void __estyle_update_dimensions(Estyle *es)
 {
-	int layer;
 	double x, y, w, h;
-
-	layer = evas_get_layer(es->evas, es->bit);
-	estyle_set_layer(es, layer);
-
+	
 	/*
 	 * If the estyle doesn't have fixed dimensions then set it to the
 	 * geometry of it's contents.
 	 */
 	if (!(es->flags & ESTYLE_BIT_FIXED)) {
-		evas_get_geometry(es->evas, es->bit, &x, &y, &w, &h);
+		evas_object_geometry_get(es->bit, &x, &y, &w, &h);
 
-		es->w =
-		    D2I_ROUND(w) +
-		    (es->style ? es->style->info->left_push +
-		     es->style->info->right_push : 0);
-		es->h =
-		    D2I_ROUND(h) + (es->style ? es->style->info->top_push +
-				    es->style->info->bottom_push : 0);
+		es->w = D2I_ROUND(w) + (es->style ? es->style->info->left_push
+			+ es->style->info->right_push : 0);
+		es->h = D2I_ROUND(h) + (es->style ? es->style->info->top_push
+			+ es->style->info->bottom_push : 0);
 	}
 }
 
@@ -835,11 +844,11 @@ void __estyle_update_dimensions(Estyle * es)
  * @callback occurs, function @func will be called with argument @data.
  */
 void estyle_callback_add(Estyle * es, Evas_Callback_Type callback,
-			 void (*func) (void *_data, Estyle * _es, int _b,
-				       int _x, int _y), void *data)
+			 void (*func) (void *_data, Estyle * _es, 
+				       void *event_info), void *data)
 {
 	Estyle_Callback *cb;
-	Evas_List l;
+	Evas_List *l;
 
 	if (!es)
 		return;
@@ -860,17 +869,16 @@ void estyle_callback_add(Estyle * es, Evas_Callback_Type callback,
 	 * Append the callback to the estyle's list, and add the callback to
 	 * the evas bits so that the wrapper function gets called.
 	 */
-	es->callbacks = evas_list_append(es->callbacks, cb);
-	evas_callback_add(es->evas, es->bit, callback,
+	es->callbacks = evas_list_append(es->callbacks, (const void *)cb);
+	evas_object_event_callback_add(es->bit, callback,
 			  __estyle_callback_dispatcher, cb);
 	if (es->style->bits) {
 		for (l = es->style->bits; l; l = l->next) {
-			Evas_Object o;
+			Evas_Object *o;
 
 			o = l->data;
-			evas_callback_add(es->evas, o, callback,
-					  __estyle_callback_dispatcher,
-					  cb);
+			evas_object_event_callback_add(o, callback,
+					__estyle_callback_dispatcher, cb);
 		}
 	}
 }
@@ -879,11 +887,11 @@ void estyle_callback_add(Estyle * es, Evas_Callback_Type callback,
  * The dispatcher redirects the callback to the appropriate function with the
  * correct arguments.
  */
-void __estyle_callback_dispatcher(void *_data, Evas _e, Evas_Object _o,
-				  int _b, int _x, int _y)
+void __estyle_callback_dispatcher(void *_data, Evas *_e, Evas_Object *_o,
+				  void *event_info)
 {
 	Estyle_Callback *cb = _data;
-	cb->callback(cb->data, cb->estyle, _b, _x, _y);
+	cb->callback(cb->data, cb->estyle, event_info);
 }
 
 /*
@@ -893,31 +901,21 @@ void __estyle_callback_dispatcher(void *_data, Evas _e, Evas_Object _o,
  *
  * Returns no value.
  */
-void estyle_callback_del(Estyle * es, Evas_Callback_Type callback)
+void estyle_callback_del(Estyle * es, Evas_Callback_Type callback,
+		Estyle_Callback_Function func)
 {
-	Evas_List l;
+	Evas_List *l;
 
 	if (!es)
 		return;
 	if (!es->evas)
 		return;
 
-	/*
-	 * Remove the evas callbacks from the evas_objects.
-	 */
-	evas_callback_del(es->evas, es->bit, callback);
-	for (l = es->style->bits; l; l = l->next) {
-		Evas_Object o;
-
-		o = l->data;
-		evas_callback_del(es->evas, o, callback);
-	}
-
 	for (l = es->callbacks; l; l = l->next) {
 		Estyle_Callback *cb;
 
 		cb = l->data;
-		if (cb->type == callback) {
+		if (cb->type == callback && cb->callback == func) {
 
 			/*
 			 * Move to the next item in the list, remove and free

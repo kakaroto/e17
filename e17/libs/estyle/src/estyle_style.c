@@ -1,3 +1,4 @@
+#include "estyle-config.h"
 #include "Estyle_private.h"
 
 #define SET_REL_COLOR(a, b) ((a + b) > 255 ? 255 : ((a + b) < 0 ? 0 : a + b))
@@ -7,8 +8,8 @@ static int style_path = 0;
 
 static void __estyle_style_read(Estyle_Style_Info * info);
 static void __estyle_style_info_load(Estyle_Style_Info * info);
-static Evas_Object __estyle_style_layer_draw(Estyle_Style_Layer * layer,
-					     Estyle * es, char *text);
+static Evas_Object *__estyle_style_layer_draw(Estyle_Style_Layer * layer,
+		Estyle * es, char *text);
 static int __estyle_style_stack_compare(void *style1, void *style2);
 
 /*
@@ -44,14 +45,14 @@ Estyle_Style *_estyle_style_instance(char *name)
  * Returns no value. The reference to the style is released and the style is
  * freed if appropriate.
  */
-void _estyle_style_release(Estyle_Style * style, Evas ev)
+void _estyle_style_release(Estyle_Style *style, Evas *ev)
 {
-	Evas_Object ob;
-	Evas_List ptr_list;
+	Evas_Object *ob;
+	Evas_List *ptr_list;
 
 	CHECK_PARAM_POINTER("style", style);
 
-	_estyle_style_info_dereference((Estyle_Style_Info *) style->info);
+	_estyle_style_info_dereference((Estyle_Style_Info *)style->info);
 
 	/*
 	 * Destroy the list of evas_objects
@@ -61,12 +62,12 @@ void _estyle_style_release(Estyle_Style * style, Evas ev)
 		/*
 		 * Destroy all of the objects for this estyle
 		 */
-		for (ptr_list = style->bits; ptr_list;
-		     ptr_list = ptr_list->next) {
+		for (ptr_list = style->bits; ptr_list; 
+			ptr_list = ptr_list->next) {
 
 			ob = ptr_list->data;
-			evas_hide(ev, ob);
-			evas_del_object(ev, ob);
+			evas_object_hide(ob);
+			evas_object_del(ob);
 		}
 
 		/*
@@ -84,10 +85,10 @@ void _estyle_style_release(Estyle_Style * style, Evas ev)
  *
  * Returns no value. Hides the style bits associated with the estyle @es.
  */
-void _estyle_style_hide(Estyle * es)
+void _estyle_style_hide(Estyle *es)
 {
-	Evas_Object ob;
-	Evas_List ptr_list;
+	Evas_Object *ob;
+	Evas_List *ptr_list;
 
 	/*
 	 * Check if we need to hide any style bits.
@@ -98,11 +99,11 @@ void _estyle_style_hide(Estyle * es)
 	/*
 	 * Hide each bit of the style representation
 	 */
-	for (ptr_list = es->style->bits; ptr_list;
-	     ptr_list = ptr_list->next) {
+	for (ptr_list = es->style->bits; ptr_list; 
+		ptr_list = ptr_list->next ) {
 
 		ob = ptr_list->data;
-		evas_hide(es->evas, ob);
+		evas_object_hide(ob);
 	}
 }
 
@@ -112,10 +113,10 @@ void _estyle_style_hide(Estyle * es)
  *
  * Returns no value. Shows the style bits associated with the estyle @es.
  */
-void _estyle_style_show(Estyle * es)
+void _estyle_style_show(Estyle *es)
 {
-	Evas_Object ob;
-	Evas_List ptr_list;
+	Evas_Object *ob;
+	Evas_List *ptr_list;
 
 	/*
 	 * Check if we need to show any style bits.
@@ -126,11 +127,11 @@ void _estyle_style_show(Estyle * es)
 	/*
 	 * Hide each bit of the style representation
 	 */
-	for (ptr_list = es->style->bits; ptr_list;
-	     ptr_list = ptr_list->next) {
+	for (ptr_list = es->style->bits; ptr_list; 
+		ptr_list = ptr_list->next ) {
 
 		ob = ptr_list->data;
-		evas_show(es->evas, ob);
+		evas_object_show(ob);
 	}
 }
 
@@ -171,12 +172,12 @@ void _estyle_style_remove_path(char *path)
  * Returns no value. Adds the evas objects for the style bits of the main text
  * layer.
  */
-void _estyle_style_draw(Estyle * es, char *text)
+void _estyle_style_draw(Estyle *es, char *text)
 {
 	int i = 0;
 	Estyle_Style_Info *info;
 	Estyle_Style_Layer *layer;
-	Evas_Object ob;
+	Evas_Object *ob;
 
 	if (!es->style)
 		return;
@@ -192,13 +193,11 @@ void _estyle_style_draw(Estyle * es, char *text)
 	 */
 	while ((layer = _estyle_heap_item(info->layers, i))) {
 		ob = __estyle_style_layer_draw(layer, es, text);
-		((Estyle_Style *) es->style)->bits =
-		    evas_list_append(((Estyle_Style *) es->style)->bits,
-				     ob);
+		((Estyle_Style *) es->style)->bits = evas_list_append( ((Estyle_Style *)es->style)->bits, ob );
 		i++;
 	}
 
-	ob = evas_get_clip_object(es->evas, es->bit);
+	ob = evas_object_clip_get(es->bit);
 	if (ob)
 		_estyle_style_set_clip(es, ob);
 }
@@ -215,8 +214,8 @@ int _estyle_style_set_layer_lower(Estyle * es, int l)
 	int i = 0;
 	Estyle_Style_Info *info;
 	Estyle_Style_Layer *layer;
-	Evas_Object ob;
-	Evas_List ptr_list;
+	Evas_Object *ob;
+	Evas_List *ptr_list;
 
 	if (!es->style)
 		return 0;
@@ -229,14 +228,14 @@ int _estyle_style_set_layer_lower(Estyle * es, int l)
 	/*
 	 * Move all of the lower layers bits into the correct layer
 	 */
-	while ((layer = _estyle_heap_item(info->layers, i))
-	       && layer->stack < 0) {
+	while ((layer = _estyle_heap_item(info->layers, i)) 
+		&& layer->stack < 0) {
 
-		for (ptr_list = es->style->bits; ptr_list;
-		     ptr_list = ptr_list->next) {
+		for (ptr_list = es->style->bits; ptr_list; 
+			ptr_list = ptr_list->next ) {
 
 			ob = ptr_list->data;
-			evas_set_layer(es->evas, ob, l);
+			evas_object_layer_set(ob, l);
 		}
 		i++;
 	}
@@ -253,14 +252,14 @@ int _estyle_style_set_layer_lower(Estyle * es, int l)
  * Returns no value. Adds the evas objects for the style bits that are above
  * the main text layer.
  */
-int _estyle_style_set_layer_upper(Estyle * es, int l, int start)
+int _estyle_style_set_layer_upper(Estyle *es, int l, int start)
 {
 	char *text;
 	int i = start;
 	Estyle_Style_Info *info;
 	Estyle_Style_Layer *layer;
-	Evas_Object ob;
-	Evas_List ptr_list;
+	Evas_Object *ob;
+	Evas_List *ptr_list;
 
 	if (!es->bit)
 		return 0;
@@ -268,7 +267,7 @@ int _estyle_style_set_layer_upper(Estyle * es, int l, int start)
 	if (!es->style)
 		return 0;
 
-	text = evas_get_text_string(es->evas, es->bit);
+	text = (char *)evas_object_text_text_get(es->bit);
 
 	info = ((Estyle_Style *) es->style)->info;
 
@@ -278,14 +277,14 @@ int _estyle_style_set_layer_upper(Estyle * es, int l, int start)
 	/*
 	 * Move all of the upper bits into the correct layer
 	 */
-	while ((layer = _estyle_heap_item(info->layers, i))
-	       && layer->stack) {
+	while ((layer = _estyle_heap_item(info->layers, i)) 
+		&& layer->stack) {
 
-		for (ptr_list = es->style->bits; ptr_list;
-		     ptr_list = ptr_list->next) {
+		for (ptr_list = es->style->bits; ptr_list; 
+			ptr_list = ptr_list->next ) {
 
 			ob = ptr_list->data;
-			evas_set_layer(es->evas, ob, l);
+			evas_object_layer_set(ob, l);
 		}
 
 		i++;
@@ -301,11 +300,11 @@ int _estyle_style_set_layer_upper(Estyle * es, int l, int start)
  * Returns no value. Moves all of the evas objects representing style bits
  * into their correct relative positions to @es.
  */
-void _estyle_style_move(Estyle * es)
+void _estyle_style_move(Estyle *es)
 {
 	int i;
-	Evas_Object ob;
-	Evas_List ptr_list;
+	Evas_Object *ob;
+	Evas_List *ptr_list;
 	Estyle_Style_Info *info;
 	Estyle_Style_Layer *layer;
 
@@ -316,7 +315,7 @@ void _estyle_style_move(Estyle * es)
 	 * Prepare to traverse the list of bits and layers to get the correct
 	 * layout.
 	 */
-	info = (Estyle_Style_Info *) es->style->info;
+	info = (Estyle_Style_Info *)es->style->info;
 	ptr_list = es->style->bits;
 	i = 0;
 
@@ -326,11 +325,11 @@ void _estyle_style_move(Estyle * es)
 	 * have the same number of items in them, but check for that just in
 	 * case there isn't.
 	 */
-	while (ptr_list && info->layers &&
+	while (ptr_list && 
 		(layer = _estyle_heap_item(info->layers, i++)) != NULL &&
 		(ob = ptr_list->data) != NULL) {
 		
-		evas_move(es->evas, ob, (double)(es->x + layer->x_offset +
+		evas_object_move(ob, (double)(es->x + layer->x_offset +
 					info->left_push),
 					(double)(es->y + layer->y_offset +
 					info->right_push));
@@ -346,11 +345,11 @@ void _estyle_style_move(Estyle * es)
  * Returns no value. Changes the color for the relative layers of the style for
  * @es.
  */
-void _estyle_style_set_color(Estyle * es)
+void _estyle_style_set_color(Estyle *es)
 {
 	int i;
-	Evas_Object sob;
-	Evas_List ptr_list;
+	Evas_Object *sob;
+	Evas_List *ptr_list;
 	Estyle_Style_Info *info;
 	Estyle_Style_Layer *layer;
 
@@ -379,8 +378,8 @@ void _estyle_style_set_color(Estyle * es)
 	 * case there isn't.
 	 */
 	while (ptr_list &&
-	       (layer = _estyle_heap_item(info->layers, i++)) != NULL &&
-	       (sob = ptr_list->data) != NULL) {
+		(layer = _estyle_heap_item(info->layers, i++)) != NULL &&
+		(sob = ptr_list->data) != NULL) {
 
 		if (layer->relative_color) {
 			int r, g, b, a;
@@ -390,7 +389,7 @@ void _estyle_style_set_color(Estyle * es)
 			b = SET_REL_COLOR(es->color->b, layer->b);
 			a = SET_REL_COLOR(es->color->a, layer->a);
 
-			evas_set_color(es->evas, sob, r, g, b, a);
+			evas_object_color_set(sob, r, g, b, a);
 		}
 
 		ptr_list = ptr_list->next;
@@ -403,11 +402,11 @@ void _estyle_style_set_color(Estyle * es)
  *
  * Returns no value. Updates the font for the estyle @es.
  */
-void _estyle_style_set_font(Estyle * es, char *font, int size)
+void _estyle_style_set_font(Estyle *es, char *font, int size)
 {
 	int i;
-	Evas_Object sob;
-	Evas_List ptr_list;
+	Evas_Object *sob;
+	Evas_List *ptr_list;
 	Estyle_Style_Info *info;
 	Estyle_Style_Layer *layer;
 
@@ -431,10 +430,10 @@ void _estyle_style_set_font(Estyle * es, char *font, int size)
 	 * case there isn't.
 	 */
 	while (ptr_list &&
-	       (layer = _estyle_heap_item(info->layers, i++)) != NULL &&
-	       (sob = ptr_list->data) != NULL) {
+		(layer = _estyle_heap_item(info->layers, i++)) != NULL &&
+		(sob = ptr_list->data) != NULL) {
 
-		evas_set_font(es->evas, sob, font, size);
+		evas_object_text_font_set(sob, font, size);
 		ptr_list = ptr_list->next;
 	}
 }
@@ -445,12 +444,12 @@ void _estyle_style_set_font(Estyle * es, char *font, int size)
  *
  * Returns no value. Updates the text for the estyle @es.
  */
-void _estyle_style_set_text(Estyle * es)
+void _estyle_style_set_text(Estyle *es)
 {
 	int i;
 	char *text;
-	Evas_Object sob;
-	Evas_List ptr_list;
+	Evas_Object *sob;
+	Evas_List *ptr_list;
 	Estyle_Style_Info *info;
 	Estyle_Style_Layer *layer;
 
@@ -461,7 +460,7 @@ void _estyle_style_set_text(Estyle * es)
 	 * Prepare to traverse the list of bits and layers to get the correct
 	 * layout.
 	 */
-	text = evas_get_text_string(es->evas, es->bit);
+	text = (char *)evas_object_text_text_get(es->bit);
 	if (!text)
 		return;
 
@@ -478,10 +477,10 @@ void _estyle_style_set_text(Estyle * es)
 	 * case there isn't.
 	 */
 	while (ptr_list &&
-	       (layer = _estyle_heap_item(info->layers, i++)) != NULL &&
-	       (sob = ptr_list->data) != NULL) {
-
-		evas_set_text(es->evas, sob, text);
+		(layer = _estyle_heap_item(info->layers, i++)) != NULL &&
+		(sob = ptr_list->data) != NULL) {
+			
+		evas_object_text_text_set(sob, text);
 		ptr_list = ptr_list->next;
 	}
 }
@@ -494,11 +493,11 @@ void _estyle_style_set_text(Estyle * es)
  * Returns no value. Changes the clip rectangle for each evas object used to
  * represent the style for @es.
  */
-void _estyle_style_set_clip(Estyle * es, Evas_Object ob)
+void _estyle_style_set_clip(Estyle *es, Evas_Object *ob)
 {
 	int i;
-	Evas_Object sob;
-	Evas_List ptr_list;
+	Evas_Object *sob;
+	Evas_List *ptr_list;
 	Estyle_Style_Info *info;
 	Estyle_Style_Layer *layer;
 
@@ -509,8 +508,8 @@ void _estyle_style_set_clip(Estyle * es, Evas_Object ob)
 	 * Prepare to traverse the list of bits and layers to get the correct
 	 * layout.
 	 */
-	info = (Estyle_Style_Info *) es->style->info;
-
+	info = (Estyle_Style_Info *)es->style->info;
+	
 	ptr_list = es->style->bits;
 
 	i = 0;
@@ -522,12 +521,12 @@ void _estyle_style_set_clip(Estyle * es, Evas_Object ob)
 	 * case there isn't.
 	 */
 	while (ptr_list &&
-	       (layer = _estyle_heap_item(info->layers, i++)) != NULL &&
-	       (sob = ptr_list->data) != NULL) {
+		(layer = _estyle_heap_item(info->layers, i++)) != NULL &&
+		(sob = ptr_list->data) != NULL) {
 		if (!ob)
-			evas_unset_clip(es->evas, sob);
+			evas_object_clip_unset(sob);
 		else
-			evas_set_clip(es->evas, sob, ob);
+			evas_object_clip_set(sob, ob);
 
 		ptr_list = ptr_list->next;
 	}
@@ -578,7 +577,7 @@ Estyle_Style_Info *_estyle_style_info_reference(char *name)
  * _estyle_style_info_dereference - remove a reference to a style_info structure
  * @info: the style info struct to dereference
  */
-void _estyle_style_info_dereference(Estyle_Style_Info * info)
+void _estyle_style_info_dereference(Estyle_Style_Info *info)
 {
 	info->references--;
 
@@ -602,26 +601,26 @@ void _estyle_style_info_dereference(Estyle_Style_Info * info)
  * @layer: the layer to be drawn
  * @es: used to get info about the evas for drawing
  */
-static Evas_Object __estyle_style_layer_draw(Estyle_Style_Layer * layer,
-					     Estyle * es, char *text)
+static Evas_Object *__estyle_style_layer_draw(Estyle_Style_Layer *layer,
+		Estyle *es, char *text)
 {
 	int r, g, b, a;
 	char *font;
-	int size;
-	Evas_Object ret;
+	double size;
+	Evas_Object *ret;
 
 	/*
 	 * Create the text at the correct size and move it into position
 	 */
-	font = evas_get_text_font(es->evas, es->bit);
-	size = evas_get_text_size(es->evas, es->bit);
-	ret =
-	    evas_add_text(es->evas, font, size + layer->size_change, text);
+	evas_object_text_font_get(es->bit, &font, &size);
+	ret = evas_object_text_add(es->evas);
+	evas_object_text_font_set(ret, font, size + layer->size_change);
+	evas_object_text_text_set(ret, text); 
 
-	evas_move(es->evas, ret, (double) (es->x + layer->x_offset +
-					   es->style->info->left_push),
-		  (double) (es->y + layer->y_offset +
-			    es->style->info->top_push));
+	evas_object_move(ret, (double)(es->x + layer->x_offset +
+				 es->style->info->left_push),
+			(double)(es->y + layer->y_offset +
+				 es->style->info->top_push));
 
 	/*
 	 * Now determine if it has relative or absolute color and change it's
@@ -643,7 +642,7 @@ static Evas_Object __estyle_style_layer_draw(Estyle_Style_Layer * layer,
 		a = layer->a;
 	}
 
-	evas_set_color(es->evas, ret, r, g, b, a);
+	evas_object_color_set(ret, r, g, b, a);
 
 	return ret;
 }
@@ -704,7 +703,7 @@ static void __estyle_style_read(Estyle_Style_Info * info)
 		return;
 	/*
 	   if (info->layers)
-	   _estyle_heap_destroy(info->layers);
+	   	_estyle_heap_destroy(info->layers);
 	 */
 
 	/*
@@ -719,8 +718,7 @@ static void __estyle_style_read(Estyle_Style_Info * info)
 		return;
 	}
 
-	info->layers =
-	    _estyle_heap_new(__estyle_style_stack_compare, layers);
+	info->layers = _estyle_heap_new(__estyle_style_stack_compare, layers);
 
 	/*
 	 * Read in each layer

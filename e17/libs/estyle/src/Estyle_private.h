@@ -15,7 +15,7 @@ enum _estyle_bit_flags {
 };
 
 typedef void (*Estyle_Callback_Function) (void *_data, Estyle * _es,
-					  int _b, int _x, int _y);
+					  void *event_info);
 
 typedef struct _estyle_callback Estyle_Callback;
 struct _estyle_callback {
@@ -29,7 +29,7 @@ struct _estyle {
 	/*
 	 * Keep a pointer in the estyle to the evas.
 	 */
-	Evas evas;
+	Evas *evas;
 
 	/*
 	 * Each estyle can have a different color than other bits in the
@@ -58,7 +58,7 @@ struct _estyle {
 	/*
 	 * The visual representation of the text.
 	 */
-	Evas_Object bit;
+	Evas_Object *bit;
 
 	/*
 	 * Keep track of the length of text stored in this bit to avoid
@@ -69,7 +69,7 @@ struct _estyle {
 	/*
 	 * Callbacks.
 	 */
-	Evas_List callbacks;
+	Evas_List *callbacks;
 };
 
 /*
