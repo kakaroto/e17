@@ -152,8 +152,8 @@ ABOUT_DOCS = E-Clock.ABOUT/MAIN E-Cpu.ABOUT/MAIN E-Cpu.ABOUT/aircut3.ttf  \
 E-Cpu.ABOUT/bg.png E-Mixer.ABOUT/MAIN E-Mixer.ABOUT/E-Mixer-standard.png \
 E-Mixer.ABOUT/E-Mixer-tall.png E-Mixer.ABOUT/E-Mixer-wide.png \
 E-MoonClock.ABOUT/MAIN E-Mountbox.ABOUT/MAIN E-Mountbox.ABOUT/shot.png \
-E-Mountbox.ABOUT/shot_unmounted.png E-NetFlame.ABOUT/MAIN  \
-E-OpenGL-Demo.ABOUT/MAIN \
+E-Mountbox.ABOUT/shot_unmounted.png E-Mountbox.ABOUT/dialog.png \
+E-NetFlame.ABOUT/MAIN E-OpenGL-Demo.ABOUT/MAIN \
 E-Power.ABOUT/MAIN E-SD.ABOUT/MAIN E-ScreenSave.ABOUT/MAIN  \
 E-ScreenShoot.ABOUT/E_ScreenShoot_buttons.png  \
 E-ScreenShoot.ABOUT/E_ScreenShoot_cloak.png E-ScreenShoot.ABOUT/MAIN \

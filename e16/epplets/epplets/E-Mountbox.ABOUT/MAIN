@@ -51,29 +51,45 @@ Right-clicking on the icons will show details about the devices and their
 mountpoints, respectively.
 
 <page columns=1 padding=16 name=config background=bg.png linkcolor=#88dddd>
+<img src=dialog.png x=140 y=80>
 <font face=aircut3/12 color=#ffffff>
 <p>
-You can configure the images for the Mountbox background and all of the
-icons by setting appropriate values in the Mountbox's config file,
-to be found in your ~/.enlightenment/ epplet_config/E-Mountbox directory.
+You can configure the images for the Mountbox background, the types of devices
+that the Mountbox recognizes and icons for these types using the configuration
+dialog:
 <p>
-A sample config file could look like this:
 <p>
-<font face=aircut3/10 color=#112222>
-### Automatically generated Epplet config file for E-Mountbox.<br>
-<br>
-CD_IMAGE /my/cool/icons/my-cd-icon.png<br>
-HD_IMAGE /my/cool/icons/my-blockdev-icon.png<br>
-FD_IMAGE /my/cool/icons/my-floppy-icon.png<br>
-ZIP_IMAGE /my/cool/icons/my-zipdisk-icon.png<br>
-BG_IMAGE /my/cool/icons/my-bg-image.png<br>
-BG_BORDER 5 5 5 5<br>
 <p>
+<p>
+<p>
+<p>
+<p>
+<p>
+The default icon defines the icon that is used for all devices that cannot be
+matched by one of the patterns (see below). The background image is stretched
+behind all the device icons.
+<p>
+In the "Pattern" and "Image File" entries you can define how the various
+devices are shown in the Mountbox window. If the text given as a pattern is
+contained in either the device name or its mountpoint, there is a match and
+the corresponding image is used. You can browse, add or delete definitions
+using the control elements below.
+
+<page columns=1 padding=16 name=config background=bg.png linkcolor=#88dddd>
 <font face=aircut3/12 color=#ffffff>
-You get the idea :)
 <p>
-This is a very early release of the Mountbox, everybody is encouraged
-to provide feedback and/or bugreports to the author at chrisk@engr.uconn.edu.
+<p>
+<p>
+<p>
+<p>
+<p>
+<p>
+<p>
+<p>
+<p align=50%>
+That's it.<br>
+Feel free to mail any comments and suggestions to me<br>
+at chrisk@engr.uconn.edu.
 <p align=75%>
 Have fun,<br>
 -- Christian.
