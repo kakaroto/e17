@@ -150,7 +150,7 @@ uninstall:
 
 info dvi:
 
-$(OBJECTS): ../config.h libgettext.h
+$(OBJECTS): ../econfig.h libgettext.h
 bindtextdom.$lo finddomain.$lo loadmsgcat.$lo: gettextP.h gettext.h loadinfo.h
 dcgettext.$lo: gettextP.h gettext.h hash-string.h loadinfo.h
 
