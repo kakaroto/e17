@@ -57,7 +57,10 @@ win_resize_cb(Ecore_Evas * ee)
          entice_config_geometry_set(x, y, w, h);
       entice_resize(w, h);
       if ((o = evas_object_name_find(ecore_evas_get(ee), "trans")))
+      {
+         evas_object_resize(o, (Evas_Coord) w, (Evas_Coord) h);
          esmart_trans_x11_freshen(o, x, y, w, h);
+      }
    }
 }
 
