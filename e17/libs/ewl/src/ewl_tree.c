@@ -714,6 +714,9 @@ ewl_tree_node_child_hide_cb(Ewl_Container *c, Ewl_Widget *w)
 
 	node = EWL_TREE_NODE(c);
 
+	if (w == node->handle)
+		DRETURN(DLEVEL_STABLE);
+
 	if (ecore_list_nodes(c->children) < 3) {
 		if (VISIBLE(node->handle))
 			ewl_widget_hide(node->handle);
