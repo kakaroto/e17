@@ -1281,6 +1281,10 @@ __imlib_SaveImage(ImlibImage * im, const char *file,
    /* set the filename to the saved one */
    pfile = im->file;
    im->file = strdup(file);
+
+   if (im->real_file)
+      free(im->real_file);
+
    im->real_file = strdup(im->file);
 
    /* find the laoder for the format - if its null use the extension */
