@@ -2062,3 +2062,19 @@ Mon Sep 20 15:20:56 PDT 1999
 
 more kde fixes.  more to come, still.  this fixes using client.win instead of
 base win for most everything.
+
+-------------------------------------------------------------------------------
+
+Mon Sep 20 19:23:42 EDT 1999
+(Christian)
+
+Added Ganymede, finally. Noticed one little bug in it: In the
+Desktop Background Settings there's a single transparent line
+on the bottom. Couldn't work my way around it.
+
+Sorted the list of window borders in the 'Set Border Style'
+menu.
+
+Added some group issues to TODO file. I hope I get to finish that
+during this week.
+

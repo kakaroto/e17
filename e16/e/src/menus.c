@@ -1714,6 +1714,15 @@ CreateMenuFromThemes(char *name, MenuStyle * ms)
    EDBUG_RETURN(m);
 }
 
+int 
+BorderNameCompare(Border * b1, Border * b2)
+{
+   if (b1 && b2)
+      return strcmp(b1->name, b2->name);
+
+   return 0;
+}
+
 Menu               *
 CreateMenuFromBorders(char *name, MenuStyle * ms)
 {
@@ -1728,6 +1737,9 @@ CreateMenuFromBorders(char *name, MenuStyle * ms)
    m->name = duplicate(name);
    m->style = ms;
    lst = (Border **) ListItemType(&num, LIST_TYPE_BORDER);
+   if (lst)
+      Quicksort((void **)lst, 0, num - 1,
+		(int (*)(void *, void *))&BorderNameCompare);
    for (i = 0; i < num; i++)
      {
 	/* if its not internal (ie doesnt start with _ ) */

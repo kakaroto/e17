@@ -1,6 +1,7 @@
 BUGS:
 raster: 	must update dox docs fully
 cK:		keeping the groups file in sync with the existing groups that need to be remembered. I'm sure there are bugs in that.
+cK		some groups stuff, like groups on multiple desktops, hammering on this whole raise/lower/raiselower stuff etc.
 mandrake:   kontrol-center seems to crash E when you click on desktop. needs fixing
 mandrake:   need to write some code to un-override redirect kfm and kpanel so I can manage them easier
 mandrake:   um, don't use close from the kpanel menu right yet.  that's a bad idea.  in fact, I wouldn't use ANY of the kpanel windowops things yet.  (nasty)
