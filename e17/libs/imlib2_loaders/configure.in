@@ -29,6 +29,15 @@ AC_ARG_ENABLE(edb,
    fi
 ])
 
+AC_ARG_ENABLE(eet,
+[  --disable-eet           disable building the eet loader],
+[
+   if test x$enableval = xno; then
+      eet=no;
+      EET_CONFIG_IN_PATH=disabled;
+   fi
+])
+
 AC_ARG_ENABLE(xcf,
 [  --disable-xcf           disable building the xcf loader],
 [
@@ -116,6 +125,50 @@ AM_CONDITIONAL(EDB_LOADER,
             test \( $EDB_CONFIG_IN_PATH = yes -o \
                     $EDB_CONFIG_IN_PATH = ignored \) -a x$edb != xno )
 
+EET_CONFIG="eet-config"
+if test x$eet != xno; then
+  AC_ARG_WITH(eet,
+  [  --with-eet-config=PATH      eet-config script to use (eg /usr/bin/eet-config)],
+  [
+      EET_CONFIG=$withval
+      AC_CHECK_PROG(EET_CONFIG_IN_PATH, $EET_CONFIG, yes, no)
+        if test $EET_CONFIG_IN_PATH = no; then
+         echo "ERROR:"
+         echo "The eet-config development script you specified "
+         echo "($EET_CONFIG) was not found.  Please check the path "
+         echo "and make sure the script exists and is executable."
+         AC_MSG_ERROR([Fatal Error: no eet-config detected.])
+         exit;
+        fi
+  ],
+  [
+     AC_CHECK_PROG(EET_CONFIG_IN_PATH, $EET_CONFIG, yes, no)
+     if test $EET_CONFIG_IN_PATH = no; then
+       echo "WARNING:"
+       echo "------------------------------------------------------------------"
+       echo "The eet-config development script was not found in your execute"
+       echo "path. This may mean one of several things"
+       echo "1. You may not have installed the eet-devel (or eet-dev)"
+       echo "   packages."
+       echo "2. You may have edb installed somewhere not covered by your path."
+       echo ""
+       echo "If this is the case make sure you have the packages installed, AND"
+       echo "that the eet-config script is in your execute path (see your"
+       echo "shell's manual page on setting the \$PATH environment variable), OR"
+       echo "alternatively, specify the script to use with --with-eet-config."
+       echo "------------------------------------------------------------------"
+       AC_MSG_WARN([no eet-config detected.])
+     fi
+  ])
+else
+  AC_MSG_CHECKING([for eet-config])
+  AC_MSG_RESULT(disabled)
+fi
+
+AM_CONDITIONAL(EET_LOADER, 
+            test \( $EET_CONFIG_IN_PATH = yes -o \
+                    $EET_CONFIG_IN_PATH = ignored \) -a x$eet != xno )
+
 AM_CONDITIONAL(XCF_LOADER, test x$xcf != xno )
 
 imlib2_includes=`$IMLIB2_CONFIG --cflags`
@@ -126,10 +179,17 @@ if test x$edb != xno; then
    edb_libs=`$EDB_CONFIG --libs`
 fi
 
+if test x$eet != xno; then
+   eet_includes=`$EET_CONFIG --cflags`
+   eet_libs=`$EET_CONFIG --libs`
+fi
+
 AC_SUBST(imlib2_includes)
 AC_SUBST(imlib2_libs)
 AC_SUBST(edb_includes)
 AC_SUBST(edb_libs)
+AC_SUBST(eet_includes)
+AC_SUBST(eet_libs)
 
 AC_OUTPUT([
 Makefile
@@ -149,6 +209,13 @@ fi
 
 echo -n " Edb: "
 if test x$EDB_LOADER_TRUE = "x#"; then
+   echo    "Disabled "
+else
+   echo    "Enabled "
+fi   
+
+echo -n " Eet: "
+if test x$EET_LOADER_TRUE = "x#"; then
    echo    "Disabled "
 else
    echo    "Enabled "

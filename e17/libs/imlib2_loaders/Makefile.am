@@ -10,6 +10,7 @@ SUBDIRS = src libltdl
 CFLAGS_EXTRA = -I$(includedir) -I$(top_srcdir) -I$(top_srcdir)/src
 
 EXTRA_DIST = \
+acinclude.m4 \
 imlib2_loaders.spec.in \
 imlib2_loaders.spec
 
