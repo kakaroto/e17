@@ -266,9 +266,11 @@ void ewl_text_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	tmp = ewl_theme_data_get_str(w, "font");
 	etox_context_set_font(ta->context, tmp,
 			      ewl_theme_data_get_int(w, "font_size"));
+	IF_FREE(tmp);
 
 	tmp = ewl_theme_data_get_str(w, "style");
 	etox_context_set_style(ta->context, tmp);
+	IF_FREE(tmp);
 
 	r = ewl_theme_data_get_int(w, "color/r");
 	g = ewl_theme_data_get_int(w, "color/g");
