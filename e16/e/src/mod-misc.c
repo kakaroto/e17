@@ -96,9 +96,6 @@ MiscSighan(int sig, void *prm __UNUSED__)
 #endif
 
 static const CfgItem MiscCfgItems[] = {
-   CFG_ITEM_INT(Conf, backgrounds.hiquality, 1),
-   CFG_ITEM_INT(Conf, backgrounds.timeout, 240),
-   CFG_ITEM_BOOL(Conf, backgrounds.user, 1),
 
    CFG_ITEM_BOOL(Conf, dialogs.headers, 0),
    CFG_ITEM_BOOL(Conf, dialogs.button_image, 0),
@@ -108,16 +105,6 @@ static const CfgItem MiscCfgItems[] = {
    CFG_ITEM_INT(Conf, dock.dirmode, DOCK_DOWN),
    CFG_ITEM_INT(Conf, dock.startx, 0),
    CFG_ITEM_INT(Conf, dock.starty, 0),
-
-   CFG_ITEM_BOOL(Conf, groups.dflt.iconify, 1),
-   CFG_ITEM_BOOL(Conf, groups.dflt.kill, 0),
-   CFG_ITEM_BOOL(Conf, groups.dflt.mirror, 1),
-   CFG_ITEM_BOOL(Conf, groups.dflt.move, 1),
-   CFG_ITEM_BOOL(Conf, groups.dflt.raise, 0),
-   CFG_ITEM_BOOL(Conf, groups.dflt.set_border, 1),
-   CFG_ITEM_BOOL(Conf, groups.dflt.stick, 1),
-   CFG_ITEM_BOOL(Conf, groups.dflt.shade, 1),
-   CFG_ITEM_BOOL(Conf, groups.swapmove, 1),
 
    CFG_ITEM_BOOL(Conf, hints.set_xroot_info_on_root_window, 0),
 

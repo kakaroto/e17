@@ -2410,7 +2410,6 @@ static const CfgItem PagersCfgItems[] = {
    CFG_ITEM_INT(Conf.pagers, sel_button, 2),
    CFG_ITEM_INT(Conf.pagers, win_button, 1),
    CFG_ITEM_INT(Conf.pagers, menu_button, 3),
-
 };
 #define N_CFG_ITEMS (sizeof(PagersCfgItems)/sizeof(CfgItem))
 

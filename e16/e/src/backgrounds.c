@@ -2773,12 +2773,21 @@ IpcItem             BackgroundsIpcArray[] = {
 #define N_IPC_FUNCS (sizeof(BackgroundsIpcArray)/sizeof(IpcItem))
 
 /*
+ * Configuration items
+ */
+static const CfgItem BackgroundsCfgItems[] = {
+   CFG_ITEM_BOOL(Conf.backgrounds, hiquality, 1),
+   CFG_ITEM_BOOL(Conf.backgrounds, user, 1),
+   CFG_ITEM_INT(Conf.backgrounds, timeout, 240),
+};
+#define N_CFG_ITEMS (sizeof(BackgroundsCfgItems)/sizeof(CfgItem))
+
+/*
  * Module descriptor
  */
 EModule             ModBackgrounds = {
    "backgrounds", "bg",
    BackgroundsSighan,
-   {N_IPC_FUNCS, BackgroundsIpcArray}
-   ,
-   {0, NULL}
+   {N_IPC_FUNCS, BackgroundsIpcArray},
+   {N_CFG_ITEMS, BackgroundsCfgItems}
 };

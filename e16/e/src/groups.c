@@ -1618,10 +1618,25 @@ IpcItem             GroupsIpcArray[] = {
 };
 #define N_IPC_FUNCS (sizeof(GroupsIpcArray)/sizeof(IpcItem))
 
+/*
+ * Configuration items
+ */
+static const CfgItem GroupsCfgItems[] = {
+   CFG_ITEM_BOOL(Conf.groups, dflt.iconify, 1),
+   CFG_ITEM_BOOL(Conf.groups, dflt.kill, 0),
+   CFG_ITEM_BOOL(Conf.groups, dflt.mirror, 1),
+   CFG_ITEM_BOOL(Conf.groups, dflt.move, 1),
+   CFG_ITEM_BOOL(Conf.groups, dflt.raise, 0),
+   CFG_ITEM_BOOL(Conf.groups, dflt.set_border, 1),
+   CFG_ITEM_BOOL(Conf.groups, dflt.stick, 1),
+   CFG_ITEM_BOOL(Conf.groups, dflt.shade, 1),
+   CFG_ITEM_BOOL(Conf.groups, swapmove, 1),
+};
+#define N_CFG_ITEMS (sizeof(GroupsCfgItems)/sizeof(CfgItem))
+
 EModule             ModGroups = {
    "groups", "grp",
    GroupsSighan,
-   {N_IPC_FUNCS, GroupsIpcArray}
-   ,
-   {0, NULL}
+   {N_IPC_FUNCS, GroupsIpcArray},
+   {N_CFG_ITEMS, GroupsCfgItems}
 };
