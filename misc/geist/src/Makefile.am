@@ -23,6 +23,7 @@ geist_SOURCES = \
     geist_line.c geist_line.h \
     geist_poly.c geist_poly.h \
     geist_imlib.c geist_imlib.h \
+    geist_style.c geist_style.h \
     geist_document.c geist_document.h \
     geist_document_gtk.c geist_document_gtk.h \
     geist_fill.c geist_fill.h \

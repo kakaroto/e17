@@ -1,4 +1,4 @@
-/* structs.h
+/* geist_style.h
 
 Copyright (C) 1999,2000 Tom Gilbert.
 
@@ -23,22 +23,32 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 */
 
-#ifndef STRUCTS_H
-#define STRUCTS_H
 
-typedef struct __geist_list geist_list;
-typedef struct __geistoptions geistoptions;
-typedef struct __geist_image geist_image;
-typedef struct __geist_text geist_text;
-typedef struct __geist_rect geist_rect;
-typedef struct __geist_object geist_object;
-typedef struct __geist_document geist_document;
-typedef struct __geist_layer geist_layer;
-typedef struct __geist_fill geist_fill;
-typedef struct __geist_line geist_line;
-typedef struct __geist_poly geist_poly;
-typedef struct __geist_point geist_point;
-typedef struct __geist_style geist_style;
-typedef struct __geist_style_bit geist_style_bit;
+#ifndef GEIST_STYLE_H
+#define GEIST_STYLE_H
+
+#include "geist.h"
+#include "geist_object.h"
+#include "geist_document.h"
+#include "geist_list.h"
+
+#define GEIST_FILL(O) ((geist_fill *)O)
+
+struct __geist_style_bit
+{
+   int x_offset, y_offset;
+   int r,g,b,a;
+};
+
+struct __geist_style
+{
+   geist_list *bits;
+   char *name;
+};
+
+geist_style_bit *geist_style_bit_new(int x_offset, int y_offset, int r, int g, int b, int a);
+geist_style *geist_style_new(char *name);
+void geist_style_bit_free(geist_style_bit *s);
+void geist_style_free(geist_style *s);
 
 #endif
