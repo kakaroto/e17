@@ -3,7 +3,7 @@
 
 <para>
 The purpose of Edje is to abstract as completely as possible the design of the interface from the application code.  Always
-keep this in mind when using Edje.  While at times Edje's API seems inadiquate or frustrating in its lack of customization, it
+keep this in mind when using Edje.  While at times Edje's API seems inadequate or frustrating in its lack of customization, it
 is this way for a reason: to keep you as a coder from taking power away from the themer.   If at any point the API seems like
 a restriction realize that what you want to do is possible, but should be done in the EDC not in the application code.
 </para>
@@ -17,7 +17,7 @@ work on and contribute to for all involved.
 <title>Edje Spec Files</title>
 
 <para>
-Once you have created you application and a default EDC you will want to make it as easy as possible for other developers and
+Once you have created your application and a default EDC you will want to make it as easy as possible for other developers and
 themers to create new interfaces for you application.  While developers can read your code and figure out what does what, many
 of the themers can not, therefore a standardized method of describing what the application requires and provides should be utilized.
 This is done by creating a flat text file named README.edje.  Below is an example of the format that should be used in your README.edje:
@@ -134,11 +134,11 @@ Changelog:
 </figure>
 
 <para>
-This scheme allows the themer to have an understanding of what functionality is avalible and what
+This scheme allows the themer to have an understanding of what functionality is available and what
 parts will be accessed by the application code and therefore must exist, even if hidden.  A changelog
 should be present to list the changes in the application that could effect themes past and present.
 A "Features and Notes" section is optional but allows a place to outline various functionality of the application
-as well as notes from the coder to the themer as to now the app is intended to be used, their wishes, etc.
+as well as notes from the coder to the themer as to how the app is intended to be used, their wishes, etc.
 This file should be present in the top level directory of your codebase.
 </para>
 
@@ -161,13 +161,13 @@ from your EDC or improve upon it.  This allows themers to be more effectively le
 
 <para>
 An important consideration for themeing was how to deal with distribution of themes.  Due to the ugly nature of using
-renamed tarballs for data distribution Edb and then EET came to live.  EET provides a simplistic manner of distributing
-complete themes and interfaces in a convinient single file package.  Because EET will compress your images there is no need
+renamed tarballs for data distribution Edb and then EET came to life.  EET provides a simplistic manner of distributing
+complete themes and interfaces in a convenient single file package.  Because EET will compress your images there is no need
 to re-compress an EET, though it is the distributers discretion to do so.  When hosting themes pre-compiled EETs should be provided.
-The images and source EDC does not, but it is recommended that you make it avalible on request or in the same place as the EET
-using a simple and clear file convension such as: theme.eet and theme-src.tgz.  Providing the source gives back to the community
+The images and source EDC does not need to be provided, but it is recommended that you make it avalible on request or in the same place 
+as the EET using a simple and clear file convension such as: theme.eet and theme-src.tgz.  Providing the source gives back to the community
 not only a nice theme but also a valuable learning tool for others.  Themes should <emphasis>not</emphasis> be distributed in
-tarballs as it defeats the purpose of single file, one step distribution.
+tarballs as it defeats the purpose of a single file, one step distribution.
 </para>
 </section>
 

@@ -12,7 +12,7 @@ the interface, and a created EET which contains all the elements of the interfac
 These EET's are generated from an Edje EDC file in which diffrent parts of the interface
 are described and laid out, and how those parts interact with your application.  This
 allows for the interface to be completely changed simply by creating a new EDC and
-generating from it the EET that your application can use.  In more popular terms, Edje
+generating the EET for your application to use.  In more popular terms, Edje
 makes every application that uses it "skinable".  Raster describes Edje as "an attempt
 to find a middleground between themeing and programming without turning the theme
 itself into just yet another program".
@@ -26,7 +26,7 @@ itself into just yet another program".
 <para>
 The Edje EDC contains every detail about your interface.  An EDC is
 a simple text file that uses C like syntax.  The file is broken into
-three distinct section: images, data, and collections.  The image section contains
+three distinct sections: images, data, and collections.  The image section contains
 a list of all the images your interface will use.  When you compile/generate your
 EDC into an EET all the images specified will be loaded into the EET itself allowing you
 to distribute your interface (or skin if you prefer) as a single file.  When
@@ -40,16 +40,16 @@ arbitrary data in key-value pairs to provide data to your application.
 <para>
 The collections in an EDC are comprised of one or more groups.  Each group
 contains parts and programs.  A part is a single element of your interface, such
-as a text element, or a rectangle, or an image.  Each part is thuroughly described
+as a text element, or a rectangle, or an image.  Each part is throughly described
 for one or more states.  For instance, an image part might actually have two images
-in it, each in a diffrent state, one for a normal state and one for a clicked (mouse down)
+in it, each in a different state, one for a normal state and one for a clicked (mouse down)
 state.  A part may have as many states defined as you like.
 </para>
 
 <para>
 These parts are then referenced in the programs.  Programs are descriptions about
 how the interface should respond to both the user and the application code itself.  A
-program can accept interface event (such as mouse button 1 down), and then change the state of
+program can accept interface events (such as mouse button 1 down), and then change the state of
 a part described earlier (change to state clicked) to create an effect.  Programs
 can also emit signals to your application.  In your application code you would define
 a callback for that event.  Each program is concise and distinct.  For example, to
@@ -60,10 +60,10 @@ the mouse down event, and yet another to change state back to normal on a mouse 
 
 <para>
 Because of the abstraction Edje provides, your applcation only needs to
-know the name of the EET to use, what signals it will recieve from
-the interface so that callbacks can be defined when that event is recieved, and
+know the name of the EET to use, what signals it will receive from
+the interface so that callbacks can be defined when that event is received, and
 what text parts in the interface can be modified.   This allows maximum flexability in
-interface design, including the ability to offload interface to graphic designers and
+interface design, including the ability to offload the interface to graphic designers and
 themers freeing the application coders, allowing users of the application to modify the
 interface without hacking or forking your project, and a much quicker prototyping and design
 tool than modifying your C application directly.

@@ -40,8 +40,8 @@
         <abstract>
         <para>
         A complete guide to designing interfaces using Edje and utilizing them 
-	effectively in your EVAS applications.  Includes complete overview of Edje 
-	Data Collections (EDC) and Edje API, including sample code and reference
+	effectively in your EVAS applications.  Includes a complete overview of Edje 
+	Data Collections (EDC) and the Edje API, including sample code and reference
         material.  Utilizing Edje effectively can simplify and streamline application 
 	development and make nearly any application completely skinable by even non-programmers.
         </para>

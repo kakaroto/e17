@@ -89,7 +89,7 @@ Signals provide the communication between your interface and your application co
 application needs to catch that signal and then do something with it, this functionality is provided by Edje signal callbacks.
 The Edje API provides you with two calls, one to add and one to delete signal callbacks: edje_object_signal_callback_add() and
 edje_object_signal_callback_del().  Both functions take 4 arguments: the Evas_Object (your edje), the signal thats emited,
-the source of that emission, and the function that should be called when the signal is recieved.
+the source of that emission, and the function that should be called when the signal is received.
 These functions will not allow you to pass NULL arguments, and therefore if you want to create callbacks for several sources that
 emit the same signal you will need to add a seperate callback for each of the sources.  The add function allows one more
 argument, a void pointer to any data you want passed to the callback function.

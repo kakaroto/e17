@@ -64,7 +64,7 @@ collections {
   <entry>images</entry>
   <entry>image,</entry>
   <entry>"image" STORAGE_METHOD;</entry>
-  <entry>Where storage method is of the following: COMP for lossless compressed, RAW for lossless uncompressed, or LOSSY for lossy compressed follorwed by
+  <entry>Where storage method is of the following: COMP for lossless compressed, RAW for lossless uncompressed, or LOSSY for lossy compressed followed by
  the quality level (0-100)
 ex: image, "button.png" LOSSY 85;
 ex: image, "backdrop.jpg" RAW;</entry>
@@ -74,7 +74,7 @@ ex: image, "backdrop.jpg" RAW;</entry>
   <entry>group</entry>
   <entry>name,</entry>
   <entry>"group_name";</entry>
-  <entry>Name used to access individual interface in an EET</entry>
+  <entry>Name used to access an individual interface in an EET.</entry>
 </row>
 
 <row>
@@ -107,7 +107,7 @@ ex: image, "backdrop.jpg" RAW;</entry>
         </entry>
   <entry>"part_name";
         </entry>
-  <entry>Symbolic part name, used for later reference in EDC
+  <entry>Symbolic part name, used for later reference in EDC.
         </entry>
 </row>
 
@@ -118,7 +118,7 @@ ex: image, "backdrop.jpg" RAW;</entry>
         </entry>
   <entry>TYPE;
         </entry>
-  <entry>Where type is: IMAGE, RECT, TEXT or NONE.  If no type is specified IMAGE is the default type.
+  <entry>Where type is: IMAGE, RECT, TEXT or NONE.  Defaults to IMAGE if no type is specified.
         </entry>
 </row>
 
@@ -152,9 +152,8 @@ ADOW, OUTLINE_SOFT_SHADOW. Default type is NONE.  ex: effect, SOFT_OUTLINE;
         </entry>
   <entry>0;
         </entry>
-  <entry>Boolean value specifying whether a part repeats an event to the part below it.  When repeat is set to 0 (off, the default) and two parts that acc
-ept events
-        are on top of each other the top most object will recieve the event and not any parts below it, turning repeat to 1 (on) will continue to send the
+  <entry>Boolean value specifying whether a part repeats an event to the part below it.  When repeat is set to 0 (off, the default) and two parts that accept events
+        are on top of each other the top most object will receive the event and not the parts below it, turning repeat to 1 (on) will continue to send the
  event down to
         the next part below it.
         </entry>
@@ -168,8 +167,7 @@ ept events
         </entry>
   <entry>"part";
         </entry>
-  <entry>Clip to the size of the specified part. Any amount of the current part that exends beyond the size of the clipped to part will be clipped off.  C
-lipped text parts
+  <entry>Clip to the size of the specified part. Any amount of the current part that extends beyond the size of the clipped to part will be clipped off.  Clipped text parts
         always truncate the text string to "...".
         </entry>
 </row>
@@ -203,8 +201,7 @@ lipped text parts
         </entry>
   <entry>"name" INDEX;
         </entry>
-  <entry>Descriptive name for the individual state, the default state must always be named "default". The INDEX value is a double between 0.0 and 1.0 whic
-h indicates levels of completion, that defaults to 0.0. Multiple states can have the same name yet with a different index value.
+  <entry>Descriptive name for the individual state, the default state must always be named "default". The INDEX value is a double between 0.0 and 1.0 which indicates levels of completion, the default is 0.0. Multiple states can have the same name yet with a different index value.
 ex: state, "default" 0.0;
         </entry>
 </row>
@@ -227,7 +224,7 @@ ex: state, "default" 0.0;
         </entry>
   <entry>HOR_VAL VER_VAL;
         </entry>
-  <entry>Specify alignment of the part within it's container as specified by rel1/rel2. Values are specified as doubles from 0.0 (align left/top) to 1.0 (
+  <entry>Specify alignment of the part within its container as specified by rel1/rel2. Values are specified as doubles from 0.0 (align left/top) to 1.0 (
 align right/bottom).
 ex: align, 0.5 0.5; (Aligns part in center of container)
 ex: align, 0.0 1.0; (Aligns part to bottom left of container)
@@ -266,7 +263,7 @@ ex: max, 100 100;
   <entry>HOR_VAL VERT_VAL;
         </entry>
   <entry>Integer stepping values in integer pixels for horizontal (arg1) and vertical (arg2) scaling. When stepping is enabled the width or/and height of 
-the image will always be divisable by it's stepping value when scaled. Default stepping values are 0 0 (ie: stepping disabled).
+the image will always be divisable by its stepping value when scaled. Default stepping values are 0 0 (ie: stepping disabled).
 ex: step, 20 1 (Image width must always be multple of 20, ie: 0, 20, 40, 60, etc. Height can be any value)
         </entry>
 </row>
@@ -278,8 +275,7 @@ ex: step, 20 1 (Image width must always be multple of 20, ie: 0, 20, 40, 60, etc
         </entry>
   <entry>MIN MAX;
         </entry>
-  <entry>Double min (arg1) and max (arg2) aspect ratio values. This controls the aspect ratio (ratio of width to height) of a scaled part, typically image
-s. The default ratio is 0.0. If both values are the same the ratio is fixed.
+  <entry>Double min (arg1) and max (arg2) aspect ratio values. This controls the aspect ratio (ratio of width to height) of a scaled part, typically images. The default ratio is 0.0. If both values are the same the ratio is fixed.
 ex: aspect, 1.0 5.0; (Minimum aspect of 1:1, maximum of 5:1 - Width:Height);
         </entry>
 </row>
@@ -291,8 +287,7 @@ ex: aspect, 1.0 5.0; (Minimum aspect of 1:1, maximum of 5:1 - Width:Height);
         </entry>
   <entry>LEFT RIGHT TOP BOTTOM;
         </entry>
-  <entry>Border scaling values for an image part as specified in integer pixel widths, for each four sides of an image. This will stop Edje from scaling t
-he outside edge of an image when scaling an image part.
+  <entry>Border scaling values for an image part as specified in integer pixel widths, for each four sides of an image. This will stop Edje from scaling the outside edge of an image when scaling an image part.
 ex: border, 10 10 10 10; (Scale the edge of the image part 10 pixels on all sides)
         </entry>
 </row>
@@ -340,8 +335,7 @@ ex: color3, 255 0 0 255; (Outline is colored red)
         </entry>
   <entry>HOR_VAL VERT_VAL;
         </entry>
-  <entry>Doubles representing the horizontal (arg1) and vertical (arg2) positioning of top left corner (for rel1) or bottom right corner (for rel2) as rel
-ative to the part specified by the "to" keyword. If no "to" keyword is present, the values are relative to the corners of the interface.
+  <entry>Doubles representing the horizontal (arg1) and vertical (arg2) positioning of top left corner (for rel1) or bottom right corner (for rel2) as relative to the part specified by the "to" keyword. If no "to" keyword is present, the values are relative to the corners of the interface.
 ex: relative, 0.0 1.0; (For rel1 with no "to": top left corner of part is positioned at the left (0.0), bottom (1.0) corner of the interface.)
         </entry>
 </row>
@@ -353,7 +347,7 @@ ex: relative, 0.0 1.0; (For rel1 with no "to": top left corner of part is positi
         </entry>
   <entry>HORZ_OFF VERT_OFF;
         </entry>
-  <entry>Integers specifying deviation in pixels from the position as defined by the relative keyword, both horizontally (arg1) and vertically (arg2)
+  <entry>Integers specifying deviation in pixels from the position as defined by the relative keyword, both horizontally (arg1) and vertically (arg2).
 ex: offset, 5 10; (Position 5 px to the right and 10 px down from the position as stated by the relative keyword)
         </entry>
 </row>
@@ -377,8 +371,7 @@ ex: to, "some_part";
         </entry>
   <entry>"part_name";
         </entry>
-  <entry>Specify another part as the reference to be used for the positioning of the current part. Same as "to", but relativity applies only on the X axis
-.
+  <entry>Specify another part as the reference to be used for the positioning of the current part. Same as "to", but relativity applies only on the X axis.
         </entry>
 </row>
 
@@ -389,8 +382,7 @@ ex: to, "some_part";
         </entry>
   <entry>"part_name";
         </entry>
-  <entry>Specify another part as the reference to be used for the positioning of the current part.  Same as "to", but relativity applies only on the Y axi
-s.
+  <entry>Specify another part as the reference to be used for the positioning of the current part.  Same as "to", but relativity applies only on the Y axis.
         </entry>
 </row>
 
@@ -413,8 +405,7 @@ s.
         </entry>
   <entry>"image_name";
         </entry>
-  <entry>Name of an image to be used in an animation loop.  Images are dispay in the order they are listed.  There is no limit to the number of tweens tha
-t can be specified.
+  <entry>Name of an image to be used in an animation loop.  Images are dispay in the order they are listed.  There is no limit to the number of tweens that can be specified.
         </entry>
 </row>
 
@@ -438,8 +429,7 @@ t can be specified.
         </entry>
   <entry>Doubles representing the horizontal (arg1) and vertical (arg2) position from which a fill (tile) should start within it's container as defined by
  rel1/rel2.  Tiling
-        then occurs in all directions from that point of origin.  This is similar in use to relativity by rel1 except that it is relative to the parts con
-tainer rather than
+        then occurs in all directions from that point of origin.  This is similar in use to relativity by rel1 except that it is relative to the parts container rather than
         the whole interface.
         ex: relative, 0.5 0.5; (part starts tiling from the middle of it's container)
         </entry>
@@ -465,8 +455,7 @@ similar in use to
         </entry>
   <entry>HOR_VAL VERT_VAL;
         </entry>
-  <entry>Doubles representing the horizontal (arg1) and vertical (arg2) position of the bottom right corner of a fill (tile).  This is similar in use to r
-elativity by rel2 except that it is relative to the parts container rather than the whole interface.
+  <entry>Doubles representing the horizontal (arg1) and vertical (arg2) position of the bottom right corner of a fill (tile).  This is similar in use to relativity by rel2 except that it is relative to the parts container rather than the whole interface.
         ex: relative, 1.0 1.0; (Tile fills entire space)
         </entry>
 </row>
@@ -478,8 +467,7 @@ elativity by rel2 except that it is relative to the parts container rather than 
         </entry>
   <entry>HOR_VAL VERT_VAL;
         </entry>
-  <entry>Integers specifying a pixel offset horizontally (arg1) and vertically (arg2) from the relative position specified by size{relative,}.  This is si
-milar in use to offset
+  <entry>Integers specifying a pixel offset horizontally (arg1) and vertically (arg2) from the relative position specified by size{relative,}.  This is similar in use to offset
         used in rel2.
         </entry>
 </row>
@@ -502,7 +490,7 @@ milar in use to offset
         </entry>
   <entry>"font_name";
         </entry>
-  <entry>Font used for text, where "font_name" is the name of the font file minus its extension.  Path to font is determined by your applications
+  <entry>Font used for text, where "font_name" is the name of the font file minus its extension.  The path to the font is determined by your applications
         evas font path. ex: font, "Impact"; (Font used is Impact.ttf found in the evas font path)
         </entry>
 </row>
@@ -536,8 +524,7 @@ milar in use to offset
         </entry>
   <entry>HOR_VAL VERT_VAL;
         </entry>
-  <entry>Boolean values specifying whether the current text string should define the minimum size of the part, such that all future changes to the text st
-ring can
+  <entry>Boolean values specifying whether the current text string should define the minimum size of the part, such that all future changes to the text string can
         be no smaller both horizontally (arg1) and vertically (arg2).
         </entry>
 </row>
@@ -549,7 +536,7 @@ ring can
         </entry>
   <entry>0.5 0.5;
         </entry>
-  <entry>Alignment of text within its containers as defined by rel1/rel2, horizontally (arg1) and vertically (arg2).
+  <entry>Alignment of text within its containers is defined by rel1/rel2, horizontally (arg1) and vertically (arg2).
         </entry>
 </row>
 
@@ -571,7 +558,7 @@ ring can
         </entry>
   <entry>SIGNAL;
         </entry>
-  <entry>Specifies signal(s) that a should cause program to run.  The signal recieved must match the specified source to run. Signals may be globbed, but 
+  <entry>Specifies signal(s) that should cause the program to run.  The signal received must match the specified source to run. Signals may be globbed, but 
 only
 one signal keyword per program may be used.
         ex: signal, "mouse,clicked,*"; (clicking any mouse button that matches source starts program)
@@ -608,8 +595,7 @@ one signal keyword per program may be used.
         </entry>
   <entry>TYPE LENGTH;
         </entry>
-  <entry>Defines how transistions occur using STATE_SET action.  Where type is the style of the transistion and length is a double specifying the number o
-f
+  <entry>Defines how transistions occur using STATE_SET action.  Where type is the style of the transistion and length is a double specifying the number of
         seconds in which to preform the transistion.  Valid types are: LINEAR, SINUSOIDAL, ACCELERATE, and DECELERATE
         </entry>
 </row>
@@ -621,8 +607,7 @@ f
         </entry>
   <entry>"action-target";
         </entry>
-  <entry>Program or part on which the specified action acts.  Multiple target keywords may be specified, one per target.  SIGNAL_EMITs do not have targets
-.
+  <entry>Program or part on which the specified action acts.  Multiple target keywords may be specified, one per target.  SIGNAL_EMITs do not have targets.
         </entry>
 </row>
 
@@ -633,7 +618,7 @@ f
         </entry>
   <entry>"next-program";
         </entry>
-		<entry>Specifies a program run after the current program completes.  The source and signal parameters of a program run as an "after" are ignored.  Multiple "after" statements can be specified per program.
+		<entry>Specifies a program to run after the current program completes.  The source and signal parameters of a program run as an "after" are ignored.  Multiple "after" statements can be specified per program.
         </entry>
 </row>
 

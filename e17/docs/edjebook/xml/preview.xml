@@ -2,9 +2,9 @@
 <title>The Edje Preview Program</title>
 
 <para>
-The <command>edje</command> program serves provides an easy to use tool for previewing, testing and debugging EDCs.
+The <command>edje</command> program provides an easy to use tool for previewing, testing and debugging EDCs.
 The tool accepts two arguments, the first is the name of the EET to use, the second is an optional argument specifying
-the Edje group to use specified within the EDC.  If no group name is supplied you will be presented with a list of
+the Edje group to use within the EDC.  If no group name is supplied you will be presented with a list of
 all the groups within the specified EET, you may click on one of the groups to preview it.
 </para>
 
