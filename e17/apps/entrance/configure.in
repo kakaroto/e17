@@ -225,7 +225,6 @@ data/themes/taillights/parts/Makefile
 data/themes/taillights/programs/Makefile
 data/themes/taillights/fonts/Makefile
 data/themes/taillights/images/Makefile
-data/themes/E17/Makefile
 ])
 
 echo
