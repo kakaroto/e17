@@ -1,4 +1,3 @@
-
 /*
  * Copyright (C) 2000 Carsten Haitzler, Geoff Harrison and various contributors
  *
@@ -90,6 +89,8 @@ ArrangeRects(RectBox * fixed, int fixed_count, RectBox * floating,
    int                 num_leftover = 0;
 
    EDBUG(7, "ArrangeRects");
+
+#define Filled(x,y) (filled[(y * (xsize - 1)) + x])
 
 #ifdef HAS_XINERAMA
    if (initial_window)
@@ -196,48 +197,9 @@ ArrangeRects(RectBox * fixed, int fixed_count, RectBox * floating,
    if (floating_count)
       leftover = Emalloc(floating_count * sizeof(int));
 
-   if (!xarray)
-     {
-	if (yarray)
-	   Efree(yarray);
-	if (filled)
-	   Efree(filled);
-	if (spaces)
-	   Efree(spaces);
-	if (leftover)
-	   Efree(leftover);
-	EDBUG_RETURN_;
-     }
-   if (!yarray)
-     {
-	Efree(xarray);
-	if (filled)
-	   Efree(filled);
-	if (spaces)
-	   Efree(spaces);
-	if (leftover)
-	   Efree(leftover);
-	EDBUG_RETURN_;
-     }
-   if (!filled)
-     {
-	Efree(xarray);
-	Efree(yarray);
-	if (spaces)
-	   Efree(spaces);
-	if (leftover)
-	   Efree(leftover);
-	EDBUG_RETURN_;
-     }
-   if (!spaces)
-     {
-	Efree(xarray);
-	Efree(yarray);
-	Efree(filled);
-	if (leftover)
-	   Efree(leftover);
-	EDBUG_RETURN_;
-     }
+   if (!xarray || !yarray || !filled || !spaces)
+      goto exit;
+
 /* copy "fixed" rects into the sorted list */
    for (i = 0; i < fixed_count; i++)
      {
@@ -306,9 +268,8 @@ ArrangeRects(RectBox * fixed, int fixed_count, RectBox * floating,
 		    {
 		       for (x = x1; x <= x2; x++)
 			 {
-			    if (filled[(y * (xsize - 1)) + x] <
-				(sorted[j].p + 1))
-			       filled[(y * (xsize - 1)) + x] = sorted[j].p + 1;
+			    if (Filled(x, y) <= sorted[j].p)
+			       Filled(x, y) = sorted[j].p + 1;
 			 }
 		    }
 	       }
@@ -320,14 +281,14 @@ ArrangeRects(RectBox * fixed, int fixed_count, RectBox * floating,
 	     for (x = 0; x < xsize - 1; x++)
 	       {
 /* if the square is empty (lowe prioiryt suares filled) "grow" the space */
-		  if (filled[(y * (xsize - 1)) + x] < (floating[i].p + 1))
+		  if (Filled(x, y) <= floating[i].p)
 		    {
 		       int                 can_expand_x = 1;
 		       int                 can_expand_y = 1;
 
 		       x1 = x + 1;
 		       y1 = y + 1;
-		       filled[(y * (xsize - 1)) + x] = 100;
+		       Filled(x, y) = 100;
 		       if (x >= xsize - 2)
 			  can_expand_x = 0;
 		       if (y >= ysize - 2)
@@ -342,8 +303,7 @@ ArrangeRects(RectBox * fixed, int fixed_count, RectBox * floating,
 			      {
 				 for (j = y; j < y1; j++)
 				   {
-				      if (filled[(j * (xsize - 1)) + x1] >=
-					  (floating[i].p + 1))
+				      if (Filled(x1, j) >= floating[i].p + 1)
 					 can_expand_x = 0;
 				   }
 			      }
@@ -353,8 +313,7 @@ ArrangeRects(RectBox * fixed, int fixed_count, RectBox * floating,
 			      {
 				 for (j = x; j < x1; j++)
 				   {
-				      if (filled[(y1 * (xsize - 1)) + j] >=
-					  (floating[i].p + 1))
+				      if (Filled(j, y1) >= floating[i].p + 1)
 					 can_expand_y = 0;
 				   }
 			      }
@@ -461,8 +420,8 @@ ArrangeRects(RectBox * fixed, int fixed_count, RectBox * floating,
 	   leftover[num_leftover++] = i;
      }
 
-   /* ok we cant fit everything in this baby.... time fit */
-   /*the leftovers into the leftover space */
+   /* ok we cant fit everything in this baby.... time to fit */
+   /* the leftovers into the leftover space */
    for (i = 0; i < num_leftover; i++)
      {
 	xsize = 0;
@@ -519,9 +478,8 @@ ArrangeRects(RectBox * fixed, int fixed_count, RectBox * floating,
 		    {
 		       for (x = x1; x <= x2; x++)
 			 {
-			    if (filled[(y * (xsize - 1)) + x] <
-				(sorted[j].p + 1))
-			       filled[(y * (xsize - 1)) + x] = sorted[j].p + 1;
+			    if (Filled(x, y) <= sorted[j].p)
+			       Filled(x, y) = sorted[j].p + 1;
 			 }
 		    }
 	       }
@@ -533,7 +491,7 @@ ArrangeRects(RectBox * fixed, int fixed_count, RectBox * floating,
 	     for (x = 0; x < xsize - 1; x++)
 	       {
 		  /* if the square is empty "grow" the space */
-		  if (!filled[(y * (xsize - 1)) + x])
+		  if (Filled(x, y) <= floating[leftover[i]].p)
 		    {
 		       int                 can_expand_x = 1;
 		       int                 can_expand_y = 1;
@@ -555,14 +513,9 @@ ArrangeRects(RectBox * fixed, int fixed_count, RectBox * floating,
 			      {
 				 for (j = y; j < y1; j++)
 				   {
-				      if (filled[(j * (xsize - 1)) + x1] >=
-					  (floating[leftover[i]].p + 1))
-					{
-					   if (filled[(j * (xsize - 1)) + x1] >
-					       (floating[leftover[i]].p + 1))
-					      fitswin = 0;
-					   can_expand_x = 0;
-					}
+				      if (Filled(x1, j) >
+					  floating[leftover[i]].p + 1)
+					 can_expand_x = 0;
 				   }
 			      }
 			    if (can_expand_x)
@@ -571,14 +524,9 @@ ArrangeRects(RectBox * fixed, int fixed_count, RectBox * floating,
 			      {
 				 for (j = x; j < x1; j++)
 				   {
-				      if (filled[(y1 * (xsize - 1)) + j] >=
-					  (floating[leftover[i]].p + 1))
-					{
-					   if (filled[(y1 * (xsize - 1)) + j] >
-					       (floating[leftover[i]].p + 1))
-					      fitswin = 0;
-					   can_expand_y = 0;
-					}
+				      if (Filled(j, y1) >
+					  floating[leftover[i]].p + 1)
+					 can_expand_y = 0;
 				   }
 			      }
 			    if (can_expand_y)
@@ -588,6 +536,9 @@ ArrangeRects(RectBox * fixed, int fixed_count, RectBox * floating,
 		       spaces[num_spaces].y = yarray[y];
 		       spaces[num_spaces].w = xarray[x1] - xarray[x];
 		       spaces[num_spaces].h = yarray[y1] - yarray[y];
+		       if (spaces[num_spaces].w < floating[leftover[i]].w ||
+			   spaces[num_spaces].h < floating[leftover[i]].h)
+			  fitswin = 0;
 		       spaces[num_spaces].p = fitswin;
 		       num_spaces++;
 		    }
@@ -641,13 +592,6 @@ ArrangeRects(RectBox * fixed, int fixed_count, RectBox * floating,
 	     num_sorted++;
 	  }
      }
-   /* free up memory */
-   Efree(xarray);
-   Efree(yarray);
-   Efree(filled);
-   Efree(spaces);
-   if (leftover)
-      Efree(leftover);
    for (i = 0; i < num_sorted; i++)
      {
 	if ((sorted[i].x + sorted[i].w) > width)
@@ -659,6 +603,20 @@ ArrangeRects(RectBox * fixed, int fixed_count, RectBox * floating,
 	if (sorted[i].y < starty)
 	   sorted[i].y = starty;
      }
+
+ exit:
+   /* free up memory */
+   if (xarray)
+      Efree(xarray);
+   if (yarray)
+      Efree(yarray);
+   if (filled)
+      Efree(filled);
+   if (spaces)
+      Efree(spaces);
+   if (leftover)
+      Efree(leftover);
+
    EDBUG_RETURN_;
 }
 
@@ -1036,7 +994,7 @@ ArrangeEwinXY(EWin * ewin, int *px, int *py)
 		     continue;
 
 		  if (b->sticky)
-		     fixed[j].p = 50;
+		     fixed[j].p = 1;
 		  else
 		     fixed[j].p = 0;
 		  j++;
