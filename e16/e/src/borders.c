@@ -118,7 +118,7 @@ SetEInfoOnAll()
 
    EDBUG(5, "SetEInfoOnAll");
 
-   lst = EwinListGet(&num);
+   lst = EwinListGetAll(&num);
    for (i = 0; i < num; i++)
       ICCCM_SetEInfo(lst[i]);
    ICCCM_SetMainEInfo();
@@ -404,7 +404,7 @@ AddToFamily(Window win)
 
 	     if (!ewin2)
 	       {
-		  lst = EwinListGet(&num);
+		  lst = EwinListGetAll(&num);
 		  for (i = 0; i < num; i++)
 		    {
 		       if ((lst[i]->iconified) ||
@@ -3229,7 +3229,7 @@ BordersEvent(XEvent * ev, border_event_func_t * func)
    EWin               *const *ewins;
    int                 i, j, num, used = 0;
 
-   ewins = EwinListGet(&num);
+   ewins = EwinListGetAll(&num);
    for (i = 0; i < num; i++)
      {
 	for (j = 0; j < ewins[i]->border->num_winparts; j++)

@@ -1492,7 +1492,7 @@ PagerSetHiQ(char onoff)
 
    HIQ = onoff;
 
-   lst = EwinListGet(&num);
+   lst = EwinListGetAll(&num);
    for (i = 0; i < num; i++)
      {
 	lst[i]->mini_w = 0;
@@ -1522,7 +1522,7 @@ PagerSetSnap(char onoff)
 
    Conf.pagers.snap = onoff;
 
-   lst = EwinListGet(&num);
+   lst = EwinListGetAll(&num);
    for (i = 0; i < num; i++)
      {
 	lst[i]->mini_w = 0;

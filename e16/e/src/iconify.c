@@ -2267,7 +2267,7 @@ IB_Setup(void)
 	   IconboxShow(ibl[i]);
 	Efree(ibl);
      }
-   lst = EwinListGet(&num);
+   lst = EwinListGetAll(&num);
    for (i = 0; i < num; i++)
      {
 	if (lst[i]->client.start_iconified)

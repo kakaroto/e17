@@ -29,7 +29,7 @@ FindEwinByBase(Window win)
    int                 i, num;
 
    EDBUG(6, "FindEwinByBase");
-   ewins = EwinListGet(&num);
+   ewins = EwinListGetAll(&num);
    for (i = 0; i < num; i++)
      {
 	if (win == ewins[i]->win)
@@ -46,7 +46,7 @@ FindEwinByChildren(Window win)
 
    EDBUG(6, "FindEwinByChildren");
 
-   ewins = EwinListGet(&num);
+   ewins = EwinListGetAll(&num);
    for (i = 0; i < num; i++)
      {
 	if ((win == ewins[i]->client.win) || (win == ewins[i]->win_container))
@@ -79,7 +79,7 @@ FindEwinByPartial(const char *match, int type)
    if (len <= 0)
       goto done;
 
-   ewins = EwinListGet(&num);
+   ewins = EwinListGetAll(&num);
    if (ewins == NULL)
       goto done;
 
@@ -117,7 +117,7 @@ FindEwinByDecoration(Window win)
 
    EDBUG(6, "FindEwinByDecoration");
 
-   ewins = EwinListGet(&num);
+   ewins = EwinListGetAll(&num);
    for (i = 0; i < num; i++)
      {
 	for (j = 0; j < ewins[i]->border->num_winparts; j++)
@@ -174,7 +174,7 @@ FindEwinByMenu(Menu * m)
 
    EDBUG(6, "FindEwinByMenu");
 
-   ewins = EwinListGet(&num);
+   ewins = EwinListGetAll(&num);
    for (i = 0; i < num; i++)
      {
 	if (ewins[i]->menu == m)
@@ -345,7 +345,7 @@ ListTransientsFor(Window win, int *num)
 
    EDBUG(6, "ListTransientsFor");
 
-   ewins = EwinListGet(&n);
+   ewins = EwinListGetAll(&n);
    j = 0;
    for (i = 0; i < n; i++)
      {
@@ -368,7 +368,7 @@ ListGroupMembers(Window win, int *num)
 
    EDBUG(6, "ListGroupMembers");
 
-   ewins = EwinListGet(&n);
+   ewins = EwinListGetAll(&n);
    j = 0;
    for (i = 0; i < n; i++)
      {
@@ -391,7 +391,7 @@ FindEwinByDialog(Dialog * d)
 
    EDBUG(6, "FindEwinByDialog");
 
-   ewins = EwinListGet(&num);
+   ewins = EwinListGetAll(&num);
    for (i = 0; i < num; i++)
      {
 	if (ewins[i]->dialog == d)
@@ -409,7 +409,7 @@ FindADialog(void)
 
    EDBUG(6, "FindADialog");
 
-   ewins = EwinListGet(&num);
+   ewins = EwinListGetAll(&num);
    for (i = n = 0; i < num; i++)
      {
 	if (ewins[i]->dialog)

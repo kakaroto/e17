@@ -102,7 +102,7 @@ MaxSizeHV(EWin * ewin, const char *resize_type, int direction)
 	  }
 	else
 	  {
-	     lst = EwinListGet(&num);
+	     lst = EwinListGetAll(&num);
 	  }
 
 	if (direction & MAX_VER)

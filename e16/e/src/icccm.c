@@ -772,7 +772,7 @@ ICCCM_GetInfo(EWin * ewin, Atom atom_change)
 	     EWin               *const *lst;
 	     int                 lnum, ok = 1;
 
-	     lst = EwinListGet(&lnum);
+	     lst = EwinListGetAll(&lnum);
 	     for (i = 0; i < lnum; i++)
 	       {
 		  if ((lst[i] != ewin)

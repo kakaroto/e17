@@ -96,7 +96,7 @@ SetNewAreaSize(int ax, int ay)
 
    SetAreaSize(ax, ay);
 
-   lst = EwinListGet(&num);
+   lst = EwinListGetAll(&num);
    for (i = 0; i < num; i++)
      {
 	if ((!(lst[i]->sticky)) && (!(lst[i]->fixedpos)))
@@ -283,7 +283,7 @@ SetCurrentArea(int ax, int ay)
    desks.desk[desks.current].current_area_y = ay;
 
    /* move all the windows around */
-   lst = EwinListGet(&num);
+   lst = EwinListGetAll(&num);
    if (Conf.desks.slidein)
      {
 	int                 wnum = 0;

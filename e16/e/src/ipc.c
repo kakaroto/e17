@@ -2587,7 +2587,7 @@ IPC_InternalList(const char *params, Client * c)
 	EWin               *const *lst;
 	int                 num, i;
 
-	lst = EwinListGet(&num);
+	lst = EwinListGetAll(&num);
 	if (!strcmp(params, "pagers"))
 	  {
 	     for (i = 0; i < num; i++)
@@ -3470,7 +3470,7 @@ IPC_WinList(const char *params, Client * c)
    int                 num, i;
    char                none[] = "-NONE-";
 
-   lst = EwinListGet(&num);
+   lst = EwinListGetAll(&num);
    if (lst)
      {
 	for (i = 0; i < num; i++)

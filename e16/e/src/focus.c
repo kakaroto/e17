@@ -45,7 +45,7 @@ FocusEwinValid(EWin * ewin)
 static EWin        *
 FocusEwinSelect(void)
 {
-   EWin              **lst, *ewin = NULL;
+   EWin               *const *lst, *ewin = NULL;
    int                 num, i;
 
    switch (Conf.focus.mode)
@@ -56,7 +56,7 @@ FocusEwinSelect(void)
 	ewin = GetEwinPointerInClient();
 	break;
      case MODE_FOCUS_CLICK:
-	lst = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
+	lst = EwinListGetFocus(&num);
 	for (i = 0; i < num; i++)
 	  {
 	     if (!FocusEwinValid(lst[i]))
@@ -64,8 +64,6 @@ FocusEwinSelect(void)
 	     ewin = lst[i];
 	     break;
 	  }
-	if (lst)
-	   Efree(lst);
 	break;
      }
 
@@ -73,7 +71,7 @@ FocusEwinSelect(void)
 }
 
 static void
-AutoraiseTimeout(int val, void *data)
+AutoraiseTimeout(int val, void *data __UNUSED__)
 {
    EWin               *ewin;
 
@@ -83,28 +81,23 @@ AutoraiseTimeout(int val, void *data)
    ewin = FindItem("", val, LIST_FINDBY_ID, LIST_TYPE_EWIN);
    if (ewin)
       RaiseEwin(ewin);
-
-   return;
-   data = NULL;
 }
 
 static void
-ReverseTimeout(int val, void *data)
+ReverseTimeout(int val, void *data __UNUSED__)
 {
    EWin               *ewin;
 
-   ewin = RemoveItem("EWIN", val, LIST_FINDBY_ID, LIST_TYPE_EWIN);
+   ewin = FindItem("", val, LIST_FINDBY_ID, LIST_TYPE_EWIN);
    if (ewin)
-      AddItem(ewin, "EWIN", ewin->client.win, LIST_TYPE_EWIN);
-
-   return;
-   data = NULL;
+      EwinListRaise(&EwinListFocus, ewin, 0);
 }
 
 static void
 FocusCycle(int inc)
 {
-   EWin              **lst0, **lst, *ewin;
+   EWin               *const *lst0;
+   EWin              **lst, *ewin;
    int                 i, num0, num, ax, ay;
 
    EDBUG(5, "FocusCycle");
@@ -115,7 +108,7 @@ FocusCycle(int inc)
 
    GetCurrentArea(&ax, &ay);
 
-   lst0 = (EWin **) ListItemType(&num0, LIST_TYPE_EWIN);
+   lst0 = EwinListGetFocus(&num0);
    if (lst0 == NULL)
       EDBUG_RETURN_;
 
@@ -131,7 +124,6 @@ FocusCycle(int inc)
 	     lst[num - 1] = ewin;
 	  }
      }
-   Efree(lst0);
 
    if (lst == NULL)
       EDBUG_RETURN_;
@@ -173,11 +165,22 @@ FocusEwinSetGrabs(EWin * ewin)
 	XGrabButton(disp, AnyButton, AnyModifier, ewin->win_container,
 		    False, ButtonPressMask, GrabModeSync, GrabModeAsync,
 		    None, None);
+/*	printf("FocusEwinSetGrabs: %#lx grab\n", ewin->client.win); */
      }
    else
      {
 	XUngrabButton(disp, AnyButton, AnyModifier, ewin->win_container);
+/*	printf("FocusEwinSetGrabs: %#lx ungrab\n", ewin->client.win); */
      }
+}
+
+static void
+FocusEwinSetActive(EWin * ewin, int active)
+{
+   ewin->active = active;
+   DrawEwin(ewin);
+
+   FocusEwinSetGrabs(ewin);
 }
 
 void
@@ -188,7 +191,7 @@ FocusFix(void)
 
    EDBUG(5, "FocusFix");
 
-   lst = EwinListGet(&num);
+   lst = EwinListGetAll(&num);
    for (i = 0; i < num; i++)
      {
 	ewin = lst[i];
@@ -312,11 +315,16 @@ FocusToEWin(EWin * ewin, int why)
 	   NULL);
 
    SoundPlay("SOUND_FOCUS_SET");
-   EwinListFocusRaise(ewin);
  done:
+   /* Unset old focus window (if any) highlighting */
+   if (Mode.focuswin)
+      FocusEwinSetActive(Mode.focuswin, 0);
    ICCCM_Cmap(ewin);
    ICCCM_Focus(ewin);
    Mode.focuswin = ewin;
+   /* Set new focus window (if any) highlighting */
+   if (Mode.focuswin)
+      FocusEwinSetActive(Mode.focuswin, 1);
 
    EDBUG_RETURN_;
 }
@@ -335,15 +343,14 @@ FocusNewDeskBegin(void)
    /* we are about to flip desktops or areas - disable enter and leave events
     * temporarily */
 
-   lst = EwinListGet(&num);
+   lst = EwinListGetAll(&num);
    for (i = 0; i < num; i++)
      {
 	ewin = lst[i];
 
 	XSelectInput(disp, ewin->win,
-		     FocusChangeMask | SubstructureNotifyMask |
-		     SubstructureRedirectMask | PropertyChangeMask |
-		     ResizeRedirectMask);
+		     SubstructureNotifyMask | SubstructureRedirectMask |
+		     PropertyChangeMask | ResizeRedirectMask);
 
 	if (ewin->pager)
 	  {
@@ -396,15 +403,14 @@ FocusNewDesk(void)
       return;
 
    /* we flipped - re-enable enter and leave events */
-   lst = EwinListGet(&num);
+   lst = EwinListGetAll(&num);
    for (i = 0; i < num; i++)
      {
 	ewin = lst[i];
 
 	XSelectInput(disp, ewin->win,
-		     FocusChangeMask | SubstructureNotifyMask |
-		     SubstructureRedirectMask | EnterWindowMask |
-		     LeaveWindowMask | PointerMotionMask |
+		     SubstructureNotifyMask | SubstructureRedirectMask |
+		     EnterWindowMask | LeaveWindowMask | PointerMotionMask |
 		     PropertyChangeMask | ResizeRedirectMask |
 		     ButtonPressMask | ButtonReleaseMask);
 
@@ -470,9 +476,21 @@ FocusNewDesk(void)
 void
 FocusHandleEnter(XEvent * ev)
 {
+   Window              win = ev->xcrossing.window;
    EWin               *ewin;
 
    EDBUG(5, "FocusHandleEnter");
+
+   /* Entering root may mean entering this screen */
+   if (win == root.win &&
+       (ev->xcrossing.mode == NotifyNormal &&
+	ev->xcrossing.detail != NotifyInferior))
+     {
+	ewin = FocusEwinSelect();
+	if (ewin)
+	   FocusToEWin(ewin, FOCUS_DESK_ENTER);
+	goto done;
+     }
 
    ewin = GetEwinByCurrentPointer();
 
@@ -495,8 +513,8 @@ FocusHandleEnter(XEvent * ev)
 	break;
      }
 
+ done:
    EDBUG_RETURN_;
-   ev = NULL;
 }
 
 void

@@ -182,10 +182,10 @@ EWinList            EwinListFocus = { "Focus", 0, 0, NULL };
 EWinList            EwinListStack = { "Stack", 0, 0, NULL };
 
 EWin               *const *
-EwinListGetStacking(int *num)
+EwinListGet(EWinList * ewl, int *num)
 {
-   *num = EwinListStack.nwins;
-   return EwinListStack.list;
+   *num = ewl->nwins;
+   return ewl->list;
 }
 
 EWin               *const *

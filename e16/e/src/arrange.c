@@ -829,7 +829,7 @@ ArrangeEwinXY(EWin * ewin, int *px, int *py)
    fixed = NULL;
    ret = NULL;
 
-   lst = EwinListGet(&num);
+   lst = EwinListGetAll(&num);
    if ((lst) && (num > 0))
      {
 	fixed = Emalloc(sizeof(RectBox) * num);

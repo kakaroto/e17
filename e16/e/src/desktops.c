@@ -129,7 +129,7 @@ ChangeNumberOfDesktops(int quantity)
    else if (Conf.desks.num > ENLIGHTENMENT_CONF_NUM_DESKTOPS)
       Conf.desks.num = ENLIGHTENMENT_CONF_NUM_DESKTOPS;
 
-   lst = EwinListGet(&num);
+   lst = EwinListGetAll(&num);
    for (i = 0; i < num; i++)
      {
 	if (lst[i]->desktop >= Conf.desks.num)
@@ -1411,7 +1411,7 @@ MoveDesktop(int desk, int x, int y)
    desks.desk[desk].x = x;
    desks.desk[desk].y = y;
 
-   lst = EwinListGet(&n);
+   lst = EwinListGetAll(&n);
    for (i = 0; i < n; i++)
       if (lst[i]->desktop == desk)
 	 ICCCM_Configure(lst[i]);

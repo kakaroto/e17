@@ -4672,7 +4672,7 @@ SettingsRemember()
 
    /* there's a much more efficient way of doing this, but this will work
     * for now */
-   lst = EwinListGet(&num);
+   lst = EwinListGetAll(&num);
    rd_ewin_list = Emalloc(sizeof(RememberWinList *) * (num + 1));
    ri = 0;
    if ((lst) && (num > 0))

@@ -93,7 +93,7 @@ FindEwinSpawningMenu(Menu * m)
 
    EDBUG(6, "FindEwinSpawningMenu");
 
-   ewins = EwinListGet(&num);
+   ewins = EwinListGetAll(&num);
    for (i = 0; i < num; i++)
      {
 	if (ewins[i]->shownmenu == m->win)
@@ -1768,7 +1768,7 @@ MenuCreateFromAllEWins(const char *name, MenuStyle * ms)
    m = MenuCreate(name);
    m->style = ms;
 
-   lst = EwinListGet(&num);
+   lst = EwinListGetAll(&num);
    for (i = 0; i < num; i++)
      {
 	if ((!lst[i]->menu) && (!lst[i]->pager) && (!lst[i]->skipwinlist)
@@ -1799,7 +1799,7 @@ MenuCreateFromDesktopEWins(char *name, MenuStyle * ms, int desk)
    m = MenuCreate(name);
    m->style = ms;
 
-   lst = EwinListGet(&num);
+   lst = EwinListGetAll(&num);
    for (i = 0; i < num; i++)
      {
 	if (((lst[i]->desktop == desk) || (lst[i]->sticky))
@@ -1832,7 +1832,7 @@ MenuCreateFromDesktops(const char *name, MenuStyle * ms)
 
    m = MenuCreate(name);
    m->style = ms;
-   lst = EwinListGet(&num);
+   lst = EwinListGetAll(&num);
    for (j = 0; j < Conf.desks.num; j++)
      {
 	mm = MenuCreate("__SUBMENUDESK_E");

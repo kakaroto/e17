@@ -586,8 +586,9 @@ HandleMouseOut(XEvent * ev)
 }
 
 void
-HandleFocusIn(XEvent * ev)
+HandleFocusIn(XEvent * ev __UNUSED__)
 {
+#if 0
    Window              win = ev->xfocus.window;
    EWin               *ewin;
 
@@ -603,11 +604,13 @@ HandleFocusIn(XEvent * ev)
      }
 
    EDBUG_RETURN_;
+#endif
 }
 
 void
-HandleFocusOut(XEvent * ev)
+HandleFocusOut(XEvent * ev __UNUSED__)
 {
+#if 0
    Window              win = ev->xfocus.window;
    EWin               *ewin;
 
@@ -628,6 +631,7 @@ HandleFocusOut(XEvent * ev)
 
  done:
    EDBUG_RETURN_;
+#endif
 }
 
 void
@@ -659,9 +663,6 @@ HandleDestroy(XEvent * ev)
 
    EForgetWindow(disp, win);
 
-   if (win == Mode.context_win)
-      Mode.context_win = 0;
-
    ewin = RemoveItem(NULL, win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
    if (ewin)
      {
@@ -683,6 +684,10 @@ HandleUnmap(XEvent * ev)
    EWin               *ewin;
 
    EDBUG(5, "HandleUnmap");
+
+   if (win == Mode.context_win)
+      Mode.context_win = 0;
+
    ewin = FindItem(NULL, win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
    if (ewin)
      {

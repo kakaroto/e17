@@ -81,7 +81,8 @@ WarpFocusHandleEvent(XEvent * ev)
 void
 WarpFocus(int delta)
 {
-   EWin              **lst0, **lst, *ewin;
+   EWin               *const *lst0;
+   EWin              **lst, *ewin;
    int                 i, num0, num;
 
    EDBUG(5, "WarpFocus");
@@ -92,36 +93,31 @@ WarpFocus(int delta)
    lst = (EWin **) ListItemType(&num, LIST_TYPE_WARP_RING);
    if (!lst)
      {
-	lst0 = (EWin **) ListItemType(&num0, LIST_TYPE_EWIN);
+	lst0 = EwinListGetFocus(&num0);
 	num = 0;
 	lst = NULL;
-	if (lst0)
+	for (i = num0 - 1; i >= 0; --i)
 	  {
-	     for (i = num0 - 1; i >= 0; --i)
-	       {
-		  ewin = lst0[i];
-		  if (		/* Either visible or iconified */
-			((EwinIsOnScreen(ewin)) || (ewin->iconified))
-			/* Exclude windows that explicitely say so */
-			&& (!ewin->skipfocus)
-			/* Keep shaded windows if conf say so */
-			&& ((!ewin->shaded) || (Conf.warplist.warpshaded))
-			/* Keep sticky windows if conf say so */
-			&& ((!ewin->sticky) || (Conf.warplist.warpsticky))
-			/* Keep iconified windows if conf say so */
-			&& ((!ewin->iconified) || (Conf.warplist.warpiconified))
-			/*&& (ewin->client.mwm_decor_title) &&
-			 * (ewin->client.mwm_decor_border) */
-		     )
-		     AddItem(ewin, "", 0, LIST_TYPE_WARP_RING);
-	       }
+	     ewin = lst0[i];
+	     if (		/* Either visible or iconified */
+		   ((EwinIsOnScreen(ewin)) || (ewin->iconified))
+		   /* Exclude windows that explicitely say so */
+		   && (!ewin->skipfocus)
+		   /* Keep shaded windows if conf say so */
+		   && ((!ewin->shaded) || (Conf.warplist.warpshaded))
+		   /* Keep sticky windows if conf say so */
+		   && ((!ewin->sticky) || (Conf.warplist.warpsticky))
+		   /* Keep iconified windows if conf say so */
+		   && ((!ewin->iconified) || (Conf.warplist.warpiconified))
+		   /*&& (ewin->client.mwm_decor_title) &&
+		    * (ewin->client.mwm_decor_border) */
+		)
+		AddItem(ewin, "", 0, LIST_TYPE_WARP_RING);
 	  }
 	MoveItemToListBottom(GetFocusEwin(), LIST_TYPE_WARP_RING);
 	lst = (EWin **) ListItemType(&num, LIST_TYPE_WARP_RING);
 	warpFocusIndex = num - 1;
      }
-
-   ewin = NULL;
 
    if (lst)
      {
@@ -252,9 +248,8 @@ WarpFocusShowTitle(EWin * ewin)
 
    for (i = 0; i < warptitles_num; i++)
      {
-	if (!FindItem
-	    ((char *)warptitles_ewin[i], 0, LIST_FINDBY_POINTER,
-	     LIST_TYPE_EWIN))
+	if (!FindItem((char *)warptitles_ewin[i], 0, LIST_FINDBY_POINTER,
+		      LIST_TYPE_EWIN))
 	   warptitles_ewin[i] = NULL;
 	if (warptitles_ewin[i])
 	  {

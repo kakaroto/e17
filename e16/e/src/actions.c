@@ -1257,7 +1257,7 @@ doCleanup(EWin * edummy, const void *params)
 	     method = ARRANGE_BY_POSITION;
 	  }
      }
-   lst = EwinListGet(&num);
+   lst = EwinListGetAll(&num);
    if (lst)
      {
 	fixed = NULL;
@@ -2357,7 +2357,7 @@ doScrollWindows(EWin * edummy, const void *params)
    y = 0;
    sscanf((char *)params, "%i %i", &x, &y);
 
-   lst = EwinListGet(&num);
+   lst = EwinListGetAll(&num);
    for (i = 0; i < num; i++)
      {
 	if ((lst[i]->desktop == desks.current) && (!lst[i]->sticky)

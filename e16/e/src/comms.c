@@ -1577,7 +1577,7 @@ HandleComms(XClientMessageEvent * ev)
 		Conf.desks.num = 1;
 	     else if (Conf.desks.num > ENLIGHTENMENT_CONF_NUM_DESKTOPS)
 		Conf.desks.num = ENLIGHTENMENT_CONF_NUM_DESKTOPS;
-	     lst = EwinListGet(&num);
+	     lst = EwinListGetAll(&num);
 	     for (i = 0; i < num; i++)
 	       {
 		  if (lst[i]->desktop >= Conf.desks.num)
@@ -1818,7 +1818,7 @@ HandleComms(XClientMessageEvent * ev)
 	EWin               *const *lst;
 	int                 i, num;
 
-	lst = EwinListGet(&num);
+	lst = EwinListGetAll(&num);
 	for (i = 0; i < num; i++)
 	  {
 	     if (!lst[i]->icccm.wm_name)

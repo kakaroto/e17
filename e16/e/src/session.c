@@ -212,7 +212,7 @@ SaveWindowStates(void)
    FILE               *f;
    char                s[4096], ss[4096];
 
-   lst = EwinListGet(&num);
+   lst = EwinListGetAll(&num);
    if (lst)
      {
 	Etmp(s);
