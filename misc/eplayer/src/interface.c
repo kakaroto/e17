@@ -121,8 +121,28 @@ void ui_fill_track_info(ePlayer *player) {
 	                          pli->comment[COMMENT_ID_ALBUM]);
 }
 
+/**
+ * Finds the filename for the theme @name.
+ * Looks in: ~/.e/apps/eplayer/themes
+ *           $prefix/share/eplayer/themes
+ */
+static char *find_theme(const char *name) {
+	static char eet[PATH_MAX + 1];
+	struct stat st;
+
+	snprintf(eet, sizeof(eet),
+	         "%s/.e/apps/" PACKAGE "/" "themes/%s.eet",
+	         getenv("HOME"), name);
+	
+	if (!stat(eet, &st))
+		return eet;
+
+	snprintf(eet, sizeof(eet), DATA_DIR "/themes/%s.eet", name);
+	
+	return stat(eet, &st) ? NULL : eet;
+}
+
 int ui_init_edje(ePlayer *player, const char *name) {
-	char eet[PATH_MAX + 1];
 	double edje_w = 0, edje_h = 0;
 
 	debug(DEBUG_LEVEL_INFO, "EDJE: Defining Edje \n");
@@ -130,10 +150,9 @@ int ui_init_edje(ePlayer *player, const char *name) {
 	player->gui.edje = edje_object_add(player->gui.evas);
 	evas_object_name_set(player->gui.edje, "main_edje");
 	
-	snprintf(eet, sizeof(eet), DATA_DIR "/themes/%s.eet",
-	         player->cfg.theme);
-	
-	if (!edje_object_file_set(player->gui.edje, eet, name)) {
+	if (!edje_object_file_set(player->gui.edje,
+	                          find_theme(player->cfg.theme),
+	                          name)) {
 		debug(DEBUG_LEVEL_CRITICAL, "Cannot load theme '%s'!\n",
 		      player->cfg.theme);
 		return 0;
@@ -216,16 +235,14 @@ static void setup_playlist(ePlayer *player) {
 
 static void show_playlist_item(ePlayer *player, PlayListItem *pli) {
 	Evas_Object *o;
-	char len[32], eet[PATH_MAX + 1];
+	char len[32];
 	double w = 0, h = 0;
 
 	/* add the item to the container */
 	o = edje_object_add(player->gui.evas);
 
-	snprintf(eet, sizeof(eet), DATA_DIR "/themes/%s.eet",
-	         player->cfg.theme);
-
-	edje_object_file_set(o, eet, "playlist_item");
+	edje_object_file_set(o, find_theme(player->cfg.theme),
+	                     "playlist_item");
 
 	/* set parts text */
 	snprintf(len, sizeof(len), "%i:%02i", pli->duration / 60,
