@@ -119,6 +119,15 @@ calc_exec(void)
 {
    char            res[BUFLEN];
 
+   if (calc_mode == SCI) {
+      int             displen = strlen(disp);
+      if (displen > 0) {
+         disp[displen] = '=';
+         disp[displen + 1] = '\0';
+         update_eqn_display(disp);
+      }
+   }
+
    snprintf(res, BUFLEN, "%.10g", equate_eval());
    update_display(res);
    disp[0] = '\0';
