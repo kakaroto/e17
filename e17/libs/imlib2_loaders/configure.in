@@ -1,0 +1,223 @@
+# get rid of that stupid cache mechanism
+rm -f config.cache
+
+AC_INIT(configure.in)
+AC_CANONICAL_BUILD
+AC_CANONICAL_HOST
+AC_CANONICAL_TARGET
+AC_ISC_POSIX
+AM_INIT_AUTOMAKE(imlib2_loaders, 1.2.0)
+AM_CONFIG_HEADER(config.h)
+
+AC_C_BIGENDIAN
+AC_PROG_CC
+AM_PROG_CC_STDC
+AC_HEADER_STDC
+AC_C_CONST
+AM_ENABLE_SHARED
+AM_PROG_LIBTOOL
+
+if test "x${exec_prefix}" = "xNONE"; then
+  if test "x${prefix}" = "xNONE"; then
+    bindir="${ac_default_prefix}/bin";
+  else
+    bindir="${prefix}/bin";
+  fi
+else
+  if test "x${prefix}" = "xNONE"; then
+    bindir="${ac_default_prefix}/bin";
+  else
+    bindir="${prefix}/bin";
+  fi
+fi
+
+if test "x${exec_prefix}" = "xNONE"; then
+  if test "x${prefix}" = "xNONE"; then
+    libdir="${ac_default_prefix}/lib";
+  else
+    libdir="${prefix}/lib";
+  fi
+else
+  if test "x${prefix}" = "xNONE"; then
+    libdir="${ac_default_prefix}/lib";
+  else
+    libdir="${prefix}/lib";
+  fi
+fi
+
+dnl Set PACKAGE_BIN_DIR in config.h.
+if test "x${bindir}" = 'xNONE'; then
+  if test "x${prefix}" = "xNONE"; then
+    AC_DEFINE_UNQUOTED(PACKAGE_BIN_DIR, "${ac_default_prefix}/bin", [Installation directory for user executables])
+  else
+    AC_DEFINE_UNQUOTED(PACKAGE_BIN_DIR, "${prefix}/bin", [Installation directory for user executables])
+  fi
+else
+  AC_DEFINE_UNQUOTED(PACKAGE_BIN_DIR, "${bindir}", [Installation directory for user executables])
+fi
+
+dnl Set PACKAGE_LIB_DIR in config.h.
+if test "x${libdir}" = 'xNONE'; then
+  if test "x${prefix}" = "xNONE"; then
+    AC_DEFINE_UNQUOTED(PACKAGE_LIB_DIR, "${ac_default_prefix}/lib", [Installation directory for libraries])
+  else
+    AC_DEFINE_UNQUOTED(PACKAGE_LIB_DIR, "${prefix}/lib", [Installation directory for libraries])
+  fi
+else
+  AC_DEFINE_UNQUOTED(PACKAGE_LIB_DIR, "${libdir}", [Installation directory for libraries])
+fi
+
+dnl Set PACKAGE_DATA_DIR in config.h.
+if test "x${datadir}" = 'x${prefix}/share'; then
+  if test "x${prefix}" = "xNONE"; then
+    AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${ac_default_prefix}/share/${PACKAGE}", "Package installed data destination")
+  else
+    AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${prefix}/share/${PACKAGE}", "Package installed data destination")
+  fi
+else
+  AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${datadir}/${PACKAGE}", "Package installed data destination")
+fi
+
+dnl Set PACKAGE_SOURCE_DIR in config.h.
+packagesrcdir=`cd $srcdir && pwd`
+AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}", [Source code directory])
+
+
+AC_ARG_ENABLE(edb,
+[  --disable-edb           disable building the edb loader],
+[
+ if test x$enableval = xno; then
+   edb=no;
+ fi
+])
+
+AC_ARG_ENABLE(eet,
+[  --disable-eet           disable building the eet loader],
+[
+ if test x$enableval = xno; then
+   eet=no;
+ fi
+])
+
+AC_ARG_ENABLE(xcf,
+[  --disable-xcf           disable building the xcf loader],
+[
+ if test x$enableval = xno; then
+   xcf=no;
+ fi
+])
+
+AC_ARG_WITH(imlib2-config,
+[  --with-imlib2-config=IMLIB2_CONFIG    use imlib2-config specified ],
+[
+  PROG_CONFIG=$withval;
+  echo "using "$PROG_CONFIG" for imlib2-config";
+],[
+ PROG="imlib2-config";
+ AC_PATH_PROG(PROG_CONFIG, $PROG, "", $PATH)
+])
+if test -n "$IMLIB2_CONFIG"; then
+  PROG_CONFIG=$IMLIB2_CONFIG;
+fi
+if test -z "$PROG_CONFIG"; then
+  echo $PROG " is not in your \$PATH. Please ensure it is.";
+  echo "You may need to install the library and/or development packages";
+  echo "that contain this configure-script.";
+  echo "FATAL ERROR. ABORT.";
+  exit -1;
+fi
+my_includes=`$PROG_CONFIG --cflags`
+AC_SUBST(my_includes)
+
+
+AC_ARG_WITH(edb-config,
+[  --with-edb-config=EDB_CONFIG    use edb-config specified ],
+[
+  PROG_CONFIG=$withval;
+  echo "using "$PROG_CONFIG" for edb-config";
+],[
+ PROG="edb-config";
+ AC_PATH_PROG(PROG_CONFIG, $PROG, "", $PATH)
+])
+if test -n "$EDB_CONFIG"; then
+  PROG_CONFIG=$EDB_CONFIG;
+fi
+if test -z "$PROG_CONFIG"; then
+  echo $PROG " is not in your \$PATH. Please ensure it is.";
+  echo "You may need to install the library and/or development packages";
+  echo "that contain this configure-script.";
+  echo "FATAL ERROR. ABORT.";
+  exit -1;
+fi
+EDB_CFLAGS=`$PROG_CONFIG --cflags`
+EDB_LIBS=`$PROG_CONFIG --libs`
+AC_SUBST(EDB_CFLAGS)
+AC_SUBST(EDB_LIBS)
+
+
+AC_ARG_WITH(eet-config,
+[  --with-eet-config=EET_CONFIG    use eet-config specified ],
+[
+  PROG_CONFIG=$withval;
+  echo "using "$PROG_CONFIG" for eet-config";
+],[
+ PROG="eet-config";
+ AC_PATH_PROG(PROG_CONFIG, $PROG, "", $PATH)
+])
+if test -n "$EET_CONFIG"; then
+  PROG_CONFIG=$EET_CONFIG;
+fi
+if test -z "$PROG_CONFIG"; then
+  echo $PROG " is not in your \$PATH. Please ensure it is.";
+  echo "You may need to install the library and/or development packages";
+  echo "that contain this configure-script.";
+  echo "FATAL ERROR. ABORT.";
+  exit -1;
+fi
+EET_CFLAGS=`$PROG_CONFIG --cflags`
+EET_LIBS=`$PROG_CONFIG --libs`
+AC_SUBST(EET_CFLAGS)
+AC_SUBST(EET_LIBS)
+
+
+
+AM_CONDITIONAL(BUILD_EDB_LOADER, test x$edb != xno)
+AM_CONDITIONAL(BUILD_EET_LOADER, test x$eet != xno)
+AM_CONDITIONAL(BUILD_XCF_LOADER, test x$xcf != xno)
+
+AC_OUTPUT([
+Makefile
+src/Makefile
+src/modules/Makefile
+src/modules/loaders/Makefile
+debian/Makefile
+],[
+])
+
+echo -e "\nBuild summary:"
+echo    "------------------------"
+echo -n " EDB: "
+if test x$edb = xno ; then
+  echo    "Disabled "
+else
+  echo    "Enabled "
+fi
+
+echo -e "\nBuild summary:"
+echo    "------------------------"
+echo -n " EET: "
+if test x$eet = xno ; then
+  echo    "Disabled "
+else
+  echo    "Enabled "
+fi
+
+echo -e "\nBuild summary:"
+echo    "------------------------"
+echo -n " XCF: "
+if test x$xcf = xno ; then
+  echo    "Disabled "
+else
+  echo    "Enabled "
+fi
+      
