@@ -114,3 +114,54 @@ feh_load_image (Imlib_Image ** im, char *filename)
     }
   return 1;
 }
+
+/* Yeah, ok. I don't use this yet, 'cos it screws with the way I create 
+ * my windows atm */
+void
+progress (Imlib_Image im, char percent, int update_x, int update_y,
+	  int update_w, int update_h)
+{
+  if (!progwin)
+    return;
+
+  imlib_context_set_drawable (progwin->bg_pmap);
+  imlib_context_set_anti_alias (0);
+  imlib_context_set_dither (0);
+  imlib_context_set_blend (0);
+  /* first time it's called */
+  if (progwin->im_w == 0)
+    {
+      imlib_context_set_image (im);
+      progwin->im_w = imlib_image_get_width ();
+      progwin->im_h = imlib_image_get_height ();
+      if (progwin->bg_pmap)
+	XFreePixmap (disp, progwin->bg_pmap);
+      progwin->bg_pmap =
+	XCreatePixmap (disp, progwin->win, progwin->im_w, progwin->im_h,
+		       depth);
+      imlib_context_set_drawable (progwin->bg_pmap);
+
+      imlib_context_set_image (progwin->blank_im);
+      imlib_render_image_on_drawable (0, 0);
+      XSetWindowBackgroundPixmap (disp, progwin->win, progwin->bg_pmap);
+      XResizeWindow (disp, progwin->win, progwin->im_w, progwin->im_h);
+      XMapWindow (disp, progwin->win);
+      XSync (disp, False);
+    }
+  imlib_context_set_anti_alias (0);
+  imlib_context_set_dither (0);
+  imlib_context_set_blend (1);
+  imlib_blend_image_onto_image (progwin->im, 0,
+				update_x, update_y,
+				update_w, update_h,
+				update_x, update_y, update_w, update_h);
+  imlib_context_set_blend (0);
+  imlib_render_image_part_on_drawable_at_size (update_x, update_y,
+					       update_w, update_h,
+					       update_x, update_y,
+					       update_w, update_h);
+  XSetWindowBackgroundPixmap (disp, progwin->win, progwin->bg_pmap);
+  XClearArea (disp, progwin->win, update_x, update_y, update_w, update_h,
+	      False);
+  XFlush (disp);
+}

@@ -29,3 +29,4 @@ char **cmdargv = NULL;
 fehoptions opt;
 int file_num = 0;
 char **files = NULL;
+winwidget progwin=NULL;

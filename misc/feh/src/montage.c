@@ -34,10 +34,6 @@ init_montage_mode (void)
   Imlib_Image *bg_im = NULL;
 
   D (("In init_montage_mode\n"));
-
-  /* We don't want progressive loading for the mini images :) */
-  imlib_context_set_progress_function(NULL);
-  imlib_context_set_progress_granularity(0);
   
   /* Use bg image dimensions for default size */
   if (opt.bg && opt.bg_file)
