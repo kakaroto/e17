@@ -45,11 +45,6 @@ if test "x$GCC" = "xyes"; then
 fi
 changequote([,])dnl
 
-AC_SUBST(ebits_cflags)
-AC_SUBST(ebits_libs)
-ebits_cflags=`ebits-config --cflags`
-ebits_libs=`ebits-config --libs`
-
 AC_SUBST(edb_cflags)
 AC_SUBST(edb_libs)
 edb_cflags=`edb-config --cflags`
