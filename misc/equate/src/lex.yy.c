@@ -378,7 +378,8 @@ char *yytext;
 #line 4 "calc.l"
 /* need this for the call to atof() below */
 #include <math.h>
-#line 382 "lex.yy.c"
+
+#line 383 "lex.yy.c"
 
 /* Macros after this point can all be overridden by user definitions in
  * section 1.
@@ -529,10 +530,10 @@ YY_DECL
 	register char *yy_cp = NULL, *yy_bp = NULL;
 	register int yy_act;
 
-#line 13 "calc.l"
+#line 14 "calc.l"
 
 
-#line 536 "lex.yy.c"
+#line 537 "lex.yy.c"
 
 	if ( yy_init )
 		{
@@ -617,10 +618,9 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 15 "calc.l"
+#line 16 "calc.l"
 {
-            printf( "An integer: %s (%g)\n", yytext,
-                    atof( yytext ) );
+            E(2, "An integer: %s (%g)\n", yytext, atof( yytext ) );
             yylval.val= atof( yytext );
             return NUM;
             }
@@ -629,28 +629,26 @@ case 2:
 YY_RULE_SETUP
 #line 22 "calc.l"
 {
-            printf( "A float: %s (%g)\n", yytext,
-                    atof( yytext ) );
+            E(2, "A float: %s (%g)\n", yytext, atof( yytext ) );
             yylval.val= atof( yytext );
             return NUM;
             }
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 28 "calc.l"
+#line 27 "calc.l"
 {
-            printf( "A float: %s (%g)\n", yytext,
-                     atof( yytext ) );
+            E(2, "A float: %s (%g)\n", yytext, atof( yytext ) );
             yylval.val= atof( yytext );
             return NUM;
             }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 35 "calc.l"
+#line 33 "calc.l"
 {
             symrec *s;
-            printf( "An identifier: %s\n", yytext );
+            E(2, "An identifier: %s\n", yytext);
             s = getsym (yytext);
             if (s == 0)
                     s = putsym (yytext, VAR);
@@ -660,36 +658,43 @@ YY_RULE_SETUP
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 45 "calc.l"
-{printf( "An operator: %s\n", yytext );
+#line 43 "calc.l"
+{
+            E(2, "An operator: %s\n", yytext );
             return (char) yytext[0];}
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 48 "calc.l"
-return OBRAK;
+#line 47 "calc.l"
+{
+            E(2, "(\n", NULL);
+            return OBRAK;
+            }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 49 "calc.l"
-return CBRAK;
+#line 51 "calc.l"
+{
+            E(2, ")\n", NULL);
+            return CBRAK;
+            }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 51 "calc.l"
+#line 56 "calc.l"
 /* eat up whitespace */
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 53 "calc.l"
-printf( "Unrecognized character: %s\n", yytext );
+#line 58 "calc.l"
+fprintf(stderr, "Unrecognized character: %s\n", yytext );
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 54 "calc.l"
+#line 59 "calc.l"
 ECHO;
 	YY_BREAK
-#line 693 "lex.yy.c"
+#line 698 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1570,6 +1575,6 @@ int main()
 	return 0;
 	}
 #endif
-#line 54 "calc.l"
+#line 59 "calc.l"
 
 

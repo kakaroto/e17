@@ -17,7 +17,8 @@ print_usage(void)
    printf("Display modes:\n");
    printf("  -b, --basic             Use Equate in basic mode (default)\n");
    printf("  -s, --scientific        Use Equate in scientific mode\n");
-   printf("  -t, --theme       [str] Use themed (edje) mode and load specified theme\n");
+   printf
+      ("  -t, --theme       [str] Use themed (edje) mode and load specified theme\n");
    exit(0);
 }
 
@@ -68,10 +69,9 @@ main(int argc, char *argv[], char *env[])
       else if (!strcmp(arg, "--theme") || !strcmp(arg, "-t")) {
          equate.conf.mode = EDJE;
          equate.conf.theme = argv[++nextarg];
-      }
-      else if (!strcmp(arg, "--exec") || !strcmp(arg, "-e"))
+      } else if (!strcmp(arg, "--exec") || !strcmp(arg, "-e"))
          exec(argv[++nextarg]);
-      
+
 
 
       else if (!strcmp(arg, "--help") || !strcmp(arg, "-h"))

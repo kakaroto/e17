@@ -886,7 +886,7 @@ yyreduce:
 
 case 2:
 #line 37 "calc.y"
-{ printf ("result:\t%.10g\n", yyvsp[0].val); _result = yyvsp[0].val;;
+{ E(2, "result:\t%.10g\n", yyvsp[0].val); _result = yyvsp[0].val;;
     break;}
 case 3:
 #line 40 "calc.y"

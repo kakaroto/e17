@@ -34,7 +34,7 @@ symrec  *tptr;   /* For returning symbol-table pointers      */
 %%
 
 input:    /* empty string */
-        | exp { printf ("result:\t%.10g\n", $1); _result = $1;}
+        | exp { E(2, "result:\t%.10g\n", $1); _result = $1;}
 ;
 
 exp:      NUM                  { $$ = $1;                         }

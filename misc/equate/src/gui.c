@@ -45,6 +45,7 @@ static equate_button basic_buttons[] = {
    {5, 2, 1, 1, "2", "2", (void *) calc_append, NULL},
    {5, 3, 1, 1, "3", "3", (void *) calc_append, NULL},
    {5, 4, 2, 1, "=", "=", (void *) calc_exec, NULL},
+
 /*  {6, 1, 1, 1, "c", "c", (void *) calc_clear, NULL},*/
    {6, 1, 1, 2, "0", "0", (void *) calc_append, NULL},
    {6, 3, 1, 1, ".", ".", (void *) calc_append, NULL},
@@ -121,6 +122,7 @@ calc_exec(void)
 
    if (calc_mode == SCI) {
       int             displen = strlen(disp);
+
       if (displen > 0) {
          disp[displen] = '=';
          disp[displen + 1] = '\0';

@@ -375,7 +375,8 @@ equate_edje_init(Equate * eq)
 
       o = edje_object_add(evas);
       evas_object_move(o, 0, 0);
-      snprintf(theme, PATH_MAX, PACKAGE_DATA_DIR "/themes/%s.eet", eq->conf.theme);
+      snprintf(theme, PATH_MAX, PACKAGE_DATA_DIR "/themes/%s.eet",
+               eq->conf.theme);
       if (edje_object_file_set(o, theme, "Main")) {
          evas_object_name_set(o, "edje");
          edje_object_size_min_get(o, &mw, &mh);

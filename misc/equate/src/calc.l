@@ -3,6 +3,7 @@
 %{
 /* need this for the call to atof() below */
 #include <math.h>
+
 %}
 
 DIGIT    [0-9]
@@ -13,28 +14,25 @@ ID       [a-z][a-z0-9]*
 %%
 
 {DIGIT}+    {
-            printf( "An integer: %s (%g)\n", yytext,
-                    atof( yytext ) );
+            E(2, "An integer: %s (%g)\n", yytext, atof( yytext ) );
             yylval.val= atof( yytext );
             return NUM;
             }
 
 {DIGIT}+"."{DIGIT}*        {
-            printf( "A float: %s (%g)\n", yytext,
-                    atof( yytext ) );
+            E(2, "A float: %s (%g)\n", yytext, atof( yytext ) );
             yylval.val= atof( yytext );
             return NUM;
             }
 {DIGIT}*"."{DIGIT}+        {
-            printf( "A float: %s (%g)\n", yytext,
-                     atof( yytext ) );
+            E(2, "A float: %s (%g)\n", yytext, atof( yytext ) );
             yylval.val= atof( yytext );
             return NUM;
             }
 
 {ID}        {
             symrec *s;
-            printf( "An identifier: %s\n", yytext );
+            E(2, "An identifier: %s\n", yytext);
             s = getsym (yytext);
             if (s == 0)
                     s = putsym (yytext, VAR);
@@ -42,14 +40,21 @@ ID       [a-z][a-z0-9]*
             return s->type;
             }
 
-"+"|"-"|"*"|"/"|"^"|"=" {printf( "An operator: %s\n", yytext );
+"+"|"-"|"*"|"/"|"^"|"=" {
+            E(2, "An operator: %s\n", yytext );
             return (char) yytext[0];}
 
-"("         return OBRAK;
-")"         return CBRAK;
+"("         {
+            E(2, "(\n", NULL);
+            return OBRAK;
+            }
+")"         {
+            E(2, ")\n", NULL);
+            return CBRAK;
+            }
 
 [ \n\t]+          /* eat up whitespace */
 
-.           printf( "Unrecognized character: %s\n", yytext );
+.           fprintf(stderr, "Unrecognized character: %s\n", yytext );
 %%
 
