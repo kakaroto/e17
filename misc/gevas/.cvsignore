@@ -16,3 +16,4 @@ config.guess
 libltdl
 config.h.in
 gevas-config.h
+gevas-config.h.in
