@@ -1,0 +1,11 @@
+major things to do here
+------------------------
+
+* autoconf/automake scripts so i can run this thing outside of the src dir
+* error checking... you don't actually expect a .sh file to load as image, eh?
+* thumbnailing
+* image boundary box
+* image info/exif data
+* zoom in/zoom out needs to be better
+* drag and drop
+* maybe some more eyecandy, we'll see
