@@ -1,18 +1,21 @@
-Source: edb
-Section: devel
+Source: libedb1
+Section: libs
 Priority: optional
 Maintainer: Laurence J. Lane <ljlane@debian.org>
-Standards-Version: 3.0.1
+Standards-Version: 3.2.1.0
 
-Package: libedb-dev
-Architecture: any
-Depends: libedb0 (= ${Source-Version}), libc6-dev
-Description: Enlightenment's db convenience wrapper library.
- Library and header files for developing programs that use
- Enlightenment's db convenience wrapper library
-
-Package: libedb0
+Package: libedb1
+Section: libs
 Architecture: any
 Depends: ${shlibs:Depends}
 Description: Enlightenment's db convenience wrapper library
  Enlightenment's db convenience wrapper library
+
+Package: libedb1-dev
+Architecture: any
+Section: devel
+Depends: libedb1 (= ${Source-Version}), libc6-dev
+Description: Enlightenment's db convenience wrapper library.
+ Library and header files for developing programs that use
+ Enlightenment's db convenience wrapper library
+

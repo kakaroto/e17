@@ -6,24 +6,20 @@ export DH_COMPAT=2
 
 pwd:=$(shell pwd)
 cfg:=--prefix=/usr
+INSTALL=/usr/bin/install
+package=libedb1
 
 build: build-stamp
 build-stamp:
 	dh_testdir
-
 	test -x autogen.sh && ./autogen.sh $(cfg) || ./configure $(cfg)
-	
 	$(MAKE)
-
 	touch build-stamp
-
 clean:
 	dh_testdir
 	dh_testroot
 	rm -f build-stamp
-
 	-$(MAKE) distclean
-
 	dh_clean
 
 install: build
@@ -31,10 +27,13 @@ install: build
 	dh_testroot
 	dh_clean -k
 	dh_installdirs
-
-	$(MAKE) install DESTDIR=$(pwd)/debian/libedb0
-
-	dh_movefiles --source=debian/libedb0
+	
+	$(MAKE) install DESTDIR=$(pwd)/debian/$(package)
+	
+	$(INSTALL) -d debian/$(package)-dev/usr/{lib,bin}
+	mv debian/$(package)/usr/include debian/$(package)-dev/usr/
+	mv debian/$(package)/usr/lib/*.{a,la,so} debian/$(package)-dev/usr/lib
+	mv debian/$(package)/usr/bin/edb-config debian/$(package)-dev/usr/bin
 
 binary-indep: build install
 
@@ -42,13 +41,11 @@ binary-arch: build install
 	dh_testversion 2.0
 	dh_testdir
 	dh_testroot
-	dh_installdocs
+	dh_installdocs AUTHORS README
 	dh_installchangelogs
-	dh_link
 	dh_strip
 	dh_compress
 	dh_fixperms
-	dh_suidregister
 	dh_makeshlibs
 	dh_installdeb
 	dh_shlibdeps
