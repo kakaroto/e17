@@ -6,7 +6,8 @@ enum _t_used
    T_UNUSED  = 0,
    T_USED = 1,
    T_SPAN_H = 2,
-   T_SPAN_V = 4
+   T_SPAN_V = 4,
+   T_DONE = 8
 };
 
 struct _tile
@@ -32,9 +33,12 @@ __imlib_MergeUpdate(ImlibUpdate *u, int w, int h)
 {
    ImlibUpdate *nu = NULL, *uu;
    struct _tile *t;
-   int tw, th, x, y, i;
-   
-   /* if theres only one rect - retunr it - no point cleaning up 1 rect */
+   int tw, th, x, y, i, r1, r2;
+
+   /* if theres no rects to process.. return NULL */
+   if (!u)
+      return NULL;
+   /* if theres only one rect - return it - no point cleaning up 1 rect */
    if (!u->next)
       return u;
    tw = w >> TB;
@@ -84,8 +88,52 @@ __imlib_MergeUpdate(ImlibUpdate *u, int w, int h)
 	  }
      }
    /* concatinate tiles horizontally */
+   for (y = 0; y < th; y++)
+     {
+	for (x = 0; x < tw - 1; x++)
+	  {
+	     if ((T(x, y).max_x == TM) && (T(x + 1, y).min_x == 0) &&
+		 (T(x, y).min_y == T(x + 1, y).min_y) &&
+		 (T(x, y).max_y == T(x + 1, y).max_y))
+		T(x, y).used |= T_SPAN_H;
+	  }
+     }
    /* concatinate tiles vertically */
+   for (y = 0; y < th - 1; y++)
+     {
+	for (x = 0; x < tw; x++)
+	  {
+	     if ((T(x, y).max_y == TM) && (T(x, y + 1).min_y == 0) &&
+		 (T(x, y).min_x == T(x, y + 1).min_x) &&
+		 (T(x, y).max_x == T(x, y + 1).max_x))
+		T(x, y).used |= T_SPAN_V;
+	  }
+     }
+   /* generate new rect list from tiles */
+   for (y = 0; y < th; y++)
+     {
+	for (x = 0; x < tw; x++)
+	  {
+	     if (!(T(x, y).used & (T_SPAN_H | T_SPAN_V)))
+		nu = __imlib_AddUpdate(nu, 
+				       (x << TB) + T(x, y).min_x,
+				       (y << TB) + T(x, y).min_y,
+				       (T(x, y).max_x  - T(x, y).min_x) + 1,
+				       (T(x, y).max_y  - T(x, y).min_y) + 1);
+/* keep going here */
+	  }
+     }   
    free(t);
+   /* count up our "update rects" */
+   for (r1 = 0, uu = u; uu; uu = uu->next, r1++);
+   for (r2 = 0, uu = nu; uu; uu = uu->next, r2++);
+   /* if our original rect list is smaller r the same size as the new rect */
+   /* list then just use the original rect list */
+   if (r1 <= r2)
+     {
+	__imlib_FreeUpdates(nu);
+	return u;
+     }
    __imlib_FreeUpdates(u);
    return nu;
 }
