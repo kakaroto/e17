@@ -140,6 +140,9 @@ entrance_session_user_reset(Entrance_Session e)
          evas_object_del(obj);
       }
       edje_object_signal_emit(e->edje, "In", "EntranceUserEntry");
+      /* FIXME: we shouldn't emit UserAuthFail here, but it gets us back to
+         the beginning */
+      edje_object_signal_emit(e->edje, "EntranceUserAuthFail", "");
    }
 }
 
@@ -231,7 +234,12 @@ entrance_session_start_user_session(Entrance_Session e)
       ebuild for this distribution. Please comment. */
    if ((session_key =
         (char *) evas_hash_find(e->config->sessions.hash, e->session)))
-      snprintf(buf, PATH_MAX, "%s %s", ENTRANCE_XSESSION, session_key);
+   {
+      if (!strcmp(session_key, "default"))
+         snprintf(buf, PATH_MAX, "%s", ENTRANCE_XSESSION);
+      else
+         snprintf(buf, PATH_MAX, "%s %s", ENTRANCE_XSESSION, session_key);
+   }
    else
       snprintf(buf, PATH_MAX, "%s", ENTRANCE_XSESSION);	/* Default 
 	   session 
@@ -509,6 +517,7 @@ _entrance_session_load_session(Entrance_Session e, char *key)
    char buf[PATH_MAX];
    Evas_Object *o = NULL;
    Evas_Object *edje = NULL;
+   Evas_Coord w, h;
 
    if (!e || !e->edje || !key)
       return (NULL);
@@ -523,10 +532,17 @@ _entrance_session_load_session(Entrance_Session e, char *key)
                e->config->theme);
    if ((result = edje_object_file_set(edje, buf, "Session")) > 0)
    {
-      evas_object_move(edje, 0, 0);
-      evas_object_resize(edje, 48, 48);
       evas_object_layer_set(edje, 0);
+      evas_object_move(edje, -9999, -9999);
 
+      if (edje_object_part_exists(e->edje, "EntranceSession"))
+      {
+         edje_object_part_geometry_get(e->edje, "EntranceSession", NULL, NULL,
+                                       &w, &h);
+         evas_object_resize(edje, w, h);
+      }
+      else
+         evas_object_resize(edje, 48, 48);
       if (edje_object_part_exists(edje, "EntranceSessionIcon"))
       {
          icon = (char *) evas_hash_find(e->config->sessions.icons, key);
