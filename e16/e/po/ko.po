@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.5\n"
-"POT-Creation-Date: 2001-10-25 11:39-0700\n"
+"POT-Creation-Date: 2002-09-04 20:37-0400\n"
 "PO-Revision-Date: 2000-04-10 16:10:30+0900\n"
 "Last-Translator: Sung-Hyun Nam <namsh@kldp.org>\n"
 "Language-Team: Korean <ko@li.org>\n"
@@ -24,7 +24,7 @@ msgstr "%u개의 참조가 남아있습니다\n"
 msgid "ActionClass Error!"
 msgstr "ActionClass 에러!"
 
-#: src/actions.c:666
+#: src/actions.c:671
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -37,7 +37,7 @@ msgstr ""
 "이 프로그램은 실행될 수 없습니다.\n"
 "이 프로그램이 존재하지 않기 때문입니다.\n"
 
-#: src/actions.c:674
+#: src/actions.c:679
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -56,7 +56,7 @@ msgstr ""
 "를 설정하는 방법을 배우신 후 경로를 제대로 설정하시기\n"
 "바랍니다.\n"
 
-#: src/actions.c:694
+#: src/actions.c:699
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -73,7 +73,7 @@ msgstr ""
 "당신이 실행할 수 있도록 되어 있습니다. 이 파일의 내용을\n"
 "한 번 확인해 보시기 바랍니다.\n"
 
-#: src/actions.c:705
+#: src/actions.c:710
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -88,7 +88,7 @@ msgstr ""
 "이 파일이 존재하지만 당신은 이 파일을 실행할 수 있는 권한을\n"
 "가지고 있지 않습니다.\n"
 
-#: src/actions.c:721
+#: src/actions.c:726
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -101,7 +101,7 @@ msgstr ""
 "이 프로그램은 실행될 수 없습니다.\n"
 "이것은 파일이 아니고 디렉토리입니다.\n"
 
-#: src/actions.c:729
+#: src/actions.c:734
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -114,16 +114,40 @@ msgstr ""
 "이 프로그램은 실행될 수 없습니다.\n"
 "이것은 일반적인 파일이 아니기 때문입니다.\n"
 
-#: src/actions.c:3305
+#: src/actions.c:3310
 #, c-format
 msgid "About Enlightenment %s"
 msgstr "인라이튼먼트 %s에 대하여"
 
-#: src/actions.c:3321
+#: src/actions.c:3326
 msgid "Welcome to the "
 msgstr "Welcome to the "
 
-#: src/actions.c:3336 src/dialog.c:304 src/groups.c:699 src/settings.c:329
+#: src/actions.c:3326
+msgid ""
+" version\n"
+"of the Enlightenment window manager.\n"
+" Enlightenment is still under development, but\n"
+"we have tried to iron out all the bugs that\n"
+"we can find. If you find a bug in the software,\n"
+" please do not hesitate to send in a bug report.\n"
+"See \"Help\" for information on joining the\n"
+"mailing list.\n"
+"\n"
+"This code last updated on:\n"
+msgstr ""
+
+#: src/actions.c:3336
+msgid ""
+"\n"
+"\n"
+"Good luck. We hope you enjoy the software.\n"
+"\n"
+"The Rasterman - raster@rasterman.com\n"
+"Mandrake - mandrake@mandrake.net\n"
+msgstr ""
+
+#: src/actions.c:3341 src/dialog.c:304 src/groups.c:699 src/settings.c:329
 #: src/settings.c:599 src/settings.c:973 src/settings.c:1183
 #: src/settings.c:1422 src/settings.c:1567 src/settings.c:1671
 #: src/settings.c:1780 src/settings.c:1863 src/settings.c:1944
@@ -133,11 +157,11 @@ msgstr "Welcome to the "
 msgid "OK"
 msgstr "확인"
 
-#: src/actions.c:3490
+#: src/actions.c:3495
 msgid "  Pick the group the window will belong to:  \n"
 msgstr "  창이 속할 그룹 선택:  \n"
 
-#: src/actions.c:3846
+#: src/actions.c:3851
 msgid ""
 "\n"
 "  There's no current group at the moment.  \n"
@@ -157,23 +181,23 @@ msgstr ""
 "  창이 속할 다른 그룹을 여기에서 선택하십시오:  \n"
 "\n"
 
-#: src/actions.c:3879
+#: src/actions.c:3884
 msgid "   Select the group to remove the window from.  "
 msgstr "   창을 삭제할 그룹을 선택하십시오.   "
 
-#: src/actions.c:3903
+#: src/actions.c:3908
 msgid "  Select the group to break  "
 msgstr "  없앨 그룹을 선택하십시오  "
 
-#: src/actions.c:3931
+#: src/actions.c:3936
 msgid "You have been warned about the dangers of Zoom mode\n"
 msgstr "확대 모드가 얼마나 위험한 건지 경고했습니다\n"
 
-#: src/actions.c:3934
+#: src/actions.c:3939
 msgid "Warning !!!"
 msgstr "경고 !!!"
 
-#: src/actions.c:3935
+#: src/actions.c:3940
 msgid ""
 "This feature is heavily reliant on a feature of your\n"
 "X Server called the Vid Mode Extension. This feature exists\n"
@@ -1039,6 +1063,7 @@ msgid "Close"
 msgstr "닫기"
 
 #: src/handlers.c:60
+#, c-format
 msgid ""
 "Enlightenment performed an Illegal Instruction.\n"
 "\n"
@@ -1192,19 +1217,19 @@ msgstr ""
 msgid "ImageClass Error!"
 msgstr "ImageClass 에러!"
 
-#: src/iconify.c:2441
+#: src/iconify.c:2442
 msgid "Iconbox Options"
 msgstr "아이콘상자 옵션"
 
-#: src/iconify.c:2447
+#: src/iconify.c:2448
 msgid "This Iconbox Settings..."
 msgstr "이 아이콘상자 설정..."
 
-#: src/iconify.c:2450
+#: src/iconify.c:2451
 msgid "Close Iconbox"
 msgstr "아이콘상자 닫기"
 
-#: src/iconify.c:2453
+#: src/iconify.c:2454
 msgid "Create New Iconbox"
 msgstr "새 아이콘상자 생성"
 

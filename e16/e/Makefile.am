@@ -1,4 +1,4 @@
-SUBDIRS = \
+SUBDIRS = m4  \
         scripts \
 	dox \
 	eesh \
@@ -9,7 +9,7 @@ SUBDIRS = \
 	po \
 	debian
 
-EXTRA_DIST = \
+EXTRA_DIST = config.rpath  \
 sample-scripts/bouncingball.pl \
 sample-scripts/lcdmover.sh \
 sample-scripts/testroller.pl \
@@ -27,3 +27,5 @@ FAQ \
 INSTALL \
 NEWS \
 README
+
+ACLOCAL_AMFLAGS = -I m4

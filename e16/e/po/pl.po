@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.5\n"
-"POT-Creation-Date: 2001-10-25 11:39-0700\n"
+"POT-Creation-Date: 2002-09-04 20:37-0400\n"
 "PO-Revision-Date: 2000-01-04 23:15+0100\n"
 "Last-Translator: Adam Kisiel <kisiel@if.pw.edu.pl>\n"
 "Language-Team: Polshi <pl@li.org>\n"
@@ -24,7 +24,7 @@ msgstr "pozostaje %u odwo³añ\n"
 msgid "ActionClass Error!"
 msgstr "B³±d ActionClass!"
 
-#: src/actions.c:666
+#: src/actions.c:671
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -37,7 +37,7 @@ msgstr ""
 "Nie mo¿na uruchomiæ programu.\n"
 "Nie istnieje taki plik wykonywalny.\n"
 
-#: src/actions.c:674
+#: src/actions.c:679
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -56,7 +56,7 @@ msgstr ""
 "Proponujê przeczytaæ stronê podrêcznika towjej pow³oki (shell),\n"
 "gdzie dowiesz siê, jak dodaæ katalogi do ¶cie¿ki wykonywalnej\n"
 
-#: src/actions.c:694
+#: src/actions.c:699
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -71,7 +71,7 @@ msgstr ""
 "jest plikiem i masz prawa do uruchomienia go. Proponujê zbadanie\n"
 "problemu.\n"
 
-#: src/actions.c:705
+#: src/actions.c:710
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -86,7 +86,7 @@ msgstr ""
 "Plik istnieje, jest plikiem, ale nie mo¿na go uruchomiæ, gdy¿\n"
 "nie masz do niego praw wykonywania.\n"
 
-#: src/actions.c:721
+#: src/actions.c:726
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -99,7 +99,7 @@ msgstr ""
 "Nie mo¿na uruchomiæ programu.\n"
 "Ten plik jest katalogiem.\n"
 
-#: src/actions.c:729
+#: src/actions.c:734
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -112,16 +112,40 @@ msgstr ""
 "Nie mo¿na uruchomiæ programu.\n"
 "Ten plik nie jest plikiem zwyk³ym.\n"
 
-#: src/actions.c:3305
+#: src/actions.c:3310
 #, c-format
 msgid "About Enlightenment %s"
 msgstr "O Enlightenment %s"
 
-#: src/actions.c:3321
+#: src/actions.c:3326
 msgid "Welcome to the "
 msgstr "Witamy w "
 
-#: src/actions.c:3336 src/dialog.c:304 src/groups.c:699 src/settings.c:329
+#: src/actions.c:3326
+msgid ""
+" version\n"
+"of the Enlightenment window manager.\n"
+" Enlightenment is still under development, but\n"
+"we have tried to iron out all the bugs that\n"
+"we can find. If you find a bug in the software,\n"
+" please do not hesitate to send in a bug report.\n"
+"See \"Help\" for information on joining the\n"
+"mailing list.\n"
+"\n"
+"This code last updated on:\n"
+msgstr ""
+
+#: src/actions.c:3336
+msgid ""
+"\n"
+"\n"
+"Good luck. We hope you enjoy the software.\n"
+"\n"
+"The Rasterman - raster@rasterman.com\n"
+"Mandrake - mandrake@mandrake.net\n"
+msgstr ""
+
+#: src/actions.c:3341 src/dialog.c:304 src/groups.c:699 src/settings.c:329
 #: src/settings.c:599 src/settings.c:973 src/settings.c:1183
 #: src/settings.c:1422 src/settings.c:1567 src/settings.c:1671
 #: src/settings.c:1780 src/settings.c:1863 src/settings.c:1944
@@ -131,11 +155,11 @@ msgstr "Witamy w "
 msgid "OK"
 msgstr "OK"
 
-#: src/actions.c:3490
+#: src/actions.c:3495
 msgid "  Pick the group the window will belong to:  \n"
 msgstr "  Wybierz grupê, do której bêdzie nale¿eæ okno:\n"
 
-#: src/actions.c:3846
+#: src/actions.c:3851
 msgid ""
 "\n"
 "  There's no current group at the moment.  \n"
@@ -155,23 +179,23 @@ msgstr ""
 "  Wybierz inn± grupê, do której bêdzie nale¿eæ okno:  \n"
 "\n"
 
-#: src/actions.c:3879
+#: src/actions.c:3884
 msgid "   Select the group to remove the window from.  "
 msgstr "   Wybierz grupê, z której mam usun±æ okno.  "
 
-#: src/actions.c:3903
+#: src/actions.c:3908
 msgid "  Select the group to break  "
 msgstr "  Wybierz grupê, któr± mam rozbiæ  "
 
-#: src/actions.c:3931
+#: src/actions.c:3936
 msgid "You have been warned about the dangers of Zoom mode\n"
 msgstr "Ostrze¿ono Ciê przed niebezpieczeñstwami trybu Powiêkszenia \n"
 
-#: src/actions.c:3934
+#: src/actions.c:3939
 msgid "Warning !!!"
 msgstr "Ostrze¿enie !"
 
-#: src/actions.c:3935
+#: src/actions.c:3940
 msgid ""
 "This feature is heavily reliant on a feature of your\n"
 "X Server called the Vid Mode Extension. This feature exists\n"
@@ -1049,6 +1073,7 @@ msgid "Close"
 msgstr "Zamknij"
 
 #: src/handlers.c:60
+#, fuzzy, c-format
 msgid ""
 "Enlightenment performed an Illegal Instruction.\n"
 "\n"
@@ -1211,19 +1236,19 @@ msgstr ""
 msgid "ImageClass Error!"
 msgstr "B³±d sekcji ImageClass"
 
-#: src/iconify.c:2441
+#: src/iconify.c:2442
 msgid "Iconbox Options"
 msgstr "Opcje Pude³ka na Ikony"
 
-#: src/iconify.c:2447
+#: src/iconify.c:2448
 msgid "This Iconbox Settings..."
 msgstr "Ustawienia tego Pude³ka na Ikony..."
 
-#: src/iconify.c:2450
+#: src/iconify.c:2451
 msgid "Close Iconbox"
 msgstr "Zamknij Pude³ko na Ikony"
 
-#: src/iconify.c:2453
+#: src/iconify.c:2454
 msgid "Create New Iconbox"
 msgstr "Stwórz nowe Pude³ko na Ikony"
 

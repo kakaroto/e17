@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.5\n"
-"POT-Creation-Date: 2001-10-25 11:39-0700\n"
+"POT-Creation-Date: 2002-09-04 20:37-0400\n"
 "PO-Revision-Date: 2000-04-10 17:30+0200\n"
 "Last-Translator: Bernt Holmberg <bernt@grub01.physto.se>\n"
 "Language-Team: Swedish <sv@li.org>\n"
@@ -24,7 +24,7 @@ msgstr "%u referenser återstår\n"
 msgid "ActionClass Error!"
 msgstr "Aktionsklass fel!"
 
-#: src/actions.c:666
+#: src/actions.c:671
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -37,7 +37,7 @@ msgstr ""
 "Programmet kunde inte exekveras.\n"
 "Orsaken är att filen inte existerar\n"
 
-#: src/actions.c:674
+#: src/actions.c:679
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -56,7 +56,7 @@ msgstr ""
 "för skalet, och kollar upp hur man lägger till eller ändrar\n"
 "sin sökväg.\n"
 
-#: src/actions.c:694
+#: src/actions.c:699
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -73,7 +73,7 @@ msgstr ""
 "det är en fil, och du har rättigheter att\n"
 "köra den. Jag föreslår att du undersöker saken.\n"
 
-#: src/actions.c:705
+#: src/actions.c:710
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -88,7 +88,7 @@ msgstr ""
 "Filen existerar och det är en fil, men du har inte\n"
 "rättigheter som räcker för att köra den.\n"
 
-#: src/actions.c:721
+#: src/actions.c:726
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -101,7 +101,7 @@ msgstr ""
 "Programmet kunde inte exekveras.\n"
 "Detta beror på att filen i verkligheten är en katalog.\n"
 
-#: src/actions.c:729
+#: src/actions.c:734
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -114,16 +114,40 @@ msgstr ""
 "Programmet kunde inte exekveras.\n"
 "Orsaken är att filen inte är en vanlig fil.\n"
 
-#: src/actions.c:3305
+#: src/actions.c:3310
 #, c-format
 msgid "About Enlightenment %s"
 msgstr "Om Enlightenment %s"
 
-#: src/actions.c:3321
+#: src/actions.c:3326
 msgid "Welcome to the "
 msgstr "Välkommen till "
 
-#: src/actions.c:3336 src/dialog.c:304 src/groups.c:699 src/settings.c:329
+#: src/actions.c:3326
+msgid ""
+" version\n"
+"of the Enlightenment window manager.\n"
+" Enlightenment is still under development, but\n"
+"we have tried to iron out all the bugs that\n"
+"we can find. If you find a bug in the software,\n"
+" please do not hesitate to send in a bug report.\n"
+"See \"Help\" for information on joining the\n"
+"mailing list.\n"
+"\n"
+"This code last updated on:\n"
+msgstr ""
+
+#: src/actions.c:3336
+msgid ""
+"\n"
+"\n"
+"Good luck. We hope you enjoy the software.\n"
+"\n"
+"The Rasterman - raster@rasterman.com\n"
+"Mandrake - mandrake@mandrake.net\n"
+msgstr ""
+
+#: src/actions.c:3341 src/dialog.c:304 src/groups.c:699 src/settings.c:329
 #: src/settings.c:599 src/settings.c:973 src/settings.c:1183
 #: src/settings.c:1422 src/settings.c:1567 src/settings.c:1671
 #: src/settings.c:1780 src/settings.c:1863 src/settings.c:1944
@@ -133,11 +157,11 @@ msgstr "Välkommen till "
 msgid "OK"
 msgstr "Ok"
 
-#: src/actions.c:3490
+#: src/actions.c:3495
 msgid "  Pick the group the window will belong to:  \n"
 msgstr "  Välj den grupp som fönstret skall tillhöra:  \n"
 
-#: src/actions.c:3846
+#: src/actions.c:3851
 msgid ""
 "\n"
 "  There's no current group at the moment.  \n"
@@ -157,23 +181,23 @@ msgstr ""
 "  Välj en annan grupp som fönstret skall tillhöra här:  \n"
 "\n"
 
-#: src/actions.c:3879
+#: src/actions.c:3884
 msgid "   Select the group to remove the window from.  "
 msgstr "  Välj den grupp som fönstret skall tas bort ifrån.  "
 
-#: src/actions.c:3903
+#: src/actions.c:3908
 msgid "  Select the group to break  "
 msgstr "  Välj den grupp som skall brytas upp  "
 
-#: src/actions.c:3931
+#: src/actions.c:3936
 msgid "You have been warned about the dangers of Zoom mode\n"
 msgstr "Du har blivit varnad om farorna med Zoom mode\n"
 
-#: src/actions.c:3934
+#: src/actions.c:3939
 msgid "Warning !!!"
 msgstr "Varning !!!"
 
-#: src/actions.c:3935
+#: src/actions.c:3940
 msgid ""
 "This feature is heavily reliant on a feature of your\n"
 "X Server called the Vid Mode Extension. This feature exists\n"
@@ -1046,6 +1070,7 @@ msgid "Close"
 msgstr "Stäng"
 
 #: src/handlers.c:60
+#, c-format
 msgid ""
 "Enlightenment performed an Illegal Instruction.\n"
 "\n"
@@ -1211,19 +1236,19 @@ msgstr ""
 msgid "ImageClass Error!"
 msgstr "Bildklass fel!"
 
-#: src/iconify.c:2441
+#: src/iconify.c:2442
 msgid "Iconbox Options"
 msgstr "Ikonlådeval"
 
-#: src/iconify.c:2447
+#: src/iconify.c:2448
 msgid "This Iconbox Settings..."
 msgstr "Denna ikonlådas inställningar..."
 
-#: src/iconify.c:2450
+#: src/iconify.c:2451
 msgid "Close Iconbox"
 msgstr "Stäng ikonlåda"
 
-#: src/iconify.c:2453
+#: src/iconify.c:2454
 msgid "Create New Iconbox"
 msgstr "Skapa ny ikonlåda"
 

@@ -1,12 +1,9 @@
-# Note that this is NOT a relocatable package
-%define ver      0.16.5
-%define rel      3.va.1
-# This is actually a CVS snapshot as of 20010614 at 20:00 PDT
+# This is actually a CVS snapshot as of 20020904 at 20:00 EDT
 
 Summary: The Enlightenment window manager.
 Name: enlightenment
 Version: 0.16.5
-Release: 4
+Release: 5
 Copyright: BSD
 Group: User Interface/Desktops
 Source: ftp://ftp.enlightenment.org/pub/enlightenment/enlightenment-%{version}.tar.gz

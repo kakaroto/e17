@@ -626,6 +626,7 @@ runApp(char *exe, char *params)
    char               *sh;
    char               *path;
    char               *real_exec;
+   int                 fd;
 
    EDBUG(6, "runApp");
 
@@ -633,6 +634,10 @@ runApp(char *exe, char *params)
    if (fork())
       EDBUG_RETURN(0);
    setsid();
+   /* Close all file descriptors except the std 3 */
+   for (fd = 3; fd < 1024; fd++) {
+      close(fd);
+   }
 #endif
    sh = usershell(getuid());
    if (exe)
