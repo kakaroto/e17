@@ -293,8 +293,6 @@ int main (int argc, char **argv)
 		       __imlib_render_str(im, fn, x, ty, str,
 					  255, 255, 255, al, 
 					  0, &retw, &reth, 0, &nx, &ny);
-		       up = imlib_update_append_rect(up, px + 5, 5 + ty + (py - y), retw, reth);
-		       up = imlib_update_append_rect(up, x + 5, 5 + ty, retw, reth);
 		       up = imlib_update_append_rect(up, px, ty + (py - y), retw, reth);
 		       up = imlib_update_append_rect(up, x, ty, retw, reth);
 		       ty += ny;

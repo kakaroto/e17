@@ -457,7 +457,8 @@ __imlib_render_str(ImlibImage *im, ImlibFont *fn, int drx, int dry, char *text,
 	  {
 	     j = text[strlen(text) - 1];
 	     TT_Get_Glyph_Metrics(fn->glyphs[j], &metrics);
-	     *nextx = w - (x_offset / 64) + metrics.advance - metrics.bbox.xMax;
+	     *nextx = w - x_offset + (metrics.advance / 64) - 
+		(metrics.bbox.xMax / 64);
 	  }
 	break;
      case 2:
@@ -472,7 +473,8 @@ __imlib_render_str(ImlibImage *im, ImlibFont *fn, int drx, int dry, char *text,
 	  {
 	     j = text[strlen(text) - 1];
 	     TT_Get_Glyph_Metrics(fn->glyphs[j], &metrics);
-	     *nexty = w - (x_offset / 64) + metrics.advance - metrics.bbox.xMax;
+	     *nexty = w - x_offset + (metrics.advance / 64) - 
+		(metrics.bbox.xMax / 64);
 	  }
 	break;
      default:
