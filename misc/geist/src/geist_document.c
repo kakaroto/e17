@@ -16,6 +16,7 @@ geist_document_new(int w, int h)
 
    d->im = imlib_create_image(w, h);
    d->pmap = XCreatePixmap(disp, root, w, h, depth);
+   d->bg_fill = geist_fill_new_coloured(255,255,255,255);
 
    D_RETURN(3, d);
 }
@@ -51,6 +52,8 @@ geist_document_render(geist_document * document)
 
    geist_imlib_image_fill_rectangle(document->im, 0, 0, document->w,
                                     document->h, 255, 255, 255, 255);
+
+   geist_fill_render(document->bg_fill, document->im, 0, 0, document->w, document->h);
 
    for (l = document->layers; l; l = l->next)
       geist_layer_render((geist_layer *) l->data, document->im);
@@ -193,6 +196,8 @@ geist_document_render_partial(geist_document * document, int x, int y, int w,
    D(4, ("Doc render partial, %d,%d %dx%d\n", x, y, w, h));
    geist_imlib_image_fill_rectangle(document->im, x, y, w, h, 255, 255, 255,
                                     255);
+
+   geist_fill_render(document->bg_fill, document->im, x, y, w, h);
 
    for (l = document->layers; l; l = l->next)
       geist_layer_render_partial((geist_layer *) l->data, document->im, x, y,

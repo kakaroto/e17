@@ -203,6 +203,10 @@ main(int argc, char *argv[])
    gtk_widget_set_sensitive(obj_name, FALSE);
 
    doc = geist_document_new(500, 500);
+   doc->bg_fill->r = 155;
+   doc->bg_fill->g = 216;
+   doc->bg_fill->b = 237;
+   doc->bg_fill->a = 255;
 
    geist_document_add_layer(doc);
 

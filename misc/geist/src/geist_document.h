@@ -7,12 +7,14 @@
 #include "layers.h"
 #include "geist_imlib.h"
 #include "geist_gtk.h"
+#include "geist_fill.h"
 
 
 struct __geist_document
 {
    char *name;
    geist_list *layers;
+   geist_fill *bg_fill;
    int w;
    int h;
    Imlib_Image im;

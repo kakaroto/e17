@@ -33,5 +33,6 @@ typedef struct __geist_rect geist_rect;
 typedef struct __geist_object geist_object;
 typedef struct __geist_document geist_document;
 typedef struct __geist_layer geist_layer;
+typedef struct __geist_fill geist_fill;
 
 #endif

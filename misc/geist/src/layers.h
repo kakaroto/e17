@@ -6,6 +6,7 @@
 #include "geist_object.h"
 #include "geist_document.h"
 #include "geist_list.h"
+#include "geist_fill.h"
 
 #define GEIST_LAYER(O) ((geist_layer *)O)
 
