@@ -3,8 +3,10 @@ MAINTAINERCLEANFILES = Makefile.in
 
 LDFLAGS           = -L/usr/X11R6/lib
 INCLUDES          = -I. -I$(top_srcdir)/dox -I/usr/X11R6/include \
+                    -I$(top_srcdir)/src \
                     $(X_CFLAGS) -I$(prefix)/include -I$(includedir) \
                     -DPREFIX=\""$(prefix)"\"
+
 LIBOBJS = @LIBOBJS@
 
 bin_PROGRAMS      = bdox

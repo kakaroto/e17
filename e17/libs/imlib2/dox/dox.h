@@ -18,8 +18,8 @@
 #include <dirent.h>
 #include <stdarg.h>
 #include <sys/wait.h>
-#include <Imlib2.h>
 
+#include "Imlib2.h"
 #include "style.h"
 
 typedef struct __dox_hotspot
