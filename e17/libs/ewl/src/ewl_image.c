@@ -42,11 +42,6 @@ Ewl_Widget     *ewl_image_load(const char *i)
 	image->type = __ewl_image_get_type(i);
 	image->path = strdup(i);
 
-	if (!image->image) {
-		ewl_widget_destroy(EWL_WIDGET(image));
-		image = NULL;
-	}
-
 	DRETURN_PTR(EWL_WIDGET(image), DLEVEL_STABLE);
 }
 
@@ -105,10 +100,105 @@ void ewl_image_set_file(Ewl_Image * i, const char *im)
 		}
 
 		/*
-		 * Now draw the new 
+		 * Now draw the new image
 		 */
 		__ewl_image_realize(w, NULL, NULL);
 	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * ewl_image_set_proportional - set boolean to determine how to scale
+ * @i: the image to change proportional setting
+ * @p: the boolean indicator of proportionality
+ *
+ * Returns no value. Changes the flag indicating if the image is scaled
+ * proportionally.
+ */
+void
+ewl_image_set_proportional(Ewl_Image *i, char p)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	DCHECK_PARAM_PTR("i", i);
+
+	i->proportional = p;
+	ewl_widget_configure(EWL_WIDGET(i));
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * ewl_image_scale - scale image dimensions by a percentage
+ * @i: the image to scale
+ * @wp: the percentage to scale width
+ * @hp: the percentage to scale height
+ *
+ * Returns no value. Scales the given image to @wp percent of preferred width
+ * by @hp percent of preferred height. If @i->proportional is set to TRUE, the
+ * lesser of @wp and @hp is applied for both directions.
+ */
+void
+ewl_image_scale(Ewl_Image *i, double wp, double hp)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("i", i);
+
+	if (i->proportional) {
+		if (wp < hp)
+			hp = wp;
+		else
+			wp = hp;
+	}
+
+	i->sw = wp;
+	i->sh = hp;
+
+	ewl_object_set_preferred_w(EWL_OBJECT(i), wp * i->ow);
+	ewl_object_set_preferred_h(EWL_OBJECT(i), hp * i->oh);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * ewl_image_scale_to - scale image dimensions to a specific size
+ * @i: the image to scale
+ * @w: the size to scale width
+ * @h: the size to scale height
+ *
+ * Returns no value. Scales the given image to @w by @hp. If @i->proportional
+ * is set to TRUE, the image is scaled proportional to the lesser scale
+ * percentage of preferred size.
+ */
+void
+ewl_image_scale_to(Ewl_Image *i, int w, int h)
+{
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR("i", i);
+
+	/*
+	 * Scale the image to be proportional inside the available space.
+	 */
+	if (i->ow && i->oh && i->proportional) {
+		double wp, hp;
+
+		wp = (double)w / (double)i->ow;
+		hp = (double)h / (double)i->oh;
+
+		if (wp < hp)
+			hp = wp;
+		else
+			wp = hp;
+
+		w = wp * i->ow;
+		h = hp * i->oh;
+	}
+
+	i->sw = 1.0;
+	i->sh = 1.0;
+	ewl_object_set_preferred_size(EWL_OBJECT(i), w, h);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -144,6 +234,9 @@ void ewl_image_init(Ewl_Image * i)
 	ewl_callback_append(w, EWL_CALLBACK_MOUSE_MOVE, __ewl_image_mouse_move,
 			    NULL);
 
+	i->sw = 1.0;
+	i->sh = 1.0;
+
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
@@ -151,7 +244,6 @@ void __ewl_image_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Image      *i;
 	Ewl_Window     *win;
-	int             ww = 0, hh = 0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -168,45 +260,87 @@ void __ewl_image_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 	 */
 	if (i->type == EWL_IMAGE_TYPE_EBITS) {
 		i->image = ebits_load(i->path);
+		if (!i->image)
+			return;
+
 		ebits_add_to_evas(i->image, win->evas);
 		ebits_set_layer(i->image, LAYER(w));
 		ebits_set_clip(i->image, w->fx_clip_box);
+		ebits_get_min_size(i->image, &i->ow, &i->oh);
 		ebits_show(i->image);
+
 	} else {
 		i->image = evas_add_image_from_file(win->evas, i->path);
+		if (!i->image)
+			return;
+
 		evas_set_layer(win->evas, i->image, LAYER(w));
 		evas_set_clip(win->evas, i->image, w->fx_clip_box);
-		evas_get_image_size(win->evas, i->image, &ww, &hh);
+		evas_get_image_size(win->evas, i->image, &i->ow, &i->oh);
 		evas_show(win->evas, i->image);
 	}
 
-	ewl_object_set_preferred_size(EWL_OBJECT(w), ww, hh);
+	if (!i->ow)
+		i->ow = 256;
+	if (!i->oh)
+		i->oh = 256;
+
+	if (ewl_object_get_preferred_w(EWL_OBJECT(i)))
+		ewl_image_scale_to(i, ewl_object_get_preferred_w(EWL_OBJECT(i)),
+				ewl_object_get_preferred_h(EWL_OBJECT(i)));
+	else
+		ewl_image_scale(i, i->sw, i->sh);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void __ewl_image_reparent(Ewl_Widget * w, void *ev_data, void *user_data)
+{
+	Ewl_Image      *i;
+	Ewl_Window     *win;
+
+	i = EWL_IMAGE(w);
+	if (!i->image)
+		return;
+
+	win = ewl_window_find_window_by_widget(w);
+
+	if (i->type == EWL_IMAGE_TYPE_EBITS)
+		ebits_set_layer(i->image, LAYER(w));
+	else
+		evas_set_layer(win->evas, i->image, LAYER(w));
 }
 
 void __ewl_image_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	Ewl_Image      *i;
 	Ewl_Window     *win;
+	int 		ww, hh;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
 	i = EWL_IMAGE(w);
+	if (!i->image)
+		return;
+
 	win = ewl_window_find_window_by_widget(w);
+
+	ww = CURRENT_W(w) - (INSET_LEFT(w) + INSET_RIGHT(w));
+	hh = CURRENT_H(w) - (INSET_TOP(w) + INSET_BOTTOM(w));
 
 	/*
 	 * Move the image into place based on type.
 	 */
 	if (i->type == EWL_IMAGE_TYPE_EBITS) {
-		ebits_move(i->image, CURRENT_X(w), CURRENT_Y(w));
-		ebits_resize(i->image, CURRENT_W(w), CURRENT_H(w));
+		ebits_move(i->image, CURRENT_X(w) + INSET_LEFT(w),
+				CURRENT_Y(w) + INSET_TOP(w));
+		ebits_resize(i->image, i->sw * ww, i->sh * hh);
 	} else {
 		evas_move(win->evas, i->image, CURRENT_X(w), CURRENT_Y(w));
-		evas_resize(win->evas, i->image, CURRENT_W(w), CURRENT_H(w));
-		evas_set_image_fill(win->evas, i->image, CURRENT_X(w),
-				CURRENT_Y(w), CURRENT_W(w), CURRENT_H(w));
+		evas_resize(win->evas, i->image, ww, hh);
+		evas_set_image_fill(win->evas, i->image, 0, 0, i->sw * ww,
+				i->sh * hh);
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);

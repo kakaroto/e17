@@ -196,10 +196,10 @@ void __ewl_scrollpane_realize(Ewl_Widget * w, void *ev_data, void *user_data)
  */
 void __ewl_scrollpane_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 {
+	int b_width, b_height;
+	Ewl_ScrollPane *s;
 	int             vs_width = 0;
 	int             hs_height = 0;
-	int             b_width, b_height;
-	Ewl_ScrollPane *s;
 	int             content_w, content_h;
 
 	/* Ewl_ScrollBar_Flags hf, vf; */
@@ -238,20 +238,17 @@ void __ewl_scrollpane_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 				    content_h);
 
 	/*
-	 * Base the sizing on the preferred size of the box.
-	 */
-	ewl_object_get_preferred_size(EWL_OBJECT(s->box), &b_width, &b_height);
-
-	/*
 	 * Update the fill percentage on the scrollbars based on available space
 	 * for the content.
 	 */
+	b_width = ewl_object_get_preferred_w(EWL_OBJECT(s->box));
+	b_height = ewl_object_get_preferred_h(EWL_OBJECT(s->box));
 	ewl_scrollbar_set_fill_percentage(EWL_SCROLLBAR(s->hscrollbar),
 					  (double) content_w /
 					  (double) b_width);
 	ewl_scrollbar_set_fill_percentage(EWL_SCROLLBAR(s->vscrollbar),
 					  (double) content_h /
-					  (double) b_height);
+					  (double) b_width);
 
 	/*
 	 * Now move the box into position. For the scrollpane to work we move

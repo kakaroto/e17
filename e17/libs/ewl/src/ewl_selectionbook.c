@@ -132,7 +132,7 @@ ewl_selectionbook_add_page(Ewl_Selectionbook * s, Ewl_Widget * tab,
 
 void ewl_selectionbook_rem_page(Ewl_Selectionbook * s, int num, int destroy)
 {
-	Ewl_SbookPage  *p;;
+	Ewl_SbookPage  *p;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("s", s);
