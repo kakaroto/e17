@@ -60,8 +60,6 @@ void ewl_combo_init(Ewl_Combo * combo, char *title)
 	ewl_widget_show(combo->button);
 
 	combo->selected = ewl_entry_new(title);
-	ewl_object_set_fill_policy(EWL_OBJECT(combo->selected),
-														 EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_HSHRINK );
 	ewl_container_append_child(EWL_CONTAINER(combo), combo->selected);
 	ewl_widget_show(combo->selected);
 
@@ -100,7 +98,7 @@ void ewl_combo_init(Ewl_Combo * combo, char *title)
 	ewl_box_set_orientation(EWL_BOX(combo->base.popup),
 				EWL_ORIENTATION_VERTICAL);
 	ewl_object_set_fill_policy(EWL_OBJECT(combo->base.popup),
-				   EWL_FLAG_FILL_NONE);
+				   EWL_FLAG_FILL_HFILL);
 	ewl_object_set_alignment(EWL_OBJECT(combo->base.popup),
 				 EWL_FLAG_ALIGN_LEFT | EWL_FLAG_ALIGN_TOP);
 
@@ -120,8 +118,8 @@ void ewl_combo_set_selected(Ewl_Combo * combo, char *item )
 	if( combo->selected ) {
 		ewl_entry_set_text(EWL_ENTRY(combo->selected), item);
 		ewl_callback_call_with_event_data(EWL_WIDGET(combo),
-																			EWL_CALLBACK_VALUE_CHANGED,
-																			item);
+						  EWL_CALLBACK_VALUE_CHANGED,
+						  item);
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
