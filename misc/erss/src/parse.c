@@ -6,7 +6,6 @@ Article *item = NULL;
 Config *cfg = NULL;
 Rc_Config *rc = NULL;
 
-
 char *get_element (char **buffer, char *type)
 {
 	char tmp_char;
@@ -262,7 +261,7 @@ int parse_rc_file ()
 	memset(rc, 0, sizeof(Rc_Config));
 	
 	fp = fopen (file, "r");
-	
+
 	while (fp && (line = get_next_line (fp)) != NULL)
 	{
 		if ((c = get_element (&line, "config")) != NULL)
@@ -344,12 +343,37 @@ void parse_config_file (char *file)
 	FILE *fp;
 	char *line;
 	char *c;
+	char *str;
+	int match = FALSE;
 
-	if ((fp = fopen (file, "r")) == NULL)
-	{
-		fprintf (stderr, "%s error: Can't open config file %s\n", 
-				PACKAGE, file);
-		exit (-1);
+	if ((fp = fopen (file, "r")) == NULL) {
+		list_config_files (FALSE);
+
+		str = ewd_list_goto_first (config_files);
+		while ((str = ewd_list_current (config_files))) {
+			if (strstr (str, file))  {
+				
+				if ((fp = fopen (str, "r")) == NULL) {
+					fprintf (stderr, "%s error: Can't open config file %s\n",
+							PACKAGE, str);
+					exit (-1);
+				}
+
+				match = TRUE;
+				break;
+			} 
+			
+			ewd_list_next (config_files);
+		}
+
+		if (!match) {
+			fprintf (stderr, "%s error: No match for %s\n", PACKAGE, file);
+			exit (-1);
+		} else {
+			printf ("%s info: your string '%s' matches %s\n", PACKAGE, file, str);
+			printf ("%s info: using %s as config file\n", PACKAGE, str);
+		}
+			
 	}
 
 	cfg = malloc (sizeof (Config));

@@ -10,6 +10,9 @@ USAGE:
 erss -h 
 erss -c /usr/local/share/erss/config/osnews.cfg
 
+It is also possible to use:
+erss -c slashdot 
+
 If you want to set some default settings look at the example 
 erssrc file in your data/ dir. Make your changes and 
 put it in ~/.erssrc

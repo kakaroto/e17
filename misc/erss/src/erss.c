@@ -11,7 +11,7 @@ Ecore_Con_Server *server;
 Evas_Object *bg;
 Evas_Object *cont;
 Evas_Object *tid;
-Ewd_List *config_files;
+Ewd_List *config_files = NULL;
 
 char *main_buffer;
 char *last_time;
@@ -188,12 +188,12 @@ int handler_server_add (void *data, int type, void *event)
 	 */
 	if (total_connects == 1)
 		printf ("%s info: sending HTTP request ...\n", PACKAGE);
-
+	
 	snprintf (c, sizeof (c), "GET %s HTTP/1.0\r\n", cfg->url);
 	ecore_con_server_send (server, c, strlen (c));
 	snprintf (c, sizeof (c), "Host: %s \r\n\r\n", cfg->hostname);
 	ecore_con_server_send (server, c, strlen (c));
-
+	
 	waiting_for_reply = TRUE;
 
 	return 1;
@@ -320,7 +320,7 @@ void cb_mouse_out_item (void *data, Evas_Object *o, const char *sig,
 		rc->browser = strdup ("mozilla");
 	}
 	
-	snprintf (c, sizeof (c), "%s %s", rc->browser, item->url);
+	snprintf (c, sizeof (c), "%s \"%s\"", rc->browser, item->url);
 	ecore_exe_run (c, NULL);
 }
 
@@ -402,8 +402,9 @@ void list_config_files (int output)
 
 					if (strstr (dentries[num]->d_name, ".cfg")) {
 						found_files = TRUE;
-						printf ("\t%s\n", file);
-						ewd_list_append (config_files, file);
+						ewd_list_append (config_files, strdup (file));
+						if (output)
+							printf ("\t%s\n", file);
 					}
 				}
 
@@ -572,7 +573,6 @@ int main (int argc, char * const argv[])
 
 	if (!ecore_evas_init ())
 		return -1;
-
 
 	width = 300;
 	height = 16 * cfg->num_stories;

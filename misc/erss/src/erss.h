@@ -33,10 +33,12 @@ extern Evas *evas;
 extern Ecore_Evas *ee;
 extern Ewd_List *list;
 extern Evas_Object *cont;
+extern Ewd_List *config_files;
 
 void cb_mouse_out_item (void *data, Evas_Object *o, const char *sig, const char *src);
 void cb_mouse_in (void *data, Evas *e, Evas_Object *obj, void *event_info);
 void cb_mouse_out (void *data, Evas *e, Evas_Object *obj, void *event_info);
+void list_config_files (int output);
 	
 
 #endif
