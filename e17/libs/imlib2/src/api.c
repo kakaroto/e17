@@ -386,14 +386,16 @@ imlib_image_get_data_for_reading_only(void)
 }
 
 void 
-imlib_image_put_back_data(void)
+imlib_image_put_back_data(DATA32 *data)
 {
    ImlibImage *im;
 
    CHECK_PARAM_POINTER("imlib_image_put_back_data", "image", ctxt_image);
+   CHECK_PARAM_POINTER("imlib_image_put_back_data", "data", data);
    CAST_IMAGE(im, ctxt_image);
    __imlib_DirtyImage(im);
    __imlib_DirtyPixmapsForImage(im);
+   data = NULL;
 }
 
 char 

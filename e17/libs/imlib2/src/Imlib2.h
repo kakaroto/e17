@@ -113,7 +113,7 @@ int     imlib_image_get_width(void);
 int     imlib_image_get_height(void);
 DATA32 *imlib_image_get_data(void);
 DATA32 *imlib_image_get_data_for_reading_only(void);
-void    imlib_image_put_back_data(void);
+void    imlib_image_put_back_data(DATA32 *data);
 char    imlib_image_has_alpha(void);
 void    imlib_image_set_never_changes_on_disk(Imlib_Image image);
 void    imlib_image_get_border(Imlib_Border *border);
