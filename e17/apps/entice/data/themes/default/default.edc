@@ -2435,14 +2435,14 @@ collections
 	    program
 	    {
 		name, "MouseWheelZoomerInner";
-		signal, "mouse,wheel,0,1";
+		signal, "mouse,wheel,0,-1";
 		source, "EnticeImage";
 		action, SIGNAL_EMIT "EnticeImageZoomIn" "";
 	    }
 	    program
 	    {
 		name, "MouseWheelZoomerOuter";
-		signal, "mouse,wheel,0,-1";
+		signal, "mouse,wheel,0,1";
 		source, "EnticeImage";
 		action, SIGNAL_EMIT "EnticeImageZoomOut" "";
 	    }
