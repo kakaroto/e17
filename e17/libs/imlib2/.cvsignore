@@ -20,3 +20,4 @@ Makefile
 *.la
 imlib2
 loaderpath.h
+*.tar.gz
