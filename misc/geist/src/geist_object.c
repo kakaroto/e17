@@ -44,9 +44,9 @@ geist_object_int_free(geist_object * obj)
       D_RETURN_(5);
 
    if (obj->name)
-      free(obj->name);
+      efree(obj->name);
 
-   free(obj);
+   efree(obj);
 
    D_RETURN_(5);
 }
@@ -60,8 +60,6 @@ geist_object_free(geist_object * obj)
       D_RETURN_(5);
 
    obj->free(obj);
-
-   free(obj);
 
    D_RETURN_(5);
 }

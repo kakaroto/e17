@@ -28,7 +28,7 @@ geist_layer_free(geist_layer * layer)
 
    geist_list_free(layer->objects);
 
-   free(layer);
+   efree(layer);
 
    D_RETURN_(3);
 }
@@ -152,7 +152,7 @@ geist_layer_remove_object(geist_layer * lay, geist_object * obj)
       if (GEIST_OBJECT(l->data) == obj)
       {
          lay->objects = geist_list_unlink(lay->objects, l);
-         free(l);
+         efree(l);
          D_RETURN(3, TRUE);
       }
    }

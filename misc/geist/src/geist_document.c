@@ -37,7 +37,7 @@ geist_document_free(geist_document * document)
    if (document->pmap)
       XFreePixmap(disp, document->pmap);
 
-   free(document);
+   efree(document);
 
    D_RETURN_(3);
 }

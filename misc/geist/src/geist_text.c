@@ -86,17 +86,17 @@ geist_text_free(geist_object * obj)
       D_RETURN_(5);
 
    if (txt->name)
-      free(txt->name);
+      efree(txt->name);
    if (txt->fontname)
-      free(txt->fontname);
+      efree(txt->fontname);
    if (txt->text)
-      free(txt->text);
+      efree(txt->text);
    if (txt->fn)
       geist_imlib_free_font(txt->fn);
    if (txt->im)
       geist_imlib_free_image(txt->im);
 
-   free(txt);
+   efree(txt);
 
    D_RETURN_(5);
 }
@@ -186,7 +186,7 @@ geist_text_change_text(geist_text * txt, char *newtext)
    obj = GEIST_OBJECT(txt);
 
    if (txt->text)
-      free(txt->text);
+      efree(txt->text);
    if (txt->im)
       geist_imlib_free_image_and_decache(txt->im);
    txt->text = estrdup(newtext);

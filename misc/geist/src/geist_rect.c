@@ -71,7 +71,7 @@ geist_rect_free(geist_object * obj)
    if (!rec)
       D_RETURN_(5);
 
-   free(rec);
+   efree(rec);
 
    D_RETURN_(5);
 }

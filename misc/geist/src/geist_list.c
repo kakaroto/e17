@@ -54,7 +54,7 @@ geist_list_free(geist_list * l)
    {
       ll = l;
       l = l->next;
-      free(ll);
+      efree(ll);
    }
 
    D_RETURN_(4);
@@ -110,7 +110,7 @@ geist_list_pop_to_end(geist_list * root, geist_list * l)
 
    root = geist_list_add_end(root, l->data);
 
-   free(l);
+   efree(l);
 
    D(5, ("root is %p\n", root));
 
@@ -253,7 +253,7 @@ geist_list_randomize(geist_list * list)
    if (len <= 1)
       D_RETURN(4, list);
    D(5, ("List(%8p) has %d items.\n", list, len));
-   farray = (geist_list **) malloc(sizeof(geist_list *) * len);
+   farray = (geist_list **) emalloc(sizeof(geist_list *) * len);
    for (f = list, i = 0; f; f = f->next, i++)
    {
       D(5, ("filelist_randomize():  farray[%d] <- %8p\n", i, f));
@@ -287,7 +287,7 @@ geist_list_randomize(geist_list * list)
    }
    f->prev = farray[len - 2];
    f->next = NULL;
-   free(farray);
+   efree(farray);
    D_RETURN(4, list);
 }
 
@@ -335,7 +335,7 @@ geist_list_remove(geist_list * root, geist_list * l)
 {
    D_ENTER(4);
    root = geist_list_unlink(root, l);
-   free(l);
+   efree(l);
    D(4, ("returning list %p, list->next %p\n", root, root->next));
    D_RETURN(4, root);
 }

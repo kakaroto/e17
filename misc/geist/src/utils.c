@@ -64,7 +64,7 @@ estrdup (char *s)
 {
   char *t;
 
-  t = (char *) emalloc (strlen (s) + 1);
+  t = (char *) g_malloc (strlen (s) + 1);
   if (t == NULL)
     eprintf ("estrdup(\"%.20s\") failed:", s);
   strcpy (t, s);

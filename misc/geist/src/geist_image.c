@@ -57,7 +57,7 @@ geist_image_new_from_file(int x, int y, char *filename)
 
    img->filename = estrdup(filename);
 
-   free(obj->name);
+   efree(obj->name);
    if ((txt = strrchr(img->filename, '/') + 1) != NULL)
       obj->name = estrdup(txt);
    else
@@ -82,11 +82,11 @@ geist_image_free(geist_object * obj)
       D_RETURN_(5);
 
    if (img->filename)
-      free(img->filename);
+      efree(img->filename);
    if (img->im)
       geist_imlib_free_image(img->im);
 
-   free(img);
+   efree(img);
 
    D_RETURN_(5);
 }

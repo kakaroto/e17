@@ -1,3 +1,9 @@
+Sun Aug  6 19:20:08 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* g_malloc and libc free don't mix :-) This fixes the core dump on
+	opening the file selector after deleting an object.
+	* Fixed bug with object freeing itself twice :)
+
 Sun Aug  6 02:09:48 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Added rectangle objects. They look kewl ;-)
