@@ -140,22 +140,6 @@ od_dock_redraw(Ecore_Evas * ee)
                      dock.x + relative_x - 0.5 * size,
                      options.height - ARROW_SPACE - size);
 
-    if (fabs(relative_x) < 0.5 * size && dock.state != unzoomed)
-      od_icon_tt_show(icon);
-    else
-      od_icon_tt_hide(icon);
-
-    {
-      Evas_Coord      w, h;
-
-      evas_object_geometry_get(icon->tt_txt, NULL, NULL, &w, &h);
-      evas_object_move(icon->tt_txt, dock.x + relative_x - 0.5 * w,
-                       options.height - ARROW_SPACE_DOUBLE - size - h);
-      evas_object_move(icon->tt_shd, dock.x + relative_x - 0.5 * w + 1.0,
-                       options.height - ARROW_SPACE_DOUBLE - size - h +
-                       1.0);
-    }
-
     item = item->next;
   }
 

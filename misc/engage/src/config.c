@@ -67,12 +67,6 @@ colour_listener(const char *key, const Ecore_Config_Type type, const int tag,
   colour = od_argb_to_colour(ecore_config_argbstr_get(key));
 
   switch (tag) {
-    case TT_TXT:
-      options.tt_txt_color = colour;
-      break;
-    case TT_SHD:
-      options.tt_shd_color = colour;
-      break;
     case BG_FORE:
       options.bg_fore = colour;
       break;
@@ -125,8 +119,6 @@ od_config_init(void)
                             "zoom-time",
                             "Time taken (in seconds) for icons to zoom");
 
-  ecore_config_argb_create("engage.options.tt_txt_color", "#00000000", 'c', "text-color", "Text color");
-  ecore_config_argb_create("engage.options.tt_shd_color", "#7f000000", 'C', "shadow-color", "Text shadow color");
   ecore_config_argb_create("engage.options.bg_fore", "#7f000000", 'B', "bg-outline-color", "Background outline color");
   ecore_config_argb_create("engage.options.bg_back", "#7fffffff", 'b', "bg-main-color", "Background main color");
 
@@ -161,14 +153,6 @@ od_config_init(void)
   options.dock_zoom_duration =
     ecore_config_float_get("engage.options.zoom_duration");
 
-  options.tt_txt_color = 
-    od_argb_to_colour(ecore_config_argbstr_get("engage.options.tt_txt_color"));
-  ecore_config_listen("colour", "engage.options.tt_txt_color",
-                      colour_listener, TT_TXT, NULL);
-  options.tt_shd_color =
-    od_argb_to_colour(ecore_config_argbstr_get("engage.options.tt_shd_color"));
-  ecore_config_listen("colour", "engage.options.tt_shd_color", 
-                      colour_listener, TT_SHD, NULL);
   options.bg_fore =
     od_argb_to_colour(ecore_config_argbstr_get("engage.options.bg_fore"));
   ecore_config_listen("colour", "engage.options.bg_fore", 

@@ -164,8 +164,6 @@ od_icon_reload(OD_Icon * in)
 
   Evas_Object    *icon = NULL;
   Evas_Object    *pic = NULL;
-  Evas_Object    *tt_txt = NULL;
-  Evas_Object    *tt_shd = NULL;
 
   icon = in->icon;
   winclass = in->winclass;
@@ -244,24 +242,6 @@ od_icon_reload(OD_Icon * in)
     }
     if (edje_object_part_exists(icon, "EngageName")) {
       edje_object_part_text_set(icon, "EngageName", name);
-    } else {
-      tt_txt = in->tt_txt = evas_object_text_add(evas);
-      tt_shd = in->tt_shd = evas_object_text_add(evas);
-      evas_object_text_font_set(tt_txt, options.tt_fa, options.tt_fs);
-      evas_object_text_text_set(tt_txt, name);
-      evas_object_color_set(tt_txt,
-                            (options.tt_txt_color >> 16) & 0xff,
-                            (options.tt_txt_color >> 8) & 0xff,
-                            (options.tt_txt_color >> 0) & 0xff, 255);
-      evas_object_layer_set(tt_txt, 200);
-
-      evas_object_text_font_set(tt_shd, options.tt_fa, options.tt_fs);
-      evas_object_text_text_set(tt_shd, name);
-      evas_object_color_set(tt_shd,
-                            (options.tt_shd_color >> 16) & 0xff,
-                            (options.tt_shd_color >> 8) & 0xff,
-                            (options.tt_shd_color >> 0) & 0xff, 127);
-      evas_object_layer_set(tt_shd, 199);
     }
     evas_object_layer_set(icon, 100);
     evas_object_show(icon);
@@ -316,25 +296,21 @@ od_icon_del(OD_Icon * icon)
   assert(icon);
   switch (icon->type) {
   case application_link:
-    assert(icon->data.applnk.command);
     assert(icon->data.applnk.winclass);
-    free(icon->data.applnk.command);
+    if (icon->data.applnk.command)
+      free(icon->data.applnk.command);
     free(icon->data.applnk.winclass);
     break;
   case minimised_window:
     break;
   }
 
-  assert(icon->icon);
-  evas_object_del(icon->icon);
+  if (icon->icon)
+    evas_object_del(icon->icon);
   if (icon->pic)
     evas_object_del(icon->pic);
-  if (icon->tt_txt)
-    evas_object_del(icon->tt_txt);
-  if (icon->tt_shd)
-    evas_object_del(icon->tt_shd);
-  assert(icon->name);
-  free(icon->name);
+  if (icon->name)
+    free(icon->name);
   free(icon);
 }
 
@@ -355,30 +331,11 @@ od_icon_arrow_hide(OD_Icon * icon)
 }
 
 void
-od_icon_tt_show(OD_Icon * icon)
-{
-  if (icon->tt_txt)
-    evas_object_show(icon->tt_txt);
-  if (icon->tt_shd)
-    evas_object_show(icon->tt_shd);
-}
-
-void
-od_icon_tt_hide(OD_Icon * icon)
-{
-  if (icon->tt_txt)
-    evas_object_hide(icon->tt_txt);
-  if (icon->tt_shd)
-    evas_object_hide(icon->tt_shd);
-}
-
-void
 od_icon_name_change(OD_Icon * icon, const char *name)
 {
   free(icon->name);
   icon->name = strdup(name);
-  evas_object_text_text_set(icon->tt_txt, name);
-  evas_object_text_text_set(icon->tt_shd, name);
+  edje_object_part_text_set(icon->icon, "EngageName", name);
   need_redraw = true;
 }
 

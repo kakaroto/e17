@@ -67,8 +67,6 @@ void            od_icon_reload(OD_Icon * in);
 void            od_icon_del(OD_Icon * od_icon);
 void            od_icon_arrow_show(OD_Icon * icon);
 void            od_icon_arrow_hide(OD_Icon * icon);
-void            od_icon_tt_show(OD_Icon * icon);
-void            od_icon_tt_hide(OD_Icon * icon);
 void            od_icon_name_change(OD_Icon * icon, const char *name);
 void            od_icon_add_path(const char *path);
 void            od_icon_add_kde_set(const char *path);
@@ -93,7 +91,7 @@ struct _OD_Options {
   int             size, spacing;    // icon-*
   double          zoomfactor, dock_zoom_duration;
 
-  unsigned        tt_txt_color, tt_shd_color, bg_fore, bg_back; // color - ARGB
+  unsigned        bg_fore, bg_back; // color - ARGB
   char           *tt_fa;        // font name
   int             tt_fs;        // font size
   double          icon_appear_duration;
@@ -126,7 +124,7 @@ struct _OD_Dock {
 #define OD_ICON_STATE_BOUNCING                 0x00000008
 
 struct _OD_Icon {
-  Evas_Object    *icon, *pic, *tt_txt, *tt_shd;
+  Evas_Object    *icon, *pic;
   unsigned        state;        // see above
   char           *name, *icon_file, *winclass;
   double          x, y;         // relative to evas
