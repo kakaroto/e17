@@ -49,5 +49,7 @@ fi
 LTLIBOBJS=`echo "$LIBOBJS" | sed 's,.o ,.lo ,g;s,.o$,.lo,'`
 AC_SUBST(LTLIBOBJS)
 
+AC_CHECK_HEADERS(freetype.h freetype/freetype.h,,)
+
 AC_OUTPUT(Makefile loaders/Makefile src/Makefile test/Makefile demo/Makefile,
 [test -z "$CONFIG_HEADERS" || echo timestamp > stamp-h])
