@@ -6,6 +6,8 @@
 #define DEFAULT_FONT "nationff"
 #define DEFAULT_SIZE 12
 
+//#define DEBUG ON
+
 void __etox_style_update_position(Etox_Style *es);
 void __etox_style_update_dimensions(Etox_Style *es);
 void __etox_style_callback_dispatcher(void *_data, Evas *_e, Evas_Object *_o,
@@ -428,6 +430,9 @@ char *etox_style_get_text(Evas_Object *obj)
  */
 void etox_style_set_text(Evas_Object *obj, char *text)
 {
+#ifdef DEBUG
+	printf("etox_style_set_text() - called. text is (%s)\n", text);
+#endif
 	int i, scount;
 	char *temp;
 	Etox_Style *es;
@@ -444,6 +449,9 @@ void etox_style_set_text(Evas_Object *obj, char *text)
 	 * characters needed.
 	 */
 	scount = es->length = strlen(text);
+#ifdef DEBUG
+	printf("etox_style_set_text() - strlen returned %d\n", es->length);
+#endif
 	while (--scount > 0 && isspace(text[scount]));
 
 	scount++;
@@ -465,6 +473,9 @@ void etox_style_set_text(Evas_Object *obj, char *text)
 	 */
 	temp[scount + (2 * i)] = '\0';
 	evas_object_text_text_set(es->bit, temp);
+#ifdef DEBUG
+	printf("etox_style_set_text() - setting object text to (%s)\n", temp);
+#endif
 	FREE(temp);
 
 	/*

@@ -3,6 +3,9 @@
 #include <ctype.h>
 #include <string.h>
 
+//#define DEBUG ON
+
+
 /*
  * etox_line_new - create a new line with the specified alignment
  * @align: the alignment of the current line
@@ -237,16 +240,25 @@ void etox_line_layout(Etox_Line * line)
 			/*
 			 * Move the evas object into place.
 			 */
+#ifdef DEBUG
+			printf("etox_line_layout() - moving bit to %d,%d. Bit text is (%s)\n",
+			       x, ty, etox_style_get_text(bit));
+#endif
 			evas_object_move(bit, x, ty);
 		}
+#ifdef DEBUG
 		else
 			printf("Encountered an obstacle!!\n");
+#endif
 
 		/*
 		 * Move horizontally to place the next bit.
 		 */
 		x += tw;
 	}
+#ifdef DEBUG
+	printf("etox_line_layout() - done\n");
+#endif
 }
 
 /*
@@ -358,6 +370,9 @@ void etox_line_merge_prepend(Etox_Line * line1, Etox_Line * line2)
  */
 void etox_line_get_text(Etox_Line * line, char *buf, int len)
 {
+#ifdef DEBUG
+	printf("etox_line_get_text() - called. len = %d\n", len);
+#endif
 	char *temp;
 	Evas_Object *es;
 	Evas_List *l;
@@ -379,26 +394,44 @@ void etox_line_get_text(Etox_Line * line, char *buf, int len)
 		es = l->data;
 
 		sum += etox_style_length(es);
+#ifdef DEBUG
+		printf("etox_line_get_text() - etox_style_length() returned %d\n", etox_style_length(es));
+#endif
 
 		t = etox_style_get_type(es);
 		if (t == ETOX_BIT_TYPE_WRAP_MARKER)
 			continue;
 		else if (t == ETOX_BIT_TYPE_TAB)
+		{
 			temp = strdup("\t");
+			sum -= 7; // etox_style_length returns 8 but we're only inserting 1
+		}                   
 		else
 			temp = etox_style_get_text(es);
 		tlen = strlen(temp);
+#ifdef DEBUG
+		printf("etox_line_get_text() - actual length of returned text is %d\n", tlen);
+#endif
 		if (pos + tlen < len) {
+#ifdef DEBUG
+			printf("etox_line_get_text() - appending %d characters at pos = %d\n", tlen, pos);
+#endif
 			pos += tlen;
 			strcat(buf, temp);
 		}
 		else {
+#ifdef DEBUG
+			printf("etox_line_get_text() - appending %d characters (limited) at pos = %d\n", (len-pos), pos);
+#endif
 			strncat(buf, temp, (len - pos));
-			pos = len - 1;
+			pos = len;
 		}
 		free(temp);
 	}
 	line->length = sum;
+#ifdef DEBUG
+	printf("etox_line_get_text() - done\n");
+#endif
 }
 
 int
@@ -407,8 +440,35 @@ etox_line_wrap(Etox *et, Etox_Line *line)
 	Evas_List *ll;
 	Evas_Object *bit = NULL, *marker;
 	Evas_Coord x, w, y, h;
-	int index = -1;
+	int index = -1, ok = 0;
 
+#ifdef DEBUG
+	printf("etox_line_wrap() - trying to wrap line:\n");
+	etox_line_print_bits(line);
+#endif
+
+   ok= 1;
+   for (ll = line->bits; ll; ll = ll->next)
+     {
+	bit = ll->data;
+	char *tmp;
+	
+	tmp = etox_style_get_text(bit);
+	evas_object_geometry_get(bit, &x, &y, &w, &h);
+	/* if we are down to 1 character... or 1 char +space - abort */
+	if (
+	    (strlen(tmp) <= 1) ||
+	    ((strlen(tmp) == 2) && (tmp[1] == ' '))
+	    ) {
+	     if (w > et->w) {
+		  ok = 0;
+	       }
+	  }
+	FREE(tmp);
+     }
+   if (!ok) {
+	return -1;
+     }
 	/* iterate through the bits to find the one on the border */
 	ll = line->bits;
 	while (ll) {
@@ -441,13 +501,17 @@ etox_line_wrap(Etox *et, Etox_Line *line)
 		/* don't start a new line with a space */
 		while (index < strlen(tmp) && isspace(tmp[index]))
 			index++;
+
 		FREE(tmp);
 	}
 
 	/* Wrap if we've found a reasonable position */
 	if (index > 0 || (index == 0 && bit != line->bits->data)) {
+#ifdef DEBUG
+		printf("etox_line_wrap() - going to split line at index %d of bit:"
+		       "(%s)\n", index, etox_style_get_text(bit));
+#endif
 		etox_line_split(line, bit, index);
-
 		ll = evas_list_find_list(et->lines, line);
 		ll = ll->next;
 
@@ -470,7 +534,7 @@ etox_line_wrap(Etox *et, Etox_Line *line)
 			etox_line_append(line, marker);
 	}
 	else
-		index = 0;
+		index = -1;
 
 	return index;
 }

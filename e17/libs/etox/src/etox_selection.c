@@ -1,4 +1,7 @@
 #include "Etox_private.h"
+#include <ctype.h>
+
+//#define DEBUG ON
 
 Evas_List *active_selections = NULL;
 
@@ -66,6 +69,7 @@ etox_selection_new(Etox *etox, Etox_Line *l1, Etox_Line *l2,
 		Evas_Object *s1, Evas_Object *s2, int i1, int i2)
 {
 	Evas_Object *temp;
+	Evas_Object *temp2;
 	Etox_Selection *selected;
 
 	/*
@@ -83,7 +87,7 @@ etox_selection_new(Etox *etox, Etox_Line *l1, Etox_Line *l2,
 	 * Split on the ending index, we use the original s2 for the end,
 	 * since it's the bit portion before the split.
 	 */
-	etox_split_bit(l2, s2, i2);
+	temp2 = etox_split_bit(l2, s2, i2+1); // split after the end character
 
 	selected = calloc(1, sizeof(Etox_Selection));
 	memset(selected, 0, sizeof(Etox_Selection));
@@ -98,7 +102,17 @@ etox_selection_new(Etox *etox, Etox_Line *l1, Etox_Line *l2,
 
 	active_selections = evas_list_prepend(active_selections, selected);
 
+        // If any bits were split, re-layout the etox.
+        /** @TODO : If there are multiple selections created in an etox, the layout
+         *  will be repeated for each. It would be optimal to hold off the layouts
+         *  until the selections were all created */
+        if (temp != s1 || temp2 != s2)
+        {
+#ifdef DEBUG
+	  printf("etox_selection_new() - bit(s) were split. calling etox_layout()\n");
+#endif
 	etox_layout(etox);
+	}
 
 	return selected;
 }
@@ -260,6 +274,9 @@ etox_select_str(Evas_Object * obj, char *match, int *index)
 	  i = *index;
 
 	pos = strstr(text + i, match);	
+#ifdef DEBUG
+	printf("\etox_select_str() - found string at index %d\n", (pos-(text+i)));
+#endif
 
 	if (pos == NULL)
 	{
@@ -269,9 +286,8 @@ etox_select_str(Evas_Object * obj, char *match, int *index)
 	}
 
 	si = pos - text;
-	ei = si + strlen(match);
-
-	printf("si: %d, ei: %d\n", si, ei);
+	// The end index should point to the last character in the match text
+	ei = si + strlen(match) - 1;
 
 	if (index)
 	  *index = ei;
@@ -346,6 +362,9 @@ etox_selection_apply_context(Etox_Selection *selected,
     }
   }
   
+#ifdef DEBUG
+  printf("etox_selection_apply_context() - calling etox_layout()\n");
+#endif
   etox_layout(selected->etox);
 }
 
@@ -380,6 +399,9 @@ etox_selection_get_geometry(Etox_Selection *selected, int *num)
 
   l = evas_list_find_list(selected->etox->lines, selected->start.line);
 
+  // Start with the second line (if any)
+  l = l->next;
+  count++; 	/* count the first line */
   while (l)
   {
     Etox_Line *line = l->data;
@@ -392,8 +414,6 @@ etox_selection_get_geometry(Etox_Selection *selected, int *num)
     l = l->next;
   }
 
-  printf("count: %d\n", count);
-
   rects = calloc(count, sizeof(Etox_Rect)); /* start and end line also */
 
   /* first line */
@@ -405,6 +425,10 @@ etox_selection_get_geometry(Etox_Selection *selected, int *num)
   etox_line_get_geometry(selected->start.line, &x, &y, &w, &h);
   rects->w = x + w - rects->x;
   rects->h = y + h - rects->y;
+#ifdef DEBUG
+  printf("etox_selection_get_geometry() - first line rect is %dx%d @ %d,%d\n",
+         rects->w, rects->h, rects->x, rects->y);
+#endif
 
   cur = rects;
   /* printf("cur1: %d\n", cur); */
@@ -436,6 +460,10 @@ etox_selection_get_geometry(Etox_Selection *selected, int *num)
   cur->w = x + w - cur->x;
   cur->h = y + h - cur->y;
 
+#ifdef DEBUG
+  printf("etox_selection_get_geometry() - last line rect is %dx%d @ %d,%d\n",
+         cur->w, cur->h, cur->x, cur->y);
+#endif
   
   if (num) *num = count;
   return rects;

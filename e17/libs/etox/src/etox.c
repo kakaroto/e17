@@ -1,5 +1,8 @@
+#include <ctype.h>
 #include "config.h"
 #include "Etox_private.h"
+
+//#define DEBUG ON
 
 static void etox_free(Evas_Object * et);
 static void etox_show(Evas_Object * et);
@@ -382,6 +385,9 @@ void etox_set_text(Evas_Object * obj, char *text)
 			et->tw = line->w;
 	}
 
+#ifdef DEBUG
+	printf("etox_set_text() - calling etox_layout()\n");
+#endif
 	etox_layout(et);
 	if (et->lines && evas_object_visible_get(obj))
 		evas_object_show(et->clip);
@@ -412,7 +418,9 @@ char *etox_get_text(Evas_Object * obj)
 	 */
 	if (!et->lines)
 		return NULL;
-
+#ifdef DEBUG
+	printf("etox_get_text() - etox length = %d\n", et->length);
+#endif
 	ret = (char *) calloc(et->length + 1, sizeof(char));
 	temp = ret;
 
@@ -422,7 +430,13 @@ char *etox_get_text(Evas_Object * obj)
 	len = et->length;
 	for (l = et->lines; l; l = l->next) {
 		line = l->data;
+#ifdef DEBUG
+		printf("etox_get_text() - getting up to %d characters\n", len);
+#endif
 		etox_line_get_text(line, temp, len);
+#ifdef DEBUG
+		printf("etox_get_text() - line text is : (%s)\n", temp);
+#endif
 
 		/*
 		 * FIXME: Currently, in etox_line_get_text(), line->length
@@ -436,6 +450,9 @@ char *etox_get_text(Evas_Object * obj)
 			Etox_Line * nline = l->next->data;
 			if (!(nline->flags & ETOX_LINE_WRAPPED)) {
 				strcat(temp, "\n");
+#ifdef DEBUG
+				printf("etox_get_text() - appended newline\n");
+#endif
 				temp++;
 				len--;
 			}
@@ -478,6 +495,9 @@ void etox_clear(Evas_Object * obj)
 
 	et->lines = NULL;
 	evas_object_hide(et->clip);
+
+	// Reset the active selections
+	etox_selection_free_by_etox(obj);
 }
 
 /**
@@ -500,6 +520,9 @@ void etox_set_soft_wrap(Evas_Object *obj, int boolean)
 	else
 		et->flags &= ~ETOX_SOFT_WRAP;
 
+#ifdef DEBUG
+	printf("\netox_set_soft_wrap() - calling etox_layout()\n");
+#endif
 	etox_layout(et);
 }
 
@@ -557,6 +580,9 @@ void etox_set_word_wrap(Evas_Object *obj, int boolean)
 	else
 		et->flags &= ~ETOX_BREAK_WORDS;
 
+#ifdef DEBUG
+	printf("\netox_set_word_wrap() - calling etox_layout()\n");
+#endif
 	etox_layout(et);
 }
 
@@ -631,7 +657,12 @@ static void etox_move(Evas_Object * obj, Evas_Coord x, Evas_Coord y)
 	 * Layout lines if appropriate.
 	 */
 	if (et->lines)
+	{
+#ifdef DEBUG
+		printf("\netox_move() - calling etox_layout()\n");
+#endif
 		etox_layout(et);
+	}
 
 	/*
 	 * Adjust the clip box to display the contents correctly. We need to
@@ -653,6 +684,9 @@ static void etox_move(Evas_Object * obj, Evas_Coord x, Evas_Coord y)
  */
 static void etox_resize(Evas_Object * obj, Evas_Coord w, Evas_Coord h)
 {
+#ifdef DEBUG
+	printf("\netox_resize() - called. w=%d  h=%d\n", w, h);
+#endif
 	Etox *et;
 
 	CHECK_PARAM_POINTER("obj", obj);
@@ -668,6 +702,9 @@ static void etox_resize(Evas_Object * obj, Evas_Coord w, Evas_Coord h)
 	/*
 	 * Layout lines if appropriate.
 	 */
+#ifdef DEBUG
+	printf("etox_resize() - calling etox_layout()\n");
+#endif
 	etox_layout(et);
 
 	/*
@@ -948,6 +985,9 @@ etox_obstacle_add(Evas_Object * obj, Evas_Coord x, Evas_Coord y,
 	if (obst)
 		et->obstacles = evas_list_append(et->obstacles, obst);
 
+#ifdef DEBUG
+	printf("\netox_obstacle_add() - calling etox_layout()\n");
+#endif
 	etox_layout(et);
 
 	return obst;
@@ -1081,6 +1121,9 @@ static Evas_List *_etox_break_text(Etox * et, char *text)
 			etox_line_append(line, bit);
 			evas_object_show(bit);
 
+                        // We just converted 1 character into 8, so adjust the line length
+			line->length += 7;
+
 			break;
 
 			/*
@@ -1115,6 +1158,9 @@ static Evas_List *_etox_break_text(Etox * et, char *text)
 			if (*walk == '\r' && *text == '\n') {
 				walk++;
 				text++;
+				// This skips a character that was counted in the
+				// original length, so decrement length by 1.
+//??				et->length--;
 			}
 
 			if (line->w > et->tw)
@@ -1165,6 +1211,10 @@ static Evas_List *_etox_break_text(Etox * et, char *text)
  */
 void etox_layout(Etox * et)
 {
+#ifdef DEBUG
+	printf("\netox_layout() - called\n");
+	printf("etox_layout() - etox size is w=%d, h=%d\n", et->w, et->h);
+#endif
 	int y;
 	Etox_Line *line;
 	Evas_List *l;
@@ -1208,6 +1258,13 @@ void etox_layout(Etox * et)
 		line->x = et->x;
 		line->y = y;
 
+#ifdef DEBUG
+		char *tmpLine = calloc(256, sizeof(char));
+		etox_line_get_text(line, tmpLine, 256);
+		printf("\n\netox_layout() - current line is : %s\n", tmpLine);
+                free(tmpLine);
+#endif
+		
 		/*
 		 * Unwrap lines if they were wrapped
 		 */
@@ -1234,6 +1291,9 @@ void etox_layout(Etox * et)
 			ll = ll->next;
 		}
 
+#ifdef DEBUG
+		printf("etox_layout() - performing initial line layout\n");
+#endif
 		etox_line_layout(line);
 
 		/*
@@ -1241,14 +1301,31 @@ void etox_layout(Etox * et)
 		 * the width affects alignment.
 		 */
 		if ((et->flags & ETOX_SOFT_WRAP) && (line->w > et->w)) {
-			etox_line_wrap(et, line);
+#ifdef DEBUG
+		   printf("etox_layout() - line needs wrapping. calling etox_line_wrap()\n");
+#endif
+		   int index = etox_line_wrap(et, line);
+		   if (index >= 0)
+		     {
+#ifdef DEBUG
+			printf("etox_layout() - re-laying out wrapped line.\n");
+#endif
 			etox_line_layout(line);
+		     }
 		}
+#ifdef DEBUG
+		printf("etox_layout() - line complete. current etox size is w=%d, h=%d\n", et->w, et->h);
+#endif
 
 		l = l->next;
 		y += line->h;
 	}
 	et->th = y - et->y;
+#ifdef DEBUG
+	printf("etox_layout() - Unwrapped text size is w=%d, h=%d\n", et->tw, et->th);
+	printf("etox_layout() - etox size is w=%d, h=%d\n", et->w, et->h);
+	printf("etox_layout() - done.\n\n");
+#endif
 }
 
 Etox_Line *
@@ -1274,22 +1351,52 @@ etox_coord_to_line(Etox *et, int y)
 Etox_Line *
 etox_index_to_line(Etox *et, int *i)
 {
-	int len = 0;
+#ifdef DEBUG
+	printf("etox_index_to_line() - called. index = %d\n", *i);
+#endif
+	int begin_line_index = 0;
+	int line_length;
 	Evas_List *l;
 	Etox_Line *line = NULL;;
 
 	l = et->lines;
 	while (l) {
 		line = l->data;
-		len += line->length;
-		if (*i < len)
-			break;
+#ifdef DEBUG
+		printf("etox_index_to_line() - checking line :\n");
+		etox_line_print_bits(line);
+		printf("etox_index_to_line() - line length is %d\n", line->length);
+#endif
+		line_length = line->length;
+		if (!(line->flags & ETOX_LINE_WRAPPED))
+		{
+#ifdef DEBUG
+		  printf("etox_index_to_line() - not a wrapped line. length++\n");
+#endif
+		  line_length++;
+		}
+#ifdef DEBUG
+		else
+		{
+		  printf("etox_index_to_line() - wrapped line\n");
+		}
+#endif
+		if (*i < (begin_line_index + line_length)) break;
+	
+		begin_line_index += line_length;
+#ifdef DEBUG
+		printf("etox_index_to_line() - begin_line_index is %d\n", begin_line_index);
+#endif
 		l = l->next;
 	}
 
 	if (line)
-		*i -= len - line->length;
-
+	{
+#ifdef DEBUG
+		printf("etox_index_to_line() - found line!\n");
+#endif
+		*i -= begin_line_index;
+	}
 	return line;
 }
 
@@ -1304,6 +1411,42 @@ etox_print_lines(Etox *et)
 		etox_line_print_bits(l->data);
 		i++;
 	}
+}
+
+/** Printout the text buffer to support debugging */
+void
+etox_print_text(Evas_Object *obj)
+{
+  char *charptr_orig = etox_get_text(obj);
+  char *charptr = charptr_orig;
+  int char_num = 0;
+  while (*charptr)
+  {
+    // Print line prefix with index
+    if (char_num == 0)
+    {
+      printf("\netox_print_lines() - %5.5d : ", (charptr-charptr_orig));
+    }
+
+    // Print characters for printables, decimal otherwise
+    if (isprint(*charptr))
+    {
+      printf(" %c ", *charptr);
+    }
+    else
+    {
+      printf("%2.2d ", *charptr);
+    }
+    fflush(stdout);
+
+    // 16 characters per line
+    if (++char_num == 16)
+    {
+      char_num = 0;
+    }
+    charptr++;
+  }
+  free(charptr_orig);
 }
 
 /**

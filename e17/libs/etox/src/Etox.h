@@ -251,6 +251,9 @@ void etox_selection_apply_context(Etox_Selection *selected,
                                   Etox_Context *context);
 Etox_Rect *etox_selection_get_geometry(Etox_Selection *selected, int *num);
 
+/** Printout the text buffer to support debugging */
+void etox_print_text(Evas_Object *obj);
+
 #ifdef __cplusplus
 }
 #endif
