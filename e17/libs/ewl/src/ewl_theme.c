@@ -114,6 +114,13 @@ static void *theme_keys[] = {
 	"/appearance/seeker/vertical/dragbar.bits.db",
 	"/appearance/seeker/vertical/dragbar/visible", "yes",
 
+	"/appearance/separator/horizontal/base",
+	"/appearance/separator/horizontal/base.bits.db",
+	"/appearance/separator/horizontal/base/visible", "yes",
+	"/appearance/separator/vertical/base",
+	"/appearance/separator/vertical/base.bits.db",
+	"/appearance/separator/vertical/base/visible", "yes",
+
 	"/appearance/table/default/base",
 	"/appearance/table/default/base.bits.db",
 	"/appearance/table/default/base/visible", "yes",

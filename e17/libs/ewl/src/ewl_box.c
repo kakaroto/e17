@@ -158,8 +158,15 @@ ewl_box_child_set_padding(Ewl_Widget * w, int xp, int yp)
 	DENTER_FUNCTION;
 	DCHECK_PARAM_PTR("w", w);
 
-	ewl_widget_set_data(w, "/x_padding", (void *) xp);
-	ewl_widget_set_data(w, "/y_padding", (void *) yp);
+	if (xp == 0)
+		ewl_widget_del_data(w, "/x_padding");
+	else
+		ewl_widget_set_data(w, "/x_padding", (void *) xp);
+	
+	if (yp == 0)
+		ewl_widget_del_data(w, "/y_padding");
+	else
+		ewl_widget_set_data(w, "/y_padding", (void *) yp);
 
 	DLEAVE_FUNCTION;
 }
@@ -565,13 +572,19 @@ __ewl_vbox_layout_children(Ewl_Widget * w)
 		  xp = (int) ewl_widget_get_data(c, "/x_padding");
 		  yp = (int) ewl_widget_get_data(c, "/y_padding");
 
-		  if (EWL_OBJECT(c)->align == EWL_ALIGNMENT_LEFT)
+		  /* If the child is bigger then the box, align it left */
+		  if (REQUEST_W(c) > REQUEST_W(w) - l - r)
+		  	REQUEST_X(c) = REQUEST_X(w) + l + xp;
+		  /* Left alignment */
+		  else if (EWL_OBJECT(c)->align == EWL_ALIGNMENT_LEFT)
 			    REQUEST_X(c) = REQUEST_X(w) + l + xp;
+		  /* Right */
 		  else if (EWL_OBJECT(c)->align == EWL_ALIGNMENT_RIGHT)
 		    {
 		 	    REQUEST_X(c) = REQUEST_X(w) + REQUEST_W(w) - l + xp;
 			    REQUEST_X(c) -= REQUEST_W(c);
 		    }
+		  /* Center or unknown */
                   else
                     {
                             REQUEST_X(c) = REQUEST_X(w) + xp;
@@ -580,7 +593,8 @@ __ewl_vbox_layout_children(Ewl_Widget * w)
                     }
 
 		  REQUEST_Y(c) = y + yp;
-		  y += REQUEST_H(c) + box->spacing + yp;
+		  /* Update y so the next child comes beneath it */
+		  y = REQUEST_Y(c) + REQUEST_H(c) + box->spacing;
 
 		  ewl_widget_configure(c);
 
@@ -802,11 +816,18 @@ __ewl_hbox_layout_children(Ewl_Widget * w)
 		  xp = (int) ewl_widget_get_data(c, "/x_padding");
 		  yp = (int) ewl_widget_get_data(c, "/y_padding");
 
+
+		  /* If the child is bigger then the box, align it to the TOP */
+		  if (REQUEST_H(c) > REQUEST_H(w) - t - b)
+		  	  REQUEST_Y(c) = REQUEST_Y(w) + t + yp;
+		  /* Top alignment */
 		  if (EWL_OBJECT(c)->align == EWL_ALIGNMENT_TOP)
 			  REQUEST_Y(c) = REQUEST_Y(w) + t + yp;
+		  /* Bottom */
                   else if (EWL_OBJECT(c)->align == EWL_ALIGNMENT_BOTTOM)
                           REQUEST_Y(c) = (REQUEST_Y(w) + REQUEST_H(w)) -
                                   REQUEST_H(c) - r + yp;
+		  /* Center or unknown */
 		  else
 		    {
 			    REQUEST_Y(c) = REQUEST_Y(w) + yp;
@@ -815,7 +836,7 @@ __ewl_hbox_layout_children(Ewl_Widget * w)
 		    }
 
 		  REQUEST_X(c) = x + xp;
-		  x += REQUEST_W(c) + box->spacing + xp;
+		  x = REQUEST_X(c) + REQUEST_W(c) + box->spacing;
 
 		  ewl_widget_configure(c);
 

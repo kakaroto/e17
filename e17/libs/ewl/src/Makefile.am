@@ -26,6 +26,7 @@ installed_headers_DATA = \
 	ewl_object.h \
 	ewl_radiobutton.h \
 	ewl_seeker.h \
+	ewl_separator.h \
 	ewl_spinner.h \
 	ewl_text.h \
 	ewl_table.h \
@@ -49,6 +50,7 @@ libewl_la_SOURCES = \
 	ewl_object.c \
 	ewl_radiobutton.c \
 	ewl_seeker.c \
+	ewl_separator.c \
 	ewl_spinner.c \
 	ewl_table.c \
 	ewl_text.c \
