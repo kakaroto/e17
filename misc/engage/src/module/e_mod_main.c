@@ -11,6 +11,7 @@
  *
  * immediate fixes needed:
  * * hook up event callbacks for Engage_App_Icon s
+ * * store ignore list in config
  * * fix mouse overs etc to reach all the sub icons
  * * add emblems to show what is iconified and what is running
  *
@@ -108,7 +109,8 @@ static void    _engage_bar_cb_menu_edit(void *data, E_Menu *m, E_Menu_Item *mi);
 
 static void    _engage_bar_cb_menu_zoom(void *data, E_Menu *m, E_Menu_Item *mi);
 
-static int     zoom_function(double d, double *zoom, double *disp, Engage_Bar *eb);
+static int     _engage_zoom_function(double d, double *zoom, double *disp, Engage_Bar *eb);
+static int     _engage_border_ignore(E_Border *bd);
 
 E_App         *_engage_unmatched_app;
 
@@ -717,6 +719,8 @@ _engage_app_icon_new(Engage_Icon *ic, E_Border *bd, int min)
    Engage_App_Icon *ai;
    Evas_Object *o;
 
+   if (_engage_border_ignore(bd))
+     return NULL;
    ai = E_NEW(Engage_App_Icon, 1);
    if (!ai) return NULL;
    
@@ -831,6 +835,8 @@ _engage_cb_event_border_add(void *data, int type, void *event)
    if (e->border->container != eb->con)
      return;
 
+   if (_engage_border_ignore(e->border))
+     return NULL;
    app = e_app_window_name_class_find(e->border->client.icccm.name,
 				      e->border->client.icccm.class);
    if (!app)
@@ -1228,17 +1234,10 @@ _engage_bar_motion_handle(Engage_Bar *eb, Evas_Coord mx, Evas_Coord my)
 	else
 	  distance = (double) (counter - md) / (eb->engage->iconbordersize);
 
-	do_zoom = zoom_function(distance, &new_zoom, &relative, eb);
+	do_zoom = _engage_zoom_function(distance, &new_zoom, &relative, eb);
 	size = icon->scale * new_zoom * eb->engage->iconbordersize;
 	halfsize = size / 2;
-	if (md2 > size)
-	  {
-	     if (eb->mouse_out == -1)
-	       eb->mouse_out = md;
-	  }
-	else
-	  eb->mouse_out = -1;
-			       
+
 	evas_object_image_fill_set(icon->icon_object, 0.0, 0.0, size, size);
 	evas_object_resize(icon->bg_object, size, size);
 	xx = x;
@@ -1264,6 +1263,17 @@ _engage_bar_motion_handle(Engage_Bar *eb, Evas_Coord mx, Evas_Coord my)
 	if (do_zoom && -0.5 < distance && distance < 0.5)
 	  {
 	     double radius, arc, theta;
+	     if (md2 > size)
+	       {
+		  /* only freeze if we can choose subicons */
+		  if ((eb->mouse_out == -1) && icon->extra_icons)
+		    eb->mouse_out = md;
+	       }
+	     else
+	       /* give us more space to choose subicons */
+	       if (md2 <= size - halfapp_size)
+		 eb->mouse_out = -1;
+
 	     radius = (4 * new_zoom - 3) / 3;
 	     if (edge == E_GADMAN_EDGE_LEFT || edge == E_GADMAN_EDGE_RIGHT)
 	       radius *= w;
@@ -1734,7 +1744,7 @@ _engage_bar_cb_menu_zoom(void *data, E_Menu *m, E_Menu_Item *mi)
 
 
 static int
-zoom_function(double d, double *zoom, double *disp, Engage_Bar *eb)
+_engage_zoom_function(double d, double *zoom, double *disp, Engage_Bar *eb)
 {
    double          range, f, x;
    double          ff, sqrt_ffxx, sqrt_ff_1;
@@ -1780,3 +1790,19 @@ zoom_function(double d, double *zoom, double *disp, Engage_Bar *eb)
    return 1;
 }
 
+static int
+_engage_border_ignore(E_Border *bd)
+{
+   /* FIXME - this needs to be saved in config */
+   static char *ignores[] = { "Gkrellm2", NULL};
+   char       **cur;
+   
+   for (cur = ignores; *cur; cur++)
+     if (bd->client.icccm.class && strcmp(bd->client.icccm.class, *cur) == 0)
+       return 1;
+   
+   if (ecore_x_window_prop_state_isset(bd->win,
+				       ECORE_X_WINDOW_STATE_SKIP_TASKBAR))
+     return 1;
+   return 0;
+}
