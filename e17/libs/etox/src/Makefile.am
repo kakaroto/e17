@@ -29,7 +29,9 @@ libetox_la_SOURCES   = \
 Etox.h \
 etox.c \
 loadfile.h \
-loadfile.c
+loadfile.c \
+font_style.c \
+font_style.h
 
 
 libetox_la_LIBADD       = $(LIBS_ALL)
