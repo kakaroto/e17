@@ -45,10 +45,10 @@ void keydown_evascallback(void *data, Evas *e, Evas_Object *obj, void *event_inf
 		ecore_main_loop_quit();
 	}
         else if (!strcmp(ev->keyname, "m")){
-		if(muted = 0){
+		if(muted == 0){
 			emotion_object_video_mute_set(emotion, 1);
 			muted = 1;
-		else {
+		} else {
 			emotion_object_video_mute_set(emotion, 0);
 			muted = 0;
 		}
