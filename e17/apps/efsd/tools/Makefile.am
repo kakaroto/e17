@@ -9,7 +9,7 @@ MAINTAINERCLEANFILES = Makefile.in Makefile magic.db pattern.db magic2db efsdsh
 INCLUDES = -I$(top_srcdir)/efsd
 
 efsdsh_SOURCES = efsdsh.c
-efsdsh_LDADD = -L$(top_builddir)/efsd/.libs -lefsd
+efsdsh_LDADD = $(top_builddir)/efsd/.libs/libefsd.so
 
 
 all-local: magic.db pattern.db

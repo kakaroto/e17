@@ -42,6 +42,9 @@ typedef struct efsd_monitor_request
 
   int                   num_options;
   EfsdOption           *options;
+
+  /* whether or not this request is still valid. */
+  char                  is_finished;
 }
 EfsdMonitorRequest;
 
@@ -94,6 +97,14 @@ typedef struct efsd_monitor
   */
 
   char                  is_sorted;
+
+  /* while efsd receives file-exists events,
+     this flag is set to TRUE. It is needed to avoid races
+     when a client requests stopping monitoring while events
+     are still received.
+  */
+
+  char                  is_receiving_exist_events;
 }
 EfsdMonitor;
 
@@ -126,6 +137,11 @@ EfsdMonitor     *efsd_monitored(char *filename, int as_dir);
    and in that case release those requests.
 */
 int              efsd_monitor_cleanup_client(int client);
+
+/* Checks all monitoring requests for a particular monitor
+   and removes those requests that are no longer valid.
+*/
+void             efsd_monitor_cleanup_requests(EfsdMonitor *m);
 
 int              efsd_monitor_send_filechange_event(EfsdMonitor *m, EfsdMonitorRequest *emr,
 						    EfsdFilechangeType type, char *filename);

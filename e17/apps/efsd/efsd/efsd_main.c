@@ -425,27 +425,27 @@ main_handle_fam_events(void)
   int          i;
   EfsdMonitor *m = NULL;
   EfsdList    *cl = NULL;
-
+  
   D_ENTER;
 
   /* The mutex-protected versions of the FAM calls
      are not really needed here -- these are the
      reading calls, not writers.
   */
-
+  
   while (FAMPending(&famcon) > 0)
     {
       memset(&famev, 0, sizeof(FAMEvent));
-
+      
       if (FAMNextEvent(&famcon, &famev) < 0)
 	{
 	  FAMOpen(&famcon);
 	  D_RETURN;
 	}
-
+      
       if (!famev.filename || famev.filename[0] == '\0')
 	continue;
-
+      
       m = (EfsdMonitor*)famev.userdata;
       
       D("Handling FAM event %i for file %s\n", famev.code, famev.filename);
@@ -456,9 +456,20 @@ main_handle_fam_events(void)
 	 return those files instead of needed a new monitor for
 	 the file-exists events.
       */
-      if ((famev.code == FAMExists) && (m->is_dir))
-	efsd_dca_append(m->files, famev.filename);
-	  
+      if (famev.code == FAMExists || famev.code == FAMCreated) 
+	{
+	  if (m->is_dir)
+	    efsd_dca_append(m->files, famev.filename);
+	}
+      else if (famev.code == FAMDeleted)
+	{
+	  if (m->is_dir)
+	    efsd_dca_remove(m->files, famev.filename);
+	}
+      
+      if (famev.code == FAMExists)
+	m->is_receiving_exist_events = TRUE;
+      
       for (cl = efsd_list_head(m->clients); cl; cl = efsd_list_next(cl))
 	{
 	  EfsdMonitorRequest *emr;
@@ -542,7 +553,7 @@ main_handle_fam_events(void)
 	      if (!m->is_dir || !m->is_sorted)
 		{
 		  /* Process directly. */
-		  
+
 		  /* Let's look only at the files we wanted: */
 		  if (list_all_files || !efsd_misc_file_is_dotfile(famev.filename))
 		    {
@@ -577,15 +588,21 @@ main_handle_fam_events(void)
 		    }
 		}
 	    }
-
+	  	  
 	  if (famev.code == FAMAcknowledge)
 	    {
 	      efsd_monitor_remove(m);
 	      break;
 	    }
 	}
+
+      if (famev.code == FAMEndExist)
+	{
+	  m->is_receiving_exist_events = FALSE;
+	  efsd_monitor_cleanup_requests(m);
+	}	        
     }
-  
+
   D_RETURN;
 }
 

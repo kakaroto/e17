@@ -101,6 +101,7 @@ monitor_new(EfsdCommand *com, int client, int dir_mode, int is_temporary, int is
   m->is_dir = dir_mode;
   m->is_temporary = is_temporary;
   m->is_sorted = is_sorted;
+  m->is_receiving_exist_events = TRUE;
 
   efsd_hash_insert(monitors, m->filename, m);
 
@@ -403,16 +404,32 @@ monitor_remove_client(EfsdCommand *com, int client)
 		{
 		  D("Use count on %s is (%i/%i) -- removing internal.\n",
 		    m->filename, m->internal_use_count, m->client_use_count);
-		  m->clients = efsd_list_remove(m->clients, l2,
-						(EfsdFunc)monitor_request_free);
+		  
+		  if (!m->is_receiving_exist_events)
+		    {
+		      m->clients = efsd_list_remove(m->clients, l2,
+						    (EfsdFunc)monitor_request_free);
+		    }
+		  else
+		    {
+		      emr->is_finished = TRUE;
+		    }
 		}
 	    }
 	  else
 	    {
 	      D("Use count on %s is (%i/%i) -- removing client %i.\n",
 		m->filename, m->internal_use_count, m->client_use_count, client);
-	      m->clients = efsd_list_remove(m->clients, l2,
-					    (EfsdFunc)monitor_request_free);
+
+	      if (!m->is_receiving_exist_events)
+		{
+		  m->clients = efsd_list_remove(m->clients, l2,
+						(EfsdFunc)monitor_request_free);
+		}
+	      else
+		{
+		  emr->is_finished = TRUE;
+		}
 	    }
 	  
 	  l2 = NULL;
@@ -685,6 +702,32 @@ efsd_monitor_cleanup_client(int client)
 
   efsd_hash_it_free(it);
   D_RETURN_(FALSE);
+}
+
+
+void
+efsd_monitor_cleanup_requests(EfsdMonitor *m)
+{
+  EfsdMonitorRequest    *emr;
+  EfsdList              *l;
+
+  D_ENTER;
+
+  if (!m)
+    D_RETURN;
+
+  for (l = efsd_list_head(m->clients); l; l = efsd_list_next(l))
+    {
+      emr = (EfsdMonitorRequest*)efsd_list_data(l);
+      
+      if (emr->is_finished)
+	{
+	  m->clients = efsd_list_remove(m->clients, l,
+					(EfsdFunc)monitor_request_free);
+	}
+    }  
+
+  D_RETURN;
 }
 
 
