@@ -327,7 +327,7 @@ feh_parse_option_array(int argc, char **argv)
       {"full-screen", 0, 0, 'F'},
       {"auto-zoom", 0, 0, 'Z'},
       {"ignore-aspect", 0, 0, 'X'},
-      {"draw_filename", 0, 0, 'd'},
+      {"draw-filename", 0, 0, 'd'},
       {"preload", 0, 0, 'p'},
       {"reverse", 0, 0, 'n'},
       {"thumbnails", 0, 0, 't'},

@@ -1,3 +1,12 @@
+Wed Jul 31 22:31:21 BST 2002  Tom Gilbert <tom@linuxbrit.co.uk>
+
+  * Fixed --draw-filename (was --draw_filename but not documented as such -
+    oops, that's been broken a terribly long time :))
+
+Tue Apr 16 19:19:11 BST 2002  Tom Gilbert <tom@linuxbrit.co.uk>
+
+  * Release 1.2.0
+
 Fri Mar 08 21:04:07 GMT 2002  Tom Gilbert <tom@linuxbrit.co.uk>
 
   * Patch from Omar Harriott <omar.harriott@csun.edu>
