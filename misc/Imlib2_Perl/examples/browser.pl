@@ -79,7 +79,12 @@ sub select_clist {
 	Imlib2::free_image() if $loaded;	
 	
 	$im = Imlib2::load_image ($path . "/" . $text);
-	Imlib2::set_context($im);
+	if (!$im) {
+		$loaded = 0;
+		$statusbar->push(1,"Could not load image $text");
+		return;
+	}	
+	Imlib2::set_context($im);	
 	$w = Imlib2::get_width();
 	$h = Imlib2::get_height();
 	
@@ -147,7 +152,7 @@ sub parse_args
 		foreach(`ls -1 $ARGV[0]`) {
 			chomp;
 			#check if its a file to begin with and then if its an image.
-			if (/(bmp|gif|jpg|jpeg|png|tif|tiff)$/i) {
+			if (/(bmp|gif|xcf|jpg|jpeg|png|tif|tiff)$/i) {
 				if(-f $path . "/" . $_) {
 					$clist->append($_);				
 				}
