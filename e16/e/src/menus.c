@@ -429,7 +429,7 @@ MenuItemCreate(const char *text, ImageClass * iclass, int action_id,
    if (iclass)
       iclass->ref_count++;
 
-   mi->text = EstrLoc2Int(text, 0);
+   mi->text = (text) ? Estrdup(_(text)) : NULL;
    mi->act_id = action_id;
    mi->params = Estrdup(action_params);
    mi->child = child;
@@ -601,7 +601,7 @@ MenuAddTitle(Menu * menu, const char *title)
    EDBUG(5, "MenuAddTitle");
    if (menu->title)
       Efree(menu->title);
-   menu->title = Estrdup(title);
+   menu->title = (title) ? Estrdup(_(title)) : NULL;
    EDBUG_RETURN_;
 }
 
