@@ -1185,7 +1185,7 @@ typedef struct _emode
      int                 icon_mode;
      char                nogroup;
      GroupConfig         group_config;
-     EWin               *kde_dock;
+     Window              kde_dock;
      int                 kde_support;
      char                clickalways;
   }
@@ -2239,23 +2239,23 @@ void                GNOME_SetWMNameVer(void);
 void                GNOME_DelHints(EWin * ewin);
 
 /* kde.c functions */
-void                KDE_ClientMessage(EWin * ewin, Atom atom, long data,
+void                KDE_ClientMessage(Window win, Atom atom, long data,
 				      Time timestamp);
-void                KDE_ClientTextMessage(EWin * ewin, Atom atom, char *data);
+void                KDE_ClientTextMessage(Window win, Atom atom, char *data);
 void                KDE_SendMessagesToModules(Atom atom, long data);
-void                KDE_AddModule(EWin * ewin);
-void                KDE_RemoveModule(EWin * ewin);
+void                KDE_AddModule(Window win);
+void                KDE_RemoveModule(Window win);
 void                KDE_Init(void);
 void                KDE_Shutdown(void);
-void                KDE_ClientInit(EWin * ewin);
-void                KDE_ClientChange(EWin * ewin, XPropertyEvent * event);
-void                KDE_GetDecorationHint(EWin * ewin, long *dechints);
+void                KDE_ClientInit(Window win);
+void                KDE_ClientChange(Window win, XPropertyEvent * event);
+void                KDE_GetDecorationHint(Window win, long *dechints);
 int                 KDE_WindowCommand(EWin * ewin, char *cmd);
 void                KDE_Command(char *cmd, XClientMessageEvent * event);
 void                KDE_ProcessClientMessage(XClientMessageEvent * event);
-void                KDE_ModuleAssert(EWin * ewin);
-void                KDE_PrepModuleEvent(EWin * ewin, KMessage msg);
-void                KDE_CheckClientHints(EWin * ewin);
+void                KDE_ModuleAssert(Window win);
+void                KDE_PrepModuleEvent(Window win, KMessage msg);
+void                KDE_CheckClientHints(Window win);
 void                KDE_HintChange(Atom a);
 void                KDE_SetRootArea(void);
 

@@ -1795,3 +1795,14 @@ Wed Sep 15 10:46:01 PDT 1999
 
 get rid of cruft in all settigns boxes - make them smaller so they fit on 
 6480x480 screens 
+
+-------------------------------------------------------------------------------
+
+Wed Sep 15 15:40:07 PDT 1999
+(Mandrake)
+
+KDE part four thousand eight hundred and two.
+no more KDE kpanel segfaults.
+the taskbar and the desktop pager still don't have names in them, and E for
+some reason isn't triggering update events.  but we'll fix that soon enough.
+here's another taste of the kde support though.
