@@ -3,14 +3,14 @@
 bindir = $(EBIN)
 
 bin_PROGRAMS = E-Load.epplet E-Clock.epplet E-Time.epplet E-Net.epplet \
-E-Cpu.epplet E-Biff.epplet E-Power.epplet @TEST_PROGS@ @MIXER_PROGS@ \
+E-Cpu.epplet E-Biff.epplet E-Power.epplet @TEST_PROGS@ @MIXER_PROGS@ @GL_PROGS@ \
 E-MemWatch.epplet E-Disk.epplet E-Areas.epplet E-Magic.epplet \
 E-NetFlame.epplet E-Sys.epplet E-ScreenShoot.epplet E-Slides.epplet \
 E-Xss.epplet E-Mountbox.epplet E-Exec.epplet E-SD.epplet @PLAYCD_PROGS@ \
 E-ScreenSave.epplet E-NetGraph.epplet E-MoonClock.epplet E-UrlWatch.epplet
 
 EXTRA_PROGRAMS = EppletTest.epplet EppletConfigTest.epplet E-Mixer.epplet \
-                 Emix.epplet E-PlayCD.epplet
+                 Emix.epplet E-PlayCD.epplet E-OpenGL-Demo.epplet
 
 ################ Conditional Builds ################
 E_Mixer_epplet_SOURCES = E-Mixer.c
@@ -34,6 +34,10 @@ EppletTest_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
 EppletConfigTest_epplet_SOURCES = ConfigTestEpplet.c
 EppletConfigTest_epplet_DEPENDENCIES = $(top_srcdir)/api/libepplet.la
 EppletConfigTest_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
+
+E_OpenGL_Demo_epplet_SOURCES = E-OpenGL-Demo.c
+E_OpenGL_Demo_epplet_DEPENDENCIES = $(top_srcdir)/api/libepplet.la
+E_OpenGL_Demo_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
 ####################################################
 
 E_Exec_epplet_SOURCES = E-Exec.c
