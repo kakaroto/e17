@@ -535,3 +535,7 @@ Thu Nov 27 00:22:16 2003                        Michael Jennings (mej)
 
 More namespace cleaning.  Just one more set to go.
 ----------------------------------------------------------------------
+Tue Dec  9 21:53:50 2003                        Michael Jennings (mej)
+
+Add --libs flag to libast-config.
+----------------------------------------------------------------------
