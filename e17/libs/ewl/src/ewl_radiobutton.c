@@ -13,6 +13,8 @@ void __ewl_radiobutton_update_check(Ewl_Widget * w);
 void __ewl_checkbutton_mouse_down(Ewl_Widget * w,void *ev_data,void *user_data);
 				    
 
+void ewl_checkbutton_init(Ewl_CheckButton * b, char * l);
+
 Ewl_Widget *
 ewl_radiobutton_new(char *label)
 {

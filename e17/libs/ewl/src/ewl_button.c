@@ -38,6 +38,7 @@ ewl_button_new(char *label)
 		return NULL;
 
 	memset(b, 0, sizeof(Ewl_Button));
+
 	ewl_button_init(b, label);
 
 	DRETURN_PTR(EWL_WIDGET(b));
@@ -46,41 +47,45 @@ ewl_button_new(char *label)
 void
 ewl_button_init(Ewl_Button * b, char *label)
 {
+	Ewl_Widget * w;
+
 	DENTER_FUNCTION;
 
+	w = EWL_WIDGET(b);
+
 	ewl_box_init(EWL_BOX(b), EWL_ORIENTATION_HORIZONTAL);
-	ewl_widget_set_appearance(EWL_WIDGET(b), "/appearance/button/default");
+	ewl_widget_set_appearance(w, "/appearance/button/default");
 
 	/*
 	 * Override the default recursive setting on containers. This prevents
 	 * the coordinate->object mapping from searching below the button
 	 * class.
 	 */
-	EWL_WIDGET(b)->recursive = FALSE;
+	w->recursive = FALSE;
 
 	/*
 	 * Attach necessary callback mechanisms
 	 */
-	ewl_callback_append(EWL_WIDGET(b), EWL_CALLBACK_REALIZE,
+	ewl_callback_append(w, EWL_CALLBACK_REALIZE,
 			    __ewl_button_realize, NULL);
-	ewl_callback_append(EWL_WIDGET(b), EWL_CALLBACK_MOUSE_DOWN,
+	ewl_callback_append(w, EWL_CALLBACK_MOUSE_DOWN,
 			    __ewl_button_mouse_down, NULL);
-	ewl_callback_append(EWL_WIDGET(b), EWL_CALLBACK_MOUSE_UP,
+	ewl_callback_append(w, EWL_CALLBACK_MOUSE_UP,
 			    __ewl_button_mouse_up, NULL);
-	ewl_callback_append(EWL_WIDGET(b), EWL_CALLBACK_FOCUS_IN,
+	ewl_callback_append(w, EWL_CALLBACK_FOCUS_IN,
 			    __ewl_button_focus_in, NULL);
-	ewl_callback_append(EWL_WIDGET(b), EWL_CALLBACK_FOCUS_OUT,
+	ewl_callback_append(w, EWL_CALLBACK_FOCUS_OUT,
 			    __ewl_button_focus_out, NULL);
-	ewl_callback_append(EWL_WIDGET(b), EWL_CALLBACK_THEME_UPDATE,
+	ewl_callback_append(w, EWL_CALLBACK_THEME_UPDATE,
 			    __ewl_button_theme_update, NULL);
 
 	if (label) {
 		b->label = strdup(label);
 		b->label_object = ewl_text_new();
-		ewl_text_set_text(EWL_TEXT(b->label_object), label);
+		ewl_text_set_text(b->label_object, label);
 
 		ewl_object_set_alignment(EWL_OBJECT(b->label_object),
-				EWL_ALIGNMENT_CENTER);
+									EWL_ALIGNMENT_CENTER);
 		ewl_container_append_child(EWL_CONTAINER(b), b->label_object);
 	}
 
@@ -125,19 +130,17 @@ __ewl_button_realize(Ewl_Widget * w, void *ev_data, void *user_data)
 
 		tmp = ewl_theme_data_get(w, "/appearance/button/default/text/font");
 		if (tmp)
-			ewl_text_set_font(EWL_TEXT(b->label_object),
-					(char *) tmp);
+			ewl_text_set_font(b->label_object, tmp);
 
 		tmp = ewl_theme_data_get(w, "/appearance/button/default/text/style");
 		if (tmp)
-			ewl_text_set_style(EWL_TEXT(b->label_object), tmp);
+			ewl_text_set_style(b->label_object, tmp);
 
 		tmp = ewl_theme_data_get(b->label_object, "/appearance/button/default/text/font_size");
 
 
 		if (tmp)
-			ewl_text_set_font_size(EWL_TEXT(b->label_object),
-					(int) (tmp));
+			ewl_text_set_font_size(b->label_object, (int) (tmp));
 
 		ewl_widget_show(b->label_object);
 	  }
@@ -240,7 +243,7 @@ __ewl_button_update_label(Ewl_Button * b)
 
 	if (tmp)
 	  {
-		ewl_text_set_font(EWL_TEXT(b->label_object), tmp);
+		ewl_text_set_font(b->label_object, tmp);
 		FREE(tmp);
 	  }
 	FREE(tmp);
@@ -251,9 +254,9 @@ __ewl_button_update_label(Ewl_Button * b)
 	 * Apply theme info to the text
 	 */
 	if (tmp)
-		ewl_text_set_font_size(EWL_TEXT(b->label_object), (int) (tmp));
+		ewl_text_set_font_size(b->label_object, (int) (tmp));
 
-	ewl_text_set_text(EWL_TEXT(b->label_object), b->label);
+	ewl_text_set_text(b->label_object, b->label);
 	ewl_widget_show(b->label_object);
 
 	DLEAVE_FUNCTION;
@@ -272,7 +275,6 @@ __ewl_button_remove_label(Ewl_Button * b)
 		DRETURN;
 
 	ewd_list_goto_first(EWL_CONTAINER(b)->children);
-	ewd_list_remove(EWL_CONTAINER(b)->children);
 
 	if (ewd_list_goto(EWL_CONTAINER(b)->children, b->label_object))
 		ewd_list_remove(EWL_CONTAINER(b)->children);

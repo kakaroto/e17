@@ -9,6 +9,8 @@ struct _ewl_entry {
 	Ewl_Box box;
 
 	Ewl_Widget * text;
+	Ewl_Widget * cursor;
+	Ewl_Widget * selection;
 };
 
 Ewl_Widget *ewl_entry_new(void);

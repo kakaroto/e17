@@ -68,7 +68,8 @@ void ewl_widget_set_appearance(Ewl_Widget *w, char *appearance);
 char * ewl_widget_get_appearance(Ewl_Widget *w);
 void __ewl_widget_configure(Ewl_Widget *w, void *event_data, void *user_data);
 void __ewl_widget_theme_update(Ewl_Widget *w, void *event_data,void *user_data);
-		
+void ewl_widget_set_parent(Ewl_Widget * w, Ewl_Widget * p);
+
 #define REALIZED(w) (EWL_WIDGET(w)->visible & EWL_VISIBILITY_REALIZED)
 #define VISIBLE(w) EWL_WIDGET(w)->visible
 #define LAYER(w) EWL_WIDGET(w)->layer

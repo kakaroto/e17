@@ -103,6 +103,7 @@
 #define DRETURN return;
 #define DRETURN_PTR(ptr) return ptr;
 #define DRETURN_INT(num) return num;
+#define DRETURN_FLOAT(num) return num;
 #define D(lvl, str)
 #define DERROR(str)
 #define DWARNING(str)

@@ -25,7 +25,7 @@ ewl_widget_init(Ewl_Widget * w, char *appearance)
 	/*
 	 * Set up the necessary theme structures 
 	 */
-	ewl_theme_init_widget(EWL_WIDGET(w));
+	ewl_theme_init_widget(w);
 
 	/*
 	 * The base appearance is used for updating the appearance of the
@@ -61,7 +61,7 @@ ewl_widget_realize(Ewl_Widget * w)
 	DENTER_FUNCTION;
 	DCHECK_PARAM_PTR("w", w);
 
-	if (!w->visible || REALIZED(w))
+	if (REALIZED(w))
 		DRETURN;
 
 	w->visible |= EWL_VISIBILITY_REALIZED;
@@ -178,7 +178,6 @@ ewl_widget_set_data(Ewl_Widget * w, void *k, void *v)
 	DENTER_FUNCTION;
 	DCHECK_PARAM_PTR("w", w);
 	DCHECK_PARAM_PTR("k", k);
-	DCHECK_PARAM_PTR("v", v);
 
 	if (!w->data)
 		w->data = ewd_hash_new(ewd_str_hash, ewd_str_compare);
@@ -489,13 +488,14 @@ __ewl_widget_theme_update(Ewl_Widget *w, void *event_data, void *user_data)
 	/*
 	 * Set up the ebits object on the widgets evas
 	 */
-	if (w->ebits_object) {
+	if (w->ebits_object)
+	  {
 		ebits_add_to_evas(w->ebits_object, w->evas);
 		ebits_set_layer(w->ebits_object, LAYER(w));
 		if (w->fx_clip_box)
 			ebits_set_clip(w->ebits_object, w->fx_clip_box);
 		ebits_show(w->ebits_object);
-	}
+	  }
 
 	FREE(key);
 
@@ -512,7 +512,6 @@ __ewl_widget_reparent(Ewl_Widget *w, void *event_data, void *user_data)
 	DCHECK_PARAM_PTR("w", w);
 
 	if (!w->parent) {
-		DLEAVE_FUNCTION;
 		DRETURN;
 	}
 

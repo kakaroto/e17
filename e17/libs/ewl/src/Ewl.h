@@ -51,3 +51,4 @@
 #include <ewl_image.h>
 #include <ewl_checkbutton.h>
 #include <ewl_radiobutton.h>
+#include <ewl_cursor.h>

@@ -14,6 +14,7 @@ installed_headers_DATA = \
 	ewl_checkbutton.h \
 	ewl_config.h \
 	ewl_container.h \
+	ewl_cursor.h \
 	ewl_debug.h \
 	ewl_entry.h \
 	ewl_enums.h \
@@ -40,6 +41,7 @@ libewl_la_SOURCES = \
 	ewl_checkbutton.c \
 	ewl_config.c \
 	ewl_container.c \
+	ewl_cursor.c \
 	ewl_entry.c \
 	ewl_events.c \
 	ewl_fx.c \

@@ -51,6 +51,7 @@ ewl_text_init(Ewl_Text * t)
 			NULL);
 	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE, __ewl_text_configure,
 			NULL);
+	ewl_callback_del(w, EWL_CALLBACK_THEME_UPDATE, __ewl_widget_theme_update);
 
 	DLEAVE_FUNCTION;
 }

@@ -1,3 +1,9 @@
+Wed Sep  12 17:35:33 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
+	* Rewrote the Ewl_Entry widget to match the new code.
+	* Some minor fixes in the Ewl_Widget code.
+	* Added a Ewl_Cursor widget, that will be used in the Ewl_Entry widget
+	  and the future Ewl_TextArea widget.
+
 Thu Sep  06 16:22:54 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
 	* Changed a few function calls to match raster's changes to ebits.
 

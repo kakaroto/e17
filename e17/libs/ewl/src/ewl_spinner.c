@@ -95,9 +95,8 @@ __ewl_spinner_init(Ewl_Spinner * spinner)
 
 	EWL_WIDGET(spinner)->recursive = TRUE;
 
-	ewl_callback_append(EWL_WIDGET(spinner),
-			    EWL_CALLBACK_REALIZE, __ewl_spinner_realize,
-			    NULL);
+	ewl_callback_append(EWL_WIDGET(spinner), EWL_CALLBACK_REALIZE,
+			__ewl_spinner_realize, NULL);
 	ewl_callback_append(EWL_WIDGET(spinner), EWL_CALLBACK_SHOW,
 			    __ewl_spinner_show, NULL);
 	ewl_callback_append(EWL_WIDGET(spinner), EWL_CALLBACK_HIDE,

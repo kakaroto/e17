@@ -86,8 +86,8 @@ ewl_list_append_text(Ewl_Widget * l, char *text[])
 
 		for (i = 0; i < EWL_TABLE(table)->columns; i++) {
 			text_widgets[i] = ewl_text_new();
-			ewl_text_set_text(EWL_TEXT(text_widgets[i]), text[i]);
-			ewl_text_set_font_size(EWL_TEXT(text_widgets[i]), 8);
+			ewl_text_set_text(text_widgets[i], text[i]);
+			ewl_text_set_font_size(text_widgets[i], 8);
 
 /*			  ewl_table_attach(table, text_widgets[i],
 					   EWL_ALIGNMENT_LEFT,

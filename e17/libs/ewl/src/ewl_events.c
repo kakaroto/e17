@@ -1,15 +1,15 @@
 
 #include <Ewl.h>
 
-Ewl_Widget *last_selected;
-Ewl_Widget *last_key;
-Ewl_Widget *last_focused;
-Ewl_Widget *dnd_widget;
+Ewl_Widget *last_selected = NULL;
+Ewl_Widget *last_key = NULL;
+Ewl_Widget *last_focused = NULL;
+Ewl_Widget *dnd_widget = NULL;
 
 static void ewl_ev_window_expose(Eevent * _ev);
 static void ewl_ev_window_configure(Eevent * _ev);
 static void ewl_ev_window_delete(Eevent * _ev);
-static void ewl_ev_window_reparent(Eevent * _ev);
+/*static void ewl_ev_window_reparent(Eevent * _ev);*/
 static void ewl_ev_key_down(Eevent * _ev);
 static void ewl_ev_key_up(Eevent * _ev);
 static void ewl_ev_mouse_down(Eevent * _ev);
@@ -22,16 +22,10 @@ static void ewl_ev_mouse_move(Eevent * _ev);
 int
 ewl_ev_init(void)
 {
-	last_selected = NULL;
-	last_key = NULL;
-	last_focused = NULL;
-	dnd_widget = NULL;
-
 	e_event_filter_handler_add(EV_WINDOW_EXPOSE, ewl_ev_window_expose);
 	e_event_filter_handler_add(EV_WINDOW_CONFIGURE,
 				   ewl_ev_window_configure);
 	e_event_filter_handler_add(EV_WINDOW_DELETE, ewl_ev_window_delete);
-
 /*	e_event_filter_handler_add(EV_WINDOW_REPARENT, ewl_ev_window_reparent);*/
 	e_event_filter_handler_add(EV_KEY_DOWN, ewl_ev_key_down);
 	e_event_filter_handler_add(EV_KEY_UP, ewl_ev_key_up);
@@ -85,7 +79,7 @@ ewl_ev_window_configure(Eevent * _ev)
 
 /*
  * FIXME: We probably need to do some work here.
- */
+ *
 static void
 ewl_ev_window_reparent(Eevent * _ev)
 {
@@ -98,6 +92,7 @@ ewl_ev_window_reparent(Eevent * _ev)
 
 	ewl_callback_call(EWL_WIDGET(window), EWL_CALLBACK_REPARENT);
 }
+ */
 
 /*
  * Retrieve the appropriate ewl_window using the x window id that is held

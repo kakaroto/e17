@@ -38,6 +38,10 @@ static void *theme_keys[] = {
         "/appearance/button/radio/text/font_size", (void *) 8,
         "/appearance/button/radio/text/style", "Default",
 
+        "/appearance/cursor/default/base",
+        "/appearance/cursor/default/base.bits.db",
+        "/appearance/cursor/default/base/visible", "yes",
+
 	"/appearance/entry/default/base",
 	"/appearance/entry/default/base.bits.db",
 	"/appearance/entry/default/base/visible", "yes",
