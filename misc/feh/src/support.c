@@ -56,7 +56,7 @@ feh_wm_set_bg(char *fil, Imlib_Image im, int centered, int scaled,
 
    if (feh_wm_get_wm_is_e() && (enl_ipc_get_win() != None))
    {
-      snprintf(sendbuf, sizeof(sendbuf), "background %s bg.file %s", bgname,
+      snprintf(sendbuf, sizeof(sendbuf), "background %s bg.file \"%s\"", bgname,
                fil);
       enl_ipc_send(sendbuf);
 
