@@ -112,30 +112,42 @@ main_loop (void)
 		  break;
 		case 2:
 		  D (("Button 2 Press event\n"));
-		  winwid = winwidget_get_from_window (ev.xbutton.window);
-		  if (winwid != NULL)
+		  if (!opt.full_screen)
 		    {
-		      D (("  Enabling zoom mode\n"));
-		      zoom_mode = 1;
-		      winwid->zoom_mode = 1;
-		      winwid->zx = ev.xbutton.x;
-		      winwid->zy = ev.xbutton.y;
-		      imlib_context_set_anti_alias (0);
-		      imlib_context_set_dither (0);
-		      imlib_context_set_blend (0);
-		      imlib_context_set_drawable (winwid->bg_pmap);
-		      imlib_context_set_image (winwid->im);
-		      if (imlib_image_has_alpha ())
+		      winwid = winwidget_get_from_window (ev.xbutton.window);
+		      if (winwid != NULL)
 			{
-			  imlib_context_set_blend (1);
-			  feh_draw_checks (winwid);
+			  D (("  Enabling zoom mode\n"));
+			  zoom_mode = 1;
+			  winwid->zoom_mode = 1;
+			  winwid->zx = ev.xbutton.x;
+			  winwid->zy = ev.xbutton.y;
+			  imlib_context_set_anti_alias (0);
+			  imlib_context_set_dither (0);
+			  imlib_context_set_blend (0);
+			  imlib_context_set_drawable (winwid->bg_pmap);
+			  imlib_context_set_image (winwid->im);
+			  if (imlib_image_has_alpha ())
+			    {
+			      imlib_context_set_blend (1);
+			      feh_draw_checks (winwid);
+			    }
+			  imlib_context_set_image (winwid->im);
+			  if (opt.full_screen)
+			    imlib_render_image_on_drawable (
+							    (scr->width -
+							     progwin->
+							     im_w) >> 1,
+							    (scr->height -
+							     progwin->
+							     im_h) >> 1);
+			  else
+			    imlib_render_image_on_drawable (0, 0);
+			  XSetWindowBackgroundPixmap (disp, winwid->win,
+						      winwid->bg_pmap);
+			  XClearWindow (disp, winwid->win);
+			  XFlush (disp);
 			}
-		      imlib_context_set_image (winwid->im);
-		      imlib_render_image_on_drawable (0, 0);
-		      XSetWindowBackgroundPixmap (disp, winwid->win,
-						  winwid->bg_pmap);
-		      XClearWindow (disp, winwid->win);
-		      XFlush (disp);
 		    }
 		  break;
 		case 4:

@@ -1,3 +1,10 @@
+Sat Mar  4 15:59:44 2000  Tom Gilbert  <gilbertt@btinternet.com>
+
+	* Bah. Disabled zooming in fullscreen mode for now. I'll do the
+	math and fix it later.
+	* I think I'm gonna have to rewrite shedloads of it to support
+	window resizing etc...
+
 Sat Mar  4 14:46:42 2000  Tom Gilbert  <gilbertt@btinternet.com>
 
 	* Fixed progressive loading in fullscreen mode. Those callbacks
