@@ -339,6 +339,7 @@ entrance_session_start_user_session(Entrance_Session *e)
    }
    ecore_evas_shutdown();
    ecore_x_sync();
+   entrance_ipc_shutdown();
 
    syslog(LOG_NOTICE, "Starting session for user \"%s\".", e->auth->user);
 
