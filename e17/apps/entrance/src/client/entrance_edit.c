@@ -548,7 +548,8 @@ _show_cb(void *data, Evas_Object * o, const char *emission,
          ecco_users_list_init(ecco.container.users);
       }
 
-      if (ecco.config->users.keys && ecco.config->users.keys->data)
+      if (!ecco.current_user && ecco.config->users.keys
+          && ecco.config->users.keys->data)
       {
 
          if ((ecco.current_user =
@@ -583,7 +584,8 @@ _show_cb(void *data, Evas_Object * o, const char *emission,
       {
          ecco_sessions_list_init(ecco.container.sessions);
       }
-      if (ecco.config->sessions.keys && ecco.config->sessions.keys->data)
+      if (!ecco.current_session && ecco.config->sessions.keys
+          && ecco.config->sessions.keys->data)
       {
          if ((ecco.current_session =
               evas_hash_find(ecco.config->sessions.hash,
@@ -1880,6 +1882,7 @@ main(int argc, char *argv[])
    ecco.focus.signal = NULL;
    ecco.scroll_timer = NULL;
    ecco.current_user = NULL;
+   ecco.current_session = NULL;
 
    /* Basic ecore initialization */
    if (!ecore_init())
