@@ -8,6 +8,7 @@
 Esmart_Text_Area *_esmart_textarea_init(Evas_Object *o);
 void              _esmart_textarea_focus_set(Esmart_Text_Area *t, Evas_Bool focus);
 void              _esmart_textarea_bg_set(Esmart_Text_Area *t, Evas_Object *o);
+Evas_Object      *_esmart_textarea_bg_get(Esmart_Text_Area *t);
 void              _esmart_textarea_clear(Esmart_Text_Area *t);
 void              _esmart_textarea_cursor_pos_set(Esmart_Text_Area *t, int pos);
 int               _esmart_textarea_cursor_pos_get(Esmart_Text_Area *t);

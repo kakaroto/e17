@@ -77,6 +77,12 @@ _esmart_textarea_bg_set(Esmart_Text_Area *t, Evas_Object *o)
    evas_object_show(t->bg);
 }
 
+Evas_Object * 
+_esmart_textarea_bg_get(Esmart_Text_Area *t)
+{
+   return t->bg;
+}
+
 /* clear the textarea */
 void
 _esmart_textarea_clear(Esmart_Text_Area *t)

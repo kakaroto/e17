@@ -126,6 +126,13 @@ esmart_textarea_bg_set(Evas_Object *o, Evas_Object *bg)
    _esmart_textarea_bg_set(t, bg);
 }
 
+Evas_Object *
+esmart_textarea_bg_get(Evas_Object *o)
+{
+      return _esmart_textarea_bg_get(o);
+}
+
+
 /* override default cursor with an Evas_Object */
 void
 esmart_textarea_cursor_set(Evas_Object *o, Evas_Object *c)
