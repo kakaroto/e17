@@ -44,7 +44,6 @@ int ewl_table_init(Ewl_Table * t, int cols, int rows, char **col_headers)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("t", t, FALSE);
-	DCHECK_PARAM_PTR_RET("col_headers", col_headers, FALSE);
 
 	/*
 	 * Iniitialize the tables inherited fields
@@ -58,7 +57,10 @@ int ewl_table_init(Ewl_Table * t, int cols, int rows, char **col_headers)
 	/*
 	 * Create a new grid
 	 */
-	t->grid = (Ewl_Grid *) ewl_grid_new(cols, rows);
+	if (col_headers)
+	        t->grid = (Ewl_Grid *) ewl_grid_new(cols, rows + 1);
+	else
+	        t->grid = (Ewl_Grid *) ewl_grid_new(cols, rows);
 	ewl_container_child_append(EWL_CONTAINER(t), EWL_WIDGET(t->grid));
 	ewl_widget_show(EWL_WIDGET(t->grid));
 
@@ -110,16 +112,27 @@ int ewl_table_init(Ewl_Table * t, int cols, int rows, char **col_headers)
  * @brief Add a child widget to the table
  */
 void
-ewl_table_add(Ewl_Table * table, Ewl_Cell * cell,
+ewl_table_add(Ewl_Table * table, Ewl_Widget * w,
 	      int start_col, int end_col, int start_row, int end_row)
 {
-
+        Ewl_Cell *cell;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("table", table);
 
-	ewl_grid_add(table->grid, EWL_WIDGET(cell),
-		     start_col, end_col, start_row, end_row);
+	cell = ewl_cell_new ();
+	ewl_container_child_append (EWL_CONTAINER (cell), w);
+
+	/*
+	 * FIXME: one must verify that other functions that
+	 * ewl_table_add need this test
+	*/
+	if (table->col_headers)
+	        ewl_grid_add(table->grid, EWL_WIDGET(cell),
+			     start_col, end_col, start_row + 1, end_row + 1);
+	else
+	        ewl_grid_add(table->grid, EWL_WIDGET(cell),
+			     start_col, end_col, start_row, end_row);
 
 	ewl_callback_prepend(EWL_WIDGET(cell), EWL_CALLBACK_MOUSE_UP,
 			     ewl_table_child_select_cb, table);
