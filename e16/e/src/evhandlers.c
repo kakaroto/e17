@@ -2631,10 +2631,6 @@ HandleMouseUp(XEvent * ev)
 			       MoveEwinToDesktop(gwins[i], ndesk);
 			 }
 		    }
-		  RedrawPagersForDesktop(p->hi_ewin->desktop, 3);
-		  ForceUpdatePagersForDesktop(p->hi_ewin->desktop);
-		  p->hi_visible = 1;
-		  PagerHideHi(p);
 	       }
 	     else if ((ev->xbutton.x >= 0) && (ev->xbutton.y >= 0)
 		      && (ev->xbutton.x < p->w) && (ev->xbutton.y < p->h))
@@ -2648,6 +2644,13 @@ HandleMouseUp(XEvent * ev)
 		       RaiseEwin(ewin);
 		       FocusToEWin(ewin);
 		    }
+	       }
+	     if (p->hi_ewin)
+	       {
+		  RedrawPagersForDesktop(p->hi_ewin->desktop, 3);
+		  ForceUpdatePagersForDesktop(p->hi_ewin->desktop);
+		  p->hi_visible = 1;
+		  PagerHideHi(p);
 	       }
 	     mode.mode = MODE_NONE;
 	     mode.context_pager = NULL;
