@@ -314,9 +314,9 @@ on_file_select_button_clicked(GtkButton * button, gpointer user_data)
    GtkWidget *fs;
    char buf[1024];
 
-   snprintf(buf, 1024, "%s/", getenv("HOME"));
    fs = gtk_file_selection_new("Add Image File...");
-   gtk_file_selection_set_filename(GTK_FILE_SELECTION(fs), buf);
+   gtk_file_selection_set_filename(GTK_FILE_SELECTION(fs),
+                                   image_fileselection_dir);
    gtk_signal_connect(GTK_OBJECT(GTK_FILE_SELECTION(fs)->cancel_button),
                       "clicked", GTK_SIGNAL_FUNC(browse_file_cancel_clicked),
                       (gpointer) fs);
