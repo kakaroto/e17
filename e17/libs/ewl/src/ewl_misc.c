@@ -236,17 +236,6 @@ int ewl_idle_render(void *data)
 		DRETURN_INT(TRUE, DLEVEL_STABLE);
 
 	/*
-	 * Freeze events on the evases to reduce overhead
-	 */
-	ecore_list_goto_first(ewl_embed_list);
-	while ((emb = ecore_list_next(ewl_embed_list)) != NULL) {
-		if (emb->evas)
-			evas_event_freeze(emb->evas);
-	}
-
-	edje_freeze();
-
-	/*
 	 * Clean out the unused widgets first, to avoid them being drawn or
 	 * unnecessary work done from configuration. Then display new widgets,
 	 * finally layout the widgets.
@@ -256,6 +245,17 @@ int ewl_idle_render(void *data)
 
 	if (!ecore_list_is_empty(realize_list))
 		ewl_realize_queue();
+
+	/*
+	 * Freeze events on the evases to reduce overhead
+	 */
+	ecore_list_goto_first(ewl_embed_list);
+	while ((emb = ecore_list_next(ewl_embed_list)) != NULL) {
+		if (REALIZED(emb) && emb->evas)
+			evas_event_freeze(emb->evas);
+	}
+
+	edje_freeze();
 
 	if (!ecore_list_is_empty(configure_list))
 		ewl_configure_queue();
@@ -267,7 +267,7 @@ int ewl_idle_render(void *data)
 	 */
 	ecore_list_goto_first(ewl_embed_list);
 	while ((emb = ecore_list_next(ewl_embed_list)) != NULL) {
-		if (emb->evas) {
+		if (REALIZED(emb) && emb->evas) {
 			evas_event_thaw(emb->evas);
 			evas_render(emb->evas);
 		}
