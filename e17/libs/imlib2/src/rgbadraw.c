@@ -1772,6 +1772,91 @@ __imlib_draw_ellipse(ImlibImage * im, int xc, int yc, int aa, int bb, DATA8 r,
 }
 
 void
+__imlib_fill_ellipse(ImlibImage * im, int xc, int yc, int aa, int bb, DATA8 r,
+                     DATA8 g, DATA8 b, DATA8 a, ImlibOp op)
+{
+   int a2 = aa * aa;
+   int b2 = bb * bb;
+   int i;
+
+   int x, y, dec;
+
+   for (x = 0, y = bb, dec = 2 * b2 + a2 * (1 - 2 * bb); b2 * x <= a2 * y;
+        x++)
+   {
+      for (i = yc - y; i <= yc + y; i++)
+      {
+         __imlib_draw_set_point(im, xc - x, i, r, g, b, a, op);
+         __imlib_draw_set_point(im, xc + x, i, r, g, b, a, op);
+      }
+
+      if (dec >= 0)
+         dec += 4 * a2 * (1 - (y--));
+      dec += b2 * (4 * x + 6);
+   }
+
+   for (x = aa, y = 0, dec = 2 * a2 + b2 * (1 - 2 * aa); a2 * y <= b2 * x;
+        y++)
+   {
+      for (i = yc - y; i <= yc + y; i++)
+      {
+         __imlib_draw_set_point(im, xc + x, i, r, g, b, a, op);
+         __imlib_draw_set_point(im, xc - x, i, r, g, b, a, op);
+      }
+
+      if (dec >= 0)
+         dec += 4 * b2 * (1 - (x--));
+      dec += a2 * (4 * y + 6);
+   }
+}
+
+void
+__imlib_fill_ellipse_clipped(ImlibImage * im, int xc, int yc, int aa, int bb,
+                             int clip_xmin, int clip_xmax, int clip_ymin,
+                             int clip_ymax, DATA8 r, DATA8 g, DATA8 b,
+                             DATA8 a, ImlibOp op)
+{
+   int a2 = aa * aa;
+   int b2 = bb * bb;
+   int i;
+
+   int x, y, dec;
+
+   for (x = 0, y = bb, dec = 2 * b2 + a2 * (1 - 2 * bb); b2 * x <= a2 * y;
+        x++)
+   {
+      for (i = yc - y; i <= yc + y; i++)
+      {
+         __imlib_draw_set_point_clipped(im, xc - x, i, clip_xmin, clip_xmax,
+                                        clip_ymin, clip_ymax, r, g, b, a, op);
+         __imlib_draw_set_point_clipped(im, xc + x, i, clip_xmin, clip_xmax,
+                                        clip_ymin, clip_ymax, r, g, b, a, op);
+      }
+
+      if (dec >= 0)
+         dec += 4 * a2 * (1 - (y--));
+      dec += b2 * (4 * x + 6);
+   }
+
+   for (x = aa, y = 0, dec = 2 * a2 + b2 * (1 - 2 * aa); a2 * y <= b2 * x;
+        y++)
+   {
+      for (i = yc - y; i <= yc + y; i++)
+      {
+         __imlib_draw_set_point_clipped(im, xc + x, i, clip_xmin, clip_xmax,
+                                        clip_ymin, clip_ymax, r, g, b, a, op);
+         __imlib_draw_set_point_clipped(im, xc - x, i, clip_xmin, clip_xmax,
+                                        clip_ymin, clip_ymax, r, g, b, a, op);
+      }
+
+      if (dec >= 0)
+         dec += 4 * b2 * (1 - (x--));
+      dec += a2 * (4 * y + 6);
+   }
+}
+
+
+void
 __imlib_draw_ellipse_clipped(ImlibImage * im, int xc, int yc, int aa, int bb,
                              int clip_xmin, int clip_xmax, int clip_ymin,
                              int clip_ymax, DATA8 r, DATA8 g, DATA8 b,

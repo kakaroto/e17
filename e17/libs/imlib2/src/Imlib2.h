@@ -253,8 +253,8 @@ void imlib_image_fill_polygon(ImlibPolygon poly);
 void imlib_polygon_get_bounds(ImlibPolygon poly, int *px1, int *py1, int *px2, int *py2);
 
 /* ellipses */
-void
-imlib_image_draw_ellipse(int xc, int yc, int a, int b);
+void imlib_image_draw_ellipse(int xc, int yc, int a, int b);
+void imlib_image_fill_ellipse(int xc, int yc, int a, int b);
 
 Imlib_Color_Range imlib_create_color_range(void);
 void imlib_free_color_range(void);

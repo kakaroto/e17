@@ -781,7 +781,8 @@ int main (int argc, char **argv)
           /* test ellipses */
           imlib_context_set_cliprect(0,0,0,0);
           imlib_context_set_color(255, 255, 255, 255);
-          imlib_image_draw_ellipse(50,280,30,40);
+          imlib_image_draw_ellipse(50,250,30,40);
+          imlib_image_fill_ellipse(50,300,30,40);
 
           imlib_image_draw_rectangle(120,245,70,70);
           up = imlib_update_append_rect(up, 120,245,70,70);
