@@ -825,11 +825,9 @@ static gint gevas_expose(GtkWidget * widget, GdkEventExpose * event)
 
 	ev = GTK_GEVAS(widget);
 
-	if (event->window == widget->window) {
-
-//		evas_update_rect(ev->evas, event->area.x, event->area.y,
-//						 event->area.width, event->area.height);
-		gevas_paint(GTK_GEVAS(widget), &event->area);
+	if (event->window == widget->window)
+    {
+        gevas_paint(GTK_GEVAS(widget), &event->area);
 	} else
 		g_assert_not_reached();
 
@@ -872,15 +870,44 @@ static void gevas_paint(GtkgEvas * ev, GdkRectangle * area)
 	if (!GTK_WIDGET_DRAWABLE(widget))
 		return;
 
-// XXX:
+// XXX: doesn't work without this line.
 	evas_update_rect(ev->evas, area->x, area->y, area->width, area->height);
 
 /*	printf("evas_update_rect() x:%d y:%d w:%d h:%d\n",
 		area->x, area->y, area->width, area->height);
 */
 	ev->evas_r = *area;
-//	evas_render_updates(ev->evas);
-	evas_render(ev->evas);
+
+    //
+    // Now we carve up the area outside of the current expose event so
+    // that evas doesn't waste time rendering stuff that already is drawn ok.
+    //
+    evas_clear_obscured_rects(ev->evas);
+    {
+        int x = ev->evas_r.x;
+        int y = ev->evas_r.y;
+        int w = ev->evas_r.width;
+        int h = ev->evas_r.height;
+        int aw = widget->allocation.width;
+        int ah = widget->allocation.height;
+
+        printf("expose() x:%d y:%d w:%d h:%d aw:%d ah:%d\n",
+               x,y,w,h,aw,ah);
+
+        // Left and right blocks
+        evas_add_obscured_rect(ev->evas, 0, 0, x, ah );
+        evas_add_obscured_rect(ev->evas, x+w, 0, aw - x+w, ah );
+        
+        // Top and bottom blocks
+        evas_add_obscured_rect(ev->evas, x, 0, x+w, y );
+        evas_add_obscured_rect(ev->evas, x, y+h, x+w, ah );
+    }
+    
+
+    evas_render(ev->evas);
+    evas_clear_obscured_rects(ev->evas);
+
+        
 
 /*  gdk_window_clear_area (widget->window,
                          area->x, 
@@ -900,6 +927,9 @@ static void gevas_paint(GtkgEvas * ev, GdkRectangle * area)
 	}
 }
 
+
+// FIXME: Here we should really know what part of the evas is viewable and
+// only redraw that bit, not the lot.
 gint gevas_view_redraw_cb(gpointer data)
 {
 	GtkgEvas* 	gevas = (GtkgEvas *) data;
@@ -912,7 +942,6 @@ gint gevas_view_redraw_cb(gpointer data)
 /*	printf("gevas_view_redraw_cb() x:%d y:%d w:%d h:%d\n",
 		area->x, area->y, area->width, area->height);
 */
-//	evas_render_updates(ev->evas);
 	evas_render(ev->evas);
 	gevas->current_idle = 0;
 	return FALSE;
