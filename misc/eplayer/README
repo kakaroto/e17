@@ -16,8 +16,6 @@ Ecore CVS with EVAS module
 Edje CVS
 Esmart CVS
 
-AVcodec 0.4.8  (optional, only needed by the MP3 decoding plugin;
-                AVcodec is found as part of the FFmpeg project)
 libVorbis 1.0+ (optional, only needed by the Ogg Vorbis decoding plugin)
 libOgg 1.0+    (ditto)
 
@@ -29,8 +27,6 @@ ePlayer is an audio player which is based on Ecore, Evas and Edje.
 Audio decoding and output is done by plugins.
 At the moment, there are input plugins for Ogg Vorbis and MP3
 and there are output plugins for OSS, ALSA and Solaris.
-
-Note that the MP3 plugin is broken at the moment.
 
 
 CREATING A PERSONAL EPLAYER CONFIG
@@ -58,13 +54,13 @@ these sets:
   a)    Set the output_plugin to a string type with the name of the 
 	 plugin.  Options are: ALSA, Solaris, or OSS
 
-If you do not with to over-ride the default setting for Eplayer, 
-simply don't create the key, or leave the type as int.  
+If you do not with to over-ride the default setting for Eplayer,
+simply don't create the key, or leave the type as int.
 
 You can also use the following directories:
- ~/.e/apps/eplayer/fonts	Fonts for use by Eplayer themes
- ~/.e/apps/eplayer/input	Input Plugins for Eplayer
- ~/.e/apps/eplayer/output	Output Plugins for Eplayer
+ ~/.e/apps/eplayer/fonts          Fonts for use by Eplayer themes
+ ~/.e/apps/eplayer/plugins/input  Input Plugins for Eplayer
+ ~/.e/apps/eplayer/plugins/output Output Plugins for Eplayer
 
 
 REPORTING BUGS
