@@ -1,0 +1,740 @@
+/*** Minimized Interface for Default theme - by El SomeoneOh ***/
+                        part {
+                                name, "background";
+                                mouse_events, 1;
+                                type, IMAGE;
+
+                                description {
+                                        state, "default" 0.0;
+                                        rel1 {
+                                                relative, 0.0 0.0;
+                                                offset, 0 0;
+                                        }
+                                        rel2 {
+                                                relative, 1.0 1.0;
+                                                offset, -1 -1;
+                                        }
+                                        image {
+                                                normal, "border-scale.png";
+                                        }
+                                        border, 6 6 6 6;
+                                        fill {
+                                                smooth, 0;
+                                        }
+                                }
+                        }
+                        part {
+                                name, "title";
+                                type,   TEXT;
+                                mouse_events, 1;
+                                description {
+                                        state,  "default" 0.0;
+
+                                        rel1 {
+                                                relative, 0.0 0.0;
+                                                offset, 0 0;
+                                        }
+                                        rel2 {
+                                                relative, 1.0 1.0;
+                                                offset, -4 -4;
+                                        }
+                                        color,  255 255 255 255;
+                                        text {
+                                                text, "ePlayer";
+                                                font, "Vera";   /* Only font Vera works!  Use other and segv */
+                                                size, 6;       /* Font Size */
+                                                align,   1.0 1.0;       /* Text alignment based on rel1/rel2 */
+                                        }
+                                }
+                        }
+                        /***** START LCD AREA *****/
+                        /* LCD Backdrop Image */
+                        part {
+                                name, "lcd_backdrop";
+                                type, IMAGE;
+                                mouse_events, 0;
+                                description {
+                                        state,  "default" 0.0;
+
+                                        /* Part should fill from the far left, 20 pixels down */
+                                        rel1 {
+                                                relative, 0.0 0.0;
+                                                offset, 4 4;
+                                        }
+
+                                        /* all the way to the far right, 40 pixels north of the bottom right corner */
+                                        rel2 {
+                                                relative, 1.0 0.0;
+                                                offset, -6 35;
+                                        }
+
+                                        image {
+                                                normal, "lcd_area.png";
+                                        }
+                                        border, 5 5 5 5;
+
+                                        fill {
+                                                smooth, 0;
+                                        }
+                                }
+                        }
+                        /* LCD Clipping Area - Invisible Rect */
+                        part {
+                                name, "lcd_clip";
+                                type, RECT;
+                                mouse_events, 0;
+                                description {
+                                        state,  "default" 0.0;
+
+                                        rel1 {
+                                                relative, 0.0 0.0;
+                                                offset, 5 5;
+                                                to, "lcd_backdrop";
+                                        }
+
+                                        rel2 {
+                                                relative, 1.0 1.0;
+                                                offset, -5 -5;
+                                                to, "lcd_backdrop";
+                                        }
+
+                                }
+                        }
+
+                        part {
+                                name, "artist_name";
+                                type,   TEXT;
+                                mouse_events, 0;
+                                clip_to, "lcd_clip";
+                                description {
+                                        state,  "default" 0.0;
+
+                                        /* Use the relative size of the LCD itself, then position with align */
+                                        rel1 {
+                                                relative, 0.0 0.0;
+                                                offset, 8 0;
+                                                to, "lcd_backdrop";
+                                        }
+
+                                        rel2 {
+                                                relative, 1.0 1.0;
+                                                offset, -1 -1;
+                                                to, "lcd_backdrop";
+                                        }
+
+
+                                        color,  181 247 255 255;
+                                        text {
+                                                text, "Artist Name";       /* Text String */
+                                                font, "redensek";   /* Only font Vera works!  Use other and segv */
+                                                size, 12;       /* Font Size */
+                                                align, 0.0 0.1;       /* Text alignment based on rel1/rel2 */
+                                        }
+                                }
+                        }
+
+                        part {
+                                name, "song_name";
+                                type,   TEXT;
+                                mouse_events, 0;
+                                clip_to, "lcd_clip";
+                                description {
+                                        state,  "default" 0.0;
+
+                                        /* Use the relative size of the LCD itself, then position with align */
+                                        rel1 {
+                                                relative, 0.0 0.0;
+                                                offset, 8 5;
+                                                to, "lcd_backdrop";
+                                        }
+
+                                        rel2 {
+                                                relative, 1.0 1.0;
+                                                offset, -1 -1;
+                                                to, "lcd_backdrop";
+                                        }
+
+
+                                        color,  181 247 255 255;
+                                        text {
+                                                text, "Song Name";       /* Text String */
+                                                font, "redensek";   /* Only font Vera works!  Use other and segv */
+                                                size, 12;       /* Font Size */
+                                                align, 0.0 0.5;       /* Text alignment based on rel1/rel2 */
+                                        }
+                                }
+                        }
+                        /* Time Counter  */
+                        part {
+                                name, "time_text";
+                                type,   TEXT;
+                                clip_to, "lcd_clip";
+                                mouse_events, 1;
+                                description {
+                                        state,  "default" 0.0;
+
+                                        /* Use the relative size of the LCD itself, then position with align */
+                                        rel1 {
+                                                relative, 0.0 0.0;
+                                                offset, 0 0;
+                                                to, "lcd_backdrop";
+                                        }
+
+                                        rel2 {
+                                                relative, 1.0 1.0;
+                                                offset, -9 -1;
+                                                to, "lcd_backdrop";
+                                        }
+
+
+                                        color,  181 247 255 255;
+                                        text {
+                                                text, "0:00";       /* Text String */
+                                                font, "micro";   /* Only font Vera works!  Use other and segv */
+                                                size, 32;       /* Font Size */
+                                                align, 1.0 1.0;       /* Text alignment based on rel1/rel2 */
+                                        }
+                                }
+                        }
+                        /***** END LCD AREA *****/
+
+                        /***** START BUTTON AREA *****/
+
+                        /***** start previous button *****/
+                        part {
+                                name, "previous_button";
+                                mouse_events, 1;
+                                type, IMAGE;
+                                description {
+                                        state, "default" 0.0;
+                                        rel1 {
+                                                relative, 0.0 0.0;
+                                                offset,  5 37;
+                                        }
+                                        rel2 {
+                                                relative, 0.0 1.0;
+                                                offset, 30 -5;
+                                        }
+                                        image {
+                                                normal, "button-small-normal.png";
+                                        }
+                                }
+                                description {
+                                        state, "clicked" 0.0;
+                                        rel1 {
+                                                relative, 0.0 0.0;
+                                                offset, 5 37;
+                                        }
+                                        rel2 {
+                                                relative, 0.0 1.0;
+                                                offset, 30 -5;
+                                        }
+                                        image {
+                                                normal, "button-small-clicked.png";
+                                        }
+                                }
+                        }
+
+                        part {
+                                name, "previous_text";
+                                type, TEXT;
+                                mouse_events, 0;                /* Does part accept mouse events? */
+                                description {
+                                        state, "default" 0.0;
+
+                                        rel1 {
+                                                relative, 0.0 0.0;
+                                                offset, 0 0;
+                                                to, "previous_button";
+                                        }
+                                        rel2 {
+                                                relative, 1.0 1.0;
+                                                offset, -1 -1;
+                                                to, "previous_button";
+                                        }
+
+
+                                        color, 255 255 255 255;  /* Color of text */
+                                        color2, 0 0 255 255;    /* Does nothing for SOFT_SHADOW */
+                                        color3, 0 0 0 32;      /* Color of shadow */
+
+                                        text {
+                                                text, "Back";       /* Text String */
+                                                font, "Vera";   /* Only font Vera works!  Use other and segv */
+                                                size, 6;       /* Font Size */
+                                                align,   0.5 0.5;       /* Text alignment based on rel1/rel2 */
+                                        }
+                                }
+                        }
+                        /***** stop previous button *****/
+                        /***** start play button *****/
+                        part {
+                                name, "play_button";
+                                mouse_events, 1;
+                                type, IMAGE;
+                                description {
+                                        state, "default" 0.0;
+                                        rel1 {
+                                                relative, 0.0 0.0;
+                                                offset,  35 37;
+                                        }
+                                        rel2 {
+                                                relative, 0.0 1.0;
+                                                offset, 60 -5;
+                                        }
+                                        image {
+                                                normal, "button-small-normal.png";
+                                        }
+                                }
+                                description {
+                                        state, "clicked" 0.0;
+                                        rel1 {
+                                                relative, 0.0 0.0;
+                                                offset, 35 37;
+                                        }
+                                        rel2 {
+                                                relative, 0.0 1.0;
+                                                offset, 60 -5;
+                                        }
+                                        image {
+                                                normal, "button-small-clicked.png";
+                                        }
+                                }
+                        }
+
+                        part {
+                                name, "stop_text";
+                                type, TEXT;
+                                mouse_events, 0;                /* Does part accept mouse events? */
+                                description {
+                                        state, "default" 0.0;
+
+                                        rel1 {
+                                                relative, 0.0 0.0;
+                                                offset, 0 0;
+                                                to, "play_button";
+                                        }
+                                        rel2 {
+                                                relative, 1.0 1.0;
+                                                offset, -1 -1;
+                                                to, "play_button";
+                                        }
+
+
+                                        color, 255 255 255 255;  /* Color of text */
+                                        color2, 0 0 255 255;    /* Does nothing for SOFT_SHADOW */
+                                        color3, 0 0 0 32;      /* Color of shadow */
+
+                                        text {
+                                                text, "Play";       /* Text String */
+                                                font, "Vera";   /* Only font Vera works!  Use other and segv */
+                                                size, 6;       /* Font Size */
+                                                align,   0.5 0.5;       /* Text alignment based on rel1/rel2 */
+                                        }
+                                }
+                        }
+                        /***** stop play button  *****/
+                        /***** start pause button *****/
+                        part {
+                                name, "pause_button";
+                                mouse_events, 1;
+                                type, IMAGE;
+                                description {
+                                        state, "default" 0.0;
+                                        rel1 {
+                                                relative, 0.0 0.0;
+                                                offset,  65 37;
+                                        }
+                                        rel2 {
+                                                relative, 0.0 1.0;
+                                                offset, 90 -5;
+                                        }
+                                        image {
+                                                normal, "button-small-normal.png";
+                                        }
+                                }
+                                description {
+                                        state, "clicked" 0.0;
+                                        rel1 {
+                                                relative, 0.0 0.0;
+                                                offset, 65 37;
+                                        }
+                                        rel2 {
+                                                relative, 0.0 1.0;
+                                                offset, 90 -5;
+                                        }
+                                        image {
+                                                normal, "button-small-clicked.png";
+                                        }
+                                }
+                        }
+
+                        part {
+                                name, "pause_text";
+                                type, TEXT;
+                                mouse_events, 0;                /* Does part accept mouse events? */
+                                description {
+                                        state, "default" 0.0;
+
+                                        rel1 {
+                                                relative, 0.0 0.0;
+                                                offset, 0 0;
+                                                to, "pause_button";
+                                        }
+                                        rel2 {
+                                                relative, 1.0 1.0;
+                                                offset, -1 -1;
+                                                to, "pause_button";
+                                        }
+
+
+                                        color, 255 255 255 255;  /* Color of text */
+                                        color2, 0 0 255 255;    /* Does nothing for SOFT_SHADOW */
+                                        color3, 0 0 0 32;      /* Color of shadow */
+
+                                        text {
+                                                text, "Stop";       /* Text String */
+                                                font, "Vera";   /* Only font Vera works!  Use other and segv */
+                                                size, 6;       /* Font Size */
+                                                align,   0.5 0.5;       /* Text alignment based on rel1/rel2 */
+                                        }
+                                }
+                        }
+                        /***** stop next button *****/
+                        /***** start next button *****/
+                        part {
+                                name, "next_button";
+                                mouse_events, 1;
+                                type, IMAGE;
+                                description {
+                                        state, "default" 0.0;
+                                        rel1 {
+                                                relative, 0.0 0.0;
+                                                offset,  95 37;
+                                        }
+                                        rel2 {
+                                                relative, 0.0 1.0;
+                                                offset, 120 -5;
+                                        }
+                                        image {
+                                                normal, "button-small-normal.png";
+                                        }
+                                }
+                                description {
+                                        state, "clicked" 0.0;
+                                        rel1 {
+                                                relative, 0.0 0.0;
+                                                offset, 95 37;
+                                        }
+                                        rel2 {
+                                                relative, 0.0 1.0;
+                                                offset, 120 -5;
+                                        }
+                                        image {
+                                                normal, "button-small-clicked.png";
+                                        }
+                                }
+			}
+
+                        part {
+                                name, "next_text";
+                                type, TEXT;
+                                mouse_events, 0;                /* Does part accept mouse events? */
+                                description {
+                                        state, "default" 0.0;
+
+                                        rel1 {
+                                                relative, 0.0 0.0;
+                                                offset, 0 0;
+                                                to, "next_button";
+                                        }
+                                        rel2 {
+                                                relative, 1.0 1.0;
+                                                offset, -1 -1;
+                                                to, "next_button";
+                                        }
+
+
+                                        color, 255 255 255 255;  /* Color of text */
+                                        color2, 0 0 255 255;    /* Does nothing for SOFT_SHADOW */
+                                        color3, 0 0 0 32;      /* Color of shadow */
+
+                                        text {
+                                                text, "Next";       /* Text String */
+                                                font, "Vera";   /* Only font Vera works!  Use other and segv */
+                                                size, 6;       /* Font Size */
+                                                align,   0.5 0.5;       /* Text alignment based on rel1/rel2 */
+                                        }
+                                }
+                        }
+                        /***** stop next button *****/
+                        /***** start quit button *****/
+                        part {
+                                name, "quit_button";
+                                mouse_events, 1;
+                                type, IMAGE;
+                                description {
+                                        state, "default" 0.0;
+                                        rel1 {
+                                                relative, 0.0 0.0;
+                                                offset,  125 37;
+                                        }
+                                        rel2 {
+                                                relative, 0.0 1.0;
+                                                offset, 150 -5;
+                                        }
+                                        image {
+                                                normal, "button-small-normal.png";
+                                        }
+                                }
+                                description {
+                                        state, "clicked" 0.0;
+                                        rel1 {
+                                                relative, 0.0 0.0;
+                                                offset, 125 37;
+                                        }
+                                        rel2 {
+                                                relative, 0.0 1.0;
+                                                offset, 150 -5;
+                                        }
+                                        image {
+                                                normal, "button-small-clicked.png";
+                                        }
+                                }
+                        }
+
+                        part {
+                                name, "quit_text";
+                                type, TEXT;
+                                mouse_events, 0;                /* Does part accept mouse events? */
+                                description {
+                                        state, "default" 0.0;
+
+                                        rel1 {
+                                                relative, 0.0 0.0;
+                                                offset, 0 0;
+                                                to, "quit_button";
+                                        }
+                                        rel2 {
+                                                relative, 1.0 1.0;
+                                                offset, -1 -1;
+                                                to, "quit_button";
+                                        }
+
+
+                                        color, 255 255 255 255;  /* Color of text */
+                                        color2, 0 0 255 255;    /* Does nothing for SOFT_SHADOW */
+                                        color3, 0 0 0 32;      /* Color of shadow */
+
+                                        text {
+                                                text, "Quit";       /* Text String */
+                                                font, "Vera";   /* Only font Vera works!  Use other and segv */
+                                                size, 6;       /* Font Size */
+                                                align,   0.5 0.5;       /* Text alignment based on rel1/rel2 */
+                                        }
+                                }
+                        }
+                        /***** stop exit button *****/
+                        /********** Volume  Controls ***************************************/
+                        part {
+                                name, "vol_label";
+                                mouse_events, 0;
+                                description {
+                                        state,  "default" 0.0;
+                                        min, 21 20;
+                                        max, 21 20;
+
+                                        rel1 {
+                                                relative, 1.0 1.0;
+                                                offset, -115 -50;
+                                        }
+                                        rel2 {
+                                                relative, 1.0 1.0;
+                                                offset, 0 24;
+                                        }
+
+                                        image {
+                                                normal, "vol-label.png";
+                                        }
+                                }
+                        }
+
+                        part {
+                                name, "vol_label_text";
+                                type, TEXT;
+                                mouse_events, 0;                /* Does part accept mouse events? */
+                                description {
+                                        state, "default" 0.0;
+
+                                        rel1 {
+                                                relative, 0.0 0.0;
+                                                offset, 0 0;
+                                                to, "vol_label";
+                                        }
+                                        rel2 {
+                                                relative, 1.0 1.0;
+                                                offset, -1 -1;
+                                                to, "vol_label";
+                                        }
+
+
+                                        color, 255 255 255 255;  /* Color of text */
+                                        color2, 0 0 255 255;    /* Does nothing for SOFT_SHADOW */
+                                        color3, 0 0 0 32;        /* Color of shadow */
+
+                                        text {
+                                                text, "VOL";       /* Text String */
+                                                font, "Vera";   /* Only font Vera works!  Use other and segv */
+                                                size, 5;        /* Font Size */
+                                                align,   0.5 0.6;       /* Text alignment based on rel1/rel2 */
+                                        }
+                                }
+                        }
+                        part {
+                                name, "vol_display";
+                                mouse_events, 0;
+                                description {
+                                        state,  "default" 0.0;
+                                        min, 23 20;
+                                        max, 23 20;
+
+                                        rel1 {
+                                                relative, 0.0 0.0;
+                                                offset, -23 0;
+                                                to, "vol_label";
+                                        }
+                                        rel2 {
+                                                relative, 0.0 1.0;
+                                                offset, 0 0;
+                                                to, "vol_label";
+                                        }
+
+                                        image {
+                                                normal, "vol-display.png";
+                                        }
+                                }
+                        }
+
+                        part {
+                                name, "vol_display_text";
+                                type,   TEXT;
+                                //clip_to, "vol_display";
+                                description {
+                                        state,  "default" 0.0;
+
+                                        /* Use the relative size of the LCD itself, then position with align */
+                                        rel1 {
+                                                relative, 0.0 0.0;
+                                                offset, 0 0;
+                                                to, "vol_display";
+                                        }
+
+                                        rel2 {
+                                                relative, 1.0 1.0;
+                                                offset, -1 -1;
+                                                to, "vol_display";
+                                        }
+
+
+                                        color,  181 247 255 255;
+                                        text {
+                                                text, "00";       /* Text String */
+                                                font, "Vera";   /* Only font Vera works!  Use other and segv */
+                                                size, 8;       /* Font Size */
+                                                align, 0.5 0.6;       /* Text alignment based on rel1/rel2 */
+                                        }
+                                }
+                        }
+
+
+                        part {
+                                name, "vol_incr_button";
+                                mouse_events, 1;
+                                description {
+                                        state,  "default" 0.0;
+                                        min, 25 20;
+                                        max, 25 20;
+
+                                        rel1 {
+                                                relative, 0.0 0.0;
+                                                offset, -25 0;
+                                                to, "vol_display";
+                                        }
+                                        rel2 {
+                                                relative, 0.0 1.0;
+                                                offset, 0 0;
+                                                to, "vol_display";
+                                        }
+
+                                        image {
+                                                normal, "vol-plus.png";
+                                        }
+                                }
+                                description {
+                                        state,  "clicked" 0.0;
+                                        min, 25 20;
+                                        max, 25 20;
+
+                                        rel1 {
+                                                relative, 0.0 0.0;
+                                                offset, -25 0;
+                                                to, "vol_display";
+                                        }
+                                        rel2 {
+                                                relative, 0.0 1.0;
+                                                offset, 0 0;
+                                                to, "vol_display";
+                                        }
+
+                                        image {
+                                                normal, "vol-plus-clicked.png";
+                                        }
+                                }
+                        }
+
+                        part {
+                                name, "vol_decr_button";
+                                mouse_events, 1;
+                                description {
+                                        state,  "default" 0.0;
+                                        min, 29 20;
+                                        max, 29 20;
+
+                                        rel1 {
+                                                relative, 0.0 0.0;
+                                                offset, -29 0;
+                                                to, "vol_incr_button";
+                                        }
+                                        rel2 {
+                                                relative, 0.0 1.0;
+                                                offset, 0 0;
+                                                to, "vol_incr_button";
+                                        }
+
+                                        image {
+                                                normal, "vol-minus.png";
+                                        }
+                                }
+                                description {
+                                        state,  "clicked" 0.0;
+                                        min, 29 20;
+                                        max, 29 20;
+
+                                        rel1 {
+                                                relative, 0.0 0.0;
+                                                offset, -29 0;
+                                                to, "vol_incr_button";
+                                        }
+                                        rel2 {
+                                                relative, 0.0 1.0;
+                                                offset, 0 0;
+                                                to, "vol_incr_button";
+                                        }
+
+                                        image {
+                                                normal, "vol-minus-clicked.png";
+                                        }
+                                }
+                        }
+
+/************** EOF ********************/

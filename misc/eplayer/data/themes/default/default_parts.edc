@@ -1,0 +1,1488 @@
+/*** Eplayer Default theme - by Ben Rockwood ***/
+/***   E D J E    P A R T S                  ***/
+
+ 			part {
+                                name, "background";
+                                mouse_events, 0;
+                                type,   IMAGE;
+                                description {
+                                        state,  "default" 0.0;
+
+                                        rel1 {
+                                                relative, 0.0 0.0;
+                                                offset, 0 0;
+                                        }
+                                        rel2 {
+                                                relative, 1.0 1.0;
+                                                offset, -1 -1;
+                                        }
+                                        image {
+                                                normal, "border-scale.png";
+                                        }
+                                        border, 6 6 6 6;
+
+                                        fill {
+                                                smooth, 0;
+                                        }
+                                }
+                        }
+
+                        part {
+                                name, "title";
+                                type,   TEXT;
+                                //effect, SHADOW;
+                                mouse_events, 1;
+                                description {
+                                        state,  "default" 0.0;
+
+                                        rel1 {
+                                                relative, 0.0 0.0;
+                                                offset, 0 4;
+                                        }
+                                        rel2 {
+                                                relative, 1.0 0.0;
+                                                offset, -1 15;
+                                        }
+                                        color,  255 255 255 255;
+                                        text {
+                                                text, "ePlayer - Edje Edition";
+                                                font, "Vera";   /* Only font Vera works!  Use other and segv */
+                                                size, 8;       /* Font Size */
+                                                align,   0.5 1.0;       /* Text alignment based on rel1/rel2 */
+                                        }
+                                }
+                        }
+
+                        part {
+                                name, "titlebar";
+                                type, RECT;
+                                mouse_events, 1;
+
+                                description {
+                                        state, "default" 0.0;
+
+                                        rel1 {
+                                                relative, 0.0 0.0;
+                                                offset, 0 0;
+                                        }
+
+                                        rel2 {
+                                                relative, 1.0 0.0;
+                                                offset, -1 16;
+                                        }
+
+                                        color, 0 0 0 0;
+                                }
+
+                        }
+
+                        part {
+                                name, "quit";
+                                type, IMAGE;
+                                mouse_events, 1;
+                                description {
+                                        state,  "default" 0.0;
+
+                                        rel1 {
+                                                relative, 1.0 0.0;
+                                                offset, -15 4;
+                                        }
+
+                                        rel2 {
+                                                relative, 1.0 0.0;
+                                                offset, -8 11;
+                                        }
+
+                                        image {
+                                                normal, "close_button.png";
+                                        }
+
+                                        fill {
+                                                smooth, 0;
+                                        }
+                                }
+                        }
+
+
+                        /* LCD Backdrop Image */
+                        part {
+                                name, "lcd_backdrop";
+                                type, IMAGE;
+                                mouse_events, 0;
+                                description {
+                                        state,  "default" 0.0;
+
+                                        /* Part should fill from the far left, 20 pixels down */
+                                        rel1 {
+                                                relative, 0.0 0.0;
+                                                offset, 5 16;
+                                        }
+
+                                        /* all the way to the far right, 40 pixels north of the bottom right corner */
+                                        rel2 {
+                                                relative, 1.0 0.0;
+                                                offset, -6 81;
+                                        }
+
+                                        image {
+                                                normal, "lcd_area.png";
+                                        }
+                                        border, 5 5 5 5;
+
+                                        fill {
+                                                smooth, 0;
+                                        }
+                                }
+                        }
+
+                        /* LCD Clipping Area - Invisible Rect */
+                        part {
+                                name, "lcd_clip";
+                                type, RECT;
+                                mouse_events, 0;
+                                description {
+                                        state,  "default" 0.0;
+
+                                        rel1 {
+                                                relative, 0.0 0.0;
+                                                offset, 5 5;
+                                                to, "lcd_backdrop";
+                                        }
+
+                                        rel2 {
+                                                relative, 1.0 1.0;
+                                                offset, -5 -5;
+                                                to, "lcd_backdrop";
+                                        }
+                                        //color, 0 0 0 0;
+
+                                }
+                        }
+                        part {
+                                name, "artist_name";
+                                type,   TEXT;
+                                //effect, SOFT_OUTLINE;
+                                mouse_events, 0;
+                                clip_to, "lcd_clip";
+                                description {
+                                        state,  "default" 0.0;
+
+                                        /* Use the relative size of the LCD itself, then position with align */
+                                        rel1 {
+                                                relative, 0.0 0.0;
+                                                offset, 8 0;
+                                                to, "lcd_backdrop";
+                                        }
+
+                                        rel2 {
+                                                relative, 1.0 1.0;
+                                                offset, -1 -1;
+                                                to, "lcd_backdrop";
+                                        }
+
+
+                                        color,  181 247 255 255;
+                                        text {
+                                                text, "Artist Name";       /* Text String */
+                                                font, "redensek";   /* Only font Vera works!  Use other and segv */
+                                                size, 12;       /* Font Size */
+                                                align, 0.0 0.1;       /* Text alignment based on rel1/rel2 */
+                                        }
+                                }
+                        }
+
+                        part {
+                                name, "album_name";
+                                type,   TEXT;
+                                //effect, SOFT_OUTLINE;
+                                mouse_events, 0;
+                                clip_to, "lcd_clip";
+                                description {
+                                        state,  "default" 0.0;
+
+                                        /* Use the relative size of the LCD itself, then position with align */
+                                        rel1 {
+                                                relative, 0.0 0.0;
+                                                offset, 8 0;
+                                                to, "lcd_backdrop";
+                                        }
+
+                                        rel2 {
+                                                relative, 1.0 1.0;
+                                                offset, -1 -1;
+                                                to, "lcd_backdrop";
+                                        }
+
+
+                                        color,  181 247 255 255;
+                                        text {
+                                                text, "Album Name";       /* Text String */
+                                                font, "redensek";   /* Only font Vera works!  Use other and segv */
+                                                size, 12;       /* Font Size */
+                                                align, 0.0 0.3;       /* Text alignment based on rel1/rel2 */
+                                        }
+                                }
+                        }
+                        part {
+                                name, "song_name";
+                                type,   TEXT;
+                                //effect, SOFT_OUTLINE;
+                                mouse_events, 0;
+                                clip_to, "lcd_clip";
+                                description {
+                                        state,  "default" 0.0;
+
+                                        /* Use the relative size of the LCD itself, then position with align */
+                                        rel1 {
+                                                relative, 0.0 0.0;
+                                                offset, 8 0;
+                                                to, "lcd_backdrop";
+                                        }
+
+                                        rel2 {
+                                                relative, 1.0 1.0;
+                                                offset, -1 -1;
+                                                to, "lcd_backdrop";
+                                        }
+
+
+                                        color,  181 247 255 255;
+                                        text {
+                                                text, "Song Name";       /* Text String */
+                                                font, "redensek";   /* Only font Vera works!  Use other and segv */
+                                                size, 12;       /* Font Size */
+                                                align, 0.0 0.5;       /* Text alignment based on rel1/rel2 */
+                                        }
+                                }
+                        }
+
+                        /* Time Counter  */
+                        part {
+                                name, "time_text";
+                                type,   TEXT;
+                                //effect, OUTLINE_SOFT_SHADOW;
+                                clip_to, "lcd_clip";
+                                mouse_events, 1;
+                                description {
+                                        state,  "default" 0.0;
+
+                                        /* Use the relative size of the LCD itself, then position with align */
+                                        rel1 {
+                                                relative, 0.0 0.0;
+                                                offset, 0 0;
+                                                to, "lcd_backdrop";
+                                        }
+
+                                        rel2 {
+                                                relative, 1.0 1.0;
+                                                offset, -9 -1;
+                                                to, "lcd_backdrop";
+                                        }
+
+
+                                        color,  181 247 255 255;
+                                        text {
+                                                text, "0:00";       /* Text String */
+                                                font, "micro";   /* Only font Vera works!  Use other and segv */
+                                                size, 26;       /* Font Size */
+                                                align, 1.0 1.0;       /* Text alignment based on rel1/rel2 */
+                                        }
+                                }
+                        }
+
+
+                        /************* Buttons *******************************/
+                        /* Button Area */
+                        part {
+                                name, "button_background";
+                                type, IMAGE;
+                                mouse_events, 0;
+                                description {
+                                        state,  "default" 0.0;
+
+                                        rel1 {
+                                                relative, 0.0 1.0;
+                                                offset, 1 5;
+                                                to, "lcd_backdrop";
+                                        }
+
+                                        rel2 {
+                                                relative, 1.0 1.0;
+                                                offset, 0 100;
+                                                to, "lcd_backdrop";
+                                        }
+
+                                        image {
+                                                normal, "controls-back.png";
+                                        }
+
+                                        border, 5 5 5 5;
+
+                                        fill {
+                                                smooth, 0;
+                                        }
+                                }
+                        }
+
+
+                        /* Previous Button */
+                        part {
+                                name, "previous_button";
+                                mouse_events, 1;
+                                description {
+                                        state,  "default" 0.0;
+                                        min, 56 40;
+                                        max, 56 40;
+
+                                        rel1 {
+                                                relative, 0.0 0.0;
+                                                offset, 5 5;
+                                                to, "button_background";
+                                        }
+                                        rel2 {
+                                                relative, 0.0 0.0;
+                                                offset, 61 45;
+                                                to, "button_background";
+                                        }
+                                        image {
+                                                normal, "button-full-normal.png";
+                                        }
+                                }
+
+                                description {
+                                        state,  "clicked" 0.0;
+                                        min, 56 40;
+                                        max, 56 40;
+
+                                        rel1 {
+                                                relative, 0.0 0.0;
+                                                offset, 5 5;
+                                                to, "button_background";
+                                        }
+                                        rel2 {
+                                                relative, 0.0 0.0;
+                                                offset, 61 45;
+                                                to, "button_background";
+                                        }
+
+                                        image {
+                                                normal, "button-full-clicked.png";
+                                        }
+                                }
+
+                        }
+                        /* Play Button */
+                        part {
+                                name, "play_button";
+                                mouse_events, 1;
+                                description {
+                                        state,  "default" 0.0;
+                                        min, 56 40;
+                                        max, 56 40;
+                                        align, 0.5 0.0;
+
+                                        rel1 {
+                                                relative, 1.0 0.0;
+                                                offset, 0 0;
+                                                to, "previous_button";
+                                        }
+                                        rel2 {
+                                                relative, 0.0 1.0;
+                                                offset, -0 -0;
+                                                to, "next_button";
+                                        }
+                                        image {
+                                                normal, "button-full-normal.png";
+                                        }
+                                }
+                                description {
+                                        state,  "clicked" 0.0;
+                                        min, 56 40;
+                                        max, 56 40;
+                                        align, 0.5 0.0;
+
+                                        rel1 {
+                                                relative, 1.0 0.0;
+                                                offset, 0 0;
+                                                to, "previous_button";
+                                        }
+                                        rel2 {
+                                                relative, 0.0 1.0;
+                                                offset, -0 -0;
+                                                to, "next_button";
+                                        }
+
+                                        image {
+                                                normal, "button-full-clicked.png";
+                                        }
+                                }
+                                description {
+                                        state,  "blink" 0.0;
+                                        min, 56 40;
+                                        max, 56 40;
+                                        align, 0.5 0.0;
+
+                                        rel1 {
+                                                relative, 1.0 0.0;
+                                                offset, 0 0;
+                                                to, "previous_button";
+                                        }
+                                        rel2 {
+                                                relative, 0.0 1.0;
+                                                offset, -0 -0;
+                                                to, "next_button";
+                                        }
+
+                                        image {
+                                                normal, "button-full-blinking.png";
+                                                tween,  "button-full-unblinking.png";
+                                        }
+                                }
+
+                        }
+
+                        /* Next Button */
+                        part {
+                                name, "next_button";
+                                mouse_events, 1;
+                                description {
+                                        state,  "default" 0.0;
+                                        min, 56 40;
+                                        max, 56 40;
+
+                                        rel1 {
+                                                relative, 1.0 0.0;
+                                                offset, -61 5;
+                                                to, "button_background";
+                                        }
+                                        rel2 {
+                                                relative, 1.0 0.0;
+                                                offset, -5 45;
+                                                to, "button_background";
+                                        }
+                                        image {
+                                                normal, "button-full-normal.png";
+                                        }
+                                }
+                                description {
+                                        state,  "clicked" 0.0;
+                                        min, 56 40;
+                                        max, 56 40;
+
+                                        rel1 {
+                                                relative, 1.0 0.0;
+                                                offset, -61 5;
+                                                to, "button_background";
+                                        }
+                                        rel2 {
+                                                relative, 1.0 0.0;
+                                                offset, -5 45;
+                                                to, "button_background";
+                                        }
+                                        image {
+                                                normal, "button-full-clicked.png";
+                                        }
+                                }
+                        }
+
+                        /* Seekback Button */
+                        part {
+                                name, "seekback_button";
+                                mouse_events, 1;
+                                description {
+                                        state,  "default" 0.0;
+                                        min, 56 40;
+                                        max, 56 40;
+                                        visible, 1;
+
+                                        rel1 {
+                                                relative, 0.0 0.0;
+                                                offset, 5 50;
+                                                to, "button_background";
+                                        }
+                                        rel2 {
+                                                relative, 0.0 0.0;
+                                                offset, 61 90;
+                                                to, "button_background";
+                                        }
+
+                                        image {
+                                                normal, "button-full-normal.png";
+                                        }
+                                }
+                                description {
+                                        state,  "clicked" 0.0;
+                                        min, 56 40;
+                                        max, 56 40;
+                                        visible, 1;
+
+                                        rel1 {
+                                                relative, 0.0 0.0;
+                                                offset, 5 50;
+                                                to, "button_background";
+                                        }
+                                        rel2 {
+                                                relative, 0.0 0.0;
+                                                offset, 61 90;
+                                                to, "button_background";
+                                        }
+
+                                        image {
+                                                normal, "button-full-clicked.png";
+                                        }
+                                }
+                        }
+
+                        /* Pause Button */
+                        part {
+                                name, "pause_button";
+                                mouse_events, 1;
+                                description {
+                                        state,  "default" 0.0;
+                                        min, 56 40;
+                                        max, 56 40;
+                                        visible, 1;
+
+                                        rel1 {
+                                                relative, 1.0 0.0;
+                                                offset, 0 0;
+                                                to, "seekback_button";
+                                        }
+                                        rel2 {
+                                                relative, 0.0 1.0;
+                                                offset, -0 -0;
+                                                to, "seekforward_button";
+                                        }
+
+                                        image {
+                                                normal, "button-3stage-unselected.png";
+                                                tween,  "button-3stage-fulldown.png";
+                                        }
+                                }
+                                description {
+                                        state,  "clicked" 0.0;
+                                        min, 56 40;
+                                        max, 56 40;
+                                        visible, 1;
+
+                                        rel1 {
+                                                relative, 1.0 0.0;
+                                                offset, 0 0;
+                                                to, "seekback_button";
+                                        }
+                                        rel2 {
+                                                relative, 0.0 1.0;
+                                                offset, -0 -0;
+                                                to, "seekforward_button";
+                                        }
+
+                                        image {
+                                                normal, "button-3stage-selected.png";
+                                                tween, "button-3stage-fulldown.png";
+                                        }
+                                }
+                                description {
+                                        state,  "blink" 0.0;
+                                        min, 56 40;
+                                        max, 56 40;
+                                        visible, 1;
+
+                                        rel1 {
+                                                relative, 1.0 0.0;
+                                                offset, 0 0;
+                                                to, "seekback_button";
+                                        }
+                                        rel2 {
+                                                relative, 0.0 1.0;
+                                                offset, -0 -0;
+                                                to, "seekforward_button";
+                                        }
+
+                                        image {
+                                                normal, "button-full-blinking.png";
+                                                tween,  "button-full-unblinking.png";
+                                        }
+                                }
+                        }
+                        /* Seekforward Button */
+                        part {
+                                name, "seekforward_button";
+                                mouse_events, 1;
+                                description {
+                                        state,  "default" 0.0;
+                                        min, 56 40;
+                                        max, 56 40;
+                                        visible, 1;
+
+                                        rel1 {
+                                                relative, 1.0 0.0;
+                                                offset, -61 50;
+                                                to, "button_background";
+                                        }
+                                        rel2 {
+                                                relative, 1.0 0.0;
+                                                offset, -5 90;
+                                                to, "button_background";
+                                        }
+
+                                        image {
+                                                normal, "button-full-normal.png";
+                                        }
+                                }
+                                description {
+                                        state,  "clicked" 0.0;
+                                        min, 56 40;
+                                        max, 56 40;
+                                        visible, 1;
+
+                                        rel1 {
+                                                relative, 1.0 0.0;
+                                                offset, -61 50;
+                                                to, "button_background";
+                                        }
+                                        rel2 {
+                                                relative, 1.0 0.0;
+                                                offset, -5 90;
+                                                to, "button_background";
+                                        }
+
+                                        image {
+                                                normal, "button-full-clicked.png";
+                                        }
+                                }
+                        }
+
+                        /***************** BUTTON TEXT ELEMENTS *******************************/
+                        part {
+                                name, "previous_text";
+                                type, TEXT;
+                                //effect, SOFT_SHADOW;
+                                mouse_events, 0;                /* Does part accept mouse events? */
+                                //                      clip_to, "previous_button";     /* Clip anything outside of the specified object */
+                                description {
+                                        state, "default" 0.0;
+
+                                        rel1 {
+                                                relative, 0.0 0.0;
+                                                offset, 0 0;
+                                                to, "previous_button";
+                                        }
+                                        rel2 {
+                                                relative, 1.0 1.0;
+                                                offset, -1 -1;
+                                                to, "previous_button";
+                                        }
+
+
+                                        color, 255 255 255 255;  /* Color of text */
+                                        color2, 0 0 255 255;    /* Does nothing for SOFT_SHADOW */
+                                        color3, 0 0 0 32;        /* Color of shadow */
+
+                                        text {
+                                                text, "Previous";       /* Text String */
+                                                font, "Vera";   /* Only font Vera works!  Use other and segv */
+                                                size, 6;        /* Font Size */
+                                                align,   0.5 0.5;       /* Text alignment based on rel1/rel2 */
+                                        }
+                                }
+                        }
+
+                        part {
+                                name, "play_text";
+                                type, TEXT;
+                                //effect, SOFT_SHADOW;
+                                mouse_events, 0;                /* Does part accept mouse events? */
+                                //                      clip_to, "play_button";     /* Clip anything outside of the specified object */
+                                description {
+                                        state, "default" 0.0;
+
+                                        rel1 {
+                                                relative, 0.0 0.0;
+                                                offset, 0 0;
+                                                to, "play_button";
+                                        }
+                                        rel2 {
+                                                relative, 1.0 1.0;
+                                                offset, -1 -1;
+                                                to, "play_button";
+                                        }
+
+
+                                        color, 255 255 255 255;  /* Color of text */
+                                        color2, 0 0 255 255;    /* Does nothing for SOFT_SHADOW */
+                                        color3, 0 0 0 32;      /* Color of shadow */
+
+                                        text {
+                                                text, "Play";       /* Text String */
+                                                font, "Vera";   /* Only font Vera works!  Use other and segv */
+                                                size, 6;       /* Font Size */
+                                                align,   0.5 0.5;       /* Text alignment based on rel1/rel2 */
+                                        }
+                                }
+                        }
+
+                        part {
+                                name, "next_text";
+                                type, TEXT;
+                                //effect, SOFT_SHADOW;
+                                mouse_events, 0;                /* Does part accept mouse events? */
+                                //                      clip_to, "next_button";     /* Clip anything outside of the specified object */
+                                description {
+                                        state, "default" 0.0;
+
+                                        rel1 {
+                                                relative, 0.0 0.0;
+                                                offset, 0 0;
+                                                to, "next_button";
+                                        }
+                                        rel2 {
+                                                relative, 1.0 1.0;
+                                                offset, -1 -1;
+                                                to, "next_button";
+                                        }
+
+
+                                        color, 255 255 255 255;  /* Color of text */
+                                        color2, 0 0 255 255;    /* Does nothing for SOFT_SHADOW */
+                                        color3, 0 0 0 32;      /* Color of shadow */
+
+                                        text {
+                                                text, "Next";       /* Text String */
+                                                font, "Vera";   /* Only font Vera works!  Use other and segv */
+                                                size, 6;       /* Font Size */
+                                                align,   0.5 0.5;       /* Text alignment based on rel1/rel2 */
+                                        }
+                                }
+                        }
+
+                        part {
+                                name, "seekback_text";
+                                type, TEXT;
+                                //effect, SOFT_SHADOW;
+                                mouse_events, 0;                /* Does part accept mouse events? */
+                                //                      clip_to, "seekback_button";     /* Clip anything outside of the specified object */
+                                description {
+                                        state, "default" 0.0;
+
+                                        rel1 {
+                                                relative, 0.0 0.0;
+                                                offset, 0 0;
+                                                to, "seekback_button";
+                                        }
+                                        rel2 {
+                                                relative, 1.0 1.0;
+                                                offset, -1 -1;
+                                                to, "seekback_button";
+                                        }
+
+
+                                        color, 255 255 255 255;  /* Color of text */
+                                        color2, 0 0 255 255;    /* Does nothing for SOFT_SHADOW */
+                                        color3, 0 0 0 32;      /* Color of shadow */
+
+                                        text {
+                                                text, "<<";       /* Text String */
+                                                font, "Vera";   /* Only font Vera works!  Use other and segv */
+                                                size, 6;       /* Font Size */
+                                                align,   0.5 0.5;       /* Text alignment based on rel1/rel2 */
+                                        }
+                                }
+                        }
+
+                        part {
+                                name, "pause_text";
+                                type, TEXT;
+                                //effect, SOFT_SHADOW;
+                                mouse_events, 0;                /* Does part accept mouse events? */
+                                //                      clip_to, "pause_button";     /* Clip anything outside of the specified object */
+                                description {
+                                        state, "default" 0.0;
+
+                                        rel1 {
+                                                relative, 0.0 0.0;
+                                                offset, 0 0;
+                                                to, "pause_button";
+                                        }
+                                        rel2 {
+                                                relative, 1.0 1.0;
+                                                offset, -1 -1;
+                                                to, "pause_button";
+                                        }
+
+
+                                        color, 255 255 255 255;  /* Color of text */
+                                        color2, 0 0 255 255;    /* Does nothing for SOFT_SHADOW */
+                                        color3, 0 0 0 32;      /* Color of shadow */
+
+                                        text {
+                                                text, "Pause";       /* Text String */
+                                                font, "Vera";   /* Only font Vera works!  Use other and segv */
+                                                size, 6;       /* Font Size */
+                                                align,   0.5 0.5;       /* Text alignment based on rel1/rel2 */
+                                        }
+                                }
+                        }
+
+                        part {
+                                name, "seekforward_text";
+                                type, TEXT;
+                                //effect, SOFT_SHADOW;
+                                mouse_events, 0;                /* Does part accept mouse events? */
+                                //                      clip_to, "seekforward_button";     /* Clip anything outside of the specified object */
+                                description {
+                                        state, "default" 0.0;
+
+                                        rel1 {
+                                                relative, 0.0 0.0;
+                                                offset, 0 0;
+                                                to, "seekforward_button";
+                                        }
+                                        rel2 {
+                                                relative, 1.0 1.0;
+                                                offset, -1 -1;
+                                                to, "seekforward_button";
+                                        }
+
+
+                                        color, 255 255 255 255;  /* Color of text */
+                                        color2, 0 0 255 255;    /* Does nothing for SOFT_SHADOW */
+                                        color3, 0 0 0 32;      /* Color of shadow */
+
+                                        text {
+                                                text, ">>";       /* Text String */
+                                                font, "Vera";   /* Only font Vera works!  Use other and segv */
+                                                size, 6;       /* Font Size */
+                                                align,   0.5 0.5;       /* Text alignment based on rel1/rel2 */
+                                        }
+                                }
+                        }
+
+                        part {
+                                name, "repeat_toggle_disabled_img";
+                                type, IMAGE;
+                                mouse_events, 1;
+
+                                description {
+                                        state, "default" 0.0;
+                                        visible, 1;
+                                        min, 57 20;
+                                        max, 57 20;
+
+                                        rel1 {
+                                                relative, 0.0 1.0;
+                                                offset, 25 28;
+                                                to, "button_background";
+                                        }
+
+                                        rel2 {
+                                                relative, 0.25 1.0;
+                                                offset, 0 0;
+                                                to, "button_background";
+                                        }
+
+                                        image {
+                                                normal, "button-off.png";
+                                        }
+                                }
+
+                                description {
+                                        state, "disabled" 0.0;
+                                        visible, 0;
+                                }
+                        }
+
+                        part {
+                                name, "repeat_toggle_enabled_img";
+
+                                description {
+                                        state, "default" 0.0;
+                                        visible, 0;
+                                }
+
+                                description {
+                                        state, "enabled" 0.0;
+                                        visible, 1;
+                                        min, 57 20;
+                                        max, 57 20;
+
+                                        rel1 {
+                                                relative, 0.0 1.0;
+                                                offset, 25 28;
+                                                to, "button_background";
+                                        }
+
+                                        rel2 {
+                                                relative, 0.25 1.0;
+                                                offset, 0 0;
+                                                to, "button_background";
+                                        }
+
+                                        image {
+                                                normal, "button-on.png";
+                                        }
+                                }
+                        }
+                        part {
+                                name, "repeat_toggle_label";
+                                type, TEXT;
+                                mouse_events, 0;
+
+                                description {
+                                        state, "default" 0.0;
+
+                                        rel1 {
+                                                relative, 0.0 0.0;
+                                                offset, 0 0;
+                                                to, "repeat_toggle_disabled_img";
+                                        }
+
+                                        rel2 {
+                                                relative, 1.0 1.0;
+                                                offset, -1 -1;
+                                                to, "repeat_toggle_disabled_img";
+                                        }
+
+                                        color, 0 0 0 255;
+
+                                        text {
+                                                text, "REPEAT";
+                                                font, "Vera";
+                                                size, 5;
+                                                align, 0.5 0.6;
+                                        }
+                                }
+                        }
+
+                        /********** Volume  Controls ***************************************/
+                        part {
+                                name, "vol_label";
+                                mouse_events, 0;
+                                description {
+                                        state,  "default" 0.0;
+                                        min, 21 20;
+                                        max, 21 20;
+
+                                        rel1 {
+                                                relative, 1.0 1.0;
+                                                offset, -21 4;
+                                                to, "button_background";
+                                        }
+                                        rel2 {
+                                                relative, 1.0 1.0;
+                                                offset, 0 24;
+                                                to, "button_background";
+                                        }
+
+                                        image {
+                                                normal, "vol-label.png";
+                                        }
+                                }
+                        }
+
+                        part {
+                                name, "vol_label_text";
+                                type, TEXT;
+                                mouse_events, 0;                /* Does part accept mouse events? */
+                                description {
+                                        state, "default" 0.0;
+
+                                        rel1 {
+                                                relative, 0.0 0.0;
+                                                offset, 0 0;
+                                                to, "vol_label";
+                                        }
+                                        rel2 {
+                                                relative, 1.0 1.0;
+                                                offset, -1 -1;
+                                                to, "vol_label";
+                                        }
+
+
+                                        color, 255 255 255 255;  /* Color of text */
+                                        color2, 0 0 255 255;    /* Does nothing for SOFT_SHADOW */
+                                        color3, 0 0 0 32;        /* Color of shadow */
+
+                                        text {
+                                                text, "VOL";       /* Text String */
+                                                font, "Vera";   /* Only font Vera works!  Use other and segv */
+                                                size, 5;        /* Font Size */
+                                                align,   0.5 0.6;       /* Text alignment based on rel1/rel2 */
+                                        }
+                                }
+                        }
+
+                        part {
+                                name, "vol_display";
+                                mouse_events, 0;
+                                description {
+                                        state,  "default" 0.0;
+                                        min, 23 20;
+                                        max, 23 20;
+
+                                        rel1 {
+                                                relative, 0.0 0.0;
+                                                offset, -23 0;
+                                                to, "vol_label";
+                                        }
+                                        rel2 {
+                                                relative, 0.0 1.0;
+                                                offset, 0 0;
+                                                to, "vol_label";
+                                        }
+
+                                        image {
+                                                normal, "vol-display.png";
+                                        }
+                                }
+                        }
+
+                        part {
+                                name, "vol_display_text";
+                                type,   TEXT;
+                                //clip_to, "vol_display";
+                                description {
+                                        state,  "default" 0.0;
+
+                                        /* Use the relative size of the LCD itself, then position with align */
+                                        rel1 {
+                                                relative, 0.0 0.0;
+                                                offset, 0 0;
+                                                to, "vol_display";
+                                        }
+
+                                        rel2 {
+                                                relative, 1.0 1.0;
+                                                offset, -1 -1;
+                                                to, "vol_display";
+                                        }
+
+
+                                        color,  181 247 255 255;
+                                        text {
+                                                text, "00";       /* Text String */
+                                                font, "Vera";   /* Only font Vera works!  Use other and segv */
+                                                size, 8;       /* Font Size */
+                                                align, 0.5 0.6;       /* Text alignment based on rel1/rel2 */
+                                        }
+                                }
+                        }
+
+                        part {
+                                name, "vol_incr_button";
+                                mouse_events, 1;
+                                description {
+                                        state,  "default" 0.0;
+                                        min, 25 20;
+                                        max, 25 20;
+
+                                        rel1 {
+                                                relative, 0.0 0.0;
+                                                offset, -25 0;
+                                                to, "vol_display";
+                                        }
+                                        rel2 {
+                                                relative, 0.0 1.0;
+                                                offset, 0 0;
+                                                to, "vol_display";
+                                        }
+
+                                        image {
+                                                normal, "vol-plus.png";
+                                        }
+                                }
+                                description {
+                                        state,  "clicked" 0.0;
+                                        min, 25 20;
+                                        max, 25 20;
+
+                                        rel1 {
+                                                relative, 0.0 0.0;
+                                                offset, -25 0;
+                                                to, "vol_display";
+                                        }
+                                        rel2 {
+                                                relative, 0.0 1.0;
+                                                offset, 0 0;
+                                                to, "vol_display";
+                                        }
+
+                                        image {
+                                                normal, "vol-plus-clicked.png";
+                                        }
+                                }
+                        }
+
+                        part {
+                                name, "vol_decr_button";
+                                mouse_events, 1;
+                                description {
+                                        state,  "default" 0.0;
+                                        min, 29 20;
+                                        max, 29 20;
+
+                                        rel1 {
+                                                relative, 0.0 0.0;
+                                                offset, -29 0;
+                                                to, "vol_incr_button";
+                                        }
+                                        rel2 {
+                                                relative, 0.0 1.0;
+                                                offset, 0 0;
+                                                to, "vol_incr_button";
+                                        }
+
+                                        image {
+                                                normal, "vol-minus.png";
+                                        }
+                                }
+                                description {
+                                        state,  "clicked" 0.0;
+                                        min, 29 20;
+                                        max, 29 20;
+
+                                        rel1 {
+                                                relative, 0.0 0.0;
+                                                offset, -29 0;
+                                                to, "vol_incr_button";
+                                        }
+                                        rel2 {
+                                                relative, 0.0 1.0;
+                                                offset, 0 0;
+                                                to, "vol_incr_button";
+                                        }
+
+                                        image {
+                                                normal, "vol-minus-clicked.png";
+                                        }
+                                }
+                        }
+
+                        /************ PLAYLIST **************************************************/
+
+                        /* LCD Playlist Backdrop Image */
+                        part {
+                                name, "playlist_backdrop";
+                                type, IMAGE;
+                                mouse_events, 0;
+                                description {
+                                        state,  "default" 0.0;
+
+                                        rel1 {
+                                                relative, 0.0 0.0;
+                                                offset, 5 210;
+                                        }
+
+                                        rel2 {
+                                                relative, 1.0 1.0;
+                                                offset, -6 -24;
+                                        }
+
+                                        image {
+                                                normal, "lcd_area.png";
+                                        }
+                                        border, 5 5 5 5;
+
+                                        fill {
+                                                smooth, 0;
+                                        }
+                                }
+                        }
+
+                        part {
+                                name, "playlist";
+                                type, RECT;
+                                mouse_events, 1;
+
+                                description {
+                                        state, "default" 0.0;
+
+                                        rel1 {
+                                                relative, 0.0 0.0;
+                                                offset, 8 5;
+                                                to, "playlist_backdrop";
+                                        }
+
+                                        rel2 {
+                                                relative, 1.0 1.0;
+                                                offset, -6 -6;
+                                                to, "playlist_backdrop";
+                                        }
+                                        color, 0 0 0 0;
+                                }
+                        }
+
+                        /********* PLAYLIST CONTROLS ****************************/
+                        /* Button Area */
+                        part {
+                                name, "controls_background";
+                                type, IMAGE;
+                                mouse_events, 0;
+                                description {
+                                        state,  "default" 0.0;
+
+                                        rel1 {
+                                                relative, 0.0 1.0;
+                                                offset, 0 1;
+                                                to, "playlist_backdrop";
+                                        }
+
+                                        rel2 {
+                                                relative, 1.0 1.0;
+                                                offset, -6 -3;
+                                                //to, "playlist_backdrop";
+                                        }
+
+                                        image {
+                                                normal, "controls-back.png";
+                                        }
+
+                                        border, 5 5 5 5;
+
+                                        fill {
+                                                smooth, 0;
+                                        }
+                                }
+                        }
+
+                        part {
+                                name, "add_button";
+                                type, IMAGE;
+                                mouse_events, 1;
+
+                                description {
+                                        state, "default" 0.0;
+
+                                        rel1 {
+                                                relative, 0.0 1.0;
+                                                offset, 2 2;
+                                                to, "playlist_backdrop";
+                                        }
+
+                                        rel2 {
+                                                relative, 0.0 1.0;
+                                                offset, 56 20;
+                                                to, "playlist_backdrop";
+                                        }
+
+
+                                        image {
+                                                normal, "function-button-normal.png";
+                                        }
+                                        border, 5 5 5 5;
+                                }
+                                description {
+                                        state, "clicked" 0.0;
+
+                                        rel1 {
+                                                relative, 0.0 1.0;
+                                                offset, 2 2;
+                                                to, "playlist_backdrop";
+                                        }
+
+                                        rel2 {
+                                                relative, 0.0 1.0;
+                                                offset, 56 20;
+                                                to, "playlist_backdrop";
+                                        }
+
+                                        image {
+                                                normal, "function-button-clicked.png";
+                                        }
+                                        border, 5 5 5 5;
+                                }
+                        }
+
+                        part {
+                                name, "del_button";
+                                type, IMAGE;
+                                mouse_events, 1;
+
+                                description {
+                                        state, "default" 0.0;
+
+                                        rel1 {
+                                                relative, 0.0 1.0;
+                                                offset, 67 2;
+                                                to, "playlist_backdrop";
+                                        }
+
+                                        rel2 {
+                                                relative, 0.0 1.0;
+                                                offset, 121 20;
+                                                to, "playlist_backdrop";
+                                        }
+
+                                        image {
+                                                normal, "function-button-normal.png";
+                                        }
+                                        border, 5 5 5 5;
+                                }
+                                description {
+                                        state, "clicked" 0.0;
+
+                                        rel1 {
+                                                relative, 0.0 1.0;
+                                                offset, 67 2;
+                                                to, "playlist_backdrop";
+                                        }
+
+                                        rel2 {
+                                                relative, 0.0 1.0;
+                                                offset, 121 20;
+                                                to, "playlist_backdrop";
+                                        }
+
+                                        image {
+                                                normal, "function-button-clicked.png";
+                                        }
+                                        border, 5 5 5 5;
+                                }
+                        }
+
+                        part {
+                                name, "edit_button";
+                                type, IMAGE;
+                                mouse_events, 1;
+
+                                description {
+                                        state, "default" 0.0;
+
+                                        rel1 {
+                                                relative, 0.0 1.0;
+                                                offset, 132 2;
+                                                to, "playlist_backdrop";
+                                        }
+
+                                        rel2 {
+                                                relative, 0.0 1.0;
+                                                offset, 188 20;
+                                                to, "playlist_backdrop";
+                                        }
+
+                                        image {
+                                                normal, "function-button-normal.png";
+                                        }
+                                        border, 5 5 5 5;
+                                }
+                                description {
+                                        state, "clicked" 0.0;
+
+                                        rel1 {
+                                                relative, 0.0 1.0;
+                                                offset, 132 2;
+                                                to, "playlist_backdrop";
+                                        }
+
+                                        rel2 {
+                                                relative, 0.0 1.0;
+                                                offset, 188 20;
+                                                to, "playlist_backdrop";
+                                        }
+
+                                        image {
+                                                normal, "function-button-clicked.png";
+                                        }
+                                        border, 5 5 5 5;
+                                }
+                        }
+
+                        /*** CONTROL TEXT ***/
+
+                        part {
+                                name, "add_text";
+                                type, TEXT;
+                                mouse_events, 0;
+
+                                description {
+                                        state, "default" 0.0;
+                                        visible, 1;
+
+                                        rel1 {
+                                                relative, 0.0 0.0;
+                                                offset, 0 0;
+                                                to, "add_button";
+                                        }
+
+                                        rel2 {
+                                                relative, 1.0 1.0;
+                                                offset, -1 -1;
+                                                to, "add_button";
+                                        }
+
+                                        text {
+                                                text, "Add";
+                                                font, "Vera";
+                                                size, 6;
+                                                align, 0.5 0.7;
+                                        }
+
+                                        color, 255 255 255 255;
+                                }
+                        }
+
+                        part {
+                                name, "del_text";
+                                type, TEXT;
+                                mouse_events, 0;
+
+                                description {
+                                        state, "default" 0.0;
+                                        visible, 1;
+
+                                        rel1 {
+                                                relative, 0.0 0.0;
+                                                offset, 0 0;
+                                                to, "del_button";
+                                        }
+
+                                        rel2 {
+                                                relative, 1.0 1.0;
+                                                offset, -1 -1;
+                                                to, "del_button";
+                                        }
+
+                                        text {
+                                                text, "Delete";
+                                                font, "Vera";
+                                                size, 6;
+                                                align, 0.5 0.7;
+                                        }
+
+                                        color, 255 255 255 255;
+                                }
+                        }
+
+                        part {
+                                name, "edit_text";
+                                type, TEXT;
+                                mouse_events, 0;
+
+                                description {
+                                        state, "default" 0.0;
+                                        visible, 1;
+
+                                        rel1 {
+                                                relative, 0.0 0.0;
+                                                offset, 0 0;
+                                                to, "edit_button";
+                                        }
+
+                                        rel2 {
+                                                relative, 1.0 1.0;
+                                                offset, -1 -1;
+                                                to, "edit_button";
+                                        }
+
+                                        text {
+                                                text, "Edit";
+                                                font, "Vera";
+                                                size, 6;
+                                                align, 0.5 0.7;
+                                        }
+
+                                        color, 255 255 255 255;
+                                }
+                        }
+
+
+/************ FIN ***************/

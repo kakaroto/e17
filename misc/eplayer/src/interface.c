@@ -226,7 +226,11 @@ static void register_callbacks(ePlayer *player) {
 		{"SWITCH_GROUP", "*",
 		 (EdjeCb) cb_switch_group},
 		{"SEEKER*", "*",
-		 (EdjeCb) cb_update_seeker}
+		 (EdjeCb) cb_update_seeker},
+                {"PLAYLIST_ADD", "*",
+                 (EdjeCb) cb_playlist_add},
+                {"PLAYLIST_DEL", "*",
+                 (EdjeCb) cb_playlist_del}
 	};
 
 	for (i = 0; i < sizeof (cb) / sizeof (EdjeCallback); i++)

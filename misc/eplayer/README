@@ -60,3 +60,22 @@ but if there is one thing I hate parsing it's XML.
 
 It would instantly make this audio player the player to use though!
 
+Q: I installed AVcodec, but I'm getting errors and odd behaviour?
+A: -> You have the wrong version of AVcodec.  If you use Gentoo a default
+merge will give you the wrong version.  AVcodec is a part of
+FFmpeg.  You need FFmpeg 0.4.8.
+
+Q: MP3's load, but play strangely.
+A: -> Ya, AVcodec sucks.... we're looking for a replacement lib.
+For the mean time just use a codec thats actually good: OggVorbis.
+
+Q: All my music is in MP3.  How can I convert it to OggVorbis?
+A: -> DON'T!!!  MP3 and OggVorbis are both lossy codecs.  Each
+codec has diffrent ideas about what information is worth loosing
+during the encoding sequence.  If you re-encode (called trancoding)
+from one to the other you'll loose even more quality than you did to 
+start with in the initial coding sequence.  So, while it is possible
+to do so, you really really don't wanna.  Since obviously your
+a law abiding person who didn't pirate your music, you can always
+just re-rip to Vorbis like a good boy.  You'll be glad you did.
+

@@ -3,6 +3,7 @@
 #include <Esmart/container.h>
 #include <Ecore_X.h>
 #include <assert.h>
+#include <ewl/Ewl.h>
 #include "eplayer.h"
 #include "track.h"
 #include "interface.h"
@@ -436,3 +437,54 @@ cb_key_release(void *data, Evas *e, Evas_Object *obj, void *event_info) {
 
 }
 
+
+/* File Dialog to add files, thanx to EWL */
+EDJE_CB(playlist_add) {
+
+	Ewl_Widget *fd_win;
+	Ewl_Widget *fd;
+	Ewl_Widget *vbox;
+
+	fd_win = ewl_window_new();
+	ewl_window_set_title(EWL_WINDOW(fd_win), "Eplayer Add File...");
+        ewl_window_set_name(EWL_WINDOW(fd_win), "Eplayer Add File...");
+        ewl_object_request_size(EWL_OBJECT(fd_win), 500, 400);
+        ewl_object_set_fill_policy(EWL_OBJECT(fd_win), EWL_FLAG_FILL_FILL |
+                        EWL_FLAG_FILL_SHRINK);
+        //ewl_callback_append(fd_win, EWL_CALLBACK_DELETE_WINDOW,
+        //                    destroy_ewl_filedialog, NULL);
+        ewl_widget_show(fd_win);
+
+        vbox = ewl_vbox_new ();
+        ewl_object_set_fill_policy(EWL_OBJECT(vbox), EWL_FLAG_FILL_FILL |
+                                EWL_FLAG_FILL_SHRINK);
+        ewl_container_append_child(EWL_CONTAINER(fd_win), vbox);
+        ewl_widget_show (vbox);
+
+	fd = ewl_filedialog_new(fd_win, EWL_FILEDIALOG_TYPE_OPEN,
+                        report);
+
+        ewl_container_append_child(EWL_CONTAINER(vbox), fd);
+        ewl_widget_show(fd);
+
+
+
+}
+
+EDJE_CB(playlist_del) {
+
+/* playlist_item_remove should be the callback to use.. not sure why that one doesn't work */
+	
+
+}
+
+void report(Ewl_Widget *row, void *ev_data, void *user_data){
+	Ewl_Fileselector *fs = user_data;
+
+        printf("file open : %s\n",
+                        ewl_fileselector_get_filename (EWL_FILESELECTOR (fs)));
+
+	//playlist_load_file(player->playlist, ewl_fileselector_get_filename(EWL_FILESELECTOR(fs)), 1);
+
+
+}
