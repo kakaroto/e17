@@ -8,10 +8,10 @@ Known bugs
 
 - Switching desktop changes stacking (sticky windows raised above non-sticky).
 
-- The pager mini-window tooltips are sometimes not unmapped when they should be. 
+- The pager mini-window tooltips are sometimes not unmapped when they should be.
 
-- When right clicking a zoomed pager mini-window to get the menu, the mini-window
-  and tooltip are not unmapped.
+- When right clicking a zoomed pager mini-window to get the menu, the
+  mini-window and tooltip are not unmapped.
 
 - Menu generation script (e_gen_menu etc.) is not up to current standards.
 
@@ -23,6 +23,13 @@ Known bugs
 
 - The focus list is sometimes not closed when it should be.
   Press Alt, press Ctrl, release Ctrl, press Tab, release Tab, release Alt.
+
+- When zooming (fullscreen) decreases screen resolution, the mouse should be
+  confined to the zoomed window.
+! May be impossible to fix due to limitations in X (vidmode extension, mouse
+  grabs).
+
+- Window ("remember") settings may not be saved on exit.
 
 
 Fixed in E 16.6-pre5
