@@ -60,7 +60,7 @@ __db_open(name, arg_flags, ok_flags, mode, fdp)
 	else
 		flags |= O_RDWR;
 
-#if defined(_WIN32) || defined(WIN16)
+#if defined(_WIN32) || defined(WIN16) || defined(__EMX__)
 #ifdef _MSC_VER
 	if (arg_flags & DB_SEQUENTIAL)
 		flags |= _O_SEQUENTIAL;
