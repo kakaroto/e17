@@ -21,6 +21,55 @@ typedef void        E_DB_File;
  */
 E_DB_File          *e_db_open(char *file);
 
+/**
+ * e_db_property_set - Sets the value of a Property Field.
+ * @edb: A database handle.
+ * @property: The name of the Property Field to edit.
+ * @value: The value to assign the the field.
+ *
+ * The property fields are special database fields that cannot be accessed
+ * by the normal get/set methods. They are used to store meta-data about the
+ * database (e.g. Type and Version Information). This function will set the
+ * value of a specified property field.
+ */
+void                e_db_property_set(E_DB_File *edb, char *property, char *value);
+
+
+/**
+ * e_db_property_get - Gets the value of a Property Field.
+ * @edb: A database handle.
+ * @property: The name of the Property Field to edit.
+ *
+ * This function will retrieve the data stored in the specified property
+ * field.
+ */
+char                *e_db_property_get(E_DB_File *edb, char *property);
+
+/**
+ * e_db_set_type - Convenience function for setting the value
+ * of the Type Property Field.
+ * @edb: A database handle.
+ * @value: The value to append to the current Type Property.
+ *
+ * This function sets the value of the Type Property for the current database.
+ * If there is already a value in the type field this value will be appended
+ * to the end. Each type is seperated by a '/' character with the entire
+ * string having leading and trailing seperating characters. The function adds
+ * the seperation characters itself.
+ */
+void                e_db_set_type(E_DB_File * edb, char *value);
+
+/**
+ * e_db_is_type - Convenience function for determining if a database is
+ * of a certain type.
+ * @edb: A database handle.
+ * @type: The type string to check for.
+ *
+ * This function will compare the specified type string against the type
+ * data stored in the database. If a match is found (case-insensitive) then 1
+ * is returned, else 0.
+ */
+int                 e_db_is_type(E_DB_File * edb, char *type);
 
 /**
  * e_db_open_read - Opens a database for read access only

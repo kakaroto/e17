@@ -15,7 +15,7 @@
 #include "edb.h"
 
 #define NEW(dat, num) malloc(sizeof(dat) * (num))
-#define FREE(dat) {if (dat) {free(dat); dat = NULL; } else {printf("eek - NULL free\n");sleep(30); } }
+#define FREE(dat) {if (dat) {free(dat); dat = NULL; } else {printf("eek - NULL free(%s @ %u)\n", __FILE__, __LINE__);sleep(30); } }
 #define IF_FREE(dat) {if (dat) FREE(dat);}
 #define MEMCPY(src, dst, type, num) memcpy(dst, src, sizeof(type) * (num))
 #define REALLOC_PTR(dat, num) {if (dat) dat = realloc(dat, sizeof(void *) * (num)); else dat = malloc(sizeof(void *) * (num));}
@@ -35,6 +35,10 @@ struct _e_db_file
 
 static _E_DB_File  *_e_db_find(char *file, char writeable);
 static void         _e_db_close(E_DB_File * edb);
+
+void        *_e_db_data_get(E_DB_File * edb, datum dkey, int *size_ret);
+void         _e_db_data_set(E_DB_File * edb, datum dkey, void *data, int size);
+
 
 static _E_DB_File  *edbs = NULL;
 static int          max_edb_count = 32;
@@ -126,6 +130,49 @@ _e_db_close(E_DB_File * edb)
 	  }
      }
 }
+
+void               *
+_e_db_data_get(E_DB_File * edb, datum dkey, int *size_ret)
+{
+   _E_DB_File         *edbf;
+   datum               ret;
+
+   edbf = (_E_DB_File *) edb;
+   ret.dptr = NULL;
+   ret = edbm_fetch(edbf->edbf, dkey);
+   last_edb_call = _e_get_time();
+   flush_pending = 1;
+   if (ret.dptr)
+     {
+	void *data;
+	
+	if (ret.dsize == 0) return NULL;
+	*size_ret = ret.dsize;
+	data = malloc(ret.dsize);
+	if (data)
+	  {
+	     memcpy(data, ret.dptr, ret.dsize);
+	     return data;
+	  }
+     }
+   *size_ret = 0;
+   return NULL;
+}
+
+void
+_e_db_data_set(E_DB_File * edb, datum dkey, void *data, int size)
+{
+   _E_DB_File         *edbf;
+   datum               dat;
+
+   edbf = (_E_DB_File *) edb;
+   dat.dptr = data;
+   dat.dsize = size;
+   edbm_store(edbf->edbf, dkey, dat, DBM_REPLACE);
+   last_edb_call = _e_get_time();
+   flush_pending = 1;
+}
+
 
 /* public routines in api */
 
@@ -319,50 +366,115 @@ e_db_runtime_flush(void)
    return 0;
 }
 
+void
+e_db_property_set(E_DB_File *edb, char *property, char *value)
+{
+   char *pname;
+   datum               dkey;
+
+   pname = malloc(strlen(property) + (sizeof(char)*2));
+   sprintf(pname, "%c%c%s", 0, 0, property); 
+
+   dkey.dptr = pname;
+   dkey.dsize = strlen(property)+2;
+
+   _e_db_data_set(edb, dkey, value, strlen(value));
+
+   free(pname);
+}
+
+char *
+e_db_property_get(E_DB_File *edb, char *property)
+{
+   char *pname;
+   char *getdata, *returndata = NULL;
+   int size = 0;
+   datum dkey;
+
+   pname = malloc(strlen(property) + (sizeof(char)*2));
+   sprintf(pname, "%c%c%s", 0, 0, property);
+   
+   dkey.dptr = pname;
+   dkey.dsize = strlen(property) + 2;
+
+   getdata = _e_db_data_get(edb, dkey, &size);
+   if (!getdata)
+      return NULL;
+   returndata = NEW(char, size + 1);
+   MEMCPY(getdata, returndata, char, size);
+
+   returndata[size] = 0;
+   FREE(getdata);
+   return returndata;
+}
+
+void
+e_db_set_type(E_DB_File * edb, char *value) {
+  char *type;
+   char *existing;
+   int lenght;
+
+   if (!e_db_is_type(edb, value)) 
+   {
+      existing = e_db_property_get(edb, "E_DBType");
+      if (existing != NULL) 
+      {
+         type = NEW(char, strlen(existing)+strlen(value)+2);
+         sprintf(type, "%s%s/", existing, value);
+         FREE(existing);
+      }
+      else
+      {
+         type = NEW(char, strlen(value)+2);
+         sprintf(type, "/%s/", value);
+      }
+      
+      e_db_property_set(edb, "E_DBType", type);
+      FREE(type);
+   }
+}
+
+int
+e_db_is_type(E_DB_File * edb, char *type) {
+   char *existing;
+   char *tok;
+
+   existing = e_db_property_get(edb, "E_DBType");
+   if (existing) 
+   {
+      tok = strtok(existing, "/");
+      while (tok != NULL) {
+         if (!strcasecmp(tok, type)) {
+            FREE(existing);
+            return 1;
+         }
+         tok = strtok(NULL, "/");
+      }
+      
+      FREE(existing);
+   }
+   return 0;
+}
+
 void               *
 e_db_data_get(E_DB_File * edb, char *key, int *size_ret)
 {
-   _E_DB_File         *edbf;
-   datum               dkey, ret;
+   datum dkey;
 
-   edbf = (_E_DB_File *) edb;
    dkey.dptr = key;
    dkey.dsize = strlen(key);
-   ret.dptr = NULL;
-   ret = edbm_fetch(edbf->edbf, dkey);
-   last_edb_call = _e_get_time();
-   flush_pending = 1;
-   if (ret.dptr)
-     {
-	void *data;
-	
-	if (ret.dsize == 0) return NULL;
-	*size_ret = ret.dsize;
-	data = malloc(ret.dsize);
-	if (data)
-	  {
-	     memcpy(data, ret.dptr, ret.dsize);
-	     return data;
-	  }
-     }
-   *size_ret = 0;
-   return NULL;
+
+   return _e_db_data_get(edb, dkey, size_ret);
 }
 
 void
 e_db_data_set(E_DB_File * edb, char *key, void *data, int size)
 {
-   _E_DB_File         *edbf;
-   datum               dkey, dat;
+   datum               dkey;
 
-   edbf = (_E_DB_File *) edb;
    dkey.dptr = key;
    dkey.dsize = strlen(key);
-   dat.dptr = data;
-   dat.dsize = size;
-   edbm_store(edbf->edbf, dkey, dat, DBM_REPLACE);
-   last_edb_call = _e_get_time();
-   flush_pending = 1;
+   _e_db_data_set(edb, dkey, data, size);
 }
 
 void
