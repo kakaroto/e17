@@ -1107,6 +1107,7 @@ usage(void)
   printf("usage: camE [OPTION]\n");
   printf("       -c FILE    Use config file FILE\n");
   printf("       -f         Don't fork to background\n");
+  printf("       -s         Single shot\n");
   printf("       -h -v      This message\n");
   exit(0);
 }
@@ -1186,16 +1187,20 @@ main(int argc,
   FILE *fp;
   int ch;
   int dont_fork = 0;
+  int single_shot = 0;
   int offline_done = 1;
   char *config_file = NULL;
 
-  while ((ch = getopt(argc, argv, "c:fhv")) != EOF) {
+  while ((ch = getopt(argc, argv, "c:fshv")) != EOF) {
     switch (ch) {
       case 'c':
         config_file = strdup(optarg);
         break;
       case 'f':
         dont_fork = 1;
+        break;
+      case 's':
+        single_shot = 1;
         break;
       case 'h':
         usage();
@@ -1210,7 +1215,7 @@ main(int argc,
     }
   }
 
-  if (!dont_fork) {
+  if (!dont_fork && !single_shot) {
     /* fork and die */
     if ((childpid = fork()) < 0) {
       fprintf(stderr, "fork (%s)\n", strerror(errno));
@@ -1457,7 +1462,7 @@ main(int argc,
   grab_init();
 
   /* go! */
-  for (;;) {
+  do {
     just_shot = 0;
     upload_successful = 1;
     end_shot = 0;
@@ -1547,23 +1552,26 @@ main(int argc,
       offline_done = do_upload(offline_image);
       log("OFFLINE\n");
     }
-    new_delay = grab_delay;
-    if (just_shot && upload_successful) {
-      end_shot = end_shot - start_shot;
-      if (bw_percent < 100)
-        bw_res_change(end_shot);
-      if (delay_correct && end_shot) {
-        new_delay -= end_shot;
-        if (new_delay < 0)
-          new_delay = 0;
-        log("Sleeping %d secs (corrected)\n", new_delay);
-      } else {
-        log("Sleeping %d secs\n", grab_delay);
+
+    if (!single_shot) {
+      new_delay = grab_delay;
+      if (just_shot && upload_successful) {
+        end_shot = end_shot - start_shot;
+        if (bw_percent < 100)
+          bw_res_change(end_shot);
+        if (delay_correct && end_shot) {
+          new_delay -= end_shot;
+          if (new_delay < 0)
+            new_delay = 0;
+          log("Sleeping %d secs (corrected)\n", new_delay);
+        } else {
+          log("Sleeping %d secs\n", grab_delay);
+        }
       }
+      if (upload_successful && (new_delay > 0))
+        sleep(new_delay);
     }
-    if (upload_successful && (new_delay > 0))
-      sleep(new_delay);
-  }
+  } while(!single_shot);
   return 0;
 }
 
