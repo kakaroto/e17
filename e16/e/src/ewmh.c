@@ -327,14 +327,22 @@ EWMH_SetCurrentDesktop(void)
 void
 EWMH_SetDesktopViewport(void)
 {
-   CARD32              val[2];
-   int                 ax, ay;
+   CARD32             *p_coord;
+   int                 n_coord, i;
 
    EDBUG(6, "EWMH_SetDesktopViewport");
-   GetCurrentArea(&ax, &ay);
-   val[0] = ax * root.w;
-   val[1] = ay * root.h;
-   _ATOM_SET_CARD32(_NET_DESKTOP_VIEWPORT, root.win, val, 2);
+   n_coord = 2 * mode.numdesktops;
+   p_coord = Emalloc(n_coord * sizeof(CARD32));
+   if (p_coord)
+     {
+        for (i = 0; i < mode.numdesktops; i++)
+          {
+             p_coord[2 * i] = desks.desk[i].current_area_x * root.w;
+             p_coord[2 * i + 1] = desks.desk[i].current_area_y * root.h;
+          }
+        _ATOM_SET_CARD32(_NET_DESKTOP_VIEWPORT, root.win, p_coord, n_coord);
+        Efree(p_coord);
+     }
    EDBUG_RETURN_;
 }
 
