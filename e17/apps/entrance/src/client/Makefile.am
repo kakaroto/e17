@@ -3,7 +3,7 @@
 INCLUDES = @edje_cflags@ @ecore_cflags@ @edb_cflags@ @evas_cflags@ \
 @esmart_cflags@
 
-bin_PROGRAMS = entrance
+bin_PROGRAMS = entrance entrance_login
 
 entrance_SOURCES = \
 	entrance_auth.c entrance_auth.h \
@@ -14,4 +14,8 @@ entrance_SOURCES = \
 	main.c 
 
 entrance_LDADD = @edje_libs@ @ecore_libs@ @edb_libs@ @evas_libs@ \
+@esmart_libs@
+
+entrance_login_SOURCES = entrance_login.c
+entrance_login_LDADD = @edje_libs@ @ecore_libs@ @edb_libs@ @evas_libs@ \
 @esmart_libs@

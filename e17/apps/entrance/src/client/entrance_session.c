@@ -263,7 +263,6 @@ entrance_session_start_user_session(Entrance_Session * e)
    ecore_evas_free(e->ee);
    ecore_evas_shutdown();
    e->ee = NULL;
-
    ecore_x_sync();
 
    syslog(LOG_NOTICE, "Starting session for user \"%s\".", e->auth->user);
@@ -303,11 +302,13 @@ entrance_session_start_user_session(Entrance_Session * e)
    }
    /* clear users's password out of memory */
    entrance_auth_clear_pass(e->auth);
-   if (waitpid(pid, NULL, 0) == pid)
-   {
-      entrance_auth_session_end(e->auth);
-      syslog(LOG_CRIT, "User Xsession Ended");
-   }
+   /* this bypasses a race condition where entrance loses its x connection */
+   /* before the wm gets it and x goes and resets itself */
+   sleep(10);
+   /* replace this rpcoess with a clean small one that just waits for its */
+   /* child to exit.. passed on the cmd-line */
+   snprintf(buf, sizeof(buf), "%s/entrance_login %i", PACKAGE_BIN_DIR, (int)pid);
+   execl("/bin/sh", "/bin/sh", "-c", buf, NULL);
 }
 
 static void
