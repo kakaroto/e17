@@ -269,6 +269,7 @@ entrance_auth_cmp_crypt(Entrance_Auth * e)
    return (strcmp(encrypted, correct)) ? ERROR_BAD_PASS : AUTH_SUCCESS;
 }
 
+#if HAVE_SHADOW
 static int
 entrance_auth_cmp_shadow(Entrance_Auth * e)
 {
@@ -295,6 +296,7 @@ entrance_auth_cmp_shadow(Entrance_Auth * e)
 
    return (strcmp(encrypted, correct)) ? ERROR_BAD_PASS : AUTH_SUCCESS;
 }
+#endif
 
 int
 entrance_auth_cmp(Entrance_Auth * e, const char *display, int mode)
