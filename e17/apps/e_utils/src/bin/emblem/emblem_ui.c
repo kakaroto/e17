@@ -158,13 +158,13 @@ emblem_ui_resize_cb(Ecore_Evas *ee)
         {
             edje_object_signal_emit(em->gui.edje, "arrows,show", "*");
             edje_object_signal_callback_add(em->gui.edje, "left,clicked", "*",
-                                                emblem_left_scroll_down_cb, NULL);
+                                            emblem_left_scroll_down_cb, em);
             edje_object_signal_callback_add(em->gui.edje, "right,clicked", "*",
-                                                emblem_right_scroll_down_cb, NULL);
+                                            emblem_right_scroll_down_cb, em);
             edje_object_signal_callback_add(em->gui.edje, "left,click,release", "*",
-                                                emblem_left_scroll_up_cb, NULL);
+                                            emblem_left_scroll_up_cb, em);
             edje_object_signal_callback_add(em->gui.edje, "right,click,release", "*",
-                                                emblem_right_scroll_up_cb, NULL);
+                                            emblem_right_scroll_up_cb, em);
         }
     }
 }
