@@ -3,6 +3,7 @@
 
 /*
  * $Id$
+ * vim:noexpandtab:sw=4:sts=4:ts=4
  */
 
 #include <Ecore.h>
