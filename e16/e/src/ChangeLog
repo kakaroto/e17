@@ -2439,3 +2439,11 @@ Mon Sep 27 12:32:58 PDT 1999
 I think I've fixed the other two KDE bugs at the bottom of the TODO file now -
 please check and see if anyone else can crash E using either of these things
 now.
+
+-------------------------------------------------------------------------------
+
+Mon Sep 27 13:31:26 PDT 1999
+(Mandrake)
+
+oops, forgot an EDBUG init in those functions
+

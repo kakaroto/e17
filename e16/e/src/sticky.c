@@ -3,6 +3,8 @@
 void
 MakeWindowUnSticky(EWin * ewin)
 {
+
+   EDBUG(5, "MakeWindowUnSticky");
    if (!ewin)
       EDBUG_RETURN_;
 
@@ -27,6 +29,7 @@ MakeWindowUnSticky(EWin * ewin)
 void
 MakeWindowSticky(EWin * ewin)
 {
+   EDBUG(5, "MakeWindowSticky");
    if (!ewin)
       EDBUG_RETURN_;
    ewin->sticky = 1;
