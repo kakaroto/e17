@@ -116,6 +116,9 @@ load (ImlibImage *im,
 	   png_set_expand(png_ptr);
 	/* we want ARGB */
 	png_set_bgr(png_ptr);
+#ifdef __BIG_ENDIAN__	
+	png_set_swap_alpha(png_ptr);
+#endif	
 	/* 16bit color -> 8bit color */
 	png_set_strip_16(png_ptr);
 	/* pack all pixels to byte boundaires */
