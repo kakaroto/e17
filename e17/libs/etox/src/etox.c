@@ -197,12 +197,7 @@ void etox_append_text(Evas_Object * obj, char *text)
 	 * new text with the last line of the old text. Duplicate text to avoid
 	 * read-only memory segv's when parsing.
 	 */
-	if (text) {
-		text = strdup(text);
-	}
-	else {
-		text = strdup(text);
-	}
+	text = strdup(text);
 
 	lines = _etox_break_text(et, text);
 	FREE(text);
