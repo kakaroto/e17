@@ -40,8 +40,10 @@ struct Ewl_Image
 	char		proportional;
 	int 		ow, oh;
 	double		sw, sh;
+	Evas_Coord	aw, ah;
 
 	struct {
+		int set;
 		int x, y, w, h;
 	} tile;
 };
