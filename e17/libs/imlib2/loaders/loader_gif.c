@@ -62,36 +62,38 @@ load(ImlibImage *im, progress_func *progress, char progress_granularity, char im
       }
       w = gif->Image.Width;
       h = gif->Image.Height;
-      rows = malloc(h * sizeof(GifRowType *));
-      if (!rows) {
-        DGifCloseFile(gif);
-        return 0;
-      }
-      for (i = 0; i < h; i++) {
-        rows[i] = NULL;
-      }
-      for (i = 0; i < h; i++) {
-        rows[i] = malloc(w * sizeof(GifPixelType));
-        if (!rows[i]) {
+      if (im->loader || immediate_load || progress) {
+        rows = malloc(h * sizeof(GifRowType *));
+        if (!rows) {
           DGifCloseFile(gif);
-          for (i = 0; i < h; i++) {
-            if (rows[i]) {
-              free(rows[i]);
-            }
-          }
-          free(rows);
           return 0;
         }
-      }
-      if (gif->Image.Interlace) {
-        for (i = 0; i < 4; i++) {
-          for (j = intoffset[i]; j < h; j += intjump[i]) {
-            DGifGetLine(gif, rows[j], w);
+        for (i = 0; i < h; i++) {
+          rows[i] = NULL;
+        }
+        for (i = 0; i < h; i++) {
+          rows[i] = malloc(w * sizeof(GifPixelType));
+          if (!rows[i]) {
+            DGifCloseFile(gif);
+            for (i = 0; i < h; i++) {
+              if (rows[i]) {
+                free(rows[i]);
+              }
+            }
+            free(rows);
+            return 0;
           }
         }
-      } else {
-        for (i = 0; i < h; i++) {
-          DGifGetLine(gif, rows[i], w);
+        if (gif->Image.Interlace) {
+          for (i = 0; i < 4; i++) {
+            for (j = intoffset[i]; j < h; j += intjump[i]) {
+              DGifGetLine(gif, rows[j], w);
+            }
+          }
+        } else {
+          for (i = 0; i < h; i++) {
+            DGifGetLine(gif, rows[i], w);
+          }
         }
       }
       done = 1;
@@ -154,9 +156,9 @@ load(ImlibImage *im, progress_func *progress, char progress_granularity, char im
         }
       }
     }
-  }
-  if (progress) {
-    progress(im, 100, 0, last_y, w, h);
+    if (progress) {
+      progress(im, 100, 0, last_y, w, h);
+    }
   }
   DGifCloseFile(gif);
   for (i = 0; i < h; i++) {
