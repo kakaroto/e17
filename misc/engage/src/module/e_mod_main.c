@@ -11,8 +11,12 @@
  * immediate fixes needed:
  * * resize underlying box properly when zooming (box images are invisible atm)
  * * work on other edges than the bottom
+ * * pick up iconified apps on startup
  * * zoom and unzoom on timer
  * * bounce icons on click ( following e_app exec hints? )
+ *
+ * * add "app rnning" support
+ * * maybe add system tray
  * 
  * * Fix menu
  *
@@ -58,7 +62,7 @@ static void    _engage_bar_edge_change(Engage_Bar *eb, int edge);
 static void    _engage_bar_update_policy(Engage_Bar *eb);
 static void    _engage_bar_motion_handle(Engage_Bar *eb, Evas_Coord mx, Evas_Coord my);
 
-static Engage_Icon *_engage_icon_new(Engage_Bar *eb, E_App *a);
+static Engage_Icon *_engage_icon_new(Engage_Bar *eb, E_App *a, int min);
 static void    _engage_icon_free(Engage_Icon *ic);
 static Engage_Icon *_engage_icon_find(Engage_Bar *eb, E_App *a);
 static void    _engage_icon_reorder_after(Engage_Icon *ic, Engage_Icon *after);
@@ -320,7 +324,7 @@ _engage_app_change(void *data, E_App *a, E_App_Change ch)
 		  Engage_Icon *ic;
 
 		  e_box_freeze(eb->box_object);
-		  ic = _engage_icon_new(eb, a);
+		  ic = _engage_icon_new(eb, a, 0);
 		  if (ic)
 		    {
 		       for (ll = e->apps->subapps; ll; ll = ll->next)
@@ -356,7 +360,7 @@ _engage_app_change(void *data, E_App *a, E_App_Change ch)
 		  if (ic) _engage_icon_free(ic);
 		  evas_image_cache_flush(eb->evas);
 		  evas_image_cache_reload(eb->evas);
-		  ic = _engage_icon_new(eb, a);
+		  ic = _engage_icon_new(eb, a, 0);
 		  if (ic)
 		    {
 		       for (ll = e->apps->subapps; ll; ll = ll->next)
@@ -455,7 +459,7 @@ _engage_bar_new(Engage *e, E_Container *con)
 	     Engage_Icon *ic;
 
 	     a = l->data;
-	     ic = _engage_icon_new(eb, a);
+	     ic = _engage_icon_new(eb, a, 0);
 	  }
      }
    eb->align_req = 0.5;
@@ -486,6 +490,9 @@ _engage_bar_new(Engage *e, E_Container *con)
    edje_object_signal_emit(eb->bar_object, "passive", "");
    */
 
+
+   /* FIXME - these are not really iconify events, we need them to be
+    * added to E before we can hook in "properly" */
    eb->iconify_handler = ecore_event_handler_add(E_EVENT_BORDER_HIDE,
 	 _engage_cb_event_border_iconify, eb);
    eb->uniconify_handler = ecore_event_handler_add(E_EVENT_BORDER_SHOW,
@@ -502,6 +509,8 @@ _engage_bar_free(Engage_Bar *eb)
 
    while (eb->icons)
      _engage_icon_free(eb->icons->data);
+   while (eb->min_icons)
+     _engage_icon_free(eb->min_icons->data);
 
    evas_object_del(eb->bar_object);
    evas_object_del(eb->box_object);
@@ -573,7 +582,7 @@ _engage_bar_disable(Engage_Bar *eb)
 }
 
 static Engage_Icon *
-_engage_icon_new(Engage_Bar *eb, E_App *a)
+_engage_icon_new(Engage_Bar *eb, E_App *a, int min)
 {
    Engage_Icon *ic;
    char *str;
@@ -586,7 +595,11 @@ _engage_icon_new(Engage_Bar *eb, E_App *a)
    ic->app = a;
    ic->scale = 1.0;
    e_object_ref(E_OBJECT(a));
-   eb->icons = evas_list_append(eb->icons, ic);
+   ic->min = min?1:0;
+   if (min)
+     eb->min_icons = evas_list_append(eb->min_icons, ic);
+   else
+     eb->icons = evas_list_append(eb->icons, ic);
 
    o = evas_object_rectangle_add(eb->evas);
    ic->event_object = o;
@@ -650,7 +663,10 @@ _engage_icon_new(Engage_Bar *eb, E_App *a)
 static void
 _engage_icon_free(Engage_Icon *ic)
 {
-   ic->eb->icons = evas_list_remove(ic->eb->icons, ic);
+   if (ic->min)
+     ic->eb->min_icons = evas_list_remove(ic->eb->min_icons, ic);
+   else
+     ic->eb->icons = evas_list_remove(ic->eb->icons, ic);
    if (ic->bg_object) evas_object_del(ic->bg_object);
    if (ic->overlay_object) evas_object_del(ic->overlay_object);
    if (ic->icon_object) evas_object_del(ic->icon_object);
@@ -712,13 +728,30 @@ _engage_config_menu_new(Engage *e)
 static int
 _engage_cb_event_border_iconify(void *data, int type, void *event)
 {
-   printf("not implemented iconify listener\n");
+   Engage_Bar *eb;
+   Engage_Icon *ic;
+   E_Event_Border_Hide *e;
+   E_App *app;
 
+   e = event;
+   eb = data;
    /*FIXME
     * check that were are the bar in the right zone
-    *
-    * add icon to list, marking as iconified (instances of ++)
     */
+   
+   if (!e->border->iconic)
+     return;
+   app = e_app_window_name_class_find(e->border->client.icccm.name,
+				      e->border->client.icccm.class);
+   if (app)
+     {
+	ic = _engage_icon_new(eb, app, 1);
+	_engage_bar_frame_resize(eb);
+	ic->border = e->border;
+	e_object_ref(E_OBJECT(e->border));
+     }
+   else
+     printf("FIXME WE HAVE NO ICON TO DISPLAY\n");
 }
 
 static int
@@ -726,11 +759,31 @@ _engage_cb_event_border_uniconify(void *data, int type, void *event)
 {
    printf("not implemented uniconify listener\n");
 
+   Engage_Bar *eb;
+   Engage_Icon *ic;
+   E_Event_Border_Show *e;
+   E_App *app;
+   Evas_List *icons;
+
+   e = event;
+   eb = data;
+
    /*FIXME
     * check that were are the bar in the right zone
-    *
-    * remove icon from list, if instances == 0 and it is only an iconic icon
     */
+   icons = eb->min_icons;
+   while (icons)
+     {
+	ic = icons->data;
+	if (ic->border == e->border)
+	  {
+	     e_object_unref(E_OBJECT(ic->border));
+	      _engage_icon_free(ic);
+	      _engage_bar_frame_resize(eb);
+	      break;
+	  }
+	icons = icons->next;
+     }
 }
 
 
@@ -824,6 +877,7 @@ _engage_bar_edge_change(Engage_Bar *eb, int edge)
    Evas_Object *o;
    E_Gadman_Policy policy;
    int changed;
+   int done_min;
 
    evas_event_freeze(eb->evas);
    o = eb->bar_object;
@@ -831,8 +885,9 @@ _engage_bar_edge_change(Engage_Bar *eb, int edge)
    edje_object_message_signal_process(o);
 
    e_box_freeze(eb->box_object);
-
-   for (l = eb->icons; l; l = l->next)
+   done_min = 0;
+   l = eb->icons;
+   while (l)
      {
 	Engage_Icon *ic;
 
@@ -853,6 +908,13 @@ _engage_bar_edge_change(Engage_Bar *eb, int edge)
 			       bw, bh, /* min */
 			       bw, bh /* max */
 			       );
+
+	l = l->next;
+	if (!l->next && !done_min)
+	  {
+	     done_min = 1;
+	     l = eb->min_icons;
+	  }
      }
 
    eb->align_req = 0.5;
@@ -919,8 +981,9 @@ static void
 _engage_bar_motion_handle(Engage_Bar *eb, Evas_Coord mx, Evas_Coord my)
 {
    Evas_Coord x, y, w, h;
-   double relx, rely;
+   double relx, rely, left, right, dummy;
    Evas_List *items;
+   int bordersize, counter, done_min;
 
    evas_object_geometry_get(eb->box_object, &x, &y, &w, &h);
    if (w > 0) relx = (double)(mx - x) / (double)w;
@@ -942,15 +1005,17 @@ _engage_bar_motion_handle(Engage_Bar *eb, Evas_Coord mx, Evas_Coord my)
    
    e_box_freeze(eb->box_object);
    items = eb->icons;
-   int bordersize = eb->engage->iconbordersize - eb->engage->conf->iconsize;
-   int counter = x + (eb->engage->iconbordersize / 2);
+   
+   bordersize = eb->engage->iconbordersize - eb->engage->conf->iconsize;
+   counter = x + (eb->engage->iconbordersize / 2);
+   done_min = 0;
    while (items)
      {
-	Engage_Icon *icon = (Engage_Icon *) items->data;
+	Engage_Icon *icon;
+	double          distance, new_zoom, relative_x, size;
 
-	double          distance = (double) (counter - mx) /
-	    (eb->engage->iconbordersize);
-	double          new_zoom, relative_x, size;
+	icon = (Engage_Icon *) items->data;
+	distance = (double) (counter - mx) / (eb->engage->iconbordersize);
 
 	zoom_function(distance, &new_zoom, &relative_x, eb);
 	size = icon->scale * new_zoom * eb->engage->iconbordersize;
@@ -961,9 +1026,14 @@ _engage_bar_motion_handle(Engage_Bar *eb, Evas_Coord mx, Evas_Coord my)
 
 	items = items->next;
 	counter += eb->engage->iconbordersize;
+
+	if (!items && !done_min) 
+	  {
+	     done_min = 1;
+	     items = eb->min_icons;
+	  }
      }
 
-   double left, right, dummy;
    zoom_function((double) (x - mx) / (eb->engage->iconbordersize),
        &dummy, &left, eb);
    zoom_function((double) ((x + w) - mx) / (eb->engage->iconbordersize),
@@ -1011,15 +1081,21 @@ static void
 _engage_bar_cb_intercept_resize(void *data, Evas_Object *o, Evas_Coord w, Evas_Coord h)
 {
    Engage_Bar *eb;
+   E_Gadman_Edge edge;
 
    eb = data;
 
    evas_object_resize(o, w, h);
    evas_object_resize(eb->event_object, w, h);
+   
+   if (eb->gmc)
+     edge = e_gadman_client_edge_get(eb->gmc);
+   else
+     edge = E_GADMAN_EDGE_BOTTOM;
 
    /* FIXME "8" should not be hardcoded, difference between engage->conf->icon
     * and engage->iconbordersize */
-   if (e_box_orientation_get(eb->box_object) == 1)
+   if (edge == E_GADMAN_EDGE_TOP || edge == E_GADMAN_EDGE_BOTTOM)
      eb->engage->conf->iconsize = h - 8;
    else
      eb->engage->conf->iconsize = w - 8;
@@ -1065,9 +1141,14 @@ _engage_icon_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_in
    ic = data;
    if (ev->button == 1)
      {
-	edje_object_signal_emit(ic->bg_object, "start", "");
-	edje_object_signal_emit(ic->overlay_object, "start", "");
-	e_app_exec(ic->app);
+	if (ic->min)
+	  e_border_uniconify(ic->border);
+	else
+	  {
+	     edje_object_signal_emit(ic->bg_object, "start", "");
+	     edje_object_signal_emit(ic->overlay_object, "start", "");
+	     e_app_exec(ic->app);
+	  }
      }
 }
 
@@ -1193,9 +1274,12 @@ _engage_bar_iconsize_change(Engage_Bar *eb)
 {
    Evas_List *l;
    Evas_Coord border;
+   int done_mins;
 
    e_box_freeze(eb->box_object);
-   for (l = eb->icons; l; l = l->next)
+   done_mins = 0;
+   l = eb->icons;
+   while (l)
      {
 	Engage_Icon *ic;
 	Evas_Object *o;
@@ -1218,6 +1302,13 @@ _engage_bar_iconsize_change(Engage_Bar *eb)
 	      bw, bh, /* min */
 	      bw, bh /* max */
 	      );
+
+	l = l->next;
+	if (!l && !done_mins)
+	  {
+	     done_mins = 1;
+	     l = eb->min_icons;
+	  }
      }
    eb->engage->iconbordersize = border;
    

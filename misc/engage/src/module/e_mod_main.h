@@ -50,6 +50,7 @@ struct _Engage_Bar
    Evas_Object *event_object;
    
    Evas_List   *icons;
+   Evas_List   *min_icons;
    
    double          align, align_req;
    
@@ -74,6 +75,8 @@ struct _Engage_Icon
    Evas_List     *extra_icons;
 
    double         scale;
+   int            min;
+   E_Border      *border;
 };
 
 EAPI void *init     (E_Module *m);
