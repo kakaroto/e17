@@ -24,3 +24,5 @@ stamp-h1
 autom4te.cache
 etox-config
 etox-config.h
+depcomp
+etox.pc
