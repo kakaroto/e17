@@ -136,6 +136,8 @@ RemoveEwinFromGroup(EWin * ewin)
 			  ewin->group->members = Erealloc(ewin->group->members, sizeof(EWin *) * ewin->group->num_members);
 		       else
 			 {
+			    if (current_group == ewin->group)
+			       current_group = NULL;
 			    RemoveItem((char *)ewin->group, 0, LIST_FINDBY_POINTER, LIST_TYPE_GROUP);
 			    FreeGroup(ewin->group);
 			 }

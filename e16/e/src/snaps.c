@@ -347,14 +347,14 @@ SnapshotEwinDialog(EWin * ewin)
 
 	     s[0] = 0;
 	     slice = 64;
-	     while ((i <= (int)strlen(ewin->client.command)) && 
+	     while ((i <= (int)strlen(ewin->client.command)) &&
 		    (i < (int)(sizeof(s) / 4)))
 	       {
 		  last = i;
 		  i += 64;
 		  slice = 64;
 		  /* and make sure that we don't cut in the middle of a word. */
-		  while ((ewin->client.command[i++] != ' ') && 
+		  while ((ewin->client.command[i++] != ' ') &&
 			 (i < (int)(sizeof(s) / 4)))
 		     slice++;
 		  strncat(s, ewin->client.command + last, slice);

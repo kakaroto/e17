@@ -30,7 +30,7 @@
 
 /* initialize all the KDE Hint Atoms */
 
-																								  /*#if 0 *//* we dont need these right now */
+																										      /*#if 0 *//* we dont need these right now */
 static Atom         KDE_COMMAND = 0;
 static Atom         KDE_ACTIVE_WINDOW = 0;
 static Atom         KDE_ACTIVATE_WINDOW = 0;

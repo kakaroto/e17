@@ -63,6 +63,10 @@ void                IPC_DockPosition(char *params, Client * c);
 
 void                IPC_ReloadMenus(char *params, Client * c);
 
+void                IPC_GroupInfo(char *params, Client * c);
+void                IPC_GroupOps(char *params, Client * c);
+void                IPC_Group(char *params, Client * c);
+
 /* the IPC Array */
 
 /* the format of an IPC member of the IPC array is as follows:
@@ -487,6 +491,40 @@ IPCStruct           IPCArray[] =
       "reload_menus",
       "Reload menus.cfg without restarting (Asmodean_)",
       NULL
+   },
+   {
+      IPC_GroupInfo,
+      "group_info",
+      "Retreive some info on groups",
+      "use \"group_info [group_index]\"\n"
+   },
+   {
+      IPC_GroupOps,
+      "group_op",
+      "Group operations",
+      "use \"group_op <windowid> <property> [<value>]\" to perform "
+      "group operations on a window.\n"
+      "Available group_op commands are:\n"
+      "  group_op <windowid> start\n"
+      "  group_op <windowid> add [<group_index>]\n"
+      "  group_op <windowid> remove\n"
+      "  group_op <windowid> break\n"
+      "  group_op <windowid> showhide\n"
+   },
+   {
+      IPC_Group,
+      "group",
+      "Group commands",
+      "use \"group <groupid> <property> <value>\" to set group properties.\n"
+      "Available group commands are:\n"
+      "  group <groupid> num_members <on/off/?>\n"
+      "  group <groupid> iconify <on/off/?>\n"
+      "  group <groupid> kill <on/off/?>\n"
+      "  group <groupid> move <on/off/?>\n"
+      "  group <groupid> raise <on/off/?>\n"
+      "  group <groupid> set_border <on/off/?>\n"
+      "  group <groupid> stick <on/off/?>\n"
+      "  group <groupid> shade <on/off/?>\n"
    }
 };
 
@@ -516,7 +554,7 @@ IPC_Modules(char *params, Client * c)
 	word(params, 2, param2);
 	if (!strcmp(param1, "load"))
 	  {
-	     if (!param2)
+	     if (!param2[0])
 	       {
 		  Esnprintf(buf, sizeof(buf), "Error: no module specified\n");
 	       }
@@ -532,7 +570,7 @@ IPC_Modules(char *params, Client * c)
 	  }
 	else if (!strcmp(param1, "unload"))
 	  {
-	     if (!param2)
+	     if (!param2[0])
 	       {
 		  Esnprintf(buf, sizeof(buf), "Error: no module specified\n");
 	       }
@@ -598,7 +636,7 @@ IPC_DockPosition(char *params, Client * c)
 
 	if (!strcmp(param1, "start_pos"))
 	  {
-	     if (param2)
+	     if (param2[0])
 	       {
 		  if (!strcmp(param2, "?"))
 		    {
@@ -627,7 +665,7 @@ IPC_DockPosition(char *params, Client * c)
 	  }
 	else if (!strcmp(param1, "direction"))
 	  {
-	     if (param2)
+	     if (param2[0])
 	       {
 		  if (!strcmp(param2, "?"))
 		    {
@@ -2241,7 +2279,7 @@ IPC_Pager(char *params, Client * c)
 	else if (!strcmp(param1, "zoom"))
 	  {
 	     word(params, 2, param2);
-	     if (param2)
+	     if (param2[0])
 	       {
 		  if (!strcmp(param2, "on"))
 		    {
@@ -2276,7 +2314,7 @@ IPC_Pager(char *params, Client * c)
 	else if (!strcmp(param1, "title"))
 	  {
 	     word(params, 2, param2);
-	     if (param2)
+	     if (param2[0])
 	       {
 		  if (!strcmp(param2, "on"))
 		    {
@@ -2306,7 +2344,7 @@ IPC_Pager(char *params, Client * c)
 	else if (!strcmp(param1, "scanrate"))
 	  {
 	     word(params, 2, param2);
-	     if (param2)
+	     if (param2[0])
 	       {
 		  if (!strcmp(param2, "?"))
 		    {
@@ -3170,11 +3208,11 @@ IPC_GotoArea(char *params, Client * c)
 	  {
 	     GetCurrentArea(&a, &b);
 	     word(params, 2, param2);
-	     if ((param2) && (!strcmp(param2, "horiz")))
+	     if ((param2[0]) && (!strcmp(param2, "horiz")))
 	       {
 		  a++;
 	       }
-	     else if ((param2) && (!strcmp(param2, "vert")))
+	     else if ((param2[0]) && (!strcmp(param2, "vert")))
 	       {
 		  b++;
 	       }
@@ -3189,11 +3227,11 @@ IPC_GotoArea(char *params, Client * c)
 	  {
 	     GetCurrentArea(&a, &b);
 	     word(params, 2, param2);
-	     if ((param2) && (!strcmp(param2, "horiz")))
+	     if ((param2[0]) && (!strcmp(param2, "horiz")))
 	       {
 		  a--;
 	       }
-	     else if ((param2) && (!strcmp(param2, "vert")))
+	     else if ((param2[0]) && (!strcmp(param2, "vert")))
 	       {
 		  b--;
 	       }
@@ -3244,7 +3282,7 @@ IPC_WinOps(char *params, Client * c)
 	word(params, 1, windowid);
 	sscanf(windowid, "%8x", &win);
 	word(params, 2, operation);
-	if (!operation)
+	if (!operation[0])
 	  {
 	     Esnprintf(buf, sizeof(buf), "Error: no operation specified\n");
 	  }
@@ -4392,4 +4430,338 @@ IPC_ReloadMenus(char *params, Client * c)
 
    params = NULL;
    c = NULL;
+}
+
+void
+IPC_GroupInfo(char *params, Client * c)
+{
+
+   char                buf[FILEPATH_LEN_MAX];
+   char                buf2[FILEPATH_LEN_MAX];
+   Group             **groups = NULL;
+   int                 num_groups, i, j;
+   char                tmp[16];
+
+   buf[0] = 0;
+
+   if (params)
+     {
+	Group              *group;
+	char                groupid[FILEPATH_LEN_MAX];
+	int                 index;
+
+	groupid[0] = 0;
+	word(params, 1, groupid);
+	sscanf(groupid, "%d", &index);
+
+	group = FindItem(NULL, index, LIST_FINDBY_ID, LIST_TYPE_GROUP);
+
+	if (!group)
+	  {
+	     Esnprintf(buf, sizeof(buf), "Error: no such group: %d\n",
+		       index);
+	     CommsSend(c, buf);
+	     return;
+	  }
+
+	groups = (Group **) Emalloc(sizeof(Group **));
+
+	if (!groups)
+	  {
+	     Esnprintf(buf, sizeof(buf), "Error: no memory\n");
+	     CommsSend(c, buf);
+	     return;
+	  }
+
+	groups[0] = group;
+	num_groups = 1;
+     }
+   else
+     {
+	groups = (Group **) ListItemType(&num_groups, LIST_TYPE_GROUP);
+
+	Esnprintf(buf, sizeof(buf),
+		  "Number of groups: %d\n",
+		  num_groups);
+     }
+
+   for (i = 0; i < num_groups; i++)
+     {
+	for (j = 0; j < groups[i]->num_members; j++)
+	  {
+	     Esnprintf(tmp, sizeof(tmp), "%d", groups[i]->index);
+	     strcat(buf, tmp);
+	     strcat(buf, ": ");
+	     strcat(buf, groups[i]->members[j]->client.title);
+	     strcat(buf, "\n");
+	  }
+	Esnprintf(buf2, sizeof(buf2),
+		  "        index: %d\n"
+		  "  num_members: %d\n"
+		  "      iconify: %d\n"
+		  "         kill: %d\n"
+		  "         move: %d\n"
+		  "        raise: %d\n"
+		  "   set_border: %d\n"
+		  "        stick: %d\n"
+		  "        shade: %d\n",
+		  groups[i]->index,
+		  groups[i]->num_members,
+		  groups[i]->iconify,
+		  groups[i]->kill,
+		  groups[i]->move,
+		  groups[i]->raise,
+		  groups[i]->set_border,
+		  groups[i]->stick,
+		  groups[i]->shade);
+	strcat(buf, buf2);
+     }
+
+   if (groups)
+      Efree(groups);
+
+   if (buf)
+      CommsSend(c, buf);
+
+   return;
+
+}
+
+void
+IPC_GroupOps(char *params, Client * c)
+{
+
+   char                buf[FILEPATH_LEN_MAX];
+
+   buf[0] = 0;
+   if (params)
+     {
+
+	char                windowid[FILEPATH_LEN_MAX];
+	char                operation[FILEPATH_LEN_MAX];
+	char                param1[FILEPATH_LEN_MAX];
+	unsigned int        win;
+
+	windowid[0] = 0;
+	operation[0] = 0;
+	param1[0] = 0;
+	word(params, 1, windowid);
+	sscanf(windowid, "%8x", &win);
+	word(params, 2, operation);
+
+	if (!operation[0])
+	  {
+	     Esnprintf(buf, sizeof(buf), "Error: no operation specified\n");
+	  }
+	else
+	  {
+	     EWin               *ewin;
+
+	     ewin = FindEwinByChildren(win);
+	     if (!ewin)
+	       {
+		  Esnprintf(buf, sizeof(buf), "Error: no such window: %8x\n",
+			    win);
+	       }
+	     else
+	       {
+		  if (!strcmp(operation, "start"))
+		    {
+		       BuildWindowGroup(&ewin, 1);
+		       Esnprintf(buf, sizeof(buf), "start %8x\n", win);
+		    }
+		  else if (!strcmp(operation, "add"))
+		    {
+		       Group              *group = current_group;
+		       char                groupid[FILEPATH_LEN_MAX];
+		       int                 index;
+
+		       groupid[0] = 0;
+		       word(params, 3, groupid);
+
+		       if (groupid[0])
+			 {
+			    sscanf(groupid, "%d", &index);
+			    group = FindItem(NULL, index, LIST_FINDBY_ID, LIST_TYPE_GROUP);
+			 }
+
+		       AddEwinToGroup(ewin, group);
+		       Esnprintf(buf, sizeof(buf), "add %8x\n", win);
+		    }
+		  else if (!strcmp(operation, "remove"))
+		    {
+		       RemoveEwinFromGroup(ewin);
+		       Esnprintf(buf, sizeof(buf), "remove %8x\n", win);
+		    }
+		  else if (!strcmp(operation, "break"))
+		    {
+		       BreakWindowGroup(ewin);
+		       Esnprintf(buf, sizeof(buf), "break %8x\n", win);
+		    }
+		  else if (!strcmp(operation, "showhide"))
+		    {
+		       doShowHideGroup(windowid);
+		       Esnprintf(buf, sizeof(buf), "showhide %8x\n", win);
+		    }
+		  else
+		    {
+		       Esnprintf(buf, sizeof(buf), "Error: no such operation: %s\n",
+				 operation);
+
+		    }
+	       }
+	  }
+     }
+   else
+     {
+	Esnprintf(buf, sizeof(buf), "Error: no window specified\n");
+     }
+
+   if (buf)
+      CommsSend(c, buf);
+
+   return;
+
+}
+
+void
+IPC_Group(char *params, Client * c)
+{
+
+   char                buf[FILEPATH_LEN_MAX];
+
+   buf[0] = 0;
+   if (params)
+     {
+
+	char                groupid[FILEPATH_LEN_MAX];
+	char                operation[FILEPATH_LEN_MAX];
+	char                param1[FILEPATH_LEN_MAX];
+	int                 index;
+
+	groupid[0] = 0;
+	operation[0] = 0;
+	param1[0] = 0;
+	word(params, 1, groupid);
+	sscanf(groupid, "%d", &index);
+	word(params, 2, operation);
+
+	if (!operation[0])
+	  {
+	     Esnprintf(buf, sizeof(buf), "Error: no operation specified\n");
+	  }
+	else
+	  {
+	     Group              *group;
+	     int                 onoff = -1;
+
+	     group = FindItem(NULL, index, LIST_FINDBY_ID, LIST_TYPE_GROUP);
+
+	     if (!group)
+	       {
+		  Esnprintf(buf, sizeof(buf), "Error: no such group: %d\n",
+			    index);
+	       }
+	     else
+	       {
+		  word(params, 3, param1);
+		  if (param1[0])
+		    {
+		       if (!strcmp(param1, "on"))
+			  onoff = 1;
+		       else if (!strcmp(param1, "off"))
+			  onoff = 0;
+
+		       if (onoff == -1 && strcmp(param1, "?"))
+			 {
+			    Esnprintf(buf, sizeof(buf),
+				      "Error: unknown mode specified\n");
+			 }
+		       else if (!strcmp(operation, "num_members"))
+			 {
+			    Esnprintf(buf, sizeof(buf),
+				      "num_members: %d\n",
+				      group->num_members);
+			    onoff = -1;
+			 }
+		       else if (!strcmp(operation, "iconify"))
+			 {
+			    if (onoff >= 0)
+			       group->iconify = onoff;
+			    else
+			       onoff = group->iconify;
+			 }
+		       else if (!strcmp(operation, "kill"))
+			 {
+			    if (onoff >= 0)
+			       group->kill = onoff;
+			    else
+			       onoff = group->kill;
+			 }
+		       else if (!strcmp(operation, "move"))
+			 {
+			    if (onoff >= 0)
+			       group->move = onoff;
+			    else
+			       onoff = group->move;
+			 }
+		       else if (!strcmp(operation, "raise"))
+			 {
+			    if (onoff >= 0)
+			       group->raise = onoff;
+			    else
+			       onoff = group->raise;
+			 }
+		       else if (!strcmp(operation, "set_border"))
+			 {
+			    if (onoff >= 0)
+			       group->set_border = onoff;
+			    else
+			       onoff = group->set_border;
+			 }
+		       else if (!strcmp(operation, "stick"))
+			 {
+			    if (onoff >= 0)
+			       group->stick = onoff;
+			    else
+			       onoff = group->stick;
+			 }
+		       else if (!strcmp(operation, "shade"))
+			 {
+			    if (onoff >= 0)
+			       group->shade = onoff;
+			    else
+			       onoff = group->shade;
+			 }
+		       else
+			 {
+			    Esnprintf(buf, sizeof(buf),
+				      "Error: no such operation: %s\n",
+				      operation);
+			    onoff = -1;
+			 }
+		    }
+		  else
+		    {
+		       Esnprintf(buf, sizeof(buf),
+				 "Error: no mode specified\n");
+		    }
+	       }
+
+	     if (onoff == 1)
+		Esnprintf(buf, sizeof(buf), "%s: on\n", operation);
+	     else if (onoff == 0)
+		Esnprintf(buf, sizeof(buf), "%s: off\n", operation);
+	  }
+     }
+   else
+     {
+	Esnprintf(buf, sizeof(buf), "Error: no group specified\n");
+     }
+
+   if (buf)
+      CommsSend(c, buf);
+
+   return;
+
 }
