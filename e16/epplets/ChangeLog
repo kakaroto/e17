@@ -2181,3 +2181,11 @@ E-Xss.  Right now it's hard-coded to run "xscreensaver-command -lock".  Anyone
 who'd like to make that configurable and has more time than me, have at it.
 :-)
 
+
+-------------------------------------------------------------------------------
+
+Wed Jun  7 20:11:10 PDT 2000
+(KainX)
+
+New patch from Alan Schmitt <alan.schmitt@inria.fr> for a textual mail reader
+button.
