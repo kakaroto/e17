@@ -177,10 +177,12 @@ static void _gevas_selectable_confine(
         gevas_get_viewport_area( gevas, &vx, &vy, &vw, &vh );
         gevasobj_get_size( ev->normal, &objw, &objh );
 
+        /* printf("gevas_selectable_move() x:%f y:%f objw:%f objh:%f\n",*x,*y,objw,objh); */
+
         if( *x < vx ) *x = vx;
         if( *y < vy ) *y = vy;
-        if( *x+objw > vw ) *x = vw-objw;
-        if( *y+objh > vh ) *y = vh-objh;
+        if( *x+objw > vx+vw ) *x = vx+vw-objw;
+        if( *y+objh > vy+vh ) *y = vy+vh-objh;
 
         /* printf("gevas_selectable_move() vx:%d vy:%d vw:%d vh:%d\n",vx,vy,vw,vh); */
     }

@@ -580,7 +580,7 @@ static gint gevas_event(GtkWidget * widget, GdkEvent * event)
 
 	ev = GTK_GEVAS(widget);
 
-/*     printf("gevas_event() ev:%p type:%d\n",ev,event->type); */
+/*      printf("gevas_event() ev:%p type:%d\n",ev,event->type);  */
     
     
 	ev->current_event = event;
@@ -717,6 +717,7 @@ static gint gevas_event(GtkWidget * widget, GdkEvent * event)
 				}
 			}
 			break;
+            
 		case GDK_BUTTON_RELEASE:
 			{
 				int x = 0, y = 0, b = 0;
@@ -725,7 +726,7 @@ static gint gevas_event(GtkWidget * widget, GdkEvent * event)
 				y = (int) event->button.y;
 				b = (int) event->button.button;
 
-/*                printf("GDK_BUTTON_RELEASE: x:%d y:%d\n",x,y);*/
+/*                printf("GDK_BUTTON_RELEASE: x:%d y:%d\n",x,y); */
                 
                 
 /*				gdk_pointer_ungrab( GDK_CURRENT_TIME );
@@ -757,7 +758,7 @@ static gint gevas_event(GtkWidget * widget, GdkEvent * event)
         && (!event->button.y)
         )
     {
-/*        printf("drag synthetic event being ignored...\n");*/
+/*        printf("drag synthetic event being ignored...\n"); */
         return FALSE;
     }
     
@@ -777,8 +778,7 @@ static gint gevas_event(GtkWidget * widget, GdkEvent * event)
     {
 	}
 
-	return 0;
-    /* return (*GTK_WIDGET_CLASS(parent_class)->event) (widget, event);*/
+    return FALSE;
 }
 
 static void gevas_map(GtkWidget * widget)
@@ -850,8 +850,9 @@ static void gevas_realize(GtkWidget * widget)
 	attributes.event_mask = gtk_widget_get_events(widget) | GDK_EXPOSURE_MASK;
 	attributes.event_mask |= GDK_EXPOSURE_MASK
         | GDK_BUTTON_PRESS_MASK
-        | GDK_LEAVE_NOTIFY_MASK | GDK_ENTER_NOTIFY_MASK
 		| GDK_BUTTON_RELEASE_MASK
+        | GDK_ENTER_NOTIFY_MASK
+        | GDK_LEAVE_NOTIFY_MASK
         | GDK_POINTER_MOTION_MASK
         | GDK_POINTER_MOTION_HINT_MASK;
 /*  attributes.event_mask = GDK_ALL_EVENTS_MASK;  */
