@@ -1,135 +1,85 @@
-AC_INIT(src/Etox.h)
-AM_CONFIG_HEADER(config.h)
+dnl Process this file with autoconf to produce a configure script.
+
+AC_INIT(configure.in)
 AM_INIT_AUTOMAKE(etox, 0.0.1)
-AC_C_BIGENDIAN
+AM_CONFIG_HEADER(etox-config.h)
+
+AC_ISC_POSIX
 AC_PROG_CC
 AM_PROG_CC_STDC
-AM_WITH_DMALLOC
+AC_HEADER_STDC
 AC_C_CONST
 AM_ENABLE_SHARED
 AM_PROG_LIBTOOL
-if test X"$enable_shared" = Xyes; then
-  DLLDFLAGS=-export-dynamic
-  AC_SUBST(DLLDFLAGS)
-fi
-AC_PROG_INSTALL
-AC_PROG_MAKE_SET
 
-EVAS_CONFIG="evas-config"
-
-AC_ARG_WITH(evas,
-        [  --with-evas=DIR       use DIR where imlib2 was installed (eg /usr/local)],
-	[CPPFLAGS="$CPPFLAGS -I$withval/include"; LDFLAGS="$LDFLAGS -L$withval/lib"
-	 EVAS_CONFIG=$withval"/bin/evas-config"])			
-AC_ARG_WITH(ttf,
-        [  --with-ttf=DIR          use DIR where freetype was installed (eg /opt/freetype)],
-	[CPPFLAGS="$CPPFLAGS -I$withval/include"; LDFLAGS="$LDFLAGS -L$withval/lib"
-	 LIBS_TTF="-L"$withval"/lib"])
-AC_ARG_WITH(gl,
-        [  --with-gl=DIR           use DIR where opengl was installed (eg /usr/X11R6)],
-	[CPPFLAGS="$CPPFLAGS -I$withval/include"; LDFLAGS="$LDFLAGS -L$withval/lib"
-	 LIBS_GL="-L"$withval"/lib"])
-			
-#### Find out about X
-AC_PATH_X
-AC_PATH_XTRA
-
-if test "x$x_includes" = "x"; then
-  x_includes="/usr/include"
+dnl Set PACKAGE_LOCALE_DIR in config.h.
+if test "x${prefix}" = "xNONE"; then
+  AC_DEFINE_UNQUOTED(PACKAGE_LOCALE_DIR, "${ac_default_prefix}/${DATADIRNAME}/locale")
+else
+  AC_DEFINE_UNQUOTED(PACKAGE_LOCALE_DIR, "${prefix}/${DATADIRNAME}/locale")
 fi
 
-x_cflags="$X_CFLAGS"
-x_ldflags="$X_LDFLAGS"
-x_libs="$X_LIBS $X_EXTRA_LIBS"
-
-AC_CHECK_LIB(X11, XOpenDisplay, x_libs="$x_libs",
-  AC_MSG_ERROR([ERROR: libX11 not found.]); exit,
-  $X_LDFLAGS $X_EXTRA_LIBS $X_LIBS)
-AC_CHECK_LIB(Xext, XShmAttach, x_libs="-lXext $x_libs",
-	     AC_CHECK_LIB(XextSam, XShmAttach,
-		          x_libs="-lXextSam -lXext $x_libs",
-			  AC_MSG_ERROR([ERROR: XShm not found.]); exit, 
-			  $x_libs),
-	     $x_libs)
-AC_CHECK_LIB(Xext, XShapeCombineMask, x_libs="-lXext $x_libs",
-             AC_MSG_ERROR([ERROR: XShape not found.]); exit,
-	     $x_libs)
-
-#### Find out about E db
-#AC_CHECK_HEADER(Edb.h,
-#AC_CHECK_LIB(edb, e_db_open, ,[
-#echo ""
-#echo "ERROR: E db needed"
-#echo ""
-#AC_MSG_ERROR([Fatal Error: no E db detected.]); exit], -L/usr/local/lib -ldb)
-#)
-
-#### Find out about Evas
-AC_CHECK_HEADER(Evas.h,
-AC_CHECK_LIB(evas, evas_new_all, ,[
-echo ""
-echo "ERROR: Evas needed (also requires Imlib2)"
-echo ""
-AC_MSG_ERROR([Fatal Error: no Evas detected.]); exit], 
-`$EVAS_CONFIG --libs` `$EVAS_CONFIG --cflags`)
-)
-
-AC_CHECK_LIB(ttf, TT_Init_FreeType, TTF_LIBS=-lttf $LIBS_TTF, [
-echo ""
-echo "ERROR: Evas needs a system with libttf.so (TrueType Font Library)"
-echo "You can obtain it from:"
-echo "ftp://ftp.enlightenment.org/pub/enlightenment/"
-echo "You can also obtain it from:"
-echo "http://www.freetype.org/"
-echo "You can obtain some truetype fonts from:"
-echo "http://voyager.cns.ohiou.edu/~sadkins/web_library/fonts/font_archive/"
-echo ""
-AC_MSG_ERROR([Fatal Error: no FreeType detected.])], $LIBS_TTF -lm)
-
-AC_CHECK_HEADERS(freetype.h freetype/freetype.h,[ break] , )
-
-AC_CHECK_HEADER(freetype.h, [ ftype=yes ], [ ftype=no ])
-AC_CHECK_HEADER(freetype/freetype.h, [ ftype_ftype=yes ], [ ftype_ftype=no ])
-
-if test x$ftype = xno; then
-if test x$ftype_ftype = xno; then
-echo ""
-echo "ERROR: freetype.h not found in freetype.h or freetype/freetype.h include"
-echo "paths. (ie /usr/include, /usr/local/include etc.). You need the freetype"
-echo "header files to build Evas. This may mean you have to install the"
-echo "freetype-devel packages for your distribution or if all else fails"
-echo "find the source for freetype and install that somewhere where Evas"
-echo "can find the header files."
-echo ""
-echo "You can obtain it from:"
-echo "ftp://ftp.enlightenment.org/pub/enlightenment/"
-echo "You can also obtain it from:"
-echo "http://www.freetype.org/"
-echo "You can obtain some truetype fonts from:"
-echo "http://voyager.cns.ohiou.edu/~sadkins/web_library/fonts/font_archive/"
-echo ""
-AC_MSG_ERROR([Fatal Error: no FreeType header files detected.])
-fi
+dnl Set PACKAGE_DATA_DIR in config.h.
+if test "x${datadir}" = 'x${prefix}/share'; then
+  if test "x${prefix}" = "xNONE"; then
+    AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${ac_default_prefix}/share/${PACKAGE}")
+  else
+    AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${prefix}/share/${PACKAGE}")
+  fi
+else
+  AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${datadir}/${PACKAGE}")
 fi
 
-ttf_includes="$CPPFLAGS"
-ttf_libs="$LIBS_TTF -lm -lttf"
+dnl Set PACKAGE_SOURCE_DIR in config.h.
+packagesrcdir=`cd $srcdir && pwd`
+AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}")
 
-CPPFLAGS=$PREV_CPPFLAGS
+dnl Use -Wall if we have gcc.
+changequote(,)dnl
+if test "x$GCC" = "xyes"; then
+  case " $CFLAGS " in
+  *[\ \	]-Wall[\ \	]*) ;;
+  *) CFLAGS="$CFLAGS -Wall" ;;
+  esac
+fi
+changequote([,])dnl
 
-evas_includes=`$EVAS_CONFIG --cflags`
-evas_libs=`$EVAS_CONFIG --libs`
+AC_SUBST(ebits_cflags)
+AC_SUBST(ebits_libs)
+ebits_cflags=`ebits-config --cflags`
+ebits_libs=`ebits-config --libs`
 
-AC_SUBST(x_cflags)
-AC_SUBST(x_includes)
-AC_SUBST(x_ldflags)
-AC_SUBST(x_libs)
-AC_SUBST(gl_includes)
-AC_SUBST(gl_ldflags)
-AC_SUBST(gl_libs)
-AC_SUBST(evas_includes)
+AC_SUBST(edb_cflags)
+AC_SUBST(edb_libs)
+edb_cflags=`edb-config --cflags`
+edb_libs=`edb-config --libs`
+
+AC_SUBST(ecore_cflags)
+AC_SUBST(ecore_libs)
+ecore_cflags=`ecore-config --cflags`
+ecore_libs=`ecore-config --libs`
+
+AC_SUBST(evas_cflags)
 AC_SUBST(evas_libs)
-AC_SUBST(ttf_includes)
-AC_SUBST(ttf_libs)
+evas_cflags=`evas-config --cflags`
+evas_libs=`evas-config --libs`
 
-AC_OUTPUT([ Makefile src/Makefile debian/Makefile test/Makefile test/img/Makefile test/style/Makefile test/fnt/Makefile], )
+AC_SUBST(ewd_cflags)
+AC_SUBST(ewd_libs)
+ewd_cflags=`ewd-config --cflags`
+ewd_libs=`ewd-config --libs`
+
+AC_SUBST(imlib2_cflags)
+AC_SUBST(imlib2_libs)
+imlib2_cflags=`imlib2-config --cflags`
+imlib2_libs=`imlib2-config --libs`
+
+AC_OUTPUT([
+Makefile
+etox-config
+src/Makefile
+test/Makefile
+], [
+chmod +x etox-config
+]
+)

@@ -1,21 +1,21 @@
 #include "Evas.h"
 #include "src/Etox.h"
+#include "etox-config.h"
 #include <stdio.h>
 #include <stdlib.h>
 
-#define IMGDIR DATADIR"/etox/img/"
-#define FNTDIR DATADIR"/etox/fnt"
-#define STLDIR DATADIR"/etox/style/"
+#define IMGDIR PACKAGE_DATA_DIR"/img/"
+#define FNTDIR PACKAGE_DATA_DIR"/fnt/"
+#define STLDIR PACKAGE_DATA_DIR"/style/"
 
 Etox et;
 char txt[4096];
 
 double down_x, down_y;
 double ox, oy;
-double offset;
 
 void
-mouse_down (void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
+mouse_down(void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
 {
    evas_put_data(_e, _o, "clicked", (void *)1);
    evas_set_layer(_e, _o, 200);
@@ -25,7 +25,7 @@ mouse_down (void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
 }
 
 void
-mouse_up (void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
+mouse_up(void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
 {
    Etox_Obstacle ob;
    double x, y, w, h;
@@ -47,11 +47,11 @@ mouse_up (void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
    evas_move(_e, _o, ox + x - down_x, oy + y - down_y);
    evas_get_geometry(_e, _o, NULL, NULL, &w, &h); 
    
-   etox_obstacle_set(et, ob, ox + x - down_x - offset, oy + y - down_y, w, h);
+   etox_obstacle_set(et, ob, ox + x - down_x, oy + y - down_y, w, h);
 }
 
 void
-mouse_move (void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
+mouse_move(void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
 {
   if (evas_get_data(_e, _o, "clicked"))
     {
@@ -73,14 +73,12 @@ main(int argc, char *argv[])
   int x, y, w, h;
 
   Etox_Style st;
-  Etox_Color ec;
+  Etox_Color ec, ec2;
   Etox_Obstacle ob[8];
   int win_w, win_h;
 
   Display *disp;
   Window win;
-
-  char txt[4096];
 
   win_w = 640;
   win_h = 580;
@@ -112,7 +110,7 @@ main(int argc, char *argv[])
 	       PointerMotionMask | ExposureMask | StructureNotifyMask);
   XMapWindow(disp, win);
 
-  etox_style_add_path(DATADIR"/etox/style");
+  etox_style_add_path(PACKAGE_DATA_DIR"/etox/style");
   etox_style_add_path("./style");
 
   o[0] = evas_add_rectangle(e);
@@ -122,29 +120,27 @@ main(int argc, char *argv[])
   evas_lower(e, o[0]);
   evas_show(e, o[0]);
 
-  /* 
-   * This is the space between the left and right border of the
-   * window and the etox. It's important to keep this var around,
-   * because etox obstacles are specified against the topleft
-   * corner of the etox, *not* the evas..
-   */
-  offset = 10;
-
   ec = etox_color_new();
   etox_color_set_member(ec, "fg", 240, 240, 240, 255);
   etox_color_set_member(ec, "ol", 10, 10, 10, 255);
   etox_color_set_member(ec, "sh", 20, 20, 20, 100);
 
-  et = etox_new_all(e, "Test Etox", offset, 0, 
-                    win_w - (offset * 2), win_h,
-		    "nationff", 10, "sh_ol.style", ec,
-		    ETOX_ALIGN_CENTER, ETOX_ALIGN_BOTTOM,
-		    255, 0);
+  ec2 = etox_color_new();
+  etox_color_set_member(ec2, "fg", 255, 255, 255, 255);
+  etox_color_set_member(ec2, "ol", 10, 10, 10, 255);
+  etox_color_set_member(ec2, "sh", 20, 20, 20, 100);
+
+  st = etox_style_new("sh_ol");
+
+  et = etox_new_all(e, "Test Etox", 10, 0, 
+                    win_w - 20, win_h, 255, 5.0,
+                    ETOX_ALIGN_TYPE_CENTER, ETOX_ALIGN_TYPE_CENTER, 
+                    NULL, NULL, "nationff", 10, NULL);
 
   x = 60, y = 320;
   o[1] = evas_add_image_from_file(e, IMGDIR"evas_test_image_0.png");
   evas_get_image_size(e, o[1], &w, &h);
-  ob[0] = etox_obstacle_add(et, x - offset, y, w, h);
+  ob[0] = etox_obstacle_add(et, x, y, w, h);
   evas_move(e, o[1], x, y); 
   evas_raise(e, o[1]);
   evas_show(e, o[1]);
@@ -155,7 +151,7 @@ main(int argc, char *argv[])
   x = 200, y = 60;
   o[2] = evas_add_image_from_file(e, IMGDIR"evas_test_image_1.png");
   evas_get_image_size(e, o[2], &w, &h);
-  ob[1] = etox_obstacle_add(et, x - offset, y, w, h);
+  ob[1] = etox_obstacle_add(et, x, y, w, h);
   evas_move(e, o[2], x, y); 
   evas_raise(e, o[2]);  
   evas_show(e, o[2]); 
@@ -166,7 +162,7 @@ main(int argc, char *argv[])
   x = 400, y = 100;
   o[3] = evas_add_image_from_file(e, IMGDIR"evas_test_image_2.png");
   evas_get_image_size(e, o[3], &w, &h);
-  ob[2] = etox_obstacle_add(et, x - offset, y, w, h);
+  ob[2] = etox_obstacle_add(et, x, y, w, h);
   evas_move(e, o[3], x, y); 
   evas_raise(e, o[3]);   
   evas_show(e, o[3]);  
@@ -174,49 +170,55 @@ main(int argc, char *argv[])
   evas_callback_add(e, o[3], CALLBACK_MOUSE_UP, mouse_up, ob[2]);  
   evas_callback_add(e, o[3], CALLBACK_MOUSE_MOVE, mouse_move, NULL);
 
-  strcpy(txt, "~font=cinema~~size=16~~color=fg 255 240 180 255~The Etox Test Program\n");
+  etox_set_text(et,ET_FONT("cinema", 16), ET_COLOR(ec2),
+                   ET_TEXT("The Etox Test Program\n"), 
+                   ET_FONT_END, ET_COLOR_END,
+                   ET_TEXT("Etox is a text layout abstraction, built "
+                           "on top of Evas. It is to text, what Ebits "
+                           "is to images. It is intended to abstract "
+                           "text layout to allow different fonts, colors, "
+                           "styles (outline, shadowed, etc.), word "
+                           "wrapping, paragraph layout, columnation and "
+                           "wrapping of text around obstacles in the text "
+                           "area.\n\nTry moving the images (obstacles) "
+                           "around, and see how etox perfectly wraps the "
+                           "text around them. Middle-clicking an image "
+                           "will remove it..\n\n"),
+/*                   ET_ALIGN(ETOX_ALIGN_TYPE_CENTER, ETOX_ALIGN_TYPE_LEFT),
+*/
+                   ET_TEXT("About E17:\n\nE17 is already beginning to use "
+                           "a powerful object model system. I like to call "
+                           "this system the \"fork() & exec()\" object model. "
+                           "Unlike other desktops who like to invent new "
+                           "\"interesting\" ways of doing object models, E17 "
+                           "shall be using one that is the most widley used "
+                           "object model in existance, one that has been in "
+                           "heavy use and development for over 30 years. It "
+                           "involves using 2 system calls - fork() and exec() "
+                           "(and their variants). It's fast, powerful, "
+                           "compatible, and requires no changes in existing "
+                           "programs for them to work with this model. It's "
+                           "great. "),
+/*                   ET_ALIGN(ETOX_ALIGN_TYPE_CENTER, ETOX_ALIGN_TYPE_RIGHT),
+*/
+                   ET_TEXT("E17 is definitely being worked on - it's just "
+                           "a bit quiet. It currently does just enough to "
+                           "manage client windows - not all of ICCCM at all, "
+                           "but just enough. I'm currently working on getting "
+                           "the icon view working in viewing directories and "
+                           "letting me at the least click on files. After "
+                           "that it'll be time to throw in the DND support "
+                           "and then we'll be cooking with gas. I plan on "
+                           "recycling the icon/directory view for handling "
+                           "iconified windows, application launcher panels, "
+                           "configuration panels (background selection and "
+                           "more) and general file browsing and "
+                           "management.\n\n"), ET_END);
 
-  strcat(txt, "~font=notepad~~size=10~~color=fg 255 255 255 255~Etox is a text layout abstraction, built ");
-  strcat(txt, "on top of Evas. It is to text, what Ebits is to images.");
-  strcat(txt, " It is intended to abstract text layout to allow different");
-  strcat(txt, " fonts, colors, styles (outline, shadowed, etc.), word ");
-  strcat(txt, "wrapping, paragraph layout, columnation and wrapping of ");
-  strcat(txt, "text around obstacles in the text area.\n\n");
-
-  strcat(txt, "Try moving the images (obstacles) around, and see how ");
-  strcat(txt, "etox perfectly wraps the text around them. Middle-clicking ");
-  strcat(txt, "an image will remove it..\n\n");
-
-  strcat(txt, "~align=left~About E17:\n\n");
-
-  strcat(txt, "~size=10~~font=notepad~E17 is already beginning to use a powerful ");
-  strcat(txt, "object model system. I like to call this system the ");
-  strcat(txt, "\"fork() & exec()\" object model. Unlike other desktops ");
-  strcat(txt, "who like to invent new \"interesting\" ways of doing ");
-  strcat(txt, "object models, E17 shall be using one that is the most ");
-  strcat(txt, "widley used object model in existance, one that has been ");
-  strcat(txt, "in heavy use and development for over 30 years. It involves ");
-  strcat(txt, "using 2 system calls - fork() and exec() (and their ");
-  strcat(txt, "variants).It's fast, powerful, compatible, and requires no ");
-  strcat(txt, "changes in existing programs for them to work with this ");
-  strcat(txt, "model. It's great.\n\n");
-
-  strcat(txt, "~align=right~E17 is definitely being worked on - it's just ");
-  strcat(txt, "a bit quiet. It currently does just enough to manage client ");
-  strcat(txt, "windows - not all of ICCCM at all, but just enough. I'm ");
-  strcat(txt, "currently working on getting the icon view working in ");
-  strcat(txt, "viewing directories and letting me at the least click on ");
-  strcat(txt, "files. After that it'll be time to throw in the DND support ");
-  strcat(txt, "and then we'll be cooking with gas. I plan on recycling the ");
-  strcat(txt, "icon/directory view for handling iconified windows, ");
-  strcat(txt, "application launcher panels, configuration panels ");
-  strcat(txt, "(background selection and more) and general file browsing ");
-  strcat(txt, "and management.\n\n");
-
-  etox_set_text(et, txt);
   etox_show(et);
 
   /* at test.. */
+/*
   {
     int x, y, w, h;
     etox_get_at(et, 544, &x, &y, &w, &h); 
@@ -224,8 +226,9 @@ main(int argc, char *argv[])
     etox_get_at_position(et, 12, 294, &x, &y, &w, &h);
     printf("At Posiotion Test: x = %d, y = %d, w = %d, h = %d\n", x, y, w, h);
   }  
-
+*/
   /* actual test.. */
+/*
   {
     double w, h;
     etox_get_size(et, &w, &h);
@@ -233,11 +236,11 @@ main(int argc, char *argv[])
     etox_get_actual_size(et, &w, &h);
     printf("Actual Size: w = %f, h = %f\n", w, h);  
   }
+*/
 
   down = 0;
   for (;;)
     {
-      double x, y;
       XEvent ev;
 
       do

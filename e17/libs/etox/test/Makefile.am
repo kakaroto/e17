@@ -1,23 +1,17 @@
-CFLAGS_X      = @x_cflags@
-CFLAGS_EXTRA  = -I$(includedir) -I$(top_srcdir) -I$(top_srcdir)/src -I/usr/local/include
+AUTOMAKE_OPTIONS = 1.4 foreign
+MAINTAINERCLEANFILES = Makefile.in
 
-CFLAGS_ALL    = $(CFLAGS_X) $(CFLAGS_EXTRA)
+CFLAGS			=	-g -W -Wall -Wno-implicit
+INCLUDES		=	-I$(top_srcdir)/src @evas_cflags@ @ewd_cflags@
 
-SUBDIRS       = fnt img style
+bin_PROGRAMS			=	etox_test_simple etox_test_drag
 
-INCLUDES = $(CFLAGS_ALL) \
-           -DLIBDIR=\"$(libdir)\" \
-	   -DBINDIR=\"$(bindir)\" \
-	   -DDATADIR=\"$(datadir)\"
-								     
-bin_PROGRAMS = etox_test etox_test_new
+etox_test_simple_DEPENDENCIES	=	$(top_builddir)/src/libetox.la
+etox_test_simple_SOURCES	=	etox_test_simple.c
+etox_test_simple_LDFLAGS	=	-static
+etox_test_simple_LDADD		=	$(top_builddir)/src/libetox.la @evas_libs@ @evas_libs@ -lecore
 
-etox_test_SOURCES = etox_test.c
-etox_test_new_SOURCES = etox_test_new.c
-
-# You'll need this if you want to use gdb..
-#etox_test_LDFLAGS = -static
-#etox_test_new_LDFLAGS = -static
-
-etox_test_LDADD = $(top_builddir)/src/libetox.la
-etox_test_new_LDADD = $(top_builddir)/src/libetox.la
+etox_test_drag_DEPENDENCIES	=	$(top_builddir)/src/libetox.la
+etox_test_drag_SOURCES		=	etox_test_drag.c
+etox_test_drag_LDFLAGS		=	-static
+etox_test_drag_LDADD		=	$(top_builddir)/src/libetox.la @evas_libs@ @ewd_libs@

@@ -30,8 +30,8 @@ _etox_loadfile_atword(char *s, int num)
 	    return &s[i];
 	  i++;
 	}
-      return NULL;
     }
+  return NULL;
 }
 
 int 
@@ -92,17 +92,19 @@ _etox_loadfile_get_line(char *s, int size, FILE *f)
   while (s[i]) 
     {
       if (!inquote) 
-	if (s[i] == '"') 
-	  {
-	    j = i;
-	    while (s[j]) 
-	      {
-		s[j] = s[j + 1];
-		j++;
-	      }
-	    inquote = 1;
-	    i--;
-	  }
+       {
+	 if (s[i] == '"') 
+	   {
+	     j = i;
+	     while (s[j]) 
+	       {
+		 s[j] = s[j + 1];
+		 j++;
+	       }
+	     inquote = 1;
+	     i--;
+	   }
+        }
       else 
 	{
 	  if (s[i] == '"') 

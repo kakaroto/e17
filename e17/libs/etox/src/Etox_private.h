@@ -3,119 +3,205 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <limits.h>
 #include <unistd.h>
 #include <string.h>
+#include <stdarg.h>
 #include <Evas.h>
+#include <Ewd.h>
+#include "etox-config.h"
+
+#define ET_X_TO_EV(A) (A + e->x)
+#define ET_Y_TO_EV(A) (A + e->y)
+#define EV_X_TO_ET(A) (A - e->x)
+#define EV_Y_TO_ET(A) (A - e->y)
+
+#ifdef DEBUG
+
+#define _etox_rebuild(A) \
+printf("ETOX: %s() (%s:%d): Rebuilding..\n", __FUNCTION__, __FILE__, __LINE__); \
+_D_etox_rebuild(A)
+#define _etox_refresh(A) \
+printf("ETOX: %s() (%s:%d): Refreshing..\n", __FUNCTION__, __FILE__, __LINE__); \
+_D_etox_refresh(A)
+#define D_PRINT(args...) \
+printf("ETOX: %s() (%s:%d): ", __FUNCTION__, __FILE__, __LINE__); printf(args)
+
+#else
+
+#define D_PRINT(args...) 
+  
+#endif
+
+
+typedef struct _Etox_All_Bits *         Etox_All_Bits;
 
 typedef struct _Etox *			Etox;
+
 typedef struct _Etox_Bit *		Etox_Bit;
+typedef struct _Etox_Align *            Etox_Align;
+typedef struct _Etox_Callback *         Etox_Callback;
+typedef struct _Etox_Color *            Etox_Color;
+typedef struct _Etox_Color_Bit *	Etox_Color_Bit;
+typedef struct _Etox_Font *             Etox_Font;
 typedef struct _Etox_Style *		Etox_Style;
 typedef struct _Etox_Style_Bit * 	Etox_Style_Bit;
-typedef struct _Etox_Color *		Etox_Color;
-typedef struct _Etox_Color_Bit *	Etox_Color_Bit;
+typedef struct _Etox_Text *		Etox_Text;
+
 typedef struct _Etox_Obstacle *		Etox_Obstacle;
 
-struct _Etox_Color_Bit
-{
-    char *name;
-    int r, g, b, a;
-};
+typedef struct _Etox_Object *		Etox_Object;
 
-struct _Etox_Color
+
+#include "Etox.h"
+struct _Etox_All_Bits
 {
-    Evas_List bit_list;
+  Etox_Align align;
+  Etox_Callback callback;
+  Etox_Color color;   
+  Etox_Font font;
+  Etox_Style style;
+  Etox_Text text;
 };
 
 struct _Etox
 {
-    char *name;
-    char *text;
-    int text_len;
+  Evas evas;
+  char *name;
+  double x, y, w, h;
+  int a; 
+  double padding; 
 
-    Etox_Obstacle *rect_list;
-    int num_rects;
-    char rendered;
-    char visible;
-    double x,y,w,h;
-    int layer;
-    char *font;
-    Etox_Style font_style;
-    int font_size;
-    Etox_Bit *bit_list;
-    int num_bits;
-    Evas evas;
-    int align;
-    Etox_Color color;
-    int default_color;
-    double padding;
-    char vertical_align;
-    int alpha_mod;
-    Evas_Object clip;
+  int show;
+  int raise;
+  int lower;
+  int layer;
+  Evas_Object clip;
+
+  struct _Etox_All_Bits def;
+
+  Ewd_List *bits;
+  Ewd_List *obstacles;
+
+  Ewd_DList *etox_objects;
+  Ewd_DList *evas_objects;
 };
+
 
 struct _Etox_Bit
 {
-    char *text;
-    char underlined;
-    double x,y,w,h;
-    char *font;
-    Evas_Object *evas_list;
-    int num_evas;
-    Etox_Style font_style;          
-    int font_size;
+  Etox_Bit_Type type;
+  void *body;
+}; 
+ 
+struct _Etox_Align
+{
+  Etox_Align_Type v, h;
+};
+
+struct _Etox_Callback
+{
+  /* TODO */
+  int bleh;
+};
+
+struct _Etox_Color
+{
+  Ewd_List *bits;
+};
+
+struct _Etox_Color_Bit
+{  
+  char *name;
+  int r, g, b, a;  
+};
+
+struct _Etox_Font
+{
+  char *name;
+  int size;
+  double ascent, descent;
 };
 
 struct _Etox_Style
 {
-    Etox_Style_Bit bits;
-    int num_bits;
-    char *name;
-    int in_use;
+  char *name;
+  double offset_w, offset_h;
+  Ewd_List *bits;
 };
 
 struct _Etox_Style_Bit
 {
-    char type;
-    int alpha;
-    double x,y;
+  Etox_Style_Type type;
+  double x, y;
+  int a;
 };
+
+struct _Etox_Text
+{
+  char *str;
+};
+
 
 struct _Etox_Obstacle
 {
-    int num;
-    double w,h;
-    double x,y;
+  double x, y, w, h;
+};
+
+
+struct _Etox_Object
+{
+  double x, y, w, h;
+  char *str;
+  Ewd_List *ev_objects;
+
+  struct _Etox_All_Bits bit;
 };
 
 
 /** Internal Functions **/
 
-int		_etox_search_tokens(const char *text, const char **needles, 
-                                    int needles_count, char **beg, char **next);
-void		_etox_available_size(Etox e, double beg_x, double beg_y, 
-                                     double h, double padding, 
-                                     double *av_x, double *av_y, double *av_w);
-void		_etox_clean(Etox e);
+#ifdef DEBUG
+void		_D_etox_rebuild(Etox e);
+void		_D_etox_refresh(Etox e);
+#else
+void		_etox_rebuild(Etox e);
 void		_etox_refresh(Etox e);
+#endif
 
-Etox_Bit	_etox_bit_new(void);
-void		_etox_bit_update_geometry(Etox e, Etox_Bit abit);
-void		_etox_bit_set_face(Etox_Bit bit, char *font, int font_size, 
-                                   Etox_Style style);
-void		_etox_bit_create_objects(Etox_Bit abit, Etox e, 
-                                         Etox_Color text_color);
-void		_etox_bit_update_objects(Etox_Bit abit, Etox e);
-void		_etox_bit_move_relative(Etox e, Etox_Bit abit, 
-                                        double delta_x, double delta_y);
-double		_etox_bit_dump_line(Etox_Bit *abits, int bit_count, Etox e, 
-                                    char align, char vertical_align,
-                                    double beg_x, double cur_w);
+void		_etox_create_etox_objects(Etox e);
+void		_etox_create_evas_objects(Etox e);
+
+Etox_Object	_etox_object_new(double x, double y, Etox_All_Bits bits);
+void		_etox_object_free(Etox_Object obj);
+int		_etox_object_get_available_size(Etox e, Etox_Object obj);
+int		_etox_object_get_string_that_fits(Etox e, Etox_Object obj);
+void		_etox_object_move(Etox e, Etox_Object obj);
+void		_etox_object_finish(Etox e, Etox_Object obj);
 
 Etox_Color_Bit	_etox_color_get_bit(Etox_Color color, char *member);
+void		_etox_color_bit_free(Etox_Color_Bit bit);
 
 char *		_etox_loadfile_atword(char *s, int num);
 int		_etox_loadfile_is_whitespace(const char *s);
 char *		_etox_loadfile_get_line(char *s, int size, FILE *f);
 int		_etox_loadfile_is_good(char *path);
+
+void		_etox_get_string_width(Etox e, Etox_Font font, char *str, 
+                                       double *w);
+void		_etox_get_font_ascent_descent(Etox e, Etox_Font font,
+                                              double *ascent, double *descent); 
+void		_etox_get_style_offsets(Etox_Style style, double *offset_w, 
+                                        double *offset_h);
+
+Etox_Align	_etox_bit_align_new(Etox_Align_Type v, Etox_Align_Type h);
+void		_etox_bit_align_free(Etox_Align align);
+Etox_Callback	_etox_bit_callback_new();
+void		_etox_bit_callback_free(Etox_Callback cb);
+Etox_Font	_etox_bit_font_new(char *name, int size, Etox e);
+void		_etox_bit_font_free(Etox_Font font);
+Etox_Text	_etox_bit_text_new(char *str);
+void		_etox_bit_text_free(Etox_Text text);
+void		_etox_bit_free(Etox_Bit bit);
 
 #endif

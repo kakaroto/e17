@@ -1,14 +1,27 @@
-
 ## Process this file with automake to produce Makefile.in
 
-AUTOMAKE_OPTIONS     = 1.4 foreign
+SUBDIRS = src test
 
-# A list of all the files in the current directory which can be regenerated
-MAINTAINERCLEANFILES = INSTALL Makefile.in aclocal.m4 config.guess \
-		       config.h.in config.sub configure install-sh \
-		       ltconfig ltmain.sh missing mkinstalldirs \
-		       stamp-h.in
+MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess \
+		   config.h.in config.sub configure install-sh \
+		   ltconfig ltmain.sh missing mkinstalldirs \
+		   stamp-h.in
 
-SUBDIRS		     = src test debian
+install-data-local:
+	@$(NORMAL_INSTALL)
+	if [ -d $(srcdir)/data ]; then \
+	  $(mkinstalldirs) $(DESTDIR)$(pkgdatadir); \
+	    (cd $(srcdir)/data; tar -cf - *) | (cd $(DESTDIR)$(pkgdatadir); tar -xf -) \
+	fi
 
-EXTRA_DIST = README AUTHORS COPYING etox.spec
+dist-hook:
+	if [ -d data ]; then \
+	  (cd $(srcdir)/data; tar -cf - *) | (cd $(distdir); tar -xf -) \
+	fi
+
+bin_SCRIPTS = etox-config
+
+EXTRA_DIST = README AUTHORS COPYING etox.m4 etox.spec
+
+m4datadir = $(datadir)/aclocal
+m4data_DATA = etox.m4

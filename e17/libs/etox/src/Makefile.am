@@ -1,43 +1,30 @@
 ## Process this file with automake to produce Makefile.in
 
-AUTOMAKE_OPTIONS     = 1.4 foreign
+INCLUDES = @evas_cflags@ @ewd_cflags@
 
-# A list of all the files in the current directory which can be regenerated
-MAINTAINERCLEANFILES = Makefile.in
+lib_LTLIBRARIES = libetox.la
 
-LIBS_X        = @x_ldflags@ @x_libs@
-LIBS_EVAS     = @evas_libs@
-LIBS_EXTRA    = -L/usr/local/lib
+installed_headersdir = $(prefix)/include
 
-CFLAGS_X      = @x_cflags@
-CFLAGS_EVAS   = @evas_includes@
-#CFLAGS_DB    = 
-CFLAGS_EXTRA  = -I$(includedir) -I$(top_srcdir) -I/usr/local/include
+installed_headers_DATA = \
+Etox.h
 
-LIBS_ALL      = $(LIBS_X) $(LIBS_EVAS) $(LIBS_EXTRA)
-CFLAGS_ALL    = $(CFLAGS_X) $(CFLAGS_EVAS) $(CFLAGS_EXTRA)
-
-INCLUDES	     = $(CFLAGS_ALL) \
-		       -DLIBDIR=\"$(libdir)\" \
-		       -DBINDIR=\"$(bindir)\" \
-		       -DDATADIR=\"$(datadir)\"
-
-lib_LTLIBRARIES      = libetox.la
-include_HEADERS      = Etox.h
-
-libetox_la_SOURCES   = \
+libetox_la_SOURCES = \
 Etox.h \
 Etox_private.h \
 etox.c \
 etox_bit.c \
 etox_color.c \
+etox_create.c \
 etox_get.c \
 etox_loadfile.c \
+etox_object.c \
 etox_obstacle.c \
 etox_set.c \
+etox_str.c \
 etox_style.c
 
 
-libetox_la_LIBADD       = $(LIBS_ALL)
+libetox_la_LIBADD       = @evas_libs@ @ewd_libs@
 libetox_la_DEPENDENCIES = $(top_builddir)/config.h
 libetox_la_LDFLAGS      = -version-info 0:1:0

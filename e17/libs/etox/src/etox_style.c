@@ -1,147 +1,154 @@
 #include "Etox_private.h"
 #include "Etox.h"
 
-Etox_Style *style_list;
-int         num_styles=0;
+static Ewd_List *style_list = NULL;
+static Ewd_List *path_list = NULL;
 
-static int     fspath_num = 0;
-static char  **fspath = NULL;
+void
+etox_style_init()
+{
+  char global_path[PATH_MAX];
+  char user_path[PATH_MAX];
+
+  path_list = ewd_list_new();
+  ewd_list_set_free_cb(path_list, EWD_FREE_CB(free));
+
+  snprintf(global_path, PATH_MAX, PACKAGE_DATA_DIR "/style");
+  etox_style_add_path(global_path);
+
+  snprintf(user_path, PATH_MAX, "%s/.e/etox/style", getenv("HOME"));
+  etox_style_add_path(user_path);
+}
 
 void 
 etox_style_add_path(char *path) 
 {
-  fspath_num++;
-  if (!fspath)
-    fspath = malloc(sizeof(char *));
-  else
-    fspath = realloc(fspath, (fspath_num * sizeof(char *)));
-  fspath[fspath_num - 1] = strdup(path);
+  if (!path)
+    return;
+
+  if (!path_list)
+    etox_style_init();
+
+  ewd_list_append(path_list, strdup(path));
 }
 
 void 
 etox_style_del_path(char *path) 
 {
-  int i, j;
+  char *tmp;
   
-  for (i = 0; i < fspath_num; i++)
-    {
-      if (!strcmp(path, fspath[i]))
-	{
-	  fspath_num--;
-	  for (j = i; j < fspath_num; j++)
-	    fspath[j] = fspath[j + 1];
-	  if (fspath_num > 0)
-	    fspath = realloc(fspath, fspath_num * sizeof(char *));
-	  else
-	    {
-	      free(fspath);
-	      fspath = NULL;
-	    }
-	}
-    }
+  if (!path || !path_list)
+    return;
+
+  ewd_list_goto_first(path_list);
+  while((tmp = (char *) ewd_list_next(path_list)))
+    if (!strcmp(tmp, path))
+      {
+        if (ewd_list_goto(path_list, tmp))
+  	  ewd_list_remove(path_list);
+	FREE(tmp);
+      }
 }
 
-char **
-etox_style_get_paths(int *number_return) 
+Ewd_List *
+etox_style_get_paths(void) 
 {
-  *number_return = fspath_num;
-  return fspath;
+  return path_list;
 }
 
 
 Etox_Style 
-etox_style_new(char *path) 
+etox_style_new(char *name) 
 {
   Etox_Style style;
+  Etox_Style_Bit bit;
   FILE *font_file;
   char s[4096];
   int i1, i2, i3, fields;
   char s2[4096];
   char nbuf[4096];
-  
-  if(!path)
-    return NULL;
+  char *tmp;
+
+  if (!path_list)
+    etox_style_init();
   
   style = malloc(sizeof(struct _Etox_Style));
-  style->in_use = 0;
   
-  style->bits = NULL;
-  style->name = malloc((strlen(path) * sizeof(char)) + 1);
-  strcpy(style->name,path);
-  style->num_bits = 0;
-  
+  if (name)
+    style->name = strdup(name);
+  else
+    style->name = NULL;
+ 
+  style->bits = ewd_list_new();
+  ewd_list_set_free_cb(style->bits, EWD_FREE_CB(free));
+
   /* Look for the style file */
   
-  if (!_etox_loadfile_is_good(path))
+  if (!_etox_loadfile_is_good(name))
     {
       int ok = 0;
-      int fspath_iter = 0;
 
-      if (!strstr(path,".style") )
+      if (!strstr(name, ".style") )
 	{
-	  strncpy(nbuf, path, 4000);
+	  strncpy(nbuf, name, 4000);
 	  strcat(nbuf, ".style");
 	  
 	  ok = _etox_loadfile_is_good(nbuf);
 	}
-      while (!ok) 
+
+      ewd_list_goto_first(path_list);
+      while((tmp = (char *) ewd_list_next(path_list))) 
 	{
-	  if (fspath_iter >= fspath_num)
-	    return NULL;
-	  strncpy(nbuf, fspath[fspath_iter], 4000);
+          if (ok)
+            break;
+	  strncpy(nbuf, tmp, 4000);
 	  if (!(nbuf[strlen(nbuf)-1] == '/'))
 	    strcat(nbuf,"/");
-	  strncat(nbuf, path, (4000 - strlen(nbuf)));
+	  strncat(nbuf, name, (4000 - strlen(nbuf)));
 	  ok = _etox_loadfile_is_good(nbuf);
 	  if (!ok)
-	    if (!strstr(path,".style") )
+	    if (!strstr(name, ".style") )
 	      {
 		strcat(nbuf, ".style");
 	      
 		ok = _etox_loadfile_is_good(nbuf);
 	      }
-	  fspath_iter++;
 	}
     }
   else
-    strncpy(nbuf, path, 4000);
+    strncpy(nbuf, name, 4000);
 
-  font_file = fopen(nbuf,"r");
-  while(_etox_loadfile_get_line(s,4096,font_file)) 
+  font_file = fopen(nbuf, "r");
+  while (_etox_loadfile_get_line(s,4096,font_file)) 
     {
       i1=i2=i3=0;
       memset(s2,0,4096);
       fields = sscanf(s,"%4000[^=]= %i %i %i",s2,&i1,&i2,&i3);
+
       if (fields < 3) 
 	{
 	  fclose(font_file);
 	  return style;
 	}
-      style->num_bits++;
-      if(style->bits)
-	{
-	  style->bits = realloc(style->bits,(style->num_bits * 
-					     sizeof(struct _Etox_Style_Bit) + 
-					     1));
-	} 
-      else 
-	{
-	  style->bits = malloc(style->num_bits * 
-			       sizeof(struct _Etox_Style_Bit) + 1);
-	}
-      if(!strcmp(s2,"sh"))
-	style->bits[style->num_bits - 1].type = ETOX_STYLE_TYPE_SHADOW;
-      if(!strcmp(s2,"fg"))
-	style->bits[style->num_bits - 1].type = ETOX_STYLE_TYPE_FOREGROUND;
-      if(!strcmp(s2,"ol"))
-	style->bits[style->num_bits - 1].type = ETOX_STYLE_TYPE_OUTLINE;
-      style->bits[style->num_bits - 1].x = i1;
-      style->bits[style->num_bits - 1].y = i2;
-      style->bits[style->num_bits - 1].alpha = i3;
+
+      bit = malloc(sizeof(struct _Etox_Style_Bit));
+
+      if (!strcmp(s2, "sh"))
+	bit->type = ETOX_STYLE_TYPE_SHADOW;
+      if (!strcmp(s2, "fg"))
+        bit->type = ETOX_STYLE_TYPE_FOREGROUND;
+      if (!strcmp(s2, "ol"))
+	bit->type = ETOX_STYLE_TYPE_OUTLINE;
+      bit->x = i1;
+      bit->y = i2;
+      bit->a = i3;
+
+      ewd_list_append(style->bits, bit);
     }
   fclose(font_file);
-  
-  (style->in_use)++;
+
+  _etox_get_style_offsets(style, &(style->offset_w), &(style->offset_h));
+
   return style;
 }
 
@@ -150,17 +157,7 @@ etox_style_free(Etox_Style style)
 {
   if (!style)
     return;
-
-  (style->in_use)--;
-
-  if (style->in_use <=0) 
-    {
-      if(style->name)
-	free(style->name);
-      if(style->bits)
-	free(style->bits);
-      free(style);
-
-      style = NULL;
-    }
+  
+  ewd_list_destroy(style->bits);
+  FREE(style);
 }
