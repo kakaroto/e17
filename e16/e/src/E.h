@@ -2336,6 +2336,7 @@ char               *ExtractTheme(char *theme);
 char               *FindFile(char *file);
 char               *FindNoThemeFile(char *file);
 char               *FindTheme(char *theme);
+void                BadThemeDialog(void);
 int                 LoadEConfig(char *themelocation);
 void                SaveUserControlConfig(FILE * autosavefile);
 void                RecoverUserConfig(void);

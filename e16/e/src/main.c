@@ -362,6 +362,7 @@ main(int argc, char **argv)
 	runDocBrowser();
      }
 
+   BadThemeDialog();
    /* The primary event loop */
    for (;;)
       WaitEvent();

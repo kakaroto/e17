@@ -2871,3 +2871,10 @@ Sun Oct  3 11:45:28 PDT 1999
 (Raster)
 
 change menu scroll dist to 4 pixels
+
+-------------------------------------------------------------------------------
+
+Sun Oct  3 12:03:22 PDT 1999
+(Raster)
+
+bad theme dialog added so people knwo they chose a bad theme...

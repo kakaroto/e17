@@ -214,6 +214,8 @@ ExtractTheme(char *theme)
    EDBUG_RETURN(NULL);
 }
 
+static char        *badtheme = NULL;
+
 char               *
 FindTheme(char *theme)
 {
@@ -239,8 +241,27 @@ FindTheme(char *theme)
 	     if (exists(s))
 		ret = ExtractTheme(s);
 	     if (!ret)
-		ret = GetDefaultTheme();
+	       {
+		  ret = GetDefaultTheme();
+		  badtheme = duplicate(theme);
+	       }
 	  }
      }
    EDBUG_RETURN(ret);
+}
+
+void
+BadThemeDialog(void)
+{
+   char                s[1024];
+
+   if (!badtheme)
+      return;
+
+   Esnprintf(s, sizeof(s),
+	     "The theme:\n"
+	     "%s\n"
+	     "Is a badly formed theme package and is thus not being used.\n"
+	     "Enlightenment has fallen back to using the DEFAULT theme.\n");
+   DIALOG_OK("Bad Theme", s);
 }
