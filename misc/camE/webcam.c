@@ -26,8 +26,8 @@
 #include <curl/curl.h>
 #include <curl/easy.h>
 
-#include <asm/types.h>
-#include "videodev.h"
+#include <sys/types.h>
+#include <linux/videodev.h>
 
 #include "parseconfig.h"
 
@@ -768,7 +768,7 @@ main(int argc, char *argv[])
       overlay_y = i;
 
    /* print config */
-   fprintf(stderr, "camE v0.7 - (c) 1999, 2000 Gerd Knorr, Tom Gilbert\n");
+   fprintf(stderr, "camE v0.8 - (c) 1999, 2000 Gerd Knorr, Tom Gilbert\n");
    fprintf(stderr,
            "grabber config: size %dx%d, input %d, norm %d, "
            "jpeg quality %d\n", grab_width, grab_height, grab_input,
