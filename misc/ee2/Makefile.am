@@ -2,7 +2,7 @@ AUTOMAKE_OPTIONS = foreign
 
 bin_PROGRAMS = ee2
 
-ee2_SOURCES = file.c file.h cache.c webcam.c about.c browser.c menus.c ee2.c ee2.h
+ee2_SOURCES = map.c file.c file.h cache.c webcam.c about.c browser.c menus.c ee2.c ee2.h
 
 CFLAGS := $(CPPFLAGS) $(CFLAGS) `gtk-config --cflags` 
 

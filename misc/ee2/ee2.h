@@ -39,16 +39,14 @@ extern char currentimage[];
 
 char cache[255];
 
-/* struct for nolan's mapping code */
+/* stuff for nolan's mapping code */
 typedef struct pixel_data
 {
 	int mappedx;
 	int mappedy;
 } mapped_pixels;
-
-/* more texture mapping stuff */
-mapped_pixels *calc_mapping(int im_width, int im_height, int x, int y);
 void sphere_map_image(GtkWidget *widget, GdkEvent *event, gpointer data);
+mapped_pixels *calc_mapping(int im_width, int im_height, int x, int y);
 
 /* functions */
 void about_init(void);

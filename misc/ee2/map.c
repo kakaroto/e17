@@ -1,3 +1,5 @@
+#include "ee2.h"
+
 /*---------------------------------------------------------------------------*/
 /* GUI callback - mapping - the image must be square at this point - Nolan*/
 
