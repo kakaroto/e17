@@ -6,10 +6,11 @@ bin_PROGRAMS = E-Load.epplet E-Clock.epplet E-Time.epplet E-Net.epplet \
 E-Cpu.epplet E-Biff.epplet E-Power.epplet @TEST_PROGS@ @MIXER_PROGS@ \
 E-MemWatch.epplet E-Disk.epplet E-Areas.epplet E-Magic.epplet \
 E-NetFlame.epplet E-Sys.epplet E-ScreenShoot.epplet E-Slides.epplet \
-E-Xss.epplet E-Mountbox.epplet E-Exec.epplet E-SD.epplet \
-E-ScreenSave.epplet E-NetGraph.epplet E-MoonClock.epplet E-UrlWatch.epplet \
+E-Xss.epplet E-Mountbox.epplet E-Exec.epplet E-SD.epplet @PLAYCD_PROGS@ \
+E-ScreenSave.epplet E-NetGraph.epplet E-MoonClock.epplet E-UrlWatch.epplet
 
-EXTRA_PROGRAMS = EppletTest.epplet EppletConfigTest.epplet E-Mixer.epplet Emix.epplet
+EXTRA_PROGRAMS = EppletTest.epplet EppletConfigTest.epplet E-Mixer.epplet \
+                 Emix.epplet E-PlayCD.epplet
 
 ################ Conditional Builds ################
 E_Mixer_epplet_SOURCES = E-Mixer.c
@@ -20,6 +21,11 @@ E_Mixer_epplet_LDADD = $(top_builddir)/api/libepplet.la -L$(libdir) -L$(prefix)/
 Emix_epplet_SOURCES = Emix.c
 Emix_epplet_DEPENDENCIES = $(top_srcdir)/api/libepplet.la
 Emix_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
+
+E_PlayCD_epplet_SOURCES = E-PlayCD.c
+E_PlayCD_epplet_DEPENDENCIES = $(top_srcdir)/api/libepplet.la
+E_PlayCD_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
+E_PlayCD_epplet_LDADD = $(top_builddir)/api/libepplet.la -L$(libdir) -L$(prefix)/lib $(LIBS) $(X_LIBS) -lcdaudio
 
 EppletTest_epplet_SOURCES = TestEpplet.c
 EppletTest_epplet_DEPENDENCIES = $(top_srcdir)/api/libepplet.la
@@ -146,7 +152,9 @@ E-Mountbox.ABOUT/shot_unmounted.png E-NetFlame.ABOUT/MAIN  \
 E-Power.ABOUT/MAIN E-SD.ABOUT/MAIN E-ScreenSave.ABOUT/MAIN  \
 E-ScreenShoot.ABOUT/E_ScreenShoot_buttons.png  \
 E-ScreenShoot.ABOUT/E_ScreenShoot_cloak.png E-ScreenShoot.ABOUT/MAIN \
-Emix.ABOUT/MAIN E-UrlWatch.ABOUT/MAIN
+Emix.ABOUT/MAIN E-UrlWatch.ABOUT/MAIN E-PlayCD.ABOUT/EPlayCD.jpg \
+E-PlayCD.ABOUT/Edoc_bg.png E-PlayCD.ABOUT/MAIN E-PlayCD.ABOUT/batmanforever.ttf \
+E-PlayCD.ABOUT/title.png
 
 # ICONS = `(cd epplets && ls -1d icons/*.icon | grep -v CVS)`
 ICONS = icons/E-Biff.icon icons/E-Clock.icon icons/E-Cpu.icon icons/E-Disk.icon \
@@ -208,7 +216,7 @@ E-Magic-data/answers.txt E-Magic-data/8ball.png
 
 EXTRA_DIST = ${ICONS} ${ABOUT_DOCS} ${DATA_FILES}
 
-NEED_FONT = E-Clock E-Mixer E-MoonClock E-Mountbox E-NetFlame E-Power E-SD E-ScreenSave E-ScreenShoot Emix E-UrlWatch
+NEED_FONT = E-Clock E-Mixer E-MoonClock E-Mountbox E-NetFlame E-Power E-SD E-ScreenSave E-ScreenShoot Emix E-UrlWatch E-PlayCD
 NEED_BG = E-Clock E-Mixer E-MoonClock E-Mountbox E-NetFlame E-Power E-SD E-ScreenSave E-ScreenShoot Emix E-UrlWatch
 BG_SRC = E-Cpu.ABOUT/bg.png
 FONT_SRC = E-Cpu.ABOUT/aircut3.ttf
@@ -236,9 +244,9 @@ install-data-hook:
 	done
 	@for i in $(NEED_BG) ; do \
 	  echo $(INSTALL_DATA) $(srcdir)/$(BG_SRC) $(DESTDIR)$(EROOT)/epplet_data/$$i/$${i}.ABOUT/ ; \
-	  $(INSTALL_DATA) $(srcdir)/$(BG_SRC) $(DESTDIR)$(EROOT)/epplet_data/$$i/$${i}.ABOUT/ ; \
+	  $(INSTALL_DATA) $(srcdir)/$(BG_SRC) $(DESTDIR)$(EROOT)/epplet_data/$$i/$${i}.ABOUT/ || : ; \
 	done
 	@for i in $(NEED_FONT) ; do \
 	  echo $(INSTALL_DATA) $(srcdir)/$(FONT_SRC) $(DESTDIR)$(EROOT)/epplet_data/$$i/$${i}.ABOUT/ ; \
-	  $(INSTALL_DATA) $(srcdir)/$(FONT_SRC) $(DESTDIR)$(EROOT)/epplet_data/$$i/$${i}.ABOUT/ ; \
+	  $(INSTALL_DATA) $(srcdir)/$(FONT_SRC) $(DESTDIR)$(EROOT)/epplet_data/$$i/$${i}.ABOUT/ || : ; \
 	done
