@@ -31,6 +31,23 @@ static void _e_thumb_stack_above (Evas_Object * o, Evas_Object * above);
 static void _e_thumb_stack_below (Evas_Object * o, Evas_Object * below);
 static void _e_thumb_color_set (Evas_Object * o, int r, int g, int b, int a);
 
+void
+e_thumb_init (void)
+{
+    int i = 0;
+    struct stat status;
+    char buf[PATH_MAX];
+    char *dirs[] = { ".thumbnails", ".thumbnails/normal", 
+		    ".thumbnails/large", ".thumbnails/fail" };
+    
+    for(i = 0; i < 4; i++)
+    {
+	snprintf(buf, PATH_MAX, "%s/%s", getenv("HOME"), dirs[i]);
+	if(!stat(buf, &status)) continue;
+	else mkdir(buf, S_IRUSR | S_IWUSR | S_IXUSR);
+    }
+}
+
 Evas_Object *
 e_thumb_new (Evas * evas, const char *file)
 {

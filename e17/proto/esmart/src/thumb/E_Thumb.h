@@ -28,6 +28,11 @@ struct _E_Thumb
 typedef struct _E_Thumb E_Thumb;
 
 /**
+ * e_thumb_init - create the directories ethumb is going to cache to
+ */
+void e_thumb_init(void);
+
+/**
  * e_thumb_free - free an E_Thumb smart object 
  */
 void e_thumb_free(Evas_Object *o);
