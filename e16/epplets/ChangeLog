@@ -1993,3 +1993,10 @@ Fixed Epplet_register_event_handler, prompted by email from Alexandre David
 to change the line where the event handler is called. (His patch changed
 only one definition of it, in the wrong place, and broke epplets ;)
 
+-------------------------------------------------------------------------------
+
+Mon Feb 28 19:50:20 GMT 2000
+(gilbertt)
+
+64-bit fixes from Bob Arendt <rdarendt@cwcom.net>
+

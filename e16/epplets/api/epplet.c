@@ -1026,7 +1026,7 @@ void
 Epplet_imageclass_paste(char *iclass, char *state, Window ww, int x, int y,
 			int w, int h)
 {
-   Pixmap              p, m;
+   Pixmap              p = 0, m = 0;
    char                s[1024], *msg;
    GC                  gc = 0;
    XGCValues           gcv;
@@ -1054,7 +1054,7 @@ void
 Epplet_imageclass_get_pixmaps(char *iclass, char *state, Pixmap * p,
 			      Pixmap * m, int w, int h)
 {
-   Pixmap              pp, mm;
+   Pixmap              pp = 0, mm = 0;
    char                s[1024], *msg;
    GC                  gc = 0, mgc = 0;
    XGCValues           gcv;
@@ -1857,7 +1857,7 @@ ECommsGet(XEvent * ev)
 {
    char                s[13], s2[9], *msg = NULL;
    int                 i;
-   Window              win;
+   Window              win = 0;
    static char        *c_msg = NULL;
 
    if (!ev)
