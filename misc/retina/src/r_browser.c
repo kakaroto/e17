@@ -174,8 +174,6 @@ r_draw_thumb(char *file)
     evas_move(e_area, e_t_txt[img_c], 50, t_y+10);
 		//evas_show(e_area, e_t_txt[i]);
 
-		printf("br: %d\n", img_c);
-										
 		t_y += 45;
 
 	QUEUE_DRAW;
