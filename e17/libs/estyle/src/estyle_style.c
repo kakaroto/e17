@@ -194,7 +194,7 @@ void _estyle_style_draw(Estyle *es, char *text)
 	while ((layer = _estyle_heap_item(info->layers, i))) {
 		ob = __estyle_style_layer_draw(layer, es, text);
 		((Estyle_Style *) es->style)->bits = evas_list_append( ((Estyle_Style *)es->style)->bits, ob );
-		evas_object_smart_member_add(es->smart_obj, ob);
+		evas_object_smart_member_add(ob, es->smart_obj);
 		i++;
 	}
 

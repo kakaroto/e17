@@ -60,7 +60,7 @@ Evas_Object *estyle_new(Evas *evas, char *text, char *style)
 	evas_object_text_font_set(es->bit, DEFAULT_FONT, DEFAULT_SIZE);
 
 	obj = evas_object_smart_add(evas, estyle_smart);
-	evas_object_smart_member_add(obj, es->bit);
+	evas_object_smart_member_add(es->bit, obj);
 	evas_object_smart_data_set(obj, es);
 	es->smart_obj = obj;
 
