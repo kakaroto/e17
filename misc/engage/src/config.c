@@ -28,7 +28,7 @@ int
 zoom_listener(const char *key, const Ecore_Config_Type type, const int tag,
               void *data)
 {
-  options.zoom = ecore_config_int_get(key);
+  options.zoom = ecore_config_boolean_get(key);
 }
 
 theme_listener(const char *key, const Ecore_Config_Type type, const int tag,
@@ -148,14 +148,14 @@ od_config_init(void)
   ecore_config_listen("theme", "engage.options.theme", theme_listener, 0, NULL);
   options.mode = ecore_config_int_get("engage.options.mode");
   options.grab_min_icons =
-    ecore_config_int_get("engage.options.grab_min_icons");
+    ecore_config_boolean_get("engage.options.grab_min_icons");
   options.grab_app_icons =
-    ecore_config_int_get("engage.options.grab_app_icons");
-  options.auto_hide = ecore_config_int_get("engage.options.auto_hide");
+    ecore_config_boolean_get("engage.options.grab_app_icons");
+  options.auto_hide = ecore_config_boolean_get("engage.options.auto_hide");
   
   options.size = ecore_config_int_get("engage.options.size");
   options.spacing = ecore_config_int_get("engage.options.spacing");
-  options.zoom = ecore_config_int_get("engage.options.zoom");
+  options.zoom = ecore_config_boolean_get("engage.options.zoom");
   ecore_config_listen("zoom", "engage.options.zoom", zoom_listener, 0, NULL);
   options.zoomfactor = ecore_config_float_get("engage.options.zoom_factor");
   options.dock_zoom_duration =
