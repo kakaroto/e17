@@ -138,16 +138,16 @@ main(int argc, char *argv[])
    D_RETURN(3, 0);
 }
 
-gboolean
-mainwin_delete_cb(GtkWidget * widget, GdkEvent * event, gpointer user_data)
+gboolean mainwin_delete_cb(GtkWidget * widget, GdkEvent * event,
+                           gpointer user_data)
 {
    D_ENTER(3);
    gtk_exit(0);
    D_RETURN(3, FALSE);
 }
 
-gboolean
-mainwin_destroy_cb(GtkWidget * widget, GdkEvent * event, gpointer user_data)
+gboolean mainwin_destroy_cb(GtkWidget * widget, GdkEvent * event,
+                            gpointer user_data)
 {
    D_ENTER(3);
    gtk_exit(0);
@@ -155,8 +155,9 @@ mainwin_destroy_cb(GtkWidget * widget, GdkEvent * event, gpointer user_data)
 }
 
 
-gboolean configure_cb(GtkWidget * widget, GdkEventConfigure * event,
-                      gpointer user_data)
+gboolean
+configure_cb(GtkWidget * widget, GdkEventConfigure * event,
+             gpointer user_data)
 {
    D_ENTER(3);
 
@@ -165,7 +166,8 @@ gboolean configure_cb(GtkWidget * widget, GdkEventConfigure * event,
    D_RETURN(3, TRUE);
 }
 
-gint evbox_buttonpress_cb(GtkWidget * widget, GdkEventButton * event)
+gint
+evbox_buttonpress_cb(GtkWidget * widget, GdkEventButton * event)
 {
    geist_object *obj;
 
@@ -226,8 +228,7 @@ gint evbox_buttonpress_cb(GtkWidget * widget, GdkEventButton * event)
    D_RETURN(5, 1);
 }
 
-gint
-evbox_buttonrelease_cb(GtkWidget * widget, GdkEventButton * event)
+gint evbox_buttonrelease_cb(GtkWidget * widget, GdkEventButton * event)
 {
    geist_list *list, *l;
    geist_object *obj;
@@ -253,12 +254,28 @@ evbox_buttonrelease_cb(GtkWidget * widget, GdkEventButton * event)
    D_RETURN(5, 1);
 }
 
-gint evbox_mousemove_cb(GtkWidget * widget, GdkEventMotion * event)
+gint
+evbox_mousemove_cb(GtkWidget * widget, GdkEventMotion * event)
 {
    geist_list *l, *list;
    geist_object *obj;
+   GdkEventMotion *e;
 
    D_ENTER(5);
+
+   if (gdk_events_pending())
+   {
+      if ((e = (GdkEventMotion *)gdk_event_get()) != NULL)
+      {
+         if (e->type == GDK_MOTION_NOTIFY)
+         {
+            D(5, ("skipping event, new one coming\n"));
+            event = e;
+         }
+         else
+            gdk_event_put((GdkEvent *)e);
+      }
+   }
 
    list = gtk_object_get_data(GTK_OBJECT(mainwin), "draglist");
    if (list)
