@@ -386,12 +386,6 @@ void etox_line_get_text(Etox_Line * line, char *buf)
 	}
 	line->length = sum;
 
-	/*
-	 * FIXME: this shouldn't happen if the next line is a wrapped line
-	 * Maybe we should just let whoever calls this func add \n's where
-	 * necessary. However, we need to be careful about the line length.
-	 */
-	strcat(buf, "\n");
 }
 
 int

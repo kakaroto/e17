@@ -516,6 +516,13 @@ char *etox_get_text(Evas_Object * obj)
 		 * string.
 		 * Is there a better way to do this?
 		 */
+		if (l->next) {
+			Etox_Line * nline = l->next->data;
+			if (!(nline->flags & ETOX_LINE_WRAPPED)) {
+				strcat(temp, "\n");
+				temp++;
+			}
+		}
 		temp += line->length;
 	}
 
