@@ -78,7 +78,8 @@ DB=$HOME/.ewl/themes/defaultTheme/EwlWindow
 ./ewldbtool $DB "child_padding/top"    "5"
 ./ewldbtool $DB "child_padding/right"  "5"
 ./ewldbtool $DB "child_padding/bottom" "5"
-./ewldbtool $DB "num_layers"     "1"
+#./ewldbtool $DB "num_layers"     "1"
+./ewldbtool $DB "num_layers"     "0"
 ./ewldbtool $DB "layer-00/name"        "Sample ImLayer"
 ./ewldbtool $DB "layer-00/width"       "320"
 ./ewldbtool $DB "layer-00/height"      "240"
@@ -95,6 +96,15 @@ DB=$HOME/.ewl/themes/defaultTheme/EwlButton
 ./ewldbtool $DB "padding/right"  "0"
 ./ewldbtool $DB "padding/bottom" "0"
 ./ewldbtool $DB "background"     "images/blue_button.png"
+./ewldbtool $DB "num_layers"     "1"
+./ewldbtool $DB "layer-00/name"        "clicked"
+./ewldbtool $DB "layer-00/width"       "320"
+./ewldbtool $DB "layer-00/height"      "240"
+./ewldbtool $DB "layer-00/alpha"       "false"
+./ewldbtool $DB "layer-00/visible"     "true"
+./ewldbtool $DB "layer-00/num_images"  "1"
+./ewldbtool $DB "layer-00/image-00"         "images/aqua_button.png"
+./ewldbtool $DB "layer-00/image-00/visible" "true"
 
 #####################
 #   OTHER WIDGETS   #

@@ -566,6 +566,9 @@ void   ewl_widget_render(EwlWidget *w)
 		if (!w->bg)	{
 			/* FIX ME */
 			w->bg = imlib_create_image(1,1);
+			imlib_context_set_image(w->bg);
+			imlib_image_set_has_alpha(TRUE);
+			ewl_imlib_image_fill_rectangle(w->bg,0, 0, 1, 1, 0, 0, 0, 0);
 		}
 		width = ewl_imlib_image_get_width(w->bg);
 		height = ewl_imlib_image_get_height(w->bg);
@@ -777,6 +780,93 @@ void       ewl_widget_imlayer_foreach(EwlWidget *widget,
 	FUNC_END("ewl_widget_imlayer_foreach");
 	return;
 }
+
+EwlBool _ewl_widget_get_imlayer_by_name_cb(EwlLL *node, EwlData *data)
+{
+	EwlImLayer *layer = (EwlImLayer*) node;
+	EwlBool     r     = FALSE;
+	char       *name  = (char*) data;
+	int         len   = layer->name?strlen(layer->name):0;
+	if (!strncmp(layer->name,name,len))
+		r = TRUE;
+	return r;
+}
+
+EwlImLayer      *ewl_widget_get_imlayer_by_name(EwlWidget *widget, char *name)
+{
+	EwlImLayer *layer = NULL;
+	FUNC_BGN("ewl_widget_get_imlayer_by_name");
+	if (!widget) {
+		ewl_debug("ewl_widget_get_imlayer_by_name",
+		          EWL_NULL_WIDGET_ERROR,
+		          "widget");
+	} else if (!name) {
+		ewl_debug("ewl_widget_get_imlayer_by_name",
+		          EWL_NULL_ERROR,
+		          "name");
+	} else {
+		layer = ewl_ll_callback_find((EwlLL*) widget->layers, 
+		                             _ewl_widget_get_imlayer_by_name_cb,
+		                             (EwlData*) name);
+	}
+	FUNC_END("ewl_widget_get_imlayer_by_name");
+	return layer;
+}
+
+void             ewl_widget_imlayer_show(EwlWidget *widget, char *name)
+{
+	EwlImLayer *layer = NULL;
+	FUNC_BGN("ewl_widget_imlayer_show");
+	if (!widget) {
+		ewl_debug("ewl_widget_imlayer_show",
+		          EWL_NULL_WIDGET_ERROR,
+		          "widget");
+	} else if (!name) {
+		ewl_debug("ewl_widget_imlayer_show",
+		          EWL_NULL_ERROR,
+		          "name");
+	} else {
+		layer = ewl_widget_get_imlayer_by_name(widget,name);
+		if (!layer) {
+			ewl_debug("ewl_widget_imlayer_show",
+			          EWL_NULL_ERROR,
+			          "layer");
+		} else {
+			ewl_imlayer_show(layer);
+			ewl_widget_set_needs_resize(widget);
+		}
+	}
+	FUNC_END("ewl_widget_imlayer_show");
+	return;
+}
+
+void             ewl_widget_imlayer_hide(EwlWidget *widget, char *name)
+{
+	EwlImLayer *layer = NULL;
+	FUNC_BGN("ewl_widget_imlayer_hide");
+	if (!widget) {
+		ewl_debug("ewl_widget_imlayer_hide",
+		          EWL_NULL_WIDGET_ERROR,
+		          "widget");
+	} else if (!name) {
+		ewl_debug("ewl_widget_imlayer_hide",
+		          EWL_NULL_ERROR,
+		          "name");
+	} else {
+		layer = ewl_widget_get_imlayer_by_name(widget,name);
+		if (!layer) {
+			ewl_debug("ewl_widget_imlayer_hide",
+			          EWL_NULL_ERROR,
+			          "layer");
+		} else {
+			ewl_imlayer_hide(layer);
+			ewl_widget_set_needs_resize(widget);
+		}
+	}
+	FUNC_END("ewl_widget_imlayer_hide");
+	return;
+}
+
 
 
 static EwlBool _cb_ewd(EwlLL *ll, EwlData *d)

@@ -161,6 +161,9 @@ void             ewl_widget_imlayer_foreach(EwlWidget *widget,
                                             EwlBool  (*cb)(EwlImLayer *layer,
                                                            EwlData    *data),
                                             EwlData   *data);
+EwlImLayer      *ewl_widget_get_imlayer_by_name(EwlWidget *widget, char *name);
+void             ewl_widget_imlayer_show(EwlWidget *widget, char *name);
+void             ewl_widget_imlayer_hide(EwlWidget *widget, char *name);
 
 /* debugging functions */
 void             ewl_widget_dump(EwlWidget *w);

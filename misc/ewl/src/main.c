@@ -5,7 +5,7 @@
 EwlBool cb_test_option(int argc, char *argv[]);
 EwlBool cb_mouse(EwlWidget *w, EwlEvent *ev, EwlData *d);
 EwlBool cb_keydown(EwlWidget *w, EwlEvent *ev, EwlData *d);
-EwlBool cb_resize(EwlWidget *w, EwlEventMouseup *ev, EwlData *d);
+EwlBool cb_resize(EwlWidget *w, EwlEvent *ev, EwlData *d);
 
 EwlWidget *win;
 int main(int argc, char *argv[])
@@ -76,6 +76,12 @@ EwlBool cb_mouse(EwlWidget *w, EwlEvent *ev, EwlData *d)
 	else if (ev->type==EWL_EVENT_MOUSEMOVE)
 		sprintf(evtype,"move");
 
+	if (w->type == EWL_BUTTON&&ev->type==EWL_EVENT_MOUSEDOWN) {
+		ewl_widget_imlayer_show(w, "clicked");
+	} else if (w->type==EWL_BUTTON&&ev->type==EWL_EVENT_MOUSEUP) {
+		ewl_widget_imlayer_hide(w, "clicked");
+	}
+
 	fprintf(stderr,"mouse%s in widget 0x%08x\n", evtype, (unsigned int) w);
 	return TRUE;
 }
@@ -87,9 +93,10 @@ EwlBool cb_keydown(EwlWidget *w, EwlEvent *ev, EwlData *d)
 	return TRUE;
 }
 
-EwlBool cb_resize(EwlWidget *w, EwlEventMouseup *ev, EwlData *d)
+EwlBool cb_resize(EwlWidget *w, EwlEvent *ev, EwlData *d)
 {
-	switch (ev->button) {
+	EwlEventMouseup *mev = (EwlEventMouseup*) ev;
+	switch (mev->button) {
 	case 1:
 		ewl_window_resize(win,50,50);
 		break;
