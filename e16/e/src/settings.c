@@ -1075,7 +1075,7 @@ CB_ConfigureFX(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
 	     if (tmp_dragbar)
 		Conf.desks.dragbar_width = 16;
 	     else
-		Conf.desks.dragbar_width = -1;
+		Conf.desks.dragbar_width = 0;
 	     Conf.desks.dragdir = tmp_dragdir;
 	     while ((b =
 		     RemoveItem("_DESKTOP_DRAG_CONTROL", 0, LIST_FINDBY_NAME,
