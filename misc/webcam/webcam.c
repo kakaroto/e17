@@ -470,7 +470,9 @@ add_text(char *image, int width, int height)
 	tm = localtime(&t);
 	len = strftime(line,127,GRAB_TEXT,tm);
 
-	camstring = fopen("/home/tammy/.camstring","r");
+
+	sprintf(line2,"%s/.camstring",getenv("HOME"));
+	camstring = fopen(line2,"r");
 	fgets(localtext,128,camstring);
 	fclose(camstring);
 	localtext[strlen(localtext) -1 ] = 0;
