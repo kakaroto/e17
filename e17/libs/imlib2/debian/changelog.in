@@ -1,4 +1,4 @@
-imlib2 (1.2.1-0cvs20050129) unstable; urgency=low
+imlib2 (@VERSION@-1) unstable; urgency=low
 
   * a CVS release
   

@@ -359,6 +359,7 @@ AC_SUBST(requirements)
 
 AC_OUTPUT([
 Makefile
+imlib2.pc
 src/Makefile
 src/lib/Makefile
 src/bin/Makefile
@@ -369,12 +370,16 @@ data/Makefile
 data/fonts/Makefile
 data/images/Makefile
 doc/Makefile
-debian/Makefile
 imlib2-config
-imlib2.pc
+README
+imlib2.spec
+imlib2.oe
+imlib2-native.oe
+imlib2.bb
+imlib2Xnative.bb
+debian/changelog
 ],[
 chmod +x imlib2-config
-touch imlib2_docs.tar.gz
 ])
 
 #####################################################################

@@ -1,11 +1,11 @@
 Summary: Powerful image loading and rendering library
 Name: imlib2
-Version: 1.2.0
-Release: 2.%(date '+%Y%m%d')
+Version: @VERSION@
+Release: 1
 License: BSD
 Group: System Environment/Libraries
 URL: http://www.enlightenment.org
-Source: ftp://ftp.enlightenment.org/pub/enlightenment/e17/libs/%{name}-%{version}.tar.gz
+Source: %{name}-%{version}.tar.gz
 Packager: %{?_packager:%{_packager}}%{!?_packager:Michael Jennings <mej@eterm.org>}
 Vendor: %{?_vendorinfo:%{_vendorinfo}}%{!?_vendorinfo:The Enlightenment Project (http://www.enlightenment.org/)}
 Distribution: %{?_distribution:%{_distribution}}%{!?_distribution:%{_vendor}}
@@ -123,7 +123,7 @@ gz compressed image loader/saver for Imlib2
        --disable-mmx \
 %endif
        $RPM_CONFIGURE_OPTS
-%{__make} LDFLAGS="$LDFLAGS -L/usr/X11R6/%{_lib}" %{?_smp_mflags} %{?mflags}
+%{__make} %{?_smp_mflags} %{?mflags}
 
 %install
 %{__make} %{?mflags_install} DESTDIR=$RPM_BUILD_ROOT install
@@ -139,22 +139,17 @@ test "x$RPM_BUILD_ROOT" != "x/" && rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-, root, root)
-%doc AUTHORS COPYING README ChangeLog doc/index.html doc/imlib2.gif doc/blank.gif
+%doc AUTHORS COPYING COPYING-PLAIN README
 %{_libdir}/lib*.so.*
-/usr/share/imlib2/data/fonts/*.ttf
-/usr/share/imlib2/data/images/*.png
-%{_bindir}/*
+%{_libdir}/*.la
+%{_datadir}/%{name}
 
 %files devel
 %defattr(-, root, root, 0755)
-%{_libdir}/libImlib2.so
+%{_libdir}/*.so
 %{_libdir}/*.a
-%{_libdir}/imlib2/loaders/*.a
-%{_libdir}/imlib2/loaders/*.la
-%{_libdir}/imlib2/filters/*.a
-%{_libdir}/imlib2/filters/*.la
-%{_libdir}/*.la
-%{_libdir}/pkgconfig/imlib2.pc
+%{_bindir}/imlib2-config
+%{_libdir}/pkgconfig/*
 %{_includedir}/*
 
 %files filters

@@ -1,8 +1,4 @@
-###############################################################################
-#                                                                             #
-#                          I   M   L   I   B      2                           #
-#                                                                             #
-###############################################################################
+Imlib2 @VERSION@
 
 This is the Imlib 2 library - a library that does image file loading and
 saving as well as rendering, manipulation, arbitrary polygon support, etc.
@@ -21,21 +17,38 @@ libjpeg          http://www.ijg.org/
 libpng           http://www.libpng.org/pub/png/libpng.html
 freetype 2.1.x   http://www.freetype.org/
 
-
 For examples of this library in use, seek:
 
 Eterm            http://www.eterm.org/ (CVS version only, currently)
 feh              http://www.linuxbrit.co.uk/feh.html
 geist            http://www.linuxbrit.co.uk/geist.html
 
+------------------------------------------------------------------------------
+COMPILING AND INSTALLING:
 
-A blurb about each of the directories:
+  ./configure
+  make
+(as root unless youa re installing in your users directories):
+  make install
+      
+------------------------------------------------------------------------------
+BUILDING PACKAGES:
 
-debian/          Debian build files
-demo/            Demo view program
-doc/             Documentation for imlib2, primarily in html
-filters/         Filter shared objects
-libltdl/         Libtool LGPL-licensed loadable module support library source
-loaders/         Imlib2's image loader-savers (jpg, png, etc)
-src/             Imlib2 main source
-test/            Test program(s)
+RPM: To build rpm packages:
+  
+  sudo rpm -ta @PACKAGE@-@VERSION@.tar.gz
+
+You will find rpm packages in your system /usr/src/redhat/* dirs (note you may
+not need to use sudo or root if you have your own ~/.rpmrc. see rpm documents
+for more details)
+
+DEB: To build deb packages:
+
+  tar zvf @PACKAGE@-@VERSION@.tar.gz
+  cd @PACKAGE@-@VERSION@
+  dpkg-buildpackage -us -uc -rfakeroot
+  cd ..
+  rm -rf @PACKAGE@-@VERSION@
+
+You will find all the debian source, binary etc. packages put in the directory
+where you first untarred the source tarball.
