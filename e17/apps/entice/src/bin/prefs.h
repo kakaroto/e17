@@ -21,13 +21,15 @@ struct _Entice_Config
    struct
    {
       int image, font;
-   } cache;
+   }
+   cache;
    int x, y, w, h;
    struct
    {
       Evas_List *list;
       Evas_Hash *hash;
-   } themes;
+   }
+   themes;
 };
 typedef struct _Entice_Config Entice_Config;
 

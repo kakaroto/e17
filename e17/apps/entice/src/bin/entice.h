@@ -21,7 +21,8 @@ struct _Entice
       Evas_Hash *hash;          /* filename -> EnticeThumb(edje) Mapping */
       Evas_List *list;          /* List of E_Thumb */
       Evas_List *current;       /* Current Image's list item */
-   } thumb;
+   }
+   thumb;
 
    Ecore_Evas *ee;              /* the evas window */
    Evas_Object *edje;           /* Main Edje_Object(theme) */

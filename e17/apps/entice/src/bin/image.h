@@ -41,7 +41,8 @@ struct _Entice_Image
       Ecore_Timer *timer;
       double velocity, start_time, x, y, dx, dy;
       Entice_Scroll_Direction direction;
-   } scroll;
+   }
+   scroll;
    char *filename;              /* we need to keep track of this */
    char *format;                /* we need to keep track of this too */
    Entice_Image_Moving_State state;

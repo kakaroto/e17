@@ -39,7 +39,8 @@ hookup_edje_signals(Evas_Object * o)
    {
       void (*func) (void *data, Evas_Object * o, const char *emission,
                     const char *source);
-   } edje_callbacks;
+   }
+   edje_callbacks;
 
    char *signals[] = { "EnticeImageDelete", "EnticeImageRemove",
       "EnticeImageNext", "EnticeImagePrev",
@@ -120,6 +121,8 @@ entice_init(Ecore_Evas * ee)
       e_container_padding_set(e->container, 4, 4, 4, 4);
       e_container_spacing_set(e->container, 4);
       e_container_move_button_set(e->container, 2);
+      e_container_layout_plugin_set(e->container, "entice");
+
       if (edje_object_part_exists(e->edje, "EnticeThumbnailArea"))
       {
          double w, h;
@@ -261,7 +264,10 @@ _entice_thumb_load(void *_data, Evas * _e, Evas_Object * _o, void *_ev)
          if ((thumb_edje =
               evas_hash_find(entice->thumb.hash,
                              entice_image_file_get(entice->current))))
+         {
             edje_object_signal_emit(thumb_edje, "EnticeThumbLoaded", "");
+            e_container_scroll_to(entice->container, thumb_edje);
+         }
 
          if (entice->scroller)
             evas_object_del(entice->scroller);
@@ -513,8 +519,8 @@ entice_file_remove(const char *file)
       if ((o = evas_hash_find(entice->thumb.hash, buf)))
       {
          entice->thumb.hash = evas_hash_del(entice->thumb.hash, buf, o);
-	 
-	 /* scroll backwards in the list, if we're at the tail */
+
+         /* scroll backwards in the list, if we're at the tail */
          if (evas_list_count(entice->thumb.list) > 2)
          {
             if (entice->thumb.current == evas_list_last(entice->thumb.list))

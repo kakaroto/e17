@@ -123,6 +123,48 @@ exit_cb(void *data, int type, void *event)
    event = NULL;
 }
 
+static int
+entice_pipe_foo(int argc, const char **argv)
+{
+   int n, i;
+   pid_t pid;
+   int fd[2];
+   char line[PATH_MAX];
+
+   if (pipe(fd) < 0)
+      exit(1);
+
+   if ((pid = fork()) < 0)
+   {
+      fprintf(stderr, "Forking error\n");
+      exit(1);
+   }
+   else if (pid > 0)            /* parent */
+   {
+      close(fd[0]);
+      return (fd[1]);
+   }
+   else                         /* child */
+   {
+      close(fd[1]);
+      while ((n = read(fd[0], line, PATH_MAX)) > 0)
+      {
+         if (!strncmp(line, "ok", n))
+         {
+            for (i = 1; i < argc; i++)
+            {
+               snprintf(line, PATH_MAX, "%s", argv[i]);
+               entice_file_add_job_cb(line, IPC_FILE_APPEND);
+            }
+            break;
+         }
+      }
+      close(fd[0]);
+      exit(0);
+   }
+   return (0);
+}
+
 /**
  * main - does a few things
  * 1. startup ecore, ecore_evas, ecore_ipc, and edje
@@ -136,8 +178,11 @@ exit_cb(void *data, int type, void *event)
 int
 main(int argc, char *argv[])
 {
-   int i = 0;
+   int pnum = -1;
    int x, y, w, h;
+
+   if (argc > 1)
+      pnum = entice_pipe_foo(argc, (const char **) argv);
 
    ecore_init();
    ecore_app_args_set(argc, (const char **) argv);
@@ -191,18 +236,14 @@ main(int argc, char *argv[])
             evas_object_show(o);
 
             entice_init(ee);
-            switch (fork())
-            {
-              case 0:
-                 for (i = 1; i < argc; i++)
-                    entice_file_add_job_cb((void *) argv[i], IPC_FILE_APPEND);
-                 exit(0);
-                 break;
-              default:
-                 break;
-            }
             ecore_evas_move_resize(ee, x, y, w, h);
             ecore_evas_show(ee);
+            if (pnum >= 0)
+            {
+               write(pnum, "ok", 2);
+               close(pnum);
+               pnum = -1;
+            }
             ecore_main_loop_begin();
 
             entice_free();
@@ -210,6 +251,8 @@ main(int argc, char *argv[])
       }
       ecore_evas_shutdown();
    }
+   if (pnum >= 0)
+      close(pnum);
    ecore_shutdown();
    return (0);
 }
