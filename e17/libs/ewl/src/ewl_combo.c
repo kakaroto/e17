@@ -60,6 +60,7 @@ void ewl_combo_init(Ewl_Combo * combo, char *title)
 	ewl_widget_show(combo->button);
 
 	combo->selected = ewl_entry_new(title);
+	ewl_object_set_alignment(EWL_OBJECT(combo->selected), EWL_FLAG_ALIGN_CENTER);
 	ewl_container_append_child(EWL_CONTAINER(combo), combo->selected);
 	ewl_widget_show(combo->selected);
 
