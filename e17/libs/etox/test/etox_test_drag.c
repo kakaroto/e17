@@ -109,6 +109,7 @@ main(int argc, char *argv[])
   XSelectInput(disp, win, ButtonPressMask | ButtonReleaseMask |
 	       PointerMotionMask | ExposureMask | StructureNotifyMask);
   XMapWindow(disp, win);
+   XSync(disp, False);
 
   etox_style_add_path(STLDIR);
   etox_style_add_path("./style");

@@ -61,7 +61,6 @@ host_alias = @host_alias@
 host_triplet = @host@
 AS = @AS@
 CC = @CC@
-DLLDFLAGS = @DLLDFLAGS@
 DLLTOOL = @DLLTOOL@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
@@ -70,25 +69,26 @@ OBJDUMP = @OBJDUMP@
 PACKAGE = @PACKAGE@
 RANLIB = @RANLIB@
 VERSION = @VERSION@
-evas_includes = @evas_includes@
+ebits_cflags = @ebits_cflags@
+ebits_libs = @ebits_libs@
+ecore_cflags = @ecore_cflags@
+ecore_libs = @ecore_libs@
+edb_cflags = @edb_cflags@
+edb_libs = @edb_libs@
+evas_cflags = @evas_cflags@
 evas_libs = @evas_libs@
-gl_includes = @gl_includes@
-gl_ldflags = @gl_ldflags@
-gl_libs = @gl_libs@
-ttf_includes = @ttf_includes@
-ttf_libs = @ttf_libs@
-x_cflags = @x_cflags@
-x_includes = @x_includes@
-x_ldflags = @x_ldflags@
-x_libs = @x_libs@
+ewd_cflags = @ewd_cflags@
+ewd_libs = @ewd_libs@
+imlib2_cflags = @imlib2_cflags@
+imlib2_libs = @imlib2_libs@
 
-EXTRA_DIST =  andover.ttf cinema.ttf grunge.ttf morpheus.ttf notepad.ttf
+EXTRA_DIST =  andover.ttf cinema.ttf grunge.ttf morpheus.ttf nationff.ttf notepad.ttf
 
 etoxdir = $(datadir)/etox/fnt
-etox_DATA =  andover.ttf cinema.ttf grunge.ttf morpheus.ttf notepad.ttf
+etox_DATA =  andover.ttf cinema.ttf grunge.ttf morpheus.ttf notepad.ttf nationff.ttf
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
-CONFIG_HEADER = ../../config.h
+CONFIG_HEADER = ../../etox-config.h
 CONFIG_CLEAN_FILES = 
 DATA =  $(etox_DATA)
 
