@@ -324,9 +324,9 @@ void ewl_entry_text_append(Ewl_Entry * e, char *text)
  * @param e: the entry widget to prepend the text
  * @param text: the text to prepend in the entry widget @a e
  * @return Returns no value.
- * @brief Append text to a entry widget
+ * @brief Prepend text to a entry widget
  *
- * Appends text to the entry widget @a e.
+ * Prepends text to the entry widget @a e.
  */
 void ewl_entry_text_prepend(Ewl_Entry * e, char *text)
 {
@@ -349,9 +349,9 @@ void ewl_entry_text_prepend(Ewl_Entry * e, char *text)
  * @param text: the text to insert in the entry widget @a e 
  * @param index: the index into the text to start inserting new text
  * @return Returns no value.
- * @brief Append text to a entry widget
+ * @brief Insert text to a entry widget
  *
- * Appends text to the entry widget @a e.
+ * Inserts text to the entry widget @a e.
  */
 void ewl_entry_text_insert(Ewl_Entry * e, char *text, int index)
 {
