@@ -11,7 +11,7 @@
 #define X_DISPLAY_MISSING
 #include <Imlib2.h>
 
-#define PROG_NAME "imconvert"
+#define PROG_NAME "imlib2_conv"
 
 static void         usage(int exit_status);
 
