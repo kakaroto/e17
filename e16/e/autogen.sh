@@ -51,4 +51,10 @@ autoconf
 
 cd "$THEDIR"
 
+cd "$THEDIR/man"
+
+./builddocs
+
+cd "$THEDIR"
+
 $srcdir/configure "$@" && echo && echo "Now type 'make' to compile Enlightenment."
