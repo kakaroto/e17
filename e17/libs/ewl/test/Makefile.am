@@ -7,6 +7,7 @@ INCLUDES			=	-I$(top_srcdir)/src @edje_cflags@ @ecore_cflags@ @evas_cflags@ @emo
 EWLTESTPROGRAMS                 =	ewl_test ewl_embed_test ewl_simple_test
 if BUILD_EMOTION_SUPPORT
 EWLMEDIATESTPROGRAMS            =	ewl_media_test
+else
 endif
 
 bin_PROGRAMS			=	$(EWLTESTPROGRAMS) $(EWLMEDIATESTPROGRAMS)
@@ -61,8 +62,7 @@ endif
 
 EXTRA_DIST 			= 	$(ewl_test_SOURCES) \
 					$(ewl_embed_test_SOURCES) \
-					$(ewl_simple_test_SOURCES) \
-					$(ewl_media_test_SOURCES)
+					$(ewl_simple_test_SOURCES)
 
 exampledir 			=	$(pkgdatadir)/examples/
 example_DATA 			=	$(ewl_test_SOURCES)

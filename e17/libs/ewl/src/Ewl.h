@@ -280,7 +280,9 @@ extern"C" {
 #include <Ecore.h>
 #include <Edb.h>
 #include <Etox.h>
+#ifdef HAVE_EMOTION_H
 #include <Emotion.h>
+#endif
 
 #include <stdio.h>
 #include <stdlib.h>
