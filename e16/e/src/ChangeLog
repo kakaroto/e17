@@ -3141,3 +3141,10 @@ Wed Oct  6 12:53:33 PDT 1999
 (Raster)
 
 fix keybidnigns_changed flag to work right...
+
+-------------------------------------------------------------------------------
+
+Wed Oct  6 14:22:23 PDT 1999
+(Raster)
+
+fix lowerign of desktop 0 bug :)

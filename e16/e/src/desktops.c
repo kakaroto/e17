@@ -1794,7 +1794,7 @@ LowerDesktop(int num)
 {
    EDBUG(3, "LowerDesktop");
 
-   if ((num < 0) || (num >= mode.numdesktops))
+   if ((num <= 0) || (num >= mode.numdesktops))
       EDBUG_RETURN_;
 
    BeginNewDeskFocus();
