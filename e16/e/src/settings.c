@@ -2538,7 +2538,7 @@ CB_ConfigureBG(int val, void *data)
 	   imlib_context_set_drawable(p2);
 	   im = imlib_create_image_from_drawable(0, 0, 0, 64, 48, 0);
 	   imlib_context_set_image(im);
-	   imlib_image_set_format("ppm");
+	   imlib_image_set_format("png");
 	   imlib_save_image(s);
 	   imlib_free_image_and_decache();
 	   EFreePixmap(disp, p2);
@@ -2866,7 +2866,7 @@ BG_RedrawView(char nuke_old)
 		       im =
 			  imlib_create_image_from_drawable(0, 0, 0, 64, 48, 0);
 		       imlib_context_set_image(im);
-		       imlib_image_set_format("ppm");
+		       imlib_image_set_format("png");
 		       imlib_save_image(s);
 		       imlib_free_image_and_decache();
 		       EFreePixmap(disp, p2);

@@ -602,6 +602,12 @@ BackgroundGetName(const Background * bg)
    return (bg) ? bg->name : NULL;
 }
 
+const char         *
+BackgroundGetBgFile(const Background * bg)
+{
+   return bg->bg.file;
+}
+
 Pixmap
 BackgroundGetPixmap(const Background * bg)
 {

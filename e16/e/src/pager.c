@@ -652,7 +652,7 @@ PagerRedraw(Pager * p, char newbg)
 								(p->w / ax),
 								(p->h / ay), 0);
 			    imlib_context_set_image(im);
-			    imlib_image_set_format("ppm");
+			    imlib_image_set_format("png");
 			    imlib_save_image(s);
 			    imlib_free_image_and_decache();
 			 }

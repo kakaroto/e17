@@ -934,6 +934,138 @@ MenuDrawItem(Menu * m, MenuItem * mi, char shape)
    EDBUG_RETURN_;
 }
 
+static Background  *
+BrackgroundCreateFromImage(const char *bgid, const char *file,
+			   char *thumb, int thlen)
+{
+   Background         *bg;
+   Imlib_Image        *im, *im2;
+   XColor              xclr;
+   char                tile = 1, keep_asp = 0;
+   int                 width, height;
+   int                 scalex = 0, scaley = 0;
+   int                 scr_asp, im_asp;
+   int                 w2, h2;
+   int                 maxw = 48, maxh = 48;
+   int                 justx = 512, justy = 512;
+
+   Esnprintf(thumb, thlen, "%s/cached/img/%s", EDirUserCache(), bgid);
+
+   bg = FindItem(bgid, 0, LIST_FINDBY_NAME, LIST_TYPE_BACKGROUND);
+
+   if (bg && (!exists(thumb) || moddate(thumb) < moddate(file)))
+     {
+	/* The thumbnail is gone or outdated - regererate */
+	BackgroundDestroy(bg);
+	bg = NULL;
+     }
+
+   if (bg)
+      return bg;
+
+   im = imlib_load_image(file);
+   if (!im)
+      return NULL;
+
+   imlib_context_set_image(im);
+   width = imlib_image_get_width();
+   height = imlib_image_get_height();
+   h2 = maxh;
+   w2 = (width * h2) / height;
+   if (w2 > maxw)
+     {
+	w2 = maxw;
+	h2 = (height * w2) / width;
+     }
+   im2 = imlib_create_cropped_scaled_image(0, 0, width, height, w2, h2);
+   imlib_free_image_and_decache();
+   imlib_context_set_image(im2);
+   imlib_image_set_format("png");
+   imlib_save_image(thumb);
+   imlib_free_image_and_decache();
+
+   scr_asp = (VRoot.w << 16) / VRoot.h;
+   im_asp = (width << 16) / height;
+   if (width == height)
+     {
+	justx = 0;
+	justy = 0;
+	scalex = 0;
+	scaley = 0;
+	tile = 1;
+	keep_asp = 0;
+     }
+   else if ((!(IN_RANGE(scr_asp, im_asp, 16000)))
+	    && ((width < 480) && (height < 360)))
+     {
+	justx = 0;
+	justy = 0;
+	scalex = 0;
+	scaley = 0;
+	tile = 1;
+	keep_asp = 0;
+     }
+   else if (IN_RANGE(scr_asp, im_asp, 16000))
+     {
+	justx = 0;
+	justy = 0;
+	scalex = 1024;
+	scaley = 1024;
+	tile = 0;
+	keep_asp = 0;
+     }
+   else if (im_asp > scr_asp)
+     {
+	justx = 512;
+	justy = 512;
+	scalex = 1024;
+	scaley = 0;
+	tile = 0;
+	keep_asp = 1;
+     }
+   else
+     {
+	justx = 512;
+	justy = 512;
+	scalex = 0;
+	scaley = 1024;
+	tile = 0;
+	keep_asp = 1;
+     }
+
+   ESetColor(&xclr, 0, 0, 0);
+
+   bg = BackgroundCreate(bgid, &xclr, file, tile,
+			 keep_asp, justx, justy,
+			 scalex, scaley, NULL, 0, 0, 0, 0, 0);
+
+   return bg;
+}
+
+static MenuItem    *
+MenuItemCreateFromBackground(const char *bgid, const char *file)
+{
+   MenuItem           *mi;
+   Background         *bg;
+   ImageClass         *ic;
+   char                thumb[4096];
+
+   bg = BrackgroundCreateFromImage(bgid, file, thumb, sizeof(thumb));
+   if (!bg)
+      return NULL;
+
+   ic = CreateIclass();
+   ic->name = Estrdup("`");
+   ic->norm.normal = CreateImageState();
+   ic->norm.normal->im_file = Estrdup(thumb);
+   ic->norm.normal->unloadable = 1;
+   IclassPopulate(ic);
+   AddItem(ic, ic->name, 0, LIST_TYPE_ICLASS);
+   mi = MenuItemCreate(NULL, ic, ACTION_BACKGROUND_SET, bgid, NULL);
+
+   return mi;
+}
+
 Menu               *
 MenuCreateFromDirectory(const char *name, MenuStyle * ms, const char *dir)
 {
@@ -949,8 +1081,10 @@ MenuCreateFromDirectory(const char *name, MenuStyle * ms, const char *dir)
    FILE               *f;
 
    EDBUG(5, "MenuCreateFromDirectory");
+
    m = MenuCreate(name);
    m->style = ms;
+
    if (stat(dir, &st) >= 0)
      {
 	int                 aa, bb, cc;
@@ -984,139 +1118,14 @@ MenuCreateFromDirectory(const char *name, MenuStyle * ms, const char *dir)
 		  word(s, 1, ss);
 		  if (!strcmp(ss, "BG"))
 		    {
-		       Background         *bg;
-		       char                ok = 1;
 		       char                s2[4096], s3[512];
-		       char                stmp[4096];
 
 		       word(s, 2, s2);
-		       Esnprintf(ss, sizeof(ss), "%s/%s", dir, s2);
 		       word(s, 3, s3);
-		       bg = (Background *) FindItem(s3, 0, LIST_FINDBY_NAME,
-						    LIST_TYPE_BACKGROUND);
-		       Esnprintf(stmp, sizeof(stmp), "%s/cached/img/%s",
-				 EDirUserCache(), s3);
-		       if (bg && (!exists(stmp) || moddate(stmp) < moddate(ss)))
-			 {
-			    /* The thumbnail is gone or outdated - regererate */
-			    BackgroundDestroy(bg);
-			    bg = NULL;
-			 }
-		       if (!bg)
-			 {
-			    Imlib_Image        *im;
-
-			    im = imlib_load_image(ss);
-			    if (im)
-			      {
-				 Imlib_Image        *im2;
-				 XColor              xclr;
-				 char                tile = 1, keep_asp = 0;
-				 int                 width, height;
-				 int                 scalex = 0, scaley = 0;
-				 int                 scr_asp, im_asp;
-				 int                 w2, h2;
-				 int                 maxw = 48, maxh = 48;
-				 int                 justx = 512, justy = 512;
-
-				 imlib_context_set_image(im);
-				 width = imlib_image_get_width();
-				 height = imlib_image_get_height();
-				 h2 = maxh;
-				 w2 =
-				    (imlib_image_get_width() * h2) /
-				    imlib_image_get_height();
-				 if (w2 > maxw)
-				   {
-				      w2 = maxw;
-				      h2 =
-					 (imlib_image_get_height() * w2) /
-					 imlib_image_get_width();
-				   }
-				 im2 = imlib_create_cropped_scaled_image(0, 0,
-									 imlib_image_get_width
-									 (),
-									 imlib_image_get_height
-									 (), w2,
-									 h2);
-				 imlib_free_image_and_decache();
-				 imlib_context_set_image(im2);
-				 imlib_image_set_format("ppm");
-				 imlib_save_image(stmp);
-				 imlib_free_image_and_decache();
-
-				 scr_asp = (VRoot.w << 16) / VRoot.h;
-				 im_asp = (width << 16) / height;
-				 if (width == height)
-				   {
-				      justx = 0;
-				      justy = 0;
-				      scalex = 0;
-				      scaley = 0;
-				      tile = 1;
-				      keep_asp = 0;
-				   }
-				 else if ((!(IN_RANGE(scr_asp, im_asp, 16000)))
-					  && ((width < 480) && (height < 360)))
-				   {
-				      justx = 0;
-				      justy = 0;
-				      scalex = 0;
-				      scaley = 0;
-				      tile = 1;
-				      keep_asp = 0;
-				   }
-				 else if (IN_RANGE(scr_asp, im_asp, 16000))
-				   {
-				      justx = 0;
-				      justy = 0;
-				      scalex = 1024;
-				      scaley = 1024;
-				      tile = 0;
-				      keep_asp = 0;
-				   }
-				 else if (im_asp > scr_asp)
-				   {
-				      justx = 512;
-				      justy = 512;
-				      scalex = 1024;
-				      scaley = 0;
-				      tile = 0;
-				      keep_asp = 1;
-				   }
-				 else
-				   {
-				      justx = 512;
-				      justy = 512;
-				      scalex = 0;
-				      scaley = 1024;
-				      tile = 0;
-				      keep_asp = 1;
-				   }
-				 ESetColor(&xclr, 0, 0, 0);
-				 bg = BackgroundCreate(s3, &xclr, ss, tile,
-						       keep_asp, justx, justy,
-						       scalex, scaley, NULL, 0,
-						       0, 0, 0, 0);
-			      }
-			    else
-			       ok = 0;
-			 }
-		       if (ok)
-			 {
-			    ImageClass         *ic = NULL;
-
-			    ic = CreateIclass();
-			    ic->name = Estrdup("`");
-			    ic->norm.normal = CreateImageState();
-			    ic->norm.normal->im_file = Estrdup(stmp);
-			    ic->norm.normal->unloadable = 1;
-			    IclassPopulate(ic);
-			    AddItem(ic, ic->name, 0, LIST_TYPE_ICLASS);
-			    mi = MenuItemCreate(NULL, ic, ACTION_BACKGROUND_SET,
-						s3, NULL);
-			    MenuAddItem(m, mi);
-			 }
+		       Esnprintf(s, sizeof(s), "%s/%s", dir, s2);
+		       mi = MenuItemCreateFromBackground(s3, s);
+		       if (mi)
+			  MenuAddItem(m, mi);
 		    }
 		  else if (!strcmp(ss, "EXE"))
 		    {
@@ -1142,33 +1151,38 @@ MenuCreateFromDirectory(const char *name, MenuStyle * ms, const char *dir)
 	     EDBUG_RETURN(m);
 	  }
      }
-   list = E_ls(dir, &num);
+
    Esnprintf(s, sizeof(s), "Scanning %s", dir);
+
    if (!init_win_ext)
       p = CreateProgressbar(s, 600, 16);
+
    if (p)
       ShowProgressbar(p);
+
    f = fopen(cs, "w");
+
+   list = E_ls(dir, &num);
    for (i = 0; i < num; i++)
      {
 	if (p)
 	   SetProgressbar(p, (i * 100) / num);
 	Esnprintf(ss, sizeof(ss), "%s/%s", dir, list[i]);
 	/* skip "dot" files and dirs - senisble */
-	if ((*(list[i]) != '.') && (stat(ss, &st) >= 0))
+	if ((*(list[i]) == '.') || (stat(ss, &st) < 0))
+	   continue;
+
+	ext = FileExtension(ss);
+	if (S_ISDIR(st.st_mode))
 	  {
-	     ext = FileExtension(ss);
-	     if (S_ISDIR(st.st_mode))
-	       {
-		  Esnprintf(s, sizeof(s), "%s/%s:%s", dir, list[i], name);
-		  Esnprintf(ss, sizeof(ss), "%s/%s", dir, list[i]);
-		  mm = MenuCreateFromDirectory(s, ms, ss);
-		  mm->parent = m;
-		  mi = MenuItemCreate(list[i], NULL, 0, NULL, mm);
-		  MenuAddItem(m, mi);
-		  if (f)
-		     fprintf(f, "DIR %s\n", list[i]);
-	       }
+	     Esnprintf(s, sizeof(s), "%s/%s:%s", dir, list[i], name);
+	     mm = MenuCreateFromDirectory(s, ms, ss);
+	     mm->parent = m;
+	     mi = MenuItemCreate(list[i], NULL, 0, NULL, mm);
+	     MenuAddItem(m, mi);
+	     if (f)
+		fprintf(f, "DIR %s\n", list[i]);
+	  }
 /* that's it - people are stupid and have executable images and just */
 /* don't get it - so I'm disablign this to save people from their own */
 /* stupidity */
@@ -1180,153 +1194,49 @@ MenuCreateFromDirectory(const char *name, MenuStyle * ms, const char *dir)
  * fprintf(f, "EXE %s\n", list[i]);
  * }
  */
-	     else if ((!strcmp(ext, "jpg")) || (!strcmp(ext, "JPG"))
-		      || (!strcmp(ext, "jpeg")) || (!strcmp(ext, "Jpeg"))
-		      || (!strcmp(ext, "JPEG")) || (!strcmp(ext, "Jpg"))
-		      || (!strcmp(ext, "gif")) || (!strcmp(ext, "Gif"))
-		      || (!strcmp(ext, "GIF")) || (!strcmp(ext, "png"))
-		      || (!strcmp(ext, "Png")) || (!strcmp(ext, "PNG"))
-		      || (!strcmp(ext, "tif")) || (!strcmp(ext, "Tif"))
-		      || (!strcmp(ext, "TIFF")) || (!strcmp(ext, "tiff"))
-		      || (!strcmp(ext, "Tiff")) || (!strcmp(ext, "TIFF"))
-		      || (!strcmp(ext, "xpm")) || (!strcmp(ext, "Xpm"))
-		      || (!strcmp(ext, "XPM")) || (!strcmp(ext, "ppm"))
-		      || (!strcmp(ext, "PPM")) || (!strcmp(ext, "pgm"))
-		      || (!strcmp(ext, "PGM")) || (!strcmp(ext, "pnm"))
-		      || (!strcmp(ext, "PNM")) || (!strcmp(ext, "bmp"))
-		      || (!strcmp(ext, "Bmp")) || (!strcmp(ext, "BMP")))
+	else if ((!strcmp(ext, "jpg")) || (!strcmp(ext, "JPG"))
+		 || (!strcmp(ext, "jpeg")) || (!strcmp(ext, "Jpeg"))
+		 || (!strcmp(ext, "JPEG")) || (!strcmp(ext, "Jpg"))
+		 || (!strcmp(ext, "gif")) || (!strcmp(ext, "Gif"))
+		 || (!strcmp(ext, "GIF")) || (!strcmp(ext, "png"))
+		 || (!strcmp(ext, "Png")) || (!strcmp(ext, "PNG"))
+		 || (!strcmp(ext, "tif")) || (!strcmp(ext, "Tif"))
+		 || (!strcmp(ext, "TIFF")) || (!strcmp(ext, "tiff"))
+		 || (!strcmp(ext, "Tiff")) || (!strcmp(ext, "TIFF"))
+		 || (!strcmp(ext, "xpm")) || (!strcmp(ext, "Xpm"))
+		 || (!strcmp(ext, "XPM")) || (!strcmp(ext, "ppm"))
+		 || (!strcmp(ext, "PPM")) || (!strcmp(ext, "pgm"))
+		 || (!strcmp(ext, "PGM")) || (!strcmp(ext, "pnm"))
+		 || (!strcmp(ext, "PNM")) || (!strcmp(ext, "bmp"))
+		 || (!strcmp(ext, "Bmp")) || (!strcmp(ext, "BMP")))
+	  {
+	     char                s3[512];
+	     int                 aa, bb, cc;
+
+	     aa = (int)st.st_ino;
+	     bb = (int)st.st_dev;
+	     cc = 0;
+	     if (st.st_mtime > st.st_ctime)
+		cc = st.st_mtime;
+	     else
+		cc = st.st_ctime;
+	     Esnprintf(s3, sizeof(s3),
+		       ".%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c",
+		       chmap[(aa >> 0) & 0x3f], chmap[(aa >> 6) & 0x3f],
+		       chmap[(aa >> 12) & 0x3f], chmap[(aa >> 18) & 0x3f],
+		       chmap[(aa >> 24) & 0x3f], chmap[(aa >> 28) & 0x3f],
+		       chmap[(bb >> 0) & 0x3f], chmap[(bb >> 6) & 0x3f],
+		       chmap[(bb >> 12) & 0x3f], chmap[(bb >> 18) & 0x3f],
+		       chmap[(bb >> 24) & 0x3f], chmap[(bb >> 28) & 0x3f],
+		       chmap[(cc >> 0) & 0x3f], chmap[(cc >> 6) & 0x3f],
+		       chmap[(cc >> 12) & 0x3f], chmap[(cc >> 18) & 0x3f],
+		       chmap[(cc >> 24) & 0x3f], chmap[(cc >> 28) & 0x3f]);
+
+	     mi = MenuItemCreateFromBackground(s3, ss);
+	     if (mi)
 	       {
-		  Background         *bg;
-		  char                ok = 1;
-		  char                s2[4096], s3[512];
-		  int                 aa, bb, cc;
+		  MenuAddItem(m, mi);
 
-		  aa = (int)st.st_ino;
-		  bb = (int)st.st_dev;
-		  cc = 0;
-		  if (st.st_mtime > st.st_ctime)
-		     cc = st.st_mtime;
-		  else
-		     cc = st.st_ctime;
-		  Esnprintf(s3, sizeof(s3),
-			    ".%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c",
-			    chmap[(aa >> 0) & 0x3f], chmap[(aa >> 6) & 0x3f],
-			    chmap[(aa >> 12) & 0x3f], chmap[(aa >> 18) & 0x3f],
-			    chmap[(aa >> 24) & 0x3f], chmap[(aa >> 28) & 0x3f],
-			    chmap[(bb >> 0) & 0x3f], chmap[(bb >> 6) & 0x3f],
-			    chmap[(bb >> 12) & 0x3f], chmap[(bb >> 18) & 0x3f],
-			    chmap[(bb >> 24) & 0x3f], chmap[(bb >> 28) & 0x3f],
-			    chmap[(cc >> 0) & 0x3f], chmap[(cc >> 6) & 0x3f],
-			    chmap[(cc >> 12) & 0x3f], chmap[(cc >> 18) & 0x3f],
-			    chmap[(cc >> 24) & 0x3f], chmap[(cc >> 28) & 0x3f]);
-		  bg = (Background *) FindItem(s3, 0, LIST_FINDBY_NAME,
-					       LIST_TYPE_BACKGROUND);
-		  if (!bg)
-		    {
-		       Imlib_Image        *im;
-
-		       im = imlib_load_image(ss);
-		       if (im)
-			 {
-			    Imlib_Image        *im2;
-			    XColor              xclr;
-			    char                tile = 1, keep_asp = 0;
-			    int                 width, height, scalex =
-			       0, scaley = 0;
-			    int                 scr_asp, im_asp, w2, h2;
-			    int                 maxw = 48, maxh = 48;
-
-			    Esnprintf(s2, sizeof(s2), "%s/cached/img/%s",
-				      EDirUserCache(), s3);
-			    imlib_context_set_image(im);
-			    width = imlib_image_get_width();
-			    height = imlib_image_get_height();
-			    h2 = maxh;
-			    w2 =
-			       (imlib_image_get_width() * h2) /
-			       imlib_image_get_height();
-			    if (w2 > maxw)
-			      {
-				 w2 = maxw;
-				 h2 =
-				    (imlib_image_get_height() * w2) /
-				    imlib_image_get_width();
-			      }
-			    im2 = imlib_create_cropped_scaled_image(0, 0,
-								    imlib_image_get_width
-								    (),
-								    imlib_image_get_height
-								    (), w2, h2);
-			    imlib_free_image_and_decache();
-			    imlib_context_set_image(im2);
-			    imlib_image_set_format("ppm");
-			    imlib_save_image(s2);
-			    imlib_free_image_and_decache();
-
-			    scr_asp = (VRoot.w << 16) / VRoot.h;
-			    im_asp = (width << 16) / height;
-			    if (width == height)
-			      {
-				 scalex = 0;
-				 scaley = 0;
-				 tile = 1;
-				 keep_asp = 0;
-			      }
-			    else if ((!(IN_RANGE(scr_asp, im_asp, 16000)))
-				     && ((width < 480) && (height < 360)))
-			      {
-				 scalex = 0;
-				 scaley = 0;
-				 tile = 1;
-				 keep_asp = 0;
-			      }
-			    else if (IN_RANGE(scr_asp, im_asp, 16000))
-			      {
-				 scalex = 1024;
-				 scaley = 1024;
-				 tile = 0;
-				 keep_asp = 0;
-			      }
-			    else if (im_asp > scr_asp)
-			      {
-				 scalex = 1024;
-				 scaley = 0;
-				 tile = 0;
-				 keep_asp = 1;
-			      }
-			    else
-			      {
-				 scalex = 0;
-				 scaley = 1024;
-				 tile = 0;
-				 keep_asp = 1;
-			      }
-			    ESetColor(&xclr, 0, 0, 0);
-			    bg = BackgroundCreate(s3, &xclr, ss, tile, keep_asp,
-						  512, 512, scalex, scaley,
-						  NULL, 0, 0, 0, 0, 0);
-			 }
-		       else
-			  ok = 0;
-		    }
-		  if (ok)
-		    {
-		       ImageClass         *ic = NULL;
-		       char                stmp[4096];
-
-		       ic = CreateIclass();
-		       ic->name = Estrdup("`");
-		       ic->norm.normal = CreateImageState();
-		       Esnprintf(stmp, sizeof(stmp), "%s/cached/img/%s",
-				 EDirUserCache(), s3);
-		       ic->norm.normal->im_file = Estrdup(stmp);
-		       ic->norm.normal->unloadable = 1;
-		       IclassPopulate(ic);
-		       AddItem(ic, ic->name, 0, LIST_TYPE_ICLASS);
-		       mi = MenuItemCreate(NULL, ic, ACTION_BACKGROUND_SET, s3,
-					   NULL);
-		       MenuAddItem(m, mi);
-		    }
 		  if (f)
 		     fprintf(f, "BG %s %s\n", list[i], s3);
 	       }
@@ -1338,6 +1248,7 @@ MenuCreateFromDirectory(const char *name, MenuStyle * ms, const char *dir)
       FreeProgressbar(p);
    if (list)
       freestrlist(list, num);
+
    EDBUG_RETURN(m);
 }
 

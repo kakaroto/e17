@@ -1633,6 +1633,7 @@ void                BackgroundIncRefcount(Background * bg);
 void                BackgroundDecRefcount(Background * bg);
 void                BackgroundTouch(Background * bg);
 const char         *BackgroundGetName(const Background * bg);
+const char         *BackgroundGetBgFile(const Background * bg);
 Pixmap              BackgroundGetPixmap(const Background * bg);
 int                 BackgroundGetColor(const Background * bg);
 void                BackgroundsAccounting(void);
