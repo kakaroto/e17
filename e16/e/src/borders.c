@@ -1678,10 +1678,12 @@ CreateEwin()
    ewin->docked = 0;
    ewin->shaded = 0;
    ewin->fixedpos = 0;
+#if 0                           /* ENABLE_GNOME - Not actually used */
    ewin->expanded_x = 0;
    ewin->expanded_y = 0;
    ewin->expanded_width = -1;
    ewin->expanded_height = -1;
+#endif
    ewin->ignorearrange = 0;
    ewin->skiptask = 0;
    ewin->skipwinlist = 0;

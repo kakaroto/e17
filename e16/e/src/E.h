@@ -843,10 +843,12 @@ typedef struct _ewin {
    char                floating;
    char                shapedone;
    char                fixedpos;
+#if 0                           /* ENABLE_GNOME - Not actually used */
    int                 expanded_x;
    int                 expanded_y;
    int                 expanded_width;
    int                 expanded_height;
+#endif
    char                ignorearrange;
    char                skiptask;
    char                skipfocus;

@@ -518,10 +518,12 @@ GNOME_GetExpandedSize(EWin * ewin, Atom atom_change)
    retval = AtomGet(ewin->client.win, atom_get, XA_CARDINAL, &size);
    if (retval)
      {
+#if 0                           /* Not actually used */
         ewin->expanded_x = retval[0];
         ewin->expanded_y = retval[1];
         ewin->expanded_width = retval[2];
         ewin->expanded_height = retval[3];
+#endif
         Efree(retval);
      }
    EDBUG_RETURN_;
