@@ -39,7 +39,12 @@ Giblib library headers and development libraries.
 %setup -q
 
 %build
-./autogen.sh --prefix=%{prefix}
+if [ ! -e ./configure ]
+then
+  ./autogen.sh --prefix=%{prefix}
+else
+  ./configure --prefix=%{prefix}
+fi
 make
 
 %install
