@@ -71,9 +71,11 @@ void load_config(char *file);
 void save_transparent_proxy(char *host, GList *hosts);
 void save_config(char *file);
 void start_lvs(char *machine);
-void stop_lvs(char *machine);
+/* void stop_lvs(char *machine); */
 void start_transparent_proxy(char *machine);
+/*
 void stop_transparent_proxy(char *machine);
+*/
 void remote_cp(char *machine1, char *file1, char *machine2, char *file2);
 void gui_save_config(void);
 
@@ -1148,7 +1150,6 @@ save_config(char *file)
 	     save_transparent_proxy(host, hosts);
 	     remote_cp(NULL, "transparent_proxy", 
 		       host, gtk_entry_get_text(GTK_ENTRY(cfg_tfile)));
-	     stop_transparent_proxy(host);
 	     start_transparent_proxy(host);
 	     if (hosts)
 	       {
@@ -1162,7 +1163,6 @@ save_config(char *file)
    remote_cp(NULL, "ipvs",
 	     gtk_entry_get_text(GTK_ENTRY(cfg_machine)),
 	     gtk_entry_get_text(GTK_ENTRY(cfg_file)));
-   stop_lvs(gtk_entry_get_text(GTK_ENTRY(cfg_machine)));
    start_lvs(gtk_entry_get_text(GTK_ENTRY(cfg_machine)));
 }
 
@@ -1174,21 +1174,23 @@ start_lvs(char *machine)
    gchar s[4096];
    extern options_t opt;
    
-   g_snprintf(s, sizeof(s), "%s %s@%s /etc/rc.d/init.d/ipvs start", 
-      opt.rsh_command, opt.user, machine);
+   g_snprintf(s, sizeof(s), "%s %s@%s %s start", 
+      opt.rsh_command, opt.user, machine, opt.ipvs_init_script);
    system(s);
 }
 
+/*
 void
 stop_lvs(char *machine)
 {
    gchar s[4096];
    extern options_t opt;
    
-   g_snprintf(s, sizeof(s), "%s %s@%s /etc/rc.d/init.d/ipvs stop", 
-     opt.rsh_command, opt.user, machine);
+   g_snprintf(s, sizeof(s), "%s %s@%s %s stop", 
+     opt.rsh_command, opt.user, machine,  opt.ipvs_init_script);
    system(s);
 }
+*/
 
 void
 start_transparent_proxy(char *machine)
@@ -1197,11 +1199,12 @@ start_transparent_proxy(char *machine)
    extern options_t opt;
    
    g_snprintf(s, sizeof(s), 
-      "%s %s@%s /etc/rc.d/init.d/transparent_proxy start", opt.rsh_command,
-      opt.user, machine);
+      "%s %s@%s %s start", opt.rsh_command,
+      opt.user, machine, opt.transparent_proxy_init_script);
    system(s);
 }
 
+/*
 void
 stop_transparent_proxy(char *machine)
 {
@@ -1209,10 +1212,11 @@ stop_transparent_proxy(char *machine)
    extern options_t opt;
    
    g_snprintf(s, sizeof(s), 
-     "%s %s@%s /etc/rc.d/init.d/transparent_proxy stop", opt.rsh_command,
-     opt.user, machine);
+     "%s %s@%s %s stop", opt.rsh_command,
+     opt.user, machine, opt.transparent_proxy_init_script);
    system(s);
 }
+*/
 
 /* copying files around */
 void
