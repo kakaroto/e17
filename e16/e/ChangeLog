@@ -2063,3 +2063,13 @@ Added a new menu generation script that should find GNOME2/KDE3 apps too.
 
 Removed obsolete TODO.
 Added BUGS.
+
+-------------------------------------------------------------------------------
+
+Fri Aug  8 20:36:01 CEST 2003
+(Kim)
+
+BUGS: Added window list bug.
+
+Minor bug fixes to maximise code.
+Spanning Xinerama screens now requires "xinerama".
