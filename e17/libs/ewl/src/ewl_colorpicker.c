@@ -69,6 +69,7 @@ void ewl_colorpicker_move_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 		ewl_spectrum_color_coord_map(EWL_SPECTRUM(w), ev->x, ev->y,
 					     &r, &g, &b, &a);
 		ewl_spectrum_rgb_set(EWL_SPECTRUM(cp->spectrum), r, g, b);
+		ewl_callback_call(EWL_WIDGET(cp), EWL_CALLBACK_VALUE_CHANGED);
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -86,6 +87,7 @@ void ewl_colorpicker_down_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 	ewl_spectrum_color_coord_map(EWL_SPECTRUM(w), ev->x, ev->y,
 				     &r, &g, &b, &a);
 	ewl_spectrum_rgb_set(EWL_SPECTRUM(cp->spectrum), r, g, b);
+	ewl_callback_call(EWL_WIDGET(cp), EWL_CALLBACK_VALUE_CHANGED);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -97,7 +99,6 @@ void ewl_colorpicker_up_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	cp->drag = 0;
-	ewl_callback_call(cp, EWL_CALLBACK_VALUE_CHANGED);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
