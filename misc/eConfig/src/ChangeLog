@@ -145,3 +145,10 @@ Sun Dec 19 13:01:15 PST 1999
 
 added skeleton code for file locking (need to do that today) as well as
 finishing the fsck code.
+
+-------------------------------------------------------------------------------
+
+Mon Dec 20 15:23:52 PST 1999
+(Mandrake)
+
+right.  bringing CVS up to date so I can do this from work.

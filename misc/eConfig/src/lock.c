@@ -27,19 +27,19 @@ _econf_lock_path(char *path)
     * this lock is obtained, the function returns.  until then it sleeps.
     */
 
-   char                tablepath[FILEPATH_LEN_MAX];
-   FILE               *FAT_TABLE;
+   char                lockpath[FILEPATH_LEN_MAX];
+   FILE               *LOCKFILE;
 
    if (!path)
       return 0;
 
-   sprintf(tablepath, "%s/fat", path);
-   if ((FAT_TABLE = fopen(tablepath, "r")))
+   sprintf(lockpath, "%s/lock", path);
+   if ((LOCKFILE = fopen(lockpath, "r")))
      {
-	while (!feof(FAT_TABLE))
+	while (!feof(LOCKFILE))
 	  {
 	  }
-	fclose(FAT_TABLE);
+	fclose(LOCKFILE);
      }
    return 1;
 

@@ -25,6 +25,7 @@ eConfigFsckPath(char *path)
     */
 
    char                tablepath[FILEPATH_LEN_MAX];
+   char                tablepath2[FILEPATH_LEN_MAX];
    FILE               *FAT_TABLE;
    FILE               *NEW_FAT_TABLE;
 
@@ -32,10 +33,16 @@ eConfigFsckPath(char *path)
       return 0;
 
    sprintf(tablepath, "%s/fat", path);
+   sprintf(tablepath2, "%s/newfat", path);
+   _econf_lock_path(path);
    if ((FAT_TABLE = fopen(tablepath, "r")))
      {
-	while (!feof(FAT_TABLE))
+	if ((NEW_FAT_TABLE = fopen(tablepath2, "r")))
 	  {
+	     while (!feof(FAT_TABLE))
+	       {
+	       }
+	     fclose(NEW_FAT_TABLE);
 	  }
 	fclose(FAT_TABLE);
      }
