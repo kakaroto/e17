@@ -410,6 +410,7 @@ __imlib_render_str(ImlibImage *im, ImlibFont *fn, int drx, int dry, char *text,
    int                 x_offset, y_offset;
    unsigned char       j;
    TT_Raster_Map      *rtmp = NULL, *rmap;
+   ImlibImage          im2;
 
    /* if we draw outside the image from here - give up */
    if ((drx > im->w) || (dry > im->h))
@@ -442,17 +443,66 @@ __imlib_render_str(ImlibImage *im, ImlibFont *fn, int drx, int dry, char *text,
 
    /* figure out the size this text string is going to be */
    __imlib_calc_size(fn, &w, &h, text);
-   if (retw)
-      *retw = w;
-   if (reth)
-      *reth = h;
-   if (*nexty)
-      *nexty = fn->ascent + fn->descent;
-   if (*nextx)
+   switch(dir)
      {
-	j = text[strlen(text) - 1];
-	TT_Get_Glyph_Metrics(fn->glyphs[j], &metrics);
-	*nextx = w - (x_offset / 64) + metrics.advance - metrics.bbox.xMax;
+     case 0:
+	if (retw)
+	   *retw = w;
+	if (reth)
+	   *reth = h;
+	if (*nexty)
+	   *nexty = fn->ascent + fn->descent;
+	if (*nextx)
+	  {
+	     j = text[strlen(text) - 1];
+	     TT_Get_Glyph_Metrics(fn->glyphs[j], &metrics);
+	     *nextx = w - (x_offset / 64) + metrics.advance - metrics.bbox.xMax;
+	  }
+	break;
+     case 1:
+	if (retw)
+	   *retw = w;
+	if (reth)
+	   *reth = h;
+	if (*nexty)
+	   *nexty = fn->ascent + fn->descent;
+	if (*nextx)
+	  {
+	     j = text[strlen(text) - 1];
+	     TT_Get_Glyph_Metrics(fn->glyphs[j], &metrics);
+	     *nextx = w - (x_offset / 64) + metrics.advance - metrics.bbox.xMax;
+	  }
+	break;
+     case 2:
+	if (retw)
+	   *retw = h;
+	if (reth)
+	   *reth = w;
+	if (*nextx)
+	   *nextx = fn->ascent + fn->descent;
+	if (*nexty)
+	  {
+	     j = text[strlen(text) - 1];
+	     TT_Get_Glyph_Metrics(fn->glyphs[j], &metrics);
+	     *nexty = w - (x_offset / 64) + metrics.advance - metrics.bbox.xMax;
+	  }
+	break;
+     case 3:
+	if (retw)
+	   *retw = h;
+	if (reth)
+	   *reth = w;
+	if (*nextx)
+	   *nextx = fn->ascent + fn->descent;
+	if (*nexty)
+	  {
+	     j = text[strlen(text) - 1];
+	     TT_Get_Glyph_Metrics(fn->glyphs[j], &metrics);
+	     *nexty = w - (x_offset / 64) + metrics.advance - metrics.bbox.xMax;
+	  }
+	break;
+     default:
+	break;
      }
    /* if the text is completely outside the image - give up */
    if (((drx + w) <= 0) || ((dry + h) <= 0))
@@ -473,28 +523,16 @@ __imlib_render_str(ImlibImage *im, ImlibFont *fn, int drx, int dry, char *text,
 	xmax = (metrics.bbox.xMax + 63) & -64;
 	ymax = (metrics.bbox.yMax + 63) & -64;
 	
-	switch(dir)
+	if (fn->glyphs_cached_right[j])
+	   rtmp = fn->glyphs_cached_right[j];
+	else
 	  {
-	  case 0: /* to right */
-	     if (fn->glyphs_cached_right[j])
-		rtmp = fn->glyphs_cached_right[j];
-	     else
-	       {
-		  rtmp = __imlib_create_font_raster(((xmax - xmin) / 64) + 1, 
-						    ((ymax - ymin) / 64) + 1);
-		  TT_Get_Glyph_Pixmap(fn->glyphs[j], rtmp, -xmin, -ymin);
-		  fn->glyphs_cached_right[j] = rtmp;
-	       }
-	     break;
-	  case 1: /* to left */
-	     break;
-	  case 2: /* to down */
-	     break;
-	  case 3: /* to up */
-	     break;
-	  default:
-	     break;
+	     rtmp = __imlib_create_font_raster(((xmax - xmin) / 64) + 1, 
+					       ((ymax - ymin) / 64) + 1);
+	     TT_Get_Glyph_Pixmap(fn->glyphs[j], rtmp, -xmin, -ymin);
+	     fn->glyphs_cached_right[j] = rtmp;
 	  }
+
 	/* Blit-or the resulting small pixmap into the biggest one */
 	/* We do that by hand, and provide also clipping.          */
 	
@@ -576,25 +614,40 @@ __imlib_render_str(ImlibImage *im, ImlibFont *fn, int drx, int dry, char *text,
 	read++;
      }
    /* blend buffer onto image */
+   im2.data = tmp;
+   im2.w = rmap->cols;
+   im2.h = rmap->rows;
    if (blur > 0)
+      __imlib_BlurImage(&im2, blur);
+   switch(dir)
      {
-	ImlibImage im2;
-	
-	im2.data = tmp;
-	im2.w = rmap->cols;
-	im2.h = rmap->rows;
-	__imlib_BlurImage(&im2, blur);
-	tmp = im2.data;
+     case 0: /* to right */
+	break;
+     case 1: /* to left */
+	__imlib_FlipImageHoriz(&im2);
+	__imlib_FlipImageVert(&im2);
+	break;
+     case 2: /* to down */
+	__imlib_FlipImageDiagonal(&im2);
+	break;
+     case 3: /* to up */
+	__imlib_FlipImageDiagonal(&im2);
+	__imlib_FlipImageHoriz(&im2);
+	__imlib_FlipImageVert(&im2);
+	break;
+     default:
+	break;
      }
+   tmp = im2.data;
    if (IMAGE_HAS_ALPHA(im))
-      __imlib_BlendRGBAToData(tmp, rmap->cols, rmap->rows,
+      __imlib_BlendRGBAToData(tmp, im2.w, im2.h,
 			      im->data, im->w, im->h,
-			      0, 0, drx, dry, rmap->cols, rmap->rows,
+			      0, 0, drx, dry, im2.w, im2.h,
 			      1, NULL, OP_COPY);
    else
-      __imlib_BlendRGBAToData(tmp, rmap->cols, rmap->rows,
+      __imlib_BlendRGBAToData(tmp, im2.w, im2.h,
 			      im->data, im->w, im->h,
-			      0, 0, drx, dry, rmap->cols, rmap->rows,
+			      0, 0, drx, dry, im2.w, im2.h,
 			      0, NULL, OP_COPY);
    free(tmp);
    __imlib_destroy_font_raster(rmap);   
