@@ -70,8 +70,7 @@ od_dock_reposition()
 {
   // find the width;
   double          width = 0;
-  double          x = 0.5 * (options.width - width);
-  double          y = options.height - options.arrow_size - 0.5 * options.size;
+  double          x, y;
 
   {
     Evas_List      *item = dock.icons;
@@ -98,6 +97,8 @@ od_dock_reposition()
 				__item = __item->next; \
 			} \
 		}
+  x = 0.5 * (options.width - width);
+  y = options.height - options.arrow_size - 0.5 * options.size;
 
   POSITION(dock.applnks);
   x += 0.5 * options.spacing;
@@ -157,8 +158,7 @@ od_dock_redraw(Ecore_Evas * ee)
   // positions the background pieces
   {
     double          left_end_disp, right_end_disp, middle_disp;
-    double          dummy;
-    double          middle = middle_disp + dock.x;
+    double          dummy, middle;
 
     zoom_function((dock.left_pos - dock.x) / (options.size + options.spacing),
                   &dummy, &left_end_disp);
@@ -168,6 +168,7 @@ od_dock_redraw(Ecore_Evas * ee)
                   &dummy, &middle_disp);
     dock.left_end = left_end_disp + dock.x;
     dock.right_end = right_end_disp + dock.x;
+    middle = middle_disp + dock.x;
 
     evas_object_move(dock.background[OD_BG_LEFT], dock.left_end,
                      options.height - options.size - 2.0 * options.arrow_size);
