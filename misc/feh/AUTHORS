@@ -1,8 +1,12 @@
 Principle author.
 Tom Gilbert (gilbrit, giblet, grubby) <gilbertt@linuxbrit.co.uk>
 
+
 Paul Duncan (pabs) <pabs@pablotron.org>
     - cam, wget fixups, mouse-button swapping options, and more.
+
+Richard Lowe (richlowe) <richlowe@btinternet.com>
+    - background setting code.
 
 Mrinal Kalakrishnan <mrinal@india.com>
     - auto-zoom mode.
