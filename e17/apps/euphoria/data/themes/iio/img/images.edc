@@ -14,6 +14,7 @@
 	image, "s_b_play.png" RAW;
 	image, "s_b_next.png" RAW; 
 	image, "s_b_stop.png" RAW; 
+	/* unused
 	image, "a_s_lcd.png" LOSSY 98;	 
 	image, "a_s_lcd_01.png" LOSSY 98; 
 	image, "a_s_lcd_02.png" LOSSY 98; 
@@ -24,8 +25,9 @@
 	image, "a_s_lcd_07.png" LOSSY 98;	
 	image, "a_s_lcd_08.png" LOSSY 98; 
 	image, "a_s_lcd_09.png" LOSSY 98;	
-	image, "a_s_lcd_010.png" LOSSY 98; 
+	image, "a_s_lcd_010.png" LOSSY 98;*/ 
 	image, "a_s_lcd_011.png" LOSSY 98;	
+	/* unused
 	image, "a_s_lcd_0112.png" LOSSY 98; 
 	image, "a_s_lcd_0113.png" LOSSY 98; 
 	image, "a_s_lcd_0114.png" LOSSY 98; 
@@ -47,7 +49,7 @@
 	image, "a_s_lcd_0130.png" LOSSY 98; 
 	image, "a_s_lcd_0131.png" LOSSY 98;	
 	image, "a_s_lcd_0132.png" LOSSY 98; 
-	image, "a_s_lcd_0133.png" LOSSY 98;	
+	image, "a_s_lcd_0133.png" LOSSY 98;*/	
 	image, "bar_delay_left.png" LOSSY 98;
 	image, "bar_delay_right.png" LOSSY 98;
 	image, "align_top.png" LOSSY 98;

@@ -100,24 +100,9 @@ program { name, "_stop_unclick"; signal, "mouse,down"; source, "_stop_button";
 	action, STATE_SET "default" 0.0; transition, LINEAR, 0.1; target, "_stop_button";
 }
 program { name, "_stop_click"; signal, "mouse,down,1"; source, "_stop_button";
-	action, SIGNAL_EMIT "STOP" "stop_button"; after, "mode_animation_stop";
-} 
+	action, SIGNAL_EMIT "STOP" "stop_button";
+}
 
-//
-program { name, "mpb_started"; signal, "PLAYBACK_STATE_PLAYING"; source, "*";
-	action, STATE_SET "default" 0.0; transition, DECELERATE 5.0; target, "count"; 
-	after, "mode_animation"; }
-
-program { name, "mpb_paused"; signal, "PLAYBACK_STATE_PAUSED"; source, "*";
-	action, STATE_SET "default" 1.0; transition, DECELERATE 0.5; target, "count"; }
-
-program { name, "mpb_stopped"; signal, "PLAYBACK_STATE_STOPPED"; source, "*";
-	action, STATE_SET "default" 1.0; transition, DECELERATE 0.5; target, "count"; }
-
-program { name, "mode_animation"; signal, "mouse,click,1"; source, "play_button";
-	action, STATE_SET "default" 0.0; transition, DECELERATE, 5.0; target,  "count";
-	after, "mode_animation"; }
-//
 program { name, "playback_has_begun"; signal, "PLAYBACK_STATE_PLAYING"; source, "*";
 	action, STATE_SET "active" 0.0; transition, DECELERATE 0.1; 
 	target, "small_lcd"; 
@@ -140,11 +125,6 @@ program { name, "playback_has_stopped"; signal, "PLAYBACK_STATE_STOPPED"; source
 	action, STATE_SET "default" 0.0; transition, DECELERATE 0.5; 
 	target, "small_lcd";
 	target, "strans_Rect"; }
-//
-program { name, "mode_animation_stop"; signal, "mouse,clicked,2"; source, "stop_button";
-	action, ACTION_STOP; target, "mode_animation";
-} 
-
 //
 program { name, "_quit_hilited"; signal, "mouse,in"; source, "_quit";
 	action, STATE_SET "hilited" 0.0; transition, LINEAR, 0.1; target, "_quit"; 

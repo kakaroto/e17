@@ -46,29 +46,33 @@
 	rel1 { relative, 1.0 0.0; offset, 0 0; to, "a_play_b"; }       		
 	rel2 { relative, 1.0 0.0; offset, 25 -1; to, "a_play_b"; }       
 	image { normal, "s_b_pause.png"; } } }
-//
-	part { name, "count"; type, IMAGE; mouse_events, 0;	 
-	description { state, "default" 0.0; max, 63 32; min, 63 32; align,	0.0 0.0;       
-	rel1 { relative, 0.5  1.0; offset, 0 0; to, "small_lcd"; }       		
-	rel2 { relative, 1.0 1.0; offset, -16 -13; to, "small_lcd"; }
-	       
-	image { normal, "a_s_lcd.png"; tween, "a_s_lcd_01.png"; tween, "a_s_lcd_02.png";
-	tween, "a_s_lcd_03.png"; tween, "a_s_lcd_04.png"; tween, "a_s_lcd_05.png";
-	tween, "a_s_lcd_06.png"; tween, "a_s_lcd_07.png"; tween, "a_s_lcd_08.png";
-	tween, "a_s_lcd_09.png"; tween, "a_s_lcd_010.png"; tween, "a_s_lcd_011.png";
-	tween, "a_s_lcd_0112.png"; tween, "a_s_lcd_0113.png"; tween, "a_s_lcd_0114.png";
-	tween, "a_s_lcd_0115.png"; tween, "a_s_lcd_0116.png"; tween, "a_s_lcd_0117.png";
-	tween, "a_s_lcd_0118.png"; tween, "a_s_lcd_0119.png"; tween, "a_s_lcd_0120.png";
-	tween, "a_s_lcd_0121.png"; tween, "a_s_lcd_0122.png"; tween, "a_s_lcd_0123.png";
-	tween, "a_s_lcd_0124.png"; tween, "a_s_lcd_0125.png"; tween, "a_s_lcd_0126.png";
-	tween, "a_s_lcd_0127.png"; tween, "a_s_lcd_0128.png"; tween, "a_s_lcd_0129.png";
-	tween, "a_s_lcd_0130.png"; tween, "a_s_lcd_0131.png"; tween, "a_s_lcd_0132.png"; 
-	} }
 
-	description { state, "default" 1.0; max, 63 32; min, 63 32; align, 0.0 0.0; visible, 1;       
-	rel1 { relative, 0.5  1.0; offset, 0 0; to, "small_lcd"; }	       		
-	rel2 { relative, 1.0 1.0; offset, -16 -13; to, "small_lcd"; }       
-	image { normal, "a_s_lcd.png"; tween, "a_s_lcd_0133.png"; } } }
+	part { name, "peak_analyzer_img"; type, IMAGE; clip_to, "peak_analyzer_clip";
+	description { state, "default" 0.0; max, 63 32; min, 63 32; align, 0.0 0.0;
+
+	rel1 { relative, 0.5 1.0; offset, 0 0; to, "small_lcd"; }
+	rel2 { relative, 1.0 1.0; offset, -16 -13; to, "small_lcd"; }
+
+	image { normal, "a_s_lcd_011.png"; } } }
+
+	part { name, "peak_analyzer_clip"; type, RECT;
+	description { state, "default" 0.0;
+
+	rel1 { relative, 0.0 0.0; to, "peak_analyzer"; }
+	rel2 { relative, 1.0 1.0; to, "peak_analyzer"; } } }
+
+	part { name, "peak_analyzer_trough"; type, RECT; repeat_events, 1;
+	description { state, "default" 0.0; color, 0 0 0 0;
+
+	rel1 { relative, 0.0 0.0; to, "peak_analyzer_img"; }
+	rel2 { relative, 1.0 1.0; to, "peak_analyzer_img"; offset, 0 32; } } }
+
+	part { name, "peak_analyzer"; type, RECT; mouse_events, 0;
+	dragable { x, 0 0 0; y, 1 1 0; confine, "peak_analyzer_trough"; }
+	description { state, "default" 0.0; color, 0 0 0 0; min, 1 1;
+
+	rel1 { relative, 0.0 0.0; to, "peak_analyzer_img"; }
+	rel2 { relative, 1.0 1.0; to, "peak_analyzer_img"; } } }
 //
 	part { name, "time_text"; type, TEXT; mouse_events, 0;                     
 	description { state,  "default" 0.0;
