@@ -22,10 +22,12 @@
 
 feh_file filelist = NULL;
 feh_file current_file = NULL;
+extern int errno;
 
 static feh_file rm_filelist = NULL;
 
-feh_file filelist_newitem (char *filename)
+feh_file
+filelist_newitem (char *filename)
 {
   feh_file newfile;
   char *s;
@@ -55,7 +57,8 @@ feh_file_free (feh_file file)
   free (file);
 }
 
-feh_file feh_file_rm_and_free (feh_file list, feh_file file)
+feh_file
+feh_file_rm_and_free (feh_file list, feh_file file)
 {
   D (("In feh_file_rm_and_free\n"));
   unlink (file->filename);
@@ -63,7 +66,8 @@ feh_file feh_file_rm_and_free (feh_file list, feh_file file)
 }
 
 
-feh_file filelist_addtofront (feh_file root, feh_file newfile)
+feh_file
+filelist_addtofront (feh_file root, feh_file newfile)
 {
   D (("In filelist_addtofront\n"));
   newfile->next = root;
@@ -88,8 +92,7 @@ filelist_length (feh_file file)
   return length;
 }
 
-feh_file
-filelist_last (feh_file file)
+feh_file filelist_last (feh_file file)
 {
   D (("In filelist_last\n"));
   if (file)
@@ -100,8 +103,7 @@ filelist_last (feh_file file)
   return file;
 }
 
-feh_file
-filelist_first (feh_file file)
+feh_file filelist_first (feh_file file)
 {
   D (("In filelist_first\n"));
   if (file)
@@ -112,7 +114,8 @@ filelist_first (feh_file file)
   return file;
 }
 
-feh_file filelist_reverse (feh_file list)
+feh_file
+filelist_reverse (feh_file list)
 {
   feh_file last;
 
@@ -146,7 +149,8 @@ filelist_num (feh_file list, feh_file file)
   return -1;
 }
 
-feh_file filelist_remove_file (feh_file list, feh_file file)
+feh_file
+filelist_remove_file (feh_file list, feh_file file)
 {
   D (("In filelist_remove_file\n"));
   if (!file)
@@ -192,7 +196,8 @@ add_file_to_filelist_recursively (char *path, unsigned char enough)
     {
       weprintf
 	("%s does not exist, or you do not have permission to open it",
-	 path); return;}
+	 path); return;
+    }
   if (S_ISDIR (st.st_mode))
     {
       D (("   It is a directory\n"));
@@ -200,8 +205,17 @@ add_file_to_filelist_recursively (char *path, unsigned char enough)
 	{
 	  struct dirent *de;
 	  DIR *dir;
+	  errno = 0;
 	  if ((dir = opendir (path)) == NULL)
-	    eprintf ("Error, couldn't open directory %s", path);
+	    {
+	      if (errno == EMFILE)
+		eprintf ("sorry - too many open files - you must be\n"
+			 "recursing on a massive file hierarchy. Please\n"
+			 "try something more managable until I can fix this\n");
+	      weprintf ("couldn't open directory %s, errno:%d :", path,
+			errno);
+	      return;
+	    }
 	  de = readdir (dir);
 	  while (de != NULL)
 	    {
@@ -253,12 +267,12 @@ void
 delete_rm_files (void)
 {
   feh_file file;
-  
+
   D (("In delete_rm_files\n"));
-  
+
   if (opt.keep_http)
     return;
-  
+
   for (file = rm_filelist; file; file = file->next)
     {
       /* Just unlink it. The list'll be freed in a minute anyway -

@@ -1,3 +1,10 @@
+Fri Feb 18 23:33:54 2000  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
+
+	* Okay, okay. I suck. There is a mild problem I have to fix when
+	running recursively on *massive* hierarchy's. Basically, I run out
+	of file descriptors :( At least it now aborts when this happens, but
+	I need to fix this.
+
 Fri Feb 18 21:13:32 2000  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
 
 	* configure.in: less stupid
