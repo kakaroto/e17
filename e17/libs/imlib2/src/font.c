@@ -32,6 +32,11 @@ static int         font_cache_size = 0;
 static ImlibXmbHash *hashes = NULL;
 #endif
 
+/* List of TTF Hashes */
+#ifdef  TTF_FONT_CACHE
+static ImlibTTFHash *ttfhashes = NULL;
+#endif
+
 /* lookupt table of raster_map -> RGBA Alpha values */
 static int rend_lut[9] = 
 { 0, 64, 128, 192, 256, 256, 256, 256, 256};
@@ -95,6 +100,41 @@ nb = (tmp | ((tmp & 256) - ((tmp & 256) >> 8))) & (~(tmp >> 9));\
 tmp = (a1) + aa;\
 na =  (tmp | ((tmp & 256) - ((tmp & 256) >> 9)));\
 (dest) = (na << 24) | (nr << 16) | (ng << 8) | nb;
+
+/* Encoding maps */
+static const ImlibEncodingMap iso1 =
+{
+  /* ISO-8859-1 encoding (conversion to UTF-8) */
+  0x00A0, 0x00A1, 0x00A2, 0x00A3, 0x00A4, 0x00A5, 0x00A6, 0x00A7, 0x00A8, 0x00A9, 0x00AA, 0x00AB, 0x00AC, 0x00AD, 0x00AE, 0x00AF, 0x00B0, 0x00B1, 0x00B2, 0x00B3, 0x00B4, 0x00B5, 0x00B6, 0x00B7, 0x00B8, 0x00B9, 0x00BA, 0x00BB, 0x00BC, 0x00BD, 0x00BE, 0x00BF, 0x00C0, 0x00C1, 0x00C2, 0x00C3, 0x00C4, 0x00C5, 0x00C6, 0x00C7, 0x00C8, 0x00C9, 0x00CA, 0x00CB, 0x00CC, 0x00CD, 0x00CE, 0x00CF, 0x00D0, 0x00D1, 0x00D2, 0x00D3, 0x00D4, 0x00D5, 0x00D6, 0x00D7, 0x00D8, 0x00D9, 0x00DA, 0x00DB, 0x00DC, 0x00DD, 0x00DE, 0x00DF, 0x00E0, 0x00E1, 0x00E2, 0x00E3, 0x00E4, 0x00E5, 0x00E6, 0x00E7, 0x00E8, 0x00E9, 0x00EA, 0x00EB, 0x00EC, 0x00ED, 0x00EE, 0x00EF, 0x00F0, 0x00F1, 0x00F2, 0x00F3, 0x00F4, 0x00F5, 0x00F6, 0x00F7, 0x00F8, 0x00F9, 0x00FA, 0x00FB, 0x00FC, 0x00FD, 0x00FE, 0x00FF
+};
+
+static const ImlibEncodingMap iso2 =
+{
+  /* ISO-8859-2 encoding (conversion to UTF-8) */
+  0x00A0, 0x0104, 0x02D8, 0x0141, 0x00A4, 0x013D, 0x015A, 0x00A7, 0x00A8, 0x0160, 0x015E, 0x0164, 0x0179, 0x00AD, 0x017D, 0x017B, 0x00B0, 0x0105, 0x02DB, 0x0142, 0x00B4, 0x013E, 0x015B, 0x02C7, 0x00B8, 0x0161, 0x015F, 0x0165, 0x017A, 0x02DD, 0x017E, 0x017C, 0x0154, 0x00C1, 0x00C2, 0x0102, 0x00C4, 0x0139, 0x0106, 0x00C7, 0x010C, 0x00C9, 0x0118, 0x00CB, 0x011A, 0x00CD, 0x00CE, 0x010E, 0x0110, 0x0143, 0x0147, 0x00D3, 0x00D4, 0x0150, 0x00D6, 0x00D7, 0x0158, 0x016E, 0x00DA, 0x0170, 0x00DC, 0x00DD, 0x0162, 0x00DF, 0x0155, 0x00E1, 0x00E2, 0x0103, 0x00E4, 0x013A, 0x0107, 0x00E7, 0x010D, 0x00E9, 0x0119, 0x00EB, 0x011B, 0x00ED, 0x00EE, 0x010F, 0x0111, 0x0144, 0x0148, 0x00F3, 0x00F4, 0x0151, 0x00F6, 0x00F7, 0x0159, 0x016F, 0x00FA, 0x0171, 0x00FC, 0x00FD, 0x0163, 0x02D9
+};
+
+static const ImlibEncodingMap iso3 =
+{
+  /* ISO-8859-3 encoding (conversion to UTF-8) */
+  0x00A0, 0x0126, 0x02D8, 0x00A3, 0x00A4, 0x0124, 0x00A7, 0x00A8, 0x0130, 0x015E, 0x011E, 0x0134, 0x00AD, 0x017B, 0x00B0, 0x0127, 0x00B2, 0x00B3, 0x00B4, 0x00B5, 0x0125, 0x00B7, 0x00B8, 0x0131, 0x015F, 0x011F, 0x0135, 0x00BD, 0x017C, 0x00C0, 0x00C1, 0x00C2, 0x00C4, 0x010A, 0x0108, 0x00C7, 0x00C8, 0x00C9, 0x00CA, 0x00CB, 0x00CC, 0x00CD, 0x00CE, 0x00CF, 0x00D1, 0x00D2, 0x00D3, 0x00D4, 0x0120, 0x00D6, 0x00D7, 0x011C, 0x00D9, 0x00DA, 0x00DB, 0x00DC, 0x016C, 0x015C, 0x00DF, 0x00E0, 0x00E1, 0x00E2, 0x00E4, 0x010B, 0x0109, 0x00E7, 0x00E8, 0x00E9, 0x00EA, 0x00EB, 0x00EC, 0x00ED, 0x00EE, 0x00EF, 0x00F1, 0x00F2, 0x00F3, 0x00F4, 0x0121, 0x00F6, 0x00F7, 0x011D, 0x00F9, 0x00FA, 0x00FB, 0x00FC, 0x016D, 0x015D, 0x02D9
+};
+
+static const ImlibEncodingMap iso4 =
+{
+  /* ISO-8859-4 encoding (conversion to UTF-8) */
+  0x00A0, 0x0104, 0x0138, 0x0156, 0x00A4, 0x0128, 0x013B, 0x00A7, 0x00A8, 0x0160, 0x0112, 0x0122, 0x0166, 0x00AD, 0x017D, 0x00AF, 0x00B0, 0x0105, 0x02DB, 0x0157, 0x00B4, 0x0129, 0x013C, 0x02C7, 0x00B8, 0x0161, 0x0113, 0x0123, 0x0167, 0x014A, 0x017E, 0x014B, 0x0100, 0x00C1, 0x00C2, 0x00C3, 0x00C4, 0x00C5, 0x00C6, 0x012E, 0x010C, 0x00C9, 0x0118, 0x00CB, 0x0116, 0x00CD, 0x00CE, 0x012A, 0x0110, 0x0145, 0x014C, 0x0136, 0x00D4, 0x00D5, 0x00D6, 0x00D7, 0x00D8, 0x0172, 0x00DA, 0x00DB, 0x00DC, 0x0168, 0x016A, 0x00DF, 0x0101, 0x00E1, 0x00E2, 0x00E3, 0x00E4, 0x00E5, 0x00E6, 0x012F, 0x010D, 0x00E9, 0x0119, 0x00EB, 0x0117, 0x00ED, 0x00EE, 0x012B, 0x0111, 0x0146, 0x014D, 0x0137, 0x00F4, 0x00F5, 0x00F6, 0x00F7, 0x00F8, 0x0173, 0x00FA, 0x00FB, 0x00FC, 0x0169, 0x016B, 0x02D9
+};
+
+static const ImlibEncodingMap iso5 =
+{
+  /* ISO-8859-5 encoding (conversion to UTF-8) */
+  0x00A0, 0x0401, 0x0402, 0x0403, 0x0404, 0x0405, 0x0406, 0x0407, 0x0408, 0x0409, 0x040A, 0x040B, 0x040C, 0x00AD, 0x040E, 0x040F, 0x0410, 0x0411, 0x0412, 0x0413, 0x0414, 0x0415, 0x0416, 0x0417, 0x0418, 0x0419, 0x041A, 0x041B, 0x041C, 0x041D, 0x041E, 0x041F, 0x0420, 0x0421, 0x0422, 0x0423, 0x0424, 0x0425, 0x0426, 0x0427, 0x0428, 0x0429, 0x042A, 0x042B, 0x042C, 0x042D, 0x042E, 0x042F, 0x0430, 0x0431, 0x0432, 0x0433, 0x0434, 0x0435, 0x0436, 0x0437, 0x0438, 0x0439, 0x043A, 0x043B, 0x043C, 0x043D, 0x043E, 0x043F, 0x0440, 0x0441, 0x0442, 0x0443, 0x0444, 0x0445, 0x0446, 0x0447, 0x0448, 0x0449, 0x044A, 0x044B, 0x044C, 0x044D, 0x044E, 0x044F, 0x2116, 0x0451, 0x0452, 0x0453, 0x0454, 0x0455, 0x0456, 0x0457, 0x0458, 0x0459, 0x045A, 0x045B, 0x045C, 0x00A7, 0x045E, 0x045F
+};
+
+static const ImlibEncodingMap* _imlib_encodings[5] = { &iso1, &iso2, &iso3, &iso4, &iso5 };
+static unsigned char imlib2_encoding = 0;
+static unsigned char encoding_initialized = 0;
 
 /* create an rmap of width and height */
 TT_Raster_Map *
@@ -239,16 +279,23 @@ __imlib_load_font(const char *fontname)
 {
    ImlibFont *fn;
    TT_Error            error;
+#ifndef TTF_FONT_CACHE
    TT_CharMap          char_map;
+#endif
    TT_Glyph_Metrics    metrics;
    TT_Instance_Metrics imetrics;
    int                 dpi = 96;
-   unsigned short      i, n, code, load_flags;
+   unsigned short      i, n, index, load_flags;
    unsigned short      num_glyphs = 0, no_cmap = 0;
    unsigned short      platform, encoding;
    int                 size, j, upm, ascent, descent;
+#ifdef TTF_FONT_CACHE
+   int                 glyphs_loaded;
+#endif
    char                *name, *file = NULL, *tmp;
    ImlibTtfFont       *f;
+
+   __imlib_init_encoding();
 
    fn = __imlib_find_cached_font(fontname, NULL, IMLIB_FONT_TYPE_TTF);
    if (fn)
@@ -396,58 +443,99 @@ __imlib_load_font(const char *fontname)
 	if ((platform == 3 && encoding == 1) ||
 	    (platform == 0 && encoding == 0))
 	  {
+#ifdef TTF_FONT_CACHE
+   /* We have to store the Char Map for futher use */
+	     TT_Get_CharMap(f->face, i, &(f->char_map));
+#else
 	     TT_Get_CharMap(f->face, i, &char_map);
+#endif
 	     break;
 	  }
      }
+#ifdef TTF_FONT_CACHE
    if (i == n)
-      TT_Get_CharMap(f->face, 0, &char_map);
+     /* We have to store the Char Map for futher use */
+     TT_Get_CharMap(f->face, 0, &(f->char_map));
+   /* Now we can see how many glyphs we have to load */
+   f->num_glyph = f->properties.num_Glyphs;
+   /* and reserve space for ALL of them */
+   f->glyph_hash = __imlib_create_ttf_font_hash_table(fontname,0,f->num_glyph);
+
+#else
+   if (i == n)
+     TT_Get_CharMap(f->face, 0, &char_map);
    f->num_glyph = 256;
+
    f->glyphs = (TT_Glyph *)malloc(f->num_glyph * sizeof(TT_Glyph));
    memset(f->glyphs, 0, f->num_glyph * sizeof(TT_Glyph));
    
    f->glyphs_cached_right = 
       (TT_Raster_Map **)malloc(f->num_glyph * sizeof(TT_Raster_Map *));
    memset(f->glyphs_cached_right, 0, f->num_glyph * sizeof(TT_Raster_Map *));
-   
+#endif   
    load_flags = TTLOAD_SCALE_GLYPH | TTLOAD_HINT_GLYPH;   
    f->max_descent = 0;
    f->max_ascent = 0;   
+#ifdef TTF_FONT_CACHE
+   /* Now load all the glyphs, storing index number with each glyph */
+   i = 0; glyphs_loaded = 0;
+   while ((i < 65535) && (glyphs_loaded < f->num_glyph))
+     {
+        if (TT_VALID(*(f->glyph_hash->hash[glyphs_loaded])->glyph)) {
+	  i++;
+	  continue;
+        }
+	  
+#else
    for (i = 0; i < f->num_glyph; ++i)
      {
-	if (TT_VALID(f->glyphs[i]))
-	   continue;
-	
-	if (no_cmap)
-	  {
-	     code = (i - ' ' + 1) < 0 ? 0 : (i - ' ' + 1);
-	     if (code >= num_glyphs)
-		code = 0;
-	  }
-	else
-	   code = TT_Char_Index(char_map, i);
-	
-	TT_New_Glyph(f->face, &f->glyphs[i]);
-	TT_Load_Glyph(f->instance, f->glyphs[i], code, load_flags);
-	TT_Get_Glyph_Metrics(f->glyphs[i], &metrics);
-	if ((metrics.bbox.yMin & -64) < f->max_descent)
-	   f->max_descent = (metrics.bbox.yMin & -64);
-	if (((metrics.bbox.yMax + 63) & -64) > f->max_ascent)
-	   f->max_ascent = ((metrics.bbox.yMax + 63) & -64);
+       if (TT_VALID(f->glyphs[i]))
+	 continue;
+#endif
+	    
+       if (no_cmap)
+	 {
+	   index = (i - ' ' + 1) < 0 ? 0 : (i - ' ' + 1);
+	   if (index >= num_glyphs)
+	     index = 0;
+	 }
+       else 
+#ifdef TTF_FONT_CACHE
+	 index = i;
+       
+       TT_New_Glyph(f->face, f->glyph_hash->hash[glyphs_loaded]->glyph);
+       TT_Load_Glyph(f->instance, *(f->glyph_hash->hash[glyphs_loaded]->glyph), index, load_flags);
+       TT_Get_Glyph_Metrics(*(f->glyph_hash->hash[glyphs_loaded]->glyph), &metrics);
+       f->glyph_hash->hash[glyphs_loaded]->wc = index;
+       i++; glyphs_loaded++;	
+#else
+       if (i < 0xA0 )
+	 index = TT_Char_Index(char_map, i);
+       else
+	 index = TT_Char_Index(char_map, _imlib_encodings[imlib2_encoding]->char_map[(i - 0xA0)]);
+       
+       TT_New_Glyph(f->face, &f->glyphs[i]);
+       TT_Load_Glyph(f->instance, f->glyphs[i], index, load_flags);
+       TT_Get_Glyph_Metrics(f->glyphs[i], &metrics);
+#endif
+       if ((metrics.bbox.yMin & -64) < f->max_descent)
+	 f->max_descent = (metrics.bbox.yMin & -64);
+       if (((metrics.bbox.yMax + 63) & -64) > f->max_ascent)
+	 f->max_ascent = ((metrics.bbox.yMax + 63) & -64);
      }
    /* work around broken fonts - some just have wrong ascent and */
    /* descent members */
    if (((f->ascent == 0) && (f->descent == 0)) || (f->ascent == 0))
      {
-	f->ascent = f->max_ascent / 64;
-	f->descent = -f->max_descent / 64;
+       f->ascent = f->max_ascent / 64;
+       f->descent = -f->max_descent / 64;
      }
    /* all ent well in loading, so add to head of font list and return */
    f->next = fonts;
    fonts = (ImlibFont *)f;
    /* we dont need the file handle hanging around so flush it out */
    TT_Flush_Face(f->face);
-
+   
    return (ImlibFont *)f;
 }
 
@@ -549,6 +637,103 @@ __imlib_create_font_hash_table(const char *xfontsetname, int type)
 }
 #endif
 
+#ifdef	TTF_FONT_CACHE
+ImlibTTFHash *
+__imlib_create_ttf_font_hash_table(const char *ttfontname, int type, int argsize)
+{
+/* Create an empty TTF cache */
+
+   int i, size;
+   ImlibTTFHash	*h;
+
+   h = ttfhashes;
+   while(h)
+     if (!strcmp(ttfontname, h->name))
+	{
+	  h->references++;
+	  return h;
+	}
+     else
+	h = h->next;
+
+   h = malloc(sizeof(ImlibTTFHash));
+   h->next = ttfhashes;
+   ttfhashes = h;
+
+   /* Append this hash at the beginning of the list of hashes */
+   h->name = strdup(ttfontname);
+   h->references = 1;
+
+   h->type = type;
+   if (type)
+     h->size = TTF_HASH_SIZE;
+   else
+     h->size = argsize;
+   h->hash = (ImlibTTFHashElm **)malloc( sizeof(ImlibTTFHashElm *) * h->size);
+   for (i=0; i<h->size; i++)
+     h->hash[i] = NULL;
+
+   for (i=0; i<h->size; i++) {
+     h->hash[i] = (ImlibTTFHashElm *)malloc(sizeof(ImlibTTFHashElm));
+     h->hash[i]->glyph = (TT_Glyph *)malloc(sizeof(TT_Glyph));
+     memset(h->hash[i]->glyph, 0, sizeof(TT_Glyph));
+     
+     h->hash[i]->glyph_raster = NULL;
+   }
+   return h;
+}
+
+unsigned short
+__imlib_find_hash_index(ImlibTtfFont *f, unsigned short argchar) 
+{
+  /* Find TTF index corresponding to the UTF code argchar 
+      Returns 0 if there is no glyph with that code in the font */
+
+  int i, span;
+  unsigned short ttf_index;
+
+  span = 0;
+  if (argchar < 0xA0 )
+    ttf_index = TT_Char_Index(f->char_map, argchar);
+  else
+    ttf_index = TT_Char_Index(f->char_map, _imlib_encodings[imlib2_encoding]->char_map[(argchar - 0xA0)]);
+
+  /* the fast search algorithm - we can use it, because the glyphs
+     are index-sorted (ascending) by the load procedure */
+
+  i = span = f->num_glyph / 2;
+  while (span > 1) {
+    if (ttf_index == f->glyph_hash->hash[i]->wc)
+      return i;
+    else if (ttf_index < f->glyph_hash->hash[i]->wc) {
+      span /= 2;
+      i -= span;
+    }
+    else {
+      span /= 2;
+      i += span;
+    }
+  }
+  /* This is needed if the number of glyphs in the font is not equal 2^n */
+  while (!((ttf_index > f->glyph_hash->hash[i]->wc) && (ttf_index < f->glyph_hash->hash[i+1]->wc))) {
+    
+    if (ttf_index > f->glyph_hash->hash[i]->wc) {
+      i++;
+      if (i > f->num_glyph)
+	return 0;
+    }
+    else {
+      i--;
+      if (i < 0)
+	return 0;
+    }
+    if (ttf_index == f->glyph_hash->hash[i]->wc) 
+      return i;
+  }
+  return 0;
+}
+#endif
+
 ImlibFont *
 __imlib_clone_cached_font(ImlibFont *fn)
 {
@@ -559,6 +744,7 @@ __imlib_clone_cached_font(ImlibFont *fn)
      case IMLIB_FONT_TYPE_TTF:
 	f = (ImlibFont *)malloc(sizeof(ImlibTtfFont));
 	memcpy(f, fn, sizeof(ImlibTtfFont));
+#ifndef TTF_FONT_CACHE
 	if (fn->ttf.num_glyph)
 	  {
    	    f->ttf.glyphs = (TT_Glyph *)malloc(f->ttf.num_glyph * sizeof(TT_Glyph));
@@ -568,6 +754,14 @@ __imlib_clone_cached_font(ImlibFont *fn)
 	    memcpy(f->ttf.glyphs_cached_right, fn->ttf.glyphs_cached_right,
 		    f->ttf.num_glyph * sizeof(TT_Raster_Map *));
 	  }
+#else
+	/* If cloning font, just increase the reference count on a hash */
+	if (fn->ttf.glyph_hash) 
+	  {
+	    f->ttf.glyph_hash = fn->ttf.glyph_hash;
+	    fn->ttf.glyph_hash->references++;
+	  } 
+#endif
         break;
      case IMLIB_FONT_TYPE_X:
      case IMLIB_FONT_TYPE_TTF_X:
@@ -626,12 +820,24 @@ __imlib_calc_size(ImlibFont *fn, int *width, int *height, const char *text)
    
    for (i = 0; text[i]; i++)
      {
-	unsigned char       j;
+#ifdef TTF_FONT_CACHE
+	/* The index is a 2-byte number now! */
+	unsigned short      j;
 	
+	/* Find the index for the code */
+	j = __imlib_find_hash_index(f,(unsigned char) text[i]);	
+	/* Use the cached glyph */
+	if (!TT_VALID(*(f->glyph_hash->hash[j]->glyph)))
+	   continue;
+	TT_Get_Glyph_Metrics(*(f->glyph_hash->hash[j]->glyph), &gmetrics);
+#else
+	unsigned char       j;	
+
 	j = text[i];	
 	if (!TT_VALID(f->glyphs[j]))
 	   continue;
 	TT_Get_Glyph_Metrics(f->glyphs[j], &gmetrics);
+#endif
 	if (i == 0)
 	   pw += ((-gmetrics.bearingX) / 64);
 	if (text[i + 1] == 0)
@@ -679,12 +885,21 @@ __imlib_calc_advance(ImlibFont *fn, int *adv_w, int *adv_h, const char *text)
    
    for (i = 0; text[i]; i++)
      {
-	unsigned char       j;
+#ifdef TTF_FONT_CACHE
+	unsigned short      j;
 	
+	j = __imlib_find_hash_index(f,(unsigned char) text[i]);
+	if (!TT_VALID(*(f->glyph_hash->hash[j]->glyph)))
+	   continue;
+	TT_Get_Glyph_Metrics(*(f->glyph_hash->hash[j]->glyph), &gmetrics);
+#else
+	unsigned char       j;
+
 	j = text[i];	
 	if (!TT_VALID(f->glyphs[j]))
 	   continue;
 	TT_Get_Glyph_Metrics(f->glyphs[j], &gmetrics);
+#endif
 	if (i == 0)
 	   pw += ((-gmetrics.bearingX) / 64);
 	pw += gmetrics.advance / 64;
@@ -716,12 +931,21 @@ __imlib_calc_inset(ImlibFont *fn, const char *text)
    
    for (i = 0; text[i]; i++)
      {
-	unsigned char       j;
+#ifdef TTF_FONT_CACHE
+	unsigned short      j;
 	
+	j = __imlib_find_hash_index(f,(unsigned char) text[i]);
+	if (!TT_VALID(*(f->glyph_hash->hash[j]->glyph)))
+	   continue;
+	TT_Get_Glyph_Metrics(*(f->glyph_hash->hash[j]->glyph), &gmetrics);
+#else
+	unsigned char       j;
+
 	j = text[i];
 	if (!TT_VALID(f->glyphs[j]))
 	   continue;
 	TT_Get_Glyph_Metrics(f->glyphs[j], &gmetrics);
+#endif
 	return ((-gmetrics.bearingX) / 64);
      }
    return 0;
@@ -740,7 +964,11 @@ __imlib_render_str(ImlibImage *im, ImlibFont *f, int drx, int dry, const char *t
    int                 w, h, i, ioff, iread, tw, th;
    char               *off, *read, *_off, *_read;
    int                 x_offset, y_offset;
+#ifdef TTF_FONT_CACHE
+   unsigned short      j;
+#else
    unsigned char       j;
+#endif
    TT_Raster_Map      *rtmp = NULL, *rmap;
    ImlibImage          im2;
    ImlibTtfFont       *fn;
@@ -770,8 +998,13 @@ __imlib_render_str(ImlibImage *im, ImlibFont *f, int drx, int dry, const char *t
 			((int)b));
 
    /* get offset of first char */
+#ifdef TTF_FONT_CACHE
+   j = __imlib_find_hash_index(fn,(unsigned char) text[0]);
+   TT_Get_Glyph_Metrics(*(fn->glyph_hash->hash[j]->glyph), &metrics);
+#else
    j = text[0];
    TT_Get_Glyph_Metrics(fn->glyphs[j], &metrics);
+#endif
    x_offset = (-metrics.bearingX) / 64;
    y_offset = -(fn->max_descent / 64);
 
@@ -790,8 +1023,13 @@ __imlib_render_str(ImlibImage *im, ImlibFont *f, int drx, int dry, const char *t
 	   *nexty = fn->ascent + fn->descent;
 	if (nextx)
 	  {
+#ifdef TTF_FONT_CACHE
+	     j = __imlib_find_hash_index(fn,(unsigned char) text[strlen(text) - 1]);
+	     TT_Get_Glyph_Metrics(*(fn->glyph_hash->hash[j]->glyph), &metrics);
+#else
 	     j = text[strlen(text) - 1];
 	     TT_Get_Glyph_Metrics(fn->glyphs[j], &metrics);
+#endif
 	     *nextx = w - x_offset + (metrics.advance / 64) - 
 		(metrics.bbox.xMax / 64);
 	  }
@@ -807,8 +1045,13 @@ __imlib_render_str(ImlibImage *im, ImlibFont *f, int drx, int dry, const char *t
 	   *nextx = fn->ascent + fn->descent;
 	if (nexty)
 	  {
+#ifdef TTF_FONT_CACHE
+	     j = __imlib_find_hash_index(fn,(unsigned char) text[strlen(text) - 1]);
+	     TT_Get_Glyph_Metrics(*(fn->glyph_hash->hash[j]->glyph), &metrics);
+#else
 	     j = text[strlen(text) - 1];
 	     TT_Get_Glyph_Metrics(fn->glyphs[j], &metrics);
+#endif
 	     *nexty = w - x_offset + (metrics.advance / 64) - 
 		(metrics.bbox.xMax / 64);
 	  }
@@ -853,8 +1096,13 @@ __imlib_render_str(ImlibImage *im, ImlibFont *f, int drx, int dry, const char *t
 	   *nexty = fn->ascent + fn->descent;
 	if (nextx)
 	  {
+#ifdef TTF_FONT_CACHE
+	    j = __imlib_find_hash_index(fn,(unsigned char) text[strlen(text) - 1]);
+	     TT_Get_Glyph_Metrics(*(fn->glyph_hash->hash[j]->glyph), &metrics);
+#else
 	     j = text[strlen(text) - 1];
 	     TT_Get_Glyph_Metrics(fn->glyphs[j], &metrics);
+#endif
 	     *nextx = w - x_offset + (metrics.advance / 64) - 
 		(metrics.bbox.xMax / 64);
 	  }
@@ -878,23 +1126,39 @@ __imlib_render_str(ImlibImage *im, ImlibFont *f, int drx, int dry, const char *t
 	/* render the text into the scratch pad */
 	for (i = 0; text[i]; i++)
 	  {
+#ifdef TTF_FONT_CACHE
+	    j = __imlib_find_hash_index(fn,(unsigned char) text[i]);
+	     if (!TT_VALID(*(fn->glyph_hash->hash[j]->glyph)))
+		continue;	
+	     TT_Get_Glyph_Metrics(*(fn->glyph_hash->hash[j]->glyph), &metrics);
+#else
 	     j = text[i];	
 	     if (!TT_VALID(fn->glyphs[j]))
 		continue;	
 	     TT_Get_Glyph_Metrics(fn->glyphs[j], &metrics);
+#endif
 	     
 	     xmin = metrics.bbox.xMin & -64;
 	     ymin = metrics.bbox.yMin & -64;
 	     xmax = (metrics.bbox.xMax + 63) & -64;
 	     ymax = (metrics.bbox.yMax + 63) & -64;
 	     
+#ifdef TTF_FONT_CACHE
+	     rtmp = fn->glyph_hash->hash[j]->glyph_raster;
+#else
 	     rtmp = fn->glyphs_cached_right[j];
+#endif
 	     if (!rtmp)
 	       {
 		  rtmp = __imlib_create_font_raster(((xmax - xmin) / 64) + 1,
 						    ((ymax - ymin) / 64) + 1);
+#ifdef TTF_FONT_CACHE
+		  TT_Get_Glyph_Pixmap(*(fn->glyph_hash->hash[j]->glyph), rtmp, -xmin, -ymin);
+		  fn->glyph_hash->hash[j]->glyph_raster = rtmp;
+#else
 		  TT_Get_Glyph_Pixmap(fn->glyphs[j], rtmp, -xmin, -ymin);
 		  fn->glyphs_cached_right[j] = rtmp;
+#endif
 		  fn->mem_use += 
 		     (((xmax - xmin) / 64) + 1) *
 		     (((ymax - ymin) / 64) + 1);
@@ -1401,12 +1665,21 @@ __imlib_char_pos(ImlibFont *f, const char *text, int x, int y,
    px = 0;
    for (i = 0; text[i]; i++)
      {
+#ifdef TTF_FONT_CACHE
+	unsigned short      j;
+	
+	j = __imlib_find_hash_index(&(f->ttf),(unsigned char) text[i]);
+	if (!TT_VALID(*(fn->glyph_hash->hash[j]->glyph)))
+	   continue;
+	TT_Get_Glyph_Metrics(*(fn->glyph_hash->hash[j]->glyph), &gmetrics);
+#else
 	unsigned char       j;
 	
 	j = text[i];
 	if (!TT_VALID(fn->glyphs[j]))
 	   continue;
 	TT_Get_Glyph_Metrics(fn->glyphs[j], &gmetrics);
+#endif
 	ppx = px;
 	if (i == 0)
 	   px += ((-gmetrics.bearingX) / 64);
@@ -1458,12 +1731,21 @@ __imlib_char_geom(ImlibFont *f, const char *text, int num,
    px = 0;
    for (i = 0; text[i]; i++)
      {
+#ifdef TTF_FONT_CACHE
+	unsigned short      j;
+	
+	j = __imlib_find_hash_index(&(f->ttf),(unsigned char) text[i]);
+	if (!TT_VALID(*(fn->glyph_hash->hash[j]->glyph)))
+	   continue;
+	TT_Get_Glyph_Metrics(*(fn->glyph_hash->hash[j]->glyph), &gmetrics);
+#else
 	unsigned char       j;
 	
 	j = text[i];
 	if (!TT_VALID(fn->glyphs[j]))
 	   continue;
 	TT_Get_Glyph_Metrics(fn->glyphs[j], &gmetrics);
+#endif
 	ppx = px;
 	if (i == 0)
 	   px += ((-gmetrics.bearingX) / 64);
@@ -1796,6 +2078,9 @@ __imlib_nuke_font(ImlibFont *fn)
    TT_Done_Instance(font->instance);
    TT_Close_Face(font->face);
    /* free all cached glyphs */
+#ifdef TTF_FONT_CACHE
+   __imlib_free_ttf_font_hash(font->glyph_hash);
+#else
    for (i = 0; i < font->num_glyph; i++)
      {	
 	if ((font->glyphs_cached_right) && (font->glyphs_cached_right[i]))
@@ -1808,6 +2093,7 @@ __imlib_nuke_font(ImlibFont *fn)
    /* free glyph cache arrays */
    if (font->glyphs_cached_right)
       free(font->glyphs_cached_right);
+#endif
    /* free font struct & name */
    free(font->name);
    free(font);
@@ -1863,3 +2149,106 @@ __imlib_free_font_hash(ImlibXmbHash *h)
       }
 }
 #endif
+
+#ifdef TTF_FONT_CACHE
+void
+__imlib_free_ttf_font_hash(ImlibTTFHash *h)
+{
+   /* Free all the memory allocated for TTF cache */
+   int i;
+
+   if (!(--(h->references)))
+      {
+	ImlibTTFHash *h, *ph;
+
+   	h = ttfhashes;
+	ph = NULL;
+   	while(h)
+	  if (!h->references)
+	    {
+	      if (ph)
+		ph->next = h->next;
+	      else
+		ttfhashes = h->next;
+	      break;
+	    }
+	  else
+	    {
+	      ph = h;
+	      h = h->next;
+	    }
+
+	free(h->name);
+	for (i = 0; i < h->size; i++)
+	  {	
+	    if ((h->hash) && (h->hash[i]) && (h->hash[i]->glyph_raster))
+	      __imlib_destroy_font_raster(h->hash[i]->glyph_raster);
+	    if ((h->hash) && TT_VALID(*(h->hash[i]->glyph)))
+	      TT_Done_Glyph(*(h->hash[i]->glyph));
+	    free(h->hash[i]);
+	  }
+	/* free the hash table*/
+	free(h->hash);
+	/* free glyph info */
+	free(h);
+      }
+}
+
+#endif
+
+void          
+__imlib_set_TTF_encoding(unsigned char enc) 
+{
+  /* Enforce the use of a specified encoding */
+  imlib2_encoding = enc;
+  encoding_initialized = 1;
+}
+
+void          
+__imlib_init_encoding()
+{
+  /* Set the current ISO encoding based on (in that order):
+   * the "IMLIB_ENCODING" environment variable,
+   * the "LANG" variable,
+   * the ISO-8859-1 default */
+   
+  char *s, *enc_num, *lang;
+  char iso2lang[21] = "cs hu pl ro hr sk sl";
+  char iso3lang[6] = "eo mt";
+  char iso4lang[12] = "et lv lt kl";
+  char iso5lang[18] = "bg be mk ru sr uk";
+
+  /* Check if we already initialized the encoding */
+  if (!encoding_initialized) 
+    {
+      imlib2_encoding = 255;
+      /* First check if we have IMLIB_ENCODING variable set */
+      if ((s = getenv("IMLIB_ENCODING")) != NULL) 
+	{
+	  if ((enc_num = strstr(s, "8859-")) != NULL) 
+	    {
+	      if (!strcmp((enc_num+5), "1")) imlib2_encoding = 0;
+	      else if (!strcmp((enc_num+5), "2")) imlib2_encoding = 1;
+	      else if (!strcmp((enc_num+5), "3")) imlib2_encoding = 2;
+	      else if (!strcmp((enc_num+5), "4")) imlib2_encoding = 3;		
+	      else if (!strcmp((enc_num+5), "5")) imlib2_encoding = 4;		
+	    }
+	}
+      if (imlib2_encoding == 255)
+	{
+	  /* Still not initialized - try to guess from LANG variable */
+	  if ((lang = getenv("LANG")) != NULL)
+	    {
+	      if (strstr(iso2lang, lang) != NULL) imlib2_encoding = 1;
+	      else if (strstr(iso3lang, lang) != NULL) imlib2_encoding = 2;
+	      else if (strstr(iso4lang, lang) != NULL) imlib2_encoding = 3;
+	      else if (strstr(iso5lang, lang) != NULL) imlib2_encoding = 4;
+	    }
+	}
+      if (imlib2_encoding == 255) { 
+	/* Still not initialized - default to ISO8859-1 */
+	imlib2_encoding = 0;
+      }
+     encoding_initialized = 1;
+    }  
+}

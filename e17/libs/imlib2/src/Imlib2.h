@@ -57,9 +57,20 @@ enum _imlib_load_error
    IMLIB_LOAD_ERROR_UNKNOWN
 };
 
+/* Encodings known to Imlib2 (so far) */
+enum _imlib_TTF_encoding
+{
+   IMLIB_TTF_ENCODING_ISO_8859_1,
+   IMLIB_TTF_ENCODING_ISO_8859_2,
+   IMLIB_TTF_ENCODING_ISO_8859_3,
+   IMLIB_TTF_ENCODING_ISO_8859_4,
+   IMLIB_TTF_ENCODING_ISO_8859_5
+};
+
 typedef enum _imlib_operation Imlib_Operation;
 typedef enum _imlib_load_error Imlib_Load_Error;
 typedef enum _imlib_text_direction Imlib_Text_Direction;
+typedef enum _imlib_TTF_encoding Imlib_TTF_Encoding;
 
 struct _imlib_border
 {
@@ -106,6 +117,7 @@ extern "C"
    void imlib_context_set_progress_granularity(char progress_granularity);
    void imlib_context_set_image(Imlib_Image image);
    void imlib_context_set_cliprect(int x, int y, int w, int h);
+   void imlib_context_set_TTF_encoding(Imlib_TTF_Encoding encoding);
 
 /* context getting */
 #ifndef X_DISPLAY_MISSING
@@ -131,6 +143,7 @@ extern "C"
    char imlib_context_get_progress_granularity(void);
    Imlib_Image imlib_context_get_image(void);
    void imlib_context_get_cliprect(int *x, int *y, int *w, int *h);
+   Imlib_TTF_Encoding imlib_context_get_TTF_encoding(void);
 
    int imlib_get_cache_size(void);
    void imlib_set_cache_size(int bytes);

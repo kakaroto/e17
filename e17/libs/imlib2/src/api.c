@@ -97,6 +97,7 @@ static char ctxt_progress_granularity = 0;
 static char ctxt_dither_mask = 0;
 static Imlib_Filter ctxt_filter = NULL;
 static Imlib_Rectangle ctxt_cliprect = { 0, 0, 0, 0 };
+static Imlib_TTF_Encoding ctxt_encoding = IMLIB_TTF_ENCODING_ISO_8859_1;
 
 /* context setting/getting functions */
 
@@ -359,6 +360,19 @@ Imlib_Image
 imlib_context_get_image(void)
 {
    return ctxt_image;
+}
+
+void 
+imlib_context_set_TTF_encoding(Imlib_TTF_Encoding encoding) 
+{
+  ctxt_encoding = encoding;
+  __imlib_set_TTF_encoding(encoding);
+}
+
+Imlib_TTF_Encoding 
+imlib_context_get_TTF_encoding(void) 
+{
+  return ctxt_encoding;
 }
 
 /* imlib api */
