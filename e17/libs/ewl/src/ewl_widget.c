@@ -720,6 +720,7 @@ void __ewl_widget_theme_update(Ewl_Widget * w, void *ev_data, void *user_data)
 	int             p_l = 0, p_r = 0, p_t = 0, p_b = 0;
 	char           *i = NULL;
 	char           *key = NULL;
+	char           *group = NULL;
 	double          width, height;
 	Ewl_Embed      *emb = NULL;
 
@@ -753,16 +754,20 @@ void __ewl_widget_theme_update(Ewl_Widget * w, void *ev_data, void *user_data)
 	 * Calculate the length of the base key string, then allocate
 	 * the memory for it plus room for placing /visible at the end.
 	 */
-	len = strlen(w->appearance) + 6;
+	len = strlen(w->appearance) + 7;
 	key = NEW(char, len);
 
 	/*
 	 * Retrieve the path to the theme file that will be loaded
-	 * return if no file to be loaded.
+	 * return if no file to be loaded. Also get the group name in the
+	 * theme file.
 	 */
-	snprintf(key, len, "%s/base", w->appearance);
-
+	snprintf(key, len, "%s/file", w->appearance);
 	i = ewl_theme_image_get(w, key);
+
+	snprintf(key, len, "%s/group", w->appearance);
+	group = ewl_theme_data_get_str(w, key);
+
 	FREE(key);
 
 	if (i) {
@@ -774,8 +779,9 @@ void __ewl_widget_theme_update(Ewl_Widget * w, void *ev_data, void *user_data)
 		 * Load the theme object
 		 */
 		w->theme_object = edje_object_add(emb->evas);
-		edje_object_file_set(w->theme_object, i, "EWL");
+		edje_object_file_set(w->theme_object, i, group);
 		FREE(i);
+		IF_FREE(group);
 	}
 
 	/*
