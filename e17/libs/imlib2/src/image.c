@@ -237,8 +237,12 @@ __imlib_CurrentCacheSize(void)
 	  {
 	     if (!(IMAGE_IS_VALID(im)))
 	       {
-		  __imlib_RemoveImageFromCache(im);
-		  __imlib_ConsumeImage(im);
+                  ImlibImage *tmp_im = im;
+
+                  im = im->next;
+		  __imlib_RemoveImageFromCache(tmp_im);
+		  __imlib_ConsumeImage(tmp_im);
+                  continue;
 	       }
 	     /* it's valid but has 0 ref's - append to cache size count */
 	     else
@@ -256,8 +260,12 @@ __imlib_CurrentCacheSize(void)
 	     /* if the image is invalid */
 	     if (!(IMAGE_IS_VALID(ip->image)))
 	       {
-		  __imlib_RemoveImagePixmapFromCache(ip);
-		  __imlib_ConsumeImagePixmap(ip);
+                  ImlibImagePixmap *tmp_ip = ip;
+
+                  ip = ip->next;
+		  __imlib_RemoveImagePixmapFromCache(tmp_ip);
+		  __imlib_ConsumeImagePixmap(tmp_ip);
+                  continue;
 	       }
 	     else
 	       {
