@@ -2950,3 +2950,13 @@ Tue Jan 15 15:22:06 EST 2002
 Fixed a whole slew of potential buffer overflows, hopefully including
 the one recently posted to BUGTRAQ.
 
+_______________________________________________
+
+Mon Mar 31 15:20:43 EST 2003
+(KainX)
+
+Finally got around to fixing the build.  Having Imlib2 already installed
+should no longer be necessary to build it.
+
+_______________________________________________
+

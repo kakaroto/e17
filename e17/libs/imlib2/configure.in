@@ -124,8 +124,6 @@ echo "ftp://ftp.enlightenment.org/pub/enlightenment/"
 echo "ftp://www.rasterman.com/pub/enlightenment/"
 echo "You can also obtain it from:"
 echo "http://www.freetype.org/"
-echo "You can obtain some truetype fonts from:"
-echo "http://voyager.cns.ohiou.edu/~sadkins/web_library/fonts/font_archive/"
 echo ""
 AC_MSG_ERROR([Fatal Error: no FreeType detected.])], -lm)
 
