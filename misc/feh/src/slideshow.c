@@ -20,6 +20,8 @@
 
 #include "feh.h"
 
+static int actual_file_num=0;
+
 void
 init_slideshow_mode (void)
 {
@@ -28,6 +30,8 @@ init_slideshow_mode (void)
   char *s = NULL;
 
   D (("In init_slideshow_mode\n"));
+
+  actual_file_num=file_num;
 
   for (opt.cur_slide = 0; opt.cur_slide < file_num; opt.cur_slide++)
     {
@@ -41,7 +45,7 @@ init_slideshow_mode (void)
 	  break;
 	}
       else
-	free (s);
+	  free (s);
     }
   if (!success)
     {
@@ -56,6 +60,11 @@ slideshow_change_image (winwidget winwid, int change)
   int i;
   int success = 0;
 
+  D(("In slideshow_change_image\n"));
+  
+  if(actual_file_num<2)
+	return;
+  
   /* Ok. I do this in such an odd way to ensure that if the last or first
    * image is not loadable, it will go through in the right direction to
    * find the correct one. Otherwise SLIDE_LAST would try the last file,
@@ -146,7 +155,8 @@ slideshow_create_name (char *filename)
     {
       fprintf (stderr, "Out of memory. Blargh.\n");
     }
-  snprintf (s, len, PACKAGE " [slideshow mode] - %s", filename);
+  snprintf (s, len, PACKAGE " [%d of %d] - %s", opt.cur_slide + 1,
+	    file_num, filename);
   return s;
 }
 
@@ -180,7 +190,8 @@ handle_keypress_event (XEvent * ev, Window win)
     case XK_Delete:
       /* I could do with some confirmation here */
       unlink (files[opt.cur_slide]);
-      files[opt.cur_slide]=NULL;
+      files[opt.cur_slide] = NULL;
+      actual_file_num--;
       slideshow_change_image (winwid, SLIDE_NEXT);
       break;
     case XK_Home:

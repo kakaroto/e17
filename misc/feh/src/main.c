@@ -62,7 +62,8 @@ main_loop (void)
 
   D (("In main_loop, window_num is %d\n", window_num));
   if (window_num == 0)
-    exit (0);
+	exit (0);
+
   for (;;)
     {
       XFlush (disp);

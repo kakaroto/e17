@@ -41,6 +41,15 @@ add_file_to_filelist_recursively (char *path, unsigned char enough)
 
   D (("In add_file_to_filelist_recursively file is %s\n", path));
 
+  if (!enough)
+    {
+      /* First time through, sort out pathname */
+      int len = 0;
+      len = strlen (path);
+      if (path[len - 1] == '/')
+	path[len - 1] = '\0';
+    }
+
   if (stat (path, &st))
     {
       fprintf (stderr, PACKAGE " - file %s does not exist\n", path);

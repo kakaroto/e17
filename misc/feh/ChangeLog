@@ -1,3 +1,13 @@
+Mon Dec 20 12:53:28 1999  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
+
+	* Hehe. I like slideshow mode so much its now the default :)
+	Having multiple images pop up one-per-window can be quite evil, so
+	Slideshow mode is prefered. To open multiple images
+	one-per-window, you now need to specify -w or -multiwindow.
+	* I also fixed a couple of things, lowered slideshow overhead,
+	tightened up the main loop somewhat, and a coupla things really
+	late last night which I can't remember ;-)
+
 Sun Dec 19 22:06:43 1999  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
 
 	* For packaging reasons, I have changed the scripts to run feh in

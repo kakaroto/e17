@@ -72,14 +72,14 @@ init_index_mode (void)
   else
     title_fn = imlib_load_font ("20thcent/24");
 
-  imlib_context_set_font (fn);
-  imlib_context_set_direction (IMLIB_TEXT_TO_RIGHT);
-  imlib_context_set_color (255, 255, 255, 255);
   if ((!fn) || (!title_fn))
     {
       fprintf (stderr, "Error loading font\n");
       exit (1);
     }
+  imlib_context_set_font (fn);
+  imlib_context_set_direction (IMLIB_TEXT_TO_RIGHT);
+  imlib_context_set_color (255, 255, 255, 255);
 
   /* Use bg image dimensions for default size */
   if (opt.bg && opt.bg_file)
@@ -280,7 +280,7 @@ init_index_mode (void)
 	  imlib_blend_image_onto_image (im_temp, 0, 0, 0, ww, hh, xxx, yyy,
 					www, hhh);
 	  /* Now draw on the info text */
-	  D (("Drawing test at %d,%d\n", x, y + opt.thumb_h + 2));
+	  D (("Drawing at %d,%d\n", x, y + opt.thumb_h + 10));
 	  imlib_text_draw (x, y + opt.thumb_h + 10,
 			   chop_file_from_full_path (files[i]));
 	  imlib_text_draw (x, y + opt.thumb_h + 20,

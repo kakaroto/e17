@@ -34,11 +34,11 @@ init_parse_options (int argc, char **argv)
   cmdargv = argv;
 
   /* Set default options */
-  opt.multiwindow = 1;
+  opt.multiwindow = 0;
   opt.montage = 0;
   opt.index = 0;
   opt.thumbs = 0;
-  opt.slideshow = 0;
+  opt.slideshow = 1;
   opt.recursive = 0;
   opt.output = 0;
   opt.output_file = NULL;
@@ -82,9 +82,12 @@ init_parse_options (int argc, char **argv)
       else if ((!strcmp (argv[i], "--ignoreaspect"))
 	       || (!strcmp (argv[i], "-A")))
 	opt.aspect = 0;
-      else if ((!strcmp (argv[i], "--slideshow"))
-	       || (!strcmp (argv[i], "-S")))
-	opt.slideshow = 1;
+      else if ((!strcmp (argv[i], "--multiwindow"))
+	       || (!strcmp (argv[i], "-w")))
+      {
+	  opt.slideshow = 0;
+	  opt.multiwindow=1;
+      }
       else if ((!strcmp (argv[i], "--recursive"))
 	       || (!strcmp (argv[i], "-r")))
 	opt.recursive = 1;
@@ -150,35 +153,6 @@ init_parse_options (int argc, char **argv)
 static void
 check_options (void)
 {
-  if (opt.slideshow)
-    {
-      if (opt.montage || opt.index)
-	{
-	  fprintf (stderr,
-		   PACKAGE
-		   " - you can't use slideshow mode in conjunction with montage\n"
-		   "   or index mode. Slideshow mode has been disabled\n");
-	  opt.slideshow = 0;
-	}
-      else if (opt.output)
-	{
-	  fprintf (stderr,
-		   PACKAGE
-		   " - Slideshow mode does not create any output, so use of -o or -O\n"
-		   "   is unecessary and has been disabled\n");
-	  opt.output = 0;
-	}
-    }
-
-  if (opt.slideshow && opt.alpha)
-    {
-      fprintf (stderr,
-	       PACKAGE
-	       " - you can't use slideshow mode in conjunction with an alpha\n"
-	       "   setting. Use of alpha has been disabled\n");
-      opt.alpha = 0;
-    }
-
   if (opt.montage && opt.index)
     {
       fprintf (stderr,
@@ -232,12 +206,9 @@ show_usage (void)
 	   "  -V, --verbose             output useful information, progress bars, etc\n"
 	   "  -r, --recursive           Recursively expand any directories in FILE to\n"
 	   "                            the content of those directories. (Take it easy)\n"
-	   "  -S, --slideshow           Enable slideshow mode. With this setting, instead\n"
-	   "                            of opening multiple windows for multiple image\n"
-	   "                            files, one window will be opened. Press mouse\n"
-	   "                            button one to flick through the images.\n"
-	   "                            When in slideshow mode, certain keys perform\n"
-	   "                            actions. See SLIDESHOW KEYS for more information\n"
+	   "  -w, --multiwindow         Disable slideshow mode. With this setting,\n"
+	   "                            instead of opening multiple files in slideshow\n"
+	   "                            mode, multiple windows will be opened.\n"
 	   "  -P, --noprogressive       Disable progressive loading and display of images\n"
 	   "  -m, --montage             Enable montage mode. Montage mode creates a new\n"
 	   "                            image consisting of a grid of thumbnails of the\n"
@@ -287,6 +258,7 @@ show_usage (void)
 	   "     --title-font FONT      Use FONT to print a title on the index, if no\n"
 	   "                            font is specified, a title will not be printed\n"
 	   " SLIDESHOW KEYS\n"
+	   " The default mode for viewing mulitple images is Slideshow mode\n"
 	   " When viewing a slideshow, the following keys may be used:\n"
 	   " p, P, <BACKSPACE>, <LEFT>  Goto previous slide\n"
 	   " n, N, <SPACE>, <RIGHT>     Goto next slide\n"

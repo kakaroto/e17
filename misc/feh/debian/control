@@ -8,6 +8,6 @@ Package: feh
 Architecture: any
 Depends: ${shlibs:Depends}
 Description: feh, the image viewer
- feh is Tom Glibret's most awesome image viewer based on the world
+ feh is Tom Gilbert's most awesome image viewer based on the world
  famous imlib2 imaging library. feh includes a free starter pr0n
  kit!
