@@ -388,6 +388,24 @@ collections
 		    rel1
 		    {
 			relative, 0.0 0.0;
+			offset, -64 0;
+			to, "bg";
+		    }
+		    rel2
+		    {
+			relative, 0.0 1.0;
+			offset, 0 0;
+			to, "bg";
+		    }
+		    color, 255 255 255 32;
+		}
+		description
+		{
+		    state, "visible" 0.0;
+		    visible, 1;
+		    rel1
+		    {
+			relative, 0.0 0.0;
 			offset, 0 0;
 			to, "bg";
 		    }
@@ -475,27 +493,6 @@ collections
 		description
 		{
 		    state, "default" 0.0;
-		    visible, 1;
-		    rel1
-		    {
-			relative, 0.0 0.0;
-			offset, 0 0;
-			to, "PanelClip";
-		    }
-		    rel2
-		    {
-			relative, 0.0 1.0;
-			offset, 0 0;
-			to, "PanelClip";
-		    }
-		    image 
-		    {
-			normal, "panel.png";
-		    }
-		}
-		description
-		{
-		    state, "visible" 0.0;
 		    visible, 1;
 		    rel1
 		    {
@@ -1389,6 +1386,7 @@ collections
 		name, "EnticeThumbnailArea";
 		type, RECT;
 		mouse_events, 0;
+		clip_to, "PanelClip";
 		description
 		{
 		    state, "default" 0.0;
@@ -1401,26 +1399,8 @@ collections
 		    }
 		    rel2
 		    {
-			relative, 1.0 1.0;
-			offset, -15 -40;
-			to, "Panel";
-		    }
-		    color, 0 0 0 0;
-		}
-		description
-		{
-		    state, "visible" 0.0;
-		    visible, 1;
-		    rel1
-		    {
-			relative, 0.0 0.0;
-			offset, 4 40;
-			to, "Panel";
-		    }
-		    rel2
-		    {
-			relative, 1.0 1.0;
-			offset, -15 -40;
+			relative, 0.0 1.0;
+			offset, 50 -40;
 			to, "Panel";
 		    }
 		    color, 0 0 0 0;
@@ -1546,8 +1526,7 @@ collections
 		source, "PanelMouseArea";
 		action, STATE_SET "visible" 0.0;
 		transition, ACCELERATE 0.3;
-		target, "Panel";
-		target, "EnticeThumbnailArea";
+		target, "PanelClip";
 	    }
 	    program
 	    {
@@ -1565,8 +1544,7 @@ collections
 		source, "bg";
 		action, STATE_SET "default" 0.0;
 		transition, DECELERATE 0.75;
-		target, "Panel";
-		target, "EnticeThumbnailArea";
+		target, "PanelClip";
 		target, "Buttons";
 	    }
 	    program
