@@ -6,3 +6,4 @@ config.log
 config.status
 Makefile
 e16-theme-*.tar.gz
+*.etheme

@@ -1,6 +1,7 @@
 
 ethemedir = $(datadir)/themes
 
+BUILT_SOURCES = @THEME@.etheme
 EXTRA_DIST = etheme-@THEME@.spec @THEME_FILES@
 
 THEME_DIR = $(DESTDIR)$(ENLIGHTENMENT_ROOT)/themes/@THEME@
@@ -18,9 +19,7 @@ uninstall-local:
 			rm -f `tar -tf -` 2>/dev/null); \
 	done
 
-untar:
-	mkdir -p files
-	tar -xzvf @THEME@.etheme -C files
-
-dotar:
-	tar -czvf @THEME@.etheme -C files *
+.PHONY: etheme @THEME@.etheme
+etheme: @THEME@.etheme
+@THEME@.etheme:
+	test ! -d data || (cd data; tar -czvf ../@THEME@.etheme --exclude CVS *)
