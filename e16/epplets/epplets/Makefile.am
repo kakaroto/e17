@@ -4,7 +4,8 @@ bindir = $(EBIN)
 
 bin_PROGRAMS = E-Load.epplet E-Clock.epplet E-Time.epplet E-Net.epplet \
 E-Cpu.epplet EppletTest.epplet E-Biff.epplet E-Power.epplet Emix.epplet \
-E-MemWatch.epplet E-Disk.epplet E-Areas.epplet EppletConfigTest.epplet
+E-MemWatch.epplet E-Disk.epplet E-Areas.epplet EppletConfigTest.epplet \
+E-NetFlame.epplet
 
 E_Load_epplet_SOURCES = E-Load.c
 E_Load_epplet_DEPENDENCIES = $(top_srcdir)/api/libepplet.la
@@ -25,6 +26,10 @@ E_Areas_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
 E_Net_epplet_SOURCES = E-Net.c
 E_Net_epplet_DEPENDENCIES = $(top_srcdir)/api/libepplet.la
 E_Net_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
+
+E_NetFlame_epplet_SOURCES = E-NetFlame.c
+E_NetFlame_epplet_DEPENDENCIES = $(top_srcdir)/api/libepplet.la
+E_NetFlame_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
 
 E_Cpu_epplet_SOURCES = E-Cpu.c
 E_Cpu_epplet_DEPENDENCIES = $(top_srcdir)/api/libepplet.la
@@ -69,11 +74,12 @@ ABOUT_DOCS = \
 E-Cpu.ABOUT/MAIN E-Cpu.ABOUT/bg.png E-Cpu.ABOUT/aircut3.ttf \
 E-Clock.ABOUT/MAIN E-Clock.ABOUT/bg.png E-Clock.ABOUT/aircut3.ttf \
 E-Power.ABOUT/MAIN E-Power.ABOUT/bg.png E-Power.ABOUT/aircut3.ttf \
+E-NetFlame.ABOUT/MAIN E-NetFlame.ABOUT/bg.png E-NetFlame.ABOUT/aircut3.ttf \
 Emix.ABOUT/MAIN Emix.ABOUT/bg.png Emix.ABOUT/aircut3.ttf
 
 ICONS = \
 E-Load.icon E-Clock.icon E-Net.icon E-Cpu.icon E-Power.icon E-Biff.icon \
-Emix.icon
+Emix.icon E-NetFlame.icon
 
 IMAGES =\
 E-Clock-Image.png E-Power-Bat-0.png E-Power-Bat-10.png E-Power-Bat-20.png \
