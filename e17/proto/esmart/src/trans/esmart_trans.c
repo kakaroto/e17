@@ -33,13 +33,14 @@ static void _esmart_trans_x11_clip_unset(Evas_Object *o);
 static Evas_Object *
 _esmart_trans_x11_pixmap_get(Evas *evas, Evas_Object *old, int x, int y, int w, int h)
 {
-   int            ret;
+   int            ret, current_desk;
    unsigned char  *data;
    Evas_Object    *new = NULL;
    Ecore_X_Pixmap p;
-   Ecore_X_Atom   x_pixmap;
+   Ecore_X_Atom   x_pixmap, x_window, x_cardinal;
    Ecore_X_Atom   rootpmap, rootcolor;
-   Ecore_X_Window root, *root_list;
+   Ecore_X_Atom   x_virtual_roots, x_current_desktop;
+   Ecore_X_Window root, *root_list = NULL;
    int            offscreen = 0;
 
    int            ox = 0, oy = 0;
@@ -50,11 +51,43 @@ _esmart_trans_x11_pixmap_get(Evas *evas, Evas_Object *old, int x, int y, int w, 
    x_pixmap = ecore_x_atom_get("PIXMAP");
    rootpmap = ecore_x_atom_get("_XROOTPMAP_ID");
    rootcolor = ecore_x_atom_get("_XROOTCOLOR_PIXEL");
+   x_window = ecore_x_atom_get("WINDOW");
+   x_cardinal = ecore_x_atom_get("CARDINAL");
+   x_virtual_roots = ecore_x_atom_get("_NET_VIRTUAL_ROOTS");
+   x_current_desktop = ecore_x_atom_get("_NET_CURRENT_DESKTOP");
+   
    root_list = ecore_x_window_root_list(&ret);
+
    if(ret)
       root = *root_list;
    else
-      root = 0; /* Paranoid */
+      root = 0;
+
+   /* Attempt to find the current virtual desktop using NetWM properties */
+   if (ecore_x_window_prop_property_get(root, x_current_desktop, 
+                                        x_cardinal,
+                                        32, &data, &ret))
+   {
+      current_desk = *((int *) data);
+      free (data);
+      if (ecore_x_window_prop_property_get(root, x_virtual_roots, x_window,
+                                           32, &data, &ret))
+      {
+         if (root_list)
+            free(root_list);
+         root_list = (Ecore_X_Window *) data;
+         root = root_list[current_desk];
+         free (root_list);
+      }
+      else
+      {
+         /* Fall back to root list provided by Xlib */
+         if (root_list)
+            root = root_list[current_desk];
+         else
+            root = 0; /* Hopefully this never happens */
+      }
+   }
 
    if (rootpmap)
    {
