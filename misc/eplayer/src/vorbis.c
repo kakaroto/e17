@@ -3,6 +3,7 @@
 #include <vorbis/vorbisfile.h>
 #include <ao/ao.h>
 #include <sys/ioctl.h>
+#include <assert.h>
 #include "eplayer.h"
 #include "vorbis.h"
 
@@ -28,13 +29,12 @@ int play_loop(void *udata) {
 		ao_play (device, pcmout, buff_len);
 		update_time(player);
 		return 1;
+	} else { /* move to the next track */
+		edje_object_signal_emit(player->gui.edje,
+	                            "PLAY_NEXT", "next_button");
 	}
 		
-	/* This sucks ass, but look for another file here....... THIS IS A BAD THING! */
-	player->playlist->cur_item = player->playlist->cur_item->next;
-	open_track(player);
-
-	return 1;
+	return 0;
 }
 
 int update_time(ePlayer *player) {
@@ -98,9 +98,17 @@ static int setup_ao(PlayListItem *current) {
 	return 1;
 }
 
+/**
+ * Opens the current track and prepares libao for playing.
+ *
+ * @param player
+ */
 void open_track(ePlayer *player) {
-	PlayListItem *pli = player->playlist->cur_item->data;
+	PlayListItem *pli;;
 	FILE *fp;
+
+	assert(player->playlist->cur_item);
+	pli = player->playlist->cur_item->data;
 
 	ov_clear(&current_track);
 

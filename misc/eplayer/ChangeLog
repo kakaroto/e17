@@ -8,6 +8,10 @@ $Id$
         * code cleanup
         * configure.ac, Makefile.am etc: implemented install and
           dist targets
+        * src/playlist.c: Fixed a potential segfault
+        * src/vorbis.c: Fixed a segfault that occurred when
+          play_loop() called open_track() with player->cur_item
+          being NULL
 
 2003-10-15 Tilman Sauerbeck <tilman@code-monkey.de>
         * data/eplayer.edc: Added basic playlist support,

@@ -14,7 +14,7 @@
 static int is_dir (const char *dir) {
 	struct stat st;
 
-	if (stat(dir, &st) != 0)
+	if (stat(dir, &st))
 		return 0;
 
 	return (S_ISDIR(st.st_mode));
@@ -162,6 +162,25 @@ void playlist_remove_all(PlayList *pl) {
 }
 
 /**
+ * Appends a list with PlayListItems to a PlayList.
+ *
+ * @param pl
+ * @param list
+ */
+static void playlist_append_list(PlayList *pl, Evas_List *list) {
+	if (!pl || !list)
+		return;
+	
+	if (!pl->items)
+		pl->items = list;
+	else {
+		pl->items->last->next = list;
+		list->prev = pl->items->last;
+		pl->items->last = list->last;
+	}
+}
+
+/**
  * Frees a PlayList object.
  *
  * @param pl The PlayList to free.
@@ -214,9 +233,6 @@ int playlist_load_dir(PlayList *pl, const char *path, int append) {
 	if (!pl || !(dir = opendir(path)))
 		return 0;
 
-	if (!append)
-		playlist_remove_all(pl);
-
 	/* ignore "." and ".." */
 	while ((entry = readdir(dir))
 	       && (!strcmp(entry->d_name, ".")
@@ -232,18 +248,16 @@ int playlist_load_dir(PlayList *pl, const char *path, int append) {
 
 	closedir(dir);
 
-	if (!append) {
-		pl->items = evas_list_reverse(tmp);
+	tmp = evas_list_reverse(tmp);
+	
+	if (append)
+		playlist_append_list(pl, tmp);
+	else {
+		playlist_remove_all(pl);
+		pl->items = tmp;
 		pl->cur_item = pl->items;
-		return 1;
 	}
 	
-	/* append the temporary list */
-	tmp = evas_list_reverse(tmp);
-	pl->items->last->next = tmp;
-	tmp->prev = pl->items->last;
-	pl->items->last = tmp->last;
-
 	return 1;
 }
 
@@ -268,9 +282,6 @@ int playlist_load_m3u(PlayList *pl, const char *file, int append) {
 	ptr = strrchr(dir, '/');
 	*ptr = 0;
 
-	if (!append)
-		playlist_remove_all(pl);
-
 	while (fgets (buf, sizeof (buf), fp)) {
 		if (!(ptr = strstrip(buf)) || !*ptr || *ptr == '#')
 			continue;
@@ -288,19 +299,14 @@ int playlist_load_m3u(PlayList *pl, const char *file, int append) {
 	fclose(fp);
 	free(dir);
 
-	if (!append) {
-		pl->items = evas_list_reverse(tmp);
+	tmp = evas_list_reverse(tmp);
+	
+	if (append)
+		playlist_append_list(pl, tmp);
+	else {
+		playlist_remove_all(pl);
+		pl->items = tmp;
 		pl->cur_item = pl->items;
-		return 1;
-	}
-
-	if (!pl->items)
-		pl->items = evas_list_reverse(tmp);
-	else { /* append the temporary list */
-		tmp = evas_list_reverse(tmp);
-		pl->items->last->next = tmp;
-		tmp->prev = pl->items->last;
-		pl->items->last = tmp->last;
 	}
 	
 	return 1;
