@@ -1778,7 +1778,11 @@ FreeEwin(EWin * ewin)
           }
      }
    if (ewin == mode.focuswin)
+#if 0                           /* Clean up if OK -- Remove FocusToNone */
       FocusToNone();
+#else
+      FocusToEWin(NULL);
+#endif
 
    if (ewin->pager)
       PagerKill(ewin->pager);

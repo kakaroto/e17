@@ -1916,7 +1916,10 @@ void                GetNextFocusEwin(void);
 void                GetPrevFocusEwin(void);
 void                FixFocus(void);
 void                FocusToEWin(EWin * ewin);
+
+#if 0                           /* Clean up if OK -- Remove FocusToNone */
 void                FocusToNone(void);
+#endif
 void                BeginNewDeskFocus(void);
 void                NewDeskFocus(void);
 
@@ -2281,7 +2284,7 @@ void                EWMH_SetDesktopSize(void);
 void                EWMH_SetCurrentDesktop(void);
 void                EWMH_SetDesktopViewport(void);
 void                EWMH_SetClientList(void);
-void                EWMH_SetActiveWindow(void);
+void                EWMH_SetActiveWindow(const EWin * ewin);
 void                EWMH_SetWindowDesktop(const EWin * ewin);
 void                EWMH_SetWindowState(const EWin * ewin);
 void                EWMH_GetWindowDesktop(EWin * ewin);
@@ -2299,7 +2302,7 @@ void                HintsSetViewportConfig(void);
 void                HintsSetCurrentDesktop(void);
 void                HintsSetDesktopViewport(void);
 void                HintsSetClientList(void);
-void                HintsSetActiveWindow(void);
+void                HintsSetActiveWindow(EWin * ewin);
 void                HintsSetWindowDesktop(EWin * ewin);
 void                HintsSetWindowArea(EWin * ewin);
 void                HintsSetWindowState(EWin * ewin);

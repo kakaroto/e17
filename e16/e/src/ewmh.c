@@ -414,14 +414,12 @@ EWMH_SetClientList(void)
 }
 
 void
-EWMH_SetActiveWindow(void)
+EWMH_SetActiveWindow(const EWin * ewin)
 {
    static Window       win_last_set;
-   EWin               *ewin;
    Window              win;
 
    EDBUG(6, "EWMH_SetActiveWindow");
-   ewin = GetFocusEwin();
    win = (ewin) ? ewin->client.win : None;
    if (win != win_last_set)
      {

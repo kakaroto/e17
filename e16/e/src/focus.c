@@ -257,7 +257,6 @@ FocusToEWin(EWin * ewin)
      {
         if (!mode.cur_menu_mode)
            mode.context_ewin = ewin;
-        HintsSetActiveWindow();
         EDBUG_RETURN_;
      }
    /* Never focus a window that's not on the current desktop.  That's just dumb. -- mej */
@@ -277,7 +276,6 @@ FocusToEWin(EWin * ewin)
           }
         if (!mode.cur_menu_mode)
            mode.context_ewin = ewin;
-        HintsSetActiveWindow();
         EDBUG_RETURN_;
      }
    mode.windowdestroy = 0;
@@ -296,11 +294,10 @@ FocusToEWin(EWin * ewin)
      }
    if (!ewin)
      {
-        XSetInputFocus(disp, root.win, RevertToPointerRoot, CurrentTime);
         mode.focuswin = NULL;
         mode.realfocuswin = NULL;
         mode.context_ewin = NULL;
-        HintsSetActiveWindow();
+        ICCCM_Focus(NULL);
         EDBUG_RETURN_;
      }
    else if (!ewin->menu)
@@ -357,7 +354,6 @@ FocusToEWin(EWin * ewin)
    if (mode.focuswin)
       DoIn("REVERSE_FOCUS_TIMEOUT", 0.5, ReverseTimeout,
            mode.focuswin->client.win, NULL);
-   HintsSetActiveWindow();
    EDBUG_RETURN_;
 }
 
@@ -506,8 +502,7 @@ NewDeskFocus(void)
                        && (ewin->desktop == desks.current)))
                     {
                        ICCCM_Focus(ewin);
-                       Efree(lst);
-                       EDBUG_RETURN_;
+                       break;
                     }
                }
              Efree(lst);
@@ -516,6 +511,7 @@ NewDeskFocus(void)
    EDBUG_RETURN_;
 }
 
+#if 0                           /* Clean up if OK -- Remove FocusToNone */
 void
 FocusToNone(void)
 {
@@ -543,3 +539,4 @@ FocusToNone(void)
    mode.realfocuswin = NULL;
    EDBUG_RETURN_;
 }
+#endif

@@ -508,6 +508,7 @@ ICCCM_Focus(EWin * ewin)
    if (!ewin)
      {
         XSetInputFocus(disp, root.win, RevertToPointerRoot, CurrentTime);
+        HintsSetActiveWindow(ewin);
         EDBUG_RETURN_;
      }
    if (ewin->menu)
@@ -543,6 +544,7 @@ ICCCM_Focus(EWin * ewin)
      }
 /*   else */
    XSetInputFocus(disp, ewin->client.win, RevertToPointerRoot, CurrentTime);
+   HintsSetActiveWindow(ewin);
    EDBUG_RETURN_;
 }
 

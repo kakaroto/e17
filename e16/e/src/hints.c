@@ -122,7 +122,7 @@ HintsSetDesktopViewport(void)
 }
 
 void
-HintsSetActiveWindow(void)
+HintsSetActiveWindow(EWin * ewin)
 {
    EDBUG(6, "HintsSetActiveWindow");
 #if ENABLE_KDE
@@ -130,7 +130,7 @@ HintsSetActiveWindow(void)
       KDE_UpdateFocusedWindow();
 #endif
 #if ENABLE_EWMH
-   EWMH_SetActiveWindow();
+   EWMH_SetActiveWindow(ewin);
 #endif
    EDBUG_RETURN_;
 }
