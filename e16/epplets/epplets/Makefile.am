@@ -10,10 +10,12 @@ E_Mixer_ldflags = -rpath $(libdir):$(pkglibdir)
 endif
 
 bin_PROGRAMS = E-Load.epplet E-Clock.epplet E-Time.epplet E-Net.epplet \
-E-Cpu.epplet E-Biff.epplet E-Power.epplet Emix.epplet \
+E-Cpu.epplet E-Biff.epplet E-Power.epplet Emix.epplet @TEST_PROGS@ \
 E-MemWatch.epplet E-Disk.epplet E-Areas.epplet \
 E-NetFlame.epplet E-Sys.epplet E-ScreenShoot.epplet E-Slides.epplet \
 E-Xss.epplet E-Mountbox.epplet E-Exec.epplet $(E_Mixer_prog) E-SD.epplet
+
+EXTRA_PROGRAMS = EppletTest.epplet EppletConfigTest.epplet
 
 E_Exec_epplet_SOURCES = E-Exec.c
 E_Exec_epplet_DEPENDENCIES = $(top_srcdir)/api/libepplet.la
@@ -58,6 +60,14 @@ E_Cpu_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
 E_Power_epplet_SOURCES = E-Power.c
 E_Power_epplet_DEPENDENCIES = $(top_srcdir)/api/libepplet.la
 E_Power_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
+
+EppletTest_epplet_SOURCES = TestEpplet.c
+EppletTest_epplet_DEPENDENCIES = $(top_srcdir)/api/libepplet.la
+EppletTest_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
+
+EppletConfigTest_epplet_SOURCES = ConfigTestEpplet.c
+EppletConfigTest_epplet_DEPENDENCIES = $(top_srcdir)/api/libepplet.la
+EppletConfigTest_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
 
 E_Biff_epplet_SOURCES = E-Biff.c mbox.c
 E_Biff_epplet_DEPENDENCIES = $(top_srcdir)/api/libepplet.la
