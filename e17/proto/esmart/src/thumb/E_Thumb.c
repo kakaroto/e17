@@ -387,9 +387,9 @@ _e_thumb_resize (Evas_Object * o, Evas_Coord w, Evas_Coord h)
 	  e->w = w;
 	  e->h = h;
 	  if (e->tw > e->th)
-	    hh *= (Evas_Coord) e->th / (Evas_Coord) e->tw;
+	    hh *= (double) e->th / (double) e->tw;
 	  else
-	    ww *= (Evas_Coord) e->tw / (Evas_Coord) e->th;
+	    ww *= (double) e->tw / (double) e->th;
 
 	  evas_object_resize (e->image, ww, hh);
 	  evas_object_image_fill_set (e->image, 0.0, 0.0, ww, hh);
