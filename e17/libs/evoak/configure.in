@@ -1,8 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
 
-echo "Evoak currently does not build due to Edje changes."
-exit -1
-
 # get rid of that stupid cache mechanism
 rm -f config.cache
 
@@ -147,3 +144,17 @@ evoak-config
 ],[
 chmod +x evoak-config
 ])
+
+echo ""
+echo "###################################################"
+echo ""
+echo ""
+echo ""
+echo "Evoak currently does not build due to Edje changes."
+echo ""
+echo ""
+echo ""
+echo "###################################################"
+echo ""
+exit -1
+
