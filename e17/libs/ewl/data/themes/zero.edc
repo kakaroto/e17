@@ -47,8 +47,10 @@ data {
     item, "/hscrollbar/velocity" "5";
     item, "/hseeker/group" "htrough";
     item, "/hseparator/group" "hline";
-    item, "/imenu/group" "dialog";
+    item, "/imenu/group" "menubase";
     item, "/imenu/vbox/menu_base/group" "sub-menu";
+    item, "/menubar/group" "menubar";
+    item, "/menu_base/group" "menubase";
     item, "/menuitem/group" "menuitem";
     item, "/notebook/tab_button/label/font" "vio";
     item, "/notebook/tab_button/label/font_size" "12";

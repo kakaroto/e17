@@ -49,6 +49,7 @@ data {
 	item, "/hseeker/group" "htrough";
 	item, "/hseparator/group" "hline";
 	item, "/imenu/group" "dialog";
+	item, "/menubar/group" "menubar";
 	item, "/menuitem/group" "menuitem";
 	item, "/notebook/tab_button/label/font" "Vera";
 	item, "/notebook/tab_button/label/style" "none";

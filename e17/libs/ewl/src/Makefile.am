@@ -35,6 +35,7 @@ EWLHEADERS = \
 	ewl_imenu.h \
 	ewl_macros.h \
 	ewl_menu.h \
+	ewl_menubar.h \
 	ewl_menu_base.h \
 	ewl_misc.h \
 	ewl_notebook.h \
@@ -91,6 +92,7 @@ EWLSOURCES= \
 	ewl_image.c \
 	ewl_imenu.c \
 	ewl_menu.c \
+	ewl_menubar.c \
 	ewl_menu_base.c \
 	ewl_misc.c \
 	ewl_notebook.c \

@@ -27,6 +27,7 @@ ewl_test_SOURCES		=	ewl_test.h \
 					ewl_image_test.c \
 					ewl_imenu_test.c \
 					ewl_menu_test.c \
+					ewl_menu_bar_test.c \
 					ewl_notebook_test.c \
 					ewl_password_test.c \
 					ewl_progressbar_test.c \
