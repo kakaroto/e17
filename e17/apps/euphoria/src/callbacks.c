@@ -599,7 +599,7 @@ XMMS_CB(playlist_mediainfo) {
 		return;
 	}
 
-	playlist_item_properties_set(pli, hash);
+	playlist_item_properties_set(pli, res);
 
 	/* we need to call this here, too, since the Edje might have been
 	 * created after the playback_currentid callback has been called
@@ -608,8 +608,6 @@ XMMS_CB(playlist_mediainfo) {
 		hilight_current_track(e);
 		ui_fill_track_info(e, pli);
 	}
-
-	xmmsc_result_unref(res);
 }
 
 XMMS_CB(playlist_entry_changed) {

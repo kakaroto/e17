@@ -17,6 +17,7 @@ typedef struct {
 
 	unsigned int id;
 	x_hash_t *properties;
+	xmmsc_result_t *props_res;
 } PlayListItem;
 
 PlayListItem *playlist_item_new(unsigned int id, Evas *evas,
@@ -27,7 +28,7 @@ void playlist_item_free(PlayListItem *pli);
 bool playlist_item_show(PlayListItem *pli);
 void playlist_item_container_set(PlayListItem *pli,
                                  Evas_Object *container);
-void playlist_item_properties_set(PlayListItem *pli, x_hash_t *p);
+void playlist_item_properties_set(PlayListItem *pli, xmmsc_result_t *r);
 
 const char *playlist_item_artist_get(PlayListItem *pli);
 const char *playlist_item_title_get(PlayListItem *pli);

@@ -110,8 +110,10 @@ unsigned int playlist_item_bitrate_get(PlayListItem *pli) {
 void playlist_item_free(PlayListItem *pli) {
 	assert(pli);
 
-	if (pli->properties)
-		xmmsc_playlist_entry_free(pli->properties);
+	if (pli->props_res) {
+		xmmsc_result_unref(pli->props_res);
+		pli->props_res = NULL;
+	}
 
 	if (pli->container && pli->edje)
 		e_container_element_destroy(pli->container, pli->edje);
@@ -146,17 +148,24 @@ static void set_parts_text(PlayListItem *pli) {
 	                          playlist_item_title_get(pli));
 }
 
-void playlist_item_properties_set(PlayListItem *pli, x_hash_t *p) {
-	assert(pli);
-	assert(p);
+void playlist_item_properties_set(PlayListItem *pli, xmmsc_result_t *r) {
+	x_hash_t *hash = NULL;
 
-	if (pli->properties == p)
+	assert(pli);
+	assert(r);
+
+	xmmsc_result_get_mediainfo(r, &hash);
+
+	if (pli->properties == hash)
 		return;
 
-	if (pli->properties)
-		xmmsc_playlist_entry_free(pli->properties);
+	if (pli->props_res) {
+		xmmsc_result_unref(pli->props_res);
+		pli->props_res = NULL;
+	}
 
-	pli->properties = p;
+	pli->properties = hash;
+	pli->props_res = r;
 
 	if (pli->edje)
 		set_parts_text(pli);
