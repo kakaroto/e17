@@ -29,8 +29,9 @@ static void _e_thumb_color_set (Evas_Object * o, int r, int g, int b, int a);
 Evas_Object *
 e_thumb_new (Evas * evas, const char *file)
 {
+  char buf[PATH_MAX];
   Evas_Object *result = NULL;
-  if (file && file[0] == '/')
+  if (file)
     {
       E_Thumb *e = NULL;
       Evas_Smart *s = NULL;
@@ -52,7 +53,10 @@ e_thumb_new (Evas * evas, const char *file)
 
       if ((e = (E_Thumb *) evas_object_smart_data_get (result)))
 	{
-	    if((e->e = epsilon_new(file)))
+	    if(!realpath(file, buf))
+		snprintf(buf, PATH_MAX, "%s", file);
+	    
+	    if((e->e = epsilon_new(buf)))
 	    {
 		if(epsilon_exists(e->e) == EPSILON_FAIL)
 		{
@@ -62,7 +66,6 @@ e_thumb_new (Evas * evas, const char *file)
 		else
 		{
 		    e->image = evas_object_image_add (evas);
-		    epsilon_thumb_file_get(e->e);
 		    evas_object_image_file_set (e->image,
 				epsilon_thumb_file_get(e->e),NULL);
 		if (!evas_object_image_load_error_get (e->image))
