@@ -30,13 +30,13 @@ static int uncompress_file (FILE *fp, int dest)
 		return 0;
 	}
 
-	error = BZ_OK;
-
-	while (error == BZ_OK) {
+	while (1) {
 		bytes = BZ2_bzRead (&error, bf, &outbuf, OUTBUF_SIZE);
 
-		if (error == BZ_OK)
+		if (error == BZ_OK || error == BZ_STREAM_END)
 			write (dest, outbuf, bytes);
+		else
+			break;
 	}
 
 	BZ2_bzReadClose (&error, bf);
