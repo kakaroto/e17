@@ -109,6 +109,9 @@ unsigned int playlist_item_bitrate_get(PlayListItem *pli) {
 void playlist_item_free(PlayListItem *pli) {
 	assert(pli);
 
+	if (pli->properties)
+		xmmsc_playlist_entry_free(pli->properties);
+
 	if (pli->container && pli->edje)
 		e_container_element_destroy(pli->container, pli->edje);
 
@@ -148,6 +151,9 @@ void playlist_item_properties_set(PlayListItem *pli, x_hash_t *p) {
 
 	if (pli->properties == p)
 		return;
+
+	if (pli->properties)
+		xmmsc_playlist_entry_free(pli->properties);
 
 	pli->properties = p;
 
