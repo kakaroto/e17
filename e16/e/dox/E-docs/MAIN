@@ -42,7 +42,8 @@ installed correctly and are either running Enlightenment for the first time or
 have just upgraded to a new version. Congratulations. Now it's time to take
 you on a quick tour of the desktop you will have before you.
 <p>
-Please remember that if you use a theme other than the default (Brushed Metal)
+Please remember that if you use a _theme(themes) other than the default
+(Brushed Metal)
 that is may look slightly or completely different to the contents of this
 User Documenation. Some behavior may also vary.
 <p>
@@ -537,8 +538,21 @@ operations menu.
 <img src=E_border_selector.png x=300 y=40>
 <font face=rothwell/25 color=#ffffff>
 <p>
-Changing the Window Border
+Changing Window Borders
 <font face=aircut3/12 color=#ffffff>
+<p>
+From time to time you may find that you don't like a particular border that a
+window uses, for some reason or another.  You can easily change the border
+style of a window in Enlightenment using the 
+<br>
+_Window_Operations(windowops)
+menu, however.  Select the "Set Border Style" menu, and you will be presented
+with a list of available borders in this theme.  The most common use for this
+is to make an application shed its border, using the BORDERLESS border type.
+<p>
+If you want to remember the
+border style for the next time you run this application, you can always use the
+_Remember(properties) dialog to remember the current window border.
 
 
 
@@ -576,15 +590,15 @@ CTRL+ALT+R - Shade/Unshade the currently focused window
 <br>
 CTRL+ALT+I - Iconify the currently focused window
 <br>
-CTRL+ALT+Tab - Switch focus to the next window
-<br>
 CTRL+ALT+R - Shade/Unshade the currently focused window
 <br>
 CTRL+ALT+S - Stick/Unstick the currently focused window
 <br>
-CTRL+ALT+Enter - Zoom/Unzoom the currently focused window
-<br>
 CTRL+ALT+(F1 - F12) - Go directly to desktops 0 - 11
+<br>
+ALT+Tab - Switch focus to the next window
+<br>
+ALT+Enter - Zoom/Unzoom the currently focused window
 <br>
 <font face=aircut3/12 color=#ffffff>
 (more on next page ...)
@@ -1198,14 +1212,49 @@ enlightenment on your X server, depending on server and configuration.
 
 
 <page columns=1 padding=16 name=focus background=Edoc_bg.png linkcolor=#88dddd>
-<img src=E_focus_settings.png x=320 y=60>
+<img src=E_mouse.png x=410 y=330>
 <font face=rothwell/25 color=#ffffff>
 <p>
 Setting the Focus
 <font face=aircut3/12 color=#ffffff>
 <p>
+<br>
+<br>
+Enlightenment offers lots of different options for focusing windows.  By
+default, it comes up in sloppy focus mode.  There are two other primary focus
+modes supported by enlightenment - click to focus and pointer focus.
+<p>
+Click To Focus most people are familiar with.  You click on a window and it
+receives the focus from enlightenment.
+<p>
+Pointer Focus gives the focus to whichever window the pointer is sitting over
+<p>
+Sloppy Focus is similar to Pointer Focus, except that if you go over the
+_desktop_background(backgrounds) you still are focused on the last window
+<p>
+Next we'll tell you how to change these settings.
 
 
+<page columns=1 padding=16 name=focus2 background=Edoc_bg.png linkcolor=#88dddd>
+<img src=E_focus_settings.png x=320 y=30>
+<font face=aircut3/12 color=#ffffff>
+<p>
+<br>
+<br>
+Enlightenment allows you to change your focus settings at any time.  Simply
+bring up the _Settings(settings) menu and then select "Focus Settings" to bring
+up a dialog that looks something like the one on the right.  At the top, we can
+select between our three focus modes, as described on the previous page.
+<p>
+We can also enable some other features, such as one that will allow a simple
+_mouse(tut5) click to raise any window to the foreground, as well as several
+other advanced focus settings.
+<p>
+Here we can also enable the focuslist feature.  This feature requires Xkb to be
+enabled in your X server.  If you don't have Xkb enabled, please consult your X
+server docs to see how to do this.  The focuslist is a window list that pops up
+as you cycle through your focus using the ALT + TAB<br>
+_Keybinding(tut10) .
 
 
 <page columns=1 padding=16 name=movemode background=Edoc_bg.png linkcolor=#88dddd>
@@ -1225,11 +1274,15 @@ Resizing Windows
 Moving Windows is cool.
 
 <page columns=1 padding=16 name=windowops background=Edoc_bg.png linkcolor=#88dddd>
+<img src=E_app_rightmouse_menu.png x=360 y=40>
 <font face=rothwell/25 color=#ffffff>
 <p>
 The Window Operations Menu
 <p>
 <font face=aircut3/12 color=#ffffff>
+The Window Operations menu is a commonly used menu that allows you to perform
+many different actions onto the current window.  
+
 
 
 <page columns=1 padding=16 name=deskenv background=Edoc_bg.png linkcolor=#88dddd>
