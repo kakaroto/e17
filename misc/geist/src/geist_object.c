@@ -64,7 +64,8 @@ geist_object_free(geist_object * obj)
    D_RETURN_(5);
 }
 
-geist_object_type geist_object_get_type(geist_object * obj)
+geist_object_type
+geist_object_get_type(geist_object * obj)
 {
    return obj->type;
 }
@@ -129,7 +130,7 @@ geist_object_show(geist_object * obj)
 {
    D_ENTER(3);
 
-   obj->visible = TRUE;
+   geist_object_set_state(obj, VISIBLE);
 
    D_RETURN_(3);
 }
@@ -139,7 +140,7 @@ geist_object_hide(geist_object * obj)
 {
    D_ENTER(3);
 
-   obj->visible = FALSE;
+   geist_object_unset_state(obj, VISIBLE);
 
    D_RETURN_(3);
 }
@@ -195,7 +196,8 @@ geist_object_add_to_object_list(geist_object * obj)
    D_RETURN_(3);
 }
 
-Imlib_Image geist_object_get_rendered_image(geist_object * obj)
+Imlib_Image
+geist_object_get_rendered_image(geist_object * obj)
 {
    D_ENTER(5);
 
@@ -203,7 +205,8 @@ Imlib_Image geist_object_get_rendered_image(geist_object * obj)
 }
 
 
-Imlib_Image geist_object_int_get_rendered_image(geist_object * obj)
+Imlib_Image
+geist_object_int_get_rendered_image(geist_object * obj)
 {
    D_ENTER(5);
 
@@ -239,7 +242,7 @@ void
 geist_object_int_render_selected(geist_object * obj, Imlib_Image dest,
                                  unsigned char multiple)
 {
-   D_ENTER(3);
+   D_ENTER(5);
 
    if (multiple)
    {
@@ -319,14 +322,15 @@ geist_object_int_render_selected(geist_object * obj, Imlib_Image dest,
 
    }
 
-   D_RETURN_(3);
+   D_RETURN_(5);
 }
 
-Imlib_Updates geist_object_int_get_selection_updates(geist_object * obj)
+Imlib_Updates
+geist_object_int_get_selection_updates(geist_object * obj)
 {
    Imlib_Updates up = NULL;
 
-   D_ENTER(3);
+   D_ENTER(5);
 
    up =
       imlib_update_append_rect(up, obj->x - HALF_SEL_WIDTH,
@@ -363,11 +367,57 @@ Imlib_Updates geist_object_int_get_selection_updates(geist_object * obj)
                                2 * HALF_SEL_WIDTH, 2 * HALF_SEL_HEIGHT);
 
 
-   D_RETURN(3, up);
+   D_RETURN(5, up);
 }
 
 
-Imlib_Updates geist_object_get_selection_updates(geist_object * obj)
+int
+geist_object_check_resize_click(geist_object * obj, int x, int y)
+{
+   D_ENTER(5);
+
+   if (XY_IN_RECT
+       (x, y, obj->x - HALF_SEL_WIDTH, obj->y - HALF_SEL_HEIGHT,
+        2 * HALF_SEL_WIDTH, 2 * HALF_SEL_HEIGHT))
+      D_RETURN(5, RESIZE_TOPLEFT);
+   if (XY_IN_RECT
+       (x, y, obj->x - HALF_SEL_WIDTH + obj->w, obj->y - HALF_SEL_HEIGHT,
+        2 * HALF_SEL_WIDTH, 2 * HALF_SEL_HEIGHT))
+      D_RETURN(5, RESIZE_TOPRIGHT);
+   if (XY_IN_RECT
+       (x, y, obj->x - HALF_SEL_WIDTH, obj->y - HALF_SEL_HEIGHT + obj->h,
+        2 * HALF_SEL_WIDTH, 2 * HALF_SEL_HEIGHT))
+      D_RETURN(5, RESIZE_BOTTOMLEFT);
+   if (XY_IN_RECT
+       (x, y, obj->x - HALF_SEL_WIDTH + obj->w,
+        obj->y - HALF_SEL_HEIGHT + obj->h, 2 * HALF_SEL_WIDTH,
+        2 * HALF_SEL_HEIGHT))
+      D_RETURN(5, RESIZE_BOTTOMRIGHT);
+   if (XY_IN_RECT
+       (x, y, obj->x - HALF_SEL_WIDTH + (obj->w / 2),
+        obj->y - HALF_SEL_HEIGHT, 2 * HALF_SEL_WIDTH, 2 * HALF_SEL_HEIGHT))
+      D_RETURN(5, RESIZE_TOP);
+   if (XY_IN_RECT
+       (x, y, obj->x - HALF_SEL_WIDTH + obj->w,
+        obj->y - HALF_SEL_HEIGHT + (obj->h / 2), 2 * HALF_SEL_WIDTH,
+        2 * HALF_SEL_HEIGHT))
+      D_RETURN(5, RESIZE_RIGHT);
+   if (XY_IN_RECT
+       (x, y, obj->x - HALF_SEL_WIDTH,
+        obj->y - HALF_SEL_HEIGHT + (obj->h / 2), 2 * HALF_SEL_WIDTH,
+        2 * HALF_SEL_HEIGHT))
+      D_RETURN(5, RESIZE_LEFT);
+   if (XY_IN_RECT
+       (x, y, obj->x - HALF_SEL_WIDTH + (obj->w / 2),
+        obj->y - HALF_SEL_HEIGHT + obj->h, 2 * HALF_SEL_WIDTH,
+        2 * HALF_SEL_HEIGHT))
+      D_RETURN(5, RESIZE_BOTTOM);
+
+   D_RETURN(5, RESIZE_NONE);
+}
+
+Imlib_Updates
+geist_object_get_selection_updates(geist_object * obj)
 {
    D_ENTER(3);
 

@@ -43,7 +43,7 @@
 ((SPANS_COMMON((x), (w), (xx), (ww))) && (SPANS_COMMON((y), (h), (yy), (hh))))
 
 #define HALF_SEL_WIDTH 2
-#define HALF_SEL_HEIGHT 2 
+#define HALF_SEL_HEIGHT 2
 
 #ifndef PACKAGE
 #define PACKAGE "geist"

@@ -11,7 +11,7 @@ geist_text_new(void)
    txt = emalloc(sizeof(geist_text));
    geist_text_init(txt);
 
-   GEIST_OBJECT(txt)->visible = TRUE;
+   geist_object_set_state(GEIST_OBJECT(txt), VISIBLE);
 
    D_RETURN(5, GEIST_OBJECT(txt));
 }
@@ -109,7 +109,7 @@ geist_text_render(geist_object * obj, Imlib_Image dest)
 
    D_ENTER(5);
 
-   if (!obj->visible)
+   if(!geist_object_get_state(obj, VISIBLE))
       D_RETURN_(5);
 
    im = GEIST_TEXT(obj);
@@ -137,7 +137,7 @@ geist_text_render_partial(geist_object * obj, Imlib_Image dest, int x, int y,
 
    D_ENTER(5);
 
-   if (!obj->visible)
+   if(!geist_object_get_state(obj, VISIBLE))
       D_RETURN_(5);
 
    im = GEIST_TEXT(obj);
@@ -261,7 +261,7 @@ geist_text_duplicate(geist_object * obj)
                                txt->a, txt->r, txt->g, txt->b);
    if (ret)
    {
-      ret->visible = obj->visible;
+      ret->state = obj->state;
       GEIST_IMAGE(ret)->alias = txt->alias;
       ret->name =
          g_strjoin(" ", "Copy of", obj->name ? obj->name : "Untitled object",
