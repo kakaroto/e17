@@ -170,6 +170,9 @@ to solves a very common problem efficiently.
 </section>
 
 &imlib_scale;
+&imlib_free_rotate;
+&imlib_90_rotate;
+&imlib_flip;
 
 </chapter>
 

@@ -35,6 +35,9 @@
 
  <!-- imlib2 -->
  <!ENTITY imlib_scale SYSTEM "xml/imlib/imlib_scale.xml">
+ <!ENTITY imlib_free_rotate SYSTEM "xml/imlib/imlib_free_rotate.xml">
+ <!ENTITY imlib_90_rotate SYSTEM "xml/imlib/imlib_90_rotate.xml">
+ <!ENTITY imlib_flip SYSTEM "xml/imlib/imlib_flip.xml">
 ]>
 
 <book>

@@ -1,0 +1,96 @@
+<!--
+#######################################################
+A simple Imlib2 image flipping recipe
+#######################################################
+-->
+<section>
+<sectioninfo>
+  <author>
+    <firstname>dan</firstname>
+    <surname>sinclair</surname>
+    <email>zero@perplexity.org</email>
+    <othername>dj2</othername>
+  </author>
+  <date>06 July 2004</date>
+</sectioninfo>
+
+<title>Recipe: Image Flipping</title>
+
+<para>
+Imlib2 contains functions to do image flipping. This can be done either
+horizontally, vertically or diagonally. This recipe will show how to 
+implement this functionality.
+</para>
+
+<example>
+<title>Image Flipping</title>
+<programlisting>
+#define X_DISPLAY_MISSING
+
+#include &lt;Imlib2.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;stdio.h&gt;
+
+int main(int argc, char ** argv) {
+    Imlib_Image in_img;
+    int dir = 0;
+
+    if (argc != 4) {
+        fprintf(stderr, "Usage: %s [in_img] [dir] [out_img]\n", argv[0]);
+        return 1;
+    }
+
+    in_img = imlib_load_image(argv[1]);
+    if (!in_img) {
+        fprintf(stderr, "Unable to load %s\n", argv[1]);
+        return 1;
+    }
+    imlib_context_set_image(in_img);
+
+    dir = atoi(argv[2]);
+    switch(dir) {
+        case HORIZONTAL:
+            imlib_image_flip_horizontal();
+            break;
+
+        case VERTICAL:
+            imlib_image_flip_vertical();
+            break;
+
+        case DIAGONAL:
+            imlib_image_flip_diagonal();
+            break;
+
+        default:
+            fprintf(stderr, "Unknown value\n");
+            return 1;
+    }
+    imlib_save_image(argv[3]);
+    return 0;
+}
+</programlisting>
+</example>
+<para>
+This example does some minimal argument checking to begin, then loads the input image
+using the <function>imlib_load_image()</function> function, passing the filename to load.
+<function>imlib_load_image()</function> will either return the Imlib_Image object, or
+NULL if the load fails. Once we have the image object we set it as the current context
+image with a call to <function>imlib_context_set_image()</function>. This tells Imlib2 that
+this is the image we want to work with and all Imlib2 operations will work with this image. 
+With the image context setup we decide on the type of flip we want to preform. This is done
+with one of the calls: <function>imlib_image_flip_horizontal()</function>,
+<function>imlib_image_flip_vertical()</function>, and 
+<function>imlib_image_flip_diagonal()</function>. The diagonal flip essentially grabs the
+top left corner and makes it the bottom right corner. The top right becoming the bottom left.
+Once the image is flipped we call <function>imlib_save_image()</function> giving it the 
+new filename and we're done.
+</para>
+
+<para>
+This should give an example of image flipping with Imlib2. It will need enhancements
+before being put into a real app but the base is there.
+</para>
+
+</section>
+
+
