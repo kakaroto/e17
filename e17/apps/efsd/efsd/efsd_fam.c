@@ -340,7 +340,10 @@ void
 efsd_fam_cleanup(void)
 {  
   D_ENTER;
+
   efsd_hash_free(monitors);
+  FAMClose(&famcon);
+
   D_RETURN;
 }
 

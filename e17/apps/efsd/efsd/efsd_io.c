@@ -754,6 +754,7 @@ fill_command(struct iovec *iov, EfsdCommand *ec)
     case EFSD_CMD_STARTMON:
     case EFSD_CMD_STOPMON:
     case EFSD_CMD_STAT:
+    case EFSD_CMD_LSTAT:
     case EFSD_CMD_READLINK:
     case EFSD_CMD_GETFILETYPE:
       n = fill_file_cmd(iov, ec);
@@ -874,6 +875,7 @@ efsd_io_read_command(int sockfd, EfsdCommand *ec)
 	case EFSD_CMD_STARTMON:
 	case EFSD_CMD_STOPMON:
 	case EFSD_CMD_STAT:
+	case EFSD_CMD_LSTAT:
 	case EFSD_CMD_READLINK:
 	case EFSD_CMD_GETFILETYPE:
 	  result = read_file_cmd(sockfd, ec);

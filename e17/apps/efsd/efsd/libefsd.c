@@ -715,6 +715,14 @@ efsd_stat(EfsdConnection *ec, char *filename)
 
 
 EfsdCmdId      
+efsd_lstat(EfsdConnection *ec, char *filename)
+{
+  D_ENTER;
+  D_RETURN_(file_cmd(ec, EFSD_CMD_LSTAT, filename, 0, NULL));
+}
+
+
+EfsdCmdId      
 efsd_readlink(EfsdConnection *ec, char *filename)
 {
   D_ENTER;

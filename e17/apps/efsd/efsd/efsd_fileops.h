@@ -38,7 +38,7 @@ int  efsd_file_set_metadata(EfsdCommand *cmd, int client);
 int  efsd_file_get_metadata(EfsdCommand *cmd, int client);
 int  efsd_file_start_monitor(EfsdCommand *cmd, int client);
 int  efsd_file_stop_monitor(EfsdCommand *cmd, int client);
-int  efsd_file_stat(EfsdCommand *cmd, int client);
+int  efsd_file_stat(EfsdCommand *cmd, int client, char use_lstat);
 int  efsd_file_readlink(EfsdCommand *cmd, int client);
 int  efsd_file_getfiletype(EfsdCommand *cmd, int client);
 

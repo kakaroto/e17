@@ -135,7 +135,11 @@ efsd_handle_client_command(EfsdCommand *command, int client)
       break;
     case EFSD_CMD_STAT:
       D(("Handling STAT on %s\n", command->efsd_file_cmd.file));
-      result = efsd_file_stat(command, client);
+      result = efsd_file_stat(command, client, FALSE);
+      break;
+    case EFSD_CMD_LSTAT:
+      D(("Handling LSTAT on %s\n", command->efsd_file_cmd.file));
+      result = efsd_file_stat(command, client, TRUE);
       break;
     case EFSD_CMD_READLINK:
       D(("Handling READLINK\n"));
@@ -176,7 +180,7 @@ efsd_handle_listdir_options(char *filename, EfsdFamRequest *efr)
 	case EFSD_OP_GET_STAT:
 	  D(("Trying stat option on file-exists event on '%s'...\n", filename));
 	  ec.type = EFSD_CMD_STAT;
-	  if (efsd_file_stat(&ec, efr->client) < 0)
+	  if (efsd_file_stat(&ec, efr->client, FALSE) < 0)
 	    {
 	      D(("Stat option for file-exists event failed -- queued.\n"));
 	    }
