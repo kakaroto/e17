@@ -1481,13 +1481,6 @@ collections
 		name,  "Setup";
 		signal, "show";
 		source, "";
-		action, SIGNAL_EMIT "In" "EntranceUserEntry";
-	    }
-	    program
-	    {
-		name,  "Setup2";
-		signal, "show";
-		source, "";
 		action, STATE_SET "hidden" 0.0;
 		target, "EntrancePassMessage";
 		target, "EntrancePassEntry";
