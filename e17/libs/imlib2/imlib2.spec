@@ -1,6 +1,6 @@
 Summary: Powerful image loading and rendering library
 Name: imlib2
-Version: 1.0.7
+Version: 1.1.0
 Release: 0.1
 Copyright: BSD
 Group: System Environment/Libraries
@@ -11,7 +11,7 @@ URL: http://www.rasterman.com/raster/imlib.html
 BuildRequires: libjpeg-devel
 BuildRequires: libpng-devel
 BuildRequires: XFree86-devel
-BuildRequires: freetype-devel
+BuildRequires: freetype2-devel
 Requires: %{name}-loader_jpeg = %{version}
 Requires: %{name}-loader_png = %{version}
 Requires: %{name}-loader_argb = %{version}
