@@ -54,6 +54,7 @@ GZIP     = gzip --best
 INSTALL  = install
 MKDIR    = mkdir
 RM       = rm
+RPM      = rpm
 STRIP    = strip
 TAR      = tar
 
@@ -84,7 +85,8 @@ install-client-strip \
 install-server-strip \
 all \
 dep \
-depend
+depend \
+rpm
 
 all: lvs-gui  $(SPEC_FILE)
 
@@ -143,6 +145,10 @@ dist: $(SPEC_FILE)
 	@$(ECHO) "############################################################"
 	@$(ECHO) "# $(DISTNAME).tar.gz is ready for distribution"
 	@$(ECHO) "############################################################"
+
+rpm: dist
+	$(RPM) -ta $(DISTNAME).tar.gz
+	$(RM) $(DISTNAME).tar.gz
 
 %: %.in Makefile
 	sed \
