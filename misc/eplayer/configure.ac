@@ -84,11 +84,15 @@ AM_CONDITIONAL(HAVE_VORBIS, test "$have_vorbis" = "yes")
 dnl Check for libavcodec
 tmp=$LIBS
 
-AC_CHECK_LIB(avcodec, avcodec_init,
-	[have_avcodec="yes"; LIBS="$LIBS -lavcodec"], have_avcodec="no")
+AC_ARG_ENABLE(debug,
+        [  --enable-avcodec          Build AVcodec support (default: no)], 
 
-if test "x$have_avcodec" = "xyes"; then
-	AC_CHECK_LIB(avformat, av_register_all,
+	[
+	AC_CHECK_LIB(avcodec, avcodec_init,
+		[have_avcodec="yes"; LIBS="$LIBS -lavcodec"], have_avcodec="no")
+
+	if test "x$have_avcodec" = "xyes"; then
+		AC_CHECK_LIB(avformat, av_register_all,
 		[
 			AVCODEC_CFLAGS="-I/usr/include/ffmpeg"
 			AVCODEC_LIBS="-lavcodec -lavformat"
@@ -96,10 +100,12 @@ if test "x$have_avcodec" = "xyes"; then
 			AC_SUBST(AVCODEC_CFLAGS)
 			AC_SUBST(AVCODEC_LIBS)
 		], have_avcodec="no")
-fi
+	fi
 
-LIBS=$tmp
-AM_CONDITIONAL(HAVE_AVCODEC, test "$have_avcodec" = "yes")
+	LIBS=$tmp
+	AM_CONDITIONAL(HAVE_AVCODEC, test "$have_avcodec" = "yes") 
+	], have_avcodec="no")
+	
 
 dnl Check for OSS
 AC_CHECK_HEADERS(sys/soundcard.h machine/soundcard.h, [have_oss="yes"; break], have_oss="no")
