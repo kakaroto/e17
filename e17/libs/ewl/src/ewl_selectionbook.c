@@ -69,7 +69,7 @@ void ewl_selectionbook_init(Ewl_Selectionbook * s)
 
 
 void
-ewl_selectionbook_add_page(Ewl_Selectionbook * s, Ewl_Widget * tab,
+ewl_selectionbook_page_add(Ewl_Selectionbook * s, Ewl_Widget * tab,
 			   Ewl_Widget * page)
 {
 	Ewl_SbookPage  *p;
@@ -113,7 +113,7 @@ ewl_selectionbook_add_page(Ewl_Selectionbook * s, Ewl_Widget * tab,
 
 
 
-void ewl_selectionbook_rem_page(Ewl_Selectionbook * s, int num, int destroy)
+void ewl_selectionbook_page_rem(Ewl_Selectionbook * s, int num, int destroy)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("s", s);
@@ -164,7 +164,7 @@ void ewl_selectionbook_rem_page(Ewl_Selectionbook * s, int num, int destroy)
 }
 
 
-void ewl_selectionbook_rem_current_page(Ewl_Selectionbook * s, int destroy)
+void ewl_selectionbook_current_page_rem(Ewl_Selectionbook * s, int destroy)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("s", s);

@@ -36,11 +36,11 @@ struct _ewl_selectionbook
 
 Ewl_Widget     *ewl_selectionbook_new(void);
 void            ewl_selectionbook_init(Ewl_Selectionbook * s);
-void            ewl_selectionbook_add_page(Ewl_Selectionbook * s,
+void            ewl_selectionbook_page_add(Ewl_Selectionbook * s,
 					   Ewl_Widget * tab, Ewl_Widget * page);
-void            ewl_selectionbook_rem_page(Ewl_Selectionbook * s, int num,
+void            ewl_selectionbook_page_rem(Ewl_Selectionbook * s, int num,
 					   int destroy);
-void            ewl_selectionbook_rem_current_page(Ewl_Selectionbook * s,
+void            ewl_selectionbook_current_page_rem(Ewl_Selectionbook * s,
 						   int destroy);
 
 /*

@@ -78,8 +78,8 @@ __create_selectionbook_test_window(Ewl_Widget * w, void *ev_data,
 	ewl_widget_show(separator);
 
 
-	ewl_selectionbook_add_page(EWL_SELECTIONBOOK(sbook), tab[0], panel[0]);
-	ewl_selectionbook_add_page(EWL_SELECTIONBOOK(sbook), tab[1], panel[1]);
+	ewl_selectionbook_page_add(EWL_SELECTIONBOOK(sbook), tab[0], panel[0]);
+	ewl_selectionbook_page_add(EWL_SELECTIONBOOK(sbook), tab[1], panel[1]);
 
 
 	return;
