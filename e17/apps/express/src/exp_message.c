@@ -5,7 +5,8 @@
 #include "Express.h"
 
 static void _exp_message_realize(Exp_Message *msg);
-static void _exp_message_intercept_resize(void *data, Evas_Object *o, Evas_Coord w, Evas_Coord h);
+/*static void _exp_message_intercept_resize(void *data, Evas_Object *o, Evas_Coord w, Evas_Coord h);
+*/
 
 Exp_Message *
 exp_message_new(Exp_Conversation *conv, char *text, int sender)
@@ -23,6 +24,8 @@ exp_message_new(Exp_Conversation *conv, char *text, int sender)
   conv->changed = 1;
   msg->changed = 1;
   msg->changes.size = 1;
+
+  return msg;
 }
 
 void

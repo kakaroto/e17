@@ -125,7 +125,7 @@ struct _Exp_Message
 };
 
 
-void exp_gui_setup(Exp *exp);
+int exp_gui_init(Exp *exp);
 
 Exp_Conversation * exp_conversation_new(Exp_Buddy *buddy);
 void               exp_conversation_free(Exp_Conversation *conv);
@@ -133,6 +133,7 @@ void               exp_conversation_update(Exp_Conversation *conv);
 void               exp_conversation_activate(Exp_Conversation *conv);
 void               exp_conversation_pos_set(Exp_Conversation *conv, double pos);
 Exp_Conversation * exp_conversation_find_by_buddy(Exp_Buddy *buddy);
+void               exp_conversation_destroy(Exp_Conversation *conv);
 
 Exp_Message *exp_message_new(Exp_Conversation *conv, char *text, int sender);
 void         exp_message_free(Exp_Message *msg);

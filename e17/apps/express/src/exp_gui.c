@@ -96,7 +96,7 @@ exp_gui_idler_before(void *data)
   Exp *exp = data;
   Evas_List *l, *removals = NULL;
 
-  if (!exp) return;
+  if (!exp) return 1;
 
   /* remove conversations that have destroy set */
   for (l = exp->conversations; l; l = l->next)
@@ -117,7 +117,7 @@ exp_gui_idler_before(void *data)
         exp->changes.active_conv = 1;
       }
     }
-    exp->active_conversation == NULL;
+    exp->active_conversation = NULL;
   }
   while(removals)
   {
@@ -178,7 +178,6 @@ exp_gui_idler_before(void *data)
 
       if (conv->active)
       {
-        double p;
         edje_object_part_swallow(exp->gui, "express.conversation", conv->cont);
         evas_object_show(conv->cont);
 
@@ -215,4 +214,9 @@ _exp_gui_scroll_callback(void *data, Evas_Object *obj, const char *sig, const ch
   {
     exp_conversation_pos_set(exp->active_conversation, dy);
   }
+  
+  return;
+  obj = NULL;
+  sig = NULL;
+  src = NULL;
 }

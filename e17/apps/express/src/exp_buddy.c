@@ -255,8 +255,6 @@ _exp_buddy_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info
 {
   Evas_Event_Mouse_Down *ev = event_info;
   Exp_Buddy *buddy = data;
-  static int i = 0;
-  char buf[200];
 
   if (!buddy) return;
 
@@ -269,5 +267,8 @@ _exp_buddy_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info
     exp_buddy_deactivate(buddy);
   }
 
+  return;
+  e = NULL;
+  obj = NULL;
 }
 

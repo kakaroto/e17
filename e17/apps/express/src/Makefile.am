@@ -3,6 +3,8 @@
 INCLUDES = @edje_cflags@ @ecore_cflags@ @edb_cflags@ @evas_cflags@ \
 @esmart_cflags@ @imlib2_cflags@ @etox_cflags@
 
+CFLAGS = -W -Wall
+
 bin_PROGRAMS = express
 
 express_SOURCES = \

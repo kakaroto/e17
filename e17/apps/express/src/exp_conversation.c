@@ -133,7 +133,7 @@ Exp_Conversation *
 exp_conversation_find_by_buddy(Exp_Buddy *buddy)
 {
   Evas_List *l;
-  if (!buddy || !buddy->exp) return;
+  if (!buddy || !buddy->exp) return NULL;
   
   for (l = buddy->exp->conversations; l; l = l->next)
   {
@@ -191,7 +191,7 @@ exp_fake_conversation(void *data)
   };
 
   conv = exp_conversation_find_by_buddy(buddy);
-  if (!conv) return;
+  if (!conv) return 0;
   printf("fake it!\n");
   exp_message_new(conv, msgs[i], i%2);
   i++;
@@ -221,7 +221,7 @@ exp_fake_conversation2(void *data)
   };
 
   conv = exp_conversation_find_by_buddy(buddy);
-  if (!conv) return;
+  if (!conv) return 0;
 
   exp_message_new(conv, msgs[i], i%2);
   i++;

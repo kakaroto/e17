@@ -111,7 +111,6 @@ exp_eb_cb_server_add(void *data, int type, void *ev)
 {
   Ecore_Con_Event_Server_Add *e;
   Exp *exp;
-  char *cookie = NULL;
 
   e = ev;
   exp = ecore_con_server_data_get(e->server);
@@ -119,6 +118,8 @@ exp_eb_cb_server_add(void *data, int type, void *ev)
   ecore_con_server_send(e->server, exp->server.cookie, strlen(exp->server.cookie));
 
   return 1;
+  data = NULL;
+  type = 0;
 }
 
 static int
@@ -131,7 +132,10 @@ exp_eb_cb_server_del(void *data, int type, void *ev)
   exp = ecore_con_server_data_get(e->server);
 
   printf("disconnected from eb\n");
+
   return 1;
+  data = NULL;
+  type = 0;
 }
 
 static int
@@ -139,7 +143,7 @@ exp_eb_cb_server_data(void *data, int type, void *ev)
 {
   Ecore_Con_Event_Server_Data *e;
   Exp *exp;
-  char *d, *msg, *tmp;
+  char *d, *msg;
   char ** cmds;
   int num_params = 0, i, remaining = 0;
 
@@ -221,6 +225,8 @@ exp_eb_cb_server_data(void *data, int type, void *ev)
   free(msg);
 
   return 1;
+  data = NULL;
+  type = 0;
 }
 
 static int
@@ -229,7 +235,7 @@ exp_eb_cookie_get(Exp *exp)
   char cookie_file[PATH_MAX];
   unsigned char cookie[8];
   FILE *cfile = NULL;
-  int i;
+  unsigned int i;
 
   snprintf(cookie_file, sizeof(cookie_file), "%s/authcookie", everybody_dir);
 
@@ -952,6 +958,11 @@ exp_eb_cmd_group_chat_invite(Exp *exp, int id, const char *msg)
 {
   /* FIXME ... */
   printf("WARNING: exp_eb_cmd_group_chat_invite not done\n");
+
+  return;
+  exp = NULL;
+  msg = NULL;
+  id = 0;
 }
 
 void
@@ -959,6 +970,11 @@ exp_eb_cmd_group_chat_send(Exp *exp, int id, const char *msg)
 {
   /* FIXME ... */
   printf("WARNING: exp_eb_cmd_group_chat_send not done\n");
+
+  return;
+  exp = NULL;
+  msg = NULL;
+  id = 0;
 }
 
 void
@@ -966,6 +982,10 @@ exp_eb_cmd_group_chat_close(Exp *exp, int id)
 {
   /* FIXME ... */
   printf("WARNING: exp_eb_cmd_group_chat_close not done\n");
+
+  return;
+  exp = NULL;
+  id = 0;
 }
 
 /* experimental */
@@ -974,6 +994,10 @@ exp_eb_cmd_group_chat_hide(Exp *exp, int id)
 {
   /* FIXME ... */
   printf("WARNING: exp_eb_cmd_group_chat_hide not done\n");
+
+  return;
+  exp = NULL;
+  id = 0;
 }
 /* done experimental */
 
@@ -1114,6 +1138,9 @@ exp_eb_cb_event_dialog_free(void *data, void *ev)
   }
   free(e);
   e = NULL;
+
+  return;
+  data = NULL;
 }
 
 static void
@@ -1135,9 +1162,10 @@ exp_eb_cb_event_buddy_login_free(void *data, void *ev)
 
   free(e);
   e = NULL;
+
+  return;
+  data = NULL;
 }
-
-
 
 static void
 exp_eb_cb_event_buddy_logout_free(void *data, void *ev)
@@ -1158,6 +1186,9 @@ exp_eb_cb_event_buddy_logout_free(void *data, void *ev)
 
   free(e);
   e = NULL;
+
+  return;
+  data = NULL;
 }
 
 

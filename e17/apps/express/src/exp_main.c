@@ -3,6 +3,7 @@
  */
 
 #include "Express.h"
+#include "exp_eb.h"
 
 static void exp_fake_buddies(Exp *exp);
   
