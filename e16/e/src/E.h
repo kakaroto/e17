@@ -2526,6 +2526,8 @@ void                MoveEwinLinearAreaBy(EWin * ewin, int a);
 int                 Emkstemp(char *template);
 void                SnapEwin(EWin * ewin, int dx, int dy, int *new_dx,
 			     int *new_dy);
+void                ArrangeEwin(EWin * ewin);
+
 void                SessionInit(void);
 void                SessionSave(int shutdown);
 void                doSMExit(void *params);

@@ -142,7 +142,6 @@ GetFocusEwin(void)
 	  }
 	EDBUG_RETURN(mode.realfocuswin);
      }
-
    if (mode.borderpartpress)
      {
 	if (mode.context_ewin)
@@ -154,7 +153,6 @@ GetFocusEwin(void)
 	     EDBUG_RETURN(mode.realfocuswin);
 	  }
      }
-
    if (mode.mode != MODE_NONE)
       EDBUG_RETURN(GetEwin());
 
@@ -1295,7 +1293,6 @@ AdoptInternal(Window win, Border * border, int type, void *ptr)
 	else
 	   SetEwinBorder(ewin);
      }
-
    b = ewin->border;
    ewin->border = NULL;
    ewin->border_new = 1;
@@ -1558,7 +1555,6 @@ FreeEwin(EWin * ewin)
 	for (i = 0; i < num_groups; i++)
 	   RemoveEwinFromGroup(ewin, ewin->groups[0]);
      }
-
    Efree(ewin);
 
    EDBUG_RETURN_;

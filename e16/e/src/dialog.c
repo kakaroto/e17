@@ -590,11 +590,11 @@ ShowDialog(Dialog * d)
 	       }
 	     else
 	       {
-		  MoveEwin(ewin, (root.w - ewin->w) / 2, (root.h - ewin->h) / 2);
+		  ArrangeEwin(ewin);
 	       }
 	  }
 	else
-	   MoveEwin(ewin, (root.w - ewin->w) / 2, (root.h - ewin->h) / 2);
+	   ArrangeEwin(ewin);
 	RestackEwin(ewin);
 	ShowEwin(ewin);
 	ewin->dialog = d;

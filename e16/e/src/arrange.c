@@ -728,3 +728,130 @@ SnapEwin(EWin * ewin, int dx, int dy, int *new_dx, int *new_dy)
    *new_dy = dy;
    EDBUG_RETURN_;
 }
+
+void
+ArrangeEwin(EWin * ewin)
+{
+
+   EWin              **lst;
+   Button            **blst;
+   int                 i, j, num;
+   RectBox            *fixed, *ret, newrect;
+
+   ewin->client.already_placed = 1;
+   lst = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
+   if ((lst) && (num > 0))
+     {
+	fixed = Emalloc(sizeof(RectBox) * num);
+	ret = Emalloc(sizeof(RectBox) * (num + 1));
+	j = 0;
+	for (i = 0; i < num; i++)
+	  {
+	     if ((lst[i] != ewin) && (!lst[i]->iconified) &&
+		 (!lst[i]->ignorearrange) && (lst[i]->layer != 0) &&
+	     (((lst[i]->area_x == desks.desk[ewin->desktop].current_area_x) &&
+	       (lst[i]->area_y == desks.desk[ewin->desktop].current_area_y) &&
+	       (lst[i]->desktop == ewin->desktop)) ||
+	      (lst[i]->sticky)))
+	       {
+		  fixed[j].data = lst[i];
+		  fixed[j].x = (lst[i])->x;
+		  fixed[j].y = (lst[i])->y;
+		  fixed[j].w = (lst[i])->w;
+		  fixed[j].h = (lst[i])->h;
+		  if (fixed[j].x < 0)
+		    {
+		       fixed[j].x += fixed[j].w;
+		       fixed[j].x = 0;
+		    }
+		  if ((fixed[j].x + fixed[j].w) > root.w)
+		     fixed[j].w = root.w - fixed[j].x;
+		  if (fixed[j].y < 0)
+		    {
+		       fixed[j].y += fixed[j].h;
+		       fixed[j].y = 0;
+		    }
+		  if ((fixed[j].y + fixed[j].h) > root.h)
+		     fixed[j].h = root.h - fixed[j].y;
+		  if ((fixed[j].w > 0) && (fixed[j].h > 0))
+		    {
+		       if (!(lst[i])->never_use_area)
+			  fixed[j].p = (lst[i])->layer;
+		       else
+			  fixed[j].p = 50;
+		       j++;
+		    }
+	       }
+	  }
+	blst = (Button **) ListItemType(&num, LIST_TYPE_BUTTON);
+	if (blst)
+	  {
+	     fixed = Erealloc(fixed, sizeof(RectBox) * (num + j));
+	     ret = Erealloc(ret, sizeof(RectBox) * ((num + j) + 1));
+	     for (i = 0; i < num; i++)
+	       {
+		  if (((blst[i]->desktop == ewin->desktop) ||
+		       ((blst[i]->desktop == 0) && (blst[i]->sticky))) &&
+		      (blst[i]->visible))
+		    {
+		       fixed[j].data = NULL;
+		       fixed[j].x = blst[i]->x;
+		       fixed[j].y = blst[i]->y;
+		       fixed[j].w = blst[i]->w;
+		       fixed[j].h = blst[i]->h;
+		       if (fixed[j].x < 0)
+			 {
+			    fixed[j].x += fixed[j].w;
+			    fixed[j].x = 0;
+			 }
+		       if ((fixed[j].x + fixed[j].w) > root.w)
+			  fixed[j].w = root.w - fixed[j].x;
+		       if (fixed[j].y < 0)
+			 {
+			    fixed[j].y += fixed[j].h;
+			    fixed[j].y = 0;
+			 }
+		       if ((fixed[j].y + fixed[j].h) > root.h)
+			  fixed[j].h = root.h - fixed[j].y;
+		       if ((fixed[j].w > 0) && (fixed[j].h > 0))
+			 {
+			    if (blst[i]->sticky)
+			       fixed[j].p = 50;
+			    else
+			       fixed[j].p = 0;
+			    j++;
+			 }
+		    }
+	       }
+	     Efree(blst);
+	  }
+	newrect.data = ewin;
+	newrect.x = 0;
+	newrect.y = 0;
+	newrect.w = ewin->w;
+	newrect.h = ewin->h;
+	newrect.p = ewin->layer;
+	ArrangeRects(fixed, j, &newrect, 1, ret, root.w, root.h, ARRANGE_BY_SIZE);
+	for (i = 0; i < j + 1; i++)
+	  {
+	     if (ret[i].data == ewin)
+	       {
+		  ewin->x = ret[i].x;
+		  ewin->y = ret[i].y;
+		  i = j + 1;
+	       }
+	  }
+	Efree(lst);
+	if (ret)
+	   Efree(ret);
+	if (fixed)
+	   Efree(fixed);
+     }
+   else
+     {
+	ewin->x = (root.w - ewin->w) >> 1;
+	ewin->y = (root.h - ewin->h) >> 1;
+     }
+   MoveEwin(ewin, ewin->x, ewin->y);
+
+}
