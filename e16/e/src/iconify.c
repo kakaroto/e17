@@ -972,7 +972,7 @@ void
 UpdateAppIcon(EWin * ewin, int imode)
 {
    /* free whatever we had before */
-   Iconbox            *ib;
+   /*Iconbox            *ib; */
 
    if (ewin->icon_pmap)
       Imlib_free_pixmap(id, ewin->icon_pmap);
