@@ -878,7 +878,11 @@ _entice_image_mouse_wheel_translate(void *data, Evas * e, Evas_Object * obj,
    {
       if ((o = (Evas_Object *) data))
       {
-         evas_event_feed_mouse_wheel_data(e, ev->direction, ev->z, o);
+         char buf[PATH_MAX];
+
+         snprintf(buf, PATH_MAX, "mouse,wheel,%i,%i", (int) ev->direction,
+                  (int) ev->z);
+         edje_object_signal_emit(o, buf, "EnticeImage");
       }
    }
 #if DEBUG
