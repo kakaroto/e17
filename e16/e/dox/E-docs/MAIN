@@ -66,16 +66,16 @@ shading etc. your windows, virtual desktops, multiple desktops, menus attached
 to windows and some root window menus and can also control the background
 of your desktop(s).
 <p align=50%>
-It is a large and complex program and is by no means perfect, but it is being
-worked on and is as stable as possible. It has many advanced features as well
-as possibly missing some features. This version (0.16.0) is by no means the
+Enlightenment is a large and complex program and is by no means perfect,
+but it is being worked on and is as stable as possible. It has many advanced features, and it is possibly missing some features that you would like to see.
+The version you are now running (0.16.0) is by no means the
 end of development and improvements, fixes and new exciting features are
 being worked on all the time. Please go and visit the _Web(web) site often, 
 as new versions, fixes, patches and updates will be released.
 <p align=50%>
-It is hoped you enjoy using this software and that it is of benefit to you.
-It might not be for everyone, but if it has made your day any better than it
-was it has done more than enough already.
+We hope that you enjoy using Enlightenment as much as we have enjoyed writing
+it.  We'd like to think that even if this isn't the right software for you, you
+at least can have fun playing around with what we have created.
 
 
 <page columns=1 padding=16 name=copyright background=Edoc_bg.png linkcolor=#88dddd>
@@ -215,6 +215,8 @@ have fun.
 <page columns=1 padding=16 name=email background=Edoc_bg.png linkcolor=#88dddd>
 <font face=aircut3/12 color=#ffffff>
 <p>
+<br>
+<br>
 CVS Commit List Mail
 <p>
 To receive CVS Commit mails, please go to the
@@ -234,7 +236,8 @@ http://enlightenment.org/mailman/listinfo/e-develop.
 <br>
 This mailing list is for discussing Enlightenment, it's development, bugs,
 feature requests, etc.  It is not a general chatter list.  The developers do
-read this mailing list and will often comment on subjects of relevancy.
+read this mailing list and will often comment on subjects brought up on the
+list.
 <p>
 
 
@@ -350,22 +353,24 @@ manipulate it like a normal window. Close the window to unstick the menu.
 
 <page columns=1 padding=16 name=tut4 background=Edoc_bg.png linkcolor=#88dddd>
 <font face=aircut3/12 color=#ffffff>
-<img src=E_settings_menu.png x=285 y=275>
+<img src=E_settings_menu.png x=285 y=235>
 <img src=E_enlightenment_menu.png x=4 y=30>
 <p>
-You will also find that instead of using the left mouse button, you click the 
-right mouse button, a menu with the title "Settings" will appear. This is
-Enlightenment's _settings_menu(settings) . From it you can select what parts 
-of your desktop that Enlightenment controls to customize and make more
-amenable to your own needs.
-<p>
-When you select one of these _settings(settings) a dialog window will appear
-giving you options to configure that part of Enlightenment.
-<p>
+<br>
 Clicking the middle button on the desktop _background(backgrounds) will display 
 Enlightenment's main menu. You can access the other menus plus more options
 (including those to log out, restart and display Help information) from this
-menu.
+menu.  A sample of this menu is shown to our left.
+<p>
+<br>
+<br>
+<br>
+<br>
+When you click the right mouse button
+a menu with the title "Settings" will appear. This is
+Enlightenment's _settings(settings) menu. From it you can select various
+configuration dialogs that will assist you in customizing your desktop to 
+better suit your needs.
 
 
 
@@ -378,7 +383,7 @@ menu.
 <p>
 Mouse Bindings
 <font face=aircut3/12 color=#ffffff>
-Of course, when you click on the _desktop(desktops) _backgound(backgrounds) of
+Of course, when you click on the _desktop(desktops) _background(backgrounds) of
 your screen, normally you will bring up a _menu(rootmenu).  And of course, when you
 click on the _border(border) of a window, you will do various things.  But these
 are not the only things you can do with your mouse.
@@ -417,12 +422,12 @@ However, there may be some features that you may be missing because of the way
 that your mouse is configured on your X server.
 <p>
 If your mouse does not have a middle button you should have enabled 
-"Emulate 3 Buttons" in your X-Server - in which case pressing both left and 
+"Emulate 3 Buttons" in your X server - in which case pressing both left and 
 right mouse buttons at once will be the equivalent of pressing a middle
 mouse button. If this does not work this may not be turned on. Please see
-your X Server documentation to configure this.
+your X server documentation to configure this.
 <p>
-This may vary from system to system. OS and XServer may also vary the method 
+This may vary from system to system. OS and X server may also vary the method 
 in which you do this, if it is possible. Not having a middle mouse button in 
 Enlightenment, or for that matter X is not a good thing as it is almost 
 assumed to be there, and is used by many applications, as well as by E.
@@ -445,7 +450,7 @@ Rolling your wheel up on the desktop background will take you back a
 _desktop(desktops) or by rolling your wheel downward, you will advance 
 forward a desktop.
 <p>
-If this doesn't work, then it may be you haven't configured your XServer to
+If this doesn't work, then it may be you haven't configured your X server to
 understand a mouse with a wheel. If you use XFree86 you may need to edit your 
 XF86Config to have a "Pointer" Section like:
 <font face=aircut3/12 color=#ccaacc>
@@ -546,9 +551,10 @@ window uses, for some reason or another.  You can easily change the border
 style of a window in Enlightenment using the 
 <br>
 _Window_Operations(windowops)
-menu, however.  Select the "Set Border Style" menu, and you will be presented
-with a list of available borders in this theme.  The most common use for this
-is to make an application shed its border, using the BORDERLESS border type.
+menu, however.  Select the "Set Border Style" menu, and a list will be
+presented to you of available borders in this theme.  The most common use
+for this is to make an application shed its border, using the
+BORDERLESS border type.
 <p>
 You can always click with ALT + Right mouse button anywhere in the window to 
 bring up the window operations menu again.
@@ -743,7 +749,7 @@ _Desktop_Backgrounds(backgrounds) section.
 Changing Desktops
 <font face=aircut3/12 color=#ffffff>
 <p>
-There are seveal ways that you can change your current desktop - let's go over
+There are several ways that you can change your current desktop - let's go over
 a few of them here.
 <p>
 You can use the _Keybindings(defkeys) alt-F1 through alt-F12 for the first 12
@@ -756,7 +762,7 @@ You can use the _Pager(pager) to quickly navigate to the desktop/area you want
 by clicking on the desired area.<br>
 You can use the _Dragbar(dragbar) to quickly navigate to a particular
 application or a particular desktop by using the middle and right mouse
-buttons<br>.
+buttons.<br>
 You can also use external applications such as the GNOME panel's pager or the
 KDE panel's pager to navigate desktops and/or applications.  You will need to
 enable _Desktop_Support(deskenv) for these to work.<br>
@@ -805,8 +811,8 @@ on how to change desktops.  Once you have dragged a desktop down, you can
 proceed to move windows between desktops this way, instead of using the
 _pager(pager) .
 <p>
-You can also use the Dragbar to retreive windowlists.  Use the middle mouse
-button to retreive a windowlist, and the right mouse button for a
+You can also use the Dragbar to retrieve windowlists.  Use the middle mouse
+button to retrieve a windowlist, and the right mouse button for a
 windowlist sorted by desktops.
 
 
@@ -821,11 +827,9 @@ windowlist sorted by desktops.
 <p>
 The Pager
 <font face=aircut3/12 color=#ffffff>
-The Pager (as seen to our right) to those of you new to the concept of
-virtual and multiple desktops
-may be a foreign concept, but once gotten used to is highly useful in being 
-able to manage your application over multiple screens that you might not 
-necessarily be able to see. 
+Pagers may not be a new idea in desktop environments, but the Pager in
+Enlightenment (as seen on the right) is a highly advanced and highly
+configurable tool for desktop and window control, as well as a navigation tool.
 <p>
 The pager lets you see your desktop screen area in miniature. It lets you click
 on a certain desktop to "visit" it, click and drag windows around in the pager 
@@ -884,11 +888,11 @@ intended for high end machines.
 <br>
 <br>
 <br>
-You can resize the pager to make it the size you'd like (hint - hint. hold down
-ALT and use the middle-mouse button to resize the pager in any direction. using
+You can resize the pager to make it the size you'd like.  Hold down
+ALT and use the middle-mouse button to resize the pager in any direction. Using
 left-mouse button whilst holding ALT and dragging will move the window. Holding
 down ALT whilst pressing right-mouse button, just like any normal window will
-get you a window operations menu).
+get you a window operations menu.
 <p>
 In the default theme clicking the tab on the right side of the pager with the
 arrow pointing right will shade and unshade the pager window horizontally, 
@@ -922,7 +926,8 @@ have individual configurations, as detailed on the next page.
 You can _move(movemode) the Iconbox around the screen using alt-leftclick
 on the window, and then moving it to the desired location on the screen.  You
 can _resize(movemode) the Iconbox by alt-middleclicking on the window and
-then adjusting the size  as described in the _Mouse_Bindings(mousebind) section
+then adjusting the size  as described in the _Mouse_Bindings(mousebind)
+section.
 <p>
 
 
@@ -1062,7 +1067,7 @@ able to configure the group individually apart from the default group settings
 (as shown on the previous page).
 <p>
 The second way is the window titlebar, which has the most important options
-directly available for convenience. shift-click to start a group,
+directly available for convenience. Shift-click to start a group,
 ctrl-clicking to add a window to the youngest group (also referred to as the
 "current" group) and shift-ctrl-click to destroying a group. You can also click
 the middle mouse button for visualizing the group(s) of a window. Click again
@@ -1162,7 +1167,7 @@ bring up a dialog that looks something like the one on the next page . . .
 <br>
 <br>
 <br>
-You can use this dialog to change your background also, as well as fine-tune
+You can use this dialog to change your background, too , as well as fine-tune
 all the various settings for each individual background available.
 
 
@@ -1182,7 +1187,7 @@ all the various settings for each individual background available.
 Tooltips
 <font face=aircut3/12 color=#ffffff>
 <p>
-From time to time, as you use enlightenment, if you don't remember what does
+From time to time, as you use Enlightenment, if you don't remember what does
 what, if you keep the mouse still for a little bit a tooltip will pop up.  The
 easiest example of this is when you hold the mouse over a _Window_Border(border)
 .
@@ -1365,15 +1370,15 @@ remains "stuck to the glass" and thus is visible on all virtual and
 multiple _desktops(desktops) .
 <p>
 Fullscreen/Window _zooms(tut11) in and out of the window changing resolutions 
-if possible. This feature will only work if you have your XServer configured
-correctly and it supports the XVidtune extension. Your XServer may not like
-having resolutions changed - it is possible that an unstable XServer could 
+if possible. This feature will only work if you have your X server configured
+correctly and it supports the XVidtune extension. Your X server may not like
+having resolutions changed - it is possible that an unstable X server could 
 crash if you use this. Be aware of this when using this feature.
 <p>
 Remember... displays the _Remember_Properties(properties) dialog that lets
 you select things to remember about this instance of an application. The 
 attributes selected to be rememberd in the state they are when you hit Apply or
-Ok in this dialog. You will have to bring it up again if you wich to remember
+Ok in this dialog. You will have to bring it up again if you wish to remember
 a new state of the window.
 <p>
 More on the _next(windowops3) page.
@@ -1385,18 +1390,18 @@ In the _Window_Groups(groups) submenu there are various options for
 configuring window
 groups and how this window relates to any groups you may have. Note that you
 cannot group _Pagers(pager) windows or _Iconboxes(iconbox) together with 
-eachother or any other windows.
+each other or any other windows.
 <p>
 You can quickly modify the size of a window to one of several aspects of 
 maxmimum sizes using the Window Size submenu.
 <p>
-Set Stacking lets you change the stackign layer of that window.
+Set Stacking lets you change the stacking layer of that window.
 <p>
 You can change the _border(changeborder) using the Set Border Style menu if
 you wish to use a different window border. If you change themes after you have 
-changed the border, and the new theme does nto provide the same named border
-the window will fall back to using the DEFAULT border until you change it
-again.
+changed the border, and the new theme doesn't provide a border of the same
+name, the window will fall back to using the DEFAULT border until you
+change it again.
 
 <page columns=1 padding=16 name=deskenv background=Edoc_bg.png linkcolor=#88dddd>
 <img src=E_kde_settings.png x=300 y=70>
@@ -1455,7 +1460,7 @@ really bizarre things to your system by using eesh, but for the most part it's
 just another interesting interface to E.  In your distribution package you
 should have received some sample scripts written in perl that interface to E
 through eesh showing how you can externally script E to do more things outside
-E's base functionality.  Expect the IPC to get more flushed out in future
+E's base functionality.  Expect the IPC to flesh out even more in future
 revisions.
 <br>
 To exit eesh, hit CTRL + D (EOF)
@@ -1484,7 +1489,7 @@ Entry title , graphic for menu (or NULL) , exec "commandline"
 <font face=aircut3/12 color=#ffffff>
 <p>
 You may have several files in here, including a kde menu and a gnome menu if
-enlightenment has detected that their presence during installation.  If
+enlightenment has detected their presence during installation.  If
 detected, your primary apps will be located in another file called
 user_apps.menu.  Each of these files is for you to edit as desired.
 
@@ -1503,7 +1508,7 @@ Editing Your Keybindings
 To set your own keybindings, all you have to do is find the keybindings.cfg
 file that was installed with enlightenment, and make a copy in your
 ~/.enlightenment directory.  This file is fairly long, but shouldn't be too
-difficult to edit.  Be careful!  the keybindings in this file will override ALL
+difficult to edit.  Be careful!  The keybindings in this file will override ALL
 the default keybindings, as long as this file exists, so edit this file with
 extreme caution (unless you know what you're doing)
 <p>
@@ -1604,11 +1609,11 @@ _All_My_Settings_Are_Mangled_And_I_Can't_Fix_It(faq3)
 <p>
 _I_Upgraded_A_Theme_But_The_New_One_Isn't_Being_Used(faq3)
 <p>
-_I_set_my_window_to_borderless_and_cant_set_it_back(faq4)
+_I_set_my_window_to_borderless_and_can't_set_it_back(faq4)
 <p>
 _How_can_I_move_or_resize_the_iconbox(faq4)
 <p>
-_These_Docs_Didn't_Help,_Where_Can_I_Get_More_Help(faqend)
+_These_Docs_Didn't_Help,_Where_Can_I_Get_More_Help?(faqend)
 
 
 
@@ -1621,23 +1626,23 @@ Frequently Asked Questions: Page 1
 <p>
 <br>
 <br>
-<br>
-Q: I can't find my iconbox, or change its settings.
+Q: I can't find my _Iconbox(iconbox) or change its settings.
 <p>
 A: There are two possibilities here.
 <p>
-1. You don't have an iconbox on your desktop right now. Just middle-click and 
+1. You don't have an Iconbox on your desktop right now. Just middle-click and 
 select Desktop/Create new iconbox
-
-<p>
 <br>
+2. Your Iconbox is transparent and borderless.  Iconify a window and see if
+your icon appears.  If so, rightclick on it to reconfigure your Iconbox.
+<p>
 <br>
 <br>
 Q:  I Can't Seem To Find My Left Mouse Menu
 <p>
 A:  Your menu files may be destroyed.  Try rerunning the program that initially
 generated them.  First you'll want to remove the ~/.enlightenment/*.menu files.
-Then you can rerun the e_gen_menu script.
+Rebuild them using the _Maintenance(maint) menu.
 
 
 
@@ -1673,7 +1678,7 @@ Frequently Asked Questions: Page 3
 <font face=aircut3/12 color=#ffffff>
 <p>
 <br>
-Q:  I set my window to borderless and cant set it back or move it.
+Q:  I set my window to borderless and can't set it back or move it.
 <p>
 A:  ALT + Right mouse button when pressed anywhere in the window will give you
 the _window_operations(windowops) menu. ALT + Left mouse button will move the
@@ -1695,7 +1700,7 @@ Frequently Asked Questions: Page 4
 <br>
 <br>
 <br>
-Q:  These Docs Didn't Help, Where Can I Get More Help
+Q:  These Docs Didn't Help, Where Can I Get More Help?
 <p>
 A: Well, we obviously can't answer all of your questions just by predicting
 them, so I would try the _website(web) as well as looking at the
