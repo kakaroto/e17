@@ -602,11 +602,7 @@ imlib_render_pixmaps_for_whole_image_at_size(Pixmap *pixmap_return,
 void
 imlib_free_pixmap_and_mask(Pixmap pixmap)
 {
-   ImlibImagePixmap *pm;
-   
-   pm = __imlib_FindCachedImagePixmapByID(ctxt_display, pixmap);
-   if (pm)
-      __imlib_RemoveImagePixmapFromCache(pm);
+   __imlib_FreePixmap(ctxt_display, pixmap);
 }
 
 void 
