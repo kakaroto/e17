@@ -1,3 +1,4 @@
+#include "config.h"
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <X11/extensions/shape.h>
@@ -18,7 +19,11 @@
 #include "ximage.h"
 #include "rgbadraw.h"
 #include "Imlib2.h"
+#ifdef HAVE_FREETYPE_H
 #include <freetype.h>
+#elif defined(HAVE_FREETYPE_FREETYPE_H)
+#include <freetype/freetype.h>
+#endif
 #include "font.h"
 #include "grad.h"
 

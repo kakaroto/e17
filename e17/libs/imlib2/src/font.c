@@ -3,7 +3,11 @@
 #include "colormod.h"
 #include "image.h"
 #include "blend.h"
+#ifdef HAVE_FREETYPE_H
 #include <freetype.h>
+#elif defined(HAVE_FREETYPE_FREETYPE_H)
+#include <freetype/freetype.h>
+#endif
 #include "font.h"
 #include <sys/types.h>
 #include <string.h>
