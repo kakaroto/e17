@@ -221,11 +221,12 @@ void etox_append_text(Etox * et, char *text)
 		 */
 		et->length -= end->length;
 		et->h -= end->h;
-		etox_line_merge(end, start);
+		etox_line_merge_append(end, start);
+		etox_line_free(start);
 		et->length += end->length;
 		et->h += end->h;
-		if (end->w > et->w)
-			et->w = end->w;
+		if (end->w > et->tw)
+			et->tw = end->w;
 	}
 
 	/*
@@ -234,8 +235,8 @@ void etox_append_text(Etox * et, char *text)
 	while (lines) {
 		start = lines->data;
 
-		if (start->w > et->w)
-			et->w = start->w;
+		if (start->w > et->tw)
+			et->tw = start->w;
 
 		et->h += start->h;
 		et->length += start->length;
@@ -286,9 +287,9 @@ void etox_prepend_text(Etox * et, char *text)
 		Evas_List *l;
 
 		l = evas_list_last(lines);
-		end = l->data;
-		start = et->lines->data;
-		et->lines = evas_list_remove(et->lines, start);
+		start = l->data;
+		lines = evas_list_remove(lines, start);
+		end = et->lines->data;
 
 		/*
 		 * Need to adjust the height and length of the line to reflect
@@ -296,29 +297,31 @@ void etox_prepend_text(Etox * et, char *text)
 		 */
 		et->length -= end->length;
 		et->h -= end->h;
-		etox_line_merge(end, start);
+		etox_line_merge_prepend(start, end);
+		etox_line_free(start);
 		et->length += end->length;
 		et->h += end->h;
-		if (end->w > et->w)
-			et->w = end->w;
+		if (end->w > et->tw)
+			et->tw = end->w;
 	}
 
 	/*
 	 * Now add the remaining lines to the end of the line list.
 	 */
-	while (et->lines) {
-		end = et->lines->data;
+	while (lines) {
+		Evas_List *l;
 
-		if (end->w > et->w)
-			et->w = end->w;
+		l = evas_list_last(lines);
+		end = l->data;
+
+		if (end->w > et->tw)
+			et->tw = end->w;
 
 		et->h += end->h;
 		et->length += end->length;
-		lines = evas_list_append(lines, end);
-		et->lines = evas_list_remove(et->lines, end);
+		et->lines = evas_list_prepend(et->lines, end);
+		lines = evas_list_remove(lines, end);
 	}
-
-	et->lines = lines;
 
 	/*
 	 * Layout the lines on the etox.
@@ -384,8 +387,8 @@ void etox_set_text(Etox * et, char *text)
 		/*
 		   * Grab the largest line width for the width of the etox.
 		 */
-		if (line->w > et->w)
-			et->w = line->w;
+		if (line->w > et->tw)
+			et->tw = line->w;
 
 		et->h += line->h;
 		et->length += line->length;
@@ -984,6 +987,8 @@ static Evas_List *_etox_break_text(Etox * et, char *text)
 			/*
 			 * Create a new line for the next text
 			 */
+			if (line->w > et->tw)
+				et->tw = line->w;
 			line = etox_line_new(line->flags);
 			ret = evas_list_append(ret, line);
 			line->et = et;
@@ -1140,7 +1145,8 @@ void _etox_unwrap_lines(Etox *et)
 			et->lines = evas_list_remove(et->lines, line);
 
 			/* merge the two lines */
-			etox_line_merge(prevline, line);
+			etox_line_merge_append(prevline, line);
+			etox_line_free(line);
 
 			/* skip the line we just merged */
 			l = l->next;
@@ -1200,7 +1206,10 @@ void etox_layout(Etox * et)
 	 */
 	et->h = y - et->y;
 
-	evas_object_resize(et->clip, et->w, et->h);
+	if (et->context->flags & ETOX_SOFT_WRAP)
+		evas_object_resize(et->clip, et->w, et->h);
+	else
+		evas_object_resize(et->clip, et->tw, et->h);
 }
 
 Etox_Line *

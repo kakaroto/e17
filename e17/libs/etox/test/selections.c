@@ -51,12 +51,12 @@ int main(int argc, const char **argv)
 	evas_object_show(bg);
 
 	/* Create message etox */
-	etox = etox_new_all(evas, 10, 10, 480, 180, 255, ETOX_ALIGN_LEFT);
-	etox_context_set_align(etox, ETOX_ALIGN_LEFT);
+	etox = etox_new_all(evas, 10, 10, 480, 180, 255, ETOX_ALIGN_LEFT |
+			ETOX_ALIGN_BOTTOM);
 	etox_context_set_font(etox, "sinon", 14);
 	etox_context_set_color(etox, 0, 255, 0, 255);
 	etox_context_set_style(etox, "shadow");
-	/* etox_context_set_soft_wrap(etox, 1); */
+	etox_context_set_soft_wrap(etox, 1);
 	etox_set_text(etox, msg);
 	etox_set_alpha(etox, 255);
 	etox_set_layer(etox, 1000);

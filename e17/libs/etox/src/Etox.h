@@ -129,6 +129,11 @@ struct _etox
 	int x, y, w, h;
 
 	/*
+	 * Geometry the text prefers w/o wraps.
+	 */
+	int tw, th;
+
+	/*
 	 * The length text in the etox
 	 */
 	int length;

@@ -7,13 +7,20 @@ do { \
 	Estyle *bit = NULL; \
 	Etox_Line *line; \
 	Evas_List *l, *bl; \
+	int w, h; \
 	line = selected->start.line; \
 	l = evas_list_find_list(selected->etox->lines, selected->start.line); \
 	bl = evas_list_find_list(line->bits, selected->start.bit); \
 	while (bl && bit != selected->end.bit) { \
-		bit = bl->data
+		bit = bl->data; \
+		estyle_geometry(bit, NULL, NULL, &w, NULL); \
+		line->w -= w
 
 #define SELECTION_LOOP_END \
+		estyle_geometry(bit, NULL, NULL, &w, &h); \
+		line->w += w; \
+		if (h > line->h) \
+			line->h = h; \
 		bl = bl->next; \
 		if (!bl) { \
 			l = l->next; \

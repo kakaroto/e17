@@ -255,13 +255,13 @@ void etox_line_minimize(Etox_Line * line)
 }
 
 /*
- * etox_line_merge - merge two lines into the first line, free the second
+ * etox_line_merge_append - merge lines into the first line, empty the second
  * @line1: the destination of the merged lines
  * @line2: the line that will be merged with line1
  *
  * Returns no value. Moves the bits from line2 into line 1.
  */
-void etox_line_merge(Etox_Line * line1, Etox_Line * line2)
+void etox_line_merge_append(Etox_Line * line1, Etox_Line * line2)
 {
 	Estyle *bit;
 
@@ -283,11 +283,37 @@ void etox_line_merge(Etox_Line * line1, Etox_Line * line2)
 	if (line2->h > line1->h)
 		line1->h = line2->h;
 	line1->length += line2->length;
+}
+
+/*
+ * etox_line_merge_prepend - merge lines into the second line, empty the first
+ * @line1: the destination of the merged lines
+ * @line2: the line that will be merged with line1
+ *
+ * Returns no value. Moves the bits from line2 into line 1.
+ */
+void etox_line_merge_prepend(Etox_Line * line1, Etox_Line * line2)
+{
+	Estyle *bit;
+
+	CHECK_PARAM_POINTER("line1", line1);
+	CHECK_PARAM_POINTER("line2", line2);
 
 	/*
-	 * Destroy the line that was merged.
+	 * Move the bits from line2 to line1.
 	 */
-	etox_line_free(line2);
+	while (line1->bits) {
+		bit = line1->bits->data;
+		line2->bits = evas_list_prepend(line2->bits, bit);
+		line1->bits = evas_list_remove(line1->bits, bit);
+	}
+	/*
+	 * Adjust the height, width and length of the merged line.
+	 */
+	line2->w += line1->w;
+	if (line1->h > line2->h)
+		line2->h = line1->h;
+	line2->length += line1->length;
 }
 
 /*
