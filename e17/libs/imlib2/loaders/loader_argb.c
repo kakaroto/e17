@@ -129,7 +129,7 @@ save (ImlibImage *im,
    int                 y, pl = 0, alpha = 0;
    char                pper = 0;
 #ifdef WORDS_BIGENDIAN
-   DATA32             *buf = NULL;
+   DATA32             *buf = (DATA32 *) malloc(im->w * 4);
 #endif
    
    /* no image data? abort */
