@@ -8,32 +8,35 @@
 
 #sh = DH_COMPAT=2 DH_VERBOSE=1 /bin/ash -ex
 #sh = DH_COMPAT=2 /bin/ash -e
-sh = DH_COMPAT=2 /bin/sh -e 
-SHELL := $(sh)
+sh = DH_COMPAT=2 /bin/sh -e
 
-VPATH = debian
-pwd := $(shell pwd)
-export DH_OPTIONS=
+SHELL := $(sh)
+ESHELL = . debian/ehrc;
+vpath install debian
+vpath build debian
 e = enlightenment
+
+configure_options = --prefix=/usr --enable-upgrade=no  --enable-fsstd=yes --mandir=/usr/share/man
 
 build: 
 	dh_testdir
-	source debian/ehrc; eh_configure
+	$(ESHELL) eh_configure $(configure_options)
+	$(ESHELL) eh_makfilefilter
 	$(MAKE)
 	touch debian/$@
 clean:
 	dh_testdir
 	dh_testroot
-	if [ -f Makefile ]; then $(MAKE) clean; fi
-	dh_clean debian/build debian/install src/themes/Makefile.old econfig.h econfig.h.old
-  
+	test -f Makefile && $(MAKE) clean
+	dh_clean *.old
+
 install: SHELL = DH_OPTIONS="-A" $(sh)
 install: build
 	dh_testdir
 	dh_testroot
 	dh_clean
-	$(MAKE) install DESTDIR=$(pwd)/debian/${e}
-	source debian/ehrc; eh_install
+	$(MAKE) install DESTDIR=$(shell pwd)/debian/${e}
+	$(ESHELL) eh_install
 	touch debian/$@ 
 
 binary-indep: SHELL = DH_OPTIONS="-i" $(sh)
@@ -41,6 +44,9 @@ binary-indep: build install
 	dh_testversion 2
 	dh_testdir
 	dh_testroot
+	dh_installdocs
+	dh_installchangelogs
+	dh_compress
 	dh_fixperms
 	dh_installdeb
 	dh_gencontrol
@@ -52,6 +58,9 @@ binary-arch: build install
 	dh_testversion 2
 	dh_testdir
 	dh_testroot
+	dh_installdocs
+	dh_installchangelogs
+	dh_compress
 	dh_installmenu
 	dh_strip
 	dh_fixperms
@@ -62,4 +71,4 @@ binary-arch: build install
 	dh_builddeb
 
 binary: binary-indep binary-arch
-.PHONY: build clean binary-indep binary-arch binary install
+.PHONY: clean binary-indep binary-arch binary

@@ -4,27 +4,18 @@ Priority: optional
 Maintainer: Laurence J. Lane <ljlane@debian.org>
 Standards-Version: 3.0.1.0
 
-Package: enlightenment-nosound
-Architecture: any
-Depends: ${shlibs:Depends}, enlightenment (= 0.16.0-4)
-Recommends: enlightenment-theme
-Conflicts: enlightenment-sound
-Replaces: enlightenment-sound
-Description: Enlightenment binary without sound support.
- The Enlightenment Window manager binary compiled without sound support.
-
-Package: enlightenment-sound
-Architecture: any
-Depends: ${shlibs:Depends}, enlightenment (= 0.16.0-4)
-Recommends: esound, enlightenment-theme
-Conflicts: enlightenment-nosound
-Replaces: enlightenment-nosound, enlightenment (<= 0.16.0-2)
-Description: Enlightenment binary without sound support.
- The Enlightenment Window manager binary compiled with sound support.
+Package: enlightenment-theme-ganymede
+Architecture: all
+Recommends: enlightenment
+Provides: enlightenment-theme
+Description: cK's Ganymede theme for E
+ This is cK's Ganymede theme. He's gonna add a really spiffy description
+ right here. <smile>
 
 Package: enlightenment-theme-shinymetal
 Architecture: all
-Depends: enlightenment
+Recommends: enlightenment
+Provides: enlightenment-theme
 Description: Raster's ShinyMetal Theme for E
  This is the theme formerly known as 'E15 default'.  It is fairly simple,
  by raster's standards, and attractive.  The motif used is shiny metal
@@ -33,22 +24,27 @@ Description: Raster's ShinyMetal Theme for E
 
 Package: enlightenment-theme-bluesteel
 Architecture: all
-Depends: enlightenment
-Description: The BlueSteel theme for E
+Recommends: enlightenment
+Provides: enlightenment-theme
+Description: Hunchback's BlueSteel theme for E
  This theme really shows off what you can do with enlightenmnet.  It's by
  Daniel Erat, and shows off antialiased text, extensively shaped windows, and
  is compliant with the 0.16.0 theme spec.
 
 Package: enlightenment
 Architecture: any
-Depends: ${shlibs:Depends}, enlightenment-sound (= 0.16.0-4) | enlightenment-nosound (= 0.16.0-4)
-Recommends: enlightenment-theme
-Replaces: enlightenment-docs, enlightenment-dox, dox, enlightenment-theme-brushedmetal
-Conflicts: enlightenment, enlightenment-theme-brushedmetal
+Depends: ${shlibs:Depends}
+Replaces: enlightenment-nosound, enlightenment-sound, enlightenment-theme-brushedmetal, enlightenment-dox
+Recommends: enlightenment-theme-shinymetal (>= 0.16.0-6)
+Conflicts: dox, enlightenment-dox, enlightenment-docs, enlightenment-theme
+Suggests: esound
 Description: The Enlightenment Window Manager
  The Enlightenment Window Manager (Developer Release), or "E", whose motto 
  is "Time to rethink everything". It allows complete user control of almost
  every possible setting.  This is  accomplished through its use of themes.
  It now includes support for root menus, iconification, docking, GNOME and
- KDE integration, and much more. It features the Brushed Metal theme, created
- by gimp legend, Tigert.
+ KDE integration, and much more.
+ .
+ Enlightenment features the BrushedMetal theme, designed by gimp legend, tigert. 
+ It is predominately grey with the subtle texture of - you guessed it - brushed 
+ metal.  The menus in particular look superb.

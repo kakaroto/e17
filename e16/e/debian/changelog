@@ -1,27 +1,15 @@
-enlightenment (0.16.0-4.01) unstable; urgency=low
+enlightenment (0.16.0-6) unstable; urgency=low
 
-  * YACVSR
+  * deprecated enlightenment-{sound,nosound,dox,dox,theme-brushedmetal}
+  * menu-method update, Closes:#47497
+  * removed tar path length kludge (dpkg 1.14.1.17 or higher required!), 
+    and theme update alternative system, also re-integrated 
+    BrushedMetal-Tigert, Closes:#47495
+  * disabled automatic updates (ghttp support), by request
+  * added enlightenment-theme-ganymede
+  * added enlightenment.1 man page
 
- -- Laurence J. Lane <ljlane@debian.org>  Sun, 17 Oct 1999 20:36:39 -0400
-
-enlightenment (0.16.0-4) unstable; urgency=low
-
-  * more corrections for the path length kludge 
-  * addition work to synch cvs and official debs
-
- -- Laurence J. Lane <ljlane@debian.org>  Sun, 17 Oct 1999 18:03:17 -0400
-
-enlightenment (0.16.0-3) unstable; urgency=low
-
-  * removed alternative theme system, Closes:#47495 
-  * erroneous esound dependency in enlightenment-nosound
-  * removed delimeters around $command in menu-method's 
-    text() function , Closes:#47497
-  * disabled ghttp support, requested
-  * deprecated enlightenment-dox, enlightenment-docs and
-    enlightenment-theme-brushedmetal
-  
- -- Laurence J. Lane <ljlane@debian.org>  Sat, 16 Oct 1999 06:50:25 -0400
+ -- Laurence J. Lane <ljlane@debian.org>  Thu, 21 Oct 1999 11:33:43 -0400
 
 enlightenment (0.16.0-2) unstable; urgency=low
 

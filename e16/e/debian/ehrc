@@ -7,129 +7,107 @@
 
 
 # convenience variables
-cfgopts='--prefix=/usr --disable-updates --enable-fsstd'
 e='enlightenment'
-programs="$e-sound $e-nosound"
-themes="$e-theme-shinymetal $e-theme-bluesteel"
-docs='NEWS INSTALL README'
-install='/usr/bin/install'
 
-
-# convenience functions
-eh_installdir ( ) { 
-  $install -d -m 755 -o root -g root "$@" 
-}
-eh_installdata ( ) { 
-  $install -m 644 -o root -g root "$@" 
-}
-eh_installexe ( ) { 
-  $install -m 755 -o root -g root "$@"
-}
-eh_make ( ) { 
-  /usr/bin/make "$@" 
+eh_installdir ( ) {
+  /usr/bin/install -g root -o root -d -m 755 "$@"
 }
 
+eh_echo ( ) {
+  echo "ehelper: $@..."
+}
 
-# consolidate debhelper files in debian/ehrc
+# consolidate debhelper files into debian/ehrc
 nospoon ( ) {
-(for i in enl*; do echo "#file:$i"; sed 's/^/\#/' $i; echo -e "\n"; done | cat -s) > data
+sed '/^#ehrc#/,$ d' ehrc > data 
+echo -e "#ehrc# This is a regex target that begins the data section.\n" >> data
+(for i in enl*; do echo "#file:$i"; sed 's/^/\#/' $i; echo -e "\n"; done | cat -s) >> data
+mv ehrc ehrc.old; mv data ehrc
 }
 
 spoon ( ) {
-perl -we 'undef $/; while(<>) { while( /^#file:(.*?)^(.*?)^$/smg ) { $file=$1; $data=$2; $data =~ s/^#//smg; open FILE,">$file" || die "$file !?"; print FILE "$data" || die "$file !?"; close FILE || die "$file !?"; } }' ehrc
+  eh_echo "unpacking debhelper files"
+  perl -we 'undef $/; while(<>) { while( /^#file:(.*?)^(.*?)^$/smg ) { $file=$1; $data=$2; $data =~ s/^#//smg; open FILE,">$file" || die "$file !?"; print FILE "$data" || die "$file !?"; close FILE || die "$file !?"; } }' ehrc
 }
 
 # place Debian menu stubs in menus.cfg
 eh_menufilter ( ) {
-perl -lwne '/^__E_CFG_VERSION 0$/ and print("$_\n\n", qw@BEGIN_NEW_FILE_MENU("DEBIAN_MENU", "ROOT", "/etc/X11/enlightenment/menus/Debian.menu")@, "\nEND_MENU") or /^ADD_MENU_SUBMENU_TEXT_ITEM.*APPS_SUBMENU/ and print("$_\n", qw@ADD_MENU_SUBMENU_TEXT_ITEM("Debian",        "DEBIAN_MENU")@) or print;' src/themes/configs/menus.cfg > debian/$e/usr/share/$e/config/menus.cfg
+eh_echo "adding Debian menu stub to menus.cfg"
+perl -lwne '/^__E_CFG_VERSION 0$/ and print("$_\n\n", qw@BEGIN_NEW_FILE_MENU("DEBIAN_MENU", "ROOT", "/etc/enlightenment/menus/Debian.menu")@, "\nEND_MENU") or /^ADD_MENU_SUBMENU_TEXT_ITEM.*APPS_SUBMENU/ and print("$_\n", qw@ADD_MENU_SUBMENU_TEXT_ITEM("Debian",        "DEBIAN_MENU")@) or print;' src/themes/configs/menus.cfg > debian/$e/usr/share/$e/config/menus.cfg
 }
 
-
-# IF this is CVS source tree, expand debhelper files
+# IF this is a CVS source tree, expand debhelper files
 # and run ./autogen.sh. ELSE, just run ./configure.
-# Modify make generated files afterwards.
-eh_configure ( ) { 
-  if [ -d CVS ]; 
-     then (cd debian; spoon); ./autogen.sh $cfgopts; 
-     else ./configure $cfgopts; 
+eh_configure ( ) {
+  if [ -d CVS ]; then
+     eh_echo "CVS/ detected, assuming a CVS build"; (cd debian; spoon)
+     test -f config.cache && eh_echo "removing config.cache" && rm config.cache
+     eh_echo "executing autogen.sh"; ./autogen.sh "$@"
+  else
+     eh_echo "no CVS/ detected, assuming a normal build"
+     test -f config.cache && eh_echo "removing config.cache" && rm config.cache
+     eh_echo "executing the GNU configure script"; ./configure "$@"
   fi
-  
-  # do not install themes, handled elsewhere
-  perl -ni'.old' -we '/^install-data-local:$/ .. /^$/ or print' \
-    src/themes/Makefile
-    
-  # remove HAVE_LIBESD from econfig.h, we
-  # need control of it dh_buildsound()
-  perl -ni'.old' -we 's@^(.*ESD.*)$@/* $1 */@ or print' econfig.h
 }
 
-
-# Debian specific documentation requirements
-eh_undocumented ( ) {
- cd debian/$e/usr/bin; find -type f | sed 's@$@.1@'
-}
-eh_installdocs ( ) {
-  dh_installdocs
-  for i in $programs $themes; 
-    do (cd debian/$i/usr/share/doc; rm -rf $i; ln -vs $e $i)
-  done
-  eh_installdata src/ChangeLog debian/$e/usr/share/doc/$e/changelog
-  eh_installdata $docs debian/$e/usr/share/doc/$e/
-  eh_installdir debian/$e/usr/share/doc/$e/examples
-  eh_installexe $(find sample-scripts/ -maxdepth 1 -type f) debian/$e/usr/share/doc/$e/examples
-  dh_undocumented -p$e $(eh_undocumented)
-  dh_undocumented -p$e-sound ${e}.1
-  dh_undocumented -p$e-nosound ${e}.1
-  dh_installchangelogs -p$e
-  dh_compress  -p$e
-}
-
-
-# build a the enlightenment executable with and without
-# sound support
-eh_buildsound ( ) {
-  rm -fv src/sound.o src/$e
-  eh_make sound.o $e -C src CFLAGS+="-DHAVE_LIBESD" SUBDIRS=""
-  eh_installdir debian/$e-sound/usr/bin
-  eh_installexe src/$e debian/$e-sound/usr/bin
-	
-  rm -fv src/sound.o src/$e
-  eh_make sound.o $e -C src ESD_LIBS="" SUBDIRS=""
-  eh_installdir debian/$e-nosound/usr/bin
-  eh_installexe src/$e debian/$e-nosound/usr/bin
-}
-
-
-# unarchive themes into respective packages
 eh_unpacktheme ( ) {
-  eh_installdir $2
-  tar zxpf src/themes/$1 -C $2
-}
-eh_unpackthemes ( ) {
-  eh_unpacktheme BrushedMetal-Tigert.etheme \
-    debian/$e/usr/share/$e/themes/bmt
-  eh_unpacktheme ShinyMetal.etheme \
-    debian/$e-theme-shinymetal/usr/share/$e/themes/ShinyMetal 
-  eh_unpacktheme BlueSteel.etheme \
-    debian/$e-theme-bluesteel/usr/share/$e/theme/BlueSteel 
+  local themedir="debian/$1/usr/share/enlightenment/themes/$2"
+  local srcdir="src/themes"
+  eh_installdir $themedir
+  eh_echo "unpacking $2.etheme to $themedir"
+  
+  tar zxpf "$srcdir/$2.etheme" -C $themedir
 }
 
+eh_installthemes ( ) {
+  eh_unpacktheme "$e-theme-bluesteel"  "BlueSteel"
+  eh_unpacktheme "$e-theme-shinymetal" "ShinyMetal"
+  eh_unpacktheme "$e-theme-ganymede"   "Ganymede" 
+  eh_unpacktheme "$e"                  "BrushedMetal-Tigert"
+}
 
-# install target meta function
+eh_makfilefilter ( ) {
+  eh_echo "disabling src/themes/Makefile's theme unpacking routine"
+  perl -ni'.old' -lwe '/^install-data-local:$/ .. /^$/ or print' src/themes/Makefile
+}
+
+eh_undocumented ( ) {
+  eh_echo "adding undocumented man page links"
+  local needdocs=$(cd debian/enlightenment/usr/bin ; ls | sed '/^enlightenment$/d;s/$/.1/' | xargs)
+  eh_echo "$needdocs"
+  dh_undocumented -p $e $needdocs
+}
+
+eh_clean ( ) {
+  rm -f core `find . \( -name '*.orig' -o -name '*.rej' -o -name '*~' \
+    -o -name '*.bak' -o -name '#*#' -o -name '.*.orig' \
+    -o -name '.*.rej' -o -name '.SUMS' \) -print`
+}
+
+# install meta function
 eh_install ( ) {
-  set -x
-  rm -fv debian/$e/usr/bin/$e
-  eh_menufilter 
-  eh_buildsound
-  eh_unpackthemes	
-  eh_installdocs
-  dh_installwm -p$e $e
+  eh_menufilter
+  eh_installthemes
+  eh_undocumented
+  eh_clean
 }
 
-# debhelper files follow
+#ehrc# This is a regex target that begins the data section.
+
+#file:enlightenment-theme-bluesteel.README.debian
+#See /usr/share/doc/enlightenment/ for additional information.
+
+#file:enlightenment-theme-ganymede.README.debian
+#See /usr/share/doc/enlightenment/ for additional information.
+
+#file:enlightenment-theme-shinymetal.README.debian
+#See /usr/share/doc/enlightenment/ for additional information.
 
 #file:enlightenment.conffiles
 #/etc/menu-methods/enlightenment
+
+#file:enlightenment.docs
+#NEWS README INSTALL AUTHORS
 
 #file:enlightenment.menu
 #?package(enlightenment):needs="wm" section="WindowManagers"\
@@ -141,7 +119,7 @@ eh_install ( ) {
 #compat="menu-1"
 #
 #genmenu=replacewith(parent($section), "/", "_") ".menu"
-#rootprefix="/etc/X11/enlightenment/menus"
+#rootprefix="/etc/enlightenment/menus"
 #treewalk="cm"
 #rootsection="Debian"
 #
@@ -188,19 +166,22 @@ eh_install ( ) {
 #endmenu=""
 #
 
-#file:enlightenment.postinst
+#file:enlightenment.preinst
 ##!/bin/sh
-#set -e
 #
-#theme_dir='/usr/share/enlightenment/themes'
+#themedir='/usr/share/enlightenment/themes'
 #
-#if [ -d "${theme_dir}/bmt" ]; then
-#   if [ -d "${theme_dir}/BrushedMetal-Tigert" ]; then
-#      echo "WARNING: Moving old BrushedMetal-Tigert to BrushedMetal-Tigert-OLD"
-#      mv -v "${theme_dir}/BrushedMetal-Tigert" "${theme_dir}/BrushedMetal-Tigert-OLD"
-#   fi
-#   echo "Correcting theme name..."
-#   mv -v "${theme_dir}/bmt" "${theme_dir}/BrushedMetal-Tigert"
+#if [ -L "$themedir/BrushedMetal-Tigert" ]; then
+#  echo "WARNING: removing $themedir/BrushedMetal-Tigert symlink"
+#  rm -v "$themedir/BrushedMetal-Tigert"
+#fi
+#
+#if [ -d "$theme_dir/BrushedMetal" ]; then 
+#  echo "WARNING: It is recommended to remove them \"$themedir/BrushedMetal\" dir."
+#fi
+#
+#if [ -d "$themedir/bmt" ]; then
+#  echo "WARNING: It is recommended to remove the \"$themedir/bmt\" dir."
 #fi
 #
 ##DEBHELPER#
@@ -211,17 +192,10 @@ eh_install ( ) {
 ##!/bin/sh
 #set -e
 #
-#theme_dir='/usr/share/enlightenment/themes'
-#if [ -d "${theme_dir}/BrushedMetal-Tigert" ]; then
-#  mv -v "${theme_dir}/BrushedMetal-Tigert" "${theme_dir}/bmt"
-#fi
-#
-#menu_dir='/etc/X11/enlightenment/menus'
+#menu_dir='/etc/enlightenment/menus'
 #find "${menu_dir}" -type f -name 'Debian_*.menu' -print0 | xargs -0r rm -f
 #
-#
 ##DEBHELPER#
-#
 #
 #exit 0
 
