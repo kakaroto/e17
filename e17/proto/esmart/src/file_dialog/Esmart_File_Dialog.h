@@ -4,6 +4,10 @@
 #include <Evas.h>
 #include <Edje.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef struct _Esmart_File_Dialog Esmart_File_Dialog;
 
 #define FILE_NEW 1
@@ -52,5 +56,9 @@ void esmart_file_dialog_callback_add (Evas_Object * efd,
 Evas_Object *esmart_file_dialog_edje_get (Evas_Object * efd);
 Evas_List *esmart_file_dialog_selections_get (Evas_Object * efd);
 const char *esmart_file_dialog_current_directory_get (Evas_Object * efd);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

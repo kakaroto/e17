@@ -4,6 +4,10 @@
 #include<Evas.h>
 #include<Epsilon.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /**
  * E_Thumb - In an effort to easily generate thumbnails this smart object
  * came to be.  Check out http://triq.net/~jens/thumbnail-spec/index.html
@@ -71,5 +75,9 @@ const char *esmart_thumb_format_get (Evas_Object * o);
  * if the cached image is still valid
  */
 int esmart_thumb_freshen (Evas_Object * o);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

@@ -6,6 +6,10 @@
 #include <Ecore.h>
 #include <limits.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 struct _Esmart_Text_Entry
 {
   Evas_Object *clip;
@@ -50,5 +54,9 @@ void esmart_text_entry_return_key_callback_set (Evas_Object * o,
 							      const char
 							      *str),
 						void *data);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

@@ -1,5 +1,5 @@
-#ifndef CONTAINER_H
-#define CONTAINER_H
+#ifndef ESMART_CONTAINER_H
+#define ESMART_CONTAINER_H
 
 #include <Evas.h>
 #include <Ecore.h>
@@ -13,6 +13,9 @@
    o add a "mover" object that tracks where moving element will go
 
 ****/
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 typedef struct _Container Container;
 typedef struct _Container_Element Container_Element;
@@ -183,5 +186,9 @@ double esmart_container_elements_orig_length_get(Evas_Object *container);
 int esmart_container_layout_plugin_set(Evas_Object *container, const char *name);
 
 void esmart_container_scroll_to(Evas_Object *container, Evas_Object *element);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

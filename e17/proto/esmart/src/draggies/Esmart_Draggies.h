@@ -5,6 +5,9 @@
 #include<Ecore.h>
 #include<Ecore_Evas.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /**
  * How to use Esmart Draggies.
@@ -29,4 +32,7 @@ void esmart_draggies_event_callback_add (Evas_Object * o,
 						       void *ev),
 					 const void *data);
 
+#ifdef __cplusplus
+}
+#endif
 #endif
