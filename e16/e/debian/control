@@ -1,53 +1,95 @@
-Source: enlightenment-cvs
+Source: enlightenment
 Section: x11
 Priority: optional
-Maintainer: Lawrence J Lane <ljlane@debian.org>
-Standards-Version: 2.4.0.0
+Maintainer: Laurence J. Lane <ljlane@debian.org>
+Standards-Version: 2.5.0.0
 
-Package: enlightenment-cvs-docs
+Package: enlightenment-docs
 Architecture: all
-Recommends: enlightenment-cvs (>= 0.16)
-Replaces: enlightenment-docs (<< 0.16-0)
-Conflicts: enlightenment-docs (<< 0.16-0)
-Provides: enlightenment-docs
-Description: All documentation for Enlightenment and its themes
- How to make a theme, how to customize E, FAQ, README, the works
+Recommends: enlightenment | enlightenment-nosound
+Description: Documentation common to all Enlightenment packages.
+ All Enlightenment packages symlink their /usr/doc/* directories here.
 
-Package: enlightenment-cvs
+Package: enlightenment
 Architecture: any
-Depends: ${shlibs:Depends}, enlightenment-cvs-docs, enlightenment-cvs-theme
-Suggests: dox-cvs, esound-cvs
-Replaces: enlightenment (<< 0.16-0)
-Conflicts: enlightenment (<< 0.16-0)
-Provides: enlightenment
+Depends: ${shlibs:Depends}, enlightenment-docs
+Recommends: enlightenment-theme, esound, dox
+Conflicts: enlightenment-nosound, enlightenment-theme (<< 0.15.0-1)
+Replaces: enlightenment-nosound
 Description: The Enlightenment Window Manager
- The Enlightnment Window Manager, whose motto is "Time to rethink everything".
- It allows complete user control of almost every possible setting.  This is 
- accomplished through its use of themes.  However at this stage, Enlightenment
- is slightly more complex than wmx and many will find it lacking in features.
- There is no support for menus or iconization.
+ The Enlightenment Window Manager (Developer Release), or "E", whose motto 
+ is "Time to rethink everything". It allows complete user control of almost
+ every possible setting.  This is  accomplished through its use of themes.
+ It now includes support for root menus, iconification, docking, GNOME 
+ integration, and much more. This version is compiled with sound support.                                                     
 
-Package: enlightenment-cvs-theme
-Architecture: all
-Depends: enlightenment-cvs-docs
-Recommends: enlightenment-cvs(>= 0.16)
-Replaces: enlightenment-theme (<< 0.16-0)
-Conflicts: enlightenment-theme (<< 0.16-0)
-Provides: enlightenment-theme
-Description: Themes pictures and config files need by the Enlightenment WM
- This package contains the graphics, sounds, and font needed for a minimal
- install of Enlightenment.  The user is allowed and even suggested to make
- their own.
-
-Package: dox-cvs
+Package: enlightenment-nosound
 Architecture: any
-Depends: ${shlibs:Depends}
-Recommends: enlightenment-cvs
-Replaces: dox (<< 0.16-0)
-Conflicts: dox (<< 0.16-0)
-Provides: dox
-Description: Dox is the Enlightened help program
- Dox is Rasterman's little creation for Enlightenment and other Enlightened
- apps to use as a mini help viewer.  It uses Rasterman's own markup type
- language.
+Depends: ${shlibs:Depends}, enlightenment-docs
+Recommends: enlightenment-theme, dox
+Conflicts: enlightenment, enlightenment-theme (<< 0.15.0-1)
+Replaces: enlightenment
+Description: The Enlightenment Window Manager without sound support
+ The Enlightenment Window Manager (Developer Release), or "E", whose motto
+ is "Time to rethink everything". It allows complete user control of almost 
+ every possible setting.  This is  accomplished through its use of themes. 
+ It now includes support for root menus, iconification, docking, GNOME 
+ integration, and much more. This version is compiled without sound support.
 
+Package: enlightenment-theme-shinymetal
+Architecture: all
+Depends: enlightenment-docs
+Recommends: enlightenment | enlightenment-nosound
+Replaces: enlightenment-theme (<< 0.15.0-1)
+Conflicts: enlightenment-theme (<< 0.15.0-1)
+Provides: enlightenment-theme
+Description: Raster's ShinyMetal Theme for E
+ This is the theme formerly known as 'E15 default'.  It is fairly simple,
+ by raster's standards, and attractive.  The motif used is shiny metal
+ borders, with translucent dark orange highlights.  It includes some nice
+ background pictures.
+
+Package: enlightenment-theme-brushedmetal
+Architecture: all
+Depends: enlightenment-docs
+Recommends: enlightenment | enlightenment-nosound
+Replaces: enlightenment-theme (<< 0.15.0-1)
+Conflicts: enlightenment-theme (<< 0.15.0-1)
+Provides: enlightenment-theme
+Description: Tigert's BrushedMetal Theme for E
+ The BrushedMetal theme, designed by gimp legend tigert, is predominately
+ grey with the subtle texture of - you guessed it - brushed metal.  The
+ menus in particular look superb.
+
+Package: enlightenment-theme-ganymede
+Architecture: all
+Depends: enlightenment-docs
+Recommends: enlightenment | enlightenment-nosound
+Replaces: enlightenment-theme (<< 0.15.0-1)
+Conflicts: enlightenment-theme (<< 0.15.0-1)
+Provides: enlightenment-theme
+Description: cK's Ganymede Theme for E
+ I don't "do" descriptions. Somebody provide one, please.
+
+Package: enlightenment-theme-brushedmetal
+Architecture: all
+Depends: enlightenment-docs
+Recommends: enlightenment | enlightenment-nosound
+Replaces: enlightenment-theme (<< 0.15.0-1)
+Conflicts: enlightenment-theme (<< 0.15.0-1)
+Provides: enlightenment-theme
+Description: Tigert's BrushedMetal Theme for E
+ The BrushedMetal theme, designed by gimp legend tigert, is predominately
+ grey with the subtle texture of - you guessed it - brushed metal.  The
+ menus in particular look superb.
+
+Package: enlightenment-dox
+Architecture: any
+Depends: ${shlibs:Depends}, enlightenment-docs
+Recommends: enlightenment | enlightenment-nosound
+Replaces: dox
+Conflicts: dox
+Provides: dox
+Description: Enlightened help program
+ Help program for Enlightened applications.  Many themes use this for their
+ documentation.

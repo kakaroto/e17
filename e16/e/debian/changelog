@@ -1,115 +1,88 @@
-enlightenment-cvs (0.16-0) unstable; urgency=low
+enlightenment (0.16.0-0.19991002+2) unstable; urgency=low
 
-  * Package names changed to reflect CVS version
+  * YACVSR (Yet Another CVS Release)
+  * fixed the alternatives stuff again
+
+ -- Laurence J. Lane <ljlane@debian.org>  Sat,  2 Oct 1999 18:21:01 -0400
+
+enlightenment (0.16.0-0.19991002+2) unstable; urgency=low
+
+  * YACVSR (Yet Another CVS Release)
+  * cleaning up a bit for a cvs debian/ update
+
+ -- Laurence J. Lane <ljlane@debian.org>  Sat,  2 Oct 1999 15:49:22 -0500
+
+enlightenment (0.16.0-0.19991002+1) unstable; urgency=low
+
+  * YACVSR (Yet Another CVS Release)
+  * returned custom debian/rules
+
+ -- Laurence J. Lane <ljlane@debian.org>  Sat,  2 Oct 1999 03:55:12 -0400
+
+enlightenment (0.16.0-0.19990929+1) unstable; urgency=low
+
+  * YACVSR (Yet Another CVS Release)
+  * threw out the custom debian/rules
+
+ -- Laurence J. Lane <ljlane@debian.org>  Wed, 29 Sep 1999 21:11:46 -0400
+
+enlightenment (0.16.0-0.19990926+1) unstable; urgency=low
+
+  * YACVSR (Yet Another CVS Release)
+  * minor debian/rules changes
+  * breaking the version number now, better than later
+
+ -- Laurence J. Lane <ljlane@debian.org>  Sun, 26 Sep 1999 12:02:17 -0400
+
+enlightenment (0.16.0-19990924-2) unstable; urgency=low
+
+  * YACVSR (Yet Another CVS Release)
+  * enlightenment-nosound.menu-method resynch, oops
+
+ -- Laurence J. Lane <ljlane@debian.org>  Fri, 24 Sep 1999 22:11:19 -0400
+
+enlightenment (0.16.0-19990924-1) unstable; urgency=low
+
+  * YACVSR (Yet Another CVS Release)
+  * more menu stuff, text commands fixed, icon support
+  * usual cvs update from a few minutes ago
+  * enlightenemt dox was missing ... uhhm, E-docs *whisltes*
+
+ -- Laurence J. Lane <ljlane@debian.org>  Fri, 24 Sep 1999 19:40:17 -0400
+
+enlightenment (0.16.0-19990921-3) unstable; urgency=low
+
+  * YACVSR (Yet Another CVS Release)
+  * menu-method clean up, thanks Dale
+  * cK's Ganymede.etheme added
+  * update-alternatives fixed
+  * sound support fixed, makefile typo
+
+ -- Laurence J. Lane <ljlane@debian.org>  Tue, 21 Sep 1999 18:21:25 -0400
+
+enlightenment (0.16.0-19990919-2) unstable; urgency=low
+
+  * YACVSR (Yet Another CVS Release)
+  * menu alternate window manager restarts
+
+ -- Laurence J. Lane <ljlane@debian.org>  Sun, 19 Sep 1999 18:44:46 -0400
+
+enlightenment (0.16.0-19990919-1) unstable; urgency=low
+
+  * YACVSR (Yet Another CVS Release)
+  * menu titles escaped in parameter field of file.menu
+  * menu title field file.menu kludged with sh/sed/basename, install-menu sucks or something
+  * theme change, dir renamed, BrushedMetal-Tigert to BrushedMetal, dpkg sucks or something
+
+ -- Laurence J. Lane <ljlane@debian.org>  Sun, 19 Sep 1999 13:59:23 -0400
+
+enlightenment (0.16.0-19990918-2) unstable; urgency=low
+
+  * YACVSR 
   
- -- Lawrence J Lane <ljlane@debian.org>  Fri, 17 Sep 1999 12:13:14 -0700
- 
-enlightenment-cvs (0.15-0.11) unstable; urgency=low
-
-  * Package names changed to reflect CVS version
-  * CVS updates, more auto* fixes
-  * Removed econfigedit stuff (dead program)
-  * Made version number two digits again to make it 
-    recognized as a new version
-
- -- Brian M. Almeida <bma@debian.org>  Sat, 19 Dec 1998 10:09:18 -0500
-
-enlightenment (0.15-0.1) unstable; urgency=low
-
-  * Happy day! E now supports the FSSTD.
-
- -- Brian M. Almeida <bma@debian.org>  Thu, 10 Dec 1998 17:31:00 -0500
-
-enlightenment (0.15-0.08) unstable; urgency=low
-
-  * CVS upstream patches (Snapshot from 19981120)
-
- -- Brian M. Almeida <bma@debian.org>  Fri, 20 Nov 1998 15:46:00 -0500
-
-enlightenment (0.15-0.07) unstable; urgency=low
-
-  * CVS upstream patches (Snapshot from 19981115)
-  * Raster made a commit RIGHT AFTER 0.06 built...grrr...
-
- -- Brian M. Almeida <bma@debian.org>  Sat, 15 Nov 1998 23:21:00 -0500
-
-enlightenment (0.15-0.06) unstable; urgency=low
-
-  * CVS upstream patches (Snapshot from 19981115)
-  * Has a double click event that shades the window, yay!
-
- -- Brian M. Almeida <bma@debian.org>  Sat, 15 Nov 1998 22:30:00 -0400
-
-enlightenment (0.15-0.05) unstable; urgency=low
-
-  * CVS upstream patches (Snapshot from 19981110)
-
- -- Brian M. Almeida <bma@debian.org>  Tue, 10 Nov 1998 16:19:00 -0400
-
-enlightenment (0.15-0.04) unstable; urgency=low
-
-  * CVS upstream patches (Snapshot from 19981109)
-
- -- Brian M. Almeida <bma@debian.org>  Tue, 10 Nov 1998 10:28:00 -0400
-
-enlightenment (0.15-0.03) unstable; urgency=low
-
-  * CVS upstream patches (Snapshot from 19981107)
-
- -- Brian M. Almeida <bma@debian.org>  Sat, 07 Nov 1998 22:24:00 -0400
-
-enlightenment (0.15-0.02) unstable; urgency=low
-
-  * CVS upstream patches (Snapshot from 19981104) to satisfy the masses
-  * Changed econfigedit dependeny to be libgtk-imlib-perl | libgnome-perl
-
- -- Brian M. Almeida <bma@debian.org>  Fri, 06 Nov 1998 12:39:00 -0400
-
-enlightenment (0.15-0.01) unstable; urgency=low
-
-  * CVS upstream release (Snapshot from 19981025) to satisfy the masses
-
- -- Brian M. Almeida <bma@debian.org>  Mon, 26 Oct 1998 21:40:00 -0400
-
-enlightenment (0.14-5) unstable; urgency=low
-
-  * Added Enlightenment to WindowManagers submenu using update-menus (#27927)
-  * Changed dependency on libgtk-perl to libgtk-imlib-perl
-
- -- Brian M. Almeida <bma@debian.org>  Wed, 14 Oct 1998 15:15:00 -0400
-
-enlightenment (0.14-4) unstable; urgency=low
-
-  * user_main.cfg calls eeyes now, not ee (#27730)
-
- -- Brian M. Almeida <bma@debian.org>  Tue, 13 Oct 1998 20:00:00 -0400
-
-enlightenment (0.14-3) unstable; urgency=low
-
-  * New maintainer
-
- -- Brian M. Almeida <bma@debian.org>  Wed, 30 Sep 1998 18:25:18 -0400
-
-enlightenment (0.14-2) unstable; urgency=low
-
-  * Fixed writing of dotfiles
-
- -- Sean E. Perry <shaleh@debian.org>  Tue, 21 Jul 1998 00:03:18 -0400
-
-enlightenment (0.14-1) unstable; urgency=low
-
-  * Added the e-docs package
-  * Official upstream release
-
- -- Sean E. Perry <shaleh@debian.org>  Sun, 19 Jul 1998 03:38:18 -0400
-
-enlightenment (0.14-0) unstable; urgency=low
-
-  * Initial Release.
-
- -- Sean E. Perry <shaleh@debian.org>  Sun,  5 Jul 1998 20:07:42 -0400
+ -- Laurence J. Lane <ljlane@debian.org>  Wed, 15 Sep 1999 19:28:23 -0400
 
 Local variables:
 mode: debian-changelog
-add-log-mailing-address: "bma@debian.org"
+add-log-mailing-address: "ljlane@debian.org"
 End:

@@ -1,111 +1,124 @@
 #!/usr/bin/make -f
-# Made with the iad of dh_make, by Craig Small
-
-BUILD_DIR=`pwd`/debian/build
-INSTALL_DIR=`pwd`/debian/tmp
 
 #export DH_VERBOSE=1
+export DH_COMPAT=2
 
-configure: configure.in
-	@echo "--- Making configure script and configuring"
-	./autogen.sh
+configure_options = --enable-fsstd=yes --prefix=/usr --bindir=/usr/X11R6/bin
+programs = enlightenment enlightenment-nosound enlightenment-dox
+docs = enlightenment-docs
+themes = enlightenment-theme-ganymede enlightenment-theme-brushedmetal enlightenment-theme-shinymetal
 
-Makefile: configure
-	@echo "--- Configuring"
-	./configure --disable-upgrade --enable-fsstd=yes --prefix=/usr \
-					--bindir=/usr/X11R6/bin
+pwd := $(shell pwd)
+install_dir = $(pwd)/debian/$@
+make_install_in_subdirs = set -ex; for i in $$subdirs; do $(MAKE) install DESTDIR=$(install_dir) SUBDIRS="" -C $$i; done
+theme_dir = debian/$@/usr/share/enlightenment/themes
+unpack_etheme = set -ex; /usr/bin/install -d -m 755 $(theme_dir)/$$etheme;tar zxf src/themes/$$etheme.etheme -C $(theme_dir)/$$etheme
+remake_sound = $(MAKE) src/{sound.o,enlightenment} CFLAGS+=$$CFLAGS $$LFLAGS -C src 
+link_docs = dh_link usr/share/doc/enlightenment-docs usr/share/doc/$@
+pre-install = @echo -e "\n--- $@"; set -ex; dh_testdir; dh_testroot; rm -rf debian/$@
+build_deb = @set -ex; for i in fixperms installdeb gencontrol md5sums builddeb; do dh_$${i}; done
+bin-list = $(shell for i in $(wildcard debian/$@/usr/X11R6/bin/*); do echo -n "$$(basename $$i).1x "; done)
 
-build: Makefile build-stamp
+$(programs): build
+$(programs) $(docs) $(themes): SHELL = DH_OPTIONS=-p$@ /bin/sh -e 
+
+build: build-stamp
 build-stamp:
-	@echo "--- Compiling"
 	dh_testdir
+	dh_testroot
+	./autogen.sh $(configure_options) || ./configure $(configure_options) 
+	mv econfig.h econfig.h.old
+	sed -e '^#define HAVE_LIBESD 1$$@//* \0 */@' econfig.h.old > econfig.h
+	cp src/themes/configs/menus.cfg menus.cfg.old
 	$(MAKE)
-	touch build-stamp
+	touch $@
 
 clean:
-	@echo "--- Cleaning"
 	dh_testdir
 	dh_testroot
-	rm -f build-stamp
-	rm -rf debian/build
-	rm -rf `find . -name '.deps'`
+	-$(MAKE) clean
+	dh_clean -A
+	-rm build-stamp
 
-	-$(MAKE) distclean
-	dh_clean 
+enlightenment-docs:
+	$(pre-install)
+	dh_installexamples sample-scripts/*.{pl,sh}
+	dh_installdocs src/{README,TODO,ChangeLog-pre0.16.gz}
+	dh_installchangelogs
+	cp src/ChangeLog debian/$@/usr/share/doc/$@/changelog
+	dh_compress
+	$(build_deb)
 
-install: build
-	@echo "--- Installing"
-	dh_testdir
-	dh_testroot
-	$(MAKE) install DESTDIR=${INSTALL_DIR}
-	mkdir -p ${INSTALL_DIR}/usr/doc/enlightenment-cvs-docs
+enlightenment:
+	$(pre-install)
+	-rm -rf src/sound.o src/enlighenment
+	$(MAKE) sound.o enlightenment -C src CFLAGS+="-DHAVE_LIBESD"
+	subdirs="eesh epp src src/themes/configs scripts"; $(make_install_in_subdirs)
+	dh_installwm enlightenment 
+	dh_installmenu 
+	dh_shlibdeps 
+	dh_strip
+	dh_undocumented $(bin-list)
+	sed -f debian/menus.sedscr src/themes/configs/menus.cfg \
+	  > debian/$@/usr/share/enlightenment/config/menus.cfg
+	dh_link etc/alternatives/enlightenment-theme-default debian/enlightenment/usr/share/enlightenment/themes/DEFAULT 
+	$(link_docs)
+	$(build_deb)
 
-binary-indep: build install \
-	enlightenment-cvs-docs \
-	enlightenment-cvs-theme \
+enlightenment-nosound:
+	$(pre-install)
+	-rm -rf src/sound.o src/enlighenment
+	$(MAKE) sound.o enlightenment -C src ESD_LIBS=
+	subdirs="eesh epp src src/themes/configs scripts"; $(make_install_in_subdirs)
+	dh_installwm enlightenment 
+	dh_installmenu 
+	dh_shlibdeps 
+	dh_strip
+	dh_undocumented $(bin-list)
+	sed -f debian/menus.sedscr src/themes/configs/menus.cfg \
+	  > debian/$@/usr/share/enlightenment/config/menus.cfg
+	$(link_docs)
+	dh_link etc/alternatives/enlightenment-theme-default debian/enlightenment/usr/share/enlightenment/themes/DEFAULT 
+	$(build_deb)
+	
+enlightenment-dox:
+	$(pre-install)
+	subdirs="dox dox/E-docs"; $(make_install_in_subdirs)
+	dh_shlibdeps 
+	dh_strip
+	dh_undocumented dox.1x
+	$(link_docs)
+	$(build_deb)
+	
+enlightenment-theme-ganymede:
+	$(pre-install)
+	etheme="Ganymede"; $(unpack_etheme)
+	$(link_docs)
+	$(build_deb)
 
-binary-arch: build install \
-	enlightenment-cvs \
-	dox-cvs
+enlightenment-theme-brushedmetal:
+	$(pre-install)
+	etheme="BrushedMetal-Tigert"; $(unpack_etheme) 
+	cd $(theme_dir); rm -rf BrushedMetal && mv BrushedMetal-Tigert BrushedMetal
+	find $(theme_dir) -name '*~' -type f | xargs rm -rf
+	$(link_docs)
+	$(build_deb)
 
-enlightenment-cvs-docs: install
-	@echo "--- Building: $@"
-	dh_installdocs		 -p$@ -P$(BUILD_DIR)/$@ src/README AUTHORS FAQ
-	dh_installchangelogs -p$@ -P$(BUILD_DIR)/$@ src/ChangeLog
-	dh_movefiles		 -p$@ -P$(BUILD_DIR)/$@
-	dh_compress		 	 -p$@ -P$(BUILD_DIR)/$@
-	dh_fixperms		 	 -p$@ -P$(BUILD_DIR)/$@
-	dh_installdeb	 	 -p$@ -P$(BUILD_DIR)/$@
-	dh_gencontrol	 	 -p$@ -P$(BUILD_DIR)/$@
-	dh_md5sums		 	 -p$@ -P$(BUILD_DIR)/$@
-	dh_builddeb		 	 -p$@ -P$(BUILD_DIR)/$@
+enlightenment-theme-shinymetal:
+	$(pre-install)
+	etheme="ShinyMetal"; $(unpack_etheme)
+	find $(theme_dir) -name '*~' -type f | xargs rm -rf
+	find $(theme_dir) -name .cvsignore -type f | xargs rm -rf
+	find $(theme_dir) -name CVS -type d | xargs rm -rf
+	$(link_docs)
+	$(build_deb)
 
-enlightenment-cvs-theme: install
-	@echo "--- Building: $@"
-	mkdir -p $(BUILD_DIR)/$@/usr/doc
-	cd $(BUILD_DIR)/$@/usr/doc; ln -sf enlightenment-cvs-docs $@
-	dh_movefiles		 -p$@ -P$(BUILD_DIR)/$@
-	dh_compress		 	 -p$@ -P$(BUILD_DIR)/$@
-	dh_fixperms		 	 -p$@ -P$(BUILD_DIR)/$@
-	dh_installdeb	 	 -p$@ -P$(BUILD_DIR)/$@
-	dh_gencontrol	 	 -p$@ -P$(BUILD_DIR)/$@
-	dh_md5sums		 	 -p$@ -P$(BUILD_DIR)/$@
-	dh_builddeb		 	 -p$@ -P$(BUILD_DIR)/$@
+test:
+	
+binary-arch: build $(programs)
 
-enlightenment-cvs: install
-	@echo "--- Building: $@"
-	mkdir -p $(BUILD_DIR)/$@/usr/doc
-	cd $(BUILD_DIR)/$@/usr/doc; ln -sf enlightenment-cvs-docs $@
-	dh_installmenu  	 -p$@ -P$(BUILD_DIR)/$@
-	dh_movefiles 		 -p$@ -P$(BUILD_DIR)/$@
-	dh_strip 		 	 -p$@ -P$(BUILD_DIR)/$@
-	dh_compress		 	 -p$@ -P$(BUILD_DIR)/$@
-	dh_fixperms		 	 -p$@ -P$(BUILD_DIR)/$@
-	dh_installdeb	 	 -p$@ -P$(BUILD_DIR)/$@
-	dh_undocumented	 	 -p$@ -P$(BUILD_DIR)/$@ enlightenment.1x
-	dh_shlibdeps	 	 -p$@ -P$(BUILD_DIR)/$@
-	dh_gencontrol	 	 -p$@ -P$(BUILD_DIR)/$@
-	dh_md5sums		 	 -p$@ -P$(BUILD_DIR)/$@
-	dh_builddeb		 	 -p$@ -P$(BUILD_DIR)/$@
+binary-indep: $(docs) $(themes)
 
-dox-cvs: install
-	@echo "--- Building: $@"
-	dh_installdocs		 -p$@ -P$(BUILD_DIR)/$@ dox/README \
-								debian/README.debian
-	dh_installchangelogs -p$@ -P$(BUILD_DIR)/$@ dox/ChangeLog
-	dh_movefiles 		 -p$@ -P$(BUILD_DIR)/$@
-	dh_strip 		 	 -p$@ -P$(BUILD_DIR)/$@
-	dh_compress		 	 -p$@ -P$(BUILD_DIR)/$@
-	dh_fixperms		 	 -p$@ -P$(BUILD_DIR)/$@
-	dh_installdeb	 	 -p$@ -P$(BUILD_DIR)/$@
-	dh_undocumented	 	 -p$@ -P$(BUILD_DIR)/$@ dox.1x
-	dh_shlibdeps	 	 -p$@ -P$(BUILD_DIR)/$@
-	dh_gencontrol	 	 -p$@ -P$(BUILD_DIR)/$@
-	dh_md5sums		 	 -p$@ -P$(BUILD_DIR)/$@
-	dh_builddeb		 	 -p$@ -P$(BUILD_DIR)/$@
+binary: build $(docs) $(programs) $(themes)
 
-source diff:                                                                  
-	@echo >&2 'source and diff are obsolete - use dpkg-source -b'; false
-
-binary: binary-indep binary-arch
-.PHONY: build clean binary-indep binary-arch binary
+.PHONY: clean binary-indep binary-arch binary package-% $(docs) $(themes) $(programs)

@@ -1,11 +1,8 @@
-enlightenment for DEBIAN
-----------------------
+Enlightenment for DEBIAN
+------------------------
 
-The Enlightenment window manager package.  
-It now complies with the FHS (Thanks DrMike & KainX!).  You can
-now build your own .debs of CVS if you so choose, since the debian
-specific files are going to be commited to the source tree.  Just run
-'debian/rules binary' and you'll be set. If you have questions, just
-email me.
+This is the CVS release of the Enlightenment Window Manager for Debian.
+This is NOT an official Debian package. Bugs posted in the Debian Bug
+Tracking System will not be acknowledged.
 
-Brian M. Almeida <bma@debian.org>, Wed, 30 Sep 1998 18:47:42 -0400
+Laurence J. Lane <ljlane@debian.org>, Wed, 29 Sep 1999 21:14:30 -0400
