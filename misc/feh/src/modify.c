@@ -276,7 +276,7 @@ feh_modify_brightness_to_rectangle (winwidget winwid, double value, int x,
   Imlib_Color_Modifier color_modifier;
   if (value > 1.0)
     return;
-	if (width == 0 || height == 0)
+  if (width == 0 || height == 0)
     return;
   imlib_context_set_image (winwid->im);
   color_modifier = imlib_create_color_modifier ();
@@ -431,4 +431,20 @@ void
 feh_scale_double (winwidget winwid)
 {
   feh_image_resize_to (winwid, winwid->im_w * 2, winwid->im_h * 2);
+}
+
+void
+feh_crop_image (winwidget winwid, int x, int y, int width, int height)
+{
+  Imlib_Image new_im = NULL;
+  if (width == 0 || height == 0)
+    return;
+  imlib_context_set_image (winwid->im);
+  new_im = imlib_create_cropped_image (x, y, width, height);
+  imlib_free_image_and_decache ();
+  winwid->im = new_im;
+  imlib_context_set_image (winwid->im);
+  winwid->im_w = imlib_image_get_width ();
+  winwid->im_h = imlib_image_get_height ();
+  winwidget_rerender_image (winwid);
 }

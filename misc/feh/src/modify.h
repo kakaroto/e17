@@ -29,8 +29,7 @@ void feh_flip_h (winwidget winwid);
 void feh_flip_v (winwidget winwid);
 void feh_modify_brightness (winwidget winwid, double value);
 void feh_modify_brightness_to_rectangle (winwidget winwid, double value,
-					 int x, int y, int width,
-					 int height);
+					 int x, int y, int width, int height);
 void feh_modify_gamma (winwidget winwid, double value);
 void feh_modify_gamma_to_rectangle (winwidget winwid, double value, int x,
 				    int y, int width, int height);
@@ -46,3 +45,4 @@ void feh_scale_max_pect (winwidget winwid);
 void feh_scale_half (winwidget winwid);
 void feh_scale_double (winwidget winwid);
 void set_pixmap_property (Pixmap p, Window woot);
+void feh_crop_image (winwidget winwid, int x, int y, int width, int height);
