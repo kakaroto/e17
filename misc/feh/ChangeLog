@@ -1,3 +1,13 @@
+Mon Jan 10 22:48:46 2000  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
+
+	* Whee. Now feh can load images from urls.
+	* Specify an image starting with http:// and feh will use wget to
+	  load the image, store it in a temporary file and view it.
+	* You must have wget installed for this to work.
+	* I have some optimisations to add, the image is currently not
+	  cached, so if you have http files in a slideshow, they will reload
+	  each time you get to them ;) I'll do this soon.
+
 Sat Jan  8 18:44:05 2000  Tom Gilbert  <gilbertt@tomgilbert.freeserve.co.uk>
 
 	* Finally got around to adding timers to feh. Now there is a new
