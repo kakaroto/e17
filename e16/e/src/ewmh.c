@@ -287,7 +287,7 @@ EWMH_SetDesktopCount(void)
 void
 EWMH_SetDesktopNames(void)
 {
-   char                buf[10*ENLIGHTENMENT_CONF_NUM_DESKTOPS], *s;
+   char                buf[10 * ENLIGHTENMENT_CONF_NUM_DESKTOPS], *s;
    int                 i;
 
    EDBUG(6, "EWMH_SetDesktopNames");
