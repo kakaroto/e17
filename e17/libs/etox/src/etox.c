@@ -380,8 +380,6 @@ void etox_set_text(Evas_Object * obj, char *text)
 		 */
 		if (line->w > et->tw)
 			et->tw = line->w;
-
-		et->th += line->h;
 	}
 
 	etox_layout(et);
@@ -670,17 +668,7 @@ static void etox_resize(Evas_Object * obj, Evas_Coord w, Evas_Coord h)
 	/*
 	 * Layout lines if appropriate.
 	 */
-	if (et->lines)
-     	  {
-	     char *text;
-	     
-	     text = etox_get_text(obj);
-	     if (text)
-	       {
-		  etox_set_text(obj, text);
-		  free(text);
-	       }
-	  }
+	etox_layout(et);
 
 	/*
 	 * Adjust the clip box to display the contents correctly. We need to
@@ -1261,6 +1249,7 @@ void etox_layout(Etox * et)
 		y += line->h;
 	}
 	et->th = y - et->y;
+printf("et->th %f\n", (float)et->th);
 }
 
 Etox_Line *
