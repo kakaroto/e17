@@ -76,8 +76,8 @@ entice_config_theme_get(void)
       /* theme doesn't exist by abs/relative path in db */
       if (stat(econfig->theme, &status) != 0)
       {
-         snprintf(buf, PATH_MAX, "%s/.entice/%s", getenv("HOME"),
-                  econfig->theme);
+         snprintf(buf, PATH_MAX, "%s/.e/apps/entice/themes/%s",
+                  getenv("HOME"), econfig->theme);
          if (stat(buf, &status) != 0)
          {
             snprintf(buf, PATH_MAX, "%s/themes/%s", PACKAGE_DATA_DIR,
