@@ -9,6 +9,8 @@ Epplet_gadget       da, b_close, b_config, b_help, pop;
 int                *flame = NULL;
 int                *vspread, *hspread, *residual;
 unsigned char       rm[255], gm[255], bm[255];
+ConfigItem          config_defaults[] = { { "color1", "30 90 90" }, { "color2", "50 255 255" }, { "color3", "255 255 255" } };
+const int           num_defaults = 3;
 
 static int          colors[] =
 {
@@ -310,40 +312,31 @@ static void
 save_conf(int d1, int d2, int d3, int d4, int d5, int d6, int d7, int d8, int d9)
 {
    char s[1024];
-   FILE *f;
-   
-   sprintf(s, "%s/.ecpurc", getenv("HOME"));
-   f = fopen(s, "w");
-   if (f)
-     {
-	fprintf(f, "%i %i %i %i %i %i %i %i %i\n", 
-		d1, d2, d3, d4, d5, d6, d7, d8, d9);
-	fclose(f);
-     }
+
+   sprintf(s, "%d %d %d", d1, d2, d3);
+   Epplet_modify_config_data("color1", s);
+   sprintf(s, "%d %d %d", d4, d5, d6);
+   Epplet_modify_config_data("color2", s);
+   sprintf(s, "%d %d %d", d7, d8, d9);
+   Epplet_modify_config_data("color3", s);
+   Epplet_save_config();
 }
 
 static void
 load_conf(void)
 {
    int d1, d2, d3, d4, d5, d6, d7, d8, d9;
-   char s[1024];
-   FILE *f;
-   
-   sprintf(s, "%s/.ecpurc", getenv("HOME"));
-   f = fopen(s, "r");
-   if (f)
-     {
-	fscanf(f, "%i %i %i %i %i %i %i %i %i\n",
-	       &d1, &d2, &d3, &d4, &d5, &d6, &d7, &d8, &d9);
-	flame_col(d1, d2,  d3,
-		  d4, d5, d6,
-		  d7, d8, d9);
-	fclose(f);
-     }
-   else
-      flame_col(30, 90,  90,
-		50, 255, 255,
-		255, 255, 255);
+   char *str;
+
+   str = Epplet_query_config_data("color1");
+   sscanf(str, "%d %d %d", &d1, &d2, &d3);
+   str = Epplet_query_config_data("color2");
+   sscanf(str, "%d %d %d", &d4, &d5, &d6);
+   str = Epplet_query_config_data("color3");
+   sscanf(str, "%d %d %d", &d7, &d8, &d9);
+   flame_col(d1, d2,  d3,
+             d4, d5, d6,
+             d7, d8, d9);
 }
 
 int
@@ -357,6 +350,7 @@ main(int argc, char **argv)
    
    Epplet_Init("E-Cpu", "0.1", "Enlightenment CPU Epplet",
 	       3, 3, argc, argv, 0);
+   Epplet_load_config(config_defaults, num_defaults);
    Epplet_timer(cb_timer, NULL, 0.1, "TIMER");
    Epplet_gadget_show(da = Epplet_create_drawingarea(2, 2, 44, 44));
    win = Epplet_get_drawingarea_window(da);
