@@ -2282,3 +2282,12 @@ Thu Dec  4 20:11:07 CET 2003
 Fix initial default iconbox placement.
 Attempt to fix pager update glitch during desktop switch.
 Fix icons for apps specifying pixmap but no mask.
+
+-------------------------------------------------------------------------------
+
+Sun Dec  7 14:10:48 CET 2003
+(Kim)
+
+Button code and namespace shuffle.
+Added window id "shortcuts" for use with eesh
+ (based on patch by Mike Frysinger <vapier@gentoo.org>).
