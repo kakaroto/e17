@@ -33,6 +33,8 @@
 #include "file.h"
 #include "treeview.h"
 
+extern int librsvg_cmp;
+
 void open_icon_chooser (GtkWidget *treeview_menu)
 {
   GtkWidget *main_window;
@@ -137,12 +139,12 @@ void open_icon_chooser (GtkWidget *treeview_menu)
         entry_select = gtk_entry_get_text (GTK_ENTRY (GTK_COMBO (
                                              resize_combo)->entry));
 
-        /* temporary fix for probability broken librsvg function.
-         * it should autodetect librsvg version...
+        /* check for broken librsvg function
+         * perhaps better handling next stable librsvg release
          */
         right = g_malloc (3);
         strsplit (filename, &right, g_utf8_strlen (filename, -1) - 3);
-        if (strcmp (right, "svg"))
+        if ((strcmp (right, "svg")) || (librsvg_cmp >= 0))
         {
           gdk_pixbuf_get_file_info (filename,
                                     &width,
@@ -150,8 +152,8 @@ void open_icon_chooser (GtkWidget *treeview_menu)
         }
         else
         {
-          width = ICON_SIZE_AUTO;
-          height = ICON_SIZE_AUTO;
+          width = ICON_SIZE_AUTO+1;
+          height = ICON_SIZE_AUTO+1;
         }
         g_free (right);
 
@@ -296,13 +298,13 @@ void update_preview_cb (GtkFileChooser *file_chooser, gpointer data)
   {
     gchar *right;
 
-    /* temporary fix for probability broken librsvg function
-     * it should autodetect librsvg version...
+    /* check for broken librsvg function
+     * perhaps better handling next stable librsvg release
      */
     right = g_malloc (3);
     strsplit (filename, &right, g_utf8_strlen (filename, -1) - 3);
 
-    if (strcmp (right, "svg"))
+    if ((strcmp (right, "svg")) || (librsvg_cmp >= 0))
     {
       gdk_pixbuf_get_file_info (filename, &width, &height);
     }

@@ -198,3 +198,78 @@ char *strtok_left (char *s, const char *delim, unsigned int number)
 
   return NULL;
 }
+
+/* if ver1  < ver2 -> return -1
+ * if ver1  > ver2 -> return 1
+ * if ver1 == ver2 -> return 0
+ */
+int version_cmp (char *ver1, char *ver2)
+{
+  char *ver1_token;
+  char *ver2_token;
+  char *ver1_ptr = malloc (strlen (ver1)+1);
+  char *ver2_ptr = malloc (strlen (ver2)+1);
+
+  ver1_token = strtok_r (ver1, ".", &ver1_ptr);
+  ver2_token = strtok_r (ver2, ".", &ver2_ptr);
+
+  while ((ver1_token != NULL) || (ver2_token != NULL))
+  {
+    int ver1_i;
+    int ver2_i;
+
+    if (ver1_token == NULL)
+      ver1_i = 0;
+    else
+      ver1_i = atoi (ver1_token);
+
+    if (ver2_token == NULL)
+      ver2_i = 0;
+    else
+    ver2_i = atoi (ver2_token);
+
+    if (ver1_i < ver2_i)
+      return -1;
+    else if (ver1_i > ver2_i)
+      return 1;
+
+    ver1_token = strtok_r (NULL, ".", &ver1_ptr);
+    ver2_token = strtok_r (NULL, ".", &ver2_ptr);
+  } 
+
+  return 0;
+}
+
+/* returns a version number of a pkg-config package
+ * the return char* could be freed after use
+ */
+char *pkg_config_version (char *package)
+{
+  gboolean spawn;
+  const int buf_len = 128;
+  gchar buf[buf_len];
+  gchar *argv_child[4];
+  gint stdout_child;
+  gint stderr_child;
+  int ret_val;
+
+  argv_child[0] = g_strdup ("pkg-config");
+  argv_child[1] = g_strdup ("--modversion");
+  argv_child[2] = package;
+  argv_child[3] = NULL;
+
+  spawn = g_spawn_async_with_pipes (NULL, argv_child, NULL, 
+                                    G_SPAWN_SEARCH_PATH, NULL,
+                                    NULL, NULL,  NULL,
+                                    &stdout_child, &stderr_child, NULL);
+
+  g_free (argv_child[0]);
+  g_free (argv_child[1]);
+
+  ret_val = read (stdout_child, buf, buf_len);
+
+  if (ret_val == 0)
+    return 0;
+  else
+    return strdup (buf);
+}

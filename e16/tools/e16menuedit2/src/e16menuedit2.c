@@ -34,14 +34,19 @@
 #include "treeview.h"
 #include "toolbar.h"
 
+int librsvg_cmp;
+
 int main (int argc, char *argv[])
 {
   GtkWidget *main_window;
   GtkWidget *treeview_menu;
   GladeXML *main_xml;
-  GtkWidget *toolbar1;
-  int i;
+  GtkWidget *toolbar1;  
   char app_dir[PATH_MAX];
+  char package[] = "librsvg-2.0";
+  char good_version[] = "2.7.1";
+  char *version;
+  int i;  
 
 #ifdef ENABLE_NLS
   bindtextdomain (GETTEXT_PACKAGE, PACKAGE_LOCALE_DIR);
@@ -79,6 +84,10 @@ int main (int argc, char *argv[])
   sprintf (app_dir, "%s/%s/%s", homedir (getuid ()), APP_HOME, ICON_DIR);
   mkdir_with_parent (app_dir, 0755);
 
+  /* get librsvg version and check if good enough */
+  version = pkg_config_version (package);
+  librsvg_cmp = version_cmp (version, good_version);
+  
   gtk_widget_show (main_window);
 
   gtk_main ();
