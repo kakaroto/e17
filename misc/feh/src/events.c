@@ -97,9 +97,9 @@ feh_event_handle_ButtonPress(XEvent * ev)
         winwid = winwidget_get_from_window(ev->xbutton.window);
         if (winwid != NULL)
         {
-           D(("Zoom mode baby!\n"));
-           opt.mode = MODE_ZOOM;
-           winwid->mode = MODE_ZOOM;
+           D(("Pan mode baby!\n"));
+           opt.mode = MODE_PAN;
+           winwid->mode = MODE_PAN;
            D(("click offset is %d,%d\n", ev->xbutton.x, ev->xbutton.y));
            winwid->click_offset_x = ev->xbutton.x - winwid->im_x;
            winwid->click_offset_y = ev->xbutton.y - winwid->im_y;
@@ -136,9 +136,9 @@ feh_event_handle_ButtonPress(XEvent * ev)
            }
            else
            {
-              D(("Pan mode baby!\n"));
-              opt.mode = MODE_PAN;
-              winwid->mode = MODE_PAN;
+              D(("Zoom mode baby!\n"));
+              opt.mode = MODE_ZOOM;
+              winwid->mode = MODE_ZOOM;
               D(("click offset is %d,%d\n", ev->xbutton.x, ev->xbutton.y));
               winwid->click_offset_x = ev->xbutton.x - winwid->im_x;
               winwid->click_offset_y = ev->xbutton.y - winwid->im_y;
