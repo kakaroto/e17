@@ -1,13 +1,14 @@
 Summary: Powerful image loading and rendering library
 Name: imlib2
 Version: 1.1.2
-Release: 1
+Release: 1.%(date '+%Y%m%d')
 Copyright: BSD
 Group: System Environment/Libraries
 Source: ftp://ftp.enlightenment.org/pub/enlightenment/e17/libs/%{name}-%{version}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-root
 Packager: Michael Jennings <mej@eterm.org>
 URL: http://www.rasterman.com/raster/imlib.html
+#BuildSuggests: freetype-devel xorg-x11-devel
 Requires: %{name}-loader_jpeg = %{version}
 Requires: %{name}-loader_png = %{version}
 Requires: %{name}-loader_argb = %{version}
@@ -103,51 +104,32 @@ Group: System Environment/Libraries
 gz compressed image loader/saver for Imlib2
 
 %prep
-rm -rf $RPM_BUILD_ROOT
-
 %setup -q
 
 %build
-
-if [ -f configure ]
-then
-  %configure --prefix=%{_prefix} --bindir=%{_bindir} --libdir=%{_libdir} --includedir=%{_includedir}
-else
-  # can't build as root? gah. ;)
-  sed <autogen.sh 's@$USER@ANNOYING@' >autogen.sh1
-  mv -f autogen.sh1 autogen.sh
-  chmod 0700 autogen.sh
-  ./autogen.sh --prefix=%{_prefix} --bindir=%{_bindir} --libdir=%{_libdir} --includedir=%{_includedir}
-fi
-
-if [ "$SMP" != "" ]; then
-  (make "MAKE=make -k -j $SMP"; exit 0)
-  make
-else
-  make
-fi
+%{configure} --prefix=%{_prefix}
+%{__make} %{?_smp_mflags} %{?mflags}
 
 %install
-rm -rf $RPM_BUILD_ROOT
-make DESTDIR=$RPM_BUILD_ROOT install
+%{__make} %{?mflags_install} DESTDIR=$RPM_BUILD_ROOT install
 
 %clean
-rm -rf $RPM_BUILD_ROOT
+test "x$RPM_BUILD_ROOT" != "x/" && rm -rf $RPM_BUILD_ROOT
 
 %post
-test -x /sbin/ldconfig && /sbin/ldconfig
+/sbin/ldconfig
 
 %postun
-test -x /sbin/ldconfig && /sbin/ldconfig
+/sbin/ldconfig
 
 %files
-%defattr(-,root,root,0755)
-%doc AUTHORS README COPYING ChangeLog doc/index.html doc/imlib2.gif doc/blank.gif
+%defattr(-, root, root)
+%doc AUTHORS COPYING README ChangeLog doc/index.html doc/imlib2.gif doc/blank.gif
 %{_libdir}/lib*.so.*
 %{_bindir}/*
 
 %files devel
-%defattr(-,root,root,0755)
+%defattr(-, root, root, 0755)
 %{_libdir}/libImlib2.so
 %{_libdir}/*.a
 %{_libdir}/*.la
@@ -190,28 +172,4 @@ test -x /sbin/ldconfig && /sbin/ldconfig
 %files loader_gz
 %attr(755,root,root) %{_libdir}/imlib2_loaders/image/zlib.*
 
-
-
 %changelog
-* Mon Jan 8 2001 The Rasterman <raster@rasterman.com>
-- Fix Requires & BuildRequires for freetype.
-
-* Sat Sep 30 2000 Lyle Kempler <term@kempler.net>
-- Bring back building imlib2 as root via autogen.sh for the lazy (me)
-- Some minor changes
-
-* Sat Sep 30 2000 Joakim Bodin <bodin@dreamhosted.com>
-- Linux-Mandrake:ise the spec file
-
-* Tue Sep 12 2000 The Rasterman <raster@rasterman.com>
-- Redo spec file
-
-* Wed Aug 30 2000 Lyle Kempler <kempler@utdallas.edu>
-- Include imlib2-config
-
-* Sat May 20 2000 Lyle Kempler <kempler@utdallas.edu>
-- Fixed problems with requiring imlib2_view
-- Went back to imlib2_view (not imlib2-view)
-
-* Tue Nov 2 1999 Lyle Kempler <kempler@utdallas.edu>
-- Mangled imlib 1.9.8 imlib spec file into imlib2 spec file

@@ -1,13 +1,14 @@
 Summary: Enlightenment Database Access Library
 Name: edb
 Version: 1.0.5
-Release: 2
+Release: 2.%(date '+%Y%m%d')
 Copyright: BSD
 Group: System Environment/Libraries
 URL: http://www.enlightenment.org/pages/edb.html
 Packager: Michael Jennings <mej@eterm.org>
 Vendor: The Enlightenment Development Team (http://www.enlightenment.org/)
 Source: ftp://ftp.enlightenment.org/enlightenment/e17/libs/%{name}-%{version}.tar.gz
+#BuildSuggests: gtk-devel
 BuildRoot: %{_tmppath}/%{name}-%{version}-root
 
 %description

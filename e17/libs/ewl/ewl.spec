@@ -1,3 +1,5 @@
+%define _missing_doc_files_terminate_build 0
+
 Summary: Enlightenment Widget Library
 Name: ewl
 Version: 0.0.4
@@ -7,7 +9,6 @@ Group: User Interface/X
 URL: http://www.enlightenment.org/pages/ewl.html
 Source: ftp://ftp.enlightenment.org/enlightenment/%{name}-%{version}.tar.gz
 Packager: Michael Jennings <mej@eterm.org>
-Vendor: The Enlightenment Development Team <e-develop@enlightenment.org>
 BuildRoot: %{_tmppath}/%{name}-%{version}-root
 
 %description

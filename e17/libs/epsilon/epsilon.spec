@@ -1,7 +1,9 @@
+%define _missing_doc_files_terminate_build 0
+
 Summary: Enlightened Thumbnail Generator
 Name: epsilon
 Version: 0.0.2
-Release: 1
+Release: 1.%(date '+%Y%m%d')
 Copyright: BSD
 Group: User Interface/X
 Source: ftp://ftp.enlightenment.org/enlightenment/%{name}-%{version}.tar.gz

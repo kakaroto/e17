@@ -1,13 +1,15 @@
+%define _missing_doc_files_terminate_build 0
+
 Summary: JPEG Scaling Library
 Name: epeg
 Version: 0.9.0
-Release: 1
+Release: 1.%(date '+%Y%m%d')
 Copyright: BSD
 Group: System Environment/Libraries
 Source: ftp://ftp.enlightenment.org/pub/epeg/%{name}-%{version}.tar.gz
 Packager: Michael Jennings <mej@eterm.org
 URL: http://www.enlightenment.org/
-BuildRequires: libjpeg-devel
+#BuildSuggests: libjpeg-devel xorg-x11-devel
 Requires: libjpeg
 BuildRoot: %{_tmppath}/%{name}-%{version}-root
 
