@@ -52,14 +52,14 @@ db_la_SOURCES       = \
 	common.h \
 	image.h
 db_la_LDFLAGS	     = -no-undefined -module -avoid-version
-db_la_LIBADD	     = $(LIBS_EDB) -ledb -lz
+db_la_LIBADD	     = $(LIBS_IMLIB2) $(LIBS_EDB) -ledb -lz
 
 eet_la_SOURCES       = \
 	loader_eet.c \
 	common.h \
 	image.h
 eet_la_LDFLAGS	     = -no-undefined -module -avoid-version
-eet_la_LIBADD	     = $(LIBS_EET) -leet -lz
+eet_la_LIBADD	     = $(LIBS_IMLIB2) $(LIBS_EET) -leet -lz
 
 ico_la_SOURCES       = \
 	loader_ico.c \
