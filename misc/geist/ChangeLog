@@ -1,3 +1,16 @@
+Sun Aug 27 02:19:03 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Yuck. Strongly dislikes the notebook UI. Having all the
+	documents in the same window means having the window the same size
+	for all of them - hardly ever what you want. Plus I want to see
+	more than one at a time. So we revert to a multiple document
+	window setup, and let the WM do the layout work. Much better.
+	* The currently selected document currently changed on
+	mouse_enter, let me know if this is too senstive, we could do on
+	mouse click instead or something...
+	* May have introduced some bugs as this was a big change. Let me
+	know.
+
 Sat Aug 26 20:48:36 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Block all the handlers when filling doc properties fields in,

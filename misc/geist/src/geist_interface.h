@@ -5,10 +5,10 @@ GtkWidget *obj_win;
 GtkWidget *obj_list;
 gint obj_sel_handler, obj_unsel_handler;
 
-gboolean mainwin_delete_cb(GtkWidget * widget, GdkEvent * event,
+gboolean docwin_delete_cb(GtkWidget * widget, GdkEvent * event,
 
                            gpointer user_data);
-gboolean mainwin_destroy_cb(GtkWidget * widget, GdkEvent * event,
+gboolean docwin_destroy_cb(GtkWidget * widget, GdkEvent * event,
 
                             gpointer user_data);
 gboolean configure_cb(GtkWidget * widget, GdkEventConfigure * event,
@@ -36,10 +36,8 @@ gboolean obj_addtext_cb(GtkWidget * widget, gpointer * data);
 gboolean obj_addrect_cb(GtkWidget * widget, gpointer * data);
 gboolean obj_addline_cb(GtkWidget * widget, gpointer * data);
 gboolean menu_cb(GtkWidget * widget, gpointer * data);
-GtkWidget *geist_create_main_window(void);
 GtkWidget *geist_create_object_list(void);
-GtkWidget *
-geist_gtk_new_document_page(geist_document *doc);
+GtkWidget *geist_gtk_new_document_window(geist_document *doc);
 void nbook_switch_page_cb(GtkNotebook * notebook, GtkNotebookPage * page,
                      guint page_num);
 

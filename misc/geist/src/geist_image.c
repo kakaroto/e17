@@ -46,6 +46,7 @@ geist_image_init(geist_image * img)
    obj->sizemode = SIZEMODE_ZOOM;
    obj->alignment = ALIGN_CENTER;
    obj->display_props = geist_image_display_props;
+   obj->get_object_list_entry = geist_image_get_object_list_entry;
    img->last.opacity = 0;
    img->opacity = FULL_OPACITY;
 
@@ -585,4 +586,12 @@ geist_image_update_positioning(geist_object * obj)
 
    geist_image_apply_image_mods(obj);
    D_RETURN_(3);
+}
+
+char *
+geist_image_get_object_list_entry(geist_object * obj, int column)
+{
+   D_ENTER(3);
+
+   D_RETURN(3, GEIST_IMAGE(obj)->filename);
 }

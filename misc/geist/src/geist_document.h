@@ -24,6 +24,7 @@ struct __geist_document
    Imlib_Updates up;
    GtkWidget *darea;
    GtkWidget *scrollwin;
+   GtkWidget *win;
 };
 
 geist_document *geist_document_new(int w, int h);

@@ -116,6 +116,7 @@ struct __geist_object
 	void (*update_dimensions_relative) (geist_object *obj, int w, int h);
 	void (*update_position_relative) (geist_object *obj, int x, int y);
     void (*update_positioning)(geist_object * obj);
+    char *(*get_object_list_entry)(geist_object *obj, int column);
 };
 
 /* allocation functions */
@@ -208,6 +209,8 @@ void geist_object_int_update_dimensions_relative(geist_object *obj, int w, int h
 void geist_object_update_sizemode(geist_object * obj);
 void geist_object_int_update_positioning(geist_object * obj);
 void geist_object_update_positioning(geist_object *obj);
+char *geist_object_get_object_list_entry(geist_object *obj, int column);
+char *geist_object_int_get_object_list_entry(geist_object *obj, int column);
 
 
 #define geist_object_set_state(o, s) (o->state |=  s)

@@ -10,7 +10,6 @@
 #include "geist_gtk_menu.h"
 #include "geist_interface.h"
 
-GtkWidget *mainwin;
 geist_document *current_doc;
 GtkWidget *statusbar;
 
@@ -40,6 +39,12 @@ void refresh_alignment_cb(GtkWidget * widget, gpointer * obj);
 void geist_update_statusbar(geist_document * doc);
 void geist_update_document_props_window(void);
 void geist_update_obj_props_window(void);
+gboolean objwin_delete_cb(GtkWidget * widget, GdkEvent * event,
+                           gpointer user_data);
+gboolean objwin_destroy_cb(GtkWidget * widget, GdkEvent * event,
+                           gpointer user_data);
+gboolean docwin_enter_cb(GtkWidget * widget, GdkEvent * event,
+                            gpointer user_data);
 
 typedef struct _geist_confirmation_dialog_data
 {
@@ -78,93 +83,6 @@ char *object_alignments[] = {
    "Bottom",
    "XXXXX"
 };
-
-GtkWidget *
-geist_create_main_window(void)
-{
-   GtkWidget *mvbox, *menubar, *menu, *menuitem;
-   GtkWidget *nbook;
-   GtkWidget *mainwin;
-
-
-   D_ENTER(3);
-
-   mainwin = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-   gtk_window_set_policy(GTK_WINDOW(mainwin), TRUE, TRUE, TRUE);
-   gtk_window_set_wmclass(GTK_WINDOW(mainwin), "geist", "geist");
-   gtk_signal_connect(GTK_OBJECT(mainwin), "delete_event",
-                      GTK_SIGNAL_FUNC(mainwin_delete_cb), NULL);
-   gtk_signal_connect(GTK_OBJECT(mainwin), "destroy_event",
-                      GTK_SIGNAL_FUNC(mainwin_destroy_cb), NULL);
-
-   mvbox = gtk_vbox_new(FALSE, 0);
-   gtk_widget_show(mvbox);
-   gtk_container_add(GTK_CONTAINER(mainwin), mvbox);
-
-   /* menus */
-   tooltips = gtk_tooltips_new();
-
-   menubar = gtk_menu_bar_new();
-   gtk_widget_show(menubar);
-   gtk_box_pack_start(GTK_BOX(mvbox), menubar, FALSE, FALSE, 0);
-
-   menu = geist_gtk_create_submenu(menubar, "File");
-
-   menuitem =
-      geist_gtk_create_menuitem(menu, "New...", "", "New Document",
-                                (GtkFunction) menu_cb, "new doc");
-   menuitem =
-      geist_gtk_create_menuitem(menu, "Open...", "", "Open Document",
-                                (GtkFunction) menu_cb, "open doc");
-   menuitem =
-      geist_gtk_create_menuitem(menu, "Save", "", "Save Document",
-                                (GtkFunction) menu_cb, "save doc");
-   menuitem =
-      geist_gtk_create_menuitem(menu, "Save as...", "", "Save Document As...",
-                                (GtkFunction) menu_cb, "save doc as");
-
-   menu = geist_gtk_create_submenu(menubar, "Add");
-
-   menuitem =
-      geist_gtk_create_menuitem(menu, "image...", "", "Add Image",
-                                (GtkFunction) obj_imageadd_cb, NULL);
-   menuitem =
-      geist_gtk_create_menuitem(menu, "rect...", "", "Add Rectangle",
-                                (GtkFunction) obj_addrect_cb, NULL);
-   menuitem =
-      geist_gtk_create_menuitem(menu, "text...", "", "Add Text",
-                                (GtkFunction) obj_addtext_cb, NULL);
-   menuitem =
-      geist_gtk_create_menuitem(menu, "line...", "", "Add Line",
-                                (GtkFunction) obj_addline_cb, NULL);
-
-   menu = geist_gtk_create_submenu(menubar, "Dialogs");
-
-   menuitem =
-      geist_gtk_create_menuitem(menu, "show object properties", "",
-                                "Show object properties",
-                                (GtkFunction) geist_display_obj_props_window,
-                                NULL);
-   menuitem =
-      geist_gtk_create_menuitem(menu, "show document properties", "",
-                                "Show document properties",
-                                (GtkFunction)
-                                geist_display_document_props_window, NULL);
-   nbook = gtk_notebook_new();
-   gtk_notebook_set_tab_pos(GTK_NOTEBOOK(nbook), GTK_POS_BOTTOM);
-   gtk_widget_show(nbook);
-   gtk_signal_connect(GTK_OBJECT(nbook), "switch_page",
-                      GTK_SIGNAL_FUNC(nbook_switch_page_cb), NULL);
-   gtk_box_pack_start(GTK_BOX(mvbox), nbook, TRUE, TRUE, 0);
-   gtk_object_set_data(GTK_OBJECT(mainwin), "notebook", nbook);
-   /*statusbar */
-   statusbar = gtk_statusbar_new();
-   gtk_box_pack_end(GTK_BOX(mvbox), statusbar, FALSE, FALSE, 0);
-   gtk_widget_show(statusbar);
-   gtk_widget_show(mainwin);
-
-   D_RETURN(3, mainwin);
-}
 
 void
 geist_clear_statusbar(void)
@@ -209,30 +127,74 @@ geist_update_statusbar(geist_document * doc)
 }
 
 
-
-void
-nbook_switch_page_cb(GtkNotebook * notebook, GtkNotebookPage * page,
-                     guint page_num)
-{
-   D_ENTER(3);
-   current_doc = GEIST_DOCUMENT((geist_list_nth(doc_list, page_num))->data);
-   geist_clear_obj_props_window();
-   geist_update_document_props_window();
-   geist_clear_statusbar();
-   geist_document_reset_object_list(current_doc);
-   D_RETURN_(3);
-}
-
 GtkWidget *
 geist_create_object_list(void)
 {
-   GtkWidget *obj_table, *obj_btn, *obj_btn_hbox, *obj_scroll;
+   GtkWidget *obj_table, *obj_btn, *obj_btn_hbox, *obj_scroll, *wvbox;
+   GtkWidget *menubar, *menu, *menuitem;
 
    D_ENTER(3);
    obj_win = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+   gtk_signal_connect(GTK_OBJECT(obj_win), "delete_event",
+                      GTK_SIGNAL_FUNC(objwin_delete_cb), NULL);
+   gtk_signal_connect(GTK_OBJECT(obj_win), "destroy_event",
+                      GTK_SIGNAL_FUNC(objwin_destroy_cb), NULL);
+   wvbox = gtk_vbox_new(FALSE, 0);
+   gtk_container_add(GTK_CONTAINER(obj_win), wvbox);
+   
+   /* menus */
+   tooltips = gtk_tooltips_new();
+
+   menubar = gtk_menu_bar_new();
+   gtk_widget_show(menubar);
+   gtk_box_pack_start(GTK_BOX(wvbox), menubar, FALSE, FALSE, 0);
+
+   menu = geist_gtk_create_submenu(menubar, "File");
+
+   menuitem =
+      geist_gtk_create_menuitem(menu, "New...", "", "New Document",
+                                (GtkFunction) menu_cb, "new doc");
+   menuitem =
+      geist_gtk_create_menuitem(menu, "Open...", "", "Open Document",
+                                (GtkFunction) menu_cb, "open doc");
+   menuitem =
+      geist_gtk_create_menuitem(menu, "Save", "", "Save Document",
+                                (GtkFunction) menu_cb, "save doc");
+   menuitem =
+      geist_gtk_create_menuitem(menu, "Save as...", "", "Save Document As...",
+                                (GtkFunction) menu_cb, "save doc as");
+
+   menu = geist_gtk_create_submenu(menubar, "Add");
+
+   menuitem =
+      geist_gtk_create_menuitem(menu, "image...", "", "Add Image",
+                                (GtkFunction) obj_imageadd_cb, NULL);
+   menuitem =
+      geist_gtk_create_menuitem(menu, "rect...", "", "Add Rectangle",
+                                (GtkFunction) obj_addrect_cb, NULL);
+   menuitem =
+      geist_gtk_create_menuitem(menu, "text...", "", "Add Text",
+                                (GtkFunction) obj_addtext_cb, NULL);
+   menuitem =
+      geist_gtk_create_menuitem(menu, "line...", "", "Add Line",
+                                (GtkFunction) obj_addline_cb, NULL);
+
+   menu = geist_gtk_create_submenu(menubar, "Dialogs");
+
+   menuitem =
+      geist_gtk_create_menuitem(menu, "show object properties", "",
+                                "Show object properties",
+                                (GtkFunction) geist_display_obj_props_window,
+                                NULL);
+   menuitem =
+      geist_gtk_create_menuitem(menu, "show document properties", "",
+                                "Show document properties",
+                                (GtkFunction)
+                                geist_display_document_props_window, NULL);
+   
    obj_table = gtk_table_new(3, 4, FALSE);
    gtk_container_set_border_width(GTK_CONTAINER(obj_win), 3);
-   gtk_container_add(GTK_CONTAINER(obj_win), obj_table);
+   gtk_box_pack_start(GTK_BOX(wvbox), obj_table, TRUE, TRUE, 0);
    obj_scroll = gtk_scrolled_window_new(NULL, NULL);
    gtk_table_attach(GTK_TABLE(obj_table), obj_scroll, 0, 4, 1, 2,
                     GTK_FILL | GTK_EXPAND, GTK_FILL | GTK_EXPAND, 2, 2);
@@ -288,35 +250,56 @@ geist_create_object_list(void)
    gtk_table_attach(GTK_TABLE(obj_table), obj_btn_hbox, 0, 3, 0, 1,
                     GTK_FILL | GTK_EXPAND, 0, 2, 2);
    gtk_widget_show(obj_btn_hbox);
+   
+   /*statusbar */
+   statusbar = gtk_statusbar_new();
+   gtk_box_pack_end(GTK_BOX(wvbox), statusbar, FALSE, FALSE, 0);
+   gtk_widget_show(statusbar);
+
    gtk_window_set_default_size(GTK_WINDOW(obj_win), 125, 230);
-   gtk_widget_show(obj_list);
    gtk_widget_show(obj_scroll);
    gtk_widget_show(obj_table);
-   gtk_widget_show(obj_win);
-   D_RETURN(3, obj_list);
+   gtk_widget_show(wvbox);
+   gtk_widget_show(obj_list);
+   D_RETURN(3, obj_win);
 }
 
 
 
 GtkWidget *
-geist_gtk_new_document_page(geist_document * doc)
+geist_gtk_new_document_window(geist_document * doc)
 {
    GtkWidget *hwid, *vwid, *darea, *viewport;
-   GtkWidget *label, *scrollwin;
-   GtkWidget *parent;
+   GtkWidget *scrollwin;
+   GtkWidget *mvbox;
+   GtkWidget *mainwin;
 
    D_ENTER(3);
-   parent = gtk_object_get_data(GTK_OBJECT(mainwin), "notebook");
+   mainwin = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+   gtk_window_set_policy(GTK_WINDOW(mainwin), TRUE, TRUE, TRUE);
+   gtk_window_set_wmclass(GTK_WINDOW(mainwin), "geist", "geist");
+   gtk_signal_connect(GTK_OBJECT(mainwin), "delete_event",
+                      GTK_SIGNAL_FUNC(docwin_delete_cb), NULL);
+   gtk_signal_connect(GTK_OBJECT(mainwin), "destroy_event",
+                      GTK_SIGNAL_FUNC(docwin_destroy_cb), NULL);
+   gtk_signal_connect(GTK_OBJECT(mainwin), "enter_notify_event",
+                      GTK_SIGNAL_FUNC(docwin_enter_cb), NULL);
+   gtk_object_set_data(GTK_OBJECT(mainwin), "doc", doc);
+   
    doc_list = geist_list_add_end(doc_list, doc);
+
+   mvbox = gtk_vbox_new(FALSE, 0);
+   gtk_widget_show(mvbox);
+   gtk_container_add(GTK_CONTAINER(mainwin), mvbox);
+
    hwid = gtk_hbox_new(TRUE, 0);
    gtk_widget_show(hwid);
-   label = gtk_label_new(doc->name);
-   gtk_widget_show(label);
-   gtk_notebook_append_page(GTK_NOTEBOOK(parent), hwid, label);
-   gtk_object_set_data(GTK_OBJECT(parent), "doc", doc);
+   gtk_box_pack_start(GTK_BOX(mvbox), hwid, TRUE, TRUE, 0);
+   
    vwid = gtk_vbox_new(TRUE, 0);
    gtk_widget_show(vwid);
    gtk_box_pack_start(GTK_BOX(hwid), vwid, TRUE, FALSE, 0);
+   
    scrollwin = gtk_scrolled_window_new(NULL, NULL);
    gtk_widget_set_usize(scrollwin, doc->w, doc->h);
    gtk_widget_show(scrollwin);
@@ -335,6 +318,8 @@ geist_gtk_new_document_page(geist_document * doc)
    gtk_object_set_data(GTK_OBJECT(darea), "doc", doc);
    doc->darea = darea;
    doc->scrollwin = scrollwin;
+   doc->win = mainwin;
+   
    gtk_signal_connect(GTK_OBJECT(darea), "button_press_event",
                       GTK_SIGNAL_FUNC(evbox_buttonpress_cb), doc);
    gtk_signal_connect(GTK_OBJECT(darea), "button_release_event",
@@ -345,10 +330,50 @@ geist_gtk_new_document_page(geist_document * doc)
    gtk_signal_connect_after(GTK_OBJECT(darea), "configure_event",
                             GTK_SIGNAL_FUNC(configure_cb), doc);
    gtk_widget_show(darea);
-   D_RETURN(3, darea);
+   current_doc = doc;
+   geist_document_reset_object_list(doc);
+   
+   D_RETURN(3, mainwin);
 }
 
-gboolean mainwin_delete_cb(GtkWidget * widget, GdkEvent * event,
+gboolean docwin_delete_cb(GtkWidget * widget, GdkEvent * event,
+                           gpointer user_data)
+{
+   geist_document *doc;
+   D_ENTER(3);
+   doc = gtk_object_get_data(GTK_OBJECT(widget), "doc");
+   if(doc)
+      geist_document_free(doc);
+   D_RETURN(3, FALSE);
+}
+
+gboolean docwin_destroy_cb(GtkWidget * widget, GdkEvent * event,
+                            gpointer user_data)
+{
+   geist_document *doc;
+   D_ENTER(3);
+   doc = gtk_object_get_data(GTK_OBJECT(widget), "doc");
+   if(doc)
+      geist_document_free(doc);
+   D_RETURN(3, FALSE);
+}
+
+gboolean docwin_enter_cb(GtkWidget * widget, GdkEvent * event,
+                            gpointer user_data)
+{
+   geist_document *doc;
+   D_ENTER(3);
+   doc =  gtk_object_get_data(GTK_OBJECT(widget), "doc");
+   if(doc != current_doc)
+   {
+      current_doc = doc;
+      geist_document_reset_object_list(doc);
+   }
+   D_RETURN(3, FALSE);
+}
+
+
+gboolean objwin_delete_cb(GtkWidget * widget, GdkEvent * event,
                            gpointer user_data)
 {
    D_ENTER(3);
@@ -356,7 +381,7 @@ gboolean mainwin_delete_cb(GtkWidget * widget, GdkEvent * event,
    D_RETURN(3, FALSE);
 }
 
-gboolean mainwin_destroy_cb(GtkWidget * widget, GdkEvent * event,
+gboolean objwin_destroy_cb(GtkWidget * widget, GdkEvent * event,
                             gpointer user_data)
 {
    D_ENTER(3);
@@ -367,13 +392,14 @@ gboolean mainwin_destroy_cb(GtkWidget * widget, GdkEvent * event,
 gboolean configure_cb(GtkWidget * widget, GdkEventConfigure * event,
                       gpointer user_data)
 {
-   geist_document *doc;
 
    D_ENTER(3);
+#if 0
+   geist_document *doc;
    doc = GEIST_DOCUMENT(user_data);
    if (doc)
       geist_document_render_to_window(doc);
-
+#endif
    D_RETURN(3, TRUE);
 }
 
@@ -424,7 +450,7 @@ gint evbox_buttonpress_cb(GtkWidget * widget, GdkEventButton * event,
                obj->clicked_y = res_y - event->y;
                geist_object_dirty(obj);
             }
-            gtk_object_set_data_full(GTK_OBJECT(mainwin), "resizelist", list,
+            gtk_object_set_data_full(GTK_OBJECT(widget), "resizelist", list,
                                      NULL);
             geist_document_render_updates(doc);
             D_RETURN(5, 1);
@@ -498,7 +524,7 @@ gint evbox_buttonpress_cb(GtkWidget * widget, GdkEventButton * event,
             }
             geist_update_statusbar(doc);
          }
-         gtk_object_set_data_full(GTK_OBJECT(mainwin), "draglist", list,
+         gtk_object_set_data_full(GTK_OBJECT(widget), "draglist", list,
                                   NULL);}
       geist_document_render_updates(doc);
       gtk_signal_handler_unblock(GTK_OBJECT(obj_list), obj_sel_handler);
@@ -518,7 +544,7 @@ gint evbox_buttonrelease_cb(GtkWidget * widget, GdkEventButton * event,
    doc = GEIST_DOCUMENT(user_data);
    if (!doc)
       D_RETURN(5, 1);
-   list = gtk_object_get_data(GTK_OBJECT(mainwin), "draglist");
+   list = gtk_object_get_data(GTK_OBJECT(widget), "draglist");
    if (list)
    {
       for (l = list; l; l = l->next)
@@ -531,11 +557,11 @@ gint evbox_buttonrelease_cb(GtkWidget * widget, GdkEventButton * event,
          geist_object_dirty(obj);
       }
       geist_list_free(list);
-      gtk_object_set_data_full(GTK_OBJECT(mainwin), "draglist", NULL, NULL);
+      gtk_object_set_data_full(GTK_OBJECT(widget), "draglist", NULL, NULL);
    }
    else
    {
-      list = gtk_object_get_data(GTK_OBJECT(mainwin), "resizelist");
+      list = gtk_object_get_data(GTK_OBJECT(widget), "resizelist");
       if (list)
       {
          for (l = list; l; l = l->next)
@@ -549,7 +575,7 @@ gint evbox_buttonrelease_cb(GtkWidget * widget, GdkEventButton * event,
             geist_object_dirty(obj);
          }
          geist_list_free(list);
-         gtk_object_set_data_full(GTK_OBJECT(mainwin), "resizelist", NULL,
+         gtk_object_set_data_full(GTK_OBJECT(widget), "resizelist", NULL,
                                   NULL);}
    }
    geist_document_render_updates(doc);
@@ -580,7 +606,7 @@ gint evbox_mousemove_cb(GtkWidget * widget, GdkEventMotion * event,
       state = event->state;
    }
 
-   list = gtk_object_get_data(GTK_OBJECT(mainwin), "draglist");
+   list = gtk_object_get_data(GTK_OBJECT(widget), "draglist");
    if (list)
    {
       for (l = list; l; l = l->next)
@@ -594,7 +620,7 @@ gint evbox_mousemove_cb(GtkWidget * widget, GdkEventMotion * event,
    }
    else
    {
-      list = gtk_object_get_data(GTK_OBJECT(mainwin), "resizelist");
+      list = gtk_object_get_data(GTK_OBJECT(widget), "resizelist");
       if (list)
       {
          for (l = list; l; l = l->next)
@@ -835,6 +861,7 @@ gboolean obj_addline_cb(GtkWidget * widget, gpointer * data)
 gboolean menu_cb(GtkWidget * widget, gpointer * data)
 {
    char *item;
+   GtkWidget *doc_win;
 
    D_ENTER(3);
    item = (char *) data;
@@ -851,8 +878,9 @@ gboolean menu_cb(GtkWidget * widget, gpointer * data)
    {
       geist_document *doc = geist_document_new(500, 500);
 
-      geist_gtk_new_document_page(doc);
+      doc_win = geist_gtk_new_document_window(doc);
       geist_document_render_full(doc, 1);
+      gtk_widget_show(doc_win);
    }
    else if (!strcmp(item, "open doc"))
       geist_document_load();

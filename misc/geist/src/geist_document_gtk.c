@@ -10,6 +10,7 @@ geist_document_render_to_window(geist_document * doc)
 
    D_ENTER(3);
 
+   gtk_widget_realize(doc->darea);
    xwin = GDK_WINDOW_XWINDOW(doc->darea->window);
 
    XSetWindowBackgroundPixmap(disp, xwin, doc->pmap);
@@ -66,6 +67,7 @@ gboolean file_load_ok_cb(GtkWidget * widget, gpointer * data)
    char *filename;
    geist_document *doc;
    int err;
+   GtkWidget *doc_win;
 
    D_ENTER(3);
 
@@ -82,8 +84,9 @@ gboolean file_load_ok_cb(GtkWidget * widget, gpointer * data)
    }
    else
       D(2, ("file %s loaded okay\n", filename));
-   geist_gtk_new_document_page(doc);
+   doc_win = geist_gtk_new_document_window(doc);
    geist_document_render_full(doc, 1);
+   gtk_widget_show(doc_win);
    gtk_widget_destroy(GTK_WIDGET(data));
 
    D_RETURN(3, TRUE);

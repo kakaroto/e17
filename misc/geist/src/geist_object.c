@@ -42,6 +42,7 @@ geist_object_init(geist_object * obj)
       geist_object_int_update_dimensions_relative;
    obj->update_positioning = geist_object_int_update_positioning;
    obj->get_updates = geist_object_int_get_updates;
+   obj->get_object_list_entry = geist_object_int_get_object_list_entry;
    obj->name = estrdup("Untitled Object");
    obj->last.alias = FALSE;
    obj->alias = TRUE;
@@ -78,7 +79,8 @@ geist_object_free(geist_object * obj)
    D_RETURN_(5);
 }
 
-geist_object_type geist_object_get_type(geist_object * obj)
+geist_object_type
+geist_object_get_type(geist_object * obj)
 {
    return obj->type;
 }
@@ -186,6 +188,25 @@ geist_object_render_selected(geist_object * obj, Imlib_Image dest,
    D_RETURN_(3);
 }
 
+char *
+geist_object_get_object_list_entry(geist_object * obj, int column)
+{
+   D_ENTER(3);
+
+   D_RETURN(3, obj->get_object_list_entry(obj, column));
+}
+
+char *
+geist_object_int_get_object_list_entry(geist_object * obj, int column)
+{
+   D_ENTER(3);
+
+   D_RETURN(3,
+            (char *)geist_imlib_image_get_filename(geist_object_get_rendered_image
+                                           (obj)));
+}
+
+
 void
 geist_object_add_to_object_list(geist_object * obj)
 {
@@ -197,9 +218,7 @@ geist_object_add_to_object_list(geist_object * obj)
    if (geist_object_get_type(obj) == GEIST_TYPE_TEXT)
       list[1] = GEIST_TEXT(obj)->text;
    else
-      list[1] =
-         (char *)
-         geist_imlib_image_get_filename(geist_object_get_rendered_image(obj));
+      list[1] = geist_object_get_object_list_entry(obj, 1);
 
    gtk_signal_handler_block(GTK_OBJECT(obj_list), obj_sel_handler);
    gtk_signal_handler_block(GTK_OBJECT(obj_list), obj_unsel_handler);
@@ -214,7 +233,8 @@ geist_object_add_to_object_list(geist_object * obj)
    D_RETURN_(3);
 }
 
-Imlib_Image geist_object_get_rendered_image(geist_object * obj)
+Imlib_Image
+geist_object_get_rendered_image(geist_object * obj)
 {
    D_ENTER(5);
 
@@ -222,7 +242,8 @@ Imlib_Image geist_object_get_rendered_image(geist_object * obj)
 }
 
 
-Imlib_Image geist_object_int_get_rendered_image(geist_object * obj)
+Imlib_Image
+geist_object_int_get_rendered_image(geist_object * obj)
 {
    D_ENTER(5);
 
@@ -341,7 +362,8 @@ geist_object_int_render_selected(geist_object * obj, Imlib_Image dest,
    D_RETURN_(5);
 }
 
-Imlib_Updates geist_object_int_get_selection_updates(geist_object * obj)
+Imlib_Updates
+geist_object_int_get_selection_updates(geist_object * obj)
 {
    Imlib_Updates up = NULL;
 
@@ -494,7 +516,8 @@ geist_object_int_get_resize_box_coords(geist_object * obj, int resize, int *x,
    D_RETURN_(3);
 }
 
-Imlib_Updates geist_object_get_selection_updates(geist_object * obj)
+Imlib_Updates
+geist_object_get_selection_updates(geist_object * obj)
 {
    D_ENTER(3);
 
@@ -811,7 +834,8 @@ geist_object_dirty(geist_object * obj)
    D_RETURN_(3);
 }
 
-Imlib_Updates geist_object_int_get_updates(geist_object * obj)
+Imlib_Updates
+geist_object_int_get_updates(geist_object * obj)
 {
    int x, y, w, h;
    Imlib_Updates up;
