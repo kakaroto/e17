@@ -198,7 +198,7 @@
 # define REQUIRE_RVAL(x, v)             do {if (!(x)) return (v);} while (0)
 #endif
 
-#define NONULL(x) ((x) ? (x) : ("<" #x " null>"))
+#define NONULL(x) (((char *) (x)) ? ((char *) (x)) : ((char *) ("<" #x " null>")))
 
 /* Macros for printing debugging messages */
 #if DEBUG >= 1

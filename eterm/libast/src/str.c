@@ -335,6 +335,19 @@ spif_str_append(spif_str_t self, spif_str_t other)
 }
 
 spif_bool_t
+spif_str_append_char(spif_str_t self, spif_char_t c)
+{
+    self->len++;
+    if (self->mem <= self->len) {
+        self->mem++;
+        self->s = SPIF_CAST(charptr) REALLOC(self->s, self->mem);
+    }
+    SPIF_CAST(char) (self->s[self->len - 1]) = c;
+    self->s[self->len] = 0;
+    return TRUE;
+}
+
+spif_bool_t
 spif_str_append_from_ptr(spif_str_t self, spif_charptr_t other)
 {
     size_t len;
@@ -344,6 +357,14 @@ spif_str_append_from_ptr(spif_str_t self, spif_charptr_t other)
     self->s = SPIF_CAST(charptr) REALLOC(self->s, self->mem);
     memcpy(self->s + self->len, other, len + 1);
     self->len += len;
+    return TRUE;
+}
+
+spif_bool_t
+spif_str_clear(spif_str_t self, spif_char_t c)
+{
+    memset(self->s, c, self->mem);
+    self->s[self->len] = 0;
     return TRUE;
 }
 
@@ -474,8 +495,12 @@ spif_str_show(spif_str_t self, spif_charptr_t name, spif_str_t buff, size_t inde
     char tmp[4096];
 
     memset(tmp, ' ', indent);
-    snprintf(tmp + indent, sizeof(tmp) - indent, "(spif_str_t) %s:  { \"%s\", len %lu, size %lu }\n",
-             name, self->s, (unsigned long) self->len, (unsigned long) self->mem);
+    if (SPIF_STR_ISNULL(self)) {
+        snprintf(tmp + indent, sizeof(tmp) - indent, "(spif_str_t) %s:  " SPIF_NULLSTR_TYPE(str) "\n", NONULL(name));
+    } else {
+        snprintf(tmp + indent, sizeof(tmp) - indent, "(spif_str_t) %s:  { \"%s\", len %lu, size %lu }\n",
+                 name, self->s, (unsigned long) self->len, (unsigned long) self->mem);
+    }
     if (SPIF_STR_ISNULL(buff)) {
         buff = spif_str_new_from_ptr(tmp);
     } else {

@@ -29,34 +29,40 @@
  */
 
 /* Standard typecast macros.... */
-#define SPIF_LIST(o)                                    (SPIF_CAST(obj) (o))
+#define SPIF_LIST(o)                                    (SPIF_CAST(list) (o))
 #define SPIF_LIST_CLASS(o)                              (SPIF_CAST(listclass) SPIF_OBJ_CLASS(o))
 
+/* Check if a list is NULL */
+#define SPIF_LIST_ISNULL(o)                             (SPIF_LIST(o) == SPIF_NULL_TYPE(list))
+
+/* Check if an object is a list */
+#define SPIF_OBJ_IS_LIST(o)                             SPIF_OBJ_IS_TYPE(o, list)
+
 /* Call a method on an instance of an implementation class */
-#define SPIF_LIST_CALL_METHOD(obj, meth)                SPIF_LIST_CLASS(obj)->meth
+#define SPIF_LIST_CALL_METHOD(o, meth)                  SPIF_LIST_CLASS(o)->meth
 
 /* Calls to the basic functions. */
 #define SPIF_LIST_NEW(type)                             SPIF_LIST((SPIF_CLASS(SPIF_CLASS_VAR(type)))->noo())
-#define SPIF_LIST_INIT(obj)                             SPIF_OBJ_INIT(obj)
-#define SPIF_LIST_DONE(obj)                             SPIF_OBJ_DONE(obj)
-#define SPIF_LIST_DEL(obj)                              SPIF_OBJ_DEL(obj)
-#define SPIF_LIST_SHOW(obj, b, i)                       SPIF_OBJ_SHOW(obj, b, i)
+#define SPIF_LIST_INIT(o)                               SPIF_OBJ_INIT(o)
+#define SPIF_LIST_DONE(o)                               SPIF_OBJ_DONE(o)
+#define SPIF_LIST_DEL(o)                                SPIF_OBJ_DEL(o)
+#define SPIF_LIST_SHOW(o, b, i)                         SPIF_OBJ_SHOW(o, b, i)
 #define SPIF_LIST_COMP(o1, o2)                          SPIF_OBJ_COMP(o1, o2)
-#define SPIF_LIST_DUP(obj)                              SPIF_OBJ_DUP(obj)
-#define SPIF_LIST_TYPE(obj)                             SPIF_OBJ_TYPE(obj)
+#define SPIF_LIST_DUP(o)                                SPIF_OBJ_DUP(o)
+#define SPIF_LIST_TYPE(o)                               SPIF_OBJ_TYPE(o)
 
-#define SPIF_LIST_APPEND(obj, item)                     SPIF_CAST(bool) ((SPIF_LIST_CALL_METHOD(obj, append))(obj, item))
-#define SPIF_LIST_CONTAINS(obj, item)                   SPIF_CAST(bool) ((SPIF_LIST_CALL_METHOD((obj), contains))(obj, item))
-#define SPIF_LIST_COUNT(obj)                            SPIF_CAST_C(size_t) ((SPIF_LIST_CALL_METHOD((obj), count))(obj))
-#define SPIF_LIST_GET(obj, index)                       SPIF_CAST(obj) ((SPIF_LIST_CALL_METHOD((obj), get))(obj, index))
-#define SPIF_LIST_INDEX(obj, item)                      SPIF_CAST_C(size_t) ((SPIF_LIST_CALL_METHOD((obj), index))(obj, item))
-#define SPIF_LIST_INSERT(obj, item)                     SPIF_CAST(bool) ((SPIF_LIST_CALL_METHOD((obj), insert))(obj, item))
-#define SPIF_LIST_INSERT_AT(obj, item, index)           SPIF_CAST(bool) ((SPIF_LIST_CALL_METHOD((obj), insert_at))(obj, item, index))
-#define SPIF_LIST_ITERATOR(obj)                         SPIF_CAST(bool) ((SPIF_LIST_CALL_METHOD((obj), iterator))(obj))
-#define SPIF_LIST_NEXT(obj)                             SPIF_CAST(obj) ((SPIF_LIST_CALL_METHOD((obj), next))(obj))
-#define SPIF_LIST_PREPEND(obj, item)                    SPIF_CAST(bool) ((SPIF_LIST_CALL_METHOD((obj), prepend))(obj, item))
-#define SPIF_LIST_REMOVE(obj, item)                     SPIF_CAST(obj) ((SPIF_LIST_CALL_METHOD((obj), remove))(obj, item))
-#define SPIF_LIST_REMOVE_AT(obj, index)                 SPIF_CAST(obj) ((SPIF_LIST_CALL_METHOD((obj), remove_at))(obj, index))
+#define SPIF_LIST_APPEND(o, item)                       SPIF_CAST(bool) ((SPIF_LIST_CALL_METHOD((o), append))(o, item))
+#define SPIF_LIST_CONTAINS(o, item)                     SPIF_CAST(bool) ((SPIF_LIST_CALL_METHOD((o), contains))(o, item))
+#define SPIF_LIST_COUNT(o)                              SPIF_CAST_C(size_t) ((SPIF_LIST_CALL_METHOD((o), count))(o))
+#define SPIF_LIST_GET(o, index)                         SPIF_CAST(obj) ((SPIF_LIST_CALL_METHOD((o), get))(o, index))
+#define SPIF_LIST_INDEX(o, item)                        SPIF_CAST_C(size_t) ((SPIF_LIST_CALL_METHOD((o), index))(o, item))
+#define SPIF_LIST_INSERT(o, item)                       SPIF_CAST(bool) ((SPIF_LIST_CALL_METHOD((o), insert))(o, item))
+#define SPIF_LIST_INSERT_AT(o, item, index)             SPIF_CAST(bool) ((SPIF_LIST_CALL_METHOD((o), insert_at))(o, item, index))
+#define SPIF_LIST_ITERATOR(o)                           SPIF_CAST(bool) ((SPIF_LIST_CALL_METHOD((o), iterator))(o))
+#define SPIF_LIST_NEXT(o)                               SPIF_CAST(obj) ((SPIF_LIST_CALL_METHOD((o), next))(o))
+#define SPIF_LIST_PREPEND(o, item)                      SPIF_CAST(bool) ((SPIF_LIST_CALL_METHOD((o), prepend))(o, item))
+#define SPIF_LIST_REMOVE(o, item)                       SPIF_CAST(obj) ((SPIF_LIST_CALL_METHOD((o), remove))(o, item))
+#define SPIF_LIST_REMOVE_AT(o, index)                   SPIF_CAST(obj) ((SPIF_LIST_CALL_METHOD((o), remove_at))(o, index))
 
 typedef spif_obj_t spif_list_t;
 typedef struct spif_listclass_t_struct *spif_listclass_t;

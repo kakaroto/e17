@@ -24,10 +24,6 @@
 #ifndef _LIBAST_ARRAY_H_
 #define _LIBAST_ARRAY_H_
 
-/*
- * interface goop
- */
-
 /* Standard typecast macros.... */
 #define SPIF_ARRAY(obj)                      (SPIF_CAST(array) (obj))
 

@@ -24,6 +24,8 @@
 #ifndef _LIBAST_TOK_H_
 #define _LIBAST_TOK_H_
 
+#include <libast/list_if.h>
+
 /* Cast an arbitrary object pointer to a tok. */
 #define SPIF_TOK(obj)                (SPIF_CAST(tok) (obj))
 
@@ -33,16 +35,28 @@
 /* Check to see if a tokenizer object is NULL. */
 #define SPIF_TOK_ISNULL(obj)         (SPIF_TOK(obj) == SPIF_NULL_TYPE(tok))
 
+#define SPIF_TOK_NEW(type)           SPIF_TOK((SPIF_CLASS(SPIF_CLASS_VAR(type)))->noo())
+#define SPIF_TOK_INIT(obj)           SPIF_OBJ_INIT(obj)
+#define SPIF_TOK_DONE(obj)           SPIF_OBJ_DONE(obj)
+#define SPIF_TOK_DEL(obj)            SPIF_OBJ_DEL(obj)
+#define SPIF_TOK_SHOW(obj, b, i)     SPIF_OBJ_SHOW(obj, b, i)
+#define SPIF_TOK_COMP(o1, o2)        SPIF_OBJ_COMP(o1, o2)
+#define SPIF_TOK_DUP(obj)            SPIF_OBJ_DUP(obj)
+#define SPIF_TOK_TYPE(obj)           SPIF_OBJ_TYPE(obj)
+
+#define SPIF_TOK_LIST(obj)           SPIF_LIST(SPIF_TOK(obj)->tokens)
+
 /* Types for the tokenizer object. */
 typedef struct spif_tok_t_struct *spif_tok_t;
 typedef struct spif_tok_t_struct spif_const_tok_t;
 
 /* An tok object is a string tokenizer */
 struct spif_tok_t_struct {
-  spif_const_str_t parent;
-  size_t count;
-  spif_str_t *token;
-  spif_str_t sep;
+    spif_const_obj_t parent;
+    spif_str_t src;
+    spif_char_t quote, dquote, escape;
+    spif_list_t tokens;
+    spif_str_t sep;
 };
 
 extern spif_class_t SPIF_CLASS_VAR(tok);
@@ -61,5 +75,16 @@ extern spif_str_t spif_tok_show(spif_tok_t, spif_charptr_t, spif_str_t, size_t);
 extern spif_cmp_t spif_tok_comp(spif_tok_t, spif_tok_t);
 extern spif_tok_t spif_tok_dup(spif_tok_t);
 extern spif_classname_t spif_tok_type(spif_tok_t);
+extern spif_str_t spif_tok_get_src(spif_tok_t);
+extern spif_bool_t spif_tok_set_src(spif_tok_t, spif_str_t);
+extern spif_char_t spif_tok_get_quote(spif_tok_t);
+extern spif_bool_t spif_tok_set_quote(spif_tok_t, spif_char_t);
+extern spif_char_t spif_tok_get_dquote(spif_tok_t);
+extern spif_bool_t spif_tok_set_dquote(spif_tok_t, spif_char_t);
+extern spif_char_t spif_tok_get_escape(spif_tok_t);
+extern spif_bool_t spif_tok_set_escape(spif_tok_t, spif_char_t);
+extern spif_str_t spif_tok_get_sep(spif_tok_t);
+extern spif_bool_t spif_tok_set_sep(spif_tok_t, spif_str_t);
+extern spif_list_t spif_tok_get_tokens(spif_tok_t);
 
 #endif /* _LIBAST_TOK_H_ */

@@ -38,16 +38,13 @@
 #define SPIF_CAST(type)                  (SPIF_TYPE(type))
 #define SPIF_CONST_CAST(type)            (const SPIF_TYPE(type))
 
-/* Converts a type (such as "obj") to the name of its classname variable. */
-#define SPIF_CLASSNAME_TYPE(type)        ((spif_classname_t) (spif_ ## type ## _classname))
-
 /* Cast the NULL pointer to a particular object type. */
 #define SPIF_NULL_TYPE(type)             (SPIF_CAST(type) (NULL))
 #define SPIF_NULL_CTYPE(type)            (SPIF_CAST_C(type) (NULL))
 
 /* Converts a type (such as "obj") to a string denoting a NULL object of that type. */
-#define SPIF_NULLSTR_TYPE(type)          ("{ ((spif_" #type "_t) NULL) }")
-#define SPIF_NULLSTR_CTYPE(type)         ("{ ((" #type ") NULL) }")
+#define SPIF_NULLSTR_TYPE(type)          "{ ((spif_" #type "_t) NULL) }"
+#define SPIF_NULLSTR_CTYPE(type)         "{ ((" #type ") NULL) }"
 
 /* Our own version of the sizeof() operator since objects are actually pointers. */
 #define SPIF_SIZEOF_TYPE(type)           (sizeof(SPIF_CONST_TYPE(type)))
@@ -67,7 +64,7 @@
 /* Check to see if a pointer references an object.  Increasing levels
    of accuracy at the expense of some speed for the higher debug levels.
    This is also internal.  It's used by other SPIF_OBJ_IS_*() macros. */
-#define SPIF_OBJ_IS_TYPE(o, type)        ((!SPIF_OBJ_ISNULL(o)) && (SPIF_OBJ_CLASSNAME(o) == SPIF_CLASSNAME_TYPE(type)))
+#define SPIF_OBJ_IS_TYPE(o, type)        ((!SPIF_OBJ_ISNULL(o)) && (SPIF_OBJ_CLASS(o) == SPIF_CLASS_VAR(type)))
 #if DEBUG == 0
 #  define SPIF_OBJ_CHECK_TYPE(o, type)   (1)
 #elsif DEBUG <= 4

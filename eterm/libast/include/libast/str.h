@@ -88,7 +88,9 @@ extern spif_charptr_t spif_str_substr_to_ptr(spif_str_t, spif_int32_t, spif_int3
 extern size_t spif_str_to_num(spif_str_t, int);
 extern double spif_str_to_float(spif_str_t);
 extern spif_bool_t spif_str_append(spif_str_t, spif_str_t);
+extern spif_bool_t spif_str_append_char(spif_str_t, spif_char_t);
 extern spif_bool_t spif_str_append_from_ptr(spif_str_t, spif_charptr_t);
+extern spif_bool_t spif_str_clear(spif_str_t, spif_char_t);
 extern spif_bool_t spif_str_trim(spif_str_t);
 extern spif_bool_t spif_str_splice(spif_str_t, size_t, size_t, spif_str_t);
 extern spif_bool_t spif_str_splice_from_ptr(spif_str_t, size_t, size_t, spif_charptr_t);
