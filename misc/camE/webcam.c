@@ -51,7 +51,7 @@ int ftp_passive = 1;
 int ftp_do = 1;
 char *scp_target = NULL;
 char *grab_device = "/dev/video0";
-char *grab_text = "";	/* strftime */
+char *grab_text = "";           /* strftime */
 char *action_pre_shot = NULL;
 char *action_post_shot = NULL;
 char *action_post_upload = NULL;
@@ -166,7 +166,7 @@ grab_init()
    }
 
    /* try to setup mmap-based capture */
-   grab_buf.format = VIDEO_PALETTE_YUV420;
+   grab_buf.format = VIDEO_PALETTE_YUV420P;
    grab_buf.frame = 0;
    grab_buf.width = grab_width;
    grab_buf.height = grab_height;
@@ -194,78 +194,70 @@ grab_init()
   
  This is a really simplistic approach. Speedups are welcomed. 
 */
-Imlib_Image convert_yuv_to_imlib2(unsigned char *src, int width, int height)
+Imlib_Image
+convert_yuv_to_imlib2(unsigned char *src, int width, int height)
 {
-    int line, col, linewidth;
-    int y, u, v, yy, vr = 0, ug = 0, vg = 0, ub = 0;
-    int r, g, b;
-    unsigned char *sy, *su, *sv;
-    Imlib_Image im;
-    DATA32 *data, *dest;
- 
-    im = imlib_create_image(width, height);
-    imlib_context_set_image(im);
-    data = imlib_image_get_data();
-    dest = data;
+   int line, col;
+   int y, u, v, yy, vr = 0, ug = 0, vg = 0, ub = 0;
+   int r, g, b;
+   unsigned char *sy, *su, *sv;
+   Imlib_Image im;
+   DATA32 *data, *dest;
 
-    linewidth = width + (width >> 1);
-    sy = src;
-    su = sy + 4;
-    sv = su + linewidth;
+   im = imlib_create_image(width, height);
+   imlib_context_set_image(im);
+   data = imlib_image_get_data();
+   dest = data;
 
-    /* The biggest problem is the interlaced data, and the fact that odd
-       add even lines have V and U data, resp. 
-     */
-    for (line = 0; line < height; line++) {
-        for (col = 0; col < width; col++) {
-            y = *sy++;
-            yy = y << 8;
-            if ((col & 1) == 0) {
-                /* only at even colums we update the u/v data */
-                u = *su - 128;
-                ug =   88 * u;
-                ub =  454 * u;
-                v = *sv - 128;
-                vg =  183 * v;
-                vr =  359 * v;
+   sy = src;
+   su = sy + (width * height);
+   sv = su + (width * height / 4);
 
-                su++;
-                sv++;
-            }
-            if ((col & 3) == 3) {
-                sy += 2; /* skip u/v */
-                su += 4; /* skip y */
-                sv += 4; /* skip y */
-            }
+   for (line = 0; line < height; line++)
+   {
+      for (col = 0; col < width; col++)
+      {
+         y = *sy++;
+         yy = y << 8;
+         u = *su - 128;
+         ug = 88 * u;
+         ub = 454 * u;
+         v = *sv - 128;
+         vg = 183 * v;
+         vr = 359 * v;
 
-            r = (yy +      vr) >> 8;
-            g = (yy - ug - vg) >> 8;
-            b = (yy + ub     ) >> 8;
-            /* At moments like this, you crave for MMX instructions with saturation */
-            if (r <   0) r =   0;
-            if (r > 255) r = 255;
-            if (g <   0) g =   0;
-            if (g > 255) g = 255;
-            if (b <   0) b =   0;
-            if (b > 255) b = 255;
+         if ((col & 1) == 0)
+         {
+            su++;
+            sv++;
+         }
 
-/*          *dst++ = r;
-            *dst++ = g;
-            *dst++ = b;
- */
-            *dest = (r << 16) | (g << 8) | b | 0xff000000;
-            dest++;
+         r = (yy + vr) >> 8;
+         g = (yy - ug - vg) >> 8;
+         b = (yy + ub) >> 8;
 
-        } /* ..for col */
-        if (line & 1) { /* odd line: go to next band */
-            su += linewidth;
-            sv += linewidth;
-        }
-        else { /* rewind u/v pointers */
-            su -= linewidth;
-            sv -= linewidth;
-        }
-    } /* ..for line */
+         if (r < 0)
+            r = 0;
+         if (r > 255)
+            r = 255;
+         if (g < 0)
+            g = 0;
+         if (g > 255)
+            g = 255;
+         if (b < 0)
+            b = 0;
+         if (b > 255)
+            b = 255;
+
+         *dest = (r << 16) | (g << 8) | b | 0xff000000;
+         dest++;
+      }
+      if ((line & 1) == 0)
+      {
+         su -= width / 2;
+         sv -= width / 2;
+      }
+   }
    imlib_image_put_back_data(data);
    return im;
 }
@@ -878,7 +870,7 @@ main(int argc, char *argv[])
       overlay_y = i;
 
    /* print config */
-   fprintf(stderr, "camE v0.9 - (c) 1999, 2000 Gerd Knorr, Tom Gilbert\n");
+   fprintf(stderr, "camE v1.0 - (c) 1999, 2000 Gerd Knorr, Tom Gilbert\n");
    fprintf(stderr,
            "grabber config: size %dx%d, input %d, norm %d, "
            "jpeg quality %d\n", grab_width, grab_height, grab_input,
@@ -886,13 +878,13 @@ main(int argc, char *argv[])
    if (ftp_do)
       fprintf(stderr, "ftp config:\n  %s@%s:%s\n  %s => %s\n", ftp_user,
               ftp_host, ftp_dir, ftp_tmp, ftp_file);
-   
+
    /* clear logfile */
-   if(logfile)
+   if (logfile)
    {
-     fp = fopen(logfile, "w");
-     if(fp)
-        fclose(fp);
+      fp = fopen(logfile, "w");
+      if (fp)
+         fclose(fp);
    }
 
    /* init everything */
@@ -923,10 +915,10 @@ main(int argc, char *argv[])
       upload_successful = 1;
       end_shot = 0;
       start_shot = 0;
-      
-      
+
+
       if (((grab_blockfile && (stat(grab_blockfile, &st) == -1))
-          || !grab_blockfile) && check_interface(watch_interface))
+           || !grab_blockfile) && check_interface(watch_interface))
       {
          time(&start_shot);
          if (action_pre_shot)
@@ -988,25 +980,28 @@ main(int argc, char *argv[])
             {
                log("uploading via scp\n");
                snprintf(target_buf, sizeof(target_buf), "%s:%s/%s",
-                                    scp_target, ftp_dir, ftp_tmp);
-               snprintf(cmd_buf, sizeof(cmd_buf), "mv %s/%s %s/%s", ftp_dir, ftp_tmp, ftp_dir, ftp_file);
+                        scp_target, ftp_dir, ftp_tmp);
+               snprintf(cmd_buf, sizeof(cmd_buf), "mv %s/%s %s/%s", ftp_dir,
+                        ftp_tmp, ftp_dir, ftp_file);
                scp_args[2] = temp_file;
                scp_args[3] = target_buf;
-               if((upload_successful = execvp_with_timeout(scp_timeout, "scp", scp_args)))
+               if ((upload_successful =
+                    execvp_with_timeout(scp_timeout, "scp", scp_args)))
                {
-                 ssh_args[3] = scp_target;
-                 ssh_args[4] = cmd_buf;
-                 if((upload_successful = execvp_with_timeout(scp_timeout, "ssh", ssh_args)))
-                 {
-                    log("shot uploaded\n");
-               
-                    if (action_post_upload)
-                    {
-                       log("running post upload action\n");
-                       system(action_post_upload);
-                       log("post upload action done\n");
-                    }
-                 }
+                  ssh_args[3] = scp_target;
+                  ssh_args[4] = cmd_buf;
+                  if ((upload_successful =
+                       execvp_with_timeout(scp_timeout, "ssh", ssh_args)))
+                  {
+                     log("shot uploaded\n");
+
+                     if (action_post_upload)
+                     {
+                        log("running post upload action\n");
+                        system(action_post_upload);
+                        log("post upload action done\n");
+                     }
+                  }
                }
             }
          }
@@ -1037,17 +1032,18 @@ main(int argc, char *argv[])
    return 0;
 }
 
-int execvp_with_timeout(int timeout, char *file, char **argv)
+int
+execvp_with_timeout(int timeout, char *file, char **argv)
 {
    int status, ret;
-   
+
    signal(SIGALRM, alarm_handler);
    alarm(timeout);
 
    if ((childpid = fork()) < 0)
    {
       fprintf(stderr, "fork (%s)\n", strerror(errno));
-      exit (2);
+      exit(2);
    }
    else if (childpid == 0)
    {
@@ -1071,12 +1067,13 @@ int execvp_with_timeout(int timeout, char *file, char **argv)
    return 1;
 }
 
-void alarm_handler(int sig)
+void
+alarm_handler(int sig)
 {
-  signal(sig, SIG_IGN);
-  log("timeout reached, abandoning\n");
-  if(childpid)
-  {
-     kill(childpid, SIGTERM);
-  }
+   signal(sig, SIG_IGN);
+   log("timeout reached, abandoning\n");
+   if (childpid)
+   {
+      kill(childpid, SIGTERM);
+   }
 }
