@@ -110,7 +110,7 @@ FindMenu(Window win)
    EDBUG_RETURN(menu);
 }
 
-EWin               *
+static EWin        *
 FindEwinSpawningMenu(Menu * m)
 {
    EWin               *ewin = NULL;
@@ -129,7 +129,7 @@ FindEwinSpawningMenu(Menu * m)
    EDBUG_RETURN(ewin);
 }
 
-void
+static void
 MenuHide(Menu * m)
 {
    EWin               *ewin;
@@ -195,7 +195,7 @@ MenuEwinInit(EWin * ewin, void *ptr)
    ewin->Close = MenuEwinClose;
 }
 
-void
+static void
 MenuShow(Menu * m, char noshow)
 {
    EWin               *ewin;
@@ -2370,6 +2370,18 @@ MenuFindParentItem(Menu * m)
    return NULL;
 }
 
+static EWin        *
+MenuFindContextEwin(Menu * m)
+{
+   while (m && m->parent)
+      m = m->parent;
+
+   if (!m)
+      return NULL;
+
+   return FindEwinSpawningMenu(m);
+}
+
 int
 MenusEventKeyPress(XEvent * ev)
 {
@@ -2440,8 +2452,9 @@ MenusEventKeyPress(XEvent * ev)
 	   break;
 	if (!mi->act_id)
 	   break;
+	ewin = MenuFindContextEwin(m);
 	MenusHide();
-	ActionsCall(mi->act_id, NULL, mi->params);
+	ActionsCall(mi->act_id, ewin, mi->params);
 	break;
      }
 
@@ -2513,6 +2526,7 @@ MenusEventMouseUp(XEvent * ev)
 {
    Menu               *m;
    MenuItem           *mi;
+   EWin               *ewin;
 
    m = FindMenuItem(ev->xbutton.window, &mi);
    if ((m) && (mi->state))
@@ -2521,8 +2535,9 @@ MenusEventMouseUp(XEvent * ev)
 	MenuDrawItem(m, mi, 1);
 	if ((mi->act_id) && (!Mode.justclicked))
 	  {
+	     ewin = MenuFindContextEwin(m);
 	     MenusHide();
-	     ActionsCall(mi->act_id, NULL, mi->params);
+	     ActionsCall(mi->act_id, ewin, mi->params);
 	     return 1;
 	  }
      }
@@ -2531,7 +2546,6 @@ MenusEventMouseUp(XEvent * ev)
      {
 	if (!m)
 	  {
-	     EWin               *ewin;
 	     Window              ww;
 
 	     ww = WindowAtXY(Mode.x, Mode.y);

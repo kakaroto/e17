@@ -171,7 +171,7 @@ GetContextEwin(void)
    EDBUG(4, "GetContextEwin");
 
 #if 0
-   ewin = Mode.mouse_over_win;
+   ewin = Mode.mouse_over_ewin;
    if (ewin && !ewin->menu)
       EDBUG_RETURN(ewin);
 #endif
@@ -1536,8 +1536,8 @@ EwinEventUnmap(EWin * ewin)
 
    if (ewin == Mode.focuswin)
       FocusToEWin(ewin, FOCUS_EWIN_GONE);
-   if (ewin == Mode.mouse_over_win)
-      Mode.mouse_over_win = NULL;
+   if (ewin == Mode.mouse_over_ewin)
+      Mode.mouse_over_ewin = NULL;
 
    /* hide any menus this ewin has brought up if they are still up when we */
    /* destroy this ewin */

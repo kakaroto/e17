@@ -1333,7 +1333,7 @@ typedef struct
    char                justclicked;
    char                click_focus_grabbed;
    EWin               *focuswin;
-   EWin               *mouse_over_win;
+   EWin               *mouse_over_ewin;
    int                 px, py, x, y;
    char                doingslide;
    int                 server_grabbed;
@@ -2186,7 +2186,6 @@ EWin               *FindEwinByDialog(Dialog * d);
 Dialog             *FindDialogButton(Window win, int *bnum);
 Dialog             *FindDialog(Window win);
 int                 FindADialog(void);
-EWin               *FindEwinSpawningMenu(Menu * m);
 Pager              *FindPager(Window win);
 DItem              *FindDialogItem(Window win, Dialog ** dret);
 
@@ -2410,8 +2409,6 @@ void                MenusHide(void);
 MenuStyle          *MenuStyleCreate(void);
 Menu               *MenuCreate(const char *name);
 void                MenuDestroy(Menu * m);
-void                MenuHide(Menu * m);
-void                MenuShow(Menu * m, char noshow);
 MenuItem           *MenuItemCreate(const char *text, ImageClass * iclass,
 				   int action_id, const char *action_params,
 				   Menu * child);

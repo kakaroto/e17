@@ -308,7 +308,7 @@ FocusToEWin(EWin * ewin, int why)
    if ((Conf.focus.warp_on_next_focus && (why == FOCUS_NEXT)) ||
        (Conf.focus.warp_after_next_focus && (why == FOCUS_WARP_DONE)))
      {
-	if (ewin != Mode.mouse_over_win)
+	if (ewin != Mode.mouse_over_ewin)
 	   XWarpPointer(disp, None, ewin->win, 0, 0, 0, 0, ewin->w / 2,
 			ewin->h / 2);
      }
@@ -363,7 +363,7 @@ FocusNewDesk(void)
 
    /* Set the mouse-over window */
    ewin = GetEwinByCurrentPointer();
-   Mode.mouse_over_win = ewin;
+   Mode.mouse_over_ewin = ewin;
 
    ewin = FocusEwinSelect();
    if (ewin)
@@ -396,7 +396,7 @@ FocusHandleEnter(XEvent * ev)
      }
 
    ewin = GetEwinByCurrentPointer();
-   Mode.mouse_over_win = ewin;
+   Mode.mouse_over_ewin = ewin;
 
    switch (Conf.focus.mode)
      {

@@ -982,7 +982,7 @@ PagerMenuShow(Pager * p, int x, int y)
 	mi = MenuItemCreate(_("Stick / Unstick"), NULL, ACTION_STICK, s, NULL);
 	MenuAddItem(pw_menu, mi);
 
-	ActionsCall(ACTION_SHOW_MENU, NULL, "named __DESK_WIN_MENU");
+	ActionsCall(ACTION_SHOW_MENU, ewin, "named __DESK_WIN_MENU");
 	return;
      }
 
