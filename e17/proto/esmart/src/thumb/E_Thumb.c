@@ -1,5 +1,5 @@
 #include "config.h"
-#include "E_Thumb.h"
+#include "Esmart_Thumb.h"
 #define X_DISPLAY_MISSING 1
 #include <Imlib2.h>
 #include <Epsilon.h>
