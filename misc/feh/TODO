@@ -6,4 +6,11 @@ people add =P
 o list mode
   I need format specifiers so people can do:
 feh -L "<img src=\"%f\" alt=\"%n\" width=\"%w\" height=\"%h\" border=\"0\">"
-to add images to their web pages for example :-)
+to add images to their web pages (for example) :-)
+
+o General
+  Rework zoom code to be more flexible/sane :-)
+  Scrollbars? Dunno.
+  The check-drawing thing KainX was talking about ages ago to speed things
+  up (uses X to tile a small tileset instead of imlib2). Ask KainX how best
+  to do this.
