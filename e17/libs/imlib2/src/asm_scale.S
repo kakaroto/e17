@@ -5,9 +5,17 @@
 /* For all OS/2 coders - please use PGCC to compile this code */
 #define PR_(foo) ___##foo
 #define PT_(foo,func) ___##foo,##func
+#define SIZE(sym)                              \
+	.___end_##sym:;                        \
+	.size ___##sym,.___end_##sym-___##sym; \
+	.align 8;
 #else
 #define PR_(foo) __##foo
 #define PT_(foo,func) __##foo,##func
+#define SIZE(sym)                           \
+	.__end_##sym:;                      \
+	.size __##sym,.__end_##sym-__##sym; \
+	.align 8;
 #endif
 
 #ifdef DO_MMX_ASM
@@ -17,12 +25,10 @@
 |*| Written by Willem Monsuwe <willem@stack.nl>
 \*/
 
-.global PR_(imlib_Scale_mmx_AARGBA)
-	.type PT_(imlib_Scale_mmx_AARGBA,@function)
-
-.bss
 .text
-.align 8
+        .align 8
+.globl PR_(imlib_Scale_mmx_AARGBA)
+	.type PT_(imlib_Scale_mmx_AARGBA,@function)
 
 /*\ Prototype: __imlib_Scale_mmx_AARGBA(ImlibScaleInfo *isi, DATA32 *dest,
 |*|	int dxx, int dyy, int dx, int dy, int dw, int dh, int dow, int sow)
@@ -797,5 +803,7 @@ PR_(imlib_Scale_mmx_AARGBA):
 	movl %ebp, %esp
 	popl %ebp
 	ret
+
+SIZE(imlib_Scale_mmx_AARGBA)
 
 #endif

@@ -5,9 +5,17 @@
 /* For all OS/2 coders - please use PGCC to compile this code */
 #define PR_(foo) ___##foo
 #define PT_(foo,func) ___##foo,##func
+#define SIZE(sym)                              \
+	.___end_##sym:;                        \
+	.size ___##sym,.___end_##sym-___##sym; \
+	.align 8;
 #else
 #define PR_(foo) __##foo
 #define PT_(foo,func) __##foo,##func
+#define SIZE(sym)                           \
+	.__end_##sym:;                      \
+	.size __##sym,.__end_##sym-__##sym; \
+	.align 8;
 #endif
 
 #ifdef DO_MMX_ASM
@@ -32,53 +40,52 @@
 #define h	28(%ebp)
 #define cm	32(%ebp)
 
-.global PR_(imlib_mmx_blend_rgba_to_rgb)
+.text
+        .align 8
+.globl PR_(imlib_mmx_blend_rgba_to_rgb)
 	.type PT_(imlib_mmx_blend_rgba_to_rgb,@function)
-.global PR_(imlib_mmx_blend_rgba_to_rgba)
+.globl PR_(imlib_mmx_blend_rgba_to_rgba)
 	.type PT_(imlib_mmx_blend_rgba_to_rgba,@function)
-.global PR_(imlib_mmx_copy_rgba_to_rgb)
+.globl PR_(imlib_mmx_copy_rgba_to_rgb)
 	.type PT_(imlib_mmx_copy_rgba_to_rgb,@function)
-.global PR_(imlib_mmx_copy_rgba_to_rgba)
+.globl PR_(imlib_mmx_copy_rgba_to_rgba)
 	.type PT_(imlib_mmx_copy_rgba_to_rgba,@function)
-.global PR_(imlib_mmx_copy_rgb_to_rgba)
+.globl PR_(imlib_mmx_copy_rgb_to_rgba)
 
 	.type PT_(imlib_mmx_copy_rgb_to_rgba,@function)
-.global PR_(imlib_mmx_add_blend_rgba_to_rgb)
+.globl PR_(imlib_mmx_add_blend_rgba_to_rgb)
 	.type PT_(imlib_mmx_add_blend_rgba_to_rgb,@function)
-.global PR_(imlib_mmx_add_blend_rgba_to_rgba)
+.globl PR_(imlib_mmx_add_blend_rgba_to_rgba)
 	.type PT_(imlib_mmx_add_blend_rgba_to_rgba,@function)
-.global PR_(imlib_mmx_add_copy_rgba_to_rgb)
+.globl PR_(imlib_mmx_add_copy_rgba_to_rgb)
 	.type PT_(imlib_mmx_add_copy_rgba_to_rgb,@function)
-.global PR_(imlib_mmx_add_copy_rgba_to_rgba)
+.globl PR_(imlib_mmx_add_copy_rgba_to_rgba)
 	.type PT_(imlib_mmx_add_copy_rgba_to_rgba,@function)
-.global PR_(imlib_mmx_add_copy_rgb_to_rgba)
+.globl PR_(imlib_mmx_add_copy_rgb_to_rgba)
 	.type PT_(imlib_mmx_add_copy_rgb_to_rgba,@function)
 
-.global PR_(imlib_mmx_subtract_blend_rgba_to_rgb)
+.globl PR_(imlib_mmx_subtract_blend_rgba_to_rgb)
 	.type PT_(imlib_mmx_subtract_blend_rgba_to_rgb,@function)
-.global PR_(imlib_mmx_subtract_blend_rgba_to_rgba)
+.globl PR_(imlib_mmx_subtract_blend_rgba_to_rgba)
 	.type PT_(imlib_mmx_subtract_blend_rgba_to_rgba,@function)
-.global PR_(imlib_mmx_subtract_copy_rgba_to_rgb)
+.globl PR_(imlib_mmx_subtract_copy_rgba_to_rgb)
 	.type PT_(imlib_mmx_subtract_copy_rgba_to_rgb,@function)
-.global PR_(imlib_mmx_subtract_copy_rgba_to_rgba)
+.globl PR_(imlib_mmx_subtract_copy_rgba_to_rgba)
 	.type PT_(imlib_mmx_subtract_copy_rgba_to_rgba,@function)
-.global PR_(imlib_mmx_subtract_copy_rgb_to_rgba)
+.globl PR_(imlib_mmx_subtract_copy_rgb_to_rgba)
 	.type PT_(imlib_mmx_subtract_copy_rgb_to_rgba,@function)
 
-.global PR_(imlib_mmx_reshade_blend_rgba_to_rgb)
+.globl PR_(imlib_mmx_reshade_blend_rgba_to_rgb)
 	.type PT_(imlib_mmx_reshade_blend_rgba_to_rgb,@function)
-.global PR_(imlib_mmx_reshade_blend_rgba_to_rgba)
+.globl PR_(imlib_mmx_reshade_blend_rgba_to_rgba)
 	.type PT_(imlib_mmx_reshade_blend_rgba_to_rgba,@function)
-.global PR_(imlib_mmx_reshade_copy_rgba_to_rgb)
+.globl PR_(imlib_mmx_reshade_copy_rgba_to_rgb)
 	.type PT_(imlib_mmx_reshade_copy_rgba_to_rgb,@function)
-.global PR_(imlib_mmx_reshade_copy_rgba_to_rgba)
+.globl PR_(imlib_mmx_reshade_copy_rgba_to_rgba)
 	.type PT_(imlib_mmx_reshade_copy_rgba_to_rgba,@function)
-.global PR_(imlib_mmx_reshade_copy_rgb_to_rgba)
+.globl PR_(imlib_mmx_reshade_copy_rgb_to_rgba)
 	.type PT_(imlib_mmx_reshade_copy_rgb_to_rgba,@function)
 	
-.bss
-.text
-.align 8
 /*\ Some useful masks \*/
 m0X000000: .byte   0,   0,   0,   0,   0,   0, 255,   0
 m10000000: .byte   0,   0,   0,   0,   0,   0,   0,   1
@@ -150,6 +157,7 @@ c1: .word 0x1, 0x1, 0x1, 0x1
 	popl %ebp		;\
 	ret
 
+
 PR_(imlib_mmx_blend_rgba_to_rgb):
 	ENTER
 
@@ -204,6 +212,7 @@ PR_(imlib_mmx_blend_rgba_to_rgb):
 	LOOP_END
 	LEAVE
 
+SIZE(imlib_mmx_blend_rgba_to_rgb)
 
 PR_(imlib_mmx_blend_rgba_to_rgba):
 	ENTER
@@ -258,6 +267,7 @@ PR_(imlib_mmx_blend_rgba_to_rgba):
 	LOOP_END
 	LEAVE
 
+SIZE(imlib_mmx_blend_rgba_to_rgba)
 
 PR_(imlib_mmx_copy_rgba_to_rgb):
 	ENTER
@@ -301,6 +311,7 @@ PR_(imlib_mmx_copy_rgba_to_rgb):
 	LOOP_END
 	LEAVE
 
+SIZE(imlib_mmx_copy_rgba_to_rgb)
 
 PR_(imlib_mmx_copy_rgba_to_rgba):
 	ENTER
@@ -326,6 +337,7 @@ PR_(imlib_mmx_copy_rgba_to_rgba):
 	LOOP_END
 	LEAVE
 
+SIZE(imlib_mmx_copy_rgba_to_rgba)
 
 PR_(imlib_mmx_copy_rgb_to_rgba):
 	ENTER
@@ -356,6 +368,7 @@ PR_(imlib_mmx_copy_rgb_to_rgba):
 	LOOP_END
 	LEAVE
 
+SIZE(imlib_mmx_copy_rgb_to_rgba)
 
 PR_(imlib_mmx_add_blend_rgba_to_rgb):
 	ENTER
@@ -396,6 +409,7 @@ PR_(imlib_mmx_add_blend_rgba_to_rgb):
 	LOOP_END
 	LEAVE
 
+SIZE(imlib_mmx_add_blend_rgba_to_rgb)
 
 PR_(imlib_mmx_add_blend_rgba_to_rgba):
 	ENTER
@@ -444,6 +458,7 @@ PR_(imlib_mmx_add_blend_rgba_to_rgba):
 	LOOP_END
 	LEAVE
 
+SIZE(imlib_mmx_add_blend_rgba_to_rgba)
 
 PR_(imlib_mmx_add_copy_rgba_to_rgb):
 	ENTER
@@ -481,6 +496,7 @@ PR_(imlib_mmx_add_copy_rgba_to_rgb):
 	LOOP_END
 	LEAVE
 
+SIZE(imlib_mmx_add_copy_rgba_to_rgb)
 
 PR_(imlib_mmx_add_copy_rgba_to_rgba):
 	ENTER
@@ -512,6 +528,7 @@ PR_(imlib_mmx_add_copy_rgba_to_rgba):
 	LOOP_END
 	LEAVE
 
+SIZE(imlib_mmx_add_copy_rgba_to_rgba)
 
 PR_(imlib_mmx_add_copy_rgb_to_rgba):
 	ENTER
@@ -549,6 +566,7 @@ PR_(imlib_mmx_add_copy_rgb_to_rgba):
 	LOOP_END
 	LEAVE
 
+SIZE(imlib_mmx_add_copy_rgb_to_rgba)
 
 PR_(imlib_mmx_subtract_blend_rgba_to_rgb):
 	ENTER
@@ -589,6 +607,7 @@ PR_(imlib_mmx_subtract_blend_rgba_to_rgb):
 	LOOP_END
 	LEAVE
 
+SIZE(imlib_mmx_subtract_blend_rgba_to_rgb)
 
 PR_(imlib_mmx_subtract_blend_rgba_to_rgba):
 	ENTER
@@ -637,6 +656,7 @@ PR_(imlib_mmx_subtract_blend_rgba_to_rgba):
 	LOOP_END
 	LEAVE
 
+SIZE(imlib_mmx_subtract_blend_rgba_to_rgba)
 
 PR_(imlib_mmx_subtract_copy_rgba_to_rgb):
 	ENTER
@@ -674,6 +694,7 @@ PR_(imlib_mmx_subtract_copy_rgba_to_rgb):
 	LOOP_END
 	LEAVE
 
+SIZE(imlib_mmx_subtract_copy_rgba_to_rgb)
 
 PR_(imlib_mmx_subtract_copy_rgba_to_rgba):
 	ENTER
@@ -715,6 +736,7 @@ PR_(imlib_mmx_subtract_copy_rgba_to_rgba):
 	LOOP_END
 	LEAVE
 
+SIZE(imlib_mmx_subtract_copy_rgba_to_rgba)
 
 PR_(imlib_mmx_subtract_copy_rgb_to_rgba):
 	ENTER
@@ -752,6 +774,7 @@ PR_(imlib_mmx_subtract_copy_rgb_to_rgba):
 	LOOP_END
 	LEAVE
 
+SIZE(imlib_mmx_subtract_copy_rgb_to_rgba)
 
 PR_(imlib_mmx_reshade_blend_rgba_to_rgb):
 	ENTER
@@ -794,6 +817,7 @@ PR_(imlib_mmx_reshade_blend_rgba_to_rgb):
 	LOOP_END
 	LEAVE
 
+SIZE(imlib_mmx_reshade_blend_rgba_to_rgb)
 
 PR_(imlib_mmx_reshade_blend_rgba_to_rgba):
 	ENTER
@@ -845,6 +869,7 @@ PR_(imlib_mmx_reshade_blend_rgba_to_rgba):
 	LOOP_END
 	LEAVE
 
+SIZE(imlib_mmx_reshade_blend_rgba_to_rgba)
 
 PR_(imlib_mmx_reshade_copy_rgba_to_rgb):
 	ENTER
@@ -908,6 +933,7 @@ PR_(imlib_mmx_reshade_copy_rgba_to_rgb):
 	LOOP_END
 	LEAVE
 
+SIZE(imlib_mmx_reshade_copy_rgba_to_rgb)
 
 PR_(imlib_mmx_reshade_copy_rgba_to_rgba):
 	ENTER
@@ -972,6 +998,7 @@ PR_(imlib_mmx_reshade_copy_rgba_to_rgba):
 	LOOP_END
 	LEAVE
 
+SIZE(imlib_mmx_reshade_copy_rgba_to_rgba)
 
 PR_(imlib_mmx_reshade_copy_rgb_to_rgba):
 	ENTER
@@ -1026,5 +1053,7 @@ PR_(imlib_mmx_reshade_copy_rgb_to_rgba):
 3:
 	LOOP_END
 	LEAVE
+
+SIZE(imlib_mmx_reshade_copy_rgb_to_rgba)
 
 #endif

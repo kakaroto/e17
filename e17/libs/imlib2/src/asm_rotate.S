@@ -5,9 +5,17 @@
 /* For all OS/2 coders - please use PGCC to compile this code */
 #define PR_(foo) ___##foo
 #define PT_(foo,func) ___##foo,##func
+#define SIZE(sym)                              \
+	.___end_##sym:;                        \
+	.size ___##sym,.___end_##sym-___##sym; \
+	.align 8;
 #else
 #define PR_(foo) __##foo
 #define PT_(foo,func) __##foo,##func
+#define SIZE(sym)                           \
+	.__end_##sym:;                      \
+	.size __##sym,.__end_##sym-__##sym; \
+	.align 8;
 #endif
 
 #ifdef DO_MMX_ASM
@@ -17,12 +25,11 @@
 |*| Written by Willem Monsuwe <willem@stack.nl>
 \*/
 
-.global PR_(imlib_mmx_RotateAA)
+.text
+        .align 8
+.globl PR_(imlib_mmx_RotateAA)
 	.type PT_(imlib_mmx_RotateAA,@function)
 
-.bss
-.text
-.align 8
 
 /*\ Prototype: __imlib_mmx_RotateAA(DATA32 *src, DATA32 *dest, int sow, int sw,
 |*|				int sh, int dow, int dw, int dh, int x, int y,
@@ -455,5 +462,8 @@ PR_(imlib_mmx_RotateAA):
 	movl %ebp, %esp
 	popl %ebp
 	ret
+
+SIZE(imlib_mmx_RotateAA)
+
 #endif
 
