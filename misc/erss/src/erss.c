@@ -415,7 +415,7 @@ void list_config_files (int output)
 				}
 			}
 		}
-		
+
 		if (output) {
 			if (no_dir)
 				printf ("\tno such dir ...\n");

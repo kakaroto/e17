@@ -95,25 +95,28 @@ int get_end_story (char *buffer)
 		return FALSE;
 }
 
-char *remove_garbage (char *c, char *garbage)
+void remove_garbage (char *c, char *garbage)
 {
 	char *str;
+	char *tmp;
 
 	if (!garbage)
-		return c;
+		return;
 
 	str = strstr (c, garbage);
 
-	if (str)
-		strcpy (str, str + strlen (garbage));
-	
-	return c;
+	if (str) {
+		tmp = strdup(str + strlen(garbage));
+		strcpy (c, tmp);
+		free (tmp);
+	}
 }
 
 void parse_data (char *buf)
 {
 	char *c;
 	char *text;
+	char *string;
 	int i;
 	
 	/* 
@@ -162,14 +165,14 @@ void parse_data (char *buf)
 	if ((c = get_element (&buf, cfg->item_title)) != NULL)
 	{
 		for (i = 0; i < 2; i++)
-			c = remove_garbage (c, garbage[i]);
+			remove_garbage (c, garbage[i]);
 		
-		c = ecore_txt_convert (rc->enc_to, rc->enc_from, c);
+		string = ecore_txt_convert (rc->enc_to, rc->enc_from, c);
 		
-		i = strlen(c) + 3 + strlen(cfg->prefix);
+		i = strlen(string) + 3 + strlen(cfg->prefix);
 		text = malloc (i);
 		
-		snprintf (text, i, " %s %s", cfg->prefix, c);
+		snprintf (text, i, " %s %s", cfg->prefix, string);
 		
 		item->obj = edje_object_add (evas);
 		edje_object_file_set (item->obj, cfg->theme, "erss_item");
@@ -183,7 +186,8 @@ void parse_data (char *buf)
 		e_container_element_append(cont, item->obj);
 		edje_object_part_text_set (item->obj, "article", text);
 
-		free (text); 
+		free (string);
+		free (text);
 		free (c);
 
 		return; 
@@ -265,45 +269,22 @@ int parse_rc_file ()
 	while (fp && (line = get_next_line (fp)) != NULL)
 	{
 		if ((c = get_element (&line, "config")) != NULL)
-		{
 			rc->config = strdup (c);
-			continue;
-		}
-
-		if ((c = get_element (&line, "theme")) != NULL)
-		{
+		else if ((c = get_element (&line, "theme")) != NULL)
 			rc->theme = strdup (c);
-			continue;
-		}
-
-		if ((c = get_element (&line, "browser")) != NULL)
-		{
+		else if ((c = get_element (&line, "browser")) != NULL)
 			rc->browser = strdup (c);
-			continue;
-		}
-
-		if ((c = get_element (&line, "proxy")) != NULL)
-		{
+		else if ((c = get_element (&line, "proxy")) != NULL)
 			rc->proxy = strdup (c);
-			continue;
-		}
-
-		if ((c = get_element (&line, "enc_from")) != NULL)
-		{
+		else if ((c = get_element (&line, "enc_from")) != NULL)
 			rc->enc_from = strdup (c);
-			continue;
-		}
-
-		if ((c = get_element (&line, "enc_to")) != NULL)
-		{
+		else if ((c = get_element (&line, "enc_to")) != NULL)
 			rc->enc_to = strdup (c);
-			continue;
-		}
-
-		if ((c = get_element (&line, "proxy_port")) != NULL)
-		{
+		else if ((c = get_element (&line, "proxy_port")) != NULL)
 			rc->proxy_port = atoi (c);
-		}
+
+		if (c)
+			free (c);
 
 		free(line);
 	}
@@ -382,61 +363,24 @@ void parse_config_file (char *file)
 	while ((line = get_next_line (fp)) != NULL)
 	{
 		if ((c = get_element (&line, "header")) != NULL)
-		{
 			cfg->header = strdup (c);
-			continue;
-		}
-		
-		if ((c = get_element (&line, "hostname")) != NULL)
-		{
+		else if ((c = get_element (&line, "hostname")) != NULL)
 			cfg->hostname = strdup (c);
-			continue;
-		}
-
-		if ((c = get_element (&line, "url")) != NULL)
-		{
+		else if ((c = get_element (&line, "url")) != NULL)
 			cfg->url = strdup (c);
-			continue;
-		}
-
-		if ((c = get_element (&line, "item_start")) != NULL)
-		{
+		else if ((c = get_element (&line, "item_start")) != NULL)
 			cfg->item_start = strdup (c);
-			continue;
-		}
-
-		if ((c = get_element (&line, "item_title")) != NULL) 
-		{
+		else if ((c = get_element (&line, "item_title")) != NULL) 
 			cfg->item_title = strdup (c);
-			continue;
-		}	
-
-		if ((c = get_element (&line, "item_url")) != NULL)
-		{
+		else if ((c = get_element (&line, "item_url")) != NULL)
 			cfg->item_url = strdup (c);
-			continue;
-		}
-
-		if ((c = get_element (&line, "item_description")) != NULL)
-		{
+		else if ((c = get_element (&line, "item_description")) != NULL)
 			cfg->item_description = strdup (c);
-			continue;
-		}
-
-		if ((c = get_element (&line, "prefix")) != NULL)
-		{
+		else if ((c = get_element (&line, "prefix")) != NULL)
 			cfg->prefix = strdup (c);
-			continue;
-		}
-
-
-		if ((c = get_element (&line, "update_rate")) != NULL)
-		{
+		else if ((c = get_element (&line, "update_rate")) != NULL)
 			cfg->update_rate = atoi (c);
-			continue;
-		}
-
-		if ((c = get_element (&line, "clock")) != NULL)
+		else if ((c = get_element (&line, "clock")) != NULL)
 		{
 			cfg->clock = atoi (c);
 
@@ -446,10 +390,7 @@ void parse_config_file (char *file)
 						"%s error: Clock option has wrong value - check your config file!\n", PACKAGE);
 				exit (-1);
 			}
-			continue;
-		}
-
-		if ((c = get_element (&line, "stories")) != NULL)
+		} else if ((c = get_element (&line, "stories")) != NULL)
 		{
 			cfg->num_stories = atoi (c);
 
@@ -459,10 +400,7 @@ void parse_config_file (char *file)
 						 "%s error: Max stories to show is 10 - check your config file!\n", PACKAGE);
 				exit (-1);
 			}
-			continue;
-		}
-
-		if ((c = get_element (&line, "borderless")) != NULL)
+		} else if ((c = get_element (&line, "borderless")) != NULL)
 		{
 			cfg->borderless = atoi (c);
 
@@ -472,21 +410,14 @@ void parse_config_file (char *file)
 						 "%s error:: Borderless option has wrong value - check your config file!\n", PACKAGE);
 				exit (-1);
 			}
-			continue;
-		}
-
-		if ((c = get_element (&line, "x")) != NULL)
-		{
+		} else if ((c = get_element (&line, "x")) != NULL)
 			cfg->x = atoi (c);
-			continue;
-		}
-
-		if ((c = get_element (&line, "y")) != NULL)
-		{
+		else if ((c = get_element (&line, "y")) != NULL)
 			cfg->y = atoi (c);
-			continue;
-		}
 
+		if (c)
+			free (c);
+		
 		free (line);
 	}
 
