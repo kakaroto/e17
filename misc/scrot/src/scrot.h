@@ -23,8 +23,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 */
 
-#ifndef FEH_H
-#define FEH_H
+#ifndef SCROT_H
+#define SCROT_H
 
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>

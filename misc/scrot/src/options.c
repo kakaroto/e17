@@ -26,7 +26,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "scrot.h"
 #include "options.h"
 
-static void feh_parse_option_array(int argc, char **argv);
+static void scrot_parse_option_array(int argc, char **argv);
 scrotoptions opt;
 
 void
@@ -38,11 +38,11 @@ init_parse_options(int argc, char **argv)
    opt.quality = 75;
 
    /* Parse the cmdline args */
-   feh_parse_option_array(argc, argv);
+   scrot_parse_option_array(argc, argv);
 }
 
 static void
-feh_parse_option_array(int argc, char **argv)
+scrot_parse_option_array(int argc, char **argv)
 {
    static char stropts[] = "bcd:e:hq:sv+:";
    static struct option lopts[] = {
