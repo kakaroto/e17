@@ -80,7 +80,6 @@ __imlib_DataCmodApply(DATA32 * data, int w, int h, int jump,
 {
    int                 x, y;
    DATA32             *p;
-   DATA8               r, g, b, a;
 
    /* We might be adding alpha */
    if (fl && !(*fl & F_HAS_ALPHA))

@@ -560,8 +560,7 @@ void
 imlib_context_get_color_hsva(float *hue, float *saturation, float *value,
                              int *alpha)
 {
-   int                 r, g, b, f;
-   float               i, j, k, max, min, d;
+   int                 r, g, b;
 
    imlib_context_get_color(&r, &g, &b, alpha);
    __imlib_rgb_to_hsv(r, g, b, hue, saturation, value);
@@ -1050,10 +1049,7 @@ imlib_image_set_border(Imlib_Border * border)
    im->border.right = border->right;
    im->border.top = border->top;
    im->border.bottom = border->bottom;
-
-#ifndef X_DISPLAY_MISSING
    __imlib_DirtyPixmapsForImage(im);
-#endif
 }
 
 void
@@ -2114,8 +2110,6 @@ imlib_text_draw_with_return_metrics(int x, int y, const char *text,
 {
    ImlibImage         *im;
    ImlibFont          *fn;
-   char               *tt;
-   int                 tx, ty;
    int                 dir;
 
    if (!ctx)
@@ -3087,8 +3081,7 @@ imlib_image_query_pixel_hsva(int x, int y, float *hue, float *saturation,
 {
    ImlibImage         *im;
    DATA32             *p;
-   int                 r, g, b, f;
-   float               i, j, k, max, min, d;
+   int                 r, g, b;
 
    if (!ctx)
       ctx = imlib_context_new();
@@ -3121,8 +3114,7 @@ imlib_image_query_pixel_hlsa(int x, int y, float *hue, float *lightness,
 {
    ImlibImage         *im;
    DATA32             *p;
-   int                 r, g, b, f;
-   float               i, j, k, max, min, d;
+   int                 r, g, b;
 
    if (!ctx)
       ctx = imlib_context_new();

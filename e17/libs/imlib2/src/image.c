@@ -1267,11 +1267,8 @@ void
 __imlib_DirtyImage(ImlibImage * im)
 {
    SET_FLAG(im->flags, F_INVALID);
-
-#ifndef X_DISPLAY_MISSING
    /* and dirty all pixmaps generated from it */
    __imlib_DirtyPixmapsForImage(im);
-#endif
 }
 
 void

@@ -389,6 +389,9 @@ __imlib_BlendRGBAToData(DATA32 *src, int src_w, int src_h, DATA32 *dst,
 			int dst_w, int dst_h, int sx, int sy, int dx, int dy,
 			int w, int h, char blend, char merge_alpha,
 			ImlibColorModifier *cm, ImlibOp op, char rgb_src);
+void
+__imlib_build_pow_lut(void);
+
 #ifdef DO_MMX_ASM
 void
 __imlib_mmx_blend_rgba_to_rgb(DATA32 *src, int sw, DATA32 *dst,

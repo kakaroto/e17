@@ -146,8 +146,11 @@ void __imlib_draw_box(ImlibImage * im, int x, int y, int w, int h, DATA8 r,
                       DATA8 g, DATA8 b, DATA8 a, ImlibOp op);
 void __imlib_draw_filled_box(ImlibImage * im, int x, int y, int w, int h,
                              DATA8 r, DATA8 g, DATA8 b, DATA8 a, ImlibOp op);
-void __imlib_draw_filled_box(ImlibImage * im, int x, int y, int w, int h,
-                             DATA8 r, DATA8 g, DATA8 b, DATA8 a, ImlibOp op);
+void __imlib_draw_filled_box_clipped(ImlibImage * im, int x, int y, int w,
+                                int h,
+                                int clip_xmin, int clip_xmax, int clip_ymin,
+                                int clip_ymax, DATA8 r, DATA8 g, DATA8 b,
+                                DATA8 a, ImlibOp op);
 void __imlib_copy_image_data(ImlibImage * im, int x, int y, int w, int h,
                              int nx, int ny);
 void __imlib_copy_alpha_data(ImlibImage * src, ImlibImage * dst, int x, int y,

@@ -31,6 +31,9 @@ void
 __imlib_FilterSet(ImlibFilterColor *fil, int x, int y,
 		  int a, int r, int g, int b);
 void
+__imlib_FilterSetColor(ImlibFilterColor * fil, int x, int y,
+                       int a, int r, int g, int b);
+void
 __imlib_FilterDivisors(ImlibFilter *fil, int a, int r, int g, int b);
 void
 __imlib_FilterConstants(ImlibFilter *fil, int a, int r, int g, int b);

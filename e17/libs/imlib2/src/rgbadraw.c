@@ -6,6 +6,7 @@
 #include "blend.h"
 #include "updates.h"
 #include "rgbadraw.h"
+#include "Imlib2.h"
 
 #define round(a) floor(a+0.5)
 
@@ -446,7 +447,7 @@ __imlib_draw_line(ImlibImage * im, int x1, int y1, int x2, int y2, DATA8 r,
 {
    int                 x, y, dx, dy, yy, xx, am, tmp;
    DATA32             *p;
-   DATA8               aaa, nr, ng, nb, rr, gg, bb, aa, na;
+   DATA8               aaa;
 
    /* clip to top edge */
    if ((y1 < 0) && (y2 < 0))
@@ -1263,7 +1264,6 @@ __imlib_draw_filled_box_clipped(ImlibImage * im, int x, int y, int w, int h,
 {
    int                 yy, xx, tmp;
    DATA32             *p;
-   DATA8               nr, ng, nb, rr, gg, bb, aa, na;
 
    if (x < 0)
      {
@@ -1369,7 +1369,6 @@ __imlib_draw_filled_box(ImlibImage * im, int x, int y, int w, int h, DATA8 r,
 {
    int                 yy, xx, tmp;
    DATA32             *p;
-   DATA8               nr, ng, nb, rr, gg, bb, aa, na;
 
    if (x < 0)
      {
@@ -2053,6 +2052,8 @@ __imlib_draw_ellipse_clipped(ImlibImage * im, int xc, int yc, int aa, int bb,
      }
 }
 
+#if 0
+/* unused */
 static void
 edge(edgeRec * table, ImlibPoint * pt1, ImlibPoint * pt2)
 {
@@ -2077,6 +2078,7 @@ edge(edgeRec * table, ImlibPoint * pt1, ImlibPoint * pt2)
      }
    while (iy1 <= iy2);
 }
+#endif
 
 static void
 span(ImlibImage * im, int y, int x1, int x2, DATA8 r, DATA8 g,
@@ -2357,14 +2359,14 @@ __imlib_draw_polygon_filled(ImlibImage * im, ImlibPoly poly, int clip_xmin,
                        /* last span on line and still not < ss->x */
                        if (ps)
                           ps->next = s;
-                     nospans:
+                     nospans: ;
                     }
                }
              if (i == y2)
                 goto nolines;
              i += step;
           }
-      nolines:
+      nolines: ;
      }
    for (i = 0; i < h; i++)
      {

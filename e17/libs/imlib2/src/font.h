@@ -76,13 +76,9 @@ char              **imlib_font_list_fonts(int *num_ret);
 ImlibFont          *imlib_font_load_joined(const char *name);
 ImlibFont          *imlib_font_load(const char *name, int size);
 void                imlib_font_free(ImlibFont * fn);
-static int          font_modify_cache_cb(Imlib_Hash * hash, const char *key,
-					 void *data, void *fdata);
 int                 imlib_font_cache_get(void);
 void                imlib_font_cache_set(int size);
 void                imlib_font_flush(void);
-static int          font_flush_free_glyph_cb(Imlib_Hash * hash, const char *key,
-					     void *data, void *fdata);
 void                imlib_font_modify_cache_by(ImlibFont * fn, int dir);
 void                imlib_font_modify_cache_by(ImlibFont * fn, int dir);
 void                imlib_font_flush_last(void);

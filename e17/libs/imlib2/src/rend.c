@@ -75,7 +75,7 @@ __imlib_RenderGetPixel(Display * d, Drawable w, Visual * v, Colormap cm,
    else
      {
         unsigned int        rm, gm, bm;
-        int                 i, rshift, gshift, bshift;
+        int                 i, rshift = 0, gshift = 0, bshift = 0;
         DATA32              val;
 
         rm = v->red_mask;
