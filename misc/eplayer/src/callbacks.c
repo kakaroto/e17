@@ -18,8 +18,7 @@ static Ewl_Widget *_fd_win = NULL;
 static void file_dialog_cancel(Ewl_Widget *row, void *ev_data, void *user_data);
 static void file_dialog_ok(Ewl_Widget *row, void *ev_data, void *user_data);
 static void hilight_current_track(ePlayer *player);
-
-int _eplayer_seek_timer(void *data);
+static int _eplayer_seek_timer(void *data);
 
 typedef enum {
 	PLAYBACK_STATE_STOPPED,
@@ -413,11 +412,14 @@ EDJE_CB(update_seeker) {
 	track_position_set(player, (int)(pli->duration * pos));
 }
 
-int _eplayer_seek_timer(void *data)
+static int _eplayer_seek_timer(void *data)
 {
 	ePlayer *player = data;
-	PlayListItem *pli = playlist_current_item_get(player->playlist);
+	PlayListItem *pli;
 	int new_pos;
+
+	if (!(pli = playlist_current_item_get(player->playlist)))
+		return 0;
 
 	new_pos = pli->current_pos + player->flags.seek_dir;
 
