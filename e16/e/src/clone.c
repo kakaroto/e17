@@ -53,9 +53,7 @@ CloneEwin(EWin * ewin)
 			  InputOutput, root.vis,
 			  CWOverrideRedirect | CWSaveUnder |
 			  CWBackingStore | CWColormap |
-			  CWBackPixmap | CWBackPixel |
-			  CWBorderPixel,
-			  &attr);
+			  CWBackPixmap | CWBackPixel | CWBorderPixel, &attr);
    pmap = XCreatePixmap(disp, c->win, ewin->w, ewin->h, root.depth);
    XSetWindowBackgroundPixmap(disp, c->win, pmap);
    XCopyArea(disp, ewin->win, pmap, gc, 0, 0, ewin->w, ewin->h, 0, 0);

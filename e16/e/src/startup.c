@@ -31,10 +31,11 @@ AddEToFile(char *file)
    char               *s1, *s2;
    char                hase = 0;
    char                foundwm = 0;
-   char               *wms[] =
-   {
-   "wmaker", "afterstep", "fvwm", "fvwm2", "twm", "mwm", "vtwm", "ctwm", "gwm",
-      "mlvwm", "kwm", "olwm", "wm2", "wmx", "olvwm", "9wm", "blackbox", "awm", "uwm",
+   char               *wms[] = {
+      "wmaker", "afterstep", "fvwm", "fvwm2", "twm", "mwm", "vtwm", "ctwm",
+	 "gwm",
+      "mlvwm", "kwm", "olwm", "wm2", "wmx", "olvwm", "9wm", "blackbox", "awm",
+	 "uwm",
       "amiwm", "dtwm", "4dwm", "scwm", "fvwm95", "fvwm95-2", "tvtwm", "bowman",
       "qwm", "icewm", "qvwm", "gnome-session", "xsm", "startkde"
    };
@@ -75,8 +76,10 @@ AddEToFile(char *file)
 		  if ((!s2) || (s1 < s2))
 		    {
 		       fprintf(f2, "#%s", s);
-		       fprintf(f2, "\n# Enlightenment inserted Execution string here\n");
-		       fprintf(f2, "exec %s/enlightenment\n\n", ENLIGHTENMENT_BIN);
+		       fprintf(f2,
+			       "\n# Enlightenment inserted Execution string here\n");
+		       fprintf(f2, "exec %s/enlightenment\n\n",
+			       ENLIGHTENMENT_BIN);
 		       foundwm = 1;
 		       i = wmnum + 1;
 		    }
@@ -173,15 +176,19 @@ CreateStartupDisplay(char start)
       EDBUG_RETURN_;
    if (start)
      {
-	bg_sideways = (Background *) FindItem("STARTUP_BACKGROUND_SIDEWAYS", 0, LIST_FINDBY_NAME,
-					      LIST_TYPE_BACKGROUND);
-	ic = (ImageClass *) FindItem("STARTUP_BAR", 0, LIST_FINDBY_NAME,
-				     LIST_TYPE_ICLASS);
+	bg_sideways =
+	   (Background *) FindItem("STARTUP_BACKGROUND_SIDEWAYS", 0,
+				   LIST_FINDBY_NAME, LIST_TYPE_BACKGROUND);
+	ic =
+	   (ImageClass *) FindItem("STARTUP_BAR", 0, LIST_FINDBY_NAME,
+				   LIST_TYPE_ICLASS);
 	if (!ic)
-	   ic = (ImageClass *) FindItem("DESKTOP_DRAGBUTTON_HORIZ", 0, LIST_FINDBY_NAME,
-					LIST_TYPE_ICLASS);
-	bg = (Background *) FindItem("STARTUP_BACKGROUND", 0, LIST_FINDBY_NAME,
-				     LIST_TYPE_BACKGROUND);
+	   ic =
+	      (ImageClass *) FindItem("DESKTOP_DRAGBUTTON_HORIZ", 0,
+				      LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
+	bg =
+	   (Background *) FindItem("STARTUP_BACKGROUND", 0, LIST_FINDBY_NAME,
+				   LIST_TYPE_BACKGROUND);
 	if ((!ic) || (!bg))
 	   EDBUG_RETURN_;
 
@@ -203,7 +210,9 @@ CreateStartupDisplay(char start)
 	EMapWindow(disp, win1);
 	EMapWindow(disp, win2);
 
-	b1 = ECreateWindow(w1, 0, root.h - desks.dragbar_width, root.w, desks.dragbar_width, 0);
+	b1 =
+	   ECreateWindow(w1, 0, root.h - desks.dragbar_width, root.w,
+			 desks.dragbar_width, 0);
 	b2 = ECreateWindow(w2, 0, 0, root.w, desks.dragbar_width, 0);
 	EMapRaised(disp, b1);
 	EMapRaised(disp, b2);
@@ -226,8 +235,7 @@ CreateStartupDisplay(char start)
      }
    else
      {
-	int                 k, spd, x, y, xOffset, yOffset, ty, fy, min,
-	                    speed;
+	int                 k, spd, x, y, xOffset, yOffset, ty, fy, min, speed;
 
 	/* we have this many so that we save on lines o code - eAndroid */
 	struct timeval      timev1, timev2;

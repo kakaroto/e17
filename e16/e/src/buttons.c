@@ -88,12 +88,13 @@ CreateButton(char *name, ImageClass * iclass, ActionClass * aclass,
    b->default_show = 1;
    b->used = 0;
    b->left = 0;
-   b->win = ECreateWindow(desks.desk[desk % ENLIGHTENMENT_CONF_NUM_DESKTOPS].win,
-			  -100, -100, 50, 50, 0);
+   b->win =
+      ECreateWindow(desks.desk[desk % ENLIGHTENMENT_CONF_NUM_DESKTOPS].win,
+		    -100, -100, 50, 50, 0);
    XSelectInput(disp, b->win,
-		ExposureMask | KeyPressMask | KeyReleaseMask |
-		ButtonPressMask | ButtonReleaseMask |
-		EnterWindowMask | LeaveWindowMask | PointerMotionMask);
+		ExposureMask | KeyPressMask | KeyReleaseMask | ButtonPressMask |
+		ButtonReleaseMask | EnterWindowMask | LeaveWindowMask |
+		PointerMotionMask);
    b->x = -1;
    b->y = -1;
    b->w = -1;
@@ -443,13 +444,15 @@ FindEmptySpotForButton(Button * bt, char *listname, char dirtomove)
 	  {
 	     for (j = 0; j < num; j++)
 	       {
-		  if ((bt->x + bt->w) <= blst[j]->x || bt->x >= (blst[j]->x + blst[j]->w))
+		  if ((bt->x + bt->w) <= blst[j]->x
+		      || bt->x >= (blst[j]->x + blst[j]->w))
 		    {
 		       done = 1;
 		    }
 		  else
 		    {
-		       if ((bt->y + bt->h) <= blst[j]->y || bt->y > (blst[j]->y + blst[j]->h))
+		       if ((bt->y + bt->h) <= blst[j]->y
+			   || bt->y > (blst[j]->y + blst[j]->h))
 			  done = 1;
 		       else
 			  done = 0;

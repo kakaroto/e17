@@ -75,9 +75,9 @@ GetNextFocusEwin(void)
 	     if (((ewin->sticky) || (ewin->desktop == desks.current)) &&
 		 ((ewin->area_x == ax) && (ewin->area_y == ay)) &&
 		 (!ewin->skipfocus) && (!ewin->shaded) &&
-		 (!ewin->menu) && (!ewin->pager) && (!ewin->ibox) &&
-		 (!ewin->iconified)	/*&& (ewin->client.mwm_decor_title) &&
-					 * (ewin->client.mwm_decor_border) */ )
+		 (!ewin->menu) && (!ewin->pager) && (!ewin->ibox) && (!ewin->iconified)	/*&& (ewin->client.mwm_decor_title) &&
+											 * (ewin->client.mwm_decor_border) */
+		)
 	       {
 		  num++;
 		  lst = Erealloc(lst, sizeof(EWin *) * num);
@@ -146,9 +146,9 @@ GetPrevFocusEwin(void)
 	     if (((ewin->sticky) || (ewin->desktop == desks.current)) &&
 		 ((ewin->area_x == ax) && (ewin->area_y == ay)) &&
 		 (!ewin->skipfocus) && (!ewin->shaded) &&
-		 (!ewin->menu) && (!ewin->pager) && (!ewin->ibox) &&
-		 (!ewin->iconified)	/*&& (ewin->client.mwm_decor_title) &&
-					 * (ewin->client.mwm_decor_border) */ )
+		 (!ewin->menu) && (!ewin->pager) && (!ewin->ibox) && (!ewin->iconified)	/*&& (ewin->client.mwm_decor_title) &&
+											 * (ewin->client.mwm_decor_border) */
+		)
 	       {
 		  num++;
 		  lst = Erealloc(lst, sizeof(EWin *) * num);
@@ -207,13 +207,14 @@ FixFocus(void)
 	     if (mode.focusmode == FOCUS_CLICK)
 	       {
 		  if (!(ewin->active))
-		     XGrabButton(disp, AnyButton, AnyModifier, ewin->win_container,
-				 False, ButtonPressMask,
+		     XGrabButton(disp, AnyButton, AnyModifier,
+				 ewin->win_container, False, ButtonPressMask,
 				 GrabModeSync, GrabModeAsync, None, None);
 	       }
 	     else
 	       {
-		  XUngrabButton(disp, AnyButton, AnyModifier, ewin->win_container);
+		  XUngrabButton(disp, AnyButton, AnyModifier,
+				ewin->win_container);
 		  GrabButtonGrabs(ewin);
 	       }
 	  }
@@ -345,7 +346,8 @@ FocusToEWin(EWin * ewin)
 		  if ((ax != ewin->area_x) || (ay != ewin->area_y))
 		    {
 		       if ((ewin->x >= root.w) || (ewin->y >= root.h) ||
-		       ((ewin->x + ewin->w) < 0) || ((ewin->y + ewin->h) < 0))
+			   ((ewin->x + ewin->w) < 0)
+			   || ((ewin->y + ewin->h) < 0))
 			  SetCurrentArea(ewin->area_x, ewin->area_y);
 		    }
 	       }
@@ -379,8 +381,7 @@ BeginNewDeskFocus(void)
 			  FocusChangeMask |
 			  SubstructureNotifyMask |
 			  SubstructureRedirectMask |
-			  PropertyChangeMask |
-			  ResizeRedirectMask);
+			  PropertyChangeMask | ResizeRedirectMask);
 	     if (ewin->pager)
 		XSelectInput(disp, ewin->client.win,
 			     PropertyChangeMask |
@@ -389,35 +390,29 @@ BeginNewDeskFocus(void)
 			     StructureNotifyMask |
 			     ColormapChangeMask |
 			     ButtonPressMask |
-			     ButtonReleaseMask |
-			     PointerMotionMask);
+			     ButtonReleaseMask | PointerMotionMask);
 	     else if (ewin->dialog)
 		XSelectInput(disp, ewin->client.win,
 			     PropertyChangeMask |
 			     FocusChangeMask |
 			     ResizeRedirectMask |
 			     StructureNotifyMask |
-			     ColormapChangeMask |
-			     ExposureMask |
-			     KeyPressMask);
+			     ColormapChangeMask | ExposureMask | KeyPressMask);
 	     else
 		XSelectInput(disp, ewin->client.win,
 			     PropertyChangeMask |
 			     FocusChangeMask |
 			     ResizeRedirectMask |
-			     StructureNotifyMask |
-			     ColormapChangeMask);
+			     StructureNotifyMask | ColormapChangeMask);
 	     for (j = 0; j < ewin->border->num_winparts; j++)
 	       {
 		  if (ewin->border->part[j].flags & FLAG_TITLE)
 		     XSelectInput(disp, ewin->bits[j].win,
 				  ExposureMask |
-				  ButtonPressMask |
-				  ButtonReleaseMask);
+				  ButtonPressMask | ButtonReleaseMask);
 		  else
 		     XSelectInput(disp, ewin->bits[j].win,
-				  ButtonPressMask |
-				  ButtonReleaseMask);
+				  ButtonPressMask | ButtonReleaseMask);
 	       }
 	  }
 	Efree(lst);
@@ -426,8 +421,7 @@ BeginNewDeskFocus(void)
       XSelectInput(disp, desks.desk[i].win,
 		   PropertyChangeMask |
 		   SubstructureRedirectMask |
-		   ButtonPressMask |
-		   ButtonReleaseMask);
+		   ButtonPressMask | ButtonReleaseMask);
 }
 
 void
@@ -454,8 +448,7 @@ NewDeskFocus(void)
 			  PointerMotionMask |
 			  PropertyChangeMask |
 			  ResizeRedirectMask |
-			  ButtonPressMask |
-			  ButtonReleaseMask);
+			  ButtonPressMask | ButtonReleaseMask);
 	     if (ewin->pager)
 		XSelectInput(disp, ewin->client.win,
 			     PropertyChangeMask |
@@ -466,8 +459,7 @@ NewDeskFocus(void)
 			     StructureNotifyMask |
 			     ColormapChangeMask |
 			     ButtonPressMask |
-			     ButtonReleaseMask |
-			     PointerMotionMask);
+			     ButtonReleaseMask | PointerMotionMask);
 	     else if (ewin->dialog)
 		XSelectInput(disp, ewin->client.win,
 			     PropertyChangeMask |
@@ -476,9 +468,7 @@ NewDeskFocus(void)
 			     FocusChangeMask |
 			     ResizeRedirectMask |
 			     StructureNotifyMask |
-			     ColormapChangeMask |
-			     ExposureMask |
-			     KeyPressMask);
+			     ColormapChangeMask | ExposureMask | KeyPressMask);
 	     else
 		XSelectInput(disp, ewin->client.win,
 			     PropertyChangeMask |
@@ -486,8 +476,7 @@ NewDeskFocus(void)
 			     LeaveWindowMask |
 			     FocusChangeMask |
 			     ResizeRedirectMask |
-			     StructureNotifyMask |
-			     ColormapChangeMask);
+			     StructureNotifyMask | ColormapChangeMask);
 	     for (j = 0; j < ewin->border->num_winparts; j++)
 	       {
 		  if (ewin->border->part[j].flags & FLAG_TITLE)
@@ -498,8 +487,7 @@ NewDeskFocus(void)
 				  ButtonPressMask |
 				  ButtonReleaseMask |
 				  EnterWindowMask |
-				  LeaveWindowMask |
-				  PointerMotionMask);
+				  LeaveWindowMask | PointerMotionMask);
 		  else
 		     XSelectInput(disp, ewin->bits[j].win,
 				  KeyPressMask |
@@ -507,8 +495,7 @@ NewDeskFocus(void)
 				  ButtonPressMask |
 				  ButtonReleaseMask |
 				  EnterWindowMask |
-				  LeaveWindowMask |
-				  PointerMotionMask);
+				  LeaveWindowMask | PointerMotionMask);
 	       }
 	  }
 	Efree(lst);
@@ -523,11 +510,8 @@ NewDeskFocus(void)
 		   ButtonMotionMask |
 		   PropertyChangeMask |
 		   SubstructureRedirectMask |
-		   KeyPressMask |
-		   KeyReleaseMask |
-		   PointerMotionMask);
-   if ((mode.focusmode == FOCUS_POINTER) ||
-       (mode.focusmode == FOCUS_SLOPPY))
+		   KeyPressMask | KeyReleaseMask | PointerMotionMask);
+   if ((mode.focusmode == FOCUS_POINTER) || (mode.focusmode == FOCUS_SLOPPY))
      {
 	ewin = GetEwinPointerInClient();
 	if (ewin)

@@ -35,12 +35,12 @@
 
 /* This is the Modules List that we maintain */
 typedef struct _ModuleMember
-  {
+{
 
-     char               *ModuleName;
-     void               *handle;
+   char               *ModuleName;
+   void               *handle;
 
-  }
+}
 ModuleMember;
 
 int                 ListLength = 0;
@@ -135,15 +135,15 @@ ModuleErrorCodeToString(int error_code)
      {
 
      case MODULE_ALREADY_LOADED:
-	return ("Module is Already Loaded.\n");
+	return (gettext("Module is Already Loaded.\n"));
      case MODULE_LOAD_FAIL:
-	return ("Module Failed During Load.\n");
+	return (gettext("Module Failed During Load.\n"));
      case MODULE_UNLOAD_FAIL:
-	return ("Module Unload Failed.\n");
+	return (gettext("Module Unload Failed.\n"));
      case MODULE_NOT_LOADED:
-	return ("Module is not Loaded.\n");
+	return (gettext("Module is not Loaded.\n"));
      default:
-	return ("Unknown Module Error.\n");
+	return (gettext("Unknown Module Error.\n"));
 
      }
 

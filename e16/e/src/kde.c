@@ -88,12 +88,12 @@ static Atom         KDE_WIN_TITLE = 0;
 
 /* the modules I have to communicate to */
 typedef struct KModuleList
-  {
+{
 
-     Window              win;
-     struct KModuleList *next;
+   Window              win;
+   struct KModuleList *next;
 
-  }
+}
 KModuleList;
 
 static KModuleList *KModules = NULL;
@@ -189,8 +189,8 @@ KDE_UpdateFocusedWindow(void)
    if (ewin)
      {
 	XChangeProperty(disp, root.win, KDE_ACTIVE_WINDOW, KDE_ACTIVE_WINDOW,
-			32, PropModeReplace, (unsigned char *)
-			&(ewin->client.win), 1);
+			32, PropModeReplace,
+			(unsigned char *)&(ewin->client.win), 1);
      }
    else
      {
@@ -256,7 +256,8 @@ KDE_NewWindow(EWin * ewin)
 		  setSimpleHint(ewin->client.win, KDE_WIN_MAXIMIZED, 0);
 	       }
 
-	     setSimpleHint(ewin->client.win, KDE_WIN_DESKTOP, ewin->desktop + 1);
+	     setSimpleHint(ewin->client.win, KDE_WIN_DESKTOP,
+			   ewin->desktop + 1);
 
 	     ewin->kde_hint = 1;
 	     KDE_SendMessagesToModules(KDE_MODULE_WIN_ADD, ewin->client.win);
@@ -403,7 +404,8 @@ KDE_AddModule(Window win)
 					      KDE_WIN_MAXIMIZED, 0);
 			  }
 			if (!getSimpleHint(lst[i]->client.win, KDE_WIN_DESKTOP))
-			   setSimpleHint(lst[i]->client.win, KDE_WIN_DESKTOP, lst[i]->desktop + 1);
+			   setSimpleHint(lst[i]->client.win, KDE_WIN_DESKTOP,
+					 lst[i]->desktop + 1);
 			KDE_ClientMessage(win, KDE_MODULE_WIN_ADD,
 					  lst[i]->client.win, CurrentTime);
 			lst[i]->kde_hint = 1;
@@ -499,8 +501,7 @@ KDE_Init(void)
 
    if (!KDE_WIN_STICKY)
      {
-	KDE_WIN_UNSAVED_DATA = XInternAtom(disp, "KWM_WIN_UNSAVED_DATA",
-					   False);
+	KDE_WIN_UNSAVED_DATA = XInternAtom(disp, "KWM_WIN_UNSAVED_DATA", False);
 
 	KDE_WIN_DECORATION = XInternAtom(disp, "KWM_WIN_DECORATION", False);
 
@@ -533,8 +534,7 @@ KDE_Init(void)
 
 	KDE_DO_NOT_MANAGE = XInternAtom(disp, "KWM_DO_NOT_MANAGE", False);
 
-	KDE_CURRENT_DESKTOP = XInternAtom(disp, "KWM_CURRENT_DESKTOP",
-					  False);
+	KDE_CURRENT_DESKTOP = XInternAtom(disp, "KWM_CURRENT_DESKTOP", False);
 
 	KDE_NUMBER_OF_DESKTOPS = XInternAtom(disp, "KWM_NUMBER_OF_DESKTOPS",
 					     False);
@@ -550,11 +550,12 @@ KDE_Init(void)
 					     False);
 
 	KDE_MODULE_DESKTOP_CHANGE = XInternAtom(disp,
-					  "KWM_MODULE_DESKTOP_CHANGE", False);
-	KDE_MODULE_DESKTOP_NAME_CHANGE = XInternAtom(disp,
-				     "KWM_MODULE_DESKTOP_NAME_CHANGE", False);
-	KDE_MODULE_DESKTOP_NUMBER_CHANGE = XInternAtom(disp,
-				   "KWM_MODULE_DESKTOP_NUMBER_CHANGE", False);
+						"KWM_MODULE_DESKTOP_CHANGE",
+						False);
+	KDE_MODULE_DESKTOP_NAME_CHANGE =
+	   XInternAtom(disp, "KWM_MODULE_DESKTOP_NAME_CHANGE", False);
+	KDE_MODULE_DESKTOP_NUMBER_CHANGE =
+	   XInternAtom(disp, "KWM_MODULE_DESKTOP_NUMBER_CHANGE", False);
 
 	KDE_MODULE_WIN_ADD = XInternAtom(disp, "KWM_MODULE_WIN_ADD", False);
 	KDE_MODULE_WIN_REMOVE = XInternAtom(disp, "KWM_MODULE_WIN_REMOVE",
@@ -566,11 +567,12 @@ KDE_Init(void)
 	KDE_MODULE_WIN_ACTIVATE = XInternAtom(disp, "KWM_MODULE_WIN_ACTIVATE",
 					      False);
 	KDE_MODULE_WIN_ICON_CHANGE = XInternAtom(disp,
-					 "KWM_MODULE_WIN_ICON_CHANGE", False);
-	KDE_MODULE_DOCKWIN_ADD = XInternAtom(disp, "KWM_MODULE_DOCKWIN_ADD",
-					     False);
-	KDE_MODULE_DOCKWIN_REMOVE = XInternAtom(disp,
-					  "KWM_MODULE_DOCKWIN_REMOVE", False);
+						 "KWM_MODULE_WIN_ICON_CHANGE",
+						 False);
+	KDE_MODULE_DOCKWIN_ADD =
+	   XInternAtom(disp, "KWM_MODULE_DOCKWIN_ADD", False);
+	KDE_MODULE_DOCKWIN_REMOVE =
+	   XInternAtom(disp, "KWM_MODULE_DOCKWIN_REMOVE", False);
 
 	memset(KDE_DESKTOP_WINDOW_REGION, 0, sizeof(KDE_DESKTOP_WINDOW_REGION));
 
@@ -870,8 +872,7 @@ KDE_GetDecorationHint(Window win, long *dechints)
    ewin->border_new = 1;
    SetEwinToBorder(ewin, b);
    ICCCM_MatchSize(ewin);
-   MoveResizeEwin(ewin, ewin->x, ewin->y, ewin->client.w,
-		  ewin->client.h);
+   MoveResizeEwin(ewin, ewin->x, ewin->y, ewin->client.w, ewin->client.h);
 
    EDBUG_RETURN_;
 
@@ -1170,8 +1171,7 @@ KDE_SetRootArea(void)
    EDBUG(6, "KDE_SetRootArea");
 
    if (getSimpleHint(root.win, KDE_CURRENT_DESKTOP))
-      if (*(getSimpleHint(root.win, KDE_CURRENT_DESKTOP)) ==
-	  desks.current + 1)
+      if (*(getSimpleHint(root.win, KDE_CURRENT_DESKTOP)) == desks.current + 1)
 	 EDBUG_RETURN_;
 
    setSimpleHint(root.win, KDE_CURRENT_DESKTOP, desks.current + 1);
@@ -1211,7 +1211,8 @@ KDE_SetNumDesktops(void)
 	  {
 	     Esnprintf(s, sizeof(s), "Desk %d", i);
 	     XChangeProperty(disp, root.win, KDE_DESKTOP_NAME[i], XA_STRING, 8,
-			  PropModeReplace, (unsigned char *)s, strlen(s) + 1);
+			     PropModeReplace, (unsigned char *)s,
+			     strlen(s) + 1);
 	  }
      }
 
@@ -1254,9 +1255,10 @@ KDE_HintChange(Atom a)
 		  unsigned long       extra;
 		  unsigned long      *data;
 
-		  if (XGetWindowProperty(disp, root.win, a, 0, 4, False, a, &type_ret,
-					 &fmt_ret, &num, &extra,
-				 (unsigned char **)&data) != Success || !data)
+		  if (XGetWindowProperty
+		      (disp, root.win, a, 0, 4, False, a, &type_ret, &fmt_ret,
+		       &num, &extra, (unsigned char **)&data) != Success
+		      || !data)
 		    {
 		       EDBUG_RETURN_;
 		    }
@@ -1364,7 +1366,8 @@ KDE_UpdateClient(EWin * ewin)
      {
 	if ((*(getSimpleHint(ewin->client.win, KDE_WIN_DESKTOP)) - 1) !=
 	    ewin->desktop)
-	   setSimpleHint(ewin->client.win, KDE_WIN_DESKTOP, (ewin->desktop) + 1);
+	   setSimpleHint(ewin->client.win, KDE_WIN_DESKTOP,
+			 (ewin->desktop) + 1);
      }
    else
      {

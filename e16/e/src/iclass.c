@@ -35,8 +35,7 @@ CreateIclass()
 
    i->name = NULL;
    i->external = 0;
-   i->norm.normal = i->norm.hilited = i->norm.clicked
-      = i->norm.disabled = NULL;
+   i->norm.normal = i->norm.hilited = i->norm.clicked = i->norm.disabled = NULL;
    i->active.normal = i->active.hilited = i->active.clicked
       = i->active.disabled = NULL;
    i->sticky.normal = i->sticky.hilited = i->sticky.clicked
@@ -727,8 +726,8 @@ IclassApply(ImageClass * iclass, Window win, int w, int h,
 				 gcv.ts_y_origin = 0;
 				 tm = ECreatePixmap(disp, win, w, h, 1);
 				 gc = XCreateGC(disp, tm, GCFillStyle | GCTile |
-					GCTileStipXOrigin | GCTileStipYOrigin,
-						&gcv);
+						GCTileStipXOrigin |
+						GCTileStipYOrigin, &gcv);
 				 XFillRectangle(disp, tm, gc, 0, 0, w, h);
 				 XFreeGC(disp, gc);
 				 EShapeCombineMask(disp, win, ShapeBounding,
@@ -1038,8 +1037,8 @@ IclassApplyCopy(ImageClass * iclass, Window win, int w, int h, int active,
 			    gcv.ts_x_origin = 0;
 			    gcv.ts_y_origin = 0;
 			    gc = XCreateGC(disp, tm, GCFillStyle | GCTile |
-					GCTileStipXOrigin | GCTileStipYOrigin,
-					   &gcv);
+					   GCTileStipXOrigin |
+					   GCTileStipYOrigin, &gcv);
 			    XFillRectangle(disp, tm, gc, 0, 0, w, h);
 			    XFreeGC(disp, gc);
 			 }

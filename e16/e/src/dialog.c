@@ -174,7 +174,8 @@ DialogBindKey(Dialog * d, char *key, void (*func) (int val, void *data),
    if (!d->keybindings)
       d->keybindings = Emalloc(sizeof(DKeyBind) * d->num_bindings);
    else
-      d->keybindings = Erealloc(d->keybindings, sizeof(DKeyBind) * d->num_bindings);
+      d->keybindings =
+	 Erealloc(d->keybindings, sizeof(DKeyBind) * d->num_bindings);
    d->keybindings[d->num_bindings - 1].val = val;
    d->keybindings[d->num_bindings - 1].data = data;
    d->keybindings[d->num_bindings - 1].func = func;
@@ -279,7 +280,7 @@ DialogQuit(int val, void *data)
 }
 
 void
-DialogAlert(char *fmt,...)
+DialogAlert(char *fmt, ...)
 {
    char                text[10240];
    va_list             ap;
@@ -292,7 +293,7 @@ DialogAlert(char *fmt,...)
 }
 
 void
-DialogAlertOK(char *fmt,...)
+DialogAlertOK(char *fmt, ...)
 {
    char                text[10240];
    va_list             ap;
@@ -300,13 +301,13 @@ DialogAlertOK(char *fmt,...)
    va_start(ap, fmt);
    Evsnprintf(text, 10240, fmt, ap);
    va_end(ap);
-   ASSIGN_ALERT("Attention !!!", "OK", " ", " ");
+   ASSIGN_ALERT(gettext("Attention !!!"), gettext("OK"), " ", " ");
    Alert(text);
    RESET_ALERT;
 }
 
 void
-DialogSetParamText(Dialog * d, char *fmt,...)
+DialogSetParamText(Dialog * d, char *fmt, ...)
 {
    char                text[10240];
    va_list             ap;
@@ -419,12 +420,10 @@ DialogDrawButton(Dialog * d, int bnum)
 	state = STATE_CLICKED;
      }
    IclassApply(d->button[bnum]->iclass, d->button[bnum]->win,
-	       d->button[bnum]->w, d->button[bnum]->h, 0, 0,
-	       state, 0);
+	       d->button[bnum]->w, d->button[bnum]->h, 0, 0, state, 0);
    TclassApply(d->button[bnum]->iclass, d->button[bnum]->win,
 	       d->button[bnum]->w, d->button[bnum]->h,
-	       0, 0, state, 1, d->button[bnum]->tclass,
-	       d->button[bnum]->text);
+	       0, 0, state, 1, d->button[bnum]->tclass, d->button[bnum]->text);
 }
 
 void
@@ -464,8 +463,7 @@ DialogDraw(Dialog * d)
    if (d->text)
      {
 	TclassApply(d->iclass, d->win, d->w, d->h,
-		    0, 0, STATE_NORMAL, 1, d->tclass,
-		    d->text);
+		    0, 0, STATE_NORMAL, 1, d->tclass, d->text);
      }
    else if (d->item)
      {
@@ -482,8 +480,7 @@ DialogDrawArea(Dialog * d, int x, int y, int w, int h)
    if (d->text)
      {
 	TclassApply(d->iclass, d->win, d->w, d->h,
-		    0, 0, STATE_NORMAL, 1, d->tclass,
-		    d->text);
+		    0, 0, STATE_NORMAL, 1, d->tclass, d->text);
      }
    else if (d->item)
      {
@@ -554,8 +551,7 @@ ShowDialog(Dialog * d)
 
    if ((d->iclass->padding.left + d->iclass->padding.right +
 	(d->num_buttons * (mw + d->iclass->padding.left +
-			   d->iclass->padding.right)))
-       > w)
+			   d->iclass->padding.right))) > w)
       w = d->iclass->padding.left + d->iclass->padding.right +
 	 (d->num_buttons * (mw + d->iclass->padding.left +
 			    d->iclass->padding.right));
@@ -587,8 +583,7 @@ ShowDialog(Dialog * d)
 
    for (i = 0; i < d->num_buttons; i++)
       IclassApply(d->button[i]->iclass, d->button[i]->win,
-		  d->button[i]->w, d->button[i]->h, 0, 0,
-		  STATE_NORMAL, 0);
+		  d->button[i]->w, d->button[i]->h, 0, 0, STATE_NORMAL, 0);
    queue_up = pq;
 
    ewin = AddInternalToFamily(d->win, 1, NULL, 0, d);
@@ -993,8 +988,7 @@ DialogRealizeItem(Dialog * d, DItem * di)
 		     EnterWindowMask | LeaveWindowMask | ButtonPressMask |
 		     ButtonReleaseMask);
 	XSelectInput(disp, di->item.slider.knob_win,
-		     ButtonPressMask |
-		     ButtonReleaseMask | PointerMotionMask);
+		     ButtonPressMask | ButtonReleaseMask | PointerMotionMask);
 	if (!di->item.slider.ic_base)
 	  {
 	     if (di->item.slider.horizontal)
@@ -1086,14 +1080,16 @@ DialogRealizeItem(Dialog * d, DItem * di)
 	       {
 		  ImlibImage         *im;
 
-		  im = ELoadImage(di->item.slider.ic_border->norm.normal->im_file);
+		  im =
+		     ELoadImage(di->item.slider.ic_border->norm.normal->
+				im_file);
 		  if (im)
 		    {
 		       di->item.slider.border_orig_w = im->rgb_width;
 		       di->item.slider.border_orig_h = im->rgb_height;
 		       Imlib_destroy_image(id, im);
 		       di->item.slider.border_win = ECreateWindow(d->win, -20,
-								-20, 2, 2, 0);
+								  -20, 2, 2, 0);
 		       EMapWindow(disp, di->item.slider.border_win);
 		    }
 	       }
@@ -1241,7 +1237,7 @@ DialogRealizeItem(Dialog * d, DItem * di)
 	   if ((cols > 0) && (rows > 0))
 	     {
 		int                 i, *col_size, *row_size = NULL, r = 0,
-		                    c = 0, x = 0, y = 0;
+		   c = 0, x = 0, y = 0;
 
 		col_size = Emalloc(sizeof(int) * cols);
 		row_size = Erealloc(row_size, sizeof(int));
@@ -1320,11 +1316,9 @@ DialogRealizeItem(Dialog * d, DItem * di)
 		     for (j = 0; j < dii->row_span; j++)
 			sh += row_size[r + j];
 		     if (dii->fill_h)
-			dii->w = sw - (dii->padding.left
-				       + dii->padding.right);
+			dii->w = sw - (dii->padding.left + dii->padding.right);
 		     if (dii->fill_v)
-			dii->h = sh - (dii->padding.top
-				       + dii->padding.bottom);
+			dii->h = sh - (dii->padding.top + dii->padding.bottom);
 		     if (dii->type == DITEM_TABLE)
 		       {
 			  int                 dx, dy, newx, newy;
@@ -1359,20 +1353,26 @@ DialogRealizeItem(Dialog * d, DItem * di)
 					       dii->w, dii->h);
 			  if (dii->type == DITEM_CHECKBUTTON)
 			     EMoveResizeWindow(disp,
-					     dii->item.check_button.check_win,
+					       dii->item.check_button.check_win,
 					       dii->x, dii->y +
 					       ((dii->h -
-				    dii->item.check_button.check_orig_h) / 2),
-					  dii->item.check_button.check_orig_w,
-					 dii->item.check_button.check_orig_h);
+						 dii->item.check_button.
+						 check_orig_h) / 2),
+					       dii->item.check_button.
+					       check_orig_w,
+					       dii->item.check_button.
+					       check_orig_h);
 			  if (dii->type == DITEM_RADIOBUTTON)
 			     EMoveResizeWindow(disp,
-					     dii->item.radio_button.radio_win,
+					       dii->item.radio_button.radio_win,
 					       dii->x, dii->y +
 					       ((dii->h -
-				    dii->item.radio_button.radio_orig_h) / 2),
-					  dii->item.radio_button.radio_orig_w,
-					 dii->item.radio_button.radio_orig_h);
+						 dii->item.radio_button.
+						 radio_orig_h) / 2),
+					       dii->item.radio_button.
+					       radio_orig_w,
+					       dii->item.radio_button.
+					       radio_orig_h);
 			  if (dii->type == DITEM_AREA)
 			    {
 			       dii->item.area.w = dii->w -
@@ -1404,23 +1404,29 @@ DialogRealizeItem(Dialog * d, DItem * di)
 			       if (dii->item.slider.base_win)
 				  EMoveResizeWindow(disp,
 						    dii->item.slider.base_win,
-					     dii->x + dii->item.slider.base_x,
-					     dii->y + dii->item.slider.base_y,
+						    dii->x +
+						    dii->item.slider.base_x,
+						    dii->y +
+						    dii->item.slider.base_y,
 						    dii->item.slider.base_w,
 						    dii->item.slider.base_h);
 			       if (dii->item.slider.border_win)
 				  EMoveResizeWindow(disp,
-						  dii->item.slider.border_win,
-					   dii->x + dii->item.slider.border_x,
-					   dii->y + dii->item.slider.border_y,
+						    dii->item.slider.border_win,
+						    dii->x +
+						    dii->item.slider.border_x,
+						    dii->y +
+						    dii->item.slider.border_y,
 						    dii->item.slider.border_w,
 						    dii->item.slider.border_h);
 			       if (dii->win)
 				  EMoveResizeWindow(disp, dii->win,
-					  dii->x + dii->item.slider.numeric_x,
-					  dii->y + dii->item.slider.numeric_y,
+						    dii->x +
+						    dii->item.slider.numeric_x,
+						    dii->y +
+						    dii->item.slider.numeric_y,
 						    dii->item.slider.numeric_w,
-						  dii->item.slider.numeric_h);
+						    dii->item.slider.numeric_h);
 			    }
 		       }
 		     x += sw;
@@ -1544,16 +1550,14 @@ DialogDrawItems(Dialog * d, DItem * di, int x, int y, int w, int h)
      {
 	int                 i;
 
-	if (INTERSECTS(x, y, w, h,
-		       di->x, di->y, di->w, di->h))
+	if (INTERSECTS(x, y, w, h, di->x, di->y, di->w, di->h))
 	  {
 	     for (i = 0; i < di->item.table.num_items; i++)
 		DialogDrawItems(d, di->item.table.items[i], x, y, w, h);
 	  }
 	return;
      }
-   if (INTERSECTS(x, y, w, h,
-		  di->x, di->y, di->w, di->h))
+   if (INTERSECTS(x, y, w, h, di->x, di->y, di->w, di->h))
      {
 	switch (di->type)
 	  {
@@ -1634,13 +1638,11 @@ DialogDrawItems(Dialog * d, DItem * di, int x, int y, int w, int h)
 	     if (di->item.check_button.onoff)
 		IclassApply(di->iclass, di->item.check_button.check_win,
 			    di->item.check_button.check_orig_w,
-			    di->item.check_button.check_orig_h, 1, 0,
-			    state, 0);
+			    di->item.check_button.check_orig_h, 1, 0, state, 0);
 	     else
 		IclassApply(di->iclass, di->item.check_button.check_win,
 			    di->item.check_button.check_orig_w,
-			    di->item.check_button.check_orig_h, 0, 0,
-			    state, 0);
+			    di->item.check_button.check_orig_h, 0, 0, state, 0);
 	     XClearArea(disp, d->win, di->x, di->y, di->w, di->h, False);
 	     TextDraw(di->tclass, d->win, 0, 0, STATE_NORMAL,
 		      di->item.check_button.text,
@@ -1677,13 +1679,11 @@ DialogDrawItems(Dialog * d, DItem * di, int x, int y, int w, int h)
 	     if (di->item.radio_button.onoff)
 		IclassApply(di->iclass, di->item.radio_button.radio_win,
 			    di->item.radio_button.radio_orig_w,
-			    di->item.radio_button.radio_orig_h, 1, 0,
-			    state, 0);
+			    di->item.radio_button.radio_orig_h, 1, 0, state, 0);
 	     else
 		IclassApply(di->iclass, di->item.radio_button.radio_win,
 			    di->item.radio_button.radio_orig_w,
-			    di->item.radio_button.radio_orig_w, 0, 0,
-			    state, 0);
+			    di->item.radio_button.radio_orig_w, 0, 0, state, 0);
 	     XClearArea(disp, d->win, di->x, di->y, di->w, di->h, False);
 	     TextDraw(di->tclass, d->win, 0, 0, STATE_NORMAL,
 		      di->item.radio_button.text,
@@ -1882,8 +1882,7 @@ DialogItemAreaSetSize(DItem * di, int w, int h)
    di->item.area.h = h;
 }
 
-Window
-DialogItemAreaGetWindow(DItem * di)
+Window DialogItemAreaGetWindow(DItem * di)
 {
    return di->item.area.area_win;
 }
@@ -1973,8 +1972,7 @@ DialogItemFindWindow(DItem * di, Window win)
    else if ((di->win == win) || ((di->type == DITEM_SLIDER) &&
 				 ((di->item.slider.base_win == win) ||
 				  (di->item.slider.knob_win == win))) ||
-	    ((di->type == DITEM_AREA) &&
-	     (di->item.area.area_win == win)))
+	    ((di->type == DITEM_AREA) && (di->item.area.area_win == win)))
      {
 	return di;
      }

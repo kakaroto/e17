@@ -139,8 +139,8 @@ ICCCM_Delete(EWin * ewin)
    del = 0;
    if (!XGetWMProtocols(disp, ewin->client.win, &prop, &num))
      {
-	XGetWindowProperty(disp, ewin->client.win, a2, 0, 10, False, a2, &a3, &dummy,
-			   &lnum, &ldummy, (unsigned char **)&prop);
+	XGetWindowProperty(disp, ewin->client.win, a2, 0, 10, False, a2, &a3,
+			   &dummy, &lnum, &ldummy, (unsigned char **)&prop);
 	num = (int)lnum;
      }
    if (prop)
@@ -226,8 +226,7 @@ ICCCM_DeIconify(EWin * ewin)
    ewin->iconified = 0;
    XChangeProperty(disp, ewin->client.win, a, a, 32, PropModeReplace,
 		   (unsigned char *)c, 2);
-   RemoveItem("ICON", ewin->client.win, LIST_FINDBY_BOTH,
-	      LIST_TYPE_ICONIFIEDS);
+   RemoveItem("ICON", ewin->client.win, LIST_FINDBY_BOTH, LIST_TYPE_ICONIFIEDS);
    EMapWindow(disp, ewin->client.win);
    EDBUG_RETURN_;
 }
@@ -309,7 +308,8 @@ ICCCM_Configure(EWin * ewin)
 	xwc.y = ewin->border->border.top;
 	xwc.width = ewin->client.w;
 	xwc.height = ewin->client.h;
-	XConfigureWindow(disp, ewin->win_container, CWX | CWY | CWWidth | CWHeight, &xwc);
+	XConfigureWindow(disp, ewin->win_container,
+			 CWX | CWY | CWWidth | CWHeight, &xwc);
      }
    else
      {
@@ -317,13 +317,15 @@ ICCCM_Configure(EWin * ewin)
 	xwc.y = -30;
 	xwc.width = 1;
 	xwc.height = 1;
-	XConfigureWindow(disp, ewin->win_container, CWX | CWY | CWWidth | CWHeight, &xwc);
+	XConfigureWindow(disp, ewin->win_container,
+			 CWX | CWY | CWWidth | CWHeight, &xwc);
 	xwc.width = ewin->client.w;
 	xwc.height = ewin->client.h;
      }
    xwc.x = 0;
    xwc.y = 0;
-   XConfigureWindow(disp, ewin->client.win, CWX | CWY | CWWidth | CWHeight, &xwc);
+   XConfigureWindow(disp, ewin->client.win, CWX | CWY | CWWidth | CWHeight,
+		    &xwc);
    if ((ewin->menu) || (ewin->dialog))
       EDBUG_RETURN_;
    ev.type = ConfigureNotify;
@@ -382,8 +384,10 @@ ICCCM_Adopt(EWin * ewin, Window win)
    ewin->y = ewin->client.y;
    ewin->reqx = ewin->client.x;
    ewin->reqy = ewin->client.y;
-   ewin->w = ewin->client.w + ewin->border->border.left + ewin->border->border.right;
-   ewin->h = ewin->client.h + ewin->border->border.top + ewin->border->border.bottom;
+   ewin->w =
+      ewin->client.w + ewin->border->border.left + ewin->border->border.right;
+   ewin->h =
+      ewin->client.h + ewin->border->border.top + ewin->border->border.bottom;
    EDBUG_RETURN_;
 }
 
@@ -405,7 +409,8 @@ ICCCM_Withdraw(EWin * ewin)
     */
    c[0] = WithdrawnState;
    c[1] = 0;
-   XChangeProperty(disp, ewin->client.win, a, a, 32, PropModeReplace, (unsigned char *)c, 2);
+   XChangeProperty(disp, ewin->client.win, a, a, 32, PropModeReplace,
+		   (unsigned char *)c, 2);
    EDBUG_RETURN_;
 }
 
@@ -495,8 +500,8 @@ ICCCM_Focus(EWin * ewin)
      }
    if (!XGetWMProtocols(disp, ewin->client.win, &prop, &num))
      {
-	XGetWindowProperty(disp, ewin->client.win, a2, 0, 10, False, a2, &a3, &dummy,
-			   &lnum, &ldummy, (unsigned char **)&prop);
+	XGetWindowProperty(disp, ewin->client.win, a2, 0, 10, False, a2, &a3,
+			   &dummy, &lnum, &ldummy, (unsigned char **)&prop);
 	num = (int)lnum;
      }
    if (prop)
@@ -527,7 +532,7 @@ ICCCM_GetGeoms(EWin * ewin, Atom atom_change)
    XSizeHints          hint;
    Window              ww;
    long                mask;
-   unsigned int        dummy, w, h;
+   unsigned int        dummy, w, h, bw;
    int                 x, y;
 
    EDBUG(6, "ICCCM_GetGeoms");
@@ -540,17 +545,17 @@ ICCCM_GetGeoms(EWin * ewin, Atom atom_change)
 	if (atom_change != atom)
 	   EDBUG_RETURN_;
      }
-   EGetGeometry(disp, ewin->client.win, &ww, &x, &y, &w, &h, &dummy, &dummy);
+   EGetGeometry(disp, ewin->client.win, &ww, &x, &y, &w, &h, &bw, &dummy);
    ewin->client.x = x;
    ewin->client.y = y;
    ewin->client.w = w;
    ewin->client.h = h;
+   ewin->client.bw = bw;
    if (XGetWMNormalHints(disp, ewin->client.win, &hint, &mask))
      {
 	if (!(ewin->client.already_placed))
 	  {
-	     if ((hint.flags & USPosition) ||
-		 ((hint.flags & PPosition)))
+	     if ((hint.flags & USPosition) || ((hint.flags & PPosition)))
 	       {
 		  if (hint.flags & PWinGravity)
 		     ewin->client.grav = hint.win_gravity;
@@ -972,7 +977,8 @@ ICCCM_GetHints(EWin * ewin, Atom atom_change)
    if (hint)
      {
 	/* I have to make sure the thing i'm docking is a dock app */
-	if ((hint->flags & StateHint) && (hint->initial_state == WithdrawnState))
+	if ((hint->flags & StateHint)
+	    && (hint->initial_state == WithdrawnState))
 	  {
 	     if (hint->flags & (StateHint | IconWindowHint |
 				IconPositionHint | WindowGroupHint))
@@ -1283,8 +1289,9 @@ ICCCM_GetEInfo(EWin * ewin)
 		  ewin->client.w = c[6];
 		  ewin->client.h = c[7];
 	       }
-	     XGetWindowProperty(disp, ewin->client.win, aa, 0, 0xffff, True, XA_STRING,
-			 &a2, &dummy, &lnum, &ldummy, (unsigned char **)&str);
+	     XGetWindowProperty(disp, ewin->client.win, aa, 0, 0xffff, True,
+				XA_STRING, &a2, &dummy, &lnum, &ldummy,
+				(unsigned char **)&str);
 	     num = (int)lnum;
 
 	     if ((num > 0) && (str))
@@ -1292,8 +1299,7 @@ ICCCM_GetEInfo(EWin * ewin)
 		  Border             *b = NULL;
 
 		  b = (Border *) FindItem(str, 0,
-					  LIST_FINDBY_NAME,
-					  LIST_TYPE_BORDER);
+					  LIST_FINDBY_NAME, LIST_TYPE_BORDER);
 		  if ((ewin->border) && (strcmp(ewin->border->name, b->name)))
 		     b = NULL;
 		  if (b)

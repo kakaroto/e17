@@ -47,10 +47,10 @@ Emkstemp(char *template)
 {
    static const char   letters[]
 #ifndef __EMX__
-   = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+      = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
 #else
-   = "abcdefghijklmnopqrstuvwxyz€‚ƒ„…†‡ˆŠ‹ŒŽŽ‘’“”•–—˜™0123456789";
+      = "abcdefghijklmnopqrstuvwxyz€‚ƒ„…†‡ˆŠ‹ŒŽŽ‘’“”•–—˜™0123456789";
 
 #endif
 
@@ -140,16 +140,15 @@ static char        *userthemepath;
 /* The saved window details */
 static int          num_match = 0;
 typedef struct _match
-  {
-     char               *session_id;
-     char               *name;
-     char               *class;
-     char               *role;
-     char               *command;
-     char                used;
-     int                 x, y, w, h, desktop, iconified, shaded, sticky,
-                         layer;
-  }
+{
+   char               *session_id;
+   char               *name;
+   char               *class;
+   char               *role;
+   char               *command;
+   char                used;
+   int                 x, y, w, h, desktop, iconified, shaded, sticky, layer;
+}
 Match;
 
 Match              *matches = NULL;
@@ -214,8 +213,12 @@ SaveWindowStates(void)
 		       y = 0;
 		       if (!ewin->sticky)
 			 {
-			    x = desks.desk[ewin->desktop].current_area_x * root.w;
-			    y = desks.desk[ewin->desktop].current_area_y * root.h;
+			    x =
+			       desks.desk[ewin->desktop].current_area_x *
+			       root.w;
+			    y =
+			       desks.desk[ewin->desktop].current_area_y *
+			       root.h;
 			 }
 		       fprintf(f, "[CLIENT] %i %i %i %i %i %i %i %i %i\n",
 			       ewin->x + x, ewin->y + y,
@@ -239,13 +242,12 @@ SaveWindowStates(void)
 	     rm(ss);
 	     mv(s, ss);
 	     if (!isfile(ss))
-		Alert("There was an error writing the clients "
-		      "session save file.\n"
-		      "You may have run out of disk "
-		      "space, not have permission\n"
-		      "to write to your filing system "
-		      "or other similar problems.\n"
-		   );
+		Alert(gettext("There was an error writing the clients "
+			      "session save file.\n"
+			      "You may have run out of disk "
+			      "space, not have permission\n"
+			      "to write to your filing system "
+			      "or other similar problems.\n"));
 	  }
 	Efree(lst);
      }
@@ -288,8 +290,7 @@ LoadWindowStates(void)
 			 &(matches[num_match - 1].iconified),
 			 &(matches[num_match - 1].shaded),
 			 &(matches[num_match - 1].sticky),
-			 &(matches[num_match - 1].layer)
-		     );
+			 &(matches[num_match - 1].layer));
 	       }
 	     else if (!strcmp(s1, "[SESSION_ID]"))
 	       {
@@ -432,9 +433,9 @@ autosave(void)
 	rm(GetGenericSMFile());
 	mv(s, GetGenericSMFile());
 	if (!isfile(GetGenericSMFile()))
-	   Alert("There was an error saving your autosave data - filing\n"
-		 "system problems.\n"
-	      );
+	   Alert(gettext
+		 ("There was an error saving your autosave data - filing\n"
+		  "system problems.\n"));
 /*      
  * if (strcmp(GetSMFile(), GetGenericSMFile()))
  * {
@@ -557,7 +558,7 @@ doSMExit(void *params)
 	     if (themepath[0] != 0)
 	       {
 		  Esnprintf(sss, sizeof(sss),
-		     "exec %s -single -ext_init_win %i -theme %s -display %s",
+			    "exec %s -single -ext_init_win %i -theme %s -display %s",
 			    command, w, themename, dstr);
 		  execl(DEFAULT_SH_PATH, DEFAULT_SH_PATH, "-c", sss, NULL);
 	       }
@@ -579,7 +580,7 @@ doSMExit(void *params)
 	     disp = NULL;
 	     sscanf(params, "%*s %1000s", s);
 	     Esnprintf(sss, sizeof(sss),
-		     "exec %s -single -ext_init_win %i -theme %s -display %s",
+		       "exec %s -single -ext_init_win %i -theme %s -display %s",
 		       command, w, s, dstr);
 	     execl(DEFAULT_SH_PATH, DEFAULT_SH_PATH, "-c", sss, NULL);
 	  }
@@ -615,9 +616,7 @@ doSMExit(void *params)
 				"\n"
 				"\n"
 				"    Are you sure you wish to log out ?    \n"
-				"\n"
-				"\n"
-		     );
+				"\n" "\n");
 		  DialogAddButton(d, "  Yes, Log Out  ", LogoutCB, 1);
 		  DialogAddButton(d, "  No  ", NULL, 1);
 		  DialogBindKey(d, "Escape", CB_SettingsEscape, 0, d);
@@ -627,7 +626,8 @@ doSMExit(void *params)
 	     ewin = FindEwinByDialog(d);
 	     if (ewin)
 	       {
-		  MoveEwin(ewin, ((root.w - (ewin->w)) / 2), ((root.h - (ewin->h)) / 2));
+		  MoveEwin(ewin, ((root.w - (ewin->w)) / 2),
+			   ((root.h - (ewin->h)) / 2));
 		  FocusToEWin(ewin);
 	       }
 	     return;
@@ -651,15 +651,19 @@ static int          restarting = False;
 
 static void         LogoutCB(int val, void *data);
 static void         set_save_props(SmcConn smc_conn, int master_flag);
-static void         callback_save_yourself2(SmcConn smc_conn, SmPointer client_data);
+static void         callback_save_yourself2(SmcConn smc_conn,
+
+					    SmPointer client_data);
 static void         callback_save_yourself(SmcConn smc_conn,
-					SmPointer client_data, int save_style,
-					   Bool shutdown, int interact_style,
-					   Bool fast);
+					   SmPointer client_data,
+					   int save_style, Bool shutdown,
+					   int interact_style, Bool fast);
 static void         callback_die(SmcConn smc_conn, SmPointer client_data);
 static void         callback_save_complete(SmcConn smc_conn,
+
 					   SmPointer client_data);
 static void         callback_shutdown_cancelled(SmcConn smc_conn,
+
 						SmPointer client_data);
 
 static void
@@ -678,17 +682,14 @@ set_save_props(SmcConn smc_conn, int master_flag)
    char                priority = 10;
    char                style;
    int                 n = 0;
-   SmPropValue         programVal =
-   {0, NULL};
-   SmPropValue         userIDVal =
-   {0, NULL};
-   SmPropValue         discardVal[] =
-   {
+   SmPropValue         programVal = { 0, NULL };
+   SmPropValue         userIDVal = { 0, NULL };
+   SmPropValue         discardVal[] = {
       {0, NULL},
       {0, NULL},
-      {0, NULL}};
-   SmPropValue         restartVal[] =
-   {
+      {0, NULL}
+   };
+   SmPropValue         restartVal[] = {
       {0, NULL},
       {0, NULL},
       {0, NULL},
@@ -698,11 +699,10 @@ set_save_props(SmcConn smc_conn, int master_flag)
       {0, NULL},
       {0, NULL},
       {0, NULL},
-      {0, NULL}};
-   SmPropValue         styleVal =
-   {0, NULL};
-   SmPropValue         priorityVal =
-   {0, NULL};
+      {0, NULL}
+   };
+   SmPropValue         styleVal = { 0, NULL };
+   SmPropValue         priorityVal = { 0, NULL };
    SmProp              programProp;
    SmProp              userIDProp;
    SmProp              discardProp;
@@ -1016,18 +1016,16 @@ ProcessICEMSGS(void)
    if (status == IceProcessMessagesIOError)
      {
 	/* Less of the hope.... E survives */
-	DialogAlert("ERROR!\n"
-		    "\n"
-		    "Lost the Session Manager that was there?\n"
-		    "Here here session manager... come here... want a bone?\n"
-		    "Oh come now! Stop sulking! Bugger. Oh well. "
-		    "Will continue without\n"
-		    "a session manager.\n"
-		    "\n"
-		    "I'll survive somehow.\n"
-		    "\n"
-		    "\n"
-		    "... I hope.\n");
+	DialogAlert(gettext("ERROR!\n"
+			    "\n"
+			    "Lost the Session Manager that was there?\n"
+			    "Here here session manager... come here... want a bone?\n"
+			    "Oh come now! Stop sulking! Bugger. Oh well. "
+			    "Will continue without\n"
+			    "a session manager.\n"
+			    "\n"
+			    "I'll survive somehow.\n"
+			    "\n" "\n" "... I hope.\n"));
 	SmcCloseConnection(sm_conn, 0, NULL);
 	sm_conn = NULL;
 	sm_fd = -1;
@@ -1158,16 +1156,14 @@ doSMExit(void *params)
 	  {
 	     AUDIO_PLAY("SOUND_LOGOUT");
 	     d = CreateDialog("LOGOUT_DIALOG");
-	     DialogSetTitle(d, "Are you sure?");
+	     DialogSetTitle(d, gettext("Are you sure?"));
 	     DialogSetText(d,
-			   "\n"
-			   "\n"
-			   "    Are you sure you wish to log out ?    \n"
-			   "\n"
-			   "\n"
-		);
-	     DialogAddButton(d, "  Yes, Log Out  ", LogoutCB, 1);
-	     DialogAddButton(d, "  No  ", NULL, 1);
+			   gettext("\n"
+				   "\n"
+				   "    Are you sure you wish to log out ?    \n"
+				   "\n" "\n"));
+	     DialogAddButton(d, gettext("  Yes, Log Out  "), LogoutCB, 1);
+	     DialogAddButton(d, gettext("  No  "), NULL, 1);
 	     DialogBindKey(d, "Escape", CB_SettingsEscape, 1, d);
 	     DialogBindKey(d, "Return", LogoutCB, 0, d);
 	  }
@@ -1175,7 +1171,8 @@ doSMExit(void *params)
 	ewin = FindEwinByDialog(d);
 	if (ewin)
 	  {
-	     MoveEwin(ewin, ((root.w - (ewin->w)) / 2), ((root.h - (ewin->h)) / 2));
+	     MoveEwin(ewin, ((root.w - (ewin->w)) / 2),
+		      ((root.h - (ewin->h)) / 2));
 	     FocusToEWin(ewin);
 	  }
 	return;
@@ -1188,8 +1185,7 @@ doSMExit(void *params)
 	   KDE_Shutdown();
 	XCloseDisplay(disp);
 	disp = NULL;
-	Esnprintf(s, sizeof(s), "exec %s -display %s",
-		  atword(params, 2), dstr);
+	Esnprintf(s, sizeof(s), "exec %s -display %s", atword(params, 2), dstr);
 	execl(DEFAULT_SH_PATH, DEFAULT_SH_PATH, "-c", s, NULL);
      }
    else if (!strcmp(s, "restart"))
@@ -1215,8 +1211,7 @@ doSMExit(void *params)
 		Esnprintf(s, sizeof(s),
 			  "exec %s -single -ext_init_win %i -theme %s "
 			  "-smfile %s -display %s",
-			  command, init_win_ext, themename,
-			  sm_file, dstr);
+			  command, init_win_ext, themename, sm_file, dstr);
 	     execl(DEFAULT_SH_PATH, DEFAULT_SH_PATH, "-c", s, NULL);
 	  }
 	else
@@ -1225,14 +1220,12 @@ doSMExit(void *params)
 		Esnprintf(s, sizeof(s),
 			  "exec %s -single -ext_init_win %i "
 			  "-smfile %s -smid %s -display %s",
-			  command, init_win_ext,
-			  sm_file, sm_client_id, dstr);
+			  command, init_win_ext, sm_file, sm_client_id, dstr);
 	     else
 		Esnprintf(s, sizeof(s),
 			  "exec %s -single -ext_init_win %i"
 			  "-smfile %s -display %s",
-			  command, init_win_ext,
-			  sm_file, dstr);
+			  command, init_win_ext, sm_file, dstr);
 	     execl(DEFAULT_SH_PATH, DEFAULT_SH_PATH, "-c", s, NULL);
 	  }
      }
@@ -1260,8 +1253,7 @@ doSMExit(void *params)
 	   Esnprintf(s, sizeof(s),
 		     "exec %s -ext_init_win %i -theme %s "
 		     "-smfile %s -single -display %s",
-		     command, init_win_ext, userthemepath,
-		     sm_file, dstr);
+		     command, init_win_ext, userthemepath, sm_file, dstr);
 	execl(DEFAULT_SH_PATH, DEFAULT_SH_PATH, "-c", s, NULL);
      }
    else if (!strcmp((char *)s, "error"))

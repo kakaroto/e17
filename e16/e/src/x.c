@@ -40,8 +40,7 @@ EFreePixmap(Display * display, Pixmap pixmap)
    XFreePixmap(display, pixmap);
 }
 
-Window
-ECreateWindow(Window parent, int x, int y, int w, int h, int saveunder)
+Window ECreateWindow(Window parent, int x, int y, int w, int h, int saveunder)
 {
    EXID               *xid;
    Window              win;
@@ -63,8 +62,7 @@ ECreateWindow(Window parent, int x, int y, int w, int h, int saveunder)
    win = XCreateWindow(disp, parent, x, y, w, h, 0, root.depth,
 		       InputOutput, root.vis, CWOverrideRedirect |
 		       CWSaveUnder | CWBackingStore | CWColormap |
-		       CWBackPixmap | CWBorderPixel,
-		       &attr);
+		       CWBackPixmap | CWBorderPixel, &attr);
    xid = NewXID();
    xid->parent = parent;
    xid->win = win;
@@ -261,8 +259,7 @@ EShapeCombineRectangles(Display * d, Window win, int dest, int x, int y,
 	  {
 	     if ((rect[0].x == 0) &&
 		 (rect[0].y == 0) &&
-		 (rect[0].width == xid->w) &&
-		 (rect[0].height == xid->h))
+		 (rect[0].width == xid->w) && (rect[0].height == xid->h))
 	       {
 		  xid->num_rect = 0;
 		  XFree(xid->rects);
@@ -589,8 +586,7 @@ DelXID(Window win)
      }
 }
 
-Window
-ECreateEventWindow(Window parent, int x, int y, int w, int h)
+Window ECreateEventWindow(Window parent, int x, int y, int w, int h)
 {
    Window              win;
    XSetWindowAttributes attr;
@@ -606,8 +602,7 @@ ECreateEventWindow(Window parent, int x, int y, int w, int h)
  * create a window which will accept the keyboard focus when no other 
  * windows have it
  */
-Window
-ECreateFocusWindow(Window parent, int x, int y, int w, int h)
+Window ECreateFocusWindow(Window parent, int x, int y, int w, int h)
 {
    Window              win;
    XSetWindowAttributes attr;
@@ -741,8 +736,7 @@ WinExists(Window win)
    EDBUG_RETURN(0);
 }
 
-Window
-WindowAtXY_0(Window base, int bx, int by, int x, int y)
+Window WindowAtXY_0(Window base, int bx, int by, int x, int y)
 {
    Window             *list = NULL;
    XWindowAttributes   att;
@@ -767,9 +761,7 @@ WindowAtXY_0(Window base, int bx, int by, int x, int y)
    wy += by;
 
    if (!((x >= wx) &&
-	 (y >= wy) &&
-	 (x < (int)(wx + ww)) &&
-	 (y < (int)(wy + wh))))
+	 (y >= wy) && (x < (int)(wx + ww)) && (y < (int)(wy + wh))))
       EDBUG_RETURN(0);
 
    if (!XQueryTree(disp, base, &root_win, &parent_win, &list, &num))
@@ -791,8 +783,7 @@ WindowAtXY_0(Window base, int bx, int by, int x, int y)
    EDBUG_RETURN(base);
 }
 
-Window
-WindowAtXY(int x, int y)
+Window WindowAtXY(int x, int y)
 {
    Window             *list = NULL;
    Window              child = 0, parent_win = 0, root_win = 0;

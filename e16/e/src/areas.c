@@ -171,9 +171,9 @@ SlideWindowsBy(Window * win, int num, int dx, int dy, int speed)
    int                 dsec, dusec;
    double              tm;
    struct _xy
-     {
-	int                 x, y;
-     }
+   {
+      int                 x, y;
+   }
                       *xy;
 
    EDBUG(5, "SlideWindowsBy");
@@ -224,8 +224,7 @@ SetCurrentArea(int ax, int ay)
 
    EDBUG(4, "SetCurrentArea");
    if ((mode.mode == MODE_RESIZE) ||
-       (mode.mode == MODE_RESIZE_H) ||
-       (mode.mode == MODE_RESIZE_V))
+       (mode.mode == MODE_RESIZE_H) || (mode.mode == MODE_RESIZE_V))
       EDBUG_RETURN_;
 
    AREA_FIX(ax, ay);
@@ -257,15 +256,15 @@ SetCurrentArea(int ax, int ay)
    if ((mode.mode == MODE_MOVE) && (mode.ewin) && (mode.movemode > 0) &&
        (!mode.moveresize_pending_ewin))
      {
-	lst = ListWinGroupMembersForEwin(mode.ewin, ACTION_MOVE, mode.nogroup, &num);
+	lst =
+	   ListWinGroupMembersForEwin(mode.ewin, ACTION_MOVE, mode.nogroup,
+				      &num);
 	for (i = 0; i < num; i++)
 	  {
 	     x = lst[i]->x;
 	     y = lst[i]->y;
 	     DrawEwinShape(lst[i], mode.movemode,
-			   x, y,
-			   lst[i]->client.w, lst[i]->client.h,
-			   3);
+			   x, y, lst[i]->client.w, lst[i]->client.h, 3);
 	  }
 	Efree(lst);
      }
@@ -307,8 +306,12 @@ SetCurrentArea(int ax, int ay)
 	     if (wl)
 	       {
 		  SlideWindowsBy(wl, wnum,
-		  -(root.w * (ax - desks.desk[desks.current].current_area_x)),
-		  -(root.h * (ay - desks.desk[desks.current].current_area_y)),
+				 -(root.w *
+				   (ax -
+				    desks.desk[desks.current].current_area_x)),
+				 -(root.h *
+				   (ay -
+				    desks.desk[desks.current].current_area_y)),
 				 desks.slidespeed);
 		  Efree(wl);
 	       }
@@ -331,8 +334,16 @@ SetCurrentArea(int ax, int ay)
 				 mode.flipp = 1;
 			      }
 			    MoveEwin(lst[i],
-				     lst[i]->x - (root.w * (ax - desks.desk[desks.current].current_area_x)),
-				     lst[i]->y - (root.h * (ay - desks.desk[desks.current].current_area_y)));
+				     lst[i]->x -
+				     (root.w *
+				      (ax -
+				       desks.desk[desks.current].
+				       current_area_x)),
+				     lst[i]->y -
+				     (root.h *
+				      (ay -
+				       desks.desk[desks.current].
+				       current_area_y)));
 			    if (setflip)
 			       mode.flipp = 0;
 			    lst[i]->area_x = a1;
@@ -360,8 +371,16 @@ SetCurrentArea(int ax, int ay)
 			      {
 				 GetWinXY(lst[i]->win, &x, &y);
 				 EMoveWindow(disp, lst[i]->win,
-					     x - (root.w * (ax - desks.desk[desks.current].current_area_x)),
-					     y - (root.h * (ay - desks.desk[desks.current].current_area_y)));
+					     x -
+					     (root.w *
+					      (ax -
+					       desks.desk[desks.current].
+					       current_area_x)),
+					     y -
+					     (root.h *
+					      (ay -
+					       desks.desk[desks.current].
+					       current_area_y)));
 			      }
 			 }
 		       /* if we're not moving it... move it across */
@@ -377,8 +396,16 @@ SetCurrentArea(int ax, int ay)
 				 mode.flipp = 1;
 			      }
 			    MoveEwin(lst[i],
-				     lst[i]->x - (root.w * (ax - desks.desk[desks.current].current_area_x)),
-				     lst[i]->y - (root.h * (ay - desks.desk[desks.current].current_area_y)));
+				     lst[i]->x -
+				     (root.w *
+				      (ax -
+				       desks.desk[desks.current].
+				       current_area_x)),
+				     lst[i]->y -
+				     (root.h *
+				      (ay -
+				       desks.desk[desks.current].
+				       current_area_y)));
 			    if (setflip)
 			       mode.flipp = 0;
 			    lst[i]->area_x = a1;
@@ -422,12 +449,12 @@ SetCurrentArea(int ax, int ay)
 			    if (mode.movemode == 5)
 			       DrawEwinShape(lst[i], mode.movemode,
 					     x, y,
-					   lst[i]->client.w, lst[i]->client.h,
+					     lst[i]->client.w, lst[i]->client.h,
 					     4);
 			    else
 			       DrawEwinShape(lst[i], mode.movemode,
 					     x, y,
-					   lst[i]->client.w, lst[i]->client.h,
+					     lst[i]->client.w, lst[i]->client.h,
 					     0);
 			    if (mode.flipp)
 			      {

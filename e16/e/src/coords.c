@@ -68,8 +68,12 @@ SetCoords(int x, int y, int w, int h)
 	       case 0:
 	       case 1:
 	       case 2:
-		  cx = ewin->x + ((ewin->w - cw) / 2) + desks.desk[ewin->desktop].x;
-		  cy = ewin->y + ((ewin->h - ch) / 2) + desks.desk[ewin->desktop].y;
+		  cx =
+		     ewin->x + ((ewin->w - cw) / 2) +
+		     desks.desk[ewin->desktop].x;
+		  cy =
+		     ewin->y + ((ewin->h - ch) / 2) +
+		     desks.desk[ewin->desktop].y;
 		  break;
 	       case 3:
 		  cx = 0;

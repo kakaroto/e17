@@ -218,16 +218,17 @@ SetupX()
    /* if cannot connect to display */
    if (!disp)
      {
-	Alert("Enlightenment cannot connect to the display nominated by\n"
-	      "your shell's DISPLAY environment variable. You may set this\n"
-	      "variable to indicate which display name Enlightenment is to\n"
-	      "connect to. It may be that you do not have an Xserver already\n"
-	      "running to serve that Display connection, or that you do not\n"
-	      "have permission to connect to that display. Please make sure\n"
-	      "all is correct before trying again. Run an Xserver by running\n"
-	      "xdm or startx first, or contact your local system\n"
-	      "administrator, or Xserver vendor, or read the X, xdm and\n"
-	      "startx manual pages before proceeding.\n");
+	Alert(gettext
+	      ("Enlightenment cannot connect to the display nominated by\n"
+	       "your shell's DISPLAY environment variable. You may set this\n"
+	       "variable to indicate which display name Enlightenment is to\n"
+	       "connect to. It may be that you do not have an Xserver already\n"
+	       "running to serve that Display connection, or that you do not\n"
+	       "have permission to connect to that display. Please make sure\n"
+	       "all is correct before trying again. Run an Xserver by running\n"
+	       "xdm or startx first, or contact your local system\n"
+	       "administrator, or Xserver vendor, or read the X, xdm and\n"
+	       "startx manual pages before proceeding.\n"));
 	EExit((void *)1);
      }
    root.scr = DefaultScreen(disp);
@@ -272,7 +273,8 @@ SetupX()
 			    if (NULL != dispstr)
 			       *dispstr = '\0';
 			 }
-		       Esnprintf(subdisplay + strlen(subdisplay), 255, ".%d", i);
+		       Esnprintf(subdisplay + strlen(subdisplay), 255, ".%d",
+				 i);
 		       dstr = duplicate(subdisplay);
 		       disp = XOpenDisplay(dstr);
 		       root.scr = i;
@@ -289,18 +291,15 @@ SetupX()
    /* Check for the Shape Extension */
    if (!XShapeQueryExtension(disp, &shape_event_base, &shape_error_base))
      {
-	ASSIGN_ALERT("X server setup error",
-		     "",
-		     "",
-		     "Quit Enlightenment");
-	Alert("FATAL ERROR:\n"
-	      "\n"
-	      "This Xserver does not support the Shape extension.\n"
-	      "This is required for Enlightenment to run.\n"
-	      "\n"
-	      "Your Xserver probably is too old or mis-configured.\n"
-	      "\n"
-	      "Exiting.\n");
+	ASSIGN_ALERT(gettext("X server setup error"),
+		     "", "", gettext("Quit Enlightenment"));
+	Alert(gettext("FATAL ERROR:\n"
+		      "\n"
+		      "This Xserver does not support the Shape extension.\n"
+		      "This is required for Enlightenment to run.\n"
+		      "\n"
+		      "Your Xserver probably is too old or mis-configured.\n"
+		      "\n" "Exiting.\n"));
 	RESET_ALERT;
 	EExit((void *)1);
      }
@@ -326,32 +325,26 @@ SetupX()
    id = Imlib_init(disp);
    if (!id)
      {
-	ASSIGN_ALERT("Imlib initialisation error",
-		     "",
-		     "",
-		     "Quit Enlightenment");
-	Alert("FATAL ERROR:\n"
-	      "\n"
-	      "Enlightenment is unable to initialise Imlib.\n"
-	      "\n"
-	      "This is unusual. Unable to contiune.\n"
-	      "Exiting.\n");
+	ASSIGN_ALERT(gettext("Imlib initialisation error"),
+		     "", "", gettext("Quit Enlightenment"));
+	Alert(gettext("FATAL ERROR:\n"
+		      "\n"
+		      "Enlightenment is unable to initialise Imlib.\n"
+		      "\n"
+		      "This is unusual. Unable to contiune.\n" "Exiting.\n"));
 	RESET_ALERT;
 	EExit((void *)1);
      }
    fd = Fnlib_init(id);
    if (!fd)
      {
-	ASSIGN_ALERT("X server setup error",
-		     "",
-		     "",
-		     "Quit Enlightenment");
-	Alert("FATAL ERROR:\n"
-	      "\n"
-	      "Enlightenment is unable to initialise Fnlib.\n"
-	      "\n"
-	      "This is unusual. Unable to contiune.\n"
-	      "Exiting.\n");
+	ASSIGN_ALERT(gettext("X server setup error"),
+		     "", "", gettext("Quit Enlightenment"));
+	Alert(gettext("FATAL ERROR:\n"
+		      "\n"
+		      "Enlightenment is unable to initialise Fnlib.\n"
+		      "\n"
+		      "This is unusual. Unable to contiune.\n" "Exiting.\n"));
 	RESET_ALERT;
 	EExit((void *)1);
      }
@@ -398,11 +391,9 @@ SetupX()
       bpress_win = ECreateWindow(root.win, -80, -80, 24, 24, 0);
       val = bpress_win;
       XChangeProperty(disp, root.win, atom_set, XA_CARDINAL,
-		      32, PropModeReplace,
-		      (unsigned char *)&val, 1);
+		      32, PropModeReplace, (unsigned char *)&val, 1);
       XChangeProperty(disp, bpress_win, atom_set, XA_CARDINAL,
-		      32, PropModeReplace,
-		      (unsigned char *)&val, 1);
+		      32, PropModeReplace, (unsigned char *)&val, 1);
    }
 
    XSync(disp, False);
@@ -410,16 +401,15 @@ SetupX()
    /* warn, if necessary about X version problems */
    if (ProtocolVersion(disp) != 11)
      {
-	ASSIGN_ALERT("X server version error",
-		     "Ignore this error",
-		     "",
-		     "Quit Enlightenment");
-	Alert("WARNING:\n"
-	      "This is not an X11 Xserver. It infact talks the X%i protocol.\n"
-	      "This may mean Enlightenment will either not function, or\n"
-	      "function incorrectly. If it is later than X11, then your\n"
-	      "server is one the author of Enlightenment neither have\n"
-	      "access to, nor have heard of.\n",
+	ASSIGN_ALERT(gettext("X server version error"),
+		     gettext("Ignore this error"),
+		     "", gettext("Quit Enlightenment"));
+	Alert(gettext("WARNING:\n"
+		      "This is not an X11 Xserver. It infact talks the X%i protocol.\n"
+		      "This may mean Enlightenment will either not function, or\n"
+		      "function incorrectly. If it is later than X11, then your\n"
+		      "server is one the author of Enlightenment neither have\n"
+		      "access to, nor have heard of.\n"),
 	      ProtocolVersion(disp));
 	RESET_ALERT;
      }
@@ -447,8 +437,7 @@ SetupX()
       XModifierKeymap    *mod;
       KeyCode             nl, sl;
       int                 i;
-      int                 masks[8] =
-      {
+      int                 masks[8] = {
 	 ShiftMask, LockMask, ControlMask, Mod1Mask, Mod2Mask, Mod3Mask,
 	 Mod4Mask, Mod5Mask
       };
@@ -503,6 +492,9 @@ SetupX()
    mode.x = 0;
    mode.y = 0;
    mode.showroottooltip = 1;
+   mode.pager_sel_button = 2;
+   mode.pager_win_button = 1;
+   mode.pager_menu_button = 3;
    mode.focusmode = FOCUS_SLOPPY;
    mode.focuswin = NULL;
    mode.realfocuswin = NULL;
@@ -628,37 +620,33 @@ ChkDir(char *d)
 {
    if (!isdir(d))
      {
-	Alert("The directory %s is apparently not a directory\n"
-	      "This is a fatal condition.\n"
-	      "Please remove this file\n",
-	      d);
+	Alert(gettext("The directory %s is apparently not a directory\n"
+		      "This is a fatal condition.\n"
+		      "Please remove this file\n"), d);
 	EExit((void *)1);
      }
    if (!canexec(d))
      {
-	Alert("Do not have execute access to %s\n"
-	      "This is a fatal condition.\n"
-	      "Please check the ownership and permissions of this\n"
-	      "directory and take steps to rectify this.\n",
-	      d);
+	Alert(gettext("Do not have execute access to %s\n"
+		      "This is a fatal condition.\n"
+		      "Please check the ownership and permissions of this\n"
+		      "directory and take steps to rectify this.\n"), d);
 	EExit((void *)1);
      }
    if (!canread(d))
      {
-	Alert("Do not have read access to %s\n"
-	      "This is a fatal condition.\n"
-	      "Please check the ownership and permissions of this\n"
-	      "directory and take steps to rectify this.\n",
-	      d);
+	Alert(gettext("Do not have read access to %s\n"
+		      "This is a fatal condition.\n"
+		      "Please check the ownership and permissions of this\n"
+		      "directory and take steps to rectify this.\n"), d);
 	EExit((void *)1);
      }
    if (!canwrite(d))
      {
-	Alert("Do not have write access to %s\n"
-	      "This is a fatal condition.\n"
-	      "Please check the ownership and permissions of this\n"
-	      "directory and take steps to rectify this.\n",
-	      d);
+	Alert(gettext("Do not have write access to %s\n"
+		      "This is a fatal condition.\n"
+		      "Please check the ownership and permissions of this\n"
+		      "directory and take steps to rectify this.\n"), d);
 	EExit((void *)1);
      }
 }
@@ -752,8 +740,7 @@ SetupEnv()
    return;
 }
 
-Window
-MakeExtInitWin(void)
+Window MakeExtInitWin(void)
 {
    Display            *d2;
    Window              win;
@@ -822,9 +809,9 @@ MakeExtInitWin(void)
    attr.background_pixel = 0;
    attr.save_under = True;
    win = XCreateWindow(d2, root.win, 0, 0, root.w, root.h, 0, root.depth,
-		     InputOutput, root.vis, CWOverrideRedirect | CWSaveUnder |
-		    CWBackingStore | CWColormap | CWBackPixel | CWBorderPixel,
-		       &attr);
+		       InputOutput, root.vis, CWOverrideRedirect | CWSaveUnder |
+		       CWBackingStore | CWColormap | CWBackPixel |
+		       CWBorderPixel, &attr);
    pmap = ECreatePixmap(d2, win, root.w, root.h, root.depth);
    gcv.subwindow_mode = IncludeInferiors;
    gc = XCreateGC(d2, win, GCSubwindowMode, &gcv);
@@ -923,8 +910,7 @@ MakeExtInitWin(void)
 		  EMoveResizeWindow(d2, w2,
 				    x - (im->rgb_width / 2),
 				    y - (im->rgb_height / 2),
-				    im->rgb_width,
-				    im->rgb_height);
+				    im->rgb_width, im->rgb_height);
 		  EMapWindow(d2, w2);
 	       }
 	     tv.tv_sec = 0;

@@ -250,7 +250,8 @@ TextSize(TextClass * tclass, int active, int sticky, int state, char *text,
 	  {
 	     XRectangle          ret1, ret2;
 
-	     XmbTextExtents(ts->xfontset, lines[i], strlen(lines[i]), &ret1, &ret2);
+	     XmbTextExtents(ts->xfontset, lines[i], strlen(lines[i]), &ret1,
+			    &ret2);
 	     *height += ret2.height;
 	     if (ret2.width > *width)
 		*width = ret2.width;
@@ -314,7 +315,8 @@ TextDraw(TextClass * tclass, Window win, int active, int sticky, int state,
    if (!gc)
       gc = XCreateGC(disp, win, 0, &gcv);
 
-   if (ts->style.orientation == FONT_TO_RIGHT || ts->style.orientation == FONT_TO_LEFT)
+   if (ts->style.orientation == FONT_TO_RIGHT
+       || ts->style.orientation == FONT_TO_LEFT)
       textwidth_limit = w;
    else
       textwidth_limit = h;
@@ -367,9 +369,10 @@ TextDraw(TextClass * tclass, Window win, int active, int sticky, int state,
 		       new_line[0] = 0;
 		       strncat(new_line, lines[i], (len - nuke_count) / 2);
 		       strcat(new_line, "...");
-		       strcat(new_line, lines[i] + ((len - nuke_count) / 2) + nuke_count);
-		       Efont_extents(ts->efont, new_line, &ascent, &descent, &wid,
-				     NULL, NULL, NULL, NULL);
+		       strcat(new_line,
+			      lines[i] + ((len - nuke_count) / 2) + nuke_count);
+		       Efont_extents(ts->efont, new_line, &ascent, &descent,
+				     &wid, NULL, NULL, NULL, NULL);
 		    }
 		  Efree(lines[i]);
 		  lines[i] = new_line;
@@ -379,10 +382,13 @@ TextDraw(TextClass * tclass, Window win, int active, int sticky, int state,
 	     xx = x + (((textwidth_limit - wid) * justification) >> 10);
 
 	     if (ts->style.orientation != FONT_TO_RIGHT)
-		drawable = ECreatePixmap(disp, root.win, wid + 2, ascent + descent + 2, GetWinDepth(win));
+		drawable =
+		   ECreatePixmap(disp, root.win, wid + 2, ascent + descent + 2,
+				 GetWinDepth(win));
 	     else
 		drawable = win;
-	     TextDrawRotTo(win, &drawable, xx - 1, yy - 1 - ascent, wid + 2, ascent + descent + 2, ts);
+	     TextDrawRotTo(win, &drawable, xx - 1, yy - 1 - ascent, wid + 2,
+			   ascent + descent + 2, ts);
 	     if (ts->style.orientation == FONT_TO_RIGHT)
 	       {
 		  offset_x = xx;
@@ -399,9 +405,11 @@ TextDraw(TextClass * tclass, Window win, int active, int sticky, int state,
 		  r = ts->bg_col.r;
 		  g = ts->bg_col.g;
 		  b = ts->bg_col.b;
-		  XSetForeground(disp, gc, Imlib_best_color_match(id, &r, &g, &b));
-		  EFont_draw_string(disp, drawable, gc, offset_x + 1, offset_y + 1,
-				    lines[i], ts->efont, Imlib_get_visual(id),
+		  XSetForeground(disp, gc,
+				 Imlib_best_color_match(id, &r, &g, &b));
+		  EFont_draw_string(disp, drawable, gc, offset_x + 1,
+				    offset_y + 1, lines[i], ts->efont,
+				    Imlib_get_visual(id),
 				    Imlib_get_colormap(id));
 	       }
 	     else if (ts->effect == 2)
@@ -409,7 +417,8 @@ TextDraw(TextClass * tclass, Window win, int active, int sticky, int state,
 		  r = ts->bg_col.r;
 		  g = ts->bg_col.g;
 		  b = ts->bg_col.b;
-		  XSetForeground(disp, gc, Imlib_best_color_match(id, &r, &g, &b));
+		  XSetForeground(disp, gc,
+				 Imlib_best_color_match(id, &r, &g, &b));
 		  EFont_draw_string(disp, drawable, gc, offset_x - 1, offset_y,
 				    lines[i], ts->efont, Imlib_get_visual(id),
 				    Imlib_get_colormap(id));
@@ -431,7 +440,8 @@ TextDraw(TextClass * tclass, Window win, int active, int sticky, int state,
 			       lines[i], ts->efont, Imlib_get_visual(id),
 			       Imlib_get_colormap(id));
 
-	     TextDrawRotBack(win, drawable, xx - 1, yy - 1 - ascent, wid + 2, ascent + descent + 2, ts);
+	     TextDrawRotBack(win, drawable, xx - 1, yy - 1 - ascent, wid + 2,
+			     ascent + descent + 2, ts);
 	     if (drawable != win)
 		EFreePixmap(disp, drawable);
 	     yy += ascent + descent;
@@ -443,7 +453,8 @@ TextDraw(TextClass * tclass, Window win, int active, int sticky, int state,
 	  {
 	     XRectangle          ret1, ret2;
 
-	     XmbTextExtents(ts->xfontset, lines[i], strlen(lines[i]), &ret1, &ret2);
+	     XmbTextExtents(ts->xfontset, lines[i], strlen(lines[i]), &ret1,
+			    &ret2);
 	     if (ret2.width > textwidth_limit)
 	       {
 		  char               *new_line;
@@ -465,8 +476,10 @@ TextDraw(TextClass * tclass, Window win, int active, int sticky, int state,
 		       new_line[0] = 0;
 		       strncat(new_line, lines[i], (len - nuke_count) / 2);
 		       strcat(new_line, "...");
-		       strcat(new_line, lines[i] + ((len - nuke_count) / 2) + nuke_count);
-		       XmbTextExtents(ts->xfontset, new_line, strlen(new_line), &ret1, &ret2);
+		       strcat(new_line,
+			      lines[i] + ((len - nuke_count) / 2) + nuke_count);
+		       XmbTextExtents(ts->xfontset, new_line, strlen(new_line),
+				      &ret1, &ret2);
 		    }
 		  Efree(lines[i]);
 		  lines[i] = new_line;
@@ -476,10 +489,14 @@ TextDraw(TextClass * tclass, Window win, int active, int sticky, int state,
 	     xx = x + (((textwidth_limit - ret2.width) * justification) >> 10);
 
 	     if (ts->style.orientation != FONT_TO_RIGHT)
-		drawable = ECreatePixmap(disp, root.win, ret2.width + 2, ret2.height + 2, GetWinDepth(win));
+		drawable =
+		   ECreatePixmap(disp, root.win, ret2.width + 2,
+				 ret2.height + 2, GetWinDepth(win));
 	     else
 		drawable = win;
-	     TextDrawRotTo(win, &drawable, xx - 1, yy - (ts->xfontset_ascent) - 1, ret2.width + 2, ret2.height + 2, ts);
+	     TextDrawRotTo(win, &drawable, xx - 1,
+			   yy - (ts->xfontset_ascent) - 1, ret2.width + 2,
+			   ret2.height + 2, ts);
 	     if (ts->style.orientation == FONT_TO_RIGHT)
 	       {
 		  offset_x = xx;
@@ -496,24 +513,26 @@ TextDraw(TextClass * tclass, Window win, int active, int sticky, int state,
 		  r = ts->bg_col.r;
 		  g = ts->bg_col.g;
 		  b = ts->bg_col.b;
-		  XSetForeground(disp, gc, Imlib_best_color_match(id, &r, &g, &b));
-		  XmbDrawString(disp, drawable, ts->xfontset, gc, offset_x + 1, offset_y + 1,
-				lines[i], strlen(lines[i]));
+		  XSetForeground(disp, gc,
+				 Imlib_best_color_match(id, &r, &g, &b));
+		  XmbDrawString(disp, drawable, ts->xfontset, gc, offset_x + 1,
+				offset_y + 1, lines[i], strlen(lines[i]));
 	       }
 	     else if (ts->effect == 2)
 	       {
 		  r = ts->bg_col.r;
 		  g = ts->bg_col.g;
 		  b = ts->bg_col.b;
-		  XSetForeground(disp, gc, Imlib_best_color_match(id, &r, &g, &b));
-		  XmbDrawString(disp, drawable, ts->xfontset, gc, offset_x - 1, offset_y,
-				lines[i], strlen(lines[i]));
-		  XmbDrawString(disp, drawable, ts->xfontset, gc, offset_x + 1, offset_y,
-				lines[i], strlen(lines[i]));
-		  XmbDrawString(disp, drawable, ts->xfontset, gc, offset_x, offset_y - 1,
-				lines[i], strlen(lines[i]));
-		  XmbDrawString(disp, drawable, ts->xfontset, gc, offset_x, offset_y + 1,
-				lines[i], strlen(lines[i]));
+		  XSetForeground(disp, gc,
+				 Imlib_best_color_match(id, &r, &g, &b));
+		  XmbDrawString(disp, drawable, ts->xfontset, gc, offset_x - 1,
+				offset_y, lines[i], strlen(lines[i]));
+		  XmbDrawString(disp, drawable, ts->xfontset, gc, offset_x + 1,
+				offset_y, lines[i], strlen(lines[i]));
+		  XmbDrawString(disp, drawable, ts->xfontset, gc, offset_x,
+				offset_y - 1, lines[i], strlen(lines[i]));
+		  XmbDrawString(disp, drawable, ts->xfontset, gc, offset_x,
+				offset_y + 1, lines[i], strlen(lines[i]));
 	       }
 	     r = ts->fg_col.r;
 	     g = ts->fg_col.g;
@@ -522,7 +541,9 @@ TextDraw(TextClass * tclass, Window win, int active, int sticky, int state,
 	     XmbDrawString(disp, drawable, ts->xfontset, gc, offset_x, offset_y,
 			   lines[i], strlen(lines[i]));
 
-	     TextDrawRotBack(win, drawable, xx - 1, yy - (ts->xfontset_ascent) - 1, ret2.width + 2, ret2.height + 2, ts);
+	     TextDrawRotBack(win, drawable, xx - 1,
+			     yy - (ts->xfontset_ascent) - 1, ret2.width + 2,
+			     ret2.height + 2, ts);
 	     if (drawable != win)
 		EFreePixmap(disp, drawable);
 	     yy += ret2.height;
@@ -560,7 +581,8 @@ TextDraw(TextClass * tclass, Window win, int active, int sticky, int state,
 		       new_line[0] = 0;
 		       strncat(new_line, lines[i], (len - nuke_count) / 2);
 		       strcat(new_line, "...");
-		       strcat(new_line, lines[i] + ((len - nuke_count) / 2) + nuke_count);
+		       strcat(new_line,
+			      lines[i] + ((len - nuke_count) / 2) + nuke_count);
 		       wid = XTextWidth(ts->xfont, new_line, strlen(new_line));
 		    }
 		  Efree(lines[i]);
@@ -571,10 +593,13 @@ TextDraw(TextClass * tclass, Window win, int active, int sticky, int state,
 	     xx = x + (((textwidth_limit - wid) * justification) >> 10);
 
 	     if (ts->style.orientation != FONT_TO_RIGHT)
-		drawable = ECreatePixmap(disp, root.win, wid + 2, ascent + descent + 2, GetWinDepth(win));
+		drawable =
+		   ECreatePixmap(disp, root.win, wid + 2, ascent + descent + 2,
+				 GetWinDepth(win));
 	     else
 		drawable = win;
-	     TextDrawRotTo(win, &drawable, xx - 1, yy - ascent - 1, wid + 2, ascent + descent + 2, ts);
+	     TextDrawRotTo(win, &drawable, xx - 1, yy - ascent - 1, wid + 2,
+			   ascent + descent + 2, ts);
 	     if (ts->style.orientation == FONT_TO_RIGHT)
 	       {
 		  offset_x = xx;
@@ -591,7 +616,8 @@ TextDraw(TextClass * tclass, Window win, int active, int sticky, int state,
 		  r = ts->bg_col.r;
 		  g = ts->bg_col.g;
 		  b = ts->bg_col.b;
-		  XSetForeground(disp, gc, Imlib_best_color_match(id, &r, &g, &b));
+		  XSetForeground(disp, gc,
+				 Imlib_best_color_match(id, &r, &g, &b));
 		  XDrawString(disp, drawable, gc, offset_x + 1, offset_y + 1,
 			      lines[i], strlen(lines[i]));
 	       }
@@ -600,7 +626,8 @@ TextDraw(TextClass * tclass, Window win, int active, int sticky, int state,
 		  r = ts->bg_col.r;
 		  g = ts->bg_col.g;
 		  b = ts->bg_col.b;
-		  XSetForeground(disp, gc, Imlib_best_color_match(id, &r, &g, &b));
+		  XSetForeground(disp, gc,
+				 Imlib_best_color_match(id, &r, &g, &b));
 		  XDrawString(disp, drawable, gc, offset_x - 1, offset_y,
 			      lines[i], strlen(lines[i]));
 		  XDrawString(disp, drawable, gc, offset_x + 1, offset_y,
@@ -617,7 +644,8 @@ TextDraw(TextClass * tclass, Window win, int active, int sticky, int state,
 	     XDrawString(disp, drawable, gc, offset_x, offset_y,
 			 lines[i], strlen(lines[i]));
 
-	     TextDrawRotBack(win, drawable, xx - 1, yy - 1 - ascent, wid + 2, ascent + descent + 2, ts);
+	     TextDrawRotBack(win, drawable, xx - 1, yy - 1 - ascent, wid + 2,
+			     ascent + descent + 2, ts);
 	     if (drawable != win)
 		EFreePixmap(disp, drawable);
 	     yy += ts->xfont->ascent + ts->xfont->descent;
@@ -655,9 +683,11 @@ TextDraw(TextClass * tclass, Window win, int active, int sticky, int state,
 		       new_line[0] = 0;
 		       strncat(new_line, lines[i], (len - nuke_count) / 4);
 		       strcat(new_line, ". . . ");
-		       strcat(new_line, lines[i] + ((len - nuke_count) / 4) + nuke_count);
-		       wid = XTextWidth16(ts->xfont, (XChar2b *) new_line,
-					  strlen(new_line) / 2);
+		       strcat(new_line,
+			      lines[i] + ((len - nuke_count) / 4) + nuke_count);
+		       wid =
+			  XTextWidth16(ts->xfont, (XChar2b *) new_line,
+				       strlen(new_line) / 2);
 		    }
 		  Efree(lines[i]);
 		  lines[i] = new_line;
@@ -667,10 +697,13 @@ TextDraw(TextClass * tclass, Window win, int active, int sticky, int state,
 	     xx = x + (((textwidth_limit - wid) * justification) >> 10);
 
 	     if (ts->style.orientation != FONT_TO_RIGHT)
-		drawable = ECreatePixmap(disp, root.win, wid + 2, ascent + descent + 2, GetWinDepth(win));
+		drawable =
+		   ECreatePixmap(disp, root.win, wid + 2, ascent + descent + 2,
+				 GetWinDepth(win));
 	     else
 		drawable = win;
-	     TextDrawRotTo(win, &drawable, xx - 1, yy - ascent - 1, wid + 2, ascent + descent + 2, ts);
+	     TextDrawRotTo(win, &drawable, xx - 1, yy - ascent - 1, wid + 2,
+			   ascent + descent + 2, ts);
 	     if (ts->style.orientation == FONT_TO_RIGHT)
 	       {
 		  offset_x = xx;
@@ -687,7 +720,8 @@ TextDraw(TextClass * tclass, Window win, int active, int sticky, int state,
 		  r = ts->bg_col.r;
 		  g = ts->bg_col.g;
 		  b = ts->bg_col.b;
-		  XSetForeground(disp, gc, Imlib_best_color_match(id, &r, &g, &b));
+		  XSetForeground(disp, gc,
+				 Imlib_best_color_match(id, &r, &g, &b));
 		  XDrawString16(disp, drawable, gc, offset_x + 1, offset_y + 1,
 				(XChar2b *) lines[i], strlen(lines[i]) / 2);
 	       }
@@ -696,7 +730,8 @@ TextDraw(TextClass * tclass, Window win, int active, int sticky, int state,
 		  r = ts->bg_col.r;
 		  g = ts->bg_col.g;
 		  b = ts->bg_col.b;
-		  XSetForeground(disp, gc, Imlib_best_color_match(id, &r, &g, &b));
+		  XSetForeground(disp, gc,
+				 Imlib_best_color_match(id, &r, &g, &b));
 		  XDrawString16(disp, drawable, gc, offset_x - 1, offset_y,
 				(XChar2b *) lines[i], strlen(lines[i]) / 2);
 		  XDrawString16(disp, drawable, gc, offset_y + 1, offset_y,
@@ -713,7 +748,8 @@ TextDraw(TextClass * tclass, Window win, int active, int sticky, int state,
 	     XDrawString16(disp, drawable, gc, offset_x, offset_y,
 			   (XChar2b *) lines[i], strlen(lines[i]) / 2);
 
-	     TextDrawRotBack(win, drawable, xx - 1, yy - 1 - ascent, wid + 2, ascent + descent + 2, ts);
+	     TextDrawRotBack(win, drawable, xx - 1, yy - 1 - ascent, wid + 2,
+			     ascent + descent + 2, ts);
 	     if (drawable != win)
 		EFreePixmap(disp, drawable);
 	     yy += ts->xfont->ascent + ts->xfont->descent;
@@ -724,7 +760,8 @@ TextDraw(TextClass * tclass, Window win, int active, int sticky, int state,
 }
 
 void
-TextDrawRotTo(Window win, Drawable * drawable, int x, int y, int w, int h, TextState * ts)
+TextDrawRotTo(Window win, Drawable * drawable, int x, int y, int w, int h,
+	      TextState * ts)
 {
    ImlibImage         *ii = NULL;
    int                 win_x, win_y;
@@ -739,8 +776,10 @@ TextDrawRotTo(Window win, Drawable * drawable, int x, int y, int w, int h, TextS
 	Imlib_paste_image(id, ii, *drawable, 0, 0, w, h);
 	break;
      case FONT_TO_DOWN:
-	EGetGeometry(disp, win, &(root.win), &win_x, &win_y, &win_w, &win_h, &win_b, &win_d);
-	ii = Imlib_create_image_from_drawable(id, win, 0, win_w - y - h, x, h, w);
+	EGetGeometry(disp, win, &(root.win), &win_x, &win_y, &win_w, &win_h,
+		     &win_b, &win_d);
+	ii =
+	   Imlib_create_image_from_drawable(id, win, 0, win_w - y - h, x, h, w);
 	Imlib_rotate_image(id, ii, -1);
 	Imlib_flip_image_vertical(id, ii);
 	Imlib_paste_image(id, ii, *drawable, 0, 0, w, h);
@@ -759,7 +798,8 @@ TextDrawRotTo(Window win, Drawable * drawable, int x, int y, int w, int h, TextS
 }
 
 void
-TextDrawRotBack(Window win, Pixmap drawable, int x, int y, int w, int h, TextState * ts)
+TextDrawRotBack(Window win, Pixmap drawable, int x, int y, int w, int h,
+		TextState * ts)
 {
    ImlibImage         *ii = NULL;
    int                 win_x, win_y;
@@ -774,7 +814,8 @@ TextDrawRotBack(Window win, Pixmap drawable, int x, int y, int w, int h, TextSta
 	Imlib_paste_image(id, ii, win, y, x, h, w);
 	break;
      case FONT_TO_DOWN:
-	EGetGeometry(disp, win, &(root.win), &win_x, &win_y, &win_w, &win_h, &win_b, &win_d);
+	EGetGeometry(disp, win, &(root.win), &win_x, &win_y, &win_w, &win_h,
+		     &win_b, &win_d);
 	ii = Imlib_create_image_from_drawable(id, drawable, 0, 0, 0, w, h);
 	Imlib_rotate_image(id, ii, 1);
 	Imlib_flip_image_horizontal(id, ii);

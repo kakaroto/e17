@@ -29,8 +29,7 @@
 char                throw_move_events_away = 0;
 void                DeskAccountTimeout(int val, void *data);
 
-HandleStruct        HArray[] =
-{
+HandleStruct        HArray[] = {
    {DefaultFunc},
    {DefaultFunc},
    {HKeyPress},
@@ -277,7 +276,8 @@ HandleEvent(XEvent * ev)
 	if (((ev->type == KeyPress) || (ev->type == KeyRelease)) &&
 	    (ev->xkey.root != root.win))
 	  {
-	     XSetInputFocus(disp, ev->xkey.root, RevertToPointerRoot, CurrentTime);
+	     XSetInputFocus(disp, ev->xkey.root, RevertToPointerRoot,
+			    CurrentTime);
 	     XSync(disp, False);
 	     ev->xkey.time = CurrentTime;
 	     XSendEvent(disp, ev->xkey.root, False, 0, ev);
@@ -346,8 +346,7 @@ WaitEvent()
 /*  XEvent              ev; */
    fd_set              fdset;
    struct timeval      tval;
-   static struct timeval tval_last =
-   {0, 0};
+   static struct timeval tval_last = { 0, 0 };
    double              time1, time2;
    Qentry             *qe;
    int                 count, pcount;
@@ -661,8 +660,7 @@ HLeaveNotify(XEvent * ev)
 	if (ev->xcrossing.window == root.win)
 	  {
 	     if (ev->xcrossing.mode == NotifyNormal &&
-		 ev->xcrossing.detail != NotifyInferior &&
-		 mode.focuswin)
+		 ev->xcrossing.detail != NotifyInferior && mode.focuswin)
 		HandleFocusWindow(root.focuswin);
 	     else
 		HandleFocusWindow(ev->xcrossing.window);

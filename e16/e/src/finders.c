@@ -249,7 +249,9 @@ ListWinGroups(EWin * ewin, char group_select, int *num)
      {
      case GROUP_SELECT_EWIN_ONLY:
 	groups = (Group **) Emalloc(sizeof(Group *) * ewin->num_groups);
-	groups = (Group **) memcpy(groups, ewin->groups, sizeof(Group *) * ewin->num_groups);
+	groups =
+	   (Group **) memcpy(groups, ewin->groups,
+			     sizeof(Group *) * ewin->num_groups);
 	*num = ewin->num_groups;
 	break;
      case GROUP_SELECT_ALL_EXCEPT_EWIN:
@@ -347,12 +349,16 @@ ListWinGroupMembersForEwin(EWin * ewin, int action, char nogroup, int *num)
 
 	     if (!daddy_says_no_no)
 	       {
-		  gwins = Erealloc(gwins, sizeof(EWin *) * (*num + ewin->groups[i]->num_members));
+		  gwins =
+		     Erealloc(gwins,
+			      sizeof(EWin *) * (*num +
+						ewin->groups[i]->num_members));
 		  /* Check if a window is not already in the group */
 		  for (k = 0; k < ewin->groups[i]->num_members; k++)
 		    {
 		       /* To get consistent behaviour, limit groups to a single desktop for now: */
-		       if (ewin->groups[i]->members[k]->desktop == ewin->desktop)
+		       if (ewin->groups[i]->members[k]->desktop ==
+			   ewin->desktop)
 			 {
 			    inlist = 0;
 			    for (j = 0; j < (*num); j++)

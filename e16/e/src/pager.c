@@ -28,7 +28,8 @@ static void         PagerUpdateTimeout(int val, void *data);
 #define SNAP mode.pager_snap
 
 void
-PagerScaleLine(Pixmap dest, Window src, int dx, int dy, int sw, int pw, int sy, int sh)
+PagerScaleLine(Pixmap dest, Window src, int dx, int dy, int sw, int pw, int sy,
+	       int sh)
 {
    static GC           gc = 0;
    XGCValues           gcv;
@@ -79,13 +80,17 @@ PagerScaleLine(Pixmap dest, Window src, int dx, int dy, int sw, int pw, int sy, 
 	if (!px_grab)
 	   return;
 	if (HIQ)
-	   px_grab2 = XGetImage(disp, src, 0, sy + (sh / 2), sw, 1, 0xffffffff, ZPixmap);
+	   px_grab2 =
+	      XGetImage(disp, src, 0, sy + (sh / 2), sw, 1, 0xffffffff,
+			ZPixmap);
 	if (!px_grab2)
 	  {
 	     XDestroyImage(px_grab);
 	     return;
 	  }
-	px_buf = XCreateImage(disp, root.vis, root.depth, ZPixmap, 0, NULL, pw, 1, 32, 0);
+	px_buf =
+	   XCreateImage(disp, root.vis, root.depth, ZPixmap, 0, NULL, pw, 1, 32,
+			0);
 	if (!px_buf)
 	  {
 	     XDestroyImage(px_grab);
@@ -208,7 +213,8 @@ PagerScaleLine(Pixmap dest, Window src, int dx, int dy, int sw, int pw, int sy, 
 }
 
 void
-PagerScaleRect(Pixmap dest, Window src, int sx, int sy, int dx, int dy, int sw, int sh, int dw, int dh)
+PagerScaleRect(Pixmap dest, Window src, int sx, int sy, int dx, int dy, int sw,
+	       int sh, int dw, int dh)
 {
    static GC           gc = 0, gc2 = 0;
    XGCValues           gcv;
@@ -244,7 +250,8 @@ PagerScaleRect(Pixmap dest, Window src, int sx, int sy, int dx, int dy, int sw, 
 		  for (y = 0; y < (dh * 2); y++)
 		    {
 		       y2 = (sh * y) / (dh * 2);
-		       XCopyArea(disp, src, p_grab->pmap, gc, sx, sy + y2, sw, 1, 0, y);
+		       XCopyArea(disp, src, p_grab->pmap, gc, sx, sy + y2, sw,
+				 1, 0, y);
 		    }
 	       }
 	     else
@@ -252,7 +259,8 @@ PagerScaleRect(Pixmap dest, Window src, int sx, int sy, int dx, int dy, int sw, 
 		  for (y = 0; y < dh; y++)
 		    {
 		       y2 = (sh * y) / dh;
-		       XCopyArea(disp, src, p_grab->pmap, gc, sx, sy + y2, sw, 1, 0, y);
+		       XCopyArea(disp, src, p_grab->pmap, gc, sx, sy + y2, sw,
+				 1, 0, y);
 		    }
 	       }
 	     XSync(disp, False);
@@ -275,7 +283,8 @@ PagerScaleRect(Pixmap dest, Window src, int sx, int sy, int dx, int dy, int sw, 
 		  y2 = (sh * y) / (dh * 2);
 		  XCopyArea(disp, src, pmap, gc, sx, sy + y2, sw, 1, 0, y);
 	       }
-	     px_grab = XGetImage(disp, pmap, 0, 0, sw, dh * 2, 0xffffffff, ZPixmap);
+	     px_grab =
+		XGetImage(disp, pmap, 0, 0, sw, dh * 2, 0xffffffff, ZPixmap);
 	     EFreePixmap(disp, pmap);
 	     if (!px_grab)
 		return;
@@ -295,7 +304,9 @@ PagerScaleRect(Pixmap dest, Window src, int sx, int sy, int dx, int dy, int sw, 
 	     if (!px_grab)
 		return;
 	  }
-	px_buf = XCreateImage(disp, root.vis, root.depth, ZPixmap, 0, NULL, dw, dh, 32, 0);
+	px_buf =
+	   XCreateImage(disp, root.vis, root.depth, ZPixmap, 0, NULL, dw, dh,
+			32, 0);
 	if (!px_buf)
 	  {
 	     XDestroyImage(px_grab);
@@ -339,7 +350,8 @@ PagerScaleRect(Pixmap dest, Window src, int sx, int sy, int dx, int dy, int sw, 
 		       v2 = XGetPixel(xim1, x2 + difx, y2);
 		       v3 = XGetPixel(xim1, x2, y2 + 1);
 		       v4 = XGetPixel(xim1, x2 + difx, y2 + 1);
-		       v1 = ((v1 >> 2) & 0x3f3f3f3f) + ((v2 >> 2) & 0x3f3f3f3f) +
+		       v1 =
+			  ((v1 >> 2) & 0x3f3f3f3f) + ((v2 >> 2) & 0x3f3f3f3f) +
 			  ((v3 >> 2) & 0x3f3f3f3f) + ((v4 >> 2) & 0x3f3f3f3f) +
 			  (v1 & v2 & v3 & v4 & 0x03030303);
 		       XPutPixel(xim3, x, y, v1);
@@ -358,11 +370,16 @@ PagerScaleRect(Pixmap dest, Window src, int sx, int sy, int dx, int dy, int sw, 
 		       v3 = XGetPixel(xim1, x2, y2 + 1);
 		       v4 = XGetPixel(xim1, x2 + difx, y2 + 1);
 		       v1 =
-			  ((v1 >> 2) & ((0x70 << 7) | (0x78 << 2) | (0x70 >> 4))) +
-			  ((v2 >> 2) & ((0x70 << 7) | (0x78 << 2) | (0x70 >> 4))) +
-			  ((v3 >> 2) & ((0x70 << 7) | (0x78 << 2) | (0x70 >> 4))) +
-			  ((v4 >> 2) & ((0x70 << 7) | (0x78 << 2) | (0x70 >> 4))) +
-			  (v1 & v2 & v3 & v4 & ((0x3 << 11) | (0x3 << 5) | (0x3)));
+			  ((v1 >> 2) &
+			   ((0x70 << 7) | (0x78 << 2) | (0x70 >> 4))) +
+			  ((v2 >> 2) &
+			   ((0x70 << 7) | (0x78 << 2) | (0x70 >> 4))) +
+			  ((v3 >> 2) &
+			   ((0x70 << 7) | (0x78 << 2) | (0x70 >> 4))) +
+			  ((v4 >> 2) &
+			   ((0x70 << 7) | (0x78 << 2) | (0x70 >> 4))) +
+			  (v1 & v2 & v3 & v4 &
+			   ((0x3 << 11) | (0x3 << 5) | (0x3)));
 		       XPutPixel(xim3, x, y, v1);
 		    }
 	       }
@@ -433,8 +450,7 @@ PagerUpdateTimeout(int val, void *data)
    double              cur_time, in;
    static int          calls = 0;
    int                 y, y2, phase, ax, ay, cx, cy, ww, hh, xx, yy;
-   static int          offsets[8] =
-   {0, 4, 2, 6, 1, 5, 3, 7};
+   static int          offsets[8] = { 0, 4, 2, 6, 1, 5, 3, 7 };
 
    p = (Pager *) data;
    Esnprintf(s, sizeof(s), "__.%x", p->win);
@@ -508,50 +524,49 @@ CreatePager(void)
 		    {
 		       SettingsPager();
 		       DIALOG_OK
-			  ("Warning!",
-			   "\n"
-			   "You seem to have an X Server capable of Shared Memory\n"
-		       "but it is incapable of doing ZPixmap Shared pixmaps\n"
-			"(The server does not claim to be able to do them).\n"
-			   "\n"
-			   "The pager in enlightenment will run slowly in snapshot\n"
-			"mode if you continue to use that mode of the pager\n"
-			   "under these conditions.\n"
-			   "\n"
-			   "It is suggested you change the settings on your pager to\n"
-			   "disable snapshots to improve performance.\n"
-			   "\n");
+			  (gettext("Warning!"),
+			   gettext("\n"
+				   "You seem to have an X Server capable of Shared Memory\n"
+				   "but it is incapable of doing ZPixmap Shared pixmaps\n"
+				   "(The server does not claim to be able to do them).\n"
+				   "\n"
+				   "The pager in enlightenment will run slowly in snapshot\n"
+				   "mode if you continue to use that mode of the pager\n"
+				   "under these conditions.\n"
+				   "\n"
+				   "It is suggested you change the settings on your pager to\n"
+				   "disable snapshots to improve performance.\n"
+				   "\n"));
 		    }
 		  else
 		     DIALOG_OK
-			("Warning!",
-			 "\n"
-			 "Your X Server is capable of doing Shared Memory but you do\n"
-			 "not have Shared Pixmaps enabled in your Imlib configuration.\n"
-			 "\n"
-			 "Please enable Shared Pixmaps in your Imlib configuration\n"
-			 "then restart enlightenment to gain better performance for\n"
-			 "the pagers when snapshot mode is enabled.\n"
-			 "\n");
+			(gettext("Warning!"),
+			 gettext("\n"
+				 "Your X Server is capable of doing Shared Memory but you do\n"
+				 "not have Shared Pixmaps enabled in your Imlib configuration.\n"
+				 "\n"
+				 "Please enable Shared Pixmaps in your Imlib configuration\n"
+				 "then restart enlightenment to gain better performance for\n"
+				 "the pagers when snapshot mode is enabled.\n"
+				 "\n"));
 	       }
 	  }
 	else
 	  {
 	     SettingsPager();
 	     DIALOG_OK
-		("Warning!",
-		 "\n"
-	     "You seem to be running Enlightenment over a network Connection\n"
-	     "or on an X Server that does not support Shared Memory, or you\n"
-		 "have disabled MIT-SHM Shared memory in your Imlib configuration.\n"
-	     "This means the Enlightenment Pager will perform slowly and use\n"
-		 "more system resources than it would when Shared Memory is\n"
-		 "available.\n"
-		 "\n"
-		 "To improve performance please either enable MIT-SHM Shared Memory\n"
-		 "in your Imlib config, if you disabled it, or disable Pager\n"
-		 "snapshots.\n"
-		 "\n");
+		(gettext("Warning!"),
+		 gettext("\n"
+			 "You seem to be running Enlightenment over a network Connection\n"
+			 "or on an X Server that does not support Shared Memory, or you\n"
+			 "have disabled MIT-SHM Shared memory in your Imlib configuration.\n"
+			 "This means the Enlightenment Pager will perform slowly and use\n"
+			 "more system resources than it would when Shared Memory is\n"
+			 "available.\n"
+			 "\n"
+			 "To improve performance please either enable MIT-SHM Shared Memory\n"
+			 "in your Imlib config, if you disabled it, or disable Pager\n"
+			 "snapshots.\n" "\n"));
 	  }
 	did_dialog = 1;
      }
@@ -720,7 +735,8 @@ PagerShow(Pager * p)
 	  {
 	     Esnprintf(s, sizeof(s), "__.%x", p->win);
 	     if (mode.pager_scanspeed > 0)
-		DoIn(s, 1 / ((double)mode.pager_scanspeed), PagerUpdateTimeout, 0, p);
+		DoIn(s, 1 / ((double)mode.pager_scanspeed), PagerUpdateTimeout,
+		     0, p);
 	  }
 	queue_up = pq;
 	AddItem(p, "PAGER", p->win, LIST_TYPE_PAGER);
@@ -1031,8 +1047,8 @@ PagerRedraw(Pager * p, char newbg)
 	for (y = 0; y < ay; y++)
 	  {
 	     for (x = 0; x < ax; x++)
-		XCopyArea(disp, p->bgpmap, p->pmap, gc, 0, 0, p->w / ax, p->h / ay,
-			  x * (p->w / ax), y * (p->h / ay));
+		XCopyArea(disp, p->bgpmap, p->pmap, gc, 0, 0, p->w / ax,
+			  p->h / ay, x * (p->w / ax), y * (p->h / ay));
 	  }
 	for (i = desks.desk[p->desktop].num - 1; i >= 0; i--)
 	  {
@@ -1054,14 +1070,16 @@ PagerRedraw(Pager * p, char newbg)
 			    XSetClipMask(disp, gc, ewin->mini_mask);
 			    XSetClipOrigin(disp, gc, wx, wy);
 			 }
-		       XCopyArea(disp, ewin->mini_pmap, p->pmap, gc, 0, 0, ww, wh, wx, wy);
+		       XCopyArea(disp, ewin->mini_pmap, p->pmap, gc, 0, 0, ww,
+				 wh, wx, wy);
 		       if (ewin->mini_mask)
 			  XSetClipMask(disp, gc, None);
 		    }
 		  else
 		    {
 		       XSetForeground(disp, gc, c1);
-		       XDrawRectangle(disp, p->pmap, gc, wx - 1, wy - 1, ww + 1, wh + 1);
+		       XDrawRectangle(disp, p->pmap, gc, wx - 1, wy - 1, ww + 1,
+				      wh + 1);
 		       XSetForeground(disp, gc, c2);
 		       XFillRectangle(disp, p->pmap, gc, wx, wy, ww, wh);
 		    }
@@ -1152,11 +1170,12 @@ PagerReArea(void)
 		  aspect = ((double)root.w) / ((double)root.h);
 		  pl[i]->ewin->client.w_inc = ax * 4;
 		  pl[i]->ewin->client.h_inc = ay * 8;
-		  pl[i]->ewin->client.aspect_min = aspect * ((double)ax / (double)ay);
-		  pl[i]->ewin->client.aspect_max = aspect * ((double)ax / (double)ay);
-		  MoveResizeEwin(pl[i]->ewin,
-				 pl[i]->ewin->x, pl[i]->ewin->y,
-				 w, h);
+		  pl[i]->ewin->client.aspect_min =
+		     aspect * ((double)ax / (double)ay);
+		  pl[i]->ewin->client.aspect_max =
+		     aspect * ((double)ax / (double)ay);
+		  MoveResizeEwin(pl[i]->ewin, pl[i]->ewin->x, pl[i]->ewin->y, w,
+				 h);
 	       }
 	  }
 	Efree(pl);
@@ -1246,21 +1265,26 @@ PagerShowMenu(Pager * p, int x, int y)
 	if (pw_menu)
 	   DestroyMenu(pw_menu);
 	pw_menu = CreateMenu();
-	AddTitleToMenu(pw_menu, "Window Options");
+	AddTitleToMenu(pw_menu, gettext("Window Options"));
 	pw_menu->name = duplicate("__DESK_WIN_MENU");
-	pw_menu->style = FindItem("DEFAULT", 0, LIST_FINDBY_NAME, LIST_TYPE_MENU_STYLE);
+	pw_menu->style =
+	   FindItem("DEFAULT", 0, LIST_FINDBY_NAME, LIST_TYPE_MENU_STYLE);
 
 	Esnprintf(s, sizeof(s), "%i", ewin->client.win);
-	mi = CreateMenuItem("Iconify", NULL, ACTION_ICONIFY, s, NULL);
+	mi = CreateMenuItem(gettext("Iconify"), NULL, ACTION_ICONIFY, s, NULL);
 	AddItemToMenu(pw_menu, mi);
 
-	mi = CreateMenuItem("Close", NULL, ACTION_KILL, s, NULL);
+	mi = CreateMenuItem(gettext("Close"), NULL, ACTION_KILL, s, NULL);
 	AddItemToMenu(pw_menu, mi);
 
-	mi = CreateMenuItem("Annihilate", NULL, ACTION_KILL_NASTY, s, NULL);
+	mi =
+	   CreateMenuItem(gettext("Annihilate"), NULL, ACTION_KILL_NASTY, s,
+			  NULL);
 	AddItemToMenu(pw_menu, mi);
 
-	mi = CreateMenuItem("Stick / Unstick", NULL, ACTION_STICK, s, NULL);
+	mi =
+	   CreateMenuItem(gettext("Stick / Unstick"), NULL, ACTION_STICK, s,
+			  NULL);
 	AddItemToMenu(pw_menu, mi);
 
 	AddItem(pw_menu, pw_menu->name, 0, LIST_TYPE_MENU);
@@ -1272,25 +1296,36 @@ PagerShowMenu(Pager * p, int x, int y)
    if (p_menu)
       DestroyMenu(p_menu);
    p_menu = CreateMenu();
-   AddTitleToMenu(p_menu, "Desktop Options");
+   AddTitleToMenu(p_menu, gettext("Desktop Options"));
    p_menu->name = duplicate("__DESK_MENU");
-   p_menu->style = FindItem("DEFAULT", 0, LIST_FINDBY_NAME, LIST_TYPE_MENU_STYLE);
+   p_menu->style =
+      FindItem("DEFAULT", 0, LIST_FINDBY_NAME, LIST_TYPE_MENU_STYLE);
 
-   mi = CreateMenuItem("Pager Settings...", NULL, ACTION_CONFIG, "pager", NULL);
+   mi =
+      CreateMenuItem(gettext("Pager Settings..."), NULL, ACTION_CONFIG, "pager",
+		     NULL);
    AddItemToMenu(p_menu, mi);
 
-   mi = CreateMenuItem("Snapshotting On", NULL, ACTION_SET_PAGER_SNAP, "1", NULL);
+   mi =
+      CreateMenuItem(gettext("Snapshotting On"), NULL, ACTION_SET_PAGER_SNAP,
+		     "1", NULL);
    AddItemToMenu(p_menu, mi);
 
-   mi = CreateMenuItem("Snapshotting Off", NULL, ACTION_SET_PAGER_SNAP, "0", NULL);
+   mi =
+      CreateMenuItem(gettext("Snapshotting Off"), NULL, ACTION_SET_PAGER_SNAP,
+		     "0", NULL);
    AddItemToMenu(p_menu, mi);
 
    if (SNAP)
      {
-	mi = CreateMenuItem("High Quality On", NULL, ACTION_SET_PAGER_HIQ, "1", NULL);
+	mi =
+	   CreateMenuItem(gettext("High Quality On"), NULL,
+			  ACTION_SET_PAGER_HIQ, "1", NULL);
 	AddItemToMenu(p_menu, mi);
 
-	mi = CreateMenuItem("High Quality Off", NULL, ACTION_SET_PAGER_HIQ, "0", NULL);
+	mi =
+	   CreateMenuItem(gettext("High Quality Off"), NULL,
+			  ACTION_SET_PAGER_HIQ, "0", NULL);
 	AddItemToMenu(p_menu, mi);
      }
    AddItem(p_menu, p_menu->name, 0, LIST_TYPE_MENU);
@@ -1343,9 +1378,12 @@ UpdatePagerSel(void)
 		  cy = desks.desk[p->desktop].current_area_y;
 		  EMoveWindow(disp, p->sel_win, cx * p->dw, cy * p->dh);
 		  EMapWindow(disp, p->sel_win);
-		  ic = FindItem("PAGER_SEL", 0, LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
+		  ic =
+		     FindItem("PAGER_SEL", 0, LIST_FINDBY_NAME,
+			      LIST_TYPE_ICLASS);
 		  if (ic)
-		     IclassApply(ic, p->sel_win, p->dw, p->dh, 0, 0, STATE_NORMAL, 0);
+		     IclassApply(ic, p->sel_win, p->dw, p->dh, 0, 0,
+				 STATE_NORMAL, 0);
 	       }
 	  }
 	Efree(pl);
@@ -1379,8 +1417,7 @@ PagerHideHi(Pager * p)
 	p->hi_visible = 0;
 	EUnmapWindow(disp, p->hi_win);
 
-	tt = FindItem("PAGER", 0, LIST_FINDBY_NAME,
-		      LIST_TYPE_TOOLTIP);
+	tt = FindItem("PAGER", 0, LIST_FINDBY_NAME, LIST_TYPE_TOOLTIP);
 	if (tt)
 	   HideToolTip(tt);
      }
@@ -1423,7 +1460,8 @@ PagerShowHi(Pager * p, EWin * ewin, int x, int y, int w, int h)
 			  int                 px, py;
 
 			  PointerAt(&px, &py);
-			  if ((px < x) || (py < y) || (px >= (x + w)) || (py >= (y + h)))
+			  if ((px < x) || (py < y) || (px >= (x + w))
+			      || (py >= (y + h)))
 			    {
 			       Imlib_kill_image(id, im);
 			       EUnmapWindow(disp, p->hi_win);
@@ -1452,7 +1490,8 @@ PagerShowHi(Pager * p, EWin * ewin, int x, int y, int w, int h)
 			  int                 px, py;
 
 			  PointerAt(&px, &py);
-			  if ((px < x) || (py < y) || (px >= (x + w)) || (py >= (y + h)))
+			  if ((px < x) || (py < y) || (px >= (x + w))
+			      || (py >= (y + h)))
 			    {
 			       Imlib_kill_image(id, im);
 			       EUnmapWindow(disp, p->hi_win);
@@ -1481,14 +1520,16 @@ PagerShowHi(Pager * p, EWin * ewin, int x, int y, int w, int h)
 		       hh = (i * h) / w;
 		       xx = x + ((w - ww) / 2);
 		       yy = y + ((h - hh) / 2);
-		       IclassApply(ic, p->hi_win, ww, hh, 0, 0, STATE_NORMAL, 0);
+		       IclassApply(ic, p->hi_win, ww, hh, 0, 0, STATE_NORMAL,
+				   0);
 		       EMoveResizeWindow(disp, p->hi_win, xx, yy, ww, hh);
 		       XClearWindow(disp, p->hi_win);
 		       {
 			  int                 px, py;
 
 			  PointerAt(&px, &py);
-			  if ((px < x) || (py < y) || (px >= (x + w)) || (py >= (y + h)))
+			  if ((px < x) || (py < y) || (px >= (x + w))
+			      || (py >= (y + h)))
 			    {
 			       EUnmapWindow(disp, p->hi_win);
 			       return;
@@ -1504,14 +1545,16 @@ PagerShowHi(Pager * p, EWin * ewin, int x, int y, int w, int h)
 		       hh = i;
 		       xx = x + ((w - ww) / 2);
 		       yy = y + ((h - hh) / 2);
-		       IclassApply(ic, p->hi_win, ww, hh, 0, 0, STATE_NORMAL, 0);
+		       IclassApply(ic, p->hi_win, ww, hh, 0, 0, STATE_NORMAL,
+				   0);
 		       EMoveResizeWindow(disp, p->hi_win, xx, yy, ww, hh);
 		       XClearWindow(disp, p->hi_win);
 		       {
 			  int                 px, py;
 
 			  PointerAt(&px, &py);
-			  if ((px < x) || (py < y) || (px >= (x + w)) || (py >= (y + h)))
+			  if ((px < x) || (py < y) || (px >= (x + w))
+			      || (py >= (y + h)))
 			    {
 			       EUnmapWindow(disp, p->hi_win);
 			       return;
@@ -1561,7 +1604,8 @@ PagerShowHi(Pager * p, EWin * ewin, int x, int y, int w, int h)
 			  int                 px, py;
 
 			  PointerAt(&px, &py);
-			  if ((px < x) || (py < y) || (px >= (x + w)) || (py >= (y + h)))
+			  if ((px < x) || (py < y) || (px >= (x + w))
+			      || (py >= (y + h)))
 			    {
 			       EFreePixmap(disp, pmap);
 			       EUnmapWindow(disp, p->hi_win);
@@ -1588,7 +1632,8 @@ PagerShowHi(Pager * p, EWin * ewin, int x, int y, int w, int h)
 			  int                 px, py;
 
 			  PointerAt(&px, &py);
-			  if ((px < x) || (py < y) || (px >= (x + w)) || (py >= (y + h)))
+			  if ((px < x) || (py < y) || (px >= (x + w))
+			      || (py >= (y + h)))
 			    {
 			       EFreePixmap(disp, pmap);
 			       EUnmapWindow(disp, p->hi_win);
@@ -1607,8 +1652,7 @@ PagerShowHi(Pager * p, EWin * ewin, int x, int y, int w, int h)
      {
 	ToolTip            *tt = NULL;
 
-	tt = FindItem("PAGER", 0, LIST_FINDBY_NAME,
-		      LIST_TYPE_TOOLTIP);
+	tt = FindItem("PAGER", 0, LIST_FINDBY_NAME, LIST_TYPE_TOOLTIP);
 	if (tt)
 	  {
 	     ShowToolTip(tt, ewin->client.title, NULL, mode.x, mode.y);
@@ -1826,7 +1870,8 @@ PagerSetSnap(char onoff)
 	       {
 		  Esnprintf(s, sizeof(s), "__.%x", pl[i]->win);
 		  if (mode.pager_scanspeed > 0)
-		     DoIn(s, 1 / ((double)mode.pager_scanspeed), PagerUpdateTimeout, 0, pl[i]);
+		     DoIn(s, 1 / ((double)mode.pager_scanspeed),
+			  PagerUpdateTimeout, 0, pl[i]);
 	       }
 	  }
 	Efree(pl);

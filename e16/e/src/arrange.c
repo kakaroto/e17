@@ -210,11 +210,13 @@ ArrangeRects(RectBox * fixed, int fixed_count, RectBox * floating,
 	     if (sorted[j].x < width)
 		xsize = ArrangeAddToList(&xarray, xsize, sorted[j].x);
 	     if ((sorted[j].x + sorted[j].w) < width)
-		xsize = ArrangeAddToList(&xarray, xsize, sorted[j].x + sorted[j].w);
+		xsize =
+		   ArrangeAddToList(&xarray, xsize, sorted[j].x + sorted[j].w);
 	     if (sorted[j].y < height)
 		ysize = ArrangeAddToList(&yarray, ysize, sorted[j].y);
 	     if ((sorted[j].y + sorted[j].h) < height)
-		ysize = ArrangeAddToList(&yarray, ysize, sorted[j].y + sorted[j].h);
+		ysize =
+		   ArrangeAddToList(&yarray, ysize, sorted[j].y + sorted[j].h);
 	  }
 /* fill the allocation array */
 	for (j = 0; j < (xsize - 1) * (ysize - 1); filled[j++] = 0);
@@ -250,7 +252,8 @@ ArrangeRects(RectBox * fixed, int fixed_count, RectBox * floating,
 		    {
 		       for (x = x1; x <= x2; x++)
 			 {
-			    if (filled[(y * (xsize - 1)) + x] < (sorted[j].p + 1))
+			    if (filled[(y * (xsize - 1)) + x] <
+				(sorted[j].p + 1))
 			       filled[(y * (xsize - 1)) + x] = sorted[j].p + 1;
 			 }
 		    }
@@ -355,11 +358,13 @@ ArrangeRects(RectBox * fixed, int fixed_count, RectBox * floating,
 		  if (a1 >= 0)
 		     sorted[num_sorted].x = spaces[k].x;
 		  else
-		     sorted[num_sorted].x = spaces[k].x + spaces[k].w - floating[i].w;
+		     sorted[num_sorted].x =
+			spaces[k].x + spaces[k].w - floating[i].w;
 		  if (a2 >= 0)
 		     sorted[num_sorted].y = spaces[k].y;
 		  else
-		     sorted[num_sorted].y = spaces[k].y + spaces[k].h - floating[i].h;
+		     sorted[num_sorted].y =
+			spaces[k].y + spaces[k].h - floating[i].h;
 	       }
 	     else
 	       {
@@ -391,11 +396,13 @@ ArrangeRects(RectBox * fixed, int fixed_count, RectBox * floating,
 	     if (sorted[j].x < width)
 		xsize = ArrangeAddToList(&xarray, xsize, sorted[j].x);
 	     if ((sorted[j].x + sorted[j].w) < width)
-		xsize = ArrangeAddToList(&xarray, xsize, sorted[j].x + sorted[j].w);
+		xsize =
+		   ArrangeAddToList(&xarray, xsize, sorted[j].x + sorted[j].w);
 	     if (sorted[j].y < height)
 		ysize = ArrangeAddToList(&yarray, ysize, sorted[j].y);
 	     if ((sorted[j].y + sorted[j].h) < height)
-		ysize = ArrangeAddToList(&yarray, ysize, sorted[j].y + sorted[j].h);
+		ysize =
+		   ArrangeAddToList(&yarray, ysize, sorted[j].y + sorted[j].h);
 	  }
 /* fill the allocation array */
 	for (j = 0; j < (xsize - 1) * (ysize - 1); filled[j++] = 0);
@@ -431,7 +438,8 @@ ArrangeRects(RectBox * fixed, int fixed_count, RectBox * floating,
 		    {
 		       for (x = x1; x <= x2; x++)
 			 {
-			    if (filled[(y * (xsize - 1)) + x] < (sorted[j].p + 1))
+			    if (filled[(y * (xsize - 1)) + x] <
+				(sorted[j].p + 1))
 			       filled[(y * (xsize - 1)) + x] = sorted[j].p + 1;
 			 }
 		    }
@@ -609,8 +617,7 @@ SnapEwin(EWin * ewin, int dx, int dy, int *new_dx, int *new_dy)
    ody = dy;
    if (dx < 0)
      {
-	if (IN_BELOW(ewin->x + dx, 0, screen_snap_dist)
-	    && (ewin->x >= 0))
+	if (IN_BELOW(ewin->x + dx, 0, screen_snap_dist) && (ewin->x >= 0))
 	   dx = 0 - ewin->x;
 	else if (lst)
 	  {
@@ -621,12 +628,13 @@ SnapEwin(EWin * ewin, int dx, int dy, int *new_dx, int *new_dy)
 		       if (((ewin->desktop == lst[i]->desktop) ||
 			    (lst[i]->sticky)) &&
 			   (!(lst[i]->floating)) &&
-			   (!(lst[i]->iconified)) &&
-			   (!(lst[i]->ignorearrange)))
+			   (!(lst[i]->iconified)) && (!(lst[i]->ignorearrange)))
 			 {
-			    if (IN_BELOW(ewin->x + dx, lst[i]->x + lst[i]->w - 1,
-					 mode.edge_snap_dist) &&
-				SPANS_COMMON(ewin->y, ewin->h, lst[i]->y, lst[i]->h)
+			    if (IN_BELOW
+				(ewin->x + dx, lst[i]->x + lst[i]->w - 1,
+				 mode.edge_snap_dist)
+				&& SPANS_COMMON(ewin->y, ewin->h, lst[i]->y,
+						lst[i]->h)
 				&& (ewin->x >= (lst[i]->x + lst[i]->w)))
 			      {
 				 dx = (lst[i]->x + lst[i]->w) - ewin->x;
@@ -653,12 +661,12 @@ SnapEwin(EWin * ewin, int dx, int dy, int *new_dx, int *new_dy)
 		       if (((ewin->desktop == lst[i]->desktop) ||
 			    (lst[i]->sticky)) &&
 			   (!(lst[i]->floating)) &&
-			   (!(lst[i]->iconified)) &&
-			   (!(lst[i]->ignorearrange)))
+			   (!(lst[i]->iconified)) && (!(lst[i]->ignorearrange)))
 			 {
 			    if (IN_ABOVE(ewin->x + ewin->w + dx - 1, lst[i]->x,
 					 mode.edge_snap_dist) &&
-				SPANS_COMMON(ewin->y, ewin->h, lst[i]->y, lst[i]->h)
+				SPANS_COMMON(ewin->y, ewin->h, lst[i]->y,
+					     lst[i]->h)
 				&& ((ewin->x + ewin->w) <= lst[i]->x))
 			      {
 				 dx = lst[i]->x - (ewin->x + ewin->w);
@@ -673,8 +681,7 @@ SnapEwin(EWin * ewin, int dx, int dy, int *new_dx, int *new_dy)
      }
    if (dy < 0)
      {
-	if (IN_BELOW(ewin->y + dy, 0, screen_snap_dist)
-	    && (ewin->y >= 0))
+	if (IN_BELOW(ewin->y + dy, 0, screen_snap_dist) && (ewin->y >= 0))
 	   dy = 0 - ewin->y;
 	else if (lst)
 	  {
@@ -685,12 +692,13 @@ SnapEwin(EWin * ewin, int dx, int dy, int *new_dx, int *new_dy)
 		       if (((ewin->desktop == lst[i]->desktop) ||
 			    (lst[i]->sticky)) &&
 			   (!(lst[i]->floating)) &&
-			   (!(lst[i]->iconified)) &&
-			   (!(lst[i]->ignorearrange)))
+			   (!(lst[i]->iconified)) && (!(lst[i]->ignorearrange)))
 			 {
-			    if (IN_BELOW(ewin->y + dy, lst[i]->y + lst[i]->h - 1,
-					 mode.edge_snap_dist) &&
-				SPANS_COMMON(ewin->x, ewin->w, lst[i]->x, lst[i]->w)
+			    if (IN_BELOW
+				(ewin->y + dy, lst[i]->y + lst[i]->h - 1,
+				 mode.edge_snap_dist)
+				&& SPANS_COMMON(ewin->x, ewin->w, lst[i]->x,
+						lst[i]->w)
 				&& (ewin->y >= (lst[i]->y + lst[i]->h)))
 			      {
 				 dy = (lst[i]->y + lst[i]->h) - ewin->y;
@@ -717,12 +725,12 @@ SnapEwin(EWin * ewin, int dx, int dy, int *new_dx, int *new_dy)
 		       if (((ewin->desktop == lst[i]->desktop) ||
 			    (lst[i]->sticky)) &&
 			   (!(lst[i]->floating)) &&
-			   (!(lst[i]->iconified)) &&
-			   (!(lst[i]->ignorearrange)))
+			   (!(lst[i]->iconified)) && (!(lst[i]->ignorearrange)))
 			 {
 			    if (IN_ABOVE(ewin->y + ewin->h + dy - 1, lst[i]->y,
 					 mode.edge_snap_dist) &&
-				SPANS_COMMON(ewin->x, ewin->w, lst[i]->x, lst[i]->w)
+				SPANS_COMMON(ewin->x, ewin->w, lst[i]->x,
+					     lst[i]->w)
 				&& ((ewin->y + ewin->h) <= lst[i]->y))
 			      {
 				 dy = lst[i]->y - (ewin->y + ewin->h);
@@ -773,10 +781,11 @@ ArrangeEwin(EWin * ewin)
 	  {
 	     if ((lst[i] != ewin) && (!lst[i]->iconified) &&
 		 (!lst[i]->ignorearrange) && (lst[i]->layer != 0) &&
-	     (((lst[i]->area_x == desks.desk[ewin->desktop].current_area_x) &&
-	       (lst[i]->area_y == desks.desk[ewin->desktop].current_area_y) &&
-	       (lst[i]->desktop == ewin->desktop)) ||
-	      (lst[i]->sticky)))
+		 (((lst
+		    [i]->area_x == desks.desk[ewin->desktop].current_area_x)
+		   && (lst[i]->area_y ==
+		       desks.desk[ewin->desktop].current_area_y)
+		   && (lst[i]->desktop == ewin->desktop)) || (lst[i]->sticky)))
 	       {
 		  fixed[j].data = lst[i];
 		  fixed[j].x = (lst[i])->x;

@@ -3995,3 +3995,14 @@ Mon Nov 22 12:42:56 PST 1999
 (Mandrake)
 
 added "current" option to win_op ipc command for walt :)
+
+-------------------------------------------------------------------------------
+
+Mon Dec  6 14:52:40 PST 1999
+(Raster)
+
+gettext internationalisation support & patch
+fix to allow setting of which mouse button do what on the pager
+fix to border width handlign in icccm
+fix to warp foucs
+some other stuff i probabyl forgot about...

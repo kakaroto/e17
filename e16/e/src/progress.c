@@ -124,7 +124,8 @@ ShowProgressbar(Progressbar * p)
    EMapRaised(disp, p->n_win);
    EMapRaised(disp, p->p_win);
    XSync(disp, False);
-   TclassApply(p->ic, p->win, p->w - (p->h * 5), p->h, 0, 0, STATE_NORMAL, 0, p->tc, p->name);
+   TclassApply(p->ic, p->win, p->w - (p->h * 5), p->h, 0, 0, STATE_NORMAL, 0,
+	       p->tc, p->name);
    queue_up = pq;
    EDBUG_RETURN_;
 }

@@ -95,15 +95,13 @@ SwitchRes(char inout, int x, int y, int w, int h)
 
    if (inout)
      {
-	if (!XF86VidModeGetModeLine(disp, root.scr,
-				    &dotclock, &curmode))
+	if (!XF86VidModeGetModeLine(disp, root.scr, &dotclock, &curmode))
 	   return 0;
 	mode = FindMode(w, h);
 	if (mode)
 	  {
 	     jump = GetModeJumpCount(mode);
-	     XWarpPointer(disp, None, root.win,
-			  0, 0, 0, 0, x, y);
+	     XWarpPointer(disp, None, root.win, 0, 0, 0, 0, x, y);
 	     XF86VidModeSetViewPort(disp, root.scr, x, y);
 	     XF86VidModeLockModeSwitch(disp, root.scr, 0);
 	     for (i = 0; i < jump; i++)
@@ -203,8 +201,7 @@ Zoom(EWin * ewin)
 	zoom_last_x = ewin->x;
 	zoom_last_y = ewin->y;
 	RaiseEwin(ewin);
-	MoveEwin(ewin, -ewin->border->border.left,
-		 -ewin->border->border.top);
+	MoveEwin(ewin, -ewin->border->border.left, -ewin->border->border.top);
 	ICCCM_Configure(ewin);
 	FocusToEWin(ewin);
 /*      XGrabPointer(disp, ewin->client.win, False, 0,

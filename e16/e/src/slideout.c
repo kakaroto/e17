@@ -177,8 +177,7 @@ ShowSlideout(Slideout * s, Window win)
 	XChangeWindowAttributes(disp, s->win, CWWinGravity, &att);
 	att.win_gravity = NorthWestGravity;
 	for (i = 0; i < s->num_buttons; i++)
-	   XChangeWindowAttributes(disp, s->button[i]->win, CWWinGravity,
-				   &att);
+	   XChangeWindowAttributes(disp, s->button[i]->win, CWWinGravity, &att);
 	EMoveResizeWindow(disp, s->win, xx, yy, 1, 1);
 	XSync(disp, False);
 	EMapRaised(disp, s->win);
@@ -190,8 +189,7 @@ ShowSlideout(Slideout * s, Window win)
 	XChangeWindowAttributes(disp, s->win, CWWinGravity, &att);
 	att.win_gravity = SouthEastGravity;
 	for (i = 0; i < s->num_buttons; i++)
-	   XChangeWindowAttributes(disp, s->button[i]->win, CWWinGravity,
-				   &att);
+	   XChangeWindowAttributes(disp, s->button[i]->win, CWWinGravity, &att);
 	EMoveResizeWindow(disp, s->win, xx, yy, 1, 1);
 	XSync(disp, False);
 	EMapRaised(disp, s->win);
@@ -203,8 +201,7 @@ ShowSlideout(Slideout * s, Window win)
 	XChangeWindowAttributes(disp, s->win, CWWinGravity, &att);
 	att.win_gravity = NorthWestGravity;
 	for (i = 0; i < s->num_buttons; i++)
-	   XChangeWindowAttributes(disp, s->button[i]->win, CWWinGravity,
-				   &att);
+	   XChangeWindowAttributes(disp, s->button[i]->win, CWWinGravity, &att);
 	EMoveResizeWindow(disp, s->win, xx, yy, 1, 1);
 	XSync(disp, False);
 	EMapRaised(disp, s->win);
@@ -216,8 +213,7 @@ ShowSlideout(Slideout * s, Window win)
 	XChangeWindowAttributes(disp, s->win, CWWinGravity, &att);
 	att.win_gravity = SouthEastGravity;
 	for (i = 0; i < s->num_buttons; i++)
-	   XChangeWindowAttributes(disp, s->button[i]->win, CWWinGravity,
-				   &att);
+	   XChangeWindowAttributes(disp, s->button[i]->win, CWWinGravity, &att);
 	EMoveResizeWindow(disp, s->win, xx, yy, 1, 1);
 	XSync(disp, False);
 	EMapRaised(disp, s->win);

@@ -35,8 +35,7 @@ runDocBrowser(void)
 
    Esnprintf(file, sizeof(file), "exec %s/dox %s/E-docs",
 	     ENLIGHTENMENT_BIN, ENLIGHTENMENT_ROOT);
-   execl(usershell(getuid()), usershell(getuid()), "-c",
-	 (char *)file, NULL);
+   execl(usershell(getuid()), usershell(getuid()), "-c", (char *)file, NULL);
    exit(0);
 
 }
@@ -57,6 +56,14 @@ main(int argc, char **argv)
 
    single_screen_mode = 0;
 /*  unsetenv("LD_PRELOAD"); */
+
+/* Part of gettext stuff */
+
+   setlocale(LC_ALL, "");
+   bindtextdomain(PACKAGE, ENLIGHTENMENT_ROOT "/locale");
+   textdomain(PACKAGE);
+
+/* End of gettext stuff */
 
 #ifdef DEBUG
    call_level = 0;
@@ -79,10 +86,10 @@ main(int argc, char **argv)
    lists = memset(lists, 0, (sizeof(List) * LIST_TYPE_COUNT));
 
    /* Set up all the text bits that belong on the GSOD */
-   AssignTitleText("Enlightenment Message Dialog");
-   AssignIgnoreText("Ignore this");
-   AssignRestartText("Restart Enlightenment");
-   AssignExitText("Quit Enlightenment");
+   AssignTitleText(gettext("Enlightenment Message Dialog"));
+   AssignIgnoreText(gettext("Ignore this"));
+   AssignRestartText(gettext("Restart Enlightenment"));
+   AssignExitText(gettext("Quit Enlightenment"));
 
    /* We'll set up what the buttons do now, too */
    AssignRestartFunction(doExit, "restart");
@@ -166,10 +173,10 @@ main(int argc, char **argv)
 	     }
 	   else if ((!strcmp("-v", argv[j])) ||
 		    (!strcmp("-version", argv[j])) ||
-		    (!strcmp("--version", argv[j])) ||
-		    (!strcmp("-v", argv[j])))
+		    (!strcmp("--version", argv[j])) || (!strcmp("-v", argv[j])))
 	     {
-		printf("Enlightenment Version: %s\nLast updated on: %s\n",
+		printf(gettext
+		       ("Enlightenment Version: %s\nLast updated on: %s\n"),
 		       ENLIGHTENMENT_VERSION, E_CHECKOUT_DATE);
 		exit(0);
 	     }

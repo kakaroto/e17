@@ -69,7 +69,8 @@ AddButtonToContainer(Container * bc, Button * b)
    else
      {
 	bc->ButtonList = Erealloc(bc->ButtonList,
-			  (bc->numofbuttonsinlist + 1) * sizeof(Container *));
+				  (bc->numofbuttonsinlist +
+				   1) * sizeof(Container *));
      }
    bc->ButtonList[bc->numofbuttonsinlist++] = b;
    b->ref_count++;
@@ -103,7 +104,8 @@ RemoveButtonFromContainer(Container * bc, Button * b)
    if (found && ((bc->numofbuttonsinlist - 1) > 0))
      {
 	bc->ButtonList = Erealloc(bc->ButtonList,
-			      (bc->numofbuttonsinlist * sizeof(Container *)));
+				  (bc->numofbuttonsinlist *
+				   sizeof(Container *)));
 	for (i = 0; i <= bc->numofbuttonsinlist; i++)
 	  {
 	     if (i != j)

@@ -85,23 +85,20 @@ DetermineEwinFloat(EWin * ewin, int dx, int dy)
 	      ((ewin->x + dx + ewin->w <= root.w) &&
 	       ((DesktopAt(desks.desk[ewin->desktop].x + ewin->x + dx +
 			   ewin->w - 1,
-			   desks.desk[ewin->desktop].y)
-		 != ewin->desktop))))))
+			   desks.desk[ewin->desktop].y) != ewin->desktop))))))
 	   dofloat = 1;
 	if ((desks.dragdir == 1) &&
 	    (((ewin->x + dx + ewin->w > root.w) ||
 	      ((ewin->x + dx >= 0) &&
 	       ((DesktopAt(desks.desk[ewin->desktop].x + ewin->x + dx,
-			   desks.desk[ewin->desktop].y)
-		 != ewin->desktop))))))
+			   desks.desk[ewin->desktop].y) != ewin->desktop))))))
 	   dofloat = 1;
 	if ((desks.dragdir == 2) &&
 	    (((ewin->y + dy < 0) ||
 	      ((ewin->y + dy + ewin->h <= root.h) &&
 	       ((DesktopAt(desks.desk[ewin->desktop].x,
 			   desks.desk[ewin->desktop].y + ewin->y + dy +
-			   ewin->h - 1)
-		 != ewin->desktop))))))
+			   ewin->h - 1) != ewin->desktop))))))
 	   dofloat = 1;
 	if ((desks.dragdir == 3) &&
 	    (((ewin->y + dy + ewin->h > root.h) ||
@@ -239,7 +236,8 @@ SlideEwinTo(EWin * ewin, int fx, int fy, int tx, int ty, int speed)
 	if (mode.slidemode == 0)
 	   EMoveWindow(disp, ewin->win, tmpx, tmpy);
 	else
-	   DrawEwinShape(ewin, mode.slidemode, tmpx, tmpy, tmpw, tmph, firstlast);
+	   DrawEwinShape(ewin, mode.slidemode, tmpx, tmpy, tmpw, tmph,
+			 firstlast);
 	if (firstlast == 0)
 	   firstlast = 1;
 	XSync(disp, False);
@@ -256,8 +254,7 @@ SlideEwinTo(EWin * ewin, int fx, int fy, int tx, int ty, int speed)
 	if (spd < min)
 	   spd = min;
      }
-   DrawEwinShape(ewin, mode.slidemode, x, y, ewin->client.w,
-		 ewin->client.h, 2);
+   DrawEwinShape(ewin, mode.slidemode, x, y, ewin->client.w, ewin->client.h, 2);
    MoveEwin(ewin, tx, ty);
    mode.doingslide = 0;
    if (mode.slidemode > 0)
@@ -272,7 +269,7 @@ SlideEwinsTo(EWin ** ewin, int *fx, int *fy, int *tx, int *ty,
 	     int num_wins, int speed)
 {
    int                 k, spd, *x = NULL, *y = NULL, min, tmpx, tmpy, tmpw,
-                       tmph, i;
+      tmph, i;
    struct timeval      timev1, timev2;
    int                 dsec, dusec;
    double              tm;
@@ -309,7 +306,8 @@ SlideEwinsTo(EWin ** ewin, int *fx, int *fy, int *tx, int *ty,
 		  if (ewin[i]->menu)
 		     EMoveWindow(disp, ewin[i]->win, tmpx, tmpy);
 		  else
-		     DrawEwinShape(ewin[i], 0, tmpx, tmpy, tmpw, tmph, firstlast);
+		     DrawEwinShape(ewin[i], 0, tmpx, tmpy, tmpw, tmph,
+				   firstlast);
 		  if (firstlast == 0)
 		     firstlast = 1;
 		  XSync(disp, False);
@@ -421,8 +419,7 @@ AddToFamily(Window win)
 	if (ewin2)
 	   ewin2->has_transients++;
      }
-   if ((mode.transientsfollowleader) &&
-       (ewin->client.transient))
+   if ((mode.transientsfollowleader) && (ewin->client.transient))
      {
 	ewin2 = FindItem(NULL, ewin->client.transient_for, LIST_FINDBY_ID,
 			 LIST_TYPE_EWIN);
@@ -430,8 +427,7 @@ AddToFamily(Window win)
 	  {
 	     ewin->desktop = ewin2->desktop;
 	     if ((mode.switchfortransientmap) &&
-		 (ewin->desktop != desks.current) &&
-		 (!ewin->iconified))
+		 (ewin->desktop != desks.current) && (!ewin->iconified))
 	       {
 		  GotoDesktop(ewin->desktop);
 		  SetCurrentArea(ewin2->area_x, ewin2->area_y);
@@ -445,8 +441,7 @@ AddToFamily(Window win)
 	       {
 		  ewin->desktop = ewin2->desktop;
 		  if ((mode.switchfortransientmap) &&
-		      (ewin->desktop != desks.current) &&
-		      (!ewin->iconified))
+		      (ewin->desktop != desks.current) && (!ewin->iconified))
 		    {
 		       GotoDesktop(ewin->desktop);
 		       SetCurrentArea(ewin2->area_x, ewin2->area_y);
@@ -468,7 +463,8 @@ AddToFamily(Window win)
 				     (!ewin->iconified))
 				   {
 				      GotoDesktop(ewin->desktop);
-				      SetCurrentArea(lst[i]->area_x, lst[i]->area_y);
+				      SetCurrentArea(lst[i]->area_x,
+						     lst[i]->area_y);
 				   }
 				 i = num;
 			      }
@@ -515,10 +511,13 @@ AddToFamily(Window win)
 	       {
 		  if ((lst[i] != ewin) && (!lst[i]->iconified) &&
 		      (!lst[i]->ignorearrange) && (lst[i]->layer != 0) &&
-		      (((lst[i]->area_x == desks.desk[ewin->desktop].current_area_x) &&
-			(lst[i]->area_y == desks.desk[ewin->desktop].current_area_y) &&
-			(lst[i]->desktop == ewin->desktop)) ||
-		       (lst[i]->sticky)))
+		      (((lst
+			 [i]->area_x ==
+			 desks.desk[ewin->desktop].current_area_x)
+			&& (lst[i]->area_y ==
+			    desks.desk[ewin->desktop].current_area_y)
+			&& (lst[i]->desktop == ewin->desktop))
+		       || (lst[i]->sticky)))
 		    {
 		       fixed[j].data = lst[i];
 		       fixed[j].x = (lst[i])->x;
@@ -637,35 +636,39 @@ AddToFamily(Window win)
 	switch (ewin->client.grav)
 	  {
 	  case NorthWestGravity:
+	     x += (ewin->client.bw * 2);
+	     y += (ewin->client.bw * 2);
 	     break;
 	  case NorthGravity:
-	     if (ewin->border)
-		y -= ewin->border->border.top + 2;
+	     y += (ewin->client.bw * 2);
 	     break;
 	  case NorthEastGravity:
+	     y += (ewin->client.bw * 2);
 	     if (ewin->border)
-		x -= ewin->border->border.left + 2;
+		x -= ewin->border->border.left + (ewin->client.bw * 2);
 	     break;
 	  case EastGravity:
 	     if (ewin->border)
-		x -= ewin->border->border.left + 2;
+		x -= ewin->border->border.left + (ewin->client.bw * 2);
 	     break;
 	  case SouthEastGravity:
 	     if (ewin->border)
 	       {
-		  x -= ewin->border->border.left + 2;
-		  y -= ewin->border->border.top + 2;
+		  x -= ewin->border->border.left + (ewin->client.bw * 2);
+		  y -= ewin->border->border.top + (ewin->client.bw * 2);
 	       }
 	     break;
 	  case SouthGravity:
 	     if (ewin->border)
-		y -= ewin->border->border.top + 2;
+		y -= ewin->border->border.top + (ewin->client.bw * 2);
 	     break;
 	  case SouthWestGravity:
+	     x += (ewin->client.bw * 2);
 	     if (ewin->border)
-		y -= ewin->border->border.top + 2;
+		y -= ewin->border->border.top + (ewin->client.bw * 2);
 	     break;
 	  case WestGravity:
+	     x += (ewin->client.bw * 2);
 	     break;
 	  case CenterGravity:
 	     break;
@@ -826,8 +829,7 @@ AddToFamily(Window win)
    if (mode.all_new_windows_get_focus)
      {
 	FocusToEWin(ewin);
-	if ((ewin->desktop != desks.current) &&
-	    (!ewin->iconified))
+	if ((ewin->desktop != desks.current) && (!ewin->iconified))
 	  {
 	     GotoDesktop(ewin->desktop);
 	     SetCurrentArea(ewin->area_x, ewin->area_y);
@@ -838,8 +840,7 @@ AddToFamily(Window win)
 	if (ewin->client.transient)
 	  {
 	     FocusToEWin(ewin);
-	     if ((ewin->desktop != desks.current) &&
-		 (!ewin->iconified))
+	     if ((ewin->desktop != desks.current) && (!ewin->iconified))
 	       {
 		  GotoDesktop(ewin->desktop);
 		  SetCurrentArea(ewin->area_x, ewin->area_y);
@@ -853,8 +854,7 @@ AddToFamily(Window win)
 	if ((ewin2) && (mode.focuswin == ewin2))
 	  {
 	     FocusToEWin(ewin);
-	     if ((ewin->desktop != desks.current) &&
-		 (!ewin->iconified))
+	     if ((ewin->desktop != desks.current) && (!ewin->iconified))
 	       {
 		  GotoDesktop(ewin->desktop);
 		  SetCurrentArea(ewin->area_x, ewin->area_y);
@@ -1030,13 +1030,13 @@ DrawEwinWinpart(EWin * ewin, int i)
      {
 	state = ewin->bits[i].state;
 	IclassApply(ewin->border->part[i].iclass, ewin->bits[i].win,
-	  ewin->bits[i].w, ewin->bits[i].h, ewin->active, ewin->sticky, state,
-		    ewin->bits[i].expose);
+		    ewin->bits[i].w, ewin->bits[i].h, ewin->active,
+		    ewin->sticky, state, ewin->bits[i].expose);
 	if (ewin->border->part[i].flags == FLAG_TITLE)
 	   TclassApply(ewin->border->part[i].iclass, ewin->bits[i].win,
-		 ewin->bits[i].w, ewin->bits[i].h, ewin->active, ewin->sticky,
-		    state, ewin->bits[i].expose, ewin->border->part[i].tclass,
-		       ewin->client.title);
+		       ewin->bits[i].w, ewin->bits[i].h, ewin->active,
+		       ewin->sticky, state, ewin->bits[i].expose,
+		       ewin->border->part[i].tclass, ewin->client.title);
 	ret = 1;
      }
    if ((move) || (resize))
@@ -1059,12 +1059,12 @@ ChangeEwinWinpart(EWin * ewin, int i)
    EDBUG(3, "ChangeEwinWinpart");
    state = ewin->bits[i].state;
    IclassApply(ewin->border->part[i].iclass, ewin->bits[i].win,
-	  ewin->bits[i].w, ewin->bits[i].h, ewin->active, ewin->sticky, state,
-	       ewin->bits[i].expose);
+	       ewin->bits[i].w, ewin->bits[i].h, ewin->active, ewin->sticky,
+	       state, ewin->bits[i].expose);
    if (ewin->border->part[i].flags == FLAG_TITLE)
       TclassApply(ewin->border->part[i].iclass, ewin->bits[i].win,
-	  ewin->bits[i].w, ewin->bits[i].h, ewin->active, ewin->sticky, state,
-		  ewin->bits[i].expose, ewin->border->part[i].tclass,
+		  ewin->bits[i].w, ewin->bits[i].h, ewin->active, ewin->sticky,
+		  state, ewin->bits[i].expose, ewin->border->part[i].tclass,
 		  ewin->client.title);
    if (ewin->bits[i].win)
       ChangeEwinWinpartContents(ewin, i);
@@ -1093,13 +1093,13 @@ DrawEwin(EWin * ewin)
      {
 	state = ewin->bits[i].state;
 	IclassApply(ewin->border->part[i].iclass, ewin->bits[i].win,
-	  ewin->bits[i].w, ewin->bits[i].h, ewin->active, ewin->sticky, state,
-		    ewin->bits[i].expose);
+		    ewin->bits[i].w, ewin->bits[i].h, ewin->active,
+		    ewin->sticky, state, ewin->bits[i].expose);
 	if (ewin->border->part[i].flags == FLAG_TITLE)
 	   TclassApply(ewin->border->part[i].iclass, ewin->bits[i].win,
-	   ewin->bits[i].w, ewin->bits[i].h, ewin->active, ewin->sticky, state,
-		       ewin->bits[i].expose, ewin->border->part[i].tclass,
-		       ewin->client.title);
+		       ewin->bits[i].w, ewin->bits[i].h, ewin->active,
+		       ewin->sticky, state, ewin->bits[i].expose,
+		       ewin->border->part[i].tclass, ewin->client.title);
      }
    if (!ewin->shapedone)
       PropagateShapes(ewin->win);
@@ -1123,9 +1123,9 @@ ChangeEwinWinpartContents(EWin * ewin, int i)
      {
      case FLAG_TITLE:
 	TclassApply(ewin->border->part[i].iclass, ewin->bits[i].win,
-	  ewin->bits[i].w, ewin->bits[i].h, ewin->active, ewin->sticky, state,
-		    ewin->bits[i].expose, ewin->border->part[i].tclass,
-		    ewin->client.title);
+		    ewin->bits[i].w, ewin->bits[i].h, ewin->active,
+		    ewin->sticky, state, ewin->bits[i].expose,
+		    ewin->border->part[i].tclass, ewin->client.title);
 	break;
      case FLAG_MINIICON:
 	break;
@@ -1170,9 +1170,13 @@ CalcEwinWinpart(EWin * ewin, int i)
    ox = oy = 0;
    if (bottomright == -1)
      {
-	ox = ((ewin->border->part[i].geom.bottomright.x.percent * ewin->w) >> 10) +
+	ox =
+	   ((ewin->
+	     border->part[i].geom.bottomright.x.percent * ewin->w) >> 10) +
 	   ewin->border->part[i].geom.bottomright.x.absolute;
-	oy = ((ewin->border->part[i].geom.bottomright.y.percent * ewin->h) >> 10) +
+	oy =
+	   ((ewin->
+	     border->part[i].geom.bottomright.y.percent * ewin->h) >> 10) +
 	   ewin->border->part[i].geom.bottomright.y.absolute;
      }
    else if (bottomright >= 0)
@@ -1224,15 +1228,9 @@ CalcEwinWinpart(EWin * ewin, int i)
 
 	iclass = ewin->border->part[i].iclass;
 	tclass = ewin->border->part[i].tclass;
-	TextSize(tclass, \
-		 ewin->active, \
-		 ewin->sticky, \
-		 ewin->bits[i].state, \
-		 ewin->client.title, \
-		 &max, \
-		 &dummyheight, \
-		 h - (iclass->padding.top + iclass->padding.bottom) \
-	   );
+	TextSize(tclass, \ewin->active, \ewin->sticky, \ewin->bits[i].state,
+		 \ewin->client.title, \&max, \&dummyheight,
+		 \h - (iclass->padding.top + iclass->padding.bottom) \);
 	max += iclass->padding.left + iclass->padding.right;
 
 	if (w > max)
@@ -1376,8 +1374,10 @@ AdoptInternal(Window win, Border * border, int type, void *ptr)
  * else  */
    if (!border)
      {
-	b = MatchEwinByFunction(ewin, (void *(*)(EWin *, WindowMatch *))
-				MatchEwinBorder);
+	b =
+	   MatchEwinByFunction(ewin,
+			       (void
+				*(*)(EWin *, WindowMatch *))MatchEwinBorder);
 	if (b)
 	  {
 	     ewin->border = b;
@@ -1539,8 +1539,7 @@ CreateEwin()
    EMapWindow(disp, ewin->win_container);
    if ((mode.clickalways) || (mode.focusmode == FOCUS_CLICK))
       XGrabButton(disp, AnyButton, 0, ewin->win_container, False,
-		  ButtonPressMask,
-		  GrabModeSync, GrabModeAsync, None, None);
+		  ButtonPressMask, GrabModeSync, GrabModeAsync, None, None);
    att.event_mask =
       StructureNotifyMask | PointerMotionMask |
       ButtonPressMask | ButtonReleaseMask | EnterWindowMask | LeaveWindowMask;
@@ -1683,8 +1682,7 @@ SetEwinBorder(EWin * ewin)
       b = (Border *) FindItem("BORDERLESS", 0, LIST_FINDBY_NAME,
 			      LIST_TYPE_BORDER);
    if (!b)
-      b = (Border *) FindItem("DEFAULT", 0, LIST_FINDBY_NAME,
-			      LIST_TYPE_BORDER);
+      b = (Border *) FindItem("DEFAULT", 0, LIST_FINDBY_NAME, LIST_TYPE_BORDER);
    ewin->border = b;
    SetFrameProperty(ewin);
    EDBUG_RETURN_;
@@ -1701,8 +1699,7 @@ SetEwinToBorder(EWin * ewin, Border * b)
    EDBUG(4, "SetEwinToBorder");
 
    if (!b)
-      b = FindItem("__FALLBACK_BORDER", 0,
-		   LIST_FINDBY_NAME, LIST_TYPE_BORDER);
+      b = FindItem("__FALLBACK_BORDER", 0, LIST_FINDBY_NAME, LIST_TYPE_BORDER);
 
    if ((!b) || (ewin->border == b) || (!ewin->border_new))
       EDBUG_RETURN_;
@@ -1744,8 +1741,7 @@ SetEwinToBorder(EWin * ewin, Border * b)
 	     if (await->iclass)
 		await->iclass->ref_count++;
 
-	     AddItem(await, b->part[i].iclass->name, 0,
-		     LIST_TYPE_AWAIT_ICLASS);
+	     AddItem(await, b->part[i].iclass->name, 0, LIST_TYPE_AWAIT_ICLASS);
 	  }
 	else
 	  {
@@ -1775,8 +1771,7 @@ SetEwinToBorder(EWin * ewin, Border * b)
 			       ButtonPressMask |
 			       ButtonReleaseMask |
 			       EnterWindowMask |
-			       LeaveWindowMask |
-			       PointerMotionMask);
+			       LeaveWindowMask | PointerMotionMask);
 	       }
 	     else
 	       {
@@ -1786,8 +1781,7 @@ SetEwinToBorder(EWin * ewin, Border * b)
 			       ButtonPressMask |
 			       ButtonReleaseMask |
 			       EnterWindowMask |
-			       LeaveWindowMask |
-			       PointerMotionMask);
+			       LeaveWindowMask | PointerMotionMask);
 	       }
 	     ewin->bits[i].x = -10;
 	     ewin->bits[i].y = -10;
@@ -1881,9 +1875,11 @@ DetermineEwinArea(EWin * ewin)
    pax = ewin->area_x;
    pay = ewin->area_y;
    ewin->area_x = (ewin->x + (ewin->w / 2) +
-		(desks.desk[ewin->desktop].current_area_x * root.w)) / root.w;
-   ewin->area_y = (ewin->y + (ewin->h / 2) +
-		(desks.desk[ewin->desktop].current_area_y * root.h)) / root.h;
+		   (desks.desk[ewin->desktop].current_area_x * root.w)) /
+      root.w;
+   ewin->area_y =
+      (ewin->y + (ewin->h / 2) +
+       (desks.desk[ewin->desktop].current_area_y * root.h)) / root.h;
    if ((pax != ewin->area_x) || (pay != ewin->area_y))
      {
 	GNOME_SetEwinArea(ewin);
@@ -2206,8 +2202,7 @@ RestackEwin(EWin * ewin)
 	for (i = 0; i < bnum; i++)
 	  {
 	     if ((blst[i]->desktop == ewin->desktop) &&
-		 (blst[i]->ontop == -1) &&
-		 (!blst[i]->sticky))
+		 (blst[i]->ontop == -1) && (!blst[i]->sticky))
 	       {
 		  tot++;
 		  wl = Erealloc(wl, tot * sizeof(Window));
@@ -2532,12 +2527,16 @@ MinShadeSize(EWin * ewin, int *mw, int *mh)
 	  {
 	     if (ewin->border->part[i].keep_for_shade)
 	       {
-		  if (ewin->border->border.left - ewin->bits[i].x > leftborderwidth)
-		     leftborderwidth = ewin->border->border.left - ewin->bits[i].x;
+		  if (ewin->border->border.left - ewin->bits[i].x >
+		      leftborderwidth)
+		     leftborderwidth =
+			ewin->border->border.left - ewin->bits[i].x;
 		  if ((ewin->bits[i].x + ewin->bits[i].w) -
-		    (ewin->w - ewin->border->border.right) > rightborderwidth)
-		     rightborderwidth = (ewin->bits[i].x + ewin->bits[i].w) -
-			(ewin->w - ewin->border->border.right);
+		      (ewin->w - ewin->border->border.right) > rightborderwidth)
+		     rightborderwidth =
+			(ewin->bits[i].x + ewin->bits[i].w) - (ewin->w -
+							       ewin->border->
+							       border.right);
 	       }
 	  }
 	ewin->w = rightborderwidth + leftborderwidth;
@@ -2554,12 +2553,17 @@ MinShadeSize(EWin * ewin, int *mw, int *mh)
 	  {
 	     if (ewin->border->part[i].keep_for_shade)
 	       {
-		  if (ewin->border->border.top - ewin->bits[i].y > topborderwidth)
-		     topborderwidth = ewin->border->border.top - ewin->bits[i].y;
+		  if (ewin->border->border.top - ewin->bits[i].y >
+		      topborderwidth)
+		     topborderwidth =
+			ewin->border->border.top - ewin->bits[i].y;
 		  if ((ewin->bits[i].y + ewin->bits[i].h) -
-		  (ewin->h - ewin->border->border.bottom) > bottomborderwidth)
-		     bottomborderwidth = (ewin->bits[i].y + ewin->bits[i].h) -
-			(ewin->h - ewin->border->border.bottom);
+		      (ewin->h - ewin->border->border.bottom) >
+		      bottomborderwidth)
+		     bottomborderwidth =
+			(ewin->bits[i].y + ewin->bits[i].h) - (ewin->h -
+							       ewin->border->
+							       border.bottom);
 	       }
 	  }
 	ewin->h = bottomborderwidth + topborderwidth;
@@ -2584,8 +2588,7 @@ InstantShadeEwin(EWin * ewin)
 
    if ((ewin->border->border.left == 0) &&
        (ewin->border->border.right == 0) &&
-       (ewin->border->border.top == 0) &&
-       (ewin->border->border.bottom == 0))
+       (ewin->border->border.top == 0) && (ewin->border->border.bottom == 0))
       EDBUG_RETURN_;
    if (GetZoomEWin() == ewin)
       EDBUG_RETURN_;
@@ -2601,8 +2604,7 @@ InstantShadeEwin(EWin * ewin)
 	MinShadeSize(ewin, &b, &d);
 	ewin->shaded = 2;
 	ewin->w = b;
-	EMoveResizeWindow(disp, ewin->win, ewin->x, ewin->y,
-			  ewin->w, ewin->h);
+	EMoveResizeWindow(disp, ewin->win, ewin->x, ewin->y, ewin->w, ewin->h);
 	EMoveResizeWindow(disp, ewin->win_container, -30, -30, 1, 1);
 	CalcEwinSizes(ewin);
 	XSync(disp, False);
@@ -2616,8 +2618,7 @@ InstantShadeEwin(EWin * ewin)
 	ewin->w = b;
 	ewin->x = d;
 	ewin->reqx = d;
-	EMoveResizeWindow(disp, ewin->win, ewin->x, ewin->y,
-			  ewin->w, ewin->h);
+	EMoveResizeWindow(disp, ewin->win, ewin->x, ewin->y, ewin->w, ewin->h);
 	EMoveResizeWindow(disp, ewin->win_container, -30, -30, 1, 1);
 	CalcEwinSizes(ewin);
 	XSync(disp, False);
@@ -2629,8 +2630,7 @@ InstantShadeEwin(EWin * ewin)
 	b = d;
 	ewin->shaded = 2;
 	ewin->h = b;
-	EMoveResizeWindow(disp, ewin->win, ewin->x, ewin->y,
-			  ewin->w, ewin->h);
+	EMoveResizeWindow(disp, ewin->win, ewin->x, ewin->y, ewin->w, ewin->h);
 	EMoveResizeWindow(disp, ewin->win_container, -30, -30, 1, 1);
 	CalcEwinSizes(ewin);
 	XSync(disp, False);
@@ -2645,8 +2645,7 @@ InstantShadeEwin(EWin * ewin)
 	ewin->h = b;
 	ewin->y = d;
 	ewin->reqy = d;
-	EMoveResizeWindow(disp, ewin->win, ewin->x, ewin->y,
-			  ewin->w, ewin->h);
+	EMoveResizeWindow(disp, ewin->win, ewin->x, ewin->y, ewin->w, ewin->h);
 	EMoveResizeWindow(disp, ewin->win_container, -30, -30, 1, 1);
 	CalcEwinSizes(ewin);
 	XSync(disp, False);
@@ -2688,8 +2687,7 @@ InstantUnShadeEwin(EWin * ewin)
 	   ewin->border->border.right;
 	ewin->shaded = 0;
 	ewin->w = b;
-	MoveResizeEwin(ewin, ewin->x, ewin->y,
-		       ewin->client.w, ewin->client.h);
+	MoveResizeEwin(ewin, ewin->x, ewin->y, ewin->client.w, ewin->client.h);
 	XSync(disp, False);
 	break;
      case 1:
@@ -2698,14 +2696,12 @@ InstantUnShadeEwin(EWin * ewin)
 	b = ewin->client.w + ewin->border->border.left +
 	   ewin->border->border.right;
 	d = ewin->x + ewin->w - (ewin->border->border.right
-				 + ewin->client.w
-				 + ewin->border->border.left);
+				 + ewin->client.w + ewin->border->border.left);
 	ewin->shaded = 0;
 	ewin->w = b;
 	ewin->x = d;
 	ewin->reqx = d;
-	MoveResizeEwin(ewin, ewin->x, ewin->y,
-		       ewin->client.w, ewin->client.h);
+	MoveResizeEwin(ewin, ewin->x, ewin->y, ewin->client.w, ewin->client.h);
 	XSync(disp, False);
 	break;
      case 2:
@@ -2715,8 +2711,7 @@ InstantUnShadeEwin(EWin * ewin)
 	   ewin->border->border.bottom;
 	ewin->shaded = 0;
 	ewin->h = b;
-	MoveResizeEwin(ewin, ewin->x, ewin->y,
-		       ewin->client.w, ewin->client.h);
+	MoveResizeEwin(ewin, ewin->x, ewin->y, ewin->client.w, ewin->client.h);
 	XSync(disp, False);
 	break;
      case 3:
@@ -2725,14 +2720,12 @@ InstantUnShadeEwin(EWin * ewin)
 	b = ewin->client.h + ewin->border->border.top +
 	   ewin->border->border.bottom;
 	d = ewin->y + ewin->h - (ewin->border->border.bottom
-				 + ewin->client.h
-				 + ewin->border->border.top);
+				 + ewin->client.h + ewin->border->border.top);
 	ewin->shaded = 0;
 	ewin->h = b;
 	ewin->y = d;
 	ewin->reqy = d;
-	MoveResizeEwin(ewin, ewin->x, ewin->y,
-		       ewin->client.w, ewin->client.h);
+	MoveResizeEwin(ewin, ewin->x, ewin->y, ewin->client.w, ewin->client.h);
 	XSync(disp, False);
 	break;
      default:
@@ -2764,8 +2757,7 @@ ShadeEwin(EWin * ewin)
 
    if ((ewin->border->border.left == 0) &&
        (ewin->border->border.right == 0) &&
-       (ewin->border->border.top == 0) &&
-       (ewin->border->border.bottom == 0))
+       (ewin->border->border.top == 0) && (ewin->border->border.bottom == 0))
       EDBUG_RETURN_;
    if (GetZoomEWin() == ewin)
       EDBUG_RETURN_;
@@ -2800,9 +2792,10 @@ ShadeEwin(EWin * ewin)
 		   ww = 1;
 		hh = ewin->client.h;
 		EMoveResizeWindow(disp, ewin->win_container,
-		 ewin->border->border.left, ewin->border->border.top, ww, hh);
-		EMoveResizeWindow(disp, ewin->win, ewin->x, ewin->y,
-				  ewin->w, ewin->h);
+				  ewin->border->border.left,
+				  ewin->border->border.top, ww, hh);
+		EMoveResizeWindow(disp, ewin->win, ewin->x, ewin->y, ewin->w,
+				  ewin->h);
 		CalcEwinSizes(ewin);
 		if (ewin->client.shaped)
 		   EShapeCombineShape(disp, ewin->win_container, ShapeBounding,
@@ -2826,8 +2819,7 @@ ShadeEwin(EWin * ewin)
 	ewin->shaded = 2;
 	ewin->w = b;
 	EMoveResizeWindow(disp, ewin->win_container, -30, -30, 1, 1);
-	EMoveResizeWindow(disp, ewin->win, ewin->x, ewin->y,
-			  ewin->w, ewin->h);
+	EMoveResizeWindow(disp, ewin->win, ewin->x, ewin->y, ewin->w, ewin->h);
 	CalcEwinSizes(ewin);
 	XSync(disp, False);
 	break;
@@ -2855,9 +2847,10 @@ ShadeEwin(EWin * ewin)
 		   ww = 1;
 		hh = ewin->client.h;
 		EMoveResizeWindow(disp, ewin->win_container,
-		 ewin->border->border.left, ewin->border->border.top, ww, hh);
-		EMoveResizeWindow(disp, ewin->win, ewin->x, ewin->y,
-				  ewin->w, ewin->h);
+				  ewin->border->border.left,
+				  ewin->border->border.top, ww, hh);
+		EMoveResizeWindow(disp, ewin->win, ewin->x, ewin->y, ewin->w,
+				  ewin->h);
 		CalcEwinSizes(ewin);
 		if (ewin->client.shaped)
 		   EShapeCombineShape(disp, ewin->win_container, ShapeBounding,
@@ -2883,8 +2876,7 @@ ShadeEwin(EWin * ewin)
 	ewin->x = d;
 	ewin->reqx = d;
 	EMoveResizeWindow(disp, ewin->win_container, -30, -30, 1, 1);
-	EMoveResizeWindow(disp, ewin->win, ewin->x, ewin->y,
-			  ewin->w, ewin->h);
+	EMoveResizeWindow(disp, ewin->win, ewin->x, ewin->y, ewin->w, ewin->h);
 	CalcEwinSizes(ewin);
 	XSync(disp, False);
 	break;
@@ -2908,14 +2900,16 @@ ShadeEwin(EWin * ewin)
 		   hh = 1;
 		ww = ewin->client.w;
 		EMoveResizeWindow(disp, ewin->win_container,
-		 ewin->border->border.left, ewin->border->border.top, ww, hh);
-		EMoveResizeWindow(disp, ewin->win, ewin->x, ewin->y,
-				  ewin->w, ewin->h);
+				  ewin->border->border.left,
+				  ewin->border->border.top, ww, hh);
+		EMoveResizeWindow(disp, ewin->win, ewin->x, ewin->y, ewin->w,
+				  ewin->h);
 		CalcEwinSizes(ewin);
 		if (ewin->client.shaped)
 		   EShapeCombineShape(disp, ewin->win_container, ShapeBounding,
 				      0, -(ewin->client.h - hh),
-				   ewin->client.win, ShapeBounding, ShapeSet);
+				      ewin->client.win, ShapeBounding,
+				      ShapeSet);
 		PropagateShapes(ewin->win);
 		gettimeofday(&timev2, NULL);
 		dsec = timev2.tv_sec - timev1.tv_sec;
@@ -2933,8 +2927,7 @@ ShadeEwin(EWin * ewin)
 	ewin->shaded = 2;
 	ewin->h = b;
 	EMoveResizeWindow(disp, ewin->win_container, -30, -30, 1, 1);
-	EMoveResizeWindow(disp, ewin->win, ewin->x, ewin->y,
-			  ewin->w, ewin->h);
+	EMoveResizeWindow(disp, ewin->win, ewin->x, ewin->y, ewin->w, ewin->h);
 	CalcEwinSizes(ewin);
 	XSync(disp, False);
 	break;
@@ -2963,9 +2956,10 @@ ShadeEwin(EWin * ewin)
 		   hh = 1;
 		ww = ewin->client.w;
 		EMoveResizeWindow(disp, ewin->win_container,
-		 ewin->border->border.left, ewin->border->border.top, ww, hh);
-		EMoveResizeWindow(disp, ewin->win, ewin->x, ewin->y,
-				  ewin->w, ewin->h);
+				  ewin->border->border.left,
+				  ewin->border->border.top, ww, hh);
+		EMoveResizeWindow(disp, ewin->win, ewin->x, ewin->y, ewin->w,
+				  ewin->h);
 		CalcEwinSizes(ewin);
 		if (ewin->client.shaped)
 		   EShapeCombineShape(disp, ewin->win_container, ShapeBounding,
@@ -2991,8 +2985,7 @@ ShadeEwin(EWin * ewin)
 	ewin->y = d;
 	ewin->reqy = d;
 	EMoveResizeWindow(disp, ewin->win_container, -30, -30, 1, 1);
-	EMoveResizeWindow(disp, ewin->win, ewin->x, ewin->y,
-			  ewin->w, ewin->h);
+	EMoveResizeWindow(disp, ewin->win, ewin->x, ewin->y, ewin->w, ewin->h);
 	CalcEwinSizes(ewin);
 	XSync(disp, False);
 	break;
@@ -3047,8 +3040,7 @@ UnShadeEwin(EWin * ewin)
 	ewin->shaded = 0;
 	EMoveResizeWindow(disp, ewin->win_container,
 			  ewin->border->border.left,
-			  ewin->border->border.top,
-			  1, ewin->client.h);
+			  ewin->border->border.top, 1, ewin->client.h);
 	EMoveResizeWindow(disp, ewin->client.win, -ewin->client.w, 0,
 			  ewin->client.w, ewin->client.h);
 	EMapWindow(disp, ewin->client.win);
@@ -3060,12 +3052,12 @@ UnShadeEwin(EWin * ewin)
 		i = ((a * (1024 - k)) + (b * k)) >> 10;
 		ewin->w = i;
 		EMoveResizeWindow(disp, ewin->win_container,
-			  ewin->border->border.left, ewin->border->border.top,
+				  ewin->border->border.left,
+				  ewin->border->border.top,
 				  ewin->w - ewin->border->border.left -
-				  ewin->border->border.right,
-				  ewin->client.h);
-		EMoveResizeWindow(disp, ewin->win, ewin->x, ewin->y,
-				  ewin->w, ewin->h);
+				  ewin->border->border.right, ewin->client.h);
+		EMoveResizeWindow(disp, ewin->win, ewin->x, ewin->y, ewin->w,
+				  ewin->h);
 		CalcEwinSizes(ewin);
 		if (ewin->client.shaped)
 		   EShapeCombineShape(disp, ewin->win_container, ShapeBounding,
@@ -3073,7 +3065,8 @@ UnShadeEwin(EWin * ewin)
 					(ewin->w - ewin->border->border.left -
 					 ewin->border->border.right)),
 				      0,
-				   ewin->client.win, ShapeBounding, ShapeSet);
+				      ewin->client.win, ShapeBounding,
+				      ShapeSet);
 		PropagateShapes(ewin->win);
 		gettimeofday(&timev2, NULL);
 		dsec = timev2.tv_sec - timev1.tv_sec;
@@ -3090,8 +3083,7 @@ UnShadeEwin(EWin * ewin)
 	     }
 	ewin->w = b;
 	queue_up = 1;
-	MoveResizeEwin(ewin, ewin->x, ewin->y,
-		       ewin->client.w, ewin->client.h);
+	MoveResizeEwin(ewin, ewin->x, ewin->y, ewin->client.w, ewin->client.h);
 	XSync(disp, False);
 	break;
      case 1:
@@ -3102,13 +3094,11 @@ UnShadeEwin(EWin * ewin)
 	   ewin->border->border.right;
 	c = ewin->x;
 	d = ewin->x + ewin->w - (ewin->border->border.right
-				 + ewin->client.w
-				 + ewin->border->border.left);
+				 + ewin->client.w + ewin->border->border.left);
 	ewin->shaded = 0;
 	EMoveResizeWindow(disp, ewin->win_container,
 			  ewin->border->border.left,
-			  ewin->border->border.top,
-			  1, ewin->client.h);
+			  ewin->border->border.top, 1, ewin->client.h);
 	EMoveResizeWindow(disp, ewin->client.win, 0, 0,
 			  ewin->client.w, ewin->client.h);
 	EMapWindow(disp, ewin->client.win);
@@ -3123,18 +3113,19 @@ UnShadeEwin(EWin * ewin)
 		ewin->x = j;
 		ewin->reqx = j;
 		EMoveResizeWindow(disp, ewin->win_container,
-			  ewin->border->border.left, ewin->border->border.top,
+				  ewin->border->border.left,
+				  ewin->border->border.top,
 				  ewin->w - ewin->border->border.left -
-				  ewin->border->border.right,
-				  ewin->client.h);
-		EMoveResizeWindow(disp, ewin->win, ewin->x, ewin->y,
-				  ewin->w, ewin->h);
+				  ewin->border->border.right, ewin->client.h);
+		EMoveResizeWindow(disp, ewin->win, ewin->x, ewin->y, ewin->w,
+				  ewin->h);
 		CalcEwinSizes(ewin);
 		if (ewin->client.shaped)
 		   EShapeCombineShape(disp, ewin->win_container, ShapeBounding,
 				      0,
 				      0,
-				   ewin->client.win, ShapeBounding, ShapeSet);
+				      ewin->client.win, ShapeBounding,
+				      ShapeSet);
 		PropagateShapes(ewin->win);
 		gettimeofday(&timev2, NULL);
 		dsec = timev2.tv_sec - timev1.tv_sec;
@@ -3153,8 +3144,7 @@ UnShadeEwin(EWin * ewin)
 	ewin->x = d;
 	ewin->reqx = d;
 	queue_up = 1;
-	MoveResizeEwin(ewin, ewin->x, ewin->y,
-		       ewin->client.w, ewin->client.h);
+	MoveResizeEwin(ewin, ewin->x, ewin->y, ewin->client.w, ewin->client.h);
 	XSync(disp, False);
 	break;
      case 2:
@@ -3166,8 +3156,7 @@ UnShadeEwin(EWin * ewin)
 	ewin->shaded = 0;
 	EMoveResizeWindow(disp, ewin->win_container,
 			  ewin->border->border.left,
-			  ewin->border->border.top,
-			  ewin->client.w, 1);
+			  ewin->border->border.top, ewin->client.w, 1);
 	EMoveResizeWindow(disp, ewin->client.win, 0, -ewin->client.h,
 			  ewin->client.w, ewin->client.h);
 	EMapWindow(disp, ewin->client.win);
@@ -3179,12 +3168,12 @@ UnShadeEwin(EWin * ewin)
 		i = ((a * (1024 - k)) + (b * k)) >> 10;
 		ewin->h = i;
 		EMoveResizeWindow(disp, ewin->win_container,
-			  ewin->border->border.left, ewin->border->border.top,
-				  ewin->client.w,
+				  ewin->border->border.left,
+				  ewin->border->border.top, ewin->client.w,
 				  ewin->h - ewin->border->border.top -
 				  ewin->border->border.bottom);
-		EMoveResizeWindow(disp, ewin->win, ewin->x, ewin->y,
-				  ewin->w, ewin->h);
+		EMoveResizeWindow(disp, ewin->win, ewin->x, ewin->y, ewin->w,
+				  ewin->h);
 		CalcEwinSizes(ewin);
 		if (ewin->client.shaped)
 		   EShapeCombineShape(disp, ewin->win_container, ShapeBounding,
@@ -3192,7 +3181,8 @@ UnShadeEwin(EWin * ewin)
 				      -(ewin->client.h -
 					(ewin->h - ewin->border->border.top -
 					 ewin->border->border.bottom)),
-				   ewin->client.win, ShapeBounding, ShapeSet);
+				      ewin->client.win, ShapeBounding,
+				      ShapeSet);
 		PropagateShapes(ewin->win);
 		gettimeofday(&timev2, NULL);
 		dsec = timev2.tv_sec - timev1.tv_sec;
@@ -3209,8 +3199,7 @@ UnShadeEwin(EWin * ewin)
 	     }
 	ewin->h = b;
 	queue_up = 1;
-	MoveResizeEwin(ewin, ewin->x, ewin->y,
-		       ewin->client.w, ewin->client.h);
+	MoveResizeEwin(ewin, ewin->x, ewin->y, ewin->client.w, ewin->client.h);
 	XSync(disp, False);
 	break;
      case 3:
@@ -3221,13 +3210,11 @@ UnShadeEwin(EWin * ewin)
 	   ewin->border->border.bottom;
 	c = ewin->y;
 	d = ewin->y + ewin->h - (ewin->border->border.bottom
-				 + ewin->client.h
-				 + ewin->border->border.top);
+				 + ewin->client.h + ewin->border->border.top);
 	ewin->shaded = 0;
 	EMoveResizeWindow(disp, ewin->win_container,
 			  ewin->border->border.left,
-			  ewin->border->border.top,
-			  ewin->client.w, 1);
+			  ewin->border->border.top, ewin->client.w, 1);
 	EMoveResizeWindow(disp, ewin->client.win, 0, 0,
 			  ewin->client.w, ewin->client.h);
 	EMapWindow(disp, ewin->client.win);
@@ -3274,8 +3261,7 @@ UnShadeEwin(EWin * ewin)
 	ewin->y = d;
 	ewin->reqy = d;
 	queue_up = 1;
-	MoveResizeEwin(ewin, ewin->x, ewin->y,
-		       ewin->client.w, ewin->client.h);
+	MoveResizeEwin(ewin, ewin->x, ewin->y, ewin->client.w, ewin->client.h);
 	XSync(disp, False);
 	break;
      default:

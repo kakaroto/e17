@@ -78,8 +78,8 @@ CommsFindCommsWindow()
 	     if (comms_win)
 	       {
 		  XGetWindowProperty(disp, comms_win, a, 0, 14, False,
-				  AnyPropertyType, &ar, &format, &num, &after,
-				     &s);
+				     AnyPropertyType, &ar, &format, &num,
+				     &after, &s);
 		  if (s)
 		     XFree(s);
 		  else
@@ -382,8 +382,7 @@ void
 HandleComms(XEvent * ev)
 {
    Client             *c;
-   char               *s, w[FILEPATH_LEN_MAX], w2[FILEPATH_LEN_MAX], *s1,
-                      *s2;
+   char               *s, w[FILEPATH_LEN_MAX], w2[FILEPATH_LEN_MAX], *s1, *s2;
    char                sunknown[] = "UNKNOWN";
    int                 unknown;
 
@@ -699,7 +698,8 @@ HandleComms(XEvent * ev)
 			       mod = 5;
 			    else if (a->modifiers == (ShiftMask | Mod1Mask))
 			       mod = 6;
-			    else if (a->modifiers == (ShiftMask | ControlMask | Mod1Mask))
+			    else if (a->modifiers ==
+				     (ShiftMask | ControlMask | Mod1Mask))
 			       mod = 7;
 			    else if (a->modifiers == (Mod2Mask))
 			       mod = 8;
@@ -719,13 +719,15 @@ HandleComms(XEvent * ev)
 			       mod = 15;
 			    else if (a->modifiers == (Mod4Mask | ControlMask))
 			       mod = 16;
-			    else if (a->modifiers == (Mod4Mask | ControlMask | ShiftMask))
+			    else if (a->modifiers ==
+				     (Mod4Mask | ControlMask | ShiftMask))
 			       mod = 17;
 			    else if (a->modifiers == (Mod5Mask | ShiftMask))
 			       mod = 18;
 			    else if (a->modifiers == (Mod5Mask | ControlMask))
 			       mod = 19;
-			    else if (a->modifiers == (Mod5Mask | ControlMask | ShiftMask))
+			    else if (a->modifiers ==
+				     (Mod5Mask | ControlMask | ShiftMask))
 			       mod = 20;
 			    if (a->action->params)
 			       Esnprintf(buf2, sizeof(buf2),
@@ -737,7 +739,9 @@ HandleComms(XEvent * ev)
 					 a->action->Type);
 			    if (buf)
 			      {
-				 buf = Erealloc(buf, strlen(buf) + strlen(buf2) + 1);
+				 buf =
+				    Erealloc(buf,
+					     strlen(buf) + strlen(buf2) + 1);
 				 strcat(buf, buf2);
 			      }
 			    else
@@ -877,8 +881,7 @@ HandleComms(XEvent * ev)
 	     bg->pmap = 0;
 	     for (i = 0; i < ENLIGHTENMENT_CONF_NUM_DESKTOPS; i++)
 	       {
-		  if ((desks.desk[i].bg == bg) &&
-		      (desks.desk[i].viewable))
+		  if ((desks.desk[i].bg == bg) && (desks.desk[i].viewable))
 		     RefreshDesktop(i);
 	       }
 	  }
@@ -1010,7 +1013,9 @@ HandleComms(XEvent * ev)
 	   ModifyCMClass(name, rnum, rpx, rpy, gnum, gpx, gpy, bnum, bpx, bpy);
 	else
 	  {
-	     cm = CreateCMClass(name, rnum, rpx, rpy, gnum, gpx, gpy, bnum, bpx, bpy);
+	     cm =
+		CreateCMClass(name, rnum, rpx, rpy, gnum, gpx, gpy, bnum, bpx,
+			      bpy);
 	     AddItem(cm, cm->name, 0, LIST_TYPE_COLORMODIFIER);
 	  }
 	Efree(name);
@@ -1033,7 +1038,9 @@ HandleComms(XEvent * ev)
 	char                buf[FILEPATH_LEN_MAX];
 
 	sscanf(s, "%*s %1000s", w);
-	bg = (Background *) FindItem(w, 0, LIST_FINDBY_NAME, LIST_TYPE_BACKGROUND);
+	bg =
+	   (Background *) FindItem(w, 0, LIST_FINDBY_NAME,
+				   LIST_TYPE_BACKGROUND);
 	Esnprintf(buf, sizeof(buf), "(null)");
 	if (bg)
 	  {
@@ -1043,36 +1050,40 @@ HandleComms(XEvent * ev)
 			  bg->name,
 			  bg->bg.solid.r, bg->bg.solid.g, bg->bg.solid.b,
 			  bg->bg.file, bg->bg.tile, bg->bg.keep_aspect,
-		       bg->bg.xjust, bg->bg.yjust, bg->bg.xperc, bg->bg.yperc,
-			  bg->top.file, bg->top.keep_aspect, bg->top.xjust,
-			  bg->top.yjust, bg->top.xperc, bg->top.yperc);
+			  bg->bg.xjust, bg->bg.yjust, bg->bg.xperc,
+			  bg->bg.yperc, bg->top.file, bg->top.keep_aspect,
+			  bg->top.xjust, bg->top.yjust, bg->top.xperc,
+			  bg->top.yperc);
 	     else if ((!(bg->bg.file)) && (bg->top.file))
 		Esnprintf(buf, sizeof(buf),
 			  "%s %i %i %i %s %i %i %i %i %i %i %s %i %i %i %i %i",
 			  bg->name,
 			  bg->bg.solid.r, bg->bg.solid.g, bg->bg.solid.b,
 			  "(null)", bg->bg.tile, bg->bg.keep_aspect,
-		       bg->bg.xjust, bg->bg.yjust, bg->bg.xperc, bg->bg.yperc,
-			  bg->top.file, bg->top.keep_aspect, bg->top.xjust,
-			  bg->top.yjust, bg->top.xperc, bg->top.yperc);
+			  bg->bg.xjust, bg->bg.yjust, bg->bg.xperc,
+			  bg->bg.yperc, bg->top.file, bg->top.keep_aspect,
+			  bg->top.xjust, bg->top.yjust, bg->top.xperc,
+			  bg->top.yperc);
 	     else if ((bg->bg.file) && (!(bg->top.file)))
 		Esnprintf(buf, sizeof(buf),
 			  "%s %i %i %i %s %i %i %i %i %i %i %s %i %i %i %i %i",
 			  bg->name,
 			  bg->bg.solid.r, bg->bg.solid.g, bg->bg.solid.b,
 			  bg->bg.file, bg->bg.tile, bg->bg.keep_aspect,
-		       bg->bg.xjust, bg->bg.yjust, bg->bg.xperc, bg->bg.yperc,
-			  "(null)", bg->top.keep_aspect, bg->top.xjust,
-			  bg->top.yjust, bg->top.xperc, bg->top.yperc);
+			  bg->bg.xjust, bg->bg.yjust, bg->bg.xperc,
+			  bg->bg.yperc, "(null)", bg->top.keep_aspect,
+			  bg->top.xjust, bg->top.yjust, bg->top.xperc,
+			  bg->top.yperc);
 	     else if ((!(bg->bg.file)) && (!(bg->top.file)))
 		Esnprintf(buf, sizeof(buf),
 			  "%s %i %i %i %s %i %i %i %i %i %i %s %i %i %i %i %i",
 			  bg->name,
 			  bg->bg.solid.r, bg->bg.solid.g, bg->bg.solid.b,
 			  "(null)", bg->bg.tile, bg->bg.keep_aspect,
-		       bg->bg.xjust, bg->bg.yjust, bg->bg.xperc, bg->bg.yperc,
-			  "(null)", bg->top.keep_aspect, bg->top.xjust,
-			  bg->top.yjust, bg->top.xperc, bg->top.yperc);
+			  bg->bg.xjust, bg->bg.yjust, bg->bg.xperc,
+			  bg->bg.yperc, "(null)", bg->top.keep_aspect,
+			  bg->top.xjust, bg->top.yjust, bg->top.xperc,
+			  bg->top.yperc);
 	  }
 	CommsSend(c, buf);
      }
@@ -1085,16 +1096,20 @@ HandleComms(XEvent * ev)
 	char               *name = NULL, *bgf = NULL, *topf = NULL;
 	int                 updated = 0, tile, keep_aspect, tkeep_aspect;
 	int                 xjust, yjust, xperc, yperc, txjust, tyjust, txperc,
-	                    typerc;
+
+	   typerc;
 
 	sscanf(s, "%1000s %1000s", tmp, w);
-	bg = (Background *) FindItem(w, 0, LIST_FINDBY_NAME, LIST_TYPE_BACKGROUND);
+	bg =
+	   (Background *) FindItem(w, 0, LIST_FINDBY_NAME,
+				   LIST_TYPE_BACKGROUND);
 	icl.r = 99;
-	i = sscanf(s, "%1000s %1000s %i %i %i %1000s %i %i %i %i %i %i %1000s %i %i %i %i %i",
-		   tmp, tmp,
-		&(icl.r), &(icl.g), &(icl.b), tmp, &tile, (int *)&keep_aspect,
-		   &xjust, &yjust, &xperc, &yperc, tmp, &tkeep_aspect, &txjust,
-		   &tyjust, &txperc, &typerc);
+	i =
+	   sscanf(s,
+		  "%1000s %1000s %i %i %i %1000s %i %i %i %i %i %i %1000s %i %i %i %i %i",
+		  tmp, tmp, &(icl.r), &(icl.g), &(icl.b), tmp, &tile,
+		  (int *)&keep_aspect, &xjust, &yjust, &xperc, &yperc, tmp,
+		  &tkeep_aspect, &txjust, &tyjust, &txperc, &typerc);
 	if (bg)
 	  {
 	     name = duplicate(w);
@@ -1216,7 +1231,9 @@ HandleComms(XEvent * ev)
 	Background         *bg;
 
 	sscanf(s, "%*s %x %1000s", (unsigned int *)&win, w);
-	bg = (Background *) FindItem(w, 0, LIST_FINDBY_NAME, LIST_TYPE_BACKGROUND);
+	bg =
+	   (Background *) FindItem(w, 0, LIST_FINDBY_NAME,
+				   LIST_TYPE_BACKGROUND);
 	if (bg)
 	   SetBackgroundTo(id, win, bg, 0);
 	CommsSend(c, "done");
@@ -1503,8 +1520,10 @@ HandleComms(XEvent * ev)
 	  {
 	     Button             *b;
 
-	     while ((b = RemoveItem("_DESKTOP_DRAG_CONTROL", 0, LIST_FINDBY_NAME,
-				    LIST_TYPE_BUTTON)))
+	     while (
+		    (b =
+		     RemoveItem("_DESKTOP_DRAG_CONTROL", 0, LIST_FINDBY_NAME,
+				LIST_TYPE_BUTTON)))
 		DestroyButton(b);
 	     InitDesktopControls();
 	     ShowDesktopControls();
@@ -1569,7 +1588,6 @@ HandleComms(XEvent * ev)
 		  "SAVEUNDER: %i\n"
 		  "MENUSLIDE: %i\n"
 		  "NUMDESKTOPS: %i\n"
-
 		  "DRAGDIR: %i\n"
 		  "DRAGBARWIDTH: %i\n"
 		  "DRAGBARORDERING: %i\n"
@@ -1577,7 +1595,6 @@ HandleComms(XEvent * ev)
 		  "DESKSLIDEIN: %i\n"
 		  "DESKSLIDESPEED: %i\n"
 		  "HIQUALITYBG: %i\n"
-
 		  "TRANSIENTSFOLLOWLEADER: %i\n"
 		  "SWITCHFORTRANSIENTMAP: %i\n"
 		  "SHOWICONS: %i\n"
@@ -1591,8 +1608,7 @@ HandleComms(XEvent * ev)
 		  "DISPLAY_WARP: %i\n"
 		  "WARP_ON_NEXT_FOCUS: %i\n"
 		  "WARP_AFTER_NEXT_FOCUS: %i\n"
-		  "EDGE_FLIP_RESISTANCE: %i\n"
-		  ,
+		  "EDGE_FLIP_RESISTANCE: %i\n",
 		  mode.focusmode, mode.dockdirmode, mode.primaryicondir,
 		  mode.movemode, mode.resizemode, mode.slidemode,
 		  mode.cleanupslide, mode.mapslide, mode.slidespeedmap,
@@ -1603,11 +1619,9 @@ HandleComms(XEvent * ev)
 		  mode.autoraise, mode.autoraisetime,
 		  mode.dockstartx, mode.dockstarty, mode.save_under,
 		  mode.menuslide, mode.numdesktops,
-
 		  desks.dragdir, desks.dragbar_width,
 		  desks.dragbar_ordering, desks.dragbar_length, desks.slidein,
 		  desks.slidespeed, desks.hiqualitybg,
-
 		  mode.transientsfollowleader, mode.switchfortransientmap,
 		  mode.showicons, a, b,
 		  mode.all_new_windows_get_focus,
@@ -1618,9 +1632,7 @@ HandleComms(XEvent * ev)
 		  mode.raise_after_next_focus,
 		  mode.display_warp,
 		  mode.warp_on_next_focus,
-		  mode.warp_after_next_focus,
-		  mode.edge_flip_resistance
-	   );
+		  mode.warp_after_next_focus, mode.edge_flip_resistance);
 	CommsSend(c, buf);
      }
    else if (!strcmp(w, "call_raw"))
@@ -1739,56 +1751,7 @@ HandleComms(XEvent * ev)
 			    "MWM_TITLE:              %5i\n"
 			    "MWM_MENU:               %5i\n"
 			    "MWM_MINIMIZE:           %5i\n"
-			    "MWM_MAXIMIZE:           %5i\n"
-			    "APP_STATE:              %5i\n",
-			    ewin->client.win,
-			    ewin->win,
-			    ewin->x,
-			    ewin->y,
-			    ewin->w,
-			    ewin->h,
-			    ewin->border->name,
-			    ewin->border->border.left,
-			    ewin->border->border.right,
-			    ewin->border->border.top,
-			    ewin->border->border.bottom,
-			    ewin->desktop,
-			    ewin->num_groups,
-			    ewin->docked,
-			    ewin->sticky,
-			    ewin->visible,
-			    ewin->iconified,
-			    ewin->shaded,
-			    ewin->active,
-			    ewin->layer,
-			    ewin->never_use_area,
-			    ewin->floating,
-			    ewin->client.w,
-			    ewin->client.h,
-			    ewin->client.icon_win,
-			    ewin->client.icon_pmap,
-			    ewin->client.icon_mask,
-			    ewin->client.group,
-			    ewin->client.need_input,
-			    ewin->client.transient,
-			    ewin->client.title,
-			    ewin->client.class,
-			    ewin->client.name,
-			    ewin->client.command,
-			    ewin->client.machine,
-			    ewin->client.icon_name,
-			    ewin->client.is_group_leader,
-			    ewin->client.no_resize_h,
-			    ewin->client.no_resize_v,
-			    ewin->client.shaped,
-			    ewin->client.width.min,
-			    ewin->client.height.min,
-			    ewin->client.width.max,
-			    ewin->client.height.max,
-			    ewin->client.base_w,
-			    ewin->client.base_h,
-			    ewin->client.w_inc,
-			    ewin->client.h_inc,
+			    "MWM_MAXIMIZE:           %5i\n" "APP_STATE:              %5i\n", ewin->client.win, ewin->win, ewin->x, ewin->y, ewin->w, ewin->h, ewin->border->name, ewin->border->border.left, ewin->border->border.right, ewin->border->border.top, ewin->border->border.bottom, ewin->desktop, ewin->num_groups, ewin->docked, ewin->sticky, ewin->visible, ewin->iconified, ewin->shaded, ewin->active, ewin->layer, ewin->never_use_area, ewin->floating, ewin->client.w, ewin->client.h, ewin->client.icon_win, ewin->client.icon_pmap, ewin->client.icon_mask, ewin->client.group, ewin->client.need_input, ewin->client.transient, ewin->client.title, ewin->client.class, ewin->client.name, ewin->client.command, ewin->client.machine, ewin->client.icon_name, ewin->client.is_group_leader, ewin->client.no_resize_h, ewin->client.no_resize_v, ewin->client.shaped, ewin->client.width.min, ewin->client.height.min, ewin->client.width.max, ewin->client.height.max, ewin->client.base_w, ewin->client.base_h, ewin->client.w_inc, ewin->client.h_inc,
 			    ewin->client.aspect_min,
 			    ewin->client.aspect_max,
 			    ewin->client.mwm_decor_border,
@@ -1970,7 +1933,9 @@ HandleComms(XEvent * ev)
      }
    else if (!strcmp(w, "list_clients"))
      {
-	char                buf[FILEPATH_LEN_MAX], *ret = NULL, none[] = "-NONE-";
+	char                buf[FILEPATH_LEN_MAX], *ret = NULL, none[] =
+
+	   "-NONE-";
 	EWin              **lst;
 	int                 i, num;
 
@@ -2248,12 +2213,11 @@ HandleComms(XEvent * ev)
 	{
 	   char                buf[FILEPATH_LEN_MAX];
 
-	   Esnprintf(buf, sizeof(buf), "Received Unknown Client Message.\n"
-		     "Client Name:    %s\n"
-		     "Client Version: %s\n"
-		     "Message Contents:\n\n"
-		     "%s\n", s1, s2, s);
-	   DIALOG_OK("E IPC Error", buf);
+	   Esnprintf(buf, sizeof(buf),
+		     gettext("Received Unknown Client Message.\n"
+			     "Client Name:    %s\n" "Client Version: %s\n"
+			     "Message Contents:\n\n" "%s\n"), s1, s2, s);
+	   DIALOG_OK(gettext("E IPC Error"), buf);
 	   AUDIO_PLAY("SOUND_ERROR_IPC");
 	}
      }

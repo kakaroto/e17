@@ -28,10 +28,10 @@ GetUniqueBGString(Background * bg)
    char                s[256];
    const char         *chmap =
 #ifndef __EMX__
-   "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_";
+      "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_";
 
 #else
-   "0123456789abcdefghijklmnopqrstuvwxyz€‚ƒ„…†‡ˆŠ‹ŒŽ‘’“”•–—˜™-_";
+      "0123456789abcdefghijklmnopqrstuvwxyz€‚ƒ„…†‡ˆŠ‹ŒŽ‘’“”•–—˜™-_";
 
    /* cyrillic symbols from 866 page correctly handled instead of eng. capitals */
 #endif
@@ -87,8 +87,7 @@ GetUniqueBGString(Background * bg)
 	     "%c%c%c%c%c%c"
 	     "%c%c%c%c%c%c"
 	     "%c%c%c%c%c%c"
-	     "%c%c%c%c%c%c"
-	     ,
+	     "%c%c%c%c%c%c",
 	     chmap[(n1 >> 0) & 0x3f],
 	     chmap[(n1 >> 6) & 0x3f],
 	     chmap[(n1 >> 12) & 0x3f],
@@ -153,9 +152,7 @@ GetUniqueBGString(Background * bg)
 	     chmap[(f6 >> 6) & 0x3f],
 	     chmap[(f6 >> 12) & 0x3f],
 	     chmap[(f6 >> 18) & 0x3f],
-	     chmap[(f6 >> 24) & 0x3f],
-	     chmap[(f6 >> 28) & 0x3f]
-      );
+	     chmap[(f6 >> 24) & 0x3f], chmap[(f6 >> 28) & 0x3f]);
    return duplicate(s);
 }
 
@@ -632,21 +629,15 @@ SetBackgroundTo(ImlibData * imd, Window win, Background * dsk, char setbg)
 	     cm->ref_count++;
 	     if (dsk->top.im)
 	       {
-		  Imlib_set_image_red_curve(id, dsk->top.im,
-					    cm->red.map);
-		  Imlib_set_image_green_curve(id, dsk->top.im,
-					      cm->green.map);
-		  Imlib_set_image_blue_curve(id, dsk->top.im,
-					     cm->blue.map);
+		  Imlib_set_image_red_curve(id, dsk->top.im, cm->red.map);
+		  Imlib_set_image_green_curve(id, dsk->top.im, cm->green.map);
+		  Imlib_set_image_blue_curve(id, dsk->top.im, cm->blue.map);
 	       }
 	     if (dsk->bg.im)
 	       {
-		  Imlib_set_image_red_curve(id, dsk->bg.im,
-					    cm->red.map);
-		  Imlib_set_image_green_curve(id, dsk->bg.im,
-					      cm->green.map);
-		  Imlib_set_image_blue_curve(id, dsk->bg.im,
-					     cm->blue.map);
+		  Imlib_set_image_red_curve(id, dsk->bg.im, cm->red.map);
+		  Imlib_set_image_green_curve(id, dsk->bg.im, cm->green.map);
+		  Imlib_set_image_blue_curve(id, dsk->bg.im, cm->blue.map);
 	       }
 	  }
      }
@@ -764,16 +755,20 @@ SetBackgroundTo(ImlibData * imd, Window win, Background * dsk, char setbg)
 	     if (dsk->top.yperc <= 0)
 	       {
 		  if (((ww << 10) / hh) !=
-		   ((dsk->top.im->rgb_width << 10) / dsk->top.im->rgb_height))
-		     hh = ((ww * dsk->top.im->rgb_height)
-			   / dsk->top.im->rgb_width);
+		      ((dsk->top.im->rgb_width << 10) /
+		       dsk->top.im->rgb_height))
+		     hh =
+			((ww * dsk->top.im->rgb_height) /
+			 dsk->top.im->rgb_width);
 	       }
 	     else
 	       {
 		  if (((hh << 10) / ww) !=
-		   ((dsk->top.im->rgb_height << 10) / dsk->top.im->rgb_width))
-		     ww = ((hh * dsk->top.im->rgb_width)
-			   / dsk->top.im->rgb_height);
+		      ((dsk->top.im->rgb_height << 10) /
+		       dsk->top.im->rgb_width))
+		     ww =
+			((hh * dsk->top.im->rgb_width) /
+			 dsk->top.im->rgb_height);
 	       }
 	  }
 	Imlib_render(imd, dsk->top.im, ww, hh);
@@ -935,16 +930,20 @@ SetBackgroundTo(ImlibData * imd, Window win, Background * dsk, char setbg)
 	     if (dsk->top.yperc <= 0)
 	       {
 		  if (((ww << 10) / hh) !=
-		   ((dsk->top.im->rgb_width << 10) / dsk->top.im->rgb_height))
-		     hh = ((ww * dsk->top.im->rgb_height)
-			   / dsk->top.im->rgb_width);
+		      ((dsk->top.im->rgb_width << 10) /
+		       dsk->top.im->rgb_height))
+		     hh =
+			((ww * dsk->top.im->rgb_height) /
+			 dsk->top.im->rgb_width);
 	       }
 	     else
 	       {
 		  if (((hh << 10) / ww) !=
-		   ((dsk->top.im->rgb_height << 10) / dsk->top.im->rgb_width))
-		     ww = ((hh * dsk->top.im->rgb_width)
-			   / dsk->top.im->rgb_height);
+		      ((dsk->top.im->rgb_height << 10) /
+		       dsk->top.im->rgb_width))
+		     ww =
+			((hh * dsk->top.im->rgb_width) /
+			 dsk->top.im->rgb_height);
 	       }
 	  }
 	Imlib_render(imd, dsk->top.im, ww, hh);
@@ -1043,13 +1042,14 @@ InitDesktopBgs()
 	  }
 	else
 	  {
-	     d->win = ECreateWindow(root.win, -root.w, -root.h, root.w, root.h, 0);
+	     d->win =
+		ECreateWindow(root.win, -root.w, -root.h, root.w, root.h, 0);
 	     XSelectInput(disp, d->win,
 			  SubstructureNotifyMask | ButtonPressMask |
-			  ButtonReleaseMask | EnterWindowMask |
-			  LeaveWindowMask | ButtonMotionMask |
-			  PropertyChangeMask | SubstructureRedirectMask |
-			  KeyPressMask | KeyReleaseMask | PointerMotionMask);
+			  ButtonReleaseMask | EnterWindowMask | LeaveWindowMask
+			  | ButtonMotionMask | PropertyChangeMask |
+			  SubstructureRedirectMask | KeyPressMask |
+			  KeyReleaseMask | PointerMotionMask);
 	     d->viewable = 0;
 	  }
 	at = XInternAtom(disp, "ENLIGHTENMENT_DESKTOP", False);
@@ -1105,33 +1105,27 @@ InitDesktopControls()
 	     AddToAction(a, ACTION_SHOW_MENU, duplicate(s));
 	     if (i > 0)
 	       {
-		  ac->tooltipstring = duplicate("Hold down the mouse button "
-						"and drag\n"
-						"the mouse to be able to "
-						"drag the desktop\n"
-						"back and forth.\n"
-						"Click right mouse button "
-						"for a list of all\n"
-						"Desktops and their "
-						"applications.\n"
-						"Click middle mouse button "
-						"for a list of all\n"
-						"applications currently"
-						" running.\n");
+		  ac->tooltipstring =
+		     duplicate(gettext
+			       ("Hold down the mouse button " "and drag\n"
+				"the mouse to be able to " "drag the desktop\n"
+				"back and forth.\n" "Click right mouse button "
+				"for a list of all\n" "Desktops and their "
+				"applications.\n" "Click middle mouse button "
+				"for a list of all\n" "applications currently"
+				" running.\n"));
 	       }
 	     else
 	       {
-		  ac->tooltipstring = duplicate("This is the Root desktop.\n"
-						"You cannot drag the "
-						"root desktop around.\n"
-						"Click right mouse button "
-						"for a list of all\n"
-						"Desktops and their "
-						"applications.\n"
-						"Click middle mouse button "
-						"for a list of all\n"
-						"applications currently "
-						"running.\n");
+		  ac->tooltipstring =
+		     duplicate(gettext
+			       ("This is the Root desktop.\n"
+				"You cannot drag the " "root desktop around.\n"
+				"Click right mouse button "
+				"for a list of all\n" "Desktops and their "
+				"applications.\n" "Click middle mouse button "
+				"for a list of all\n" "applications currently "
+				"running.\n"));
 	       }
 	  }
 	Esnprintf(s, sizeof(s), "RAISEBUTTON_DESKTOP_%i", i);
@@ -1145,8 +1139,10 @@ InitDesktopControls()
 	     param = Emalloc(3);
 	     Esnprintf(param, 3, "%i", i);
 	     AddToAction(a, ACTION_DESKTOP_RAISE, param);
-	     ac2->tooltipstring = duplicate("Click here to raise this desktop\n"
-					    "to the top.\n");
+	     ac2->tooltipstring =
+		duplicate(gettext
+			  ("Click here to raise this desktop\n"
+			   "to the top.\n"));
 	  }
 	Esnprintf(s, sizeof(s), "LOWERBUTTON_DESKTOP_%i", i);
 	ac3 = FindItem(s, 0, LIST_FINDBY_NAME, LIST_TYPE_ACLASS);
@@ -1159,8 +1155,10 @@ InitDesktopControls()
 	     param = Emalloc(3);
 	     Esnprintf(param, 3, "%i", i);
 	     AddToAction(a, ACTION_DESKTOP_LOWER, param);
-	     ac3->tooltipstring = duplicate("Click here to lower this desktop\n"
-					    "to the bottom.\n");
+	     ac3->tooltipstring =
+		duplicate(gettext
+			  ("Click here to lower this desktop\n"
+			   "to the bottom.\n"));
 	  }
 	b = NULL;
 
@@ -1312,17 +1310,17 @@ InitDesktopControls()
 	     else if (desks.dragdir == 2)
 	       {
 		  b = CreateButton("_DESKTOP_DESKRAY_DRAG_CONTROL", ic4, ac,
-				 NULL, NULL, 1, FLAG_FIXED_HORIZ, 1, 99999, 1,
+				   NULL, NULL, 1, FLAG_FIXED_HORIZ, 1, 99999, 1,
 				   99999, 0, 0, desks.desk[i].x, 0,
 				   desks.desk[i].y, 0, 0, 0, 0, 0, 1, 0, 1);
 	       }
 	     else
 	       {
 		  b = CreateButton("_DESKTOP_DESKRAY_DRAG_CONTROL", ic4, ac,
-				 NULL, NULL, 1, FLAG_FIXED_HORIZ, 1, 99999, 1,
+				   NULL, NULL, 1, FLAG_FIXED_HORIZ, 1, 99999, 1,
 				   99999, 0, 0, desks.desk[i].x, 0,
-			       desks.desk[i].y + root.h - desks.dragbar_width,
-				   0, 0, 0, 0, 0, 1, 0, 1);
+				   desks.desk[i].y + root.h -
+				   desks.dragbar_width, 0, 0, 0, 0, 0, 1, 0, 1);
 	       }
 	     AddItem(b, b->name, 2, LIST_TYPE_BUTTON);
 	     desks.desk[i].tag = b;
@@ -1377,8 +1375,7 @@ ConformEwinToDesktop(EWin * ewin)
 
    EDBUG(3, "ConformEwinToDesktop");
 
-   if ((ewin->iconified) &&
-       (ewin->parent != desks.desk[ewin->desktop].win))
+   if ((ewin->iconified) && (ewin->parent != desks.desk[ewin->desktop].win))
      {
 	ewin->parent = desks.desk[ewin->desktop].win;
 	DesktopAddEwinToTop(ewin);
@@ -1460,8 +1457,9 @@ MoveStickyWindowsToCurrentDesk(void)
 		  DesktopRemoveEwin(ewin);
 		  ewin->desktop = DESKTOPS_WRAP_NUM(desks.current);
 		  ewin->parent = desks.desk[ewin->desktop].win;
-		  EReparentWindow(disp, ewin->win, desks.desk[ewin->desktop].win,
-				  root.w, root.h);
+		  EReparentWindow(disp, ewin->win,
+				  desks.desk[ewin->desktop].win, root.w,
+				  root.h);
 		  XLowerWindow(disp, ewin->win);
 		  EMoveWindow(disp, ewin->win, ewin->x, ewin->y);
 		  DesktopAddEwinToTop(ewin);
@@ -1511,8 +1509,7 @@ GotoDesktop(int num)
    }
 
    if ((mode.mode == MODE_RESIZE) ||
-       (mode.mode == MODE_RESIZE_H) ||
-       (mode.mode == MODE_RESIZE_V))
+       (mode.mode == MODE_RESIZE_H) || (mode.mode == MODE_RESIZE_V))
      {
 	doResizeEnd(NULL);
      }
@@ -1530,8 +1527,7 @@ GotoDesktop(int num)
 		  mode.ewin->reqy = -99999;
 		  DrawEwinShape(mode.ewin, mode.movemode,
 				x, y,
-				mode.ewin->client.w, mode.ewin->client.h,
-				3);
+				mode.ewin->client.w, mode.ewin->client.h, 3);
 	       }
 	  }
 	else
@@ -1626,14 +1622,12 @@ GotoDesktop(int num)
 	     if (mode.movemode == 5)
 	       {
 		  DrawEwinShape(mode.ewin, mode.movemode, x, y,
-				mode.ewin->client.w, mode.ewin->client.h,
-				4);
+				mode.ewin->client.w, mode.ewin->client.h, 4);
 	       }
 	     else
 	       {
 		  DrawEwinShape(mode.ewin, mode.movemode, x, y,
-				mode.ewin->client.w, mode.ewin->client.h,
-				0);
+				mode.ewin->client.w, mode.ewin->client.h, 0);
 	       }
 	  }
      }
@@ -1720,7 +1714,8 @@ MoveDesktop(int num, int x, int y)
 		       if ((!v) && (desks.desk[deskorder[i]].viewable)
 			   && (desks.desk[deskorder[i]].bg))
 			 {
-			    desks.desk[deskorder[i]].bg->last_viewed = time(NULL);
+			    desks.desk[deskorder[i]].bg->last_viewed =
+			       time(NULL);
 			 }
 		       desks.desk[deskorder[i]].viewable = v;
 		    }
@@ -2053,7 +2048,8 @@ DesktopRemoveEwin(EWin * ewin)
    int                 i, j;
 
    EDBUG(5, "DesktopRemoveEwin");
-   if ((ewin->desktop < 0) || (ewin->desktop > ENLIGHTENMENT_CONF_NUM_DESKTOPS - 1))
+   if ((ewin->desktop < 0)
+       || (ewin->desktop > ENLIGHTENMENT_CONF_NUM_DESKTOPS - 1))
       EDBUG_RETURN_;
    for (i = 0; i < desks.desk[ewin->desktop].num; i++)
      {
@@ -2191,7 +2187,8 @@ MoveEwinToDesktopAt(EWin * ewin, int num, int x, int y)
 	  {
 	     for (i = 0; i < nn; i++)
 	       {
-		  MoveEwinToDesktopAt(lst[i], num, lst[i]->x + dx, lst[i]->y + dy);
+		  MoveEwinToDesktopAt(lst[i], num, lst[i]->x + dx,
+				      lst[i]->y + dy);
 	       }
 	     Efree(lst);
 	  }

@@ -40,11 +40,7 @@ AtomGet(Window win, Atom to_get, Atom type, int *size)
    XGetWindowProperty(disp, win, to_get, 0,
 		      length,
 		      False, type,
-		      &type_ret,
-		      &format_ret,
-		      &num_ret,
-		      &bytes_after,
-		      &retval);
+		      &type_ret, &format_ret, &num_ret, &bytes_after, &retval);
    if ((retval) && (num_ret > 0) && (format_ret > 0))
      {
 	if (format_ret == 32)

@@ -114,10 +114,11 @@ BuildWindowGroup(EWin ** ewins, int num)
 	   AddEwinToGroup(ewins[i], g);
 	else
 	  {
-	     DIALOG_OK("Cannot comply",
-		       "Iconboxes and Pagers are disallowed from being\n"
-		       "members of a group. You cannot add these windows\n"
-		       "to a group.\n");
+	     DIALOG_OK(gettext("Cannot comply"),
+		       gettext
+		       ("Iconboxes and Pagers are disallowed from being\n"
+			"members of a group. You cannot add these windows\n"
+			"to a group.\n"));
 	  }
      }
 }
@@ -136,7 +137,8 @@ AddEwinToGroup(EWin * ewin, Group * g)
 		if (ewin->groups[i] == g)
 		   return;
 	     ewin->num_groups++;
-	     ewin->groups = Erealloc(ewin->groups, sizeof(Group *) * ewin->num_groups);
+	     ewin->groups =
+		Erealloc(ewin->groups, sizeof(Group *) * ewin->num_groups);
 	     ewin->groups[ewin->num_groups - 1] = g;
 	     g->num_members++;
 	     g->members = Erealloc(g->members, sizeof(EWin *) * g->num_members);
@@ -145,10 +147,11 @@ AddEwinToGroup(EWin * ewin, Group * g)
 	  }
 	else
 	  {
-	     DIALOG_OK("Cannot comply",
-		       "Iconboxes and Pagers are disallowed from being\n"
-		       "members of a group. You cannot add these windows\n"
-		       "to a group.\n");
+	     DIALOG_OK(gettext("Cannot comply"),
+		       gettext
+		       ("Iconboxes and Pagers are disallowed from being\n"
+			"members of a group. You cannot add these windows\n"
+			"to a group.\n"));
 	  }
      }
 }
@@ -208,10 +211,15 @@ RemoveEwinFromGroup(EWin * ewin, Group * g)
 				    g->members[j] = g->members[j + 1];
 				 g->num_members--;
 				 if (g->num_members > 0)
-				    g->members = Erealloc(g->members, sizeof(EWin *) * g->num_members);
+				    g->members =
+				       Erealloc(g->members,
+						sizeof(EWin *) *
+						g->num_members);
 				 else
 				   {
-				      RemoveItem((char *)g, 0, LIST_FINDBY_POINTER, LIST_TYPE_GROUP);
+				      RemoveItem((char *)g, 0,
+						 LIST_FINDBY_POINTER,
+						 LIST_TYPE_GROUP);
 				      FreeGroup(g);
 				   }
 				 /* and remove the group from the groups that the window is in */
@@ -225,21 +233,30 @@ RemoveEwinFromGroup(EWin * ewin, Group * g)
 				      ewin->num_groups = 0;
 				   }
 				 else
-				    ewin->groups = Erealloc(ewin->groups, sizeof(Group *) * ewin->num_groups);
+				    ewin->groups =
+				       Erealloc(ewin->groups,
+						sizeof(Group *) *
+						ewin->num_groups);
 				 SaveGroups();
 
 				 x = ewin->x;
 				 y = ewin->y;
-				 if ((ewin->x + ewin->border->border.left + 1) > root.w)
+				 if ((ewin->x + ewin->border->border.left + 1) >
+				     root.w)
 				    x = root.w - ewin->border->border.left - 1;
 				 else if ((ewin->x + ewin->w -
 					   ewin->border->border.right - 1) < 0)
-				    x = 0 - ewin->w + ewin->border->border.right + 1;
-				 if ((ewin->y + ewin->border->border.top + 1) > root.h)
+				    x =
+				       0 - ewin->w +
+				       ewin->border->border.right + 1;
+				 if ((ewin->y + ewin->border->border.top + 1) >
+				     root.h)
 				    y = root.h - ewin->border->border.top - 1;
 				 else if ((ewin->y + ewin->h -
-					 ewin->border->border.bottom - 1) < 0)
-				    y = 0 - ewin->h + ewin->border->border.bottom + 1;
+					   ewin->border->border.bottom - 1) < 0)
+				    y =
+				       0 - ewin->h +
+				       ewin->border->border.bottom + 1;
 
 				 MoveEwin(ewin, x, y);
 
@@ -266,7 +283,8 @@ GetWinGroupMemberNames(Group ** groups, int num)
 	group_member_strings[i][0] = 0;
 	for (j = 0; j < groups[i]->num_members; j++)
 	  {
-	     strcat(group_member_strings[i], groups[i]->members[j]->client.title);
+	     strcat(group_member_strings[i],
+		    groups[i]->members[j]->client.title);
 	     strcat(group_member_strings[i], "\n");
 	  }
      }
@@ -305,8 +323,9 @@ ShowHideWinGroups(EWin * ewin, Group * g, char onoff)
 		  if (!gwins[i]->border->group_border_name)
 		     continue;
 
-		  b = (Border *) FindItem(gwins[i]->border->group_border_name, 0, LIST_FINDBY_NAME,
-					  LIST_TYPE_BORDER);
+		  b =
+		     (Border *) FindItem(gwins[i]->border->group_border_name, 0,
+					 LIST_FINDBY_NAME, LIST_TYPE_BORDER);
 		  if (b)
 		    {
 		       gwins[i]->previous_border = gwins[i]->border;
@@ -326,8 +345,9 @@ ShowHideWinGroups(EWin * ewin, Group * g, char onoff)
 		  if (!gwins[i]->border->group_border_name)
 		     continue;
 
-		  b = (Border *) FindItem(gwins[i]->border->group_border_name, 0, LIST_FINDBY_NAME,
-					  LIST_TYPE_BORDER);
+		  b =
+		     (Border *) FindItem(gwins[i]->border->group_border_name, 0,
+					 LIST_FINDBY_NAME, LIST_TYPE_BORDER);
 		  if (b)
 		    {
 		       gwins[i]->previous_border = gwins[i]->border;
@@ -352,8 +372,8 @@ ShowHideWinGroups(EWin * ewin, Group * g, char onoff)
 	     gwins[i]->border_new = 1;
 	     SetEwinToBorder(gwins[i], b);
 	     ICCCM_MatchSize(gwins[i]);
-	     MoveResizeEwin(gwins[i], gwins[i]->x, gwins[i]->y, gwins[i]->client.w,
-			    gwins[i]->client.h);
+	     MoveResizeEwin(gwins[i], gwins[i]->x, gwins[i]->y,
+			    gwins[i]->client.w, gwins[i]->client.h);
 	     RememberImportantInfoForEwin(gwins[i]);
 	  }
      }
@@ -389,14 +409,20 @@ SaveGroups(void)
 			    if (groups[i]->members[0]->snap->num_groups)
 			      {
 				 fprintf(f, "NEW: %i\n", groups[i]->index);
-				 fprintf(f, "ICONIFY: %i\n", groups[i]->cfg.iconify);
+				 fprintf(f, "ICONIFY: %i\n",
+					 groups[i]->cfg.iconify);
 				 fprintf(f, "KILL: %i\n", groups[i]->cfg.kill);
 				 fprintf(f, "MOVE: %i\n", groups[i]->cfg.move);
-				 fprintf(f, "RAISE: %i\n", groups[i]->cfg.raise);
-				 fprintf(f, "SET_BORDER: %i\n", groups[i]->cfg.set_border);
-				 fprintf(f, "STICK: %i\n", groups[i]->cfg.stick);
-				 fprintf(f, "SHADE: %i\n", groups[i]->cfg.shade);
-				 fprintf(f, "MIRROR: %i\n", groups[i]->cfg.mirror);
+				 fprintf(f, "RAISE: %i\n",
+					 groups[i]->cfg.raise);
+				 fprintf(f, "SET_BORDER: %i\n",
+					 groups[i]->cfg.set_border);
+				 fprintf(f, "STICK: %i\n",
+					 groups[i]->cfg.stick);
+				 fprintf(f, "SHADE: %i\n",
+					 groups[i]->cfg.shade);
+				 fprintf(f, "MIRROR: %i\n",
+					 groups[i]->cfg.mirror);
 			      }
 			 }
 		    }
@@ -571,25 +597,29 @@ ChooseGroupDialog(EWin * ewin, char *message, char group_select, int action)
    tmp_action = action;
    tmp_groups = ListWinGroups(ewin, group_select, &num_groups);
 
-   if ((num_groups == 0) && (action == ACTION_BREAK_GROUP || action == ACTION_REMOVE_FROM_GROUP))
+   if ((num_groups == 0)
+       && (action == ACTION_BREAK_GROUP || action == ACTION_REMOVE_FROM_GROUP))
      {
-	DIALOG_OK("Window Group Error",
-		"\n  This window currently does not belong to any groups.  \n"
-	     "  You can only destroy groups or remove windows from groups  \n"
-		  "  through a window that actually belongs to at least one group.  \n\n");
+	DIALOG_OK(gettext("Window Group Error"),
+		  gettext
+		  ("\n  This window currently does not belong to any groups.  \n"
+		   "  You can only destroy groups or remove windows from groups  \n"
+		   "  through a window that actually belongs to at least one group.\n\n"));
 	return;
      }
    if ((num_groups == 0) && (group_select == GROUP_SELECT_ALL_EXCEPT_EWIN))
      {
-	DIALOG_OK("Window Group Error",
-		  "\n  Currently, no groups exist or this window  \n"
-		  "  already belongs to all existing groups.  \n"
-		  "  You have to start other groups first.  \n\n");
+	DIALOG_OK(gettext("Window Group Error"),
+		  gettext("\n  Currently, no groups exist or this window  \n"
+			  "  already belongs to all existing groups.  \n"
+			  "  You have to start other groups first.  \n\n"));
 	return;
      }
    if (!tmp_groups)
      {
-	DIALOG_OK("Window Group Error", "\n  Currently, no groups exist. You have to start a group first.  \n\n");
+	DIALOG_OK(gettext("Window Group Error"),
+		  gettext
+		  ("\n  Currently, no groups exist. You have to start a group first.\n\n"));
 	return;
      }
 
@@ -604,7 +634,7 @@ ChooseGroupDialog(EWin * ewin, char *message, char group_select, int action)
    AUDIO_PLAY("SOUND_SETTINGS_GROUP");
 
    d = CreateDialog("GROUP_SELECTION");
-   DialogSetTitle(d, "Window Group Selection");
+   DialogSetTitle(d, gettext("Window Group Selection"));
 
    table = DialogInitItem(d);
    DialogItemTableSetOptions(table, 2, 0, 0, 0);
@@ -661,8 +691,8 @@ ChooseGroupDialog(EWin * ewin, char *message, char group_select, int action)
    DialogItemSetFill(di, 1, 0);
    DialogItemSeparatorSetOrientation(di, 0);
 
-   DialogAddButton(d, "OK", ChooseGroup, 1);
-   DialogAddButton(d, "Close", ChooseGroup, 1);
+   DialogAddButton(d, gettext("OK"), ChooseGroup, 1);
+   DialogAddButton(d, gettext("Close"), ChooseGroup, 1);
    DialogSetExitFunction(d, ChooseGroup, 2, d);
    DialogBindKey(d, "Escape", ChooseGroupEscape, 0, d);
    DialogBindKey(d, "Return", ChooseGroup, 0, d);

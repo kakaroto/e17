@@ -116,486 +116,424 @@ void                IPC_Group(char *params, Client * c);
  * --Mandrake
  */
 
-IPCStruct           IPCArray[] =
-{
+IPCStruct           IPCArray[] = {
    {
-      IPC_Help,
-      "help",
-      "gives you this help screen",
-      "Additional parameters will retrieve help on many topics - "
-      "\"help <command>\".\nuse \"help all\" for a list of commands."
-   },
+    IPC_Help,
+    "help",
+    "gives you this help screen",
+    "Additional parameters will retrieve help on many topics - "
+    "\"help <command>\".\nuse \"help all\" for a list of commands."},
    {
-      IPC_Version,
-      "version",
-      "displays the current version of Enlightenment running",
-      NULL
-   },
+    IPC_Version,
+    "version",
+    "displays the current version of Enlightenment running",
+    NULL},
    {
-      IPC_Nop,
-      "nop",
-      "IPC No-operation - returns nop",
-      NULL
-   },
+    IPC_Nop,
+    "nop",
+    "IPC No-operation - returns nop",
+    NULL},
    {
-      IPC_Copyright,
-      "copyright",
-      "displays copyright information for Enlightenment",
-      NULL
-   },
+    IPC_Copyright,
+    "copyright",
+    "displays copyright information for Enlightenment",
+    NULL},
    {
-      IPC_AutoSave,
-      "autosave",
-      "toggle the Automatic Saving Feature",
-      "Use \"autosave ?\" to list the current status\n"
-      "use \"autosave on\" or \"autosave off\" to toggle the status"
-   },
+    IPC_AutoSave,
+    "autosave",
+    "toggle the Automatic Saving Feature",
+    "Use \"autosave ?\" to list the current status\n"
+    "use \"autosave on\" or \"autosave off\" to toggle the status"},
    {
-      IPC_DefaultTheme,
-      "default_theme",
-      "toggle the default theme",
-      "Use \"default_theme ?\" to get the current default theme\n"
-      "use \"default_theme /path/to/theme\"\n"
-      "you can retrieve a list of available themes from the "
-      "\"list_themes\" command"
-   },
+    IPC_DefaultTheme,
+    "default_theme",
+    "toggle the default theme",
+    "Use \"default_theme ?\" to get the current default theme\n"
+    "use \"default_theme /path/to/theme\"\n"
+    "you can retrieve a list of available themes from the "
+    "\"list_themes\" command"},
    {
-      IPC_Restart,
-      "restart",
-      "Restart Enlightenment",
-      NULL
-   },
+    IPC_Restart,
+    "restart",
+    "Restart Enlightenment",
+    NULL},
    {
-      IPC_RestartWM,
-      "restart_wm",
-      "Restart another window manager",
-      "Use \"restart_wm <wmname>\" to start another window manager.\n"
-      "Example: \"restart_wm fvwm\""
-   },
+    IPC_RestartWM,
+    "restart_wm",
+    "Restart another window manager",
+    "Use \"restart_wm <wmname>\" to start another window manager.\n"
+    "Example: \"restart_wm fvwm\""},
    {
-      IPC_RestartTheme,
-      "restart_theme",
-      "Restart with another theme",
-      "Use \"restart_theme <themename>\" to restart enlightenment "
-      "with another theme\nExample: \"restart_theme icE\""
-   },
+    IPC_RestartTheme,
+    "restart_theme",
+    "Restart with another theme",
+    "Use \"restart_theme <themename>\" to restart enlightenment "
+    "with another theme\nExample: \"restart_theme icE\""},
    {
-      IPC_Exit,
-      "exit",
-      "Exit Enlightenment",
-      NULL
-   },
+    IPC_Exit,
+    "exit",
+    "Exit Enlightenment",
+    NULL},
    {
-      IPC_ForceSave,
-      "save_config",
-      "Force Enlightenment to save settings now",
-      NULL
-   },
+    IPC_ForceSave,
+    "save_config",
+    "Force Enlightenment to save settings now",
+    NULL},
    {
-      IPC_SMFile,
-      "sm_file",
-      "Change the default prefix used for session saves",
-      "Average users are encouraged not to touch this setting.\n"
-      "Use \"sm_file ?\" to retrieve the current session management "
-      "file prefix\nUse \"sm_file /path/to/prefix/filenameprefix\" "
-      "to change."
-   },
+    IPC_SMFile,
+    "sm_file",
+    "Change the default prefix used for session saves",
+    "Average users are encouraged not to touch this setting.\n"
+    "Use \"sm_file ?\" to retrieve the current session management "
+    "file prefix\nUse \"sm_file /path/to/prefix/filenameprefix\" "
+    "to change."},
    {
-      IPC_ListThemes,
-      "list_themes",
-      "List currently available themes",
-      NULL
-   },
+    IPC_ListThemes,
+    "list_themes",
+    "List currently available themes",
+    NULL},
    {
-      IPC_GotoDesktop,
-      "goto_desktop",
-      "Change currently active destkop",
-      "Use \"goto_desktop num\" to go to a specific desktop.\n"
-      "Use \"goto_desktop next\" and \"goto_desktop prev\" to go to "
-      "the next and\n     previous desktop\n"
-      "Use \"goto_desktop ?\" to find out what desktop you are "
-      "currently on"
-   },
+    IPC_GotoDesktop,
+    "goto_desktop",
+    "Change currently active destkop",
+    "Use \"goto_desktop num\" to go to a specific desktop.\n"
+    "Use \"goto_desktop next\" and \"goto_desktop prev\" to go to "
+    "the next and\n     previous desktop\n"
+    "Use \"goto_desktop ?\" to find out what desktop you are " "currently on"},
    {
-      IPC_GotoArea,
-      "goto_area",
-      "Change currently active area",
-      "Use \"goto_area <horiz> <vert>\" to go to a specific desktop.\n"
-      "Use \"goto_desktop next <vert/horiz>\" and \"goto_desktop "
-      "prev <vert/horiz>\" to go to the next and\n     "
-      "previous areas\nUse \"goto_area ?\" to find out what area "
-      "you are currently on"
-   },
+    IPC_GotoArea,
+    "goto_area",
+    "Change currently active area",
+    "Use \"goto_area <horiz> <vert>\" to go to a specific desktop.\n"
+    "Use \"goto_desktop next <vert/horiz>\" and \"goto_desktop "
+    "prev <vert/horiz>\" to go to the next and\n     "
+    "previous areas\nUse \"goto_area ?\" to find out what area "
+    "you are currently on"},
    {
-      IPC_ShowIcons,
-      "show_icons",
-      "Toggle the display of icons on the desktop",
-      "Use \"show_icons on\" and \"show_icons off\" to change this setting\n"
-      "Use \"show_icons ?\" to retrieve the current setting"
-   },
+    IPC_ShowIcons,
+    "show_icons",
+    "Toggle the display of icons on the desktop",
+    "Use \"show_icons on\" and \"show_icons off\" to change this setting\n"
+    "Use \"show_icons ?\" to retrieve the current setting"},
    {
-      IPC_FocusMode,
-      "focus_mode",
-      "Change the current focus mode setting",
-      "Use \"focus_mode <mode>\" to change the focus mode.\n"
-      "Use \"focus_mode ?\" to retrieve the current setting\n"
-      "Focus Types:\n"
-      "click: This is the traditional click-to-focus mode.\n"
-      "clicknograb: This is a similar focus mode, but without the "
-      "grabbing of the click\n    "
-      "(you cannot click anywhere in a window to focus it)\n"
-      "pointer: The focus will follow the mouse pointer\n"
-      "sloppy: in sloppy-focus, the focus follows the mouse, "
-      "but when over\n    "
-      "the desktop background the last window does not lose the focus"
-   },
+    IPC_FocusMode,
+    "focus_mode",
+    "Change the current focus mode setting",
+    "Use \"focus_mode <mode>\" to change the focus mode.\n"
+    "Use \"focus_mode ?\" to retrieve the current setting\n"
+    "Focus Types:\n"
+    "click: This is the traditional click-to-focus mode.\n"
+    "clicknograb: This is a similar focus mode, but without the "
+    "grabbing of the click\n    "
+    "(you cannot click anywhere in a window to focus it)\n"
+    "pointer: The focus will follow the mouse pointer\n"
+    "sloppy: in sloppy-focus, the focus follows the mouse, "
+    "but when over\n    "
+    "the desktop background the last window does not lose the focus"},
    {
-      IPC_AdvancedFocus,
-      "advanced_focus",
-      "Toggle Advanced Focus Settings",
-      "use \"advanced_focus <option> <on/off/?>\" to change.\n"
-      "the options you may set are:\n"
-      "new_window_focus : all new windows get the keyboard focus\n"
-      "new_popup_window_focus : all new transient windows get focus\n"
-      "new_popup_of_owner_focus : transient windows from apps that have\n"
-      "   focus already may receive focus\n"
-      "raise_on_keyboard_focus_switch: Raise windows when switching focus\n"
-      "   with the keyboard\n"
-      "raise_after_keyboard_focus_switch: Raise windows after switching "
-      "focus\n"
-      "   with the keyboard\n"
-      "pointer_to_keyboard_focus_window: Send the pointer to the focused\n"
-      "   window when changing focus with the keyboard\n"
-      "pointer_after_keyboard_focus_window: Send the pointer to the "
-      "focused\n"
-      "   window after changing focus with the keyboard\n"
-      "transients_follow_leader: popup windows appear together with the\n"
-      "   window that created them.\n"
-      "switch_to_popup_location: switch to where a popup window appears\n"
-      "focus_list: display and use focus list (requires XKB)\n"
-      "manual_placement: place all new windows by hand"
-   },
+    IPC_AdvancedFocus,
+    "advanced_focus",
+    "Toggle Advanced Focus Settings",
+    "use \"advanced_focus <option> <on/off/?>\" to change.\n"
+    "the options you may set are:\n"
+    "new_window_focus : all new windows get the keyboard focus\n"
+    "new_popup_window_focus : all new transient windows get focus\n"
+    "new_popup_of_owner_focus : transient windows from apps that have\n"
+    "   focus already may receive focus\n"
+    "raise_on_keyboard_focus_switch: Raise windows when switching focus\n"
+    "   with the keyboard\n"
+    "raise_after_keyboard_focus_switch: Raise windows after switching "
+    "focus\n"
+    "   with the keyboard\n"
+    "pointer_to_keyboard_focus_window: Send the pointer to the focused\n"
+    "   window when changing focus with the keyboard\n"
+    "pointer_after_keyboard_focus_window: Send the pointer to the "
+    "focused\n"
+    "   window after changing focus with the keyboard\n"
+    "transients_follow_leader: popup windows appear together with the\n"
+    "   window that created them.\n"
+    "switch_to_popup_location: switch to where a popup window appears\n"
+    "focus_list: display and use focus list (requires XKB)\n"
+    "manual_placement: place all new windows by hand"},
    {
-      IPC_NumDesks,
-      "num_desks",
-      "Change the number of available desktops",
-      "Use \"num_desks <num>\" to change the available number of desktops.\n"
-      "Use \"num_desks ?\" to retrieve the current setting"
-   },
+    IPC_NumDesks,
+    "num_desks",
+    "Change the number of available desktops",
+    "Use \"num_desks <num>\" to change the available number of desktops.\n"
+    "Use \"num_desks ?\" to retrieve the current setting"},
    {
-      IPC_NumAreas,
-      "num_areas",
-      "Change the size of the virtual desktop",
-      "Use \"num_areas <width> <height>\" to change the size of the "
-      "virtual desktop.\nExample: \"num_areas 2 2\" makes 2x2 "
-      "virtual destkops\nUse \"num_areas ?\" to retrieve the "
-      "current setting"
-   },
+    IPC_NumAreas,
+    "num_areas",
+    "Change the size of the virtual desktop",
+    "Use \"num_areas <width> <height>\" to change the size of the "
+    "virtual desktop.\nExample: \"num_areas 2 2\" makes 2x2 "
+    "virtual destkops\nUse \"num_areas ?\" to retrieve the " "current setting"},
    {
-      IPC_WinOps,
-      "win_op",
-      "Change a property of a specific window",
-      "Use \"win_op <windowid> <property> <value>\" to change the "
-      "property of a window\nYou can use the \"window_list\" "
-      "command to retrieve a list of available windows\n"
-      "You can use ? after most of these commands to receive the current\n"
-      "status of that flag\n"
-      "available win_op commands are:\n  win_op <windowid> close\n  "
-      "win_op <windowid> annihilate\n  win_op <windowid> iconify\n  "
-      "win_op <windowid> shade\n  win_op <windowid> stick\n  "
-      "win_op <windowid> toggle_<width/height/size> "
-      "<conservative/available>\n          (or none for absolute)\n  "
-      "win_op <windowid> border <BORDERNAME>\n  win_op <windowid> "
-      "desk <desktochangeto/next/prev>\n  win_op <windowid> "
-      "area <x> <y>\n  win_op <windowid> <raise/lower>\n  "
-      "win_op <windowid> <move/resize> <x> <y>\n  "
-      "(you can use ? and ?? to retreive client and frame locations)\n  "
-      "win_op <windowid> focus\n  "
-      "win_op <windowid> title <title>\n"
-      "win_op <windowid> raise\n"
-      "win_op <windowid> lower\n"
-      "win_op <windowid> layer <0-100,4=normal>\n"
-    "<windowid> may be substituted with \"current\" to use the current window"
-   },
+    IPC_WinOps,
+    "win_op",
+    "Change a property of a specific window",
+    "Use \"win_op <windowid> <property> <value>\" to change the "
+    "property of a window\nYou can use the \"window_list\" "
+    "command to retrieve a list of available windows\n"
+    "You can use ? after most of these commands to receive the current\n"
+    "status of that flag\n"
+    "available win_op commands are:\n  win_op <windowid> close\n  "
+    "win_op <windowid> annihilate\n  win_op <windowid> iconify\n  "
+    "win_op <windowid> shade\n  win_op <windowid> stick\n  "
+    "win_op <windowid> toggle_<width/height/size> "
+    "<conservative/available>\n          (or none for absolute)\n  "
+    "win_op <windowid> border <BORDERNAME>\n  win_op <windowid> "
+    "desk <desktochangeto/next/prev>\n  win_op <windowid> "
+    "area <x> <y>\n  win_op <windowid> <raise/lower>\n  "
+    "win_op <windowid> <move/resize> <x> <y>\n  "
+    "(you can use ? and ?? to retreive client and frame locations)\n  "
+    "win_op <windowid> focus\n  "
+    "win_op <windowid> title <title>\n"
+    "win_op <windowid> raise\n"
+    "win_op <windowid> lower\n"
+    "win_op <windowid> layer <0-100,4=normal>\n"
+    "<windowid> may be substituted with \"current\" to use the current window"},
    {
-      IPC_WinList,
-      "window_list",
-      "Get a list of currently open windows and their Titles",
-      "the list will be returned in the following "
-      "format - \"window_id : title\""
-   },
+    IPC_WinList,
+    "window_list",
+    "Get a list of currently open windows and their Titles",
+    "the list will be returned in the following "
+    "format - \"window_id : title\""},
    {
-      IPC_ButtonShow,
-      "button_show",
-      "Show or Hide buttons on desktop",
-      "use \"button_show <button/buttons/all_buttons_except/all> "
-      "<BUTTON_STRING>\"\nexamples: \"button_show buttons all\" "
-      "(removes all buttons and the dragbar)\n\"button_show\" "
-      "(removes all buttons)\n \"button_show buttons CONFIG*\" "
-      "(removes all buttons with CONFIG in the start)"
-   },
+    IPC_ButtonShow,
+    "button_show",
+    "Show or Hide buttons on desktop",
+    "use \"button_show <button/buttons/all_buttons_except/all> "
+    "<BUTTON_STRING>\"\nexamples: \"button_show buttons all\" "
+    "(removes all buttons and the dragbar)\n\"button_show\" "
+    "(removes all buttons)\n \"button_show buttons CONFIG*\" "
+    "(removes all buttons with CONFIG in the start)"},
    {
-      IPC_ActiveNetwork,
-      "active_network",
-      "Enable or disable networking",
-      "use \"active_network <on/off>\" to toggle\n"
-      "use \"active_network ?\" to test status"
-   },
+    IPC_ActiveNetwork,
+    "active_network",
+    "Enable or disable networking",
+    "use \"active_network <on/off>\" to toggle\n"
+    "use \"active_network ?\" to test status"},
    {
-      IPC_FX,
-      "fx",
-      "Toggle various effects on/off",
-      "Use \"fx <effect> <mode>\" to set the mode of a particular effect\n"
-      "Use \"fx <effect> ?\" to get the current mode\n"
-      "the following effects are available\n"
-      "ripples <on/off> (ripples that act as a water effect on the screen)\n"
-      "deskslide <on/off> (slide in desktops on desktop change)\n"
-      "mapslide <on/off> (slide in new windows)\n"
-      "raindrops <on/off> (raindrops will appear across your desktop)\n"
-      "menu_animate <on/off> (toggles the animation of menus "
-      "as they appear)\n"
+    IPC_FX,
+    "fx",
+    "Toggle various effects on/off",
+    "Use \"fx <effect> <mode>\" to set the mode of a particular effect\n"
+    "Use \"fx <effect> ?\" to get the current mode\n"
+    "the following effects are available\n"
+    "ripples <on/off> (ripples that act as a water effect on the screen)\n"
+    "deskslide <on/off> (slide in desktops on desktop change)\n"
+    "mapslide <on/off> (slide in new windows)\n"
+    "raindrops <on/off> (raindrops will appear across your desktop)\n"
+    "menu_animate <on/off> (toggles the animation of menus "
+    "as they appear)\n"
     "animate_win_shading <on/off> (toggles the animation of window shading)\n"
-      "window_shade_speed <#> (number of pixels/sec to shade a window)\n"
-      "dragbar <on/off/left/right/top/bottom> (changes "
-      "location of dragbar)\n"
-      "tooltips <on/off/#> (changes state of tooltips and "
-      "seconds till popup)\n"
-      "autoraise <on/off/#> (changes state of autoraise and "
-      "seconds till raise)\n"
-      "edge_resistance <#/?/off> (changes the amount (in 1/100 seconds)\n"
-      "   of time to push for resistance to give)\n"
-      "edge_snap_resistance <#/?> (changes the number of pixels that "
-      "a window will\n   resist moving against another window\n"
-      "audio <on/off> (changes state of audio)\n"
-      "-  seconds for tooltips and autoraise can have less than one second\n"
-      "   (i.e. 0.5) or greater (1.3, 3.5, etc)"
-   },
+    "window_shade_speed <#> (number of pixels/sec to shade a window)\n"
+    "dragbar <on/off/left/right/top/bottom> (changes "
+    "location of dragbar)\n"
+    "tooltips <on/off/#> (changes state of tooltips and "
+    "seconds till popup)\n"
+    "autoraise <on/off/#> (changes state of autoraise and "
+    "seconds till raise)\n"
+    "edge_resistance <#/?/off> (changes the amount (in 1/100 seconds)\n"
+    "   of time to push for resistance to give)\n"
+    "edge_snap_resistance <#/?> (changes the number of pixels that "
+    "a window will\n   resist moving against another window\n"
+    "audio <on/off> (changes state of audio)\n"
+    "-  seconds for tooltips and autoraise can have less than one second\n"
+    "   (i.e. 0.5) or greater (1.3, 3.5, etc)"},
    {
-      IPC_DockPosition,
-      "dock",
-      "Change Data about the Dock Position and Direction",
-      "use \"dock direction <up/down/left/right/?>\" to set or "
-      "test direction\n"
-      "use \"dock start_pos ?\" to test the starting x y coords\n"
-      "use \"dock start_pos x y\" to set the starting x y coords"
-   },
+    IPC_DockPosition,
+    "dock",
+    "Change Data about the Dock Position and Direction",
+    "use \"dock direction <up/down/left/right/?>\" to set or "
+    "test direction\n"
+    "use \"dock start_pos ?\" to test the starting x y coords\n"
+    "use \"dock start_pos x y\" to set the starting x y coords"},
    {
-      IPC_MoveMode,
-      "move_mode",
-      "Toggle the Window move mode",
-      "use \"move_mode <opaque/lined/box/shaded/semi-solid/translucent>\" "
-      "to set\nuse \"move_mode ?\" to get the current mode"
-   },
+    IPC_MoveMode,
+    "move_mode",
+    "Toggle the Window move mode",
+    "use \"move_mode <opaque/lined/box/shaded/semi-solid/translucent>\" "
+    "to set\nuse \"move_mode ?\" to get the current mode"},
    {
-      IPC_ResizeMode,
-      "resize_mode",
-      "Toggle the Window resize mode",
-      "use \"resize_mode <opaque/lined/box/shaded/semi-solid>\" "
-      "to set\nuse \"resize_mode ?\" to get the current mode"
-   },
+    IPC_ResizeMode,
+    "resize_mode",
+    "Toggle the Window resize mode",
+    "use \"resize_mode <opaque/lined/box/shaded/semi-solid>\" "
+    "to set\nuse \"resize_mode ?\" to get the current mode"},
    {
-      IPC_Pager,
-      "pager",
-      "Toggle the status of the Pager and various pager settings",
-      "use \"pager <on/off>\" to set the current mode\nuse \"pager ?\" "
-      "to get the current mode\n"
-      "use \"pager <#> <on/off/?>\" to toggle or test any desktop's pager\n"
-      "use \"pager hiq <on/off>\" to toggle high quality pager\n"
-      "use \"pager snap <on/off>\" to toggle snapshotting in the pager\n"
-      "use \"pager zoom <on/off>\" to toggle zooming in the pager\n"
-      "use \"pager title <on/off>\" to toggle title display in the pager\n"
-      "use \"pager scanrate <#>\" to toggle number of line update "
-      "per second"
-   },
+    IPC_Pager,
+    "pager",
+    "Toggle the status of the Pager and various pager settings",
+    "use \"pager <on/off>\" to set the current mode\nuse \"pager ?\" "
+    "to get the current mode\n"
+    "use \"pager <#> <on/off/?>\" to toggle or test any desktop's pager\n"
+    "use \"pager hiq <on/off>\" to toggle high quality pager\n"
+    "use \"pager snap <on/off>\" to toggle snapshotting in the pager\n"
+    "use \"pager zoom <on/off>\" to toggle zooming in the pager\n"
+    "use \"pager title <on/off>\" to toggle title display in the pager\n"
+    "use \"pager scanrate <#>\" to toggle number of line update " "per second"},
    {
-      IPC_InternalList,
-      "internal_list",
-      "Retrieve a list of internal items",
-      "use \"internal_list <pagers/menus/dialogs/internal_ewin>\"\n"
-      "to retrieve a list of various internal window types.\n"
-      "(note that listing internal_ewin  doesn't retrieve "
-      "dialogs currently)\n"
-   },
+    IPC_InternalList,
+    "internal_list",
+    "Retrieve a list of internal items",
+    "use \"internal_list <pagers/menus/dialogs/internal_ewin>\"\n"
+    "to retrieve a list of various internal window types.\n"
+    "(note that listing internal_ewin  doesn't retrieve "
+    "dialogs currently)\n"},
    {
-      IPC_SetFocus,
-      "set_focus",
-      "Set/Retrieve focused window",
-      "use \"set_focus <win_id>\" to focus a new window\n"
-      "use \"set_focus ?\" to retrieve the currently focused window"
-   },
+    IPC_SetFocus,
+    "set_focus",
+    "Set/Retrieve focused window",
+    "use \"set_focus <win_id>\" to focus a new window\n"
+    "use \"set_focus ?\" to retrieve the currently focused window"},
    {
-      IPC_DialogOK,
-      "dialog_ok",
-      "Pop up a dialog box with an OK button",
-      "use \"dialog_ok <message>\" to pop up a dialog box."
-   },
+    IPC_DialogOK,
+    "dialog_ok",
+    "Pop up a dialog box with an OK button",
+    "use \"dialog_ok <message>\" to pop up a dialog box."},
    {
-      IPC_ListClassMembers,
-      "list_class",
-      "List all members of a class",
-      "use \"list_class <classname>\" to get back a list of class members\n"
-      "available classes are:\n"
-      "sounds\n"
-      "actions\n"
-      "backgrounds\n"
-      "borders\n"
-      "text\n"
-      "images\n"
-      "cursors\n"
-      "buttons"
-   },
+    IPC_ListClassMembers,
+    "list_class",
+    "List all members of a class",
+    "use \"list_class <classname>\" to get back a list of class members\n"
+    "available classes are:\n"
+    "sounds\n"
+    "actions\n"
+    "backgrounds\n" "borders\n" "text\n" "images\n" "cursors\n" "buttons"},
    {
-      IPC_PlaySoundClass,
-      "play_sound",
-      "Plays a soundclass via E",
-      "use \"play_sound <soundclass>\" to play a sound.\n"
-      "use \"list_class sounds\" to get a list of available sounds"
-   },
+    IPC_PlaySoundClass,
+    "play_sound",
+    "Plays a soundclass via E",
+    "use \"play_sound <soundclass>\" to play a sound.\n"
+    "use \"list_class sounds\" to get a list of available sounds"},
    {
-      IPC_SoundClass,
-      "soundclass",
-      "Create/Delete soundclasses",
-      "use \"soundclass create <classname> <filename>\" to create\n"
-      "use \"soundclass delete <classname>\" to delete"
-   },
+    IPC_SoundClass,
+    "soundclass",
+    "Create/Delete soundclasses",
+    "use \"soundclass create <classname> <filename>\" to create\n"
+    "use \"soundclass delete <classname>\" to delete"},
    {
-      IPC_ImageClass,
-      "imageclass",
-      "Create/delete/modify/apply an ImageClass",
-      "This doesn't do anything yet."
-   },
+    IPC_ImageClass,
+    "imageclass",
+    "Create/delete/modify/apply an ImageClass",
+    "This doesn't do anything yet."},
    {
-      IPC_ActionClass,
-      "actionclass",
-      "Create/Delete/Modify an ActionClass",
-      "This doesn't do anything yet."
-   },
+    IPC_ActionClass,
+    "actionclass",
+    "Create/Delete/Modify an ActionClass",
+    "This doesn't do anything yet."},
    {
-      IPC_ColorModifierClass,
-      "colormod",
-      "Create/Delete/Modify a ColorModifierClass",
-      "This doesn't do anything yet."
-   },
+    IPC_ColorModifierClass,
+    "colormod",
+    "Create/Delete/Modify a ColorModifierClass",
+    "This doesn't do anything yet."},
    {
-      IPC_TextClass,
-      "textclass",
-      "Create/Delete/Modify/apply a TextClass",
-      "This doesn't do anything yet."
-   },
+    IPC_TextClass,
+    "textclass",
+    "Create/Delete/Modify/apply a TextClass",
+    "This doesn't do anything yet."},
    {
-      IPC_Background,
-      "background",
-      "Create/Delete/Modify a Background",
-      "use \"background\" to list all defined backgrounds.\n"
-      "use \"background <name>\" to delete a background.\n"
-      "use \"background <name> ?\" to show current values.\n"
-      "use \"background <name> <type> <value> to create / modify.\n"
-      "(get available types from \"background <name> ?\"."
-   },
+    IPC_Background,
+    "background",
+    "Create/Delete/Modify a Background",
+    "use \"background\" to list all defined backgrounds.\n"
+    "use \"background <name>\" to delete a background.\n"
+    "use \"background <name> ?\" to show current values.\n"
+    "use \"background <name> <type> <value> to create / modify.\n"
+    "(get available types from \"background <name> ?\"."},
    {
-      IPC_Border,
-      "border",
-      "Create/Delete/Modify a Border",
-      "This doesn't do anything yet."
-   },
+    IPC_Border,
+    "border",
+    "Create/Delete/Modify a Border",
+    "This doesn't do anything yet."},
    {
-      IPC_Cursor,
-      "cursor",
-      "Create/Delete/Modify a Cursor",
-      "This doesn't do anything yet."
-   },
+    IPC_Cursor,
+    "cursor",
+    "Create/Delete/Modify a Cursor",
+    "This doesn't do anything yet."},
    {
-      IPC_Button,
-      "button",
-      "Create/Delete/Modify a Button",
-      "This doesn't do anything yet."
-   },
+    IPC_Button,
+    "button",
+    "Create/Delete/Modify a Button",
+    "This doesn't do anything yet."},
    {
-      IPC_GeneralInfo,
-      "general_info",
-      "Retrieve some general information",
-      "use \"general_info <info>\" to retrieve information\n"
-      "available info is: screen_size"
-   },
+    IPC_GeneralInfo,
+    "general_info",
+    "Retrieve some general information",
+    "use \"general_info <info>\" to retrieve information\n"
+    "available info is: screen_size"},
    {
-      IPC_Modules,
-      "module",
-      "Load/Unload/List Modules",
-      NULL
-   },
+    IPC_Modules,
+    "module",
+    "Load/Unload/List Modules",
+    NULL},
    {
-      IPC_ReloadMenus,
-      "reload_menus",
-      "Reload menus.cfg without restarting (Asmodean_)",
-      NULL
-   },
+    IPC_ReloadMenus,
+    "reload_menus",
+    "Reload menus.cfg without restarting (Asmodean_)",
+    NULL},
    {
-      IPC_GroupInfo,
-      "group_info",
-      "Retrieve some info on groups",
-      "use \"group_info [group_index]\""
-   },
+    IPC_GroupInfo,
+    "group_info",
+    "Retrieve some info on groups",
+    "use \"group_info [group_index]\""},
    {
-      IPC_GroupOps,
-      "group_op",
-      "Group operations",
-      "use \"group_op <windowid> <property> [<value>]\" to perform "
-      "group operations on a window.\n"
-      "Available group_op commands are:\n"
-      "  group_op <windowid> start\n"
-      "  group_op <windowid> add [<group_index>]\n"
-      "  group_op <windowid> remove [<group_index>]\n"
-      "  group_op <windowid> break [<group_index>]\n"
-      "  group_op <windowid> showhide\n"
-   },
+    IPC_GroupOps,
+    "group_op",
+    "Group operations",
+    "use \"group_op <windowid> <property> [<value>]\" to perform "
+    "group operations on a window.\n"
+    "Available group_op commands are:\n"
+    "  group_op <windowid> start\n"
+    "  group_op <windowid> add [<group_index>]\n"
+    "  group_op <windowid> remove [<group_index>]\n"
+    "  group_op <windowid> break [<group_index>]\n"
+    "  group_op <windowid> showhide\n"},
    {
-      IPC_Group,
-      "group",
-      "Group commands",
-      "use \"group <groupid> <property> <value>\" to set group properties.\n"
-      "Available group commands are:\n"
-      "  group <groupid> num_members <on/off/?>\n"
-      "  group <groupid> iconify <on/off/?>\n"
-      "  group <groupid> kill <on/off/?>\n"
-      "  group <groupid> move <on/off/?>\n"
-      "  group <groupid> raise <on/off/?>\n"
-      "  group <groupid> set_border <on/off/?>\n"
-      "  group <groupid> stick <on/off/?>\n"
-      "  group <groupid> shade <on/off/?>\n"
-      "  group <groupid> mirror <on/off/?>\n"
-   },
+    IPC_Group,
+    "group",
+    "Group commands",
+    "use \"group <groupid> <property> <value>\" to set group properties.\n"
+    "Available group commands are:\n"
+    "  group <groupid> num_members <on/off/?>\n"
+    "  group <groupid> iconify <on/off/?>\n"
+    "  group <groupid> kill <on/off/?>\n"
+    "  group <groupid> move <on/off/?>\n"
+    "  group <groupid> raise <on/off/?>\n"
+    "  group <groupid> set_border <on/off/?>\n"
+    "  group <groupid> stick <on/off/?>\n"
+    "  group <groupid> shade <on/off/?>\n"
+    "  group <groupid> mirror <on/off/?>\n"},
    {
-      IPC_KDE,
-      "kde",
-      "Turns on and off KDE support",
-      "use \"kde on\" and \"kde off\" to enable/disable support"
-   },
+    IPC_KDE,
+    "kde",
+    "Turns on and off KDE support",
+    "use \"kde on\" and \"kde off\" to enable/disable support"},
    {
-      IPC_MemDebug,
-      "dump_mem_debug",
-      "Dumps memory debugging information out to e.mem.out",
-      "Use this command to have E dump its current memory debugging table\n"
-      "to the e.mem.out file. NOTE: please read comments at the top of\n"
-      "memory.c to see how to enable this. This will let you hunt memory\n"
-      "leaks, over-allocations of memory, and other memory-related problems\n"
-      "very easily with all pointers allocated stamped with a time, call\n"
-      "tree that led to that allocation, file and line, and the chunk size.\n"
-   },
+    IPC_MemDebug,
+    "dump_mem_debug",
+    "Dumps memory debugging information out to e.mem.out",
+    "Use this command to have E dump its current memory debugging table\n"
+    "to the e.mem.out file. NOTE: please read comments at the top of\n"
+    "memory.c to see how to enable this. This will let you hunt memory\n"
+    "leaks, over-allocations of memory, and other memory-related problems\n"
+    "very easily with all pointers allocated stamped with a time, call\n"
+    "tree that led to that allocation, file and line, and the chunk size.\n"},
    {
-      IPC_Remember,
-      "remember",
-      "Remembers parameters for client window ID x",
-      "usage:\n"
-      "  remember <windowid> <parameter>\n"
-      "  where parameter is one of: all, none, border, desktop, size,\n"
-      "  location, layer, sticky, icon, shade, group, dialog, command\n"
-   },
+    IPC_Remember,
+    "remember",
+    "Remembers parameters for client window ID x",
+    "usage:\n"
+    "  remember <windowid> <parameter>\n"
+    "  where parameter is one of: all, none, border, desktop, size,\n"
+    "  location, layer, sticky, icon, shade, group, dialog, command\n"},
    {
-      IPC_CurrentTheme,
-      "current_theme",
-      "Returns the name of the currently used theme",
-      ""
-   }
+    IPC_CurrentTheme,
+    "current_theme",
+    "Returns the name of the currently used theme",
+    ""}
 };
 
 /* the functions */
@@ -607,7 +545,7 @@ IPCStruct           IPCArray[] =
  * - Mandrake
  */
 
-void 
+void
 IPC_Nop(char *params, Client * c)
 {
    CommsSend(c, "nop");
@@ -615,7 +553,7 @@ IPC_Nop(char *params, Client * c)
    return;
 }
 
-void 
+void
 IPC_Remember(char *params, Client * c)
 {
    char                buf[FILEPATH_LEN_MAX];
@@ -676,7 +614,7 @@ IPC_Remember(char *params, Client * c)
    return;
 }
 
-void 
+void
 IPC_KDE(char *params, Client * c)
 {
 
@@ -720,7 +658,7 @@ IPC_KDE(char *params, Client * c)
    return;
 }
 
-void 
+void
 IPC_Modules(char *params, Client * c)
 {
 
@@ -802,7 +740,7 @@ IPC_Modules(char *params, Client * c)
    return;
 }
 
-void 
+void
 IPC_DockPosition(char *params, Client * c)
 {
 
@@ -842,7 +780,8 @@ IPC_DockPosition(char *params, Client * c)
 			 }
 		       else
 			 {
-			    Esnprintf(buf, sizeof(buf), "Error: no y coordinate");
+			    Esnprintf(buf, sizeof(buf),
+				      "Error: no y coordinate");
 
 			 }
 		    }
@@ -925,7 +864,7 @@ IPC_DockPosition(char *params, Client * c)
 
 }
 
-void 
+void
 IPC_GeneralInfo(char *params, Client * c)
 {
 
@@ -956,7 +895,7 @@ IPC_GeneralInfo(char *params, Client * c)
 
 }
 
-void 
+void
 IPC_Button(char *params, Client * c)
 {
 
@@ -1010,8 +949,7 @@ IPC_Button(char *params, Client * c)
 	  }
 	else
 	  {
-	     Esnprintf(buf, sizeof(buf),
-		       "Error: unknown operation specified");
+	     Esnprintf(buf, sizeof(buf), "Error: unknown operation specified");
 	  }
      }
    else
@@ -1025,7 +963,7 @@ IPC_Button(char *params, Client * c)
    return;
 }
 
-void 
+void
 IPC_Background(char *params, Client * c)
 {
    char                buf[FILEPATH_LEN_MAX];
@@ -1051,7 +989,9 @@ IPC_Background(char *params, Client * c)
 	       {
 		  /* query background values */
 
-		  bg = (Background *) FindItem(name, 0, LIST_FINDBY_NAME, LIST_TYPE_BACKGROUND);
+		  bg =
+		     (Background *) FindItem(name, 0, LIST_FINDBY_NAME,
+					     LIST_TYPE_BACKGROUND);
 
 		  if (bg)
 		    {
@@ -1060,13 +1000,13 @@ IPC_Background(char *params, Client * c)
 				 " bg.solid\t %i %i %i \n"
 				 " bg.file\t %s \ttop.file\t %s \n"
 				 " bg.tile\t %i \n"
-			      " bg.keep_aspect\t %i \ttop.keep_aspect\t %i \n"
+				 " bg.keep_aspect\t %i \ttop.keep_aspect\t %i \n"
 				 " bg.xjust\t %i \ttop.xjust\t %i \n"
 				 " bg.yjust\t %i \ttop.yjust\t %i \n"
 				 " bg.xperc\t %i \ttop.xperc\t %i \n"
 				 " bg.yperc\t %i \ttop.yperc\t %i \n",
 				 bg->name, bg->ref_count,
-			       bg->bg.solid.r, bg->bg.solid.g, bg->bg.solid.b,
+				 bg->bg.solid.r, bg->bg.solid.g, bg->bg.solid.b,
 				 bg->bg.file, bg->top.file,
 				 bg->bg.tile,
 				 bg->bg.keep_aspect, bg->top.keep_aspect,
@@ -1076,19 +1016,26 @@ IPC_Background(char *params, Client * c)
 				 bg->bg.yperc, bg->top.yperc);
 		    }
 		  else
-		     Esnprintf(buf, sizeof(buf), "Error: background '%s' does not exist.", name);
+		     Esnprintf(buf, sizeof(buf),
+			       "Error: background '%s' does not exist.", name);
 	       }
 	     else
 	       {
 		  /* create / modify background */
 
-		  bg = (Background *) FindItem(name, 0, LIST_FINDBY_NAME, LIST_TYPE_BACKGROUND);
+		  bg =
+		     (Background *) FindItem(name, 0, LIST_FINDBY_NAME,
+					     LIST_TYPE_BACKGROUND);
 
 		  if (!bg)
-		     bg = CreateDesktopBG(strdup(name), NULL, NULL, 0, 0, 0, 0, 0, 0, NULL, 0, 0, 0, 0, 0);
+		     bg =
+			CreateDesktopBG(strdup(name), NULL, NULL, 0, 0, 0, 0, 0,
+					0, NULL, 0, 0, 0, 0, 0);
 
 		  if (!bg)
-		     Esnprintf(buf, sizeof(buf), "Error: could not create background '%s'.", name);
+		     Esnprintf(buf, sizeof(buf),
+			       "Error: could not create background '%s'.",
+			       name);
 		  else
 		    {
 		       word(params, 3, valu);
@@ -1143,7 +1090,9 @@ IPC_Background(char *params, Client * c)
 		       else if (!strcmp(type, "top.yperc"))
 			  bg->top.yperc = atoi(valu);
 		       else
-			  Esnprintf(buf, sizeof(buf), "Error: unknown background value type '%s'.", type);
+			  Esnprintf(buf, sizeof(buf),
+				    "Error: unknown background value type '%s'.",
+				    type);
 		    }
 
 		  AddItem(bg, bg->name, 0, LIST_TYPE_BACKGROUND);
@@ -1152,20 +1101,26 @@ IPC_Background(char *params, Client * c)
 	else
 	  {
 	     /* delete background */
-	     bg = (Background *) FindItem(name, 0, LIST_FINDBY_NAME, LIST_TYPE_BACKGROUND);
+	     bg =
+		(Background *) FindItem(name, 0, LIST_FINDBY_NAME,
+					LIST_TYPE_BACKGROUND);
 
 	     if (bg)
 	       {
 		  if (bg->ref_count == 0)
 		    {
-		       RemoveItem(name, 0, LIST_FINDBY_NAME, LIST_TYPE_BACKGROUND);
+		       RemoveItem(name, 0, LIST_FINDBY_NAME,
+				  LIST_TYPE_BACKGROUND);
 		       FreeDesktopBG(bg);
 		    }
 		  else
-		     Esnprintf(buf, sizeof(buf), "Error: ref_count for background '%s' is %u.", name, bg->ref_count);
+		     Esnprintf(buf, sizeof(buf),
+			       "Error: ref_count for background '%s' is %u.",
+			       name, bg->ref_count);
 	       }
 	     else
-		Esnprintf(buf, sizeof(buf), "Error: background '%s' does not exist.", name);
+		Esnprintf(buf, sizeof(buf),
+			  "Error: background '%s' does not exist.", name);
 	  }
      }
    else
@@ -1208,7 +1163,7 @@ IPC_Background(char *params, Client * c)
    return;
 }
 
-void 
+void
 IPC_Border(char *params, Client * c)
 {
 
@@ -1262,8 +1217,7 @@ IPC_Border(char *params, Client * c)
 	  }
 	else
 	  {
-	     Esnprintf(buf, sizeof(buf),
-		       "Error: unknown operation specified");
+	     Esnprintf(buf, sizeof(buf), "Error: unknown operation specified");
 	  }
      }
    else
@@ -1277,7 +1231,7 @@ IPC_Border(char *params, Client * c)
    return;
 }
 
-void 
+void
 IPC_Cursor(char *params, Client * c)
 {
 
@@ -1331,8 +1285,7 @@ IPC_Cursor(char *params, Client * c)
 	  }
 	else
 	  {
-	     Esnprintf(buf, sizeof(buf),
-		       "Error: unknown operation specified");
+	     Esnprintf(buf, sizeof(buf), "Error: unknown operation specified");
 	  }
      }
    else
@@ -1346,7 +1299,7 @@ IPC_Cursor(char *params, Client * c)
    return;
 }
 
-void 
+void
 IPC_TextClass(char *params, Client * c)
 {
    char                pq;
@@ -1452,8 +1405,7 @@ IPC_TextClass(char *params, Client * c)
 		  t = (TextClass *) FindItem(param1, 0, LIST_FINDBY_NAME,
 					     LIST_TYPE_TCLASS);
 		  if (t)
-		     Esnprintf(buf, sizeof(buf), "TextClass %s found",
-			       t->name);
+		     Esnprintf(buf, sizeof(buf), "TextClass %s found", t->name);
 		  else
 		     Esnprintf(buf, sizeof(buf), "TextClass %s not found",
 			       param1);
@@ -1490,7 +1442,7 @@ IPC_TextClass(char *params, Client * c)
    return;
 }
 
-void 
+void
 IPC_ColorModifierClass(char *params, Client * c)
 {
 
@@ -1520,7 +1472,8 @@ IPC_ColorModifierClass(char *params, Client * c)
 		  ColorModifierClass *cm;
 
 		  cm = (ColorModifierClass *) FindItem(param1, 0,
-				   LIST_FINDBY_NAME, LIST_TYPE_COLORMODIFIER);
+						       LIST_FINDBY_NAME,
+						       LIST_TYPE_COLORMODIFIER);
 		  if (cm)
 		     FreeCMClass(cm);
 	       }
@@ -1532,7 +1485,8 @@ IPC_ColorModifierClass(char *params, Client * c)
 		  ColorModifierClass *cm;
 
 		  cm = (ColorModifierClass *) FindItem(param1, 0,
-				   LIST_FINDBY_NAME, LIST_TYPE_COLORMODIFIER);
+						       LIST_FINDBY_NAME,
+						       LIST_TYPE_COLORMODIFIER);
 		  if (cm)
 		     Esnprintf(buf, sizeof(buf), "%u references remain.",
 			       cm->ref_count);
@@ -1559,7 +1513,7 @@ IPC_ColorModifierClass(char *params, Client * c)
    return;
 }
 
-void 
+void
 IPC_ActionClass(char *params, Client * c)
 {
 
@@ -1628,7 +1582,7 @@ IPC_ActionClass(char *params, Client * c)
    return;
 }
 
-void 
+void
 IPC_ImageClass(char *params, Client * c)
 {
    char                pq;
@@ -1677,14 +1631,15 @@ IPC_ImageClass(char *params, Client * c)
 	       {
 		  ImageClass         *iclass;
 
-		  iclass = (ImageClass *) FindItem(param1, 0, LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
+		  iclass =
+		     (ImageClass *) FindItem(param1, 0, LIST_FINDBY_NAME,
+					     LIST_TYPE_ICLASS);
 		  if (iclass)
 		     Esnprintf(buf, sizeof(buf),
 			       "%i %i %i %i",
 			       iclass->padding.left,
 			       iclass->padding.right,
-			       iclass->padding.top,
-			       iclass->padding.bottom);
+			       iclass->padding.top, iclass->padding.bottom);
 		  else
 		     Esnprintf(buf, sizeof(buf),
 			       "Error: Imageclass does not exist");
@@ -1693,7 +1648,9 @@ IPC_ImageClass(char *params, Client * c)
 	       {
 		  ImageClass         *iclass;
 
-		  iclass = (ImageClass *) FindItem(param1, 0, LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
+		  iclass =
+		     (ImageClass *) FindItem(param1, 0, LIST_FINDBY_NAME,
+					     LIST_TYPE_ICLASS);
 		  if (iclass)
 		    {
 		       ImlibImage         *im = NULL;
@@ -1706,7 +1663,8 @@ IPC_ImageClass(char *params, Client * c)
 			    if (iclass->norm.normal->real_file)
 			       im =
 				  Imlib_load_image(id,
-					      iclass->norm.normal->real_file);
+						   iclass->norm.normal->
+						   real_file);
 			    if (im)
 			      {
 				 Esnprintf(buf, sizeof(buf),
@@ -1730,7 +1688,9 @@ IPC_ImageClass(char *params, Client * c)
 	       {
 		  ImageClass         *iclass;
 
-		  iclass = (ImageClass *) FindItem(param1, 0, LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
+		  iclass =
+		     (ImageClass *) FindItem(param1, 0, LIST_FINDBY_NAME,
+					     LIST_TYPE_ICLASS);
 		  if (iclass)
 		    {
 		       Window              win;
@@ -1750,7 +1710,8 @@ IPC_ImageClass(char *params, Client * c)
 			  st = STATE_NORMAL;
 		       if ((hptr = atword(params, 6)))
 			 {
-			    w = (int)strtol(atword(params, 5), (char **)NULL, 0);
+			    w =
+			       (int)strtol(atword(params, 5), (char **)NULL, 0);
 			    h = (int)strtol(hptr, (char **)NULL, 0);
 			 }
 		       pq = queue_up;
@@ -1764,7 +1725,9 @@ IPC_ImageClass(char *params, Client * c)
 		  ImageClass         *iclass;
 		  Pixmap              pmap = 0, mask = 0;
 
-		  iclass = (ImageClass *) FindItem(param1, 0, LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
+		  iclass =
+		     (ImageClass *) FindItem(param1, 0, LIST_FINDBY_NAME,
+					     LIST_TYPE_ICLASS);
 		  if (iclass)
 		    {
 		       Window              win;
@@ -1783,16 +1746,20 @@ IPC_ImageClass(char *params, Client * c)
 		       else
 			  st = STATE_NORMAL;
 		       if (!(hptr = atword(params, 6)))
-			  Esnprintf(buf, sizeof(buf), "Error:  missing width and/or height");
+			  Esnprintf(buf, sizeof(buf),
+				    "Error:  missing width and/or height");
 		       else
 			 {
-			    w = (int)strtol(atword(params, 5), (char **)NULL, 0);
+			    w =
+			       (int)strtol(atword(params, 5), (char **)NULL, 0);
 			    h = (int)strtol(hptr, (char **)NULL, 0);
 			    pq = queue_up;
 			    queue_up = 0;
-			    IclassApplyCopy(iclass, win, w, h, 0, 0, st, &pmap, &mask);
+			    IclassApplyCopy(iclass, win, w, h, 0, 0, st, &pmap,
+					    &mask);
 			    queue_up = pq;
-			    Esnprintf(buf, sizeof(buf), "0x%08x 0x%08x", pmap, mask);
+			    Esnprintf(buf, sizeof(buf), "0x%08x 0x%08x", pmap,
+				      mask);
 			 }
 		    }
 	       }
@@ -1841,7 +1808,7 @@ IPC_ImageClass(char *params, Client * c)
    return;
 }
 
-void 
+void
 IPC_SoundClass(char *params, Client * c)
 {
 
@@ -1905,7 +1872,7 @@ IPC_SoundClass(char *params, Client * c)
    return;
 }
 
-void 
+void
 IPC_PlaySoundClass(char *params, Client * c)
 {
    char                buf[FILEPATH_LEN_MAX];
@@ -1934,7 +1901,7 @@ IPC_PlaySoundClass(char *params, Client * c)
 
 }
 
-void 
+void
 IPC_ListClassMembers(char *params, Client * c)
 {
 
@@ -2126,7 +2093,7 @@ IPC_ListClassMembers(char *params, Client * c)
    return;
 }
 
-void 
+void
 IPC_DialogOK(char *params, Client * c)
 {
 
@@ -2147,7 +2114,7 @@ IPC_DialogOK(char *params, Client * c)
    return;
 }
 
-void 
+void
 IPC_SetFocus(char *params, Client * c)
 {
 
@@ -2194,7 +2161,7 @@ IPC_SetFocus(char *params, Client * c)
 
 }
 
-void 
+void
 IPC_AdvancedFocus(char *params, Client * c)
 {
 
@@ -2389,13 +2356,11 @@ IPC_AdvancedFocus(char *params, Client * c)
 	       {
 		  if (mode.display_warp)
 		    {
-		       Esnprintf(buf, sizeof(buf),
-				 "display_warp: on");
+		       Esnprintf(buf, sizeof(buf), "display_warp: on");
 		    }
 		  else
 		    {
-		       Esnprintf(buf, sizeof(buf),
-				 "display_warp: off");
+		       Esnprintf(buf, sizeof(buf), "display_warp: off");
 		    }
 	       }
 	     else
@@ -2529,13 +2494,11 @@ IPC_AdvancedFocus(char *params, Client * c)
 	       {
 		  if (mode.manual_placement)
 		    {
-		       Esnprintf(buf, sizeof(buf),
-				 "manual_placement: on");
+		       Esnprintf(buf, sizeof(buf), "manual_placement: on");
 		    }
 		  else
 		    {
-		       Esnprintf(buf, sizeof(buf),
-				 "manual_placement: off");
+		       Esnprintf(buf, sizeof(buf), "manual_placement: off");
 		    }
 	       }
 	     else
@@ -2560,7 +2523,7 @@ IPC_AdvancedFocus(char *params, Client * c)
 
 }
 
-void 
+void
 IPC_InternalList(char *params, Client * c)
 {
 
@@ -2642,7 +2605,7 @@ IPC_InternalList(char *params, Client * c)
 
 }
 
-void 
+void
 IPC_Pager(char *params, Client * c)
 {
 
@@ -2874,7 +2837,7 @@ IPC_Pager(char *params, Client * c)
 
 }
 
-void 
+void
 IPC_MoveMode(char *params, Client * c)
 {
 
@@ -2945,7 +2908,7 @@ IPC_MoveMode(char *params, Client * c)
 
 }
 
-void 
+void
 IPC_ResizeMode(char *params, Client * c)
 {
 
@@ -3010,7 +2973,7 @@ IPC_ResizeMode(char *params, Client * c)
 
 }
 
-void 
+void
 IPC_FX(char *params, Client * c)
 {
 
@@ -3047,8 +3010,7 @@ IPC_FX(char *params, Client * c)
 	       }
 	     else
 	       {
-		  Esnprintf(buf, sizeof(buf),
-			    "Error: unknown mode specified");
+		  Esnprintf(buf, sizeof(buf), "Error: unknown mode specified");
 	       }
 	  }
 	else if (!strcmp(word1, "deskslide"))
@@ -3071,8 +3033,7 @@ IPC_FX(char *params, Client * c)
 	       }
 	     else
 	       {
-		  Esnprintf(buf, sizeof(buf),
-			    "Error: unknown mode specified");
+		  Esnprintf(buf, sizeof(buf), "Error: unknown mode specified");
 	       }
 	  }
 	else if (!strcmp(word1, "mapslide"))
@@ -3095,8 +3056,7 @@ IPC_FX(char *params, Client * c)
 	       }
 	     else
 	       {
-		  Esnprintf(buf, sizeof(buf),
-			    "Error: unknown mode specified");
+		  Esnprintf(buf, sizeof(buf), "Error: unknown mode specified");
 	       }
 	  }
 	else if (!strcmp(word1, "raindrops"))
@@ -3121,8 +3081,7 @@ IPC_FX(char *params, Client * c)
 	       }
 	     else
 	       {
-		  Esnprintf(buf, sizeof(buf),
-			    "Error: unknown mode specified");
+		  Esnprintf(buf, sizeof(buf), "Error: unknown mode specified");
 	       }
 	  }
 	else if (!strcmp(word1, "menu_animate"))
@@ -3145,8 +3104,7 @@ IPC_FX(char *params, Client * c)
 	       }
 	     else
 	       {
-		  Esnprintf(buf, sizeof(buf),
-			    "Error: unknown mode specified");
+		  Esnprintf(buf, sizeof(buf), "Error: unknown mode specified");
 	       }
 	  }
 	else if (!strcmp(word1, "waves"))
@@ -3171,8 +3129,7 @@ IPC_FX(char *params, Client * c)
 	       }
 	     else
 	       {
-		  Esnprintf(buf, sizeof(buf),
-			    "Error: unknown mode specified");
+		  Esnprintf(buf, sizeof(buf), "Error: unknown mode specified");
 	       }
 	  }
 	else if (!strcmp(word1, "animate_win_shading"))
@@ -3195,8 +3152,7 @@ IPC_FX(char *params, Client * c)
 	       }
 	     else
 	       {
-		  Esnprintf(buf, sizeof(buf),
-			    "Error: unknown mode specified");
+		  Esnprintf(buf, sizeof(buf), "Error: unknown mode specified");
 	       }
 	  }
 	else if (!strcmp(word1, "window_shade_speed"))
@@ -3288,8 +3244,7 @@ IPC_FX(char *params, Client * c)
 	       }
 	     else
 	       {
-		  Esnprintf(buf, sizeof(buf),
-			    "Error: unknown mode specified");
+		  Esnprintf(buf, sizeof(buf), "Error: unknown mode specified");
 	       }
 
 	     if (move)
@@ -3302,10 +3257,12 @@ IPC_FX(char *params, Client * c)
 		  for (i = 0; i < ENLIGHTENMENT_CONF_NUM_DESKTOPS; i++)
 		     MoveDesktop(i, 0, 0);
 		  while ((b = RemoveItem("_DESKTOP_DRAG_CONTROL",
-				      0, LIST_FINDBY_NAME, LIST_TYPE_BUTTON)))
+					 0, LIST_FINDBY_NAME,
+					 LIST_TYPE_BUTTON)))
 		     DestroyButton(b);
 		  while ((b = RemoveItem("_DESKTOP_DESKRAY_DRAG_CONTROL",
-				      0, LIST_FINDBY_NAME, LIST_TYPE_BUTTON)))
+					 0, LIST_FINDBY_NAME,
+					 LIST_TYPE_BUTTON)))
 		     DestroyButton(b);
 		  InitDesktopControls();
 		  ShowDesktopControls();
@@ -3383,7 +3340,7 @@ IPC_FX(char *params, Client * c)
 		  if (!strcmp(word2, "?"))
 		    {
 		       Esnprintf(buf, sizeof(buf),
-			       "edge_snap_distance: %d", mode.edge_snap_dist);
+				 "edge_snap_distance: %d", mode.edge_snap_dist);
 		    }
 		  else
 		    {
@@ -3392,8 +3349,7 @@ IPC_FX(char *params, Client * c)
 	       }
 	     else
 	       {
-		  Esnprintf(buf, sizeof(buf),
-			    "Error: no pixel distance given");
+		  Esnprintf(buf, sizeof(buf), "Error: no pixel distance given");
 	       }
 	  }
 	else if (!strcmp(word1, "autoraise"))
@@ -3474,8 +3430,7 @@ IPC_FX(char *params, Client * c)
 	       }
 	     else
 	       {
-		  Esnprintf(buf, sizeof(buf),
-			    "Error: unknown mode specified");
+		  Esnprintf(buf, sizeof(buf), "Error: unknown mode specified");
 	       }
 	  }
 	else
@@ -3495,7 +3450,7 @@ IPC_FX(char *params, Client * c)
 
 }
 
-void 
+void
 IPC_ActiveNetwork(char *params, Client * c)
 {
    char                buf[FILEPATH_LEN_MAX];
@@ -3550,7 +3505,7 @@ IPC_ActiveNetwork(char *params, Client * c)
    return;
 }
 
-void 
+void
 IPC_ButtonShow(char *params, Client * c)
 {
    c = NULL;
@@ -3565,7 +3520,7 @@ IPC_ButtonShow(char *params, Client * c)
    return;
 }
 
-void 
+void
 IPC_WinList(char *params, Client * c)
 {
 
@@ -3611,7 +3566,7 @@ IPC_WinList(char *params, Client * c)
 
 }
 
-void 
+void
 IPC_GotoArea(char *params, Client * c)
 {
 
@@ -3689,7 +3644,7 @@ IPC_GotoArea(char *params, Client * c)
 
 }
 
-void 
+void
 IPC_WinOps(char *params, Client * c)
 {
 
@@ -3747,13 +3702,15 @@ IPC_WinOps(char *params, Client * c)
 		    {
 		       ICCCM_Delete(ewin);
 		       ApplySclass(FindItem("SOUND_WINDOW_CLOSE", 0,
-					 LIST_FINDBY_NAME, LIST_TYPE_SCLASS));
+					    LIST_FINDBY_NAME,
+					    LIST_TYPE_SCLASS));
 		    }
 		  else if (!strcmp(operation, "annihiliate"))
 		    {
 		       EDestroyWindow(disp, ewin->client.win);
 		       ApplySclass(FindItem("SOUND_WINDOW_CLOSE", 0,
-					 LIST_FINDBY_NAME, LIST_TYPE_SCLASS));
+					    LIST_FINDBY_NAME,
+					    LIST_TYPE_SCLASS));
 		    }
 		  else if (!strcmp(operation, "iconify"))
 		    {
@@ -3885,18 +3842,22 @@ IPC_WinOps(char *params, Client * c)
 				   {
 				      /* return the window title */
 				      Esnprintf(buf, sizeof(buf),
-				      "window title: %s", ewin->client.title);
+						"window title: %s",
+						ewin->client.title);
 				   }
 				 else
 				   {
 				      /* set the new title */
 				      if (ewin->client.title)
 					 Efree(ewin->client.title);
-				      ewin->client.title = Emalloc((strlen(ptr) + 1) *
-								sizeof(char));
+				      ewin->client.title =
+					 Emalloc((strlen(ptr) + 1) *
+
+						 sizeof(char));
 
 				      strcpy(ewin->client.title, ptr);
-				      XStoreName(disp, ewin->client.win, ewin->client.title);
+				      XStoreName(disp, ewin->client.win,
+						 ewin->client.title);
 				      DrawEwin(ewin);
 				   }
 			      }
@@ -3960,14 +3921,16 @@ IPC_WinOps(char *params, Client * c)
 			    else
 			      {
 				 b = (Border *) FindItem(param1, 0,
-					  LIST_FINDBY_NAME, LIST_TYPE_BORDER);
+							 LIST_FINDBY_NAME,
+							 LIST_TYPE_BORDER);
 				 if ((b) && (b != ewin->border))
 				   {
 				      ewin->border_new = 1;
 				      SetEwinToBorder(ewin, b);
 				      ICCCM_MatchSize(ewin);
 				      MoveResizeEwin(ewin, ewin->x, ewin->y,
-					      ewin->client.w, ewin->client.h);
+						     ewin->client.w,
+						     ewin->client.h);
 				   }
 			      }
 			 }
@@ -4094,13 +4057,14 @@ IPC_WinOps(char *params, Client * c)
 			    if (!strcmp(param1, "?"))
 			      {
 				 Esnprintf(buf, sizeof(buf),
-					 "window size: %d %d", ewin->client.w,
+					   "window size: %d %d", ewin->client.w,
 					   ewin->client.h);
 			      }
 			    else if (!strcmp(param1, "??"))
 			      {
 				 Esnprintf(buf, sizeof(buf),
-				       "frame size: %d %d", ewin->w, ewin->h);
+					   "frame size: %d %d", ewin->w,
+					   ewin->h);
 			      }
 			    else
 			      {
@@ -4157,8 +4121,7 @@ IPC_WinOps(char *params, Client * c)
 		    }
 		  else
 		    {
-		       Esnprintf(buf, sizeof(buf),
-				 "Error: unknown operation");
+		       Esnprintf(buf, sizeof(buf), "Error: unknown operation");
 		    }
 	       }
 	  }
@@ -4175,7 +4138,7 @@ IPC_WinOps(char *params, Client * c)
 
 }
 
-void 
+void
 IPC_NumAreas(char *params, Client * c)
 {
 
@@ -4189,8 +4152,7 @@ IPC_NumAreas(char *params, Client * c)
 	     int                 ax, ay;
 
 	     GetAreaSize(&ax, &ay);
-	     Esnprintf(buf, sizeof(buf), "Number of Areas: %d %d",
-		       ax, ay);
+	     Esnprintf(buf, sizeof(buf), "Number of Areas: %d %d", ax, ay);
 	  }
 	else
 	  {
@@ -4213,7 +4175,7 @@ IPC_NumAreas(char *params, Client * c)
 
 }
 
-void 
+void
 IPC_NumDesks(char *params, Client * c)
 {
 
@@ -4244,7 +4206,7 @@ IPC_NumDesks(char *params, Client * c)
 
 }
 
-void 
+void
 IPC_FocusMode(char *params, Client * c)
 {
 
@@ -4315,7 +4277,7 @@ IPC_FocusMode(char *params, Client * c)
 
 }
 
-void 
+void
 IPC_ShowIcons(char *params, Client * c)
 {
 
@@ -4359,7 +4321,7 @@ IPC_ShowIcons(char *params, Client * c)
    return;
 }
 
-void 
+void
 IPC_GotoDesktop(char *params, Client * c)
 {
 
@@ -4382,8 +4344,7 @@ IPC_GotoDesktop(char *params, Client * c)
 	  }
 	else if (!strcmp(params, "?"))
 	  {
-	     Esnprintf(buf, sizeof(buf), "Current Desktop: %d",
-		       desks.current);
+	     Esnprintf(buf, sizeof(buf), "Current Desktop: %d", desks.current);
 	  }
 	else
 	  {
@@ -4397,7 +4358,7 @@ IPC_GotoDesktop(char *params, Client * c)
    return;
 }
 
-void 
+void
 IPC_ListThemes(char *params, Client * c)
 {
 
@@ -4438,7 +4399,7 @@ IPC_ListThemes(char *params, Client * c)
 
 }
 
-void 
+void
 IPC_SMFile(char *params, Client * c)
 {
 
@@ -4469,7 +4430,7 @@ IPC_SMFile(char *params, Client * c)
 
 }
 
-void 
+void
 IPC_ForceSave(char *params, Client * c)
 {
 
@@ -4485,7 +4446,7 @@ IPC_ForceSave(char *params, Client * c)
    return;
 }
 
-void 
+void
 IPC_Restart(char *params, Client * c)
 {
 
@@ -4496,7 +4457,7 @@ IPC_Restart(char *params, Client * c)
 
 }
 
-void 
+void
 IPC_RestartWM(char *params, Client * c)
 {
 
@@ -4518,7 +4479,7 @@ IPC_RestartWM(char *params, Client * c)
 
 }
 
-void 
+void
 IPC_RestartTheme(char *params, Client * c)
 {
 
@@ -4538,7 +4499,7 @@ IPC_RestartTheme(char *params, Client * c)
    return;
 }
 
-void 
+void
 IPC_Exit(char *params, Client * c)
 {
 
@@ -4552,7 +4513,7 @@ IPC_Exit(char *params, Client * c)
 
 }
 
-void 
+void
 IPC_DefaultTheme(char *params, Client * c)
 {
 
@@ -4592,7 +4553,7 @@ IPC_DefaultTheme(char *params, Client * c)
 
 }
 
-void 
+void
 IPC_CurrentTheme(char *params, Client * c)
 {
 
@@ -4608,7 +4569,7 @@ IPC_CurrentTheme(char *params, Client * c)
    params = NULL;
 }
 
-void 
+void
 IPC_AutoSave(char *params, Client * c)
 {
 
@@ -4645,7 +4606,7 @@ IPC_AutoSave(char *params, Client * c)
 
 }
 
-void 
+void
 IPC_Help(char *params, Client * c)
 {
 
@@ -4658,13 +4619,14 @@ IPC_Help(char *params, Client * c)
    buf[0] = 0;
    buf2[0] = 0;
    numIPC = sizeof(IPCArray) / sizeof(IPCStruct);
-   Esnprintf(buf, sizeof(buf), "Enlightenment IPC Commands Help");
+   Esnprintf(buf, sizeof(buf), gettext("Enlightenment IPC Commands Help"));
 
    if (!params)
      {
-	strcat(buf, "\ncommands currently available:\n");
-	strcat(buf, "use \"help all\" for descriptions of each command\n"
-	       "use \"help <command>\" for an individual description\n\n");
+	strcat(buf, gettext("\ncommands currently available:\n"));
+	strcat(buf,
+	       gettext("use \"help all\" for descriptions of each command\n"
+		       "use \"help <command>\" for an individual description\n\n"));
 
 	commandname_list = Emalloc(numIPC * sizeof(char *));
 
@@ -4700,10 +4662,10 @@ IPC_Help(char *params, Client * c)
      {
 	if (!strcmp(params, "all"))
 	  {
-	     strcat(buf, "\ncommands currently available:\n");
-	     strcat(buf, "use \"help <command>\" "
-		    "for an individual description\n");
-	     strcat(buf, "<command> : <description>\n");
+	     strcat(buf, gettext("\ncommands currently available:\n"));
+	     strcat(buf, gettext("use \"help <command>\" "
+				 "for an individual description\n"));
+	     strcat(buf, gettext("<command> : <description>\n"));
 	     for (i = 0; i < numIPC; i++)
 	       {
 		  strcat(buf, IPCArray[i].commandname);
@@ -4742,7 +4704,7 @@ IPC_Help(char *params, Client * c)
    return;
 }
 
-void 
+void
 IPC_Copyright(char *params, Client * c)
 {
 
@@ -4755,7 +4717,7 @@ IPC_Copyright(char *params, Client * c)
 	     "Kimball Thurston,\n"
 	     "Michael Kellen, Frederic Devernay, Felix Bellaby, "
 	     "Michael Jennings,\n"
-	  "Christian Kreibich, Peter Kjellerstedt, Troy Pesola, Owen Taylor, "
+	     "Christian Kreibich, Peter Kjellerstedt, Troy Pesola, Owen Taylor, "
 	     "Stalyn,\n"
 	     "Knut Neumann, Nathan Heagy, Simon Forman, "
 	     "Brent Nelson,\n"
@@ -4790,8 +4752,7 @@ IPC_Copyright(char *params, Client * c)
 	     "IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, "
 	     "OUT OF OR IN\n"
 	     "CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS "
-	     "IN THE SOFTWARE.\n"
-      );
+	     "IN THE SOFTWARE.\n");
 
    if (buf)
       CommsSend(c, buf);
@@ -4800,7 +4761,7 @@ IPC_Copyright(char *params, Client * c)
 
 }
 
-void 
+void
 IPC_Version(char *params, Client * c)
 {
 
@@ -4811,8 +4772,8 @@ IPC_Version(char *params, Client * c)
    buf[0] = 0;
 
    Esnprintf(buf, sizeof(buf),
-	     "Enlightenment Version : %s\n"
-	     "code is current to    : %s\n",
+	     gettext("Enlightenment Version : %s\n"
+		     "code is current to    : %s\n"),
 	     ENLIGHTENMENT_VERSION, E_CHECKOUT_DATE);
    /* Esnprintf(buf, sizeof(buf),
     * "Enlightenment Version : %s\n"
@@ -4834,7 +4795,7 @@ IPC_Version(char *params, Client * c)
  * - Mandrake
  */
 
-int 
+int
 HandleIPC(char *params, Client * c)
 {
 
@@ -4870,7 +4831,7 @@ HandleIPC(char *params, Client * c)
  * button was depressed
  */
 
-void 
+void
 ButtonIPC(int val, void *data)
 {
 
@@ -4885,7 +4846,7 @@ ButtonIPC(int val, void *data)
  *
  */
 
-void 
+void
 IPC_ReloadMenus(char *params, Client * c)
 {
    /*
@@ -4936,7 +4897,7 @@ IPC_ReloadMenus(char *params, Client * c)
    c = NULL;
 }
 
-void 
+void
 IPC_GroupInfo(char *params, Client * c)
 {
 
@@ -4962,8 +4923,7 @@ IPC_GroupInfo(char *params, Client * c)
 
 	if (!group)
 	  {
-	     Esnprintf(buf, sizeof(buf), "Error: no such group: %d",
-		       index);
+	     Esnprintf(buf, sizeof(buf), "Error: no such group: %d", index);
 	     CommsSend(c, buf);
 	     return;
 	  }
@@ -4982,9 +4942,7 @@ IPC_GroupInfo(char *params, Client * c)
      {
 	groups = (Group **) ListItemType(&num_groups, LIST_TYPE_GROUP);
 
-	Esnprintf(buf, sizeof(buf),
-		  "Number of groups: %d",
-		  num_groups);
+	Esnprintf(buf, sizeof(buf), "Number of groups: %d", num_groups);
      }
 
    for (i = 0; i < num_groups; i++)
@@ -5016,8 +4974,7 @@ IPC_GroupInfo(char *params, Client * c)
 		  groups[i]->cfg.raise,
 		  groups[i]->cfg.set_border,
 		  groups[i]->cfg.stick,
-		  groups[i]->cfg.shade,
-		  groups[i]->cfg.mirror);
+		  groups[i]->cfg.shade, groups[i]->cfg.mirror);
 	strcat(buf, buf2);
      }
 
@@ -5031,7 +4988,7 @@ IPC_GroupInfo(char *params, Client * c)
 
 }
 
-void 
+void
 IPC_GroupOps(char *params, Client * c)
 {
 
@@ -5084,7 +5041,9 @@ IPC_GroupOps(char *params, Client * c)
 		       if (groupid[0])
 			 {
 			    sscanf(groupid, "%d", &index);
-			    group = FindItem(NULL, index, LIST_FINDBY_ID, LIST_TYPE_GROUP);
+			    group =
+			       FindItem(NULL, index, LIST_FINDBY_ID,
+					LIST_TYPE_GROUP);
 			 }
 		       AddEwinToGroup(ewin, group);
 		       Esnprintf(buf, sizeof(buf), "add %8x", win);
@@ -5097,7 +5056,9 @@ IPC_GroupOps(char *params, Client * c)
 		       if (groupid[0])
 			 {
 			    sscanf(groupid, "%d", &index);
-			    group = FindItem(NULL, index, LIST_FINDBY_ID, LIST_TYPE_GROUP);
+			    group =
+			       FindItem(NULL, index, LIST_FINDBY_ID,
+					LIST_TYPE_GROUP);
 			 }
 		       RemoveEwinFromGroup(ewin, group);
 		       Esnprintf(buf, sizeof(buf), "remove %8x", win);
@@ -5110,7 +5071,9 @@ IPC_GroupOps(char *params, Client * c)
 		       if (groupid[0])
 			 {
 			    sscanf(groupid, "%d", &index);
-			    group = FindItem(NULL, index, LIST_FINDBY_ID, LIST_TYPE_GROUP);
+			    group =
+			       FindItem(NULL, index, LIST_FINDBY_ID,
+					LIST_TYPE_GROUP);
 			 }
 		       BreakWindowGroup(ewin, group);
 		       Esnprintf(buf, sizeof(buf), "break %8x", win);
@@ -5122,8 +5085,8 @@ IPC_GroupOps(char *params, Client * c)
 		    }
 		  else
 		    {
-		       Esnprintf(buf, sizeof(buf), "Error: no such operation: %s",
-				 operation);
+		       Esnprintf(buf, sizeof(buf),
+				 "Error: no such operation: %s", operation);
 
 		    }
 	       }
@@ -5141,7 +5104,7 @@ IPC_GroupOps(char *params, Client * c)
 
 }
 
-void 
+void
 IPC_Group(char *params, Client * c)
 {
 
@@ -5197,8 +5160,7 @@ IPC_Group(char *params, Client * c)
 		       else if (!strcmp(operation, "num_members"))
 			 {
 			    Esnprintf(buf, sizeof(buf),
-				      "num_members: %d",
-				      group->num_members);
+				      "num_members: %d", group->num_members);
 			    onoff = -1;
 			 }
 		       else if (!strcmp(operation, "iconify"))
@@ -5267,8 +5229,7 @@ IPC_Group(char *params, Client * c)
 		    }
 		  else
 		    {
-		       Esnprintf(buf, sizeof(buf),
-				 "Error: no mode specified");
+		       Esnprintf(buf, sizeof(buf), "Error: no mode specified");
 		    }
 	       }
 
@@ -5290,7 +5251,7 @@ IPC_Group(char *params, Client * c)
 
 }
 
-void 
+void
 IPC_MemDebug(char *params, Client * c)
 {
    EDisplayMemUse();

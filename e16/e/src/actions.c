@@ -71,8 +71,7 @@ GrabButtonGrabs(EWin * ewin)
    Action             *a;
 
    ac = (ActionClass *) FindItem("BUTTONBINDINGS", 0,
-				 LIST_FINDBY_NAME,
-				 LIST_TYPE_ACLASS);
+				 LIST_FINDBY_NAME, LIST_TYPE_ACLASS);
 
    if (ac)
      {
@@ -119,7 +118,8 @@ GrabButtonGrabs(EWin * ewin)
 					   None, None);
 			    XGrabButton(disp, button, mod | mask_mod_combos[i],
 					ewin->win, False, mask,
-				     GrabModeSync, GrabModeAsync, None, None);
+					GrabModeSync, GrabModeAsync, None,
+					None);
 			 }
 		    }
 	       }
@@ -135,8 +135,7 @@ UnGrabButtonGrabs(EWin * ewin)
    Action             *a;
 
    ac = (ActionClass *) FindItem("BUTTONBINDINGS", 0,
-				 LIST_FINDBY_NAME,
-				 LIST_TYPE_ACLASS);
+				 LIST_FINDBY_NAME, LIST_TYPE_ACLASS);
 
    if (ac)
      {
@@ -177,8 +176,7 @@ UnGrabButtonGrabs(EWin * ewin)
 					     mod | mask_mod_combos[i],
 					     ewin->pager->hi_win);
 			    XUngrabButton(disp, button,
-					  mod | mask_mod_combos[i],
-					  ewin->win);
+					  mod | mask_mod_combos[i], ewin->win);
 			 }
 		    }
 	       }
@@ -539,9 +537,10 @@ spawnMenu(void *params)
      {
 	if ((ewin) && (ewin->win != mode.context_win) && (mode.context_win))
 	  {
-	     EGetGeometry(disp, mode.context_win, &dw, &di, &di, &w, &h, &d, &d);
-	     XTranslateCoordinates(disp, mode.context_win, root.win,
-				   0, 0, &x, &y, &dw);
+	     EGetGeometry(disp, mode.context_win, &dw, &di, &di, &w, &h, &d,
+			  &d);
+	     XTranslateCoordinates(disp, mode.context_win, root.win, 0, 0, &x,
+				   &y, &dw);
 
 	     if (w >= h)
 		mode.y = -(y + h);
@@ -593,8 +592,7 @@ spawnMenu(void *params)
    if (((ewin) && (ewin->win == mode.context_win)) ||
        (ewin = FindEwinByChildren(mode.context_win)))
      {
-	if ((ewin) && (mode.cur_menu_depth > 0) &&
-	    (mode.cur_menu[0]))
+	if ((ewin) && (mode.cur_menu_depth > 0) && (mode.cur_menu[0]))
 	   ewin->shownmenu = mode.cur_menu[0]->win;
      }
    params = NULL;
@@ -662,26 +660,25 @@ runApp(char *exe, char *params)
 #else
 		  if (_fnisabs((char *)exe))
 #endif
-		     DialogAlertOK("There was an error running the program:\n"
-				   "%s\n"
-				   "This program could not be executed.\n"
-				 "This is because the file does not exist.\n",
+		     DialogAlertOK(gettext
+				   ("There was an error running the program:\n"
+				    "%s\n"
+				    "This program could not be executed.\n"
+				    "This is because the file does not exist.\n"),
 				   (char *)exe);
 		  /* relative path */
 		  else
-		     DialogAlertOK("There was an error running the program:\n"
-				   "%s\n"
-				   "This program could not be executed.\n"
-				 "This is most probably because this program "
-				   "is not in the\n"
-				 "path for your shell which is %s. I suggest "
-				   "you read "
-				   "the manual\n"
-				   "page for that shell and read up how to "
-				   "change or add "
-				   "to your\n"
-				   "execution path.\n",
-				   (char *)exe, sh);
+		     DialogAlertOK(gettext
+				   ("There was an error running the program:\n"
+				    "%s\n"
+				    "This program could not be executed.\n"
+				    "This is most probably because this program "
+				    "is not in the\n"
+				    "path for your shell which is %s. I suggest "
+				    "you read " "the manual\n"
+				    "page for that shell and read up how to "
+				    "change or add " "to your\n"
+				    "execution path.\n"), (char *)exe, sh);
 	       }
 	     else
 		/* it is a node on the filing sys */
@@ -691,28 +688,26 @@ runApp(char *exe, char *params)
 		    {
 		       /* can execute it */
 		       if (canexec((char *)path))
-			  DialogAlertOK("There was an error running the program:\n"
-					"%s\n"
-					"This program could not be executed.\n"
-					"I am unsure as to why you could not "
-					"do this. "
-					"The file exists,\n"
-					"is a file, and you are allowed to "
-					"execute it. I "
-					"suggest you look\n"
-					"into this.\n",
-					(char *)path);
+			  DialogAlertOK(gettext
+					("There was an error running the program:\n"
+					 "%s\n"
+					 "This program could not be executed.\n"
+					 "I am unsure as to why you could not "
+					 "do this. " "The file exists,\n"
+					 "is a file, and you are allowed to "
+					 "execute it. I " "suggest you look\n"
+					 "into this.\n"), (char *)path);
 		       /* not executable file */
 		       else
-			  DialogAlertOK("There was an error running the program:\n"
-					"%s\n"
-					"This program could not be executed.\n"
-					"This is because the file exists, is a"
-					" file, but "
-					"you are unable\n"
-					"to execute it because you do not "
-					"have execute "
-					"access to this file.\n",
+			  DialogAlertOK(gettext
+					("There was an error running the program:\n"
+					 "%s\n"
+					 "This program could not be executed.\n"
+					 "This is because the file exists, is a"
+					 " file, but " "you are unable\n"
+					 "to execute it because you do not "
+					 "have execute "
+					 "access to this file.\n"),
 					(char *)path);
 		    }
 		  /* it's not a file */
@@ -720,20 +715,20 @@ runApp(char *exe, char *params)
 		    {
 		       /* its a dir */
 		       if (isdir((char *)path))
-			  DialogAlertOK("There was an error running the program:\n"
-					"%s\n"
-					"This program could not be executed.\n"
-					"This is because the file is infact "
-					"a directory.\n",
-					(char *)path);
+			  DialogAlertOK(gettext
+					("There was an error running the program:\n"
+					 "%s\n"
+					 "This program could not be executed.\n"
+					 "This is because the file is infact "
+					 "a directory.\n"), (char *)path);
 		       /* its not a file or a dir */
 		       else
-			  DialogAlertOK("There was an error running the program:\n"
-					"%s\n"
-					"This program could not be executed.\n"
-					"This is because the file is not a "
-					"regular file.\n",
-					(char *)path);
+			  DialogAlertOK(gettext
+					("There was an error running the program:\n"
+					 "%s\n"
+					 "This program could not be executed.\n"
+					 "This is because the file is not a "
+					 "regular file.\n"), (char *)path);
 		    }
 		  if (path)
 		     Efree(path);
@@ -1097,7 +1092,8 @@ doMoveImpl(void *params, char constrained)
 	FloatEwinAt(gwins[i], gwins[i]->x, gwins[i]->y);
 	if (!mode.moveresize_pending_ewin)
 	   DrawEwinShape(gwins[i], mode.movemode, gwins[i]->x, gwins[i]->y,
-		      gwins[i]->client.w, gwins[i]->client.h, mode.firstlast);
+			 gwins[i]->client.w, gwins[i]->client.h,
+			 mode.firstlast);
      }
    Efree(gwins);
    mode.firstlast = 1;
@@ -1166,8 +1162,9 @@ doMoveEnd(void *params)
      {
 	wasresize = 1;
 	for (i = 0; i < num; i++)
-	   DrawEwinShape(gwins[i], mode.movemode, gwins[i]->x, gwins[i]->y, gwins[i]->client.w,
-			 gwins[i]->client.h, mode.firstlast);
+	   DrawEwinShape(gwins[i], mode.movemode, gwins[i]->x, gwins[i]->y,
+			 gwins[i]->client.w, gwins[i]->client.h,
+			 mode.firstlast);
 	for (i = 0; i < num; i++)
 	   MoveEwin(gwins[i], gwins[i]->x, gwins[i]->y);
      }
@@ -1179,9 +1176,11 @@ doMoveEnd(void *params)
 	     if (gwins[i]->floating)
 		MoveEwinToDesktopAt(gwins[i], d,
 				    gwins[i]->x - (desks.desk[d].x -
-					     desks.desk[gwins[i]->desktop].x),
+						   desks.desk[gwins[i]->
+							      desktop].x),
 				    gwins[i]->y - (desks.desk[d].y -
-					    desks.desk[gwins[i]->desktop].y));
+						   desks.desk[gwins[i]->
+							      desktop].y));
 	     else
 		MoveEwinToDesktopAt(gwins[i], d, gwins[i]->x, gwins[i]->y);
 	     gwins[i]->floating = 0;
@@ -1350,15 +1349,14 @@ doCleanup(void *params)
 	for (i = 0; i < num; i++)
 	  {
 	     if ((((EWin *) lst[i])->desktop == desks.current) &&
-	     (!((EWin *) lst[i])->sticky) && (!((EWin *) lst[i])->floating) &&
-		 (!((EWin *) lst[i])->iconified) &&
-		 (!((EWin *) lst[i])->ignorearrange) &&
-		 (!((EWin *) lst[i])->menu) &&
-		 (((EWin *) lst[i])->area_x ==
-		  desks.desk[((EWin *) lst[i])->desktop].current_area_x) &&
-		 (((EWin *) lst[i])->area_y ==
-		  desks.desk[((EWin *) lst[i])->desktop].current_area_y)
-		)
+		 (!((EWin *) lst[i])->sticky) && (!((EWin *) lst[i])->floating)
+		 && (!((EWin *) lst[i])->iconified)
+		 && (!((EWin *) lst[i])->ignorearrange)
+		 && (!((EWin *) lst[i])->menu)
+		 && (((EWin *) lst[i])->area_x ==
+		     desks.desk[((EWin *) lst[i])->desktop].current_area_x)
+		 && (((EWin *) lst[i])->area_y ==
+		     desks.desk[((EWin *) lst[i])->desktop].current_area_y))
 	       {
 		  floating[j].data = lst[i];
 		  floating[j].x = ((EWin *) lst[i])->x;
@@ -1368,14 +1366,11 @@ doCleanup(void *params)
 		  floating[j++].h = ((EWin *) lst[i])->h;
 	       }
 	     else if (
-			(
-			   (((EWin *) lst[i])->desktop == desks.current) ||
-			   (((EWin *) lst[i])->sticky)
-			) &&
-			(((EWin *) lst[i])->layer != 4) &&
-			(((EWin *) lst[i])->layer != 0) &&
-			(!((EWin *) lst[i])->menu)
-		)
+		      (
+		       (((EWin *) lst[i])->desktop == desks.current) ||
+		       (((EWin *) lst[i])->sticky)) &&
+(((EWin *) lst[i])->layer != 4) &&
+(((EWin *) lst[i])->layer != 0) && (!((EWin *) lst[i])->menu))
 	       {
 		  fixed = Erealloc(fixed, sizeof(RectBox) * (k + 1));
 		  fixed[k].data = lst[i];
@@ -1521,7 +1516,8 @@ doCleanup(void *params)
 		       if (ewin)
 			 {
 			    if ((ewin->x != ret[i].x) || (ewin->y != ret[i].y))
-			       MoveEwin((EWin *) ret[i].data, ret[i].x, ret[i].y);
+			       MoveEwin((EWin *) ret[i].data, ret[i].x,
+					ret[i].y);
 			 }
 		    }
 	       }
@@ -1724,9 +1720,11 @@ doStick(void *params)
    for (i = 0; i < num; i++)
      {
 	curr_group = EwinsInGroup(ewin, gwins[i]);
-	if (gwins[i]->sticky && ((curr_group && !curr_group->cfg.mirror) || sticky))
+	if (gwins[i]->sticky
+	    && ((curr_group && !curr_group->cfg.mirror) || sticky))
 	   MakeWindowUnSticky(gwins[i]);
-	else if (!gwins[i]->sticky && ((curr_group && !curr_group->cfg.mirror) || !sticky))
+	else if (!gwins[i]->sticky
+		 && ((curr_group && !curr_group->cfg.mirror) || !sticky))
 	   MakeWindowSticky(gwins[i]);
 	params = NULL;
 	GNOME_SetHint(gwins[i]);
@@ -2204,8 +2202,7 @@ doPlaySoundClass(void *params)
    if (!params)
       EDBUG_RETURN(0);
 
-   ApplySclass(FindItem((char *)params, 0, LIST_FINDBY_NAME,
-			LIST_TYPE_SCLASS));
+   ApplySclass(FindItem((char *)params, 0, LIST_FINDBY_NAME, LIST_TYPE_SCLASS));
 
    EDBUG_RETURN(0);
 }
@@ -2331,7 +2328,7 @@ doHideShowButton(void *params)
 			    if (matchregexp(ss, lst[i]->name))
 			      {
 				 if ((strcmp(lst[i]->name,
-					   "_DESKTOP_DESKRAY_DRAG_CONTROL") &&
+					     "_DESKTOP_DESKRAY_DRAG_CONTROL") &&
 				      (!lst[i]->used)))
 				   {
 				      if (!(lst[i]->visible))
@@ -2361,7 +2358,7 @@ doHideShowButton(void *params)
 			    if (!matchregexp(ss, lst[i]->name))
 			      {
 				 if ((strcmp(lst[i]->name,
-					   "_DESKTOP_DESKRAY_DRAG_CONTROL") &&
+					     "_DESKTOP_DESKRAY_DRAG_CONTROL") &&
 				      (!lst[i]->used)))
 				   {
 				      if (!(lst[i]->visible))
@@ -2461,11 +2458,13 @@ doIconifyWindow(void *params)
    for (i = 0; i < num; i++)
      {
 	curr_group = EwinsInGroup(ewin, gwins[i]);
-	if (gwins[i]->iconified && ((curr_group && !curr_group->cfg.mirror) || iconified))
+	if (gwins[i]->iconified
+	    && ((curr_group && !curr_group->cfg.mirror) || iconified))
 	  {
 	     DeIconifyEwin(gwins[i]);
 	  }
-	else if (!gwins[i]->iconified && ((curr_group && !curr_group->cfg.mirror) || !iconified))
+	else if (!gwins[i]->iconified
+		 && ((curr_group && !curr_group->cfg.mirror) || !iconified))
 	  {
 	     IconifyEwin(gwins[i]);
 	  }
@@ -2568,12 +2567,14 @@ doShade(void *params)
    for (i = 0; i < num; i++)
      {
 	curr_group = EwinsInGroup(ewin, gwins[i]);
-	if (gwins[i]->shaded && ((curr_group && !curr_group->cfg.mirror) || shaded))
+	if (gwins[i]->shaded
+	    && ((curr_group && !curr_group->cfg.mirror) || shaded))
 	  {
 	     AUDIO_PLAY("SOUND_UNSHADE");
 	     UnShadeEwin(gwins[i]);
 	  }
-	else if (!gwins[i]->shaded && ((curr_group && !curr_group->cfg.mirror) || !shaded))
+	else if (!gwins[i]->shaded
+		 && ((curr_group && !curr_group->cfg.mirror) || !shaded))
 	  {
 	     AUDIO_PLAY("SOUND_SHADE");
 	     ShadeEwin(gwins[i]);
@@ -3019,7 +3020,9 @@ doSetWinBorder(void *params)
    if (!params)
       EDBUG_RETURN(0);
 
-   gwins = ListWinGroupMembersForEwin(ewin, ACTION_SET_WINDOW_BORDER, mode.nogroup, &num);
+   gwins =
+      ListWinGroupMembersForEwin(ewin, ACTION_SET_WINDOW_BORDER, mode.nogroup,
+				 &num);
 
    sscanf((char *)params, "%1000s", buf);
    b = (Border *) FindItem(buf, 0, LIST_FINDBY_NAME, LIST_TYPE_BORDER);
@@ -3038,8 +3041,7 @@ doSetWinBorder(void *params)
      {
 	if ((b->border.left == 0) &&
 	    (b->border.right == 0) &&
-	    (b->border.top == 0) &&
-	    (b->border.bottom == 0))
+	    (b->border.top == 0) && (b->border.bottom == 0))
 	   EDBUG_RETURN(0);
      }
    for (i = 0; i < num; i++)
@@ -3058,8 +3060,8 @@ doSetWinBorder(void *params)
 	     if (shadechange)
 		InstantShadeEwin(gwins[i]);
 	     ICCCM_MatchSize(gwins[i]);
-	     MoveResizeEwin(gwins[i], gwins[i]->x, gwins[i]->y, gwins[i]->client.w,
-			    gwins[i]->client.h);
+	     MoveResizeEwin(gwins[i], gwins[i]->x, gwins[i]->y,
+			    gwins[i]->client.w, gwins[i]->client.h);
 	  }
 	RememberImportantInfoForEwin(gwins[i]);
      }
@@ -3129,7 +3131,7 @@ doAbout(void *params)
    {
       char                stuff[255];
 
-      Esnprintf(stuff, sizeof(stuff), "About Enlightenment %s",
+      Esnprintf(stuff, sizeof(stuff), gettext("About Enlightenment %s"),
 		ENLIGHTENMENT_VERSION);
       DialogSetTitle(d, stuff);
    }
@@ -3145,29 +3147,29 @@ doAbout(void *params)
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
    DialogItemTextSetText(di,
-			 "Welcome to the "
-			 ENLIGHTENMENT_VERSION
-			 " version\n"
-			 "of the Enlightenment "
-			 "window manager.\n Enlightenment is still under "
-			 "development, but\n"
-			 "we have tried to iron out all the bugs "
-			 "that\nwe can find. If "
-			 "you find a bug in the software,\n please do "
-			 "not hesitate to send "
-			 "in a bug report.\nSee \"Help\" for information "
-			 "on joining the\n"
-			 "mailing list.\n"
-			 "\n"
-			 "This code last updated on:\n"
-			 E_CHECKOUT_DATE "\n"
-			 "\n"
-			 "Good luck. We hope you enjoy the software.\n"
-			 "\n"
-			 "The Rasterman - raster@rasterman.com\n"
-			 "Mandrake - mandrake@mandrake.net\n");
+			 gettext("Welcome to the "
+				 ENLIGHTENMENT_VERSION
+				 " version\n"
+				 "of the Enlightenment "
+				 "window manager.\n Enlightenment is still under "
+				 "development, but\n"
+				 "we have tried to iron out all the bugs "
+				 "that\nwe can find. If "
+				 "you find a bug in the software,\n please do "
+				 "not hesitate to send "
+				 "in a bug report.\nSee \"Help\" for information "
+				 "on joining the\n"
+				 "mailing list.\n"
+				 "\n"
+				 "This code last updated on:\n"
+				 E_CHECKOUT_DATE "\n"
+				 "\n"
+				 "Good luck. We hope you enjoy the software.\n"
+				 "\n"
+				 "The Rasterman - raster@rasterman.com\n"
+				 "Mandrake - mandrake@mandrake.net\n"));
 
-   DialogAddButton(d, "OK", NULL, 1);
+   DialogAddButton(d, gettext("OK"), NULL, 1);
    ShowDialog(d);
 
    params = NULL;
@@ -3320,7 +3322,8 @@ doConfigure(void *params)
 	     if (ewin)
 	       {
 		  ChooseGroupDialog(ewin,
-			    "  Pick the group the window will belong to:  \n",
+				    gettext
+				    ("  Pick the group the window will belong to:  \n"),
 				    GROUP_SELECT_ALL_EXCEPT_EWIN,
 				    ACTION_ADD_TO_GROUP);
 	       }
@@ -3339,8 +3342,7 @@ struct _keyset
 int
 doInsertKeys(void *params)
 {
-   const struct _keyset ks[] =
-   {
+   const struct _keyset ks[] = {
       {"a", 0, "a"},
       {"b", 0, "b"},
       {"c", 0, "c"},
@@ -3462,14 +3464,17 @@ doInsertKeys(void *params)
 		  ev.y = mode.y;
 		  ev.x_root = mode.x;
 		  ev.y_root = mode.y;
-		  for (j = 0; j < (int)(sizeof(ks) / sizeof(struct _keyset)); j++)
+		  for (j = 0; j < (int)(sizeof(ks) / sizeof(struct _keyset));
+
+		       j++)
 
 		    {
 		       if (!strncmp(ks[j].ch, &(s[i]), strlen(ks[j].ch)))
 			 {
 			    i += (strlen(ks[j].ch) - 1);
 			    ev.keycode =
-			       XKeysymToKeycode(disp, XStringToKeysym(ks[j].sym));
+			       XKeysymToKeycode(disp,
+						XStringToKeysym(ks[j].sym));
 			    ev.state = ks[j].state;
 			    ev.type = KeyPress;
 			    XSendEvent(disp, win, False, 0, (XEvent *) & ev);
@@ -3551,7 +3556,8 @@ doRaiseLower(void *params)
    if (!ewin)
       EDBUG_RETURN(0);
 
-   gwins = ListWinGroupMembersForEwin(ewin, ACTION_RAISE_LOWER, mode.nogroup, &num);
+   gwins =
+      ListWinGroupMembersForEwin(ewin, ACTION_RAISE_LOWER, mode.nogroup, &num);
    for (j = 0; j < num; j++)
      {
 	ewin = gwins[j];
@@ -3561,7 +3567,8 @@ doRaiseLower(void *params)
 	       {
 		  if (desks.desk[ewin->desktop].list[i]->layer == ewin->layer &&
 		      (desks.desk[ewin->desktop].list[i] == ewin ||
-		       !FindEwinInList(desks.desk[ewin->desktop].list[i], gwins, num)))
+		       !FindEwinInList(desks.desk[ewin->desktop].list[i], gwins,
+				       num)))
 		    {
 		       if (desks.desk[ewin->desktop].list[i] != ewin)
 			  raise = 1;
@@ -3665,13 +3672,13 @@ doAddToGroup(void *params)
    if (!current_group)
      {
 	ChooseGroupDialog(ewin,
-			  "\n  There's no current group at the moment.  \n"
-			"  The current group is the last one you created,  \n"
-		     "  and it exists until you create a new one or break  \n"
-			  "  the latest one.  \n\n"
-	    "  Pick another group that the window will belong to here:  \n\n",
-			  GROUP_SELECT_ALL_EXCEPT_EWIN,
-			  ACTION_ADD_TO_GROUP);
+			  gettext
+			  ("\n  There's no current group at the moment.  \n"
+			   "  The current group is the last one you created,  \n"
+			   "  and it exists until you create a new one or break  \n"
+			   "  the latest one.  \n\n"
+			   "  Pick another group that the window will belong to here:  \n\n"),
+			  GROUP_SELECT_ALL_EXCEPT_EWIN, ACTION_ADD_TO_GROUP);
 	EDBUG_RETURN(0);
      }
    else
@@ -3699,9 +3706,9 @@ doRemoveFromGroup(void *params)
       EDBUG_RETURN(0);
 
    ChooseGroupDialog(ewin,
-		     "   Select the group to remove the window from.  ",
-		     GROUP_SELECT_EWIN_ONLY,
-		     ACTION_REMOVE_FROM_GROUP);
+		     gettext
+		     ("   Select the group to remove the window from.  "),
+		     GROUP_SELECT_EWIN_ONLY, ACTION_REMOVE_FROM_GROUP);
 
    SaveGroups();
    EDBUG_RETURN(0);
@@ -3725,9 +3732,8 @@ doBreakGroup(void *params)
       EDBUG_RETURN(0);
 
    ChooseGroupDialog(ewin,
-		     "  Select the group to break  ",
-		     GROUP_SELECT_EWIN_ONLY,
-		     ACTION_BREAK_GROUP);
+		     gettext("  Select the group to break  "),
+		     GROUP_SELECT_EWIN_ONLY, ACTION_BREAK_GROUP);
 
    SaveGroups();
    EDBUG_RETURN(0);
@@ -3752,22 +3758,23 @@ doZoom(void *params)
 	f = fopen(s, "w");
 	if (f)
 	  {
-	     fprintf(f, "You have been warned abotu the dangers of Zoom mode\n");
+	     fprintf(f,
+		     gettext
+		     ("You have been warned about the dangers of Zoom mode\n"));
 	     fclose(f);
 	  }
-	DIALOG_OK("Warning !!!",
-		  "This feature is heavily reliant on a feature of your\n"
-	       "X Server called the Vid Mode Extension. This feature exists\n"
-		  "in XFree86 Servers, but is not a heavily used part of the\n"
-		  "Server and thus isn't tested much.\n"
-		  "\n"
-		"It is possible your X Server does not deal well with being\n"
-		  "asked to switch modes quickly and it may hang, glitch,\n"
-		  "display artifacts or perhaps simply refuse to work.\n"
-		  "\n"
-	       "This is a warning and will only be displayed this one time.\n"
-		"If your Server does not behave well then you will probably\n"
-		  "have to avoid using this feature.\n");
+	DIALOG_OK(gettext("Warning !!!"),
+		  gettext
+		  ("This feature is heavily reliant on a feature of your\n"
+		   "X Server called the Vid Mode Extension. This feature exists\n"
+		   "in XFree86 Servers, but is not a heavily used part of the\n"
+		   "Server and thus isn't tested much.\n" "\n"
+		   "It is possible your X Server does not deal well with being\n"
+		   "asked to switch modes quickly and it may hang, glitch,\n"
+		   "display artifacts or perhaps simply refuse to work.\n" "\n"
+		   "This is a warning and will only be displayed this one time.\n"
+		   "If your Server does not behave well then you will probably\n"
+		   "have to avoid using this feature.\n"));
 	EDBUG_RETURN(0);
      }
    ewin = GetFocusEwin();
@@ -3807,31 +3814,43 @@ initFunctionArray(void)
    ActionFunctions[ACTION_DESKTOP_LOWER] = (int (*)(void *))(doLowerDesktop);
    ActionFunctions[ACTION_DESKTOP_DRAG] = (int (*)(void *))(doDragDesktop);
    ActionFunctions[ACTION_STICK] = (int (*)(void *))(doStick);
-   ActionFunctions[ACTION_DESKTOP_INPLACE] = (int (*)(void *))(doInplaceDesktop);
+   ActionFunctions[ACTION_DESKTOP_INPLACE] =
+      (int (*)(void *))(doInplaceDesktop);
    ActionFunctions[ACTION_DRAG_BUTTON] = (int (*)(void *))(doDragButtonStart);
    ActionFunctions[ACTION_FOCUSMODE_SET] = (int (*)(void *))(doFocusModeSet);
    ActionFunctions[ACTION_MOVEMODE_SET] = (int (*)(void *))(doMoveModeSet);
    ActionFunctions[ACTION_RESIZEMODE_SET] = (int (*)(void *))(doResizeModeSet);
    ActionFunctions[ACTION_SLIDEMODE_SET] = (int (*)(void *))(doSlideModeSet);
-   ActionFunctions[ACTION_CLEANUPSILDE_SET] = (int (*)(void *))(doCleanupSlideSet);
+   ActionFunctions[ACTION_CLEANUPSILDE_SET] =
+      (int (*)(void *))(doCleanupSlideSet);
    ActionFunctions[ACTION_MAPSLIDE_SET] = (int (*)(void *))(doMapSlideSet);
    ActionFunctions[ACTION_SOUND_SET] = (int (*)(void *))(doSoundSet);
-   ActionFunctions[ACTION_BUTTONMOVE_RESIST_SET] = (int (*)(void *))(doButtonMoveResistSet);
-   ActionFunctions[ACTION_DESKTOPBG_TIMEOUT_SET] = (int (*)(void *))(doDesktopBgTimeoutSet);
-   ActionFunctions[ACTION_MAPSLIDE_SPEED_SET] = (int (*)(void *))(doMapSlideSpeedSet);
-   ActionFunctions[ACTION_CLEANUPSLIDE_SPEED_SET] = (int (*)(void *))(doCleanupSlideSpeedSet);
+   ActionFunctions[ACTION_BUTTONMOVE_RESIST_SET] =
+      (int (*)(void *))(doButtonMoveResistSet);
+   ActionFunctions[ACTION_DESKTOPBG_TIMEOUT_SET] =
+      (int (*)(void *))(doDesktopBgTimeoutSet);
+   ActionFunctions[ACTION_MAPSLIDE_SPEED_SET] =
+      (int (*)(void *))(doMapSlideSpeedSet);
+   ActionFunctions[ACTION_CLEANUPSLIDE_SPEED_SET] =
+      (int (*)(void *))(doCleanupSlideSpeedSet);
    ActionFunctions[ACTION_DRAGDIR_SET] = (int (*)(void *))(doDragdirSet);
-   ActionFunctions[ACTION_DRAGBAR_ORDER_SET] = (int (*)(void *))(doDragbarOrderSet);
-   ActionFunctions[ACTION_DRAGBAR_WIDTH_SET] = (int (*)(void *))(doDragbarWidthSet);
-   ActionFunctions[ACTION_DRAGBAR_LENGTH_SET] = (int (*)(void *))(doDragbarLengthSet);
+   ActionFunctions[ACTION_DRAGBAR_ORDER_SET] =
+      (int (*)(void *))(doDragbarOrderSet);
+   ActionFunctions[ACTION_DRAGBAR_WIDTH_SET] =
+      (int (*)(void *))(doDragbarWidthSet);
+   ActionFunctions[ACTION_DRAGBAR_LENGTH_SET] =
+      (int (*)(void *))(doDragbarLengthSet);
    ActionFunctions[ACTION_DESKSLIDE_SET] = (int (*)(void *))(doDeskSlideSet);
-   ActionFunctions[ACTION_DESKSLIDE_SPEED_SET] = (int (*)(void *))(doDeskSlideSpeedSet);
-   ActionFunctions[ACTION_HIQUALITYBG_SET] = (int (*)(void *))(doHiQualityBgSet);
+   ActionFunctions[ACTION_DESKSLIDE_SPEED_SET] =
+      (int (*)(void *))(doDeskSlideSpeedSet);
+   ActionFunctions[ACTION_HIQUALITYBG_SET] =
+      (int (*)(void *))(doHiQualityBgSet);
    ActionFunctions[ACTION_PLAYSOUNDCLASS] = (int (*)(void *))(doPlaySoundClass);
    ActionFunctions[ACTION_GOTO_DESK] = (int (*)(void *))(doGotoDesktop);
    ActionFunctions[ACTION_DESKRAY] = (int (*)(void *))(doDeskray);
    ActionFunctions[ACTION_AUTOSAVE_SET] = (int (*)(void *))(doAutosaveSet);
-   ActionFunctions[ACTION_HIDESHOW_BUTTON] = (int (*)(void *))(doHideShowButton);
+   ActionFunctions[ACTION_HIDESHOW_BUTTON] =
+      (int (*)(void *))(doHideShowButton);
    ActionFunctions[ACTION_ICONIFY] = (int (*)(void *))(doIconifyWindow);
    ActionFunctions[ACTION_SLIDEOUT] = (int (*)(void *))(doSlideout);
    ActionFunctions[ACTION_SCROLL_WINDOWS] = (int (*)(void *))(doScrollWindows);
@@ -3839,10 +3858,13 @@ initFunctionArray(void)
    ActionFunctions[ACTION_MAX_HEIGHT] = (int (*)(void *))(doMaxH);
    ActionFunctions[ACTION_MAX_WIDTH] = (int (*)(void *))(doMaxW);
    ActionFunctions[ACTION_MAX_SIZE] = (int (*)(void *))(doMax);
-   ActionFunctions[ACTION_SEND_TO_NEXT_DESK] = (int (*)(void *))(doSendToNextDesk);
-   ActionFunctions[ACTION_SEND_TO_PREV_DESK] = (int (*)(void *))(doSendToPrevDesk);
+   ActionFunctions[ACTION_SEND_TO_NEXT_DESK] =
+      (int (*)(void *))(doSendToNextDesk);
+   ActionFunctions[ACTION_SEND_TO_PREV_DESK] =
+      (int (*)(void *))(doSendToPrevDesk);
    ActionFunctions[ACTION_SNAPSHOT] = (int (*)(void *))(doSnapshot);
-   ActionFunctions[ACTION_SCROLL_CONTAINER] = (int (*)(void *))(doScrollContainer);
+   ActionFunctions[ACTION_SCROLL_CONTAINER] =
+      (int (*)(void *))(doScrollContainer);
    ActionFunctions[ACTION_TOOLTIP_SET] = (int (*)(void *))(doToolTipSet);
    ActionFunctions[ACTION_FOCUS_NEXT] = (int (*)(void *))(doFocusNext);
    ActionFunctions[ACTION_FOCUS_PREV] = (int (*)(void *))(doFocusPrev);
@@ -3853,37 +3875,48 @@ initFunctionArray(void)
    ActionFunctions[ACTION_TOGGLE_FIXED] = (int (*)(void *))(doToggleFixedPos);
    ActionFunctions[ACTION_SET_LAYER] = (int (*)(void *))(doSetLayer);
    ActionFunctions[ACTION_WARP_POINTER] = (int (*)(void *))(doWarpPointer);
-   ActionFunctions[ACTION_MOVE_WINDOW_TO_AREA] = (int (*)(void *))(doMoveWinToArea);
-   ActionFunctions[ACTION_MOVE_WINDOW_BY_AREA] = (int (*)(void *))(doMoveWinByArea);
-   ActionFunctions[ACTION_SET_WINDOW_BORDER] = (int (*)(void *))(doSetWinBorder);
+   ActionFunctions[ACTION_MOVE_WINDOW_TO_AREA] =
+      (int (*)(void *))(doMoveWinToArea);
+   ActionFunctions[ACTION_MOVE_WINDOW_BY_AREA] =
+      (int (*)(void *))(doMoveWinByArea);
+   ActionFunctions[ACTION_SET_WINDOW_BORDER] =
+      (int (*)(void *))(doSetWinBorder);
    ActionFunctions[ACTION_LINEAR_AREA_SET] = (int (*)(void *))(doLinearAreaSet);
-   ActionFunctions[ACTION_LINEAR_MOVE_BY] = (int (*)(void *))(doLinearAreaMoveBy);
+   ActionFunctions[ACTION_LINEAR_MOVE_BY] =
+      (int (*)(void *))(doLinearAreaMoveBy);
    ActionFunctions[ACTION_ABOUT] = (int (*)(void *))(doAbout);
    ActionFunctions[ACTION_FX] = (int (*)(void *))(doFX);
-   ActionFunctions[ACTION_MOVE_WINDOW_TO_LINEAR_AREA] = (int (*)(void *))(doMoveWinToLinearArea);
-   ActionFunctions[ACTION_MOVE_WINDOW_BY_LINEAR_AREA] = (int (*)(void *))(doMoveWinByArea);
+   ActionFunctions[ACTION_MOVE_WINDOW_TO_LINEAR_AREA] =
+      (int (*)(void *))(doMoveWinToLinearArea);
+   ActionFunctions[ACTION_MOVE_WINDOW_BY_LINEAR_AREA] =
+      (int (*)(void *))(doMoveWinByArea);
    ActionFunctions[ACTION_SET_PAGER_HIQ] = (int (*)(void *))(doSetPagerHiq);
    ActionFunctions[ACTION_SET_PAGER_SNAP] = (int (*)(void *))(doSetPagerSnap);
    ActionFunctions[ACTION_CONFIG] = (int (*)(void *))(doConfigure);
-   ActionFunctions[ACTION_MOVE_CONSTRAINED] = (int (*)(void *))(doMoveConstrained);
+   ActionFunctions[ACTION_MOVE_CONSTRAINED] =
+      (int (*)(void *))(doMoveConstrained);
    ActionFunctions[ACTION_INSERT_KEYS] = (int (*)(void *))(doInsertKeys);
    ActionFunctions[ACTION_START_GROUP] = (int (*)(void *))(doStartGroup);
    ActionFunctions[ACTION_ADD_TO_GROUP] = (int (*)(void *))(doAddToGroup);
-   ActionFunctions[ACTION_REMOVE_FROM_GROUP] = (int (*)(void *))(doRemoveFromGroup);
+   ActionFunctions[ACTION_REMOVE_FROM_GROUP] =
+      (int (*)(void *))(doRemoveFromGroup);
    ActionFunctions[ACTION_BREAK_GROUP] = (int (*)(void *))(doBreakGroup);
    ActionFunctions[ACTION_SHOW_HIDE_GROUP] = (int (*)(void *))(doShowHideGroup);
    ActionFunctions[ACTION_CREATE_ICONBOX] = (int (*)(void *))(doCreateIconbox);
    ActionFunctions[ACTION_RAISE_LOWER] = (int (*)(void *))(doRaiseLower);
    ActionFunctions[ACTION_ZOOM] = (int (*)(void *))(doZoom);
-   ActionFunctions[ACTION_SET_WINDOW_BORDER_NG] = (int (*)(void *))(doSetWinBorderNoGroup);
-   ActionFunctions[ACTION_ICONIFY_NG] = (int (*)(void *))(doIconifyWindowNoGroup);
+   ActionFunctions[ACTION_SET_WINDOW_BORDER_NG] =
+      (int (*)(void *))(doSetWinBorderNoGroup);
+   ActionFunctions[ACTION_ICONIFY_NG] =
+      (int (*)(void *))(doIconifyWindowNoGroup);
    ActionFunctions[ACTION_KILL_NG] = (int (*)(void *))(doKillNoGroup);
    ActionFunctions[ACTION_MOVE_NG] = (int (*)(void *))(doMoveNoGroup);
    ActionFunctions[ACTION_RAISE_NG] = (int (*)(void *))(doRaiseNoGroup);
    ActionFunctions[ACTION_LOWER_NG] = (int (*)(void *))(doLowerNoGroup);
    ActionFunctions[ACTION_STICK_NG] = (int (*)(void *))(doStickNoGroup);
    ActionFunctions[ACTION_SHADE_NG] = (int (*)(void *))(doShadeNoGroup);
-   ActionFunctions[ACTION_RAISE_LOWER_NG] = (int (*)(void *))(doRaiseLowerNoGroup);
+   ActionFunctions[ACTION_RAISE_LOWER_NG] =
+      (int (*)(void *))(doRaiseLowerNoGroup);
 
    EDBUG_RETURN(0);
 }

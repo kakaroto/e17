@@ -203,8 +203,7 @@ TclassPopulate(TextClass * tclass)
 
 void
 TclassApply(ImageClass * iclass, Window win, int w, int h, int active,
-	    int sticky, int state, char expose,
-	    TextClass * tclass, char *text)
+	    int sticky, int state, char expose, TextClass * tclass, char *text)
 {
 
    EDBUG(4, "TclassApply");

@@ -34,7 +34,8 @@ GrabActionKey(Action * a)
    if (a->anymodifier)
      {
 	mod = AnyModifier;
-	XGrabKey(disp, a->key, mod, root.win, False, GrabModeAsync, GrabModeAsync);
+	XGrabKey(disp, a->key, mod, root.win, False, GrabModeAsync,
+		 GrabModeAsync);
      }
    else
      {
@@ -42,7 +43,8 @@ GrabActionKey(Action * a)
 
 	/* grab the key even if locks are on or not */
 	for (i = 0; i < 8; i++)
-	   XGrabKey(disp, a->key, mod | mask_mod_combos[i], root.win, False, GrabModeAsync, GrabModeAsync);
+	   XGrabKey(disp, a->key, mod | mask_mod_combos[i], root.win, False,
+		    GrabModeAsync, GrabModeAsync);
      }
    EDBUG_RETURN_;
 }

@@ -43,11 +43,11 @@
 
 static ToolTip     *ttip = NULL;
 struct _mdata
-  {
-     Menu               *m;
-     MenuItem           *mi;
-     EWin               *ewin;
-  };
+{
+   Menu               *m;
+   MenuItem           *mi;
+   EWin               *ewin;
+};
 
 static void         ToolTipTimeout(int val, void *data);
 static void         SubmenuShowTimeout(int val, void *dat);
@@ -84,8 +84,7 @@ ToolTipTimeout(int val, void *data)
       EDBUG_RETURN_;
 
    if (!ttip)
-      ttip = FindItem("DEFAULT", 0, LIST_FINDBY_NAME,
-		      LIST_TYPE_TOOLTIP);
+      ttip = FindItem("DEFAULT", 0, LIST_FINDBY_NAME, LIST_TYPE_TOOLTIP);
 
    if (ac->tooltipstring)
      {
@@ -150,7 +149,8 @@ HandleClientMessage(XEvent * ev)
      }
    if (ev->xclient.message_type == a4)
      {
-	ewin = FindItem(NULL, ev->xclient.window, LIST_FINDBY_ID, LIST_TYPE_EWIN);
+	ewin =
+	   FindItem(NULL, ev->xclient.window, LIST_FINDBY_ID, LIST_TYPE_EWIN);
 	if (ewin)
 	  {
 	     ewin->layer = ev->xclient.data.l[0];
@@ -163,7 +163,8 @@ HandleClientMessage(XEvent * ev)
      }
    if (ev->xclient.message_type == a5)
      {
-	ewin = FindItem(NULL, ev->xclient.window, LIST_FINDBY_ID, LIST_TYPE_EWIN);
+	ewin =
+	   FindItem(NULL, ev->xclient.window, LIST_FINDBY_ID, LIST_TYPE_EWIN);
 	if (!ewin)
 	   EDBUG_RETURN_;
 	if (ev->xclient.data.l[0] & WIN_STATE_FIXED_POSITION)
@@ -180,7 +181,8 @@ HandleClientMessage(XEvent * ev)
 	     else
 		ewin->ignorearrange = 0;
 	  }
-	if ((ev->xclient.data.l[0] & WIN_STATE_STICKY) && (!ewin->ignorearrange))
+	if ((ev->xclient.data.l[0] & WIN_STATE_STICKY)
+	    && (!ewin->ignorearrange))
 	  {
 	     if (ev->xclient.data.l[1] & WIN_STATE_STICKY)
 	       {
@@ -190,7 +192,8 @@ HandleClientMessage(XEvent * ev)
 		       RaiseEwin(ewin);
 		       DrawEwin(ewin);
 		       ApplySclass(FindItem("SOUND_WINDOW_STICK", 0,
-					 LIST_FINDBY_NAME, LIST_TYPE_SCLASS));
+					    LIST_FINDBY_NAME,
+					    LIST_TYPE_SCLASS));
 		    }
 	       }
 	     else
@@ -201,7 +204,8 @@ HandleClientMessage(XEvent * ev)
 		       RaiseEwin(ewin);
 		       DrawEwin(ewin);
 		       ApplySclass(FindItem("SOUND_WINDOW_UNSTICK", 0,
-					 LIST_FINDBY_NAME, LIST_TYPE_SCLASS));
+					    LIST_FINDBY_NAME,
+					    LIST_TYPE_SCLASS));
 		    }
 	       }
 	  }
@@ -217,9 +221,10 @@ HandleClientMessage(XEvent * ev)
      }
    if (ev->xclient.message_type == a6)
      {
-	ewin = FindItem(NULL, ev->xclient.window, LIST_FINDBY_ID, LIST_TYPE_EWIN);
-	if ((ewin) && (ev->xclient.data.l[0] == IconicState) &&
-	    (!(ewin->iconified)))
+	ewin =
+	   FindItem(NULL, ev->xclient.window, LIST_FINDBY_ID, LIST_TYPE_EWIN);
+	if ((ewin) && (ev->xclient.data.l[0] == IconicState)
+	    && (!(ewin->iconified)))
 	  {
 	     IconifyEwin(ewin);
 	     EDBUG_RETURN_;
@@ -266,7 +271,8 @@ HandleFocusWindowIn(Window win)
 	     DrawEwin(mode.focuswin);
 	     if (mode.focusmode == FOCUS_CLICK)
 	       {
-		  XUngrabButton(disp, AnyButton, AnyModifier, mode.focuswin->win_container);
+		  XUngrabButton(disp, AnyButton, AnyModifier,
+				mode.focuswin->win_container);
 		  GrabButtonGrabs(mode.focuswin);
 	       }
 	  }
@@ -354,8 +360,7 @@ HandleMotion(XEvent * ev)
 
    if ((!(ev->xmotion.state & (Button1Mask | Button2Mask |
 			       Button3Mask | Button4Mask |
-			       Button5Mask)) &&
-	(!mode.place)))
+			       Button5Mask)) && (!mode.place)))
      {
 	switch (mode.mode)
 	  {
@@ -389,14 +394,17 @@ HandleMotion(XEvent * ev)
 	     int                 screen_snap_dist;
 
 	     ewin = mode.ewin;
-	     gwins = ListWinGroupMembersForEwin(ewin, ACTION_MOVE, mode.nogroup, &num);
+	     gwins =
+		ListWinGroupMembersForEwin(ewin, ACTION_MOVE, mode.nogroup,
+					   &num);
 
 	     if ((mode.moveresize_pending_ewin) &&
 		 (mode.ewin == mode.moveresize_pending_ewin))
 	       {
 		  for (i = 0; i < num; i++)
-		     DrawEwinShape(gwins[i], mode.movemode, gwins[i]->x, gwins[i]->y,
-				   gwins[i]->client.w, gwins[i]->client.h, 0);
+		     DrawEwinShape(gwins[i], mode.movemode, gwins[i]->x,
+				   gwins[i]->y, gwins[i]->client.w,
+				   gwins[i]->client.h, 0);
 		  mode.moveresize_pending_ewin = NULL;
 	       }
 	     dx = mode.x - mode.px;
@@ -471,12 +479,23 @@ HandleMotion(XEvent * ev)
 		     /* jump out of snap horizontally */
 		     if ((ndx != dx) &&
 			 (((gwins[i]->x == 0) &&
-			   (!(IN_RANGE(gwins[i]->reqx, gwins[i]->x, screen_snap_dist)))) ||
-			  ((gwins[i]->x == (root.w - gwins[i]->w)) &&
-			   (!(IN_RANGE(gwins[i]->reqx, gwins[i]->x, screen_snap_dist)))) ||
-			  ((gwins[i]->x != 0) &&
-			   (gwins[i]->x != (root.w - gwins[i]->w) &&
-			    (!(IN_RANGE(gwins[i]->reqx, gwins[i]->x, mode.edge_snap_dist)))))))
+			   (!(IN_RANGE
+			      (gwins[i]->reqx, gwins[i]->x, screen_snap_dist))))
+			  || ((gwins[i]->x == (root.w - gwins[i]->w))
+			      &&
+			      (!(IN_RANGE
+				 (gwins[i]->reqx, gwins[i]->x,
+				  screen_snap_dist)))) || ((gwins[i]->x != 0)
+							   && (gwins[i]->x !=
+							       (root.w -
+								gwins[i]->w)
+							       &&
+							       (!(IN_RANGE
+								  (gwins[i]->
+								   reqx,
+								   gwins[i]->x,
+								   mode.
+								   edge_snap_dist)))))))
 		       {
 			  jumpx = 1;
 			  ndx = gwins[i]->reqx - gwins[i]->x + dx;
@@ -484,12 +503,23 @@ HandleMotion(XEvent * ev)
 		     /* jump out of snap vertically */
 		     if ((ndy != dy) &&
 			 (((gwins[i]->y == 0) &&
-			   (!(IN_RANGE(gwins[i]->reqy, gwins[i]->y, screen_snap_dist)))) ||
-			  ((gwins[i]->y == (root.h - gwins[i]->h)) &&
-			   (!(IN_RANGE(gwins[i]->reqy, gwins[i]->y, screen_snap_dist)))) ||
-			  ((gwins[i]->y != 0) &&
-			   (gwins[i]->y != (root.h - gwins[i]->h) &&
-			    (!(IN_RANGE(gwins[i]->reqy, gwins[i]->y, mode.edge_snap_dist)))))))
+			   (!(IN_RANGE
+			      (gwins[i]->reqy, gwins[i]->y, screen_snap_dist))))
+			  || ((gwins[i]->y == (root.h - gwins[i]->h))
+			      &&
+			      (!(IN_RANGE
+				 (gwins[i]->reqy, gwins[i]->y,
+				  screen_snap_dist)))) || ((gwins[i]->y != 0)
+							   && (gwins[i]->y !=
+							       (root.h -
+								gwins[i]->h)
+							       &&
+							       (!(IN_RANGE
+								  (gwins[i]->
+								   reqy,
+								   gwins[i]->y,
+								   mode.
+								   edge_snap_dist)))))))
 		       {
 			  jumpy = 1;
 			  ndy = gwins[i]->reqy - gwins[i]->y + dy;
@@ -547,7 +577,8 @@ HandleMotion(XEvent * ev)
 		     y = mode.win_y + mode.win_h - h;
 		  ewin->client.w = pw;
 		  ewin->client.h = ph;
-		  DrawEwinShape(ewin, mode.resizemode, x, y, w, h, mode.firstlast);
+		  DrawEwinShape(ewin, mode.resizemode, x, y, w, h,
+				mode.firstlast);
 		  break;
 	       case 1:
 		  ph = ewin->client.h;
@@ -563,7 +594,8 @@ HandleMotion(XEvent * ev)
 		  else
 		     y = mode.win_y + mode.win_h - h;
 		  ewin->client.h = ph;
-		  DrawEwinShape(ewin, mode.resizemode, x, y, w, h, mode.firstlast);
+		  DrawEwinShape(ewin, mode.resizemode, x, y, w, h,
+				mode.firstlast);
 		  break;
 	       case 2:
 		  pw = ewin->client.w;
@@ -579,14 +611,16 @@ HandleMotion(XEvent * ev)
 		  else
 		     x = mode.win_x + mode.win_w - w;
 		  ewin->client.w = pw;
-		  DrawEwinShape(ewin, mode.resizemode, x, y, w, h, mode.firstlast);
+		  DrawEwinShape(ewin, mode.resizemode, x, y, w, h,
+				mode.firstlast);
 		  break;
 	       case 3:
 		  w = mode.win_w + (mode.x - mode.start_x);
 		  h = mode.win_h + (mode.y - mode.start_y);
 		  x = ewin->x;
 		  y = ewin->y;
-		  DrawEwinShape(ewin, mode.resizemode, x, y, w, h, mode.firstlast);
+		  DrawEwinShape(ewin, mode.resizemode, x, y, w, h,
+				mode.firstlast);
 		  break;
 	       default:
 		  break;
@@ -613,14 +647,16 @@ HandleMotion(XEvent * ev)
 		  else
 		     x = mode.win_x + mode.win_w - w;
 		  ewin->client.w = pw;
-		  DrawEwinShape(ewin, mode.resizemode, x, y, w, h, mode.firstlast);
+		  DrawEwinShape(ewin, mode.resizemode, x, y, w, h,
+				mode.firstlast);
 		  break;
 	       case 1:
 		  w = mode.win_w + (mode.x - mode.start_x);
 		  h = ewin->client.h;
 		  x = ewin->x;
 		  y = ewin->y;
-		  DrawEwinShape(ewin, mode.resizemode, x, y, w, h, mode.firstlast);
+		  DrawEwinShape(ewin, mode.resizemode, x, y, w, h,
+				mode.firstlast);
 		  break;
 	       default:
 		  break;
@@ -647,14 +683,16 @@ HandleMotion(XEvent * ev)
 		  else
 		     y = mode.win_y + mode.win_h - h;
 		  ewin->client.h = ph;
-		  DrawEwinShape(ewin, mode.resizemode, x, y, w, h, mode.firstlast);
+		  DrawEwinShape(ewin, mode.resizemode, x, y, w, h,
+				mode.firstlast);
 		  break;
 	       case 1:
 		  w = ewin->client.w;
 		  h = mode.win_h + (mode.y - mode.start_y);
 		  x = ewin->x;
 		  y = ewin->y;
-		  DrawEwinShape(ewin, mode.resizemode, x, y, w, h, mode.firstlast);
+		  DrawEwinShape(ewin, mode.resizemode, x, y, w, h,
+				mode.firstlast);
 		  break;
 	       default:
 		  break;
@@ -716,8 +754,7 @@ HandleMotion(XEvent * ev)
 	     if (mode.button)
 	       {
 		  MovebuttonToCoord(mode.button,
-				    mode.button->x + dx,
-				    mode.button->y + dy);
+				    mode.button->x + dx, mode.button->y + dy);
 		  if (mode.deskmode == MODE_DESKRAY)
 		    {
 		       MoveDesktop(mode.deskdrag, desks.desk[mode.deskdrag].x,
@@ -809,8 +846,9 @@ HandleMotion(XEvent * ev)
 		ydist = offy;
 
 	     /* only if any active menus are partially off screen then scroll */
-	     if ((((xdist > 0) && (x1 < 0)) || ((xdist < 0) && (x2 >= root.w))) ||
-	       (((ydist > 0) && (y1 < 0)) || ((ydist < 0) && (y2 >= root.h))))
+	     if ((((xdist > 0) && (x1 < 0)) || ((xdist < 0) && (x2 >= root.w)))
+		 || (((ydist > 0) && (y1 < 0))
+		     || ((ydist < 0) && (y2 >= root.h))))
 	       {
 		  /* If we would scroll too far, limit scrolling to 2/3s of screen */
 		  if (ydist < -root.h)
@@ -839,7 +877,8 @@ HandleMotion(XEvent * ev)
 			      }
 			 }
 		    }
-		  SlideEwinsTo(menus, fx, fy, tx, ty, mode.cur_menu_depth, mode.shadespeed);
+		  SlideEwinsTo(menus, fx, fy, tx, ty, mode.cur_menu_depth,
+			       mode.shadespeed);
 	       }
 	  }
 	if ((xdist != 0) || (ydist != 0))
@@ -851,7 +890,8 @@ HandleMotion(XEvent * ev)
 
 	p = FindPager(ev->xmotion.window);
 	if (p)
-	   PagerHandleMotion(p, ev->xmotion.window, ev->xmotion.x, ev->xmotion.y);
+	   PagerHandleMotion(p, ev->xmotion.window, ev->xmotion.x,
+			     ev->xmotion.y);
 	else
 	   PagerHandleMotion(NULL, ev->xmotion.window, -99, -99);
      }
@@ -885,13 +925,16 @@ HandleMotion(XEvent * ev)
 		  x += dx;
 		  y += dy;
 		  EMoveWindow(disp, p->hi_win, x, y);
-		  XTranslateCoordinates(disp, p->win, root.win, 0, 0, &px, &py, &dw);
+		  XTranslateCoordinates(disp, p->win, root.win, 0, 0, &px, &py,
+					&dw);
 		  x -= px + (cx * (p->w / ax));
 		  y -= py + (cy * (p->h / ay));
 		  MoveEwin(p->hi_ewin, (x * root.w * ax) / p->w,
 			   (y * root.h * ay) / p->h);
 	       }
-	     gwins = ListWinGroupMembersForEwin(p->hi_ewin, ACTION_MOVE, mode.nogroup, &num);
+	     gwins =
+		ListWinGroupMembersForEwin(p->hi_ewin, ACTION_MOVE,
+					   mode.nogroup, &num);
 	     for (i = 0; i < num; i++)
 	       {
 		  if ((gwins[i] != p->hi_ewin) && (!gwins[i]->pager) &&
@@ -929,18 +972,23 @@ HandleMotion(XEvent * ev)
 			  di->item.slider.wanted_val += dx;
 			  di->item.slider.val = di->item.slider.lower +
 			     (((di->item.slider.wanted_val *
-			    (di->item.slider.upper - di->item.slider.lower)) /
-			  (di->item.slider.base_w - di->item.slider.knob_w)) /
+				(di->item.slider.upper -
+				 di->item.slider.lower)) /
+			       (di->item.slider.base_w -
+				di->item.slider.knob_w)) /
 			      di->item.slider.unit) * di->item.slider.unit;
 		       }
 		     else
 		       {
 			  di->item.slider.wanted_val += dy;
 			  di->item.slider.val = di->item.slider.lower +
-			     ((((di->item.slider.base_h - di->item.slider.knob_h -
+			     ((((di->
+				 item.slider.base_h - di->item.slider.knob_h -
 				 di->item.slider.wanted_val) *
-			    (di->item.slider.upper - di->item.slider.lower)) /
-			  (di->item.slider.base_h - di->item.slider.knob_h)) /
+				(di->item.slider.upper -
+				 di->item.slider.lower)) /
+			       (di->item.slider.base_h -
+				di->item.slider.knob_h)) /
 			      di->item.slider.unit) * di->item.slider.unit;
 		       }
 		     if (di->item.slider.val < di->item.slider.lower)
@@ -1013,7 +1061,8 @@ HandleDestroy(XEvent * ev)
 	  }
 	if (mode.doingslide)
 	  {
-	     DrawEwinShape(ewin, mode.slidemode, ewin->x, ewin->y, ewin->client.w, ewin->client.h, 2);
+	     DrawEwinShape(ewin, mode.slidemode, ewin->x, ewin->y,
+			   ewin->client.w, ewin->client.h, 2);
 	     mode.doingslide = 0;
 	  }
 	if (ewin == mode.focuswin)
@@ -1179,7 +1228,9 @@ HandleReparent(XEvent * ev)
       Efree(lst);
    if (!found)
      {
-	ewin = RemoveItem(NULL, ev->xreparent.window, LIST_FINDBY_ID, LIST_TYPE_EWIN);
+	ewin =
+	   RemoveItem(NULL, ev->xreparent.window, LIST_FINDBY_ID,
+		      LIST_TYPE_EWIN);
 	if (ewin)
 	  {
 	     if (ewin == mode.ewin)
@@ -1274,8 +1325,7 @@ HandleConfigureRequest(XEvent * ev)
 	   ewin->client.height.max = h;
 	MoveResizeEwin(ewin,
 		       x - ewin->border->border.left,
-		       y - ewin->border->border.top,
-		       w, h);
+		       y - ewin->border->border.top, w, h);
 	if (mode.mode == MODE_MOVE)
 	   ICCCM_Configure(ewin);
 	{
@@ -1334,7 +1384,8 @@ HandleResizeRequest(XEvent * ev)
 	ReZoom(ewin);
      }
    else
-      EResizeWindow(disp, win, ev->xresizerequest.width, ev->xresizerequest.height);
+      EResizeWindow(disp, win, ev->xresizerequest.width,
+		    ev->xresizerequest.height);
    EDBUG_RETURN_;
 }
 
@@ -1440,7 +1491,8 @@ HandleMapRequest(XEvent * ev)
 	  {
 	     EWin               *ewin;
 
-	     ewin = FindItem(NULL, ev->xmap.window, LIST_FINDBY_ID, LIST_TYPE_EWIN);
+	     ewin =
+		FindItem(NULL, ev->xmap.window, LIST_FINDBY_ID, LIST_TYPE_EWIN);
 	     KDE_NewWindow(ewin);
 
 	  }
@@ -1565,7 +1617,8 @@ HandleMouseDown(XEvent * ev)
 	unsigned int        bmask = 0, evmask;
 
 	evmask = ev->xbutton.state &
-	   (Button1Mask | Button2Mask | Button3Mask | Button4Mask | Button5Mask);
+	   (Button1Mask | Button2Mask | Button3Mask | Button4Mask |
+	    Button5Mask);
 	if (ev->xbutton.button == 1)
 	   bmask = Button1Mask;
 	else if (ev->xbutton.button == 2)
@@ -1589,8 +1642,8 @@ HandleMouseDown(XEvent * ev)
    if (mode.tooltips)
       DoIn("TOOLTIP_TIMEOUT", mode.tiptime, ToolTipTimeout, 0, NULL);
 
-   if ((((float)(ev->xbutton.time - last_time) / 1000) < mode_double_click_time) &&
-       ((int)(ev->xbutton.button) == (int)(last_button)))
+   if ((((float)(ev->xbutton.time - last_time) / 1000) < mode_double_click_time)
+       && ((int)(ev->xbutton.button) == (int)(last_button)))
       double_click = 1;
    last_time = ev->xbutton.time;
    last_button = ev->xbutton.button;
@@ -1615,8 +1668,7 @@ HandleMouseDown(XEvent * ev)
 
 	XUngrabPointer(disp, CurrentTime);
 
-	ac = FindItem("DESKBINDINGS", 0, LIST_FINDBY_NAME,
-		      LIST_TYPE_ACLASS);
+	ac = FindItem("DESKBINDINGS", 0, LIST_FINDBY_NAME, LIST_TYPE_ACLASS);
 	if (ac)
 	  {
 	     if (!EventAclass(ev, ac))
@@ -1667,7 +1719,8 @@ HandleMouseDown(XEvent * ev)
 		  ewin2 = FindEwinByMenu(mi->child);
 		  if (ewin2)
 		    {
-		       MoveEwin(ewin2, ewin->x + ewin->border->border.left + mx + mw,
+		       MoveEwin(ewin2,
+				ewin->x + ewin->border->border.left + mx + mw,
 				ewin->y + ewin->border->border.top + my -
 				ewin2->border->border.top);
 		       RaiseEwin(ewin2);
@@ -1702,7 +1755,8 @@ HandleMouseDown(XEvent * ev)
 			       mode.context_ewin = ewins[i];
 			    mode.borderpartpress = 1;
 			    if (ewins[i]->border->part[j].aclass)
-			       EventAclass(ev, ewins[i]->border->part[j].aclass);
+			       EventAclass(ev,
+					   ewins[i]->border->part[j].aclass);
 			    mode.borderpartpress = 0;
 			 }
 		       Efree(ewins);
@@ -1721,7 +1775,8 @@ HandleMouseDown(XEvent * ev)
 	       {
 		  GrabThePointer(win);
 		  if (buttons[i]->inside_win)
-		     XSendEvent(disp, buttons[i]->inside_win, False, ButtonPressMask, ev);
+		     XSendEvent(disp, buttons[i]->inside_win, False,
+				ButtonPressMask, ev);
 		  mode.button = buttons[i];
 		  buttons[i]->state = STATE_CLICKED;
 		  DrawButton(buttons[i]);
@@ -1792,9 +1847,11 @@ HandleMouseDown(XEvent * ev)
 		       {
 			  di->item.slider.in_drag = 1;
 			  if (di->item.slider.horizontal)
-			     di->item.slider.wanted_val = di->item.slider.knob_x;
+			     di->item.slider.wanted_val =
+				di->item.slider.knob_x;
 			  else
-			     di->item.slider.wanted_val = di->item.slider.knob_y;
+			     di->item.slider.wanted_val =
+				di->item.slider.knob_y;
 		       }
 		  }
 		di->clicked = 1;
@@ -1808,8 +1865,7 @@ HandleMouseDown(XEvent * ev)
 	ActionClass        *ac;
 
 	ac = (ActionClass *) FindItem("BUTTONBINDINGS", 0,
-				      LIST_FINDBY_NAME,
-				      LIST_TYPE_ACLASS);
+				      LIST_FINDBY_NAME, LIST_TYPE_ACLASS);
 	if (ac)
 	  {
 	     mode.ewin = ewin;
@@ -1847,24 +1903,24 @@ HandleMouseDown(XEvent * ev)
 		int                 hx, hy;
 		Window              dw;
 
-		XTranslateCoordinates(disp, p->hi_win, p->win, 0, 0, &hx, &hy, &dw);
+		XTranslateCoordinates(disp, p->hi_win, p->win, 0, 0, &hx, &hy,
+				      &dw);
 		ev->xbutton.x += hx;
 		ev->xbutton.y += hy;
 	     }
-	   if (ev->xbutton.button == 3)
+	   if (ev->xbutton.button == mode.pager_menu_button)
 	     {
 		if ((ev->xbutton.x >= 0) && (ev->xbutton.y >= 0) &&
 		    (ev->xbutton.x < p->w) && (ev->xbutton.y < p->h))
 		   PagerShowMenu(p, ev->xbutton.x, ev->xbutton.y);
 	     }
-	   else if (ev->xbutton.button == 1)
+	   else if (ev->xbutton.button == mode.pager_win_button)
 	     {
 		ewin = EwinInPagerAt(p, ev->xbutton.x, ev->xbutton.y);
 		if ((ewin) && (!ewin->pager))
 		  {
 		     Window              dw;
-		     int                 wx, wy, ww, wh, ax, ay, cx, cy,
-		                         px, py;
+		     int                 wx, wy, ww, wh, ax, ay, cx, cy, px, py;
 
 		     PagerHideHi(p);
 		     pwin_px = ewin->x;
@@ -1876,9 +1932,12 @@ HandleMouseDown(XEvent * ev)
 		     wy = ((ewin->y + (cy * root.h)) * (p->h / ay)) / root.h;
 		     ww = ((ewin->w) * (p->w / ax)) / root.w;
 		     wh = ((ewin->h) * (p->h / ay)) / root.h;
-		     XTranslateCoordinates(disp, p->win, root.win, 0, 0, &px, &py, &dw);
-		     EMoveResizeWindow(disp, p->hi_win, px + wx, py + wy, ww, wh);
-		     ESetWindowBackgroundPixmap(disp, p->hi_win, ewin->mini_pmap);
+		     XTranslateCoordinates(disp, p->win, root.win, 0, 0, &px,
+					   &py, &dw);
+		     EMoveResizeWindow(disp, p->hi_win, px + wx, py + wy, ww,
+				       wh);
+		     ESetWindowBackgroundPixmap(disp, p->hi_win,
+						ewin->mini_pmap);
 		     EMapRaised(disp, p->hi_win);
 		     GrabThePointer(p->hi_win);
 		     p->hi_visible = 1;
@@ -1936,7 +1995,9 @@ HandleMouseUp(XEvent * ev)
 	ewin = GetEwin();
 	if (ewin)
 	  {
-	     gwins = ListWinGroupMembersForEwin(ewin, ACTION_MOVE, mode.nogroup, &num);
+	     gwins =
+		ListWinGroupMembersForEwin(ewin, ACTION_MOVE, mode.nogroup,
+					   &num);
 	     if ((mode.movemode == 0) && (mode.mode == MODE_MOVE))
 		for (i = 0; i < num; i++)
 		   DetermineEwinFloat(gwins[i], 0, 0);
@@ -1991,7 +2052,9 @@ HandleMouseUp(XEvent * ev)
 	ewin = GetEwin();
 	if (ewin)
 	  {
-	     gwins = ListWinGroupMembersForEwin(ewin, ACTION_MOVE, mode.nogroup, &num);
+	     gwins =
+		ListWinGroupMembersForEwin(ewin, ACTION_MOVE, mode.nogroup,
+					   &num);
 	     if ((mode.movemode == 0) && (mode.mode == MODE_MOVE))
 		for (i = 0; i < num; i++)
 		   DetermineEwinFloat(gwins[i], 0, 0);
@@ -2149,8 +2212,9 @@ HandleMouseUp(XEvent * ev)
 		       if ((!ewins[i]->menu) && (!mode.cur_menu_mode))
 			  mode.context_ewin = ewins[i];
 		       mode.borderpartpress = 1;
-		       if ((click_was_in == win2) && (ewins[i]->border->part[j].aclass) &&
-			   (!wasmovres))
+		       if ((click_was_in == win2)
+			   && (ewins[i]->border->part[j].aclass)
+			   && (!wasmovres))
 			  EventAclass(ev, ewins[i]->border->part[j].aclass);
 		       mode.borderpartpress = 0;
 		       if ((mode.slideout) && (pslideout))
@@ -2170,7 +2234,8 @@ HandleMouseUp(XEvent * ev)
 	buttons = (Button **) ListItemType(&num, LIST_TYPE_BUTTON);
 	for (i = 0; i < num; i++)
 	  {
-	     if ((click_was_in == buttons[i]->win) || (click_was_in == buttons[i]->event_win))
+	     if ((click_was_in == buttons[i]->win)
+		 || (click_was_in == buttons[i]->event_win))
 	       {
 		  if ((buttons[i]->inside_win) && (!wasmovres))
 		     XSendEvent(disp, buttons[i]->inside_win, False,
@@ -2269,8 +2334,7 @@ HandleMouseUp(XEvent * ev)
 	ActionClass        *ac;
 
 	ac = (ActionClass *) FindItem("BUTTONBINDINGS", 0,
-				      LIST_FINDBY_NAME,
-				      LIST_TYPE_ACLASS);
+				      LIST_FINDBY_NAME, LIST_TYPE_ACLASS);
 	if (ac)
 	  {
 	     mode.borderpartpress = 1;
@@ -2292,7 +2356,7 @@ HandleMouseUp(XEvent * ev)
 	int                 pax, pay;
 
 	p = FindPager(ev->xbutton.window);
-	if ((p) && (ev->xbutton.button == 2))
+	if ((p) && (ev->xbutton.button == mode.pager_sel_button))
 	  {
 	     PagerAreaAt(p, ev->xbutton.x, ev->xbutton.y, &pax, &pay);
 	     GotoDesktop(p->desktop);
@@ -2302,14 +2366,15 @@ HandleMouseUp(XEvent * ev)
 	       }
 	     SetCurrentArea(pax, pay);
 	  }
-	else if ((p) && (ev->xbutton.button == 1))
+	else if ((p) && (ev->xbutton.button == mode.pager_win_button))
 	  {
 	     if (ev->xbutton.window == p->hi_win)
 	       {
 		  int                 hx, hy;
 		  Window              dw;
 
-		  XTranslateCoordinates(disp, p->hi_win, p->win, 0, 0, &hx, &hy, &dw);
+		  XTranslateCoordinates(disp, p->hi_win, p->win, 0, 0, &hx, &hy,
+					&dw);
 		  ev->xbutton.x += hx;
 		  ev->xbutton.y += hy;
 	       }
@@ -2325,13 +2390,18 @@ HandleMouseUp(XEvent * ev)
 
 		       ew = desks.desk[desks.current].list[i];
 		       if (((ew->pager) || (ew->ibox)) &&
-			   ((ew->desktop == desks.current) ||
-			    (ew->sticky)))
+			   ((ew->desktop == desks.current) || (ew->sticky)))
 			 {
-			    if ((ev->xbutton.x_root >= (ew->x + ew->border->border.left)) &&
-				(ev->xbutton.x_root < (ew->x + ew->w - ew->border->border.right)) &&
-				(ev->xbutton.y_root >= (ew->y + ew->border->border.top)) &&
-				(ev->xbutton.y_root < (ew->y + ew->h - ew->border->border.bottom)))
+			    if (
+				(ev->xbutton.x_root >=
+				 (ew->x + ew->border->border.left))
+				&& (ev->xbutton.x_root <
+				    (ew->x + ew->w - ew->border->border.right))
+				&& (ev->xbutton.y_root >=
+				    (ew->y + ew->border->border.top))
+				&& (ev->xbutton.y_root <
+				    (ew->y + ew->h -
+				     ew->border->border.bottom)))
 			      {
 				 ewin = ew;
 				 i = desks.desk[desks.current].num;
@@ -2342,13 +2412,13 @@ HandleMouseUp(XEvent * ev)
 		  if ((ewin) && (ewin->pager))
 		    {
 		       Pager              *pp;
-		       int                 w, h, x, y, ax, ay, cx, cy, px,
-		                           py;
+		       int                 w, h, x, y, ax, ay, cx, cy, px, py;
 		       int                 wx, wy, base_x = 0, base_y = 0;
 		       Window              dw;
 
-		       gwins = ListWinGroupMembersForEwin(p->hi_ewin, ACTION_MOVE,
-							  mode.nogroup, &num);
+		       gwins =
+			  ListWinGroupMembersForEwin(p->hi_ewin, ACTION_MOVE,
+						     mode.nogroup, &num);
 		       pp = ewin->pager;
 		       cx = desks.desk[pp->desktop].current_area_x;
 		       cy = desks.desk[pp->desktop].current_area_y;
@@ -2363,8 +2433,7 @@ HandleMouseUp(XEvent * ev)
 			  (root.h / (pp->h / ay));
 		       if (((x + w) <= px) ||
 			   ((y + h) <= py) ||
-			   (x >= (px + pp->w)) ||
-			   (y >= (py + pp->h)))
+			   (x >= (px + pp->w)) || (y >= (py + pp->h)))
 			 {
 			    int                 ndesk, nx, ny;
 
@@ -2381,7 +2450,9 @@ HandleMouseUp(XEvent * ev)
 			 }
 		       else
 			 {
-			    gwins = ListWinGroupMembersForEwin(p->hi_ewin, ACTION_MOVE,
+			    gwins =
+			       ListWinGroupMembersForEwin(p->hi_ewin,
+							  ACTION_MOVE,
 							  mode.nogroup, &num);
 			    /* get get the location of the base win so we can move the */
 			    /* rest of the windows in the group to the correct offset */
@@ -2395,25 +2466,29 @@ HandleMouseUp(XEvent * ev)
 			      {
 				 if (!gwins[i]->sticky)
 				    MoveEwinToDesktopAt(gwins[i], pp->desktop,
-						   wx + (gwin_px[i] - base_x),
-						  wy + (gwin_py[i] - base_y));
+							wx + (gwin_px[i] -
+							      base_x),
+							wy + (gwin_py[i] -
+							      base_y));
 				 else
 				    MoveEwin(gwins[i],
-					     ((root.w * ax) + wx + (gwin_px[i] - base_x)) % root.w,
-					     ((root.h * ay) + wy + (gwin_py[i] - base_y)) % root.h);
+					     ((root.w * ax) + wx +
+					      (gwin_px[i] - base_x)) % root.w,
+					     ((root.h * ay) + wy +
+					      (gwin_py[i] - base_y)) % root.h);
 			      }
 			 }
 		    }
 		  else if ((ewin) && (ewin->ibox) &&
 			   (!((p->hi_ewin->ibox) ||
 			      ((ewin->client.need_input) &&
-			       ((ewin->skiptask) || (ewin->skipwinlist)))
-			    )))
+			       ((ewin->skiptask) || (ewin->skipwinlist))))))
 		    {
 		       char                was_shaded;
 
-		       gwins = ListWinGroupMembersForEwin(p->hi_ewin, ACTION_MOVE,
-							  mode.nogroup, &num);
+		       gwins =
+			  ListWinGroupMembersForEwin(p->hi_ewin, ACTION_MOVE,
+						     mode.nogroup, &num);
 		       for (i = 0; i < num; i++)
 			 {
 			    if (!gwins[i]->pager)
@@ -2424,13 +2499,19 @@ HandleMouseUp(XEvent * ev)
 				 if (ewin->ibox)
 				   {
 				      IB_Animate(1, gwins[i], ewin->ibox->ewin);
-				      UpdateAppIcon(gwins[i], ewin->ibox->icon_mode);
+				      UpdateAppIcon(gwins[i],
+						    ewin->ibox->icon_mode);
 				   }
 				 HideEwin(gwins[i]);
 				 MoveEwin(gwins[i], gwin_px[i] +
-					  ((desks.desk[gwins[i]->desktop].current_area_x) -
-				    p->hi_ewin->area_x) * root.w, gwin_py[i] +
-					  ((desks.desk[gwins[i]->desktop].current_area_y) -
+					  ((desks.
+					    desk[gwins[i]->desktop].
+					    current_area_x) -
+					   p->hi_ewin->area_x) * root.w,
+					  gwin_py[i] +
+					  ((desks.
+					    desk[gwins[i]->desktop].
+					    current_area_y) -
 					   p->hi_ewin->area_y) * root.h);
 				 if (was_shaded != gwins[i]->shaded)
 				    InstantShadeEwin(gwins[i]);
@@ -2441,8 +2522,8 @@ HandleMouseUp(XEvent * ev)
 		    }
 		  else
 		    {
-		       int                 ndesk, nx, ny, base_x = 0, base_y = 0,
-		                           ax, ay;
+		       int                 ndesk, nx, ny, base_x = 0, base_y =
+			  0, ax, ay;
 
 		       ndesk = desks.current;
 		       nx = (int)ev->xbutton.x_root -
@@ -2453,8 +2534,9 @@ HandleMouseUp(XEvent * ev)
 			  ((int)p->hi_ewin->h / 2);
 		       GetAreaSize(&ax, &ay);
 
-		       gwins = ListWinGroupMembersForEwin(p->hi_ewin, ACTION_MOVE,
-							  mode.nogroup, &num);
+		       gwins =
+			  ListWinGroupMembersForEwin(p->hi_ewin, ACTION_MOVE,
+						     mode.nogroup, &num);
 		       for (i = 0; i < num; i++)
 			  if (gwins[i] == p->hi_ewin)
 			    {
@@ -2468,8 +2550,10 @@ HandleMouseUp(XEvent * ev)
 					ny + (gwin_py[i] - base_y));
 			    else
 			       MoveEwin(gwins[i],
-					((root.w * ax) + nx + (gwin_px[i] - base_x)) % root.w,
-					((root.h * ay) + ny + (gwin_py[i] - base_y)) % root.h);
+					((root.w * ax) + nx +
+					 (gwin_px[i] - base_x)) % root.w,
+					((root.h * ay) + ny +
+					 (gwin_py[i] - base_y)) % root.h);
 			    if (!gwins[i]->sticky)
 			       MoveEwinToDesktop(gwins[i], ndesk);
 			 }
@@ -2533,7 +2617,8 @@ SubmenuShowTimeout(int val, void *dat)
    ewin2 = FindEwinByMenu(data->mi->child);
    if (ewin2)
      {
-	MoveEwin(ewin2, data->ewin->x + data->ewin->border->border.left + mx + mw,
+	MoveEwin(ewin2,
+		 data->ewin->x + data->ewin->border->border.left + mx + mw,
 		 data->ewin->y + data->ewin->border->border.top + my -
 		 ewin2->border->border.top);
 	RaiseEwin(ewin2);
@@ -2645,8 +2730,7 @@ HandleMouseIn(XEvent * ev)
 		  mdata.m = m;
 		  mdata.mi = mi;
 		  mdata.ewin = ewin;
-		  DoIn("SUBMENU_SHOW", 0.2, SubmenuShowTimeout,
-		       0, &mdata);
+		  DoIn("SUBMENU_SHOW", 0.2, SubmenuShowTimeout, 0, &mdata);
 	       }
 	  }
 	EDBUG_RETURN_;
@@ -2672,7 +2756,8 @@ HandleMouseIn(XEvent * ev)
 			    if ((!ewins[i]->menu) && (!mode.cur_menu_mode))
 			       mode.context_ewin = ewins[i];
 			    if (ewins[i]->border->part[j].aclass)
-			       EventAclass(ev, ewins[i]->border->part[j].aclass);
+			       EventAclass(ev,
+					   ewins[i]->border->part[j].aclass);
 			 }
 		    }
 		  Efree(ewins);
@@ -2797,7 +2882,8 @@ HandleMouseOut(XEvent * ev)
 			    if ((!ewins[i]->menu) && (!mode.cur_menu_mode))
 			       mode.context_ewin = ewins[i];
 			    if (ewins[i]->border->part[j].aclass)
-			       EventAclass(ev, ewins[i]->border->part[j].aclass);
+			       EventAclass(ev,
+					   ewins[i]->border->part[j].aclass);
 			 }
 		    }
 		  Efree(ewins);

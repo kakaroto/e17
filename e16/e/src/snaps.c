@@ -35,7 +35,8 @@ FindSnapshot(EWin * ewin)
    if (ewin->snap)
       return ewin->snap;
    if ((ewin->client.name) && (ewin->client.class))
-      Esnprintf(buf, sizeof(buf), "%s.%s", ewin->client.name, ewin->client.class);
+      Esnprintf(buf, sizeof(buf), "%s.%s", ewin->client.name,
+		ewin->client.class);
    else if (ewin->client.title)
       Esnprintf(buf, sizeof(buf), "TITLE.%s", ewin->client.title);
    else
@@ -62,7 +63,8 @@ GetSnapshot(EWin * ewin)
 	char                buf[4096];
 
 	if ((ewin->client.name) && (ewin->client.class))
-	   Esnprintf(buf, sizeof(buf), "%s.%s", ewin->client.name, ewin->client.class);
+	   Esnprintf(buf, sizeof(buf), "%s.%s", ewin->client.name,
+		     ewin->client.class);
 	else if (ewin->client.title)
 	   Esnprintf(buf, sizeof(buf), "TITLE.%s", ewin->client.title);
 	sn = NewSnapshot(buf);
@@ -400,7 +402,7 @@ SnapshotEwinDialog(EWin * ewin)
    DialogItemSetColSpan(di, 2);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemCheckButtonSetText(di, "Location");
+   DialogItemCheckButtonSetText(di, gettext("Location"));
    DialogItemCheckButtonSetState(di, tmp_snap_location);
    DialogItemCheckButtonSetPtr(di, &tmp_snap_location);
 
@@ -408,7 +410,7 @@ SnapshotEwinDialog(EWin * ewin)
    DialogItemSetColSpan(di, 2);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemCheckButtonSetText(di, "Border style");
+   DialogItemCheckButtonSetText(di, gettext("Border style"));
    DialogItemCheckButtonSetState(di, tmp_snap_border);
    DialogItemCheckButtonSetPtr(di, &tmp_snap_border);
 
@@ -416,7 +418,7 @@ SnapshotEwinDialog(EWin * ewin)
    DialogItemSetColSpan(di, 2);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemCheckButtonSetText(di, "Size");
+   DialogItemCheckButtonSetText(di, gettext("Size"));
    DialogItemCheckButtonSetState(di, tmp_snap_size);
    DialogItemCheckButtonSetPtr(di, &tmp_snap_size);
 
@@ -424,7 +426,7 @@ SnapshotEwinDialog(EWin * ewin)
    DialogItemSetColSpan(di, 2);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemCheckButtonSetText(di, "Desktop");
+   DialogItemCheckButtonSetText(di, gettext("Desktop"));
    DialogItemCheckButtonSetState(di, tmp_snap_desktop);
    DialogItemCheckButtonSetPtr(di, &tmp_snap_desktop);
 
@@ -432,7 +434,7 @@ SnapshotEwinDialog(EWin * ewin)
    DialogItemSetColSpan(di, 2);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemCheckButtonSetText(di, "Shaded state");
+   DialogItemCheckButtonSetText(di, gettext("Shaded state"));
    DialogItemCheckButtonSetState(di, tmp_snap_shade);
    DialogItemCheckButtonSetPtr(di, &tmp_snap_shade);
 
@@ -440,7 +442,7 @@ SnapshotEwinDialog(EWin * ewin)
    DialogItemSetColSpan(di, 2);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemCheckButtonSetText(di, "Sticky state");
+   DialogItemCheckButtonSetText(di, gettext("Sticky state"));
    DialogItemCheckButtonSetState(di, tmp_snap_sticky);
    DialogItemCheckButtonSetPtr(di, &tmp_snap_sticky);
 
@@ -448,7 +450,7 @@ SnapshotEwinDialog(EWin * ewin)
    DialogItemSetColSpan(di, 2);
    DialogItemSetPadding(di, 2, 2, 2, 2);
    DialogItemSetFill(di, 1, 0);
-   DialogItemCheckButtonSetText(di, "Stacking layer");
+   DialogItemCheckButtonSetText(di, gettext("Stacking layer"));
    DialogItemCheckButtonSetState(di, tmp_snap_layer);
    DialogItemCheckButtonSetPtr(di, &tmp_snap_layer);
 
@@ -467,7 +469,9 @@ SnapshotEwinDialog(EWin * ewin)
 	     DialogItemSetColSpan(di, 2);
 	     DialogItemSetPadding(di, 2, 2, 2, 2);
 	     DialogItemSetFill(di, 1, 0);
-	     DialogItemCheckButtonSetText(di, "Restart application on login");
+	     DialogItemCheckButtonSetText(di,
+					  gettext
+					  ("Restart application on login"));
 	     DialogItemCheckButtonSetState(di, tmp_snap_cmd);
 	     DialogItemCheckButtonSetPtr(di, &tmp_snap_cmd);
 	  }
@@ -489,7 +493,9 @@ SnapshotEwinDialog(EWin * ewin)
 	DialogItemSetColSpan(di, 4);
 	DialogItemSetPadding(di, 2, 2, 2, 2);
 	DialogItemSetFill(di, 1, 0);
-	DialogItemCheckButtonSetText(di, "Remember this window's group(s)");
+	DialogItemCheckButtonSetText(di,
+				     gettext
+				     ("Remember this window's group(s)"));
 	DialogItemCheckButtonSetState(di, tmp_snap_group);
 	DialogItemCheckButtonSetPtr(di, &tmp_snap_group);
      }
@@ -500,9 +506,9 @@ SnapshotEwinDialog(EWin * ewin)
    DialogItemSetFill(di, 1, 0);
    DialogItemSeparatorSetOrientation(di, 0);
 
-   DialogAddButton(d, "OK", CB_ApplySnap, 1);
-   DialogAddButton(d, "Apply", CB_ApplySnap, 0);
-   DialogAddButton(d, "Cancel", CB_ApplySnap, 1);
+   DialogAddButton(d, gettext("OK"), CB_ApplySnap, 1);
+   DialogAddButton(d, gettext("Apply"), CB_ApplySnap, 0);
+   DialogAddButton(d, gettext("Cancel"), CB_ApplySnap, 1);
    DialogSetExitFunction(d, CB_ApplySnap, 2, d);
    DialogBindKey(d, "Escape", CB_ApplySnapEscape, 0, d);
    DialogBindKey(d, "Return", CB_ApplySnap, 0, d);
@@ -677,7 +683,8 @@ SnapshotEwinGroups(EWin * ewin, char onoff)
      {
 	if (onoff)
 	  {
-	     groups = ListWinGroups(gwins[i], GROUP_SELECT_EWIN_ONLY, &num_groups);
+	     groups =
+		ListWinGroups(gwins[i], GROUP_SELECT_EWIN_ONLY, &num_groups);
 	     if (groups)
 	       {
 		  sn = gwins[i]->snap;
@@ -739,7 +746,8 @@ UnsnapshotEwin(EWin * ewin)
    char                buf[4096];
 
    if ((ewin->client.name) && (ewin->client.class))
-      Esnprintf(buf, sizeof(buf), "%s.%s", ewin->client.name, ewin->client.class);
+      Esnprintf(buf, sizeof(buf), "%s.%s", ewin->client.name,
+		ewin->client.class);
    else if (ewin->client.title)
       Esnprintf(buf, sizeof(buf), "TITLE.%s", ewin->client.title);
    else
@@ -748,7 +756,9 @@ UnsnapshotEwin(EWin * ewin)
      {
 	ListChangeItemID(LIST_TYPE_SNAPSHOT, ewin->snap, 0);
 	ewin->snap->used = 0;
-	sn = RemoveItem((char *)ewin->snap, 0, LIST_FINDBY_POINTER, LIST_TYPE_SNAPSHOT);
+	sn =
+	   RemoveItem((char *)ewin->snap, 0, LIST_FINDBY_POINTER,
+		      LIST_TYPE_SNAPSHOT);
 	ewin->snap = NULL;
      }
    else
@@ -800,7 +810,8 @@ SaveSnapInfo(void)
 	     if (sn->use_wh)
 		fprintf(f, "WH: %i %i\n", sn->w, sn->h);
 	     if (sn->use_xy)
-		fprintf(f, "XY: %i %i %i %i\n", sn->x, sn->y, sn->area_x, sn->area_y);
+		fprintf(f, "XY: %i %i %i %i\n", sn->x, sn->y, sn->area_x,
+			sn->area_y);
 	     if (sn->use_layer)
 		fprintf(f, "LAYER: %i\n", sn->layer);
 	     if (sn->use_sticky)
@@ -826,7 +837,7 @@ SaveSnapInfo(void)
    rm(buf);
    mv(s, buf);
    if (!isfile(buf))
-      Alert("Error saving snaps file\n");
+      Alert(gettext("Error saving snaps file\n"));
    SaveGroups();
 }
 
@@ -861,7 +872,8 @@ LoadSnapInfo(void)
 
    Esnprintf(buf, sizeof(buf), "%s.snapshots.%i", GetSMFile(), root.scr);
    if (!exists(buf))
-      Esnprintf(buf, sizeof(buf), "%s.snapshots.%i", GetGenericSMFile(), root.scr);
+      Esnprintf(buf, sizeof(buf), "%s.snapshots.%i", GetGenericSMFile(),
+		root.scr);
 #ifndef __EMX__
    f = fopen(buf, "r");
 #else
@@ -987,7 +999,9 @@ LoadSnapInfo(void)
 	       {
 		  word(buf, 2, s);
 		  sn->num_groups++;
-		  sn->groups = Erealloc(sn->groups, sizeof(int) * sn->num_groups);
+		  sn->groups =
+
+		     Erealloc(sn->groups, sizeof(int) * sn->num_groups);
 
 		  sn->groups[sn->num_groups - 1] = atoi(s);
 	       }
@@ -1028,16 +1042,20 @@ MatchEwinToSnapInfo(EWin * ewin)
 	     if (sn->use_desktop)
 	       {
 		  ewin->client.x +=
-		     ((sn->area_x - desks.desk[ewin->desktop].current_area_x) * root.w);
+		     ((sn->area_x - desks.desk[ewin->desktop].current_area_x) *
+		      root.w);
 		  ewin->client.y +=
-		     ((sn->area_y - desks.desk[ewin->desktop].current_area_y) * root.h);
+		     ((sn->area_y - desks.desk[ewin->desktop].current_area_y) *
+		      root.h);
 	       }
 	     else
 	       {
 		  ewin->client.x +=
-		     ((sn->area_x - desks.desk[desks.current].current_area_x) * root.w);
+		     ((sn->area_x - desks.desk[desks.current].current_area_x) *
+		      root.w);
 		  ewin->client.y +=
-		     ((sn->area_y - desks.desk[desks.current].current_area_y) * root.h);
+		     ((sn->area_y - desks.desk[desks.current].current_area_y) *
+		      root.h);
 	       }
 	  }
 	ewin->x = ewin->client.x;
@@ -1079,7 +1097,9 @@ MatchEwinToSnapInfo(EWin * ewin)
 	       {
 		  BuildWindowGroup(&ewin, 1);
 		  ewin->groups[ewin->num_groups - 1]->index = sn->groups[i];
-		  ListChangeItemID(LIST_TYPE_GROUP, ewin->groups[ewin->num_groups - 1], sn->groups[i]);
+		  ListChangeItemID(LIST_TYPE_GROUP,
+				   ewin->groups[ewin->num_groups - 1],
+				   sn->groups[i]);
 	       }
 	     else
 		AddEwinToGroup(ewin, g);
@@ -1169,12 +1189,28 @@ MatchEwinToSnapInfoAfter(EWin * ewin)
 	       {
 		  if (sn->use_desktop)
 		     MoveEwin(ewin,
-			      sn->x + ((sn->area_x - desks.desk[ewin->desktop].current_area_x) * root.w),
-			      sn->y + ((sn->area_y - desks.desk[ewin->desktop].current_area_y) * root.h));
+			      sn->x +
+			      ((sn->
+				area_x -
+				desks.desk[ewin->desktop].current_area_x) *
+			       root.w),
+			      sn->y +
+			      ((sn->
+				area_y -
+				desks.desk[ewin->desktop].current_area_y) *
+			       root.h));
 		  else
 		     MoveEwin(ewin,
-			      sn->x + ((sn->area_x - desks.desk[desks.current].current_area_x) * root.w),
-			      sn->y + ((sn->area_y - desks.desk[desks.current].current_area_y) * root.h));
+			      sn->x +
+			      ((sn->
+				area_x -
+				desks.desk[desks.current].current_area_x) *
+			       root.w),
+			      sn->y +
+			      ((sn->
+				area_y -
+				desks.desk[desks.current].current_area_y) *
+			       root.h));
 	       }
 	     else
 		MoveEwin(ewin, sn->x, sn->y);
@@ -1228,7 +1264,9 @@ MatchEwinToSnapInfoAfter(EWin * ewin)
 	       {
 		  BuildWindowGroup(&ewin, 1);
 		  ewin->groups[ewin->num_groups - 1]->index = sn->groups[i];
-		  ListChangeItemID(LIST_TYPE_GROUP, ewin->groups[ewin->num_groups - 1], sn->groups[i]);
+		  ListChangeItemID(LIST_TYPE_GROUP,
+				   ewin->groups[ewin->num_groups - 1],
+				   sn->groups[i]);
 	       }
 	     else
 		AddEwinToGroup(ewin, g);

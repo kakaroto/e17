@@ -37,8 +37,7 @@ static Window       sc_window = 0;
 static Atom         sc_atom = 0;
 static ImlibData   *imd = NULL;
 
-Window
-SC_GetDestWin(void)
+Window SC_GetDestWin(void)
 {
    return 0;
 }
@@ -61,9 +60,7 @@ SC_Main(void)
 	if (XCheckWindowEvent(sc_disp, sc_window,
 			      PropertyChangeMask |
 			      PointerMotionMask |
-			      ButtonPressMask |
-			      ButtonReleaseMask
-			      ,&ev))
+			      ButtonPressMask | ButtonReleaseMask, &ev))
 	  {
 	     switch (ev.type)
 	       {
@@ -94,7 +91,8 @@ SC_Main(void)
 		     if (!a_wait)
 			a_wait = XInternAtom(sc_disp, "ENL_SC_WAIT", False);
 		     if (!a_hotspot)
-			a_hotspot = XInternAtom(sc_disp, "ENL_SC_HOTSPOT", False);
+			a_hotspot =
+			   XInternAtom(sc_disp, "ENL_SC_HOTSPOT", False);
 		     if (ev.xproperty.atom == a_wait)
 		       {
 			  retval = NULL;
@@ -158,7 +156,8 @@ SC_Main(void)
 		  ESetWindowBackgroundPixmap(sc_disp, sc_window, pmap);
 		  Imlib_free_pixmap(imd, pmap);
 		  XClearWindow(sc_disp, sc_window);
-		  EResizeWindow(sc_disp, sc_window, im->rgb_width, im->rgb_height);
+		  EResizeWindow(sc_disp, sc_window, im->rgb_width,
+				im->rgb_height);
 		  Imlib_destroy_image(imd, im);
 	       }
 	  }
@@ -240,8 +239,8 @@ SC_Init(void)
    {
       int                 test_event_base, test_error_base, test_v1, test_v2;
 
-      if (XTestQueryExtension(sc_disp, &test_event_base, &test_error_base, &
-			      test_v1, &test_v2))
+      if (XTestQueryExtension
+	  (sc_disp, &test_event_base, &test_error_base, &test_v1, &test_v2))
 	 XTestGrabControl(sc_disp, True);
    }
 #endif
@@ -259,10 +258,7 @@ SC_Init(void)
 			     CWBackPixel | CWBorderPixel, &attr);
    XSelectInput(sc_disp, sc_window,
 		PropertyChangeMask |
-		PointerMotionMask |
-		ButtonPressMask |
-		ButtonReleaseMask
-      );
+		PointerMotionMask | ButtonPressMask | ButtonReleaseMask);
    sc_atom = XInternAtom(disp, "ENLIGHTENMENT_SOFT_CURSOR", False);
    val = sc_window;
    XChangeProperty(sc_disp, root.win, sc_atom, XA_CARDINAL, 32,
@@ -282,9 +278,8 @@ SC_Init(void)
 
    XGrabPointer(sc_disp, sc_window, True,
 		ButtonPressMask | ButtonReleaseMask |
-		PointerMotionMask | ButtonMotionMask
-		,GrabModeAsync, GrabModeAsync, None, cs,
-		CurrentTime);
+		PointerMotionMask | ButtonMotionMask, GrabModeAsync,
+		GrabModeAsync, None, cs, CurrentTime);
    XUngrabServer(sc_disp);
    SC_Main();
    exit(0);

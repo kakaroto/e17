@@ -98,7 +98,7 @@ HandleDrawQueue()
 	     for (i = 0; i < num; i++)
 	       {
 		  if ((lst[i]->d == dq->d) && (dq->d->item) &&
-		  /*(dq->d->item == dq->di) && */ (lst[i]->di == dq->di))
+		      /*(dq->d->item == dq->di) && */ (lst[i]->di == dq->di))
 		    {
 		       if (dq->x < lst[i]->x)
 			 {
@@ -200,8 +200,7 @@ HandleDrawQueue()
 	     else if (lst[i]->iclass)
 	       {
 		  IclassApply(lst[i]->iclass, lst[i]->win, lst[i]->w, lst[i]->h,
-			      lst[i]->active, lst[i]->sticky, lst[i]->state,
-			      0);
+			      lst[i]->active, lst[i]->sticky, lst[i]->state, 0);
 /*            printf("I %x\n", lst[i]->win); */
 	       }
 	     else if (lst[i]->pager)
@@ -429,7 +428,8 @@ EBlendRemoveShape(EWin * ewin, Pixmap pmap, int x, int y)
 	XFillRectangle(disp, mask, gcm, 0, 0, w, h);
 	XSetForeground(disp, gcm, 0);
 	for (i = 0; i < rn; i++)
-	   XFillRectangle(disp, mask, gcm, rl[i].x, rl[i].y, rl[i].width, rl[i].height);
+	   XFillRectangle(disp, mask, gcm, rl[i].x, rl[i].y, rl[i].width,
+			  rl[i].height);
 	XSetClipMask(disp, gc, mask);
      }
    XSetClipOrigin(disp, gc, x, y);
@@ -437,7 +437,8 @@ EBlendRemoveShape(EWin * ewin, Pixmap pmap, int x, int y)
 }
 
 void
-EBlendPixImg(EWin * ewin, PixImg * s1, PixImg * s2, PixImg * dst, int x, int y, int w, int h)
+EBlendPixImg(EWin * ewin, PixImg * s1, PixImg * s2, PixImg * dst, int x, int y,
+	     int w, int h)
 {
    int                 ox, oy;
    int                 i, j;
@@ -521,7 +522,8 @@ EBlendPixImg(EWin * ewin, PixImg * s1, PixImg * s2, PixImg * dst, int x, int y, 
 
 		       p1 = *ptr1++;
 		       p2 = *ptr2++;
-		       *ptr3++ = ((p1 >> 1) & 0x7f7f7f7f) + ((p2 >> 1) & 0x7f7f7f7f) +
+		       *ptr3++ =
+			  ((p1 >> 1) & 0x7f7f7f7f) + ((p2 >> 1) & 0x7f7f7f7f) +
 			  (p1 & p2 & 0x01010101);
 		    }
 	       }
@@ -570,12 +572,17 @@ EBlendPixImg(EWin * ewin, PixImg * s1, PixImg * s2, PixImg * dst, int x, int y, 
 				 p1 = *ptr1++;
 				 p2 = *ptr2++;
 				 *ptr3++ =
-				    ((p1 >> 1) & ((0x78 << 8) | (0x7c << 3) | (0x78 >> 3) |
-				 (0x78 << 24) | (0x7c << 19) | (0x78 << 13))) +
-				    ((p2 >> 1) & ((0x78 << 8) | (0x7c << 3) | (0x78 >> 3) |
-				 (0x78 << 24) | (0x7c << 19) | (0x78 << 13))) +
-				    (p1 & p2 & ((0x1 << 11) | (0x1 << 5) | (0x1) |
-				    (0x1 << 27) | (0x1 << 21) | (0x1 << 16)));
+				    ((p1 >> 1) &
+				     ((0x78 << 8) | (0x7c << 3) | (0x78 >> 3) |
+				      (0x78 << 24) | (0x7c << 19) | (0x78 <<
+								     13))) +
+				    ((p2 >> 1) &
+				     ((0x78 << 8) | (0x7c << 3) | (0x78 >> 3) |
+				      (0x78 << 24) | (0x7c << 19) | (0x78 <<
+								     13))) +
+				    (p1 & p2 &
+				     ((0x1 << 11) | (0x1 << 5) | (0x1) |
+				      (0x1 << 27) | (0x1 << 21) | (0x1 << 16)));
 			      }
 			 }
 		       else
@@ -587,12 +594,17 @@ EBlendPixImg(EWin * ewin, PixImg * s1, PixImg * s2, PixImg * dst, int x, int y, 
 				 p1 = *ptr1++;
 				 p2 = *ptr2++;
 				 *ptr3++ =
-				    ((p1 >> 1) & ((0x78 << 8) | (0x7c << 3) | (0x78 >> 3) |
-				 (0x78 << 24) | (0x7c << 19) | (0x78 << 13))) +
-				    ((p2 >> 1) & ((0x78 << 8) | (0x7c << 3) | (0x78 >> 3) |
-				 (0x78 << 24) | (0x7c << 19) | (0x78 << 13))) +
-				    (p1 & p2 & ((0x1 << 11) | (0x1 << 5) | (0x1) |
-				    (0x1 << 27) | (0x1 << 21) | (0x1 << 16)));
+				    ((p1 >> 1) &
+				     ((0x78 << 8) | (0x7c << 3) | (0x78 >> 3) |
+				      (0x78 << 24) | (0x7c << 19) | (0x78 <<
+								     13))) +
+				    ((p2 >> 1) &
+				     ((0x78 << 8) | (0x7c << 3) | (0x78 >> 3) |
+				      (0x78 << 24) | (0x7c << 19) | (0x78 <<
+								     13))) +
+				    (p1 & p2 &
+				     ((0x1 << 11) | (0x1 << 5) | (0x1) |
+				      (0x1 << 27) | (0x1 << 21) | (0x1 << 16)));
 			      }
 			    {
 			       unsigned short     *pptr1, *pptr2, *pptr3;
@@ -603,9 +615,13 @@ EBlendPixImg(EWin * ewin, PixImg * s1, PixImg * s2, PixImg * dst, int x, int y, 
 			       pptr3 = (unsigned short *)ptr3;
 			       pp1 = *pptr1;
 			       pp2 = *pptr2;
-			       *pptr3 = ((pp1 >> 1) & ((0x78 << 8) | (0x7c << 3) | (0x78 >> 3))) +
-				  ((pp2 >> 1) & ((0x78 << 8) | (0x7c << 3) | (0x78 >> 3))) +
-				  (pp1 & pp2 & ((0x1 << 11) | (0x1 << 5) | (0x1)));
+			       *pptr3 =
+				  ((pp1 >> 1) &
+				   ((0x78 << 8) | (0x7c << 3) | (0x78 >> 3))) +
+				  ((pp2 >> 1) &
+				   ((0x78 << 8) | (0x7c << 3) | (0x78 >> 3))) +
+				  (pp1 & pp2 & ((0x1 << 11) | (0x1 << 5) |
+						(0x1)));
 			    }
 			 }
 		    }
@@ -637,12 +653,17 @@ EBlendPixImg(EWin * ewin, PixImg * s1, PixImg * s2, PixImg * dst, int x, int y, 
 				 p1 = *ptr1++;
 				 p2 = *ptr2++;
 				 *ptr3++ =
-				    ((p1 >> 1) & ((0x78 << 7) | (0x78 << 2) | (0x78 >> 3) |
-				 (0x78 << 23) | (0x78 << 18) | (0x78 << 13))) +
-				    ((p2 >> 1) & ((0x78 << 7) | (0x78 << 2) | (0x78 >> 3) |
-				 (0x78 << 23) | (0x78 << 18) | (0x78 << 13))) +
-				    (p1 & p2 & ((0x1 << 10) | (0x1 << 5) | (0x1) |
-				    (0x1 << 26) | (0x1 << 20) | (0x1 << 16)));
+				    ((p1 >> 1) &
+				     ((0x78 << 7) | (0x78 << 2) | (0x78 >> 3) |
+				      (0x78 << 23) | (0x78 << 18) | (0x78 <<
+								     13))) +
+				    ((p2 >> 1) &
+				     ((0x78 << 7) | (0x78 << 2) | (0x78 >> 3) |
+				      (0x78 << 23) | (0x78 << 18) | (0x78 <<
+								     13))) +
+				    (p1 & p2 &
+				     ((0x1 << 10) | (0x1 << 5) | (0x1) |
+				      (0x1 << 26) | (0x1 << 20) | (0x1 << 16)));
 			      }
 			 }
 		       else
@@ -654,12 +675,17 @@ EBlendPixImg(EWin * ewin, PixImg * s1, PixImg * s2, PixImg * dst, int x, int y, 
 				 p1 = *ptr1++;
 				 p2 = *ptr2++;
 				 *ptr3++ =
-				    ((p1 >> 1) & ((0x78 << 7) | (0x78 << 2) | (0x78 >> 3) |
-				 (0x78 << 23) | (0x78 << 18) | (0x78 << 13))) +
-				    ((p2 >> 1) & ((0x78 << 7) | (0x78 << 2) | (0x78 >> 3) |
-				 (0x78 << 23) | (0x78 << 18) | (0x78 << 13))) +
-				    (p1 & p2 & ((0x1 << 10) | (0x1 << 5) | (0x1) |
-				    (0x1 << 26) | (0x1 << 20) | (0x1 << 16)));
+				    ((p1 >> 1) &
+				     ((0x78 << 7) | (0x78 << 2) | (0x78 >> 3) |
+				      (0x78 << 23) | (0x78 << 18) | (0x78 <<
+								     13))) +
+				    ((p2 >> 1) &
+				     ((0x78 << 7) | (0x78 << 2) | (0x78 >> 3) |
+				      (0x78 << 23) | (0x78 << 18) | (0x78 <<
+								     13))) +
+				    (p1 & p2 &
+				     ((0x1 << 10) | (0x1 << 5) | (0x1) |
+				      (0x1 << 26) | (0x1 << 20) | (0x1 << 16)));
 			      }
 			    {
 			       unsigned short     *pptr1, *pptr2, *pptr3;
@@ -670,9 +696,13 @@ EBlendPixImg(EWin * ewin, PixImg * s1, PixImg * s2, PixImg * dst, int x, int y, 
 			       pptr3 = (unsigned short *)ptr3;
 			       pp1 = *pptr1;
 			       pp2 = *pptr2;
-			       *pptr3++ = ((pp1 >> 1) & ((0x78 << 7) | (0x78 << 2) | (0x78 >> 3))) +
-				  ((pp2 >> 1) & ((0x78 << 7) | (0x78 << 2) | (0x78 >> 3))) +
-				  (pp1 & pp2 & ((0x1 << 10) | (0x1 << 5) | (0x1)));
+			       *pptr3++ =
+				  ((pp1 >> 1) &
+				   ((0x78 << 7) | (0x78 << 2) | (0x78 >> 3))) +
+				  ((pp2 >> 1) &
+				   ((0x78 << 7) | (0x78 << 2) | (0x78 >> 3))) +
+				  (pp1 & pp2 & ((0x1 << 10) | (0x1 << 5) |
+						(0x1)));
 			    }
 			 }
 		    }
@@ -800,8 +830,7 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
      }
 
    if ((mode.mode == MODE_RESIZE) ||
-       (mode.mode == MODE_RESIZE_H) ||
-       (mode.mode == MODE_RESIZE_V))
+       (mode.mode == MODE_RESIZE_H) || (mode.mode == MODE_RESIZE_V))
      {
 	w1 = ewin->client.w;
 	h1 = ewin->client.h;
@@ -818,8 +847,7 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
    if ((md == 5)
        && ((mode.mode == MODE_RESIZE) ||
 	   (mode.mode == MODE_RESIZE_H) ||
-	   (mode.mode == MODE_RESIZE_V) ||
-	   (ewin->groups && check_move)))
+	   (mode.mode == MODE_RESIZE_V) || (ewin->groups && check_move)))
       md = 0;
    if (md == 5)
      {
@@ -846,8 +874,10 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
 	MoveResizeEwin(ewin, x, y, w, h);
 	if (mode.mode != MODE_NONE)
 	   SetCoords(ewin->x, ewin->y,
-		  (ewin->client.w - ewin->client.base_w) / ewin->client.w_inc,
-		 (ewin->client.h - ewin->client.base_h) / ewin->client.h_inc);
+		     (ewin->client.w -
+		      ewin->client.base_w) / ewin->client.w_inc,
+		     (ewin->client.h -
+		      ewin->client.base_h) / ewin->client.h_inc);
 	break;
      case 1:
      case 2:
@@ -856,16 +886,13 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
      case 5:
 	if (!b1)
 	   b1 = XCreateBitmapFromData(disp, root.win, flipped_gray_bits,
-				      flipped_gray_width,
-				      flipped_gray_height);
+				      flipped_gray_width, flipped_gray_height);
 	if (!b2)
 	   b2 = XCreateBitmapFromData(disp, root.win, gray_bits,
-				      gray_width,
-				      gray_height);
+				      gray_width, gray_height);
 	if (!b3)
 	   b3 = XCreateBitmapFromData(disp, root.win, gray3_bits,
-				      gray3_width,
-				      gray3_height);
+				      gray3_width, gray3_height);
 	x1 = ewin->x + desks.desk[ewin->desktop].x;
 	y1 = ewin->y + desks.desk[ewin->desktop].y;
 	w1 = ewin->w - (ewin->border->border.left + ewin->border->border.right);
@@ -881,8 +908,12 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
 	     ewin->client.w = w;
 	     ewin->client.h = h;
 	     ICCCM_MatchSize(ewin);
-	     ewin->w = ewin->client.w + ewin->border->border.left + ewin->border->border.right;
-	     ewin->h = ewin->client.h + ewin->border->border.top + ewin->border->border.bottom;
+	     ewin->w =
+		ewin->client.w + ewin->border->border.left +
+		ewin->border->border.right;
+	     ewin->h =
+		ewin->client.h + ewin->border->border.top +
+		ewin->border->border.bottom;
 	  }
 	w = ewin->w - (ewin->border->border.left + ewin->border->border.right);
 	h = ewin->h - (ewin->border->border.top + ewin->border->border.bottom);
@@ -893,7 +924,9 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
 	     if (gcv.foreground == 0)
 		gcv.foreground = BlackPixel(disp, root.scr);
 	     gcv.subwindow_mode = IncludeInferiors;
-	     gc = XCreateGC(disp, root.win, GCFunction | GCForeground | GCSubwindowMode, &gcv);
+	     gc =
+		XCreateGC(disp, root.win,
+			  GCFunction | GCForeground | GCSubwindowMode, &gcv);
 	  }
 #define DRAW_H_ARROW(x1, x2, y1) \
       if (((x2) - (x1)) >= 12) \
@@ -1020,8 +1053,10 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
 	     if ((mode.mode != MODE_NONE) &&
 		 (!ewin->groups || (ewin->groups && !check_move)))
 		SetCoords(ewin->x, ewin->y,
-		  (ewin->client.w - ewin->client.base_w) / ewin->client.w_inc,
-		 (ewin->client.h - ewin->client.base_h) / ewin->client.h_inc);
+			  (ewin->client.w -
+			   ewin->client.base_w) / ewin->client.w_inc,
+			  (ewin->client.h -
+			   ewin->client.base_h) / ewin->client.h_inc);
 	     if (firstlast < 2)
 	       {
 		  DO_DRAW_MODE_1(x, y, w, h);
@@ -1036,8 +1071,10 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
 	     if ((mode.mode != MODE_NONE) &&
 		 (!ewin->groups || (ewin->groups && !check_move)))
 		SetCoords(ewin->x, ewin->y,
-		  (ewin->client.w - ewin->client.base_w) / ewin->client.w_inc,
-		 (ewin->client.h - ewin->client.base_h) / ewin->client.h_inc);
+			  (ewin->client.w -
+			   ewin->client.base_w) / ewin->client.w_inc,
+			  (ewin->client.h -
+			   ewin->client.base_h) / ewin->client.h_inc);
 	     if (firstlast < 2)
 	       {
 		  DO_DRAW_MODE_2(x, y, w, h);
@@ -1052,8 +1089,10 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
 	     if ((mode.mode != MODE_NONE) &&
 		 (!ewin->groups || (ewin->groups && !check_move)))
 		SetCoords(ewin->x, ewin->y,
-		  (ewin->client.w - ewin->client.base_w) / ewin->client.w_inc,
-		 (ewin->client.h - ewin->client.base_h) / ewin->client.h_inc);
+			  (ewin->client.w -
+			   ewin->client.base_w) / ewin->client.w_inc,
+			  (ewin->client.h -
+			   ewin->client.base_h) / ewin->client.h_inc);
 	     if (firstlast < 2)
 	       {
 		  DO_DRAW_MODE_3(x, y, w, h);
@@ -1069,8 +1108,10 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
 		if ((mode.mode != MODE_NONE) &&
 		    (!ewin->groups || (ewin->groups && !check_move)))
 		   SetCoords(ewin->x, ewin->y,
-		   (ewin->client.w - ewin->client.base_w) / ewin->client.w_inc,
-			     (ewin->client.h - ewin->client.base_h) / ewin->client.h_inc);
+			     (ewin->client.w -
+			      ewin->client.base_w) / ewin->client.w_inc,
+			     (ewin->client.h -
+			      ewin->client.base_h) / ewin->client.h_inc);
 	     if (firstlast < 2)
 	       {
 		  DO_DRAW_MODE_4(x, y, w, h);
@@ -1105,10 +1146,12 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
 		    {
 		       mode.movemode = 0;
 		       UngrabX();
-		       DrawEwinShape(ewin, mode.movemode, x, y, w, h, firstlast);
+		       DrawEwinShape(ewin, mode.movemode, x, y, w, h,
+				     firstlast);
 		       EDBUG_RETURN_;
 		    }
-		  EFillPixmap(root.win, root_pi->pmap, x1, y1, ewin->w, ewin->h);
+		  EFillPixmap(root.win, root_pi->pmap, x1, y1, ewin->w,
+			      ewin->h);
 		  gc = XCreateGC(disp, root_pi->pmap, 0, &gcv);
 		  XCopyArea(disp, root_pi->pmap, ewin_pi->pmap, gc, x1, y1,
 			    ewin->w, ewin->h, 0, 0);
@@ -1138,11 +1181,13 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
 		       if (dx < 0)
 			  EFillPixmap(root.win, root_pi->pmap, x, y, -dx, ht);
 		       else if (dx > 0)
-			  EFillPixmap(root.win, root_pi->pmap, x + wt - dx, y, dx, ht);
+			  EFillPixmap(root.win, root_pi->pmap, x + wt - dx, y,
+				      dx, ht);
 		       if (dy < 0)
 			  EFillPixmap(root.win, root_pi->pmap, x, y, wt, -dy);
 		       else if (dy > 0)
-			  EFillPixmap(root.win, root_pi->pmap, x, y + ht - dy, wt, dy);
+			  EFillPixmap(root.win, root_pi->pmap, x, y + ht - dy,
+				      wt, dy);
 		    }
 		  else
 		     EFillPixmap(root.win, root_pi->pmap, x, y, wt, ht);
@@ -1153,11 +1198,13 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
 		       if (dx > 0)
 			  EPastePixmap(root.win, root_pi->pmap, x1, y1, dx, ht);
 		       else if (dx < 0)
-			  EPastePixmap(root.win, root_pi->pmap, x1 + wt + dx, y1, -dx, ht);
+			  EPastePixmap(root.win, root_pi->pmap, x1 + wt + dx,
+				       y1, -dx, ht);
 		       if (dy > 0)
 			  EPastePixmap(root.win, root_pi->pmap, x1, y1, wt, dy);
 		       else if (dy < 0)
-			  EPastePixmap(root.win, root_pi->pmap, x1, y1 + ht + dy, wt, -dy);
+			  EPastePixmap(root.win, root_pi->pmap, x1,
+				       y1 + ht + dy, wt, -dy);
 		    }
 		  else
 		    {
@@ -1169,7 +1216,8 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
 	       }
 	     else if (firstlast == 2)
 	       {
-		  EPastePixmap(root.win, root_pi->pmap, x1, y1, ewin->w, ewin->h);
+		  EPastePixmap(root.win, root_pi->pmap, x1, y1, ewin->w,
+			       ewin->h);
 		  if (ewin_pi)
 		     EDestroyPixImg(ewin_pi);
 		  if (root_pi)
@@ -1208,14 +1256,17 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
 	       }
 	     if (mode.mode != MODE_NONE)
 		SetCoords(ewin->x, ewin->y,
-		  (ewin->client.w - ewin->client.base_w) / ewin->client.w_inc,
-		 (ewin->client.h - ewin->client.base_h) / ewin->client.h_inc);
+			  (ewin->client.w -
+			   ewin->client.base_w) / ewin->client.w_inc,
+			  (ewin->client.h -
+			   ewin->client.base_h) / ewin->client.h_inc);
 	  }
 	if (firstlast == 2)
 	  {
 	     /* If we're moving a group, don't do this,
 	      * otherwise we have a lot of garbage onscreen */
-	     if (!ewin->floating || !ewin->groups || (ewin->groups && !check_move))
+	     if (!ewin->floating || !ewin->groups
+		 || (ewin->groups && !check_move))
 	       {
 		  if (ewin->shaded)
 		     MoveEwin(ewin, ewin->x, ewin->y);
@@ -1321,13 +1372,16 @@ PropagateShapes(Window win)
 	     if ((att.class == InputOutput) && (att.map_state != IsUnmapped))
 	       {
 		  rl = NULL;
-		  rl = EShapeGetRectangles(disp, list[i], ShapeBounding, &rn, &ord);
+		  rl =
+		     EShapeGetRectangles(disp, list[i], ShapeBounding, &rn,
+					 &ord);
 		  if (rl)
 		    {
 		       num_rects += rn;
 		       if (rn > 0)
 			 {
-			    rects = Erealloc(rects, num_rects * sizeof(XRectangle));
+			    rects =
+			       Erealloc(rects, num_rects * sizeof(XRectangle));
 			    /* go through all clip rects in thsi window's shape */
 			    for (k = 0; k < rn; k++)
 			      {
@@ -1335,7 +1389,8 @@ PropagateShapes(Window win)
 				 rects[num_rects - rn + k].x = x + rl[k].x;
 				 rects[num_rects - rn + k].y = y + rl[k].y;
 				 rects[num_rects - rn + k].width = rl[k].width;
-				 rects[num_rects - rn + k].height = rl[k].height;
+				 rects[num_rects - rn + k].height =
+				    rl[k].height;
 			      }
 			 }
 		       Efree(rl);
@@ -1355,8 +1410,8 @@ PropagateShapes(Window win)
 	/* set the rects as the shape mask */
 	if (rects)
 	  {
-	     EShapeCombineRectangles(disp, win, ShapeBounding, 0, 0, rects, num_rects,
-				     ShapeSet, Unsorted);
+	     EShapeCombineRectangles(disp, win, ShapeBounding, 0, 0, rects,
+				     num_rects, ShapeSet, Unsorted);
 	     Efree(rects);
 	     rl = NULL;
 	     rl = EShapeGetRectangles(disp, win, ShapeBounding, &rn, &ord);
@@ -1375,7 +1430,8 @@ PropagateShapes(Window win)
 		  Efree(rl);
 	       }
 	     else
-		EShapeCombineMask(disp, win, ShapeBounding, 0, 0, None, ShapeSet);
+		EShapeCombineMask(disp, win, ShapeBounding, 0, 0, None,
+				  ShapeSet);
 	  }
 	XFree(list);
      }

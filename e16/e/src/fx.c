@@ -27,15 +27,15 @@
 #endif
 
 typedef struct _fxhandler
-  {
-     char               *name;
-     void                (*init_func) (char *name);
-     void                (*desk_func) (void);
-     void                (*quit_func) (void);
-     void                (*pause_func) (void);
-     char                in_use;
-     char                paused;
-  }
+{
+   char               *name;
+   void                (*init_func) (char *name);
+   void                (*desk_func) (void);
+   void                (*quit_func) (void);
+   void                (*pause_func) (void);
+   char                in_use;
+   char                paused;
+}
 FXHandler;
 
 void                FX_Ripple_Init(char *name);
@@ -56,19 +56,19 @@ void                FX_ImageSpinner_Quit(void);
 void                FX_ImageSpinner_Pause(void);
 
 static int          num_fx_handlers = 4;
-static FXHandler    fx_handlers[] =
-{
+static FXHandler    fx_handlers[] = {
    {"ripples",
     FX_Ripple_Init, FX_Ripple_Desk, FX_Ripple_Quit, FX_Ripple_Pause,
     0, 0},
    {"raindrops",
-  FX_Raindrops_Init, FX_Raindrops_Desk, FX_Raindrops_Quit, FX_Raindrops_Pause,
+    FX_Raindrops_Init, FX_Raindrops_Desk, FX_Raindrops_Quit, FX_Raindrops_Pause,
     0, 0},
    {"waves",
     FX_Waves_Init, FX_Waves_Desk, FX_Waves_Quit, FX_Waves_Pause,
     0, 0},
    {"imagespinner",
-    FX_ImageSpinner_Init, FX_ImageSpinner_Desk, FX_ImageSpinner_Quit, FX_ImageSpinner_Pause,
+    FX_ImageSpinner_Init, FX_ImageSpinner_Desk, FX_ImageSpinner_Quit,
+    FX_ImageSpinner_Pause,
     0, 0}
 };
 
@@ -250,24 +250,23 @@ FX_ripple_timeout(int val, void *data)
 	gc = XCreateGC(disp, fx_ripple_win, GCSubwindowMode, &gcv);
 	gc1 = XCreateGC(disp, fx_ripple_win, 0L, &gcv);
 	if (!before)
-	   DIALOG_OK("Starting up Ripples FX...",
-		     "\n"
-		     "You have just started the Ripples Effect.\n"
-		     "\n"
-		 "If you look closely on your desktop background, and if it\n"
-	       "doesn't have a solid colour (ie has a background texture or\n"
-		"image), you will see a pool of water at the bottom of your\n"
-		 "screen that reflects everything above it and \"ripples\".\n"
-		     "\n"
-	    "To disable this effect just select this option again to toggle\n"
-		     "it off.\n");
+	   DIALOG_OK(gettext("Starting up Ripples FX..."),
+		     gettext("\n"
+			     "You have just started the Ripples Effect.\n"
+			     "\n"
+			     "If you look closely on your desktop background, and if it\n"
+			     "doesn't have a solid colour (ie has a background texture or\n"
+			     "image), you will see a pool of water at the bottom of your\n"
+			     "screen that reflects everything above it and \"ripples\".\n"
+			     "\n"
+			     "To disable this effect just select this option again to toggle\n"
+			     "it off.\n"));
 	before = 1;
      }
    if (fx_ripple_count == 0)
       XCopyArea(disp, fx_ripple_win, fx_ripple_above, gc,
 		0, root.h - (fx_ripple_waterh * 3),
-		root.w, fx_ripple_waterh * 2,
-		0, 0);
+		root.w, fx_ripple_waterh * 2, 0, 0);
    fx_ripple_count++;
    if (fx_ripple_count > 32)
       fx_ripple_count = 0;
@@ -322,8 +321,7 @@ FX_Ripple_Quit(void)
 {
    RemoveTimerEvent("FX_RIPPLE_TIMEOUT");
    XClearArea(disp, fx_ripple_win,
-	      0, root.h - fx_ripple_waterh,
-	      root.w, fx_ripple_waterh, False);
+	      0, root.h - fx_ripple_waterh, root.w, fx_ripple_waterh, False);
 }
 
 void
@@ -359,11 +357,11 @@ static PixImg      *fx_raindrops_draw = NULL;
 void                FX_raindrops_timeout(int val, void *data);
 
 typedef struct _drop_context
-  {
-     int                 x, y;
-     int                 count;
-     PixImg             *buf;
-  }
+{
+   int                 x, y;
+   int                 count;
+   PixImg             *buf;
+}
 DropContext;
 
 static DropContext  fx_raindrops[4];
@@ -385,53 +383,53 @@ FX_raindrops_timeout(int val, void *data)
 
 	if (!id->x.shm)
 	  {
-	     DIALOG_OK("Unable to display raindrops",
-		       "\n"
-		       "Enlightenment is unable to display raindrops on this\n"
-		    "display because Shared memory is not available on this\n"
-		       "X-Server.\n"
-		       "\n"
-		    "This may be due to Enlightenment being a remote client\n"
-		   "running over the network, a MIT-SHM incapable X-server,\n"
-		       "having run out of SHM ID's on the system or Shared\n"
-		       "Memory support being turned off in Imlib\n"
-		       "\n"
-		     "You may correct this by either running `imlib_config'\n"
-		     "or copying the system imrc (/usr/etc/imrc) to ~/.imrc\n"
-		       "and editing it, enabling shared memory.\n"
-		       "\n");
+	     DIALOG_OK(gettext("Unable to display raindrops"),
+		       gettext("\n"
+			       "Enlightenment is unable to display raindrops on this\n"
+			       "display because Shared memory is not available on this\n"
+			       "X-Server.\n"
+			       "\n"
+			       "This may be due to Enlightenment being a remote client\n"
+			       "running over the network, a MIT-SHM incapable X-server,\n"
+			       "having run out of SHM ID's on the system or Shared\n"
+			       "Memory support being turned off in Imlib\n"
+			       "\n"
+			       "You may correct this by either running `imlib_config'\n"
+			       "or copying the system imrc (/usr/etc/imrc) to ~/.imrc\n"
+			       "and editing it, enabling shared memory.\n"
+			       "\n"));
 	     return;
 	  }
 	if (!id->x.shmp)
 	  {
-	     DIALOG_OK("Unable to display raindrops",
-		       "\n"
-		       "Enlightenment is unable to display raindrops on this\n"
-		  "display because shared pixmaps are not available on this\n"
-		       "X-Server.\n"
-		       "\n"
-		   "This may be due to either the X-Server not implimenting\n"
-		       "shared pixmaps, or shared pixmaps being disabled in\n"
-		       "Imlib's configuration.\n"
-		       "\n"
-		     "You may correct this by either running `imlib_config'\n"
-		     "or copying the system imrc (/usr/etc/imrc) to ~/.imrc\n"
-		       "and editing it, enabling shared pixmaps.\n"
-		       "\n");
+	     DIALOG_OK(gettext("Unable to display raindrops"),
+		       gettext("\n"
+			       "Enlightenment is unable to display raindrops on this\n"
+			       "display because shared pixmaps are not available on this\n"
+			       "X-Server.\n"
+			       "\n"
+			       "This may be due to either the X-Server not implimenting\n"
+			       "shared pixmaps, or shared pixmaps being disabled in\n"
+			       "Imlib's configuration.\n"
+			       "\n"
+			       "You may correct this by either running `imlib_config'\n"
+			       "or copying the system imrc (/usr/etc/imrc) to ~/.imrc\n"
+			       "and editing it, enabling shared pixmaps.\n"
+			       "\n"));
 	     return;
 	  }
 	if (!before)
-	   DIALOG_OK("Starting up Raindrops FX...",
-		     "\n"
-		     "You have just started the Raindrops Effect.\n"
-		     "\n"
-		 "If you look closely on your desktop background, and if it\n"
-	       "doesn't have a solid colour (ie has a background texture or\n"
-		 "image), you will see \"raindrops\" hit the background and\n"
-	      "make little splashes. This Effect can be VERY CPU intensive.\n"
-		     "\n"
-	    "To disable this effect just select this option again to toggle\n"
-		     "it off.\n");
+	   DIALOG_OK(gettext("Starting up Raindrops FX..."),
+		     gettext("\n"
+			     "You have just started the Raindrops Effect.\n"
+			     "\n"
+			     "If you look closely on your desktop background, and if it\n"
+			     "doesn't have a solid colour (ie has a background texture or\n"
+			     "image), you will see \"raindrops\" hit the background and\n"
+			     "make little splashes. This Effect can be VERY CPU intensive.\n"
+			     "\n"
+			     "To disable this effect just select this option again to toggle\n"
+			     "it off.\n"));
 	before = 1;
 	if (first)
 	  {
@@ -439,14 +437,16 @@ FX_raindrops_timeout(int val, void *data)
 
 	     first = 0;
 	     for (i = 0; i < 256; i++)
-		sintab[i] = (char)(sin(((double)i) * M_PI_2 * 4 / 256) * fx_amplitude);
+		sintab[i] =
+		   (char)(sin(((double)i) * M_PI_2 * 4 / 256) * fx_amplitude);
 	     for (j = 0; j < fx_raindrop_size; j++)
 	       {
 		  for (i = 0; i < fx_raindrop_size; i++)
 		    {
 		       xx = i - fx_raindrop_size2;
 		       yy = j - fx_raindrop_size2;
-		       disttab[i][j] = (unsigned char)sqrt((double)((xx * xx) + (yy * yy)));
+		       disttab[i][j] =
+			  (unsigned char)sqrt((double)((xx * xx) + (yy * yy)));
 		    }
 	       }
 	  }
@@ -459,8 +459,7 @@ FX_raindrops_timeout(int val, void *data)
 	gc = XCreateGC(disp, fx_raindrops_win, GCSubwindowMode, &gcv);
 	gc1 = XCreateGC(disp, fx_raindrops_win, 0L, &gcv);
 	fx_raindrops_draw = ECreatePixImg(fx_raindrops_win,
-					  fx_raindrop_size,
-					  fx_raindrop_size);
+					  fx_raindrop_size, fx_raindrop_size);
 	if (!fx_raindrops_draw)
 	   return;
 	for (i = 0; i < fx_raindrops_number; i++)
@@ -508,21 +507,35 @@ FX_raindrops_timeout(int val, void *data)
 		       if (i != j)
 			 {
 			    if (((fx_raindrops[i].x >= fx_raindrops[j].x) &&
-				 (fx_raindrops[i].x < fx_raindrops[j].x + fx_raindrop_size) &&
-				 (fx_raindrops[i].y >= fx_raindrops[j].y) &&
-				 (fx_raindrops[i].y < fx_raindrops[j].y + fx_raindrop_size)) ||
-				((fx_raindrops[i].x + fx_raindrop_size >= fx_raindrops[j].x) &&
-				 (fx_raindrops[i].x + fx_raindrop_size < fx_raindrops[j].x + fx_raindrop_size) &&
-				 (fx_raindrops[i].y >= fx_raindrops[j].y) &&
-				 (fx_raindrops[i].y < fx_raindrops[j].y + fx_raindrop_size)) ||
-				((fx_raindrops[i].x >= fx_raindrops[j].x) &&
-				 (fx_raindrops[i].x < fx_raindrops[j].x + fx_raindrop_size) &&
-				 (fx_raindrops[i].y + fx_raindrop_size >= fx_raindrops[j].y) &&
-				 (fx_raindrops[i].y + fx_raindrop_size < fx_raindrops[j].y + fx_raindrop_size)) ||
-				((fx_raindrops[i].x + fx_raindrop_size >= fx_raindrops[j].x) &&
-				 (fx_raindrops[i].x + fx_raindrop_size < fx_raindrops[j].x + fx_raindrop_size) &&
-				 (fx_raindrops[i].y + fx_raindrop_size >= fx_raindrops[j].y) &&
-				 (fx_raindrops[i].y + fx_raindrop_size < fx_raindrops[j].y + fx_raindrop_size)))
+				 (fx_raindrops[i].x <
+				  fx_raindrops[j].x + fx_raindrop_size)
+				 && (fx_raindrops[i].y >= fx_raindrops[j].y)
+				 && (fx_raindrops[i].y <
+				     fx_raindrops[j].y + fx_raindrop_size))
+				||
+				((fx_raindrops
+				  [i].x + fx_raindrop_size >= fx_raindrops[j].x)
+				 && (fx_raindrops[i].x + fx_raindrop_size <
+				     fx_raindrops[j].x + fx_raindrop_size)
+				 && (fx_raindrops[i].y >= fx_raindrops[j].y)
+				 && (fx_raindrops[i].y <
+				     fx_raindrops[j].y + fx_raindrop_size))
+				|| ((fx_raindrops[i].x >= fx_raindrops[j].x)
+				    && (fx_raindrops[i].x <
+					fx_raindrops[j].x + fx_raindrop_size)
+				    && (fx_raindrops[i].y + fx_raindrop_size >=
+					fx_raindrops[j].y)
+				    && (fx_raindrops[i].y + fx_raindrop_size <
+					fx_raindrops[j].y + fx_raindrop_size))
+				||
+				((fx_raindrops
+				  [i].x + fx_raindrop_size >= fx_raindrops[j].x)
+				 && (fx_raindrops[i].x + fx_raindrop_size <
+				     fx_raindrops[j].x + fx_raindrop_size)
+				 && (fx_raindrops[i].y + fx_raindrop_size >=
+				     fx_raindrops[j].y)
+				 && (fx_raindrops[i].y + fx_raindrop_size <
+				     fx_raindrops[j].y + fx_raindrop_size)))
 			       intersect = 1;
 			 }
 		    }
@@ -530,7 +543,8 @@ FX_raindrops_timeout(int val, void *data)
 	     XShmGetImage(disp, fx_raindrops_win, fx_raindrops[i].buf->xim,
 			  fx_raindrops[i].x, fx_raindrops[i].y, 0xffffffff);
 	  }
-	percent_done = 1 + ((fx_raindrops[i].count << 8) / fx_raindrop_duration);
+	percent_done =
+	   1 + ((fx_raindrops[i].count << 8) / fx_raindrop_duration);
 	for (y = 0; y < fx_raindrop_size; y++)
 	  {
 	     for (x = 0; x < fx_raindrop_size; x++)
@@ -554,11 +568,13 @@ FX_raindrops_timeout(int val, void *data)
 			    int                 varx, vary;
 			    int                 phase, divisor, multiplier;
 
-			    phase = ((percent - percent_done) * fx_frequency) & 0xff;
+			    phase =
+			       ((percent - percent_done) * fx_frequency) & 0xff;
 			    xx = x - fx_raindrop_size2;
 			    yy = y - fx_raindrop_size2;
 			    divisor = 1 + (dist << 8);
-			    multiplier = (int)sintab[phase] * (256 - percent_done);
+			    multiplier =
+			       (int)sintab[phase] * (256 - percent_done);
 			    varx = ((-xx) * multiplier) / divisor;
 			    vary = ((-yy) * multiplier) / divisor;
 			    xx = x + varx;
@@ -572,7 +588,8 @@ FX_raindrops_timeout(int val, void *data)
 			    else if (yy >= fx_raindrop_size)
 			       yy = fx_raindrop_size - 1;
 			    XPutPixel(fx_raindrops_draw->xim, x, y,
-				 XGetPixel(fx_raindrops[i].buf->xim, xx, yy));
+				      XGetPixel(fx_raindrops[i].buf->xim, xx,
+						yy));
 			 }
 		    }
 	       }
@@ -582,7 +599,8 @@ FX_raindrops_timeout(int val, void *data)
 		     fx_raindrop_size, fx_raindrop_size, False);
 	XSync(disp, False);
      }
-   DoIn("FX_RAINDROPS_TIMEOUT", (0.066 /*/ (float)fx_raindrops_number */ ), FX_raindrops_timeout, 0, NULL);
+   DoIn("FX_RAINDROPS_TIMEOUT", (0.066 /*/ (float)fx_raindrops_number */ ),
+	FX_raindrops_timeout, 0, NULL);
    return;
    val = 0;
    data = NULL;
@@ -696,17 +714,17 @@ FX_Wave_timeout(int val, void *data)
 	gc = XCreateGC(disp, fx_wave_win, GCSubwindowMode, &gcv);
 	gc1 = XCreateGC(disp, fx_wave_win, 0L, &gcv);
 	if (!before)
-	   DIALOG_OK("Starting up Waves FX...",
-		     "\n"
-		     "You have just started the Waves Effect.\n"
-		     "\n"
-		 "If you look closely on your desktop background, and if it\n"
-	       "doesn't have a solid colour (ie has a background texture or\n"
-		"image), you will see a pool of water at the bottom of your\n"
-		   "screen that reflects everything above it and \"waves\".\n"
-		     "\n"
-	    "To disable this effect just select this option again to toggle\n"
-		     "it off.\n");
+	   DIALOG_OK(gettext("Starting up Waves FX..."),
+		     gettext("\n"
+			     "You have just started the Waves Effect.\n"
+			     "\n"
+			     "If you look closely on your desktop background, and if it\n"
+			     "doesn't have a solid colour (ie has a background texture or\n"
+			     "image), you will see a pool of water at the bottom of your\n"
+			     "screen that reflects everything above it and \"waves\".\n"
+			     "\n"
+			     "To disable this effect just select this option again to toggle\n"
+			     "it off.\n"));
 	before = 1;
      }
 
@@ -715,8 +733,7 @@ FX_Wave_timeout(int val, void *data)
      {
 	XCopyArea(disp, fx_wave_win, fx_wave_above, gc,
 		  0, root.h - (FX_WAVE_WATERH * 3),
-		  root.w, FX_WAVE_WATERH * 2,
-		  0, 0);
+		  root.w, FX_WAVE_WATERH * 2, 0, 0);
      }
 
    /* Increment and roll the counter */
@@ -742,8 +759,7 @@ FX_Wave_timeout(int val, void *data)
      {
 	XCopyArea(disp, fx_wave_above, fx_wave_win, gc1,
 		  0, root.h - FX_WAVE_GRABH,
-		  root.w, FX_WAVE_DEPTH * 2,
-		  0, root.h - FX_WAVE_GRABH);
+		  root.w, FX_WAVE_DEPTH * 2, 0, root.h - FX_WAVE_GRABH);
      }
 
    /* Go through the bottom couple (FX_WAVE_WATERH) lines of the window */
@@ -781,8 +797,7 @@ FX_Wave_timeout(int val, void *data)
 	     sx = (int)(sin(incx2) * FX_WAVE_DEPTH);
 
 	     /* Display this block */
-	     XCopyArea(disp, fx_wave_above, fx_wave_win, gc1,
-		       x, yy,	/* x, y */
+	     XCopyArea(disp, fx_wave_above, fx_wave_win, gc1, x, yy,	/* x, y */
 		       FX_WAVE_WATERW, 1,	/* w, h */
 		       off + x, root.h - FX_WAVE_WATERH + y + sx	/* dx, dy */
 		);
@@ -821,8 +836,7 @@ FX_Waves_Quit(void)
 {
    RemoveTimerEvent("FX_WAVE_TIMEOUT");
    XClearArea(disp, fx_wave_win,
-	      0, root.h - FX_WAVE_WATERH,
-	      root.w, FX_WAVE_WATERH, False);
+	      0, root.h - FX_WAVE_WATERH, root.w, FX_WAVE_WATERH, False);
 }
 
 void
@@ -850,8 +864,7 @@ static Window       fx_imagespinner_win = 0;
 static int          fx_imagespinner_count = 3;
 static ImlibData   *fx_imagespinner_imd = NULL;
 static char        *fx_imagespinner_params = NULL;
-static
-void                FX_imagespinner_timeout(int val, void *data);
+static void         FX_imagespinner_timeout(int val, void *data);
 
 void
 FX_imagespinner_timeout(int val, void *data)
@@ -867,12 +880,12 @@ FX_imagespinner_timeout(int val, void *data)
 	else
 	   fx_imagespinner_imd = id;
 	if (!before)
-	   DIALOG_OK("Starting up imagespinners FX...",
-		     "\n"
-		     "You have just started the imagespinners Effect.\n"
-		     "\n"
-	    "To disable this effect just select this option again to toggle\n"
-		     "it off.\n");
+	   DIALOG_OK(gettext("Starting up imagespinners FX..."),
+		     gettext("\n"
+			     "You have just started the imagespinners Effect.\n"
+			     "\n"
+			     "To disable this effect just select this option again to toggle\n"
+			     "it off.\n"));
 	before = 1;
      }
 /* do stuff here */
@@ -898,8 +911,7 @@ FX_imagespinner_timeout(int val, void *data)
 	     x = ((root.w * x) >> 10) - ((w * x) >> 10);
 	     y = ((root.h * y) >> 10) - ((h * y) >> 10);
 	     Imlib_paste_image(fx_imagespinner_imd, im,
-			       fx_imagespinner_win,
-			       x, y, w, h);
+			       fx_imagespinner_win, x, y, w, h);
 	     Imlib_destroy_image(fx_imagespinner_imd, im);
 	  }
 	Efree(string);
@@ -933,10 +945,7 @@ void
 FX_ImageSpinner_Quit(void)
 {
    RemoveTimerEvent("FX_IMAGESPINNER_TIMEOUT");
-   XClearArea(disp, fx_imagespinner_win,
-	      0, 0,
-	      root.w, root.h,
-	      False);
+   XClearArea(disp, fx_imagespinner_win, 0, 0, root.w, root.h, False);
    if (fx_imagespinner_params)
       Efree(fx_imagespinner_params);
    fx_imagespinner_params = NULL;

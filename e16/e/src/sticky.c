@@ -31,8 +31,7 @@ MakeWindowUnSticky(EWin * ewin)
       EDBUG_RETURN_;
 
    FloatEwinAt(ewin, ewin->x, ewin->y);
-   DrawEwinShape(ewin, 0, ewin->x, ewin->y,
-		 ewin->client.w, ewin->client.h, 0);
+   DrawEwinShape(ewin, 0, ewin->x, ewin->y, ewin->client.w, ewin->client.h, 0);
    MoveEwinToDesktopAt(ewin, desks.current, ewin->x, ewin->y);
    ewin->sticky = 0;
    RaiseEwin(ewin);

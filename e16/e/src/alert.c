@@ -42,7 +42,7 @@ int                 debug_level;
 char               *call_stack[1024];
 
 void
-Alert(char *fmt,...)
+Alert(char *fmt, ...)
 {
    char                text[10240];
    va_list             ap;
@@ -175,13 +175,13 @@ ShowAlert(char *text)
    str2 = RestartText;
    str3 = ExitText;
    if (!title)
-      title = "Enlightenment Error";
+      title = gettext("Enlightenment Error");
    if (!str1)
-      str1 = "Ignore";
+      str1 = gettext("Ignore");
    if (!str2)
-      str2 = "Restart";
+      str2 = gettext("Restart");
    if (!str3)
-      str3 = "Exit";
+      str3 = gettext("Exit");
 
 #define DRAW_BOX_OUT(mdd, mgc, mwin, mx, my, mw, mh) \
 if (colorful) { \
@@ -308,7 +308,9 @@ goto CN; \
    hih = DisplayHeight(dd, DefaultScreen(dd));
    w = (wid - 600) / 2;
    h = (hih - 440) / 2;
-   mask = CWBackPixel | CWBorderPixel | CWOverrideRedirect | CWSaveUnder | CWBackingStore;
+   mask =
+      CWBackPixel | CWBorderPixel | CWOverrideRedirect | CWSaveUnder |
+      CWBackingStore;
    if (colorful)
       att.background_pixel = cols[1];
    else
@@ -401,21 +403,24 @@ goto CN; \
 	h = XTextWidth(xfs, str1, strlen(str1));
 	w = 10 + (((580 - mh) * 0) / 4);
 	XMoveResizeWindow(dd, b1, w - 5, 440 - 15 - fh, mh + 10, fh + 10);
-	XSelectInput(dd, b1, ButtonPressMask | ButtonReleaseMask | ExposureMask);
+	XSelectInput(dd, b1,
+		     ButtonPressMask | ButtonReleaseMask | ExposureMask);
      }
    if (sscanf(str2, "%s", line) > 0)
      {
 	h = XTextWidth(xfs, str2, strlen(str2));
 	w = 10 + (((580 - mh) * 1) / 2);
 	XMoveResizeWindow(dd, b2, w - 5, 440 - 15 - fh, mh + 10, fh + 10);
-	XSelectInput(dd, b2, ButtonPressMask | ButtonReleaseMask | ExposureMask);
+	XSelectInput(dd, b2,
+		     ButtonPressMask | ButtonReleaseMask | ExposureMask);
      }
    if (sscanf(str3, "%s", line) > 0)
      {
 	h = XTextWidth(xfs, str3, strlen(str3));
 	w = 10 + (((580 - mh) * 2) / 2);
 	XMoveResizeWindow(dd, b3, w - 5, 440 - 15 - fh, mh + 10, fh + 10);
-	XSelectInput(dd, b3, ButtonPressMask | ButtonReleaseMask | ExposureMask);
+	XSelectInput(dd, b3,
+		     ButtonPressMask | ButtonReleaseMask | ExposureMask);
      }
    XSync(dd, False);
    XSelectInput(dd, win, KeyPressMask | KeyReleaseMask | ExposureMask);

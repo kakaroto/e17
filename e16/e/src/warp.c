@@ -129,8 +129,7 @@ WarpFocus(int delta)
    lst = (EWin **) ListItemType(&num, LIST_TYPE_WARP_RING);
    if (!lst)
      {
-	num0 = desks.desk[desks.current].num;
-	lst0 = desks.desk[desks.current].list;
+	lst0 = (EWin **) ListItemType(&num0, LIST_TYPE_EWIN);
 	num = 0;
 	lst = NULL;
 	if (lst0)
@@ -142,9 +141,9 @@ WarpFocus(int delta)
 		      (ewin->x + ewin->w > 0) && (ewin->x < root.w) &&
 		      (ewin->y + ewin->h > 0) && (ewin->y < root.h) &&
 		      (!ewin->skipfocus) && (!ewin->shaded) &&
-		      (!ewin->menu) && (!ewin->pager) && (!ewin->ibox) &&
-		      (!ewin->iconified)	/*&& (ewin->client.mwm_decor_title) &&
-						 * (ewin->client.mwm_decor_border) */ )
+		      (!ewin->menu) && (!ewin->pager) && (!ewin->ibox) && (!ewin->iconified)	/*&& (ewin->client.mwm_decor_title) &&
+												 * (ewin->client.mwm_decor_border) */
+		     )
 		     AddItem(ewin, "", 0, LIST_TYPE_WARP_RING);
 	       }
 	  }
@@ -164,7 +163,8 @@ WarpFocus(int delta)
 	     if (mode.raise_on_next_focus)
 		RaiseEwin(ewin);
 	     if (mode.warp_on_next_focus)
-		XWarpPointer(disp, None, ewin->win, 0, 0, 0, 0, ewin->w / 2, ewin->h / 2);
+		XWarpPointer(disp, None, ewin->win, 0, 0, 0, 0, ewin->w / 2,
+			     ewin->h / 2);
 	     /* if (mode.focusmode == FOCUS_CLICK) */
 	     /* FocusToEWin(ewin); */
 	  }
@@ -194,7 +194,8 @@ WarpFocusFinish(void)
 	     FocusToEWin(ewin);
 	     if (mode.warp_after_next_focus || mode.warp_on_next_focus)
 	       {
-		  XWarpPointer(disp, None, ewin->win, 0, 0, 0, 0, ewin->w / 2, ewin->h / 2);
+		  XWarpPointer(disp, None, ewin->win, 0, 0, 0, 0, ewin->w / 2,
+			       ewin->h / 2);
 	       }
 	     if (mode.raise_after_next_focus)
 		RaiseEwin(ewin);
@@ -244,7 +245,8 @@ WarpFocusShowTitle(EWin * ewin)
 		  warptitles =
 		     Erealloc(warptitles, (sizeof(Window) * warptitles_num));
 		  warptitles_ewin =
-		     Erealloc(warptitles_ewin, (sizeof(EWin *) * warptitles_num));
+		     Erealloc(warptitles_ewin,
+			      (sizeof(EWin *) * warptitles_num));
 		  warptitles[warptitles_num - 1] =
 		     ECreateWindow(warpFocusTitleWindow, 0, 0, 1, 1, 0);
 		  EMapWindow(disp, warptitles[warptitles_num - 1]);
@@ -285,7 +287,8 @@ WarpFocusShowTitle(EWin * ewin)
 	  {
 	     if (ewin == warptitles_ewin[i])
 	       {
-		  IclassApply(ic, warptitles[i], mw, mh, 0, 0, STATE_CLICKED, 0);
+		  IclassApply(ic, warptitles[i], mw, mh, 0, 0, STATE_CLICKED,
+			      0);
 		  TclassApply(ic, warptitles[i], mw, mh, 0, 0, STATE_CLICKED, 0,
 			      tc, warptitles_ewin[i]->client.title);
 	       }

@@ -31,7 +31,7 @@ char               *
 append_merge_dir(char *dir, char ***list, int *count)
 {
    char                s[FILEPATH_LEN_MAX], ss[FILEPATH_LEN_MAX], **str = NULL,
-                      *def = NULL;
+      *def = NULL;
    char                already, *tmp, *tmp2, ok;
    int                 i, j, num;
 
@@ -107,7 +107,9 @@ append_merge_dir(char *dir, char ***list, int *count)
 char              **
 ListThemes(int *number)
 {
-   char                s[FILEPATH_LEN_MAX], **list = NULL, *def = NULL, *def2 = NULL;
+   char                s[FILEPATH_LEN_MAX], **list = NULL, *def = NULL, *def2 =
+
+      NULL;
    int                 count = 0;
 
    Esnprintf(s, sizeof(s), "%s/themes", UserEDir());
@@ -162,7 +164,8 @@ GetDefaultTheme(void)
 #ifndef __EMX__
 	Esnprintf(ss, sizeof(ss), "%s/themes/DEFAULT", ENLIGHTENMENT_ROOT);
 #else
-	Esnprintf(ss, sizeof(ss), "%s/themes/DEFAULT", __XOS2RedirRoot(ENLIGHTENMENT_ROOT));
+	Esnprintf(ss, sizeof(ss), "%s/themes/DEFAULT",
+		  __XOS2RedirRoot(ENLIGHTENMENT_ROOT));
 #endif
 #ifndef __EMX__
 	count = readlink(ss, s, sizeof(s));
@@ -173,7 +176,8 @@ GetDefaultTheme(void)
 		def = duplicate(s);
 	     else
 	       {
-		  Esnprintf(ss, sizeof(ss), "%s/themes/%s", ENLIGHTENMENT_ROOT, s);
+		  Esnprintf(ss, sizeof(ss), "%s/themes/%s", ENLIGHTENMENT_ROOT,
+			    s);
 		  def = duplicate(ss);
 	       }
 	  }
@@ -237,8 +241,7 @@ ExtractTheme(char *theme)
 	     /* make the temp dir */
 
 	     themename = fileof(theme);
-	     Esnprintf(th, sizeof(th), "%s/themes/%s",
-		       UserEDir(), themename);
+	     Esnprintf(th, sizeof(th), "%s/themes/%s", UserEDir(), themename);
 	     Efree(themename);
 	     md(th);
 	     /* check magic numbers */
@@ -246,10 +249,11 @@ ExtractTheme(char *theme)
 	       {
 		  /*gzipped tarball */
 		  Esnprintf(s, sizeof(s),
-			  "gzip -d -c < %s | (cd %s ; tar -xf -)", theme, th);
+			    "gzip -d -c < %s | (cd %s ; tar -xf -)", theme, th);
 	       }
-	     else if ((buf[257] == 'u') && (buf[258] == 's') && (buf[259] == 't') &&
-		      (buf[260] == 'a') && (buf[261] == 'r'))
+	     else if ((buf[257] == 'u') && (buf[258] == 's')
+		      && (buf[259] == 't') && (buf[260] == 'a')
+		      && (buf[261] == 'r'))
 	       {
 		  /*vanilla tarball */
 		  Esnprintf(s, sizeof(s), "(cd %s ; tar -xf %s)", th, theme);
@@ -286,13 +290,14 @@ FindTheme(char *theme)
    char               *ret = NULL;
 
    EDBUG(6, "FindTheme");
-   badreason = "Unknown\n";
+   badreason = gettext("Unknown\n");
    if (!theme[0])
      {
 #ifndef __EMX__
 	Esnprintf(s, sizeof(s), "%s/themes/DEFAULT", ENLIGHTENMENT_ROOT);
 #else
-	Esnprintf(s, sizeof(s), "%s/themes/DEFAULT", __XOS2RedirRoot(ENLIGHTENMENT_ROOT));
+	Esnprintf(s, sizeof(s), "%s/themes/DEFAULT",
+		  __XOS2RedirRoot(ENLIGHTENMENT_ROOT));
 #endif
 	EDBUG_RETURN(duplicate(s));
      }
@@ -308,18 +313,19 @@ FindTheme(char *theme)
 	if (exists(s))
 	   ret = ExtractTheme(s);
 	else
-	   badreason = "Theme file/directory does not exist\n";
+	   badreason = gettext("Theme file/directory does not exist\n");
 	if (!ret)
 	  {
 #ifndef __EMX__
 	     Esnprintf(s, sizeof(s), "%s/themes/%s", ENLIGHTENMENT_ROOT, theme);
 #else
-	     Esnprintf(s, sizeof(s), "%s/themes/%s", __XOS2RedirRoot(ENLIGHTENMENT_ROOT), theme);
+	     Esnprintf(s, sizeof(s), "%s/themes/%s",
+		       __XOS2RedirRoot(ENLIGHTENMENT_ROOT), theme);
 #endif
 	     if (exists(s))
 		ret = ExtractTheme(s);
 	     else
-		badreason = "Theme file/directory does not exist\n";
+		badreason = gettext("Theme file/directory does not exist\n");
 	     if (!ret)
 	       {
 		  ret = GetDefaultTheme();
@@ -339,13 +345,12 @@ BadThemeDialog(void)
       return;
 
    Esnprintf(s, sizeof(s),
-	     "The theme:\n"
-	     "%s\n"
-	     "Is a badly formed theme package and is thus not being used.\n"
-	     "Enlightenment has fallen back to using the DEFAULT theme.\n"
-	     "\n"
-	     "The reason this theme is bad is:\n"
-	     "%s",
-	     badtheme, badreason);
-   DIALOG_OK("Bad Theme", s);
+	     gettext("The theme:\n"
+		     "%s\n"
+		     "Is a badly formed theme package and is thus not being used.\n"
+		     "Enlightenment has fallen back to using the DEFAULT theme.\n"
+		     "\n"
+		     "The reason this theme is bad is:\n"
+		     "%s"), badtheme, badreason);
+   DIALOG_OK(gettext("Bad Theme"), s);
 }

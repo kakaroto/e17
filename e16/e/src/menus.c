@@ -27,7 +27,8 @@ static MenuStyle   *desk_menu_style = NULL;
 static MenuStyle   *group_menu_style = NULL;
 
 static void         FileMenuUpdate(int val, void *data);
-static void         FillFlatFileMenu(Menu * m, MenuStyle * ms, char *name, char *file, Menu * parent);
+static void         FillFlatFileMenu(Menu * m, MenuStyle * ms, char *name,
+				     char *file, Menu * parent);
 
 void
 ShowTaskMenu(void)
@@ -308,8 +309,9 @@ ShowMenu(Menu * m, char noshow)
    ewin = FindEwinByMenu(m);
    if (ewin)
      {
-	if ((mode.button) && FindItem((char *)mode.button, 0, LIST_FINDBY_POINTER,
-				      LIST_TYPE_BUTTON))
+	if ((mode.button)
+	    && FindItem((char *)mode.button, 0, LIST_FINDBY_POINTER,
+			LIST_TYPE_BUTTON))
 	  {
 	     fprintf(stderr, "setting back to normal\n");
 	     mode.button->state = STATE_NORMAL;
@@ -355,7 +357,8 @@ ShowMenu(Menu * m, char noshow)
 	if (mode.menusonscreen)
 	   EMoveWindow(disp, m->win, wx, wy);
 	else
-	   EMoveWindow(disp, m->win, mode.x - x - (w / 2), mode.y - y - (h / 2));
+	   EMoveWindow(disp, m->win, mode.x - x - (w / 2),
+		       mode.y - y - (h / 2));
      }
    else if ((mode.x >= 0) && (mode.y < 0))
      {
@@ -671,7 +674,8 @@ void
 RealizeMenu(Menu * m)
 {
    int                 i, maxh = 0, maxw = 0, maxx1, maxx2, w, h, x, y, r,
-                       mmw, mmh;
+
+      mmw, mmh;
    unsigned int        iw, ih;
    ImlibImage         *im;
    XSetWindowAttributes att;
@@ -728,7 +732,8 @@ RealizeMenu(Menu * m)
 							im->rgb_width,
 							im->rgb_height, 0);
 		  EMapWindow(disp, m->items[i]->icon_win);
-		  XChangeWindowAttributes(disp, m->items[i]->icon_win, CWEventMask, &att);
+		  XChangeWindowAttributes(disp, m->items[i]->icon_win,
+					  CWEventMask, &att);
 		  m->items[i]->icon_w = im->rgb_width;
 		  m->items[i]->icon_h = im->rgb_height;
 		  if (im->rgb_height > maxh)
@@ -743,20 +748,24 @@ RealizeMenu(Menu * m)
      }
    if (((has_i) && (has_s)) || ((!has_i) && (!has_s)))
      {
-	if (m->style->item_iclass->padding.top > m->style->sub_iclass->padding.top)
+	if (m->style->item_iclass->padding.top >
+	    m->style->sub_iclass->padding.top)
 	   maxh += m->style->item_iclass->padding.top;
 	else
 	   maxh += m->style->sub_iclass->padding.top;
-	if (m->style->item_iclass->padding.bottom > m->style->sub_iclass->padding.bottom)
+	if (m->style->item_iclass->padding.bottom >
+	    m->style->sub_iclass->padding.bottom)
 	   maxh += m->style->item_iclass->padding.bottom;
 	else
 	   maxh += m->style->sub_iclass->padding.bottom;
 	maxw = maxx1 + maxx2;
-	if (m->style->item_iclass->padding.left > m->style->sub_iclass->padding.left)
+	if (m->style->item_iclass->padding.left >
+	    m->style->sub_iclass->padding.left)
 	   maxw += m->style->item_iclass->padding.left;
 	else
 	   maxw += m->style->sub_iclass->padding.left;
-	if (m->style->item_iclass->padding.right > m->style->sub_iclass->padding.right)
+	if (m->style->item_iclass->padding.right >
+	    m->style->sub_iclass->padding.right)
 	   maxw += m->style->item_iclass->padding.right;
 	else
 	   maxw += m->style->sub_iclass->padding.right;
@@ -818,8 +827,8 @@ RealizeMenu(Menu * m)
 	     iw = 0;
 	     ih = 0;
 	     GetWinWH(m->items[i]->icon_win, &iw, &ih);
-	     IclassApply(m->items[i]->icon_iclass, m->items[i]->icon_win, iw, ih,
-			 0, 0, STATE_NORMAL, 0);
+	     IclassApply(m->items[i]->icon_iclass, m->items[i]->icon_win, iw,
+			 ih, 0, 0, STATE_NORMAL, 0);
 	  }
 	if (x + maxw > mmw)
 	   mmw = x + maxw;
@@ -864,8 +873,7 @@ RealizeMenu(Menu * m)
 	IclassApplyCopy(m->style->bg_iclass, m->win, mmw, mmh, 0, 0,
 			STATE_NORMAL, &(m->pmap), &(m->mask));
 	ESetWindowBackgroundPixmap(disp, m->win, m->pmap);
-	EShapeCombineMask(disp, m->win, ShapeBounding,
-			  0, 0, m->mask, ShapeSet);
+	EShapeCombineMask(disp, m->win, ShapeBounding, 0, 0, m->mask, ShapeSet);
 	for (i = 0; i < m->num; i++)
 	   DrawMenuItem(m, m->items[i], 0);
      }
@@ -900,26 +908,29 @@ DrawMenuItem(Menu * m, MenuItem * mi, char shape)
 	     GetWinXY(mi->win, &x, &y);
 	     if (!m->style->use_item_bg)
 	       {
-		  mi->pmap[(int)(mi->state)] = ECreatePixmap(disp, mi->win, w, h, id->x.depth);
+		  mi->pmap[(int)(mi->state)] =
+		     ECreatePixmap(disp, mi->win, w, h, id->x.depth);
 		  gc = XCreateGC(disp, m->pmap, 0, &gcv);
-		  XCopyArea(disp, m->pmap, mi->pmap[(int)(mi->state)], gc, x, y, w, h, 0, 0);
+		  XCopyArea(disp, m->pmap, mi->pmap[(int)(mi->state)], gc, x, y,
+			    w, h, 0, 0);
 		  mi->mask[(int)(mi->state)] = None;
 		  if ((mi->state != STATE_NORMAL) || (mi->child))
 		    {
 		       pmap = 0;
 		       mask = 0;
 		       if (mi->child)
-			  IclassApplyCopy(m->style->sub_iclass, mi->win, w, h, 0, 0, mi->state,
-					  &pmap, &mask);
+			  IclassApplyCopy(m->style->sub_iclass, mi->win, w, h,
+					  0, 0, mi->state, &pmap, &mask);
 		       else
-			  IclassApplyCopy(m->style->item_iclass, mi->win, w, h, 0, 0, mi->state,
-					  &pmap, &mask);
+			  IclassApplyCopy(m->style->item_iclass, mi->win, w, h,
+					  0, 0, mi->state, &pmap, &mask);
 		       if (mask)
 			 {
 			    XSetClipMask(disp, gc, mask);
 			    XSetClipOrigin(disp, gc, 0, 0);
 			 }
-		       XCopyArea(disp, pmap, mi->pmap[(int)(mi->state)], gc, 0, 0, w, h, 0, 0);
+		       XCopyArea(disp, pmap, mi->pmap[(int)(mi->state)], gc, 0,
+				 0, w, h, 0, 0);
 		       Imlib_free_pixmap(id, pmap);
 		       if (mask)
 			  Imlib_free_pixmap(id, mask);
@@ -929,11 +940,13 @@ DrawMenuItem(Menu * m, MenuItem * mi, char shape)
 	     else
 	       {
 		  if (mi->child)
-		     IclassApplyCopy(m->style->sub_iclass, mi->win, w, h, 0, 0, mi->state,
-				     &(mi->pmap[(int)(mi->state)]), &(mi->mask[(int)(mi->state)]));
+		     IclassApplyCopy(m->style->sub_iclass, mi->win, w, h, 0, 0,
+				     mi->state, &(mi->pmap[(int)(mi->state)]),
+				     &(mi->mask[(int)(mi->state)]));
 		  else
-		     IclassApplyCopy(m->style->item_iclass, mi->win, w, h, 0, 0, mi->state,
-				     &(mi->pmap[(int)(mi->state)]), &(mi->mask[(int)(mi->state)]));
+		     IclassApplyCopy(m->style->item_iclass, mi->win, w, h, 0, 0,
+				     mi->state, &(mi->pmap[(int)(mi->state)]),
+				     &(mi->mask[(int)(mi->state)]));
 	       }
 	  }
      }
@@ -957,7 +970,8 @@ DrawMenuItem(Menu * m, MenuItem * mi, char shape)
 	if (!m->style->use_item_bg)
 	  {
 	     if ((mi->state != STATE_NORMAL) || (mi->child))
-		IclassApply(m->style->item_iclass, mi->win, w, h, 0, 0, mi->state, 0);
+		IclassApply(m->style->item_iclass, mi->win, w, h, 0, 0,
+			    mi->state, 0);
 	     else
 	       {
 		  ESetWindowBackgroundPixmap(disp, mi->win, ParentRelative);
@@ -969,9 +983,11 @@ DrawMenuItem(Menu * m, MenuItem * mi, char shape)
 	else
 	  {
 	     if (mi->child)
-		IclassApply(m->style->sub_iclass, mi->win, w, h, 0, 0, mi->state, 0);
+		IclassApply(m->style->sub_iclass, mi->win, w, h, 0, 0,
+			    mi->state, 0);
 	     else
-		IclassApply(m->style->item_iclass, mi->win, w, h, 0, 0, mi->state, 0);
+		IclassApply(m->style->item_iclass, mi->win, w, h, 0, 0,
+			    mi->state, 0);
 	  }
      }
    if ((shape) && (m->style->use_item_bg))
@@ -991,10 +1007,10 @@ CreateMenuFromDirectory(char *name, MenuStyle * ms, char *dir)
    struct stat         st;
    const char         *chmap =
 #ifndef __EMX__
-   "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_";
+      "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_";
 
 #else
-   "0123456789abcdefghijklmnopqrstuvwxyz€‚ƒ„…†‡ˆŠ‹ŒŽ‘’“”•–—˜™-_";
+      "0123456789abcdefghijklmnopqrstuvwxyz€‚ƒ„…†‡ˆŠ‹ŒŽ‘’“”•–—˜™-_";
 
 #endif
    FILE               *f;
@@ -1039,8 +1055,7 @@ CreateMenuFromDirectory(char *name, MenuStyle * ms, char *dir)
 		  chmap[(cc >> 6) & 0x3f],
 		  chmap[(cc >> 12) & 0x3f],
 		  chmap[(cc >> 18) & 0x3f],
-		  chmap[(cc >> 24) & 0x3f],
-		  chmap[(cc >> 28) & 0x3f]);
+		  chmap[(cc >> 24) & 0x3f], chmap[(cc >> 28) & 0x3f]);
 	/* cached dir listing - use it */
 	if (exists(cs))
 	  {
@@ -1060,7 +1075,9 @@ CreateMenuFromDirectory(char *name, MenuStyle * ms, char *dir)
 		       char                s2[4096], s3[512];
 
 		       word(s, 3, s3);
-		       bg = (Background *) FindItem(s3, 0, LIST_FINDBY_NAME, LIST_TYPE_BACKGROUND);
+		       bg =
+			  (Background *) FindItem(s3, 0, LIST_FINDBY_NAME,
+						  LIST_TYPE_BACKGROUND);
 		       if (!bg)
 			 {
 			    ImlibImage         *im;
@@ -1074,13 +1091,13 @@ CreateMenuFromDirectory(char *name, MenuStyle * ms, char *dir)
 				 ImlibColor          icl;
 				 char                tile = 1, keep_asp = 0;
 				 int                 width, height, scalex = 0,
-				                     scaley = 0;
-				 int                 scr_asp, im_asp, w2,
-				                     h2;
+				    scaley = 0;
+				 int                 scr_asp, im_asp, w2, h2;
 				 int                 maxw = 48, maxh = 48;
 				 int                 justx = 512, justy = 512;
 
-				 Esnprintf(s2, sizeof(s2), "%s/cached/img/%s", UserEDir(), s3);
+				 Esnprintf(s2, sizeof(s2), "%s/cached/img/%s",
+					   UserEDir(), s3);
 				 width = im->rgb_width;
 				 height = im->rgb_height;
 				 h2 = maxh;
@@ -1088,7 +1105,8 @@ CreateMenuFromDirectory(char *name, MenuStyle * ms, char *dir)
 				 if (w2 > maxw)
 				   {
 				      w2 = maxw;
-				      h2 = (im->rgb_height * w2) / im->rgb_width;
+				      h2 =
+					 (im->rgb_height * w2) / im->rgb_width;
 				   }
 				 im2 = Imlib_clone_scaled_image(id, im, w2, h2);
 				 Imlib_save_image_to_ppm(id, im2, s2);
@@ -1107,8 +1125,8 @@ CreateMenuFromDirectory(char *name, MenuStyle * ms, char *dir)
 				      tile = 1;
 				      keep_asp = 0;
 				   }
-				 else if ((!(IN_RANGE(scr_asp, im_asp, 16000))) &&
-					  ((width < 480) && (height < 360)))
+				 else if ((!(IN_RANGE(scr_asp, im_asp, 16000)))
+					  && ((width < 480) && (height < 360)))
 				   {
 				      justx = 0;
 				      justy = 0;
@@ -1147,9 +1165,11 @@ CreateMenuFromDirectory(char *name, MenuStyle * ms, char *dir)
 				 icl.r = 0;
 				 icl.g = 0;
 				 icl.b = 0;
-				 bg = CreateDesktopBG(s3, &icl, ss, tile, keep_asp,
-						 justx, justy, scalex, scaley,
-						      NULL, 0, 0, 0, 0, 0);
+				 bg =
+				    CreateDesktopBG(s3, &icl, ss, tile,
+						    keep_asp, justx, justy,
+						    scalex, scaley, NULL, 0, 0,
+						    0, 0, 0);
 				 AddItem(bg, bg->name, 0, LIST_TYPE_BACKGROUND);
 			      }
 			    else
@@ -1168,7 +1188,9 @@ CreateMenuFromDirectory(char *name, MenuStyle * ms, char *dir)
 			    ic->norm.normal->unloadable = 1;
 			    IclassPopulate(ic);
 			    AddItem(ic, ic->name, 0, LIST_TYPE_ICLASS);
-			    mi = CreateMenuItem(NULL, ic, ACTION_BACKGROUND_SET, s3, NULL);
+			    mi =
+			       CreateMenuItem(NULL, ic, ACTION_BACKGROUND_SET,
+					      s3, NULL);
 			    AddItemToMenu(m, mi);
 			 }
 		    }
@@ -1287,9 +1309,10 @@ CreateMenuFromDirectory(char *name, MenuStyle * ms, char *dir)
 			    chmap[(cc >> 6) & 0x3f],
 			    chmap[(cc >> 12) & 0x3f],
 			    chmap[(cc >> 18) & 0x3f],
-			    chmap[(cc >> 24) & 0x3f],
-			    chmap[(cc >> 28) & 0x3f]);
-		  bg = (Background *) FindItem(s3, 0, LIST_FINDBY_NAME, LIST_TYPE_BACKGROUND);
+			    chmap[(cc >> 24) & 0x3f], chmap[(cc >> 28) & 0x3f]);
+		  bg =
+		     (Background *) FindItem(s3, 0, LIST_FINDBY_NAME,
+					     LIST_TYPE_BACKGROUND);
 		  if (!bg)
 		    {
 		       ImlibImage         *im;
@@ -1301,11 +1324,12 @@ CreateMenuFromDirectory(char *name, MenuStyle * ms, char *dir)
 			    ImlibColor          icl;
 			    char                tile = 1, keep_asp = 0;
 			    int                 width, height, scalex = 0,
-			                        scaley = 0;
+			       scaley = 0;
 			    int                 scr_asp, im_asp, w2, h2;
 			    int                 maxw = 48, maxh = 48;
 
-			    Esnprintf(s2, sizeof(s2), "%s/cached/img/%s", UserEDir(), s3);
+			    Esnprintf(s2, sizeof(s2), "%s/cached/img/%s",
+				      UserEDir(), s3);
 			    width = im->rgb_width;
 			    height = im->rgb_height;
 			    h2 = maxh;
@@ -1383,7 +1407,9 @@ CreateMenuFromDirectory(char *name, MenuStyle * ms, char *dir)
 		       ic->norm.normal->unloadable = 1;
 		       IclassPopulate(ic);
 		       AddItem(ic, ic->name, 0, LIST_TYPE_ICLASS);
-		       mi = CreateMenuItem(NULL, ic, ACTION_BACKGROUND_SET, s3, NULL);
+		       mi =
+			  CreateMenuItem(NULL, ic, ACTION_BACKGROUND_SET, s3,
+					 NULL);
 		       AddItemToMenu(m, mi);
 		    }
 		  if (f)
@@ -1440,7 +1466,8 @@ CreateMenuFromFlatFile(char *name, MenuStyle * ms, char *file, Menu * parent)
 }
 
 static void
-FillFlatFileMenu(Menu * m, MenuStyle * ms, char *name, char *file, Menu * parent)
+FillFlatFileMenu(Menu * m, MenuStyle * ms, char *name, char *file,
+		 Menu * parent)
 {
    FILE               *f;
    char                first = 1;
@@ -1658,8 +1685,9 @@ CreateMenuFromGnome(char *name, MenuStyle * ms, char *dir)
 #endif
 		  if (f)
 		    {
-		       char               *iname = NULL, *exec = NULL, *texec = NULL,
-		                          *tmp;
+		       char               *iname = NULL, *exec = NULL, *texec =
+
+			  NULL, *tmp;
 		       char               *en_name = NULL;
 
 		       while (fgets(s, sizeof(s), f))
@@ -1671,7 +1699,8 @@ CreateMenuFromGnome(char *name, MenuStyle * ms, char *dir)
 			    else if (name_buf[0] &&
 				     !strncmp(s, name_buf, strlen(name_buf)))
 			       iname = duplicate(&(s[strlen(name_buf)]));
-			    else if (!strncmp(s, "TryExec=", strlen("TryExec=")))
+			    else
+			       if (!strncmp(s, "TryExec=", strlen("TryExec=")))
 			       texec = duplicate(&(s[strlen("TryExec=")]));
 			    else if (!strncmp(s, "Exec=", strlen("Exec=")))
 			       exec = duplicate(&(s[strlen("Exec=")]));
@@ -1697,7 +1726,9 @@ CreateMenuFromGnome(char *name, MenuStyle * ms, char *dir)
 				 if (tmp)
 				    Efree(tmp);
 
-				 mi = CreateMenuItem(iname, NULL, ACTION_EXEC, exec, NULL);
+				 mi =
+				    CreateMenuItem(iname, NULL, ACTION_EXEC,
+						   exec, NULL);
 				 AddItemToMenu(m, mi);
 			      }
 			 }
@@ -1781,7 +1812,9 @@ CreateMenuFromBorders(char *name, MenuStyle * ms)
 	/* if its not internal (ie doesnt start with _ ) */
 	if (lst[i]->name[0] != '_')
 	  {
-	     mi = CreateMenuItem(lst[i]->name, NULL, ACTION_SET_WINDOW_BORDER, lst[i]->name, NULL);
+	     mi =
+		CreateMenuItem(lst[i]->name, NULL, ACTION_SET_WINDOW_BORDER,
+			       lst[i]->name, NULL);
 	     AddItemToMenu(m, mi);
 	  }
      }
@@ -1810,10 +1843,13 @@ CreateMenuFromAllEWins(char *name, MenuStyle * ms)
      {
 	for (i = 0; i < num; i++)
 	  {
-	     if ((!lst[i]->menu) && (!lst[i]->pager) && (!lst[i]->skipwinlist) && (lst[i]->client.title) && (!lst[i]->ibox))
+	     if ((!lst[i]->menu) && (!lst[i]->pager) && (!lst[i]->skipwinlist)
+		 && (lst[i]->client.title) && (!lst[i]->ibox))
 	       {
 		  Esnprintf(s, sizeof(s), "%i", (int)(lst[i]->client.win));
-		  mi = CreateMenuItem(lst[i]->client.title, NULL, ACTION_FOCUS_SET, s, NULL);
+		  mi =
+		     CreateMenuItem(lst[i]->client.title, NULL,
+				    ACTION_FOCUS_SET, s, NULL);
 		  AddItemToMenu(m, mi);
 	       }
 	  }
@@ -1843,10 +1879,13 @@ CreateMenuFromDesktopEWins(char *name, MenuStyle * ms, int desk)
 	for (i = 0; i < num; i++)
 	  {
 	     if (((lst[i]->desktop == desk) || (lst[i]->sticky)) &&
-		 (!lst[i]->menu) && (!lst[i]->pager) && (!lst[i]->skipwinlist) && (lst[i]->client.title) && (!lst[i]->ibox))
+		 (!lst[i]->menu) && (!lst[i]->pager) && (!lst[i]->skipwinlist)
+		 && (lst[i]->client.title) && (!lst[i]->ibox))
 	       {
 		  Esnprintf(s, sizeof(s), "%i", (int)(lst[i]->client.win));
-		  mi = CreateMenuItem(lst[i]->client.title, NULL, ACTION_FOCUS_SET, s, NULL);
+		  mi =
+		     CreateMenuItem(lst[i]->client.title, NULL,
+				    ACTION_FOCUS_SET, s, NULL);
 		  AddItemToMenu(m, mi);
 	       }
 	  }
@@ -1877,20 +1916,25 @@ CreateMenuFromDesktops(char *name, MenuStyle * ms)
 	mm->name = duplicate("__SUBMENUDESK_E");
 	mm->style = ms;
 	Esnprintf(s, sizeof(s), "%i", j);
-	mi = CreateMenuItem("Go to this Desktop", NULL, ACTION_GOTO_DESK, s, NULL);
+	mi =
+	   CreateMenuItem(gettext("Go to this Desktop"), NULL, ACTION_GOTO_DESK,
+			  s, NULL);
 	AddItemToMenu(mm, mi);
 	for (i = 0; i < num; i++)
 	  {
 	     if (((lst[i]->desktop == j) || (lst[i]->sticky)) &&
-		 (!lst[i]->menu) && (!lst[i]->pager) && (!lst[i]->skipwinlist) && (lst[i]->client.title) && (!lst[i]->ibox))
+		 (!lst[i]->menu) && (!lst[i]->pager) && (!lst[i]->skipwinlist)
+		 && (lst[i]->client.title) && (!lst[i]->ibox))
 	       {
 		  Esnprintf(s, sizeof(s), "%i", (int)(lst[i]->client.win));
-		  mi = CreateMenuItem(lst[i]->client.title, NULL, ACTION_FOCUS_SET, s, NULL);
+		  mi =
+		     CreateMenuItem(lst[i]->client.title, NULL,
+				    ACTION_FOCUS_SET, s, NULL);
 		  AddItemToMenu(mm, mi);
 	       }
 	  }
 	mm->parent = m;
-	Esnprintf(s, sizeof(s), "Desktop %i", j);
+	Esnprintf(s, sizeof(s), gettext("Desktop %i"), j);
 	mi = CreateMenuItem(s, NULL, 0, NULL, mm);
 	AddItemToMenu(m, mi);
      }
@@ -1952,19 +1996,25 @@ CreateMenuFromGroups(char *name, MenuStyle * ms)
 	     mm->name = duplicate("__SUBMENUGROUP_E");
 	     mm->style = ms;
 	     Esnprintf(s, sizeof(s), "%i", lst[i]->members[0]->client.win);
-	     mi = CreateMenuItem("Show/Hide this group", NULL, ACTION_SHOW_HIDE_GROUP, s, NULL);
+	     mi =
+		CreateMenuItem(gettext("Show/Hide this group"), NULL,
+			       ACTION_SHOW_HIDE_GROUP, s, NULL);
 	     AddItemToMenu(mm, mi);
-	     mi = CreateMenuItem("Iconify this group", NULL, ACTION_ICONIFY, s, NULL);
+	     mi =
+		CreateMenuItem(gettext("Iconify this group"), NULL,
+			       ACTION_ICONIFY, s, NULL);
 	     AddItemToMenu(mm, mi);
 
 	     for (j = 0; j < lst[i]->num_members; j++)
 	       {
 		  Esnprintf(s, sizeof(s), "%i", lst[i]->members[j]->client.win);
-		  mi = CreateMenuItem(lst[i]->members[j]->client.title, NULL, ACTION_FOCUS_SET, s, NULL);
+		  mi =
+		     CreateMenuItem(lst[i]->members[j]->client.title, NULL,
+				    ACTION_FOCUS_SET, s, NULL);
 		  AddItemToMenu(mm, mi);
 	       }
 	     mm->parent = m;
-	     Esnprintf(s, sizeof(s), "Group %i", i);
+	     Esnprintf(s, sizeof(s), gettext("Group %i"), i);
 	     mi = CreateMenuItem(s, NULL, 0, NULL, mm);
 	     AddItemToMenu(m, mi);
 	  }

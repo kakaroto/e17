@@ -25,18 +25,16 @@
 typedef struct _efont_color_tab EfontColorTable;
 
 struct _efont_color_tab
-  {
-     Colormap            cmap;
+{
+   Colormap            cmap;
 
-     XColor              list[256];
-     unsigned char       match[8][8][8];
-  };
+   XColor              list[256];
+   unsigned char       match[8][8][8];
+};
 
 /*static EfontColorTable *color_tab = NULL; */
-static unsigned char alpha_lut[5] =
-{0, 64, 128, 192, 255};
-static unsigned char bounded_palette[9] =
-{0, 1, 2, 3, 4, 4, 4, 4, 4};
+static unsigned char alpha_lut[5] = { 0, 64, 128, 192, 255 };
+static unsigned char bounded_palette[9] = { 0, 1, 2, 3, 4, 4, 4, 4, 4 };
 
 static TT_Raster_Map *
 create_font_raster(int width, int height)
@@ -196,9 +194,7 @@ render_text(TT_Raster_Map * rmap, TT_Raster_Map * rchr, Efont * f, char *text,
 	/* was unsigned.                                             */
 
 	if (xmin >= (int)rmap->width ||
-	    ymin >= (int)rmap->rows ||
-	    xmax < 0 ||
-	    ymax < 0)
+	    ymin >= (int)rmap->rows || xmax < 0 || ymax < 0)
 	   continue;
 
 	/* Note that the clipping check is performed _after_ rendering */
@@ -275,7 +271,9 @@ merge_text_16(XImage * xim, TT_Raster_Map * rmap, int offset_x, int offset_y,
    cb = (col << 3) & 0xf8;
    for (y = 0; y < xim->height; y++)
      {
-	ptr = (unsigned char *)rmap->bitmap + offset_x + ((y + offset_y) * rmap->cols);
+	ptr =
+	   (unsigned char *)rmap->bitmap + offset_x +
+	   ((y + offset_y) * rmap->cols);
 	for (x = 0; x < xim->width; x++)
 	  {
 	     if ((a = alpha_lut[*ptr]) > 0)
@@ -293,7 +291,9 @@ merge_text_16(XImage * xim, TT_Raster_Map * rmap, int offset_x, int offset_y,
 		       ng = g + ((tmp + (tmp >> 8) + 0x80) >> 8);
 		       tmp = (cb - b) * a;
 		       nb = b + ((tmp + (tmp >> 8) + 0x80) >> 8);
-		       pixel = ((nr & 0xf8) << 8) | ((ng & 0xfc) << 3) | ((nb & 0xf8) >> 3);
+		       pixel =
+			  ((nr & 0xf8) << 8) | ((ng & 0xfc) << 3) | ((nb & 0xf8)
+								     >> 3);
 		       XPutPixel(xim, x, y, pixel);
 		    }
 		  else
@@ -318,7 +318,9 @@ merge_text_15(XImage * xim, TT_Raster_Map * rmap, int offset_x, int offset_y,
    cb = (col << 3) & 0xf8;
    for (y = 0; y < xim->height; y++)
      {
-	ptr = (unsigned char *)rmap->bitmap + offset_x + ((y + offset_y) * rmap->cols);
+	ptr =
+	   (unsigned char *)rmap->bitmap + offset_x +
+	   ((y + offset_y) * rmap->cols);
 	for (x = 0; x < xim->width; x++)
 	  {
 	     if ((a = alpha_lut[*ptr]) > 0)
@@ -336,7 +338,9 @@ merge_text_15(XImage * xim, TT_Raster_Map * rmap, int offset_x, int offset_y,
 		       ng = g + ((tmp + (tmp >> 8) + 0x80) >> 8);
 		       tmp = (cb - b) * a;
 		       nb = b + ((tmp + (tmp >> 8) + 0x80) >> 8);
-		       pixel = ((nr & 0xf8) << 7) | ((ng & 0xf8) << 2) | ((nb & 0xf8) >> 3);
+		       pixel =
+			  ((nr & 0xf8) << 7) | ((ng & 0xf8) << 2) | ((nb & 0xf8)
+								     >> 3);
 		       XPutPixel(xim, x, y, pixel);
 		    }
 		  else
@@ -361,7 +365,9 @@ merge_text_24(XImage * xim, TT_Raster_Map * rmap, int offset_x, int offset_y,
    cb = col & 0xff;
    for (y = 0; y < xim->height; y++)
      {
-	ptr = (unsigned char *)rmap->bitmap + offset_x + ((y + offset_y) * rmap->cols);
+	ptr =
+	   (unsigned char *)rmap->bitmap + offset_x +
+	   ((y + offset_y) * rmap->cols);
 	for (x = 0; x < xim->width; x++)
 	  {
 	     if ((a = alpha_lut[*ptr]) > 0)
@@ -438,7 +444,9 @@ merge_text_1(XImage * xim, TT_Raster_Map * rmap, int offset_x, int offset_y,
 
    for (y = 0; y < xim->height; y++)
      {
-	ptr = (unsigned char *)rmap->bitmap + offset_x + ((y + offset_y) * rmap->cols);
+	ptr =
+	   (unsigned char *)rmap->bitmap + offset_x +
+	   ((y + offset_y) * rmap->cols);
 	for (x = 0; x < xim->width; x++)
 	  {
 	     if (alpha_lut[*ptr] > 2)
@@ -511,8 +519,7 @@ EFont_draw_string(Display * disp, Drawable win, GC gc, int x, int y, char *text,
      {
 	XGetWindowAttributes(disp, xatt.root, &ratt);
 	XTranslateCoordinates(disp, win, xatt.root, 0, 0, &rx, &ry, &chld);
-	if ((xatt.map_state != IsViewable) &&
-	    (xatt.backing_store == NotUseful))
+	if ((xatt.map_state != IsViewable) && (xatt.backing_store == NotUseful))
 	  {
 	     destroy_font_raster(rmap);
 	     destroy_font_raster(rtmp);
@@ -596,7 +603,9 @@ EFont_draw_string(Display * disp, Drawable win, GC gc, int x, int y, char *text,
 	       {
 		  shm = 0;
 		  XDestroyImage(xim);
-		  xim = XGetImage(disp, win, x, y, width, height, 0xffffffff, ZPixmap);
+		  xim =
+		     XGetImage(disp, win, x, y, width, height, 0xffffffff,
+			       ZPixmap);
 		  XSetErrorHandler((XErrorHandler) erh);
 		  shm_checked = 1;
 	       }
@@ -608,7 +617,9 @@ EFont_draw_string(Display * disp, Drawable win, GC gc, int x, int y, char *text,
 		    {
 		       shm = 0;
 		       XDestroyImage(xim);
-		       xim = XGetImage(disp, win, x, y, width, height, 0xffffffff, ZPixmap);
+		       xim =
+			  XGetImage(disp, win, x, y, width, height, 0xffffffff,
+				    ZPixmap);
 		       XSetErrorHandler((XErrorHandler) erh);
 		       shm_checked = 1;
 		    }
@@ -628,7 +639,9 @@ EFont_draw_string(Display * disp, Drawable win, GC gc, int x, int y, char *text,
 	       {
 		  shm = 0;
 		  XDestroyImage(xim);
-		  xim = XGetImage(disp, win, x, y, width, height, 0xffffffff, ZPixmap);
+		  xim =
+		     XGetImage(disp, win, x, y, width, height, 0xffffffff,
+			       ZPixmap);
 		  XSetErrorHandler((XErrorHandler) erh);
 		  shm_checked = 1;
 	       }
@@ -646,7 +659,9 @@ EFont_draw_string(Display * disp, Drawable win, GC gc, int x, int y, char *text,
 	       {
 		  shm = 0;
 		  XDestroyImage(xim);
-		  xim = XGetImage(disp, win, x, y, width, height, 0xffffffff, ZPixmap);
+		  xim =
+		     XGetImage(disp, win, x, y, width, height, 0xffffffff,
+			       ZPixmap);
 		  shm_checked = 1;
 	       }
 	     XSetErrorHandler((XErrorHandler) erh);
@@ -694,8 +709,7 @@ EFont_draw_string(Display * disp, Drawable win, GC gc, int x, int y, char *text,
       merge_text_1(xim, rmap, clipx, clipy, col);
 
    if (shm)
-      XShmPutImage(disp, win, gc, xim, 0, 0, x, y,
-		   width, height, False);
+      XShmPutImage(disp, win, gc, xim, 0, 0, x, y, width, height, False);
    else
       XPutImage(disp, win, gc, xim, 0, 0, x, y, width, height);
    destroy_font_raster(rmap);
@@ -880,7 +894,8 @@ Efont_extents(Efont * f, char *text, int *font_ascent_return,
 	if (text[i + 1] == 0)
 	  {
 	     if (rbearing_return)
-		*rbearing_return = ((gmetrics.bbox.xMax - gmetrics.advance) / 64);
+		*rbearing_return =
+		   ((gmetrics.bbox.xMax - gmetrics.advance) / 64);
 	  }
 	pw += gmetrics.advance / 64;
      }

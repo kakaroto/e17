@@ -77,7 +77,9 @@ GetLine(char *s, int size, FILE * f)
 	line_stack_size--;
 	if (line_stack_size > 0)
 	  {
-	     line_stack = Erealloc(line_stack, line_stack_size * sizeof(char *));
+	     line_stack =
+
+		Erealloc(line_stack, line_stack_size * sizeof(char *));
 	  }
 	else
 	  {
@@ -175,6 +177,7 @@ GetLine(char *s, int size, FILE * f)
 
 		  else
 		     line_stack = Erealloc(line_stack,
+
 					   line_stack_size * sizeof(char *));
 
 		  line_stack[line_stack_size - 1] = Emalloc(j + 1);
@@ -196,6 +199,7 @@ GetLine(char *s, int size, FILE * f)
 	if (line_stack_size > 0)
 	  {
 	     line_stack = Erealloc(line_stack,
+
 				   line_stack_size * sizeof(char *));
 
 	  }
@@ -235,13 +239,14 @@ Config_Text(FILE * ConfigFile)
 	else if (i1 == CONFIG_CLOSE)
 	  {
 	     if (fields != 1)
-		Alert("CONFIG: ignoring extra data in \"%s\"\n", s);
+		Alert(gettext("CONFIG: ignoring extra data in \"%s\"\n"), s);
 	  }
 	else if (i1 != CONFIG_INVALID)
 	  {
 	     if (fields != 2)
 	       {
-		  Alert("CONFIG: missing required data in \"%s\"\n", s);
+		  Alert(gettext("CONFIG: missing required data in \"%s\"\n"),
+			s);
 		  i1 = CONFIG_INVALID;
 	       }
 	  }
@@ -423,27 +428,24 @@ Config_Text(FILE * ConfigFile)
 	  case TEXT_FG_COL:
 	     if (ts)
 		sscanf(s, "%*s %i %i %i",
-		       &ts->fg_col.r,
-		       &ts->fg_col.g,
-		       &ts->fg_col.b);
+		       &ts->fg_col.r, &ts->fg_col.g, &ts->fg_col.b);
 	     break;
 	  case TEXT_BG_COL:
 	     if (ts)
 		sscanf(s, "%*s %i %i %i",
-		       &ts->bg_col.r,
-		       &ts->bg_col.g,
-		       &ts->bg_col.b);
+		       &ts->bg_col.r, &ts->bg_col.g, &ts->bg_col.b);
 	     break;
 	  default:
-	     Alert("Warning: unable to determine what to do with\n"
-		   "the following text in the middle of current Text"
-		   " definition:\n"
-		   "%s\nWill ignore and continue...\n", s);
+	     Alert(gettext("Warning: unable to determine what to do with\n"
+			   "the following text in the middle of current Text"
+			   " definition:\n"
+			   "%s\nWill ignore and continue...\n"), s);
 	  }
 
      }
-   Alert("Warning:  Configuration appears to have ended before we were\n"
-	 "Done loading a text block.  Outcome is likely not good.\n");
+   Alert(gettext
+	 ("Warning:  Configuration appears to have ended before we were\n"
+	  "Done loading a text block.  Outcome is likely not good.\n"));
 }
 
 void
@@ -472,13 +474,14 @@ Config_Slideout(FILE * ConfigFile)
 	else if (i1 == CONFIG_CLOSE)
 	  {
 	     if (fields != 1)
-		Alert("CONFIG: ignoring extra data in \"%s\"\n", s);
+		Alert(gettext("CONFIG: ignoring extra data in \"%s\"\n"), s);
 	  }
 	else if (i1 != CONFIG_INVALID)
 	  {
 	     if (fields != 2)
 	       {
-		  Alert("CONFIG: missing required data in \"%s\"\n", s);
+		  Alert(gettext("CONFIG: missing required data in \"%s\"\n"),
+			s);
 		  i1 = CONFIG_INVALID;
 	       }
 	  }
@@ -512,15 +515,16 @@ Config_Slideout(FILE * ConfigFile)
 	     }
 	     break;
 	  default:
-	     Alert("Warning: unable to determine what to do with\n"
-		   "the following text in the middle of current Text "
-		   "definition:\n"
-		   "%s\nWill ignore and continue...\n", s);
+	     Alert(gettext("Warning: unable to determine what to do with\n"
+			   "the following text in the middle of current Text "
+			   "definition:\n"
+			   "%s\nWill ignore and continue...\n"), s);
 	  }
 
      }
-   Alert("Warning:  Configuration appears to have ended before we were\n"
-	 "Done loading a Slideout block.  Outcome is likely not good.\n");
+   Alert(gettext
+	 ("Warning:  Configuration appears to have ended before we were\n"
+	  "Done loading a Slideout block.  Outcome is likely not good.\n"));
 }
 
 void
@@ -550,7 +554,7 @@ Config_Control(FILE * ConfigFile)
 	     if (fields != 1)
 	       {
 		  RecoverUserConfig();
-		  Alert("CONFIG: ignoring extra data in \"%s\"\n", s);
+		  Alert(gettext("CONFIG: ignoring extra data in \"%s\"\n"), s);
 	       }
 	  }
 	else if (i1 != CONFIG_INVALID)
@@ -558,7 +562,8 @@ Config_Control(FILE * ConfigFile)
 	     if (fields != 2)
 	       {
 		  RecoverUserConfig();
-		  Alert("CONFIG: missing required data in \"%s\"\n", s);
+		  Alert(gettext("CONFIG: missing required data in \"%s\"\n"),
+			s);
 		  i1 = CONFIG_INVALID;
 	       }
 	  }
@@ -759,14 +764,17 @@ Config_Control(FILE * ConfigFile)
 	     mode.user_bg = i2;
 	     break;
 	  case CONTROL_DOCKSTARTPOS:
-	     sscanf(s, "%*s %d %d ", &mode.dockstartx,
-		    &mode.dockstarty);
+	     sscanf(s, "%*s %d %d ", &mode.dockstartx, &mode.dockstarty);
 	     break;
 	  case CONTROL_KDESUPPORT:
 	     mode.kde_support = i2;
 	     break;
 	  case CONTROL_SHOWROOTTOOLTIP:
 	     mode.showroottooltip = i2;
+	     break;
+	  case CONTROL_PAGER_BUTTONS:
+	     sscanf(s, "%*s %i %i %i ", &mode.pager_sel_button,
+		    &mode.pager_win_button, &mode.pager_menu_button);
 	     break;
 	  case CONTROL_CLICK_ALWAYS:
 	     mode.clickalways = i2;
@@ -786,15 +794,16 @@ Config_Control(FILE * ConfigFile)
 	     break;
 	  default:
 	     RecoverUserConfig();
-	     Alert("Warning: unable to determine what to do with\n"
-		   "the following text in the middle of current Control "
-		   "definition:\n"
-		   "%s\nWill ignore and continue...\n", s);
+	     Alert(gettext("Warning: unable to determine what to do with\n"
+			   "the following text in the middle of current Control "
+			   "definition:\n"
+			   "%s\nWill ignore and continue...\n"), s);
 	  }
      }
    RecoverUserConfig();
-   Alert("Warning:  Configuration appears to have ended before we were\n"
-	 "Done loading a Control block.  Outcome is likely not good.\n");
+   Alert(gettext
+	 ("Warning:  Configuration appears to have ended before we were\n"
+	  "Done loading a Control block.  Outcome is likely not good.\n"));
 }
 
 void
@@ -819,13 +828,14 @@ Config_MenuStyle(FILE * ConfigFile)
 	else if (i1 == CONFIG_CLOSE)
 	  {
 	     if (fields != 1)
-		Alert("CONFIG: ignoring extra data in \"%s\"\n", s);
+		Alert(gettext("CONFIG: ignoring extra data in \"%s\"\n"), s);
 	  }
 	else if (i1 != CONFIG_INVALID)
 	  {
 	     if (fields != 2)
 	       {
-		  Alert("CONFIG: missing required data in \"%s\"\n", s);
+		  Alert(gettext("CONFIG: missing required data in \"%s\"\n"),
+			s);
 	       }
 	  }
 	switch (i1)
@@ -840,8 +850,7 @@ Config_MenuStyle(FILE * ConfigFile)
 	     ms->name = duplicate(s2);
 	     break;
 	  case CONFIG_TEXT:
-	     ms->tclass = FindItem(s2, 0,
-				   LIST_FINDBY_NAME, LIST_TYPE_TCLASS);
+	     ms->tclass = FindItem(s2, 0, LIST_FINDBY_NAME, LIST_TYPE_TCLASS);
 	     if (ms->tclass)
 		ms->tclass->ref_count++;
 	     break;
@@ -903,8 +912,9 @@ Config_MenuStyle(FILE * ConfigFile)
 	     break;
 	  }
      }
-   Alert("Warning:  Configuration appears to have ended before we were\n"
-	 "Done loading a Menu block.  Outcome is likely not good.\n");
+   Alert(gettext
+	 ("Warning:  Configuration appears to have ended before we were\n"
+	  "Done loading a Menu block.  Outcome is likely not good.\n"));
 }
 
 void
@@ -936,13 +946,14 @@ Config_Menu(FILE * ConfigFile)
 	else if (i1 == CONFIG_CLOSE)
 	  {
 	     if (fields != 1)
-		Alert("CONFIG: ignoring extra data in \"%s\"\n", s);
+		Alert(gettext("CONFIG: ignoring extra data in \"%s\"\n"), s);
 	  }
 	else if (i1 != CONFIG_INVALID)
 	  {
 	     if (fields != 2)
 	       {
-		  Alert("CONFIG: missing required data in \"%s\"\n", s);
+		  Alert(gettext("CONFIG: missing required data in \"%s\"\n"),
+			s);
 		  i1 = CONFIG_INVALID;
 	       }
 	  }
@@ -956,14 +967,12 @@ Config_Menu(FILE * ConfigFile)
 	       }
 	     return;
 	  case MENU_PREBUILT:
-	     sscanf(s, "%i %4000s %4000s %4000s %4000s",
-		    &i1, s2, s3, s4, s5);
+	     sscanf(s, "%i %4000s %4000s %4000s %4000s", &i1, s2, s3, s4, s5);
 	     if (!strcmp(s4, "dirscan"))
 	       {
 		  MenuStyle          *ms;
 
-		  ms = FindItem(s3, 0,
-				LIST_FINDBY_NAME, LIST_TYPE_MENU_STYLE);
+		  ms = FindItem(s3, 0, LIST_FINDBY_NAME, LIST_TYPE_MENU_STYLE);
 		  if (!ms)
 		    {
 		       ms = FindItem("DEFAULT", 0,
@@ -981,8 +990,7 @@ Config_Menu(FILE * ConfigFile)
 	       {
 		  MenuStyle          *ms;
 
-		  ms = FindItem(s3, 0,
-				LIST_FINDBY_NAME, LIST_TYPE_MENU_STYLE);
+		  ms = FindItem(s3, 0, LIST_FINDBY_NAME, LIST_TYPE_MENU_STYLE);
 		  if (ms)
 		    {
 		       m = CreateMenuFromGnome(s2, ms, s5);
@@ -993,8 +1001,7 @@ Config_Menu(FILE * ConfigFile)
 	       {
 		  MenuStyle          *ms;
 
-		  ms = FindItem(s3, 0,
-				LIST_FINDBY_NAME, LIST_TYPE_MENU_STYLE);
+		  ms = FindItem(s3, 0, LIST_FINDBY_NAME, LIST_TYPE_MENU_STYLE);
 		  if (ms)
 		    {
 		       m = CreateMenuFromBorders(s2, ms);
@@ -1005,8 +1012,7 @@ Config_Menu(FILE * ConfigFile)
 	       {
 		  MenuStyle          *ms;
 
-		  ms = FindItem(s3, 0,
-				LIST_FINDBY_NAME, LIST_TYPE_MENU_STYLE);
+		  ms = FindItem(s3, 0, LIST_FINDBY_NAME, LIST_TYPE_MENU_STYLE);
 		  if (ms)
 		    {
 		       m = CreateMenuFromThemes(s2, ms);
@@ -1017,8 +1023,7 @@ Config_Menu(FILE * ConfigFile)
 	       {
 		  MenuStyle          *ms;
 
-		  ms = FindItem(s3, 0,
-				LIST_FINDBY_NAME, LIST_TYPE_MENU_STYLE);
+		  ms = FindItem(s3, 0, LIST_FINDBY_NAME, LIST_TYPE_MENU_STYLE);
 		  if (ms)
 		    {
 		       m = CreateMenuFromFlatFile(s2, ms, s5, NULL);
@@ -1029,8 +1034,7 @@ Config_Menu(FILE * ConfigFile)
 	       {
 		  MenuStyle          *ms;
 
-		  ms = FindItem(s3, 0,
-				LIST_FINDBY_NAME, LIST_TYPE_MENU_STYLE);
+		  ms = FindItem(s3, 0, LIST_FINDBY_NAME, LIST_TYPE_MENU_STYLE);
 		  if (ms)
 		    {
 		       m = CreateMenuFromAllEWins(s2, ms);
@@ -1041,8 +1045,7 @@ Config_Menu(FILE * ConfigFile)
 	       {
 		  MenuStyle          *ms;
 
-		  ms = FindItem(s3, 0,
-				LIST_FINDBY_NAME, LIST_TYPE_MENU_STYLE);
+		  ms = FindItem(s3, 0, LIST_FINDBY_NAME, LIST_TYPE_MENU_STYLE);
 		  if (ms)
 		    {
 		       m = CreateMenuFromDesktops(s2, ms);
@@ -1143,8 +1146,9 @@ Config_Menu(FILE * ConfigFile)
 	     break;
 	  }
      }
-   Alert("Warning:  Configuration appears to have ended before we were\n"
-	 "Done loading a Menu block.  Outcome is likely not good.\n");
+   Alert(gettext
+	 ("Warning:  Configuration appears to have ended before we were\n"
+	  "Done loading a Menu block.  Outcome is likely not good.\n"));
 }
 
 void
@@ -1166,7 +1170,7 @@ BorderPartLoad(FILE * ConfigFile, char type, Border * b)
    int                 flags = FLAG_BUTTON;
    char                isregion = 0, keepshade = 1;
    int                 wmin = 0, wmax = 0, hmin = 0, hmax = 0, torigin = 0,
-                       txp = 0, txa = 0, typ = 0, tya = 0, borigin = 0;
+      txp = 0, txa = 0, typ = 0, tya = 0, borigin = 0;
    int                 bxp = 0, bxa = 0, byp = 0, bya = 0;
    int                 fields;
 
@@ -1184,13 +1188,14 @@ BorderPartLoad(FILE * ConfigFile, char type, Border * b)
 	else if (i1 == CONFIG_CLOSE)
 	  {
 	     if (fields != 1)
-		Alert("CONFIG: ignoring extra data in \"%s\"\n", s);
+		Alert(gettext("CONFIG: ignoring extra data in \"%s\"\n"), s);
 	  }
 	else if (i1 != CONFIG_INVALID)
 	  {
 	     if (fields != 2)
 	       {
-		  Alert("CONFIG: missing required data in \"%s\"\n", s);
+		  Alert(gettext("CONFIG: missing required data in \"%s\"\n"),
+			s);
 		  i1 = CONFIG_INVALID;
 	       }
 	  }
@@ -1279,8 +1284,9 @@ BorderPartLoad(FILE * ConfigFile, char type, Border * b)
 	     break;
 	  }
      }
-   Alert("Warning:  Configuration appears to have ended before we were\n"
-	 "Done loading a BorderPart block.  Outcome is likely not good.\n");
+   Alert(gettext
+	 ("Warning:  Configuration appears to have ended before we were\n"
+	  "Done loading a BorderPart block.  Outcome is likely not good.\n"));
 }
 
 void
@@ -1311,13 +1317,14 @@ Config_Border(FILE * ConfigFile)
 	else if (i1 == CONFIG_CLOSE)
 	  {
 	     if (fields != 1)
-		Alert("CONFIG: ignoring extra data in \"%s\"\n", s);
+		Alert(gettext("CONFIG: ignoring extra data in \"%s\"\n"), s);
 	  }
 	else if (i1 != CONFIG_INVALID)
 	  {
 	     if (fields != 2)
 	       {
-		  Alert("CONFIG: missing required data in \"%s\"\n", s);
+		  Alert(gettext("CONFIG: missing required data in \"%s\"\n"),
+			s);
 		  i1 = CONFIG_INVALID;
 	       }
 	  }
@@ -1368,8 +1375,9 @@ Config_Border(FILE * ConfigFile)
 	       }
 	  }
      }
-   Alert("Warning:  Configuration appears to have ended before we were\n"
-	 "Done loading a Main Border block.  Outcome is likely not good.\n");
+   Alert(gettext
+	 ("Warning:  Configuration appears to have ended before we were\n"
+	  "Done loading a Main Border block.  Outcome is likely not good.\n"));
 }
 
 void
@@ -1392,7 +1400,8 @@ Config_Button(FILE * ConfigFile)
    int                 flags = 0, minw = 1, maxw = 99999, minh = 1;
    int                 maxh = 99999, xo = 0, yo = 0, xa = 0;
    int                 xr = 0, ya = 0, yr = 0, xsr = 0, xsa = 0, ysr = 0,
-                       ysa = 0;
+
+      ysa = 0;
    char                simg = 0;
    int                 desk = 0;
    char                sticky = 0;
@@ -1415,7 +1424,7 @@ Config_Button(FILE * ConfigFile)
 	     if (fields != 1)
 	       {
 		  RecoverUserConfig();
-		  Alert("CONFIG: ignoring extra data in \"%s\"\n", s);
+		  Alert(gettext("CONFIG: ignoring extra data in \"%s\"\n"), s);
 	       }
 	  }
 	else if (i1 != CONFIG_INVALID)
@@ -1423,7 +1432,8 @@ Config_Button(FILE * ConfigFile)
 	     if (fields != 2)
 	       {
 		  RecoverUserConfig();
-		  Alert("CONFIG: missing required data in \"%s\"\n", s);
+		  Alert(gettext("CONFIG: missing required data in \"%s\"\n"),
+			s);
 		  i1 = CONFIG_INVALID;
 	       }
 	  }
@@ -1434,7 +1444,7 @@ Config_Button(FILE * ConfigFile)
 	       {
 		  bt = CreateButton(name, ic, ac, tc, label, ontop, flags,
 				    minw, maxw, minh, maxh, xo, yo, xa, xr, ya,
-				  yr, xsr, xsa, ysr, ysa, simg, desk, sticky);
+				    yr, xsr, xsa, ysr, ysa, simg, desk, sticky);
 		  bt->default_show = show;
 		  bt->internal = internal;
 		  AddItem(bt, bt->name, 0, LIST_TYPE_BUTTON);
@@ -1585,8 +1595,9 @@ Config_Button(FILE * ConfigFile)
       Efree(name);
 
    RecoverUserConfig();
-   Alert("Warning:  Configuration appears to have ended before we were\n"
-	 "Done loading a Button block.  Outcome is likely not good.\n");
+   Alert(gettext
+	 ("Warning:  Configuration appears to have ended before we were\n"
+	  "Done loading a Button block.  Outcome is likely not good.\n"));
 
    return;
 }
@@ -1629,7 +1640,7 @@ Config_Desktop(FILE * ConfigFile)
 	     if (fields != 1)
 	       {
 		  RecoverUserConfig();
-		  Alert("CONFIG: ignoring extra data in \"%s\"\n", s);
+		  Alert(gettext("CONFIG: ignoring extra data in \"%s\"\n"), s);
 	       }
 	  }
 	else if (ii1 != CONFIG_INVALID)
@@ -1637,7 +1648,8 @@ Config_Desktop(FILE * ConfigFile)
 	     if (fields != 2)
 	       {
 		  RecoverUserConfig();
-		  Alert("CONFIG: missing required data in \"%s\"\n", s);
+		  Alert(gettext("CONFIG: missing required data in \"%s\"\n"),
+			s);
 		  ii1 = CONFIG_INVALID;
 	       }
 	  }
@@ -1679,7 +1691,8 @@ Config_Desktop(FILE * ConfigFile)
 		       if (ok)
 			 {
 			    bg = CreateDesktopBG(name, &icl, bg1, i1, i2,
-				     i3, i4, i5, i6, bg2, j1, j2, j3, j4, j5);
+						 i3, i4, i5, i6, bg2, j1, j2,
+						 j3, j4, j5);
 			    AddItem(bg, bg->name, 0, LIST_TYPE_BACKGROUND);
 			    if (cm)
 			      {
@@ -1704,8 +1717,7 @@ Config_Desktop(FILE * ConfigFile)
 	     break;
 	  case CONFIG_CLASSNAME:
 	  case BG_NAME:
-	     if ((bg = FindItem(s2, 0,
-				LIST_FINDBY_NAME, LIST_TYPE_BACKGROUND)))
+	     if ((bg = FindItem(s2, 0, LIST_FINDBY_NAME, LIST_TYPE_BACKGROUND)))
 	       {
 		  ignore = 1;
 	       }
@@ -1724,15 +1736,15 @@ Config_Desktop(FILE * ConfigFile)
 		  if ((atoi(s2) < ENLIGHTENMENT_CONF_NUM_DESKTOPS) &&
 		      (atoi(s2) >= 0))
 		    {
-		       if ((desks.desk[atoi(s2)].bg == NULL) ||
-			   (mode.user_bg))
+		       if ((desks.desk[atoi(s2)].bg == NULL) || (mode.user_bg))
 			 {
 			    if ((ird) && (atoi(s2) == 0))
 			       bg = NULL;
 			    if (!bg)
 			      {
 				 bg = CreateDesktopBG(name, &icl, bg1, i1, i2,
-				     i3, i4, i5, i6, bg2, j1, j2, j3, j4, j5);
+						      i3, i4, i5, i6, bg2, j1,
+						      j2, j3, j4, j5);
 				 AddItem(bg, bg->name, 0, LIST_TYPE_BACKGROUND);
 			      }
 			    if (!strcmp(bg->name, "NONE"))
@@ -1753,8 +1765,7 @@ Config_Desktop(FILE * ConfigFile)
 		  if ((atoi(s2) < ENLIGHTENMENT_CONF_NUM_DESKTOPS) &&
 		      (atoi(s2) >= 0))
 		    {
-		       if ((desks.desk[atoi(s2)].bg == NULL) ||
-			   (mode.user_bg))
+		       if ((desks.desk[atoi(s2)].bg == NULL) || (mode.user_bg))
 			 {
 			    if (bg)
 			      {
@@ -1841,8 +1852,9 @@ Config_Desktop(FILE * ConfigFile)
       Efree(bg2);
 
    RecoverUserConfig();
-   Alert("Warning:  Configuration appears to have ended before we were\n"
-	 "Done loading a Desktop block.  Outcome is likely not good.\n");
+   Alert(gettext
+	 ("Warning:  Configuration appears to have ended before we were\n"
+	  "Done loading a Desktop block.  Outcome is likely not good.\n"));
 
    return;
 }
@@ -1876,13 +1888,14 @@ Config_ECursor(FILE * ConfigFile)
 	else if (ii1 == CONFIG_CLOSE)
 	  {
 	     if (fields != 1)
-		Alert("CONFIG: ignoring extra data in \"%s\"\n", s);
+		Alert(gettext("CONFIG: ignoring extra data in \"%s\"\n"), s);
 	  }
 	else if (ii1 != CONFIG_INVALID)
 	  {
 	     if (fields != 2)
 	       {
-		  Alert("CONFIG: missing required data in \"%s\"\n", s);
+		  Alert(gettext("CONFIG: missing required data in \"%s\"\n"),
+			s);
 	       }
 	  }
 	switch (ii1)
@@ -1919,8 +1932,9 @@ Config_ECursor(FILE * ConfigFile)
       Efree(name);
    if (file)
       Efree(file);
-   Alert("Warning:  Configuration appears to have ended before we were\n"
-	 "Done loading a Desktop block.  Outcome is likely not good.\n");
+   Alert(gettext
+	 ("Warning:  Configuration appears to have ended before we were\n"
+	  "Done loading a Desktop block.  Outcome is likely not good.\n"));
 }
 
 void
@@ -1931,7 +1945,7 @@ Config_Iconbox(FILE * ConfigFile)
    int                 i1;
    int                 fields;
 
-   Alert("Easter Egg!  Iconboxes aren't implemented yet.\n");
+   Alert(gettext("Easter Egg!  Iconboxes aren't implemented yet.\n"));
 
    while (GetLine(s, sizeof(s), ConfigFile))
      {
@@ -1944,13 +1958,14 @@ Config_Iconbox(FILE * ConfigFile)
 	else if (i1 == CONFIG_CLOSE)
 	  {
 	     if (fields != 1)
-		Alert("CONFIG: ignoring extra data in \"%s\"\n", s);
+		Alert(gettext("CONFIG: ignoring extra data in \"%s\"\n"), s);
 	  }
 	else if (i1 != CONFIG_INVALID)
 	  {
 	     if (fields != 2)
 	       {
-		  Alert("CONFIG: missing required data in \"%s\"\n", s);
+		  Alert(gettext("CONFIG: missing required data in \"%s\"\n"),
+			s);
 	       }
 	  }
 	switch (i1)
@@ -1961,8 +1976,9 @@ Config_Iconbox(FILE * ConfigFile)
 	     break;
 	  }
      }
-   Alert("Warning:  Configuration appears to have ended before we were\n"
-	 "Done loading an Iconbox block.  Outcome is likely not good.\n");
+   Alert(gettext
+	 ("Warning:  Configuration appears to have ended before we were\n"
+	  "Done loading an Iconbox block.  Outcome is likely not good.\n"));
 }
 
 void
@@ -1996,8 +2012,9 @@ Config_Sound(FILE * ConfigFile)
 	     AddItem(sc, sc->name, 0, LIST_TYPE_SCLASS);
 	  }
      }
-   Alert("Warning:  Configuration appears to have ended before we were\n"
-	 "Done loading an Sound block.  Outcome is likely not good.\n");
+   Alert(gettext
+	 ("Warning:  Configuration appears to have ended before we were\n"
+	  "Done loading an Sound block.  Outcome is likely not good.\n"));
 }
 
 void
@@ -2037,7 +2054,7 @@ Config_ActionClass(FILE * ConfigFile)
 	     if (fields != 1)
 	       {
 		  RecoverUserConfig();
-		  Alert("CONFIG: ignoring extra data in \"%s\"\n", s);
+		  Alert(gettext("CONFIG: ignoring extra data in \"%s\"\n"), s);
 	       }
 	  }
 	else if (i1 != CONFIG_INVALID)
@@ -2045,7 +2062,8 @@ Config_ActionClass(FILE * ConfigFile)
 	     if (fields != 2)
 	       {
 		  RecoverUserConfig();
-		  Alert("CONFIG: missing required data in \"%s\"\n", s);
+		  Alert(gettext("CONFIG: missing required data in \"%s\"\n"),
+			s);
 	       }
 	  }
 	switch (i1)
@@ -2198,7 +2216,8 @@ Config_ActionClass(FILE * ConfigFile)
 	     if (first)
 	       {
 		  a = CreateAction(event, anymod,
-			 mod, anybut, but, anykey, key, action_tooltipstring);
+				   mod, anybut, but, anykey, key,
+				   action_tooltipstring);
 		  /* the correct place to grab an action key */
 		  if (action_tooltipstring)
 		    {
@@ -2224,10 +2243,11 @@ Config_ActionClass(FILE * ConfigFile)
 	     if (action_tooltipstring)
 	       {
 		  action_tooltipstring = Erealloc(action_tooltipstring,
-					       (strlen(action_tooltipstring) +
-						strlen(atword(s, 2)) + 2));
+						  (strlen(action_tooltipstring)
+						   + strlen(atword(s, 2)) + 2));
 		  action_tooltipstring = strcat(action_tooltipstring, "\n");
-		  action_tooltipstring = strcat(action_tooltipstring, atword(s, 2));
+		  action_tooltipstring =
+		     strcat(action_tooltipstring, atword(s, 2));
 	       }
 	     else
 		action_tooltipstring = duplicate(atword(s, 2));
@@ -2246,10 +2266,10 @@ Config_ActionClass(FILE * ConfigFile)
 	     break;
 	  default:
 	     RecoverUserConfig();
-	     Alert("Warning: unable to determine what to do with\n"
-		   "the following text in the middle of current"
-		   " ActionClass definition:\n"
-		   "%s\nWill ignore and continue...\n", s);
+	     Alert(gettext("Warning: unable to determine what to do with\n"
+			   "the following text in the middle of current"
+			   " ActionClass definition:\n"
+			   "%s\nWill ignore and continue...\n"), s);
 	     break;
 	  }
      }
@@ -2260,8 +2280,9 @@ Config_ActionClass(FILE * ConfigFile)
    if (action_tooltipstring)
       Efree(action_tooltipstring);
    RecoverUserConfig();
-   Alert("Warning:  Configuration appears to have ended before we were\n"
-	 "Done loading an Action Class block.  Outcome is likely not good.\n");
+   Alert(gettext
+	 ("Warning:  Configuration appears to have ended before we were\n"
+	  "Done loading an Action Class block.  Outcome is likely not good.\n"));
 }
 
 void
@@ -2290,13 +2311,14 @@ Config_ImageClass(FILE * ConfigFile)
 	else if (i1 == CONFIG_CLOSE)
 	  {
 	     if (fields != 1)
-		Alert("CONFIG: ignoring extra data in \"%s\"\n", s);
+		Alert(gettext("CONFIG: ignoring extra data in \"%s\"\n"), s);
 	  }
 	else if (i1 != CONFIG_INVALID)
 	  {
 	     if (fields != 2)
 	       {
-		  Alert("CONFIG: missing required data in \"%s\"\n", s);
+		  Alert(gettext("CONFIG: missing required data in \"%s\"\n"),
+			s);
 	       }
 	  }
 	switch (i1)
@@ -2458,15 +2480,16 @@ Config_ImageClass(FILE * ConfigFile)
 	     ICToRead = ic->sticky_active.disabled;
 	     break;
 	  default:
-	     Alert("Warning: unable to determine what to do with\n"
-		   "the following text in the middle of current "
-		   "ImageClass definition:\n"
-		   "%s\nWill ignore and continue...\n", s);
+	     Alert(gettext("Warning: unable to determine what to do with\n"
+			   "the following text in the middle of current "
+			   "ImageClass definition:\n"
+			   "%s\nWill ignore and continue...\n"), s);
 	     break;
 	  }
      }
-   Alert("Warning:  Configuration appears to have ended before we were\n"
-	 "Done loading an ImageClass block.  Outcome is likely not good.\n");
+   Alert(gettext
+	 ("Warning:  Configuration appears to have ended before we were\n"
+	  "Done loading an ImageClass block.  Outcome is likely not good.\n"));
 }
 
 void
@@ -2505,7 +2528,7 @@ Config_ColorModifier(FILE * ConfigFile)
 	     if (fields != 1)
 	       {
 		  RecoverUserConfig();
-		  Alert("CONFIG: ignoring extra data in \"%s\"\n", s);
+		  Alert(gettext("CONFIG: ignoring extra data in \"%s\"\n"), s);
 	       }
 	  }
 	else if (i1 != CONFIG_INVALID)
@@ -2513,7 +2536,8 @@ Config_ColorModifier(FILE * ConfigFile)
 	     if (fields != 2)
 	       {
 		  RecoverUserConfig();
-		  Alert("CONFIG: missing required data in \"%s\"\n", s);
+		  Alert(gettext("CONFIG: missing required data in \"%s\"\n"),
+			s);
 	       }
 	  }
 	switch (i1)
@@ -2523,8 +2547,7 @@ Config_ColorModifier(FILE * ConfigFile)
 						  LIST_TYPE_COLORMODIFIER);
 	     if (cm)
 	       {
-		  ModifyCMClass(name, rnum, rx, ry, gnum,
-				gx, gy, bnum, bx, by);
+		  ModifyCMClass(name, rnum, rx, ry, gnum, gx, gy, bnum, bx, by);
 	       }
 	     else
 	       {
@@ -2705,10 +2728,10 @@ Config_ColorModifier(FILE * ConfigFile)
 	     break;
 	  default:
 	     RecoverUserConfig();
-	     Alert("Warning: unable to determine what to do with\n"
-		   "the following text in the middle of current "
-		   " ColorModifier definition:\n"
-		   "%s\nWill ignore and continue...\n", s);
+	     Alert(gettext("Warning: unable to determine what to do with\n"
+			   "the following text in the middle of current "
+			   " ColorModifier definition:\n"
+			   "%s\nWill ignore and continue...\n"), s);
 	     break;
 	  }
      }
@@ -2729,9 +2752,10 @@ Config_ColorModifier(FILE * ConfigFile)
       Efree(by);
 
    RecoverUserConfig();
-   Alert("Warning:  Configuration appears to have ended before we were\n"
-	 "Done loading an ColorModifier block.\n"
-	 "Outcome is likely not good.\n");
+   Alert(gettext
+	 ("Warning:  Configuration appears to have ended before we were\n"
+	  "Done loading an ColorModifier block.\n"
+	  "Outcome is likely not good.\n"));
 
    return;
 }
@@ -2768,13 +2792,14 @@ Config_ToolTip(FILE * ConfigFile)
 	else if (i1 == CONFIG_CLOSE)
 	  {
 	     if (fields != 1)
-		Alert("CONFIG: ignoring extra data in \"%s\"\n", s);
+		Alert(gettext("CONFIG: ignoring extra data in \"%s\"\n"), s);
 	  }
 	else if (i1 != CONFIG_INVALID)
 	  {
 	     if (fields != 2)
 	       {
-		  Alert("CONFIG: missing required data in \"%s\"\n", s);
+		  Alert(gettext("CONFIG: missing required data in \"%s\"\n"),
+			s);
 	       }
 	  }
 	switch (i1)
@@ -2796,8 +2821,7 @@ Config_ToolTip(FILE * ConfigFile)
 	     break;
 	  case TOOLTIP_DRAWICLASS:
 	  case CONFIG_IMAGECLASS:
-	     drawiclass = FindItem(s2, 0, LIST_FINDBY_NAME,
-				   LIST_TYPE_ICLASS);
+	     drawiclass = FindItem(s2, 0, LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
 	     break;
 	  case TOOLTIP_BUBBLE1:
 	     bubble1 = FindItem(s2, 0, LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
@@ -2822,15 +2846,15 @@ Config_ToolTip(FILE * ConfigFile)
 				       LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
 	     break;
 	  default:
-	     Alert("Warning: unable to determine what to do with\n"
-		   "the following text in the middle of current "
-		   "ToolTip definition:\n"
-		   "%s\nWill ignore and continue...\n", s);
+	     Alert(gettext("Warning: unable to determine what to do with\n"
+			   "the following text in the middle of current "
+			   "ToolTip definition:\n"
+			   "%s\nWill ignore and continue...\n"), s);
 	     break;
 	  }
      }
-   Alert("Warning: Configuration appears to have ended before we were\n"
-	 "Done loading an ToolTip block.  Outcome is likely not good.\n");
+   Alert(gettext("Warning: Configuration appears to have ended before we were\n"
+		 "Done loading an ToolTip block.  Outcome is likely not good.\n"));
 
 }
 
@@ -2861,14 +2885,14 @@ Config_FX(FILE * ConfigFile)
 	     if (fields != 1)
 	       {
 		  RecoverUserConfig();
-		  Alert("CONFIG: ignoring extra data in \"%s\"\n", s);
+		  Alert(gettext("CONFIG: ignoring extra data in \"%s\"\n"), s);
 	       }
 	     return;
 	  }
      }
    RecoverUserConfig();
-   Alert("Warning: Configuration appears to have ended before we were\n"
-	 "Done loading an FX block.  Outcome is likely not good.\n");
+   Alert(gettext("Warning: Configuration appears to have ended before we were\n"
+		 "Done loading an FX block.  Outcome is likely not good.\n"));
 }
 
 void
@@ -2903,16 +2927,16 @@ Config_Extras(FILE * ConfigFile)
 	     return;
 	     break;
 	  default:
-	     Alert("Warning: unable to determine what to do with\n"
-		   "the following text in the middle of current "
-		   "Extras definition:\n"
-		   "%s\nWill ignore and continue...\n", s);
+	     Alert(gettext("Warning: unable to determine what to do with\n"
+			   "the following text in the middle of current "
+			   "Extras definition:\n"
+			   "%s\nWill ignore and continue...\n"), s);
 	     break;
 	  }
      }
    RecoverUserConfig();
-   Alert("Warning: Configuration appears to have ended before we were\n"
-	 "Done loading an Extras block.  Outcome is likely not good.\n");
+   Alert(gettext("Warning: Configuration appears to have ended before we were\n"
+		 "Done loading an Extras block.  Outcome is likely not good.\n"));
 }
 
 void
@@ -2938,7 +2962,7 @@ Config_Ibox(FILE * ConfigFile)
 	else if (i1 == CONFIG_CLOSE)
 	  {
 	     if (fields != 1)
-		Alert("CONFIG: ignoring extra data in \"%s\"\n", s);
+		Alert(gettext("CONFIG: ignoring extra data in \"%s\"\n"), s);
 	  }
 	switch (i1)
 	  {
@@ -3001,16 +3025,16 @@ Config_Ibox(FILE * ConfigFile)
 	     return;
 	     break;
 	  default:
-	     Alert("Warning: unable to determine what to do with\n"
-		   "the following text in the middle of current "
-		   "Iconbox definition:\n"
-		   "%s\nWill ignore and continue...\n", s);
+	     Alert(gettext("Warning: unable to determine what to do with\n"
+			   "the following text in the middle of current "
+			   "Iconbox definition:\n"
+			   "%s\nWill ignore and continue...\n"), s);
 	     break;
 	  }
      }
    RecoverUserConfig();
-   Alert("Warning: Configuration appears to have ended before we were\n"
-	 "Done loading an Iconbox block.  Outcome is likely not good.\n");
+   Alert(gettext("Warning: Configuration appears to have ended before we were\n"
+		 "Done loading an Iconbox block.  Outcome is likely not good.\n"));
 }
 
 void
@@ -3039,13 +3063,14 @@ Config_WindowMatch(FILE * ConfigFile)
 	else if (i1 == CONFIG_CLOSE)
 	  {
 	     if (fields != 1)
-		Alert("CONFIG: ignoring extra data in \"%s\"\n", s);
+		Alert(gettext("CONFIG: ignoring extra data in \"%s\"\n"), s);
 	  }
 	else if (i1 != CONFIG_INVALID)
 	  {
 	     if (fields != 2)
 	       {
-		  Alert("CONFIG: missing required data in \"%s\"\n", s);
+		  Alert(gettext("CONFIG: missing required data in \"%s\"\n"),
+			s);
 	       }
 	  }
 	switch (i1)
@@ -3058,8 +3083,7 @@ Config_WindowMatch(FILE * ConfigFile)
 	     break;
 	  case CONFIG_BORDER:
 	  case WINDOWMATCH_USEBORDER:
-	     bm->border = FindItem(s2, 0,
-				   LIST_FINDBY_NAME, LIST_TYPE_BORDER);
+	     bm->border = FindItem(s2, 0, LIST_FINDBY_NAME, LIST_TYPE_BORDER);
 	     if (bm->border)
 		bm->border->ref_count++;
 	     break;
@@ -3078,8 +3102,7 @@ Config_WindowMatch(FILE * ConfigFile)
 	     break;
 	  case WINDOWMATCH_ICON:
 	  case CONFIG_ICONBOX:
-	     bm->icon = FindItem(s2, 0,
-				 LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
+	     bm->icon = FindItem(s2, 0, LIST_FINDBY_NAME, LIST_TYPE_ICLASS);
 	     if (bm->icon)
 		bm->icon->ref_count++;
 	     break;
@@ -3117,15 +3140,15 @@ Config_WindowMatch(FILE * ConfigFile)
 	     bm->make_sticky = atoi(s2);
 	     break;
 	  default:
-	     Alert("Warning: unable to determine what to do with\n"
-		   "the following text in the middle of current "
-		   "WindowMatch definition:\n"
-		   "%s\nWill ignore and continue...\n", s);
+	     Alert(gettext("Warning: unable to determine what to do with\n"
+			   "the following text in the middle of current "
+			   "WindowMatch definition:\n"
+			   "%s\nWill ignore and continue...\n"), s);
 	     break;
 	  }
      }
-   Alert("Warning: Configuration appears to have ended before we were\n"
-	 "Done loading an WindowMatch block.  Outcome is likely not good.\n");
+   Alert(gettext("Warning: Configuration appears to have ended before we were\n"
+		 "Done loading an WindowMatch block.  Outcome is likely not good.\n"));
 }
 
 int
@@ -3173,14 +3196,14 @@ OpenConfigFileForReading(char *path, char preprocess)
 
 	if ((!have_epp) && (!(isfile(epp_path)) && (canexec(epp_path))))
 	  {
-	     Alert("Help! Cannot find epp!\n"
-		   "Enlightenment is looking for epp here:\n"
-		   "%s\n"
-		   "This is a FATAL ERROR.\n"
-		"This is probably due to either the program not existing or\n"
-		   "it not being able to be executed by you.\n",
+	     Alert(gettext("Help! Cannot find epp!\n"
+			   "Enlightenment is looking for epp here:\n"
+			   "%s\n"
+			   "This is a FATAL ERROR.\n"
+			   "This is probably due to either the program not existing or\n"
+			   "it not being able to be executed by you.\n"),
 		   epp_path);
-	     doExit("error");
+	     doExit(gettext("error"));
 	  }
 	else
 	   have_epp = 1;
@@ -3200,26 +3223,20 @@ OpenConfigFileForReading(char *path, char preprocess)
 		s[i] = '.';
 	     i++;
 	  }
-	Esnprintf(execline, sizeof(execline),
-		  "%s "
-		  "-P "
-		  "-nostdinc "
-		  "-undef "
+	Esnprintf(execline, sizeof(execline), "%s " "-P " "-nostdinc " "-undef "
 #ifndef __EMX__
 		  "-include %s/config/definitions "
 		  "-I%s "
 		  "-I%s/config "
 		  "-D ENLIGHTENMENT_VERSION=%s "
-		  "-D ENLIGHTENMENT_ROOT=%s "
-		  "-D ENLIGHTENMENT_BIN=%s "
+		  "-D ENLIGHTENMENT_ROOT=%s " "-D ENLIGHTENMENT_BIN=%s "
 #else
 		  "-include %s%s/config/definitions "
 		  "-I%s "
 		  "-I%s%s/config "
 		  "-D ENLIGHTENMENT_VERSION=%s "
 		  "-D ENLIGHTENMENT_ROOT=%s%s "
-		  "-D ENLIGHTENMENT_BIN=%s%s "
-		  "-D X11ROOT=%s "
+		  "-D ENLIGHTENMENT_BIN=%s%s " "-D X11ROOT=%s "
 #endif
 		  "-D ENLIGHTENMENT_THEME=%s "
 		  "-D SCREEN_RESOLUTION_%ix%i=1 "
@@ -3240,17 +3257,14 @@ OpenConfigFileForReading(char *path, char preprocess)
 		  x11root, ENLIGHTENMENT_ROOT,
 		  ENLIGHTENMENT_VERSION,
 		  x11root, ENLIGHTENMENT_ROOT,
-		  x11root, ENLIGHTENMENT_BIN,
-		  x11root,
+		  x11root, ENLIGHTENMENT_BIN, x11root,
 #endif
 		  themepath,
 		  root.w, root.h, root.w, root.h, root.depth,
-		  def_user, def_home, def_shell,
-		  path, UserEDir(), s);
+		  def_user, def_home, def_shell, path, UserEDir(), s);
 	system(execline);
 	Esnprintf(execline, sizeof(execline),
-		  "%s/cached/cfg/%s.preparsed",
-		  UserEDir(), s);
+		  "%s/cached/cfg/%s.preparsed", UserEDir(), s);
 #ifndef __EMX__
 	fpin = fopen(execline, "r");
 #else
@@ -3283,7 +3297,8 @@ LoadConfigFile(char *f)
 {
    FILE               *ConfigFile;
    char                s[FILEPATH_LEN_MAX], s2[FILEPATH_LEN_MAX], *file,
-                      *ppfile;
+
+      *ppfile;
    int                 i;
    char                notheme = 0;
 
@@ -3371,7 +3386,7 @@ LoadOpenConfigFile(FILE * ConfigFile)
 	     if (fields != 1)
 	       {
 		  RecoverUserConfig();
-		  Alert("CONFIG: ignoring extra data in \"%s\"\n", s);
+		  Alert(gettext("CONFIG: ignoring extra data in \"%s\"\n"), s);
 	       }
 	  }
 	else if (i1 != CONFIG_INVALID)
@@ -3379,7 +3394,8 @@ LoadOpenConfigFile(FILE * ConfigFile)
 	     if (fields != 2)
 	       {
 		  RecoverUserConfig();
-		  Alert("CONFIG: missing required data in \"%s\"\n", s);
+		  Alert(gettext("CONFIG: missing required data in \"%s\"\n"),
+			s);
 	       }
 	  }
 	if (i2 == CONFIG_OPEN)
@@ -3388,34 +3404,33 @@ LoadOpenConfigFile(FILE * ConfigFile)
 	       {
 		  if (!is_autosave)
 		    {
-		       ASSIGN_ALERT("Theme versioning ERROR",
-				    "Restart with Defaults",
-				    " ",
-				    "Abort and Exit");
-		       Alert("ERROR:\n"
-			     "\n"
-			     "The configuration for the theme you are "
-			     "running is\n"
-			     "incompatible. It's config revision is %i.  "
-			     "It needs to\n"
-			     "be marked as being revision %i\n"
-			     "\n"
-			     "Please contact the theme author or "
-			     "maintainer and\n"
-			     "inform them that in order for their theme "
-			     "to function\n"
-			     "with this version of Enlightenment, they "
-			     "have to\n"
-			     "update it to the current settings, and "
-			     "then match\n"
-			     "the revision number.\n"
-			     "\n"
-			     "If the theme revision is higher than "
-			     "Enlightenment's\n"
-			     "it may be that you haven't upgraded "
-			     "Enlightenment for\n"
-			     "a while and this theme takes advantages of new\n"
-			     "features in Enlightenment in new versions.\n",
+		       ASSIGN_ALERT(gettext("Theme versioning ERROR"),
+				    gettext("Restart with Defaults"),
+				    " ", gettext("Abort and Exit"));
+		       Alert(gettext("ERROR:\n"
+				     "\n"
+				     "The configuration for the theme you are "
+				     "running is\n"
+				     "incompatible. It's config revision is %i.  "
+				     "It needs to\n"
+				     "be marked as being revision %i\n"
+				     "\n"
+				     "Please contact the theme author or "
+				     "maintainer and\n"
+				     "inform them that in order for their theme "
+				     "to function\n"
+				     "with this version of Enlightenment, they "
+				     "have to\n"
+				     "update it to the current settings, and "
+				     "then match\n"
+				     "the revision number.\n"
+				     "\n"
+				     "If the theme revision is higher than "
+				     "Enlightenment's\n"
+				     "it may be that you haven't upgraded "
+				     "Enlightenment for\n"
+				     "a while and this theme takes advantages of new\n"
+				     "features in Enlightenment in new versions.\n"),
 			     e_cfg_ver, min_e_cfg_ver);
 		       RESET_ALERT;
 		       doExit("restart_theme DEFAULT");
@@ -3423,25 +3438,24 @@ LoadOpenConfigFile(FILE * ConfigFile)
 		  else
 		    {
 		       mode.autosave = 0;
-		       ASSIGN_ALERT("User Config Version ERROR",
-				    "Restart with Defaults",
-				    " ",
-				    "Abort and Exit");
-		       Alert("ERROR:\n"
-			     "\n"
-			     "The settings you are using are "
-			     "incompatible with\n"
-			     "this version of Enlightenment.\n"
-			     "It's revision is %i It needs to be revision "
-			     "%i to\n"
-			     "be compatible.\n"
-			     "\n"
-			     "If you just upgraded to a new version of E\n"
-			 "Restarting with Defaults will remove your current\n"
-			     "user preferences and start cleanly with system\n"
-			     "defaults. You can then modify your "
-			     "configuration to\n"
-			     "your liking again safely.\n",
+		       ASSIGN_ALERT(gettext("User Config Version ERROR"),
+				    gettext("Restart with Defaults"),
+				    " ", gettext("Abort and Exit"));
+		       Alert(gettext("ERROR:\n"
+				     "\n"
+				     "The settings you are using are "
+				     "incompatible with\n"
+				     "this version of Enlightenment.\n"
+				     "It's revision is %i It needs to be revision "
+				     "%i to\n"
+				     "be compatible.\n"
+				     "\n"
+				     "If you just upgraded to a new version of E\n"
+				     "Restarting with Defaults will remove your current\n"
+				     "user preferences and start cleanly with system\n"
+				     "defaults. You can then modify your "
+				     "configuration to\n"
+				     "your liking again safely.\n"),
 			     e_cfg_ver, min_e_cfg_ver);
 		       RESET_ALERT;
 		       doExit("restart");
@@ -3560,7 +3574,8 @@ FindFile(char *file)
 #ifndef __EMX__
    Esnprintf(s, sizeof(s), "%s/config/%s", ENLIGHTENMENT_ROOT, file);
 #else
-   Esnprintf(s, sizeof(s), "%s/config/%s", __XOS2RedirRoot(ENLIGHTENMENT_ROOT), file);
+   Esnprintf(s, sizeof(s), "%s/config/%s", __XOS2RedirRoot(ENLIGHTENMENT_ROOT),
+	     file);
 #endif
    if (isfile(s))
       EDBUG_RETURN(duplicate(s));
@@ -3599,7 +3614,8 @@ FindNoThemeFile(char *file)
 #ifndef __EMX__
    Esnprintf(s, sizeof(s), "%s/config/%s", ENLIGHTENMENT_ROOT, file);
 #else
-   Esnprintf(s, sizeof(s), "%s/config/%s", __XOS2RedirRoot(ENLIGHTENMENT_ROOT), file);
+   Esnprintf(s, sizeof(s), "%s/config/%s", __XOS2RedirRoot(ENLIGHTENMENT_ROOT),
+	     file);
 #endif
    if (isfile(s))
       EDBUG_RETURN(duplicate(s));
@@ -3639,43 +3655,40 @@ LoadEConfig(char *themelocation)
 	rm(ss);
 	mv(s, ss);
 	if (!isfile(ss))
-	   Alert("WARNING!\n"
-		 "There was an error writing the file:\n"
-		 "%s\n"
-		 "This may be due to lack of disk space, quota or\n"
-		 "filesystem permissions.\n",
-		 ss
-	      );
+	   Alert(gettext("WARNING!\n"
+			 "There was an error writing the file:\n"
+			 "%s\n"
+			 "This may be due to lack of disk space, quota or\n"
+			 "filesystem permissions.\n"), ss);
      }
    strcpy(themename, themelocation);
    theme = FindTheme(themelocation);
    if (!theme)
      {
-	Alert("Enlightenment has just experienced some major problems in\n"
-	      "attempting to load the theme you specified or the default\n"
-	      "configuration directory:\n"
-	      "%s/config/\n"
-	      "This will prevent Enlightenment from loading any "
-	      "configuration\n"
-	      "files at all.\n"
-	      "Since this couldn't be found Enlightenment is probably not\n"
-	      "going to find any configuration files anywhere on your\n"
-	      "system, and so it will have almost no configuration loaded\n"
-	      "when it starts up. This is most likely the sign of a bad\n"
-	      "installation of Enlightenment if this directory is missing.\n"
-	      "The likely causes are that the package was improperly built,\n"
-	      "if a binary package, or 'make install' hasn't been typed\n"
-	      "or during the installation the directory above was not\n"
-	      "able to be copied over for installation perhaps due to\n"
-	      "permissions or lack of disk space. It also could be that the\n"
-	      "config directory has been inadvertently deleted since\n"
-	      "installation.\n"
-	      "This is a serious problem and should be rectified immediately\n"
-	      "Please contact your system administrator or package "
-	      "maintainer.\n"
-	      "If you are the administrator of your own system please\n"
-	      "consult the documentation that came with Enlightenment for\n"
-	      "additional information.\n", ENLIGHTENMENT_ROOT);
+	Alert(gettext
+	      ("Enlightenment has just experienced some major problems in\n"
+	       "attempting to load the theme you specified or the default\n"
+	       "configuration directory:\n" "%s/config/\n"
+	       "This will prevent Enlightenment from loading any "
+	       "configuration\n" "files at all.\n"
+	       "Since this couldn't be found Enlightenment is probably not\n"
+	       "going to find any configuration files anywhere on your\n"
+	       "system, and so it will have almost no configuration loaded\n"
+	       "when it starts up. This is most likely the sign of a bad\n"
+	       "installation of Enlightenment if this directory is missing.\n"
+	       "The likely causes are that the package was improperly built,\n"
+	       "if a binary package, or 'make install' hasn't been typed\n"
+	       "or during the installation the directory above was not\n"
+	       "able to be copied over for installation perhaps due to\n"
+	       "permissions or lack of disk space. It also could be that the\n"
+	       "config directory has been inadvertently deleted since\n"
+	       "installation.\n"
+	       "This is a serious problem and should be rectified immediately\n"
+	       "Please contact your system administrator or package "
+	       "maintainer.\n"
+	       "If you are the administrator of your own system please\n"
+	       "consult the documentation that came with Enlightenment for\n"
+	       "additional information.\n"), ENLIGHTENMENT_ROOT);
 	EDBUG_RETURN(0);
      }
    strcpy(themepath, theme);
@@ -3684,8 +3697,7 @@ LoadEConfig(char *themelocation)
    {
       Progressbar        *p = NULL;
       int                 i;
-      char               *config_files[] =
-      {
+      char               *config_files[] = {
 	 "init.cfg",
 	 "control.cfg",
 	 "textclasses.cfg",
@@ -3719,7 +3731,9 @@ LoadEConfig(char *themelocation)
 	      CreateStartupDisplay(1);
 	   if ((i > 0) && (!p) && (!init_win_ext))
 	     {
-		p = CreateProgressbar("Enlightenment Starting...", 400, 16);
+		p =
+		   CreateProgressbar(gettext("Enlightenment Starting..."), 400,
+				     16);
 		if (p)
 		   ShowProgressbar(p);
 	     }
@@ -3740,7 +3754,10 @@ LoadEConfig(char *themelocation)
 	   else
 	      LoadConfigFile(config_files[i]);
 	   if (p)
-	      SetProgressbar(p, (i * 100) / (int)(sizeof(config_files) / sizeof(char *)));
+	      SetProgressbar(p,
+
+			     (i * 100) / (int)(sizeof(config_files) /
+					       sizeof(char *)));
 	}
 
       if (p)
@@ -3838,6 +3855,8 @@ SaveUserControlConfig(FILE * autosavefile)
 	fprintf(autosavefile, "1366 %i\n", (int)mode.kde_support);
 	fprintf(autosavefile, "1367 %i\n", (int)mode.clickalways);
 	fprintf(autosavefile, "1368 %i\n", (int)mode.showroottooltip);
+	fprintf(autosavefile, "1369 %i %i %i\n", (int)mode.pager_sel_button,
+		(int)mode.pager_win_button, (int)mode.pager_menu_button);
 	fprintf(autosavefile, "1000\n");
 	fprintf(autosavefile, "1001 0\n");
 	if (mode.keybinds_changed)
@@ -3853,8 +3872,8 @@ SaveUserControlConfig(FILE * autosavefile)
 		  for (i = 0; i < ac->num; i++)
 		    {
 		       aa = ac->list[i];
-		       if ((aa) && (aa->action) && (aa->event == EVENT_KEY_DOWN) &&
-			   (aa->key_str))
+		       if ((aa) && (aa->action) && (aa->event == EVENT_KEY_DOWN)
+			   && (aa->key_str))
 			 {
 			    int                 mod;
 
@@ -3913,10 +3932,12 @@ SaveUserControlConfig(FILE * autosavefile)
 			    fprintf(autosavefile, "101 %i\n", mod);
 			    /* action */
 			    if (aa->action->params)
-			       fprintf(autosavefile, "104 %i %s\n", aa->action->Type,
+			       fprintf(autosavefile, "104 %i %s\n",
+				       aa->action->Type,
 				       (char *)aa->action->params);
 			    else
-			       fprintf(autosavefile, "104 %i\n", aa->action->Type);
+			       fprintf(autosavefile, "104 %i\n",
+				       aa->action->Type);
 			 }
 		    }
 		  fprintf(autosavefile, "1000\n");
@@ -4014,18 +4035,26 @@ SaveUserControlConfig(FILE * autosavefile)
 	       {
 		  fprintf(autosavefile, "19 999\n");
 		  fprintf(autosavefile, "100 %s\n", iblist[i]->name);
-		  fprintf(autosavefile, "200 %i\n", (int)iblist[i]->orientation);
+		  fprintf(autosavefile, "200 %i\n",
+			  (int)iblist[i]->orientation);
 		  fprintf(autosavefile, "2001 %i\n", (int)iblist[i]->nobg);
 		  fprintf(autosavefile, "2002 %i\n", (int)iblist[i]->shownames);
 		  fprintf(autosavefile, "2003 %i\n", iblist[i]->iconsize);
 		  fprintf(autosavefile, "2004 %i\n", (int)iblist[i]->icon_mode);
-		  fprintf(autosavefile, "2005 %i\n", (int)iblist[i]->scrollbar_side);
-		  fprintf(autosavefile, "2006 %i\n", (int)iblist[i]->arrow_side);
-		  fprintf(autosavefile, "2007 %i\n", (int)iblist[i]->auto_resize);
-		  fprintf(autosavefile, "2008 %i\n", (int)iblist[i]->draw_icon_base);
-		  fprintf(autosavefile, "2009 %i\n", (int)iblist[i]->scrollbar_hide);
-		  fprintf(autosavefile, "2010 %i\n", (int)iblist[i]->cover_hide);
-		  fprintf(autosavefile, "2011 %i\n", (int)iblist[i]->auto_resize_anchor);
+		  fprintf(autosavefile, "2005 %i\n",
+			  (int)iblist[i]->scrollbar_side);
+		  fprintf(autosavefile, "2006 %i\n",
+			  (int)iblist[i]->arrow_side);
+		  fprintf(autosavefile, "2007 %i\n",
+			  (int)iblist[i]->auto_resize);
+		  fprintf(autosavefile, "2008 %i\n",
+			  (int)iblist[i]->draw_icon_base);
+		  fprintf(autosavefile, "2009 %i\n",
+			  (int)iblist[i]->scrollbar_hide);
+		  fprintf(autosavefile, "2010 %i\n",
+			  (int)iblist[i]->cover_hide);
+		  fprintf(autosavefile, "2011 %i\n",
+			  (int)iblist[i]->auto_resize_anchor);
 		  fprintf(autosavefile, "2012 %i\n", (int)iblist[i]->animate);
 		  fprintf(autosavefile, "1000\n");
 	       }
@@ -4131,19 +4160,17 @@ RecoverUserConfig(void)
 {
    if (is_autosave)
      {
-	ASSIGN_ALERT("Recover system config?",
-		     "Yes, Attempt recovery",
-		     "Restart and try again",
-		     "Quit and give up");
-	Alert("Enlightenment has encountered parsing errors in your autosaved\n"
-	      "configuration.\n"
-	      "\n"
-	      "This may be due to filing system errors, Minor bugs or"
-	      " unforeseen\n"
-	      "system shutdowns.\n"
-	      "\n"
-	      "Do you wish Enlightenment to recover its original system\n"
-	      "configuration and try again?\n");
+	ASSIGN_ALERT(gettext("Recover system config?"),
+		     gettext("Yes, Attempt recovery"),
+		     gettext("Restart and try again"),
+		     gettext("Quit and give up"));
+	Alert(gettext
+	      ("Enlightenment has encountered parsing errors in your autosaved\n"
+	       "configuration.\n" "\n"
+	       "This may be due to filing system errors, Minor bugs or"
+	       " unforeseen\n" "system shutdowns.\n" "\n"
+	       "Do you wish Enlightenment to recover its original system\n"
+	       "configuration and try again?\n"));
 	RESET_ALERT;
 	mode.autosave = 0;
 	MapUnmap(1);
