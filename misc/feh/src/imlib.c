@@ -474,7 +474,8 @@ feh_set_bg(char *fil, int scaled, int desktop, int set)
    eesh = popen(buf, "w");
    if (eesh == NULL)
    {
-      eprintf("Where is that eesh thing then\n");
+      weprintf("Where is that eesh thing then\n");
+      D_RETURN_;
    }
    fprintf(eesh, "background %s bg.file  %s\n", bgname, fil);
 
