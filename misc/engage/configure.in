@@ -82,7 +82,7 @@ fi
 AC_PATH_GENERIC(esmart, 0.0.2, [
 	AC_SUBST(esmart_libs)
 	AC_SUBST(esmart_cflags) ],
-	AC_MSG_ERROR(Cannot find edb: Is esmart-config in path?))
+	AC_MSG_ERROR(Cannot find esmart: Is esmart-config in path?))
 esmart_libs=`esmart-config --libs`
 esmart_cflags=`esmart-config --cflags`
 AC_SUBST(esmart_libs)
