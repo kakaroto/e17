@@ -20,7 +20,7 @@ int d;
 void
 browser_init(void)
 {
-  GtkWidget *scroller, *hbox1, *hbox2, *vbox1, *vbox2,
+  GtkWidget *scroller, *vbox1,
     *frame1, *frame2, *btn, *sep, *cbtn;
   GtkWidget *nfr1, *nlbl;
 	
@@ -32,17 +32,14 @@ browser_init(void)
   gtk_widget_show(nfr1);
   gtk_notebook_insert_page(GTK_NOTEBOOK(ModMdi), nfr1, nlbl, 0);
   
-  vbox2 = gtk_vbox_new(FALSE, 0);
-  gtk_container_add(GTK_CONTAINER(nfr1), vbox2);
+  vbox1 = gtk_vbox_new(FALSE, 0);
+  gtk_container_add(GTK_CONTAINER(nfr1), vbox1);
 
   scroller = gtk_scrolled_window_new(NULL, NULL);
   gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scroller),
 				 GTK_POLICY_NEVER, GTK_POLICY_ALWAYS);
-  gtk_box_pack_start(GTK_BOX(vbox2), scroller, TRUE, TRUE, 0);
+  gtk_box_pack_start(GTK_BOX(vbox1), scroller, TRUE, TRUE, 0);
 	
-  hbox2 = gtk_hbox_new(FALSE, 0);
-  gtk_box_pack_start(GTK_BOX(vbox2), hbox2, TRUE, TRUE, 0);
-
   /* clist stuff */
   BrClist = gtk_clist_new_with_titles(1, titles);
   gtk_clist_set_row_height(GTK_CLIST(BrClist), 37);
@@ -57,7 +54,7 @@ browser_init(void)
   gtk_widget_show(cbtn);
   gtk_signal_connect(GTK_OBJECT(cbtn), "clicked",
 		     GTK_SIGNAL_FUNC(check_callback), NULL);
-  gtk_box_pack_start(GTK_BOX(vbox2), cbtn, TRUE, TRUE, 0);
+  gtk_box_pack_start(GTK_BOX(vbox1), cbtn, TRUE, TRUE, 0);
 	
 #if 0
   /* What the heck was the point of this? :-)
@@ -68,9 +65,7 @@ browser_init(void)
 #endif
 
   gtk_widget_show(scroller);
-  gtk_widget_show(hbox1);
-  gtk_widget_show(hbox2);
-  gtk_widget_show(vbox2);
+  gtk_widget_show(vbox1);
 }
 
 void
