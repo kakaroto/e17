@@ -13,8 +13,7 @@ SUBDIRS		     = src test tools debian
 
 bin_SCRIPTS = edb-config
 
-EXTRA_DIST = README AUTHORS COPYING edb.spec edb.pc.in
+EXTRA_DIST = README AUTHORS COPYING edb.spec edb.pc.in conf-e-x11.sh
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = edb.pc
-
