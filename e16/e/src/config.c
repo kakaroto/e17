@@ -3250,7 +3250,7 @@ OpenConfigFileForReading(char *path, char preprocess)
 		    "This is a FATAL ERROR.\n"
 		    "This is probably due to either the program not existing or\n"
 		    "it not being able to be executed by you.\n"), epp_path);
-	     doExit(_("error"));
+	     SessionExit("error");
 	  }
 	else
 	   have_epp = 1;
@@ -3401,7 +3401,7 @@ LoadOpenConfigFile(FILE * ConfigFile)
 			      "features in Enlightenment in new versions.\n"),
 			     e_cfg_ver, min_e_cfg_ver);
 		       RESET_ALERT;
-		       doExit("restart_theme DEFAULT");
+		       SessionExit("restart_theme DEFAULT");
 		    }
 		  else
 		    {
@@ -3423,7 +3423,7 @@ LoadOpenConfigFile(FILE * ConfigFile)
 			      "your liking again safely.\n"), e_cfg_ver,
 			     min_e_cfg_ver);
 		       RESET_ALERT;
-		       doExit("restart");
+		       SessionExit("restart");
 		    }
 	       }
 	     else
@@ -4229,6 +4229,6 @@ RecoverUserConfig(void)
 	     XKillClient(disp, init_win_ext);
 	     init_win_ext = 0;
 	  }
-	doExit("restart");
+	SessionExit("restart");
      }
 }

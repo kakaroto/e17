@@ -845,7 +845,7 @@ doExit(void *params)
    /* This function is now handled in session.c */
    if (InZoom())
       Zoom(NULL);
-   doSMExit(params);
+   SessionExit(params);
    EDBUG_RETURN(0);
 }
 

@@ -90,8 +90,9 @@ main(int argc, char **argv)
    AssignExitText(_("Quit Enlightenment"));
 
    /* We'll set up what the buttons do now, too */
-   AssignRestartFunction(doExit, "restart");
-   AssignExitFunction(doExit, NULL);
+   AssignRestartFunction(SessionExit, "restart");
+   AssignExitFunction(SessionExit, NULL);
+
    srand(time(NULL));
 
    if (!uname(&ubuf))
@@ -244,10 +245,7 @@ main(int argc, char **argv)
    /* make all of our fallback classes */
    SetupFallbackClasses();
    UngrabX();
-   /* We'll set up what the buttons do now, too */
-   /* again?  why are we doing this twice? */
-   AssignRestartFunction((*doExit), duplicate("restart"));
-   AssignExitFunction((*EExit), (void *)1);
+
    desks.desk[0].viewable = 0;
    /* now we're going to load the configuration/theme */
    LoadEConfig(themepath);

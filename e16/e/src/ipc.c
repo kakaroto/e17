@@ -4377,7 +4377,7 @@ IPC_Restart(char *params, Client * c)
    c = NULL;
    params = NULL;
 
-   doExit("restart");
+   SessionExit("restart");
 
 }
 
@@ -4390,7 +4390,7 @@ IPC_RestartWM(char *params, Client * c)
      {
 	Esnprintf(buf, sizeof(buf), "restart_wm %s", params);
 	params = NULL;
-	doExit(buf);
+	SessionExit(buf);
      }
    else
      {
@@ -4408,7 +4408,7 @@ IPC_RestartTheme(char *params, Client * c)
      {
 	Esnprintf(buf, sizeof(buf), "restart_theme %s", params);
 	params = NULL;
-	doExit(buf);
+	SessionExit(buf);
      }
    else
      {
@@ -4423,9 +4423,9 @@ IPC_Exit(char *params, Client * c)
    c = NULL;
 
    if (params)
-      doExit("quit");
+      SessionExit("quit");
    else
-      doExit("logout");
+      SessionExit("logout");
 }
 
 static void
@@ -4451,7 +4451,7 @@ IPC_DefaultTheme(char *params, Client * c)
 	     SetDefaultTheme(params);
 	     Esnprintf(restartcommand, sizeof(restartcommand),
 		       "restart_theme %s", params);
-	     doExit(restartcommand);
+	     SessionExit(restartcommand);
 	  }
 	else
 	  {

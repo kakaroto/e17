@@ -2406,9 +2406,10 @@ void                ArrangeEwinCentered(EWin * ewin, int focus);
 void                ArrangeEwinXY(EWin * ewin, int *px, int *py);
 void                ArrangeEwinCenteredXY(EWin * ewin, int *px, int *py);
 
+/* session.c */
 void                SessionInit(void);
 void                SessionSave(int shutdown);
-void                doSMExit(void *params);
+int                 SessionExit(void *params);
 void                ProcessICEMSGS(void);
 int                 GetSMfd(void);
 void                SessionGetInfo(EWin * ewin, Atom atom_change);

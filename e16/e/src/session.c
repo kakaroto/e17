@@ -38,6 +38,8 @@ typedef unsigned long big_type;
 
 #endif
 
+static int          sm_fd = -1;
+
 /* Generate a unique temporary file name from TEMPLATE.
  * The last six characters of TEMPLATE must be "XXXXXX";
  * they are replaced with a string that makes the filename unique.
@@ -449,188 +451,7 @@ autosave(void)
      }
 }
 
-#ifndef HAVE_X11_SM_SMLIB_H
-
-void
-SessionInit(void)
-{
-   int                 i;
-
-   LoadWindowStates();
-}
-
-void
-ProcessICEMSGS(void)
-{
-}
-
-int
-GetSMfd(void)
-{
-   return -1;
-}
-
-void
-SessionGetInfo(EWin * ewin, Atom atom_change)
-{
-}
-
-void
-SetSMID(char *smid)
-{
-}
-
-void
-SaveSession(int shutdown)
-{
-   /* don't need */
-   /* autosave(); */
-}
-
-static void
-LogoutCB(int val, void *data)
-{
-   doSMExit(NULL);
-   val = 0;
-   data = NULL;
-}
-
-static void
-CB_SettingsEscape(int val, void *data)
-{
-   DialogClose((Dialog *) data);
-   val = 0;
-}
-
-/* This is the original code from actions.c(doExit). */
-void
-doSMExit(void *params)
-{
-   char                s[1024];
-   char               *real_exec;
-   char                sss[FILEPATH_LEN_MAX];
-   Window              w;
-   char                master_flag, do_master_kill;
-
-   master_flag = (master_pid == getpid())? 1 : 0;
-
-   do_master_kill = 1;
-
-   if (!params)
-      SaveSession(1);
-   if ((disp) && ((!params) || ((params) && strcmp((char *)params, "logout"))))
-      SetEInfoOnAll();
-
-   if (params)
-     {
-	SoundExit();
-#ifndef __EMX__
-	setsid();
-#endif
-	sscanf(params, "%1000s", s);
-	if (mustdel)
-	  {
-#ifndef __EMX__
-	     Esnprintf(sss, sizeof(sss), "/bin/rm -rf %s", themepath);
-#else
-	     Esnprintf(sss, sizeof(sss), "rm.exe -rf %s", themepath);
-#endif
-	     system(sss);
-	  }
-	if (!strcmp(s, "restart"))
-	  {
-	     SoundPlay("SOUND_WAIT");
-	     if (sound_fd >= 0)
-		close(sound_fd);
-	     w = MakeExtInitWin();
-	     XCloseDisplay(disp);
-	     disp = NULL;
-
-	     if (themepath[0] != 0)
-	       {
-		  Esnprintf(sss, sizeof(sss),
-			    "exec %s -single -ext_init_win %i -theme %s "
-			    "-econfdir %s -ecachedir %s", command,
-			    w, themename, UserEDir(), UserCacheDir());
-		  execl(DEFAULT_SH_PATH, DEFAULT_SH_PATH, "-c", sss, NULL);
-	       }
-	     else
-	       {
-		  Esnprintf(sss, sizeof(sss),
-			    "exec %s -single -ext_init_win %i "
-			    "-econfdir %s -ecachedir %s", command,
-			    w, UserEDir(), UserCacheDir());
-		  execl(DEFAULT_SH_PATH, DEFAULT_SH_PATH, "-c", sss, NULL);
-	       }
-	  }
-	else if (!strcmp(s, "restart_theme"))
-	  {
-	     SoundPlay("SOUND_WAIT");
-	     if (sound_fd >= 0)
-		close(sound_fd);
-	     w = MakeExtInitWin();
-	     XCloseDisplay(disp);
-	     disp = NULL;
-	     sscanf(params, "%*s %1000s", s);
-	     Esnprintf(sss, sizeof(sss),
-		       "exec %s -single -ext_init_win %i -theme %s "
-		       "-econfdir %s -ecachedir %s", command, w, s,
-		       UserEDir(), UserCacheDir());
-	     execl(DEFAULT_SH_PATH, DEFAULT_SH_PATH, "-c", sss, NULL);
-	  }
-	else if (!strcmp(s, "restart_wm"))
-	  {
-	     SoundPlay("SOUND_EXIT");
-	     if (sound_fd >= 0)
-		close(sound_fd);
-	     XCloseDisplay(disp);
-	     disp = NULL;
-	     if (atword(params, 2))
-		strncpy(s, atword(params, 2), 1000);
-	     real_exec = (char *)Emalloc(strlen(s) + 6);
-	     sprintf(real_exec,
-		     "exec %s " "-econfdir %s -ecachedir %s", s,
-		     UserEDir(), UserCacheDir());
-	     execl(DEFAULT_SH_PATH, DEFAULT_SH_PATH, "-c", "exec", real_exec,
-		   NULL);
-	  }
-	else if (!strcmp(s, "logout"))
-	  {
-	     Dialog             *d;
-	     EWin               *ewin;
-
-	     if (!
-		 (d =
-		  FindItem("LOGOUT_DIALOG", 0, LIST_FINDBY_NAME,
-			   LIST_TYPE_DIALOG)))
-	       {
-		  SoundPlay("SOUND_LOGOUT");
-		  d = DialogCreate("LOGOUT_DIALOG");
-		  DialogSetTitle(d, "Are you sure?");
-		  DialogSetText(d,
-				"\n" "\n"
-				"    Are you sure you wish to log out ?    \n"
-				"\n" "\n");
-		  DialogAddButton(d, "  Yes, Log Out  ", LogoutCB, 1);
-		  DialogAddButton(d, "  No  ", NULL, 1);
-		  DialogBindKey(d, "Escape", CB_SettingsEscape, 0, d);
-		  DialogBindKey(d, "Return", LogoutCB, 0, d);
-	       }
-	     ShowDialog(d);
-	     ewin = FindEwinByDialog(d);
-	     if (ewin)
-	       {
-		  ArrangeEwinCentered(ewin, 1);
-	       }
-	     return;
-	  }
-     }
-
-   SoundPlay("SOUND_EXIT");
-   EExit(0);
-}
-
-#else /* HAVE_X11_SM_SMLIB_H */
+#ifdef HAVE_X11_SM_SMLIB_H
 
 #include <X11/SM/SMlib.h>
 
@@ -641,7 +462,6 @@ doSMExit(void *params)
 
 static char        *sm_client_id = NULL;
 static SmcConn      sm_conn = NULL;
-static int          sm_fd = -1;
 
 /* True if we are saving state for a doExit("restart") */
 static int          restarting = False;
@@ -778,7 +598,7 @@ set_save_props(SmcConn smc_conn, int master_flag)
      }
    if (restarting)
      {
-	Esnprintf(buf, sizeof(buf), "%i", (unsigned)init_win_ext);
+	Esnprintf(buf, sizeof(buf), "%li", init_win_ext);
 
 	restartVal[n].length = strlen(extinitwin);
 	restartVal[n++].value = extinitwin;
@@ -937,9 +757,12 @@ ice_io_error_handler(IceConn connection)
    connection = 0;
 }
 
+#endif /* HAVE_X11_SM_SMLIB_H */
+
 void
 SessionInit(void)
 {
+#ifdef HAVE_X11_SM_SMLIB_H
    static SmPointer    context;
    SmcCallbacks        callbacks;
 
@@ -1003,12 +826,15 @@ SessionInit(void)
 	fcntl(sm_fd, F_SETFD, fcntl(sm_fd, F_GETFD, 0) | FD_CLOEXEC);
      }
    stale_sm_file = 1;
+#endif /* HAVE_X11_SM_SMLIB_H */
+
    LoadWindowStates();
 }
 
 void
 ProcessICEMSGS(void)
 {
+#ifdef HAVE_X11_SM_SMLIB_H
    IceProcessMessagesStatus status;
 
    if (sm_fd < 0)
@@ -1028,6 +854,7 @@ ProcessICEMSGS(void)
 	sm_conn = NULL;
 	sm_fd = -1;
      }
+#endif /* HAVE_X11_SM_SMLIB_H */
 }
 
 int
@@ -1039,6 +866,7 @@ GetSMfd(void)
 void
 SessionGetInfo(EWin * ewin, Atom atom_change)
 {
+#ifdef HAVE_X11_SM_SMLIB_H
    char               *s;
    Window             *w;
    int                 size;
@@ -1069,41 +897,47 @@ SessionGetInfo(EWin * ewin, Atom atom_change)
 	  }
 	Efree(w);
      }
+#endif /* HAVE_X11_SM_SMLIB_H */
 }
 
 void
 SetSMID(char *smid)
 {
+#ifdef HAVE_X11_SM_SMLIB_H
    sm_client_id = smid;
+#endif /* HAVE_X11_SM_SMLIB_H */
 }
 
+static void         doSMExit(void *params);
 static void
 LogoutCB(int val, void *data)
 {
+#ifdef HAVE_X11_SM_SMLIB_H
    if (sm_conn)
      {
 	SmcRequestSaveYourself(sm_conn, SmSaveBoth, True, SmInteractStyleAny,
 			       False, True);
      }
    else
+#endif /* HAVE_X11_SM_SMLIB_H */
      {
 	doSMExit(NULL);
      }
-   val = 0;
-   data = NULL;
 }
 
 void
 SaveSession(int shutdown)
 {
    /* dont' need anymore */
-   /* ayosave(); */
+   /* autosave(); */
+#ifdef HAVE_X11_SM_SMLIB_H
    if (shutdown && sm_conn)
      {
 	SmcCloseConnection(sm_conn, 0, NULL);
 	sm_conn = NULL;
 	sm_fd = -1;
      }
+#endif /* HAVE_X11_SM_SMLIB_H */
 }
 
 static void
@@ -1112,6 +946,8 @@ CB_SettingsEscape(int val, void *data)
    DialogClose((Dialog *) data);
    val = 0;
 }
+
+#ifdef HAVE_X11_SM_SMLIB_H
 
 /*
  * Normally, the SM will throw away all the session data for a client
@@ -1122,7 +958,7 @@ CB_SettingsEscape(int val, void *data)
  * and then restore it on restart. We grab X input via the ext_init_win
  * so the our clients remain frozen while we are down.
  */
-void
+static void
 doSMExit(void *params)
 {
    char                s[1024];
@@ -1198,16 +1034,16 @@ doSMExit(void *params)
 	  {
 	     if (sm_client_id)
 		Esnprintf(s, sizeof(s),
-			  "exec %s -single -ext_init_win %i -theme %s "
+			  "exec %s -single -ext_init_win %li -theme %s "
 			  "-econfdir %s -ecachedir %s "
 			  "-smfile %s -smid %s", command,
-			  (unsigned)init_win_ext, themename, UserEDir(),
+			  init_win_ext, themename, UserEDir(),
 			  UserCacheDir(), sm_file, sm_client_id);
 	     else
 		Esnprintf(s, sizeof(s),
-			  "exec %s -single -ext_init_win %i -theme %s "
+			  "exec %s -single -ext_init_win %li -theme %s "
 			  "-econfdir %s -ecachedir %s "
-			  "-smfile %s", command, (unsigned)init_win_ext,
+			  "-smfile %s", command, init_win_ext,
 			  themename, UserEDir(), UserCacheDir(), sm_file);
 	     execl(DEFAULT_SH_PATH, DEFAULT_SH_PATH, "-c", s, NULL);
 	  }
@@ -1215,16 +1051,16 @@ doSMExit(void *params)
 	  {
 	     if (sm_client_id)
 		Esnprintf(s, sizeof(s),
-			  "exec %s -single -ext_init_win %i "
+			  "exec %s -single -ext_init_win %li "
 			  "-econfdir %s -ecachedir %s "
 			  "-smfile %s -smid %s", command,
-			  (unsigned)init_win_ext, UserEDir(), UserCacheDir(),
+			  init_win_ext, UserEDir(), UserCacheDir(),
 			  sm_file, sm_client_id);
 	     else
 		Esnprintf(s, sizeof(s),
-			  "exec %s -single -ext_init_win %i"
+			  "exec %s -single -ext_init_win %li"
 			  "-econfdir %s -ecachedir %s "
-			  "-smfile %s", command, (unsigned)init_win_ext,
+			  "-smfile %s", command, init_win_ext,
 			  UserEDir(), UserCacheDir(), sm_file);
 	     execl(DEFAULT_SH_PATH, DEFAULT_SH_PATH, "-c", s, NULL);
 	  }
@@ -1245,16 +1081,16 @@ doSMExit(void *params)
 	  }
 	if (sm_client_id)
 	   Esnprintf(s, sizeof(s),
-		     "exec %s -single -ext_init_win %i -theme %s "
+		     "exec %s -single -ext_init_win %li -theme %s "
 		     "-econfdir %s -ecachedir %s "
-		     "-smfile %s -smid %s", command, (unsigned)init_win_ext,
+		     "-smfile %s -smid %s", command, init_win_ext,
 		     userthemepath, UserEDir(), UserCacheDir(), sm_file,
 		     sm_client_id);
 	else
 	   Esnprintf(s, sizeof(s),
-		     "exec %s -ext_init_win %i -theme %s "
+		     "exec %s -ext_init_win %li -theme %s "
 		     "-econfdir %s -ecachedir %s "
-		     "-smfile %s -single", command, (unsigned)init_win_ext,
+		     "-smfile %s -single", command, init_win_ext,
 		     userthemepath, UserEDir(), UserCacheDir(), sm_file);
 	execl(DEFAULT_SH_PATH, DEFAULT_SH_PATH, "-c", s, NULL);
      }
@@ -1269,4 +1105,135 @@ doSMExit(void *params)
    EExit(0);
 }
 
+#else /* HAVE_X11_SM_SMLIB_H */
+
+/* This is the original code from actions.c(doExit). */
+static void
+doSMExit(void *params)
+{
+   char                s[1024];
+   char               *real_exec;
+   char                sss[FILEPATH_LEN_MAX];
+   Window              w;
+   char                master_flag, do_master_kill;
+
+   master_flag = (master_pid == getpid())? 1 : 0;
+
+   do_master_kill = 1;
+
+   if (!params)
+      SaveSession(1);
+   if ((disp) && ((!params) || ((params) && strcmp((char *)params, "logout"))))
+      SetEInfoOnAll();
+
+   if (params)
+     {
+	SoundExit();
+#ifndef __EMX__
+	setsid();
+#endif
+	sscanf(params, "%1000s", s);
+	if (mustdel)
+	  {
+#ifndef __EMX__
+	     Esnprintf(sss, sizeof(sss), "/bin/rm -rf %s", themepath);
+#else
+	     Esnprintf(sss, sizeof(sss), "rm.exe -rf %s", themepath);
+#endif
+	     system(sss);
+	  }
+	if (!strcmp(s, "restart"))
+	  {
+	     SoundPlay("SOUND_WAIT");
+	     w = MakeExtInitWin();
+	     XCloseDisplay(disp);
+	     disp = NULL;
+
+	     if (themepath[0] != 0)
+	       {
+		  Esnprintf(sss, sizeof(sss),
+			    "exec %s -single -ext_init_win %li -theme %s "
+			    "-econfdir %s -ecachedir %s", command,
+			    w, themename, UserEDir(), UserCacheDir());
+		  execl(DEFAULT_SH_PATH, DEFAULT_SH_PATH, "-c", sss, NULL);
+	       }
+	     else
+	       {
+		  Esnprintf(sss, sizeof(sss),
+			    "exec %s -single -ext_init_win %li "
+			    "-econfdir %s -ecachedir %s", command,
+			    w, UserEDir(), UserCacheDir());
+		  execl(DEFAULT_SH_PATH, DEFAULT_SH_PATH, "-c", sss, NULL);
+	       }
+	  }
+	else if (!strcmp(s, "restart_theme"))
+	  {
+	     SoundPlay("SOUND_WAIT");
+	     w = MakeExtInitWin();
+	     XCloseDisplay(disp);
+	     disp = NULL;
+	     sscanf(params, "%*s %1000s", s);
+	     Esnprintf(sss, sizeof(sss),
+		       "exec %s -single -ext_init_win %li -theme %s "
+		       "-econfdir %s -ecachedir %s", command, w, s,
+		       UserEDir(), UserCacheDir());
+	     execl(DEFAULT_SH_PATH, DEFAULT_SH_PATH, "-c", sss, NULL);
+	  }
+	else if (!strcmp(s, "restart_wm"))
+	  {
+	     SoundPlay("SOUND_EXIT");
+	     XCloseDisplay(disp);
+	     disp = NULL;
+	     if (atword(params, 2))
+		strncpy(s, atword(params, 2), 1000);
+	     real_exec = (char *)Emalloc(strlen(s) + 6);
+	     sprintf(real_exec,
+		     "exec %s " "-econfdir %s -ecachedir %s", s,
+		     UserEDir(), UserCacheDir());
+	     execl(DEFAULT_SH_PATH, DEFAULT_SH_PATH, "-c", "exec", real_exec,
+		   NULL);
+	  }
+	else if (!strcmp(s, "logout"))
+	  {
+	     Dialog             *d;
+	     EWin               *ewin;
+
+	     if (!
+		 (d =
+		  FindItem("LOGOUT_DIALOG", 0, LIST_FINDBY_NAME,
+			   LIST_TYPE_DIALOG)))
+	       {
+		  SoundPlay("SOUND_LOGOUT");
+		  d = DialogCreate("LOGOUT_DIALOG");
+		  DialogSetTitle(d, "Are you sure?");
+		  DialogSetText(d,
+				"\n" "\n"
+				"    Are you sure you wish to log out ?    \n"
+				"\n" "\n");
+		  DialogAddButton(d, "  Yes, Log Out  ", LogoutCB, 1);
+		  DialogAddButton(d, "  No  ", NULL, 1);
+		  DialogBindKey(d, "Escape", CB_SettingsEscape, 0, d);
+		  DialogBindKey(d, "Return", LogoutCB, 0, d);
+	       }
+	     ShowDialog(d);
+	     ewin = FindEwinByDialog(d);
+	     if (ewin)
+	       {
+		  ArrangeEwinCentered(ewin, 1);
+	       }
+	     return;
+	  }
+     }
+
+   SoundPlay("SOUND_EXIT");
+   EExit(0);
+}
+
 #endif /* HAVE_X11_SM_SMLIB_H */
+
+int
+SessionExit(void *param)
+{
+   doSMExit(param);
+   return 0;
+}

@@ -441,7 +441,7 @@ HandleComms(XClientMessageEvent * ev)
 	  {
 	     SetDefaultTheme(buf);
 	     Esnprintf(sss, sizeof(sss), "restart_theme %s", buf);
-	     doExit(sss);
+	     SessionExit(sss);
 	  }
      }
    else if (!strcmp(w, "list_bg"))

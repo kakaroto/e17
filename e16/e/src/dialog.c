@@ -2128,7 +2128,7 @@ DialogOKstr(const char *title, const char *txt)
 void
 DialogRestart(int val, void *data)
 {
-   doExit("restart");
+   SessionExit("restart");
    val = 0;
    data = NULL;
 }
@@ -2136,7 +2136,7 @@ DialogRestart(int val, void *data)
 void
 DialogQuit(int val, void *data)
 {
-   doExit("error");
+   SessionExit("error");
    val = 0;
    data = NULL;
 }
