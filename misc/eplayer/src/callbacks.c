@@ -29,16 +29,23 @@ typedef enum {
 
 static PlaybackState playback_state = PLAYBACK_STATE_STOPPED;
 
-static void playback_state_set(ePlayer *player, PlaybackState new_state) {
+static void signal_playback_state(ePlayer *player) {
 	char *sig[PLAYBACK_STATE_NUM] = {"PLAYBACK_STATE_STOPPED",
 	                                 "PLAYBACK_STATE_PAUSED",
 	                                 "PLAYBACK_STATE_PLAYING"};
+
+	assert(player);
+
+	edje_object_signal_emit(player->gui.edje, sig[playback_state],
+	                        "ePlayer");
+}
+
+static void playback_state_set(ePlayer *player, PlaybackState new_state) {
 	assert(player);
 
 	if (new_state != playback_state)
-		edje_object_signal_emit(player->gui.edje, sig[new_state],
-		                        "ePlayer");
-
+		signal_playback_state(player);
+	
 	playback_state = new_state;
 }
 
@@ -357,6 +364,8 @@ EDJE_CB(switch_group) {
 
 	playlist_container_set(player->playlist, player->gui.playlist);
 	hilight_current_track(player);
+
+	signal_playback_state(player);
 }
 
 EDJE_CB(update_seeker) {
