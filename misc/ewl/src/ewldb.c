@@ -13,24 +13,23 @@ char    *ewl_db_strip_path(char *path)
 	len = strlen(path);
 	if (len<3)	{
 		FUNC_END("ewl_db_strip_path");
-		return e_string_dup(path);
+		return ewl_string_dup(path);
 	}
 	if (path[len-3]!='.'||
 	    path[len-2]!='d'||
 	    path[len-1]!='b')	{
 		FUNC_END("ewl_db_strip_path");
-		return e_string_dup(path);
+		return ewl_string_dup(path);
 	}
 
-	if (ewl_debug_is_active())
-		fprintf(stderr,"WARNING: Stripping .db suffix.\n");
+	/* FIXME -- fprintf(stderr,"WARNING: Stripping .db suffix.\n");*/
 
 	path[len-3]=0;
 	np = malloc(len-2);
 	if (!np)	{
 		ewl_debug("ewl_db_strip_path", EWL_NULL_ERROR, "np");
 		path[len-3] = '.';
-		return e_string_dup(path);
+		return ewl_string_dup(path);
 	}
 	strcpy(np,path);
 	path[len-3] = '.';
@@ -47,8 +46,8 @@ EwlDB   *ewl_db_new()
 		ewl_debug("ewl_db_new", EWL_NULL_ERROR, "db");
 	} else {
 		/* initialize db here */
-		db->ll.data = NULL;
-		db->ll.next = NULL;
+		db->node.data = NULL;
+		db->node.next = NULL;
 		db->db = NULL;
 		db->error = 0;
 		db->writeable = 0;
@@ -135,6 +134,7 @@ EwlDB   *ewl_db_open_writeable(char *file)
 
 void     ewl_db_flush(EwlDB *db)
 {
+	UNUSED(db);
 	FUNC_BGN("ewl_db_flush");
 	/* do I even need this badboy? */
 	FUNC_END("ewl_db_flush");
@@ -172,7 +172,7 @@ void    *ewl_db_get(EwlDB *db, char *key, int *size_ret)
 		dkey.dsize = strlen(key)+1;
 		dval = dbm_fetch(db->db, dkey);
 		*size_ret = dval.dsize;
-		return e_string_dup(dval.dptr);
+		return ewl_string_dup(dval.dptr);
 	}
 	if (size_ret) *size_ret=0;
 	FUNC_END("ewl_db_get");
@@ -291,10 +291,10 @@ void     ewl_db_string_set(EwlDB *db, char *key, char *str)
 	return;
 }
 
-EwlLL *ewl_db_dump(EwlDB *db)
+EwlList *ewl_db_dump(EwlDB *db)
 {
 	char    *buf = NULL;
-	EwlLL   *ll = NULL;
+	EwlList *ll = NULL;
 	datum    key;
 	FUNC_BGN("ewl_db_dump");
 	if (!db)	{
@@ -313,7 +313,7 @@ EwlLL *ewl_db_dump(EwlDB *db)
 		}
 		memcpy(buf, key.dptr, key.dsize);
 		buf[key.dsize] = 0;
-		ll = ewl_ll_insert_with_data(ll, (EwlData*) buf);
+		ewl_list_insert(ll, ewl_list_node_new(buf));
 		key = dbm_nextkey(db->db);
 	}
 	FUNC_END("ewl_db_dump");

@@ -2,7 +2,7 @@
 #define _EWL_DB_H_ 1
 
 #include "includes.h"
-#include "ll.h"
+#include "list.h"
 #include "util.h"
 
 #define DB_DBM_HSEARCH  1
@@ -11,7 +11,7 @@
 
 typedef struct _EwlDB EwlDB;
 struct _EwlDB	{
-	EwlLL       ll;
+	EwlListNode node;
 	int         ref_count;
 	DBM        *db;
 	char       *path;
@@ -40,7 +40,7 @@ void     ewl_db_float_set(EwlDB *db, char *key, float val);
 char    *ewl_db_string_get(EwlDB *db, char *key);
 void     ewl_db_string_set(EwlDB *db, char *key, char *str);
 
-EwlLL   *ewl_db_dump(EwlDB *db);
+EwlList   *ewl_db_dump(EwlDB *db);
 
 #endif /* _EWL_DB_H_ */
 

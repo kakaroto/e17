@@ -6,9 +6,9 @@ struct _EwlThemeFindClass	{
 	char *dbpath;
 };
 
-EwlBool _cb_ewl_theme_find_db(EwlLL *node, EwlData *data)
+char ewl_theme_find_db_cb(EwlListNode *node, void *data)
 {
-	EwlBool      r = FALSE;
+	char      r = FALSE;
 	struct stat  stats;
 	EwlThemeFindClass *find_data = (EwlThemeFindClass*) data;
 	char        *app = ewl_get_application_name(),
@@ -18,9 +18,6 @@ EwlBool _cb_ewl_theme_find_db(EwlLL *node, EwlData *data)
 	            *buf = NULL;
 	int          len = (path?strlen(path):0) + (theme?strlen(theme):0) +
 	                   (app?strlen(app):0) + (db?strlen(db):0) + 16;
-	if (ewl_debug_is_active())
-		fprintf(stderr,"path = %s\naloocating buf of size %d for filename\n",
-		        (char*) path, len);
 	buf = malloc(len);
 	if (!buf) {
 		if (theme) free(theme);
@@ -30,24 +27,18 @@ EwlBool _cb_ewl_theme_find_db(EwlLL *node, EwlData *data)
 	if (theme)	{
 		if (app)	{
 			snprintf(buf,len,"%s/%s/%s-%s.db", path, theme, app, db);
-			if (ewl_debug_is_active())
-				fprintf(stderr, "0. looking for %s\n", buf);
 			if (stat(buf,&stats)!=-1)	{
-				if (ewl_debug_is_active())
-					fprintf(stderr,"0. found it\n");
-				find_data->dbpath = e_string_dup(buf);
+				find_data->dbpath = ewl_string_dup(buf);
 				r = TRUE;
 			}
 		} 
 
 		if (!r)		{
 			snprintf(buf,len,"%s/%s/%s.db", path, theme, db);
-			if (ewl_debug_is_active())
-				fprintf(stderr, "1. looking for %s\n", buf);
+			fprintf(stderr, "1. looking for %s\n", buf);
 			if (stat(buf,&stats)!=-1)	{
-				if (ewl_debug_is_active())
-					fprintf(stderr,"1. found it\n");
-				find_data->dbpath = e_string_dup(buf);
+				fprintf(stderr,"1. found it\n");
+				find_data->dbpath = ewl_string_dup(buf);
 				r = TRUE;
 			}
 		}
@@ -55,24 +46,20 @@ EwlBool _cb_ewl_theme_find_db(EwlLL *node, EwlData *data)
 
 	if (!r&&app)	{
 		snprintf(buf,len,"%s/%s-%s.db", path, app, db);
-		if (ewl_debug_is_active())
-			fprintf(stderr, "2. looking for %s\n", buf);
+		fprintf(stderr, "2. looking for %s\n", buf);
 		if (stat(buf,&stats)!=-1)	{
-			if (ewl_debug_is_active())
-				fprintf(stderr,"2. found it\n");
-			find_data->dbpath = e_string_dup(buf);
+			fprintf(stderr,"2. found it\n");
+			find_data->dbpath = ewl_string_dup(buf);
 			r = TRUE;
 		}
 	}
 
 	if (!r)	{
 		snprintf(buf,len,"%s/%s.db", path, db);
-		if (ewl_debug_is_active())
-			fprintf(stderr, "3. looking for %s\n", buf);
+		fprintf(stderr, "3. looking for %s\n", buf);
 		if (stat(buf,&stats)!=-1)	{
-			if (ewl_debug_is_active())
-				fprintf(stderr,"3. found it\n");
-			find_data->dbpath = e_string_dup(buf);
+			fprintf(stderr,"3. found it\n");
+			find_data->dbpath = ewl_string_dup(buf);
 			r = TRUE;
 		}
 	}
@@ -83,44 +70,29 @@ EwlBool _cb_ewl_theme_find_db(EwlLL *node, EwlData *data)
 	return r;
 }
 
-EwlBool _cb_test(EwlLL *node, EwlData *data)
-{
-	fprintf(stderr,"%s\n", (char*)(node->data));
-	return FALSE;
-}
-
 char         *ewl_theme_find_db(char *name)
 {
-	EwlLL *pl = ewl_get_path_list(),
-	      *fl = NULL;
-	char  *path  = NULL;
+	EwlList     *pl = ewl_get_path_list();
+	EwlListNode *fl;
+	char        *path  = NULL;
 	EwlThemeFindClass find_data;
-	FUNC_BGN("ewl_theme_find_db");
-	if (!pl)	{
-		ewl_debug("ewl_theme_find_db", EWL_NULL_ERROR, "pl");
-	} else if (!name)	{
-		ewl_debug("ewl_theme_find_db", EWL_NULL_ERROR, "name");
+	find_data.dbpath = NULL;
+	find_data.widget = ewl_string_dup(name);
+	fl = ewl_list_find(pl, ewl_theme_find_db_cb, &find_data);
+	if (fl)	{
+		path = find_data.dbpath;
 	} else {
-		find_data.dbpath = NULL;
-		find_data.widget = e_string_dup(name);
-		fl = ewl_ll_callback_find(pl, _cb_ewl_theme_find_db,
-		                          (EwlData*) &find_data);
-		if (fl)	{
-			path = find_data.dbpath;
-		} else {
-			/* couldn't find the theme */
-			fprintf(stderr,"ERROR: Couldn't locate theme for \"%s\".\n"
-			        "Please check your theme path and permissions.\n",
-			        find_data.widget);
-		}
+		/* couldn't find the theme */
+		fprintf(stderr,"ERROR: Couldn't locate theme for \"%s\".\n"
+		        "Please check your theme path and permissions.\n",
+		        find_data.widget);
 	}
-	FUNC_END("ewl_theme_find_db");
 	return path;
 }
 
-EwlBool _cb_ewl_theme_find_file(EwlLL *node, EwlData *data)
+char     ewl_theme_find_file_cb(EwlListNode *node, void *data)
 {
-	EwlBool      r = FALSE;
+	char      r = FALSE;
 	struct stat  stats;
 	EwlThemeFindClass *find_data = (EwlThemeFindClass*) data;
 	char        *theme = ewl_get_theme(),
@@ -129,9 +101,8 @@ EwlBool _cb_ewl_theme_find_file(EwlLL *node, EwlData *data)
 	            *buf = NULL;
 	int          len = (path?strlen(path):0) + (theme?strlen(theme):0) +
 	                   (file?strlen(file):0) + 16;
-	if (ewl_debug_is_active())
-		fprintf(stderr,"path = %s\naloocating buf of size %d for filename\n",
-		        (char*) path, len);
+	fprintf(stderr,"path = %s\naloocating buf of size %d for filename\n",
+	        (char*) path, len);
 	buf = malloc(len); 
 	if (!buf) {
 		if (theme) free(theme);
@@ -140,24 +111,20 @@ EwlBool _cb_ewl_theme_find_file(EwlLL *node, EwlData *data)
 	buf[0] = 0;
 	if (theme)	{
 		snprintf(buf,len,"%s/%s/%s", path, theme, file);
-		if (ewl_debug_is_active())
-			fprintf(stderr, "_cb_find_file: 0. looking for %s\n", buf);
+		fprintf(stderr, "_cb_find_file: 0. looking for %s\n", buf);
 		if (stat(buf,&stats)!=-1)	{
-			if (ewl_debug_is_active())
-				fprintf(stderr,"_cb_find_file: 0. found it\n");
-			find_data->dbpath = e_string_dup(buf);
+			fprintf(stderr,"_cb_find_file: 0. found it\n");
+			find_data->dbpath = ewl_string_dup(buf);
 			r = TRUE;
 		}
 	}
 
 	if (!r)	{
 		snprintf(buf,len,"%s/%s", path, file);
-		if (ewl_debug_is_active())
-			fprintf(stderr, "_cb_find_file: 1. looking for %s\n", buf);
+		fprintf(stderr, "_cb_find_file: 1. looking for %s\n", buf);
 		if (stat(buf,&stats)!=-1)	{
-			if (ewl_debug_is_active())
-				fprintf(stderr,"_cb_find_file: 1. found it\n");
-			find_data->dbpath = e_string_dup(buf);
+			fprintf(stderr,"_cb_find_file: 1. found it\n");
+			find_data->dbpath = ewl_string_dup(buf);
 			r = TRUE;
 		}
 	}
@@ -169,30 +136,21 @@ EwlBool _cb_ewl_theme_find_file(EwlLL *node, EwlData *data)
 
 char         *ewl_theme_find_file(char *name)
 {
-	EwlLL *pl = ewl_get_path_list(),
-	      *fl = NULL;
-	char  *path  = NULL;
+	EwlList     *pl = ewl_get_path_list();
+	EwlListNode *fl = NULL;
+	char        *path  = NULL;
 	EwlThemeFindClass find_data;
-	FUNC_BGN("ewl_theme_find_db");
-	if (!pl)	{
-		ewl_debug("ewl_theme_find_db", EWL_NULL_ERROR, "pl");
-	} else if (!name)	{
-		ewl_debug("ewl_theme_find_db", EWL_NULL_ERROR, "name");
+	find_data.dbpath = NULL;
+	find_data.widget = ewl_string_dup(name);
+	fl = ewl_list_find(pl, ewl_theme_find_file_cb, &find_data);
+	if (fl)	{
+		path = find_data.dbpath;
 	} else {
-		find_data.dbpath = NULL;
-		find_data.widget = e_string_dup(name);
-		fl = ewl_ll_callback_find(pl, _cb_ewl_theme_find_file,
-		                          (EwlData*) &find_data);
-		if (fl)	{
-			path = find_data.dbpath;
-		} else {
-			/* couldn't find the theme */
-			fprintf(stderr,"ERROR: Couldn't locate file \"%s\".\n"
-			        "Please check your theme path and permissions.\n",
-			        find_data.widget);
-		}
+		/* couldn't find the theme */
+		fprintf(stderr,"ERROR: Couldn't locate file \"%s\".\n"
+		        "Please check your theme path and permissions.\n",
+		        find_data.widget);
 	}
-	FUNC_END("ewl_theme_find_db");
 	return path;
 }
 
@@ -211,9 +169,9 @@ char         *ewl_theme_get_string(char *key)
 		ewl_debug("ewl_theme_get_string", EWL_NULL_ERROR, "key");
 	} else {
 		if (key[0]=='/')	{
-			tmp = e_string_dup(key+1);
+			tmp = ewl_string_dup(key+1);
 		} else {
-			tmp = e_string_dup(key);
+			tmp = ewl_string_dup(key);
 		}
 		wid = strtok(tmp,"/");
 		tkey = strtok(NULL, "");
@@ -236,9 +194,9 @@ char         *ewl_theme_get_string(char *key)
 	return val;
 }
 
-EwlBool       ewl_theme_get_int(char *key, int *val)
+char       ewl_theme_get_int(char *key, int *val)
 {
-	EwlBool  r = FALSE;
+	char  r = FALSE;
 	char    *temp = NULL;
 	FUNC_BGN("ewl_theme_get_int");
 	if (!key) {
@@ -281,7 +239,7 @@ EwlBool       ewl_theme_get_float(char *key, float *val)
 }
 
 
-EwlImage     *ewl_theme_get_image(char *key)
+/*EwlImage     *ewl_theme_get_image(char *key)
 {
 	EwlImage *im        = NULL;
 	EwlBool   visible   = FALSE;
@@ -297,8 +255,7 @@ EwlImage     *ewl_theme_get_image(char *key)
 
 		if (!path)	{
 			ewl_debug("ewl_theme_get_image", EWL_NULL_ERROR, "path");
-			if (ewl_debug_is_active())
-				fprintf(stderr,"DEBUG: Couldn't find image associated with the following key:\n\t\"%s\".\nTrying the follwing key:\n\t\"%s/path\".\n",
+			fprintf(stderr,"DEBUG: Couldn't find image associated with the following key:\n\t\"%s\".\nTrying the follwing key:\n\t\"%s/path\".\n",
 				        key, key);
 			
 			snprintf(buf,1023,"%s/path", ewl_theme_get_string(key));
@@ -377,20 +334,17 @@ EwlImLayer   *ewl_theme_get_imlayer(char *key)
 				ewl_debug("ewl_theme_get_imlayer", EWL_NULL_ERROR, "imlay");
 			} else {
 				if (visible) ewl_imlayer_show(imlay);
-				if (ewl_debug_is_active())
-					fprintf(stderr,"ewl_theme_get_imlayer(): "
-					        "Image Layer \"%s\" loaded okay.\n",
-					        (name)?name:"Untitled ImLayer");
+				fprintf(stderr,"ewl_theme_get_imlayer(): "
+				        "Image Layer \"%s\" loaded okay.\n",
+				        (name)?name:"Untitled ImLayer");
 				if (!gn)	{
-					if (ewl_debug_is_active())
-						fprintf(stderr,"ewl_theme_get_imlayer(): "
-						        "No Images to load for ImLayer \"%s\".\n",
-						        (name)?name:"Untitled ImLayer");
+					fprintf(stderr,"ewl_theme_get_imlayer(): "
+					        "No Images to load for ImLayer \"%s\".\n",
+					        (name)?name:"Untitled ImLayer");
 				} else {
-					if (ewl_debug_is_active())
-						fprintf(stderr,"ewl_widget_get_theme(): "
-						        "Loading %d Images for ImLayer \"%s\".\n",
-						        num, (name)?name:"Untitled ImLayer");
+					fprintf(stderr,"ewl_widget_get_theme(): "
+					        "Loading %d Images for ImLayer \"%s\".\n",
+					        num, (name)?name:"Untitled ImLayer");
 					for (i=0; i<num; i++)	{
 						sprintf(buf,"%s/image-%02d", key, i);
 						ewl_imlayer_image_insert(imlay,
@@ -403,7 +357,7 @@ EwlImLayer   *ewl_theme_get_imlayer(char *key)
 	}
 	FUNC_END("ewl_theme_get_imlayer");
 	return imlay;
-}
+}*/
 
 
 void          ewl_widget_get_theme(EwlWidget *wid, char *key)
@@ -412,7 +366,7 @@ void          ewl_widget_get_theme(EwlWidget *wid, char *key)
 	char     *buf = NULL,
 	         *tmp = NULL;
 	int       i = 0,
-	          t = 0;
+	          t[4] = {0,0,0,0};
 	FUNC_BGN("ewl_widget_get_theme");
 	if (!wid) {
 		ewl_debug("ewl_widget_get_theme", EWL_NULL_WIDGET_ERROR, "wid");
@@ -424,27 +378,25 @@ void          ewl_widget_get_theme(EwlWidget *wid, char *key)
 			ewl_debug("ewl_widget_get_theme", EWL_NULL_ERROR, "buf");
 		} else {
 			sprintf(buf,"%s/name", key);
-			if (key) wid->name = ewl_theme_get_string(key);
+			ewl_set(wid,"/object/name", ewl_theme_get_string(key));
 
 			sprintf(buf,"%s/padding/left", key); 
-			gt = ewl_theme_get_int(buf,&t);
-			if (gt) ewl_widget_set_padding(wid,&t,0,0,0);
+			gt = ewl_theme_get_int(buf,&t[0]);
 			sprintf(buf,"%s/padding/top", key); 
-			gt = ewl_theme_get_int(buf,&t);
-			if (gt) ewl_widget_set_padding(wid,0,&t,0,0);
+			gt = ewl_theme_get_int(buf,&t[1]);
 			sprintf(buf,"%s/padding/right", key); 
-			gt = ewl_theme_get_int(buf,&t);
-			if (gt) ewl_widget_set_padding(wid,0,0,&t,0);
+			gt = ewl_theme_get_int(buf,&t[2]);
 			sprintf(buf,"%s/padding/bottom", key); 
-			gt = ewl_theme_get_int(buf,&t);
-			if (gt) ewl_widget_set_padding(wid,0,0,0,&t);
+			ewl_widget_set_padding(wid,t[0], t[1], t[2], t[3]);
 			
 			sprintf(buf,"%s/background", key);
 			tmp = ewl_theme_find_file(ewl_theme_get_string(buf));
 			if (tmp)	{
 				/*ewl_widget_set_background(wid,ewl_imlib_load_image(tmp));*/
 				ewl_widget_set_background(wid,
-				    evas_add_image_from_file(ewl_widget_get_evas(wid), tmp));
+				    evas_add_image_from_file(ewl_widget_get_evas(wid), tmp),0);
+				fprintf(stderr,"DEBUG: setting bg for widget  %p to %s.\n",
+				        wid, tmp);
 			}
 
 			/*sprintf(buf,"%s/num_layers", key); 

@@ -1,19 +1,15 @@
-#ifndef _EWL_THEME_H_
-#define _EWL_THEME_H_ 1
+#ifndef _THEME_H_
+#define _THEME_H_
 
 
 #include "includes.h"
-#include "debug.h"
-#include "ll.h"
+#include "list.h"
 #include "util.h"
-#include "ewldb.h"
-#include "image.h"
-#include "event.h"
 #include "widget.h"
-#include "translators.h"
+#include "ewldb.h"
 
-/* from state.h */
-extern EwlLL *ewl_get_path_list();
+/* from api.h */
+extern EwlList *ewl_get_path_list();
 extern char  *ewl_get_application_name();
 extern char  *ewl_get_theme();
 
@@ -21,12 +17,11 @@ char         *ewl_theme_find_db(char *name);   /* searches the given paht */
 char         *ewl_theme_find_file(char *name); /* same, but for media */
 
 char         *ewl_theme_get_string(char *key);
-EwlBool       ewl_theme_get_int(char *key, int *val);
-EwlBool       ewl_theme_get_float(char *key, float *val);
+char          ewl_theme_get_int(char *key, int *val);
+char          ewl_theme_get_float(char *key, float *val);
 
-EwlImage     *ewl_theme_get_image(char *key);
-EwlImLayer   *ewl_theme_get_imlayer(char *key);
+/*EwlImage     *ewl_theme_get_image(char *key);*/
 
-void          ewl_widget_get_theme(EwlWidget *wid, char *key);
+void          ewl_widget_get_theme(EwlWidget *widget, char *key);
 
-#endif /*_EWL_THEME_H_*/
+#endif /* _THEME_H_ */

@@ -2,7 +2,6 @@
 *.la
 .deps
 .libs
-Makefile
 Makefile.in
 aclocal.m4
 confdefs.h

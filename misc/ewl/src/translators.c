@@ -1,364 +1,341 @@
 #include "translators.h"
 
-EwlEventTranslator *ewl_translator_new(EwlTranslatorCallback  cb, 
-                                       char                  *desc, 
-                                       EwlEventType           type)
+EwlEvent           *ewl_translate(XEvent *xev)
 {
-	EwlEventTranslator *et = NULL;
-	if (!cb)	{
-		ewl_debug("ewl_event_translator_new", EWL_NULL_ERROR, "cb");
-	} else {
-		et = malloc(sizeof(EwlEventTranslator));
-		if (!et)	{
-			ewl_debug("ewl_evnt_translator_new", EWL_NULL_ERROR, " et");
-		} else {
-			et->cb = cb;
-			et->type = type;
-			if (ewl_debug_is_active())
-				fprintf(stderr,"ewl_translator_new(): adding translator for %s (type %d).\n", desc, type);
-		}
+	static char initialized = 0;
+	static EwlEventTranslator *translators[LASTEvent];
+	int    i = 0;
+	if (!initialized)	{
+		initialized++;
+		for (i=0; i<LASTEvent; i++)
+			translators[i] = NULL;
+
+		translators[KeyPress] = ewl_translator_new(
+	    	                       cb_ewl_event_keypress_translate,
+		                           "keydown");
+		translators[KeyRelease] = ewl_translator_new(
+		                             cb_ewl_event_keyrelease_translate,
+		                             "keyup");
+		translators[ButtonPress] = ewl_translator_new(
+		                              cb_ewl_event_buttonpress_translate, 
+		                              "mousedown");
+		translators[ButtonRelease] = ewl_translator_new(
+		                              cb_ewl_event_buttonrelease_translate, 
+		                              "mouseup");
+		translators[MotionNotify] = ewl_translator_new(
+		                              cb_ewl_event_motion_translate, 
+		                              "mousemove");
+		translators[EnterNotify] = ewl_translator_new(
+		                              cb_ewl_event_enter_translate, 
+		                              "enter");
+		translators[LeaveNotify] = ewl_translator_new(
+		                              cb_ewl_event_leave_translate, 
+		                              "leave");
+		translators[FocusIn] = ewl_translator_new(
+		                              cb_ewl_event_focusin_translate, 
+		                              "focusin");
+		translators[FocusOut] = ewl_translator_new(
+		                              cb_ewl_event_focusout_translate, 
+		                              "focusout");
+		translators[Expose] = ewl_translator_new(
+	   		                           cb_ewl_event_expose_translate, 
+	   		                           "expose");
+		translators[VisibilityNotify] = ewl_translator_new(
+		   	                           cb_ewl_event_visibility_translate, 
+		   	                           "visibility");
+			translators[CreateNotify] = ewl_translator_new(
+		                              cb_ewl_event_create_translate, 
+		                              "create");
+		translators[DestroyNotify] = ewl_translator_new(
+		                              cb_ewl_event_destroy_translate, 
+		                              "destroy");
+		translators[UnmapNotify] = ewl_translator_new(
+		                              cb_ewl_event_unmapnotify_translate, 
+		                              "hide");
+		translators[MapNotify] = ewl_translator_new(
+		                              cb_ewl_event_mapnotify_translate, 
+		                              "show");
+		translators[MapRequest] = ewl_translator_new(
+		                              cb_ewl_event_maprequest_translate, 
+		                              "showrequest");
+		translators[ReparentNotify] = ewl_translator_new(
+		                              cb_ewl_event_reparentnotify_translate, 
+		                              "reparent");
+		translators[ConfigureNotify] = ewl_translator_new(
+		                              cb_ewl_event_configurenotify_translate, 
+		                              "configure");
+		translators[ConfigureRequest] = ewl_translator_new(
+		                              cb_ewl_event_configurerequest_translate, 
+		                              "configurerequest");
+		translators[CirculateNotify] = ewl_translator_new(
+		                              cb_ewl_event_circulatenotify_translate, 
+		                              "circulate");
+		translators[CirculateRequest] = ewl_translator_new(
+		                              cb_ewl_event_circulaterequest_translate, 
+		                              "circulate");
+		translators[PropertyNotify] = ewl_translator_new(
+		                              cb_ewl_event_property_translate, 
+		                              "property");
+		translators[ColormapNotify] = ewl_translator_new(
+		                              cb_ewl_event_colormap_translate, 
+		                              "colormap");
+		translators[ClientMessage] = ewl_translator_new(
+		                              cb_ewl_event_clientmessage_translate, 
+		                              "client");
+		translators[SelectionNotify] = ewl_translator_new(
+		                              cb_ewl_event_selectionnotify_translate, 
+		                              "selectionnotify");
+		translators[SelectionRequest] = ewl_translator_new(
+		                              cb_ewl_event_selectionrequest_translate, 
+		                              "selection");
 	}
+
+	if (translators[xev->type])
+		return translators[xev->type]->cb(translators[xev->type], xev);
+
+	return NULL;
+}
+
+EwlEventTranslator *ewl_translator_new(EwlTranslatorCallback  cb, 
+                                       char                  *type)
+{
+	EwlEventTranslator *et = malloc(sizeof(EwlEventTranslator));
+	et->cb = cb;
+	et->type = ewl_string_dup(type);
 	return et;
 }
 
 EwlEvent *cb_ewl_event_keypress_translate(EwlEventTranslator *t, XEvent *xev)
 {
-	EwlEvent  *eev = ewl_event_new_by_type(t->type);
-	EwlWidget *w = ewl_widget_grabbed_get();
-	if (!eev)	{
-		ewl_debug("cb_ewl_event_keypress_translate", EWL_NULL_ERROR, "eev");
-		return NULL;
-	} else if (!xev) {
-		ewl_debug("cb_ewl_event_keypress_translate", EWL_NULL_ERROR, "xev");
-		return NULL;
-	}
-	if (w)
-		((EwlEvent*)eev)->widget = w;
-	else 
-		((EwlEvent*)eev)->widget = ewl_window_find_by_xwin(xev->xkey.window);
-	return (EwlEvent*) eev;
+	EwlEvent  *ev = NULL;
+	EwlWidget *w = ewl_get_grabbed();
+	if (!w)	w = ewl_window_find_by_xwin(xev->xkey.window);
+	ev = ewl_event_new(t->type,w);
+	return ev;
 }
 
 EwlEvent *cb_ewl_event_keyrelease_translate(EwlEventTranslator *t, XEvent *xev)
 {
-	EwlEvent  *eev = ewl_event_new_by_type(t->type);
-	EwlWidget *w = ewl_widget_grabbed_get();
-	if (!eev)	{
-		ewl_debug("cb_ewl_event_keyrelease_translate", EWL_NULL_ERROR, "eev");
-		return NULL;
-	} else if (!xev) {
-		ewl_debug("cb_ewl_event_keyrelease_translate", EWL_NULL_ERROR, "xev");
-		return NULL;
-	}
-	if (w)
-		((EwlEvent*)eev)->widget = w;
-	else 
-		((EwlEvent*)eev)->widget = ewl_window_find_by_xwin(xev->xkey.window);
-	return (EwlEvent*) eev;
+	EwlEvent  *ev = NULL;
+	EwlWidget *w = ewl_get_grabbed();
+	if (!w)	w = ewl_window_find_by_xwin(xev->xkey.window);
+	ev = ewl_event_new(t->type,w);
+	return ev;
 }
 
 EwlEvent *cb_ewl_event_buttonpress_translate(EwlEventTranslator *t, XEvent *xev)
 {
-	EwlEvent  *eev = ewl_event_new_by_type(t->type);
-	EwlWidget         *w   = ewl_widget_grabbed_get();
-	if (!eev)	{
-		ewl_debug("cb_ewl_event_buttonpress_translate", EWL_NULL_ERROR, "eev");
-		return NULL;
-	}
-	if (w)
-		((EwlEvent*)eev)->widget = w;
-	else 
-		((EwlEvent*)eev)->widget = ewl_window_find_by_xwin(xev->xbutton.window);
-	((EwlEventMousedown*)eev)->x = xev->xbutton.x;
-	((EwlEventMousedown*)eev)->y = xev->xbutton.y;
-	((EwlEventMousedown*)eev)->button = xev->xbutton.button;
+	EwlEvent  *ev = NULL;
+	EwlWidget *w = ewl_get_grabbed();
+	int       *i = NULL; 
+
+	if (!w)	w = ewl_window_find_by_xwin(xev->xbutton.window);
+	ev = ewl_event_new(t->type,w);
+	i = malloc(sizeof(int)); *i = xev->xbutton.x;
+	ewl_event_set_data(ev, "/event/x", i);
+	i = malloc(sizeof(int)); *i = xev->xbutton.y;
+	ewl_event_set_data(ev, "/event/y", i);
+	i = malloc(sizeof(int)); *i = xev->xbutton.button;
+	ewl_event_set_data(ev, "/event/button", i);
 	
-	return (EwlEvent*)eev;
+	return ev;
 }
 
 EwlEvent *cb_ewl_event_buttonrelease_translate(EwlEventTranslator *t, XEvent *xev)
 {
-	EwlEvent  *eev = ewl_event_new_by_type(t->type);
-	EwlWidget         *w   = ewl_widget_grabbed_get();
-	if (!eev)	{
-		ewl_debug("cb_ewl_event_buttonrelease_translate", EWL_NULL_ERROR, "eev");
-		return NULL;
-	}
-	if (w)
-		((EwlEvent*)eev)->widget = w;
-	else
-		((EwlEvent*)eev)->widget = ewl_window_find_by_xwin(xev->xbutton.window);
-	((EwlEventMouseup*)eev)->x = xev->xbutton.x;
-	((EwlEventMouseup*)eev)->y = xev->xbutton.y;
-	((EwlEventMouseup*)eev)->button = xev->xbutton.button;
+	EwlEvent  *ev = NULL;
+	EwlWidget *w = ewl_get_grabbed();
+	int       *i = NULL; 
+
+	if (!w)	w = ewl_window_find_by_xwin(xev->xbutton.window);
+	ev = ewl_event_new(t->type,w);
+	i = malloc(sizeof(int)); *i = xev->xbutton.x;
+	ewl_event_set_data(ev, "/event/x", i);
+	i = malloc(sizeof(int)); *i = xev->xbutton.y;
+	ewl_event_set_data(ev, "/event/y", i);
+	i = malloc(sizeof(int)); *i = xev->xbutton.button;
+	ewl_event_set_data(ev, "/event/button", i);
 	
-	return (EwlEvent*)eev;
+	return ev;
 }
 
 EwlEvent *cb_ewl_event_motion_translate(EwlEventTranslator *t, XEvent *xev)
 {
-	EwlEvent  *eev = ewl_event_new_by_type(t->type);
-	EwlWidget         *w   = ewl_widget_grabbed_get();
-	if (!eev)	{
-		ewl_debug("cb_ewl_event_motion_translate", EWL_NULL_ERROR, "eev");
-		return NULL;
-	}
-	if (w)
-		((EwlEvent*)eev)->widget = w;
-	else
-		((EwlEvent*)eev)->widget = ewl_window_find_by_xwin(xev->xmotion.window);
-	((EwlEventMousemove*)eev)->x = xev->xmotion.x;
-	((EwlEventMousemove*)eev)->y = xev->xmotion.y;
+	EwlEvent  *ev = NULL;
+	EwlWidget *w = ewl_get_grabbed();
+	int       *i = NULL; 
+
+	if (!w)	w = ewl_window_find_by_xwin(xev->xmotion.window);
+	ev = ewl_event_new(t->type,w);
+	i = malloc(sizeof(int)); *i = xev->xmotion.x;
+	ewl_event_set_data(ev, "/event/x", i);
+	i = malloc(sizeof(int)); *i = xev->xmotion.y;
+	ewl_event_set_data(ev, "/event/y", i);
 	
-	return (EwlEvent*)eev;
+	return ev;
 }
 
 EwlEvent *cb_ewl_event_enter_translate(EwlEventTranslator *t, XEvent *xev)
 {
-	EwlEvent  *eev = ewl_event_new_by_type(t->type);
-	EwlWidget         *w   = ewl_widget_grabbed_get();
-	if (!eev)	{
-		ewl_debug("cb_ewl_event_enter_translate", EWL_NULL_ERROR, "eev");
-		return NULL;
-	}
-	if (w)
-		((EwlEvent*)eev)->widget = w;
-	else
-	((EwlEvent*)eev)->widget = ewl_window_find_by_xwin(xev->xcrossing.window);
-	return eev;
+	EwlEvent  *ev = NULL;
+	EwlWidget *w = ewl_window_find_by_xwin(xev->xcrossing.window);
+	ev = ewl_event_new(t->type,w);
+	return ev;
 }
 
 EwlEvent *cb_ewl_event_leave_translate(EwlEventTranslator *t, XEvent *xev)
 {
-	EwlEvent  *eev = ewl_event_new_by_type(t->type);
-	EwlWidget         *w   = ewl_widget_grabbed_get();
-	if (!eev)	{
-		ewl_debug("cb_ewl_event_leave_translate", EWL_NULL_ERROR, "eev");
-		return NULL;
-	}
-	if (w)
-		((EwlEvent*)eev)->widget = w;
-	else
-	((EwlEvent*)eev)->widget = ewl_window_find_by_xwin(xev->xcrossing.window);
-	return eev;
+	EwlEvent  *ev = NULL;
+	EwlWidget *w = ewl_window_find_by_xwin(xev->xcrossing.window);
+	ev = ewl_event_new(t->type,w);
+	return ev;
 }
 
 EwlEvent *cb_ewl_event_focusin_translate(EwlEventTranslator *t, XEvent *xev)
 {
-	EwlEvent  *eev = ewl_event_new_by_type(t->type);
-	if (!eev)	{
-		ewl_debug("cb_ewl_event_focusin_translate", EWL_NULL_ERROR, "eev");
-		return NULL;
-	}
-	((EwlEvent*)eev)->widget = ewl_window_find_by_xwin(xev->xfocus.window);
-	return eev;
+	EwlWidget *w = ewl_window_find_by_xwin(xev->xfocus.window);
+	EwlEvent  *ev = ewl_event_new(t->type,w);
+	return ev;
 }
 
 EwlEvent *cb_ewl_event_focusout_translate(EwlEventTranslator *t, XEvent *xev)
 {
-	EwlEvent  *eev = ewl_event_new_by_type(t->type);
-	if (!eev)	{
-		ewl_debug("cb_ewl_event_focusout_translate", EWL_NULL_ERROR, "eev");
-		return NULL;
-	}
-	((EwlEvent*)eev)->widget = ewl_window_find_by_xwin(xev->xfocus.window);
-	return eev;
+	EwlWidget *w = ewl_window_find_by_xwin(xev->xfocus.window);
+	EwlEvent  *ev = ewl_event_new(t->type,w);
+	return ev;
 }
 
 EwlEvent *cb_ewl_event_expose_translate(EwlEventTranslator *t, XEvent *xev)
 {
-	EwlEvent  *eev = ewl_event_new_by_type(t->type);
-	int        x, y, w, h;
-	if (!eev)	{
-		ewl_debug("cb_ewl_event_expose_translate", EWL_NULL_ERROR, "eev");
-		return NULL;
-	}
-	x = xev->xexpose.x; y = xev->xexpose.y;
-	w = xev->xexpose.width; h = xev->xexpose.height;
-	((EwlEvent*)eev)->widget = ewl_window_find_by_xwin(xev->xexpose.window);
-	((EwlEventExpose*)eev)->rect = ewl_rect_new_with_values(&x,&y,&w,&h);
-	((EwlEventExpose*)eev)->count = xev->xexpose.count;
-	return (EwlEvent*)eev;
+	EwlWidget *w = ewl_window_find_by_xwin(xev->xkey.window);
+	EwlEvent  *ev = ewl_event_new(t->type,w);
+	int       *i = NULL;
+	EwlRect   *rect = ewl_rect_new_with_values(xev->xexpose.x, xev->xexpose.y, xev->xexpose.width, xev->xexpose.height);
+	/*i = malloc(sizeof(int)); *i = xev->xexpose.x;
+	ewl_event_set_data(ev, "/event/x", i);
+	i = malloc(sizeof(int)); *i = xev->xexpose.y;
+	ewl_event_set_data(ev, "/event/y", i);
+	i = malloc(sizeof(int)); *i = xev->xexpose.y;*/
+	ewl_event_set_data(ev, "/expose/rect", rect);
+	i = malloc(sizeof(int)); *i = xev->xexpose.count;
+	ewl_event_set_data(ev, "/event/count", i);
+	
+	return ev;
 }
 
 EwlEvent *cb_ewl_event_visibility_translate(EwlEventTranslator *t, XEvent *xev)
 {
-	EwlEvent  *eev = ewl_event_new_by_type(t->type);
-	if (!eev)	{
-		ewl_debug("cb_ewl_event_visibility_translate", EWL_NULL_ERROR, "eev");
-		return NULL;
-	}
-	((EwlEvent*)eev)->widget = ewl_window_find_by_xwin(xev->xexpose.window);
-	return eev;
+	EwlWidget *w = ewl_window_find_by_xwin(xev->xexpose.window);
+	EwlEvent  *ev = ewl_event_new(t->type,w);
+	return ev;
 }
 
 EwlEvent *cb_ewl_event_create_translate(EwlEventTranslator *t, XEvent *xev)
 {
-	EwlEvent  *eev = ewl_event_new_by_type(t->type);
-	if (!eev)	{
-		ewl_debug("cb_ewl_event_create_translate", EWL_NULL_ERROR, "eev");
-		return NULL;
-	}
-	((EwlEvent*)eev)->widget = ewl_window_find_by_xwin(xev->xcreatewindow.window);
-	return eev;
+	EwlWidget *w = ewl_window_find_by_xwin(xev->xcreatewindow.window);
+	EwlEvent  *ev = ewl_event_new(t->type,w);
+	return ev;
 }
 
 EwlEvent *cb_ewl_event_destroy_translate(EwlEventTranslator *t, XEvent *xev)
 {
-	EwlEvent  *eev = ewl_event_new_by_type(t->type);
-	if (!eev)	{
-		ewl_debug("cb_ewl_event_destroy_translate", EWL_NULL_ERROR, "eev");
-		return NULL;
-	}
-	((EwlEvent*)eev)->widget = ewl_window_find_by_xwin(xev->xdestroywindow.window);
-	return eev;
+	EwlWidget *w = ewl_window_find_by_xwin(xev->xdestroywindow.window);
+	EwlEvent  *ev = ewl_event_new(t->type,w);
+	return ev;
 }
 
 EwlEvent *cb_ewl_event_unmapnotify_translate(EwlEventTranslator *t, XEvent *xev)
 {
-	EwlEvent  *eev = ewl_event_new_by_type(t->type);
-	if (!eev)	{
-		ewl_debug("cb_ewl_event_unmapnotify_translate", EWL_NULL_ERROR, "eev");
-		return NULL;
-	}
-	fprintf(stderr,"unampnotify translator called.\n");
-	((EwlEvent*)eev)->widget = ewl_window_find_by_xwin(xev->xunmap.window);
-	return eev;
+	EwlWidget *w = ewl_window_find_by_xwin(xev->xunmap.window);
+	EwlEvent  *ev = ewl_event_new(t->type,w);
+	return ev;
 }
 
 EwlEvent *cb_ewl_event_mapnotify_translate(EwlEventTranslator *t, XEvent *xev)
 {
-	EwlEvent  *eev = ewl_event_new_by_type(t->type);
-	if (!eev)	{
-		ewl_debug("cb_ewl_event_mapnotify_translate", EWL_NULL_ERROR, "eev");
-		return NULL;
-	}
-	fprintf(stderr,"mampnotify translator called.\n");
-	((EwlEvent*)eev)->widget = ewl_window_find_by_xwin(xev->xmap.window);
-	return eev;
+	EwlWidget *w = ewl_window_find_by_xwin(xev->xmap.window);
+	EwlEvent  *ev = ewl_event_new(t->type,w);
+	return ev;
 }
 
 EwlEvent *cb_ewl_event_maprequest_translate(EwlEventTranslator *t, XEvent *xev)
 {
-	EwlEvent  *eev = ewl_event_new_by_type(t->type);
-	if (!eev)	{
-		ewl_debug("cb_ewl_event_maprequest_translate", EWL_NULL_ERROR, "eev");
-		return NULL;
-	}
-	fprintf(stderr,"maprequest translator called.\n");
-	((EwlEvent*)eev)->widget = ewl_window_find_by_xwin(xev->xmaprequest.window);
-	return eev;
+	EwlWidget *w = ewl_window_find_by_xwin(xev->xmaprequest.window);
+	EwlEvent  *ev = ewl_event_new(t->type,w);
+	return ev;
 }
 
 EwlEvent *cb_ewl_event_reparentnotify_translate(EwlEventTranslator *t, XEvent *xev)
 {
-	EwlEvent  *eev = ewl_event_new_by_type(t->type);
-	if (!eev)	{
-		ewl_debug("cb_ewl_event_reparentnotify_translate", EWL_NULL_ERROR, "eev");
-		return NULL;
-	}
-	((EwlEvent*)eev)->widget = ewl_window_find_by_xwin(xev->xreparent.window);
-	return eev;
+	EwlWidget *w = ewl_window_find_by_xwin(xev->xreparent.window);
+	EwlEvent  *ev = ewl_event_new(t->type,w);
+	return ev;
 }
 
 EwlEvent *cb_ewl_event_configurenotify_translate(EwlEventTranslator *t, XEvent *xev)
 {
-	EwlEvent  *eev = ewl_event_new_by_type(t->type);
-	if (!eev)	{
-		ewl_debug("cb_ewl_event_configurenotify_translate", EWL_NULL_ERROR, "eev");
-		return NULL;
-	}
-	((EwlEvent*)eev)->widget = ewl_window_find_by_xwin(xev->xconfigure.window);
-	((EwlEventConfigure*)eev)->width = xev->xconfigure.width;
-	((EwlEventConfigure*)eev)->height = xev->xconfigure.height;
-	return eev;
+	EwlWidget *w = ewl_window_find_by_xwin(xev->xconfigure.window);
+	EwlEvent  *ev = ewl_event_new(t->type,w);
+	int       *i = malloc(sizeof(int)); *i = xev->xconfigure.width;
+	ewl_event_set_data(ev, "/event/width", i);
+	i = malloc(sizeof(int)); *i = xev->xconfigure.height;
+	ewl_event_set_data(ev, "/event/height", i);
+	return ev;
 }
 
 EwlEvent *cb_ewl_event_configurerequest_translate(EwlEventTranslator *t, XEvent *xev)
 {
-	EwlEvent  *eev = ewl_event_new_by_type(t->type);
-	if (!eev)	{
-		ewl_debug("cb_ewl_event_configurenotify_translate", EWL_NULL_ERROR, "eev");
-		return NULL;
-	}
-	((EwlEvent*)eev)->widget = ewl_window_find_by_xwin(xev->xconfigurerequest.window);
-	return eev;
+	EwlWidget *w = ewl_window_find_by_xwin(xev->xconfigurerequest.window);
+	EwlEvent  *ev = ewl_event_new(t->type,w);
+	return ev;
 }
 
 EwlEvent *cb_ewl_event_circulatenotify_translate(EwlEventTranslator *t, XEvent *xev)
 {
-	EwlEvent  *eev = ewl_event_new_by_type(t->type);
-	if (!eev)	{
-		ewl_debug("cb_ewl_event_circulatenotify_translate", EWL_NULL_ERROR, "eev");
-		return NULL;
-	}
-	((EwlEvent*)eev)->widget = ewl_window_find_by_xwin(xev->xcirculate.window);
-	return eev;
+	EwlWidget *w = ewl_window_find_by_xwin(xev->xcirculate.window);
+	EwlEvent  *ev = ewl_event_new(t->type,w);
+	return ev;
 }
 
 EwlEvent *cb_ewl_event_circulaterequest_translate(EwlEventTranslator *t, XEvent *xev)
 {
-	EwlEvent  *eev = ewl_event_new_by_type(t->type);
-	if (!eev)	{
-		ewl_debug("cb_ewl_event_circulaterequest_translate", EWL_NULL_ERROR, "eev");
-		return NULL;
-	}
-	((EwlEvent*)eev)->widget = ewl_window_find_by_xwin(xev->xcirculaterequest.window);
-	return eev;
+	EwlWidget *w = ewl_window_find_by_xwin(xev->xcirculate.window);
+	EwlEvent  *ev = ewl_event_new(t->type,w);
+	return ev;
 }
 
 EwlEvent *cb_ewl_event_property_translate(EwlEventTranslator *t, XEvent *xev)
 {
-	EwlEvent  *eev = ewl_event_new_by_type(t->type);
-	if (!eev)	{
-		ewl_debug("cb_ewl_event_property_translate", EWL_NULL_ERROR, "eev");
-		return NULL;
-	}
-	((EwlEvent*)eev)->widget = ewl_window_find_by_xwin(xev->xproperty.window);
-	return eev;
+	EwlWidget *w = ewl_window_find_by_xwin(xev->xproperty.window);
+	EwlEvent  *ev = ewl_event_new(t->type,w);
+	return ev;
 }
 
 EwlEvent *cb_ewl_event_colormap_translate(EwlEventTranslator *t, XEvent *xev)
 {
-	EwlEvent  *eev = ewl_event_new_by_type(t->type);
-	if (!eev)	{
-		ewl_debug("cb_ewl_event_colormap_translate", EWL_NULL_ERROR, "eev");
-		return NULL;
-	}
-	((EwlEvent*)eev)->widget = ewl_window_find_by_xwin(xev->xcolormap.window);
-	return eev;
+	EwlWidget *w = ewl_window_find_by_xwin(xev->xcolormap.window);
+	EwlEvent  *ev = ewl_event_new(t->type,w);
+	return ev;
 }
 
 EwlEvent *cb_ewl_event_clientmessage_translate(EwlEventTranslator *t, XEvent *xev)
 {
-	EwlEvent  *eev = ewl_event_new_by_type(t->type);
-	if (!eev)	{
-		ewl_debug("cb_ewl_event_clientmessage_translate", EWL_NULL_ERROR, "eev");
-		return NULL;
-	}
-	((EwlEvent*)eev)->widget = ewl_window_find_by_xwin(xev->xkey.window);
-	return eev;
+	EwlWidget *w = ewl_window_find_by_xwin(xev->xkey.window);
+	EwlEvent  *ev = ewl_event_new(t->type,w);
+	return ev;
 }
 
 EwlEvent *cb_ewl_event_selectionnotify_translate(EwlEventTranslator *t, XEvent *xev)
 {
-	EwlEvent  *eev = ewl_event_new_by_type(t->type);
-	if (!eev)	{
-		ewl_debug("cb_ewl_event_selectionnotify_translate", EWL_NULL_ERROR, "eev");
-		return NULL;
-	}
-	((EwlEvent*)eev)->widget = ewl_window_find_by_xwin(xev->xkey.window);
-	return eev;
+	EwlWidget *w = ewl_window_find_by_xwin(xev->xkey.window);
+	EwlEvent  *ev = ewl_event_new(t->type,w);
+	return ev;
 }
 
 EwlEvent *cb_ewl_event_selectionrequest_translate(EwlEventTranslator *t, XEvent *xev)
 {
-	EwlEvent  *eev = ewl_event_new_by_type(t->type);
-	if (!eev)	{
-		ewl_debug("cb_ewl_event_selectionrequest_translate", EWL_NULL_ERROR, "eev");
-		return NULL;
-	}
-	((EwlEvent*)eev)->widget = ewl_window_find_by_xwin(xev->xkey.window);
-	return eev;
+	EwlWidget *w = ewl_window_find_by_xwin(xev->xkey.window);
+	EwlEvent  *ev = ewl_event_new(t->type,w);
+	return ev;
 }
 

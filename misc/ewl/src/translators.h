@@ -1,32 +1,26 @@
 #ifndef _EVENT_TRANSLATORS_H_
 #define _EVENT_TRANSLATORS_H_ 1
 
-#include "includes.h"
-#include "ll.h"
-#include "event.h"
 #include "layout.h"
+#include "event.h"
 #include "widget.h"
 
 #define EWL_MAX_EVENT_TRANSLATORS LASTEvent /* thanks! giblet */
 
-/* defined in state.h */
-extern EwlWidget *ewl_widget_grabbed_get();
-extern EwlWidget *ewl_widget_focused_get();
 /* defined in ewlwindow.h */
 extern EwlWidget *ewl_window_find_by_xwin(Window xwin);
 
 typedef struct _EwlEventTranslator EwlEventTranslator;
 typedef EwlEvent *(*EwlTranslatorCallback)(EwlEventTranslator *t, XEvent *xev);
 struct _EwlEventTranslator	{
-	EwlEventType           type;
-	char                  *desc;
+	char                  *type;
 	EwlTranslatorCallback  cb;
 };
 
+EwlEvent           *ewl_translate(XEvent *xev);
+
 EwlEventTranslator *ewl_translator_new(EwlTranslatorCallback  cb,
-                                       char                  *desc,
-                                       EwlEventType           type);
-EwlWidget          *ewl_widget_find_by_xwin(Window xwin);
+                                       char                  *type);
 
 EwlEvent *cb_ewl_event_keypress_translate(EwlEventTranslator *t, XEvent *xev);
 EwlEvent *cb_ewl_event_keyrelease_translate(EwlEventTranslator *t, XEvent *xev);

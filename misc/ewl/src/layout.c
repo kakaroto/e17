@@ -5,7 +5,7 @@ EwlRect *ewl_rect_new()
 	EwlRect *r = malloc(sizeof(EwlRect));
 	FUNC_BGN("ewl_rect_new");
 	if (!r)	{
-		ewl_debug("ewl_rect_new", EWL_NULL_ERROR, "r");
+		/* FIXME */
 	} else {
 		r->x = 0;
 		r->y = 0;
@@ -16,17 +16,17 @@ EwlRect *ewl_rect_new()
 	return r;
 }
 
-EwlRect *ewl_rect_new_with_values(int *x, int *y, int *w, int *h)
+EwlRect *ewl_rect_new_with_values(int x, int y, int w, int h)
 {
 	EwlRect *r = malloc(sizeof(EwlRect));
 	FUNC_BGN("ewl_rect_new_with_values");
 	if (!r)	{
 		ewl_debug("ewl_rect_new_with_values", EWL_NULL_ERROR, "r");
 	} else {
-		r->x = x?*x:0;
-		r->y = y?*y:0;
-		r->w = w?*w:-1;
-		r->h = h?*h:-1;
+		r->x = x;
+		r->y = y;
+		r->w = w;
+		r->h = h;
 	}
 	FUNC_END("ewl_rect_new_with_values");
 	return r;
@@ -39,7 +39,7 @@ EwlRect *ewl_rect_dup(EwlRect *r)
 	if (!r)	{
 		ewl_debug("ewl_rect_dup", EWL_NULL_ERROR, "r");
 	} else {
-		tr = ewl_rect_new_with_values(&r->x, &r->y, &r->w, &r->h);
+		tr = ewl_rect_new_with_values(r->x, r->y, r->w, r->h);
 	}
 	FUNC_END("ewl_rect_dup");
 	return tr;
@@ -121,7 +121,7 @@ EwlRRect *ewl_rrect_new()
 {
 	EwlRRect *r = NULL;
 	FUNC_BGN("ewl_rrect_new");
-	r = ewl_rrect_new_with_values(NULL,NULL,NULL,NULL, NULL,NULL,NULL,NULL);
+	r = ewl_rrect_new_with_values(0,0,0,0, 0,0,0,0);
 	if (!r)	{
 		ewl_debug("ewl_rrect_new", EWL_NULL_ERROR, "r");
 	}
@@ -129,22 +129,22 @@ EwlRRect *ewl_rrect_new()
 	return r;
 }
 
-EwlRRect *ewl_rrect_new_with_values(int *txr, int *txa, int *tyr, int *tya,
-                                    int *bxr, int *bxa, int *byr, int *bya)
+EwlRRect *ewl_rrect_new_with_values(int txr, int txa, int tyr, int tya,
+                                    int bxr, int bxa, int byr, int bya)
 {
 	EwlRRect *r = malloc(sizeof(EwlRRect));
 	FUNC_BGN("ewl_rrect_new_with_values");
 	if (!r)	{
 		ewl_debug("ewl_rrect_new_with_values", EWL_NULL_ERROR, "r");
 	} else {
-		r->x[EWL_TOP_RELATIVE] = txr?*txr:0;
-		r->x[EWL_TOP_ABSOLUTE] = txa?*txa:0;
-		r->y[EWL_TOP_RELATIVE] = tyr?*tyr:0;
-		r->y[EWL_TOP_ABSOLUTE] = tya?*tya:0;
-		r->x[EWL_BOT_RELATIVE] = bxr?*bxr:8192;
-		r->x[EWL_BOT_ABSOLUTE] = bxa?*bxa:0;
-		r->y[EWL_BOT_RELATIVE] = byr?*byr:8192;
-		r->y[EWL_BOT_ABSOLUTE] = bya?*bya:0;
+		r->x[EWL_TOP_RELATIVE] = txr;
+		r->x[EWL_TOP_ABSOLUTE] = txa;
+		r->y[EWL_TOP_RELATIVE] = tyr;
+		r->y[EWL_TOP_ABSOLUTE] = tya;
+		r->x[EWL_BOT_RELATIVE] = bxr;
+		r->x[EWL_BOT_ABSOLUTE] = bxa;
+		r->y[EWL_BOT_RELATIVE] = byr;
+		r->y[EWL_BOT_ABSOLUTE] = bya;
 	}
 	FUNC_END("ewl_rrect_new_with_values");
 	return r;
@@ -157,14 +157,14 @@ EwlRRect *ewl_rrect_dup(EwlRRect *r)
 	if (!r)	{
 		ewl_debug("ewl_rrect_dup", EWL_NULL_ERROR, "r");
 	} else {
-		rr = ewl_rrect_new_with_values(&(r->x[EWL_TOP_RELATIVE]),
-		                               &(r->x[EWL_TOP_ABSOLUTE]),
-		                               &(r->y[EWL_TOP_RELATIVE]),
-		                               &(r->y[EWL_TOP_ABSOLUTE]),
-		                               &(r->x[EWL_BOT_RELATIVE]),
-		                               &(r->x[EWL_BOT_ABSOLUTE]),
-		                               &(r->y[EWL_BOT_RELATIVE]),
-		                               &(r->y[EWL_BOT_ABSOLUTE]));
+		rr = ewl_rrect_new_with_values((r->x[EWL_TOP_RELATIVE]),
+		                               (r->x[EWL_TOP_ABSOLUTE]),
+		                               (r->y[EWL_TOP_RELATIVE]),
+		                               (r->y[EWL_TOP_ABSOLUTE]),
+		                               (r->x[EWL_BOT_RELATIVE]),
+		                               (r->x[EWL_BOT_ABSOLUTE]),
+		                               (r->y[EWL_BOT_RELATIVE]),
+		                               (r->y[EWL_BOT_ABSOLUTE]));
 		if (!rr)	{
 			ewl_debug("ewl_rrect_dup", EWL_NULL_ERROR, "rr");
 		}
@@ -284,10 +284,10 @@ EwlLayout *ewl_layout_new()
         max=0, may=0, maw=-1, mah=-1;
 	EwlLayout *l = NULL;
 	FUNC_BGN("ewl_layout_new");
-	l = ewl_layout_new_with_values(&x,   &y,   &w,   &h,
-	                               &rx,  &ry,  &rw,  &rh,
-	                               &mix, &miy, &miw, &mih,
-	                               &max, &may, &maw, &mah);
+	l = ewl_layout_new_with_values(x,   y,   w,   h,
+	                               rx,  ry,  rw,  rh,
+	                               mix, miy, miw, mih,
+	                               max, may, maw, mah);
 	if (!l)	{
 		ewl_debug("ewl_layout_new", EWL_NULL_ERROR, "l");
 	}
@@ -295,10 +295,10 @@ EwlLayout *ewl_layout_new()
 	return l;
 }
 
-EwlLayout *ewl_layout_new_with_values(int *x,   int *y,   int *w,   int *h,
-                                      int *rx,  int *ry,  int *rw,  int *rh,
-                                      int *mix, int *miy, int *miw, int *mih,
-                                      int *max, int *may, int *maw, int *mah)
+EwlLayout *ewl_layout_new_with_values(int x,   int y,   int w,   int h,
+                                      int rx,  int ry,  int rw,  int rh,
+                                      int mix, int miy, int miw, int mih,
+                                      int max, int may, int maw, int mah)
 {
 	EwlLayout *l = NULL;
 	FUNC_BGN("ewl_layout_new_with_values");
@@ -329,10 +329,10 @@ EwlLayout *ewl_layout_new_with_rect_values(EwlRect *rect, EwlRect *req,
 	miw = min?min->w:-1; mih = min?min->h:-1;
 	maxx = max?max->x:0; may = max?max->y:0;
 	maw = max?max->w:-1; mah = max?max->h:-1;
-	l = ewl_layout_new_with_values(&x,   &y,   &w,   &h,
-	                               &rx,  &ry,  &rw,  &rh,
-	                               &mix, &miy, &miw, &mih,
-	                               &maxx, &may, &maw, &mah);
+	l = ewl_layout_new_with_values(x,   y,   w,   h,
+	                               rx,  ry,  rw,  rh,
+	                               mix, miy, miw, mih,
+	                               maxx, may, maw, mah);
 	if (!l)	{
 		ewl_debug("ewl_layout_new_with_rect_values", EWL_NULL_ERROR, "l");
 	}
@@ -1089,9 +1089,9 @@ EwlRLayout *ewl_rlayout_new()
 	int         x = 0;
 	EwlRLayout *r = NULL;
 	FUNC_BGN("ewl_rlayout_new");
-	r = ewl_rlayout_new_with_values(&x,&x,&x,&x, &x,&x,&x,&x, &x,&x,&x,&x,
-	                                &x,&x,&x,&x, &x,&x,&x,&x, &x,&x,&x,&x,
-	                                &x,&x,&x,&x, &x,&x,&x,&x );
+	r = ewl_rlayout_new_with_values(x,x,x,x, x,x,x,x, x,x,x,x,
+	                                x,x,x,x, x,x,x,x, x,x,x,x,
+	                                x,x,x,x, x,x,x,x );
 	if (!r)	{
 		ewl_debug("ewl_rlayout_new", EWL_NULL_ERROR, "r");
 	}
@@ -1100,14 +1100,14 @@ EwlRLayout *ewl_rlayout_new()
 }
 
 EwlRLayout *ewl_rlayout_new_with_values(
-              int *txr,   int *txa,   int *tyr,   int *tya,
-              int *bxr,   int *bxa,   int *byr,   int *bya,
-              int *rtxr,  int *rtxa,  int *rtyr,  int *rtya,
-              int *rbxr,  int *rbxa,  int *rbyr,  int *rbya,
-              int *mitxr, int *mitxa, int *mityr, int *mitya,
-              int *mibxr, int *mibxa, int *mibyr, int *mibya,
-              int *matxr, int *matxa, int *matyr, int *matya,
-              int *mabxr, int *mabxa, int *mabyr, int *mabya)
+              int txr,   int txa,   int tyr,   int tya,
+              int bxr,   int bxa,   int byr,   int bya,
+              int rtxr,  int rtxa,  int rtyr,  int rtya,
+              int rbxr,  int rbxa,  int rbyr,  int rbya,
+              int mitxr, int mitxa, int mityr, int mitya,
+              int mibxr, int mibxa, int mibyr, int mibya,
+              int matxr, int matxa, int matyr, int matya,
+              int mabxr, int mabxa, int mabyr, int mabya)
 {
 	EwlRLayout *l = malloc(sizeof(EwlRLayout));
 	FUNC_BGN("ewl_rlayout_new_with_values");

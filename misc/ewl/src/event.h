@@ -1,116 +1,53 @@
-#ifndef _EWL_EVENT_CLASS_H_
-#define _EWL_EVENT_CLASS_H_ 1
+#ifndef _EVENT_H_
+#define _EVENT_H_
 
 #include "includes.h"
-#include "debug.h"
-#include "ll.h"
-#include "util.h"
-#include "layout.h"
+#include "error.h"
+#include "list.h"
+#include "hash.h"
 
-typedef unsigned int                EwlEventType;
-enum _EwlEventTypeEnum {
-/* INTERNAL EVENTS */
-	EWL_EVENT_NONE,
-	EWL_EVENT_INIT,
-	EWL_EVENT_REALIZE,
-	EWL_EVENT_UNREALIZE,
-	EWL_EVENT_MEDIA,
+#define EWL_EVENT(a) ((EwlEvent*)a)
+#define EWL_CALLBACK(a) ((EwlCallback) a)
+#define EWL_CALLBACK_DATA(a) ((EwlCallbackData*)a)
 
-/* X EVENTS */
-	EWL_EVENT_SHOW,
-	EWL_EVENT_HIDE,
-	EWL_EVENT_RESIZE,
-	EWL_EVENT_MOVE,
-	EWL_EVENT_MOUSEDOWN,
-	EWL_EVENT_MOUSEUP,
-	EWL_EVENT_MOUSEMOVE,
-	EWL_EVENT_KEYDOWN,
-	EWL_EVENT_KEYUP,
-	EWL_EVENT_ENTER,
-	EWL_EVENT_LEAVE,
-	EWL_EVENT_FOCUSIN,
-	EWL_EVENT_FOCUSOUT,
-	EWL_EVENT_EXPOSE,
-	EWL_EVENT_VISIBILITY,
-	EWL_EVENT_CREATE,
-	EWL_EVENT_DESTROY,
-	EWL_EVENT_REPARENT,
-	EWL_EVENT_CONFIGURE,
-	EWL_EVENT_CIRCULATE,
-	EWL_EVENT_PROPERTY,
-	EWL_EVENT_COLORMAP,
-	EWL_EVENT_CLIENT,
-	EWL_EVENT_SELECTION,
-	EWL_EVENT_LAST
-};
+typedef struct _EwlEvent        EwlEvent;
+typedef void (*EwlCallback)(void *object, EwlEvent *event, void *data);
+typedef struct _EwlCallbackData EwlCallbackData;
 
-static char *_EwlEventTypeStringEnum[] = {
-/* INTERNAL EVENTS */
-	"EWL_EVENT_NONE",
-	"EWL_EVENT_INIT",
-	"EWL_EVENT_REALIZE",
-	"EWL_EVENT_UNREALIZE",
-	"EWL_EVENT_MEDIA",
-
-/* X EVENTS */
-	"EWL_EVENT_SHOW",
-	"EWL_EVENT_HIDE",
-	"EWL_EVENT_RESIZE",
-	"EWL_EVENT_MOVE",
-	"EWL_EVENT_MOUSEDOWN",
-	"EWL_EVENT_MOUSEUP",
-	"EWL_EVENT_MOUSEMOVE",
-	"EWL_EVENT_KEYDOWN",
-	"EWL_EVENT_KEYUP",
-	"EWL_EVENT_ENTER",
-	"EWL_EVENT_LEAVE",
-	"EWL_EVENT_FOCUSIN",
-	"EWL_EVENT_FOCUSOUT",
-	"EWL_EVENT_EXPOSE",
-	"EWL_EVENT_VISIBILITY",
-	"EWL_EVENT_CREATE",
-	"EWL_EVENT_DESTROY",
-	"EWL_EVENT_REPARENT",
-	"EWL_EVENT_CONFIGURE",
-	"EWL_EVENT_CIRCULATE",
-	"EWL_EVENT_PROPERTY",
-	"EWL_EVENT_COLORMAP",
-	"EWL_EVENT_CLIENT",
-	"EWL_EVENT_SELECTION",
-	"EWL_EVENT_LAST"
-};
-
-typedef struct _EwlEvent EwlEvent;
 struct _EwlEvent	{
-	EwlLL             ll;
-	EwlType           type;
-	void             *widget; /* EwlWidget hasn't been defined yet */
-	EwlData          *data;
-	unsigned int      time;
+	EwlListNode   node;
+	EwlHash      *data;
 };
 
-#include "event_types.h"
+struct _EwlCallbackData	{
+	EwlCallback  callback;
+	void        *data;
+};
 
-EwlEvent      *ewl_event_none_new();
-EwlEvent      *ewl_event_new();
-EwlEvent      *ewl_event_new_by_type(EwlEventType t);
-EwlEvent      *ewl_event_new_by_type_with_widget(EwlEventType  type,
-                                                 void         *widget);
-EwlEvent      *ewl_event_dup(EwlEvent *sev);
-void           ewl_event_free(EwlEvent *ev);
+/* EVENT QUEUE CALLS */
+EwlList  *ewl_get_event_queue();
+char      ewl_events_pending();
+EwlEvent *ewl_next_event();
+void      ewl_queue(EwlEvent *event);
+void      ewl_event_queue(EwlEvent *event);
+void      ewl_event_queue_new(char *type, void *object);
 
-EwlData       *ewl_event_get_data(EwlEvent *ev);
-void           ewl_event_set_data(EwlEvent *ev, EwlData *data);
+/* EVENT CALLBACK FUNCTIONS */
+EwlCallbackData *ewl_callback_data_new(EwlCallback cb, void *data);
 
-EwlEventType   ewl_event_get_type(EwlEvent *ev);
-/*void           ewl_event_set_type(EwlEvent *ev, EwlEventType type);*/
-char          *ewl_event_get_type_string(EwlEvent *ev);
+/* EVNET NEW/FREE FUNCTIONS */
+EwlEvent *ewl_event_new(char *type, void *object);
+void      ewl_event_free(EwlEvent *event);
 
-static char __depricated_eventtype_die_pedantic_die()	{
-	if (!_EwlEventTypeStringEnum)	{
-		return __depricated_eventtype_die_pedantic_die();
-	}
-	return 0;
-}
+/* EVENT TYPE/OBJECT FUNCTIONS */
+void      ewl_event_set_type(EwlEvent *event, char *type);
+char     *ewl_event_get_type(EwlEvent *event);
 
-#endif /* _EWL_EVENT_CLASS_H_ */
+void      ewl_event_set_object(EwlEvent *event, void *object);
+void     *ewl_event_get_object(EwlEvent *event);
+
+/* EVENT DATA HASH FUCNTIONS */
+void      ewl_event_set_data(EwlEvent *event, char *key, void *data);
+void     *ewl_event_get_data(EwlEvent *event, char *key);
+
+#endif /* _EVENT_H_ */

@@ -2,6 +2,7 @@
 #define _LAYOUT_H_ 1
 
 #include "includes.h"
+#include "error.h"
 
 /* EWL_RECT */
 typedef struct _EwlRect EwlRect;
@@ -10,7 +11,7 @@ struct _EwlRect	{
 };
 
 EwlRect *ewl_rect_new();
-EwlRect *ewl_rect_new_with_values(int *x, int *y, int *w, int *h);
+EwlRect *ewl_rect_new_with_values(int x, int y, int w, int h);
 EwlRect *ewl_rect_dup(EwlRect *r);
 void     ewl_rect_free(EwlRect *r);
 
@@ -40,8 +41,8 @@ struct _EwlRRect	{
 };
 
 EwlRRect *ewl_rrect_new();
-EwlRRect *ewl_rrect_new_with_values(int *txr, int *txa, int *tyr, int *tya,
-                                    int *bxr, int *bxa, int *byr, int *bya);
+EwlRRect *ewl_rrect_new_with_values(int txr, int txa, int tyr, int tya,
+                                    int bxr, int bxa, int byr, int bya);
 EwlRRect *ewl_rrect_dup(EwlRRect *r);
 void      ewl_rrect_free(EwlRRect *r);
 
@@ -65,10 +66,10 @@ struct _EwlLayout  {
 };
 
 EwlLayout *ewl_layout_new();
-EwlLayout *ewl_layout_new_with_values(int *x,   int *y,   int *w,   int *h,
-                                      int *rx,  int *ry,  int *rw,  int *rh,
-                                      int *mix, int *miy, int *miw, int *mih,
-                                      int *max, int *may, int *maw, int *mah);
+EwlLayout *ewl_layout_new_with_values(int x,   int y,   int w,   int h,
+                                      int rx,  int ry,  int rw,  int rh,
+                                      int mix, int miy, int miw, int mih,
+                                      int max, int may, int maw, int mah);
 EwlLayout *ewl_layout_new_with_rect_values(EwlRect *rect, EwlRect *req,
                                            EwlRect *min,  EwlRect *max);
 EwlLayout *ewl_layout_dup(EwlLayout *l);
@@ -147,14 +148,14 @@ struct _EwlRLayout	{
 
 EwlRLayout *ewl_rlayout_new();
 EwlRLayout *ewl_rlayout_new_with_values(
-              int *txr,   int *txa,   int *tyr,   int *tya,
-              int *bxr,   int *bxa,   int *byr,   int *bya,
-              int *rtxr,  int *rtxa,  int *rtyr,  int *rtya,
-              int *rbxr,  int *rbxa,  int *rbyr,  int *rbya,
-              int *mitxr, int *mitxa, int *mityr, int *mitya,
-              int *mibxr, int *mibxa, int *mibyr, int *mibya,
-              int *matxr, int *matxa, int *matyr, int *matya,
-              int *mabxr, int *mabxa, int *mabyr, int *mabya);
+              int txr,   int txa,   int tyr,   int tya,
+              int bxr,   int bxa,   int byr,   int bya,
+              int rtxr,  int rtxa,  int rtyr,  int rtya,
+              int rbxr,  int rbxa,  int rbyr,  int rbya,
+              int mitxr, int mitxa, int mityr, int mitya,
+              int mibxr, int mibxa, int mibyr, int mibya,
+              int matxr, int matxa, int matyr, int matya,
+              int mabxr, int mabxa, int mabyr, int mabya);
 EwlRLayout *ewl_rlayout_new_with_rect_values(EwlRRect *rect, EwlRRect *req,
                                            EwlRRect *min,  EwlRRect *max);
 EwlRLayout *ewl_rlayout_dup(EwlRLayout *l);

@@ -24,12 +24,20 @@
 #include <X11/Xresource.h>
 #include <X11/X.h>
 #include <X11/Xproto.h>
-#include <Imlib2.h>
+
 #include <Evas.h>
 
 #include "mwm.h"
 
-#include "debug.h"
-#include "types.h"
+#define UNUSED(x)  ((void) (x))
+
+typedef char EwlBool;
+
+#ifndef TRUE
+#define TRUE 1
+#endif
+#ifndef FALSE
+#define FALSE 0
+#endif
 
 #endif  /*  _INCLUDES_H_ */
