@@ -1,3 +1,5 @@
+#include "ipc.h"
+
 typedef enum { OFFLINE, ONLINE } connstate;
 
 typedef struct Ecore_Config_Ipc_Server_List {

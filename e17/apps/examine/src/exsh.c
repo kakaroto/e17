@@ -41,7 +41,6 @@ extern int      read_history();
 
 
 
-#include "ipc.h"
 #include "ecore_config_client.h"
 
 

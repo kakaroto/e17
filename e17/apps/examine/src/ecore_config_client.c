@@ -13,7 +13,6 @@
 #include <limits.h>
 
 
-#include "ipc.h"
 #include "ecore_config_client.h"
 
 

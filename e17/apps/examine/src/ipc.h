@@ -1,5 +1,5 @@
 #include <Ecore_Ipc.h>
-#include "Ecore_Config.h"
+#include <Ecore_Config.h>
 
 typedef enum {
   IPC_NONE,

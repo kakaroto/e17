@@ -1,5 +1,4 @@
 #include "ecore_config_client.h"
-#include "ipc.h"
 #include <Ewl.h>
 
 typedef enum {
