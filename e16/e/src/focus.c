@@ -192,8 +192,6 @@ FocusFix(void)
    EWin               *const *lst, *ewin;
    int                 i, num;
 
-   EDBUG(5, "FocusFix");
-
    lst = EwinListGetAll(&num);
    for (i = 0; i < num; i++)
      {
@@ -201,8 +199,6 @@ FocusFix(void)
 	GrabButtonRelease(AnyButton, AnyModifier, ewin->win_container);
 	FocusEwinSetGrabs(ewin);
      }
-
-   EDBUG_RETURN_;
 }
 
 void
@@ -210,8 +206,6 @@ FocusToEWin(EWin * ewin, int why)
 {
    int                 do_follow = 0;
    int                 do_raise = 0, do_warp = 0;
-
-   EDBUG(4, "FocusToEWin");
 
    if (EventDebug(EDBUG_TYPE_FOCUS))
      {
@@ -237,11 +231,11 @@ FocusToEWin(EWin * ewin, int why)
      case FOCUS_LEAVE:		/* Unused */
      case FOCUS_CLICK:
 	if (ewin == Mode.focuswin)
-	   EDBUG_RETURN_;
+	   return;
 	if (ewin == NULL)	/* Unfocus */
 	   break;
 	if (!FocusEwinValid(ewin, 1))
-	   EDBUG_RETURN_;
+	   return;
 	break;
 
      case FOCUS_DESK_ENTER:
@@ -254,12 +248,12 @@ FocusToEWin(EWin * ewin, int why)
      case FOCUS_DESK_LEAVE:
 	ewin = NULL;
 	if (ewin == Mode.focuswin)
-	   EDBUG_RETURN_;
+	   return;
 	break;
 
      case FOCUS_EWIN_GONE:
 	if (ewin != Mode.focuswin)
-	   EDBUG_RETURN_;
+	   return;
 	ewin = FocusEwinSelect();
 	if (ewin == Mode.focuswin)
 	   ewin = NULL;
@@ -268,7 +262,7 @@ FocusToEWin(EWin * ewin, int why)
      case FOCUS_EWIN_NEW:
 	/* Don't chase around after the windows at startup */
 	if (Mode.wm.startup || Mode.doingslide)
-	   EDBUG_RETURN_;
+	   return;
 
 	if (Conf.focus.all_new_windows_get_focus)
 	  {
@@ -294,16 +288,16 @@ FocusToEWin(EWin * ewin, int why)
 	  }
 
 	if (!do_follow)
-	   EDBUG_RETURN_;
+	   return;
 	if (ewin == Mode.focuswin)
-	   EDBUG_RETURN_;
+	   return;
 	if (!FocusEwinValid(ewin, 0))
-	   EDBUG_RETURN_;
+	   return;
 	break;
      }
 
    if (ewin == Mode.focuswin)
-      EDBUG_RETURN_;
+      return;
 
    /* Check if ewin is a valid focus window target */
 
@@ -358,7 +352,7 @@ FocusToEWin(EWin * ewin, int why)
    if (!PointerAt(NULL, NULL))
      {
 	Mode.focuswin = NULL;
-	EDBUG_RETURN_;
+	return;
      }
 
    /* Set new focus window (if any) highlighting */
@@ -367,8 +361,6 @@ FocusToEWin(EWin * ewin, int why)
       FocusEwinSetActive(Mode.focuswin, 1);
    if (why != FOCUS_DESK_LEAVE)
       ICCCM_Focus(ewin);
-
-   EDBUG_RETURN_;
 }
 
 void
@@ -407,8 +399,6 @@ FocusNewDesk(void)
 {
    EWin               *ewin;
 
-   EDBUG(4, "FocusNewDesk");
-
    if (--new_desk_focus_nesting)
       return;
 
@@ -421,8 +411,6 @@ FocusNewDesk(void)
    Mode.mouse_over_ewin = ewin;
 
    FocusToEWin(NULL, FOCUS_DESK_ENTER);
-
-   EDBUG_RETURN_;
 }
 
 /*

@@ -32,8 +32,6 @@ AtomGet(Window win, Atom to_get, Atom type, int *size)
    long                length;
    void               *data;
 
-   EDBUG(5, "AtomGet");
-
    retval = NULL;
    length = 0x7fffffff;
    XGetWindowProperty(disp, win, to_get, 0, length, False, type, &type_ret,
@@ -69,12 +67,12 @@ AtomGet(Window win, Atom to_get, Atom type, int *size)
 		memcpy(data, retval, num_ret);
 	  }
 	XFree(retval);
-	EDBUG_RETURN(data);
+	return data;
      }
    if (retval)
       XFree(retval);
-   EDBUG_RETURN(NULL);
 
+   return NULL;
 }
 
 void

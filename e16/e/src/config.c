@@ -387,37 +387,35 @@ FindFile(const char *file, const char *themepath)
 {
    char                s[FILEPATH_LEN_MAX];
 
-   EDBUG(6, "FindFile");
-
    /* if absolute path - and file exists - return it */
    if (isabspath(file))
      {
 	strcpy(s, file);
 	if (findLocalizedFile(s) || isfile(s))
-	   EDBUG_RETURN(Estrdup(s));
+	   return Estrdup(s);
      }
 
    /* look in ~/.e16 first */
 
    Esnprintf(s, sizeof(s), "%s/%s", EDirUser(), file);
    if (findLocalizedFile(s) || isfile(s))
-      EDBUG_RETURN(Estrdup(s));
+      return Estrdup(s);
 
    if (themepath)
      {
 	/* look in theme dir */
 	Esnprintf(s, sizeof(s), "%s/%s", themepath, file);
 	if (findLocalizedFile(s) || isfile(s))
-	   EDBUG_RETURN(Estrdup(s));
+	   return Estrdup(s);
      }
 
    /* look in system config dir */
    Esnprintf(s, sizeof(s), "%s/config/%s", EDirRoot(), file);
    if (findLocalizedFile(s) || isfile(s))
-      EDBUG_RETURN(Estrdup(s));
+      return Estrdup(s);
 
    /* not found.... NULL */
-   EDBUG_RETURN(NULL);
+   return NULL;
 }
 
 char               *
@@ -433,11 +431,9 @@ ConfigFileFind(const char *name, const char *themepath, int pp)
    char               *fullname, *file, *ppfile;
    int                 i, err;
 
-   EDBUG(5, "FindConfigFile");
-
    fullname = FindFile(name, themepath);
    if (!fullname)
-      EDBUG_RETURN(NULL);
+      return NULL;
 
    /* Quit if not preparsing */
    if (!pp)
@@ -523,8 +519,6 @@ ThemeConfigLoad(void)
    Progressbar        *p = NULL;
    int                 i;
 
-   EDBUG(5, "ThemeConfigLoad");
-
    Esnprintf(s, sizeof(s), "%s/", Mode.theme.path);
 
    for (i = 0; i < (int)(sizeof(config_files) / sizeof(char *)); i++)
@@ -562,7 +556,7 @@ ThemeConfigLoad(void)
 
    BordersSetupFallback();
 
-   EDBUG_RETURN(0);
+   return 0;
 }
 
 void

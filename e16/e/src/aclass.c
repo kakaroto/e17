@@ -63,8 +63,6 @@ RemoveActionType(ActionType * ActionTypeToRemove)
 {
    ActionType         *ptr, *pp;
 
-   EDBUG(5, "RemoveActionType");
-
    ptr = ActionTypeToRemove;
    while (ptr)
      {
@@ -74,8 +72,6 @@ RemoveActionType(ActionType * ActionTypeToRemove)
 	ptr = ptr->next;
 	Efree(pp);
      }
-
-   EDBUG_RETURN_;
 }
 
 Action             *
@@ -83,8 +79,6 @@ ActionCreate(char event, char anymod, int mod, int anybut, int but,
 	     char anykey, const char *key, const char *tooltipstring)
 {
    Action             *aa;
-
-   EDBUG(5, "ActionCreate");
 
    aa = Emalloc(sizeof(Action));
    aa->action = NULL;
@@ -103,16 +97,14 @@ ActionCreate(char event, char anymod, int mod, int anybut, int but,
       (tooltipstring) ? Estrdup((tooltipstring[0]) ? _(tooltipstring) : "?!?") :
       NULL;
 
-   EDBUG_RETURN(aa);
+   return aa;
 }
 
 static void
 ActionDestroy(Action * aa)
 {
-   EDBUG(5, "ActionDestroy");
-
    if (!aa)
-      EDBUG_RETURN_;
+      return;
 
    if ((aa->event == EVENT_KEY_DOWN) || (aa->event == EVENT_KEY_UP))
       UnGrabActionKey(aa);
@@ -123,9 +115,6 @@ ActionDestroy(Action * aa)
    if (aa->key_str)
       Efree(aa->key_str);
    Efree(aa);
-
-   EDBUG_RETURN_;
-
 }
 
 void
@@ -133,7 +122,6 @@ ActionAddTo(Action * aa, const char *params)
 {
    ActionType         *pptr, *ptr, *at;
 
-   EDBUG(5, "ActionAddTo");
    pptr = NULL;
    at = Emalloc(sizeof(ActionType));
    at->next = NULL;
@@ -152,20 +140,17 @@ ActionAddTo(Action * aa, const char *params)
 	  }
 	pptr->next = at;
      }
-   EDBUG_RETURN_;
 }
 
 void
 ActionclassAddAction(ActionClass * ac, Action * aa)
 {
-   EDBUG(5, "ActionclassAddAction");
    ac->num++;
    if (!ac->list)
       ac->list = Emalloc(sizeof(Action *));
    else
       ac->list = Erealloc(ac->list, ac->num * sizeof(Action *));
    ac->list[ac->num - 1] = aa;
-   EDBUG_RETURN_;
 }
 
 ActionClass        *
@@ -173,7 +158,6 @@ ActionclassCreate(const char *name, int global)
 {
    ActionClass        *ac;
 
-   EDBUG(5, "ActionclassCreate");
    ac = Emalloc(sizeof(ActionClass));
    ac->name = Estrdup(name);
    ac->num = 0;
@@ -182,7 +166,8 @@ ActionclassCreate(const char *name, int global)
    ac->ref_count = 0;
    AddItem(ac, ac->name, 0, (global)?
 	   LIST_TYPE_ACLASS_GLOBAL : LIST_TYPE_ACLASS);
-   EDBUG_RETURN(ac);
+
+   return ac;
 }
 
 void
@@ -190,16 +175,14 @@ ActionclassDestroy(ActionClass * ac)
 {
    int                 i;
 
-   EDBUG(5, "ActionclassDestroy");
-
    if (!ac)
-      EDBUG_RETURN_;
+      return;
 
    if (ac->ref_count > 0)
      {
 	DialogOK(_("ActionClass Error!"), _("%u references remain\n"),
 		 ac->ref_count);
-	EDBUG_RETURN_;
+	return;
      }
    while (RemoveItemByPtr(ac, LIST_TYPE_ACLASS));
 
@@ -213,8 +196,6 @@ ActionclassDestroy(ActionClass * ac)
       Efree(ac->tooltipstring);
    Efree(ac);
    mode_action_destroy = 1;
-
-   EDBUG_RETURN_;
 }
 
 int
@@ -859,10 +840,8 @@ EventAclass(XEvent * ev, EWin * ewin, ActionClass * ac)
    int                 i, type, button, modifiers, ok, mouse, mask, val = 0;
    Action             *aa;
 
-   EDBUG(5, "EventAclass");
-
    if (Mode.action_inhibit || (ewin && ewin->no_actions))
-      EDBUG_RETURN(0);
+      return 0;
 
    key = type = button = modifiers = mouse = 0;
 
@@ -910,7 +889,7 @@ EventAclass(XEvent * ev, EWin * ewin, ActionClass * ac)
 	if (ewin && ev->xcrossing.window == EoGetWin(ewin) &&
 	    (ev->xcrossing.x >= 0 && ev->xcrossing.x < EoGetW(ewin) &&
 	     ev->xcrossing.y >= 0 && ev->xcrossing.y < EoGetH(ewin)))
-	   EDBUG_RETURN(0);
+	   return 0;
 	type = EVENT_MOUSE_LEAVE;
 	button = -1;
 	modifiers = ev->xcrossing.state & mask;
@@ -987,7 +966,7 @@ EventAclass(XEvent * ev, EWin * ewin, ActionClass * ac)
 
    mode_action_destroy = 0;
 
-   EDBUG_RETURN(val);
+   return val;
 }
 
 static void
@@ -1378,10 +1357,8 @@ GrabActionKey(Action * aa)
 {
    int                 mod;
 
-   EDBUG(4, "GrabActionKey");
-
    if (!aa->key)
-      EDBUG_RETURN_;
+      return;
 
    mod = aa->modifiers;
    if (aa->anymodifier)
@@ -1399,8 +1376,6 @@ GrabActionKey(Action * aa)
 	   XGrabKey(disp, aa->key, mod | Mode.masks.mod_combos[i], VRoot.win,
 		    False, GrabModeAsync, GrabModeAsync);
      }
-
-   EDBUG_RETURN_;
 }
 
 static void
@@ -1408,10 +1383,8 @@ UnGrabActionKey(Action * aa)
 {
    int                 mod;
 
-   EDBUG(4, "UnGrabActionKey");
-
    if (!aa->key)
-      EDBUG_RETURN_;
+      return;
 
    mod = aa->modifiers;
    if (aa->anymodifier)
@@ -1427,6 +1400,4 @@ UnGrabActionKey(Action * aa)
 	for (i = 0; i < 8; i++)
 	   XUngrabKey(disp, aa->key, mod | Mode.masks.mod_combos[i], VRoot.win);
      }
-
-   EDBUG_RETURN_;
 }

@@ -42,8 +42,6 @@ SlideWindowSizeTo(Window win, int fx, int fy, int tx, int ty, int fw, int fh,
 {
    int                 k, x, y, w, h;
 
-   EDBUG(5, "SlideWindowTo");
-
    ecore_x_grab();
 
    ETimedLoopInit(0, 1024, speed);
@@ -61,8 +59,6 @@ SlideWindowSizeTo(Window win, int fx, int fy, int tx, int ty, int fw, int fh,
    EMoveResizeWindow(disp, win, tx, ty, tw, th);
 
    ecore_x_ungrab();
-
-   EDBUG_RETURN_;
 }
 
 static Slideout    *
@@ -70,11 +66,9 @@ SlideoutCreate(char *name, char dir)
 {
    Slideout           *s;
 
-   EDBUG(5, "SlideoutCreate");
-
    s = Emalloc(sizeof(Slideout));
    if (!s)
-      EDBUG_RETURN(NULL);
+      return NULL;
 
    s->name = Estrdup(name);
    s->direction = dir;
@@ -86,7 +80,7 @@ SlideoutCreate(char *name, char dir)
    s->from_win = 0;
    s->ref_count = 0;
 
-   EDBUG_RETURN(s);
+   return s;
 }
 
 void
@@ -98,11 +92,9 @@ SlideoutShow(Slideout * s, EWin * ewin, Window win)
    XSetWindowAttributes att;
    unsigned int        w, h, d;
 
-   EDBUG(5, "SlideoutShow");
-
    /* Don't ever show more than one slideout */
    if (Mode.slideout)
-      EDBUG_RETURN_;
+      return;
 
    SlideoutCalcSize(s);
    EGetGeometry(disp, win, &dw, &di, &di, &w, &h, &d, &d);
@@ -121,7 +113,7 @@ SlideoutShow(Slideout * s, EWin * ewin, Window win)
 	     s->direction = 1;
 	     SlideoutShow(s, ewin, win);
 	     s->direction = pdir;
-	     EDBUG_RETURN_;
+	     return;
 	  }
 	break;
      case 3:
@@ -133,7 +125,7 @@ SlideoutShow(Slideout * s, EWin * ewin, Window win)
 	     s->direction = 0;
 	     SlideoutShow(s, ewin, win);
 	     s->direction = pdir;
-	     EDBUG_RETURN_;
+	     return;
 	  }
 	break;
      case 0:
@@ -145,7 +137,7 @@ SlideoutShow(Slideout * s, EWin * ewin, Window win)
 	     s->direction = 1;
 	     SlideoutShow(s, ewin, win);
 	     s->direction = pdir;
-	     EDBUG_RETURN_;
+	     return;
 	  }
 	break;
      case 1:
@@ -157,7 +149,7 @@ SlideoutShow(Slideout * s, EWin * ewin, Window win)
 	     s->direction = 0;
 	     SlideoutShow(s, ewin, win);
 	     s->direction = pdir;
-	     EDBUG_RETURN_;
+	     return;
 	  }
 	break;
      default:
@@ -239,24 +231,18 @@ SlideoutShow(Slideout * s, EWin * ewin, Window win)
    s->ref_count++;
 
    Mode.slideout = s;
-
-   EDBUG_RETURN_;
 }
 
 void
 SlideoutHide(Slideout * s)
 {
-   EDBUG(5, "SlideoutHide");
-
    if (!s)
-      EDBUG_RETURN_;
+      return;
 
    EUnmapWindow(disp, s->win);
    s->from_win = 0;
    s->ref_count--;
    Mode.slideout = NULL;
-
-   EDBUG_RETURN_;
 }
 
 static void
@@ -266,10 +252,8 @@ SlideoutCalcSize(Slideout * s)
    int                 mx, my, x, y;
    int                 bw, bh;
 
-   EDBUG(5, "SlideoutCalcSize");
-
    if (!s)
-      EDBUG_RETURN_;
+      return;
 
    mx = 0;
    my = 0;
@@ -334,19 +318,15 @@ SlideoutCalcSize(Slideout * s)
 	  }
      }
    PropagateShapes(s->win);
-
-   EDBUG_RETURN_;
 }
 
 static void
 SlideoutAddButton(Slideout * s, Button * b)
 {
-   EDBUG(5, "SlideoutAddButton");
-
    if (!b)
-      EDBUG_RETURN_;
+      return;
    if (!s)
-      EDBUG_RETURN_;
+      return;
 
    s->num_buttons++;
    s->button = Erealloc(s->button, sizeof(Button *) * s->num_buttons);
@@ -355,20 +335,14 @@ SlideoutAddButton(Slideout * s, Button * b)
    ButtonSetSwallowed(b);
    ButtonShow(b);
    SlideoutCalcSize(s);
-
-   EDBUG_RETURN_;
 }
 
 #if 0
 static void
 SlideoutRemoveButton(Slideout * s, Button * b)
 {
-   EDBUG(5, "SlideoutRemoveButton");
-
    s = NULL;
    b = NULL;
-
-   EDBUG_RETURN_;
 }
 #endif
 

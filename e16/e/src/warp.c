@@ -199,8 +199,6 @@ WarpFocus(int delta)
    EWin              **lst, *ewin;
    int                 i, num0, num;
 
-   EDBUG(5, "WarpFocus");
-
    /* Remember invoking keycode (ugly hack) */
    if (!warpFocusTitleShowing)
       warpFocusKey = Mode.last_keycode;
@@ -251,8 +249,6 @@ WarpFocus(int delta)
 	  }
 	Efree(lst);
      }
-
-   EDBUG_RETURN_;
 }
 
 static void
@@ -261,11 +257,9 @@ WarpFocusFinish(void)
    EWin              **lst, *ewin;
    int                 num;
 
-   EDBUG(5, "WarpFocusFinish");
-
    lst = (EWin **) ListItemType(&num, LIST_TYPE_WARP_RING);
    if (!lst)
-      goto done;
+      return;
 
    ewin = lst[warpFocusIndex];
 
@@ -287,16 +281,11 @@ WarpFocusFinish(void)
    Efree(lst);
 
    while (RemoveItem("", 0, LIST_FINDBY_NONE, LIST_TYPE_WARP_RING));
-
- done:
-   EDBUG_RETURN_;
 }
 
 static void
 WarpFocusHandleEvent(XEvent * ev, void *prm __UNUSED__)
 {
-   EDBUG(5, "WarpFocusHandleEvent");
-
    switch (ev->type)
      {
 #if 0				/* Not necessary when sampling keycode in events.c */

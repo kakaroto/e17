@@ -76,16 +76,14 @@ MWM_GetHints(EWin * ewin, Atom atom_change)
    MWMHints           *mwmhints;
    unsigned char      *puc;
 
-   EDBUG(6, "MWM_GetHints");
-
    if (EwinIsInternal(ewin))
-      EDBUG_RETURN_;
+      return;
 
    if (!_MOTIF_WM_HINTS)
       _MOTIF_WM_HINTS = XInternAtom(disp, "_MOTIF_WM_HINTS", False);
 
    if (atom_change && atom_change != _MOTIF_WM_HINTS)
-      EDBUG_RETURN_;
+      return;
 
    ewin->client.mwm_decor_border = 1;
    ewin->client.mwm_decor_resizeh = 1;
@@ -104,7 +102,7 @@ MWM_GetHints(EWin * ewin, Atom atom_change)
 		      False, _MOTIF_WM_HINTS, &a2, &fmt, &num, &end, &puc);
    mwmhints = (MWMHints *) puc;
    if (!mwmhints)
-      EDBUG_RETURN_;
+      return;
 
    if (num < PROP_MWM_HINTS_ELEMENTS_MIN)
       goto done;
@@ -170,8 +168,6 @@ MWM_GetHints(EWin * ewin, Atom atom_change)
  done:
    if (mwmhints)
       XFree(mwmhints);
-
-   EDBUG_RETURN_;
 }
 
 void
@@ -185,11 +181,9 @@ MWM_SetInfo(void)
    }
    mwminfo;
 
-   EDBUG(6, "MWM_SetInfo");
    a1 = XInternAtom(disp, "_MOTIF_WM_INFO", False);
    mwminfo.flags = 2;
    mwminfo.win = VRoot.win;
    XChangeProperty(disp, VRoot.win, a1, a1, 32, PropModeReplace,
 		   (unsigned char *)&mwminfo, 2);
-   EDBUG_RETURN_;
 }

@@ -45,11 +45,9 @@ SyncBorderToEwin(EWin * ewin)
 {
    const Border       *b;
 
-   EDBUG(4, "SyncBorderToEwin");
    b = ewin->border;
    ICCCM_GetShapeInfo(ewin);
    EwinSetBorder(ewin, b, 1);
-   EDBUG_RETURN_;
 }
 
 void
@@ -62,8 +60,6 @@ static void
 BorderWinpartRealise(EWin * ewin, int i)
 {
    EWinBit            *ewb = &ewin->bits[i];
-
-   EDBUG(4, "BorderWinpartRealise");
 
    if ((ewb->cx != ewb->x) || (ewb->cy != ewb->y) ||
        (ewb->cw != ewb->w) || (ewb->ch != ewb->h))
@@ -78,7 +74,6 @@ BorderWinpartRealise(EWin * ewin, int i)
 	     EMoveResizeWindow(disp, ewb->win, ewb->x, ewb->y, ewb->w, ewb->h);
 	  }
      }
-   EDBUG_RETURN_;
 }
 
 static void
@@ -131,8 +126,6 @@ BorderWinpartDraw(EWin * ewin, int i)
    EWinBit            *ewb = &ewin->bits[i];
    int                 move = 0, resize = 0, ret = 0;
 
-   EDBUG(4, "BorderWinpartDraw");
-
    if ((ewb->x != ewb->cx) || (ewb->y != ewb->cy))
      {
 	move = 1;
@@ -155,21 +148,17 @@ BorderWinpartDraw(EWin * ewin, int i)
 	ret = 1;
      }
 
-   EDBUG_RETURN(ret);
+   return ret;
 }
 
 void
 BorderWinpartChange(EWin * ewin, int i, int force)
 {
-   EDBUG(3, "BorderWinpartChange");
-
    BorderWinpartITclassApply(ewin, i, force);
 
    if (!ewin->shapedone || ewin->border->changes_shape)
       EwinPropagateShapes(ewin);
    ewin->shapedone = 1;
-
-   EDBUG_RETURN_;
 }
 
 void
@@ -177,10 +166,8 @@ EwinBorderDraw(EWin * ewin, int do_shape, int queue_off)
 {
    int                 i, pq;
 
-   EDBUG(4, "EwinBorderDraw");
-
    if (!ewin)
-      EDBUG_RETURN_;
+      return;
 
    pq = Mode.queue_up;
    if (queue_off)
@@ -195,8 +182,6 @@ EwinBorderDraw(EWin * ewin, int do_shape, int queue_off)
 
    if (queue_off)
       Mode.queue_up = pq;
-
-   EDBUG_RETURN_;
 }
 
 void
@@ -217,7 +202,6 @@ BorderWinpartCalc(EWin * ewin, int i)
    int                 x, y, w, h, ox, oy, max, min;
    int                 topleft, bottomright;
 
-   EDBUG(4, "BorderWinpartCalc");
    topleft = ewin->border->part[i].geom.topleft.originbox;
    bottomright = ewin->border->part[i].geom.bottomright.originbox;
    if (topleft >= 0)
@@ -389,7 +373,6 @@ BorderWinpartCalc(EWin * ewin, int i)
 	ewin->bits[i].w = w;
 	ewin->bits[i].h = h;
      }
-   EDBUG_RETURN_;
 }
 
 void
@@ -398,12 +381,10 @@ EwinBorderCalcSizes(EWin * ewin)
    int                 i;
    char                reshape;
 
-   EDBUG(4, "EwinBorderCalcSizes");
-
    if (!ewin)
-      EDBUG_RETURN_;
+      return;
    if (!ewin->border)
-      EDBUG_RETURN_;
+      return;
 
    for (i = 0; i < ewin->border->num_winparts; i++)
       ewin->bits[i].w = -2;
@@ -435,8 +416,6 @@ EwinBorderCalcSizes(EWin * ewin)
 	   EwinPropagateShapes(ewin);
 	ewin->shapedone = 1;
      }
-
-   EDBUG_RETURN_;
 }
 
 void
@@ -445,11 +424,9 @@ HonorIclass(char *s, int id)
    AwaitIclass        *a;
    EWin               *ewin;
 
-   EDBUG(4, "HonorIclass");
-
    a = RemoveItem(s, 0, LIST_FINDBY_NAME, LIST_TYPE_AWAIT_ICLASS);
    if (!a)
-      EDBUG_RETURN_;
+      return;
 
    ewin = FindItem(NULL, a->client_win, LIST_FINDBY_ID, LIST_TYPE_EWIN);
    if (ewin)
@@ -480,8 +457,6 @@ HonorIclass(char *s, int id)
       a->iclass->ref_count--;
 
    Efree(a);
-
-   EDBUG_RETURN_;
 }
 
 static void
@@ -560,10 +535,8 @@ EwinBorderSetTo(EWin * ewin, const Border * b)
 
    AwaitIclass        *await;
 
-   EDBUG(4, "EwinBorderSetTo");
-
    if (ewin->border == b)
-      EDBUG_RETURN_;
+      return;
 
    if (b == NULL)
      {
@@ -671,8 +644,6 @@ EwinBorderSetTo(EWin * ewin, const Border * b)
 
    EwinBorderCalcSizes(ewin);
    EwinPropagateShapes(ewin);
-
-   EDBUG_RETURN_;
 }
 
 void
@@ -719,17 +690,15 @@ BorderCreate(const char *name)
 {
    Border             *b;
 
-   EDBUG(5, "BorderCreate");
-
    b = Ecalloc(1, sizeof(Border));
    if (!b)
-      EDBUG_RETURN(NULL);
+      return NULL;
 
    b->name = Estrdup(name);
    b->group_border_name = NULL;
    b->shadedir = 2;
 
-   EDBUG_RETURN(b);
+   return b;
 }
 
 void
@@ -737,15 +706,13 @@ BorderDestroy(Border * b)
 {
    int                 i;
 
-   EDBUG(3, "BorderDestroy");
-
    if (!b)
-      EDBUG_RETURN_;
+      return;
 
    if (b->ref_count > 0)
      {
 	DialogOK(_("Border Error!"), _("%u references remain\n"), b->ref_count);
-	EDBUG_RETURN_;
+	return;
      }
 
    while (RemoveItemByPtr(b, LIST_TYPE_BORDER));
@@ -771,8 +738,6 @@ BorderDestroy(Border * b)
       Efree(b->group_border_name);
    if (b->aclass)
       ActionclassDecRefcount(b->aclass);
-
-   EDBUG_RETURN_;
 }
 
 void
@@ -783,8 +748,6 @@ BorderWinpartAdd(Border * b, ImageClass * iclass, ActionClass * aclass,
 		 int bxp, int bxa, int byp, int bya, char keep_for_shade)
 {
    int                 n;
-
-   EDBUG(6, "BorderWinpartAdd");
 
    b->num_winparts++;
    n = b->num_winparts;
@@ -829,8 +792,6 @@ BorderWinpartAdd(Border * b, ImageClass * iclass, ActionClass * aclass,
    b->part[n - 1].geom.bottomright.x.absolute = bxa;
    b->part[n - 1].geom.bottomright.y.percent = byp;
    b->part[n - 1].geom.bottomright.y.absolute = bya;
-
-   EDBUG_RETURN_;
 }
 
 void

@@ -30,8 +30,6 @@ SignalHandler(int sig)
    static int          loop_count = 0;
    int                 status;
 
-   EDBUG(7, "SignalHandler");
-
    if (EventDebug(EDBUG_TYPE_SESSION))
       Eprintf("SignalHandler signal=%d\n", sig);
 
@@ -118,7 +116,6 @@ SignalHandler(int sig)
 	while (waitpid(-1, &status, WNOHANG) > 0);
 	break;
      }
-   EDBUG_RETURN_;
 }
 
 static void
@@ -165,19 +162,13 @@ SignalsSetup(void)
 {
    /* This function will set up all the signal handlers for E */
 
-   EDBUG(6, "SignalsSetup");
-
    doSignalsSetup(1);
-
-   EDBUG_RETURN_;
 }
 
 void
 SignalsRestore(void)
 {
    /* This function will restore all the signal handlers for E */
-
-   EDBUG(6, "SignalsRestore");
 
 #if 0
    signal(SIGHUP, SIG_DFL);
@@ -200,8 +191,6 @@ SignalsRestore(void)
 #else
    doSignalsSetup(0);
 #endif
-
-   EDBUG_RETURN_;
 }
 
 void
@@ -209,7 +198,6 @@ EHandleXError(Display * d __UNUSED__, XErrorEvent * ev)
 {
 /*  char                buf[64]; */
 
-   EDBUG(7, "EHandleXError");
    if ((ev->request_code == X_ChangeWindowAttributes)
        && (ev->error_code == BadAccess))
      {
@@ -228,16 +216,11 @@ EHandleXError(Display * d __UNUSED__, XErrorEvent * ev)
    XGetErrorText(disp, ev->error_code, buf, 63);
    fprintf(stderr, "Whee %i: %s : %i\n", time(NULL), buf, ev->request_code);
 #endif
-
-   EDBUG_RETURN_;
 }
 
 void
-HandleXIOError(Display * d)
+HandleXIOError(Display * d __UNUSED__)
 {
-   EDBUG(7, "HandleXIOError");
    disp = NULL;
    SessionExit("error");
-   EDBUG_RETURN_;
-   d = NULL;
 }

@@ -205,16 +205,14 @@ BackgroundImagesRemove(Background * bg)
 static int
 BackgroundDestroy(Background * bg)
 {
-   EDBUG(6, "BackgroundDestroy");
-
    if (!bg)
-      EDBUG_RETURN(-1);
+      return -1;
 
    if (bg->ref_count > 0)
      {
 	DialogOK(_("Background Error!"), _("%u references remain\n"),
 		 bg->ref_count);
-	EDBUG_RETURN(-1);
+	return -1;
      }
 
    RemoveItem((char *)bg, 0, LIST_FINDBY_POINTER, LIST_TYPE_BACKGROUND);
@@ -225,7 +223,7 @@ BackgroundDestroy(Background * bg)
 
    Efree(bg);
 
-   EDBUG_RETURN(0);
+   return 0;
 }
 
 static void
@@ -233,10 +231,8 @@ BackgroundDelete(Background * bg)
 {
    char               *f;
 
-   EDBUG(6, "BackgroundDelete");
-
    if (BackgroundDestroy(bg))
-      EDBUG_RETURN_;
+      return;
 
    /* And delete the actual image files */
    if (bg->bg.file)
@@ -257,8 +253,6 @@ BackgroundDelete(Background * bg)
 	     Efree(f);
 	  }
      }
-
-   EDBUG_RETURN_;
 }
 
 static Background  *
@@ -269,11 +263,10 @@ BackgroundCreate(const char *name, XColor * solid, const char *bgn, char tile,
 {
    Background         *bg;
 
-   EDBUG(6, "BackgroundCreate");
-
    bg = Emalloc(sizeof(Background));
    if (!bg)
-      EDBUG_RETURN(NULL);
+      return NULL;
+
    bg->name = Estrdup(name);
    bg->pmap = 0;
    bg->last_viewed = 0;
@@ -310,7 +303,7 @@ BackgroundCreate(const char *name, XColor * solid, const char *bgn, char tile,
 
    AddItem(bg, bg->name, 0, LIST_TYPE_BACKGROUND);
 
-   EDBUG_RETURN(bg);
+   return bg;
 }
 
 void
@@ -326,8 +319,6 @@ BackgroundModify(Background * bg, XColor * solid, const char *bgn, char tile,
 		 int tyjust, int txperc, int typerc)
 {
    int                 updated = 0;
-
-   EDBUG(6, "BackgroundCreate");
 
    if (solid->red != bg->bg_solid.red)
       updated = 1;
@@ -399,7 +390,7 @@ BackgroundModify(Background * bg, XColor * solid, const char *bgn, char tile,
 	bg->pmap = 0;
      }
 
-   EDBUG_RETURN(updated);
+   return updated;
 }
 
 static void
@@ -481,10 +472,8 @@ BackgroundApply(Background * bg, Window win, int setbg)
    GC                  gc;
    int                 rt, depth;
 
-   EDBUG(4, "BackgroundApply");
-
    if (!WinExists(win))
-      EDBUG_RETURN_;
+      return;
 
    GetWinWH(win, &rw, &rh);
    depth = GetWinDepth(win);
@@ -678,8 +667,6 @@ BackgroundApply(Background * bg, Window win, int setbg)
       ecore_x_gc_del(gc);
 
    imlib_context_set_dither(rt);
-
-   EDBUG_RETURN_;
 }
 
 Background         *
@@ -1206,8 +1193,6 @@ BackgroundsAccounting(void)
    Background        **lst;
    Window              win;
 
-   EDBUG(3, "BackgroundsAccounting");
-
    now = time(NULL);
 
    for (i = 0; i < DesksGetNumber(); i++)
@@ -1250,18 +1235,14 @@ BackgroundsAccounting(void)
      }
    if (lst)
       Efree(lst);
-
-   EDBUG_RETURN_;
 }
 
 static void
 BackgroundsTimeout(int val __UNUSED__, void *data __UNUSED__)
 {
-   EDBUG(5, "BackgroundsTimeout");
    BackgroundsAccounting();
 /* RemoveTimerEvent("BACKGROUND_ACCOUNTING_TIMEOUT"); */
    DoIn("BACKGROUND_ACCOUNTING_TIMEOUT", 30.0, BackgroundsTimeout, 0, NULL);
-   EDBUG_RETURN_;
 }
 
 static void

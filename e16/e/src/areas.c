@@ -120,7 +120,6 @@ SetNewAreaSize(int ax, int ay)
 void
 SetAreaSize(int aw, int ah)
 {
-   EDBUG(4, "SetAreaSize");
    if (aw < 1)
       aw = 1;
    if (ah < 1)
@@ -129,16 +128,13 @@ SetAreaSize(int aw, int ah)
    Conf.desks.areas_ny = area_h = ah;
    HintsSetViewportConfig();
    ModulesSignal(ESIGNAL_AREA_CONFIGURED, NULL);
-   EDBUG_RETURN_;
 }
 
 void
 GetAreaSize(int *aw, int *ah)
 {
-   EDBUG(4, "GetAreaSize");
    *aw = area_w;
    *ah = area_h;
-   EDBUG_RETURN_;
 }
 
 void
@@ -175,9 +171,8 @@ SlideWindowsBy(Window * win, int num, int dx, int dy, int speed)
       int                 x, y;
    }                  *xy;
 
-   EDBUG(5, "SlideWindowsBy");
    if (num < 1)
-      EDBUG_RETURN_;
+      return;
 
    xy = Emalloc(sizeof(struct _xy) * num);
 
@@ -203,8 +198,6 @@ SlideWindowsBy(Window * win, int num, int dx, int dy, int speed)
 
    if (xy)
       Efree(xy);
-
-   EDBUG_RETURN_;
 }
 
 void
@@ -213,17 +206,15 @@ SetCurrentArea(int ax, int ay)
    EWin               *const *lst, *ewin;
    int                 i, num, dx, dy, pax, pay;
 
-   EDBUG(4, "SetCurrentArea");
-
    if ((Mode.mode == MODE_RESIZE) || (Mode.mode == MODE_RESIZE_H)
        || (Mode.mode == MODE_RESIZE_V))
-      EDBUG_RETURN_;
+      return;
 
    AreaFix(&ax, &ay);
    DeskGetCurrentArea(&pax, &pay);
 
    if (ax == pax && ay == pay)
-      EDBUG_RETURN_;
+      return;
 
    if (EventDebug(EDBUG_TYPE_DESKS))
       Eprintf("SetCurrentArea %d,%d\n", ax, ay);
@@ -311,8 +302,6 @@ SetCurrentArea(int ax, int ay)
 
    /* update which "edge flip resistance" detector windows are visible */
    EdgeWindowsShow();
-
-   EDBUG_RETURN_;
 }
 
 void

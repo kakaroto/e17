@@ -81,8 +81,6 @@ ButtonCreate(const char *name, int id, ImageClass * iclass,
 {
    Button             *b;
 
-   EDBUG(5, "ButtonCreate");
-
    if (desk < 0 || desk >= DesksGetNumber())
       return NULL;
    if (sticky && ontop == 1)
@@ -158,21 +156,19 @@ ButtonCreate(const char *name, int id, ImageClass * iclass,
 
    AddItem(b, b->name, id, LIST_TYPE_BUTTON);
 
-   EDBUG_RETURN(b);
+   return b;
 }
 
 void
 ButtonDestroy(Button * b)
 {
-   EDBUG(5, "ButtonDestroy");
-
    if (!b)
-      EDBUG_RETURN_;
+      return;
 
    if (b->ref_count > 0)
      {
 	DialogOK(_("Button Error!"), _("%u references remain\n"), b->ref_count);
-	EDBUG_RETURN_;
+	return;
      }
 
    while (RemoveItemByPtr(b, LIST_TYPE_BUTTON));
@@ -198,8 +194,6 @@ ButtonDestroy(Button * b)
       Efree(b->label);
 
    Efree(b);
-
-   EDBUG_RETURN_;
 }
 
 static void
@@ -208,7 +202,6 @@ ButtonCalc(Button * b)
    int                 w, h, x, y, xo, yo;
    Imlib_Image        *im;
 
-   EDBUG(4, "ButtonCalc");
    x = 0;
    y = 0;
    w = 32;
@@ -260,16 +253,12 @@ ButtonCalc(Button * b)
    EoSetY(b, y);
    EoSetW(b, w);
    EoSetH(b, h);
-
-   EDBUG_RETURN_;
 }
 
 void
 ButtonShow(Button * b)
 {
    char                move, resize;
-
-   EDBUG(4, "ButtonShow");
 
    ButtonCalc(b);
 
@@ -297,8 +286,6 @@ ButtonShow(Button * b)
    b->cy = EoGetY(b);
    b->cw = EoGetW(b);
    b->ch = EoGetH(b);
-
-   EDBUG_RETURN_;
 }
 
 void
@@ -306,10 +293,8 @@ ButtonMoveToDesktop(Button * b, int desk)
 {
    int                 pdesk;
 
-   EDBUG(3, "ButtonMoveToDesktop");
-
    if (desk < 0 || desk >= DesksGetNumber())
-      EDBUG_RETURN_;
+      return;
 
    if (EoIsSticky(b) && EoGetLayer(b) == 1)
       desk = 0;
@@ -319,49 +304,36 @@ ButtonMoveToDesktop(Button * b, int desk)
    if (desk != pdesk)
       EReparentWindow(disp, EoGetWin(b), DeskGetWin(desk), EoGetX(b),
 		      EoGetY(b));
-
-   EDBUG_RETURN_;
 }
 
 void
 ButtonHide(Button * b)
 {
-   EDBUG(3, "ButtonHide");
-
    EUnmapWindow(disp, EoGetWin(b));
    b->visible = 0;
-
-   EDBUG_RETURN_;
 }
 
 void
 ButtonToggle(Button * b)
 {
-   EDBUG(3, "ButtonToggle");
-
    if (b->used)
-      EDBUG_RETURN_;
+      return;
 
    if (b->visible)
       ButtonHide(b);
    else
       ButtonShow(b);
-
-   EDBUG_RETURN_;
 }
 
 void
 ButtonDraw(Button * b)
 {
-   EDBUG(3, "ButtonDraw");
-
    ImageclassApply(b->iclass, EoGetWin(b), EoGetW(b), EoGetH(b), 0, 0, b->state,
 		   0, ST_BUTTON);
 
    if (b->label)
       TextclassApply(b->iclass, EoGetWin(b), EoGetW(b), EoGetH(b), 0, 0,
 		     b->state, 0, b->tclass, b->label);
-   EDBUG_RETURN_;
 }
 
 void
@@ -377,9 +349,8 @@ ButtonMoveToCoord(Button * b, int x, int y)
    int                 rx, ry, relx, rely, absx, absy;
    char                move, resize;
 
-   EDBUG(3, "ButtonMoveToCoord");
    if (b->flags & FLAG_FIXED)
-      EDBUG_RETURN_;
+      return;
 
    if ((x + (EoGetW(b) >> 1)) < (VRoot.w / 3))
       relx = 0;
@@ -429,8 +400,6 @@ ButtonMoveToCoord(Button * b, int x, int y)
    b->cy = EoGetY(b);
    b->cw = EoGetW(b);
    b->ch = EoGetH(b);
-
-   EDBUG_RETURN_;
 }
 
 void
@@ -578,7 +547,6 @@ ButtonEmbedWindow(Button * b, Window WindowToEmbed)
 
    unsigned int        w, h;
 
-   EDBUG(4, "ButtonEmbedWindow");
    EReparentWindow(disp, WindowToEmbed, EoGetWin(b), 0, 0);
    b->inside_win = WindowToEmbed;
    GetWinWH(WindowToEmbed, &w, &h);
@@ -593,7 +561,7 @@ ButtonEmbedWindow(Button * b, Window WindowToEmbed)
    EMoveWindow(disp, b->event_win, (EoGetW(b) - w) >> 1, (EoGetH(b) - h) >> 1);
    EMapRaised(disp, b->event_win);
 
-   EDBUG_RETURN(0);
+   return 0;
 }
 
 static void
@@ -641,8 +609,6 @@ FindButton(Window win)
    Button            **buttons;
    int                 i, num;
 
-   EDBUG(6, "FindButton");
-
    buttons = (Button **) ListItemType(&num, LIST_TYPE_BUTTON);
    for (i = 0; i < num; i++)
      {
@@ -651,12 +617,13 @@ FindButton(Window win)
 	  {
 	     b = buttons[i];
 	     Efree(buttons);
-	     EDBUG_RETURN(b);
+	     return b;
 	  }
      }
    if (buttons)
       Efree(buttons);
-   EDBUG_RETURN(NULL);
+
+   return NULL;
 }
 
 /*

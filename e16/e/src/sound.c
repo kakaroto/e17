@@ -73,8 +73,6 @@ LoadWav(const char *file)
    int                 bytes_per_frame, frames_read;
    double              in_rate;
 
-   EDBUG(5, "LoadWav");
-
    find = FindFile(file, Mode.theme.path);
    if (!find)
      {
@@ -83,14 +81,14 @@ LoadWav(const char *file)
 		   "following sound file:\n%s\n"
 		   "Enlightenment will continue to operate, but you\n"
 		   "may wish to check your configuration settings.\n"), file);
-	EDBUG_RETURN(NULL);
+	return NULL;
      }
 
    in_file = afOpenFile(find, "r", NULL);
    if (!in_file)
      {
 	Efree(find);
-	EDBUG_RETURN(NULL);
+	return NULL;
      }
 
    s = Emalloc(sizeof(Sample));
@@ -98,7 +96,7 @@ LoadWav(const char *file)
      {
 	Efree(find);
 	afCloseFile(in_file);
-	EDBUG_RETURN(NULL);
+	return NULL;
      }
 
    frame_count = afGetFrameCount(in_file, AF_DEFAULT_TRACK);
@@ -134,7 +132,7 @@ LoadWav(const char *file)
    afCloseFile(in_file);
    Efree(find);
 
-   EDBUG_RETURN(s);
+   return s;
 }
 
 static void
@@ -142,10 +140,8 @@ SamplePlay(Sample * s)
 {
    int                 size, confirm = 0;
 
-   EDBUG(5, "SamplePlay");
-
    if ((sound_fd < 0) || (!Conf_sound.enable) || (!s))
-      EDBUG_RETURN_;
+      return;
 
    if (!s->id && s->data)
      {
@@ -165,16 +161,12 @@ SamplePlay(Sample * s)
      }
    if (s->id > 0)
       esd_sample_play(sound_fd, s->id);
-
-   EDBUG_RETURN_;
 }
 #endif /* HAVE_LIBESD */
 
 static void
 DestroySample(Sample * s)
 {
-   EDBUG(5, "DestroySample");
-
 #ifdef HAVE_LIBESD
    if ((s->id) && (sound_fd >= 0))
      {
@@ -190,7 +182,6 @@ DestroySample(Sample * s)
       Efree(s->file);
    if (s)
       Efree(s);
-   EDBUG_RETURN_;
 }
 
 static SoundClass  *
@@ -198,23 +189,23 @@ SclassCreate(const char *name, const char *file)
 {
    SoundClass         *sclass;
 
-   EDBUG(6, "SclassCreate");
    sclass = Emalloc(sizeof(SoundClass));
    if (!sclass)
-      EDBUG_RETURN(NULL);
+      return NULL;
+
    sclass->name = Estrdup(name);
    sclass->file = Estrdup(file);
    sclass->sample = NULL;
    AddItem(sclass, sclass->name, 0, LIST_TYPE_SCLASS);
-   EDBUG_RETURN(sclass);
+
+   return sclass;
 }
 
 static void
 SclassDestroy(SoundClass * sclass)
 {
-   EDBUG(5, "SclassDestroy");
    if (!sclass)
-      EDBUG_RETURN_;
+      return;
    RemoveItem(sclass->name, 0, LIST_FINDBY_NAME, LIST_TYPE_SCLASS);
    if (sclass->name)
       Efree(sclass->name);
@@ -223,15 +214,13 @@ SclassDestroy(SoundClass * sclass)
    if (sclass->sample)
       DestroySample(sclass->sample);
    Efree(sclass);
-   EDBUG_RETURN_;
 }
 
 static void
 SclassApply(SoundClass * sclass)
 {
-   EDBUG(4, "SclassApply");
    if (!sclass || !Conf_sound.enable)
-      EDBUG_RETURN_;
+      return;
 #ifdef HAVE_LIBESD
    if (!sclass->sample)
       sclass->sample = LoadWav(sclass->file);
@@ -240,7 +229,6 @@ SclassApply(SoundClass * sclass)
    else
       SclassDestroy(sclass);
 #endif
-   EDBUG_RETURN_;
 }
 
 static const char  *
@@ -278,13 +266,12 @@ SoundInit(void)
    int                 fd;
 #endif
 
-   EDBUG(5, "SoundInit");
 #ifdef HAVE_LIBESD
    if (!Conf_sound.enable)
-      EDBUG_RETURN_;
+      return;
 
    if (sound_fd != -1)
-      EDBUG_RETURN_;
+      return;
 
    fd = esd_open_sound(NULL);
    if (fd >= 0)
@@ -300,7 +287,6 @@ SoundInit(void)
 #else
    Conf_sound.enable = 0;
 #endif
-   EDBUG_RETURN_;
 }
 
 static void
@@ -309,10 +295,8 @@ SoundExit(void)
    SoundClass        **lst;
    int                 num, i;
 
-   EDBUG(6, "SoundExit");
-
    if (sound_fd < 0)
-      EDBUG_RETURN_;
+      return;
 
    lst = (SoundClass **) ListItemType(&num, LIST_TYPE_SCLASS);
    for (i = 0; i < num; i++)
@@ -326,8 +310,6 @@ SoundExit(void)
 
    close(sound_fd);
    sound_fd = -1;
-
-   EDBUG_RETURN_;
 }
 
 /*

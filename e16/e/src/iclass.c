@@ -92,11 +92,9 @@ ImagestateCreate(void)
 {
    ImageState         *is;
 
-   EDBUG(6, "ImagestateCreate");
-
    is = Emalloc(sizeof(ImageState));
    if (!is)
-      EDBUG_RETURN(NULL);
+      return NULL;
 
    is->im_file = NULL;
    is->real_file = NULL;
@@ -113,14 +111,12 @@ ImagestateCreate(void)
    is->bevelstyle = BEVEL_NONE;
    is->colmod = NULL;
 
-   EDBUG_RETURN(is);
+   return is;
 }
 
 static void
 FreeImageState(ImageState * i)
 {
-
-   EDBUG(7, "FreeImageState");
 
    Efree(i->im_file);
    Efree(i->real_file);
@@ -136,16 +132,11 @@ FreeImageState(ImageState * i)
 
    if (i->colmod)
       i->colmod->ref_count--;
-
-   EDBUG_RETURN_;
-
 }
 
 static void
 FreeImageStateArray(ImageStateArray * isa)
 {
-   EDBUG(6, "FreeImageStateArray");
-
    FreeImageState(isa->normal);
    Efree(isa->normal);
    FreeImageState(isa->hilited);
@@ -154,25 +145,19 @@ FreeImageStateArray(ImageStateArray * isa)
    Efree(isa->clicked);
    FreeImageState(isa->disabled);
    Efree(isa->disabled);
-
-   EDBUG_RETURN_;
 }
 
 static void
 ImagestatePopulate(ImageState * is)
 {
-   EDBUG(6, "ImagestatePopulate");
-
    if (!is)
-      EDBUG_RETURN_;
+      return;
 
    EAllocColor(&is->bg);
    EAllocColor(&is->hi);
    EAllocColor(&is->lo);
    EAllocColor(&is->hihi);
    EAllocColor(&is->lolo);
-
-   EDBUG_RETURN_;
 }
 
 static void
@@ -214,61 +199,56 @@ ImagestateRealize(ImageState * is)
 static ImageClass  *
 ImageclassCreate(const char *name)
 {
-   ImageClass         *i;
+   ImageClass         *ic;
 
-   EDBUG(5, "ImageclassCreate");
+   ic = Emalloc(sizeof(ImageClass));
+   if (!ic)
+      return NULL;
 
-   i = Emalloc(sizeof(ImageClass));
-   if (!i)
-      EDBUG_RETURN(NULL);
+   ic->name = Estrdup(name);
+   ic->external = 0;
+   ic->norm.normal = ic->norm.hilited = ic->norm.clicked = ic->norm.disabled =
+      NULL;
+   ic->active.normal = ic->active.hilited = ic->active.clicked =
+      ic->active.disabled = NULL;
+   ic->sticky.normal = ic->sticky.hilited = ic->sticky.clicked =
+      ic->sticky.disabled = NULL;
+   ic->sticky_active.normal = ic->sticky_active.hilited =
+      ic->sticky_active.clicked = ic->sticky_active.disabled = NULL;
+   ic->padding.left = 0;
+   ic->padding.right = 0;
+   ic->padding.top = 0;
+   ic->padding.bottom = 0;
+   ic->colmod = NULL;
+   ic->ref_count = 0;
 
-   i->name = Estrdup(name);
-   i->external = 0;
-   i->norm.normal = i->norm.hilited = i->norm.clicked = i->norm.disabled = NULL;
-   i->active.normal = i->active.hilited = i->active.clicked =
-      i->active.disabled = NULL;
-   i->sticky.normal = i->sticky.hilited = i->sticky.clicked =
-      i->sticky.disabled = NULL;
-   i->sticky_active.normal = i->sticky_active.hilited =
-      i->sticky_active.clicked = i->sticky_active.disabled = NULL;
-   i->padding.left = 0;
-   i->padding.right = 0;
-   i->padding.top = 0;
-   i->padding.bottom = 0;
-   i->colmod = NULL;
-   i->ref_count = 0;
-
-   EDBUG_RETURN(i);
+   return ic;
 }
 
 static void
-ImageclassDestroy(ImageClass * i)
+ImageclassDestroy(ImageClass * ic)
 {
-   EDBUG(5, "FreeImageClass");
+   if (!ic)
+      return;
 
-   if (!i)
-      EDBUG_RETURN_;
-
-   if (i->ref_count > 0)
+   if (ic->ref_count > 0)
      {
 	DialogOK(_("Imageclass Error!"), _("%u references remain\n"),
-		 i->ref_count);
-	EDBUG_RETURN_;
+		 ic->ref_count);
+	return;
      }
-   while (RemoveItemByPtr(i, LIST_TYPE_ICLASS));
+   while (RemoveItemByPtr(ic, LIST_TYPE_ICLASS));
 
-   if (i->name)
-      Efree(i->name);
+   if (ic->name)
+      Efree(ic->name);
 
-   FreeImageStateArray(&(i->norm));
-   FreeImageStateArray(&(i->active));
-   FreeImageStateArray(&(i->sticky));
-   FreeImageStateArray(&(i->sticky_active));
+   FreeImageStateArray(&(ic->norm));
+   FreeImageStateArray(&(ic->active));
+   FreeImageStateArray(&(ic->sticky));
+   FreeImageStateArray(&(ic->sticky_active));
 
-   if (i->colmod)
-      i->colmod->ref_count--;
-
-   EDBUG_RETURN_;
+   if (ic->colmod)
+      ic->colmod->ref_count--;
 }
 
 ImageClass         *
@@ -303,12 +283,11 @@ ImageclassPopulate(ImageClass * ic)
 {
    ColorModifierClass *cm;
 
-   EDBUG(6, "ImageclassPopulate");
    if ((!ic) || (ic->external))
-      EDBUG_RETURN_;
+      return;
 
    if (!ic->norm.normal)
-      EDBUG_RETURN_;
+      return;
 
    ImagestatePopulate(ic->norm.normal);
    ISTATE_SET_STATE(norm.hilited, norm.normal);
@@ -379,8 +358,6 @@ ImageclassPopulate(ImageClass * ic)
    ISTATE_SET_CM(sticky_active.hilited, cm);
    ISTATE_SET_CM(sticky_active.clicked, cm);
    ISTATE_SET_CM(sticky_active.disabled, cm);
-
-   EDBUG_RETURN_;
 }
 
 int
@@ -1074,15 +1051,13 @@ ImageclassApply(ImageClass * ic, Window win, int w, int h, int active,
 {
    ImageState         *is;
 
-   EDBUG(4, "ImageclassApply");
-
    if ((!ic) || (!win))
-      EDBUG_RETURN_;
+      return;
 
    if (w < 0)
       GetWinWH(win, (unsigned int *)&w, (unsigned int *)&h);
    if ((w < 0) || (h < 0))
-      EDBUG_RETURN_;
+      return;
 
 #if 0				/* Try not using the draw queue here. */
    if (Mode.queue_up)
@@ -1111,16 +1086,16 @@ ImageclassApply(ImageClass * ic, Window win, int w, int h, int active,
 	dq->y = 0;
 	dq->image_type = image_type;
 	AddItem(dq, "DRAW", dq->win, LIST_TYPE_DRAW);
-	EDBUG_RETURN_;
+	return;
      }
 #endif
 
    if (ic->external)
-      EDBUG_RETURN_;
+      return;
 
    is = ImageclassGetImageState(ic, state, active, sticky);
    if (!is)
-      EDBUG_RETURN_;
+      return;
 
    if (!expose)
      {
@@ -1153,8 +1128,6 @@ ImageclassApply(ImageClass * ic, Window win, int w, int h, int active,
 	ImagestateDrawBevel(is, win, gc, w, h);
 	ecore_x_gc_del(gc);
      }
-
-   EDBUG_RETURN_;
 }
 
 void
@@ -1165,23 +1138,21 @@ ImageclassApplyCopy(ImageClass * ic, Window win, int w, int h, int active,
    ImageState         *is;
    GC                  gc;
 
-   EDBUG(4, "ImageclassApplyCopy");
-
    if (pmm == NULL)
-      EDBUG_RETURN_;
+      return;
 
    pmm->type = 0;
    pmm->pmap = pmm->mask = 0;
 
    if ((!ic) || (!win) || (w < 1) || (h < 1))
-      EDBUG_RETURN_;
+      return;
 
    if (ic->external)
-      EDBUG_RETURN_;
+      return;
 
    is = ImageclassGetImageState(ic, state, active, sticky);
    if (!is)
-      EDBUG_RETURN_;
+      return;
 
    if (is->im == NULL && is->im_file)
       ImagestateRealize(is);
@@ -1197,7 +1168,7 @@ ImageclassApplyCopy(ImageClass * ic, Window win, int w, int h, int active,
 	     is->im = NULL;
 	  }
 
-	EDBUG_RETURN_;
+	return;
      }
 
    /* if there is a bevel to draw, draw it */
@@ -1220,8 +1191,6 @@ ImageclassApplyCopy(ImageClass * ic, Window win, int w, int h, int active,
 	ImagestateDrawBevel(is, pmap, gc, w, h);
 	ecore_x_gc_del(gc);
      }
-
-   EDBUG_RETURN_;
 }
 
 /*

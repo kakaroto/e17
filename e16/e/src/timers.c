@@ -41,11 +41,11 @@ DoIn(const char *name, double in_time, void (*func) (int val, void *data),
    Qentry             *qe, *ptr, *pptr;
    double              tally;
 
-   EDBUG(5, "DoIn");
    RemoveTimerEvent(name);
    qe = Emalloc(sizeof(Qentry));
    if (!qe)
-      EDBUG_RETURN_;
+      return;
+
    qe->name = Estrdup(name);
    qe->func = func;
    qe->next = NULL;
@@ -92,7 +92,7 @@ DoIn(const char *name, double in_time, void (*func) (int val, void *data),
 		  if (qe->next)
 		     qe->next->in_time -= qe->in_time;
 		  /* we're done */
-		  EDBUG_RETURN_;
+		  return;
 	       }
 	     pptr = ptr;
 	     ptr = ptr->next;
@@ -106,14 +106,12 @@ DoIn(const char *name, double in_time, void (*func) (int val, void *data),
 
 	qe->in_time -= tally;
      }
-   EDBUG_RETURN_;
 }
 
 Qentry             *
 GetHeadTimerQueue(void)
 {
-   EDBUG(6, "GetHeadTimerQueue");
-   EDBUG_RETURN(q_first);
+   return q_first;
 }
 
 void
@@ -121,10 +119,9 @@ HandleTimerEvent(void)
 {
    Qentry             *qe;
 
-   EDBUG(6, "HandleTimerQueue");
    /* no timers - exit */
    if (!q_first)
-      EDBUG_RETURN_;
+      return;
 
    /* get the first timer */
    qe = q_first;
@@ -137,7 +134,6 @@ HandleTimerEvent(void)
       Efree(qe->name);
    if (qe)
       Efree(qe);
-   EDBUG_RETURN_;
 }
 
 void
@@ -145,7 +141,6 @@ RemoveTimerEvent(const char *name)
 {
    Qentry             *qe, *ptr, *pptr;
 
-   EDBUG(6, "RemoveTimerEvent");
    pptr = NULL;
    ptr = q_first;
    /* hunt through the queue */
@@ -169,11 +164,10 @@ RemoveTimerEvent(const char *name)
 	     if (qe)
 		Efree(qe);
 	     /* done */
-	     EDBUG_RETURN_;
+	     return;
 	  }
 	pptr = ptr;
 	ptr = ptr->next;
 	/* keep going through the queue */
      }
-   EDBUG_RETURN_;
 }

@@ -45,8 +45,6 @@ ProgressbarCreate(char *name, int width, int height)
 {
    Progressbar        *p;
 
-   EDBUG(5, "CreateProgressbar");
-
    p = Emalloc(sizeof(Progressbar));
    pnum++;
    plist = Erealloc(plist, pnum * sizeof(Progressbar *));
@@ -85,15 +83,13 @@ ProgressbarCreate(char *name, int width, int height)
 
    p->value = 0;
 
-   EDBUG_RETURN(p);
+   return p;
 }
 
 void
 ProgressbarDestroy(Progressbar * p)
 {
    int                 i, j;
-
-   EDBUG(5, "ProgressbarDestroy");
 
    if (p->name)
       Efree(p->name);
@@ -150,8 +146,6 @@ ProgressbarDestroy(Progressbar * p)
      {
 	plist = Erealloc(plist, pnum * sizeof(Progressbar *));
      }
-
-   EDBUG_RETURN_;
 }
 
 void
@@ -160,10 +154,8 @@ ProgressbarSet(Progressbar * p, int progress)
    int                 w;
    char                s[64], pq;
 
-   EDBUG(5, "SetProgressbar");
-
    if (progress == p->value)
-      EDBUG_RETURN_;
+      return;
 
    p->value = progress;
    w = (p->value * p->w) / 100;
@@ -180,8 +172,6 @@ ProgressbarSet(Progressbar * p, int progress)
    EResizeWindow(disp, p->p_win, w, p->h);
    Mode.queue_up = pq;
    XFlush(disp);
-
-   EDBUG_RETURN_;
 }
 
 void
@@ -190,7 +180,6 @@ ProgressbarShow(Progressbar * p)
    int                 w;
    char                pq;
 
-   EDBUG(5, "ShowProgressbar");
    w = (p->value * p->w) / 100;
    if (w < 1)
       w = 1;
@@ -210,17 +199,14 @@ ProgressbarShow(Progressbar * p)
    TextclassApply(p->ic, p->win, p->w - (p->h * 5), p->h, 0, 0, STATE_NORMAL, 0,
 		  p->tc, p->name);
    Mode.queue_up = pq;
-   EDBUG_RETURN_;
 }
 
 void
 ProgressbarHide(Progressbar * p)
 {
-   EDBUG(5, "HideProgressbar");
    EUnmapWindow(disp, p->win);
    EUnmapWindow(disp, p->n_win);
    EUnmapWindow(disp, p->p_win);
-   EDBUG_RETURN_;
 }
 
 Window             *

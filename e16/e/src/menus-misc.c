@@ -61,8 +61,6 @@ MenuCreateFromDirectory(const char *name, Menu * parent, MenuStyle * ms,
       "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_";
    FILE               *f;
 
-   EDBUG(5, "MenuCreateFromDirectory");
-
    m = MenuCreate(name, NULL, parent, ms);
 
    if (stat(dir, &st) >= 0)
@@ -127,7 +125,7 @@ MenuCreateFromDirectory(const char *name, Menu * parent, MenuStyle * ms,
 		    }
 	       }
 	     fclose(f);
-	     EDBUG_RETURN(m);
+	     return m;
 	  }
      }
 
@@ -226,7 +224,7 @@ MenuCreateFromDirectory(const char *name, Menu * parent, MenuStyle * ms,
    if (list)
       freestrlist(list, num);
 
-   EDBUG_RETURN(m);
+   return m;
 }
 
 static void
@@ -374,14 +372,13 @@ MenuCreateFromFlatFile(const char *name, Menu * parent, MenuStyle * ms,
    char                s[4096], *ff;
    static int          calls = 0;
 
-   EDBUG(5, "MenuCreateFromFlatFile");
    if (calls > 32)
-      EDBUG_RETURN(NULL);
+      return NULL;
    calls++;
 
    ff = FindFile(file, NULL);
    if (!ff)
-      EDBUG_RETURN(NULL);
+      goto done;
 
    if (canread(ff))
      {
@@ -397,7 +394,8 @@ MenuCreateFromFlatFile(const char *name, Menu * parent, MenuStyle * ms,
 
  done:
    calls--;
-   EDBUG_RETURN(m);
+
+   return m;
 }
 
 Menu               *
@@ -411,8 +409,6 @@ MenuCreateFromGnome(const char *name, Menu * parent, MenuStyle * ms,
    MenuItem           *mi;
    FILE               *f;
    char               *lang, name_buf[20];
-
-   EDBUG(5, "MenuCreateFromGnome");
 
    if ((lang = setlocale(LC_MESSAGES, NULL)) != NULL)
       Esnprintf(name_buf, sizeof(name_buf), "Name[%s]=", lang);
@@ -517,7 +513,7 @@ MenuCreateFromGnome(const char *name, Menu * parent, MenuStyle * ms,
    if (list)
       freestrlist(list, num);
 
-   EDBUG_RETURN(m);
+   return m;
 }
 
 Menu               *
@@ -529,8 +525,6 @@ MenuCreateFromThemes(const char *name, MenuStyle * ms)
    char                ss[4096], *s;
 
    MenuItem           *mi;
-
-   EDBUG(5, "MenuCreateFromThemes");
 
    m = MenuCreate(name, NULL, NULL, ms);
 
@@ -546,7 +540,7 @@ MenuCreateFromThemes(const char *name, MenuStyle * ms)
    if (lst)
       freestrlist(lst, i);
 
-   EDBUG_RETURN(m);
+   return m;
 }
 
 static int
@@ -567,8 +561,6 @@ MenuCreateFromBorders(const char *name, MenuStyle * ms)
    int                 i, num;
    MenuItem           *mi;
 
-   EDBUG(5, "MenuCreateFromBorders");
-
    m = MenuCreate(name, NULL, NULL, ms);
 
    lst = (Border **) ListItemType(&num, LIST_TYPE_BORDER);
@@ -586,7 +578,8 @@ MenuCreateFromBorders(const char *name, MenuStyle * ms)
      }
    if (lst)
       Efree(lst);
-   EDBUG_RETURN(m);
+
+   return m;
 }
 
 Menu               *
@@ -599,7 +592,6 @@ MenuCreateFromAllEWins(const char *name, MenuStyle * ms)
 
    MenuItem           *mi;
 
-   EDBUG(5, "MenuCreateFromEWins");
    m = MenuCreate(name, NULL, NULL, ms);
 
    lst = EwinListGetAll(&num);
@@ -613,7 +605,7 @@ MenuCreateFromAllEWins(const char *name, MenuStyle * ms)
 	MenuAddItem(m, mi);
      }
 
-   EDBUG_RETURN(m);
+   return m;
 }
 
 #if 0				/* Not used */
@@ -627,7 +619,6 @@ MenuCreateFromDesktopEWins(char *name, Menu * parent, MenuStyle * ms, int desk)
 
    MenuItem           *mi;
 
-   EDBUG(5, "MenuCreateFromDesktopEWins");
    m = MenuCreate(name, NULL, parent, ms);
 
    lst = EwinListGetAll(&num);
@@ -642,8 +633,7 @@ MenuCreateFromDesktopEWins(char *name, Menu * parent, MenuStyle * ms, int desk)
 	MenuAddItem(m, mi);
      }
 
-   EDBUG_RETURN(m);
-   desk = 0;
+   return m;
 }
 #endif
 
@@ -655,8 +645,6 @@ MenuCreateFromDesktops(const char *name, MenuStyle * ms)
    int                 j, i, num;
    char                s[256];
    MenuItem           *mi;
-
-   EDBUG(5, "MenuCreateFromDesktops");
 
    m = MenuCreate(name, NULL, NULL, ms);
 
@@ -683,7 +671,7 @@ MenuCreateFromDesktops(const char *name, MenuStyle * ms)
 	MenuAddItem(m, mi);
      }
 
-   EDBUG_RETURN(m);
+   return m;
 }
 
 #if 0				/* Not finished */
@@ -696,7 +684,6 @@ MenuCreateMoveToDesktop(char *name, Menu * parent, MenuStyle * ms)
 
    MenuItem           *mi;
 
-   EDBUG(5, "MenuCreateDesktops");
    m = MenuCreate(name, NULL, parent, ms);
 
    for (i = 0; i < Mode.numdesktops; i++)
@@ -706,7 +693,8 @@ MenuCreateMoveToDesktop(char *name, Menu * parent, MenuStyle * ms)
 	mi = MenuItemCreate(s1, NULL, s2, NULL);
 	MenuAddItem(m, mi);
      }
-   EDBUG_RETURN(m);
+
+   return m;
 }
 #endif
 
@@ -720,7 +708,6 @@ MenuCreateFromGroups(const char *name, MenuStyle * ms)
 
    MenuItem           *mi;
 
-   EDBUG(5, "MenuCreateFromEWins");
    m = MenuCreate(name, NULL, NULL, ms);
 
    lst = (Group **) ListItemType(&num, LIST_TYPE_GROUP);
@@ -754,7 +741,8 @@ MenuCreateFromGroups(const char *name, MenuStyle * ms)
 	  }
 	Efree(lst);
      }
-   EDBUG_RETURN(m);
+
+   return m;
 }
 
 #if 0				/* Not used */
@@ -765,7 +753,6 @@ RefreshTaskMenu(int desk)
    int                 lx = 0, ly = 0;
    EWin               *ewin;
 
-   EDBUG(5, "RefreshTaskMenu");
    if (task_menu[desk])
      {
 	ewin = FindEwinByMenu(task_menu[desk]);
@@ -780,7 +767,7 @@ RefreshTaskMenu(int desk)
    task_menu[desk] = NULL;
    if (!task_menu_style)
      {
-	EDBUG_RETURN(NULL);
+	return NULL;
      }
    task_menu[desk] = MenuCreateFromDesktopEWins("MENU", task_menu_style, desk);
    if ((was) && (task_menu[desk]))
@@ -797,14 +784,12 @@ RefreshTaskMenu(int desk)
 	Mode.cur_menu_depth = 1;
 	MenuShowMasker(task_menu[desk]);
      }
-   EDBUG_RETURN(task_menu[desk]);
+   return task_menu[desk];
 }
 
 void
 ShowTaskMenu(void)
 {
-   EDBUG(5, "ShowTaskMenu");
-   EDBUG_RETURN_;
 }
 #endif
 
@@ -819,9 +804,7 @@ ShowAllTaskMenu(void)
    static MenuStyle   *ms = NULL;
    static Menu        *m = NULL;
 
-   EDBUG(5, "ShowAllTaskMenu");
    ShowInternalMenu(&m, &ms, "TASK_MENU", MenuCreateFromAllEWins);
-   EDBUG_RETURN_;
 }
 
 void
@@ -830,9 +813,7 @@ ShowDeskMenu(void)
    static MenuStyle   *ms = NULL;
    static Menu        *m = NULL;
 
-   EDBUG(5, "ShowDeskMenu");
    ShowInternalMenu(&m, &ms, "DESK_MENU", MenuCreateFromDesktops);
-   EDBUG_RETURN_;
 }
 
 void
@@ -841,7 +822,5 @@ ShowGroupMenu(void)
    static MenuStyle   *ms = NULL;
    static Menu        *m = NULL;
 
-   EDBUG(5, "ShowGroupMenu");
    ShowInternalMenu(&m, &ms, "GROUP_MENU", MenuCreateFromGroups);
-   EDBUG_RETURN_;
 }

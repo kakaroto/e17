@@ -49,7 +49,7 @@ StartupWindowsCreate(int start)
 	   FindItem("STARTUP_BACKGROUND", 0, LIST_FINDBY_NAME,
 		    LIST_TYPE_BACKGROUND);
 	if ((!ic) || (!bg))
-	   EDBUG_RETURN_;
+	   return;
 
 	if (bg_sideways)
 	  {
@@ -101,7 +101,7 @@ StartupWindowsCreate(int start)
 	int                 k, x, y, xOffset, yOffset, ty, fy;
 
 	if ((!ic) || (!bg))
-	   EDBUG_RETURN_;
+	   return;
 
 	fy = 0;
 
@@ -140,7 +140,6 @@ StartupWindowsCreate(int start)
 	BackgroundDestroyByName("STARTUP_BACKGROUND_SIDEWAYS");
 	BackgroundDestroyByName("STARTUP_BACKGROUND");
      }
-   EDBUG_RETURN_;
 }
 
 /* FIXME - should be handled via object stack */

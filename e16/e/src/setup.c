@@ -39,7 +39,6 @@ MapUnmap(int start)
    static unsigned int num = 0;
    int                 i;
 
-   EDBUG(6, "MapUnmap");
    switch (start)
      {
      case 0:
@@ -109,7 +108,6 @@ MapUnmap(int start)
      default:
 	break;
      }
-   EDBUG_RETURN_;
 }
 
 /*
@@ -119,8 +117,6 @@ void
 SetupX(const char *dstr)
 {
    char                buf[128];
-
-   EDBUG(6, "SetupX");
 
    /* In case we are going to fork, set up the master pid */
    Mode.wm.master = 1;
@@ -358,6 +354,4 @@ SetupX(const char *dstr)
 
    ScreenInit();
    ZoomInit();
-
-   EDBUG_RETURN_;
 }

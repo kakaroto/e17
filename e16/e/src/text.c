@@ -34,7 +34,6 @@ static void         TextDrawRotBack(Window win, Drawable drawable, int x, int y,
 TextState          *
 TextGetState(TextClass * tclass, int active, int sticky, int state)
 {
-   EDBUG(5, "TextGetState");
    if (active)
      {
 	if (!sticky)
@@ -42,13 +41,13 @@ TextGetState(TextClass * tclass, int active, int sticky, int state)
 	     switch (state)
 	       {
 	       case STATE_NORMAL:
-		  EDBUG_RETURN(tclass->active.normal);
+		  return tclass->active.normal;
 	       case STATE_HILITED:
-		  EDBUG_RETURN(tclass->active.hilited);
+		  return tclass->active.hilited;
 	       case STATE_CLICKED:
-		  EDBUG_RETURN(tclass->active.clicked);
+		  return tclass->active.clicked;
 	       case STATE_DISABLED:
-		  EDBUG_RETURN(tclass->active.disabled);
+		  return tclass->active.disabled;
 	       default:
 		  break;
 	       }
@@ -58,13 +57,13 @@ TextGetState(TextClass * tclass, int active, int sticky, int state)
 	     switch (state)
 	       {
 	       case STATE_NORMAL:
-		  EDBUG_RETURN(tclass->sticky_active.normal);
+		  return tclass->sticky_active.normal;
 	       case STATE_HILITED:
-		  EDBUG_RETURN(tclass->sticky_active.hilited);
+		  return tclass->sticky_active.hilited;
 	       case STATE_CLICKED:
-		  EDBUG_RETURN(tclass->sticky_active.clicked);
+		  return tclass->sticky_active.clicked;
 	       case STATE_DISABLED:
-		  EDBUG_RETURN(tclass->sticky_active.disabled);
+		  return tclass->sticky_active.disabled;
 	       default:
 		  break;
 	       }
@@ -76,13 +75,13 @@ TextGetState(TextClass * tclass, int active, int sticky, int state)
 	switch (state)
 	  {
 	  case STATE_NORMAL:
-	     EDBUG_RETURN(tclass->sticky.normal);
+	     return tclass->sticky.normal;
 	  case STATE_HILITED:
-	     EDBUG_RETURN(tclass->sticky.hilited);
+	     return tclass->sticky.hilited;
 	  case STATE_CLICKED:
-	     EDBUG_RETURN(tclass->sticky.clicked);
+	     return tclass->sticky.clicked;
 	  case STATE_DISABLED:
-	     EDBUG_RETURN(tclass->sticky.disabled);
+	     return tclass->sticky.disabled;
 	  default:
 	     break;
 	  }
@@ -92,18 +91,18 @@ TextGetState(TextClass * tclass, int active, int sticky, int state)
 	switch (state)
 	  {
 	  case STATE_NORMAL:
-	     EDBUG_RETURN(tclass->norm.normal);
+	     return tclass->norm.normal;
 	  case STATE_HILITED:
-	     EDBUG_RETURN(tclass->norm.hilited);
+	     return tclass->norm.hilited;
 	  case STATE_CLICKED:
-	     EDBUG_RETURN(tclass->norm.clicked);
+	     return tclass->norm.clicked;
 	  case STATE_DISABLED:
-	     EDBUG_RETURN(tclass->norm.disabled);
+	     return tclass->norm.disabled;
 	  default:
 	     break;
 	  }
      }
-   EDBUG_RETURN(NULL);
+   return NULL;
 }
 
 static char       **
@@ -112,12 +111,11 @@ TextGetLines(const char *text, int *count)
    int                 i, j, k;
    char              **list = NULL;
 
-   EDBUG(5, "TextGetLines");
    *count = 0;
    i = 0;
    k = 0;
    if (!text)
-      EDBUG_RETURN(NULL);
+      return NULL;
    *count = 1;
    while (text[i])
      {
@@ -135,20 +133,18 @@ TextGetLines(const char *text, int *count)
 	   i++;
      }
    *count = k;
-   EDBUG_RETURN(list);
+   return list;
 }
 
 static void
 TextStateLoadFont(TextState * ts)
 {
-   EDBUG(5, "TextStateLoadFont");
-
    if (!ts->fontname)
-      EDBUG_RETURN_;
+      return;
 
    /* Quit if already done */
    if ((ts->efont) || (ts->xfont) || (ts->xfontset))
-      EDBUG_RETURN_;
+      return;
 
    ts->need_utf8 = Mode.text.utf8_int;
 
@@ -221,29 +217,27 @@ TextStateLoadFont(TextState * ts)
    ts->xfont = XLoadQueryFont(disp, "fixed");
 
  done:
-   EDBUG_RETURN_;
+   return;
 }
 
 void
 TextSize(TextClass * tclass, int active, int sticky, int state,
-	 const char *text, int *width, int *height, int fsize)
+	 const char *text, int *width, int *height, int fsize __UNUSED__)
 {
    const char         *str;
    char              **lines;
    int                 i, num_lines;
    TextState          *ts;
 
-   EDBUG(4, "TextSize");
-
    *width = 0;
    *height = 0;
 
    if (!text)
-      EDBUG_RETURN_;
+      return;
 
    ts = TextGetState(tclass, active, sticky, state);
    if (!ts)
-      EDBUG_RETURN_;
+      return;
 
    TextStateLoadFont(ts);
 
@@ -252,7 +246,7 @@ TextSize(TextClass * tclass, int active, int sticky, int state,
    lines = TextGetLines(str, &num_lines);
    EstrInt2EncFree(str, ts->need_utf8);
    if (!lines)
-      EDBUG_RETURN_;
+      return;
 
    if (ts->efont)
      {
@@ -307,13 +301,11 @@ TextSize(TextClass * tclass, int active, int sticky, int state,
 	  }
      }
    freestrlist(lines, num_lines);
-   EDBUG_RETURN_;
-   fsize = 0;
 }
 
 void
 TextDraw(TextClass * tclass, Window win, int active, int sticky, int state,
-	 const char *text, int x, int y, int w, int h, int fsize,
+	 const char *text, int x, int y, int w, int h, int fsize __UNUSED__,
 	 int justification)
 {
    const char         *str;
@@ -325,14 +317,12 @@ TextDraw(TextClass * tclass, Window win, int active, int sticky, int state,
    int                 textwidth_limit, offset_x, offset_y;
    Pixmap              drawable;
 
-   EDBUG(4, "TextDraw");
-
    if (!tclass || !text)
-      EDBUG_RETURN_;
+      return;
 
    ts = TextGetState(tclass, active, sticky, state);
    if (!ts)
-      EDBUG_RETURN_;
+      return;
 
    TextStateLoadFont(ts);
 
@@ -341,7 +331,7 @@ TextDraw(TextClass * tclass, Window win, int active, int sticky, int state,
    lines = TextGetLines(str, &num_lines);
    EstrInt2EncFree(str, ts->need_utf8);
    if (!lines)
-      EDBUG_RETURN_;
+      return;
 
    if (!gc)
       gc = ecore_x_gc_new(win);
@@ -782,8 +772,6 @@ TextDraw(TextClass * tclass, Window win, int active, int sticky, int state,
 	  }
      }
    freestrlist(lines, num_lines);
-   EDBUG_RETURN_;
-   fsize = 0;
 }
 
 void

@@ -189,8 +189,6 @@ EWMH_Init(Window win_wm_check)
    Atom                atom_list[64];
    int                 atom_count;
 
-   EDBUG(6, "EWMH_Init");
-
    E_XA_UTF8_STRING = XInternAtom(disp, "UTF8_STRING", False);
 
 #ifndef USE_ECORE_X
@@ -266,8 +264,6 @@ EWMH_Init(Window win_wm_check)
 
    _ATOM_INIT(_NET_STARTUP_INFO_BEGIN);
    _ATOM_INIT(_NET_STARTUP_INFO);
-
-   EDBUG_RETURN_;
 }
 
 /*
@@ -473,7 +469,6 @@ EWMH_SetWindowState(const EWin * ewin)
    int                 len = sizeof(atom_list) / sizeof(Atom);
    int                 atom_count;
 
-   EDBUG(6, "EWMH_SetWindowState");
    atom_count = 0;
    atom_list_set(atom_list, len, &atom_count, _NET_WM_STATE_STICKY,
 		 EoIsSticky(ewin));
@@ -496,7 +491,6 @@ EWMH_SetWindowState(const EWin * ewin)
    atom_list_set(atom_list, len, &atom_count, _NET_WM_STATE_BELOW,
 		 EoGetLayer(ewin) <= 2);
    _ATOM_SET_ATOM(ewin->client.win, _NET_WM_STATE, atom_list, atom_count);
-   EDBUG_RETURN_;
 }
 
 void
@@ -571,7 +565,7 @@ EWMH_GetWindowDesktop(EWin * ewin)
    EwinChange(ewin, EWIN_CHANGE_DESKTOP);
 
  done:
-   EDBUG_RETURN_;
+   ;
 }
 
 void
@@ -579,8 +573,6 @@ EWMH_GetWindowState(EWin * ewin)
 {
    Atom               *p_atoms, atom;
    int                 i, n_atoms;
-
-   EDBUG(6, "EWMH_GetWindowState");
 
    n_atoms = 0;
    p_atoms = AtomGet(ewin->client.win, _NET_WM_STATE, XA_ATOM, &n_atoms);
@@ -623,7 +615,7 @@ EWMH_GetWindowState(EWin * ewin)
    Efree(p_atoms);
 
  done:
-   EDBUG_RETURN_;
+   ;
 }
 
 static void
@@ -631,8 +623,6 @@ EWMH_GetWindowType(EWin * ewin)
 {
    Atom               *p_atoms, atom;
    int                 n_atoms;
-
-   EDBUG(6, "EWMH_GetWindowType");
 
    n_atoms = 0;
    p_atoms = AtomGet(ewin->client.win, _NET_WM_WINDOW_TYPE, XA_ATOM, &n_atoms);
@@ -691,7 +681,7 @@ EWMH_GetWindowType(EWin * ewin)
    Efree(p_atoms);
 
  done:
-   EDBUG_RETURN_;
+   ;
 }
 
 static void
@@ -699,8 +689,6 @@ EWMH_GetWindowMisc(EWin * ewin)
 {
    void               *val;
    int                 size;
-
-   EDBUG(6, "EWMH_GetWindowMisc");
 
    val = AtomGet(ewin->client.win, _NET_SUPPORTING_WM_CHECK, XA_WINDOW, &size);
    if (val)
@@ -745,7 +733,6 @@ EWMH_GetWindowStrut(EWin * ewin)
 void
 EWMH_GetWindowHints(EWin * ewin)
 {
-   EDBUG(6, "EWMH_GetWindowHints");
    EWMH_GetWindowMisc(ewin);
    EWMH_GetWindowOpacity(ewin);
    EWMH_GetWindowName(ewin);
@@ -755,7 +742,6 @@ EWMH_GetWindowHints(EWin * ewin)
    EWMH_GetWindowType(ewin);
 /*  EWMH_GetWindowIcons(ewin);  TBD */
    EWMH_GetWindowStrut(ewin);
-   EDBUG_RETURN_;
 }
 
 /*
@@ -764,10 +750,8 @@ EWMH_GetWindowHints(EWin * ewin)
 void
 EWMH_DelWindowHints(const EWin * ewin)
 {
-   EDBUG(6, "EWMH_DelWindowHints");
    XDeleteProperty(disp, ewin->client.win, _NET_WM_DESKTOP);
    XDeleteProperty(disp, ewin->client.win, _NET_WM_STATE);
-   EDBUG_RETURN_;
 }
 
 /*
@@ -795,8 +779,6 @@ void
 EWMH_ProcessClientMessage(XClientMessageEvent * event)
 {
    EWin               *ewin;
-
-   EDBUG(6, "EWMH_ProcessClientMessage");
 
    /*
     * The ones that don't target an application window
@@ -999,7 +981,7 @@ EWMH_ProcessClientMessage(XClientMessageEvent * event)
      }
 
  done:
-   EDBUG_RETURN_;
+   ;
 }
 
 /*
@@ -1008,8 +990,6 @@ EWMH_ProcessClientMessage(XClientMessageEvent * event)
 void
 EWMH_ProcessPropertyChange(EWin * ewin, Atom atom_change)
 {
-   EDBUG(6, "EWMH_ProcessPropertyChange");
-
    if (atom_change == _NET_WM_NAME)
       EWMH_GetWindowName(ewin);
    else if (atom_change == _NET_WM_ICON_NAME)
@@ -1018,6 +998,4 @@ EWMH_ProcessPropertyChange(EWin * ewin, Atom atom_change)
       EWMH_GetWindowStrut(ewin);
    else if (atom_change == _NET_WM_WINDOW_OPACITY)
       EWMH_GetWindowOpacity(ewin);
-
-   EDBUG_RETURN_;
 }

@@ -33,7 +33,7 @@ GroupCreate(void)
 
    g = Emalloc(sizeof(Group));
    if (!g)
-      EDBUG_RETURN(NULL);
+      return NULL;
 
    t = GetTime();
    g->index = (int)((GetTime() - (floor(t / 1000) * 1000)) * 10000);
@@ -50,7 +50,7 @@ GroupCreate(void)
    g->num_members = 0;
    g->members = NULL;
 
-   EDBUG_RETURN(g);
+   return g;
 }
 
 static void

@@ -199,9 +199,9 @@ __Emalloc(int size, const char *file, int line)
 {
    void               *p;
 
-   EDBUG(9, "Emalloc");
    if (size <= 0)
       return NULL;
+
    p = malloc(size);
    if (!p)
      {
@@ -236,7 +236,7 @@ __Emalloc(int size, const char *file, int line)
 #endif
      }
 #endif
-   EDBUG_RETURN(p);
+   return p;
 }
 
 void               *
@@ -246,7 +246,6 @@ __Erealloc(void *ptr, int size, const char *file, int line)
 
 #if DBUG_MEM
    char                bad = 0;
-
 #endif
 
    if (ptr == NULL)
@@ -262,7 +261,7 @@ __Erealloc(void *ptr, int size, const char *file, int line)
 	__Efree(ptr, file, line);
 	return NULL;
      }
-   EDBUG(9, "Erealloc");
+
 #if DBUG_MEM
    if (ptr)
      {
@@ -293,7 +292,7 @@ __Erealloc(void *ptr, int size, const char *file, int line)
 		 "\n" "The error occurred at %s, line %d.\n"), size,
 	       (float)size / 1024, (float)size / (1024 * 1024), ptr, file,
 	       line);
-	EDBUG_RETURN(NULL);
+	return NULL;
      }
 #endif
    p = realloc(ptr, size);
@@ -333,7 +332,7 @@ __Erealloc(void *ptr, int size, const char *file, int line)
 	  }
      }
 #endif
-   EDBUG_RETURN(p);
+   return p;
 }
 
 void
@@ -341,9 +340,8 @@ __Efree(void *ptr, const char *file, int line)
 {
 #if DBUG_MEM
    char                bad = 0;
-
 #endif
-   EDBUG(9, "Efree");
+
 #if DBUG_MEM
    {
       unsigned int        i, j, k;
@@ -384,7 +382,7 @@ __Efree(void *ptr, const char *file, int line)
 		 "memory chunk that has not been allocated, or has already been\n"
 		 "freed.\n" "\n" "This is definitely a bug. Please report it.\n"
 		 "\n" "The error occurred at %s, line %d.\n"), ptr, file, line);
-	EDBUG_RETURN_;
+	return;
      }
 #endif
    if (!ptr)
@@ -400,10 +398,9 @@ __Efree(void *ptr, const char *file, int line)
 		 "It is safe to ignore this error and continue running Enlightenment.\n"
 		 "\n" "The pointer value was %x.\n"
 		 "The error occurred at %s, line %d.\n"), ptr, file, line);
-	EDBUG_RETURN_;
+	return;
      }
    free(ptr);
-   EDBUG_RETURN_;
 }
 #endif
 
@@ -416,13 +413,12 @@ Estrdup(const char *s)
    char               *ss;
    int                 sz;
 
-   EDBUG(9, "Estrdup");
    if (!s)
-      EDBUG_RETURN(NULL);
+      return NULL;
    sz = strlen(s);
    ss = Emalloc(sz + 1);
    strncpy(ss, s, sz + 1);
-   EDBUG_RETURN(ss);
+   return ss;
 }
 #endif
 
@@ -432,13 +428,12 @@ Estrndup(const char *s, int n)
 {
    char               *ss;
 
-   EDBUG(9, "Estrndup");
    if (!s)
-      EDBUG_RETURN(NULL);
+      return NULL;
    ss = Emalloc(n + 1);
    strncpy(ss, s, n);
    ss[n] = '\0';
-   EDBUG_RETURN(ss);
+   return ss;
 }
 #endif
 

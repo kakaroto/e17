@@ -59,11 +59,9 @@ TooltipCreate(const char *name, ImageClass * ic0, ImageClass * ic1,
    EObj               *eo;
 #endif
 
-   EDBUG(5, "TooltipCreate");
-
    if (ic0 == NULL || ic1 == NULL || ic2 == NULL || ic3 == NULL || ic4 == NULL
        || tclass == NULL)
-      EDBUG_RETURN((ToolTip *) NULL);
+      return NULL;
 
    tt = Emalloc(sizeof(ToolTip));
    tt->name = Estrdup(name);
@@ -113,25 +111,21 @@ TooltipCreate(const char *name, ImageClass * ic0, ImageClass * ic1,
 
    AddItem(tt, tt->name, 0, LIST_TYPE_TOOLTIP);
 
-   EDBUG_RETURN(tt);
+   return tt;
 }
 
 #if 0				/* Not used */
 static void
 TooltipDestroy(ToolTip * tt)
 {
-   EDBUG(5, "FreeToolTip");
-
    if (!tt)
-      EDBUG_RETURN_;
+      return;
 
    if (tt->ref_count > 0)
      {
 	DialogOK(_("ToolTip Error!"), _("%u references remain\n"),
 		 tt->ref_count);
      }
-
-   EDBUG_RETURN_;
 }
 #endif
 
@@ -282,10 +276,8 @@ TooltipShow(ToolTip * tt, const char *text, ActionClass * ac, int x, int y)
    Action             *aa;
    const char         *tts;
 
-   EDBUG(5, "TooltipShow");
-
    if (!tt || Mode.mode != MODE_NONE)
-      EDBUG_RETURN_;
+      return;
 
    pq = Mode.queue_up;
    Mode.queue_up = 0;
@@ -651,19 +643,16 @@ TooltipShow(ToolTip * tt, const char *text, ActionClass * ac, int x, int y)
    tt->visible = 1;
    if (heights)
       Efree(heights);
-   EDBUG_RETURN_;
 }
 
 void
 TooltipHide(ToolTip * tt)
 {
-   EDBUG(5, "TooltipHide");
-
    if (!tt)
-      EDBUG_RETURN_;
+      return;
 
    if (!tt->visible)
-      EDBUG_RETURN_;
+      return;
 
    tt->visible = 0;
    EUnmapWindow(disp, tt->win);
@@ -672,8 +661,6 @@ TooltipHide(ToolTip * tt)
    EUnmapWindow(disp, tt->s_win[2]);
    EUnmapWindow(disp, tt->s_win[3]);
    ecore_x_sync();
-
-   EDBUG_RETURN_;
 }
 
 /*
@@ -708,27 +695,25 @@ ToolTipTimeout(int val __UNUSED__, void *data __UNUSED__)
    ActionClass        *ac;
    const char         *tts;
 
-   EDBUG(5, "ToolTipTimeout");
-
    /* In the case of multiple screens, check to make sure
     * the root window is still where the mouse is... */
    if (False ==
        XQueryPointer(disp, VRoot.win, &rt, &ch, &dum, &dum, &x, &y, &mask))
-      EDBUG_RETURN_;
+      return;
 
    /* In case this is a virtual root */
    if (x < 0 || y < 0 || x >= VRoot.w || y >= VRoot.h)
-      EDBUG_RETURN_;
+      return;
 
    /* dont pop up tooltip is mouse button down */
    if (mask &
        (Button1Mask | Button2Mask | Button3Mask | Button4Mask | Button5Mask))
-      EDBUG_RETURN_;
+      return;
 
    win = WindowAtXY(x, y);
    ac = FindActionClass(win);
    if (!ac)
-      EDBUG_RETURN_;
+      return;
 
    if (!ttip)
       ttip = FindItem("DEFAULT", 0, LIST_FINDBY_NAME, LIST_TYPE_TOOLTIP);
@@ -754,8 +739,6 @@ ToolTipTimeout(int val __UNUSED__, void *data __UNUSED__)
 		TooltipShow(ttip, tts, ac, x, y);
 	  }
      }
-
-   EDBUG_RETURN_;
 }
 
 /*

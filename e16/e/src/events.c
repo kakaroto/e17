@@ -168,8 +168,6 @@ HandleEvent(XEvent * ev)
    int                 i, num;
    Slideout           *pslideout = NULL;
 
-   EDBUG(7, "HandleEvent");
-
 #if ENABLE_DEBUG_EVENTS
    if (EventDebug(ev->type))
       EventShow(ev);
@@ -266,7 +264,7 @@ HandleEvent(XEvent * ev)
 	       (Mode.mode == MODE_MOVE_PENDING || Mode.mode == MODE_MOVE))))
 	  {
 	     if ((int)Mode.last_button != (int)ev->xbutton.button)
-		EDBUG_RETURN_;
+		return;
 	  }
 #endif
 
@@ -288,7 +286,7 @@ HandleEvent(XEvent * ev)
 		  Button5Mask)) && (!Mode.place)))
 	  {
 	     if (ActionsEnd(NULL))
-		EDBUG_RETURN_;
+		return;
 	  }
 #endif
 	ActionsHandleMotion();
@@ -352,8 +350,6 @@ HandleEvent(XEvent * ev)
 	break;
 #endif
      }
-
-   EDBUG_RETURN_;
 }
 
 static void
@@ -635,8 +631,6 @@ WaitEvent(void)
 
    DBUG_STACKSTART;
 
-   EDBUG(7, "WaitEvent");
-
    smfd = GetSMfd();
    xfd = ConnectionNumber(disp);
    fdsize = MAX(xfd, smfd) + 1;
@@ -716,7 +710,7 @@ WaitEvent(void)
       count = select(fdsize, &fdset, NULL, NULL, NULL);
 
    if (count < 0)
-      EDBUG_RETURN_;
+      return;
 
    if ((smfd >= 0) && (count > 0) && (FD_ISSET(smfd, &fdset)))
       ProcessICEMSGS();
@@ -728,8 +722,6 @@ WaitEvent(void)
       HandleTimerEvent();
 
    DBUG_STACKCHECK;
-
-   EDBUG_RETURN_;
 }
 
 #if ENABLE_DEBUG_EVENTS

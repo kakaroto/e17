@@ -94,7 +94,7 @@ runDocBrowser(void)
       return;
 
    if (fork())
-      EDBUG_RETURN_;
+      return;
 
    Esnprintf(file, sizeof(file), "exec %s/edox %s/E-docs",
 	     EDirBin(), EDirRoot());

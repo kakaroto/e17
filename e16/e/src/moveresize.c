@@ -33,10 +33,8 @@ ActionMoveStart(EWin * ewin, int grab, char constrained, int nogroup)
    EWin              **gwins;
    int                 i, num;
 
-   EDBUG(6, "DoMove");
-
    if (!ewin || ewin->fixedpos)
-      EDBUG_RETURN(0);
+      return 0;
 
    mode_moveresize_ewin = ewin;
    move_mode_real = Conf.movres.mode_move;
@@ -85,7 +83,8 @@ ActionMoveStart(EWin * ewin, int grab, char constrained, int nogroup)
    Efree(gwins);
    move_swapcoord_x = EoGetX(ewin);
    move_swapcoord_y = EoGetY(ewin);
-   EDBUG_RETURN(0);
+
+   return 0;
 }
 
 int
@@ -93,8 +92,6 @@ ActionMoveEnd(EWin * ewin)
 {
    EWin              **gwins;
    int                 d, num, i;
-
-   EDBUG(6, "doMoveEnd");
 
    if (ewin && ewin != mode_moveresize_ewin)
       return 0;
@@ -110,7 +107,7 @@ ActionMoveEnd(EWin * ewin)
 	   ecore_x_ungrab();
 	if (Mode.mode == MODE_MOVE)
 	   Conf.movres.mode_move = move_mode_real;
-	EDBUG_RETURN(0);
+	return 0;
      }
 
    d = DesktopAt(Mode.x, Mode.y);
@@ -170,7 +167,7 @@ ActionMoveEnd(EWin * ewin)
 
    EwinUpdateAfterMoveResize(ewin, 0);
 
-   EDBUG_RETURN(0);
+   return 0;
 }
 
 int
@@ -256,10 +253,8 @@ ActionResizeStart(EWin * ewin, int grab, int hv)
 {
    int                 x, y, w, h, ww, hh;
 
-   EDBUG(6, "DoResize");
-
    if (!ewin || ewin->shaded)
-      EDBUG_RETURN(0);
+      return 0;
 
    mode_moveresize_ewin = ewin;
 
@@ -352,15 +347,13 @@ ActionResizeStart(EWin * ewin, int grab, int hv)
    DrawEwinShape(ewin, Conf.movres.mode_resize, EoGetX(ewin), EoGetY(ewin),
 		 ewin->client.w, ewin->client.h, 0);
 
-   EDBUG_RETURN(0);
+   return 0;
 }
 
 int
 ActionResizeEnd(EWin * ewin)
 {
    int                 i;
-
-   EDBUG(0, "doResizeEnd");
 
    if (ewin && ewin != mode_moveresize_ewin)
       return 0;
@@ -374,7 +367,7 @@ ActionResizeEnd(EWin * ewin)
      {
 	if (Conf.movres.mode_resize > 0)
 	   ecore_x_ungrab();
-	EDBUG_RETURN(0);
+	return 0;
      }
    Mode.queue_up = DRAW_QUEUE_ENABLE;
    Mode.mode = MODE_NONE;
@@ -391,7 +384,7 @@ ActionResizeEnd(EWin * ewin)
 
    EwinUpdateAfterMoveResize(ewin, 1);
 
-   EDBUG_RETURN(0);
+   return 0;
 }
 
 void

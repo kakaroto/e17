@@ -27,7 +27,6 @@ ArrangeAddToList(int **array, int current_size, int value)
 {
    int                 i, j;
 
-   EDBUG(8, "ArrangeAddToList");
    for (i = 0; i < current_size; i++)
      {
 	if (value < (*array)[i])
@@ -35,13 +34,13 @@ ArrangeAddToList(int **array, int current_size, int value)
 	     for (j = current_size; j > i; j--)
 		(*array)[j] = (*array)[j - 1];
 	     (*array)[i] = value;
-	     EDBUG_RETURN(current_size + 1);
+	     return current_size + 1;
 	  }
 	else if (value == (*array)[i])
-	   EDBUG_RETURN(current_size);
+	   return current_size;
      }
    (*array)[current_size] = value;
-   EDBUG_RETURN(current_size + 1);
+   return current_size + 1;
 }
 
 static void
@@ -49,7 +48,6 @@ ArrangeSwapList(RectBox * list, int a, int b)
 {
    RectBox             bb;
 
-   EDBUG(8, "ArrangeSwapList");
    bb.data = list[a].data;
    bb.x = list[a].x;
    bb.y = list[a].y;
@@ -65,7 +63,6 @@ ArrangeSwapList(RectBox * list, int a, int b)
    list[b].y = bb.y;
    list[b].w = bb.w;
    list[b].h = bb.h;
-   EDBUG_RETURN_;
 }
 
 void
@@ -84,8 +81,6 @@ ArrangeRects(RectBox * fixed, int fixed_count, RectBox * floating,
    int                 sort;
    int                 a1, a2;
    int                 num_leftover = 0;
-
-   EDBUG(7, "ArrangeRects");
 
 #define Filled(x,y) (filled[(y * (xsize - 1)) + x])
 
@@ -574,8 +569,6 @@ ArrangeRects(RectBox * fixed, int fixed_count, RectBox * floating,
       Efree(spaces);
    if (leftover)
       Efree(leftover);
-
-   EDBUG_RETURN_;
 }
 
 void
@@ -586,15 +579,14 @@ SnapEwin(EWin * ewin, int dx, int dy, int *new_dx, int *new_dy)
    static char         last_res = 0;
    int                 top_bound, bottom_bound, left_bound, right_bound, w, h;
 
-   EDBUG(5, "SnapEwin");
    if (!ewin)
-      EDBUG_RETURN_;
+      return;
 
    if (!Conf.snap.enable)
      {
 	*new_dx = dx;
 	*new_dy = dy;
-	EDBUG_RETURN_;
+	return;
      }
 
    ScreenGetAvailableArea(ewin->shape_x, ewin->shape_y,
@@ -791,33 +783,24 @@ SnapEwin(EWin * ewin, int dx, int dy, int *new_dx, int *new_dy)
      }
    *new_dx = dx;
    *new_dy = dy;
-   EDBUG_RETURN_;
 }
 
 void
 ArrangeEwin(EWin * ewin)
 {
-   EDBUG(8, "ArrangeEwin");
-
    ewin->client.already_placed = 1;
    ArrangeEwinXY(ewin, &EoGetX(ewin), &EoGetY(ewin));
    MoveEwin(ewin, EoGetX(ewin), EoGetY(ewin));
-
-   EDBUG_RETURN_;
 }
 
 void
 ArrangeEwinCentered(EWin * ewin, int focus)
 {
-   EDBUG(8, "ArrangeEwinCentered");
-
    ewin->client.already_placed = 1;
    ArrangeEwinCenteredXY(ewin, &EoGetX(ewin), &EoGetY(ewin));
    MoveEwin(ewin, EoGetX(ewin), EoGetY(ewin));
    if (focus)
       FocusToEWin(ewin, FOCUS_SET);
-
-   EDBUG_RETURN_;
 }
 
 static int

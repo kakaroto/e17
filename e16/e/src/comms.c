@@ -46,11 +46,9 @@ ClientCreate(Window win)
    Client             *c;
    char                st[32];
 
-   EDBUG(6, "ClientCreate");
-
    c = Ecalloc(1, sizeof(Client));
    if (!c)
-      EDBUG_RETURN(NULL);
+      return NULL;
 
    Esnprintf(st, sizeof(st), "%8x", (int)win);
    c->name = Estrdup(st);
@@ -60,7 +58,7 @@ ClientCreate(Window win)
    AddItem(c, st, win, LIST_TYPE_CLIENT);
    XSelectInput(disp, win, StructureNotifyMask | SubstructureNotifyMask);
 
-   EDBUG_RETURN(c);
+   return c;
 }
 
 static void
@@ -68,10 +66,8 @@ ClientDestroy(Client * c)
 {
    Window              win;
 
-   EDBUG(6, "ClientDestroy");
-
    if (!c)
-      EDBUG_RETURN_;
+      return;
 
    win = c->win;
    RemoveItem(NULL, win, LIST_FINDBY_ID, LIST_TYPE_CLIENT);
@@ -88,8 +84,6 @@ ClientDestroy(Client * c)
    if (c->info)
       Efree(c->info);
    Efree(c);
-
-   EDBUG_RETURN_;
 }
 
 static int
@@ -152,11 +146,10 @@ ClientCommsGet(Client ** c, XClientMessageEvent * ev)
    Window              win = 0;
    Client             *cl;
 
-   EDBUG(5, "ClientCommsGet");
    if ((!ev) || (!c))
-      EDBUG_RETURN(NULL);
+      return NULL;
    if (ev->message_type != XA_ENL_MSG)
-      EDBUG_RETURN(NULL);
+      return NULL;
 
    s[12] = 0;
    s2[8] = 0;
@@ -171,7 +164,7 @@ ClientCommsGet(Client ** c, XClientMessageEvent * ev)
      {
 	cl = ClientCreate(win);
 	if (!cl)
-	   EDBUG_RETURN(NULL);
+	   return NULL;
      }
 
    if (cl->msg)
@@ -179,7 +172,7 @@ ClientCommsGet(Client ** c, XClientMessageEvent * ev)
 	/* append text to end of msg */
 	cl->msg = Erealloc(cl->msg, strlen(cl->msg) + strlen(s) + 1);
 	if (!cl->msg)
-	   EDBUG_RETURN(NULL);
+	   return NULL;
 	strcat(cl->msg, s);
      }
    else
@@ -187,7 +180,7 @@ ClientCommsGet(Client ** c, XClientMessageEvent * ev)
 	/* new msg */
 	cl->msg = Emalloc(strlen(s) + 1);
 	if (!cl->msg)
-	   EDBUG_RETURN(NULL);
+	   return NULL;
 	strcpy(cl->msg, s);
      }
    if (strlen(s) < 12)
@@ -196,7 +189,7 @@ ClientCommsGet(Client ** c, XClientMessageEvent * ev)
 	cl->msg = NULL;
 	*c = cl;
      }
-   EDBUG_RETURN(msg);
+   return msg;
 }
 
 static void
@@ -206,11 +199,9 @@ ClientHandleComms(XClientMessageEvent * ev)
    char               *s;
    const char         *s1, *s2;
 
-   EDBUG(4, "ClientHandleComms");
-
    s = ClientCommsGet(&c, ev);
    if (!s)
-      EDBUG_RETURN_;
+      return;
 
    if (EventDebug(EDBUG_TYPE_IPC))
       Eprintf("ClientHandleComms: %s\n", s);
@@ -235,8 +226,6 @@ ClientHandleComms(XClientMessageEvent * ev)
 
  done:
    Efree(s);
-
-   EDBUG_RETURN_;
 }
 
 static void
@@ -263,8 +252,6 @@ CommsInit(void)
 {
    char                s[1024];
 
-   EDBUG(5, "CommsSetup");
-
    comms_win = XCreateSimpleWindow(disp, VRoot.win, -100, -100, 5, 5, 0, 0, 0);
    ERegisterWindow(comms_win);
    XSelectInput(disp, comms_win, StructureNotifyMask | SubstructureNotifyMask);
@@ -278,8 +265,6 @@ CommsInit(void)
 		   PropModeReplace, (unsigned char *)s, strlen(s));
 
    XA_ENL_MSG = XInternAtom(disp, "ENL_MSG", False);
-
-   EDBUG_RETURN_;
 }
 
 static void
@@ -289,10 +274,8 @@ CommsDoSend(Window win, const char *s)
    int                 i, j, k, len;
    XEvent              ev;
 
-   EDBUG(5, "CommsDoSend");
-
    if ((!win) || (!s))
-      EDBUG_RETURN_;
+      return;
 
    len = strlen(s);
    ev.xclient.type = ClientMessage;
@@ -315,35 +298,26 @@ CommsDoSend(Window win, const char *s)
 	   ev.xclient.data.b[k] = ss[k];
 	XSendEvent(disp, win, False, 0, (XEvent *) & ev);
      }
-   EDBUG_RETURN_;
 }
 
 void
 CommsSend(Client * c, const char *s)
 {
-   EDBUG(5, "CommsSend");
-
    if (!c)
-      EDBUG_RETURN_;
+      return;
 
    c->replied = 1;
    CommsDoSend(c->win, s);
-
-   EDBUG_RETURN_;
 }
 
 void
 CommsFlush(Client * c)
 {
-   EDBUG(5, "CommsFlush");
-
    if (!c)
-      EDBUG_RETURN_;
+      return;
 
    if (!c->replied)
       CommsDoSend(c->win, "");
-
-   EDBUG_RETURN_;
 }
 
 /*
@@ -353,14 +327,10 @@ CommsFlush(Client * c)
 void
 CommsSendToMasterWM(const char *s)
 {
-   EDBUG(5, "CommsSendToMasterWM");
-
    if (Mode.wm.master)
-      EDBUG_RETURN_;
+      return;
 
    CommsDoSend(RootWindow(disp, Mode.wm.master_screen), s);
-
-   EDBUG_RETURN_;
 }
 
 /*
@@ -372,18 +342,14 @@ CommsBroadcastToSlaveWMs(const char *s)
 {
    int                 screen;
 
-   EDBUG(5, "CommsBroadcastToSlaveWMs");
-
    if (!Mode.wm.master || Mode.wm.single)
-      EDBUG_RETURN_;
+      return;
 
    for (screen = 0; screen < Mode.display.screens; screen++)
      {
 	if (screen != Mode.wm.master_screen)
 	   CommsDoSend(RootWindow(disp, screen), s);
      }
-
-   EDBUG_RETURN_;
 }
 
 void
@@ -393,10 +359,9 @@ CommsBroadcast(const char *s)
    int                 num, i;
    Client             *c;
 
-   EDBUG(5, "CommsBroadcast");
    l = ListItems(&num, LIST_TYPE_CLIENT);
    if (!s)
-      EDBUG_RETURN_;
+      return;
    for (i = 0; i < num; i++)
      {
 	c = (Client *) FindItem(l[i], 0, LIST_FINDBY_NAME, LIST_TYPE_CLIENT);
@@ -404,5 +369,4 @@ CommsBroadcast(const char *s)
 	   CommsSend(c, s);
      }
    freestrlist(l, num);
-   EDBUG_RETURN_;
 }

@@ -34,19 +34,18 @@ HandleDrawQueue()
    int                 i, num;
    char                already, p_queue;
 
-   EDBUG(4, "HandleDrawQueue");
    switch (Mode.mode)
      {
      case MODE_MOVE_PENDING:
      case MODE_MOVE:
 	if (Conf.movres.mode_move > 0)
-	   EDBUG_RETURN_;
+	   return;
 	break;
      case MODE_RESIZE:
      case MODE_RESIZE_H:
      case MODE_RESIZE_V:
 	if (Conf.movres.mode_resize > 0)
-	   EDBUG_RETURN_;
+	   return;
 	break;
      }
 
@@ -256,17 +255,14 @@ HandleDrawQueue()
      }
 
    Mode.queue_up = p_queue;
-   EDBUG_RETURN_;
 }
 
 char
 IsPropagateEwinOnQueue(EWin * ewin)
 {
-   EDBUG(6, "IsPropagateOnQueue");
-
    if (FindItem(NULL, EoGetWin(ewin), LIST_FINDBY_ID, LIST_TYPE_DRAW))
-      EDBUG_RETURN(1);
-   EDBUG_RETURN(0);
+      return 1;
+   return 0;
 }
 
 static void
@@ -1306,8 +1302,6 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
    char                str[32], pq;
    char                check_move = 0;
 
-   EDBUG(4, "DrawEwinShape");
-
    for (i = 0; i < ewin->num_groups; i++)
      {
 	check_move |= ewin->groups[i]->cfg.move;
@@ -1755,7 +1749,6 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h, char firstlast)
 
  done:
    Mode.queue_up = pq;
-   EDBUG_RETURN_;
 }
 
 Imlib_Image        *
@@ -1764,15 +1757,13 @@ ELoadImage(char *file)
    Imlib_Image        *im;
    char               *f = NULL;
 
-   EDBUG(5, "ELoadImage");
-
    if (!file)
-      EDBUG_RETURN(NULL);
+      return NULL;
 
    if (file[0] == '/')
      {
 	im = imlib_load_image(file);
-	EDBUG_RETURN(im);
+	return im;
      }
 
    f = ThemeFileFind(file);
@@ -1780,10 +1771,10 @@ ELoadImage(char *file)
      {
 	im = imlib_load_image(f);
 	Efree(f);
-	EDBUG_RETURN(im);
+	return im;
      }
 
-   EDBUG_RETURN(NULL);
+   return NULL;
 }
 
 void
@@ -1796,7 +1787,6 @@ PropagateShapes(Window win)
    XRectangle         *rects = NULL, *rl = NULL;
    XWindowAttributes   att;
 
-   EDBUG(6, "PropagateShapes");
    if (Mode.queue_up)
      {
 	DrawQueue          *dq;
@@ -1820,11 +1810,11 @@ PropagateShapes(Window win)
 	dq->x = 0;
 	dq->y = 0;
 	AddItem(dq, "DRAW", dq->win, LIST_TYPE_DRAW);
-	EDBUG_RETURN_;
+	return;
      }
    EGetGeometry(disp, win, &rt, &x, &y, &w, &h, &d, &d);
    if ((w <= 0) || (h <= 0))
-      EDBUG_RETURN_;
+      return;
 
    ww = w;
    hh = h;
@@ -1905,5 +1895,4 @@ PropagateShapes(Window win)
 	  }
 	XFree(list);
      }
-   EDBUG_RETURN_;
 }

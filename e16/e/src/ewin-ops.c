@@ -30,8 +30,6 @@ SlideEwinTo(EWin * ewin, int fx, int fy, int tx, int ty, int speed)
    int                 k, x, y, tmpx, tmpy;
    char                firstlast;
 
-   EDBUG(3, "SlideEwinTo");
-
    firstlast = 0;
    Mode.doingslide = 1;
    SoundPlay("SOUND_WINDOW_SLIDE");
@@ -65,8 +63,6 @@ SlideEwinTo(EWin * ewin, int fx, int fy, int tx, int ty, int speed)
       ecore_x_ungrab();
 
    SoundPlay("SOUND_WINDOW_SLIDE_END");
-
-   EDBUG_RETURN_;
 }
 
 void
@@ -75,8 +71,6 @@ SlideEwinsTo(EWin ** ewin, int *fx, int *fy, int *tx, int *ty, int num_wins,
 {
    int                 k, *x = NULL, *y = NULL, tmpx, tmpy, tmpw, tmph, i;
    char                firstlast;
-
-   EDBUG(3, "SlideEwinsTo");
 
    if (num_wins)
      {
@@ -137,8 +131,6 @@ SlideEwinsTo(EWin ** ewin, int *fx, int *fy, int *tx, int *ty, int num_wins,
       Efree(x);
    if (y)
       Efree(y);
-
-   EDBUG_RETURN_;
 }
 
 void
@@ -177,9 +169,8 @@ doMoveResizeEwin(EWin * ewin, int x, int y, int w, int h, int flags)
    EWin              **lst;
    int                 i, num;
 
-   EDBUG(3, "doMoveResizeEwin");
    if (call_depth > 256)
-      EDBUG_RETURN_;
+      return;
    call_depth++;
 
    if (EventDebug(EDBUG_TYPE_MOVERESIZE))
@@ -308,7 +299,6 @@ doMoveResizeEwin(EWin * ewin, int x, int y, int w, int h, int flags)
      }
 
    call_depth--;
-   EDBUG_RETURN_;
 }
 
 void
@@ -337,22 +327,20 @@ EwinIconify(EWin * ewin)
    int                 i, num;
    char                was_shaded;
 
-   EDBUG(6, "EwinIconify");
-
    if (!ewin)
-      EDBUG_RETURN_;
+      return;
 
    if (GetZoomEWin() == ewin)
       Zoom(NULL);
 
    if (ewin->props.inhibit_iconify)
-      EDBUG_RETURN_;
+      return;
 
    if (ewin->state != EWIN_STATE_MAPPED)
-      EDBUG_RETURN_;
+      return;
 
    if (call_depth > 256)
-      EDBUG_RETURN_;
+      return;
    call_depth++;
 
    was_shaded = ewin->shaded;
@@ -391,7 +379,6 @@ EwinIconify(EWin * ewin)
    HintsSetWindowState(ewin);
 
    call_depth--;
-   EDBUG_RETURN_;
 }
 
 void
@@ -402,14 +389,12 @@ EwinDeIconify(EWin * ewin)
    int                 i, num;
    int                 x, y, ox, oy, dx, dy;
 
-   EDBUG(6, "EwinDeIconify");
-
    if (call_depth > 256)
-      EDBUG_RETURN_;
+      return;
    call_depth++;
 
    if (ewin->state != EWIN_STATE_ICONIC)
-      EDBUG_RETURN_;
+      return;
 
    EwinRememberPositionGet(ewin, &ox, &oy);
    x = ox;
@@ -479,23 +464,19 @@ EwinDeIconify(EWin * ewin)
    HintsSetWindowState(ewin);
 
    call_depth--;
-   EDBUG_RETURN_;
 }
 
 void
 EwinUnStick(EWin * ewin)
 {
 
-   EDBUG(4, "EwinUnStick");
    if (!ewin)
-      EDBUG_RETURN_;
+      return;
 
    EoSetSticky(ewin, 0);
    MoveEwinToDesktopAt(ewin, DesksGetCurrent(), EoGetX(ewin), EoGetY(ewin));
    EwinBorderUpdateState(ewin);
    HintsSetWindowState(ewin);
-
-   EDBUG_RETURN_;
 }
 
 void
@@ -503,9 +484,8 @@ EwinStick(EWin * ewin)
 {
    int                 x, y, dx, dy;
 
-   EDBUG(4, "EwinStick");
    if (!ewin)
-      EDBUG_RETURN_;
+      return;
 
    /* Avoid "losing" windows made sticky while not in the current viewport */
    dx = EoGetW(ewin) / 2;
@@ -523,8 +503,6 @@ EwinStick(EWin * ewin)
    EoSetSticky(ewin, 1);
    EwinBorderUpdateState(ewin);
    HintsSetWindowState(ewin);
-
-   EDBUG_RETURN_;
 }
 
 void
@@ -534,15 +512,13 @@ EwinInstantShade(EWin * ewin, int force)
    int                 b, d;
    char                pq;
 
-   EDBUG(4, "EwinInstantShade");
-
    if ((ewin->border->border.left == 0) && (ewin->border->border.right == 0)
        && (ewin->border->border.top == 0) && (ewin->border->border.bottom == 0))
-      EDBUG_RETURN_;
+      return;
    if (GetZoomEWin() == ewin)
-      EDBUG_RETURN_;
+      return;
    if (ewin->shaded && !force)
-      EDBUG_RETURN_;
+      return;
 
    pq = Mode.queue_up;
    Mode.queue_up = 0;
@@ -611,8 +587,6 @@ EwinInstantShade(EWin * ewin, int force)
    Mode.queue_up = pq;
    HintsSetWindowState(ewin);
    ModulesSignal(ESIGNAL_EWIN_CHANGE, ewin);
-
-   EDBUG_RETURN_;
 }
 
 void
@@ -622,12 +596,10 @@ EwinInstantUnShade(EWin * ewin)
    int                 b, d;
    char                pq;
 
-   EDBUG(4, "EwinInstantUnShade");
-
    if (GetZoomEWin() == ewin)
-      EDBUG_RETURN_;
+      return;
    if (!ewin->shaded)
-      EDBUG_RETURN_;
+      return;
    pq = Mode.queue_up;
    Mode.queue_up = 0;
 
@@ -692,8 +664,6 @@ EwinInstantUnShade(EWin * ewin)
    Mode.queue_up = pq;
    HintsSetWindowState(ewin);
    ModulesSignal(ESIGNAL_EWIN_CHANGE, ewin);
-
-   EDBUG_RETURN_;
 }
 
 void
@@ -703,17 +673,15 @@ EwinShade(EWin * ewin)
    int                 i, j, k, speed, a, b, c, d, ww, hh;
    char                pq;
 
-   EDBUG(4, "EwinShade");
-
    if ((ewin->border->border.left == 0) && (ewin->border->border.right == 0)
        && (ewin->border->border.top == 0) && (ewin->border->border.bottom == 0))
-      EDBUG_RETURN_;
+      return;
    if (GetZoomEWin() == ewin)
-      EDBUG_RETURN_;
+      return;
    if (ewin->shaded)
-      EDBUG_RETURN_;
+      return;
    if ((ewin->border) && (!strcmp(ewin->border->name, "BORDERLESS")))
-      EDBUG_RETURN_;
+      return;
 
    pq = Mode.queue_up;
    Mode.queue_up = 0;
@@ -908,8 +876,6 @@ EwinShade(EWin * ewin)
 
    HintsSetWindowState(ewin);
    ModulesSignal(ESIGNAL_EWIN_CHANGE, ewin);
-
-   EDBUG_RETURN_;
 }
 
 void
@@ -919,12 +885,10 @@ EwinUnShade(EWin * ewin)
    int                 i, j, k, speed, a, b, c, d;
    char                pq;
 
-   EDBUG(4, "EwinUnShade");
-
    if (GetZoomEWin() == ewin)
-      EDBUG_RETURN_;
+      return;
    if (!ewin->shaded || ewin->iconified)
-      EDBUG_RETURN_;
+      return;
 
    pq = Mode.queue_up;
    Mode.queue_up = 0;
@@ -1143,8 +1107,6 @@ EwinUnShade(EWin * ewin)
 
    HintsSetWindowState(ewin);
    ModulesSignal(ESIGNAL_EWIN_CHANGE, ewin);
-
-   EDBUG_RETURN_;
 }
 
 void
@@ -1306,7 +1268,7 @@ EwinOpClose(EWin * ewin)
    int                 num, i;
 
    if (!ewin)
-      EDBUG_RETURN_;
+      return;
 
    gwins = ListWinGroupMembersForEwin(ewin, GROUP_ACTION_KILL,
 				      Mode.nogroup, &num);

@@ -28,14 +28,13 @@ FindEwinByBase(Window win)
    EWin               *const *ewins;
    int                 i, num;
 
-   EDBUG(6, "FindEwinByBase");
    ewins = EwinListGetAll(&num);
    for (i = 0; i < num; i++)
      {
 	if (win == EoGetWin(ewins[i]))
 	   return ewins[i];
      }
-   EDBUG_RETURN(NULL);
+   return NULL;
 }
 
 EWin               *
@@ -43,8 +42,6 @@ FindEwinByChildren(Window win)
 {
    EWin               *const *ewins;
    int                 i, j, num;
-
-   EDBUG(6, "FindEwinByChildren");
 
    ewins = EwinListGetAll(&num);
    for (i = 0; i < num; i++)
@@ -62,7 +59,7 @@ FindEwinByChildren(Window win)
 		  }
 	  }
      }
-   EDBUG_RETURN(NULL);
+   return NULL;
 }
 
 EWin               *
@@ -73,8 +70,6 @@ FindEwinByPartial(const char *match, int type)
    int                 i, num, len;
    char                ewinid[FILEPATH_LEN_MAX];
    const char         *name;
-
-   EDBUG(6, "FindEwinByPartial");
 
    len = strlen(match);
    if (len <= 0)
@@ -110,7 +105,7 @@ FindEwinByPartial(const char *match, int type)
      }
 
  done:
-   EDBUG_RETURN(ewin);
+   return ewin;
 }
 
 EWin               *
@@ -118,8 +113,6 @@ FindEwinByDecoration(Window win)
 {
    EWin               *const *ewins;
    int                 i, j, num;
-
-   EDBUG(6, "FindEwinByDecoration");
 
    ewins = EwinListGetAll(&num);
    for (i = 0; i < num; i++)
@@ -131,7 +124,7 @@ FindEwinByDecoration(Window win)
 	  }
      }
 
-   EDBUG_RETURN(NULL);
+   return NULL;
 }
 
 ActionClass        *
@@ -141,18 +134,16 @@ FindActionClass(Window win)
    EWin               *ewin;
    int                 i;
 
-   EDBUG(6, "FindActionClass");
-
    b = FindButton(win);
    if (b)
-      EDBUG_RETURN(ButtonGetAClass(b));
+      return ButtonGetAClass(b);
 
    ewin = FindEwinByDecoration(win);
    if (ewin)
      {
 	for (i = 0; i < ewin->border->num_winparts; i++)
 	   if (win == ewin->bits[i].win)
-	      EDBUG_RETURN(ewin->border->part[i].aclass);
+	      return ewin->border->part[i].aclass;
      }
 
    for (i = 0; i < Conf.desks.num; i++)
@@ -163,11 +154,11 @@ FindActionClass(Window win)
 	  {
 	     ac = FindItem("DESKBINDINGS", 0, LIST_FINDBY_NAME,
 			   LIST_TYPE_ACLASS);
-	     EDBUG_RETURN(ac);
+	     return ac;
 	  }
      }
 
-   EDBUG_RETURN(NULL);
+   return NULL;
 }
 
 Group             **
@@ -314,12 +305,12 @@ ListWinGroupMembersForEwin(EWin * ewin, int action, char nogroup, int *num)
 	     gwins[0] = ewin;
 	     *num = 1;
 	  }
-	EDBUG_RETURN(gwins);
+	return gwins;
      }
    else
      {
 	*num = 0;
-	EDBUG_RETURN(NULL);
+	return NULL;
      }
 }
 
@@ -328,8 +319,6 @@ EwinListTransients(EWin * ewin, int *num, int group)
 {
    EWin               *const *ewins, **lst, *ew;
    int                 i, j, n;
-
-   EDBUG(6, "EwinListTransients");
 
    j = 0;
    lst = NULL;
@@ -380,7 +369,7 @@ EwinListTransients(EWin * ewin, int *num, int group)
 
  done:
    *num = j;
-   EDBUG_RETURN(lst);
+   return lst;
 }
 
 EWin              **
@@ -388,8 +377,6 @@ EwinListTransientFor(EWin * ewin, int *num)
 {
    EWin               *const *ewins, **lst, *ew;
    int                 i, j, n;
-
-   EDBUG(6, "EwinListTransientFor");
 
    j = 0;
    lst = NULL;
@@ -419,7 +406,7 @@ EwinListTransientFor(EWin * ewin, int *num)
 
  done:
    *num = j;
-   EDBUG_RETURN(lst);
+   return lst;
 }
 
 #if 0				/* Not used */
@@ -428,8 +415,6 @@ ListGroupMembers(Window win, int *num)
 {
    EWin               *const *ewins, **lst = NULL;
    int                 i, j, n;
-
-   EDBUG(6, "ListGroupMembers");
 
    ewins = EwinListGetAll(&n);
    j = 0;
@@ -443,6 +428,6 @@ ListGroupMembers(Window win, int *num)
 	  }
      }
    *num = j;
-   EDBUG_RETURN(lst);
+   return lst;
 }
 #endif

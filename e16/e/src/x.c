@@ -251,7 +251,6 @@ ECreateWindow(Window parent, int x, int y, int w, int h, int saveunder)
    Window              win;
    XSetWindowAttributes attr;
 
-   EDBUG(6, "ECreateWindow");
    attr.backing_store = NotUseful;
    attr.override_redirect = True;
    attr.colormap = VRoot.cmap;
@@ -270,7 +269,7 @@ ECreateWindow(Window parent, int x, int y, int w, int h, int saveunder)
 		       CWColormap | CWBackPixmap | CWBorderPixel, &attr);
    EXidSet(win, parent, x, y, w, h, VRoot.depth);
 
-   EDBUG_RETURN(win);
+   return win;
 }
 
 void
@@ -822,13 +821,12 @@ ECreateEventWindow(Window parent, int x, int y, int w, int h)
    Window              win;
    XSetWindowAttributes attr;
 
-   EDBUG(6, "ECreateEventWindow");
    attr.override_redirect = False;
    win = XCreateWindow(disp, parent, x, y, w, h, 0, 0, InputOnly, VRoot.vis,
 		       CWOverrideRedirect, &attr);
    EXidSet(win, parent, x, y, w, h, VRoot.depth);
 
-   EDBUG_RETURN(win);
+   return win;
 }
 
 /*
@@ -840,8 +838,6 @@ ECreateFocusWindow(Window parent, int x, int y, int w, int h)
 {
    Window              win;
    XSetWindowAttributes attr;
-
-   EDBUG(6, "ECreateFocusWindow");
 
    attr.backing_store = NotUseful;
    attr.override_redirect = True;
@@ -861,7 +857,7 @@ ECreateFocusWindow(Window parent, int x, int y, int w, int h)
    XMapWindow(disp, win);
    XSetInputFocus(disp, win, RevertToParent, CurrentTime);
 
-   EDBUG_RETURN(win);
+   return win;
 }
 
 void
@@ -942,9 +938,7 @@ GetWinXY(Window win, int *x, int *y)
    Window              w1;
    unsigned int        w, h, b, d;
 
-   EDBUG(7, "GetWinXY");
    EGetGeometry(disp, win, &w1, x, y, &w, &h, &b, &d);
-   EDBUG_RETURN_;
 }
 
 Window
@@ -952,13 +946,11 @@ GetWinParent(Window win)
 {
    EXID               *xid;
 
-   EDBUG(7, "GetWinParent");
-
    xid = EXidFind(win);
    if (xid)
       return xid->parent;
 
-   EDBUG_RETURN(0);
+   return 0;
 }
 
 void
@@ -968,9 +960,7 @@ GetWinWH(Window win, unsigned int *w, unsigned int *h)
    int                 x, y;
    unsigned int        b, d;
 
-   EDBUG(7, "GetWinWH");
    EGetGeometry(disp, win, &w1, &x, &y, w, h, &b, &d);
-   EDBUG_RETURN_;
 }
 
 int
@@ -980,9 +970,8 @@ GetWinDepth(Window win)
    unsigned int        w, h, b, d;
    int                 x, y;
 
-   EDBUG(7, "GetWinDepth");
    EGetGeometry(disp, win, &w1, &x, &y, &w, &h, &b, &d);
-   EDBUG_RETURN(d);
+   return d;
 }
 
 int
@@ -993,10 +982,9 @@ WinExists(Window win)
    unsigned int        w, h;
    unsigned int        b, d;
 
-   EDBUG(7, "WinExists");
    if (EGetGeometry(disp, win, &w1, &x, &y, &w, &h, &b, &d))
-      EDBUG_RETURN(1);
-   EDBUG_RETURN(0);
+      return 1;
+   return 0;
 }
 
 Window
@@ -1022,13 +1010,12 @@ WindowAtXY_0(Window base, int bx, int by, int x, int y)
    unsigned int        ww, wh, num;
    int                 wx, wy;
 
-   EDBUG(7, "WindowAtXY_0");
    if (!XGetWindowAttributes(disp, base, &att))
-      EDBUG_RETURN(0);
+      return 0;
    if (att.class == InputOnly)
-      EDBUG_RETURN(0);
+      return 0;
    if (att.map_state != IsViewable)
-      EDBUG_RETURN(0);
+      return 0;
    wx = att.x;
    wy = att.y;
    ww = att.width;
@@ -1039,10 +1026,10 @@ WindowAtXY_0(Window base, int bx, int by, int x, int y)
 
    if (!((x >= wx) && (y >= wy) && (x < (int)(wx + ww))
 	 && (y < (int)(wy + wh))))
-      EDBUG_RETURN(0);
+      return 0;
 
    if (!XQueryTree(disp, base, &root_win, &parent_win, &list, &num))
-      EDBUG_RETURN(base);
+      return base;
    if (list)
      {
 	for (i = num - 1;; i--)
@@ -1050,14 +1037,14 @@ WindowAtXY_0(Window base, int bx, int by, int x, int y)
 	     if ((child = WindowAtXY_0(list[i], wx, wy, x, y)) != 0)
 	       {
 		  XFree(list);
-		  EDBUG_RETURN(child);
+		  return child;
 	       }
 	     if (!i)
 		break;
 	  }
 	XFree(list);
      }
-   EDBUG_RETURN(base);
+   return base;
 }
 
 Window
@@ -1068,12 +1055,11 @@ WindowAtXY(int x, int y)
    unsigned int        num;
    int                 i;
 
-   EDBUG(7, "WindowAtXY");
    ecore_x_grab();
    if (!XQueryTree(disp, VRoot.win, &root_win, &parent_win, &list, &num))
      {
 	ecore_x_ungrab();
-	EDBUG_RETURN(VRoot.win);
+	return VRoot.win;
      }
    if (list)
      {
@@ -1091,13 +1077,13 @@ WindowAtXY(int x, int y)
 
 	     XFree(list);
 	     ecore_x_ungrab();
-	     EDBUG_RETURN(child);
+	     return child;
 	  }
 	while (--i > 0);
 	XFree(list);
      }
    ecore_x_ungrab();
-   EDBUG_RETURN(VRoot.win);
+   return VRoot.win;
 }
 
 Bool

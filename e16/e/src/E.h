@@ -137,38 +137,6 @@ extern int          call_level;
 extern char        *call_stack[1024];
 
 #endif
-#ifdef DEBUG
-#define EDBUG(l,x) \
-{ \
-  call_stack[call_level] = x; \
-  call_level++; \
-}
-#else
-#define EDBUG(l,x)  \
-;
-#endif
-
-#ifdef DEBUG
-#define EDBUG_RETURN(x)  \
-{ \
-  call_level--; \
-  return (x); \
-}
-#define EDBUG_RETURN_  \
-{ \
-  call_level--; \
-  return; \
-}
-#else
-#define EDBUG_RETURN(x)  \
-{ \
-  return (x); \
-}
-#define EDBUG_RETURN_  \
-{ \
-  return; \
-}
-#endif
 
 #ifdef HAVE_SNPRINTF
 #define Evsnprintf vsnprintf

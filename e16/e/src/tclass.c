@@ -42,11 +42,9 @@ TextstateCreate(void)
 {
    TextState          *ts;
 
-   EDBUG(6, "TextstateCreate");
-
    ts = Ecalloc(1, sizeof(TextState));
    if (!ts)
-      EDBUG_RETURN(NULL);
+      return NULL;
 
    ts->fontname = NULL;
    ts->style.mode = MODE_WRAP_CHAR;
@@ -55,7 +53,7 @@ TextstateCreate(void)
    ts->xfont = NULL;
    ts->xfontset = 0;
 
-   EDBUG_RETURN(ts);
+   return ts;
 }
 
 static void
@@ -75,16 +73,14 @@ TextclassCreate(const char *name)
 {
    TextClass          *tc;
 
-   EDBUG(5, "TextclassCreate");
-
    tc = Ecalloc(1, sizeof(TextClass));
    if (!tc)
-      EDBUG_RETURN(NULL);
+      return NULL;
 
    tc->name = Estrdup(name);
    tc->justification = 512;
 
-   EDBUG_RETURN(tc);
+   return tc;
 }
 
 static void
@@ -94,7 +90,7 @@ TextclassDestroy(TextClass * tc)
      {
 	DialogOK(_("Textclass Error!"), _("%u references remain\n"),
 		 tc->ref_count);
-	EDBUG_RETURN_;
+	return;
      }
    if (tc->name)
       Efree(tc->name);
@@ -137,13 +133,11 @@ static void
 TextclassPopulate(TextClass * tclass)
 {
 
-   EDBUG(6, "TextclassPopulate");
-
    if (!tclass)
-      EDBUG_RETURN_;
+      return;
 
    if (!tclass->norm.normal)
-      EDBUG_RETURN_;
+      return;
 
    if (!tclass->norm.hilited)
       tclass->norm.hilited = tclass->norm.normal;
@@ -178,8 +172,6 @@ TextclassPopulate(TextClass * tclass)
       tclass->sticky_active.clicked = tclass->sticky_active.normal;
    if (!tclass->sticky_active.disabled)
       tclass->sticky_active.disabled = tclass->sticky_active.normal;
-
-   EDBUG_RETURN_;
 }
 
 TextClass          *
@@ -443,10 +435,8 @@ TextclassApply(ImageClass * iclass, Window win, int w, int h, int active,
 	       TextClass * tclass, const char *text)
 {
 
-   EDBUG(4, "TextclassApply");
-
    if ((!iclass) || (!tclass) || (!text) || (!win) || (w < 1) || (h < 1))
-      EDBUG_RETURN_;
+      return;
 
 #if 0				/* Try not using the draw queue here. */
    if (Mode.queue_up)
@@ -480,7 +470,7 @@ TextclassApply(ImageClass * iclass, Window win, int w, int h, int active,
 	dq->x = 0;
 	dq->y = 0;
 	AddItem(dq, "DRAW", dq->win, LIST_TYPE_DRAW);
-	EDBUG_RETURN_;
+	return;
      }
 #endif
 
@@ -492,8 +482,6 @@ TextclassApply(ImageClass * iclass, Window win, int w, int h, int active,
 	    h - (iclass->padding.top + iclass->padding.bottom),
 	    h - (iclass->padding.top + iclass->padding.bottom),
 	    tclass->justification);
-
-   EDBUG_RETURN_;
 }
 
 /*

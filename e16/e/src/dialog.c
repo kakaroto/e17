@@ -1494,7 +1494,7 @@ DialogDrawItems(Dialog * d, DItem * di, int x, int y, int w, int h)
 	dq->x = x;
 	dq->y = y;
 	AddItem(dq, "DRAW", 0, LIST_TYPE_DRAW);
-	EDBUG_RETURN_;
+	return;
      }
 
    if (di->type == DITEM_TABLE)
@@ -2433,7 +2433,6 @@ FindDialog(Window win)
    Dialog            **ds, *d = NULL;
    int                 i, num;
 
-   EDBUG(6, "FindDialog");
    ds = (Dialog **) ListItemType(&num, LIST_TYPE_DIALOG);
    for (i = 0; i < num; i++)
      {
@@ -2444,7 +2443,7 @@ FindDialog(Window win)
      }
    if (ds)
       Efree(ds);
-   EDBUG_RETURN(d);
+   return d;
 }
 
 EWin               *
@@ -2453,8 +2452,6 @@ FindEwinByDialog(Dialog * d)
    EWin               *const *ewins;
    int                 i, num;
 
-   EDBUG(6, "FindEwinByDialog");
-
    ewins = EwinListGetAll(&num);
    for (i = 0; i < num; i++)
      {
@@ -2462,7 +2459,7 @@ FindEwinByDialog(Dialog * d)
 	   return ewins[i];
      }
 
-   EDBUG_RETURN(NULL);
+   return NULL;
 }
 
 int
@@ -2471,8 +2468,6 @@ FindADialog(void)
    EWin               *const *ewins;
    int                 i, num, n;
 
-   EDBUG(6, "FindADialog");
-
    ewins = EwinListGetAll(&num);
    for (i = n = 0; i < num; i++)
      {
@@ -2480,7 +2475,7 @@ FindADialog(void)
 	   n++;
      }
 
-   EDBUG_RETURN(n);
+   return n;
 }
 
 #if 0				/* Unused */
@@ -2492,9 +2487,9 @@ doAlert(EWin * edummy __UNUSED__, const char *params)
 
    pp = Estrdup(params);
    if (!pp)
-      EDBUG_RETURN(1);
+      return 1;
    if (strlen(pp) <= 0)
-      EDBUG_RETURN(1);
+      return 1;
 
    i = 1;
    while (pp[i])

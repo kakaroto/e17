@@ -28,10 +28,10 @@ WindowMatchCreate(const char *name)
 {
    WindowMatch        *b;
 
-   EDBUG(5, "WindowMatchCreate");
    b = Emalloc(sizeof(WindowMatch));
    if (!b)
-      EDBUG_RETURN(NULL);
+      return NULL;
+
    b->name = Estrdup(name);
    b->win_title = NULL;
    b->win_name = NULL;
@@ -48,17 +48,16 @@ WindowMatchCreate(const char *name)
    b->icon = NULL;
    b->desk = 0;
    b->make_sticky = 0;
-   EDBUG_RETURN(b);
+
+   return b;
 }
 
 #if 0
 static void
 WindowMatchDestroy(WindowMatch * wm)
 {
-   EDBUG(4, "RemoveWindowMatch");
-
    if (!wm)
-      EDBUG_RETURN_;
+      return;
 
    while (RemoveItemByPtr(wm, LIST_TYPE_WINDOWMATCH));
 
@@ -74,8 +73,6 @@ WindowMatchDestroy(WindowMatch * wm)
       Efree(wm->win_name);
    if (wm->win_class)
       Efree(wm->win_class);
-
-   EDBUG_RETURN_;
 }
 #endif
 
@@ -193,90 +190,84 @@ static int
 WindowMatchTest(EWin * ewin, WindowMatch * b)
 {
 
-   EDBUG(5, "MatchEwinBorder");
-
    if ((b->win_title) && (ewin->icccm.wm_name)
        && (!matchregexp(b->win_title, ewin->icccm.wm_name)))
-      EDBUG_RETURN(0);
+      return 0;
 
    if ((b->win_name) && (ewin->icccm.wm_res_name)
        && (!matchregexp(b->win_name, ewin->icccm.wm_res_name)))
-      EDBUG_RETURN(0);
+      return 0;
 
    if ((b->win_class) && (ewin->icccm.wm_res_class)
        && (!matchregexp(b->win_class, ewin->icccm.wm_res_class)))
-      EDBUG_RETURN(0);
+      return 0;
 
    if ((ewin->client.w > b->width.max) || (ewin->client.w < b->width.min))
-      EDBUG_RETURN(0);
+      return 0;
 
    if ((ewin->client.h > b->height.max) || (ewin->client.h < b->height.min))
-      EDBUG_RETURN(0);
+      return 0;
 
    if ((b->transient >= 0) && (b->transient != ewin->client.transient))
-      EDBUG_RETURN(0);
+      return 0;
 
    if ((b->no_resize_h >= 0) && (b->no_resize_h != ewin->client.no_resize_h))
-      EDBUG_RETURN(0);
+      return 0;
 
    if ((b->no_resize_v >= 0) && (b->no_resize_v != ewin->client.no_resize_v))
-      EDBUG_RETURN(0);
+      return 0;
 
    if ((b->shaped >= 0) && (b->shaped != ewin->client.shaped))
-      EDBUG_RETURN(0);
+      return 0;
 
-   EDBUG_RETURN(1);
+   return 1;
 }
 
 Border             *
 MatchEwinBorder(EWin * ewin, WindowMatch * b)
 {
-   EDBUG(4, "MatchEwinBorder");
-
    if (WindowMatchTest(ewin, b))
      {
 	if (b->make_sticky)
 	   EoSetSticky(ewin, 1);
 
-	EDBUG_RETURN(b->border);
+	return b->border;
      }
    else
      {
-	EDBUG_RETURN(0);
+	return 0;
      }
 }
 
 ImageClass         *
 MatchEwinIcon(EWin * ewin, WindowMatch * b)
 {
-   EDBUG(4, "MatchEwinIcon");
    if (WindowMatchTest(ewin, b))
      {
 	if (b->make_sticky)
 	   EoSetSticky(ewin, 1);
 
-	EDBUG_RETURN(b->icon);
+	return b->icon;
      }
    else
      {
-	EDBUG_RETURN(0);
+	return 0;
      }
 }
 
 int
 MatchEwinDesktop(EWin * ewin, WindowMatch * b)
 {
-   EDBUG(4, "MatchEwinDesktop");
    if (WindowMatchTest(ewin, b))
      {
 	if (b->make_sticky)
 	   EoSetSticky(ewin, 1);
 
-	EDBUG_RETURN(b->desk);
+	return b->desk;
      }
    else
      {
-	EDBUG_RETURN(0);
+	return 0;
      }
 }
 
@@ -288,7 +279,6 @@ MatchEwinByFunction(EWin * ewin,
    int                 i, num;
    void               *retval;
 
-   EDBUG(4, "MatchEwinByFunction");
    retval = 0;
 
    lst = (WindowMatch **) ListItemType(&num, LIST_TYPE_WINDOWMATCH);
@@ -304,5 +294,5 @@ MatchEwinByFunction(EWin * ewin,
 	Efree(lst);
      }
 
-   EDBUG_RETURN(retval);
+   return retval;
 }

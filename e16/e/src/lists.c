@@ -44,14 +44,13 @@ FindItem(const char *name, int id, int find_by, int type)
 {
    List               *ptr;
 
-   EDBUG(6, "FindItem");
    ptr = lists[type].next;
    if (find_by == LIST_FINDBY_NAME)
      {
 	while (ptr)
 	  {
 	     if ((!strcmp(name, ptr->name)))
-		EDBUG_RETURN(ptr->item);
+		return ptr->item;
 	     ptr = ptr->next;
 	  }
      }
@@ -60,7 +59,7 @@ FindItem(const char *name, int id, int find_by, int type)
 	while (ptr)
 	  {
 	     if ((ptr->id == id))
-		EDBUG_RETURN(ptr->item);
+		return ptr->item;
 	     ptr = ptr->next;
 	  }
      }
@@ -69,7 +68,7 @@ FindItem(const char *name, int id, int find_by, int type)
 	while (ptr)
 	  {
 	     if ((!strcmp(name, ptr->name)) && (ptr->id == id))
-		EDBUG_RETURN(ptr->item);
+		return ptr->item;
 	     ptr = ptr->next;
 	  }
      }
@@ -78,7 +77,7 @@ FindItem(const char *name, int id, int find_by, int type)
 	while (ptr)
 	  {
 	     if (ptr->item == (void *)name)
-		EDBUG_RETURN(ptr->item);
+		return ptr->item;
 	     ptr = ptr->next;
 	  }
      }
@@ -86,10 +85,10 @@ FindItem(const char *name, int id, int find_by, int type)
      {
 	while (ptr)
 	  {
-	     EDBUG_RETURN(ptr->item);
+	     return ptr->item;
 	  }
      }
-   EDBUG_RETURN(NULL);
+   return NULL;
 }
 
 void
@@ -97,16 +96,14 @@ AddItem(const void *item, const char *name, int id, int type)
 {
    List               *ptr;
 
-   EDBUG(6, "AddItem");
    ptr = Emalloc(sizeof(List));
    if (!ptr)
-      EDBUG_RETURN_;
+      return;
    ptr->item = (void *)item;
    ptr->name = Estrdup(name);
    ptr->id = id;
    ptr->next = lists[type].next;
    lists[type].next = ptr;
-   EDBUG_RETURN_;
 }
 
 void
@@ -114,10 +111,9 @@ AddItemEnd(const void *item, const char *name, int id, int type)
 {
    List               *ptr, *p;
 
-   EDBUG(6, "AddItem");
    ptr = Emalloc(sizeof(List));
    if (!ptr)
-      EDBUG_RETURN_;
+      return;
    ptr->item = (void *)item;
    ptr->name = Estrdup(name);
    ptr->id = id;
@@ -126,26 +122,23 @@ AddItemEnd(const void *item, const char *name, int id, int type)
    if (!p)
      {
 	lists[type].next = ptr;
-	EDBUG_RETURN_;
+	return;
      }
    while (p)
      {
 	if (!p->next)
 	  {
 	     p->next = ptr;
-	     EDBUG_RETURN_;
+	     return;
 	  }
 	p = p->next;
      }
-   EDBUG_RETURN_;
 }
 
 void
 MoveItemToListTop(const void *item, int type)
 {
    List               *ptr, *pptr;
-
-   EDBUG(6, "MoveItemToListTop");
 
    pptr = NULL;
    ptr = lists[type].next;
@@ -158,11 +151,11 @@ MoveItemToListTop(const void *item, int type)
 		  pptr->next = ptr->next;
 		  ptr->next = lists[type].next;
 		  lists[type].next = ptr;
-		  EDBUG_RETURN_;
+		  return;
 	       }
 	     else
 	       {
-		  EDBUG_RETURN_;
+		  return;
 	       }
 	  }
 	else
@@ -171,15 +164,12 @@ MoveItemToListTop(const void *item, int type)
 	     ptr = ptr->next;
 	  }
      }
-   EDBUG_RETURN_;
 }
 
 void
 MoveItemToListBottom(const void *item, int type)
 {
    List               *ptr, *pptr, *nptr;
-
-   EDBUG(6, "MoveItemToListBottom");
 
    pptr = lists + type;
    ptr = pptr->next;
@@ -197,11 +187,11 @@ MoveItemToListBottom(const void *item, int type)
 		  pptr->next = ptr->next;
 		  nptr->next = ptr;
 		  ptr->next = NULL;
-		  EDBUG_RETURN_;
+		  return;
 	       }
 	     else
 	       {
-		  EDBUG_RETURN_;
+		  return;
 	       }
 	  }
 	else
@@ -210,7 +200,6 @@ MoveItemToListBottom(const void *item, int type)
 	     ptr = ptr->next;
 	  }
      }
-   EDBUG_RETURN_;
 }
 
 void               *
@@ -219,7 +208,6 @@ RemoveItem(const char *name, int id, int find_by, int type)
    List               *ptr, *pptr;
    void               *p;
 
-   EDBUG(6, "RemoveItem");
    pptr = NULL;
    ptr = lists[type].next;
    if (find_by == LIST_FINDBY_NAME)
@@ -236,7 +224,7 @@ RemoveItem(const char *name, int id, int find_by, int type)
 		  if (ptr->name)
 		     Efree(ptr->name);
 		  Efree(ptr);
-		  EDBUG_RETURN(p);
+		  return p;
 	       }
 	     pptr = ptr;
 	     ptr = ptr->next;
@@ -256,7 +244,7 @@ RemoveItem(const char *name, int id, int find_by, int type)
 		  if (ptr->name)
 		     Efree(ptr->name);
 		  Efree(ptr);
-		  EDBUG_RETURN(p);
+		  return p;
 	       }
 	     pptr = ptr;
 	     ptr = ptr->next;
@@ -276,7 +264,7 @@ RemoveItem(const char *name, int id, int find_by, int type)
 		  if (ptr->name)
 		     Efree(ptr->name);
 		  Efree(ptr);
-		  EDBUG_RETURN(p);
+		  return p;
 	       }
 	     pptr = ptr;
 	     ptr = ptr->next;
@@ -296,7 +284,7 @@ RemoveItem(const char *name, int id, int find_by, int type)
 		  if (ptr->name)
 		     Efree(ptr->name);
 		  Efree(ptr);
-		  EDBUG_RETURN(p);
+		  return p;
 	       }
 	     pptr = ptr;
 	     ptr = ptr->next;
@@ -314,13 +302,13 @@ RemoveItem(const char *name, int id, int find_by, int type)
 	     if (ptr->name)
 		Efree(ptr->name);
 	     Efree(ptr);
-	     EDBUG_RETURN(p);
+	     return p;
 	     pptr = ptr;
 	     ptr = ptr->next;
 	  }
      }
 
-   EDBUG_RETURN(NULL);
+   return NULL;
 }
 
 void               *
@@ -328,8 +316,6 @@ RemoveItemByPtr(const void *ptritem, int type)
 {
    List               *ptr, *pptr;
    void               *p;
-
-   EDBUG(6, "RemoveItemByPtr");
 
    pptr = NULL;
    ptr = lists[type].next;
@@ -350,13 +336,13 @@ RemoveItemByPtr(const void *ptritem, int type)
 	     if (ptr->name)
 		Efree(ptr->name);
 	     Efree(ptr);
-	     EDBUG_RETURN(p);
+	     return p;
 	  }
 	pptr = ptr;
 	ptr = ptr->next;
      }
 
-   EDBUG_RETURN(NULL);
+   return NULL;
 }
 
 void              **
@@ -366,11 +352,10 @@ ListItemType(int *num, int type)
    int                 i, len;
    void              **lst;
 
-   EDBUG(6, "ListItemType");
    *num = 0;
    len = 0;
    if (type == LIST_TYPE_ANY)
-      EDBUG_RETURN(NULL);
+      return NULL;
    ptr = lists[type].next;
    while (ptr)
      {
@@ -378,7 +363,7 @@ ListItemType(int *num, int type)
 	ptr = ptr->next;
      }
    if (!len)
-      EDBUG_RETURN(NULL);
+      return NULL;
    lst = Emalloc(len * sizeof(void *));
 
    i = 0;
@@ -389,7 +374,7 @@ ListItemType(int *num, int type)
 	ptr = ptr->next;
      }
    *num = i;
-   EDBUG_RETURN(lst);
+   return lst;
 }
 
 char              **
@@ -399,7 +384,6 @@ ListItems(int *num, int type)
    int                 i, len;
    char              **list;
 
-   EDBUG(7, "ListItems");
    i = 0;
    len = 0;
    list = NULL;
@@ -425,7 +409,7 @@ ListItems(int *num, int type)
    if (!list)
      {
 	*num = 0;
-	EDBUG_RETURN(NULL);
+	return NULL;
      }
    ptr = lists[type].next;
    if (type != LIST_TYPE_ANY)
@@ -447,7 +431,7 @@ ListItems(int *num, int type)
 	  }
      }
    *num = len;
-   EDBUG_RETURN(list);
+   return list;
 }
 
 void              **
@@ -457,10 +441,9 @@ ListItemTypeID(int *num, int type, int id)
    int                 i, len;
    void              **lst;
 
-   EDBUG(6, "ListItemType");
    *num = 0;
    if (type == LIST_TYPE_ANY)
-      EDBUG_RETURN(NULL);
+      return NULL;
    len = 64;
    lst = Emalloc(len * sizeof(void *));
 
@@ -481,9 +464,9 @@ ListItemTypeID(int *num, int type, int id)
    if (i <= 0)
      {
 	Efree(lst);
-	EDBUG_RETURN(NULL);
+	return NULL;
      }
-   EDBUG_RETURN(lst);
+   return lst;
 }
 
 void              **
@@ -493,10 +476,9 @@ ListItemTypeName(int *num, int type, const char *name)
    int                 i, len;
    void              **lst;
 
-   EDBUG(6, "ListItemTypeName");
    *num = 0;
    if (type == LIST_TYPE_ANY)
-      EDBUG_RETURN(NULL);
+      return NULL;
    len = 64;
    lst = Emalloc(len * sizeof(void *));
 
@@ -517,9 +499,9 @@ ListItemTypeName(int *num, int type, const char *name)
    if (i <= 0)
      {
 	Efree(lst);
-	EDBUG_RETURN(NULL);
+	return NULL;
      }
-   EDBUG_RETURN(lst);
+   return lst;
 }
 
 void
@@ -527,16 +509,14 @@ ListChangeItemID(int type, void *item, int id)
 {
    List               *ptr;
 
-   EDBUG(6, "ListChangeItemID");
    ptr = lists[type].next;
    while (ptr)
      {
 	if (ptr->item == item)
 	  {
 	     ptr->id = id;
-	     EDBUG_RETURN_;
+	     return;
 	  }
 	ptr = ptr->next;
      }
-   EDBUG_RETURN_;
 }

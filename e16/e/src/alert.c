@@ -166,9 +166,8 @@ ShowAlert(char *text)
    XFontStruct       **font_struct_list_return;
    char              **font_name_list_return;
 
-   EDBUG(8, "ShowAlert");
    if (!text)
-      EDBUG_RETURN_;
+      return;
 
    /*
     * We may get here from obscure places like an X-error or signal handler
@@ -179,7 +178,7 @@ ShowAlert(char *text)
      {
 	fprintf(stderr, text);
 	fflush(stderr);
-	EDBUG_RETURN_;
+	return;
      }
 
    cmap = DefaultColormap(dd, DefaultScreen(dd));
@@ -516,27 +515,19 @@ ShowAlert(char *text)
    if (cnum > 0)
       XFreeColors(dd, cmap, cols, cnum, 0);
    XCloseDisplay(dd);
-
-   EDBUG_RETURN_;
 }
 
 static void
 AssignTitleText(const char *text)
 {
-   EDBUG(7, "AssignTitleText");
-
    if (TitleText)
       Efree(TitleText);
    TitleText = Estrdup(text);
-
-   EDBUG_RETURN_;
 }
 
 static void
 AssignIgnoreText(const char *text)
 {
-   EDBUG(7, "AssignIgnoreText");
-
    if (IgnoreText)
       Efree(IgnoreText);
 
@@ -549,15 +540,11 @@ AssignIgnoreText(const char *text)
      {
 	IgnoreText = NULL;
      }
-
-   EDBUG_RETURN_;
 }
 
 static void
 AssignRestartText(const char *text)
 {
-   EDBUG(7, "AssignRestartText");
-
    if (RestartText)
       Efree(RestartText);
 
@@ -570,15 +557,11 @@ AssignRestartText(const char *text)
      {
 	RestartText = NULL;
      }
-
-   EDBUG_RETURN_;
 }
 
 static void
 AssignExitText(const char *text)
 {
-   EDBUG(7, "AssignExitText");
-
    if (ExitText)
       Efree(ExitText);
 
@@ -591,18 +574,14 @@ AssignExitText(const char *text)
      {
 	ExitText = NULL;
      }
-
-   EDBUG_RETURN_;
 }
 
 #if 0
 static void
 AssignIgnoreFunction(int (*FunctionToAssign) (const void *), const void *params)
 {
-   EDBUG(7, "AssignIgnoreFunction");
    IgnoreFunction = FunctionToAssign;
    IgnoreParams = params;
-   EDBUG_RETURN_;
 }
 #endif
 
@@ -610,19 +589,15 @@ static void
 AssignRestartFunction(int (*FunctionToAssign) (const void *),
 		      const void *params)
 {
-   EDBUG(7, "AssignRestartFunction");
    RestartFunction = FunctionToAssign;
    RestartParams = params;
-   EDBUG_RETURN_;
 }
 
 static void
 AssignExitFunction(int (*FunctionToAssign) (const void *), const void *params)
 {
-   EDBUG(7, "AssignExitFunction");
    ExitFunction = FunctionToAssign;
    ExitParams = params;
-   EDBUG_RETURN_;
 }
 
 void
@@ -646,8 +621,6 @@ AlertX(const char *title, const char *ignore,
    char                text[10240];
    va_list             ap;
 
-   EDBUG(7, "AlertX");
-
    AssignTitleText(title);
    AssignIgnoreText(ignore);
    AssignRestartText(restart);
@@ -663,8 +636,6 @@ AlertX(const char *title, const char *ignore,
    AssignIgnoreText(_("Ignore this"));
    AssignRestartText(_("Restart Enlightenment"));
    AssignExitText(_("Quit Enlightenment"));
-
-   EDBUG_RETURN_;
 }
 
 void
@@ -673,13 +644,9 @@ Alert(const char *fmt, ...)
    char                text[10240];
    va_list             ap;
 
-   EDBUG(7, "Alert");
-
    va_start(ap, fmt);
    Evsnprintf(text, 10240, fmt, ap);
    va_end(ap);
    SoundPlay("SOUND_ALERT");
    ShowAlert(text);
-
-   EDBUG_RETURN_;
 }

@@ -28,16 +28,14 @@ CreateCurve(ModCurve * c)
 {
    int                 i, j, cx, v1, v2, val, dist;
 
-   EDBUG(6, "CreateCurve");
-
    if (!c)
-      EDBUG_RETURN_;
+      return;
 
    if (c->num == 0)
      {
 	for (i = 0; i < 256; i++)
 	   c->map[i] = i;
-	EDBUG_RETURN_;
+	return;
      }
 
    cx = 0;
@@ -61,37 +59,29 @@ CreateCurve(ModCurve * c)
 	       }
 	  }
      }
-
-   EDBUG_RETURN_;
 }
 
 void
 FreeModCurve(ModCurve * c)
 {
-   EDBUG(6, "FreeModCurve");
-
    if (!c)
-      EDBUG_RETURN_;
+      return;
 
    Efree(c->px);
    Efree(c->py);
-
-   EDBUG_RETURN_;
 }
 
 void
 FreeCMClass(ColorModifierClass * cm)
 {
-   EDBUG(5, "FreeCmClass");
-
    if (!cm)
-      EDBUG_RETURN_;
+      return;
 
    if (cm->ref_count > 0)
      {
 	DialogOK(_("ColorModClass Error!"), _("%u references remain\n"),
 		 cm->ref_count);
-	EDBUG_RETURN_;
+	return;
      }
 
    while (RemoveItemByPtr(cm, LIST_TYPE_COLORMODIFIER));
@@ -100,8 +90,6 @@ FreeCMClass(ColorModifierClass * cm)
    FreeModCurve(&(cm->red));
    FreeModCurve(&(cm->green));
    FreeModCurve(&(cm->blue));
-
-   EDBUG_RETURN_;
 }
 
 ColorModifierClass *
@@ -112,11 +100,9 @@ CreateCMClass(char *name, int rnum, unsigned char *rpx,
 {
    ColorModifierClass *cm;
 
-   EDBUG(5, "CreateCMCLass");
-
    cm = Emalloc(sizeof(ColorModifierClass));
    if (!cm)
-      EDBUG_RETURN(NULL);
+      return NULL;
 
    cm->name = Estrdup(name);
    cm->red.px = NULL;
@@ -170,7 +156,7 @@ CreateCMClass(char *name, int rnum, unsigned char *rpx,
    CreateCurve(&(cm->green));
    CreateCurve(&(cm->blue));
 
-   EDBUG_RETURN(cm);
+   return cm;
 }
 
 int
@@ -375,11 +361,10 @@ ModifyCMClass(char *name, int rnum, unsigned char *rpx, unsigned char *rpy,
 {
    ColorModifierClass *cm;
 
-   EDBUG(5, "ModifyCMCLass");
    cm = (ColorModifierClass *) FindItem(name, 0, LIST_FINDBY_NAME,
 					LIST_TYPE_COLORMODIFIER);
    if (!cm)
-      EDBUG_RETURN_;
+      return;
 
    if (cm->red.px)
       Efree(cm->red.px);
@@ -443,8 +428,6 @@ ModifyCMClass(char *name, int rnum, unsigned char *rpx, unsigned char *rpy,
    CreateCurve(&(cm->red));
    CreateCurve(&(cm->green));
    CreateCurve(&(cm->blue));
-
-   EDBUG_RETURN_;
 }
 
 #if 0				/* Unused */

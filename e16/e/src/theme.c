@@ -276,8 +276,6 @@ ThemeExtract(const char *theme)
    const char         *oktheme = NULL;
    char               *name;
 
-   EDBUG(7, "ThemeExtract");
-
    mustdel = 0;
 
    /* its a directory - just use it "as is" */
@@ -325,12 +323,12 @@ ThemeExtract(const char *theme)
 
  done:
    if (oktheme && !SanitiseThemeDir(oktheme))
-      EDBUG_RETURN(Estrdup(oktheme));
+      return Estrdup(oktheme);
 
    /* failed */
    ThemeCleanup();
 
-   EDBUG_RETURN(NULL);
+   return NULL;
 }
 
 static char        *
@@ -339,12 +337,10 @@ ThemeFind(const char *theme)
    char                s[FILEPATH_LEN_MAX];
    char               *ret = NULL;
 
-   EDBUG(6, "ThemeFind");
-
    badreason = _("Unknown\n");
 
    if (!theme || !theme[0])
-      EDBUG_RETURN(ThemeGetDefault());
+      return ThemeGetDefault();
 
    if (isabspath(theme))
       ret = ThemeExtract(theme);
@@ -369,7 +365,7 @@ ThemeFind(const char *theme)
 	       }
 	  }
      }
-   EDBUG_RETURN(ret);
+   return ret;
 }
 
 #if 0
