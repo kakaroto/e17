@@ -466,25 +466,27 @@ feh_set_bg(char *fil, Imlib_Image im, int centered, int scaled, int desktop,
 
    D_ENTER;
 
-   D(("Setting bg %s\n", fil));
-   snprintf(bgname, sizeof(bgname), "FEHBG_%d", num);
+   snprintf(bgname, sizeof(bgname), "%d_FEHBG", num);
    sprintf(buf, "%s/eesh",
            getenv("EBIN") ? getenv("EBIN") : PREFIX "/enlightenment/bin");
 
    if (fil == NULL)
    {
-      snprintf(bgfil, sizeof(bgfil), "%s/.%s", getenv("HOME"), bgname);
-      feh_imlib_save_image(im, bgname);
+      snprintf(bgfil, sizeof(bgfil), "%s/.%s.jpg", getenv("HOME"), bgname);
+      feh_imlib_save_image(im, bgfil);
+      printf("bg saved as %s\n", bgfil);
       fil = bgfil;
    }
+   D(("Setting bg %s\n", fil));
 
    if ((stat(buf, &st)) != -1)
    {
       eesh = popen(buf, "w");
-      fprintf(eesh, "background %s bg.file  %s\n", bgname, fil);
+      fprintf(eesh, "background %s bg.file %s\n", bgname, fil);
 
       if (scaled)
       {
+         fprintf(eesh, "background %s bg.solid 0 0 0\n", bgname);
          fprintf(eesh, "background %s bg.xjust 512\n", bgname);
          fprintf(eesh, "background %s bg.yjust 512\n", bgname);
          fprintf(eesh, "background %s bg.xperc 1024\n", bgname);
