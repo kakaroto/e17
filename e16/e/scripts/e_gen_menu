@@ -10,7 +10,7 @@ OUT_DIR=$HOME"/.enlightenment"
 OUT=$OUT_DIR"/file.menu"
 
 e_gen_kde_menu menus_kde $OUT_DIR $OUT_DIR"/kde.menu"
-e_gen_gnome_menu menus_kde $OUT_DIR $OUT_DIR"/gnome.menu"
+e_gen_gnome_menu menus_gnome $OUT_DIR $OUT_DIR"/gnome.menu"
 
 # if the out dir doesnt exist - make it 
 if [ ! -d "$OUT_DIR" ]; then
