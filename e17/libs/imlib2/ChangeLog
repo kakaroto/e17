@@ -2905,3 +2905,21 @@ Thu Apr 27 13:41:11 GMT 2000
 
 Free up some RAM and close the filehandle when interrupted.
 
+_______________________________________________
+
+Thu Apr 27 13:43:49 GMT 2000
+(gilbertt)
+
+Actually, made the gif loader give back what it's got without changing im->h
+to reflect, or reallocing the image data. The reason for this is that it
+already told apps what the image size was in the first progressive loader
+callback, and changing it afterwards can cause confusion. Also, an app can
+still handle/display a half-loaded image, as the rest is just filled black,
+and the programmer knows how much of the image he got, 'cos he interrupted
+it from the callback. If the programmer wants to trim the image, he knows
+where to trim it, but if he/she wants to display a part-loaded image,
+that'll work sanely.
+
+I think this is more sane behaviour, having tested it in feh and
+imlib2_view, but feel free to disagree ;-)
+
