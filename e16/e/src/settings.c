@@ -3661,20 +3661,7 @@ SettingsBackground(Background * bg)
    DialogItemSetFill(di, 1, 0);
    DialogItemSeparatorSetOrientation(di, 0);
 
-   DialogAddButton(d, _("OK"), CB_ConfigureBG, 1);
-   DialogAddButton(d, _("Apply"), CB_ConfigureBG, 0);
-   DialogAddButton(d, _("Close"), CB_ConfigureBG, 1);
-   DialogSetExitFunction(d, CB_ConfigureBG, 2, d);
-   DialogBindKey(d, "Escape", CB_SettingsEscape, 0, d);
-   DialogBindKey(d, "Return", CB_ConfigureBG, 0, d);
-
 #ifdef ENABLE_THEME_TRANSPARENCY
-   di = DialogAddItem(table, DITEM_SEPARATOR);
-   DialogItemSetColSpan(di, 3);
-   DialogItemSetPadding(di, 2, 2, 2, 2);
-   DialogItemSetFill(di, 1, 0);
-   DialogItemSeparatorSetOrientation(di, 0);
-
    di = label = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetColSpan(di, 3);
    DialogItemSetPadding(di, 2, 2, 2, 2);
@@ -3695,7 +3682,20 @@ SettingsBackground(Background * bg)
    DialogItemSliderSetVal(di, tmp_theme_transparency);
    DialogItemSliderSetValPtr(di, &tmp_theme_transparency);
    DialogItemSetCallback(di, CB_ThemeTransparency, 0, (void *)label);
+
+   di = DialogAddItem(table, DITEM_SEPARATOR);
+   DialogItemSetColSpan(di, 3);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemSeparatorSetOrientation(di, 0);
 #endif /* ENABLE_THEME_TRANSPARENCY */
+
+   DialogAddButton(d, _("OK"), CB_ConfigureBG, 1);
+   DialogAddButton(d, _("Apply"), CB_ConfigureBG, 0);
+   DialogAddButton(d, _("Close"), CB_ConfigureBG, 1);
+   DialogSetExitFunction(d, CB_ConfigureBG, 2, d);
+   DialogBindKey(d, "Escape", CB_SettingsEscape, 0, d);
+   DialogBindKey(d, "Return", CB_ConfigureBG, 0, d);
 
    ShowDialog(d);
 
