@@ -607,22 +607,12 @@ ShowDialog(Dialog * d)
    char                pq;
    int                 i, w, h, mw, mh;
    EWin               *ewin;
-   XTextProperty       xtp;
-   XClassHint         *xch;
    Snapshot           *sn;
 
    if (d->title)
      {
-	xtp.encoding = XA_STRING;
-	xtp.format = 8;
-	xtp.value = (unsigned char *)(d->title);
-	xtp.nitems = strlen((char *)(xtp.value));
-	XSetWMName(disp, d->win, &xtp);
-	xch = XAllocClassHint();
-	xch->res_name = d->name;
-	xch->res_class = (char *)"Enlightenment_Dialog";
-	XSetClassHint(disp, d->win, xch);
-	XFree(xch);
+	HintsSetWindowName(d->win, d->title);
+	HintsSetWindowClass(d->win, d->name, "Enlightenment_Dialog");
      }
 
    ewin = FindEwinByDialog(d);

@@ -134,12 +134,47 @@ HintsSetDesktopViewport(void)
 }
 
 void
-HintsSetActiveWindow(EWin * ewin)
+HintsSetActiveWindow(Window win)
 {
    EDBUG(6, "HintsSetActiveWindow");
 #if ENABLE_EWMH
-   EWMH_SetActiveWindow(ewin);
+   EWMH_SetActiveWindow(win);
 #endif
+   EDBUG_RETURN_;
+}
+
+void
+HintsSetWindowName(Window win, const char *name)
+{
+   XTextProperty       xtp;
+
+   EDBUG(6, "HintsSetWindowName");
+
+   xtp.encoding = XA_STRING;
+   xtp.format = 8;
+   xtp.value = (unsigned char *)name;
+   xtp.nitems = strlen(name);
+   XSetWMName(disp, win, &xtp);
+
+#if ENABLE_EWMH
+   EWMH_SetWindowName(win, name);
+#endif
+   EDBUG_RETURN_;
+}
+
+void
+HintsSetWindowClass(Window win, const char *name, const char *clss)
+{
+   XClassHint         *xch;
+
+   EDBUG(6, "HintsSetWindowClass");
+
+   xch = XAllocClassHint();
+   xch->res_name = (char *)name;
+   xch->res_class = (char *)clss;
+   XSetClassHint(disp, win, xch);
+   XFree(xch);
+
    EDBUG_RETURN_;
 }
 

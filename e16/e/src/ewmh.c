@@ -417,13 +417,11 @@ EWMH_SetClientStacking(void)
 }
 
 void
-EWMH_SetActiveWindow(const EWin * ewin)
+EWMH_SetActiveWindow(Window win)
 {
    static Window       win_last_set;
-   Window              win;
 
    EDBUG(6, "EWMH_SetActiveWindow");
-   win = (ewin) ? ewin->client.win : None;
    if (win != win_last_set)
      {
 	_ATOM_SET_WINDOW(_NET_ACTIVE_WINDOW, VRoot.win, &win, 1);
@@ -446,6 +444,12 @@ EWMH_SetShowingDesktop(int on)
 /*
  * Functions that set X11-properties from E-window internals
  */
+
+void
+EWMH_SetWindowName(Window win, const char *name)
+{
+   _ATOM_SET_UTF8_STRING(_NET_WM_NAME, win, name);
+}
 
 void
 EWMH_SetWindowDesktop(const EWin * ewin)

@@ -312,7 +312,6 @@ void
 PagerShow(Pager * p)
 {
    EWin               *ewin = NULL;
-   XClassHint         *xch;
    char                s[4096];
    char                pq;
 
@@ -326,14 +325,13 @@ PagerShow(Pager * p)
      }
 
    Esnprintf(s, sizeof(s), "%i", p->desktop);
-   xch = XAllocClassHint();
-   xch->res_name = s;
-   xch->res_class = (char *)"Enlightenment_Pager";
-   XSetClassHint(disp, p->win, xch);
-   XFree(xch);
+   HintsSetWindowClass(p->win, s, "Enlightenment_Pager");
+
    pq = Mode.queue_up;
    Mode.queue_up = 0;
+
    MatchToSnapInfoPager(p);
+
    ewin = AddInternalToFamily(p->win, (p->border_name) ? p->border_name :
 			      "PAGER", EWIN_TYPE_PAGER, p, PagerEwinInit);
    if (ewin)
@@ -1023,21 +1021,6 @@ PagerHide(Pager * p)
       HideEwin(p->ewin);
 }
 
-static void
-PagerTitle(Pager * p, char *title)
-{
-   XTextProperty       xtp;
-
-   if (!Conf.pagers.enable)
-      return;
-
-   xtp.encoding = XA_STRING;
-   xtp.format = 8;
-   xtp.value = (unsigned char *)(title);
-   xtp.nitems = strlen((char *)(xtp.value));
-   XSetWMName(disp, p->win, &xtp);
-}
-
 void
 UpdatePagerSel(void)
 {
@@ -1427,7 +1410,7 @@ NewPagerForDesktop(int desk)
      {
 	p->desktop = desk;
 	Esnprintf(s, sizeof(s), "%i", desk);
-	PagerTitle(p, s);
+	HintsSetWindowName(p->win, s);
 	PagerShow(p);
      }
 }

@@ -585,23 +585,16 @@ void
 IconboxShow(Iconbox * ib)
 {
    EWin               *ewin = NULL;
-   XClassHint         *xch;
-   XTextProperty       xtp;
    char                pq;
 
    pq = Mode.queue_up;
    Mode.queue_up = 0;
-   xtp.encoding = XA_STRING;
-   xtp.format = 8;
-   xtp.value = (unsigned char *)("Iconbox");
-   xtp.nitems = strlen((char *)(xtp.value));
-   XSetWMName(disp, ib->win, &xtp);
-   xch = XAllocClassHint();
-   xch->res_name = ib->name;
-   xch->res_class = (char *)"Enlightenment_IconBox";
-   XSetClassHint(disp, ib->win, xch);
-   XFree(xch);
+
+   HintsSetWindowName(ib->win, "Iconbox");
+   HintsSetWindowClass(ib->win, ib->name, "Enlightenment_IconBox");
+
    MatchToSnapInfoIconbox(ib);
+
    ewin = AddInternalToFamily(ib->win, "ICONBOX", EWIN_TYPE_ICONBOX, ib,
 			      IconboxEwinInit);
    if (ewin)

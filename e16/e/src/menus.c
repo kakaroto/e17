@@ -638,12 +638,11 @@ MenuAddStyle(Menu * menu, const char *style)
 void
 MenuRealize(Menu * m)
 {
-   int                 i, maxh = 0, maxw =
-      0, maxx1, maxx2, w, h, x, y, r, mmw, mmh;
+   int                 i, maxh = 0, maxw = 0;
+   int                 maxx1, maxx2, w, h, x, y, r, mmw, mmh;
    unsigned int        iw, ih;
    Imlib_Image        *im;
    XSetWindowAttributes att;
-   XTextProperty       xtp;
    char                pq, has_i, has_s;
 
    EDBUG(5, "MenuRealize");
@@ -655,12 +654,9 @@ MenuRealize(Menu * m)
 
    if (m->title)
      {
-	xtp.encoding = XA_STRING;
-	xtp.format = 8;
-	xtp.value = (unsigned char *)(m->title);
-	xtp.nitems = strlen((char *)(xtp.value));
-	XSetWMName(disp, m->win, &xtp);
+	HintsSetWindowName(m->win, m->title);
      }
+
    maxh = 0;
    maxx1 = 0;
    maxx2 = 0;
