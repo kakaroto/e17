@@ -1,107 +1,129 @@
+#include <Edje.h>
 #include "eplayer.h"
+#include "mixer.h"
+#include "vorbis.h"
 
-	int     	paused = 0;
+static int paused = 1;
 
+void unpause_playback(ePlayer *data, Evas *e, Evas_Object *obj, void *event_info) {
+	/* This ensures we don't call this callback multiple times */
+	if (!paused)
+		return;
 
-
-
-
-void unpause_playback(player_session *data, Evas *e, Evas_Object *obj, void *event_info){
-
-        /* This ensures we don't call this callback multiple times */
-        if (paused == 0)
-                return;
-
-        printf("Unpause callback entered\n");
-        paused = 0;
-
-        data->play_idler = ecore_idler_add(play_loop, data);	/* Start the play idler */
-
-}
-
-
-
-void pause_playback(player_session *data, Evas *e, Evas_Object *obj, void *event_info){
-
-        if (paused == 1)
-                return;
-
-        printf("Pause callback entered\n");
-        paused = 1;
-
-        ecore_idler_del(data->play_idler);	/* Stop the play idler */
-
-}
-
-
-void next_file(player_session *data, Evas *e, Evas_Object *obj, void *event_info){
-	printf("DEBUG: Next File Called\n");        /* Report what we're doing for debugging purposes */
+#ifdef DEBUG
+	printf("Unpause callback entered\n");
+#endif
 	
-	ecore_idler_del(data->play_idler);	/* Stop the current playing stream */
+	paused = 0;
 
-        data->play_list = data->play_list->next;      /* Get the next list item */
-	printf("DEBUG: Pointer addr is: %d\n", (int)data->play_list);
+	data->play_idler = ecore_idler_add(play_loop, data); /* Start the play idler */
+}
 
-	if(data->play_list == NULL){
+void pause_playback(ePlayer *player, Evas *e, Evas_Object *obj,
+                    void *event_info) {
+	if (paused)
+		return;
+	
+#ifdef DEBUG
+	printf("Pause callback entered\n");
+#endif
+	
+	paused = 1;
+
+	/* Stop the current playing stream */
+	if (player->play_idler) {
+		ecore_idler_del(player->play_idler);
+		player->play_idler = NULL;
+	}
+}
+
+void next_file(ePlayer *player, Evas *e, Evas_Object *obj, void *event_info) {
+#ifdef DEBUG
+	printf("DEBUG: Next File Called\n");
+#endif
+	
+	/* Stop the current playing stream */
+	if (player->play_idler) {
+		ecore_idler_del(player->play_idler);
+		player->play_idler = NULL;
+	}
+
+	/* Get the next list item */
+	player->playlist->cur_item = player->playlist->cur_item->next;
+	
+	if (!player->playlist->cur_item) {
+#ifdef DEBUG
 		printf("\n\nDEBUG: Youve hit the end of the list!!! \n\n");
+#endif
 
-		edje_object_part_text_set(data->edje, "artist_name", "*****************************");
-                edje_object_part_text_set(data->edje, "album_name", " END OF THE ROAD ");
-                edje_object_part_text_set(data->edje, "song_name", "*****************************");
-                edje_object_part_text_set(data->edje, "time_text", "DAS:EN:DE");
+		edje_object_part_text_set(player->gui.edje, "artist_name", "*****************************");
+		edje_object_part_text_set(player->gui.edje, "album_name", " END OF THE ROAD ");
+		edje_object_part_text_set(player->gui.edje, "song_name", "*****************************");
+		edje_object_part_text_set(player->gui.edje, "time_text", "DAS:EN:DE");
 		
 		/* Since we hit the end, start from the beginning. */
-		printf("DEBUG: Reseting playlist.  Currently NULL playlist pointer %d, reset pointer %d\n", 
-			(int)data->play_list, (int)data->full_list);
-		data->play_list = data->full_list;
+		player->playlist->cur_item = player->playlist->items;
 
 		return;
 	} 
-
-    printf("DEBUG: Next file to play is: %s\n", (char *) data->play_list->data);
-	printf("DEBUG: In next-file, proccessing new file\n");
-	setup_ao();					/* If so, seutp the audio out path */
-	get_vorbis (data, (PlayListItem *) data->play_list->data); /* Setup the intrface with comments, etc */
-    ao_open();					/* Open the outbound audio path */
-    data->play_idler = ecore_idler_add(play_loop, data);	 /* Start the play loop */
+	
+	/* Start the play loop */
+	open_track(player);
+    player->play_idler = ecore_idler_add(play_loop, player);
 }
 
+void prev_file(ePlayer *player, Evas *e, Evas_Object *obj,
+               void *event_info) {
+#ifdef DEBUG
+	printf("DEBUG: Previous File Called\n");
+#endif
 
-void prev_file(void *udata, Evas *e, Evas_Object *obj, void *event_info) {
-	player_session *data = udata;
-	printf("DEBUG: Previous File Called\n");	/* Report what we're doing for debugging purposes */
+	if (player->play_idler) {
+		/* Stop the current playing stream */
+		ecore_idler_del(player->play_idler);
+		player->play_idler = NULL;
+	}
 
-	ecore_idler_del(data->play_idler);	/* Stop the current playing stream */
+	/* Get the previous list item */
+	if (!player->playlist->cur_item->prev)
+		return;
 
-	data->play_list = evas_list_prev(data->play_list);	/* Get the previous list item */
+	player->playlist->cur_item = player->playlist->cur_item->prev;
 
-	setup_ao(); /* If so, seutp the audio out path */
-	get_vorbis (data, (PlayListItem *) data->play_list->data); /* Setup the intrface with comments, etc */
-	ao_open(); /* Open the outbound audio path */
-	data->play_idler = ecore_idler_add(play_loop, data);	/* Start the play loop */
+	/* Start the play loop */
+	open_track (player);
+	player->play_idler = ecore_idler_add(play_loop, player);
 }
 
-void raise_vol(void *udata, Evas_Object *obj, const char *emission, const char *src) {
-	player_session *data = udata;
+void raise_vol(ePlayer *player, Evas_Object *obj, const char *emission,
+               const char *src) {
 	int vol;
 
-	vol = read_mixer(data);
+#ifdef DEBUG
+	printf("DEBUG: Raising volume\n");
+#endif
+
+	vol = read_mixer(player);
 	set_mixer(vol + 1);
-	read_mixer(data);
+	read_mixer(player);
 }
 
-void lower_vol(void *udata, Evas_Object *obj, const char *emission, const char *src) {
-	player_session *data = udata;
+void lower_vol(ePlayer *player, Evas_Object *obj, const char *emission,
+               const char *src) {
 	int vol;
 
-	vol = read_mixer(data);
+#ifdef DEBUG
+	printf("DEBUG: Lowering volume\n");
+#endif
+	
+	vol = read_mixer(player);
 	set_mixer(vol - 1);
-	read_mixer(data);
+	read_mixer(player);
 }
 
-void switch_time_display (void *udata, Evas_Object *obj, const char *emission, const char *src) {
-	player_session *session = udata;
-
-	session->time_display = !session->time_display;
-	update_time (session);
+void switch_time_display(ePlayer *player, Evas_Object *obj,
+                         const char *emission, const char *src) {
+	player->time_display = !player->time_display;
+	update_time(player);
 }
+

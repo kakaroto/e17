@@ -6,17 +6,20 @@ AM_INIT_AUTOMAKE(eplayer, 0.7)
 
 AC_PROG_CC
 AC_ISC_POSIX
+AC_PROG_INSTALL
 AC_HEADER_STDC
+AC_C_BIGENDIAN
 
-AC_SUBST(CFLAGS)
-AC_SUBST(LDFLAGS)
+AC_ARG_ENABLE(debug,
+	[  --enable-debug          debug build (default: no)], [
+		AC_DEFINE([DEBUG], [], [Define to 1 if you want debugging output])
+		CFLAGS=`echo "$CFLAGS -g -Wall" | sed s/" -s"//`
+	])
 
 ## The Simplistic Way
 AC_CHECK_LIB(ao,ao_driver_id)
 AC_CHECK_LIB(vorbis,vorbis_info_init)
 AC_CHECK_LIB(vorbisfile,ov_open)
-#AC_CHECK_LIB(ecore,ecore_init)
-AC_CHECK_LIB(ecore_evas,ecore_evas_init)
 
 ## The more complete way
 AC_PATH_GENERIC(ecore, , ,

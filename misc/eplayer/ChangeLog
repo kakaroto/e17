@@ -1,5 +1,12 @@
 $Id$
 
+2003-10-16 Tilman Sauerbeck <tilman@code-monkey.de>
+        * configure.ac: Added endianess-check, added --enable-debug
+          switch
+        * src/eplayer.c, src/playlist.c: added playlist_load_any(),
+          eplayer will now load files and directories as well
+        * code cleanup
+
 2003-10-15 Tilman Sauerbeck <tilman@code-monkey.de>
         * data/eplayer.edc: Added basic playlist support,
           time_text shows elapsed time or time left

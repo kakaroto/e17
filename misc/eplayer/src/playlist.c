@@ -8,9 +8,10 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <config.h>
 #include "playlist.h"
 
-static int dir_exists (const char *dir) {
+static int is_dir (const char *dir) {
 	struct stat st;
 
 	if (stat(dir, &st) != 0)
@@ -93,6 +94,7 @@ PlayListItem *playlist_item_new(const char *file) {
 	PlayListItem *pli;
 	FILE *fp;
 	OggVorbis_File vf = {0};
+	vorbis_info *info;
 
 	if (!(fp = fopen(file, "rb")) || ov_open(fp, &vf, NULL, 0))
 		return NULL;
@@ -101,11 +103,17 @@ PlayListItem *playlist_item_new(const char *file) {
 		return NULL;
 
 	memset(pli, 0, sizeof(PlayListItem));
+	snprintf(pli->file, sizeof(pli->file), "%s", file);
 
 	/* read the vorbis comments etc */
-	snprintf(pli->file, sizeof(pli->file), "%s", file);
-	pli->duration = ov_time_total(&vf, -1);
 	playlist_item_read_comments(pli, ov_comment(&vf, -1));
+
+	/* get bitrate and number of channels */
+	info = ov_info(&vf, -1);
+	pli->channels = info->channels;
+	pli->rate = info->rate;
+	
+	pli->duration = ov_time_total(&vf, -1);
 
 	ov_clear(&vf);	/* ov_clear closes the file, too */
 
@@ -148,8 +156,8 @@ void playlist_remove_all(PlayList *pl) {
 		return;
 	
 	while (pl->items) {
-		pl->items = evas_list_remove(pl->items, pl->items->data);
 		playlist_item_free((PlayListItem *) pl->items->data);
+		pl->items = evas_list_remove(pl->items, pl->items->data);
 	}
 }
 
@@ -184,6 +192,9 @@ int playlist_load_file(PlayList *pl, const char *file, int append) {
 
 	pl->items = evas_list_append(pl->items, pli);
 
+	if (!append)
+		pl->cur_item = pl->items;
+
 	return 1;
 }
 
@@ -213,7 +224,7 @@ int playlist_load_dir(PlayList *pl, const char *path, int append) {
 	
 	/* real entries: load directories recursively */
 	while ((entry = readdir(dir))) {
-		if (dir_exists(entry->d_name))
+		if (is_dir(entry->d_name))
 			playlist_load_dir(pl, entry->d_name, 1);
 		else if ((pli = playlist_item_new(entry->d_name)))
 			tmp = evas_list_prepend(tmp, pli);
@@ -223,6 +234,7 @@ int playlist_load_dir(PlayList *pl, const char *path, int append) {
 
 	if (!append) {
 		pl->items = evas_list_reverse(tmp);
+		pl->cur_item = pl->items;
 		return 1;
 	}
 	
@@ -231,7 +243,7 @@ int playlist_load_dir(PlayList *pl, const char *path, int append) {
 	pl->items->last->next = tmp;
 	tmp->prev = pl->items->last;
 	pl->items->last = tmp->last;
-	
+
 	return 1;
 }
 
@@ -244,6 +256,7 @@ int playlist_load_dir(PlayList *pl, const char *path, int append) {
  */
 int playlist_load_m3u(PlayList *pl, const char *file, int append) {
 	PlayListItem *pli = NULL;
+	Evas_List *tmp = NULL;
 	FILE *fp;
 	char buf[1024], path[PATH_MAX + 1], *dir, *ptr;
 
@@ -267,7 +280,7 @@ int playlist_load_m3u(PlayList *pl, const char *file, int append) {
 		}
 
 		if ((pli = playlist_item_new(ptr))) {
-			pl->items = evas_list_prepend(pl->items, pli);
+			tmp = evas_list_prepend(tmp, pli);
 			pl->num++;
 		}
 	}
@@ -275,8 +288,44 @@ int playlist_load_m3u(PlayList *pl, const char *file, int append) {
 	fclose(fp);
 	free(dir);
 
-	if (pl->items)
-		pl->items = evas_list_reverse(pl->items);
+	if (!append) {
+		pl->items = evas_list_reverse(tmp);
+		pl->cur_item = pl->items;
+		return 1;
+	}
 
+	if (!pl->items)
+		pl->items = evas_list_reverse(tmp);
+	else { /* append the temporary list */
+		tmp = evas_list_reverse(tmp);
+		pl->items->last->next = tmp;
+		tmp->prev = pl->items->last;
+		pl->items->last = tmp->last;
+	}
+	
 	return 1;
+}
+
+/**
+ * Add a M3U file, an Ogg file or a directory to a PlayList.
+ *
+ * @param pl
+ * @param path
+ * @param append If 0, the old entries will be overwritten.
+ */
+int playlist_load_any(PlayList *pl, const char *path, int append) {
+	char *ptr = NULL;
+	
+	if (is_dir(path))
+		return playlist_load_dir(pl, path, append);
+
+	/* FIXME we check for m3u or ogg using the suffix :/ */
+	ptr = (char *) &path[strlen(path) - 3];
+
+	if (!strcasecmp(ptr, "ogg"))
+		return playlist_load_file(pl, path, append);
+	else if (!strcasecmp(ptr, "m3u"))
+		return playlist_load_m3u(pl, path, append);
+	else
+		return 0;
 }
