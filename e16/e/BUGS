@@ -27,6 +27,8 @@ TODO for E 16.7
 Fixed in CVS
 ~~~~~~~~~~~~
 
+- Several problems with pager clicking and dragging.
+
 - Shaded window borders are not drawn correctly after restart.
 
 - Iconify/deiconfy changes window position if mostly off-screen.

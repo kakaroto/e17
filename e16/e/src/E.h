@@ -1346,7 +1346,6 @@ typedef struct
    Window              menu_cover_win;
    Window              menu_win_covered;
    int                 context_w, context_h;
-   Pager              *context_pager;
    char                constrained;
    char                nogroup;
    char                keybinds_changed;
