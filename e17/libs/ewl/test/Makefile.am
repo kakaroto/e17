@@ -27,4 +27,4 @@ ewl_test_SOURCES		=	ewl_test.c \
 					ewl_tree_test.c
 
 #ewl_test_LDFLAGS		=	-static
-ewl_test_LDADD			=	$(top_builddir)/src/libewl.la @edje_libs@ @ecore_libs@ @evas_libs@ @ewd_libs@ -lefence
+ewl_test_LDADD			=	$(top_builddir)/src/libewl.la @edje_libs@ @ecore_libs@ @evas_libs@ @ewd_libs@
