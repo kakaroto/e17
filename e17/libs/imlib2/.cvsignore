@@ -22,3 +22,6 @@ aclocal.m4
 *.orig
 *.rej
 *.la
+autom4te*
+depcomp
+imlib2.c
