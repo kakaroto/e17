@@ -201,7 +201,7 @@ FileOpen(GtkWidget * widget, GtkFileSelection * fs)
 void 
 DrawImage(Imlib_Image * im, int w, int h)
 {
-  Pixmap pm, mask, thumb;
+  Pixmap pm;
   int x, y, c_test;
 
   D(("DrawImage(%8p, %d, %d)\n", im, w, h));

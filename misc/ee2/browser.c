@@ -20,8 +20,7 @@ int d;
 void
 browser_init(void)
 {
-  GtkWidget *scroller, *vbox1, *dummy,
-    *frame1, *frame2, *btn, *sep, *cbtn;
+  GtkWidget *scroller, *vbox1;
   GtkWidget *nfr1, *nlbl;
 	
   gchar *titles[1]={"Images"};
@@ -106,11 +105,6 @@ void
 browser_sel(GtkWidget *clist, gint row, gint column,
 	    GdkEventButton *event, gpointer data)
 {
-  gchar lblt[255];
-  char alp[255];
-  int w, h;
-  GdkPixmap *tp = NULL;
-
   /* if this is a 2X click, show the image window if it's hidden */
   if (event)
     if (event->type == GDK_2BUTTON_PRESS && !GTK_WIDGET_VISIBLE(MainWindow))
@@ -156,7 +150,7 @@ browser_sel(GtkWidget *clist, gint row, gint column,
 void
 prev_draw(Imlib_Image *im, int w, int h)
 {
-  Pixmap pm_t, mask, thumb;
+  Pixmap pm_t;
   int ww, hh;
 	
   if(!disp_t){

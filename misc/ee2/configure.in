@@ -25,5 +25,5 @@ AC_SUBST(CFLAGS)
 AC_SUBST(LIBS)
 
 AM_CONFIG_HEADER(config.h)
-AC_OUTPUT(Makefile)
+AC_OUTPUT(Makefile ee2.spec)
 

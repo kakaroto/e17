@@ -5,9 +5,9 @@ GtkWidget *t1, *t2;
 void
 fx_init(void)
 {
-  GtkWidget *nfr1, *nlbl, *vbox1, *sep, *btn;
+  GtkWidget *nfr1, *nlbl, *vbox1, *btn;
 	GtkWidget *b1, *b2;
-	GtkWidget *v1, *c1, *l1;
+	GtkWidget *l1;
 	GtkAdjustment *adj, *adj2;
 
 	GtkWidget *dead = gtk_label_new("  ");

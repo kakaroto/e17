@@ -27,8 +27,6 @@ mod_init(void)
   GtkWidget *box1, *box2, *box3, *box4; /* packing boxes */
   GtkWidget *frame1, *frame2, *frame3; /* frames */
   GtkWidget *btn;
-	GdkColormap *gcmap;
-	GdkColor clr1, clr2;
   gchar *titles[1]={"Electric Eyes 2"};
   gchar *clabels[255][1] = { {""} };
   int eek;

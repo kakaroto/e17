@@ -1,0 +1,54 @@
+%define	name	ee2
+%define	ver	@VERSION@
+%define	rel	1
+%define prefix  @prefix@
+
+Summary: Electric Eyes 2
+Name: %{name}
+Version: %{ver}
+Release: %{rel}
+Copyright: BSD
+Group: System Environment/Libraries
+URL: http://www.enlightenment.org/efm.html
+Packager: Horms <horms@vergenet.net>
+Vendor: The Enlightenment Development Team <e-develop@enlightenment.org>
+Source: ftp://ftp.enlightenment.org/enlightenment/%{name}-%{ver}.tar.gz
+BuildRoot: /var/tmp/%{name}-root
+
+%description
+Electric Eyes 2, Imlib based image viewer.
+
+%prep
+%setup -q
+
+%build
+./configure --prefix=%{prefix}
+make
+
+%install
+make prefix=$RPM_BUILD_ROOT%{prefix} install
+
+#File finding code thanks to Samuel Flory of VA Linux Systems
+cd ${RPM_BUILD_ROOT}
+# Directories
+find . -type d | sed '1,2d;s,^\.,\%attr(-\,root\,root) \%dir ,' \
+  > ${RPM_BUILD_DIR}/%{name}-%{version}-%{release}.files
+# Files
+find . -type f | sed 's,^\.,\%attr(-\,root\,root) ,' \
+  >> ${RPM_BUILD_DIR}/%{name}-%{version}-%{release}.files
+# Symbolic links
+find . -type l | sed 's,^\.,\%attr(-\,root\,root) ,' \
+  >> ${RPM_BUILD_DIR}/%{name}-%{version}-%{release}.files
+
+
+%clean
+rm -rf $RPM_BUILD_DIR/%{name}-%{version}
+rm -rf $RPM_BUILD_ROOT
+rm ${RPM_BUILD_DIR}/%{name}-%{version}-%{release}.files
+
+
+%files -f ../%{name}-%{version}-%{release}.files
+
+%changelog
+* Wed Sep 25 2000 Horms <horms@vergenet.net>
+- created for version 0.1.0

@@ -7,8 +7,8 @@
 void
 scale_init(void)
 {
-	GtkWidget *nfr1, *nlbl, *vbox1, *sep, *btn;
-	GtkWidget *b1, *b2;
+	GtkWidget *nfr1, *nlbl, *vbox1;
+	GtkWidget *b1;
 	GtkWidget *cur_lbl;
 	int scw, sch;
 	char lbl[255];

@@ -4,13 +4,13 @@
 
 #include "ee2.h"
 
-GtkWidget *adj;
+GtkObject *adj;
 double brite_val;
 
 void
 brite_init(void)
 {
-	GtkWidget *nfr1, *nlbl, *vbox1, *sep, *btn;
+	GtkWidget *nfr1, *nlbl, *vbox1, *btn;
 	GtkWidget *b1;
 	GtkWidget *r1;
 
@@ -30,7 +30,7 @@ brite_init(void)
 	gtk_signal_connect(GTK_OBJECT(adj), "value_changed",
 										GTK_SIGNAL_FUNC(brite_cha), NULL);
 
-	r1 = gtk_hscale_new(adj);
+	r1 = gtk_hscale_new(GTK_ADJUSTMENT(adj));
 	gtk_widget_show(r1);
 	gtk_box_pack_start(GTK_BOX(b1), r1, TRUE, TRUE, 0);
 
