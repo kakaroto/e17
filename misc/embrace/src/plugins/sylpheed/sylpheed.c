@@ -133,6 +133,7 @@ static bool sylpheed_check (MailBox *mb)
 		xmlNodePtr node;
 		xmlChar *ch;
 		char xpath[256];
+		int n;
 
 		snprintf (xpath, sizeof (xpath),
 		          "//folderlist/folder[@name=\'%s\']"
@@ -149,12 +150,16 @@ static bool sylpheed_check (MailBox *mb)
 		assert (node);
 
 		ch = xmlNodeListGetString (xml, node, 1);
-		assert (ch);
+		if (ch) {
+			n = xmlXPathCastStringToNumber (ch);
 
-		if (!i)
-			mailbox_unseen_set (mb, xmlXPathCastStringToNumber (ch));
-		else
-			mailbox_total_set (mb, xmlXPathCastStringToNumber (ch));
+			if (!i)
+				mailbox_unseen_set (mb, n);
+			else
+				mailbox_total_set (mb, n);
+
+			xmlFree (ch);
+		}
 
 		xmlXPathFreeObject (set);
 	}
