@@ -3,21 +3,22 @@ user: "default button" indicator for the default "enter" activated button
 user: add submenu resistance / timeout for running across to a submenu
 user: add "virtual" resistance boxes
 user: resistance is still in effect for iconified window
-me: window groups...
-    when adding to a group need group selection dialogbox
-me: iconbox name display
-me: add dnd to iconbox
-me: option to turn off iconbox cover
-me: icoify animation suport
-me: changing virtual desktop size screws up pager content draws.
-me: forbid iconifying of the iconbox
-me: forbid shading of any window if its borderless
-me: forbid chaning to a borderless window if the window is shaded
-me: unshade windows before iconifying then shade again
-me: accept right click on scrollbar and cover win for iconbox
+user: finer grained control on selecting icon display policy
 kainx: new tooltip stuff doesnt saccoutn for 2x extra in calculating iconbox
 kainx: reduce need for tooltip text to have auto gened tooltips work
-me: sound.cfg classes to add / support in theme..
+raster: window groups...
+    when adding to a group need group selection dialogbox
+raster: iconbox name display
+raster: add dnd to iconbox
+raster: option to turn off iconbox cover
+raster: icoify animation suport
+raster: changing virtual desktop size screws up pager content draws.
+raster: forbid iconifying of the iconbox
+raster: forbid shading of any window if its borderless
+raster: forbid chaning to a borderless window if the window is shaded
+raster: unshade windows before iconifying then shade again
+raster: accept right click on scrollbar and cover win for iconbox
+raster: sound.cfg classes to add / support in theme..
 SOUND_MENU_SHOW - whenever a menu is popped up.
 SOUND_RESIZE_START - the start of any window resize
 SOUND_RESIZE_STOP - the end of any window resize
