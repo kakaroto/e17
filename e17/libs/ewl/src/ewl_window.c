@@ -351,7 +351,7 @@ void ewl_window_realize_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	/*
 	 * Determine the type of evas to create.
 	 */
-	render = ewl_config_get_render_method();
+	render = ewl_config_render_method_get();
 	if (!render)
 		render = strdup("software_x11");
 
