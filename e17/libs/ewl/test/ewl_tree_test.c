@@ -75,6 +75,13 @@ __create_tree_test_window(Ewl_Widget * w, void *ev_data,
 		else
 			prow = ewl_tree_add_text_row(EWL_TREE(tree),
 					EWL_ROW(prow), entries);
+
+		/*
+		prow = ewl_entry_new(entries[0]);
+		ewl_container_append_child(EWL_CONTAINER(tree), prow);
+		ewl_widget_show(prow);
+		*/
+
 		/* ewl_tree_set_row_expanded(EWL_ROW(prow), TRUE); */
 
 		for (col = 0; col < COLS; col++) {

@@ -12,8 +12,6 @@
  * This defines the various types of callbacks that can be hooked up for each
  * widget.
  */
-typedef enum Ewl_Callback_Type Ewl_Callback_Type;
-
 enum Ewl_Callback_Type
 {
 	EWL_CALLBACK_NONE, /**< A placeholder FIXME: Is this necessary still? */
@@ -46,12 +44,12 @@ enum Ewl_Callback_Type
 	EWL_CALLBACK_MAX /**< Flag to indicate last value */
 };
 
+typedef enum Ewl_Callback_Type Ewl_Callback_Type;
+
 /**
  * Flags for the callbacks to indicate interception or notification of the
  * parent.
  */
-typedef enum Ewl_Event_Notify Ewl_Event_Notify;
-
 enum Ewl_Event_Notify
 {
 	EWL_CALLBACK_NOTIFY_NONE = 0,
@@ -59,43 +57,49 @@ enum Ewl_Event_Notify
 	EWL_CALLBACK_NOTIFY_INTERCEPT = 2
 };
 
+typedef enum Ewl_Event_Notify Ewl_Event_Notify;
+
 /**
  * The orientation enum is used in a few widgets to specify whether the widget
  * should be laid out in a horizontal or vertical fashion.
  */
-typedef enum Ewl_Orientation Ewl_Orientation;
-
 enum Ewl_Orientation
 {
 	EWL_ORIENTATION_HORIZONTAL,
 	EWL_ORIENTATION_VERTICAL
 };
 
+typedef enum Ewl_Orientation Ewl_Orientation;
+
+/**
+ * A variety of flags that affect layout, visibility, scheduling and
+ * properties of objects.
+ */
 enum Ewl_Flags
 {
 	/*
 	 * The alignment enumeration allows for specifying how an element is
 	 * aligned within it's container.
 	 */
-	EWL_FLAG_ALIGN_CENTER = ETOX_ALIGN_CENTER,
-	EWL_FLAG_ALIGN_LEFT = ETOX_ALIGN_LEFT,
-	EWL_FLAG_ALIGN_RIGHT = ETOX_ALIGN_RIGHT,
-	EWL_FLAG_ALIGN_TOP = ETOX_ALIGN_TOP,
-	EWL_FLAG_ALIGN_BOTTOM = ETOX_ALIGN_BOTTOM,
+	EWL_FLAG_ALIGN_CENTER = ETOX_ALIGN_CENTER, /**< Center align bit */
+	EWL_FLAG_ALIGN_LEFT = ETOX_ALIGN_LEFT, /**< Left align bit */
+	EWL_FLAG_ALIGN_RIGHT = ETOX_ALIGN_RIGHT, /**< Right align bit */
+	EWL_FLAG_ALIGN_TOP = ETOX_ALIGN_TOP, /**< Top align bit */
+	EWL_FLAG_ALIGN_BOTTOM = ETOX_ALIGN_BOTTOM, /**< Bottom align bit */
 
 	/*
 	 * Fill policy identifies to containers whether child widgets should be
 	 * stretched to fill available space or keep their current size.
 	 */
-	EWL_FLAG_FILL_NONE = 0,
-	EWL_FLAG_FILL_HSHRINK = 0x1000,
-	EWL_FLAG_FILL_VSHRINK = 0x2000,
+	EWL_FLAG_FILL_NONE = 0, /**< Do not fill or shrink in any direction */
+	EWL_FLAG_FILL_HSHRINK = 0x1000, /**< Horizontally shrink bit */
+	EWL_FLAG_FILL_VSHRINK = 0x2000, /**< Horizontally shrink bit */
 	EWL_FLAG_FILL_SHRINK =
-	    EWL_FLAG_FILL_HSHRINK | EWL_FLAG_FILL_VSHRINK,
-	EWL_FLAG_FILL_HFILL = 0x4000,
-	EWL_FLAG_FILL_VFILL = 0x8000,
-	EWL_FLAG_FILL_FILL = EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_VFILL,
-	EWL_FLAG_FILL_ALL = EWL_FLAG_FILL_FILL | EWL_FLAG_FILL_SHRINK,
+	    EWL_FLAG_FILL_HSHRINK | EWL_FLAG_FILL_VSHRINK, /**< Shrink bit */
+	EWL_FLAG_FILL_HFILL = 0x4000, /**< Horizontal fill bit */
+	EWL_FLAG_FILL_VFILL = 0x8000, /**< Vertical fill bit */
+	EWL_FLAG_FILL_FILL = EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_VFILL, /**< Fill bit */
+	EWL_FLAG_FILL_ALL = EWL_FLAG_FILL_FILL | EWL_FLAG_FILL_SHRINK, /**< Shrunk and fill bit */
 
 	/*
 	 * Flags identifying the visibility status of the widget

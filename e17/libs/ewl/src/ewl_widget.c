@@ -1223,7 +1223,7 @@ void ewl_widget_enable_cb(Ewl_Widget * w, void *ev_data, void *user_data)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
 
-	ewl_widget_set_state(w, "normal");
+	ewl_widget_set_state(w, "default");
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1245,9 +1245,9 @@ ewl_widget_focus_in_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 		DRETURN(DLEVEL_STABLE);
 
 	if (ewl_object_has_state(EWL_OBJECT(w), EWL_FLAG_STATE_PRESSED))
-		ewl_widget_set_state(w, "clicked");
+		ewl_widget_set_state(w, "mouse,down,0");
 	else
-		ewl_widget_set_state(w, "hilited");
+		ewl_widget_set_state(w, "mouse,in");
 }
 
 void
@@ -1256,16 +1256,21 @@ ewl_widget_focus_out_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 	if (ewl_object_has_state(EWL_OBJECT(w), EWL_FLAG_STATE_DISABLED))
 		DRETURN(DLEVEL_STABLE);
 
-	ewl_widget_set_state(w, "normal");
+	ewl_widget_set_state(w, "mouse,out");
+	ewl_widget_set_state(w, "default");
 }
 
 void
 ewl_widget_mouse_down_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 {
+	Ecore_X_Event_Mouse_Button_Down *e = ev_data;
+	char state[14];
+
 	if (ewl_object_has_state(EWL_OBJECT(w), EWL_FLAG_STATE_DISABLED))
 		DRETURN(DLEVEL_STABLE);
 
-	ewl_widget_set_state(w, "clicked");
+	snprintf(state, 14, "mouse,down,%i", e->button);
+	ewl_widget_set_state(w, state);
 }
 
 void
@@ -1275,11 +1280,11 @@ ewl_widget_mouse_up_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 		DRETURN(DLEVEL_STABLE);
 
 	if (ewl_object_has_state(EWL_OBJECT(w), EWL_FLAG_STATE_HILITED)) {
-		ewl_widget_set_state(w, "hilited");
+		ewl_widget_set_state(w, "mouse,in");
 		ewl_callback_call_with_event_data(w, EWL_CALLBACK_CLICKED,
 						  ev_data);
 	} else
-		ewl_widget_set_state(w, "normal");
+		ewl_widget_set_state(w, "default");
 }
 
 void
