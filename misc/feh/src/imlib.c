@@ -29,7 +29,7 @@ init_x_and_imlib (void)
 
   disp = XOpenDisplay (NULL);
   if (!disp)
-    eprintf ("Cannot open display");
+    eprintf ("Can't open X display");
   vis = DefaultVisual (disp, DefaultScreen (disp));
   depth = DefaultDepth (disp, DefaultScreen (disp));
   cm = DefaultColormap (disp, DefaultScreen (disp));
@@ -51,25 +51,30 @@ init_x_and_imlib (void)
   imlib_add_path_to_font_path (PREFIX "/share/feh/fonts");
   imlib_add_path_to_font_path ("./ttfonts");
 
-  checks = imlib_create_image (CHECK_SIZE, CHECK_SIZE);
-
-  if (!checks)
-    eprintf ("Unable to create a teeny weeny imlib image. I detect problems");
-
-  imlib_context_set_image (checks);
-  for (y = 0; y < CHECK_SIZE; y += 8)
+  /* don't need checks for these */
+  if (!(opt.list  || opt.longlist || opt.montage || opt.index || opt.thumbs))
     {
-      onoff = (y / 8) & 0x1;
-      for (x = 0; x < CHECK_SIZE; x += 8)
+      checks = imlib_create_image (CHECK_SIZE, CHECK_SIZE);
+
+      if (!checks)
+	eprintf
+	  ("Unable to create a teeny weeny imlib image. I detect problems");
+
+      imlib_context_set_image (checks);
+      for (y = 0; y < CHECK_SIZE; y += 8)
 	{
-	  if (onoff)
-	    imlib_context_set_color (144, 144, 144, 255);
-	  else
-	    imlib_context_set_color (100, 100, 100, 255);
-	  imlib_image_fill_rectangle (x, y, 8, 8);
-	  onoff++;
-	  if (onoff == 2)
-	    onoff = 0;
+	  onoff = (y / 8) & 0x1;
+	  for (x = 0; x < CHECK_SIZE; x += 8)
+	    {
+	      if (onoff)
+		imlib_context_set_color (144, 144, 144, 255);
+	      else
+		imlib_context_set_color (100, 100, 100, 255);
+	      imlib_image_fill_rectangle (x, y, 8, 8);
+	      onoff++;
+	      if (onoff == 2)
+		onoff = 0;
+	    }
 	}
     }
 }
@@ -87,7 +92,7 @@ feh_load_image_char (Imlib_Image ** im, char *filename)
 }
 
 int
-feh_load_image (Imlib_Image ** im, feh_file *file)
+feh_load_image (Imlib_Image ** im, feh_file * file)
 {
   Imlib_Load_Error err;
 

@@ -1,3 +1,8 @@
+Fri Mar 17 22:58:14 2000  Tom Gilbert  <gilbertt@btinternet.com>
+
+	* Don't need to create checkerboard for list mode, montage mode,
+	index mode, etc...
+
 Fri Mar 17 22:43:27 2000  Tom Gilbert  <gilbertt@btinternet.com>
 
 	* We don't need to allocate space for the file info unless we
