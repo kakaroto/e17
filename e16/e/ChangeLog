@@ -1712,3 +1712,10 @@ Also fixes a couple of bugs with the current -econfdir option.
 
 Patches here for scripts and stuff.
 
+-------------------------------------------------------------------------------
+
+Mon Mar 27 21:35:50 GMT 2000
+(gilbertt)
+
+.spec file fixups in preparation for 0.16.4
+

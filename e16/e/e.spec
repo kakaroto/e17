@@ -1,5 +1,5 @@
 # Note that this is NOT a relocatable package
-%define ver      0.16.3
+%define ver      0.16.4
 %define rel      1
 %define prefix   /usr
 
@@ -9,10 +9,10 @@ Version: %ver
 Release: %rel
 Copyright: GPL
 Group: User Interface/Desktops
-Source: ftp://www.rasterman.com/pub/enlightenment/enlightenment-%{ver}.tar.gz
+Source: ftp://ftp.enlightenment.org/pub/enlightenment/enlightenment-%{ver}.tar.gz
 BuildRoot: /tmp/e-%{ver}-root
 Packager: The Rasterman <raster@redhat.com>
-URL: http://www.rasterman.com/
+URL: http://www.enlightenment.org
 Requires: imlib >= 1.9.8
 Requires: fnlib >= 0.5
 Requires: freetype >= 1.1
