@@ -383,7 +383,7 @@ ewl_ev_mouse_move(Ecore_Event * _ev)
 	else
 		dnd_widget = NULL;
 
-	if (!(widget->state & EWL_STATE_DISABLED))
+	if (widget && !(widget->state & EWL_STATE_DISABLED))
 		last_focused = widget;
 	else
 		last_focused = NULL;

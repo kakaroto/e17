@@ -263,7 +263,6 @@ ewl_container_get_child_at_recursive(Ewl_Container * widget, int x, int y)
 	/*
 	 * The starting point is the current widget
 	 */
-	ewd_list_goto_first(widget->children);
 	child = EWL_WIDGET(widget);
 
 	/*
@@ -274,8 +273,13 @@ ewl_container_get_child_at_recursive(Ewl_Container * widget, int x, int y)
 		ewl_container_get_child_at(EWL_CONTAINER(child), x, y)))
 	  {
 		  if (child2->recursive)
-			  child = ewl_container_get_child_at(EWL_CONTAINER
-							     (child), x, y);
+		    {
+			    child = ewl_container_get_child_at(EWL_CONTAINER
+							       (child), x, y);
+
+			    if (!child)
+				    DRETURN_PTR(child2, DLEVEL_STABLE);
+		    }
 		  else
 			  DRETURN_PTR(child2, DLEVEL_STABLE);
 	  }

@@ -22,7 +22,7 @@ void __ewl_seeker_focus_out(Ewl_Widget * w, void *event_data,
 void __ewl_seeker_mouse_move(Ewl_Widget * w, void *event_data,
 			     void *user_data);
 void __ewl_seeker_position_to_value(Ewl_Widget * w, int in_x, int in_y);
-void __ewl_seeker_value_to_position(Ewl_Widget * w, double val);
+void __ewl_seeker_value_to_position(Ewl_Widget * w);
 
 /**
  * ewl_seeker_new - allocate and initialize a new seeker with orientation
@@ -210,6 +210,7 @@ __ewl_seeker_init(Ewl_Seeker * s, Ewl_Orientation orientation)
 	s->orientation = orientation;
 	s->range = 100;
 	s->value = 0;
+	s->step = 5;
 
 	/*
 	 * Add necessary configuration callbacks
@@ -277,7 +278,7 @@ __ewl_seeker_configure(Ewl_Widget * w, void *event_data, void *user_data)
 	if (!s->drag_button)
 		DRETURN(DLEVEL_STABLE);
 
-	__ewl_seeker_value_to_position(s->drag_button, s->value);
+	__ewl_seeker_value_to_position(s->drag_button);
 	ewl_widget_configure(EWL_WIDGET(s->drag_button));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -289,7 +290,6 @@ __ewl_seeker_drag_button_mouse_down(Ewl_Widget * w, void *event_data,
 {
 	Ecore_Event_Mouse_Down *ev;
 	Ewl_Seeker *s;
-	int tmp;
 	int xx, yy, ww, hh;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -303,11 +303,9 @@ __ewl_seeker_drag_button_mouse_down(Ewl_Widget * w, void *event_data,
 	ewl_object_get_current_geometry(EWL_OBJECT(w), &xx, &yy, &ww, &hh);
 
 	if (s->orientation == EWL_ORIENTATION_HORIZONTAL)
-		tmp = (xx + ww) - ev->x;
+		s->dragstart = ev->x - xx;
 	else
-		tmp = (yy + hh) - ev->y;
-
-	s->dragstart = tmp;
+		s->dragstart = ev->y - yy;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -376,6 +374,8 @@ __ewl_seeker_position_to_value(Ewl_Widget * w, int in_x, int in_y)
 	 */
 	xx += l;
 	yy += t;
+	ww -= l + r;
+	hh -= t + b;
 
 	/*
 	 * The direction of the drag_button move depends on the orientation of the
@@ -389,7 +389,6 @@ __ewl_seeker_position_to_value(Ewl_Widget * w, int in_x, int in_y)
 		   * position to determine the new position
 		   */
 		  req_x = in_x - s->dragstart;
-
 		  /*
 		   * Check the boundaries to make sure we're not off the end of
 		   * the bar
@@ -397,20 +396,16 @@ __ewl_seeker_position_to_value(Ewl_Widget * w, int in_x, int in_y)
 		  if (req_x < xx)
 			  req_x = xx;
 
-		  if (req_x + CURRENT_W(w) + l + r > xx + ww)
-			  req_x = xx + ww - CURRENT_W(w) - l - r;
+		  if (req_x + CURRENT_W(w) > xx + ww)
+			  req_x = xx + ww - CURRENT_W(w);
 
 		  /*
 		   * Calculate the new value for the seeker
 		   */
-		  val = (double) (req_x - (xx - l)) / (double) ((ww - l - r) -
-								CURRENT_W(w));
+		  val = 1.0 -
+			  (((double) (req_x - xx) /
+			    (double) (ww - CURRENT_W(w))));
 
-		  printf("%f\n", val);
-		  /*
-		   * Adjust the values for assigning geometry to the object
-		   */
-		  xx = req_x;
 	  }
 	else
 	  {
@@ -428,18 +423,13 @@ __ewl_seeker_position_to_value(Ewl_Widget * w, int in_x, int in_y)
 		  if (req_y < yy)
 			  req_y = yy;
 
-		  if (req_y + CURRENT_H(w) + t + b > yy + hh)
-			  req_y = yy + hh - CURRENT_H(w) - t - b;
+		  if (req_y + CURRENT_H(w) > yy + hh)
+			  req_y = yy + hh - CURRENT_H(w);
 
 		  /*
 		   * Calculate the new value for the seeker
 		   */
 		  val = (double) (req_y - yy) / (double) (hh - CURRENT_H(w));
-
-		  /*
-		   * Adjust the values for assigning geometry to the object
-		   */
-		  yy = req_y;
 	  }
 
 	/*
@@ -452,14 +442,14 @@ __ewl_seeker_position_to_value(Ewl_Widget * w, int in_x, int in_y)
 	if (s->value > s->range)
 		s->value = s->range;
 
+	__ewl_seeker_value_to_position(w);
+
 	if (old_val != s->value)
 		ewl_callback_call(EWL_WIDGET(s), EWL_CALLBACK_VALUE_CHANGED);
-
-	ewl_object_request_position(EWL_OBJECT(w), xx, yy);
 }
 
 void
-__ewl_seeker_value_to_position(Ewl_Widget * w, double val)
+__ewl_seeker_value_to_position(Ewl_Widget * w)
 {
 	Ewl_Seeker *s;
 	int xx, yy, ww, hh;
@@ -478,6 +468,8 @@ __ewl_seeker_value_to_position(Ewl_Widget * w, double val)
 	 */
 	xx += l;
 	yy += t;
+	ww -= l + r;
+	hh -= t + b;
 
 	/*
 	 * The direction of the drag_button move depends on the orientation of the
@@ -490,18 +482,13 @@ __ewl_seeker_value_to_position(Ewl_Widget * w, double val)
 		   * Use the current value along with the range to determine the
 		   * new position
 		   */
-		  req_x = xx + (int) (floor((double) (ww - CURRENT_W(w)) *
-					    (s->value / s->range)));
+		  req_x = xx + ww -
+			  (int) (floor
+				 ((double) (ww - CURRENT_W(w)) *
+				  ((s->range - s->value) / s->range))) -
+			  CURRENT_W(w);
 
-		  /*
-		   * Check the boundaries to make sure we're not off the end of
-		   * the bar
-		   */
-		  if (req_x + ww > xx + ww)
-			  req_x = xx + ww;
-
-		  if (req_x > xx)
-			  xx = req_x;
+		  req_y = yy;
 	  }
 	else
 	  {
@@ -515,25 +502,18 @@ __ewl_seeker_value_to_position(Ewl_Widget * w, double val)
 						 (s->value / s->range))) -
 			  CURRENT_H(w);
 
-		  /*
-		   * Check the boundaries to make sure we're not off the end of
-		   * the bar
-		   */
-		  if (req_y + hh > yy + hh)
-			  req_y = yy + hh;
-
-		  if (req_y > yy)
-			  yy = req_y;
+		  req_x = xx;
 	  }
 
-	ewl_object_request_position(EWL_OBJECT(w), xx, yy);
+	ewl_object_request_position(EWL_OBJECT(w), req_x, req_y);
 }
 
 void
 __ewl_seeker_mouse_down(Ewl_Widget * w, void *event_data, void *user_data)
 {
 	Ewl_Seeker *s;
-	Ecore_Event_Mouse_Move *ev;
+	Ecore_Event_Mouse_Down *ev;
+	int xx, yy, ww, hh;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("w", w);
@@ -542,6 +522,35 @@ __ewl_seeker_mouse_down(Ewl_Widget * w, void *event_data, void *user_data)
 	ev = event_data;
 
 	s = EWL_SEEKER(w);
+
+	ewl_object_get_current_geometry(EWL_OBJECT(s->drag_button),
+					&xx, &yy, &ww, &hh);
+
+	switch (s->orientation)
+	  {
+	  case EWL_ORIENTATION_HORIZONTAL:
+		  if (ev->x < xx)
+			  s->value -= s->step;
+		  else if (ev->x > xx + ww)
+			  s->value += s->step;
+		  break;
+	  case EWL_ORIENTATION_VERTICAL:
+		  if (ev->y < yy)
+			  s->value += s->step;
+		  else if (ev->y > yy + hh)
+			  s->value -= s->step;
+		  break;
+	  default:
+		  break;
+	  }
+
+	if (!s->value)
+		s->value = 0.0;
+	else if (s->value > s->range)
+		s->value = s->range;
+
+	__ewl_seeker_value_to_position(s->drag_button);
+	ewl_widget_configure(s->drag_button);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

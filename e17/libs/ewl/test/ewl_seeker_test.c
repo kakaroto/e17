@@ -37,7 +37,6 @@ __create_seeker_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_widget_show(seeker_win);
 
 	hseeker = ewl_hseeker_new();
-	ewl_seeker_set_value(EWL_SEEKER(hseeker), 50.0);
 	ewl_object_set_padding(EWL_OBJECT(hseeker), 10, 10, 10, 0);
 	ewl_container_append_child(EWL_CONTAINER(seeker_win), hseeker);
 	ewl_widget_show(hseeker);

@@ -1,3 +1,8 @@
+Sun Nov  11 00:38:40 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
+	* Now ewl_container_get_child_at_recursive() returns the last
+	  container found if no widget with the recursive flag set was found.
+	* Ewl_Seeker cleanups.
+
 Sat Nov  10 21:23:10 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
 	* Added a mouse out ecore event handler, which calls focus out on any
 	  widgets in focus (if any).
@@ -10,7 +15,7 @@ Sat Nov  10 21:23:10 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
 	  configure. Just call ewl_widget_enable() on the widget again to
 	  make it normal. I also added matching callbacks for theese.
 
-Fri Nov  09 00:22:08 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
+Sat Nov  10 00:22:08 2001 Christopher Rosendahl <crosendahl@northernwatch.com>
 	* Removed the Ewl_Widget_Type enum, instead im gonna use the
 	  Ewl_Widget->appearance to identify widgets.
 	* Added a callback called EWL_CALLBACK_APPEARANCE_CHANGED
