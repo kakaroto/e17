@@ -5,6 +5,7 @@ INPUT                  = doc/entrance.doxygen src/client/main.c \
 			 src/client/entrance_auth.c \
 			 src/client/entrance_session.c \
 			 src/client/entrance_config.c \
+			 src/client/entrance_user.c \
 			 src/client/util.c
 IMAGE_PATH             = doc/images
 OUTPUT_LANGUAGE        = English
