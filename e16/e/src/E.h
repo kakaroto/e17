@@ -913,6 +913,7 @@ typedef struct
       char                slide;
       char                onscreen;
       char                warp;
+      int                 opacity;
       struct
       {
 	 KeySym              left, right, up, down, escape, ret;
