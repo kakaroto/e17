@@ -513,7 +513,13 @@ entice_file_remove(const char *file)
       if ((o = evas_hash_find(entice->thumb.hash, buf)))
       {
          entice->thumb.hash = evas_hash_del(entice->thumb.hash, buf, o);
-
+	 
+	 /* scroll backwards in the list, if we're at the tail */
+         if (evas_list_count(entice->thumb.list) > 2)
+         {
+            if (entice->thumb.current == evas_list_last(entice->thumb.list))
+               entice->thumb.current = evas_list_prev(entice->thumb.current);
+         }
          if (!(entice->thumb.current = evas_list_prev(entice->thumb.current)))
          {
             entice->thumb.current = evas_list_last(entice->thumb.list);
