@@ -411,7 +411,7 @@ ShowAlert(char *text)
       XSetForeground(dd, gc, att.border_pixel);
 
    xfs = XCreateFontSet(dd, "-*-sans unicode-*-r-*-*-12-*-*-*-*-*-*-*,"
-			    "-*-helvetica-*-r-*-*-12-*-*-*-*-*-*-*,fixed",
+			"-*-helvetica-*-r-*-*-12-*-*-*-*-*-*-*,fixed",
 			&missing_charset_list_return,
 			&missing_charset_count_return, &def_string_return);
    if (!xfs)
