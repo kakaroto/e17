@@ -778,7 +778,7 @@ filetype_test_fs(char *filename, struct stat *st, char *type, int len)
   ptr = type + fslen;
 
 #ifdef __EMX__
-  snprintf(ptr, len - fslen, "%s", "hpfs");
+  snprintf(ptr, len - fslen, "/%s", "hpfs");
 #elif !defined(HAVE_STATFS) && !defined(HAVE_STATFS)
   snprintf(ptr, len - fslen, "/%s", "unknown-fs");
   D_RETURN_(TRUE);
