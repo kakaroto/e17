@@ -477,7 +477,7 @@ EDJE_CB(playlist_add) {
 	ewl_container_append_child(EWL_CONTAINER(fd_win), vbox);
 	ewl_widget_show (vbox);
 
-	fd = ewl_filedialog_new(fd_win, EWL_FILEDIALOG_TYPE_OPEN,
+	fd = ewl_filedialog_new(EWL_FILEDIALOG_TYPE_OPEN,
 			file_dialog_ok, file_dialog_cancel);
 
 	ewl_container_append_child(EWL_CONTAINER(vbox), fd);
