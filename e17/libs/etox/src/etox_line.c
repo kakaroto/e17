@@ -647,8 +647,8 @@ etox_line_apply_context(Etox_Line *line, Etox_Context *context, Evas_Object *sta
 {
   Evas_List *l, *ls = NULL, *le = NULL;
 
-  ls = evas_list_find(line->bits, start);
-  le = evas_list_find(line->bits, end);
+  ls = evas_list_find_list(line->bits, start);
+  le = evas_list_find_list(line->bits, end);
   
   /* make sure start and end exist and are in line->bits */
   if ( !ls )
@@ -656,7 +656,7 @@ etox_line_apply_context(Etox_Line *line, Etox_Context *context, Evas_Object *sta
   if ( !le ) 
     le = evas_list_last(line->bits); 
 
-  for (l = ls; l && l != le; l = l->next)
+  for (l = ls; l; l = l->next)
   {
     Evas_Object *bit;
 
@@ -666,5 +666,8 @@ etox_line_apply_context(Etox_Line *line, Etox_Context *context, Evas_Object *sta
     evas_object_color_set(bit, context->r, context->g, context->b,
                           context->a);
     estyle_set_font(bit, context->font, context->font_size);
+
+    if (l == le)
+      break;
   }
 }
