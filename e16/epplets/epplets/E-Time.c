@@ -63,6 +63,8 @@ out_cb(void *data, Window w)
 int
 main(int argc, char **argv)
 {
+   atexit (Epplet_cleanup);
+   
    Epplet_Init("E-Time", "0.1", "Enlightenment Digital Clock Epplet",
 	       3, 3, argc, argv, 0);
    b_close = Epplet_create_button(NULL, NULL, 
@@ -74,7 +76,7 @@ main(int argc, char **argv)
    Epplet_gadget_show(label4 = Epplet_create_label(-4, 36, "", 1));
    Epplet_register_focus_in_handler(in_cb, NULL);
    Epplet_register_focus_out_handler(out_cb, NULL);
-
+   
    Epplet_show();
    timer_cb(NULL);
    Epplet_Loop();
