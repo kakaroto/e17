@@ -307,6 +307,7 @@ ECreatePixImg(Window win, int w, int h)
       bpp = 3;
    else
       bpp = 4;
+
 #if !USE_IMLIB2
    if ((pImlib_Context->max_shm) && ((bpp * w * h) > pImlib_Context->max_shm))
       return NULL;
@@ -317,69 +318,49 @@ ECreatePixImg(Window win, int w, int h)
    pi = Emalloc(sizeof(PixImg));
    if (!pi)
       return NULL;
+
    pi->shminfo = Emalloc(sizeof(XShmSegmentInfo));
-   if (!pi->shminfo)
+   if (pi->shminfo)
      {
-	Efree(pi);
-	return NULL;
-     }
-   pi->xim =
-      XShmCreateImage(disp, root.vis, root.depth, ZPixmap, NULL, pi->shminfo,
-		      w, h);
-   if (!pi->xim)
-     {
+	pi->xim = XShmCreateImage(disp, root.vis, root.depth, ZPixmap, NULL,
+				  pi->shminfo, w, h);
+	if (pi->xim)
+	  {
+	     pi->shminfo->shmid =
+		shmget(IPC_PRIVATE, pi->xim->bytes_per_line * pi->xim->height,
+		       IPC_CREAT | 0666);
+	     if (pi->shminfo->shmid >= 0)
+	       {
+		  pi->shminfo->shmaddr = pi->xim->data =
+		     shmat(pi->shminfo->shmid, 0, 0);
+		  if (pi->shminfo->shmaddr)
+		    {
+		       pi->shminfo->readOnly = False;
+		       XShmAttach(disp, pi->shminfo);
+		       pi->pmap =
+			  XShmCreatePixmap(disp, win, pi->shminfo->shmaddr,
+					   pi->shminfo, w, h, root.depth);
+		       if (pi->pmap)
+			 {
+			    gcv.subwindow_mode = IncludeInferiors;
+			    pi->gc =
+			       XCreateGC(disp, win, GCSubwindowMode, &gcv);
+			    if (pi->gc)
+			       return pi;
+
+			    XFreePixmap(disp, pi->pmap);
+			 }
+		       XShmDetach(disp, pi->shminfo);
+		       shmdt(pi->shminfo->shmaddr);
+		    }
+		  shmctl(pi->shminfo->shmid, IPC_RMID, 0);
+	       }
+	     XDestroyImage(pi->xim);
+	  }
 	Efree(pi->shminfo);
-	Efree(pi);
-	return NULL;
      }
-   pi->shminfo->shmid =
-      shmget(IPC_PRIVATE, pi->xim->bytes_per_line * pi->xim->height,
-	     IPC_CREAT | 0666);
-   if (pi->shminfo->shmid < 0)
-     {
-	XDestroyImage(pi->xim);
-	Efree(pi->shminfo);
-	Efree(pi);
-	return NULL;
-     }
-   pi->shminfo->shmaddr = pi->xim->data = shmat(pi->shminfo->shmid, 0, 0);
-   if (!pi->shminfo->shmaddr)
-     {
-	shmctl(pi->shminfo->shmid, IPC_RMID, 0);
-	XDestroyImage(pi->xim);
-	Efree(pi->shminfo);
-	Efree(pi);
-	return NULL;
-     }
-   pi->shminfo->readOnly = False;
-   XShmAttach(disp, pi->shminfo);
-   pi->pmap =
-      XShmCreatePixmap(disp, win, pi->shminfo->shmaddr, pi->shminfo, w, h,
-		       root.depth);
-   if (!pi->pmap)
-     {
-	XShmDetach(disp, pi->shminfo);
-	shmdt(pi->shminfo->shmaddr);
-	shmctl(pi->shminfo->shmid, IPC_RMID, 0);
-	XDestroyImage(pi->xim);
-	Efree(pi->shminfo);
-	Efree(pi);
-	return NULL;
-     }
-   gcv.subwindow_mode = IncludeInferiors;
-   pi->gc = XCreateGC(disp, win, GCSubwindowMode, &gcv);
-   if (!pi->gc)
-     {
-	XShmDetach(disp, pi->shminfo);
-	shmdt(pi->shminfo->shmaddr);
-	shmctl(pi->shminfo->shmid, IPC_RMID, 0);
-	XDestroyImage(pi->xim);
-	Efree(pi->shminfo);
-	XFreePixmap(disp, pi->pmap);
-	Efree(pi);
-	return NULL;
-     }
-   return pi;
+   Efree(pi);
+   return NULL;
 }
 
 void
@@ -899,73 +880,58 @@ ScaleLine(Pixmap dest, Window src, int dx, int dy, int sw, int pw, int sy,
    p_grab = ECreatePixImg(dest, sw, 1);
    if (p_grab)
      {
-	if (HIQ)
+	p_buf = ECreatePixImg(dest, pw, 1);
+	if (p_buf)
 	  {
-	     p_grab2 = ECreatePixImg(dest, sw, 1);
-	     if (!p_grab2)
+	     XCopyArea(disp, src, p_grab->pmap, gc, 0, sy, sw, 1, 0, 0);
+	     if (HIQ)
 	       {
-		  EDestroyPixImg(p_grab);
-		  p_grab = NULL;
-	       }
-	  }
+		  p_grab2 = ECreatePixImg(dest, sw, 1);
+		  if (!p_grab2)
+		     goto boo1;
 
-	if (p_grab)
-	  {
-	     p_buf = ECreatePixImg(dest, pw, 1);
-	     if (p_buf)
-	       {
-		  XCopyArea(disp, src, p_grab->pmap, gc, 0, sy, sw, 1, 0, 0);
-		  if (HIQ)
-		     XCopyArea(disp, src, p_grab2->pmap, gc, 0, sy + (sh / 2),
-			       sw, 1, 0, 0);
-		  XSync(disp, False);
+		  XCopyArea(disp, src, p_grab2->pmap, gc, 0,
+			    sy + (sh / 2), sw, 1, 0, 0);
 	       }
+	     XSync(disp, False);
+	     goto wheee;
+
+	   boo1:
+	     EDestroyPixImg(p_buf);
+	     p_buf = NULL;
 	  }
-	else
-	  {
-	     EDestroyPixImg(p_grab);
-	     if (p_grab2)
-		EDestroyPixImg(p_grab2);
-	     p_grab = NULL;
-	  }
+	EDestroyPixImg(p_grab);
+	p_grab = NULL;
      }
 
-   if (!p_grab)
+   px_grab = XGetImage(disp, src, 0, sy, sw, 1, 0xffffffff, ZPixmap);
+   if (px_grab)
      {
-	px_grab = XGetImage(disp, src, 0, sy, sw, 1, 0xffffffff, ZPixmap);
-	if (!px_grab)
-	   return;
-
-	if (HIQ)
-	   px_grab2 =
-	      XGetImage(disp, src, 0, sy + (sh / 2), sw, 1, 0xffffffff,
-			ZPixmap);
-	if (!px_grab2)
+	px_buf = XCreateImage(disp, root.vis, root.depth, ZPixmap, 0,
+			      NULL, pw, 1, 32, 0);
+	if (px_buf)
 	  {
-	     XDestroyImage(px_grab);
-	     return;
-	  }
+	     px_buf->data = malloc(px_buf->bytes_per_line * px_buf->height);
+	     if (!px_buf->data)
+		goto boo2;
 
-	px_buf =
-	   XCreateImage(disp, root.vis, root.depth, ZPixmap, 0, NULL, pw, 1,
-			32, 0);
-	if (!px_buf)
-	  {
-	     XDestroyImage(px_grab);
-	     XDestroyImage(px_grab2);
-	     return;
-	  }
+	     if (HIQ)
+	       {
+		  px_grab2 = XGetImage(disp, src, 0, sy + (sh / 2), sw, 1,
+				       0xffffffff, ZPixmap);
+		  if (!px_grab2)
+		     goto boo2;
+	       }
+	     goto wheee;
 
-	px_buf->data = malloc(px_buf->bytes_per_line * px_buf->height);
-	if (!px_buf->data)
-	  {
-	     XDestroyImage(px_grab);
-	     XDestroyImage(px_grab2);
+	   boo2:
 	     XDestroyImage(px_buf);
-	     return;
 	  }
+	XDestroyImage(px_grab);
+	return;
      }
 
+ wheee:
    if (HIQ)
      {
 	int                 v1, v2, v3, v4, difx;
