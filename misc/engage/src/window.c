@@ -157,7 +157,10 @@ od_window_init()
   ecore_evas_name_class_set(ee, "engage", "engage");
   ecore_evas_borderless_set(ee, 1);
   if (options.mode == OM_ONTOP)
-    ecore_evas_shaped_set(ee, 1);
+     {
+	ecore_evas_avoid_damage_set(ee, 1);
+	ecore_evas_shaped_set(ee, 1);
+     }
   else
     ecore_evas_shaped_set(ee, 0);
   ecore_evas_callback_post_render_set(ee, handle_post_render_cb);

@@ -33,7 +33,7 @@ od_config_init(void)
                           "The overall width of the application area");
   ecore_config_int_create("engage.options.height", 100, 'H', "height",
                           "The overall height of the application area");
-  ecore_config_theme_create("engage.options.theme", "gentoo", 't', "theme",
+  ecore_config_theme_create("engage.options.theme", "creepy_engage", 't', "theme",
                             "The theme name to use (minus path and extension)");
   /* not technically correct - iconsets should do this, but it looks better for
    * everything bar 'gentoo' - and we all have the others installed ;) */
