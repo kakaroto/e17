@@ -36,7 +36,7 @@
 #include "parseconfig.h"
 #include "pwc-ioctl.h"
 
-#define VERSION "1.8"
+#define VERSION "1.9"
 
 void camlog(char *fmt,
          ...);
@@ -1584,8 +1584,8 @@ main(int argc,
 
 	/* Set new values for width and height, else the image's 
 	   text might not show up in the correct position. */
-	width = crop_width;
-	height = crop_height;
+	width = scale_width;
+	height = scale_height;
       }
 
       camlog("** shot taken\n");
