@@ -52,16 +52,16 @@ struct Ewl_Window
 
 Ewl_Widget     *ewl_window_new(void);
 int             ewl_window_init(Ewl_Window * win);
-Ewl_Window     *ewl_window_find_window(void *window);
-void            ewl_window_set_title(Ewl_Window * win, char *title);
-char           *ewl_window_get_title(Ewl_Window * win);
-void            ewl_window_set_name(Ewl_Window * win, char *name);
-char           *ewl_window_get_name(Ewl_Window * win);
-void            ewl_window_set_class(Ewl_Window * win, char *classname);
-char           *ewl_window_get_class(Ewl_Window * win);
-void            ewl_window_set_borderless(Ewl_Window * win);
+Ewl_Window     *ewl_window_window_find(void *window);
+void            ewl_window_title_set(Ewl_Window * win, char *title);
+char           *ewl_window_title_get(Ewl_Window * win);
+void            ewl_window_name_set(Ewl_Window * win, char *name);
+char           *ewl_window_name_get(Ewl_Window * win);
+void            ewl_window_class_set(Ewl_Window * win, char *classname);
+char           *ewl_window_class_get(Ewl_Window * win);
+void            ewl_window_borderless_set(Ewl_Window * win);
 void            ewl_window_move(Ewl_Window * win, int x, int y);
-void            ewl_window_get_position(Ewl_Window * win, int *x, int *y);
+void            ewl_window_position_get(Ewl_Window * win, int *x, int *y);
 
 /*
  * Internally used callbacks, override at your own risk.

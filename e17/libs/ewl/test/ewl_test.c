@@ -125,10 +125,10 @@ main(int argc, char **argv)
 	printf("HEAP SIZE:\t%u bytes\n", heap_end - heap_start);
 
 	main_win = ewl_window_new();
-	ewl_window_set_title(EWL_WINDOW(main_win),
+	ewl_window_title_set(EWL_WINDOW(main_win),
 			     "The Enlightenment Widget Library");
-	ewl_window_set_name(EWL_WINDOW(main_win), "EWL Test Application");
-	ewl_window_set_class(EWL_WINDOW(main_win), "EFL Test Application");
+	ewl_window_name_set(EWL_WINDOW(main_win), "EWL Test Application");
+	ewl_window_class_set(EWL_WINDOW(main_win), "EFL Test Application");
 	ewl_callback_append(main_win, EWL_CALLBACK_DELETE_WINDOW,
 			    __close_main_window, NULL);
 	ewl_callback_append(main_win, EWL_CALLBACK_REALIZE,

@@ -128,9 +128,9 @@ void open_cb(Ewl_Widget *w, void *event, void *data ) {
     }
 
     fd_win = ewl_window_new();
-    ewl_window_set_title(EWL_WINDOW(fd_win), "EWL Media Open");
-    ewl_window_set_class(EWL_WINDOW(fd_win), "EWL_Media_Open");
-    ewl_window_set_name(EWL_WINDOW(fd_win), "EWL_Media_Open");
+    ewl_window_title_set(EWL_WINDOW(fd_win), "EWL Media Open");
+    ewl_window_class_set(EWL_WINDOW(fd_win), "EWL_Media_Open");
+    ewl_window_name_set(EWL_WINDOW(fd_win), "EWL_Media_Open");
     ewl_callback_append(fd_win, EWL_CALLBACK_DELETE_WINDOW, 
 				    fd_win_del_cb, NULL);
     ewl_widget_show(fd_win);
@@ -173,9 +173,9 @@ int main(int argc, char ** argv) {
 	file = argv[1];
 
     win = ewl_window_new();
-    ewl_window_set_title(EWL_WINDOW(win), "EWL Media test");
-    ewl_window_set_name(EWL_WINDOW(win), "EWL_Media_test");
-    ewl_window_set_class(EWL_WINDOW(win), "EWL_Media_test");
+    ewl_window_title_set(EWL_WINDOW(win), "EWL Media test");
+    ewl_window_name_set(EWL_WINDOW(win), "EWL_Media_test");
+    ewl_window_class_set(EWL_WINDOW(win), "EWL_Media_test");
     ewl_callback_append(win, EWL_CALLBACK_DELETE_WINDOW, del_cb, NULL);
     ewl_callback_append(win, EWL_CALLBACK_KEY_UP, key_up_cb, NULL);
     ewl_object_size_request(EWL_OBJECT(win), 320, 280);

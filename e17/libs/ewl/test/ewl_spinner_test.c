@@ -52,7 +52,7 @@ __spinner_window_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	int             xx, yy, ww, hh;
 
-	ewl_window_get_position(EWL_WINDOW(tmp_win), &xx, &yy);
+	ewl_window_position_get(EWL_WINDOW(tmp_win), &xx, &yy);
 	ewl_object_current_size_get(EWL_OBJECT(tmp_win), &ww, &hh);
 
 	ewl_callback_del(spinner[0], EWL_CALLBACK_VALUE_CHANGED,
@@ -99,9 +99,9 @@ __create_spinner_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	spinner_button = w;
 
 	spinner_win = ewl_window_new();
-	ewl_window_set_title(EWL_WINDOW(spinner_win), "STest");
-	ewl_window_set_name(EWL_WINDOW(spinner_win), "EWL Test Application");
-	ewl_window_set_class(EWL_WINDOW(spinner_win), "EFL Test Application");
+	ewl_window_title_set(EWL_WINDOW(spinner_win), "STest");
+	ewl_window_name_set(EWL_WINDOW(spinner_win), "EWL Test Application");
+	ewl_window_class_set(EWL_WINDOW(spinner_win), "EFL Test Application");
 	ewl_callback_append(spinner_win, EWL_CALLBACK_DELETE_WINDOW,
 			    __destroy_spinner_test_window, NULL);
 	ewl_widget_show(spinner_win);
@@ -118,7 +118,7 @@ __create_spinner_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	ewl_callback_append(tmp_win, EWL_CALLBACK_CONFIGURE,
 			    __spinner_window_configure, NULL);
 	ewl_widget_show(tmp_win);
-	ewl_window_set_borderless(EWL_WINDOW(tmp_win));
+	ewl_window_borderless_set(EWL_WINDOW(tmp_win));
 
 	/*
 	 * Grab the current coordinates of the window we will manipulate.

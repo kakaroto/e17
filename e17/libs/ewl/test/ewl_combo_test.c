@@ -54,9 +54,9 @@ __create_combo_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	combo_button = w;
 
 	combo_win = ewl_window_new();
-	ewl_window_set_title(EWL_WINDOW(combo_win), "Combo Test");
-	ewl_window_set_name(EWL_WINDOW(combo_win), "EWL Test Application");
-	ewl_window_set_class(EWL_WINDOW(combo_win), "EFL Test Application");
+	ewl_window_title_set(EWL_WINDOW(combo_win), "Combo Test");
+	ewl_window_name_set(EWL_WINDOW(combo_win), "EWL Test Application");
+	ewl_window_class_set(EWL_WINDOW(combo_win), "EFL Test Application");
 	ewl_callback_append(combo_win, EWL_CALLBACK_DELETE_WINDOW,
 			    __destroy_combo_test_window, NULL);
 	ewl_widget_show(combo_win);

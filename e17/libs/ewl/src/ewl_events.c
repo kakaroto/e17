@@ -180,7 +180,7 @@ int ewl_ev_x_window_configure(void *data, int type, void *e)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	ev = e;
 
-	window = ewl_window_find_window((void *)ev->win);
+	window = ewl_window_window_find((void *)ev->win);
 	if (!window)
 		DRETURN_INT(TRUE, DLEVEL_STABLE);
 
@@ -221,7 +221,7 @@ int ewl_ev_x_window_delete(void *data, int type, void *e)
 
 	ev = e;
 
-	window = ewl_window_find_window((void *)ev->win);
+	window = ewl_window_window_find((void *)ev->win);
 	if (!window)
 		DRETURN_INT(TRUE, DLEVEL_STABLE);
 

@@ -39,9 +39,9 @@ __create_tree_test_window(Ewl_Widget * w, void *ev_data,
 
 	tree_win = ewl_window_new();
 	ewl_object_fill_policy_set(EWL_OBJECT(tree_win), EWL_FLAG_FILL_SHRINK);
-	ewl_window_set_title(EWL_WINDOW(tree_win), "Tree Test");
-	ewl_window_set_name(EWL_WINDOW(tree_win), "EWL Test Application");
-	ewl_window_set_class(EWL_WINDOW(tree_win), "EFL Test Application");
+	ewl_window_title_set(EWL_WINDOW(tree_win), "Tree Test");
+	ewl_window_name_set(EWL_WINDOW(tree_win), "EWL Test Application");
+	ewl_window_class_set(EWL_WINDOW(tree_win), "EFL Test Application");
 	/* ewl_object_set_maximum_size(EWL_OBJECT(tree_win), 400, 400); */
 	ewl_object_size_request(EWL_OBJECT(tree_win), 400, 200);
 	ewl_callback_append(tree_win, EWL_CALLBACK_DELETE_WINDOW,

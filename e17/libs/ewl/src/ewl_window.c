@@ -27,7 +27,7 @@ Ecore_List *ewl_window_list = NULL;
  * @return Returns a new window on success, or NULL on failure.
  * @brief Allocate and initialize a new window
  */
-Ewl_Widget     *ewl_window_new()
+Ewl_Widget *ewl_window_new()
 {
 	Ewl_Window     *w;
 
@@ -50,7 +50,7 @@ Ewl_Widget     *ewl_window_new()
  * @return Returns the found ewl window on success, NULL on failure.
  * @brief Find an ewl window by it's X window
  */
-Ewl_Window     *ewl_window_find_window(void *window)
+Ewl_Window *ewl_window_window_find(void *window)
 {
 	Ewl_Window     *retwin;
 
@@ -75,7 +75,7 @@ Ewl_Window     *ewl_window_find_window(void *window)
  * Sets the title of window @a w to @a title and calls the necessary X lib
  * functions to update the window.
  */
-void ewl_window_set_title(Ewl_Window * win, char *title)
+void ewl_window_title_set(Ewl_Window * win, char *title)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("win", win);
@@ -106,7 +106,7 @@ void ewl_window_set_title(Ewl_Window * win, char *title)
  *
  * The returned title should be freed.
  */
-char           *ewl_window_get_title(Ewl_Window * win)
+char *ewl_window_title_get(Ewl_Window * win)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("win", win, NULL);
@@ -123,7 +123,7 @@ char           *ewl_window_get_title(Ewl_Window * win)
  * Sets the name of window @a w to @a name and calls the necessary X lib
  * functions to update the window.
  */
-void ewl_window_set_name(Ewl_Window * win, char *name)
+void ewl_window_name_set(Ewl_Window * win, char *name)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("win", win);
@@ -155,7 +155,7 @@ void ewl_window_set_name(Ewl_Window * win, char *name)
  *
  * The returned name should be freed.
  */
-char           *ewl_window_get_name(Ewl_Window * win)
+char *ewl_window_name_get(Ewl_Window * win)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("win", win, NULL);
@@ -172,7 +172,7 @@ char           *ewl_window_get_name(Ewl_Window * win)
  * Sets the class of window @a w to @a class and calls the necessary X lib
  * functions to update the window.
  */
-void ewl_window_set_class(Ewl_Window * win, char *classname)
+void ewl_window_class_set(Ewl_Window * win, char *classname)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("win", win);
@@ -204,7 +204,7 @@ void ewl_window_set_class(Ewl_Window * win, char *classname)
  *
  * The returned class should be freed.
  */
-char           *ewl_window_get_class(Ewl_Window * win)
+char *ewl_window_class_get(Ewl_Window * win)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET("win", win, NULL);
@@ -220,7 +220,7 @@ char           *ewl_window_get_class(Ewl_Window * win)
  * Remove the border from the specified widget and call the
  * necessary X lib functions to update the appearance.
  */
-void ewl_window_set_borderless(Ewl_Window * win)
+void ewl_window_borderless_set(Ewl_Window * win)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("win", win);
@@ -270,7 +270,7 @@ void ewl_window_move(Ewl_Window * win, int x, int y)
  *
  * Stores the window position into the parameters @a x and @a y.
  */
-void ewl_window_get_position(Ewl_Window * win, int *x, int *y)
+void ewl_window_position_get(Ewl_Window * win, int *x, int *y)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR("win", win);

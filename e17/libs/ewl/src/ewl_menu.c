@@ -50,7 +50,7 @@ void ewl_menu_init(Ewl_Menu * menu, char *image, char *title)
 	 * Create the popup menu portion of the widget.
 	 */
 	menu->base.popup = ewl_window_new();
-	ewl_window_set_borderless(EWL_WINDOW(menu->base.popup));
+	ewl_window_borderless_set(EWL_WINDOW(menu->base.popup));
 	ewl_widget_internal_set(menu->base.popup, TRUE);
 	ewl_widget_layer_set(menu->base.popup, 1000);
 	ewl_widget_appearance_set(EWL_WIDGET(menu->base.popup), "menu");
@@ -75,7 +75,7 @@ void ewl_menu_configure_cb(Ewl_Widget *w, void *ev_data, void *user_data)
 	emb = ewl_embed_find_by_widget(w);
 
 	if (ewl_widget_type_is(EWL_WIDGET(emb), "window"))
-		ewl_window_get_position(EWL_WINDOW(emb), &x, &y);
+		ewl_window_position_get(EWL_WINDOW(emb), &x, &y);
 	else {
 		x = CURRENT_X(w);
 		y = CURRENT_Y(w);

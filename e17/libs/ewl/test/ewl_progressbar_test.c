@@ -138,9 +138,9 @@ void __create_progressbar_test_window(Ewl_Widget * w, void *ev_data, void *user_
 	progressbar_button = w;
 
 	progressbar_win = ewl_window_new();
-	ewl_window_set_title(EWL_WINDOW(progressbar_win), "Progressbar Test");
-	ewl_window_set_name(EWL_WINDOW(progressbar_win), "EWL Test Application");
-	ewl_window_set_class(EWL_WINDOW(progressbar_win), "EFL Test Application");
+	ewl_window_title_set(EWL_WINDOW(progressbar_win), "Progressbar Test");
+	ewl_window_name_set(EWL_WINDOW(progressbar_win), "EWL Test Application");
+	ewl_window_class_set(EWL_WINDOW(progressbar_win), "EFL Test Application");
 	ewl_object_size_request(EWL_OBJECT(progressbar_win), 300, 20);
 	ewl_callback_append(progressbar_win, EWL_CALLBACK_DELETE_WINDOW,
 			__destroy_progressbar_test_window, NULL);

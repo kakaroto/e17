@@ -42,9 +42,9 @@ __create_colorpicker_test_window(Ewl_Widget * w, void *ev_data, void *user_data)
 	colorpicker_button = w;
 
 	colorpicker_win = ewl_window_new();
-	ewl_window_set_title(EWL_WINDOW(colorpicker_win), "Color Picker Test");
-	ewl_window_set_name(EWL_WINDOW(colorpicker_win), "EWL Test Application");
-	ewl_window_set_class(EWL_WINDOW(colorpicker_win), "EFL Test Application");
+	ewl_window_title_set(EWL_WINDOW(colorpicker_win), "Color Picker Test");
+	ewl_window_name_set(EWL_WINDOW(colorpicker_win), "EWL Test Application");
+	ewl_window_class_set(EWL_WINDOW(colorpicker_win), "EFL Test Application");
 	ewl_callback_append(colorpicker_win, EWL_CALLBACK_DELETE_WINDOW,
 			    __destroy_colorpicker_test_window, NULL);
 	ewl_widget_show(colorpicker_win);

@@ -37,9 +37,9 @@ int main(int argc, char ** argv) {
 
     win = ewl_window_new();
     ewl_callback_append(win, EWL_CALLBACK_DELETE_WINDOW, win_del_cb, NULL);
-    ewl_window_set_title(EWL_WINDOW(win), "EWL EDB ed");
-    ewl_window_set_class(EWL_WINDOW(win), "EWL_EDB_ed");
-    ewl_window_set_name(EWL_WINDOW(win), "EWL_EDB_ed");
+    ewl_window_title_set(EWL_WINDOW(win), "EWL EDB ed");
+    ewl_window_class_set(EWL_WINDOW(win), "EWL_EDB_ed");
+    ewl_window_name_set(EWL_WINDOW(win), "EWL_EDB_ed");
     ewl_object_size_request(EWL_OBJECT(win), 400, 300);
     ewl_widget_show(win);
 
@@ -283,9 +283,9 @@ void open_cb(Ewl_Widget *w, void *event, void *data) {
 	Ewl_Widget *fd_win = NULL, *fd = NULL;
 
 	fd_win = ewl_window_new();
-	ewl_window_set_title(EWL_WINDOW(fd_win), "EWL EDB ed open");
-	ewl_window_set_class(EWL_WINDOW(fd_win), "EWL_EDB_ed_open");
-	ewl_window_set_name(EWL_WINDOW(fd_win), "EWL_EDB_ed_open");
+	ewl_window_title_set(EWL_WINDOW(fd_win), "EWL EDB ed open");
+	ewl_window_class_set(EWL_WINDOW(fd_win), "EWL_EDB_ed_open");
+	ewl_window_name_set(EWL_WINDOW(fd_win), "EWL_EDB_ed_open");
 	ewl_callback_append(fd_win, EWL_CALLBACK_DELETE_WINDOW, fd_win_del_cb, fd_win);
 	ewl_widget_show(fd_win);
 

@@ -35,9 +35,9 @@ __create_filedialog_test_window(Ewl_Widget * w, void *ev_data,
 	fd_button = w;
 
 	fd_win = ewl_window_new();
-	ewl_window_set_title(EWL_WINDOW(fd_win), "File Dialog Test");
-	ewl_window_set_name(EWL_WINDOW(fd_win), "EWL Test Application");
-	ewl_window_set_class(EWL_WINDOW(fd_win), "EFL Test Application");
+	ewl_window_title_set(EWL_WINDOW(fd_win), "File Dialog Test");
+	ewl_window_name_set(EWL_WINDOW(fd_win), "EWL Test Application");
+	ewl_window_class_set(EWL_WINDOW(fd_win), "EFL Test Application");
 	ewl_object_size_request(EWL_OBJECT(fd_win), 500, 400);
 	ewl_object_fill_policy_set(EWL_OBJECT(fd_win), EWL_FLAG_FILL_FILL |
 			EWL_FLAG_FILL_SHRINK);
