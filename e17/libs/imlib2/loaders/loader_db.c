@@ -27,6 +27,7 @@ void formats (ImlibLoader *l);
 #include <db.h>
 #include <unistd.h>
 #include <sys/stat.h>
+#include <zlib.h>
 
 static int
 permissions(char *file)
@@ -68,7 +69,7 @@ char
 load (ImlibImage *im, ImlibProgressFunction progress,
       char progress_granularity, char immediate_load)
 {
-   int                  w, h, alpha;
+   int                  w, h, alpha, compression;
    DBM                 *db;
    char                 file[4096], key[4096], *ptr;
    datum                dkey, ret;
@@ -138,7 +139,7 @@ load (ImlibImage *im, ImlibProgressFunction progress,
 		SWAP32(header[i]);
 	  }
 #endif
-	if (header[0] != (int)0xac1dfeed)
+	if (header[0] != 0xac1dfeed)
 	  {
 	     dbm_close(db);
 	     return 0;
@@ -146,12 +147,13 @@ load (ImlibImage *im, ImlibProgressFunction progress,
 	w = header[1];
 	h = header[2];
 	alpha = header[3];
+	compression = header[4];
 	if ((w > 8192) || (h > 8192))
 	  {
 	     dbm_close(db);
 	     return 0;
 	  }
-	if (ret.dsize < ((w * h * 4) + 32))
+	if ((compression == 0) && (ret.dsize < ((w * h * 4) + 32)))
 	  {
 	     dbm_close(db);
 	     return 0;
@@ -181,40 +183,56 @@ load (ImlibImage *im, ImlibProgressFunction progress,
 	     dbm_close(db);
 	     return 0;
 	  }
-	for (y = 0; y < h; y++)
+	if (!compression)
 	  {
+	     for (y = 0; y < h; y++)
+	       {
 #ifdef WORDS_BIGENDIAN
-	       {
-		  int x;
-		  
-		  memcpy(ptr, &(body[y * w]), im->w * sizeof(DATA32));
-		  for (x = 0; x < im->w; x++)
-		     SWAP32(ptr[x]);
-	       }
-#else
-	     memcpy(ptr, &(body[y * w]), im->w * sizeof(DATA32));
-#endif	     
-	     ptr += im->w;
-	     if (progress)
-	       {
-		  char per;
-		  int l;
-		  
-		  per = (char)((100 * y) / im->h);
-		  if (((per - pper) >= progress_granularity) ||
-		      (y == (im->h - 1)))
 		    {
-		       l = y - pl;
-                       if(!progress(im, per, 0, (y - l), im->w, l))
-			 {
-			    dbm_close(db);
-			    return 2;
-			 }
-		       pper = per;
-		       pl = y;
+		       int x;
+		       
+		       memcpy(ptr, &(body[y * w]), im->w * sizeof(DATA32));
+		       for (x = 0; x < im->w; x++)
+			  SWAP32(ptr[x]);
 		    }
-	       }
-	  }	   
+#else
+		  memcpy(ptr, &(body[y * w]), im->w * sizeof(DATA32));
+#endif	     
+		  ptr += im->w;
+		  if (progress)
+		    {
+		       char per;
+		       int l;
+		       
+		       per = (char)((100 * y) / im->h);
+		       if (((per - pper) >= progress_granularity) ||
+			   (y == (im->h - 1)))
+			 {
+			    l = y - pl;
+			    if(!progress(im, per, 0, (y - l), im->w, l))
+			      {
+				 dbm_close(db);
+				 return 2;
+			      }
+			    pper = per;
+			    pl = y;
+			 }
+		    }
+	       }	   
+	  }
+	else
+	  {
+	     int dlen;
+	     
+	     dlen = w * h * sizeof(DATA32);
+	     uncompress(im->data, &dlen, body, ret.dsize - 32);
+#ifdef WORDS_BIGENDIAN
+	     for (x = 0; x < (im->w * im->h); x++)
+		SWAP32(im->data[x]);
+#endif			
+	     if (progress)
+		progress(im, 100, 0, 0, im->w, im->h);	     
+	  }
      }
    dbm_close(db);
    return 1;
@@ -230,6 +248,8 @@ save (ImlibImage *im, ImlibProgressFunction progress,
    datum                dkey, ret;
    DATA32             *buf;
    DBM                 *db;
+   int                  compression = 0;
+   
    
    
    /* no image data? abort */
@@ -282,19 +302,87 @@ save (ImlibImage *im, ImlibProgressFunction progress,
    dkey.dptr = key;
    dkey.dsize = strlen(key);
    
-   buf = (DATA32 *) malloc(((im->w * im->h) + 8) * sizeof(DATA32));   
+   /* account for space for xompression */
+   buf = (DATA32 *) malloc((((im->w * im->h * 101) / 100) + 3 + 8) * sizeof(DATA32));   
    header = buf;
    header[0] = 0xac1dfeed;
    header[1] = im->w;
    header[2] = im->h;
    header[3] = alpha;
-   header[4] = 0;
-   memcpy(&(buf[8]), im->data, im->w * im->h * sizeof(DATA32));
+     {
+	ImlibImageTag      *tag;
+	
+	tag = __imlib_GetTag(im, "compression");
+	if (!tag)
+	   header[4] = 0;
+	else
+	  {
+	     compression = tag->val;
+	     if (compression < 0)
+		compression = 0;
+	     else if (compression > 9)
+		compression = 9;
+	     header[4] = compression;
+	  }
+     }
+   if (compression > 0)
+     {
+	DATA32 *compressed;
+	int retr;
+	int buflen;
+	
+	compressed = &(buf[8]);
+	buflen = ((im->w * im->h * sizeof(DATA32) * 101) / 100) + 12;
 #ifdef WORDS_BIGENDIAN
-   for (y = 0; y < (im->w * im->h) + 8; y++)
-      SWAP32(buf[y]);
+	  {
+	     DATA32 *buf2;
+	     
+	     buf2 = malloc((((im->w * im->h * 101) / 100) + 3) * sizeof(DATA32));
+	     if (buf2)
+	       {
+		  int y;
+		  
+		  memcpy(buf2, im->data, im->w * im->h * sizeof(DATA32));
+		  for (y = 0; y < (im->w * im->h) + 8; y++)
+		     SWAP32(buf2[y]);
+		  retr = compress2(compressed, &buflen, buf2, 
+				   im->w * im->h * sizeof(DATA32), compression);
+		  free(buf2);
+	       }
+	     else
+		retr = Z_MEM_ERROR;
+	  }
+#else
+	retr = compress2(compressed, &buflen, im->data, 
+			 im->w * im->h * sizeof(DATA32), compression);
 #endif
-   ret.dsize = ((im->w * im->h) + 8) * sizeof(DATA32);
+	if (retr != Z_OK)
+	   compressed = 0;
+	else
+	  {
+	     if (buflen >= (im->w * im->h * sizeof(DATA32)))
+		compressed = 0;
+	     else
+		ret.dsize = (8 * sizeof(DATA32)) + buflen;
+	  }
+     }
+   if (compression == 0)
+     {
+	memcpy(&(buf[8]), im->data, im->w * im->h * sizeof(DATA32));
+	header[4] = compression;
+#ifdef WORDS_BIGENDIAN
+	for (y = 0; y < (im->w * im->h) + 8; y++)
+	   SWAP32(buf[y]);
+#endif
+	ret.dsize = ((im->w * im->h) + 8) * sizeof(DATA32);
+     }
+#ifdef WORDS_BIGENDIAN
+   else
+     {
+	for (y = 0; y < 8; y++)
+	   SWAP32(buf2[y]);
+     }
+#endif
    ret.dptr = buf;
    dbm_store(db, dkey, ret, DBM_REPLACE);
    free(buf);

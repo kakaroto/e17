@@ -52,4 +52,4 @@ tga_la_LIBADD	     =
 
 db_la_SOURCES       = loader_db.c
 db_la_LDFLAGS	    = -no-undefined -module -avoid-version
-db_la_LIBADD	    = -ldb
+db_la_LIBADD	    = -ldb -lz
