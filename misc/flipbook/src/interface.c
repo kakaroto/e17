@@ -652,7 +652,7 @@ GtkWidget *
 		hbox = gtk_hbox_new(FALSE,0);
 		gtk_widget_show(hbox);
 		gtk_container_add(GTK_CONTAINER(radiobutton1), hbox);
-		entry = gtk_entry_new_with_max_length(3);
+		entry = gtk_entry_new();
 		gtk_widget_show(entry);
 		gtk_box_pack_start(GTK_BOX(hbox), entry, FALSE, FALSE, 0);
 		label = gtk_label_new("% of system memory");
@@ -671,8 +671,28 @@ GtkWidget *
 					 (GtkAttachOptions) (!GTK_EXPAND | !GTK_SHRINK | GTK_FILL),
 					 (GtkAttachOptions) (0), 0, 0);
 
+	{
+		GtkWidget *label;
+		GtkWidget *entry;
+		GtkWidget *hbox;
+
+		radiobutton2 = gtk_radio_button_new(alignment1_group);
+		hbox = gtk_hbox_new(FALSE,0);
+		gtk_widget_show(hbox);
+		gtk_container_add(GTK_CONTAINER(radiobutton2), hbox);
+		entry = gtk_entry_new();
+		gtk_widget_show(entry);
+		gtk_box_pack_start(GTK_BOX(hbox), entry, FALSE, FALSE, 0);
+		label = gtk_label_new("Megabytes of system memory");
+		gtk_widget_show(label);
+		gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
+
+	}
+
+	/*
 	radiobutton2 = gtk_radio_button_new_with_label(alignment1_group,
 		   	"## Megabytes of system memory");
+			*/
 	alignment1_group = gtk_radio_button_group(GTK_RADIO_BUTTON(radiobutton2));
 	gtk_widget_show(radiobutton2);
 	gtk_table_attach(GTK_TABLE(table2), radiobutton2, 1, 2, 1, 2,
