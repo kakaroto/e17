@@ -1,6 +1,6 @@
 # Note that this is NOT a relocatable package
 %define ver      @VERSION@
-%define rel      1
+%define rel      2
 %define prefix   @prefix@
 
 Summary: Powerful image loading and rendering library for X11R6
@@ -120,7 +120,7 @@ rm -rf $RPM_BUILD_ROOT
 %doc README COPYING ChangeLog TODO
 %attr(755,root,root) %{prefix}/lib/lib*.so.*
 %attr(755,root,root) %{prefix}/lib/loaders
-%{prefix}/bin/imlib2_view
+%{prefix}/bin/*
 
 %files devel
 %defattr(-,root,root)
@@ -132,6 +132,9 @@ rm -rf $RPM_BUILD_ROOT
 #%defattr(-,root,root)
 
 %changelog
+* Wed Aug 30 2000 Lyle Kempler <kempler@utdallas.edu>
+- Include imlib2-config
+
 * Sat May 20 2000 Lyle Kempler <kempler@utdallas.edu>
 - Fixed problems with requiring imlib2_view
 - Went back to imlib2_view (not imlib2-view)
