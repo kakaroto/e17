@@ -27,8 +27,9 @@ build:
 clean:
 	dh_testdir
 	dh_testroot
-	test -f Makefile && $(MAKE) clean
-	dh_clean *.old
+	-$(MAKE) clean
+	-$(MAKE) distclean
+	dh_clean *.old debian/install debian/build
 
 install: SHELL = DH_OPTIONS="-A" $(sh)
 install: build
