@@ -1145,7 +1145,10 @@ _engage_icon_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_in
    if (ev->button == 1)
      {
 	if (ic->min)
-	  e_border_uniconify(ic->border);
+	  {
+	     e_border_uniconify(ic->border);
+	     e_border_raise(ic->border);
+	  }
 	else
 	  {
 	     edje_object_signal_emit(ic->bg_object, "start", "");
