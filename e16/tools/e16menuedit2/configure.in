@@ -29,6 +29,8 @@ AC_PATH_PROG(SCROLLKEEPER,scrollkeeper-config,no)
 AM_CONDITIONAL(SK, "$SCROLLKEEPER" 2&>/dev/null != no)
 AC_SUBST(SK)
 
+AC_PATH_PROG(YELP,yelp,no)
+
 dnl Set PACKAGE_LOCALE_DIR in config.h.
 if test "x${prefix}" = "xNONE"; then
   AC_DEFINE_UNQUOTED(PACKAGE_LOCALE_DIR, "${ac_default_prefix}/${DATADIRNAME}/locale","")
@@ -85,7 +87,8 @@ AC_DEFINE_UNQUOTED(PACKAGE_DOC_DIR, "${packageprefix}/${packagedocdir}","")
 AC_DEFINE_UNQUOTED(PACKAGE_PIXMAPS_DIR, "${packageprefix}/${packagepixmapsdir}","")
 AC_DEFINE_UNQUOTED(SYSTEM_PIXMAPS_DIR, "${packageprefix}/${systempixmapsdir}","")
 AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}","")
-
+AC_DEFINE_UNQUOTED(SCROLLKEEPER, "${SCROLLKEEPER}","")
+AC_DEFINE_UNQUOTED(YELP, "${YELP}","")
 
 AC_OUTPUT([
 Makefile
@@ -94,5 +97,6 @@ pixmaps/Makefile
 po/Makefile.in
 help/Makefile
 help/C/Makefile
+help/C/figures/Makefile
 ])
 
