@@ -402,6 +402,7 @@ feh_http_load_image(char *url)
       if (!(hptr = feh_gethostbyname(hostname)))
       {
          weprintf("error resolving host %s:", hostname);
+         free(hostname);
          free(tmpname);
          D_RETURN(4, NULL);
       }
@@ -417,12 +418,14 @@ feh_http_load_image(char *url)
       {
          weprintf("error opening socket:");
          free(tmpname);
+         free(hostname);
          D_RETURN(4, NULL);
       }
       if (connect(sockno, (struct sockaddr *) &addr, sizeof(addr)) == -1)
       {
          weprintf("error connecting socket:");
          free(tmpname);
+         free(hostname);
          D_RETURN(4, NULL);
       }
 
@@ -455,12 +458,14 @@ feh_http_load_image(char *url)
          free(host_string);
          free(query_string);
          free(tmpname);
+         free(hostname);
          weprintf("error sending over socket:");
          D_RETURN(4, NULL);
       }
       free(get_string);
       free(host_string);
       free(query_string);
+      free(hostname);
 
       while ((size = read(sockno, &buf, OUR_BUF_SIZE)))
       {
@@ -643,8 +648,8 @@ feh_strip_hostname(char *url)
 
    ret = emalloc(len + 1);
    strncpy(ret, start, len);
+   ret[len] = '\0';
    D_RETURN(3, ret);
-
 }
 
 void
