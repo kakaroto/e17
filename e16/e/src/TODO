@@ -3,7 +3,6 @@ raster:         need to investigate "The icons in the iconbox have garbage three
 cK:		keeping the groups file in sync with the existing groups that need to be remembered. I'm sure there are bugs in that.
 cK		hammering on this whole raise/lower/raiselower stuff in groups.
 mandrake: expose events in the dialog boxes aren't handled right.
-mandrake: need a "first time you ran enlightenment" feature to pop up Help and generate the initial menus using e_gen_menu
 
 FEATURES FOR DR 0.17:
 kainx: 		reduce need for tooltip text to have auto gened tooltips work

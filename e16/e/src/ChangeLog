@@ -2651,3 +2651,12 @@ Fri Oct  1 12:52:19 PDT 1999
 (Mandrake)
 
 fixed the bug in dox, removed from TODO list.
+
+-------------------------------------------------------------------------------
+
+Fri Oct  1 13:35:50 PDT 1999
+(Mandrake)
+
+wrote some code for "first time initialization" cruft.
+should generate the user menus in ~/.enlightenment, as well as run dox for the
+first time.

@@ -2,7 +2,7 @@
 #include "E.h"
 #include <X11/keysym.h>
 
-void
+void 
 MapUnmap(int start)
 {
    /* this function will map and unmap all the windows based on the progress
@@ -82,7 +82,7 @@ MapUnmap(int start)
    EDBUG_RETURN_;
 }
 
-void
+void 
 SetupSignals()
 {
 
@@ -165,7 +165,7 @@ SetupSignals()
    EDBUG_RETURN_;
 }
 
-void
+void 
 SetupX()
 {
 
@@ -583,7 +583,7 @@ SetupX()
    EDBUG_RETURN_;
 }
 
-void
+void 
 SetupDirs()
 {
    char                s[1024], ss[1024];
@@ -625,7 +625,7 @@ SetupDirs()
    EDBUG_RETURN_;
 }
 
-void
+void 
 SetupEnv()
 {
    char                s[1024];
@@ -829,4 +829,40 @@ MakeExtInitWin(void)
  * }
  * } */
    exit(0);
+}
+
+void 
+SetupUserInitialization()
+{
+
+   FILE               *f;
+   char                file[FILEPATH_LEN_MAX];
+
+   EDBUG(3, "SetupUserInitialization");
+
+   Esnprintf(file, sizeof(file), "%s/.initialized", UserEDir());
+   if (isfile(file))
+     {
+	mode.firsttime = 0;
+     }
+   else
+     {
+	mode.firsttime = 1;
+	f = fopen(file, "w");
+	fprintf(f, "Congradulations, you have run enlightenment before.\n");
+	fprintf(f, "Removing this file and *.menu in this directory\n");
+	fprintf(f, "will cause enlightenment to regenerate them, as\n");
+	fprintf(f, "run the documentation browser\n");
+	fclose(f);
+	if (fork())
+	   EDBUG_RETURN_;
+	Esnprintf(file, sizeof(file), "exec %s/e_gen_menu", ENLIGHTENMENT_BIN);
+	execl(usershell(getuid()), usershell(getuid()), "-c",
+	      (char *)file, NULL);
+	exit(0);
+
+     }
+
+   EDBUG_RETURN_;
+
 }

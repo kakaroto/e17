@@ -1,6 +1,23 @@
 #include "E.h"
 #include "timestamp.h"
 
+static void 
+runDocBrowser(void)
+{
+
+   char                file[FILEPATH_LEN_MAX];
+
+   if (fork())
+      EDBUG_RETURN_;
+
+   Esnprintf(file, sizeof(file), "exec %s/dox %s/E-docs",
+	     ENLIGHTENMENT_BIN, ENLIGHTENMENT_ROOT);
+   execl(usershell(getuid()), usershell(getuid()), "-c",
+	 (char *)file, NULL);
+   exit(0);
+
+}
+
 int
 main(int argc, char **argv)
 {
@@ -177,6 +194,7 @@ main(int argc, char **argv)
    CommsSetup();
    CommsFindCommsWindow();
    GrabX();
+   SetupUserInitialization();
    LoadGroups();
    LoadSnapInfo();
    MapUnmap(0);
@@ -338,6 +356,10 @@ main(int argc, char **argv)
 		"Unless someone helps there is no time to fix this so start\n"
 		  "modifying your themes now if they use Color Modifiers\n"
 	   );
+     }
+   if (mode.firsttime)
+     {
+	runDocBrowser();
      }
 
    /* The primary event loop */

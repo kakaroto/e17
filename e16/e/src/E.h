@@ -1194,6 +1194,7 @@ typedef struct _emode
      int                 kde_support;
      char                clickalways;
      char                keybinds_changed;
+     char                firsttime;
   }
 EMode;
 
@@ -1715,6 +1716,7 @@ void                SetupX(void);
 void                SetupDirs(void);
 void                SetupEnv(void);
 Window              MakeExtInitWin(void);
+void                SetupUserInitialization(void);
 
 void                HandleSigHup(int num);
 void                HandleSigInt(int num);
