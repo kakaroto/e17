@@ -78,7 +78,7 @@ imlib_render_str(ImlibImage * im, ImlibFont * fn, int drx, int dry,
    DATA32             *data, col;
    int                 nx, ny, tmp;
 
-   imlib_font_query_size(fn, text, &w, &h);
+   imlib_font_query_advance(fn, text, &w, &h);
 
    data = malloc(w * h * sizeof(DATA32));
    if (!data)
