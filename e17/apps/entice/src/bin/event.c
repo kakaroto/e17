@@ -361,7 +361,7 @@ e_property(Ecore_Event * ev)
 		       }
 		     im->modified = 0;
 		     im->o_thumb = evas_object_rectangle_add(evas);
-		     evas_object_image_file_set(evas, IM "thumb.png", NULL);
+		     evas_object_image_file_set(im->o_thumb, IM "thumb.png", NULL);
 		     evas_object_event_callback_add(im->o_thumb,
 						    EVAS_CALLBACK_MOUSE_DOWN,
 						    e_list_item_click, l);
