@@ -88,11 +88,12 @@ __edb_addrem_recover(logp, edbtp, lsnp, redo, info)
 		change = DB_MPOOL_DIRTY;
 	}
 
-	if (change)
+	if (change) {
 		if (redo)
 			LSN(pagep) = *lsnp;
 		else
 			LSN(pagep) = argp->pagelsn;
+	}
 
 	if ((ret = memp_fput(mpf, pagep, change)) != 0)
 		goto out;
@@ -124,7 +125,7 @@ __edb_split_recover(logp, edbtp, lsnp, redo, info)
 	REC_PRINT(__edb_split_print);
 	REC_INTRO(__edb_split_read);
 
-	if ((ret = memp_fget(mpf, &argp->pgno, 0, &pagep)) != 0)
+	if ((ret = memp_fget(mpf, &argp->pgno, 0, &pagep)) != 0) {
 		if (!redo) {
 			/*
 			 * We are undoing and the page doesn't exist.  That
@@ -137,6 +138,7 @@ __edb_split_recover(logp, edbtp, lsnp, redo, info)
 			if ((ret = memp_fget(mpf,
 			    &argp->pgno, DB_MPOOL_CREATE, &pagep)) != 0)
 				goto out;
+	}
 
 	/*
 	 * There are two types of log messages here, one for the old page
@@ -253,7 +255,7 @@ __edb_big_recover(logp, edbtp, lsnp, redo, info)
 	/* Now check the previous page. */
 ppage:	if (argp->prev_pgno != PGNO_INVALID) {
 		change = 0;
-		if ((ret = memp_fget(mpf, &argp->prev_pgno, 0, &pagep)) != 0)
+		if ((ret = memp_fget(mpf, &argp->prev_pgno, 0, &pagep)) != 0) {
 			if (!redo) {
 				/*
 				 * We are undoing and the page doesn't exist.
@@ -268,6 +270,7 @@ ppage:	if (argp->prev_pgno != PGNO_INVALID) {
 				if ((ret = memp_fget(mpf, &argp->prev_pgno,
 				    DB_MPOOL_CREATE, &pagep)) != 0)
 					goto out;
+		}
 
 		cmp_n = log_compare(lsnp, &LSN(pagep));
 		cmp_p = log_compare(&LSN(pagep), &argp->prevlsn);
@@ -544,7 +547,7 @@ __edb_addpage_recover(logp, edbtp, lsnp, redo, info)
 	if ((ret = memp_fput(mpf, pagep, change)) != 0)
 		goto out;
 
-	if ((ret = memp_fget(mpf, &argp->nextpgno, 0, &pagep)) != 0)
+	if ((ret = memp_fget(mpf, &argp->nextpgno, 0, &pagep)) != 0) {
 		if (!redo) {
 			/*
 			 * We are undoing and the page doesn't exist.  That
@@ -557,6 +560,7 @@ __edb_addpage_recover(logp, edbtp, lsnp, redo, info)
 			if ((ret = memp_fget(mpf,
 			    &argp->nextpgno, DB_MPOOL_CREATE, &pagep)) != 0)
 				goto out;
+	}
 
 	change = 0;
 	cmp_n = log_compare(lsnp, &LSN(pagep));

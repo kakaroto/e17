@@ -249,7 +249,7 @@ __bam_ca_split(edbp, ppgno, lpgno, rpgno, split_indx, cleft)
 	for (edbc = TAILQ_FIRST(&edbp->active_queue);
 	    edbc != NULL; edbc = TAILQ_NEXT(edbc, links)) {
 		cp = (CURSOR *)edbc->internal;
-		if (cp->pgno == ppgno)
+		if (cp->pgno == ppgno) {
 			if (cp->indx < split_indx) {
 				if (cleft)
 					cp->pgno = lpgno;
@@ -257,7 +257,9 @@ __bam_ca_split(edbp, ppgno, lpgno, rpgno, split_indx, cleft)
 				cp->pgno = rpgno;
 				cp->indx -= split_indx;
 			}
-		if (cp->dpgno == ppgno)
+		}
+
+		if (cp->dpgno == ppgno) {
 			if (cp->dindx < split_indx) {
 				if (cleft)
 					cp->dpgno = lpgno;
@@ -265,6 +267,7 @@ __bam_ca_split(edbp, ppgno, lpgno, rpgno, split_indx, cleft)
 				cp->dpgno = rpgno;
 				cp->dindx -= split_indx;
 			}
+		}
 	}
 	DB_THREAD_UNLOCK(edbp);
 }

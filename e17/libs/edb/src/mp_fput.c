@@ -134,7 +134,7 @@ memp_fput(edbmfp, pgaddr, flags)
 	 * next time the memp_sync function runs we try writing it there, as
 	 * the checkpoint application better be able to write all of the files.
 	 */
-	if (F_ISSET(bhp, BH_WRITE))
+	if (F_ISSET(bhp, BH_WRITE)) {
 		if (F_ISSET(bhp, BH_DIRTY)) {
 			if (__memp_bhwrite(edbmp,
 			    edbmfp->mfp, bhp, NULL, &wrote) != 0 || !wrote)
@@ -145,6 +145,7 @@ memp_fput(edbmfp, pgaddr, flags)
 			--edbmfp->mfp->lsn_cnt;
 			--mp->lsn_cnt;
 		}
+	}
 
 	UNLOCKREGION(edbmp);
 	return (0);

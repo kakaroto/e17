@@ -247,7 +247,7 @@ AC_SUBST(mutex_align)
 dnl Check for the standard shorthand types.
 AC_SUBST(u_char_decl)
 AC_CACHE_CHECK([for u_char], db_cv_uchar, [dnl
-AC_TRY_COMPILE([#include <sys/types.h>], u_char foo;,
+AC_TRY_COMPILE([#include <sys/types.h>], [u_char foo = 0; return foo;],
 	[db_cv_uchar=yes], [db_cv_uchar=no])])
 if test "$db_cv_uchar" = no; then
 	u_char_decl="typedef unsigned char u_char;"
@@ -255,7 +255,7 @@ fi
 
 AC_SUBST(u_short_decl)
 AC_CACHE_CHECK([for u_short], db_cv_ushort, [dnl
-AC_TRY_COMPILE([#include <sys/types.h>], u_short foo;,
+AC_TRY_COMPILE([#include <sys/types.h>], [u_short foo = 0; return foo;],
 	[db_cv_ushort=yes], [db_cv_ushort=no])])
 if test "$db_cv_ushort" = no; then
 	u_short_decl="typedef unsigned short u_short;"
@@ -263,7 +263,7 @@ fi
 
 AC_SUBST(u_int_decl)
 AC_CACHE_CHECK([for u_int], db_cv_uint, [dnl
-AC_TRY_COMPILE([#include <sys/types.h>], u_int foo;,
+AC_TRY_COMPILE([#include <sys/types.h>], [u_int foo = 0; return foo;],
 	[db_cv_uint=yes], [db_cv_uint=no])])
 if test "$db_cv_uint" = no; then
 	u_int_decl="typedef unsigned int u_int;"
@@ -271,7 +271,7 @@ fi
 
 AC_SUBST(u_long_decl)
 AC_CACHE_CHECK([for u_long], db_cv_ulong, [dnl
-AC_TRY_COMPILE([#include <sys/types.h>], u_long foo;,
+AC_TRY_COMPILE([#include <sys/types.h>], [u_long foo = 0; return foo;],
 	[db_cv_ulong=yes], [db_cv_ulong=no])])
 if test "$db_cv_ulong" = no; then
 	u_long_decl="typedef unsigned long u_long;"
@@ -280,7 +280,7 @@ fi
 dnl DB/Vi use specific integer sizes.
 AC_SUBST(u_int8_decl)
 AC_CACHE_CHECK([for u_int8_t], db_cv_uint8, [dnl
-AC_TRY_COMPILE([#include <sys/types.h>], u_int8_t foo;,
+AC_TRY_COMPILE([#include <sys/types.h>], [u_int8_t foo = 0; return foo;],
 	[db_cv_uint8=yes])])
 if test "$db_cv_uint8" = no; then
 	AC_MSG_ERROR(No unsigned 8-bit integral type.)
@@ -291,7 +291,7 @@ fi
 
 AC_SUBST(u_int16_decl)
 AC_CACHE_CHECK([for u_int16_t], db_cv_uint16, [dnl
-AC_TRY_COMPILE([#include <sys/types.h>], u_int16_t foo;,
+AC_TRY_COMPILE([#include <sys/types.h>], [u_int16_t foo = 0; return foo;],
 	[db_cv_uint16=yes])])
 if test "$db_cv_uint16" = no; then
 	AC_MSG_ERROR([No unsigned 16-bit integral type.])
@@ -302,7 +302,7 @@ fi
 
 AC_SUBST(int16_decl)
 AC_CACHE_CHECK([for int16_t], db_cv_int16, [dnl
-AC_TRY_COMPILE([#include <sys/types.h>], int16_t foo;,
+AC_TRY_COMPILE([#include <sys/types.h>], [int16_t foo = 0; return foo;],
 	[db_cv_int16=yes])])
 if test "$db_cv_int16" = no; then
 	AC_MSG_ERROR([No signed 16-bit integral type.])
@@ -313,7 +313,7 @@ fi
 
 AC_SUBST(u_int32_decl)
 AC_CACHE_CHECK([for u_int32_t], db_cv_uint32, [dnl
-AC_TRY_COMPILE([#include <sys/types.h>], u_int32_t foo;,
+AC_TRY_COMPILE([#include <sys/types.h>], [u_int32_t foo = 0; return foo;],
 	[db_cv_uint32=yes])])
 if test "$db_cv_uint32" = no; then
 	AC_MSG_ERROR([No unsigned 32-bit integral type.])
@@ -324,7 +324,7 @@ fi
 
 AC_SUBST(int32_decl)
 AC_CACHE_CHECK([for int32_t], db_cv_int32, [dnl
-AC_TRY_COMPILE([#include <sys/types.h>], int32_t foo;,
+AC_TRY_COMPILE([#include <sys/types.h>], [int32_t foo = 0; return foo;],
 	[db_cv_int32=yes])])
 if test "$db_cv_int32" = no; then
 	AC_MSG_ERROR([No signed 32-bit integral type.])

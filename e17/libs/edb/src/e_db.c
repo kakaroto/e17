@@ -419,7 +419,6 @@ void
 e_db_set_type(E_DB_File * edb, char *value) {
   char *type;
    char *existing;
-   int lenght;
 
    if (!e_db_is_type(edb, value)) 
    {
