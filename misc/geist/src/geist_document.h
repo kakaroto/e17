@@ -40,5 +40,6 @@ void
 geist_document_render_selection(geist_document * doc);
 geist_list *geist_document_get_selected_list(geist_document * doc);
 void geist_document_unselect_all(geist_document * doc);
+void geist_document_dirty_object(geist_document * doc, geist_object * obj);
 
 #endif

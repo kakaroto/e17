@@ -98,7 +98,11 @@ geist_document_unselect_all(geist_document * doc)
       for (l = sl; l; l = l->next)
       {
          obj = GEIST_OBJECT(l->data);
-         geist_object_unset_state(obj, SELECTED);
+         if (geist_object_get_state(obj, SELECTED))
+         {
+            geist_object_unset_state(obj, SELECTED);
+            geist_document_dirty_object(doc, obj);
+         }
       }
       geist_list_free(sl);
    }
@@ -228,10 +232,25 @@ geist_document_render_updates(geist_document * d)
       imlib_updates_get_coordinates(d->up, &x, &y, &w, &h);
       geist_document_render_partial(d, x, y, w, h);
       geist_document_render_selection(d);
-      geist_document_render_pmap_partial(d, x, y, w, h);
-      geist_document_render_to_gtk_window_partial(d, darea, x, y, w, h);
+      /* geist_document_render_pmap_partial(d, x, y, w, h); */
+      geist_document_render_pmap(d);
+      /* geist_document_render_to_gtk_window_partial(d, darea, x, y, w, h); */
+      geist_document_render_to_gtk_window(d, darea);
       imlib_updates_free(d->up);
       d->up = NULL;
    }
+   D_RETURN_(3);
+}
+
+void
+geist_document_dirty_object(geist_document * doc, geist_object * obj)
+{
+   D_ENTER(3);
+
+   doc->up =
+      imlib_update_append_rect(doc->up, obj->x - HALF_SEL_WIDTH,
+                               obj->y - HALF_SEL_HEIGHT,
+                               obj->w + HALF_SEL_WIDTH,
+                               obj->h + HALF_SEL_HEIGHT);
    D_RETURN_(3);
 }

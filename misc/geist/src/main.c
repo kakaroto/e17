@@ -185,6 +185,7 @@ evbox_buttonpress_cb(GtkWidget * widget, GdkEventButton * event)
       if ((event->state & GDK_SHIFT_MASK))
       {
          geist_object_toggle_state(obj, SELECTED);
+         geist_document_dirty_object(doc, obj);
          D_RETURN(5, 1);
       }
       else if (!geist_object_get_state(obj, SELECTED))
@@ -192,6 +193,7 @@ evbox_buttonpress_cb(GtkWidget * widget, GdkEventButton * event)
          geist_document_unselect_all(doc);
          D(2, ("setting object state SELECTED\n"));
          geist_object_set_state(obj, SELECTED);
+         geist_document_dirty_object(doc, obj);
       }
 
       list = geist_document_get_selected_list(doc);
@@ -203,8 +205,7 @@ evbox_buttonpress_cb(GtkWidget * widget, GdkEventButton * event)
          D(2, ("setting object state DRAG\n"));
          geist_object_set_state(obj, DRAG);
          geist_object_raise(doc, obj);
-         doc->up =
-            imlib_update_append_rect(doc->up, obj->x, obj->y, obj->w, obj->h);
+         geist_document_dirty_object(doc, obj);
       }
       gtk_object_set_data_full(GTK_OBJECT(mainwin), "draglist", list, NULL);
       geist_document_render_updates(doc);
@@ -230,8 +231,7 @@ gint evbox_buttonrelease_cb(GtkWidget * widget, GdkEventButton * event)
 
          D(2, ("unsetting object state DRAG\n"));
          geist_object_unset_state(obj, DRAG);
-         doc->up =
-            imlib_update_append_rect(doc->up, obj->x, obj->y, obj->w, obj->h);
+         geist_document_dirty_object(doc, obj);
       }
    }
    geist_list_free(list);
@@ -260,8 +260,7 @@ evbox_mousemove_cb(GtkWidget * widget, GdkEventMotion * event)
             imlib_update_append_rect(doc->up, obj->x, obj->y, obj->w, obj->h);
          obj->x = event->x - obj->clicked_x;
          obj->y = event->y - obj->clicked_y;
-         doc->up =
-            imlib_update_append_rect(doc->up, obj->x, obj->y, obj->w, obj->h);
+         geist_document_dirty_object(doc, obj);
       }
    geist_document_render_updates(doc);
    /* geist_document_render(doc); */
