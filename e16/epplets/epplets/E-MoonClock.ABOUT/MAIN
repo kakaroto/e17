@@ -1,0 +1,18 @@
+<page columns=1 padding=16 name=front background=bg.png linkcolor=#88dddd>
+<font face=aircut3/32 color=#ffffff>
+<p align=50%>
+E-MoonClock
+<font face=aircut3/18 color=#88eeff>
+<p align=50%>
+An Enlightenment Epplet showing the current phase of the moon.
+<font face=aircut3/12 color=#ffffff>
+<p align=50%>
+By Michael Lea - 1999
+<p>
+This epplet shows the current phase of the moon.  Quite simple,
+really.<br><br>
+Much thanks to Mike Henderson, the author of wmMoonClock.  He
+did all the hard stuff.
+
+<p>
+Michael Lea   (mikelea@charm.net)
