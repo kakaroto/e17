@@ -77,23 +77,6 @@ engrave_part_state_name_set(Engrave_Part_State *eps, char *name, double value)
 }
 
 /**
- * engrave_part_state_name_get- Get the name of the state
- * @param eps: The Engrave_Part_State to retrieve the name from
- * @param value: If not NULL will return the value param.
- *
- * @return Returns a copy of the name of the state this pointer must be
- * freed by the application, or NULL if no name found.
- */
-char *
-engrave_part_state_name_get(Engrave_Part_State *eps, double *value)
-{
-  if (!eps || !eps->name) return NULL;
-
-  if (value) *value = eps->value;
-  return strdup(eps->name);
-}
-
-/**
  * engrave_part_state_visible_set - Set the visiblity of the state
  * @param eps: The Engrave_Part_State to set the value too.
  * @param visible: The visibility value to set to the state
@@ -741,6 +724,448 @@ engrave_part_state_copy(Engrave_Part_State *from, Engrave_Part_State *to)
     else
       fprintf(stderr, "Insufficient memory to dup image\n");
   }
+}
+
+/** 
+ * engrave_part_state_name_get - get the state name/value
+ * @param eps: The Engave_Part_State to get the values from
+ * @param val: Where to put the value setting
+ *
+ * @return Returns the state name, or NULL on failure.
+ */
+char *
+engrave_part_state_name_get(Engrave_Part_State *eps, double *val)
+{
+  char *str = NULL;
+
+  if (eps)
+    str = (eps->name ? strdup(eps->name) : NULL);
+
+  if (val) *val = (eps ? eps->value : 0);
+  return str;
+}
+
+/**
+ * engrave_part_state_visible_get - get the visiblity flag
+ * @param eps: The Engrave_Part_State to get the visiblity from
+ *
+ * @return Returns the visiblity of the state
+ */
+int
+engrave_part_state_visible_get(Engrave_Part_State *eps)
+{
+  if (!eps) return 1;
+  return eps->visible;
+}
+
+/**
+ * engrave_part_state_align_get - get the alignment of the state
+ * @param eps: The Engrave_Part_State to get the info from
+ * @param x: Where to store the x value or 0.5 if not set
+ * @param y: Where to store the y value or 0.5 if not set
+ *
+ * @return Returns no value.
+ */
+void
+engrave_part_state_align_get(Engrave_Part_State *eps, double *x, double *y)
+{
+  if (x) *x = (eps ? eps->align.x : 0.5);
+  if (y) *y = (eps ? eps->align.y : 0.5);
+}
+
+/**
+ * engrave_part_state_step_get - get the stepping info for the state
+ * @param eps: The Engrave_Part_State to get the info from
+ * @param x: Where to store the x value
+ * @parma y: Where to store the y value
+ *
+ * @return Returns no value.
+ */
+void
+engrave_part_state_step_get(Engrave_Part_State *eps, double *x, double *y)
+{
+  if (x) *x = (eps ? eps->step.x : 0);
+  if (y) *y = (eps ? eps->step.y : 0);
+}
+
+/**
+ * engrave_part_state_min_get - get the minimum size of the state
+ * @param eps: The Engrave_Part_State to get the min from
+ * @param w: Where to store the w value
+ * @param h: Where to store the h value
+ *
+ * @return Returns no value.
+ */
+void
+engrave_part_state_min_get(Engrave_Part_State *eps, int *w, int *h)
+{
+  if (w) *w = (eps ? eps->min.w : 0);
+  if (h) *h = (eps ? eps->min.h : 0);
+}
+
+/**
+ * engrave_part_state_max_get - get the maximum size of the state
+ * @param eps: The Engrave_Part_State to get the max from
+ * @param w: Where to store the w value
+ * @param h: Where to store the h value
+ *
+ * @return Returns no value.
+ */
+void
+engrave_part_state_max_get(Engrave_Part_State *eps, int *w, int *h)
+{
+  if (w) *w = (eps ? eps->max.w : -1);
+  if (h) *h = (eps ? eps->max.h : -1);
+}
+
+/**
+ * engrave_part_state_aspect_get - get the aspect ratio for the state
+ * @param eps: The Engrave_Part_State to get the aspect info from
+ * @param h: Where to store the w value
+ * @param w: Where to store the h value
+ * 
+ * @return Returns no value
+ */
+void
+engrave_part_state_aspect_get(Engrave_Part_State *eps, double *w, double *h)
+{
+  if (w) *w = (eps ? eps->aspect.w : 0);
+  if (h) *h = (eps ? eps->aspect.h : 0);
+}
+
+/**
+ * engrave_part_state_aspect_preference_get - get the aspect preference
+ * @param eps: The Engrave_Part_State to get the aspect preference from
+ *
+ * @return Returns the Engrave_Aspect_Preference for the state
+ */
+Engrave_Aspect_Preference
+engrave_part_state_aspect_preference_get(Engrave_Part_State *eps)
+{
+  if (!eps) return ENGRAVE_ASPECT_PREFERENCE_NONE;
+  return eps->aspect.prefer;
+}
+
+/** 
+ * engrave_part_state_rel1_relative_get - get the rel1 relative values
+ * @param eps: The Engrave_Part_State to get the values from
+ * @param x: Where to store the x value
+ * @param y: Where to store the y value
+ * 
+ * @return Returns no value.
+ */
+void
+engrave_part_state_rel1_relative_get(Engrave_Part_State *eps, 
+                                          double *x, double *y)
+{
+  if (x) *x = (eps ? eps->rel1.relative.x : 0);
+  if (y) *y = (eps ? eps->rel1.relative.y : 0);
+}
+
+/**
+ * engrave_part_state_rel1_offset_get - get the rel1 offset values
+ * @param eps: The Engrave_Part_State to get the values from
+ * @param x: Where to store the x value
+ * @param y: Where to store the y value
+ *
+ * @return Returns no value.
+ */
+void
+engrave_part_state_rel1_offset_get(Engrave_Part_State *eps, int *x, int*y)
+{
+  if (x) *x = (eps ? eps->rel1.offset.x : 0);
+  if (y) *y = (eps ? eps->rel1.offset.y : 0);
+}
+
+/**
+ * engrave_part_state_rel1_to_x_get - get the to_x value for rel1
+ * @param eps: The Engrave_Part_State to get the value from
+ * 
+ * @return Returns a pointer to the to_x value or NULL on failure.
+ * This pointer must be free'd by the user.
+ */
+char *
+engrave_part_state_rel1_to_x_get(Engrave_Part_State *eps)
+{
+  if (!eps) return NULL;
+  return (eps->rel1.to_x ? strdup(eps->rel1.to_x) : NULL);
+}
+
+/**
+ * engrave_part_state_rel1_to_y_get - get the to_y value for rel1
+ * @param eps: The Engrave_Part_State to get the value from
+ * 
+ * @return Returns a pointer to the to_y value or NULL on failure.
+ * This pointer must be free'd by the user.
+ */
+char *
+engrave_part_state_rel1_to_y_get(Engrave_Part_State *eps)
+{
+  if (!eps) return NULL;
+  return (eps->rel1.to_y ? strdup(eps->rel1.to_y) : NULL);
+}
+
+/** 
+ * engrave_part_state_rel2_relative_get - get the rel2 relative values
+ * @param eps: The Engrave_Part_State to get the values from
+ * @param x: Where to store the x value
+ * @param y: Where to store the y value
+ * 
+ * @return Returns no value.
+ */
+void
+engrave_part_state_rel2_relative_get(Engrave_Part_State *eps, 
+                                          double *x, double *y)
+{
+  if (x) *x = (eps ? eps->rel2.relative.x : 1.0);
+  if (y) *y = (eps ? eps->rel2.relative.y : 1.0);
+}
+
+/**
+ * engrave_part_state_rel2_offset_get - get the rel2 offset values
+ * @param eps: The Engrave_Part_State to get the values from
+ * @param x: Where to store the x value
+ * @param y: Where to store the y value
+ *
+ * @return Returns no value.
+ */
+void
+engrave_part_state_rel2_offset_get(Engrave_Part_State *eps, int *x, int*y)
+{
+  if (x) *x = (eps ? eps->rel2.offset.x : -1);
+  if (y) *y = (eps ? eps->rel2.offset.y : -1);
+}
+
+/**
+ * engrave_part_state_rel2_to_x_get - get the to_x value for rel2
+ * @param eps: The Engrave_Part_State to get the value from
+ * 
+ * @return Returns a pointer to the to_x value or NULL on failure.
+ * This pointer must be free'd by the user.
+ */
+char *
+engrave_part_state_rel2_to_x_get(Engrave_Part_State *eps)
+{
+  if (!eps) return NULL;
+  return (eps->rel2.to_x ? strdup(eps->rel2.to_x) : NULL);
+}
+
+/**
+ * engrave_part_state_rel2_to_y_get - get the to_y value for rel2
+ * @param eps: The Engrave_Part_State to get the value from
+ * 
+ * @return Returns a pointer to the to_y value or NULL on failure.
+ * This pointer must be free'd by the user.
+ */
+char *
+engrave_part_state_rel2_to_y_get(Engrave_Part_State *eps)
+{
+  if (!eps) return NULL;
+  return (eps->rel2.to_y ? strdup(eps->rel2.to_y) : NULL);
+}
+
+/**
+ * engrave_part_state_color_class_get - get the color class for the state
+ * @param eps: The Engrave_Part_State to get the colour class from
+ * 
+ * @return Returns a pointer to the colour class on success or NULL on
+ * failure. This pointer must be free'd by the user.
+ */
+char *
+engrave_part_state_color_class_get(Engrave_Part_State *eps)
+{
+  if (!eps) return NULL;
+  return (eps->color_class ? strdup(eps->color_class) : NULL);
+}
+
+/**
+ * engrave_part_state_color_get - get the color value from the state
+ * @param eps: The Engrave_Part_State to get the values from
+ * @param r: Where to store the r value
+ * @param g: Where to store the g value
+ * @param b: Where to store the b value
+ * @param a: Where to store the a value
+ *
+ * @return Returns no value.
+ */
+void engrave_part_state_color_get(Engrave_Part_State *eps, 
+                                  int *r, int *g, int *b, int *a)
+{
+  if (r) *r = (eps ? eps->color.r : 255);
+  if (g) *g = (eps ? eps->color.g : 255);
+  if (b) *b = (eps ? eps->color.b : 255);
+  if (a) *a = (eps ? eps->color.a : 255);
+}
+
+/**
+ * engrave_part_state_color2_get - get the color2 value from the state
+ * @param eps: The Engrave_Part_State to get the values from
+ * @param r: Where to store the r value
+ * @param g: Where to store the g value
+ * @param b: Where to store the b value
+ * @param a: Where to store the a value
+ *
+ * @return Returns no value.
+ */
+void engrave_part_state_color2_get(Engrave_Part_State *eps, 
+                                  int *r, int *g, int *b, int *a)
+{
+  if (r) *r = (eps ? eps->color2.r : 0);
+  if (g) *g = (eps ? eps->color2.g : 0);
+  if (b) *b = (eps ? eps->color2.b : 0);
+  if (a) *a = (eps ? eps->color2.a : 255);
+}
+
+/**
+ * engrave_part_state_color3_get - get the color3 value from the state
+ * @param eps: The Engrave_Part_State to get the values from
+ * @param r: Where to store the r value
+ * @param g: Where to store the g value
+ * @param b: Where to store the b value
+ * @param a: Where to store the a value
+ *
+ * @return Returns no value.
+ */
+void engrave_part_state_color3_get(Engrave_Part_State *eps, 
+                                  int *r, int *g, int *b, int *a)
+{
+  if (r) *r = (eps ? eps->color3.r : 0);
+  if (g) *g = (eps ? eps->color3.g : 0);
+  if (b) *b = (eps ? eps->color3.b : 0);
+  if (a) *a = (eps ? eps->color3.a : 128);
+}
+
+/**
+ * engrave_part_state_image_normal_get - get the Engrave_Image for the normal setting
+ * @param eps: The Engrave_Part_State to get the image from
+ *
+ * @return Returns the Engrave_Image for the normal setting or NULL on
+ * failure.
+ */
+Engrave_Image *
+engrave_part_state_image_normal_get(Engrave_Part_State *eps)
+{
+  return (eps ? eps->image.normal : NULL);
+}
+
+/**
+ * engrave_part_state_image_border_get - get the border settings
+ * @param eps: The Engrave_Part_State to get the settings from
+ * @param l: Where to store the left value
+ * @param r: Where to store the right value
+ * @param t: Where to store the top value
+ * @param b: Where to store the bottom value
+ *
+ * @return Returns no value.
+ */
+void
+engrave_part_state_image_border_get(Engrave_Part_State *eps,
+                                  int *l, int *r, int *t, int *b)
+{
+  if (l) *l = (eps ? eps->image.border.l : 0);
+  if (r) *r = (eps ? eps->image.border.r : 0);
+  if (t) *t = (eps ? eps->image.border.t : 0);
+  if (b) *b = (eps ? eps->image.border.b : 0);
+}
+
+/**
+ * engrave_part_state_text_text_get - get the text value
+ * @param eps: The Engrave_Part_State to get the text from
+ *
+ * @return Returns a pointer to the text value on success or NULL on
+ * failure. This pointer must be free'd by the user.
+ */
+char *
+engrave_part_state_text_text_get(Engrave_Part_State *eps)
+{
+  if (!eps) return NULL;
+  return (eps->text.text ? strdup(eps->text.text) : NULL);
+}
+
+/**
+ * engrave_part_state_text_text_class_get - get the text class
+ * @param eps: The Engrave_Part_State to get the value from
+ *
+ * @return Returns a pointer to the text class or NULL on failure. This
+ * pointer must be free'd by the user.
+ */
+char *
+engrave_part_state_text_text_class_get(Engrave_Part_State *eps)
+{
+  if (!eps) return NULL;
+  return (eps->text.text_class ? strdup(eps->text.text_class) : NULL);
+}
+
+/**
+ * engrave_part_state_text_font_get - get the text font
+ * @param eps: The Engrave_Part_State to get the font from
+ *
+ * @return Returns a pointer to the font on success or NULL on failure. This
+ * pointer must be free'd by the user.
+ */
+char *
+engrave_part_state_text_font_get(Engrave_Part_State *eps)
+{
+  if (!eps) return NULL;
+  return (eps->text.font ? strdup(eps->text.font) : NULL);
+}
+
+/**
+ * engrave_part_state_text_size_get - get the font size
+ * @param eps: The Engrave_Part_State to get the font size from
+ *
+ * @return Returns the font size.
+ */
+int
+engrave_part_state_text_size_get(Engrave_Part_State *eps)
+{
+  return (eps ? eps->text.size : 0);
+}
+
+/**
+ * engrave_part_state_text_fit_get - get the text fit settings
+ * @param eps: The Engrave_Part_State to get the values from
+ * @param x: Where to store the x value
+ * @param y: Where to store the y value
+ * 
+ * @return Returns no value.
+ */
+void
+engrave_part_state_text_fit_get(Engrave_Part_State *eps, int *x, int *y)
+{
+  if (x) *x = (eps ? eps->text.fit.x : 0);
+  if (y) *y = (eps ? eps->text.fit.y : 0);
+}
+
+/**
+ * engrave_part_state_text_min_get - get the text min size
+ * @param eps: The Engrave_Part_State to get the values from
+ * @param x: Where to store the x value
+ * @param y: Where to store the y value
+ * 
+ * @return Returns no value.
+ */
+void
+engrave_part_state_text_min_get(Engrave_Part_State *eps, int *x, int *y)
+{
+  if (x) *x = (eps ? eps->text.min.x : 0);
+  if (y) *y = (eps ? eps->text.min.y : 0);
+}
+
+/**
+ * engrave_part_state_text_align_get - get the text alignment settings
+ * @param eps: The Engrave_Part_State to get the align from
+ * @param x: Where to store the x value
+ * @param y: Where to store the y value
+ *
+ * @return Returns no value.
+ */
+void
+engrave_part_state_text_align_get(Engrave_Part_State *eps,
+                                      double *x, double *y)
+{
+  if (x) *x = (eps ? eps->text.align.x : 0.5);
+  if (y) *y = (eps ? eps->text.align.y : 0.5);
 }
 
 /**

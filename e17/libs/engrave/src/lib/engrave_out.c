@@ -396,137 +396,174 @@ static void
 _engrave_output_state(Engrave_Part_State *state, Engrave_Part *part, void *data)
 {
   FILE *out = data;
-  
+  char *tmp, *tmp2;
+  double x, y;
+  int w, h, ix, iy;
+  int r, g, b, a, l, t;
+  Engrave_Aspect_Preference aspect_pref;
+  Engrave_Image *im;
+
   engrave_out_start(out, "description");
 
-  engrave_out_data(out, "state", "\"%s\" %.2f", state->name, state->value);
-  engrave_out_data(out, "visible", "%d", state->visible);
+  tmp = engrave_part_state_name_get(state, &x);
+  engrave_out_data(out, "state", "\"%s\" %.2f", tmp, x);
+  IF_FREE(tmp);
 
-  if (state->align.x != .5 || state->align.y != .5)
-    engrave_out_data(out, "align", "%.2f %.2f", state->align.x, state->align.y);
+  engrave_out_data(out, "visible", "%d",
+                          engrave_part_state_visible_get(state));
 
-  if (state->step.x || state->step.y)
-    engrave_out_data(out, "step", "%.2f %.2f", state->step.x, state->step.y);
+  engrave_part_state_align_get(state, &x, &y);
+  if (x != .5 || y != .5)
+    engrave_out_data(out, "align", "%.2f %.2f", x, y);
 
-  if (state->min.w > 0 || state->min.h > 0)
-    engrave_out_data(out, "min", "%d %d", state->min.w, state->min.h);
+  engrave_part_state_step_get(state, &x, &y);
+  if (x || y)
+    engrave_out_data(out, "step", "%.2f %.2f", x, y);
 
-  if (state->max.w >= 0 || state->max.h >= 0)
-    engrave_out_data(out, "max", "%d %d", state->max.w, state->max.h);
+  engrave_part_state_min_get(state, &w, &h);
+  if (w > 0 || h > 0)
+    engrave_out_data(out, "min", "%d %d", w, h);
 
-  if (state->aspect.w || state->aspect.h)
-    engrave_out_data(out, "aspect", "%.2f %.2f", 
-            state->aspect.w, state->aspect.h);
+  engrave_part_state_max_get(state, &w, &h);
+  if (w >= 0 || h >= 0)
+    engrave_out_data(out, "max", "%d %d", w, h);
 
-  if (state->aspect.prefer)
+  engrave_part_state_aspect_get(state, &x, &y);
+  if (x || y)
+    engrave_out_data(out, "aspect", "%.2f %.2f", x, y);
+
+  aspect_pref = engrave_part_state_aspect_preference_get(state);
+  if (aspect_pref)
     engrave_out_data(out, "aspect_preference", "%s",
-            _aspect_preference_string[state->aspect.prefer]);
+            _aspect_preference_string[aspect_pref]);
   
   /* rel 1 */ 
   engrave_out_start(out, "rel1");
-  engrave_out_data(out, "relative", "%.2f %.2f",
-          state->rel1.relative.x, state->rel1.relative.y);
-  engrave_out_data(out, "offset", "%d %d",
-          state->rel1.offset.x, state->rel1.offset.y);
 
-  if ( state->rel1.to_x || state->rel1.to_y)
+  engrave_part_state_rel1_relative_get(state, &x, &y);
+  engrave_out_data(out, "relative", "%.2f %.2f", x, y);
+  
+  engrave_part_state_rel1_offset_get(state, &ix, &iy);
+  engrave_out_data(out, "offset", "%d %d", ix, iy);
+
+  tmp = engrave_part_state_rel1_to_x_get(state);
+  tmp2 = engrave_part_state_rel1_to_y_get(state);
+  if (tmp || tmp2)
   {
-    if (!strcmp(state->rel1.to_x, state->rel1.to_y))
-    {
-      engrave_out_data(out, "to", "\"%s\"", state->rel1.to_x);
-    }
+    if (!strcmp(tmp, tmp2))
+      engrave_out_data(out, "to", "\"%s\"", tmp);
     else
     {
-      engrave_out_data(out, "to_x", "\"%s\"", state->rel1.to_x);
-      engrave_out_data(out, "to_y", "\"%s\"", state->rel1.to_y);
+      engrave_out_data(out, "to_x", "\"%s\"", tmp);
+      engrave_out_data(out, "to_y", "\"%s\"", tmp2);
     }
   }
+  IF_FREE(tmp);
+  IF_FREE(tmp2);
+
   engrave_out_end(out);
 
   /* rel 2 */ 
   engrave_out_start(out, "rel2");
-  engrave_out_data(out, "relative", "%.2f %.2f",
-          state->rel2.relative.x, state->rel2.relative.y);
-  engrave_out_data(out, "offset", "%d %d",
-          state->rel2.offset.x, state->rel2.offset.y);
 
-  if ( state->rel2.to_x || state->rel2.to_y)
+  engrave_part_state_rel2_relative_get(state, &x, &y);
+  engrave_out_data(out, "relative", "%.2f %.2f", x, y);
+
+  engrave_part_state_rel2_offset_get(state, &ix, &iy);
+  engrave_out_data(out, "offset", "%d %d", ix, iy);
+
+  tmp = engrave_part_state_rel2_to_x_get(state);
+  tmp2 = engrave_part_state_rel2_to_y_get(state);
+  if (tmp || tmp2)
   {
-    if (!strcmp(state->rel2.to_x, state->rel2.to_y))
-    {
-      engrave_out_data(out, "to", "\"%s\"", state->rel2.to_x);
-    }
+    if (!strcmp(tmp, tmp2))
+      engrave_out_data(out, "to", "\"%s\"", tmp);
     else
     {
-      engrave_out_data(out, "to_x", "\"%s\"", state->rel2.to_x);
-      engrave_out_data(out, "to_y", "\"%s\"", state->rel2.to_y);
+      engrave_out_data(out, "to_x", "\"%s\"", tmp);
+      engrave_out_data(out, "to_y", "\"%s\"", tmp2);
     }
   }
+  IF_FREE(tmp);
+  IF_FREE(tmp2);
+
   engrave_out_end(out);
 
-  if (state->color_class)
-    engrave_out_data(out, "color_class", "\"%s\"", state->color_class);
+  tmp = engrave_part_state_color_class_get(state);
+  if (tmp) {
+    engrave_out_data(out, "color_class", "\"%s\"", tmp); 
+    FREE(tmp);
+  }
 
-  if (state->color.r != 255 || state->color.g != 255 ||
-      state->color.b != 255 || state->color.a != 255)
-    engrave_out_data(out, "color", "%d %d %d %d", 
-            state->color.r, state->color.g, state->color.b, state->color.a);
+  engrave_part_state_color_get(state, &r, &g, &b, &a);
+  if (r != 255 || g != 255 || b != 255 || a != 255)
+    engrave_out_data(out, "color", "%d %d %d %d", r, g, b, a);
 
-  if (state->color2.r != 0 || state->color2.g != 0 ||
-      state->color2.b != 0 || state->color2.a != 255)
-    engrave_out_data(out, "color2", "%d %d %d %d",
-            state->color2.r, state->color2.g, state->color2.b, state->color2.a);
+  engrave_part_state_color2_get(state, &r, &g, &b, &a);
+  if (r != 0 || g != 0 || b != 0 || a != 255)
+    engrave_out_data(out, "color2", "%d %d %d %d", r, g, b, a);
 
-  if (state->color3.r != 0 || state->color3.g != 0 ||
-      state->color3.b != 0 || state->color3.a != 128)
-    engrave_out_data(out, "color3", "%d %d %d %d", 
-            state->color3.r, state->color3.g, state->color3.b, state->color3.a);
+  engrave_part_state_color3_get(state, &r, &g, &b, &a);
+  if (r != 0 || g != 0 || b != 0 || a != 128)
+    engrave_out_data(out, "color3", "%d %d %d %d", r, g, b, a);
 
-  if (part->type == ENGRAVE_PART_TYPE_IMAGE && state->image.normal )
+  im = engrave_part_state_image_normal_get(state);
+  if ((engrave_part_type_get(part) == ENGRAVE_PART_TYPE_IMAGE) && im)
   {
     engrave_out_start(out, "image");
-    engrave_out_data(out, "normal", "\"%s\"", state->image.normal->name);
+
+    tmp = engrave_image_name_get(im);
+    engrave_out_data(out, "normal", "\"%s\"", tmp);
+    IF_FREE(tmp);
+
     engrave_part_state_tween_foreach(state,
                         _engrave_part_state_output_tween, out);
 
-    if (state->image.border.l || state->image.border.r 
-            || state->image.border.t || state->image.border.b)
-      engrave_out_data(out, "border", "%d %d %d %d", 
-             state->image.border.l, state->image.border.r,
-             state->image.border.t, state->image.border.b);
+    engrave_part_state_image_border_get(state, &l, &r, &t, &b);
+    if (l || r || t || b)
+      engrave_out_data(out, "border", "%d %d %d %d", l, r, t, b);
     engrave_out_end(out);
   }
-  else if (part->type == ENGRAVE_PART_TYPE_TEXT)
+  else if (engrave_part_type_get(part) == ENGRAVE_PART_TYPE_TEXT)
   {
     engrave_out_start(out, "text");
 
-    if (state->text.text)
-      engrave_out_data(out, "text", "\"%s\"", state->text.text);
-    
-    if (state->text.text_class)
-      engrave_out_data(out, "text_class", "\"%s\"", state->text.text_class);
-
-    if (state->text.font)
-      engrave_out_data(out, "font", "\"%s\"", state->text.font);
-    
-    if (state->text.size)
-      engrave_out_data(out, "size", "%d", state->text.size);
-
-    if (state->text.fit.x || state->text.fit.y)
-      engrave_out_data(out, "fit", "%d %d", 
-              state->text.fit.x, state->text.fit.y);
+    tmp = engrave_part_state_text_text_get(state);
+    if (tmp) {
+      engrave_out_data(out, "text", "\"%s\"", tmp);
+      FREE(tmp);
+    }
+   
+    tmp = engrave_part_state_text_text_class_get(state);
+    if (tmp) {
+      engrave_out_data(out, "text_class", "\"%s\"", tmp);
+      FREE(tmp);
+    }
   
-    if (state->text.min.x || state->text.min.y)
-      engrave_out_data(out, "min", "%d %d",
-              state->text.min.x, state->text.min.y);
+    tmp = engrave_part_state_text_font_get(state);
+    if (tmp) {
+      engrave_out_data(out, "font", "\"%s\"", tmp);
+      FREE(tmp);
+    }
+   
+    h = engrave_part_state_text_size_get(state);
+    if (h)
+      engrave_out_data(out, "size", "%d", h);
 
-    if (state->text.align.x || state->text.align.y)
-      engrave_out_data(out, "align", "%.2f %.2f",
-              state->text.align.x, state->text.align.y);
+    engrave_part_state_text_fit_get(state, &ix, &iy); 
+    if (x || y)
+      engrave_out_data(out, "fit", "%d %d", ix, iy);
+ 
+    engrave_part_state_text_min_get(state, &ix, &iy);
+    if (x || y)
+      engrave_out_data(out, "min", "%d %d", ix, iy);
+
+    engrave_part_state_text_align_get(state, &x, &y);
+    if (x || y)
+      engrave_out_data(out, "align", "%.2f %.2f", x, y);
 
     engrave_out_end(out);
   }
-
   engrave_out_end(out);
 }
 
