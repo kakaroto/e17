@@ -4,9 +4,9 @@
 static void *_ewd_list_current(Ewd_List * list);
 
 /* Adding functions */
-static int _ewd_list_insert(Ewd_List * list, void *data);
-static int _ewd_list_append(Ewd_List * list, void *data);
-static int _ewd_list_prepend(Ewd_List * list, void *data);
+static int _ewd_list_insert(Ewd_List * list, Ewd_List_Node *node);
+static int _ewd_list_append(Ewd_List * list, Ewd_List_Node *node);
+static int _ewd_list_prepend(Ewd_List * list, Ewd_List_Node *node);
 
 /* Remove functions */
 static void *_ewd_list_remove(Ewd_List * list);
@@ -182,12 +182,16 @@ int ewd_list_nodes(Ewd_List * list)
 inline int ewd_list_append(Ewd_List * list, void *data)
 {
 	int ret;
+	Ewd_List_Node *node;
 
 	CHECK_PARAM_POINTER_RETURN("list", list, FALSE);
 
+	node = ewd_list_node_new();
+	node->data = data;
+
 	EWD_WRITE_LOCK(list);
 
-	ret = _ewd_list_append(list, data);
+	ret = _ewd_list_append(list, node);
 
 	EWD_WRITE_UNLOCK(list);
 
@@ -195,26 +199,13 @@ inline int ewd_list_append(Ewd_List * list, void *data)
 }
 
 /* For adding items to the end of the list */
-int _ewd_list_append(Ewd_List * list, void *data)
+int _ewd_list_append(Ewd_List * list, Ewd_List_Node *end)
 {
-	Ewd_List_Node *end = NULL;
-
-	if (!list)
-		return FALSE;
-
-	end = ewd_list_node_new();
-	if (!end)
-		return FALSE;
-
 	if (list->last) {
 		EWD_WRITE_LOCK(list->last);
 		list->last->next = end;
 		EWD_WRITE_UNLOCK(list->last);
 	}
-
-	EWD_WRITE_LOCK(end);
-	end->data = data;
-	EWD_WRITE_UNLOCK(end);
 
 	list->last = end;
 
@@ -237,33 +228,26 @@ int _ewd_list_append(Ewd_List * list, void *data)
 inline int ewd_list_prepend(Ewd_List * list, void *data)
 {
 	int ret;
+	Ewd_List_Node *node;
 
 	CHECK_PARAM_POINTER_RETURN("list", list, FALSE);
 
+	node = ewd_list_node_new();
+	node->data = data;
+
 	EWD_WRITE_LOCK(list);
-	ret = _ewd_list_prepend(list, data);
+	ret = _ewd_list_prepend(list, node);
 	EWD_WRITE_UNLOCK(list);
 
 	return ret;
 }
 
 /* For adding items to the beginning of the list */
-int _ewd_list_prepend(Ewd_List * list, void *data)
+int _ewd_list_prepend(Ewd_List * list, Ewd_List_Node *start)
 {
-	Ewd_List_Node *start = NULL;
-
-	if (!list)
-		return FALSE;
-
-	/* Create a new node to add to the list */
-	start = ewd_list_node_new();
-	if (!start)
-		return FALSE;
-
 	/* Put it at the beginning of the list */
 	EWD_WRITE_LOCK(start);
 	start->next = list->first;
-	start->data = data;
 	EWD_WRITE_UNLOCK(start);
 
 	list->first = start;
@@ -291,38 +275,41 @@ int _ewd_list_prepend(Ewd_List * list, void *data)
 inline int ewd_list_insert(Ewd_List * list, void *data)
 {
 	int ret;
+	Ewd_List_Node *node;
 
 	CHECK_PARAM_POINTER_RETURN("list", list, FALSE);
 
+	node = ewd_list_node_new();
+	node->data = data;
+
 	EWD_WRITE_LOCK(list);
-	ret = _ewd_list_insert(list, data);
+	ret = _ewd_list_insert(list, node);
 	EWD_WRITE_UNLOCK(list);
 
 	return ret;
 }
 
 /* For adding items in front of the current position in the list */
-int _ewd_list_insert(Ewd_List * list, void *data)
+int _ewd_list_insert(Ewd_List * list, Ewd_List_Node *new)
 {
-	Ewd_List_Node *new = NULL;
-
 	/*
 	 * If the current point is at the beginning of the list, then it's the
 	 * same as prepending it to the list.
 	 */
 	if (list->current == list->first)
-		return _ewd_list_prepend(list, data);
-	else if (!list->current || list->current == list->last)
-		return _ewd_list_append(list, data);
+		return _ewd_list_prepend(list, new);
 
-	/* Create the node to insert into the list */
-	new = ewd_list_node_new();
-	if (!new)
-		return FALSE;
+	if (list->current == NULL) {
+		int ret_value;
+
+		ret_value = _ewd_list_append(list, new);
+		list->current = list->last;
+
+		return ret_value;
+	}
 
 	/* Setup the fields of the new node */
 	EWD_WRITE_LOCK(new);
-	new->data = data;
 	new->next = list->current;
 	EWD_WRITE_UNLOCK(new);
 
@@ -1007,17 +994,20 @@ int ewd_dlist_nodes(Ewd_DList * list)
 int ewd_dlist_append(Ewd_DList * list, void *data)
 {
 	int ret;
-	Ewd_List_Node *prev;
+	Ewd_DList_Node *prev;
+	Ewd_DList_Node *node;
 
 	CHECK_PARAM_POINTER_RETURN("list", list, FALSE);
 
 	EWD_WRITE_LOCK(list);
 
-	prev = EWD_LIST(list)->last;
-	ret = _ewd_list_append(EWD_LIST(list), data);
+	node = ewd_dlist_node_new();
+	EWD_LIST_NODE(node)->data = data;
+
+	prev = EWD_DLIST_NODE(EWD_LIST(list)->last);
+	ret = _ewd_list_append(EWD_LIST(list), EWD_LIST_NODE(node));
 	if (ret) {
-		EWD_DLIST_NODE(EWD_LIST(list)->last)->previous =
-			EWD_DLIST_NODE(prev);
+		node->previous = prev;
 	}
 
 	EWD_WRITE_UNLOCK(list);
@@ -1034,17 +1024,20 @@ int ewd_dlist_append(Ewd_DList * list, void *data)
 int ewd_dlist_prepend(Ewd_DList * list, void *data)
 {
 	int ret;
-	Ewd_List_Node *prev;
+	Ewd_DList_Node *prev;
+	Ewd_DList_Node *node;
 
 	CHECK_PARAM_POINTER_RETURN("list", list, FALSE);
 
 	EWD_WRITE_LOCK(list);
 
-	prev = EWD_LIST(list)->first;
-	ret = _ewd_list_prepend(EWD_LIST(list), data);
-	if (ret)
-		EWD_DLIST_NODE(prev)->previous =
-			EWD_DLIST_NODE(EWD_LIST(list)->first);
+	node = ewd_dlist_node_new();
+	EWD_LIST_NODE(node)->data = data;
+
+	prev = EWD_DLIST_NODE(EWD_LIST(list)->first);
+	ret = _ewd_list_prepend(EWD_LIST(list), EWD_LIST_NODE(node));
+	if (ret && prev)
+		prev->previous = node;
 
 	EWD_WRITE_UNLOCK(list);
 
@@ -1060,23 +1053,34 @@ int ewd_dlist_prepend(Ewd_DList * list, void *data)
 int ewd_dlist_insert(Ewd_DList * list, void *data)
 {
 	int ret;
-	int index;
-	Ewd_List_Node *current;
+	Ewd_DList_Node *prev;
+	Ewd_DList_Node *node;
 
 	CHECK_PARAM_POINTER_RETURN("list", list, FALSE);
 
 	EWD_WRITE_LOCK(list);
 
-	index = ewd_list_index(EWD_LIST(list));
-	current = EWD_LIST(list)->current;
+	prev = EWD_DLIST_NODE(EWD_LIST(list)->current);
+	if (!prev)
+		prev = EWD_DLIST_NODE(EWD_LIST(list)->last);
 
-	ret = _ewd_list_insert(list, data);
-	if (ret && current) {
-		_ewd_list_goto_index(EWD_LIST(list), index);
-		EWD_DLIST_NODE(current)->previous =
-			EWD_DLIST_NODE(EWD_LIST(list)->current);
-		_ewd_list_goto_index(EWD_LIST(list), index + 1);
+	if (prev)
+		prev = prev->previous;
+
+	node = ewd_dlist_node_new();
+	EWD_LIST_NODE(node)->data = data;
+
+	ret = _ewd_list_insert(list, EWD_LIST_NODE(node));
+	if (!ret) {
+		EWD_WRITE_UNLOCK(list);
+		return ret;
 	}
+
+	if (EWD_LIST_NODE(node)->next)
+		EWD_DLIST_NODE(EWD_LIST_NODE(node)->next)->previous = node;
+
+	if (prev)
+		node->previous = prev;
 
 	EWD_WRITE_UNLOCK(list);
 
