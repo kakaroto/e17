@@ -107,6 +107,24 @@ ebg_cflags=`ebg-config --cflags`
 AC_SUBST(ebg_libs)
 AC_SUBST(ebg_cflags)
 
+AC_PATH_GENERIC(estyle, 0.0.1, [
+	AC_SUBST(estyle_libs)
+	AC_SUBST(estyle_cflags) ],
+	AC_MSG_ERROR(Cannot find estyle: Is estyle-config in path?))
+estyle_libs=`estyle-config --libs`
+estyle_cflags=`estyle-config --cflags`
+AC_SUBST(estyle_libs)
+AC_SUBST(estyle_cflags)
+
+AC_PATH_GENERIC(ewd, 0.0.1, [
+	AC_SUBST(ewd_libs)
+	AC_SUBST(ewd_cflags) ],
+	AC_MSG_ERROR(Cannot find ewd: Is ewd-config in path?))
+ewd_libs=`ewd-config --libs`
+ewd_cflags=`ewd-config --cflags`
+AC_SUBST(ewd_libs)
+AC_SUBST(ewd_cflags)
+
 AC_CHECK_HEADERS(security/pam_appl.h, [
     LIBS="$LIBS -lpam"
     VRFY="verify-pam"
@@ -121,5 +139,6 @@ src/Makefile
 src/client/Makefile
 src/daemon/Makefile
 src/daemon/elogin_wrapper
+data/init.d/elogin
 ])
 
