@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
-"POT-Creation-Date: 2003-06-14 02:39+0200\n"
+"POT-Creation-Date: 2003-06-15 16:22+0200\n"
 "PO-Revision-Date: 2000-04-09 18:46+0200\n"
 "Last-Translator: Antonio Ognio Cesti  <ognio@altavista.net>\n"
 "Language-Team: Spanish <es@li.org>\n"
@@ -230,19 +230,19 @@ msgstr ""
 "Si su Servidor no funciona correctamente entonces probablemente\n"
 "tendrá que dejar de usar esta función.\n"
 
-#: src/alert.c:179
+#: src/alert.c:175
 msgid "Enlightenment Error"
 msgstr "Error de Enlightenment"
 
-#: src/alert.c:181
+#: src/alert.c:177
 msgid "Ignore"
 msgstr "Ignorar"
 
-#: src/alert.c:183
+#: src/alert.c:179
 msgid "Restart"
 msgstr "Reiniciar"
 
-#: src/alert.c:185
+#: src/alert.c:181
 msgid "Exit"
 msgstr "Salir"
 

@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
-"POT-Creation-Date: 2003-06-14 02:39+0200\n"
+"POT-Creation-Date: 2003-06-15 16:22+0200\n"
 "PO-Revision-Date: 2000-03-29 21:12+0200\n"
 "Last-Translator: Matthias Warkus <mawa@iname.com>\n"
 "Language-Team: Enlightenment l10n <e-develop@enlightenment.org>\n"
@@ -251,22 +251,22 @@ msgstr ""
 "auf diese Funktion verzichten müssen.\n"
 
 # src/alert.c:178
-#: src/alert.c:179
+#: src/alert.c:175
 msgid "Enlightenment Error"
 msgstr "Enlightenment-Fehler"
 
 # src/alert.c:180
-#: src/alert.c:181
+#: src/alert.c:177
 msgid "Ignore"
 msgstr "Ignorieren"
 
 # src/alert.c:182
-#: src/alert.c:183
+#: src/alert.c:179
 msgid "Restart"
 msgstr "Neu starten"
 
 # src/alert.c:184
-#: src/alert.c:185
+#: src/alert.c:181
 msgid "Exit"
 msgstr "Verlassen"
 

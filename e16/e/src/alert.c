@@ -38,10 +38,6 @@ static char        *ExitText = NULL;
 
 static char        *TitleText = NULL;
 
-int                 call_level;
-int                 debug_level;
-char               *call_stack[1024];
-
 void
 Alert(char *fmt, ...)
 {

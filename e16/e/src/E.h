@@ -3152,11 +3152,8 @@ extern char        *e_machine_name;
 
 #ifdef HAS_XINERAMA
 extern char         xinerama_active;
-
 #endif
 
-/* This turns on E's internal stack tracking system for coarse debugging */
-/* and being able to trace E for profiling/optimisation purposes (which */
-/* believe it or not I'm actually doing) */
-
-/* #define DEBUG 1 */
+#define EDBUG_CLIENT_MESSAGES	0x00000001
+#define EDBUG_PROPERTY_CHANGE	0x00000002
+extern int          debug_flags;

@@ -48,6 +48,7 @@ main(int argc, char **argv)
    Background         *bg;
    ECursor            *ec = NULL;
    struct utsname      ubuf;
+   char               *str;
 
    /* This function runs all the setup for startup, and then 
     * proceeds into the primary event loop at the end.
@@ -67,14 +68,13 @@ main(int argc, char **argv)
 #ifdef DEBUG
    call_level = 0;
    debug_level = 0;
-   {
-      char               *debug_str;
-
-      debug_str = getenv("EDBUG");
-      if (debug_str)
-	 debug_level = atoi(debug_str);
-   }
+   str = getenv("EDBUG");
+   if (str)
+      debug_level = atoi(str);
 #endif
+   str = getenv("EDBUG_FLAGS");
+   if (str)
+      debug_flags = strtoul(str, NULL, 0);
 
    EDBUG(1, "main");
 

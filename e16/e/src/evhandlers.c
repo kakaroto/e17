@@ -99,17 +99,20 @@ ToolTipTimeout(int val, void *data)
 void
 HandleClientMessage(XEvent * ev)
 {
-#if DEBUG_HINTS
-   char               *name = XGetAtomName(disp, ev->xclient.message_type);
-
-   printf
-      ("HandleClientMessage: ev_type=%s(%d) ev_win=%#x data[0-3]= %08lx %08lx %08lx %08lx\n",
-       name, (unsigned)ev->xclient.message_type, (unsigned)ev->xclient.window,
-       ev->xclient.data.l[0], ev->xclient.data.l[1], ev->xclient.data.l[2],
-       ev->xclient.data.l[3]);
-   XFree(name);
-#endif
    EDBUG(5, "HandleClientMessage");
+
+   if (debug_flags & EDBUG_CLIENT_MESSAGES)
+     {
+	char               *name = XGetAtomName(disp, ev->xclient.message_type);
+
+	printf
+	   ("HandleClientMessage: ev_type=%s(%d) ev_win=%#x data[0-3]= %08lx %08lx %08lx %08lx\n",
+	    name, (unsigned)ev->xclient.message_type,
+	    (unsigned)ev->xclient.window, ev->xclient.data.l[0],
+	    ev->xclient.data.l[1], ev->xclient.data.l[2],
+	    ev->xclient.data.l[3]);
+	XFree(name);
+     }
 
    if (!xa_ENL_MSG)
       xa_ENL_MSG = XInternAtom(disp, "ENL_MSG", False);
@@ -1120,13 +1123,15 @@ HandleProperty(XEvent * ev)
    char                title[10240];
    int                 desktop;
 
-#if DEBUG_HINTS
-   char               *name = XGetAtomName(disp, ev->xproperty.atom);
+   if (debug_flags & EDBUG_PROPERTY_CHANGE)
+     {
+	char               *name = XGetAtomName(disp, ev->xproperty.atom);
 
-   printf("HandleProperty: Atom=%s(%d) id=%#x\n",
-	  name, (unsigned)ev->xproperty.atom, (unsigned)ev->xproperty.window);
-   XFree(name);
-#endif
+	printf("HandleProperty: Atom=%s(%d) id=%#x\n",
+	       name, (unsigned)ev->xproperty.atom,
+	       (unsigned)ev->xproperty.window);
+	XFree(name);
+     }
 
    EDBUG(5, "HandleProperty");
 

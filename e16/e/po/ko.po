@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
-"POT-Creation-Date: 2003-06-14 02:39+0200\n"
+"POT-Creation-Date: 2003-06-15 16:22+0200\n"
 "PO-Revision-Date: 2000-04-10 16:10:30+0900\n"
 "Last-Translator: Sung-Hyun Nam <namsh@kldp.org>\n"
 "Language-Team: Korean <ko@li.org>\n"
@@ -225,19 +225,19 @@ msgstr ""
 "당신의 서버가 제대로 동작하지 않는다면 당신은 앞으로\n"
 "이 기능을 사용하지 말아야 합니다.\n"
 
-#: src/alert.c:179
+#: src/alert.c:175
 msgid "Enlightenment Error"
 msgstr "인라이튼먼트 에러"
 
-#: src/alert.c:181
+#: src/alert.c:177
 msgid "Ignore"
 msgstr "무시"
 
-#: src/alert.c:183
+#: src/alert.c:179
 msgid "Restart"
 msgstr "재시작"
 
-#: src/alert.c:185
+#: src/alert.c:181
 msgid "Exit"
 msgstr "종료"
 

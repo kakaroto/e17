@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
-"POT-Creation-Date: 2003-06-14 02:39+0200\n"
+"POT-Creation-Date: 2003-06-15 16:22+0200\n"
 "PO-Revision-Date: 2000-01-05 00:25+0100\n"
 "Last-Translator: Sylvain GIL <tootella@tootella.com>\n"
 "Language-Team: French <fr@li.org>\n"
@@ -219,19 +219,19 @@ msgstr ""
 "figer, clignoter, afficher des parasites ou peut-être simplement refuser\n"
 "de fonctionner.\n"
 
-#: src/alert.c:179
+#: src/alert.c:175
 msgid "Enlightenment Error"
 msgstr "Erreur Enlightenment"
 
-#: src/alert.c:181
+#: src/alert.c:177
 msgid "Ignore"
 msgstr "Ignorer"
 
-#: src/alert.c:183
+#: src/alert.c:179
 msgid "Restart"
 msgstr "Redémarrer"
 
-#: src/alert.c:185
+#: src/alert.c:181
 msgid "Exit"
 msgstr "Sortir"
 

@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
-"POT-Creation-Date: 2003-06-14 02:39+0200\n"
+"POT-Creation-Date: 2003-06-15 16:22+0200\n"
 "PO-Revision-Date: 2000-04-10 17:30+0200\n"
 "Last-Translator: Bernt Holmberg <bernt@grub01.physto.se>\n"
 "Language-Team: Swedish <sv@li.org>\n"
@@ -225,19 +225,19 @@ msgstr ""
 "X Server inte uppför sig riktigt, skall du troligtvis\n"
 "undvika denna finess.\n"
 
-#: src/alert.c:179
+#: src/alert.c:175
 msgid "Enlightenment Error"
 msgstr "Enlightenment Fel"
 
-#: src/alert.c:181
+#: src/alert.c:177
 msgid "Ignore"
 msgstr "Ignorera"
 
-#: src/alert.c:183
+#: src/alert.c:179
 msgid "Restart"
 msgstr "Starta om"
 
-#: src/alert.c:185
+#: src/alert.c:181
 msgid "Exit"
 msgstr "Avsluta"
 

@@ -10,7 +10,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
-"POT-Creation-Date: 2003-06-14 02:39+0200\n"
+"POT-Creation-Date: 2003-06-15 16:22+0200\n"
 "PO-Revision-Date: 2001-01-07 14:00+0900\n"
 "Last-Translator: Enlightenment-jp Mailing List <enlightenment-jp@UaUa.ORG>\n"
 "Language-Team: Japanese <ja@li.org>\n"
@@ -228,19 +228,19 @@ msgstr ""
 "この機能は使わないほうがよいでしょう。\n"
 "\n"
 
-#: src/alert.c:179
+#: src/alert.c:175
 msgid "Enlightenment Error"
 msgstr "Enlightenment エラー"
 
-#: src/alert.c:181
+#: src/alert.c:177
 msgid "Ignore"
 msgstr "無視"
 
-#: src/alert.c:183
+#: src/alert.c:179
 msgid "Restart"
 msgstr "再起動"
 
-#: src/alert.c:185
+#: src/alert.c:181
 msgid "Exit"
 msgstr "終了"
 

@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
-"POT-Creation-Date: 2003-06-14 02:39+0200\n"
+"POT-Creation-Date: 2003-06-15 16:22+0200\n"
 "PO-Revision-Date: 2000-07-30 22:39+0200\n"
 "Last-Translator: Fatih Demir <kabalak@gmx.net>\n"
 "Language-Team: Turkish <tr@li.org>\n"
@@ -227,19 +227,19 @@ msgstr ""
 "XSunucun bu özelliði iyice desteklemiyorsa , bu \n"
 "özelliði kullanmadan kaçýn ! \n"
 
-#: src/alert.c:179
+#: src/alert.c:175
 msgid "Enlightenment Error"
 msgstr "Enlightenment hatasý"
 
-#: src/alert.c:181
+#: src/alert.c:177
 msgid "Ignore"
 msgstr "Unut"
 
-#: src/alert.c:183
+#: src/alert.c:179
 msgid "Restart"
 msgstr "Yeniden baþla"
 
-#: src/alert.c:185
+#: src/alert.c:181
 msgid "Exit"
 msgstr "Çýk"
 
