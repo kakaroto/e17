@@ -75,6 +75,13 @@ void on_preferences1_close(GtkWidget * widget, gpointer user_data) {
 
 }
 
+void on_save_preferences(GtkWidget *widget, gpointer user_data) {
+
+	printf("saving user preferences.\n");
+	on_preferences1_close(widget, user_data);
+
+}
+
 void on_choose_movie_segment1_close(GtkWidget * widget, gpointer user_data) {
 
 	if(user_data) {
@@ -83,6 +90,13 @@ void on_choose_movie_segment1_close(GtkWidget * widget, gpointer user_data) {
 
 	gtk_widget_destroy (GTK_WIDGET(choose_segment));
 	choose_segment=NULL;
+
+}
+
+void on_chose_segment(GtkWidget *widget, gpointer user_data) {
+
+	printf("chose segment.\n");
+	on_choose_movie_segment1_close(widget, user_data);
 
 }
 
@@ -193,3 +207,32 @@ void on_movie_info(GtkWidget *widget, gpointer user_data) {
 	}
 
 }
+
+void on_play_button(GtkWidget *widget, gpointer user_data) {
+
+	if(user_data) {
+		widget = NULL;
+	}
+
+	printf("Pressed the Play Button\n");
+}
+
+
+void on_rewind_button(GtkWidget *widget, gpointer user_data) {
+
+	if(user_data) {
+		widget = NULL;
+	}
+
+	printf("Pressed the Rewind Button\n");
+}
+
+void on_forward_button(GtkWidget *widget, gpointer user_data) {
+
+	if(user_data) {
+		widget = NULL;
+	}
+
+	printf("Pressed the Fast Forward Button\n");
+}
+

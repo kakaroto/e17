@@ -109,3 +109,11 @@ Thu Dec 30 10:38:50 PST 1999
 (Mandrake)
 
 linked in file selector for Open Movie also
+
+---------------------------------------------------------------------------
+
+Sat Jan  1 18:53:02 PST 2000
+(Mandrake)
+
+Added in some callbacks for important stuff.  Going to add a sample player, as
+well as saving data constructs shortly

@@ -37,3 +37,10 @@ void on_open_from_template(GtkWidget *widget, gpointer user_data);
 void on_open_template_close(GtkWidget *widget, gpointer user_data);
 void on_movie_info(GtkWidget *widget, gpointer user_data);
 void on_movie_info_close(GtkWidget *widget, gpointer user_data);
+
+void on_play_button(GtkWidget *widget, gpointer user_data);
+void on_rewind_button(GtkWidget *widget, gpointer user_data);
+void on_forward_button(GtkWidget *widget, gpointer user_data);
+
+void on_save_preferences(GtkWidget *widget, gpointer user_data);
+void on_chose_segment(GtkWidget *widget, gpointer user_data);

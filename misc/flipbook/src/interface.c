@@ -95,6 +95,7 @@ GtkWidget *
 	file1 = CreateBarSubMenu(menubar1,"File");
 	{
 		GtkWidget *menuitem;
+
 		menuitem = CreateMenuItem(file1,"Open Movie","",
 				"Open an existing Movie", NULL,"open movie");
 		gtk_signal_connect (GTK_OBJECT (menuitem), "activate",
@@ -181,6 +182,8 @@ GtkWidget *
 	gtk_container_add(GTK_CONTAINER(rewind_button), pixmap2);
 	gtk_widget_show(rewind_button);
 	gtk_box_pack_start(GTK_BOX(hbox9), rewind_button, FALSE, FALSE, 0);
+	gtk_signal_connect (GTK_OBJECT (rewind_button), "clicked",
+				            GTK_SIGNAL_FUNC (on_rewind_button), NULL);
 
 	pixmap3 = create_pixmap(VA_Flipbook, "play.xpm");
 	gtk_widget_ref(pixmap3);
@@ -195,6 +198,8 @@ GtkWidget *
 	gtk_container_add(GTK_CONTAINER(play_button), pixmap3);
 	gtk_widget_show(play_button);
 	gtk_box_pack_start(GTK_BOX(hbox9), play_button, FALSE, FALSE, 0);
+	gtk_signal_connect (GTK_OBJECT (play_button), "clicked",
+				            GTK_SIGNAL_FUNC (on_play_button), NULL);
 
 	hscale3 = gtk_hscale_new(GTK_ADJUSTMENT(gtk_adjustment_new(0, 0, 101, 1,
 				   	1, 1)));
@@ -217,6 +222,8 @@ GtkWidget *
 	gtk_container_add(GTK_CONTAINER(forward_button), pixmap4);
 	gtk_widget_show(forward_button);
 	gtk_box_pack_start(GTK_BOX(hbox9), forward_button, FALSE, FALSE, 0);
+	gtk_signal_connect (GTK_OBJECT (forward_button), "clicked",
+				            GTK_SIGNAL_FUNC (on_forward_button), NULL);
 
 	hbox2 = gtk_hbox_new(FALSE, 0);
 	gtk_widget_ref(hbox2);
@@ -520,6 +527,9 @@ GtkWidget *
 		   	segment_ok, (GtkDestroyNotify) gtk_widget_unref);
 	gtk_widget_show(segment_ok);
 	gtk_box_pack_start(GTK_BOX(hbox5), segment_ok, FALSE, FALSE, 0);
+	gtk_signal_connect (GTK_OBJECT (segment_ok), "clicked",
+				            GTK_SIGNAL_FUNC (on_chose_segment),
+						   	NULL);
 
 	segment_cancel = gtk_button_new_with_label("Cancel");
 	gtk_widget_ref(segment_cancel);
@@ -793,6 +803,8 @@ GtkWidget *
 	gtk_box_pack_start(GTK_BOX(vbox4), hbox8, TRUE, TRUE, 0);
 
 	button8 = gtk_button_new_with_label("Okay");
+	gtk_signal_connect (GTK_OBJECT (button8), "clicked",
+				            GTK_SIGNAL_FUNC (on_save_preferences), NULL);
 	gtk_widget_ref(button8);
 	gtk_object_set_data_full(GTK_OBJECT(Preferences_Window), "button8", button8,
 							 (GtkDestroyNotify) gtk_widget_unref);
