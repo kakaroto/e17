@@ -2436,6 +2436,8 @@ MenusEventKeyPress(XEvent * ev)
 #endif
 	break;
      case XK_Return:
+	if (!mi)
+	   break;
 	if (!mi->act_id)
 	   break;
 	MenusHide();
