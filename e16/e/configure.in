@@ -30,7 +30,7 @@ if test "x$ENLIGHTENMENT_RELEASE" != "x"; then
 AC_DEFINE_UNQUOTED(ENLIGHTENMENT_RELEASE, "$ENLIGHTENMENT_RELEASE", [Release])
 fi
 
-ALL_LINGUAS="bs da de en_US es fr hu ko nl no ru sv pt pl pt_BR tr ja"
+ALL_LINGUAS="bg bs da de en_US es fr hu ko nl no ru sv pt pl pt_BR tr ja"
 
 AC_PROG_CC
 AC_PROG_MAKE_SET
