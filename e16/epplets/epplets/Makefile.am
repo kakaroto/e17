@@ -116,8 +116,7 @@ E-ScreenSave.c E-ScreenSave.h cloak.c utils.c utils.h cloak.h
 E_ScreenSave_epplet_DEPENDENCIES = $(top_srcdir)/api/libepplet.la
 E_ScreenSave_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
 
-E_UrlWatch_epplet_SOURCES = \
-E-UrlWatch.c E-UrlWatch.h cloak.c utils.c utils.h cloak.h
+E_UrlWatch_epplet_SOURCES = E-UrlWatch.c E-UrlWatch.h utils.c utils.h
 E_UrlWatch_epplet_DEPENDENCIES = $(top_srcdir)/api/libepplet.la
 E_UrlWatch_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir) $(X_LIBS)
 E_UrlWatch_epplet_LDADD = $(top_builddir)/api/libepplet.la -L$(libdir) -L$(prefix)/lib $(LIBS) $(X_LIBS)
