@@ -579,13 +579,13 @@ ShowToolTip(ToolTip * tt, char *text, ActionClass * ac, int x, int y)
 
 	for (i = 0; i < ac->num; i++)
 	  {
-	     x = xx;
+	     x = xx + iw;
 	     if (ac->list[i]->tooltipstring)
 	       {
 		  if (ac->list[i]->event == EVENT_DOUBLE_DOWN)
 		    {
 		       TextDraw(tt->tclass, tt->win, 0, 0, STATE_NORMAL, "2x",
-				xx - double_w, y, double_w, heights[i], 17, 0);
+				xx + iw - double_w, y, double_w, heights[i], 17, 0);
 		    }
 		  if (ac->list[i]->anybutton)
 		    {
@@ -764,7 +764,7 @@ ShowToolTip(ToolTip * tt, char *text, ActionClass * ac, int x, int y)
 		    }
 
 		  TextDraw(tt->tclass, tt->win, 0, 0, STATE_NORMAL, ac->list[i]->tooltipstring,
-			   tt->iclass->padding.left + icons_width, y,
+			   tt->iclass->padding.left + icons_width + iw, y,
 			   labels_width, heights[i], 17, 0);
 		  y += heights[i];
 	       }

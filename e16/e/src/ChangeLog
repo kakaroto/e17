@@ -1192,3 +1192,11 @@ Thu Sep  2 14:24:52 PDT 1999
 (Mandrake)
 
 Added focus code rewrite into todo list
+
+-------------------------------------------------------------------------------
+
+Thu Sep  2 14:38:11 PDT 1999
+(Raster)
+
+fixed tooltip drawing bug.. 
+been updating brushed metal.. MUCH sexier now :)

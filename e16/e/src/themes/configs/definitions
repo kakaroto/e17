@@ -706,6 +706,19 @@ __TOOLTIP __BGN;\
   __DISTANCE distance;\
 __END
 
+#define DEFINE_TOOLTIP_WITH_LOGO(name, main_iclass, cloud1_iclass, cloud2_iclass, cloud3_iclass, cloud4_iclass, tclass, distance, logo) \
+__TOOLTIP __BGN;\
+  __NAME name;\
+  __ICLASS main_iclass;\
+  __BUBBLE1_ICLASS cloud1_iclass;\
+  __BUBBLE2_ICLASS cloud2_iclass;\
+  __BUBBLE3_ICLASS cloud3_iclass;\
+  __BUBBLE4_ICLASS cloud4_iclass;\
+  __TOOLTIP_HELP_ICON logo;\
+  __TCLASS tclass;\
+  __DISTANCE distance;\
+__END
+
 /*********** Sound creation macors *******************************/
 #define BEGIN_SOUND \
 __SOUND __BGN
