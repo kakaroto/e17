@@ -135,7 +135,7 @@ load (ImlibImage *im, ImlibProgressFunction progress,
 #ifdef WORDS_BIGENDIAN
 	  {
 	     int i;
-	     for (i = 0; i < dat.dsize; i++)
+	     for (i = 0; i < ret.dsize; i++)
 		SWAP32(header[i]);
 	  }
 #endif
@@ -223,6 +223,7 @@ load (ImlibImage *im, ImlibProgressFunction progress,
 	else
 	  {
 	     int dlen;
+             int x;
 	     
 	     dlen = w * h * sizeof(DATA32);
 	     uncompress(im->data, &dlen, body, ret.dsize - 32);
@@ -246,7 +247,7 @@ save (ImlibImage *im, ImlibProgressFunction progress,
    char                 file[4096], key[4096], *cp;
    DATA32              *header;
    datum                dkey, ret;
-   DATA32             *buf;
+   DATA32             *buf, *buf2;
    DBM                 *db;
    int                  compression = 0;
    
@@ -335,8 +336,6 @@ save (ImlibImage *im, ImlibProgressFunction progress,
 	buflen = ((im->w * im->h * sizeof(DATA32) * 101) / 100) + 12;
 #ifdef WORDS_BIGENDIAN
 	  {
-	     DATA32 *buf2;
-	     
 	     buf2 = malloc((((im->w * im->h * 101) / 100) + 3) * sizeof(DATA32));
 	     if (buf2)
 	       {
@@ -368,6 +367,7 @@ save (ImlibImage *im, ImlibProgressFunction progress,
      }
    if (compression == 0)
      {
+	int y;
 	memcpy(&(buf[8]), im->data, im->w * im->h * sizeof(DATA32));
 	header[4] = compression;
 #ifdef WORDS_BIGENDIAN
@@ -379,6 +379,7 @@ save (ImlibImage *im, ImlibProgressFunction progress,
 #ifdef WORDS_BIGENDIAN
    else
      {
+	int y;
 	for (y = 0; y < 8; y++)
 	   SWAP32(buf2[y]);
      }
