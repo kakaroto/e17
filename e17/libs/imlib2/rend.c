@@ -27,7 +27,8 @@ __imlib_RenderImage(Display *d, ImlibImage *im,
 		    Visual *v, Colormap cm, int depth, 
 		    int sx, int sy, int sw, int sh, 
 		    int dx, int dy, int dw, int dh, 
-		    char anitalias, char hiq, char blend, char dither_mask)
+		    char anitalias, char hiq, char blend, char dither_mask,
+		    ImlibColorModifier *cmod)
 {
    XImage   *xim, *mxim;
    Context *ct;
@@ -118,7 +119,14 @@ __imlib_RenderImage(Display *d, ImlibImage *im,
    ct = __imlib_GetContext(d, v, cm, depth);
    __imlib_RGBASetupContext(ct);
    if ((blend) && (IMAGE_HAS_ALPHA(im)))
-      back = __imlib_GrabDrawableToRGBA(d, w, 0, v, cm, depth, dx, dy, dw, dh, 0);
+     {
+	back = malloc(dw *dh *sizeof(DATA32));
+        if (!__imlib_GrabDrawableToRGBA(back, 0, 0, dw, dh, d, w, 0, v, cm, depth, dx, dy, dw, dh, 0, 1))
+	  {
+	     free(back);
+	     back = NULL;
+	  }
+     }
    /* get a new XImage - or get one from the cached list */
    xim = __imlib_ProduceXImage(d, v, depth, dw, dh, &shm);
    if (!xim)

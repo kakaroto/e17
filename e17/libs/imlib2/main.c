@@ -21,12 +21,12 @@
 
 Display *disp;
 
-#if 0
+#if 1
 int main (int argc, char **argv)
 {
    Window win;
    int i, j;
-   ImlibImage *im;
+   Imlib_Image *im;
    Visual *vis;
    int depth;
    int sec1, usec1, sec2, usec2;
@@ -43,6 +43,7 @@ int main (int argc, char **argv)
    int dith = 0;
    int loop = 1;
    int blend = 0;
+   int interactive = 0;
    
    for (i = 1; i < argc; i++)
      {
@@ -50,6 +51,11 @@ int main (int argc, char **argv)
 	   root = 1;
 	else if (!strcmp(argv[i], "-smooth"))
 	   aa = 1;
+	else if (!strcmp(argv[i], "-interactive"))
+	  {
+	     interactive = 1;
+	     loop = 0;
+	  }
 	else if (!strcmp(argv[i], "-blend"))
 	   blend = 1;
 	else if (!strcmp(argv[i], "-dither"))
@@ -70,13 +76,16 @@ int main (int argc, char **argv)
    printf("init\n");
    disp = XOpenDisplay(NULL);
    printf("load\n");
-   im = __imlib_LoadImage(file, NULL, 0, 0, 0);
+   im = imlib_load_image(file);
    if (!im)
-      printf("load fialed\n");
+     {
+	printf("load fialed\n");
+	exit(0);
+     }
    if (w < 0)
      {
-	w = im->w;
-	h = im->h;
+	w = imlib_image_get_width(im);
+	h = imlib_image_get_height(im);   
      }
    if (root)
       win = DefaultRootWindow(disp);
@@ -99,47 +108,54 @@ int main (int argc, char **argv)
    gettimeofday(&timev,NULL);
    sec1=(int)timev.tv_sec; /* and stores it so we can time outselves */
    usec1=(int)timev.tv_usec; /* we will use this to vary speed of rot */
-   __imlib_SetMaxXImageCount(disp, 5);  
+   __imlib_SetMaxXImageCount(disp, 0);
    if (loop)
      {
 	for (i = 0; i < w; i++)
 	  {
-	     static Pixmap m = 0;
-	     
-	     if (m)
-		XFreePixmap(disp, m);
-	     m = 0;
-	     /*	  
-	      if (((w - i) > 0) && ((((w - i) * h) / w) > 0))
-	      m = XCreatePixmap(disp, win, (w - i), ((w - i) * h) / w, 1);
-	      */	  __imlib_RenderImage(disp, im, 
-				      win, m, 
-				      vis, 
-				      DefaultColormap(disp, DefaultScreen(disp)), 
-				      depth, 
-				      0, 0, im->w, im->h, 
-				      0, 0, w - i, ((w - i) * h) / w,
-				      (char)aa, (char)dith, (char)blend, 0
-				      );
-	     if (m)
-	       {
-		  XShapeCombineMask(disp, win, ShapeBounding, 0, 0, m, ShapeSet);
-	       }
+	     imlib_render_image_on_drawable_at_size(im, disp, win, vis, 
+						    DefaultColormap(disp, DefaultScreen(disp)),
+						    depth, 
+						    aa, dith, blend, 
+						    0, 0,
+						    w - i, (((w - i) * h) / w),
+						    NULL);
 	     pixels += (w - i) * (((w - i) * h) / w);
+	  }
+     }
+   else if (interactive)
+     {
+	while (1)
+	  {
+	     int x, y, dum;
+	     unsigned int dui;
+	     Window rt;
+	     Imlib_Image im2;
+	     
+	     XQueryPointer(disp, win, &rt, &rt, &x, &y,
+			   &dum, &dum, &dui);
+	     im2 = imlib_create_image_from_drawable(disp, win, 0, vis, 
+						    DefaultColormap(disp, DefaultScreen(disp)),
+						    depth, x - (w / 2), y - (h / 2), w, h, 0);
+	     imlib_render_image_on_drawable(im2, disp, win, vis, 
+					    DefaultColormap(disp, DefaultScreen(disp)),
+					    depth, dith, 0, 32, 32, NULL);
+	     imlib_free_image_and_decache(im2);
 	  }
      }
    else
      {
-	__imlib_RenderImage(disp, im, 
-		    win, 0, 
-		    vis, 
-		    DefaultColormap(disp, DefaultScreen(disp)), 
-		    depth, 
-		    0, 0, im->w, im->h, 
-		    0, 0, w, h,
-		    (char)aa, (char)dith, (char)blend, 0
-		    );
-	pixels += (w) * (h);
+	for (i = 0; i < w; i++)
+	  {
+	     imlib_render_image_on_drawable_at_size(im, disp, win, vis, 
+						    DefaultColormap(disp, DefaultScreen(disp)),
+						    depth, 
+						    aa, dith, blend, 
+						    0, 0,
+						    w, h,
+						    NULL);
+	     pixels += w * h;
+	  }
      }
    gettimeofday(&timev,NULL);
    sec2=(int)timev.tv_sec; /* and stores it so we can time outselves */
@@ -157,7 +173,7 @@ int main (int argc, char **argv)
    printf("%3.3f Mpixels / sec\n", (double)(pixels) / (sec * 1000000));
    return 0;
 }
-#endif
+#else
 int main (int argc, char **argv)
 {
    Window win;
@@ -229,8 +245,8 @@ int main (int argc, char **argv)
      {	
 	for (i = 0; i < (argc - start); i++)
 	  {
-	     imlib_blend_image_onto_image(im[i], tmp, 0, 0, w, h, 0, 0, w, h);
-	     imlib_render_image_on_drawable(tmp, disp, win, vis, cm, depth, 
+/*	     imlib_blend_image_onto_image(im[i], tmp, 0, 0, w, h, 0, 0, w, h);*/
+	     imlib_render_image_on_drawable(im[i], disp, win, vis, cm, depth, 
 					    dith, 0, 
 					    x, y);
 	     memcpy(data2, data1, w * h *sizeof(DATA32));
@@ -238,3 +254,4 @@ int main (int argc, char **argv)
      }
    return 0;
 }
+#endif

@@ -66,7 +66,9 @@ _load_PNG (int *ww, int *hh, FILE *f)
   /* Palette -> RGB */
   if (info_ptr->color_type == PNG_COLOR_TYPE_RGB_ALPHA)
     png_set_expand(png_ptr);
-  /* 16bit color -> 8bit color */
+   /* we want ARGB */
+   png_set_bgr(png_ptr);
+   /* 16bit color -> 8bit color */
   png_set_strip_16(png_ptr);
   /* pack all pixels to byte boundaires */
   png_set_packing(png_ptr);

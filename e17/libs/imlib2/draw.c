@@ -43,7 +43,7 @@ __imlib_CreatePixmapsForImage(Display *d, Drawable w, Visual *v, int depth,
 	*m = mask;
      }
    __imlib_RenderImage(d, im, pmap, mask, v, cm, depth, sx, sy, sw, sh, 0, 0, 
-		       dw, dh, anitalias, hiq, 0, dither_mask);
+		       dw, dh, anitalias, hiq, 0, dither_mask, cmod);
    return 1;
 }
 

@@ -39,40 +39,40 @@ static DATA8 *_dither_b8;
 /*****************************************************************************/
 /* MACROS for plain RGBA -> RGB565 conversion */
 #define WRITE1_RGBA_RGB565(src, dest)        \
-*dest = ((*src << 8) & 0xf800) |           \
+*dest = ((*src >> 8) & 0xf800) |           \
         ((*src >> 5) & 0x7e0) |            \
-        ((*src >> 19) & 0x1f); dest++; src++
+        ((*src >> 3) & 0x1f); dest++; src++
 #ifdef __BIG_ENDIAN__
 #define WRITE2_RGBA_RGB565(src, dest)                   \
 {                                                       \
- *((DATA32 *)dest) = ((src[1] << 8) & 0xf800) |         \
+ *((DATA32 *)dest) = ((src[1] >> 8) & 0xf800) |         \
                      ((src[1] >> 5) & 0x7e0) |          \
-                     ((src[1] >> 19) & 0x1f) |          \
-                     ((src[0] << 24) & 0xf8000000) |    \
+                     ((src[1] >> 3) & 0x1f) |           \
+                     ((src[0] << 8) & 0xf8000000) |     \
                      ((src[0] << 11) & 0x7e00000) |     \
-                     ((src[0] >> 3) & 0x1f0000);        \
+                     ((src[0] << 13) & 0x1f0000);       \
                      dest += 2; src += 2;               \
 }
 #else
 #define WRITE2_RGBA_RGB565(src, dest)                    \
 {                                                        \
- *((DATA32 *)dest) = ((src[0] << 8) & 0xf800) |          \
+ *((DATA32 *)dest) = ((src[0] >> 8) & 0xf800) |          \
                      ((src[0] >> 5) & 0x7e0) |           \
-                     ((src[0] >> 19) & 0x1f) |           \
-                     ((src[1] << 24) & 0xf8000000) |     \
+                     ((src[0] >> 3) & 0x1f) |            \
+                     ((src[1] << 8) & 0xf8000000) |      \
                      ((src[1] << 11) & 0x7e00000) |      \
-                     ((src[1] >> 3) & 0x1f0000);         \
+                     ((src[1] << 13) & 0x1f0000);        \
                      dest += 2; src += 2;                \
 }
 #endif
 /*****************************************************************************/
 /* MACROS for dithered RGBA -> RGB565 conversion */
 #define DITHER_RGBA_565_LUT_R(num) \
-(_dither_r16[(((x + num) & 0x3) << 10) | ((y & 0x3) << 8) | ((src[num] >> 0 ) & 0xff)])
+(_dither_r16[(((x + num) & 0x3) << 10) | ((y & 0x3) << 8) | ((src[num] >> 16 ) & 0xff)])
 #define DITHER_RGBA_565_LUT_G(num) \
 (_dither_g16[(((x + num) & 0x3) << 10) | ((y & 0x3) << 8) | ((src[num] >> 8 ) & 0xff)])
 #define DITHER_RGBA_565_LUT_B(num) \
-(_dither_b16[(((x + num) & 0x3) << 10) | ((y & 0x3) << 8) | ((src[num] >> 16 ) & 0xff)])
+(_dither_b16[(((x + num) & 0x3) << 10) | ((y & 0x3) << 8) | ((src[num] >> 0 ) & 0xff)])
 
 #define WRITE1_RGBA_RGB565_DITHER(src, dest)                  \
 *dest = (DITHER_RGBA_565_LUT_R(0)) |                          \
@@ -110,40 +110,40 @@ static DATA8 *_dither_b8;
 /*****************************************************************************/
 /* MACROS for plain RGBA -> RGB555 conversion */
 #define WRITE1_RGBA_RGB555(src, dest)        \
-*dest = ((*src << 7) & 0x7c00) |           \
+*dest = ((*src >> 9) & 0x7c00) |           \
         ((*src >> 6) & 0x3e0) |            \
-        ((*src >> 19) & 0x1f); dest++; src++
+        ((*src >> 3) & 0x1f); dest++; src++
 #ifdef __BIG_ENDIAN__
 #define WRITE2_RGBA_RGB555(src, dest)                   \
 {                                                       \
- *((DATA32 *)dest) = ((src[1] << 7) & 0x7c00) |         \
+ *((DATA32 *)dest) = ((src[1] >> 9) & 0x7c00) |         \
                      ((src[1] >> 6) & 0x3e0) |          \
-                     ((src[1] >> 19) & 0x1f) |          \
-                     ((src[0] << 23) & 0x7c000000) |    \
+                     ((src[1] >> 3) & 0x1f) |          \
+                     ((src[0] << 7) & 0x7c000000) |    \
                      ((src[0] << 10) & 0x3e00000) |     \
-                     ((src[0] >> 3) & 0x1f0000);        \
+                     ((src[0] << 13) & 0x1f0000);        \
                      dest += 2; src += 2;               \
 }
 #else
 #define WRITE2_RGBA_RGB555(src, dest)                    \
 {                                                        \
- *((DATA32 *)dest) = ((src[0] << 7) & 0x7c00) |          \
+ *((DATA32 *)dest) = ((src[0] >> 9) & 0x7c00) |          \
                      ((src[0] >> 6) & 0x3e0) |           \
-                     ((src[0] >> 19) & 0x1f) |           \
-                     ((src[1] << 23) & 0x7c000000) |     \
+                     ((src[0] >> 3) & 0x1f) |           \
+                     ((src[1] << 7) & 0x7c000000) |     \
                      ((src[1] << 10) & 0x3e00000) |      \
-                     ((src[1] >> 3) & 0x1f0000);         \
+                     ((src[1] << 13) & 0x1f0000);         \
                      dest += 2; src += 2;                \
 }
 #endif
 /*****************************************************************************/
 /* MACROS for dithered RGBA -> RGB555 conversion */
 #define DITHER_RGBA_555_LUT_R(num) \
-(_dither_r16[(((x + num) & 0x3) << 10) | ((y & 0x3) << 8) | ((src[num] >> 0 ) & 0xff)])
+(_dither_r16[(((x + num) & 0x3) << 10) | ((y & 0x3) << 8) | ((src[num] >> 16 ) & 0xff)])
 #define DITHER_RGBA_555_LUT_G(num) \
 (_dither_g16[(((x + num) & 0x3) << 10) | ((y & 0x3) << 8) | ((src[num] >> 8 ) & 0xff)])
 #define DITHER_RGBA_555_LUT_B(num) \
-(_dither_b16[(((x + num) & 0x3) << 10) | ((y & 0x3) << 8) | ((src[num] >> 16 ) & 0xff)])
+(_dither_b16[(((x + num) & 0x3) << 10) | ((y & 0x3) << 8) | ((src[num] >> 0 ) & 0xff)])
 
 #define WRITE1_RGBA_RGB555_DITHER(src, dest)                  \
 *dest = (DITHER_RGBA_555_LUT_R(0)) |                          \
@@ -181,72 +181,72 @@ static DATA8 *_dither_b8;
 /*****************************************************************************/
 /* MACROS for plain RGBA -> RGB332 conversion */
 #define WRITE1_RGBA_RGB332(src, dest)        \
-*dest = _dither_color_lut[((*src >> 22) & 0x03) |                          \
+*dest = _dither_color_lut[((*src >> 6)  & 0x03) |                          \
                           ((*src >> 11) & 0x1c) |                          \
-                          ((*src)       & 0xe0)]; dest++; src++
+                          ((*src >> 16) & 0xe0)]; dest++; src++
 #ifdef __BIG_ENDIAN__
 #define WRITE2_RGBA_RGB332(src, dest)                                      \
 {                                                                          \
- *((DATA16 *)dest) = (_dither_color_lut[((src[1] >> 22) & 0x03) |          \
+ *((DATA16 *)dest) = (_dither_color_lut[((src[1] >> 6)  & 0x03) |          \
                                         ((src[1] >> 11) & 0x1c) |          \
-                                        ((src[1])       & 0xe0)]) |        \
-                     (_dither_color_lut[((src[0] >> 22) & 0x03) |          \
+                                        ((src[1] >> 16) & 0xe0)]) |        \
+                     (_dither_color_lut[((src[0] >> 6)  & 0x03) |          \
                                         ((src[0] >> 11) & 0x1c) |          \
-                                        ((src[0]        & 0xe0)] << 8);    \
+                                        ((src[0] >> 16) & 0xe0)] << 8);    \
                      dest += 2; src += 2;                                  \
 }
 #define WRITE4_RGBA_RGB332(src, dest)                                      \
 {                                                                          \
- *((DATA32 *)dest) = (_dither_color_lut[((src[3] >> 22) & 0x03) |          \
+ *((DATA32 *)dest) = (_dither_color_lut[((src[3] >> 6)  & 0x03) |          \
                                         ((src[3] >> 11) & 0x1c) |          \
-                                        ((src[3])       & 0xe0)]) |        \
-                     (_dither_color_lut[((src[2] >> 22) & 0x03) |          \
+                                        ((src[3] >> 16) & 0xe0)]) |        \
+                     (_dither_color_lut[((src[2] >> 6)  & 0x03) |          \
                                         ((src[2] >> 11) & 0x1c) |          \
-                                        ((src[2])       & 0xe0)] << 8) |   \
-                     (_dither_color_lut[((src[1] >> 22) & 0x03) |          \
+                                        ((src[2] >> 16) & 0xe0)] << 8) |   \
+                     (_dither_color_lut[((src[1] >> 6)  & 0x03) |          \
                                         ((src[1] >> 11) & 0x1c) |          \
-                                        ((src[1])       & 0xe0)] << 16) |  \
-                     (_dither_color_lut[((src[0] >> 22) & 0x03) |          \
+                                        ((src[1] >> 16) & 0xe0)] << 16) |  \
+                     (_dither_color_lut[((src[0] >> 6)  & 0x03) |          \
                                         ((src[0] >> 11) & 0x1c) |          \
-                                        ((src[0])       & 0xe0)] << 24);   \
+                                        ((src[0] >> 16) & 0xe0)] << 24);   \
                      dest += 4; src += 4;                                  \
 }
 #else
 #define WRITE2_RGBA_RGB332(src, dest)                                      \
 {                                                                          \
- *((DATA16 *)dest) = (_dither_color_lut[((src[0] >> 22) & 0x03) |          \
+ *((DATA16 *)dest) = (_dither_color_lut[((src[0] >> 6)  & 0x03) |          \
                                         ((src[0] >> 11) & 0x1c) |          \
-                                        ((src[0])       & 0xe0)]) |        \
-                     (_dither_color_lut[((src[1] >> 22) & 0x03) |          \
+                                        ((src[0] >> 16) & 0xe0)]) |        \
+                     (_dither_color_lut[((src[1] >> 6)  & 0x03) |          \
                                         ((src[1] >> 11) & 0x1c) |          \
-                                        ((src[1])       & 0xe0)] << 8);    \
+                                        ((src[1] >> 16) & 0xe0)] << 8);    \
                      dest += 2; src += 2;                                  \
 }
 #define WRITE4_RGBA_RGB332(src, dest)                                      \
 {                                                                          \
- *((DATA32 *)dest) = (_dither_color_lut[((src[0] >> 22) & 0x03) |          \
+ *((DATA32 *)dest) = (_dither_color_lut[((src[0] >> 6)  & 0x03) |          \
                                         ((src[0] >> 11) & 0x1c) |          \
-                                        ((src[0])       & 0xe0)]) |        \
-                     (_dither_color_lut[((src[1] >> 22) & 0x03) |          \
+                                        ((src[0] >> 16) & 0xe0)]) |        \
+                     (_dither_color_lut[((src[1] >> 6)  & 0x03) |          \
                                         ((src[1] >> 11) & 0x1c) |          \
-                                        ((src[1])       & 0xe0)] << 8) |   \
-                     (_dither_color_lut[((src[2] >> 22) & 0x03) |          \
+                                        ((src[1] >> 16) & 0xe0)] << 8) |   \
+                     (_dither_color_lut[((src[2] >> 6)  & 0x03) |          \
                                         ((src[2] >> 11) & 0x1c) |          \
-                                        ((src[2])       & 0xe0)] << 16) |  \
-                     (_dither_color_lut[((src[3] >> 22) & 0x03) |          \
+                                        ((src[2] >> 16) & 0xe0)] << 16) |  \
+                     (_dither_color_lut[((src[3] >> 6)  & 0x03) |          \
                                         ((src[3] >> 11) & 0x1c) |          \
-                                        ((src[3])       & 0xe0)] << 24);   \
+                                        ((src[3] >> 16) & 0xe0)] << 24);   \
                      dest += 4; src += 4;                                  \
 }
 #endif
 /*****************************************************************************/
 /* MACROS for dithered RGBA -> RGB332 conversion */
 #define DITHER_RGBA_332_LUT_R(num) \
-(_dither_r8[(((x + num) & 0x7) << 11) | ((y & 0x7) << 8) | ((src[num] >> 0 ) & 0xff)])
+(_dither_r8[(((x + num) & 0x7) << 11) | ((y & 0x7) << 8) | ((src[num] >> 16) & 0xff)])
 #define DITHER_RGBA_332_LUT_G(num) \
 (_dither_g8[(((x + num) & 0x7) << 11) | ((y & 0x7) << 8) | ((src[num] >> 8)  & 0xff)])
 #define DITHER_RGBA_332_LUT_B(num) \
-(_dither_b8[(((x + num) & 0x7) << 11) | ((y & 0x7) << 8) | ((src[num] >> 16) & 0xff)])
+(_dither_b8[(((x + num) & 0x7) << 11) | ((y & 0x7) << 8) | ((src[num] >> 0) & 0xff)])
 
 #define WRITE1_RGBA_RGB332_DITHER(src, dest)                                   \
 *dest = _dither_color_lut[(DITHER_RGBA_332_LUT_R(0)) |                         \
@@ -315,9 +315,9 @@ static DATA8 *_dither_b8;
 
 /*****************************************************************************/
 /* MACROS for plain RGBA -> RGB232 conversion */
-#define RGB232_BSHIFT >> 22
+#define RGB232_BSHIFT >> 6
 #define RGB232_GSHIFT >> 11
-#define RGB232_RSHIFT >> 1
+#define RGB232_RSHIFT >> 17
 #define RGB232_BMASK & 0x03
 #define RGB232_GMASK & 0x1c
 #define RGB232_RMASK & 0x60
@@ -384,11 +384,11 @@ static DATA8 *_dither_b8;
 /*****************************************************************************/
 /* MACROS for dithered RGBA -> RGB232 conversion */
 #define DITHER_RGBA_232_LUT_R(num) \
-(_dither_r8[(((x + num) & 0x7) << 11) | ((y & 0x7) << 8) | ((src[num] >> 0 ) & 0xff)])
+(_dither_r8[(((x + num) & 0x7) << 11) | ((y & 0x7) << 8) | ((src[num] >> 16) & 0xff)])
 #define DITHER_RGBA_232_LUT_G(num) \
 (_dither_g8[(((x + num) & 0x7) << 11) | ((y & 0x7) << 8) | ((src[num] >> 8)  & 0xff)])
 #define DITHER_RGBA_232_LUT_B(num) \
-(_dither_b8[(((x + num) & 0x7) << 11) | ((y & 0x7) << 8) | ((src[num] >> 16) & 0xff)])
+(_dither_b8[(((x + num) & 0x7) << 11) | ((y & 0x7) << 8) | ((src[num] >> 0) & 0xff)])
 
 #define WRITE1_RGBA_RGB232_DITHER(src, dest)                                   \
 *dest = _dither_color_lut[(DITHER_RGBA_232_LUT_R(0)) |                         \
@@ -457,9 +457,9 @@ static DATA8 *_dither_b8;
 
 /*****************************************************************************/
 /* MACROS for plain RGBA -> RGB222 conversion */
-#define RGB222_BSHIFT >> 22
+#define RGB222_BSHIFT >> 6
 #define RGB222_GSHIFT >> 12
-#define RGB222_RSHIFT >> 2
+#define RGB222_RSHIFT >> 18
 #define RGB222_BMASK & 0x03
 #define RGB222_GMASK & 0x0c
 #define RGB222_RMASK & 0x30
@@ -526,11 +526,11 @@ static DATA8 *_dither_b8;
 /*****************************************************************************/
 /* MACROS for dithered RGBA -> RGB222 conversion */
 #define DITHER_RGBA_222_LUT_R(num) \
-(_dither_r8[(((x + num) & 0x7) << 11) | ((y & 0x7) << 8) | ((src[num] >> 0 ) & 0xff)])
+(_dither_r8[(((x + num) & 0x7) << 11) | ((y & 0x7) << 8) | ((src[num] >> 16) & 0xff)])
 #define DITHER_RGBA_222_LUT_G(num) \
 (_dither_g8[(((x + num) & 0x7) << 11) | ((y & 0x7) << 8) | ((src[num] >> 8)  & 0xff)])
 #define DITHER_RGBA_222_LUT_B(num) \
-(_dither_b8[(((x + num) & 0x7) << 11) | ((y & 0x7) << 8) | ((src[num] >> 16) & 0xff)])
+(_dither_b8[(((x + num) & 0x7) << 11) | ((y & 0x7) << 8) | ((src[num] >> 0) & 0xff)])
 
 #define WRITE1_RGBA_RGB222_DITHER(src, dest)                                   \
 *dest = _dither_color_lut[(DITHER_RGBA_222_LUT_R(0)) |                         \
@@ -599,9 +599,9 @@ static DATA8 *_dither_b8;
 
 /*****************************************************************************/
 /* MACROS for plain RGBA -> RGB221 conversion */
-#define RGB221_BSHIFT >> 23
+#define RGB221_BSHIFT >> 7
 #define RGB221_GSHIFT >> 13
-#define RGB221_RSHIFT >> 3
+#define RGB221_RSHIFT >> 19
 #define RGB221_BMASK & 0x01
 #define RGB221_GMASK & 0x06
 #define RGB221_RMASK & 0x18
@@ -668,11 +668,11 @@ static DATA8 *_dither_b8;
 /*****************************************************************************/
 /* MACROS for dithered RGBA -> RGB221 conversion */
 #define DITHER_RGBA_221_LUT_R(num) \
-(_dither_r8[(((x + num) & 0x7) << 11) | ((y & 0x7) << 8) | ((src[num] >> 0 ) & 0xff)])
+(_dither_r8[(((x + num) & 0x7) << 11) | ((y & 0x7) << 8) | ((src[num] >> 16) & 0xff)])
 #define DITHER_RGBA_221_LUT_G(num) \
 (_dither_g8[(((x + num) & 0x7) << 11) | ((y & 0x7) << 8) | ((src[num] >> 8)  & 0xff)])
 #define DITHER_RGBA_221_LUT_B(num) \
-(_dither_b8[(((x + num) & 0x7) << 11) | ((y & 0x7) << 8) | ((src[num] >> 16) & 0xff)])
+(_dither_b8[(((x + num) & 0x7) << 11) | ((y & 0x7) << 8) | ((src[num] >> 0) & 0xff)])
 
 #define WRITE1_RGBA_RGB221_DITHER(src, dest)                                   \
 *dest = _dither_color_lut[(DITHER_RGBA_221_LUT_R(0)) |                         \
@@ -741,9 +741,9 @@ static DATA8 *_dither_b8;
 
 /*****************************************************************************/
 /* MACROS for plain RGBA -> RGB121 conversion */
-#define RGB121_BSHIFT >> 23
+#define RGB121_BSHIFT >> 7
 #define RGB121_GSHIFT >> 13
-#define RGB121_RSHIFT >> 4
+#define RGB121_RSHIFT >> 20
 #define RGB121_BMASK & 0x01
 #define RGB121_GMASK & 0x06
 #define RGB121_RMASK & 0x08
@@ -810,11 +810,11 @@ static DATA8 *_dither_b8;
 /*****************************************************************************/
 /* MACROS for dithered RGBA -> RGB121 conversion */
 #define DITHER_RGBA_121_LUT_R(num) \
-(_dither_r8[(((x + num) & 0x7) << 11) | ((y & 0x7) << 8) | ((src[num] >> 0 ) & 0xff)])
+(_dither_r8[(((x + num) & 0x7) << 11) | ((y & 0x7) << 8) | ((src[num] >> 16) & 0xff)])
 #define DITHER_RGBA_121_LUT_G(num) \
 (_dither_g8[(((x + num) & 0x7) << 11) | ((y & 0x7) << 8) | ((src[num] >> 8)  & 0xff)])
 #define DITHER_RGBA_121_LUT_B(num) \
-(_dither_b8[(((x + num) & 0x7) << 11) | ((y & 0x7) << 8) | ((src[num] >> 16) & 0xff)])
+(_dither_b8[(((x + num) & 0x7) << 11) | ((y & 0x7) << 8) | ((src[num] >> 0) & 0xff)])
 
 #define WRITE1_RGBA_RGB121_DITHER(src, dest)                                   \
 *dest = _dither_color_lut[(DITHER_RGBA_121_LUT_R(0)) |                         \
@@ -883,9 +883,9 @@ static DATA8 *_dither_b8;
 
 /*****************************************************************************/
 /* MACROS for plain RGBA -> RGB111 conversion */
-#define RGB111_BSHIFT >> 23
+#define RGB111_BSHIFT >> 7
 #define RGB111_GSHIFT >> 14
-#define RGB111_RSHIFT >> 5
+#define RGB111_RSHIFT >> 21
 #define RGB111_BMASK & 0x01
 #define RGB111_GMASK & 0x02
 #define RGB111_RMASK & 0x30
@@ -952,11 +952,11 @@ static DATA8 *_dither_b8;
 /*****************************************************************************/
 /* MACROS for dithered RGBA -> RGB111 conversion */
 #define DITHER_RGBA_111_LUT_R(num) \
-(_dither_r8[(((x + num) & 0x7) << 11) | ((y & 0x7) << 8) | ((src[num] >> 0 ) & 0xff)])
+(_dither_r8[(((x + num) & 0x7) << 11) | ((y & 0x7) << 8) | ((src[num] >> 16) & 0xff)])
 #define DITHER_RGBA_111_LUT_G(num) \
 (_dither_g8[(((x + num) & 0x7) << 11) | ((y & 0x7) << 8) | ((src[num] >> 8)  & 0xff)])
 #define DITHER_RGBA_111_LUT_B(num) \
-(_dither_b8[(((x + num) & 0x7) << 11) | ((y & 0x7) << 8) | ((src[num] >> 16) & 0xff)])
+(_dither_b8[(((x + num) & 0x7) << 11) | ((y & 0x7) << 8) | ((src[num] >> 0) & 0xff)])
 
 #define WRITE1_RGBA_RGB111_DITHER(src, dest)                                   \
 *dest = _dither_color_lut[(DITHER_RGBA_111_LUT_R(0)) |                         \
@@ -1073,9 +1073,7 @@ src++;
 /*****************************************************************************/
 /* MACROS for plain RGBA -> RGB8888 conversion */
 #define WRITE1_RGBA_RGB8888(src, dest)             \
-*dest = ((*src >> 16)  & 0x0000ff) |              \
-        ((*src << 0)   & 0x00ff00) |              \
-        ((*src << 16)  & 0xff0000); dest++; src++;
+*dest = *src; dest++; src++;
 
 /*****************************************************************************/
 /* Actual rendering routines                                                 */
@@ -1085,9 +1083,9 @@ src++;
 /*****************************************************************************/
 /* MACROS for plain RGBA -> RGB888 conversion */
 #define WRITE1_RGBA_RGB888(src, dest)             \
-*dest = ((*src >> 16)  & 0xff); dest++;       \
+*dest = ((*src >> 0)   & 0xff); dest++;       \
 *dest = ((*src >> 8)   & 0xff); dest++;       \
-*dest = ((*src >> 0)   & 0xff); dest++; src++;
+*dest = ((*src >> 16)  & 0xff); dest++; src++;
 
 void
 __imlib_RGBASetupContext(Context *ct)

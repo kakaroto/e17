@@ -286,16 +286,20 @@ imlib_render_image_on_drawable(Imlib_Image image, Display *display,
 			       Colormap colormap, int depth,
 			       char dithered_rendering,
 			       char alpha_blending,
-			       int x, int y)
+			       int x, int y,
+			       Imlib_Color_Modifier color_modifier)
 {
    ImlibImage *im;
-
+   ImlibColorModifier *cm;
+   
    CAST_IMAGE(im, image);
+   cm = (ImlibColorModifier *)color_modifier;
    __imlib_RenderImage(display, im, drawable, 0, visual, colormap, depth, 
 		       0, 0, im->w, im->h, x, y, im->w, im->h,
 		       0,
 		       dithered_rendering,
-		       alpha_blending, 0);
+		       alpha_blending, 0, 
+		       cm);
 }
 
 void
@@ -305,16 +309,20 @@ imlib_render_image_on_drawable_at_size(Imlib_Image image, Display *display,
 				       char anti_aliased_scaling,
 				       char dithered_rendering,
 				       char alpha_blending,
-				       int x, int y, int width, int height)
+				       int x, int y, int width, int height,
+				       Imlib_Color_Modifier color_modifier)
 {
    ImlibImage *im;
+   ImlibColorModifier *cm;
 
    CAST_IMAGE(im, image);
+   cm = (ImlibColorModifier *)color_modifier;
    __imlib_RenderImage(display, im, drawable, 0, visual, colormap, depth, 
-		       0, 0, width, height, x, y, width, height,
+		       0, 0, im->w, im->h, x, y, width, height,
 		       anti_aliased_scaling,
 		       dithered_rendering,
-		       alpha_blending, 0);
+		       alpha_blending, 0, 
+		       cm);
 }
 
 void 
@@ -331,8 +339,12 @@ imlib_blend_image_onto_image(Imlib_Image source_image,
    CAST_IMAGE(im_dst, destination_image);
    /* FIXME: doesnt do clipping in any way or form - must fix */
    
-   __imlib_BlendRGBAToRGBA(im_src->data, 0, im_dst->data, 0, 
-			   source_width, source_height);
+   if (IMAGE_HAS_ALPHA(im_src))
+      __imlib_BlendRGBAToRGBA(im_src->data, 0, im_dst->data, 0, 
+			      source_width, source_height);
+   else       
+      __imlib_BlendRGBAToRGB(im_src->data, 0, im_dst->data, 0, 
+			     source_width, source_height);
 }
 
 Imlib_Image 
@@ -382,7 +394,7 @@ imlib_create_image_from_drawable(Display *display,
 				 Pixmap mask, Visual *visual,
 				 Colormap colormap, int depth,
 				 int x, int y,
-				 int width, int height)
+				 int width, int height, char need_to_grab_x)
 {
    ImlibImage *im;
    char domask = 0;
@@ -390,10 +402,49 @@ imlib_create_image_from_drawable(Display *display,
    if (mask)
       domask = 1;
    im = __imlib_CreateImage(width, height, NULL);
-   im->data = __imlib_GrabDrawableToRGBA(display, drawable, mask, visual,
-					 colormap, depth, x, y, width, height,
-					 domask);
+   im->data = malloc(width * height * sizeof(DATA32));
+   __imlib_GrabDrawableToRGBA(im->data, 0, 0, width, height,
+			      display, drawable, mask, visual,
+			      colormap, depth, x, y, width, height,
+			      domask, need_to_grab_x);
    return (Imlib_Image)im;
+}
+
+char
+imlib_copy_drawable_to_image(Imlib_Image image, Display *display,
+			     Drawable drawable, Pixmap mask, Visual *visual,
+			     Colormap colormap, int depth, int x, int y,
+			     int width, int height,
+			     int destination_x, int destination_y,
+			     char need_to_grab_x)
+{
+   ImlibImage *im;
+   char domask = 0;
+   
+   if (mask)
+      domask = 1;   
+   CAST_IMAGE(im, image);
+   if (destination_x < 0)
+     {
+	width += destination_x;
+	destination_x = 0;
+     }
+   else if (destination_x >= im->w)
+      return 0;
+   if (destination_y < 0)
+     {
+	height += destination_y;
+	destination_y = 0;
+     }
+   else if (destination_y >= im->h)
+      return 0;
+   if ((width <= 0) || (height <= 0))
+      return 0;
+   return __imlib_GrabDrawableToRGBA(im->data, destination_x, destination_y,
+				     im->w, im->h, display, drawable, 
+				     mask, visual, colormap, depth, 
+				     x, y, width, height,
+				     domask, need_to_grab_x);   
 }
 
 Imlib_Image 

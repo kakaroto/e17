@@ -82,14 +82,16 @@ void imlib_render_image_on_drawable(Imlib_Image image, Display *display,
 				    Colormap colormap, int depth,
 				    char dithered_rendering,
 				    char alpha_blending,
-				    int x, int y);
+				    int x, int y,
+				    Imlib_Color_Modifier color_modifier);
 void imlib_render_image_on_drawable_at_size(Imlib_Image image, Display *display,
 					    Drawable drawable, Visual *visual,
 					    Colormap colormap, int depth,
 					    char anti_aliased_scaling,
 					    char dithered_rendering,
 					    char alpha_blending,
-					    int x, int y, int width, int height);
+					    int x, int y, int width, int height,
+					    Imlib_Color_Modifier color_modifier);
 /* rgba space ops */
 void imlib_blend_image_onto_image(Imlib_Image source_image,
 				  Imlib_Image destination_image,
@@ -103,6 +105,17 @@ void imlib_blend_image_onto_image(Imlib_Image source_image,
 /* FIXME: */
 /* draw line, polygon, rect - with option of drawing in rgb or alpha or both */
 /* apply alpha of one image to another */
+void imlib_image_updates_reset(Imlib_Image image);
+void imlib_image_updates_flush_to_drawable(Imlib_Image image, Display *display,
+					   Drawable drawable, Visual *visual,
+					   Colormap colormap, int depth,
+					   char dithered_rendering,
+					   char alpha_blending,
+					   int x, int y, 
+					   int width, int height,
+					   Imlib_Color_Modifier color_modifier);
+void imlibimage_updates_add(Imlib_Image image, int x, int y, 
+			    int width, int height);
 
 #endif
 
@@ -117,8 +130,17 @@ Imlib_Image imlib_create_image_from_drawable(Display *display,
 					     Pixmap mask, Visual *visual, 
 					     Colormap colormap, int depth,
 					     int x, int y, 
-					     int width, int height);
+					     int width, int height,
+					     char need_to_grab_x);
 Imlib_Image imlib_clone_image(Imlib_Image image);
+char imlib_copy_drawable_to_image(Imlib_Image image, Display *display,
+				  Drawable drawable,
+				  Pixmap mask, Visual *visual,
+				  Colormap colormap, int depth,
+				  int x, int y,
+				  int width, int height,
+				  int destination_x, int destination_y,
+				  char need_to_grab_x);
 
 #if 0
 Imlib_image imlib_create_cropped_image(Imlib_Image image,
