@@ -1,0 +1,75 @@
+#include "e17/macros/button-macros.edc"
+
+fonts {
+    font, "e17/fonts/Vera.ttf" "Vera";
+}
+
+images {
+#include "e17/bits/images/images.edc"
+}
+
+collections {
+#include "e17/bits/button-groups.edc"
+#include "e17/bits/entry-groups.edc"
+#include "e17/bits/menu-groups.edc"
+#include "e17/bits/paned-groups.edc"
+#include "e17/bits/progressbar-groups.edc"
+#include "e17/bits/scrollbar-groups.edc"
+#include "e17/bits/tree-groups.edc"
+#include "e17/bits/separator-groups.edc"
+#include "e17/bits/window-groups.edc"
+}
+
+data {
+    item, "/button/group" "button";
+    item, "/cell/group" "button";
+    item, "/radio/group" "radiobutton";
+    item, "/check/group" "checkbutton";
+
+    item, "/entry/group" "entry";
+    item, "/entry/color/a" "255";
+    item, "/entry/font" "Vera";
+    item, "/entry/font_size" "10";
+    item, "/cursor/group" "vline";
+
+    item, "/hseparator/group" "hline";
+    item, "/vseparator/group" "vline";
+
+    item, "/grabber_vertical/group" "vgrabber";
+    item, "/grabber_horizontal/group" "hgrabber";
+
+    item, "/text/color/a" "255";
+    item, "/text/font" "Vera";
+    item, "/text/font_size" "10";
+    item, "/text/style" "none";
+
+    item, "/node/check/group" "treenode";
+
+    item, "/progressbar_bar/group" "progressbar_bar";
+    item, "/progressbar/group" "progressbar";
+
+    item, "/combo/button_decrement/group" "vscroll-down";
+    item, "/combo/button_increment/group" "vscroll-up";
+    item, "/spinner/button_decrement/group" "vscroll-down";
+    item, "/spinner/button_increment/group" "vscroll-up";
+    item, "/spinner/acceleration" "5";
+    item, "/spinner/velocity" "5";
+    item, "/vscrollbar/button_decrement/group" "vscroll-down";
+    item, "/vscrollbar/button_increment/group" "vscroll-up";
+    item, "/hscrollbar/button_decrement/group" "hscroll-left";
+    item, "/hscrollbar/button_increment/group" "hscroll-right";
+
+    item, "/imenu/group" "dialog";
+    item, "/menubar/group" "menubar";
+    item, "/menuitem/group" "menuitem";
+
+    item, "/tooltip/group" "window";
+    item, "/window/group" "window";
+
+    item, "/theme/author" "dj2 (www.everburning.com)";
+    item, "/theme/font_path" "fonts";
+    item, "/theme/license" 
+        "Creative Commons License: http://creativecommons.org/licenses/bg-sa/1.0";
+    item, "/theme/name" "e17";
+}
+
