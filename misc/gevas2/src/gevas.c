@@ -807,9 +807,11 @@ static gint gevas_event(GtkWidget * widget, GdkEvent * event)
     
 
     
-	if (event->any.window == widget->window) {
+	if (event->any.window == widget->window)
+    {
 		if (GTK_WIDGET_CLASS(parent_class)->event)
         {
+//            fprintf( stderr, "GEVAS: passing to parent" );
             return (*GTK_WIDGET_CLASS(parent_class)->event) (widget, event);
         }
 		else
@@ -1276,7 +1278,7 @@ static gint gevas_view_redraw_cb(gpointer data)
     if(!GTK_WIDGET_MAPPED(ev))  
         return FALSE;
     
-    fprintf(stderr,"gevas_view_redraw_cb!\n");
+    fprintf(stderr,"gevas_view_redraw_cb! gevas:%p\n", gevas);
 
     evas_obscured_clear(ev->evas);
     evas_render(ev->evas);
@@ -1318,7 +1320,7 @@ void gevas_queue_redraw(GtkgEvas * gevas)
     if( !gevas || !GTK_WIDGET_REALIZED(gevas) || !GTK_WIDGET_MAPPED(gevas) )
         return;
 
-//    fprintf(stderr,"gevas_queue_redraw() \n");
+    fprintf(stderr,"gevas_queue_redraw() gevas:%p \n", gevas );
     
     /* This call seems to be much slower to use.*/
     /*gtk_widget_queue_draw( gevas );*/

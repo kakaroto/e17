@@ -81,6 +81,7 @@ extern "C" {
 
 	guint gevastwin_get_type(void);
 	GtkgEvasTwin *gevastwin_new();
+    void gevastwin_sync_obj( GtkgEvasTwin* ev, GtkgEvasObj* object );
 
 
 #define GEVASTWIN_BACKWARD_LOOKUP_KEY "___gevastwin_backward_key"

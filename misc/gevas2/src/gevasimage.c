@@ -291,7 +291,9 @@ static void gevasimage_set_arg(GtkObject * object, GtkArg * arg, guint arg_id)
                     evas_object_image_fill_set( o, 0, 0, w, h );
                     evas_object_resize( o, w, h );
                 }
-                fprintf(stderr,"ARG_IMAGENAME(s): %s %lx\n", ev->image_filename, EVAS(ev) );
+                fprintf(stderr,"ARG_IMAGENAME(s): %s gevas:%p\n",
+                        ev->image_filename,
+                        GTK_GEVASOBJ(ev)->gevas );
             }
             else
             {

@@ -186,17 +186,20 @@ void _gevastwin_sync_obj(GtkgEvasTwin * ev, GtkgEvasObj * obj)
 {
 	double main_x = 0, main_y = 0, main_w = 0, main_h = 0;
 
-	if (ev->mainobj && ev->auxobj) {
+	if (ev->mainobj && ev->auxobj)
+    {
 		gevasobj_get_geometry(ev->mainobj, &main_x, &main_y, &main_w, &main_h);
 
-		if (obj == ev->auxobj) {
+		if (obj == ev->auxobj)
+        {
 //			ev->aux_obj_move(ev->auxobj, main_x + (ev->ax?main_w:0) + ev->ox, main_y + (ev->ay?main_h:0) + ev->oy);
 
 			ev->aux_obj_move(ev->auxobj, main_x, main_y + main_h + 5);
 			gevasobj_queue_redraw(ev->auxobj);
 		}
 
-		if (obj == ev->mainobj) {
+		if (obj == ev->mainobj)
+        {
 			double ax = 0, ay = 0, ah = 0, aw = 0;
 
 			gevasobj_get_geometry(ev->auxobj, &ax, &ay, &aw, &ah);
@@ -206,6 +209,15 @@ void _gevastwin_sync_obj(GtkgEvasTwin * ev, GtkgEvasObj * obj)
 			gevasobj_queue_redraw(ev->mainobj);
 		}
 	}
+}
+
+void gevastwin_sync_obj( GtkgEvasTwin* ev, GtkgEvasObj* object )
+{
+	g_return_if_fail(object != NULL);
+	g_return_if_fail(GTK_IS_GEVASOBJ(object));
+	g_return_if_fail(ev != NULL);
+	g_return_if_fail(GTK_IS_GEVASTWIN(ev));
+    _gevastwin_sync_obj( ev, object );
 }
 
 void _gevastwin_move_xxx(GtkgEvasObj * object, double x, double y)
