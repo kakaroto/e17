@@ -59,7 +59,7 @@ void term_redraw(void *data) {
 	 continue;
       }
       /* printf("Rendering c-row %d  g-row %d\n",i2,i); */
-      for(j = 0; j < term->tcanvas->cols; j++) {	 
+      for(j = 0; j < term->tcanvas->cols; j++) {
 	 tgl = &term->tcanvas->grid[j + 
 				    (term->tcanvas->cols * 
 				     (i2)
@@ -223,11 +223,11 @@ void term_clear_area(Term *term, int x1, int y1, int x2, int y2) {
    Term_TGlyph *tgl;
    /* TODO: Finalize this shit before shipping code out */
    x1--;y1--;x2--;y2--;
-   if(x1 < 0) x1 = 0;
-   if(y2 < 0) x1 = 0;
-   if(x1 < 0) x1 = 0;
-   if(y2 < 0) x1 = 0;   
-   //printf("Clearing: %d %d, %d %d\n",x1,y1+term->tcanvas->scroll_region_start,x2,y2+term->tcanvas->scroll_region_start);
+   if(x1 < 0) x1 = 0; if(x1 > term->tcanvas->cols) x1 = term->tcanvas->cols;
+   if(y1 < 0) y1 = 0; if(y1 > term->tcanvas->rows) y1 = term->tcanvas->rows;
+   if(x2 < 0) x2 = 0; if(x2 > term->tcanvas->cols) x2 = term->tcanvas->cols;
+   if(y2 < 0) y2 = 0; if(y2 > term->tcanvas->rows) y2 = term->tcanvas->rows;  
+   printf("Clearing: %d %d, %d %d\n",x1,y1+term->tcanvas->scroll_region_start,x2,y2+term->tcanvas->scroll_region_start);
    for(i = y1; i <= y2; i++) {      
       for(j = x1; j <= x2; j++) {
 	 tgl = &term->tcanvas->grid[j + (term->tcanvas->cols * (i + term->tcanvas->scroll_region_start))];
@@ -301,7 +301,7 @@ void term_scroll_up(Term *term, int rows) {
    }
 
 
-   
+   return;
    
    if(term->tcanvas->scroll_in_region) {
       printf("SCROLL IN REGION!!!!!!!!!!!!!!!!!!!!\n");
