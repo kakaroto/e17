@@ -1,3 +1,11 @@
+Sun Jun 18 03:47:58 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Okay. Thanks to richlowe and me, the bg setting is getting
+	pretty cool now. It uses eesh under E, but if it can't find it,
+	nicely falls back to X calls. There are more options to come
+	(choosing which desktop etc), but for now, things are pretty sweet
+	;-)
+
 Sun Jun 18 01:29:16 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* The first part of some background setting code from richlowe 
