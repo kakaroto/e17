@@ -2221,7 +2221,7 @@ Epplet_textbox_handle_keyevent(XEvent * ev, Epplet_gadget gadget)
 
 	   Epplet_textbox_textsize(g, &text_width, &h, g->contents);
 
-	   if ((g->to_cursor + g->x_offset) >= (g->w - CRSR_WDTH))
+	   if ((int) (g->to_cursor + g->x_offset) >= (g->w - CRSR_WDTH))
 	     {
 
 		s[0] = *(g->contents + g->cursor_pos + 1);
@@ -2319,14 +2319,12 @@ Epplet_textbox_handle_keyevent(XEvent * ev, Epplet_gadget gadget)
 	     free(g->contents);
 	     g->contents = s;
 
-	     if (g->cursor_pos >= 0)
+	     if (g->cursor_pos > 0)
 		g->cursor_pos--;
 	  }
      }
    else
      {
-	char                temp_char, *s;
-
 	if (g->contents != NULL)
 	  {
 	     g->contents =
