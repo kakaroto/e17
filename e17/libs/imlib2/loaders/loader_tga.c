@@ -36,7 +36,7 @@ char                save(ImlibImage * im, ImlibProgressFunction progress,
 void                formats(ImlibLoader * l);
 
 /* flip an inverted image - see RLE reading below */
-static DATA32      *flip(DATA32 * in, int w, int h);
+static void         tgaflip(DATA32 * in, int w, int h);
 
 /* TGA pixel formats */
 #define TGA_TYPE_MAPPED      1
@@ -241,8 +241,6 @@ load(ImlibImage * im, ImlibProgressFunction progress,
 
    if (!footer_present)
      {
-        fclose(fp);
-        return 0;
      }
 
    /* now read the header */
@@ -262,7 +260,7 @@ load(ImlibImage * im, ImlibProgressFunction progress,
    /* now parse the header */
 
    /* this flag indicated bottom-up pixel storage */
-   vinverted = header.descriptor ^ TGA_DESC_VERTICAL;
+   vinverted = !(header.descriptor & TGA_DESC_VERTICAL);
 
    switch (header.imageType)
      {
@@ -373,9 +371,9 @@ load(ImlibImage * im, ImlibProgressFunction progress,
                   /* point dataptr at the beginning of the row */
                   if (vinverted)
                      /* some TGA's are stored upside-down! */
-                     dataptr = im->data + (im->h - (y + 1)) * im->w;
+                     dataptr = im->data + ((im->h - y - 1) * im->w);
                   else
-                     dataptr = im->data + y * im->w;
+                     dataptr = im->data + (y * im->w);
 
                   for (x = 0; x < im->w; x++)   /* for each pixel in the row */
                     {
@@ -384,7 +382,8 @@ load(ImlibImage * im, ImlibProgressFunction progress,
 
                               /* 32-bit BGRA pixels */
                            case 32:
-                              WRITE_RGBA(dataptr, *(bufptr + 2),        /* R */
+                              WRITE_RGBA(dataptr,
+					 *(bufptr + 2), /* R */
                                          *(bufptr + 1), /* G */
                                          *(bufptr + 0), /* B */
                                          *(bufptr + 3)  /* A */
@@ -395,7 +394,8 @@ load(ImlibImage * im, ImlibProgressFunction progress,
 
                               /* 24-bit BGR pixels */
                            case 24:
-                              WRITE_RGBA(dataptr, *(bufptr + 2),        /* R */
+                              WRITE_RGBA(dataptr,
+					 *(bufptr + 2), /* R */
                                          *(bufptr + 1), /* G */
                                          *(bufptr + 0), /* B */
                                          (char)0xff     /* A */
@@ -406,41 +406,26 @@ load(ImlibImage * im, ImlibProgressFunction progress,
 
                               /* 8-bit grayscale */
                            case 8:
-                              WRITE_RGBA(dataptr, *bufptr,      /* grayscale */
-                                         *bufptr, *bufptr, (char)0xff);
+                              WRITE_RGBA(dataptr, /* grayscale */
+					 *bufptr,
+                                         *bufptr, 
+					 *bufptr, (char)0xff);
                               dataptr++;
                               bufptr += 1;
                               break;
                          }
 
                     }           /* end for (each pixel) */
-
-                  /* report progress every row */
-                  if (progress)
-                    {
-                       char                per;
-                       int                 l;
-
-                       per = (char)((100 * y) / im->h);
-                       if (((per - pper) >= progress_granularity) ||
-                           (y == (im->h - 1)))
-                         {
-                            l = y - pl;
-                            if (!progress(im, per, 0, (y - l), im->w, l))
-                              {
-                                 free(buf);
-                                 fclose(fp);
-                                 return 2;
-                              }
-                            pper = per;
-                            pl = y;
-                         }
-                    }
-
-               }                /* end for (each row) */
-
-          }                     /* end if (RLE) */
-
+	       }
+	     if (progress)
+	       {
+		  char                per;
+		  int                 l;
+		  
+		  progress(im, 100, 0, 0, im->w, im->h);
+	       } /* end for (each row) */
+          }
+	/* end if (!RLE) */
         /* decode RLE compressed data */
         else
           {
@@ -539,62 +524,21 @@ load(ImlibImage * im, ImlibProgressFunction progress,
                               }
                          }
                     }           /* end if (raw packet) */
-
-                  /* report progress every packet */
-                  if (progress)
-                    {
-                       char                per;
-                       int                 l;
-
-                       /* compute an approximate y value */
-                       /* can't be exact since packets don't necessarily */
-                       /* end at the end of a row */
-                       y = (dataptr - im->data) / im->w;
-
-                       per = (char)((100 * y) / im->h);
-
-                       if (((per - pper) >= progress_granularity) ||
-                           (y == (im->h - 1)))
-                         {
-                            l = y - pl;
-                            if (!progress(im, per, 0, (y - l), im->w, l))
-                              {
-                                 free(buf);
-                                 fclose(fp);
-                                 return 2;
-                              }
-                            pper = per;
-                            pl = y;
-                         }
-                    }           /* end progress report */
-
                }                /* end for (each packet) */
-
              /* must now flip a bottom-up image */
-
-             /* This is the best of several ugly implementations
-              * I considered. It's not very good since the image
-              * will be upside-down throughout the loading process.
-              * This could be done in-line with the de-RLE code
-              * above, but that would be messy to code. There's
-              * probably a better way... */
-
-             if (vinverted)
-               {
-                  im->data = flip(im->data, im->w, im->h);
-                  if (!im->data)
-                    {
-                       fclose(fp);
-                       free(buf);
-                       return 0;
-                    }
-               }
-
-          }                     /* end if (image is RLE) */
-
+             if (vinverted) tgaflip(im->data, im->w, im->h);
+	     if (progress)
+	       {
+		  char                per;
+		  int                 l;
+		  
+		  progress(im, 100, 0, 0, im->w, im->h);
+	       } /* end for (each row) */
+          }
+	/* end if (image is RLE) */
         free(buf);
-
-     }                          /* end if (loading pixel data) */
+     }
+   /* end if (loading pixel data) */
 
    fclose(fp);
    return 1;
@@ -617,31 +561,27 @@ formats(ImlibLoader * l)
 
 /**********************/
 
-/* flip a DATA32 image block vertically
- * by allocating a new block, then copying
- * the rows in reverse order
- */
+/* flip a DATA32 image block vertically in place */
 
-static DATA32      *
-flip(DATA32 * in, int w, int h)
+static void
+tgaflip (DATA32 * in, int w, int h)
 {
-   int                 adv, adv2, i;
-   DATA32             *out;
+   DATA32 *adv, *adv2;
+   int x, y;
 
-   out = malloc(w * h * sizeof(DATA32));
-   if (!out)
-      return NULL;
+   adv = in;
+   adv2 = in + (w * (h - 1));
 
-   adv = 0;
-   adv2 = w * h;
-
-   for (i = 0; i < h; i++)
+   for (y = 0; y < (h / 2); y++)
      {
+	DATA32 tmp;
+	for (x = 0; x < w; x++)
+	  {
+	     tmp = adv[x];
+	     adv[x] = adv2[x];
+	     adv2[x] = tmp;
+	  }
         adv2 -= w;
-        memmove(out + adv, in + adv2, w * sizeof(DATA32));
         adv += w;
      }
-
-   free(in);
-   return out;
 }
