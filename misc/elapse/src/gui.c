@@ -15,6 +15,7 @@ void elapse_gui_init(Elapse *elapse, int argc, const char **argv)
 	ecore_evas_init();
 	elapse->ee = ecore_evas_software_x11_new(NULL, 0, 0, 0, 0, 0);
 	ecore_evas_title_set(elapse->ee, "Elapse");
+   ecore_evas_name_class_set(elapse->ee, "Elapse", "Elapse");
 	ecore_evas_borderless_set(elapse->ee, 1);
 	win = ecore_evas_software_x11_window_get(elapse->ee);
 	ecore_x_window_prop_layer_set(win, ECORE_X_WINDOW_LAYER_BELOW);
