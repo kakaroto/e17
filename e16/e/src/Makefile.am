@@ -55,7 +55,6 @@ enlightenment_SOURCES = \
 	memory.c		\
 	menus.c			\
 	misc.c			\
-	modules.c		\
 	moveresize.c		\
 	mwm.c			\
 	pager.c                 \

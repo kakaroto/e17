@@ -2356,14 +2356,6 @@ void                EdgeHandleMotion(XEvent * ev);
 void                Quicksort(void **a, int l, int r,
 			      int (*CompareFunc) (void *d1, void *d2));
 
-/* modules.c */
-int                 LoadModule(char *module_name);
-int                 UnloadModule(char *module_name);
-char               *ModuleErrorCodeToString(int error_code);
-char               *ModuleListAsString(void);
-int                 IsLoadedModule(char *module_name);
-char               *FindModulePath(char *module_name);
-
 /* moveresize.c */
 int                 ActionMoveStart(EWin * ewin, void *params, char constrained,
 				    int nogroup);

@@ -85,7 +85,6 @@ static void         IPC_Cursor(char *params, Client * c);
 static void         IPC_PlaySoundClass(char *params, Client * c);
 static void         IPC_ListClassMembers(char *params, Client * c);
 static void         IPC_GeneralInfo(char *params, Client * c);
-static void         IPC_Modules(char *params, Client * c);
 static void         IPC_DockConfig(char *params, Client * c);
 static void         IPC_MemDebug(char *params, Client * c);
 static void         IPC_Remember(char *params, Client * c);
@@ -478,11 +477,6 @@ IPCStruct           IPCArray[] = {
     "use \"general_info <info>\" to retrieve information\n"
     "available info is: screen_size"},
    {
-    IPC_Modules,
-    "module", NULL,
-    "Load/Unload/List Modules",
-    NULL},
-   {
     IPC_ReloadMenus,
     "reload_menus", NULL,
     "Reload menus.cfg without restarting (Asmodean_)",
@@ -773,87 +767,6 @@ IPC_Remember(char *params, Client * c)
      }
    else
       Esnprintf(buf, sizeof(buf), "Error: no parameters");
-
-   if (buf[0])
-      CommsSend(c, buf);
-}
-
-static void
-IPC_Modules(char *params, Client * c)
-{
-   char                buf[FILEPATH_LEN_MAX];
-
-   buf[0] = 0;
-
-   if (params)
-     {
-	char                param1[FILEPATH_LEN_MAX];
-	char                param2[FILEPATH_LEN_MAX];
-	char                param3[FILEPATH_LEN_MAX];
-
-	param1[0] = 0;
-	param2[0] = 0;
-	param3[0] = 0;
-
-	word(params, 1, param1);
-	word(params, 2, param2);
-	word(params, 3, param3);
-	if (!strcmp(param1, "load"))
-	  {
-	     if (!param2[0])
-	       {
-		  Esnprintf(buf, sizeof(buf), "Error: no module specified");
-	       }
-	     else
-	       {
-		  int                 returncode = 0;
-
-		  if ((returncode = LoadModule(param2)))
-		    {
-		       strcat(buf, ModuleErrorCodeToString(returncode));
-		    }
-	       }
-	  }
-	else if (!strcmp(param1, "unload"))
-	  {
-	     if (!param2[0])
-	       {
-		  Esnprintf(buf, sizeof(buf), "Error: no module specified");
-	       }
-	     else
-	       {
-		  int                 returncode = 0;
-
-		  if ((returncode = UnloadModule(param2)))
-		    {
-		       strcat(buf, ModuleErrorCodeToString(returncode));
-#if 0				/* What ?!? */
-		       if (!buf[0])
-			 {
-			    Esnprintf(buf, sizeof(buf), "");
-			 }
-#endif
-		    }
-	       }
-	  }
-	else if (!strcmp(param1, "list"))
-	  {
-	     strcat(buf, ModuleListAsString());
-	     if (!buf[0])
-	       {
-		  Esnprintf(buf, sizeof(buf), "no modules loaded");
-	       }
-	  }
-	else
-	  {
-	     Esnprintf(buf, sizeof(buf),
-		       "Error: unknown module operation specified");
-	  }
-     }
-   else
-     {
-	Esnprintf(buf, sizeof(buf), "Error: no module operation specified");
-     }
 
    if (buf[0])
       CommsSend(c, buf);
