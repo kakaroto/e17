@@ -72,12 +72,14 @@ void       ewl_box_resize_callback(void *object, EwlEvent *event, void *data)
 	EwlWidget    *widget = EWL_WIDGET(object),
                  *child;
 	EwlIterator  *i;
+	EwlRequisition *request;
 	EwlRect      *rect,
                  *min,
 	             *max,
 	             *req;
 	char         *btype = ewl_get(object, "/box/type");
 	int           min_w = 0, min_h = 0,
+	              req_w = 0, req_h = 0,
 	              max_w = 0, max_h = 0,
 	              sum_w = 0, sum_h = 0,
 	              inc = 0, x = 0, y = 0;
@@ -89,6 +91,7 @@ void       ewl_box_resize_callback(void *object, EwlEvent *event, void *data)
 	     i=ewl_iterator_next(i))	{
 		child = EWL_WIDGET(i->data);
 		if (ewl_widget_is_visible(child))	{
+			request = ewl_widget_get_requisition(child);
 			req = ewl_widget_get_requested_rect(child);
 			min = ewl_widget_get_min_rect(child);
 			max = ewl_widget_get_max_rect(child);
@@ -96,6 +99,8 @@ void       ewl_box_resize_callback(void *object, EwlEvent *event, void *data)
 			if (req)	{
 				if (max_w<req->w) max_w = req->w;
 				if (max_h<req->h) max_h = req->h;
+				req_w += req->w;
+				req_h += req->h;
 				sum_w += req->w;
 				sum_h += req->h;
 			} else if (min)	{
