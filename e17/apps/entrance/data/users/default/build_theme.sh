@@ -5,4 +5,4 @@ if [ "x$1" != "x" ]; then
 else
     SRCDIR=.
 fi
-edje_cc -v -id $SRCDIR/img $SRCDIR/default.edc $SRCDIR/default.eet
+edje_cc -v -id $SRCDIR/images $SRCDIR/default.edc $SRCDIR/default.eet
