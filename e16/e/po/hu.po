@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Enlightenment DR 0.16\n"
-"POT-Creation-Date: 1999-12-15 16:52+0100\n"
+"POT-Creation-Date: 1999-12-23 11:29-0800\n"
 "PO-Revision-Date: 1999-12-12 13:38+0200\n"
 "Last-Translator: Gergely Egerváry <mauzi@poli.hu>\n"
 "Language-Team: Hungarian <hu@li.org>\n"
@@ -458,7 +458,7 @@ msgid ""
 "your liking again safely.\n"
 msgstr ""
 
-#: src/config.c:3656
+#: src/config.c:3713
 #, c-format
 msgid ""
 "WARNING!\n"
@@ -468,7 +468,7 @@ msgid ""
 "filesystem permissions.\n"
 msgstr ""
 
-#: src/config.c:3667
+#: src/config.c:3724
 #, c-format
 msgid ""
 "Enlightenment has just experienced some major problems in\n"
@@ -496,27 +496,27 @@ msgid ""
 "additional information.\n"
 msgstr ""
 
-#: src/config.c:3734
+#: src/config.c:3791
 msgid "Enlightenment Starting..."
 msgstr "Az Enlightenment indítása..."
 
-#: src/config.c:4162
+#: src/config.c:4219
 msgid "Recover system config?"
 msgstr ""
 
-#: src/config.c:4163
+#: src/config.c:4220
 msgid "Yes, Attempt recovery"
 msgstr ""
 
-#: src/config.c:4164
+#: src/config.c:4221
 msgid "Restart and try again"
 msgstr ""
 
-#: src/config.c:4165
+#: src/config.c:4222
 msgid "Quit and give up"
 msgstr ""
 
-#: src/config.c:4167
+#: src/config.c:4224
 msgid ""
 "Enlightenment has encountered parsing errors in your autosaved\n"
 "configuration.\n"
@@ -575,7 +575,7 @@ msgid ""
 "You have just started the Ripples Effect.\n"
 "\n"
 "If you look closely on your desktop background, and if it\n"
-"doesn't have a solid color (ie has a background texture or\n"
+"doesn't have a solid colour (ie has a background texture or\n"
 "image), you will see a pool of water at the bottom of your\n"
 "screen that reflects everything above it and \"ripples\".\n"
 "\n"
@@ -632,7 +632,7 @@ msgid ""
 "You have just started the Raindrops Effect.\n"
 "\n"
 "If you look closely on your desktop background, and if it\n"
-"doesn't have a solid color (ie has a background texture or\n"
+"doesn't have a solid colour (ie has a background texture or\n"
 "image), you will see \"raindrops\" hit the background and\n"
 "make little splashes. This Effect can be VERY CPU intensive.\n"
 "\n"
@@ -725,13 +725,12 @@ msgid "Close"
 msgstr "Bezár"
 
 #: src/handlers.c:59
-#, c-format
 msgid ""
 "Enlightenment performed an Illegal Instruction.\n"
 "\n"
 "This most likely is due to you having installed an run a\n"
 "binary of Enlightenment that was compiled for a make or model\n"
-"of CPU not 100% identical or compatible with yours. Please\n"
+"of CPU not 100%% identical or compatible with yours. Please\n"
 "either obtain the correct package for your system, or\n"
 "re-compile Enlightenment and possibly any support libraries\n"
 "that you got in binary format to run Enlightenment.\n"
@@ -823,7 +822,7 @@ msgid ""
 "Are you absolutely sure you want to have Enlightenment\n"
 "edit your startup files for you?\n"
 "\n"
-"If your startup files are highly customized this may not\n"
+"If your startup files are highly customised this may not\n"
 "work.\n"
 "\n"
 "Are you ABSOLUTELY sure?\n"
@@ -845,11 +844,11 @@ msgstr "Iconbox bezárása"
 msgid "Create New Iconbox"
 msgstr "Új iconbox létrehozása"
 
-#: src/ipc.c:4705
+#: src/ipc.c:4717
 msgid "Enlightenment IPC Commands Help"
 msgstr "Enlightenment IPC parancsok súgója"
 
-#: src/ipc.c:4709 src/ipc.c:4748
+#: src/ipc.c:4721 src/ipc.c:4760
 msgid ""
 "\n"
 "commands currently available:\n"
@@ -857,7 +856,7 @@ msgstr ""
 "\n"
 "elérhetõ parancsok:\n"
 
-#: src/ipc.c:4711
+#: src/ipc.c:4723
 msgid ""
 "use \"help all\" for descriptions of each command\n"
 "use \"help <command>\" for an individual description\n"
@@ -866,16 +865,16 @@ msgstr ""
 "írja be: \"help all\" az összes parancs leírásának megjelenítéséhez\n"
 "írja be: \"help <parancs>\" az egyes parancsok leírásának megjelenítéséhez\n"
 
-#: src/ipc.c:4749
+#: src/ipc.c:4761
 msgid "use \"help <command>\" for an individual description\n"
 msgstr ""
 "írja be: \"help <parancs>\" az egyes parancsok leírásának megjelenítéséhez\n"
 
-#: src/ipc.c:4751
+#: src/ipc.c:4763
 msgid "<command> : <description>\n"
 msgstr "<parancs> : <leírás>\n"
 
-#: src/ipc.c:4858
+#: src/ipc.c:4870
 #, c-format
 msgid ""
 "Enlightenment Version : %s\n"
@@ -959,7 +958,7 @@ msgstr ""
 msgid ""
 "WARNING!!!!!!\n"
 "\n"
-"Re-allocation for %i bytes (%3.0f kB or %3.1f MB) did not succeed.\n"
+"Re-allocation for %i bytes (%3.0f Kb or %3.1f Mb) did not succeed.\n"
 "\n"
 "Either this is a bug where ridiculous amounts of memory\n"
 "are being allocated, or your system has run out of both\n"
@@ -1010,7 +1009,7 @@ msgid ""
 "It is safe to ignore this error and continue running Enlightenment.\n"
 "\n"
 "The pointer value was %x.\n"
-"The error occurred at %s, line %d.\n"
+"The error occured at %s, line %d.\n"
 msgstr ""
 
 #: src/menus.c:1918
@@ -1424,7 +1423,8 @@ msgid "Send mouse pointer to window on focus switch"
 msgstr ""
 
 #: src/settings.c:511
-msgid "Display and use focus list"
+#, fuzzy
+msgid "Display and use focuslist"
 msgstr "Fókuszlista megjelenítése és használata"
 
 #: src/settings.c:520
@@ -1507,7 +1507,8 @@ msgstr ""
 "képernyõméret"
 
 #: src/settings.c:1003
-msgid "Virtual Deskop Settings"
+#, fuzzy
+msgid "Virtual Desktop Settings"
 msgstr "Virtuális asztalok beállításai"
 
 #: src/settings.c:1029
@@ -1972,16 +1973,16 @@ msgid ""
 msgstr ""
 
 #: src/setup.c:328
-msgid "Imlib initialization error"
+msgid "Imlib initialisation error"
 msgstr ""
 
 #: src/setup.c:330
 msgid ""
 "FATAL ERROR:\n"
 "\n"
-"Enlightenment is unable to initialize Imlib.\n"
+"Enlightenment is unable to initialise Imlib.\n"
 "\n"
-"This is unusual. Unable to continue.\n"
+"This is unusual. Unable to contiune.\n"
 "Exiting.\n"
 msgstr ""
 
@@ -1989,9 +1990,9 @@ msgstr ""
 msgid ""
 "FATAL ERROR:\n"
 "\n"
-"Enlightenment is unable to initialize Fnlib.\n"
+"Enlightenment is unable to initialise Fnlib.\n"
 "\n"
-"This is unusual. Unable to continue.\n"
+"This is unusual. Unable to contiune.\n"
 "Exiting.\n"
 msgstr ""
 
@@ -2108,12 +2109,12 @@ msgid ""
 msgstr ""
 
 #: src/sound.c:262
-msgid "Error initializing sound"
+msgid "Error initialising sound"
 msgstr ""
 
 #: src/sound.c:265
 msgid ""
-"Audio was enabled for Enlightenment but there was an error\n"
+"Audio was enabled for Enlightenemnt but there was an error\n"
 "communicating with the audio server (Esound). Audio will\n"
 "now be disabled.\n"
 msgstr ""

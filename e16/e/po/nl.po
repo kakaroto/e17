@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nl.po\n"
-"POT-Creation-Date: 1999-11-28 00:18+0100\n"
+"POT-Creation-Date: 1999-12-23 11:29-0800\n"
 "PO-Revision-Date: 1999-12-13 HO:MI+ZONE\n"
 "Last-Translator: Dènis Riedijk <ried@si.tn.tudelft.nl>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -46,7 +46,7 @@ msgstr ""
 "U de documentatie voor uw sheel bekijkt hoe U het pad voor\n"
 "uivoerbare programma's moet aanpassen.\n"
 
-#: src/actions.c:694
+#: src/actions.c:692
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -63,7 +63,7 @@ msgstr ""
 "en U bent gerechtigd om het uit te voeren. Ik suggereer dat\n"
 "U hier naar kijkt.\n"
 
-#: src/actions.c:707
+#: src/actions.c:703
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -78,7 +78,7 @@ msgstr ""
 "De reden hiervoor is dat het bestand bestaat, maar U kan het\n"
 "niet uitvoeren omdat U geen uitvoer rechten voor het bestand heeft.\n"
 
-#: src/actions.c:723
+#: src/actions.c:719
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -91,7 +91,7 @@ msgstr ""
 "Dit programma kon niet uitgevoerd worden.\n"
 "De reden hiervoor is dat het bestand in werkelijkheid een directory is.\n"
 
-#: src/actions.c:731
+#: src/actions.c:727
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -202,7 +202,7 @@ msgstr "Herstarten"
 msgid "Exit"
 msgstr "Afsluiten"
 
-#: src/comms.c:2251
+#: src/comms.c:2209
 #, c-format
 msgid ""
 "Received Unknown Client Message.\n"
@@ -248,7 +248,7 @@ msgstr ""
 "%s\n"
 "Zal negeren en doorgaan...\n"
 
-#: src/config.c:445
+#: src/config.c:447
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading a text block.  Outcome is likely not good.\n"
@@ -257,7 +257,7 @@ msgstr ""
 "klaar zijn met het laden van het huidige tekstblok. Resultaat zal\n"
 "waarschijnlijk niet ok zijn.\n"
 
-#: src/config.c:522
+#: src/config.c:526
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading a Slideout block.  Outcome is likely not good.\n"
@@ -266,7 +266,7 @@ msgstr ""
 "klaar zijn met het laden van de huidige slideout. Resultaat zal\n"
 "waarschijnlijk niet ok zijn.\n"
 
-#: src/config.c:789
+#: src/config.c:797
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -510,7 +510,6 @@ msgstr ""
 "%s\n"
 "Zal negeren en doorgaan...\n"
 
-
 #: src/config.c:3149
 msgid ""
 "Warning: Configuration appears to have ended before we were\n"
@@ -595,7 +594,7 @@ msgid ""
 "your liking again safely.\n"
 msgstr ""
 
-#: src/config.c:3656
+#: src/config.c:3713
 #, c-format
 msgid ""
 "WARNING!\n"
@@ -610,7 +609,7 @@ msgstr ""
 "Dit kan zijn vanwege een gebrek aan schijfruimte, quota\n"
 "of bestandspermissies.\n"
 
-#: src/config.c:3667
+#: src/config.c:3724
 #, c-format
 msgid ""
 "Enlightenment has just experienced some major problems in\n"
@@ -638,27 +637,27 @@ msgid ""
 "additional information.\n"
 msgstr ""
 
-#: src/config.c:3734
+#: src/config.c:3791
 msgid "Enlightenment Starting..."
 msgstr "Enlightenment start op"
 
-#: src/config.c:4162
+#: src/config.c:4219
 msgid "Recover system config?"
 msgstr "Systeem configuratie redden ?"
 
-#: src/config.c:4163
+#: src/config.c:4220
 msgid "Yes, Attempt recovery"
 msgstr "Ja, probeer te redden"
 
-#: src/config.c:4164
+#: src/config.c:4221
 msgid "Restart and try again"
 msgstr "Herstart en probeer opnieuw"
 
-#: src/config.c:4165
+#: src/config.c:4222
 msgid "Quit and give up"
 msgstr "Stop en geef op"
 
-#: src/config.c:4167
+#: src/config.c:4224
 msgid ""
 "Enlightenment has encountered parsing errors in your autosaved\n"
 "configuration.\n"
@@ -670,7 +669,7 @@ msgid ""
 "configuration and try again?\n"
 msgstr ""
 
-#: src/desktops.c:1108
+#: src/desktops.c:1110
 msgid ""
 "Hold down the mouse button and drag\n"
 "the mouse to be able to drag the desktop\n"
@@ -688,7 +687,7 @@ msgstr ""
 "Klik op de middelste muisknop voor een lijst\n"
 "van de applicaties die nu draaien.\n"
 
-#: src/desktops.c:1124
+#: src/desktops.c:1122
 msgid ""
 "This is the Root desktop.\n"
 "You cannot drag the root desktop around.\n"
@@ -734,7 +733,7 @@ msgid ""
 "You have just started the Ripples Effect.\n"
 "\n"
 "If you look closely on your desktop background, and if it\n"
-"doesn't have a solid color (ie has a background texture or\n"
+"doesn't have a solid colour (ie has a background texture or\n"
 "image), you will see a pool of water at the bottom of your\n"
 "screen that reflects everything above it and \"ripples\".\n"
 "\n"
@@ -791,7 +790,7 @@ msgid ""
 "You have just started the Raindrops Effect.\n"
 "\n"
 "If you look closely on your desktop background, and if it\n"
-"doesn't have a solid color (ie has a background texture or\n"
+"doesn't have a solid colour (ie has a background texture or\n"
 "image), you will see \"raindrops\" hit the background and\n"
 "make little splashes. This Effect can be VERY CPU intensive.\n"
 "\n"
@@ -861,7 +860,7 @@ msgstr ""
 " verwijderen via vensters die daadwerkelijk bij minstens een groep behoren\n"
 "\n"
 
-#: src/groups.c:585
+#: src/groups.c:613
 msgid ""
 "\n"
 "  Currently, no groups exist or this window  \n"
@@ -899,13 +898,12 @@ msgid "Close"
 msgstr "Sluit"
 
 #: src/handlers.c:59
-#, c-format
 msgid ""
 "Enlightenment performed an Illegal Instruction.\n"
 "\n"
 "This most likely is due to you having installed an run a\n"
 "binary of Enlightenment that was compiled for a make or model\n"
-"of CPU not 100% identical or compatible with yours. Please\n"
+"of CPU not 100%% identical or compatible with yours. Please\n"
 "either obtain the correct package for your system, or\n"
 "re-compile Enlightenment and possibly any support libraries\n"
 "that you got in binary format to run Enlightenment.\n"
@@ -956,11 +954,11 @@ msgstr "Een andere Window Manager is al actief"
 msgid "OK (edit file)"
 msgstr "OK (pas bestand aan)"
 
-#: src/handlers.c:218
+#: src/handlers.c:217
 msgid "Cancel (do NOT edit)"
 msgstr "Annuleer (niet aanpassen)"
 
-#: src/handlers.c:219
+#: src/handlers.c:218
 msgid ""
 "Another Window Manager is already running.\n"
 "\n"
@@ -997,7 +995,7 @@ msgid ""
 "Are you absolutely sure you want to have Enlightenment\n"
 "edit your startup files for you?\n"
 "\n"
-"If your startup files are highly customized this may not\n"
+"If your startup files are highly customised this may not\n"
 "work.\n"
 "\n"
 "Are you ABSOLUTELY sure?\n"
@@ -1019,11 +1017,11 @@ msgstr "Sluit Icoonbox"
 msgid "Create New Iconbox"
 msgstr "Maak een nieuwe Icoonbox"
 
-#: src/ipc.c:4705
+#: src/ipc.c:4717
 msgid "Enlightenment IPC Commands Help"
 msgstr "Enlightenment Inter Process Commandos Hulp"
 
-#: src/ipc.c:4709 src/ipc.c:4748
+#: src/ipc.c:4721 src/ipc.c:4760
 msgid ""
 "\n"
 "commands currently available:\n"
@@ -1031,22 +1029,22 @@ msgstr ""
 "\n"
 "commandos die nu beschikbaar zijn:\n"
 
-#: src/ipc.c:4711
+#: src/ipc.c:4723
 msgid ""
 "use \"help all\" for descriptions of each command\n"
 "use \"help <command>\" for an individual description\n"
 "\n"
 msgstr ""
 
-#: src/ipc.c:4749
+#: src/ipc.c:4761
 msgid "use \"help <command>\" for an individual description\n"
 msgstr ""
 
-#: src/ipc.c:4751
+#: src/ipc.c:4763
 msgid "<command> : <description>\n"
 msgstr ""
 
-#: src/ipc.c:4858
+#: src/ipc.c:4870
 #, c-format
 msgid ""
 "Enlightenment Version : %s\n"
@@ -1108,11 +1106,11 @@ msgid ""
 " "
 msgstr ""
 
-#: src/memory.c:275
+#: src/memory.c:277
 msgid "Error in reallocating memory that hasn't been allocated"
 msgstr ""
 
-#: src/memory.c:279
+#: src/memory.c:281
 #, c-format
 msgid ""
 "WARNING!!!!!!\n"
@@ -1127,12 +1125,12 @@ msgid ""
 "The error occurred at %s, line %d.\n"
 msgstr ""
 
-#: src/memory.c:303
+#: src/memory.c:301
 #, c-format
 msgid ""
 "WARNING!!!!!!\n"
 "\n"
-"Re-allocation for %i bytes (%3.0f kB or %3.1f MB) did not succeed.\n"
+"Re-allocation for %i bytes (%3.0f Kb or %3.1f Mb) did not succeed.\n"
 "\n"
 "Either this is a bug where ridiculous amounts of memory\n"
 "are being allocated, or your system has run out of both\n"
@@ -1164,15 +1162,15 @@ msgid ""
 "The error occurred at %s, line %d.\n"
 msgstr ""
 
-#: src/memory.c:401
+#: src/memory.c:396
 msgid "Error in attempting to free NULL pointer"
 msgstr ""
 
-#: src/memory.c:402
+#: src/memory.c:397
 msgid "Ignore this (safe)"
 msgstr ""
 
-#: src/memory.c:405
+#: src/memory.c:400
 #, c-format
 msgid ""
 "WARNING!!!!!!\n"
@@ -1183,7 +1181,7 @@ msgid ""
 "It is safe to ignore this error and continue running Enlightenment.\n"
 "\n"
 "The pointer value was %x.\n"
-"The error occurred at %s, line %d.\n"
+"The error occured at %s, line %d.\n"
 msgstr ""
 
 #: src/menus.c:1918
@@ -1586,7 +1584,9 @@ msgstr "Alleen nieuwe dialoog vensters krijgen de invoer"
 
 #: src/settings.c:478
 msgid "Only new dialogs whose owner is focused get the focus"
-msgstr "Alleen nieuwe dialoog vensters waarvan de eigenaar de invoer heeft krijgen de invoer"
+msgstr ""
+"Alleen nieuwe dialoog vensters waarvan de eigenaar de invoer heeft krijgen "
+"de invoer"
 
 #: src/settings.c:486
 msgid "Raise windows on focus switch"
@@ -1597,7 +1597,8 @@ msgid "Send mouse pointer to window on focus switch"
 msgstr "Stuur de muis naar het venster bij een invoer wisseling"
 
 #: src/settings.c:511
-msgid "Display and use focus list"
+#, fuzzy
+msgid "Display and use focuslist"
 msgstr "Toon en gebruik een venster lijst"
 
 #: src/settings.c:520
@@ -1680,7 +1681,8 @@ msgstr ""
 "Sherm in grootte"
 
 #: src/settings.c:1003
-msgid "Virtual Deskop Settings"
+#, fuzzy
+msgid "Virtual Desktop Settings"
 msgstr "Virtuele Dektop Instellingen"
 
 #: src/settings.c:1029
@@ -2128,7 +2130,7 @@ msgid ""
 "startx manual pages before proceeding.\n"
 msgstr ""
 
-#: src/setup.c:292 src/setup.c:345
+#: src/setup.c:294 src/setup.c:341
 msgid "X server setup error"
 msgstr ""
 
@@ -2145,38 +2147,38 @@ msgid ""
 msgstr ""
 
 #: src/setup.c:328
-msgid "Imlib initialization error"
+msgid "Imlib initialisation error"
 msgstr ""
 
 #: src/setup.c:330
 msgid ""
 "FATAL ERROR:\n"
 "\n"
-"Enlightenment is unable to initialize Imlib.\n"
+"Enlightenment is unable to initialise Imlib.\n"
 "\n"
-"This is unusual. Unable to continue.\n"
+"This is unusual. Unable to contiune.\n"
 "Exiting.\n"
 msgstr ""
 
-#: src/setup.c:349
+#: src/setup.c:343
 msgid ""
 "FATAL ERROR:\n"
 "\n"
-"Enlightenment is unable to initialize Fnlib.\n"
+"Enlightenment is unable to initialise Fnlib.\n"
 "\n"
-"This is unusual. Unable to continue.\n"
+"This is unusual. Unable to contiune.\n"
 "Exiting.\n"
 msgstr ""
 
-#: src/setup.c:413
+#: src/setup.c:404
 msgid "X server version error"
 msgstr ""
 
-#: src/setup.c:414
+#: src/setup.c:405
 msgid "Ignore this error"
 msgstr ""
 
-#: src/setup.c:417
+#: src/setup.c:407
 #, c-format
 msgid ""
 "WARNING:\n"
@@ -2222,47 +2224,47 @@ msgid ""
 "directory and take steps to rectify this.\n"
 msgstr ""
 
-#: src/snaps.c:403
+#: src/snaps.c:405
 msgid "Location"
 msgstr "Locatie"
 
-#: src/snaps.c:411
+#: src/snaps.c:413
 msgid "Border style"
 msgstr "Rand stijl"
 
-#: src/snaps.c:419
+#: src/snaps.c:421
 msgid "Size"
 msgstr "Grootte"
 
-#: src/snaps.c:427
+#: src/snaps.c:429
 msgid "Desktop"
 msgstr "Desktop"
 
-#: src/snaps.c:435
+#: src/snaps.c:437
 msgid "Shaded state"
 msgstr "Shaded staat"
 
-#: src/snaps.c:443
+#: src/snaps.c:445
 msgid "Sticky state"
 msgstr "Sticky staat"
 
-#: src/snaps.c:451
+#: src/snaps.c:453
 msgid "Stacking layer"
 msgstr "Laag van het venster"
 
-#: src/snaps.c:470
+#: src/snaps.c:474
 msgid "Restart application on login"
 msgstr "Herstart applicatie bij inloggen"
 
-#: src/snaps.c:492
+#: src/snaps.c:498
 msgid "Remember this window's group(s)"
 msgstr "Herinner de groepen van dit venster"
 
-#: src/snaps.c:505
+#: src/snaps.c:511
 msgid "Cancel"
 msgstr "Annuleer"
 
-#: src/snaps.c:829
+#: src/snaps.c:840
 msgid "Error saving snaps file\n"
 msgstr ""
 
@@ -2281,12 +2283,12 @@ msgid ""
 msgstr ""
 
 #: src/sound.c:262
-msgid "Error initializing sound"
+msgid "Error initialising sound"
 msgstr ""
 
 #: src/sound.c:265
 msgid ""
-"Audio was enabled for Enlightenment but there was an error\n"
+"Audio was enabled for Enlightenemnt but there was an error\n"
 "communicating with the audio server (Esound). Audio will\n"
 "now be disabled.\n"
 msgstr ""
@@ -2311,7 +2313,7 @@ msgid ""
 "%s"
 msgstr ""
 
-#: src/theme.c:350
+#: src/theme.c:355
 msgid "Bad Theme"
 msgstr ""
 

@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 1999-12-15 16:52+0100\n"
+"POT-Creation-Date: 1999-12-23 11:29-0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Christian Kreibich <chrisk@engr.uconn.edu\n"
 "Language-Team: german <de@li.org>\n"
@@ -638,7 +638,7 @@ msgstr ""
 "und die Einstellungen neu initialisiert werden. Sie können\n"
 "danach die Einstellungen erneut nach Belieben verändern.\n"
 
-#: src/config.c:3656
+#: src/config.c:3713
 #, c-format
 msgid ""
 "WARNING!\n"
@@ -653,7 +653,7 @@ msgstr ""
 "Dies kann an mangelndem Speicherplatz, Benutzer-Quotas\n"
 "oder mangelnden Benutzerrechten liegen.\n"
 
-#: src/config.c:3667
+#: src/config.c:3724
 #, c-format
 msgid ""
 "Enlightenment has just experienced some major problems in\n"
@@ -697,27 +697,27 @@ msgstr ""
 "Falls Sie Ihr System selbst administrieren, konsultieren Sie\n"
 "bitte die mitgelieferte Dokumentation für weitere Hinweise.\n"
 
-#: src/config.c:3734
+#: src/config.c:3791
 msgid "Enlightenment Starting..."
 msgstr "Enlightenment startet..."
 
-#: src/config.c:4162
+#: src/config.c:4219
 msgid "Recover system config?"
 msgstr "Systemkonfiguration wiederherstellen?"
 
-#: src/config.c:4163
+#: src/config.c:4220
 msgid "Yes, Attempt recovery"
 msgstr "Ja, Wiederherstellung versuchen"
 
-#: src/config.c:4164
+#: src/config.c:4221
 msgid "Restart and try again"
 msgstr "Neustarten und erneut versuchen"
 
-#: src/config.c:4165
+#: src/config.c:4222
 msgid "Quit and give up"
 msgstr "Beenden und aufgeben"
 
-#: src/config.c:4167
+#: src/config.c:4224
 msgid ""
 "Enlightenment has encountered parsing errors in your autosaved\n"
 "configuration.\n"
@@ -795,12 +795,13 @@ msgid "Starting up Ripples FX..."
 msgstr "Der \"Ripples\"-Effekt wird gestartet..."
 
 #: src/fx.c:255
+#, fuzzy
 msgid ""
 "\n"
 "You have just started the Ripples Effect.\n"
 "\n"
 "If you look closely on your desktop background, and if it\n"
-"doesn't have a solid color (ie has a background texture or\n"
+"doesn't have a solid colour (ie has a background texture or\n"
 "image), you will see a pool of water at the bottom of your\n"
 "screen that reflects everything above it and \"ripples\".\n"
 "\n"
@@ -887,12 +888,13 @@ msgid "Starting up Raindrops FX..."
 msgstr "Der \"Raindrops\"-Effekt wird gestartet..."
 
 #: src/fx.c:424
+#, fuzzy
 msgid ""
 "\n"
 "You have just started the Raindrops Effect.\n"
 "\n"
 "If you look closely on your desktop background, and if it\n"
-"doesn't have a solid color (ie has a background texture or\n"
+"doesn't have a solid colour (ie has a background texture or\n"
 "image), you will see \"raindrops\" hit the background and\n"
 "make little splashes. This Effect can be VERY CPU intensive.\n"
 "\n"
@@ -1022,13 +1024,13 @@ msgid "Close"
 msgstr "Schließen"
 
 #: src/handlers.c:59
-#, c-format
+#, fuzzy
 msgid ""
 "Enlightenment performed an Illegal Instruction.\n"
 "\n"
 "This most likely is due to you having installed an run a\n"
 "binary of Enlightenment that was compiled for a make or model\n"
-"of CPU not 100% identical or compatible with yours. Please\n"
+"of CPU not 100%% identical or compatible with yours. Please\n"
 "either obtain the correct package for your system, or\n"
 "re-compile Enlightenment and possibly any support libraries\n"
 "that you got in binary format to run Enlightenment.\n"
@@ -1167,11 +1169,12 @@ msgid "NO (do not edit)"
 msgstr "NEIN (Datei nicht verändern)"
 
 #: src/handlers.c:238
+#, fuzzy
 msgid ""
 "Are you absolutely sure you want to have Enlightenment\n"
 "edit your startup files for you?\n"
 "\n"
-"If your startup files are highly customized this may not\n"
+"If your startup files are highly customised this may not\n"
 "work.\n"
 "\n"
 "Are you ABSOLUTELY sure?\n"
@@ -1200,11 +1203,11 @@ msgstr "Iconbox schließen"
 msgid "Create New Iconbox"
 msgstr "Neue Iconbox erzeugen"
 
-#: src/ipc.c:4705
+#: src/ipc.c:4717
 msgid "Enlightenment IPC Commands Help"
 msgstr "Enlightenment IPC-Befehlshilfe"
 
-#: src/ipc.c:4709 src/ipc.c:4748
+#: src/ipc.c:4721 src/ipc.c:4760
 msgid ""
 "\n"
 "commands currently available:\n"
@@ -1212,7 +1215,7 @@ msgstr ""
 "\n"
 "momentan verfügbare Befehle:\n"
 
-#: src/ipc.c:4711
+#: src/ipc.c:4723
 msgid ""
 "use \"help all\" for descriptions of each command\n"
 "use \"help <command>\" for an individual description\n"
@@ -1222,15 +1225,15 @@ msgstr ""
 "Benutzen Sie \"help <Befehl>\" für eine individuelle Beschreibung\n"
 "\n"
 
-#: src/ipc.c:4749
+#: src/ipc.c:4761
 msgid "use \"help <command>\" for an individual description\n"
 msgstr "Benutzen Sie \"help <Befehl>\" für eine individuelle Beschreibung\n"
 
-#: src/ipc.c:4751
+#: src/ipc.c:4763
 msgid "<command> : <description>\n"
 msgstr "<Befehl> : <Erläuterung>\n"
 
-#: src/ipc.c:4858
+#: src/ipc.c:4870
 #, c-format
 msgid ""
 "Enlightenment Version : %s\n"
@@ -1337,11 +1340,11 @@ msgstr ""
 "Der Fehler trat in %s bei Zeile %d auf.\n"
 
 #: src/memory.c:301
-#, c-format
+#, fuzzy, c-format
 msgid ""
 "WARNING!!!!!!\n"
 "\n"
-"Re-allocation for %i bytes (%3.0f kB or %3.1f MB) did not succeed.\n"
+"Re-allocation for %i bytes (%3.0f Kb or %3.1f Mb) did not succeed.\n"
 "\n"
 "Either this is a bug where ridiculous amounts of memory\n"
 "are being allocated, or your system has run out of both\n"
@@ -1407,7 +1410,7 @@ msgid "Ignore this (safe)"
 msgstr "Ignorieren (problemlos)"
 
 #: src/memory.c:400
-#, c-format
+#, fuzzy, c-format
 msgid ""
 "WARNING!!!!!!\n"
 "\n"
@@ -1417,7 +1420,7 @@ msgid ""
 "It is safe to ignore this error and continue running Enlightenment.\n"
 "\n"
 "The pointer value was %x.\n"
-"The error occurred at %s, line %d.\n"
+"The error occured at %s, line %d.\n"
 msgstr ""
 "WARNUNG!!!!!!\n"
 "\n"
@@ -1928,7 +1931,8 @@ msgid "Send mouse pointer to window on focus switch"
 msgstr "Mauszeiger bei Fokuswechsel zu Fenster senden"
 
 #: src/settings.c:511
-msgid "Display and use focus list"
+#, fuzzy
+msgid "Display and use focuslist"
 msgstr "Fokusliste anzeigen und benutzen"
 
 #: src/settings.c:520
@@ -2011,7 +2015,8 @@ msgstr ""
 "Bildschirm"
 
 #: src/settings.c:1003
-msgid "Virtual Deskop Settings"
+#, fuzzy
+msgid "Virtual Desktop Settings"
 msgstr "Einstellungen für virtuelle Desktops"
 
 #: src/settings.c:1029
@@ -2496,16 +2501,18 @@ msgstr ""
 "Abbruch.\n"
 
 #: src/setup.c:328
-msgid "Imlib initialization error"
+#, fuzzy
+msgid "Imlib initialisation error"
 msgstr "Fehler bei der Initialisierung von Imlib"
 
 #: src/setup.c:330
+#, fuzzy
 msgid ""
 "FATAL ERROR:\n"
 "\n"
-"Enlightenment is unable to initialize Imlib.\n"
+"Enlightenment is unable to initialise Imlib.\n"
 "\n"
-"This is unusual. Unable to continue.\n"
+"This is unusual. Unable to contiune.\n"
 "Exiting.\n"
 msgstr ""
 "Unübergehbarer Fehler:\n"
@@ -2517,12 +2524,13 @@ msgstr ""
 "Abbruch.\n"
 
 #: src/setup.c:343
+#, fuzzy
 msgid ""
 "FATAL ERROR:\n"
 "\n"
-"Enlightenment is unable to initialize Fnlib.\n"
+"Enlightenment is unable to initialise Fnlib.\n"
 "\n"
-"This is unusual. Unable to continue.\n"
+"This is unusual. Unable to contiune.\n"
 "Exiting.\n"
 msgstr ""
 "Unübergehbarer Fehler:\n"
@@ -2673,12 +2681,14 @@ msgstr ""
 "Sie gegebenenfalls Ihre Einstellungen.\n"
 
 #: src/sound.c:262
-msgid "Error initializing sound"
+#, fuzzy
+msgid "Error initialising sound"
 msgstr "Fehler bei der Audio-Initialisierung"
 
 #: src/sound.c:265
+#, fuzzy
 msgid ""
-"Audio was enabled for Enlightenment but there was an error\n"
+"Audio was enabled for Enlightenemnt but there was an error\n"
 "communicating with the audio server (Esound). Audio will\n"
 "now be disabled.\n"
 msgstr ""
