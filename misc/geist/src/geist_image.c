@@ -50,12 +50,12 @@ geist_image_init(geist_image * img)
    obj->has_transparency = geist_image_has_transparency;
    img->last.image_mods[R] = 0;
    img->last.image_mods[G] = 0;
-	img->last.image_mods[B] = 0;
-	img->last.image_mods[A] = 0;
-	img->image_mods[R] = FULL_COLOR;
-	img->image_mods[G] = FULL_COLOR;
-	img->image_mods[B] = FULL_COLOR;
-	img->image_mods[A] = FULL_OPACITY;		
+   img->last.image_mods[B] = 0;
+   img->last.image_mods[A] = 0;
+   img->image_mods[R] = FULL_COLOR;
+   img->image_mods[G] = FULL_COLOR;
+   img->image_mods[B] = FULL_COLOR;
+   img->image_mods[A] = FULL_OPACITY;
 
    D_RETURN_(5);
 }
@@ -208,8 +208,7 @@ geist_image_load_file(geist_image * img, char *filename)
    D_RETURN(5, ret);
 }
 
-Imlib_Image
-geist_image_get_rendered_image(geist_object * obj)
+Imlib_Image geist_image_get_rendered_image(geist_object * obj)
 {
    D_ENTER(3);
 
@@ -219,7 +218,7 @@ geist_image_get_rendered_image(geist_object * obj)
 geist_object *
 geist_image_duplicate(geist_object * obj)
 {
-	int i;
+   int i;
    geist_object *ret;
    geist_image *img;
 
@@ -234,10 +233,10 @@ geist_image_duplicate(geist_object * obj)
       ret->rendered_y = obj->rendered_y;
       ret->h = obj->h;
       ret->w = obj->w;
-		for (i=0; i<4; i++)
-		{
-      	GEIST_IMAGE(ret)->image_mods[i] = img->image_mods[i];
-		}
+      for (i = 0; i < 4; i++)
+      {
+         GEIST_IMAGE(ret)->image_mods[i] = img->image_mods[i];
+      }
       ret->state = obj->state;
       ret->alias = obj->alias;
       ret->name =
@@ -272,32 +271,33 @@ void
 refresh_image_mods_cb(GtkWidget * widget, gpointer * type)
 {
    int p[4], i;
-	geist_list *list, *l;
-	geist_object *obj=NULL;
+   geist_list *list, *l;
+   geist_object *obj = NULL;
 
-	D_ENTER(3);
-	
-	/*this works for multiple objects although we wont have that situation for
-	now, but that might change somewhere along the line so there :) */
-	
-	list = geist_document_get_selected_list(current_doc);
+   D_ENTER(3);
+
+   /*this works for multiple objects although we wont have that situation for
+      now, but that might change somewhere along the line so there :) */
+
+   list = geist_document_get_selected_list(current_doc);
    if (list)
    {
       for (l = list; l; l = l->next)
       {
          obj = l->data;
-			for (i=0; i<4;i++)
-			{
-				p[i]= GEIST_IMAGE(obj)->image_mods[i];
-			}
-		p[GPOINTER_TO_INT(type)]= gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(widget));
-   	geist_image_change_image_mods(GEIST_OBJECT(obj), p);
-   	geist_object_dirty(GEIST_OBJECT(obj));
-		}
-	}
-	geist_list_free(list);
+         for (i = 0; i < 4; i++)
+         {
+            p[i] = GEIST_IMAGE(obj)->image_mods[i];
+         }
+         p[GPOINTER_TO_INT(type)] =
+            gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(widget));
+         geist_image_change_image_mods(GEIST_OBJECT(obj), p);
+         geist_object_dirty(GEIST_OBJECT(obj));
+      }
+   }
+   geist_list_free(list);
    geist_document_render_updates(GEIST_OBJECT_DOC(obj));
-	D_RETURN_(3);
+   D_RETURN_(3);
 }
 
 
@@ -334,8 +334,7 @@ img_load_cancel_cb(GtkWidget * widget, gpointer data)
 
 
 
-gboolean
-geist_image_select_file_cb(GtkWidget * widget, gpointer * data)
+gboolean geist_image_select_file_cb(GtkWidget * widget, gpointer * data)
 {
    cb_data *sel_cb_data = NULL;
    geist_object *obj = GEIST_OBJECT(data);
@@ -356,7 +355,8 @@ geist_image_select_file_cb(GtkWidget * widget, gpointer * data)
    return TRUE;
 }
 
-gboolean refresh_aa_cb(GtkWidget * widget, gpointer * data)
+gboolean
+refresh_aa_cb(GtkWidget * widget, gpointer * data)
 {
    geist_object *obj = NULL;
    geist_list *l = NULL;
@@ -391,16 +391,16 @@ geist_image_display_props(geist_object * obj)
    GtkWidget *file_entry;
    GtkWidget *antialias_checkb;
    GtkAdjustment *ao, *ar, *ag, *ab;
-	GtkWidget *imo, *imo_l;
-	GtkWidget *cr_l, *cr, *cg_l, *cg, *cb_l, *cb, *hbox;
+   GtkWidget *imo, *imo_l;
+   GtkWidget *cr_l, *cr, *cg_l, *cg, *cb_l, *cb, *hbox;
 
    image_props = gtk_hbox_new(FALSE, 0);
-	
-	ao = (GtkAdjustment *) gtk_adjustment_new(0, 0, 100, 1, 1, 1);
+
+   ao = (GtkAdjustment *) gtk_adjustment_new(0, 0, 100, 1, 1, 1);
    ar = (GtkAdjustment *) gtk_adjustment_new(0, 0, 100, 1, 1, 1);
    ag = (GtkAdjustment *) gtk_adjustment_new(0, 0, 100, 1, 1, 1);
    ab = (GtkAdjustment *) gtk_adjustment_new(0, 0, 100, 1, 1, 1);
-	
+
    table = gtk_table_new(3, 2, FALSE);
    gtk_widget_show(table);
    gtk_container_add(GTK_CONTAINER(image_props), table);
@@ -445,7 +445,7 @@ geist_image_display_props(geist_object * obj)
                     0, 2, 2);
    gtk_widget_show(imo);
 
-	hbox = gtk_hbox_new(FALSE, 0);
+   hbox = gtk_hbox_new(FALSE, 0);
 
    cr_l = gtk_label_new("Red %:");
    gtk_misc_set_alignment(GTK_MISC(cr_l), 1.0, 0.5);
@@ -475,33 +475,29 @@ geist_image_display_props(geist_object * obj)
    cb = gtk_spin_button_new(GTK_ADJUSTMENT(ab), 1, 0);
    gtk_box_pack_start(GTK_BOX(hbox), cb, TRUE, FALSE, 2);
    gtk_widget_show(cb);
-	
-	gtk_table_attach(GTK_TABLE(table), hbox, 0, 3, 2, 3, GTK_FILL | GTK_EXPAND,
+
+   gtk_table_attach(GTK_TABLE(table), hbox, 0, 3, 2, 3, GTK_FILL | GTK_EXPAND,
                     0, 2, 2);
    gtk_widget_show(hbox);
 
-	gtk_spin_button_set_value(GTK_SPIN_BUTTON(imo),
-			GEIST_IMAGE(obj)->image_mods[A]);
-	gtk_spin_button_set_value(GTK_SPIN_BUTTON(cr),
-			GEIST_IMAGE(obj)->image_mods[R]);
-	gtk_spin_button_set_value(GTK_SPIN_BUTTON(cg),
-			GEIST_IMAGE(obj)->image_mods[G]);
-	gtk_spin_button_set_value(GTK_SPIN_BUTTON(cb),
-			GEIST_IMAGE(obj)->image_mods[B]);
-	
+   gtk_spin_button_set_value(GTK_SPIN_BUTTON(imo),
+                             GEIST_IMAGE(obj)->image_mods[A]);
+   gtk_spin_button_set_value(GTK_SPIN_BUTTON(cr),
+                             GEIST_IMAGE(obj)->image_mods[R]);
+   gtk_spin_button_set_value(GTK_SPIN_BUTTON(cg),
+                             GEIST_IMAGE(obj)->image_mods[G]);
+   gtk_spin_button_set_value(GTK_SPIN_BUTTON(cb),
+                             GEIST_IMAGE(obj)->image_mods[B]);
+
    gtk_signal_connect(GTK_OBJECT(imo), "changed",
-                      GTK_SIGNAL_FUNC(refresh_image_mods_cb),
-                      (gpointer) A);
-	gtk_signal_connect(GTK_OBJECT(cr), "changed",
-                      GTK_SIGNAL_FUNC(refresh_image_mods_cb),
-                      (gpointer) R);
-	gtk_signal_connect(GTK_OBJECT(cg), "changed",
-                      GTK_SIGNAL_FUNC(refresh_image_mods_cb),
-                      (gpointer) G);
-	gtk_signal_connect(GTK_OBJECT(cb), "changed",
-                      GTK_SIGNAL_FUNC(refresh_image_mods_cb),
-                      (gpointer) B);
-	
+                      GTK_SIGNAL_FUNC(refresh_image_mods_cb), (gpointer) A);
+   gtk_signal_connect(GTK_OBJECT(cr), "changed",
+                      GTK_SIGNAL_FUNC(refresh_image_mods_cb), (gpointer) R);
+   gtk_signal_connect(GTK_OBJECT(cg), "changed",
+                      GTK_SIGNAL_FUNC(refresh_image_mods_cb), (gpointer) G);
+   gtk_signal_connect(GTK_OBJECT(cb), "changed",
+                      GTK_SIGNAL_FUNC(refresh_image_mods_cb), (gpointer) B);
+
    gtk_widget_show(imo);
    return (image_props);
 
@@ -514,7 +510,7 @@ geist_image_apply_image_mods(geist_object * obj)
    int has_resized = 0;
    int w, h, i;
    double ra, ha, rr, hr, rg, hg, rb, hb;
-   DATA8 atab[256],rtab[256],gtab[256],btab[256];
+   DATA8 atab[256], rtab[256], gtab[256], btab[256];
 
    D_ENTER(3);
 
@@ -533,8 +529,13 @@ geist_image_apply_image_mods(geist_object * obj)
                                                (geist_imlib_image_get_height
                                                 (img->orig_im) !=
                                                 obj->rendered_h))
-                                              && img->image_mods[A] !=
-                                              FULL_OPACITY))
+                                              &&
+                                              ((img->
+                                                image_mods[A] != FULL_OPACITY)
+                                               || (img->image_mods[R] != 100)
+                                               || (img->image_mods[G] != 100)
+                                               || (img->image_mods[B] !=
+                                                   100))))
    {
       obj->last.alias = obj->alias;
       /* need to resize */
@@ -556,22 +557,21 @@ geist_image_apply_image_mods(geist_object * obj)
    }
 
    if (
-			((img->image_mods[A] != FULL_OPACITY)
-       && (img->image_mods[A] != img->last.image_mods[A]))
-			|| ((img->image_mods[R] != FULL_COLOR)
-       && (img->image_mods[R] != img->last.image_mods[R]))
-			|| ((img->image_mods[G] != FULL_COLOR)
-       && (img->image_mods[G] != img->last.image_mods[G]))
-			|| ((img->image_mods[B] != FULL_COLOR)
-       && (img->image_mods[B] != img->last.image_mods[B]))
-			|| (has_resized)
-		)
+       ((img->image_mods[A] != FULL_OPACITY)
+        && (img->image_mods[A] != img->last.image_mods[A]))
+       || ((img->image_mods[R] != FULL_COLOR)
+           && (img->image_mods[R] != img->last.image_mods[R]))
+       || ((img->image_mods[G] != FULL_COLOR)
+           && (img->image_mods[G] != img->last.image_mods[G]))
+       || ((img->image_mods[B] != FULL_COLOR)
+           && (img->image_mods[B] != img->last.image_mods[B]))
+       || (has_resized))
    {
       D(5, ("need to do opacity, it's %d\n", img->image_mods[A]));
       img->last.image_mods[R] = img->image_mods[R];
-		img->last.image_mods[G] = img->image_mods[G];
-		img->last.image_mods[B] = img->image_mods[B];
-		img->last.image_mods[A] = img->image_mods[A];
+      img->last.image_mods[G] = img->image_mods[G];
+      img->last.image_mods[B] = img->image_mods[B];
+      img->last.image_mods[A] = img->image_mods[A];
       /* need to apply image mods */
       if (!has_resized)
       {
@@ -594,33 +594,33 @@ geist_image_apply_image_mods(geist_object * obj)
       {
          if (
              (ra =
-              modf((double) (i) * ((double) img->image_mods[A] / (double) 100),
-                   &ha)) > 0.5)
+              modf((double) (i) *
+                   ((double) img->image_mods[A] / (double) 100), &ha)) > 0.5)
             ha++;
          atab[i] = (DATA8) (ha);
-			
-			if (
+
+         if (
              (rr =
-              modf((double) (i) * ((double) img->image_mods[R] / (double) 100),
-                   &hr)) > 0.5)
+              modf((double) (i) *
+                   ((double) img->image_mods[R] / (double) 100), &hr)) > 0.5)
             hr++;
          rtab[i] = (DATA8) (hr);
-			
-			if (
+
+         if (
              (rg =
-              modf((double) (i) * ((double) img->image_mods[G] / (double) 100),
-                   &hg)) > 0.5)
+              modf((double) (i) *
+                   ((double) img->image_mods[G] / (double) 100), &hg)) > 0.5)
             hg++;
          gtab[i] = (DATA8) (hg);
-			
-			if (
+
+         if (
              (rb =
-              modf((double) (i) * ((double) img->image_mods[B] / (double) 100),
-                   &hb)) > 0.5)
+              modf((double) (i) *
+                   ((double) img->image_mods[B] / (double) 100), &hb)) > 0.5)
             hb++;
          btab[i] = (DATA8) (hb);
       }
-		geist_imlib_apply_color_modifier_to_rectangle(img->im, 0, 0, w, h, rtab,
+      geist_imlib_apply_color_modifier_to_rectangle(img->im, 0, 0, w, h, rtab,
                                                     gtab, btab, atab);
    }
    D_RETURN_(3);
@@ -629,17 +629,17 @@ geist_image_apply_image_mods(geist_object * obj)
 void
 geist_image_change_image_mods(geist_object * obj, int op[4])
 {
-	int i;
+   int i;
    geist_image *im = NULL;
 
    D_ENTER(3);
 
    im = GEIST_IMAGE(obj);
-	for (i=0; i<4; i++)
-	{
-   	im->image_mods[i] = op[i];
-	}  
-	geist_image_apply_image_mods(obj);
+   for (i = 0; i < 4; i++)
+   {
+      im->image_mods[i] = op[i];
+   }
+   geist_image_apply_image_mods(obj);
 
    D_RETURN_(5);
 }
