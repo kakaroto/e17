@@ -667,7 +667,9 @@ SnapEwin(EWin * ewin, int dx, int dy, int *new_dx, int *new_dy)
    EWin              **lst, **gwins;
    int                 gnum, num, i, j, screen_snap_dist, odx, ody;
    static char         last_res = 0;
+#ifdef HAS_XINERAMA
    static XineramaScreenInfo *screens = NULL;
+#endif   
    static int          num_screens = 0;
    int                 top_bound, bottom_bound, left_bound, right_bound;
 
