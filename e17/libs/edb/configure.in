@@ -648,7 +648,7 @@ fi
 AC_MSG_RESULT($gtk_ok)
 
 AC_CHECK_LIB(ncurses, putwin,
-  AC_CHECK_HEADER(ncurses.h, ncurses_ok=yes, ncurses_ok=no)
+  AC_CHECK_HEADER(ncurses.h, ncurses_ok=yes, ncurses_ok=no),
   ncurses_ok=no,
   -lncurses)
   
