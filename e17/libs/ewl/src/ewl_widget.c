@@ -705,6 +705,7 @@ void __ewl_widget_configure(Ewl_Widget * w, void *ev_data, void *user_data)
 void __ewl_widget_theme_update(Ewl_Widget * w, void *ev_data, void *user_data)
 {
 	int             len;
+	int             l = 0, r = 0, t = 0, b = 0;
 	int             i_l = 0, i_r = 0, i_t = 0, i_b = 0;
 	int             p_l = 0, p_r = 0, p_t = 0, p_b = 0;
 	char           *i = NULL;
@@ -716,24 +717,24 @@ void __ewl_widget_theme_update(Ewl_Widget * w, void *ev_data, void *user_data)
 	DCHECK_PARAM_PTR("w", w);
 
 	if (w->ebits_object) {
-		int             l = 0, r = 0, t = 0, b = 0;
-
 		ebits_get_insets(w->ebits_object, &i_l, &i_r, &i_t, &i_b);
-		ewl_object_get_insets(EWL_OBJECT(w), &l, &r, &t, &b);
-
-		i_l = i_l - l;
-		i_r = i_r - r;
-		i_t = i_t - t;
-		i_b = i_b - b;
-
 		ebits_get_padding(w->ebits_object, &p_l, &p_r, &p_t, &p_b);
-		ewl_object_get_padding(EWL_OBJECT(w), &l, &r, &t, &b);
-
-		p_l = p_l - l;
-		p_r = p_r - r;
-		p_t = p_t - t;
-		p_b = p_b - b;
 	}
+
+	ewl_object_get_insets(EWL_OBJECT(w), &l, &r, &t, &b);
+
+	i_l = l - i_l;
+	i_r = r - i_r;
+	i_t = t - i_t;
+	i_b = b - i_b;
+
+	ewl_object_get_padding(EWL_OBJECT(w), &l, &r, &t, &b);
+
+	p_l = l - p_l;
+	p_r = r - p_r;
+	p_t = t - p_t;
+	p_b = b - p_b;
+
 	__ewl_widget_ebits_destroy(w);
 
 	/*
@@ -779,7 +780,6 @@ void __ewl_widget_theme_update(Ewl_Widget * w, void *ev_data, void *user_data)
 	 * Set up the ebits object on the widgets evas
 	 */
 	if (w->ebits_object) {
-		int             l = 0, r = 0, t = 0, b = 0;
 
 		ebits_add_to_evas(w->ebits_object, win->evas);
 		ebits_set_layer(w->ebits_object, LAYER(w));
