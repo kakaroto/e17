@@ -344,7 +344,7 @@ feh_file_info_load(feh_file * file, Imlib_Image im)
    else if (!feh_load_image(&im1, file, NULL))
       D_RETURN(4, 1);
 
-   if (!im)
+   if (!im1)
       D_RETURN(4, 1);
 
    file->info = feh_file_info_new();
@@ -362,7 +362,6 @@ feh_file_info_load(feh_file * file, Imlib_Image im)
 
    if (need_free && im1)
       feh_imlib_free_image_and_decache(im1);
-
    D_RETURN(4, 0);
 }
 
