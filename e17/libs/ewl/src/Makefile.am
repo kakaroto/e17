@@ -4,7 +4,7 @@ INCLUDES = @edje_cflags@ @ecore_cflags@ @edb_cflags@ @evas_cflags@ @etox_cflags@
 
 lib_LTLIBRARIES = libewl.la
 
-HEADERS = \
+EWLHEADERS = \
 	Ewl.h \
 	ewl_border.h \
 	ewl_box.h \
@@ -101,10 +101,10 @@ libewl_la_SOURCES = \
 	ewl_tooltip.c \
 	ewl_widget.c \
 	ewl_window.c \
-	$(HEADERS)
+	$(EWLHEADERS)
 
 installed_headersdir = $(prefix)/include/ewl
-installed_headers_DATA = $(HEADERS)
+installed_headers_DATA = $(EWLHEADERS)
 
 libewl_la_LIBADD = @edje_libs@ @ecore_libs@ @edb_libs@ @evas_libs@ @etox_libs@ -lm
 libewl_la_LDFLAGS = -version-info 0:0:0
