@@ -31,7 +31,8 @@ EXTRA_DIST = E-Load.icon E-Clock.icon E-Net.icon E-Cpu.icon EppletTest.icon \
 E-Clock-Image.png
 
 install-data-hook:
-	$(mkinstalldirs) $(EROOT)/epplet_icons;
-	for i in $(srcdir)/*.icon $(srcdir)/*.png; do \
-	  $(INSTALL_DATA) $$i $(EROOT)/epplet_icons/; \
+	$(mkinstalldirs) $(EROOT)/epplet_icons
+	@for i in $(srcdir)/*.icon ; do \
+	  echo $(INSTALL_DATA) $$i $(EROOT)/epplet_icons/ ; \
+	  $(INSTALL_DATA) $$i $(EROOT)/epplet_icons/ ; \
 	done
