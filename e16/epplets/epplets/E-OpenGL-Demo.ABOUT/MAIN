@@ -1,0 +1,14 @@
+<page columns=1 padding=16 name=front background=bg.png linkcolor=#88dddd>
+<font face=aircut3/32 color=#ffffff>
+<p align=50%>
+E-OpenGL-Demo
+<font face=aircut3/18 color=#88eeff>
+<p align=50%>
+The Useless Demo application that aspires to be a rotating light mapped, textured cube.
+<font face=aircut3/12 color=#ffffff>
+<p align=50%>
+By Wayde Milas - 2000
+<p>
+This epplet will some day show a spinning light mapped cube with selectable
+textures. The idea until then is to sue it as a testbed for adding OpenGL
+code into the epplets api.
