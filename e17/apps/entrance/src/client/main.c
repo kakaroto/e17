@@ -767,17 +767,27 @@ main(int argc, char *argv[])
       /* testing mode decides entrance window size * * Use rendering engine
          specified in config. On systems with * hardware acceleration, GL
          should improve performance appreciably */
-      if (!session->config->engine)
-         e = ecore_evas_software_x11_new(NULL, 0, 0, 0, g_x, g_y);
-#ifdef HAVE_ECORE_GL_X11
-      else if (session->config->engine)
-         e = ecore_evas_gl_x11_new(NULL, 0, 0, 0, g_x, g_y);
-#endif
-      else
-      {
-         fprintf(stderr,
-                 "Warning: Invalid Evas engine specified in config. Defaulting to software engine.\n");
-         e = ecore_evas_software_x11_new(NULL, 0, 0, 0, g_x, g_y);
+      switch (session->config->engine) {
+      case 1:
+	  if (ecore_evas_engine_type_supported_get(ECORE_EVAS_ENGINE_GL_X11)) {
+	      e = ecore_evas_gl_x11_new(NULL, 0, 0, 0, g_x, g_y);
+	      break;
+	  }
+	  fprintf(stderr, "Warning: Evas GL engine: engine not supported. Defaulting to software engine.\n");
+	  
+      case 0:
+	  e = ecore_evas_software_x11_new(NULL, 0, 0, 0, g_x, g_y);
+	  break;
+
+      default:
+	  fprintf(stderr, "Warning: Invalid Evas engine specified in config. Defaulting to software engine.\n");
+	  e = ecore_evas_software_x11_new(NULL, 0, 0, 0, g_x, g_y);
+	  break;
+      }
+      
+      if (!e) {
+	  fprintf(stderr, "Critical error: No Evas engine available. Exiting.\n");
+	  return (-1);
       }
 
       ew = ecore_evas_software_x11_window_get(e);
