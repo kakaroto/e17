@@ -1,3 +1,5 @@
+// For users with an even number of displays search for //relative and
+// uncomment those lines, then comment out the ones above them.
 images
 {
     image, "e.png"	LOSSY 80;
@@ -62,6 +64,16 @@ collections
 		    {
 			normal, "e_logo_bg.jpg";
 		    }
+		    // set the offset to the size of each display
+		    //fill 
+		    //{
+		    //	smooth, 0;
+		    //	size 
+		    //	{
+		    //	    relative, 0.0 0.0;
+		    //	    offset, 1280 1024;
+		    //	}
+		    //}
 		}
 		description
 		{
@@ -97,11 +109,13 @@ collections
 		    rel1
 		    {
 			relative, 0.5 0.8;
+			//relative, 0.25 0.8;
 			offset, -100 0;
 		    }
 		    rel2
 		    {
 			relative, 0.5 0.8;
+			//relative, 0.25 0.8;
 			offset, 100 70;
 		    }
 		    color, 100 100 100 255;
@@ -122,11 +136,13 @@ collections
 		    rel1
 		    {
 			relative, 0.5 0.8;
+			//relative, 0.25 0.8;
 			offset, -100 0;
 		    }
 		    rel2
 		    {
 			relative, 0.5 0.8;
+			//relative, 0.25 0.8;
 			offset, 100 70;
 		    }
 		    color, 100 100 100 0;
@@ -154,11 +170,13 @@ collections
 		    rel1
 		    {
 			relative, 0.5 0.8;
+			//relative, 0.25 0.8;
 			offset, -100 0;
 		    }
 		    rel2
 		    {
 			relative, 0.5 0.8;
+			//relative, 0.25 0.8;
 			offset, 100 70;
 		    }
 		    color, 100 100 100 255;
@@ -179,11 +197,13 @@ collections
 		    rel1
 		    {
 			relative, 0.5 0.8;
+			//relative, 0.25 0.8;
 			offset, -100 0;
 		    }
 		    rel2
 		    {
 			relative, 0.5 0.8;
+			//relative, 0.25 0.8;
 			offset, 100 70;
 		    }
 		    color, 100 100 100 0;
@@ -540,13 +560,13 @@ collections
 		    color3, 227 227 227 64;
 		    rel1
 		    {
-			relative, 0.0 0.0;
+			relative, 0.1 0.1;
 			offset, 10 30;
 			to, "bg";
 		    }
 		    rel2
 		    {
-			relative, 0.0 0.0;
+			relative, 0.1 0.1;
 			offset, 300 70;
 			to, "bg";
 		    }
@@ -1416,7 +1436,7 @@ collections
 		source,	"";
 		action, STATE_SET "postauth" 0.0;
 		target, "bg";
-		transition, SINUSOIDAL 1.5;
+		transition, SINUSOIDAL 1.0;
 		after, "EntranceEnd";
 	    }
 	    program
