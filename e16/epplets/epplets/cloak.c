@@ -524,7 +524,7 @@ draw_rotator (void)
 
 /* Can I fit a starfield into a 40x40 window? */
 /* Gotta be worth a try! */
-#define NUM_STARS 60
+#define NUM_STARS 100
 double star_x[NUM_STARS];
 double star_y[NUM_STARS];
 double star_z[NUM_STARS];
@@ -574,8 +574,11 @@ draw_starfield (void)
 	}
       else
 	{
-	  b = ((255 / 5) * star_zv[i]) * (1000 / star_z[i]);
+	  b = ((255 / 5) * star_zv[i]) * (1-(star_z[i]/1000));
 	  set_col_pixel (star_screenx[i], star_screeny[i], b, 255, 255, 255);
+	  set_col_pixel (star_screenx[i]+1, star_screeny[i], b, 255, 255, 255);
+	  set_col_pixel (star_screenx[i], star_screeny[i]+1, b, 255, 255, 255);
+	  set_col_pixel (star_screenx[i]+1, star_screeny[i]+1, b, 255, 255, 255);
 	}
     }
 }
@@ -607,8 +610,8 @@ draw_aa_starfield (void)
     {
       star_z[i] = star_z[i] - star_zv[i];
 
-      star_screenx[i] = star_x[i] / star_z[i] * 100 + 19;
-      star_screeny[i] = star_y[i] / star_z[i] * 100 + 19;
+      star_screenx[i] = star_x[i] / star_z[i] * 100.0 + 19.0;
+      star_screeny[i] = star_y[i] / star_z[i] * 100.0 + 19.0;
 
       if ((star_screenx[i] > 39) || (star_screenx[i] < 0)
 	  || (star_screeny[i] > 39) || (star_screeny[i] < 0)
@@ -621,8 +624,8 @@ draw_aa_starfield (void)
 	}
       else
 	{
-	  b = ((255 / 5) * star_zv[i]) * (1000 / star_z[i]);
-	  aa_pixel (star_screenx[i], star_screeny[i], b, 255, 255, 255);
+	  b = ((255 / 5) * star_zv[i]) * (1-(star_z[i]/1000));
+	  aa_pixel (star_screenx[i], star_screeny[i], b*2, 255, 255, 255);
 	}
     }
 }
