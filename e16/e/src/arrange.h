@@ -29,16 +29,16 @@
 #define ARRANGE_BY_POSITION 2
 
 typedef struct _rectbox
-  {
-     void               *data;
-     int                 x, y, w, h;
-     int                 p;
-  }
+{
+   void               *data;
+   int                 x, y, w, h;
+   int                 p;
+}
 RectBox;
 
 void                ArrangeRects(RectBox * fixed, int fixed_count,
-				 RectBox * floating, int floating_count,
-				 RectBox * sorted, int startx, int starty,
-				 int width, int height, int policy,
+                                 RectBox * floating, int floating_count,
+                                 RectBox * sorted, int startx, int starty,
+                                 int width, int height, int policy,
 
-				 char initial_window);
+                                 char initial_window);

@@ -4682,3 +4682,16 @@ Sun May 28 11:48:09 PDT 2000
 
 There's nothing illegal about base width/height being zero, so don't
 force it to be no less than 1.
+
+-------------------------------------------------------------------------------
+
+Sun Jun  4 20:56:41 GMT 2000
+(gilbertt)
+
+Patch from monkeyiq@flashmail.com (real name?) for the option to position
+windows centered under the mouse pointer.
+
+(I changed the logic just slightly from the patch, so that windows too big
+vertically are positioned so that the top is visible, instead of the other
+way around).
+

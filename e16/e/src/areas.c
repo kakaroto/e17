@@ -73,25 +73,25 @@ SetNewAreaSize(int ax, int ay)
    SetAreaSize(ax, ay);
    lst = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
    if (lst)
-     {
-	for (i = 0; i < num; i++)
-	  {
-	     if ((!(lst[i]->sticky)) && (!(lst[i]->fixedpos)))
-	       {
-		  if (lst[i]->area_x >= ax)
-		     MoveEwinToArea(lst[i], ax - 1, lst[i]->area_x);
-		  if (lst[i]->area_y >= ay)
-		     MoveEwinToArea(lst[i], lst[i]->area_x, ay - 1);
-	       }
-	  }
-	Efree(lst);
-     }
+   {
+      for (i = 0; i < num; i++)
+      {
+         if ((!(lst[i]->sticky)) && (!(lst[i]->fixedpos)))
+         {
+            if (lst[i]->area_x >= ax)
+               MoveEwinToArea(lst[i], ax - 1, lst[i]->area_x);
+            if (lst[i]->area_y >= ay)
+               MoveEwinToArea(lst[i], lst[i]->area_x, ay - 1);
+         }
+      }
+      Efree(lst);
+   }
    GetCurrentArea(&a, &b);
    if (a >= ax)
-     {
-	SetCurrentArea(ax - 1, b);
-	GetCurrentArea(&a, &b);
-     }
+   {
+      SetCurrentArea(ax - 1, b);
+      GetCurrentArea(&a, &b);
+   }
    if (b >= ay)
       SetCurrentArea(a, ay - 1);
 }
@@ -153,7 +153,7 @@ int
 GetCurrentLinearArea(void)
 {
    return ((desks.desk[desks.current].current_area_y * area_w) +
-	   desks.desk[desks.current].current_area_x);
+           desks.desk[desks.current].current_area_x);
 }
 
 void
@@ -191,9 +191,9 @@ SlideWindowsBy(Window * win, int num, int dx, int dy, int speed)
    int                 dsec, dusec;
    double              tm;
    struct _xy
-     {
-	int                 x, y;
-     }
+   {
+      int                 x, y;
+   }
                       *xy;
 
    EDBUG(5, "SlideWindowsBy");
@@ -206,28 +206,28 @@ SlideWindowsBy(Window * win, int num, int dx, int dy, int speed)
    for (i = 0; i < num; i++)
       GetWinXY(win[i], &(xy[i].x), &(xy[i].y));
    for (k = 0; k <= 1024; k += spd)
-     {
-	gettimeofday(&timev1, NULL);
-	for (i = 0; i < num; i++)
-	  {
-	     x = ((xy[i].x * (1024 - k)) + ((xy[i].x + dx) * k)) >> 10;
-	     y = ((xy[i].y * (1024 - k)) + ((xy[i].y + dy) * k)) >> 10;
-	     EMoveWindow(disp, win[i], x, y);
-	  }
-	XSync(disp, False);
-	gettimeofday(&timev2, NULL);
-	dsec = timev2.tv_sec - timev1.tv_sec;
-	dusec = timev2.tv_usec - timev1.tv_usec;
-	if (dusec < 0)
-	  {
-	     dsec--;
-	     dusec += 1000000;
-	  }
-	tm = (double)dsec + (((double)dusec) / 1000000);
-	spd = (int)((double)speed * tm);
-	if (spd < min)
-	   spd = min;
-     }
+   {
+      gettimeofday(&timev1, NULL);
+      for (i = 0; i < num; i++)
+      {
+         x = ((xy[i].x * (1024 - k)) + ((xy[i].x + dx) * k)) >> 10;
+         y = ((xy[i].y * (1024 - k)) + ((xy[i].y + dy) * k)) >> 10;
+         EMoveWindow(disp, win[i], x, y);
+      }
+      XSync(disp, False);
+      gettimeofday(&timev2, NULL);
+      dsec = timev2.tv_sec - timev1.tv_sec;
+      dusec = timev2.tv_usec - timev1.tv_usec;
+      if (dusec < 0)
+      {
+         dsec--;
+         dusec += 1000000;
+      }
+      tm = (double)dsec + (((double)dusec) / 1000000);
+      spd = (int)((double)speed * tm);
+      if (spd < min)
+         spd = min;
+   }
    for (i = 0; i < num; i++)
       EMoveWindow(disp, win[i], xy[i].x + dx, xy[i].y + dy);
    if (xy)
@@ -243,51 +243,50 @@ SetCurrentArea(int ax, int ay)
    ToolTip            *tt;
 
    EDBUG(4, "SetCurrentArea");
-   if ((mode.mode == MODE_RESIZE) ||
-       (mode.mode == MODE_RESIZE_H) || (mode.mode == MODE_RESIZE_V))
+   if ((mode.mode == MODE_RESIZE) || (mode.mode == MODE_RESIZE_H)
+       || (mode.mode == MODE_RESIZE_V))
       EDBUG_RETURN_;
 
    AREA_FIX(ax, ay);
-   if ((ax == desks.desk[desks.current].current_area_x) &&
-       (ay == desks.desk[desks.current].current_area_y))
+   if ((ax == desks.desk[desks.current].current_area_x)
+       && (ay == desks.desk[desks.current].current_area_y))
       EDBUG_RETURN_;
    tt = FindItem("DEFAULT", 0, LIST_FINDBY_NAME, LIST_TYPE_TOOLTIP);
    HideToolTip(tt);
    dx = ax - desks.desk[desks.current].current_area_x;
    dy = ay - desks.desk[desks.current].current_area_y;
    if (dx < 0)
-     {
-	AUDIO_PLAY("SOUND_MOVE_AREA_LEFT");
-     }
+   {
+      AUDIO_PLAY("SOUND_MOVE_AREA_LEFT");
+   }
    else if (dx > 0)
-     {
-	AUDIO_PLAY("SOUND_MOVE_AREA_RIGHT");
-     }
+   {
+      AUDIO_PLAY("SOUND_MOVE_AREA_RIGHT");
+   }
    else if (dy < 0)
-     {
-	AUDIO_PLAY("SOUND_MOVE_AREA_UP");
-     }
+   {
+      AUDIO_PLAY("SOUND_MOVE_AREA_UP");
+   }
    else if (dy > 0)
-     {
-	AUDIO_PLAY("SOUND_MOVE_AREA_DOWN");
-     }
+   {
+      AUDIO_PLAY("SOUND_MOVE_AREA_DOWN");
+   }
 
    /* if we're in move mode....  and its non opaque undraw our boxes */
-   if ((mode.mode == MODE_MOVE) && (mode.ewin) && (mode.movemode > 0) &&
-       (!mode.moveresize_pending_ewin))
-     {
-	lst =
-	   ListWinGroupMembersForEwin(mode.ewin, ACTION_MOVE, mode.nogroup,
-				      &num);
-	for (i = 0; i < num; i++)
-	  {
-	     x = lst[i]->x;
-	     y = lst[i]->y;
-	     DrawEwinShape(lst[i], mode.movemode,
-			   x, y, lst[i]->client.w, lst[i]->client.h, 3);
-	  }
-	Efree(lst);
-     }
+   if ((mode.mode == MODE_MOVE) && (mode.ewin) && (mode.movemode > 0)
+       && (!mode.moveresize_pending_ewin))
+   {
+      lst =
+         ListWinGroupMembersForEwin(mode.ewin, ACTION_MOVE, mode.nogroup, &num);
+      for (i = 0; i < num; i++)
+      {
+         x = lst[i]->x;
+         y = lst[i]->y;
+         DrawEwinShape(lst[i], mode.movemode, x, y, lst[i]->client.w,
+                       lst[i]->client.h, 3);
+      }
+      Efree(lst);
+   }
    /* remove lots of event masks from windows.. we dont want to bother */
    /* handling events as a result of our playing wiht windows */
    FocusToEWin(NULL);
@@ -295,148 +294,133 @@ SetCurrentArea(int ax, int ay)
    /* move all the windows around */
    lst = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
    if (lst)
-     {
-	if (desks.slidein)
-	  {
-	     int                 wnum = 0;
-	     Window             *wl = NULL;
+   {
+      if (desks.slidein)
+      {
+         int                 wnum = 0;
+         Window             *wl = NULL;
 
-	     /* create the list of windwos to move */
-	     for (i = 0; i < num; i++)
-	       {
-		  if ((lst[i]->desktop == desks.current) &&
-		      (!lst[i]->sticky) && (!lst[i]->fixedpos) &&
-		      (!lst[i]->iconified))
-		    {
-		       if ((lst[i]->floating) && (mode.movemode > 0))
-			 {
-			    wnum++;
-			    wl = Erealloc(wl, sizeof(Window) * wnum);
-			    wl[wnum - 1] = lst[i]->win;
-			 }
-		       else if (!lst[i]->floating)
-			 {
-			    wnum++;
-			    wl = Erealloc(wl, sizeof(Window) * wnum);
-			    wl[wnum - 1] = lst[i]->win;
-			 }
-		    }
-	       }
-	     /* slide them */
-	     if (wl)
-	       {
-		  SlideWindowsBy(wl, wnum,
-				 -(root.w *
-				   (ax -
-				    desks.desk[desks.current].current_area_x)),
-				 -(root.h *
-				   (ay -
-				    desks.desk[desks.current].current_area_y)),
-				 desks.slidespeed);
-		  Efree(wl);
-	       }
-	     /* move the windows to their final positions */
-	     for (i = 0; i < num; i++)
-	       {
-		  if ((lst[i]->desktop == desks.current) &&
-		      (!lst[i]->sticky) && (!lst[i]->fixedpos) &&
-		      (!lst[i]->iconified))
-		    {
-		       if (!lst[i]->floating)
-			 {
-			    char                setflip = 0;
+         /* create the list of windwos to move */
+         for (i = 0; i < num; i++)
+         {
+            if ((lst[i]->desktop == desks.current) && (!lst[i]->sticky)
+                && (!lst[i]->fixedpos) && (!lst[i]->iconified))
+            {
+               if ((lst[i]->floating) && (mode.movemode > 0))
+               {
+                  wnum++;
+                  wl = Erealloc(wl, sizeof(Window) * wnum);
+                  wl[wnum - 1] = lst[i]->win;
+               }
+               else if (!lst[i]->floating)
+               {
+                  wnum++;
+                  wl = Erealloc(wl, sizeof(Window) * wnum);
+                  wl[wnum - 1] = lst[i]->win;
+               }
+            }
+         }
+         /* slide them */
+         if (wl)
+         {
+            SlideWindowsBy(wl, wnum,
+                           -(root.w *
+                             (ax - desks.desk[desks.current].current_area_x)),
+                           -(root.h *
+                             (ay - desks.desk[desks.current].current_area_y)),
+                           desks.slidespeed);
+            Efree(wl);
+         }
+         /* move the windows to their final positions */
+         for (i = 0; i < num; i++)
+         {
+            if ((lst[i]->desktop == desks.current) && (!lst[i]->sticky)
+                && (!lst[i]->fixedpos) && (!lst[i]->iconified))
+            {
+               if (!lst[i]->floating)
+               {
+                  char                setflip = 0;
 
-			    a1 = lst[i]->area_x;
-			    a2 = lst[i]->area_y;
-			    if (!mode.flipp)
-			      {
-				 setflip = 1;
-				 mode.flipp = 1;
-			      }
-			    MoveEwin(lst[i],
-				     lst[i]->x -
-				     (root.w *
-				      (ax -
-				       desks.desk[desks.
-						  current].current_area_x)),
-				     lst[i]->y -
-				     (root.h *
-				      (ay -
-				       desks.desk[desks.
-						  current].current_area_y)));
-			    if (setflip)
-			       mode.flipp = 0;
-			    lst[i]->area_x = a1;
-			    lst[i]->area_y = a2;
-			    GNOME_SetEwinArea(lst[i]);
-			 }
-		    }
-	       }
-	  }
-	else
-	  {
-	     /* move all widnwos across.... */
-	     for (i = 0; i < num; i++)
-	       {
-		  if ((lst[i]->desktop == desks.current) &&
-		      (!lst[i]->sticky) && (!lst[i]->fixedpos) &&
-		      (!lst[i]->iconified))
-		    {
-		       /* if we're moving this window and its not opaque move */
-		       /* warp it across withotu remebering the xy stuff */
-		       /* well work out the xy stuff later when the move finishes */
-		       if (lst[i]->floating)
-			 {
-			    if (mode.movemode > 0)
-			      {
-				 GetWinXY(lst[i]->win, &x, &y);
-				 EMoveWindow(disp, lst[i]->win,
-					     x -
-					     (root.w *
-					      (ax -
-					       desks.desk[desks.current].
-					       current_area_x)),
-					     y -
-					     (root.h *
-					      (ay -
-					       desks.desk[desks.current].
-					       current_area_y)));
-			      }
-			 }
-		       /* if we're not moving it... move it across */
-		       else
-			 {
-			    char                setflip = 0;
+                  a1 = lst[i]->area_x;
+                  a2 = lst[i]->area_y;
+                  if (!mode.flipp)
+                  {
+                     setflip = 1;
+                     mode.flipp = 1;
+                  }
+                  MoveEwin(lst[i],
+                           lst[i]->x -
+                           (root.w *
+                            (ax - desks.desk[desks.current].current_area_x)),
+                           lst[i]->y -
+                           (root.h *
+                            (ay - desks.desk[desks.current].current_area_y)));
+                  if (setflip)
+                     mode.flipp = 0;
+                  lst[i]->area_x = a1;
+                  lst[i]->area_y = a2;
+                  GNOME_SetEwinArea(lst[i]);
+               }
+            }
+         }
+      }
+      else
+      {
+         /* move all widnwos across.... */
+         for (i = 0; i < num; i++)
+         {
+            if ((lst[i]->desktop == desks.current) && (!lst[i]->sticky)
+                && (!lst[i]->fixedpos) && (!lst[i]->iconified))
+            {
+               /* if we're moving this window and its not opaque move */
+               /* warp it across withotu remebering the xy stuff */
+               /* well work out the xy stuff later when the move finishes */
+               if (lst[i]->floating)
+               {
+                  if (mode.movemode > 0)
+                  {
+                     GetWinXY(lst[i]->win, &x, &y);
+                     EMoveWindow(disp, lst[i]->win,
+                                 x -
+                                 (root.w *
+                                  (ax -
+                                   desks.desk[desks.current].current_area_x)),
+                                 y -
+                                 (root.h *
+                                  (ay -
+                                   desks.desk[desks.current].current_area_y)));
+                  }
+               }
+               /* if we're not moving it... move it across */
+               else
+               {
+                  char                setflip = 0;
 
-			    a1 = lst[i]->area_x;
-			    a2 = lst[i]->area_y;
-			    if (!mode.flipp)
-			      {
-				 setflip = 1;
-				 mode.flipp = 1;
-			      }
-			    MoveEwin(lst[i],
-				     lst[i]->x -
-				     (root.w *
-				      (ax -
-				       desks.desk[desks.
-						  current].current_area_x)),
-				     lst[i]->y -
-				     (root.h *
-				      (ay -
-				       desks.desk[desks.
-						  current].current_area_y)));
-			    if (setflip)
-			       mode.flipp = 0;
-			    lst[i]->area_x = a1;
-			    lst[i]->area_y = a2;
-			    GNOME_SetEwinArea(lst[i]);
-			 }
-		    }
-	       }
-	  }
-	Efree(lst);
-     }
+                  a1 = lst[i]->area_x;
+                  a2 = lst[i]->area_y;
+                  if (!mode.flipp)
+                  {
+                     setflip = 1;
+                     mode.flipp = 1;
+                  }
+                  MoveEwin(lst[i],
+                           lst[i]->x -
+                           (root.w *
+                            (ax - desks.desk[desks.current].current_area_x)),
+                           lst[i]->y -
+                           (root.h *
+                            (ay - desks.desk[desks.current].current_area_y)));
+                  if (setflip)
+                     mode.flipp = 0;
+                  lst[i]->area_x = a1;
+                  lst[i]->area_y = a2;
+                  GNOME_SetEwinArea(lst[i]);
+               }
+            }
+         }
+      }
+      Efree(lst);
+   }
    /* set the current area up in out data structs */
    desks.desk[desks.current].current_area_x = ax;
    desks.desk[desks.current].current_area_y = ay;
@@ -446,72 +430,67 @@ SetCurrentArea(int ax, int ay)
    /* redraw any windows that were in "move mode" */
    mode.moveresize_pending_ewin = NULL;
    if ((mode.mode == MODE_MOVE) && (mode.ewin))
-     {
-	lst = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
-	if (lst)
-	  {
-	     for (i = 0; i < num; i++)
-	       {
-		  if (lst[i]->floating)
-		    {
-		       if (mode.movemode > 0)
-			 {
-			    if (mode.flipp)
-			      {
-				 x = lst[i]->x - (dx * root.w);
-				 y = lst[i]->y - (dy * root.h);
-			      }
-			    else
-			      {
-				 x = lst[i]->x;
-				 y = lst[i]->y;
-			      }
-			    if (mode.movemode == 5)
-			       DrawEwinShape(lst[i], mode.movemode,
-					     x, y,
-					   lst[i]->client.w, lst[i]->client.h,
-					     4);
-			    else
-			       DrawEwinShape(lst[i], mode.movemode, x, y,
-					   lst[i]->client.w, lst[i]->client.h,
-					     0);
-			    if (mode.flipp)
-			      {
-				 mode.next_move_x_plus = dx * root.w;
-				 mode.next_move_y_plus = dy * root.h;
-			      }
-			 }
-		       else
-			 {
-			    if (mode.flipp)
-			      {
-				 x = lst[i]->x - (dx * root.w);
-				 y = lst[i]->y - (dy * root.h);
-			      }
-			    else
-			      {
-				 x = lst[i]->x;
-				 y = lst[i]->y;
-			      }
-			    DrawEwinShape(lst[i], mode.movemode,
-					  x, y,
-					  lst[i]->client.w, lst[i]->client.h,
-					  0);
-			    if (mode.flipp)
-			      {
-				 lst[i]->x = x + (dx * root.w);
-				 lst[i]->y = y + (dy * root.h);
-				 lst[i]->reqx = lst[i]->x;
-				 lst[i]->reqy = lst[i]->y;
-			      }
-			 }
-		    }
-		  RedrawPagersForDesktop(lst[i]->desktop, 3);
-		  PagerEwinOutsideAreaUpdate(lst[i]);
-	       }
-	     Efree(lst);
-	  }
-     }
+   {
+      lst = (EWin **) ListItemType(&num, LIST_TYPE_EWIN);
+      if (lst)
+      {
+         for (i = 0; i < num; i++)
+         {
+            if (lst[i]->floating)
+            {
+               if (mode.movemode > 0)
+               {
+                  if (mode.flipp)
+                  {
+                     x = lst[i]->x - (dx * root.w);
+                     y = lst[i]->y - (dy * root.h);
+                  }
+                  else
+                  {
+                     x = lst[i]->x;
+                     y = lst[i]->y;
+                  }
+                  if (mode.movemode == 5)
+                     DrawEwinShape(lst[i], mode.movemode, x, y,
+                                   lst[i]->client.w, lst[i]->client.h, 4);
+                  else
+                     DrawEwinShape(lst[i], mode.movemode, x, y,
+                                   lst[i]->client.w, lst[i]->client.h, 0);
+                  if (mode.flipp)
+                  {
+                     mode.next_move_x_plus = dx * root.w;
+                     mode.next_move_y_plus = dy * root.h;
+                  }
+               }
+               else
+               {
+                  if (mode.flipp)
+                  {
+                     x = lst[i]->x - (dx * root.w);
+                     y = lst[i]->y - (dy * root.h);
+                  }
+                  else
+                  {
+                     x = lst[i]->x;
+                     y = lst[i]->y;
+                  }
+                  DrawEwinShape(lst[i], mode.movemode, x, y, lst[i]->client.w,
+                                lst[i]->client.h, 0);
+                  if (mode.flipp)
+                  {
+                     lst[i]->x = x + (dx * root.w);
+                     lst[i]->y = y + (dy * root.h);
+                     lst[i]->reqx = lst[i]->x;
+                     lst[i]->reqy = lst[i]->y;
+                  }
+               }
+            }
+            RedrawPagersForDesktop(lst[i]->desktop, 3);
+            PagerEwinOutsideAreaUpdate(lst[i]);
+         }
+         Efree(lst);
+      }
+   }
    /* re-focus on a new ewin on that new desktop area */
    NewDeskFocus();
    /* tell the FX api abotu the change */
@@ -530,7 +509,7 @@ MoveEwinToArea(EWin * ewin, int ax, int ay)
    EDBUG(4, "MoveEwinToArea");
    AREA_FIX(ax, ay);
    MoveEwin(ewin, ewin->x + (root.w * (ax - ewin->area_x)),
-	    ewin->y + (root.h * (ay - ewin->area_y)));
+            ewin->y + (root.h * (ay - ewin->area_y)));
    ewin->area_x = ax;
    ewin->area_y = ay;
    GNOME_SetEwinArea(ewin);
@@ -553,6 +532,6 @@ MoveCurrentAreaBy(int ax, int ay)
    EDBUG(4, "MoveCurrentAreaBy");
 
    SetCurrentArea(desks.desk[desks.current].current_area_x + ax,
-		  desks.desk[desks.current].current_area_y + ay);
+                  desks.desk[desks.current].current_area_y + ay);
    EDBUG_RETURN_;
 }

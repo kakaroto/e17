@@ -49,12 +49,12 @@ CreateECursor(char *name, char *image, ImlibColor * fg, ImlibColor * bg)
    XReadBitmapFile(disp, root.win, img, &w, &h, &pmap, &xh, &yh);
    XQueryBestCursor(disp, root.win, w, h, &ww, &hh);
    if ((w > ww) || (h > hh))
-     {
-	EFreePixmap(disp, pmap);
-	EFreePixmap(disp, mask);
-	Efree(img);
-	return NULL;
-     }
+   {
+      EFreePixmap(disp, pmap);
+      EFreePixmap(disp, mask);
+      Efree(img);
+      return NULL;
+   }
    r = fg->r;
    g = fg->g;
    b = fg->b;
@@ -104,15 +104,15 @@ FreeECursor(ECursor * ec)
       return;
 
    if (ec->ref_count > 0)
-     {
-	char                stuff[255];
+   {
+      char                stuff[255];
 
-	Esnprintf(stuff, sizeof(stuff), _("%u references remain\n"),
-		  ec->ref_count);
-	DIALOG_OK(_("ECursor Error!"), stuff);
+      Esnprintf(stuff, sizeof(stuff), _("%u references remain\n"),
+                ec->ref_count);
+      DIALOG_OK(_("ECursor Error!"), stuff);
 
-	return;
-     }
+      return;
+   }
 
    while (RemoveItemByPtr(ec, LIST_TYPE_ECURSOR));
 

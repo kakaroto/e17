@@ -42,7 +42,7 @@ int                 debug_level;
 char               *call_stack[1024];
 
 void
-Alert(char *fmt,...)
+Alert(char *fmt, ...)
 {
    char                text[10240];
    va_list             ap;
@@ -165,11 +165,11 @@ ShowAlert(char *text)
       EDBUG_RETURN_;
    dd = XOpenDisplay(NULL);
    if (!dd)
-     {
-	fprintf(stderr, text);
-	fflush(stderr);
-	EDBUG_RETURN_;
-     }
+   {
+      fprintf(stderr, text);
+      fflush(stderr);
+      EDBUG_RETURN_;
+   }
    title = TitleText;
    str1 = IgnoreText;
    str2 = RestartText;
@@ -260,49 +260,49 @@ goto CN; \
    if (DefaultDepth(dd, DefaultScreen(dd)) > 4)
       colorful = 1;
    if (colorful)
-     {
-	cmap = DefaultColormap(dd, DefaultScreen(dd));
-	r = 220;
-	g = 220;
-	b = 220;
-	xcl.red = (r << 8) | r;
-	xcl.green = (g << 8) | g;
-	xcl.blue = (b << 8) | b;
-	ALLOC_COLOR(dd, cmap, &xcl);
-	cols[cnum++] = xcl.pixel;
-	r = 160;
-	g = 160;
-	b = 160;
-	xcl.red = (r << 8) | r;
-	xcl.green = (g << 8) | g;
-	xcl.blue = (b << 8) | b;
-	ALLOC_COLOR(dd, cmap, &xcl);
-	cols[cnum++] = xcl.pixel;
-	r = 100;
-	g = 100;
-	b = 100;
-	xcl.red = (r << 8) | r;
-	xcl.green = (g << 8) | g;
-	xcl.blue = (b << 8) | b;
-	ALLOC_COLOR(dd, cmap, &xcl);
-	cols[cnum++] = xcl.pixel;
-	r = 0;
-	g = 0;
-	b = 0;
-	xcl.red = (r << 8) | r;
-	xcl.green = (g << 8) | g;
-	xcl.blue = (b << 8) | b;
-	ALLOC_COLOR(dd, cmap, &xcl);
-	cols[cnum++] = xcl.pixel;
-	r = 255;
-	g = 255;
-	b = 255;
-	xcl.red = (r << 8) | r;
-	xcl.green = (g << 8) | g;
-	xcl.blue = (b << 8) | b;
-	ALLOC_COLOR(dd, cmap, &xcl);
-	cols[cnum++] = xcl.pixel;
-     }
+   {
+      cmap = DefaultColormap(dd, DefaultScreen(dd));
+      r = 220;
+      g = 220;
+      b = 220;
+      xcl.red = (r << 8) | r;
+      xcl.green = (g << 8) | g;
+      xcl.blue = (b << 8) | b;
+      ALLOC_COLOR(dd, cmap, &xcl);
+      cols[cnum++] = xcl.pixel;
+      r = 160;
+      g = 160;
+      b = 160;
+      xcl.red = (r << 8) | r;
+      xcl.green = (g << 8) | g;
+      xcl.blue = (b << 8) | b;
+      ALLOC_COLOR(dd, cmap, &xcl);
+      cols[cnum++] = xcl.pixel;
+      r = 100;
+      g = 100;
+      b = 100;
+      xcl.red = (r << 8) | r;
+      xcl.green = (g << 8) | g;
+      xcl.blue = (b << 8) | b;
+      ALLOC_COLOR(dd, cmap, &xcl);
+      cols[cnum++] = xcl.pixel;
+      r = 0;
+      g = 0;
+      b = 0;
+      xcl.red = (r << 8) | r;
+      xcl.green = (g << 8) | g;
+      xcl.blue = (b << 8) | b;
+      ALLOC_COLOR(dd, cmap, &xcl);
+      cols[cnum++] = xcl.pixel;
+      r = 255;
+      g = 255;
+      b = 255;
+      xcl.red = (r << 8) | r;
+      xcl.green = (g << 8) | g;
+      xcl.blue = (b << 8) | b;
+      ALLOC_COLOR(dd, cmap, &xcl);
+      cols[cnum++] = xcl.pixel;
+   }
  CN:
    wid = DisplayWidth(dd, DefaultScreen(dd));
    hih = DisplayHeight(dd, DefaultScreen(dd));
@@ -322,31 +322,35 @@ goto CN; \
    att.backing_store = Always;
    att.save_under = True;
    att.override_redirect = True;
-   win = XCreateWindow(dd, DefaultRootWindow(dd), -100, -100, 1, 1, 0,
-		       DefaultDepth(dd, DefaultScreen(dd)), InputOutput,
-		       DefaultVisual(dd, DefaultScreen(dd)), mask, &att);
+   win =
+      XCreateWindow(dd, DefaultRootWindow(dd), -100, -100, 1, 1, 0,
+                    DefaultDepth(dd, DefaultScreen(dd)), InputOutput,
+                    DefaultVisual(dd, DefaultScreen(dd)), mask, &att);
 
    if (sscanf(str1, "%s", line) > 0)
-     {
-	b1 = XCreateWindow(dd, win, -100, -100, 1, 1, 0,
-			   DefaultDepth(dd, DefaultScreen(dd)), InputOutput,
-			   DefaultVisual(dd, DefaultScreen(dd)), mask, &att);
-	EMapWindow(dd, b1);
-     }
+   {
+      b1 =
+         XCreateWindow(dd, win, -100, -100, 1, 1, 0,
+                       DefaultDepth(dd, DefaultScreen(dd)), InputOutput,
+                       DefaultVisual(dd, DefaultScreen(dd)), mask, &att);
+      EMapWindow(dd, b1);
+   }
    if (sscanf(str2, "%s", line) > 0)
-     {
-	b2 = XCreateWindow(dd, win, -100, -100, 1, 1, 0,
-			   DefaultDepth(dd, DefaultScreen(dd)), InputOutput,
-			   DefaultVisual(dd, DefaultScreen(dd)), mask, &att);
-	EMapWindow(dd, b2);
-     }
+   {
+      b2 =
+         XCreateWindow(dd, win, -100, -100, 1, 1, 0,
+                       DefaultDepth(dd, DefaultScreen(dd)), InputOutput,
+                       DefaultVisual(dd, DefaultScreen(dd)), mask, &att);
+      EMapWindow(dd, b2);
+   }
    if (sscanf(str3, "%s", line) > 0)
-     {
-	b3 = XCreateWindow(dd, win, -100, -100, 1, 1, 0,
-			   DefaultDepth(dd, DefaultScreen(dd)), InputOutput,
-			   DefaultVisual(dd, DefaultScreen(dd)), mask, &att);
-	EMapWindow(dd, b3);
-     }
+   {
+      b3 =
+         XCreateWindow(dd, win, -100, -100, 1, 1, 0,
+                       DefaultDepth(dd, DefaultScreen(dd)), InputOutput,
+                       DefaultVisual(dd, DefaultScreen(dd)), mask, &att);
+      EMapWindow(dd, b3);
+   }
 
    gc = XCreateGC(dd, win, 0, &gcv);
    if (colorful)
@@ -356,33 +360,33 @@ goto CN; \
    fh = 0;
    xfs = NULL;
    if (!xfs)
-     {
-	xfs = XLoadQueryFont(dd, "-*-helvetica-*-r-*-*-12-*-*-*-*-*-*-*");
-     }
+   {
+      xfs = XLoadQueryFont(dd, "-*-helvetica-*-r-*-*-12-*-*-*-*-*-*-*");
+   }
    if (!xfs)
-     {
-	xfs = XLoadQueryFont(dd, "fixed");
-     }
+   {
+      xfs = XLoadQueryFont(dd, "fixed");
+   }
    font = xfs->fid;
    fh = xfs->ascent + xfs->descent;
    XSetFont(dd, gc, font);
    XMapWindow(dd, win);
    XGrabPointer(dd, win, True, ButtonPressMask | ButtonReleaseMask,
-		GrabModeAsync, GrabModeAsync, None, None, CurrentTime);
+                GrabModeAsync, GrabModeAsync, None, None, CurrentTime);
    XGrabKeyboard(dd, win, True, GrabModeAsync, GrabModeAsync, CurrentTime);
    XSetInputFocus(dd, win, RevertToPointerRoot, CurrentTime);
    XGrabServer(dd);
    XSync(dd, False);
    for (i = 0; i < 600; i += 40)
-     {
-	ww = i;
-	hh = (i * 440) / 600;
-	x = (wid - ww) >> 1;
-	y = (hih - hh) >> 1;
-	XMoveResizeWindow(dd, win, x, y, ww, hh);
-	DRAW_BOX_OUT(dd, gc, win, 0, 0, ww, hh);
-	XSync(dd, False);
-     }
+   {
+      ww = i;
+      hh = (i * 440) / 600;
+      x = (wid - ww) >> 1;
+      y = (hih - hh) >> 1;
+      XMoveResizeWindow(dd, win, x, y, ww, hh);
+      DRAW_BOX_OUT(dd, gc, win, 0, 0, ww, hh);
+      XSync(dd, False);
+   }
    ww = 600;
    hh = 440;
    x = (wid - 600) >> 1;
@@ -399,29 +403,26 @@ goto CN; \
    if (h > mh)
       mh = h;
    if (sscanf(str1, "%s", line) > 0)
-     {
-	h = XTextWidth(xfs, str1, strlen(str1));
-	w = 10 + (((580 - mh) * 0) / 4);
-	XMoveResizeWindow(dd, b1, w - 5, 440 - 15 - fh, mh + 10, fh + 10);
-	XSelectInput(dd, b1,
-		     ButtonPressMask | ButtonReleaseMask | ExposureMask);
-     }
+   {
+      h = XTextWidth(xfs, str1, strlen(str1));
+      w = 10 + (((580 - mh) * 0) / 4);
+      XMoveResizeWindow(dd, b1, w - 5, 440 - 15 - fh, mh + 10, fh + 10);
+      XSelectInput(dd, b1, ButtonPressMask | ButtonReleaseMask | ExposureMask);
+   }
    if (sscanf(str2, "%s", line) > 0)
-     {
-	h = XTextWidth(xfs, str2, strlen(str2));
-	w = 10 + (((580 - mh) * 1) / 2);
-	XMoveResizeWindow(dd, b2, w - 5, 440 - 15 - fh, mh + 10, fh + 10);
-	XSelectInput(dd, b2,
-		     ButtonPressMask | ButtonReleaseMask | ExposureMask);
-     }
+   {
+      h = XTextWidth(xfs, str2, strlen(str2));
+      w = 10 + (((580 - mh) * 1) / 2);
+      XMoveResizeWindow(dd, b2, w - 5, 440 - 15 - fh, mh + 10, fh + 10);
+      XSelectInput(dd, b2, ButtonPressMask | ButtonReleaseMask | ExposureMask);
+   }
    if (sscanf(str3, "%s", line) > 0)
-     {
-	h = XTextWidth(xfs, str3, strlen(str3));
-	w = 10 + (((580 - mh) * 2) / 2);
-	XMoveResizeWindow(dd, b3, w - 5, 440 - 15 - fh, mh + 10, fh + 10);
-	XSelectInput(dd, b3,
-		     ButtonPressMask | ButtonReleaseMask | ExposureMask);
-     }
+   {
+      h = XTextWidth(xfs, str3, strlen(str3));
+      w = 10 + (((580 - mh) * 2) / 2);
+      XMoveResizeWindow(dd, b3, w - 5, 440 - 15 - fh, mh + 10, fh + 10);
+      XSelectInput(dd, b3, ButtonPressMask | ButtonReleaseMask | ExposureMask);
+   }
    XSync(dd, False);
    XSelectInput(dd, win, KeyPressMask | KeyReleaseMask | ExposureMask);
 
@@ -473,92 +474,92 @@ XSync(dd, False); \
 
    w = 1;
    while (w == 1)
-     {
-	XNextEvent(dd, &ev);
-	switch (ev.type)
-	  {
-	  case KeyPress:
-	     key = XKeysymToKeycode(dd, XStringToKeysym("F1"));
-	     if (key == ev.xkey.keycode)
-	       {
-		  DRAW_BOX_IN(dd, gc, b1, 0, 0, mh + 10, fh + 10);
-		  XSync(dd, False);
-		  sleep(1);
-		  DRAW_BOX_OUT(dd, gc, b1, 0, 0, mh + 10, fh + 10);
-		  XSync(dd, False);
-		  AlertHandleClick(1);
-		  w = 0;
-	       }
-	     key = XKeysymToKeycode(dd, XStringToKeysym("F2"));
-	     if (key == ev.xkey.keycode)
-	       {
-		  DRAW_BOX_IN(dd, gc, b2, 0, 0, mh + 10, fh + 10);
-		  XSync(dd, False);
-		  sleep(1);
-		  DRAW_BOX_OUT(dd, gc, b2, 0, 0, mh + 10, fh + 10);
-		  XSync(dd, False);
-		  AlertHandleClick(2);
-		  w = 0;
-	       }
-	     key = XKeysymToKeycode(dd, XStringToKeysym("F3"));
-	     if (key == ev.xkey.keycode)
-	       {
-		  DRAW_BOX_IN(dd, gc, b3, 0, 0, mh + 10, fh + 10);
-		  XSync(dd, False);
-		  sleep(1);
-		  DRAW_BOX_OUT(dd, gc, b3, 0, 0, mh + 10, fh + 10);
-		  XSync(dd, False);
-		  AlertHandleClick(3);
-		  w = 0;
-	       }
-	     break;
-	  case ButtonPress:
-	     if (ev.xbutton.window == b1)
-	       {
-		  DRAW_BOX_IN(dd, gc, b1, 0, 0, mh + 10, fh + 10);
-	       }
-	     else if (ev.xbutton.window == b2)
-	       {
-		  DRAW_BOX_IN(dd, gc, b2, 0, 0, mh + 10, fh + 10);
-	       }
-	     else if (ev.xbutton.window == b3)
-	       {
-		  DRAW_BOX_IN(dd, gc, b3, 0, 0, mh + 10, fh + 10);
-	       }
-	     w = 1;
-	     XSync(dd, False);
-	     break;
-	  case ButtonRelease:
-	     if (ev.xbutton.window == b1)
-	       {
-		  DRAW_BOX_OUT(dd, gc, b1, 0, 0, mh + 10, fh + 10);
-		  XSync(dd, False);
-		  AlertHandleClick(1);
-		  w = 0;
-	       }
-	     else if (ev.xbutton.window == b2)
-	       {
-		  DRAW_BOX_OUT(dd, gc, b2, 0, 0, mh + 10, fh + 10);
-		  XSync(dd, False);
-		  AlertHandleClick(2);
-		  w = 0;
-	       }
-	     else if (ev.xbutton.window == b3)
-	       {
-		  DRAW_BOX_OUT(dd, gc, b3, 0, 0, mh + 10, fh + 10);
-		  XSync(dd, False);
-		  AlertHandleClick(3);
-		  w = 0;
-	       }
-	     break;
-	  case Expose:
-	     DRAW_ALERT;
-	     w = 1;
-	     break;
-	  default:
-	     break;
-	  }
-     }
+   {
+      XNextEvent(dd, &ev);
+      switch (ev.type)
+      {
+        case KeyPress:
+           key = XKeysymToKeycode(dd, XStringToKeysym("F1"));
+           if (key == ev.xkey.keycode)
+           {
+              DRAW_BOX_IN(dd, gc, b1, 0, 0, mh + 10, fh + 10);
+              XSync(dd, False);
+              sleep(1);
+              DRAW_BOX_OUT(dd, gc, b1, 0, 0, mh + 10, fh + 10);
+              XSync(dd, False);
+              AlertHandleClick(1);
+              w = 0;
+           }
+           key = XKeysymToKeycode(dd, XStringToKeysym("F2"));
+           if (key == ev.xkey.keycode)
+           {
+              DRAW_BOX_IN(dd, gc, b2, 0, 0, mh + 10, fh + 10);
+              XSync(dd, False);
+              sleep(1);
+              DRAW_BOX_OUT(dd, gc, b2, 0, 0, mh + 10, fh + 10);
+              XSync(dd, False);
+              AlertHandleClick(2);
+              w = 0;
+           }
+           key = XKeysymToKeycode(dd, XStringToKeysym("F3"));
+           if (key == ev.xkey.keycode)
+           {
+              DRAW_BOX_IN(dd, gc, b3, 0, 0, mh + 10, fh + 10);
+              XSync(dd, False);
+              sleep(1);
+              DRAW_BOX_OUT(dd, gc, b3, 0, 0, mh + 10, fh + 10);
+              XSync(dd, False);
+              AlertHandleClick(3);
+              w = 0;
+           }
+           break;
+        case ButtonPress:
+           if (ev.xbutton.window == b1)
+           {
+              DRAW_BOX_IN(dd, gc, b1, 0, 0, mh + 10, fh + 10);
+           }
+           else if (ev.xbutton.window == b2)
+           {
+              DRAW_BOX_IN(dd, gc, b2, 0, 0, mh + 10, fh + 10);
+           }
+           else if (ev.xbutton.window == b3)
+           {
+              DRAW_BOX_IN(dd, gc, b3, 0, 0, mh + 10, fh + 10);
+           }
+           w = 1;
+           XSync(dd, False);
+           break;
+        case ButtonRelease:
+           if (ev.xbutton.window == b1)
+           {
+              DRAW_BOX_OUT(dd, gc, b1, 0, 0, mh + 10, fh + 10);
+              XSync(dd, False);
+              AlertHandleClick(1);
+              w = 0;
+           }
+           else if (ev.xbutton.window == b2)
+           {
+              DRAW_BOX_OUT(dd, gc, b2, 0, 0, mh + 10, fh + 10);
+              XSync(dd, False);
+              AlertHandleClick(2);
+              w = 0;
+           }
+           else if (ev.xbutton.window == b3)
+           {
+              DRAW_BOX_OUT(dd, gc, b3, 0, 0, mh + 10, fh + 10);
+              XSync(dd, False);
+              AlertHandleClick(3);
+              w = 0;
+           }
+           break;
+        case Expose:
+           DRAW_ALERT;
+           w = 1;
+           break;
+        default:
+           break;
+      }
+   }
    XDestroyWindow(dd, win);
    XFreeGC(dd, gc);
    XFreeFont(dd, xfs);
@@ -574,21 +575,21 @@ AlertHandleClick(int button)
 {
    EDBUG(9, "AlertHandleClick");
    switch (button)
-     {
+   {
      case 1:
-	if (IgnoreFunction)
-	   (*(IgnoreFunction)) (IgnoreParams);
-	break;
+        if (IgnoreFunction)
+           (*(IgnoreFunction)) (IgnoreParams);
+        break;
      case 2:
-	if (RestartFunction)
-	   (*(RestartFunction)) (RestartParams);
-	break;
+        if (RestartFunction)
+           (*(RestartFunction)) (RestartParams);
+        break;
      case 3:
-	if (ExitFunction)
-	   (*(ExitFunction)) (ExitParams);
-	break;
+        if (ExitFunction)
+           (*(ExitFunction)) (ExitParams);
+        break;
      default:
-	break;
-     }
+        break;
+   }
    EDBUG_RETURN_;
 }

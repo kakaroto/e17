@@ -32,20 +32,20 @@ GrabActionKey(Action * a)
       EDBUG_RETURN_;
    mod = a->modifiers;
    if (a->anymodifier)
-     {
-	mod = AnyModifier;
-	XGrabKey(disp, a->key, mod, root.win, False, GrabModeAsync,
-		 GrabModeAsync);
-     }
+   {
+      mod = AnyModifier;
+      XGrabKey(disp, a->key, mod, root.win, False, GrabModeAsync,
+               GrabModeAsync);
+   }
    else
-     {
-	int                 i;
+   {
+      int                 i;
 
-	/* grab the key even if locks are on or not */
-	for (i = 0; i < 8; i++)
-	   XGrabKey(disp, a->key, mod | mask_mod_combos[i], root.win, False,
-		    GrabModeAsync, GrabModeAsync);
-     }
+      /* grab the key even if locks are on or not */
+      for (i = 0; i < 8; i++)
+         XGrabKey(disp, a->key, mod | mask_mod_combos[i], root.win, False,
+                  GrabModeAsync, GrabModeAsync);
+   }
    EDBUG_RETURN_;
 }
 
@@ -59,18 +59,18 @@ UnGrabActionKey(Action * a)
       EDBUG_RETURN_;
    mod = a->modifiers;
    if (a->anymodifier)
-     {
-	mod = AnyModifier;
-	XUngrabKey(disp, a->key, mod, root.win);
-     }
+   {
+      mod = AnyModifier;
+      XUngrabKey(disp, a->key, mod, root.win);
+   }
    else
-     {
-	int                 i;
+   {
+      int                 i;
 
-	/* ungrab the key even if locks are on or not */
-	for (i = 0; i < 8; i++)
-	   XUngrabKey(disp, a->key, mod | mask_mod_combos[i], root.win);
-     }
+      /* ungrab the key even if locks are on or not */
+      for (i = 0; i < 8; i++)
+         XUngrabKey(disp, a->key, mod | mask_mod_combos[i], root.win);
+   }
    EDBUG_RETURN_;
 }
 
@@ -81,7 +81,7 @@ GrabTheButtons(Window win)
    if (mode.click_focus_grabbed)
       EDBUG_RETURN_;
    XGrabPointer(disp, win, True, ButtonPressMask | ButtonReleaseMask,
-		GrabModeAsync, GrabModeAsync, None, None, CurrentTime);
+                GrabModeAsync, GrabModeAsync, None, None, CurrentTime);
    grab_window = win;
    mode.click_focus_grabbed = 1;
    EDBUG_RETURN_;
@@ -95,10 +95,11 @@ GrabThePointer(Window win)
    EDBUG(4, "GrabThePointer");
    if (mode.click_focus_grabbed)
       EDBUG_RETURN(1);
-   ret = XGrabPointer(disp, win, True, ButtonPressMask | ButtonReleaseMask |
-		      PointerMotionMask | ButtonMotionMask |
-		      EnterWindowMask | LeaveWindowMask, GrabModeAsync,
-		      GrabModeAsync, None, None, CurrentTime);
+   ret =
+      XGrabPointer(disp, win, True,
+                   ButtonPressMask | ButtonReleaseMask | PointerMotionMask |
+                   ButtonMotionMask | EnterWindowMask | LeaveWindowMask,
+                   GrabModeAsync, GrabModeAsync, None, None, CurrentTime);
    grab_window = win;
    mode.click_focus_grabbed = 1;
    EDBUG_RETURN(ret);
@@ -112,10 +113,11 @@ GrabConfineThePointer(Window win)
    EDBUG(4, "GrabThePointer");
    if (mode.click_focus_grabbed)
       EDBUG_RETURN(1);
-   ret = XGrabPointer(disp, win, True, ButtonPressMask | ButtonReleaseMask |
-		      PointerMotionMask | ButtonMotionMask |
-		      EnterWindowMask | LeaveWindowMask, GrabModeAsync,
-		      GrabModeAsync, win, None, CurrentTime);
+   ret =
+      XGrabPointer(disp, win, True,
+                   ButtonPressMask | ButtonReleaseMask | PointerMotionMask |
+                   ButtonMotionMask | EnterWindowMask | LeaveWindowMask,
+                   GrabModeAsync, GrabModeAsync, win, None, CurrentTime);
    grab_window = win;
    mode.click_focus_grabbed = 1;
    EDBUG_RETURN(ret);
