@@ -140,3 +140,23 @@ geist_layer_raise_object(geist_document * doc, geist_object * obj)
 
    D_RETURN_(4);
 }
+
+unsigned char
+geist_layer_remove_object(geist_layer * lay, geist_object * obj)
+{
+   geist_list *l;
+
+   D_ENTER(3);
+
+   for (l = lay->objects; l; l = l->next)
+   {
+      if (GEIST_OBJECT(l->data) == obj)
+      {
+         geist_list_unlink(lay->objects, l);
+         free(l);
+         D_RETURN(3, TRUE);
+      }
+   }
+
+   D_RETURN(3, FALSE);
+}

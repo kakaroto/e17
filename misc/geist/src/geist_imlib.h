@@ -37,7 +37,7 @@ geist_imlib_load_image(Imlib_Image * im, char *filename);
 int geist_imlib_image_get_width(Imlib_Image im);
 int geist_imlib_image_get_height(Imlib_Image im);
 int geist_imlib_image_has_alpha(Imlib_Image im);
-char *geist_imlib_image_get_filename(Imlib_Image im);
+const char *geist_imlib_image_get_filename(Imlib_Image im);
 void geist_imlib_free_image_and_decache(Imlib_Image im);
 void geist_imlib_render_image_on_drawable(Drawable d, Imlib_Image im, int x,
                                         int y, char dither, char blend,

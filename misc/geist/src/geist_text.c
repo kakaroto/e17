@@ -16,6 +16,26 @@ geist_text_new(void)
    D_RETURN(5, GEIST_OBJECT(txt));
 }
 
+void
+geist_text_init(geist_text * txt)
+{
+   geist_object *obj;
+
+   D_ENTER(5);
+   memset(txt, 0, sizeof(geist_text));
+   obj = GEIST_OBJECT(txt);
+   geist_object_init(obj);
+   obj->free = geist_text_free;
+   obj->render = geist_text_render;
+   obj->render_selected = geist_object_int_render_selected;
+   obj->render_partial = geist_text_render_partial;
+   obj->get_rendered_image = geist_text_get_rendered_image;
+   obj->get_selection_updates = geist_object_int_get_selection_updates;
+   geist_object_set_type(obj, GEIST_TYPE_TEXT);
+
+   D_RETURN_(5);
+}
+
 geist_object *
 geist_text_new_with_text(int x, int y, char *fontname, char *text)
 {
@@ -47,25 +67,6 @@ geist_text_new_with_text(int x, int y, char *fontname, char *text)
    txt->im = geist_text_create_image(txt, &obj->w, &obj->h);
 
    D_RETURN(5, GEIST_OBJECT(txt));
-}
-
-void
-geist_text_init(geist_text * txt)
-{
-   geist_object *obj;
-
-   D_ENTER(5);
-   memset(txt, 0, sizeof(geist_text));
-   obj = GEIST_OBJECT(txt);
-   geist_object_init(obj);
-   obj->free = geist_text_free;
-   obj->render = geist_text_render;
-   obj->render_selected = geist_object_int_render_selected;
-   obj->render_partial = geist_text_render_partial;
-   obj->get_rendered_image= geist_text_get_rendered_image;
-	geist_object_set_type(obj,GEIST_TYPE_TEXT);
-
-   D_RETURN_(5);
 }
 
 void
@@ -138,7 +139,7 @@ geist_text_render_partial(geist_object * obj, Imlib_Image dest, int x, int y,
    im = GEIST_TEXT(obj);
    if (!im->im)
       D_RETURN_(5);
-   
+
    sx = x - obj->x;
    sy = y - obj->y;
    sw = sx + w;
@@ -153,7 +154,7 @@ geist_text_render_partial(geist_object * obj, Imlib_Image dest, int x, int y,
    if (sh > geist_imlib_image_get_height(im->im))
       sh = geist_imlib_image_get_height(im->im);
 
-      if (sw > w)
+   if (sw > w)
       sw = w;
    if (sh > h)
       sh = h;
@@ -187,14 +188,13 @@ geist_text_change_text(geist_text * txt, char *newtext)
       free(txt->text);
    if (txt->im)
       geist_imlib_free_image_and_decache(txt->im);
-	txt->text = estrdup(newtext);
+   txt->text = estrdup(newtext);
    txt->im = geist_text_create_image(txt, &obj->w, &obj->h);
 
    D_RETURN_(3);
 }
 
-Imlib_Image
-geist_text_create_image(geist_text * txt, int *w, int *h)
+Imlib_Image geist_text_create_image(geist_text * txt, int *w, int *h)
 {
    DATA8 atab[256];
    Imlib_Image im;
@@ -237,7 +237,8 @@ geist_text_create_image(geist_text * txt, int *w, int *h)
    D_RETURN(3, im);
 }
 
-Imlib_Image geist_text_get_rendered_image(geist_object *obj)
+Imlib_Image
+geist_text_get_rendered_image(geist_object * obj)
 {
    D_ENTER(3);
 

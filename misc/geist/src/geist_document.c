@@ -297,3 +297,31 @@ geist_document_dirty_object(geist_document * doc, geist_object * obj)
                                obj->h + (2 * HALF_SEL_HEIGHT));
    D_RETURN_(5);
 }
+
+void
+geist_document_dirty_object_selection(geist_document * doc,
+                                      geist_object * obj)
+{
+   D_ENTER(5);
+
+   doc->up =
+      imlib_updates_append_updates(doc->up, obj->get_selection_updates(obj));
+
+   D_RETURN_(5);
+}
+
+void
+geist_document_remove_object(geist_document * d, geist_object * obj)
+{
+   geist_list *l;
+
+   D_ENTER(3);
+   geist_document_dirty_object(d, obj);
+   for (l = d->layers; l; l = l->next)
+   {
+      if (geist_layer_remove_object(GEIST_LAYER(l->data), obj))
+         break;
+   }
+
+   D_RETURN_(3);
+}

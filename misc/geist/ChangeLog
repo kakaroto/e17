@@ -1,3 +1,33 @@
+Sat Aug  5 12:59:35 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Fixed text update, removed duplicate call to
+	_text_create_image() and dirty the object before it is resized, so
+	that if it shrinks, no pixel goop is left behind.
+	* Patch from Till Adam, apparently the file selector wasn't
+	getting destroyed properly.
+	* File selector callback didn't check path != NULL and didn't
+	check the image wasn't NULL (in case of non-images).
+	* Checks for valid objects in object list callbacks.
+	* Wired in the object deletion button.
+	* Slight optimisation by adding a function to only dirty the
+	selection of an object, for when it's selection changes only - it
+	saves redrawing the whole thing.
+
+Sat Aug  5 12:58:54 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Stuff by pabs last night:
+
+	- added geist_object_get/set_type() for later calls.
+	- gixed a bug in geist_text_change_text() that caused a SEGV if you
+	used it (SMOOTH MOVE TOM).
+	- selecting ojbects in the geist window will now update the selection
+	in the object list.
+	- selecting an object in the list will automatically raise it.
+	- added a visibility checkbox.
+	- added a text entry box.  if the object you select is a text object,
+	you can adjust the text real-time.
+	- you can now load images with the "add" button.
+
 Sat Aug  5 01:04:41 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Fixed make install to work. But now YOU HAVE TO RUN MAKE INSTALL

@@ -18,6 +18,26 @@ geist_image_new(void)
    D_RETURN(5, (geist_object *) img);
 }
 
+void
+geist_image_init(geist_image * img)
+{
+   geist_object *obj;
+
+   D_ENTER(5);
+   memset(img, 0, sizeof(geist_image));
+   obj = (geist_object *) img;
+   geist_object_init(obj);
+   obj->free = geist_image_free;
+   obj->render = geist_image_render;
+   obj->render_selected = geist_object_int_render_selected;
+   obj->render_partial = geist_image_render_partial;
+   obj->get_rendered_image = geist_image_get_rendered_image;
+   obj->get_selection_updates = geist_object_int_get_selection_updates;
+	geist_object_set_type(obj,GEIST_TYPE_IMAGE);
+
+   D_RETURN_(5);
+}
+
 geist_object *
 geist_image_new_from_file(int x, int y, char *filename)
 {
@@ -41,25 +61,6 @@ geist_image_new_from_file(int x, int y, char *filename)
    obj->y = y;
 
    D_RETURN(5, (geist_object *) img);
-}
-
-void
-geist_image_init(geist_image * img)
-{
-   geist_object *obj;
-
-   D_ENTER(5);
-   memset(img, 0, sizeof(geist_image));
-   obj = (geist_object *) img;
-   geist_object_init(obj);
-   obj->free = geist_image_free;
-   obj->render = geist_image_render;
-   obj->render_selected = geist_object_int_render_selected;
-   obj->render_partial = geist_image_render_partial;
-   obj->get_rendered_image = geist_image_get_rendered_image;
-	geist_object_set_type(obj,GEIST_TYPE_IMAGE);
-
-   D_RETURN_(5);
 }
 
 void

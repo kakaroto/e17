@@ -124,7 +124,7 @@ geist_imlib_free_image(Imlib_Image im)
    imlib_free_image();
 }
 
-char *geist_imlib_image_get_filename(Imlib_Image im)
+const char *geist_imlib_image_get_filename(Imlib_Image im)
 {
 	imlib_context_set_image(im);
 	return imlib_image_get_filename();
