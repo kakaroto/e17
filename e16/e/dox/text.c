@@ -242,7 +242,6 @@ TextDraw(TextState * ts, Window win, char *text,
    int                 xx, yy;
    XGCValues           gcv;
    static GC           gc = 0;
-   int                 r, g, b;
 
    lines = TextGetLines(text, &num_lines);
    if (!lines)
