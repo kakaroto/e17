@@ -366,9 +366,9 @@ void etox_set_text(Evas_Object * obj, char *text)
 	/*
 	 * Sum up the length and height of the text in the etox.
 	 */
-	et->h = 0;
-	et->length = strlen(text);
+	et->th = 0;
 	et->tw = 0;
+	et->length = strlen(text);
 
 	et->lines = _etox_break_text(et, text);
 	FREE(text);
@@ -381,7 +381,7 @@ void etox_set_text(Evas_Object * obj, char *text)
 		if (line->w > et->tw)
 			et->tw = line->w;
 
-		et->h += line->h;
+		et->th += line->h;
 	}
 
 	etox_layout(et);
@@ -689,7 +689,7 @@ static void etox_resize(Evas_Object * obj, Evas_Coord w, Evas_Coord h)
 	 */
 	evas_object_move(et->clip, (et->x), (et->y));
 	evas_object_resize(et->clip, (et->w), (et->h));
-	evas_object_resize(obj, et->w, et->h);
+	/* evas_object_resize(obj, et->w, et->h); */
 }
 
 /**
@@ -1260,22 +1260,7 @@ void etox_layout(Etox * et)
 		l = l->next;
 		y += line->h;
 	}
-
-	/*
-	 * Adjust the height of the etox to the height of all lines
-	 */
-	et->h = y - et->y;
-	et->th = et->h;
-	
-
-	if (et->flags & ETOX_SOFT_WRAP) {
-		evas_object_resize(et->clip, et->w, et->h);
-		evas_object_resize(et->smart_obj, et->w, et->h);
-	}
-	else {
-		evas_object_resize(et->clip, et->tw, et->th);
-		evas_object_resize(et->smart_obj, et->tw, et->th);
-	}
+	et->th = y - et->y;
 }
 
 Etox_Line *
@@ -1332,4 +1317,25 @@ etox_print_lines(Etox *et)
 		i++;
 	}
 }
+
+/**
+ * etox_text_geometry_get - get the desired text geometry
+ * @obj: the etox to get the geometry from
+ * @w: variable to set the width into, or NULL if not needed
+ * @h: variable to set the height into, or NULL if not needed
+ *
+ * Returns the desired width and height of the etox
+ */
+void etox_text_geometry_get(Evas_Object *obj, Evas_Coord *w, Evas_Coord *h)
+{
+    Etox *et;
+
+	CHECK_PARAM_POINTER("obj", obj);
+
+	et = evas_object_smart_data_get(obj);
+
+    if (w) *w = et->tw;
+    if (h) *h = et->th;
+}
+
 

@@ -376,16 +376,11 @@ etox_selection_get_geometry(Etox_Selection *selected, int *num)
   Etox_Rect *rects = NULL, *cur = NULL;
   Evas_List *l = NULL, *midlines = NULL;
   Evas_Coord x, y, w, h;
-  int count = 1;
-
-  if (selected->start.line == selected->end.line)
-  {
-    return NULL;
-  }
+  int count = 0;
 
   l = evas_list_find_list(selected->etox->lines, selected->start.line);
 
-  for (l = l->next; l; l = l->next)
+  while (l)
   {
     Etox_Line *line = l->data;
 
@@ -394,6 +389,7 @@ etox_selection_get_geometry(Etox_Selection *selected, int *num)
     if (line == selected->end.line) break;
 
     midlines = evas_list_append(midlines, line);
+    l = l->next;
   }
 
   printf("count: %d\n", count);
@@ -410,7 +406,6 @@ etox_selection_get_geometry(Etox_Selection *selected, int *num)
   rects->w = x + w - rects->x;
   rects->h = y + h - rects->y;
 
-  printf("(%d, %d) %d x %d\n", rects->x, rects->y, rects->w, rects->h);
   cur = rects;
   /* printf("cur1: %d\n", cur); */
   for (l = midlines; l; l = l->next)
@@ -427,10 +422,14 @@ etox_selection_get_geometry(Etox_Selection *selected, int *num)
     cur->h = h;
   }
 
-  cur ++;
-  etox_line_get_geometry(selected->end.line, &x, &y, &w, &h);
-  cur->x = x;
-  cur->y = y;
+  if (selected->end.line != selected->start.line)
+  {
+    etox_line_get_geometry(selected->end.line, &x, &y, &w, &h);
+    cur++;
+    cur->x = x;
+    cur->y = y;
+  }
+
   //etox_line_index_to_geometry(selected->end.line, selected->end.index,
   //                            &x, &y, &w, &h);
   evas_object_geometry_get(selected->end.bit, &x, &y, &w, &h);

@@ -427,7 +427,7 @@ etox_line_wrap(Etox *et, Etox_Line *line)
 				NULL, NULL, NULL, NULL);
 
 	/* Adjust the index to find the actual character we want to wrap. */
-	if (index > 0) {
+	if (index > 0 || (index == 0 && bit != line->bits->data)) {
 		char *tmp;
 
 		tmp = etox_style_get_text(bit);
@@ -445,7 +445,7 @@ etox_line_wrap(Etox *et, Etox_Line *line)
 	}
 
 	/* Wrap if we've found a reasonable position */
-	if (index > 0) {
+	if (index > 0 || (index == 0 && bit != line->bits->data)) {
 		etox_line_split(line, bit, index);
 
 		ll = evas_list_find_list(et->lines, line);

@@ -175,6 +175,9 @@ char *etox_get_text(Evas_Object * et);
 void etox_clear(Evas_Object * et);
 
 int etox_get_length(Evas_Object *obj);
+
+void etox_text_geometry_get(Evas_Object *obj, Evas_Coord *w, Evas_Coord *h);
+
 /*
  * Geometry retrieval functions
  */
