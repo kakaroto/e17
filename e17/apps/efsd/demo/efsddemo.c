@@ -245,6 +245,14 @@ void handle_efsd_event(EfsdEvent *ee)
 	      printf("target is %s\n", (char*)ee->efsd_reply_event.data);
 	    }
 	  break;
+	case EFSD_CMD_GETMIME:
+	  printf("Getmime event %i\n", 
+		 ee->efsd_reply_event.command.efsd_file_cmd.id);
+	  if (ee->efsd_reply_event.status == SUCCESS)
+	    {
+	      printf("mimetype is %s\n", (char*)ee->efsd_reply_event.data);
+	    }
+	  break;
 	case EFSD_CMD_CLOSE:
 	  printf("Close event %i\n", 
 		 ee->efsd_reply_event.command.efsd_file_cmd.id);
@@ -275,25 +283,13 @@ demo_sighandler(int signal)
 }
 
 
-void
-mime_type_tests(int argc, char** argv)
-{
-  int i;
-
-  for (i = 0; i < argc; i++)
-    {
-      printf("Mimetype for '%s': '%s'\n", argv[i], efsd_get_file_mimetype(argv[i]));
-    }
-}
-
-
 int
 main(int argc, char** argv)
 {
   EfsdConnection     *ec;
   EfsdCmdId           id;
   pid_t               child;
-  int                 blocking;
+  int                 blocking, i;
 
   /* Read command-line options. */
   if (argc > 1 && (!strcmp(argv[1], "-h") || !strcmp(argv[1], "--help")))
@@ -308,18 +304,8 @@ main(int argc, char** argv)
   if (argc > 1 && !strcmp(argv[1], "-select"))
     blocking = 0;
   else
-    blocking = 1;
+    blocking = 1;  
 
-  
-  /* Mime type tests ... */
-  if (blocking)
-    mime_type_tests(argc-1, &argv[1]);
-  else
-    mime_type_tests(argc-2, &argv[2]);
-  
-
-  /* Now some fs monitoring tests ... */
-  
   /* Open connection to efsd. */
   if ( (ec = efsd_open()) == NULL)
     {
@@ -336,6 +322,15 @@ main(int argc, char** argv)
       else
 	read_answers_selecting(ec);
       exit(0);
+    }
+
+  /* MIME type tests */
+  for (i = (blocking ? 1 : 2); i < argc; i++)
+    {
+      if ((id = efsd_get_mimetype(ec, argv[i])) >= 0)
+	printf("Requesting mimetype for '%s'.\n", argv[i]);
+      else
+	printf("Couldn't issue getmime command.\n");      
     }
 
   /* Create a directory */

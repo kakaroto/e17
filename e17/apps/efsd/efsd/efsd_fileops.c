@@ -38,10 +38,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <unistd.h>
 #include <signal.h>
 
+#include <efsd_common.h>
 #include <efsd_debug.h>
 #include <efsd_fam.h>
 #include <efsd_fileops.h>
 #include <efsd_io.h>
+#include <efsd_magic.h>
 #include <efsd_misc.h>
 #include <efsd_queue.h>
 #include <efsd_types.h>
@@ -292,6 +294,31 @@ efsd_file_readlink(EfsdCommand *cmd, int client)
     result = send_reply(cmd, SUCCESS, 0, n, s, client);
   else
     result = send_reply(cmd, FAILURE, errno, 0, NULL, client);
+
+  D_RETURN_(result);
+}
+
+
+int  
+efsd_file_getmime(EfsdCommand *cmd, int client)
+{
+  static int initialized = 0;
+  char *mime = NULL;
+  int   result;
+
+  D_ENTER;
+
+  if (!initialized)
+    {
+      efsd_magic_init(efsd_get_magic_db(),
+		      efsd_get_patterns_db());
+      initialized = 1;
+    }
+
+  if ( (mime = efsd_magic_get(cmd->efsd_file_cmd.file)) != NULL)
+    result = send_reply(cmd, SUCCESS, 0, strlen(mime)+1, mime, client);
+  else
+    result = send_reply(cmd, FAILURE, 0, 0, NULL, client);
 
   D_RETURN_(result);
 }

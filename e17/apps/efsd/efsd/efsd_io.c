@@ -656,6 +656,7 @@ fill_command(struct iovec *iov, EfsdCommand *ec)
     case EFSD_CMD_STOPMON:
     case EFSD_CMD_STAT:
     case EFSD_CMD_READLINK:
+    case EFSD_CMD_GETMIME:
       n = fill_file_cmd(iov, ec);
       break;
     case EFSD_CMD_MOVE:
@@ -732,6 +733,7 @@ efsd_io_read_command(int sockfd, EfsdCommand *ec)
 	case EFSD_CMD_STOPMON:
 	case EFSD_CMD_STAT:
 	case EFSD_CMD_READLINK:
+	case EFSD_CMD_GETMIME:
 	  result = read_file_cmd(sockfd, ec);
 	  break;
 	case EFSD_CMD_MOVE:

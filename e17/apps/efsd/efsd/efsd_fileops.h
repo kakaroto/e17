@@ -40,5 +40,6 @@ int  efsd_file_start_monitor(EfsdCommand *cmd, int client);
 int  efsd_file_stop_monitor(EfsdCommand *cmd, int client);
 int  efsd_file_stat(EfsdCommand *cmd, int client);
 int  efsd_file_readlink(EfsdCommand *cmd, int client);
+int  efsd_file_getmime(EfsdCommand *cmd, int client);
 
 #endif

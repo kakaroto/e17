@@ -77,6 +77,7 @@ typedef enum efsd_command_type
   EFSD_CMD_STOPMON, 
   EFSD_CMD_STAT, 
   EFSD_CMD_READLINK, 
+  EFSD_CMD_GETMIME,
   EFSD_CMD_CLOSE
 }
 EfsdCommandType;

@@ -153,6 +153,10 @@ efsd_handle_client_command(EfsdCommand *command, int client)
       D(("Handling READLINK\n"));
       result = efsd_file_readlink(command, client);
       break;
+    case EFSD_CMD_GETMIME:
+      D(("Handling GETMIME\n"));
+      result = efsd_file_getmime(command, client);
+      break;
     case EFSD_CMD_CLOSE:
       D(("Handling CLOSE\n"));
       result = efsd_close_connection(client);
@@ -476,7 +480,7 @@ efsd_initialize(void)
   signal(SIGIO,     efsd_cleanup_signal_callback);
   signal(SIGIOT,    efsd_cleanup_signal_callback);
   signal(SIGQUIT,   efsd_cleanup_signal_callback);
-  signal(SIGSEGV,   efsd_cleanup_signal_callback);
+  //  signal(SIGSEGV,   efsd_cleanup_signal_callback);
   signal(SIGSTKFLT, efsd_cleanup_signal_callback);
   signal(SIGSYS,    efsd_cleanup_signal_callback);
   signal(SIGTERM,   efsd_cleanup_signal_callback);
