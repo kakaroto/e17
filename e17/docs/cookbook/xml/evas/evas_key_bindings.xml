@@ -14,8 +14,107 @@ Setting up key bindings in evas
 <title>Recipe: Key Binds, using EVAS Key Events</title>
 
 <para>
-This is my recipe!
+Many applications can benifit from providing key binds for commonly used
+operations.  Whether accepting text in ways the EFL doesn't normally expect
+or just a way to bind the + key to raise the volume of a mixer, keybinds
+can add just the bit of functionality that makes your app a hit.
 </para>
+
+<para>
+The following code is a simple and complete application that is useful
+in exploring keybinds using EVAS event callbacks.  It creates a black
+100 by 100 pixel window in which you can hit keys.
+</para>
+
+<example>
+<title>Key grabbing using EVAS Events</title>
+<programlisting>
+#include &lt;Ecore_Evas.h&gt;
+#include &lt;Ecore.h&gt;
+
+#define WIDTH 100
+#define HEIGHT 100
+
+        Ecore_Evas  *   ee;
+        Evas        *   evas;
+        Evas_Object *   base_rect;
+
+
+static int
+main_signal_exit(void *data, int ev_type, void *ev)
+{
+   ecore_main_loop_quit();
+   return 1;
+}
+
+void mouse(void *data, Evas *e, Evas_Object *obj, void *event_info) {
+        Evas_Event_Mouse_Down *ev;
+
+        ev = (Evas_Event_Mouse_Down *)event_info;
+        printf("You pressed button: %d\n", ev-&gt;button);
+}
+
+void key_down(void *data, Evas *e, Evas_Object *obj, void *event_info) {
+        Evas_Event_Key_Down *ev;
+
+        ev = (Evas_Event_Key_Down *)event_info;
+        printf("You hit key: %s\n", ev->keyname);
+}
+
+
+void move(void *data, Evas *e, Evas_Object *obj, void *event_info) {
+        printf("Entered callback: mouse move\n");
+}
+
+
+
+int main(){
+        ecore_init();
+        ecore_event_handler_add(ECORE_EVENT_SIGNAL_EXIT, 
+			main_signal_exit, NULL);
+
+   ee = ecore_evas_software_x11_new(NULL, 0,  0, 0, WIDTH, HEIGHT);
+        ecore_evas_title_set(ee, "EVAS Callback Test");
+        ecore_evas_borderless_set(ee, 0);
+        ecore_evas_show(ee);
+
+   evas = ecore_evas_get(ee);
+        evas_font_path_append(evas, "data/");
+
+   base_rect = evas_object_rectangle_add(evas);
+        evas_object_resize(base_rect, (double)WIDTH, (double)HEIGHT);
+        evas_object_color_set(base_rect, 0, 0, 0, 255);
+        evas_object_focus_set(base_rect, 1);
+        evas_object_show(base_rect);
+
+        evas_object_event_callback_add(base_rect, 
+			EVAS_CALLBACK_MOUSE_DOWN, mouse, NULL);       
+        evas_object_event_callback_add(base_rect, 
+			EVAS_CALLBACK_MOUSE_MOVE, move, NULL);        
+        evas_object_event_callback_add(base_rect, 
+			EVAS_CALLBACK_KEY_DOWN, key_down, NULL);      
+
+        ecore_main_loop_begin();
+        
+        ecore_evas_shutdown();
+        ecore_shutdown();
+
+        return 0;
+}
+</programlisting>
+</example>
+
+<para>
+You can compile this example in the following manner:
+</para>
+
+<example>
+<title>EVAS Keybind Compile</title>
+<programlisting>
+gcc `evas-config --libs --cflags` `ecore-config --libs --cflags` \
+> key_test.c -o key_test
+</programlisting>
+</example>
 
 </section>
 
