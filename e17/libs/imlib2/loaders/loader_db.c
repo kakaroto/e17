@@ -82,11 +82,8 @@ load (ImlibImage *im, ImlibProgressFunction progress,
    ptr = strrchr(file, ':');
    if (ptr) 
       {
-	 int flen;
-	 
 	 *ptr = 0;
-	 if (!can_read(file))
-	    return 0;
+	 if (!can_read(file)) return 0;
 	 strcpy(key, &(ptr[1]));
       }
    else
@@ -206,14 +203,17 @@ load (ImlibImage *im, ImlibProgressFunction progress,
 	  }
 	else
 	  {
-	     int dlen;
-             int x;
+	     uLongf dlen;
 	     
 	     dlen = w * h * sizeof(DATA32);
-	     uncompress(im->data, &dlen, body, size - 32);
+	     uncompress((Bytef *)im->data, &dlen, (Bytef *)body, (uLongf)(size - 32));
 #ifdef WORDS_BIGENDIAN
-	     for (x = 0; x < (im->w * im->h); x++)
-		SWAP32(im->data[x]);
+	       {
+		  int x;
+		  
+		  for (x = 0; x < (im->w * im->h); x++)
+		     SWAP32(im->data[x]);
+	       }
 #endif			
 	     if (progress)
 		progress(im, 100, 0, 0, im->w, im->h);	     
@@ -248,15 +248,11 @@ save (ImlibImage *im, ImlibProgressFunction progress,
    cp = strrchr(file, ':');
    if (cp)
      {
-	int flen;
-	
 	*cp = 0;
 	if (exists(file))
 	  {
-	     if (!can_write(file))
-		return 0;
-	     if (!can_read(file))
-		return 0;
+	     if (!can_write(file)) return 0;
+	     if (!can_read(file)) return 0;
 	  }
 	strcpy(key, &(cp[1]));
      }
@@ -293,12 +289,14 @@ save (ImlibImage *im, ImlibProgressFunction progress,
      {
 	DATA32 *compressed;
 	int retr;
-	int buflen;
+	uLongf buflen;
 	
 	compressed = &(buf[8]);
 	buflen = ((im->w * im->h * sizeof(DATA32) * 101) / 100) + 12;
 #ifdef WORDS_BIGENDIAN
 	  {
+	     DATA32 *buf2;
+	     
 	     buf2 = malloc((((im->w * im->h * 101) / 100) + 3) * sizeof(DATA32));
 	     if (buf2)
 	       {
@@ -307,16 +305,20 @@ save (ImlibImage *im, ImlibProgressFunction progress,
 		  memcpy(buf2, im->data, im->w * im->h * sizeof(DATA32));
 		  for (y = 0; y < (im->w * im->h) + 8; y++)
 		     SWAP32(buf2[y]);
-		  retr = compress2(compressed, &buflen, buf2, 
-				   im->w * im->h * sizeof(DATA32), compression);
+		  retr = compress2((Bytef *)compressed, &buflen, 
+				   (Bytef *)buf2, 
+				   (uLong)(im->w * im->h * sizeof(DATA32)), 
+				   compression);
 		  free(buf2);
 	       }
 	     else
 		retr = Z_MEM_ERROR;
 	  }
 #else
-	retr = compress2(compressed, &buflen, im->data, 
-			 im->w * im->h * sizeof(DATA32), compression);
+	retr = compress2((Bytef *)compressed, &buflen, 
+			 (Bytef *)im->data, 
+			 (uLong)(im->w * im->h * sizeof(DATA32)), 
+			 compression);
 #endif
 	if (retr != Z_OK)
 	   compressed = 0;
@@ -328,24 +330,20 @@ save (ImlibImage *im, ImlibProgressFunction progress,
 		size = (8 * sizeof(DATA32)) + buflen;
 	  }
      }
-   if (compression == 0)
+   else
      {
 	memcpy(&(buf[8]), im->data, im->w * im->h * sizeof(DATA32));
 	header[4] = compression;
 #ifdef WORDS_BIGENDIAN
-	for (y = 0; y < (im->w * im->h) + 8; y++)
-	   SWAP32(buf[y]);
+	  {
+	     int y;
+	     
+	     for (y = 0; y < (im->w * im->h) + 8; y++)
+		SWAP32(buf[y]);
+	  }
 #endif
 	size = ((im->w * im->h) + 8) * sizeof(DATA32);
      }
-#ifdef WORDS_BIGENDIAN
-   else
-     {
-	int y;
-	for (y = 0; y < 8; y++)
-	   SWAP32(buf2[y]);
-     }
-#endif
    ret = buf;
    e_db_data_set(db, key, ret, size);
    free(buf);
