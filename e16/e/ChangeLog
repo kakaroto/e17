@@ -2899,3 +2899,16 @@ Fix segv in menu keypress handling.
 Fix borders on initially shaded windows.
 Partial fix to clipped TT font text.
 Put lost warpfocused option back in.
+
+-------------------------------------------------------------------------------
+
+Fri Jun 18 20:04:49 CEST 2004
+(Kim)
+
+Raise on ACTION_FOCUS_SET.
+Localized menu generation (based on patch by Andreas Volz <lists@brachttal.net>).
+Localize menu title and item text.
+Selective Transparency - configuration (Jaron Omega <jaron@sock-stream.net>).
+Fix a number of bugs with pager clicking and dragging.
+Fix inappropriate re-use of cached mini-window image pixmaps.
+Read WM_TRANSIENT_FOR only on map or change + debug stuff.
