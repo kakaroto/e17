@@ -251,6 +251,7 @@ winwidget_update_title(winwidget ret)
       XStoreName(disp, ret->win, ret->name);
    else
       XStoreName(disp, ret->win, "feh");
+   XFlush(disp);
    D_RETURN_(4);
 }
 

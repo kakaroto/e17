@@ -1,3 +1,8 @@
+Fri Aug  4 12:09:29 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Sweet patch from Eric, changes window title to "Reloading:
+	<Former title>" when reloading an image. Neato :)
+
 Thu Aug  3 23:11:23 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Another fine patch from Eric Dorland, allows the configuration

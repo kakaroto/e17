@@ -105,6 +105,8 @@ void
 feh_reload_image(winwidget w, int resize)
 {
    Imlib_Progress_Function pfunc = NULL;
+   char *title, *new_title;
+   int len;
 
    D_ENTER(4);
 
@@ -122,6 +124,12 @@ feh_reload_image(winwidget w, int resize)
       pfunc = progressive_load_cb;
     */
 
+   len = strlen(w->name) + sizeof("Reloading: ") + 1;
+   new_title = emalloc(len);
+   snprintf(new_title, len, "Reloading: %s", w->name);
+   title = estrdup(w->name);
+   winwidget_rename(w, new_title);
+   
    if ((winwidget_loadimage(w, FEH_FILE(w->file->data), pfunc)) != 0)
    {
       if (!pfunc)
@@ -151,6 +159,10 @@ feh_reload_image(winwidget w, int resize)
    }
    else
       weprintf("Couldn't reload image. Is it still there?");
+
+   winwidget_rename(w, title);
+   free(title);
+   free(new_title);
 
    D_RETURN_(4);
 }
