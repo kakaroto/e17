@@ -1,0 +1,19 @@
+DESCRIPTION = "Meta-package for Enlightenment X11 Without FrameBuffer"
+PACKAGES = "e e-libs e-base"
+
+ALLOW_EMPTY = 1
+
+# task-e-libs = "libiconv imlib2 edb eet evas ecore epeg epsilon embryo edje esmart emotion etox ewl"
+
+task-e-libs = "libiconv eet evas ecore embryo edje"
+
+task-e-base = ""
+
+DEPENDS ="task-bootstrap diet-x11 xserver-kdrive ttf-bitstream-vera"
+
+RDEPENDS_e-libs = "${task-e-libs}"
+DEPENDS += "${task-e-libs}"
+
+RDEPENDS_e-base = "${task-e-base}"
+DEPENDS += "${task-e-base}"
+
