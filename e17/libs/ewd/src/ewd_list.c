@@ -35,13 +35,11 @@ static void *_ewd_dlist_goto_index(Ewd_DList *list, int index);
  */
 Ewd_List *ewd_list_new()
 {
-	Ewd_List *list = NULL;
+	Ewd_List *list;
 
 	list = (Ewd_List *)malloc(sizeof(Ewd_List));
-	/*
 	if (!list)
 		return NULL;
-	*/
 
 	if (!ewd_list_init(list)) {
 		FREE(list);
@@ -640,7 +638,7 @@ static void *_ewd_list_goto(Ewd_List * list, void *data)
 	list->current = node;
 	list->index = index;
 
-	return list->current;
+	return list->current->data;
 }
 
 /**
