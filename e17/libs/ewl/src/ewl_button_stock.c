@@ -156,6 +156,24 @@ ewl_button_stock_with_id_new (char *stock_id,
 			      EWL_FLAG_FILL_VFILL || EWL_FLAG_FILL_SHRINK);
 
   EWL_BUTTON_STOCK (button)->response_id = response_id;
+
+  ewl_callback_append (button,
+		       EWL_CALLBACK_CLICKED,
+		       EWL_CALLBACK_FUNCTION (ewl_button_stock_click_cb),
+		       &(EWL_BUTTON_STOCK (button)->response_id));
   
   DRETURN_PTR(button, DLEVEL_STABLE);
+}
+
+/*
+ * Internally used callbacks, override at your own risk.
+ */
+
+void
+ewl_button_stock_click_cb (Ewl_Widget *w, void *ev, void *data)
+{
+  
+  ewl_callback_call_with_event_data (w,
+				     EWL_CALLBACK_VALUE_CHANGED,
+                                     data);
 }

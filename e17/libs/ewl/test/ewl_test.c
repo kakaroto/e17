@@ -66,7 +66,7 @@ main(int argc, char **argv)
 	Ewl_Widget     *main_box;
 	Ewl_Widget     *main_tree;
 	Ewl_Widget     *main_area;
-        Ewl_Widget *tooltip;
+        Ewl_Widget     *tooltip;
 	Ewl_Widget     *prow[BUTTONS];
 	static test_set       tests[] = {
 		{ "Box",         __create_box_test_window,         "ewl_box_test.c" },

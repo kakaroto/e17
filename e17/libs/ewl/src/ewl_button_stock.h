@@ -74,6 +74,12 @@ Ewl_Widget *ewl_button_stock_with_id_new (char *stock_id,
 int         ewl_button_stock_init        (Ewl_Button_Stock *b, 
 					  char *stock_id);
 
+/*
+ * Internally used callbacks, override at your own risk.
+ */
+
+void ewl_button_stock_click_cb (Ewl_Widget *w, void *ev, void *data);
+
 /**
  * @}
  */
