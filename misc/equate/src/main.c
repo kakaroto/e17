@@ -85,6 +85,9 @@ main(int argc, char *argv[], char *env[])
 
    if (conf_srv = ecore_config_init("equate")) {
       props = ecore_config_bundle_new(conf_srv, "settings");
+      /* this controls our defaults */
+      ecore_config_default_int(props, "/settings/mode", BASIC, 0, 3, 1);
+      ecore_config_default_string(props, "/settings/theme", "equate");
 
 
 
@@ -95,12 +98,13 @@ main(int argc, char *argv[], char *env[])
          equate.conf.mode = ecore_config_get_int(props, "/settings/mode");
       if ((equate.conf.mode == EDJE) && (!equate.conf.theme))
          equate.conf.theme = ecore_config_get_string(props, "/settings/theme");
+   } else {
+      /* in case ecore_config fails to init */
+      if (equate.conf.mode == DEFAULT)
+         equate.conf.mode = BASIC;
+      if ((equate.conf.mode == EDJE) && (!equate.conf.theme))
+         equate.conf.theme = "equate";
    }
-   if (equate.conf.mode == DEFAULT)
-      equate.conf.mode = BASIC;
-   if ((equate.conf.mode == EDJE) && (!equate.conf.theme))
-      equate.conf.theme = "equate";
-
    equate_init(&equate);
 
    init_gui(&equate, argc, argv);
