@@ -66,9 +66,11 @@
 #define ENABLE_TRANSPARENCY 1
 #define ENABLE_THEME_TRANSPARENCY 1
 
-#define ICLASS_ATTR_OPAQUE      0	/* No transparency */
-#define ICLASS_ATTR_BG          1	/* Background transparency */
-#define ICLASS_ATTR_GLASS       2	/* Glass transparency */
+#define ICLASS_ATTR_OPAQUE      0x00	/* No transparency */
+#define ICLASS_ATTR_BG          0x01	/* Background transparency */
+#define ICLASS_ATTR_GLASS       0x02	/* Glass transparency */
+#define ICLASS_ATTR_NO_CLIP     0x04	/* Don't apply clip mask */
+#define ICLASS_ATTR_USE_CM      0x08	/* Use colormodifier */
 
 #else
 

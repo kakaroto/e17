@@ -439,8 +439,8 @@ ImageStateMakePmapMask(ImageState * is, Drawable win, PmapMask * pmm,
 	     break;
 	  }
      }
-#else
-   trans = 0;
+   if (flags != ICLASS_ATTR_OPAQUE)
+      flags |= ICLASS_ATTR_USE_CM;
 #endif
 
    apply = !pmm;
@@ -467,7 +467,7 @@ ImageStateMakePmapMask(ImageState * is, Drawable win, PmapMask * pmm,
     *   0x04: Don't apply image mask to result
     */
    if (is->transparent && imlib_image_has_alpha())
-      flags = (is->transparent & 0x02) ? ICLASS_ATTR_GLASS : ICLASS_ATTR_BG;
+      flags = is->transparent;
 
    trans = (flags != ICLASS_ATTR_OPAQUE);
 
@@ -483,7 +483,7 @@ ImageStateMakePmapMask(ImageState * is, Drawable win, PmapMask * pmm,
 	  {
 	     /* Create the background base image */
 	     bg = BackgroundGetPixmap(desks.desk[desks.current].bg);
-	     if (flags == ICLASS_ATTR_GLASS || bg == None)
+	     if ((flags & ICLASS_ATTR_GLASS) || (bg == None))
 		bg = VRoot.win;
 	     imlib_context_set_drawable(bg);
 	     ii = imlib_create_image_from_drawable(0, xx, yy, w, h, 1);
@@ -495,6 +495,8 @@ ImageStateMakePmapMask(ImageState * is, Drawable win, PmapMask * pmm,
      {
 /*	Eprintf("ImageStateMakePmapMask %#lx %d %d\n", win, w, h); */
      }
+#else
+   trans = 0;
 #endif
 
    if (is->pixmapfillstyle == FILL_STRETCH || trans)
@@ -504,7 +506,7 @@ ImageStateMakePmapMask(ImageState * is, Drawable win, PmapMask * pmm,
 	  {
 	     imlib_context_set_blend(1);
 #ifdef ENABLE_THEME_TRANSPARENCY
-	     if (flags != ICLASS_ATTR_OPAQUE)
+	     if (flags & ICLASS_ATTR_USE_CM)
 	       {
 		  imlib_context_set_color_modifier(icm);
 	       }
@@ -513,7 +515,7 @@ ImageStateMakePmapMask(ImageState * is, Drawable win, PmapMask * pmm,
 	     imlib_blend_image_onto_image(is->im, 0, 0, 0, ww, hh, 0, 0, w, h);
 	     imlib_context_set_blend(0);
 #ifdef ENABLE_THEME_TRANSPARENCY
-	     if (flags != ICLASS_ATTR_OPAQUE)
+	     if (flags & ICLASS_ATTR_USE_CM)
 	       {
 		  imlib_context_set_color_modifier(NULL);
 	       }
@@ -526,7 +528,7 @@ ImageStateMakePmapMask(ImageState * is, Drawable win, PmapMask * pmm,
 	pmm->type = 1;
 	imlib_render_pixmaps_for_whole_image_at_size(&pmm->pmap, &pmm->mask,
 						     w, h);
-	if (ii && make_mask && (is->transparent & 0x04) == 0)
+	if (ii && make_mask && !(flags & ICLASS_ATTR_NO_CLIP))
 	  {
 	     Pixmap              pmap = 0, mask = 0;
 	     GC                  gc;
