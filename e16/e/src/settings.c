@@ -1742,6 +1742,7 @@ static Dialog      *bg_sel_dialog;
 static DItem       *bg_sel;
 static DItem       *bg_sel_slider;
 static DItem       *bg_mini_disp;
+static DItem       *bg_filename;
 static DItem       *tmp_w[10];
 static int          tmp_bg_sel_sliderval = 0;
 static Background  *tbg = NULL;
@@ -1975,6 +1976,23 @@ CB_ConfigureRemBG(int val, void *data)
 		  else
 		     tmp_bg_image = 0;
 		  KeepBGimages(tmp_bg, 1);
+
+		  {
+		     char               *stmp;
+		     char                s[1024];
+
+		     if (tmp_bg->bg.file)
+			stmp = fullfileof(tmp_bg->bg.file);
+		     else
+			stmp = duplicate("-NONE-");
+		     Esnprintf(s, sizeof(s), "Background definition information:\nName: %s\nFile: %s\n",
+			       tmp_bg->name,
+			       stmp);
+		     Efree(stmp);
+		     DialogItemTextSetText(bg_filename, s);
+		     DialogDrawItems(bg_sel_dialog, bg_filename,
+				     0, 0, 99999, 99999);
+		  }
 		  tmp_bg_r = tmp_bg->bg.solid.r;
 		  tmp_bg_g = tmp_bg->bg.solid.g;
 		  tmp_bg_b = tmp_bg->bg.solid.b;
@@ -2077,6 +2095,23 @@ CB_ConfigureDelBG(int val, void *data)
 		  else
 		     tmp_bg_image = 0;
 		  KeepBGimages(tmp_bg, 1);
+
+		  {
+		     char               *stmp;
+		     char                s[1024];
+
+		     if (tmp_bg->bg.file)
+			stmp = fullfileof(tmp_bg->bg.file);
+		     else
+			stmp = duplicate("-NONE-");
+		     Esnprintf(s, sizeof(s), "Background definition information:\nName: %s\nFile: %s\n",
+			       tmp_bg->name,
+			       stmp);
+		     Efree(stmp);
+		     DialogItemTextSetText(bg_filename, s);
+		     DialogDrawItems(bg_sel_dialog, bg_filename,
+				     0, 0, 99999, 99999);
+		  }
 		  tmp_bg_r = tmp_bg->bg.solid.r;
 		  tmp_bg_g = tmp_bg->bg.solid.g;
 		  tmp_bg_b = tmp_bg->bg.solid.b;
@@ -2307,6 +2342,22 @@ CB_BGAreaEvent(int val, void *data)
 		tmp_bg_image = 0;
 	     KeepBGimages(tmp_bg, 1);
 
+	     {
+		char               *stmp;
+		char                s[1024];
+
+		if (tmp_bg->bg.file)
+		   stmp = fullfileof(tmp_bg->bg.file);
+		else
+		   stmp = duplicate("-NONE-");
+		Esnprintf(s, sizeof(s), "Background definition information:\nName: %s\nFile: %s\n",
+			  tmp_bg->name,
+			  stmp);
+		Efree(stmp);
+		DialogItemTextSetText(bg_filename, s);
+		DialogDrawItems(bg_sel_dialog, bg_filename,
+				0, 0, 99999, 99999);
+	     }
 	     tmp_bg_r = tmp_bg->bg.solid.r;
 	     tmp_bg_g = tmp_bg->bg.solid.g;
 	     tmp_bg_b = tmp_bg->bg.solid.b;
@@ -2414,6 +2465,22 @@ BGSettingsGoTo(Background * bg)
 		     tmp_bg_image = 0;
 		  KeepBGimages(tmp_bg, 1);
 
+		  {
+		     char               *stmp;
+		     char                s[1024];
+
+		     if (tmp_bg->bg.file)
+			stmp = fullfileof(tmp_bg->bg.file);
+		     else
+			stmp = duplicate("-NONE-");
+		     Esnprintf(s, sizeof(s), "Background definition information:\nName: %s\nFile: %s\n",
+			       tmp_bg->name,
+			       stmp);
+		     Efree(stmp);
+		     DialogItemTextSetText(bg_filename, s);
+		     DialogDrawItems(bg_sel_dialog, bg_filename,
+				     0, 0, 99999, 99999);
+		  }
 		  tmp_bg_r = tmp_bg->bg.solid.r;
 		  tmp_bg_g = tmp_bg->bg.solid.g;
 		  tmp_bg_b = tmp_bg->bg.solid.b;
@@ -3010,6 +3077,25 @@ SettingsBackground(Background * bg)
    DialogItemSliderSetVal(di, tmp_bg_sel_sliderval);
    DialogItemSliderSetValPtr(di, &tmp_bg_sel_sliderval);
    DialogItemSetCallback(bg_sel_slider, CB_BGAreaSlide, 0, NULL);
+
+   di = bg_filename = DialogAddItem(table, DITEM_TEXT);
+   DialogItemSetColSpan(di, 3);
+   DialogItemSetPadding(di, 2, 2, 2, 2);
+   DialogItemSetFill(di, 1, 0);
+   DialogItemSetAlign(di, 512, 512);
+   {
+      char               *stmp;
+
+      if (tmp_bg->bg.file)
+	 stmp = fullfileof(tmp_bg->bg.file);
+      else
+	 stmp = duplicate("-NONE-");
+      Esnprintf(s, sizeof(s), "Background definition information:\nName: %s\nFile: %s\n",
+		tmp_bg->name,
+		stmp);
+      Efree(stmp);
+      DialogItemTextSetText(bg_filename, s);
+   }
 
    di = DialogAddItem(table, DITEM_SEPARATOR);
    DialogItemSetColSpan(di, 3);

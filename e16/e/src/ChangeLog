@@ -1274,3 +1274,10 @@ Sat Sep  4 08:19:25 PDT 1999
 (Raster)
 
 fixed makefile.am to not nuke interactive.sh
+
+-------------------------------------------------------------------------------
+
+Sat Sep  4 09:39:09 PDT 1999
+(Raster)
+
+added filename display to background selector..
