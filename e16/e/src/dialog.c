@@ -489,6 +489,7 @@ ShowDialog(Dialog * d)
    EWin               *ewin;
    XTextProperty       xtp;
    XClassHint         *xch;
+   Snapshot           *sn;
 
    SC_Kill();
    if (d->title)
@@ -508,6 +509,8 @@ ShowDialog(Dialog * d)
    ewin = FindEwinByDialog(d);
    if (ewin)
      {
+	if (ewin->desktop != desks.current)
+	   MoveEwinToDesktopAt(ewin, desks.current, ewin->x, ewin->y);
 	RaiseEwin(ewin);
 	ShowEwin(ewin);
 	return;
@@ -577,7 +580,17 @@ ShowDialog(Dialog * d)
 	DesktopRemoveEwin(ewin);
 	ewin->layer = 4;
 	DesktopAddEwinToTop(ewin);
-	MoveEwin(ewin, (root.w - ewin->w) / 2, (root.h - ewin->h) / 2);
+	sn = FindSnapshot(ewin);
+	/* get the size right damnit! */
+	if (sn)
+	  {
+	     if (sn->use_wh)
+		ResizeEwin(ewin, sn->w, sn->h);
+	     if (sn->use_xy)
+		MoveEwin(ewin, sn->x, sn->y);
+	  }
+	else
+	   MoveEwin(ewin, (root.w - ewin->w) / 2, (root.h - ewin->h) / 2);
 	RestackEwin(ewin);
 	ShowEwin(ewin);
 	ewin->dialog = d;

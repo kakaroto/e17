@@ -1685,3 +1685,10 @@ Sun Sep 12 10:39:46 PDT 1999
 (Raster)
 
 make sure we have name and class set on dialogs so rememebr.. can work on them
+
+-------------------------------------------------------------------------------
+
+Sun Sep 12 10:49:14 PDT 1999
+(Raster)
+
+and use those snapshot values for the dialogs damnit... :)
