@@ -1,9 +1,9 @@
 #define V_PREV_REL(NAME) \
-    rel1 { to, NAME"_scrollbar_trough"; relative, 0.5 0.0; offset, -4 -8; } \
-    rel2 { to, NAME"_scrollbar_trough"; relative, 0.5 0.0; offset, 4 -1; } 
+    rel1 { to, NAME"_scrollbar_trough_img"; relative, 0.5 0.0; offset, -7 -14; } \
+    rel2 { to, NAME"_scrollbar_trough_img"; relative, 0.5 0.0; offset, 7 0; } 
 #define V_NEXT_REL(NAME) \
-    rel1 { to, NAME"_scrollbar_trough"; relative, 0.0 1.0; offset,  -4 1; } \
-    rel2 { to, NAME"_scrollbar_trough"; relative, 1.0 1.0; offset,   4 8; } 
+    rel1 { to, NAME"_scrollbar_trough_img"; relative, 0.0 1.0; offset,  -7 0; } \
+    rel2 { to, NAME"_scrollbar_trough_img"; relative, 1.0 1.0; offset,   7 14; } 
 #define VPANEL(NAME, BIMG, BIMG2, BW, BH, NIMG, NIMG2, NW, NH, REL1_TO, \
 	REL1_REL, REL1_OFF, REL2_TO, REL2_REL, REL2_OFF, CLIPTO) \
       part {				\
@@ -27,27 +27,50 @@
 	}				\
       }					\
       part {				\
+        name, NAME"_list_border";	\
+	clip_to, CLIPTO;		\
+	type, IMAGE;			\
+	repeat_events, 1;		\
+	description {			\
+	  state, "default" 0.0;		\
+	  rel1 {			\
+	    to, NAME"_rect";		\
+	    relative, 0.0 0.0;		\
+	    offset, 3 9;		\
+	  }				\
+	  rel2 {			\
+	    to, NAME"_rect";		\
+	    relative, 1.0 1.0;		\
+	    offset, -3 -10;		\
+	  }				\
+	  image {			\
+	      normal, "lcd_window.png"; \
+	  }				\
+	  border, 8 8 8 8;		\
+	}				\
+      }					\
+      part {				\
         name, NAME"_scrollbar_trough_img";	\
 	clip_to, CLIPTO;		\
 	type, IMAGE;			\
 	mouse_events, 0;		\
 	description {			\
 	  state, "default" 0.0;		\
-	  color, 192 192 192 255;	\
+	  color, 255 255 255 255;	\
 	  rel1 {			\
 	    to, NAME"_rect";		\
 	    relative, 1.0 0.0;		\
-	    offset, -12 18;		\
+	    offset, -25 45;		\
 	  }				\
 	  rel2 {			\
 	    to, NAME"_rect";		\
 	    relative, 1.0 1.0;		\
-	    offset, -2 -18;		\
+	    offset, -14 -45;		\
 	  }				\
 	  image {			\
-	      normal, "border-bevel.png"; \
+	      normal, "v_scrollbar_base.png"; \
 	  }				\
-	  border, 3 3 3 3;		\
+	  border, 6 6 20 20;		\
 	}				\
       }					\
       part {				\
@@ -57,7 +80,7 @@
 	mouse_events, 1;		\
 	description {			\
 	  state, "default" 0.0;		\
-	  color, 192 192 192 64;	\
+	  color, 192 192 192 0;		\
 	  rel1 {			\
 	    to, NAME"_scrollbar_trough_img"; \
 	    relative, 0.0 0.0;		\
@@ -76,115 +99,45 @@
 	type, IMAGE;			\
 	mouse_events, 1;		\
 	dragable {			\
-	    x, 0 1 0;			\
+	    x, 0 0 0;			\
 	    y, 1 1 0;			\
 	    confine, NAME"_scrollbar_trough"; \
 	}				\
 	description {			\
 	  state, "default" 0.0;		\
-	  min, 4 10;		\
+	  min, 11 35;		\
 	  align, 0.5 0.5; 	\
 	  rel1 {			\
-	    to, NAME"_scrollbar_trough";\
-	    relative, 0.0 0.0;		\
+	    relative, 0.5 0.0;		\
 	    offset, 0 0;		\
+	    to, NAME"_scrollbar_trough";\
 	  }				\
 	  rel2 {			\
+	    relative, 0.5 0.0;		\
+	    offset, 0 35;		\
 	    to, NAME"_scrollbar_trough";\
-	    relative, 1.0 0.0;		\
-	    offset, 0 10;		\
 	  }				\
 	  image {			\
-	      normal, "vscroll-button.png"; \
+	      normal, "v_scrollbar.png"; \
 	  }				\
 	}				\
 	description {			\
 	  state, "down" 0.0;		\
-	  min, 4 20;			\
+	  min, 11 35;			\
 	  rel1 {			\
-	    to, NAME"_scrollbar_trough";\
-	    relative, 0.0 0.0;		\
+	    relative, 0.5 0.0;		\
 	    offset, 0 0;		\
+	    to, NAME"_scrollbar_trough";\
 	  }				\
 	  rel2 {			\
+	    relative, 0.5 0.0;		\
+	    offset, 0 35;		\
 	    to, NAME"_scrollbar_trough";\
-	    relative, 1.0 0.0;		\
-	    offset, 0 20;		\
 	  }				\
 	  image {			\
-	      normal, "vscroll-button-clicked.png"; \
+	      normal, "v_scrollbar.png"; \
 	  }				\
 	  color, 255 255 255 127;	\
-	}				\
-      }					\
-      part {				\
-        name, NAME"_scrollbar_deco";	\
-	clip_to, CLIPTO;		\
-	type, IMAGE;			\
-	mouse_events, 0;		\
-	description {			\
-	  state, "default" 0.0;		\
-	  color, 192 192 192 192;	\
-	  rel1 {			\
-	    to, NAME"_scrollbar";	\
-	    relative, 0.5 0.5;		\
-	    offset, -3 -3;		\
-	  }				\
-	  rel2 {			\
-	    to, NAME"_scrollbar";	\
-	    relative, 0.5 0.5;		\
-	    offset, 3 3;		\
-	  }				\
-	  image {			\
-	      normal, "vscroll-deco.png"; \
-	  } 				\
-	  border, 3 3 3 3;		\
-	}				\
-      }					\
-      part {				\
-        name, NAME"_back_rect";		\
-	clip_to, CLIPTO;		\
-	description {			\
-	  state, "default" 0.0;		\
-	  min, 12 12;			\
-	  max, 12 12;			\
-	  rel1 { 			\
-	    to, NAME"_scrollbar_trough";\
-	    relative, 0.5 0.0; 		\
-	    offset, -7 -14; 		\
-	  } 				\
-          rel2 { 			\
-	   to, NAME"_scrollbar_trough"; \
-	      relative, 0.5 0.0; 	\
-	      offset, 7 4; 		\
-	  } 				\
-	  image {			\
-	    normal, "border-bevel.png";	\
-	  }				\
-	  border, 3 3 3 3;		\
-	}				\
-      }					\
-      part {				\
-        name, NAME"_next_rect";		\
-	clip_to, CLIPTO;		\
-	description {			\
-	  state, "default" 0.0;		\
-	  min, 12 12;			\
-	  max, 12 12;			\
-	  rel1 { 			\
-	    to, NAME"_scrollbar_trough";\
-	    relative, 0.5 1.0; 		\
-	    offset, -7 -4; 		\
-	  } 				\
-          rel2 { 			\
-	   to, NAME"_scrollbar_trough"; \
-	      relative, 0.5 1.0; 	\
-	      offset, 7 14; 		\
-	  } 				\
-	  image {			\
-	    normal, "border-bevel.png";	\
-	  }				\
-	  border, 3 3 3 3;		\
 	}				\
       }					\
       part {				\
@@ -259,18 +212,19 @@
         name, NAME"_list";		\
 	clip_to, NAME"_list_clip";	\
 	type, RECT;			\
+	mouse_events, 0; 		\
 	description {			\
 	  state, "default" 0.0;		\
-	  color, 229 229 229 92;	\
+	  color, 255 0 0 0;		\
 	  rel1 {			\
 	    to, NAME"_rect";		\
 	    relative, 0.0 0.0;		\
-	    offset, 5 10;		\
+	    offset, 15 30;		\
 	  }				\
 	  rel2 {			\
 	    to, NAME"_rect";		\
 	    relative, 1.0 1.0;		\
-	    offset, -15 -10;		\
+	    offset, -30 -30;		\
 	  }				\
 	}				\
       }					\
@@ -291,29 +245,6 @@
 	    relative, 1.0 1.0;		\
 	    offset, -15 -10;		\
 	  }				\
-	}				\
-      }					\
-      part {				\
-        name, NAME"_list_border";	\
-	clip_to, CLIPTO;		\
-	type, IMAGE;			\
-	repeat_events, 1;		\
-	description {			\
-	  state, "default" 0.0;		\
-	  rel1 {			\
-	    to, NAME"_list";		\
-	    relative, 0.0 0.0;		\
-	    offset, -1 -1;		\
-	  }				\
-	  rel2 {			\
-	    to, NAME"_list";		\
-	    relative, 1.0 1.0;		\
-	    offset, -1 -1;		\
-	  }				\
-	  image {			\
-	      normal, "border-bevel.png"; \
-	  }				\
-	  border, 3 3 3 3;		\
 	}				\
       }					\
       part {				\

@@ -93,5 +93,9 @@
 	image, "edit_track.png" LOSSY 98;
 	image, "edit_track_hilited.png" LOSSY 98;
 	image, "edit_track_clicked.png" LOSSY 98;
+	image, "arrow_up.png" LOSSY 98;
+	image, "arrow_down.png" LOSSY 98;
+	image, "v_scrollbar.png" LOSSY 98;
+	image, "v_scrollbar_base.png" LOSSY 98;
 
 

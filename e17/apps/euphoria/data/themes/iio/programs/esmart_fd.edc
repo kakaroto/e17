@@ -1,0 +1,8 @@
+VPANEL_PROG("directory",
+	"e,fd,container,scroll,back,directory",
+	"e,fd,container,scroll,next,directory",
+	"e,fd,container,scrollbar,scroll,,directory")
+VPANEL_PROG("files",
+	"e,fd,container,scroll,back,files",
+	"e,fd,container,scroll,next,files",
+	"e,fd,container,scrollbar,scroll,,files")
