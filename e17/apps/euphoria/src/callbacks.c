@@ -186,9 +186,8 @@ EDJE_CB(playlist_item_play) {
 }
 
 static void remove_playlist_item(Euphoria *e, PlayListItem *pli) {
-	
 	assert(pli);
-	
+
 	xmmsc_playlist_remove(e->xmms, pli->id);
 }
 
@@ -330,8 +329,7 @@ EDJE_CB(update_seeker) {
 	xmmsc_playback_seek_ms(e->xmms, (int) pos);
 }
 
-static int _euphoria_seek_timer(void *data)
-{
+static int _euphoria_seek_timer(void *data) {
 	Euphoria *e = data;
 	int new_pos;
 
@@ -349,8 +347,8 @@ static int _euphoria_seek_timer(void *data)
 }
 
 /* Handle Key Bindings via EVAS Event Callback */
-void
-cb_key_press(void *data, Evas *evas, Evas_Object *obj, void *event_info) {
+void cb_key_press(void *data, Evas *evas, Evas_Object *obj,
+                  void *event_info) {
 	Euphoria *e = data;
 
         Evas_Event_Key_Down *ev;
@@ -397,11 +395,11 @@ cb_key_press(void *data, Evas *evas, Evas_Object *obj, void *event_info) {
 /* - This only works IF you turn off X key repeat, which raster */
 /*   pointed out is global... so for most of us, this won't work. */
 /* This function is, thus, currently unused, but left in for testing. */
-void
-cb_key_release(void *data, Evas *evas, Evas_Object *obj, void *event_info) {
-        Euphoria *e = data;
+void cb_key_release(void *data, Evas *evas, Evas_Object *obj,
+                    void *event_info) {
+	Euphoria *e = data;
+	Evas_Event_Key_Down *ev;
 
-        Evas_Event_Key_Down *ev;
         ev = (Evas_Event_Key_Down *)event_info;
 
         //printf("DEBUG: You released key: %s\n", ev->keyname);
@@ -502,15 +500,16 @@ XMMS_CB(playback_status) {
 }
 
 XMMS_CB(playback_playtime) {
-	PlayListItem *pli = e->playlist->current_item;
+	unsigned int duration;
 
-	if(pli) {
-	    e->track_current_pos = (int) arg / 1000; /* time is in msecs */
+	if (!e->playlist->current_item)
+		return;
 
-	    ui_refresh_time(e, e->track_current_pos);
-	    ui_refresh_seeker(e, (double) e->track_current_pos /
-	                  playlist_item_duration_get(pli));
-	}
+	e->track_current_pos = (int) arg / 1000; /* time is in msecs */
+	duration = playlist_item_duration_get(e->playlist->current_item);
+
+	ui_refresh_time(e, e->track_current_pos);
+	ui_refresh_seeker(e, (double) e->track_current_pos / duration);
 }
 
 XMMS_CB(playback_currentid) {
@@ -527,7 +526,7 @@ XMMS_CB(playback_currentid) {
 		}
 	}
 
-	if (id > 0) 
+	if (id > 0)
 		playlist_set_current(e->playlist, id);
 
 	hilight_current_track(e);
@@ -554,15 +553,14 @@ XMMS_CB(playlist_mediainfo) {
 }
 
 XMMS_CB(playlist_mediainfo_id) {
-	PlayListItem *pli;
 	unsigned int id = (unsigned int) arg;
-	
+
 	xmmsc_playlist_get_mediainfo(e->xmms, id);
 }
 
 XMMS_CB(playlist_list) {
 	int i, *id = arg;
-	
+
 	if (!id)
 		return;
 
@@ -586,9 +584,8 @@ XMMS_CB(playlist_remove) {
 	 */
 	assert (id > 0);
 
-	if (xmmscs_playback_current_id(e->xmms) == id) {
+	if (xmmscs_playback_current_id(e->xmms) == id)
 		xmmsc_playback_stop(e->xmms);
-	}
 
 	pli = playlist_item_find_by_id(e->playlist, id);
 	assert(pli);

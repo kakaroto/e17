@@ -75,8 +75,9 @@ void playlist_item_remove(PlayList *pl, PlayListItem *pli) {
 	pl->duration -= playlist_item_duration_get(pli);
 	pl->items = evas_list_remove(pl->items, pli);
 	playlist_item_free(pli);
-	if(pl->current_item == pli)
-	    pl->current_item = NULL;
+
+	if (pl->current_item == pli)
+		pl->current_item = NULL;
 }
 
 /**
@@ -133,7 +134,8 @@ PlayListItem *playlist_set_current(PlayList *pl, unsigned int id)
 	if ((pli = playlist_item_find_by_id (pl, id)))
 		pl->current_item = pli;
 	else
-		fprintf(stderr, "%p %d\n", pl, id); 
+		debug(DEBUG_LEVEL_INFO, "%s() failed for id %d\n",
+		      __FUNCTION__, id);
 
 	return pli;
 }
