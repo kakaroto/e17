@@ -1,6 +1,6 @@
 # this is NOT relocatable..?
-%define	name	geist
-%define	ver	0.0.2
+%define	name	@PACKAGE@
+%define	ver	@VERSION@
 %define	rel	1
 %define prefix  /usr
 
@@ -13,9 +13,9 @@ Group: User Interface/X
 URL: http://www.linuxbrit.co.uk/geist.html
 Packager: Term <term@kempler.net>
 Vendor: Tom Gilbert <gilbertt@linuxbrit.co.uk>
-Source: ftp://not.available.yet.co.uk/%{name}-%{ver}.tar.gz
+Source: http://linuxbrit.co.uk/downloads/%{name}-%{ver}.tar.gz
 BuildRoot: /var/tmp/%{name}-root
-Requires: imlib2 >= 0.0.5
+Requires: imlib2 >= 1.0.0
 Requires: libxml2-devel >= 2.0
 Requires: gtk+-devel >= 1.2.0
 Requires: zlib

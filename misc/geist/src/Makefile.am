@@ -8,6 +8,11 @@ INCLUDES = \
 
 bin_PROGRAMS = geist
 
+testdocs_DATA = test.xml text_test.xml
+testdocsdir=$(prefix)/share/geist
+
+EXTRA_DIST = $(testdocs_DATA)
+
 geist_SOURCES = \
 	main.c \
 	utils.c utils.h \

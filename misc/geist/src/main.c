@@ -60,9 +60,10 @@ main(int argc, char *argv[])
    if (argc > 1)
       doc = geist_document_load_xml(argv[1], &err);
    else
-      doc = geist_document_load_xml("test.xml", &err);
+      doc = geist_document_load_xml(PREFIX "/share/geist/test.xml", &err);
    if (!doc)
-      weprintf("failed to load xml file\n");
+      weprintf("failed to load demo xml file %s, did you make install?",
+               PREFIX "/share/test.xml");
    else
    {
       doc_win = geist_gtk_new_document_window(doc);
