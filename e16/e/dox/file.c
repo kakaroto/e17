@@ -357,6 +357,7 @@ username(int uid)
    static int          usr_uid = -1;
    static char        *usr_s = NULL;
    char               *s;
+
 #ifndef __EMX__
    struct passwd      *pwd;
 
@@ -373,8 +374,8 @@ username(int uid)
 	return (s);
      }
 #else
-  if ((s = getenv("USER")) != NULL)
-    return (s);
+   if ((s = getenv("USER")) != NULL)
+      return (s);
 #endif
    return (strdup("unknown"));
 }
@@ -385,6 +386,7 @@ homedir(int uid)
    static int          usr_uid = -1;
    static char        *usr_s = NULL;
    char               *s;
+
 #ifndef __EMX__
    struct passwd      *pwd;
 
@@ -401,10 +403,10 @@ homedir(int uid)
 	return (s);
      }
 #else
-  if ((s = getenv("HOME")) != NULL)
-    return (s);
-  else if ((s = getenv("TMP")) != NULL)
-    return (s);
+   if ((s = getenv("HOME")) != NULL)
+      return (s);
+   else if ((s = getenv("TMP")) != NULL)
+      return (s);
 #endif
    return (strdup("/tmp"));
 }
@@ -415,6 +417,7 @@ usershell(int uid)
    static int          usr_uid = -1;
    static char        *usr_s = NULL;
    char               *s;
+
 #ifndef __EMX__
    struct passwd      *pwd;
 
@@ -432,7 +435,7 @@ usershell(int uid)
      }
    return (strdup("/bin/sh"));
 #else
-  return (strdup("sh.exe"));
+   return (strdup("sh.exe"));
 #endif
 }
 
@@ -619,29 +622,48 @@ word_mb(char *s, int num, char *wd, int *spaceflag)
    char               *start, *finish, *ss, *w;
 
    int                 wcflg, mbflg;
-   struct              char_class {
-     char               *name;
-     wctype_t            wt;
-   }                   *cc, char_class_tbl[] = {
+   struct char_class
+   {
+      char               *name;
+      wctype_t            wt;
+   }                  *cc, char_class_tbl[] =
+   {
 #ifdef linux
-	/* Will be supported on glibc 2.1.3 or later */
-	{"jspace", 0}, {"jhira", 0}, {"jkata", 0}, {"jkanji", 0}, {"jdigit", 0},/* Japanese */
-	{"hangul", 0}, {"hanja", 0},                                   /* Korean    */
-	/* {"?????"}, {"?????"},*/                               /* Chinese   */
+      /* Will be supported on glibc 2.1.3 or later */
+      {
+      "jspace", 0},
+      {
+      "jhira", 0},
+      {
+      "jkata", 0},
+      {
+      "jkanji", 0},
+      {
+      "jdigit", 0},		/* Japanese */
+      {
+      "hangul", 0},
+      {
+      "hanja", 0},		/* Korean    */
+	 /* {"?????"}, {"?????"}, *//* Chinese   */
 #endif
 #ifdef sgi
-	  /* SGI IRIX (Japanese, Chinese, Korean, etc..) */
-	  {"special", 0}, {"phonogram", 0}, {"ideogram", 0},
+	 /* SGI IRIX (Japanese, Chinese, Korean, etc..) */
+      {
+      "special", 0},
+      {
+      "phonogram", 0},
+      {
+      "ideogram", 0},
 #endif
 #ifdef sun
-	/* {"?????"}, {"?????"},*/
+	 /* {"?????"}, {"?????"}, */
 #endif
 #ifdef hpux
-	/* {"?????"}, {"?????"},*/
+	 /* {"?????"}, {"?????"}, */
 #endif
-	  {NULL, 0}
+      {
+      NULL, 0}
    };
-
 
    if (!s)
       return;
@@ -655,11 +677,11 @@ word_mb(char *s, int num, char *wd, int *spaceflag)
 
    /*  Check multibyte character class is available or not */
    wcflg = 0;
-   for ( cc = char_class_tbl; cc->name != NULL; cc++ )
+   for (cc = char_class_tbl; cc->name != NULL; cc++)
      {
-	cc->wt = wctype( cc->name );
-	if ( cc->wt != (wctype_t)0 )
-	  wcflg = 1;
+	cc->wt = wctype(cc->name);
+	if (cc->wt != (wctype_t) 0)
+	   wcflg = 1;
      }
 
    cnt = 0;
@@ -672,39 +694,41 @@ word_mb(char *s, int num, char *wd, int *spaceflag)
 
    while (s[i])
      {
-	int          len, oldflg=1;
+	int                 len, oldflg = 1;
 
-
-	len = mblen( s + i, MB_CUR_MAX );
-	if ( len < 0 )		{ i++; continue; }
+	len = mblen(s + i, MB_CUR_MAX);
+	if (len < 0)
+	  {
+	     i++;
+	     continue;
+	  }
 
 	/*  Check multibyte character class */
-	if ( wcflg )
+	if (wcflg)
 	  {
 	     wchar_t             wc;
 
 	     mbflg = 1;
-	     if ( (mbtowc( &wc, s + i, strlen(s + i) )) != -1 )
+	     if ((mbtowc(&wc, s + i, strlen(s + i))) != -1)
 	       {
-		 for ( cc = char_class_tbl; cc->name != NULL; cc++ )
-		   {
-		     if ( cc->wt == (wctype_t)0 )
-		       continue;
+		  for (cc = char_class_tbl; cc->name != NULL; cc++)
+		    {
+		       if (cc->wt == (wctype_t) 0)
+			  continue;
 
-		     if ( iswctype( wc, cc->wt ) != 0 )
-		       {
-			  mbflg = 2;
-			  break;
-		        }
-		   }
+		       if (iswctype(wc, cc->wt) != 0)
+			 {
+			    mbflg = 2;
+			    break;
+			 }
+		    }
 	       }
 	  }
 	else
-	  mbflg = len;
+	   mbflg = len;
 
-	if ((cnt == num) && (
-		(s[i] == ' ') || (s[i] == '\t') ||
-		(oldflg != mbflg) || (mbflg > 1) ))
+	if ((cnt == num) && ((s[i] == ' ') || (s[i] == '\t') ||
+			     (oldflg != mbflg) || (mbflg > 1)))
 	  {
 	     finish = &s[i];
 	     break;
@@ -712,16 +736,16 @@ word_mb(char *s, int num, char *wd, int *spaceflag)
 
 	if ((s[i] != ' ') && (s[i] != '\t'))
 	  {
-	     if ( (i == 0) ||
-		  (s[i - 1] == ' ') || (s[i - 1] == '\t') ||
-		  ((oldflg > 1) && (mbflg > 1)) || (oldflg != mbflg) )
+	     if ((i == 0) ||
+		 (s[i - 1] == ' ') || (s[i - 1] == '\t') ||
+		 ((oldflg > 1) && (mbflg > 1)) || (oldflg != mbflg))
 	       {
 		  cnt++;
 		  if (cnt == num)
 		    {
-		      start = &s[i];
-		      if ( (s[i - 1] == ' ') || (s[i - 1] == '\t') )
-			*spaceflag = 1;
+		       start = &s[i];
+		       if ((s[i - 1] == ' ') || (s[i - 1] == '\t'))
+			  *spaceflag = 1;
 		    }
 	       }
 	  }
@@ -838,7 +862,7 @@ pathtoexec(char *file)
 #ifndef __EMX__
    if (file[0] == '/')
 #else
-  if (_fnisabs(file))
+   if (_fnisabs(file))
 #endif
      {
 	if (canexec(file))
@@ -854,7 +878,7 @@ pathtoexec(char *file)
 #ifndef __EMX__
    while ((ep = strchr(cp, ':')))
 #else
-  while ((ep = strchr(cp, ';')))
+   while ((ep = strchr(cp, ';')))
 #endif
      {
 	len = ep - cp;
@@ -865,9 +889,9 @@ pathtoexec(char *file)
 	     s[len] = 0;
 	     s = realloc(s, len + 2 + exelen);
 #ifdef __EMX__
-	  if (s[len-1] != '/')
+	     if (s[len - 1] != '/')
 #endif
-	     strcat(s, "/");
+		strcat(s, "/");
 	     strcat(s, file);
 	     if (canexec(s))
 		return (s);
@@ -883,9 +907,9 @@ pathtoexec(char *file)
 	s[len] = 0;
 	s = realloc(s, len + 2 + exelen);
 #ifdef __EMX__
-	  if (s[len-1] != '/')
+	if (s[len - 1] != '/')
 #endif
-	strcat(s, "/");
+	   strcat(s, "/");
 	strcat(s, file);
 	if (canexec(s))
 	   return (s);
@@ -900,10 +924,11 @@ pathtofile(char *file)
    char               *p, *cp, *ep;
    char               *s;
    int                 len, exelen;
+
 #ifndef __EMX__
    if (file[0] == '/')
 #else
-  if (_fnisabs(file))
+   if (_fnisabs(file))
 #endif
      {
 	if (exists(file))
@@ -919,7 +944,7 @@ pathtofile(char *file)
 #ifndef __EMX__
    while ((ep = strchr(cp, ':')))
 #else
-  while ((ep = strchr(cp, ';')))
+   while ((ep = strchr(cp, ';')))
 #endif
      {
 	len = ep - cp;
@@ -930,9 +955,9 @@ pathtofile(char *file)
 	     s[len] = 0;
 	     s = realloc(s, len + 2 + exelen);
 #ifdef __EMX__
-	  if (s[len-1] != '/')
+	     if (s[len - 1] != '/')
 #endif
-	     strcat(s, "/");
+		strcat(s, "/");
 	     strcat(s, file);
 	     if (exists(s))
 		return (s);
@@ -948,9 +973,9 @@ pathtofile(char *file)
 	s[len] = 0;
 	s = realloc(s, len + 2 + exelen);
 #ifdef __EMX__
-      if (s[len-1] != '/')
+	if (s[len - 1] != '/')
 #endif
-	strcat(s, "/");
+	   strcat(s, "/");
 	strcat(s, file);
 	if (exists(s))
 	   return (s);
@@ -967,10 +992,10 @@ findLocalizedFile(char *fname)
    int                 i;
 
    if (!(lang = setlocale(LC_MESSAGES, NULL)))
-     return 0;
+      return 0;
 
    tmp = strdup(fname);
-   lang = strdup(lang); 	/* lang may be in static space, thus it must
+   lang = strdup(lang);		/* lang may be in static space, thus it must
 				 * be duplicated before we change it below */
    p[0] = lang + strlen(lang);
    p[1] = strchr(lang, '.');
@@ -979,15 +1004,15 @@ findLocalizedFile(char *fname)
    for (i = 0; i < 3; i++)
      {
 	if (p[i] == NULL)
-          continue;
+	   continue;
 
 	*p[i] = '\0';
 	sprintf(fname, "%s.%s", tmp, lang);
 	if (exists(fname))
 	  {
-	    free(tmp);
-	    free(lang);
-	    return 1;
+	     free(tmp);
+	     free(lang);
+	     return 1;
 	  }
      }
    strcpy(fname, tmp);

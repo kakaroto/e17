@@ -164,7 +164,6 @@ extern Drawable     vIcDrw;
 #include <Fnlib.h>
 #endif
 
-
 #define FILEPATH_LEN_MAX 4096
 
 #define DEFAULT_LINKCOLOR_R 30
@@ -191,7 +190,6 @@ typedef struct _efont Efont;
   putenv(envvar);\
 }
 
-
 typedef struct _root
 {
    Window              win;
@@ -204,83 +202,83 @@ typedef struct _root
 Root;
 
 typedef struct _textstate
-  {
-     char               *fontname;
+{
+   char               *fontname;
 #if USE_FNLIB
-     FnlibStyle          style;
-     FnlibFont          *font;
+   FnlibStyle          style;
+   FnlibFont          *font;
 #endif
-     XColor              fg_col;
-     XColor              bg_col;
-     int                 effect;
-     Efont              *efont;
-     XFontStruct        *xfont;
-     XFontSet            xfontset;
-     int                 xfontset_ascent;
-     int                 height;
-  }
+   XColor              fg_col;
+   XColor              bg_col;
+   int                 effect;
+   Efont              *efont;
+   XFontStruct        *xfont;
+   XFontSet            xfontset;
+   int                 xfontset_ascent;
+   int                 height;
+}
 TextState;
 
 typedef enum _type
-  {
-     IMG,
-     BR,
-     FONT,
-     P,
-     TEXT,
-     PAGE
-  }
+{
+   IMG,
+   BR,
+   FONT,
+   P,
+   TEXT,
+   PAGE
+}
 Type;
 
 typedef struct _img
-  {
-     char               *src;
-     char               *src2;
-     char               *src3;
-     int                 x, y;
-     char               *link;
-     int                 w, h;
-  }
+{
+   char               *src;
+   char               *src2;
+   char               *src3;
+   int                 x, y;
+   char               *link;
+   int                 w, h;
+}
 Img_;
 
 typedef struct _font
-  {
-     char               *face;
-     int                 r, g, b;
-  }
+{
+   char               *face;
+   int                 r, g, b;
+}
 Font_;
 
 typedef struct _p
-  {
-     float               align;
-  }
+{
+   float               align;
+}
 P_;
 
 typedef struct _object
-  {
-     Type                type;
-     void               *object;
-  }
+{
+   Type                type;
+   void               *object;
+}
 Object;
 
 typedef struct _page
-  {
-     char               *name;
-     int                 count;
-     Object             *obj;
-     int                 columns;
-     int                 padding;
-     int                 linkr, linkg, linkb;
-     char               *background;
-  }
+{
+   char               *name;
+   int                 count;
+   Object             *obj;
+   int                 columns;
+   int                 padding;
+   int                 linkr, linkg, linkb;
+   char               *background;
+}
 Page;
 
 typedef struct _link
-  {
-     char               *name;
-     int                 x, y, w, h;
-     struct _link       *next;
-  }
+{
+   char               *name;
+   int                 x, y, w, h;
+   struct _link       *next;
+}
 Link;
 
 void                Efont_extents(Efont * f, char *text,
@@ -353,6 +351,7 @@ Link               *RenderPage(Window win, int page_num, int w, int h);
 
 extern Display     *disp;
 extern Root         root;
+
 #if USE_FNLIB
 extern FnlibData   *pFnlibData;
 #endif

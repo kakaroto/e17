@@ -213,13 +213,10 @@ extern int          debug_level;
 void                Alert(char *fmt, ...);
 void                InitStringList(void);
 void                AssignIgnoreFunction(int (*FunctionToAssign) (void *),
-
 					 void *params);
 void                AssignRestartFunction(int (*FunctionToAssign) (void *),
-
 					  void *params);
 void                AssignExitFunction(int (*FunctionToAssign) (void *),
-
 				       void *params);
 void                AssignTitleText(char *text);
 void                AssignIgnoreText(char *text);

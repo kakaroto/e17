@@ -92,7 +92,8 @@ TextStateLoadFont(TextState * ts)
 	       {
 		  int                 as, ds;
 
-		  Efont_extents(ts->efont, " ", &as, &ds, NULL, NULL, NULL, NULL, NULL);
+		  Efont_extents(ts->efont, " ", &as, &ds, NULL, NULL, NULL,
+				NULL, NULL);
 		  ts->xfontset_ascent = as;
 		  ts->height = as + ds;
 	       }
@@ -145,8 +146,7 @@ TextStateLoadFont(TextState * ts)
 }
 
 void
-TextSize(TextState * ts, char *text,
-	 int *width, int *height, int fsize)
+TextSize(TextState * ts, char *text, int *width, int *height, int fsize)
 {
    char              **lines;
    int                 i, num_lines;
@@ -196,7 +196,8 @@ TextSize(TextState * ts, char *text,
 	  {
 	     XRectangle          ret1, ret2;
 
-	     XmbTextExtents(ts->xfontset, lines[i], strlen(lines[i]), &ret1, &ret2);
+	     XmbTextExtents(ts->xfontset, lines[i], strlen(lines[i]), &ret1,
+			    &ret2);
 	     *height += ret2.height;
 	     if (ret2.width > *width)
 		*width = ret2.width;
@@ -234,8 +235,7 @@ TextSize(TextState * ts, char *text,
 
 void
 TextDraw(TextState * ts, Window win, char *text,
-	 int x, int y, int w, int h, int fsize,
-	 int justification)
+	 int x, int y, int w, int h, int fsize, int justification)
 {
    char              **lines;
    int                 i, num_lines;
@@ -319,7 +319,8 @@ TextDraw(TextState * ts, Window win, char *text,
 	  {
 	     XRectangle          ret1, ret2;
 
-	     XmbTextExtents(ts->xfontset, lines[i], strlen(lines[i]), &ret1, &ret2);
+	     XmbTextExtents(ts->xfontset, lines[i], strlen(lines[i]), &ret1,
+			    &ret2);
 	     if (i == 0)
 		yy += ts->xfontset_ascent;
 	     xx = x + (((w - ret2.width) * justification) >> 10);
@@ -384,8 +385,7 @@ TextDraw(TextState * ts, Window win, char *text,
 	       }
 	     EAllocColor(&ts->fg_col);
 	     XSetForeground(disp, gc, ts->fg_col.pixel);
-	     XDrawString(disp, win, gc, xx, yy,
-			 lines[i], strlen(lines[i]));
+	     XDrawString(disp, win, gc, xx, yy, lines[i], strlen(lines[i]));
 	     yy += ts->xfont->ascent + ts->xfont->descent;
 	  }
      }

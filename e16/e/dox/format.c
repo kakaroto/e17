@@ -93,10 +93,8 @@ AddObject(Object * obj)
    page[num_pages - 1].obj =
       realloc(page[num_pages - 1].obj,
 	      sizeof(Object) * (page[num_pages - 1].count));
-   page[num_pages - 1].obj[page[num_pages - 1].count - 1].type =
-      obj->type;
-   page[num_pages - 1].obj[page[num_pages - 1].count - 1].object =
-      obj->object;
+   page[num_pages - 1].obj[page[num_pages - 1].count - 1].type = obj->type;
+   page[num_pages - 1].obj[page[num_pages - 1].count - 1].object = obj->object;
 }
 
 void
@@ -575,7 +573,7 @@ RenderPage(Window win, int page_num, int w, int h)
 		  im = imlib_load_image(tmp);
 		  if (im)
 		    {
-	     	       imlib_context_set_image(im);
+		       imlib_context_set_image(im);
 		       img->w = imlib_image_get_width();
 		       img->h = imlib_image_get_height();
 		       imlib_context_set_drawable(win);
@@ -659,83 +657,93 @@ RenderPage(Window win, int page_num, int w, int h)
 		  int                 sx, sy, ssx, ssy;
 		  char                link_txt[1024];
 		  char                link_link[1024];
-		  int                 spaceflag, oldwc=0;
+		  int                 spaceflag, oldwc = 0;
 
 		  wd[0] = 0;
 #ifdef HAVE_WCTYPE_H
-		  if ( MB_CUR_MAX > 1 )                 /* If multibyte locale,... */
-		    word_mb(txt, wc, wd, &spaceflag);
+		  if (MB_CUR_MAX > 1)	/* If multibyte locale,... */
+		     word_mb(txt, wc, wd, &spaceflag);
 		  else
 #endif
 		    {
-		      word(txt, wc, wd);
-		      spaceflag = 1;
+		       word(txt, wc, wd);
+		       spaceflag = 1;
 		    }
-		  if (!wd[0])	eol = 1;
+		  if (!wd[0])
+		     eol = 1;
 
 		  wc++;
 		  eot++;
 		  strcpy(ss, s);
-		  if ( (eot != 1) && spaceflag)
+		  if ((eot != 1) && spaceflag)
 		     strcat(s, " ");
 
 		  if (wd[0] == '_')
-		     {
-			link_txt[0] = '\0';
-			link_link[0] = '\0';
-			link = 1;
-			oldwc = wc;
-		 	TextSize(&ts, s, &lx, &th, 17);
-		     }
-
-		  if ( link == 1 )
 		    {
-		      if ( eol || ( (wd[0] != '_') && spaceflag ) )	/* if NO link tag, ... */
-			{
-			  link_txt[0] = '\0';
-			  link_link[0] = '\0';
-			  link = 0;
-			  wc = oldwc;
+		       link_txt[0] = '\0';
+		       link_link[0] = '\0';
+		       link = 1;
+		       oldwc = wc;
+		       TextSize(&ts, s, &lx, &th, 17);
+		    }
+
+		  if (link == 1)
+		    {
+		       if (eol || ((wd[0] != '_') && spaceflag))	/* if NO link tag, ... */
+			 {
+			    link_txt[0] = '\0';
+			    link_link[0] = '\0';
+			    link = 0;
+			    wc = oldwc;
 #ifdef HAVE_WCTYPE_H
-			  if ( MB_CUR_MAX > 1 )
-			    word_mb(txt, wc - 1, wd, &spaceflag);
-			  else
+			    if (MB_CUR_MAX > 1)
+			       word_mb(txt, wc - 1, wd, &spaceflag);
+			    else
 #endif
-			    {
-			      word(txt, wc - 1, wd);
-			      spaceflag = 1;
-			    }
-			}
-		      else
-		        {
-			  int	k, linkflg;
+			      {
+				 word(txt, wc - 1, wd);
+				 spaceflag = 1;
+			      }
+			 }
+		       else
+			 {
+			    int                 k, linkflg;
 
-			  j = 0;
-			  linkflg = 0;
-			  if ( wd[0] == '_' )	{ j++; linkflg++; }
+			    j = 0;
+			    linkflg = 0;
+			    if (wd[0] == '_')
+			      {
+				 j++;
+				 linkflg++;
+			      }
 
-			  k = strlen( link_txt );
-			  for ( ; wd[j] != '(' && wd[j] != '\0'; j++, k++)
-			    {
-			      if (wd[j] == '_')	link_txt[k] = ' ';
-			      else		link_txt[k] = wd[j];
-			      if ( linkflg )	wd[ j - 1 ] = link_txt[k];
-			      else		wd[j]       = link_txt[k];
-			    }
-			  link_txt[k] = '\0';
-			  if ( linkflg )	wd[ j - 1 ] = '\0';
+			    k = strlen(link_txt);
+			    for (; wd[j] != '(' && wd[j] != '\0'; j++, k++)
+			      {
+				 if (wd[j] == '_')
+				    link_txt[k] = ' ';
+				 else
+				    link_txt[k] = wd[j];
+				 if (linkflg)
+				    wd[j - 1] = link_txt[k];
+				 else
+				    wd[j] = link_txt[k];
+			      }
+			    link_txt[k] = '\0';
+			    if (linkflg)
+			       wd[j - 1] = '\0';
 
-			  if ( wd[j] == '(' )
-			    {
-			      wd[j++] = '\0';
-			      strcpy( link_link, wd + j);
-			      link_link[ strlen(link_link) - 1 ] = '\0';
-			      strcpy( wd, link_txt );
-			      link = 2;
-			    }
-			  else
-			    continue;
-			}
+			    if (wd[j] == '(')
+			      {
+				 wd[j++] = '\0';
+				 strcpy(link_link, wd + j);
+				 link_link[strlen(link_link) - 1] = '\0';
+				 strcpy(wd, link_txt);
+				 link = 2;
+			      }
+			    else
+			       continue;
+			 }
 		    }
 
 		  strcat(s, wd);
@@ -765,7 +773,8 @@ RenderPage(Window win, int page_num, int w, int h)
 					{
 					   if ((iix >= sx) && (iix <= ssx))
 					     {
-						if (((ix + iix) / 2) > ((sx + ssx) / 2))
+						if (((ix + iix) / 2) >
+						    ((sx + ssx) / 2))
 						   ssx = ix - 1;
 						else
 						   sx = iix + 1;
@@ -793,8 +802,8 @@ RenderPage(Window win, int page_num, int w, int h)
 		     txt_disp = s;
 		  if (((tw > xspace) || (eol)) && (strlen(txt_disp) > 0))
 		    {
-		       if ( txt_disp[strlen(txt_disp) - 1] == ' ' )
-		         txt_disp[strlen(txt_disp) - 1] = 0;
+		       if (txt_disp[strlen(txt_disp) - 1] == ' ')
+			  txt_disp[strlen(txt_disp) - 1] = 0;
 
 		       if ((eot == 1) && (tw > xspace))
 			 {
@@ -803,18 +812,20 @@ RenderPage(Window win, int page_num, int w, int h)
 
 			    while (txt_disp[(point + cnt)])
 			      {
-				len = mblen( txt_disp + point + cnt, MB_CUR_MAX);
-				if ( len < 0 )
-				  {
-				     cnt++;
-				     continue;
-				  }
-				else
-				  for ( i = 0; i < len; i++, cnt++ )
-					p1[cnt] = txt_disp[point + cnt];
+				 len =
+				    mblen(txt_disp + point + cnt, MB_CUR_MAX);
+				 if (len < 0)
+				   {
+				      cnt++;
+				      continue;
+				   }
+				 else
+				    for (i = 0; i < len; i++, cnt++)
+				       p1[cnt] = txt_disp[point + cnt];
 				 p1[cnt] = 0;
 				 TextSize(&ts, p1, &tw, &th, 17);
-				 if ((tw > xspace) || (!txt_disp[(point + cnt)]))
+				 if ((tw > xspace)
+				     || (!txt_disp[(point + cnt)]))
 				   {
 				      if (txt_disp[(point + cnt)])
 					{
@@ -830,9 +841,13 @@ RenderPage(Window win, int page_num, int w, int h)
 					}
 				      wastext = 1;
 				      TextDraw(&ts, win, p1, x + off, y,
-					    xspace, 99999, 17, justification);
+					       xspace, 99999, 17,
+					       justification);
 				      y += ts.height;
-				      if (y >= (h - (pg->padding + ts.height - (ts.height - ts.xfontset_ascent))))
+				      if (y >=
+					  (h -
+					   (pg->padding + ts.height -
+					    (ts.height - ts.xfontset_ascent))))
 					{
 					   y = pg->padding;
 					   x += col_w + pg->padding;
@@ -848,35 +863,50 @@ RenderPage(Window win, int page_num, int w, int h)
 					   if (pg->obj[j].type == IMG)
 					     {
 						img = pg->obj[j].object;
-						if ((img->w > 0) && (img->h > 0))
+						if ((img->w > 0)
+						    && (img->h > 0))
 						  {
 						     int                 ix,
-						                         iy,
-						                         iix,
-						                         iiy;
+							iy, iix, iiy;
 
 						     ix = img->x;
 						     iy = img->y;
 						     iix = img->x + img->w - 1;
 						     iiy = img->y + img->h - 1;
 
-						     if ((iy <= ssy) && (iiy >= sy))
+						     if ((iy <= ssy)
+							 && (iiy >= sy))
 						       {
-							  if ((ix >= sx) && (ix <= ssx))
+							  if ((ix >= sx)
+							      && (ix <= ssx))
 							    {
-							       if ((iix >= sx) && (iix <= ssx))
+							       if ((iix >= sx)
+								   && (iix <=
+								       ssx))
 								 {
-								    if (((ix + iix) / 2) > ((sx + ssx) / 2))
-								       ssx = ix - 1;
+								    if (((ix +
+									  iix) /
+									 2) >
+									((sx +
+									  ssx) /
+									 2))
+								       ssx =
+									  ix -
+									  1;
 								    else
-								       sx = iix + 1;
+								       sx =
+									  iix +
+									  1;
 								 }
 							       else
 								 {
-								    ssx = ix - 1;
+								    ssx =
+								       ix - 1;
 								 }
 							    }
-							  else if ((iix >= sx) && (iix <= ssx))
+							  else if ((iix >= sx)
+								   && (iix <=
+								       ssx))
 							    {
 							       sx = iix + 1;
 							    }
@@ -898,7 +928,7 @@ RenderPage(Window win, int page_num, int w, int h)
 			    wastext = 1;
 			    TextDraw(&ts, win, txt_disp, x + off, y,
 				     xspace, 99999, 17, justification);
-			    if ( link > 1 && !strcmp( wd, link_txt) )
+			    if (link > 1 && !strcmp(wd, link_txt))
 			      {
 				 link = 0;
 				 link_link[0] = '\0';
@@ -915,13 +945,15 @@ RenderPage(Window win, int page_num, int w, int h)
 
 				 gc = XCreateGC(disp, win, 0, &gcv);
 				 EGetColor(&ts.fg_col, &rr, &gg, &bb);
-				 ESetColor(&ts.fg_col, pg->linkr, pg->linkg, pg->linkb);
+				 ESetColor(&ts.fg_col, pg->linkr, pg->linkg,
+					   pg->linkb);
 				 EAllocColor(&ts.fg_col);
 				 XSetForeground(disp, gc, ts.fg_col.pixel);
 				 TextSize(&ts, txt_disp, &tw, &th, 17);
 				 extra = ((xspace - tw) * justification) >> 10;
-				 TextDraw(&ts, win, link_txt, x + off + lx + extra, y,
-					  99999, 99999, 17, 0);
+				 TextDraw(&ts, win, link_txt,
+					  x + off + lx + extra, y, 99999, 99999,
+					  17, 0);
 				 TextSize(&ts, link_txt, &lw, &th, 17);
 				 XDrawLine(disp, win, gc,
 					   x + off + lx + extra,
@@ -947,7 +979,10 @@ RenderPage(Window win, int page_num, int w, int h)
 				 link_txt[0] = '\0';
 			      }
 			    y += ts.height;
-			    if (y >= (h - (pg->padding + ts.height - (ts.height - ts.xfontset_ascent))))
+			    if (y >=
+				(h -
+				 (pg->padding + ts.height -
+				  (ts.height - ts.xfontset_ascent))))
 			      {
 				 y = pg->padding;
 				 x += col_w + pg->padding;
@@ -964,7 +999,8 @@ RenderPage(Window win, int page_num, int w, int h)
 	  default:
 	     break;
 	  }
-	if (y >= (h - (pg->padding + ts.height - (ts.height - ts.xfontset_ascent))))
+	if (y >=
+	    (h - (pg->padding + ts.height - (ts.height - ts.xfontset_ascent))))
 	  {
 	     y = pg->padding;
 	     x += col_w + pg->padding;
