@@ -77,6 +77,19 @@ esmart_libs=`$ESMART_CONFIG --libs`
 AC_SUBST(esmart_cflags)
 AC_SUBST(esmart_libs)
 
+PROG="imlib2-config";
+AC_PATH_PROG(IMLIB2_CONFIG, $PROG, "", $PATH)
+if [ test -z $IMLIB2_CONFIG]; then
+  echo $PROG " is not in your \$PATH. Please ensure it is.";
+  echo "Read the manual page for you shell as to how to extend your path.";
+  echo "FATAL ERROR. ABORT.";
+  exit -1;
+fi
+imlib2_cflags=`$IMLIB2_CONFIG --cflags`
+imlib2_libs=`$IMLIB2_CONFIG --libs`
+AC_SUBST(imlib2_cflags)
+AC_SUBST(imlib2_libs)
+
 PROG="evas-config";
 AC_PATH_PROG(EVAS_CONFIG, $PROG, "", $PATH)
 if [ test -z $EVAS_CONFIG ]; then
