@@ -142,6 +142,8 @@ entice_config_new(void)
       memset(result, 0, sizeof(Entice_Config));
       snprintf(buf, PATH_MAX, "%s/default.eet", PACKAGE_DATA_DIR);
       result->theme = strdup(buf);
+      result->w = 320;
+      result->h = 240;
    }
    return (result);
 }
@@ -232,7 +234,7 @@ entice_config_init(void)
             if (!e_db_int_get(db, "/entice/w", &econfig->w))
 		econfig->y = 320;
             if (!e_db_int_get(db, "/entice/h", &econfig->h))
-		econfig->y = 120;
+		econfig->y = 240;
 
             e_db_close(db);
          }
