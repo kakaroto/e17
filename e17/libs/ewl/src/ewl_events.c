@@ -203,9 +203,7 @@ int ewl_ev_key_down(void *data, int type, void *_ev)
  */
 int ewl_ev_key_up(void *data, int type, void *_ev)
 {
-	/*
-	 * Dispatch key up events to the appropriate widget
-	 */
+	Ewl_Widget     *temp;
 	Ewl_Embed      *embed;
 	Ecore_X_Event_Key_Up *ev;
 
@@ -218,12 +216,17 @@ int ewl_ev_key_up(void *data, int type, void *_ev)
 		DRETURN_INT(TRUE, DLEVEL_STABLE);
 
 	/*
-	 * If a widget has received a keydown event, then it should receive a
-	 * matching key up event
+	 * Dispatcher of key up events, these get sent to the last widget
+	 * selected, and every parent above it.
 	 */
-	if (last_key)
-		ewl_callback_call_with_event_data(last_key, EWL_CALLBACK_KEY_UP,
-						  ev);
+	temp = last_key;
+	while (temp) {
+		if (!(ewl_object_has_state(EWL_OBJECT(temp),
+					EWL_FLAG_STATE_DISABLED)))
+			ewl_callback_call_with_event_data(temp,
+					EWL_CALLBACK_KEY_UP, ev);
+		temp = temp->parent;
+	}
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }

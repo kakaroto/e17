@@ -282,15 +282,14 @@ ewl_callback_call_with_event_data(Ewl_Widget * w, Ewl_Callback_Type t,
 		parent = parent->parent;
 	}
 
-	if (top) {
-		ewl_callback_call_with_event_data(top, t, ev_data);
-		DRETURN(DLEVEL_STABLE);
-	}
+	if (top)
+		w = top;
 
 	/*
 	 * Now search up the tree to find the first notified widget. This may
 	 * result in some recursion.
 	 */
+	top = NULL;
 	parent = w->parent;
 	while (parent) {
 		if (EWL_CALLBACK_FLAGS(parent, t) & EWL_CALLBACK_NOTIFY_NOTIFY)
