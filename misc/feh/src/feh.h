@@ -165,6 +165,7 @@ typedef struct cmdlineoptions
   unsigned char progressive;
   unsigned char modify_mode;
   unsigned char keep_http;
+  unsigned char borderless;
 
   char *output_file;
   char *bg_file;

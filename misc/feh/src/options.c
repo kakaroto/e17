@@ -59,6 +59,7 @@ init_parse_options (int argc, char **argv)
   opt.slideshow_delay = 0;
   opt.reload = 0;
   opt.keep_http = 0;
+  opt.borderless = 0;
 
   opt.thumb_w = 60;
   opt.thumb_h = 60;
@@ -77,6 +78,8 @@ init_parse_options (int argc, char **argv)
 	opt.thumbs = 1;
       else if ((!strcmp (argv[i], "--verbose")) || (!strcmp (argv[i], "-V")))
 	opt.verbose = 1;
+      else if ((!strcmp (argv[i], "--borderless")) || (!strcmp (argv[i], "-b")))
+        opt.borderless = 1;
       else if ((!strcmp (argv[i], "--keep-http"))
 	       || (!strcmp (argv[i], "-k")))
 	opt.keep_http = 1;
@@ -230,6 +233,7 @@ show_usage (void)
 	   "  -w, --multiwindow         Disable slideshow mode. With this setting,\n"
 	   "                            instead of opening multiple files in slideshow\n"
 	   "                            mode, multiple windows will be opened.\n"
+	   "  -b, --borderless          Create borderless windows\n"
 	   "  -P, --noprogressive       Disable progressive loading and display of images\n"
 	   "  -D, --slideshow-delay NUM For slideshow mode, specifies time delay (seconds)\n"
 	   "                            between automatically changing slides.\n"

@@ -124,14 +124,18 @@ winwidget_create_window (winwidget ret, int w, int h)
   XSetWindowAttributes attr;
   XClassHint *xch;
   Screen *scr;
+  MWMHints mwmhints;
+  Atom prop = None;
 
   D (("In winwidget_create_window\n"));
 
+#if 0
   scr = ScreenOfDisplay (disp, DefaultScreen (disp));
   if (w > scr->width)
     w = scr->width;
   if (h > scr->height)
     h = scr->height;
+#endif
 
   attr.backing_store = NotUseful;
   attr.override_redirect = False;
@@ -144,12 +148,39 @@ winwidget_create_window (winwidget ret, int w, int h)
     LeaveWindowMask | KeyPressMask | KeyReleaseMask | ButtonMotionMask |
     ExposureMask | FocusChangeMask | PropertyChangeMask |
     VisibilityChangeMask;
+
+  if (opt.borderless)
+    {
+      prop = XInternAtom (disp, "_MOTIF_WM_HINTS", True);
+      if (prop == None)
+	{
+	  weprintf ("Window Manager does not support MWM hints. "
+		    "To get a borderless window I have to bypass your wm.");
+	  attr.override_redirect = True;
+	  mwmhints.flags = 0;
+	}
+      else
+	{
+	  mwmhints.flags = MWM_HINTS_DECORATIONS;
+	  mwmhints.decorations = 0;
+	}
+    }
+  else
+    mwmhints.flags = 0;
+
   ret->win =
     XCreateWindow (disp, DefaultRootWindow (disp), 0, 0, w, h, 0,
 		   depth, InputOutput, vis,
 		   CWOverrideRedirect | CWSaveUnder | CWBackingStore |
 		   CWColormap | CWBackPixel | CWBorderPixel | CWEventMask,
 		   &attr);
+
+  if (mwmhints.flags)
+    {
+      XChangeProperty (disp, ret->win, prop, prop, 32,
+		       PropModeReplace, (unsigned char *) &mwmhints,
+		       PROP_MWM_HINTS_ELEMENTS);
+    }
 
   XSetWMProtocols (disp, ret->win, &wmDeleteWindow, 1);
   winwidget_update_title (ret);
