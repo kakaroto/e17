@@ -71,6 +71,8 @@
  * -------------------------------------------------------------------------
  */
 #include <time.h>
+#include <sys/types.h>
+#include <signal.h>
 #include "entrance.h"
 #include "entrance_session.h"
 #include "EvasTextEntry.h"
@@ -371,7 +373,9 @@ reboot_cb(void *data, Evas_Object *o, const char *emission, const char *source)
 {
     if(session->config->reboot.allow)
     {
-	execl("/bin/sh", "/bin/sh", "-c", "/sbin/shutdown -r now \"This system is going down for reboot NOW!\"", NULL);
+        pid_t ppid = getppid();
+    	execl("/bin/sh", "/bin/sh", "-c", "/sbin/shutdown -r now", NULL);
+        kill(ppid, SIGQUIT);
     }
 }
 
@@ -390,7 +394,9 @@ shutdown_cb(void *data, Evas_Object *o, const char *emission, const char *source
 {
     if(session->config->halt.allow)
     {
-	execl("/bin/sh", "/bin/sh", "-c", "/sbin/shutdown -h now \"This system is being shut down NOW!\"", NULL);
+        pid_t ppid = getppid();
+    	execl("/bin/sh", "/bin/sh", "-c", "/sbin/shutdown -h now", NULL);
+        kill(ppid, SIGQUIT);
     }
 }
 
@@ -423,11 +429,11 @@ main(int argc, char *argv[])
     Ecore_Evas *e = NULL;
     Ecore_Timer *timer = NULL;
     Evas_Object *o = NULL, *edje = NULL;
-    double x, y, w, h;
+    Evas_Coord x, y, w, h;
     char *entries[] = { "EntranceUserEntry", "EntrancePassEntry" };
     int entries_count = 2;
 
-   openlog("entrance", LOG_NOWAIT, LOG_DAEMON);
+    openlog("entrance", LOG_NOWAIT, LOG_DAEMON);
     if(argv[1]) snprintf(buf, PATH_MAX, "%s", argv[1]);
     /* Basic ecore initialization */
     if(!ecore_init()) return(-1);
@@ -452,8 +458,20 @@ main(int argc, char *argv[])
 	edje_frametime_set(1.0/60.0);
 
 	/* setup our ecore_evas */ 
-	/* testing mode decides entrance window size */
-	e = ecore_evas_software_x11_new(NULL, 0, 0, 0, WINW, WINH);
+	/* testing mode decides entrance window size
+     *
+     * Use rendering engine specified in config. On systems with
+     * hardware acceleration, GL should improve performance appreciably
+     */
+    if(!strcmp(session->config->engine, "software"))
+        e = ecore_evas_software_x11_new(NULL, 0, 0, 0, WINW, WINH);
+    else if(!strcmp(session->config->engine, "gl"))
+        e = ecore_evas_gl_x11_new(NULL, 0, 0, 0, WINW, WINH);
+    else {
+        fprintf(stderr, "Warning: Invalid Evas engine specified in config. Defaulting to software engine.\n");
+        e = ecore_evas_software_x11_new(NULL, 0, 0, 0, WINW, WINH);
+    }
+    
 	ew = ecore_evas_software_x11_window_get(e);
 	ecore_evas_title_set(e, "Entrance");
 	ecore_evas_callback_delete_request_set(e, window_del_cb);

@@ -326,7 +326,7 @@ evas_text_entry_stack_below(Evas_Object *o, Evas_Object *below)
     evas_object_stack_below(e->base, below);
 }
 static void
-evas_text_entry_move(Evas_Object *o, double x, double y)
+evas_text_entry_move(Evas_Object *o, Evas_Coord x, Evas_Coord y)
 {
     Evas_Text_Entry *e = NULL;
     e = evas_object_smart_data_get(o);
@@ -334,7 +334,7 @@ evas_text_entry_move(Evas_Object *o, double x, double y)
     evas_object_move(e->base, x, y);
 }
 static void
-evas_text_entry_resize(Evas_Object *o, double w, double h)
+evas_text_entry_resize(Evas_Object *o, Evas_Coord w, Evas_Coord h)
 {
     Evas_Text_Entry *e = NULL;
     e = evas_object_smart_data_get(o);

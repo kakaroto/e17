@@ -28,6 +28,11 @@ entrance_config_populate(Entrance_Config e, E_DB_File * db)
       return;
 
    /* strings 'n things */
+   if ((str = e_db_str_get(db, "/entrance/engine")))
+      e->engine = str;
+   else
+      e->engine = strdup("software");
+
    if ((str = e_db_str_get(db, "/entrance/theme")))
       e->theme = str;
    else

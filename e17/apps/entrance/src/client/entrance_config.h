@@ -18,6 +18,12 @@
 struct _Entrance_Config
 {
    /**
+    * engine - the evas rendering engine to use
+    * gl - OpenGL rendering engine
+    * software - The software rendering engine (default)
+    */
+   char *engine;
+   /**
     * theme - the theme we want entrance ui to use
     */
    char *theme;
