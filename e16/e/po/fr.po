@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-07-05 19:02+0200\n"
+"POT-Creation-Date: 2004-07-17 23:16+0200\n"
 "PO-Revision-Date: 2004-07-10 04:15+0200\n"
 "Last-Translator: Ludwig Noujarret <ludwig@noujarret.com>\n"
 "Language-Team: French <fr@li.org>\n"
@@ -20,8 +20,9 @@ msgstr ""
 msgid "ActionClass Error!"
 msgstr "Erreur de type ActionClass !"
 
-#: src/actions.c:289 src/borders.c:2257 src/buttons.c:124 src/cmclass.c:91
-#: src/cursors.c:104 src/iclass.c:169 src/tclass.c:63 src/tooltips.c:662
+#: src/actions.c:289 src/backgrounds.c:192 src/borders.c:2271
+#: src/buttons.c:124 src/cmclass.c:91 src/cursors.c:142 src/iclass.c:169
+#: src/tclass.c:63 src/tooltips.c:662
 #, c-format
 msgid "%u references remain\n"
 msgstr "Il reste %u références\n"
@@ -115,27 +116,31 @@ msgstr ""
 "Ce programme ne peut pas être exécuté.\n"
 "Le fichier n'est pas un fichier correct.\n"
 
-#: src/actions.c:2881
+#: src/actions.c:2880
 #, c-format
 msgid "About Enlightenment %s"
 msgstr "A propos d'Enlightenment %s"
 
-#: src/actions.c:2897
-msgid "Welcome to the "
-msgstr "Bienvenue dans la version "
-
-#: src/actions.c:2897
+#: src/actions.c:2894
+#, fuzzy, c-format
 msgid ""
-" version\n"
+"Welcome to the %s version\n"
 "of the Enlightenment window manager.\n"
-" Enlightenment is still under development, but\n"
+"Enlightenment is still under development, but\n"
 "we have tried to iron out all the bugs that\n"
 "we can find. If you find a bug in the software,\n"
-" please do not hesitate to send in a bug report.\n"
+"please do not hesitate to send in a bug report.\n"
 "See \"Help\" for information on joining the\n"
 "mailing list.\n"
 "\n"
-"This code last updated on:\n"
+"This code was last updated on:\n"
+"%s\n"
+"\n"
+"Good luck. We hope you enjoy the software.\n"
+"\n"
+"The Rasterman - raster@rasterman.com\n"
+"Mandrake - mandrake@mandrake.net\n"
+"Kim Woelders - kim@woelders.dk\n"
 msgstr ""
 " \n"
 "du gestionnaire de fenêtres Enlightenment.\n"
@@ -144,29 +149,12 @@ msgstr ""
 "d'éradiquer tous les bugs que nous pouvions\n"
 "trouver. Si vous constatez un bug, n'hésitez\n"
 "pas à nous en envoyer un rapport détaillé.\n"
-"Voyez l'\"Aide\" pour de plus amples informations au sujet de l'inscription à la liste de diffusion.\n"
+"Voyez l'\"Aide\" pour de plus amples informations au sujet de l'inscription "
+"à la liste de diffusion.\n"
 "\n"
 "Ce code a été mis à jour le :\n"
 
-#: src/actions.c:2907
-msgid ""
-"\n"
-"\n"
-"Good luck. We hope you enjoy the software.\n"
-"\n"
-"The Rasterman - raster@rasterman.com\n"
-"Mandrake - mandrake@mandrake.net\n"
-"Kim Woelders - kim@woelders.dk\n"
-msgstr ""
-"\n"
-"\n"
-"Bonne chance. Nous espérons que vous apprécierez ce logiciel.\n"
-"\n"
-"The Rasterman - raster@rasterman.com\n"
-"Mandrake - mandrake@mandrake.net\n"
-"Kim Woelders - kim@woelders.dk\n"
-
-#: src/actions.c:2913 src/dialog.c:2130 src/dialog.c:2171 src/groups.c:677
+#: src/actions.c:2910 src/dialog.c:2130 src/dialog.c:2171 src/groups.c:677
 #: src/settings.c:336 src/settings.c:609 src/settings.c:980
 #: src/settings.c:1203 src/settings.c:1439 src/settings.c:1592
 #: src/settings.c:1694 src/settings.c:1801 src/settings.c:1880
@@ -176,11 +164,11 @@ msgstr ""
 msgid "OK"
 msgstr "OK"
 
-#: src/actions.c:3024
+#: src/actions.c:3021
 msgid "  Pick the group the window will belong to:  \n"
 msgstr "  Choisissez le groupe auquel cette fenêtre appartiendra :  \n"
 
-#: src/actions.c:3248
+#: src/actions.c:3245
 msgid ""
 "\n"
 "  There's no current group at the moment.  \n"
@@ -200,24 +188,24 @@ msgstr ""
 "  Choisissez un autre groupe auquel la fenêtre appartiendra :  \n"
 "\n"
 
-#: src/actions.c:3268
+#: src/actions.c:3265
 msgid "   Select the group to remove the window from.  "
 msgstr "   Choisissez le groupe duquel la fenêtre sera retirée :  "
 
-#: src/actions.c:3280
+#: src/actions.c:3277
 msgid "  Select the group to break  "
 msgstr "  Choisissez le groupe à supprimer :  "
 
-#: src/actions.c:3307
+#: src/actions.c:3304
 #, c-format
 msgid "You have been warned about the dangers of Zoom mode\n"
 msgstr "Vous avez été averti des risques du mode Zoom\n"
 
-#: src/actions.c:3310
+#: src/actions.c:3307
 msgid "Warning !!!"
 msgstr "Avertissement !!!"
 
-#: src/actions.c:3311
+#: src/actions.c:3308
 msgid ""
 "This feature is heavily reliant on a feature of your\n"
 "X Server called the Vid Mode Extension. This feature exists\n"
@@ -260,9 +248,9 @@ msgstr "Ignorer"
 msgid "Restart Enlightenment"
 msgstr "Redémarrer Enlightenment"
 
-#: src/alert.c:48 src/alert.c:78 src/memory.c:211 src/memory.c:287
-#: src/memory.c:305 src/memory.c:381 src/memory.c:396 src/setup.c:286
-#: src/setup.c:297 src/setup.c:347
+#: src/alert.c:48 src/alert.c:78 src/events.c:61 src/memory.c:211
+#: src/memory.c:287 src/memory.c:305 src/memory.c:381 src/memory.c:396
+#: src/setup.c:286 src/setup.c:297 src/setup.c:347
 msgid "Quit Enlightenment"
 msgstr "Quitter Enlightenment"
 
@@ -282,7 +270,12 @@ msgstr "Redémarrer"
 msgid "Exit"
 msgstr "Sortir"
 
-#: src/borders.c:2257
+#: src/backgrounds.c:192
+#, fuzzy
+msgid "Background Error!"
+msgstr "Fond d'écran"
+
+#: src/borders.c:2271
 msgid "Border Error!"
 msgstr "Erreur de type Border !"
 
@@ -317,18 +310,18 @@ msgstr ""
 
 #: src/config.c:355 src/config.c:593 src/config.c:668 src/config.c:1021
 #: src/config.c:1138 src/config.c:1374 src/config.c:1501 src/config.c:1605
-#: src/config.c:1818 src/config.c:2065 src/config.c:2140 src/config.c:2232
-#: src/config.c:2488 src/config.c:2710 src/config.c:2972 src/config.c:3063
-#: src/config.c:3096 src/config.c:3241 src/config.c:3443
+#: src/config.c:1818 src/config.c:2065 src/config.c:2138 src/config.c:2230
+#: src/config.c:2486 src/config.c:2708 src/config.c:2970 src/config.c:3061
+#: src/config.c:3094 src/config.c:3239 src/config.c:3441
 #, c-format
 msgid "CONFIG: ignoring extra data in \"%s\"\n"
 msgstr "Configuration : Omission des données superficielles dans \"%s\"\n"
 
 #: src/config.c:361 src/config.c:599 src/config.c:676 src/config.c:1027
 #: src/config.c:1144 src/config.c:1380 src/config.c:1507 src/config.c:1613
-#: src/config.c:1826 src/config.c:2071 src/config.c:2146 src/config.c:2240
-#: src/config.c:2494 src/config.c:2718 src/config.c:2978 src/config.c:3247
-#: src/config.c:3451
+#: src/config.c:1826 src/config.c:2071 src/config.c:2144 src/config.c:2238
+#: src/config.c:2492 src/config.c:2716 src/config.c:2976 src/config.c:3245
+#: src/config.c:3449
 #, c-format
 msgid "CONFIG: missing required data in \"%s\"\n"
 msgstr "Configuration : Donnée requise manquante dans \"%s\"\n"
@@ -415,7 +408,7 @@ msgstr ""
 "Avertissement : La configuration s'est achevée avant que nous ayons\n"
 "terminé de charger un \"Button block\". Ce n'est pas bon signe.\n"
 
-#: src/config.c:2033 src/config.c:2115
+#: src/config.c:2033 src/config.c:2113
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading a Desktop block.  Outcome is likely not good.\n"
@@ -423,11 +416,11 @@ msgstr ""
 "Avertissement : La configuration s'est achevée avant que nous ayons\n"
 "terminé de charger un \"Desktop block\". Ce n'est pas bon signe.\n"
 
-#: src/config.c:2127
+#: src/config.c:2125
 msgid "Easter Egg!  Iconboxes aren't implemented yet.\n"
 msgstr "Surprise!  Les boîtes à icônes ne sont pas encore implémentées.\n"
 
-#: src/config.c:2157
+#: src/config.c:2155
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading an Iconbox block.  Outcome is likely not good.\n"
@@ -435,7 +428,7 @@ msgstr ""
 "Avertissement : La configuration s'est achevée avant que nous ayons\n"
 "terminé de charger un \"Iconbox block\". Ce n'est pas bon signe.\n"
 
-#: src/config.c:2191
+#: src/config.c:2189
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading an Sound block.  Outcome is likely not good.\n"
@@ -443,7 +436,7 @@ msgstr ""
 "Avertissement : La configuration s'est achevée avant que nous ayons\n"
 "terminé de charger un \"Sound block\". Ce n'est pas bon signe.\n"
 
-#: src/config.c:2444
+#: src/config.c:2442
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -456,7 +449,7 @@ msgstr ""
 "%s\n"
 "Ignoré, on continue...\n"
 
-#: src/config.c:2458
+#: src/config.c:2456
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading an Action Class block.  Outcome is likely not good.\n"
@@ -464,7 +457,7 @@ msgstr ""
 "Avertissement : La configuration s'est achevée avant que nous ayons\n"
 "terminé de charger un \"Action Class block\". Ce n'est pas bon signe.\n"
 
-#: src/config.c:2663
+#: src/config.c:2661
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -477,7 +470,7 @@ msgstr ""
 "%s\n"
 "Ignoré, on continue...\n"
 
-#: src/config.c:2670
+#: src/config.c:2668
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading an ImageClass block.  Outcome is likely not good.\n"
@@ -485,7 +478,7 @@ msgstr ""
 "Avertissement : La configuration s'est achevée avant que nous ayons\n"
 "terminé de charger un \"ImageClass block\". Ce n'est pas bon signe.\n"
 
-#: src/config.c:2909
+#: src/config.c:2907
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -498,7 +491,7 @@ msgstr ""
 "%s\n"
 "Ignoré, on continue...\n"
 
-#: src/config.c:2933
+#: src/config.c:2931
 msgid ""
 "Warning:  Configuration appears to have ended before we were\n"
 "Done loading an ColorModifier block.\n"
@@ -507,7 +500,7 @@ msgstr ""
 "Avertissement : La configuration s'est achevée avant que nous ayons\n"
 "terminé de charger un \"ImageClass block\". Ce n'est pas bon signe.\n"
 
-#: src/config.c:3024
+#: src/config.c:3022
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -520,7 +513,7 @@ msgstr ""
 "%s\n"
 "Ignoré, on continue...\n"
 
-#: src/config.c:3031
+#: src/config.c:3029
 msgid ""
 "Warning: Configuration appears to have ended before we were\n"
 "Done loading an ToolTip block.  Outcome is likely not good.\n"
@@ -528,7 +521,7 @@ msgstr ""
 "Avertissement : La configuration s'est achevée avant que nous ayons\n"
 "terminé de charger un \"ToolTip block\". Ce n'est pas bon signe.\n"
 
-#: src/config.c:3069
+#: src/config.c:3067
 msgid ""
 "Warning: Configuration appears to have ended before we were\n"
 "Done loading an FX block.  Outcome is likely not good.\n"
@@ -536,7 +529,7 @@ msgstr ""
 "Avertissement : La configuration s'est achevée avant que nous ayons\n"
 "terminé de charger un \"FX block\". Ce n'est pas bon signe.\n"
 
-#: src/config.c:3159
+#: src/config.c:3157
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -549,7 +542,7 @@ msgstr ""
 "%s\n"
 "Ignoré, on continue...\n"
 
-#: src/config.c:3167
+#: src/config.c:3165
 msgid ""
 "Warning: Configuration appears to have ended before we were\n"
 "Done loading an Iconbox block.  Outcome is likely not good.\n"
@@ -557,7 +550,7 @@ msgstr ""
 "Avertissement : La configuration s'est achevée avant que nous ayons\n"
 "terminé de charger un \"Iconbox block\". Ce n'est pas bon signe.\n"
 
-#: src/config.c:3203
+#: src/config.c:3201
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -570,7 +563,7 @@ msgstr ""
 "%s\n"
 "Ignoré, on continue...\n"
 
-#: src/config.c:3211
+#: src/config.c:3209
 msgid ""
 "Warning: Configuration appears to have ended before we were\n"
 "Done loading an Extras block.  Outcome is likely not good.\n"
@@ -578,7 +571,7 @@ msgstr ""
 "Avertissement : La configuration s'est achevée avant que nous ayons\n"
 "terminé de charger un \"Extras block\". Ce n'est pas bon signe.\n"
 
-#: src/config.c:3317
+#: src/config.c:3315
 #, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
@@ -591,7 +584,7 @@ msgstr ""
 "%s\n"
 "Ignoré, on continue...\n"
 
-#: src/config.c:3324
+#: src/config.c:3322
 msgid ""
 "Warning: Configuration appears to have ended before we were\n"
 "Done loading an WindowMatch block.  Outcome is likely not good.\n"
@@ -599,7 +592,7 @@ msgstr ""
 "Avertissement : La configuration s'est achevée avant que nous ayons\n"
 "terminé de charger un \"WindowMatch block\". Ce n'est pas bon signe.\n"
 
-#: src/config.c:3353
+#: src/config.c:3351
 #, c-format
 msgid ""
 "Help! Cannot find epp!\n"
@@ -616,19 +609,19 @@ msgstr ""
 "Soit le programme n'existe pas,\n"
 "soit vous n'avez pas les droits pour l'exécuter.\n"
 
-#: src/config.c:3460
+#: src/config.c:3458
 msgid "Theme versioning ERROR"
 msgstr "Erreur de version de thème"
 
-#: src/config.c:3461 src/config.c:3490
+#: src/config.c:3459 src/config.c:3488
 msgid "Restart with Defaults"
 msgstr "Redémarrer avec les réglages par défaut"
 
-#: src/config.c:3462 src/config.c:3491
+#: src/config.c:3460 src/config.c:3489
 msgid "Abort and Exit"
 msgstr "Interrompre et Sortir"
 
-#: src/config.c:3463
+#: src/config.c:3461
 #, c-format
 msgid ""
 "ERROR:\n"
@@ -666,11 +659,11 @@ msgstr ""
 "prend avantage de nouvelles fonctionnalités\n"
 "d'Enlightenment.\n"
 
-#: src/config.c:3489
+#: src/config.c:3487
 msgid "User Config Version ERROR"
 msgstr "Erreur de version de configuration utilisateur"
 
-#: src/config.c:3492
+#: src/config.c:3490
 #, c-format
 msgid ""
 "ERROR:\n"
@@ -699,7 +692,7 @@ msgstr ""
 "du système. Vous pourrez ensuite modifier votre configuration\n"
 "comme vous le souhaitez.\n"
 
-#: src/config.c:3739
+#: src/config.c:3737
 #, c-format
 msgid ""
 "WARNING!\n"
@@ -714,7 +707,7 @@ msgstr ""
 "Cela peut être dû à un manque d'espace disque, de quota ou à\n"
 "un problème de permissions sur le fichier.\n"
 
-#: src/config.c:3747
+#: src/config.c:3745
 #, c-format
 msgid ""
 "No themes were found in the default theme directory:\n"
@@ -729,27 +722,27 @@ msgstr ""
 " %s/themes/\n"
 "Poursuivre ne rime à rien.\n"
 
-#: src/config.c:3799
+#: src/config.c:3797
 msgid "Enlightenment Starting..."
 msgstr "Démarrage d'Enlightenment..."
 
-#: src/config.c:4263
+#: src/config.c:4259
 msgid "Recover system config?"
 msgstr "Récupérer la configuration système ?"
 
-#: src/config.c:4263
+#: src/config.c:4259
 msgid "Yes, Attempt recovery"
 msgstr "Oui, tenter de récupérer"
 
-#: src/config.c:4264
+#: src/config.c:4260
 msgid "Restart and try again"
 msgstr "Redémarrer et réessayer"
 
-#: src/config.c:4264
+#: src/config.c:4260
 msgid "Quit and give up"
 msgstr "Quitter et abandonner"
 
-#: src/config.c:4266
+#: src/config.c:4262
 msgid ""
 "Enlightenment has encountered parsing errors in your autosaved\n"
 "configuration.\n"
@@ -769,7 +762,7 @@ msgstr ""
 "Souhaitez vous qu'Enlightenment récupère sa configuration\n"
 "initiale et réessaie ?\n"
 
-#: src/cursors.c:104
+#: src/cursors.c:142
 msgid "ECursor Error!"
 msgstr "Erreur de type ECursor !"
 
@@ -821,6 +814,22 @@ msgstr "Cliquez ici pour abaisser ce bureau.\n"
 #: src/dialog.c:2171
 msgid "Attention !!!"
 msgstr "Attention !!!"
+
+#: src/events.c:60 src/setup.c:296
+msgid "X server setup error"
+msgstr "Erreur de configuration du serveur X"
+
+#: src/events.c:62
+msgid ""
+"FATAL ERROR:\n"
+"\n"
+"This Xserver does not support the Shape extension.\n"
+"This is required for Enlightenment to run.\n"
+"\n"
+"Your Xserver probably is too old or mis-configured.\n"
+"\n"
+"Exiting.\n"
+msgstr ""
 
 #: src/fx.c:247
 msgid "Starting up Ripples FX..."
@@ -1219,19 +1228,19 @@ msgstr ""
 msgid "ImageClass Error!"
 msgstr "Erreur de type ImageClass !"
 
-#: src/iconify.c:2257
+#: src/iconify.c:2256
 msgid "Iconbox Options"
 msgstr "Options de la boîte à icônes"
 
-#: src/iconify.c:2260
+#: src/iconify.c:2259
 msgid "This Iconbox Settings..."
 msgstr "Paramètres de cette boîte à icônes..."
 
-#: src/iconify.c:2263
+#: src/iconify.c:2262
 msgid "Close Iconbox"
 msgstr "Fermer la boîte à icônes"
 
-#: src/iconify.c:2265
+#: src/iconify.c:2264
 msgid "Create New Iconbox"
 msgstr "Créer une nouvelle boîte à icônes"
 
@@ -1239,7 +1248,7 @@ msgstr "Créer une nouvelle boîte à icônes"
 msgid "Message"
 msgstr "Message"
 
-#: src/ipc.c:3922
+#: src/ipc.c:3909
 #, c-format
 msgid ""
 "Enlightenment Version : %s\n"
@@ -1248,11 +1257,11 @@ msgstr ""
 "Version d'Enlightenment : %s\n"
 "Code courant               : %s\n"
 
-#: src/ipc.c:6472
+#: src/ipc.c:6458
 msgid "Enlightenment IPC Commands Help"
 msgstr "Aide des commandes IPC d'Enlightenment"
 
-#: src/ipc.c:6476 src/ipc.c:6506
+#: src/ipc.c:6462 src/ipc.c:6490
 msgid ""
 "\n"
 "commands currently available:\n"
@@ -1260,7 +1269,7 @@ msgstr ""
 "\n"
 "Commandes disponibles actuellement :\n"
 
-#: src/ipc.c:6478
+#: src/ipc.c:6463
 msgid ""
 "use \"help all\" for descriptions of each command\n"
 "use \"help <command>\" for an individual description\n"
@@ -1270,15 +1279,15 @@ msgstr ""
 "tapez \"help <commande>\" pour une description individuelle\n"
 "\n"
 
-#: src/ipc.c:6508
+#: src/ipc.c:6491
 msgid "use \"help <command>\" for an individual description\n"
 msgstr "tapez \"help <commande>\" pour une description individuelle\n"
 
-#: src/ipc.c:6510
+#: src/ipc.c:6493
 msgid "      <command>   : <description>\n"
 msgstr "      <commande>   : <description>\n"
 
-#: src/main.c:179
+#: src/main.c:178
 #, c-format
 msgid ""
 "Enlightenment Version: %s\n"
@@ -1323,7 +1332,8 @@ msgstr ""
 "swap ou encore reconfigurer Enlightenment pour qu'il utilise\n"
 "moins de ressources en désactivant certaines fonctionnalités.\n"
 "\n"
-"La requête d'allocation (malloc) a été effectué dans %s, ligne %d\n "
+"La requête d'allocation (malloc) a été effectué dans %s, ligne %d\n"
+" "
 
 #: src/memory.c:285
 msgid "Error in reallocating memory that hasn't been allocated"
@@ -1385,7 +1395,8 @@ msgstr ""
 "swap ou encore reconfigurer Enlightenment pour qu'il utilise\n"
 "moins de ressources en désactivant certaines fonctionnalités.\n"
 "\n"
-"L'erreur a eu lieu dans %s, ligne %d.\n "
+"L'erreur a eu lieu dans %s, ligne %d.\n"
+" "
 
 #: src/memory.c:379
 msgid "Error in freeing memory that hasn't been allocated"
@@ -1444,24 +1455,24 @@ msgstr ""
 "La valeur du pointeur était %x.\n"
 "L'erreur a eu lieu dans %s, ligne %d.\n"
 
-#: src/menus.c:1852
+#: src/menus.c:1846
 msgid "Go to this Desktop"
 msgstr "Aller à ce bureau"
 
-#: src/menus.c:1868 src/menus.c:1891
+#: src/menus.c:1861 src/menus.c:1884
 #, c-format
 msgid "Desktop %i"
 msgstr "Bureau %i"
 
-#: src/menus.c:1921
+#: src/menus.c:1914
 msgid "Show/Hide this group"
 msgstr "Montrer/Cacher ce groupe"
 
-#: src/menus.c:1924
+#: src/menus.c:1917
 msgid "Iconify this group"
 msgstr "Icônifier ce groupe"
 
-#: src/menus.c:1938
+#: src/menus.c:1931
 #, c-format
 msgid "Group %i"
 msgstr "Groupe %i"
@@ -1542,8 +1553,7 @@ msgstr ""
 "\n"
 "Le pager fonctionnera lentement en mode capture d'écran\n"
 "si vous continuez à utiliser cette option du pager sous ces\n"
-"conditons."
-"\n"
+"conditons.\n"
 "Il est suggéré de changer les paramètres de votre pager afin\n"
 "de ne plus utiliser le mode capture d'écran.\n"
 
@@ -2629,10 +2639,6 @@ msgstr ""
 "Impossible de continuer.\n"
 "Sortie.\n"
 
-#: src/setup.c:296
-msgid "X server setup error"
-msgstr "Erreur de configuration du serveur X"
-
 #: src/setup.c:298
 msgid ""
 "FATAL ERROR:\n"
@@ -2838,79 +2844,24 @@ msgstr ""
 msgid "TextClass Error!"
 msgstr "Erreur de type TextClass !"
 
-#: src/theme.c:43
-msgid "Theme does not contain a borders.cfg file\n"
-msgstr "Le thème ne contient pas de fichier borders.cfg\n"
-
-#: src/theme.c:49
-msgid "Theme does not contain a buttons.cfg file\n"
-msgstr "Le thème ne contient pas de fichier buttons.cfg\n"
-
-#: src/theme.c:55
-msgid "Theme does not contain a colormodifiers.cfg file\n"
-msgstr "Le thème ne contient pas de fichier colormodifiers.cfg\n"
-
-#: src/theme.c:61
-msgid "Theme does not contain a cursors.cfg file\n"
-msgstr "Le thème ne contient pas de fichier cursors.cfg\n"
-
-#: src/theme.c:67
-msgid "Theme does not contain a desktops.cfg file\n"
-msgstr "Le thème ne contient pas de fichier desktops.cfg\n"
-
-#: src/theme.c:73
-msgid "Theme does not contain a imageclasses.cfg file\n"
-msgstr "Le thème ne contient pas de fichier imageclasses.cfg\n"
-
-#: src/theme.c:79
-msgid "Theme does not contain a init.cfg file\n"
-msgstr "Le thème ne contient pas de fichier init.cfg\n"
-
-#: src/theme.c:85
-msgid "Theme does not contain a menustyles.cfg file\n"
-msgstr "Le thème ne contient pas de fichier menustyles.cfg\n"
-
-#: src/theme.c:91
-msgid "Theme does not contain a slideouts.cfg file\n"
-msgstr "Le thème ne contient pas de fichier slideouts.cfg\n"
-
-#: src/theme.c:97
-msgid "Theme does not contain a sound.cfg file\n"
+#: src/theme.c:68
+#, fuzzy, c-format
+msgid "Theme %s does not contain a %s file\n"
 msgstr "Le thème ne contient pas de fichier sound.cfg\n"
 
-#: src/theme.c:103
-msgid "Theme does not contain a tooltips.cfg file\n"
-msgstr "Le thème ne contient pas de fichier tooltips.cfg\n"
-
-#: src/theme.c:109
-msgid "Theme does not contain a windowmatches.cfg file\n"
-msgstr "Le thème ne contient pas de fichier windowmatches.cfg\n"
-
-#: src/theme.c:115
-msgid "Theme contains a menus.cfg file\n"
-msgstr "Le thème contient un fichier menus.cfg\n"
-
-#: src/theme.c:121
-msgid "Theme contains a control.cfg file\n"
-msgstr "Le thème contient un fichier control.cfg\n"
-
-#: src/theme.c:127
-msgid "Theme contains a keybindings.cfg file\n"
-msgstr "Le thème contient un fichier keybindings.cfg\n"
-
-#: src/theme.c:420
+#: src/theme.c:360
 msgid "Unknown\n"
 msgstr "Inconnu\n"
 
-#: src/theme.c:433 src/theme.c:440
+#: src/theme.c:373 src/theme.c:380
 msgid "Theme file/directory does not exist\n"
 msgstr "Le fichier/répertoire de thème n'existe pas\n"
 
-#: src/theme.c:457
+#: src/theme.c:397
 msgid "Bad Theme"
 msgstr "Mauvais thème"
 
-#: src/theme.c:458
+#: src/theme.c:398
 #, c-format
 msgid ""
 "The theme:\n"
@@ -2933,3 +2884,138 @@ msgstr ""
 msgid "ToolTip Error!"
 msgstr "Erreur de type ToolTip !"
 
+#: config/strings.c:4
+#, fuzzy
+msgid "Focus Settings ..."
+msgstr "Paramètres du Focus"
+
+#: config/strings.c:5
+#, fuzzy
+msgid "Move & Resize Settings ..."
+msgstr "Paramètres de Déplacement et Redimensionnement"
+
+#: config/strings.c:6
+#, fuzzy
+msgid "Pager Settings ..."
+msgstr "Paramètres du Pager..."
+
+#: config/strings.c:7
+#, fuzzy
+msgid "Window Placement Settings ..."
+msgstr "Paramètres de Placement des fenêtres"
+
+#: config/strings.c:8
+#, fuzzy
+msgid "Multiple Desktop Settings ..."
+msgstr "Paramètres des Bureaux multiples"
+
+#: config/strings.c:9
+#, fuzzy
+msgid "Virtual Desktop Settings ..."
+msgstr "Paramètres des Bureaux virtuels"
+
+#: config/strings.c:10
+#, fuzzy
+msgid "Autoraise Settings ..."
+msgstr "Paramètres d'Auto-élévation"
+
+#: config/strings.c:11
+#, fuzzy
+msgid "Tooltip Settings ..."
+msgstr "Paramètres des Bulles d'aide"
+
+#: config/strings.c:12
+#, fuzzy
+msgid "Audio Settings ..."
+msgstr "Paramètres Audio"
+
+#: config/strings.c:13
+#, fuzzy
+msgid "Group Settings ..."
+msgstr "Paramètres du Pager..."
+
+#: config/strings.c:14
+#, fuzzy
+msgid "Remember Settings ..."
+msgstr "Paramètres mémorisés..."
+
+#: config/strings.c:15
+#, fuzzy
+msgid "Special FX Settings ..."
+msgstr "Paramètres des Effets spéciaux"
+
+#: config/strings.c:16
+#, fuzzy
+msgid "Desktop Background Settings ..."
+msgstr "Paramètres des Fonds d'écran"
+
+#: config/strings.c:17
+#, fuzzy
+msgid "Miscellaneous Settings ..."
+msgstr "Paramètres Génériques"
+
+#: config/strings.c:18
+msgid "Legacy E-conf tool ..."
+msgstr ""
+
+#~ msgid "Welcome to the "
+#~ msgstr "Bienvenue dans la version "
+
+#~ msgid ""
+#~ "\n"
+#~ "\n"
+#~ "Good luck. We hope you enjoy the software.\n"
+#~ "\n"
+#~ "The Rasterman - raster@rasterman.com\n"
+#~ "Mandrake - mandrake@mandrake.net\n"
+#~ "Kim Woelders - kim@woelders.dk\n"
+#~ msgstr ""
+#~ "\n"
+#~ "\n"
+#~ "Bonne chance. Nous espérons que vous apprécierez ce logiciel.\n"
+#~ "\n"
+#~ "The Rasterman - raster@rasterman.com\n"
+#~ "Mandrake - mandrake@mandrake.net\n"
+#~ "Kim Woelders - kim@woelders.dk\n"
+
+#~ msgid "Theme does not contain a borders.cfg file\n"
+#~ msgstr "Le thème ne contient pas de fichier borders.cfg\n"
+
+#~ msgid "Theme does not contain a buttons.cfg file\n"
+#~ msgstr "Le thème ne contient pas de fichier buttons.cfg\n"
+
+#~ msgid "Theme does not contain a colormodifiers.cfg file\n"
+#~ msgstr "Le thème ne contient pas de fichier colormodifiers.cfg\n"
+
+#~ msgid "Theme does not contain a cursors.cfg file\n"
+#~ msgstr "Le thème ne contient pas de fichier cursors.cfg\n"
+
+#~ msgid "Theme does not contain a desktops.cfg file\n"
+#~ msgstr "Le thème ne contient pas de fichier desktops.cfg\n"
+
+#~ msgid "Theme does not contain a imageclasses.cfg file\n"
+#~ msgstr "Le thème ne contient pas de fichier imageclasses.cfg\n"
+
+#~ msgid "Theme does not contain a init.cfg file\n"
+#~ msgstr "Le thème ne contient pas de fichier init.cfg\n"
+
+#~ msgid "Theme does not contain a menustyles.cfg file\n"
+#~ msgstr "Le thème ne contient pas de fichier menustyles.cfg\n"
+
+#~ msgid "Theme does not contain a slideouts.cfg file\n"
+#~ msgstr "Le thème ne contient pas de fichier slideouts.cfg\n"
+
+#~ msgid "Theme does not contain a tooltips.cfg file\n"
+#~ msgstr "Le thème ne contient pas de fichier tooltips.cfg\n"
+
+#~ msgid "Theme does not contain a windowmatches.cfg file\n"
+#~ msgstr "Le thème ne contient pas de fichier windowmatches.cfg\n"
+
+#~ msgid "Theme contains a menus.cfg file\n"
+#~ msgstr "Le thème contient un fichier menus.cfg\n"
+
+#~ msgid "Theme contains a control.cfg file\n"
+#~ msgstr "Le thème contient un fichier control.cfg\n"
+
+#~ msgid "Theme contains a keybindings.cfg file\n"
+#~ msgstr "Le thème contient un fichier keybindings.cfg\n"
