@@ -367,7 +367,7 @@ gint evbox_mousemove_cb(GtkWidget * widget, GdkEventMotion * event)
 gboolean
 obj_add_cb(GtkWidget * widget, gpointer * data)
 {
-   fprintf(stderr, "add object");
+   fprintf(stderr, "add object\n");
    return TRUE;
 }
 
@@ -375,7 +375,7 @@ gboolean
 obj_cpy_cb(GtkWidget * widget, gpointer * data)
 {
 
-   fprintf(stderr, "cpy object");
+   fprintf(stderr, "cpy object\n");
    return TRUE;
 }
 
@@ -383,7 +383,7 @@ gboolean
 obj_del_cb(GtkWidget * widget, gpointer * data)
 {
 
-   fprintf(stderr, "del object");
+   fprintf(stderr, "del object\n");
    return TRUE;
 }
 
