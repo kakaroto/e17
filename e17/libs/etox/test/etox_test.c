@@ -32,14 +32,14 @@ main(int argc, char **argv)
    Evas e;
    Evas_Object o[3], rect[NRECTS], rect_2;
 
-   E_Font_Style  *e_font_style;
-   Etox          *e_etox;
-   Etox          *e_etox_2;
-   Etox          *et_up_label;
-   Etox          *et_down_label;
+   Etox_Style  e_font_style;
+   Etox        e_etox;
+   Etox        e_etox_2;
+   Etox        et_up_label;
+   Etox        et_down_label;
    XSetWindowAttributes att;
    Evas_Render_Method method;
-   E_Text_Color  *tcl;
+   Etox_Color  tcl;
    
    int down;
    double t1, t2;
@@ -81,8 +81,8 @@ main(int argc, char **argv)
    cm = evas_get_optimal_colormap(e, disp);
    depth = evas_get_colors(e);
 
-   etox_add_path_to_font_style_path(DATADIR"/etox/style");
-   etox_add_path_to_font_style_path("./style");
+   etox_style_add_path(DATADIR"/etox/style");
+   etox_style_add_path("./style");
    
    o[0] = evas_add_image_from_file(e, IMGDIR"sky001.png");
    evas_lower(e, o[0]);
@@ -98,28 +98,23 @@ main(int argc, char **argv)
    evas_set_layer(e, o[2], 50);
    evas_show(e, o[2]);
    
-   e_font_style = E_load_font_style("sh_ol.style");
-   
-   e_etox = Etox_new("Etox name");
-   e_etox->evas = e;
-   e_etox->text = NULL;
-   e_etox->text_len = 0;
-   etox_set_font_style(e_etox, e_font_style);
+   e_font_style = etox_style_new("sh_ol.style");
+  
+   e_etox = etox_new(e, "Etox name");
+   etox_set_style(e_etox, e_font_style);
    etox_set_layer(e_etox, 10);
-   e_etox->font = strdup("cinema");
-   e_etox->font_size = 10;
-   e_etox->x = 0;
-   e_etox->y = 0;
-   e_etox->w=450;
-   e_etox->h=1000;
-   etox_clip_rect_new(e_etox, 100, 90, 50, 400);
+   etox_set_font(e_etox, "cinema", 10);
+   etox_move(e_etox, 0, 0);
+   etox_resize(e_etox, 450, 1000);
+
+   etox_obstacle_add(e_etox, 100, 80, 50, 400);
    rect[0] = evas_add_rectangle(e);
    evas_set_color(e, rect[0], 20, 40, 200, 150);
    evas_resize(e, rect[0], 50, 400);
-   evas_move(e, rect[0], 105, 90);
+   evas_move(e, rect[0], 105, 80);
    evas_set_layer(e, rect[0], 10);
    evas_show(e, rect[0]);
-   etox_clip_rect_new(e_etox, 350, 150, 100, 100);
+   etox_obstacle_add(e_etox, 350, 150, 100, 100);
    rect[1] = evas_add_rectangle(e);
    evas_set_color(e, rect[1], 20, 200, 40, 150);
    evas_resize(e, rect[1], 100, 100);
@@ -127,10 +122,10 @@ main(int argc, char **argv)
    evas_set_layer(e, rect[1], 10);
    evas_show(e, rect[1]);
 
-   strcpy(txt,"~color=fg 255 2 2~~color=ol 0 0 0~~color=sh 0 0 0~~valign=bottom~~font=morpheus~~size=20~");
+   strcpy(txt,"~color=fg 255 2 2 255~~color=ol 0 0 0 255~~color=sh 0 0 0 255~~valign=bottom~~font=morpheus~~size=20~");
    strcat(txt,"~align=center~~size=25~~font=cinema~Th~font=morpheus~~size=20~e Gospel of Tux (v1.0)\n\n");
 
-   strcat(txt,"~font=notepad~~size=12~~color=fg 255 255 255~~align~In the beginning Turing created the Machine.\n\n");
+   strcat(txt,"~font=nationff~~size=12~~color=fg 255 255 255 255~~align~In the beginning Turing created the Machine.\n\n");
 
    strcat(txt,"~align=center~And the Machine was crufty and bodacious, existing in ");
    strcat(txt,"theory only. And von Neumann looked upon the Machine, ");
@@ -148,7 +143,7 @@ main(int argc, char **argv)
    strcat(txt,"Systems unto the earth.\n\n");
      
 
-   strcat(txt,"~style~The first Systems were mighty giants; many great ");
+   strcat(txt,"~style~~align=right~The first Systems were mighty giants; many great ");
    strcat(txt,"works of renown did they accomplish. Among them were ");
    strcat(txt,"Colossus, the codebreaker; ENIAC, the targeter; EDSAC ");
    strcat(txt,"and MULTIVAC and all manner of froody creatures ");
@@ -159,7 +154,7 @@ main(int argc, char **argv)
    strcat(txt,"the Ancients. This was the First Age, the age of ");
    strcat(txt,"Lore.\n\n");
 
-   strcat(txt,"Now the sons of Marketing looked upon the children of ");
+   strcat(txt,"~align=left~Now the sons of Marketing looked upon the children of ");
    strcat(txt,"Turing, and saw that they were swift of mind and ");
    strcat(txt,"terse of name and had many great and baleful ");
    strcat(txt,"attributes. And they said unto themselves, \"Let us go ");
@@ -175,8 +170,7 @@ main(int argc, char **argv)
    strcat(txt,"despising and being despised by the true Engineers, ");
    strcat(txt,"the children of von Neumann. ");
    
-   etox_set_alpha_mod(e_etox, 255);
-   etox_set_word_wrap(e_etox, WORD_WRAP_FORCE);
+   etox_set_alpha(e_etox, 255);
    etox_set_text(e_etox, txt);
    etox_x = 5; etox_y = 0;
    etox_move(e_etox, etox_x, etox_y);
@@ -190,25 +184,22 @@ main(int argc, char **argv)
    evas_show(e, rect[2]);
    evas_lower(e, rect[2]);
    
-   e_etox_2 = Etox_new("Showoff");
-   e_etox_2->evas = e;
-   etox_set_font_style(e_etox_2, e_font_style);
+   e_etox_2 = etox_new(e, "Showoff");
+   etox_set_style(e_etox_2, e_font_style);
    etox_set_layer(e_etox_2, 15);
-   e_etox_2->font = strdup("cinema");
-   e_etox_2->font_size = 10;
-   e_etox_2->w=210;
-   e_etox_2->h=400;
-   etox_set_alpha_mod(e_etox_2, 255);
-   
-   strcpy(txt,"~color=fg 255 255 255~~color=ol 0 0 0~~color=sh 0 0 0~~valign=bottom~~font=notepad~~size=14~Various vertical and horizontal alignments:\n");
-   strcat(txt,"~color=fg 255 2 2~~color=ol 0 0 0~~color=sh 0 0 0~~valign=bottom~~font=cinema~");
+   etox_set_font(e_etox_2, "cinema", 10);
+   etox_resize(e_etox_2, 210, 400);
+   etox_set_alpha(e_etox_2, 100);
+
+   strcpy(txt,"~color=fg 255 255 255 255~~color=ol 0 0 0 255~~color=sh 0 0 0 255~~valign=bottom~~font=notepad~~size=14~Various vertical and horizontal alignments:\n");
+   strcat(txt,"~color=fg 255 2 2 255~~color=ol 0 0 0 255~~color=sh 0 0 0 255~~valign=bottom~~font=cinema~");
    strcat(txt,"~valign=top~~align=left~~size=25~B~size=23~B~size=21~B~size=19~B~size=17~B\n");
    strcat(txt,"~valign=center~~align=center~~size=25~B~size=23~B~size=21~B~size=19~B~size=17~B\n");
    strcat(txt,"~valign=bottom~~align=right~~size=25~B~size=23~B~size=21~B~size=19~B~size=17~B\n");
    
    etox_set_text(e_etox_2, txt);
    etox_set_layer(e_etox_2, 15);
-   etox_move(e_etox_2,420,75);
+   etox_move(e_etox_2, 420, 75);
    etox_show(e_etox_2);
   
    rect_2 = evas_add_rectangle(e);
@@ -218,28 +209,24 @@ main(int argc, char **argv)
    evas_set_layer(e, rect_2, 14);
    evas_show(e, rect_2);
 
-   tcl = malloc(sizeof(E_Text_Color));
-   tcl->fg.r = 255;
-   tcl->fg.g = 255;
-   tcl->fg.b = 255;
-   tcl->ol.r = 20;
-   tcl->ol.g = 20;
-   tcl->ol.b = 100;
-   tcl->sh.r = 100;
-   tcl->sh.g = 30;
-   tcl->sh.b = 30;
+   tcl = etox_color_new();
+   etox_color_set_member(tcl, "fg", 255, 255, 255, 255);
+   etox_color_set_member(tcl, "ol", 20, 20, 100, 255);
+   etox_color_set_member(tcl, "sh", 100, 30, 30, 255);
    
-   et_up_label = Etox_new_all(e, "UP label", 400, 5, 200, 100, 
-			      60, "cinema", "sh_ol.style", 15, tcl,
-			      0, ALIGN_CENTER, ALIGN_BOTTOM);
-   etox_set_alpha_mod(et_up_label, 0);
+   et_up_label = etox_new_all(e, "UP label", 400, 5, 200, 100, 
+			      "cinema", 15, "sh_ol.style", tcl,
+			      ETOX_ALIGN_CENTER, ETOX_ALIGN_BOTTOM,
+                              60, 0);
+   etox_set_alpha(et_up_label, 0);
    etox_set_text(et_up_label, "GO UP !!!");   
    etox_show(et_up_label);
    
-   et_down_label = Etox_new_all(e, "DOWN label", 400, 430, 200, 100, 
-			      60, "cinema", "sh_ol.style", 15, tcl,
-			      0, ALIGN_CENTER, ALIGN_BOTTOM);
-   etox_set_alpha_mod(et_down_label, 0);
+   et_down_label = etox_new_all(e, "UP label", 400, 430, 200, 100,
+                                "cinema", 15, "sh_ol.style", tcl,
+                                ETOX_ALIGN_CENTER, ETOX_ALIGN_BOTTOM,     
+                                60, 0);
+   etox_set_alpha(et_down_label, 0);
    etox_set_text(et_down_label, "GO DOWN !!!");   
    etox_show(et_down_label);
       
@@ -301,7 +288,7 @@ main(int argc, char **argv)
 			    etox_free(et_up_label);
 			    etox_free(e_etox_2);
 			    etox_free(e_etox);
-			    free(tcl);
+			    etox_color_free(tcl);
 			    for (i=0; i<3; i++)
 			      evas_del_object(e, o[i]);
 			    for (i=0; i<NRECTS; i++)
@@ -322,22 +309,25 @@ main(int argc, char **argv)
 	  {
 	     double shift;
 	     double dx, dy;
-	     
+             double ex, ey, ew, eh;	     
+
+             etox_get_geometry(e_etox, &ex, &ey, &ew, &eh);
+
 	     shift = floor((get_time() - t1) / 0.04);
 
-	     if (!(((e_etox->x - etox_x) == 0) && (e_etox->y - etox_y) == 0))
+	     if (!(((ex - etox_x) == 0) && (ey - etox_y) == 0))
 	       {
-		  dx = (shift < fabs(e_etox->x - etox_x)) ? 
-		       -(shift * (fabs(e_etox->x - etox_x)/(e_etox->x - etox_x))) : 
-	               -(e_etox->x - etox_x); 
-		  dy = (shift < fabs(e_etox->y - etox_y)) ? 
-		       -(shift * (fabs(e_etox->y - etox_y)/(e_etox->y - etox_y))) : 
-	               -(e_etox->y - etox_y); 
+		  dx = (shift < fabs(ex - etox_x)) ? 
+		       -(shift * (fabs(ex - etox_x)/(ex - etox_x))) : 
+	               -(ex - etox_x); 
+		  dy = (shift < fabs(ey - etox_y)) ? 
+		       -(shift * (fabs(ey - etox_y)/(ey - etox_y))) : 
+	               -(ey - etox_y); 
 		  if (dx) 
 		    {
 		       double ox, oy, ow, oh;
 		       int j;
-		       etox_move(e_etox, e_etox->x+dx, e_etox->y);
+		       etox_move(e_etox, ex+dx, ey);
 		       
 		       for (j=0; j<NRECTS; j++)
 			 {
@@ -349,7 +339,7 @@ main(int argc, char **argv)
 		    {
 		       double ox, oy, ow, oh;
 		       int j;
-		       etox_move(e_etox, e_etox->x, e_etox->y+dy);
+		       etox_move(e_etox, ex, ey+dy);
 		       
 		       for (j=0; j<NRECTS; j++)
 			 {
@@ -358,20 +348,20 @@ main(int argc, char **argv)
 			 }
 		    }
 	       }
-	     if (alpha_up_goal < etox_get_alpha_mod(et_up_label)) {
-		etox_set_alpha_mod(et_up_label, (etox_get_alpha_mod(et_up_label) - (shift * 10)) < 0 ? 0 : etox_get_alpha_mod(et_up_label) - (shift * 10));
+	     if (alpha_up_goal < etox_get_alpha(et_up_label)) {
+		etox_set_alpha(et_up_label, (etox_get_alpha(et_up_label) - (shift * 10)) < 0 ? 0 : etox_get_alpha(et_up_label) - (shift * 10));
 	     }	     
-	     if (alpha_up_goal > etox_get_alpha_mod(et_up_label)) {
-		etox_set_alpha_mod(et_up_label, etox_get_alpha_mod(et_up_label) + (shift * 10));
-		if (etox_get_alpha_mod(et_up_label) >= 255)
+	     if (alpha_up_goal > etox_get_alpha(et_up_label)) {
+		etox_set_alpha(et_up_label, etox_get_alpha(et_up_label) + (shift * 10));
+		if (etox_get_alpha(et_up_label) >= 255)
 		  alpha_up_goal = 0;
 	     }
-	     if (alpha_down_goal < etox_get_alpha_mod(et_down_label)) {
-		etox_set_alpha_mod(et_down_label, (etox_get_alpha_mod(et_down_label) - (shift * 10)) < 0 ? 0 : etox_get_alpha_mod(et_down_label) - (shift * 10));
+	     if (alpha_down_goal < etox_get_alpha(et_down_label)) {
+		etox_set_alpha(et_down_label, (etox_get_alpha(et_down_label) - (shift * 10)) < 0 ? 0 : etox_get_alpha(et_down_label) - (shift * 10));
 	     }	     
-	     if (alpha_down_goal > etox_get_alpha_mod(et_down_label)) {
-		etox_set_alpha_mod(et_down_label, etox_get_alpha_mod(et_down_label) + (shift * 10));
-		if (etox_get_alpha_mod(et_down_label) >= 255)
+	     if (alpha_down_goal > etox_get_alpha(et_down_label)) {
+		etox_set_alpha(et_down_label, etox_get_alpha(et_down_label) + (shift * 10));
+		if (etox_get_alpha(et_down_label) >= 255)
 		  alpha_down_goal = 0;
 	     }
 	     t1 = get_time();
