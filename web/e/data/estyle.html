@@ -6,10 +6,10 @@
 
 <p>Estyle.db's consist of several key/value pairs describing how the text to be rendered should be manuipulated using multiple layers.  Each layer can have a diffrent color, alpha channel value, size, offset in both x and y independantly, and stacking value.  Manipulating each of these values and becoming creative with stacking each layer a number of interesting and unique effects can be added to your text, in a simple, reusable manner.</p>
 
-<hr>
-<center><b>A Code Example</b></center>
 
 <div class="code">
+
+
 <pre>
 #include &lt;Ecore_Evas.h&gt;
 #include &lt;Ecore.h&gt;
@@ -34,7 +34,8 @@ int main(){
 
 
    evas = ecore_evas_get(ee);
-	evas_font_path_append(evas, "/usr/X11/lib/X11/fonts/TrueType/");
+	evas_font_path_append(evas, 
+	    "/usr/X11/lib/X11/fonts/TrueType/");
 
 
    base_rect = evas_object_rectangle_add(evas);
@@ -63,11 +64,11 @@ int main(){
 <p>This code is rendered in the following manner: gcc `ecore-config --cflags --libs` `ewd-config --libs --cflags` `estyle-config --libs --cflags` estyle-viewer.c</p>
 
 <p>The result of the above code looks like this:</p>
-<img src="img/estyle-example.png">
+<center> <img src="img/estyle-example.png" class="example_image"> </center>
 
 <p>The following default Estyles are provided with the library source: bold, outline, plain, raised and shadow.  With some tinkering and imagination your estyles can make your text look just the way you'd like without having to use pre-rendered images.  The best way to learn how to manipulate Estyle DB's is to edit the an included Estyle directly and experiment with the effects of diffrent chanegs.  You can edit Estyle DB's using an EDB editor (ie: edb_gtk_ed).</p>
 
-<p>Estyle is owned by <a href="team.html">RbdPngn</a>.</p>
+<p class="manager">Estyle's project manager is <a href="team.html" class="lite">Nathan "RbdPngn" Ingersoll</a>.</p>
 @end@
 
 @bottom@
