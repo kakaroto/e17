@@ -329,6 +329,9 @@ main(int argc, char **argv)
 		  "any more time and resources to this problem that can be\n"
 		"worked around by pre-generating modified images instead of\n"
 		  "using Color Modifiers.\n"
+		  "\n"
+		"Unless someone helps there is no time to fix this so start\n"
+		  "modifying your themes now if they use Color Modifiers\n"
 	   );
      }
 
