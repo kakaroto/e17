@@ -7,7 +7,8 @@ E-Cpu.epplet E-Biff.epplet E-Power.epplet @TEST_PROGS@ @MIXER_PROGS@ \
 E-MemWatch.epplet E-Disk.epplet E-Areas.epplet E-Magic.epplet \
 E-NetFlame.epplet E-Sys.epplet E-ScreenShoot.epplet E-Slides.epplet \
 E-Xss.epplet E-Mountbox.epplet E-Exec.epplet E-SD.epplet \
-E-ScreenSave.epplet E-NetGraph.epplet E-MoonClock.epplet E-UrlWatch.epplet
+E-ScreenSave.epplet E-NetGraph.epplet E-MoonClock.epplet E-UrlWatch.epplet \
+E-PlayCD.epplet
 
 EXTRA_PROGRAMS = EppletTest.epplet EppletConfigTest.epplet E-Mixer.epplet Emix.epplet
 
@@ -33,6 +34,10 @@ EppletConfigTest_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
 E_Exec_epplet_SOURCES = E-Exec.c
 E_Exec_epplet_DEPENDENCIES = $(top_srcdir)/api/libepplet.la
 E_Exec_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir)
+
+E_PlayCD_epplet_SOURCES = E-PlayCD.c
+E_PlayCD_epplet_DEPENDENCIES = $(top_srcdir)/api/libepplet.la
+E_PlayCD_epplet_LDFLAGS = -rpath $(libdir):$(pkglibdir) -lcdaudio
 
 E_SD_epplet_SOURCES = E-SD.c E-SD.h esdcloak.c utils.c utils.h esdcloak.h
 E_SD_epplet_DEPENDENCIES = $(top_srcdir)/api/libepplet.la
