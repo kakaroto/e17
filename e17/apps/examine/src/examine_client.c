@@ -260,6 +260,7 @@ examine_client_list_props_cb(void)
 
       if (*label && *typename) {
         prop_tmp = malloc(sizeof(examine_prop));
+        memset(prop_tmp,0,sizeof(examine_prop));
         prop_tmp->key = strdup(label);
         prop_tmp->bound = BOUND_NONE;
 
@@ -309,8 +310,9 @@ examine_client_list_props_cb(void)
           prop_tmp->data = strdup(range);
         } else if (!strcmp(type, "boolean")) {
           prop_tmp->type = PT_BLN;
-        } else
-          prop_tmp->value.ptr = NULL;
+        } else {
+          prop_tmp->type = PT_NIL;
+          prop_tmp->value.ptr = prop_tmp->oldvalue.ptr = NULL; }
 
         prop_tmp->next = prop_list;
         prop_list = prop_tmp;
@@ -406,7 +408,15 @@ examine_client_save(examine_prop * target)
     }
     break;
   default:                     /* PT_STR, PT_RGB */
-    if (strcmp(target->value.ptr, target->oldvalue.ptr) != 0) {
+printf("$%x, %s, %p, %p\n",target->type,target->key,target->value.ptr,target->oldvalue.ptr);
+if(target->value.ptr)
+  printf("|%s|\n",target->value.ptr);
+if(target->oldvalue.ptr)
+  printf("|%s|\n",target->oldvalue.ptr);
+
+    if (target->value.ptr &&
+        (!target->oldvalue.ptr ||
+         strcmp(target->value.ptr, target->oldvalue.ptr))) {
       free(target->oldvalue.ptr);
       target->oldvalue.ptr = strdup(target->value.ptr);
       examine_client_set_val(target);
@@ -433,11 +443,15 @@ examine_client_get_val_cb(void)
   examine_prop   *prop;
   Ewl_Widget     *sibling;
 
-  ret = strstr(examine_client_buf, "=") + 1;
-  if (ret == 1) {
-    printf("OFFENDING STRING: %s\n", examine_client_buf);
-    return;
-  }
+printf("|%s|\n",examine_client_buf);
+
+  ret = strstr(examine_client_buf, "=");
+  if (ret == NULL) {
+    if(strcasecmp(examine_client_buf,"<undefined>"))
+      printf("OFFENDING STRING: %s\n", examine_client_buf);
+    return; }
+
+  ret++;
 
   if (*ret == '"') {
     ret++;

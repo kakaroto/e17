@@ -7,13 +7,13 @@ Release: 1.%(date '+%Y%m%d')
 License: BSD
 Group: System Environment/Libraries
 URL: http://www.enlightenment.org/
-Source: ftp://ftp.enlightenment.org/pub/engrave/engrave-%{ver}.tar.gz
+Source: %{name}-%{version}.tar.gz
 Packager: %{?_packager:%{_packager}}%{!?_packager:Michael Jennings <mej@eterm.org>}
 Vendor: %{?_vendorinfo:%{_vendorinfo}}%{!?_vendorinfo:The Enlightenment Project (http://www.enlightenment.org/)}
 Distribution: %{?_distribution:%{_distribution}}%{!?_distribution:%{_vendor}}
 #BuildSuggests: xorg-x11-devel
 BuildRequires: XFree86-devel
-BuildRequires: edb-devel ecore-devel
+BuildRequires: ecore-devel ewl-devel
 BuildRoot: %{_tmppath}/%{name}-%{version}-root
 
 %description
