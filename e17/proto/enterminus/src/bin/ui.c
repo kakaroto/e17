@@ -1,5 +1,6 @@
 #include "term.h"
 
+/* TODO: check replace all term->tcanvas->cur* with term->cur* */
 
 #define COLOR0 255, 255, 255
 #define COLOR1 200, 20, 20
@@ -198,16 +199,19 @@ int term_cursor_move_row(Term *term, int n) {
 /* Move cursor to [x,y] */
 void term_cursor_goto(Term *term, int x, int y) {
    DPRINT((stderr,"Moving cursor to [%d,%d]\n",x,y));   
-   term->tcanvas->cur_col = x-1;
-   term->tcanvas->cur_row = y-1;
-   if(term->tcanvas->cur_col < 0)
-     term->tcanvas->cur_col = 0;
-   if(term->tcanvas->cur_col >= term->tcanvas->cols)
-     term->tcanvas->cur_col = term->tcanvas->cols-1;
-   if(term->tcanvas->cur_row < 0)
-     term->tcanvas->cur_row = 0;
-   if(term->tcanvas->cur_row >=  term->tcanvas->rows)
-     term->tcanvas->cur_row =  term->tcanvas->rows-1;
+   term->cur_col = x-1;
+   term->cur_row = y-1;
+   if(term->cur_col < 0)
+     term->cur_col = 0;
+   if(term->cur_col >= term->tcanvas->cols)
+     term->cur_col = term->tcanvas->cols-1;
+   if(term->cur_row < 0)
+     term->cur_row = 0;
+   if(term->cur_row >=  term->tcanvas->rows)
+     term->cur_row =  term->tcanvas->rows-1;
+   term->tcanvas->cur_col = term->cur_col;
+   term->tcanvas->cur_row = term->tcanvas->scroll_region_start +term->cur_row;
+   printf("Went to %d %d\n",term->cur_col,term->cur_row);
 }
 
 /* Move cursor again to last saved [x,y] */
@@ -243,7 +247,7 @@ void term_clear_area(Term *term, int x1, int y1, int x2, int y2) {
    if(y1 < 0) y1 = 0; if(y1 > term->tcanvas->rows) y1 = term->tcanvas->rows;
    if(x2 < 0) x2 = 0; if(x2 > term->tcanvas->cols) x2 = term->tcanvas->cols;
    if(y2 < 0) y2 = 0; if(y2 > term->tcanvas->rows) y2 = term->tcanvas->rows;  
-   DPRINT(("Clearing: %d %d, %d %d\n",x1,y1+term->tcanvas->scroll_region_start,x2,y2+term->tcanvas->scroll_region_start));
+   DPRINT((stderr,"Clearing: %d %d, %d %d\n",x1,y1+term->tcanvas->scroll_region_start,x2,y2+term->tcanvas->scroll_region_start));
    for(i = y1; i <= y2; i++) {      
       for(j = x1; j <= x2; j++) {
 	 tgl = &term->tcanvas->grid[j + (term->tcanvas->cols * (i + term->tcanvas->scroll_region_start))];
