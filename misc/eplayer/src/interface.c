@@ -91,12 +91,18 @@ int ui_init(ePlayer *player) {
 	                        NULL);
 	
 
-	if (!strcasecmp(player->cfg.evas_engine, "gl"))
-		player->gui.ee = ecore_evas_gl_x11_new(NULL, 0,  0, 0,
-		                                       0, 0);
-	else
-		player->gui.ee = ecore_evas_software_x11_new(NULL, 0,  0, 0,
-		                                             0, 0);
+	if (!strcasecmp(player->cfg.evas_engine, "gl")) {
+		debug(DEBUG_LEVEL_INFO, "Starting EVAS GL X11\n");
+		player->gui.ee = ecore_evas_gl_x11_new(NULL, 0, 0, 0, 0, 0);
+	} else if(!strcasecmp(player->cfg.evas_engine, "fb")) {
+		debug(DEBUG_LEVEL_INFO, "Starting EVAS FB\n");
+		player->gui.ee = ecore_evas_fb_new(NULL, 0, 0, 0);
+	} else {
+		debug(DEBUG_LEVEL_INFO, "Starting EVAS X11\n");
+		player->gui.ee = ecore_evas_software_x11_new(NULL, 0, 0, 0, 0, 0);
+	}
+			
+
 
 	if (!player->gui.ee) {
 		debug(DEBUG_LEVEL_CRITICAL,

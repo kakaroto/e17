@@ -3,6 +3,7 @@
 
 #include <Ecore.h>
 #include <Ecore_Evas.h>
+#include <Ecore_Fb.h>
 #include <pthread.h>
 #include "playlist.h"
 #include "plugin.h"

@@ -32,6 +32,41 @@ and there are output plugins for OSS, ALSA and Solaris.
 
 Note that the MP3 plugin is broken at the moment.
 
+
+CREATING A PERSONAL EPLAYER CONFIG
+----------------------------------
+
+Eplayer can get some configuration information from a personal
+configuration file thanks to EDB.  To create one follow 
+these sets:
+
+ 1) Create the directory ~/.e/apps/eplayer
+ 2) Using the EDB tool of choice create a eplayer.db
+	(ie: "edb_gtk_ed eplayer")
+ 3) Add the following keys:
+	/eplayer/evas_engine
+	/eplayer/output_plugin
+	/eplayer/theme	
+ 4) If you wish to use GL or FB: 
+  a)	Set evas_engine to a string type with the value "gl" or "fb".
+ 5) If you wish to use a non-default theme:
+  a)    Create the directory: ~/.e/apps/eplayer/themes
+  b)    Copy the EETs for the themes you want to use there.
+  c)    Set theme to a string type with the name of the theme minus the .eet
+		(ie: iio.eet is put in the edb as just "iio")
+ 6) If you wish to use a specific output plugin:
+  a)    Set the output_plugin to a string type with the name of the 
+	 plugin.  Options are: ALSA, Solaris, or OSS
+
+If you do not with to over-ride the default setting for Eplayer, 
+simply don't create the key, or leave the type as int.  
+
+You can also use the following directories:
+ ~/.e/apps/eplayer/fonts	Fonts for use by Eplayer themes
+ ~/.e/apps/eplayer/input	Input Plugins for Eplayer
+ ~/.e/apps/eplayer/output	Output Plugins for Eplayer
+
+
 REPORTING BUGS
 ---------------
 
