@@ -28,51 +28,26 @@
 #endif
 #include <sys/types.h>
 #include <unistd.h>
-#if USE_READLINE
-#include <readline/readline.h>
-#include <readline/history.h>
-#endif
 
 extern char         waitonly;
 
-#if !USE_READLINE
-static char         buf[10240];
 static int          stdin_state;
-#endif
-static Client      *e;
-
-static void
+void                restore_stdin_state(void);
+void
 restore_stdin_state(void)
 {
-#if USE_READLINE
-   rl_callback_handler_remove();
-#else
    fcntl(0, F_SETFL, stdin_state);
-#endif
-}
-
-static void
-process_line(char *line)
-{
-   if (line == NULL)
-      exit(0);
-   if (*line == '\0')
-      return;
-
-   CommsSend(e, line);
-   XSync(disp, False);
-#if USE_READLINE
-   add_history(line);
-#endif
 }
 
 int
 main(int argc, char **argv)
 {
    XEvent              ev;
-   Client             *me;
-   int                 i, j;
+   Client             *me, *e;
+   char                buf[10240];
+   int                 i, j, k;
    fd_set              fd;
+   signed char         ret;
    char               *command;
 
    waitonly = 0;
@@ -144,16 +119,10 @@ main(int argc, char **argv)
      }
 
    XSync(disp, False);
-
-#if USE_READLINE
-   rl_callback_handler_install("", process_line);
-#else
-   stdin_state = fcntl(0, F_GETFL, 0);
-   fcntl(0, F_SETFL, O_NONBLOCK);
-#endif
-   atexit(restore_stdin_state);
-
    j = 0;
+   stdin_state = fcntl(0, F_GETFL, 0);
+   atexit(restore_stdin_state);
+   fcntl(0, F_SETFL, O_NONBLOCK);
    for (;;)
      {
 	if (waitonly)
@@ -176,11 +145,6 @@ main(int argc, char **argv)
 
 	     if (FD_ISSET(0, &fd))
 	       {
-#if USE_READLINE
-		  rl_callback_read_char();
-#else
-		  int                 k, ret;
-
 		  k = 0;
 		  while ((ret = read(0, &(buf[j]), 1) > 0))
 		    {
@@ -189,14 +153,16 @@ main(int argc, char **argv)
 			 {
 			    buf[j] = 0;
 			    if (strlen(buf) > 0)
-			       process_line(buf);
+			      {
+				 CommsSend(e, buf);
+				 XSync(disp, False);
+			      }
 			    j = -1;
 			 }
 		       j++;
 		    }
 		  if ((ret < 0) || ((k == 0) && (ret == 0)))
 		     exit(0);
-#endif
 	       }
 	     else if (FD_ISSET(ConnectionNumber(disp), &fd))
 	       {
@@ -212,6 +178,5 @@ main(int argc, char **argv)
 	       }
 	  }
      }
-
    return 0;
 }

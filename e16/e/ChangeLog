@@ -2105,3 +2105,10 @@ Do config file replacements atomically.
 Do save snaps on exit.
 
 GNOME(1) hint support now disabled by default.
+
+-------------------------------------------------------------------------------
+
+Sun Aug 17 15:28:17 CEST 2003
+(Kim)
+
+Removed possibility to use readline in eesh (readline is GPL, not LGPL).
