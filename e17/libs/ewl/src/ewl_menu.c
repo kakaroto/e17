@@ -84,9 +84,9 @@ void __expand_menu(Ewl_Widget * w, void *ev_data, void *user_data)
 	 * initializing the rest of the fields to avoid the add callback being
 	 * called.
 	 */
-	menu->popup = ewl_window_new();
-	ewl_window_set_borderless(EWL_WINDOW(menu->popup));
-	ewl_object_set_fill_policy(EWL_OBJECT(menu->popup),
+	menu->base.popup = ewl_window_new();
+	ewl_window_set_borderless(EWL_WINDOW(menu->base.popup));
+	ewl_object_set_fill_policy(EWL_OBJECT(menu->base.popup),
 				   EWL_FILL_POLICY_NONE);
 
 	/* FIXME: We will need a real function for doing this from the embed
@@ -104,11 +104,11 @@ void __expand_menu(Ewl_Widget * w, void *ev_data, void *user_data)
 		x += CURRENT_X(w);
 		y += CURRENT_Y(w) + CURRENT_H(w);
 
-		ewl_object_set_minimum_size(EWL_OBJECT(menu->popup),
+		ewl_object_set_minimum_size(EWL_OBJECT(menu->base.popup),
 					CURRENT_W(menu),
-					MINIMUM_H(menu->popup));
+					MINIMUM_H(menu->base.popup));
 	}
 
-	ewl_widget_realize(EWL_WIDGET(menu->popup));
-	ewl_window_move(EWL_WINDOW(menu->popup), x, y);
+	ewl_widget_realize(EWL_WIDGET(menu->base.popup));
+	ewl_window_move(EWL_WINDOW(menu->base.popup), x, y);
 }
