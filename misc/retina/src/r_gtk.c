@@ -17,7 +17,7 @@ r_gtk_init()
    window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	 gtk_window_set_default_size(GTK_WINDOW(window), 300, 180);
    gtk_window_set_title(GTK_WINDOW(window), "Retina - Nothing Loaded...");
-   
+
    area = gtk_drawing_area_new();
    gtk_container_add(GTK_CONTAINER(window), area);
    gtk_widget_set_events(area, 
@@ -28,6 +28,7 @@ r_gtk_init()
 			 GDK_ENTER_NOTIFY_MASK |
 			 GDK_LEAVE_NOTIFY_MASK | 
 			 GDK_STRUCTURE_MASK);
+
    gtk_signal_connect(GTK_OBJECT(area), "expose_event",
 		      GTK_SIGNAL_FUNC(r_evas_expose_event), NULL);
    gtk_signal_connect(GTK_OBJECT(area), "configure_event",
@@ -36,7 +37,13 @@ r_gtk_init()
 		      GTK_SIGNAL_FUNC(r_gtk_area_b_press), NULL);
    gtk_signal_connect(GTK_OBJECT(area), "button_release_event",
 		      GTK_SIGNAL_FUNC(r_gtk_area_b_release), NULL);
-   gtk_widget_show(area);
+	 
+	 gtk_signal_connect(GTK_OBJECT(window), "key_press_event",
+	 		GTK_SIGNAL_FUNC(r_gtk_keypress), NULL);
+	 gtk_signal_connect(GTK_OBJECT(window), "key_release_event",
+	 		GTK_SIGNAL_FUNC(r_gtk_keyrelease), NULL);
+
+	 gtk_widget_show(area);
 
 	 filesel = gtk_file_selection_new("Retina - Load Image...");
 	 gtk_signal_connect(GTK_OBJECT(GTK_FILE_SELECTION(filesel)->ok_button),
@@ -65,4 +72,23 @@ r_gtk_area_b_release(GtkWidget *area, GdkEventButton *event, gpointer data)
    mouse_button = event->button;
    
    evas_event_button_up(e_area, event->x, event->y, event->button);
+}
+
+gint
+r_gtk_keypress(GtkWidget *area, GdkEventKey *event)
+{
+	switch(event->keyval){
+		case GDK_Down:
+			r_browser_move_down();
+			break;
+		case GDK_Up:
+			r_browser_move_up();
+			break;
+	}
+}
+
+gint
+r_gtk_keyrelease(GtkWidget *area, GdkEventKey *event)
+{
+	printf("up\n");
 }

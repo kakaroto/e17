@@ -12,8 +12,11 @@
 #include <unistd.h>
 #include <string.h>
 
+#include <sys/stat.h>
+
 #include <gtk/gtk.h>
 #include <gdk/gdkx.h>
+#include <gdk/gdkkeysyms.h>
 
 #include <Evas.h>
 #include <Edb.h>
@@ -22,10 +25,15 @@
 if (current_idle) gtk_idle_remove(current_idle);\
 current_idle = gtk_idle_add(view_redraw, NULL);
 
+/* This is from ecore */
+time_t e_file_modified_time(char *file);
+
 /* Function Prototypes */
 void r_gtk_init(void);
 gboolean r_gtk_area_b_press(GtkWidget *area, GdkEventButton *event, gpointer data);
 gboolean r_gtk_area_b_release(GtkWidget *area, GdkEventButton *event, gpointer data);
+gint r_gtk_keypress(GtkWidget *area, GdkEventKey *event);
+gint r_gtk_keyrelease(GtkWidget *area, GdkEventKey *event);
 
 gint view_redraw(gpointer data);
 void r_evas_create(void);
@@ -42,6 +50,13 @@ void r_browser_init(void);
 void r_scrollbar_render(void);
 void r_scrollbar_init(void);
 void r_browser_add(char *img);
+void r_gen_thumb(char *file);
+void r_draw_thumb(void);
+void r_add_text(char *txt, int x, int y);
+void r_browser_move_down(void);
+void r_browser_move_up(void);
+void r_browser_hide(void);
+void r_browser_show(void);
 
 void r_error(char *msg);
 
@@ -57,3 +72,4 @@ void r_b4_click(void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y);
 void r_b5_click(void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y);
 void r_m_up(void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y);
 
+void r_db_init(void);

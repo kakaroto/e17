@@ -13,7 +13,7 @@ extern Evas e_area;
 extern Evas_Object e_img;
 extern Evas_Object e_checks;
 extern Evas_Object e_btn1, e_btn2, e_btn3, e_btn4, e_btn5, e_bs;
-extern Evas_Object e_br_bg, e_scr_t, e_scr_b1, e_scr_b2;
+extern Evas_Object e_br_bg, e_scr_t, e_scr_b1, e_scr_b2, e_scr_s;
 extern GtkWidget *area, *window;
 extern GtkWidget *bwin;
 extern int tb_status, br_status;
@@ -30,12 +30,6 @@ r_cb_init()
 	evas_callback_add(e_area, e_btn3, CALLBACK_MOUSE_DOWN, r_b3_click, NULL);
 	evas_callback_add(e_area, e_btn4, CALLBACK_MOUSE_DOWN, r_b4_click, NULL);
 	evas_callback_add(e_area, e_btn5, CALLBACK_MOUSE_DOWN, r_b5_click, NULL);
-
-	evas_callback_add(e_area, e_btn1, CALLBACK_MOUSE_UP, r_m_up, NULL);
-	evas_callback_add(e_area, e_btn2, CALLBACK_MOUSE_UP, r_m_up, NULL);
-	evas_callback_add(e_area, e_btn3, CALLBACK_MOUSE_UP, r_m_up, NULL);
-	evas_callback_add(e_area, e_btn4, CALLBACK_MOUSE_UP, r_m_up, NULL);
-	evas_callback_add(e_area, e_btn5, CALLBACK_MOUSE_UP, r_m_up, NULL);
 }
 
 void
@@ -71,12 +65,6 @@ r_cb_m_down(void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
 }
 
 void
-r_m_up(void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
-{
-	/* nothing */
-}
-
-void
 r_b1_click(void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
 {
 	r_file_load();
@@ -99,6 +87,8 @@ r_b3_click(void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
 			evas_show(e_area, e_scr_t);
 			evas_show(e_area, e_scr_b1);
 			evas_show(e_area, e_scr_b2);
+			evas_show(e_area, e_scr_s);
+			r_browser_show();
 			br_status = 1;
 			break;
 
@@ -107,6 +97,8 @@ r_b3_click(void *_data, Evas _e, Evas_Object _o, int _b, int _x, int _y)
 			evas_hide(e_area, e_scr_t);
 			evas_hide(e_area, e_scr_b1);
 			evas_hide(e_area, e_scr_b2);
+			evas_hide(e_area, e_scr_s);
+			r_browser_hide();
 			br_status = 0;
 			break;
 	}

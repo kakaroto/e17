@@ -50,7 +50,7 @@ void
 r_evas_init()
 {
    int w, h;
-   
+
    gtk_widget_realize(GTK_WIDGET(area));
    gdk_window_set_back_pixmap(area->window, NULL, FALSE);
    evas_set_output(e_area,
@@ -149,12 +149,12 @@ r_evas_toolbar_init()
    
 	 evas_set_layer(e_area, e_checks, 0);
    evas_set_layer(e_area, e_img, 1);
-	 evas_set_layer(e_area, e_bs, 2);
-   evas_set_layer(e_area, e_btn1, 2);
-	 evas_set_layer(e_area, e_btn2, 2);
-	 evas_set_layer(e_area, e_btn3, 2);
-	 evas_set_layer(e_area, e_btn4, 2);
-	 evas_set_layer(e_area, e_btn5, 2);
+	 evas_set_layer(e_area, e_bs, 3);
+   evas_set_layer(e_area, e_btn1, 3);
+	 evas_set_layer(e_area, e_btn2, 3);
+	 evas_set_layer(e_area, e_btn3, 3);
+	 evas_set_layer(e_area, e_btn4, 3);
+	 evas_set_layer(e_area, e_btn5, 3);
 }
 
 int
@@ -174,7 +174,7 @@ r_evas_load(char *img)
    evas_resize(e_area, e_img, w, h);
 
 	 evas_callback_add(e_area, e_img, CALLBACK_MOUSE_DOWN, r_cb_m_down, NULL);
-	 evas_callback_add(e_area, e_img, CALLBACK_MOUSE_UP, r_m_up, NULL);
+	 evas_callback_add(e_area, e_checks, CALLBACK_MOUSE_DOWN, r_cb_m_down, NULL);
    
 	 if(w < 300 && h > 180)
 		 gtk_widget_set_usize(GTK_WIDGET(window), 300, h+20);

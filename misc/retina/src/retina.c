@@ -11,10 +11,13 @@
 
 /* Global Evas Variables */
 Evas e_area;
+Evas_List files = NULL;
+Evas_List images = NULL;
 Evas_Object e_img;
 Evas_Object e_checks;
 Evas_Object e_btn1, e_btn2, e_btn3, e_btn4, e_btn5, e_bs;
-Evas_Object e_br_bg, e_scr_t, e_scr_b1, e_scr_b2;
+Evas_Object e_br_bg, e_scr_t, e_scr_b1, e_scr_b2, e_scr_s;
+Evas_Object e_t_img[500], e_t_txt[500], e_t_txt2[500], e_t_shd;
 
 /* Global GTK+ Variables */
 GtkWidget *window, *area;
@@ -27,28 +30,38 @@ Colormap cmap;
 guint current_idle = 0;
 
 /* Other Globals */
+E_DB_File *db;
 char window_title[255] = "Retina - Nothing Loaded...";
 char image_title[255];
+char *r_images[500];
 int tb_status = 0, br_status = 0;
 int mouse_button;
+int t_y = 40, b_y = 37;
+int img_c = 0, cur_sel;
+pid_t scanner_pid = 0;
 
 int
 main(int argc, char **argv)
 {
-   /* GTK+ Widgets */
-   
+	int i;
+	
    /* Get things started */
    gtk_init(&argc, &argv);
+	 r_db_init();
    r_evas_create();
    r_gtk_init();
    r_evas_init();
    
    /* Check for a command line arg, do things appropriately */
    if(argc > 1){
-      sprintf(window_title, "Retina - %s", argv[1]);
-      gtk_window_set_title(GTK_WINDOW(window), window_title);
-      /* Load the splash screen */
-      r_evas_load(argv[1]);
+		 for(i = 1; i < argc; i++){
+			 r_gen_thumb(argv[i]);
+			 r_images[i -1] = strdup(argv[i]);
+			 img_c++;
+		 }
+		 r_draw_thumb();
+		 evas_set_color(e_area, e_t_txt[cur_sel], 255, 200, 0, 255);
+		 r_evas_load(argv[1]);
    } else {
       r_evas_load("../img/retina.png");
    }
@@ -65,4 +78,13 @@ main(int argc, char **argv)
    gtk_main();
    evas_free(e_area);
    return 0;
+}
+
+time_t
+e_file_modified_time(char *file)
+{
+	struct stat st;
+	if(stat(file, &st) < 0)
+		return 0;
+	return st.st_mtime;
 }
