@@ -1,3 +1,11 @@
+Sat Aug 26 20:48:36 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
+
+	* Block all the handlers when filling doc properties fields in,
+	else all the changed handlers get called.
+	* Added document resizing support. It's a hack right now, as it
+	doesn't work quite right with the scrolled window. The interface
+	needs some fixing up soon.
+
 Thu Aug 24 21:25:25 2000  Tom Gilbert  <gilbertt@linuxbrit.co.uk>
 
 	* Urm. *spanks Till*. You don't efree() a geist_list :-) You

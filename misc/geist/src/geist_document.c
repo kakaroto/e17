@@ -413,3 +413,31 @@ geist_document_save_imlib(geist_document * doc, char *filename)
 
    D_RETURN(3, 1);
 }
+
+void
+geist_document_resize(geist_document * doc, int w, int h)
+{
+   D_ENTER(3);
+
+   if (w == 0)
+      w = 1;
+   if (h == 0)
+      h = 1;
+
+   if ((w != doc->w) || (h != doc->h))
+   {
+      doc->w = w;
+      doc->h = h;
+      if (doc->pmap)
+         XFreePixmap(disp, doc->pmap);
+      doc->pmap = XCreatePixmap(disp, root, w, h, depth);
+      if (doc->im)
+         geist_imlib_free_image(doc->im);
+      doc->im = imlib_create_image(w, h);
+      /* TODO move objects back into document if they are moved off it */
+      geist_document_resize_gtk(doc, w,h);
+      geist_document_render_full(doc, TRUE);
+   }
+
+   D_RETURN_(3);
+}

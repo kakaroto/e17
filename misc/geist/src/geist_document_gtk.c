@@ -141,3 +141,13 @@ gboolean file_save_ok_cb(GtkWidget * widget, gpointer * data)
 
    D_RETURN(3, TRUE);
 }
+
+void geist_document_resize_gtk(geist_document *doc, int w,int h)
+{
+   D_ENTER(3);
+
+   gtk_widget_set_usize(doc->darea, w, h);
+   gtk_widget_set_usize(doc->scrollwin, w, h);
+
+   D_RETURN_(3);
+}

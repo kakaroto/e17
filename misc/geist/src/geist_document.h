@@ -23,6 +23,7 @@ struct __geist_document
    Pixmap pmap;
    Imlib_Updates up;
    GtkWidget *darea;
+   GtkWidget *scrollwin;
 };
 
 geist_document *geist_document_new(int w, int h);
@@ -52,5 +53,7 @@ void geist_document_rename(geist_document *d, char *name);
 void geist_document_reset_object_list(geist_document * d);
 int geist_document_save_imlib(geist_document * doc, char *filename);
 int geist_document_save(geist_document * doc, char *filename);
+void
+geist_document_resize(geist_document * doc, int w, int h);
 
 #endif
