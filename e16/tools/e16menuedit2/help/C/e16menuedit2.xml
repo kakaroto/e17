@@ -1,0 +1,93 @@
+<?xml version="1.0"?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" 
+"http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [
+  <!ENTITY legal SYSTEM "legal.xml">
+  <!ENTITY appversion "0.2">
+  <!ENTITY manrevision "0.2">
+  <!ENTITY date "August 2004">
+  <!ENTITY app "<application>E16 Menu Editor II</application>">
+  <!-- Information about the entities
+       The legal.xml file contains legal information, there is no need to edit the file. 
+       Use the appversion entity to specify the version of the application.
+       Use the manrevision entity to specify the revision number of this manual.
+       Use the date entity to specify the release date of this manual.
+       Use the app entity to specify the name of the application. -->
+]>
+<article id="index" lang="en">
+  <articleinfo>
+    <title>&app; Manual V&manrevision;</title>
+    <copyright> 
+      <year>2004</year> 
+      <holder>Andreas Volz</holder> 
+    </copyright> 
+    <publisher> 
+      <publishername>Enlightenment Project</publishername> 
+    </publisher> 
+    &legal;
+    <authorgroup>
+      <author>
+	<firstname>Andreas</firstname> <surname>Volz</surname>
+	<affiliation>
+    <orgname>Enlightenment Project</orgname> 
+	  <address>
+	    <email>linux@brachttal.net</email>      
+	  </address>
+	</affiliation>
+      </author>     
+    </authorgroup>
+    <revhistory>      
+      <revision>
+	<revnumber>&app; Manual v&appversion;</revnumber>
+	<date>2004</date>
+	<revdescription>
+	  <para role="author">Andreas Volz
+	    <email>linux@brachttal.net</email>
+	  </para>
+	</revdescription>
+      </revision>
+    </revhistory>
+    <releaseinfo>This manual describes version &appversion; of &app;.
+    </releaseinfo> 
+      <legalnotice> 
+      <title>Feedback</title> 
+      <para>To report a bug or make a suggestion regarding the &app; application or
+      this manual, follow the directions in the 
+      <ulink url="http://xcomputerman.com/bugs/login_page.php"
+	  type="help">Enlightenment BugTracker</ulink>. 
+      </para>
+      </legalnotice>
+  </articleinfo>
+
+  <sect1 id="intro">
+    <title>Introduction.</title>
+      <para>This is the &app; user's guide. It does not yet contain
+      any actual information. Just a template currently.</para>
+    <figure id="mainwindow-fig"> 
+	<title>&app; Window</title> 
+	<screenshot> 
+	  <mediaobject> 
+	    <imageobject><imagedata
+		fileref="figures/e16menuedit2-main.png" format="PNG"/> 
+	    </imageobject>
+	    
+	    <textobject> 
+	      <phrase>Shows &app; main window.</phrase> 
+	    </textobject> 
+	  </mediaobject> 
+	</screenshot> 
+    </figure>
+  </sect1>
+ 
+   <sect1 id="advanced">
+      <title>Advanced e16menuedit2.</title> 
+      <para> &app; is a complex program, with many advanced
+      features.</para>
+
+   </sect1>
+
+</article>
+
+
+
+
+
