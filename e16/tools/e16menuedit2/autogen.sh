@@ -98,10 +98,27 @@ do
        DIE=1
        }
       }
+        
+      (grep "^AM_PROG_LIBTOOL" $CONFIGURE >/dev/null) && {
+        (libtool --version) < /dev/null > /dev/null 2>&1 || {
+          echo
+          echo "**Error**: You must have \`libtool' installed."
+          echo "You can get it from: ftp://ftp.gnu.org/pub/gnu/"
+          DIE=1
+        }
+      }
+
 
       if grep "^AC_PROG_INTLTOOL" $CONFIGURE >/dev/null; then
        echo "Running intltoolize..."
         intltoolize --copy --force --automake
+      fi
+
+      if grep "^AM_PROG_LIBTOOL" $CONFIGURE >/dev/null; then
+        if test -z "$NO_LIBTOOLIZE" ; then
+          echo "Running libtoolize..."
+          libtoolize --force --copy
+        fi
       fi
 
       test -d m4 && aclocalinclude="$aclocalinclude -I m4"

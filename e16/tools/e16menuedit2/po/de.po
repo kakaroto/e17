@@ -8,13 +8,33 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16menuedit2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-07-30 00:34+0200\n"
+"POT-Creation-Date: 2004-08-02 21:59+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Andreas Volz <linux@brachttal.net>\n"
 "Language-Team: German <linux@brachttal.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=iso-8859-15\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+#: src/callbacks.c:48 e16menuedit2.glade.h:13
+msgid "Save"
+msgstr "Speichern"
+
+#: src/callbacks.c:55 src/treeview.c:140 e16menuedit2.glade.h:11
+msgid "New Entry"
+msgstr "Neuer Eintrag"
+
+#: src/callbacks.c:62 e16menuedit2.glade.h:3
+msgid "Choose Icon"
+msgstr "Wähle Icon"
+
+#: src/callbacks.c:69 e16menuedit2.glade.h:4
+msgid "Delete Entry"
+msgstr "Lösche Eintrag"
+
+#: src/callbacks.c:76 e16menuedit2.glade.h:12
+msgid "Quit"
+msgstr "Beenden"
 
 #: src/icon_chooser.c:63
 msgid "Select Icon..."
@@ -24,42 +44,33 @@ msgstr "Wähle Icon..."
 msgid "Icon size:"
 msgstr "Icon Größe:"
 
-#: src/treeview.c:129 src/toolbar.c:49
-msgid "New Entry"
-msgstr "Neuer Eintrag"
-
-#: src/toolbar.c:42
-msgid "Save"
-msgstr "Speichern"
-
-#: src/toolbar.c:56
-msgid "Choose Icon"
-msgstr "Wähle Icon"
-
-#: src/toolbar.c:63
-msgid "Delete Entry"
-msgstr "Lösche Eintrag"
-
-#: src/toolbar.c:70
-msgid "Quit"
-msgstr "Beenden"
-
 #: e16menuedit2.glade.h:1
+msgid ""
+"<span font_desc=\"Sans 22\">E16 Menu Editor II</span>\n"
+"e16menuedit2 v0.2"
+msgstr ""
+
+#: e16menuedit2.glade.h:5
 msgid "E16 Menu Editor"
 msgstr "E16 Menü Editor"
 
-#: e16menuedit2.glade.h:2
+#: e16menuedit2.glade.h:6
 msgid "Edit"
 msgstr "Bearbeiten"
 
-#: e16menuedit2.glade.h:3
+#: e16menuedit2.glade.h:7
 msgid "File"
 msgstr "Datei"
 
-#: e16menuedit2.glade.h:4
+#: e16menuedit2.glade.h:8
 msgid "Help"
 msgstr "Hilfe"
 
-#: e16menuedit2.glade.h:5
+#: e16menuedit2.glade.h:9
 msgid "Info"
 msgstr "Info"
+
+#: e16menuedit2.glade.h:10
+#, fuzzy
+msgid "Info about E16 Menu Editor"
+msgstr "E16 Menü Editor"
