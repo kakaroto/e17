@@ -1576,7 +1576,7 @@ Epplet_textbox_handle_keyevent(XEvent *ev, Epplet_gadget *gadget)
 	  g->contents = malloc(sizeof(char) * (strlen(s) + 2));
 
 	  if (g->contents != NULL)
-	    Esnprintf(g->contents, sizeof(g->contents), "%s%c", s, c);
+	    sprintf(g->contents, "%s%c", s, c);
 
 	  free(s);
 	}
@@ -1585,7 +1585,7 @@ Epplet_textbox_handle_keyevent(XEvent *ev, Epplet_gadget *gadget)
 	  g->contents = malloc(2);
 
 	  if (g->contents != NULL)
-	    Esnprintf(g->contents, sizeof(g->contents), "%s", TheKey);
+	    sprintf(g->contents, "%s", TheKey);
 	}
 
       if (g->cursor_pos <= g->w)
