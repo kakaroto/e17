@@ -39,7 +39,7 @@ int ewl_theme_init(void)
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
 	/*
-	 * Setup a string with the path to the users theme dir 
+	 * Retrieve the current theme from the users config.
 	 */
 	theme_name = ewl_config_get_str("system", "/theme/name");
 	if (!theme_name)
@@ -48,6 +48,10 @@ int ewl_theme_init(void)
 	if (!theme_name)
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
+	/*
+	 * Get the users home directory. This environment variable should
+	 * always be set.
+	 */
 	home = getenv("HOME");
 	if (!home) {
 		DERROR("Environment variable HOME not defined\n"
@@ -56,6 +60,11 @@ int ewl_theme_init(void)
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 	}
 
+	/*
+	 * Build a path to the theme if it is the users home dir and use it if
+	 * available. First attempts to use the theme.db method, but fails
+	 * over to an eet.
+	 */
 	snprintf(theme_db_path, PATH_MAX, "%s/.e/ewl/themes/%s", home,
 			theme_name);
 
@@ -64,10 +73,15 @@ int ewl_theme_init(void)
 				"%s/.e/ewl/themes/%s/theme.db", home,
 				theme_name);
 		theme_db = e_db_open_read(theme_db_path);
-		if (theme_db)
+		if (theme_db) {
+			snprintf(theme_db_path, PATH_MAX,
+					"%s/.e/ewl/themes/%s/", home,
+					theme_name);
 			theme_path = strdup(theme_db_path);
+		}
 	}
-	else {
+
+	if (!theme_path) {
 		snprintf(theme_db_path, PATH_MAX, "%s/.e/ewl/themes/%s.eet",
 				home, theme_name);
 		if (((stat(theme_db_path, &st)) == 0) && S_ISREG(st.st_mode)) {
@@ -75,6 +89,10 @@ int ewl_theme_init(void)
 		}
 	}
 
+	/*
+	 * No user theme, so we try the system-wide theme. Same failover
+	 * scheme, theme.db first fails over to the eet.
+	 */
 	if (!theme_path) {
 
 		/*
@@ -95,17 +113,21 @@ int ewl_theme_init(void)
 				theme_path = strdup(theme_db_path);
 			}
 		}
-		else {
-			snprintf(theme_db_path, PATH_MAX, PACKAGE_DATA_DIR
-					"/themes/%s.eet", theme_name);
-			if (((stat(theme_db_path, &st)) == 0) &&
-					S_ISREG(st.st_mode)) {
-				theme_path = strdup(theme_db_path);
-			}
-		}
 
 	}
 
+	if (!theme_path) {
+		snprintf(theme_db_path, PATH_MAX, PACKAGE_DATA_DIR
+				"/themes/%s.eet", theme_name);
+		if (((stat(theme_db_path, &st)) == 0) &&
+				S_ISREG(st.st_mode)) {
+			theme_path = strdup(theme_db_path);
+		}
+	}
+
+	/*
+	 * If we can't find a theme, no point in continuing further.
+	 */
 	if (!theme_path) {
 		DERROR("No usable theme found, exiting EWL");
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
