@@ -1,4 +1,4 @@
-SUBDIRS = pix backup
+SUBDIRS = pix
 
 configdata_DATA = \
 actionclasses.cfg \
