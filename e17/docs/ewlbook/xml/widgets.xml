@@ -2,116 +2,565 @@
 <title>Widgets</title>
 <para>
 We will now look at each widget individually. See the code that creates the widget and a 
-screenshot of the widget in action. 
+screen shot of the widget in action. 
 </para>
 
+<!-- ################################### -->
+<!-- EWL BOX -->
 <sect1 id="sec-EwlBox">
 <title>ewl_hbox and ewl_vbox</title>
+
+<para>
+The box widgets allow you to specify different ways in which the 
+application will be laid out. You can create either a horizontal (hbox)
+or vertical (vbox) box. A vertical box will have its children packed
+from top to bottom, while a horizontal box will have its widgets
+packed from left to right.
+</para>
+
+<para>
+A box widget will not show up in the application itself, it is just
+used as a container for other widgets.
+</para>
+
+<para>
+ <example>
+  <title>Creating EWL boxes</title>
+  <programlisting role="C">
+   Ewl_Widget *hbox = ewl_hbox_new();
+   ewl_widget_show(hbox);
+
+   Ewl_Widget *vbox = ewl_vbox_new();
+   ewl_widget_show(vbox);
+  </programlisting>
+ </example>
+The box widgets are relativly simple to create and use, only requiring a call to the
+new function.
+</para>
+
+<para>
+The functions to manipulate the boxes include:
+<itemizedlist mark="bullet" spacing="compact">
+ <listitem><para><function>void ewl_box_set_orientation(Ewl_Box *, Ewl_Orientation)</function></para></listitem>
+ <listitem><para><function>Ewl_Orientation ewl_box_get_orientation(Ewl_Box *)</function></para></listitem>
+ <listitem><para><function>void ewl_box_set_spacing(Ewl_Box *, int)</function></para></listitem>
+ <listitem><para><function>void ewl_box_set_homogeneous(Ewl_Box *, int)</function></para></listitem>
+</itemizedlist>
+
+The <literal>Ewl_Orientation</literal> flag can be one of:
+<itemizedlist mark="bullet" spacing="compact">
+ <listitem><para>EWL_ORIENTATION_HORIZONTAL</para></listitem>
+ <listitem><para>EWL_ORIENTATION_VERTICAL</para></listitem>
+</itemizedlist>
+</para>
+
+<para>
+The <function>ewl_box_set_spacing()</function> will set the amount of spacing between the
+items in the box to the given value. While the <function>ewl_box_set_homogeneous()</function>
+will set the box to give all items in it the same size if this is set to true, otherwise
+they will have their required size.
+</para>
+
+</sect1>
+
+<!-- ################################### -->
+<!-- EWL BUTTON -->
+<sect1 id="sec-EwlButton">
+<title>ewl_button</title>
+<para>
+The button widget is simply a widget with a label attached. When the 
+user clicks on the button the callback attached to 
+<literal>EWL_CALLBACK_CLICKED</literal> will be executed.
+</para>
+
+<para>
+ <figure>
+  <title>An Ewl Button</title>
+  <inlinemediaobject>
+   <imageobject>
+    <imagedata fileref="img/entry.png" format="png" />
+   </imageobject>
+   <textobject>
+    <phrase>Example of an EWL entry box</phrase>
+   </textobject>
+  </inlinemediaobject>
+ </figure>
+</para>
+
+<para>
+<example id="sec-EwlButtonCode">
+ <title>Creating a button</title>
+ <programlisting role="C">
+    Ewl_Widget *button = ewl_button_new("A button");
+    ewl_object_set_alignment(EWL_OBJECT(button), EWL_FLAG_ALIGN_CENTER);
+    ewl_callback_append(button, EWL_CALLBACK_CLICKED, button_cb, NULL);
+    ewl_widget_show(button);
+ </programlisting>
+</example>
+The label portion of the button can be aligned to any of the <literal>EWL_FLAG_ALIGN_*</literal>
+settings.
+</para>
+
+<para>
+<example id="sec-EwlButtonCB">
+ <title>Button Callback</title>
+ <programlisting role="C">
+void button_cb(Ewl_Widget *w, void *event, void *data) {
+    printf("button pressed\n");
+}
+ </programlisting>
+</example>
+</para>
+
+<para>
+The label on a button can be manipulated after the button has been created through
+the two calls:
+<itemizedlist mark="bullet" spacing="compact">
+ <listitem><para><function>char *ewl_button_get_label(EwlButton *)</function></para></listitem>
+ <listitem><para><function>void ewl_button_set_label(EwlButton *, char *)</function></para></listitem>
+</itemizedlist>
+</para>
+</sect1>
+
+<!-- ################################### -->
+<!-- EWL COMBO -->
+<sect1 id="sec-EwlCombo">
+<title>ewl_combo</title>
+<para>
+ <figure>
+  <title>An Ewl Combo box</title>
+  <inlinemediaobject>
+   <imageobject>
+    <imagedata fileref="img/combo.png" format="png" />
+   </imageobject>
+   <textobject>
+    <phrase>Example of an EWL combo box</phrase>
+   </textobject>
+  </inlinemediaobject>
+ </figure>
+</para>
 <para>
 </para>
 </sect1>
 
+<!-- ################################### -->
+<!-- EWL DIALOG -->
 <sect1 id="sec-EwlDialog">
 <title>ewl_dialog</title>
 <para>
+ <figure>
+  <title>An Ewl Dialog</title>
+  <inlinemediaobject>
+   <imageobject>
+    <imagedata fileref="img/dialog_box.png" format="png" />
+   </imageobject>
+   <textobject>
+    <phrase>Example of an EWL dialog box</phrase>
+   </textobject>
+  </inlinemediaobject>
+ </figure>
+</para>
+<para>
 </para>
 </sect1>
 
+<!-- ################################### -->
+<!-- EWL ENTRY -->
 <sect1 id="sec-EwlEntry">
 <title>ewl_entry</title>
 <para>
+The EWL entry box is available when you need to retrieve text input from the user.
+The box works on single lines, and the callback is triggered when the user presses
+the 'Enter' key.
+</para>
+
+<para>
+ <figure>
+  <title>An EWL entry box</title>
+  <inlinemediaobject>
+   <imageobject>
+    <imagedata fileref="img/entry.png" format="png" />
+   </imageobject>
+   <textobject>
+    <phrase>Example of an EWL entry box</phrase>
+   </textobject>
+  </inlinemediaobject>
+ </figure>
+</para>
+
+<para>
+ <example>
+  <title>Creating an EWL entry box</title>
+  <programlisting role="C">
+   Ewl_Widget *entry = ewl_entry_new();
+   ewl_object_request_size(EWL_OBJECT(entry), 100, 15);
+   ewl_object_set_padding(EWL_OBJECT(entry), 1, 1, 1, 1);
+   ewl_callback_append(entry, EWL_CALLBACK_VALUE_CHANGED, entry_cb, NULL);
+   ewl_widget_show(entry);
+  </programlisting>
+ </example> 
+The <literal>Ewl_Entry</literal> is a fairly simple object to work with, about the
+only required setup is to create the new object and attach a callback for
+<literal>EWL_CALLBACK_VALUE_CHANGED</literal> events. This example takes the 
+extra steps of setting the size with <function>ewl_object_request_size()</function>
+and adding a little bit of padding to the widget with 
+<function>ewl_object_set_padding()</function>.
+</para>
+
+<para>
+ <example>
+  <title>Ewl_Entry value changed callback</title>
+  <programlisting role="C">
+void entry_cb(Ewl_Widget *w, void *event, void *data) {
+    char *s = ewl_entry_get_text(EWL_ENTRY(w));
+    printf("%s\n", s);
+
+    ewl_entry_set_text(EWL_ENTRY(w), "New Text");
+}
+  </programlisting>
+ </example>
+This callback grabs the current value of the entry widget with the call to
+<function>ewl_entry_get_text()</function> and then resets the text to the 
+value of 'New Text' by calling <function>ewl_entry_set_text()</function>.
+</para>
+
+<para>
+The <literal>Ewl_Entry</literal> object allows you to set whether or not the
+text is editable with a call to 
+<function>void ewl_entry_set_editable(Ewl_Entry *, unsigned int edit)</function>
+where <literal>edit</literal> is 0 for uneditable and editable otherwise.
 </para>
 </sect1>
 
+<!-- ################################### -->
+<!-- EWL FILEDIALOG -->
 <sect1 id="sec-EwlFileDialog">
 <title>ewl_filedialog</title>
 <para>
+It is often desired to allow the user to open and save files. This can
+be easily accomplished through the use of the <literal>Ewl_Filedialog</literal>.
+</para>
+<para>
+ <figure>
+  <title>An EWL file dialog</title>
+  <inlinemediaobject>
+   <imageobject>
+    <imagedata fileref="img/file_dialog.png" format="png" />
+   </imageobject>
+   <textobject>
+    <phrase>Example of an EWL file dialog</phrase>
+   </textobject>
+  </inlinemediaobject>
+ </figure>
+This file dialog has been embedded into its own window, but it could have been
+placed in another window in the same fashion.
+</para>
+
+<para>
+ <example>
+  <title>Creating an EWL filedialog</title>
+  <programlisting role="C">
+   Ewl_Widget *filedialog = ewl_filedialog_new(EWL_FILEDIALOG_TYPE_OPEN);
+   ewl_callback_append(filedialog, EWL_CALLBACK_VALUE_CHANGED, open_file_cb, NULL);
+   ewl_widget_show(filedialog);
+  </programlisting>
+ </example>
+When the file dialog is created you specify a type either 
+<literal>EWL_FILDIALOG_TYPE_OPEN</literal> or <literal>EWL_FILEDIALOG_TYPE_SAVE</literal>
+depending on the type of file dialog desired. The callback 
+<literal>EWL_CALLBACK_VALUE_CHANGED</literal> will be executed when the user clicks
+the 'Open' button in the dialog.
+</para>
+
+<para>
+It is also possible to pack other widgets into the filedialog itself. This is done through
+the normal <function>ewl_container_append_child()</function>. So, if you wanted for example,
+to add a 'Home' button, you could create the button and pack it into the file dialog where
+it will appear down the left side.
+</para>
+
+<para>
+You can change the directory that is currently being viewed in the file dialog by
+executing <function>void ewl_filedialog_set_directory(Ewl_Filedialog *, char *path)</function>
+where <literal>path</literal> is the full path to the desired directory.
+</para>
+
+<para>
+ <example>
+  <title>Ewl_Filedialog open callback</title>
+  <programlisting role="C">
+void open_file_cb(Ewl_Widget *w, void *event, void *data) {
+    char *filename = (char *)event;
+    printf("selected file %s\n", filename);
+}
+  </programlisting>
+ </example>
+The file that has been selected is passed to the callback as the <literal>event</literal>
+parameter. If you wish to remove the filedialog you can do something similar to 
+<literal>ewl_widget_hide(fd_win)</literal> where <literal>fd_win</literal> is the window
+object holding the file dialog.
 </para>
 </sect1>
 
+<!-- ################################### -->
+<!-- EWL IMAGE -->
 <sect1 id="sec-EwlImage">
 <title>ewl_image</title>
 <para>
 </para>
 </sect1>
 
+<!-- ################################### -->
+<!-- EWL MENU -->
 <sect1 id="sec-EwlMenu">
 <title>ewl_menu</title>
 <para>
 </para>
 </sect1>
 
+<!-- ################################### -->
+<!-- EWL NOTEBOOK -->
 <sect1 id="sec-EwlNotebook">
 <title>ewl_notebook</title>
 <para>
+ <figure>
+  <title>An EWL Notebook</title>
+  <inlinemediaobject>
+   <imageobject>
+    <imagedata fileref="img/notebook.png" format="png" />
+   </imageobject>
+   <textobject>
+    <phrase>Example of an EWL Notebook</phrase>
+   </textobject>
+  </inlinemediaobject>
+ </figure>
+</para>
+<para>
 </para>
 </sect1>
 
+<!-- ################################### -->
+<!-- EWL PASSWORD -->
 <sect1 id="sec-EwlPassword">
 <title>ewl_password</title>
 <para>
+ <figure>
+  <title>An EWL password dialog</title>
+  <inlinemediaobject>
+   <imageobject>
+    <imagedata fileref="img/passwd.png" format="png" />
+   </imageobject>
+   <textobject>
+    <phrase>Example of an EWL password dialog</phrase>
+   </textobject>
+  </inlinemediaobject>
+ </figure>
 </para>
-</sect1>
-
-<sect1 id="sec-EwlProgressBar">
-<title>ewl_progressbar</title>
 <para>
 </para>
 </sect1>
 
+<!-- ################################### -->
+<!-- EWL PROGRESSBAR -->
+<sect1 id="sec-EwlProgressBar">
+<title>ewl_progressbar</title>
+<para>
+ <figure>
+  <title>An EWL progress bar</title>
+  <inlinemediaobject>
+   <imageobject>
+    <imagedata fileref="img/progressbar.png" format="png" />
+   </imageobject>
+   <textobject>
+    <phrase>Example of an EWL progress bar</phrase>
+   </textobject>
+  </inlinemediaobject>
+ </figure>
+</para>
+<para>
+</para>
+</sect1>
+
+<!-- ################################### -->
+<!-- EWL RADIO BUTTON -->
 <sect1 id="sec-Ewl-RadioButton">
 <title>ewl_radiobutton</title>
 <para>
 </para>
 </sect1>
 
+<!-- ################################### -->
+<!-- EWL SCROLLPANE -->
 <sect1 id="sec-EwlScrollpane">
 <title>ewl_scrollpane</title>
 <para>
 </para>
 </sect1>
 
+<!-- ################################### -->
+<!-- EWL SEEKER -->
 <sect1 id="sec-EwlSeeker">
 <title>ewl_seeker</title>
 <para>
 </para>
 </sect1>
 
+<!-- ################################### -->
+<!-- EWL SPINNER -->
 <sect1 id="sec-EwlSpinner">
 <title>ewl_spinner</title>
+<para>
+ <figure>
+  <title>An EWL spinner</title>
+  <inlinemediaobject>
+   <imageobject>
+    <imagedata fileref="img/spinner.png" format="png" />
+   </imageobject>
+   <textobject>
+    <phrase>Example of an EWL spinner</phrase>
+   </textobject>
+  </inlinemediaobject>
+ </figure>
+</para>
 <para>
 </para>
 </sect1>
 
+<!-- ################################### -->
+<!-- EWL TABLE -->
 <sect1 id="sec-EwlTable">
 <title>ewl_table</title>
 <para>
 </para>
 </sect1>
 
+<!-- ################################### -->
+<!-- EWL TEXT -->
 <sect1 id="sec-EwlText">
 <title>ewl_text</title>
 <para>
 </para>
 </sect1>
 
+<!-- ################################### -->
+<!-- EWL TOOLTIP -->
 <sect1 id="sec-EwlTooltip">
 <title>ewl_tooltip</title>
+<para>
+ <figure>
+  <title>An EWL tooltip</title>
+  <inlinemediaobject>
+   <imageobject>
+    <imagedata fileref="img/tooltip.png" format="png" />
+   </imageobject>
+   <textobject>
+    <phrase>Example of an EWL tooltip</phrase>
+   </textobject>
+  </inlinemediaobject>
+ </figure>
+</para>
 <para>
 </para>
 </sect1>
 
+<!-- ################################### -->
+<!-- EWL TREE -->
 <sect1 id="sec-EwlTree">
 <title>ewl_tree</title>
 <para>
 </para>
 </sect1>
 
+<!-- ################################### -->
+<!-- EWL WINDOW -->
 <sect1 id="sec-EwlWindow">
 <title>ewl_window</title>
 <para>
+An ewl_window will be used by every EWL application. This is the window that
+will display all of the other desired EWL widgets.
+</para>
+
+<para>
+ <figure>
+  <title>An EWL Window</title>
+  <inlinemediaobject>
+   <imageobject>
+    <imagedata fileref="img/create_window.png" format="png" />
+   </imageobject>
+   <textobject>
+    <phrase>Example of an EWL window</phrase>
+   </textobject>
+  </inlinemediaobject>
+ </figure>
+</para>
+
+<para>
+ <example id="sec-EwlWindowCode">
+  <title>Creating a Window</title>
+  <programlisting role="C">
+    Ewl_Widget *window = ewl_window_new();
+    ewl_window_set_title(EWL_WINDOW(window), "foo window");
+    ewl_window_set_class(EWL_WINDOW(window), "foo_class");
+    ewl_window_set_name(EWL_WINDOW(window), "foo_name");
+    ewl_object_request_size(EWL_OBJECT(window), 300, 400);
+    ewl_callback_append(window, EWL_CALLBACK_DELETE_WINDOW, win_del_cb, NULL);
+    ewl_widget_show(window);
+  </programlisting>
+ </example>
+Setting up the basic window is pretty simple. We take the extra steps of
+calling: <function>ewl_window_set_title()</function>, 
+<function>ewl_window_set_name()</function> and <function>ewl_window_set_class()</function>
+to fill in the information the window manager uses.
+</para>
+
+<para>
+Since the window is a <literal>Ewl_Object</literal> like any other, we use the
+<function>ewl_object_request_size()</function> to request the starting size of
+our window. We could have also called <function>ewl_object_set_minimum_size()</function>
+and <function>ewl_object_set_maximum_size()</function> to constrain the 
+minimum/maximum sizes of our window.
+</para>
+
+<para>
+The main callback used by a Ewl_Window is the <literal>EWL_CALLBACK_DELETE_WINDOW</literal>.
+This will be called when, for whatever reason, the window is being destroyed by the 
+window manager. It should be used to cleanup any resources that the application has
+used before exiting the application.
+</para>
+
+<para>
+ <example id="sec-EwlWindowDestroyCb">
+ <title>Ewl Window destroy callback</title>
+ <programlisting role="C">
+void win_del_cb(Ewl_Widget *w, void *event, void *data) {
+    ewl_widget_destroy(w);
+    ewl_main_quit();
+}
+ </programlisting>
+ </example>
+</para>
+
+<para>
+Some of the other operations involving the Ewl_Window object are:
+<itemizedlist mark="bullet" spacing="compact">
+ <listitem><para><function>char *ewl_window_get_title(Ewl_Window *)</function></para></listitem>
+ <listitem><para><function>char *ewl_window_get_name(Ewl_Window *)</function></para></listitem>
+ <listitem><para><function>char *ewl_window_get_class(Ewl_Window *)</function></para></listitem>
+ <listitem><para><function>void ewl_window_set_borderless(Ewl_Window *)</function></para></listitem>
+ <listitem><para><function>void ewl_window_move(Ewl_Window *, int x, int y)</function></para></listitem>
+ <listitem><para>
+  <function>void ewl_window_get_position(Ewl_Window *, int *x, int *y)</function>
+ </para></listitem>
+</itemizedlist>
+The first three calls are pretty self explanatory. The <function>ewl_window_set_borderless()</function>
+can be used to tell the window manager not to display any decoration around the window, this includes
+the border and the title bar. The function <function>ewl_window_move()</function> is used to
+position the window to a specific place on the desktop, indexed from the top left corner. The opposite
+to this is <function>ewl_window_get_position()</function> which will return the position of the
+window on the desktop.
 </para>
 </sect1>
 
 </chapter>
+
 

@@ -10,9 +10,17 @@
 
  <revhistory>
   <revision>
-   <revnumber>v0.1</revnumber>
+   <authorinitials>dj2</authorinitials>
+   <revnumber>0.1</revnumber>
    <date>July 07, 2004</date>
    <revremark>Initial document</revremark>
+  </revision>
+
+  <revision>
+   <authorinitials>dj2</authorinitials>
+   <revnumber>0.2</revnumber>
+   <date>July 10, 2004</date>
+   <revremark>Flush out some of the widget information</revremark>
   </revision>
  </revhistory>
 
