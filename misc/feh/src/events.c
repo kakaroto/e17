@@ -97,18 +97,9 @@ feh_event_handle_ButtonPress(XEvent * ev)
         winwid = winwidget_get_from_window(ev->xbutton.window);
         if (winwid != NULL)
         {
-           if (ev->xbutton.state & ControlMask)
-           {
-              D(("Zoom mode baby!\n"));
-              opt.mode = MODE_ZOOM;
-              winwid->mode = MODE_ZOOM;
-           }
-           else
-           {
-              D(("Pan mode baby!\n"));
-              opt.mode = MODE_PAN;
-              winwid->mode = MODE_PAN;
-           }
+           D(("Zoom mode baby!\n"));
+           opt.mode = MODE_ZOOM;
+           winwid->mode = MODE_ZOOM;
            D(("click offset is %d,%d\n", ev->xbutton.x, ev->xbutton.y));
            winwid->click_offset_x = ev->xbutton.x - winwid->im_x;
            winwid->click_offset_y = ev->xbutton.y - winwid->im_y;
@@ -119,24 +110,38 @@ feh_event_handle_ButtonPress(XEvent * ev)
         winwid = winwidget_get_from_window(ev->xbutton.window);
         if (winwid != NULL)
         {
-           if (!opt.no_menus)
+           if (ev->xbutton.state & ControlMask)
            {
-              int x, y, b;
-              unsigned int c;
-              Window r;
+              if (!opt.no_menus)
+              {
+                 int x, y, b;
+                 unsigned int c;
+                 Window r;
 
-              if (!menu_main)
-                 feh_menu_init();
-              if (winwid->type == WIN_TYPE_ABOUT)
-              {
-                 XQueryPointer(disp, winwid->win, &r, &r, &x, &y, &b, &b, &c);
-                 feh_menu_show_at_xy(menu_close, winwid, x, y);
+                 if (!menu_main)
+                    feh_menu_init();
+                 if (winwid->type == WIN_TYPE_ABOUT)
+                 {
+                    XQueryPointer(disp, winwid->win, &r, &r, &x, &y, &b, &b,
+                                  &c);
+                    feh_menu_show_at_xy(menu_close, winwid, x, y);
+                 }
+                 else
+                 {
+                    XQueryPointer(disp, winwid->win, &r, &r, &x, &y, &b, &b,
+                                  &c);
+                    feh_menu_show_at_xy(menu_main, winwid, x, y);
+                 }
               }
-              else
-              {
-                 XQueryPointer(disp, winwid->win, &r, &r, &x, &y, &b, &b, &c);
-                 feh_menu_show_at_xy(menu_main, winwid, x, y);
-              }
+           }
+           else
+           {
+              D(("Pan mode baby!\n"));
+              opt.mode = MODE_PAN;
+              winwid->mode = MODE_PAN;
+              D(("click offset is %d,%d\n", ev->xbutton.x, ev->xbutton.y));
+              winwid->click_offset_x = ev->xbutton.x - winwid->im_x;
+              winwid->click_offset_y = ev->xbutton.y - winwid->im_y;
            }
         }
         break;
@@ -211,8 +216,19 @@ feh_event_handle_ButtonRelease(XEvent * ev)
         break;
      case 3:
         D(("Button 3 Release event\n"));
-        if (opt.no_menus)
+        if ((ev->xbutton.state & ControlMask) && (opt.no_menus))
            winwidget_destroy_all();
+        else
+        {
+           winwid = winwidget_get_from_window(ev->xbutton.window);
+           if (winwid != NULL)
+           {
+              D(("Disabling Pan/Zoom mode\n"));
+              opt.mode = MODE_NORMAL;
+              winwid->mode = MODE_NORMAL;
+              winwidget_render_image(winwid, 0, 1);
+           }
+        }
         break;
      default:
         break;
@@ -344,7 +360,7 @@ feh_event_handle_MotionNotify(XEvent * ev)
       xx = winwid->w - winwid->im_w;
       yy = winwid->h - winwid->im_h;
 
-      /* stick to left hand side */
+      /* stick to left/right hand side */
       if ((x < 10) && (x > -10))
          winwid->im_x = 0;
       else if (xx && ((x < xx + 10) && (x > xx - 10)))
@@ -352,7 +368,7 @@ feh_event_handle_MotionNotify(XEvent * ev)
       else
          winwid->im_x = x;
 
-      /* stick to top */
+      /* stick to top/bottom */
       if ((y < 10) && (y > -10))
          winwid->im_y = 0;
       else if (yy && ((y < yy + 10) && (y > yy - 10)))
