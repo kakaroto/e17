@@ -11,15 +11,12 @@ Then to compile:
 To install (run this as root, or the user who handles installs):
     make install
 
-You need to use the build_icon.sh script (as the user that will be running
-engage, not root!) to build icon files for your apps.
-The script will install both the mapping and the launch icon, you may wish to
-remove the launch icon and leave just the mapping in place - instructions on
-how to do so follow the successful install of an icon using the build script.
-These icons are compatible with the upcoming e17 e_app icons with some
-modifications agreed with raster.
+You need to use the e_util_eapp_edit application (as the user that will be
+running engage, not root!) from CVS in e17/apps/e_utils to build icon files for your apps.
+These icons are compatible with the upcoming e17 e_app icons and should live
+in ~.e/e/applications/all.
 
-Unmatched windows will pick up the xapp.eet in the shared directory which has
+Unmatched windows will pick up the xapp.eapp in the shared directory which has
 no icon - _unless_ the theme overrides this icon!
 
 Try using the "none" theme to start with and the "gentoo" theme for a nice

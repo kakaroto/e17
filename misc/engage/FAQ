@@ -1,15 +1,8 @@
 Q; Why do I have no icons?
-A: You need to create some! - use the provided build_icon.sh to create them and install them for you.
+A: You need to create some! - use the e_util_eapp_edit application in e17 cvs to create them for you.
 
 Q: Why are my icons question marks?
-A: You have no mapping for the running application - the build_icon.sh will
-install a mapping for any app it creates an icon for.
-
-Q: How do I know what arguments to use for the build_icon.sh?
-A: Easy :
-  1) Application title - the text you wish to appear above the icon
-  2) Command - the command used to start (or spawn another instance of) the app
-     i.e. "mozilla" or "Eterm --borderless"
-  3) Window class }
-  4) Window name  } If you do not know these values go to the "remember" settings dialog (if using Enlightenment) and read them off the screen
+A: You have no mapping for the running application - you need a .eapp file
+that has a matching window class for the icon it represents - try xprop for a
+hint as to your windows class.
 
