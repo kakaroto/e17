@@ -105,12 +105,14 @@ struct _Term {
    int           data_len;  
    int           font_width;
    int           font_height;
-   
+   char         *title;
+   int           w;
+   int           h;
 };
 
 typedef struct _Term Term;
 
-Term          *term_new(Ecore_Evas *ee);
+Term          *term_init(Evas_Object *o);
 Term_TCanvas  *term_tcanvas_new();
 int            term_tcanvas_data(void *data);
 void           term_tcanvas_glyph_push(Term *term, char c);
@@ -132,7 +134,7 @@ int            get_pty(Term *term);
 int            get_tty(Term *term);
 void           sigchld_handler(int a);
 struct passwd *find_user(void);
-int            execute_command(Term *term, int argc, const char **argv);
+int            execute_command(Term *term);//, int argc, const char **argv);
 
 void           term_window_init(Ecore_Evas *ee, Evas *evas);
 void           term_term_bg_set(Term *term, char *img);
@@ -154,3 +156,21 @@ void           term_clear_area(Term *term, int x1, int y1, int x2, int y2);
 void           term_scroll_up(Term *term, int rows);
 void           term_scroll_down(Term *term, int rows);
    
+void           term_smart_add(Evas_Object *o);
+void           term_smart_del(Evas_Object *o);
+void           term_smart_layer_set(Evas_Object *o, int l);
+void           term_smart_raise(Evas_Object *o);
+void           term_smart_lower(Evas_Object *o);
+void           term_smart_stack_above(Evas_Object *o, Evas_Object *above);
+void           term_smart_stack_below(Evas_Object *o, Evas_Object *below);
+void           term_smart_move(Evas_Object *o, Evas_Coord x, Evas_Coord y);
+void           term_smart_resize(Evas_Object *o, Evas_Coord w, Evas_Coord h);
+void           term_smart_show(Evas_Object *o);
+void           term_smart_hide(Evas_Object *o);
+void           term_smart_color_set(Evas_Object *o, int r, int g, int b, int a);
+void           term_smart_clip_set(Evas_Object *o, Evas_Object *clip);
+void           term_smart_clip_unset(Evas_Object *o);
+Evas_Smart    *term_smart_get();
+
+void           enterm_init(Ecore_Evas *ee, Evas_Object *term);   
+void           enterm_cb_resize(Ecore_Evas *ee);

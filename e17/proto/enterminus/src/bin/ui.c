@@ -8,36 +8,23 @@
 #define COLOR4 20, 20, 200
 #define COLOR5 46, 75, 100
 #define COLOR6 98, 175, 200
-#define COLOR7 50, 50, 50 
+#define COLOR7 250, 250, 250
 #define COLOR8 231, 105, 50
 
-/* this isnt used right now */
-void term_window_init(Ecore_Evas *ee, Evas *evas) {
-
-   ee = ecore_evas_software_x11_new(0, 0, 0, 0, 640, 480);
-   evas =  ecore_evas_get(ee);
-   ecore_evas_show(ee);
-}
-
 void term_term_bg_set(Term *term, char *img) {
-   int x, y, w, h;
 
-   ecore_evas_geometry_get(term->ee, &x, &y, &w, &h);
-      
    if(!term->bg) {
       term->bg = evas_object_image_add(term->evas);
       evas_object_event_callback_add(term->bg, EVAS_CALLBACK_KEY_DOWN, 
 				     term_cb_key_down,
-				     term);
-      ecore_evas_callback_resize_set(term->ee, term_cb_resize);
+				     term);      
    }
    
-   evas_object_resize(term->bg, w, h);
+   evas_object_resize(term->bg, term->w, term->h);
    evas_object_image_file_set(term->bg, img, NULL);
    evas_object_layer_set(term->bg, 0);
-   evas_object_image_fill_set(term->bg, 0, 0, w, h);
-   evas_object_focus_set(term->bg,1);   
-   evas_object_show(term->bg);
+   evas_object_image_fill_set(term->bg, 0, 0, term->w, term->h);
+   evas_object_focus_set(term->bg, 1);
 
 }
 
@@ -115,10 +102,8 @@ void term_redraw(void *data) {
 	    break;
 
 	 }
-	 	
-	 evas_object_layer_set(gl->text,1);
+	 
 	 evas_object_move(gl->text, j*term->font.width, i*term->font.height);
-	 evas_object_show(gl->text);
 	 tgl->changed = 0;
       }
       if(i + term->tcanvas->scroll_region_start > (term->tcanvas->rows - 1)*term->tcanvas->scroll_size) {	 

@@ -146,7 +146,9 @@ misc.c \
 pty.c  \
 term.c \
 ui.c \
-handlers.c  
+handlers.c \
+smart.c \
+enterm.c
 
 
 enterminus_LDADD = @my_libs@
@@ -159,7 +161,8 @@ bin_PROGRAMS = enterminus$(EXEEXT)
 PROGRAMS = $(bin_PROGRAMS)
 
 am_enterminus_OBJECTS = main.$(OBJEXT) misc.$(OBJEXT) pty.$(OBJEXT) \
-	term.$(OBJEXT) ui.$(OBJEXT) handlers.$(OBJEXT)
+	term.$(OBJEXT) ui.$(OBJEXT) handlers.$(OBJEXT) smart.$(OBJEXT) \
+	enterm.$(OBJEXT)
 enterminus_OBJECTS = $(am_enterminus_OBJECTS)
 enterminus_DEPENDENCIES =
 enterminus_LDFLAGS =
@@ -167,8 +170,9 @@ enterminus_LDFLAGS =
 DEFAULT_INCLUDES =  -I. -I$(srcdir) -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
-@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/handlers.Po ./$(DEPDIR)/main.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/misc.Po ./$(DEPDIR)/pty.Po \
+@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/enterm.Po ./$(DEPDIR)/handlers.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/main.Po ./$(DEPDIR)/misc.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/pty.Po ./$(DEPDIR)/smart.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/term.Po ./$(DEPDIR)/ui.Po
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
@@ -229,10 +233,12 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/enterm.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/handlers.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/main.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/misc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pty.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/smart.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/term.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ui.Po@am__quote@
 

@@ -13,6 +13,8 @@ misc.c \
 pty.c  \
 term.c \
 ui.c \
-handlers.c  
+handlers.c \
+smart.c \
+enterm.c
 
 enterminus_LDADD = @my_libs@

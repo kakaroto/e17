@@ -18,9 +18,13 @@ void term_handler_xterm_seq(int op, Term *term) {
    switch(op) {
     case 0: /* set window and icon title */
     case 1: /* set icon title */
-    case 2: /* set window title */      
-      ecore_x_window_prop_title_set(ecore_evas_software_x11_window_get(term->ee),
-				    buf);
+    case 2: /* set window title */
+      if(term->title) free(term->title);
+      term->title = malloc(sizeof(buf));
+      snprintf(term->title, sizeof(buf), "%s", buf);
+      /* TODO: MOVE THIS TO FRONTEND CODE */
+      //ecore_x_window_prop_title_set(ecore_evas_software_x11_window_get(term->ee),
+      //			    buf);
       break;
    }
 }
@@ -449,99 +453,4 @@ void term_cb_key_down(void *data, Evas *e, Evas_Object *obj, void *event_info){
       //write(term->cmd_fd.sys, tmp, 1);
 
    }
-}
-
-struct winsize *get_font_dim(Term *term)
-{
-   static struct winsize w;
-   w.ws_row = term->tcanvas->rows;
-   w.ws_col = term->tcanvas->cols;
-   w.ws_xpixel = w.ws_ypixel = 0;
-   return &w;
-}
-
-
-void term_cb_resize(Ecore_Evas *ee) {
-   int x, y, w, h, w_char, h_char, 
-     num_chars_w, num_chars_h, old_size;
-   Term *term;
-   Term_EGlyph *gl;
-   Term_TGlyph *gt;
-   
-   term = (Term*)ecore_evas_data_get(ee, "term");
-   
-   ecore_evas_geometry_get(term->ee, &x, &y, &w, &h);
-   
-   w_char = term_font_get_width(term);
-   h_char = term_font_get_height(term);   
-   
-   num_chars_w = (int)((float)w/(float)w_char);
-   num_chars_h = (int)((float)h/(float)h_char);
-   
-   if(term->tcanvas->cols == num_chars_w && term->tcanvas->rows == num_chars_h)
-     return;
-     
-   /* TODO: Check if we're increasing or decreasing window size */   
-   
-   old_size = term->tcanvas->cols * term->tcanvas->rows;   
-   
-   term->tcanvas->cols = num_chars_w;
-   term->tcanvas->rows = num_chars_h;
-   
-   term->tcanvas->scroll_region_start = 0;
-   term->tcanvas->scroll_region_end = term->tcanvas->rows - 1;      
-
-   if((term->tcanvas->grid = realloc(term->tcanvas->grid, 
-				    term->tcanvas->cols * term->tcanvas->rows *
-				    term->tcanvas->scroll_size *
-				    sizeof(Term_TGlyph))) == NULL) {
-      fprintf(stderr,"Fatal: Could not reallocate text grid!\n");
-      exit(-1);
-   }
-   
-   /* review this, do we need to subtract:
-    * (term->tcanvas->cols * term->tcanvas->rows * term->tcanvas->scroll_size)
-    */
-   y = (term->tcanvas->cols * term->tcanvas->rows * term->tcanvas->scroll_size)
-	- (old_size *  term->tcanvas->scroll_size);
-      
-   for(x = y ; 
-       x <= term->tcanvas->cols * term->tcanvas->rows * term->tcanvas->scroll_size;
-       x++) {
-      gt = &term->tcanvas->grid[x];
-      gt->c = '\0';
-   }   
-   
-   if((term->tcanvas->changed_rows = realloc(term->tcanvas->changed_rows, 
-					    term->tcanvas->rows *
-					    term->tcanvas->scroll_size *
-					    sizeof(int))) == NULL) {
-      fprintf(stderr,"Fatal: Could not reallocate changed rows buffer!\n");
-      exit(-1);      
-   }
-   
-   for(x = 0; x <= term->tcanvas->rows * term->tcanvas->scroll_size; x++)
-     term->tcanvas->changed_rows[x] = 0;
-   
-   if((term->grid = realloc(term->grid, term->tcanvas->cols * 
-			    term->tcanvas->rows *
-			    sizeof(Term_EGlyph))) == NULL) {
-      fprintf(stderr,"Fatal: Couldnt not reallocate evas grid!\n");
-      exit(-1);
-   }
-   
-   y = term->tcanvas->cols * term->tcanvas->rows - 
-     (term->tcanvas->cols * term->tcanvas->rows - (old_size));
-   
-   for(x = y ; x <= term->tcanvas->cols * term->tcanvas->rows; x++) {
-      gl = &term->grid[x];
-      gl->text = evas_object_text_add(term->evas);
-   }
-   
-   if(ioctl(term->cmd_fd.sys, TIOCSWINSZ, get_font_dim(term)) < 0) {
-      fprintf(stderr, "Couldn't set window size: %m\n");
-   }
-   
-   term_term_bg_set(term, DATADIR"white.png");
-   
 }

@@ -176,13 +176,16 @@ int term_font_get_height(Term *term) {
    return h;
 }
 
-Term *term_new(Ecore_Evas *ee) {
+Term *term_init(Evas_Object *o) {
    int i, j;
-   Term_EGlyph *gl;
-   Term *term = malloc(sizeof(Term));   
+   Evas *evas;
+   Term_EGlyph *gl;      
+   Term *term;
+   
+   term = malloc(sizeof(Term));
+   evas = evas_object_evas_get(o);
    term->term_id = 0;
-   term->ee = ee;
-   term->evas = ecore_evas_get(ee);   
+   term->evas = evas;
    term->tcanvas = term_tcanvas_new();
    term->grid = calloc(term->tcanvas->cols * term->tcanvas->rows,
 		       sizeof(Term_EGlyph));
@@ -190,7 +193,10 @@ Term *term_new(Ecore_Evas *ee) {
    for(i = 0; 
        i < term->tcanvas->cols * term->tcanvas->rows; i++) {
       gl = &term->grid[i];
-      gl->text = evas_object_text_add(term->evas);      
+      gl->text = evas_object_text_add(term->evas);
+      gl->bg = evas_object_text_add(term->evas);
+      evas_object_layer_set(gl->text,2);
+      evas_object_layer_set(gl->text,1);      
    }   
    
    term->bg = NULL;
@@ -200,18 +206,17 @@ Term *term_new(Ecore_Evas *ee) {
    term->data_ptr = 0;   
    term->font.width = term_font_get_width(term);
    term->font.height = term_font_get_height(term);
+   term->title = NULL;
    evas_font_path_append(term->evas, term->font.path);
-   ecore_timer_add(0.1, term_timers, term);   
-   
-   ecore_x_window_prop_step_size_set(ecore_evas_software_x11_window_get(term->ee),
-				      term_font_get_width(term),
-				      term_font_get_height(term));
-   
-   ecore_evas_resize(term->ee, 
-		     term->tcanvas->cols*term_font_get_width(term), 
-		     term->tcanvas->rows*term_font_get_height(term));
-   
-   ecore_evas_data_set(term->ee, "term", term);
-   
+   ecore_timer_add(0.1, term_timers, term);            
+   execute_command(term);//, argc, argv);  
+   term->cmd_fd.ecore =  ecore_main_fd_handler_add(term->cmd_fd.sys,
+						   ECORE_FD_READ,
+						   term_tcanvas_data, term,
+						   NULL, NULL);
+   term->w = term->font.width * term->tcanvas->cols;
+   term->h = term->font.height * term->tcanvas->rows;
+   term_term_bg_set(term, DATADIR"black.png");
+      
    return term;
 }
