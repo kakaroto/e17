@@ -227,7 +227,7 @@ load (ImlibImage *im, ImlibProgressFunction progress,
 		    {
 		       int x;
 		       
-		       memcpy(ptr, body, im->w * im->h 8 sizeof(DATA32));
+		       memcpy(ptr, body, im->w * im->h * sizeof(DATA32));
 		       for (x = 0; x < (im->w * im->h); x++)
 			 SWAP32(ptr[x]);
 		    }
