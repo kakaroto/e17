@@ -11,5 +11,7 @@ next1.png   rew2.png           small-play2.png   volume.png \
 next2.png   screen.png         small-prev1.png   x1.png \
 panel.png   seeker_bar.png     small-prev2.png   x2.png \
 pause1.png  seeker_trough.png  small-rew1.png \
-pause2.png  shad.png           small-rew2.png
+pause2.png  shad.png           small-rew2.png \
+bot_grad.png seeker_bar_grad.png small-left-grad.png \
+small-right-grad.png top_grad.png vol-dn-border.png vol-up-border.png
 
