@@ -71,14 +71,6 @@ inline void     ewl_print_warning(void);
 	return num; \
 }
 
-#define DERROR(fmt) \
-{ \
-	ewl_print_warning(); \
-	fprintf(stderr, "\tIn function:\n\n" \
-			"\t%s();\n\n", __FUNCTION__); \
-	fprintf(stderr, fmt); \
-}
-
 #define DWARNING(fmt) \
 { \
 	ewl_print_warning(); \
@@ -124,7 +116,6 @@ inline void     ewl_print_warning(void);
 #define DRETURN_PTR(ptr, lvl) return (void *)ptr
 #define DRETURN_FLOAT(num, lvl) return num
 #define DRETURN_INT(num, lvl) return num
-#define DERROR(fmt)
 #define DWARNING(fmt)
 #define DCHECK_PARAM_PTR(str, ptr) \
 { \
@@ -141,4 +132,13 @@ inline void     ewl_print_warning(void);
 }
 #endif
 
+#define DERROR(fmt) \
+{ \
+	ewl_print_warning(); \
+	fprintf(stderr, "\tIn function:\n\n" \
+			"\t%s();\n\n", __FUNCTION__); \
+	fprintf(stderr, fmt); \
+}
+
 #endif				/* __EWL_DEBUG_H__ */
+
