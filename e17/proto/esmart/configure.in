@@ -71,6 +71,7 @@ src/Makefile
 test/Makefile
 src/container/Makefile
 src/thumb/Makefile
+src/trans/Makefile
 ], [
 chmod +x esmart-config
 ]

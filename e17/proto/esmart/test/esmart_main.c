@@ -15,6 +15,7 @@
 #include <Ecore_Evas.h>
 #include "E_Thumb.h"
 #include "container.h"
+#include "X11_Trans.h"
 
 static void
 window_del_cb(Ecore_Evas *ee)
@@ -23,15 +24,35 @@ window_del_cb(Ecore_Evas *ee)
 }
 
 static void
-window_resize_cb(Ecore_Evas *ee)
+window_move_cb(Ecore_Evas *ee)
 {
-    int w, h;
+    int x, y, w, h;
     Evas_Object *o = NULL;
 
-    ecore_evas_geometry_get(ee, NULL, NULL, &w, &h);
+    ecore_evas_geometry_get(ee, &x, &y, &w, &h);
 
-    if((o = evas_object_name_find(ecore_evas_get(ee), "background")))
+    if((o = evas_object_name_find(ecore_evas_get(ee), "root_background")))
+    {
+	evas_object_x11_trans_freshen(o, x, y, w, h);
+    }
+}
+static void
+window_resize_cb(Ecore_Evas *ee)
+{
+    int x, y, w, h;
+    Evas_Object *o = NULL;
+
+    ecore_evas_geometry_get(ee, &x, &y, &w, &h);
+
+    if((o = evas_object_name_find(ecore_evas_get(ee), "root_background")))
+    {
 	evas_object_resize(o, w, h);
+	evas_object_x11_trans_freshen(o, x, y, w, h);
+    }
+    if((o = evas_object_name_find(ecore_evas_get(ee), "background")))
+    {
+	evas_object_resize(o, w, h);
+    }
     if((o = evas_object_name_find(ecore_evas_get(ee), "container")))
 	evas_object_resize(o, w, h);
 }
@@ -43,7 +64,7 @@ exit_cb(void *ev, int ev_type, void *data)
     return(0);
 }
 
-static int
+static void
 bg_down_cb(void *data, Evas *evas, Evas_Object *obj, void *event_info)
 {
   Evas_Event_Mouse_Down *event = event_info;
@@ -55,11 +76,9 @@ bg_down_cb(void *data, Evas *evas, Evas_Object *obj, void *event_info)
     e_container_scroll_start(cont, -1);
   else
     e_container_scroll_start(cont, 1);
-  
-
 }
 
-static int
+static void
 bg_up_cb(void *data, Evas *evas, Evas_Object *obj, void *event_info)
 {
   Evas_Event_Mouse_Up *event = event_info;
@@ -88,14 +107,23 @@ main(int argc, char *argv[])
 	ecore_evas_title_set(ee, "Enlightenment Thumbnail Test");
 	ecore_evas_callback_delete_request_set(ee, window_del_cb);
 	ecore_evas_callback_resize_set(ee, window_resize_cb);
+	ecore_evas_callback_move_set(ee, window_move_cb);
 
 	evas = ecore_evas_get(ee);
+	o = evas_object_x11_trans_new(evas);
+	evas_object_move(o, 0, 0);
+	evas_object_resize(o, 300, 120);
+	evas_object_layer_set(o, -5);
+	evas_object_name_set(o, "root_background");
+	evas_object_show(o);
+
 	o = evas_object_rectangle_add(evas);
 	evas_object_move(o, 0, 0);
 	evas_object_resize(o, 300, 120);
-	evas_object_color_set(o, 255, 255, 255, 255);
-	evas_object_layer_set(o, -5);
+	evas_object_layer_set(o, -6);
+	evas_object_color_set(o, 255, 255, 255, 0);
 	evas_object_name_set(o, "background");
+	
 	evas_object_show(o);
 
 	cont = e_container_new(evas);
@@ -109,9 +137,10 @@ main(int argc, char *argv[])
 	e_container_fill_policy_set(cont,
 				    CONTAINER_FILL_POLICY_FILL_Y | 
 				    CONTAINER_FILL_POLICY_KEEP_ASPECT);
-
+	
 	evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_DOWN, bg_down_cb, cont);
 	evas_object_event_callback_add(o, EVAS_CALLBACK_MOUSE_UP, bg_up_cb, cont);
+
 
 	while(--argc)
 	{
@@ -122,7 +151,6 @@ main(int argc, char *argv[])
 		e_container_element_append(cont, o);
 	    }
 	}
-
 	ecore_evas_show(ee);
 	ecore_main_loop_begin();
     }
