@@ -30,7 +30,12 @@ themeing under the new Enlightenment version.
 %setup
 
 %build
-./configure --prefix=%prefix
+if [ -e ./configure ]
+then
+  ./configure --prefix=%prefix
+else
+  ./autogen.sh --prefix=%prefix
+fi
 
 if [ "$SMP" != "" ]; then
   (make "MAKE=make -k -j $SMP"; exit 0)
