@@ -1,0 +1,26 @@
+# List of source files containing translatable strings.
+
+src/actions.c
+src/alert.c
+src/comms.c
+src/config.c
+src/desktops.c
+src/dialog.c
+src/fx.c
+src/groups.c
+src/handlers.c
+src/iconify.c
+src/ipc.c
+src/main.c
+src/memory.c
+src/menus.c
+src/misc.c
+src/modules.c
+src/pager.c
+src/session.c
+src/settings.c
+src/setup.c
+src/snaps.c
+src/sound.c
+src/theme.c
+src/update.c

@@ -34,6 +34,9 @@ fi
 
 AM_CONFIG_HEADER(econfig.h)
 
+echo $(CATOBJECT)
+echo $(CATALOGS)
+
 AC_DEFINE_UNQUOTED(ENLIGHTENMENT_VERSION, "$ENLIGHTENMENT_VERSION")
 AC_SUBST(ENLIGHTENMENT_VERSION)
 AC_DEFINE_UNQUOTED(ENLIGHTENMENT_MAJOR, "$ENLIGHTENMENT_MAJOR")
@@ -45,6 +48,13 @@ AC_SUBST(ENLIGHTENMENT_MICRO)
 
 AC_SUBST(ENLIGHTENMENT_ROOT)
 AC_SUBST(ENLIGHTENMENT_BIN)
+
+AC_DEFINE_UNQUOTED(PACKAGE,"$PACKAGE")
+AC_DEFINE_UNQUOTED(VERSION,"$VERSION")
+AC_SUBST(PACKAGE)
+AC_SUBST(VERSION)
+
+ALL_LINGUAS="nl de"
 
 AC_PROG_CC
 AC_PROG_MAKE_SET
@@ -80,6 +90,8 @@ AC_ARG_ENABLE(sound, [  --enable-sound    compile with sound support
 
 AC_ARG_ENABLE(upgrade, [  --enable-upgrade    compile with auto-upgrade support
 [default=yes]], ,enable_upgrade=yes)
+
+AM_GNU_GETTEXT
 
 if test "x$enable_sound" = "xyes"; then
 AM_PATH_ESD(0.2.13,AC_DEFINE(HAVE_LIBESD),[
@@ -201,4 +213,6 @@ epp/Makefile
 man/Makefile
 scripts/Makefile
 scripts/enlightenment.install
+po/Makefile.in
+intl/Makefile
 ])

@@ -4,7 +4,9 @@ SUBDIRS = \
 	eesh \
 	epp \
     man \
-	src
+	src \
+	intl \
+	po
 
 EXTRA_DIST = \
 sample-scripts/bouncingball.pl \
@@ -20,4 +22,5 @@ debian/changelog \
 debian/control \
 debian/copyright \
 debian/ehrc \
-debian/rules
+debian/rules \
+ABOUT-NLS
