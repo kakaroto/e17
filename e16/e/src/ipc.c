@@ -75,7 +75,7 @@ void                IPC_PlaySoundClass(char *params, Client * c);
 void                IPC_ListClassMembers(char *params, Client * c);
 void                IPC_GeneralInfo(char *params, Client * c);
 void                IPC_Modules(char *params, Client * c);
-void                IPC_DockPosition(char *params, Client * c);
+void                IPC_DockConfig(char *params, Client * c);
 void                IPC_KDE(char *params, Client * c);
 void                IPC_MemDebug(char *params, Client * c);
 void                IPC_Remember(char *params, Client * c);
@@ -349,7 +349,7 @@ IPCStruct           IPCArray[] = {
     "-  seconds for tooltips and autoraise can have less than one second\n"
     "   (i.e. 0.5) or greater (1.3, 3.5, etc)"},
    {
-    IPC_DockPosition,
+    IPC_DockConfig,
     "dock",
     "Change Data about the Dock Position and Direction",
     "use \"dock direction <up/down/left/right/?>\" to set or "
@@ -832,7 +832,7 @@ IPC_Modules(char *params, Client * c)
 }
 
 void
-IPC_DockPosition(char *params, Client * c)
+IPC_DockConfig(char *params, Client * c)
 {
 
    char                buf[FILEPATH_LEN_MAX];
@@ -931,6 +931,31 @@ IPC_DockPosition(char *params, Client * c)
 		    {
 		       Esnprintf(buf, sizeof(buf), "Error: unknown direction "
 				 "specified");
+		    }
+	       }
+	     else
+	       {
+		  Esnprintf(buf, sizeof(buf), "Error: no operation specified");
+	       }
+	  }
+	else if (!strcmp(param1,"support"))
+	  {
+	     if (param2[0])
+	       {
+		  if (!strcmp(param2, "?"))
+		    {
+		       Esnprintf(buf,sizeof(buf), "dockapp support: %s", 
+		          (mode.dockapp_support)?"enabled":"disabled");
+		    }
+		  else if (!strcmp(param2, "on"))
+		    {
+		       mode.dockapp_support = 1;
+		       Esnprintf(buf,sizeof(buf), "dockapp support: enabled");
+		    }
+		  else if (!strcmp(param2, "off"))
+		    {
+		       mode.dockapp_support = 0;
+		       Esnprintf(buf,sizeof(buf), "dockapp support: disabled");
 		    }
 	       }
 	     else

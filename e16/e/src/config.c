@@ -806,6 +806,9 @@ Config_Control(FILE * ConfigFile)
 
 	     }
 	     break;
+	  case CONTROL_DOCKAPP_SUPPORT:
+	     mode.dockapp_support = i2;
+	     break;
 	  default:
 	     RecoverUserConfig();
 	     Alert(_("Warning: unable to determine what to do with\n"
@@ -3801,6 +3804,7 @@ SaveUserControlConfig(FILE * autosavefile)
 	fprintf(autosavefile, "404 %i\n", (int)desks.slidein);
 	fprintf(autosavefile, "405 %i\n", (int)desks.slidespeed);
 	fprintf(autosavefile, "406 %i\n", (int)desks.hiqualitybg);
+	fprintf(autosavefile, "1370 %i\n", (int)mode.dockapp_support);
 	fprintf(autosavefile, "325 %i\n", (int)mode.dockdirmode);
 	fprintf(autosavefile, "326 %i\n", (int)mode.shadespeed);
 	fprintf(autosavefile, "327 %i\n", (int)mode.tooltips);

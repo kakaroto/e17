@@ -393,7 +393,7 @@ AddToFamily(Window win)
    /* adopt the new baby */
    ewin = Adopt(win);
    /* if is an afterstep/windowmaker dock app 0- dock it */
-   if (ewin->docked)
+   if (mode.dockapp_support && ewin->docked)
      {
 	DockIt(ewin);
 	EDBUG_RETURN_;
@@ -1784,7 +1784,7 @@ SetEwinBorder(EWin * ewin)
    else
       b = MatchEwinByFunction(ewin, (void *(*)(EWin *, WindowMatch *))
 			      (MatchEwinBorder));
-   if (ewin->docked)
+   if (mode.dockapp_support&&ewin->docked)
       b = (Border *) FindItem("BORDERLESS", 0, LIST_FINDBY_NAME,
 			      LIST_TYPE_BORDER);
    if (!b)

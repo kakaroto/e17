@@ -1149,7 +1149,7 @@ HandleDestroy(XEvent * ev)
 	   mode.mouse_over_win = NULL;
 	if (ewin == mode.ewin)
 	   mode.ewin = NULL;
-	if (ewin->docked)
+	if (mode.dockapp_support&&ewin->docked)
 	   DockDestroy(ewin);
 	DesktopRemoveEwin(ewin);
 	FreeEwin(ewin);
@@ -1494,7 +1494,7 @@ HandleUnmap(XEvent * ev)
 	     mode.mode = MODE_NONE;
 	     mode.context_pager = NULL;
 	  }
-	if (ewin->docked)
+	if (mode.dockapp_support&&ewin->docked)
 	   DockDestroy(ewin);
 	if (ewin == mode.ewin)
 	  {

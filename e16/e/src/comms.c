@@ -1259,10 +1259,15 @@ HandleComms(XEvent * ev)
 		  word(s, wd, w);
 		  mode.focusmode = atoi(w);
 	       }
-	     else if (!strcmp(w, "DOCKDIRMODE:"))
+	     else if (!strcmp(w, "DOCKAPP_SUPPORT:"))
 	       {
 		  word(s, wd, w);
 		  mode.dockdirmode = atoi(w);
+	       }
+	     else if (!strcmp(w, "DOCKDIRMODE:"))
+	       {
+		  word(s, wd, w);
+		  mode.dockapp_support = atoi(w);
 	       }
 	     else if (!strcmp(w, "ICONDIRMODE:"))
 	       {
@@ -1566,6 +1571,7 @@ HandleComms(XEvent * ev)
 	GetAreaSize(&a, &b);
 	Esnprintf(buf, sizeof(buf),
 		  "FOCUSMODE: %i\n"
+          "DOCKAPP_SUPPORT: %i\n"
 		  "DOCKDIRMODE: %i\n"
 		  "ICONDIRMODE: %i\n"
 		  "MOVEMODE: %i\n"
@@ -1611,7 +1617,7 @@ HandleComms(XEvent * ev)
 		  "WARP_ON_NEXT_FOCUS: %i\n"
 		  "WARP_AFTER_NEXT_FOCUS: %i\n"
 		  "EDGE_FLIP_RESISTANCE: %i\n",
-		  mode.focusmode, mode.dockdirmode, mode.primaryicondir,
+		  mode.focusmode, mode.dockapp_support, mode.dockdirmode, mode.primaryicondir,
 		  mode.movemode, mode.resizemode, mode.slidemode,
 		  mode.cleanupslide, mode.mapslide, mode.slidespeedmap,
 		  mode.slidespeedcleanup, mode.shadespeed,

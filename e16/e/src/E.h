@@ -1190,6 +1190,7 @@ typedef struct _emode
    double              tiptime;
    char                autoraise;
    double              autoraisetime;
+   char                dockapp_support; /* wmdockapp only */
    int                 dockstartx;
    int                 dockstarty;
    char                save_under;
