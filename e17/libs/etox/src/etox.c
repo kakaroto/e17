@@ -1214,9 +1214,7 @@ etox_index_to_line(Etox *et, int *i)
 		l = l->next;
 	}
 
-	if (!l)
-		line = NULL;
-	else
+	if (line)
 		*i -= len - line->length;
 
 	return line;
