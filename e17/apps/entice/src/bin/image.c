@@ -684,8 +684,11 @@ e_display_current_image(void)
      {
 	char                title[4096];
 
-	if (!o_image)
+	if (o_image)
 	  {
+	    evas_object_del(o_image);
+	    o_image = NULL;
+	  }
 	o_image = evas_object_image_add(evas);
 	evas_object_image_file_set(o_image,
 				   ((Image *) (current_image->data))->file,
@@ -697,7 +700,6 @@ e_display_current_image(void)
 	evas_object_event_callback_add(o_image, EVAS_CALLBACK_MOUSE_MOVE,
 				       next_image_move, NULL);
 	evas_object_show(o_image);
-	  }
 	if (evas_object_image_load_error_get(o_image) != EVAS_LOAD_ERROR_NONE)
 	  {
 	     enum active_state command = active_in;
