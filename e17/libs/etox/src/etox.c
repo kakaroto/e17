@@ -82,8 +82,6 @@ Etox *etox_new(Evas *evas)
  * @w: the width of the size for the etox
  * @h: the height of the size for the etox
  * @alpha: the alpha value to apply to the text in the etox
- * @padding: the padding surrounding the text in the etox
- * @style: the default style to be applied to the text of the etox
  * @align: the defaul alignment to apply to the text of the etox
  *
  * Returns a pointer to a newly allocated etox on success, NULL on failure.

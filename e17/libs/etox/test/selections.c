@@ -72,16 +72,33 @@ int main(int argc, const char **argv)
 		etox_selection_set_color(selected1, 255, 0, 0, 255);
 	}
 
-	/*
-	selected2 = etox_select_index(etox, 9, 15);
+	selected2 = etox_select_index(etox, 0, 20);
 	printf("Selected %p\n", selected2);
 	if (selected2) {
 		printf("Selected from %p to %p\n", selected2->start.bit,
 				selected2->end.bit);
-		etox_selection_set_style(selected2, "shadow");
 		etox_selection_set_color(selected2, 0, 0, 255, 255);
 	}
-	*/
+
+	etox_selection_free(selected1);
+
+	selected1 = etox_select_index(etox, 59, 200);
+	printf("Selected %p\n", selected1);
+	if (selected1) {
+		printf("Selected from %p to %p\n", selected1->start.bit,
+				selected1->end.bit);
+		etox_selection_set_style(selected1, "outline");
+	}
+
+	etox_selection_free(selected2);
+
+	selected2 = etox_select_index(etox, 200, 1000);
+	printf("Selected %p\n", selected2);
+	if (selected2) {
+		printf("Selected from %p to %p\n", selected2->start.bit,
+				selected2->end.bit);
+		etox_selection_set_color(selected2, 0, 0, 255, 255);
+	}
 
 	ecore_main_loop_begin();
 
